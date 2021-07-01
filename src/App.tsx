@@ -9,9 +9,7 @@ function App() {
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <Counter />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
+        <p>First automated deployment!!</p>        
         <span>
           <span>Learn </span>
           <a

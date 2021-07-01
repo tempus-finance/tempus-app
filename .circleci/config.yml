@@ -34,11 +34,17 @@ jobs:
       - run:
           name: Run tests
           command: npm test
+      - persist_to_workspace:          
+          root: ./
+          paths:
+            - ./
           
   deploy-to-stage:
     docker:
       - image: cimg/node:15.1
     steps:
+      - attach_workspace:      
+          at: ./
       - run:
           name: Firebase Deploy
           command: ./node_modules/.bin/firebase deploy --only hosting:tempus-app-stage --token "$FIREBASE_TOKEN"
