@@ -31,6 +31,9 @@ jobs:
       - run:
           name: Run tests
           command: npm test
+      - run:
+          name: Firebase Deploy
+          command: ./node_modules/.bin/firebase deploy --token "$FIREBASE_TOKEN"
 
 workflows:
   # Below is the definition of your workflow.
