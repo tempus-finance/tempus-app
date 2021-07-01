@@ -33,7 +33,7 @@ See the section about [deployment](https://facebook.github.io/create-react-app/d
 
 In the `/packages/tempus-client` directory, you can run:
 
-### `npm deploy-stage`
+### `npm run deploy-stage`
 
 Creates new production build and deploys to Firebase staging server.
 
