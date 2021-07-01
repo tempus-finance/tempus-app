@@ -33,7 +33,7 @@ jobs:
           command: npm test
       - run:
           name: Firebase Deploy
-          command: ./node_modules/.bin/firebase deploy --token "$FIREBASE_TOKEN"
+          command: ./node_modules/.bin/firebase deploy --only hosting:tempus-app-stage --token "$FIREBASE_TOKEN"
 
 workflows:
   # Below is the definition of your workflow.
