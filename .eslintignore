@@ -6,3 +6,4 @@
 **/.git/**
 **/public/**
 .eslintrc.js
+src/serviceWorker.ts
