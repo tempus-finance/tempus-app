@@ -23,7 +23,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "deploy-stage": "npm run build && firebase deploy --only hosting:tempus-app-stage"
+    "deploy-stage": "npm run build && firebase deploy --only hosting:tempus-app-stage --token $FIREBASE_TOKEN"
   },
   "eslintConfig": {
     "extends": "react-app"
