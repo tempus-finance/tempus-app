@@ -1,6 +1,10 @@
+@import './constants.scss';
+
 body {
-  margin: 0;
   font-family: AeonikPro-Medium;
+  color: #fff;
+  background-color: $primary;
+  margin: 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
