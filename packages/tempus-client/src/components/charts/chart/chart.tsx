@@ -9,7 +9,7 @@ import './chart.scss';
 export type ChartType = 'TLV' | 'VOLUME';
 
 interface ChartProps {
-  type: ChartType;
+  kind: ChartType;
   title: string;
 }
 
@@ -27,8 +27,8 @@ function Chart(props: ChartProps): JSX.Element {
       </div>
       <div className="chart-row">
         <div className="chart-graph-container">
-          {props.type === 'TLV' && <TLVChart />}
-          {props.type === 'VOLUME' && <VolumeChart />}
+          {props.kind === 'TLV' && <TLVChart />}
+          {props.kind === 'VOLUME' && <VolumeChart />}
           <div className="chart-data-axis-label-row">
             {generatedArrayOfIntegers(15).map(number => {
               return (
