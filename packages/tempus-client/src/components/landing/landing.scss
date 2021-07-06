@@ -1,0 +1,23 @@
+.landing-section-container {
+  grid-area: section;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto;
+  row-gap: 48px;
+  column-gap: 48px;
+  grid-template-areas: 'chart-1 chart-2';
+}
+
+.tvl-chart-container {
+  grid-area: chart-1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.volume-chart-container {
+  grid-area: chart-2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
