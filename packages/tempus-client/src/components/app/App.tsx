@@ -5,7 +5,7 @@ import './App.scss';
 
 function App(): JSX.Element {
   return (
-    <div className='app-container'>
+    <div className="app-container">
       <Header />
       <Landing />
     </div>

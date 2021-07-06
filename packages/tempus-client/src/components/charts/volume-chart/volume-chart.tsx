@@ -7,10 +7,10 @@ function VolumeChart(): JSX.Element {
   const data = generateChartData(60);
 
   return (
-    <ResponsiveContainer width='100%' height={275}>
+    <ResponsiveContainer width="100%" height={275}>
       <BarChart width={730} height={250} data={data}>
         {/* Hide default Tooltip card UI */}
-        <Tooltip contentStyle={{display: 'none'}} />
+        <Tooltip contentStyle={{ display: 'none' }} />
         <Bar dataKey="value" fill="#FFDF99" />
       </BarChart>
     </ResponsiveContainer>
