@@ -1,3 +1,5 @@
+import WalletConnect from '../wallet-connect/wallet-connect';
+
 import './header.scss';
 
 function Header(): JSX.Element {
@@ -14,9 +16,7 @@ function Header(): JSX.Element {
         <p className='header-action'>
           TRADE
         </p>
-        <p className='header-action'>
-          CONNECT WALLET
-        </p>
+        <WalletConnect />
       </div>
     </div>
   );
