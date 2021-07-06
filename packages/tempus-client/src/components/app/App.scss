@@ -1,10 +1,10 @@
 .app-container {
   display: grid;
-  grid-template-columns: 128px 1fr 1fr 128px;
+  grid-template-columns: 128px 1fr 128px;
   grid-template-rows: 96px auto;
   row-gap: 48px;
   column-gap: 48px;
   grid-template-areas:
-    '. header header .'
-    '. chart-1 chart-2 .';
+    '. header .'
+    '. section .';
 }
