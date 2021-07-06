@@ -14,10 +14,12 @@ interface ChartProps {
 }
 
 function Chart(props: ChartProps): JSX.Element {
+  const { title, kind } = props;
+
   return (
     <div className="chart">
       <div className="chart-header">
-        <p>{props.title}</p>
+        <p>{title}</p>
         <p>1 July 2021</p>
       </div>
       <Divider />
@@ -27,16 +29,14 @@ function Chart(props: ChartProps): JSX.Element {
       </div>
       <div className="chart-row">
         <div className="chart-graph-container">
-          {props.kind === 'TLV' && <TLVChart />}
-          {props.kind === 'VOLUME' && <VolumeChart />}
+          {kind === 'TLV' && <TLVChart />}
+          {kind === 'VOLUME' && <VolumeChart />}
           <div className="chart-data-axis-label-row">
-            {generatedArrayOfIntegers(15).map(number => {
-              return (
-                <p key={number} className="chart-graph-axis-label-text">
-                  {number}
-                </p>
-              );
-            })}
+            {generatedArrayOfIntegers(15).map((value: number) => (
+              <p key={value} className="chart-graph-axis-label-text">
+                {value}
+              </p>
+            ))}
           </div>
         </div>
       </div>

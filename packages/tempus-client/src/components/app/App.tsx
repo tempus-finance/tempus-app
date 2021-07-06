@@ -1,5 +1,5 @@
-import Header from './../header/header';
-import Landing from './../landing/landing';
+import Header from '../header/header';
+import Landing from '../landing/landing';
 
 import './App.scss';
 
