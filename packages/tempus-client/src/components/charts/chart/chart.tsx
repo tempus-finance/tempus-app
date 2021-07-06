@@ -6,10 +6,10 @@ import { generatedArrayOfIntegers } from '../../../util/data-generator';
 
 import './chart.scss';
 
-export type ChartType = 'TLV' | 'VOLUME';
+export type ChartKind = 'TLV' | 'VOLUME';
 
 interface ChartProps {
-  kind: ChartType;
+  kind: ChartKind;
   title: string;
 }
 
