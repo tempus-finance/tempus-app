@@ -27,9 +27,6 @@
     "build": "lerna run build",
     "test": "lerna run ci:test"
   },
-  "eslintConfig": {
-    "extends": "react-app"
-  },
   "browserslist": {
     "production": [
       ">0.2%",
