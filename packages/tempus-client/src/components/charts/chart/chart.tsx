@@ -6,10 +6,7 @@ import { generatedArrayOfIntegers } from '../../../util/data-generator';
 
 import './chart.scss';
 
-export enum ChartType {
-  TLV = 'TLV',
-  VOLUME = 'VOLUME',
-}
+export type ChartType = 'TLV' | 'VOLUME';
 
 interface ChartProps {
   type: ChartType;
@@ -30,8 +27,8 @@ function Chart(props: ChartProps): JSX.Element {
       </div>
       <div className="chart-row">
         <div className="chart-graph-container">
-          {props.type === ChartType.TLV && <TLVChart />}
-          {props.type === ChartType.VOLUME && <VolumeChart />}
+          {props.type === 'TLV' && <TLVChart />}
+          {props.type === 'VOLUME' && <VolumeChart />}
           <div className="chart-data-axis-label-row">
             {generatedArrayOfIntegers(15).map(number => {
               return (
