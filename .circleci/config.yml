@@ -49,7 +49,7 @@ jobs:
           at: ./
       - add_ssh_keys:
           fingerprints:
-            - '57:2d:4c:c2:8c:3c:9d:e2:44:11:ce:19:2a:ad:32:29'
+            - 'a2:f3:4d:ea:25:d7:04:25:c3:04:f0:75:a6:c1:87:cd'
       - run:
           name: Avoid hosts unknown for github
           command: echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
