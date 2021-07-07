@@ -1,20 +1,17 @@
-import { FC, useCallback, useState } from 'react';
+import { FC } from 'react';
 import { Web3Provider } from '@ethersproject/providers';
 import { useWeb3React } from '@web3-react/core';
 import { InjectedConnector } from '@web3-react/injected-connector';
 
 const WalletConnect: FC = (): JSX.Element => {
-  const [hasBeenClicked, setHasBeenClicked] = useState<boolean>(false);
-
   const { account, activate, active } = useWeb3React<Web3Provider>();
 
-  const onConnect = useCallback(() => {
-    if (!hasBeenClicked) {
-      setHasBeenClicked(true);
+  const onConnect = () => {
+    if (!active) {
       const injectedConnector = new InjectedConnector({ supportedChainIds });
       activate(injectedConnector);
     }
-  }, [hasBeenClicked, setHasBeenClicked, activate]);
+  };
 
   let shortenedAccount;
   if (account) {
