@@ -52,7 +52,7 @@ jobs:
             - '57:2d:4c:c2:8c:3c:9d:e2:44:11:ce:19:2a:ad:32:29'
       - run:
           name: Avoid hosts unknown for github
-          command: mkdir ~/.ssh/ && echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
+          command: echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
       - run:
           name: Tag build
           command: ./node_modules/.bin/lerna version patch --conventional-commits --yes
