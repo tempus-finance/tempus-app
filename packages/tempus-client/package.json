@@ -6,10 +6,12 @@
     "@ethersproject/providers": "^5.4.1",
     "@web3-react/core": "^6.1.9",
     "@web3-react/injected-connector": "^6.0.7",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
     "react-scripts": "4.0.3",
     "recharts": "^2.0.9"
+  },
+  "peerDependencies": {
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -21,5 +23,8 @@
     "ci:test": "CI=true react-scripts test",
     "eject": "react-scripts eject",
     "deploy-stage": "firebase deploy --only hosting:tempus-app-stage --token $FIREBASE_TOKEN"
+  },
+  "resolutions": {
+    "react-test-renderer": "17.0.2"
   }
 }
