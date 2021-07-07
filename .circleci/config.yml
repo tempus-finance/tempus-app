@@ -48,8 +48,8 @@ jobs:
       - attach_workspace:
           at: ./
       - run:
-        name: Tag build
-        command: /node_modules/.bin/lerna version patch --conventional-commits --yes
+          name: Tag build
+          command: /node_modules/.bin/lerna version patch --conventional-commits --yes
       - run:
           name: Firebase Deploy in Stage
           command: ./node_modules/.bin/lerna run deploy-stage
