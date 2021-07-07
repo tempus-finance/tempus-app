@@ -48,8 +48,8 @@ jobs:
       - attach_workspace:
           at: ./
       - run:
-          name: Add github.com to known hosts
-          command: ssh-keyscan github.com >> ~/.ssh/known_hosts
+          name: Avoid hosts unknown for github
+          command: mkdir ~/.ssh/ && echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
       - run:
           name: Tag build
           command: ./node_modules/.bin/lerna version patch --conventional-commits --yes
