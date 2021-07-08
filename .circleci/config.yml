@@ -29,7 +29,7 @@ jobs:
       #     pkg-manager: yarn
       - run:
           name: Lerna Bootstrap
-          command: ./node_modules/.bin/lerna bootstrap --hoist
+          command: ./node_modules/.bin/lerna exec -- npm i && /node_modules/.bin/lerna link
       - run:
           name: Build
           command: npm run build
