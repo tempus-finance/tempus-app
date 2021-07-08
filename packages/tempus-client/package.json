@@ -5,15 +5,47 @@
   "dependencies": {
     "@ethersproject/providers": "^5.4.1",
     "@material-ui/core": "^4.12.1",
+    "@reduxjs/toolkit": "^1.6.0",
+    "@testing-library/jest-dom": "^4.2.4",
+    "@testing-library/react": "^9.5.0",
+    "@testing-library/user-event": "^7.2.1",
+    "@types/jest": "^24.9.1",
+    "@types/node": "^12.20.15",
+    "@types/react": "^16.14.8",
+    "@types/react-dom": "^16.9.13",
+    "@types/react-redux": "^7.1.16",
     "@web3-react/core": "^6.1.9",
     "@web3-react/injected-connector": "^6.0.7",
     "ethers": "^5.4.1",
     "react-scripts": "4.0.3",
     "recharts": "^2.0.9"
   },
-  "peerDependencies": {
+  "devDependencies": {
     "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "react-dom": "^17.0.2",
+    "react-redux": "^7.2.4"
+  },
+  "peerDependencies": {
+    "@typescript-eslint/eslint-plugin": "^4.28.1",
+    "@typescript-eslint/parser": "^4.28.1",
+    "eslint-config-airbnb-typescript": "^12.3.1",
+    "firebase-tools": "^9.14.0",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-redux": "^7.2.4",
+    "sass": "^1.35.1"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   },
   "eslintConfig": {
     "extends": "react-app"
