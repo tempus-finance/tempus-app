@@ -29,10 +29,13 @@ jobs:
       #     pkg-manager: yarn
       - run:
           name: Lerna Bootstrap
-          command: ./node_modules/.bin/lerna exec -- npm i && /node_modules/.bin/lerna link
+          command: ./node_modules/.bin/lerna bootstrap
       - run:
           name: Build
           command: npm run build
+      - run:
+          name: Check react versions
+          command: npm ls react
       - run:
           name: Run tests
           command: npm test
