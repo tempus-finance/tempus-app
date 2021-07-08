@@ -41,6 +41,17 @@ jobs:
           paths:
             - ./
 
+  tag:
+    docker:
+      - image: cimg/node:15.1
+    steps:
+      - attach_workspace:
+          at: ./
+      - checkout
+      - run:
+          name: Tag build
+          command: ./node_modules/.bin/lerna version patch --conventional-commits --yes
+
   deploy-to-stage:
     docker:
       - image: cimg/node:15.1
@@ -59,6 +70,12 @@ workflows:
   sample:
     jobs:
       - build-and-test
+      - tag:
+          requires:
+            - build-and-test
+          filters:
+            branches:
+              only: master
       - deploy-to-stage:
           requires:
             - build-and-test

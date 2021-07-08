@@ -1,6 +1,6 @@
 {
   "name": "tempus-client",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "private": true,
   "dependencies": {
     "@ethersproject/providers": "^5.4.1",
