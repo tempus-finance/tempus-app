@@ -75,7 +75,7 @@ workflows:
             - build-and-test
           filters:
             branches:
-              only: lerna-versioning
+              only: master
       - deploy-to-stage:
           requires:
             - build-and-test
