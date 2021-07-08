@@ -35,7 +35,7 @@ jobs:
           command: npm run build
       - run:
           name: Check react versions
-          command: npm ls react
+          command: npm ls react && npm ls react-dom
       - run:
           name: Run tests
           command: npm test
