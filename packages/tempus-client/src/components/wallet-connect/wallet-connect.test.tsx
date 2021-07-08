@@ -9,7 +9,7 @@ describe('WalletConnect', () => {
     jest.clearAllMocks();
   });
 
-  test('shows default message when wallet not connected', async done => {
+  test('shows default message when wallet not connected', () => {
     useWeb3React.mockImplementation(() => ({
       account: undefined,
       activate: jest.fn,
@@ -19,7 +19,6 @@ describe('WalletConnect', () => {
     const { getByText } = render(<WalletConnect />);
 
     expect(getByText(CONNECT_WALLET)).toBeInTheDocument();
-    done();
   });
 
   xtest(`calls "activate" method when click on "${CONNECT_WALLET}"`, () => {
