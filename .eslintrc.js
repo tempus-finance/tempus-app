@@ -16,7 +16,12 @@ module.exports = {
     },
   ],
   parser: '@typescript-eslint/parser',
-  extends: ['plugin:react/recommended', 'plugin:@typescript-eslint/recommended', 'airbnb-typescript'],
+  extends: [
+    'plugin:react/recommended',
+    'plugin:react-hooks/recommended',
+    'plugin:@typescript-eslint/recommended',
+    'airbnb-typescript',
+  ],
   parserOptions: {
     ecmaVersion: 2018,
     sourceType: 'module',

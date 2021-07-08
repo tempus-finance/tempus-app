@@ -21,7 +21,7 @@ describe('WalletConnect', () => {
     expect(getByText(CONNECT_WALLET)).toBeInTheDocument();
   });
 
-  xtest(`calls "activate" method when click on "${CONNECT_WALLET}"`, () => {
+  test(`calls "activate" method when click on "${CONNECT_WALLET}"`, () => {
     const mockActivate = jest.fn();
 
     useWeb3React.mockImplementation(() => ({
@@ -37,7 +37,7 @@ describe('WalletConnect', () => {
     expect(mockActivate).toHaveBeenCalledTimes(1);
   });
 
-  xtest('shows user address when wallet is connected', () => {
+  test('shows user address when wallet is connected', () => {
     useWeb3React.mockImplementation(() => ({
       account: 'ABC-123-XYZ',
       activate: jest.fn,

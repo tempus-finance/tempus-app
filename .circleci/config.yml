@@ -34,12 +34,6 @@ jobs:
           name: Build
           command: npm run build
       - run:
-          name: Npm link react
-          command: cd packages/tempus-client && npm link ../../node_modules/react
-      - run:
-          name: Check react versions
-          command: npm ls react && npm ls react-dom
-      - run:
           name: Run tests
           command: npm test
       - persist_to_workspace:
