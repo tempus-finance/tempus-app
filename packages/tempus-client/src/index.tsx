@@ -29,7 +29,6 @@ const theme = createTheme({
     fontFamily: 'Aeonik',
   },
 });
-console.log(theme);
 
 ReactDOM.render(
   <React.StrictMode>
