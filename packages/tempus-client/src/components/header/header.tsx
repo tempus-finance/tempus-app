@@ -1,5 +1,7 @@
 import WalletConnect from '../wallet-connect/wallet-connect';
 
+import { Typography } from '@material-ui/core';
+
 import './header.scss';
 
 function Header(): JSX.Element {
@@ -7,9 +9,15 @@ function Header(): JSX.Element {
     <div className="header-container">
       <img alt="tempus-logo" src="/tempus-logo.svg" />
       <div className="header-actions">
-        <p className="header-action">EARN</p>
-        <p className="header-action">FIX</p>
-        <p className="header-action">TRADE</p>
+        <Typography className="header-action" variant="button">
+          EARN
+        </Typography>
+        <Typography className="header-action" variant="button">
+          FIX
+        </Typography>
+        <Typography className="header-action" variant="button">
+          TRADE
+        </Typography>
         <WalletConnect />
       </div>
     </div>

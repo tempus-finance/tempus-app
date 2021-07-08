@@ -1,6 +1,7 @@
 import TLVChart from '../tlv-chart/tlv-chart';
 import VolumeChart from '../volume-chart/volume-chart';
-import Divider from '../../divider/divider';
+
+import { Divider } from '@material-ui/core';
 
 import { generatedArrayOfIntegers } from '../../../util/data-generator';
 
@@ -22,7 +23,7 @@ function Chart(props: ChartProps): JSX.Element {
         <p>{title}</p>
         <p>1 July 2021</p>
       </div>
-      <Divider />
+      <Divider orientation="horizontal" />
       <div className="chart-data-label">
         <p className="chart-data-label-text">$127,123,135</p>
         <p className="chart-data-label-text-small">+52.23%</p>
