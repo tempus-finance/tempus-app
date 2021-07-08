@@ -47,6 +47,7 @@ jobs:
     steps:
       - attach_workspace:
           at: ./
+      - checkout
       - add_ssh_keys:
           fingerprints:
             - 'a2:f3:4d:ea:25:d7:04:25:c3:04:f0:75:a6:c1:87:cd'
@@ -54,11 +55,11 @@ jobs:
           name: Avoid hosts unknown for github
           command: echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
       - run:
-          name: Tag build
-          command: ./node_modules/.bin/lerna version patch --conventional-commits --yes
-      - run:
           name: Firebase Deploy in Stage
           command: ./node_modules/.bin/lerna run deploy-stage
+      - run:
+          name: Tag build
+          command: ./node_modules/.bin/lerna version patch --conventional-commits --yes
 
 workflows:
   # Below is the definition of your workflow.
