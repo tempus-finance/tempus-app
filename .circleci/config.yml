@@ -75,7 +75,7 @@ workflows:
             - build-and-test
           filters:
             branches:
-              only: master
+              only: fix-tag
       - deploy-to-stage:
           requires:
             - build-and-test
