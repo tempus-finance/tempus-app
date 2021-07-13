@@ -1,4 +1,5 @@
 import { DataGrid } from '@material-ui/data-grid';
+import { Asset } from '../../../interfaces';
 
 function TopAssets(): JSX.Element {
   return (
@@ -8,10 +9,6 @@ function TopAssets(): JSX.Element {
   );
 }
 export default TopAssets;
-
-// TODO
-// get the tokens/coins svgs?
-// store them somewhere (maybe in public/tokens ?)
 
 // TODO
 // <TokenIcon type="ETH" />
@@ -47,19 +44,6 @@ const columns = [
     width: 180,
   },
 ];
-
-// TODO
-// interface in src/interfaces folder
-interface Asset {
-  id: number;
-  ticker: string;
-  minFixedAPY: number;
-  maxFixedAPY: number;
-  minVariableAPY: number;
-  maxVariableAPY: number;
-  TVL: number;
-  volume24h: number;
-}
 
 // TODO
 // get assets - discuss with Djorje
