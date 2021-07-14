@@ -1,8 +1,8 @@
-// to check
+export type TransactionAction = 'deposit' | 'swap' | 'redemption' | 'earlyRedemption';
 export interface Transaction {
   pool: string;
-  action: string; // should be a type? deposit | swap | redemption | early redemption
+  action: TransactionAction;
   totalValue: number;
   account: string;
-  time: Date; // or a string representing a date?
+  time: Date;
 }
