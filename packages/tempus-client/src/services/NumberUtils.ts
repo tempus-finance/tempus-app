@@ -11,12 +11,18 @@ const multiplierLookup = [
 const regex = /\.0+$|(\.[0-9]*[1-9])0+$/;
 
 class NumberUtils {
-  static format(value: number, precision: number = 0): string {
-    const multiplier = multiplierLookup.find(item => Math.abs(value) >= item.value);
+  static formatWithMultiplier(value: any, precision: number = 0): string {
+    const sanitizedValue = Number(value);
+    const multiplier = multiplierLookup.find(item => Math.abs(sanitizedValue) >= item.value);
 
     return multiplier
-      ? `${(value / multiplier.value).toFixed(precision).replace(regex, '$1')}${multiplier.symbol}`
+      ? `${(sanitizedValue / multiplier.value).toFixed(precision).replace(regex, '$1')}${multiplier.symbol}`
       : '0';
+  }
+
+  static formatPercentage(value: any, precision: number = 0): string {
+    const sanitizedValue = Number(value);
+    return sanitizedValue ? `${(sanitizedValue * 100).toFixed(precision)}%` : ``;
   }
 }
 

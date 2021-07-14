@@ -1,9 +1,7 @@
-import { GridCellParams } from '@material-ui/data-grid';
+import { GridCellParams, GridValueFormatterParams } from '@material-ui/data-grid';
+import NumberUtils from '../../../services/NumberUtils';
 import TokenIcon from '../../tokenIcon/tokenIcon';
 
-// TODO
-// we need the Financial service for this - BLOCKED
-// format/round the values ==> APY in %, TVL, Volume in millions/thousands (dynamically?)
 const topAssetsColumns = [
   {
     field: 'ticker',
@@ -20,24 +18,34 @@ const topAssetsColumns = [
     field: 'fixedAPY',
     headerName: 'Fixed APY',
     flex: 1,
-    valueGetter: (params: any) => `${params.row.minFixedAPY} - ${params.row.maxFixedAPY}`,
+    valueGetter: (params: any) =>
+      `${NumberUtils.formatPercentage(params.row.minFixedAPY, 2)} - ${NumberUtils.formatPercentage(
+        params.row.maxFixedAPY,
+        2,
+      )}`,
   },
   {
     field: 'variableAPY',
     headerName: 'Variable APY',
     flex: 1,
-    valueGetter: (params: any) => `${params.row.minVariableAPY} - ${params.row.maxVariableAPY}`,
+    valueGetter: (params: any) =>
+      `${NumberUtils.formatPercentage(params.row.minVariableAPY, 2)} - ${NumberUtils.formatPercentage(
+        params.row.maxVariableAPY,
+        2,
+      )}`,
   },
   {
     field: 'TVL',
     headerName: 'TVL',
     type: 'number',
+    valueFormatter: ({ value }: GridValueFormatterParams) => NumberUtils.formatWithMultiplier(value, 2),
     flex: 1,
   },
   {
     field: 'volume24h',
     headerName: 'Volume 24h',
     type: 'number',
+    valueFormatter: ({ value }: GridValueFormatterParams) => NumberUtils.formatWithMultiplier(value, 2),
     flex: 1,
   },
 ];
