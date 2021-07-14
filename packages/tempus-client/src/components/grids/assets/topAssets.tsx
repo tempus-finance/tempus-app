@@ -1,52 +1,26 @@
+import { Typography } from '@material-ui/core';
 import { DataGrid } from '@material-ui/data-grid';
+import topAssetsColumns from './topAssetsColumnDefinitions';
 
-function TopAssets(): JSX.Element {
+import './topAssets.scss';
+
+const TopAssets = (): JSX.Element => {
   return (
-    <div style={{ height: 200, width: '100%' }}>
-      <DataGrid rows={rows} columns={columns} pageSize={5} />
+    <div className="tf-top-assets">
+      <Typography>Top Assets</Typography>
+      <div className="tf-top-assets-grid">
+        <DataGrid
+          rows={rows}
+          columns={topAssetsColumns}
+          autoHeight={true}
+          autoPageSize={true}
+          hideFooterPagination={true}
+        />
+      </div>
     </div>
   );
-}
+};
 export default TopAssets;
-
-// TODO
-// get the tokens/coins svgs?
-// store them somewhere (maybe in public/tokens ?)
-
-// TODO
-// <TokenIcon type="ETH" />
-
-// TODO
-// the Asset column has to show the ticker name and the associated icon
-
-// TODO
-// we need the Financial service for this - BLOCKED
-// format/round the values ==> APY in %, TVL, Volume in millions/thousands (dynamically?)
-const columns = [
-  { field: 'ticker', headerName: 'Asset', width: 150 },
-  {
-    field: 'fixedAPY',
-    headerName: 'Fixed APY',
-    width: 150,
-    valueGetter: (params: any) => `${params.row.minFixedAPY} - ${params.row.maxFixedAPY}`,
-  },
-  {
-    field: 'variableAPY',
-    headerName: 'Variable APY',
-    width: 150,
-    valueGetter: (params: any) => `${params.row.minVariableAPY} - ${params.row.maxVariableAPY}`,
-  },
-  {
-    field: 'TVL',
-    headerName: 'TVL',
-    width: 150,
-  },
-  {
-    field: 'volume24h',
-    headerName: 'Volume 24h',
-    width: 180,
-  },
-];
 
 // TODO
 // interface in src/interfaces folder
@@ -72,6 +46,56 @@ const rows: Asset[] = [
   {
     id: 1,
     ticker: 'ETH',
+    minFixedAPY: 0.0312,
+    maxFixedAPY: 0.1125,
+    minVariableAPY: 0.0412,
+    maxVariableAPY: 0.125,
+    TVL: 262620000,
+    volume24h: 100000,
+  },
+  {
+    id: 2,
+    ticker: 'USDC',
+    minFixedAPY: 0.0312,
+    maxFixedAPY: 0.1125,
+    minVariableAPY: 0.0412,
+    maxVariableAPY: 0.125,
+    TVL: 262620000,
+    volume24h: 100000,
+  },
+  {
+    id: 3,
+    ticker: 'AAVE',
+    minFixedAPY: 0.0312,
+    maxFixedAPY: 0.1125,
+    minVariableAPY: 0.0412,
+    maxVariableAPY: 0.125,
+    TVL: 262620000,
+    volume24h: 100000,
+  },
+  {
+    id: 4,
+    ticker: 'COMP',
+    minFixedAPY: 0.0312,
+    maxFixedAPY: 0.1125,
+    minVariableAPY: 0.0412,
+    maxVariableAPY: 0.125,
+    TVL: 262620000,
+    volume24h: 100000,
+  },
+  {
+    id: 5,
+    ticker: 'DAI',
+    minFixedAPY: 0.0312,
+    maxFixedAPY: 0.1125,
+    minVariableAPY: 0.0412,
+    maxVariableAPY: 0.125,
+    TVL: 262620000,
+    volume24h: 100000,
+  },
+  {
+    id: 6,
+    ticker: 'TUSD',
     minFixedAPY: 0.0312,
     maxFixedAPY: 0.1125,
     minVariableAPY: 0.0412,
