@@ -1,5 +1,6 @@
 import Chart from '../charts/chart/chart';
 import TopAssets from '../grids/assets/topAssets';
+import Transactions from '../grids/transactions/transactions';
 
 import './landing.scss';
 
@@ -14,6 +15,9 @@ function Landing(): JSX.Element {
       </div>
       <div className="tf-asset-grid-container">
         <TopAssets />
+      </div>
+      <div className="tf-transactions-grid-container">
+        <Transactions />
       </div>
     </div>
   );
