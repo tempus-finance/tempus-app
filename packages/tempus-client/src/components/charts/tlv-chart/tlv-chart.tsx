@@ -1,14 +1,16 @@
+import { useEffect } from 'react';
 import { AreaChart, Tooltip, Area, ResponsiveContainer } from 'recharts';
-
-import { generateChartData } from '../../../util/data-generator';
+import config from '../../../config';
+import getContractService from '../../../services/ContractService';
 
 function TLVChart(): JSX.Element {
-  // Dummy data - TODO - Replace with real date from contract
-  const data = generateChartData(60);
+  useEffect(() => {
+    getContractService().getPoolTVL(config.protocols[0].address);
+  }, []);
 
   return (
     <ResponsiveContainer width="100%" height={275}>
-      <AreaChart data={data}>
+      <AreaChart data={[]}>
         <defs>
           <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
             <stop offset="5%" stopColor="#FFDF99" stopOpacity={0.8} />

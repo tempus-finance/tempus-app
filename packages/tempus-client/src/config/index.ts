@@ -10,10 +10,12 @@ const config: Config = {
     { ticker: 'usdc', address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' },
   ],
   protocols: [
-    { name: 'aave', address: '' }, // TBD
-    { name: 'compound', address: '' }, // TBD
-    { name: 'lido', address: '' }, // TBD
+    { name: 'aave', address: '0x93FF98eC53FD4c69324d3d1c6F48E53fa97e2fF3' }, // TBD - ideally we will be able to fetch list of pools from contract
+    { name: 'aave', address: '0xEA9E6552Afdc38859403Acb262de7D14cfA0536d' }, // TBD - ideally we will be able to fetch list of pools from contract
   ],
+  tokenNameToIdMap: {
+    AaveAToken: 'aave',
+  },
 };
 
 export default config;

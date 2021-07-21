@@ -5,14 +5,7 @@ import { InjectedConnector } from '@web3-react/injected-connector';
 
 import { Typography } from '@material-ui/core';
 
-import { Contract } from 'ethers';
-
-import ERC20ABI from './../../abi/ERC20/ERC20.json';
-import { ERC20 } from '../../abi/ERC20/ERC20';
-
-import TempusPoolABI from './../../abi/TempusPool/TempusPool.json';
-import { TempusPool } from '../../abi/TempusPool/TempusPool';
-import { formatEther, parseEther } from 'ethers/lib/utils';
+import getContractService from '../../services/ContractService';
 
 const WalletConnect: FC = (): JSX.Element => {
   const [hasBeenClicked, setHasBeenClicked] = useState<boolean>(false);
@@ -26,50 +19,15 @@ const WalletConnect: FC = (): JSX.Element => {
     }
   }, [hasBeenClicked, setHasBeenClicked, activate]);
 
+  /**
+   * Initialize contracts service with new signer when user connects a wallet.
+   */
   useEffect(() => {
-    if (!account || !library) {
+    if (!library) {
       return;
     }
-
-    // Example contract communication with typings
-    /*
-    // Make sure to import Contract from 'ethers' library
-    const contract = new Contract(
-      // This is the address of the contract
-      '0x039557b8f8f53d863f534C4dFF01d8A3467d26A0',
-      // Import ABI JSON file from 'abi/TempusToken.json'.
-      // ABI JSON for TempusToken is generated when you run 'npm run start-local' in tempus-protocol repository inside tempus-protocol/abi-artifacts.
-      TempusTokenABI,
-      library?.getSigner(),
-      // TempusToken is a typings file generated when running 'npm run start-local' in tempus-protocol repository inside tempus-protocol/typechain.
-    ) as TempusToken;
-
-    // Call an example function from contract - notice that we now have full contract typings and error checking because of typings file.
-    contract.balanceOf(account);
-
-    contract.filters.Transfer();*/
-
-    const backingTokenSupply = new Contract(
-      '0xdA437583dd0D22FA713d86291461858d2b3161C8',
-      ERC20ABI,
-      library.getSigner(),
-    ) as ERC20;
-
-    const tempusPoolContract = new Contract(
-      '0x93FF98eC53FD4c69324d3d1c6F48E53fa97e2fF3',
-      TempusPoolABI,
-      library.getSigner(),
-    ) as TempusPool;
-
-    const getExampleData = async () => {
-      const result = await tempusPoolContract.principalShare();
-      console.log(result);
-
-      const totalYBTSupply = await backingTokenSupply.balanceOf(tempusPoolContract.address);
-      console.log(formatEther(totalYBTSupply));
-    };
-    getExampleData();
-  }, [account, library]);
+    getContractService().init(library.getSigner());
+  }, [library]);
 
   let shortenedAccount;
   if (account) {
