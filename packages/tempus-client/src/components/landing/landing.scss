@@ -1,22 +1,35 @@
-.landing-section-container {
+.tf-landing-section-container {
   grid-area: section;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  grid-template-rows: auto;
   row-gap: 48px;
   column-gap: 48px;
-  grid-template-areas: 'chart-1 chart-2';
+  grid-template-areas: 'chart-1 chart-2' 'asset-grid asset-grid' 'transactions-grid transactions-grid';
 }
 
-.tvl-chart-container {
+.tf-tvl-chart-container {
   grid-area: chart-1;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.volume-chart-container {
+.tf-volume-chart-container {
   grid-area: chart-2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.tf-asset-grid-container {
+  grid-area: asset-grid;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.tf-transactions-grid-container {
+  grid-area: transactions-grid;
   display: flex;
   justify-content: center;
   align-items: center;

@@ -1,0 +1,20 @@
+.tf-transactions {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+
+  .tf-transactions-grid {
+    .MuiDataGrid-root {
+      border-color: transparent;
+      color: white;
+
+      .MuiSvgIcon-root.MuiDataGrid-iconSeparator {
+        display: none;
+      }
+
+      .MuiDataGrid-cell {
+        border-bottom-color: transparent;
+      }
+    }
+  }
+}
