@@ -1,6 +1,6 @@
-export type Token = 'aave' | 'comp' | 'dai' | 'eth' | 'tusd' | 'usdc';
+import { Ticker } from '../../interfaces';
 
-export const tokenIcons: { [key in Token]: string } = {
+export const tokenIcons: { [key in Ticker]: string } = {
   aave: `
     <g fill="none">
       <circle fill="#2EBAC6" cx="16" cy="16" r="16"/>

@@ -9,7 +9,7 @@ const topAssetsColumns = [
     flex: 1,
     renderCell: (params: GridCellParams) => (
       <div className="tf-top-assets-ticker">
-        <TokenIcon token={params.row.ticker.toLowerCase()} />
+        <TokenIcon ticker={params.row.ticker.toLowerCase()} />
         <span>{params.row.ticker}</span>
       </div>
     ),
