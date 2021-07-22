@@ -14,6 +14,7 @@ const config: Config = {
     { name: 'compound', address: '' }, // TBD
     { name: 'lido', address: '' }, // TBD
   ],
+  tempusPools: [],
 };
 
 export default config;
