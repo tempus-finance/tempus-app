@@ -1,12 +1,12 @@
-import { Contract, Signer } from 'ethers';
-import { Provider } from '@ethersproject/abstract-provider';
+import { Contract } from 'ethers';
+import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
 
 import TempusPoolABI from '../abi/TempusPool.json';
 import config from '../config';
 import TempusPoolService from './TempusPoolService';
 
 let tempusPoolService: TempusPoolService;
-const getTempusPoolService = (signerOrProvider?: Signer | Provider) => {
+const getTempusPoolService = (signerOrProvider: JsonRpcSigner | JsonRpcProvider) => {
   if (!tempusPoolService) {
     tempusPoolService = new TempusPoolService();
     tempusPoolService.init({
