@@ -3,10 +3,12 @@ import TempusPoolService from './TempusPoolService';
 import PriceOracleService from './PriceOracleService';
 
 jest.mock('ethers');
-const { utils, Contract } = require('ethers');
+const { Contract } = jest.requireMock('ethers');
+const { utils } = jest.requireMock('ethers');
+const { BigNumber } = jest.requireActual('ethers');
 
 jest.mock('@ethersproject/providers');
-const { JsonRpcProvider } = require('@ethersproject/providers');
+const { JsonRpcProvider } = jest.requireMock('@ethersproject/providers');
 
 describe('TempusPoolService', () => {
   const mockAddresses = ['someAddress'];
@@ -141,11 +143,9 @@ describe('TempusPoolService', () => {
       });
       mockCurrentRate.mockImplementation((address: string, overrides: {}) => {
         if (!overrides) {
-          return Promise.resolve({
-            sub: jest.fn(() => 1),
-          });
+          return Promise.resolve(BigNumber.from('10'));
         } else {
-          return Promise.resolve(9);
+          return Promise.resolve(BigNumber.from('9'));
         }
       });
       utils.formatEther.mockImplementation((value: number) => value);

@@ -19,7 +19,7 @@ type TempusPoolServiceParameters = {
 
 class TempusPoolService {
   private readonly SECONDS_IN_A_DAY = 86400;
-  private readonly BLOCK_DURATION = 15;
+  private readonly BLOCK_DURATION_SECONDS = 15;
 
   private poolAddresses: string[] = [];
   private tempusPoolsMap: TempusPoolsMap = {};
@@ -86,7 +86,7 @@ class TempusPoolService {
     if (tempusPool) {
       const latestBlock = await tempusPool.provider.getBlock('latest');
       const pastBlock = await tempusPool.provider.getBlock(
-        latestBlock.number - this.SECONDS_IN_A_DAY / this.BLOCK_DURATION,
+        latestBlock.number - this.SECONDS_IN_A_DAY / this.BLOCK_DURATION_SECONDS,
       );
 
       const priceOracle = await this.getPriceOracleForPool(address);
@@ -94,7 +94,7 @@ class TempusPoolService {
 
       const currentExchangeRate = await priceOracle.currentRate(yieldBearingTokenAddress);
       const pastExchangeRate = await priceOracle.currentRate(yieldBearingTokenAddress, {
-        blockTag: latestBlock.number - this.SECONDS_IN_A_DAY / this.BLOCK_DURATION,
+        blockTag: latestBlock.number - this.SECONDS_IN_A_DAY / this.BLOCK_DURATION_SECONDS,
       });
 
       if (!currentExchangeRate || !pastExchangeRate) {
