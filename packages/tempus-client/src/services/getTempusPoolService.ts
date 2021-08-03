@@ -4,6 +4,7 @@ import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
 import TempusPoolABI from '../abi/TempusPool.json';
 import config from '../config';
 import TempusPoolService from './TempusPoolService';
+import getPriceOracleService from './getPriceOracleService';
 
 let tempusPoolService: TempusPoolService;
 const getTempusPoolService = (signerOrProvider: JsonRpcSigner | JsonRpcProvider) => {
@@ -13,6 +14,7 @@ const getTempusPoolService = (signerOrProvider: JsonRpcSigner | JsonRpcProvider)
       Contract,
       tempusPoolAddresses: config.tempusPools,
       TempusPoolABI: TempusPoolABI,
+      priceOracleService: getPriceOracleService(signerOrProvider),
       signerOrProvider,
     });
   }

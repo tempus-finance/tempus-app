@@ -15,6 +15,7 @@ const config: Config = {
     { name: 'lido', address: '' }, // TBD
   ],
   tempusPools: [],
+  priceOracles: [],
 };
 
 export default config;

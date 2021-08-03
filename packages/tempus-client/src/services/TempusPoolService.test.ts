@@ -22,6 +22,8 @@ describe('TempusPoolService', () => {
   const mockYieldBearingToken = jest.fn();
   const mockGetPriceOracleForPool = jest.fn();
   const mockCurrentRate = jest.fn();
+  const getPriceOracleServiceMock = jest.fn();
+  const mockPriceOracleService = jest.fn();
 
   const mockProvider = new JsonRpcProvider();
 
@@ -61,6 +63,7 @@ describe('TempusPoolService', () => {
         Contract,
         tempusPoolAddresses: mockAddresses,
         TempusPoolABI: mockABI,
+        priceOracleService: getPriceOracleServiceMock(),
         signerOrProvider: mockProvider,
       });
 
@@ -74,12 +77,25 @@ describe('TempusPoolService', () => {
     beforeEach(() => {
       jest.clearAllMocks();
 
-      instance = new TempusPoolService();
+      getPriceOracleServiceMock.mockImplementation(() => {
+        return {
+          currentRate: mockCurrentRate,
+        };
+      });
+      mockCurrentRate.mockImplementation((address: string, tokenAddress: string, overrides: {}) => {
+        if (!overrides) {
+          return Promise.resolve(BigNumber.from('10'));
+        } else {
+          return Promise.resolve(BigNumber.from('9'));
+        }
+      });
 
+      instance = new TempusPoolService();
       instance.init({
         Contract,
         tempusPoolAddresses: mockAddresses,
         TempusPoolABI: mockABI,
+        priceOracleService: getPriceOracleServiceMock(),
         signerOrProvider: mockProvider,
       });
     });
@@ -111,14 +127,6 @@ describe('TempusPoolService', () => {
       });
     });
 
-    test('it returns a PriceOracleService instance for the pool', () => {
-      mockPriceOracle.mockImplementation(() => Promise.resolve('price-oracle-address'));
-
-      instance.getPriceOracleForPool(mockAddress).then(result => {
-        expect(result).toBeInstanceOf(PriceOracleService);
-      });
-    });
-
     test('it returns variable APY for the pool', () => {
       mockGetBlock.mockImplementation((blockNumber: number | string) => {
         if (blockNumber === 'latest') {
@@ -134,20 +142,8 @@ describe('TempusPoolService', () => {
         }
       });
       mockYieldBearingToken.mockImplementation(() => Promise.resolve('yield-bearing-token-address'));
+      mockPriceOracle.mockImplementation(() => Promise.resolve('price-oracle-address'));
 
-      instance.getPriceOracleForPool = mockGetPriceOracleForPool;
-      mockGetPriceOracleForPool.mockImplementation(() => {
-        return Promise.resolve({
-          currentRate: mockCurrentRate,
-        });
-      });
-      mockCurrentRate.mockImplementation((address: string, overrides: {}) => {
-        if (!overrides) {
-          return Promise.resolve(BigNumber.from('10'));
-        } else {
-          return Promise.resolve(BigNumber.from('9'));
-        }
-      });
       utils.formatEther.mockImplementation((value: number) => value);
 
       instance.getVariableAPY(mockAddress).then(result => {

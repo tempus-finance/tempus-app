@@ -1,33 +1,69 @@
 // External libraries
-import { CallOverrides, Contract } from 'ethers';
-import { JsonRpcProvider } from '@ethersproject/providers';
+import { BigNumber, CallOverrides, Contract } from 'ethers';
+import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
 
 // Contract Typings
 import { AavePriceOracle } from '../abi/AavePriceOracle';
+import { CompoundPriceOracle } from '../abi/CompoundPriceOracle';
 
 // ABI
 import AavePriceOracleABI from '../abi/AavePriceOracle.json';
+import CompoundPriceOracleABI from '../abi/CompoundPriceOracle.json';
+
+// Interfaces
+import { PriceOracle } from '../interfaces/PriceOracle';
+
+type PriceOraclesMap = { [address: string]: AavePriceOracle | CompoundPriceOracle };
+
+type PriceOracleServiceParameters = {
+  Contract: typeof Contract;
+  priceOraclesConfig: PriceOracle[];
+  signerOrProvider: JsonRpcSigner | JsonRpcProvider;
+};
 
 class PriceOracleService {
-  private provider: JsonRpcProvider;
-  private contract: AavePriceOracle;
+  private priceOraclesMap: PriceOraclesMap = {};
 
-  constructor(address: string) {
-    // TODO - Figure out a better way to store read-only provider (maybe as a singleton that can be used across contract services)
-    this.provider = new JsonRpcProvider('http://127.0.0.1:8545', { chainId: 31337, name: 'localhost' });
-    this.contract = new Contract(address, AavePriceOracleABI, this.provider) as AavePriceOracle;
+  public init(params: PriceOracleServiceParameters) {
+    this.priceOraclesMap = {};
+
+    params.priceOraclesConfig.forEach(config => {
+      if (config.name === 'aave') {
+        this.priceOraclesMap[config.address] = new Contract(
+          config.address,
+          AavePriceOracleABI,
+          params.signerOrProvider,
+        ) as AavePriceOracle;
+      }
+      if (config.name === 'compound') {
+        this.priceOraclesMap[config.address] = new Contract(
+          config.address,
+          CompoundPriceOracleABI,
+          params.signerOrProvider,
+        ) as CompoundPriceOracle;
+      }
+    });
   }
 
-  public currentRate(yieldBearingTokenAddress: string, overrides?: CallOverrides) {
-    try {
-      if (!overrides) {
-        return this.contract.currentRate(yieldBearingTokenAddress);
-      } else {
-        return this.contract.currentRate(yieldBearingTokenAddress, overrides);
+  public async currentRate(address: string, tokenAddress: string, overrides?: CallOverrides): Promise<BigNumber> {
+    let currentRate = BigNumber.from('0');
+
+    const priceOracle = this.priceOraclesMap[address];
+    if (priceOracle) {
+      try {
+        if (!overrides) {
+          currentRate = await priceOracle.currentRate(tokenAddress);
+        } else {
+          currentRate = await priceOracle.currentRate(tokenAddress, overrides);
+        }
+
+        return currentRate;
+      } catch (error) {
+        console.error('PriceOracleService currentRate', error);
       }
-    } catch (error) {
-      console.error('PriceOracleService currentRate', error);
     }
+
+    throw new Error(`PriceOracle address '${address}' is not valid`);
   }
 }
 export default PriceOracleService;

@@ -14,23 +14,34 @@ type TempusPoolServiceParameters = {
   Contract: any;
   tempusPoolAddresses: string[];
   TempusPoolABI: any;
+  priceOracleService: PriceOracleService;
   signerOrProvider: JsonRpcSigner | JsonRpcProvider;
 };
 
 class TempusPoolService {
+  private readonly DAYS_IN_A_YEAR = 365;
   private readonly SECONDS_IN_A_DAY = 86400;
   private readonly BLOCK_DURATION_SECONDS = 15;
 
   private poolAddresses: string[] = [];
   private tempusPoolsMap: TempusPoolsMap = {};
+  private priceOracleService: PriceOracleService | null = null;
 
-  init({ Contract, tempusPoolAddresses = [], TempusPoolABI = {}, signerOrProvider }: TempusPoolServiceParameters) {
+  init({
+    Contract,
+    tempusPoolAddresses = [],
+    TempusPoolABI = {},
+    priceOracleService,
+    signerOrProvider,
+  }: TempusPoolServiceParameters) {
     this.poolAddresses = [...tempusPoolAddresses];
     this.tempusPoolsMap = {};
 
     this.poolAddresses.forEach((address: string) => {
       this.tempusPoolsMap[address] = new Contract(address, TempusPoolABI, signerOrProvider) as TempusPool;
     });
+
+    this.priceOracleService = priceOracleService;
   }
 
   getPoolAddresses(): string[] {
@@ -65,22 +76,7 @@ class TempusPoolService {
     throw new Error(`Address '${address}' is not valid`);
   }
 
-  public async getPriceOracleForPool(address: string): Promise<PriceOracleService> {
-    if (this.tempusPoolsMap[address] !== undefined) {
-      const tempusPool = this.tempusPoolsMap[address];
-
-      try {
-        const priceOracleAddress = await tempusPool.priceOracle();
-
-        return new PriceOracleService(priceOracleAddress);
-      } catch (error) {
-        console.error('TempusPoolService getPriceOracleForPool', error);
-      }
-    }
-    throw new Error(`Address '${address}' is not valid`);
-  }
-
-  public async getVariableAPY(address: string) {
+  public async getVariableAPY(address: string): Promise<number> {
     const tempusPool = this.tempusPoolsMap[address];
 
     if (tempusPool) {
@@ -89,22 +85,29 @@ class TempusPoolService {
         latestBlock.number - this.SECONDS_IN_A_DAY / this.BLOCK_DURATION_SECONDS,
       );
 
-      const priceOracle = await this.getPriceOracleForPool(address);
+      const priceOracleAddress = await tempusPool.priceOracle();
       const yieldBearingTokenAddress = await tempusPool.yieldBearingToken();
 
-      const currentExchangeRate = await priceOracle.currentRate(yieldBearingTokenAddress);
-      const pastExchangeRate = await priceOracle.currentRate(yieldBearingTokenAddress, {
-        blockTag: latestBlock.number - this.SECONDS_IN_A_DAY / this.BLOCK_DURATION_SECONDS,
-      });
+      const currentExchangeRate = await this.priceOracleService?.currentRate(
+        priceOracleAddress,
+        yieldBearingTokenAddress,
+      );
+      const pastExchangeRate = await this.priceOracleService?.currentRate(
+        priceOracleAddress,
+        yieldBearingTokenAddress,
+        {
+          blockTag: latestBlock.number - this.SECONDS_IN_A_DAY / this.BLOCK_DURATION_SECONDS,
+        },
+      );
 
       if (!currentExchangeRate || !pastExchangeRate) {
-        return;
+        return 0;
       }
 
       const blockRateDiff = currentExchangeRate.sub(pastExchangeRate);
       const blockTimeDiff = latestBlock.timestamp - pastBlock.timestamp;
 
-      const totalSegments = (this.SECONDS_IN_A_DAY * 365) / blockTimeDiff;
+      const totalSegments = (this.SECONDS_IN_A_DAY * this.DAYS_IN_A_YEAR) / blockTimeDiff;
 
       return totalSegments * Number(ethers.utils.formatEther(blockRateDiff)) * 100;
     }
