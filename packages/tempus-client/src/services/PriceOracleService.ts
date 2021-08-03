@@ -56,11 +56,10 @@ class PriceOracleService {
         } else {
           currentRate = await priceOracle.currentRate(tokenAddress, overrides);
         }
-
-        return currentRate;
       } catch (error) {
         console.error('PriceOracleService currentRate', error);
       }
+      return currentRate;
     }
 
     throw new Error(`PriceOracle address '${address}' is not valid`);

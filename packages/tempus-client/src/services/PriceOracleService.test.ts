@@ -1,8 +1,7 @@
 // External libraries
 import { CallOverrides } from '@ethersproject/contracts';
 
-// Config
-import config from '../config';
+// Interfaces
 import { PriceOracle } from '../interfaces/PriceOracle';
 
 // Services

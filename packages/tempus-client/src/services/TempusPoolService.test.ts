@@ -1,6 +1,5 @@
 // Services
 import TempusPoolService from './TempusPoolService';
-import PriceOracleService from './PriceOracleService';
 
 jest.mock('ethers');
 const { Contract } = jest.requireMock('ethers');
@@ -20,10 +19,8 @@ describe('TempusPoolService', () => {
   const mockPriceOracle = jest.fn();
   const mockGetBlock = jest.fn();
   const mockYieldBearingToken = jest.fn();
-  const mockGetPriceOracleForPool = jest.fn();
   const mockCurrentRate = jest.fn();
   const getPriceOracleServiceMock = jest.fn();
-  const mockPriceOracleService = jest.fn();
 
   const mockProvider = new JsonRpcProvider();
 
