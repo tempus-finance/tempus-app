@@ -24,8 +24,6 @@ const TopAssets = (): JSX.Element => {
 export default TopAssets;
 
 // TODO
-
-// TODO
 // get assets - discuss with Djorje
 
 // TODO
@@ -35,7 +33,7 @@ export default TopAssets;
 const rows: Asset[] = [
   {
     id: 1,
-    ticker: 'ETH',
+    ticker: 'eth',
     minFixedAPY: 0.0312,
     maxFixedAPY: 0.1125,
     minVariableAPY: 0.0412,
@@ -45,7 +43,7 @@ const rows: Asset[] = [
   },
   {
     id: 2,
-    ticker: 'USDC',
+    ticker: 'usdc',
     minFixedAPY: 0.0312,
     maxFixedAPY: 0.1125,
     minVariableAPY: 0.0412,
@@ -55,7 +53,7 @@ const rows: Asset[] = [
   },
   {
     id: 3,
-    ticker: 'AAVE',
+    ticker: 'aave',
     minFixedAPY: 0.0312,
     maxFixedAPY: 0.1125,
     minVariableAPY: 0.0412,
@@ -65,7 +63,7 @@ const rows: Asset[] = [
   },
   {
     id: 4,
-    ticker: 'COMP',
+    ticker: 'comp',
     minFixedAPY: 0.0312,
     maxFixedAPY: 0.1125,
     minVariableAPY: 0.0412,
@@ -75,7 +73,7 @@ const rows: Asset[] = [
   },
   {
     id: 5,
-    ticker: 'DAI',
+    ticker: 'dai',
     minFixedAPY: 0.0312,
     maxFixedAPY: 0.1125,
     minVariableAPY: 0.0412,
@@ -85,7 +83,7 @@ const rows: Asset[] = [
   },
   {
     id: 6,
-    ticker: 'TUSD',
+    ticker: 'tusd',
     minFixedAPY: 0.0312,
     maxFixedAPY: 0.1125,
     minVariableAPY: 0.0412,
