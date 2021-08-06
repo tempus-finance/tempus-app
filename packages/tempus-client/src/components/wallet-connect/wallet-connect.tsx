@@ -2,8 +2,8 @@ import { FC, useCallback, useState } from 'react';
 import { Web3Provider } from '@ethersproject/providers';
 import { useWeb3React } from '@web3-react/core';
 import { InjectedConnector } from '@web3-react/injected-connector';
-
-import { Typography } from '@material-ui/core';
+import AccountBalanceWalletIcon from '@material-ui/icons/AccountBalanceWallet';
+import Button from '@material-ui/core/Button';
 
 const WalletConnect: FC = (): JSX.Element => {
   const [hasBeenClicked, setHasBeenClicked] = useState<boolean>(false);
@@ -22,10 +22,21 @@ const WalletConnect: FC = (): JSX.Element => {
     shortenedAccount = `${account.substring(0, 6)}...${account.substring(account.length - 5, account.length)}`;
   }
 
-  return (
-    <Typography className="header-action" onClick={onConnect} variant="button">
-      {active ? shortenedAccount : CONNECT_WALLET}
-    </Typography>
+  return active ? (
+    <span className="tf-header-action tf-header-action-account" title={String(account)}>
+      <AccountBalanceWalletIcon />
+      {shortenedAccount}
+    </span>
+  ) : (
+    <Button
+      title={CONNECT_WALLET}
+      color="secondary"
+      size="small"
+      className="tf-header-action tf-header-action-wallet"
+      onClick={onConnect}
+    >
+      <AccountBalanceWalletIcon /> {CONNECT_WALLET}
+    </Button>
   );
 };
 
