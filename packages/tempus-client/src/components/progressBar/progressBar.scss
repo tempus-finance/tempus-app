@@ -1,0 +1,25 @@
+@import '../../constants.scss';
+
+.tf__progress-bar {
+  width: 100%;
+  margin: 5px auto;
+
+  .tf__progress-bar__outer {
+    position: relative;
+    height: 5px;
+    width: 100%;
+    background-color: $accent;
+    border-radius: 3px;
+
+    .tf__progress-bar__inner {
+      top: 0;
+      bottom: 0;
+      right: 0;
+      position: absolute;
+      background-color: $secondary-darker;
+      box-shadow: 0 0 5px $secondary;
+      height: 100%;
+      border-radius: 3px;
+    }
+  }
+}
