@@ -1,7 +1,32 @@
 // Colors
+
+// Primary
 $primary: #066d59;
+
+$primary-bright: lighten($primary, 30%);
+$primary-lightest: lighten($primary, 15%);
+$primary-lighter: lighten($primary, 10%);
+$primary-light: lighten($primary, 5%);
+
+$primary-dark: darken($primary, 5%);
+$primary-darker: darken($primary, 8%);
+
+// Secondary
 $secondary: #ffdf99;
+
+$secondary-dark: darken($secondary, 5%);
+$secondary-darker: darken($secondary, 15%);
+
+// Accent
+
 $accent: #ada4fd;
+
+$accent-light: lighten($accent, 5%);
+
+$accent-dark: darken($accent, 5%);
+$accent-darker: darken($accent, 10%);
+
+// Complementary
 $black: #000000;
 $white: #ffffff;
 $floating-surface: rgba(0, 0, 0, 0.15);
