@@ -7,4 +7,6 @@ export type Config = {
   protocols: Protocol[];
   tempusPools: string[];
   priceOracles: PriceOracle[];
+  statisticsContract: string;
+  networkUrl: string;
 };

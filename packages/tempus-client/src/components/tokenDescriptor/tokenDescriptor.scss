@@ -1,0 +1,13 @@
+.tf__tokens-returned__name {
+  display: flex;
+  flex-direction: row;
+
+  .tf__tokens-returned__ticker {
+    padding-left: 5px;
+    font-size: 20px;
+  }
+
+  .tf__tokens-returned__name {
+    font-size: 14px;
+  }
+}

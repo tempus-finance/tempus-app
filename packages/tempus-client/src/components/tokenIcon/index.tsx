@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useMemo } from 'react';
 import { Ticker } from '../../interfaces';
 import { tokenIcons } from './tokenIcons';
 
@@ -7,16 +7,18 @@ type IconInProps = {
 };
 
 const TokenIcon: FC<IconInProps> = ({ ticker }): JSX.Element => {
+  const __html = useMemo(() => `<title>${ticker.toUpperCase()}</title>${tokenIcons[ticker]}`, [ticker]);
+
   return (
     <svg
       aria-hidden="true"
       className="tf-icon"
-      width={32}
-      height={32}
+      width={24}
+      height={24}
       viewBox="0 0 32 32"
       role="img"
-      dangerouslySetInnerHTML={{ __html: tokenIcons[ticker] }}
-    />
+      dangerouslySetInnerHTML={{ __html }}
+    ></svg>
   );
 };
 

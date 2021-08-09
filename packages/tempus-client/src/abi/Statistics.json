@@ -1,0 +1,82 @@
+[
+  {
+    "inputs": [],
+    "name": "ENS",
+    "outputs": [
+      {
+        "internalType": "contract IEns",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "chainlinkAggregatorNodeHash",
+        "type": "bytes32"
+      }
+    ],
+    "name": "getRate",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "rate",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "rateDenominator",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "contract TempusPool",
+        "name": "pool",
+        "type": "address"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "rateConversionData",
+        "type": "bytes32"
+      }
+    ],
+    "name": "totalValueLockedAtGivenRate",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "contract TempusPool",
+        "name": "pool",
+        "type": "address"
+      }
+    ],
+    "name": "totalValueLockedInBackingTokens",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  }
+]
