@@ -5,4 +5,6 @@ export type Config = {
   tokens: Token[];
   protocols: Protocol[];
   tempusPools: string[];
+  statisticsContract: string;
+  networkUrl: string;
 };
