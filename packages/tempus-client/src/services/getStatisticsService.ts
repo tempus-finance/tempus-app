@@ -13,7 +13,7 @@ import StatisticsService from './StatisticsService';
 import getDefaultProvider from './getDefaultProvider';
 
 let statisticsService: StatisticsService;
-const getStatisticsService = (signerOrProvider: JsonRpcSigner | JsonRpcProvider) => {
+const getStatisticsService = (signerOrProvider?: JsonRpcSigner | JsonRpcProvider) => {
   if (!statisticsService) {
     statisticsService = new StatisticsService();
     statisticsService.init({
