@@ -80,28 +80,23 @@ class TempusPoolService {
     const tempusPool = this.tempusPoolsMap[address];
 
     if (tempusPool) {
-      const latestBlock = await tempusPool.provider.getBlock('latest');
-      const pastBlock = await tempusPool.provider.getBlock(
-        latestBlock.number - this.SECONDS_IN_A_DAY / this.BLOCK_DURATION_SECONDS,
-      );
+      const [latestBlock, priceOracleAddress, yieldBearingTokenAddress] = await Promise.all([
+        tempusPool.provider.getBlock('latest'),
+        tempusPool.priceOracle(),
+        tempusPool.yieldBearingToken(),
+      ]);
 
-      const priceOracleAddress = await tempusPool.priceOracle();
-      const yieldBearingTokenAddress = await tempusPool.yieldBearingToken();
-
-      const currentExchangeRate = await this.priceOracleService?.currentRate(
-        priceOracleAddress,
-        yieldBearingTokenAddress,
-      );
-      const pastExchangeRate = await this.priceOracleService?.currentRate(
-        priceOracleAddress,
-        yieldBearingTokenAddress,
-        {
+      const [pastBlock, currentExchangeRate, pastExchangeRate] = await Promise.all([
+        tempusPool.provider.getBlock(latestBlock.number - this.SECONDS_IN_A_DAY / this.BLOCK_DURATION_SECONDS),
+        this.priceOracleService?.currentRate(priceOracleAddress, yieldBearingTokenAddress),
+        this.priceOracleService?.currentRate(priceOracleAddress, yieldBearingTokenAddress, {
           blockTag: latestBlock.number - this.SECONDS_IN_A_DAY / this.BLOCK_DURATION_SECONDS,
-        },
-      );
+        }),
+      ]);
 
       if (!currentExchangeRate || !pastExchangeRate) {
-        return 0;
+        console.error('TempusPoolService getVariableAPY() - Failed to fetch current/past exchange rates.');
+        return Promise.reject(0);
       }
 
       const blockRateDiff = currentExchangeRate.sub(pastExchangeRate);
