@@ -1,6 +1,6 @@
 import { GridCellParams, GridValueFormatterParams } from '@material-ui/data-grid';
 import NumberUtils from '../../../services/NumberUtils';
-import TokenIcon from '../../tokenIcon/tokenIcon';
+import TokenIcon from '../../tokenIcon';
 
 const topAssetsColumns = [
   {
