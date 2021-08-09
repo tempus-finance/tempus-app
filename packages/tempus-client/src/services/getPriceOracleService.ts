@@ -7,7 +7,7 @@ import getDefaultProvider from './getDefaultProvider';
 import config from '../config';
 
 let priceOracleService: PriceOracleService;
-const getPriceOracleService = (signerOrProvider: JsonRpcSigner | JsonRpcProvider) => {
+const getPriceOracleService = (signerOrProvider?: JsonRpcSigner | JsonRpcProvider) => {
   if (!priceOracleService) {
     priceOracleService = new PriceOracleService();
     priceOracleService.init({
