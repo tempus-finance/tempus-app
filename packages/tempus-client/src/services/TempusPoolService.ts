@@ -80,31 +80,36 @@ class TempusPoolService {
     const tempusPool = this.tempusPoolsMap[address];
 
     if (tempusPool) {
-      const [latestBlock, priceOracleAddress, yieldBearingTokenAddress] = await Promise.all([
-        tempusPool.provider.getBlock('latest'),
-        tempusPool.priceOracle(),
-        tempusPool.yieldBearingToken(),
-      ]);
+      try {
+        const [latestBlock, priceOracleAddress, yieldBearingTokenAddress] = await Promise.all([
+          tempusPool.provider.getBlock('latest'),
+          tempusPool.priceOracle(),
+          tempusPool.yieldBearingToken(),
+        ]);
 
-      const [pastBlock, currentExchangeRate, pastExchangeRate] = await Promise.all([
-        tempusPool.provider.getBlock(latestBlock.number - this.SECONDS_IN_A_DAY / this.BLOCK_DURATION_SECONDS),
-        this.priceOracleService?.currentRate(priceOracleAddress, yieldBearingTokenAddress),
-        this.priceOracleService?.currentRate(priceOracleAddress, yieldBearingTokenAddress, {
-          blockTag: latestBlock.number - this.SECONDS_IN_A_DAY / this.BLOCK_DURATION_SECONDS,
-        }),
-      ]);
+        const [pastBlock, currentExchangeRate, pastExchangeRate] = await Promise.all([
+          tempusPool.provider.getBlock(latestBlock.number - this.SECONDS_IN_A_DAY / this.BLOCK_DURATION_SECONDS),
+          this.priceOracleService?.currentRate(priceOracleAddress, yieldBearingTokenAddress),
+          this.priceOracleService?.currentRate(priceOracleAddress, yieldBearingTokenAddress, {
+            blockTag: latestBlock.number - this.SECONDS_IN_A_DAY / this.BLOCK_DURATION_SECONDS,
+          }),
+        ]);
 
-      if (!currentExchangeRate || !pastExchangeRate) {
-        console.error('TempusPoolService getVariableAPY() - Failed to fetch current/past exchange rates.');
-        return Promise.reject(0);
+        if (!currentExchangeRate || !pastExchangeRate) {
+          console.error('TempusPoolService getVariableAPY() - Failed to fetch current/past exchange rates.');
+          return Promise.reject(0);
+        }
+
+        const blockRateDiff = currentExchangeRate.sub(pastExchangeRate);
+        const blockTimeDiff = latestBlock.timestamp - pastBlock.timestamp;
+
+        const totalSegments = (this.SECONDS_IN_A_DAY * this.DAYS_IN_A_YEAR) / blockTimeDiff;
+
+        return totalSegments * Number(ethers.utils.formatEther(blockRateDiff)) * 100;
+      } catch (error) {
+        console.error('TempusPoolService getVariableAPY()', error);
+        return Promise.reject(error);
       }
-
-      const blockRateDiff = currentExchangeRate.sub(pastExchangeRate);
-      const blockTimeDiff = latestBlock.timestamp - pastBlock.timestamp;
-
-      const totalSegments = (this.SECONDS_IN_A_DAY * this.DAYS_IN_A_YEAR) / blockTimeDiff;
-
-      return totalSegments * Number(ethers.utils.formatEther(blockRateDiff)) * 100;
     }
     throw new Error(`Address '${address}' is not valid`);
   }
