@@ -16,6 +16,7 @@ const config: Config = {
     { name: 'lido', address: '' }, // TBD
   ],
   tempusPools: [],
+  priceOracles: [],
   statisticsContract: '0x35e54CC8fBc4C0EB23c2De24ca07e29D7bFde100',
   networkUrl: 'http://3.131.169.226',
 };

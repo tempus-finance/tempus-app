@@ -1,30 +1,42 @@
-import { TempusPool } from '../abi/TempusPool';
+// Services
 import TempusPoolService from './TempusPoolService';
 
 jest.mock('ethers');
-const { Contract } = require('ethers');
+const { Contract } = jest.requireMock('ethers');
+const { utils } = jest.requireMock('ethers');
+const { BigNumber } = jest.requireActual('ethers');
+
+jest.mock('@ethersproject/providers');
+const { JsonRpcProvider } = jest.requireMock('@ethersproject/providers');
 
 describe('TempusPoolService', () => {
   const mockAddresses = ['someAddress'];
   const [mockAddress] = mockAddresses;
 
   const mockABI = {};
-  const mockGetSigner = jest.fn();
   const mockCurrentExchangeRate = jest.fn();
   const mockMaturityTime = jest.fn();
+  const mockPriceOracle = jest.fn();
+  const mockGetBlock = jest.fn();
+  const mockYieldBearingToken = jest.fn();
+  const mockCurrentRate = jest.fn();
+  const getPriceOracleServiceMock = jest.fn();
 
-  const mockLibrary = {
-    getSigner: mockGetSigner,
-  };
+  const mockProvider = new JsonRpcProvider();
 
-  let instance;
+  let instance: TempusPoolService;
 
   beforeEach(() => {
     Contract.mockImplementation(() => {
       return {
         currentExchangeRate: mockCurrentExchangeRate,
         maturityTime: mockMaturityTime,
-      } as TempusPool;
+        priceOracle: mockPriceOracle,
+        yieldBearingToken: mockYieldBearingToken,
+        provider: {
+          getBlock: mockGetBlock,
+        },
+      };
     });
   });
 
@@ -48,12 +60,10 @@ describe('TempusPoolService', () => {
         Contract,
         tempusPoolAddresses: mockAddresses,
         TempusPoolABI: mockABI,
-        signerOrProvider: mockLibrary,
+        priceOracleService: getPriceOracleServiceMock(),
+        signerOrProvider: mockProvider,
       });
 
-      const addressesLength = mockAddresses.length;
-
-      expect(mockGetSigner).toHaveBeenCalledTimes(addressesLength);
       expect(instance).toBeInstanceOf(TempusPoolService);
     });
   });
@@ -64,13 +74,26 @@ describe('TempusPoolService', () => {
     beforeEach(() => {
       jest.clearAllMocks();
 
-      instance = new TempusPoolService();
+      getPriceOracleServiceMock.mockImplementation(() => {
+        return {
+          currentRate: mockCurrentRate,
+        };
+      });
+      mockCurrentRate.mockImplementation((address: string, tokenAddress: string, overrides: {}) => {
+        if (!overrides) {
+          return Promise.resolve(BigNumber.from('10'));
+        } else {
+          return Promise.resolve(BigNumber.from('9'));
+        }
+      });
 
+      instance = new TempusPoolService();
       instance.init({
         Contract,
         tempusPoolAddresses: mockAddresses,
         TempusPoolABI: mockABI,
-        signerOrProvider: mockLibrary,
+        priceOracleService: getPriceOracleServiceMock(),
+        signerOrProvider: mockProvider,
       });
     });
 
@@ -98,6 +121,30 @@ describe('TempusPoolService', () => {
         expect(result.getFullYear()).toBe(2021);
         expect(result.getMonth()).toBe(3);
         expect(result.getUTCDate()).toBe(4);
+      });
+    });
+
+    test('it returns variable APY for the pool', () => {
+      mockGetBlock.mockImplementation((blockNumber: number | string) => {
+        if (blockNumber === 'latest') {
+          return Promise.resolve({
+            number: 100,
+            timestamp: 200,
+          });
+        } else {
+          return Promise.resolve({
+            number: 50,
+            timestamp: 100,
+          });
+        }
+      });
+      mockYieldBearingToken.mockImplementation(() => Promise.resolve('yield-bearing-token-address'));
+      mockPriceOracle.mockImplementation(() => Promise.resolve('price-oracle-address'));
+
+      utils.formatEther.mockImplementation((value: number) => value);
+
+      instance.getVariableAPY(mockAddress).then(result => {
+        expect(result).toEqual(31536000);
       });
     });
   });

@@ -1,0 +1,16 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Test - Debug",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "${workspaceRoot}/packages/tempus-client/node_modules/.bin/react-scripts",
+      "args": ["test", "--runInBand", "--no-cache", "--env=jsdom"],
+      "cwd": "${workspaceRoot}/packages/tempus-client",
+      "protocol": "inspector",
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen"
+    }
+  ]
+}
