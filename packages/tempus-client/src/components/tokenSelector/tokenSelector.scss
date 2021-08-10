@@ -1,0 +1,33 @@
+@import '../../constants.scss';
+
+.tf__token-selector {
+  border: 1px solid $accent;
+  border-radius: 4px;
+  padding: 4px;
+}
+
+li.tf__token-selector__menu-item__container {
+  background-color: $primary;
+
+  &:hover {
+    background-color: $primary-light;
+  }
+
+  &.Mui-selected {
+    background-color: $accent-darker;
+
+    &:hover {
+      background-color: $accent-darker;
+    }
+  }
+}
+
+.tf__token-selector__menu-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  svg {
+    margin-right: 5px;
+  }
+}

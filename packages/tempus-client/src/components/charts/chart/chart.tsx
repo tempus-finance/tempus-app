@@ -6,7 +6,7 @@ import VolumeChart from '../volume-chart/volume-chart';
 
 import { Divider, CircularProgress } from '@material-ui/core';
 
-import getPastDaysNumber from '../../../util/getPastDaysNumber';
+import getPastDaysNumber from '../../../utils/getPastDaysNumber';
 
 import ChartDataPoint from '../../../interfaces/ChartDataPoint';
 

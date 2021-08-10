@@ -2,10 +2,10 @@ import { Contract } from 'ethers';
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
 
 import TempusPoolABI from '../abi/TempusPool.json';
-import config from '../config';
 import TempusPoolService from './TempusPoolService';
 import getPriceOracleService from './getPriceOracleService';
 import getDefaultProvider from './getDefaultProvider';
+import getConfig from '../utils/get-config';
 
 let tempusPoolService: TempusPoolService;
 const getTempusPoolService = (signerOrProvider?: JsonRpcSigner | JsonRpcProvider) => {
@@ -15,7 +15,7 @@ const getTempusPoolService = (signerOrProvider?: JsonRpcSigner | JsonRpcProvider
     tempusPoolService = new TempusPoolService();
     tempusPoolService.init({
       Contract,
-      tempusPoolAddresses: config.tempusPools.map(tempusPoolConfig => tempusPoolConfig.address),
+      tempusPoolAddresses: getConfig().tempusPools.map(tempusPoolConfig => tempusPoolConfig.address),
       TempusPoolABI: TempusPoolABI,
       priceOracleService: getPriceOracleService(defaultProvider),
       signerOrProvider: defaultProvider,
@@ -25,7 +25,7 @@ const getTempusPoolService = (signerOrProvider?: JsonRpcSigner | JsonRpcProvider
   if (signerOrProvider) {
     tempusPoolService.init({
       Contract: Contract,
-      tempusPoolAddresses: config.tempusPools.map(tempusPoolConfig => tempusPoolConfig.address),
+      tempusPoolAddresses: getConfig().tempusPools.map(tempusPoolConfig => tempusPoolConfig.address),
       TempusPoolABI: TempusPoolABI,
       priceOracleService: getPriceOracleService(signerOrProvider),
       signerOrProvider: signerOrProvider,

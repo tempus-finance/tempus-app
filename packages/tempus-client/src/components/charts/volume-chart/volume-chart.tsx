@@ -1,6 +1,6 @@
 import { ResponsiveContainer, BarChart, Bar, Tooltip } from 'recharts';
 
-import { generateChartData } from '../../../util/data-generator';
+import { generateChartData } from '../../../utils/data-generator';
 
 function VolumeChart(): JSX.Element {
   // Dummy data - TODO - Replace with real date from contract
