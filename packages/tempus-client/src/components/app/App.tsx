@@ -1,6 +1,7 @@
 import { FC, useCallback, useState } from 'react';
 import Header from '../header/header';
 import Landing from '../landing/landing';
+import DashboardManager from '../dashboard/dashboard-manager';
 
 import './App.scss';
 
@@ -22,7 +23,7 @@ const App: FC = (): JSX.Element => {
     <div className="tf__app__container">
       <Header active={activeLink} onLogoClick={showLandingHandler} onDashboardClick={showDashboardHandler} />
       {!showDashboard && <Landing />}
-      {showDashboard && <div>Here goes the Dashboard</div>}
+      {showDashboard && <DashboardManager />}
     </div>
   );
 };

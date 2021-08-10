@@ -1,6 +1,7 @@
+import { Ticker } from './Token';
 export interface Asset {
   id: number;
-  ticker: string;
+  ticker: Ticker;
   minFixedAPY: number;
   maxFixedAPY: number;
   minVariableAPY: number;

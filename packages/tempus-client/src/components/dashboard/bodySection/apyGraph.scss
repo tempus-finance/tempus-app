@@ -1,0 +1,44 @@
+@import '../../../constants.scss';
+
+.tf__dashboard__apy-graph {
+  display: flex;
+  margin-right: 30px;
+
+  .tf__dashboard__apy-graph__bar-outer {
+    width: 100%;
+    margin: auto;
+    height: 20px;
+    display: flex;
+    align-items: flex-end;
+
+    div[class*='tf__dashboard__apy-graph__bar'] {
+      width: 3px;
+      margin-right: 1px;
+      background-color: $primary-lightest;
+
+      &.tf__dashboard__apy-graph__bar-active {
+        background-color: $white;
+      }
+    }
+
+    .tf__dashboard__apy-graph__bar-1 {
+      height: 4px;
+    }
+
+    .tf__dashboard__apy-graph__bar-2 {
+      height: 8px;
+    }
+
+    .tf__dashboard__apy-graph__bar-3 {
+      height: 12px;
+    }
+
+    .tf__dashboard__apy-graph__bar-4 {
+      height: 16px;
+    }
+
+    .tf__dashboard__apy-graph__bar-5 {
+      height: 20px;
+    }
+  }
+}
