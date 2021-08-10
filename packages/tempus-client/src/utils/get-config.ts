@@ -9,12 +9,12 @@ export default function getConfig(): Config {
   // Return default config if cookie config is not specified - empty config for now.
   if (!overridingConfig) {
     return config;
-  } else {
-    try {
-      return JSON.parse(overridingConfig);
-    } catch (error) {
-      console.error('Failed to parse environment config from cookie. Using default config as a fallback.');
-      return config;
-    }
+  }
+
+  try {
+    return JSON.parse(overridingConfig);
+  } catch (error) {
+    console.error('Failed to parse environment config from cookie. Using default config as a fallback.');
+    return config;
   }
 }
