@@ -4,7 +4,7 @@ import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
 import PriceOracleService from './PriceOracleService';
 import getDefaultProvider from './getDefaultProvider';
 
-import config from '../config';
+import getConfig from '../util/get-config';
 
 let priceOracleService: PriceOracleService;
 const getPriceOracleService = (signerOrProvider?: JsonRpcSigner | JsonRpcProvider) => {
@@ -13,7 +13,7 @@ const getPriceOracleService = (signerOrProvider?: JsonRpcSigner | JsonRpcProvide
     priceOracleService.init({
       Contract: Contract,
       signerOrProvider: getDefaultProvider(),
-      priceOraclesConfig: config.priceOracles,
+      priceOraclesConfig: getConfig().priceOracles,
     });
   }
 
@@ -21,7 +21,7 @@ const getPriceOracleService = (signerOrProvider?: JsonRpcSigner | JsonRpcProvide
     priceOracleService.init({
       Contract: Contract,
       signerOrProvider: signerOrProvider,
-      priceOraclesConfig: config.priceOracles,
+      priceOraclesConfig: getConfig().priceOracles,
     });
   }
 
