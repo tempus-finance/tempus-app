@@ -40,6 +40,7 @@ const TLVChart: FC<TVLChartProps> = (props): JSX.Element => {
 
   useEffect(() => {
     onSetActiveDataPoint(chartData[chartData.length - 1]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chartData]);
 
   return (
