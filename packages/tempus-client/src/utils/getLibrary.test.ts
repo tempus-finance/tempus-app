@@ -8,7 +8,7 @@ describe('utils -> getLibrary', () => {
   let mockProvider = new JsonRpcProvider();
   let mockLibrary = new Web3Provider();
 
-  beforeEach(() => {
+  beforeAll(() => {
     Web3Provider.mockImplementation(() => mockLibrary);
   });
 
