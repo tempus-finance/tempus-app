@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, useEffect, useState, useCallback } from 'react';
 import { AreaChart, Tooltip, Area, ResponsiveContainer } from 'recharts';
 
 import getTVLChartDataAdapter from '../../../adapters/getTVLChartDataAdapter';
@@ -14,15 +14,18 @@ const TLVChart: FC<TVLChartProps> = (props): JSX.Element => {
 
   const [chartData, setChartData] = useState<ChartDataPoint[]>([]);
 
-  const onChartMouseMove = (event: any) => {
-    let activeDataPointIndex = chartData.length - 1;
-    if (event.activeLabel) {
-      activeDataPointIndex = event.activeLabel;
-    }
-    const activeDataPoint = chartData[activeDataPointIndex];
+  const onChartMouseMove = useCallback(
+    (event: any) => {
+      let activeDataPointIndex = chartData.length - 1;
+      if (event.activeLabel) {
+        activeDataPointIndex = event.activeLabel;
+      }
+      const activeDataPoint = chartData[activeDataPointIndex];
 
-    props.onSetActiveDataPoint(activeDataPoint);
-  };
+      onSetActiveDataPoint(activeDataPoint);
+    },
+    [chartData, onSetActiveDataPoint],
+  );
 
   const onChartMouseLeave = (event: any) => {
     props.onSetActiveDataPoint(chartData[chartData.length - 1]);
