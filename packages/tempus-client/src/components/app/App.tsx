@@ -1,5 +1,4 @@
 import { FC, useCallback, useState } from 'react';
-import getConfig from '../../utils/get-config';
 import Header from '../header/header';
 import Landing from '../landing/landing';
 
@@ -12,8 +11,6 @@ const App: FC = (): JSX.Element => {
   const showDashboardHandler = useCallback(() => {
     setShowDashboard(true);
     setActiveLink('DASHBOARD');
-
-    console.log(getConfig());
   }, [setActiveLink, setShowDashboard]);
 
   const showLandingHandler = useCallback(() => {
