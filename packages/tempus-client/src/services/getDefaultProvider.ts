@@ -2,7 +2,7 @@
 import { JsonRpcProvider } from '@ethersproject/providers';
 
 // Config
-import getConfig from '../util/get-config';
+import getConfig from '../utils/get-config';
 
 let defaultProvider: JsonRpcProvider;
 const getDefaultProvider = () => {

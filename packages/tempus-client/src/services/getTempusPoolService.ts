@@ -5,7 +5,7 @@ import TempusPoolABI from '../abi/TempusPool.json';
 import TempusPoolService from './TempusPoolService';
 import getPriceOracleService from './getPriceOracleService';
 import getDefaultProvider from './getDefaultProvider';
-import getConfig from '../util/get-config';
+import getConfig from '../utils/get-config';
 
 let tempusPoolService: TempusPoolService;
 const getTempusPoolService = (signerOrProvider?: JsonRpcSigner | JsonRpcProvider) => {

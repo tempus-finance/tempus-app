@@ -6,7 +6,7 @@ import { JsonRpcSigner, JsonRpcProvider } from '@ethersproject/providers';
 import StatisticsABI from '../abi/Statistics.json';
 
 // Config
-import getConfig from '../util/get-config';
+import getConfig from '../utils/get-config';
 
 // Service
 import StatisticsService from './StatisticsService';

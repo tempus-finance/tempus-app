@@ -4,7 +4,7 @@ import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
 import PriceOracleService from './PriceOracleService';
 import getDefaultProvider from './getDefaultProvider';
 
-import getConfig from '../util/get-config';
+import getConfig from '../utils/get-config';
 
 let priceOracleService: PriceOracleService;
 const getPriceOracleService = (signerOrProvider?: JsonRpcSigner | JsonRpcProvider) => {
