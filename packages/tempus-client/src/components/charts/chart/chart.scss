@@ -1,6 +1,7 @@
 @import './../../../constants.scss';
 
-.chart {
+.tf__chart {
+  position: relative;
   width: 100%;
   height: 100%;
   padding: 24px;
@@ -8,21 +9,33 @@
   background-color: $floating-surface;
 }
 
-.chart-row {
+.tf__chart-loading-overlay {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.3);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.tf__chart-row {
   display: flex;
   justify-content: center;
   align-items: center;
   width: 100%;
 }
 
-.chart-data-axis-label-row {
+.tf__chart-data-axis-label-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
   width: 100%;
 }
 
-.chart-header {
+.tf__chart-header {
   height: 48px;
   width: 100%;
   display: flex;
@@ -30,7 +43,7 @@
   align-items: center;
 }
 
-.chart-data-label {
+.tf__chart-data-label {
   height: 64px;
   width: 100%;
   display: flex;
@@ -38,12 +51,12 @@
   align-items: flex-end;
 }
 
-.chart-data-label-text {
+.tf__chart-data-label-text {
   font-size: 42px;
   margin: 0px;
 }
 
-.chart-data-label-text-small {
+.tf__chart-data-label-text-small {
   font-size: 24px;
   padding-left: 12px;
   padding-bottom: 4px;
@@ -51,11 +64,11 @@
   color: $accent;
 }
 
-.chart-graph-container {
+.tf__chart-graph-container {
   width: 100%;
 }
 
-.chart-graph-axis-label-text {
+.tf__chart-graph-axis-label-text {
   font-size: 20px;
   margin: 4px 0px 4px 0px;
 }

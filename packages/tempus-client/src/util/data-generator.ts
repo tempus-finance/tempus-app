@@ -4,7 +4,6 @@ export function generateChartData(chartEntryCount: number) {
   const data = [];
   for (let i = 0; i < chartEntryCount; i++) {
     data.push({
-      name: i,
       value: Math.random() * 100,
     });
   }

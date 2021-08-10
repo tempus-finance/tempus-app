@@ -15,7 +15,7 @@ const getTempusPoolService = (signerOrProvider?: JsonRpcSigner | JsonRpcProvider
     tempusPoolService = new TempusPoolService();
     tempusPoolService.init({
       Contract,
-      tempusPoolAddresses: config.tempusPools,
+      tempusPoolAddresses: config.tempusPools.map(tempusPoolConfig => tempusPoolConfig.address),
       TempusPoolABI: TempusPoolABI,
       priceOracleService: getPriceOracleService(defaultProvider),
       signerOrProvider: defaultProvider,
@@ -25,7 +25,7 @@ const getTempusPoolService = (signerOrProvider?: JsonRpcSigner | JsonRpcProvider
   if (signerOrProvider) {
     tempusPoolService.init({
       Contract: Contract,
-      tempusPoolAddresses: config.tempusPools,
+      tempusPoolAddresses: config.tempusPools.map(tempusPoolConfig => tempusPoolConfig.address),
       TempusPoolABI: TempusPoolABI,
       priceOracleService: getPriceOracleService(signerOrProvider),
       signerOrProvider: signerOrProvider,

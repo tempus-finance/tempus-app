@@ -16,6 +16,7 @@ describe('TempusPoolService', () => {
   const mockABI = {};
   const mockCurrentExchangeRate = jest.fn();
   const mockMaturityTime = jest.fn();
+  const mockStartTime = jest.fn();
   const mockPriceOracle = jest.fn();
   const mockGetBlock = jest.fn();
   const mockYieldBearingToken = jest.fn();
@@ -31,6 +32,7 @@ describe('TempusPoolService', () => {
       return {
         currentExchangeRate: mockCurrentExchangeRate,
         maturityTime: mockMaturityTime,
+        startTime: mockStartTime,
         priceOracle: mockPriceOracle,
         yieldBearingToken: mockYieldBearingToken,
         provider: {
@@ -117,6 +119,21 @@ describe('TempusPoolService', () => {
       );
 
       instance.getMaturityTime(mockAddress).then((result: any) => {
+        expect(result).toBeInstanceOf(Date);
+        expect(result.getFullYear()).toBe(2021);
+        expect(result.getMonth()).toBe(3);
+        expect(result.getUTCDate()).toBe(4);
+      });
+    });
+
+    test('it returns a Promise that resolves with the value of the start time', () => {
+      mockStartTime.mockImplementation(() =>
+        Promise.resolve({
+          toNumber: jest.fn().mockReturnValue(1617494400),
+        }),
+      );
+
+      instance.getStartTime(mockAddress).then((result: Date) => {
         expect(result).toBeInstanceOf(Date);
         expect(result.getFullYear()).toBe(2021);
         expect(result.getMonth()).toBe(3);

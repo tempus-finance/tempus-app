@@ -15,7 +15,12 @@ const config: Config = {
     { name: 'compound', address: '' }, // TBD
     { name: 'lido', address: '' }, // TBD
   ],
-  tempusPools: [],
+  tempusPools: [
+    {
+      address: '0x2B2a0994Faca1d245f51720c4E2517869FbF002A',
+      backingToken: 'dai',
+    },
+  ],
   priceOracles: [],
   statisticsContract: '0x35e54CC8fBc4C0EB23c2De24ca07e29D7bFde100',
   networkUrl: 'http://3.131.169.226',
