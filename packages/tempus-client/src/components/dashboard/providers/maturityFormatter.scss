@@ -1,0 +1,25 @@
+.tf__dashboard__grid__maturity {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 3px 0;
+}
+
+.tf__dashboard__grid__maturity-range {
+  text-align: center;
+  margin: auto 5px;
+}
+
+.tf__dashboard__body__row-child {
+  .tf__dashboard__grid__maturity {
+    flex-direction: column;
+    justify-content: flex-end;
+    padding-left: 20px;
+
+    .tf__dashboard__grid__maturity-timeLeft {
+      display: flex;
+      width: 100%;
+      justify-content: space-between;
+    }
+  }
+}

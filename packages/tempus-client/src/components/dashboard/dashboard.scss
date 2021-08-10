@@ -1,0 +1,175 @@
+@import '../../constants.scss';
+
+.tf__dashboard__section__container {
+  grid-area: section;
+  display: grid;
+  grid-template-columns: 1fr;
+  row-gap: 48px;
+  column-gap: 48px;
+  grid-template-areas: 'dashboard dashboard';
+}
+
+.tf__dashboard__container {
+  grid-area: dashboard;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.tf__dashboard {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+
+  .tf__dashboard__grid {
+    background-color: $primary;
+
+    .tf__dashboard__filter__row {
+      background: $primary;
+
+      > th {
+        background-color: transparent;
+        border-bottom: 1px solid $primary-dark;
+
+        .tf__dashboard__filter__chip {
+          margin: 0 8px;
+        }
+
+        .tf__dashboard__filter__chip-select {
+          margin-top: 0;
+        }
+      }
+    }
+
+    .tf__dashboard__body__row {
+      > td {
+        border-bottom-color: transparent;
+        padding: 0;
+
+        &:last-child {
+          padding-right: 10px;
+        }
+      }
+
+      &:hover {
+        background-color: $primary-light;
+      }
+
+      &.tf__dashboard__body__row-child {
+        > td {
+          background-color: $primary-dark;
+          border-bottom-color: $primary-darker;
+        }
+
+        &:hover {
+          > td {
+            background-color: $primary-light;
+          }
+        }
+
+        .tf__dashboard__body__trade {
+          display: flex;
+          justify-content: center;
+        }
+      }
+    }
+
+    .tf__dashboard__header__row {
+      background: $primary;
+
+      > th {
+        background-color: transparent;
+        border-bottom: 2px solid $accent-dark;
+      }
+
+      .tf__dashboard__header__cell {
+        padding-left: 0;
+        padding-right: 0;
+        padding-bottom: 3px;
+
+        &:last-child {
+          padding-right: 10px;
+        }
+
+        &.tf__dashboard__header__token button[class*='TableTreeExpandButtonBase-button'] {
+          padding-right: 0;
+          padding-left: 0;
+        }
+
+        &:not(.tf__dashboard__header__token) span.MuiButtonBase-root {
+          text-align: right;
+        }
+
+        span.MuiButtonBase-root {
+          width: 100%;
+          font-weight: 200;
+          color: white;
+        }
+
+        > div > button {
+          padding: 0 8px;
+        }
+
+        .MuiTableSortLabel-root.MuiTableSortLabel-active.MuiTableSortLabel-root.MuiTableSortLabel-active
+          .MuiTableSortLabel-icon {
+          color: $accent-dark;
+        }
+      }
+    }
+
+    .tf__dashboard__header__protocol {
+      > div {
+        display: flex;
+        align-items: center;
+        height: 30px;
+
+        > svg {
+          margin-right: 7px;
+        }
+
+        > span {
+          text-transform: capitalize;
+        }
+      }
+    }
+
+    .tf__dashboard__body__apy {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-end;
+      padding: 3px 0 3px 5px;
+      align-items: center;
+
+      .tf__dashboard__body__apy-value {
+        display: flex;
+        align-items: flex-end;
+        justify-content: flex-end;
+        width: 30px;
+
+        > span {
+          margin-left: 5px;
+        }
+      }
+    }
+
+    .tf__dashboard__trade-button {
+      display: flex;
+      justify-content: flex-end;
+      width: 87%;
+      padding: 0;
+
+      .MuiButton-containedSizeSmall {
+        padding: 2px 8px;
+      }
+    }
+
+    .tf__dashboard__asset-ticker {
+      display: flex;
+      align-items: center;
+
+      > span {
+        margin-left: 7px;
+      }
+    }
+  }
+}
