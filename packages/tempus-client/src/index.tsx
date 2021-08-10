@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { Web3ReactProvider } from '@web3-react/core';
 import { createTheme, ThemeProvider } from '@material-ui/core';
 import App from './components/app/App';
-import getLibrary from './util/get-library';
+import getLibrary from './utils/get-library';
 
 import './index.scss';
 

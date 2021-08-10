@@ -3,7 +3,7 @@ import VolumeChart from '../volume-chart/volume-chart';
 
 import { Divider } from '@material-ui/core';
 
-import { generatedArrayOfIntegers } from '../../../util/data-generator';
+import { generatedArrayOfIntegers } from '../../../utils/data-generator';
 
 import './chart.scss';
 

@@ -6,7 +6,7 @@ import { JsonRpcSigner, JsonRpcProvider } from '@ethersproject/providers';
 import StatisticsABI from '../abi/Statistics.json';
 
 // Config
-import config from '../config';
+import getConfig from '../utils/get-config';
 
 // Service
 import StatisticsService from './StatisticsService';
@@ -18,7 +18,7 @@ const getStatisticsService = (signerOrProvider?: JsonRpcSigner | JsonRpcProvider
     statisticsService = new StatisticsService();
     statisticsService.init({
       Contract: Contract,
-      address: config.statisticsContract,
+      address: getConfig().statisticsContract,
       abi: StatisticsABI,
       signerOrProvider: getDefaultProvider(),
     });
@@ -27,7 +27,7 @@ const getStatisticsService = (signerOrProvider?: JsonRpcSigner | JsonRpcProvider
   if (signerOrProvider) {
     statisticsService.init({
       Contract: Contract,
-      address: config.statisticsContract,
+      address: getConfig().statisticsContract,
       abi: StatisticsABI,
       signerOrProvider: signerOrProvider,
     });
