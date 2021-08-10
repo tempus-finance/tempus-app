@@ -18,8 +18,8 @@ const config: Config = {
   ],
   tempusPools: [
     {
-      address: '0x2B2a0994Faca1d245f51720c4E2517869FbF002A',
-      backingToken: 'dai',
+      address: '',
+      backingToken: '',
     },
   ],
   priceOracles: [],

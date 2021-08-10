@@ -9,7 +9,7 @@ import TempusPoolService from '../services/TempusPoolService';
 
 import ChartDataPoint from '../interfaces/ChartDataPoint';
 
-import config from '../config';
+import getConfig from '../utils/get-config';
 
 type TVLChartDataAdapterParameters = {
   signerOrProvider: JsonRpcProvider | JsonRpcSigner;
@@ -102,7 +102,7 @@ class TVLChartDataAdapter {
     let startTimes: Date[];
     try {
       const fetchStartTimePromises: Promise<Date>[] = [];
-      config.tempusPools.forEach(tempusPoolConfig => {
+      getConfig().tempusPools.forEach(tempusPoolConfig => {
         if (this.tempusPoolService) {
           const startTimePromise = this.tempusPoolService.getStartTime(tempusPoolConfig.address);
           fetchStartTimePromises.push(startTimePromise);
@@ -116,7 +116,7 @@ class TVLChartDataAdapter {
 
     const startTimesMap = new Map<string, Date>();
     startTimes.forEach((startTime, index) => {
-      startTimesMap.set(config.tempusPools[index].address, startTime);
+      startTimesMap.set(getConfig().tempusPools[index].address, startTime);
     });
 
     return startTimesMap;
@@ -139,7 +139,7 @@ class TVLChartDataAdapter {
     let tempusPoolsTvl: BigNumber[];
     try {
       // TODO - Fetch pools from factory contract - waiting for backend team to finish factory contract for this.
-      config.tempusPools.forEach(tempusPoolConfig => {
+      getConfig().tempusPools.forEach(tempusPoolConfig => {
         const poolStartTime = tempusPoolStartTimes.get(tempusPoolConfig.address);
 
         // Do not query block if tempus pool contract did not exist at that point in time.
