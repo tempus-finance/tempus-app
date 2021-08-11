@@ -1,9 +1,10 @@
 import { FC } from 'react';
 import { VirtualTable } from '@devexpress/dx-react-grid-material-ui';
+import { Table } from '@devexpress/dx-react-grid';
 import NumberUtils from '../../../services/NumberUtils';
 import APYGraph from './apyGraph';
 
-const APYCell: FC = (props: any) => {
+const APYCell: FC<Table.DataCellProps> = (props: Table.DataCellProps) => {
   const className = `tf__dashboard__body__cell tf__dashboard__body__apy-cell`;
   let apy;
   const isParent = !props.row.parentId;
