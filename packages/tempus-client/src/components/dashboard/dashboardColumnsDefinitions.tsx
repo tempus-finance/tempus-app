@@ -1,4 +1,13 @@
-export const dashboardColumnsDefinitions = [
+import { Column } from '@devexpress/dx-react-grid';
+
+import { variableAPYTooltipText } from '../../constants';
+
+export interface ExtraDataColumn extends Column {
+  tooltip?: string;
+  type?: string;
+}
+
+export const dashboardColumnsDefinitions: ExtraDataColumn[] = [
   {
     name: 'token',
     title: 'Asset',
@@ -22,6 +31,7 @@ export const dashboardColumnsDefinitions = [
   {
     name: 'variableAPY',
     title: 'Variable APR',
+    tooltip: variableAPYTooltipText,
     getCellValue: (row: any) => {
       if (row.variableAPY.length === 2) {
         return row.variableAPY;

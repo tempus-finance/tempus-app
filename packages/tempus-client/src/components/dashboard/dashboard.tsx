@@ -15,7 +15,7 @@ import BodyCellFactory from './bodySection/bodyCellFactory';
 import BodyRow from './bodySection/bodyRow';
 import HeaderCell from './headerSection/headerCell';
 import HeaderRow from './headerSection/headerRow';
-import HeaderTitleComponent from './headerSection/headerTitle';
+import HeaderContentComponent from './headerSection/headerContent';
 import MaturityProvider from './providers/maturityProvider';
 import TVLProvider from './providers/tvlProvider';
 
@@ -80,7 +80,7 @@ const Dashboard: FC<DashboardProps> = ({ rows, onRowActionClick }): JSX.Element 
           <TableHeaderRow
             rowComponent={HeaderRow}
             cellComponent={HeaderCell}
-            titleComponent={HeaderTitleComponent}
+            contentComponent={HeaderContentComponent}
             showSortingControls={true}
           />
           <TableTreeColumn
