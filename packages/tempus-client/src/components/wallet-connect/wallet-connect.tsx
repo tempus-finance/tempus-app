@@ -51,6 +51,7 @@ const supportedChainIds = [
   5, // Goerli 31337
   42, // Kovan
   1337, // Local
+  31337, // AWS Private
 ];
 
 // Example contract communication with typings

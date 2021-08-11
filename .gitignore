@@ -26,3 +26,5 @@ yarn-debug.log*
 yarn-error.log*
 
 .firebase
+
+packages/tempus-client/cookie-config.json
