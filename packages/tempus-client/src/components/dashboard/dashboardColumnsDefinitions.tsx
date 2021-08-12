@@ -58,10 +58,10 @@ export const dashboardColumnsDefinitions: ExtraDataColumn[] = [
     },
   },
   {
-    name: 'balance',
-    title: 'Balance',
+    name: 'presentValue',
+    title: 'Present Value',
     getCellValue: (row: any) => {
-      return new Intl.NumberFormat().format(row.balance);
+      return new Intl.NumberFormat().format(row.presentValue);
     },
   },
   {

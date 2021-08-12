@@ -10,6 +10,6 @@ export interface DashboardRow {
   fixedAPY: number;
   variableAPY: number;
   TVL: number;
-  balance: number;
+  presentValue: number;
   availableToDeposit: string;
 }
