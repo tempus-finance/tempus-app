@@ -16,7 +16,12 @@ const config: Config = {
     { name: 'compound', address: '' }, // TBD
     { name: 'lido', address: '' }, // TBD
   ],
-  tempusPools: [],
+  tempusPools: [
+    {
+      address: '',
+      backingToken: '',
+    },
+  ],
   priceOracles: [],
   statisticsContract: '',
   networkUrl: '',

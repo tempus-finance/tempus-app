@@ -8,10 +8,10 @@ function Landing(): JSX.Element {
   return (
     <div className="tf-landing-section-container">
       <div className="tf-tvl-chart-container">
-        <Chart kind="TLV" title="Total Value Locked" />
+        <Chart kind="TLV" title="Total Value Locked" showLoadingIndicator={true} />
       </div>
       <div className="tf-volume-chart-container">
-        <Chart kind="VOLUME" title="Volume 24H" />
+        <Chart kind="VOLUME" title="Volume 24H" showLoadingIndicator={false} />
       </div>
       <div className="tf-asset-grid-container">
         <TopAssets />

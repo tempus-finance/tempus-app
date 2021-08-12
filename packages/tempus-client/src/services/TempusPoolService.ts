@@ -76,6 +76,20 @@ class TempusPoolService {
     throw new Error(`Address '${address}' is not valid`);
   }
 
+  public async getStartTime(address: string): Promise<Date> {
+    const tempusPool = this.tempusPoolsMap[address];
+    if (tempusPool !== undefined) {
+      try {
+        return new Date((await tempusPool.startTime()).toNumber() * 1000);
+      } catch (error) {
+        console.error('TempusPoolService getStartTime', error);
+        return Promise.reject(error);
+      }
+    }
+
+    throw new Error(`Address '${address}' is not valid`);
+  }
+
   public async getVariableAPY(address: string): Promise<number> {
     const tempusPool = this.tempusPoolsMap[address];
 
@@ -111,6 +125,7 @@ class TempusPoolService {
         return Promise.reject(error);
       }
     }
+
     throw new Error(`Address '${address}' is not valid`);
   }
 }

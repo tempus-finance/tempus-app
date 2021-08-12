@@ -1,9 +1,14 @@
-import TLVChart from '../tlv-chart/tlv-chart';
+import { useState } from 'react';
+import { DateTime } from 'luxon';
+
+import TLVChart from '../tvl-chart/TVLChart';
 import VolumeChart from '../volume-chart/volume-chart';
 
-import { Divider } from '@material-ui/core';
+import { Divider, CircularProgress } from '@material-ui/core';
 
-import { generatedArrayOfIntegers } from '../../../utils/data-generator';
+import getPastDaysNumber from '../../../utils/getPastDaysNumber';
+
+import ChartDataPoint from '../../../interfaces/ChartDataPoint';
 
 import './chart.scss';
 
@@ -12,29 +17,43 @@ export type ChartKind = 'TLV' | 'VOLUME';
 interface ChartProps {
   kind: ChartKind;
   title: string;
+  // Temporary solution to disable loading indicator on Volume24H chart
+  // TODO - Fetch data from contract for Volume24H chart as well and remove `showLoadingIndicator` prop.
+  showLoadingIndicator: boolean;
 }
 
 function Chart(props: ChartProps): JSX.Element {
-  const { title, kind } = props;
+  const { title, kind, showLoadingIndicator } = props;
+
+  const [activeDataPoint, setActiveDataPoint] = useState<ChartDataPoint | null>(null);
+
+  const onSetActiveDataPoint = (dataPoint: ChartDataPoint) => {
+    setActiveDataPoint(dataPoint);
+  };
 
   return (
-    <div className="chart">
-      <div className="chart-header">
+    <div className="tf__chart">
+      {showLoadingIndicator && !activeDataPoint && (
+        <div className="tf__chart-loading-overlay">
+          <CircularProgress size={48} />
+        </div>
+      )}
+      <div className="tf__chart-header">
         <p>{title}</p>
-        <p>1 July 2021</p>
+        <p>{activeDataPoint && DateTime.fromJSDate(activeDataPoint.date).toFormat('DDD')}</p>
       </div>
       <Divider orientation="horizontal" />
-      <div className="chart-data-label">
-        <p className="chart-data-label-text">$127,123,135</p>
-        <p className="chart-data-label-text-small">+52.23%</p>
+      <div className="tf__chart-data-label">
+        <p className="tf__chart-data-label-text">${activeDataPoint && activeDataPoint.value}</p>
+        <p className="tf__chart-data-label-text-small">{activeDataPoint && `${activeDataPoint.valueIncrease}%`}</p>
       </div>
-      <div className="chart-row">
-        <div className="chart-graph-container">
-          {kind === 'TLV' && <TLVChart />}
+      <div className="tf__chart-row">
+        <div className="tf__chart-graph-container">
+          {kind === 'TLV' && <TLVChart onSetActiveDataPoint={onSetActiveDataPoint} />}
           {kind === 'VOLUME' && <VolumeChart />}
-          <div className="chart-data-axis-label-row">
-            {generatedArrayOfIntegers(15).map((value: number) => (
-              <p key={value} className="chart-graph-axis-label-text">
+          <div className="tf__chart-data-axis-label-row">
+            {getPastDaysNumber(30, 2).map((value: number) => (
+              <p key={value} className="tf__chart-graph-axis-label-text">
                 {value}
               </p>
             ))}

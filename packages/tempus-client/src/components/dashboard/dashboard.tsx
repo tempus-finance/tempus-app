@@ -15,6 +15,7 @@ import BodyCellFactory from './bodySection/bodyCellFactory';
 import BodyRow from './bodySection/bodyRow';
 import HeaderCell from './headerSection/headerCell';
 import HeaderRow from './headerSection/headerRow';
+import HeaderContent from './headerSection/headerContent';
 import MaturityProvider from './providers/maturityProvider';
 import TVLProvider from './providers/tvlProvider';
 
@@ -36,7 +37,7 @@ const Dashboard: FC<DashboardProps> = ({ rows, onRowActionClick }): JSX.Element 
     { columnName: ColumnNames.PROTOCOL, align: 'center' as 'center', width: 120 },
     { columnName: ColumnNames.MATURITY, align: 'right' as 'right' },
     { columnName: ColumnNames.FIXED_APY, align: 'right' as 'right', width: 120 },
-    { columnName: ColumnNames.VARIABLE_APY, align: 'right' as 'right', width: 120 },
+    { columnName: ColumnNames.VARIABLE_APY, align: 'right' as 'right', width: 160 },
     { columnName: ColumnNames.TVL, align: 'right' as 'right', width: 80 },
     { columnName: ColumnNames.BALANCE, align: 'right' as 'right', width: 135 },
     { columnName: ColumnNames.AVAILABLE_TO_DEPOSIT, align: 'right' as 'right', width: 150 },
@@ -76,7 +77,12 @@ const Dashboard: FC<DashboardProps> = ({ rows, onRowActionClick }): JSX.Element 
             rowComponent={BodyRow}
             cellComponent={BodyCellFactory}
           />
-          <TableHeaderRow rowComponent={HeaderRow} cellComponent={HeaderCell} showSortingControls={true} />
+          <TableHeaderRow
+            rowComponent={HeaderRow}
+            cellComponent={HeaderCell}
+            contentComponent={HeaderContent}
+            showSortingControls={true}
+          />
           <TableTreeColumn
             for={ColumnNames.TOKEN}
             cellComponent={(props: any) => (
