@@ -8,7 +8,7 @@ export const mockData: any[] = [
     fixedAPY: [0.051, 0.1029],
     variableAPY: [0.079, 0.412],
     TVL: 100000000,
-    balance: 4500.0,
+    presentValue: 4500.0,
     availableToDeposit: '12.334 ETH',
   },
   {
@@ -21,7 +21,7 @@ export const mockData: any[] = [
     fixedAPY: 0.051,
     variableAPY: 0.117,
     TVL: 50000000,
-    balance: 1000.0,
+    presentValue: 1000.0,
     availableToDeposit: '12.334 ETH',
   },
   {
@@ -34,7 +34,7 @@ export const mockData: any[] = [
     fixedAPY: 0.079,
     variableAPY: 0.1356,
     TVL: 35000000,
-    balance: 3500.0,
+    presentValue: 3500.0,
     availableToDeposit: '12.334 ETH',
   },
   {
@@ -47,7 +47,7 @@ export const mockData: any[] = [
     fixedAPY: 0.1029,
     variableAPY: 0.412,
     TVL: 15000000,
-    balance: 0,
+    presentValue: 0,
     availableToDeposit: '12.334 ETH',
   },
   {
@@ -59,7 +59,7 @@ export const mockData: any[] = [
     fixedAPY: 0.011,
     variableAPY: 0.045,
     TVL: 123456,
-    balance: 1000.0,
+    presentValue: 1000.0,
     availableToDeposit: '12.02 USDC',
   },
   {
@@ -72,7 +72,7 @@ export const mockData: any[] = [
     fixedAPY: 0.011,
     variableAPY: 0.045,
     TVL: 123456,
-    balance: 1000.0,
+    presentValue: 1000.0,
     availableToDeposit: '12.02 USDC',
   },
   {
@@ -84,7 +84,7 @@ export const mockData: any[] = [
     fixedAPY: [0.009, 0.02],
     variableAPY: [0.045, 0.111],
     TVL: 200000000,
-    balance: 1000.0,
+    presentValue: 1000.0,
     availableToDeposit: '40 DAI',
   },
   {
@@ -97,7 +97,7 @@ export const mockData: any[] = [
     fixedAPY: 0.009,
     variableAPY: 0.045,
     TVL: 100000000,
-    balance: 1000.0,
+    presentValue: 1000.0,
     availableToDeposit: '40 DAI',
   },
   {
@@ -110,7 +110,7 @@ export const mockData: any[] = [
     fixedAPY: 0.02,
     variableAPY: 0.111,
     TVL: 100000000,
-    balance: 0,
+    presentValue: 0,
     availableToDeposit: '40 DAI',
   },
   {
@@ -123,7 +123,7 @@ export const mockData: any[] = [
     fixedAPY: 0.00875,
     variableAPY: 0.0333,
     TVL: 15000000,
-    balance: 0,
+    presentValue: 0,
     availableToDeposit: '40 DAI',
   },
   {
@@ -135,7 +135,7 @@ export const mockData: any[] = [
     fixedAPY: 0.012,
     variableAPY: 0.045,
     TVL: 15000,
-    balance: 1050.0,
+    presentValue: 1050.0,
     availableToDeposit: '40 CMP',
   },
   {
@@ -148,7 +148,7 @@ export const mockData: any[] = [
     fixedAPY: 0.012,
     variableAPY: 0.045,
     TVL: 15000,
-    balance: 1050.0,
+    presentValue: 1050.0,
     availableToDeposit: '40 CMP',
   },
 ];

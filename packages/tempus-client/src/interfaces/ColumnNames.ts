@@ -5,6 +5,6 @@ export enum ColumnNames {
   FIXED_APY = 'fixedAPY',
   VARIABLE_APY = 'variableAPY',
   TVL = 'TVL',
-  BALANCE = 'balance',
+  PRESENT_VALUE = 'presentValue',
   AVAILABLE_TO_DEPOSIT = 'availableToDeposit',
 }

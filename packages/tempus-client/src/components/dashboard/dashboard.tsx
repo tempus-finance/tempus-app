@@ -39,7 +39,7 @@ const Dashboard: FC<DashboardProps> = ({ rows, onRowActionClick }): JSX.Element 
     { columnName: ColumnNames.FIXED_APY, align: 'right' as 'right', width: 140 },
     { columnName: ColumnNames.VARIABLE_APY, align: 'right' as 'right', width: 160 },
     { columnName: ColumnNames.TVL, align: 'right' as 'right', width: 80 },
-    { columnName: ColumnNames.BALANCE, align: 'right' as 'right', width: 135 },
+    { columnName: ColumnNames.PRESENT_VALUE, align: 'right' as 'right', width: 135 },
     { columnName: ColumnNames.AVAILABLE_TO_DEPOSIT, align: 'right' as 'right', width: 150 },
   ]);
 
