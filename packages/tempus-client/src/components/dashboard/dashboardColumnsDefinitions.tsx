@@ -1,10 +1,9 @@
 import { Column } from '@devexpress/dx-react-grid';
 
-import { variableAPYTooltipText } from '../../constants';
+import { fixedAPYTooltipText, variableAPYTooltipText } from '../../constants';
 
 export interface ExtraDataColumn extends Column {
   tooltip?: string;
-  type?: string;
 }
 
 export const dashboardColumnsDefinitions: ExtraDataColumn[] = [
@@ -20,7 +19,7 @@ export const dashboardColumnsDefinitions: ExtraDataColumn[] = [
   {
     name: 'fixedAPY',
     title: 'Fixed APR',
-    type: 'number',
+    tooltip: fixedAPYTooltipText,
     getCellValue: (row: any) => {
       if (row.fixedAPY.length === 2) {
         return row.fixedAPY;
