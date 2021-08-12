@@ -1,0 +1,20 @@
+@import '../../constants.scss';
+
+.tf__currency-input {
+  .MuiInputBase-root {
+    &::before,
+    &::after {
+      display: none;
+    }
+  }
+
+  .MuiInput-underline::after {
+    display: none;
+  }
+
+  input {
+    text-align: right;
+    font-size: 30px;
+    color: $secondary;
+  }
+}
