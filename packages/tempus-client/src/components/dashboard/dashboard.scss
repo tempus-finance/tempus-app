@@ -161,6 +161,14 @@
       .MuiButton-containedSizeSmall {
         padding: 2px 8px;
       }
+
+      .MuiButton-root {
+        color: white;
+
+        &:hover {
+          color: $secondary;
+        }
+      }
     }
 
     .tf__dashboard__asset-ticker {

@@ -1,19 +1,21 @@
+// External Libraries
 import { FC } from 'react';
+
+// External UI Components
+import { Table } from '@devexpress/dx-react-grid';
 import { VirtualTable } from '@devexpress/dx-react-grid-material-ui';
-import TokenIcon from '../../tokenIcon';
+
+// Interfaces
 import { Ticker } from '../../../interfaces';
 
-const ProtocolCell: FC = (props: any) => {
-  const className = `tf__dashboard__body__cell tf__dashboard__body__protocol`;
+// Style
+import './protocolCell.scss';
+
+const ProtocolCell: FC<Table.DataCellProps> = props => {
   const ticker = props.value;
   return (
-    <VirtualTable.Cell {...props} className={className}>
-      {ticker && (
-        <div>
-          <TokenIcon ticker={ticker} />
-          <span>{getProtocolFromTicker(ticker)}</span>
-        </div>
-      )}
+    <VirtualTable.Cell {...props}>
+      {ticker && <span className="tf__dashboard__body__protocol_label">{getProtocolFromTicker(ticker)}</span>}
     </VirtualTable.Cell>
   );
 };
