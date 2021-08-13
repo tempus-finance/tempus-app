@@ -59,7 +59,7 @@ const TokenButton: FC<TokenButtonProps> = (props: TokenButtonProps) => {
       )}
       {indentComponent.props.level === 1 && (
         <div className="tf__dashboard__trade-button">
-          <Button title="Manage" color="secondary" size="small" onClick={onClick}>
+          <Button title="Manage" size="small" onClick={onClick}>
             <LaunchIcon />
           </Button>
         </div>
