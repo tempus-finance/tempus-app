@@ -3,3 +3,5 @@ export const variableAPYTooltipText =
 
 export const fixedAPYTooltipText =
   'Calculated based on the current TYS/TPS exchange rate and does not take into account slippage. For a more accurate calculation, please click on the "Open" icon for the relevant pool and use the deposit function.';
+
+export const volume24hTooltipText = 'Calculated as the sum of deposit, redeem, and swap amounts in a 24 hour period.';
