@@ -1,15 +1,22 @@
+// External Libraries
 import { useState } from 'react';
 import { DateTime } from 'luxon';
 
-import TLVChart from '../tvl-chart/TVLChart';
-import VolumeChart from '../volume-chart/volume-chart';
-
+// External UI Components
 import { Divider, CircularProgress } from '@material-ui/core';
 
+// UI Components
+import TLVChart from '../tvl-chart/TVLChart';
+import VolumeChart from '../volume-chart/volume-chart';
+import InfoTooltip from '../../infoTooltip/infoTooltip';
+
+// Utils
 import getPastDaysNumber from '../../../utils/getPastDaysNumber';
 
+// Interfaces
 import ChartDataPoint from '../../../interfaces/ChartDataPoint';
 
+// Style
 import './chart.scss';
 
 export type ChartKind = 'TLV' | 'VOLUME';
@@ -20,10 +27,11 @@ interface ChartProps {
   // Temporary solution to disable loading indicator on Volume24H chart
   // TODO - Fetch data from contract for Volume24H chart as well and remove `showLoadingIndicator` prop.
   showLoadingIndicator: boolean;
+  tooltip?: string;
 }
 
 function Chart(props: ChartProps): JSX.Element {
-  const { title, kind, showLoadingIndicator } = props;
+  const { title, kind, showLoadingIndicator, tooltip } = props;
 
   const [activeDataPoint, setActiveDataPoint] = useState<ChartDataPoint | null>(null);
 
@@ -40,7 +48,10 @@ function Chart(props: ChartProps): JSX.Element {
       )}
       <div className="tf__chart-header">
         <p>{title}</p>
-        <p>{activeDataPoint && DateTime.fromJSDate(activeDataPoint.date).toFormat('DDD')}</p>
+        <div className="tf__chart-header-info">
+          <p>{activeDataPoint && DateTime.fromJSDate(activeDataPoint.date).toFormat('DDD')}</p>
+          {tooltip && <InfoTooltip text={tooltip} />}
+        </div>
       </div>
       <Divider orientation="horizontal" />
       <div className="tf__chart-data-label">
