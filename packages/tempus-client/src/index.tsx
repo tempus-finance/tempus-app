@@ -37,6 +37,11 @@ const theme = createTheme({
         maxWidth: 1000,
       },
     },
+    MuiTooltip: {
+      tooltip: {
+        fontSize: '0.875rem',
+      },
+    },
   },
 });
 

@@ -60,7 +60,12 @@ export const dashboardColumnsDefinitions: ExtraDataColumn[] = [
     name: 'presentValue',
     title: 'Present Value',
     getCellValue: (row: any) => {
-      return new Intl.NumberFormat().format(row.presentValue);
+      return new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+        maximumFractionDigits: 2,
+        minimumFractionDigits: 0,
+      }).format(row.presentValue);
     },
   },
   {
