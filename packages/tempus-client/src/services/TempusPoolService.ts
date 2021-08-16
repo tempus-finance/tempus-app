@@ -1,11 +1,7 @@
-// External libraries
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
-import { ethers } from 'ethers';
-
-// Contract Typings
+import { BigNumber, ethers } from 'ethers';
+import { TypedEvent } from '../abi/commons';
 import { TempusPool } from '../abi/TempusPool';
-
-// Services
 import PriceOracleService from './PriceOracleService';
 
 type TempusPoolsMap = { [key: string]: TempusPool };
@@ -17,6 +13,28 @@ type TempusPoolServiceParameters = {
   priceOracleService: PriceOracleService;
   signerOrProvider: JsonRpcSigner | JsonRpcProvider;
 };
+
+// I need to define event types like this, because TypeChain plugin for Hardhat does not generate them.
+// TODO - Use event types from auto generated contract typings file when TypeChain plugin for Hardhat adds them.
+// See: https://github.com/ethereum-ts/TypeChain/issues/454
+export type DepositedEvent = TypedEvent<
+  [string, string, BigNumber, BigNumber, BigNumber] & {
+    depositor: string;
+    recipient: string;
+    yieldTokenAmount: BigNumber;
+    shareAmounts: BigNumber;
+    rate: BigNumber;
+  }
+>;
+export type RedeemedEvent = TypedEvent<
+  [string, BigNumber, BigNumber, BigNumber, BigNumber] & {
+    redeemer: string;
+    principalAmount: BigNumber;
+    yieldAmount: BigNumber;
+    yieldBearingAmount: BigNumber;
+    rate: BigNumber;
+  }
+>;
 
 class TempusPoolService {
   private readonly DAYS_IN_A_YEAR = 365;
@@ -46,6 +64,45 @@ class TempusPoolService {
 
   getPoolAddresses(): string[] {
     return this.poolAddresses;
+  }
+
+  public getBackingTokenTicker(address: string) {
+    const tempusPool = this.tempusPoolsMap[address];
+    if (tempusPool) {
+      // TODO - When backend team adds backing token ticker attribute on TempusPool contract, use it instead of hardcoded DAI value.
+      return Promise.resolve('DAI');
+    }
+    throw new Error(`Address '${address}' is not valid`);
+  }
+
+  public async getDepositedEvents(address: string): Promise<DepositedEvent[]> {
+    const tempusPoolContract = this.tempusPoolsMap[address];
+
+    if (tempusPoolContract) {
+      try {
+        return await tempusPoolContract.queryFilter(tempusPoolContract.filters.Deposited());
+      } catch (error) {
+        console.error(`TempusPoolService getDepositedEvents(${address})`, error);
+        return Promise.reject(error);
+      }
+    }
+
+    throw new Error(`Address '${address}' is not valid`);
+  }
+
+  public async getRedeemedEvents(address: string) {
+    const tempusPoolContract = this.tempusPoolsMap[address];
+
+    if (tempusPoolContract) {
+      try {
+        return tempusPoolContract.queryFilter(tempusPoolContract.filters.Redeemed());
+      } catch (error) {
+        console.error(`TempusPoolService getRedeemEvents(${address})`, error);
+        return Promise.reject(error);
+      }
+    }
+
+    throw new Error(`Address '${address}' is not valid`);
   }
 
   getCurrentExchangeRate(address: string): Promise<number> {

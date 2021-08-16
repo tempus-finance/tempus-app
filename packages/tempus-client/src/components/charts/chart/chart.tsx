@@ -1,22 +1,12 @@
-// External Libraries
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { DateTime } from 'luxon';
-
-// External UI Components
 import { Divider, CircularProgress } from '@material-ui/core';
-
-// UI Components
 import TLVChart from '../tvl-chart/TVLChart';
 import VolumeChart from '../volume-chart/volume-chart';
 import InfoTooltip from '../../infoTooltip/infoTooltip';
-
-// Utils
 import getPastDaysNumber from '../../../utils/getPastDaysNumber';
-
-// Interfaces
 import ChartDataPoint from '../../../interfaces/ChartDataPoint';
 
-// Style
 import './chart.scss';
 
 export type ChartKind = 'TLV' | 'VOLUME';
@@ -24,24 +14,24 @@ export type ChartKind = 'TLV' | 'VOLUME';
 interface ChartProps {
   kind: ChartKind;
   title: string;
-  // Temporary solution to disable loading indicator on Volume24H chart
-  // TODO - Fetch data from contract for Volume24H chart as well and remove `showLoadingIndicator` prop.
-  showLoadingIndicator: boolean;
   tooltip?: string;
 }
 
 function Chart(props: ChartProps): JSX.Element {
-  const { title, kind, showLoadingIndicator, tooltip } = props;
+  const { title, kind, tooltip } = props;
 
   const [activeDataPoint, setActiveDataPoint] = useState<ChartDataPoint | null>(null);
 
-  const onSetActiveDataPoint = (dataPoint: ChartDataPoint) => {
-    setActiveDataPoint(dataPoint);
-  };
+  const onSetActiveDataPoint = useCallback(
+    (dataPoint: ChartDataPoint) => {
+      setActiveDataPoint(dataPoint);
+    },
+    [setActiveDataPoint],
+  );
 
   return (
     <div className="tf__chart">
-      {showLoadingIndicator && !activeDataPoint && (
+      {!activeDataPoint && (
         <div className="tf__chart-loading-overlay">
           <CircularProgress size={48} />
         </div>
@@ -61,7 +51,7 @@ function Chart(props: ChartProps): JSX.Element {
       <div className="tf__chart-row">
         <div className="tf__chart-graph-container">
           {kind === 'TLV' && <TLVChart onSetActiveDataPoint={onSetActiveDataPoint} />}
-          {kind === 'VOLUME' && <VolumeChart />}
+          {kind === 'VOLUME' && <VolumeChart onSetActiveDataPoint={onSetActiveDataPoint} />}
           <div className="tf__chart-data-axis-label-row">
             {getPastDaysNumber(30, 2).map((value: number) => (
               <p key={value} className="tf__chart-graph-axis-label-text">

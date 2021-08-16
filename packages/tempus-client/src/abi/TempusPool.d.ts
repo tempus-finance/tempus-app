@@ -13,112 +13,105 @@ import {
   ContractTransaction,
   Overrides,
   CallOverrides,
-} from "ethers";
-import { BytesLike } from "@ethersproject/bytes";
-import { Listener, Provider } from "@ethersproject/providers";
-import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
-import { TypedEventFilter, TypedEvent, TypedListener } from "./commons";
+} from 'ethers';
+import { BytesLike } from '@ethersproject/bytes';
+import { Listener, Provider } from '@ethersproject/providers';
+import { FunctionFragment, EventFragment, Result } from '@ethersproject/abi';
+import { TypedEventFilter, TypedEvent, TypedListener } from './commons';
 
 interface TempusPoolInterface extends ethers.utils.Interface {
   functions: {
-    "currentExchangeRate()": FunctionFragment;
-    "deposit(uint256,address)": FunctionFragment;
-    "finalize()": FunctionFragment;
-    "initialExchangeRate()": FunctionFragment;
-    "matured()": FunctionFragment;
-    "maturityExchangeRate()": FunctionFragment;
-    "maturityTime()": FunctionFragment;
-    "priceOracle()": FunctionFragment;
-    "principalShare()": FunctionFragment;
-    "redeem(uint256,uint256)": FunctionFragment;
-    "startTime()": FunctionFragment;
-    "version()": FunctionFragment;
-    "yieldBearingToken()": FunctionFragment;
-    "yieldShare()": FunctionFragment;
+    'currentExchangeRate()': FunctionFragment;
+    'deposit(uint256,address)': FunctionFragment;
+    'feesConfig()': FunctionFragment;
+    'finalize()': FunctionFragment;
+    'initialExchangeRate()': FunctionFragment;
+    'matured()': FunctionFragment;
+    'maturityExchangeRate()': FunctionFragment;
+    'maturityTime()': FunctionFragment;
+    'owner()': FunctionFragment;
+    'priceOracle()': FunctionFragment;
+    'pricePerYieldShare()': FunctionFragment;
+    'principalShare()': FunctionFragment;
+    'redeem(uint256,uint256)': FunctionFragment;
+    'renounceOwnership()': FunctionFragment;
+    'setFeesConfig(tuple)': FunctionFragment;
+    'startTime()': FunctionFragment;
+    'totalFees()': FunctionFragment;
+    'transferFees(address,uint256)': FunctionFragment;
+    'transferOwnership(address)': FunctionFragment;
+    'underlyingProtocol()': FunctionFragment;
+    'version()': FunctionFragment;
+    'yieldBearingToken()': FunctionFragment;
+    'yieldShare()': FunctionFragment;
   };
 
+  encodeFunctionData(functionFragment: 'currentExchangeRate', values?: undefined): string;
+  encodeFunctionData(functionFragment: 'deposit', values: [BigNumberish, string]): string;
+  encodeFunctionData(functionFragment: 'feesConfig', values?: undefined): string;
+  encodeFunctionData(functionFragment: 'finalize', values?: undefined): string;
+  encodeFunctionData(functionFragment: 'initialExchangeRate', values?: undefined): string;
+  encodeFunctionData(functionFragment: 'matured', values?: undefined): string;
+  encodeFunctionData(functionFragment: 'maturityExchangeRate', values?: undefined): string;
+  encodeFunctionData(functionFragment: 'maturityTime', values?: undefined): string;
+  encodeFunctionData(functionFragment: 'owner', values?: undefined): string;
+  encodeFunctionData(functionFragment: 'priceOracle', values?: undefined): string;
+  encodeFunctionData(functionFragment: 'pricePerYieldShare', values?: undefined): string;
+  encodeFunctionData(functionFragment: 'principalShare', values?: undefined): string;
+  encodeFunctionData(functionFragment: 'redeem', values: [BigNumberish, BigNumberish]): string;
+  encodeFunctionData(functionFragment: 'renounceOwnership', values?: undefined): string;
   encodeFunctionData(
-    functionFragment: "currentExchangeRate",
-    values?: undefined
+    functionFragment: 'setFeesConfig',
+    values: [
+      {
+        depositPercent: BigNumberish;
+        earlyRedeemPercent: BigNumberish;
+        matureRedeemPercent: BigNumberish;
+      },
+    ],
   ): string;
-  encodeFunctionData(
-    functionFragment: "deposit",
-    values: [BigNumberish, string]
-  ): string;
-  encodeFunctionData(functionFragment: "finalize", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "initialExchangeRate",
-    values?: undefined
-  ): string;
-  encodeFunctionData(functionFragment: "matured", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "maturityExchangeRate",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "maturityTime",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "priceOracle",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "principalShare",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "redeem",
-    values: [BigNumberish, BigNumberish]
-  ): string;
-  encodeFunctionData(functionFragment: "startTime", values?: undefined): string;
-  encodeFunctionData(functionFragment: "version", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "yieldBearingToken",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "yieldShare",
-    values?: undefined
-  ): string;
+  encodeFunctionData(functionFragment: 'startTime', values?: undefined): string;
+  encodeFunctionData(functionFragment: 'totalFees', values?: undefined): string;
+  encodeFunctionData(functionFragment: 'transferFees', values: [string, BigNumberish]): string;
+  encodeFunctionData(functionFragment: 'transferOwnership', values: [string]): string;
+  encodeFunctionData(functionFragment: 'underlyingProtocol', values?: undefined): string;
+  encodeFunctionData(functionFragment: 'version', values?: undefined): string;
+  encodeFunctionData(functionFragment: 'yieldBearingToken', values?: undefined): string;
+  encodeFunctionData(functionFragment: 'yieldShare', values?: undefined): string;
 
-  decodeFunctionResult(
-    functionFragment: "currentExchangeRate",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "deposit", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "finalize", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "initialExchangeRate",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "matured", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "maturityExchangeRate",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "maturityTime",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "priceOracle",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "principalShare",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "redeem", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "startTime", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "version", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "yieldBearingToken",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "yieldShare", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'currentExchangeRate', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'deposit', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'feesConfig', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'finalize', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'initialExchangeRate', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'matured', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'maturityExchangeRate', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'maturityTime', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'owner', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'priceOracle', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'pricePerYieldShare', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'principalShare', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'redeem', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'renounceOwnership', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'setFeesConfig', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'startTime', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'totalFees', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'transferFees', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'transferOwnership', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'underlyingProtocol', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'version', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'yieldBearingToken', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'yieldShare', data: BytesLike): Result;
 
-  events: {};
+  events: {
+    'Deposited(address,address,uint256,uint256,uint256)': EventFragment;
+    'OwnershipTransferred(address,address)': EventFragment;
+    'Redeemed(address,uint256,uint256,uint256,uint256)': EventFragment;
+  };
+
+  getEvent(nameOrSignatureOrTopic: 'Deposited'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'OwnershipTransferred'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'Redeemed'): EventFragment;
 }
 
 export class TempusPool extends BaseContract {
@@ -127,26 +120,26 @@ export class TempusPool extends BaseContract {
   deployed(): Promise<this>;
 
   listeners<EventArgsArray extends Array<any>, EventArgsObject>(
-    eventFilter?: TypedEventFilter<EventArgsArray, EventArgsObject>
+    eventFilter?: TypedEventFilter<EventArgsArray, EventArgsObject>,
   ): Array<TypedListener<EventArgsArray, EventArgsObject>>;
   off<EventArgsArray extends Array<any>, EventArgsObject>(
     eventFilter: TypedEventFilter<EventArgsArray, EventArgsObject>,
-    listener: TypedListener<EventArgsArray, EventArgsObject>
+    listener: TypedListener<EventArgsArray, EventArgsObject>,
   ): this;
   on<EventArgsArray extends Array<any>, EventArgsObject>(
     eventFilter: TypedEventFilter<EventArgsArray, EventArgsObject>,
-    listener: TypedListener<EventArgsArray, EventArgsObject>
+    listener: TypedListener<EventArgsArray, EventArgsObject>,
   ): this;
   once<EventArgsArray extends Array<any>, EventArgsObject>(
     eventFilter: TypedEventFilter<EventArgsArray, EventArgsObject>,
-    listener: TypedListener<EventArgsArray, EventArgsObject>
+    listener: TypedListener<EventArgsArray, EventArgsObject>,
   ): this;
   removeListener<EventArgsArray extends Array<any>, EventArgsObject>(
     eventFilter: TypedEventFilter<EventArgsArray, EventArgsObject>,
-    listener: TypedListener<EventArgsArray, EventArgsObject>
+    listener: TypedListener<EventArgsArray, EventArgsObject>,
   ): this;
   removeAllListeners<EventArgsArray extends Array<any>, EventArgsObject>(
-    eventFilter: TypedEventFilter<EventArgsArray, EventArgsObject>
+    eventFilter: TypedEventFilter<EventArgsArray, EventArgsObject>,
   ): this;
 
   listeners(eventName?: string): Array<Listener>;
@@ -159,7 +152,7 @@ export class TempusPool extends BaseContract {
   queryFilter<EventArgsArray extends Array<any>, EventArgsObject>(
     event: TypedEventFilter<EventArgsArray, EventArgsObject>,
     fromBlockOrBlockhash?: string | number | undefined,
-    toBlock?: string | number | undefined
+    toBlock?: string | number | undefined,
   ): Promise<Array<TypedEvent<EventArgsArray & EventArgsObject>>>;
 
   interface: TempusPoolInterface;
@@ -170,12 +163,18 @@ export class TempusPool extends BaseContract {
     deposit(
       yieldTokenAmount: BigNumberish,
       recipient: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: string | Promise<string> },
     ): Promise<ContractTransaction>;
 
-    finalize(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
+    feesConfig(overrides?: CallOverrides): Promise<
+      [BigNumber, BigNumber, BigNumber] & {
+        depositPercent: BigNumber;
+        earlyRedeemPercent: BigNumber;
+        matureRedeemPercent: BigNumber;
+      }
+    >;
+
+    finalize(overrides?: Overrides & { from?: string | Promise<string> }): Promise<ContractTransaction>;
 
     initialExchangeRate(overrides?: CallOverrides): Promise<[BigNumber]>;
 
@@ -185,17 +184,47 @@ export class TempusPool extends BaseContract {
 
     maturityTime(overrides?: CallOverrides): Promise<[BigNumber]>;
 
+    owner(overrides?: CallOverrides): Promise<[string]>;
+
     priceOracle(overrides?: CallOverrides): Promise<[string]>;
+
+    pricePerYieldShare(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     principalShare(overrides?: CallOverrides): Promise<[string]>;
 
     redeem(
       principalAmount: BigNumberish,
       yieldAmount: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: string | Promise<string> },
+    ): Promise<ContractTransaction>;
+
+    renounceOwnership(overrides?: Overrides & { from?: string | Promise<string> }): Promise<ContractTransaction>;
+
+    setFeesConfig(
+      newFeesConfig: {
+        depositPercent: BigNumberish;
+        earlyRedeemPercent: BigNumberish;
+        matureRedeemPercent: BigNumberish;
+      },
+      overrides?: Overrides & { from?: string | Promise<string> },
     ): Promise<ContractTransaction>;
 
     startTime(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    totalFees(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    transferFees(
+      recipient: string,
+      amount: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> },
+    ): Promise<ContractTransaction>;
+
+    transferOwnership(
+      newOwner: string,
+      overrides?: Overrides & { from?: string | Promise<string> },
+    ): Promise<ContractTransaction>;
+
+    underlyingProtocol(overrides?: CallOverrides): Promise<[string]>;
 
     version(overrides?: CallOverrides): Promise<[BigNumber]>;
 
@@ -209,12 +238,18 @@ export class TempusPool extends BaseContract {
   deposit(
     yieldTokenAmount: BigNumberish,
     recipient: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    overrides?: Overrides & { from?: string | Promise<string> },
   ): Promise<ContractTransaction>;
 
-  finalize(
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
+  feesConfig(overrides?: CallOverrides): Promise<
+    [BigNumber, BigNumber, BigNumber] & {
+      depositPercent: BigNumber;
+      earlyRedeemPercent: BigNumber;
+      matureRedeemPercent: BigNumber;
+    }
+  >;
+
+  finalize(overrides?: Overrides & { from?: string | Promise<string> }): Promise<ContractTransaction>;
 
   initialExchangeRate(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -224,17 +259,47 @@ export class TempusPool extends BaseContract {
 
   maturityTime(overrides?: CallOverrides): Promise<BigNumber>;
 
+  owner(overrides?: CallOverrides): Promise<string>;
+
   priceOracle(overrides?: CallOverrides): Promise<string>;
+
+  pricePerYieldShare(overrides?: CallOverrides): Promise<BigNumber>;
 
   principalShare(overrides?: CallOverrides): Promise<string>;
 
   redeem(
     principalAmount: BigNumberish,
     yieldAmount: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    overrides?: Overrides & { from?: string | Promise<string> },
+  ): Promise<ContractTransaction>;
+
+  renounceOwnership(overrides?: Overrides & { from?: string | Promise<string> }): Promise<ContractTransaction>;
+
+  setFeesConfig(
+    newFeesConfig: {
+      depositPercent: BigNumberish;
+      earlyRedeemPercent: BigNumberish;
+      matureRedeemPercent: BigNumberish;
+    },
+    overrides?: Overrides & { from?: string | Promise<string> },
   ): Promise<ContractTransaction>;
 
   startTime(overrides?: CallOverrides): Promise<BigNumber>;
+
+  totalFees(overrides?: CallOverrides): Promise<BigNumber>;
+
+  transferFees(
+    recipient: string,
+    amount: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> },
+  ): Promise<ContractTransaction>;
+
+  transferOwnership(
+    newOwner: string,
+    overrides?: Overrides & { from?: string | Promise<string> },
+  ): Promise<ContractTransaction>;
+
+  underlyingProtocol(overrides?: CallOverrides): Promise<string>;
 
   version(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -245,11 +310,15 @@ export class TempusPool extends BaseContract {
   callStatic: {
     currentExchangeRate(overrides?: CallOverrides): Promise<BigNumber>;
 
-    deposit(
-      yieldTokenAmount: BigNumberish,
-      recipient: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    deposit(yieldTokenAmount: BigNumberish, recipient: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+    feesConfig(overrides?: CallOverrides): Promise<
+      [BigNumber, BigNumber, BigNumber] & {
+        depositPercent: BigNumber;
+        earlyRedeemPercent: BigNumber;
+        matureRedeemPercent: BigNumber;
+      }
+    >;
 
     finalize(overrides?: CallOverrides): Promise<void>;
 
@@ -261,17 +330,36 @@ export class TempusPool extends BaseContract {
 
     maturityTime(overrides?: CallOverrides): Promise<BigNumber>;
 
+    owner(overrides?: CallOverrides): Promise<string>;
+
     priceOracle(overrides?: CallOverrides): Promise<string>;
+
+    pricePerYieldShare(overrides?: CallOverrides): Promise<BigNumber>;
 
     principalShare(overrides?: CallOverrides): Promise<string>;
 
-    redeem(
-      principalAmount: BigNumberish,
-      yieldAmount: BigNumberish,
-      overrides?: CallOverrides
+    redeem(principalAmount: BigNumberish, yieldAmount: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
+
+    renounceOwnership(overrides?: CallOverrides): Promise<void>;
+
+    setFeesConfig(
+      newFeesConfig: {
+        depositPercent: BigNumberish;
+        earlyRedeemPercent: BigNumberish;
+        matureRedeemPercent: BigNumberish;
+      },
+      overrides?: CallOverrides,
     ): Promise<void>;
 
     startTime(overrides?: CallOverrides): Promise<BigNumber>;
+
+    totalFees(overrides?: CallOverrides): Promise<BigNumber>;
+
+    transferFees(recipient: string, amount: BigNumberish, overrides?: CallOverrides): Promise<void>;
+
+    transferOwnership(newOwner: string, overrides?: CallOverrides): Promise<void>;
+
+    underlyingProtocol(overrides?: CallOverrides): Promise<string>;
 
     version(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -280,7 +368,46 @@ export class TempusPool extends BaseContract {
     yieldShare(overrides?: CallOverrides): Promise<string>;
   };
 
-  filters: {};
+  filters: {
+    Deposited(
+      depositor?: null,
+      recipient?: null,
+      yieldTokenAmount?: null,
+      shareAmounts?: null,
+      rate?: null,
+    ): TypedEventFilter<
+      [string, string, BigNumber, BigNumber, BigNumber],
+      {
+        depositor: string;
+        recipient: string;
+        yieldTokenAmount: BigNumber;
+        shareAmounts: BigNumber;
+        rate: BigNumber;
+      }
+    >;
+
+    OwnershipTransferred(
+      previousOwner?: string | null,
+      newOwner?: string | null,
+    ): TypedEventFilter<[string, string], { previousOwner: string; newOwner: string }>;
+
+    Redeemed(
+      redeemer?: null,
+      principalAmount?: null,
+      yieldAmount?: null,
+      yieldBearingAmount?: null,
+      rate?: null,
+    ): TypedEventFilter<
+      [string, BigNumber, BigNumber, BigNumber, BigNumber],
+      {
+        redeemer: string;
+        principalAmount: BigNumber;
+        yieldAmount: BigNumber;
+        yieldBearingAmount: BigNumber;
+        rate: BigNumber;
+      }
+    >;
+  };
 
   estimateGas: {
     currentExchangeRate(overrides?: CallOverrides): Promise<BigNumber>;
@@ -288,12 +415,12 @@ export class TempusPool extends BaseContract {
     deposit(
       yieldTokenAmount: BigNumberish,
       recipient: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: string | Promise<string> },
     ): Promise<BigNumber>;
 
-    finalize(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
+    feesConfig(overrides?: CallOverrides): Promise<BigNumber>;
+
+    finalize(overrides?: Overrides & { from?: string | Promise<string> }): Promise<BigNumber>;
 
     initialExchangeRate(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -303,17 +430,47 @@ export class TempusPool extends BaseContract {
 
     maturityTime(overrides?: CallOverrides): Promise<BigNumber>;
 
+    owner(overrides?: CallOverrides): Promise<BigNumber>;
+
     priceOracle(overrides?: CallOverrides): Promise<BigNumber>;
+
+    pricePerYieldShare(overrides?: CallOverrides): Promise<BigNumber>;
 
     principalShare(overrides?: CallOverrides): Promise<BigNumber>;
 
     redeem(
       principalAmount: BigNumberish,
       yieldAmount: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: string | Promise<string> },
+    ): Promise<BigNumber>;
+
+    renounceOwnership(overrides?: Overrides & { from?: string | Promise<string> }): Promise<BigNumber>;
+
+    setFeesConfig(
+      newFeesConfig: {
+        depositPercent: BigNumberish;
+        earlyRedeemPercent: BigNumberish;
+        matureRedeemPercent: BigNumberish;
+      },
+      overrides?: Overrides & { from?: string | Promise<string> },
     ): Promise<BigNumber>;
 
     startTime(overrides?: CallOverrides): Promise<BigNumber>;
+
+    totalFees(overrides?: CallOverrides): Promise<BigNumber>;
+
+    transferFees(
+      recipient: string,
+      amount: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> },
+    ): Promise<BigNumber>;
+
+    transferOwnership(
+      newOwner: string,
+      overrides?: Overrides & { from?: string | Promise<string> },
+    ): Promise<BigNumber>;
+
+    underlyingProtocol(overrides?: CallOverrides): Promise<BigNumber>;
 
     version(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -323,43 +480,67 @@ export class TempusPool extends BaseContract {
   };
 
   populateTransaction: {
-    currentExchangeRate(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
+    currentExchangeRate(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     deposit(
       yieldTokenAmount: BigNumberish,
       recipient: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: string | Promise<string> },
     ): Promise<PopulatedTransaction>;
 
-    finalize(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
+    feesConfig(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    initialExchangeRate(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
+    finalize(overrides?: Overrides & { from?: string | Promise<string> }): Promise<PopulatedTransaction>;
+
+    initialExchangeRate(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     matured(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    maturityExchangeRate(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
+    maturityExchangeRate(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     maturityTime(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     priceOracle(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    pricePerYieldShare(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     principalShare(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     redeem(
       principalAmount: BigNumberish,
       yieldAmount: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: string | Promise<string> },
+    ): Promise<PopulatedTransaction>;
+
+    renounceOwnership(overrides?: Overrides & { from?: string | Promise<string> }): Promise<PopulatedTransaction>;
+
+    setFeesConfig(
+      newFeesConfig: {
+        depositPercent: BigNumberish;
+        earlyRedeemPercent: BigNumberish;
+        matureRedeemPercent: BigNumberish;
+      },
+      overrides?: Overrides & { from?: string | Promise<string> },
     ): Promise<PopulatedTransaction>;
 
     startTime(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    totalFees(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    transferFees(
+      recipient: string,
+      amount: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> },
+    ): Promise<PopulatedTransaction>;
+
+    transferOwnership(
+      newOwner: string,
+      overrides?: Overrides & { from?: string | Promise<string> },
+    ): Promise<PopulatedTransaction>;
+
+    underlyingProtocol(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     version(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 

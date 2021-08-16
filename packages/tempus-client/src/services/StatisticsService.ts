@@ -51,6 +51,25 @@ class StatisticsService {
 
     return totalValueLockedUSD;
   }
+
+  /**
+   * Returns conversion rate of specified token to USD
+   */
+  public async getRate(tokenTicker: string, overrides?: CallOverrides): Promise<number> {
+    if (!this.statistics) {
+      console.error(
+        'StatisticsService totalValueLockedUSD Attempted to use statistics contract before initializing it...',
+      );
+
+      return Promise.reject(0);
+    }
+
+    const ensNameHash = ethers.utils.namehash(`${tokenTicker.toLowerCase()}-usd.data.eth`);
+
+    const [rate, rateDenominator] = await this.statistics.getRate(ensNameHash, overrides);
+
+    return Number(ethers.utils.formatEther(rate)) / Number(ethers.utils.formatEther(rateDenominator));
+  }
 }
 
 export default StatisticsService;
