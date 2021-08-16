@@ -6,6 +6,7 @@ import {
   SummaryState,
   TreeDataState,
   SortingState,
+  Sorting,
 } from '@devexpress/dx-react-grid';
 import { Grid, TableHeaderRow, VirtualTable, TableTreeColumn } from '@devexpress/dx-react-grid-material-ui';
 import { ColumnNames, DashboardRow } from '../../interfaces';
@@ -51,7 +52,11 @@ const Dashboard: FC<DashboardProps> = ({ rows, onRowActionClick }): JSX.Element 
 
   const [integratedSortingColumnExtensions] = useState([
     { columnName: ColumnNames.MATURITY, compare: compareMaturity },
+    { columnName: ColumnNames.FIXED_APY, compare: compareAPY },
+    { columnName: ColumnNames.VARIABLE_APY, compare: compareAPY },
   ]);
+
+  const [currentSorting, setCurrentSorting] = useState<Sorting[]>([]);
 
   const onExpandedRowIdsChange = useCallback(
     (expandedRowIds: Array<number | string>) => {
@@ -60,11 +65,35 @@ const Dashboard: FC<DashboardProps> = ({ rows, onRowActionClick }): JSX.Element 
     [setExpandedRows],
   );
 
+  /**
+   * When user clicks on an unsorted column, we want to apply descending sort first, and on the second click ascending sort.
+   */
+  const onSortingChange = useCallback(
+    (sorting: Sorting[]) => {
+      const isColumnSortingApplied = (columnName: string, sorting: Sorting[]) => {
+        return sorting.findIndex(sortingItem => sortingItem.columnName === columnName) > -1;
+      };
+
+      sorting.forEach(sortedColumn => {
+        if (!isColumnSortingApplied(sortedColumn.columnName, currentSorting)) {
+          sorting[0].direction = 'desc';
+        }
+      });
+
+      setCurrentSorting(sorting);
+    },
+    [setCurrentSorting, currentSorting],
+  );
+
   return (
     <div className="tf__dashboard">
       <div className="tf__dashboard__grid">
         <Grid rows={rows} columns={dashboardColumnsDefinitions}>
-          <SortingState columnExtensions={sortingStateColumnExtensions} />
+          <SortingState
+            sorting={currentSorting}
+            onSortingChange={onSortingChange}
+            columnExtensions={sortingStateColumnExtensions}
+          />
           <TreeDataState defaultExpandedRowIds={[]} onExpandedRowIdsChange={onExpandedRowIdsChange} />
           <SummaryState totalItems={totalSummaryItems} treeItems={treeSummaryItems} />
           <MaturityProvider for={[ColumnNames.MATURITY]} />
@@ -98,6 +127,7 @@ const Dashboard: FC<DashboardProps> = ({ rows, onRowActionClick }): JSX.Element 
 export default Dashboard;
 
 const compareMaturity = (a: number[], b: number[]) => a[0] - b[0];
+const compareAPY = (a: number[], b: number[]) => a[1] - b[1];
 
 const totalSummaryItems = [{ columnName: ColumnNames.TOKEN, type: 'count' }];
 
