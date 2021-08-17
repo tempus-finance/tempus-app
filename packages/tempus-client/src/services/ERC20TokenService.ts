@@ -20,7 +20,7 @@ class ERC20TokenService {
 
   public async symbol(): Promise<Ticker> {
     if (!this.contract) {
-      console.error('PriceOracleService - symbol() - Attempted to use PriceOracleService before initializing it!');
+      console.error('ERC20TokenService - symbol() - Attempted to use ERC20TokenService before initializing it!');
       return Promise.reject();
     }
 

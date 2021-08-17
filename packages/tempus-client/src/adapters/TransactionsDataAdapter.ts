@@ -1,11 +1,12 @@
-import { ethers } from 'ethers';
 import { DateTime } from 'luxon';
 import { formatDistanceToNow } from 'date-fns';
-import { getDefaultProvider, JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
+import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
 import getTempusPoolService from '../services/getTempusPoolService';
 import TempusPoolService, { DepositedEvent, RedeemedEvent } from '../services/TempusPoolService';
 import getStatisticsService from '../services/getStatisticsService';
 import StatisticsService from '../services/StatisticsService';
+import getDefaultProvider from '../services/getDefaultProvider';
+import { getEventValue, isDepositEvent, isRedeemEvent } from '../services/EventUtils';
 import { Transaction, TransactionAction } from '../interfaces';
 import getConfig from '../utils/get-config';
 
@@ -14,8 +15,6 @@ type TransactionsDataAdapterParameters = {
 };
 
 class TransactionsDataAdapter {
-  private events: (DepositedEvent | RedeemedEvent)[] = [];
-
   private tempusPoolService: TempusPoolService | null = null;
   private statisticsService: StatisticsService | null = null;
 
@@ -25,14 +24,13 @@ class TransactionsDataAdapter {
   }
 
   public async generateData(): Promise<Transaction[]> {
-    await this.fetchEvents();
-
-    const transactions = await this.fetchTransactionData();
+    const events = await this.fetchEvents();
+    const transactions = await this.fetchTransactionData(events);
 
     return transactions;
   }
 
-  private async fetchEvents() {
+  private async fetchEvents(): Promise<(DepositedEvent | RedeemedEvent)[]> {
     const fetchDepositEventsPromises: Promise<DepositedEvent[]>[] = [];
     const fetchRedeemEventsPromises: Promise<RedeemedEvent[]>[] = [];
     getConfig().tempusPools.forEach(tempusPool => {
@@ -47,12 +45,12 @@ class TransactionsDataAdapter {
     const depositEvents = (await Promise.all(fetchDepositEventsPromises)).flat();
     const redeemEvents = (await Promise.all(fetchRedeemEventsPromises)).flat();
 
-    this.events = [...depositEvents, ...redeemEvents];
+    return [...depositEvents, ...redeemEvents];
   }
 
-  private async fetchTransactionData(): Promise<Transaction[]> {
+  private async fetchTransactionData(events: (DepositedEvent | RedeemedEvent)[]): Promise<Transaction[]> {
     const eventDataFetchPromises: Promise<Transaction>[] = [];
-    this.events.forEach(event => {
+    events.forEach(event => {
       eventDataFetchPromises.push(this.fetchEventData(event));
     });
     return Promise.all(eventDataFetchPromises);
@@ -64,10 +62,13 @@ class TransactionsDataAdapter {
       return Promise.reject();
     }
 
-    const eventValue = await this.getEventUSDValue(event);
-    const eventDate = await this.getEventTime(event);
-    const tokenTicker = await this.tempusPoolService.getYieldBearingTokenTicker(event.address);
-    const poolMaturityDate = await this.tempusPoolService.getMaturityTime(event.address);
+    const [eventValue, eventDate, tokenTicker, poolMaturityDate] = await Promise.all([
+      await this.getEventUSDValue(event),
+      await this.getEventTime(event),
+      await this.tempusPoolService.getYieldBearingTokenTicker(event.address),
+      await this.tempusPoolService.getMaturityTime(event.address),
+    ]);
+
     const formattedDate = DateTime.fromJSDate(poolMaturityDate).toFormat('D');
 
     const transaction: Transaction = {
@@ -83,10 +84,10 @@ class TransactionsDataAdapter {
   }
 
   private getEventAccount(event: DepositedEvent | RedeemedEvent): string {
-    if (this.isDepositEvent(event)) {
+    if (isDepositEvent(event)) {
       return event.args.depositor;
     }
-    if (this.isRedeemEvent(event)) {
+    if (isRedeemEvent(event)) {
       return event.args.redeemer;
     }
 
@@ -94,10 +95,10 @@ class TransactionsDataAdapter {
   }
 
   private getEventAction(event: DepositedEvent | RedeemedEvent): TransactionAction {
-    if (this.isDepositEvent(event)) {
+    if (isDepositEvent(event)) {
       return 'Deposit';
     }
-    if (this.isRedeemEvent(event)) {
+    if (isRedeemEvent(event)) {
       // TODO - Check if redeem event has 'early redemption' flag set, if yes, return 'Early Redemption'.
       // Waiting for backend team to add early Redemption flag.
       return 'Redemption';
@@ -125,37 +126,7 @@ class TransactionsDataAdapter {
       blockTag: event.blockNumber,
     });
 
-    return this.getEventTokenValue(event) * poolBackingTokenRate;
-  }
-
-  /**
-   * Returns event value in terms of the event Tempus Pool backing token count.
-   */
-  private getEventTokenValue(event: DepositedEvent | RedeemedEvent): number {
-    const exchangeRate = Number(ethers.utils.formatEther(event.args.rate));
-
-    if (this.isDepositEvent(event)) {
-      return Number(ethers.utils.formatEther(event.args.yieldTokenAmount)) * exchangeRate;
-    }
-    if (this.isRedeemEvent(event)) {
-      return Number(ethers.utils.formatEther(event.args.yieldBearingAmount)) * exchangeRate;
-    } else {
-      throw new Error('Failed to get event value.');
-    }
-  }
-
-  /**
-   * Type guard - Checks if provided event is of type DepositedEvent
-   */
-  private isDepositEvent(event: DepositedEvent | RedeemedEvent): event is DepositedEvent {
-    return 'yieldTokenAmount' in event.args;
-  }
-
-  /**
-   * Type guard - Checks if provided event is of type RedeemedEvent
-   */
-  private isRedeemEvent(event: DepositedEvent | RedeemedEvent): event is RedeemedEvent {
-    return 'yieldBearingAmount' in event.args;
+    return getEventValue(event) * poolBackingTokenRate;
   }
 }
 export default TransactionsDataAdapter;
