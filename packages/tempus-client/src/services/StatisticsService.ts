@@ -66,7 +66,14 @@ class StatisticsService {
 
     const ensNameHash = ethers.utils.namehash(`${tokenTicker.toLowerCase()}-usd.data.eth`);
 
-    const [rate, rateDenominator] = await this.statistics.getRate(ensNameHash, overrides);
+    let rate: BigNumber;
+    let rateDenominator: BigNumber;
+    try {
+      [rate, rateDenominator] = await this.statistics.getRate(ensNameHash, overrides);
+    } catch (error) {
+      console.error(`Failed to get exchange rate for ${tokenTicker}!`, error);
+      return Promise.reject(error);
+    }
 
     return Number(ethers.utils.formatEther(rate)) / Number(ethers.utils.formatEther(rateDenominator));
   }

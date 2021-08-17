@@ -34,7 +34,12 @@ class VolumeChartDataAdapter {
   public async generateChartData(): Promise<ChartDataPoint[]> {
     const chartDataPoints: ChartDataPoint[] = [];
 
-    await this.fetchData();
+    try {
+      await this.fetchData();
+    } catch (error) {
+      console.error('Failed to fetch data for volume chart.', error);
+      return Promise.reject(error);
+    }
 
     // Generate chart data for last NUMBER_OF_PAST_DAYS
     for (let i = this.NUMBER_OF_PAST_DAYS; i > 0; i--) {
@@ -78,12 +83,30 @@ class VolumeChartDataAdapter {
       }
     });
 
-    // DODO - Include swap events as well when they are added on the backend side.
-    const depositEvents = (await Promise.all(depositEventFetchPromises)).flat();
-    const redeemEvents = (await Promise.all(redeemEventFetchPromises)).flat();
+    let depositEvents: DepositedEvent[];
+    let redeemEvents: RedeemedEvent[];
+    try {
+      // DODO - Include swap events as well when they are added on the backend side.
+      depositEvents = (await Promise.all(depositEventFetchPromises)).flat();
+      redeemEvents = (await Promise.all(redeemEventFetchPromises)).flat();
+    } catch (error) {
+      console.error('Failed to fetch deposit and redeem events for volume chart', error);
+      return Promise.reject(error);
+    }
 
-    await this.fetchEventBlocks([...depositEvents, ...redeemEvents]);
-    await this.fetchChartData([...depositEvents, ...redeemEvents]);
+    try {
+      await this.fetchEventBlocks([...depositEvents, ...redeemEvents]);
+    } catch (error) {
+      console.error('Failed to fetch block data for deposit and redeem events', error);
+      return Promise.reject(error);
+    }
+
+    try {
+      await this.fetchChartData([...depositEvents, ...redeemEvents]);
+    } catch (error) {
+      console.error('Failed to fetch chart data for deposit and redeem events', error);
+      return Promise.reject(error);
+    }
   }
 
   /**
@@ -96,7 +119,12 @@ class VolumeChartDataAdapter {
       fetchPromises.push(this.getEventChartData(event));
     });
 
-    this.chartData = await Promise.all(fetchPromises);
+    try {
+      this.chartData = await Promise.all(fetchPromises);
+    } catch (error) {
+      console.log('Failed to fetch events chart data', error);
+      return Promise.reject(error);
+    }
   }
 
   /**
@@ -109,7 +137,12 @@ class VolumeChartDataAdapter {
       fetchBlockPromises.push(event.getBlock());
     });
 
-    this.eventBlockData = await Promise.all(fetchBlockPromises);
+    try {
+      this.eventBlockData = await Promise.all(fetchBlockPromises);
+    } catch (error) {
+      console.error('Failed to fetch block data for events', error);
+      return Promise.reject(error);
+    }
   }
 
   /**
@@ -138,10 +171,23 @@ class VolumeChartDataAdapter {
 
     const eventBlock = this.getEventBlock(event);
 
-    const eventPoolBackingToken = await this.tempusPoolService.getBackingTokenTicker(event.address);
-    const poolBackingTokenRate = await this.statisticsService.getRate(eventPoolBackingToken, {
-      blockTag: eventBlock.number,
-    });
+    let eventPoolBackingToken: string;
+    try {
+      eventPoolBackingToken = await this.tempusPoolService.getBackingTokenTicker(event.address);
+    } catch (error) {
+      console.error('Failed to get tempus pool backing token ticker!', error);
+      return Promise.reject(error);
+    }
+
+    let poolBackingTokenRate: number;
+    try {
+      poolBackingTokenRate = await this.statisticsService.getRate(eventPoolBackingToken, {
+        blockTag: eventBlock.number,
+      });
+    } catch (error) {
+      console.error('Failed to get tempus pool exchange rate to USD!');
+      return Promise.reject(error);
+    }
 
     return {
       date: new Date(this.getEventBlock(event).timestamp * 1000),
