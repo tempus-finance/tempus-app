@@ -174,7 +174,7 @@ describe('TempusPoolService', () => {
     test('it returns a pool backing token ticker', async () => {
       const ticker = await instance.getBackingTokenTicker(mockAddress);
 
-      expect(ticker).toBe('DAI');
+      expect(ticker).toBe('dai');
     });
 
     test('it returns a a list of deposited events', async () => {
