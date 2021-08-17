@@ -66,7 +66,7 @@ class TempusPoolService {
     return this.poolAddresses;
   }
 
-  public getBackingTokenTicker(address: string) {
+  public getBackingTokenTicker(address: string): Promise<string> {
     const tempusPool = this.tempusPoolsMap[address];
     if (tempusPool) {
       // TODO - When backend team adds backing token ticker attribute on TempusPool contract, use it instead of hardcoded DAI value.
@@ -90,7 +90,7 @@ class TempusPoolService {
     throw new Error(`Address '${address}' is not valid`);
   }
 
-  public async getRedeemedEvents(address: string) {
+  public async getRedeemedEvents(address: string): Promise<RedeemedEvent[]> {
     const tempusPoolContract = this.tempusPoolsMap[address];
 
     if (tempusPoolContract) {

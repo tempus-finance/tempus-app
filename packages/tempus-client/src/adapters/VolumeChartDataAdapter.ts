@@ -112,7 +112,7 @@ class VolumeChartDataAdapter {
   /**
    * Fetches chart data for all passed events.
    */
-  private async fetchChartData(events: Array<DepositedEvent | RedeemedEvent>) {
+  private async fetchChartData(events: Array<DepositedEvent | RedeemedEvent>): Promise<void> {
     const fetchPromises: Promise<EventChartData>[] = [];
 
     events.forEach(event => {
@@ -130,7 +130,7 @@ class VolumeChartDataAdapter {
   /**
    * Fetches block data for all provided events.
    */
-  private async fetchEventBlocks(events: Array<DepositedEvent | RedeemedEvent>) {
+  private async fetchEventBlocks(events: Array<DepositedEvent | RedeemedEvent>): Promise<void> {
     const fetchBlockPromises: Promise<Block>[] = [];
 
     events.forEach(event => {
