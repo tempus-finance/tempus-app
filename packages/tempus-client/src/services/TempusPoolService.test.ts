@@ -22,6 +22,7 @@ describe('TempusPoolService', () => {
   const mockYieldBearingToken = jest.fn();
   const mockCurrentRate = jest.fn();
   const getPriceOracleServiceMock = jest.fn();
+  const mockQueryFilter = jest.fn();
 
   const mockProvider = new JsonRpcProvider();
 
@@ -35,8 +36,13 @@ describe('TempusPoolService', () => {
         startTime: mockStartTime,
         priceOracle: mockPriceOracle,
         yieldBearingToken: mockYieldBearingToken,
+        queryFilter: mockQueryFilter,
         provider: {
           getBlock: mockGetBlock,
+        },
+        filters: {
+          Deposited: jest.fn(),
+          Redeemed: jest.fn(),
         },
       };
     });
@@ -163,6 +169,42 @@ describe('TempusPoolService', () => {
       instance.getVariableAPY(mockAddress).then(result => {
         expect(result).toEqual(31536000);
       });
+    });
+
+    test('it returns a pool backing token ticker', async () => {
+      const ticker = await instance.getBackingTokenTicker(mockAddress);
+
+      expect(ticker).toBe('DAI');
+    });
+
+    test('it returns a a list of deposited events', async () => {
+      mockQueryFilter.mockImplementation(() => {
+        return Promise.resolve([
+          {
+            event: 'test-deposit-event',
+          },
+        ]);
+      });
+
+      const depositedEvents = await instance.getDepositedEvents(mockAddress);
+
+      expect(depositedEvents.length).toBe(1);
+      expect(depositedEvents[0].event).toBe('test-deposit-event');
+    });
+
+    test('it returns a a list of redeemed events', async () => {
+      mockQueryFilter.mockImplementation(() => {
+        return Promise.resolve([
+          {
+            event: 'test-redeem-event',
+          },
+        ]);
+      });
+
+      const depositedEvents = await instance.getRedeemedEvents(mockAddress);
+
+      expect(depositedEvents.length).toBe(1);
+      expect(depositedEvents[0].event).toBe('test-redeem-event');
     });
   });
 });
