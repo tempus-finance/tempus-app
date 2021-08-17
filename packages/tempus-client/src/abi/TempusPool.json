@@ -15,10 +15,123 @@
         "internalType": "uint256",
         "name": "maturity",
         "type": "uint256"
+      },
+      {
+        "internalType": "string",
+        "name": "principalName",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "principalSymbol",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "yieldName",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "yieldSymbol",
+        "type": "string"
       }
     ],
     "stateMutability": "nonpayable",
     "type": "constructor"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "depositor",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "recipient",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "yieldTokenAmount",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "shareAmounts",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "rate",
+        "type": "uint256"
+      }
+    ],
+    "name": "Deposited",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "previousOwner",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "newOwner",
+        "type": "address"
+      }
+    ],
+    "name": "OwnershipTransferred",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "redeemer",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "principalAmount",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "yieldAmount",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "yieldBearingAmount",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "rate",
+        "type": "uint256"
+      }
+    ],
+    "name": "Redeemed",
+    "type": "event"
   },
   {
     "inputs": [],
@@ -55,6 +168,29 @@
       }
     ],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "feesConfig",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "depositPercent",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "earlyRedeemPercent",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "matureRedeemPercent",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -118,6 +254,19 @@
   },
   {
     "inputs": [],
+    "name": "owner",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "priceOracle",
     "outputs": [
       {
@@ -131,10 +280,23 @@
   },
   {
     "inputs": [],
+    "name": "pricePerYieldShare",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "principalShare",
     "outputs": [
       {
-        "internalType": "contract PrincipalShare",
+        "internalType": "contract IERC20",
         "name": "",
         "type": "address"
       }
@@ -156,6 +318,49 @@
       }
     ],
     "name": "redeem",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "renounceOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "depositPercent",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "earlyRedeemPercent",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "matureRedeemPercent",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct TempusPool.FeesConfig",
+        "name": "newFeesConfig",
+        "type": "tuple"
+      }
+    ],
+    "name": "setFeesConfig",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -168,6 +373,63 @@
         "internalType": "uint256",
         "name": "",
         "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "totalFees",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "recipient",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "transferFees",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "newOwner",
+        "type": "address"
+      }
+    ],
+    "name": "transferOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "underlyingProtocol",
+    "outputs": [
+      {
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
       }
     ],
     "stateMutability": "view",
@@ -204,7 +466,7 @@
     "name": "yieldShare",
     "outputs": [
       {
-        "internalType": "contract YieldShare",
+        "internalType": "contract IERC20",
         "name": "",
         "type": "address"
       }
