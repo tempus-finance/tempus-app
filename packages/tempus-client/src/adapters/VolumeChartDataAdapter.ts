@@ -86,7 +86,7 @@ class VolumeChartDataAdapter {
     let depositEvents: DepositedEvent[];
     let redeemEvents: RedeemedEvent[];
     try {
-      // DODO - Include swap events as well when they are added on the backend side.
+      // TODO - Include swap events as well when they are added on the backend side.
       depositEvents = (await Promise.all(depositEventFetchPromises)).flat();
       redeemEvents = (await Promise.all(redeemEventFetchPromises)).flat();
     } catch (error) {
