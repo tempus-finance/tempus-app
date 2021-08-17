@@ -2,6 +2,7 @@ import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
 import { BigNumber, ethers } from 'ethers';
 import { TypedEvent } from '../abi/commons';
 import { TempusPool } from '../abi/TempusPool';
+import { Ticker } from '../interfaces';
 import PriceOracleService from './PriceOracleService';
 
 type TempusPoolsMap = { [key: string]: TempusPool };
@@ -66,11 +67,11 @@ class TempusPoolService {
     return this.poolAddresses;
   }
 
-  public getBackingTokenTicker(address: string): Promise<string> {
+  public getBackingTokenTicker(address: string): Promise<Ticker> {
     const tempusPool = this.tempusPoolsMap[address];
     if (tempusPool) {
       // TODO - When backend team adds backing token ticker attribute on TempusPool contract, use it instead of hardcoded DAI value.
-      return Promise.resolve('DAI');
+      return Promise.resolve('dai');
     }
     throw new Error(`Address '${address}' is not valid`);
   }
