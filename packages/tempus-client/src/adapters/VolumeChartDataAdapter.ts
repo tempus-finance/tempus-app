@@ -42,9 +42,8 @@ class VolumeChartDataAdapter {
     }
 
     // Generate chart data for last NUMBER_OF_PAST_DAYS
+    const currentTime = Date.now();
     for (let i = this.NUMBER_OF_PAST_DAYS; i > 0; i--) {
-      const currentTime = Date.now();
-
       const startDate = new Date(currentTime - this.MILLISECONDS_IN_A_DAY * i);
       const endDate = new Date(currentTime - this.MILLISECONDS_IN_A_DAY * (i - 1));
 
