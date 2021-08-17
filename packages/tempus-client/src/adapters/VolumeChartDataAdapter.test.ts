@@ -33,7 +33,7 @@ describe('generateChartData()', () => {
     instance.init(mockProvider);
   });
 
-  test('it returns an array of data points for past 2 days', async () => {
+  test('it returns an array of data points for past 30 days', async () => {
     const chartData = await instance.generateChartData();
 
     expect(spyFetchData).toHaveBeenCalledTimes(1);
