@@ -1,6 +1,5 @@
 import { GridValueGetterParams } from '@material-ui/data-grid';
-import { formatDistanceToNow } from 'date-fns';
-import NumberUtils from '../../../services/NumberUtils';
+import { DateTime } from 'luxon';
 
 const transactionsColumnDefinitions = [
   {
@@ -17,18 +16,25 @@ const transactionsColumnDefinitions = [
     field: 'totalValue',
     headerName: 'Total Value',
     type: 'number',
-    valueGetter: (params: GridValueGetterParams) => `${NumberUtils.formatWithMultiplier(params.row.totalValue, 2)}`,
-    flex: 1,
+    valueGetter: (params: GridValueGetterParams) => {
+      return new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+        maximumFractionDigits: 2,
+        minimumFractionDigits: 0,
+      }).format(params.row.totalValue);
+    },
+    flex: 0.5,
   },
   {
     field: 'account',
     headerName: 'Account',
-    flex: 1,
+    flex: 1.5,
   },
   {
     field: 'time',
     headerName: 'Time',
-    valueGetter: (params: GridValueGetterParams) => `${formatDistanceToNow(params.row.time)}`,
+    valueGetter: (params: GridValueGetterParams) => `${DateTime.fromJSDate(params.row.time).toFormat('FF')}`,
     flex: 1,
   },
 ];
