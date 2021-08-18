@@ -2,7 +2,7 @@ export const mockData: any[] = [
   {
     id: 1,
     parentId: null,
-    token: 'eth',
+    token: 'ETH',
     protocol: null,
     maturity: [new Date('2021-11-30'), new Date('2022-01-31')],
     fixedAPY: [0.051, 0.1029],
@@ -14,7 +14,9 @@ export const mockData: any[] = [
   {
     id: 2,
     parentId: 1,
-    token: 'eth',
+    token: 'ETH',
+    supportedTokens: ['ETH', 'stETH'],
+    defaultToken: 'stETH',
     protocol: 'aave',
     startDate: new Date('2021-01-01'),
     maturity: new Date('2021-12-31'),
@@ -27,7 +29,9 @@ export const mockData: any[] = [
   {
     id: 3,
     parentId: 1,
-    token: 'eth',
+    token: 'ETH',
+    supportedTokens: ['ETH', 'stETH'],
+    defaultToken: 'stETH',
     protocol: 'lido',
     startDate: new Date('2021-05-01'),
     maturity: new Date('2021-11-30'),
@@ -40,7 +44,9 @@ export const mockData: any[] = [
   {
     id: 4,
     parentId: 1,
-    token: 'eth',
+    token: 'ETH',
+    supportedTokens: ['ETH', 'stETH'],
+    defaultToken: 'stETH',
     protocol: 'comp',
     startDate: new Date('2021-03-01'),
     maturity: new Date('2022-01-31'),
@@ -53,7 +59,7 @@ export const mockData: any[] = [
   {
     id: 10,
     parentId: null,
-    token: 'usdc',
+    token: 'USDC',
     protocol: null,
     maturity: new Date('2021-08-15'),
     fixedAPY: [0.011, 0.011],
@@ -65,7 +71,9 @@ export const mockData: any[] = [
   {
     id: 11,
     parentId: 10,
-    token: 'usdc',
+    token: 'USDC',
+    supportedTokens: ['USDC', 'LIDO'],
+    defaultToken: 'LIDO',
     protocol: 'lido',
     startDate: new Date('2021-01-01'),
     maturity: new Date('2021-08-15'),
@@ -78,7 +86,7 @@ export const mockData: any[] = [
   {
     id: 20,
     parentId: null,
-    token: 'dai',
+    token: 'DAI',
     protocol: null,
     maturity: [new Date('2022-01-22'), new Date('2022-02-22')],
     fixedAPY: [0.009, 0.02],
@@ -90,7 +98,9 @@ export const mockData: any[] = [
   {
     id: 21,
     parentId: 20,
-    token: 'dai',
+    token: 'DAI',
+    supportedTokens: ['DAI', 'LIDO'],
+    defaultToken: 'LIDO',
     protocol: 'comp',
     startDate: new Date('2021-07-01'),
     maturity: new Date('2022-01-22'),
@@ -103,7 +113,9 @@ export const mockData: any[] = [
   {
     id: 22,
     parentId: 20,
-    token: 'dai',
+    token: 'DAI',
+    supportedTokens: ['DAI', 'LIDO'],
+    defaultToken: 'LIDO',
     protocol: 'aave',
     startDate: new Date('2021-02-22'),
     maturity: new Date('2022-02-22'),
@@ -116,7 +128,9 @@ export const mockData: any[] = [
   {
     id: 23,
     parentId: 20,
-    token: 'dai',
+    token: 'DAI',
+    supportedTokens: ['DAI', 'LIDO'],
+    defaultToken: 'LIDO',
     protocol: 'comp',
     startDate: new Date('2021-03-01'),
     maturity: new Date('2022-11-21'),
@@ -129,7 +143,7 @@ export const mockData: any[] = [
   {
     id: 30,
     parentId: null,
-    token: 'comp',
+    token: 'COMP',
     protocol: null,
     maturity: new Date('2021-08-15'),
     fixedAPY: [0.012, 0.012],
@@ -141,7 +155,9 @@ export const mockData: any[] = [
   {
     id: 31,
     parentId: 30,
-    token: 'comp',
+    token: 'COMP',
+    supportedTokens: ['COMP', 'DAI'],
+    defaultToken: 'DAI',
     protocol: 'comp',
     startDate: new Date('2021-06-01'),
     maturity: new Date('2021-08-15'),

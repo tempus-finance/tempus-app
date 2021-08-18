@@ -38,11 +38,20 @@ button.tf__header__action {
   &:last-child {
     margin-right: 0;
   }
-}
 
-.tf__header__action__account {
-  color: $accent;
-  display: inline-flex;
-  align-items: center;
-  font-size: 13px;
+  .tf__header__action__account {
+    display: inline-flex;
+    align-items: center;
+    font-size: 13px;
+  }
+
+  &.tf__header__action-wallet {
+    background-color: $primary-dark;
+    border: 1px solid $white;
+    padding: 2px 4px;
+
+    &:hover {
+      background-color: $primary-light;
+    }
+  }
 }

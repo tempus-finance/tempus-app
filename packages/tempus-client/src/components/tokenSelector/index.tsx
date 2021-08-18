@@ -28,7 +28,7 @@ const getMenuItems = (items: string[]) => {
           {item !== 'empty' && (
             <>
               <TokenIcon ticker={item as Ticker} />
-              {item.toUpperCase()}
+              {item}
             </>
           )}
           {item === 'empty' && 'Please select'}

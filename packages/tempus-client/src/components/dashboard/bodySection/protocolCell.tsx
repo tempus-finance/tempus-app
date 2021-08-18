@@ -24,9 +24,9 @@ export default ProtocolCell;
 
 // TODO implement a map between Ticker and Protocol
 const getProtocolFromTicker = (ticker: Ticker) => {
-  if (ticker === 'comp') {
+  if (ticker === 'COMP') {
     return 'compound';
   }
 
-  return ticker;
+  return ticker.toLocaleLowerCase();
 };

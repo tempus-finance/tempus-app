@@ -72,7 +72,7 @@ class TempusPoolService {
     const tempusPool = this.tempusPoolsMap[address];
     if (tempusPool) {
       // TODO - When backend team adds backing token ticker attribute on TempusPool contract, use it instead of hardcoded DAI value.
-      return Promise.resolve('dai');
+      return Promise.resolve('DAI');
     }
     throw new Error(`Address '${address}' is not valid`);
   }
