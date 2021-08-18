@@ -9,6 +9,9 @@ const { BigNumber } = jest.requireActual('ethers');
 jest.mock('@ethersproject/providers');
 const { JsonRpcProvider } = jest.requireMock('@ethersproject/providers');
 
+jest.mock('./getERC20TokenService');
+const getERC20TokenService = jest.requireMock('./getERC20TokenService');
+
 describe('TempusPoolService', () => {
   const mockAddresses = ['someAddress'];
   const [mockAddress] = mockAddresses;
@@ -23,6 +26,8 @@ describe('TempusPoolService', () => {
   const mockCurrentRate = jest.fn();
   const getPriceOracleServiceMock = jest.fn();
   const mockQueryFilter = jest.fn();
+
+  const mockSymbol = jest.fn();
 
   const mockProvider = new JsonRpcProvider();
 
@@ -44,6 +49,12 @@ describe('TempusPoolService', () => {
           Deposited: jest.fn(),
           Redeemed: jest.fn(),
         },
+      };
+    });
+
+    getERC20TokenService.default.mockImplementation(() => {
+      return {
+        symbol: mockSymbol,
       };
     });
   });
@@ -175,6 +186,15 @@ describe('TempusPoolService', () => {
       const ticker = await instance.getBackingTokenTicker(mockAddress);
 
       expect(ticker).toBe('dai');
+    });
+
+    test('it returns a pool yield bearing token ticker', async () => {
+      mockYieldBearingToken.mockImplementation(() => Promise.resolve('yield-bearing-token-address'));
+      mockSymbol.mockImplementation(() => Promise.resolve('aDAI'));
+
+      const ticker = await instance.getYieldBearingTokenTicker(mockAddress);
+
+      expect(ticker).toBe('aDAI');
     });
 
     test('it returns a a list of deposited events', async () => {
