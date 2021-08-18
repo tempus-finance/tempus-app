@@ -1,4 +1,4 @@
-export type Ticker = 'aave' | 'comp' | 'dai' | 'eth' | 'lido' | 'tps' | 'tys' | 'tlpt' | 'tusd' | 'usdc';
+export type Ticker = 'AAVE' | 'COMP' | 'DAI' | 'ETH' | 'LIDO' | 'TPS' | 'TYS' | 'TLPT' | 'TUSD' | 'stETH' | 'USDC';
 
 export type Token = {
   ticker: Ticker;

@@ -52,8 +52,8 @@ const TokenButton: FC<TokenButtonProps> = (props: TokenButtonProps) => {
         <Button className="tf__dashboard__body__token-button" onClick={expandButton.props.onToggle}>
           <div className="tf__dashboard__asset-ticker">
             {isExpanded ? <ArrowDropDownIcon /> : <ArrowRightIcon />}
-            <TokenIcon ticker={contentComponent.props.children.toLowerCase()} />
-            <span style={{ textTransform: 'uppercase' }}>{contentComponent.props.children}</span>
+            <TokenIcon ticker={contentComponent.props.children} />
+            <span>{contentComponent.props.children}</span>
           </div>
         </Button>
       )}

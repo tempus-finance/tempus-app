@@ -7,7 +7,7 @@ type IconInProps = {
 };
 
 const TokenIcon: FC<IconInProps> = ({ ticker }): JSX.Element => {
-  const __html = useMemo(() => `<title>${ticker.toUpperCase()}</title>${tokenIcons[ticker]}`, [ticker]);
+  const __html = useMemo(() => `<title>${ticker}</title>${tokenIcons[ticker]}`, [ticker]);
 
   return (
     <svg
