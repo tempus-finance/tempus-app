@@ -1,6 +1,5 @@
 // UI Components
 import Chart from '../charts/chart/chart';
-import TopAssets from '../grids/assets/topAssets';
 import Transactions from '../grids/transactions/transactions';
 
 // Constants
@@ -17,9 +16,6 @@ function Landing(): JSX.Element {
       </div>
       <div className="tf-volume-chart-container">
         <Chart kind="VOLUME" title="Volume 24H" tooltip={volume24hTooltipText} />
-      </div>
-      <div className="tf-asset-grid-container">
-        <TopAssets />
       </div>
       <div className="tf-transactions-grid-container">
         <Transactions />
