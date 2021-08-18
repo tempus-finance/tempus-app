@@ -24,7 +24,14 @@ class ERC20TokenService {
       return Promise.reject();
     }
 
-    return (await this.contract.symbol()) as Ticker;
+    let ticker: Ticker;
+    try {
+      ticker = (await this.contract.symbol()) as Ticker;
+    } catch (error) {
+      console.error('ERC20TokenService - symbol() - Failed to get token ticker!');
+      return Promise.reject();
+    }
+    return ticker;
   }
 }
 export default ERC20TokenService;

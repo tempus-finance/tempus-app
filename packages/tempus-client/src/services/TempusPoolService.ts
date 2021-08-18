@@ -80,9 +80,15 @@ class TempusPoolService {
   public async getYieldBearingTokenTicker(address: string): Promise<Ticker> {
     const tempusPool = this.tempusPoolsMap[address];
     if (tempusPool) {
-      const address = await tempusPool.yieldBearingToken();
+      let yieldBearingTokenAddress: string;
+      try {
+        yieldBearingTokenAddress = await tempusPool.yieldBearingToken();
+      } catch (error) {
+        console.error(`Failed to get YBT address for Tempus Pool ${address}`);
+        return Promise.reject(error);
+      }
 
-      return getERC20TokenService(address).symbol();
+      return getERC20TokenService(yieldBearingTokenAddress).symbol();
     }
     throw new Error(`Address '${address}' is not valid`);
   }
