@@ -14,7 +14,7 @@ const TokenDescriptor: FC<TokenDescriptorInProps> = ({ ticker, description }): J
     <div className="tf__tokens-returned__name">
       <TokenIcon ticker={ticker} />
       <div className="tf__tokens-returned__ticker">
-        <span>{ticker.toUpperCase()}</span>
+        <span>{ticker}</span>
         {description && <span className="tf__tokens-returned__name">{description}</span>}
       </div>
     </div>

@@ -1,10 +1,12 @@
 import { Protocol } from './Protocol';
-import { Token } from './Token';
+import { Ticker } from './Token';
 
 export interface DashboardRow {
   id: number;
   parentId: number;
-  token: Token;
+  token: Ticker;
+  supportedTokens?: Ticker[];
+  defaultToken?: Ticker;
   protocol: Protocol[];
   maturity: Date;
   fixedAPY: number;

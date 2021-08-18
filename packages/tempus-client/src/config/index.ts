@@ -4,12 +4,12 @@ import { Config } from '../interfaces';
 // Waiting for backend team for factory contract - for now, we need to store all relevant contract addresses in this config.
 const config: Config = {
   tokens: [
-    { ticker: 'aave', address: '' },
-    { ticker: 'comp', address: '' },
-    { ticker: 'dai', address: '' },
-    { ticker: 'eth', address: '' }, // TBD
-    { ticker: 'tusd', address: '' },
-    { ticker: 'usdc', address: '' },
+    { ticker: 'AAVE', address: '' },
+    { ticker: 'COMP', address: '' },
+    { ticker: 'DAI', address: '' },
+    { ticker: 'ETH', address: '' }, // TBD
+    { ticker: 'TUSD', address: '' },
+    { ticker: 'USDC', address: '' },
   ],
   protocols: [
     { name: 'aave', address: '' }, // TBD

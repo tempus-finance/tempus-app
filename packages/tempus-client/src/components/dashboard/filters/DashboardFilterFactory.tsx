@@ -26,7 +26,7 @@ const DashboardFilterFactory = (props: any) => {
   }
 };
 
-const tickers: Ticker[] = ['eth', 'usdc'];
+const tickers: Ticker[] = ['ETH', 'stETH'];
 const protocolNames: ProtocolName[] = ['lido', 'aave'];
 
 export default DashboardFilterFactory;
