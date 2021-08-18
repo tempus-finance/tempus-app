@@ -1,6 +1,4 @@
-export * from './Asset';
 export * from './ColumnNames';
-export * from './Asset';
 export * from './Config';
 export * from './DashboardRow';
 export * from './Protocol';
