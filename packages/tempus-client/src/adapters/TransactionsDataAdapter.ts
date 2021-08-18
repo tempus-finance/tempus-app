@@ -1,13 +1,13 @@
 import { DateTime } from 'luxon';
 import { formatDistanceToNow } from 'date-fns';
-import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
+import { Block, JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
 import getTempusPoolService from '../services/getTempusPoolService';
 import TempusPoolService, { DepositedEvent, RedeemedEvent } from '../services/TempusPoolService';
 import getStatisticsService from '../services/getStatisticsService';
 import StatisticsService from '../services/StatisticsService';
 import getDefaultProvider from '../services/getDefaultProvider';
 import { getEventValue, isDepositEvent, isRedeemEvent } from '../services/EventUtils';
-import { Transaction, TransactionAction } from '../interfaces';
+import { Ticker, Transaction, TransactionAction } from '../interfaces';
 import getConfig from '../utils/get-config';
 
 type TransactionsDataAdapterParameters = {
@@ -24,8 +24,21 @@ class TransactionsDataAdapter {
   }
 
   public async generateData(): Promise<Transaction[]> {
-    const events = await this.fetchEvents();
-    const transactions = await this.fetchTransactionData(events);
+    let events: (DepositedEvent | RedeemedEvent)[];
+    try {
+      events = await this.fetchEvents();
+    } catch (error) {
+      console.error('TransactionsDataAdapter - generateData() - Failed to fetch transaction events!');
+      return Promise.reject(error);
+    }
+
+    let transactions: Transaction[];
+    try {
+      transactions = await this.fetchTransactionData(events);
+    } catch (error) {
+      console.error('TransactionsDataAdapter - generateData() - Failed to fetch transaction data!');
+      return Promise.reject(error);
+    }
 
     return transactions;
   }
@@ -42,8 +55,15 @@ class TransactionsDataAdapter {
       fetchDepositEventsPromises.push(this.tempusPoolService.getDepositedEvents(tempusPool.address));
       fetchRedeemEventsPromises.push(this.tempusPoolService.getRedeemedEvents(tempusPool.address));
     });
-    const depositEvents = (await Promise.all(fetchDepositEventsPromises)).flat();
-    const redeemEvents = (await Promise.all(fetchRedeemEventsPromises)).flat();
+    let depositEvents: DepositedEvent[];
+    let redeemEvents: RedeemedEvent[];
+    try {
+      depositEvents = (await Promise.all(fetchDepositEventsPromises)).flat();
+      redeemEvents = (await Promise.all(fetchRedeemEventsPromises)).flat();
+    } catch (error) {
+      console.error('TransactionsDataAdapter - fetchEvents() - Failed to fetch deposit and redeem events!');
+      return Promise.reject(error);
+    }
 
     return [...depositEvents, ...redeemEvents];
   }
@@ -62,23 +82,29 @@ class TransactionsDataAdapter {
       return Promise.reject();
     }
 
-    const [eventValue, eventDate, tokenTicker, poolMaturityDate] = await Promise.all([
-      await this.getEventUSDValue(event),
-      await this.getEventTime(event),
-      await this.tempusPoolService.getYieldBearingTokenTicker(event.address),
-      await this.tempusPoolService.getMaturityTime(event.address),
-    ]);
+    let transaction: Transaction;
+    try {
+      const [eventValue, eventDate, tokenTicker, poolMaturityDate] = await Promise.all([
+        await this.getEventUSDValue(event),
+        await this.getEventTime(event),
+        await this.tempusPoolService.getYieldBearingTokenTicker(event.address),
+        await this.tempusPoolService.getMaturityTime(event.address),
+      ]);
 
-    const formattedDate = DateTime.fromJSDate(poolMaturityDate).toFormat('D');
+      const formattedDate = DateTime.fromJSDate(poolMaturityDate).toFormat('D');
 
-    const transaction: Transaction = {
-      id: event.blockHash,
-      pool: `${tokenTicker} ${formatDistanceToNow(poolMaturityDate)} ${formattedDate}`,
-      action: this.getEventAction(event),
-      totalValue: eventValue,
-      account: this.getEventAccount(event),
-      time: eventDate,
-    };
+      transaction = {
+        id: event.blockHash,
+        pool: `${tokenTicker} ${formatDistanceToNow(poolMaturityDate)} ${formattedDate}`,
+        action: this.getEventAction(event),
+        totalValue: eventValue,
+        account: this.getEventAccount(event),
+        time: eventDate,
+      };
+    } catch (error) {
+      console.error('TransactionsDataAdapter - fetchEventData() - Failed to fetch transaction data for event!');
+      return Promise.reject(error);
+    }
 
     return transaction;
   }
@@ -110,7 +136,13 @@ class TransactionsDataAdapter {
   private async getEventTime(event: DepositedEvent | RedeemedEvent): Promise<Date> {
     const provider = getDefaultProvider();
 
-    const eventBlock = await provider.getBlock(event.blockNumber);
+    let eventBlock: Block;
+    try {
+      eventBlock = await provider.getBlock(event.blockNumber);
+    } catch (error) {
+      console.error('TransactionsDataAdapter - getEventTime() - Failed to fetch event block data!');
+      return Promise.reject(error);
+    }
 
     return new Date(eventBlock.timestamp * 1000);
   }
@@ -121,10 +153,25 @@ class TransactionsDataAdapter {
       return Promise.reject();
     }
 
-    const eventPoolBackingToken = await this.tempusPoolService.getBackingTokenTicker(event.address);
-    const poolBackingTokenRate = await this.statisticsService.getRate(eventPoolBackingToken, {
-      blockTag: event.blockNumber,
-    });
+    let eventPoolBackingToken: Ticker;
+    try {
+      eventPoolBackingToken = await this.tempusPoolService.getBackingTokenTicker(event.address);
+    } catch (error) {
+      console.log(
+        'TransactionsDataAdapter - getEventUSDValue() - Failed to fetch event tempus pool backing token ticker!',
+      );
+      return Promise.reject(error);
+    }
+
+    let poolBackingTokenRate: number;
+    try {
+      poolBackingTokenRate = await this.statisticsService.getRate(eventPoolBackingToken, {
+        blockTag: event.blockNumber,
+      });
+    } catch (error) {
+      console.error('TransactionsDataAdapter - getEventUSDValue() - Failed to fetch backing token rate!');
+      return Promise.reject(error);
+    }
 
     return getEventValue(event) * poolBackingTokenRate;
   }
