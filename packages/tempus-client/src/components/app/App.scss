@@ -1,9 +1,16 @@
+@import '../../constants.scss';
+
+.tf__sidebar__handler {
+  position: absolute;
+  left: 0;
+}
+
 .tf__app__container {
   display: grid;
-  grid-template-columns: 128px 1fr 128px;
-  grid-template-rows: 96px auto;
-  row-gap: 48px;
-  column-gap: 48px;
+  grid-template-columns: $grid-template-columns 1fr $grid-template-columns;
+  grid-template-rows: $grid-template-rows auto;
+  row-gap: $row-gap;
+  column-gap: $column-gap;
   grid-template-areas:
     '. header .'
     '. section .';

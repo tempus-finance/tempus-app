@@ -4,9 +4,32 @@
   grid-area: section;
   display: grid;
   grid-template-columns: 1fr;
-  row-gap: 48px;
-  column-gap: 48px;
   grid-template-areas: 'dashboard dashboard';
+
+  background-color: $primary-darker;
+  padding: 0 7px;
+  border-radius: 4px;
+  box-shadow: 1px 1px 5px 2px $primary-dark;
+
+  &[hidden] {
+    opacity: 0;
+    z-index: -99;
+  }
+}
+
+.tf__detail__section__container {
+  grid-area: section;
+  display: flex;
+  flex-direction: column;
+  background-color: $primary-darker;
+  padding: 0 7px;
+  border-radius: 4px;
+  box-shadow: 1px 1px 5px 2px $primary-dark;
+
+  &[hidden] {
+    opacity: 0;
+    z-index: -99;
+  }
 }
 
 .tf__dashboard__container {
@@ -22,14 +45,14 @@
   width: 100%;
 
   .tf__dashboard__grid {
-    background-color: $primary;
+    background-color: $primary-darker;
 
     .tf__dashboard__filter__row {
       background: $primary;
 
       > th {
         background-color: transparent;
-        border-bottom: 1px solid $primary-dark;
+        border-bottom: 1px solid $primary-darker;
 
         .tf__dashboard__filter__chip {
           margin: 0 8px;
@@ -38,6 +61,12 @@
         .tf__dashboard__filter__chip-select {
           margin-top: 0;
         }
+      }
+    }
+
+    tbody {
+      > tr:nth-of-type(odd) {
+        background-color: $primary-dark;
       }
     }
 
@@ -57,8 +86,8 @@
 
       &.tf__dashboard__body__row-child {
         > td {
-          background-color: $primary-dark;
-          border-bottom-color: $primary-darker;
+          background-color: $primary-dim;
+          border-bottom-color: $primary;
         }
 
         &:hover {
@@ -75,17 +104,18 @@
     }
 
     .tf__dashboard__header__row {
-      background: $primary;
+      background: $primary-darker;
 
       > th {
         background-color: transparent;
-        border-bottom: 2px solid $accent-dark;
+        border-bottom: 2px solid $primary-dark;
       }
 
       .tf__dashboard__header__cell {
         padding-left: 0;
         padding-right: 0;
         padding-bottom: 3px;
+        font-size: 14px;
 
         &:last-child {
           padding-right: 10px;
@@ -106,13 +136,23 @@
           color: white;
         }
 
+        button.MuiIconButton-root {
+          > span {
+            > svg {
+              width: 14px;
+              height: 14px;
+              fill: $offwhite;
+            }
+          }
+        }
+
         > div > button {
           padding: 0 8px;
         }
 
         .MuiTableSortLabel-root.MuiTableSortLabel-active.MuiTableSortLabel-root.MuiTableSortLabel-active
           .MuiTableSortLabel-icon {
-          color: $accent-dark;
+          color: $secondary;
         }
       }
     }
