@@ -23,16 +23,16 @@ const WalletConnect: FC = (): JSX.Element => {
   }
 
   return active ? (
-    <span className="tf-header-action tf-header-action-account" title={String(account)}>
+    <span className="tf__header__action tf__header__action-account" title={String(account)}>
       <AccountBalanceWalletIcon />
       {shortenedAccount}
     </span>
   ) : (
     <Button
       title={CONNECT_WALLET}
-      color="secondary"
+      variant="contained"
       size="small"
-      className="tf-header-action tf-header-action-wallet"
+      className="tf__header__action tf__header__action-wallet"
       onClick={onConnect}
     >
       <AccountBalanceWalletIcon /> {CONNECT_WALLET}

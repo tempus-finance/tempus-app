@@ -1,23 +1,27 @@
 @import '../../constants.scss';
 
+.MuiList-root.MuiMenu-list {
+  background-color: $primary;
+}
+
 .tf__token-selector {
-  border: 1px solid $accent;
+  border: 1px solid $primary-lighter;
   border-radius: 4px;
-  padding: 4px;
+  padding: 4px 7px;
 }
 
 li.tf__token-selector__menu-item__container {
   background-color: $primary;
 
   &:hover {
-    background-color: $primary-light;
+    background-color: $primary-lighter;
   }
 
   &.Mui-selected {
-    background-color: $accent-darker;
+    background-color: $primary-light;
 
     &:hover {
-      background-color: $accent-darker;
+      background-color: $primary-lighter;
     }
   }
 }

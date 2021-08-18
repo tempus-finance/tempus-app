@@ -20,26 +20,16 @@ const Header: FC<HeaderProps> = ({ active, onDashboardClick, onLogoClick }): JSX
   return (
     <div className="tf__header__container">
       <TempusLogo onClick={onLogoClick} />
-      <div className="f__header__actions">
+      <div className="tf__header__actions">
         <Button
           title="Dashboard"
           color="secondary"
           size="small"
-          className="tf__header__action"
+          className="tf__header__action tf__header__action-dashboard"
           disabled={active === 'DASHBOARD'}
           onClick={onDashboardClick}
         >
           DASHBOARD
-        </Button>
-        <Button
-          title="PORTFOLIO"
-          color="secondary"
-          size="small"
-          className="tf__header__action"
-          disabled={active === 'PORTFOLIO'}
-          onClick={() => {}}
-        >
-          PORTFOLIO
         </Button>
         <WalletConnect />
       </div>
