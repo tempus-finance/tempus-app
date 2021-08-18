@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { DateTime } from 'luxon';
+import format from 'date-fns/format';
 import { Divider, CircularProgress } from '@material-ui/core';
 import TLVChart from '../tvl-chart/TVLChart';
 import VolumeChart from '../volume-chart/volume-chart';
@@ -39,7 +39,7 @@ function Chart(props: ChartProps): JSX.Element {
       <div className="tf__chart-header">
         <p>{title}</p>
         <div className="tf__chart-header-info">
-          <p>{activeDataPoint && DateTime.fromJSDate(activeDataPoint.date).toFormat('DDD')}</p>
+          <p>{activeDataPoint && format(activeDataPoint.date, 'MMMM d, yyyy')}</p>
           {tooltip && <InfoTooltip text={tooltip} />}
         </div>
       </div>
