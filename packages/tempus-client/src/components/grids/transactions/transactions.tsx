@@ -24,11 +24,11 @@ const Transactions = (): JSX.Element => {
   }, []);
 
   return (
-    <div className="tf-transactions">
+    <div className="tf__transactions">
       <Typography>Transactions</Typography>
-      <div className="tf-transactions-grid">
+      <div className="tf__transactions-grid">
         {loading && (
-          <div className="tf-transactions-loading-overlay">
+          <div className="tf__transactions-loading-overlay">
             <CircularProgress size={48} />
           </div>
         )}

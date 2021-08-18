@@ -1,4 +1,4 @@
-import { DateTime } from 'luxon';
+import format from 'date-fns/format';
 import { formatDistanceToNow } from 'date-fns';
 import { Block, JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
 import getTempusPoolService from '../services/getTempusPoolService';
@@ -91,7 +91,7 @@ class TransactionsDataAdapter {
         await this.tempusPoolService.getMaturityTime(event.address),
       ]);
 
-      const formattedDate = DateTime.fromJSDate(poolMaturityDate).toFormat('D');
+      const formattedDate = format(poolMaturityDate, 'dd/MM/yyyy');
 
       transaction = {
         id: event.blockHash,

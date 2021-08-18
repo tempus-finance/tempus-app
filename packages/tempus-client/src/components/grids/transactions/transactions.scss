@@ -1,10 +1,10 @@
-.tf-transactions {
+.tf__transactions {
   display: flex;
   flex-direction: column;
   width: 100%;
   margin-bottom: 64px;
 
-  .tf-transactions-grid {
+  .tf__transactions-grid {
     position: relative;
 
     .MuiDataGrid-root {
@@ -22,7 +22,7 @@
   }
 }
 
-.tf-transactions-loading-overlay {
+.tf__transactions-loading-overlay {
   position: absolute;
   left: 0px;
   top: 0px;

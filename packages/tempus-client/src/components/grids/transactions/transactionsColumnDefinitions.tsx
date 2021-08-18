@@ -1,5 +1,5 @@
 import { GridValueGetterParams } from '@material-ui/data-grid';
-import { DateTime } from 'luxon';
+import format from 'date-fns/format';
 
 const transactionsColumnDefinitions = [
   {
@@ -34,7 +34,7 @@ const transactionsColumnDefinitions = [
   {
     field: 'time',
     headerName: 'Time',
-    valueGetter: (params: GridValueGetterParams) => `${DateTime.fromJSDate(params.row.time).toFormat('FF')}`,
+    valueGetter: (params: GridValueGetterParams) => format(params.row.time, 'MMM dd, yyyy, h:mm:ss a'),
     flex: 1,
   },
 ];

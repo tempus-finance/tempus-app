@@ -4,7 +4,7 @@ import { DepositedEvent, RedeemedEvent } from './TempusPoolService';
 /**
  * Returns amount of backing tokens transferred for an event.
  */
-export function getEventValue(event: DepositedEvent | RedeemedEvent) {
+export function getEventValue(event: DepositedEvent | RedeemedEvent): number {
   const exchangeRate = Number(ethers.utils.formatEther(event.args.rate));
 
   if (isDepositEvent(event)) {
