@@ -1,3 +1,5 @@
+@import '../../../constants.scss';
+
 .tf__dashboard__grid__maturity {
   display: flex;
   align-items: center;
@@ -10,6 +12,15 @@
   margin: auto 5px;
 }
 
+.tf__dashboard__grid__maturity-responsive-wrapper {
+  display: flex;
+  align-items: center;
+
+  @media (max-width: $breakpoint-lg) {
+    display: none;
+  }
+}
+
 .tf__dashboard__body__row-child {
   .tf__dashboard__grid__maturity {
     flex-direction: column;
@@ -20,6 +31,10 @@
       display: flex;
       width: 100%;
       justify-content: space-between;
+
+      @media (max-width: $breakpoint-lg) {
+        justify-content: flex-end;
+      }
     }
   }
 }

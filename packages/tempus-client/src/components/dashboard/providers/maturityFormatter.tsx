@@ -18,10 +18,10 @@ const MaturityFormatter = ({ value, row }: any) => {
       <div className="tf__dashboard__grid__maturity">
         <div>{format(min, maturityFormat)}</div>
         {max && (
-          <>
+          <div className="tf__dashboard__grid__maturity-responsive-wrapper">
             <div className="tf__dashboard__grid__maturity tf__dashboard__grid__maturity-range">to</div>
             <div>{format(max, maturityFormat)}</div>
-          </>
+          </div>
         )}
       </div>
     );
@@ -36,9 +36,13 @@ const MaturityFormatter = ({ value, row }: any) => {
     <div className="tf__dashboard__grid__maturity">
       <div className="tf__dashboard__grid__maturity-timeLeft">
         <div>{format(value[0], maturityFormat)}</div>
-        <div>{formatDistanceToNow(value[0], { addSuffix: true })}</div>
+        <div className="tf__dashboard__grid__maturity-responsive-wrapper">
+          {formatDistanceToNow(value[0], { addSuffix: true })}
+        </div>
       </div>
-      <ProgressBar value={progressBarValue} />
+      <div style={{ width: '100%' }} className="tf__dashboard__grid__maturity-responsive-wrapper">
+        <ProgressBar value={progressBarValue} />
+      </div>
     </div>
   );
 };

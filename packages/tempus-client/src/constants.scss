@@ -30,3 +30,10 @@ $accent-darker: darken($accent, 10%);
 $black: #000000;
 $white: #ffffff;
 $floating-surface: rgba(0, 0, 0, 0.15);
+
+// Breakpoints
+$breakpoint-xs: 0px;
+$breakpoint-sm: 600px;
+$breakpoint-md: 960px;
+$breakpoint-lg: 1500px;
+$breakpoint-xl: 1920px;
