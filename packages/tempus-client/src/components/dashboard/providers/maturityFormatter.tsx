@@ -40,7 +40,7 @@ const MaturityFormatter = ({ value, row }: any) => {
           {formatDistanceToNow(value[0], { addSuffix: true })}
         </div>
       </div>
-      <div style={{ width: '100%' }} className="tf__dashboard__grid__maturity-responsive-wrapper">
+      <div className="tf__dashboard__grid__maturity-responsive-progress-bar-wrapper">
         <ProgressBar value={progressBarValue} />
       </div>
     </div>

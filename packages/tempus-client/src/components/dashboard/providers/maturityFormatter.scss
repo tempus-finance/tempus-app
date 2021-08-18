@@ -21,6 +21,14 @@
   }
 }
 
+.tf__dashboard__grid__maturity-responsive-progress-bar-wrapper {
+  width: 100%;
+
+  @media (max-width: $breakpoint-lg) {
+    display: none;
+  }
+}
+
 .tf__dashboard__body__row-child {
   .tf__dashboard__grid__maturity {
     flex-direction: column;
