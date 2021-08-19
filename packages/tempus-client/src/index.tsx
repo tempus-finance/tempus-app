@@ -23,7 +23,7 @@ const theme = createTheme({
     },
   },
   typography: {
-    fontFamily: 'Aeonik',
+    fontFamily: 'Aeonik, sans-serif',
   },
   overrides: {
     MuiSelect: {
