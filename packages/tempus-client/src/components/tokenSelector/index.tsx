@@ -1,4 +1,4 @@
-import { FC, ChangeEvent, useCallback, useState } from 'react';
+import { FC, ChangeEvent, useCallback, useEffect, useState } from 'react';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
@@ -50,6 +50,12 @@ const TokenSelector: FC<TokenSelectorProps> = ({ defaultTicker, tickers, classNa
   const [token, setToken] = useState<string>(() => {
     return defaultTicker ? (defaultTicker as string) : 'empty';
   });
+
+  useEffect(() => {
+    if (defaultTicker) {
+      setToken(defaultTicker);
+    }
+  }, [defaultTicker, setToken]);
 
   const handleChange = useCallback(
     (event: ChangeEvent<{ value: unknown }>) => {
