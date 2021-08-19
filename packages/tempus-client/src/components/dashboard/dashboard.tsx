@@ -23,6 +23,7 @@ import TVLProvider from './providers/tvlProvider';
 import './dashboard.scss';
 
 type DashboardInProps = {
+  hidden: boolean;
   rows: DashboardRow[];
 };
 
@@ -32,7 +33,7 @@ type DashboardOutProps = {
 
 type DashboardProps = DashboardInProps & DashboardOutProps;
 
-const Dashboard: FC<DashboardProps> = ({ rows, onRowActionClick }): JSX.Element => {
+const Dashboard: FC<DashboardProps> = ({ hidden, rows, onRowActionClick }): JSX.Element => {
   const [tableColumnExtensions] = useState([
     { columnName: ColumnNames.TOKEN, align: 'left' as 'left', width: 120 },
     { columnName: ColumnNames.PROTOCOL, align: 'center' as 'center', width: 120 },
@@ -86,39 +87,43 @@ const Dashboard: FC<DashboardProps> = ({ rows, onRowActionClick }): JSX.Element 
   );
 
   return (
-    <div className="tf__dashboard">
-      <div className="tf__dashboard__grid">
-        <Grid rows={rows} columns={dashboardColumnsDefinitions}>
-          <SortingState
-            sorting={currentSorting}
-            onSortingChange={onSortingChange}
-            columnExtensions={sortingStateColumnExtensions}
-          />
-          <TreeDataState defaultExpandedRowIds={[]} onExpandedRowIdsChange={onExpandedRowIdsChange} />
-          <SummaryState totalItems={totalSummaryItems} treeItems={treeSummaryItems} />
-          <MaturityProvider for={[ColumnNames.MATURITY]} />
-          <TVLProvider for={[ColumnNames.TVL]} />
-          <CustomTreeData getChildRows={getChildRows} />
-          <IntegratedSummary />
-          <IntegratedSorting columnExtensions={integratedSortingColumnExtensions} />
-          <VirtualTable
-            columnExtensions={tableColumnExtensions}
-            rowComponent={BodyRow}
-            cellComponent={BodyCellFactory}
-          />
-          <TableHeaderRow
-            rowComponent={HeaderRow}
-            cellComponent={HeaderCell}
-            contentComponent={HeaderContent}
-            showSortingControls={true}
-          />
-          <TableTreeColumn
-            for={ColumnNames.TOKEN}
-            cellComponent={(props: any) => (
-              <TokenButton {...props} expandedRows={expandedRows} actionHandler={onRowActionClick} />
-            )}
-          />
-        </Grid>
+    <div className="tf__dashboard__section__container" hidden={hidden}>
+      <div className="tf__dashboard__container">
+        <div className="tf__dashboard">
+          <div className="tf__dashboard__grid">
+            <Grid rows={rows} columns={dashboardColumnsDefinitions}>
+              <SortingState
+                sorting={currentSorting}
+                onSortingChange={onSortingChange}
+                columnExtensions={sortingStateColumnExtensions}
+              />
+              <TreeDataState defaultExpandedRowIds={[]} onExpandedRowIdsChange={onExpandedRowIdsChange} />
+              <SummaryState totalItems={totalSummaryItems} treeItems={treeSummaryItems} />
+              <MaturityProvider for={[ColumnNames.MATURITY]} />
+              <TVLProvider for={[ColumnNames.TVL]} />
+              <CustomTreeData getChildRows={getChildRows} />
+              <IntegratedSummary />
+              <IntegratedSorting columnExtensions={integratedSortingColumnExtensions} />
+              <VirtualTable
+                columnExtensions={tableColumnExtensions}
+                rowComponent={BodyRow}
+                cellComponent={BodyCellFactory}
+              />
+              <TableHeaderRow
+                rowComponent={HeaderRow}
+                cellComponent={HeaderCell}
+                contentComponent={HeaderContent}
+                showSortingControls={true}
+              />
+              <TableTreeColumn
+                for={ColumnNames.TOKEN}
+                cellComponent={(props: any) => (
+                  <TokenButton {...props} expandedRows={expandedRows} actionHandler={onRowActionClick} />
+                )}
+              />
+            </Grid>
+          </div>
+        </div>
       </div>
     </div>
   );
