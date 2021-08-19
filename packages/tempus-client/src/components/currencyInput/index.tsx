@@ -1,4 +1,4 @@
-import { FC, useCallback, useState } from 'react';
+import { FC, useCallback, useEffect, useState } from 'react';
 import FormControl from '@material-ui/core/FormControl';
 import TextField from '@material-ui/core/TextField';
 import { formatValueToCurrency, parseStringToNumber } from './currencyParser';
@@ -8,7 +8,8 @@ import './currencyInput.scss';
 type CurrencyInputInProps = {
   defaultValue?: number;
   placeholder?: string;
-  precision?: number;
+  precision?: number; // TODO: use precision, default should be 0
+  disabled?: boolean;
 };
 
 type CurrencyInputOutProps = {
@@ -17,10 +18,21 @@ type CurrencyInputOutProps = {
 
 type CurrencyInputProps = CurrencyInputInProps & CurrencyInputOutProps;
 
-const CurrencyInput: FC<CurrencyInputProps> = ({ defaultValue = 0, placeholder, onChange }: CurrencyInputProps) => {
+const CurrencyInput: FC<CurrencyInputProps> = ({
+  defaultValue = 0,
+  placeholder,
+  disabled,
+  onChange,
+}: CurrencyInputProps) => {
   const [stringValue, setStringValue] = useState<string | undefined>(() =>
     formatValueToCurrency(defaultValue.toString()),
   );
+
+  useEffect(() => {
+    if (defaultValue) {
+      setStringValue(formatValueToCurrency(defaultValue.toString()));
+    }
+  }, [defaultValue, setStringValue]);
 
   const onValueChange = useCallback(
     (event: any) => {
@@ -44,6 +56,7 @@ const CurrencyInput: FC<CurrencyInputProps> = ({ defaultValue = 0, placeholder, 
             value={stringValue}
             onChange={onValueChange}
             placeholder={placeholder}
+            disabled={disabled}
           />
         </FormControl>
       </div>
