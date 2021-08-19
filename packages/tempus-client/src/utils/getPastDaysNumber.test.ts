@@ -1,12 +1,17 @@
 import getPastDaysNumber from './getPastDaysNumber';
 
-const { DateTime } = jest.requireActual('luxon');
+import sub from 'date-fns/sub';
+import format from 'date-fns/format';
 
 describe('getPastDaysNumber()', () => {
   test('it returns an array of numbers that represent specified past number of days with specified interval', () => {
-    DateTime.now = jest.fn().mockReturnValue(DateTime.fromISO('2021-01-01T00:00:00.000Z'));
+    const currentDate = new Date();
 
-    const daysNumber = getPastDaysNumber(10, 3);
-    expect(daysNumber).toStrictEqual([23, 26, 29, 1]);
+    const daysNumber = getPastDaysNumber(3, 1);
+    expect(daysNumber).toStrictEqual([
+      Number(format(sub(currentDate, { days: 2 }), 'd')),
+      Number(format(sub(currentDate, { days: 1 }), 'd')),
+      Number(format(sub(currentDate, { days: 0 }), 'd')),
+    ]);
   });
 });

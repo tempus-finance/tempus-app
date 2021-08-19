@@ -4,6 +4,7 @@ import { useWeb3React } from '@web3-react/core';
 import { InjectedConnector } from '@web3-react/injected-connector';
 import AccountBalanceWalletIcon from '@material-ui/icons/AccountBalanceWallet';
 import Button from '@material-ui/core/Button';
+import shortenAccount from '../../utils/shorten-account';
 
 const WalletConnect: FC = (): JSX.Element => {
   const [hasBeenClicked, setHasBeenClicked] = useState<boolean>(false);
@@ -19,7 +20,7 @@ const WalletConnect: FC = (): JSX.Element => {
 
   let shortenedAccount;
   if (account) {
-    shortenedAccount = `${account.substring(0, 6)}...${account.substring(account.length - 5, account.length)}`;
+    shortenedAccount = shortenAccount(account);
   }
 
   return active ? (

@@ -1,6 +1,5 @@
 import { GridValueGetterParams } from '@material-ui/data-grid';
-import { formatDistanceToNow } from 'date-fns';
-import NumberUtils from '../../../services/NumberUtils';
+import format from 'date-fns/format';
 
 const transactionsColumnDefinitions = [
   {
@@ -11,27 +10,31 @@ const transactionsColumnDefinitions = [
   {
     field: 'action',
     headerName: 'Action',
-    type: 'number',
     flex: 1,
   },
   {
     field: 'totalValue',
     headerName: 'Total Value',
     type: 'number',
-    valueGetter: (params: GridValueGetterParams) => `${NumberUtils.formatWithMultiplier(params.row.totalValue, 2)}`,
-    flex: 1,
+    valueGetter: (params: GridValueGetterParams) => {
+      return new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+        maximumFractionDigits: 2,
+        minimumFractionDigits: 0,
+      }).format(params.row.totalValue);
+    },
+    flex: 0.5,
   },
   {
     field: 'account',
     headerName: 'Account',
-    type: 'number',
-    flex: 1,
+    flex: 1.5,
   },
   {
     field: 'time',
     headerName: 'Time',
-    type: 'number',
-    valueGetter: (params: GridValueGetterParams) => `${formatDistanceToNow(params.row.time)}`,
+    valueGetter: (params: GridValueGetterParams) => format(params.row.time, 'MMM dd, yyyy, h:mm:ss a'),
     flex: 1,
   },
 ];

@@ -1,10 +1,10 @@
-import { ethers } from 'ethers';
 import { Block, JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
 import ChartDataPoint from '../interfaces/ChartDataPoint';
 import getStatisticsService from '../services/getStatisticsService';
 import getTempusPoolService from '../services/getTempusPoolService';
 import StatisticsService from '../services/StatisticsService';
 import TempusPoolService, { DepositedEvent, RedeemedEvent } from '../services/TempusPoolService';
+import { getEventValue } from '../services/EventUtils';
 import getConfig from '../utils/get-config';
 
 type VolumeChartDataAdapterParameters = {
@@ -190,38 +190,8 @@ class VolumeChartDataAdapter {
 
     return {
       date: new Date(this.getEventBlock(event).timestamp * 1000),
-      value: poolBackingTokenRate * this.getEventValue(event),
+      value: poolBackingTokenRate * getEventValue(event),
     };
-  }
-
-  /**
-   * Returns event value in terms of the event Tempus Pool backing token count.
-   */
-  private getEventValue(event: DepositedEvent | RedeemedEvent): number {
-    const exchangeRate = Number(ethers.utils.formatEther(event.args.rate));
-
-    if (this.isDepositEvent(event)) {
-      return Number(ethers.utils.formatEther(event.args.yieldTokenAmount)) * exchangeRate;
-    }
-    if (this.isRedeemEvent(event)) {
-      return Number(ethers.utils.formatEther(event.args.yieldBearingAmount)) * exchangeRate;
-    } else {
-      throw new Error('Failed to get event value.');
-    }
-  }
-
-  /**
-   * Type guard - Checks if provided event is of type DepositedEvent
-   */
-  private isDepositEvent(event: DepositedEvent | RedeemedEvent): event is DepositedEvent {
-    return 'yieldTokenAmount' in event.args;
-  }
-
-  /**
-   * Type guard - Checks if provided event is of type RedeemedEvent
-   */
-  private isRedeemEvent(event: DepositedEvent | RedeemedEvent): event is RedeemedEvent {
-    return 'yieldBearingAmount' in event.args;
   }
 }
 export default VolumeChartDataAdapter;

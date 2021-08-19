@@ -1,42 +1,40 @@
-import { Typography } from '@material-ui/core';
+import { useEffect, useState } from 'react';
+import { CircularProgress, Typography } from '@material-ui/core';
 import { DataGrid } from '@material-ui/data-grid';
+import getTransactionsDataAdapter from '../../../adapters/getTransactionsDataAdapter';
+import { Transaction } from '../../../interfaces';
 import transactionsColumnDefinitions from './transactionsColumnDefinitions';
 
 import './transactions.scss';
 
 const Transactions = (): JSX.Element => {
+  const [loading, setLoading] = useState<boolean>(false);
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+
+  useEffect(() => {
+    const fetchTransactions = async () => {
+      const dataAdapter = getTransactionsDataAdapter();
+
+      const data = await dataAdapter.generateData();
+      setTransactions(data);
+      setLoading(false);
+    };
+    fetchTransactions();
+    setLoading(true);
+  }, []);
+
   return (
-    <div className="tf-transactions">
+    <div className="tf__transactions">
       <Typography>Transactions</Typography>
-      <div className="tf-transactions-grid">
-        <DataGrid rows={rows} columns={transactionsColumnDefinitions} autoHeight={true} hideFooter={true} />
+      <div className="tf__transactions-grid">
+        {loading && (
+          <div className="tf__transactions-loading-overlay">
+            <CircularProgress size={48} />
+          </div>
+        )}
+        <DataGrid rows={transactions} columns={transactionsColumnDefinitions} autoHeight={true} hideFooter={true} />
       </div>
     </div>
   );
 };
 export default Transactions;
-
-// TODO
-// get transactions - discuss with Djorje
-
-// TODO
-// we need the Financial service for this - BLOCKED
-// create a row for each asset => retrieve values with Financial service
-const rows: any[] = [
-  {
-    id: 1,
-    pool: 'stETH 3 months 31/12/2021',
-    action: 'Deposit',
-    totalValue: 262000000,
-    account: '0x3090...065d22b',
-    time: new Date(),
-  },
-  {
-    id: 2,
-    pool: 'stETH 3 months 31/12/2021',
-    action: 'Deposit',
-    totalValue: 262000000,
-    account: '0x3090...065d22b',
-    time: new Date('2021-07-14T06:00'),
-  },
-];
