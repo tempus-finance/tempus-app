@@ -71,7 +71,13 @@ class TempusPoolService {
   public async getBackingTokenTicker(address: string): Promise<Ticker> {
     const tempusPool = this.tempusPoolsMap[address];
     if (tempusPool) {
-      const backingTokenAddress = await tempusPool.backingToken();
+      let backingTokenAddress: string;
+      try {
+        backingTokenAddress = await tempusPool.backingToken();
+      } catch (error) {
+        console.error(`Failed to get BT address for Tempus Pool ${address}`);
+        return Promise.reject(error);
+      }
 
       return getERC20TokenService(backingTokenAddress).symbol();
     }
