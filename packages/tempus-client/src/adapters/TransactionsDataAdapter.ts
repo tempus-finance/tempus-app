@@ -1,3 +1,4 @@
+import { ethers } from 'ethers';
 import format from 'date-fns/format';
 import { formatDistanceToNow } from 'date-fns';
 import { Block, JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
@@ -6,7 +7,7 @@ import TempusPoolService, { DepositedEvent, RedeemedEvent } from '../services/Te
 import getStatisticsService from '../services/getStatisticsService';
 import StatisticsService from '../services/StatisticsService';
 import getDefaultProvider from '../services/getDefaultProvider';
-import { getEventValue, isDepositEvent, isRedeemEvent } from '../services/EventUtils';
+import { isDepositEvent, isRedeemEvent } from '../services/EventUtils';
 import { Ticker, Transaction, TransactionAction } from '../interfaces';
 import getConfig from '../utils/get-config';
 
@@ -173,7 +174,7 @@ class TransactionsDataAdapter {
       return Promise.reject(error);
     }
 
-    return getEventValue(event) * poolBackingTokenRate;
+    return Number(ethers.utils.formatEther(event.args.backingTokenValue)) * poolBackingTokenRate;
   }
 }
 export default TransactionsDataAdapter;

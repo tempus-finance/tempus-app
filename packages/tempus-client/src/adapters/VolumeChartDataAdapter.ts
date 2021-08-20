@@ -1,10 +1,10 @@
+import { ethers } from 'ethers';
 import { Block, JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
 import ChartDataPoint from '../interfaces/ChartDataPoint';
 import getStatisticsService from '../services/getStatisticsService';
 import getTempusPoolService from '../services/getTempusPoolService';
 import StatisticsService from '../services/StatisticsService';
 import TempusPoolService, { DepositedEvent, RedeemedEvent } from '../services/TempusPoolService';
-import { getEventValue } from '../services/EventUtils';
 import getConfig from '../utils/get-config';
 
 type VolumeChartDataAdapterParameters = {
@@ -190,7 +190,7 @@ class VolumeChartDataAdapter {
 
     return {
       date: new Date(this.getEventBlock(event).timestamp * 1000),
-      value: poolBackingTokenRate * getEventValue(event),
+      value: Number(ethers.utils.formatEther(event.args.backingTokenValue)) * poolBackingTokenRate,
     };
   }
 }
