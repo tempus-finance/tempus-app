@@ -23,9 +23,8 @@ export const formatValueToCurrency = (value: any): string | undefined => {
     const filteredRightValues = rightValues.filter((v: string) => formatValueToCurrencyRegExp.test(v));
 
     if (filteredRightValues.length) {
-      return `${new Intl.NumberFormat().format(parseInt(filteredLeftValues.join(''), 10))}.${parseInt(
-        filteredRightValues.join(''),
-        10,
+      return `${new Intl.NumberFormat().format(parseInt(filteredLeftValues.join(''), 10))}.${filteredRightValues.join(
+        '',
       )}`;
     } else {
       return `${new Intl.NumberFormat().format(parseInt(filteredLeftValues.join(''), 10))}.`;
