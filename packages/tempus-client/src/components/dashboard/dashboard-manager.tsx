@@ -1,6 +1,6 @@
 import { FC, useCallback, useMemo, useState } from 'react';
 import { DashboardRow } from '../../interfaces';
-import getDashboardDataService from '../../services/getDashboardDataService';
+import getDashboardDataAdapter from '../../adapters/getDashboardDataAdapter';
 import Dashboard from './dashboard';
 
 type DashboardManagerProps = {
@@ -12,7 +12,12 @@ const DashboardManager: FC<DashboardManagerProps> = ({ selectedRow, onRowSelecte
   const [rows, setRows] = useState<DashboardRow[]>([]);
 
   useMemo(() => {
-    setRows(getDashboardDataService().getRows());
+    const fetchRows = async () => {
+      const rows = await getDashboardDataAdapter().getRows();
+
+      setRows(rows);
+    };
+    fetchRows();
   }, [setRows]);
 
   const onRowActionClick = useCallback(

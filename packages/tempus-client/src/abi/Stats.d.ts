@@ -18,7 +18,7 @@ import { Listener, Provider } from "@ethersproject/providers";
 import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 import { TypedEventFilter, TypedEvent, TypedListener } from "./commons";
 
-interface StatisticsInterface extends ethers.utils.Interface {
+interface StatsInterface extends ethers.utils.Interface {
   functions: {
     "ENS()": FunctionFragment;
     "getRate(bytes32)": FunctionFragment;
@@ -51,7 +51,7 @@ interface StatisticsInterface extends ethers.utils.Interface {
   events: {};
 }
 
-export class Statistics extends BaseContract {
+export class Stats extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
@@ -92,7 +92,7 @@ export class Statistics extends BaseContract {
     toBlock?: string | number | undefined
   ): Promise<Array<TypedEvent<EventArgsArray & EventArgsObject>>>;
 
-  interface: StatisticsInterface;
+  interface: StatsInterface;
 
   functions: {
     ENS(overrides?: CallOverrides): Promise<[string]>;

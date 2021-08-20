@@ -3,23 +3,23 @@ import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
 import { BigNumber, CallOverrides, Contract, ethers } from 'ethers';
 
 // Contract typings
-import { Statistics } from '../abi/Statistics';
+import { Stats } from '../abi/Stats';
 
 // ABI
-import StatisticsABI from '../abi/Statistics.json';
+import StatsABI from '../abi/Stats.json';
 
 type StatisticsServiceParameters = {
   Contract: typeof Contract;
   address: string;
-  abi: typeof StatisticsABI;
+  abi: typeof StatsABI;
   signerOrProvider: JsonRpcProvider | JsonRpcSigner;
 };
 
 class StatisticsService {
-  private statistics: Statistics | null = null;
+  private stats: Stats | null = null;
 
   init(params: StatisticsServiceParameters) {
-    this.statistics = new Contract(params.address, params.abi, params.signerOrProvider) as Statistics;
+    this.stats = new Contract(params.address, params.abi, params.signerOrProvider) as Stats;
   }
 
   public async totalValueLockedUSD(
@@ -29,7 +29,7 @@ class StatisticsService {
   ): Promise<BigNumber> {
     let totalValueLockedUSD = BigNumber.from('0');
 
-    if (!this.statistics) {
+    if (!this.stats) {
       console.error(
         'StatisticsService totalValueLockedUSD Attempted to use statistics contract before initializing it...',
       );
@@ -39,11 +39,15 @@ class StatisticsService {
 
     const chainlinkAggregatorEnsHash = ethers.utils.namehash(`${poolBackingTokenTicker.toLowerCase()}-usd.data.eth`);
     try {
-      totalValueLockedUSD = await this.statistics.totalValueLockedAtGivenRate(
-        tempusPool,
-        chainlinkAggregatorEnsHash,
-        overrides,
-      );
+      if (overrides) {
+        totalValueLockedUSD = await this.stats.totalValueLockedAtGivenRate(
+          tempusPool,
+          chainlinkAggregatorEnsHash,
+          overrides,
+        );
+      } else {
+        totalValueLockedUSD = await this.stats.totalValueLockedAtGivenRate(tempusPool, chainlinkAggregatorEnsHash);
+      }
     } catch (error) {
       console.error(`StatisticsService totalValueLockedUSD ${error}`);
       return Promise.reject(error);
@@ -56,7 +60,7 @@ class StatisticsService {
    * Returns conversion rate of specified token to USD
    */
   public async getRate(tokenTicker: string, overrides?: CallOverrides): Promise<number> {
-    if (!this.statistics) {
+    if (!this.stats) {
       console.error(
         'StatisticsService totalValueLockedUSD Attempted to use statistics contract before initializing it...',
       );
@@ -69,7 +73,7 @@ class StatisticsService {
     let rate: BigNumber;
     let rateDenominator: BigNumber;
     try {
-      [rate, rateDenominator] = await this.statistics.getRate(ensNameHash, overrides);
+      [rate, rateDenominator] = await this.stats.getRate(ensNameHash, overrides);
     } catch (error) {
       console.error(`Failed to get exchange rate for ${tokenTicker}!`, error);
       return Promise.reject(error);

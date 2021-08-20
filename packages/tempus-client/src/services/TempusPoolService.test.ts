@@ -13,11 +13,12 @@ jest.mock('./getERC20TokenService');
 const getERC20TokenService = jest.requireMock('./getERC20TokenService');
 
 describe('TempusPoolService', () => {
+  const mockBackingTokenAddress = 'dummy-backing-token-address';
   const mockAddresses = ['someAddress'];
   const [mockAddress] = mockAddresses;
 
   const mockABI = {};
-  const mockCurrentExchangeRate = jest.fn();
+  const mockCurrentInterestRate = jest.fn();
   const mockMaturityTime = jest.fn();
   const mockStartTime = jest.fn();
   const mockPriceOracle = jest.fn();
@@ -26,6 +27,8 @@ describe('TempusPoolService', () => {
   const mockCurrentRate = jest.fn();
   const getPriceOracleServiceMock = jest.fn();
   const mockQueryFilter = jest.fn();
+  const mockBackingToken = jest.fn();
+  const mockProtocolName = jest.fn();
 
   const mockSymbol = jest.fn();
 
@@ -36,12 +39,14 @@ describe('TempusPoolService', () => {
   beforeEach(() => {
     Contract.mockImplementation(() => {
       return {
-        currentExchangeRate: mockCurrentExchangeRate,
+        currentInterestRate: mockCurrentInterestRate,
         maturityTime: mockMaturityTime,
         startTime: mockStartTime,
         priceOracle: mockPriceOracle,
         yieldBearingToken: mockYieldBearingToken,
         queryFilter: mockQueryFilter,
+        backingToken: mockBackingToken,
+        protocolName: mockProtocolName,
         provider: {
           getBlock: mockGetBlock,
         },
@@ -117,7 +122,7 @@ describe('TempusPoolService', () => {
     });
 
     test('it returns a Promise that resolves with the value of the current exchange rate', () => {
-      mockCurrentExchangeRate.mockImplementation(() =>
+      mockCurrentInterestRate.mockImplementation(() =>
         Promise.resolve({
           toBigInt: jest.fn().mockReturnValue(123.45),
         }),
@@ -183,6 +188,9 @@ describe('TempusPoolService', () => {
     });
 
     test('it returns a pool backing token ticker', async () => {
+      mockBackingToken.mockImplementation(() => mockBackingTokenAddress);
+      mockSymbol.mockImplementation(() => Promise.resolve('DAI'));
+
       const ticker = await instance.getBackingTokenTicker(mockAddress);
 
       expect(ticker).toBe('DAI');
@@ -195,6 +203,16 @@ describe('TempusPoolService', () => {
       const ticker = await instance.getYieldBearingTokenTicker(mockAddress);
 
       expect(ticker).toBe('aDAI');
+    });
+
+    test('it returns a name of the protocol', async () => {
+      mockProtocolName.mockImplementation(() => Promise.resolve('Aave'));
+
+      utils.parseBytes32String.mockImplementation((value: string) => value);
+
+      const protocolName = await instance.getProtocolName(mockAddress);
+
+      expect(protocolName).toBe('Aave');
     });
 
     test('it returns a a list of deposited events', async () => {

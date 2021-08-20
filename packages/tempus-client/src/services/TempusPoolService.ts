@@ -68,11 +68,12 @@ class TempusPoolService {
     return this.poolAddresses;
   }
 
-  public getBackingTokenTicker(address: string): Promise<Ticker> {
+  public async getBackingTokenTicker(address: string): Promise<Ticker> {
     const tempusPool = this.tempusPoolsMap[address];
     if (tempusPool) {
-      // TODO - When backend team adds backing token ticker attribute on TempusPool contract, use it instead of hardcoded DAI value.
-      return Promise.resolve('DAI');
+      const backingTokenAddress = await tempusPool.backingToken();
+
+      return getERC20TokenService(backingTokenAddress).symbol();
     }
     throw new Error(`Address '${address}' is not valid`);
   }
@@ -89,6 +90,19 @@ class TempusPoolService {
       }
 
       return getERC20TokenService(yieldBearingTokenAddress).symbol();
+    }
+    throw new Error(`Address '${address}' is not valid`);
+  }
+
+  public async getProtocolName(address: string): Promise<string> {
+    const tempusPool = this.tempusPoolsMap[address];
+    if (tempusPool) {
+      try {
+        return ethers.utils.parseBytes32String(await tempusPool.protocolName());
+      } catch (error) {
+        console.error('TempusPoolService - getProtocolName() - Failed to fetch protocol name', error);
+        return Promise.reject(error);
+      }
     }
     throw new Error(`Address '${address}' is not valid`);
   }
@@ -126,7 +140,7 @@ class TempusPoolService {
   getCurrentExchangeRate(address: string): Promise<number> {
     if (this.tempusPoolsMap[address] !== undefined) {
       return this.tempusPoolsMap[address]
-        .currentExchangeRate()
+        .currentInterestRate()
         .then((data: any) => Promise.resolve(data.toBigInt()))
         .catch((error: Error) => {
           console.error('ContractDataService getCurrentExchangeRate error', error);

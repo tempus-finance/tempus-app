@@ -1,14 +1,28 @@
-import { Protocol } from './Protocol';
 import { Ticker } from './Token';
 
-export interface DashboardRow {
-  id: number;
-  parentId: number;
+export type DashboardRow = DashboardRowParent | DashboardRowChild;
+
+export interface DashboardRowParent {
+  id: string;
+  // dx-react-grid library requires parentId on each row - even though parent rows don't actually need it and is always null.
+  parentId: null;
   token: Ticker;
-  supportedTokens?: Ticker[];
-  defaultToken?: Ticker;
-  protocol: Protocol[];
-  maturity: Date;
+  maturity: Date[];
+  fixedAPY: number[];
+  variableAPY: number[];
+  TVL: number;
+  presentValue: number;
+  availableToDeposit: string;
+}
+
+export interface DashboardRowChild {
+  id: string;
+  parentId: string;
+  token: Ticker;
+  protocol: string;
+  supportedTokens: Ticker[];
+  startDate: Date;
+  maturityDate: Date;
   fixedAPY: number;
   variableAPY: number;
   TVL: number;

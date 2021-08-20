@@ -52,9 +52,9 @@ class PriceOracleService {
     if (priceOracle) {
       try {
         if (!overrides) {
-          currentRate = await priceOracle.currentRate(tokenAddress);
+          currentRate = await priceOracle.storedInterestRate(tokenAddress);
         } else {
-          currentRate = await priceOracle.currentRate(tokenAddress, overrides);
+          currentRate = await priceOracle.storedInterestRate(tokenAddress, overrides);
         }
       } catch (error) {
         console.error('PriceOracleService currentRate', error);
