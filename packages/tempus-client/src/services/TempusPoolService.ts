@@ -20,21 +20,23 @@ type TempusPoolServiceParameters = {
 // TODO - Use event types from auto generated contract typings file when TypeChain plugin for Hardhat adds them.
 // See: https://github.com/ethereum-ts/TypeChain/issues/454
 export type DepositedEvent = TypedEvent<
-  [string, string, BigNumber, BigNumber, BigNumber] & {
+  [string, string, BigNumber, BigNumber, BigNumber, BigNumber] & {
     depositor: string;
     recipient: string;
     yieldTokenAmount: BigNumber;
+    backingTokenValue: BigNumber;
     shareAmounts: BigNumber;
-    rate: BigNumber;
+    interestRate: BigNumber;
   }
 >;
 export type RedeemedEvent = TypedEvent<
-  [string, BigNumber, BigNumber, BigNumber, BigNumber] & {
+  [string, BigNumber, BigNumber, BigNumber, BigNumber, BigNumber] & {
     redeemer: string;
-    principalAmount: BigNumber;
-    yieldAmount: BigNumber;
+    principalShareAmount: BigNumber;
+    yieldShareAmount: BigNumber;
     yieldBearingAmount: BigNumber;
-    rate: BigNumber;
+    backingTokenValue: BigNumber;
+    interestRate: BigNumber;
   }
 >;
 

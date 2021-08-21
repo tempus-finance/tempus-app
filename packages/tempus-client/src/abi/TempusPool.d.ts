@@ -104,9 +104,9 @@ interface TempusPoolInterface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: 'yieldShare', data: BytesLike): Result;
 
   events: {
-    'Deposited(address,address,uint256,uint256,uint256)': EventFragment;
+    'Deposited(address,address,uint256,uint256,uint256,uint256)': EventFragment;
     'OwnershipTransferred(address,address)': EventFragment;
-    'Redeemed(address,uint256,uint256,uint256,uint256)': EventFragment;
+    'Redeemed(address,uint256,uint256,uint256,uint256,uint256)': EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: 'Deposited'): EventFragment;
@@ -373,16 +373,18 @@ export class TempusPool extends BaseContract {
       depositor?: null,
       recipient?: null,
       yieldTokenAmount?: null,
+      backingTokenValue?: null,
       shareAmounts?: null,
-      rate?: null,
+      interestRate?: null,
     ): TypedEventFilter<
-      [string, string, BigNumber, BigNumber, BigNumber],
+      [string, string, BigNumber, BigNumber, BigNumber, BigNumber],
       {
         depositor: string;
         recipient: string;
         yieldTokenAmount: BigNumber;
+        backingTokenValue: BigNumber;
         shareAmounts: BigNumber;
-        rate: BigNumber;
+        interestRate: BigNumber;
       }
     >;
 
@@ -393,18 +395,20 @@ export class TempusPool extends BaseContract {
 
     Redeemed(
       redeemer?: null,
-      principalAmount?: null,
-      yieldAmount?: null,
+      principalShareAmount?: null,
+      yieldShareAmount?: null,
       yieldBearingAmount?: null,
-      rate?: null,
+      backingTokenValue?: null,
+      interestRate?: null,
     ): TypedEventFilter<
-      [string, BigNumber, BigNumber, BigNumber, BigNumber],
+      [string, BigNumber, BigNumber, BigNumber, BigNumber, BigNumber],
       {
         redeemer: string;
-        principalAmount: BigNumber;
-        yieldAmount: BigNumber;
+        principalShareAmount: BigNumber;
+        yieldShareAmount: BigNumber;
         yieldBearingAmount: BigNumber;
-        rate: BigNumber;
+        backingTokenValue: BigNumber;
+        interestRate: BigNumber;
       }
     >;
   };
