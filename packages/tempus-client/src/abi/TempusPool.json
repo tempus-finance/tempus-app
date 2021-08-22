@@ -23,13 +23,19 @@
       {
         "indexed": false,
         "internalType": "uint256",
+        "name": "backingTokenValue",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
         "name": "shareAmounts",
         "type": "uint256"
       },
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "rate",
+        "name": "interestRate",
         "type": "uint256"
       }
     ],
@@ -67,13 +73,13 @@
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "principalAmount",
+        "name": "principalShareAmount",
         "type": "uint256"
       },
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "yieldAmount",
+        "name": "yieldShareAmount",
         "type": "uint256"
       },
       {
@@ -85,7 +91,13 @@
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "rate",
+        "name": "backingTokenValue",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "interestRate",
         "type": "uint256"
       }
     ],
