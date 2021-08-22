@@ -75,8 +75,8 @@ export default class DashboardDataAdapter {
         fixedAPY: 0.051, // TODO - Get from TempusPool controller once it's added on the backend.
         variableAPY: 0.117, // TODO - Needs to be fixed - does not take into account gains from providing liquidity, some protocol compound interest, it does not increase linearly.
         TVL: Number(ethers.utils.formatEther(tvl)),
-        presentValue: 1000.0, // TODO - Need to decide what to do with this column before user connects the wallet.
-        availableToDeposit: '12.334 DAI', // TODO - Needs to decide what to do with this column before user connects the wallet.
+        presentValue: undefined, // TODO - Need to decide what to do with this column before user connects the wallet.
+        availableToDeposit: undefined, // TODO - Needs to decide what to do with this column before user connects the wallet.
       };
     } catch (error) {
       console.error('DashboardDataAdapter - getChildRowData() - Failed to get data for child row!', error);
@@ -101,7 +101,10 @@ export default class DashboardDataAdapter {
           return accumulator + currentValue.TVL;
         }, 0);
         const parentPresentValue = parentChildren.reduce((accumulator, currentValue) => {
-          return accumulator + currentValue.presentValue;
+          if (currentValue.presentValue) {
+            return (accumulator + currentValue.presentValue) | 0;
+          }
+          return accumulator;
         }, 0);
 
         const parentRow: DashboardRowParent = {

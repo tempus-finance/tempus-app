@@ -64,6 +64,10 @@ export const dashboardColumnsDefinitions: ExtraDataColumn[] = [
     name: 'presentValue',
     title: 'Present Value',
     getCellValue: (row: any) => {
+      if (!row.presentValue) {
+        return '-';
+      }
+
       return new Intl.NumberFormat('en-US', {
         style: 'currency',
         currency: 'USD',
@@ -75,5 +79,11 @@ export const dashboardColumnsDefinitions: ExtraDataColumn[] = [
   {
     name: 'availableToDeposit',
     title: 'Avail to Deposit',
+    getCellValue: (row: any) => {
+      if (!row.availableToDeposit) {
+        return '-';
+      }
+      return row.availableToDeposit;
+    },
   },
 ];

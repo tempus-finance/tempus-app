@@ -2,7 +2,7 @@ import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
 import { BigNumber, ethers } from 'ethers';
 import { TypedEvent } from '../abi/commons';
 import { TempusPool } from '../abi/TempusPool';
-import { Ticker } from '../interfaces';
+import { ProtocolName, Ticker } from '../interfaces';
 import getERC20TokenService from './getERC20TokenService';
 import PriceOracleService from './PriceOracleService';
 
@@ -100,11 +100,11 @@ class TempusPoolService {
     throw new Error(`Address '${address}' is not valid`);
   }
 
-  public async getProtocolName(address: string): Promise<string> {
+  public async getProtocolName(address: string): Promise<ProtocolName> {
     const tempusPool = this.tempusPoolsMap[address];
     if (tempusPool) {
       try {
-        return ethers.utils.parseBytes32String(await tempusPool.protocolName());
+        return ethers.utils.parseBytes32String(await tempusPool.protocolName()) as ProtocolName;
       } catch (error) {
         console.error('TempusPoolService - getProtocolName() - Failed to fetch protocol name', error);
         return Promise.reject(error);
