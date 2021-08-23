@@ -22,8 +22,8 @@ const WalletConnect: FC = (): JSX.Element => {
   }, [hasBeenClicked, setHasBeenClicked, activate]);
 
   useEffect(() => {
-    context.setContext &&
-      context.setContext({
+    context.setData &&
+      context.setData({
         userWalletAddress: account || '',
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps

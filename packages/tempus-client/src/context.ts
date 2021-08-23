@@ -5,7 +5,7 @@ interface ContextDataType {
 }
 
 interface ContextType {
-  setContext: Dispatch<SetStateAction<ContextDataType>> | null;
+  setData: Dispatch<SetStateAction<ContextDataType>> | null;
   data: ContextDataType;
 }
 
@@ -14,5 +14,5 @@ export const defaultContextValue = {
 };
 export const Context = React.createContext<ContextType>({
   data: defaultContextValue,
-  setContext: null,
+  setData: null,
 });

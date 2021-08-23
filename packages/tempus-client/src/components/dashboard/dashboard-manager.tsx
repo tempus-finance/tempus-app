@@ -12,16 +12,18 @@ type DashboardManagerProps = {
 const DashboardManager: FC<DashboardManagerProps> = ({ selectedRow, onRowSelected }): JSX.Element => {
   const [rows, setRows] = useState<DashboardRow[]>([]);
 
-  const context = useContext(Context);
+  const {
+    data: { userWalletAddress },
+  } = useContext(Context);
 
   useMemo(() => {
     const fetchRows = async () => {
-      const rows = await getDashboardDataAdapter(context.data.userWalletAddress).getRows();
+      const rows = await getDashboardDataAdapter(userWalletAddress).getRows();
 
       setRows(rows);
     };
     fetchRows();
-  }, [setRows, context.data.userWalletAddress]);
+  }, [setRows, userWalletAddress]);
 
   const onRowActionClick = useCallback(
     (row: any) => {
