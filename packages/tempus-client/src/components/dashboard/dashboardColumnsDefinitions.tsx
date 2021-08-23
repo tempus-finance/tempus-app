@@ -42,8 +42,8 @@ export const dashboardColumnsDefinitions: ExtraDataColumn[] = [
     name: 'maturity',
     title: 'Maturity',
     getCellValue: row => {
-      if (row.maturity && row.maturity.length === 2) {
-        const [min, max] = row.maturity;
+      if (row.maturityRange && row.maturityRange.length === 2) {
+        const [min, max] = row.maturityRange;
         if (min.getTime() === max.getTime()) {
           return [min.getTime()];
         }
