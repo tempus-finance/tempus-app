@@ -94,8 +94,12 @@ export default class DashboardDataAdapter {
         TVL: Number(ethers.utils.formatEther(tvl)),
         presentValue:
           presentValueInBackingTokens !== undefined ? presentValueInBackingTokens * poolBackingTokenRate : undefined,
-        availableToDeposit:
-          availableToDeposit !== undefined ? `${availableToDeposit} ${backingTokenTicker}` : undefined,
+        availableToDeposit: availableToDeposit && {
+          backingToken: availableToDeposit.backingToken,
+          backingTokenTicker: backingTokenTicker,
+          yieldToken: availableToDeposit.yieldToken,
+          yieldTokenTicker: yieldBearingTokenTicker,
+        },
       };
     } catch (error) {
       console.error('DashboardDataAdapter - getChildRowData() - Failed to get data for child row!', error);
@@ -125,6 +129,9 @@ export default class DashboardDataAdapter {
           }
           return accumulator;
         }, 0);
+        let availableToDeposit: boolean = parentChildren.some(child => {
+          return child.availableToDeposit?.backingToken || child.availableToDeposit?.yieldToken;
+        });
 
         const parentRow: DashboardRowParent = {
           id: child.token, // Using token as parent ID, this way multiple children with same token will fall under same parent.
@@ -135,9 +142,7 @@ export default class DashboardDataAdapter {
           variableAPY: this.getRangeFrom<number>(childrenVariable),
           TVL: parentTVL,
           presentValue: this.userWalletAddress ? parentPresentValue : undefined,
-          // availableToDeposit - Decide how we want to show multiple user tokens in the same row
-          // (in case parent has multiple children with different YBT)
-          availableToDeposit: parentChildren[0].availableToDeposit,
+          availableToDeposit: this.userWalletAddress ? (availableToDeposit ? 'Yes' : 'No') : undefined,
         };
 
         parentRows.push(parentRow);
@@ -217,7 +222,9 @@ export default class DashboardDataAdapter {
     }
   }
 
-  private async getAvailableToDepositForPool(pool: TempusPool): Promise<number | undefined> {
+  private async getAvailableToDepositForPool(
+    pool: TempusPool,
+  ): Promise<{ backingToken: number; yieldToken: number } | undefined> {
     if (!this.tempusPoolService || !this.statisticsService) {
       console.error(
         'DashboardDataAdapter - getAvailableToDepositForPool() - Attempted to use DashboardDataAdapter before initializing it!',
@@ -230,12 +237,23 @@ export default class DashboardDataAdapter {
     }
 
     try {
-      const poolBackingToken = await this.tempusPoolService.getBackingToken(pool.address);
+      const [poolBackingToken, poolYieldToken] = await Promise.all([
+        this.tempusPoolService.getBackingToken(pool.address),
+        this.tempusPoolService.getYieldToken(pool.address),
+      ]);
+
       const backingToken = getERC20TokenService(poolBackingToken);
+      const yieldToken = getERC20TokenService(poolYieldToken);
 
-      const availableToDeposit = await backingToken.balanceOf(this.userWalletAddress);
+      const [backingTokensAvailable, yieldTokensAvailable] = await Promise.all([
+        backingToken.balanceOf(this.userWalletAddress),
+        yieldToken.balanceOf(this.userWalletAddress),
+      ]);
 
-      return Number(ethers.utils.formatEther(availableToDeposit));
+      return {
+        backingToken: Number(ethers.utils.formatEther(backingTokensAvailable)),
+        yieldToken: Number(ethers.utils.formatEther(yieldTokensAvailable)),
+      };
     } catch (error) {
       console.error(
         `DashboardDataAdapter - getAvailableToDepositForPool() - ` +

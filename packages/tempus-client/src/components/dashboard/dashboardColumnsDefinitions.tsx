@@ -1,6 +1,7 @@
 import { Column } from '@devexpress/dx-react-grid';
 
 import { fixedAPYTooltipText, variableAPYTooltipText } from '../../constants';
+import { DashboardRowChild, DashboardRowParent } from '../../interfaces';
 
 export interface ExtraDataColumn extends Column {
   tooltip?: string;
@@ -79,11 +80,19 @@ export const dashboardColumnsDefinitions: ExtraDataColumn[] = [
   {
     name: 'availableToDeposit',
     title: 'Avail to Deposit',
-    getCellValue: (row: any) => {
-      if (row.availableToDeposit !== 0 && !row.availableToDeposit) {
+    getCellValue: (row: DashboardRowParent | DashboardRowChild) => {
+      if (!row.availableToDeposit) {
         return '-';
       }
-      return row.availableToDeposit;
+
+      if (row.availableToDeposit === 'Yes' || row.availableToDeposit === 'No') {
+        return row.availableToDeposit;
+      }
+
+      return (
+        `${row.availableToDeposit.backingToken} ${row.availableToDeposit.backingTokenTicker} / ` +
+        `${row.availableToDeposit.yieldToken} ${row.availableToDeposit.yieldTokenTicker}`
+      );
     },
   },
 ];

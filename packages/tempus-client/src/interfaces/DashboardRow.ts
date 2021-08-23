@@ -6,13 +6,13 @@ export interface DashboardRow {
   token: Ticker;
   TVL: number;
   presentValue: number | undefined;
-  availableToDeposit: string | undefined;
 }
 
 export interface DashboardRowParent extends DashboardRow {
   maturityRange: Date[];
   fixedAPY: number[];
   variableAPY: number[];
+  availableToDeposit: 'Yes' | 'No' | undefined;
 }
 
 export interface DashboardRowChild extends DashboardRow {
@@ -22,4 +22,12 @@ export interface DashboardRowChild extends DashboardRow {
   maturityDate: Date;
   fixedAPY: number;
   variableAPY: number;
+  availableToDeposit: AvailableToDepositChild | undefined;
+}
+
+interface AvailableToDepositChild {
+  backingToken: number;
+  backingTokenTicker: Ticker;
+  yieldToken: number;
+  yieldTokenTicker: Ticker;
 }
