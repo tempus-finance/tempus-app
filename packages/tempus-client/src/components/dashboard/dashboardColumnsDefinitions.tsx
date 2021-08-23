@@ -80,7 +80,7 @@ export const dashboardColumnsDefinitions: ExtraDataColumn[] = [
     name: 'availableToDeposit',
     title: 'Avail to Deposit',
     getCellValue: (row: any) => {
-      if (!row.availableToDeposit) {
+      if (row.availableToDeposit !== 0 && !row.availableToDeposit) {
         return '-';
       }
       return row.availableToDeposit;

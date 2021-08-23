@@ -261,6 +261,15 @@ class TempusPoolService {
 
     throw new Error(`Address '${address}' is not valid`);
   }
+
+  public getBackingToken(address: string): Promise<string> {
+    const tempusPool = this.tempusPoolsMap[address];
+    if (tempusPool) {
+      return tempusPool.backingToken();
+    }
+
+    throw new Error(`Address '${address}' is not valid`);
+  }
 }
 
 export default TempusPoolService;
