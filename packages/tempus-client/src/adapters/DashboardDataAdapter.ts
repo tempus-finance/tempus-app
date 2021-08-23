@@ -111,7 +111,7 @@ export default class DashboardDataAdapter {
           id: child.token, // Using token as parent ID, this way multiple children with same token will fall under same parent.
           parentId: null, // Always null for parent rows
           token: child.token,
-          maturity: this.getRangeFrom<Date>(childrenMaturityDate),
+          maturityRange: this.getRangeFrom<Date>(childrenMaturityDate),
           fixedAPY: this.getRangeFrom<number>(childrenFixedAPY),
           variableAPY: this.getRangeFrom<number>(childrenVariable),
           TVL: parentTVL,
