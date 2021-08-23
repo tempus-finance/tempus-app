@@ -1,6 +1,8 @@
 import { FC, useCallback, useMemo, useState } from 'react';
 import { DashboardRow } from '../../interfaces';
 import getDashboardDataAdapter from '../../adapters/getDashboardDataAdapter';
+import { useAppSelector } from '../../state/hooks';
+import { selectUserWalletAddress } from '../../state/slices/user-wallet-slice';
 import Dashboard from './dashboard';
 
 type DashboardManagerProps = {
@@ -11,14 +13,16 @@ type DashboardManagerProps = {
 const DashboardManager: FC<DashboardManagerProps> = ({ selectedRow, onRowSelected }): JSX.Element => {
   const [rows, setRows] = useState<DashboardRow[]>([]);
 
+  const userWalletAddress = useAppSelector(selectUserWalletAddress);
+
   useMemo(() => {
     const fetchRows = async () => {
-      const rows = await getDashboardDataAdapter().getRows();
+      const rows = await getDashboardDataAdapter(userWalletAddress).getRows();
 
       setRows(rows);
     };
     fetchRows();
-  }, [setRows]);
+  }, [setRows, userWalletAddress]);
 
   const onRowActionClick = useCallback(
     (row: any) => {

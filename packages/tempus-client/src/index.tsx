@@ -1,9 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux';
 import { Web3ReactProvider } from '@web3-react/core';
 import { createTheme, ThemeProvider } from '@material-ui/core';
 import App from './components/app/App';
 import getLibrary from './utils/getLibrary';
+import { store } from './state/store';
 
 import './index.scss';
 
@@ -47,11 +49,13 @@ const theme = createTheme({
 
 ReactDOM.render(
   <React.StrictMode>
-    <ThemeProvider theme={theme}>
-      <Web3ReactProvider getLibrary={getLibrary}>
-        <App />
-      </Web3ReactProvider>
-    </ThemeProvider>
+    <Provider store={store}>
+      <ThemeProvider theme={theme}>
+        <Web3ReactProvider getLibrary={getLibrary}>
+          <App />
+        </Web3ReactProvider>
+      </ThemeProvider>
+    </Provider>
   </React.StrictMode>,
   document.getElementById('root'),
 );

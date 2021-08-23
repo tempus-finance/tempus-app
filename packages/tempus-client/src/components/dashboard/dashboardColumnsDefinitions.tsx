@@ -64,7 +64,7 @@ export const dashboardColumnsDefinitions: ExtraDataColumn[] = [
     name: 'presentValue',
     title: 'Present Value',
     getCellValue: (row: any) => {
-      if (!row.presentValue) {
+      if (row.presentValue !== 0 && !row.presentValue) {
         return '-';
       }
 

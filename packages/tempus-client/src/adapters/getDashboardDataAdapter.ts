@@ -3,17 +3,22 @@ import getDefaultProvider from '../services/getDefaultProvider';
 import DashboardDataAdapter from './DashboardDataAdapter';
 
 let dashboardDataAdapter: DashboardDataAdapter;
-const getDashboardDataAdapter = (signerOrProvider?: JsonRpcSigner | JsonRpcProvider): DashboardDataAdapter => {
+const getDashboardDataAdapter = (
+  userWalletAddress: string,
+  signerOrProvider?: JsonRpcSigner | JsonRpcProvider,
+): DashboardDataAdapter => {
   if (!dashboardDataAdapter) {
     dashboardDataAdapter = new DashboardDataAdapter();
     dashboardDataAdapter.init({
       signerOrProvider: getDefaultProvider(),
+      userWalletAddress: userWalletAddress,
     });
   }
 
   if (signerOrProvider) {
     dashboardDataAdapter.init({
       signerOrProvider: signerOrProvider,
+      userWalletAddress: userWalletAddress,
     });
   }
 

@@ -1,12 +1,16 @@
-import { FC, useCallback, useState } from 'react';
+import { FC, useCallback, useState, useEffect } from 'react';
 import { Web3Provider } from '@ethersproject/providers';
 import { useWeb3React } from '@web3-react/core';
 import { InjectedConnector } from '@web3-react/injected-connector';
 import AccountBalanceWalletIcon from '@material-ui/icons/AccountBalanceWallet';
 import Button from '@material-ui/core/Button';
 import shortenAccount from '../../utils/shorten-account';
+import { useAppDispatch } from '../../state/hooks';
+import { setUserWalletAddress } from '../../state/slices/user-wallet-slice';
 
 const WalletConnect: FC = (): JSX.Element => {
+  const dispatch = useAppDispatch();
+
   const [hasBeenClicked, setHasBeenClicked] = useState<boolean>(false);
   const { account, activate, active } = useWeb3React<Web3Provider>();
 
@@ -17,6 +21,10 @@ const WalletConnect: FC = (): JSX.Element => {
       activate(injectedConnector);
     }
   }, [hasBeenClicked, setHasBeenClicked, activate]);
+
+  useEffect(() => {
+    dispatch(setUserWalletAddress(account || ''));
+  }, [dispatch, account]);
 
   let shortenedAccount;
   if (account) {
