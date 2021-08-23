@@ -106,7 +106,7 @@ class TempusPoolService {
     const tempusPool = this.tempusPoolsMap[address];
     if (tempusPool) {
       try {
-        return ethers.utils.parseBytes32String(await tempusPool.protocolName()) as ProtocolName;
+        return ethers.utils.parseBytes32String(await tempusPool.protocolName()).toLowerCase() as ProtocolName;
       } catch (error) {
         console.error('TempusPoolService - getProtocolName() - Failed to fetch protocol name', error);
         return Promise.reject(error);

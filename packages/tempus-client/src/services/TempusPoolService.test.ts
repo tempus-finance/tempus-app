@@ -214,13 +214,13 @@ describe('TempusPoolService', () => {
     });
 
     test('it returns a name of the protocol', async () => {
-      mockProtocolName.mockImplementation(() => Promise.resolve('AAVE'));
+      mockProtocolName.mockImplementation(() => Promise.resolve('Aave'));
 
       utils.parseBytes32String.mockImplementation((value: string) => value);
 
       const protocolName = await instance.getProtocolName(mockAddress);
 
-      expect(protocolName).toBe('AAVE');
+      expect(protocolName).toBe('aave');
     });
 
     test('it returns a a list of deposited events', async () => {
