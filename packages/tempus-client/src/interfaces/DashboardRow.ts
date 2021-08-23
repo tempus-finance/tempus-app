@@ -1,17 +1,25 @@
-import { Protocol } from './Protocol';
 import { Ticker } from './Token';
 
 export interface DashboardRow {
-  id: number;
-  parentId: number;
+  id: string;
+  parentId: string | null;
   token: Ticker;
-  supportedTokens?: Ticker[];
-  defaultToken?: Ticker;
-  protocol: Protocol[];
-  maturity: Date;
+  TVL: number;
+  presentValue: number | undefined;
+  availableToDeposit: string | undefined;
+}
+
+export interface DashboardRowParent extends DashboardRow {
+  maturityRange: Date[];
+  fixedAPY: number[];
+  variableAPY: number[];
+}
+
+export interface DashboardRowChild extends DashboardRow {
+  protocol: string;
+  supportedTokens: Ticker[];
+  startDate: Date;
+  maturityDate: Date;
   fixedAPY: number;
   variableAPY: number;
-  TVL: number;
-  presentValue: number;
-  availableToDeposit: string;
 }

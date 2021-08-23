@@ -20,13 +20,52 @@ import { TypedEventFilter, TypedEvent, TypedListener } from "./commons";
 
 interface AavePriceOracleInterface extends ethers.utils.Interface {
   functions: {
-    "currentRate(address)": FunctionFragment;
+    "numAssetsPerYieldToken(uint256,uint256)": FunctionFragment;
+    "numYieldTokensPerAsset(uint256,uint256)": FunctionFragment;
+    "protocolName()": FunctionFragment;
+    "storedInterestRate(address)": FunctionFragment;
+    "updateInterestRate(address)": FunctionFragment;
   };
 
-  encodeFunctionData(functionFragment: "currentRate", values: [string]): string;
+  encodeFunctionData(
+    functionFragment: "numAssetsPerYieldToken",
+    values: [BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "numYieldTokensPerAsset",
+    values: [BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "protocolName",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "storedInterestRate",
+    values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "updateInterestRate",
+    values: [string]
+  ): string;
 
   decodeFunctionResult(
-    functionFragment: "currentRate",
+    functionFragment: "numAssetsPerYieldToken",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "numYieldTokensPerAsset",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "protocolName",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "storedInterestRate",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "updateInterestRate",
     data: BytesLike
   ): Result;
 
@@ -77,23 +116,130 @@ export class AavePriceOracle extends BaseContract {
   interface: AavePriceOracleInterface;
 
   functions: {
-    currentRate(token: string, overrides?: CallOverrides): Promise<[BigNumber]>;
+    numAssetsPerYieldToken(
+      yieldBearingAmount: BigNumberish,
+      arg1: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
+    numYieldTokensPerAsset(
+      backingTokenAmount: BigNumberish,
+      arg1: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
+    protocolName(overrides?: CallOverrides): Promise<[string]>;
+
+    storedInterestRate(
+      token: string,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
+    updateInterestRate(
+      token: string,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
   };
 
-  currentRate(token: string, overrides?: CallOverrides): Promise<BigNumber>;
+  numAssetsPerYieldToken(
+    yieldBearingAmount: BigNumberish,
+    arg1: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  numYieldTokensPerAsset(
+    backingTokenAmount: BigNumberish,
+    arg1: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  protocolName(overrides?: CallOverrides): Promise<string>;
+
+  storedInterestRate(
+    token: string,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  updateInterestRate(
+    token: string,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
 
   callStatic: {
-    currentRate(token: string, overrides?: CallOverrides): Promise<BigNumber>;
+    numAssetsPerYieldToken(
+      yieldBearingAmount: BigNumberish,
+      arg1: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    numYieldTokensPerAsset(
+      backingTokenAmount: BigNumberish,
+      arg1: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    protocolName(overrides?: CallOverrides): Promise<string>;
+
+    storedInterestRate(
+      token: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    updateInterestRate(
+      token: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
   };
 
   filters: {};
 
   estimateGas: {
-    currentRate(token: string, overrides?: CallOverrides): Promise<BigNumber>;
+    numAssetsPerYieldToken(
+      yieldBearingAmount: BigNumberish,
+      arg1: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    numYieldTokensPerAsset(
+      backingTokenAmount: BigNumberish,
+      arg1: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    protocolName(overrides?: CallOverrides): Promise<BigNumber>;
+
+    storedInterestRate(
+      token: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    updateInterestRate(
+      token: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
-    currentRate(
+    numAssetsPerYieldToken(
+      yieldBearingAmount: BigNumberish,
+      arg1: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    numYieldTokensPerAsset(
+      backingTokenAmount: BigNumberish,
+      arg1: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    protocolName(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    storedInterestRate(
+      token: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    updateInterestRate(
       token: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;

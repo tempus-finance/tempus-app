@@ -1,6 +1,6 @@
 import { ethers } from 'ethers';
 import StatisticsService from './StatisticsService';
-import StatisticsABI from '../abi/Statistics.json';
+import StatisticsABI from '../abi/Stats.json';
 
 jest.mock('ethers');
 const { Contract } = jest.requireMock('ethers');

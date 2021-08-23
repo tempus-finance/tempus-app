@@ -11,6 +11,7 @@ import {
   PopulatedTransaction,
   BaseContract,
   ContractTransaction,
+  Overrides,
   CallOverrides,
 } from "ethers";
 import { BytesLike } from "@ethersproject/bytes";
@@ -20,23 +21,36 @@ import { TypedEventFilter, TypedEvent, TypedListener } from "./commons";
 
 interface CompoundPriceOracleInterface extends ethers.utils.Interface {
   functions: {
-    "currentRate(address)": FunctionFragment;
-    "numYieldTokensPerAsset(address,uint256)": FunctionFragment;
-    "scaledBalance(address,uint256)": FunctionFragment;
+    "numAssetsPerYieldToken(uint256,uint256)": FunctionFragment;
+    "numYieldTokensPerAsset(uint256,uint256)": FunctionFragment;
+    "protocolName()": FunctionFragment;
+    "storedInterestRate(address)": FunctionFragment;
+    "updateInterestRate(address)": FunctionFragment;
   };
 
-  encodeFunctionData(functionFragment: "currentRate", values: [string]): string;
   encodeFunctionData(
-    functionFragment: "numYieldTokensPerAsset",
-    values: [string, BigNumberish]
+    functionFragment: "numAssetsPerYieldToken",
+    values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "scaledBalance",
-    values: [string, BigNumberish]
+    functionFragment: "numYieldTokensPerAsset",
+    values: [BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "protocolName",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "storedInterestRate",
+    values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "updateInterestRate",
+    values: [string]
   ): string;
 
   decodeFunctionResult(
-    functionFragment: "currentRate",
+    functionFragment: "numAssetsPerYieldToken",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -44,7 +58,15 @@ interface CompoundPriceOracleInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "scaledBalance",
+    functionFragment: "protocolName",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "storedInterestRate",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "updateInterestRate",
     data: BytesLike
   ): Result;
 
@@ -95,47 +117,77 @@ export class CompoundPriceOracle extends BaseContract {
   interface: CompoundPriceOracleInterface;
 
   functions: {
-    currentRate(token: string, overrides?: CallOverrides): Promise<[BigNumber]>;
+    numAssetsPerYieldToken(
+      amount: BigNumberish,
+      rate: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
 
     numYieldTokensPerAsset(
-      t: string,
       amount: BigNumberish,
+      rate: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
-    scaledBalance(
+    protocolName(overrides?: CallOverrides): Promise<[string]>;
+
+    storedInterestRate(
       token: string,
-      amount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
+
+    updateInterestRate(
+      token: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
   };
 
-  currentRate(token: string, overrides?: CallOverrides): Promise<BigNumber>;
+  numAssetsPerYieldToken(
+    amount: BigNumberish,
+    rate: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
 
   numYieldTokensPerAsset(
-    t: string,
     amount: BigNumberish,
+    rate: BigNumberish,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
-  scaledBalance(
+  protocolName(overrides?: CallOverrides): Promise<string>;
+
+  storedInterestRate(
     token: string,
-    amount: BigNumberish,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
+
+  updateInterestRate(
+    token: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
 
   callStatic: {
-    currentRate(token: string, overrides?: CallOverrides): Promise<BigNumber>;
-
-    numYieldTokensPerAsset(
-      t: string,
+    numAssetsPerYieldToken(
       amount: BigNumberish,
+      rate: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    scaledBalance(
-      token: string,
+    numYieldTokensPerAsset(
       amount: BigNumberish,
+      rate: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    protocolName(overrides?: CallOverrides): Promise<string>;
+
+    storedInterestRate(
+      token: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    updateInterestRate(
+      token: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
   };
@@ -143,37 +195,54 @@ export class CompoundPriceOracle extends BaseContract {
   filters: {};
 
   estimateGas: {
-    currentRate(token: string, overrides?: CallOverrides): Promise<BigNumber>;
-
-    numYieldTokensPerAsset(
-      t: string,
+    numAssetsPerYieldToken(
       amount: BigNumberish,
+      rate: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    scaledBalance(
-      token: string,
+    numYieldTokensPerAsset(
       amount: BigNumberish,
+      rate: BigNumberish,
       overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    protocolName(overrides?: CallOverrides): Promise<BigNumber>;
+
+    storedInterestRate(
+      token: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    updateInterestRate(
+      token: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
   };
 
   populateTransaction: {
-    currentRate(
-      token: string,
+    numAssetsPerYieldToken(
+      amount: BigNumberish,
+      rate: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     numYieldTokensPerAsset(
-      t: string,
       amount: BigNumberish,
+      rate: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    scaledBalance(
+    protocolName(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    storedInterestRate(
       token: string,
-      amount: BigNumberish,
       overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    updateInterestRate(
+      token: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
   };
 }

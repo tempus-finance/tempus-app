@@ -41,12 +41,16 @@ export const dashboardColumnsDefinitions: ExtraDataColumn[] = [
   {
     name: 'maturity',
     title: 'Maturity',
-    getCellValue: (row: any) => {
-      if (row.maturity.length === 2) {
-        const [min, max] = row.maturity;
+    getCellValue: row => {
+      if (row.maturityRange && row.maturityRange.length === 2) {
+        const [min, max] = row.maturityRange;
+        if (min.getTime() === max.getTime()) {
+          return [min.getTime()];
+        }
+
         return [min.getTime(), max.getTime()];
       }
-      return [row.maturity.getTime()];
+      return [row.maturityDate.getTime()];
     },
   },
   {
@@ -60,6 +64,10 @@ export const dashboardColumnsDefinitions: ExtraDataColumn[] = [
     name: 'presentValue',
     title: 'Present Value',
     getCellValue: (row: any) => {
+      if (!row.presentValue) {
+        return '-';
+      }
+
       return new Intl.NumberFormat('en-US', {
         style: 'currency',
         currency: 'USD',
@@ -71,5 +79,11 @@ export const dashboardColumnsDefinitions: ExtraDataColumn[] = [
   {
     name: 'availableToDeposit',
     title: 'Avail to Deposit',
+    getCellValue: (row: any) => {
+      if (!row.availableToDeposit) {
+        return '-';
+      }
+      return row.availableToDeposit;
+    },
   },
 ];

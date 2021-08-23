@@ -1,46 +1,5 @@
 [
   {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "token",
-        "type": "address"
-      },
-      {
-        "internalType": "contract IPriceOracle",
-        "name": "oracle",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "maturity",
-        "type": "uint256"
-      },
-      {
-        "internalType": "string",
-        "name": "principalName",
-        "type": "string"
-      },
-      {
-        "internalType": "string",
-        "name": "principalSymbol",
-        "type": "string"
-      },
-      {
-        "internalType": "string",
-        "name": "yieldName",
-        "type": "string"
-      },
-      {
-        "internalType": "string",
-        "name": "yieldSymbol",
-        "type": "string"
-      }
-    ],
-    "stateMutability": "nonpayable",
-    "type": "constructor"
-  },
-  {
     "anonymous": false,
     "inputs": [
       {
@@ -147,7 +106,20 @@
   },
   {
     "inputs": [],
-    "name": "currentExchangeRate",
+    "name": "backingToken",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "currentInterestRate",
     "outputs": [
       {
         "internalType": "uint256",
@@ -183,6 +155,30 @@
     "type": "function"
   },
   {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "backingTokenAmount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "recipient",
+        "type": "address"
+      }
+    ],
+    "name": "depositBackingToken",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
     "inputs": [],
     "name": "feesConfig",
     "outputs": [
@@ -214,7 +210,7 @@
   },
   {
     "inputs": [],
-    "name": "initialExchangeRate",
+    "name": "initialInterestRate",
     "outputs": [
       {
         "internalType": "uint256",
@@ -240,7 +236,7 @@
   },
   {
     "inputs": [],
-    "name": "maturityExchangeRate",
+    "name": "maturityInterestRate",
     "outputs": [
       {
         "internalType": "uint256",
@@ -292,7 +288,46 @@
   },
   {
     "inputs": [],
+    "name": "pricePerPrincipalShare",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "pricePerPrincipalShareStored",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "pricePerYieldShare",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "pricePerYieldShareStored",
     "outputs": [
       {
         "internalType": "uint256",
@@ -311,6 +346,19 @@
         "internalType": "contract IERC20",
         "name": "",
         "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "protocolName",
+    "outputs": [
+      {
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
       }
     ],
     "stateMutability": "view",
@@ -338,6 +386,30 @@
       }
     ],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "principalAmount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "yieldAmount",
+        "type": "uint256"
+      }
+    ],
+    "name": "redeemToBackingToken",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "payable",
     "type": "function"
   },
   {
@@ -432,19 +504,6 @@
     "name": "transferOwnership",
     "outputs": [],
     "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "underlyingProtocol",
-    "outputs": [
-      {
-        "internalType": "bytes32",
-        "name": "",
-        "type": "bytes32"
-      }
-    ],
-    "stateMutability": "view",
     "type": "function"
   },
   {

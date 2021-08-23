@@ -23,7 +23,7 @@ describe('PriceOracleService', () => {
   ];
   const mockAddress = mockPriceOraclesConfig[0].address;
 
-  const mockCurrentRate = jest.fn();
+  const mockStoredInterestRate = jest.fn();
 
   let instance: PriceOracleService;
 
@@ -32,7 +32,7 @@ describe('PriceOracleService', () => {
   beforeEach(() => {
     Contract.mockImplementation(() => {
       return {
-        currentRate: mockCurrentRate,
+        storedInterestRate: mockStoredInterestRate,
       };
     });
   });
@@ -77,7 +77,7 @@ describe('PriceOracleService', () => {
     });
 
     test('it returns a Promise that resolves with the value of the current rate', async () => {
-      mockCurrentRate.mockImplementation((address: string, overrides: CallOverrides) =>
+      mockStoredInterestRate.mockImplementation((address: string, overrides: CallOverrides) =>
         Promise.resolve(BigNumber.from('10')),
       );
 

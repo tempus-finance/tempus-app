@@ -3,7 +3,7 @@ import { Contract } from 'ethers';
 import { JsonRpcSigner, JsonRpcProvider } from '@ethersproject/providers';
 
 // ABI
-import StatisticsABI from '../abi/Statistics.json';
+import StatisticsABI from '../abi/Stats.json';
 
 // Config
 import getConfig from '../utils/get-config';
