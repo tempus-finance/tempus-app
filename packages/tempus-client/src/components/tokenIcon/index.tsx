@@ -7,9 +7,10 @@ type IconInProps = {
 };
 
 const TokenIcon: FC<IconInProps> = ({ ticker }): JSX.Element => {
-  const __html = useMemo(() => `<title>${ticker}</title>${tokenIcons[ticker]}`, [ticker]);
+  const icon = useMemo(() => tokenIcons[ticker], [ticker]);
+  const __html = useMemo(() => `<title>${ticker}</title>${icon}`, [ticker, icon]);
 
-  return (
+  return icon ? (
     <svg
       aria-hidden="true"
       className="tf-icon"
@@ -19,6 +20,8 @@ const TokenIcon: FC<IconInProps> = ({ ticker }): JSX.Element => {
       role="img"
       dangerouslySetInnerHTML={{ __html }}
     ></svg>
+  ) : (
+    <></>
   );
 };
 
