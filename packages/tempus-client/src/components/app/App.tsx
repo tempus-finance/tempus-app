@@ -37,7 +37,7 @@ const App: FC = (): JSX.Element => {
   }, [setActiveLink, setShowDashboard]);
 
   return (
-    <Context.Provider value={{ data: contextData, setContext: setContextData }}>
+    <Context.Provider value={{ data: contextData, setData: setContextData }}>
       <div className="tf__sidebar__handler">
         <IconButton onClick={onOpenSidebar}>
           <ChevronRightIcon />
