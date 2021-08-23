@@ -11,14 +11,14 @@ const getDashboardDataAdapter = (
     dashboardDataAdapter = new DashboardDataAdapter();
     dashboardDataAdapter.init({
       signerOrProvider: getDefaultProvider(),
-      userWalletAddress: userWalletAddress,
+      userWalletAddress,
     });
   }
 
   if (signerOrProvider) {
     dashboardDataAdapter.init({
       signerOrProvider: signerOrProvider,
-      userWalletAddress: userWalletAddress,
+      userWalletAddress,
     });
   }
 
