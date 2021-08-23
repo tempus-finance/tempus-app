@@ -286,5 +286,13 @@ describe('TempusPoolService', () => {
 
       expect(principalTokenAddress).toBe('mock-principal-share-address');
     });
+
+    test('it returns address of the backing token', async () => {
+      mockBackingToken.mockImplementation(() => Promise.resolve(mockBackingTokenAddress));
+
+      const principalTokenAddress = await instance.getBackingToken(mockAddress);
+
+      expect(principalTokenAddress).toBe(mockBackingTokenAddress);
+    });
   });
 });
