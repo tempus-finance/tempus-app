@@ -1,6 +1,4 @@
 import { fireEvent, render } from '@testing-library/react';
-import { Provider } from 'react-redux';
-import { store } from '../../state/store';
 import WalletConnect, { CONNECT_WALLET } from './wallet-connect';
 
 jest.mock('@web3-react/core');
@@ -18,11 +16,7 @@ describe('WalletConnect', () => {
       active: false,
     }));
 
-    const { getByText } = render(
-      <Provider store={store}>
-        <WalletConnect />
-      </Provider>,
-    );
+    const { getByText } = render(<WalletConnect />);
 
     expect(getByText(CONNECT_WALLET)).toBeInTheDocument();
   });
@@ -36,11 +30,7 @@ describe('WalletConnect', () => {
       active: false,
     }));
 
-    const { getByText } = render(
-      <Provider store={store}>
-        <WalletConnect />
-      </Provider>,
-    );
+    const { getByText } = render(<WalletConnect />);
 
     fireEvent.click(getByText(CONNECT_WALLET));
 
@@ -54,11 +44,7 @@ describe('WalletConnect', () => {
       active: true,
     }));
 
-    const { getByText } = render(
-      <Provider store={store}>
-        <WalletConnect />
-      </Provider>,
-    );
+    const { getByText } = render(<WalletConnect />);
 
     expect(getByText(/ABC-12...3-XYZ/i)).toBeInTheDocument();
   });
