@@ -81,14 +81,19 @@ export const dashboardColumnsDefinitions: ExtraDataColumn[] = [
     name: 'availableToDeposit',
     title: 'Avail to Deposit',
     getCellValue: (row: DashboardRowParent | DashboardRowChild) => {
-      if (!row.availableToDeposit) {
+      // If it's undefined, user did not connect the wallet
+      if (row.availableToDeposit === undefined) {
         return '-';
       }
 
-      if (row.availableToDeposit === 'Yes' || row.availableToDeposit === 'No') {
-        return row.availableToDeposit;
+      // If row is a parent, return Yes/No
+      if (row.availableToDeposit === true) {
+        return 'Yes';
+      } else if (row.availableToDeposit === false) {
+        return 'No';
       }
 
+      // If it's a child row return amount of backing and yield tokens available
       return (
         `${row.availableToDeposit.backingToken} ${row.availableToDeposit.backingTokenTicker} / ` +
         `${row.availableToDeposit.yieldToken} ${row.availableToDeposit.yieldTokenTicker}`

@@ -142,7 +142,7 @@ export default class DashboardDataAdapter {
           variableAPY: this.getRangeFrom<number>(childrenVariable),
           TVL: parentTVL,
           presentValue: this.userWalletAddress ? parentPresentValue : undefined,
-          availableToDeposit: this.userWalletAddress ? (availableToDeposit ? 'Yes' : 'No') : undefined,
+          availableToDeposit: this.userWalletAddress ? availableToDeposit : undefined,
         };
 
         parentRows.push(parentRow);

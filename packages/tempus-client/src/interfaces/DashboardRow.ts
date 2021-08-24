@@ -12,7 +12,7 @@ export interface DashboardRowParent extends DashboardRow {
   maturityRange: Date[];
   fixedAPY: number[];
   variableAPY: number[];
-  availableToDeposit: 'Yes' | 'No' | undefined;
+  availableToDeposit: boolean | undefined;
 }
 
 export interface DashboardRowChild extends DashboardRow {
