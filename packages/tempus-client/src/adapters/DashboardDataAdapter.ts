@@ -129,8 +129,8 @@ export default class DashboardDataAdapter {
           }
           return accumulator;
         }, 0);
-        let availableToDeposit: boolean = parentChildren.some(child => {
-          return child.availableTokensToDeposit?.backingToken || child.availableTokensToDeposit?.yieldBearingToken;
+        let availableToDeposit: boolean = parentChildren.some(({ availableTokensToDeposit }) => {
+          return availableTokensToDeposit?.backingToken || availableTokensToDeposit?.yieldBearingToken;
         });
 
         const parentRow: DashboardRowParent = {
