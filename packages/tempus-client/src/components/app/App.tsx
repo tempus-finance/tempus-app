@@ -6,10 +6,12 @@ import Landing from '../landing/landing';
 import DashboardManager from '../dashboard/dashboard-manager';
 import Sidebar from '../sidebar/sidebar';
 import { DashboardRow } from '../../interfaces';
+import { Context, defaultContextValue } from '../../context';
 
 import './App.scss';
 
 const App: FC = (): JSX.Element => {
+  const [contextData, setContextData] = useState(defaultContextValue);
   const [showDashboard, setShowDashboard] = useState<boolean>(false);
   const [selectedRow, setSelectedRow] = useState<DashboardRow | null>(null);
   const [activeLink, setActiveLink] = useState<string>('');
@@ -35,7 +37,7 @@ const App: FC = (): JSX.Element => {
   }, [setActiveLink, setShowDashboard]);
 
   return (
-    <>
+    <Context.Provider value={{ data: contextData, setData: setContextData }}>
       <div className="tf__sidebar__handler">
         <IconButton onClick={onOpenSidebar}>
           <ChevronRightIcon />
@@ -47,7 +49,7 @@ const App: FC = (): JSX.Element => {
         {showDashboard && <DashboardManager selectedRow={selectedRow} onRowSelected={setSelectedRow} />}
       </div>
       <Sidebar open={openSidebar} content={selectedRow} onClose={onClose} />
-    </>
+    </Context.Provider>
   );
 };
 

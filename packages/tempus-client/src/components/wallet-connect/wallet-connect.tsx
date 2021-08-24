@@ -1,12 +1,15 @@
-import { FC, useCallback, useState } from 'react';
+import { FC, useCallback, useState, useEffect, useContext } from 'react';
 import { Web3Provider } from '@ethersproject/providers';
 import { useWeb3React } from '@web3-react/core';
 import { InjectedConnector } from '@web3-react/injected-connector';
 import AccountBalanceWalletIcon from '@material-ui/icons/AccountBalanceWallet';
 import Button from '@material-ui/core/Button';
 import shortenAccount from '../../utils/shorten-account';
+import { Context } from '../../context';
 
 const WalletConnect: FC = (): JSX.Element => {
+  let context = useContext(Context);
+
   const [hasBeenClicked, setHasBeenClicked] = useState<boolean>(false);
   const { account, activate, active } = useWeb3React<Web3Provider>();
 
@@ -17,6 +20,14 @@ const WalletConnect: FC = (): JSX.Element => {
       activate(injectedConnector);
     }
   }, [hasBeenClicked, setHasBeenClicked, activate]);
+
+  useEffect(() => {
+    context.setData &&
+      context.setData({
+        userWalletAddress: account || '',
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [account]);
 
   let shortenedAccount;
   if (account) {

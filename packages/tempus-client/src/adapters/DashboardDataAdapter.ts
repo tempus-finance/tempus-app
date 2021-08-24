@@ -6,19 +6,23 @@ import getStatisticsService from '../services/getStatisticsService';
 import getTempusPoolService from '../services/getTempusPoolService';
 import StatisticsService from '../services/StatisticsService';
 import TempusPoolService from '../services/TempusPoolService';
+import getERC20TokenService from '../services/getERC20TokenService';
 import getConfig from '../utils/get-config';
 
 type DashboardDataAdapterParameters = {
   signerOrProvider: JsonRpcProvider | JsonRpcSigner;
+  userWalletAddress: string;
 };
 
 export default class DashboardDataAdapter {
   private tempusPoolService: TempusPoolService | null = null;
   private statisticsService: StatisticsService | null = null;
+  private userWalletAddress: string = '';
 
   public init(params: DashboardDataAdapterParameters) {
     this.tempusPoolService = getTempusPoolService(params.signerOrProvider);
     this.statisticsService = getStatisticsService(params.signerOrProvider);
+    this.userWalletAddress = params.userWalletAddress;
   }
 
   public async getRows(): Promise<DashboardRow[]> {
@@ -53,15 +57,26 @@ export default class DashboardDataAdapter {
     }
 
     try {
-      const [backingTokenTicker, yieldBearingTokenTicker, protocolName, startDate, maturityDate] = await Promise.all([
+      const [
+        backingTokenTicker,
+        yieldBearingTokenTicker,
+        protocolName,
+        startDate,
+        maturityDate,
+        presentValueInBackingTokens,
+      ] = await Promise.all([
         this.tempusPoolService.getBackingTokenTicker(tempusPool.address),
         this.tempusPoolService.getYieldBearingTokenTicker(tempusPool.address),
         this.tempusPoolService.getProtocolName(tempusPool.address),
         this.tempusPoolService.getStartTime(tempusPool.address),
         this.tempusPoolService.getMaturityTime(tempusPool.address),
+        this.getPresentValueInBackingTokensForPool(tempusPool),
       ]);
 
-      const tvl = await this.statisticsService.totalValueLockedUSD(tempusPool.address, backingTokenTicker);
+      const [tvl, poolBackingTokenRate] = await Promise.all([
+        this.statisticsService.totalValueLockedUSD(tempusPool.address, backingTokenTicker),
+        this.statisticsService.getRate(backingTokenTicker),
+      ]);
 
       // TODO - Replace dummy data for each tempus pool (child row) with real data.
       return {
@@ -75,7 +90,7 @@ export default class DashboardDataAdapter {
         fixedAPY: 0.051, // TODO - Get from TempusPool controller once it's added on the backend.
         variableAPY: 0.117, // TODO - Needs to be fixed - does not take into account gains from providing liquidity, some protocol compound interest, it does not increase linearly.
         TVL: Number(ethers.utils.formatEther(tvl)),
-        presentValue: undefined, // TODO - Need to decide what to do with this column before user connects the wallet.
+        presentValue: presentValueInBackingTokens ? presentValueInBackingTokens * poolBackingTokenRate : undefined,
         availableToDeposit: undefined, // TODO - Needs to decide what to do with this column before user connects the wallet.
       };
     } catch (error) {
@@ -153,5 +168,47 @@ export default class DashboardDataAdapter {
     });
 
     return [minValue, maxValue];
+  }
+
+  private async getPresentValueInBackingTokensForPool(pool: TempusPool): Promise<number | undefined> {
+    if (!this.tempusPoolService || !this.statisticsService) {
+      console.error(
+        'DashboardDataAdapter - getPresentValueInBackingTokensForPool() - Attempted to use DashboardDataAdapter before initializing it!',
+      );
+      return Promise.reject();
+    }
+
+    if (!this.userWalletAddress) {
+      return undefined;
+    }
+
+    try {
+      const [yieldTokenAddress, principalTokenAddress, pricePerPrincipalShare, pricePerYieldShare] = await Promise.all([
+        this.tempusPoolService.getYieldToken(pool.address),
+        this.tempusPoolService.getPrincipalToken(pool.address),
+        this.tempusPoolService.pricePerPrincipalShareStored(pool.address),
+        this.tempusPoolService.pricePerYieldShareStored(pool.address),
+      ]);
+
+      const yieldToken = getERC20TokenService(yieldTokenAddress);
+      const principalToken = getERC20TokenService(principalTokenAddress);
+
+      const [userYieldSupply, userPrincipalSupply] = await Promise.all([
+        yieldToken.balanceOf(this.userWalletAddress),
+        principalToken.balanceOf(this.userWalletAddress),
+      ]);
+
+      const yieldValue = userYieldSupply.mul(pricePerYieldShare);
+      const principalValue = userPrincipalSupply.mul(pricePerPrincipalShare);
+
+      const totalValue = yieldValue.add(principalValue);
+
+      return Number(ethers.utils.formatEther(totalValue));
+    } catch (error) {
+      console.error(
+        `DashboardDataAdapter - getPresentValueInBackingTokensForPool() ` +
+          `- Failed to get present value in backing tokens for user: "${this.userWalletAddress}", pool: "${pool.address}"`,
+      );
+    }
   }
 }
