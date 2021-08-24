@@ -29,6 +29,10 @@ describe('TempusPoolService', () => {
   const mockQueryFilter = jest.fn();
   const mockBackingToken = jest.fn();
   const mockProtocolName = jest.fn();
+  const mockPricePerYieldShareStored = jest.fn();
+  const mockPricePerPrincipalShareStored = jest.fn();
+  const mockYieldShare = jest.fn();
+  const mockPrincipalShare = jest.fn();
 
   const mockSymbol = jest.fn();
 
@@ -47,6 +51,10 @@ describe('TempusPoolService', () => {
         queryFilter: mockQueryFilter,
         backingToken: mockBackingToken,
         protocolName: mockProtocolName,
+        pricePerYieldShareStored: mockPricePerYieldShareStored,
+        pricePerPrincipalShareStored: mockPricePerPrincipalShareStored,
+        yieldShare: mockYieldShare,
+        principalShare: mockPrincipalShare,
         provider: {
           getBlock: mockGetBlock,
         },
@@ -243,6 +251,40 @@ describe('TempusPoolService', () => {
 
       expect(depositedEvents.length).toBe(1);
       expect(depositedEvents[0].event).toBe('test-redeem-event');
+    });
+
+    test('it returns price per yield share stored', async () => {
+      mockPricePerYieldShareStored.mockImplementation(() => Promise.resolve(BigNumber.from('1')));
+
+      const pricePerYieldShareStored = await instance.pricePerYieldShareStored(mockAddress);
+
+      expect(pricePerYieldShareStored).toBeInstanceOf(BigNumber);
+      expect(pricePerYieldShareStored.toNumber()).toBe(1);
+    });
+
+    test('it returns price per principal share stored', async () => {
+      mockPricePerPrincipalShareStored.mockImplementation(() => Promise.resolve(BigNumber.from('10')));
+
+      const pricePerPrincipalShareStored = await instance.pricePerPrincipalShareStored(mockAddress);
+
+      expect(pricePerPrincipalShareStored).toBeInstanceOf(BigNumber);
+      expect(pricePerPrincipalShareStored.toNumber()).toBe(10);
+    });
+
+    test('it returns address of the yield token', async () => {
+      mockYieldShare.mockImplementation(() => Promise.resolve('mock-yield-share-address'));
+
+      const yieldTokenAddress = await instance.getYieldToken(mockAddress);
+
+      expect(yieldTokenAddress).toBe('mock-yield-share-address');
+    });
+
+    test('it returns address of the principal token', async () => {
+      mockPrincipalShare.mockImplementation(() => Promise.resolve('mock-principal-share-address'));
+
+      const principalTokenAddress = await instance.getPrincipalToken(mockAddress);
+
+      expect(principalTokenAddress).toBe('mock-principal-share-address');
     });
   });
 });

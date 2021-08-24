@@ -3,6 +3,7 @@ import ERC20TokenService from './ERC20TokenService';
 
 jest.mock('ethers');
 const { Contract } = jest.requireMock('ethers');
+const { BigNumber } = jest.requireActual('ethers');
 
 jest.mock('@ethersproject/providers');
 const { JsonRpcProvider } = jest.requireMock('@ethersproject/providers');
@@ -14,11 +15,13 @@ describe('ERC20TokenService', () => {
   let instance: ERC20TokenService;
 
   const mockSymbol = jest.fn();
+  const mockBalanceOf = jest.fn();
 
   beforeEach(() => {
     Contract.mockImplementation(() => {
       return {
         symbol: mockSymbol,
+        balanceOf: mockBalanceOf,
       };
     });
   });
@@ -70,6 +73,30 @@ describe('ERC20TokenService', () => {
       const result = await instance.symbol();
 
       expect(result).toBe('aDAI');
+    });
+  });
+
+  describe('balanceOf()', () => {
+    beforeEach(() => {
+      jest.clearAllMocks();
+
+      instance = new ERC20TokenService();
+
+      instance.init({
+        Contract,
+        address: mockAddress,
+        abi: ERC20ABI,
+        signerOrProvider: mockProvider,
+      });
+    });
+
+    test('it returns a Promise that resolves with the balance of provided address', async () => {
+      mockBalanceOf.mockImplementation(() => Promise.resolve(BigNumber.from('10')));
+
+      const result = await instance.balanceOf('mock-user-address');
+
+      expect(result).toBeInstanceOf(BigNumber);
+      expect(result.toNumber()).toBe(10);
     });
   });
 });

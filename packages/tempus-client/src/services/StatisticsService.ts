@@ -73,7 +73,11 @@ class StatisticsService {
     let rate: BigNumber;
     let rateDenominator: BigNumber;
     try {
-      [rate, rateDenominator] = await this.stats.getRate(ensNameHash, overrides);
+      if (overrides) {
+        [rate, rateDenominator] = await this.stats.getRate(ensNameHash, overrides);
+      } else {
+        [rate, rateDenominator] = await this.stats.getRate(ensNameHash);
+      }
     } catch (error) {
       console.error(`Failed to get exchange rate for ${tokenTicker}!`, error);
       return Promise.reject(error);
