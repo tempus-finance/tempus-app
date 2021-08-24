@@ -29,6 +29,19 @@ function Chart(props: ChartProps): JSX.Element {
     [setActiveDataPoint],
   );
 
+  const getFormattedValue = (): string => {
+    if (!activeDataPoint) {
+      return '';
+    }
+
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      maximumFractionDigits: 2,
+      minimumFractionDigits: 0,
+    }).format(activeDataPoint.value);
+  };
+
   return (
     <div className="tf__chart">
       {!activeDataPoint && (
@@ -45,7 +58,7 @@ function Chart(props: ChartProps): JSX.Element {
       </div>
       <Divider orientation="horizontal" />
       <div className="tf__chart-data-label">
-        <p className="tf__chart-data-label-text">${activeDataPoint && activeDataPoint.value}</p>
+        <p className="tf__chart-data-label-text">{getFormattedValue()}</p>
         <p className="tf__chart-data-label-text-small">{activeDataPoint && `${activeDataPoint.valueIncrease}%`}</p>
       </div>
       <div className="tf__chart-row">
