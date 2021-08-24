@@ -22,12 +22,12 @@ export interface DashboardRowChild extends DashboardRow {
   maturityDate: Date;
   fixedAPY: number;
   variableAPY: number;
-  availableToDeposit: AvailableToDepositChild | undefined;
+  availableTokensToDeposit: AvailableTokensToDeposit | undefined;
 }
 
-interface AvailableToDepositChild {
+interface AvailableTokensToDeposit {
   backingToken: number;
   backingTokenTicker: Ticker;
-  yieldToken: number;
-  yieldTokenTicker: Ticker;
+  yieldBearingToken: number;
+  yieldBearingTokenTicker: Ticker;
 }

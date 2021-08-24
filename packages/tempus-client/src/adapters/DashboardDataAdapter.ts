@@ -94,11 +94,11 @@ export default class DashboardDataAdapter {
         TVL: Number(ethers.utils.formatEther(tvl)),
         presentValue:
           presentValueInBackingTokens !== undefined ? presentValueInBackingTokens * poolBackingTokenRate : undefined,
-        availableToDeposit: availableToDeposit && {
+        availableTokensToDeposit: availableToDeposit && {
           backingToken: availableToDeposit.backingToken,
           backingTokenTicker: backingTokenTicker,
-          yieldToken: availableToDeposit.yieldToken,
-          yieldTokenTicker: yieldBearingTokenTicker,
+          yieldBearingToken: availableToDeposit.yieldBearingToken,
+          yieldBearingTokenTicker: yieldBearingTokenTicker,
         },
       };
     } catch (error) {
@@ -130,7 +130,7 @@ export default class DashboardDataAdapter {
           return accumulator;
         }, 0);
         let availableToDeposit: boolean = parentChildren.some(child => {
-          return child.availableToDeposit?.backingToken || child.availableToDeposit?.yieldToken;
+          return child.availableTokensToDeposit?.backingToken || child.availableTokensToDeposit?.yieldBearingToken;
         });
 
         const parentRow: DashboardRowParent = {
@@ -193,8 +193,8 @@ export default class DashboardDataAdapter {
 
     try {
       const [yieldTokenAddress, principalTokenAddress, pricePerPrincipalShare, pricePerYieldShare] = await Promise.all([
-        this.tempusPoolService.getYieldToken(pool.address),
-        this.tempusPoolService.getPrincipalToken(pool.address),
+        this.tempusPoolService.getYieldTokenAddress(pool.address),
+        this.tempusPoolService.getPrincipalTokenAddress(pool.address),
         this.tempusPoolService.pricePerPrincipalShareStored(pool.address),
         this.tempusPoolService.pricePerYieldShareStored(pool.address),
       ]);
@@ -224,7 +224,7 @@ export default class DashboardDataAdapter {
 
   private async getAvailableToDepositForPool(
     pool: TempusPool,
-  ): Promise<{ backingToken: number; yieldToken: number } | undefined> {
+  ): Promise<{ backingToken: number; yieldBearingToken: number } | undefined> {
     if (!this.tempusPoolService || !this.statisticsService) {
       console.error(
         'DashboardDataAdapter - getAvailableToDepositForPool() - Attempted to use DashboardDataAdapter before initializing it!',
@@ -237,22 +237,22 @@ export default class DashboardDataAdapter {
     }
 
     try {
-      const [poolBackingToken, poolYieldToken] = await Promise.all([
-        this.tempusPoolService.getBackingToken(pool.address),
-        this.tempusPoolService.getYieldToken(pool.address),
+      const [poolBackingToken, poolYieldBearingToken] = await Promise.all([
+        this.tempusPoolService.getBackingTokenAddress(pool.address),
+        this.tempusPoolService.getYieldBearingTokenAddress(pool.address),
       ]);
 
       const backingToken = getERC20TokenService(poolBackingToken);
-      const yieldToken = getERC20TokenService(poolYieldToken);
+      const yieldBearingToken = getERC20TokenService(poolYieldBearingToken);
 
       const [backingTokensAvailable, yieldTokensAvailable] = await Promise.all([
         backingToken.balanceOf(this.userWalletAddress),
-        yieldToken.balanceOf(this.userWalletAddress),
+        yieldBearingToken.balanceOf(this.userWalletAddress),
       ]);
 
       return {
         backingToken: Number(ethers.utils.formatEther(backingTokensAvailable)),
-        yieldToken: Number(ethers.utils.formatEther(yieldTokensAvailable)),
+        yieldBearingToken: Number(ethers.utils.formatEther(yieldTokensAvailable)),
       };
     } catch (error) {
       console.error(
