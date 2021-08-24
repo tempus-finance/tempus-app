@@ -1,4 +1,5 @@
 // Services
+import { CallOverrides } from 'ethers';
 import TempusPoolService from './TempusPoolService';
 
 jest.mock('ethers');
@@ -21,11 +22,9 @@ describe('TempusPoolService', () => {
   const mockCurrentInterestRate = jest.fn();
   const mockMaturityTime = jest.fn();
   const mockStartTime = jest.fn();
-  const mockPriceOracle = jest.fn();
   const mockGetBlock = jest.fn();
   const mockYieldBearingToken = jest.fn();
   const mockCurrentRate = jest.fn();
-  const getPriceOracleServiceMock = jest.fn();
   const mockQueryFilter = jest.fn();
   const mockBackingToken = jest.fn();
   const mockProtocolName = jest.fn();
@@ -46,7 +45,6 @@ describe('TempusPoolService', () => {
         currentInterestRate: mockCurrentInterestRate,
         maturityTime: mockMaturityTime,
         startTime: mockStartTime,
-        priceOracle: mockPriceOracle,
         yieldBearingToken: mockYieldBearingToken,
         queryFilter: mockQueryFilter,
         backingToken: mockBackingToken,
@@ -92,7 +90,6 @@ describe('TempusPoolService', () => {
         Contract,
         tempusPoolAddresses: mockAddresses,
         TempusPoolABI: mockABI,
-        priceOracleService: getPriceOracleServiceMock(),
         signerOrProvider: mockProvider,
       });
 
@@ -106,11 +103,6 @@ describe('TempusPoolService', () => {
     beforeEach(() => {
       jest.clearAllMocks();
 
-      getPriceOracleServiceMock.mockImplementation(() => {
-        return {
-          currentRate: mockCurrentRate,
-        };
-      });
       mockCurrentRate.mockImplementation((address: string, tokenAddress: string, overrides: {}) => {
         if (!overrides) {
           return Promise.resolve(BigNumber.from('10'));
@@ -124,7 +116,6 @@ describe('TempusPoolService', () => {
         Contract,
         tempusPoolAddresses: mockAddresses,
         TempusPoolABI: mockABI,
-        priceOracleService: getPriceOracleServiceMock(),
         signerOrProvider: mockProvider,
       });
     });
@@ -185,8 +176,13 @@ describe('TempusPoolService', () => {
           });
         }
       });
-      mockYieldBearingToken.mockImplementation(() => Promise.resolve('yield-bearing-token-address'));
-      mockPriceOracle.mockImplementation(() => Promise.resolve('price-oracle-address'));
+      mockCurrentInterestRate.mockImplementation((overrides: CallOverrides) => {
+        if (overrides) {
+          return Promise.resolve(BigNumber.from('1'));
+        } else {
+          return Promise.resolve(BigNumber.from('2'));
+        }
+      });
 
       utils.formatEther.mockImplementation((value: number) => value);
 
