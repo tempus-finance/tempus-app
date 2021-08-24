@@ -274,7 +274,7 @@ describe('TempusPoolService', () => {
     test('it returns address of the yield token', async () => {
       mockYieldShare.mockImplementation(() => Promise.resolve('mock-yield-share-address'));
 
-      const yieldTokenAddress = await instance.getYieldToken(mockAddress);
+      const yieldTokenAddress = await instance.getYieldTokenAddress(mockAddress);
 
       expect(yieldTokenAddress).toBe('mock-yield-share-address');
     });
@@ -282,9 +282,17 @@ describe('TempusPoolService', () => {
     test('it returns address of the principal token', async () => {
       mockPrincipalShare.mockImplementation(() => Promise.resolve('mock-principal-share-address'));
 
-      const principalTokenAddress = await instance.getPrincipalToken(mockAddress);
+      const principalTokenAddress = await instance.getPrincipalTokenAddress(mockAddress);
 
       expect(principalTokenAddress).toBe('mock-principal-share-address');
+    });
+
+    test('it returns address of the backing token', async () => {
+      mockBackingToken.mockImplementation(() => Promise.resolve(mockBackingTokenAddress));
+
+      const principalTokenAddress = await instance.getBackingTokenAddress(mockAddress);
+
+      expect(principalTokenAddress).toBe(mockBackingTokenAddress);
     });
   });
 });

@@ -64,6 +64,7 @@ export default class DashboardDataAdapter {
         startDate,
         maturityDate,
         presentValueInBackingTokens,
+        availableToDeposit,
       ] = await Promise.all([
         this.tempusPoolService.getBackingTokenTicker(tempusPool.address),
         this.tempusPoolService.getYieldBearingTokenTicker(tempusPool.address),
@@ -71,6 +72,7 @@ export default class DashboardDataAdapter {
         this.tempusPoolService.getStartTime(tempusPool.address),
         this.tempusPoolService.getMaturityTime(tempusPool.address),
         this.getPresentValueInBackingTokensForPool(tempusPool),
+        this.getAvailableToDepositForPool(tempusPool),
       ]);
 
       const [tvl, poolBackingTokenRate] = await Promise.all([
@@ -90,8 +92,14 @@ export default class DashboardDataAdapter {
         fixedAPY: 0.051, // TODO - Get from TempusPool controller once it's added on the backend.
         variableAPY: 0.117, // TODO - Needs to be fixed - does not take into account gains from providing liquidity, some protocol compound interest, it does not increase linearly.
         TVL: Number(ethers.utils.formatEther(tvl)),
-        presentValue: presentValueInBackingTokens ? presentValueInBackingTokens * poolBackingTokenRate : undefined,
-        availableToDeposit: undefined, // TODO - Needs to decide what to do with this column before user connects the wallet.
+        presentValue:
+          presentValueInBackingTokens !== undefined ? presentValueInBackingTokens * poolBackingTokenRate : undefined,
+        availableTokensToDeposit: availableToDeposit && {
+          backingToken: availableToDeposit.backingToken,
+          backingTokenTicker: backingTokenTicker,
+          yieldBearingToken: availableToDeposit.yieldBearingToken,
+          yieldBearingTokenTicker: yieldBearingTokenTicker,
+        },
       };
     } catch (error) {
       console.error('DashboardDataAdapter - getChildRowData() - Failed to get data for child row!', error);
@@ -121,6 +129,9 @@ export default class DashboardDataAdapter {
           }
           return accumulator;
         }, 0);
+        let availableToDeposit: boolean = parentChildren.some(({ availableTokensToDeposit }) => {
+          return availableTokensToDeposit?.backingToken || availableTokensToDeposit?.yieldBearingToken;
+        });
 
         const parentRow: DashboardRowParent = {
           id: child.token, // Using token as parent ID, this way multiple children with same token will fall under same parent.
@@ -130,10 +141,8 @@ export default class DashboardDataAdapter {
           fixedAPY: this.getRangeFrom<number>(childrenFixedAPY),
           variableAPY: this.getRangeFrom<number>(childrenVariable),
           TVL: parentTVL,
-          presentValue: parentPresentValue,
-          // availableToDeposit - Decide how we want to show multiple user tokens in the same row
-          // (in case parent has multiple children with different YBT)
-          availableToDeposit: parentChildren[0].availableToDeposit,
+          presentValue: this.userWalletAddress ? parentPresentValue : undefined,
+          availableToDeposit: this.userWalletAddress ? availableToDeposit : undefined,
         };
 
         parentRows.push(parentRow);
@@ -184,8 +193,8 @@ export default class DashboardDataAdapter {
 
     try {
       const [yieldTokenAddress, principalTokenAddress, pricePerPrincipalShare, pricePerYieldShare] = await Promise.all([
-        this.tempusPoolService.getYieldToken(pool.address),
-        this.tempusPoolService.getPrincipalToken(pool.address),
+        this.tempusPoolService.getYieldTokenAddress(pool.address),
+        this.tempusPoolService.getPrincipalTokenAddress(pool.address),
         this.tempusPoolService.pricePerPrincipalShareStored(pool.address),
         this.tempusPoolService.pricePerYieldShareStored(pool.address),
       ]);
@@ -209,6 +218,48 @@ export default class DashboardDataAdapter {
         `DashboardDataAdapter - getPresentValueInBackingTokensForPool() ` +
           `- Failed to get present value in backing tokens for user: "${this.userWalletAddress}", pool: "${pool.address}"`,
       );
+      return Promise.reject(error);
+    }
+  }
+
+  private async getAvailableToDepositForPool(
+    pool: TempusPool,
+  ): Promise<{ backingToken: number; yieldBearingToken: number } | undefined> {
+    if (!this.tempusPoolService || !this.statisticsService) {
+      console.error(
+        'DashboardDataAdapter - getAvailableToDepositForPool() - Attempted to use DashboardDataAdapter before initializing it!',
+      );
+      return Promise.reject();
+    }
+
+    if (!this.userWalletAddress) {
+      return undefined;
+    }
+
+    try {
+      const [poolBackingToken, poolYieldBearingToken] = await Promise.all([
+        this.tempusPoolService.getBackingTokenAddress(pool.address),
+        this.tempusPoolService.getYieldBearingTokenAddress(pool.address),
+      ]);
+
+      const backingToken = getERC20TokenService(poolBackingToken);
+      const yieldBearingToken = getERC20TokenService(poolYieldBearingToken);
+
+      const [backingTokensAvailable, yieldTokensAvailable] = await Promise.all([
+        backingToken.balanceOf(this.userWalletAddress),
+        yieldBearingToken.balanceOf(this.userWalletAddress),
+      ]);
+
+      return {
+        backingToken: Number(ethers.utils.formatEther(backingTokensAvailable)),
+        yieldBearingToken: Number(ethers.utils.formatEther(yieldTokensAvailable)),
+      };
+    } catch (error) {
+      console.error(
+        `DashboardDataAdapter - getAvailableToDepositForPool() - ` +
+          `Failed to fetch Available to Deposit for user: ${this.userWalletAddress}, pool: ${pool.address}`,
+      );
+      return Promise.reject(error);
     }
   }
 }

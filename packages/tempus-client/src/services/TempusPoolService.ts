@@ -244,7 +244,7 @@ class TempusPoolService {
     throw new Error(`Address '${address}' is not valid`);
   }
 
-  public getYieldToken(address: string): Promise<string> {
+  public getYieldTokenAddress(address: string): Promise<string> {
     const tempusPool = this.tempusPoolsMap[address];
     if (tempusPool) {
       return tempusPool.yieldShare();
@@ -253,10 +253,28 @@ class TempusPoolService {
     throw new Error(`Address '${address}' is not valid`);
   }
 
-  public getPrincipalToken(address: string): Promise<string> {
+  public getPrincipalTokenAddress(address: string): Promise<string> {
     const tempusPool = this.tempusPoolsMap[address];
     if (tempusPool) {
       return tempusPool.principalShare();
+    }
+
+    throw new Error(`Address '${address}' is not valid`);
+  }
+
+  public getBackingTokenAddress(address: string): Promise<string> {
+    const tempusPool = this.tempusPoolsMap[address];
+    if (tempusPool) {
+      return tempusPool.backingToken();
+    }
+
+    throw new Error(`Address '${address}' is not valid`);
+  }
+
+  public getYieldBearingTokenAddress(address: string): Promise<string> {
+    const tempusPool = this.tempusPoolsMap[address];
+    if (tempusPool) {
+      return tempusPool.yieldBearingToken();
     }
 
     throw new Error(`Address '${address}' is not valid`);
