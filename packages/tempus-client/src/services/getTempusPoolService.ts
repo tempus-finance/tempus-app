@@ -3,7 +3,6 @@ import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
 
 import TempusPoolABI from '../abi/TempusPool.json';
 import TempusPoolService from './TempusPoolService';
-import getPriceOracleService from './getPriceOracleService';
 import getDefaultProvider from './getDefaultProvider';
 import getConfig from '../utils/get-config';
 
@@ -17,7 +16,6 @@ const getTempusPoolService = (signerOrProvider?: JsonRpcSigner | JsonRpcProvider
       Contract,
       tempusPoolAddresses: getConfig().tempusPools.map(tempusPoolConfig => tempusPoolConfig.address),
       TempusPoolABI: TempusPoolABI,
-      priceOracleService: getPriceOracleService(defaultProvider),
       signerOrProvider: defaultProvider,
     });
   }
@@ -27,7 +25,6 @@ const getTempusPoolService = (signerOrProvider?: JsonRpcSigner | JsonRpcProvider
       Contract: Contract,
       tempusPoolAddresses: getConfig().tempusPools.map(tempusPoolConfig => tempusPoolConfig.address),
       TempusPoolABI: TempusPoolABI,
-      priceOracleService: getPriceOracleService(signerOrProvider),
       signerOrProvider: signerOrProvider,
     });
   }
