@@ -1,5 +1,5 @@
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
-import { BigNumber, ethers } from 'ethers';
+import { BigNumber, ContractTransaction, ethers } from 'ethers';
 import { TypedEvent } from '../abi/commons';
 import { TempusPool } from '../abi/TempusPool';
 import { ProtocolName, Ticker } from '../interfaces';
@@ -262,6 +262,25 @@ class TempusPoolService {
       return tempusPool.yieldBearingToken();
     }
 
+    throw new Error(`Address '${address}' is not valid`);
+  }
+
+  public async deposit(
+    address: string,
+    amount: BigNumber,
+    recipient: string,
+  ): Promise<ContractTransaction | undefined> {
+    const tempusPool = this.tempusPoolsMap[address];
+    if (tempusPool) {
+      let depositTransaction: ContractTransaction | undefined;
+      try {
+        depositTransaction = await tempusPool.deposit(amount, recipient);
+      } catch (error) {
+        console.error(`TempusPoolService - deposit() - Failed to make a deposit to the pool!`, error);
+        return Promise.reject(error);
+      }
+      return depositTransaction;
+    }
     throw new Error(`Address '${address}' is not valid`);
   }
 }

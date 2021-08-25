@@ -8,10 +8,10 @@ import shortenAccount from '../../utils/shorten-account';
 import { Context } from '../../context';
 
 const WalletConnect: FC = (): JSX.Element => {
-  let context = useContext(Context);
+  const { setData } = useContext(Context);
 
   const [hasBeenClicked, setHasBeenClicked] = useState<boolean>(false);
-  const { account, activate, active } = useWeb3React<Web3Provider>();
+  const { account, activate, active, library } = useWeb3React<Web3Provider>();
 
   const onConnect = useCallback(() => {
     if (!hasBeenClicked) {
@@ -22,12 +22,13 @@ const WalletConnect: FC = (): JSX.Element => {
   }, [hasBeenClicked, setHasBeenClicked, activate]);
 
   useEffect(() => {
-    context.setData &&
-      context.setData({
+    setData &&
+      setData({
+        userWalletSigner: library?.getSigner() || null,
         userWalletAddress: account || '',
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [account]);
+  }, [account, library]);
 
   let shortenedAccount;
   if (account) {
@@ -66,19 +67,36 @@ const supportedChainIds = [
   31337, // AWS Private
 ];
 
-// Example contract communication with typings
 /*
-// Make sure to import Contract from 'ethers' library
-const contract = new Contract(
-  // This is the address of the contract
-  '0x039557b8f8f53d863f534C4dFF01d8A3467d26A0',
-  // Import ABI JSON file from 'abi/TempusToken.json'.
-  // ABI JSON for TempusToken is generated when you run 'npm run start-local' in tempus-protocol repository inside tempus-protocol/abi-artifacts.
-  TempusTokenABI,
-  library?.getSigner(),
-// TempusToken is a typings file generated when running 'npm run start-local' in tempus-protocol repository inside tempus-protocol/typechain.
-) as TempusToken;
+*** Example deposit to TempusPool code snippet
 
-// Call an example function from contract - notice that we now have full contract typings and error checking because of typings file.
-contract.balanceOf(account);
+// Get the tempus pool address we want to deposit to
+const tempusPoolAddress = getConfig().tempusPools[0].address;
+
+// Get tempus pool service - make sure to pass signer we get when user connects the wallet,
+// you can get it from react context after user connects the wallet
+const tempusPoolService = getTempusPoolService(library.getSigner());
+
+// Get address of the token we want to deposit, in this example we want to deposit YBT but we can also deposit BT
+const addressYBT = await tempusPoolService.getYieldBearingTokenAddress(tempusPoolAddress);
+
+// Get ERC20 token service - make sure to pass signer we get when user connects the wallet
+const serviceYBT = getERC20TokenService(addressYBT, library.getSigner());
+
+// APPROVE BUTTON - First part of deposit is to approve specific amount of tokens - this will open MetaMask popup that asks user to confirm approval.
+// This approve basically allows tempus pool contract to transfer amount of tokens from user wallet.
+const approveTransaction = await serviceYBT.approve(tempusPoolAddress, ethers.utils.parseEther('100'));
+
+// Transaction can take some time to finish (to get mined), make sure to wait for that to happen before going to next step.
+await approveTransaction.wait();
+
+// After approve transaction is finished, we can run deposit transaction - this will also open MetaMask popup that asks user to confirm transaction.
+// Last parameter here is the address of the wallet we want to send TPS and TYS tokens to.
+const depositTransaction = await tempusPoolService.deposit(tempusPoolAddress, ethers.utils.parseEther('100'), account);
+
+// Again, wait for transaction to finish executing.
+await depositTransaction?.wait();
+
+
+// We need to add error handling when waiting for transaction to finish in case user runs out of gas, etc...
 */
