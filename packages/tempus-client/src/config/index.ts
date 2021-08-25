@@ -22,7 +22,6 @@ const config: Config = {
       backingToken: '',
     },
   ],
-  priceOracles: [],
   statisticsContract: '',
   networkUrl: '',
 };

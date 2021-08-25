@@ -32,8 +32,9 @@ interface TempusPoolInterface extends ethers.utils.Interface {
     'matured()': FunctionFragment;
     'maturityInterestRate()': FunctionFragment;
     'maturityTime()': FunctionFragment;
+    'numAssetsPerYieldToken(uint256,uint256)': FunctionFragment;
+    'numYieldTokensPerAsset(uint256,uint256)': FunctionFragment;
     'owner()': FunctionFragment;
-    'priceOracle()': FunctionFragment;
     'pricePerPrincipalShare()': FunctionFragment;
     'pricePerPrincipalShareStored()': FunctionFragment;
     'pricePerYieldShare()': FunctionFragment;
@@ -63,8 +64,9 @@ interface TempusPoolInterface extends ethers.utils.Interface {
   encodeFunctionData(functionFragment: 'matured', values?: undefined): string;
   encodeFunctionData(functionFragment: 'maturityInterestRate', values?: undefined): string;
   encodeFunctionData(functionFragment: 'maturityTime', values?: undefined): string;
+  encodeFunctionData(functionFragment: 'numAssetsPerYieldToken', values: [BigNumberish, BigNumberish]): string;
+  encodeFunctionData(functionFragment: 'numYieldTokensPerAsset', values: [BigNumberish, BigNumberish]): string;
   encodeFunctionData(functionFragment: 'owner', values?: undefined): string;
-  encodeFunctionData(functionFragment: 'priceOracle', values?: undefined): string;
   encodeFunctionData(functionFragment: 'pricePerPrincipalShare', values?: undefined): string;
   encodeFunctionData(functionFragment: 'pricePerPrincipalShareStored', values?: undefined): string;
   encodeFunctionData(functionFragment: 'pricePerYieldShare', values?: undefined): string;
@@ -102,8 +104,9 @@ interface TempusPoolInterface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: 'matured', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'maturityInterestRate', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'maturityTime', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'numAssetsPerYieldToken', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'numYieldTokensPerAsset', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'owner', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'priceOracle', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'pricePerPrincipalShare', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'pricePerPrincipalShareStored', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'pricePerYieldShare', data: BytesLike): Result;
@@ -211,9 +214,19 @@ export class TempusPool extends BaseContract {
 
     maturityTime(overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    owner(overrides?: CallOverrides): Promise<[string]>;
+    numAssetsPerYieldToken(
+      yieldTokens: BigNumberish,
+      interestRate: BigNumberish,
+      overrides?: CallOverrides,
+    ): Promise<[BigNumber]>;
 
-    priceOracle(overrides?: CallOverrides): Promise<[string]>;
+    numYieldTokensPerAsset(
+      backingTokens: BigNumberish,
+      interestRate: BigNumberish,
+      overrides?: CallOverrides,
+    ): Promise<[BigNumber]>;
+
+    owner(overrides?: CallOverrides): Promise<[string]>;
 
     pricePerPrincipalShare(overrides?: Overrides & { from?: string | Promise<string> }): Promise<ContractTransaction>;
 
@@ -306,9 +319,19 @@ export class TempusPool extends BaseContract {
 
   maturityTime(overrides?: CallOverrides): Promise<BigNumber>;
 
-  owner(overrides?: CallOverrides): Promise<string>;
+  numAssetsPerYieldToken(
+    yieldTokens: BigNumberish,
+    interestRate: BigNumberish,
+    overrides?: CallOverrides,
+  ): Promise<BigNumber>;
 
-  priceOracle(overrides?: CallOverrides): Promise<string>;
+  numYieldTokensPerAsset(
+    backingTokens: BigNumberish,
+    interestRate: BigNumberish,
+    overrides?: CallOverrides,
+  ): Promise<BigNumber>;
+
+  owner(overrides?: CallOverrides): Promise<string>;
 
   pricePerPrincipalShare(overrides?: Overrides & { from?: string | Promise<string> }): Promise<ContractTransaction>;
 
@@ -397,9 +420,19 @@ export class TempusPool extends BaseContract {
 
     maturityTime(overrides?: CallOverrides): Promise<BigNumber>;
 
-    owner(overrides?: CallOverrides): Promise<string>;
+    numAssetsPerYieldToken(
+      yieldTokens: BigNumberish,
+      interestRate: BigNumberish,
+      overrides?: CallOverrides,
+    ): Promise<BigNumber>;
 
-    priceOracle(overrides?: CallOverrides): Promise<string>;
+    numYieldTokensPerAsset(
+      backingTokens: BigNumberish,
+      interestRate: BigNumberish,
+      overrides?: CallOverrides,
+    ): Promise<BigNumber>;
+
+    owner(overrides?: CallOverrides): Promise<string>;
 
     pricePerPrincipalShare(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -521,9 +554,19 @@ export class TempusPool extends BaseContract {
 
     maturityTime(overrides?: CallOverrides): Promise<BigNumber>;
 
-    owner(overrides?: CallOverrides): Promise<BigNumber>;
+    numAssetsPerYieldToken(
+      yieldTokens: BigNumberish,
+      interestRate: BigNumberish,
+      overrides?: CallOverrides,
+    ): Promise<BigNumber>;
 
-    priceOracle(overrides?: CallOverrides): Promise<BigNumber>;
+    numYieldTokensPerAsset(
+      backingTokens: BigNumberish,
+      interestRate: BigNumberish,
+      overrides?: CallOverrides,
+    ): Promise<BigNumber>;
+
+    owner(overrides?: CallOverrides): Promise<BigNumber>;
 
     pricePerPrincipalShare(overrides?: Overrides & { from?: string | Promise<string> }): Promise<BigNumber>;
 
@@ -611,9 +654,19 @@ export class TempusPool extends BaseContract {
 
     maturityTime(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    numAssetsPerYieldToken(
+      yieldTokens: BigNumberish,
+      interestRate: BigNumberish,
+      overrides?: CallOverrides,
+    ): Promise<PopulatedTransaction>;
 
-    priceOracle(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    numYieldTokensPerAsset(
+      backingTokens: BigNumberish,
+      interestRate: BigNumberish,
+      overrides?: CallOverrides,
+    ): Promise<PopulatedTransaction>;
+
+    owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     pricePerPrincipalShare(overrides?: Overrides & { from?: string | Promise<string> }): Promise<PopulatedTransaction>;
 

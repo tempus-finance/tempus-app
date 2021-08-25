@@ -4,7 +4,6 @@ import { TypedEvent } from '../abi/commons';
 import { TempusPool } from '../abi/TempusPool';
 import { ProtocolName, Ticker } from '../interfaces';
 import getERC20TokenService from './getERC20TokenService';
-import PriceOracleService from './PriceOracleService';
 
 type TempusPoolsMap = { [key: string]: TempusPool };
 
@@ -12,7 +11,6 @@ type TempusPoolServiceParameters = {
   Contract: any;
   tempusPoolAddresses: string[];
   TempusPoolABI: any;
-  priceOracleService: PriceOracleService;
   signerOrProvider: JsonRpcSigner | JsonRpcProvider;
 };
 
@@ -47,23 +45,14 @@ class TempusPoolService {
 
   private poolAddresses: string[] = [];
   private tempusPoolsMap: TempusPoolsMap = {};
-  private priceOracleService: PriceOracleService | null = null;
 
-  init({
-    Contract,
-    tempusPoolAddresses = [],
-    TempusPoolABI = {},
-    priceOracleService,
-    signerOrProvider,
-  }: TempusPoolServiceParameters) {
+  init({ Contract, tempusPoolAddresses = [], TempusPoolABI = {}, signerOrProvider }: TempusPoolServiceParameters) {
     this.poolAddresses = [...tempusPoolAddresses];
     this.tempusPoolsMap = {};
 
     this.poolAddresses.forEach((address: string) => {
       this.tempusPoolsMap[address] = new Contract(address, TempusPoolABI, signerOrProvider) as TempusPool;
     });
-
-    this.priceOracleService = priceOracleService;
   }
 
   getPoolAddresses(): string[] {
@@ -192,16 +181,12 @@ class TempusPoolService {
 
     if (tempusPool) {
       try {
-        const [latestBlock, priceOracleAddress, yieldBearingTokenAddress] = await Promise.all([
-          tempusPool.provider.getBlock('latest'),
-          tempusPool.priceOracle(),
-          tempusPool.yieldBearingToken(),
-        ]);
+        const latestBlock = await tempusPool.provider.getBlock('latest');
 
         const [pastBlock, currentExchangeRate, pastExchangeRate] = await Promise.all([
           tempusPool.provider.getBlock(latestBlock.number - this.SECONDS_IN_A_DAY / this.BLOCK_DURATION_SECONDS),
-          this.priceOracleService?.currentRate(priceOracleAddress, yieldBearingTokenAddress),
-          this.priceOracleService?.currentRate(priceOracleAddress, yieldBearingTokenAddress, {
+          tempusPool.currentInterestRate(),
+          tempusPool.currentInterestRate({
             blockTag: latestBlock.number - this.SECONDS_IN_A_DAY / this.BLOCK_DURATION_SECONDS,
           }),
         ]);
