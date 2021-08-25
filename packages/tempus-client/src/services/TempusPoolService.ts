@@ -264,6 +264,18 @@ class TempusPoolService {
 
     throw new Error(`Address '${address}' is not valid`);
   }
+
+  public deposit(
+    address: string,
+    amount: BigNumber,
+    recipient: string,
+  ): Promise<ethers.ContractTransaction | undefined> {
+    const tempusPool = this.tempusPoolsMap[address];
+    if (tempusPool) {
+      return tempusPool.deposit(amount, recipient);
+    }
+    throw new Error(`Address '${address}' is not valid`);
+  }
 }
 
 export default TempusPoolService;

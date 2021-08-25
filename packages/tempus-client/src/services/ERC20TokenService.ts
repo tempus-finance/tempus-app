@@ -1,4 +1,4 @@
-import { BigNumber, Contract } from 'ethers';
+import { BigNumber, Contract, ContractTransaction } from 'ethers';
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
 import { ERC20 } from '../abi/ERC20';
 import ERC20ABI from '../abi/ERC20.json';
@@ -48,6 +48,15 @@ class ERC20TokenService {
       return Promise.reject();
     }
     return ticker;
+  }
+
+  public approve(spenderAddress: string, amount: BigNumber): Promise<ContractTransaction> {
+    if (!this.contract) {
+      console.error('ERC20TokenService - approve() - Attempted to use ERC20TokenService before initializing it!');
+      return Promise.reject();
+    }
+
+    return this.contract.approve(spenderAddress, amount);
   }
 }
 export default ERC20TokenService;
