@@ -8,7 +8,7 @@ import shortenAccount from '../../utils/shorten-account';
 import { Context } from '../../context';
 
 const WalletConnect: FC = (): JSX.Element => {
-  let { setData } = useContext(Context);
+  const { setData } = useContext(Context);
 
   const [hasBeenClicked, setHasBeenClicked] = useState<boolean>(false);
   const { account, activate, active, library } = useWeb3React<Web3Provider>();

@@ -50,13 +50,20 @@ class ERC20TokenService {
     return ticker;
   }
 
-  public approve(spenderAddress: string, amount: BigNumber): Promise<ContractTransaction> {
+  public async approve(spenderAddress: string, amount: BigNumber): Promise<ContractTransaction> {
     if (!this.contract) {
       console.error('ERC20TokenService - approve() - Attempted to use ERC20TokenService before initializing it!');
       return Promise.reject();
     }
 
-    return this.contract.approve(spenderAddress, amount);
+    let approveTransaction: ContractTransaction;
+    try {
+      approveTransaction = await this.contract.approve(spenderAddress, amount);
+    } catch (error) {
+      console.log('ERC20TokenService - approve() - Approve transaction failed!', error);
+      return Promise.reject(error);
+    }
+    return approveTransaction;
   }
 }
 export default ERC20TokenService;
