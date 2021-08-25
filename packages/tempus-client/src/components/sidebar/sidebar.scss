@@ -1,7 +1,6 @@
 @import '../../constants.scss';
 
 .tf__sidebar-container {
-  background-color: $primary-darker;
   display: flex;
   flex: 1;
   flex-shrink: 0;
@@ -11,17 +10,17 @@
   left: 0;
   position: relative;
   height: 100%;
-  background: $primary-darker;
+
   > div {
-    background-color: $primary-darker;
+    background-color: $primary;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
     padding-left: 7px;
     padding-right: 7px;
-    width: calc(#{$grid-template-columns} - 14px - 2px);
-    border-right: 2px solid $primary-dark;
+    width: calc(#{$grid-template-columns} - 14px);
+    border-right: none;
   }
 }
 

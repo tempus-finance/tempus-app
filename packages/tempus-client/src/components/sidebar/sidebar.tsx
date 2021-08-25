@@ -3,6 +3,7 @@ import Divider from '@material-ui/core/Divider';
 import Drawer from '@material-ui/core/Drawer';
 import IconButton from '@material-ui/core/IconButton';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+import PoolChart from '../poolChart';
 
 import './sidebar.scss';
 
@@ -28,6 +29,14 @@ const getTokenValue = (token: string): string => {
 
   return new Intl.NumberFormat('en-US').format(value);
 };
+
+const data = [
+  { token: 'staked-principals', amount: 7 },
+  { token: 'principals', amount: 12.34 },
+  { token: 'yields', amount: 2 },
+  { token: 'staked-yields', amount: 5 },
+];
+
 const Sidebar: FC<SidebarProps> = ({ open, content, onClose }) => {
   console.log('sidebar', content);
   const { supportedTokens } = content || {};
@@ -73,6 +82,9 @@ const Sidebar: FC<SidebarProps> = ({ open, content, onClose }) => {
                 <span>Share</span>
                 <span>5.56%</span>
               </div>
+              <div className="tf__sidebar__content-item">
+                <PoolChart data={data} />
+              </div>
               <div className="tf__sidebar__content-divider"></div>
               <div className="tf__sidebar__content-title">Selected Pool</div>
               <div className="tf__sidebar__content-item">
@@ -86,10 +98,6 @@ const Sidebar: FC<SidebarProps> = ({ open, content, onClose }) => {
             </>
           )}
         </div>
-      </div>
-      <div className="tf__sidebar__transactions">
-        <div className="tf__sidebar__title">Transactions</div>
-        <div className="tf__sidebar__content">xxx</div>
       </div>
       <Divider />
     </Drawer>
