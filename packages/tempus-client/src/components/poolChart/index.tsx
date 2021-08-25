@@ -8,7 +8,24 @@ const Slice = (props: PieSeries.PointProps) => {
 
   const className = `tf__pool-chart__slice-${props.argument}`;
 
-  return <PieSeries.Point {...props} className={className} />;
+  const BLOW_OUT_DISTANCE = 10;
+  const sin = Math.sin((props.endAngle - props.startAngle) / 2 + props.startAngle + Math.PI / 2);
+  const cos = Math.cos((props.endAngle - props.startAngle) / 2 + props.startAngle + Math.PI / 2);
+  const sx = BLOW_OUT_DISTANCE * cos * -1;
+  const sy = BLOW_OUT_DISTANCE * sin * -1;
+
+  return (
+    <PieSeries.Point
+      {...props}
+      className={className}
+      style={{
+        transform:
+          props.argument === 'staked-principals' || props.argument === 'staked-yields'
+            ? `translate(${sx}px, ${sy}px)`
+            : 'none',
+      }}
+    />
+  );
 };
 
 type PoolChartProps = {
