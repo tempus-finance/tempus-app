@@ -25,7 +25,6 @@ describe('TempusPoolService', () => {
   const mockGetBlock = jest.fn();
   const mockYieldBearingToken = jest.fn();
   const mockCurrentRate = jest.fn();
-  const mockQueryFilter = jest.fn();
   const mockBackingToken = jest.fn();
   const mockProtocolName = jest.fn();
   const mockPricePerYieldShareStored = jest.fn();
@@ -46,7 +45,6 @@ describe('TempusPoolService', () => {
         maturityTime: mockMaturityTime,
         startTime: mockStartTime,
         yieldBearingToken: mockYieldBearingToken,
-        queryFilter: mockQueryFilter,
         backingToken: mockBackingToken,
         protocolName: mockProtocolName,
         pricePerYieldShareStored: mockPricePerYieldShareStored,
@@ -217,36 +215,6 @@ describe('TempusPoolService', () => {
       const protocolName = await instance.getProtocolName(mockAddress);
 
       expect(protocolName).toBe('aave');
-    });
-
-    test('it returns a a list of deposited events', async () => {
-      mockQueryFilter.mockImplementation(() => {
-        return Promise.resolve([
-          {
-            event: 'test-deposit-event',
-          },
-        ]);
-      });
-
-      const depositedEvents = await instance.getDepositedEvents(mockAddress);
-
-      expect(depositedEvents.length).toBe(1);
-      expect(depositedEvents[0].event).toBe('test-deposit-event');
-    });
-
-    test('it returns a a list of redeemed events', async () => {
-      mockQueryFilter.mockImplementation(() => {
-        return Promise.resolve([
-          {
-            event: 'test-redeem-event',
-          },
-        ]);
-      });
-
-      const depositedEvents = await instance.getRedeemedEvents(mockAddress);
-
-      expect(depositedEvents.length).toBe(1);
-      expect(depositedEvents[0].event).toBe('test-redeem-event');
     });
 
     test('it returns price per yield share stored', async () => {

@@ -1,4 +1,4 @@
-import { DepositedEvent, RedeemedEvent } from './TempusPoolService';
+import { DepositedEvent, RedeemedEvent } from './TempusControllerService';
 
 /**
  * Type guard - Checks if provided event is of type DepositedEvent

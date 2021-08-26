@@ -7,5 +7,6 @@ export type Config = {
   protocols: Protocol[];
   tempusPools: TempusPool[];
   statisticsContract: string;
+  tempusControllerContract: string;
   networkUrl: string;
 };
