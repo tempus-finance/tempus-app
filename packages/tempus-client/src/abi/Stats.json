@@ -39,7 +39,7 @@
   {
     "inputs": [
       {
-        "internalType": "contract TempusPool",
+        "internalType": "contract ITempusPool",
         "name": "pool",
         "type": "address"
       },
@@ -63,7 +63,7 @@
   {
     "inputs": [
       {
-        "internalType": "contract TempusPool",
+        "internalType": "contract ITempusPool",
         "name": "pool",
         "type": "address"
       }
