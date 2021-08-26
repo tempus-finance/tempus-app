@@ -8,6 +8,7 @@ import StatisticsService from '../services/StatisticsService';
 import TempusPoolService from '../services/TempusPoolService';
 import getERC20TokenService from '../services/getERC20TokenService';
 import getConfig from '../utils/get-config';
+import weiToEth from '../utils/convert-wei-to-eth';
 
 type DashboardDataAdapterParameters = {
   signerOrProvider: JsonRpcProvider | JsonRpcSigner;
@@ -212,7 +213,7 @@ export default class DashboardDataAdapter {
 
       const totalValue = yieldValue.add(principalValue);
 
-      return Number(ethers.utils.formatEther(totalValue));
+      return Number(ethers.utils.formatEther(weiToEth(totalValue)));
     } catch (error) {
       console.error(
         `DashboardDataAdapter - getPresentValueInBackingTokensForPool() ` +

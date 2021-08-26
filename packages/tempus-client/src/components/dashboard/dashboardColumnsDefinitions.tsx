@@ -2,6 +2,7 @@ import { Column } from '@devexpress/dx-react-grid';
 
 import { fixedAPYTooltipText, variableAPYTooltipText } from '../../constants';
 import { DashboardRowChild, DashboardRowParent } from '../../interfaces';
+import NumberUtils from '../../services/NumberUtils';
 
 export interface ExtraDataColumn extends Column {
   tooltip?: string;
@@ -94,8 +95,12 @@ export const dashboardColumnsDefinitions: ExtraDataColumn[] = [
           return '-';
         }
         return (
-          `${row.availableTokensToDeposit.backingToken} ${row.availableTokensToDeposit.backingTokenTicker} / ` +
-          `${row.availableTokensToDeposit.yieldBearingToken} ${row.availableTokensToDeposit.yieldBearingTokenTicker}`
+          `${NumberUtils.formatWithMultiplier(row.availableTokensToDeposit.backingToken, 2)} ${
+            row.availableTokensToDeposit.backingTokenTicker
+          } / ` +
+          `${NumberUtils.formatWithMultiplier(row.availableTokensToDeposit.yieldBearingToken, 2)} ${
+            row.availableTokensToDeposit.yieldBearingTokenTicker
+          }`
         );
       }
     },
