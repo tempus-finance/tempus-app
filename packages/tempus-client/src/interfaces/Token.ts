@@ -11,8 +11,3 @@ export type Ticker =
   | 'stETH'
   | 'USDC'
   | 'aDAI';
-
-export type Token = {
-  ticker: Ticker;
-  address: string;
-};
