@@ -23,9 +23,10 @@ import { TypedEventFilter, TypedEvent, TypedListener } from "./commons";
 interface TempusPoolInterface extends ethers.utils.Interface {
   functions: {
     "backingToken()": FunctionFragment;
+    "controller()": FunctionFragment;
     "currentInterestRate()": FunctionFragment;
     "deposit(uint256,address)": FunctionFragment;
-    "depositBackingToken(uint256,address)": FunctionFragment;
+    "depositBacking(uint256,address)": FunctionFragment;
     "feesConfig()": FunctionFragment;
     "finalize()": FunctionFragment;
     "initialInterestRate()": FunctionFragment;
@@ -41,8 +42,8 @@ interface TempusPoolInterface extends ethers.utils.Interface {
     "pricePerYieldShareStored()": FunctionFragment;
     "principalShare()": FunctionFragment;
     "protocolName()": FunctionFragment;
-    "redeem(uint256,uint256)": FunctionFragment;
-    "redeemToBackingToken(uint256,uint256)": FunctionFragment;
+    "redeem(address,uint256,uint256,address)": FunctionFragment;
+    "redeemToBacking(address,uint256,uint256,address)": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "setFeesConfig(tuple)": FunctionFragment;
     "startTime()": FunctionFragment;
@@ -59,6 +60,10 @@ interface TempusPoolInterface extends ethers.utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
+    functionFragment: "controller",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "currentInterestRate",
     values?: undefined
   ): string;
@@ -67,7 +72,7 @@ interface TempusPoolInterface extends ethers.utils.Interface {
     values: [BigNumberish, string]
   ): string;
   encodeFunctionData(
-    functionFragment: "depositBackingToken",
+    functionFragment: "depositBacking",
     values: [BigNumberish, string]
   ): string;
   encodeFunctionData(
@@ -123,11 +128,11 @@ interface TempusPoolInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "redeem",
-    values: [BigNumberish, BigNumberish]
+    values: [string, BigNumberish, BigNumberish, string]
   ): string;
   encodeFunctionData(
-    functionFragment: "redeemToBackingToken",
-    values: [BigNumberish, BigNumberish]
+    functionFragment: "redeemToBacking",
+    values: [string, BigNumberish, BigNumberish, string]
   ): string;
   encodeFunctionData(
     functionFragment: "renounceOwnership",
@@ -167,13 +172,14 @@ interface TempusPoolInterface extends ethers.utils.Interface {
     functionFragment: "backingToken",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "controller", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "currentInterestRate",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "deposit", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "depositBackingToken",
+    functionFragment: "depositBacking",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "feesConfig", data: BytesLike): Result;
@@ -226,7 +232,7 @@ interface TempusPoolInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "redeem", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "redeemToBackingToken",
+    functionFragment: "redeemToBacking",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -255,14 +261,10 @@ interface TempusPoolInterface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: "yieldShare", data: BytesLike): Result;
 
   events: {
-    "Deposited(address,address,uint256,uint256,uint256,uint256)": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
-    "Redeemed(address,uint256,uint256,uint256,uint256,uint256)": EventFragment;
   };
 
-  getEvent(nameOrSignatureOrTopic: "Deposited"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "Redeemed"): EventFragment;
 }
 
 export class TempusPool extends BaseContract {
@@ -311,6 +313,8 @@ export class TempusPool extends BaseContract {
   functions: {
     backingToken(overrides?: CallOverrides): Promise<[string]>;
 
+    controller(overrides?: CallOverrides): Promise<[string]>;
+
     currentInterestRate(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     deposit(
@@ -319,7 +323,7 @@ export class TempusPool extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    depositBackingToken(
+    depositBacking(
       backingTokenAmount: BigNumberish,
       recipient: string,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
@@ -380,14 +384,18 @@ export class TempusPool extends BaseContract {
     protocolName(overrides?: CallOverrides): Promise<[string]>;
 
     redeem(
+      from: string,
       principalAmount: BigNumberish,
       yieldAmount: BigNumberish,
+      recipient: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    redeemToBackingToken(
+    redeemToBacking(
+      from: string,
       principalAmount: BigNumberish,
       yieldAmount: BigNumberish,
+      recipient: string,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -428,6 +436,8 @@ export class TempusPool extends BaseContract {
 
   backingToken(overrides?: CallOverrides): Promise<string>;
 
+  controller(overrides?: CallOverrides): Promise<string>;
+
   currentInterestRate(overrides?: CallOverrides): Promise<BigNumber>;
 
   deposit(
@@ -436,7 +446,7 @@ export class TempusPool extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  depositBackingToken(
+  depositBacking(
     backingTokenAmount: BigNumberish,
     recipient: string,
     overrides?: PayableOverrides & { from?: string | Promise<string> }
@@ -495,14 +505,18 @@ export class TempusPool extends BaseContract {
   protocolName(overrides?: CallOverrides): Promise<string>;
 
   redeem(
+    from: string,
     principalAmount: BigNumberish,
     yieldAmount: BigNumberish,
+    recipient: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  redeemToBackingToken(
+  redeemToBacking(
+    from: string,
     principalAmount: BigNumberish,
     yieldAmount: BigNumberish,
+    recipient: string,
     overrides?: PayableOverrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -543,19 +557,33 @@ export class TempusPool extends BaseContract {
   callStatic: {
     backingToken(overrides?: CallOverrides): Promise<string>;
 
+    controller(overrides?: CallOverrides): Promise<string>;
+
     currentInterestRate(overrides?: CallOverrides): Promise<BigNumber>;
 
     deposit(
       yieldTokenAmount: BigNumberish,
       recipient: string,
       overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    ): Promise<
+      [BigNumber, BigNumber, BigNumber] & {
+        mintedShares: BigNumber;
+        depositedBT: BigNumber;
+        rate: BigNumber;
+      }
+    >;
 
-    depositBackingToken(
+    depositBacking(
       backingTokenAmount: BigNumberish,
       recipient: string,
       overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    ): Promise<
+      [BigNumber, BigNumber, BigNumber] & {
+        mintedShares: BigNumber;
+        depositedYBT: BigNumber;
+        rate: BigNumber;
+      }
+    >;
 
     feesConfig(
       overrides?: CallOverrides
@@ -604,16 +632,32 @@ export class TempusPool extends BaseContract {
     protocolName(overrides?: CallOverrides): Promise<string>;
 
     redeem(
+      from: string,
       principalAmount: BigNumberish,
       yieldAmount: BigNumberish,
+      recipient: string,
       overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    ): Promise<
+      [BigNumber, BigNumber, BigNumber] & {
+        redeemableYieldTokens: BigNumber;
+        redeemableBackingTokens: BigNumber;
+        rate: BigNumber;
+      }
+    >;
 
-    redeemToBackingToken(
+    redeemToBacking(
+      from: string,
       principalAmount: BigNumberish,
       yieldAmount: BigNumberish,
+      recipient: string,
       overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    ): Promise<
+      [BigNumber, BigNumber, BigNumber] & {
+        redeemableYieldTokens: BigNumber;
+        redeemableBackingTokens: BigNumber;
+        rate: BigNumber;
+      }
+    >;
 
     renounceOwnership(overrides?: CallOverrides): Promise<void>;
 
@@ -649,25 +693,6 @@ export class TempusPool extends BaseContract {
   };
 
   filters: {
-    Deposited(
-      depositor?: null,
-      recipient?: null,
-      yieldTokenAmount?: null,
-      backingTokenValue?: null,
-      shareAmounts?: null,
-      interestRate?: null
-    ): TypedEventFilter<
-      [string, string, BigNumber, BigNumber, BigNumber, BigNumber],
-      {
-        depositor: string;
-        recipient: string;
-        yieldTokenAmount: BigNumber;
-        backingTokenValue: BigNumber;
-        shareAmounts: BigNumber;
-        interestRate: BigNumber;
-      }
-    >;
-
     OwnershipTransferred(
       previousOwner?: string | null,
       newOwner?: string | null
@@ -675,29 +700,12 @@ export class TempusPool extends BaseContract {
       [string, string],
       { previousOwner: string; newOwner: string }
     >;
-
-    Redeemed(
-      redeemer?: null,
-      principalShareAmount?: null,
-      yieldShareAmount?: null,
-      yieldBearingAmount?: null,
-      backingTokenValue?: null,
-      interestRate?: null
-    ): TypedEventFilter<
-      [string, BigNumber, BigNumber, BigNumber, BigNumber, BigNumber],
-      {
-        redeemer: string;
-        principalShareAmount: BigNumber;
-        yieldShareAmount: BigNumber;
-        yieldBearingAmount: BigNumber;
-        backingTokenValue: BigNumber;
-        interestRate: BigNumber;
-      }
-    >;
   };
 
   estimateGas: {
     backingToken(overrides?: CallOverrides): Promise<BigNumber>;
+
+    controller(overrides?: CallOverrides): Promise<BigNumber>;
 
     currentInterestRate(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -707,7 +715,7 @@ export class TempusPool extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    depositBackingToken(
+    depositBacking(
       backingTokenAmount: BigNumberish,
       recipient: string,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
@@ -758,14 +766,18 @@ export class TempusPool extends BaseContract {
     protocolName(overrides?: CallOverrides): Promise<BigNumber>;
 
     redeem(
+      from: string,
       principalAmount: BigNumberish,
       yieldAmount: BigNumberish,
+      recipient: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    redeemToBackingToken(
+    redeemToBacking(
+      from: string,
       principalAmount: BigNumberish,
       yieldAmount: BigNumberish,
+      recipient: string,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -807,6 +819,8 @@ export class TempusPool extends BaseContract {
   populateTransaction: {
     backingToken(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    controller(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     currentInterestRate(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
@@ -817,7 +831,7 @@ export class TempusPool extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    depositBackingToken(
+    depositBacking(
       backingTokenAmount: BigNumberish,
       recipient: string,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
@@ -876,14 +890,18 @@ export class TempusPool extends BaseContract {
     protocolName(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     redeem(
+      from: string,
       principalAmount: BigNumberish,
       yieldAmount: BigNumberish,
+      recipient: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    redeemToBackingToken(
+    redeemToBacking(
+      from: string,
       principalAmount: BigNumberish,
       yieldAmount: BigNumberish,
+      recipient: string,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

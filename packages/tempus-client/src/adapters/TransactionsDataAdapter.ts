@@ -3,13 +3,14 @@ import format from 'date-fns/format';
 import { formatDistanceToNow } from 'date-fns';
 import { Block, JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
 import getTempusPoolService from '../services/getTempusPoolService';
-import TempusPoolService, { DepositedEvent, RedeemedEvent } from '../services/TempusPoolService';
+import TempusPoolService from '../services/TempusPoolService';
 import getStatisticsService from '../services/getStatisticsService';
 import StatisticsService from '../services/StatisticsService';
 import getDefaultProvider from '../services/getDefaultProvider';
 import { isDepositEvent, isRedeemEvent } from '../services/EventUtils';
 import { Ticker, Transaction, TransactionAction } from '../interfaces';
-import getConfig from '../utils/get-config';
+import TempusControllerService, { DepositedEvent, RedeemedEvent } from '../services/TempusControllerService';
+import getTempusControllerService from '../services/getTempusControllerService';
 
 type TransactionsDataAdapterParameters = {
   signerOrProvider: JsonRpcProvider | JsonRpcSigner;
@@ -18,10 +19,12 @@ type TransactionsDataAdapterParameters = {
 class TransactionsDataAdapter {
   private tempusPoolService: TempusPoolService | null = null;
   private statisticsService: StatisticsService | null = null;
+  private tempusControllerService: TempusControllerService | null = null;
 
   public init(params: TransactionsDataAdapterParameters): void {
     this.tempusPoolService = getTempusPoolService(params.signerOrProvider);
     this.statisticsService = getStatisticsService(params.signerOrProvider);
+    this.tempusControllerService = getTempusControllerService(params.signerOrProvider);
   }
 
   public async generateData(): Promise<Transaction[]> {
@@ -45,22 +48,18 @@ class TransactionsDataAdapter {
   }
 
   private async fetchEvents(): Promise<(DepositedEvent | RedeemedEvent)[]> {
-    const fetchDepositEventsPromises: Promise<DepositedEvent[]>[] = [];
-    const fetchRedeemEventsPromises: Promise<RedeemedEvent[]>[] = [];
-    getConfig().tempusPools.forEach(tempusPool => {
-      if (this.tempusPoolService === null) {
-        console.error('Attempted to use TransactionsDataAdapter before initializing it!');
-        return Promise.reject();
-      }
+    if (this.tempusControllerService === null) {
+      console.error('Attempted to use TransactionsDataAdapter before initializing it!');
+      return Promise.reject();
+    }
 
-      fetchDepositEventsPromises.push(this.tempusPoolService.getDepositedEvents(tempusPool.address));
-      fetchRedeemEventsPromises.push(this.tempusPoolService.getRedeemedEvents(tempusPool.address));
-    });
     let depositEvents: DepositedEvent[];
     let redeemEvents: RedeemedEvent[];
     try {
-      depositEvents = (await Promise.all(fetchDepositEventsPromises)).flat();
-      redeemEvents = (await Promise.all(fetchRedeemEventsPromises)).flat();
+      [depositEvents, redeemEvents] = await Promise.all([
+        this.tempusControllerService.getDepositedEvents(),
+        this.tempusControllerService.getRedeemedEvents(),
+      ]);
     } catch (error) {
       console.error('TransactionsDataAdapter - fetchEvents() - Failed to fetch deposit and redeem events!');
       return Promise.reject(error);
@@ -88,8 +87,8 @@ class TransactionsDataAdapter {
       const [eventValue, eventDate, tokenTicker, poolMaturityDate] = await Promise.all([
         await this.getEventUSDValue(event),
         await this.getEventTime(event),
-        await this.tempusPoolService.getYieldBearingTokenTicker(event.address),
-        await this.tempusPoolService.getMaturityTime(event.address),
+        await this.tempusPoolService.getYieldBearingTokenTicker(event.args.pool),
+        await this.tempusPoolService.getMaturityTime(event.args.pool),
       ]);
 
       const formattedDate = format(poolMaturityDate, 'dd/MM/yyyy');
@@ -156,7 +155,7 @@ class TransactionsDataAdapter {
 
     let eventPoolBackingToken: Ticker;
     try {
-      eventPoolBackingToken = await this.tempusPoolService.getBackingTokenTicker(event.address);
+      eventPoolBackingToken = await this.tempusPoolService.getBackingTokenTicker(event.args.pool);
     } catch (error) {
       console.log(
         'TransactionsDataAdapter - getEventUSDValue() - Failed to fetch event tempus pool backing token ticker!',

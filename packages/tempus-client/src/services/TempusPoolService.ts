@@ -1,6 +1,5 @@
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
 import { BigNumber, ContractTransaction, ethers } from 'ethers';
-import { TypedEvent } from '../abi/commons';
 import { TempusPool } from '../abi/TempusPool';
 import { ProtocolName, Ticker } from '../interfaces';
 import getERC20TokenService from './getERC20TokenService';
@@ -13,30 +12,6 @@ type TempusPoolServiceParameters = {
   TempusPoolABI: any;
   signerOrProvider: JsonRpcSigner | JsonRpcProvider;
 };
-
-// I need to define event types like this, because TypeChain plugin for Hardhat does not generate them.
-// TODO - Use event types from auto generated contract typings file when TypeChain plugin for Hardhat adds them.
-// See: https://github.com/ethereum-ts/TypeChain/issues/454
-export type DepositedEvent = TypedEvent<
-  [string, string, BigNumber, BigNumber, BigNumber, BigNumber] & {
-    depositor: string;
-    recipient: string;
-    yieldTokenAmount: BigNumber;
-    backingTokenValue: BigNumber;
-    shareAmounts: BigNumber;
-    interestRate: BigNumber;
-  }
->;
-export type RedeemedEvent = TypedEvent<
-  [string, BigNumber, BigNumber, BigNumber, BigNumber, BigNumber] & {
-    redeemer: string;
-    principalShareAmount: BigNumber;
-    yieldShareAmount: BigNumber;
-    yieldBearingAmount: BigNumber;
-    backingTokenValue: BigNumber;
-    interestRate: BigNumber;
-  }
->;
 
 class TempusPoolService {
   private readonly DAYS_IN_A_YEAR = 365;
@@ -101,36 +76,6 @@ class TempusPoolService {
         return Promise.reject(error);
       }
     }
-    throw new Error(`Address '${address}' is not valid`);
-  }
-
-  public async getDepositedEvents(address: string): Promise<DepositedEvent[]> {
-    const tempusPoolContract = this.tempusPoolsMap[address];
-
-    if (tempusPoolContract) {
-      try {
-        return await tempusPoolContract.queryFilter(tempusPoolContract.filters.Deposited());
-      } catch (error) {
-        console.error(`TempusPoolService getDepositedEvents(${address})`, error);
-        return Promise.reject(error);
-      }
-    }
-
-    throw new Error(`Address '${address}' is not valid`);
-  }
-
-  public async getRedeemedEvents(address: string): Promise<RedeemedEvent[]> {
-    const tempusPoolContract = this.tempusPoolsMap[address];
-
-    if (tempusPoolContract) {
-      try {
-        return tempusPoolContract.queryFilter(tempusPoolContract.filters.Redeemed());
-      } catch (error) {
-        console.error(`TempusPoolService getRedeemEvents(${address})`, error);
-        return Promise.reject(error);
-      }
-    }
-
     throw new Error(`Address '${address}' is not valid`);
   }
 

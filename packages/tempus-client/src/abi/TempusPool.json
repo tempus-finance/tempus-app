@@ -3,49 +3,6 @@
     "anonymous": false,
     "inputs": [
       {
-        "indexed": false,
-        "internalType": "address",
-        "name": "depositor",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "recipient",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "yieldTokenAmount",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "backingTokenValue",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "shareAmounts",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "interestRate",
-        "type": "uint256"
-      }
-    ],
-    "name": "Deposited",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
         "indexed": true,
         "internalType": "address",
         "name": "previousOwner",
@@ -62,51 +19,21 @@
     "type": "event"
   },
   {
-    "anonymous": false,
-    "inputs": [
+    "inputs": [],
+    "name": "backingToken",
+    "outputs": [
       {
-        "indexed": false,
         "internalType": "address",
-        "name": "redeemer",
+        "name": "",
         "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "principalShareAmount",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "yieldShareAmount",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "yieldBearingAmount",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "backingTokenValue",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "interestRate",
-        "type": "uint256"
       }
     ],
-    "name": "Redeemed",
-    "type": "event"
+    "stateMutability": "view",
+    "type": "function"
   },
   {
     "inputs": [],
-    "name": "backingToken",
+    "name": "controller",
     "outputs": [
       {
         "internalType": "address",
@@ -147,7 +74,17 @@
     "outputs": [
       {
         "internalType": "uint256",
-        "name": "",
+        "name": "mintedShares",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "depositedBT",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "rate",
         "type": "uint256"
       }
     ],
@@ -167,11 +104,21 @@
         "type": "address"
       }
     ],
-    "name": "depositBackingToken",
+    "name": "depositBacking",
     "outputs": [
       {
         "internalType": "uint256",
-        "name": "",
+        "name": "mintedShares",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "depositedYBT",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "rate",
         "type": "uint256"
       }
     ],
@@ -402,6 +349,11 @@
   {
     "inputs": [
       {
+        "internalType": "address",
+        "name": "from",
+        "type": "address"
+      },
+      {
         "internalType": "uint256",
         "name": "principalAmount",
         "type": "uint256"
@@ -410,13 +362,28 @@
         "internalType": "uint256",
         "name": "yieldAmount",
         "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "recipient",
+        "type": "address"
       }
     ],
     "name": "redeem",
     "outputs": [
       {
         "internalType": "uint256",
-        "name": "",
+        "name": "redeemableYieldTokens",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "redeemableBackingTokens",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "rate",
         "type": "uint256"
       }
     ],
@@ -426,6 +393,11 @@
   {
     "inputs": [
       {
+        "internalType": "address",
+        "name": "from",
+        "type": "address"
+      },
+      {
         "internalType": "uint256",
         "name": "principalAmount",
         "type": "uint256"
@@ -434,13 +406,28 @@
         "internalType": "uint256",
         "name": "yieldAmount",
         "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "recipient",
+        "type": "address"
       }
     ],
-    "name": "redeemToBackingToken",
+    "name": "redeemToBacking",
     "outputs": [
       {
         "internalType": "uint256",
-        "name": "",
+        "name": "redeemableYieldTokens",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "redeemableBackingTokens",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "rate",
         "type": "uint256"
       }
     ],

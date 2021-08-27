@@ -4,8 +4,9 @@ import ChartDataPoint from '../interfaces/ChartDataPoint';
 import getStatisticsService from '../services/getStatisticsService';
 import getTempusPoolService from '../services/getTempusPoolService';
 import StatisticsService from '../services/StatisticsService';
-import TempusPoolService, { DepositedEvent, RedeemedEvent } from '../services/TempusPoolService';
-import getConfig from '../utils/get-config';
+import TempusPoolService from '../services/TempusPoolService';
+import TempusControllerService, { DepositedEvent, RedeemedEvent } from '../services/TempusControllerService';
+import getTempusControllerService from '../services/getTempusControllerService';
 
 type VolumeChartDataAdapterParameters = {
   signerOrProvider: JsonRpcProvider | JsonRpcSigner;
@@ -25,10 +26,12 @@ class VolumeChartDataAdapter {
 
   private tempusPoolService: TempusPoolService | null = null;
   private statisticsService: StatisticsService | null = null;
+  private tempusControllerService: TempusControllerService | null = null;
 
   public init(params: VolumeChartDataAdapterParameters): void {
     this.tempusPoolService = getTempusPoolService(params.signerOrProvider);
     this.statisticsService = getStatisticsService(params.signerOrProvider);
+    this.tempusControllerService = getTempusControllerService(params.signerOrProvider);
   }
 
   public async generateChartData(): Promise<ChartDataPoint[]> {
@@ -72,22 +75,21 @@ class VolumeChartDataAdapter {
    * Fetches all required data from contracts in order to build data structure for Volume chart
    */
   private async fetchData(): Promise<void> {
-    const depositEventFetchPromises: Promise<DepositedEvent[]>[] = [];
-    const redeemEventFetchPromises: Promise<RedeemedEvent[]>[] = [];
-
-    getConfig().tempusPools.forEach(tempusPool => {
-      if (this.tempusPoolService) {
-        depositEventFetchPromises.push(this.tempusPoolService.getDepositedEvents(tempusPool.address));
-        redeemEventFetchPromises.push(this.tempusPoolService.getRedeemedEvents(tempusPool.address));
-      }
-    });
+    if (!this.tempusControllerService) {
+      console.error(
+        'VolumeChartDataAdapter - fetchData() - Attempted to use VolumeChartDataAdapter before initalizing it!',
+      );
+      return Promise.reject();
+    }
 
     let depositEvents: DepositedEvent[];
     let redeemEvents: RedeemedEvent[];
     try {
       // TODO - Include swap events as well when they are added on the backend side.
-      depositEvents = (await Promise.all(depositEventFetchPromises)).flat();
-      redeemEvents = (await Promise.all(redeemEventFetchPromises)).flat();
+      [depositEvents, redeemEvents] = await Promise.all([
+        this.tempusControllerService.getDepositedEvents(),
+        this.tempusControllerService.getRedeemedEvents(),
+      ]);
     } catch (error) {
       console.error('Failed to fetch deposit and redeem events for volume chart', error);
       return Promise.reject(error);
@@ -172,7 +174,7 @@ class VolumeChartDataAdapter {
 
     let eventPoolBackingToken: string;
     try {
-      eventPoolBackingToken = await this.tempusPoolService.getBackingTokenTicker(event.address);
+      eventPoolBackingToken = await this.tempusPoolService.getBackingTokenTicker(event.args.pool);
     } catch (error) {
       console.error('Failed to get tempus pool backing token ticker!', error);
       return Promise.reject(error);
