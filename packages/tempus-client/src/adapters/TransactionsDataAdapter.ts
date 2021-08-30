@@ -58,7 +58,7 @@ class TransactionsDataAdapter {
       return Promise.reject(error);
     }
 
-    return transactions;
+    return this.sortTransactions(transactions);
   }
 
   private async fetchEvents(): Promise<(DepositedEvent | RedeemedEvent | SwapEvent)[]> {
@@ -212,6 +212,10 @@ class TransactionsDataAdapter {
     }
 
     return Number(ethers.utils.formatEther(eventBackingTokenValue)) * poolBackingTokenRate;
+  }
+
+  private sortTransactions(transactions: Transaction[]): Transaction[] {
+    return transactions.sort((a, b) => b.time.getTime() - a.time.getTime());
   }
 }
 export default TransactionsDataAdapter;
