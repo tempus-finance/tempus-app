@@ -1,8 +1,10 @@
-import { BigNumber, Contract } from 'ethers';
+import { BigNumber, Contract, ethers } from 'ethers';
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
 import { Vault } from '../abi/Vault';
 import VaultABI from '../abi/Vault.json';
 import { TypedEvent } from '../abi/commons';
+import getDefaultProvider from './getDefaultProvider';
+import { SECONDS_IN_AN_HOUR } from '../constants';
 
 type VaultServiceParameters = {
   Contract: typeof Contract;
@@ -24,6 +26,15 @@ export type SwapEvent = TypedEvent<
   }
 >;
 
+/**
+ * Swap Given In means we want to give in specified amount of tokens, for unknown amount of some other token
+ * Swap Given Out means we want to give unknown amount of tokens, for specified amount of some other token
+ */
+export enum SwapKind {
+  GIVEN_IN = 0,
+  GIVEN_OUT = 1,
+}
+
 class VaultService {
   private contract: Vault | null = null;
 
@@ -43,6 +54,47 @@ class VaultService {
       console.error(`VaultService - getSwapEvents() - Failed to get swap events!`, error);
       return Promise.reject(error);
     }
+  }
+
+  /**
+   * @description Make sure to give approval of 'amount' of 'assetIn' tokens to Vault address
+   */
+  public async swap(
+    poolId: string,
+    kind: SwapKind,
+    fromAddress: string,
+    assetItAddress: string,
+    assetOutAddress: string,
+    amount: number,
+  ) {
+    if (!this.contract) {
+      console.error('VaultService - swap() - Attempted to use VaultService before initializing it!');
+      return Promise.reject();
+    }
+
+    const provider = getDefaultProvider();
+    const latestBlock = await provider.getBlock('latest');
+
+    const singleSwap = {
+      poolId: poolId,
+      kind: kind,
+      assetIn: assetItAddress,
+      assetOut: assetOutAddress,
+      amount: ethers.utils.parseEther(amount.toString()),
+      userData: ethers.utils.formatBytes32String('0x0'),
+    };
+
+    const fundManagement = {
+      sender: fromAddress,
+      fromInternalBalance: false,
+      recipient: fromAddress,
+      toInternalBalance: false,
+    };
+
+    const minimumReturn = 1;
+    const deadline = latestBlock.timestamp + SECONDS_IN_AN_HOUR;
+
+    return this.contract.swap(singleSwap, fundManagement, minimumReturn, deadline);
   }
 }
 
