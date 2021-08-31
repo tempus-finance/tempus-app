@@ -25,6 +25,12 @@
   align-items: center;
 }
 
+.tf__header__action-account {
+  display: inline-flex;
+  align-items: center;
+  font-size: 13px;
+}
+
 button.tf__header__action {
   margin-right: 20px;
   cursor: pointer;
@@ -37,12 +43,6 @@ button.tf__header__action {
 
   &:last-child {
     margin-right: 0;
-  }
-
-  .tf__header__action__account {
-    display: inline-flex;
-    align-items: center;
-    font-size: 13px;
   }
 
   &.tf__header__action-wallet {

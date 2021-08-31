@@ -46,6 +46,7 @@ const WalletConnect: FC = (): JSX.Element => {
       variant="contained"
       size="small"
       className="tf__header__action tf__header__action-wallet"
+      disabled={hasBeenClicked}
       onClick={onConnect}
     >
       <AccountBalanceWalletIcon /> {CONNECT_WALLET}
