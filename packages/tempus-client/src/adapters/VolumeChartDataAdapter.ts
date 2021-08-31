@@ -98,7 +98,7 @@ class VolumeChartDataAdapter {
       [depositEvents, redeemEvents, swapEvents] = await Promise.all([
         this.tempusControllerService.getDepositedEvents(),
         this.tempusControllerService.getRedeemedEvents(),
-        this.vaultService?.getSwapEvents(),
+        this.vaultService.getSwapEvents(),
       ]);
     } catch (error) {
       console.error('Failed to fetch deposit and redeem events for volume chart', error);
