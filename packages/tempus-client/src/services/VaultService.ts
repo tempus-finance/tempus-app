@@ -63,7 +63,7 @@ class VaultService {
     poolId: string,
     kind: SwapKind,
     fromAddress: string,
-    assetItAddress: string,
+    assetInAddress: string,
     assetOutAddress: string,
     amount: number,
   ) {
@@ -78,7 +78,7 @@ class VaultService {
     const singleSwap = {
       poolId: poolId,
       kind: kind,
-      assetIn: assetItAddress,
+      assetIn: assetInAddress,
       assetOut: assetOutAddress,
       amount: ethers.utils.parseEther(amount.toString()),
       userData: ethers.utils.formatBytes32String('0x0'),
