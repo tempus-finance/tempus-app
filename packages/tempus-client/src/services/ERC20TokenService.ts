@@ -3,6 +3,7 @@ import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
 import { ERC20 } from '../abi/ERC20';
 import ERC20ABI from '../abi/ERC20.json';
 import { Ticker } from '../interfaces';
+import { ZERO_ETH_ADDRESS } from '../constants';
 
 type ERC20TokenServiceParameters = {
   Contract: typeof Contract;
@@ -26,6 +27,11 @@ class ERC20TokenService {
 
     let balance: BigNumber;
     try {
+      // ETH is a native token that does not have an ERC20 contract, we need to get balance for it like this.
+      if (this.contract.address === ZERO_ETH_ADDRESS) {
+        return this.contract.provider.getBalance(address);
+      }
+
       balance = await this.contract.balanceOf(address);
     } catch (error) {
       console.error(`ERC20TokenService - balanceOf() - Failed to get balance of ${address}!`);
@@ -42,6 +48,11 @@ class ERC20TokenService {
 
     let ticker: Ticker;
     try {
+      // ETH is a native token that does not have an ERC20 contract, we need to return token ticker like this.
+      if (this.contract.address === ZERO_ETH_ADDRESS) {
+        return 'ETH';
+      }
+
       ticker = (await this.contract.symbol()) as Ticker;
     } catch (error) {
       console.error('ERC20TokenService - symbol() - Failed to get token ticker!');
@@ -50,7 +61,7 @@ class ERC20TokenService {
     return ticker;
   }
 
-  public async approve(spenderAddress: string, amount: BigNumber): Promise<ContractTransaction> {
+  public async approve(spenderAddress: string, amount: BigNumber): Promise<ContractTransaction | void> {
     if (!this.contract) {
       console.error('ERC20TokenService - approve() - Attempted to use ERC20TokenService before initializing it!');
       return Promise.reject();
@@ -58,6 +69,11 @@ class ERC20TokenService {
 
     let approveTransaction: ContractTransaction;
     try {
+      // No need to approve ETH transfers, ETH is not an ERC20 contract.
+      if (this.contract.address === ZERO_ETH_ADDRESS) {
+        return Promise.resolve();
+      }
+
       approveTransaction = await this.contract.approve(spenderAddress, amount);
     } catch (error) {
       console.log('ERC20TokenService - approve() - Approve transaction failed!', error);
