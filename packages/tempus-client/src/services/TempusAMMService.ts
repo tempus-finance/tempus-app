@@ -26,6 +26,20 @@ class TempusAMMService {
     });
   }
 
+  public poolId(address: string): Promise<string> {
+    const amm = this.tempusAMMMap.get(address);
+    if (amm) {
+      try {
+        return amm.getPoolId();
+      } catch (error) {
+        console.error('TempusAMMService - poolId() - Failed to fetch pool ID from contract!', error);
+        return Promise.reject(error);
+      }
+    }
+
+    throw new Error('TempusAMMService - poolId() - Invalid AMM address provided!');
+  }
+
   public async getTempusPoolAddressFromId(poolId: string): Promise<string> {
     const addressDataFetchPromises: Promise<TempusPoolAddressData>[] = [];
     this.tempusAMMMap.forEach(tempusAMM => {
