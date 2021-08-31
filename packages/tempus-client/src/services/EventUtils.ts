@@ -57,7 +57,7 @@ export async function getEventBackingTokenValue(
       const tempusPoolAddress = await amm.getTempusPoolAddressFromId(event.args.poolId);
       const principalAddress = await pool.getPrincipalTokenAddress(tempusPoolAddress);
 
-      // If tokenIn is principal token, return amountIn it as an event value, otherwise return amountOut as an event value.
+      // If tokenIn is principal token, return amountIn as an event value, otherwise return amountOut as an event value.
       return event.args.tokenIn === principalAddress ? event.args.amountIn : event.args.amountOut;
     } catch (error) {
       console.error('EventUtils - getEventBackingTokenValue() - Failed to get event value in backing tokens.', error);
