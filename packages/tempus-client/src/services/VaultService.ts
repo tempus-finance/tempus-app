@@ -66,7 +66,7 @@ class VaultService {
     assetInAddress: string,
     assetOutAddress: string,
     amount: number,
-  ) {
+  ): Promise<ethers.ContractTransaction> {
     if (!this.contract) {
       console.error('VaultService - swap() - Attempted to use VaultService before initializing it!');
       return Promise.reject();

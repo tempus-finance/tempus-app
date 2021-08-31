@@ -26,7 +26,7 @@ class TempusAMMService {
     });
   }
 
-  public poolId(address: string) {
+  public poolId(address: string): Promise<string> {
     const amm = this.tempusAMMMap.get(address);
     if (amm) {
       try {
