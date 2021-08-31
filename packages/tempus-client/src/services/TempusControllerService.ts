@@ -26,14 +26,16 @@ export type DepositedEvent = TypedEvent<
   }
 >;
 export type RedeemedEvent = TypedEvent<
-  [string, string, BigNumber, BigNumber, BigNumber, BigNumber, BigNumber] & {
+  [string, string, string, BigNumber, BigNumber, BigNumber, BigNumber, BigNumber, boolean] & {
     pool: string;
     redeemer: string;
+    recipient: string;
     principalShareAmount: BigNumber;
     yieldShareAmount: BigNumber;
     yieldBearingAmount: BigNumber;
     backingTokenValue: BigNumber;
     interestRate: BigNumber;
+    isEarlyRedeem: boolean;
   }
 >;
 
