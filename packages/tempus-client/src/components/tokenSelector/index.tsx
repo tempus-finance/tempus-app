@@ -10,7 +10,7 @@ import './tokenSelector.scss';
 
 type TokenSelectorInProps = {
   defaultTicker?: Ticker;
-  tickers: Ticker[];
+  tickers?: Ticker[];
   classNames?: string;
 };
 
@@ -38,24 +38,25 @@ const getMenuItems = (items: string[]) => {
   });
 };
 
-const TokenSelector: FC<TokenSelectorProps> = ({ defaultTicker, tickers, classNames, onTokenChange }) => {
-  const [items, setItems] = useState(() => {
-    if (!defaultTicker) {
-      return [...tickers, 'empty'];
-    }
-
-    return [...tickers];
-  });
-
-  const [token, setToken] = useState<string>(() => {
-    return defaultTicker ? (defaultTicker as string) : 'empty';
-  });
+const TokenSelector: FC<TokenSelectorProps> = ({ defaultTicker, tickers = [], classNames, onTokenChange }) => {
+  const [items, setItems] = useState<string[]>([]);
+  const [token, setToken] = useState<string>('empty');
 
   useEffect(() => {
-    if (defaultTicker) {
+    if (defaultTicker && defaultTicker !== token) {
       setToken(defaultTicker);
     }
-  }, [defaultTicker, setToken]);
+  }, [defaultTicker, token, setToken]);
+
+  useEffect(() => {
+    if (tickers && tickers.length && items.length === 0) {
+      if (!defaultTicker) {
+        setItems([...tickers, 'empty']);
+      } else {
+        setItems([...tickers]);
+      }
+    }
+  }, [tickers, defaultTicker, items, setItems]);
 
   const handleChange = useCallback(
     (event: ChangeEvent<{ value: unknown }>) => {
