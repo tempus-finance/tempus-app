@@ -1,4 +1,4 @@
-import { ethers } from 'ethers';
+import { BigNumber, ethers } from 'ethers';
 import format from 'date-fns/format';
 import { formatDistanceToNow } from 'date-fns';
 import { Block, JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
@@ -7,10 +7,14 @@ import TempusPoolService from '../services/TempusPoolService';
 import getStatisticsService from '../services/getStatisticsService';
 import StatisticsService from '../services/StatisticsService';
 import getDefaultProvider from '../services/getDefaultProvider';
-import { isDepositEvent, isRedeemEvent } from '../services/EventUtils';
-import { Ticker, Transaction, TransactionAction } from '../interfaces';
+import { isDepositEvent, isRedeemEvent, isSwapEvent } from '../services/EventUtils';
 import TempusControllerService, { DepositedEvent, RedeemedEvent } from '../services/TempusControllerService';
 import getTempusControllerService from '../services/getTempusControllerService';
+import VaultService, { SwapEvent } from '../services/VaultService';
+import getVaultService from '../services/getVaultService';
+import getTempusAMMService from '../services/getTempusAMMService';
+import TempusAMMService from '../services/TempusAMMService';
+import { Ticker, Transaction, TransactionAction } from '../interfaces';
 
 type TransactionsDataAdapterParameters = {
   signerOrProvider: JsonRpcProvider | JsonRpcSigner;
@@ -20,15 +24,19 @@ class TransactionsDataAdapter {
   private tempusPoolService: TempusPoolService | null = null;
   private statisticsService: StatisticsService | null = null;
   private tempusControllerService: TempusControllerService | null = null;
+  private vaultService: VaultService | null = null;
+  private tempusAMMService: TempusAMMService | null = null;
 
   public init(params: TransactionsDataAdapterParameters): void {
     this.tempusPoolService = getTempusPoolService(params.signerOrProvider);
     this.statisticsService = getStatisticsService(params.signerOrProvider);
     this.tempusControllerService = getTempusControllerService(params.signerOrProvider);
+    this.vaultService = getVaultService(params.signerOrProvider);
+    this.tempusAMMService = getTempusAMMService(params.signerOrProvider);
   }
 
   public async generateData(): Promise<Transaction[]> {
-    let events: (DepositedEvent | RedeemedEvent)[];
+    let events: (DepositedEvent | RedeemedEvent | SwapEvent)[];
     try {
       events = await this.fetchEvents();
     } catch (error) {
@@ -47,28 +55,30 @@ class TransactionsDataAdapter {
     return transactions;
   }
 
-  private async fetchEvents(): Promise<(DepositedEvent | RedeemedEvent)[]> {
-    if (this.tempusControllerService === null) {
+  private async fetchEvents(): Promise<(DepositedEvent | RedeemedEvent | SwapEvent)[]> {
+    if (!this.tempusControllerService || !this.vaultService) {
       console.error('Attempted to use TransactionsDataAdapter before initializing it!');
       return Promise.reject();
     }
 
     let depositEvents: DepositedEvent[];
     let redeemEvents: RedeemedEvent[];
+    let swapEvents: SwapEvent[];
     try {
-      [depositEvents, redeemEvents] = await Promise.all([
+      [depositEvents, redeemEvents, swapEvents] = await Promise.all([
         this.tempusControllerService.getDepositedEvents(),
         this.tempusControllerService.getRedeemedEvents(),
+        this.vaultService.getSwapEvents(),
       ]);
     } catch (error) {
       console.error('TransactionsDataAdapter - fetchEvents() - Failed to fetch deposit and redeem events!');
       return Promise.reject(error);
     }
 
-    return [...depositEvents, ...redeemEvents];
+    return [...depositEvents, ...redeemEvents, ...swapEvents];
   }
 
-  private async fetchTransactionData(events: (DepositedEvent | RedeemedEvent)[]): Promise<Transaction[]> {
+  private async fetchTransactionData(events: (DepositedEvent | RedeemedEvent | SwapEvent)[]): Promise<Transaction[]> {
     const eventDataFetchPromises: Promise<Transaction>[] = [];
     events.forEach(event => {
       eventDataFetchPromises.push(this.fetchEventData(event));
@@ -76,7 +86,7 @@ class TransactionsDataAdapter {
     return Promise.all(eventDataFetchPromises);
   }
 
-  private async fetchEventData(event: DepositedEvent | RedeemedEvent): Promise<Transaction> {
+  private async fetchEventData(event: DepositedEvent | RedeemedEvent | SwapEvent): Promise<Transaction> {
     if (!this.tempusPoolService) {
       console.error('Attempted to use TransactionsDataAdapter before initializing it!');
       return Promise.reject();
@@ -84,11 +94,13 @@ class TransactionsDataAdapter {
 
     let transaction: Transaction;
     try {
+      const eventPoolAddress = await this.getEventPoolAddress(event);
+
       const [eventValue, eventDate, tokenTicker, poolMaturityDate] = await Promise.all([
         await this.getEventUSDValue(event),
         await this.getEventTime(event),
-        await this.tempusPoolService.getYieldBearingTokenTicker(event.args.pool),
-        await this.tempusPoolService.getMaturityTime(event.args.pool),
+        await this.tempusPoolService.getYieldBearingTokenTicker(eventPoolAddress),
+        await this.tempusPoolService.getMaturityTime(eventPoolAddress),
       ]);
 
       const formattedDate = format(poolMaturityDate, 'dd/MM/yyyy');
@@ -109,18 +121,22 @@ class TransactionsDataAdapter {
     return transaction;
   }
 
-  private getEventAccount(event: DepositedEvent | RedeemedEvent): string {
+  private getEventAccount(event: DepositedEvent | RedeemedEvent | SwapEvent): string {
     if (isDepositEvent(event)) {
       return event.args.depositor;
     }
     if (isRedeemEvent(event)) {
       return event.args.redeemer;
     }
+    if (isSwapEvent(event)) {
+      // TODO - Use address of the user that executed the swap once it's added to swap event data.
+      return '-';
+    }
 
     throw new Error('TransactionsDataAdapter - getEventAccount() - Invalid event type!');
   }
 
-  private getEventAction(event: DepositedEvent | RedeemedEvent): TransactionAction {
+  private getEventAction(event: DepositedEvent | RedeemedEvent | SwapEvent): TransactionAction {
     if (isDepositEvent(event)) {
       return 'Deposit';
     }
@@ -130,11 +146,14 @@ class TransactionsDataAdapter {
       }
       return 'Redemption';
     }
+    if (isSwapEvent(event)) {
+      return 'Swap';
+    }
 
     throw new Error('TransactionsDataAdapter - getEventAccount() - Invalid event type!');
   }
 
-  private async getEventTime(event: DepositedEvent | RedeemedEvent): Promise<Date> {
+  private async getEventTime(event: DepositedEvent | RedeemedEvent | SwapEvent): Promise<Date> {
     const provider = getDefaultProvider();
 
     let eventBlock: Block;
@@ -148,7 +167,7 @@ class TransactionsDataAdapter {
     return new Date(eventBlock.timestamp * 1000);
   }
 
-  private async getEventUSDValue(event: DepositedEvent | RedeemedEvent): Promise<number> {
+  private async getEventUSDValue(event: DepositedEvent | RedeemedEvent | SwapEvent): Promise<number> {
     if (!this.tempusPoolService || !this.statisticsService) {
       console.error('Attempted to use TransactionsDataAdapter before initializing it!');
       return Promise.reject();
@@ -156,7 +175,9 @@ class TransactionsDataAdapter {
 
     let eventPoolBackingToken: Ticker;
     try {
-      eventPoolBackingToken = await this.tempusPoolService.getBackingTokenTicker(event.args.pool);
+      const eventPoolAddress = await this.getEventPoolAddress(event);
+
+      eventPoolBackingToken = await this.tempusPoolService.getBackingTokenTicker(eventPoolAddress);
     } catch (error) {
       console.log(
         'TransactionsDataAdapter - getEventUSDValue() - Failed to fetch event tempus pool backing token ticker!',
@@ -174,7 +195,69 @@ class TransactionsDataAdapter {
       return Promise.reject(error);
     }
 
-    return Number(ethers.utils.formatEther(event.args.backingTokenValue)) * poolBackingTokenRate;
+    let eventBackingTokenValue: BigNumber;
+    try {
+      eventBackingTokenValue = await this.getEventBackingTokenValue(event);
+    } catch (error) {
+      console.error(
+        'TransactionsDataAdapter - getEventUSDValue() - Failed to get event value in backing tokes!',
+        error,
+      );
+      return Promise.reject(error);
+    }
+
+    return Number(ethers.utils.formatEther(eventBackingTokenValue)) * poolBackingTokenRate;
+  }
+
+  private async getEventPoolAddress(event: DepositedEvent | RedeemedEvent | SwapEvent): Promise<string> {
+    if (!this.tempusAMMService) {
+      console.error('Attempted to use TransactionsDataAdapter before initalizing it!');
+      return Promise.reject();
+    }
+
+    if (isDepositEvent(event) || isRedeemEvent(event)) {
+      return event.args.pool;
+    }
+    if (isSwapEvent(event)) {
+      try {
+        return this.tempusAMMService.getTempusPoolAddressFromId(event.args.poolId);
+      } catch (error) {
+        console.error(
+          'TransactionsDataAdapter - getEventPoolAddress() - Failed to get swap event pool address!',
+          error,
+        );
+        return Promise.reject(error);
+      }
+    }
+
+    throw new Error('getEventPoolAddress() - Invalid event type!');
+  }
+
+  private async getEventBackingTokenValue(event: DepositedEvent | RedeemedEvent | SwapEvent): Promise<BigNumber> {
+    if (!this.tempusPoolService || !this.tempusAMMService) {
+      console.error('Attempted to use TransactionsDataAdapter before initalizing it!');
+      return Promise.reject();
+    }
+
+    if (isDepositEvent(event) || isRedeemEvent(event)) {
+      return event.args.backingTokenValue;
+    }
+    if (isSwapEvent(event)) {
+      try {
+        const tempusPoolAddress = await this.tempusAMMService.getTempusPoolAddressFromId(event.args.poolId);
+        const principalAddress = await this.tempusPoolService.getPrincipalTokenAddress(tempusPoolAddress);
+
+        // If tokenIn is principal token, return amountIn it as an event value, otherwise return amountOut as an event value.
+        return event.args.tokenIn === principalAddress ? event.args.amountIn : event.args.amountOut;
+      } catch (error) {
+        console.error(
+          'TransactionsDataAdapter - getEventBackingTokenValue() - Failed to get event value in backing tokens.',
+          error,
+        );
+      }
+    }
+
+    throw new Error('getEventBackingTokenValue() - Invalid event type!');
   }
 }
 export default TransactionsDataAdapter;
