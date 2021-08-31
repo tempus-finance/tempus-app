@@ -29,7 +29,7 @@ const CurrencyInput: FC<CurrencyInputProps> = ({
   );
 
   useEffect(() => {
-    if (defaultValue) {
+    if (defaultValue !== undefined) {
       setStringValue(formatValueToCurrency(defaultValue.toString()));
     }
   }, [defaultValue, setStringValue]);
