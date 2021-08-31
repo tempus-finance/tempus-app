@@ -83,6 +83,12 @@
         "type": "address"
       },
       {
+        "indexed": true,
+        "internalType": "address",
+        "name": "recipient",
+        "type": "address"
+      },
+      {
         "indexed": false,
         "internalType": "uint256",
         "name": "principalShareAmount",
@@ -111,10 +117,34 @@
         "internalType": "uint256",
         "name": "interestRate",
         "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "bool",
+        "name": "isEarlyRedeem",
+        "type": "bool"
       }
     ],
     "name": "Redeemed",
     "type": "event"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "contract ITempusAMM",
+        "name": "tempusAMM",
+        "type": "address"
+      },
+      {
+        "internalType": "bool",
+        "name": "toBackingToken",
+        "type": "bool"
+      }
+    ],
+    "name": "completeExitAndRedeem",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
   },
   {
     "inputs": [
@@ -214,6 +244,62 @@
     "type": "function"
   },
   {
+    "inputs": [
+      {
+        "internalType": "contract ITempusAMM",
+        "name": "tempusAMM",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "lpTokensAmount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "principalAmountOutMin",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "yieldAmountOutMin",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bool",
+        "name": "toInternalBalances",
+        "type": "bool"
+      }
+    ],
+    "name": "exitTempusAMM",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "contract ITempusAMM",
+        "name": "tempusAMM",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "sharesAmount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bool",
+        "name": "toBackingToken",
+        "type": "bool"
+      }
+    ],
+    "name": "exitTempusAMMAndRedeem",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "inputs": [],
     "name": "owner",
     "outputs": [
@@ -234,6 +320,11 @@
         "type": "address"
       },
       {
+        "internalType": "address",
+        "name": "sender",
+        "type": "address"
+      },
+      {
         "internalType": "uint256",
         "name": "principalAmount",
         "type": "uint256"
@@ -242,6 +333,11 @@
         "internalType": "uint256",
         "name": "yieldAmount",
         "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "recipient",
+        "type": "address"
       }
     ],
     "name": "redeemToBacking",
@@ -257,6 +353,11 @@
         "type": "address"
       },
       {
+        "internalType": "address",
+        "name": "sender",
+        "type": "address"
+      },
+      {
         "internalType": "uint256",
         "name": "principalAmount",
         "type": "uint256"
@@ -265,6 +366,11 @@
         "internalType": "uint256",
         "name": "yieldAmount",
         "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "recipient",
+        "type": "address"
       }
     ],
     "name": "redeemToYieldBearing",

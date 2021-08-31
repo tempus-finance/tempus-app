@@ -141,8 +141,9 @@ class TransactionsDataAdapter {
       return 'Deposit';
     }
     if (isRedeemEvent(event)) {
-      // TODO - Check if redeem event has 'early redemption' flag set, if yes, return 'Early Redemption'.
-      // Waiting for backend team to add early Redemption flag.
+      if (event.args.isEarlyRedeem) {
+        return 'Early Redemption';
+      }
       return 'Redemption';
     }
     if (isSwapEvent(event)) {
