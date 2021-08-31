@@ -1,3 +1,8 @@
+export const DAYS_IN_A_YEAR = 365;
+export const SECONDS_IN_AN_HOUR = 3600;
+export const SECONDS_IN_A_DAY = 86400;
+export const BLOCK_DURATION_SECONDS = 13.15;
+
 export const variableAPYTooltipText =
   'Calculated as the sum of the current estimated yield in the underlying Protocol and the current estimated yield from the AMM (swap fees received by providing maximum liquidity to the TYS/TPS pool).';
 

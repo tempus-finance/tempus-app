@@ -1,6 +1,7 @@
-import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
 import { BigNumber, ContractTransaction, ethers } from 'ethers';
+import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
 import { TempusPool } from '../abi/TempusPool';
+import { BLOCK_DURATION_SECONDS, DAYS_IN_A_YEAR, SECONDS_IN_A_DAY } from '../constants';
 import { ProtocolName, Ticker } from '../interfaces';
 import getERC20TokenService from './getERC20TokenService';
 
@@ -14,10 +15,6 @@ type TempusPoolServiceParameters = {
 };
 
 class TempusPoolService {
-  private readonly DAYS_IN_A_YEAR = 365;
-  private readonly SECONDS_IN_A_DAY = 86400;
-  private readonly BLOCK_DURATION_SECONDS = 15;
-
   private poolAddresses: string[] = [];
   private tempusPoolsMap: TempusPoolsMap = {};
 
@@ -129,10 +126,10 @@ class TempusPoolService {
         const latestBlock = await tempusPool.provider.getBlock('latest');
 
         const [pastBlock, currentExchangeRate, pastExchangeRate] = await Promise.all([
-          tempusPool.provider.getBlock(latestBlock.number - this.SECONDS_IN_A_DAY / this.BLOCK_DURATION_SECONDS),
+          tempusPool.provider.getBlock(latestBlock.number - SECONDS_IN_A_DAY / BLOCK_DURATION_SECONDS),
           tempusPool.currentInterestRate(),
           tempusPool.currentInterestRate({
-            blockTag: latestBlock.number - this.SECONDS_IN_A_DAY / this.BLOCK_DURATION_SECONDS,
+            blockTag: latestBlock.number - SECONDS_IN_A_DAY / BLOCK_DURATION_SECONDS,
           }),
         ]);
 
@@ -144,7 +141,7 @@ class TempusPoolService {
         const blockRateDiff = currentExchangeRate.sub(pastExchangeRate);
         const blockTimeDiff = latestBlock.timestamp - pastBlock.timestamp;
 
-        const totalSegments = (this.SECONDS_IN_A_DAY * this.DAYS_IN_A_YEAR) / blockTimeDiff;
+        const totalSegments = (SECONDS_IN_A_DAY * DAYS_IN_A_YEAR) / blockTimeDiff;
 
         return totalSegments * Number(ethers.utils.formatEther(blockRateDiff)) * 100;
       } catch (error) {
