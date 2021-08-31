@@ -14,6 +14,7 @@ type TokenButtonInProps = {
   column: any;
   row: any;
   expandedRows: number[];
+  isWalletConnected: boolean;
 };
 
 type TokenButtonOutProps = {
@@ -23,7 +24,7 @@ type TokenButtonOutProps = {
 type TokenButtonProps = TokenButtonInProps & TokenButtonOutProps;
 
 const TokenButton: FC<TokenButtonProps> = (props: TokenButtonProps) => {
-  const { children, expandedRows, tableRow, row, actionHandler } = props;
+  const { children, expandedRows, tableRow, row, isWalletConnected, actionHandler } = props;
   const { rowId } = tableRow;
   const [indentComponent, expandButton, _, contentComponent] = children;
   console.warn(_);
@@ -59,9 +60,11 @@ const TokenButton: FC<TokenButtonProps> = (props: TokenButtonProps) => {
       )}
       {indentComponent.props.level === 1 && (
         <div className="tf__dashboard__trade-button">
-          <Button title="Manage" size="small" onClick={onClick}>
-            <LaunchIcon />
-          </Button>
+          {isWalletConnected && (
+            <Button title="Manage" size="small" onClick={onClick}>
+              <LaunchIcon />
+            </Button>
+          )}
         </div>
       )}
     </TableTreeColumn.Cell>
