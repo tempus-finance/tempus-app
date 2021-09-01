@@ -24,7 +24,8 @@ interface TempusTokenInterface extends ethers.utils.Interface {
     "allowance(address,address)": FunctionFragment;
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
-    "burn(address,uint256)": FunctionFragment;
+    "burn(uint256)": FunctionFragment;
+    "burnFrom(address,uint256)": FunctionFragment;
     "decimals()": FunctionFragment;
     "decreaseAllowance(address,uint256)": FunctionFragment;
     "increaseAllowance(address,uint256)": FunctionFragment;
@@ -44,8 +45,9 @@ interface TempusTokenInterface extends ethers.utils.Interface {
     values: [string, BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "balanceOf", values: [string]): string;
+  encodeFunctionData(functionFragment: "burn", values: [BigNumberish]): string;
   encodeFunctionData(
-    functionFragment: "burn",
+    functionFragment: "burnFrom",
     values: [string, BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "decimals", values?: undefined): string;
@@ -76,6 +78,7 @@ interface TempusTokenInterface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "burn", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "burnFrom", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "decimals", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "decreaseAllowance",
@@ -165,6 +168,11 @@ export class TempusToken extends BaseContract {
     balanceOf(account: string, overrides?: CallOverrides): Promise<[BigNumber]>;
 
     burn(
+      amount: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    burnFrom(
       account: string,
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -219,6 +227,11 @@ export class TempusToken extends BaseContract {
   balanceOf(account: string, overrides?: CallOverrides): Promise<BigNumber>;
 
   burn(
+    amount: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  burnFrom(
     account: string,
     amount: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
@@ -272,7 +285,9 @@ export class TempusToken extends BaseContract {
 
     balanceOf(account: string, overrides?: CallOverrides): Promise<BigNumber>;
 
-    burn(
+    burn(amount: BigNumberish, overrides?: CallOverrides): Promise<void>;
+
+    burnFrom(
       account: string,
       amount: BigNumberish,
       overrides?: CallOverrides
@@ -348,6 +363,11 @@ export class TempusToken extends BaseContract {
     balanceOf(account: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     burn(
+      amount: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    burnFrom(
       account: string,
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -406,6 +426,11 @@ export class TempusToken extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     burn(
+      amount: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    burnFrom(
       account: string,
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
