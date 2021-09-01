@@ -1,56 +1,104 @@
-// External libraries
-import { ethers } from 'ethers';
-
-// Adapters
+import * as ejs from 'ethers';
+import * as ejsp from '@ethersproject/providers';
+import getDefaultProvider from '../services/getDefaultProvider';
 import TVLChartDataAdapter from './TVLChartDataAdapter';
+import { SECONDS_IN_A_DAY } from '../constants';
 
-jest.mock('ethers');
-const { Contract } = jest.requireMock('ethers');
-const { BigNumber } = jest.requireActual('ethers');
+describe('TVLChartDataAdapter', () => {
+  let adapter: TVLChartDataAdapter;
 
-jest.mock('@ethersproject/providers');
-const { JsonRpcProvider } = jest.requireMock('@ethersproject/providers');
+  // 100 days ago
+  const poolStartTime = Math.floor(Date.now() / 1000) - SECONDS_IN_A_DAY * 100;
 
-let instance: TVLChartDataAdapter;
-let mockProvider = new JsonRpcProvider();
+  const mockGetBlock = jest.fn();
+  const mockStartTime = jest.fn();
+  const mockTotalValueLockedAtGivenRate = jest.fn();
 
-describe('generateChartData()', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
-
-    Contract.mockImplementation(() => {
-      return {};
+    mockGetBlock.mockImplementation((blockNumber: number | 'latest') => {
+      if (blockNumber === 'latest') {
+        return {
+          number: 1000,
+          timestamp: Math.floor(Date.now() / 1000),
+        };
+      } else {
+        return {
+          number: blockNumber,
+          timestamp: Math.floor(Date.now() / 1000) - SECONDS_IN_A_DAY * 101,
+        };
+      }
+    });
+    mockStartTime.mockImplementation(() => {
+      return ejs.BigNumber.from(poolStartTime);
+    });
+    mockTotalValueLockedAtGivenRate.mockImplementation(() => {
+      return ejs.BigNumber.from(ejs.utils.parseEther('1000'));
     });
 
-    // TODO - Find a better way to mock private members of a class
-    (TVLChartDataAdapter.prototype as any).fetchDataPointBlocks = jest.fn().mockImplementation(() => {
-      return [
-        {
-          timestamp: 1,
-          number: 1,
-        },
-        {
-          timestamp: 2,
-          number: 2,
-        },
-      ];
-    });
-    (TVLChartDataAdapter.prototype as any).getTempusTotalTVL = jest.fn().mockImplementation(() => {
-      return BigNumber.from('100');
-    });
-    ethers.utils.formatEther = jest.fn().mockImplementation((value: number) => {
-      return value;
+    jest.spyOn(ejs, 'Contract').mockImplementation(() => {
+      return {
+        startTime: mockStartTime,
+        totalValueLockedAtGivenRate: mockTotalValueLockedAtGivenRate,
+      };
     });
 
-    instance = new TVLChartDataAdapter();
-    instance.init(mockProvider);
+    jest.spyOn(ejsp, 'JsonRpcProvider').mockImplementation(() => {
+      return {
+        getBlock: mockGetBlock,
+      };
+    });
+
+    adapter = new TVLChartDataAdapter();
+    adapter.init({
+      signerOrProvider: getDefaultProvider(),
+    });
   });
 
-  test('it returns an array of data points for past 2 days', async () => {
-    const chartData = await instance.generateChartData();
+  describe('init()', () => {
+    test('it properly injects required services', () => {
+      expect(adapter['statisticsService']).toBeDefined();
+      expect(adapter['tempusPoolService']).toBeDefined();
+    });
+  });
 
-    expect(chartData.length).toBe(2);
-    expect(chartData[0].value).toBe(100);
-    expect(chartData[0].valueIncrease).toBe(0);
+  describe('generateChartData()', () => {
+    test('returns generated chart data', async () => {
+      const data = await adapter.generateChartData();
+
+      expect(data).toBeDefined();
+    });
+
+    test('it returns generated data for last 30 days', async () => {
+      const data = await adapter.generateChartData();
+
+      expect(data.length).toBe(30);
+    });
+
+    test('it returns correct TVL for last day', async () => {
+      const data = await adapter.generateChartData();
+
+      expect(data[data.length - 1].value).toBe(1000);
+    });
+
+    test('it sorts result from oldest to newest', async () => {
+      const data = await adapter.generateChartData();
+
+      expect(data[data.length - 1].date.getTime() - data[0].date.getTime()).toBeGreaterThan(0);
+    });
+
+    test('it returns zero tvl for days before contract was deployed', async () => {
+      const data = await adapter.generateChartData();
+
+      expect(data[0].value).toBe(0);
+    });
+
+    test('it console logs the error and returns rejected promise if service is not initialized before use', async () => {
+      const adapterUninitialized = new TVLChartDataAdapter();
+
+      const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+
+      await expect(adapterUninitialized.generateChartData()).rejects.toEqual([]);
+      expect(consoleErrorSpy).toHaveBeenCalledWith('Attempted to use TVLChartDataAdapter before initializing it.');
+    });
   });
 });
