@@ -37,7 +37,7 @@ class TempusAMMService {
       }
     }
 
-    throw new Error('TempusAMMService - poolId() - Invalid AMM address provided!');
+    throw new Error(`TempusAMMService - poolId('${address}') - Invalid AMM address provided!`);
   }
 
   public async getTempusPoolAddressFromId(poolId: string): Promise<string> {
