@@ -31,6 +31,7 @@ describe('TempusPoolService', () => {
   const mockPricePerPrincipalShareStored = jest.fn();
   const mockYieldShare = jest.fn();
   const mockPrincipalShare = jest.fn();
+  const mockNumAssetsPerYieldToken = jest.fn();
 
   const mockSymbol = jest.fn();
 
@@ -51,6 +52,7 @@ describe('TempusPoolService', () => {
         pricePerPrincipalShareStored: mockPricePerPrincipalShareStored,
         yieldShare: mockYieldShare,
         principalShare: mockPrincipalShare,
+        numAssetsPerYieldToken: mockNumAssetsPerYieldToken,
         provider: {
           getBlock: mockGetBlock,
         },
@@ -257,6 +259,14 @@ describe('TempusPoolService', () => {
       const principalTokenAddress = await instance.getBackingTokenAddress(mockAddress);
 
       expect(principalTokenAddress).toBe(mockBackingTokenAddress);
+    });
+
+    test('it returns number of assets per yield token', async () => {
+      mockNumAssetsPerYieldToken.mockImplementation(() => Promise.resolve(BigNumber.from('3')));
+
+      const numberOfAssets = await instance.numAssetsPerYieldToken(mockAddress, 1, 1);
+
+      expect(numberOfAssets.toNumber()).toBe(3);
     });
   });
 });

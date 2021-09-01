@@ -207,6 +207,28 @@ class TempusPoolService {
     throw new Error(`Address '${address}' is not valid`);
   }
 
+  public async numAssetsPerYieldToken(
+    address: string,
+    yieldTokenAmount: number,
+    interestRate: number,
+  ): Promise<BigNumber> {
+    const tempusPool = this.tempusPoolsMap[address];
+
+    if (tempusPool) {
+      try {
+        return tempusPool.numAssetsPerYieldToken(yieldTokenAmount, interestRate);
+      } catch (error) {
+        console.error(
+          `TempusPoolService - numAssetsPerYieldToken() - Failed to retrieve num of asset per yield token`,
+          error,
+        );
+        return Promise.reject();
+      }
+    }
+
+    throw new Error(`Address '${address}' is not valid`);
+  }
+
   public async deposit(
     address: string,
     amount: BigNumber,

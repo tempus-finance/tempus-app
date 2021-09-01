@@ -9,8 +9,7 @@ const APYCell: FC<Table.DataCellProps> = (props: Table.DataCellProps) => {
   let apy;
   const isParent = !props.row.parentId;
   if (props.value.length === 2) {
-    const [min, max] = props.value;
-    console.log(min);
+    const [, max] = props.value;
     apy = max;
   } else {
     apy = props.value;

@@ -24,6 +24,7 @@ import './dashboard.scss';
 
 type DashboardInProps = {
   hidden: boolean;
+  userWalletAddress?: string;
   rows: DashboardRow[];
 };
 
@@ -33,7 +34,7 @@ type DashboardOutProps = {
 
 type DashboardProps = DashboardInProps & DashboardOutProps;
 
-const Dashboard: FC<DashboardProps> = ({ hidden, rows, onRowActionClick }): JSX.Element => {
+const Dashboard: FC<DashboardProps> = ({ hidden, userWalletAddress, rows, onRowActionClick }): JSX.Element => {
   const [tableColumnExtensions] = useState([
     { columnName: ColumnNames.TOKEN, align: 'left' as 'left', width: 120 },
     { columnName: ColumnNames.PROTOCOL, align: 'center' as 'center', width: 120 },
@@ -118,7 +119,12 @@ const Dashboard: FC<DashboardProps> = ({ hidden, rows, onRowActionClick }): JSX.
               <TableTreeColumn
                 for={ColumnNames.TOKEN}
                 cellComponent={(props: any) => (
-                  <TokenButton {...props} expandedRows={expandedRows} actionHandler={onRowActionClick} />
+                  <TokenButton
+                    {...props}
+                    expandedRows={expandedRows}
+                    isWalletConnected={!!userWalletAddress}
+                    actionHandler={onRowActionClick}
+                  />
                 )}
               />
             </Grid>

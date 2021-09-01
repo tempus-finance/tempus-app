@@ -36,11 +36,16 @@ const DashboardManager: FC<DashboardManagerProps> = ({ selectedRow, onRowSelecte
     onRowSelected && onRowSelected(null);
   }, [onRowSelected]);
 
-  const shouldShowDashboard = !!selectedRow;
+  const shouldShowDashboard = !!userWalletAddress && !!selectedRow;
 
   return (
     <>
-      <Dashboard hidden={shouldShowDashboard} rows={rows} onRowActionClick={onRowActionClick} />
+      <Dashboard
+        hidden={shouldShowDashboard}
+        rows={rows}
+        userWalletAddress={userWalletAddress}
+        onRowActionClick={onRowActionClick}
+      />
       <div className="tf__detail__section__container" hidden={!shouldShowDashboard}>
         <div>Here the details</div> <div onClick={onCloseRowDetail}>Close</div>
       </div>
