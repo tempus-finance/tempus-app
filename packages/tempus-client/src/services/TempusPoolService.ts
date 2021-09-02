@@ -52,28 +52,14 @@ class TempusPoolService {
   public async getBackingTokenAddress(address: string): Promise<string> {
     const cachedPromise = tempusPoolCache.backingTokenAddress.get(address);
     if (cachedPromise) {
-      const startFromCache = performance.now();
-      const backingTokenAddress = await cachedPromise;
-      const endFromCache = performance.now();
-
-      console.log(`From cache: ${endFromCache - startFromCache}ms`);
-
-      return backingTokenAddress;
+      return cachedPromise;
     }
 
-    const startFromContract = performance.now();
     const tempusPool = this.tempusPoolsMap.get(address);
     if (tempusPool) {
       const backingTokenAddressPromise = tempusPool.backingToken();
       tempusPoolCache.backingTokenAddress.set(address, backingTokenAddressPromise);
-
-      const backingTokenAddress = await backingTokenAddressPromise;
-
-      const endFromContract = performance.now();
-
-      console.log(`From contract: ${endFromContract - startFromContract}ms`);
-
-      return backingTokenAddress;
+      return backingTokenAddressPromise;
     }
 
     throw new Error(`Address '${address}' is not valid`);
