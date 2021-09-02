@@ -42,6 +42,7 @@ class TempusPoolService {
         return Promise.reject(error);
       }
 
+      // ERC20TokenService should be injected
       return getERC20TokenService(backingTokenAddress).symbol();
     }
     throw new Error(`Address '${address}' is not valid`);
@@ -229,6 +230,7 @@ class TempusPoolService {
     throw new Error(`Address '${address}' is not valid`);
   }
 
+  // TODO can be removed?
   public async deposit(
     address: string,
     amount: BigNumber,
