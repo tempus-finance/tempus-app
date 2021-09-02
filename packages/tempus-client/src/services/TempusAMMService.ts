@@ -1,7 +1,10 @@
-import { Contract } from 'ethers';
+import { BigNumber, Contract, ethers } from 'ethers';
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
 import { TempusAMM } from '../abi/TempusAMM';
 import TempusAMMABI from '../abi/TempusAMM.json';
+import { DAYS_IN_A_YEAR, SECONDS_IN_A_DAY } from '../constants';
+import TempusPoolService from './TempusPoolService';
+import getTempusPoolService from './getTempusPoolService';
 
 interface TempusPoolAddressData {
   poolAddress: string;
@@ -18,12 +21,16 @@ type TempusAMMServiceParameters = {
 class TempusAMMService {
   private tempusAMMMap: Map<string, TempusAMM> = new Map<string, TempusAMM>();
 
+  private tempusPoolService: TempusPoolService | null = null;
+
   public init(params: TempusAMMServiceParameters) {
     this.tempusAMMMap.clear();
 
     params.tempusAMMAddresses.forEach((address: string) => {
       this.tempusAMMMap.set(address, new Contract(address, TempusAMMABI, params.signerOrProvider) as TempusAMM);
     });
+
+    this.tempusPoolService = getTempusPoolService(params.signerOrProvider);
   }
 
   public poolId(address: string): Promise<string> {
@@ -63,6 +70,70 @@ class TempusAMMService {
     }
 
     throw new Error('Failed to get tempus pool address from ID!');
+  }
+
+  public async getTempusPoolAddress(address: string) {
+    const service = this.tempusAMMMap.get(address);
+    if (service) {
+      try {
+        return await service.tempusPool();
+      } catch (error) {
+        console.error('TempusAMMService - getTempusPoolAddress() - Failed to get tempus pool address!', error);
+        return Promise.reject(error);
+      }
+    }
+    throw new Error(`TempusAMMService - getTempusPoolAddress() - TempusAMM with address '${address}' does not exist`);
+  }
+
+  public async getFixedAPR(address: string): Promise<number> {
+    if (!this.tempusPoolService) {
+      console.error('TempusAMMService - getFixedAPR() - Attempted to se TempusAMMService before initializing it!');
+      return Promise.reject();
+    }
+
+    const service = this.tempusAMMMap.get(address);
+    if (service) {
+      const SPOT_PRICE_AMOUNT = 10000;
+
+      let expectedReturn: BigNumber;
+      try {
+        expectedReturn = await service.getExpectedReturnGivenIn(
+          ethers.utils.parseEther(SPOT_PRICE_AMOUNT.toString()),
+          false,
+        );
+      } catch (error) {
+        console.error(
+          'TempusAMMService - getExpectedReturnGivenIn() - Failed to get expected return for yield share tokens!',
+        );
+        return Promise.reject(error);
+      }
+
+      let tempusPoolAddress: string;
+      try {
+        tempusPoolAddress = await this.getTempusPoolAddress(address);
+      } catch (error) {
+        console.error('TempusAMMService - getFixedAPR() - Failed to fetch tempus pool address!');
+        return Promise.reject(error);
+      }
+
+      let tempusPoolMaturityTime: Date;
+      try {
+        tempusPoolMaturityTime = await this.tempusPoolService.getMaturityTime(tempusPoolAddress);
+      } catch (error) {
+        console.error('TempusAMMService - getFixedAPR() - Failed to fetch tempus pool maturity time.');
+        return Promise.reject(error);
+      }
+
+      // Convert timeUntilMaturity from milliseconds to seconds.
+      const timeUntilMaturity = (tempusPoolMaturityTime.getTime() - Date.now()) / 1000;
+
+      const scaleFactor = (SECONDS_IN_A_DAY * DAYS_IN_A_YEAR) / timeUntilMaturity;
+
+      return (Number(ethers.utils.formatEther(expectedReturn)) / SPOT_PRICE_AMOUNT) * scaleFactor;
+    }
+    throw new Error(
+      `TempusAMMService - getExpectedReturnGivenIn() - TempusAMM with address '${address}' does not exist`,
+    );
   }
 
   private async fetchTempusPoolAddressData(tempusAMM: TempusAMM): Promise<TempusPoolAddressData> {

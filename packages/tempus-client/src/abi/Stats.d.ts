@@ -20,13 +20,11 @@ import { TypedEventFilter, TypedEvent, TypedListener } from "./commons";
 
 interface StatsInterface extends ethers.utils.Interface {
   functions: {
-    "ENS()": FunctionFragment;
     "getRate(bytes32)": FunctionFragment;
     "totalValueLockedAtGivenRate(address,bytes32)": FunctionFragment;
     "totalValueLockedInBackingTokens(address)": FunctionFragment;
   };
 
-  encodeFunctionData(functionFragment: "ENS", values?: undefined): string;
   encodeFunctionData(functionFragment: "getRate", values: [BytesLike]): string;
   encodeFunctionData(
     functionFragment: "totalValueLockedAtGivenRate",
@@ -37,7 +35,6 @@ interface StatsInterface extends ethers.utils.Interface {
     values: [string]
   ): string;
 
-  decodeFunctionResult(functionFragment: "ENS", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "getRate", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "totalValueLockedAtGivenRate",
@@ -95,8 +92,6 @@ export class Stats extends BaseContract {
   interface: StatsInterface;
 
   functions: {
-    ENS(overrides?: CallOverrides): Promise<[string]>;
-
     getRate(
       chainlinkAggregatorNodeHash: BytesLike,
       overrides?: CallOverrides
@@ -115,8 +110,6 @@ export class Stats extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
   };
-
-  ENS(overrides?: CallOverrides): Promise<string>;
 
   getRate(
     chainlinkAggregatorNodeHash: BytesLike,
@@ -137,8 +130,6 @@ export class Stats extends BaseContract {
   ): Promise<BigNumber>;
 
   callStatic: {
-    ENS(overrides?: CallOverrides): Promise<string>;
-
     getRate(
       chainlinkAggregatorNodeHash: BytesLike,
       overrides?: CallOverrides
@@ -161,8 +152,6 @@ export class Stats extends BaseContract {
   filters: {};
 
   estimateGas: {
-    ENS(overrides?: CallOverrides): Promise<BigNumber>;
-
     getRate(
       chainlinkAggregatorNodeHash: BytesLike,
       overrides?: CallOverrides
@@ -181,8 +170,6 @@ export class Stats extends BaseContract {
   };
 
   populateTransaction: {
-    ENS(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     getRate(
       chainlinkAggregatorNodeHash: BytesLike,
       overrides?: CallOverrides

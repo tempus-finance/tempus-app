@@ -9,6 +9,8 @@ import TempusPoolService from '../services/TempusPoolService';
 import getERC20TokenService from '../services/getERC20TokenService';
 import getConfig from '../utils/get-config';
 import weiToEth from '../utils/convert-wei-to-eth';
+import getTempusAMMService from '../services/getTempusAMMService';
+import TempusAMMService from '../services/TempusAMMService';
 
 type DashboardDataAdapterParameters = {
   signerOrProvider: JsonRpcProvider | JsonRpcSigner;
@@ -18,11 +20,13 @@ type DashboardDataAdapterParameters = {
 export default class DashboardDataAdapter {
   private tempusPoolService: TempusPoolService | null = null;
   private statisticsService: StatisticsService | null = null;
+  private tempusAMMService: TempusAMMService | null = null;
   private userWalletAddress: string = '';
 
   public init(params: DashboardDataAdapterParameters) {
     this.tempusPoolService = getTempusPoolService(params.signerOrProvider);
     this.statisticsService = getStatisticsService(params.signerOrProvider);
+    this.tempusAMMService = getTempusAMMService(params.signerOrProvider);
     this.userWalletAddress = params.userWalletAddress;
   }
 
@@ -50,7 +54,7 @@ export default class DashboardDataAdapter {
   }
 
   private async getChildRowData(tempusPool: TempusPool): Promise<DashboardRowChild> {
-    if (!this.tempusPoolService || !this.statisticsService) {
+    if (!this.tempusPoolService || !this.statisticsService || !this.tempusAMMService) {
       console.error(
         'DashboardDataAdapter - getChildRowData() - Attempted to use DashboardDataAdapter before initializing it!',
       );
@@ -64,6 +68,7 @@ export default class DashboardDataAdapter {
         protocolName,
         startDate,
         maturityDate,
+        fixedAPR,
         presentValueInBackingTokens,
         availableToDeposit,
       ] = await Promise.all([
@@ -72,6 +77,7 @@ export default class DashboardDataAdapter {
         this.tempusPoolService.getProtocolName(tempusPool.address),
         this.tempusPoolService.getStartTime(tempusPool.address),
         this.tempusPoolService.getMaturityTime(tempusPool.address),
+        this.tempusAMMService.getFixedAPR(tempusPool.ammAddress),
         this.getPresentValueInBackingTokensForPool(tempusPool),
         this.getAvailableToDepositForPool(tempusPool),
       ]);
@@ -90,7 +96,7 @@ export default class DashboardDataAdapter {
         protocol: protocolName,
         startDate: startDate,
         maturityDate: maturityDate,
-        fixedAPY: 0.051, // TODO - Get from TempusPool controller once it's added on the backend.
+        fixedAPY: fixedAPR,
         variableAPY: 0.117, // TODO - Needs to be fixed - does not take into account gains from providing liquidity, some protocol compound interest, it does not increase linearly.
         TVL: Number(ethers.utils.formatEther(tvl)),
         presentValue:
