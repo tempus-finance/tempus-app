@@ -1,54 +1,86 @@
-import { BigNumber, ContractTransaction, ethers } from 'ethers';
+import { BigNumber, Contract, ContractTransaction, ethers } from 'ethers';
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
 import { TempusPool } from '../abi/TempusPool';
+import TempusPoolABI from '../abi/TempusPool.json';
 import { BLOCK_DURATION_SECONDS, DAYS_IN_A_YEAR, SECONDS_IN_A_DAY } from '../constants';
 import { ProtocolName, Ticker } from '../interfaces';
 import getERC20TokenService from './getERC20TokenService';
-
-type TempusPoolsMap = { [key: string]: TempusPool };
+import tempusPoolCache from '../cache/TempusPoolCache';
 
 type TempusPoolServiceParameters = {
-  Contract: any;
+  Contract: typeof Contract;
   tempusPoolAddresses: string[];
-  TempusPoolABI: any;
+  TempusPoolABI: typeof TempusPoolABI;
   signerOrProvider: JsonRpcSigner | JsonRpcProvider;
 };
 
 class TempusPoolService {
-  private poolAddresses: string[] = [];
-  private tempusPoolsMap: TempusPoolsMap = {};
+  private tempusPoolsMap: Map<string, TempusPool> = new Map();
 
-  init({ Contract, tempusPoolAddresses = [], TempusPoolABI = {}, signerOrProvider }: TempusPoolServiceParameters) {
-    this.poolAddresses = [...tempusPoolAddresses];
-    this.tempusPoolsMap = {};
+  init({ Contract, tempusPoolAddresses = [], TempusPoolABI, signerOrProvider }: TempusPoolServiceParameters) {
+    this.tempusPoolsMap.clear();
 
-    this.poolAddresses.forEach((address: string) => {
-      this.tempusPoolsMap[address] = new Contract(address, TempusPoolABI, signerOrProvider) as TempusPool;
+    tempusPoolAddresses.forEach((address: string) => {
+      this.tempusPoolsMap.set(address, new Contract(address, TempusPoolABI, signerOrProvider) as TempusPool);
     });
   }
 
-  getPoolAddresses(): string[] {
-    return this.poolAddresses;
-  }
-
   public async getBackingTokenTicker(address: string): Promise<Ticker> {
-    const tempusPool = this.tempusPoolsMap[address];
+    const cachedPromise = tempusPoolCache.backingTokenTicker.get(address);
+    if (cachedPromise) {
+      return cachedPromise;
+    }
+
+    const tempusPool = this.tempusPoolsMap.get(address);
     if (tempusPool) {
       let backingTokenAddress: string;
       try {
-        backingTokenAddress = await tempusPool.backingToken();
+        backingTokenAddress = await this.getBackingTokenAddress(address);
       } catch (error) {
-        console.error(`Failed to get BT address for Tempus Pool ${address}`);
+        console.error(`Failed to get backing token address for Tempus Pool '${address}'`);
         return Promise.reject(error);
       }
 
-      return getERC20TokenService(backingTokenAddress).symbol();
+      const backingTokenTickerPromise = getERC20TokenService(backingTokenAddress).symbol();
+      tempusPoolCache.backingTokenTicker.set(address, backingTokenTickerPromise);
+
+      return backingTokenTickerPromise;
     }
     throw new Error(`Address '${address}' is not valid`);
   }
 
+  public async getBackingTokenAddress(address: string): Promise<string> {
+    const cachedPromise = tempusPoolCache.backingTokenAddress.get(address);
+    if (cachedPromise) {
+      const startFromCache = performance.now();
+      const backingTokenAddress = await cachedPromise;
+      const endFromCache = performance.now();
+
+      console.log(`From cache: ${endFromCache - startFromCache}ms`);
+
+      return backingTokenAddress;
+    }
+
+    const startFromContract = performance.now();
+    const tempusPool = this.tempusPoolsMap.get(address);
+    if (tempusPool) {
+      const backingTokenAddressPromise = tempusPool.backingToken();
+      tempusPoolCache.backingTokenAddress.set(address, backingTokenAddressPromise);
+
+      const backingTokenAddress = await backingTokenAddressPromise;
+
+      const endFromContract = performance.now();
+
+      console.log(`From contract: ${endFromContract - startFromContract}ms`);
+
+      return backingTokenAddress;
+    }
+
+    throw new Error(`Address '${address}' is not valid`);
+  }
+
   public async getYieldBearingTokenTicker(address: string): Promise<Ticker> {
-    const tempusPool = this.tempusPoolsMap[address];
+    const tempusPool = this.tempusPoolsMap.get(address);
     if (tempusPool) {
       let yieldBearingTokenAddress: string;
       try {
@@ -64,7 +96,7 @@ class TempusPoolService {
   }
 
   public async getProtocolName(address: string): Promise<ProtocolName> {
-    const tempusPool = this.tempusPoolsMap[address];
+    const tempusPool = this.tempusPoolsMap.get(address);
     if (tempusPool) {
       try {
         return ethers.utils.parseBytes32String(await tempusPool.protocolName()).toLowerCase() as ProtocolName;
@@ -76,36 +108,37 @@ class TempusPoolService {
     throw new Error(`Address '${address}' is not valid`);
   }
 
-  getCurrentExchangeRate(address: string): Promise<number> {
-    if (this.tempusPoolsMap[address] !== undefined) {
-      return this.tempusPoolsMap[address]
-        .currentInterestRate()
-        .then((data: any) => Promise.resolve(data.toBigInt()))
-        .catch((error: Error) => {
-          console.error('ContractDataService getCurrentExchangeRate error', error);
-          return Promise.reject(error);
-        });
+  public async getCurrentExchangeRate(address: string): Promise<bigint> {
+    const tempusPool = this.tempusPoolsMap.get(address);
+    if (tempusPool) {
+      try {
+        return (await tempusPool.currentInterestRate()).toBigInt();
+      } catch (error) {
+        console.error('ContractDataService getCurrentExchangeRate error', error);
+        return Promise.reject(error);
+      }
     }
 
     throw new Error(`Address '${address}' is not valid`);
   }
 
-  getMaturityTime(address: string): Promise<Date> {
-    if (this.tempusPoolsMap[address] !== undefined) {
-      return this.tempusPoolsMap[address]
-        .maturityTime()
-        .then((data: any) => Promise.resolve(new Date(data.toNumber() * 1000)))
-        .catch((error: Error) => {
-          console.error('ContractDataService getMaturityTime', error);
-          return Promise.reject(error);
-        });
+  public async getMaturityTime(address: string): Promise<Date> {
+    const tempusPool = this.tempusPoolsMap.get(address);
+    if (tempusPool) {
+      try {
+        const data = await tempusPool.maturityTime();
+        return new Date(data.toNumber() * 1000);
+      } catch (error) {
+        console.error('ContractDataService getMaturityTime', error);
+        return Promise.reject(error);
+      }
     }
 
     throw new Error(`Address '${address}' is not valid`);
   }
 
   public async getStartTime(address: string): Promise<Date> {
-    const tempusPool = this.tempusPoolsMap[address];
+    const tempusPool = this.tempusPoolsMap.get(address);
     if (tempusPool !== undefined) {
       try {
         return new Date((await tempusPool.startTime()).toNumber() * 1000);
@@ -119,8 +152,7 @@ class TempusPoolService {
   }
 
   public async getVariableAPY(address: string): Promise<number> {
-    const tempusPool = this.tempusPoolsMap[address];
-
+    const tempusPool = this.tempusPoolsMap.get(address);
     if (tempusPool) {
       try {
         const latestBlock = await tempusPool.provider.getBlock('latest');
@@ -154,7 +186,7 @@ class TempusPoolService {
   }
 
   public async pricePerYieldShareStored(address: string): Promise<BigNumber> {
-    const tempusPool = this.tempusPoolsMap[address];
+    const tempusPool = this.tempusPoolsMap.get(address);
     if (tempusPool) {
       return tempusPool.pricePerYieldShareStored();
     }
@@ -163,7 +195,7 @@ class TempusPoolService {
   }
 
   public async pricePerPrincipalShareStored(address: string): Promise<BigNumber> {
-    const tempusPool = this.tempusPoolsMap[address];
+    const tempusPool = this.tempusPoolsMap.get(address);
     if (tempusPool) {
       return tempusPool.pricePerPrincipalShareStored();
     }
@@ -172,7 +204,7 @@ class TempusPoolService {
   }
 
   public getYieldTokenAddress(address: string): Promise<string> {
-    const tempusPool = this.tempusPoolsMap[address];
+    const tempusPool = this.tempusPoolsMap.get(address);
     if (tempusPool) {
       return tempusPool.yieldShare();
     }
@@ -181,7 +213,7 @@ class TempusPoolService {
   }
 
   public getPrincipalTokenAddress(address: string): Promise<string> {
-    const tempusPool = this.tempusPoolsMap[address];
+    const tempusPool = this.tempusPoolsMap.get(address);
     if (tempusPool) {
       return tempusPool.principalShare();
     }
@@ -189,17 +221,8 @@ class TempusPoolService {
     throw new Error(`Address '${address}' is not valid`);
   }
 
-  public getBackingTokenAddress(address: string): Promise<string> {
-    const tempusPool = this.tempusPoolsMap[address];
-    if (tempusPool) {
-      return tempusPool.backingToken();
-    }
-
-    throw new Error(`Address '${address}' is not valid`);
-  }
-
   public getYieldBearingTokenAddress(address: string): Promise<string> {
-    const tempusPool = this.tempusPoolsMap[address];
+    const tempusPool = this.tempusPoolsMap.get(address);
     if (tempusPool) {
       return tempusPool.yieldBearingToken();
     }
@@ -212,7 +235,7 @@ class TempusPoolService {
     yieldTokenAmount: number,
     interestRate: number,
   ): Promise<BigNumber> {
-    const tempusPool = this.tempusPoolsMap[address];
+    const tempusPool = this.tempusPoolsMap.get(address);
 
     if (tempusPool) {
       try {
@@ -234,7 +257,7 @@ class TempusPoolService {
     amount: BigNumber,
     recipient: string,
   ): Promise<ContractTransaction | undefined> {
-    const tempusPool = this.tempusPoolsMap[address];
+    const tempusPool = this.tempusPoolsMap.get(address);
     if (tempusPool) {
       let depositTransaction: ContractTransaction | undefined;
       try {

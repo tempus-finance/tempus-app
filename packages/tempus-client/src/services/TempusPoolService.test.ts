@@ -1,6 +1,6 @@
-// Services
 import { CallOverrides } from 'ethers';
 import TempusPoolService from './TempusPoolService';
+import TempusPoolABI from '../abi/TempusPool.json';
 
 jest.mock('ethers');
 const { Contract } = jest.requireMock('ethers');
@@ -18,7 +18,6 @@ describe('TempusPoolService', () => {
   const mockAddresses = ['someAddress'];
   const [mockAddress] = mockAddresses;
 
-  const mockABI = {};
   const mockCurrentInterestRate = jest.fn();
   const mockMaturityTime = jest.fn();
   const mockStartTime = jest.fn();
@@ -89,7 +88,7 @@ describe('TempusPoolService', () => {
       instance.init({
         Contract,
         tempusPoolAddresses: mockAddresses,
-        TempusPoolABI: mockABI,
+        TempusPoolABI: TempusPoolABI,
         signerOrProvider: mockProvider,
       });
 
@@ -115,21 +114,18 @@ describe('TempusPoolService', () => {
       instance.init({
         Contract,
         tempusPoolAddresses: mockAddresses,
-        TempusPoolABI: mockABI,
+        TempusPoolABI: TempusPoolABI,
         signerOrProvider: mockProvider,
       });
     });
 
-    test('it returns a Promise that resolves with the value of the current exchange rate', () => {
-      mockCurrentInterestRate.mockImplementation(() =>
-        Promise.resolve({
-          toBigInt: jest.fn().mockReturnValue(123.45),
-        }),
-      );
+    test('it returns a Promise that resolves with the value of the current exchange rate', async () => {
+      mockCurrentInterestRate.mockImplementation(() => BigNumber.from('100'));
 
-      instance.getCurrentExchangeRate(mockAddress).then((result: any) => {
-        expect(result).toBe(123.45);
-      });
+      const result = await instance.getCurrentExchangeRate(mockAddress);
+
+      expect(result).toBeInstanceOf(BigNumber);
+      expect(result.toString()).toBe('100');
     });
 
     test('it returns a Promise that resolves with the value of the maturity time', () => {

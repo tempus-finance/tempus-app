@@ -103,7 +103,7 @@ class TransactionsDataAdapter {
       const eventPoolAddress = await getEventPoolAddress(event, this.tempusAMMService);
 
       const [eventValue, eventDate, tokenTicker, poolMaturityDate] = await Promise.all([
-        await this.getEventUSDValue(event),
+        await this.getEventUSDValue(event, eventPoolAddress),
         await this.getEventTime(event),
         await this.tempusPoolService.getYieldBearingTokenTicker(eventPoolAddress),
         await this.tempusPoolService.getMaturityTime(eventPoolAddress),
@@ -173,7 +173,10 @@ class TransactionsDataAdapter {
     return new Date(eventBlock.timestamp * 1000);
   }
 
-  private async getEventUSDValue(event: DepositedEvent | RedeemedEvent | SwapEvent): Promise<number> {
+  private async getEventUSDValue(
+    event: DepositedEvent | RedeemedEvent | SwapEvent,
+    poolAddress: string,
+  ): Promise<number> {
     if (!this.tempusPoolService || !this.statisticsService || !this.tempusAMMService) {
       console.error('Attempted to use TransactionsDataAdapter before initializing it!');
       return Promise.reject();
@@ -181,9 +184,7 @@ class TransactionsDataAdapter {
 
     let eventPoolBackingToken: Ticker;
     try {
-      const eventPoolAddress = await getEventPoolAddress(event, this.tempusAMMService);
-
-      eventPoolBackingToken = await this.tempusPoolService.getBackingTokenTicker(eventPoolAddress);
+      eventPoolBackingToken = await this.tempusPoolService.getBackingTokenTicker(poolAddress);
     } catch (error) {
       console.log(
         'TransactionsDataAdapter - getEventUSDValue() - Failed to fetch event tempus pool backing token ticker!',
