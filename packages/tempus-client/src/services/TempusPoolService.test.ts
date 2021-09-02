@@ -124,7 +124,7 @@ describe('TempusPoolService', () => {
 
       const result = await instance.getCurrentExchangeRate(mockAddress);
 
-      expect(result).toBeInstanceOf(BigNumber);
+      expect(result).toBeDefined();
       expect(result.toString()).toBe('100');
     });
 
