@@ -1,4 +1,4 @@
-import { BigNumber, ContractTransaction, ethers } from 'ethers';
+import { BigNumber, ethers } from 'ethers';
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
 import { TempusPool } from '../abi/TempusPool';
 import { BLOCK_DURATION_SECONDS, DAYS_IN_A_YEAR, SECONDS_IN_A_DAY } from '../constants';
@@ -11,20 +11,30 @@ type TempusPoolServiceParameters = {
   Contract: any;
   tempusPoolAddresses: string[];
   TempusPoolABI: any;
+  eRC20TokenServiceGetter: typeof getERC20TokenService;
   signerOrProvider: JsonRpcSigner | JsonRpcProvider;
 };
 
 class TempusPoolService {
   private poolAddresses: string[] = [];
   private tempusPoolsMap: TempusPoolsMap = {};
+  private eRC20TokenServiceGetter: typeof getERC20TokenService | null = null;
 
-  init({ Contract, tempusPoolAddresses = [], TempusPoolABI = {}, signerOrProvider }: TempusPoolServiceParameters) {
+  init({
+    Contract,
+    tempusPoolAddresses = [],
+    TempusPoolABI = {},
+    signerOrProvider,
+    eRC20TokenServiceGetter,
+  }: TempusPoolServiceParameters) {
     this.poolAddresses = [...tempusPoolAddresses];
     this.tempusPoolsMap = {};
 
     this.poolAddresses.forEach((address: string) => {
       this.tempusPoolsMap[address] = new Contract(address, TempusPoolABI, signerOrProvider) as TempusPool;
     });
+
+    this.eRC20TokenServiceGetter = eRC20TokenServiceGetter;
   }
 
   getPoolAddresses(): string[] {
@@ -32,6 +42,11 @@ class TempusPoolService {
   }
 
   public async getBackingTokenTicker(address: string): Promise<Ticker> {
+    if (!this.eRC20TokenServiceGetter) {
+      console.error('TempusPoolService - getBackingTokenTicker() - Attempted to use service before initializing it!');
+      return Promise.reject();
+    }
+
     const tempusPool = this.tempusPoolsMap[address];
     if (tempusPool) {
       let backingTokenAddress: string;
@@ -42,7 +57,7 @@ class TempusPoolService {
         return Promise.reject(error);
       }
 
-      return getERC20TokenService(backingTokenAddress).symbol();
+      return this.eRC20TokenServiceGetter(backingTokenAddress).symbol();
     }
     throw new Error(`Address '${address}' is not valid`);
   }
@@ -226,25 +241,6 @@ class TempusPoolService {
       }
     }
 
-    throw new Error(`Address '${address}' is not valid`);
-  }
-
-  public async deposit(
-    address: string,
-    amount: BigNumber,
-    recipient: string,
-  ): Promise<ContractTransaction | undefined> {
-    const tempusPool = this.tempusPoolsMap[address];
-    if (tempusPool) {
-      let depositTransaction: ContractTransaction | undefined;
-      try {
-        depositTransaction = await tempusPool.deposit(amount, recipient);
-      } catch (error) {
-        console.error(`TempusPoolService - deposit() - Failed to make a deposit to the pool!`, error);
-        return Promise.reject(error);
-      }
-      return depositTransaction;
-    }
     throw new Error(`Address '${address}' is not valid`);
   }
 }
