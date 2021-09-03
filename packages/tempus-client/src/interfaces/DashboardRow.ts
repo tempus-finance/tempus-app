@@ -16,6 +16,7 @@ export interface DashboardRowParent extends DashboardRow {
 }
 
 export interface DashboardRowChild extends DashboardRow {
+  poolAddress: string;
   protocol: string;
   supportedTokens: Ticker[];
   startDate: Date;
