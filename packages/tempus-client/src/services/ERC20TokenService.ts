@@ -4,6 +4,7 @@ import { ERC20 } from '../abi/ERC20';
 import ERC20ABI from '../abi/ERC20.json';
 import { Ticker } from '../interfaces';
 import { ZERO_ETH_ADDRESS } from '../constants';
+import { symbolCache } from '../cache/ERC20TokenCache';
 
 type ERC20TokenServiceParameters = {
   Contract: typeof Contract;
@@ -46,19 +47,25 @@ class ERC20TokenService {
       return Promise.reject();
     }
 
-    let ticker: Ticker;
+    const cachedSymbolPromise = symbolCache.get(this.contract.address);
+    if (cachedSymbolPromise) {
+      return cachedSymbolPromise;
+    }
+
     try {
       // ETH is a native token that does not have an ERC20 contract, we need to return token ticker like this.
       if (this.contract.address === ZERO_ETH_ADDRESS) {
         return 'ETH';
       }
 
-      ticker = (await this.contract.symbol()) as Ticker;
+      const tickerPromise = this.contract.symbol() as Promise<Ticker>;
+      symbolCache.set(this.contract.address, tickerPromise);
+
+      return tickerPromise;
     } catch (error) {
       console.error('ERC20TokenService - symbol() - Failed to get token ticker!');
       return Promise.reject();
     }
-    return ticker;
   }
 
   public async approve(spenderAddress: string, amount: BigNumber): Promise<ContractTransaction | void> {

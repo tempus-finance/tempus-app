@@ -5,7 +5,15 @@ import TempusPoolABI from '../abi/TempusPool.json';
 import { BLOCK_DURATION_SECONDS, DAYS_IN_A_YEAR, SECONDS_IN_A_DAY } from '../constants';
 import { ProtocolName, Ticker } from '../interfaces';
 import getERC20TokenService from './getERC20TokenService';
-import { backingTokenAddressCache, backingTokenTickerCache } from '../cache/TempusPoolCache';
+import {
+  backingTokenAddressCache,
+  maturityTimeCache,
+  principalShareTokenAddressCache,
+  protocolNameCache,
+  startTimeCache,
+  yieldBearingTokenAddressCache,
+  yieldShareTokenAddressCache,
+} from '../cache/TempusPoolCache';
 
 type TempusPoolServiceParameters = {
   Contract: typeof Contract;
@@ -26,66 +34,64 @@ class TempusPoolService {
   }
 
   public async getBackingTokenTicker(address: string): Promise<Ticker> {
-    const cachedPromise = backingTokenTickerCache.get(address);
-    if (cachedPromise) {
-      return cachedPromise;
+    let backingTokenAddress: string;
+    try {
+      backingTokenAddress = await this.getBackingTokenAddress(address);
+    } catch (error) {
+      console.error(`Failed to get backing token address for Tempus Pool '${address}'`);
+      return Promise.reject(error);
     }
 
-    const tempusPool = this.tempusPoolsMap.get(address);
-    if (tempusPool) {
-      let backingTokenAddress: string;
-      try {
-        backingTokenAddress = await this.getBackingTokenAddress(address);
-      } catch (error) {
-        console.error(`Failed to get backing token address for Tempus Pool '${address}'`);
-        return Promise.reject(error);
-      }
-
-      const backingTokenTickerPromise = getERC20TokenService(backingTokenAddress).symbol();
-      backingTokenTickerCache.set(address, backingTokenTickerPromise);
-
-      return backingTokenTickerPromise;
-    }
-    throw new Error(`Address '${address}' is not valid`);
+    return getERC20TokenService(backingTokenAddress).symbol();
   }
 
   public async getBackingTokenAddress(address: string): Promise<string> {
-    const cachedPromise = backingTokenAddressCache.get(address);
-    if (cachedPromise) {
-      return cachedPromise;
-    }
-
     const tempusPool = this.tempusPoolsMap.get(address);
     if (tempusPool) {
-      const backingTokenAddressPromise = tempusPool.backingToken();
-      backingTokenAddressCache.set(address, backingTokenAddressPromise);
-      return backingTokenAddressPromise;
+      const cachedPromise = backingTokenAddressCache.get(address);
+      if (cachedPromise) {
+        return cachedPromise;
+      }
+
+      try {
+        const backingTokenAddressPromise = tempusPool.backingToken();
+        backingTokenAddressCache.set(address, backingTokenAddressPromise);
+
+        return backingTokenAddressPromise;
+      } catch (error) {
+        console.error('TempusPoolService - getBackingTokenAddress() - Failed to fetch backing token address!', error);
+        return Promise.reject(error);
+      }
     }
 
     throw new Error(`Address '${address}' is not valid`);
   }
 
   public async getYieldBearingTokenTicker(address: string): Promise<Ticker> {
-    const tempusPool = this.tempusPoolsMap.get(address);
-    if (tempusPool) {
-      let yieldBearingTokenAddress: string;
-      try {
-        yieldBearingTokenAddress = await tempusPool.yieldBearingToken();
-      } catch (error) {
-        console.error(`Failed to get YBT address for Tempus Pool ${address}`);
-        return Promise.reject(error);
-      }
-
-      return getERC20TokenService(yieldBearingTokenAddress).symbol();
+    let yieldBearingTokenAddress: string;
+    try {
+      yieldBearingTokenAddress = await this.getYieldBearingTokenAddress(address);
+    } catch (error) {
+      console.error(`Failed to get YBT address for Tempus Pool ${address}`);
+      return Promise.reject(error);
     }
-    throw new Error(`Address '${address}' is not valid`);
+
+    return getERC20TokenService(yieldBearingTokenAddress).symbol();
   }
 
   public async getProtocolName(address: string): Promise<ProtocolName> {
     const tempusPool = this.tempusPoolsMap.get(address);
     if (tempusPool) {
+      const cachedProtocolNamePromise = protocolNameCache.get(address);
+      if (cachedProtocolNamePromise) {
+        return ethers.utils.parseBytes32String(await cachedProtocolNamePromise).toLowerCase() as ProtocolName;
+      }
+
       try {
-        return ethers.utils.parseBytes32String(await tempusPool.protocolName()).toLowerCase() as ProtocolName;
+        const fetchProtocolNamePromise = tempusPool.protocolName();
+        protocolNameCache.set(address, fetchProtocolNamePromise);
+
+        return ethers.utils.parseBytes32String(await fetchProtocolNamePromise).toLowerCase() as ProtocolName;
       } catch (error) {
         console.error('TempusPoolService - getProtocolName() - Failed to fetch protocol name', error);
         return Promise.reject(error);
@@ -111,9 +117,16 @@ class TempusPoolService {
   public async getMaturityTime(address: string): Promise<Date> {
     const tempusPool = this.tempusPoolsMap.get(address);
     if (tempusPool) {
+      const cachedMaturityTimePromise = maturityTimeCache.get(address);
+      if (cachedMaturityTimePromise) {
+        return new Date((await tempusPool.maturityTime()).toNumber() * 1000);
+      }
+
       try {
-        const data = await tempusPool.maturityTime();
-        return new Date(data.toNumber() * 1000);
+        const fetchMaturityTimePromise = tempusPool.maturityTime();
+        maturityTimeCache.set(address, fetchMaturityTimePromise);
+
+        return new Date((await fetchMaturityTimePromise).toNumber() * 1000);
       } catch (error) {
         console.error('ContractDataService getMaturityTime', error);
         return Promise.reject(error);
@@ -126,8 +139,16 @@ class TempusPoolService {
   public async getStartTime(address: string): Promise<Date> {
     const tempusPool = this.tempusPoolsMap.get(address);
     if (tempusPool !== undefined) {
+      const cachedStartTimePromise = startTimeCache.get(address);
+      if (cachedStartTimePromise) {
+        return new Date((await cachedStartTimePromise).toNumber() * 1000);
+      }
+
       try {
-        return new Date((await tempusPool.startTime()).toNumber() * 1000);
+        const fetchStartTimePromise = tempusPool.startTime();
+        startTimeCache.set(address, fetchStartTimePromise);
+
+        return new Date((await fetchStartTimePromise).toNumber() * 1000);
       } catch (error) {
         console.error('TempusPoolService getStartTime', error);
         return Promise.reject(error);
@@ -189,10 +210,23 @@ class TempusPoolService {
     throw new Error(`Address '${address}' is not valid`);
   }
 
-  public getYieldTokenAddress(address: string): Promise<string> {
+  public getYieldShareTokenAddress(address: string): Promise<string> {
     const tempusPool = this.tempusPoolsMap.get(address);
     if (tempusPool) {
-      return tempusPool.yieldShare();
+      const cachedYieldShareTokenAddressPromise = yieldShareTokenAddressCache.get(address);
+      if (cachedYieldShareTokenAddressPromise) {
+        return cachedYieldShareTokenAddressPromise;
+      }
+
+      try {
+        const fetchYieldShareTokenAddressPromise = tempusPool.yieldShare();
+        yieldShareTokenAddressCache.set(address, fetchYieldShareTokenAddressPromise);
+
+        return fetchYieldShareTokenAddressPromise;
+      } catch (error) {
+        console.log('TempusPoolService - getYieldTokenAddress() - Failed to fetch yield share token address!', error);
+        return Promise.reject(error);
+      }
     }
 
     throw new Error(`Address '${address}' is not valid`);
@@ -201,7 +235,23 @@ class TempusPoolService {
   public getPrincipalTokenAddress(address: string): Promise<string> {
     const tempusPool = this.tempusPoolsMap.get(address);
     if (tempusPool) {
-      return tempusPool.principalShare();
+      const cachedPrincipalShareTokenAddressPromise = principalShareTokenAddressCache.get(address);
+      if (cachedPrincipalShareTokenAddressPromise) {
+        return cachedPrincipalShareTokenAddressPromise;
+      }
+
+      try {
+        const fetchPrincipalShareTokenAddressPromise = tempusPool.principalShare();
+        principalShareTokenAddressCache.set(address, fetchPrincipalShareTokenAddressPromise);
+
+        return fetchPrincipalShareTokenAddressPromise;
+      } catch (error) {
+        console.log(
+          'TempusPoolService - getPrincipalTokenAddress() - Failed to fetch principal share token address!',
+          error,
+        );
+        return Promise.reject(error);
+      }
     }
 
     throw new Error(`Address '${address}' is not valid`);
@@ -210,7 +260,23 @@ class TempusPoolService {
   public getYieldBearingTokenAddress(address: string): Promise<string> {
     const tempusPool = this.tempusPoolsMap.get(address);
     if (tempusPool) {
-      return tempusPool.yieldBearingToken();
+      const cachedYieldBearingTokenAddressPromise = yieldBearingTokenAddressCache.get(address);
+      if (cachedYieldBearingTokenAddressPromise) {
+        return cachedYieldBearingTokenAddressPromise;
+      }
+
+      try {
+        const fetchYieldBearingTokenAddressPromise = tempusPool.yieldBearingToken();
+        yieldBearingTokenAddressCache.set(address, fetchYieldBearingTokenAddressPromise);
+
+        return fetchYieldBearingTokenAddressPromise;
+      } catch (error) {
+        console.error(
+          'TempusPoolService - getYieldBearingTokenAddress() - Failed to fetch yield bearing token address!',
+          error,
+        );
+        return Promise.reject(error);
+      }
     }
 
     throw new Error(`Address '${address}' is not valid`);

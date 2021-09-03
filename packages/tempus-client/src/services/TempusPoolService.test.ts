@@ -236,7 +236,7 @@ describe('TempusPoolService', () => {
     test('it returns address of the yield token', async () => {
       mockYieldShare.mockImplementation(() => Promise.resolve('mock-yield-share-address'));
 
-      const yieldTokenAddress = await instance.getYieldTokenAddress(mockAddress);
+      const yieldTokenAddress = await instance.getYieldShareTokenAddress(mockAddress);
 
       expect(yieldTokenAddress).toBe('mock-yield-share-address');
     });

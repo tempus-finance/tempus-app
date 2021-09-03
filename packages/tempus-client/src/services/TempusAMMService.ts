@@ -4,6 +4,7 @@ import { TempusAMM } from '../abi/TempusAMM';
 import TempusAMMABI from '../abi/TempusAMM.json';
 import { DAYS_IN_A_YEAR, SECONDS_IN_A_DAY } from '../constants';
 import TempusPoolService from './TempusPoolService';
+import { poolAddressCache, poolIdCache } from '../cache/TempusAMMCache';
 
 interface TempusPoolAddressData {
   poolAddress: string;
@@ -36,8 +37,16 @@ class TempusAMMService {
   public poolId(address: string): Promise<string> {
     const amm = this.tempusAMMMap.get(address);
     if (amm) {
+      const cachedPoolIdPromise = poolIdCache.get(address);
+      if (cachedPoolIdPromise) {
+        return cachedPoolIdPromise;
+      }
+
       try {
-        return amm.getPoolId();
+        const poolIdFetchPromise = amm.getPoolId();
+        poolIdCache.set(address, poolIdFetchPromise);
+
+        return poolIdFetchPromise;
       } catch (error) {
         console.error('TempusAMMService - poolId() - Failed to fetch pool ID from contract!', error);
         return Promise.reject(error);
@@ -75,8 +84,16 @@ class TempusAMMService {
   public async getTempusPoolAddress(address: string): Promise<string> {
     const service = this.tempusAMMMap.get(address);
     if (service) {
+      const cachedPoolAddressPromise = poolAddressCache.get(address);
+      if (cachedPoolAddressPromise) {
+        return cachedPoolAddressPromise;
+      }
+
       try {
-        return await service.tempusPool();
+        const poolAddressFetchPromise = service.tempusPool();
+        poolAddressCache.set(address, poolAddressFetchPromise);
+
+        return poolAddressFetchPromise;
       } catch (error) {
         console.error('TempusAMMService - getTempusPoolAddress() - Failed to get tempus pool address!', error);
         return Promise.reject(error);
