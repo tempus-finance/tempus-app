@@ -1,4 +1,4 @@
-import { BigNumber, Contract, ContractTransaction, ethers } from 'ethers';
+import { BigNumber, Contract, ethers } from 'ethers';
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
 import { TempusPool } from '../abi/TempusPool';
 import TempusPoolABI from '../abi/TempusPool.json';
@@ -19,18 +19,29 @@ type TempusPoolServiceParameters = {
   Contract: typeof Contract;
   tempusPoolAddresses: string[];
   TempusPoolABI: typeof TempusPoolABI;
+  eRC20TokenServiceGetter: typeof getERC20TokenService;
   signerOrProvider: JsonRpcSigner | JsonRpcProvider;
 };
 
 class TempusPoolService {
   private tempusPoolsMap: Map<string, TempusPool> = new Map();
 
-  init({ Contract, tempusPoolAddresses = [], TempusPoolABI, signerOrProvider }: TempusPoolServiceParameters) {
+  private eRC20TokenServiceGetter: typeof getERC20TokenService | null = null;
+
+  init({
+    Contract,
+    tempusPoolAddresses = [],
+    TempusPoolABI,
+    signerOrProvider,
+    eRC20TokenServiceGetter,
+  }: TempusPoolServiceParameters) {
     this.tempusPoolsMap.clear();
 
     tempusPoolAddresses.forEach((address: string) => {
       this.tempusPoolsMap.set(address, new Contract(address, TempusPoolABI, signerOrProvider) as TempusPool);
     });
+
+    this.eRC20TokenServiceGetter = eRC20TokenServiceGetter;
   }
 
   public async getBackingTokenTicker(address: string): Promise<Ticker> {
@@ -301,25 +312,6 @@ class TempusPoolService {
       }
     }
 
-    throw new Error(`Address '${address}' is not valid`);
-  }
-
-  public async deposit(
-    address: string,
-    amount: BigNumber,
-    recipient: string,
-  ): Promise<ContractTransaction | undefined> {
-    const tempusPool = this.tempusPoolsMap.get(address);
-    if (tempusPool) {
-      let depositTransaction: ContractTransaction | undefined;
-      try {
-        depositTransaction = await tempusPool.deposit(amount, recipient);
-      } catch (error) {
-        console.error(`TempusPoolService - deposit() - Failed to make a deposit to the pool!`, error);
-        return Promise.reject(error);
-      }
-      return depositTransaction;
-    }
     throw new Error(`Address '${address}' is not valid`);
   }
 }
