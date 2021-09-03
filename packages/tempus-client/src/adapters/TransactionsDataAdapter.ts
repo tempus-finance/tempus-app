@@ -1,6 +1,7 @@
 import { BigNumber, ethers } from 'ethers';
 import format from 'date-fns/format';
 import { formatDistanceToNow } from 'date-fns';
+import { v1 as uuid } from 'uuid';
 import { Block, JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
 import getTempusPoolService from '../services/getTempusPoolService';
 import TempusPoolService from '../services/TempusPoolService';
@@ -112,7 +113,7 @@ class TransactionsDataAdapter {
       const formattedDate = format(poolMaturityDate, 'dd/MM/yyyy');
 
       transaction = {
-        id: event.blockHash,
+        id: uuid(),
         pool: `${tokenTicker} ${formatDistanceToNow(poolMaturityDate)} ${formattedDate}`,
         action: this.getEventAction(event),
         totalValue: eventValue,
