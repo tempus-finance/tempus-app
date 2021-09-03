@@ -5,7 +5,7 @@ import TempusPoolABI from '../abi/TempusPool.json';
 import { BLOCK_DURATION_SECONDS, DAYS_IN_A_YEAR, SECONDS_IN_A_DAY } from '../constants';
 import { ProtocolName, Ticker } from '../interfaces';
 import getERC20TokenService from './getERC20TokenService';
-import tempusPoolCache from '../cache/TempusPoolCache';
+import { backingTokenAddressCache, backingTokenTickerCache } from '../cache/TempusPoolCache';
 
 type TempusPoolServiceParameters = {
   Contract: typeof Contract;
@@ -26,7 +26,7 @@ class TempusPoolService {
   }
 
   public async getBackingTokenTicker(address: string): Promise<Ticker> {
-    const cachedPromise = tempusPoolCache.backingTokenTicker.get(address);
+    const cachedPromise = backingTokenTickerCache.get(address);
     if (cachedPromise) {
       return cachedPromise;
     }
@@ -42,7 +42,7 @@ class TempusPoolService {
       }
 
       const backingTokenTickerPromise = getERC20TokenService(backingTokenAddress).symbol();
-      tempusPoolCache.backingTokenTicker.set(address, backingTokenTickerPromise);
+      backingTokenTickerCache.set(address, backingTokenTickerPromise);
 
       return backingTokenTickerPromise;
     }
@@ -50,7 +50,7 @@ class TempusPoolService {
   }
 
   public async getBackingTokenAddress(address: string): Promise<string> {
-    const cachedPromise = tempusPoolCache.backingTokenAddress.get(address);
+    const cachedPromise = backingTokenAddressCache.get(address);
     if (cachedPromise) {
       return cachedPromise;
     }
@@ -58,7 +58,7 @@ class TempusPoolService {
     const tempusPool = this.tempusPoolsMap.get(address);
     if (tempusPool) {
       const backingTokenAddressPromise = tempusPool.backingToken();
-      tempusPoolCache.backingTokenAddress.set(address, backingTokenAddressPromise);
+      backingTokenAddressCache.set(address, backingTokenAddressPromise);
       return backingTokenAddressPromise;
     }
 
