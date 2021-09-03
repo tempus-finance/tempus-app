@@ -12,7 +12,7 @@ const BodyCellFactory = (props: any) => {
     return <ProtocolCell {...props} />;
   }
 
-  if (columnName === ColumnNames.FIXED_APY || columnName === ColumnNames.VARIABLE_APY) {
+  if (columnName === ColumnNames.FIXED_APR || columnName === ColumnNames.VARIABLE_APY) {
     return <APYCell {...props} />;
   }
 

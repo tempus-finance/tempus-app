@@ -1,5 +1,9 @@
 import { JsonRpcSigner, JsonRpcProvider } from '@ethersproject/providers';
 import getDefaultProvider from '../services/getDefaultProvider';
+import getERC20TokenService from '../services/getERC20TokenService';
+import getStatisticsService from '../services/getStatisticsService';
+import getTempusAMMService from '../services/getTempusAMMService';
+import getTempusPoolService from '../services/getTempusPoolService';
 import DashboardDataAdapter from './DashboardDataAdapter';
 
 let dashboardDataAdapter: DashboardDataAdapter;
@@ -12,12 +16,20 @@ const getDashboardDataAdapter = (
     dashboardDataAdapter.init({
       signerOrProvider: getDefaultProvider(),
       userWalletAddress,
+      eRC20TokenServiceGetter: getERC20TokenService,
+      statisticsService: getStatisticsService(),
+      tempusAMMService: getTempusAMMService(),
+      tempusPoolService: getTempusPoolService(),
     });
   }
 
   if (signerOrProvider) {
     dashboardDataAdapter.init({
       signerOrProvider: signerOrProvider,
+      eRC20TokenServiceGetter: getERC20TokenService,
+      statisticsService: getStatisticsService(signerOrProvider),
+      tempusAMMService: getTempusAMMService(signerOrProvider),
+      tempusPoolService: getTempusPoolService(signerOrProvider),
       userWalletAddress,
     });
   }
