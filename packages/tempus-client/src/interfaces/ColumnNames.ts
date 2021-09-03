@@ -2,7 +2,7 @@ export enum ColumnNames {
   TOKEN = 'token',
   PROTOCOL = 'protocol',
   MATURITY = 'maturity',
-  FIXED_APY = 'fixedAPR',
+  FIXED_APR = 'fixedAPR',
   VARIABLE_APY = 'variableAPY',
   TVL = 'TVL',
   PRESENT_VALUE = 'presentValue',

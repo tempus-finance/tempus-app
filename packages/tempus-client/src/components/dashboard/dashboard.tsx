@@ -39,7 +39,7 @@ const Dashboard: FC<DashboardProps> = ({ hidden, userWalletAddress, rows, onRowA
     { columnName: ColumnNames.TOKEN, align: 'left' as 'left', width: 120 },
     { columnName: ColumnNames.PROTOCOL, align: 'center' as 'center', width: 120 },
     { columnName: ColumnNames.MATURITY, align: 'right' as 'right' },
-    { columnName: ColumnNames.FIXED_APY, align: 'right' as 'right', width: 140 },
+    { columnName: ColumnNames.FIXED_APR, align: 'right' as 'right', width: 140 },
     { columnName: ColumnNames.VARIABLE_APY, align: 'right' as 'right', width: 160 },
     { columnName: ColumnNames.TVL, align: 'right' as 'right', width: 80 },
     { columnName: ColumnNames.PRESENT_VALUE, align: 'right' as 'right', width: 135 },
@@ -54,7 +54,7 @@ const Dashboard: FC<DashboardProps> = ({ hidden, userWalletAddress, rows, onRowA
 
   const [integratedSortingColumnExtensions] = useState([
     { columnName: ColumnNames.MATURITY, compare: compareMaturity },
-    { columnName: ColumnNames.FIXED_APY, compare: compareAPY },
+    { columnName: ColumnNames.FIXED_APR, compare: compareAPY },
     { columnName: ColumnNames.VARIABLE_APY, compare: compareAPY },
   ]);
 

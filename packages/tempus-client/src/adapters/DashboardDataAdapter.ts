@@ -128,7 +128,7 @@ export default class DashboardDataAdapter {
         const parentChildren = this.getParentChildren(child.token, childRows);
 
         const childrenMaturityDate = parentChildren.map(child => child.maturityDate);
-        const childrenFixedAPY = parentChildren.map(child => child.fixedAPR);
+        const childrenFixedAPR = parentChildren.map(child => child.fixedAPR);
         const childrenVariable = parentChildren.map(child => child.variableAPY);
         const parentTVL = parentChildren.reduce((accumulator, currentValue) => {
           return accumulator + currentValue.TVL;
@@ -148,7 +148,7 @@ export default class DashboardDataAdapter {
           parentId: null, // Always null for parent rows
           token: child.token,
           maturityRange: this.getRangeFrom<Date>(childrenMaturityDate),
-          fixedAPR: this.getRangeFrom<number>(childrenFixedAPY),
+          fixedAPR: this.getRangeFrom<number>(childrenFixedAPR),
           variableAPY: this.getRangeFrom<number>(childrenVariable),
           TVL: parentTVL,
           presentValue: this.userWalletAddress ? parentPresentValue : undefined,
