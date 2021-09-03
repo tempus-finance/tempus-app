@@ -10,7 +10,7 @@ export interface DashboardRow {
 
 export interface DashboardRowParent extends DashboardRow {
   maturityRange: Date[];
-  fixedAPY: number[];
+  fixedAPR: number[];
   variableAPY: number[];
   availableToDeposit: boolean | undefined;
 }
@@ -20,7 +20,7 @@ export interface DashboardRowChild extends DashboardRow {
   supportedTokens: Ticker[];
   startDate: Date;
   maturityDate: Date;
-  fixedAPY: number;
+  fixedAPR: number;
   variableAPY: number;
   availableTokensToDeposit: AvailableTokensToDeposit | undefined;
 }

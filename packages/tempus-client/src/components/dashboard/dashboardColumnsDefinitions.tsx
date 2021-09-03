@@ -19,14 +19,14 @@ export const dashboardColumnsDefinitions: ExtraDataColumn[] = [
   },
 
   {
-    name: 'fixedAPY',
+    name: 'fixedAPR',
     title: 'Fixed APR',
     tooltip: fixedAPYTooltipText,
     getCellValue: (row: any) => {
-      if (row.fixedAPY.length === 2) {
-        return row.fixedAPY;
+      if (row.fixedAPR.length === 2) {
+        return row.fixedAPR;
       }
-      return [row.fixedAPY];
+      return [row.fixedAPR];
     },
   },
   {

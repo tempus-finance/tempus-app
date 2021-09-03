@@ -2,31 +2,34 @@ import { ethers } from 'ethers';
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
 import { DashboardRow, DashboardRowChild, DashboardRowParent } from '../interfaces';
 import { TempusPool } from '../interfaces/TempusPool';
-import getStatisticsService from '../services/getStatisticsService';
-import getTempusPoolService from '../services/getTempusPoolService';
 import StatisticsService from '../services/StatisticsService';
 import TempusPoolService from '../services/TempusPoolService';
 import getERC20TokenService from '../services/getERC20TokenService';
 import getConfig from '../utils/get-config';
 import weiToEth from '../utils/convert-wei-to-eth';
-import getTempusAMMService from '../services/getTempusAMMService';
 import TempusAMMService from '../services/TempusAMMService';
 
 type DashboardDataAdapterParameters = {
   signerOrProvider: JsonRpcProvider | JsonRpcSigner;
   userWalletAddress: string;
+  tempusPoolService: TempusPoolService;
+  statisticsService: StatisticsService;
+  tempusAMMService: TempusAMMService;
+  eRC20TokenServiceGetter: typeof getERC20TokenService;
 };
 
 export default class DashboardDataAdapter {
+  private eRC20TokenServiceGetter: typeof getERC20TokenService | null = null;
   private tempusPoolService: TempusPoolService | null = null;
   private statisticsService: StatisticsService | null = null;
   private tempusAMMService: TempusAMMService | null = null;
   private userWalletAddress: string = '';
 
   public init(params: DashboardDataAdapterParameters) {
-    this.tempusPoolService = getTempusPoolService(params.signerOrProvider);
-    this.statisticsService = getStatisticsService(params.signerOrProvider);
-    this.tempusAMMService = getTempusAMMService(params.signerOrProvider);
+    this.eRC20TokenServiceGetter = params.eRC20TokenServiceGetter;
+    this.tempusPoolService = params.tempusPoolService;
+    this.statisticsService = params.statisticsService;
+    this.tempusAMMService = params.tempusAMMService;
     this.userWalletAddress = params.userWalletAddress;
   }
 
@@ -65,7 +68,7 @@ export default class DashboardDataAdapter {
       const [
         backingTokenTicker,
         yieldBearingTokenTicker,
-        protocolName,
+        protocol,
         startDate,
         maturityDate,
         fixedAPR,
@@ -93,19 +96,19 @@ export default class DashboardDataAdapter {
         parentId: backingTokenTicker,
         token: backingTokenTicker,
         supportedTokens: [backingTokenTicker, yieldBearingTokenTicker],
-        protocol: protocolName,
-        startDate: startDate,
-        maturityDate: maturityDate,
-        fixedAPY: fixedAPR,
+        protocol,
+        startDate,
+        maturityDate,
+        fixedAPR,
         variableAPY: 0.117, // TODO - Needs to be fixed - does not take into account gains from providing liquidity, some protocol compound interest, it does not increase linearly.
         TVL: Number(ethers.utils.formatEther(tvl)),
         presentValue:
           presentValueInBackingTokens !== undefined ? presentValueInBackingTokens * poolBackingTokenRate : undefined,
         availableTokensToDeposit: availableToDeposit && {
           backingToken: availableToDeposit.backingToken,
-          backingTokenTicker: backingTokenTicker,
+          backingTokenTicker,
           yieldBearingToken: availableToDeposit.yieldBearingToken,
-          yieldBearingTokenTicker: yieldBearingTokenTicker,
+          yieldBearingTokenTicker,
         },
       };
     } catch (error) {
@@ -125,7 +128,7 @@ export default class DashboardDataAdapter {
         const parentChildren = this.getParentChildren(child.token, childRows);
 
         const childrenMaturityDate = parentChildren.map(child => child.maturityDate);
-        const childrenFixedAPY = parentChildren.map(child => child.fixedAPY);
+        const childrenFixedAPY = parentChildren.map(child => child.fixedAPR);
         const childrenVariable = parentChildren.map(child => child.variableAPY);
         const parentTVL = parentChildren.reduce((accumulator, currentValue) => {
           return accumulator + currentValue.TVL;
@@ -145,7 +148,7 @@ export default class DashboardDataAdapter {
           parentId: null, // Always null for parent rows
           token: child.token,
           maturityRange: this.getRangeFrom<Date>(childrenMaturityDate),
-          fixedAPY: this.getRangeFrom<number>(childrenFixedAPY),
+          fixedAPR: this.getRangeFrom<number>(childrenFixedAPY),
           variableAPY: this.getRangeFrom<number>(childrenVariable),
           TVL: parentTVL,
           presentValue: this.userWalletAddress ? parentPresentValue : undefined,
@@ -187,7 +190,7 @@ export default class DashboardDataAdapter {
   }
 
   private async getPresentValueInBackingTokensForPool(pool: TempusPool): Promise<number | undefined> {
-    if (!this.tempusPoolService || !this.statisticsService) {
+    if (!this.tempusPoolService || !this.statisticsService || !this.eRC20TokenServiceGetter) {
       console.error(
         'DashboardDataAdapter - getPresentValueInBackingTokensForPool() - Attempted to use DashboardDataAdapter before initializing it!',
       );
@@ -206,8 +209,8 @@ export default class DashboardDataAdapter {
         this.tempusPoolService.pricePerYieldShareStored(pool.address),
       ]);
 
-      const yieldToken = getERC20TokenService(yieldTokenAddress);
-      const principalToken = getERC20TokenService(principalTokenAddress);
+      const yieldToken = this.eRC20TokenServiceGetter(yieldTokenAddress);
+      const principalToken = this.eRC20TokenServiceGetter(principalTokenAddress);
 
       const [userYieldSupply, userPrincipalSupply] = await Promise.all([
         yieldToken.balanceOf(this.userWalletAddress),
@@ -232,7 +235,7 @@ export default class DashboardDataAdapter {
   private async getAvailableToDepositForPool(
     pool: TempusPool,
   ): Promise<{ backingToken: number; yieldBearingToken: number } | undefined> {
-    if (!this.tempusPoolService || !this.statisticsService) {
+    if (!this.tempusPoolService || !this.statisticsService || !this.eRC20TokenServiceGetter) {
       console.error(
         'DashboardDataAdapter - getAvailableToDepositForPool() - Attempted to use DashboardDataAdapter before initializing it!',
       );
@@ -249,8 +252,8 @@ export default class DashboardDataAdapter {
         this.tempusPoolService.getYieldBearingTokenAddress(pool.address),
       ]);
 
-      const backingToken = getERC20TokenService(poolBackingToken);
-      const yieldBearingToken = getERC20TokenService(poolYieldBearingToken);
+      const backingToken = this.eRC20TokenServiceGetter(poolBackingToken);
+      const yieldBearingToken = this.eRC20TokenServiceGetter(poolYieldBearingToken);
 
       const [backingTokensAvailable, yieldTokensAvailable] = await Promise.all([
         backingToken.balanceOf(this.userWalletAddress),

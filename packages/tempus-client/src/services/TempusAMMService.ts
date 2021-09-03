@@ -4,7 +4,6 @@ import { TempusAMM } from '../abi/TempusAMM';
 import TempusAMMABI from '../abi/TempusAMM.json';
 import { DAYS_IN_A_YEAR, SECONDS_IN_A_DAY } from '../constants';
 import TempusPoolService from './TempusPoolService';
-import getTempusPoolService from './getTempusPoolService';
 
 interface TempusPoolAddressData {
   poolAddress: string;
@@ -16,6 +15,7 @@ type TempusAMMServiceParameters = {
   tempusAMMAddresses: string[];
   TempusAMMABI: typeof TempusAMMABI;
   signerOrProvider: JsonRpcSigner | JsonRpcProvider;
+  tempusPoolService: TempusPoolService;
 };
 
 class TempusAMMService {
@@ -30,7 +30,7 @@ class TempusAMMService {
       this.tempusAMMMap.set(address, new Contract(address, TempusAMMABI, params.signerOrProvider) as TempusAMM);
     });
 
-    this.tempusPoolService = getTempusPoolService(params.signerOrProvider);
+    this.tempusPoolService = params.tempusPoolService;
   }
 
   public poolId(address: string): Promise<string> {
@@ -72,7 +72,7 @@ class TempusAMMService {
     throw new Error('Failed to get tempus pool address from ID!');
   }
 
-  public async getTempusPoolAddress(address: string) {
+  public async getTempusPoolAddress(address: string): Promise<string> {
     const service = this.tempusAMMMap.get(address);
     if (service) {
       try {

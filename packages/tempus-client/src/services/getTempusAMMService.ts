@@ -4,6 +4,7 @@ import TempusAMMABI from '../abi/TempusAMM.json';
 import getConfig from '../utils/get-config';
 import TempusAMMService from './TempusAMMService';
 import getDefaultProvider from './getDefaultProvider';
+import getTempusPoolService from './getTempusPoolService';
 
 let tempusAMMService: TempusAMMService;
 const getTempusAMMService = (signerOrProvider?: JsonRpcSigner | JsonRpcProvider): TempusAMMService => {
@@ -14,6 +15,7 @@ const getTempusAMMService = (signerOrProvider?: JsonRpcSigner | JsonRpcProvider)
       tempusAMMAddresses: getConfig().tempusPools.map(tempusPoolConfig => tempusPoolConfig.ammAddress),
       TempusAMMABI: TempusAMMABI,
       signerOrProvider: getDefaultProvider(),
+      tempusPoolService: getTempusPoolService(),
     });
   }
 
@@ -23,6 +25,7 @@ const getTempusAMMService = (signerOrProvider?: JsonRpcSigner | JsonRpcProvider)
       tempusAMMAddresses: getConfig().tempusPools.map(tempusPoolConfig => tempusPoolConfig.ammAddress),
       TempusAMMABI: TempusAMMABI,
       signerOrProvider: signerOrProvider,
+      tempusPoolService: getTempusPoolService(signerOrProvider),
     });
   }
 
