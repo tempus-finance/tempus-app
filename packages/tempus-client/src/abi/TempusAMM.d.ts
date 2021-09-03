@@ -30,6 +30,7 @@ interface TempusAMMInterface extends ethers.utils.Interface {
     "getActionId(bytes4)": FunctionFragment;
     "getAmplificationParameter()": FunctionFragment;
     "getAuthorizer()": FunctionFragment;
+    "getExpectedReturnGivenIn(uint256,bool)": FunctionFragment;
     "getLastInvariant()": FunctionFragment;
     "getOwner()": FunctionFragment;
     "getPausedState()": FunctionFragment;
@@ -88,6 +89,10 @@ interface TempusAMMInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "getAuthorizer",
     values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getExpectedReturnGivenIn",
+    values: [BigNumberish, boolean]
   ): string;
   encodeFunctionData(
     functionFragment: "getLastInvariant",
@@ -254,6 +259,10 @@ interface TempusAMMInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "getExpectedReturnGivenIn",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "getLastInvariant",
     data: BytesLike
   ): Result;
@@ -415,6 +424,12 @@ export class TempusAMM extends BaseContract {
     >;
 
     getAuthorizer(overrides?: CallOverrides): Promise<[string]>;
+
+    getExpectedReturnGivenIn(
+      amount: BigNumberish,
+      yieldShareIn: boolean,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
 
     getLastInvariant(
       overrides?: CallOverrides
@@ -630,6 +645,12 @@ export class TempusAMM extends BaseContract {
   >;
 
   getAuthorizer(overrides?: CallOverrides): Promise<string>;
+
+  getExpectedReturnGivenIn(
+    amount: BigNumberish,
+    yieldShareIn: boolean,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
 
   getLastInvariant(
     overrides?: CallOverrides
@@ -848,6 +869,12 @@ export class TempusAMM extends BaseContract {
     >;
 
     getAuthorizer(overrides?: CallOverrides): Promise<string>;
+
+    getExpectedReturnGivenIn(
+      amount: BigNumberish,
+      yieldShareIn: boolean,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     getLastInvariant(
       overrides?: CallOverrides
@@ -1106,6 +1133,12 @@ export class TempusAMM extends BaseContract {
 
     getAuthorizer(overrides?: CallOverrides): Promise<BigNumber>;
 
+    getExpectedReturnGivenIn(
+      amount: BigNumberish,
+      yieldShareIn: boolean,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     getLastInvariant(overrides?: CallOverrides): Promise<BigNumber>;
 
     getOwner(overrides?: CallOverrides): Promise<BigNumber>;
@@ -1306,6 +1339,12 @@ export class TempusAMM extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     getAuthorizer(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    getExpectedReturnGivenIn(
+      amount: BigNumberish,
+      yieldShareIn: boolean,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     getLastInvariant(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 

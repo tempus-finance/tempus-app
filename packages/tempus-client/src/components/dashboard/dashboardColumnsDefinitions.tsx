@@ -1,6 +1,6 @@
 import { Column } from '@devexpress/dx-react-grid';
 
-import { fixedAPYTooltipText, variableAPYTooltipText } from '../../constants';
+import { fixedAPRTooltipText, variableAPYTooltipText } from '../../constants';
 import { DashboardRowChild, DashboardRowParent } from '../../interfaces';
 import NumberUtils from '../../services/NumberUtils';
 
@@ -19,14 +19,14 @@ export const dashboardColumnsDefinitions: ExtraDataColumn[] = [
   },
 
   {
-    name: 'fixedAPY',
+    name: 'fixedAPR',
     title: 'Fixed APR',
-    tooltip: fixedAPYTooltipText,
+    tooltip: fixedAPRTooltipText,
     getCellValue: (row: any) => {
-      if (row.fixedAPY.length === 2) {
-        return row.fixedAPY;
+      if (row.fixedAPR.length === 2) {
+        return row.fixedAPR;
       }
-      return [row.fixedAPY];
+      return [row.fixedAPR];
     },
   },
   {

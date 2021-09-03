@@ -1,18 +1,5 @@
 [
   {
-    "inputs": [],
-    "name": "ENS",
-    "outputs": [
-      {
-        "internalType": "contract IENS",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "inputs": [
       {
         "internalType": "bytes32",
