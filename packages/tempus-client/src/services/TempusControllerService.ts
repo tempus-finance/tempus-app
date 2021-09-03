@@ -1,4 +1,4 @@
-import { BigNumber, Contract } from 'ethers';
+import { BigNumber, Contract, ContractTransaction } from 'ethers';
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
 import { TempusController } from '../abi/TempusController';
 import TempusControllerABI from '../abi/TempusController.json';
@@ -74,6 +74,27 @@ class TempusControllerService {
       return await this.contract.queryFilter(this.contract.filters.Redeemed());
     } catch (error) {
       console.error(`TempusControllerService getRedeemEvents() - Failed to get redeemed events!`, error);
+      return Promise.reject(error);
+    }
+  }
+
+  public async depositAndFix(
+    tempusAMM: string,
+    tokenAmount: BigNumber,
+    isBackingToken: boolean,
+    minTYSRate: BigNumber,
+  ): Promise<ContractTransaction> {
+    if (!this.contract) {
+      console.error(
+        'TempusControllerService - depositAndFix() - Attempted to use TempusControllerService before initializing it!',
+      );
+      return Promise.reject();
+    }
+
+    try {
+      return await this.contract.depositAndFix(tempusAMM, tokenAmount, isBackingToken, minTYSRate);
+    } catch (error) {
+      console.error(`TempusControllerService depositAndFix() - Failed to deposit backing tokens!`, error);
       return Promise.reject(error);
     }
   }
