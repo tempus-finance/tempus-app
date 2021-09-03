@@ -1,64 +1,49 @@
-import getPoolDataAdapter from './getPoolDataAdapter';
 import PoolDataAdapter from './PoolDataAdapter';
 
 jest.mock('@ethersproject/providers');
 const { JsonRpcProvider } = jest.requireMock('@ethersproject/providers');
-const mockProvider = new JsonRpcProvider();
-
-jest.mock('../services/getTempusPoolService');
-const getTempusPoolService = jest.requireMock('../services/getTempusPoolService');
-
-jest.mock('../services/getTempusControllerService');
-const getTempusControllerService = jest.requireMock('../services/getTempusControllerService');
-
-jest.mock('../services/getERC20TokenService');
-const getERC20TokenService = jest.requireMock('../services/getERC20TokenService');
-
-jest.mock('../services/getStatisticsService');
-const getStatisticsService = jest.requireMock('../services/getStatisticsService');
 
 describe('PoolDataAdapter', () => {
   let instance: PoolDataAdapter;
 
+  const mockProvider = new JsonRpcProvider();
+
   beforeEach(() => {
     jest.clearAllMocks();
 
-    const mockBalanceOf = jest.fn();
-    const mockGetRate = jest.fn();
-    const mockGetBackingTokenAddress = jest.fn().mockImplementation(() => Promise.resolve('backingAddress'));
-
-    getTempusControllerService.default.mockImplementation(() => {
-      return {};
+    const mockGetTempusControllerService = jest.fn();
+    const mockGetERC20TokenService = jest.fn().mockImplementation((address: string) => {
+      if (address === 'backing-token-address') {
+        return {
+          balanceOf: jest.fn().mockResolvedValue(10),
+        };
+      } else {
+        return {
+          balanceOf: jest.fn().mockResolvedValue(20),
+        };
+      }
+    });
+    const mockGetStatisticsService = jest.fn().mockImplementation(() => {
+      return { getRate: jest.fn().mockResolvedValue(0.5) };
     });
 
-    getTempusPoolService.default.mockImplementation(() => {
-      console.log(1);
+    const mockGetTempusPoolService = jest.fn().mockImplementation(() => {
       return {
-        getBackingTokenAddress: mockGetBackingTokenAddress, // this does not work
-        // getBackingTokenAddress: () => Promise.resolve('backingAddress'), // this works
-        getBackingTokenTicker: jest.fn().mockResolvedValue('BACKING'),
-        getYieldBearingTokenAddress: jest.fn().mockResolvedValue('yieldAddress'),
+        getBackingTokenAddress: jest.fn().mockResolvedValue('backing-token-address'),
+        getBackingTokenTicker: jest.fn().mockResolvedValue('backing-token-ticker'),
+        getYieldBearingTokenAddress: jest.fn().mockResolvedValue('yield-bearing-token-address'),
         numAssetsPerYieldToken: jest.fn().mockResolvedValue('1'),
       };
     });
 
-    getERC20TokenService.default.mockImplementation((address: string) => {
-      // console.log('getERC20TokenService address', address);
-      if (address === 'backingAddress') {
-        return {
-          balanceOf: mockBalanceOf.mockResolvedValue(10),
-        };
-      } else
-        return {
-          balanceOf: mockBalanceOf.mockResolvedValue(20),
-        };
+    instance = new PoolDataAdapter();
+    instance.init({
+      eRC20TokenServiceGetter: mockGetERC20TokenService,
+      statisticService: mockGetStatisticsService(),
+      tempusControllerAddress: 'mock-tempus-controller-address',
+      tempusControllerService: mockGetTempusControllerService(),
+      tempusPoolService: mockGetTempusPoolService(),
     });
-
-    getStatisticsService.default.mockImplementation(() => {
-      return { getRate: mockGetRate.mockResolvedValue(0.5) };
-    });
-
-    instance = getPoolDataAdapter(mockProvider);
   });
 
   describe('getPoolDataAdapter()', () => {
@@ -78,9 +63,9 @@ describe('PoolDataAdapter', () => {
 
       expect(balances).toEqual({
         backingTokenBalance: 10,
-        backingTokenRate: 1,
+        backingTokenRate: 0.5,
         yieldBearingTokenBalance: 20,
-        yieldBearingTokenRate: 1,
+        yieldBearingTokenRate: 0.5,
       });
     });
   });

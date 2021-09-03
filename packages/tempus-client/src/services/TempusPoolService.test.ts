@@ -11,7 +11,7 @@ jest.mock('@ethersproject/providers');
 const { JsonRpcProvider } = jest.requireMock('@ethersproject/providers');
 
 jest.mock('./getERC20TokenService');
-const getERC20TokenService = jest.requireMock('./getERC20TokenService');
+const getERC20TokenService = jest.requireMock('./getERC20TokenService').default;
 
 describe('TempusPoolService', () => {
   const mockBackingTokenAddress = 'dummy-backing-token-address';
@@ -63,7 +63,7 @@ describe('TempusPoolService', () => {
       };
     });
 
-    getERC20TokenService.default.mockImplementation(() => {
+    getERC20TokenService.mockImplementation(() => {
       return {
         symbol: mockSymbol,
       };
@@ -91,6 +91,7 @@ describe('TempusPoolService', () => {
         tempusPoolAddresses: mockAddresses,
         TempusPoolABI: mockABI,
         signerOrProvider: mockProvider,
+        eRC20TokenServiceGetter: getERC20TokenService,
       });
 
       expect(instance).toBeInstanceOf(TempusPoolService);
@@ -117,6 +118,7 @@ describe('TempusPoolService', () => {
         tempusPoolAddresses: mockAddresses,
         TempusPoolABI: mockABI,
         signerOrProvider: mockProvider,
+        eRC20TokenServiceGetter: getERC20TokenService,
       });
     });
 

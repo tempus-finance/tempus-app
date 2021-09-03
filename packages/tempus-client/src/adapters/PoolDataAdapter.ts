@@ -48,34 +48,40 @@ export default class PoolDataAdapter {
       }
     | undefined
   > {
+    if (!this.tempusPoolService || !this.statisticService || !this.eRC20TokenServiceGetter) {
+      console.error('PoolDataAdapter - retrieveBalances() - Attempted to use PoolDataAdapter before initializing it!');
+      return Promise.reject();
+    }
+
     try {
-      if (this.eRC20TokenServiceGetter) {
-        const backingTokenAddress = await this.tempusPoolService?.getBackingTokenAddress(tempusPoolAddress);
-        const backingTokenService = this.eRC20TokenServiceGetter(backingTokenAddress || '', signer);
-        const backingTokenBalance = await backingTokenService.balanceOf(userWalletAddress);
+      const [backingTokenAddress, yieldBearingTokenAddress, backingTokenTicker, yieldBearingTokenConversionRate] =
+        await Promise.all([
+          this.tempusPoolService.getBackingTokenAddress(tempusPoolAddress),
+          this.tempusPoolService.getYieldBearingTokenAddress(tempusPoolAddress),
+          this.tempusPoolService.getBackingTokenTicker(tempusPoolAddress),
+          // TODO - Fetch interest rate from contract instead of hardcoded value=1
+          this.tempusPoolService.numAssetsPerYieldToken(tempusPoolAddress, 1, 1),
+        ]);
 
-        const yieldBearingTokenAddress =
-          (await this.tempusPoolService?.getYieldBearingTokenAddress(tempusPoolAddress)) || '';
-        const yieldBearingTokenService = this.eRC20TokenServiceGetter(yieldBearingTokenAddress, signer);
-        const yieldBearingTokenBalance = await yieldBearingTokenService.balanceOf(userWalletAddress);
+      const backingTokenService = this.eRC20TokenServiceGetter(backingTokenAddress, signer);
+      const yieldBearingTokenService = this.eRC20TokenServiceGetter(yieldBearingTokenAddress, signer);
 
-        const backingTokenTicker = (await this.tempusPoolService?.getBackingTokenTicker(tempusPoolAddress)) || '';
-        const backingTokenRate = (await this.statisticService?.getRate(backingTokenTicker)) || 1;
+      const [backingTokenBalance, yieldBearingTokenBalance, backingTokenRate] = await Promise.all([
+        backingTokenService.balanceOf(userWalletAddress),
+        yieldBearingTokenService.balanceOf(userWalletAddress),
+        this.statisticService.getRate(backingTokenTicker),
+      ]);
 
-        const yieldBearingTokenConversionRate =
-          (await this.tempusPoolService?.numAssetsPerYieldToken(tempusPoolAddress, 1, 1)) || 1;
-        const yieldBearingTokenRate = Number(yieldBearingTokenConversionRate.toString()) * backingTokenRate;
+      const yieldBearingTokenRate = Number(yieldBearingTokenConversionRate.toString()) * backingTokenRate;
 
-        return {
-          backingTokenBalance,
-          backingTokenRate,
-          yieldBearingTokenBalance,
-          yieldBearingTokenRate,
-        };
-      }
-      throw new Error('PoolDataAdapter:retrieveBalances():Missing eRC20TokenServiceGetter');
+      return {
+        backingTokenBalance,
+        backingTokenRate,
+        yieldBearingTokenBalance,
+        yieldBearingTokenRate,
+      };
     } catch (error) {
-      console.error('PoolDataAdapter:retrieveBalances():', error);
+      console.error('PoolDataAdapter - retrieveBalances() - Failed to retrieve balances!', error);
       Promise.reject();
     }
   }
@@ -86,17 +92,20 @@ export default class PoolDataAdapter {
     signer: JsonRpcSigner,
     approveAmount = 0,
   ): Promise<ContractTransaction | void> {
+    if (!this.tempusPoolService || !this.eRC20TokenServiceGetter) {
+      console.error('PoolDataAdapter - retrieveBalances() - Attempted to use PoolDataAdapter before initializing it!');
+      return Promise.reject();
+    }
+
     try {
-      if (this.eRC20TokenServiceGetter) {
-        const tokenAddress = isBackingToken
-          ? await this.tempusPoolService?.getBackingTokenAddress(tempusPoolAddress)
-          : await this.tempusPoolService?.getYieldBearingTokenAddress(tempusPoolAddress);
-        const tokenService = this.eRC20TokenServiceGetter(tokenAddress || '', signer);
-        return tokenService.approve(this.tempusControllerAddress, ethers.utils.parseEther(approveAmount.toString()));
-      }
-      throw new Error('PoolDataAdapter:approveDeposit():Missing eRC20TokenServiceGetter');
+      const tokenAddress = isBackingToken
+        ? await this.tempusPoolService.getBackingTokenAddress(tempusPoolAddress)
+        : await this.tempusPoolService.getYieldBearingTokenAddress(tempusPoolAddress);
+
+      const tokenService = this.eRC20TokenServiceGetter(tokenAddress, signer);
+      return tokenService.approve(this.tempusControllerAddress, ethers.utils.parseEther(approveAmount.toString()));
     } catch (error) {
-      console.error('PoolDataAdapter:approveDeposit():', error);
+      console.error('PoolDataAdapter - approveDeposit() - Failed to approve tokens for deposit!', error);
       Promise.reject();
     }
   }
@@ -107,8 +116,13 @@ export default class PoolDataAdapter {
     isBackingToken: boolean,
     minTYSRate: BigNumber,
   ): Promise<ContractTransaction | undefined> {
+    if (!this.tempusControllerService) {
+      console.error('PoolDataAdapter - retrieveBalances() - Attempted to use PoolDataAdapter before initializing it!');
+      return Promise.reject();
+    }
+
     try {
-      return await this.tempusControllerService?.depositAndFix(tempusAMM, tokenAmount, isBackingToken, minTYSRate);
+      return await this.tempusControllerService.depositAndFix(tempusAMM, tokenAmount, isBackingToken, minTYSRate);
     } catch (error) {
       console.error(`TempusPoolService - depositAndFix() - Failed to make a deposit to the pool!`, error);
       return Promise.reject(error);
