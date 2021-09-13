@@ -15,7 +15,7 @@ export function isDepositEvent(event: DepositedEvent | RedeemedEvent | SwapEvent
  * Type guard - Checks if provided event is of type RedeemedEvent
  */
 export function isRedeemEvent(event: DepositedEvent | RedeemedEvent | SwapEvent): event is RedeemedEvent {
-  return 'yieldBearingAmount' in event.args;
+  return 'yieldTokenAmount' in event.args;
 }
 
 /**
