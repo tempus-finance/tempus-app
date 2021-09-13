@@ -1,17 +1,7 @@
 @import '../../constants.scss';
 
-.tf__sidebar__handler {
-  position: absolute;
-  left: 0;
-}
-
 .tf__app__container {
-  display: grid;
-  grid-template-columns: $grid-template-columns 1fr $grid-template-columns;
-  grid-template-rows: $grid-template-rows auto;
-  row-gap: $row-gap;
-  column-gap: $column-gap;
-  grid-template-areas:
-    '. header .'
-    '. section .';
+  max-width: 1200px;
+  margin: 0 auto;
+  height: 100%;
 }

@@ -9,6 +9,8 @@ import {
   Sorting,
 } from '@devexpress/dx-react-grid';
 import { Grid, TableHeaderRow, VirtualTable, TableTreeColumn } from '@devexpress/dx-react-grid-material-ui';
+import FilterListIcon from '@material-ui/icons/FilterList';
+import SettingsIcon from '@material-ui/icons/Settings';
 import { ColumnNames, DashboardRow } from '../../interfaces';
 import { dashboardColumnsDefinitions } from './dashboardColumnsDefinitions';
 import TokenButton from './bodySection/tokenButton';
@@ -36,14 +38,14 @@ type DashboardProps = DashboardInProps & DashboardOutProps;
 
 const Dashboard: FC<DashboardProps> = ({ hidden, userWalletAddress, rows, onRowActionClick }): JSX.Element => {
   const [tableColumnExtensions] = useState([
-    { columnName: ColumnNames.TOKEN, align: 'left' as 'left', width: 120 },
-    { columnName: ColumnNames.PROTOCOL, align: 'center' as 'center', width: 120 },
+    { columnName: ColumnNames.TOKEN, align: 'left' as 'left', width: 140 },
+    { columnName: ColumnNames.PROTOCOL, align: 'center' as 'center', width: 100 },
     { columnName: ColumnNames.MATURITY, align: 'right' as 'right' },
-    { columnName: ColumnNames.FIXED_APR, align: 'right' as 'right', width: 140 },
-    { columnName: ColumnNames.VARIABLE_APY, align: 'right' as 'right', width: 160 },
+    { columnName: ColumnNames.FIXED_APR, align: 'left' as 'left', width: 140 },
+    { columnName: ColumnNames.VARIABLE_APY, align: 'left' as 'left', width: 160 },
     { columnName: ColumnNames.TVL, align: 'right' as 'right', width: 80 },
     { columnName: ColumnNames.PRESENT_VALUE, align: 'right' as 'right', width: 135 },
-    { columnName: ColumnNames.AVAILABLE_TO_DEPOSIT, align: 'right' as 'right', width: 150 },
+    { columnName: ColumnNames.AVAILABLE_TO_DEPOSIT, align: 'right' as 'right' },
   ]);
 
   const [expandedRows, setExpandedRows] = useState<number[]>([]);
@@ -90,6 +92,18 @@ const Dashboard: FC<DashboardProps> = ({ hidden, userWalletAddress, rows, onRowA
   return (
     <div className="tf__dashboard__section__container" hidden={hidden}>
       <div className="tf__dashboard__container">
+        <div className="tf__dashboard__header">
+          <div className="tf__dashboard__header__title">Available Pools</div>
+          <div className="tf__dashboard__header__actions">
+            <div>
+              Filters <FilterListIcon />
+            </div>
+            <div>
+              Settings <SettingsIcon />
+            </div>
+          </div>
+        </div>
+        <hr />
         <div className="tf__dashboard">
           <div className="tf__dashboard__grid">
             <Grid rows={rows} columns={dashboardColumnsDefinitions}>

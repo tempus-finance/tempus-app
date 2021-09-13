@@ -1,8 +1,8 @@
 import { FC, useCallback, useEffect, useState } from 'react';
 import { TableTreeColumn } from '@devexpress/dx-react-grid-material-ui';
 import Button from '@material-ui/core/Button';
-import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
-import ArrowRightIcon from '@material-ui/icons/ArrowRight';
+import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import LaunchIcon from '@material-ui/icons/Launch';
 import TokenIcon from '../../tokenIcon';
 
@@ -52,9 +52,9 @@ const TokenButton: FC<TokenButtonProps> = (props: TokenButtonProps) => {
       {indentComponent.props.level === 0 && (
         <Button className="tf__dashboard__body__token-button" onClick={expandButton.props.onToggle}>
           <div className="tf__dashboard__asset-ticker">
-            {isExpanded ? <ArrowDropDownIcon /> : <ArrowRightIcon />}
-            <TokenIcon ticker={contentComponent.props.children} />
+            {isExpanded ? <KeyboardArrowDownIcon /> : <ChevronRightIcon />}
             <span>{contentComponent.props.children}</span>
+            <TokenIcon ticker={contentComponent.props.children} />
           </div>
         </Button>
       )}
