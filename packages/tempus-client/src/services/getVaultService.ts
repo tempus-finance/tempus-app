@@ -4,6 +4,7 @@ import VaultABI from '../abi/Vault.json';
 import VaultService from './VaultService';
 import getDefaultProvider from './getDefaultProvider';
 import getConfig from '../utils/get-config';
+import getTempusAMMService from './getTempusAMMService';
 
 let vaultService: VaultService;
 const getVaultService = (signerOrProvider?: JsonRpcSigner | JsonRpcProvider): VaultService => {
@@ -14,6 +15,7 @@ const getVaultService = (signerOrProvider?: JsonRpcSigner | JsonRpcProvider): Va
       address: getConfig().vaultContract,
       abi: VaultABI,
       signerOrProvider: getDefaultProvider(),
+      tempusAMMService: getTempusAMMService(),
     });
   }
 
@@ -23,6 +25,7 @@ const getVaultService = (signerOrProvider?: JsonRpcSigner | JsonRpcProvider): Va
       address: getConfig().vaultContract,
       abi: VaultABI,
       signerOrProvider: signerOrProvider,
+      tempusAMMService: getTempusAMMService(signerOrProvider),
     });
   }
 
