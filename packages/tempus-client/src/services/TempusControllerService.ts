@@ -15,7 +15,7 @@ type TempusControllerServiceParameters = {
 // TODO - Use event types from auto generated contract typings file when TypeChain plugin for Hardhat adds them.
 // See: https://github.com/ethereum-ts/TypeChain/issues/454
 export type DepositedEvent = TypedEvent<
-  [string, string, string, BigNumber, BigNumber, BigNumber, BigNumber] & {
+  [string, string, string, BigNumber, BigNumber, BigNumber, BigNumber, BigNumber] & {
     pool: string;
     depositor: string;
     recipient: string;
@@ -23,18 +23,20 @@ export type DepositedEvent = TypedEvent<
     backingTokenValue: BigNumber;
     shareAmounts: BigNumber;
     interestRate: BigNumber;
+    fee: BigNumber;
   }
 >;
 export type RedeemedEvent = TypedEvent<
-  [string, string, string, BigNumber, BigNumber, BigNumber, BigNumber, BigNumber, boolean] & {
+  [string, string, string, BigNumber, BigNumber, BigNumber, BigNumber, BigNumber, BigNumber, boolean] & {
     pool: string;
     redeemer: string;
     recipient: string;
     principalShareAmount: BigNumber;
     yieldShareAmount: BigNumber;
-    yieldBearingAmount: BigNumber;
+    yieldTokenAmount: BigNumber;
     backingTokenValue: BigNumber;
     interestRate: BigNumber;
+    fee: BigNumber;
     isEarlyRedeem: boolean;
   }
 >;

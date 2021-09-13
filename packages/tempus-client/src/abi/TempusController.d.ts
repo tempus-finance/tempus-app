@@ -129,9 +129,9 @@ interface TempusControllerInterface extends ethers.utils.Interface {
   ): Result;
 
   events: {
-    "Deposited(address,address,address,uint256,uint256,uint256,uint256)": EventFragment;
+    "Deposited(address,address,address,uint256,uint256,uint256,uint256,uint256)": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
-    "Redeemed(address,address,address,uint256,uint256,uint256,uint256,uint256,bool)": EventFragment;
+    "Redeemed(address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bool)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "Deposited"): EventFragment;
@@ -432,9 +432,19 @@ export class TempusController extends BaseContract {
       yieldTokenAmount?: null,
       backingTokenValue?: null,
       shareAmounts?: null,
-      interestRate?: null
+      interestRate?: null,
+      fee?: null
     ): TypedEventFilter<
-      [string, string, string, BigNumber, BigNumber, BigNumber, BigNumber],
+      [
+        string,
+        string,
+        string,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber
+      ],
       {
         pool: string;
         depositor: string;
@@ -443,6 +453,7 @@ export class TempusController extends BaseContract {
         backingTokenValue: BigNumber;
         shareAmounts: BigNumber;
         interestRate: BigNumber;
+        fee: BigNumber;
       }
     >;
 
@@ -460,15 +471,17 @@ export class TempusController extends BaseContract {
       recipient?: string | null,
       principalShareAmount?: null,
       yieldShareAmount?: null,
-      yieldBearingAmount?: null,
+      yieldTokenAmount?: null,
       backingTokenValue?: null,
       interestRate?: null,
+      fee?: null,
       isEarlyRedeem?: null
     ): TypedEventFilter<
       [
         string,
         string,
         string,
+        BigNumber,
         BigNumber,
         BigNumber,
         BigNumber,
@@ -482,9 +495,10 @@ export class TempusController extends BaseContract {
         recipient: string;
         principalShareAmount: BigNumber;
         yieldShareAmount: BigNumber;
-        yieldBearingAmount: BigNumber;
+        yieldTokenAmount: BigNumber;
         backingTokenValue: BigNumber;
         interestRate: BigNumber;
+        fee: BigNumber;
         isEarlyRedeem: boolean;
       }
     >;
