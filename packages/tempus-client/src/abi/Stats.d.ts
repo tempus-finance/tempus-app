@@ -20,11 +20,21 @@ import { TypedEventFilter, TypedEvent, TypedListener } from "./commons";
 
 interface StatsInterface extends ethers.utils.Interface {
   functions: {
+    "estimatedMintedShares(address,uint256,bool)": FunctionFragment;
+    "estimatedRedeem(address,uint256,uint256,bool)": FunctionFragment;
     "getRate(bytes32)": FunctionFragment;
     "totalValueLockedAtGivenRate(address,bytes32)": FunctionFragment;
     "totalValueLockedInBackingTokens(address)": FunctionFragment;
   };
 
+  encodeFunctionData(
+    functionFragment: "estimatedMintedShares",
+    values: [string, BigNumberish, boolean]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "estimatedRedeem",
+    values: [string, BigNumberish, BigNumberish, boolean]
+  ): string;
   encodeFunctionData(functionFragment: "getRate", values: [BytesLike]): string;
   encodeFunctionData(
     functionFragment: "totalValueLockedAtGivenRate",
@@ -35,6 +45,14 @@ interface StatsInterface extends ethers.utils.Interface {
     values: [string]
   ): string;
 
+  decodeFunctionResult(
+    functionFragment: "estimatedMintedShares",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "estimatedRedeem",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "getRate", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "totalValueLockedAtGivenRate",
@@ -92,6 +110,21 @@ export class Stats extends BaseContract {
   interface: StatsInterface;
 
   functions: {
+    estimatedMintedShares(
+      pool: string,
+      amount: BigNumberish,
+      isBackingToken: boolean,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
+    estimatedRedeem(
+      pool: string,
+      principals: BigNumberish,
+      yields: BigNumberish,
+      toBackingToken: boolean,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
     getRate(
       chainlinkAggregatorNodeHash: BytesLike,
       overrides?: CallOverrides
@@ -110,6 +143,21 @@ export class Stats extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
   };
+
+  estimatedMintedShares(
+    pool: string,
+    amount: BigNumberish,
+    isBackingToken: boolean,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  estimatedRedeem(
+    pool: string,
+    principals: BigNumberish,
+    yields: BigNumberish,
+    toBackingToken: boolean,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
 
   getRate(
     chainlinkAggregatorNodeHash: BytesLike,
@@ -130,6 +178,21 @@ export class Stats extends BaseContract {
   ): Promise<BigNumber>;
 
   callStatic: {
+    estimatedMintedShares(
+      pool: string,
+      amount: BigNumberish,
+      isBackingToken: boolean,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    estimatedRedeem(
+      pool: string,
+      principals: BigNumberish,
+      yields: BigNumberish,
+      toBackingToken: boolean,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     getRate(
       chainlinkAggregatorNodeHash: BytesLike,
       overrides?: CallOverrides
@@ -152,6 +215,21 @@ export class Stats extends BaseContract {
   filters: {};
 
   estimateGas: {
+    estimatedMintedShares(
+      pool: string,
+      amount: BigNumberish,
+      isBackingToken: boolean,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    estimatedRedeem(
+      pool: string,
+      principals: BigNumberish,
+      yields: BigNumberish,
+      toBackingToken: boolean,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     getRate(
       chainlinkAggregatorNodeHash: BytesLike,
       overrides?: CallOverrides
@@ -170,6 +248,21 @@ export class Stats extends BaseContract {
   };
 
   populateTransaction: {
+    estimatedMintedShares(
+      pool: string,
+      amount: BigNumberish,
+      isBackingToken: boolean,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    estimatedRedeem(
+      pool: string,
+      principals: BigNumberish,
+      yields: BigNumberish,
+      toBackingToken: boolean,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     getRate(
       chainlinkAggregatorNodeHash: BytesLike,
       overrides?: CallOverrides

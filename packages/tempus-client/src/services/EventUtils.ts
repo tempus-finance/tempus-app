@@ -8,14 +8,14 @@ import { SwapEvent } from './VaultService';
  * Type guard - Checks if provided event is of type DepositedEvent
  */
 export function isDepositEvent(event: DepositedEvent | RedeemedEvent | SwapEvent): event is DepositedEvent {
-  return 'yieldTokenAmount' in event.args;
+  return 'depositor' in event.args;
 }
 
 /**
  * Type guard - Checks if provided event is of type RedeemedEvent
  */
 export function isRedeemEvent(event: DepositedEvent | RedeemedEvent | SwapEvent): event is RedeemedEvent {
-  return 'yieldBearingAmount' in event.args;
+  return 'redeemer' in event.args;
 }
 
 /**

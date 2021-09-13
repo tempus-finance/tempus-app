@@ -84,6 +84,11 @@
       },
       {
         "internalType": "uint256",
+        "name": "fee",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
         "name": "rate",
         "type": "uint256"
       }
@@ -118,11 +123,69 @@
       },
       {
         "internalType": "uint256",
+        "name": "fee",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
         "name": "rate",
         "type": "uint256"
       }
     ],
     "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bool",
+        "name": "isBackingToken",
+        "type": "bool"
+      }
+    ],
+    "name": "estimatedMintedShares",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "principals",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "yields",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bool",
+        "name": "toBackingToken",
+        "type": "bool"
+      }
+    ],
+    "name": "estimatedRedeem",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -385,6 +448,11 @@
       },
       {
         "internalType": "uint256",
+        "name": "fee",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
         "name": "rate",
         "type": "uint256"
       }
@@ -425,6 +493,11 @@
       {
         "internalType": "uint256",
         "name": "redeemedBackingTokens",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "fee",
         "type": "uint256"
       },
       {
@@ -505,11 +578,6 @@
         "internalType": "address",
         "name": "recipient",
         "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
       }
     ],
     "name": "transferFees",

@@ -43,6 +43,12 @@
         "internalType": "uint256",
         "name": "interestRate",
         "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "fee",
+        "type": "uint256"
       }
     ],
     "name": "Deposited",
@@ -103,7 +109,7 @@
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "yieldBearingAmount",
+        "name": "yieldTokenAmount",
         "type": "uint256"
       },
       {
@@ -116,6 +122,12 @@
         "indexed": false,
         "internalType": "uint256",
         "name": "interestRate",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "fee",
         "type": "uint256"
       },
       {
