@@ -39,6 +39,10 @@ describe('VaultService', () => {
       };
     });
 
+    const mockGetTempusAMMService = jest.fn().mockReturnValue({
+      poolId: jest.fn().mockReturnValue('test-pool-id'),
+    });
+
     getDefaultProvider.mockImplementation(() => {
       return {
         getBlock: mockGetBlock,
@@ -50,6 +54,7 @@ describe('VaultService', () => {
       abi: VaultABI,
       address: vaultAddress,
       signerOrProvider: getDefaultProvider(),
+      tempusAMMService: mockGetTempusAMMService(),
     });
   });
 
