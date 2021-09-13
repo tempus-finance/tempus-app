@@ -10,7 +10,7 @@ type HeaderInProps = {
 };
 
 type HeaderOutProps = {
-  onDashboardClick: () => void;
+  onDashboardClick?: () => void;
   onLogoClick: () => void;
 };
 
@@ -19,7 +19,9 @@ type HeaderProps = HeaderInProps & HeaderOutProps;
 const Header: FC<HeaderProps> = ({ active, onDashboardClick, onLogoClick }): JSX.Element => {
   return (
     <div className="tf__header__container">
-      <TempusLogo onClick={onLogoClick} />
+      <div className="tf__logo">
+        <TempusLogo onClick={onLogoClick} />
+      </div>
       <div className="tf__header__actions">
         <Button
           title="Dashboard"
@@ -30,6 +32,16 @@ const Header: FC<HeaderProps> = ({ active, onDashboardClick, onLogoClick }): JSX
           onClick={onDashboardClick}
         >
           DASHBOARD
+        </Button>
+        <Button
+          title="Dashboard"
+          color="secondary"
+          size="small"
+          className="tf__header__action tf__header__action-dashboard"
+          disabled={active === 'PORTFOLIO'}
+          onClick={() => null}
+        >
+          PORTFOLIO
         </Button>
         <WalletConnect />
       </div>

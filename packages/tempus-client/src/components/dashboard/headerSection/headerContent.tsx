@@ -17,14 +17,18 @@ interface ContentProps extends TableHeaderRow.ContentProps {
 
 const HeaderContent: FC<ContentProps> = props => {
   return (
-    <TableHeaderRow.Content column={props.column} align="right">
-      {props.children}
-      {props.column.tooltip && (
-        <Tooltip title={props.column.tooltip}>
-          <IconButton size="small">
-            <InfoOutlined />
-          </IconButton>
-        </Tooltip>
+    <TableHeaderRow.Content column={props.column} align="left">
+      {props.column.tooltip ? (
+        <>
+          {props.children}
+          <Tooltip title={props.column.tooltip}>
+            <IconButton size="small">
+              <InfoOutlined />
+            </IconButton>
+          </Tooltip>
+        </>
+      ) : (
+        props.children
       )}
     </TableHeaderRow.Content>
   );

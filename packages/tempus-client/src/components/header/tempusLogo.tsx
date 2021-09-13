@@ -6,7 +6,7 @@ type TempusLogoProps = {
 
 const TempusLogo: FC<TempusLogoProps> = ({ onClick }): JSX.Element => {
   return (
-    <svg width={150} viewBox="0 0 180 50" className="tf__logo" onClick={onClick}>
+    <svg width={150} viewBox="0 0 180 50" onClick={onClick}>
       <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
         <g id="tf-tempus-logo" transform="translate(5 5)" fill="#ffffff" fillRule="nonzero">
           <path

@@ -13,7 +13,7 @@ const theme = createTheme({
     type: 'dark',
     primary: {
       main: '#066d59',
-      dark: '#066d59',
+      dark: '#065d4c',
       light: 'ffdf99',
       contrastText: '#ffffff',
     },
@@ -23,7 +23,7 @@ const theme = createTheme({
     },
   },
   typography: {
-    fontFamily: 'Aeonik, sans-serif',
+    fontFamily: 'Roboto, sans-serif',
   },
   overrides: {
     MuiSelect: {

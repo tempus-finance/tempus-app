@@ -20,7 +20,7 @@ export const dashboardColumnsDefinitions: ExtraDataColumn[] = [
 
   {
     name: 'fixedAPR',
-    title: 'Fixed APR',
+    title: `Fixed APR`,
     tooltip: fixedAPRTooltipText,
     getCellValue: (row: any) => {
       if (row.fixedAPR.length === 2) {
@@ -57,14 +57,14 @@ export const dashboardColumnsDefinitions: ExtraDataColumn[] = [
   },
   {
     name: 'TVL',
-    title: 'TVL',
+    title: 'TVL ($)',
     getCellValue: (row: any) => {
       return row.TVL;
     },
   },
   {
     name: 'presentValue',
-    title: 'Present Value',
+    title: 'Balance ($)',
     getCellValue: (row: any) => {
       if (row.presentValue !== 0 && !row.presentValue) {
         return '-';
@@ -80,7 +80,7 @@ export const dashboardColumnsDefinitions: ExtraDataColumn[] = [
   },
   {
     name: 'availableToDeposit',
-    title: 'Avail to Deposit',
+    title: 'Available to Deposit',
     getCellValue: (row: DashboardRowParent | DashboardRowChild) => {
       // Parent row
       if ('availableToDeposit' in row) {

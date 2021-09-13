@@ -10,7 +10,14 @@
 }
 
 .tf__logo {
+  width: 182px;
+  height: 67px;
+  margin-top: 7px;
   cursor: pointer;
+
+  > svg {
+    width: 100%;
+  }
 
   &:hover {
     #tf__tempus-logo {
@@ -32,10 +39,15 @@
 }
 
 button.tf__header__action {
-  margin-right: 20px;
+  margin-right: 50px;
   cursor: pointer;
   border-bottom: 1px solid transparent;
   color: white;
+
+  > span {
+    font-size: 20px;
+    font-weight: 500;
+  }
 
   &:disabled {
     color: $secondary-darker;
@@ -53,5 +65,14 @@ button.tf__header__action {
     &:hover {
       background-color: $primary-light;
     }
+  }
+}
+
+span.tf__header__action {
+  font-size: 20px;
+  font-weight: 500;
+
+  > svg {
+    margin-right: 11px;
   }
 }
