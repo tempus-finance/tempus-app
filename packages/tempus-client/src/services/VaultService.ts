@@ -4,13 +4,16 @@ import { Vault } from '../abi/Vault';
 import VaultABI from '../abi/Vault.json';
 import { TypedEvent } from '../abi/commons';
 import getDefaultProvider from './getDefaultProvider';
+import TempusAMMService from './TempusAMMService';
 import { SECONDS_IN_AN_HOUR } from '../constants';
+import getConfig from '../utils/get-config';
 
 type VaultServiceParameters = {
   Contract: typeof Contract;
   address: string;
   abi: typeof VaultABI;
   signerOrProvider: JsonRpcProvider | JsonRpcSigner;
+  tempusAMMService: TempusAMMService;
 };
 
 // I need to define event types like this, because TypeChain plugin for Hardhat does not generate them.
@@ -38,18 +41,45 @@ export enum SwapKind {
 class VaultService {
   private contract: Vault | null = null;
 
+  private tempusAMMService: TempusAMMService | null = null;
+
   public init(params: VaultServiceParameters) {
     this.contract = new Contract(params.address, params.abi, params.signerOrProvider) as Vault;
+
+    this.tempusAMMService = params.tempusAMMService;
   }
 
   public async getSwapEvents(): Promise<SwapEvent[]> {
-    if (!this.contract) {
+    if (!this.contract || !this.tempusAMMService) {
       console.error('VaultService - getSwapEvents() - Attempted to use VaultService before initializing it!');
       return Promise.reject();
     }
 
+    let poolIDs: string[] = [];
     try {
-      return await this.contract.queryFilter(this.contract.filters.Swap());
+      const fetchPoolIdPromises: Promise<string>[] = [];
+      getConfig().tempusPools.forEach(tempusPool => {
+        if (!this.tempusAMMService) {
+          throw new Error('VaultService - getSwapEvents() - Attempted to use VaultService before initializing it!');
+        }
+        fetchPoolIdPromises.push(this.tempusAMMService.poolId(tempusPool.ammAddress));
+      });
+      poolIDs = await Promise.all(fetchPoolIdPromises);
+    } catch (error) {
+      console.error('VaultService - getSwapEvents() - Failed to get IDs for tempus pools!', error);
+      return Promise.reject(error);
+    }
+
+    try {
+      const fetchSwapEventPromises: Promise<SwapEvent[]>[] = [];
+      poolIDs.forEach(poolID => {
+        if (!this.contract) {
+          throw new Error('VaultService - getSwapEvents() - Attempted to use VaultService before initializing it!');
+        }
+
+        fetchSwapEventPromises.push(this.contract.queryFilter(this.contract.filters.Swap(poolID)));
+      });
+      return (await Promise.all(fetchSwapEventPromises)).flat();
     } catch (error) {
       console.error(`VaultService - getSwapEvents() - Failed to get swap events!`, error);
       return Promise.reject(error);
