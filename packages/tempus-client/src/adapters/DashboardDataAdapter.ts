@@ -13,8 +13,8 @@ import StatisticsService from '../services/StatisticsService';
 import TempusPoolService from '../services/TempusPoolService';
 import getERC20TokenService from '../services/getERC20TokenService';
 import getConfig from '../utils/get-config';
-import TempusAMMService from '../services/TempusAMMService';
 import { mul18f } from '../utils/wei-math';
+import TempusAMMService from '../services/TempusAMMService';
 
 type DashboardDataAdapterParameters = {
   signerOrProvider: JsonRpcProvider | JsonRpcSigner;

@@ -83,10 +83,7 @@ class StatisticsService {
       return Promise.reject(error);
     }
 
-    const rateInEth = ethers.utils.parseUnits(rate.toString(), 'ether');
-    const rateDenominatorInEth = ethers.utils.parseUnits(rateDenominator.toString(), 'ether');
-
-    return ethers.utils.parseEther(rateInEth.div(rateDenominatorInEth).toString());
+    return ethers.utils.parseEther(rate.div(rateDenominator).toString());
   }
 }
 
