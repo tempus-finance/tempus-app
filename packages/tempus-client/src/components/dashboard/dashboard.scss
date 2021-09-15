@@ -51,24 +51,24 @@ $padding: 20px;
   margin-bottom: 2px;
 
   .tf__dashboard__header__title {
-    font-size: 18px;
-    font-weight: bold;
+    @include dashboard-title;
   }
 
   .tf__dashboard__header__actions {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    font-weight: 500px;
-    font-size: 16px;
 
     > div {
       display: flex;
       align-items: center;
       margin-left: 20px;
+      cursor: pointer;
+      @include dashboard-header-cell;
 
       > svg {
         margin-left: 10px;
+        cursor: pointer;
       }
     }
   }
@@ -105,7 +105,7 @@ $padding: 20px;
 
     tbody {
       > tr {
-        height: 100px;
+        height: 80px;
         padding: 10px 0;
       }
     }
@@ -163,17 +163,7 @@ $padding: 20px;
         padding-left: 0;
         padding-right: 0;
         padding-bottom: 3px;
-        font-size: 16px;
-        font-weight: 500;
-        text-align: left;
-
-        &:first-child {
-          padding-left: 48px;
-        }
-
-        &:last-child {
-          padding-right: 10px;
-        }
+        @include dashboard-header-cell;
 
         &.tf__dashboard__header__token button[class*='TableTreeExpandButtonBase-button'] {
           padding-right: 0;
@@ -183,8 +173,8 @@ $padding: 20px;
         button.MuiIconButton-root {
           > span {
             > svg {
-              width: 14px;
-              height: 14px;
+              width: 20px;
+              height: 20px;
               fill: $offwhite;
             }
           }
@@ -197,6 +187,31 @@ $padding: 20px;
         .MuiTableSortLabel-root.MuiTableSortLabel-active.MuiTableSortLabel-root.MuiTableSortLabel-active
           .MuiTableSortLabel-icon {
           color: $secondary;
+        }
+      }
+
+      .tf__dashboard__header__maturity {
+        text-align: right;
+      }
+
+      .tf__dashboard__header__fixedAPR {
+        div {
+          width: auto;
+          margin-left: auto;
+        }
+      }
+
+      .tf__dashboard__header__variableAPY {
+        div {
+          width: auto;
+          margin-left: auto;
+        }
+      }
+
+      .tf__dashboard__header__presentValue {
+        div {
+          width: auto;
+          margin-left: auto;
         }
       }
     }
@@ -220,33 +235,29 @@ $padding: 20px;
     .tf__dashboard__body__apy {
       display: flex;
       flex-direction: row;
-      justify-content: flex-start;
+      justify-content: flex-end;
       padding: 3px 0 3px;
-      align-items: center;
+      align-items: flex-end;
 
       .tf__dashboard__body__apy-value {
         display: flex;
         align-items: flex-end;
         justify-content: flex-end;
+        @include dashboard-cell-text;
       }
     }
 
     .tf__dashboard__trade-button {
       display: flex;
-      justify-content: flex-end;
-      width: 87%;
-      padding: 0;
-
-      .MuiButton-containedSizeSmall {
-        padding: 2px 8px;
-      }
+      justify-content: center;
+      width: 100%;
 
       .MuiButton-root {
         color: white;
-
-        &:hover {
-          color: $secondary;
-        }
+        padding: 10px 15px 10px 15px;
+        text-transform: none;
+        background-color: $primary-darker;
+        @include dashboard-header-cell;
       }
     }
 
@@ -262,6 +273,14 @@ $padding: 20px;
         margin-right: 5px;
         font-size: 16px;
       }
+    }
+
+    .tf__dashboard__parent-toggle-icon {
+      width: 30px;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: flex-start;
     }
   }
 }

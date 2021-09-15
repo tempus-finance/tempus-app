@@ -224,8 +224,8 @@ class TempusPoolService {
 
   public async numAssetsPerYieldToken(
     address: string,
-    yieldTokenAmount: number,
-    interestRate: number,
+    yieldTokenAmount: BigNumber,
+    interestRate: BigNumber,
   ): Promise<BigNumber> {
     const tempusPool = this.tempusPoolsMap[address];
 
@@ -242,6 +242,19 @@ class TempusPoolService {
     }
 
     throw new Error(`Address '${address}' is not valid`);
+  }
+
+  public async currentInterestRate(address: string): Promise<BigNumber> {
+    const contract = this.tempusPoolsMap[address];
+    if (contract) {
+      try {
+        return await contract.currentInterestRate();
+      } catch (error) {
+        console.error('TempusPoolService - currentInterestRate() - Failed to fetch interest rate!', error);
+        return Promise.reject(error);
+      }
+    }
+    throw new Error(`TempusPoolService - currentInterestRate() - Address '${address}' is not valid`);
   }
 }
 

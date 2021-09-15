@@ -6,27 +6,42 @@ import { Table } from '@devexpress/dx-react-grid';
 import { VirtualTable } from '@devexpress/dx-react-grid-material-ui';
 
 // Interfaces
-import { Ticker } from '../../../interfaces';
+import { ProtocolName, Ticker } from '../../../interfaces';
 
 // Style
 import './protocolCell.scss';
+import TokenIcon from '../../tokenIcon';
 
 const ProtocolCell: FC<Table.DataCellProps> = props => {
-  const ticker = props.value;
+  const isParent: boolean = !props.row.parentId;
+  const protocol: ProtocolName = props.row.protocol;
+
   return (
     <VirtualTable.Cell {...props}>
-      {ticker && <span className="tf__dashboard__body__protocol_label">{getProtocolFromTicker(ticker)}</span>}
+      {isParent &&
+        props.row.protocols.map((protocol: ProtocolName) => {
+          return (
+            <div className="tf__dashboard__body__protocol-icon-align">
+              <TokenIcon ticker={getTickerFromProtocol(protocol)} />
+            </div>
+          );
+        })}
+      {!isParent && (
+        <div className="tf__dashboard__body__protocol_container">
+          <TokenIcon ticker={getTickerFromProtocol(protocol)} />
+          <span className="tf__dashboard__body__protocol_label">{protocol}</span>
+        </div>
+      )}
     </VirtualTable.Cell>
   );
 };
 
 export default ProtocolCell;
 
-// TODO implement a map between Ticker and Protocol
-const getProtocolFromTicker = (ticker: Ticker) => {
-  if (ticker === 'COMP') {
-    return 'compound';
+const getTickerFromProtocol = (protocol: ProtocolName): Ticker => {
+  if (protocol === 'compound') {
+    return 'COMP';
   }
 
-  return ticker.toLocaleLowerCase();
+  return protocol.toUpperCase() as Ticker;
 };

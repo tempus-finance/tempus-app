@@ -1,7 +1,8 @@
 import { Column } from '@devexpress/dx-react-grid';
+import { ethers } from 'ethers';
 
 import { fixedAPRTooltipText, variableAPYTooltipText } from '../../constants';
-import { DashboardRowChild, DashboardRowParent } from '../../interfaces';
+import { DashboardRow, DashboardRowChild, DashboardRowParent } from '../../interfaces';
 import NumberUtils from '../../services/NumberUtils';
 
 export interface ExtraDataColumn extends Column {
@@ -57,25 +58,21 @@ export const dashboardColumnsDefinitions: ExtraDataColumn[] = [
   },
   {
     name: 'TVL',
-    title: 'TVL ($)',
+    title: 'TVL',
     getCellValue: (row: any) => {
       return row.TVL;
     },
   },
   {
     name: 'presentValue',
-    title: 'Balance ($)',
-    getCellValue: (row: any) => {
-      if (row.presentValue !== 0 && !row.presentValue) {
+    title: 'Balance',
+    tooltip: 'Waiting for text...',
+    getCellValue: (row: DashboardRow) => {
+      if (!row.presentValue) {
         return '-';
       }
 
-      return new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: 'USD',
-        maximumFractionDigits: 2,
-        minimumFractionDigits: 0,
-      }).format(row.presentValue);
+      return `$${NumberUtils.formatWithMultiplier(Number(ethers.utils.formatEther(row.presentValue)), 2)}`;
     },
   },
   {
@@ -83,11 +80,17 @@ export const dashboardColumnsDefinitions: ExtraDataColumn[] = [
     title: 'Available to Deposit',
     getCellValue: (row: DashboardRowParent | DashboardRowChild) => {
       // Parent row
-      if ('availableToDeposit' in row) {
-        if (row.availableToDeposit === undefined) {
+      if ('protocols' in row) {
+        if (row.availableUSDToDeposit === undefined) {
           return '-';
         }
-        return row.availableToDeposit ? 'Yes' : 'No';
+
+        return new Intl.NumberFormat('en-US', {
+          style: 'currency',
+          currency: 'USD',
+          maximumFractionDigits: 2,
+          minimumFractionDigits: 0,
+        }).format(row.availableUSDToDeposit.toBigInt());
       }
       // Child row
       else {
@@ -95,12 +98,14 @@ export const dashboardColumnsDefinitions: ExtraDataColumn[] = [
           return '-';
         }
         return (
-          `${NumberUtils.formatWithMultiplier(row.availableTokensToDeposit.backingToken, 2)} ${
-            row.availableTokensToDeposit.backingTokenTicker
-          } / ` +
-          `${NumberUtils.formatWithMultiplier(row.availableTokensToDeposit.yieldBearingToken, 2)} ${
-            row.availableTokensToDeposit.yieldBearingTokenTicker
-          }`
+          `${NumberUtils.formatWithMultiplier(
+            Number(ethers.utils.formatEther(row.availableTokensToDeposit.backingToken)),
+            2,
+          )} ${row.availableTokensToDeposit.backingTokenTicker} / ` +
+          `${NumberUtils.formatWithMultiplier(
+            Number(ethers.utils.formatEther(row.availableTokensToDeposit.yieldBearingToken)),
+            2,
+          )} ${row.availableTokensToDeposit.yieldBearingTokenTicker}`
         );
       }
     },

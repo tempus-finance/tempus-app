@@ -11,6 +11,7 @@ $primary-light: lighten($primary, 5%);
 $primary-dim: #237162;
 $primary-dark: #065d4c;
 $primary-darker: #034135;
+$primary-popup: #077c66;
 
 // Secondary
 $secondary: #ffdf99;
@@ -48,3 +49,29 @@ $grid-template-columns: 196px;
 $column-gap: 0;
 
 $sidebar-margin-top: $grid-template-rows + $row-gap;
+
+// Typography - Not yet finalized by designer
+@mixin header-action {
+  font-size: 20px;
+  font-weight: 500;
+  font-style: normal;
+  line-height: 23px;
+}
+@mixin dashboard-title {
+  font-size: 18px;
+  font-weight: 700;
+  font-style: normal;
+  line-height: 21px;
+}
+@mixin dashboard-header-cell {
+  font-size: 16px;
+  font-weight: 500;
+  font-style: normal;
+  line-height: 18px;
+}
+@mixin dashboard-cell-text {
+  font-size: 16px;
+  font-weight: 400;
+  font-style: normal;
+  line-height: 18px;
+}
