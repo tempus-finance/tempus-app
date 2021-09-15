@@ -126,7 +126,7 @@ export default class DashboardDataAdapter {
           yieldBearingToken: availableToDeposit.yieldBearingToken,
           yieldBearingTokenTicker,
         },
-        availableToDepositInUSD,
+        availableUSDToDeposit: availableToDepositInUSD,
       };
     } catch (error) {
       console.error('DashboardDataAdapter - getChildRowData() - Failed to get data for child row!', error);
@@ -162,14 +162,14 @@ export default class DashboardDataAdapter {
         const processedTokens: Ticker[] = [];
         let availableToDepositInUSD = BigNumber.from('0');
         parentChildren.forEach(child => {
-          if (child.availableToDepositInUSD) {
-            if (processedTokens.indexOf(child.availableToDepositInUSD.backingTokenTicker) === -1) {
-              availableToDepositInUSD = availableToDepositInUSD.add(child.availableToDepositInUSD.backingToken);
-              processedTokens.push(child.availableToDepositInUSD.backingTokenTicker);
+          if (child.availableUSDToDeposit) {
+            if (processedTokens.indexOf(child.availableUSDToDeposit.backingTokenTicker) === -1) {
+              availableToDepositInUSD = availableToDepositInUSD.add(child.availableUSDToDeposit.backingToken);
+              processedTokens.push(child.availableUSDToDeposit.backingTokenTicker);
             }
-            if (processedTokens.indexOf(child.availableToDepositInUSD.yieldBearingTokenTicker) === -1) {
-              availableToDepositInUSD = availableToDepositInUSD.add(child.availableToDepositInUSD.yieldBearingToken);
-              processedTokens.push(child.availableToDepositInUSD.yieldBearingTokenTicker);
+            if (processedTokens.indexOf(child.availableUSDToDeposit.yieldBearingTokenTicker) === -1) {
+              availableToDepositInUSD = availableToDepositInUSD.add(child.availableUSDToDeposit.yieldBearingToken);
+              processedTokens.push(child.availableUSDToDeposit.yieldBearingTokenTicker);
             }
           }
         });
@@ -183,7 +183,7 @@ export default class DashboardDataAdapter {
           variableAPY: this.getRangeFrom<number>(childrenVariable),
           TVL: parentTVL,
           presentValue: this.userWalletAddress ? parentPresentValue : undefined,
-          availableToDeposit: availableToDepositInUSD,
+          availableUSDToDeposit: availableToDepositInUSD,
           protocols: Array.from(new Set(childrenProtocols)), // Converting list of protocols to set removes duplicate items
         };
 

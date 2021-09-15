@@ -1,4 +1,4 @@
-import { BigNumber } from '@ethersproject/bignumber';
+import { BigNumber } from 'ethers';
 import { Ticker } from './Token';
 import { ProtocolName } from '.';
 
@@ -14,7 +14,7 @@ export interface DashboardRowParent extends DashboardRow {
   maturityRange: Date[];
   fixedAPR: number[];
   variableAPY: number[];
-  availableToDeposit: BigNumber | undefined;
+  availableUSDToDeposit: BigNumber | undefined;
   protocols: ProtocolName[];
 }
 
@@ -27,7 +27,7 @@ export interface DashboardRowChild extends DashboardRow {
   fixedAPR: number;
   variableAPY: number;
   availableTokensToDeposit: AvailableToDeposit | undefined;
-  availableToDepositInUSD: AvailableToDeposit | undefined;
+  availableUSDToDeposit: AvailableToDeposit | undefined;
 }
 
 export interface AvailableToDeposit {

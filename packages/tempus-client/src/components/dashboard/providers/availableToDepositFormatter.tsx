@@ -8,9 +8,12 @@ import './availableToDepositFormatter.scss';
 const AvailableToDepositFormatter = (props: DataTypeProvider.ValueFormatterProps) => {
   const row = props.row as DashboardRow;
 
-  if (isParentRow(row) && row.availableToDeposit) {
+  if (isParentRow(row) && row.availableUSDToDeposit) {
     return (
-      <div>{`$${NumberUtils.formatWithMultiplier(Number(ethers.utils.formatEther(row.availableToDeposit)), 2)}`}</div>
+      <div>{`$${NumberUtils.formatWithMultiplier(
+        Number(ethers.utils.formatEther(row.availableUSDToDeposit)),
+        2,
+      )}`}</div>
     );
   }
 

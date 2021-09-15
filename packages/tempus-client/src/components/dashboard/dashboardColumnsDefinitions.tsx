@@ -80,8 +80,8 @@ export const dashboardColumnsDefinitions: ExtraDataColumn[] = [
     title: 'Available to Deposit',
     getCellValue: (row: DashboardRowParent | DashboardRowChild) => {
       // Parent row
-      if ('availableToDeposit' in row) {
-        if (row.availableToDeposit === undefined) {
+      if ('protocols' in row) {
+        if (row.availableUSDToDeposit === undefined) {
           return '-';
         }
 
@@ -90,7 +90,7 @@ export const dashboardColumnsDefinitions: ExtraDataColumn[] = [
           currency: 'USD',
           maximumFractionDigits: 2,
           minimumFractionDigits: 0,
-        }).format(row.availableToDeposit.toBigInt());
+        }).format(row.availableUSDToDeposit.toBigInt());
       }
       // Child row
       else {
