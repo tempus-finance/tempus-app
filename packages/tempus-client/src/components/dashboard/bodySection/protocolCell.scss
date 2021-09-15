@@ -1,3 +1,16 @@
 .tf__dashboard__body__protocol_label {
   text-transform: capitalize;
 }
+
+.tf__dashboard__body__protocol_container {
+  display: flex;
+  align-items: center;
+
+  span {
+    padding-left: 10px;
+  }
+}
+
+.tf__dashboard__body__protocol-icon-align {
+  padding-top: 6px;
+}

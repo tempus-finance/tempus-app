@@ -4,6 +4,7 @@ import ERC20TokenService from '../services/ERC20TokenService';
 import StatisticsService from '../services/StatisticsService';
 import TempusControllerService from '../services/TempusControllerService';
 import TempusPoolService from '../services/TempusPoolService';
+import { mul18f } from '../utils/wei-math';
 
 type PoolDataAdapterParameters = {
   tempusControllerAddress: string;
@@ -42,9 +43,9 @@ export default class PoolDataAdapter {
   ): Promise<
     | {
         backingTokenBalance: BigNumber;
-        backingTokenRate: number;
+        backingTokenRate: BigNumber;
         yieldBearingTokenBalance: BigNumber;
-        yieldBearingTokenRate: number;
+        yieldBearingTokenRate: BigNumber;
       }
     | undefined
   > {
@@ -60,7 +61,11 @@ export default class PoolDataAdapter {
           this.tempusPoolService.getYieldBearingTokenAddress(tempusPoolAddress),
           this.tempusPoolService.getBackingTokenTicker(tempusPoolAddress),
           // TODO - Fetch interest rate from contract instead of hardcoded value=1
-          this.tempusPoolService.numAssetsPerYieldToken(tempusPoolAddress, 1, 1),
+          this.tempusPoolService.numAssetsPerYieldToken(
+            tempusPoolAddress,
+            ethers.utils.parseEther('1'),
+            ethers.utils.parseEther('1'),
+          ),
         ]);
 
       const backingTokenService = this.eRC20TokenServiceGetter(backingTokenAddress, signer);
@@ -72,7 +77,7 @@ export default class PoolDataAdapter {
         this.statisticService.getRate(backingTokenTicker),
       ]);
 
-      const yieldBearingTokenRate = Number(yieldBearingTokenConversionRate.toString()) * backingTokenRate;
+      const yieldBearingTokenRate = mul18f(yieldBearingTokenConversionRate, backingTokenRate);
 
       return {
         backingTokenBalance,

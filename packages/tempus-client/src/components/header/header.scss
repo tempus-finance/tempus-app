@@ -1,53 +1,45 @@
 @import '../../constants.scss';
 
 .tf__header__container {
-  grid-area: header;
   width: 100%;
-  height: 100%;
+  height: 64px;
+  margin-top: 8px;
+  margin-bottom: 8px;
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
 .tf__logo {
-  width: 182px;
-  height: 67px;
-  margin-top: 7px;
+  display: flex;
+  align-items: center;
+  height: 100%;
   cursor: pointer;
-
-  > svg {
-    width: 100%;
-  }
-
-  &:hover {
-    #tf__tempus-logo {
-      fill: $secondary;
-    }
-  }
 }
 
 .tf__header__actions {
   display: flex;
   height: 100%;
   align-items: center;
+
+  .MuiButton-root {
+    text-transform: none;
+  }
+
+  span {
+    @include header-action;
+  }
 }
 
 .tf__header__action-account {
   display: inline-flex;
   align-items: center;
-  font-size: 13px;
 }
 
 button.tf__header__action {
   margin-right: 50px;
   cursor: pointer;
-  border-bottom: 1px solid transparent;
   color: white;
-
-  > span {
-    font-size: 20px;
-    font-weight: 500;
-  }
 
   &:disabled {
     color: $secondary-darker;
@@ -69,10 +61,7 @@ button.tf__header__action {
 }
 
 span.tf__header__action {
-  font-size: 20px;
-  font-weight: 500;
-
   > svg {
-    margin-right: 11px;
+    margin-right: 10px;
   }
 }

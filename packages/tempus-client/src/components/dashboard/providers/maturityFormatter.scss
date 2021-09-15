@@ -38,11 +38,7 @@
     .tf__dashboard__grid__maturity-timeLeft {
       display: flex;
       width: 100%;
-      justify-content: space-between;
-
-      @media (max-width: $breakpoint-lg) {
-        justify-content: flex-end;
-      }
+      justify-content: flex-end;
     }
   }
 }

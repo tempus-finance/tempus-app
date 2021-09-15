@@ -1,4 +1,4 @@
-import { BigNumber, ethers } from 'ethers';
+import { BigNumber } from 'ethers';
 import format from 'date-fns/format';
 import { formatDistanceToNow } from 'date-fns';
 import { v1 as uuid } from 'uuid';
@@ -22,6 +22,7 @@ import getVaultService from '../services/getVaultService';
 import getTempusAMMService from '../services/getTempusAMMService';
 import TempusAMMService from '../services/TempusAMMService';
 import { Ticker, Transaction, TransactionAction } from '../interfaces';
+import { mul18f } from '../utils/wei-math';
 
 type TransactionsDataAdapterParameters = {
   signerOrProvider: JsonRpcProvider | JsonRpcSigner;
@@ -174,7 +175,7 @@ class TransactionsDataAdapter {
     return new Date(eventBlock.timestamp * 1000);
   }
 
-  private async getEventUSDValue(event: DepositedEvent | RedeemedEvent | SwapEvent): Promise<number> {
+  private async getEventUSDValue(event: DepositedEvent | RedeemedEvent | SwapEvent): Promise<BigNumber> {
     if (!this.tempusPoolService || !this.statisticsService || !this.tempusAMMService) {
       console.error('Attempted to use TransactionsDataAdapter before initializing it!');
       return Promise.reject();
@@ -192,7 +193,7 @@ class TransactionsDataAdapter {
       return Promise.reject(error);
     }
 
-    let poolBackingTokenRate: number;
+    let poolBackingTokenRate: BigNumber;
     try {
       poolBackingTokenRate = await this.statisticsService.getRate(eventPoolBackingToken, {
         blockTag: event.blockNumber,
@@ -213,7 +214,7 @@ class TransactionsDataAdapter {
       return Promise.reject(error);
     }
 
-    return Number(ethers.utils.formatEther(eventBackingTokenValue)) * poolBackingTokenRate;
+    return mul18f(eventBackingTokenValue, poolBackingTokenRate);
   }
 
   private sortTransactions(transactions: Transaction[]): Transaction[] {

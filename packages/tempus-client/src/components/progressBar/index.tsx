@@ -7,12 +7,12 @@ type ProgressBarProps = {
 };
 
 const ProgressBar: FC<ProgressBarProps> = ({ value = 0 }) => {
-  const left = useMemo(() => `${value * 100}%`, [value]);
+  const width = useMemo(() => `${value * 100}%`, [value]);
 
   return (
     <div className="tf__progress-bar">
       <div className="tf__progress-bar__outer">
-        <div className="tf__progress-bar__inner" style={{ left: `${left}` }} />
+        <div className="tf__progress-bar__inner" style={{ width }} />
       </div>
     </div>
   );

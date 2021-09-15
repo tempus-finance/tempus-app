@@ -10,6 +10,7 @@ import TempusPoolService from '../services/TempusPoolService';
 import ChartDataPoint from '../interfaces/ChartDataPoint';
 
 import getConfig from '../utils/get-config';
+import { div18f, mul18f } from '../utils/wei-math';
 
 type TVLChartDataAdapterParameters = {
   signerOrProvider: JsonRpcProvider | JsonRpcSigner;
@@ -55,13 +56,21 @@ class TVLChartDataAdapter {
     }
 
     const chartData = tempusPoolsTvl.map((result, index) => {
-      const currentValue = Number(ethers.utils.formatEther(result));
-      const previousValue = index > 0 && Number(ethers.utils.formatEther(tempusPoolsTvl[index - 1]));
+      const currentValue = result;
+      const previousValue = index > 0 && tempusPoolsTvl[index - 1];
+
+      let valueIncrease = BigNumber.from('0');
+      if (previousValue && !previousValue.isZero()) {
+        const valueDiff = currentValue.sub(previousValue);
+        const valueRatio = div18f(valueDiff, previousValue);
+
+        valueIncrease = mul18f(valueRatio, ethers.utils.parseEther('100'));
+      }
 
       return {
-        value: Number(ethers.utils.formatEther(result)),
+        value: ethers.utils.formatEther(result),
         date: new Date(blocksToQuery[index].timestamp * 1000),
-        valueIncrease: previousValue ? ((currentValue - previousValue) / previousValue) * 100 : 0,
+        valueIncrease: ethers.utils.formatEther(valueIncrease),
       };
     });
 

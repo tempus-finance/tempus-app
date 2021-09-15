@@ -12,13 +12,14 @@ import getVaultService from '../services/getVaultService';
 import { getEventBackingTokenValue, getEventPoolAddress } from '../services/EventUtils';
 import TempusAMMService from '../services/TempusAMMService';
 import getTempusAMMService from '../services/getTempusAMMService';
+import { div18f, mul18f } from '../utils/wei-math';
 
 type VolumeChartDataAdapterParameters = {
   signerOrProvider: JsonRpcProvider | JsonRpcSigner;
 };
 
 interface EventChartData {
-  value: number;
+  value: BigNumber;
   date: Date;
 }
 
@@ -66,17 +67,25 @@ class VolumeChartDataAdapter {
   }
 
   private getChartDataPoint(dateFrom: Date, dateTo: Date, previous: ChartDataPoint): ChartDataPoint {
-    let value = 0;
+    let value = BigNumber.from('0');
     this.chartData.forEach(data => {
       if (data.date > dateFrom && data.date < dateTo) {
-        value += data.value;
+        value = value.add(data.value);
       }
     });
 
+    let valueIncrease = BigNumber.from('0');
+    if (previous && previous.value && !ethers.utils.parseEther(previous.value).isZero()) {
+      const valueDiff = value.sub(previous.value);
+      const valueRatio = div18f(valueDiff, ethers.utils.parseEther(previous.value));
+
+      valueIncrease = mul18f(valueRatio, ethers.utils.parseEther('100'));
+    }
+
     return {
-      value: value,
+      value: ethers.utils.formatEther(value),
       date: dateTo,
-      valueIncrease: previous && previous.value ? ((value - previous.value) / previous.value) * 100 : 0,
+      valueIncrease: ethers.utils.formatEther(valueIncrease),
     };
   }
 
@@ -176,7 +185,7 @@ class VolumeChartDataAdapter {
    */
   private async getEventChartData(event: DepositedEvent | RedeemedEvent | SwapEvent): Promise<EventChartData> {
     if (!this.tempusPoolService || !this.statisticsService || !this.tempusAMMService) {
-      console.error('Attempted to use VolumeChartDataAdapter before initalizing it!');
+      console.error('Attempted to use VolumeChartDataAdapter before initializing it!');
       return Promise.reject();
     }
 
@@ -191,7 +200,7 @@ class VolumeChartDataAdapter {
       return Promise.reject(error);
     }
 
-    let poolBackingTokenRate: number;
+    let poolBackingTokenRate: BigNumber;
     try {
       poolBackingTokenRate = await this.statisticsService.getRate(eventPoolBackingToken, {
         blockTag: eventBlock.number,
@@ -214,7 +223,7 @@ class VolumeChartDataAdapter {
 
     return {
       date: new Date(this.getEventBlock(event).timestamp * 1000),
-      value: Number(ethers.utils.formatEther(eventBackingTokenValue)) * poolBackingTokenRate,
+      value: mul18f(eventBackingTokenValue, poolBackingTokenRate),
     };
   }
 }

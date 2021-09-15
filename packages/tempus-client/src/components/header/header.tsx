@@ -5,8 +5,10 @@ import TempusLogo from './tempusLogo';
 
 import './header.scss';
 
+export type HeaderLinks = 'Dashboard' | 'Portfolio' | '';
+
 type HeaderInProps = {
-  active?: string;
+  active?: HeaderLinks;
 };
 
 type HeaderOutProps = {
@@ -28,20 +30,22 @@ const Header: FC<HeaderProps> = ({ active, onDashboardClick, onLogoClick }): JSX
           color="secondary"
           size="small"
           className="tf__header__action tf__header__action-dashboard"
-          disabled={active === 'DASHBOARD'}
+          disabled={active === 'Dashboard'}
           onClick={onDashboardClick}
+          disableRipple={true}
         >
-          DASHBOARD
+          Dashboard
         </Button>
         <Button
           title="Dashboard"
           color="secondary"
           size="small"
           className="tf__header__action tf__header__action-dashboard"
-          disabled={active === 'PORTFOLIO'}
+          disabled={active === 'Portfolio'}
           onClick={() => null}
+          disableRipple={true}
         >
-          PORTFOLIO
+          Portfolio
         </Button>
         <WalletConnect />
       </div>

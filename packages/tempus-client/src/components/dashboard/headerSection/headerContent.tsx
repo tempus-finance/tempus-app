@@ -21,11 +21,13 @@ const HeaderContent: FC<ContentProps> = props => {
       {props.column.tooltip ? (
         <>
           {props.children}
-          <Tooltip title={props.column.tooltip}>
-            <IconButton size="small">
-              <InfoOutlined />
-            </IconButton>
-          </Tooltip>
+          <div style={{ marginRight: '4px' }}>
+            <Tooltip title={props.column.tooltip}>
+              <IconButton size="small">
+                <InfoOutlined />
+              </IconButton>
+            </Tooltip>
+          </div>
         </>
       ) : (
         props.children

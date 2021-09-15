@@ -1,10 +1,9 @@
 import { FC, useCallback, useEffect, useState } from 'react';
 import { TableTreeColumn } from '@devexpress/dx-react-grid-material-ui';
 import Button from '@material-ui/core/Button';
-import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import LaunchIcon from '@material-ui/icons/Launch';
 import TokenIcon from '../../tokenIcon';
+import ArrowRight from '../../icons/ArrowRightIcon';
+import ArrowDown from '../../icons/ArrowDownIcon';
 
 type TokenButtonInProps = {
   children: any[];
@@ -26,8 +25,7 @@ type TokenButtonProps = TokenButtonInProps & TokenButtonOutProps;
 const TokenButton: FC<TokenButtonProps> = (props: TokenButtonProps) => {
   const { children, expandedRows, tableRow, row, isWalletConnected, actionHandler } = props;
   const { rowId } = tableRow;
-  const [indentComponent, expandButton, _, contentComponent] = children;
-  console.warn(_);
+  const [indentComponent, expandButton, , contentComponent] = children;
 
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
 
@@ -52,7 +50,7 @@ const TokenButton: FC<TokenButtonProps> = (props: TokenButtonProps) => {
       {indentComponent.props.level === 0 && (
         <Button className="tf__dashboard__body__token-button" onClick={expandButton.props.onToggle}>
           <div className="tf__dashboard__asset-ticker">
-            {isExpanded ? <KeyboardArrowDownIcon /> : <ChevronRightIcon />}
+            <div className="tf__dashboard__parent-toggle-icon">{isExpanded ? <ArrowDown /> : <ArrowRight />}</div>
             <span>{contentComponent.props.children}</span>
             <TokenIcon ticker={contentComponent.props.children} />
           </div>
@@ -62,7 +60,7 @@ const TokenButton: FC<TokenButtonProps> = (props: TokenButtonProps) => {
         <div className="tf__dashboard__trade-button">
           {isWalletConnected && (
             <Button title="Manage" size="small" onClick={onClick}>
-              <LaunchIcon />
+              Manage
             </Button>
           )}
         </div>
