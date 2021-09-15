@@ -5,6 +5,7 @@ import getStatisticsService from '../services/getStatisticsService';
 import getTempusAMMService from '../services/getTempusAMMService';
 import getTempusPoolService from '../services/getTempusPoolService';
 import DashboardDataAdapter from './DashboardDataAdapter';
+import getVariableRateService from './getVariableRateService';
 
 let dashboardDataAdapter: DashboardDataAdapter;
 const getDashboardDataAdapter = (
@@ -20,6 +21,7 @@ const getDashboardDataAdapter = (
       statisticsService: getStatisticsService(),
       tempusAMMService: getTempusAMMService(),
       tempusPoolService: getTempusPoolService(),
+      variableRateService: getVariableRateService(getDefaultProvider()),
     });
   }
 
@@ -30,6 +32,7 @@ const getDashboardDataAdapter = (
       statisticsService: getStatisticsService(signerOrProvider),
       tempusAMMService: getTempusAMMService(signerOrProvider),
       tempusPoolService: getTempusPoolService(signerOrProvider),
+      variableRateService: getVariableRateService(signerOrProvider),
       userWalletAddress,
     });
   }

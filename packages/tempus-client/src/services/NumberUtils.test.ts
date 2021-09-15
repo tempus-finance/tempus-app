@@ -25,14 +25,19 @@ describe('NumberUtils', () => {
 
   describe('formatPercentage()', () => {
     [
-      { num: 0, expected: '' },
+      { num: 0, expected: '0%' },
       { num: 1, expected: '100%' },
+      { num: 1, precision: 2, expected: '100%' },
       { num: 0.2, expected: '20%' },
+      { num: 0.12345, precision: 2, expected: '12.34%' },
+      { num: 0.987659, precision: 3, roundValue: true, expected: '98.766%' },
+      { num: 0.987659, precision: 3, roundValue: false, expected: '98.765%' },
       { num: 0.05, expected: '5%' },
       { num: -0.06, expected: '-6%' },
+      { num: '3a', expected: '' },
     ].forEach(item => {
       test('it formats a number to a percentage', () => {
-        const result = NumberUtils.formatPercentage(item.num);
+        const result = NumberUtils.formatPercentage(item.num, item.precision, item.roundValue);
         expect(result).toEqual(item.expected);
       });
     });

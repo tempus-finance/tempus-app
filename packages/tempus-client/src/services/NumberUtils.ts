@@ -20,9 +20,25 @@ class NumberUtils {
       : '0';
   }
 
-  static formatPercentage(value: any, precision: number = 0): string {
+  static formatPercentage(value: any, precision: number = 2, roundValue?: boolean): string {
     const sanitizedValue = Number(value);
-    return sanitizedValue ? `${(sanitizedValue * 100).toFixed(precision)}%` : ``;
+
+    if (sanitizedValue === undefined) {
+      return '';
+    }
+
+    const sanitizedValuePer100 = sanitizedValue * 100;
+
+    if (roundValue) {
+      return `${sanitizedValuePer100.toFixed(precision)}%`;
+    }
+
+    const matchingString = '^-?\\d+(?:\\.\\d{0,' + precision + '})?';
+    const regEx = new RegExp(matchingString);
+
+    const sanitizedValueString = sanitizedValuePer100.toString();
+    const parsedString = sanitizedValueString.match(regEx);
+    return parsedString ? `${parsedString[0]}%` : '';
   }
 }
 
