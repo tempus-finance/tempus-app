@@ -93,16 +93,10 @@ describe('StatisticsService', () => {
       mockGetRate.mockImplementation((ens, overrides) => {
         return Promise.resolve([ejs.BigNumber.from('100'), ejs.BigNumber.from('2')]);
       });
-      jest.spyOn(ejs.utils, 'namehash').mockImplementation((value: string) => {
-        return value;
-      });
-      jest.spyOn(ejs.utils, 'formatEther').mockImplementation(value => {
-        return value.toString();
-      });
 
       const result = await instance.getRate('dai');
 
-      expect(ejs.utils.formatEther(result)).toBe(ejs.utils.parseEther('50').toString());
+      expect(ejs.utils.formatEther(result)).toBe('50.0');
     });
   });
 });

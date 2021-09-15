@@ -7,6 +7,7 @@ import { Stats } from '../abi/Stats';
 
 // ABI
 import StatsABI from '../abi/Stats.json';
+import { div18f } from '../utils/wei-math';
 
 type StatisticsServiceParameters = {
   Contract: typeof Contract;
@@ -83,7 +84,7 @@ class StatisticsService {
       return Promise.reject(error);
     }
 
-    return ethers.utils.parseEther(rate.div(rateDenominator).toString());
+    return div18f(rate, rateDenominator);
   }
 }
 
