@@ -1,11 +1,6 @@
-// External libraries
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
 import { BigNumber, CallOverrides, Contract, ethers } from 'ethers';
-
-// Contract typings
 import { Stats } from '../abi/Stats';
-
-// ABI
 import StatsABI from '../abi/Stats.json';
 import { div18f } from '../utils/wei-math';
 
