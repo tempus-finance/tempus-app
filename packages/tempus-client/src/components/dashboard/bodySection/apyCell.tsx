@@ -20,7 +20,7 @@ const APYCell: FC<Table.DataCellProps> = (props: Table.DataCellProps) => {
       <div className="tf__dashboard__body__apy">
         {isParent ? (
           <div className="tf__dashboard__body__apy-value">
-            up to{' '}
+            <span>Up to&nbsp;</span>
             <span
               style={{
                 fontWeight: apy > 0.2 ? 600 : 400,

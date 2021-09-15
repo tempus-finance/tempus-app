@@ -1,5 +1,6 @@
 import { GridValueGetterParams } from '@material-ui/data-grid';
 import format from 'date-fns/format';
+import { ethers } from 'ethers';
 
 const transactionsColumnDefinitions = [
   {
@@ -10,7 +11,7 @@ const transactionsColumnDefinitions = [
   {
     field: 'action',
     headerName: 'Action',
-    flex: 1,
+    flex: 0.5,
   },
   {
     field: 'totalValue',
@@ -22,9 +23,9 @@ const transactionsColumnDefinitions = [
         currency: 'USD',
         maximumFractionDigits: 2,
         minimumFractionDigits: 0,
-      }).format(params.row.totalValue);
+      }).format(Number(ethers.utils.formatEther(params.row.totalValue)));
     },
-    flex: 0.5,
+    flex: 0.6,
   },
   {
     field: 'account',

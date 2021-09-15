@@ -6,9 +6,9 @@ type TempusLogoProps = {
 
 const TempusLogo: FC<TempusLogoProps> = ({ onClick }): JSX.Element => {
   return (
-    <svg width={150} viewBox="0 0 180 50" className="tf__logo" onClick={onClick}>
+    <svg width={150} viewBox="0 0 180 50" onClick={onClick}>
       <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
-        <g id="tf-tempus-logo" transform="translate(5 5)" fill="#ffffff" fillRule="nonzero">
+        <g id="tf__tempus-logo" transform="translate(5 5)" fill="#ffffff" fillRule="nonzero">
           <path
             d="M73.618 17.193c1.485-.696 1.712-1.998 1.712-3.121V13.04h-3.615v1.032a3.156 3.156 0 01-2.712 3.121h-.271v.026c-.057 0-.113.005-.169.005v3.615c.229 0 .458-.012.685-.035h2.208v7.01c0 2.907 1.836 4.652 4.775 4.652 1.194 0 1.928-.215 2.295-.368V28.73a5.942 5.942 0 01-1.254.121c-1.164 0-1.776-.428-1.776-1.744v-6.302h3.03V17.19h-4.908v.003z"
             id="Path"

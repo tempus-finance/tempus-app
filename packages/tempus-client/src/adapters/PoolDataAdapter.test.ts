@@ -1,3 +1,5 @@
+import { BigNumber } from '@ethersproject/bignumber';
+import { ethers } from 'ethers';
 import PoolDataAdapter from './PoolDataAdapter';
 
 jest.mock('@ethersproject/providers');
@@ -15,16 +17,16 @@ describe('PoolDataAdapter', () => {
     const mockGetERC20TokenService = jest.fn().mockImplementation((address: string) => {
       if (address === 'backing-token-address') {
         return {
-          balanceOf: jest.fn().mockResolvedValue(10),
+          balanceOf: jest.fn().mockResolvedValue(ethers.utils.parseEther('10')),
         };
       } else {
         return {
-          balanceOf: jest.fn().mockResolvedValue(20),
+          balanceOf: jest.fn().mockResolvedValue(ethers.utils.parseEther('20')),
         };
       }
     });
     const mockGetStatisticsService = jest.fn().mockImplementation(() => {
-      return { getRate: jest.fn().mockResolvedValue(0.5) };
+      return { getRate: jest.fn().mockResolvedValue(ethers.utils.parseEther('0.5')) };
     });
 
     const mockGetTempusPoolService = jest.fn().mockImplementation(() => {
@@ -32,7 +34,7 @@ describe('PoolDataAdapter', () => {
         getBackingTokenAddress: jest.fn().mockResolvedValue('backing-token-address'),
         getBackingTokenTicker: jest.fn().mockResolvedValue('backing-token-ticker'),
         getYieldBearingTokenAddress: jest.fn().mockResolvedValue('yield-bearing-token-address'),
-        numAssetsPerYieldToken: jest.fn().mockResolvedValue('1'),
+        numAssetsPerYieldToken: jest.fn().mockResolvedValue(ethers.utils.parseEther('1')),
       };
     });
 
@@ -61,12 +63,13 @@ describe('PoolDataAdapter', () => {
 
       const balances = await instance.retrieveBalances(tempusPoolAddress, userWalletAddress, signer);
 
-      expect(balances).toEqual({
-        backingTokenBalance: 10,
-        backingTokenRate: 0.5,
-        yieldBearingTokenBalance: 20,
-        yieldBearingTokenRate: 0.5,
-      });
+      expect(balances).toBeDefined();
+      if (balances) {
+        expect(ethers.utils.formatEther(balances.backingTokenBalance)).toBe('10.0');
+        expect(ethers.utils.formatEther(balances.backingTokenRate)).toBe('0.5');
+        expect(ethers.utils.formatEther(balances.yieldBearingTokenBalance)).toBe('20.0');
+        expect(ethers.utils.formatEther(balances.yieldBearingTokenRate)).toBe('0.5');
+      }
     });
   });
 });

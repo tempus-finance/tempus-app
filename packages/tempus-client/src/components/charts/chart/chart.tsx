@@ -39,7 +39,7 @@ function Chart(props: ChartProps): JSX.Element {
       currency: 'USD',
       maximumFractionDigits: 2,
       minimumFractionDigits: 0,
-    }).format(activeDataPoint.value);
+    }).format(Number(activeDataPoint.value));
   };
 
   return (

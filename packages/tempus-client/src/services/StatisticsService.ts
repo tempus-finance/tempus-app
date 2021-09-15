@@ -1,12 +1,8 @@
-// External libraries
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
 import { BigNumber, CallOverrides, Contract, ethers } from 'ethers';
-
-// Contract typings
 import { Stats } from '../abi/Stats';
-
-// ABI
 import StatsABI from '../abi/Stats.json';
+import { div18f } from '../utils/wei-math';
 
 type StatisticsServiceParameters = {
   Contract: typeof Contract;
@@ -59,7 +55,7 @@ class StatisticsService {
   /**
    * Returns conversion rate of specified token to USD
    */
-  public async getRate(tokenTicker: string, overrides?: CallOverrides): Promise<number> {
+  public async getRate(tokenTicker: string, overrides?: CallOverrides): Promise<BigNumber> {
     if (!this.stats) {
       console.error(
         'StatisticsService totalValueLockedUSD Attempted to use statistics contract before initializing it...',
@@ -83,7 +79,7 @@ class StatisticsService {
       return Promise.reject(error);
     }
 
-    return Number(ethers.utils.formatEther(rate)) / Number(ethers.utils.formatEther(rateDenominator));
+    return div18f(rate, rateDenominator);
   }
 }
 

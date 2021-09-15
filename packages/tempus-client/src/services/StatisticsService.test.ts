@@ -1,10 +1,6 @@
-import { ethers } from 'ethers';
-import StatisticsService from './StatisticsService';
+import * as ejs from 'ethers';
 import StatisticsABI from '../abi/Stats.json';
-
-jest.mock('ethers');
-const { Contract } = jest.requireMock('ethers');
-const { BigNumber } = jest.requireActual('ethers');
+import StatisticsService from './StatisticsService';
 
 jest.mock('@ethersproject/providers');
 const { JsonRpcProvider } = jest.requireMock('@ethersproject/providers');
@@ -19,7 +15,7 @@ describe('StatisticsService', () => {
   const mockGetRate = jest.fn();
 
   beforeEach(() => {
-    Contract.mockImplementation(() => {
+    jest.spyOn(ejs, 'Contract').mockImplementation(() => {
       return {
         totalValueLockedAtGivenRate: mockTotalValueLockedAtGivenRate,
         getRate: mockGetRate,
@@ -44,7 +40,7 @@ describe('StatisticsService', () => {
 
     test('it initialize the instance', () => {
       instance.init({
-        Contract,
+        Contract: ejs.Contract,
         address: mockAddress,
         abi: StatisticsABI,
         signerOrProvider: mockProvider,
@@ -61,7 +57,7 @@ describe('StatisticsService', () => {
       instance = new StatisticsService();
 
       instance.init({
-        Contract,
+        Contract: ejs.Contract,
         address: mockAddress,
         abi: StatisticsABI,
         signerOrProvider: mockProvider,
@@ -69,7 +65,9 @@ describe('StatisticsService', () => {
     });
 
     test('it returns a Promise that resolves with the value of the total value locked in USD for provided TempusPool', async () => {
-      mockTotalValueLockedAtGivenRate.mockImplementation(() => Promise.resolve(BigNumber.from('0x36461af5a4ad877d37')));
+      mockTotalValueLockedAtGivenRate.mockImplementation(() =>
+        Promise.resolve(ejs.BigNumber.from('0x36461af5a4ad877d37')),
+      );
 
       const result = await instance.totalValueLockedUSD('tempus-tool-address', 'dai');
 
@@ -84,7 +82,7 @@ describe('StatisticsService', () => {
       instance = new StatisticsService();
 
       instance.init({
-        Contract,
+        Contract: ejs.Contract,
         address: mockAddress,
         abi: StatisticsABI,
         signerOrProvider: mockProvider,
@@ -93,18 +91,12 @@ describe('StatisticsService', () => {
 
     test('it returns a Promise that resolves with the value current exchange rate', async () => {
       mockGetRate.mockImplementation((ens, overrides) => {
-        return Promise.resolve([BigNumber.from('100'), BigNumber.from('2')]);
-      });
-      ethers.utils.namehash = jest.fn().mockImplementation((value: string) => {
-        return value;
-      });
-      ethers.utils.formatEther = jest.fn().mockImplementation(value => {
-        return value;
+        return Promise.resolve([ejs.BigNumber.from('100'), ejs.BigNumber.from('2')]);
       });
 
       const result = await instance.getRate('dai');
 
-      expect(result).toBe(50);
+      expect(ejs.utils.formatEther(result)).toBe('50.0');
     });
   });
 });
