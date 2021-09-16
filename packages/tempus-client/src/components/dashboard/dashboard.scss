@@ -217,19 +217,7 @@ $padding: 20px;
     }
 
     .tf__dashboard__header__protocol {
-      > div {
-        display: flex;
-        align-items: center;
-        height: 30px;
-
-        > svg {
-          margin-right: 7px;
-        }
-
-        > span {
-          text-transform: capitalize;
-        }
-      }
+      text-align: left;
     }
 
     .tf__dashboard__body__apy {
