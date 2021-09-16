@@ -5,7 +5,7 @@ import ProgressBar from '../../progressBar';
 import './maturityFormatter.scss';
 
 // TODO the date format can be set in a constant and imported
-const maturityFormat = 'dd MMM yyyy';
+const maturityFormat = 'dd MMM yy';
 
 const MaturityFormatter = ({ value, row }: any) => {
   //TODO useState
