@@ -21,11 +21,7 @@ const ProtocolCell: FC<Table.DataCellProps> = props => {
       {isParent && (
         <div className="tf__dashboard__body__protocol-icons_container">
           {props.row.protocols.map((protocol: ProtocolName) => {
-            return (
-              <div>
-                <TokenIcon ticker={getTickerFromProtocol(protocol)} />
-              </div>
-            );
+            return <TokenIcon ticker={getTickerFromProtocol(protocol)} />;
           })}
         </div>
       )}
