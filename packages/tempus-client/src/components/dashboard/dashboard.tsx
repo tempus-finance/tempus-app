@@ -201,6 +201,7 @@ const Dashboard: FC<DashboardProps> = ({ hidden, userWalletAddress, rows, onRowA
               <IntegratedSummary />
               <IntegratedSorting columnExtensions={integratedSortingColumnExtensions} />
               <VirtualTable
+                height="auto"
                 columnExtensions={tableColumnExtensions}
                 rowComponent={BodyRow}
                 cellComponent={BodyCellFactory}
