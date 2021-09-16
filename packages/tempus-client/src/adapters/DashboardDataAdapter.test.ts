@@ -38,12 +38,13 @@ describe('DashboardDataAdapter', () => {
       ];
     });
 
-    instance.init(mockProvider);
+    instance.init({ signerOrProvider: mockProvider });
   });
 
   describe('getDashboardDataAdapter()', () => {
     test('returns a not null DashboardDataAdapter instance', () => {
-      const instance: DashboardDataAdapter = getDashboardDataService();
+      const userWalletAddress = 'abc';
+      const instance: DashboardDataAdapter = getDashboardDataService(userWalletAddress);
 
       expect(instance).toBeInstanceOf(DashboardDataAdapter);
       expect(instance).not.toBe(null);

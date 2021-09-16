@@ -15,6 +15,7 @@ import getERC20TokenService from '../services/getERC20TokenService';
 import getConfig from '../utils/get-config';
 import { mul18f } from '../utils/wei-math';
 import TempusAMMService from '../services/TempusAMMService';
+import VariableRateService from './VariableRateService';
 
 type DashboardDataAdapterParameters = {
   signerOrProvider: JsonRpcProvider | JsonRpcSigner;
@@ -23,6 +24,7 @@ type DashboardDataAdapterParameters = {
   statisticsService: StatisticsService;
   tempusAMMService: TempusAMMService;
   eRC20TokenServiceGetter: typeof getERC20TokenService;
+  variableRateService: VariableRateService;
 };
 
 export default class DashboardDataAdapter {
@@ -31,6 +33,7 @@ export default class DashboardDataAdapter {
   private statisticsService: StatisticsService | null = null;
   private tempusAMMService: TempusAMMService | null = null;
   private userWalletAddress: string = '';
+  private variableRateService: VariableRateService | null = null;
 
   public init(params: DashboardDataAdapterParameters) {
     this.eRC20TokenServiceGetter = params.eRC20TokenServiceGetter;
@@ -38,6 +41,7 @@ export default class DashboardDataAdapter {
     this.statisticsService = params.statisticsService;
     this.tempusAMMService = params.tempusAMMService;
     this.userWalletAddress = params.userWalletAddress;
+    this.variableRateService = params.variableRateService;
   }
 
   public async getRows(): Promise<DashboardRow[]> {
@@ -114,7 +118,7 @@ export default class DashboardDataAdapter {
         startDate,
         maturityDate,
         fixedAPR,
-        variableAPY: 0.117, // TODO - Needs to be fixed - does not take into account gains from providing liquidity, some protocol compound interest, it does not increase linearly.
+        variableAPY: this.variableRateService ? await this.variableRateService.getAprRate(protocol) : 0,
         TVL: Number(ethers.utils.formatEther(tvl)),
         presentValue:
           presentValueInBackingTokens !== undefined
