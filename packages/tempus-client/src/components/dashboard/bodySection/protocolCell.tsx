@@ -18,14 +18,17 @@ const ProtocolCell: FC<Table.DataCellProps> = props => {
 
   return (
     <VirtualTable.Cell {...props}>
-      {isParent &&
-        props.row.protocols.map((protocol: ProtocolName) => {
-          return (
-            <div className="tf__dashboard__body__protocol-icon-align">
-              <TokenIcon ticker={getTickerFromProtocol(protocol)} />
-            </div>
-          );
-        })}
+      {isParent && (
+        <div className="tf__dashboard__body__protocol-icons_container">
+          {props.row.protocols.map((protocol: ProtocolName) => {
+            return (
+              <div>
+                <TokenIcon ticker={getTickerFromProtocol(protocol)} />
+              </div>
+            );
+          })}
+        </div>
+      )}
       {!isParent && (
         <div className="tf__dashboard__body__protocol_container">
           <TokenIcon ticker={getTickerFromProtocol(protocol)} />

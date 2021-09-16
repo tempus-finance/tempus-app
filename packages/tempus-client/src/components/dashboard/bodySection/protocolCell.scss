@@ -11,6 +11,11 @@
   }
 }
 
-.tf__dashboard__body__protocol-icon-align {
+.tf__dashboard__body__protocol-icons_container {
   padding-top: 6px;
+  display: flex;
+
+  svg {
+    margin-right: 10px;
+  }
 }
