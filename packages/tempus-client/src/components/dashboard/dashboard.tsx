@@ -41,12 +41,12 @@ type DashboardProps = DashboardInProps & DashboardOutProps;
 const Dashboard: FC<DashboardProps> = ({ hidden, userWalletAddress, rows, onRowActionClick }): JSX.Element => {
   const [tableColumnExtensions] = useState([
     { columnName: ColumnNames.TOKEN, align: 'left' as 'left', width: 160 },
-    { columnName: ColumnNames.PROTOCOL, align: 'left' as 'left', width: 100 },
+    { columnName: ColumnNames.PROTOCOL, align: 'left' as 'left', width: 115 },
     { columnName: ColumnNames.MATURITY, align: 'right' as 'right' },
     { columnName: ColumnNames.FIXED_APR, align: 'right' as 'right', width: 140 },
     { columnName: ColumnNames.VARIABLE_APY, align: 'right' as 'right', width: 160 },
     { columnName: ColumnNames.TVL, align: 'right' as 'right', width: 80 },
-    { columnName: ColumnNames.PRESENT_VALUE, align: 'right' as 'right', width: 145 },
+    { columnName: ColumnNames.PRESENT_VALUE, align: 'right' as 'right', width: 120 },
     { columnName: ColumnNames.AVAILABLE_TO_DEPOSIT, align: 'right' as 'right', width: 180 },
   ]);
 

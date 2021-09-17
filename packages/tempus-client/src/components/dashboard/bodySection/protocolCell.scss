@@ -6,6 +6,10 @@
   display: flex;
   align-items: center;
 
+  svg {
+    flex-shrink: 0;
+  }
+
   span {
     padding-left: 10px;
   }
