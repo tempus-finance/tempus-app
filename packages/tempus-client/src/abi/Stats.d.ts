@@ -20,6 +20,9 @@ import { TypedEventFilter, TypedEvent, TypedListener } from "./commons";
 
 interface StatsInterface extends ethers.utils.Interface {
   functions: {
+    "estimateExitAndRedeem(address,uint256,uint256,uint256,bool)": FunctionFragment;
+    "estimatedDepositAndFix(address,uint256,bool)": FunctionFragment;
+    "estimatedDepositAndProvideLiquidity(address,uint256,bool)": FunctionFragment;
     "estimatedMintedShares(address,uint256,bool)": FunctionFragment;
     "estimatedRedeem(address,uint256,uint256,bool)": FunctionFragment;
     "getRate(bytes32)": FunctionFragment;
@@ -27,6 +30,18 @@ interface StatsInterface extends ethers.utils.Interface {
     "totalValueLockedInBackingTokens(address)": FunctionFragment;
   };
 
+  encodeFunctionData(
+    functionFragment: "estimateExitAndRedeem",
+    values: [string, BigNumberish, BigNumberish, BigNumberish, boolean]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "estimatedDepositAndFix",
+    values: [string, BigNumberish, boolean]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "estimatedDepositAndProvideLiquidity",
+    values: [string, BigNumberish, boolean]
+  ): string;
   encodeFunctionData(
     functionFragment: "estimatedMintedShares",
     values: [string, BigNumberish, boolean]
@@ -45,6 +60,18 @@ interface StatsInterface extends ethers.utils.Interface {
     values: [string]
   ): string;
 
+  decodeFunctionResult(
+    functionFragment: "estimateExitAndRedeem",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "estimatedDepositAndFix",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "estimatedDepositAndProvideLiquidity",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "estimatedMintedShares",
     data: BytesLike
@@ -110,6 +137,35 @@ export class Stats extends BaseContract {
   interface: StatsInterface;
 
   functions: {
+    estimateExitAndRedeem(
+      tempusAMM: string,
+      lpTokens: BigNumberish,
+      principals: BigNumberish,
+      yields: BigNumberish,
+      toBackingToken: boolean,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
+    estimatedDepositAndFix(
+      tempusAMM: string,
+      amount: BigNumberish,
+      isBackingToken: boolean,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber] & { principals: BigNumber }>;
+
+    estimatedDepositAndProvideLiquidity(
+      tempusAMM: string,
+      amount: BigNumberish,
+      isBackingToken: boolean,
+      overrides?: CallOverrides
+    ): Promise<
+      [BigNumber, BigNumber, BigNumber] & {
+        lpTokens: BigNumber;
+        principals: BigNumber;
+        yields: BigNumber;
+      }
+    >;
+
     estimatedMintedShares(
       pool: string,
       amount: BigNumberish,
@@ -143,6 +199,35 @@ export class Stats extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
   };
+
+  estimateExitAndRedeem(
+    tempusAMM: string,
+    lpTokens: BigNumberish,
+    principals: BigNumberish,
+    yields: BigNumberish,
+    toBackingToken: boolean,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  estimatedDepositAndFix(
+    tempusAMM: string,
+    amount: BigNumberish,
+    isBackingToken: boolean,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  estimatedDepositAndProvideLiquidity(
+    tempusAMM: string,
+    amount: BigNumberish,
+    isBackingToken: boolean,
+    overrides?: CallOverrides
+  ): Promise<
+    [BigNumber, BigNumber, BigNumber] & {
+      lpTokens: BigNumber;
+      principals: BigNumber;
+      yields: BigNumber;
+    }
+  >;
 
   estimatedMintedShares(
     pool: string,
@@ -178,6 +263,35 @@ export class Stats extends BaseContract {
   ): Promise<BigNumber>;
 
   callStatic: {
+    estimateExitAndRedeem(
+      tempusAMM: string,
+      lpTokens: BigNumberish,
+      principals: BigNumberish,
+      yields: BigNumberish,
+      toBackingToken: boolean,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    estimatedDepositAndFix(
+      tempusAMM: string,
+      amount: BigNumberish,
+      isBackingToken: boolean,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    estimatedDepositAndProvideLiquidity(
+      tempusAMM: string,
+      amount: BigNumberish,
+      isBackingToken: boolean,
+      overrides?: CallOverrides
+    ): Promise<
+      [BigNumber, BigNumber, BigNumber] & {
+        lpTokens: BigNumber;
+        principals: BigNumber;
+        yields: BigNumber;
+      }
+    >;
+
     estimatedMintedShares(
       pool: string,
       amount: BigNumberish,
@@ -215,6 +329,29 @@ export class Stats extends BaseContract {
   filters: {};
 
   estimateGas: {
+    estimateExitAndRedeem(
+      tempusAMM: string,
+      lpTokens: BigNumberish,
+      principals: BigNumberish,
+      yields: BigNumberish,
+      toBackingToken: boolean,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    estimatedDepositAndFix(
+      tempusAMM: string,
+      amount: BigNumberish,
+      isBackingToken: boolean,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    estimatedDepositAndProvideLiquidity(
+      tempusAMM: string,
+      amount: BigNumberish,
+      isBackingToken: boolean,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     estimatedMintedShares(
       pool: string,
       amount: BigNumberish,
@@ -248,6 +385,29 @@ export class Stats extends BaseContract {
   };
 
   populateTransaction: {
+    estimateExitAndRedeem(
+      tempusAMM: string,
+      lpTokens: BigNumberish,
+      principals: BigNumberish,
+      yields: BigNumberish,
+      toBackingToken: boolean,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    estimatedDepositAndFix(
+      tempusAMM: string,
+      amount: BigNumberish,
+      isBackingToken: boolean,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    estimatedDepositAndProvideLiquidity(
+      tempusAMM: string,
+      amount: BigNumberish,
+      isBackingToken: boolean,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     estimatedMintedShares(
       pool: string,
       amount: BigNumberish,
