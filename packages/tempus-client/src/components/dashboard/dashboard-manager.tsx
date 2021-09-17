@@ -1,6 +1,7 @@
 import { FC, useCallback, useContext, useMemo, useState } from 'react';
 import { DashboardRow } from '../../interfaces';
 import getDashboardDataAdapter from '../../adapters/getDashboardDataAdapter';
+import Detail from '../detail/detail';
 import Dashboard from './dashboard';
 import { Context } from '../../context';
 
@@ -46,9 +47,7 @@ const DashboardManager: FC<DashboardManagerProps> = ({ selectedRow, onRowSelecte
         userWalletAddress={userWalletAddress}
         onRowActionClick={onRowActionClick}
       />
-      <div className="tf__detail__section__container" hidden={!shouldShowDashboard}>
-        <div>Here the details</div> <div onClick={onCloseRowDetail}>Close</div>
-      </div>
+      <Detail hidden={!shouldShowDashboard} content={selectedRow} onClose={onCloseRowDetail} />
     </>
   );
 };

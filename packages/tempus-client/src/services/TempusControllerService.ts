@@ -100,6 +100,22 @@ class TempusControllerService {
       return Promise.reject(error);
     }
   }
+
+  public async completeExitAndRedeem(tempusAMM: string, isBackingToken: boolean): Promise<ContractTransaction> {
+    if (!this.contract) {
+      console.error(
+        'TempusControllerService - completeExitAndRedeem() - Attempted to use TempusControllerService before initializing it!',
+      );
+      return Promise.reject();
+    }
+
+    try {
+      return await this.contract.completeExitAndRedeem(tempusAMM, isBackingToken);
+    } catch (error) {
+      console.error(`TempusControllerService completeExitAndRedeem() - Failed to redeem tokens!`, error);
+      return Promise.reject(error);
+    }
+  }
 }
 
 export default TempusControllerService;

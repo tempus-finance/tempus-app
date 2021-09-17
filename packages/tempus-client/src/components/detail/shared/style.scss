@@ -1,0 +1,301 @@
+@import '../../../constants.scss';
+
+button.tf__action__max-balance {
+  background-color: $primary;
+  color: $white;
+
+  &:hover {
+    background-color: $primary-dark;
+  }
+}
+
+.tf__dialog__swap-tab {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 5px 0;
+  border-radius: 8px;
+}
+
+.tf__dialog__tab__action-container__balance {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  // width: 100%;
+  flex: 1;
+  // background-color: $primary-dim;
+
+  .tf__dialog__tab__action-container__balance-title {
+    margin-right: 10px;
+  }
+  .tf__dialog__tab__action-container__balance-value {
+    margin-right: 10px;
+    font-weight: 800;
+  }
+}
+
+.tf__dialog__tab__action-container__balance-amount {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.tf__dialog__tab__action-container__token-selector {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 4px 4px 0 0;
+}
+
+.tf__dialog__tab__action-container__token-amount {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.tf__dialog__tab__action-container__token-description {
+  display: flex;
+  justify-content: flex-start;
+  font-size: 12px;
+  margin-top: 5px;
+  margin-left: 5px;
+}
+
+.tf__dialog__tab__action-container__token-amount-fiat {
+  display: flex;
+  justify-content: flex-end;
+  font-size: 16px;
+}
+
+.tf__dialog__tab__action-container__yield-selector {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.tf__dialog__tab__action-container__tokens-returned {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 20px 7px;
+
+  .tf__tokens-returned {
+    min-width: 160px;
+    padding: 7px;
+    margin: 7px 0;
+    display: flex;
+    flex-direction: row;
+    border-radius: 8px;
+    border: 1px solid $accent;
+    box-shadow: 1px 1px 5px 2px $primary-dark;
+
+    .tf__tokens-returned__data {
+      flex: 3;
+      display: flex;
+      flex-direction: column;
+      margin-top: 20px;
+      font-size: 30px;
+      text-align: right;
+    }
+  }
+}
+
+// TODO was in token descriptor
+.tf__tokens-returned__name {
+  display: flex;
+  flex-direction: row;
+
+  .tf__tokens-returned__ticker {
+    padding-left: 5px;
+    font-size: 20px;
+  }
+
+  .tf__tokens-returned__description {
+    display: flex;
+    flex-direction: row;
+    font-size: 14px;
+  }
+}
+
+.tf__dialog__tab__action-container__deposit__tokens-returned {
+  // grid-column: 1/-1;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 20px 7px;
+  flex: 1;
+  // background-color: red;
+
+  .tf__tokens-returned {
+    // min-width: 160px;
+    height: calc(100% - 14px);
+    padding: 7px;
+    margin: 7px 0;
+    display: flex;
+    flex-direction: row;
+    border: 1px solid $primary;
+    border-radius: 8px;
+    width: 100%;
+    background-color: $primary;
+    box-shadow: 1px 1px 5px 2px $primary-dark;
+
+    .stuff-left {
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      padding: 10px;
+    }
+
+    .stuff-centre {
+      flex: 1;
+
+      .big-title {
+        font-size: 20px;
+        font-weight: 500;
+        margin: 7px auto;
+      }
+
+      .small-title {
+        font-size: 14px;
+        margin: 0 auto 4px;
+      }
+    }
+
+    .stuff-right {
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      // padding: 10px;
+      font-size: 24px;
+    }
+
+    &:hover {
+      background-color: $primary-light;
+      border: 1px solid $secondary;
+      cursor: pointer;
+    }
+
+    &.active {
+      background-color: $primary-light;
+      border: 1px solid $secondary;
+    }
+  }
+}
+
+.tf__dialog__tab__action-container-combiner-apr {
+  text-align: right;
+}
+
+.tf__dialog__tab__action-container__single-token {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  margin-top: 20px;
+
+  > svg {
+    margin-right: 10px;
+  }
+}
+
+.tf__dialog__tab__action-container__lp-tokens {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: center;
+  margin-top: 20px;
+  font-size: 30px;
+
+  .tf__dialog__tab__action-container__token-amount-fiat,
+  .tf__dialog__tab__action-container__lp-tokens__share {
+    margin-top: 10px;
+    font-size: 14px;
+  }
+
+  .small-title {
+    font-size: 14px;
+  }
+}
+
+.tf__dialog__tab__action-container__middle-add {
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-start;
+  padding-left: 95px;
+}
+
+.tf__dialog__tab__action-container-grid {
+  &.tf__detail-withdraw__grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.element1 {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 10px;
+  padding: 7px;
+  background-color: $primary;
+  border-radius: 8px 0 0 8px;
+  flex: 1;
+
+  &.disabled {
+    display: none;
+  }
+
+  .add-icon-container {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    bottom: -19px;
+    right: -14px;
+    width: 28px;
+    height: 28px;
+    background-color: $primary-dim;
+    z-index: 99;
+    border-radius: 40px;
+  }
+}
+
+.element2 {
+  position: relative;
+  margin-top: 10px;
+  padding: 7px;
+  background-color: $primary;
+  border-radius: 0 8px 8px 0;
+  flex: 1;
+
+  &.disabled {
+    color: darkgray;
+  }
+}
+
+.tf__dialog__tab__action-container-grid__top-left.element1,
+.tf__dialog__tab__action-container-grid__top-right.element2 {
+  margin-top: 20px;
+}
+
+.element7 {
+  position: relative;
+  margin-top: 20px;
+  padding: 7px;
+  background-color: $primary;
+  border-radius: 8px 0 0 8px !important;
+  flex: 1;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: flex-start !important;
+
+  .small-title {
+    font-size: 12px;
+    margin-top: 7px;
+    margin-left: 7px;
+  }
+}

@@ -1,0 +1,22 @@
+@import '../../../constants.scss';
+
+.tf__dialog__tab__action-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  padding: 14px 7px 14px;
+  background-color: $primary-dim;
+  border-radius: 8px;
+  width: 100%;
+
+  .tf__dialog__tab__action-container__label {
+    display: flex;
+    align-items: center;
+    padding: 7px 14px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-radius: 4px 0 4px 0;
+  }
+}

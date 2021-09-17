@@ -1,0 +1,15 @@
+.tf__dialog__tab__execute {
+  display: flex;
+  margin: 20px 0;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+
+  > button:first-child {
+    margin-right: 30px;
+  }
+
+  button {
+    min-width: 150px;
+  }
+}
