@@ -10,8 +10,7 @@ $padding: 20px;
   @include background-level-1;
 
   &[hidden] {
-    opacity: 0;
-    z-index: -99;
+    display: none;
   }
 }
 
@@ -203,6 +202,10 @@ $padding: 20px;
       display: flex;
       justify-content: center;
       width: 100%;
+
+      .MuiButton-containedSizeSmall {
+        padding: 2px 8px;
+      }
 
       .MuiButton-root {
         color: #ffffff;

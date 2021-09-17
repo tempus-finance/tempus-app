@@ -1,0 +1,56 @@
+@import '../../../constants.scss';
+
+.tf__dialog__tab__action-container-grid {
+  &.tf__detail-mint__grid {
+    grid-template-columns: 1fr 10px 1fr;
+    grid-template-areas:
+      'top-left top-middle top-right'
+      'centre-left centre-middle centre-right'
+      'bottom-left bottom-middle bottom-right';
+
+    .tf__tokens-returned__data {
+      display: flex;
+      font-size: 30px;
+      text-align: right;
+    }
+  }
+}
+
+.element3 {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 20px;
+  padding: 14px 7px;
+  background-color: $primary;
+  border-radius: 8px;
+  flex: 1;
+}
+
+.element4 {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 20px;
+  padding: 14px 7px;
+  background-color: $primary;
+  border-radius: 8px;
+  flex: 1;
+}
+
+.element5 {
+  grid-area: centre-middle;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20px;
+
+  .add-icon-container2 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: $primary-dim;
+    z-index: 99;
+    border-radius: 40px;
+  }
+}
