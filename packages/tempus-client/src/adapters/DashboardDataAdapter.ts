@@ -110,7 +110,7 @@ export default class DashboardDataAdapter {
       // TODO - Replace dummy data for each tempus pool (child row) with real data.
       return {
         id: tempusPool.address,
-        poolAddress: tempusPool.address,
+        tempusPool: tempusPool,
         parentId: backingTokenTicker,
         token: backingTokenTicker,
         supportedTokens: [backingTokenTicker, yieldBearingTokenTicker],

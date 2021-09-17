@@ -1,4 +1,5 @@
 import { BigNumber } from 'ethers';
+import { TempusPool } from './TempusPool';
 import { Ticker } from './Token';
 import { ProtocolName } from '.';
 
@@ -19,8 +20,8 @@ export interface DashboardRowParent extends DashboardRow {
 }
 
 export interface DashboardRowChild extends DashboardRow {
-  poolAddress: string;
   protocol: ProtocolName;
+  tempusPool: TempusPool;
   supportedTokens: Ticker[];
   startDate: Date;
   maturityDate: Date;
