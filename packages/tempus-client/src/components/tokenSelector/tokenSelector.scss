@@ -1,37 +1,12 @@
 @import '../../constants.scss';
 
-.MuiList-root.MuiMenu-list {
-  background-color: $primary;
-}
-
 .tf__token-selector {
-  border: 1px solid $primary-lighter;
   border-radius: 4px;
   padding: 4px 7px;
-
-  &:hover {
-    background-color: $primary-light;
-  }
 
   .MuiSelect-select:focus,
   .MuiInputBase-root.Mui-focused {
     background-color: transparent;
-  }
-}
-
-li.tf__token-selector__menu-item__container {
-  background-color: $primary;
-
-  &:hover {
-    background-color: $primary-lighter;
-  }
-
-  &.Mui-selected {
-    background-color: $primary-light;
-
-    &:hover {
-      background-color: $primary-lighter;
-    }
   }
 }
 

@@ -15,7 +15,6 @@
   input {
     text-align: right;
     font-size: 30px;
-    color: $secondary;
 
     &[disabled] {
       color: darkgray; // TODO: move this colour to constants or check if we can use a darker secondary

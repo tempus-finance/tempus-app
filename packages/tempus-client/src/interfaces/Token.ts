@@ -10,4 +10,5 @@ export type Ticker =
   | 'TUSD'
   | 'stETH'
   | 'USDC'
-  | 'aDAI';
+  | 'aDAI'
+  | 'cDAI';

@@ -1,6 +1,7 @@
 import { FC } from 'react';
 import Button from '@material-ui/core/Button';
 import WalletConnect from '../wallet-connect/wallet-connect';
+import Typography from '../typography/Typography';
 import TempusLogo from './tempusLogo';
 
 import './header.scss';
@@ -22,30 +23,32 @@ const Header: FC<HeaderProps> = ({ active, onDashboardClick, onLogoClick }): JSX
   return (
     <div className="tf__header__container">
       <div className="tf__logo">
-        <TempusLogo onClick={onLogoClick} />
+        <TempusLogo fillColor="black" onClick={onLogoClick} />
       </div>
       <div className="tf__header__actions">
         <Button
           title="Dashboard"
-          color="secondary"
           size="small"
-          className="tf__header__action tf__header__action-dashboard"
+          className="tf__header__action"
           disabled={active === 'Dashboard'}
           onClick={onDashboardClick}
           disableRipple={true}
         >
-          Dashboard
+          <Typography color={active === 'Dashboard' ? 'accent' : 'default'} variant="h3">
+            Dashboard
+          </Typography>
         </Button>
         <Button
           title="Dashboard"
-          color="secondary"
           size="small"
-          className="tf__header__action tf__header__action-dashboard"
+          className="tf__header__action"
           disabled={active === 'Portfolio'}
           onClick={() => null}
           disableRipple={true}
         >
-          Portfolio
+          <Typography color={active === 'Portfolio' ? 'accent' : 'default'} variant="h3">
+            Portfolio
+          </Typography>
         </Button>
         <WalletConnect />
       </div>
