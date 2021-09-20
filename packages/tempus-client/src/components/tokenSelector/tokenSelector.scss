@@ -2,7 +2,10 @@
 
 .tf__token-selector {
   border-radius: 4px;
-  padding: 4px 7px;
+
+  .MuiInputBase-input {
+    padding: 0px;
+  }
 
   .MuiSelect-select:focus,
   .MuiInputBase-root.Mui-focused {

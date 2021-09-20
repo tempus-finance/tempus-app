@@ -1,6 +1,7 @@
 import { ChangeEvent, FC, useCallback, useState } from 'react';
 import { JsonRpcSigner } from '@ethersproject/providers';
 import { Tab, Tabs } from '@material-ui/core';
+import Typography from '../../typography/Typography';
 import PoolDataAdapter from '../../../adapters/PoolDataAdapter';
 import { TempusPool } from '../../../interfaces/TempusPool';
 import DetailDeposit from './detailDeposit';
@@ -37,8 +38,20 @@ const DetailBasic: FC<DetailBasicProps> = ({
   return (
     <>
       <Tabs value={tab} onChange={onTabChange} centered className="test">
-        <Tab label="Deposit" />
-        <Tab label="Withdraw" />
+        <Tab
+          label={
+            <Typography color="default" variant="h3">
+              Deposit
+            </Typography>
+          }
+        />
+        <Tab
+          label={
+            <Typography color="default" variant="h3">
+              Withdraw
+            </Typography>
+          }
+        />
       </Tabs>
 
       <DetailDeposit

@@ -3,8 +3,6 @@ import FormControl from '@material-ui/core/FormControl';
 import TextField from '@material-ui/core/TextField';
 import { formatValueToCurrency, parseStringToNumber } from './currencyParser';
 
-import './currencyInput.scss';
-
 type CurrencyInputInProps = {
   defaultValue?: number;
   placeholder?: string;
@@ -47,20 +45,18 @@ const CurrencyInput: FC<CurrencyInputProps> = ({
   );
 
   return (
-    <div className="tf__currency-input">
-      <div className="amount">
-        <FormControl>
-          <TextField
-            id="standard-basic"
-            type="text"
-            value={stringValue}
-            onChange={onValueChange}
-            placeholder={placeholder}
-            disabled={disabled}
-          />
-        </FormControl>
-      </div>
-    </div>
+    <FormControl>
+      <TextField
+        id="standard-basic"
+        type="text"
+        value={stringValue}
+        onChange={onValueChange}
+        placeholder={placeholder}
+        disabled={disabled}
+        variant="outlined"
+        size="small"
+      />
+    </FormControl>
   );
 };
 

@@ -56,7 +56,8 @@ typographyStyleMap.set('disclaimer-text', {
 
 interface TypographyProps {
   variant: TypographyVariant;
-  color: TypographyColor;
+  color?: TypographyColor;
+  capitalize?: boolean;
 }
 
 const Typography: FC<TypographyProps> = props => {
@@ -71,6 +72,8 @@ const Typography: FC<TypographyProps> = props => {
     case 'inverted':
       color = '#FFFFFF';
       break;
+    default:
+      color = '#222222';
   }
 
   return (
@@ -78,6 +81,7 @@ const Typography: FC<TypographyProps> = props => {
       style={{
         ...typographyStyleMap.get(props.variant),
         color: color,
+        textTransform: props.capitalize ? 'capitalize' : 'none',
       }}
     >
       {props.children}

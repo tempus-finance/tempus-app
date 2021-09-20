@@ -1,14 +1,5 @@
 @import '../../../constants.scss';
 
-button.tf__action__max-balance {
-  background-color: $primary;
-  color: $white;
-
-  &:hover {
-    background-color: $primary-dark;
-  }
-}
-
 .tf__dialog__swap-tab {
   display: flex;
   justify-content: center;
@@ -89,8 +80,6 @@ button.tf__action__max-balance {
     display: flex;
     flex-direction: row;
     border-radius: 8px;
-    border: 1px solid $accent;
-    box-shadow: 1px 1px 5px 2px $primary-dark;
 
     .tf__tokens-returned__data {
       flex: 3;
@@ -137,11 +126,8 @@ button.tf__action__max-balance {
     margin: 7px 0;
     display: flex;
     flex-direction: row;
-    border: 1px solid $primary;
     border-radius: 8px;
     width: 100%;
-    background-color: $primary;
-    box-shadow: 1px 1px 5px 2px $primary-dark;
 
     .stuff-left {
       display: flex;
@@ -174,14 +160,7 @@ button.tf__action__max-balance {
     }
 
     &:hover {
-      background-color: $primary-light;
-      border: 1px solid $secondary;
       cursor: pointer;
-    }
-
-    &.active {
-      background-color: $primary-light;
-      border: 1px solid $secondary;
     }
   }
 }
@@ -241,7 +220,6 @@ button.tf__action__max-balance {
   justify-content: space-between;
   margin-top: 10px;
   padding: 7px;
-  background-color: $primary;
   border-radius: 8px 0 0 8px;
   flex: 1;
 
@@ -258,7 +236,6 @@ button.tf__action__max-balance {
     right: -14px;
     width: 28px;
     height: 28px;
-    background-color: $primary-dim;
     z-index: 99;
     border-radius: 40px;
   }
@@ -268,7 +245,6 @@ button.tf__action__max-balance {
   position: relative;
   margin-top: 10px;
   padding: 7px;
-  background-color: $primary;
   border-radius: 0 8px 8px 0;
   flex: 1;
 
@@ -286,7 +262,6 @@ button.tf__action__max-balance {
   position: relative;
   margin-top: 20px;
   padding: 7px;
-  background-color: $primary;
   border-radius: 8px 0 0 8px !important;
   flex: 1;
   flex-direction: column !important;

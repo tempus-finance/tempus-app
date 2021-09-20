@@ -345,6 +345,25 @@
   {
     "inputs": [
       {
+        "internalType": "uint256[]",
+        "name": "amountsIn",
+        "type": "uint256[]"
+      }
+    ],
+    "name": "getExpectedLPTokensForTokensIn",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
         "internalType": "uint256",
         "name": "amount",
         "type": "uint256"
@@ -360,6 +379,30 @@
       {
         "internalType": "uint256",
         "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "bptAmountIn",
+        "type": "uint256"
+      }
+    ],
+    "name": "getExpectedTokensOutGivenBPTIn",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "principals",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "yields",
         "type": "uint256"
       }
     ],

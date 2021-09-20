@@ -2,7 +2,7 @@ import { FC, useCallback, useState } from 'react';
 import Header, { HeaderLinks } from '../header/header';
 import Landing from '../landing/landing';
 import DashboardManager from '../dashboard/dashboard-manager';
-import { DashboardRow } from '../../interfaces';
+import { DashboardRowChild } from '../../interfaces';
 import { Context, defaultContextValue } from '../../context';
 
 import './App.scss';
@@ -10,7 +10,7 @@ import './App.scss';
 const App: FC = (): JSX.Element => {
   const [contextData, setContextData] = useState(defaultContextValue);
   const [showDashboard, setShowDashboard] = useState<boolean>(false);
-  const [selectedRow, setSelectedRow] = useState<DashboardRow | null>(null);
+  const [selectedRow, setSelectedRow] = useState<DashboardRowChild | null>(null);
   const [activeLink, setActiveLink] = useState<HeaderLinks>('');
   const showDashboardHandler = useCallback(() => {
     setShowDashboard(true);
