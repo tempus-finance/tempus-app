@@ -4,29 +4,11 @@
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  padding: 3px 0;
 }
 
 .tf__dashboard__grid__maturity-range {
   text-align: center;
   margin: auto 5px;
-}
-
-.tf__dashboard__grid__maturity-responsive-wrapper {
-  display: flex;
-  align-items: center;
-
-  @media (max-width: $breakpoint-lg) {
-    display: none;
-  }
-}
-
-.tf__dashboard__grid__maturity-responsive-progress-bar-wrapper {
-  width: 100%;
-
-  @media (max-width: $breakpoint-lg) {
-    display: none;
-  }
 }
 
 .tf__dashboard__body__row-child {

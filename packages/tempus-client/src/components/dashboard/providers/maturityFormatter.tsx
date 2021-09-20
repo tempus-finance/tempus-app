@@ -1,5 +1,6 @@
 import { format } from 'date-fns';
 import differenceInSeconds from 'date-fns/differenceInSeconds';
+import Typography from '../../typography/Typography';
 import ProgressBar from '../../progressBar';
 
 import './maturityFormatter.scss';
@@ -15,13 +16,10 @@ const MaturityFormatter = ({ value, row }: any) => {
     const [min, max] = value;
     return (
       <div className="tf__dashboard__grid__maturity">
-        <div>{format(min, maturityFormat)}</div>
-        {max && (
-          <div className="tf__dashboard__grid__maturity-responsive-wrapper">
-            <div className="tf__dashboard__grid__maturity tf__dashboard__grid__maturity-range">&nbsp;-&nbsp;</div>
-            <div>{format(max, maturityFormat)}</div>
-          </div>
-        )}
+        <Typography color="default" variant="body-text">
+          {format(min, maturityFormat)}
+          {max && ` - ${format(max, maturityFormat)}`}
+        </Typography>
       </div>
     );
   }
@@ -36,9 +34,7 @@ const MaturityFormatter = ({ value, row }: any) => {
       <div className="tf__dashboard__grid__maturity-timeLeft">
         <div>{format(value[0], maturityFormat)}</div>
       </div>
-      <div className="tf__dashboard__grid__maturity-responsive-progress-bar-wrapper">
-        <ProgressBar value={progressBarValue} />
-      </div>
+      <ProgressBar value={progressBarValue} />
     </div>
   );
 };

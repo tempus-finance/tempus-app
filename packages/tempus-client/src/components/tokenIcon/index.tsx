@@ -2,6 +2,8 @@ import { FC, useMemo } from 'react';
 import { Ticker } from '../../interfaces';
 import { tokenIcons } from './tokenIcons';
 
+import './tokenIcon.scss';
+
 type IconInProps = {
   ticker: Ticker;
 };
@@ -13,7 +15,7 @@ const TokenIcon: FC<IconInProps> = ({ ticker }): JSX.Element => {
   return icon ? (
     <svg
       aria-hidden="true"
-      className="tf-icon"
+      className="tf__token__icon"
       width={24}
       height={24}
       viewBox="0 0 32 32"

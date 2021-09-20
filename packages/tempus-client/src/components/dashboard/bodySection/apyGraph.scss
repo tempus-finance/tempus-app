@@ -15,11 +15,6 @@
     div[class*='tf__dashboard__apy-graph__bar'] {
       width: 3px;
       margin-right: 1px;
-      background-color: $primary-lightest;
-
-      &.tf__dashboard__apy-graph__bar-active {
-        background-color: $white;
-      }
     }
 
     .tf__dashboard__apy-graph__bar-1 {

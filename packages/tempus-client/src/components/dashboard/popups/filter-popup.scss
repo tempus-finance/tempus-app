@@ -5,7 +5,6 @@
   z-index: 999;
 
   > .MuiPaper-root {
-    background-color: $primary-popup;
     border-radius: 12px;
   }
 }
@@ -46,12 +45,7 @@
   margin-top: 15px;
 
   > .MuiButton-contained {
-    background-color: $primary-darker;
     color: white;
-  }
-
-  > .MuiButton-contained:hover {
-    background-color: $primary-dark;
   }
 
   > .MuiButton-root {

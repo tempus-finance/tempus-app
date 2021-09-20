@@ -1,38 +1,23 @@
-// Colors
-
-// Primary
-$primary: #066d59;
-
-$primary-bright: lighten($primary, 30%);
-$primary-lightest: lighten($primary, 15%);
-$primary-lighter: lighten($primary, 10%);
-$primary-light: lighten($primary, 5%);
-
-$primary-dim: #237162;
-$primary-dark: #065d4c;
-$primary-darker: #034135;
-$primary-popup: #077c66;
-
-// Secondary
-$secondary: #ffdf99;
-
-$secondary-dark: darken($secondary, 5%);
-$secondary-darker: darken($secondary, 15%);
-
-// Accent
-
-$accent: #ada4fd;
-
-$accent-light: lighten($accent, 5%);
-
-$accent-dark: darken($accent, 5%);
-$accent-darker: darken($accent, 10%);
-
-// Complementary
-$black: #000000;
-$white: #ffffff;
-$offwhite: #fef5fe;
-$floating-surface: rgba(0, 0, 0, 0.15);
+// Colors - Light Theme
+$background-color: #f1f1f1;
+@mixin background-level-1 {
+  background-color: #fcfcfc;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+@mixin background-level-2 {
+  background-color: #ffffff;
+  box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.25);
+}
+@mixin background-level-3 {
+  background-color: #ffffff;
+  box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.25);
+  border: 1px solid #fcfcfc;
+}
+$text-color: #222222;
+$ui-element-color: #e2e2e2;
+$accent-color-1: #f5ac37;
+$accent-color-2: #f24c00;
+$accent-color-3: #065f73;
 
 // Breakpoints
 $breakpoint-xs: 0px;
@@ -49,29 +34,3 @@ $grid-template-columns: 196px;
 $column-gap: 0;
 
 $sidebar-margin-top: $grid-template-rows + $row-gap;
-
-// Typography - Not yet finalized by designer
-@mixin header-action {
-  font-size: 20px;
-  font-weight: 500;
-  font-style: normal;
-  line-height: 23px;
-}
-@mixin dashboard-title {
-  font-size: 18px;
-  font-weight: 700;
-  font-style: normal;
-  line-height: 21px;
-}
-@mixin dashboard-header-cell {
-  font-size: 16px;
-  font-weight: 500;
-  font-style: normal;
-  line-height: 18px;
-}
-@mixin dashboard-cell-text {
-  font-size: 16px;
-  font-weight: 400;
-  font-style: normal;
-  line-height: 18px;
-}

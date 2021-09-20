@@ -1,3 +1,5 @@
+@import '../../../constants.scss';
+
 .tf__transactions {
   display: flex;
   flex-direction: column;
@@ -9,7 +11,7 @@
 
     .MuiDataGrid-root {
       border-color: transparent;
-      color: white;
+      color: $text-color;
 
       .MuiSvgIcon-root.MuiDataGrid-iconSeparator {
         display: none;

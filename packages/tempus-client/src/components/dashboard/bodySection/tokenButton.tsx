@@ -1,6 +1,7 @@
 import { FC, useCallback, useEffect, useState } from 'react';
 import { TableTreeColumn } from '@devexpress/dx-react-grid-material-ui';
 import Button from '@material-ui/core/Button';
+import Typography from '../../typography/Typography';
 import TokenIcon from '../../tokenIcon';
 import ArrowRight from '../../icons/ArrowRightIcon';
 import ArrowDown from '../../icons/ArrowDownIcon';
@@ -51,7 +52,9 @@ const TokenButton: FC<TokenButtonProps> = (props: TokenButtonProps) => {
         <Button className="tf__dashboard__body__token-button" onClick={expandButton.props.onToggle}>
           <div className="tf__dashboard__asset-ticker">
             <div className="tf__dashboard__parent-toggle-icon">{isExpanded ? <ArrowDown /> : <ArrowRight />}</div>
-            <span>{contentComponent.props.children}</span>
+            <Typography color="default" variant="body-text">
+              {contentComponent.props.children}
+            </Typography>
             <TokenIcon ticker={contentComponent.props.children} />
           </div>
         </Button>
@@ -60,7 +63,9 @@ const TokenButton: FC<TokenButtonProps> = (props: TokenButtonProps) => {
         <div className="tf__dashboard__trade-button">
           {isWalletConnected && (
             <Button title="Manage" size="small" onClick={onClick}>
-              Manage
+              <Typography color="inverted" variant="h5">
+                Manage
+              </Typography>
             </Button>
           )}
         </div>

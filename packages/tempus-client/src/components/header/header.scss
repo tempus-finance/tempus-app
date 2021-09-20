@@ -25,10 +25,6 @@
   .MuiButton-root {
     text-transform: none;
   }
-
-  span {
-    @include header-action;
-  }
 }
 
 .tf__header__action-account {
@@ -39,29 +35,12 @@
 button.tf__header__action {
   margin-right: 50px;
   cursor: pointer;
-  color: white;
-
-  &:disabled {
-    color: $secondary-darker;
-  }
 
   &:last-child {
     margin-right: 0;
   }
 
   &.tf__header__action-wallet {
-    background-color: $primary-dark;
-    border: 1px solid $white;
     padding: 2px 4px;
-
-    &:hover {
-      background-color: $primary-light;
-    }
-  }
-}
-
-span.tf__header__action {
-  > svg {
-    margin-right: 10px;
   }
 }
