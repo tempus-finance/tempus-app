@@ -15,14 +15,37 @@ describe('PoolDataAdapter', () => {
 
     const mockGetTempusControllerService = jest.fn();
     const mockGetERC20TokenService = jest.fn().mockImplementation((address: string) => {
-      if (address === 'backing-token-address') {
-        return {
-          balanceOf: jest.fn().mockResolvedValue(ethers.utils.parseEther('10')),
-        };
-      } else {
-        return {
-          balanceOf: jest.fn().mockResolvedValue(ethers.utils.parseEther('20')),
-        };
+      switch (address) {
+        case 'backing-token-address': {
+          return {
+            balanceOf: jest.fn().mockResolvedValue(ethers.utils.parseEther('10')),
+          };
+        }
+
+        case 'yield-bearing-token-address': {
+          return {
+            balanceOf: jest.fn().mockResolvedValue(ethers.utils.parseEther('20')),
+          };
+        }
+
+        case 'principals-token-address': {
+          return {
+            balanceOf: jest.fn().mockResolvedValue(ethers.utils.parseEther('31')),
+          };
+        }
+
+        case 'yields-token-address': {
+          return {
+            balanceOf: jest.fn().mockResolvedValue(ethers.utils.parseEther('12')),
+          };
+        }
+
+        // LP tokens
+        default: {
+          return {
+            balanceOf: jest.fn().mockResolvedValue(ethers.utils.parseEther('7')),
+          };
+        }
       }
     });
     const mockGetStatisticsService = jest.fn().mockImplementation(() => {
@@ -34,6 +57,8 @@ describe('PoolDataAdapter', () => {
         getBackingTokenAddress: jest.fn().mockResolvedValue('backing-token-address'),
         getBackingTokenTicker: jest.fn().mockResolvedValue('backing-token-ticker'),
         getYieldBearingTokenAddress: jest.fn().mockResolvedValue('yield-bearing-token-address'),
+        getPrincipalTokenAddress: jest.fn().mockResolvedValue('principals-token-address'),
+        getYieldTokenAddress: jest.fn().mockResolvedValue('yields-token-address'),
         numAssetsPerYieldToken: jest.fn().mockResolvedValue(ethers.utils.parseEther('1')),
       };
     });
@@ -59,9 +84,10 @@ describe('PoolDataAdapter', () => {
     test('returns an object containing balances ', async () => {
       const tempusPoolAddress = 'abc';
       const userWalletAddress = 'xyz';
+      const tempusAmmAddress = '123';
       const signer = mockProvider;
 
-      const balances = await instance.retrieveBalances(tempusPoolAddress, userWalletAddress, signer);
+      const balances = await instance.retrieveBalances(tempusPoolAddress, tempusAmmAddress, userWalletAddress, signer);
 
       expect(balances).toBeDefined();
       if (balances) {
@@ -69,6 +95,9 @@ describe('PoolDataAdapter', () => {
         expect(ethers.utils.formatEther(balances.backingTokenRate)).toBe('0.5');
         expect(ethers.utils.formatEther(balances.yieldBearingTokenBalance)).toBe('20.0');
         expect(ethers.utils.formatEther(balances.yieldBearingTokenRate)).toBe('0.5');
+        expect(ethers.utils.formatEther(balances.principalsTokenBalance)).toBe('31.0');
+        expect(ethers.utils.formatEther(balances.yieldsTokenBalance)).toBe('12.0');
+        expect(ethers.utils.formatEther(balances.lpTokensBalance)).toBe('7.0');
       }
     });
   });
