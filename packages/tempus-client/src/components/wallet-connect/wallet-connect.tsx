@@ -4,6 +4,7 @@ import { useWeb3React } from '@web3-react/core';
 import { InjectedConnector } from '@web3-react/injected-connector';
 import AccountBalanceWalletIcon from '@material-ui/icons/AccountBalanceWallet';
 import Button from '@material-ui/core/Button';
+import Typography from '../typography/Typography';
 import shortenAccount from '../../utils/shorten-account';
 import { Context } from '../../context';
 
@@ -38,7 +39,9 @@ const WalletConnect: FC = (): JSX.Element => {
   return active ? (
     <span className="tf__header__action tf__header__action-account" title={String(account)}>
       <AccountBalanceWalletIcon />
-      {shortenedAccount}
+      <Typography color="default" variant="h3">
+        {shortenedAccount}
+      </Typography>
     </span>
   ) : (
     <Button

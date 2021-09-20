@@ -6,7 +6,8 @@
   height: 100%;
   padding: 24px;
   box-sizing: border-box;
-  background-color: $floating-surface;
+  border-radius: 5px;
+  @include background-level-1;
 }
 
 .tf__chart-loading-overlay {
@@ -61,7 +62,6 @@
   padding-left: 12px;
   padding-bottom: 4px;
   margin: 0px;
-  color: $accent;
 }
 
 .tf__chart-graph-container {

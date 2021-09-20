@@ -10,33 +10,9 @@ import './index.scss';
 // Use theme object to modify colors, fonts, etc...
 const theme = createTheme({
   palette: {
-    type: 'dark',
-    primary: {
-      main: '#066d59',
-      dark: '#065d4c',
-      light: 'ffdf99',
-      contrastText: '#ffffff',
-    },
-    secondary: {
-      main: '#ada4fd',
-      contrastText: '#ffffff',
-    },
-  },
-  typography: {
-    fontFamily: 'Roboto, sans-serif',
+    type: 'light',
   },
   overrides: {
-    MuiSelect: {
-      select: {
-        padding: '5px 0',
-      },
-    },
-    MuiDialog: {
-      paperWidthSm: {
-        minWidth: 400,
-        maxWidth: 1000,
-      },
-    },
     MuiTooltip: {
       tooltip: {
         fontSize: '0.875rem',

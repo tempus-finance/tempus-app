@@ -1,15 +1,8 @@
-// External libraries
 import { FC } from 'react';
-
-// External UI Components
 import { TableHeaderRow } from '@devexpress/dx-react-grid-material-ui';
-import { IconButton, Tooltip } from '@material-ui/core';
-
-// External UI Icons
-import { InfoOutlined } from '@material-ui/icons';
-
-// Interfaces
+import Typography from '../../typography/Typography';
 import { ExtraDataColumn } from '../dashboardColumnsDefinitions';
+import InfoTooltip from '../../infoTooltip/infoTooltip';
 
 interface ContentProps extends TableHeaderRow.ContentProps {
   column: ExtraDataColumn;
@@ -20,17 +13,17 @@ const HeaderContent: FC<ContentProps> = props => {
     <TableHeaderRow.Content column={props.column} align="left">
       {props.column.tooltip ? (
         <>
-          {props.children}
+          <Typography color="default" variant="h5">
+            {props.children}
+          </Typography>
           <div style={{ marginRight: '4px' }}>
-            <Tooltip title={props.column.tooltip}>
-              <IconButton size="small">
-                <InfoOutlined />
-              </IconButton>
-            </Tooltip>
+            <InfoTooltip text={props.column.tooltip} />
           </div>
         </>
       ) : (
-        props.children
+        <Typography color="default" variant="h5">
+          {props.children}
+        </Typography>
       )}
     </TableHeaderRow.Content>
   );

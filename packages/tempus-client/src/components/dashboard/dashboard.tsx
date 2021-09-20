@@ -10,6 +10,7 @@ import {
 } from '@devexpress/dx-react-grid';
 import { Grid, TableHeaderRow, VirtualTable, TableTreeColumn } from '@devexpress/dx-react-grid-material-ui';
 import { ColumnNames, DashboardRow, isChildRow, isParentRow } from '../../interfaces';
+import Typography from '../typography/Typography';
 import FilterIcon from '../icons/FilterIcon';
 import { dashboardColumnsDefinitions } from './dashboardColumnsDefinitions';
 import FilterPopup, { FilterData } from './popups/filter-popup';
@@ -170,10 +171,15 @@ const Dashboard: FC<DashboardProps> = ({ hidden, userWalletAddress, rows, onRowA
     <div className="tf__dashboard__section__container" hidden={hidden}>
       <div className="tf__dashboard__container">
         <div className="tf__dashboard__header">
-          <div className="tf__dashboard__header__title">Available Pools</div>
+          <Typography color="default" variant="h4">
+            Available Pools
+          </Typography>
           <div className="tf__dashboard__header__actions">
             <div onClick={onToggleFilterPopup} ref={filterButtonRef}>
-              Filter <FilterIcon />
+              <Typography color="default" variant="h4">
+                Filter
+              </Typography>
+              <FilterIcon />
             </div>
             <FilterPopup
               open={filterPopupOpen}
