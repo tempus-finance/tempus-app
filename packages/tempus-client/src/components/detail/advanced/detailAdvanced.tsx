@@ -14,7 +14,7 @@ type DetailAdvancedProps = {
 };
 
 const DetailAdvanced: FC<DetailAdvancedProps> = (props: DetailAdvancedProps) => {
-  const { content, isMaturity } = props;
+  const { content } = props;
   const [tab, setTab] = useState<number>(0);
 
   const onTabChange = (event: ChangeEvent<{}>, value: number) => {

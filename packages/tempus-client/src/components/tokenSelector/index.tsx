@@ -2,7 +2,6 @@ import { FC, ChangeEvent, useCallback, useEffect, useState } from 'react';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
-import InputBase from '@material-ui/core/InputBase';
 import { Ticker } from '../../interfaces/Token';
 import TokenIcon from '../tokenIcon';
 
@@ -73,13 +72,11 @@ const TokenSelector: FC<TokenSelectorProps> = ({ defaultTicker, tickers = [], cl
   );
 
   return (
-    <div className="tf__token-selector">
-      <FormControl className={classNames}>
-        <Select labelId="tf__token-selector" value={token} onChange={handleChange} input={<InputBase />}>
-          {getMenuItems(items)}
-        </Select>
-      </FormControl>
-    </div>
+    <FormControl size="small">
+      <Select variant="outlined" labelId="tf__token-selector" value={token} onChange={handleChange}>
+        {getMenuItems(items)}
+      </Select>
+    </FormControl>
   );
 };
 

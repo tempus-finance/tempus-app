@@ -1,5 +1,5 @@
 import { FC, useMemo } from 'react';
-import { Ticker } from '../../interfaces';
+import { ProtocolName, Ticker } from '../../interfaces';
 import { tokenIcons } from './tokenIcons';
 
 import './tokenIcon.scss';
@@ -28,3 +28,11 @@ const TokenIcon: FC<IconInProps> = ({ ticker }): JSX.Element => {
 };
 
 export default TokenIcon;
+
+export const getTickerFromProtocol = (protocol: ProtocolName): Ticker => {
+  if (protocol === 'compound') {
+    return 'COMP';
+  }
+
+  return protocol.toUpperCase() as Ticker;
+};

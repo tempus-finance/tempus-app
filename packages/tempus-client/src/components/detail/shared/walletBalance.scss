@@ -6,16 +6,6 @@
   justify-content: center;
   align-items: center;
   flex-direction: row;
-
-  > svg {
-    fill: $accent;
-  }
-}
-
-.pie-icon-container {
-  > svg {
-    fill: $accent;
-  }
 }
 
 .wallet-data-container,
@@ -35,15 +25,5 @@
       margin-right: 5px;
       font-size: 14px;
     }
-
-    > span:nth-child(2) {
-      color: $accent;
-    }
-  }
-}
-
-.pool-data-container {
-  > span:first-child {
-    color: $secondary;
   }
 }

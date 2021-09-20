@@ -1,24 +1,19 @@
-import { FC, ChangeEvent, useEffect, useCallback, useContext, useMemo, useState } from 'react';
-import { format, formatDistanceToNow, differenceInSeconds } from 'date-fns';
-import IconButton from '@material-ui/core/IconButton';
-import CloseIcon from '@material-ui/icons/Close';
-import FormGroup from '@material-ui/core/FormGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
+import { FC, ChangeEvent, useEffect, useCallback, useContext, useState } from 'react';
+import { format } from 'date-fns';
 import Switch from '@material-ui/core/Switch';
-import FormControl from '@material-ui/core/FormControl';
+import Typography from '../typography/Typography';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
 import PoolDataAdapter from '../../adapters/PoolDataAdapter';
 import { Context } from '../../context';
-import TokenIcon from '../tokenIcon';
-import ProgressBar from '../progressBar';
+import TokenIcon, { getTickerFromProtocol } from '../tokenIcon';
 import DetailBasic from './basic/detailBasic';
 import DetailAdvanced from './advanced/detailAdvanced';
+import { DashboardRowChild } from '../../interfaces';
 
 import './detail.scss';
 
 type DetailInProps = {
-  hidden: boolean;
-  content?: any;
+  content: DashboardRowChild;
 };
 
 type DetailOutPros = {
@@ -27,12 +22,8 @@ type DetailOutPros = {
 
 type DetailProps = DetailInProps & DetailOutPros;
 
-const Detail: FC<DetailProps> = ({ hidden, content, onClose }) => {
-  const { token = '', protocol = '', maturity = new Date(), startDate, tempusPool } = content || {};
-
-  const startToMaturity = useMemo(() => differenceInSeconds(maturity, startDate), [maturity, startDate]);
-  const nowToMaturity = useMemo(() => differenceInSeconds(maturity, new Date()), [maturity]);
-  const left = useMemo(() => nowToMaturity / startToMaturity, [nowToMaturity, startToMaturity]);
+const Detail: FC<DetailProps> = ({ content, onClose }) => {
+  const { token, protocol, maturityDate, tempusPool } = content;
 
   const [showAdvancedUI, setShowAdvancedUI] = useState<boolean>(false);
   const [poolDataAdapter, setPoolDataAdapter] = useState<PoolDataAdapter | undefined>(undefined);
@@ -55,60 +46,44 @@ const Detail: FC<DetailProps> = ({ hidden, content, onClose }) => {
   }, [userWalletSigner]);
 
   return (
-    <div className="tf__detail__section__container" hidden={hidden}>
+    <div className="tf__detail__section__container">
       <div className="tf__dialog-container">
-        <div className="test">
-          <div className="tf__dialog-container__header">
-            <div className="tf__dialog-container__header-title">
-              <div className="tf__dialog-container__header-summary">
-                <div className="tf__dialog-container__header-summary-data">
-                  <div className="tf__dialog-container__header-series">Series</div>
-                  <div className="tf__dialog-container__header-series__value">
-                    {token} <TokenIcon ticker={token} /> via <span>{protocol}</span>
-                  </div>
-                </div>
-                <div className="tf__dialog-container__header-summary-bar">
-                  <div className="tf__dialog-container__header-summary-time-left">
-                    {maturity && `Matures ${formatDistanceToNow(maturity, { addSuffix: true })}`}
-                  </div>
-                  <ProgressBar value={left} />
-                  <div className="tf__dialog-container__header-summary-maturity">
-                    {maturity && format(maturity, 'do MMM yy')}
-                  </div>
-                </div>
-              </div>
+        <div className="tf__dialog-container__header">
+          <div className="tf__dialog-container__header-summary-data">
+            <TokenIcon ticker={token} />
+            <Typography color="default" variant="h4">
+              &nbsp;&nbsp;{token} via&nbsp;&nbsp;
+            </Typography>
+            <TokenIcon ticker={getTickerFromProtocol(protocol)} />
+            <Typography color="default" variant="h4" capitalize={true}>
+              &nbsp;&nbsp;{protocol}
+            </Typography>
+          </div>
 
-              <div className="tf__dialog-container__header-ui-toggle">
-                <FormControl component="fieldset">
-                  <FormGroup aria-label="position" row>
-                    <FormControlLabel
-                      value="end"
-                      control={<Switch checked={showAdvancedUI} />}
-                      label="Advanced"
-                      labelPlacement="end"
-                      onChange={onInterfaceChange}
-                    />
-                  </FormGroup>
-                </FormControl>
-              </div>
-              <IconButton aria-label="close" onClick={onClose}>
-                <CloseIcon />
-              </IconButton>
-            </div>
+          <div className="tf__dialog-container__header-ui-toggle">
+            <Switch checked={showAdvancedUI} onChange={onInterfaceChange} name="advanced-options" />
+            <Typography color="default" variant="h4">
+              Advanced options
+            </Typography>
           </div>
-          <div className="tf__dialog__content">
-            {showAdvancedUI ? (
-              <DetailAdvanced content={content} />
-            ) : (
-              <DetailBasic
-                content={content}
-                tempusPool={tempusPool}
-                signer={userWalletSigner}
-                userWalletAddress={userWalletAddress}
-                poolDataAdapter={poolDataAdapter}
-              />
-            )}
-          </div>
+        </div>
+        <div>
+          <Typography color="default" variant="h5">
+            Matures on {format(maturityDate, 'dd MMM yy')}
+          </Typography>
+        </div>
+        <div className="tf__dialog__content">
+          {showAdvancedUI ? (
+            <DetailAdvanced content={content} />
+          ) : (
+            <DetailBasic
+              content={content}
+              tempusPool={tempusPool}
+              signer={userWalletSigner}
+              userWalletAddress={userWalletAddress}
+              poolDataAdapter={poolDataAdapter}
+            />
+          )}
         </div>
       </div>
     </div>
