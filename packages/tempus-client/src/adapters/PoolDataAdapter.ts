@@ -130,9 +130,21 @@ export default class PoolDataAdapter {
     tokenAmount: number,
     isBackingToken: boolean,
   ): Promise<{
-    fixedDeposit: number | undefined;
-    variableDeposit: number[] | undefined;
+    fixedDeposit: number;
+    variableDeposit: number[];
   } | void> {
+    if (!this.statisticService) {
+      console.error(
+        'PoolDataAdapter - getEstimatedDepositAmount() - Attempted to use PoolDataAdapter before initializing it!',
+      );
+      return Promise.reject();
+    }
+
+    if (!tempusAmmAddress || tokenAmount === undefined) {
+      console.error('PoolDataAdapter - getEstimatedDepositAmount() - Tempus AMM address or token amount not valid');
+      return Promise.reject();
+    }
+
     try {
       const [fixedDeposit, variableDeposit] = await Promise.all([
         this.statisticService?.estimatedDepositAndFix(tempusAmmAddress, tokenAmount, isBackingToken),
@@ -140,12 +152,12 @@ export default class PoolDataAdapter {
       ]);
 
       return {
-        fixedDeposit: fixedDeposit ? parseFloat(ethers.utils.formatEther(fixedDeposit)) : undefined,
-        variableDeposit: variableDeposit ? variableDeposit.map(ethers.utils.formatEther).map(parseFloat) : [],
+        fixedDeposit: parseFloat(ethers.utils.formatEther(fixedDeposit)),
+        variableDeposit: variableDeposit.map(ethers.utils.formatEther).map(parseFloat),
       };
     } catch (error) {
       console.error('PoolDataAdapter - getEstimatedDepositAmount() - Failed to retrieve balances!', error);
-      Promise.reject(null);
+      Promise.reject();
     }
   }
 
@@ -156,6 +168,20 @@ export default class PoolDataAdapter {
     lpAmount: number,
     isBackingToken: boolean,
   ): Promise<number | void> {
+    if (!this.statisticService) {
+      console.error(
+        'PoolDataAdapter - getEstimatedWithdrawAmount() - Attempted to use PoolDataAdapter before initializing it!',
+      );
+      return Promise.reject();
+    }
+
+    if (!tempusAmmAddress || principalAmount === undefined || yieldsAmount === undefined || lpAmount === undefined) {
+      console.error(
+        'PoolDataAdapter - getEstimatedDepositAmount() - Tempus AMM address, principals, yields or lp tokens amount not valid',
+      );
+      return Promise.reject();
+    }
+
     try {
       const amount = await this.statisticService?.estimateExitAndRedeem(
         tempusAmmAddress,
@@ -164,10 +190,10 @@ export default class PoolDataAdapter {
         lpAmount,
         isBackingToken,
       );
-      return amount ? parseFloat(ethers.utils.formatEther(amount)) : undefined;
+      return parseFloat(ethers.utils.formatEther(amount));
     } catch (error) {
       console.error('PoolDataAdapter - getEstimatedWithdrawAmount() - Failed to retrieve balances!', error);
-      Promise.reject(0);
+      Promise.reject();
     }
   }
 
