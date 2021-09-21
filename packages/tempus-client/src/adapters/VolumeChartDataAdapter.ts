@@ -2,20 +2,20 @@ import { BigNumber, ethers } from 'ethers';
 import { Block, JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
 import ChartDataPoint from '../interfaces/ChartDataPoint';
 import StatisticsService from '../services/StatisticsService';
-import getStatisticsService from '../services/getStatisticsService';
 import TempusPoolService from '../services/TempusPoolService';
-import getTempusPoolService from '../services/getTempusPoolService';
 import TempusControllerService, { DepositedEvent, RedeemedEvent } from '../services/TempusControllerService';
-import getTempusControllerService from '../services/getTempusControllerService';
 import VaultService, { SwapEvent } from '../services/VaultService';
-import getVaultService from '../services/getVaultService';
 import { getEventBackingTokenValue, getEventPoolAddress } from '../services/EventUtils';
 import TempusAMMService from '../services/TempusAMMService';
-import getTempusAMMService from '../services/getTempusAMMService';
 import { div18f, mul18f } from '../utils/wei-math';
 
 type VolumeChartDataAdapterParameters = {
   signerOrProvider: JsonRpcProvider | JsonRpcSigner;
+  tempusPoolService: TempusPoolService;
+  statisticsService: StatisticsService;
+  tempusControllerService: TempusControllerService;
+  vaultService: VaultService;
+  tempusAMMService: TempusAMMService;
 };
 
 interface EventChartData {
@@ -37,11 +37,11 @@ class VolumeChartDataAdapter {
   private tempusAMMService: TempusAMMService | null = null;
 
   public init(params: VolumeChartDataAdapterParameters): void {
-    this.tempusPoolService = getTempusPoolService(params.signerOrProvider);
-    this.statisticsService = getStatisticsService(params.signerOrProvider);
-    this.tempusControllerService = getTempusControllerService(params.signerOrProvider);
-    this.vaultService = getVaultService(params.signerOrProvider);
-    this.tempusAMMService = getTempusAMMService(params.signerOrProvider);
+    this.tempusPoolService = params.tempusPoolService;
+    this.statisticsService = params.statisticsService;
+    this.tempusControllerService = params.tempusControllerService;
+    this.vaultService = params.vaultService;
+    this.tempusAMMService = params.tempusAMMService;
   }
 
   public async generateChartData(): Promise<ChartDataPoint[]> {
@@ -76,7 +76,7 @@ class VolumeChartDataAdapter {
 
     let valueIncrease = BigNumber.from('0');
     if (previous && previous.value && !ethers.utils.parseEther(previous.value).isZero()) {
-      const valueDiff = value.sub(previous.value);
+      const valueDiff = value.sub(ethers.utils.parseEther(previous.value));
       const valueRatio = div18f(valueDiff, ethers.utils.parseEther(previous.value));
 
       valueIncrease = mul18f(valueRatio, ethers.utils.parseEther('100'));
