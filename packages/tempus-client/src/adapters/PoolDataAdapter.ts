@@ -125,9 +125,9 @@ export default class PoolDataAdapter {
     }
   }
 
-  // async getEstimatedMintShares(tempusPoolAddress: string, tokenAmount: BigNumber, isBackingToken: boolean) {
-  //   return this.statisticService?.estimatedMintedShares(tempusPoolAddress, tokenAmount, isBackingToken);
-  // }
+  async getEstimatedMintShares(tempusPoolAddress: string, tokenAmount: BigNumber, isBackingToken: boolean) {
+    return this.statisticService?.estimatedMintedShares(tempusPoolAddress, tokenAmount, isBackingToken);
+  }
 
   async approve(
     tempusPoolAddress: string,
@@ -172,17 +172,17 @@ export default class PoolDataAdapter {
     }
   }
 
-  // async executeWithdraw(tempusAMM: string, isBackingToken: boolean): Promise<ContractTransaction | undefined> {
-  //   if (!this.tempusControllerService) {
-  //     console.error('PoolDataAdapter - executeWithdraw() - Attempted to use PoolDataAdapter before initializing it!');
-  //     return Promise.reject();
-  //   }
+  async executeWithdraw(tempusAMM: string, isBackingToken: boolean): Promise<ContractTransaction | undefined> {
+    if (!this.tempusControllerService) {
+      console.error('PoolDataAdapter - executeWithdraw() - Attempted to use PoolDataAdapter before initializing it!');
+      return Promise.reject();
+    }
 
-  //   try {
-  //     return await this.tempusControllerService.completeExitAndRedeem(tempusAMM, isBackingToken);
-  //   } catch (error) {
-  //     console.error(`TempusPoolService - executeWithdraw() - Failed to make a deposit to the pool!`, error);
-  //     return Promise.reject(error);
-  //   }
-  // }
+    try {
+      return await this.tempusControllerService.completeExitAndRedeem(tempusAMM, isBackingToken);
+    } catch (error) {
+      console.error(`TempusPoolService - executeWithdraw() - Failed to make a deposit to the pool!`, error);
+      return Promise.reject(error);
+    }
+  }
 }

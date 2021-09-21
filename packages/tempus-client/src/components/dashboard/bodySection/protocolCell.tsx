@@ -1,16 +1,10 @@
-// External Libraries
 import { FC } from 'react';
-
-// External UI Components
 import { Table } from '@devexpress/dx-react-grid';
 import { VirtualTable } from '@devexpress/dx-react-grid-material-ui';
+import TokenIcon, { getTickerFromProtocol } from '../../tokenIcon';
+import { ProtocolName } from '../../../interfaces';
 
-// Interfaces
-import { ProtocolName, Ticker } from '../../../interfaces';
-
-// Style
 import './protocolCell.scss';
-import TokenIcon from '../../tokenIcon';
 
 const ProtocolCell: FC<Table.DataCellProps> = props => {
   const isParent: boolean = !props.row.parentId;
@@ -36,11 +30,3 @@ const ProtocolCell: FC<Table.DataCellProps> = props => {
 };
 
 export default ProtocolCell;
-
-const getTickerFromProtocol = (protocol: ProtocolName): Ticker => {
-  if (protocol === 'compound') {
-    return 'COMP';
-  }
-
-  return protocol.toUpperCase() as Ticker;
-};

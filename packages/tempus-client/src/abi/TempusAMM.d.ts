@@ -30,7 +30,9 @@ interface TempusAMMInterface extends ethers.utils.Interface {
     "getActionId(bytes4)": FunctionFragment;
     "getAmplificationParameter()": FunctionFragment;
     "getAuthorizer()": FunctionFragment;
+    "getExpectedLPTokensForTokensIn(uint256[])": FunctionFragment;
     "getExpectedReturnGivenIn(uint256,bool)": FunctionFragment;
+    "getExpectedTokensOutGivenBPTIn(uint256)": FunctionFragment;
     "getLastInvariant()": FunctionFragment;
     "getOwner()": FunctionFragment;
     "getPausedState()": FunctionFragment;
@@ -91,8 +93,16 @@ interface TempusAMMInterface extends ethers.utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
+    functionFragment: "getExpectedLPTokensForTokensIn",
+    values: [BigNumberish[]]
+  ): string;
+  encodeFunctionData(
     functionFragment: "getExpectedReturnGivenIn",
     values: [BigNumberish, boolean]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getExpectedTokensOutGivenBPTIn",
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "getLastInvariant",
@@ -259,7 +269,15 @@ interface TempusAMMInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "getExpectedLPTokensForTokensIn",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "getExpectedReturnGivenIn",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getExpectedTokensOutGivenBPTIn",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -425,11 +443,23 @@ export class TempusAMM extends BaseContract {
 
     getAuthorizer(overrides?: CallOverrides): Promise<[string]>;
 
+    getExpectedLPTokensForTokensIn(
+      amountsIn: BigNumberish[],
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
     getExpectedReturnGivenIn(
       amount: BigNumberish,
       yieldShareIn: boolean,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
+
+    getExpectedTokensOutGivenBPTIn(
+      bptAmountIn: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<
+      [BigNumber, BigNumber] & { principals: BigNumber; yields: BigNumber }
+    >;
 
     getLastInvariant(
       overrides?: CallOverrides
@@ -646,11 +676,23 @@ export class TempusAMM extends BaseContract {
 
   getAuthorizer(overrides?: CallOverrides): Promise<string>;
 
+  getExpectedLPTokensForTokensIn(
+    amountsIn: BigNumberish[],
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
   getExpectedReturnGivenIn(
     amount: BigNumberish,
     yieldShareIn: boolean,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
+
+  getExpectedTokensOutGivenBPTIn(
+    bptAmountIn: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<
+    [BigNumber, BigNumber] & { principals: BigNumber; yields: BigNumber }
+  >;
 
   getLastInvariant(
     overrides?: CallOverrides
@@ -870,11 +912,23 @@ export class TempusAMM extends BaseContract {
 
     getAuthorizer(overrides?: CallOverrides): Promise<string>;
 
+    getExpectedLPTokensForTokensIn(
+      amountsIn: BigNumberish[],
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     getExpectedReturnGivenIn(
       amount: BigNumberish,
       yieldShareIn: boolean,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    getExpectedTokensOutGivenBPTIn(
+      bptAmountIn: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<
+      [BigNumber, BigNumber] & { principals: BigNumber; yields: BigNumber }
+    >;
 
     getLastInvariant(
       overrides?: CallOverrides
@@ -1133,9 +1187,19 @@ export class TempusAMM extends BaseContract {
 
     getAuthorizer(overrides?: CallOverrides): Promise<BigNumber>;
 
+    getExpectedLPTokensForTokensIn(
+      amountsIn: BigNumberish[],
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     getExpectedReturnGivenIn(
       amount: BigNumberish,
       yieldShareIn: boolean,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getExpectedTokensOutGivenBPTIn(
+      bptAmountIn: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1340,9 +1404,19 @@ export class TempusAMM extends BaseContract {
 
     getAuthorizer(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    getExpectedLPTokensForTokensIn(
+      amountsIn: BigNumberish[],
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     getExpectedReturnGivenIn(
       amount: BigNumberish,
       yieldShareIn: boolean,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getExpectedTokensOutGivenBPTIn(
+      bptAmountIn: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

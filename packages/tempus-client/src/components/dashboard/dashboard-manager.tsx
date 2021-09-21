@@ -1,13 +1,13 @@
 import { FC, useCallback, useContext, useMemo, useState } from 'react';
-import { DashboardRow } from '../../interfaces';
+import { DashboardRow, DashboardRowChild } from '../../interfaces';
 import getDashboardDataAdapter from '../../adapters/getDashboardDataAdapter';
 import Detail from '../detail/detail';
 import Dashboard from './dashboard';
 import { Context } from '../../context';
 
 type DashboardManagerProps = {
-  selectedRow: DashboardRow | null;
-  onRowSelected?: (row: DashboardRow | null) => void;
+  selectedRow: DashboardRowChild | null;
+  onRowSelected?: (row: DashboardRowChild | null) => void;
 };
 
 const DashboardManager: FC<DashboardManagerProps> = ({ selectedRow, onRowSelected }): JSX.Element => {
@@ -47,7 +47,8 @@ const DashboardManager: FC<DashboardManagerProps> = ({ selectedRow, onRowSelecte
         userWalletAddress={userWalletAddress}
         onRowActionClick={onRowActionClick}
       />
-      <Detail hidden={!shouldShowDashboard} content={selectedRow} onClose={onCloseRowDetail} />
+
+      {selectedRow && <Detail content={selectedRow} onClose={onCloseRowDetail} />}
     </>
   );
 };
