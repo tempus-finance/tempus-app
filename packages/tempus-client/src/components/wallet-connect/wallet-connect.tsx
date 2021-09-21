@@ -23,6 +23,20 @@ const WalletConnect: FC = (): JSX.Element => {
   }, [hasBeenClicked, setHasBeenClicked, activate]);
 
   useEffect(() => {
+    const checkConnection = async () => {
+      const injectedConnector = new InjectedConnector({ supportedChainIds });
+      injectedConnector.isAuthorized().then((authorized: boolean | null) => {
+        if (authorized) {
+          activate(injectedConnector);
+        }
+      });
+    };
+    if (!active) {
+      checkConnection();
+    }
+  }, [active, activate]);
+
+  useEffect(() => {
     setData &&
       setData({
         userWalletSigner: library?.getSigner() || null,
