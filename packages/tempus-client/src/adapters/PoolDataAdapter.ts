@@ -125,8 +125,50 @@ export default class PoolDataAdapter {
     }
   }
 
-  async getEstimatedMintShares(tempusPoolAddress: string, tokenAmount: BigNumber, isBackingToken: boolean) {
-    return this.statisticService?.estimatedMintedShares(tempusPoolAddress, tokenAmount, isBackingToken);
+  async getEstimatedDepositAmount(
+    tempusAmmAddress: string,
+    tokenAmount: number,
+    isBackingToken: boolean,
+  ): Promise<{
+    fixedDeposit: number | undefined;
+    variableDeposit: number[] | undefined;
+  } | void> {
+    try {
+      const [fixedDeposit, variableDeposit] = await Promise.all([
+        this.statisticService?.estimatedDepositAndFix(tempusAmmAddress, tokenAmount, isBackingToken),
+        this.statisticService?.estimatedDepositAndProvideLiquidity(tempusAmmAddress, tokenAmount, isBackingToken),
+      ]);
+
+      return {
+        fixedDeposit: fixedDeposit ? parseFloat(ethers.utils.formatEther(fixedDeposit)) : undefined,
+        variableDeposit: variableDeposit ? variableDeposit.map(ethers.utils.formatEther).map(parseFloat) : [],
+      };
+    } catch (error) {
+      console.error('PoolDataAdapter - getEstimatedDepositAmount() - Failed to retrieve balances!', error);
+      Promise.reject(null);
+    }
+  }
+
+  async getEstimatedWithdrawAmount(
+    tempusAmmAddress: string,
+    principalAmount: number,
+    yieldsAmount: number,
+    lpAmount: number,
+    isBackingToken: boolean,
+  ): Promise<number | void> {
+    try {
+      const amount = await this.statisticService?.estimateExitAndRedeem(
+        tempusAmmAddress,
+        principalAmount,
+        yieldsAmount,
+        lpAmount,
+        isBackingToken,
+      );
+      return amount ? parseFloat(ethers.utils.formatEther(amount)) : undefined;
+    } catch (error) {
+      console.error('PoolDataAdapter - getEstimatedWithdrawAmount() - Failed to retrieve balances!', error);
+      Promise.reject(0);
+    }
   }
 
   async approve(

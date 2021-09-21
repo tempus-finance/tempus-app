@@ -13,7 +13,6 @@ const mockGetLastCompletedReportDelta = jest.fn();
 const mockPostTotalPooledEther = eth.BigNumber.from('10000000');
 const mockPreTotalPooledEther = eth.BigNumber.from('5000000');
 const mockTimeElapsed = eth.BigNumber.from('3000000');
-const mockSupplyRatePerBlock = jest.fn();
 const mockBorrowRatePerBlock = jest.fn();
 
 jest.spyOn(eth as any, 'Contract').mockImplementation((address: any) => {
@@ -25,10 +24,7 @@ jest.spyOn(eth as any, 'Contract').mockImplementation((address: any) => {
 
   if (address === cEthAddress) {
     return {
-      methods: {
-        supplyRatePerBlock: mockSupplyRatePerBlock,
-        borrowRatePerBlock: mockBorrowRatePerBlock,
-      },
+      borrowRatePerBlock: mockBorrowRatePerBlock,
     };
   }
 
@@ -90,20 +86,10 @@ describe('VariableRate', () => {
     });
 
     test('returns the APR of `compound` protocol', async () => {
-      mockSupplyRatePerBlock.mockImplementation(() => {
-        return {
-          call: jest.fn().mockReturnValue(1000000),
-        };
-      });
-
-      mockBorrowRatePerBlock.mockImplementation(() => {
-        return {
-          call: jest.fn().mockReturnValue(200),
-        };
-      });
+      mockBorrowRatePerBlock.mockImplementation(() => 2000000000);
 
       const apr = await instance.getAprRate('compound');
-      expect(apr).toEqual(0.0002398052903807013);
+      expect(apr).toEqual(0.48075880352207445);
     });
 
     test('returns the APR of `lido` protocol', async () => {

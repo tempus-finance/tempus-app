@@ -6,12 +6,12 @@ import CurrencyInput from '../../currencyInput';
 import TokenSelector from '../../tokenSelector';
 import ActionContainer from '../shared/actionContainer';
 import Execute from '../shared/execute';
+import SectionContainer from '../shared/sectionContainer';
 import PoolDetailProps from '../shared/PoolDetailProps';
 import Typography from '../../typography/Typography';
+import Spacer from '../../spacer/spacer';
 
 import '../shared/style.scss';
-import Spacer from '../../spacer/spacer';
-import SectionContainer from '../shared/sectionContainer';
 
 const DetailDeposit: FC<PoolDetailProps> = ({
   selectedTab,
@@ -22,19 +22,24 @@ const DetailDeposit: FC<PoolDetailProps> = ({
   poolDataAdapter,
 }) => {
   const { address, ammAddress } = tempusPool || {};
-  const { supportedTokens = [], fixedAPR = 0 } = content || {};
+  const { supportedTokens = [], fixedAPR = 0, variableAPY = 0 } = content || {};
   const [backingToken] = supportedTokens;
 
   const [selectedToken, setSelectedToken] = useState<string | undefined>(undefined);
   const [amount, setAmount] = useState<number>(0);
   const [balance, setBalance] = useState<number>(0);
+  const [usdRate, setUsdRate] = useState<number>(0);
   const [minTYSRate] = useState<number>(0); // TODO where to get this value?
 
-  const [principalsAmount] = useState<number>(1234); // TODO where to get this value?
-  const [lpTokensAmount] = useState<number>(4321); // TODO where to get this value?
+  const [fixedPrincipalsAmount, setFixedPrincipalsAmount] = useState<number | undefined>(undefined);
+  const [variablePrincipalsAmount, setVariablePrincipalsAmount] = useState<number | undefined>(undefined);
+  const [variableLpTokensAmount, setVariableLpTokensAmount] = useState<number | undefined>(undefined);
 
   const [backingTokenBalance, setBackingTokenBalance] = useState<number | undefined>(undefined);
   const [yieldBearingTokenBalance, setYieldBearingTokenBalance] = useState<number | undefined>(undefined);
+
+  const [backingTokenRate, setBackingTokenRate] = useState<number | undefined>(undefined);
+  const [yieldBearingTokenRate, setYieldBearingTokenRate] = useState<number | undefined>(undefined);
 
   const [selectedYield, setSelectedYield] = useState<string>('');
   const [approveDisabled, setApproveDisabled] = useState<boolean>(false);
@@ -49,16 +54,32 @@ const DetailDeposit: FC<PoolDetailProps> = ({
           if (backingTokenBalance !== undefined && !isNaN(backingTokenBalance)) {
             setBalance(backingTokenBalance);
           }
+
+          if (backingTokenRate !== undefined && !isNaN(backingTokenRate)) {
+            setUsdRate(backingTokenRate);
+          }
         }
 
         if (backingToken !== token) {
           if (yieldBearingTokenBalance !== undefined && !isNaN(yieldBearingTokenBalance)) {
             setBalance(yieldBearingTokenBalance);
           }
+
+          if (yieldBearingTokenRate !== undefined && !isNaN(yieldBearingTokenRate)) {
+            setUsdRate(yieldBearingTokenRate);
+          }
         }
       }
     },
-    [backingToken, backingTokenBalance, yieldBearingTokenBalance, setSelectedToken, setBalance],
+    [
+      backingToken,
+      backingTokenBalance,
+      backingTokenRate,
+      yieldBearingTokenBalance,
+      yieldBearingTokenRate,
+      setSelectedToken,
+      setBalance,
+    ],
   );
 
   const onAmountChange = useCallback(
@@ -142,11 +163,17 @@ const DetailDeposit: FC<PoolDetailProps> = ({
     const retrieveBalances = async () => {
       if (signer && address && ammAddress) {
         try {
-          const { backingTokenBalance = '0', yieldBearingTokenBalance = '0' } =
-            (await poolDataAdapter?.retrieveBalances(address, ammAddress, userWalletAddress, signer)) || {};
+          const {
+            backingTokenBalance = '0',
+            backingTokenRate = '0',
+            yieldBearingTokenBalance = '0',
+            yieldBearingTokenRate = '0',
+          } = (await poolDataAdapter?.retrieveBalances(address, ammAddress, userWalletAddress, signer)) || {};
 
           setBackingTokenBalance(Number(ethers.utils.formatEther(backingTokenBalance)));
+          setBackingTokenRate(Number(ethers.utils.formatEther(backingTokenRate)));
           setYieldBearingTokenBalance(Number(ethers.utils.formatEther(yieldBearingTokenBalance)));
+          setYieldBearingTokenRate(Number(ethers.utils.formatEther(yieldBearingTokenRate)));
         } catch (err) {
           // TODO handle errors
           console.log('Detail Deposit - retrieveBalances -', err);
@@ -162,7 +189,50 @@ const DetailDeposit: FC<PoolDetailProps> = ({
     userWalletAddress,
     poolDataAdapter,
     setBackingTokenBalance,
+    setBackingTokenRate,
+    setYieldBearingTokenRate,
     setYieldBearingTokenBalance,
+  ]);
+
+  useEffect(() => {
+    const retrieveDepositAmount = async () => {
+      if (amount && ammAddress) {
+        try {
+          const isBackingToken = backingToken === selectedToken;
+
+          const { fixedDeposit, variableDeposit } =
+            (await poolDataAdapter?.getEstimatedDepositAmount(ammAddress, amount, isBackingToken)) || {};
+
+          if (fixedDeposit !== undefined) {
+            setFixedPrincipalsAmount(fixedDeposit);
+          }
+
+          if (variableDeposit) {
+            const [variablePrincipals, , variableLpTokens] = variableDeposit;
+            if (variablePrincipals !== undefined) {
+              setVariablePrincipalsAmount(variablePrincipals);
+            }
+            if (variableLpTokens !== undefined) {
+              setVariableLpTokensAmount(variableLpTokens);
+            }
+          }
+        } catch (err) {
+          // TODO handle errors
+          console.log('Detail Deposit - retrieveDepositAmount -', err);
+        }
+      }
+    };
+
+    retrieveDepositAmount();
+  }, [
+    ammAddress,
+    amount,
+    selectedToken,
+    backingToken,
+    poolDataAdapter,
+    setFixedPrincipalsAmount,
+    setVariablePrincipalsAmount,
+    setVariableLpTokensAmount,
   ]);
 
   useEffect(() => {
@@ -222,7 +292,8 @@ const DetailDeposit: FC<PoolDetailProps> = ({
                 <div className="tf__dialog__flex-col-space-between" yield-attribute="fixed" onClick={onSelectYield}>
                   <Typography variant="h4">Fixed Yield</Typography>
                   <Typography variant="body-text">
-                    est. {new Intl.NumberFormat().format(principalsAmount)} Principles
+                    est. {fixedPrincipalsAmount ? new Intl.NumberFormat().format(fixedPrincipalsAmount) : '-'}{' '}
+                    Principals
                   </Typography>
                   <Typography variant="body-text">est. {NumberUtils.formatPercentage(fixedAPR, 2)}</Typography>
                 </div>
@@ -242,13 +313,15 @@ const DetailDeposit: FC<PoolDetailProps> = ({
                   <Typography variant="h4">Variable Yield</Typography>
                   <div>
                     <Typography variant="body-text">
-                      est. {new Intl.NumberFormat().format(principalsAmount)} Principals
+                      est. {variablePrincipalsAmount ? new Intl.NumberFormat().format(variablePrincipalsAmount) : '-'}{' '}
+                      Principals
                     </Typography>
                     <Typography variant="body-text">
-                      est. {new Intl.NumberFormat().format(lpTokensAmount)} LP Tokens
+                      est. {variableLpTokensAmount ? new Intl.NumberFormat().format(variableLpTokensAmount) : '-'} LP
+                      Tokens
                     </Typography>
                   </div>
-                  <Typography variant="body-text">est. {NumberUtils.formatPercentage(fixedAPR, 2)}</Typography>
+                  <Typography variant="body-text">est. {NumberUtils.formatPercentage(variableAPY, 2)}</Typography>
                 </div>
               </SectionContainer>
             </div>
