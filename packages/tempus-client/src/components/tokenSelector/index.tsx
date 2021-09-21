@@ -22,7 +22,7 @@ type TokenSelectorProps = TokenSelectorInProps & TokenSelectorOutProps;
 const getMenuItems = (items: string[]) => {
   return items.map((item: string) => {
     return (
-      <MenuItem value={item} className="tf__token-selector__menu-item__container">
+      <MenuItem key={item} value={item} className="tf__token-selector__menu-item__container">
         <div className="tf__token-selector__menu-item">
           {item !== 'empty' && (
             <>
