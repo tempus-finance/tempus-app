@@ -1,38 +1,49 @@
 import { BigNumber, ContractTransaction, ethers } from 'ethers';
 import { JsonRpcSigner } from '@ethersproject/providers';
-import ERC20TokenService from '../services/ERC20TokenService';
+import TempusAMMService from '../services/TempusAMMService';
 import StatisticsService from '../services/StatisticsService';
-import TempusControllerService from '../services/TempusControllerService';
+import TempusControllerService, { DepositedEvent, RedeemedEvent } from '../services/TempusControllerService';
 import TempusPoolService from '../services/TempusPoolService';
+import getERC20TokenService from '../services/getERC20TokenService';
 import { mul18f } from '../utils/wei-math';
+import { Ticker } from '../interfaces';
+
+export interface UserTransaction {
+  event: DepositedEvent | RedeemedEvent;
+  block: ethers.providers.Block;
+  usdValue: BigNumber;
+}
 
 type PoolDataAdapterParameters = {
   tempusControllerAddress: string;
   tempusControllerService: TempusControllerService;
   tempusPoolService: TempusPoolService;
   statisticService: StatisticsService;
-  eRC20TokenServiceGetter: (backingToken: string, signer: JsonRpcSigner) => ERC20TokenService;
+  tempusAMMService: TempusAMMService;
+  eRC20TokenServiceGetter: typeof getERC20TokenService;
 };
 
 export default class PoolDataAdapter {
   private tempusControllerService: TempusControllerService | undefined = undefined;
   private tempusControllerAddress: string = '';
-  private tempusPoolService: TempusPoolService | undefined = undefined;
-  private statisticService: StatisticsService | undefined = undefined;
-  private eRC20TokenServiceGetter: undefined | ((backingToken: string, signer: JsonRpcSigner) => ERC20TokenService) =
-    undefined;
+  private tempusPoolService: TempusPoolService | null = null;
+  private statisticService: StatisticsService | null = null;
+  private tempusAMMService: TempusAMMService | null = null;
+  private eRC20TokenServiceGetter: null | typeof getERC20TokenService = null;
 
   init({
     tempusControllerService,
     tempusControllerAddress,
     tempusPoolService,
     statisticService,
+    tempusAMMService,
     eRC20TokenServiceGetter,
   }: PoolDataAdapterParameters) {
     this.tempusControllerService = tempusControllerService;
     this.tempusControllerAddress = tempusControllerAddress;
     this.tempusPoolService = tempusPoolService;
     this.statisticService = statisticService;
+    this.tempusAMMService = tempusAMMService;
     this.eRC20TokenServiceGetter = eRC20TokenServiceGetter;
   }
 
@@ -41,18 +52,15 @@ export default class PoolDataAdapter {
     tempusAMMAddress: string,
     userWalletAddress: string,
     signer: JsonRpcSigner,
-  ): Promise<
-    | {
-        backingTokenBalance: BigNumber;
-        backingTokenRate: BigNumber;
-        yieldBearingTokenBalance: BigNumber;
-        yieldBearingTokenRate: BigNumber;
-        principalsTokenBalance: BigNumber;
-        yieldsTokenBalance: BigNumber;
-        lpTokensBalance: BigNumber;
-      }
-    | undefined
-  > {
+  ): Promise<{
+    backingTokenBalance: BigNumber;
+    backingTokenRate: BigNumber;
+    yieldBearingTokenBalance: BigNumber;
+    yieldBearingTokenRate: BigNumber;
+    principalsTokenBalance: BigNumber;
+    yieldsTokenBalance: BigNumber;
+    lpTokensBalance: BigNumber;
+  }> {
     if (!userWalletAddress) {
       console.error(
         'PoolDataAdapter - retrieveBalances() - Attempted to use PoolDataAdapter before connecting user wallet!',
@@ -121,7 +129,7 @@ export default class PoolDataAdapter {
       };
     } catch (error) {
       console.error('PoolDataAdapter - retrieveBalances() - Failed to retrieve balances!', error);
-      Promise.reject();
+      return Promise.reject();
     }
   }
 
@@ -184,5 +192,93 @@ export default class PoolDataAdapter {
       console.error(`TempusPoolService - executeWithdraw() - Failed to make a deposit to the pool!`, error);
       return Promise.reject(error);
     }
+  }
+
+  public async getExpectedReturnForLPTokens(
+    tempusAMMAddress: string,
+    lpTokenAmount: BigNumber,
+  ): Promise<{
+    principals: BigNumber;
+    yields: BigNumber;
+  }> {
+    if (!this.tempusAMMService) {
+      console.error(
+        'PoolDataAdapter - getExpectedReturnForLPTokens() - Attempted to use PoolDataAdapter before initializing it!',
+      );
+      return Promise.reject();
+    }
+
+    try {
+      return await this.tempusAMMService.getExpectedTokensOutGivenBPTIn(tempusAMMAddress, lpTokenAmount);
+    } catch (error) {
+      console.error(
+        'PoolDataAdapter - getExpectedReturnForLPTokens() - Failed to fetch expected token return from LP Tokens',
+      );
+      return Promise.reject(error);
+    }
+  }
+
+  public async getUserTransactionEvents(
+    tempusPoolAddress: string,
+    userWalletAddress: string,
+    backingTokenTicker: Ticker,
+  ): Promise<UserTransaction[]> {
+    if (!this.tempusControllerService || !this.statisticService) {
+      console.error(
+        'PoolDataAdapter - getUserTransactions() - Attempted to use PoolDataAdapter before initializing it!',
+      );
+      return Promise.reject();
+    }
+
+    let events: (DepositedEvent | RedeemedEvent)[] = [];
+    try {
+      // TODO - Swap events (transactions) do not contain user address - if they do at some point we should include them here.
+      const [depositedEvents, redeemedEvents] = await Promise.all([
+        this.tempusControllerService.getDepositedEvents(tempusPoolAddress, userWalletAddress),
+        this.tempusControllerService.getRedeemedEvents(tempusPoolAddress, userWalletAddress),
+      ]);
+      events = [...depositedEvents, ...redeemedEvents];
+    } catch (error) {
+      console.error('PoolDataAdapter - getUserTransactions() - Failed to fetch user events!', error);
+      return Promise.reject(error);
+    }
+
+    let backingTokenRate: BigNumber;
+    try {
+      backingTokenRate = await this.statisticService.getRate(backingTokenTicker);
+    } catch (error) {
+      console.error(
+        'PoolDataAdapter - getUserTransactions() - Failed to fetch backing token conversion rate to USD!',
+        error,
+      );
+      return Promise.reject(error);
+    }
+
+    let userTransactions: UserTransaction[] = [];
+    try {
+      userTransactions = await Promise.all(
+        events.map(async event => {
+          if (!this.statisticService) {
+            console.error(
+              'PoolDataAdapter - getUserTransactions() - Attempted to use PoolDataAdapter before initializing it!',
+            );
+            return Promise.reject();
+          }
+
+          const eventBlock = await event.getBlock();
+
+          return {
+            event: event,
+            block: eventBlock,
+            usdValue: mul18f(event.args.backingTokenValue, backingTokenRate),
+          };
+        }),
+      );
+    } catch (error) {
+      console.error('PoolDataAdapter - getUserTransactions() - Failed to fetch user transaction data!', error);
+      return Promise.reject(error);
+    }
+
+    return userTransactions;
   }
 }

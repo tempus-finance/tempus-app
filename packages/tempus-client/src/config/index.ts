@@ -7,7 +7,7 @@ const config: Config = {
     {
       address: '',
       ammAddress: '',
-      backingToken: '',
+      backingToken: 'DAI',
     },
   ],
   statisticsContract: '',

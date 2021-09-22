@@ -20,9 +20,10 @@ const SectionContainer: FC<SectionContainerProps> = props => {
       {title && tooltip && <Spacer size={18} />}
       <div className="tf__dialog__section-title">
         {title && <Typography variant="h4">{title}</Typography>}
-        <Spacer size={10} />
+        {title && <Spacer size={10} />}
         {tooltip && <InfoTooltip text={tooltip} />}
       </div>
+      {title && <Spacer size={18} />}
       <div
         className="tf__dialog__section-content"
         style={{

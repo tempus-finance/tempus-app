@@ -9,7 +9,9 @@
 .tf__dialog-container {
   @include background-level-1;
   padding: 20px;
-  min-width: 650px;
+  max-width: 700px;
+  flex-grow: 1;
+  align-self: flex-start;
 
   .tf__dialog-container__header {
     display: flex;
@@ -62,13 +64,10 @@
       align-items: center;
     }
   }
+}
 
-  .tf__dialog-container__header-wallet {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: row;
-    flex: 1;
-    padding: 3px 0;
-  }
+.tf__user__details-container {
+  @include background-level-1;
+  padding: 20px;
+  flex-grow: 1;
 }

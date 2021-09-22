@@ -48,7 +48,7 @@ class TempusControllerService {
     this.contract = new Contract(params.address, params.abi, params.signerOrProvider) as TempusController;
   }
 
-  public async getDepositedEvents(): Promise<DepositedEvent[]> {
+  public async getDepositedEvents(forPool?: string, forUser?: string): Promise<DepositedEvent[]> {
     if (!this.contract) {
       console.error(
         'TempusControllerService - getDepositedEvents() - Attempted to use TempusControllerService before initializing it!',
@@ -57,14 +57,14 @@ class TempusControllerService {
     }
 
     try {
-      return await this.contract.queryFilter(this.contract.filters.Deposited());
+      return await this.contract.queryFilter(this.contract.filters.Deposited(forPool, forUser));
     } catch (error) {
       console.error(`TempusControllerService getDepositedEvents() - Failed to get deposited events!`, error);
       return Promise.reject(error);
     }
   }
 
-  public async getRedeemedEvents(): Promise<RedeemedEvent[]> {
+  public async getRedeemedEvents(forPool?: string, forUser?: string): Promise<RedeemedEvent[]> {
     if (!this.contract) {
       console.error(
         'TempusControllerService - getRedeemedEvents() - Attempted to use TempusControllerService before initializing it!',
@@ -73,7 +73,7 @@ class TempusControllerService {
     }
 
     try {
-      return await this.contract.queryFilter(this.contract.filters.Redeemed());
+      return await this.contract.queryFilter(this.contract.filters.Redeemed(forPool, forUser));
     } catch (error) {
       console.error(`TempusControllerService getRedeemEvents() - Failed to get redeemed events!`, error);
       return Promise.reject(error);

@@ -136,6 +136,28 @@ class TempusAMMService {
     );
   }
 
+  public async getExpectedTokensOutGivenBPTIn(
+    address: string,
+    lpTokenAmount: BigNumber,
+  ): Promise<{
+    principals: BigNumber;
+    yields: BigNumber;
+  }> {
+    const tempusAMM = this.tempusAMMMap.get(address);
+    if (tempusAMM) {
+      try {
+        return await tempusAMM.getExpectedTokensOutGivenBPTIn(lpTokenAmount);
+      } catch (error) {
+        console.error(
+          'TempusAMMService - getExpectedTokensOutGivenBPTIn() - Failed to fetch expected amount of Principals and Yields!',
+        );
+      }
+    }
+    throw new Error(
+      `TempusAMMService - getExpectedTokensOutGivenBPTIn() - TempusAMM with address '${address}' does not exist!`,
+    );
+  }
+
   private async fetchTempusPoolAddressData(tempusAMM: TempusAMM): Promise<TempusPoolAddressData> {
     const [poolAddress, tempusPoolId] = await Promise.all([tempusAMM.tempusPool(), tempusAMM.getPoolId()]);
 

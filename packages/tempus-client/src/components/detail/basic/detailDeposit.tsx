@@ -4,14 +4,16 @@ import Button from '@material-ui/core/Button';
 import NumberUtils from '../../../services/NumberUtils';
 import CurrencyInput from '../../currencyInput';
 import TokenSelector from '../../tokenSelector';
+import Typography from '../../typography/Typography';
+import Spacer from '../../spacer/spacer';
 import ActionContainer from '../shared/actionContainer';
 import Execute from '../shared/execute';
+import SectionContainer from '../shared/sectionContainer';
 import PoolDetailProps from '../shared/PoolDetailProps';
-import Typography from '../../typography/Typography';
 
 import '../shared/style.scss';
-import Spacer from '../../spacer/spacer';
-import SectionContainer from '../shared/sectionContainer';
+
+type SelectedYield = 'fixed' | 'variable';
 
 const DetailDeposit: FC<PoolDetailProps> = ({
   selectedTab,
@@ -36,7 +38,7 @@ const DetailDeposit: FC<PoolDetailProps> = ({
   const [backingTokenBalance, setBackingTokenBalance] = useState<number | undefined>(undefined);
   const [yieldBearingTokenBalance, setYieldBearingTokenBalance] = useState<number | undefined>(undefined);
 
-  const [selectedYield, setSelectedYield] = useState<string>('');
+  const [selectedYield, setSelectedYield] = useState<SelectedYield>('fixed');
   const [approveDisabled, setApproveDisabled] = useState<boolean>(false);
   const [executeDisabled, setExecuteDisabled] = useState<boolean>(true);
 
@@ -172,7 +174,9 @@ const DetailDeposit: FC<PoolDetailProps> = ({
   return (
     <div role="tabpanel" hidden={selectedTab !== 0}>
       <div className="tf__dialog__content-tab">
+        <Spacer size={25} />
         <ActionContainer label="From">
+          <Spacer size={18} />
           <SectionContainer>
             <div className="tf__dialog__flex-row">
               <div className="tf__dialog__label-align-right">
@@ -209,7 +213,7 @@ const DetailDeposit: FC<PoolDetailProps> = ({
             </div>
           </SectionContainer>
         </ActionContainer>
-
+        <Spacer size={25} />
         <ActionContainer label="To">
           <div className="tf__dialog__flex-row">
             <div className="tf__dialog__flex-row-half-width">
@@ -224,7 +228,9 @@ const DetailDeposit: FC<PoolDetailProps> = ({
                   <Typography variant="body-text">
                     est. {new Intl.NumberFormat().format(principalsAmount)} Principles
                   </Typography>
-                  <Typography variant="body-text">est. {NumberUtils.formatPercentage(fixedAPR, 2)}</Typography>
+                  <Typography variant="h3" color="accent">
+                    est. {NumberUtils.formatPercentage(fixedAPR, 2)}
+                  </Typography>
                 </div>
               </SectionContainer>
             </div>
@@ -248,7 +254,9 @@ const DetailDeposit: FC<PoolDetailProps> = ({
                       est. {new Intl.NumberFormat().format(lpTokensAmount)} LP Tokens
                     </Typography>
                   </div>
-                  <Typography variant="body-text">est. {NumberUtils.formatPercentage(fixedAPR, 2)}</Typography>
+                  <Typography variant="h3" color="accent">
+                    est. {NumberUtils.formatPercentage(fixedAPR, 2)}
+                  </Typography>
                 </div>
               </SectionContainer>
             </div>

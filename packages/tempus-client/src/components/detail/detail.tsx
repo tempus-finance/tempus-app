@@ -1,14 +1,16 @@
 import { FC, ChangeEvent, useEffect, useCallback, useContext, useState } from 'react';
 import { format } from 'date-fns';
 import Switch from '@material-ui/core/Switch';
-import Typography from '../typography/Typography';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
 import PoolDataAdapter from '../../adapters/PoolDataAdapter';
+import { DashboardRowChild } from '../../interfaces';
 import { Context } from '../../context';
 import TokenIcon, { getTickerFromProtocol } from '../tokenIcon';
+import Typography from '../typography/Typography';
+import Spacer from '../spacer/spacer';
+import DetailUserInfo from './shared/detailUserInfo/detailUserInfo';
 import DetailBasic from './basic/detailBasic';
 import DetailAdvanced from './advanced/detailAdvanced';
-import { DashboardRowChild } from '../../interfaces';
 
 import './detail.scss';
 
@@ -26,7 +28,7 @@ const Detail: FC<DetailProps> = ({ content, onClose }) => {
   const { token, protocol, maturityDate, tempusPool } = content;
 
   const [showAdvancedUI, setShowAdvancedUI] = useState<boolean>(false);
-  const [poolDataAdapter, setPoolDataAdapter] = useState<PoolDataAdapter | undefined>(undefined);
+  const [poolDataAdapter, setPoolDataAdapter] = useState<PoolDataAdapter | null>(null);
 
   const {
     data: { userWalletSigner, userWalletAddress },
@@ -85,6 +87,16 @@ const Detail: FC<DetailProps> = ({ content, onClose }) => {
             />
           )}
         </div>
+      </div>
+      <Spacer size={23} />
+      <div className="tf__user__details-container">
+        <DetailUserInfo
+          content={content}
+          poolDataAdapter={poolDataAdapter}
+          tempusPool={tempusPool}
+          signer={userWalletSigner}
+          userWalletAddress={userWalletAddress}
+        />
       </div>
     </div>
   );

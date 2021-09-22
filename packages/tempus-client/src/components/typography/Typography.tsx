@@ -67,7 +67,7 @@ const Typography: FC<TypographyProps> = props => {
       color = '#222222';
       break;
     case 'accent':
-      color = '#F5AC37';
+      color = '#FF6B00';
       break;
     case 'inverted':
       color = '#FFFFFF';
