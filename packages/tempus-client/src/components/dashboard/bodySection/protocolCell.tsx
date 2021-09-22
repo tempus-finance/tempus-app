@@ -14,8 +14,8 @@ const ProtocolCell: FC<Table.DataCellProps> = props => {
     <VirtualTable.Cell {...props}>
       {isParent && (
         <div className="tf__dashboard__body__protocol-icons_container">
-          {props.row.protocols.map((protocol: ProtocolName) => {
-            return <TokenIcon ticker={getTickerFromProtocol(protocol)} />;
+          {props.row.protocols.map((protocol: ProtocolName, index: number) => {
+            return <TokenIcon key={index} ticker={getTickerFromProtocol(protocol)} />;
           })}
         </div>
       )}

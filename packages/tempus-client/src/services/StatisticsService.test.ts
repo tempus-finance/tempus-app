@@ -13,12 +13,18 @@ describe('StatisticsService', () => {
 
   const mockTotalValueLockedAtGivenRate = jest.fn();
   const mockGetRate = jest.fn();
+  const mockEstimatedDepositAndFix = jest.fn();
+  const mockEstimatedDepositAndProvideLiquidity = jest.fn();
+  const mockEstimateExitAndRedeem = jest.fn();
 
   beforeEach(() => {
-    jest.spyOn(ejs, 'Contract').mockImplementation(() => {
+    jest.spyOn(ejs as any, 'Contract').mockImplementation(() => {
       return {
         totalValueLockedAtGivenRate: mockTotalValueLockedAtGivenRate,
         getRate: mockGetRate,
+        estimatedDepositAndFix: mockEstimatedDepositAndFix,
+        estimatedDepositAndProvideLiquidity: mockEstimatedDepositAndProvideLiquidity,
+        estimateExitAndRedeem: mockEstimateExitAndRedeem,
       };
     });
   });
@@ -97,6 +103,96 @@ describe('StatisticsService', () => {
       const result = await instance.getRate('dai');
 
       expect(ejs.utils.formatEther(result)).toBe('50.0');
+    });
+  });
+
+  describe('estimatedDepositAndFix()', () => {
+    beforeEach(() => {
+      jest.clearAllMocks();
+
+      instance = new StatisticsService();
+
+      instance.init({
+        Contract: ejs.Contract,
+        address: mockAddress,
+        abi: StatisticsABI,
+        signerOrProvider: mockProvider,
+      });
+    });
+
+    test('it returns the amount of Principals tokens on fixed yield deposit', async () => {
+      const value = ejs.BigNumber.from('57000000000000');
+      mockEstimatedDepositAndFix.mockImplementation(() => {
+        return Promise.resolve(value);
+      });
+
+      const tempusPool = 'abc';
+      const tokenAmount = 100;
+      const isBackingToken = true;
+
+      const result = await instance.estimatedDepositAndFix(tempusPool, tokenAmount, isBackingToken);
+
+      expect(ejs.utils.formatEther(result)).toBe(ejs.utils.formatEther(value));
+    });
+
+    test('it returns the amount of Principals and LP tokens on variable yield deposit', async () => {
+      const value = [
+        ejs.BigNumber.from('23400000000000'),
+        ejs.BigNumber.from('56700000000000'),
+        ejs.BigNumber.from('99980000000000'),
+      ];
+      mockEstimatedDepositAndProvideLiquidity.mockImplementation(() => {
+        return Promise.resolve(value);
+      });
+
+      const tempusPool = 'abc';
+      const tokenAmount = 2;
+      const isBackingToken = true;
+
+      const result = await instance.estimatedDepositAndProvideLiquidity(tempusPool, tokenAmount, isBackingToken);
+
+      expect(ejs.utils.formatEther(result[0])).toBe(ejs.utils.formatEther(value[0]));
+      expect(ejs.utils.formatEther(result[1])).toBe(ejs.utils.formatEther(value[1]));
+      expect(ejs.utils.formatEther(result[2])).toBe(ejs.utils.formatEther(value[2]));
+    });
+  });
+
+  describe('estimateExitAndRedeem()', () => {
+    beforeEach(() => {
+      jest.clearAllMocks();
+
+      instance = new StatisticsService();
+
+      instance.init({
+        Contract: ejs.Contract,
+        address: mockAddress,
+        abi: StatisticsABI,
+        signerOrProvider: mockProvider,
+      });
+    });
+
+    test('it returns the amount of Backing or Yield Bearing tokens on withdraw', async () => {
+      const value = ejs.BigNumber.from('45670000000000');
+
+      mockEstimateExitAndRedeem.mockImplementation(() => {
+        return Promise.resolve(value);
+      });
+
+      const tempusPool = 'abc';
+      const principalsAmount = 100;
+      const yieldsAmount = 200;
+      const lpTokensAmount = 300;
+      const isBackingToken = true;
+
+      const result = await instance.estimateExitAndRedeem(
+        tempusPool,
+        principalsAmount,
+        yieldsAmount,
+        lpTokensAmount,
+        isBackingToken,
+      );
+
+      expect(ejs.utils.formatEther(result)).toBe(ejs.utils.formatEther(value));
     });
   });
 });

@@ -25,7 +25,7 @@ const DetailWithdraw: FC<PoolDetailProps> = ({
   const [backingToken, yieldBearingToken] = supportedTokens;
 
   const [selectedToken, setSelectedToken] = useState<string | undefined>(undefined);
-  const [withdrawAmount, setWithdrawAmount] = useState<number>(123);
+  const [withdrawAmount, setWithdrawAmount] = useState<number | undefined>(undefined);
   const [usdRate, setUsdRate] = useState<number>(0);
 
   const [principalsBalance, setPrincipalsBalance] = useState<number | undefined>(undefined);
@@ -44,16 +44,12 @@ const DetailWithdraw: FC<PoolDetailProps> = ({
         setSelectedToken(token);
 
         if (backingToken === token) {
-          // TODO: get how many backing tokens
-
           if (backingTokenRate !== undefined && !isNaN(backingTokenRate)) {
             setUsdRate(backingTokenRate);
           }
         }
 
         if (backingToken !== token) {
-          // TODO: get how many yield bearing tokens
-
           if (yieldBearingTokenRate !== undefined && !isNaN(yieldBearingTokenRate)) {
             setUsdRate(yieldBearingTokenRate);
           }
@@ -136,16 +132,6 @@ const DetailWithdraw: FC<PoolDetailProps> = ({
           setPrincipalsBalance(Number(ethers.utils.formatEther(principalsTokenBalance)));
           setYieldsBalance(Number(ethers.utils.formatEther(yieldsTokenBalance)));
           setLpBalance(Number(ethers.utils.formatEther(lpTokensBalance)));
-
-          // TODO below calculation is purely for test
-          const fakeTotal =
-            Number(ethers.utils.formatEther(principalsTokenBalance)) +
-            Number(ethers.utils.formatEther(yieldsTokenBalance));
-          if (selectedToken === backingToken) {
-            setWithdrawAmount(fakeTotal * 1.2);
-          } else {
-            setWithdrawAmount(fakeTotal * 0.99);
-          }
         } catch (err) {
           // TODO handle errors
           console.log('err', err);
@@ -167,6 +153,44 @@ const DetailWithdraw: FC<PoolDetailProps> = ({
     setPrincipalsBalance,
     setYieldsBalance,
     setLpBalance,
+  ]);
+
+  useEffect(() => {
+    const retrieveWithdrawAmount = async () => {
+      console.log('retrieveWithdrawAmount');
+      if (selectedToken && ammAddress) {
+        try {
+          const isBackingToken = backingToken === selectedToken;
+
+          const amount = await poolDataAdapter?.getEstimatedWithdrawAmount(
+            ammAddress,
+            principalsBalance || 0,
+            yieldsBalance || 0,
+            lpBalance || 0,
+            isBackingToken,
+          );
+
+          console.log('retrieveWithdrawAmount amount', amount);
+          if (amount !== undefined) {
+            setWithdrawAmount(amount);
+          }
+        } catch (err) {
+          // TODO handle errors
+          console.log('Detail Deposit - retrieveDepositAmount -', err);
+        }
+      }
+    };
+
+    retrieveWithdrawAmount();
+  }, [
+    ammAddress,
+    selectedToken,
+    backingToken,
+    principalsBalance,
+    yieldsBalance,
+    lpBalance,
+    poolDataAdapter,
+    setWithdrawAmount,
   ]);
 
   useEffect(() => {
@@ -256,10 +280,11 @@ const DetailWithdraw: FC<PoolDetailProps> = ({
 
             <div className="tf__dialog__tab__action-container-grid__centre-right tf__dialog__tab__action-container__lp-tokens">
               <div>
-                <span className="small-title">(est.)</span> {new Intl.NumberFormat().format(withdrawAmount)}
+                <span className="small-title">(est.)</span>{' '}
+                {withdrawAmount ? new Intl.NumberFormat().format(withdrawAmount) : '-'}
               </div>
               <div className="tf__dialog__tab__action-container__token-amount-fiat">
-                <div>{`~ ${new Intl.NumberFormat().format(withdrawAmount * usdRate)} USD`}</div>
+                <div>{`~ ${withdrawAmount ? new Intl.NumberFormat().format(withdrawAmount * usdRate) : '-'} USD`}</div>
               </div>
             </div>
           </ActionContainerGrid>

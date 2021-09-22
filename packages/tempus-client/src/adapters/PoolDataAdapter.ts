@@ -133,8 +133,76 @@ export default class PoolDataAdapter {
     }
   }
 
-  async getEstimatedMintShares(tempusPoolAddress: string, tokenAmount: BigNumber, isBackingToken: boolean) {
-    return this.statisticService?.estimatedMintedShares(tempusPoolAddress, tokenAmount, isBackingToken);
+  async getEstimatedDepositAmount(
+    tempusAmmAddress: string,
+    tokenAmount: number,
+    isBackingToken: boolean,
+  ): Promise<{
+    fixedDeposit: number;
+    variableDeposit: number[];
+  } | void> {
+    if (!this.statisticService) {
+      console.error(
+        'PoolDataAdapter - getEstimatedDepositAmount() - Attempted to use PoolDataAdapter before initializing it!',
+      );
+      return Promise.reject();
+    }
+
+    if (!tempusAmmAddress || tokenAmount === undefined) {
+      console.error('PoolDataAdapter - getEstimatedDepositAmount() - Tempus AMM address or token amount not valid');
+      return Promise.reject();
+    }
+
+    try {
+      const [fixedDeposit, variableDeposit] = await Promise.all([
+        this.statisticService?.estimatedDepositAndFix(tempusAmmAddress, tokenAmount, isBackingToken),
+        this.statisticService?.estimatedDepositAndProvideLiquidity(tempusAmmAddress, tokenAmount, isBackingToken),
+      ]);
+
+      return {
+        fixedDeposit: parseFloat(ethers.utils.formatEther(fixedDeposit)),
+        variableDeposit: variableDeposit.map(ethers.utils.formatEther).map(parseFloat),
+      };
+    } catch (error) {
+      console.error('PoolDataAdapter - getEstimatedDepositAmount() - Failed to retrieve balances!', error);
+      Promise.reject();
+    }
+  }
+
+  async getEstimatedWithdrawAmount(
+    tempusAmmAddress: string,
+    principalAmount: number,
+    yieldsAmount: number,
+    lpAmount: number,
+    isBackingToken: boolean,
+  ): Promise<number | void> {
+    if (!this.statisticService) {
+      console.error(
+        'PoolDataAdapter - getEstimatedWithdrawAmount() - Attempted to use PoolDataAdapter before initializing it!',
+      );
+      return Promise.reject();
+    }
+
+    if (!tempusAmmAddress || principalAmount === undefined || yieldsAmount === undefined || lpAmount === undefined) {
+      console.error(
+        'PoolDataAdapter - getEstimatedDepositAmount() - Tempus AMM address, principals, yields or lp tokens amount not valid',
+      );
+      return Promise.reject();
+    }
+
+    try {
+      const amount = await this.statisticService?.estimateExitAndRedeem(
+        tempusAmmAddress,
+        principalAmount,
+        yieldsAmount,
+        lpAmount,
+        isBackingToken,
+      );
+      return parseFloat(ethers.utils.formatEther(amount));
+    } catch (error) {
+      console.error('PoolDataAdapter - getEstimatedWithdrawAmount() - Failed to retrieve balances!', error);
+      Promise.reject();
+    }
   }
 
   async approve(
