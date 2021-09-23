@@ -1,6 +1,7 @@
 import { JsonRpcSigner, JsonRpcProvider } from '@ethersproject/providers';
 import getERC20TokenService from '../services/getERC20TokenService';
 import getStatisticsService from '../services/getStatisticsService';
+import getTempusAMMService from '../services/getTempusAMMService';
 import getTempusControllerService from '../services/getTempusControllerService';
 import getTempusPoolService from '../services/getTempusPoolService';
 import getConfig from '../utils/get-config';
@@ -20,6 +21,7 @@ const getPoolDataAdapter = (signerOrProvider?: JsonRpcSigner | JsonRpcProvider):
       tempusControllerService: getTempusControllerService(signerOrProvider),
       tempusPoolService: getTempusPoolService(signerOrProvider),
       statisticService: getStatisticsService(signerOrProvider),
+      tempusAMMService: getTempusAMMService(signerOrProvider),
       eRC20TokenServiceGetter: getERC20TokenService,
     });
   }

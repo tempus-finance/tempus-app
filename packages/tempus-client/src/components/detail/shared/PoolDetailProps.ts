@@ -9,7 +9,7 @@ type PoolDetailProps = {
   signer: JsonRpcSigner | null;
   userWalletAddress: string;
   content?: DashboardRowChild;
-  poolDataAdapter?: PoolDataAdapter;
+  poolDataAdapter: PoolDataAdapter | null;
 };
 
 export default PoolDetailProps;

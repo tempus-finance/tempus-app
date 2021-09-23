@@ -4,6 +4,7 @@ import { Tab, Tabs } from '@material-ui/core';
 import Typography from '../../typography/Typography';
 import PoolDataAdapter from '../../../adapters/PoolDataAdapter';
 import { TempusPool } from '../../../interfaces/TempusPool';
+import { DashboardRowChild } from '../../../interfaces';
 import DetailDeposit from './detailDeposit';
 import DetailWithdraw from './detailWithdraw';
 
@@ -13,8 +14,8 @@ type DetailBasicInProps = {
   signer: JsonRpcSigner | null;
   tempusPool: TempusPool;
   userWalletAddress: string;
-  poolDataAdapter?: PoolDataAdapter;
-  content?: any;
+  poolDataAdapter: PoolDataAdapter | null;
+  content: DashboardRowChild;
 };
 
 type DetailBasicProps = DetailBasicInProps;
