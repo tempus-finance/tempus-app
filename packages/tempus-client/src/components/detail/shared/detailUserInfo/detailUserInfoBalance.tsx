@@ -42,12 +42,12 @@ const DetailUserInfoBalance: FC<DetailUserInfoBalancesProps> = props => {
     }
 
     setBackingTokenValue(
-      NumberUtils.formatWithMultiplier(ethers.utils.formatEther(availableTokensToDeposit.backingToken)),
+      NumberUtils.formatWithMultiplier(ethers.utils.formatEther(availableTokensToDeposit.backingToken), 2),
     );
     setYieldBearingTokenValue(
-      NumberUtils.formatWithMultiplier(ethers.utils.formatEther(availableTokensToDeposit.yieldBearingToken)),
+      NumberUtils.formatWithMultiplier(ethers.utils.formatEther(availableTokensToDeposit.yieldBearingToken), 2),
     );
-    setFormattedPresentValue(`$${NumberUtils.formatWithMultiplier(ethers.utils.formatEther(presentValue))}`);
+    setFormattedPresentValue(`$${NumberUtils.formatWithMultiplier(ethers.utils.formatEther(presentValue), 2)}`);
   }, [availableTokensToDeposit, presentValue]);
 
   useEffect(() => {
