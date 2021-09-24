@@ -20,7 +20,7 @@ export interface FilterData {
 interface FilterPopupProps {
   open: boolean;
   anchor: HTMLElement | null;
-  onFilter: (filterData: FilterData) => void;
+  onFilter: (filterData: FilterData | null) => void;
   onClose: () => void;
 }
 
@@ -66,7 +66,7 @@ const FilterPopup: FC<FilterPopupProps> = (props: FilterPopupProps) => {
     setMaturityRangeMin('');
     setMaturityRangeMax('');
 
-    applyFilters();
+    onFilter(null);
   };
 
   const applyFilters = () => {
@@ -78,8 +78,8 @@ const FilterPopup: FC<FilterPopupProps> = (props: FilterPopupProps) => {
         max: aPRRangeMax ? Number(aPRRangeMax) / 100 : null,
       },
       maturityRange: {
-        min: Number(maturityRangeMin),
-        max: Number(maturityRangeMax),
+        min: maturityRangeMin ? Number(maturityRangeMin) : null,
+        max: maturityRangeMax ? Number(maturityRangeMax) : null,
       },
     });
   };
