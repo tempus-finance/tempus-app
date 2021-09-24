@@ -144,6 +144,18 @@ $padding: 20px;
           padding-left: 0;
         }
 
+        &.tf__dashboard__header__maturity {
+          padding-right: 8px;
+        }
+
+        &.tf__dashboard__header__TVL {
+          padding-right: 8px;
+        }
+
+        &.tf__dashboard__header__availableToDeposit {
+          padding-right: 8px;
+        }
+
         button.MuiIconButton-root {
           > span {
             > svg {
@@ -157,35 +169,6 @@ $padding: 20px;
           padding: 0 8px;
         }
       }
-
-      .tf__dashboard__header__maturity {
-        text-align: right;
-      }
-
-      .tf__dashboard__header__fixedAPR {
-        div {
-          width: auto;
-          margin-left: auto;
-        }
-      }
-
-      .tf__dashboard__header__variableAPY {
-        div {
-          width: auto;
-          margin-left: auto;
-        }
-      }
-
-      .tf__dashboard__header__presentValue {
-        div {
-          width: auto;
-          margin-left: auto;
-        }
-      }
-    }
-
-    .tf__dashboard__header__protocol {
-      text-align: left;
     }
 
     .tf__dashboard__body__apy {
@@ -230,6 +213,14 @@ $padding: 20px;
       flex-direction: row;
       align-items: center;
       justify-content: flex-start;
+    }
+
+    .tf__dashboard__parent-token-ticker {
+      width: 65px;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: flex-end;
     }
   }
 }

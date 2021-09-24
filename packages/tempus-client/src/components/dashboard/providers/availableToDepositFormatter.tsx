@@ -2,6 +2,8 @@ import { DataTypeProvider } from '@devexpress/dx-react-grid';
 import { ethers } from 'ethers';
 import { DashboardRow, isChildRow, isParentRow } from '../../../interfaces';
 import NumberUtils from '../../../services/NumberUtils';
+import Spacer from '../../spacer/spacer';
+import Typography from '../../typography/Typography';
 import TokenIcon from '../../tokenIcon';
 import './availableToDepositFormatter.scss';
 
@@ -30,10 +32,9 @@ const AvailableToDepositFormatter = (props: DataTypeProvider.ValueFormatterProps
                 )}
               </p>
               <div className="tf__dashboard__grid__avail-to-deposit-token-ticker-container">
+                <Typography variant="body-text">{row.availableTokensToDeposit.backingTokenTicker}</Typography>
+                <Spacer size={5} />
                 <TokenIcon ticker={row.availableTokensToDeposit.backingTokenTicker} />
-                <p className="tf__dashboard__grid__avail-to-deposit-token-ticker">
-                  {row.availableTokensToDeposit.backingTokenTicker}
-                </p>
               </div>
             </>
           ) : (
@@ -50,10 +51,9 @@ const AvailableToDepositFormatter = (props: DataTypeProvider.ValueFormatterProps
                 )}
               </p>
               <div className="tf__dashboard__grid__avail-to-deposit-token-ticker-container">
+                <Typography variant="body-text">{row.availableTokensToDeposit.yieldBearingTokenTicker}</Typography>
+                <Spacer size={5} />
                 <TokenIcon ticker={row.availableTokensToDeposit.yieldBearingTokenTicker} />
-                <p className="tf__dashboard__grid__avail-to-deposit-token-ticker">
-                  {row.availableTokensToDeposit.yieldBearingTokenTicker}
-                </p>
               </div>
             </>
           ) : (
