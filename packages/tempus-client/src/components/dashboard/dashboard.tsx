@@ -101,71 +101,82 @@ const Dashboard: FC<DashboardProps> = ({ hidden, userWalletAddress, rows, onRowA
     setFilterPopupOpen(!filterPopupOpen);
   };
 
-  const onApplyFilter = (filterData: FilterData) => {
-    let result = rows.filter(row => {
-      if (isParentRow(row)) {
-        return true;
+  /**
+   * If `null` is passed as `filterData`, all filters will be cleared.
+   */
+  const onApplyFilter = useCallback(
+    (filterData: FilterData | null) => {
+      if (!filterData) {
+        setFilteredRows(null);
+        return;
       }
 
-      // Check asset name matches
-      const assetNameMatched = filterData.assetName
-        ? row.token.toLowerCase().indexOf(filterData.assetName.toLowerCase()) > -1
-        : true;
-
-      // Check protocol name matches
-      let protocolNameMatched;
-      if (isChildRow(row)) {
-        protocolNameMatched = filterData.protocolName
-          ? row.protocol.toLowerCase().indexOf(filterData.protocolName.toLowerCase()) > -1
-          : true;
-      }
-
-      // Check APR matches
-      let aprMatched;
-      if (isChildRow(row)) {
-        const min = filterData.aPRRange.min;
-        const max = filterData.aPRRange.max;
-
-        aprMatched =
-          (min === 0 || min) && (max === 0 || max)
-            ? (row.fixedAPR > min && row.fixedAPR < max) || (row.variableAPY > min && row.variableAPY < max)
-            : true;
-      }
-
-      // Check maturity matches
-      let maturityMatched;
-      if (isChildRow(row)) {
-        const min = filterData.maturityRange.min;
-        const max = filterData.maturityRange.max;
-
-        if ((min === 0 || min) && (max === 0 || max)) {
-          const startFrom = Date.now() + min * SECONDS_IN_A_DAY * 1000;
-          const endTo = Date.now() + max * SECONDS_IN_A_DAY * 1000;
-
-          maturityMatched = row.maturityDate.getTime() > startFrom && row.maturityDate.getTime() < endTo;
-        } else {
-          maturityMatched = true;
+      let result = rows.filter(row => {
+        if (isParentRow(row)) {
+          return true;
         }
-      }
 
-      return assetNameMatched && protocolNameMatched && aprMatched && maturityMatched;
-    });
+        // Check asset name matches
+        const assetNameMatched = filterData.assetName
+          ? row.token.toLowerCase().indexOf(filterData.assetName.toLowerCase()) > -1
+          : true;
 
-    // Filter out parent rows without children
-    result = result.filter(row => {
-      if (isChildRow(row)) {
-        return true;
-      }
+        // Check protocol name matches
+        let protocolNameMatched;
+        if (isChildRow(row)) {
+          protocolNameMatched = filterData.protocolName
+            ? row.protocol.toLowerCase().indexOf(filterData.protocolName.toLowerCase()) > -1
+            : true;
+        }
 
-      const parentChildren = result.filter(r => {
-        return r.parentId !== null && r.parentId === row.id;
+        // Check APR matches
+        let aprMatched;
+        if (isChildRow(row)) {
+          const min = filterData.aPRRange.min;
+          const max = filterData.aPRRange.max;
+
+          aprMatched =
+            (min === 0 || min) && (max === 0 || max)
+              ? (row.fixedAPR > min && row.fixedAPR < max) || (row.variableAPY > min && row.variableAPY < max)
+              : true;
+        }
+
+        // Check maturity matches
+        let maturityMatched;
+        if (isChildRow(row)) {
+          const min = filterData.maturityRange.min;
+          const max = filterData.maturityRange.max;
+
+          if ((min === 0 || min) && (max === 0 || max)) {
+            const startFrom = Date.now() + min * SECONDS_IN_A_DAY * 1000;
+            const endTo = Date.now() + max * SECONDS_IN_A_DAY * 1000;
+
+            maturityMatched = row.maturityDate.getTime() > startFrom && row.maturityDate.getTime() < endTo;
+          } else {
+            maturityMatched = true;
+          }
+        }
+
+        return assetNameMatched && protocolNameMatched && aprMatched && maturityMatched;
       });
 
-      return parentChildren.length > 0;
-    });
+      // Filter out parent rows without children
+      result = result.filter(row => {
+        if (isChildRow(row)) {
+          return true;
+        }
 
-    setFilteredRows(result);
-  };
+        const parentChildren = result.filter(r => {
+          return r.parentId !== null && r.parentId === row.id;
+        });
+
+        return parentChildren.length > 0;
+      });
+
+      setFilteredRows(result);
+    },
+    [rows],
+  );
 
   return (
     <div className="tf__dashboard__section__container" hidden={hidden}>
