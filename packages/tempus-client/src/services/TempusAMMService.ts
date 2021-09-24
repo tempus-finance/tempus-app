@@ -3,6 +3,7 @@ import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
 import { TempusAMM } from '../abi/TempusAMM';
 import TempusAMMABI from '../abi/TempusAMM.json';
 import { DAYS_IN_A_YEAR, SECONDS_IN_A_DAY } from '../constants';
+import { mul18f, div18f } from '../utils/wei-math';
 import TempusPoolService from './TempusPoolService';
 
 interface TempusPoolAddressData {
@@ -93,14 +94,12 @@ class TempusAMMService {
 
     const service = this.tempusAMMMap.get(address);
     if (service) {
-      const SPOT_PRICE_AMOUNT = 10000;
+      const SPOT_PRICE_AMOUNT = ethers.utils.parseEther('10000');
+      const YIELD_TO_PRINCIPAL = true;
 
       let expectedReturn: BigNumber;
       try {
-        expectedReturn = await service.getExpectedReturnGivenIn(
-          ethers.utils.parseEther(SPOT_PRICE_AMOUNT.toString()),
-          false,
-        );
+        expectedReturn = await service.getExpectedReturnGivenIn(SPOT_PRICE_AMOUNT, YIELD_TO_PRINCIPAL);
       } catch (error) {
         console.error(
           'TempusAMMService - getExpectedReturnGivenIn() - Failed to get expected return for yield share tokens!',
@@ -116,20 +115,24 @@ class TempusAMMService {
         return Promise.reject(error);
       }
 
+      let tempusPoolStartTime: Date;
       let tempusPoolMaturityTime: Date;
       try {
-        tempusPoolMaturityTime = await this.tempusPoolService.getMaturityTime(tempusPoolAddress);
+        [tempusPoolStartTime, tempusPoolMaturityTime] = await Promise.all([
+          this.tempusPoolService.getStartTime(tempusPoolAddress),
+          this.tempusPoolService.getMaturityTime(tempusPoolAddress),
+        ]);
       } catch (error) {
-        console.error('TempusAMMService - getFixedAPR() - Failed to fetch tempus pool maturity time.');
+        console.error('TempusAMMService - getFixedAPR() - Failed to fetch tempus pool maturity and start time.');
         return Promise.reject(error);
       }
 
-      // Convert timeUntilMaturity from milliseconds to seconds.
-      const timeUntilMaturity = (tempusPoolMaturityTime.getTime() - Date.now()) / 1000;
+      // Convert poolDuration from milliseconds to seconds.
+      const poolDuration = (tempusPoolMaturityTime.getTime() - tempusPoolStartTime.getTime()) / 1000;
 
-      const scaleFactor = (SECONDS_IN_A_DAY * DAYS_IN_A_YEAR) / timeUntilMaturity;
+      const scaleFactor = ethers.utils.parseEther(((SECONDS_IN_A_DAY * DAYS_IN_A_YEAR) / poolDuration).toString());
 
-      return (Number(ethers.utils.formatEther(expectedReturn)) / SPOT_PRICE_AMOUNT) * scaleFactor;
+      return Number(ethers.utils.formatEther(mul18f(div18f(expectedReturn, SPOT_PRICE_AMOUNT), scaleFactor)));
     }
     throw new Error(
       `TempusAMMService - getExpectedReturnGivenIn() - TempusAMM with address '${address}' does not exist`,
