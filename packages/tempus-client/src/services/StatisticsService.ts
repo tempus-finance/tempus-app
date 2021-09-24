@@ -87,7 +87,7 @@ class StatisticsService {
    **/
   async estimatedDepositAndFix(
     tempusAmmAddress: string,
-    tokenAmount: number,
+    tokenAmount: BigNumber,
     isBackingToken: boolean,
   ): Promise<BigNumber> {
     if (!this.stats) {
@@ -116,7 +116,7 @@ class StatisticsService {
    **/
   async estimatedDepositAndProvideLiquidity(
     tempusAmmAddress: string,
-    tokenAmount: number,
+    tokenAmount: BigNumber,
     isBackingToken: boolean,
   ): Promise<[BigNumber, BigNumber, BigNumber]> {
     if (!this.stats) {
@@ -140,32 +140,29 @@ class StatisticsService {
    **/
   async estimateExitAndRedeem(
     tempusAmmAddress: string,
-    principalAmount: number,
-    yieldsAmount: number,
-    lpAmount: number,
+    principalAmount: BigNumber,
+    yieldsAmount: BigNumber,
+    lpAmount: BigNumber,
     isBackingToken: boolean,
   ): Promise<BigNumber> {
     if (!this.stats) {
       console.error(
         'StatisticsService estimateExitAndRedeem Attempted to use statistics contract before initializing it...',
       );
-      return Promise.reject(0);
+      return Promise.reject();
     }
 
     try {
-      const parsedPrincipalsAmount = ethers.utils.parseEther(principalAmount.toString());
-      const parsedYieldsAmount = ethers.utils.parseEther(yieldsAmount.toString());
-      const parsedLpAmount = ethers.utils.parseEther(lpAmount.toString());
       return this.stats.estimateExitAndRedeem(
         tempusAmmAddress,
-        parsedPrincipalsAmount,
-        parsedYieldsAmount,
-        parsedLpAmount,
+        principalAmount,
+        yieldsAmount,
+        lpAmount,
         isBackingToken,
       );
     } catch (error) {
       console.error(`Failed to get estimated withdraw amount`, error);
-      return Promise.reject(0);
+      return Promise.reject(error);
     }
   }
 }

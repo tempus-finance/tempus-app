@@ -14,7 +14,7 @@ type TokenSelectorInProps = {
 };
 
 type TokenSelectorOutProps = {
-  onTokenChange?: (token: string | undefined) => void;
+  onTokenChange?: (token: string) => void;
 };
 
 type TokenSelectorProps = TokenSelectorInProps & TokenSelectorOutProps;

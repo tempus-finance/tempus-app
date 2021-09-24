@@ -1,14 +1,17 @@
-import { FC, useCallback, useEffect, useState } from 'react';
-import { ethers } from 'ethers';
-import AddIcon from '@material-ui/icons/Add';
-import Typography from '@material-ui/core/Typography';
+import { ethers, BigNumber } from 'ethers';
+import { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { Button } from '@material-ui/core';
 import { Ticker } from '../../../interfaces/Token';
+import NumberUtils from '../../../services/NumberUtils';
+import { mul18f } from '../../../utils/wei-math';
+import Typography from '../../typography/Typography';
+import Spacer from '../../spacer/spacer';
 import TokenSelector from '../../tokenSelector';
 import ActionContainer from '../shared/actionContainer';
-import ActionContainerGrid from '../shared/actionContainerGrid';
-import ConnectingArrow from '../shared/connectingArrow';
-import Execute from '../shared/execute';
 import PoolDetailProps from '../shared/PoolDetailProps';
+import SectionContainer from '../shared/sectionContainer';
+import PlusIconContainer from '../shared/plusIconContainer';
+import ApproveButton from '../shared/approveButton';
 
 import '../shared/style.scss';
 
@@ -20,82 +23,53 @@ const DetailWithdraw: FC<PoolDetailProps> = ({
   userWalletAddress,
   poolDataAdapter,
 }) => {
-  const { address, ammAddress } = tempusPool || {};
-  const { supportedTokens = [] } = content || {};
+  const { address, ammAddress } = tempusPool;
+  const { supportedTokens } = content;
   const [backingToken, yieldBearingToken] = supportedTokens;
 
-  const [selectedToken, setSelectedToken] = useState<string | undefined>(undefined);
-  const [withdrawAmount, setWithdrawAmount] = useState<number | undefined>(undefined);
-  const [usdRate, setUsdRate] = useState<number>(0);
+  const [selectedToken, setSelectedToken] = useState<string>(yieldBearingToken);
+  const [withdrawAmount, setWithdrawAmount] = useState<BigNumber>(BigNumber.from('0'));
+  const [usdRate, setUsdRate] = useState<BigNumber>(BigNumber.from('0'));
 
-  const [principalsBalance, setPrincipalsBalance] = useState<number | undefined>(undefined);
-  const [yieldsBalance, setYieldsBalance] = useState<number | undefined>(undefined);
-  const [lpBalance, setLpBalance] = useState<number | undefined>(undefined);
+  const [principalsBalance, setPrincipalsBalance] = useState<BigNumber>(BigNumber.from('0'));
+  const [yieldsBalance, setYieldsBalance] = useState<BigNumber>(BigNumber.from('0'));
+  const [lpBalance, setLpBalance] = useState<BigNumber>(BigNumber.from('0'));
 
-  const [backingTokenRate, setBackingTokenRate] = useState<number | undefined>(undefined);
-  const [yieldBearingTokenRate, setYieldBearingTokenRate] = useState<number | undefined>(undefined);
+  const [backingTokenRate, setBackingTokenRate] = useState<BigNumber>(BigNumber.from('0'));
+  const [yieldBearingTokenRate, setYieldBearingTokenRate] = useState<BigNumber>(BigNumber.from('0'));
 
-  const [approveDisabled, setApproveDisabled] = useState<boolean>(false);
+  const [principalsBalanceFormatted, setPrincipalsBalanceFormatted] = useState<string>('');
+  const [yieldsBalanceFormatted, setYieldsBalanceFormatted] = useState<string>('');
+  const [lpBalanceFormatted, setLpBalanceFormatted] = useState<string>('');
+  const [withdrawAmountFormatted, setWithdrawAmountFormatted] = useState<string>('');
+  const [withdrawAmountUsdFormatted, setWithdrawAmountUsdFormatted] = useState<string>('');
+
+  const [principalsApproved, setPrincipalsApproved] = useState<boolean>(false);
+  const [yieldsApproved, setYieldsApproved] = useState<boolean>(false);
+  const [lpApproved, setLpApproved] = useState<boolean>(false);
   const [executeDisabled, setExecuteDisabled] = useState<boolean>(true);
 
   const onTokenChange = useCallback(
-    (token: string | undefined) => {
-      if (!!token) {
-        setSelectedToken(token);
-
-        if (backingToken === token) {
-          if (backingTokenRate !== undefined && !isNaN(backingTokenRate)) {
-            setUsdRate(backingTokenRate);
-          }
-        }
-
-        if (backingToken !== token) {
-          if (yieldBearingTokenRate !== undefined && !isNaN(yieldBearingTokenRate)) {
-            setUsdRate(yieldBearingTokenRate);
-          }
-        }
+    (token: string) => {
+      setSelectedToken(token);
+      if (backingToken === token) {
+        setUsdRate(backingTokenRate);
+      } else {
+        setUsdRate(yieldBearingTokenRate);
       }
     },
     [backingToken, backingTokenRate, yieldBearingTokenRate, setSelectedToken, setUsdRate],
   );
 
-  const onApprove = useCallback(() => {
-    const approve = async () => {
-      if (signer) {
-        try {
-          const isBackingToken = backingToken === selectedToken;
-          // TODO check??
-          const approveTransaction = await poolDataAdapter?.approve(address, isBackingToken, signer, principalsBalance);
-          if (approveTransaction) {
-            await approveTransaction.wait();
-            setExecuteDisabled(false);
-          }
-        } catch (err) {
-          // TODO handle errors
-          console.log('onApprove err', err);
-        }
-      }
-    };
-    setApproveDisabled(true);
-    approve();
-  }, [
-    address,
-    signer,
-    backingToken,
-    selectedToken,
-    principalsBalance,
-    poolDataAdapter,
-    setApproveDisabled,
-    setExecuteDisabled,
-  ]);
-
   const onExecute = useCallback(() => {
     const execute = async () => {
-      if (signer) {
+      if (signer && poolDataAdapter) {
         try {
           const isBackingToken = backingToken === selectedToken;
-          const depositTransaction = await poolDataAdapter?.executeWithdraw(ammAddress, isBackingToken);
-          await depositTransaction?.wait();
+          const depositTransaction = await poolDataAdapter.executeWithdraw(ammAddress, isBackingToken);
+          if (depositTransaction) {
+            await depositTransaction.wait();
+          }
           setExecuteDisabled(false);
         } catch (err) {
           // TODO handle errors
@@ -108,30 +82,33 @@ const DetailWithdraw: FC<PoolDetailProps> = ({
     execute();
   }, [signer, ammAddress, backingToken, selectedToken, poolDataAdapter, setExecuteDisabled]);
 
-  useEffect(() => {
-    if (!!yieldBearingToken && !!yieldBearingTokenRate && !selectedToken) {
-      setSelectedToken(yieldBearingToken);
-      setUsdRate(yieldBearingTokenRate);
-    }
-  }, [selectedToken, yieldBearingTokenRate, yieldBearingToken, setSelectedToken, setUsdRate]);
+  useMemo(() => {
+    setPrincipalsBalanceFormatted(NumberUtils.formatWithMultiplier(ethers.utils.formatEther(principalsBalance)));
+    setYieldsBalanceFormatted(NumberUtils.formatWithMultiplier(ethers.utils.formatEther(yieldsBalance)));
+    setLpBalanceFormatted(NumberUtils.formatWithMultiplier(ethers.utils.formatEther(lpBalance)));
+    setWithdrawAmountFormatted(NumberUtils.formatWithMultiplier(ethers.utils.formatEther(withdrawAmount)));
+    setWithdrawAmountUsdFormatted(
+      NumberUtils.formatWithMultiplier(ethers.utils.formatEther(mul18f(withdrawAmount, usdRate))),
+    );
+  }, [principalsBalance, yieldsBalance, lpBalance, withdrawAmount, usdRate]);
 
   useEffect(() => {
     const retrieveBalances = async () => {
-      if (signer && address && ammAddress) {
+      if (signer && address && ammAddress && poolDataAdapter) {
         try {
           const {
-            backingTokenRate = '0',
-            yieldBearingTokenRate = '0',
-            principalsTokenBalance = '0',
-            yieldsTokenBalance = '0',
-            lpTokensBalance = '0',
-          } = (await poolDataAdapter?.retrieveBalances(address, ammAddress, userWalletAddress, signer)) || {};
+            backingTokenRate,
+            yieldBearingTokenRate,
+            principalsTokenBalance,
+            yieldsTokenBalance,
+            lpTokensBalance,
+          } = (await poolDataAdapter.retrieveBalances(address, ammAddress, userWalletAddress, signer)) || {};
 
-          setBackingTokenRate(Number(ethers.utils.formatEther(backingTokenRate)));
-          setYieldBearingTokenRate(Number(ethers.utils.formatEther(yieldBearingTokenRate)));
-          setPrincipalsBalance(Number(ethers.utils.formatEther(principalsTokenBalance)));
-          setYieldsBalance(Number(ethers.utils.formatEther(yieldsTokenBalance)));
-          setLpBalance(Number(ethers.utils.formatEther(lpTokensBalance)));
+          setBackingTokenRate(backingTokenRate);
+          setYieldBearingTokenRate(yieldBearingTokenRate);
+          setPrincipalsBalance(principalsTokenBalance);
+          setYieldsBalance(yieldsTokenBalance);
+          setLpBalance(lpTokensBalance);
         } catch (err) {
           // TODO handle errors
           console.log('err', err);
@@ -157,26 +134,21 @@ const DetailWithdraw: FC<PoolDetailProps> = ({
 
   useEffect(() => {
     const retrieveWithdrawAmount = async () => {
-      console.log('retrieveWithdrawAmount');
-      if (selectedToken && ammAddress) {
+      if (selectedToken && ammAddress && poolDataAdapter) {
         try {
           const isBackingToken = backingToken === selectedToken;
 
-          const amount = await poolDataAdapter?.getEstimatedWithdrawAmount(
+          const amount = await poolDataAdapter.getEstimatedWithdrawAmount(
             ammAddress,
-            principalsBalance || 0,
-            yieldsBalance || 0,
-            lpBalance || 0,
+            principalsBalance,
+            yieldsBalance,
+            lpBalance,
             isBackingToken,
           );
-
-          console.log('retrieveWithdrawAmount amount', amount);
-          if (amount !== undefined) {
-            setWithdrawAmount(amount);
-          }
-        } catch (err) {
-          // TODO handle errors
-          console.log('Detail Deposit - retrieveDepositAmount -', err);
+          setWithdrawAmount(amount);
+        } catch (error) {
+          console.log('DetailWithdraw - retrieveWithdrawAmount() -', error);
+          return Promise.reject(error);
         }
       }
     };
@@ -193,109 +165,120 @@ const DetailWithdraw: FC<PoolDetailProps> = ({
     setWithdrawAmount,
   ]);
 
-  useEffect(() => {
-    setApproveDisabled(!withdrawAmount);
-  }, [withdrawAmount, setApproveDisabled]);
-
   return (
     <div role="tabpanel" hidden={selectedTab !== 1}>
       <div className="tf__dialog__content-tab">
+        <Spacer size={20} />
+        <Typography variant="body-text">
+          In order to withdraw from the Pool you have to approve withdrawal from all token balances and execute the
+          transaction.
+        </Typography>
+        <Spacer size={14} />
         <ActionContainer label="From">
-          <ActionContainerGrid className="tf__detail-withdraw__grid">
-            <div className="tf__dialog__tab__action-container-grid__top-left element1">
-              <div className="tf__tokens-returned__name">
-                <div className="tf__tokens-returned__ticker">
-                  <span>Principals</span>
-                  <span className="tf__tokens-returned__description">Principal Share</span>
-                </div>
+          <Spacer size={10} />
+          <SectionContainer>
+            <div className="tf__flex-row-space-between">
+              <div className="tf__flex-column-space-between">
+                <Typography variant="h4">Principals</Typography>
+                <Spacer size={10} />
+                <Typography variant="body-text">Balance {principalsBalanceFormatted} Principals</Typography>
               </div>
-
-              <div className="add-icon-container">
-                <AddIcon />
-              </div>
-            </div>
-            <div className="tf__dialog__tab__action-container-grid__top-right element2">
-              <div className="tf__dialog__tab__action-container__balance">
-                <Typography variant="subtitle2" className="tf__dialog__tab__action-container__balance-title">
-                  Balance
-                </Typography>
-                <div className="tf__dialog__tab__action-container__balance-value">
-                  {new Intl.NumberFormat().format(principalsBalance || 0)}
-                </div>
+              <div className="tf__flex-column-center-end">
+                <ApproveButton
+                  poolDataAdapter={poolDataAdapter}
+                  signer={signer}
+                  amountToApprove={principalsBalance}
+                  tokenToApprove={content.principalTokenAddress}
+                  approved={principalsApproved}
+                  onApproved={() => {
+                    setPrincipalsApproved(true);
+                  }}
+                />
               </div>
             </div>
-
-            <div className="tf__dialog__tab__action-container-grid__centre-left element1">
-              <div className="tf__tokens-returned__name">
-                <div className="tf__tokens-returned__ticker">
-                  <span>Yields</span>
-                  <span className="tf__tokens-returned__description">Yield Share</span>
-                </div>
+          </SectionContainer>
+          <PlusIconContainer />
+          <SectionContainer>
+            <div className="tf__flex-row-space-between">
+              <div className="tf__flex-column-space-between">
+                <Typography variant="h4">Yields</Typography>
+                <Spacer size={10} />
+                <Typography variant="body-text">Balance {yieldsBalanceFormatted} Yields</Typography>
               </div>
-
-              <div className="add-icon-container">
-                <AddIcon />
-              </div>
-            </div>
-            <div className="tf__dialog__tab__action-container-grid__centre-right element2">
-              <div className="tf__dialog__tab__action-container__balance">
-                <Typography variant="subtitle2" className="tf__dialog__tab__action-container__balance-title">
-                  Balance
-                </Typography>
-                <div className="tf__dialog__tab__action-container__balance-value">
-                  {new Intl.NumberFormat().format(yieldsBalance || 0)}
-                </div>
-              </div>
-            </div>
-
-            <div className="tf__dialog__tab__action-container-grid__bottom-left element1">
-              <div className="tf__tokens-returned__name">
-                <div className="tf__tokens-returned__ticker">
-                  <span>LP Token</span>
-                </div>
+              <div className="tf__flex-column-center-end">
+                <ApproveButton
+                  poolDataAdapter={poolDataAdapter}
+                  signer={signer}
+                  amountToApprove={yieldsBalance}
+                  tokenToApprove={content.yieldTokenAddress}
+                  approved={yieldsApproved}
+                  onApproved={() => {
+                    setYieldsApproved(true);
+                  }}
+                />
               </div>
             </div>
-            <div className="tf__dialog__tab__action-container-grid__bottom-right element2">
-              <div className="tf__dialog__tab__action-container__balance">
-                <Typography variant="subtitle2" className="tf__dialog__tab__action-container__balance-title">
-                  Balance
-                </Typography>
-                <div className="tf__dialog__tab__action-container__balance-value">
-                  {new Intl.NumberFormat().format(lpBalance || 0)}
-                </div>
+          </SectionContainer>
+          <PlusIconContainer />
+          <SectionContainer>
+            <div className="tf__flex-row-space-between">
+              <div className="tf__flex-column-space-between">
+                <Typography variant="h4">LP Tokens</Typography>
+                <Spacer size={10} />
+                <Typography variant="body-text">Balance {lpBalanceFormatted} LP Tokens</Typography>
+              </div>
+              <div className="tf__flex-column-center-end">
+                <ApproveButton
+                  poolDataAdapter={poolDataAdapter}
+                  signer={signer}
+                  amountToApprove={lpBalance}
+                  // TempusAMM address is used as LP token address
+                  tokenToApprove={tempusPool.ammAddress}
+                  approved={lpApproved}
+                  onApproved={() => {
+                    setLpApproved(true);
+                  }}
+                />
               </div>
             </div>
-          </ActionContainerGrid>
+          </SectionContainer>
         </ActionContainer>
-        <ConnectingArrow />
+        <Spacer size={20} />
         <ActionContainer label="To">
-          <ActionContainerGrid>
-            <div className="tf__dialog__tab__action-container-grid__centre-left tf__dialog__tab__action-container__token-selector">
-              <TokenSelector
-                tickers={supportedTokens}
-                defaultTicker={selectedToken as Ticker}
-                onTokenChange={onTokenChange}
-              />
-            </div>
-
-            <div className="tf__dialog__tab__action-container-grid__centre-right tf__dialog__tab__action-container__lp-tokens">
-              <div>
-                <span className="small-title">(est.)</span>{' '}
-                {withdrawAmount ? new Intl.NumberFormat().format(withdrawAmount) : '-'}
+          <Spacer size={20} />
+          <SectionContainer>
+            <div className="tf__flex-row-space-between">
+              <div className="tf__flex-row-center">
+                <Typography variant="body-text">Token</Typography>
+                <Spacer size={10} />
+                <TokenSelector
+                  tickers={supportedTokens}
+                  defaultTicker={selectedToken as Ticker}
+                  onTokenChange={onTokenChange}
+                />
               </div>
-              <div className="tf__dialog__tab__action-container__token-amount-fiat">
-                <div>{`~ ${withdrawAmount ? new Intl.NumberFormat().format(withdrawAmount * usdRate) : '-'} USD`}</div>
+              <div className="tf__flex-column-center-end">
+                <Typography variant="h5">
+                  Estimate: {withdrawAmountFormatted} {selectedToken}
+                </Typography>
+                <Typography variant="disclaimer-text">~${withdrawAmountUsdFormatted}</Typography>
               </div>
             </div>
-          </ActionContainerGrid>
+          </SectionContainer>
         </ActionContainer>
-        <Execute
-          approveLabel="Approve Principals"
-          approveDisabled={approveDisabled}
-          executeDisabled={executeDisabled}
-          onApprove={onApprove}
-          onExecute={onExecute}
-        />
+        <Spacer size={20} />
+        <div className="tf__flex-row-center">
+          <Button
+            color="secondary"
+            variant="contained"
+            onClick={onExecute}
+            disabled={!principalsApproved || !yieldsApproved || !lpApproved}
+          >
+            <Typography variant="h5" color="inverted">
+              Execute
+            </Typography>
+          </Button>
+        </div>
       </div>
     </div>
   );

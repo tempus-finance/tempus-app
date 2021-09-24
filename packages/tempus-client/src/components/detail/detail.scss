@@ -63,11 +63,16 @@
       flex-direction: column;
       align-items: center;
     }
+
+    .MuiButton-root {
+      text-transform: none;
+      height: 40px;
+    }
   }
 }
 
 .tf__user__details-container {
   @include background-level-1;
   padding: 20px;
-  flex-grow: 1;
+  width: 400px;
 }

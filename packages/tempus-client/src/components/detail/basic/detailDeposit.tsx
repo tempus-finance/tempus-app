@@ -1,6 +1,7 @@
-import { FC, useCallback, useEffect, useState } from 'react';
-import { ethers } from 'ethers';
+import { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { ethers, BigNumber } from 'ethers';
 import Button from '@material-ui/core/Button';
+import { mul18f } from '../../../utils/wei-math';
 import NumberUtils from '../../../services/NumberUtils';
 import CurrencyInput from '../../currencyInput';
 import TokenSelector from '../../tokenSelector';
@@ -28,21 +29,25 @@ const DetailDeposit: FC<PoolDetailProps> = ({
   const [backingToken] = supportedTokens;
 
   const [selectedToken, setSelectedToken] = useState<string | undefined>(undefined);
-  const [amount, setAmount] = useState<number>(0);
-  const [balance, setBalance] = useState<number>(0);
-  const [usdRate, setUsdRate] = useState<number>(0);
+  const [amount, setAmount] = useState<BigNumber>(BigNumber.from('0'));
+  const [balance, setBalance] = useState<BigNumber>(BigNumber.from('0'));
+  const [usdRate, setUsdRate] = useState<BigNumber>(BigNumber.from('0'));
   const [minTYSRate] = useState<number>(0); // TODO where to get this value?
 
   const [fixedPrincipalsAmount, setFixedPrincipalsAmount] = useState<number | undefined>(undefined);
   const [variablePrincipalsAmount, setVariablePrincipalsAmount] = useState<number | undefined>(undefined);
   const [variableLpTokensAmount, setVariableLpTokensAmount] = useState<number | undefined>(undefined);
 
-  const [backingTokenBalance, setBackingTokenBalance] = useState<number | undefined>(undefined);
-  const [yieldBearingTokenBalance, setYieldBearingTokenBalance] = useState<number | undefined>(undefined);
+  const [backingTokenBalance, setBackingTokenBalance] = useState<BigNumber>(BigNumber.from('0'));
+  const [yieldBearingTokenBalance, setYieldBearingTokenBalance] = useState<BigNumber>(BigNumber.from('0'));
 
   const [selectedYield, setSelectedYield] = useState<SelectedYield>('fixed');
-  const [backingTokenRate, setBackingTokenRate] = useState<number | undefined>(undefined);
-  const [yieldBearingTokenRate, setYieldBearingTokenRate] = useState<number | undefined>(undefined);
+  const [backingTokenRate, setBackingTokenRate] = useState<BigNumber>(BigNumber.from('0'));
+  const [yieldBearingTokenRate, setYieldBearingTokenRate] = useState<BigNumber>(BigNumber.from('0'));
+
+  const [balanceFormatted, setBalanceFormatted] = useState<string>('');
+  // TODO - Use BigNumber to avoid overflows when converting from BigNumber to Number.
+  const [amountFormatted, setAmountFormatted] = useState<number>(0);
 
   const [approveDisabled, setApproveDisabled] = useState<boolean>(false);
   const [executeDisabled, setExecuteDisabled] = useState<boolean>(true);
@@ -53,23 +58,13 @@ const DetailDeposit: FC<PoolDetailProps> = ({
         setSelectedToken(token);
 
         if (backingToken === token) {
-          if (backingTokenBalance !== undefined && !isNaN(backingTokenBalance)) {
-            setBalance(backingTokenBalance);
-          }
-
-          if (backingTokenRate !== undefined && !isNaN(backingTokenRate)) {
-            setUsdRate(backingTokenRate);
-          }
+          setBalance(backingTokenBalance);
+          setUsdRate(backingTokenRate);
         }
 
         if (backingToken !== token) {
-          if (yieldBearingTokenBalance !== undefined && !isNaN(yieldBearingTokenBalance)) {
-            setBalance(yieldBearingTokenBalance);
-          }
-
-          if (yieldBearingTokenRate !== undefined && !isNaN(yieldBearingTokenRate)) {
-            setUsdRate(yieldBearingTokenRate);
-          }
+          setBalance(yieldBearingTokenBalance);
+          setUsdRate(yieldBearingTokenRate);
         }
       }
     },
@@ -87,9 +82,9 @@ const DetailDeposit: FC<PoolDetailProps> = ({
   const onAmountChange = useCallback(
     (value: number | undefined) => {
       if (!!value && !isNaN(value)) {
-        setAmount(value);
+        setAmount(ethers.utils.parseEther(value.toString()));
       } else {
-        setAmount(0);
+        setAmount(BigNumber.from('0'));
       }
     },
     [setAmount],
@@ -97,9 +92,7 @@ const DetailDeposit: FC<PoolDetailProps> = ({
 
   const onClickPercentage = useCallback(
     (percentage: number) => {
-      if (!!balance && !isNaN(balance)) {
-        setAmount(balance * percentage);
-      }
+      setAmount(mul18f(balance, ethers.utils.parseEther(percentage.toString())));
     },
     [balance, setAmount],
   );
@@ -116,10 +109,10 @@ const DetailDeposit: FC<PoolDetailProps> = ({
 
   const onApprove = useCallback(() => {
     const approve = async () => {
-      if (signer) {
+      if (signer && poolDataAdapter) {
         try {
           const isBackingToken = backingToken === selectedToken;
-          const approveTransaction = await poolDataAdapter?.approve(address, isBackingToken, signer, balance);
+          const approveTransaction = await poolDataAdapter.approve(address, isBackingToken, signer, balance);
           if (approveTransaction) {
             await approveTransaction.wait();
             setExecuteDisabled(false);
@@ -138,13 +131,11 @@ const DetailDeposit: FC<PoolDetailProps> = ({
     const execute = async () => {
       if (signer) {
         try {
-          const parsedAmount = (amount || 0).toString();
-          const tokenAmount = ethers.utils.parseEther(parsedAmount);
           const isBackingToken = backingToken === selectedToken;
           const parsedMinTYSRate = ethers.utils.parseEther(minTYSRate.toString());
           const depositTransaction = await poolDataAdapter?.executeDeposit(
             ammAddress,
-            tokenAmount,
+            amount,
             isBackingToken,
             parsedMinTYSRate,
           );
@@ -161,21 +152,22 @@ const DetailDeposit: FC<PoolDetailProps> = ({
     execute();
   }, [signer, ammAddress, backingToken, selectedToken, amount, minTYSRate, poolDataAdapter, setExecuteDisabled]);
 
+  useMemo(() => {
+    setBalanceFormatted(NumberUtils.formatWithMultiplier(ethers.utils.formatEther(balance)));
+    setAmountFormatted(Number(ethers.utils.formatEther(amount)));
+  }, [balance, amount]);
+
   useEffect(() => {
     const retrieveBalances = async () => {
-      if (signer && address && ammAddress) {
+      if (signer && address && ammAddress && poolDataAdapter) {
         try {
-          const {
-            backingTokenBalance = '0',
-            backingTokenRate = '0',
-            yieldBearingTokenBalance = '0',
-            yieldBearingTokenRate = '0',
-          } = (await poolDataAdapter?.retrieveBalances(address, ammAddress, userWalletAddress, signer)) || {};
+          const { backingTokenBalance, backingTokenRate, yieldBearingTokenBalance, yieldBearingTokenRate } =
+            (await poolDataAdapter.retrieveBalances(address, ammAddress, userWalletAddress, signer)) || {};
 
-          setBackingTokenBalance(Number(ethers.utils.formatEther(backingTokenBalance)));
-          setBackingTokenRate(Number(ethers.utils.formatEther(backingTokenRate)));
-          setYieldBearingTokenBalance(Number(ethers.utils.formatEther(yieldBearingTokenBalance)));
-          setYieldBearingTokenRate(Number(ethers.utils.formatEther(yieldBearingTokenRate)));
+          setBackingTokenBalance(backingTokenBalance);
+          setBackingTokenRate(backingTokenRate);
+          setYieldBearingTokenBalance(yieldBearingTokenBalance);
+          setYieldBearingTokenRate(yieldBearingTokenRate);
         } catch (err) {
           // TODO handle errors
           console.log('Detail Deposit - retrieveBalances -', err);
@@ -198,12 +190,12 @@ const DetailDeposit: FC<PoolDetailProps> = ({
 
   useEffect(() => {
     const retrieveDepositAmount = async () => {
-      if (amount && ammAddress) {
+      if (amount && ammAddress && poolDataAdapter) {
         try {
           const isBackingToken = backingToken === selectedToken;
 
           const { fixedDeposit, variableDeposit } =
-            (await poolDataAdapter?.getEstimatedDepositAmount(ammAddress, amount, isBackingToken)) || {};
+            (await poolDataAdapter.getEstimatedDepositAmount(ammAddress, amount, isBackingToken)) || {};
 
           if (fixedDeposit !== undefined) {
             setFixedPrincipalsAmount(fixedDeposit);
@@ -255,7 +247,7 @@ const DetailDeposit: FC<PoolDetailProps> = ({
               <TokenSelector tickers={supportedTokens} onTokenChange={onTokenChange} />
               <Spacer size={20} />
               <Typography variant="body-text">
-                Balance: {selectedToken ? `${new Intl.NumberFormat().format(balance)} ${selectedToken}` : '-'}
+                Balance: {selectedToken ? `${balanceFormatted} ${selectedToken}` : '-'}
               </Typography>
             </div>
             <Spacer size={14} />
@@ -263,7 +255,7 @@ const DetailDeposit: FC<PoolDetailProps> = ({
               <div className="tf__dialog__label-align-right">
                 <Typography variant="body-text">Amount</Typography>
               </div>
-              <CurrencyInput defaultValue={amount} onChange={onAmountChange} disabled={!selectedToken} />
+              <CurrencyInput defaultValue={amountFormatted} onChange={onAmountChange} disabled={!selectedToken} />
               <Spacer size={20} />
               <Button variant="contained" size="small" onClick={() => onClickPercentage(0.25)}>
                 25%

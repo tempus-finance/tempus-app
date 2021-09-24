@@ -8,7 +8,7 @@ type PoolDetailProps = {
   tempusPool: TempusPool;
   signer: JsonRpcSigner | null;
   userWalletAddress: string;
-  content?: DashboardRowChild;
+  content: DashboardRowChild;
   poolDataAdapter: PoolDataAdapter | null;
 };
 

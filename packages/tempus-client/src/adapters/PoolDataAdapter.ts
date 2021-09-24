@@ -74,24 +74,23 @@ export default class PoolDataAdapter {
     }
 
     // TODO - Fetch interest rate from contract instead of hardcoded values
-    const yieldTokenAmount = BigNumber.from('1');
-    const interestRate = BigNumber.from('1');
+    const yieldTokenAmount = ethers.utils.parseEther('1');
 
     try {
       const [
         backingTokenAddress,
         yieldBearingTokenAddress,
         backingTokenTicker,
-        yieldBearingTokenConversionRate,
         principalsTokenAddress,
         yieldsTokenAddress,
+        interestRate,
       ] = await Promise.all([
         this.tempusPoolService.getBackingTokenAddress(tempusPoolAddress),
         this.tempusPoolService.getYieldBearingTokenAddress(tempusPoolAddress),
         this.tempusPoolService.getBackingTokenTicker(tempusPoolAddress),
-        this.tempusPoolService.numAssetsPerYieldToken(tempusPoolAddress, yieldTokenAmount, interestRate),
         this.tempusPoolService.getPrincipalTokenAddress(tempusPoolAddress),
         this.tempusPoolService.getYieldTokenAddress(tempusPoolAddress),
+        this.tempusPoolService.currentInterestRate(tempusPoolAddress),
       ]);
 
       const backingTokenService = this.eRC20TokenServiceGetter(backingTokenAddress, signer);
@@ -107,6 +106,7 @@ export default class PoolDataAdapter {
         yieldsTokenBalance,
         backingTokenRate,
         lpTokensBalance,
+        yieldBearingTokenConversionRate,
       ] = await Promise.all([
         backingTokenService.balanceOf(userWalletAddress),
         yieldBearingTokenService.balanceOf(userWalletAddress),
@@ -114,6 +114,7 @@ export default class PoolDataAdapter {
         yieldsTokenService.balanceOf(userWalletAddress),
         this.statisticService.getRate(backingTokenTicker),
         lpTokenService.balanceOf(userWalletAddress),
+        this.tempusPoolService.numAssetsPerYieldToken(tempusPoolAddress, yieldTokenAmount, interestRate),
       ]);
 
       const yieldBearingTokenRate = mul18f(yieldBearingTokenConversionRate, backingTokenRate);
@@ -135,7 +136,7 @@ export default class PoolDataAdapter {
 
   async getEstimatedDepositAmount(
     tempusAmmAddress: string,
-    tokenAmount: number,
+    tokenAmount: BigNumber,
     isBackingToken: boolean,
   ): Promise<{
     fixedDeposit: number;
@@ -155,8 +156,8 @@ export default class PoolDataAdapter {
 
     try {
       const [fixedDeposit, variableDeposit] = await Promise.all([
-        this.statisticService?.estimatedDepositAndFix(tempusAmmAddress, tokenAmount, isBackingToken),
-        this.statisticService?.estimatedDepositAndProvideLiquidity(tempusAmmAddress, tokenAmount, isBackingToken),
+        this.statisticService.estimatedDepositAndFix(tempusAmmAddress, tokenAmount, isBackingToken),
+        this.statisticService.estimatedDepositAndProvideLiquidity(tempusAmmAddress, tokenAmount, isBackingToken),
       ]);
 
       return {
@@ -171,11 +172,11 @@ export default class PoolDataAdapter {
 
   async getEstimatedWithdrawAmount(
     tempusAmmAddress: string,
-    principalAmount: number,
-    yieldsAmount: number,
-    lpAmount: number,
+    principalAmount: BigNumber,
+    yieldsAmount: BigNumber,
+    lpAmount: BigNumber,
     isBackingToken: boolean,
-  ): Promise<number | void> {
+  ): Promise<BigNumber> {
     if (!this.statisticService) {
       console.error(
         'PoolDataAdapter - getEstimatedWithdrawAmount() - Attempted to use PoolDataAdapter before initializing it!',
@@ -191,17 +192,17 @@ export default class PoolDataAdapter {
     }
 
     try {
-      const amount = await this.statisticService?.estimateExitAndRedeem(
+      const amount = await this.statisticService.estimateExitAndRedeem(
         tempusAmmAddress,
         principalAmount,
         yieldsAmount,
         lpAmount,
         isBackingToken,
       );
-      return parseFloat(ethers.utils.formatEther(amount));
+      return amount;
     } catch (error) {
       console.error('PoolDataAdapter - getEstimatedWithdrawAmount() - Failed to retrieve balances!', error);
-      Promise.reject();
+      return Promise.reject();
     }
   }
 
@@ -209,7 +210,7 @@ export default class PoolDataAdapter {
     tempusPoolAddress: string,
     isBackingToken: boolean,
     signer: JsonRpcSigner,
-    approveAmount = 0,
+    approveAmount: BigNumber,
   ): Promise<ContractTransaction | void> {
     if (!this.tempusPoolService || !this.eRC20TokenServiceGetter) {
       console.error('PoolDataAdapter - approve() - Attempted to use PoolDataAdapter before initializing it!');
@@ -222,11 +223,24 @@ export default class PoolDataAdapter {
         : await this.tempusPoolService.getYieldBearingTokenAddress(tempusPoolAddress);
 
       const tokenService = this.eRC20TokenServiceGetter(tokenAddress, signer);
-      return tokenService.approve(this.tempusControllerAddress, ethers.utils.parseEther(approveAmount.toString()));
+      return tokenService.approve(this.tempusControllerAddress, approveAmount);
     } catch (error) {
       console.error('PoolDataAdapter - approve() - Failed to approve tokens for deposit!', error);
       Promise.reject();
     }
+  }
+
+  async approveToken(
+    tokenAddress: string,
+    amount: BigNumber,
+    signer: JsonRpcSigner,
+  ): Promise<ContractTransaction | void> {
+    if (!this.eRC20TokenServiceGetter) {
+      return Promise.reject();
+    }
+
+    const tokenService = this.eRC20TokenServiceGetter(tokenAddress, signer);
+    return tokenService.approve(this.tempusControllerAddress, amount);
   }
 
   async executeDeposit(
