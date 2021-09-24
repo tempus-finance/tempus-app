@@ -6,7 +6,7 @@ import TempusLogo from './tempusLogo';
 
 import './header.scss';
 
-export type HeaderLinks = 'Dashboard' | 'Portfolio' | '';
+export type HeaderLinks = 'Dashboard' | 'Portfolio' | 'Statistics';
 
 type HeaderInProps = {
   active?: HeaderLinks;
