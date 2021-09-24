@@ -61,6 +61,7 @@ const Dashboard: FC<DashboardProps> = ({ hidden, userWalletAddress, rows, onRowA
     { columnName: ColumnNames.MATURITY, compare: compareMaturity },
     { columnName: ColumnNames.FIXED_APR, compare: compareAPY },
     { columnName: ColumnNames.VARIABLE_APY, compare: compareAPY },
+    { columnName: ColumnNames.PROTOCOL, compare: compareProtocol },
   ]);
 
   const [currentSorting, setCurrentSorting] = useState<Sorting[]>([]);
@@ -250,8 +251,34 @@ const Dashboard: FC<DashboardProps> = ({ hidden, userWalletAddress, rows, onRowA
 
 export default Dashboard;
 
-const compareMaturity = (a: number[], b: number[]) => a[0] - b[0];
-const compareAPY = (a: number[], b: number[]) => a[1] - b[1];
+const compareMaturity = (a: number[], b: number[]): number => a[0] - b[0];
+const compareAPY = (a: number[], b: number[]): number => a[1] - b[1];
+const compareProtocol = (a: string[] | string, b: string[] | string): number => {
+  // Sort child rows
+  if (typeof a === 'string' && typeof b === 'string') {
+    return a.localeCompare(b);
+  }
+
+  // Sort parent rows
+  const maxLength = Math.max(a.length, b.length);
+  for (let i = 0; i < maxLength; i++) {
+    if (a[i] !== b[i]) {
+      if (a[i] === undefined) {
+        return 1;
+      }
+      if (b[i] === undefined) {
+        return -1;
+      }
+
+      if (a[i] > b[i]) {
+        return -1;
+      } else if (a[i] < b[i]) {
+        return 1;
+      }
+    }
+  }
+  return 0;
+};
 
 const totalSummaryItems = [{ columnName: ColumnNames.TOKEN, type: 'count' }];
 
