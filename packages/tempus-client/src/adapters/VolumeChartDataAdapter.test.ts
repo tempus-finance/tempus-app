@@ -115,7 +115,7 @@ describe('generateChartData()', () => {
     const mockGetTempusPoolService = jest.fn().mockImplementation(() => {
       return {
         getBackingTokenTicker: jest.fn().mockResolvedValue('dai'),
-        getPrincipalTokenAddress: jest.fn().mockResolvedValue('principal-address'),
+        getPrincipalsTokenAddress: jest.fn().mockResolvedValue('principal-address'),
       };
     });
 

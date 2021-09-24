@@ -240,7 +240,7 @@ export default class DashboardDataAdapter {
     try {
       const [yieldTokenAddress, principalTokenAddress, pricePerPrincipalShare, pricePerYieldShare] = await Promise.all([
         this.tempusPoolService.getYieldTokenAddress(pool.address),
-        this.tempusPoolService.getPrincipalTokenAddress(pool.address),
+        this.tempusPoolService.getPrincipalsTokenAddress(pool.address),
         this.tempusPoolService.pricePerPrincipalShareStored(pool.address),
         this.tempusPoolService.pricePerYieldShareStored(pool.address),
       ]);

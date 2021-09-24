@@ -126,6 +126,26 @@ class VaultService {
 
     return this.contract.swap(singleSwap, fundManagement, minimumReturn, deadline);
   }
+
+  async getPoolTokens(poolId: string): Promise<
+    [string[], BigNumber[], BigNumber] & {
+      tokens: string[];
+      balances: BigNumber[];
+      lastChangeBlock: BigNumber;
+    }
+  > {
+    if (!this.contract) {
+      console.error('VaultService - getPoolTokens() - Attempted to use VaultService before initializing it!');
+      return Promise.reject();
+    }
+
+    try {
+      return this.contract.getPoolTokens(poolId);
+    } catch (error) {
+      console.error(`VaultService - getPoolTokens() - Failed to get pool tokens!`, error);
+      return Promise.reject(error);
+    }
+  }
 }
 
 export default VaultService;
