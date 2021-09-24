@@ -95,10 +95,11 @@ class TempusAMMService {
     const service = this.tempusAMMMap.get(address);
     if (service) {
       const SPOT_PRICE_AMOUNT = ethers.utils.parseEther('10000');
+      const YIELD_TO_PRINCIPAL = true;
 
       let expectedReturn: BigNumber;
       try {
-        expectedReturn = await service.getExpectedReturnGivenIn(SPOT_PRICE_AMOUNT, true);
+        expectedReturn = await service.getExpectedReturnGivenIn(SPOT_PRICE_AMOUNT, YIELD_TO_PRINCIPAL);
       } catch (error) {
         console.error(
           'TempusAMMService - getExpectedReturnGivenIn() - Failed to get expected return for yield share tokens!',
