@@ -73,7 +73,13 @@ const TokenSelector: FC<TokenSelectorProps> = ({ defaultTicker, tickers = [], cl
 
   return (
     <FormControl size="small">
-      <Select variant="outlined" labelId="tf__token-selector" value={token} onChange={handleChange}>
+      <Select
+        variant="outlined"
+        className="tf__token-selector"
+        labelId="tf__token-selector"
+        value={token}
+        onChange={handleChange}
+      >
         {getMenuItems(items)}
       </Select>
     </FormControl>
