@@ -18,7 +18,6 @@ type TempusAMMServiceParameters = {
   TempusAMMABI: typeof TempusAMMABI;
   signerOrProvider: JsonRpcSigner | JsonRpcProvider;
   tempusPoolService: TempusPoolService;
-  vaultService: VaultService;
 };
 
 class TempusAMMService {
@@ -26,7 +25,7 @@ class TempusAMMService {
   private tempusPoolService: TempusPoolService | null = null;
   private vaultService: VaultService | null = null;
 
-  public init({ tempusAMMAddresses, signerOrProvider, tempusPoolService, vaultService }: TempusAMMServiceParameters) {
+  public init({ tempusAMMAddresses, signerOrProvider, tempusPoolService }: TempusAMMServiceParameters) {
     this.tempusAMMMap.clear();
 
     tempusAMMAddresses.forEach((address: string) => {
@@ -34,7 +33,6 @@ class TempusAMMService {
     });
 
     this.tempusPoolService = tempusPoolService;
-    this.vaultService = vaultService;
   }
 
   public poolId(address: string): Promise<string> {
@@ -104,13 +102,6 @@ class TempusAMMService {
       try {
         expectedReturn = await service.getExpectedReturnGivenIn(SPOT_PRICE_AMOUNT, YIELD_TO_PRINCIPAL);
       } catch (error) {
-        if (this.vaultService) {
-          const poolId = await service.getPoolId();
-          const [, ammBalances] = await this.vaultService.getPoolTokens(poolId);
-          const result = ammBalances.map(v => v.toString()).join(' ');
-          console.error('TempusAMMService - getExpectedReturnGivenIn() - ammBalances', poolId, result);
-        }
-
         console.error(
           'TempusAMMService - getExpectedReturnGivenIn() - Failed to get expected return for yield share tokens!',
         );

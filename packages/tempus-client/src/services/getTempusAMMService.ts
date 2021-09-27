@@ -5,7 +5,6 @@ import getConfig from '../utils/get-config';
 import TempusAMMService from './TempusAMMService';
 import getDefaultProvider from './getDefaultProvider';
 import getTempusPoolService from './getTempusPoolService';
-import getVaultService from './getVaultService';
 
 let tempusAMMService: TempusAMMService;
 const getTempusAMMService = (signerOrProvider?: JsonRpcSigner | JsonRpcProvider): TempusAMMService => {
@@ -17,7 +16,6 @@ const getTempusAMMService = (signerOrProvider?: JsonRpcSigner | JsonRpcProvider)
       TempusAMMABI: TempusAMMABI,
       signerOrProvider: getDefaultProvider(),
       tempusPoolService: getTempusPoolService(),
-      vaultService: getVaultService(),
     });
   }
 
@@ -28,7 +26,6 @@ const getTempusAMMService = (signerOrProvider?: JsonRpcSigner | JsonRpcProvider)
       TempusAMMABI: TempusAMMABI,
       signerOrProvider: signerOrProvider,
       tempusPoolService: getTempusPoolService(signerOrProvider),
-      vaultService: getVaultService(signerOrProvider),
     });
   }
 
