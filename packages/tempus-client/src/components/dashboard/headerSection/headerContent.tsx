@@ -16,7 +16,7 @@ const HeaderContent: FC<ContentProps> = props => {
           <Typography color="default" variant="h5">
             {props.children}
           </Typography>
-          <div style={{ marginRight: '5px' }}>
+          <div className="tf__dashboard__header-info-icon-container">
             <InfoTooltip text={props.column.tooltip} />
           </div>
         </>
