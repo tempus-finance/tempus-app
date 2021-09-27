@@ -1,5 +1,5 @@
 import { FC, useCallback, useEffect, useState } from 'react';
-import { ethers, BigNumber } from 'ethers';
+import { ethers, utils, BigNumber } from 'ethers';
 import AddIcon from '@material-ui/icons/Add';
 import Typography from '@material-ui/core/Typography';
 import { Ticker } from '../../../interfaces/Token';
@@ -25,15 +25,15 @@ const DetailWithdraw: FC<PoolDetailProps> = ({
   const [backingToken, yieldBearingToken] = supportedTokens;
 
   const [selectedToken, setSelectedToken] = useState<string | undefined>(undefined);
-  const [withdrawAmount, setWithdrawAmount] = useState<number | undefined>(undefined);
-  const [usdRate, setUsdRate] = useState<number>(0);
+  const [withdrawAmount, setWithdrawAmount] = useState<BigNumber | null>(null);
+  const [usdRate, setUsdRate] = useState<BigNumber | null>(null);
 
-  const [principalsBalance, setPrincipalsBalance] = useState<number | undefined>(undefined);
-  const [yieldsBalance, setYieldsBalance] = useState<number | undefined>(undefined);
-  const [lpBalance, setLpBalance] = useState<number | undefined>(undefined);
+  const [principalsBalance, setPrincipalsBalance] = useState<BigNumber | null>(null);
+  const [yieldsBalance, setYieldsBalance] = useState<BigNumber | null>(null);
+  const [lpBalance, setLpBalance] = useState<BigNumber | null>(null);
 
-  const [backingTokenRate, setBackingTokenRate] = useState<number | undefined>(undefined);
-  const [yieldBearingTokenRate, setYieldBearingTokenRate] = useState<number | undefined>(undefined);
+  const [backingTokenRate, setBackingTokenRate] = useState<BigNumber | null>(null);
+  const [yieldBearingTokenRate, setYieldBearingTokenRate] = useState<BigNumber | null>(null);
 
   const [approveDisabled, setApproveDisabled] = useState<boolean>(false);
   const [executeDisabled, setExecuteDisabled] = useState<boolean>(true);
@@ -44,13 +44,13 @@ const DetailWithdraw: FC<PoolDetailProps> = ({
         setSelectedToken(token);
 
         if (backingToken === token) {
-          if (backingTokenRate !== undefined && !isNaN(backingTokenRate)) {
+          if (backingTokenRate !== undefined) {
             setUsdRate(backingTokenRate);
           }
         }
 
         if (backingToken !== token) {
-          if (yieldBearingTokenRate !== undefined && !isNaN(yieldBearingTokenRate)) {
+          if (yieldBearingTokenRate !== undefined) {
             setUsdRate(yieldBearingTokenRate);
           }
         }
@@ -61,7 +61,7 @@ const DetailWithdraw: FC<PoolDetailProps> = ({
 
   const onApprove = useCallback(() => {
     const approve = async () => {
-      if (signer) {
+      if (signer && principalsBalance) {
         try {
           const isBackingToken = backingToken === selectedToken;
           // TODO check??
@@ -120,18 +120,32 @@ const DetailWithdraw: FC<PoolDetailProps> = ({
       if (signer && address && ammAddress) {
         try {
           const {
-            backingTokenRate = '0',
-            yieldBearingTokenRate = '0',
-            principalsTokenBalance = '0',
-            yieldsTokenBalance = '0',
-            lpTokensBalance = '0',
+            backingTokenRate,
+            yieldBearingTokenRate,
+            principalsTokenBalance,
+            yieldsTokenBalance,
+            lpTokensBalance,
           } = (await poolDataAdapter?.retrieveBalances(address, ammAddress, userWalletAddress, signer)) || {};
 
-          setBackingTokenRate(Number(ethers.utils.formatEther(backingTokenRate)));
-          setYieldBearingTokenRate(Number(ethers.utils.formatEther(yieldBearingTokenRate)));
-          setPrincipalsBalance(Number(ethers.utils.formatEther(principalsTokenBalance)));
-          setYieldsBalance(Number(ethers.utils.formatEther(yieldsTokenBalance)));
-          setLpBalance(Number(ethers.utils.formatEther(lpTokensBalance)));
+          if (backingTokenRate) {
+            setBackingTokenRate(backingTokenRate);
+          }
+
+          if (yieldBearingTokenRate) {
+            setYieldBearingTokenRate(yieldBearingTokenRate);
+          }
+
+          if (principalsTokenBalance) {
+            setPrincipalsBalance(principalsTokenBalance);
+          }
+
+          if (yieldsTokenBalance) {
+            setYieldsBalance(yieldsTokenBalance);
+          }
+
+          if (lpTokensBalance) {
+            setLpBalance(lpTokensBalance);
+          }
         } catch (err) {
           // TODO handle errors
           console.log('err', err);
@@ -173,7 +187,7 @@ const DetailWithdraw: FC<PoolDetailProps> = ({
 
           console.log('retrieveWithdrawAmount amount', amount);
           // Quick fix, proper fix is on branch for Withdraw UI update
-          setWithdrawAmount(Number(ethers.utils.formatEther(amount)));
+          setWithdrawAmount(amount);
         } catch (err) {
           // TODO handle errors
           console.log('Detail Deposit - retrieveDepositAmount -', err);
@@ -220,7 +234,7 @@ const DetailWithdraw: FC<PoolDetailProps> = ({
                   Balance
                 </Typography>
                 <div className="tf__dialog__tab__action-container__balance-value">
-                  {new Intl.NumberFormat().format(principalsBalance || 0)}
+                  {new Intl.NumberFormat().format(Number(utils.formatEther(principalsBalance || 0)))}
                 </div>
               </div>
             </div>
@@ -243,7 +257,7 @@ const DetailWithdraw: FC<PoolDetailProps> = ({
                   Balance
                 </Typography>
                 <div className="tf__dialog__tab__action-container__balance-value">
-                  {new Intl.NumberFormat().format(yieldsBalance || 0)}
+                  {new Intl.NumberFormat().format(Number(utils.formatEther(yieldsBalance || 0)))}
                 </div>
               </div>
             </div>
@@ -261,7 +275,7 @@ const DetailWithdraw: FC<PoolDetailProps> = ({
                   Balance
                 </Typography>
                 <div className="tf__dialog__tab__action-container__balance-value">
-                  {new Intl.NumberFormat().format(lpBalance || 0)}
+                  {new Intl.NumberFormat().format(Number(utils.formatEther(lpBalance || 0)))}
                 </div>
               </div>
             </div>
@@ -281,10 +295,16 @@ const DetailWithdraw: FC<PoolDetailProps> = ({
             <div className="tf__dialog__tab__action-container-grid__centre-right tf__dialog__tab__action-container__lp-tokens">
               <div>
                 <span className="small-title">(est.)</span>{' '}
-                {withdrawAmount ? new Intl.NumberFormat().format(withdrawAmount) : '-'}
+                {withdrawAmount ? new Intl.NumberFormat().format(Number(utils.formatEther(withdrawAmount))) : '-'}
               </div>
               <div className="tf__dialog__tab__action-container__token-amount-fiat">
-                <div>{`~ ${withdrawAmount ? new Intl.NumberFormat().format(withdrawAmount * usdRate) : '-'} USD`}</div>
+                <div>{`~ ${
+                  withdrawAmount && usdRate
+                    ? new Intl.NumberFormat().format(
+                        Number(utils.formatEther(withdrawAmount)) * Number(utils.formatEther(usdRate)),
+                      )
+                    : '-'
+                } USD`}</div>
               </div>
             </div>
           </ActionContainerGrid>

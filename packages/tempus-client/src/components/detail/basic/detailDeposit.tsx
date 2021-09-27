@@ -1,5 +1,5 @@
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
-import { ethers, BigNumber } from 'ethers';
+import { ethers, utils, BigNumber } from 'ethers';
 import Button from '@material-ui/core/Button';
 import NumberUtils from '../../../services/NumberUtils';
 import CurrencyInput from '../../currencyInput';
@@ -25,24 +25,25 @@ const DetailDeposit: FC<PoolDetailProps> = ({
 }) => {
   const { address, ammAddress } = tempusPool || {};
   const { supportedTokens = [], fixedAPR = 0, variableAPY = 0 } = content || {};
+  const [triggerUpdateBalance, setTriggerUpdateBalance] = useState<boolean>(true);
   const [backingToken] = supportedTokens;
 
   const [selectedToken, setSelectedToken] = useState<string | undefined>(undefined);
   const [amount, setAmount] = useState<number>(0);
-  const [balance, setBalance] = useState<number>(0);
-  const [usdRate, setUsdRate] = useState<number>(0);
+  const [balance, setBalance] = useState<BigNumber | null>(null);
+  const [usdRate, setUsdRate] = useState<BigNumber | null>(null);
   const [minTYSRate] = useState<number>(0); // TODO where to get this value?
 
   const [fixedPrincipalsAmount, setFixedPrincipalsAmount] = useState<BigNumber | null>(null);
   const [variablePrincipalsAmount, setVariablePrincipalsAmount] = useState<BigNumber>(BigNumber.from('0'));
   const [variableLpTokensAmount, setVariableLpTokensAmount] = useState<BigNumber>(BigNumber.from('0'));
 
-  const [backingTokenBalance, setBackingTokenBalance] = useState<number | undefined>(undefined);
-  const [yieldBearingTokenBalance, setYieldBearingTokenBalance] = useState<number | undefined>(undefined);
+  const [backingTokenBalance, setBackingTokenBalance] = useState<BigNumber | null>(null);
+  const [yieldBearingTokenBalance, setYieldBearingTokenBalance] = useState<BigNumber | null>(null);
 
   const [selectedYield, setSelectedYield] = useState<SelectedYield>('fixed');
-  const [backingTokenRate, setBackingTokenRate] = useState<number | undefined>(undefined);
-  const [yieldBearingTokenRate, setYieldBearingTokenRate] = useState<number | undefined>(undefined);
+  const [backingTokenRate, setBackingTokenRate] = useState<BigNumber | null>(null);
+  const [yieldBearingTokenRate, setYieldBearingTokenRate] = useState<BigNumber | null>(null);
 
   const [approveDisabled, setApproveDisabled] = useState<boolean>(false);
   const [executeDisabled, setExecuteDisabled] = useState<boolean>(true);
@@ -51,23 +52,24 @@ const DetailDeposit: FC<PoolDetailProps> = ({
     (token: string | undefined) => {
       if (!!token) {
         setSelectedToken(token);
+        setAmount(0);
 
         if (backingToken === token) {
-          if (backingTokenBalance !== undefined && !isNaN(backingTokenBalance)) {
+          if (backingTokenBalance !== null) {
             setBalance(backingTokenBalance);
           }
 
-          if (backingTokenRate !== undefined && !isNaN(backingTokenRate)) {
+          if (backingTokenRate !== null) {
             setUsdRate(backingTokenRate);
           }
         }
 
         if (backingToken !== token) {
-          if (yieldBearingTokenBalance !== undefined && !isNaN(yieldBearingTokenBalance)) {
+          if (yieldBearingTokenBalance !== null) {
             setBalance(yieldBearingTokenBalance);
           }
 
-          if (yieldBearingTokenRate !== undefined && !isNaN(yieldBearingTokenRate)) {
+          if (yieldBearingTokenRate !== null) {
             setUsdRate(yieldBearingTokenRate);
           }
         }
@@ -77,10 +79,11 @@ const DetailDeposit: FC<PoolDetailProps> = ({
       backingToken,
       backingTokenBalance,
       backingTokenRate,
-      yieldBearingTokenBalance,
       yieldBearingTokenRate,
+      yieldBearingTokenBalance,
       setSelectedToken,
       setBalance,
+      setAmount,
     ],
   );
 
@@ -95,13 +98,15 @@ const DetailDeposit: FC<PoolDetailProps> = ({
     [setAmount],
   );
 
-  const onClickPercentage = useCallback(
-    (percentage: number) => {
-      if (!!balance && !isNaN(balance)) {
-        setAmount(balance * percentage);
+  const onPercentageChange = useCallback(
+    (event: any) => {
+      const percentage = event.currentTarget.value;
+      if (!!selectedToken && !!balance && !isNaN(percentage)) {
+        const balanceAsNumber = Number(ethers.utils.formatEther(balance));
+        setAmount(balanceAsNumber * percentage);
       }
     },
-    [balance, setAmount],
+    [balance, selectedToken, setAmount],
   );
 
   const onSelectYield = useCallback(
@@ -116,7 +121,7 @@ const DetailDeposit: FC<PoolDetailProps> = ({
 
   const onApprove = useCallback(() => {
     const approve = async () => {
-      if (signer) {
+      if (signer && balance) {
         try {
           const isBackingToken = backingToken === selectedToken;
           const approveTransaction = await poolDataAdapter?.approve(address, isBackingToken, signer, balance);
@@ -136,9 +141,9 @@ const DetailDeposit: FC<PoolDetailProps> = ({
 
   const onExecute = useCallback(() => {
     const execute = async () => {
-      if (signer) {
+      if (signer && amount) {
         try {
-          const parsedAmount = (amount || 0).toString();
+          const parsedAmount = amount.toString();
           const tokenAmount = ethers.utils.parseEther(parsedAmount);
           const isBackingToken = backingToken === selectedToken;
           const parsedMinTYSRate = ethers.utils.parseEther(minTYSRate.toString());
@@ -150,6 +155,8 @@ const DetailDeposit: FC<PoolDetailProps> = ({
           );
           await depositTransaction?.wait();
           setExecuteDisabled(false);
+          setTriggerUpdateBalance(true);
+          setAmount(0);
         } catch (err) {
           // TODO handle errors
           console.log('onExecute err', err);
@@ -159,23 +166,50 @@ const DetailDeposit: FC<PoolDetailProps> = ({
 
     setExecuteDisabled(true);
     execute();
-  }, [signer, ammAddress, backingToken, selectedToken, amount, minTYSRate, poolDataAdapter, setExecuteDisabled]);
+  }, [
+    signer,
+    ammAddress,
+    backingToken,
+    selectedToken,
+    amount,
+    minTYSRate,
+    poolDataAdapter,
+    setExecuteDisabled,
+    setTriggerUpdateBalance,
+    setAmount,
+  ]);
 
   useEffect(() => {
     const retrieveBalances = async () => {
       if (signer && address && ammAddress) {
         try {
-          const {
-            backingTokenBalance = '0',
-            backingTokenRate = '0',
-            yieldBearingTokenBalance = '0',
-            yieldBearingTokenRate = '0',
-          } = (await poolDataAdapter?.retrieveBalances(address, ammAddress, userWalletAddress, signer)) || {};
+          const { backingTokenBalance, backingTokenRate, yieldBearingTokenBalance, yieldBearingTokenRate } =
+            (await poolDataAdapter?.retrieveBalances(address, ammAddress, userWalletAddress, signer)) || {};
 
-          setBackingTokenBalance(Number(ethers.utils.formatEther(backingTokenBalance)));
-          setBackingTokenRate(Number(ethers.utils.formatEther(backingTokenRate)));
-          setYieldBearingTokenBalance(Number(ethers.utils.formatEther(yieldBearingTokenBalance)));
-          setYieldBearingTokenRate(Number(ethers.utils.formatEther(yieldBearingTokenRate)));
+          if (backingTokenBalance) {
+            setBackingTokenBalance(backingTokenBalance);
+
+            if (backingToken === selectedToken) {
+              setBalance(backingTokenBalance);
+            }
+          }
+
+          if (backingTokenRate) {
+            setBackingTokenRate(backingTokenRate);
+          }
+
+          if (yieldBearingTokenBalance) {
+            setYieldBearingTokenBalance(yieldBearingTokenBalance);
+            if (backingToken !== selectedToken) {
+              setBalance(yieldBearingTokenBalance);
+            }
+          }
+
+          if (yieldBearingTokenRate) {
+            setYieldBearingTokenRate(yieldBearingTokenRate);
+          }
+
+          setTriggerUpdateBalance(false);
         } catch (err) {
           // TODO handle errors
           console.log('Detail Deposit - retrieveBalances -', err);
@@ -183,8 +217,13 @@ const DetailDeposit: FC<PoolDetailProps> = ({
       }
     };
 
-    retrieveBalances();
+    if (triggerUpdateBalance) {
+      retrieveBalances();
+    }
   }, [
+    triggerUpdateBalance,
+    backingToken,
+    selectedToken,
     signer,
     address,
     ammAddress,
@@ -194,6 +233,7 @@ const DetailDeposit: FC<PoolDetailProps> = ({
     setBackingTokenRate,
     setYieldBearingTokenRate,
     setYieldBearingTokenBalance,
+    setTriggerUpdateBalance,
   ]);
 
   useEffect(() => {
@@ -209,16 +249,16 @@ const DetailDeposit: FC<PoolDetailProps> = ({
               isBackingToken,
             )) || {};
 
-          if (fixedDeposit !== undefined) {
+          if (fixedDeposit !== null) {
             setFixedPrincipalsAmount(fixedDeposit);
           }
 
           if (variableDeposit) {
             const [variablePrincipals, , variableLpTokens] = variableDeposit;
-            if (variablePrincipals !== undefined) {
+            if (variablePrincipals !== null) {
               setVariablePrincipalsAmount(variablePrincipals);
             }
-            if (variableLpTokens !== undefined) {
+            if (variableLpTokens !== null) {
               setVariableLpTokensAmount(variableLpTokens);
             }
           }
@@ -242,8 +282,29 @@ const DetailDeposit: FC<PoolDetailProps> = ({
   ]);
 
   useEffect(() => {
-    setApproveDisabled(!amount || !selectedYield);
-  }, [amount, selectedYield, setApproveDisabled]);
+    setExecuteDisabled(!amount || !selectedYield);
+  }, [amount, selectedYield, setExecuteDisabled]);
+
+  useEffect(() => {
+    const getAllowance = async () => {
+      if (signer) {
+        const isBackingToken = backingToken === selectedToken;
+        const allowance = await poolDataAdapter?.getApprovedAllowance(
+          userWalletAddress,
+          address,
+          isBackingToken,
+          signer,
+        );
+        if (allowance) {
+          setApproveDisabled(true);
+        } else {
+          setApproveDisabled(false);
+        }
+      }
+    };
+
+    getAllowance();
+  }, [userWalletAddress, address, selectedToken, backingToken, signer, poolDataAdapter]);
 
   const fixedPrincipalsAmountFormatted = useMemo(() => {
     if (!fixedPrincipalsAmount) {
@@ -280,7 +341,10 @@ const DetailDeposit: FC<PoolDetailProps> = ({
               <TokenSelector tickers={supportedTokens} onTokenChange={onTokenChange} />
               <Spacer size={20} />
               <Typography variant="body-text">
-                Balance: {selectedToken ? `${new Intl.NumberFormat().format(balance)} ${selectedToken}` : '-'}
+                Balance:{' '}
+                {selectedToken && balance
+                  ? `${new Intl.NumberFormat().format(Number(utils.formatEther(balance)))} ${selectedToken}`
+                  : '-'}
               </Typography>
             </div>
             <Spacer size={14} />
@@ -290,19 +354,19 @@ const DetailDeposit: FC<PoolDetailProps> = ({
               </div>
               <CurrencyInput defaultValue={amount} onChange={onAmountChange} disabled={!selectedToken} />
               <Spacer size={20} />
-              <Button variant="contained" size="small" onClick={() => onClickPercentage(0.25)}>
+              <Button variant="contained" size="small" value="0.25" onClick={onPercentageChange}>
                 25%
               </Button>
               <Spacer size={10} />
-              <Button variant="contained" size="small" onClick={() => onClickPercentage(0.5)}>
+              <Button variant="contained" size="small" value="0.5" onClick={onPercentageChange}>
                 50%
               </Button>
               <Spacer size={10} />
-              <Button value="tps" variant="contained" size="small" onClick={() => onClickPercentage(0.75)}>
+              <Button variant="contained" size="small" value="0.75" onClick={onPercentageChange}>
                 75%
               </Button>
               <Spacer size={10} />
-              <Button value="tps" variant="contained" size="small" onClick={() => onClickPercentage(1)}>
+              <Button variant="contained" size="small" value="1" onClick={onPercentageChange}>
                 Max
               </Button>
             </div>

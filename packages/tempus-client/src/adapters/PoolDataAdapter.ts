@@ -200,7 +200,7 @@ export default class PoolDataAdapter {
     tempusPoolAddress: string,
     isBackingToken: boolean,
     signer: JsonRpcSigner,
-    approveAmount = 0,
+    approveAmount: BigNumber,
   ): Promise<ContractTransaction | void> {
     if (!this.tempusPoolService || !this.eRC20TokenServiceGetter) {
       console.error('PoolDataAdapter - approve() - Attempted to use PoolDataAdapter before initializing it!');
@@ -213,7 +213,7 @@ export default class PoolDataAdapter {
         : await this.tempusPoolService.getYieldBearingTokenAddress(tempusPoolAddress);
 
       const tokenService = this.eRC20TokenServiceGetter(tokenAddress, signer);
-      return tokenService.approve(this.tempusControllerAddress, ethers.utils.parseEther(approveAmount.toString()));
+      return tokenService.approve(this.tempusControllerAddress, approveAmount);
     } catch (error) {
       console.error('PoolDataAdapter - approve() - Failed to approve tokens for deposit!', error);
       Promise.reject();
