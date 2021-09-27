@@ -77,15 +77,13 @@ export default class PoolDataAdapter {
     const yieldTokenAmount = ethers.utils.parseEther('1');
 
     try {
-      const interestRate = await this.tempusPoolService.currentInterestRate(tempusPoolAddress);
-
-      const {
-        backingTokenService,
-        yieldBearingTokenService,
-        principalsTokenService,
-        yieldsTokenService,
-        lpTokenService,
-      } = await this.getTokenServices(tempusPoolAddress, tempusAMMAddress, signer);
+      const [
+        { backingTokenService, yieldBearingTokenService, principalsTokenService, yieldsTokenService, lpTokenService },
+        interestRate,
+      ] = await Promise.all([
+        this.getTokenServices(tempusPoolAddress, tempusAMMAddress, signer),
+        this.tempusPoolService.currentInterestRate(tempusPoolAddress),
+      ]);
 
       const [backingTokenTicker, yieldBearingTokenConversionRate] = await Promise.all([
         this.tempusPoolService.getBackingTokenTicker(tempusPoolAddress),
@@ -106,7 +104,6 @@ export default class PoolDataAdapter {
         yieldsTokenService.balanceOf(userWalletAddress),
         this.statisticService.getRate(backingTokenTicker),
         lpTokenService.balanceOf(userWalletAddress),
-        this.tempusPoolService.numAssetsPerYieldToken(tempusPoolAddress, yieldTokenAmount, interestRate),
       ]);
 
       const yieldBearingTokenRate = mul18f(yieldBearingTokenConversionRate, backingTokenRate);
@@ -228,6 +225,7 @@ export default class PoolDataAdapter {
     signer: JsonRpcSigner,
   ): Promise<ContractTransaction | void> {
     if (!this.eRC20TokenServiceGetter) {
+      console.error('PoolDataAdapter - approveToken() - Attempted to use PoolDataAdapter before initializing it!');
       return Promise.reject();
     }
 
