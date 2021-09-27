@@ -1,4 +1,4 @@
-import { FC, useCallback, useContext, useMemo, useState } from 'react';
+import { FC, useCallback, useContext, useEffect, useState } from 'react';
 import { DashboardRow, DashboardRowChild } from '../../interfaces';
 import getDashboardDataAdapter from '../../adapters/getDashboardDataAdapter';
 import Detail from '../detail/detail';
@@ -17,14 +17,12 @@ const DashboardManager: FC<DashboardManagerProps> = ({ selectedRow, onRowSelecte
     data: { userWalletAddress },
   } = useContext(Context);
 
-  useMemo(() => {
+  useEffect(() => {
     const fetchRows = async () => {
-      const rows = await getDashboardDataAdapter(userWalletAddress).getRows();
-
-      setRows(rows);
+      setRows(await getDashboardDataAdapter(userWalletAddress).getRows());
     };
     fetchRows();
-  }, [setRows, userWalletAddress]);
+  }, [userWalletAddress]);
 
   const onRowActionClick = useCallback(
     (row: any) => {
