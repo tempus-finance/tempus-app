@@ -43,7 +43,7 @@ const Dashboard: FC<DashboardProps> = ({ hidden, userWalletAddress, rows, onRowA
   const [tableColumnExtensions] = useState([
     { columnName: ColumnNames.TOKEN, align: 'left' as 'left', width: 160 },
     { columnName: ColumnNames.PROTOCOL, align: 'left' as 'left', width: 115 },
-    { columnName: ColumnNames.MATURITY, align: 'right' as 'right' },
+    { columnName: ColumnNames.MATURITY, align: 'left' as 'left' },
     { columnName: ColumnNames.FIXED_APR, align: 'right' as 'right', width: 140 },
     { columnName: ColumnNames.VARIABLE_APY, align: 'right' as 'right', width: 160 },
     { columnName: ColumnNames.TVL, align: 'right' as 'right', width: 80 },

@@ -25,7 +25,21 @@ export const dashboardColumnsDefinitions: ExtraDataColumn[] = [
       }
     },
   },
+  {
+    name: 'maturity',
+    title: 'Maturity',
+    getCellValue: row => {
+      if (row.maturityRange && row.maturityRange.length === 2) {
+        const [min, max] = row.maturityRange;
+        if (min.getTime() === max.getTime()) {
+          return [min.getTime()];
+        }
 
+        return [min.getTime(), max.getTime()];
+      }
+      return [row.maturityDate.getTime()];
+    },
+  },
   {
     name: 'fixedAPR',
     title: `Fixed APR`,
@@ -46,21 +60,6 @@ export const dashboardColumnsDefinitions: ExtraDataColumn[] = [
         return row.variableAPY;
       }
       return [row.variableAPY];
-    },
-  },
-  {
-    name: 'maturity',
-    title: 'Maturity',
-    getCellValue: row => {
-      if (row.maturityRange && row.maturityRange.length === 2) {
-        const [min, max] = row.maturityRange;
-        if (min.getTime() === max.getTime()) {
-          return [min.getTime()];
-        }
-
-        return [min.getTime(), max.getTime()];
-      }
-      return [row.maturityDate.getTime()];
     },
   },
   {
