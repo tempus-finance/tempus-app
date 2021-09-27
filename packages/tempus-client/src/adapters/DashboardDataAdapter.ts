@@ -19,7 +19,6 @@ import VariableRateService from './VariableRateService';
 
 type DashboardDataAdapterParameters = {
   signerOrProvider: JsonRpcProvider | JsonRpcSigner;
-  userWalletAddress: string;
   tempusPoolService: TempusPoolService;
   statisticsService: StatisticsService;
   tempusAMMService: TempusAMMService;
@@ -40,11 +39,12 @@ export default class DashboardDataAdapter {
     this.tempusPoolService = params.tempusPoolService;
     this.statisticsService = params.statisticsService;
     this.tempusAMMService = params.tempusAMMService;
-    this.userWalletAddress = params.userWalletAddress;
     this.variableRateService = params.variableRateService;
   }
 
-  public async getRows(): Promise<DashboardRow[]> {
+  public async getRows(userWalletAddress: string): Promise<DashboardRow[]> {
+    this.userWalletAddress = userWalletAddress;
+
     let childRows: DashboardRowChild[];
     try {
       childRows = await this.getChildRows();

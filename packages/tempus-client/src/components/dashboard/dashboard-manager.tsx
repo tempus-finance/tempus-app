@@ -19,7 +19,7 @@ const DashboardManager: FC<DashboardManagerProps> = ({ selectedRow, onRowSelecte
 
   useMemo(() => {
     const fetchRows = async () => {
-      const rows = await getDashboardDataAdapter(userWalletAddress).getRows();
+      const rows = await getDashboardDataAdapter().getRows(userWalletAddress);
 
       setRows(rows);
     };
