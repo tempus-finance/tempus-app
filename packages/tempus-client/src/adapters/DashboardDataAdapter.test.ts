@@ -43,8 +43,7 @@ describe('DashboardDataAdapter', () => {
 
   describe('getDashboardDataAdapter()', () => {
     test('returns a not null DashboardDataAdapter instance', () => {
-      const userWalletAddress = 'abc';
-      const instance: DashboardDataAdapter = getDashboardDataService(userWalletAddress);
+      const instance: DashboardDataAdapter = getDashboardDataService();
 
       expect(instance).toBeInstanceOf(DashboardDataAdapter);
       expect(instance).not.toBe(null);
@@ -53,7 +52,9 @@ describe('DashboardDataAdapter', () => {
 
   describe('getRows()', () => {
     test('returns an Array of rows ', async () => {
-      const rows = await instance.getRows();
+      const userWalletAddress = 'abc';
+
+      const rows = await instance.getRows(userWalletAddress);
 
       expect(spyGetChildRows).toHaveBeenCalledTimes(1);
       expect(spyGetParentRows).toHaveBeenCalledTimes(1);

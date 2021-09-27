@@ -19,7 +19,7 @@ const DashboardManager: FC<DashboardManagerProps> = ({ selectedRow, onRowSelecte
 
   useEffect(() => {
     const fetchRows = async () => {
-      setRows(await getDashboardDataAdapter(userWalletAddress).getRows());
+      setRows(await getDashboardDataAdapter().getRows(userWalletAddress));
     };
     fetchRows();
   }, [userWalletAddress]);
