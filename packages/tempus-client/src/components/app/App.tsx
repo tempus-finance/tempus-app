@@ -13,6 +13,7 @@ const App: FC = (): JSX.Element => {
   const [activePage, setActivePage] = useState<HeaderLinks>('Dashboard');
 
   const showDashboardHandler = useCallback(() => {
+    setSelectedRow(null);
     setActivePage('Dashboard');
   }, [setActivePage]);
 
