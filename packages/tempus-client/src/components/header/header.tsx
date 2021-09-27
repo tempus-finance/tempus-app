@@ -26,30 +26,6 @@ const Header: FC<HeaderProps> = ({ active, onDashboardClick, onLogoClick }): JSX
         <TempusLogo fillColor="black" onClick={onLogoClick} />
       </div>
       <div className="tf__header__actions">
-        <Button
-          title="Dashboard"
-          size="small"
-          className="tf__header__action"
-          disabled={active === 'Dashboard'}
-          onClick={onDashboardClick}
-          disableRipple={true}
-        >
-          <Typography color={active === 'Dashboard' ? 'accent' : 'default'} variant="h3">
-            Dashboard
-          </Typography>
-        </Button>
-        <Button
-          title="Dashboard"
-          size="small"
-          className="tf__header__action"
-          disabled={active === 'Portfolio'}
-          onClick={() => null}
-          disableRipple={true}
-        >
-          <Typography color={active === 'Portfolio' ? 'accent' : 'default'} variant="h3">
-            Portfolio
-          </Typography>
-        </Button>
         <WalletConnect />
       </div>
     </div>
