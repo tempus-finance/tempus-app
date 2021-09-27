@@ -124,7 +124,7 @@ const poolId = await tempusAMMService.poolId(poolAMMAddress);
 
 // Get address of the tokens we want to swap (TPS and TYS).
 const yieldShareAddress = await tempusPoolService.getYieldTokenAddress(poolAddress);
-const principalShareAddress = await tempusPoolService.getPrincipalTokenAddress(poolAddress);
+const principalShareAddress = await tempusPoolService.getPrincipalsTokenAddress(poolAddress);
 
 // Get TPS token service.
 const principalShareService = getERC20TokenService(principalShareAddress, library.getSigner());

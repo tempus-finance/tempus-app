@@ -55,7 +55,7 @@ export async function getEventBackingTokenValue(
   if (isSwapEvent(event)) {
     try {
       const tempusPoolAddress = await amm.getTempusPoolAddressFromId(event.args.poolId);
-      const principalAddress = await pool.getPrincipalTokenAddress(tempusPoolAddress);
+      const principalAddress = await pool.getPrincipalsTokenAddress(tempusPoolAddress);
 
       // If tokenIn is principal token, return amountIn as an event value, otherwise return amountOut as an event value.
       return event.args.tokenIn === principalAddress ? event.args.amountIn : event.args.amountOut;

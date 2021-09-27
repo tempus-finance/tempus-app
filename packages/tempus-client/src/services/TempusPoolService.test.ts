@@ -250,7 +250,7 @@ describe('TempusPoolService', () => {
     test('it returns address of the principal token', async () => {
       mockPrincipalShare.mockImplementation(() => Promise.resolve('mock-principal-share-address'));
 
-      const principalTokenAddress = await instance.getPrincipalTokenAddress(mockAddress);
+      const principalTokenAddress = await instance.getPrincipalsTokenAddress(mockAddress);
 
       expect(principalTokenAddress).toBe('mock-principal-share-address');
     });
