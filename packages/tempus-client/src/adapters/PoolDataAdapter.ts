@@ -131,7 +131,7 @@ export default class PoolDataAdapter {
   ): Promise<{
     fixedDeposit: BigNumber;
     variableDeposit: BigNumber[];
-  } | void> {
+  }> {
     if (!this.statisticService) {
       console.error(
         'PoolDataAdapter - getEstimatedDepositAmount() - Attempted to use PoolDataAdapter before initializing it!',
@@ -156,7 +156,7 @@ export default class PoolDataAdapter {
       };
     } catch (error) {
       console.error('PoolDataAdapter - getEstimatedDepositAmount() - Failed to retrieve balances!', error);
-      Promise.reject();
+      return Promise.reject();
     }
   }
 
