@@ -2,8 +2,8 @@ import { FC, useCallback, useState } from 'react';
 import { DashboardRowChild } from '../../interfaces';
 import { Context, defaultContextValue } from '../../context';
 import Header, { HeaderLinks } from '../header/header';
-import Analytics from '../analytics/analytics';
 import DashboardManager from '../dashboard/dashboard-manager';
+import Analytics from '../analytics/analytics';
 
 import './App.scss';
 

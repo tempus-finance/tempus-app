@@ -33,7 +33,7 @@ const Execute: FC<ExecuteProps> = ({
           {approveLabel || 'Approve'}
         </Button>
       </Tooltip>
-      <Tooltip title={executeDisabled ? 'Execute trade' : 'Execution disabled until approved'}>
+      <Tooltip title={executeDisabled ? 'Execution disabled until approved' : 'Execute trade'}>
         <span>
           <Button
             variant="contained"
