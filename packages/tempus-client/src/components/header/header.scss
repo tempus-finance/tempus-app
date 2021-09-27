@@ -44,3 +44,30 @@ button.tf__header__action {
     padding: 2px 4px;
   }
 }
+
+.tf__header__action-icon-container {
+  @include background-level-3;
+  width: 30px;
+  height: 30px;
+  border-radius: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.tf__header__action-options {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.tf__header__popper {
+  padding-top: 5px;
+  z-index: 999;
+}
+
+.tf__header__options-menu-container {
+  @include background-level-1;
+  display: flex;
+  flex-direction: column;
+}
