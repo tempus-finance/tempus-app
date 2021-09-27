@@ -6,7 +6,7 @@ import Transactions from '../grids/transactions/transactions';
 import { volume24hTooltipText } from '../../constants';
 
 // Style
-import './statistics.scss';
+import './analytics.scss';
 
 function Statistics(): JSX.Element {
   return (

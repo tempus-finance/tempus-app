@@ -1,9 +1,9 @@
 import { FC, useCallback, useState } from 'react';
-import Header, { HeaderLinks } from '../header/header';
-import Statistics from '../statistics/statistics';
-import DashboardManager from '../dashboard/dashboard-manager';
 import { DashboardRowChild } from '../../interfaces';
 import { Context, defaultContextValue } from '../../context';
+import Header, { HeaderLinks } from '../header/header';
+import Analytics from '../analytics/analytics';
+import DashboardManager from '../dashboard/dashboard-manager';
 
 import './App.scss';
 
@@ -16,12 +16,16 @@ const App: FC = (): JSX.Element => {
     setActivePage('Dashboard');
   }, [setActivePage]);
 
+  const showAnalyticsHandler = useCallback(() => {
+    setActivePage('Analytics');
+  }, [setActivePage]);
+
   return (
     <Context.Provider value={{ data: contextData, setData: setContextData }}>
       <div className="tf__app__container">
-        <Header active={activePage} onLogoClick={showDashboardHandler} />
+        <Header onLogoClick={showDashboardHandler} onAnalyticsClick={showAnalyticsHandler} />
         {activePage === 'Dashboard' && <DashboardManager selectedRow={selectedRow} onRowSelected={setSelectedRow} />}
-        {activePage === 'Statistics' && <Statistics />}
+        {activePage === 'Analytics' && <Analytics />}
       </div>
     </Context.Provider>
   );
