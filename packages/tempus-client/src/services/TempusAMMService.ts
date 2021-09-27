@@ -5,6 +5,7 @@ import TempusAMMABI from '../abi/TempusAMM.json';
 import { DAYS_IN_A_YEAR, SECONDS_IN_A_DAY } from '../constants';
 import { mul18f, div18f } from '../utils/wei-math';
 import TempusPoolService from './TempusPoolService';
+import VaultService from './VaultService';
 
 interface TempusPoolAddressData {
   poolAddress: string;
@@ -17,21 +18,23 @@ type TempusAMMServiceParameters = {
   TempusAMMABI: typeof TempusAMMABI;
   signerOrProvider: JsonRpcSigner | JsonRpcProvider;
   tempusPoolService: TempusPoolService;
+  vaultService: VaultService;
 };
 
 class TempusAMMService {
   private tempusAMMMap: Map<string, TempusAMM> = new Map<string, TempusAMM>();
-
   private tempusPoolService: TempusPoolService | null = null;
+  private vaultService: VaultService | null = null;
 
-  public init(params: TempusAMMServiceParameters) {
+  public init({ tempusAMMAddresses, signerOrProvider, tempusPoolService, vaultService }: TempusAMMServiceParameters) {
     this.tempusAMMMap.clear();
 
-    params.tempusAMMAddresses.forEach((address: string) => {
-      this.tempusAMMMap.set(address, new Contract(address, TempusAMMABI, params.signerOrProvider) as TempusAMM);
+    tempusAMMAddresses.forEach((address: string) => {
+      this.tempusAMMMap.set(address, new Contract(address, TempusAMMABI, signerOrProvider) as TempusAMM);
     });
 
-    this.tempusPoolService = params.tempusPoolService;
+    this.tempusPoolService = tempusPoolService;
+    this.vaultService = vaultService;
   }
 
   public poolId(address: string): Promise<string> {
@@ -101,6 +104,13 @@ class TempusAMMService {
       try {
         expectedReturn = await service.getExpectedReturnGivenIn(SPOT_PRICE_AMOUNT, YIELD_TO_PRINCIPAL);
       } catch (error) {
+        if (this.vaultService) {
+          const poolId = await service.getPoolId();
+          const [, ammBalances] = await this.vaultService.getPoolTokens(poolId);
+          const result = ammBalances.map(v => v.toString()).join(' ');
+          console.error('TempusAMMService - getExpectedReturnGivenIn() - ammBalances', poolId, result);
+        }
+
         console.error(
           'TempusAMMService - getExpectedReturnGivenIn() - Failed to get expected return for yield share tokens!',
         );

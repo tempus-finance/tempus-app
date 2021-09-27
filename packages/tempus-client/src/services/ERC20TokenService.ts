@@ -15,11 +15,11 @@ type ERC20TokenServiceParameters = {
 class ERC20TokenService {
   private contract: ERC20 | null = null;
 
-  public init(params: ERC20TokenServiceParameters) {
+  init(params: ERC20TokenServiceParameters) {
     this.contract = new Contract(params.address, params.abi, params.signerOrProvider) as ERC20;
   }
 
-  public async balanceOf(address: string): Promise<BigNumber> {
+  async balanceOf(address: string): Promise<BigNumber> {
     if (!this.contract) {
       console.error('ERC20TokenService - balanceOf() - Attempted to use ERC20TokenService before initializing it!');
       return Promise.reject();
@@ -40,7 +40,7 @@ class ERC20TokenService {
     return balance;
   }
 
-  public async symbol(): Promise<Ticker> {
+  async symbol(): Promise<Ticker> {
     if (!this.contract) {
       console.error('ERC20TokenService - symbol() - Attempted to use ERC20TokenService before initializing it!');
       return Promise.reject();
@@ -61,7 +61,25 @@ class ERC20TokenService {
     return ticker;
   }
 
-  public async approve(spenderAddress: string, amount: BigNumber): Promise<ContractTransaction | void> {
+  async getAllowance(ownerAddress: string, spenderAddress: string): Promise<BigNumber> {
+    if (!this.contract) {
+      console.error('ERC20TokenService - getAllowance() - Attempted to use ERC20TokenService before initializing it!');
+      return Promise.reject();
+    }
+
+    try {
+      if (this.contract.address === ZERO_ETH_ADDRESS) {
+        this.contract.provider.getBalance(ownerAddress);
+      }
+
+      return await this.contract.allowance(ownerAddress, spenderAddress);
+    } catch (error) {
+      console.log('ERC20TokenService - getAllowance() - Getting allowance failed!', error);
+      return Promise.reject(error);
+    }
+  }
+
+  async approve(spenderAddress: string, amount: BigNumber): Promise<ContractTransaction | void> {
     if (!this.contract) {
       console.error('ERC20TokenService - approve() - Attempted to use ERC20TokenService before initializing it!');
       return Promise.reject();

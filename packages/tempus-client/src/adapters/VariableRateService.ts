@@ -52,9 +52,9 @@ class VariableRateService {
         return VariableRateService.getAprFromApy(await this.getAaveAPY());
       }
 
-      case 'compound': {
-        return VariableRateService.getAprFromApy(await this.getCompoundAPY());
-      }
+      // case 'compound': {
+      //   return VariableRateService.getAprFromApy(await this.getCompoundAPY());
+      // }
 
       case 'lido': {
         return this.getLidoAPR(fees);
@@ -118,26 +118,22 @@ class VariableRateService {
     }
   }
 
-  private async getCompoundAPY(): Promise<number> {
-    try {
-      // const supplyRatePerBlock = await this.cEthToken?.supplyRatePerBlock();
-      // console.log('getCompoundAPY supplyRatePerBlock', supplyRatePerBlock.toString());
-      // const supplyApy =
-      //   (Math.pow((supplyRatePerBlock / ethMantissa) * COMPOUND_BLOCKS_PER_DAY + 1, DAYS_IN_A_YEAR) - 1) * 100;
+  // private async getCompoundAPY(): Promise<number> {
+  //   try {
+  //     const supplyRatePerBlock = await this.cEthToken?.methods.supplyRatePerBlock().call();
+  //     const supplyApy =
+  //       (Math.pow((supplyRatePerBlock / ethMantissa) * COMPOUND_BLOCKS_PER_DAY + 1, DAYS_IN_A_YEAR) - 1) * 100;
 
-      const borrowRatePerBlock = await this.cEthToken?.borrowRatePerBlock();
-      // console.log('getCompoundAPY borrowRatePerBlock', borrowRatePerBlock.toString());
-      const borrowApy =
-        (Math.pow((borrowRatePerBlock / ethMantissa) * COMPOUND_BLOCKS_PER_DAY + 1, DAYS_IN_A_YEAR) - 1) * 100;
+  //     console.log('getCompoundAPY supplyRatePerBlock', supplyRatePerBlock);
+  //     console.log('getCompoundAPY supplyApy', supplyApy);
 
-      // console.log('getCompoundAPY borrowApy', borrowApy.toString());
-
-      return borrowApy;
-    } catch (error) {
-      console.error('VariableRateService - getCompoundAPY', error);
-      return 0;
-    }
-  }
+  //     // TODO check with actual contract
+  //     return supplyApy;
+  //   } catch (error) {
+  //     console.error('VariableRateService - getCompoundAPY', error);
+  //     return 0;
+  //   }
+  // }
 }
 
 export default VariableRateService;

@@ -195,7 +195,7 @@ class TempusPoolService {
     throw new Error(`Address '${address}' is not valid`);
   }
 
-  public getPrincipalTokenAddress(address: string): Promise<string> {
+  public getPrincipalsTokenAddress(address: string): Promise<string> {
     const tempusPool = this.tempusPoolsMap[address];
     if (tempusPool) {
       return tempusPool.principalShare();

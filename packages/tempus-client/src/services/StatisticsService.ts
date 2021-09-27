@@ -87,7 +87,7 @@ class StatisticsService {
    **/
   async estimatedDepositAndFix(
     tempusAmmAddress: string,
-    tokenAmount: number,
+    tokenAmount: BigNumber,
     isBackingToken: boolean,
   ): Promise<BigNumber> {
     if (!this.stats) {
@@ -103,8 +103,7 @@ class StatisticsService {
     }
 
     try {
-      const parsedAmount = ethers.utils.parseEther(tokenAmount.toString());
-      return this.stats.estimatedDepositAndFix(tempusAmmAddress, parsedAmount, isBackingToken);
+      return this.stats.estimatedDepositAndFix(tempusAmmAddress, tokenAmount, isBackingToken);
     } catch (error) {
       console.error(`StatisticsService - estimatedDepositAndFix - Failed to get estimated fixed deposit amount`, error);
       return Promise.reject(0);
@@ -116,7 +115,7 @@ class StatisticsService {
    **/
   async estimatedDepositAndProvideLiquidity(
     tempusAmmAddress: string,
-    tokenAmount: number,
+    tokenAmount: BigNumber,
     isBackingToken: boolean,
   ): Promise<[BigNumber, BigNumber, BigNumber]> {
     if (!this.stats) {
@@ -127,8 +126,7 @@ class StatisticsService {
     }
 
     try {
-      const parsedAmount = ethers.utils.parseEther(tokenAmount.toString());
-      return this.stats.estimatedDepositAndProvideLiquidity(tempusAmmAddress, parsedAmount, isBackingToken);
+      return this.stats.estimatedDepositAndProvideLiquidity(tempusAmmAddress, tokenAmount, isBackingToken);
     } catch (error) {
       console.error(`Failed to get estimated variable deposit amount`, error);
       return Promise.reject(0);
@@ -140,9 +138,9 @@ class StatisticsService {
    **/
   async estimateExitAndRedeem(
     tempusAmmAddress: string,
-    principalAmount: number,
-    yieldsAmount: number,
-    lpAmount: number,
+    principalAmount: BigNumber,
+    yieldsAmount: BigNumber,
+    lpAmount: BigNumber,
     isBackingToken: boolean,
   ): Promise<BigNumber> {
     if (!this.stats) {
@@ -153,14 +151,11 @@ class StatisticsService {
     }
 
     try {
-      const parsedPrincipalsAmount = ethers.utils.parseEther(principalAmount.toString());
-      const parsedYieldsAmount = ethers.utils.parseEther(yieldsAmount.toString());
-      const parsedLpAmount = ethers.utils.parseEther(lpAmount.toString());
       return this.stats.estimateExitAndRedeem(
         tempusAmmAddress,
-        parsedPrincipalsAmount,
-        parsedYieldsAmount,
-        parsedLpAmount,
+        principalAmount,
+        yieldsAmount,
+        lpAmount,
         isBackingToken,
       );
     } catch (error) {

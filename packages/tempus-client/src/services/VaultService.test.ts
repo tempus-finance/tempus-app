@@ -1,9 +1,6 @@
-import { ethers } from 'ethers';
+import * as eth from 'ethers';
 import VaultABI from '../abi/Vault.json';
 import VaultService, { SwapKind } from './VaultService';
-
-jest.mock('ethers');
-const { Contract } = jest.requireMock('ethers');
 
 jest.mock('./getDefaultProvider');
 const getDefaultProvider = jest.requireMock('./getDefaultProvider').default;
@@ -21,21 +18,21 @@ describe('VaultService', () => {
   const mockSwap = jest.fn();
   const mockSwapFilter = jest.fn();
   const mockGetBlock = jest.fn();
+  const mockGetPoolTokens = jest.fn();
 
   beforeEach(() => {
     jest.clearAllMocks();
 
-    ethers.utils = jest.requireActual('ethers').utils;
-
     vaultService = new VaultService();
 
-    Contract.mockImplementation(() => {
+    jest.spyOn(eth as any, 'Contract').mockImplementation(() => {
       return {
         queryFilter: mockQueryFilter,
         swap: mockSwap,
         filters: {
           Swap: mockSwapFilter,
         },
+        getPoolTokens: mockGetPoolTokens,
       };
     });
 
@@ -50,7 +47,7 @@ describe('VaultService', () => {
     });
 
     vaultService.init({
-      Contract: Contract,
+      Contract: eth.Contract,
       abi: VaultABI,
       address: vaultAddress,
       signerOrProvider: getDefaultProvider(),
@@ -95,12 +92,12 @@ describe('VaultService', () => {
     expect(mockSwap).toHaveBeenCalledTimes(1);
     expect(mockSwap).toHaveBeenCalledWith(
       {
-        amount: ethers.utils.parseEther(swapAmount.toString()),
+        amount: eth.utils.parseEther(swapAmount.toString()),
         assetIn: principalShareAddress,
         assetOut: yieldShareAddress,
         kind: SwapKind.GIVEN_IN,
         poolId: tempusPoolId,
-        userData: ethers.utils.formatBytes32String('0x0'),
+        userData: eth.utils.formatBytes32String('0x0'),
       },
       {
         fromInternalBalance: false,
@@ -111,5 +108,17 @@ describe('VaultService', () => {
       1,
       3601,
     );
+  });
+
+  test('getPoolTokens() - Returns a list of token amounts', async () => {
+    mockGetPoolTokens.mockImplementation(() => {
+      return [eth.BigNumber.from('1'), eth.BigNumber.from('2'), eth.BigNumber.from('3')];
+    });
+
+    const poolId = 'abc';
+    const results = await vaultService.getPoolTokens(poolId);
+    expect(results[0].toString()).toBe('1');
+    expect(results[1].toString()).toBe('2');
+    expect(results[2].toString()).toBe('3');
   });
 });
