@@ -1,5 +1,5 @@
 import { FC, useCallback, useEffect, useState } from 'react';
-import { ethers } from 'ethers';
+import { ethers, BigNumber } from 'ethers';
 import AddIcon from '@material-ui/icons/Add';
 import Typography from '@material-ui/core/Typography';
 import { Ticker } from '../../../interfaces/Token';
@@ -158,22 +158,22 @@ const DetailWithdraw: FC<PoolDetailProps> = ({
   useEffect(() => {
     const retrieveWithdrawAmount = async () => {
       console.log('retrieveWithdrawAmount');
-      if (selectedToken && ammAddress) {
+      if (selectedToken && ammAddress && poolDataAdapter) {
         try {
           const isBackingToken = backingToken === selectedToken;
 
-          const amount = await poolDataAdapter?.getEstimatedWithdrawAmount(
+          const amount = await poolDataAdapter.getEstimatedWithdrawAmount(
             ammAddress,
-            principalsBalance || 0,
-            yieldsBalance || 0,
-            lpBalance || 0,
+            // Quick fix, proper fix is on branch for Withdraw UI update
+            principalsBalance ? ethers.utils.parseEther(principalsBalance.toString()) : BigNumber.from('0'),
+            yieldsBalance ? ethers.utils.parseEther(yieldsBalance.toString()) : BigNumber.from('0'),
+            lpBalance ? ethers.utils.parseEther(lpBalance.toString()) : BigNumber.from('0'),
             isBackingToken,
           );
 
           console.log('retrieveWithdrawAmount amount', amount);
-          if (amount !== undefined) {
-            setWithdrawAmount(amount);
-          }
+          // Quick fix, proper fix is on branch for Withdraw UI update
+          setWithdrawAmount(Number(ethers.utils.formatEther(amount)));
         } catch (err) {
           // TODO handle errors
           console.log('Detail Deposit - retrieveDepositAmount -', err);

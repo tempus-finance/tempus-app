@@ -1,5 +1,5 @@
-import { FC, useCallback, useEffect, useState } from 'react';
-import { ethers } from 'ethers';
+import { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { ethers, BigNumber } from 'ethers';
 import Button from '@material-ui/core/Button';
 import NumberUtils from '../../../services/NumberUtils';
 import CurrencyInput from '../../currencyInput';
@@ -33,9 +33,9 @@ const DetailDeposit: FC<PoolDetailProps> = ({
   const [usdRate, setUsdRate] = useState<number>(0);
   const [minTYSRate] = useState<number>(0); // TODO where to get this value?
 
-  const [fixedPrincipalsAmount, setFixedPrincipalsAmount] = useState<number | undefined>(undefined);
-  const [variablePrincipalsAmount, setVariablePrincipalsAmount] = useState<number | undefined>(undefined);
-  const [variableLpTokensAmount, setVariableLpTokensAmount] = useState<number | undefined>(undefined);
+  const [fixedPrincipalsAmount, setFixedPrincipalsAmount] = useState<BigNumber | null>(null);
+  const [variablePrincipalsAmount, setVariablePrincipalsAmount] = useState<BigNumber>(BigNumber.from('0'));
+  const [variableLpTokensAmount, setVariableLpTokensAmount] = useState<BigNumber>(BigNumber.from('0'));
 
   const [backingTokenBalance, setBackingTokenBalance] = useState<number | undefined>(undefined);
   const [yieldBearingTokenBalance, setYieldBearingTokenBalance] = useState<number | undefined>(undefined);
@@ -198,12 +198,16 @@ const DetailDeposit: FC<PoolDetailProps> = ({
 
   useEffect(() => {
     const retrieveDepositAmount = async () => {
-      if (amount && ammAddress) {
+      if (amount && ammAddress && poolDataAdapter) {
         try {
           const isBackingToken = backingToken === selectedToken;
 
           const { fixedDeposit, variableDeposit } =
-            (await poolDataAdapter?.getEstimatedDepositAmount(ammAddress, amount, isBackingToken)) || {};
+            (await poolDataAdapter.getEstimatedDepositAmount(
+              ammAddress,
+              ethers.utils.parseEther(amount.toString()),
+              isBackingToken,
+            )) || {};
 
           if (fixedDeposit !== undefined) {
             setFixedPrincipalsAmount(fixedDeposit);
@@ -240,6 +244,27 @@ const DetailDeposit: FC<PoolDetailProps> = ({
   useEffect(() => {
     setApproveDisabled(!amount || !selectedYield);
   }, [amount, selectedYield, setApproveDisabled]);
+
+  const fixedPrincipalsAmountFormatted = useMemo(() => {
+    if (!fixedPrincipalsAmount) {
+      return null;
+    }
+    return NumberUtils.formatWithMultiplier(ethers.utils.formatEther(fixedPrincipalsAmount), 2);
+  }, [fixedPrincipalsAmount]);
+
+  const variablePrincipalsAmountFormatted = useMemo(() => {
+    if (!variablePrincipalsAmount) {
+      return null;
+    }
+    return NumberUtils.formatWithMultiplier(ethers.utils.formatEther(variablePrincipalsAmount), 2);
+  }, [variablePrincipalsAmount]);
+
+  const variableLpTokensAmountFormatted = useMemo(() => {
+    if (!variableLpTokensAmount) {
+      return null;
+    }
+    return NumberUtils.formatWithMultiplier(ethers.utils.formatEther(variableLpTokensAmount), 2);
+  }, [variableLpTokensAmount]);
 
   return (
     <div role="tabpanel" hidden={selectedTab !== 0}>
@@ -296,8 +321,7 @@ const DetailDeposit: FC<PoolDetailProps> = ({
                 <div className="tf__dialog__flex-col-space-between" yield-attribute="fixed" onClick={onSelectYield}>
                   <Typography variant="h4">Fixed Yield</Typography>
                   <Typography variant="body-text">
-                    est. {fixedPrincipalsAmount ? new Intl.NumberFormat().format(fixedPrincipalsAmount) : '-'}{' '}
-                    Principals
+                    est. {fixedPrincipalsAmountFormatted ? fixedPrincipalsAmountFormatted : '-'} Principals
                   </Typography>
                   <Typography variant="h3" color="accent">
                     est. {NumberUtils.formatPercentage(fixedAPR, 2)}
@@ -319,12 +343,10 @@ const DetailDeposit: FC<PoolDetailProps> = ({
                   <Typography variant="h4">Variable Yield</Typography>
                   <div>
                     <Typography variant="body-text">
-                      est. {variablePrincipalsAmount ? new Intl.NumberFormat().format(variablePrincipalsAmount) : '-'}{' '}
-                      Principals
+                      est. {variablePrincipalsAmountFormatted ? variablePrincipalsAmountFormatted : '-'} Principals
                     </Typography>
                     <Typography variant="body-text">
-                      est. {variableLpTokensAmount ? new Intl.NumberFormat().format(variableLpTokensAmount) : '-'} LP
-                      Tokens
+                      est. {variableLpTokensAmountFormatted ? variableLpTokensAmountFormatted : '-'} LP Tokens
                     </Typography>
                   </div>
                   <Typography variant="h3" color="accent">
