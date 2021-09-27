@@ -341,10 +341,9 @@ const DetailDeposit: FC<PoolDetailProps> = ({
               <TokenSelector tickers={supportedTokens} onTokenChange={onTokenChange} />
               <Spacer size={20} />
               <Typography variant="body-text">
-                Balance:{' '}
-                {selectedToken && balance
-                  ? `${new Intl.NumberFormat().format(Number(utils.formatEther(balance)))} ${selectedToken}`
-                  : '-'}
+                {selectedToken &&
+                  balance &&
+                  `Balance: ${new Intl.NumberFormat().format(Number(utils.formatEther(balance)))} ${selectedToken}`}
               </Typography>
             </div>
             <Spacer size={14} />
