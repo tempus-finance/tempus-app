@@ -2,7 +2,7 @@ import { Column } from '@devexpress/dx-react-grid';
 import { ethers } from 'ethers';
 
 import { fixedAPRTooltipText, variableAPYTooltipText } from '../../constants';
-import { DashboardRow, DashboardRowChild, DashboardRowParent } from '../../interfaces';
+import { DashboardRow, DashboardRowChild, DashboardRowParent, isParentRow } from '../../interfaces';
 import NumberUtils from '../../services/NumberUtils';
 
 export interface ExtraDataColumn extends Column {
@@ -17,6 +17,13 @@ export const dashboardColumnsDefinitions: ExtraDataColumn[] = [
   {
     name: 'protocol',
     title: 'Protocol',
+    getCellValue: (row: DashboardRowChild | DashboardRowParent) => {
+      if (isParentRow(row)) {
+        return row.protocols;
+      } else {
+        return row.protocol;
+      }
+    },
   },
 
   {

@@ -16,12 +16,14 @@ describe('ERC20TokenService', () => {
 
   const mockSymbol = jest.fn();
   const mockBalanceOf = jest.fn();
+  const mockAllowance = jest.fn();
 
   beforeEach(() => {
     Contract.mockImplementation(() => {
       return {
         symbol: mockSymbol,
         balanceOf: mockBalanceOf,
+        allowance: mockAllowance,
       };
     });
   });
@@ -94,6 +96,18 @@ describe('ERC20TokenService', () => {
       mockBalanceOf.mockImplementation(() => Promise.resolve(BigNumber.from('10')));
 
       const result = await instance.balanceOf('mock-user-address');
+
+      expect(result).toBeInstanceOf(BigNumber);
+      expect(result.toNumber()).toBe(10);
+    });
+
+    test('it returns the allowance of selected token', async () => {
+      mockAllowance.mockResolvedValue(BigNumber.from('10'));
+
+      const ownerAddress = '123';
+      const spenderAddress = '987';
+
+      const result = await instance.getAllowance(ownerAddress, spenderAddress);
 
       expect(result).toBeInstanceOf(BigNumber);
       expect(result.toNumber()).toBe(10);

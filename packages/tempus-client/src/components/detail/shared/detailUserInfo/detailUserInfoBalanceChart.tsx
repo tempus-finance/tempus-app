@@ -12,6 +12,7 @@ import LegendDotGradient from '../legendDotGradient';
 interface UserBalanceChartDataPoint {
   name: string;
   percentage: number;
+  color: string;
 }
 
 interface DetailUserInfoBalanceChartProps {
@@ -26,18 +27,21 @@ const DetailUserInfoBalanceChart: FC<DetailUserInfoBalanceChartProps> = props =>
 
   const [chartData, setChartData] = useState<UserBalanceChartDataPoint[]>([]);
   const [chartHighlightedItems, setChartHighlightedItems] = useState<SeriesRef[]>([]);
+  const [chartColors, setChartColors] = useState<string[]>([]);
   const [principalShareValue, setPrincipalShareValue] = useState<string>('');
   const [yieldShareValue, setYieldShareValue] = useState<string>('');
   const [lpTokenPrincipalReturnValue, setLpTokenPrincipalReturnValue] = useState<string>('');
   const [lpTokenYieldReturnValue, setLpTokenYieldReturnValue] = useState<string>('');
 
   useMemo(() => {
-    setPrincipalShareValue(NumberUtils.formatWithMultiplier(ethers.utils.formatEther(principalShareBalance)));
-    setYieldShareValue(NumberUtils.formatWithMultiplier(ethers.utils.formatEther(yieldShareBalance)));
+    setPrincipalShareValue(NumberUtils.formatWithMultiplier(ethers.utils.formatEther(principalShareBalance), 2));
+    setYieldShareValue(NumberUtils.formatWithMultiplier(ethers.utils.formatEther(yieldShareBalance), 2));
     setLpTokenPrincipalReturnValue(
-      NumberUtils.formatWithMultiplier(ethers.utils.formatEther(lpTokenPrincipalReturnBalance)),
+      NumberUtils.formatWithMultiplier(ethers.utils.formatEther(lpTokenPrincipalReturnBalance), 2),
     );
-    setLpTokenYieldReturnValue(NumberUtils.formatWithMultiplier(ethers.utils.formatEther(lpTokenYieldReturnBalance)));
+    setLpTokenYieldReturnValue(
+      NumberUtils.formatWithMultiplier(ethers.utils.formatEther(lpTokenYieldReturnBalance), 2),
+    );
   }, [principalShareBalance, yieldShareBalance, lpTokenPrincipalReturnBalance, lpTokenYieldReturnBalance]);
 
   useMemo(() => {
@@ -49,28 +53,32 @@ const DetailUserInfoBalanceChart: FC<DetailUserInfoBalanceChartProps> = props =>
       return;
     }
 
-    const dataPoints = [
+    const dataPoints: UserBalanceChartDataPoint[] = [
       {
         name: 'Principals',
         percentage: Number(ethers.utils.formatEther(div18f(principalShareBalance, totalValue))),
+        color: '#FF6B00',
       },
       {
         name: 'Yields',
         percentage: Number(ethers.utils.formatEther(div18f(yieldShareBalance, totalValue))),
+        color: '#288195',
       },
       {
         name: 'LP Token - Principals',
         percentage: Number(ethers.utils.formatEther(div18f(lpTokenPrincipalReturnBalance, totalValue))),
+        color: '#e56000',
       },
       {
         name: 'LP Token - Yields',
         percentage: Number(ethers.utils.formatEther(div18f(lpTokenYieldReturnBalance, totalValue))),
+        color: '#206777',
       },
     ].sort((a, b) => {
       return b.percentage - a.percentage;
     });
-    const highlightedDataPoints: SeriesRef[] = [];
 
+    const highlightedDataPoints: SeriesRef[] = [];
     dataPoints.forEach((dataPoint, index) => {
       if (dataPoint.name === 'LP Token - Principals' || dataPoint.name === 'LP Token - Yields') {
         highlightedDataPoints.push({
@@ -80,14 +88,19 @@ const DetailUserInfoBalanceChart: FC<DetailUserInfoBalanceChartProps> = props =>
       }
     });
 
+    const dataColors = dataPoints.map(dataPoint => {
+      return dataPoint.color;
+    });
+
     setChartData(dataPoints);
+    setChartColors(dataColors);
     setChartHighlightedItems(highlightedDataPoints);
   }, [principalShareBalance, yieldShareBalance, lpTokenPrincipalReturnBalance, lpTokenYieldReturnBalance]);
 
   return (
     <>
       <Chart data={chartData} height={225}>
-        <Palette scheme={['#FF6B00', '#288195', '#e56000', '#206777']} />
+        <Palette scheme={chartColors} />
         <PieSeries valueField="percentage" argumentField="name" innerRadius={0.6} outerRadius={1} />
         <SelectionState selection={chartHighlightedItems} />
       </Chart>

@@ -2,9 +2,11 @@ import * as ejs from 'ethers';
 import TempusAMMABI from '../abi/TempusAMM.json';
 import getDefaultProvider from './getDefaultProvider';
 import TempusAMMService from './TempusAMMService';
+import TempusPoolService from './TempusPoolService';
 
 describe('TempusAMMService', () => {
   let tempusAMMService: TempusAMMService;
+  let tempusPoolService: TempusPoolService;
 
   const tempusAMMAddresses = ['address-a', 'address-b', 'address-c'];
   const tempusPoolIds = ['test-pool-id-a', 'test-pool-id-b', 'test-pool-id-c'];
@@ -16,7 +18,7 @@ describe('TempusAMMService', () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
-    jest.spyOn(ejs, 'Contract').mockImplementation(() => {
+    jest.spyOn(ejs as any, 'Contract').mockImplementation(() => {
       return {
         getPoolId: mockGetPoolId,
         tempusPool: mockTempusPool,
@@ -27,11 +29,14 @@ describe('TempusAMMService', () => {
     mockTempusPool.mockImplementation(() => Promise.resolve(tempusPoolAddresses[0]));
 
     tempusAMMService = new TempusAMMService();
+    tempusPoolService = new TempusPoolService();
+
     tempusAMMService.init({
       Contract: ejs.Contract,
       tempusAMMAddresses: tempusAMMAddresses,
       signerOrProvider: getDefaultProvider(),
       TempusAMMABI: TempusAMMABI,
+      tempusPoolService,
     });
   });
 
@@ -50,6 +55,7 @@ describe('TempusAMMService', () => {
         TempusAMMABI: TempusAMMABI,
         signerOrProvider: getDefaultProvider(),
         tempusAMMAddresses: tempusAMMAddresses,
+        tempusPoolService,
       });
 
       expect(tempusAMMService['tempusAMMMap'].size).toBe(3);
@@ -68,7 +74,7 @@ describe('TempusAMMService', () => {
 
       try {
         await tempusAMMService.poolId(nonExistingAddress);
-      } catch (error) {
+      } catch (error: any) {
         expect(error.message).toBe(
           `TempusAMMService - poolId('${nonExistingAddress}') - Invalid AMM address provided!`,
         );
@@ -99,7 +105,7 @@ describe('TempusAMMService', () => {
 
       try {
         await tempusAMMService.getTempusPoolAddressFromId(nonExistingPoolId);
-      } catch (error) {
+      } catch (error: any) {
         expect(error.message).toBe('Failed to get tempus pool address from ID!');
       }
     });

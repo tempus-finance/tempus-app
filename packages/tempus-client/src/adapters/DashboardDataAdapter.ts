@@ -19,7 +19,6 @@ import VariableRateService from './VariableRateService';
 
 type DashboardDataAdapterParameters = {
   signerOrProvider: JsonRpcProvider | JsonRpcSigner;
-  userWalletAddress: string;
   tempusPoolService: TempusPoolService;
   statisticsService: StatisticsService;
   tempusAMMService: TempusAMMService;
@@ -40,11 +39,12 @@ export default class DashboardDataAdapter {
     this.tempusPoolService = params.tempusPoolService;
     this.statisticsService = params.statisticsService;
     this.tempusAMMService = params.tempusAMMService;
-    this.userWalletAddress = params.userWalletAddress;
     this.variableRateService = params.variableRateService;
   }
 
-  public async getRows(): Promise<DashboardRow[]> {
+  public async getRows(userWalletAddress: string): Promise<DashboardRow[]> {
+    this.userWalletAddress = userWalletAddress;
+
     let childRows: DashboardRowChild[];
     try {
       childRows = await this.getChildRows();
@@ -90,7 +90,7 @@ export default class DashboardDataAdapter {
       ] = await Promise.all([
         this.tempusPoolService.getBackingTokenTicker(tempusPool.address),
         this.tempusPoolService.getYieldBearingTokenTicker(tempusPool.address),
-        this.tempusPoolService.getPrincipalTokenAddress(tempusPool.address),
+        this.tempusPoolService.getPrincipalsTokenAddress(tempusPool.address),
         this.tempusPoolService.getYieldTokenAddress(tempusPool.address),
         this.tempusPoolService.getProtocolName(tempusPool.address),
         this.tempusPoolService.getStartTime(tempusPool.address),
@@ -246,7 +246,7 @@ export default class DashboardDataAdapter {
     try {
       const [yieldTokenAddress, principalTokenAddress, pricePerPrincipalShare, pricePerYieldShare] = await Promise.all([
         this.tempusPoolService.getYieldTokenAddress(pool.address),
-        this.tempusPoolService.getPrincipalTokenAddress(pool.address),
+        this.tempusPoolService.getPrincipalsTokenAddress(pool.address),
         this.tempusPoolService.pricePerPrincipalShareStored(pool.address),
         this.tempusPoolService.pricePerYieldShareStored(pool.address),
       ]);

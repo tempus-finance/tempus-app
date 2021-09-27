@@ -103,8 +103,7 @@ class StatisticsService {
     }
 
     try {
-      const parsedAmount = ethers.utils.parseEther(tokenAmount.toString());
-      return this.stats.estimatedDepositAndFix(tempusAmmAddress, parsedAmount, isBackingToken);
+      return this.stats.estimatedDepositAndFix(tempusAmmAddress, tokenAmount, isBackingToken);
     } catch (error) {
       console.error(`StatisticsService - estimatedDepositAndFix - Failed to get estimated fixed deposit amount`, error);
       return Promise.reject(0);
@@ -127,8 +126,7 @@ class StatisticsService {
     }
 
     try {
-      const parsedAmount = ethers.utils.parseEther(tokenAmount.toString());
-      return this.stats.estimatedDepositAndProvideLiquidity(tempusAmmAddress, parsedAmount, isBackingToken);
+      return this.stats.estimatedDepositAndProvideLiquidity(tempusAmmAddress, tokenAmount, isBackingToken);
     } catch (error) {
       console.error(`Failed to get estimated variable deposit amount`, error);
       return Promise.reject(0);
