@@ -2,6 +2,7 @@ import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { ethers, utils, BigNumber } from 'ethers';
 import Button from '@material-ui/core/Button';
 import NumberUtils from '../../../services/NumberUtils';
+import { Ticker } from '../../../interfaces';
 import CurrencyInput from '../../currencyInput';
 import TokenSelector from '../../tokenSelector';
 import Typography from '../../typography/Typography';
@@ -28,7 +29,7 @@ const DetailDeposit: FC<PoolDetailProps> = ({
   const [triggerUpdateBalance, setTriggerUpdateBalance] = useState<boolean>(true);
   const [backingToken] = supportedTokens;
 
-  const [selectedToken, setSelectedToken] = useState<string | undefined>(undefined);
+  const [selectedToken, setSelectedToken] = useState<Ticker | undefined>(undefined);
   const [amount, setAmount] = useState<number>(0);
   const [balance, setBalance] = useState<BigNumber | null>(null);
   const [usdRate, setUsdRate] = useState<BigNumber | null>(null);
@@ -49,7 +50,7 @@ const DetailDeposit: FC<PoolDetailProps> = ({
   const [executeDisabled, setExecuteDisabled] = useState<boolean>(true);
 
   const onTokenChange = useCallback(
-    (token: string | undefined) => {
+    (token: Ticker | undefined) => {
       if (!!token) {
         setSelectedToken(token);
         setAmount(0);
@@ -141,17 +142,19 @@ const DetailDeposit: FC<PoolDetailProps> = ({
 
   const onExecute = useCallback(() => {
     const execute = async () => {
-      if (signer && amount) {
+      if (signer && amount && poolDataAdapter) {
         try {
           const parsedAmount = amount.toString();
           const tokenAmount = ethers.utils.parseEther(parsedAmount);
           const isBackingToken = backingToken === selectedToken;
           const parsedMinTYSRate = ethers.utils.parseEther(minTYSRate.toString());
-          const depositTransaction = await poolDataAdapter?.executeDeposit(
+          const isEthDeposit = selectedToken === 'ETH';
+          const depositTransaction = await poolDataAdapter.executeDeposit(
             ammAddress,
             tokenAmount,
             isBackingToken,
             parsedMinTYSRate,
+            isEthDeposit,
           );
           await depositTransaction?.wait();
           setExecuteDisabled(false);

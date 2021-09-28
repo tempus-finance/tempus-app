@@ -6,6 +6,7 @@ import TempusControllerService, { DepositedEvent, RedeemedEvent } from '../servi
 import TempusPoolService from '../services/TempusPoolService';
 import getERC20TokenService from '../services/getERC20TokenService';
 import { mul18f } from '../utils/wei-math';
+import { ZERO_ETH_ADDRESS } from '../constants';
 import { Ticker } from '../interfaces';
 
 export interface UserTransaction {
@@ -238,6 +239,11 @@ export default class PoolDataAdapter {
         ? await this.tempusPoolService.getBackingTokenAddress(tempusPoolAddress)
         : await this.tempusPoolService.getYieldBearingTokenAddress(tempusPoolAddress);
 
+      // In case of ETH, total user balance is always approved.
+      if (tokenAddress === ZERO_ETH_ADDRESS) {
+        return Number(ethers.utils.formatEther(await signer.getBalance()));
+      }
+
       const tokenService = this.eRC20TokenServiceGetter(tokenAddress, signer);
       const allowance = await tokenService.getAllowance(userWalletAddress, this.tempusControllerAddress);
       if (allowance) {
@@ -255,6 +261,7 @@ export default class PoolDataAdapter {
     tokenAmount: BigNumber,
     isBackingToken: boolean,
     minTYSRate: BigNumber,
+    isEthDeposit?: boolean,
   ): Promise<ContractTransaction | undefined> {
     if (!this.tempusControllerService) {
       console.error('PoolDataAdapter - executeDeposit() - Attempted to use PoolDataAdapter before initializing it!');
@@ -262,7 +269,13 @@ export default class PoolDataAdapter {
     }
 
     try {
-      return await this.tempusControllerService.depositAndFix(tempusAMM, tokenAmount, isBackingToken, minTYSRate);
+      return await this.tempusControllerService.depositAndFix(
+        tempusAMM,
+        tokenAmount,
+        isBackingToken,
+        minTYSRate,
+        isEthDeposit,
+      );
     } catch (error) {
       console.error(`TempusPoolService - executeDeposit() - Failed to make a deposit to the pool!`, error);
       return Promise.reject(error);

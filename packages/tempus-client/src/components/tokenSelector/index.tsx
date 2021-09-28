@@ -14,7 +14,7 @@ type TokenSelectorInProps = {
 };
 
 type TokenSelectorOutProps = {
-  onTokenChange?: (token: string | undefined) => void;
+  onTokenChange?: (token: Ticker | undefined) => void;
 };
 
 type TokenSelectorProps = TokenSelectorInProps & TokenSelectorOutProps;
@@ -59,7 +59,7 @@ const TokenSelector: FC<TokenSelectorProps> = ({ defaultTicker, tickers = [], cl
 
   const handleChange = useCallback(
     (event: ChangeEvent<{ value: unknown }>) => {
-      const newToken = event.target.value as string;
+      const newToken = event.target.value as Ticker;
       setToken(newToken);
 
       setItems([...tickers]);
