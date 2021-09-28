@@ -79,9 +79,8 @@ export default class PoolDataAdapter {
       return Promise.reject();
     }
 
-    // TODO - Fetch interest rate from contract instead of hardcoded values
     const yieldTokenAmount = BigNumber.from('1');
-    const interestRate = BigNumber.from('1');
+    const interestRate = await this.tempusPoolService.currentInterestRate(tempusPoolAddress);
 
     try {
       const {
@@ -461,8 +460,7 @@ export default class PoolDataAdapter {
         const pureInterest = ratio.sub(BigNumber.from(ONE_ETH_IN_WEI));
         return mul18f(pureInterest, scaleFactor);
       }
-      // TODO - Fetch interest rate from contract instead of hardcoded values
-      const interestRate = BigNumber.from('1');
+      const interestRate = await this.tempusPoolService.currentInterestRate(tempusPoolAddress);
 
       const backingAmount = await this.tempusPoolService.numAssetsPerYieldToken(
         tempusPoolAddress,
