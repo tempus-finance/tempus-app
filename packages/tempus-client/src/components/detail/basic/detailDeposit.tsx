@@ -2,6 +2,7 @@ import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { ethers, utils, BigNumber } from 'ethers';
 import Button from '@material-ui/core/Button';
 import NumberUtils from '../../../services/NumberUtils';
+import { Ticker } from '../../../interfaces';
 import CurrencyInput from '../../currencyInput';
 import TokenSelector from '../../tokenSelector';
 import Typography from '../../typography/Typography';
@@ -28,7 +29,7 @@ const DetailDeposit: FC<PoolDetailProps> = ({
   const [triggerUpdateBalance, setTriggerUpdateBalance] = useState<boolean>(true);
   const [backingToken] = supportedTokens;
 
-  const [selectedToken, setSelectedToken] = useState<string | undefined>(undefined);
+  const [selectedToken, setSelectedToken] = useState<Ticker | undefined>(undefined);
   const [amount, setAmount] = useState<number>(0);
   const [balance, setBalance] = useState<BigNumber | null>(null);
   const [usdRate, setUsdRate] = useState<BigNumber | null>(null);
@@ -41,6 +42,7 @@ const DetailDeposit: FC<PoolDetailProps> = ({
   const [backingTokenBalance, setBackingTokenBalance] = useState<BigNumber | null>(null);
   const [yieldBearingTokenBalance, setYieldBearingTokenBalance] = useState<BigNumber | null>(null);
 
+  const [estimatedFixedApr, setEstimatedFixedApr] = useState<BigNumber | null>(null);
   const [selectedYield, setSelectedYield] = useState<SelectedYield>('fixed');
   const [backingTokenRate, setBackingTokenRate] = useState<BigNumber | null>(null);
   const [yieldBearingTokenRate, setYieldBearingTokenRate] = useState<BigNumber | null>(null);
@@ -49,7 +51,7 @@ const DetailDeposit: FC<PoolDetailProps> = ({
   const [executeDisabled, setExecuteDisabled] = useState<boolean>(true);
 
   const onTokenChange = useCallback(
-    (token: string | undefined) => {
+    (token: Ticker | undefined) => {
       if (!!token) {
         setSelectedToken(token);
         setAmount(0);
@@ -141,17 +143,19 @@ const DetailDeposit: FC<PoolDetailProps> = ({
 
   const onExecute = useCallback(() => {
     const execute = async () => {
-      if (signer && amount) {
+      if (signer && amount && poolDataAdapter) {
         try {
           const parsedAmount = amount.toString();
           const tokenAmount = ethers.utils.parseEther(parsedAmount);
           const isBackingToken = backingToken === selectedToken;
           const parsedMinTYSRate = ethers.utils.parseEther(minTYSRate.toString());
-          const depositTransaction = await poolDataAdapter?.executeDeposit(
+          const isEthDeposit = selectedToken === 'ETH';
+          const depositTransaction = await poolDataAdapter.executeDeposit(
             ammAddress,
             tokenAmount,
             isBackingToken,
             parsedMinTYSRate,
+            isEthDeposit,
           );
           await depositTransaction?.wait();
           setExecuteDisabled(false);
@@ -327,6 +331,30 @@ const DetailDeposit: FC<PoolDetailProps> = ({
     return NumberUtils.formatWithMultiplier(ethers.utils.formatEther(variableLpTokensAmount), 2);
   }, [variableLpTokensAmount]);
 
+  useEffect(() => {
+    const getEstimatedFixedApr = async () => {
+      if (amount && selectedToken) {
+        const isBackingToken = selectedToken === backingToken;
+        const result = await poolDataAdapter?.getEstimatedFixedApr(
+          ethers.utils.parseEther(amount.toString()),
+          isBackingToken,
+          address,
+          ammAddress,
+        );
+
+        if (result) {
+          setEstimatedFixedApr(result);
+        } else {
+          setEstimatedFixedApr(null);
+        }
+      } else {
+        setEstimatedFixedApr(null);
+      }
+    };
+
+    getEstimatedFixedApr();
+  }, [amount, selectedToken, backingToken, address, ammAddress, poolDataAdapter, setEstimatedFixedApr]);
+
   return (
     <div role="tabpanel" hidden={selectedTab !== 0}>
       <div className="tf__dialog__content-tab">
@@ -387,7 +415,10 @@ const DetailDeposit: FC<PoolDetailProps> = ({
                     est. {fixedPrincipalsAmountFormatted ? fixedPrincipalsAmountFormatted : '-'} Principals
                   </Typography>
                   <Typography variant="h3" color="accent">
-                    est. {NumberUtils.formatPercentage(fixedAPR, 2)}
+                    est.{' '}
+                    {estimatedFixedApr
+                      ? NumberUtils.formatPercentage(ethers.utils.formatEther(estimatedFixedApr))
+                      : NumberUtils.formatPercentage(fixedAPR, 2)}
                   </Typography>
                 </div>
               </SectionContainer>

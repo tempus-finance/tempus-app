@@ -76,7 +76,7 @@ const DetailUserInfoBalance: FC<DetailUserInfoBalancesProps> = props => {
   return (
     <>
       <SectionContainer>
-        <ActionContainer label="Available to Deposit">
+        <ActionContainer label="Available">
           <Spacer size={6} />
           <div className="tf__detail__user__info-row">
             <Typography variant="body-text">{backingTokenTicker}</Typography>
