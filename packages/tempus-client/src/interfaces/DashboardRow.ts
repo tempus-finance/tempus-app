@@ -29,6 +29,8 @@ export interface DashboardRowChild extends DashboardRow {
   variableAPY: number; // TODO rename to variableAPR
   availableTokensToDeposit: AvailableToDeposit | undefined;
   availableUSDToDeposit: AvailableToDeposit | undefined;
+  principalTokenAddress: string;
+  yieldTokenAddress: string;
 }
 
 export interface AvailableToDeposit {

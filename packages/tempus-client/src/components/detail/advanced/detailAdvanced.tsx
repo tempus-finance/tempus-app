@@ -1,20 +1,25 @@
 import { FC, useState, ChangeEvent } from 'react';
 import { Tab, Tabs } from '@material-ui/core';
 
-import DetailMint from './detailMint';
 import DetailSwap from './detailSwap';
-import DetailPool from './detailPool';
-import DetailRedeem from './detailRedeem';
+import Typography from '../../typography/Typography';
 
 import '../shared/style.scss';
+import { DashboardRowChild } from '../../../interfaces';
+import PoolDataAdapter from '../../../adapters/PoolDataAdapter';
+import { JsonRpcSigner } from '@ethersproject/providers';
+import { TempusPool } from '../../../interfaces/TempusPool';
 
 type DetailAdvancedProps = {
-  content?: any;
-  isMaturity?: boolean;
+  content: DashboardRowChild;
+  poolDataAdapter: PoolDataAdapter | null;
+  userWalletAddress: string;
+  tempusPool: TempusPool;
+  signer: JsonRpcSigner | null;
 };
 
 const DetailAdvanced: FC<DetailAdvancedProps> = (props: DetailAdvancedProps) => {
-  const { content } = props;
+  const { content, userWalletAddress, poolDataAdapter, signer, tempusPool } = props;
   const [tab, setTab] = useState<number>(0);
 
   const onTabChange = (event: ChangeEvent<{}>, value: number) => {
@@ -24,16 +29,25 @@ const DetailAdvanced: FC<DetailAdvancedProps> = (props: DetailAdvancedProps) => 
   return (
     <>
       <Tabs value={tab} onChange={onTabChange} centered>
-        <Tab label="Mint" className="tf__tab" />
-        <Tab label="Swap" className="tf__tab" disabled={false} />
-        <Tab label="Pool" className="tf__tab" />
-        <Tab label="Redeem" className="tf__tab" />
+        <Tab
+          label={
+            <Typography color="default" variant="h3">
+              Swap
+            </Typography>
+          }
+          className="tf__tab"
+        />
       </Tabs>
 
-      <DetailMint content={content} selectedTab={tab} />
-      <DetailSwap content={content} selectedTab={tab} />
-      <DetailPool content={content} selectedTab={tab} />
-      <DetailRedeem content={content} selectedTab={tab} />
+      {tab === 0 && (
+        <DetailSwap
+          content={content}
+          userWalletAddress={userWalletAddress}
+          poolDataAdapter={poolDataAdapter}
+          signer={signer}
+          tempusPool={tempusPool}
+        />
+      )}
     </>
   );
 };

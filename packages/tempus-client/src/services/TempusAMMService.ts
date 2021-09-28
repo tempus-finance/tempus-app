@@ -170,6 +170,16 @@ class TempusAMMService {
       tempusPoolId,
     };
   }
+
+  public async getExpectedReturnGivenIn(address: string, amount: BigNumber, yieldShareIn: boolean) {
+    const contract = this.tempusAMMMap.get(address);
+    if (contract) {
+      return contract.getExpectedReturnGivenIn(amount, yieldShareIn);
+    }
+    throw new Error(
+      `TempusAMMService - getExpectedReturnGivenIn() - TempusAMM with address '${address}' does not exist!`,
+    );
+  }
 }
 
 export default TempusAMMService;

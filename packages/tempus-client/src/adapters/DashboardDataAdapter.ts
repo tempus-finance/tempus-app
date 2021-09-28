@@ -79,6 +79,8 @@ export default class DashboardDataAdapter {
       const [
         backingTokenTicker,
         yieldBearingTokenTicker,
+        principalTokenAddress,
+        yieldTokenAddress,
         protocol,
         startDate,
         maturityDate,
@@ -88,6 +90,8 @@ export default class DashboardDataAdapter {
       ] = await Promise.all([
         this.tempusPoolService.getBackingTokenTicker(tempusPool.address),
         this.tempusPoolService.getYieldBearingTokenTicker(tempusPool.address),
+        this.tempusPoolService.getPrincipalsTokenAddress(tempusPool.address),
+        this.tempusPoolService.getYieldTokenAddress(tempusPool.address),
         this.tempusPoolService.getProtocolName(tempusPool.address),
         this.tempusPoolService.getStartTime(tempusPool.address),
         this.tempusPoolService.getMaturityTime(tempusPool.address),
@@ -115,6 +119,8 @@ export default class DashboardDataAdapter {
         token: backingTokenTicker,
         supportedTokens: [backingTokenTicker, yieldBearingTokenTicker],
         protocol,
+        principalTokenAddress,
+        yieldTokenAddress,
         startDate,
         maturityDate,
         fixedAPR,

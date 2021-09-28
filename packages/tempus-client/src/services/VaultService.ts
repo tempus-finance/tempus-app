@@ -95,7 +95,7 @@ class VaultService {
     fromAddress: string,
     assetInAddress: string,
     assetOutAddress: string,
-    amount: number,
+    amount: BigNumber,
   ): Promise<ethers.ContractTransaction> {
     if (!this.contract) {
       console.error('VaultService - swap() - Attempted to use VaultService before initializing it!');
@@ -110,7 +110,7 @@ class VaultService {
       kind: kind,
       assetIn: assetInAddress,
       assetOut: assetOutAddress,
-      amount: ethers.utils.parseEther(amount.toString()),
+      amount: amount,
       userData: ethers.utils.formatBytes32String('0x0'),
     };
 
