@@ -72,6 +72,8 @@ describe('PoolDataAdapter', () => {
       };
     });
 
+    const mockGetVaultService = jest.fn().mockRejectedValue({});
+
     instance = new PoolDataAdapter();
     instance.init({
       eRC20TokenServiceGetter: mockGetERC20TokenService,
@@ -80,6 +82,7 @@ describe('PoolDataAdapter', () => {
       tempusControllerService: mockGetTempusControllerService(),
       tempusAMMService: mockTempusAMMService(),
       tempusPoolService: mockGetTempusPoolService(),
+      vaultService: mockGetVaultService(),
     });
   });
 

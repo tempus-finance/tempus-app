@@ -171,10 +171,18 @@ class TempusAMMService {
     };
   }
 
-  public async getExpectedReturnGivenIn(address: string, amount: BigNumber, yieldShareIn: boolean) {
+  async getExpectedReturnGivenIn(address: string, amount: BigNumber, yieldShareIn: boolean) {
     const contract = this.tempusAMMMap.get(address);
     if (contract) {
-      return contract.getExpectedReturnGivenIn(amount, yieldShareIn);
+      try {
+        return await contract.getExpectedReturnGivenIn(amount, yieldShareIn);
+      } catch (error) {
+        console.error(
+          'TempusAMMService - getExpectedReturnGivenIn() - Failed to get expected return value for token!',
+          error,
+        );
+        return Promise.reject(error);
+      }
     }
     throw new Error(
       `TempusAMMService - getExpectedReturnGivenIn() - TempusAMM with address '${address}' does not exist!`,

@@ -9,7 +9,6 @@ import DetailDeposit from './detailDeposit';
 import DetailWithdraw from './detailWithdraw';
 
 import '../shared/style.scss';
-import Spacer from '../../spacer/spacer';
 
 type DetailBasicInProps = {
   signer: JsonRpcSigner | null;

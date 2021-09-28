@@ -6,6 +6,8 @@ import { DashboardRowChild } from '../../../interfaces';
 import { TempusPool } from '../../../interfaces/TempusPool';
 import PoolDataAdapter from '../../../adapters/PoolDataAdapter';
 import NumberUtils from '../../../services/NumberUtils';
+import { SwapKind } from '../../../services/VaultService';
+import getConfig from '../../../utils/get-config';
 import SwapIcon from '../../icons/SwapIcon';
 import Typography from '../../typography/Typography';
 import CurrencyInput from '../../currencyInput';
@@ -13,10 +15,6 @@ import Spacer from '../../spacer/spacer';
 import Execute from '../shared/execute';
 import SectionContainer from '../shared/sectionContainer';
 import FloatingButton from '../shared/floatingButton';
-
-import './detailSwap.scss';
-import getConfig from '../../../utils/get-config';
-import { SwapKind } from '../../../services/VaultService';
 
 interface TokenDetail {
   tokenName: 'Principals' | 'Yields';

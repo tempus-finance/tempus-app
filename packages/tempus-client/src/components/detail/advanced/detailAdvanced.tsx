@@ -1,14 +1,13 @@
 import { FC, useState, ChangeEvent } from 'react';
+import { JsonRpcSigner } from '@ethersproject/providers';
 import { Tab, Tabs } from '@material-ui/core';
-
-import DetailSwap from './detailSwap';
+import { DashboardRowChild } from '../../../interfaces';
+import { TempusPool } from '../../../interfaces/TempusPool';
+import PoolDataAdapter from '../../../adapters/PoolDataAdapter';
 import Typography from '../../typography/Typography';
+import DetailSwap from './detailSwap';
 
 import '../shared/style.scss';
-import { DashboardRowChild } from '../../../interfaces';
-import PoolDataAdapter from '../../../adapters/PoolDataAdapter';
-import { JsonRpcSigner } from '@ethersproject/providers';
-import { TempusPool } from '../../../interfaces/TempusPool';
 
 type DetailAdvancedProps = {
   content: DashboardRowChild;

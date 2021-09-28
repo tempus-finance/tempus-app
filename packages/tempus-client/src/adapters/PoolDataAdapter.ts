@@ -135,8 +135,12 @@ export default class PoolDataAdapter {
     }
 
     const tokenService = this.eRC20TokenServiceGetter(address, signer);
-
-    return tokenService.balanceOf(userAddress);
+    try {
+      return await tokenService.balanceOf(userAddress);
+    } catch (error) {
+      console.error('PoolDataAdapter - getTokenBalance() - Failed to get token balance!', error);
+      return Promise.reject(error);
+    }
   }
 
   async getEstimatedDepositAmount(
@@ -247,7 +251,12 @@ export default class PoolDataAdapter {
     }
 
     const tokenService = this.eRC20TokenServiceGetter(tokenAddress, signer);
-    return tokenService.approve(spenderAddress, amount);
+    try {
+      return await tokenService.approve(spenderAddress, amount);
+    } catch (error) {
+      console.error('PoolDataAdapter - approveToken() - Failed to approve token amount!', error);
+      return Promise.reject(error);
+    }
   }
 
   async getApprovedAllowance(
@@ -440,7 +449,12 @@ export default class PoolDataAdapter {
       return Promise.reject();
     }
 
-    return this.tempusAMMService.getExpectedReturnGivenIn(amm, amount, yieldShareIn);
+    try {
+      return await this.tempusAMMService.getExpectedReturnGivenIn(amm, amount, yieldShareIn);
+    } catch (error) {
+      console.error('PoolDataAdapter - getExpectedReturnForShareToken() - Failed to get expected return value!', error);
+      return Promise.reject(error);
+    }
   }
 
   async swapShareTokens(
@@ -455,8 +469,19 @@ export default class PoolDataAdapter {
       return Promise.reject();
     }
 
-    const poolId = await this.tempusAMMService.poolId(tempusAMM);
+    let poolId: string = '';
+    try {
+      poolId = await this.tempusAMMService.poolId(tempusAMM);
+    } catch (error) {
+      console.error('PoolDataAdapter - swapShareTokens() - Failed to fetch pool ID!', error);
+      return Promise.reject(error);
+    }
 
-    return this.vaultService.swap(poolId, kind, userWallet, fromToken, toToken, amount);
+    try {
+      return await this.vaultService.swap(poolId, kind, userWallet, fromToken, toToken, amount);
+    } catch (error) {
+      console.error('PoolDataAdapter - swapShareTokens() - Failed to swap tokens!');
+      return Promise.reject(error);
+    }
   }
 }
