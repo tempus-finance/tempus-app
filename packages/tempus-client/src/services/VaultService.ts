@@ -93,8 +93,8 @@ class VaultService {
     poolId: string,
     kind: SwapKind,
     fromAddress: string,
-    assetInAddress: string,
-    assetOutAddress: string,
+    assetIn: string,
+    assetOut: string,
     amount: BigNumber,
   ): Promise<ethers.ContractTransaction> {
     if (!this.contract) {
@@ -106,11 +106,11 @@ class VaultService {
     const latestBlock = await provider.getBlock('latest');
 
     const singleSwap = {
-      poolId: poolId,
-      kind: kind,
-      assetIn: assetInAddress,
-      assetOut: assetOutAddress,
-      amount: amount,
+      poolId,
+      kind,
+      assetIn,
+      assetOut,
+      amount,
       userData: ethers.utils.formatBytes32String('0x0'),
     };
 
