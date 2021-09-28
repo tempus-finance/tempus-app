@@ -187,7 +187,7 @@ export default class DashboardDataAdapter {
           variableAPY: this.getRangeFrom<number>(childrenVariable),
           TVL: parentTVL,
           presentValue: this.userWalletAddress ? parentPresentValue : undefined,
-          availableUSDToDeposit: availableToDepositInUSD,
+          availableUSDToDeposit: this.userWalletAddress ? availableToDepositInUSD : undefined,
           protocols: Array.from(new Set(childrenProtocols)), // Converting list of protocols to set removes duplicate items
         };
 
