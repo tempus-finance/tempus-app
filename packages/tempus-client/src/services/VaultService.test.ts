@@ -78,7 +78,7 @@ describe('VaultService', () => {
       };
     });
 
-    const swapAmount = 5;
+    const swapAmount = eth.ethers.BigNumber.from('5');
 
     await vaultService.swap(
       tempusPoolId,
@@ -92,7 +92,7 @@ describe('VaultService', () => {
     expect(mockSwap).toHaveBeenCalledTimes(1);
     expect(mockSwap).toHaveBeenCalledWith(
       {
-        amount: eth.utils.parseEther(swapAmount.toString()),
+        amount: swapAmount,
         assetIn: principalShareAddress,
         assetOut: yieldShareAddress,
         kind: SwapKind.GIVEN_IN,

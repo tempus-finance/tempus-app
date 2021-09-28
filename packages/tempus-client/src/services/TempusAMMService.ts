@@ -177,6 +177,24 @@ class TempusAMMService {
       tempusPoolId,
     };
   }
+
+  async getExpectedReturnGivenIn(address: string, amount: BigNumber, yieldShareIn: boolean) {
+    const contract = this.tempusAMMMap.get(address);
+    if (contract) {
+      try {
+        return await contract.getExpectedReturnGivenIn(amount, yieldShareIn);
+      } catch (error) {
+        console.error(
+          'TempusAMMService - getExpectedReturnGivenIn() - Failed to get expected return value for token!',
+          error,
+        );
+        return Promise.reject(error);
+      }
+    }
+    throw new Error(
+      `TempusAMMService - getExpectedReturnGivenIn() - TempusAMM with address '${address}' does not exist!`,
+    );
+  }
 }
 
 export default TempusAMMService;

@@ -74,9 +74,16 @@ const Detail: FC<DetailProps> = ({ content, onClose }) => {
             Matures on {format(maturityDate, 'dd MMM yy')}
           </Typography>
         </div>
+        <Spacer size={18} />
         <div className="tf__dialog__content">
           {showAdvancedUI ? (
-            <DetailAdvanced content={content} />
+            <DetailAdvanced
+              content={content}
+              tempusPool={tempusPool}
+              userWalletAddress={userWalletAddress}
+              poolDataAdapter={poolDataAdapter}
+              signer={userWalletSigner}
+            />
           ) : (
             <DetailBasic
               content={content}

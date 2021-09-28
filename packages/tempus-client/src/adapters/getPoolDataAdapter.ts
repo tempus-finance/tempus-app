@@ -4,6 +4,7 @@ import getStatisticsService from '../services/getStatisticsService';
 import getTempusAMMService from '../services/getTempusAMMService';
 import getTempusControllerService from '../services/getTempusControllerService';
 import getTempusPoolService from '../services/getTempusPoolService';
+import getVaultService from '../services/getVaultService';
 import getConfig from '../utils/get-config';
 import PoolDataAdapter from './PoolDataAdapter';
 
@@ -22,6 +23,7 @@ const getPoolDataAdapter = (signerOrProvider?: JsonRpcSigner | JsonRpcProvider):
       tempusPoolService: getTempusPoolService(signerOrProvider),
       statisticService: getStatisticsService(signerOrProvider),
       tempusAMMService: getTempusAMMService(signerOrProvider),
+      vaultService: getVaultService(signerOrProvider),
       eRC20TokenServiceGetter: getERC20TokenService,
     });
   }

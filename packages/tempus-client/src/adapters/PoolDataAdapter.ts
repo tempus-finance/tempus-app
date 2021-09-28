@@ -8,6 +8,7 @@ import getERC20TokenService from '../services/getERC20TokenService';
 import { div18f, mul18f } from '../utils/wei-math';
 import { DAYS_IN_A_YEAR, ONE_ETH_IN_WEI, SECONDS_IN_A_DAY, ZERO_ETH_ADDRESS } from '../constants';
 import { Ticker } from '../interfaces';
+import VaultService, { SwapKind } from '../services/VaultService';
 
 export interface UserTransaction {
   event: DepositedEvent | RedeemedEvent;
@@ -21,6 +22,7 @@ type PoolDataAdapterParameters = {
   tempusPoolService: TempusPoolService;
   statisticService: StatisticsService;
   tempusAMMService: TempusAMMService;
+  vaultService: VaultService;
   eRC20TokenServiceGetter: typeof getERC20TokenService;
 };
 
@@ -30,6 +32,7 @@ export default class PoolDataAdapter {
   private tempusPoolService: TempusPoolService | null = null;
   private statisticService: StatisticsService | null = null;
   private tempusAMMService: TempusAMMService | null = null;
+  private vaultService: VaultService | null = null;
   private eRC20TokenServiceGetter: null | typeof getERC20TokenService = null;
 
   init({
@@ -38,6 +41,7 @@ export default class PoolDataAdapter {
     tempusPoolService,
     statisticService,
     tempusAMMService,
+    vaultService,
     eRC20TokenServiceGetter,
   }: PoolDataAdapterParameters) {
     this.tempusControllerService = tempusControllerService;
@@ -45,6 +49,7 @@ export default class PoolDataAdapter {
     this.tempusPoolService = tempusPoolService;
     this.statisticService = statisticService;
     this.tempusAMMService = tempusAMMService;
+    this.vaultService = vaultService;
     this.eRC20TokenServiceGetter = eRC20TokenServiceGetter;
   }
 
@@ -122,6 +127,20 @@ export default class PoolDataAdapter {
     } catch (error) {
       console.error('PoolDataAdapter - retrieveBalances() - Failed to retrieve balances!', error);
       return Promise.reject();
+    }
+  }
+
+  async getTokenBalance(address: string, userAddress: string, signer: JsonRpcSigner): Promise<BigNumber> {
+    if (!this.eRC20TokenServiceGetter) {
+      return Promise.reject();
+    }
+
+    const tokenService = this.eRC20TokenServiceGetter(address, signer);
+    try {
+      return await tokenService.balanceOf(userAddress);
+    } catch (error) {
+      console.error('PoolDataAdapter - getTokenBalance() - Failed to get token balance!', error);
+      return Promise.reject(error);
     }
   }
 
@@ -218,6 +237,26 @@ export default class PoolDataAdapter {
     } catch (error) {
       console.error('PoolDataAdapter - approve() - Failed to approve tokens for deposit!', error);
       Promise.reject();
+    }
+  }
+
+  async approveToken(
+    tokenAddress: string,
+    spenderAddress: string,
+    amount: BigNumber,
+    signer: JsonRpcSigner,
+  ): Promise<ContractTransaction | void> {
+    if (!this.eRC20TokenServiceGetter) {
+      console.error('PoolDataAdapter - approveToken() - Attempted to use PoolDataAdapter before initializing it!');
+      return Promise.reject();
+    }
+
+    const tokenService = this.eRC20TokenServiceGetter(tokenAddress, signer);
+    try {
+      return await tokenService.approve(spenderAddress, amount);
+    } catch (error) {
+      console.error('PoolDataAdapter - approveToken() - Failed to approve token amount!', error);
+      return Promise.reject(error);
     }
   }
 
@@ -471,6 +510,47 @@ export default class PoolDataAdapter {
     } catch (error) {
       console.error('PoolDataAdapter - getTokenServices() - Failed to retrieve services!', error);
       return Promise.reject();
+    }
+  }
+
+  async getExpectedReturnForShareToken(amm: string, amount: BigNumber, yieldShareIn: boolean) {
+    if (!this.tempusAMMService) {
+      return Promise.reject();
+    }
+
+    try {
+      return await this.tempusAMMService.getExpectedReturnGivenIn(amm, amount, yieldShareIn);
+    } catch (error) {
+      console.error('PoolDataAdapter - getExpectedReturnForShareToken() - Failed to get expected return value!', error);
+      return Promise.reject(error);
+    }
+  }
+
+  async swapShareTokens(
+    tempusAMM: string,
+    kind: SwapKind,
+    fromToken: string,
+    toToken: string,
+    amount: BigNumber,
+    userWallet: string,
+  ) {
+    if (!this.vaultService || !this.tempusAMMService) {
+      return Promise.reject();
+    }
+
+    let poolId: string = '';
+    try {
+      poolId = await this.tempusAMMService.poolId(tempusAMM);
+    } catch (error) {
+      console.error('PoolDataAdapter - swapShareTokens() - Failed to fetch pool ID!', error);
+      return Promise.reject(error);
+    }
+
+    try {
+      return await this.vaultService.swap(poolId, kind, userWallet, fromToken, toToken, amount);
+    } catch (error) {
+      console.error('PoolDataAdapter - swapShareTokens() - Failed to swap tokens!');
+      return Promise.reject(error);
     }
   }
 }
