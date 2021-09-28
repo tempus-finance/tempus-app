@@ -16,4 +16,16 @@
   width: 100%;
   padding: 20px;
   box-sizing: border-box;
+  position: relative;
+}
+
+.tf__dialog__section-tick {
+  position: absolute;
+  right: 13px;
+  top: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 20px;
+  height: 20px;
 }
