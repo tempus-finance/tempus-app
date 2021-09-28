@@ -85,6 +85,7 @@ class TempusControllerService {
     tokenAmount: BigNumber,
     isBackingToken: boolean,
     minTYSRate: BigNumber,
+    isEthDeposit?: boolean,
   ): Promise<ContractTransaction> {
     if (!this.contract) {
       console.error(
@@ -94,7 +95,13 @@ class TempusControllerService {
     }
 
     try {
-      return await this.contract.depositAndFix(tempusAMM, tokenAmount, isBackingToken, minTYSRate);
+      if (isEthDeposit) {
+        return await this.contract.depositAndFix(tempusAMM, tokenAmount, isBackingToken, minTYSRate, {
+          value: tokenAmount,
+        });
+      } else {
+        return await this.contract.depositAndFix(tempusAMM, tokenAmount, isBackingToken, minTYSRate);
+      }
     } catch (error) {
       console.error(`TempusControllerService depositAndFix() - Failed to deposit backing tokens!`, error);
       return Promise.reject(error);

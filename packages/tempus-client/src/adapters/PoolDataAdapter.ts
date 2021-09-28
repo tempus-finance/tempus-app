@@ -255,6 +255,7 @@ export default class PoolDataAdapter {
     tokenAmount: BigNumber,
     isBackingToken: boolean,
     minTYSRate: BigNumber,
+    isEthDeposit?: boolean,
   ): Promise<ContractTransaction | undefined> {
     if (!this.tempusControllerService) {
       console.error('PoolDataAdapter - executeDeposit() - Attempted to use PoolDataAdapter before initializing it!');
@@ -262,7 +263,13 @@ export default class PoolDataAdapter {
     }
 
     try {
-      return await this.tempusControllerService.depositAndFix(tempusAMM, tokenAmount, isBackingToken, minTYSRate);
+      return await this.tempusControllerService.depositAndFix(
+        tempusAMM,
+        tokenAmount,
+        isBackingToken,
+        minTYSRate,
+        isEthDeposit,
+      );
     } catch (error) {
       console.error(`TempusPoolService - executeDeposit() - Failed to make a deposit to the pool!`, error);
       return Promise.reject(error);
