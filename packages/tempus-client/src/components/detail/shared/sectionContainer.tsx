@@ -1,4 +1,5 @@
 import { FC } from 'react';
+import TickIcon from '../../icons/TickIcon';
 import InfoTooltip from '../../infoTooltip/infoTooltip';
 import Spacer from '../../spacer/spacer';
 import Typography from '../../typography/Typography';
@@ -32,6 +33,11 @@ const SectionContainer: FC<SectionContainerProps> = props => {
         }}
       >
         {props.children}
+        {selected && (
+          <div className="tf__dialog__section-tick">
+            <TickIcon fillColor="#FF6B00" />
+          </div>
+        )}
       </div>
     </div>
   );
