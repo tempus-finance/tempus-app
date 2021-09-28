@@ -42,6 +42,7 @@ const DetailDeposit: FC<PoolDetailProps> = ({
   const [backingTokenBalance, setBackingTokenBalance] = useState<BigNumber | null>(null);
   const [yieldBearingTokenBalance, setYieldBearingTokenBalance] = useState<BigNumber | null>(null);
 
+  const [estimatedFixedApr, setEstimatedFixedApr] = useState<BigNumber | null>(null);
   const [selectedYield, setSelectedYield] = useState<SelectedYield>('fixed');
   const [backingTokenRate, setBackingTokenRate] = useState<BigNumber | null>(null);
   const [yieldBearingTokenRate, setYieldBearingTokenRate] = useState<BigNumber | null>(null);
@@ -330,6 +331,30 @@ const DetailDeposit: FC<PoolDetailProps> = ({
     return NumberUtils.formatWithMultiplier(ethers.utils.formatEther(variableLpTokensAmount), 2);
   }, [variableLpTokensAmount]);
 
+  useEffect(() => {
+    const getEstimatedFixedApr = async () => {
+      if (amount && selectedToken) {
+        const isBackingToken = selectedToken === backingToken;
+        const result = await poolDataAdapter?.getEstimatedFixedApr(
+          ethers.utils.parseEther(amount.toString()),
+          isBackingToken,
+          address,
+          ammAddress,
+        );
+
+        if (result) {
+          setEstimatedFixedApr(result);
+        } else {
+          setEstimatedFixedApr(null);
+        }
+      } else {
+        setEstimatedFixedApr(null);
+      }
+    };
+
+    getEstimatedFixedApr();
+  }, [amount, selectedToken, backingToken, address, ammAddress, poolDataAdapter, setEstimatedFixedApr]);
+
   return (
     <div role="tabpanel" hidden={selectedTab !== 0}>
       <div className="tf__dialog__content-tab">
@@ -390,7 +415,10 @@ const DetailDeposit: FC<PoolDetailProps> = ({
                     est. {fixedPrincipalsAmountFormatted ? fixedPrincipalsAmountFormatted : '-'} Principals
                   </Typography>
                   <Typography variant="h3" color="accent">
-                    est. {NumberUtils.formatPercentage(fixedAPR, 2)}
+                    est.{' '}
+                    {estimatedFixedApr
+                      ? NumberUtils.formatPercentage(ethers.utils.formatEther(estimatedFixedApr))
+                      : NumberUtils.formatPercentage(fixedAPR, 2)}
                   </Typography>
                 </div>
               </SectionContainer>

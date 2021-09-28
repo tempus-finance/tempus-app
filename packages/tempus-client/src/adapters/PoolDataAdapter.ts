@@ -5,8 +5,8 @@ import StatisticsService from '../services/StatisticsService';
 import TempusControllerService, { DepositedEvent, RedeemedEvent } from '../services/TempusControllerService';
 import TempusPoolService from '../services/TempusPoolService';
 import getERC20TokenService from '../services/getERC20TokenService';
-import { mul18f } from '../utils/wei-math';
-import { ZERO_ETH_ADDRESS } from '../constants';
+import { div18f, mul18f } from '../utils/wei-math';
+import { DAYS_IN_A_YEAR, ONE_ETH_IN_WEI, SECONDS_IN_A_DAY, ZERO_ETH_ADDRESS } from '../constants';
 import { Ticker } from '../interfaces';
 
 export interface UserTransaction {
@@ -382,6 +382,62 @@ export default class PoolDataAdapter {
     }
 
     return userTransactions;
+  }
+
+  async getEstimatedFixedApr(
+    tokenAmount: BigNumber,
+    isBackingToken: boolean,
+    tempusPoolAddress: string,
+    tempusAMMAddress: string,
+  ): Promise<BigNumber> {
+    if (!this.tempusPoolService || !this.tempusAMMService || !this.statisticService) {
+      console.error(
+        'PoolDataAdapter - getEstimatedFixedApr() - Attempted to use PoolDataAdapter before initializing it.',
+      );
+      return Promise.reject();
+    }
+
+    if (!tokenAmount) {
+      console.error('PoolDataAdapter - getEstimatedFixedApr() - Invalid backingTokenAmount amount.');
+      return Promise.reject();
+    }
+
+    try {
+      const [tempusPoolStartTime, tempusPoolMaturityTime] = await Promise.all([
+        this.tempusPoolService.getStartTime(tempusPoolAddress),
+        this.tempusPoolService.getMaturityTime(tempusPoolAddress),
+      ]);
+
+      const poolDuration = (tempusPoolMaturityTime.getTime() - tempusPoolStartTime.getTime()) / 1000;
+      const scaleFactor = ethers.utils.parseEther(((SECONDS_IN_A_DAY * DAYS_IN_A_YEAR) / poolDuration).toString());
+
+      const principals = await this.statisticService.estimatedDepositAndFix(
+        tempusAMMAddress,
+        tokenAmount,
+        isBackingToken,
+      );
+
+      if (isBackingToken) {
+        const ratio = div18f(principals, tokenAmount);
+        const pureInterest = ratio.sub(BigNumber.from(ONE_ETH_IN_WEI));
+        return mul18f(pureInterest, scaleFactor);
+      }
+      // TODO - Fetch interest rate from contract instead of hardcoded values
+      const interestRate = BigNumber.from('1');
+
+      const backingAmount = await this.tempusPoolService.numAssetsPerYieldToken(
+        tempusPoolAddress,
+        tokenAmount,
+        interestRate,
+      );
+
+      const ratio = div18f(principals, backingAmount);
+      const pureInterest = ratio.sub(BigNumber.from(ONE_ETH_IN_WEI));
+      return mul18f(pureInterest, scaleFactor);
+    } catch (error) {
+      console.error('PoolDataAdapter - getEstimatedFixedApr() - Failed to get value.', error);
+      return Promise.reject();
+    }
   }
 
   private async getTokenServices(tempusPoolAddress: string, tempusAMMAddress: string, signer: JsonRpcSigner) {
