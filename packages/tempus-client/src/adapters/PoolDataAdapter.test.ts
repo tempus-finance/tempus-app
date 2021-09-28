@@ -72,7 +72,7 @@ describe('PoolDataAdapter', () => {
       };
     });
 
-    const mockGetVaultService = jest.fn().mockRejectedValue({});
+    const mockGetVaultService = jest.fn().mockReturnValue({});
 
     instance = new PoolDataAdapter();
     instance.init({
