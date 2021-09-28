@@ -2,7 +2,7 @@ import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { ethers, BigNumber } from 'ethers';
 import { JsonRpcSigner } from '@ethersproject/providers';
 import Button from '@material-ui/core/Button';
-import { DashboardRowChild } from '../../../interfaces';
+import { DashboardRowChild, PoolShares } from '../../../interfaces';
 import { TempusPool } from '../../../interfaces/TempusPool';
 import PoolDataAdapter from '../../../adapters/PoolDataAdapter';
 import NumberUtils from '../../../services/NumberUtils';
@@ -17,7 +17,7 @@ import SectionContainer from '../shared/sectionContainer';
 import FloatingButton from '../shared/floatingButton';
 
 interface TokenDetail {
-  tokenName: 'Principals' | 'Yields';
+  tokenName: PoolShares;
   tokenAddress: string;
 }
 
@@ -116,14 +116,21 @@ const DetailSwap: FC<DetailSwapProps> = props => {
 
       const amountParsed = ethers.utils.parseEther(amount.toString());
 
-      await poolDataAdapter.swapShareTokens(
-        tempusPool.ammAddress,
-        SwapKind.GIVEN_IN,
-        tokenFrom.tokenAddress,
-        tokenTo.tokenAddress,
-        amountParsed,
-        userWalletAddress,
-      );
+      try {
+        await poolDataAdapter.swapShareTokens(
+          tempusPool.ammAddress,
+          SwapKind.GIVEN_IN,
+          tokenFrom.tokenAddress,
+          tokenTo.tokenAddress,
+          amountParsed,
+          userWalletAddress,
+        );
+      } catch (error) {
+        setExecuteDisabled(false);
+
+        console.error('DetailSwap - execute() - Failed to execute swap transaction!', error);
+        return Promise.reject(error);
+      }
       setExecuteDisabled(false);
     };
     setExecuteDisabled(true);
@@ -136,7 +143,12 @@ const DetailSwap: FC<DetailSwapProps> = props => {
       return;
     }
     const getBalance = async () => {
-      setBalance(await poolDataAdapter.getTokenBalance(tokenFrom.tokenAddress, userWalletAddress, signer));
+      try {
+        setBalance(await poolDataAdapter.getTokenBalance(tokenFrom.tokenAddress, userWalletAddress, signer));
+      } catch (error) {
+        console.error('DetailSwap - getBalance() - Failed to get token balance!', error);
+        return Promise.reject(error);
+      }
     };
     getBalance();
   }, [poolDataAdapter, signer, tokenFrom, userWalletAddress]);
@@ -155,9 +167,14 @@ const DetailSwap: FC<DetailSwapProps> = props => {
         return;
       }
 
-      setReceiveAmount(
-        await poolDataAdapter.getExpectedReturnForShareToken(tempusPool.ammAddress, amountParsed, yieldShareIn),
-      );
+      try {
+        setReceiveAmount(
+          await poolDataAdapter.getExpectedReturnForShareToken(tempusPool.ammAddress, amountParsed, yieldShareIn),
+        );
+      } catch (error) {
+        console.error('DetailSwap - getReceiveAmount() - Failed to fetch expected amount of returned tokens!', error);
+        return Promise.reject(error);
+      }
     };
     getReceiveAmount();
   }, [poolDataAdapter, amount, tempusPool, tokenFrom]);

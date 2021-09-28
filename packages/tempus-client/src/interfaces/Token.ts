@@ -12,3 +12,5 @@ export type Ticker =
   | 'USDC'
   | 'aDAI'
   | 'cDAI';
+
+export type PoolShares = 'Principals' | 'Yields';
