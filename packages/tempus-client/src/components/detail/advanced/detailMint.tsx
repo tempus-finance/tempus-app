@@ -50,8 +50,10 @@ const DetailMint: FC<DetailMintProps> = props => {
 
   const onAmountChange = useCallback(
     (amount: number | undefined) => {
-      if (!!amount && !isNaN(amount)) {
+      if (amount === 0 || amount) {
         setAmount(amount);
+      } else {
+        setAmount(0);
       }
     },
     [setAmount],
@@ -265,7 +267,12 @@ const DetailMint: FC<DetailMintProps> = props => {
         <Execute
           onApprove={onApprove}
           approveDisabled={
-            !selectedToken || !amount || (!approvedAllowance && approvedAllowance !== 0) || amount < approvedAllowance
+            !selectedToken ||
+            !amount ||
+            (!approvedAllowance && approvedAllowance !== 0) ||
+            amount < approvedAllowance ||
+            !balance ||
+            ethers.utils.parseEther(amount.toString()).gt(balance)
           }
           onExecute={onExecute}
           executeDisabled={
