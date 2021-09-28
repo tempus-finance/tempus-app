@@ -6,6 +6,7 @@ import TempusControllerService, { DepositedEvent, RedeemedEvent } from '../servi
 import TempusPoolService from '../services/TempusPoolService';
 import getERC20TokenService from '../services/getERC20TokenService';
 import { mul18f } from '../utils/wei-math';
+import { ZERO_ETH_ADDRESS } from '../constants';
 import { Ticker } from '../interfaces';
 
 export interface UserTransaction {
@@ -237,6 +238,11 @@ export default class PoolDataAdapter {
       const tokenAddress = isBackingToken
         ? await this.tempusPoolService.getBackingTokenAddress(tempusPoolAddress)
         : await this.tempusPoolService.getYieldBearingTokenAddress(tempusPoolAddress);
+
+      // In case of ETH, total user balance is always approved.
+      if (tokenAddress === ZERO_ETH_ADDRESS) {
+        return Number(ethers.utils.formatEther(await signer.getBalance()));
+      }
 
       const tokenService = this.eRC20TokenServiceGetter(tokenAddress, signer);
       const allowance = await tokenService.getAllowance(userWalletAddress, this.tempusControllerAddress);

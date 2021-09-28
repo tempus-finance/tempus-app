@@ -290,12 +290,6 @@ const DetailDeposit: FC<PoolDetailProps> = ({
 
   useEffect(() => {
     const getAllowance = async () => {
-      // No need to approve ETH
-      if (selectedToken === 'ETH') {
-        setApproveDisabled(true);
-        return;
-      }
-
       if (signer) {
         const isBackingToken = backingToken === selectedToken;
         const allowance = await poolDataAdapter?.getApprovedAllowance(
