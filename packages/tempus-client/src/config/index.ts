@@ -8,6 +8,7 @@ const config: Config = {
       address: '',
       ammAddress: '',
       backingToken: 'DAI',
+      spotPrice: '10000',
     },
   ],
   statisticsContract: '',
