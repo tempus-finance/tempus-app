@@ -1,34 +1,55 @@
-import { FC, useCallback, useState } from 'react';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { BigNumber, ethers } from 'ethers';
+import { JsonRpcSigner } from '@ethersproject/providers';
 import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
-import AddIcon from '@material-ui/icons/Add';
-
+import { DashboardRowChild, Ticker } from '../../../interfaces';
+import { TempusPool } from '../../../interfaces/TempusPool';
+import PoolDataAdapter from '../../../adapters/PoolDataAdapter';
+import NumberUtils from '../../../services/NumberUtils';
+import getConfig from '../../../utils/get-config';
+import Typography from '../../typography/Typography';
+import Spacer from '../../spacer/spacer';
 import TokenSelector from '../../tokenSelector';
 import CurrencyInput from '../../currencyInput';
-import ConnectingArrow from '../shared/connectingArrow';
 import ActionContainer from '../shared/actionContainer';
-import ActionContainerGrid from '../shared/actionContainerGrid';
 import Execute from '../shared/execute';
+import SectionContainer from '../shared/sectionContainer';
+import PlusIconContainer from '../shared/plusIconContainer';
 
 import './detailMint.scss';
 
 type DetailMintInProps = {
-  content?: any;
-  selectedTab: number;
+  content: DashboardRowChild;
+  tempusPool: TempusPool;
+  userWalletAddress: string;
+  signer: JsonRpcSigner | null;
+  poolDataAdapter: PoolDataAdapter | null;
 };
 
 type DetailMintOutProps = {};
 
 type DetailMintProps = DetailMintInProps & DetailMintOutProps;
 
-const DetailMint: FC<DetailMintProps> = ({ content, selectedTab }) => {
-  const { token = '', protocol = '', balance = 0 } = content || {};
+const DetailMint: FC<DetailMintProps> = props => {
+  const { content, tempusPool, userWalletAddress, signer, poolDataAdapter } = props;
+  const { supportedTokens, backingTokenAddress, yieldBearingTokenAddress } = content;
+  const [backingToken, yieldBearingToken] = supportedTokens;
 
+  const [selectedToken, setSelectedToken] = useState<Ticker | null>(null);
   const [amount, setAmount] = useState<number>(0);
+  const [balance, setBalance] = useState<BigNumber | null>(null);
+  const [estimatedTokens, setEstimatedTokens] = useState<BigNumber | null>(null);
+  const [approvedAllowance, setApprovedAllowance] = useState<number | null>(null);
+
+  const onTokenChange = useCallback((token: Ticker | undefined) => {
+    if (!token) {
+      return;
+    }
+    setSelectedToken(token);
+  }, []);
 
   const onAmountChange = useCallback(
     (amount: number | undefined) => {
-      console.log('onAmountChange', amount);
       if (!!amount && !isNaN(amount)) {
         setAmount(amount);
       }
@@ -36,84 +57,221 @@ const DetailMint: FC<DetailMintProps> = ({ content, selectedTab }) => {
     [setAmount],
   );
 
-  const onClickMax = useCallback(() => {
-    setAmount(balance);
-  }, [balance, setAmount]);
+  const onPercentageChange = useCallback(
+    (event: React.MouseEvent<HTMLButtonElement>) => {
+      const percentage = event.currentTarget.value;
+      if (balance) {
+        setAmount(Number(ethers.utils.formatEther(balance)) * Number(percentage));
+      }
+    },
+    [balance],
+  );
 
-  const tpsValue = 52102.42;
-  const tysValue = 0;
+  useEffect(() => {
+    const retrieveBalances = async () => {
+      if (signer && tempusPool.address && tempusPool.ammAddress && poolDataAdapter) {
+        try {
+          let balance: BigNumber | null = null;
+          if (selectedToken === backingToken) {
+            balance = await poolDataAdapter.getTokenBalance(backingTokenAddress, userWalletAddress, signer);
+          } else if (selectedToken === yieldBearingToken) {
+            balance = await poolDataAdapter.getTokenBalance(yieldBearingTokenAddress, userWalletAddress, signer);
+          }
+
+          setBalance(balance);
+        } catch (error) {
+          console.error('DetailMint - retrieveBalances() - Failed to retrieve balance for selected token!', error);
+          return Promise.reject(error);
+        }
+      }
+    };
+    retrieveBalances();
+  }, [
+    tempusPool,
+    userWalletAddress,
+    signer,
+    poolDataAdapter,
+    selectedToken,
+    backingToken,
+    yieldBearingToken,
+    backingTokenAddress,
+    yieldBearingTokenAddress,
+  ]);
+
+  const onApprove = useCallback(() => {
+    const approve = async () => {
+      if (signer && balance && poolDataAdapter) {
+        try {
+          const approveTransaction = await poolDataAdapter.approveToken(
+            selectedToken === backingToken ? backingTokenAddress : yieldBearingTokenAddress,
+            getConfig().tempusControllerContract,
+            balance,
+            signer,
+          );
+          if (approveTransaction) {
+            await approveTransaction.wait();
+          }
+        } catch (error) {
+          console.log(`DetailMint - onApprove() - Failed to approve token!`, error);
+        }
+      }
+    };
+    approve();
+  }, [backingToken, backingTokenAddress, balance, poolDataAdapter, selectedToken, signer, yieldBearingTokenAddress]);
+
+  const onExecute = useCallback(() => {
+    const execute = async () => {
+      if (!poolDataAdapter) {
+        return;
+      }
+
+      const amountParsed = ethers.utils.parseEther(amount.toString());
+
+      try {
+        await poolDataAdapter.deposit(
+          tempusPool.address,
+          amountParsed,
+          userWalletAddress,
+          selectedToken === backingToken,
+          selectedToken === 'ETH',
+        );
+      } catch (error) {
+        console.error('DetailMint - execute() - Failed to execute mint transaction!', error);
+        return Promise.reject(error);
+      }
+    };
+    execute();
+  }, [amount, backingToken, poolDataAdapter, selectedToken, tempusPool.address, userWalletAddress]);
+
+  // Fetch estimated tokens returned
+  useEffect(() => {
+    const getEstimates = async () => {
+      if (!poolDataAdapter) {
+        return;
+      }
+      const isBackingToken = selectedToken === backingToken;
+      const amountParsed = ethers.utils.parseEther(amount.toString());
+
+      try {
+        setEstimatedTokens(
+          await poolDataAdapter.estimatedMintedShares(tempusPool.address, amountParsed, isBackingToken),
+        );
+      } catch (error) {
+        console.error('DetailMint - getEstimates() - Failed to get estimate for selected token!', error);
+      }
+    };
+    getEstimates();
+  }, [amount, backingToken, poolDataAdapter, selectedToken, tempusPool]);
+
+  // Fetch allowance for currently selected token
+  useEffect(() => {
+    const getApprovedAllowance = async () => {
+      if (!signer || !poolDataAdapter || !selectedToken) {
+        return;
+      }
+      const poolAddress = tempusPool.address;
+      const isBacking = selectedToken === backingToken;
+
+      try {
+        setApprovedAllowance(
+          await poolDataAdapter.getApprovedAllowance(userWalletAddress, poolAddress, isBacking, signer),
+        );
+      } catch (error) {
+        console.error(
+          'DetailMint - getApprovedAllowance() - Failed to get approved allowance for selected token!',
+          error,
+        );
+      }
+    };
+    getApprovedAllowance();
+  }, [backingToken, poolDataAdapter, selectedToken, signer, tempusPool.address, userWalletAddress]);
+
+  const balanceFormatted = useMemo(() => {
+    if (!balance) {
+      return null;
+    }
+    return NumberUtils.formatWithMultiplier(ethers.utils.formatEther(balance), 4);
+  }, [balance]);
+
+  const estimatedTokensFormatted = useMemo(() => {
+    if (!estimatedTokens) {
+      return null;
+    }
+    return NumberUtils.formatWithMultiplier(ethers.utils.formatEther(estimatedTokens), 4);
+  }, [estimatedTokens]);
 
   return (
-    <div role="tabpanel" hidden={selectedTab !== 0}>
+    <div role="tabpanel">
       <div className="tf__dialog__content-tab">
         <ActionContainer label="From">
-          <ActionContainerGrid>
-            <div className="tf__dialog__tab__action-container-grid__centre-left tf__dialog__tab__action-container__token-selector">
-              <TokenSelector tickers={['ETH', 'DAI']} />
-            </div>
-
-            <div className="tf__dialog__tab__action-container-grid__top-right tf__dialog__tab__action-container__balance">
-              <Typography variant="subtitle2" className="tf__dialog__tab__action-container__balance-title">
-                Balance
+          <Spacer size={18} />
+          <SectionContainer>
+            <div className="tf__dialog__flex-row">
+              <div className="tf__dialog__label-align-right">
+                <Typography variant="body-text">Token</Typography>
+              </div>
+              <TokenSelector tickers={supportedTokens} onTokenChange={onTokenChange} />
+              <Spacer size={20} />
+              <Typography variant="body-text">
+                {selectedToken && balanceFormatted && `Balance: ${balanceFormatted} ${selectedToken}`}
               </Typography>
-              <div className="tf__dialog__tab__action-container__balance-value">
-                {new Intl.NumberFormat().format(balance)}
+            </div>
+            <Spacer size={14} />
+            <div className="tf__dialog__flex-row">
+              <div className="tf__dialog__label-align-right">
+                <Typography variant="body-text">Amount</Typography>
               </div>
-              <div className="tf__dialog__tab__action-container__balance-max">
-                <Button
-                  value="Max"
-                  variant="contained"
-                  size="small"
-                  onClick={onClickMax}
-                  className="tf__action__max-balance"
-                >
-                  Max
-                </Button>
-              </div>
+              <CurrencyInput defaultValue={amount} onChange={onAmountChange} disabled={!selectedToken} />
+              <Spacer size={20} />
+              <Button variant="contained" size="small" value="0.25" onClick={onPercentageChange}>
+                25%
+              </Button>
+              <Spacer size={10} />
+              <Button variant="contained" size="small" value="0.5" onClick={onPercentageChange}>
+                50%
+              </Button>
+              <Spacer size={10} />
+              <Button variant="contained" size="small" value="0.75" onClick={onPercentageChange}>
+                75%
+              </Button>
+              <Spacer size={10} />
+              <Button variant="contained" size="small" value="1" onClick={onPercentageChange}>
+                Max
+              </Button>
             </div>
-
-            <div className="tf__dialog__tab__action-container-grid__centre-right tf__dialog__tab__action-container__token-amount">
-              <CurrencyInput defaultValue={0} onChange={onAmountChange} />
-            </div>
-
-            <div className="tf__dialog__tab__action-container-grid__bottom-left tf__dialog__tab__action-container__token-description">
-              {protocol.toUpperCase()} staked {token}
-            </div>
-
-            <div className="tf__dialog__tab__action-container-grid__bottom-right tf__dialog__tab__action-container__token-amount-fiat">
-              <div>{amount !== undefined ? `~ ${amount * 12.567} USD` : ''}</div>
-            </div>
-          </ActionContainerGrid>
+          </SectionContainer>
         </ActionContainer>
-        <ConnectingArrow />
+        <Spacer size={20} />
         <ActionContainer label="To">
-          <ActionContainerGrid className="tf__detail-mint__grid">
-            <div className="tf__dialog__tab__action-container-grid__centre-left tf__dialog__tab__action-container__tokens-returned element3">
-              <div className="tf__tokens-returned__name">
-                <div className="tf__tokens-returned__ticker">
-                  <span>Principals</span>
-                  <span className="tf__tokens-returned__description">Principal Share</span>
-                </div>
-              </div>
-              <div className="tf__tokens-returned__data">{new Intl.NumberFormat().format(tpsValue)}</div>
+          <Spacer size={20} />
+          <div className="tf__dialog__flex-row">
+            <div className="tf__dialog__flex-row-half-width">
+              <SectionContainer>
+                <Typography variant="h4">Principals</Typography>
+                <Spacer size={14} />
+                <Typography variant="body-text">est. {estimatedTokensFormatted} Principals</Typography>
+              </SectionContainer>
             </div>
-            <div className="tf__dialog__tab__action-container-grid__centre-middle element5">
-              <div className="add-icon-container2">
-                <AddIcon />
-              </div>
+            <PlusIconContainer orientation="vertical" />
+            <div className="tf__dialog__flex-row-half-width">
+              <SectionContainer>
+                <Typography variant="h4">Yields</Typography>
+                <Spacer size={14} />
+                <Typography variant="body-text">est. {estimatedTokensFormatted} Yields</Typography>
+              </SectionContainer>
             </div>
-            <div className="tf__dialog__tab__action-container-grid__centre-right tf__dialog__tab__action-container__tokens-returned element4">
-              <div className="tf__tokens-returned__name">
-                <div className="tf__tokens-returned__ticker">
-                  <span>Yields</span>
-                  <span className="tf__tokens-returned__description">Yield Share</span>
-                </div>
-              </div>
-              <div className="tf__tokens-returned__data">{new Intl.NumberFormat().format(tysValue)}</div>
-            </div>
-          </ActionContainerGrid>
+          </div>
         </ActionContainer>
-        <Execute onApprove={() => null} onExecute={() => null} />
+        <Execute
+          onApprove={onApprove}
+          approveDisabled={
+            !selectedToken || !amount || (!approvedAllowance && approvedAllowance !== 0) || amount < approvedAllowance
+          }
+          onExecute={onExecute}
+          executeDisabled={
+            !selectedToken || !amount || (!approvedAllowance && approvedAllowance !== 0) || amount > approvedAllowance
+          }
+        />
       </div>
     </div>
   );
