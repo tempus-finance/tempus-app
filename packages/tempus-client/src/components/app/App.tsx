@@ -4,6 +4,7 @@ import { Context, defaultContextValue } from '../../context';
 import Header, { HeaderLinks } from '../header/header';
 import DashboardManager from '../dashboard/dashboard-manager';
 import Analytics from '../analytics/analytics';
+import NotificationContainer from '../notification';
 
 import './App.scss';
 
@@ -24,6 +25,7 @@ const App: FC = (): JSX.Element => {
   return (
     <Context.Provider value={{ data: contextData, setData: setContextData }}>
       <div className="tf__app__container">
+        <NotificationContainer />
         <Header onLogoClick={showDashboardHandler} onAnalyticsClick={showAnalyticsHandler} />
         {activePage === 'Dashboard' && <DashboardManager selectedRow={selectedRow} onRowSelected={setSelectedRow} />}
         {activePage === 'Analytics' && <Analytics />}

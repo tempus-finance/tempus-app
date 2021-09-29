@@ -22,7 +22,9 @@ describe('WalletConnect', () => {
   });
 
   test(`calls "activate" method when click on "${CONNECT_WALLET}"`, () => {
-    const mockActivate = jest.fn();
+    const mockActivate = jest.fn().mockImplementation(() => ({
+      then: jest.fn().mockImplementation(() => ({ catch: jest.fn() })),
+    }));
 
     useWeb3React.mockImplementation(() => ({
       account: undefined,
