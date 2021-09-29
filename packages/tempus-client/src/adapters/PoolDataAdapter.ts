@@ -550,4 +550,45 @@ export default class PoolDataAdapter {
       return Promise.reject(error);
     }
   }
+
+  async getBackingTokenRate(ticker: string) {
+    if (!this.statisticService) {
+      console.error(
+        'PoolDataAdapter - getBackingTokenRate() - Attempted to use PoolDataAdapter before initializing it!',
+      );
+      return Promise.reject();
+    }
+
+    try {
+      return await this.statisticService.getRate(ticker);
+    } catch (error) {
+      console.error('PoolDataAdapter - getBackingTokenRate() - Failed to get backing token rate!', error);
+      return Promise.reject(error);
+    }
+  }
+
+  async getYieldBearingTokenRate(tempusPool: string, backingTokenTicker: Ticker) {
+    if (!this.statisticService || !this.tempusPoolService) {
+      console.error(
+        'PoolDataAdapter - getYieldBearingTokenRate() - Attempted to use PoolDataAdapter before initializing it!',
+      );
+      return Promise.reject();
+    }
+
+    const yieldTokenAmount = ethers.utils.parseEther('1');
+    try {
+      const interestRate = await this.tempusPoolService.currentInterestRate(tempusPool);
+      const yieldBearingTokenConversionRate = await this.tempusPoolService.numAssetsPerYieldToken(
+        tempusPool,
+        yieldTokenAmount,
+        interestRate,
+      );
+      const backingTokenRate = await this.statisticService.getRate(backingTokenTicker);
+
+      return mul18f(yieldBearingTokenConversionRate, backingTokenRate);
+    } catch (error) {
+      console.error('PoolDataAdapter - getBackingTokenRate() - Failed to get backing token rate!', error);
+      return Promise.reject(error);
+    }
+  }
 }

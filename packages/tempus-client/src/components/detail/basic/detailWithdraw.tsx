@@ -4,6 +4,7 @@ import { Button } from '@material-ui/core';
 import { Ticker } from '../../../interfaces/Token';
 import NumberUtils from '../../../services/NumberUtils';
 import { mul18f } from '../../../utils/wei-math';
+import getConfig from '../../../utils/get-config';
 import Typography from '../../typography/Typography';
 import Spacer from '../../spacer/spacer';
 import TokenSelector from '../../tokenSelector';
@@ -15,72 +16,42 @@ import ApproveButton from '../shared/approveButton';
 
 import '../shared/style.scss';
 
-const DetailWithdraw: FC<PoolDetailProps> = ({
-  selectedTab,
-  tempusPool,
-  content,
-  signer,
-  userWalletAddress,
-  poolDataAdapter,
-}) => {
+const DetailWithdraw: FC<PoolDetailProps> = ({ tempusPool, content, signer, userWalletAddress, poolDataAdapter }) => {
   const { address, ammAddress } = tempusPool;
   const { supportedTokens } = content;
   const [backingToken, yieldBearingToken] = supportedTokens;
 
-  const [selectedToken, setSelectedToken] = useState<string>(yieldBearingToken);
-  const [withdrawAmount, setWithdrawAmount] = useState<BigNumber | null>(null);
-  const [usdRate, setUsdRate] = useState<BigNumber | null>(null);
+  const [selectedToken, setSelectedToken] = useState<Ticker>(yieldBearingToken);
+  const [estimatedWithdrawAmount, setEstimatedWithdrawAmount] = useState<BigNumber | null>(null);
 
   const [principalsBalance, setPrincipalsBalance] = useState<BigNumber | null>(null);
   const [yieldsBalance, setYieldsBalance] = useState<BigNumber | null>(null);
   const [lpBalance, setLpBalance] = useState<BigNumber | null>(null);
 
-  const [backingTokenRate, setBackingTokenRate] = useState<BigNumber | null>(null);
-  const [yieldBearingTokenRate, setYieldBearingTokenRate] = useState<BigNumber | null>(null);
-
-  const [principalsBalanceFormatted, setPrincipalsBalanceFormatted] = useState<string>('');
-  const [yieldsBalanceFormatted, setYieldsBalanceFormatted] = useState<string>('');
-  const [lpBalanceFormatted, setLpBalanceFormatted] = useState<string>('');
-  const [withdrawAmountFormatted, setWithdrawAmountFormatted] = useState<string>('');
-  const [withdrawAmountUsdFormatted, setWithdrawAmountUsdFormatted] = useState<string>('');
+  const [tokenRate, setTokenRate] = useState<BigNumber | null>(null);
 
   const [principalsApproved, setPrincipalsApproved] = useState<boolean>(false);
   const [yieldsApproved, setYieldsApproved] = useState<boolean>(false);
   const [lpApproved, setLpApproved] = useState<boolean>(false);
 
-  const onTokenChange = useCallback(
-    (token: string | undefined) => {
-      if (!!token) {
-        setSelectedToken(token);
-
-        if (backingToken === token) {
-          if (backingTokenRate !== null) {
-            setUsdRate(backingTokenRate);
-          }
-        }
-
-        if (backingToken !== token) {
-          if (yieldBearingTokenRate !== null) {
-            setUsdRate(yieldBearingTokenRate);
-          }
-        }
-      }
-    },
-    [backingToken, backingTokenRate, yieldBearingTokenRate, setSelectedToken, setUsdRate],
-  );
+  const onTokenChange = useCallback((token: Ticker | undefined) => {
+    if (token) {
+      setSelectedToken(token);
+    }
+  }, []);
 
   const onExecute = useCallback(() => {
     const execute = async () => {
       if (signer && poolDataAdapter) {
         try {
           const isBackingToken = backingToken === selectedToken;
+
           const depositTransaction = await poolDataAdapter.executeWithdraw(ammAddress, isBackingToken);
           if (depositTransaction) {
             await depositTransaction.wait();
           }
-        } catch (err) {
-          // TODO handle errors
-          console.log('onExecute err', err);
+        } catch (error) {
+          console.log('DetailWithdraw - onExecute() - Failed to execute the transaction!', error);
         }
       }
     };
@@ -88,63 +59,47 @@ const DetailWithdraw: FC<PoolDetailProps> = ({
     execute();
   }, [signer, ammAddress, backingToken, selectedToken, poolDataAdapter]);
 
-  useMemo(() => {
-    if (!principalsBalance || !yieldsBalance || !lpBalance || !withdrawAmount || !usdRate) {
-      return;
-    }
+  // Update token rate when selected token changes
+  useEffect(() => {
+    const getRate = async () => {
+      if (!poolDataAdapter) {
+        return;
+      }
 
-    setPrincipalsBalanceFormatted(NumberUtils.formatWithMultiplier(ethers.utils.formatEther(principalsBalance)));
-    setYieldsBalanceFormatted(NumberUtils.formatWithMultiplier(ethers.utils.formatEther(yieldsBalance)));
-    setLpBalanceFormatted(NumberUtils.formatWithMultiplier(ethers.utils.formatEther(lpBalance)));
-    setWithdrawAmountFormatted(NumberUtils.formatWithMultiplier(ethers.utils.formatEther(withdrawAmount)));
-    setWithdrawAmountUsdFormatted(
-      NumberUtils.formatWithMultiplier(ethers.utils.formatEther(mul18f(withdrawAmount, usdRate))),
-    );
-  }, [principalsBalance, yieldsBalance, lpBalance, withdrawAmount, usdRate]);
+      if (selectedToken === backingToken) {
+        setTokenRate(await poolDataAdapter.getBackingTokenRate(backingToken));
+      }
+      if (selectedToken === yieldBearingToken) {
+        setTokenRate(await poolDataAdapter.getYieldBearingTokenRate(tempusPool.address, backingToken));
+      }
+    };
+    getRate();
+  }, [backingToken, poolDataAdapter, selectedToken, tempusPool.address, yieldBearingToken]);
 
+  // Fetch token balances when component mounts
   useEffect(() => {
     const retrieveBalances = async () => {
       if (signer && address && ammAddress && poolDataAdapter) {
         try {
-          const {
-            backingTokenRate,
-            yieldBearingTokenRate,
-            principalsTokenBalance,
-            yieldsTokenBalance,
-            lpTokensBalance,
-          } = (await poolDataAdapter.retrieveBalances(address, ammAddress, userWalletAddress, signer)) || {};
+          const { principalsTokenBalance, yieldsTokenBalance, lpTokensBalance } =
+            (await poolDataAdapter.retrieveBalances(address, ammAddress, userWalletAddress, signer)) || {};
 
-          setBackingTokenRate(backingTokenRate);
-          setYieldBearingTokenRate(yieldBearingTokenRate);
           setPrincipalsBalance(principalsTokenBalance);
           setYieldsBalance(yieldsTokenBalance);
           setLpBalance(lpTokensBalance);
-        } catch (err) {
-          // TODO handle errors
-          console.log('err', err);
+        } catch (error) {
+          console.log('DetailWithdraw - retrieveBalances() - Failed to retrieve pool balances!', error);
         }
       }
     };
 
     retrieveBalances();
-  }, [
-    signer,
-    address,
-    ammAddress,
-    backingToken,
-    selectedToken,
-    userWalletAddress,
-    poolDataAdapter,
-    setBackingTokenRate,
-    setYieldBearingTokenRate,
-    setPrincipalsBalance,
-    setYieldsBalance,
-    setLpBalance,
-  ]);
+  }, [signer, address, ammAddress, userWalletAddress, poolDataAdapter]);
 
+  // Fetch estimated withdraw amount of tokens
   useEffect(() => {
-    const retrieveWithdrawAmount = async () => {
-      if (selectedToken && ammAddress && poolDataAdapter && principalsBalance && yieldsBalance && lpBalance) {
+    const retrieveEstimatedWithdrawAmount = async () => {
+      if (poolDataAdapter && principalsBalance && yieldsBalance && lpBalance) {
         try {
           const isBackingToken = backingToken === selectedToken;
 
@@ -155,28 +110,54 @@ const DetailWithdraw: FC<PoolDetailProps> = ({
             lpBalance,
             isBackingToken,
           );
-          setWithdrawAmount(amount);
+          setEstimatedWithdrawAmount(amount);
         } catch (error) {
-          console.log('DetailWithdraw - retrieveWithdrawAmount() -', error);
+          console.log('DetailWithdraw - retrieveWithdrawAmount() - Failed to fetch estimated withdraw amount!', error);
           return Promise.reject(error);
         }
       }
     };
 
-    retrieveWithdrawAmount();
-  }, [
-    ammAddress,
-    selectedToken,
-    backingToken,
-    principalsBalance,
-    yieldsBalance,
-    lpBalance,
-    poolDataAdapter,
-    setWithdrawAmount,
-  ]);
+    retrieveEstimatedWithdrawAmount();
+  }, [ammAddress, selectedToken, backingToken, principalsBalance, yieldsBalance, lpBalance, poolDataAdapter]);
+
+  const principalsBalanceFormatted = useMemo(() => {
+    if (!principalsBalance) {
+      return null;
+    }
+    return NumberUtils.formatWithMultiplier(ethers.utils.formatEther(principalsBalance), 3);
+  }, [principalsBalance]);
+
+  const yieldsBalanceFormatted = useMemo(() => {
+    if (!yieldsBalance) {
+      return null;
+    }
+    return NumberUtils.formatWithMultiplier(ethers.utils.formatEther(yieldsBalance), 3);
+  }, [yieldsBalance]);
+
+  const lpBalanceFormatted = useMemo(() => {
+    if (!lpBalance) {
+      return null;
+    }
+    return NumberUtils.formatWithMultiplier(ethers.utils.formatEther(lpBalance), 3);
+  }, [lpBalance]);
+
+  const estimatedWithdrawAmountFormatted = useMemo(() => {
+    if (!estimatedWithdrawAmount) {
+      return null;
+    }
+    return NumberUtils.formatWithMultiplier(ethers.utils.formatEther(estimatedWithdrawAmount), 3);
+  }, [estimatedWithdrawAmount]);
+
+  const estimatedWithdrawAmountUsdFormatted = useMemo(() => {
+    if (!estimatedWithdrawAmount || !tokenRate) {
+      return null;
+    }
+    return NumberUtils.formatWithMultiplier(ethers.utils.formatEther(mul18f(estimatedWithdrawAmount, tokenRate)), 3);
+  }, [estimatedWithdrawAmount, tokenRate]);
 
   return (
-    <div role="tabpanel" hidden={selectedTab !== 1}>
+    <div role="tabpanel">
       <div className="tf__dialog__content-tab">
         <Spacer size={20} />
         <Typography variant="body-text">
@@ -199,6 +180,7 @@ const DetailWithdraw: FC<PoolDetailProps> = ({
                   signer={signer}
                   amountToApprove={principalsBalance || BigNumber.from('0')}
                   tokenToApprove={content.principalTokenAddress}
+                  spenderAddress={getConfig().tempusControllerContract}
                   approved={principalsApproved}
                   onApproved={() => {
                     setPrincipalsApproved(true);
@@ -221,6 +203,7 @@ const DetailWithdraw: FC<PoolDetailProps> = ({
                   signer={signer}
                   amountToApprove={yieldsBalance || BigNumber.from('0')}
                   tokenToApprove={content.yieldTokenAddress}
+                  spenderAddress={getConfig().tempusControllerContract}
                   approved={yieldsApproved}
                   onApproved={() => {
                     setYieldsApproved(true);
@@ -244,6 +227,7 @@ const DetailWithdraw: FC<PoolDetailProps> = ({
                   amountToApprove={lpBalance || BigNumber.from('0')}
                   // TempusAMM address is used as LP token address
                   tokenToApprove={tempusPool.ammAddress}
+                  spenderAddress={getConfig().tempusControllerContract}
                   approved={lpApproved}
                   onApproved={() => {
                     setLpApproved(true);
@@ -269,9 +253,9 @@ const DetailWithdraw: FC<PoolDetailProps> = ({
               </div>
               <div className="tf__flex-column-center-end">
                 <Typography variant="h5">
-                  Estimate: {withdrawAmountFormatted} {selectedToken}
+                  Estimate: {estimatedWithdrawAmountFormatted} {selectedToken}
                 </Typography>
-                <Typography variant="disclaimer-text">~${withdrawAmountUsdFormatted}</Typography>
+                <Typography variant="disclaimer-text">~${estimatedWithdrawAmountUsdFormatted}</Typography>
               </div>
             </div>
           </SectionContainer>

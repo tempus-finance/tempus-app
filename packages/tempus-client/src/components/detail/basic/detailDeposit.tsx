@@ -16,14 +16,7 @@ import '../shared/style.scss';
 
 type SelectedYield = 'fixed' | 'variable';
 
-const DetailDeposit: FC<PoolDetailProps> = ({
-  selectedTab,
-  tempusPool,
-  content,
-  signer,
-  userWalletAddress,
-  poolDataAdapter,
-}) => {
+const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userWalletAddress, poolDataAdapter }) => {
   const { address, ammAddress } = tempusPool || {};
   const { supportedTokens = [], fixedAPR = 0, variableAPY = 0 } = content || {};
   const [triggerUpdateBalance, setTriggerUpdateBalance] = useState<boolean>(true);
@@ -364,7 +357,7 @@ const DetailDeposit: FC<PoolDetailProps> = ({
   }, [amount, selectedToken, backingToken, address, ammAddress, poolDataAdapter, setEstimatedFixedApr]);
 
   return (
-    <div role="tabpanel" hidden={selectedTab !== 0}>
+    <div role="tabpanel">
       <div className="tf__dialog__content-tab">
         <Spacer size={25} />
         <ActionContainer label="From">

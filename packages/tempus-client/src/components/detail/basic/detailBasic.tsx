@@ -54,22 +54,24 @@ const DetailBasic: FC<DetailBasicProps> = ({
           }
         />
       </Tabs>
-      <DetailDeposit
-        selectedTab={tab}
-        content={content}
-        tempusPool={tempusPool}
-        signer={signer}
-        userWalletAddress={userWalletAddress}
-        poolDataAdapter={poolDataAdapter}
-      />
-      <DetailWithdraw
-        selectedTab={tab}
-        content={content}
-        tempusPool={tempusPool}
-        signer={signer}
-        userWalletAddress={userWalletAddress}
-        poolDataAdapter={poolDataAdapter}
-      />
+      {tab === 0 && (
+        <DetailDeposit
+          content={content}
+          tempusPool={tempusPool}
+          signer={signer}
+          userWalletAddress={userWalletAddress}
+          poolDataAdapter={poolDataAdapter}
+        />
+      )}
+      {tab === 1 && (
+        <DetailWithdraw
+          content={content}
+          tempusPool={tempusPool}
+          signer={signer}
+          userWalletAddress={userWalletAddress}
+          poolDataAdapter={poolDataAdapter}
+        />
+      )}
     </>
   );
 };

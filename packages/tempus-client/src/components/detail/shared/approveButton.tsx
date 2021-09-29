@@ -9,13 +9,14 @@ interface ApproveButtonProps {
   poolDataAdapter: PoolDataAdapter | null;
   signer: JsonRpcSigner | null;
   tokenToApprove: string;
+  spenderAddress: string;
   amountToApprove: BigNumber;
   approved: boolean;
   onApproved: () => void;
 }
 
 const ApproveButton: FC<ApproveButtonProps> = props => {
-  const { signer, poolDataAdapter, tokenToApprove, amountToApprove, approved, onApproved } = props;
+  const { signer, poolDataAdapter, tokenToApprove, spenderAddress, amountToApprove, approved, onApproved } = props;
 
   const [approving, setApproving] = useState<boolean>(false);
 
@@ -23,7 +24,12 @@ const ApproveButton: FC<ApproveButtonProps> = props => {
     const approve = async () => {
       if (signer && poolDataAdapter) {
         try {
-          const approveTransaction = await poolDataAdapter.approveToken(tokenToApprove, amountToApprove, signer);
+          const approveTransaction = await poolDataAdapter.approveToken(
+            tokenToApprove,
+            spenderAddress,
+            amountToApprove,
+            signer,
+          );
           if (approveTransaction) {
             await approveTransaction.wait();
             onApproved();
@@ -37,7 +43,7 @@ const ApproveButton: FC<ApproveButtonProps> = props => {
     approve();
 
     setApproving(true);
-  }, [onApproved, tokenToApprove, signer, poolDataAdapter, amountToApprove]);
+  }, [onApproved, tokenToApprove, signer, poolDataAdapter, amountToApprove, spenderAddress]);
 
   return (
     <>

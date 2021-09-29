@@ -5,4 +5,5 @@ export type TempusPool = {
   ammAddress: string;
   backingToken: Ticker;
   spotPrice: string;
+  maxLeftoverShares: string;
 };
