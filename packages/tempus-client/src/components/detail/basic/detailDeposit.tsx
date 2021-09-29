@@ -1,11 +1,13 @@
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { utils, BigNumber } from 'ethers';
+import { format } from 'date-fns';
 import Button from '@material-ui/core/Button';
 import NumberUtils from '../../../services/NumberUtils';
-import { Ticker } from '../../../interfaces';
+import { ProtocolName, Ticker } from '../../../interfaces';
 import CurrencyInput from '../../currencyInput';
 import TokenSelector from '../../tokenSelector';
 import Typography from '../../typography/Typography';
+import getNotificationService from '../../../services/getNotificationService';
 import Spacer from '../../spacer/spacer';
 import ActionContainer from '../shared/actionContainer';
 import Execute from '../shared/execute';
@@ -16,9 +18,10 @@ import '../shared/style.scss';
 
 type SelectedYield = 'fixed' | 'variable';
 
+// TODO Component is too big, we may need to break it up
 const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userWalletAddress, poolDataAdapter }) => {
   const { address, ammAddress } = tempusPool || {};
-  const { supportedTokens = [], fixedAPR = 0, variableAPY = 0 } = content || {};
+  const { supportedTokens = [], fixedAPR = 0, variableAPY = 0, protocol, maturityDate } = content || {};
   const [triggerUpdateBalance, setTriggerUpdateBalance] = useState<boolean>(true);
   const [backingToken] = supportedTokens;
 
@@ -151,6 +154,15 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
             isEthDeposit,
           );
           await depositTransaction?.wait();
+          // TODO
+          // how to get transaction address for Etherscan?
+          const link = 'someEtherscanLink';
+          getNotificationService().notify(
+            'Deposit Successful',
+            getSuccessfulNotification(selectedYield, backingToken, protocol, maturityDate),
+            link,
+            'View on Etherscan',
+          );
           setExecuteDisabled(false);
           setTriggerUpdateBalance(true);
           setAmount(0);
@@ -168,6 +180,9 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
     ammAddress,
     backingToken,
     selectedToken,
+    protocol,
+    maturityDate,
+    selectedYield,
     amount,
     minTYSRate,
     poolDataAdapter,
@@ -463,3 +478,14 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
 };
 
 export default DetailDeposit;
+
+const getSuccessfulNotification = (
+  selectedYield: string,
+  backingToken: Ticker,
+  protocol: ProtocolName,
+  maturityDate: Date,
+): string => {
+  return `${selectedYield} Yield
+    ${backingToken} via ${protocol}
+    ${format(maturityDate, 'dd MMMM yyyy')}`;
+};
