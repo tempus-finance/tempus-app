@@ -1,5 +1,5 @@
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
-import { ethers, BigNumber } from 'ethers';
+import { utils, BigNumber } from 'ethers';
 import Button from '@material-ui/core/Button';
 import NumberUtils from '../../../services/NumberUtils';
 import { Ticker } from '../../../interfaces';
@@ -46,8 +46,6 @@ const DetailDeposit: FC<PoolDetailProps> = ({
   const [selectedYield, setSelectedYield] = useState<SelectedYield>('fixed');
   const [backingTokenRate, setBackingTokenRate] = useState<BigNumber | null>(null);
   const [yieldBearingTokenRate, setYieldBearingTokenRate] = useState<BigNumber | null>(null);
-
-  const [balanceFormatted, setBalanceFormatted] = useState<string>('');
 
   const [approveDisabled, setApproveDisabled] = useState<boolean>(false);
   const [executeDisabled, setExecuteDisabled] = useState<boolean>(true);
@@ -106,7 +104,7 @@ const DetailDeposit: FC<PoolDetailProps> = ({
     (event: any) => {
       const percentage = event.currentTarget.value;
       if (!!selectedToken && !!balance && !isNaN(percentage)) {
-        const balanceAsNumber = Number(ethers.utils.formatEther(balance));
+        const balanceAsNumber = Number(utils.formatEther(balance));
         setAmount(balanceAsNumber * percentage);
       }
     },
@@ -148,9 +146,9 @@ const DetailDeposit: FC<PoolDetailProps> = ({
       if (signer && amount && poolDataAdapter) {
         try {
           const parsedAmount = amount.toString();
-          const tokenAmount = ethers.utils.parseEther(parsedAmount);
+          const tokenAmount = utils.parseEther(parsedAmount);
           const isBackingToken = backingToken === selectedToken;
-          const parsedMinTYSRate = ethers.utils.parseEther(minTYSRate.toString());
+          const parsedMinTYSRate = utils.parseEther(minTYSRate.toString());
           const isEthDeposit = selectedToken === 'ETH';
           const depositTransaction = await poolDataAdapter.executeDeposit(
             ammAddress,
@@ -184,14 +182,6 @@ const DetailDeposit: FC<PoolDetailProps> = ({
     setTriggerUpdateBalance,
     setAmount,
   ]);
-
-  useMemo(() => {
-    if (!balance || !amount) {
-      return;
-    }
-
-    setBalanceFormatted(NumberUtils.formatWithMultiplier(ethers.utils.formatEther(balance)));
-  }, [balance, amount]);
 
   useEffect(() => {
     const retrieveBalances = async () => {
@@ -259,7 +249,7 @@ const DetailDeposit: FC<PoolDetailProps> = ({
           const { fixedDeposit, variableDeposit } =
             (await poolDataAdapter.getEstimatedDepositAmount(
               ammAddress,
-              ethers.utils.parseEther(amount.toString()),
+              utils.parseEther(amount.toString()),
               isBackingToken,
             )) || {};
 
@@ -324,29 +314,37 @@ const DetailDeposit: FC<PoolDetailProps> = ({
     if (!fixedPrincipalsAmount) {
       return null;
     }
-    return NumberUtils.formatWithMultiplier(ethers.utils.formatEther(fixedPrincipalsAmount), 2);
+    return NumberUtils.formatWithMultiplier(utils.formatEther(fixedPrincipalsAmount), 2);
   }, [fixedPrincipalsAmount]);
 
   const variablePrincipalsAmountFormatted = useMemo(() => {
     if (!variablePrincipalsAmount) {
       return null;
     }
-    return NumberUtils.formatWithMultiplier(ethers.utils.formatEther(variablePrincipalsAmount), 2);
+    return NumberUtils.formatWithMultiplier(utils.formatEther(variablePrincipalsAmount), 2);
   }, [variablePrincipalsAmount]);
 
   const variableLpTokensAmountFormatted = useMemo(() => {
     if (!variableLpTokensAmount) {
       return null;
     }
-    return NumberUtils.formatWithMultiplier(ethers.utils.formatEther(variableLpTokensAmount), 2);
+    return NumberUtils.formatWithMultiplier(utils.formatEther(variableLpTokensAmount), 2);
   }, [variableLpTokensAmount]);
+
+  const balanceFormatted = useMemo(() => {
+    if (!balance || !amount) {
+      return null;
+    }
+
+    return NumberUtils.formatWithMultiplier(utils.formatEther(balance), 2);
+  }, [balance, amount]);
 
   useEffect(() => {
     const getEstimatedFixedApr = async () => {
       if (amount && selectedToken) {
         const isBackingToken = selectedToken === backingToken;
         const result = await poolDataAdapter?.getEstimatedFixedApr(
-          ethers.utils.parseEther(amount.toString()),
+          utils.parseEther(amount.toString()),
           isBackingToken,
           address,
           ammAddress,
@@ -425,7 +423,7 @@ const DetailDeposit: FC<PoolDetailProps> = ({
                   <Typography variant="h3" color="accent">
                     est.{' '}
                     {estimatedFixedApr
-                      ? NumberUtils.formatPercentage(ethers.utils.formatEther(estimatedFixedApr))
+                      ? NumberUtils.formatPercentage(utils.formatEther(estimatedFixedApr))
                       : NumberUtils.formatPercentage(fixedAPR, 2)}
                   </Typography>
                 </div>
