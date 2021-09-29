@@ -251,7 +251,7 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
           }
 
           if (variableDeposit) {
-            const [variablePrincipals, , variableLpTokens] = variableDeposit;
+            const [variableLpTokens, variablePrincipals] = variableDeposit;
             if (variablePrincipals !== null) {
               setVariablePrincipalsAmount(variablePrincipals);
             }
