@@ -205,6 +205,20 @@ const DetailMint: FC<DetailMintProps> = props => {
     return NumberUtils.formatWithMultiplier(ethers.utils.formatEther(estimatedTokens), 4);
   }, [estimatedTokens]);
 
+  const approveDisabled = useMemo(() => {
+    const alreadyApproved = !!approvedAllowance && amount < approvedAllowance;
+    const amountHigherThenBalance = !!balance && ethers.utils.parseEther(amount.toString()).gt(balance);
+
+    return !selectedToken || alreadyApproved || amountHigherThenBalance;
+  }, [selectedToken, balance, amount, approvedAllowance]);
+
+  const executeDisabled = useMemo(() => {
+    const tokensApproved = !!approvedAllowance && amount < approvedAllowance;
+    const amountHigherThenBalance = !!balance && ethers.utils.parseEther(amount.toString()).gt(balance);
+
+    return !selectedToken || !amount || !tokensApproved || amountHigherThenBalance;
+  }, [amount, approvedAllowance, balance, selectedToken]);
+
   return (
     <div role="tabpanel">
       <div className="tf__dialog__content-tab">
@@ -269,18 +283,9 @@ const DetailMint: FC<DetailMintProps> = props => {
         </ActionContainer>
         <Execute
           onApprove={onApprove}
-          approveDisabled={
-            !selectedToken ||
-            !amount ||
-            (!approvedAllowance && approvedAllowance !== 0) ||
-            amount < approvedAllowance ||
-            !balance ||
-            ethers.utils.parseEther(amount.toString()).gt(balance)
-          }
+          approveDisabled={approveDisabled}
           onExecute={onExecute}
-          executeDisabled={
-            !selectedToken || !amount || (!approvedAllowance && approvedAllowance !== 0) || amount > approvedAllowance
-          }
+          executeDisabled={executeDisabled}
         />
       </div>
     </div>
