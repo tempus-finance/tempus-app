@@ -593,6 +593,22 @@ export default class PoolDataAdapter {
     }
   }
 
+  async estimatedMintedShares(tempusPool: string, amount: BigNumber, isBackingToken: boolean): Promise<BigNumber> {
+    if (!this.statisticService) {
+      console.error(
+        'PoolDataAdapter - estimatedMintedShares() - Attempted to use PoolDataAdapter before initializing it!',
+      );
+      return Promise.reject();
+    }
+
+    try {
+      return await this.statisticService.estimatedMintedShares(tempusPool, amount, isBackingToken);
+    } catch (error) {
+      console.error('PoolDataAdapter - estimatedMintedShares() - Failed to fetch estimated minted shares!', error);
+      return Promise.reject(error);
+    }
+  }
+
   async getYieldBearingTokenRate(tempusPool: string, backingTokenTicker: Ticker) {
     if (!this.statisticService || !this.tempusPoolService) {
       console.error(
@@ -614,6 +630,30 @@ export default class PoolDataAdapter {
       return mul18f(yieldBearingTokenConversionRate, backingTokenRate);
     } catch (error) {
       console.error('PoolDataAdapter - getBackingTokenRate() - Failed to get backing token rate!', error);
+      return Promise.reject(error);
+    }
+  }
+
+  async deposit(
+    tempusPool: string,
+    amount: BigNumber,
+    recipient: string,
+    isBackingToken: boolean,
+    isEthDeposit?: boolean,
+  ): Promise<ContractTransaction> {
+    if (!this.tempusControllerService) {
+      console.error('PoolDataAdapter - deposit() - Attempted to use PoolDataAdapter before initializing it!');
+      return Promise.reject();
+    }
+
+    try {
+      if (isBackingToken) {
+        return this.tempusControllerService.depositBacking(tempusPool, amount, recipient, isEthDeposit);
+      } else {
+        return this.tempusControllerService.depositYieldBearing(tempusPool, amount, recipient);
+      }
+    } catch (error) {
+      console.error('PoolDataAdapter - deposit() - Failed to make a deposit!', error);
       return Promise.reject(error);
     }
   }

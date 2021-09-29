@@ -136,6 +136,49 @@ class TempusControllerService {
       return Promise.reject(error);
     }
   }
+
+  async depositYieldBearing(tempusPool: string, amount: BigNumber, recipient: string): Promise<ContractTransaction> {
+    if (!this.contract) {
+      console.error(
+        'TempusControllerService - depositYieldBearing() - Attempted to use TempusControllerService before initializing it!',
+      );
+      return Promise.reject();
+    }
+
+    try {
+      return await this.contract.depositYieldBearing(tempusPool, amount, recipient);
+    } catch (error) {
+      console.error('TempusControllerService - depositYieldBearing() - Failed to deposit yield bearing token!', error);
+      return Promise.reject(error);
+    }
+  }
+
+  async depositBacking(
+    tempusPool: string,
+    amount: BigNumber,
+    recipient: string,
+    isEthDeposit?: boolean,
+  ): Promise<ContractTransaction> {
+    if (!this.contract) {
+      console.error(
+        'TempusControllerService - depositBacking() - Attempted to use TempusControllerService before initializing it!',
+      );
+      return Promise.reject();
+    }
+
+    try {
+      if (isEthDeposit) {
+        return await this.contract.depositBacking(tempusPool, amount, recipient, {
+          value: amount,
+        });
+      } else {
+        return await this.contract.depositBacking(tempusPool, amount, recipient);
+      }
+    } catch (error) {
+      console.error('TempusControllerService - depositBacking() - Failed to deposit backing token!', error);
+      return Promise.reject(error);
+    }
+  }
 }
 
 export default TempusControllerService;

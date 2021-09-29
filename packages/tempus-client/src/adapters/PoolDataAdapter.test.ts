@@ -66,6 +66,7 @@ describe('PoolDataAdapter', () => {
         numAssetsPerYieldToken: jest.fn().mockResolvedValue(ethers.utils.parseEther('1')),
         getStartTime: jest.fn().mockResolvedValue(new Date('2022-03-01')),
         getMaturityTime: jest.fn().mockResolvedValue(new Date('2022-04-01')),
+        currentInterestRate: jest.fn().mockResolvedValue(ethers.utils.parseEther('1')),
       };
     });
 

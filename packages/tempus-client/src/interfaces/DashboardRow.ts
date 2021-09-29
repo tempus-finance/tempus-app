@@ -31,6 +31,8 @@ export interface DashboardRowChild extends DashboardRow {
   availableUSDToDeposit: AvailableToDeposit | undefined;
   principalTokenAddress: string;
   yieldTokenAddress: string;
+  backingTokenAddress: string;
+  yieldBearingTokenAddress: string;
 }
 
 export interface AvailableToDeposit {

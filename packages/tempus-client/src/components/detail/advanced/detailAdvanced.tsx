@@ -6,6 +6,7 @@ import { TempusPool } from '../../../interfaces/TempusPool';
 import PoolDataAdapter from '../../../adapters/PoolDataAdapter';
 import Typography from '../../typography/Typography';
 import DetailSwap from './detailSwap';
+import DetailMint from './detailMint';
 
 import '../shared/style.scss';
 
@@ -31,6 +32,14 @@ const DetailAdvanced: FC<DetailAdvancedProps> = (props: DetailAdvancedProps) => 
         <Tab
           label={
             <Typography color="default" variant="h3">
+              Mint
+            </Typography>
+          }
+          className="tf__tab"
+        />
+        <Tab
+          label={
+            <Typography color="default" variant="h3">
               Swap
             </Typography>
           }
@@ -39,6 +48,15 @@ const DetailAdvanced: FC<DetailAdvancedProps> = (props: DetailAdvancedProps) => 
       </Tabs>
 
       {tab === 0 && (
+        <DetailMint
+          content={content}
+          poolDataAdapter={poolDataAdapter}
+          signer={signer}
+          tempusPool={tempusPool}
+          userWalletAddress={userWalletAddress}
+        />
+      )}
+      {tab === 1 && (
         <DetailSwap
           content={content}
           userWalletAddress={userWalletAddress}

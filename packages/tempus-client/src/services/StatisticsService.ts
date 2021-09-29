@@ -163,6 +163,22 @@ class StatisticsService {
       return Promise.reject(error);
     }
   }
+
+  async estimatedMintedShares(tempusPool: string, amount: BigNumber, isBackingToken: boolean): Promise<BigNumber> {
+    if (!this.stats) {
+      console.error(
+        'StatisticsService - estimatedMintedShares() - Attempted to use statistics contract before initializing it!',
+      );
+      return Promise.reject();
+    }
+
+    try {
+      return await this.stats.estimatedMintedShares(tempusPool, amount, isBackingToken);
+    } catch (error) {
+      console.error('StatisticsService - estimatedMintedShares() - Failed to fetch estimated minted shares!', error);
+      return Promise.reject(error);
+    }
+  }
 }
 
 export default StatisticsService;
