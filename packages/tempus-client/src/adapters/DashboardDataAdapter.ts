@@ -100,9 +100,11 @@ export default class DashboardDataAdapter {
         this.getAvailableToDepositForPool(tempusPool),
       ]);
 
-      const [tvl, poolBackingTokenRate] = await Promise.all([
+      const [tvl, poolBackingTokenRate, backingTokenAddress, yieldBearingTokenAddress] = await Promise.all([
         this.statisticsService.totalValueLockedUSD(tempusPool.address, backingTokenTicker),
         this.statisticsService.getRate(backingTokenTicker),
+        this.tempusPoolService.getBackingTokenAddress(tempusPool.address),
+        this.tempusPoolService.getYieldBearingTokenAddress(tempusPool.address),
       ]);
 
       const availableToDepositInUSD = await this.getAvailableToDepositInUSD(
@@ -121,6 +123,8 @@ export default class DashboardDataAdapter {
         protocol,
         principalTokenAddress,
         yieldTokenAddress,
+        backingTokenAddress,
+        yieldBearingTokenAddress,
         startDate,
         maturityDate,
         fixedAPR,

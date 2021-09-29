@@ -74,7 +74,7 @@ class ERC20TokenService {
 
       return await this.contract.allowance(ownerAddress, spenderAddress);
     } catch (error) {
-      console.log('ERC20TokenService - getAllowance() - Getting allowance failed!', error);
+      console.error('ERC20TokenService - getAllowance() - Getting allowance failed!', error);
       return Promise.reject(error);
     }
   }
