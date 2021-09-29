@@ -1,13 +1,16 @@
-import { FC, useCallback, useState } from 'react';
+import { FC, useCallback, useEffect, useState } from 'react';
 import { BigNumber } from 'ethers';
 import { JsonRpcSigner } from '@ethersproject/providers';
 import { Button } from '@material-ui/core';
 import PoolDataAdapter from '../../../adapters/PoolDataAdapter';
 import Typography from '../../typography/Typography';
+import { TempusPool } from '../../../interfaces/TempusPool';
 
 interface ApproveButtonProps {
   poolDataAdapter: PoolDataAdapter | null;
   signer: JsonRpcSigner | null;
+  userWalletAddress: string;
+  tempusPool: TempusPool;
   tokenToApprove: string;
   spenderAddress: string;
   amountToApprove: BigNumber;
@@ -16,7 +19,17 @@ interface ApproveButtonProps {
 }
 
 const ApproveButton: FC<ApproveButtonProps> = props => {
-  const { signer, poolDataAdapter, tokenToApprove, spenderAddress, amountToApprove, approved, onApproved } = props;
+  const {
+    signer,
+    poolDataAdapter,
+    tokenToApprove,
+    spenderAddress,
+    userWalletAddress,
+    tempusPool,
+    amountToApprove,
+    approved,
+    onApproved,
+  } = props;
 
   const [approving, setApproving] = useState<boolean>(false);
 
@@ -44,6 +57,15 @@ const ApproveButton: FC<ApproveButtonProps> = props => {
 
     setApproving(true);
   }, [onApproved, tokenToApprove, signer, poolDataAdapter, amountToApprove, spenderAddress]);
+
+  // Fetch token allowance
+  useEffect(() => {
+    if (!poolDataAdapter) {
+      return;
+    }
+
+    poolDataAdapter.getApprovedAllowance(userWalletAddress, tempusPool.address);
+  }, []);
 
   return (
     <>
