@@ -50,7 +50,10 @@ describe('PoolDataAdapter', () => {
       }
     });
     const mockGetStatisticsService = jest.fn().mockImplementation(() => {
-      return { getRate: jest.fn().mockResolvedValue(ethers.utils.parseEther('0.5')) };
+      return {
+        getRate: jest.fn().mockResolvedValue(ethers.utils.parseEther('0.5')),
+        estimatedDepositAndFix: jest.fn().mockResolvedValue(ethers.utils.parseEther('123')),
+      };
     });
 
     const mockGetTempusPoolService = jest.fn().mockImplementation(() => {
@@ -61,6 +64,8 @@ describe('PoolDataAdapter', () => {
         getPrincipalsTokenAddress: jest.fn().mockResolvedValue('principals-token-address'),
         getYieldTokenAddress: jest.fn().mockResolvedValue('yields-token-address'),
         numAssetsPerYieldToken: jest.fn().mockResolvedValue(ethers.utils.parseEther('1')),
+        getStartTime: jest.fn().mockResolvedValue(new Date('2022-03-01')),
+        getMaturityTime: jest.fn().mockResolvedValue(new Date('2022-04-01')),
       };
     });
 
@@ -72,6 +77,8 @@ describe('PoolDataAdapter', () => {
       };
     });
 
+    const mockGetVaultService = jest.fn().mockReturnValue({});
+
     instance = new PoolDataAdapter();
     instance.init({
       eRC20TokenServiceGetter: mockGetERC20TokenService,
@@ -80,6 +87,7 @@ describe('PoolDataAdapter', () => {
       tempusControllerService: mockGetTempusControllerService(),
       tempusAMMService: mockTempusAMMService(),
       tempusPoolService: mockGetTempusPoolService(),
+      vaultService: mockGetVaultService(),
     });
   });
 
@@ -148,6 +156,22 @@ describe('PoolDataAdapter', () => {
       expect(allowance).toBeDefined();
       if (allowance) {
         expect(allowance).toBe(23400000);
+      }
+    });
+  });
+
+  describe('getEstimatedFixedApr()', () => {
+    test('returns an estimated fixed apr value', async () => {
+      const tokenAmount = ethers.BigNumber.from('100000');
+      const isBackingToken = true;
+      const tempusPoolAddress = 'abc';
+      const tempusAMMAddress = 'xyz';
+
+      const apr = await instance.getEstimatedFixedApr(tokenAmount, isBackingToken, tempusPoolAddress, tempusAMMAddress);
+
+      expect(apr).toBeDefined();
+      if (apr) {
+        expect(ethers.utils.formatEther(apr)).toBe('14482258064516116.305806451612904');
       }
     });
   });

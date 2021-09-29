@@ -10,7 +10,11 @@ import './availableToDepositFormatter.scss';
 const AvailableToDepositFormatter = (props: DataTypeProvider.ValueFormatterProps) => {
   const row = props.row as DashboardRow;
 
-  if (isParentRow(row) && row.availableUSDToDeposit) {
+  if (isParentRow(row)) {
+    if (!row.availableUSDToDeposit) {
+      return <Typography variant="body-text">-</Typography>;
+    }
+
     return (
       <div>{`$${NumberUtils.formatWithMultiplier(
         Number(ethers.utils.formatEther(row.availableUSDToDeposit)),
@@ -20,45 +24,41 @@ const AvailableToDepositFormatter = (props: DataTypeProvider.ValueFormatterProps
   }
 
   if (isChildRow(row)) {
+    if (!row.availableTokensToDeposit) {
+      return <Typography variant="body-text">-</Typography>;
+    }
+
     return (
       <div className="tf__dashboard__grid__avail-to-deposit-container">
         <div className="tf__dashboard__grid__avail-to-deposit-token-row">
-          {row.availableTokensToDeposit ? (
-            <>
-              <p>
-                {NumberUtils.formatWithMultiplier(
-                  Number(ethers.utils.formatEther(row.availableTokensToDeposit.backingToken)),
-                  2,
-                )}
-              </p>
-              <div className="tf__dashboard__grid__avail-to-deposit-token-ticker-container">
-                <Typography variant="body-text">{row.availableTokensToDeposit.backingTokenTicker}</Typography>
-                <Spacer size={5} />
-                <TokenIcon ticker={row.availableTokensToDeposit.backingTokenTicker} />
-              </div>
-            </>
-          ) : (
-            '-'
-          )}
+          <>
+            <p>
+              {NumberUtils.formatWithMultiplier(
+                Number(ethers.utils.formatEther(row.availableTokensToDeposit.backingToken)),
+                2,
+              )}
+            </p>
+            <div className="tf__dashboard__grid__avail-to-deposit-token-ticker-container">
+              <Typography variant="body-text">{row.availableTokensToDeposit.backingTokenTicker}</Typography>
+              <Spacer size={5} />
+              <TokenIcon ticker={row.availableTokensToDeposit.backingTokenTicker} />
+            </div>
+          </>
         </div>
         <div className="tf__dashboard__grid__avail-to-deposit-token-row">
-          {row.availableTokensToDeposit ? (
-            <>
-              <p>
-                {NumberUtils.formatWithMultiplier(
-                  Number(ethers.utils.formatEther(row.availableTokensToDeposit.yieldBearingToken)),
-                  2,
-                )}
-              </p>
-              <div className="tf__dashboard__grid__avail-to-deposit-token-ticker-container">
-                <Typography variant="body-text">{row.availableTokensToDeposit.yieldBearingTokenTicker}</Typography>
-                <Spacer size={5} />
-                <TokenIcon ticker={row.availableTokensToDeposit.yieldBearingTokenTicker} />
-              </div>
-            </>
-          ) : (
-            '-'
-          )}
+          <>
+            <p>
+              {NumberUtils.formatWithMultiplier(
+                Number(ethers.utils.formatEther(row.availableTokensToDeposit.yieldBearingToken)),
+                2,
+              )}
+            </p>
+            <div className="tf__dashboard__grid__avail-to-deposit-token-ticker-container">
+              <Typography variant="body-text">{row.availableTokensToDeposit.yieldBearingTokenTicker}</Typography>
+              <Spacer size={5} />
+              <TokenIcon ticker={row.availableTokensToDeposit.yieldBearingTokenTicker} />
+            </div>
+          </>
         </div>
       </div>
     );

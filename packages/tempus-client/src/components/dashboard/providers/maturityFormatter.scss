@@ -3,7 +3,7 @@
 .tf__dashboard__grid__maturity {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: flex-start;
 }
 
 .tf__dashboard__grid__maturity-range {
@@ -14,8 +14,8 @@
 .tf__dashboard__body__row-child {
   .tf__dashboard__grid__maturity {
     flex-direction: column;
-    justify-content: flex-end;
-    padding-left: 20px;
+    justify-content: flex-start;
+    max-width: 150px;
 
     .tf__dashboard__grid__maturity-timeLeft {
       display: flex;

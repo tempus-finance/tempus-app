@@ -80,9 +80,11 @@ const DetailUserInfoTransactions: FC<DetailUserInfoTransactionsProps> = props =>
             <Spacer size={3} />
 
             {/* Render all events for specific time section */}
-            {timeFrameTransactions.map(transaction => {
-              return <DetailUserInfoTransactionRow transaction={transaction} />;
-            })}
+            {timeFrameTransactions
+              .sort((a, b) => b.block.timestamp - a.block.timestamp)
+              .map(transaction => {
+                return <DetailUserInfoTransactionRow transaction={transaction} />;
+              })}
           </>
         );
       })}

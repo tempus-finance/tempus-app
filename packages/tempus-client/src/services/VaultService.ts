@@ -93,9 +93,9 @@ class VaultService {
     poolId: string,
     kind: SwapKind,
     fromAddress: string,
-    assetInAddress: string,
-    assetOutAddress: string,
-    amount: number,
+    assetIn: string,
+    assetOut: string,
+    amount: BigNumber,
   ): Promise<ethers.ContractTransaction> {
     if (!this.contract) {
       console.error('VaultService - swap() - Attempted to use VaultService before initializing it!');
@@ -106,11 +106,11 @@ class VaultService {
     const latestBlock = await provider.getBlock('latest');
 
     const singleSwap = {
-      poolId: poolId,
-      kind: kind,
-      assetIn: assetInAddress,
-      assetOut: assetOutAddress,
-      amount: ethers.utils.parseEther(amount.toString()),
+      poolId,
+      kind,
+      assetIn,
+      assetOut,
+      amount,
       userData: ethers.utils.formatBytes32String('0x0'),
     };
 

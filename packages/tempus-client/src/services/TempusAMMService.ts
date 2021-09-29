@@ -6,6 +6,7 @@ import { DAYS_IN_A_YEAR, SECONDS_IN_A_DAY } from '../constants';
 import { mul18f, div18f } from '../utils/wei-math';
 import TempusPoolService from './TempusPoolService';
 import VaultService from './VaultService';
+import getConfig from '../utils/get-config';
 
 interface TempusPoolAddressData {
   poolAddress: string;
@@ -95,12 +96,18 @@ class TempusAMMService {
 
     const service = this.tempusAMMMap.get(address);
     if (service) {
-      const SPOT_PRICE_AMOUNT = ethers.utils.parseEther('10000');
       const YIELD_TO_PRINCIPAL = true;
+
+      const tempusPool = getConfig().tempusPools.find(pool => pool.ammAddress === address);
+      if (!tempusPool) {
+        console.error('TempusAMMService - getExpectedReturnGivenIn() - Failed to get tempus pool data from AMM!');
+        return Promise.reject();
+      }
+      const spotPrice = ethers.utils.parseEther(tempusPool.spotPrice);
 
       let expectedReturn: BigNumber;
       try {
-        expectedReturn = await service.getExpectedReturnGivenIn(SPOT_PRICE_AMOUNT, YIELD_TO_PRINCIPAL);
+        expectedReturn = await service.getExpectedReturnGivenIn(spotPrice, YIELD_TO_PRINCIPAL);
       } catch (error) {
         console.error(
           'TempusAMMService - getExpectedReturnGivenIn() - Failed to get expected return for yield share tokens!',
@@ -133,7 +140,7 @@ class TempusAMMService {
 
       const scaleFactor = ethers.utils.parseEther(((SECONDS_IN_A_DAY * DAYS_IN_A_YEAR) / poolDuration).toString());
 
-      return Number(ethers.utils.formatEther(mul18f(div18f(expectedReturn, SPOT_PRICE_AMOUNT), scaleFactor)));
+      return Number(ethers.utils.formatEther(mul18f(div18f(expectedReturn, spotPrice), scaleFactor)));
     }
     throw new Error(
       `TempusAMMService - getExpectedReturnGivenIn() - TempusAMM with address '${address}' does not exist`,
@@ -169,6 +176,24 @@ class TempusAMMService {
       poolAddress,
       tempusPoolId,
     };
+  }
+
+  async getExpectedReturnGivenIn(address: string, amount: BigNumber, yieldShareIn: boolean) {
+    const contract = this.tempusAMMMap.get(address);
+    if (contract) {
+      try {
+        return await contract.getExpectedReturnGivenIn(amount, yieldShareIn);
+      } catch (error) {
+        console.error(
+          'TempusAMMService - getExpectedReturnGivenIn() - Failed to get expected return value for token!',
+          error,
+        );
+        return Promise.reject(error);
+      }
+    }
+    throw new Error(
+      `TempusAMMService - getExpectedReturnGivenIn() - TempusAMM with address '${address}' does not exist!`,
+    );
   }
 }
 

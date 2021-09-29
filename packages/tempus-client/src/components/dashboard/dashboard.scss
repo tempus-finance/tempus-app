@@ -139,11 +139,6 @@ $padding: 20px;
         padding-right: 0;
         padding-bottom: 3px;
 
-        &.tf__dashboard__header__token button[class*='TableTreeExpandButtonBase-button'] {
-          padding-right: 0;
-          padding-left: 0;
-        }
-
         &.tf__dashboard__header__maturity {
           padding-right: 8px;
         }
@@ -170,7 +165,7 @@ $padding: 20px;
         }
 
         > div > button {
-          padding: 0 8px;
+          padding: 0px;
         }
       }
     }

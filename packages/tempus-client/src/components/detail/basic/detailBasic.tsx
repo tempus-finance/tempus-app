@@ -38,7 +38,7 @@ const DetailBasic: FC<DetailBasicProps> = ({
 
   return (
     <>
-      <Tabs value={tab} onChange={onTabChange} centered className="test">
+      <Tabs value={tab} onChange={onTabChange} centered>
         <Tab
           label={
             <Typography color="default" variant="h3">
@@ -54,7 +54,6 @@ const DetailBasic: FC<DetailBasicProps> = ({
           }
         />
       </Tabs>
-
       <DetailDeposit
         selectedTab={tab}
         content={content}
