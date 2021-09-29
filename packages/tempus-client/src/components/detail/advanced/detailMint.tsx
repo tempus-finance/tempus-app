@@ -41,12 +41,15 @@ const DetailMint: FC<DetailMintProps> = props => {
   const [estimatedTokens, setEstimatedTokens] = useState<BigNumber | null>(null);
   const [approvedAllowance, setApprovedAllowance] = useState<number | null>(null);
 
-  const onTokenChange = useCallback((token: Ticker | undefined) => {
-    if (!token) {
-      return;
-    }
-    setSelectedToken(token);
-  }, []);
+  const onTokenChange = useCallback(
+    (token: Ticker | undefined) => {
+      if (!token) {
+        return;
+      }
+      setSelectedToken(token);
+    },
+    [setSelectedToken],
+  );
 
   const onAmountChange = useCallback(
     (amount: number | undefined) => {
@@ -66,7 +69,7 @@ const DetailMint: FC<DetailMintProps> = props => {
         setAmount(Number(ethers.utils.formatEther(balance)) * Number(percentage));
       }
     },
-    [balance],
+    [balance, setAmount],
   );
 
   useEffect(() => {
