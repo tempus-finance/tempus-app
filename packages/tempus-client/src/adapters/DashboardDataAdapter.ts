@@ -118,8 +118,6 @@ export default class DashboardDataAdapter {
         parentId: backingTokenTicker,
         token: backingTokenTicker,
         supportedTokens: [backingTokenTicker, yieldBearingTokenTicker],
-        principalTokenAddress,
-        yieldTokenAddress,
         protocol,
         principalTokenAddress,
         yieldTokenAddress,

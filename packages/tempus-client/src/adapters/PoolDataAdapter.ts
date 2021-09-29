@@ -240,10 +240,7 @@ export default class PoolDataAdapter {
 
   async approveToken(
     tokenAddress: string,
-<<<<<<< HEAD
-=======
     spenderAddress: string,
->>>>>>> basic-deposit
     amount: BigNumber,
     signer: JsonRpcSigner,
   ): Promise<ContractTransaction | void> {
@@ -253,16 +250,12 @@ export default class PoolDataAdapter {
     }
 
     const tokenService = this.eRC20TokenServiceGetter(tokenAddress, signer);
-<<<<<<< HEAD
-    return tokenService.approve(this.tempusControllerAddress, amount);
-=======
     try {
       return await tokenService.approve(spenderAddress, amount);
     } catch (error) {
       console.error('PoolDataAdapter - approveToken() - Failed to approve token amount!', error);
       return Promise.reject(error);
     }
->>>>>>> basic-deposit
   }
 
   async getApprovedAllowance(
