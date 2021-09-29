@@ -9,6 +9,7 @@ import DetailSwap from './detailSwap';
 import DetailMint from './detailMint';
 
 import '../shared/style.scss';
+import DetailPool from './detailPool';
 
 type DetailAdvancedProps = {
   content: DashboardRowChild;
@@ -45,6 +46,14 @@ const DetailAdvanced: FC<DetailAdvancedProps> = (props: DetailAdvancedProps) => 
           }
           className="tf__tab"
         />
+        <Tab
+          label={
+            <Typography color="default" variant="h3">
+              Pool
+            </Typography>
+          }
+          className="tf__tab"
+        />
       </Tabs>
 
       {tab === 0 && (
@@ -63,6 +72,14 @@ const DetailAdvanced: FC<DetailAdvancedProps> = (props: DetailAdvancedProps) => 
           poolDataAdapter={poolDataAdapter}
           signer={signer}
           tempusPool={tempusPool}
+        />
+      )}
+      {tab === 2 && (
+        <DetailPool
+          content={content}
+          poolDataAdapter={poolDataAdapter}
+          signer={signer}
+          userWalletAddress={userWalletAddress}
         />
       )}
     </>

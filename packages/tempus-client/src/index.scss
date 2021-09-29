@@ -23,8 +23,14 @@ code {
   cursor: default !important;
 }
 
-.tf__flex-row-center {
+.tf__flex-row-center-v {
   display: flex;
+  align-items: center;
+}
+
+.tf__flex-row-center-vh {
+  display: flex;
+  justify-content: center;
   align-items: center;
 }
 
@@ -44,4 +50,15 @@ code {
   flex-direction: column;
   justify-content: center;
   align-items: flex-end;
+}
+
+.tf__flex-column-center-vh {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.tf__full_width {
+  width: 100%;
 }

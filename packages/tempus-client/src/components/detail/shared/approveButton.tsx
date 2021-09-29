@@ -35,6 +35,12 @@ const ApproveButton: FC<ApproveButtonProps> = props => {
           );
           if (approveTransaction) {
             await approveTransaction.wait();
+
+            // Set new allowance
+            setAllowance(
+              await poolDataAdapter.getTokenAllowance(tokenToApprove, spenderAddress, userWalletAddress, signer),
+            );
+
             onApproved();
             setApproving(false);
           }
@@ -63,7 +69,7 @@ const ApproveButton: FC<ApproveButtonProps> = props => {
   const approved = useMemo(() => {
     const alreadyApproved = !!allowance && ethers.utils.parseEther(allowance.toString()).gte(amountToApprove);
 
-    return !alreadyApproved;
+    return alreadyApproved;
   }, [allowance, amountToApprove]);
 
   if (approved) {
