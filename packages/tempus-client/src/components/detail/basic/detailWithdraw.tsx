@@ -181,7 +181,7 @@ const DetailWithdraw: FC<PoolDetailProps> = ({ tempusPool, content, signer, user
                   amountToApprove={principalsBalance || BigNumber.from('0')}
                   tokenToApprove={content.principalTokenAddress}
                   spenderAddress={getConfig().tempusControllerContract}
-                  approved={principalsApproved}
+                  userWalletAddress={userWalletAddress}
                   onApproved={() => {
                     setPrincipalsApproved(true);
                   }}
@@ -189,7 +189,7 @@ const DetailWithdraw: FC<PoolDetailProps> = ({ tempusPool, content, signer, user
               </div>
             </div>
           </SectionContainer>
-          <PlusIconContainer />
+          <PlusIconContainer orientation="horizontal" />
           <SectionContainer>
             <div className="tf__flex-row-space-between">
               <div className="tf__flex-column-space-between">
@@ -204,7 +204,7 @@ const DetailWithdraw: FC<PoolDetailProps> = ({ tempusPool, content, signer, user
                   amountToApprove={yieldsBalance || BigNumber.from('0')}
                   tokenToApprove={content.yieldTokenAddress}
                   spenderAddress={getConfig().tempusControllerContract}
-                  approved={yieldsApproved}
+                  userWalletAddress={userWalletAddress}
                   onApproved={() => {
                     setYieldsApproved(true);
                   }}
@@ -212,7 +212,7 @@ const DetailWithdraw: FC<PoolDetailProps> = ({ tempusPool, content, signer, user
               </div>
             </div>
           </SectionContainer>
-          <PlusIconContainer />
+          <PlusIconContainer orientation="horizontal" />
           <SectionContainer>
             <div className="tf__flex-row-space-between">
               <div className="tf__flex-column-space-between">
@@ -228,7 +228,7 @@ const DetailWithdraw: FC<PoolDetailProps> = ({ tempusPool, content, signer, user
                   // TempusAMM address is used as LP token address
                   tokenToApprove={tempusPool.ammAddress}
                   spenderAddress={getConfig().tempusControllerContract}
-                  approved={lpApproved}
+                  userWalletAddress={userWalletAddress}
                   onApproved={() => {
                     setLpApproved(true);
                   }}

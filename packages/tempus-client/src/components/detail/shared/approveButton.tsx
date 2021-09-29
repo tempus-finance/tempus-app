@@ -1,5 +1,5 @@
-import { FC, useCallback, useEffect, useState } from 'react';
-import { BigNumber } from 'ethers';
+import { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { BigNumber, ethers } from 'ethers';
 import { JsonRpcSigner } from '@ethersproject/providers';
 import { Button } from '@material-ui/core';
 import PoolDataAdapter from '../../../adapters/PoolDataAdapter';
@@ -10,28 +10,18 @@ interface ApproveButtonProps {
   poolDataAdapter: PoolDataAdapter | null;
   signer: JsonRpcSigner | null;
   userWalletAddress: string;
-  tempusPool: TempusPool;
   tokenToApprove: string;
   spenderAddress: string;
   amountToApprove: BigNumber;
-  approved: boolean;
   onApproved: () => void;
 }
 
 const ApproveButton: FC<ApproveButtonProps> = props => {
-  const {
-    signer,
-    poolDataAdapter,
-    tokenToApprove,
-    spenderAddress,
-    userWalletAddress,
-    tempusPool,
-    amountToApprove,
-    approved,
-    onApproved,
-  } = props;
+  const { signer, poolDataAdapter, tokenToApprove, spenderAddress, userWalletAddress, amountToApprove, onApproved } =
+    props;
 
   const [approving, setApproving] = useState<boolean>(false);
+  const [allowance, setAllowance] = useState<number | null>(null);
 
   const onApprove = useCallback(() => {
     const approve = async () => {
@@ -60,12 +50,25 @@ const ApproveButton: FC<ApproveButtonProps> = props => {
 
   // Fetch token allowance
   useEffect(() => {
-    if (!poolDataAdapter) {
-      return;
-    }
+    const getAllowance = async () => {
+      if (!poolDataAdapter || !signer) {
+        return;
+      }
 
-    poolDataAdapter.getApprovedAllowance(userWalletAddress, tempusPool.address);
-  }, []);
+      setAllowance(await poolDataAdapter.getTokenAllowance(tokenToApprove, spenderAddress, userWalletAddress, signer));
+    };
+    getAllowance();
+  }, [poolDataAdapter, signer, spenderAddress, tokenToApprove, userWalletAddress]);
+
+  const approved = useMemo(() => {
+    const alreadyApproved = !!allowance && ethers.utils.parseEther(allowance.toString()).gte(amountToApprove);
+
+    return !alreadyApproved;
+  }, [allowance, amountToApprove]);
+
+  if (approved) {
+    onApproved();
+  }
 
   return (
     <>
