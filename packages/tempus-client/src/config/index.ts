@@ -9,6 +9,7 @@ const config: Config = {
       ammAddress: '',
       backingToken: 'DAI',
       spotPrice: '10000',
+      maxLeftoverShares: '',
     },
   ],
   statisticsContract: '',

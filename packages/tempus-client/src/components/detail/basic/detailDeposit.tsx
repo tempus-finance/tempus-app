@@ -1,5 +1,5 @@
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
-import { ethers, utils, BigNumber } from 'ethers';
+import { utils, BigNumber } from 'ethers';
 import Button from '@material-ui/core/Button';
 import NumberUtils from '../../../services/NumberUtils';
 import { Ticker } from '../../../interfaces';
@@ -16,14 +16,7 @@ import '../shared/style.scss';
 
 type SelectedYield = 'fixed' | 'variable';
 
-const DetailDeposit: FC<PoolDetailProps> = ({
-  selectedTab,
-  tempusPool,
-  content,
-  signer,
-  userWalletAddress,
-  poolDataAdapter,
-}) => {
+const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userWalletAddress, poolDataAdapter }) => {
   const { address, ammAddress } = tempusPool || {};
   const { supportedTokens = [], fixedAPR = 0, variableAPY = 0 } = content || {};
   const [triggerUpdateBalance, setTriggerUpdateBalance] = useState<boolean>(true);
@@ -104,7 +97,7 @@ const DetailDeposit: FC<PoolDetailProps> = ({
     (event: any) => {
       const percentage = event.currentTarget.value;
       if (!!selectedToken && !!balance && !isNaN(percentage)) {
-        const balanceAsNumber = Number(ethers.utils.formatEther(balance));
+        const balanceAsNumber = Number(utils.formatEther(balance));
         setAmount(balanceAsNumber * percentage);
       }
     },
@@ -123,10 +116,10 @@ const DetailDeposit: FC<PoolDetailProps> = ({
 
   const onApprove = useCallback(() => {
     const approve = async () => {
-      if (signer && balance) {
+      if (signer && balance && poolDataAdapter) {
         try {
           const isBackingToken = backingToken === selectedToken;
-          const approveTransaction = await poolDataAdapter?.approve(address, isBackingToken, signer, balance);
+          const approveTransaction = await poolDataAdapter.approve(address, isBackingToken, signer, balance);
           if (approveTransaction) {
             await approveTransaction.wait();
             setExecuteDisabled(false);
@@ -146,9 +139,9 @@ const DetailDeposit: FC<PoolDetailProps> = ({
       if (signer && amount && poolDataAdapter) {
         try {
           const parsedAmount = amount.toString();
-          const tokenAmount = ethers.utils.parseEther(parsedAmount);
+          const tokenAmount = utils.parseEther(parsedAmount);
           const isBackingToken = backingToken === selectedToken;
-          const parsedMinTYSRate = ethers.utils.parseEther(minTYSRate.toString());
+          const parsedMinTYSRate = utils.parseEther(minTYSRate.toString());
           const isEthDeposit = selectedToken === 'ETH';
           const depositTransaction = await poolDataAdapter.executeDeposit(
             ammAddress,
@@ -185,7 +178,7 @@ const DetailDeposit: FC<PoolDetailProps> = ({
 
   useEffect(() => {
     const retrieveBalances = async () => {
-      if (signer && address && ammAddress) {
+      if (signer && address && ammAddress && poolDataAdapter) {
         try {
           const { backingTokenBalance, backingTokenRate, yieldBearingTokenBalance, yieldBearingTokenRate } =
             (await poolDataAdapter?.retrieveBalances(address, ammAddress, userWalletAddress, signer)) || {};
@@ -249,7 +242,7 @@ const DetailDeposit: FC<PoolDetailProps> = ({
           const { fixedDeposit, variableDeposit } =
             (await poolDataAdapter.getEstimatedDepositAmount(
               ammAddress,
-              ethers.utils.parseEther(amount.toString()),
+              utils.parseEther(amount.toString()),
               isBackingToken,
             )) || {};
 
@@ -314,29 +307,37 @@ const DetailDeposit: FC<PoolDetailProps> = ({
     if (!fixedPrincipalsAmount) {
       return null;
     }
-    return NumberUtils.formatWithMultiplier(ethers.utils.formatEther(fixedPrincipalsAmount), 2);
+    return NumberUtils.formatWithMultiplier(utils.formatEther(fixedPrincipalsAmount), 2);
   }, [fixedPrincipalsAmount]);
 
   const variablePrincipalsAmountFormatted = useMemo(() => {
     if (!variablePrincipalsAmount) {
       return null;
     }
-    return NumberUtils.formatWithMultiplier(ethers.utils.formatEther(variablePrincipalsAmount), 2);
+    return NumberUtils.formatWithMultiplier(utils.formatEther(variablePrincipalsAmount), 2);
   }, [variablePrincipalsAmount]);
 
   const variableLpTokensAmountFormatted = useMemo(() => {
     if (!variableLpTokensAmount) {
       return null;
     }
-    return NumberUtils.formatWithMultiplier(ethers.utils.formatEther(variableLpTokensAmount), 2);
+    return NumberUtils.formatWithMultiplier(utils.formatEther(variableLpTokensAmount), 2);
   }, [variableLpTokensAmount]);
+
+  const balanceFormatted = useMemo(() => {
+    if (!balance || !amount) {
+      return null;
+    }
+
+    return NumberUtils.formatWithMultiplier(utils.formatEther(balance), 2);
+  }, [balance, amount]);
 
   useEffect(() => {
     const getEstimatedFixedApr = async () => {
       if (amount && selectedToken) {
         const isBackingToken = selectedToken === backingToken;
         const result = await poolDataAdapter?.getEstimatedFixedApr(
-          ethers.utils.parseEther(amount.toString()),
+          utils.parseEther(amount.toString()),
           isBackingToken,
           address,
           ammAddress,
@@ -356,7 +357,7 @@ const DetailDeposit: FC<PoolDetailProps> = ({
   }, [amount, selectedToken, backingToken, address, ammAddress, poolDataAdapter, setEstimatedFixedApr]);
 
   return (
-    <div role="tabpanel" hidden={selectedTab !== 0}>
+    <div role="tabpanel">
       <div className="tf__dialog__content-tab">
         <Spacer size={25} />
         <ActionContainer label="From">
@@ -369,9 +370,7 @@ const DetailDeposit: FC<PoolDetailProps> = ({
               <TokenSelector tickers={supportedTokens} onTokenChange={onTokenChange} />
               <Spacer size={20} />
               <Typography variant="body-text">
-                {selectedToken &&
-                  balance &&
-                  `Balance: ${new Intl.NumberFormat().format(Number(utils.formatEther(balance)))} ${selectedToken}`}
+                {selectedToken && balanceFormatted ? `Balance: ${balanceFormatted} ${selectedToken}` : '-'}
               </Typography>
             </div>
             <Spacer size={14} />
@@ -417,7 +416,7 @@ const DetailDeposit: FC<PoolDetailProps> = ({
                   <Typography variant="h3" color="accent">
                     est.{' '}
                     {estimatedFixedApr
-                      ? NumberUtils.formatPercentage(ethers.utils.formatEther(estimatedFixedApr))
+                      ? NumberUtils.formatPercentage(utils.formatEther(estimatedFixedApr))
                       : NumberUtils.formatPercentage(fixedAPR, 2)}
                   </Typography>
                 </div>

@@ -1,8 +1,9 @@
-import { BigNumber, Contract, ContractTransaction } from 'ethers';
+import { BigNumber, Contract, ContractTransaction, ethers } from 'ethers';
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
 import { TempusController } from '../abi/TempusController';
 import TempusControllerABI from '../abi/TempusController.json';
 import { TypedEvent } from '../abi/commons';
+import getConfig from '../utils/get-config';
 
 type TempusControllerServiceParameters = {
   Contract: typeof Contract;
@@ -116,8 +117,20 @@ class TempusControllerService {
       return Promise.reject();
     }
 
+    const tempusPoolConfig = getConfig().tempusPools.find(
+      tempusPoolConfig => tempusPoolConfig.ammAddress === tempusAMM,
+    );
+    if (!tempusPoolConfig) {
+      console.error('TempusControllerService - completeExitAndRedeem() - Failed to get tempus pool config!');
+      return Promise.reject();
+    }
+
     try {
-      return await this.contract.completeExitAndRedeem(tempusAMM, isBackingToken);
+      return await this.contract.completeExitAndRedeem(
+        tempusAMM,
+        ethers.utils.parseEther(tempusPoolConfig.maxLeftoverShares),
+        isBackingToken,
+      );
     } catch (error) {
       console.error(`TempusControllerService completeExitAndRedeem() - Failed to redeem tokens!`, error);
       return Promise.reject(error);

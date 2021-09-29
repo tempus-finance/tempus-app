@@ -147,7 +147,7 @@ class StatisticsService {
       console.error(
         'StatisticsService estimateExitAndRedeem Attempted to use statistics contract before initializing it...',
       );
-      return Promise.reject(0);
+      return Promise.reject();
     }
 
     try {
@@ -160,7 +160,7 @@ class StatisticsService {
       );
     } catch (error) {
       console.error(`Failed to get estimated withdraw amount`, error);
-      return Promise.reject(0);
+      return Promise.reject(error);
     }
   }
 

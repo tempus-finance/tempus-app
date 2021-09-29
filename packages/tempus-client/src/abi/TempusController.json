@@ -148,6 +148,11 @@
         "type": "address"
       },
       {
+        "internalType": "uint256",
+        "name": "maxLeftoverShares",
+        "type": "uint256"
+      },
+      {
         "internalType": "bool",
         "name": "toBackingToken",
         "type": "bool"
@@ -312,6 +317,53 @@
     "type": "function"
   },
   {
+    "inputs": [
+      {
+        "internalType": "contract ITempusPool",
+        "name": "targetPool",
+        "type": "address"
+      }
+    ],
+    "name": "finalize",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "contract ITempusAMM",
+        "name": "tempusAMM",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "principals",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "yields",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "threshold",
+        "type": "uint256"
+      }
+    ],
+    "name": "getSwapAmountToEndWithEqualShares",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "amountIn",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [],
     "name": "owner",
     "outputs": [
@@ -393,6 +445,49 @@
   {
     "inputs": [],
     "name": "renounceOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "contract ITempusAMM",
+        "name": "tempusAMM",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "sender",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "recipient",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "swapAmount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "contract IERC20",
+        "name": "tokenIn",
+        "type": "address"
+      },
+      {
+        "internalType": "contract IERC20",
+        "name": "tokenOut",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "minReturn",
+        "type": "uint256"
+      }
+    ],
+    "name": "swap",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

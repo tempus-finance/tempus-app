@@ -22,3 +22,26 @@ code {
   z-index: 998;
   cursor: default !important;
 }
+
+.tf__flex-row-center {
+  display: flex;
+  align-items: center;
+}
+
+.tf__flex-row-space-between {
+  display: flex;
+  justify-content: space-between;
+}
+
+.tf__flex-column-space-between {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.tf__flex-column-center-end {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-end;
+}
