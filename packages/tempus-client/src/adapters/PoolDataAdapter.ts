@@ -455,6 +455,28 @@ export default class PoolDataAdapter {
     );
   }
 
+  async removeLiquidity(
+    amm: string,
+    userWalletAddress: string,
+    principalsAddress: string,
+    yieldsAddress: string,
+    lpAmount: BigNumber,
+  ) {
+    if (!this.vaultService || !this.tempusAMMService) {
+      console.error('PoolDataAdapter - removeLiquidity() - Attempted to use PoolDataAdapter before initializing it!');
+      return Promise.reject();
+    }
+
+    const poolId = await this.tempusAMMService.poolId(amm);
+    return await this.vaultService.removeLiquidity(
+      poolId,
+      userWalletAddress,
+      principalsAddress,
+      yieldsAddress,
+      lpAmount,
+    );
+  }
+
   public async getUserTransactionEvents(
     tempusPoolAddress: string,
     userWalletAddress: string,

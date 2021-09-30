@@ -54,7 +54,9 @@ const DetailPool: FC<DetailPoolProps> = ({ content, poolDataAdapter, signer, use
             tempusPool={tempusPool}
           />
         )}
-        {view === 'remove' && <DetailPoolRemoveLiquidity content={content} />}
+        {view === 'remove' && (
+          <DetailPoolRemoveLiquidity content={content} poolDataAdapter={poolDataAdapter} tempusPool={tempusPool} />
+        )}
       </div>
     </div>
   );

@@ -40,7 +40,12 @@ export enum SwapKind {
 
 export enum TempusAMMJoinKind {
   INIT = 0,
-  EXACT_TOKENS_IN_FOR_BPT_OUT,
+  EXACT_TOKENS_IN_FOR_BPT_OUT = 1,
+}
+
+export enum TempusAMMExitKind {
+  EXACT_BPT_IN_FOR_TOKENS_OUT = 0,
+  BPT_IN_FOR_EXACT_TOKENS_OUT = 1,
 }
 
 class VaultService {
@@ -173,6 +178,37 @@ class VaultService {
     };
 
     return await this.contract.joinPool(poolId, userWalletAddress, userWalletAddress, joinPoolRequest);
+  }
+
+  async removeLiquidity(
+    poolId: string,
+    userWalletAddress: string,
+    principalAddress: string,
+    yieldsAddress: string,
+    lpAmount: BigNumber,
+  ) {
+    if (!this.contract) {
+      console.error('VaultService - swap() - Attempted to use VaultService before initializing it!');
+      return Promise.reject();
+    }
+
+    const assets = [{ address: principalAddress }, { address: yieldsAddress }].sort(
+      (a, b) => parseInt(a.address) - parseInt(b.address),
+    );
+
+    const exitUserData = ethers.utils.defaultAbiCoder.encode(
+      ['uint256', 'uint256'],
+      [TempusAMMExitKind.EXACT_BPT_IN_FOR_TOKENS_OUT, lpAmount],
+    );
+
+    const exitPoolRequest = {
+      assets: assets.map(({ address }) => address),
+      minAmountsOut: [10000, 10000],
+      userData: exitUserData,
+      toInternalBalance: false,
+    };
+
+    return await this.contract.exitPool(poolId, userWalletAddress, userWalletAddress, exitPoolRequest);
   }
 
   async getPoolTokens(poolId: string): Promise<

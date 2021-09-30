@@ -1,32 +1,40 @@
-import { FC, useCallback, useState } from 'react';
+import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
-import FormControl from '@material-ui/core/FormControl';
-import Typography from '@material-ui/core/Typography';
-import AddIcon from '@material-ui/icons/Add';
-import TokenDescriptor from '../../tokenDescriptor';
-import ConnectingArrow from '../shared/connectingArrow';
+import Typography from '../../typography/Typography';
 import ActionContainer from '../shared/actionContainer';
-import ActionContainerGrid from '../shared/actionContainerGrid';
-import Execute from '../shared/execute';
 import CurrencyInput from '../../currencyInput';
+import Spacer from '../../spacer/spacer';
+import SectionContainer from '../shared/sectionContainer';
+import PlusIconContainer from '../shared/plusIconContainer';
+import ApproveButton from '../shared/approveButton';
+import { Context } from '../../../context';
+import { DashboardRowChild } from '../../../interfaces';
+import PoolDataAdapter from '../../../adapters/PoolDataAdapter';
+import getConfig from '../../../utils/get-config';
+import { TempusPool } from '../../../interfaces/TempusPool';
+import NumberUtils from '../../../services/NumberUtils';
+import { ethers, BigNumber } from 'ethers';
 
 type DetailPoolAddLiquidityInProps = {
-  content?: any;
+  content: DashboardRowChild;
+  poolDataAdapter: PoolDataAdapter | null;
+  tempusPool: TempusPool;
 };
 
 type DetailPoolAddLiquidityOutProps = {};
 
 type DetailPoolAddLiquidityProps = DetailPoolAddLiquidityInProps & DetailPoolAddLiquidityOutProps;
 
-const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = ({ content }) => {
-  const { balance = 0 } = content || {};
+const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = ({ content, poolDataAdapter, tempusPool }) => {
+  const { data } = useContext(Context);
 
   const [amount, setAmount] = useState<number>(0);
+  const [estimatedPrincipals, setEstimatedPrincipals] = useState<BigNumber | null>(null);
+  const [estimatedYields, setEstimatedYields] = useState<BigNumber | null>(null);
+  const [executeDisabled, setExecuteDisabled] = useState<boolean>(true);
 
   const onAmountChange = useCallback(
     (amount: number | undefined) => {
-      console.log('onAmountChange', amount);
       if (!!amount && !isNaN(amount)) {
         setAmount(amount);
       }
@@ -34,80 +42,163 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = ({ content }) =>
     [setAmount],
   );
 
-  const onClickMax = useCallback(() => {
-    setAmount(balance);
-  }, [balance, setAmount]);
+  const onAmountPercentageChange = useCallback(
+    (event: any) => {
+      const percentage = event.currentTarget.value;
+      if (!!data.userLPBalance && !isNaN(percentage)) {
+        const balanceAsNumber = Number(ethers.utils.formatEther(data.userLPBalance));
+        setAmount(balanceAsNumber * Number(percentage));
+      }
+    },
+    [data.userLPBalance, setAmount],
+  );
 
-  const tpsValue = 42942;
-  const tysValue = 6242;
+  // Fetch estimated share tokens returned
+  useEffect(() => {
+    const getTokensEstimate = async () => {
+      if (!poolDataAdapter) {
+        return;
+      }
+
+      try {
+        const estimate = await poolDataAdapter.getExpectedReturnForLPTokens(
+          tempusPool.ammAddress,
+          ethers.utils.parseEther(amount.toString()),
+        );
+        setEstimatedPrincipals(estimate.principals);
+        setEstimatedYields(estimate.yields);
+      } catch (error) {
+        console.error('DetailPoolRemoveLiquidity - getTokensEstimate() - Failed to fetch estimated return!', error);
+      }
+    };
+    getTokensEstimate();
+  }, [amount, poolDataAdapter, tempusPool.ammAddress]);
+
+  const onApproved = useCallback(() => {
+    setExecuteDisabled(false);
+  }, [setExecuteDisabled]);
+
+  const onExecute = useCallback(() => {
+    if (!poolDataAdapter) {
+      return;
+    }
+    poolDataAdapter.removeLiquidity(
+      tempusPool.ammAddress,
+      data.userWalletAddress,
+      content.principalTokenAddress,
+      content.yieldTokenAddress,
+      ethers.utils.parseEther(amount.toString()),
+    );
+  }, [
+    amount,
+    content.principalTokenAddress,
+    content.yieldTokenAddress,
+    tempusPool.ammAddress,
+    data.userWalletAddress,
+    poolDataAdapter,
+  ]);
+
+  const lpTokenBalanceFormatted = useMemo(() => {
+    if (!data.userLPBalance) {
+      return null;
+    }
+    return NumberUtils.formatWithMultiplier(ethers.utils.formatEther(data.userLPBalance), 3);
+  }, [data.userLPBalance]);
+
+  const estimatedPrincipalsFormatted = useMemo(() => {
+    if (!estimatedPrincipals) {
+      return null;
+    }
+    return NumberUtils.formatWithMultiplier(ethers.utils.formatEther(estimatedPrincipals), 3);
+  }, [estimatedPrincipals]);
+
+  const estimatedYieldsFormatted = useMemo(() => {
+    if (!estimatedYields) {
+      return null;
+    }
+    return NumberUtils.formatWithMultiplier(ethers.utils.formatEther(estimatedYields), 3);
+  }, [estimatedYields]);
 
   return (
     <>
+      <Spacer size={10} />
       <ActionContainer label="From">
-        <ActionContainerGrid className="tf__detail-withdraw__grid">
-          <div className="tf__dialog__tab__action-container-grid__top-left element1">
-            <div className="tf__tokens-returned__name">
-              <div className="tf__tokens-returned__ticker">
-                <span>LP Token</span>
+        <Spacer size={20} />
+        <SectionContainer>
+          <div className="tf__flex-row-center-v">
+            <div className="tf__flex-column-space-between">
+              <Typography variant="h4">LP Tokens</Typography>
+              <Spacer size={20} />
+              <div className="tf__flex-row-center-v">
+                <Typography variant="body-text">Amount</Typography>
+                <Spacer size={10} />
+                <CurrencyInput defaultValue={amount} onChange={onAmountChange} />
               </div>
             </div>
-          </div>
-
-          <div className="tf__dialog__tab__action-container-grid__top-right element2">
-            <div className="tf__dialog__tab__action-container__balance">
-              <Typography variant="subtitle2" className="tf__dialog__tab__action-container__balance-title">
-                Balance
-              </Typography>
-              <div className="tf__dialog__tab__action-container__balance-value">
-                {new Intl.NumberFormat().format(balance)}
-              </div>
-              <div className="tf__dialog__tab__action-container__balance-max">
-                <Button
-                  value="lp"
-                  variant="contained"
-                  size="small"
-                  onClick={onClickMax}
-                  className="tf__action__max-balance"
-                >
+            <Spacer size={20} />
+            <div className="tf__flex-column-space-between">
+              <Typography variant="body-text">Balance: {lpTokenBalanceFormatted} LP Tokens</Typography>
+              <Spacer size={20} />
+              <div className="tf__flex-row-center-v">
+                <Button variant="contained" size="small" value="0.25" onClick={onAmountPercentageChange}>
+                  25%
+                </Button>
+                <Spacer size={10} />
+                <Button variant="contained" size="small" value="0.5" onClick={onAmountPercentageChange}>
+                  50%
+                </Button>
+                <Spacer size={10} />
+                <Button variant="contained" size="small" value="0.75" onClick={onAmountPercentageChange}>
+                  75%
+                </Button>
+                <Spacer size={10} />
+                <Button variant="contained" size="small" value="1" onClick={onAmountPercentageChange}>
                   Max
                 </Button>
               </div>
             </div>
-            <div className="tf__dialog__tab__action-container__token-amount">
-              <CurrencyInput defaultValue={0} onChange={onAmountChange} />
-            </div>
           </div>
-        </ActionContainerGrid>
+        </SectionContainer>
       </ActionContainer>
-      <ConnectingArrow />
+      <Spacer size={20} />
       <ActionContainer label="To">
-        <ActionContainerGrid className="tf__detail-mint__grid">
-          <div className="tf__dialog__tab__action-container-grid__centre-left tf__dialog__tab__action-container__tokens-returned element3">
-            <div className="tf__tokens-returned__name">
-              <div className="tf__tokens-returned__ticker">
-                <span>Principals</span>
-                <span className="tf__tokens-returned__description">Principal Share</span>
-              </div>
-            </div>
-            <div className="tf__tokens-returned__data">{new Intl.NumberFormat().format(tpsValue)}</div>
+        <Spacer size={20} />
+        <div className="tf__dialog__flex-row">
+          <div className="tf__dialog__flex-row-half-width">
+            <SectionContainer>
+              <Typography variant="h4">Principals</Typography>
+              <Spacer size={14} />
+              <Typography variant="body-text">est. {estimatedPrincipalsFormatted} Principals</Typography>
+            </SectionContainer>
           </div>
-          <div className="tf__dialog__tab__action-container-grid__centre-middle element5">
-            <div className="add-icon-container2">
-              <AddIcon />
-            </div>
+          <PlusIconContainer orientation="vertical" />
+          <div className="tf__dialog__flex-row-half-width">
+            <SectionContainer>
+              <Typography variant="h4">Yields</Typography>
+              <Spacer size={14} />
+              <Typography variant="body-text">est. {estimatedYieldsFormatted} Yields</Typography>
+            </SectionContainer>
           </div>
-          <div className="tf__dialog__tab__action-container-grid__centre-right tf__dialog__tab__action-container__tokens-returned element4">
-            <div className="tf__tokens-returned__name">
-              <div className="tf__tokens-returned__ticker">
-                <span>Yields</span>
-                <span className="tf__tokens-returned__description">Yield Share</span>
-              </div>
-            </div>
-            <div className="tf__tokens-returned__data">{new Intl.NumberFormat().format(tysValue)}</div>
-          </div>
-        </ActionContainerGrid>
+        </div>
       </ActionContainer>
-      <Execute approveLabel="Remove Liquidity" onApprove={() => null} onExecute={() => null} />
+      <Spacer size={20} />
+      <div className="tf__flex-row-center-v">
+        <ApproveButton
+          amountToApprove={data.userLPBalance}
+          onApproved={onApproved}
+          poolDataAdapter={poolDataAdapter}
+          signer={data.userWalletSigner}
+          userWalletAddress={data.userWalletAddress}
+          spenderAddress={getConfig().vaultContract}
+          tokenToApprove={tempusPool.ammAddress}
+        />
+        <Spacer size={18} />
+        <Button variant="contained" color="secondary" onClick={onExecute} disabled={executeDisabled || amount === 0}>
+          <Typography color="inverted" variant="h5">
+            Execute
+          </Typography>
+        </Button>
+      </div>
     </>
   );
 };

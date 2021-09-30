@@ -1,12 +1,8 @@
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import Button from '@material-ui/core/Button';
 import Typography from '../../typography/Typography';
-import AddIcon from '@material-ui/icons/Add';
-import ConnectingArrow from '../shared/connectingArrow';
+
 import ActionContainer from '../shared/actionContainer';
-import ActionContainerGrid from '../shared/actionContainerGrid';
-import Execute from '../shared/execute';
-import TokenDescriptor from '../../tokenDescriptor';
 import NumberUtils from '../../../services/NumberUtils';
 import CurrencyInput from '../../currencyInput';
 import { DashboardRowChild } from '../../../interfaces';
@@ -21,9 +17,9 @@ import { BigNumber } from '@ethersproject/bignumber';
 import PoolDataAdapter from '../../../adapters/PoolDataAdapter';
 import { JsonRpcSigner } from '@ethersproject/providers';
 import getConfig from '../../../utils/get-config';
-import { constants, ethers } from 'ethers';
+import { ethers } from 'ethers';
 import PlusIconContainer from '../shared/plusIconContainer';
-import { div18f, mul18f } from '../../../utils/wei-math';
+import { div18f } from '../../../utils/wei-math';
 import { TempusPool } from '../../../interfaces/TempusPool';
 
 type DetailPoolAddLiquidityInProps = {
