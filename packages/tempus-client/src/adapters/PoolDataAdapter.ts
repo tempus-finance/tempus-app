@@ -5,10 +5,11 @@ import StatisticsService from '../services/StatisticsService';
 import TempusControllerService, { DepositedEvent, RedeemedEvent } from '../services/TempusControllerService';
 import TempusPoolService from '../services/TempusPoolService';
 import getERC20TokenService from '../services/getERC20TokenService';
+import VaultService, { SwapKind } from '../services/VaultService';
+import { TransferEventListener } from '../services/ERC20TokenService';
 import { div18f, mul18f } from '../utils/wei-math';
 import { DAYS_IN_A_YEAR, ONE_ETH_IN_WEI, SECONDS_IN_A_DAY, ZERO_ETH_ADDRESS } from '../constants';
 import { Ticker } from '../interfaces';
-import VaultService, { SwapKind } from '../services/VaultService';
 
 export interface UserTransaction {
   event: DepositedEvent | RedeemedEvent;
@@ -656,5 +657,20 @@ export default class PoolDataAdapter {
       console.error('PoolDataAdapter - deposit() - Failed to make a deposit!', error);
       return Promise.reject(error);
     }
+  }
+
+  async onTokenReceived(
+    tokenAddress: string,
+    userWalletAddress: string,
+    signer: JsonRpcSigner,
+    listener: TransferEventListener,
+  ) {
+    if (!this.eRC20TokenServiceGetter) {
+      return;
+    }
+
+    const tokenContract = this.eRC20TokenServiceGetter(tokenAddress, signer);
+
+    tokenContract.onTransfer(null, userWalletAddress, listener);
   }
 }

@@ -1,6 +1,7 @@
-import { ChangeEvent, FC, useCallback, useState } from 'react';
+import { ChangeEvent, FC, useCallback, useContext, useMemo, useState } from 'react';
 import { JsonRpcSigner } from '@ethersproject/providers';
 import { Tab, Tabs } from '@material-ui/core';
+import { Context } from '../../../context';
 import Typography from '../../typography/Typography';
 import PoolDataAdapter from '../../../adapters/PoolDataAdapter';
 import { TempusPool } from '../../../interfaces/TempusPool';
@@ -27,6 +28,8 @@ const DetailBasic: FC<DetailBasicProps> = ({
   userWalletAddress,
   poolDataAdapter,
 }: DetailBasicProps) => {
+  const { data } = useContext(Context);
+
   const [tab, setTab] = useState<number>(0);
 
   const onTabChange = useCallback(
@@ -35,6 +38,15 @@ const DetailBasic: FC<DetailBasicProps> = ({
     },
     [setTab],
   );
+
+  // Hide 'Withdraw' tab if user does not have any balance in the pool.
+  const withdrawVisible = useMemo(() => {
+    if (data.userPrincipalsBalance && data.userYieldsBalance && data.userLPBalance) {
+      return !data.userPrincipalsBalance.isZero() || !data.userYieldsBalance.isZero() || !data.userLPBalance.isZero();
+    } else {
+      return false;
+    }
+  }, [data.userLPBalance, data.userPrincipalsBalance, data.userYieldsBalance]);
 
   return (
     <>
@@ -46,13 +58,15 @@ const DetailBasic: FC<DetailBasicProps> = ({
             </Typography>
           }
         />
-        <Tab
-          label={
-            <Typography color="default" variant="h3">
-              Withdraw
-            </Typography>
-          }
-        />
+        {withdrawVisible && (
+          <Tab
+            label={
+              <Typography color="default" variant="h3">
+                Withdraw
+              </Typography>
+            }
+          />
+        )}
       </Tabs>
       {tab === 0 && (
         <DetailDeposit
@@ -63,7 +77,7 @@ const DetailBasic: FC<DetailBasicProps> = ({
           poolDataAdapter={poolDataAdapter}
         />
       )}
-      {tab === 1 && (
+      {tab === 1 && withdrawVisible && (
         <DetailWithdraw
           content={content}
           tempusPool={tempusPool}

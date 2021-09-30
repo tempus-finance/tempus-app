@@ -1,7 +1,8 @@
-import { FC, useMemo, useState } from 'react';
+import { FC, useContext, useMemo, useState } from 'react';
 import { BigNumber, ethers } from 'ethers';
 import { Palette, SelectionState, SeriesRef } from '@devexpress/dx-react-chart';
 import { Chart, PieSeries } from '@devexpress/dx-react-chart-material-ui';
+import { Context } from '../../../../context';
 import { div18f } from '../../../../utils/wei-math';
 import NumberUtils from '../../../../services/NumberUtils';
 import Spacer from '../../../spacer/spacer';
@@ -16,14 +17,16 @@ interface UserBalanceChartDataPoint {
 }
 
 interface DetailUserInfoBalanceChartProps {
-  principalShareBalance: BigNumber;
-  yieldShareBalance: BigNumber;
   lpTokenPrincipalReturnBalance: BigNumber;
   lpTokenYieldReturnBalance: BigNumber;
 }
 
 const DetailUserInfoBalanceChart: FC<DetailUserInfoBalanceChartProps> = props => {
-  const { principalShareBalance, yieldShareBalance, lpTokenPrincipalReturnBalance, lpTokenYieldReturnBalance } = props;
+  const { lpTokenPrincipalReturnBalance, lpTokenYieldReturnBalance } = props;
+
+  const {
+    data: { userPrincipalsBalance, userYieldsBalance },
+  } = useContext(Context);
 
   const [chartData, setChartData] = useState<UserBalanceChartDataPoint[]>([]);
   const [chartHighlightedItems, setChartHighlightedItems] = useState<SeriesRef[]>([]);
@@ -34,19 +37,29 @@ const DetailUserInfoBalanceChart: FC<DetailUserInfoBalanceChartProps> = props =>
   const [lpTokenYieldReturnValue, setLpTokenYieldReturnValue] = useState<string>('');
 
   useMemo(() => {
-    setPrincipalShareValue(NumberUtils.formatWithMultiplier(ethers.utils.formatEther(principalShareBalance), 2));
-    setYieldShareValue(NumberUtils.formatWithMultiplier(ethers.utils.formatEther(yieldShareBalance), 2));
+    setPrincipalShareValue(
+      userPrincipalsBalance
+        ? NumberUtils.formatWithMultiplier(ethers.utils.formatEther(userPrincipalsBalance), 2)
+        : '-',
+    );
+    setYieldShareValue(
+      userYieldsBalance ? NumberUtils.formatWithMultiplier(ethers.utils.formatEther(userYieldsBalance), 2) : '-',
+    );
     setLpTokenPrincipalReturnValue(
       NumberUtils.formatWithMultiplier(ethers.utils.formatEther(lpTokenPrincipalReturnBalance), 2),
     );
     setLpTokenYieldReturnValue(
       NumberUtils.formatWithMultiplier(ethers.utils.formatEther(lpTokenYieldReturnBalance), 2),
     );
-  }, [principalShareBalance, yieldShareBalance, lpTokenPrincipalReturnBalance, lpTokenYieldReturnBalance]);
+  }, [lpTokenPrincipalReturnBalance, lpTokenYieldReturnBalance, userPrincipalsBalance, userYieldsBalance]);
 
   useMemo(() => {
-    const totalValue = principalShareBalance
-      .add(yieldShareBalance)
+    if (!userPrincipalsBalance || !userYieldsBalance) {
+      return;
+    }
+
+    const totalValue = userPrincipalsBalance
+      .add(userYieldsBalance)
       .add(lpTokenPrincipalReturnBalance)
       .add(lpTokenYieldReturnBalance);
     if (totalValue.isZero()) {
@@ -56,12 +69,12 @@ const DetailUserInfoBalanceChart: FC<DetailUserInfoBalanceChartProps> = props =>
     const dataPoints: UserBalanceChartDataPoint[] = [
       {
         name: 'Principals',
-        percentage: Number(ethers.utils.formatEther(div18f(principalShareBalance, totalValue))),
+        percentage: Number(ethers.utils.formatEther(div18f(userPrincipalsBalance, totalValue))),
         color: '#FF6B00',
       },
       {
         name: 'Yields',
-        percentage: Number(ethers.utils.formatEther(div18f(yieldShareBalance, totalValue))),
+        percentage: Number(ethers.utils.formatEther(div18f(userYieldsBalance, totalValue))),
         color: '#288195',
       },
       {
@@ -95,7 +108,7 @@ const DetailUserInfoBalanceChart: FC<DetailUserInfoBalanceChartProps> = props =>
     setChartData(dataPoints);
     setChartColors(dataColors);
     setChartHighlightedItems(highlightedDataPoints);
-  }, [principalShareBalance, yieldShareBalance, lpTokenPrincipalReturnBalance, lpTokenYieldReturnBalance]);
+  }, [userPrincipalsBalance, userYieldsBalance, lpTokenPrincipalReturnBalance, lpTokenYieldReturnBalance]);
 
   return (
     <>
