@@ -9,7 +9,10 @@ const APYCell: FC<Table.DataCellProps> = (props: Table.DataCellProps) => {
   const className = `tf__dashboard__body__cell tf__dashboard__body__apy-cell`;
   let apy;
   const isParent = !props.row.parentId;
-  if (props.value.length === 2) {
+  if (!props.value) {
+    apy = null;
+  }
+  else if (props.value.length === 2) {
     const [, max] = props.value;
     apy = max;
   } else {
@@ -19,7 +22,10 @@ const APYCell: FC<Table.DataCellProps> = (props: Table.DataCellProps) => {
   return (
     <VirtualTable.Cell {...props} className={className}>
       <div className="tf__dashboard__body__apy">
-        {isParent ? (
+        {!apy && <Typography variant='body-text'>
+          -
+          </Typography>}
+        {apy && isParent ? (
           <div className="tf__dashboard__body__apy-value">
             <Typography color="default" variant="body-text">
               Up to&nbsp;
@@ -31,7 +37,7 @@ const APYCell: FC<Table.DataCellProps> = (props: Table.DataCellProps) => {
         ) : (
           ''
         )}
-        {!isParent ? (
+        {apy && !isParent ? (
           <>
             <APYGraph apy={apy} />
             <div className="tf__dashboard__body__apy-value">{NumberUtils.formatPercentage(apy, 2)}</div>

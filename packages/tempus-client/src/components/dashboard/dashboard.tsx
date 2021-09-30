@@ -138,7 +138,7 @@ const Dashboard: FC<DashboardProps> = ({ hidden, userWalletAddress, rows, onRowA
 
           aprMatched =
             (min === 0 || min) && (max === 0 || max)
-              ? (row.fixedAPR > min && row.fixedAPR < max) || (row.variableAPY > min && row.variableAPY < max)
+              ? (row.fixedAPR && row.fixedAPR > min && row.fixedAPR < max) || (row.variableAPY > min && row.variableAPY < max)
               : true;
         }
 

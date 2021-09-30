@@ -170,7 +170,7 @@ export default class PoolDataAdapter {
 
       return {
         fixedDeposit,
-        variableDeposit,
+        variableDeposit, // [lpTokens, principals, yields]
       };
     } catch (error) {
       console.error('PoolDataAdapter - getEstimatedDepositAmount() - Failed to retrieve balances!', error);

@@ -5,6 +5,7 @@ import { useWeb3React } from '@web3-react/core';
 import { InjectedConnector } from '@web3-react/injected-connector';
 import AccountBalanceWalletIcon from '@material-ui/icons/AccountBalanceWallet';
 import shortenAccount from '../../utils/shorten-account';
+import getNotificationService from '../../services/getNotificationService';
 import NumberUtils from '../../services/NumberUtils';
 import { Context } from '../../context';
 import Typography from '../typography/Typography';
@@ -33,7 +34,13 @@ const WalletConnect: FC = (): JSX.Element => {
   const onConnect = useCallback(() => {
     if (!active) {
       const injectedConnector = new InjectedConnector({ supportedChainIds });
-      activate(injectedConnector);
+      activate(injectedConnector)
+        .then(() => {
+          getNotificationService().notify('Wallet connected', '');
+        })
+        .catch(() => {
+          getNotificationService().warn('Error connecting wallet', '');
+        });
     }
   }, [active, activate]);
 

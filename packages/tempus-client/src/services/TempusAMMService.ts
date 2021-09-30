@@ -4,9 +4,9 @@ import { TempusAMM } from '../abi/TempusAMM';
 import TempusAMMABI from '../abi/TempusAMM.json';
 import { DAYS_IN_A_YEAR, SECONDS_IN_A_DAY } from '../constants';
 import { mul18f, div18f } from '../utils/wei-math';
-import TempusPoolService from './TempusPoolService';
-import VaultService from './VaultService';
 import getConfig from '../utils/get-config';
+import TempusPoolService from './TempusPoolService';
+import getVaultService from './getVaultService';
 
 interface TempusPoolAddressData {
   poolAddress: string;
@@ -24,7 +24,6 @@ type TempusAMMServiceParameters = {
 class TempusAMMService {
   private tempusAMMMap: Map<string, TempusAMM> = new Map<string, TempusAMM>();
   private tempusPoolService: TempusPoolService | null = null;
-  private vaultService: VaultService | null = null;
 
   public init({ tempusAMMAddresses, signerOrProvider, tempusPoolService }: TempusAMMServiceParameters) {
     this.tempusAMMMap.clear();
@@ -88,11 +87,14 @@ class TempusAMMService {
     throw new Error(`TempusAMMService - getTempusPoolAddress() - TempusAMM with address '${address}' does not exist`);
   }
 
-  public async getFixedAPR(address: string): Promise<number> {
+  public async getFixedAPR(address: string): Promise<number | null> {
     if (!this.tempusPoolService) {
       console.error('TempusAMMService - getFixedAPR() - Attempted to se TempusAMMService before initializing it!');
       return Promise.reject();
     }
+
+    // If we try to inject vault service in AMM it create infinite dependancy loop - this is a qucik workaround.
+    const vaultService = getVaultService();
 
     const service = this.tempusAMMMap.get(address);
     if (service) {
@@ -100,18 +102,27 @@ class TempusAMMService {
 
       const tempusPool = getConfig().tempusPools.find(pool => pool.ammAddress === address);
       if (!tempusPool) {
-        console.error('TempusAMMService - getExpectedReturnGivenIn() - Failed to get tempus pool data from AMM!');
+        console.error('TempusAMMService - getFixedAPR() - Failed to get tempus pool data from AMM!');
         return Promise.reject();
       }
       const spotPrice = ethers.utils.parseEther(tempusPool.spotPrice);
+
+      try {
+        const poolId = await service.getPoolId();
+        const poolTokens = await vaultService.getPoolTokens(poolId);
+        if (poolTokens.balances[0].isZero() || poolTokens.balances[1].isZero()) {
+          return null;
+        }
+      } catch (error) {
+        console.error('TempusAMMService - getFixedAPR() - Failed to fetch pool balances!', error);
+        return Promise.reject(error);
+      }
 
       let expectedReturn: BigNumber;
       try {
         expectedReturn = await service.getExpectedReturnGivenIn(spotPrice, YIELD_TO_PRINCIPAL);
       } catch (error) {
-        console.error(
-          'TempusAMMService - getExpectedReturnGivenIn() - Failed to get expected return for yield share tokens!',
-        );
+        console.error('TempusAMMService - getFixedAPR() - Failed to get expected return for yield share tokens!');
         return Promise.reject(error);
       }
 
@@ -142,9 +153,7 @@ class TempusAMMService {
 
       return Number(ethers.utils.formatEther(mul18f(div18f(expectedReturn, spotPrice), scaleFactor)));
     }
-    throw new Error(
-      `TempusAMMService - getExpectedReturnGivenIn() - TempusAMM with address '${address}' does not exist`,
-    );
+    throw new Error(`TempusAMMService - getFixedAPR() - TempusAMM with address '${address}' does not exist`);
   }
 
   public async getExpectedTokensOutGivenBPTIn(
