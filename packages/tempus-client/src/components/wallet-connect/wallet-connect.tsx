@@ -60,10 +60,11 @@ const WalletConnect: FC = (): JSX.Element => {
 
   useEffect(() => {
     setData &&
-      setData({
+      setData(previousData => ({
+        ...previousData,
         userWalletSigner: library?.getSigner() || null,
         userWalletAddress: account || '',
-      });
+      }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [account, library]);
 

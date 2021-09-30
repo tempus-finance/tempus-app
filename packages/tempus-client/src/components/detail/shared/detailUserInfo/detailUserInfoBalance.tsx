@@ -31,8 +31,6 @@ const DetailUserInfoBalance: FC<DetailUserInfoBalancesProps> = props => {
   const [backingTokenValue, setBackingTokenValue] = useState<string>('');
   const [yieldBearingTokenValue, setYieldBearingTokenValue] = useState<string>('');
   const [formattedPresentValue, setFormattedPresentValue] = useState<string>('');
-  const [principalShareBalance, setPrincipalShareBalance] = useState<BigNumber>(BigNumber.from('0'));
-  const [yieldShareBalance, setYieldShareBalance] = useState<BigNumber>(BigNumber.from('0'));
   const [lpTokenPrincipalReturnBalance, setLpTokenPrincipalReturn] = useState<BigNumber>(BigNumber.from('0'));
   const [lpTokenYieldReturnBalance, setLpTokenYieldReturn] = useState<BigNumber>(BigNumber.from('0'));
 
@@ -60,8 +58,6 @@ const DetailUserInfoBalance: FC<DetailUserInfoBalancesProps> = props => {
             userBalance.lpTokensBalance,
           );
 
-          setPrincipalShareBalance(userBalance.principalsTokenBalance);
-          setYieldShareBalance(userBalance.yieldsTokenBalance);
           setLpTokenPrincipalReturn(expectedLPTokenReturn.principals);
           setLpTokenYieldReturn(expectedLPTokenReturn.yields);
         } catch (error) {
@@ -104,8 +100,6 @@ const DetailUserInfoBalance: FC<DetailUserInfoBalancesProps> = props => {
           <Divider />
           <Spacer size={20} />
           <DetailUserInfoBalanceChart
-            principalShareBalance={principalShareBalance}
-            yieldShareBalance={yieldShareBalance}
             lpTokenPrincipalReturnBalance={lpTokenPrincipalReturnBalance}
             lpTokenYieldReturnBalance={lpTokenYieldReturnBalance}
           />
