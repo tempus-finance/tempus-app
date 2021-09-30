@@ -7,9 +7,9 @@ import PoolDataAdapter from '../../../adapters/PoolDataAdapter';
 import Typography from '../../typography/Typography';
 import DetailSwap from './detailSwap';
 import DetailMint from './detailMint';
+import DetailPool from './detailPool';
 
 import '../shared/style.scss';
-import DetailPool from './detailPool';
 
 type DetailAdvancedProps = {
   content: DashboardRowChild;

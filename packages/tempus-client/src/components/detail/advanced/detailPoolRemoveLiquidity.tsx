@@ -1,19 +1,19 @@
 import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { ethers, BigNumber } from 'ethers';
 import Button from '@material-ui/core/Button';
+import { Context } from '../../../context';
+import { DashboardRowChild } from '../../../interfaces';
+import { TempusPool } from '../../../interfaces/TempusPool';
+import NumberUtils from '../../../services/NumberUtils';
+import PoolDataAdapter from '../../../adapters/PoolDataAdapter';
+import getConfig from '../../../utils/get-config';
 import Typography from '../../typography/Typography';
-import ActionContainer from '../shared/actionContainer';
 import CurrencyInput from '../../currencyInput';
 import Spacer from '../../spacer/spacer';
+import ActionContainer from '../shared/actionContainer';
 import SectionContainer from '../shared/sectionContainer';
 import PlusIconContainer from '../shared/plusIconContainer';
 import ApproveButton from '../shared/approveButton';
-import { Context } from '../../../context';
-import { DashboardRowChild } from '../../../interfaces';
-import PoolDataAdapter from '../../../adapters/PoolDataAdapter';
-import getConfig from '../../../utils/get-config';
-import { TempusPool } from '../../../interfaces/TempusPool';
-import NumberUtils from '../../../services/NumberUtils';
-import { ethers, BigNumber } from 'ethers';
 
 type DetailPoolAddLiquidityInProps = {
   content: DashboardRowChild;
@@ -79,16 +79,26 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = ({ content, pool
   }, [setExecuteDisabled]);
 
   const onExecute = useCallback(() => {
-    if (!poolDataAdapter) {
-      return;
-    }
-    poolDataAdapter.removeLiquidity(
-      tempusPool.ammAddress,
-      data.userWalletAddress,
-      content.principalTokenAddress,
-      content.yieldTokenAddress,
-      ethers.utils.parseEther(amount.toString()),
-    );
+    const removeLiquidity = async () => {
+      if (!poolDataAdapter) {
+        return;
+      }
+      try {
+        poolDataAdapter.removeLiquidity(
+          tempusPool.ammAddress,
+          data.userWalletAddress,
+          content.principalTokenAddress,
+          content.yieldTokenAddress,
+          ethers.utils.parseEther(amount.toString()),
+        );
+      } catch (error) {
+        console.error(
+          'DetailPoolRemoveLiquidity - removeLiquidity() - Failed to remove liquidity from tempus pool AMM!',
+          error,
+        );
+      }
+    };
+    removeLiquidity();
   }, [
     amount,
     content.principalTokenAddress,

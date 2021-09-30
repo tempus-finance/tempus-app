@@ -1,14 +1,14 @@
 import { FC, MouseEvent, useCallback, useState } from 'react';
+import { JsonRpcSigner } from '@ethersproject/providers';
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
-import DetailPoolAddLiquidity from './detailPoolAddLiquidity';
-import DetailPoolRemoveLiquidity from './detailPoolRemoveLiquidity';
 import { DashboardRowChild } from '../../../interfaces';
+import { TempusPool } from '../../../interfaces/TempusPool';
+import PoolDataAdapter from '../../../adapters/PoolDataAdapter';
 import Spacer from '../../spacer/spacer';
 import Typography from '../../typography/Typography';
-import PoolDataAdapter from '../../../adapters/PoolDataAdapter';
-import { JsonRpcSigner } from '@ethersproject/providers';
-import { TempusPool } from '../../../interfaces/TempusPool';
+import DetailPoolAddLiquidity from './detailPoolAddLiquidity';
+import DetailPoolRemoveLiquidity from './detailPoolRemoveLiquidity';
 
 type DetailPoolInProps = {
   content: DashboardRowChild;

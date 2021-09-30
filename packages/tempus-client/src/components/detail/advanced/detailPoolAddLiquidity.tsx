@@ -1,26 +1,23 @@
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
-import Button from '@material-ui/core/Button';
-import Typography from '../../typography/Typography';
-
-import ActionContainer from '../shared/actionContainer';
+import { Divider, Button } from '@material-ui/core';
+import { BigNumber, ethers } from 'ethers';
+import { JsonRpcSigner } from '@ethersproject/providers';
+import PoolDataAdapter from '../../../adapters/PoolDataAdapter';
 import NumberUtils from '../../../services/NumberUtils';
-import CurrencyInput from '../../currencyInput';
 import { DashboardRowChild } from '../../../interfaces';
-import SectionContainer from '../shared/sectionContainer';
+import { TempusPool } from '../../../interfaces/TempusPool';
+import getConfig from '../../../utils/get-config';
+import { div18f } from '../../../utils/wei-math';
+import Typography from '../../typography/Typography';
 import Spacer from '../../spacer/spacer';
-import { Divider } from '@material-ui/core';
+import CurrencyInput from '../../currencyInput';
+import ActionContainer from '../shared/actionContainer';
+import SectionContainer from '../shared/sectionContainer';
+import ApproveButton from '../shared/approveButton';
+import PlusIconContainer from '../shared/plusIconContainer';
+import ScaleIcon from '../../icons/ScaleIcon';
 
 import './detailPoolAddLiquidity.scss';
-import ScaleIcon from '../../icons/ScaleIcon';
-import ApproveButton from '../shared/approveButton';
-import { BigNumber } from '@ethersproject/bignumber';
-import PoolDataAdapter from '../../../adapters/PoolDataAdapter';
-import { JsonRpcSigner } from '@ethersproject/providers';
-import getConfig from '../../../utils/get-config';
-import { ethers } from 'ethers';
-import PlusIconContainer from '../shared/plusIconContainer';
-import { div18f } from '../../../utils/wei-math';
-import { TempusPool } from '../../../interfaces/TempusPool';
 
 type DetailPoolAddLiquidityInProps = {
   content: DashboardRowChild;
@@ -171,7 +168,14 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = props => {
         return;
       }
 
-      setExpectedPoolShare(await poolDataAdapter.getPoolShareForLPTokensIn(tempusPool.ammAddress, expectedLPTokens));
+      try {
+        setExpectedPoolShare(await poolDataAdapter.getPoolShareForLPTokensIn(tempusPool.ammAddress, expectedLPTokens));
+      } catch (error) {
+        console.error(
+          'DetailPoolAddLiquidity - fetchExpectedPoolShare() - Failed to fetch expected pool share!',
+          error,
+        );
+      }
     };
     fetchExpectedPoolShare();
   }, [expectedLPTokens, poolDataAdapter, tempusPool.ammAddress]);
@@ -181,14 +185,18 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = props => {
       if (!poolDataAdapter) {
         return;
       }
-      poolDataAdapter.provideLiquidity(
-        tempusPool.ammAddress,
-        userWalletAddress,
-        content.principalTokenAddress,
-        content.yieldTokenAddress,
-        ethers.utils.parseEther(principalsAmount.toString()),
-        ethers.utils.parseEther(yieldsAmount.toString()),
-      );
+      try {
+        await poolDataAdapter.provideLiquidity(
+          tempusPool.ammAddress,
+          userWalletAddress,
+          content.principalTokenAddress,
+          content.yieldTokenAddress,
+          ethers.utils.parseEther(principalsAmount.toString()),
+          ethers.utils.parseEther(yieldsAmount.toString()),
+        );
+      } catch (error) {
+        console.error('DetailPoolAddLiquidity - provideLiquidity() - Failed to provide liquidity!', error);
+      }
     };
     provideLiquidity();
   }, [

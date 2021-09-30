@@ -1,4 +1,4 @@
-import { BigNumber, Contract, ethers } from 'ethers';
+import { BigNumber, Contract, ethers, ContractTransaction } from 'ethers';
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
 import { Vault } from '../abi/Vault';
 import VaultABI from '../abi/Vault.json';
@@ -144,21 +144,26 @@ class VaultService {
     yieldsAddress: string,
     principalsIn: BigNumber,
     yieldsIn: BigNumber,
-  ) {
+  ): Promise<ContractTransaction> {
     if (!this.contract) {
-      console.error('VaultService - swap() - Attempted to use VaultService before initializing it!');
+      console.error('VaultService - provideLiquidity() - Attempted to use VaultService before initializing it!');
       return Promise.reject();
     }
     let kind = TempusAMMJoinKind.EXACT_TOKENS_IN_FOR_BPT_OUT;
 
-    const poolTokens = await this.contract.getPoolTokens(poolId);
-    // If current liquidity is zero we need to init pool first
-    if (poolTokens.balances[0].isZero() && poolTokens.balances[1].isZero()) {
-      if (principalsIn.isZero() || yieldsIn.isZero()) {
-        return Promise.reject('Both tokens in must be non-zero amount when initializing the pool!');
-      }
+    try {
+      const poolTokens = await this.contract.getPoolTokens(poolId);
+      // If current liquidity is zero we need to init pool first
+      if (poolTokens.balances[0].isZero() && poolTokens.balances[1].isZero()) {
+        if (principalsIn.isZero() || yieldsIn.isZero()) {
+          return Promise.reject('Both tokens in must be non-zero amount when initializing the pool!');
+        }
 
-      kind = TempusAMMJoinKind.INIT;
+        kind = TempusAMMJoinKind.INIT;
+      }
+    } catch (error) {
+      console.error('VaultService - provideLiquidity() - Failed to check tempus pool AMM balance!', error);
+      return Promise.reject();
     }
 
     const assets = [
@@ -177,7 +182,12 @@ class VaultService {
       fromInternalBalance: false,
     };
 
-    return await this.contract.joinPool(poolId, userWalletAddress, userWalletAddress, joinPoolRequest);
+    try {
+      return await this.contract.joinPool(poolId, userWalletAddress, userWalletAddress, joinPoolRequest);
+    } catch (error) {
+      console.error('VaultService - provideLiquidity() - Failed to provide liquidity to tempus pool AMM!', error);
+      return Promise.reject();
+    }
   }
 
   async removeLiquidity(
@@ -186,9 +196,9 @@ class VaultService {
     principalAddress: string,
     yieldsAddress: string,
     lpAmount: BigNumber,
-  ) {
+  ): Promise<ethers.ContractTransaction> {
     if (!this.contract) {
-      console.error('VaultService - swap() - Attempted to use VaultService before initializing it!');
+      console.error('VaultService - removeLiquidity() - Attempted to use VaultService before initializing it!');
       return Promise.reject();
     }
 
@@ -208,7 +218,12 @@ class VaultService {
       toInternalBalance: false,
     };
 
-    return await this.contract.exitPool(poolId, userWalletAddress, userWalletAddress, exitPoolRequest);
+    try {
+      return await this.contract.exitPool(poolId, userWalletAddress, userWalletAddress, exitPoolRequest);
+    } catch (error) {
+      console.error('VaultService - removeLiquidity() - Failed to remove liquidity from tempus pool AMM!', error);
+      return Promise.reject();
+    }
   }
 
   async getPoolTokens(poolId: string): Promise<

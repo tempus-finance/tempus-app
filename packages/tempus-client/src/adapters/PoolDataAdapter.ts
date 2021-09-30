@@ -5,11 +5,11 @@ import StatisticsService from '../services/StatisticsService';
 import TempusControllerService, { DepositedEvent, RedeemedEvent } from '../services/TempusControllerService';
 import TempusPoolService from '../services/TempusPoolService';
 import getERC20TokenService from '../services/getERC20TokenService';
+import VaultService, { SwapKind } from '../services/VaultService';
 import { TransferEventListener } from '../services/ERC20TokenService';
 import { div18f, mul18f } from '../utils/wei-math';
 import { DAYS_IN_A_YEAR, ONE_ETH_IN_WEI, SECONDS_IN_A_DAY, ZERO_ETH_ADDRESS } from '../constants';
 import { Ticker } from '../interfaces';
-import VaultService, { SwapKind } from '../services/VaultService';
 
 export interface UserTransaction {
   event: DepositedEvent | RedeemedEvent;
@@ -423,9 +423,15 @@ export default class PoolDataAdapter {
       return Promise.reject();
     }
 
-    const lpTotalSupply = await this.eRC20TokenServiceGetter(amm).totalSupply();
-    if (lpTotalSupply.isZero()) {
-      return 1;
+    let lpTotalSupply: BigNumber;
+    try {
+      lpTotalSupply = await this.eRC20TokenServiceGetter(amm).totalSupply();
+      if (lpTotalSupply.isZero()) {
+        return 1;
+      }
+    } catch (error) {
+      console.error('PoolDataAdapter - getPoolShareForLPTokensIn() - Failed to fetch total LP supply!', error);
+      return Promise.reject(error);
     }
 
     return Number(ethers.utils.formatEther(div18f(amountIn, amountIn.add(lpTotalSupply))));
@@ -438,21 +444,26 @@ export default class PoolDataAdapter {
     yieldsAddress: string,
     principalsIn: BigNumber,
     yieldsIn: BigNumber,
-  ) {
+  ): Promise<ContractTransaction> {
     if (!this.vaultService || !this.tempusAMMService) {
       console.error('PoolDataAdapter - provideLiquidity() - Attempted to use PoolDataAdapter before initializing it!');
       return Promise.reject();
     }
 
-    const poolId = await this.tempusAMMService.poolId(amm);
-    return await this.vaultService.provideLiquidity(
-      poolId,
-      userWalletAddress,
-      principalsAddress,
-      yieldsAddress,
-      principalsIn,
-      yieldsIn,
-    );
+    try {
+      const poolId = await this.tempusAMMService.poolId(amm);
+      return await this.vaultService.provideLiquidity(
+        poolId,
+        userWalletAddress,
+        principalsAddress,
+        yieldsAddress,
+        principalsIn,
+        yieldsIn,
+      );
+    } catch (error) {
+      console.error('PoolDataAdapter - provideLiquidity() - Failed to provide liquidity to tempus pool AMM!', error);
+      return Promise.reject();
+    }
   }
 
   async removeLiquidity(
@@ -461,20 +472,25 @@ export default class PoolDataAdapter {
     principalsAddress: string,
     yieldsAddress: string,
     lpAmount: BigNumber,
-  ) {
+  ): Promise<ContractTransaction> {
     if (!this.vaultService || !this.tempusAMMService) {
       console.error('PoolDataAdapter - removeLiquidity() - Attempted to use PoolDataAdapter before initializing it!');
       return Promise.reject();
     }
 
-    const poolId = await this.tempusAMMService.poolId(amm);
-    return await this.vaultService.removeLiquidity(
-      poolId,
-      userWalletAddress,
-      principalsAddress,
-      yieldsAddress,
-      lpAmount,
-    );
+    try {
+      const poolId = await this.tempusAMMService.poolId(amm);
+      return await this.vaultService.removeLiquidity(
+        poolId,
+        userWalletAddress,
+        principalsAddress,
+        yieldsAddress,
+        lpAmount,
+      );
+    } catch (error) {
+      console.error('PoolDataAdapter - removeLiquidity() - Failed to remove liquidity from tempus pool AMM!', error);
+      return Promise.reject();
+    }
   }
 
   public async getUserTransactionEvents(
