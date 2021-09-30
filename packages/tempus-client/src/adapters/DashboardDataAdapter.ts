@@ -220,14 +220,17 @@ export default class DashboardDataAdapter {
     });
   }
 
-  private getRangeFrom<ValueType>(values: ValueType[]): ValueType[] {
+  private getRangeFrom<ValueType>(values: (ValueType | null)[]): (ValueType | null)[] {
     let minValue = values[0];
     let maxValue = values[0];
     values.forEach(value => {
-      if (minValue > value) {
+      if (!value) {
+        return;
+      }
+      if (minValue && minValue > value) {
         minValue = value;
       }
-      if (maxValue < value) {
+      if (maxValue && maxValue < value) {
         maxValue = value;
       }
     });

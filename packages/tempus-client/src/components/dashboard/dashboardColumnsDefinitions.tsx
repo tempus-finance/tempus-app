@@ -45,10 +45,18 @@ export const dashboardColumnsDefinitions: ExtraDataColumn[] = [
     title: `Fixed APR`,
     tooltip: fixedAPRTooltipText,
     getCellValue: (row: any) => {
-      if (row.fixedAPR.length === 2) {
+      if (!row.fixedAPR) {
+        return null;
+      }
+      else if (row.fixedAPR.length === 2) {
+        if (!row.fixedAPR[0] || !row.fixedAPR[1]) {
+          return null;
+        }
         return row.fixedAPR;
       }
-      return [row.fixedAPR];
+      else {
+        return [row.fixedAPR];
+      }
     },
   },
   {
