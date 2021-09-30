@@ -15,6 +15,7 @@ import SectionContainer from '../shared/sectionContainer';
 import PoolDetailProps from '../shared/PoolDetailProps';
 
 import '../shared/style.scss';
+import { interestRateProtectionTooltipText, liquidityProvisionTooltipText } from '../../../constants';
 
 type SelectedYield = 'fixed' | 'variable';
 
@@ -419,7 +420,7 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
             <div className="tf__dialog__flex-row-half-width">
               <SectionContainer
                 title="Interest rate protection"
-                tooltip="Waiting for text..."
+                tooltip={interestRateProtectionTooltipText}
                 selectable={true}
                 selected={selectedYield === 'fixed'}
               >
@@ -443,7 +444,7 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
             <div className="tf__dialog__flex-row-half-width">
               <SectionContainer
                 title="Liquidity provision"
-                tooltip="Waiting for text..."
+                tooltip={liquidityProvisionTooltipText}
                 selectable={true}
                 selected={selectedYield === 'variable'}
               >
