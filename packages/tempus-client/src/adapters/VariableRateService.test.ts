@@ -6,7 +6,10 @@ import VariableRate from './VariableRateService';
 jest.mock('@ethersproject/providers');
 const { JsonRpcProvider } = jest.requireMock('@ethersproject/providers');
 
-let instance: any;
+jest.mock('../services/TempusPoolService');
+const TempusPoolService = jest.requireMock('../services/TempusPoolService').default;
+
+let instance: VariableRate;
 const mockLiquidityRate = eth.BigNumber.from('123000000000000000000000000');
 const mockGetReserveData = jest.fn();
 const mockGetLastCompletedReportDelta = jest.fn();
@@ -66,9 +69,10 @@ describe('VariableRate', () => {
 
   describe('getAprRate(', () => {
     const mockProvider = new JsonRpcProvider();
+    const mockTempusPoolService = new TempusPoolService();
 
     instance = new VariableRate();
-    instance.init(mockProvider);
+    instance.init(mockProvider, mockTempusPoolService);
 
     test('returns a valid instance', () => {
       expect(instance).toBeInstanceOf(VariableRate);
@@ -81,7 +85,9 @@ describe('VariableRate', () => {
         };
       });
 
-      const apr = await instance.getAprRate('aave');
+      const tempusPoolAddress = 'abc';
+
+      const apr = await instance.getAprRate('aave', tempusPoolAddress);
       expect(apr).toEqual(0.123);
     });
 
@@ -92,7 +98,9 @@ describe('VariableRate', () => {
         };
       });
 
-      const apr = await instance.getAprRate('compound');
+      const tempusPoolAddress = 'dfg';
+
+      const apr = await instance.getAprRate('compound', tempusPoolAddress);
       expect(apr).toEqual(0.48075880352207445);
     });
 
