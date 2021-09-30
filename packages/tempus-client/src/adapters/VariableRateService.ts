@@ -2,17 +2,16 @@ import { ethers, BigNumber, Contract } from 'ethers';
 import { JsonRpcSigner, JsonRpcProvider } from '@ethersproject/providers';
 import lidoOracleABI from '../abi/LidoOracle.json';
 import AaveLendingPoolABI from '../abi/AaveLendingPool.json';
-import cEthTokenABI from '../abi/cEthToken.json';
+import cERC20Token from '../abi/cERC20Token.json';
 import {
   DAYS_IN_A_YEAR,
   SECONDS_IN_YEAR,
   ONE_ETH_IN_WEI,
   aaveLendingPoolAddress,
   lidoOracleAddress,
-  cEthAddress,
-  daiAddress,
   COMPOUND_BLOCKS_PER_DAY,
 } from '../constants';
+import TempusPoolService from '../services/TempusPoolService';
 import { ProtocolName } from '../interfaces';
 import { wadToDai } from '../utils/rayToDai';
 
@@ -36,25 +35,37 @@ class VariableRateService {
 
   private aaveLendingPool: Contract | null = null;
   private lidoOracle: Contract | null = null;
-  private cEthToken: Contract | null = null;
+  private tempusPoolService: TempusPoolService | null = null;
+  private tokenAddressToContractMap: { [tokenAddress: string]: ethers.Contract } = {};
+  private signerOrProvider: JsonRpcSigner | JsonRpcProvider | null = null;
 
-  init(signerOrProvider: JsonRpcSigner | JsonRpcProvider) {
+  init(signerOrProvider: JsonRpcSigner | JsonRpcProvider, tempusPoolService: TempusPoolService) {
     if (signerOrProvider) {
       this.aaveLendingPool = new Contract(aaveLendingPoolAddress, AaveLendingPoolABI, signerOrProvider);
       this.lidoOracle = new Contract(lidoOracleAddress, lidoOracleABI.abi, signerOrProvider);
-      this.cEthToken = new Contract(cEthAddress, cEthTokenABI, signerOrProvider);
+      this.signerOrProvider = signerOrProvider;
+      this.tempusPoolService = tempusPoolService;
     }
   }
 
-  async getAprRate(protocol: ProtocolName): Promise<number> {
+  async getAprRate(protocol: ProtocolName, tempusPoolAddress?: string): Promise<number> {
+    let yieldBearingTokenAddress: string = '';
     switch (protocol) {
       case 'aave': {
-        return VariableRateService.getAprFromApy(await this.getAaveAPY());
+        if (tempusPoolAddress && this.tempusPoolService) {
+          yieldBearingTokenAddress = await this.tempusPoolService.getYieldBearingTokenAddress(tempusPoolAddress);
+          return VariableRateService.getAprFromApy(await this.getAaveAPY(yieldBearingTokenAddress));
+        }
+        return 0;
       }
 
-      // case 'compound': {
-      //   return VariableRateService.getAprFromApy(await this.getCompoundAPY());
-      // }
+      case 'compound': {
+        if (tempusPoolAddress && this.tempusPoolService) {
+          yieldBearingTokenAddress = await this.tempusPoolService?.getYieldBearingTokenAddress(tempusPoolAddress);
+          return VariableRateService.getAprFromApy(await this.getCompoundAPY(yieldBearingTokenAddress));
+        }
+        return 0;
+      }
 
       case 'lido': {
         return this.getLidoAPR(fees);
@@ -107,9 +118,9 @@ class VariableRateService {
     return APR.mul(BigNumber.from(numerator)).div(BigNumber.from(denominator));
   }
 
-  private async getAaveAPY(): Promise<number> {
+  private async getAaveAPY(yieldBearingTokenAddress: string): Promise<number> {
     try {
-      const { currentLiquidityRate } = await this.aaveLendingPool?.getReserveData(daiAddress);
+      const { currentLiquidityRate } = await this.aaveLendingPool?.getReserveData(yieldBearingTokenAddress);
       const aaveAPY = Number(ethers.utils.formatEther(wadToDai(currentLiquidityRate)));
       return aaveAPY;
     } catch (error) {
@@ -118,22 +129,29 @@ class VariableRateService {
     }
   }
 
-  // private async getCompoundAPY(): Promise<number> {
-  //   try {
-  //     const supplyRatePerBlock = await this.cEthToken?.methods.supplyRatePerBlock().call();
-  //     const supplyApy =
-  //       (Math.pow((supplyRatePerBlock / ethMantissa) * COMPOUND_BLOCKS_PER_DAY + 1, DAYS_IN_A_YEAR) - 1) * 100;
+  private async getCompoundAPY(yieldBearingTokenAddress: string): Promise<number> {
+    if (!this.signerOrProvider) {
+      return 0;
+    }
 
-  //     console.log('getCompoundAPY supplyRatePerBlock', supplyRatePerBlock);
-  //     console.log('getCompoundAPY supplyApy', supplyApy);
+    try {
+      let supplyRatePerBlock;
+      if (this.tokenAddressToContractMap[yieldBearingTokenAddress] === undefined) {
+        this.tokenAddressToContractMap[yieldBearingTokenAddress] = new Contract(
+          yieldBearingTokenAddress,
+          cERC20Token,
+          this.signerOrProvider,
+        );
+      }
+      supplyRatePerBlock = await this.tokenAddressToContractMap[yieldBearingTokenAddress].supplyRatePerBlock();
+      const supplyApy = Math.pow((supplyRatePerBlock / ethMantissa) * COMPOUND_BLOCKS_PER_DAY + 1, DAYS_IN_A_YEAR) - 1;
 
-  //     // TODO check with actual contract
-  //     return supplyApy;
-  //   } catch (error) {
-  //     console.error('VariableRateService - getCompoundAPY', error);
-  //     return 0;
-  //   }
-  // }
+      return supplyApy;
+    } catch (error) {
+      console.error('VariableRateService - getCompoundAPY', error);
+      return 0;
+    }
+  }
 }
 
 export default VariableRateService;
