@@ -8,7 +8,7 @@ import getERC20TokenService from '../services/getERC20TokenService';
 import { div18f, mul18f } from '../utils/wei-math';
 import { DAYS_IN_A_YEAR, ONE_ETH_IN_WEI, SECONDS_IN_A_DAY, ZERO_ETH_ADDRESS } from '../constants';
 import { Ticker } from '../interfaces';
-import VaultService, { SwapKind } from '../services/VaultService';
+import VaultService, { SwapKind, TempusAMMJoinKind } from '../services/VaultService';
 
 export interface UserTransaction {
   event: DepositedEvent | RedeemedEvent;
@@ -381,6 +381,77 @@ export default class PoolDataAdapter {
       );
       return Promise.reject(error);
     }
+  }
+
+  async getExpectedLPTokensForShares(
+    tempusAMM: string,
+    principalsAddress: string,
+    yieldsAddress: string,
+    principalsIn: BigNumber,
+    yieldsIn: BigNumber,
+  ): Promise<BigNumber> {
+    if (!this.tempusAMMService) {
+      console.error(
+        'PoolDataAdapter - getExpectedLPTokensForShares() - Attempted to use PoolDataAdapter before initializing it!',
+      );
+      return Promise.reject();
+    }
+
+    try {
+      return await this.tempusAMMService.getExpectedLPTokensForTokensIn(
+        tempusAMM,
+        principalsAddress,
+        yieldsAddress,
+        principalsIn,
+        yieldsIn,
+      );
+    } catch (error) {
+      console.error(
+        'PoolDataAdapter - getExpectedLPTokensForShares() - Failed to fetch expected LP token return!',
+        error,
+      );
+      return Promise.reject(error);
+    }
+  }
+
+  async getPoolShareForLPTokensIn(amm: string, amountIn: BigNumber): Promise<number> {
+    if (!this.vaultService || !this.eRC20TokenServiceGetter) {
+      console.error(
+        'PoolDataAdapter - getPoolShareForLPTokensIn() - Attempted to use PoolDataAdapter before initializing it!',
+      );
+      return Promise.reject();
+    }
+
+    const lpTotalSupply = await this.eRC20TokenServiceGetter(amm).totalSupply();
+    if (lpTotalSupply.isZero()) {
+      return 1;
+    }
+
+    return Number(ethers.utils.formatEther(div18f(amountIn, amountIn.add(lpTotalSupply))));
+  }
+
+  async provideLiquidity(
+    amm: string,
+    userWalletAddress: string,
+    principalsAddress: string,
+    yieldsAddress: string,
+    principalsIn: BigNumber,
+    yieldsIn: BigNumber,
+  ) {
+    if (!this.vaultService || !this.tempusAMMService) {
+      console.error('PoolDataAdapter - provideLiquidity() - Attempted to use PoolDataAdapter before initializing it!');
+      return Promise.reject();
+    }
+
+    const poolId = await this.tempusAMMService.poolId(amm);
+    return await this.vaultService.provideLiquidity(
+      poolId,
+      userWalletAddress,
+      principalsAddress,
+      yieldsAddress,
+      principalsIn,
+      yieldsIn,
+    );
   }
 
   public async getUserTransactionEvents(

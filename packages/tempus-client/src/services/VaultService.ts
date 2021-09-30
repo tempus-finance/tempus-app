@@ -38,6 +38,11 @@ export enum SwapKind {
   GIVEN_OUT = 1,
 }
 
+export enum TempusAMMJoinKind {
+  INIT = 0,
+  EXACT_TOKENS_IN_FOR_BPT_OUT,
+}
+
 class VaultService {
   private contract: Vault | null = null;
 
@@ -125,6 +130,49 @@ class VaultService {
     const deadline = latestBlock.timestamp + SECONDS_IN_AN_HOUR;
 
     return this.contract.swap(singleSwap, fundManagement, minimumReturn, deadline);
+  }
+
+  async provideLiquidity(
+    poolId: string,
+    userWalletAddress: string,
+    principalsAddress: string,
+    yieldsAddress: string,
+    principalsIn: BigNumber,
+    yieldsIn: BigNumber,
+  ) {
+    if (!this.contract) {
+      console.error('VaultService - swap() - Attempted to use VaultService before initializing it!');
+      return Promise.reject();
+    }
+    let kind = TempusAMMJoinKind.EXACT_TOKENS_IN_FOR_BPT_OUT;
+
+    const poolTokens = await this.contract.getPoolTokens(poolId);
+    // If current liquidity is zero we need to init pool first
+    if (poolTokens.balances[0].isZero() && poolTokens.balances[1].isZero()) {
+      if (principalsIn.isZero() || yieldsIn.isZero()) {
+        return Promise.reject('Both tokens in must be non-zero amount when initializing the pool!');
+      }
+
+      kind = TempusAMMJoinKind.INIT;
+    }
+
+    const assets = [
+      { address: principalsAddress, amount: principalsIn },
+      { address: yieldsAddress, amount: yieldsIn },
+    ].sort((a, b) => parseInt(a.address) - parseInt(b.address));
+
+    const initialBalances = assets.map(({ amount }) => amount);
+
+    const initUserData = ethers.utils.defaultAbiCoder.encode(['uint256', 'uint256[]'], [kind, initialBalances]);
+
+    const joinPoolRequest = {
+      assets: assets.map(({ address }) => address),
+      maxAmountsIn: initialBalances,
+      userData: initUserData,
+      fromInternalBalance: false,
+    };
+
+    return await this.contract.joinPool(poolId, userWalletAddress, userWalletAddress, joinPoolRequest);
   }
 
   async getPoolTokens(poolId: string): Promise<

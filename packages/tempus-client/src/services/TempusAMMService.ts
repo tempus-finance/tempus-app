@@ -93,7 +93,7 @@ class TempusAMMService {
       return Promise.reject();
     }
 
-    // If we try to inject vault service in AMM it create infinite dependancy loop - this is a qucik workaround.
+    // If we try to inject vault service in AMM it create infinite dependency loop - this is a quick workaround.
     const vaultService = getVaultService();
 
     const service = this.tempusAMMMap.get(address);
@@ -175,6 +175,39 @@ class TempusAMMService {
     }
     throw new Error(
       `TempusAMMService - getExpectedTokensOutGivenBPTIn() - TempusAMM with address '${address}' does not exist!`,
+    );
+  }
+
+  async getExpectedLPTokensForTokensIn(
+    address: string,
+    principalsAddress: string,
+    yieldsAddress: string,
+    principalsIn: BigNumber,
+    yieldsIn: BigNumber,
+  ): Promise<BigNumber> {
+    const tempusAMM = this.tempusAMMMap.get(address);
+    if (tempusAMM) {
+      if (principalsIn.isZero() && yieldsIn.isZero()) {
+        return ethers.utils.parseEther('0');
+      }
+
+      try {
+        const assets = [
+          { address: principalsAddress, amount: principalsIn },
+          { address: yieldsAddress, amount: yieldsIn },
+        ].sort((a, b) => parseInt(a.address) - parseInt(b.address));
+        const amountsIn = assets.map(({ amount }) => amount);
+
+        return await tempusAMM.getExpectedLPTokensForTokensIn(amountsIn);
+      } catch (error) {
+        console.error(
+          'TempusAMMService - getExpectedLPTokensForTokensIn() - Failed to fetch expected amount of LP Tokens!',
+        );
+        return Promise.reject(error);
+      }
+    }
+    throw new Error(
+      `TempusAMMService - getExpectedLPTokensForTokensIn() - TempusAMM with address '${address}' does not exist!`,
     );
   }
 

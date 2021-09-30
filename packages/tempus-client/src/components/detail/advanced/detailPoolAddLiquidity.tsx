@@ -21,12 +21,14 @@ import { BigNumber } from '@ethersproject/bignumber';
 import PoolDataAdapter from '../../../adapters/PoolDataAdapter';
 import { JsonRpcSigner } from '@ethersproject/providers';
 import getConfig from '../../../utils/get-config';
-import { ethers } from 'ethers';
+import { constants, ethers } from 'ethers';
 import PlusIconContainer from '../shared/plusIconContainer';
 import { div18f, mul18f } from '../../../utils/wei-math';
+import { TempusPool } from '../../../interfaces/TempusPool';
 
 type DetailPoolAddLiquidityInProps = {
   content: DashboardRowChild;
+  tempusPool: TempusPool;
   poolDataAdapter: PoolDataAdapter | null;
   signer: JsonRpcSigner | null;
   userWalletAddress: string;
@@ -37,7 +39,7 @@ type DetailPoolAddLiquidityOutProps = {};
 type DetailPoolAddLiquidityProps = DetailPoolAddLiquidityInProps & DetailPoolAddLiquidityOutProps;
 
 const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = props => {
-  const { content, poolDataAdapter, signer, userWalletAddress } = props;
+  const { content, poolDataAdapter, signer, userWalletAddress, tempusPool } = props;
 
   const [principalsBalance, setPrincipalsBalance] = useState<BigNumber | null>(null);
   const [yieldsBalance, setYieldsBalance] = useState<BigNumber | null>(null);
@@ -47,6 +49,9 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = props => {
 
   const [principalsAmount, setPrincipalsAmount] = useState<number>(0);
   const [yieldsAmount, setYieldsAmount] = useState<number>(0);
+
+  const [expectedLPTokens, setExpectedLPTokens] = useState<BigNumber | null>(null);
+  const [expectedPoolShare, setExpectedPoolShare] = useState<number | null>(null);
 
   const onPrincipalsAmountChange = useCallback(
     (amount: number | undefined) => {
@@ -112,25 +117,114 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = props => {
       return;
     }
 
-    const totalTokens = principalsBalance.add(yieldsBalance);
+    if (principalsBalance.isZero() && yieldsBalance.isZero()) {
+      setPrincipalsPercentage(0);
+      setYieldsPercentage(0);
+    } else if (principalsBalance.isZero() && !yieldsBalance.isZero()) {
+      setPrincipalsPercentage(0);
+      setYieldsPercentage(1);
+    } else if (!principalsBalance.isZero() && yieldsBalance.isZero()) {
+      setPrincipalsPercentage(1);
+      setYieldsPercentage(0);
+    } else {
+      const totalTokens = principalsBalance.add(yieldsBalance);
 
-    setPrincipalsPercentage(Number(ethers.utils.formatEther(div18f(principalsBalance, totalTokens))));
-    setYieldsPercentage(Number(ethers.utils.formatEther(div18f(yieldsBalance, totalTokens))));
+      setPrincipalsPercentage(Number(ethers.utils.formatEther(div18f(principalsBalance, totalTokens))));
+      setYieldsPercentage(Number(ethers.utils.formatEther(div18f(yieldsBalance, totalTokens))));
+    }
   }, [principalsBalance, yieldsBalance, setPrincipalsPercentage, setYieldsPercentage]);
+
+  // Fetch estimated LP Token amount
+  useEffect(() => {
+    const fetchEstimatedLPTokens = async () => {
+      if (!poolDataAdapter) {
+        return;
+      }
+
+      try {
+        setExpectedLPTokens(
+          await poolDataAdapter.getExpectedLPTokensForShares(
+            tempusPool.ammAddress,
+            content.principalTokenAddress,
+            content.yieldTokenAddress,
+            ethers.utils.parseEther(principalsAmount.toString()),
+            ethers.utils.parseEther(yieldsAmount.toString()),
+          ),
+        );
+      } catch (error) {
+        console.error(
+          'DetailPoolAddLiquidity - fetchEstimatedLPTokens() - Failed to fetch estimated LP Tokens!',
+          error,
+        );
+      }
+    };
+    fetchEstimatedLPTokens();
+  }, [
+    tempusPool.ammAddress,
+    content.principalTokenAddress,
+    content.yieldTokenAddress,
+    principalsAmount,
+    yieldsAmount,
+    poolDataAdapter,
+  ]);
+
+  // Fetch pool share for amount in
+  useEffect(() => {
+    const fetchExpectedPoolShare = async () => {
+      if (!poolDataAdapter || !expectedLPTokens) {
+        return;
+      }
+
+      setExpectedPoolShare(await poolDataAdapter.getPoolShareForLPTokensIn(tempusPool.ammAddress, expectedLPTokens));
+    };
+    fetchExpectedPoolShare();
+  }, [expectedLPTokens, poolDataAdapter, tempusPool.ammAddress]);
+
+  const onExecute = useCallback(() => {
+    const provideLiquidity = async () => {
+      if (!poolDataAdapter) {
+        return;
+      }
+      poolDataAdapter.provideLiquidity(
+        tempusPool.ammAddress,
+        userWalletAddress,
+        content.principalTokenAddress,
+        content.yieldTokenAddress,
+        ethers.utils.parseEther(principalsAmount.toString()),
+        ethers.utils.parseEther(yieldsAmount.toString()),
+      );
+    };
+    provideLiquidity();
+  }, [
+    content.principalTokenAddress,
+    content.yieldTokenAddress,
+    tempusPool.ammAddress,
+    principalsAmount,
+    yieldsAmount,
+    poolDataAdapter,
+    userWalletAddress,
+  ]);
 
   const principalsBalanceFormatted = useMemo(() => {
     if (!principalsBalance) {
-      return;
+      return null;
     }
     return NumberUtils.formatWithMultiplier(ethers.utils.formatEther(principalsBalance), 3);
   }, [principalsBalance]);
 
   const yieldsBalanceFormatted = useMemo(() => {
     if (!yieldsBalance) {
-      return;
+      return null;
     }
     return NumberUtils.formatWithMultiplier(ethers.utils.formatEther(yieldsBalance), 3);
   }, [yieldsBalance]);
+
+  const expectedLPTokensFormatted = useMemo(() => {
+    if (!expectedLPTokens) {
+      return null;
+    }
+    return NumberUtils.formatWithMultiplier(ethers.utils.formatEther(expectedLPTokens), 3);
+  }, [expectedLPTokens]);
 
   return (
     <>
@@ -138,7 +232,7 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = props => {
         <Typography variant="h4">Pool rations</Typography>
         <div className="tf__flex-row-center-vh">
           <Typography variant="body-text">
-            {principalsPercentage && NumberUtils.formatPercentage(principalsPercentage, 3)}
+            {principalsPercentage !== null && NumberUtils.formatPercentage(principalsPercentage, 3)}
           </Typography>
           <Spacer size={20} />
           <div className="tf__flex-column-center-vh">
@@ -158,7 +252,7 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = props => {
           </div>
           <Spacer size={20} />
           <Typography variant="body-text">
-            {yieldsPercentage && NumberUtils.formatPercentage(yieldsPercentage, 3)}
+            {yieldsPercentage !== null && NumberUtils.formatPercentage(yieldsPercentage, 3)}
           </Typography>
         </div>
       </SectionContainer>
@@ -272,16 +366,16 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = props => {
           <div className="tf__flex-row-space-between">
             <div className="tf__flex-row-center-v">
               <Typography variant="body-text">Estimate:&nbsp;</Typography>
-              <Typography variant="h5">2400 LP Tokens</Typography>
+              <Typography variant="h5">{expectedLPTokensFormatted} LP Tokens</Typography>
             </div>
-            <Typography variant="body-text">45% share of Pool</Typography>
+            <Typography variant="body-text">{NumberUtils.formatPercentage(expectedPoolShare)} share of Pool</Typography>
           </div>
         </SectionContainer>
       </ActionContainer>
 
       <Spacer size={20} />
       <div className="tf__flex-row-center-v">
-        <Button color="secondary" variant="contained" onClick={() => {}} disabled={false}>
+        <Button color="secondary" variant="contained" onClick={onExecute} disabled={false}>
           <Typography variant="h5" color="inverted">
             Execute
           </Typography>

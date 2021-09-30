@@ -65,7 +65,7 @@ const DetailUserInfoBalance: FC<DetailUserInfoBalancesProps> = props => {
           setLpTokenPrincipalReturn(expectedLPTokenReturn.principals);
           setLpTokenYieldReturn(expectedLPTokenReturn.yields);
         } catch (error) {
-          console.log('Detail User Info - retrieveBalances() - Failed to fetch token balances for the user!', error);
+          console.error('Detail User Info - retrieveBalances() - Failed to fetch token balances for the user!', error);
         }
       }
     };

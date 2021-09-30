@@ -99,5 +99,19 @@ class ERC20TokenService {
     }
     return approveTransaction;
   }
+
+  async totalSupply(): Promise<BigNumber> {
+    if (!this.contract) {
+      console.error('ERC20TokenService - approve() - Attempted to use ERC20TokenService before initializing it!');
+      return Promise.reject();
+    }
+
+    try {
+      return await this.contract.totalSupply();
+    } catch (error) {
+      console.error('ERC20TokenService - totalSupply() - Failed to get token total supply!', error);
+      return Promise.reject(error);
+    }
+  }
 }
 export default ERC20TokenService;

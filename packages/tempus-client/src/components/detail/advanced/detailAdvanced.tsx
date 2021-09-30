@@ -80,6 +80,7 @@ const DetailAdvanced: FC<DetailAdvancedProps> = (props: DetailAdvancedProps) => 
           poolDataAdapter={poolDataAdapter}
           signer={signer}
           userWalletAddress={userWalletAddress}
+          tempusPool={tempusPool}
         />
       )}
     </>
