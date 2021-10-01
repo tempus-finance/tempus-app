@@ -56,8 +56,6 @@ const Header: FC<HeaderProps> = ({ onAnalyticsClick, onLogoClick }): JSX.Element
       </div>
       <div className="tf__header__actions">
         <div className="tf__header__action-options" ref={optionsMenuAnchor} onClick={toggleOptionsMenu}>
-          <Typography variant="h5">Options</Typography>
-          <Spacer size={5} />
           <div className="tf__header__action-icon-container">
             <MenuIcon />
           </div>
