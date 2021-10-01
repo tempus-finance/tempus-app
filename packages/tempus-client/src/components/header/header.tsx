@@ -1,7 +1,6 @@
 import { FC, useRef, useState } from 'react';
 import { List, ListItem, ListItemIcon, ListItemText, Popper } from '@material-ui/core';
 import WalletConnect from '../wallet-connect/wallet-connect';
-import Typography from '../typography/Typography';
 import Spacer from '../spacer/spacer';
 import MenuIcon from '../icons/MenuIcon';
 import AboutIcon from '../icons/AboutIcon';
