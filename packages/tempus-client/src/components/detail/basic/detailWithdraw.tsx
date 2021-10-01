@@ -242,7 +242,7 @@ const DetailWithdraw: FC<PoolDetailProps> = ({ tempusPool, content, signer, user
           <Spacer size={20} />
           <SectionContainer>
             <div className="tf__flex-row-space-between">
-              <div className="tf__flex-row-center">
+              <div className="tf__flex-row-center-v">
                 <Typography variant="body-text">Token</Typography>
                 <Spacer size={10} />
                 <TokenSelector
@@ -261,7 +261,7 @@ const DetailWithdraw: FC<PoolDetailProps> = ({ tempusPool, content, signer, user
           </SectionContainer>
         </ActionContainer>
         <Spacer size={20} />
-        <div className="tf__flex-row-center">
+        <div className="tf__flex-row-center-v">
           <Button
             color="secondary"
             variant="contained"

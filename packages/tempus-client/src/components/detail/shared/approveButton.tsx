@@ -4,7 +4,6 @@ import { JsonRpcSigner } from '@ethersproject/providers';
 import { Button } from '@material-ui/core';
 import PoolDataAdapter from '../../../adapters/PoolDataAdapter';
 import Typography from '../../typography/Typography';
-import { TempusPool } from '../../../interfaces/TempusPool';
 
 interface ApproveButtonProps {
   poolDataAdapter: PoolDataAdapter | null;
@@ -12,7 +11,7 @@ interface ApproveButtonProps {
   userWalletAddress: string;
   tokenToApprove: string;
   spenderAddress: string;
-  amountToApprove: BigNumber;
+  amountToApprove: BigNumber | null;
   onApproved: () => void;
 }
 
@@ -25,7 +24,7 @@ const ApproveButton: FC<ApproveButtonProps> = props => {
 
   const onApprove = useCallback(() => {
     const approve = async () => {
-      if (signer && poolDataAdapter) {
+      if (signer && poolDataAdapter && amountToApprove) {
         try {
           const approveTransaction = await poolDataAdapter.approveToken(
             tokenToApprove,
@@ -35,6 +34,12 @@ const ApproveButton: FC<ApproveButtonProps> = props => {
           );
           if (approveTransaction) {
             await approveTransaction.wait();
+
+            // Set new allowance
+            setAllowance(
+              await poolDataAdapter.getTokenAllowance(tokenToApprove, spenderAddress, userWalletAddress, signer),
+            );
+
             onApproved();
             setApproving(false);
           }
@@ -46,7 +51,7 @@ const ApproveButton: FC<ApproveButtonProps> = props => {
     approve();
 
     setApproving(true);
-  }, [onApproved, tokenToApprove, signer, poolDataAdapter, amountToApprove, spenderAddress]);
+  }, [onApproved, tokenToApprove, signer, poolDataAdapter, amountToApprove, spenderAddress, userWalletAddress]);
 
   // Fetch token allowance
   useEffect(() => {
@@ -61,9 +66,15 @@ const ApproveButton: FC<ApproveButtonProps> = props => {
   }, [poolDataAdapter, signer, spenderAddress, tokenToApprove, userWalletAddress]);
 
   const approved = useMemo(() => {
-    const alreadyApproved = !!allowance && ethers.utils.parseEther(allowance.toString()).gte(amountToApprove);
+    if (!amountToApprove) {
+      return false;
+    }
 
-    return !alreadyApproved;
+    const amountToApproveParsed = Number(ethers.utils.formatEther(amountToApprove));
+
+    const alreadyApproved = !!allowance && allowance >= amountToApproveParsed;
+
+    return alreadyApproved;
   }, [allowance, amountToApprove]);
 
   if (approved) {

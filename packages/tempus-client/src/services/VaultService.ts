@@ -1,4 +1,4 @@
-import { BigNumber, Contract, ethers } from 'ethers';
+import { BigNumber, Contract, ethers, ContractTransaction } from 'ethers';
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
 import { Vault } from '../abi/Vault';
 import VaultABI from '../abi/Vault.json';
@@ -36,6 +36,16 @@ export type SwapEvent = TypedEvent<
 export enum SwapKind {
   GIVEN_IN = 0,
   GIVEN_OUT = 1,
+}
+
+export enum TempusAMMJoinKind {
+  INIT = 0,
+  EXACT_TOKENS_IN_FOR_BPT_OUT = 1,
+}
+
+export enum TempusAMMExitKind {
+  EXACT_BPT_IN_FOR_TOKENS_OUT = 0,
+  BPT_IN_FOR_EXACT_TOKENS_OUT = 1,
 }
 
 class VaultService {
@@ -125,6 +135,95 @@ class VaultService {
     const deadline = latestBlock.timestamp + SECONDS_IN_AN_HOUR;
 
     return this.contract.swap(singleSwap, fundManagement, minimumReturn, deadline);
+  }
+
+  async provideLiquidity(
+    poolId: string,
+    userWalletAddress: string,
+    principalsAddress: string,
+    yieldsAddress: string,
+    principalsIn: BigNumber,
+    yieldsIn: BigNumber,
+  ): Promise<ContractTransaction> {
+    if (!this.contract) {
+      console.error('VaultService - provideLiquidity() - Attempted to use VaultService before initializing it!');
+      return Promise.reject();
+    }
+    let kind = TempusAMMJoinKind.EXACT_TOKENS_IN_FOR_BPT_OUT;
+
+    try {
+      const poolTokens = await this.contract.getPoolTokens(poolId);
+      // If current liquidity is zero we need to init pool first
+      if (poolTokens.balances[0].isZero() && poolTokens.balances[1].isZero()) {
+        if (principalsIn.isZero() || yieldsIn.isZero()) {
+          return Promise.reject('Both tokens in must be non-zero amount when initializing the pool!');
+        }
+
+        kind = TempusAMMJoinKind.INIT;
+      }
+    } catch (error) {
+      console.error('VaultService - provideLiquidity() - Failed to check tempus pool AMM balance!', error);
+      return Promise.reject();
+    }
+
+    const assets = [
+      { address: principalsAddress, amount: principalsIn },
+      { address: yieldsAddress, amount: yieldsIn },
+    ].sort((a, b) => parseInt(a.address) - parseInt(b.address));
+
+    const initialBalances = assets.map(({ amount }) => amount);
+
+    const initUserData = ethers.utils.defaultAbiCoder.encode(['uint256', 'uint256[]'], [kind, initialBalances]);
+
+    const joinPoolRequest = {
+      assets: assets.map(({ address }) => address),
+      maxAmountsIn: initialBalances,
+      userData: initUserData,
+      fromInternalBalance: false,
+    };
+
+    try {
+      return await this.contract.joinPool(poolId, userWalletAddress, userWalletAddress, joinPoolRequest);
+    } catch (error) {
+      console.error('VaultService - provideLiquidity() - Failed to provide liquidity to tempus pool AMM!', error);
+      return Promise.reject();
+    }
+  }
+
+  async removeLiquidity(
+    poolId: string,
+    userWalletAddress: string,
+    principalAddress: string,
+    yieldsAddress: string,
+    lpAmount: BigNumber,
+  ): Promise<ethers.ContractTransaction> {
+    if (!this.contract) {
+      console.error('VaultService - removeLiquidity() - Attempted to use VaultService before initializing it!');
+      return Promise.reject();
+    }
+
+    const assets = [{ address: principalAddress }, { address: yieldsAddress }].sort(
+      (a, b) => parseInt(a.address) - parseInt(b.address),
+    );
+
+    const exitUserData = ethers.utils.defaultAbiCoder.encode(
+      ['uint256', 'uint256'],
+      [TempusAMMExitKind.EXACT_BPT_IN_FOR_TOKENS_OUT, lpAmount],
+    );
+
+    const exitPoolRequest = {
+      assets: assets.map(({ address }) => address),
+      minAmountsOut: [10000, 10000],
+      userData: exitUserData,
+      toInternalBalance: false,
+    };
+
+    try {
+      return await this.contract.exitPool(poolId, userWalletAddress, userWalletAddress, exitPoolRequest);
+    } catch (error) {
+      console.error('VaultService - removeLiquidity() - Failed to remove liquidity from tempus pool AMM!', error);
+      return Promise.reject();
+    }
   }
 
   async getPoolTokens(poolId: string): Promise<

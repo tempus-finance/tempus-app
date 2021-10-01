@@ -384,6 +384,115 @@ export default class PoolDataAdapter {
     }
   }
 
+  async getExpectedLPTokensForShares(
+    tempusAMM: string,
+    principalsAddress: string,
+    yieldsAddress: string,
+    principalsIn: BigNumber,
+    yieldsIn: BigNumber,
+  ): Promise<BigNumber> {
+    if (!this.tempusAMMService) {
+      console.error(
+        'PoolDataAdapter - getExpectedLPTokensForShares() - Attempted to use PoolDataAdapter before initializing it!',
+      );
+      return Promise.reject();
+    }
+
+    try {
+      return await this.tempusAMMService.getExpectedLPTokensForTokensIn(
+        tempusAMM,
+        principalsAddress,
+        yieldsAddress,
+        principalsIn,
+        yieldsIn,
+      );
+    } catch (error) {
+      console.error(
+        'PoolDataAdapter - getExpectedLPTokensForShares() - Failed to fetch expected LP token return!',
+        error,
+      );
+      return Promise.reject(error);
+    }
+  }
+
+  async getPoolShareForLPTokensIn(tempusAmm: string, amountIn: BigNumber): Promise<number> {
+    if (!this.vaultService || !this.eRC20TokenServiceGetter) {
+      console.error(
+        'PoolDataAdapter - getPoolShareForLPTokensIn() - Attempted to use PoolDataAdapter before initializing it!',
+      );
+      return Promise.reject();
+    }
+
+    let lpTotalSupply: BigNumber;
+    try {
+      lpTotalSupply = await this.eRC20TokenServiceGetter(tempusAmm).totalSupply();
+      if (lpTotalSupply.isZero()) {
+        return 1;
+      }
+    } catch (error) {
+      console.error('PoolDataAdapter - getPoolShareForLPTokensIn() - Failed to fetch total LP supply!', error);
+      return Promise.reject(error);
+    }
+
+    return Number(ethers.utils.formatEther(div18f(amountIn, amountIn.add(lpTotalSupply))));
+  }
+
+  async provideLiquidity(
+    tempusAmm: string,
+    userWalletAddress: string,
+    principalsAddress: string,
+    yieldsAddress: string,
+    principalsIn: BigNumber,
+    yieldsIn: BigNumber,
+  ): Promise<ContractTransaction> {
+    if (!this.vaultService || !this.tempusAMMService) {
+      console.error('PoolDataAdapter - provideLiquidity() - Attempted to use PoolDataAdapter before initializing it!');
+      return Promise.reject();
+    }
+
+    try {
+      const poolId = await this.tempusAMMService.poolId(tempusAmm);
+      return await this.vaultService.provideLiquidity(
+        poolId,
+        userWalletAddress,
+        principalsAddress,
+        yieldsAddress,
+        principalsIn,
+        yieldsIn,
+      );
+    } catch (error) {
+      console.error('PoolDataAdapter - provideLiquidity() - Failed to provide liquidity to tempus pool AMM!', error);
+      return Promise.reject();
+    }
+  }
+
+  async removeLiquidity(
+    tempusAmm: string,
+    userWalletAddress: string,
+    principalsAddress: string,
+    yieldsAddress: string,
+    lpAmount: BigNumber,
+  ): Promise<ContractTransaction> {
+    if (!this.vaultService || !this.tempusAMMService) {
+      console.error('PoolDataAdapter - removeLiquidity() - Attempted to use PoolDataAdapter before initializing it!');
+      return Promise.reject();
+    }
+
+    try {
+      const poolId = await this.tempusAMMService.poolId(tempusAmm);
+      return await this.vaultService.removeLiquidity(
+        poolId,
+        userWalletAddress,
+        principalsAddress,
+        yieldsAddress,
+        lpAmount,
+      );
+    } catch (error) {
+      console.error('PoolDataAdapter - removeLiquidity() - Failed to remove liquidity from tempus pool AMM!', error);
+      return Promise.reject();
+    }
+  }
+
   public async getUserTransactionEvents(
     tempusPoolAddress: string,
     userWalletAddress: string,
@@ -537,13 +646,13 @@ export default class PoolDataAdapter {
     }
   }
 
-  async getExpectedReturnForShareToken(amm: string, amount: BigNumber, yieldShareIn: boolean) {
+  async getExpectedReturnForShareToken(tempusAmm: string, amount: BigNumber, yieldShareIn: boolean) {
     if (!this.tempusAMMService) {
       return Promise.reject();
     }
 
     try {
-      return await this.tempusAMMService.getExpectedReturnGivenIn(amm, amount, yieldShareIn);
+      return await this.tempusAMMService.getExpectedReturnGivenIn(tempusAmm, amount, yieldShareIn);
     } catch (error) {
       console.error('PoolDataAdapter - getExpectedReturnForShareToken() - Failed to get expected return value!', error);
       return Promise.reject(error);
