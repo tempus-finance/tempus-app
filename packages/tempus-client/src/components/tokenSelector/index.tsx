@@ -2,7 +2,6 @@ import { FC, ChangeEvent, useCallback, useEffect, useState } from 'react';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
-import InputBase from '@material-ui/core/InputBase';
 import { Ticker } from '../../interfaces/Token';
 import TokenIcon from '../tokenIcon';
 
@@ -15,7 +14,7 @@ type TokenSelectorInProps = {
 };
 
 type TokenSelectorOutProps = {
-  onTokenChange?: (token: string | undefined) => void;
+  onTokenChange?: (token: Ticker | undefined) => void;
 };
 
 type TokenSelectorProps = TokenSelectorInProps & TokenSelectorOutProps;
@@ -23,7 +22,7 @@ type TokenSelectorProps = TokenSelectorInProps & TokenSelectorOutProps;
 const getMenuItems = (items: string[]) => {
   return items.map((item: string) => {
     return (
-      <MenuItem value={item} className="tf__token-selector__menu-item__container">
+      <MenuItem key={item} value={item} className="tf__token-selector__menu-item__container">
         <div className="tf__token-selector__menu-item">
           {item !== 'empty' && (
             <>
@@ -60,7 +59,7 @@ const TokenSelector: FC<TokenSelectorProps> = ({ defaultTicker, tickers = [], cl
 
   const handleChange = useCallback(
     (event: ChangeEvent<{ value: unknown }>) => {
-      const newToken = event.target.value as string;
+      const newToken = event.target.value as Ticker;
       setToken(newToken);
 
       setItems([...tickers]);
@@ -73,13 +72,17 @@ const TokenSelector: FC<TokenSelectorProps> = ({ defaultTicker, tickers = [], cl
   );
 
   return (
-    <div className="tf__token-selector">
-      <FormControl className={classNames}>
-        <Select labelId="tf__token-selector" value={token} onChange={handleChange} input={<InputBase />}>
-          {getMenuItems(items)}
-        </Select>
-      </FormControl>
-    </div>
+    <FormControl size="small">
+      <Select
+        variant="outlined"
+        className="tf__token-selector"
+        labelId="tf__token-selector"
+        value={token}
+        onChange={handleChange}
+      >
+        {getMenuItems(items)}
+      </Select>
+    </FormControl>
   );
 };
 

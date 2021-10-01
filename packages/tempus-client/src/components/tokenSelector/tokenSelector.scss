@@ -2,12 +2,7 @@
 
 .tf__token-selector {
   border-radius: 4px;
-  padding: 4px 7px;
-
-  .MuiSelect-select:focus,
-  .MuiInputBase-root.Mui-focused {
-    background-color: transparent;
-  }
+  height: 45px;
 }
 
 .tf__token-selector__menu-item {

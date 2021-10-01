@@ -4,11 +4,13 @@ export type Ticker =
   | 'DAI'
   | 'ETH'
   | 'LIDO'
-  | 'PRINCIPALS'
-  | 'YIELDS'
+  | 'Principals'
+  | 'Yields'
   | 'TLPT'
   | 'TUSD'
   | 'stETH'
   | 'USDC'
   | 'aDAI'
   | 'cDAI';
+
+export type PoolShares = 'Principals' | 'Yields';

@@ -17,10 +17,13 @@ const APYGraph: FC<APYGraphInProps> = ({ apy }: APYGraphInProps) => {
         {apyThresholds.map((threshold, index) => {
           if (apy * 100 > threshold) {
             return (
-              <div className={`tf__dashboard__apy-graph__bar-${index + 1} tf__dashboard__apy-graph__bar-active`} />
+              <div
+                key={index}
+                className={`tf__dashboard__apy-graph__bar-${index + 1} tf__dashboard__apy-graph__bar-active`}
+              />
             );
           }
-          return <div className={`tf__dashboard__apy-graph__bar-${index + 1}`} />;
+          return <div key={index} className={`tf__dashboard__apy-graph__bar-${index + 1}`} />;
         })}
       </div>
     </div>

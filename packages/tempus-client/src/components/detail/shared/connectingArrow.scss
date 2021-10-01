@@ -1,0 +1,17 @@
+@import '../../../constants.scss';
+
+.tf__dialog__tab__connecting-arrow {
+  width: 100%;
+  margin-top: -10px;
+  margin-bottom: -10px;
+  display: flex;
+  justify-content: center;
+  z-index: 999;
+
+  .arrow-container {
+    padding: 4px;
+    width: 23px;
+    height: 23px;
+    border-radius: 40px;
+  }
+}

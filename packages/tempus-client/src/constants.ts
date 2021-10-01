@@ -22,3 +22,9 @@ export const fixedAPRTooltipText =
   'Calculated based on the current TYS/TPS exchange rate and does not take into account slippage. For a more accurate calculation, please click on the "Open" icon for the relevant pool and use the deposit function.';
 
 export const volume24hTooltipText = 'Calculated as the sum of deposit, redeem, and swap amounts in a 24 hour period.';
+
+export const interestRateProtectionTooltipText =
+  'Fix your future yield with Tempus. This function locks your Yield Bearing Token, mints Principals and Yields in exchange, and swaps all Yields for Principals through TempusAMM. You will receive Principals which will be redeemable 1:1 to the Underlying asset on Maturity.';
+
+export const liquidityProvisionTooltipText =
+  'Provide liquidity to Tempus to earn extra yield. This function locks your Yield Bearing Token, mints Principals and Yields in exchange, and uses the maximum available number of Principals and Yields to provide liquidity to TempusAMM. This means that you will receive the underlying yield, and the Tempus swap fees, aggregated into one yield.';

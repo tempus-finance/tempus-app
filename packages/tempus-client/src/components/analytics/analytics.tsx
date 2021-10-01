@@ -6,9 +6,9 @@ import Transactions from '../grids/transactions/transactions';
 import { volume24hTooltipText } from '../../constants';
 
 // Style
-import './landing.scss';
+import './analytics.scss';
 
-function Landing(): JSX.Element {
+function Statistics(): JSX.Element {
   return (
     <div className="tf-landing-section-container">
       <div className="tf-tvl-chart-container">
@@ -23,4 +23,4 @@ function Landing(): JSX.Element {
     </div>
   );
 }
-export default Landing;
+export default Statistics;

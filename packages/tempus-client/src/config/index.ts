@@ -7,7 +7,9 @@ const config: Config = {
     {
       address: '',
       ammAddress: '',
-      backingToken: '',
+      backingToken: 'DAI',
+      spotPrice: '10000',
+      maxLeftoverShares: '',
     },
   ],
   statisticsContract: '',

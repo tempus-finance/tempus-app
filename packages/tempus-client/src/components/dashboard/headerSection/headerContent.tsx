@@ -10,13 +10,13 @@ interface ContentProps extends TableHeaderRow.ContentProps {
 
 const HeaderContent: FC<ContentProps> = props => {
   return (
-    <TableHeaderRow.Content column={props.column} align="left">
+    <TableHeaderRow.Content column={props.column} align={props.align}>
       {props.column.tooltip ? (
         <>
           <Typography color="default" variant="h5">
             {props.children}
           </Typography>
-          <div style={{ marginRight: '4px' }}>
+          <div className="tf__dashboard__header-info-icon-container">
             <InfoTooltip text={props.column.tooltip} />
           </div>
         </>

@@ -1,0 +1,98 @@
+@import '../../constants.scss';
+
+.tf__detail__section__container {
+  display: flex;
+  justify-content: center;
+  padding: 0;
+}
+
+.tf__dialog-container {
+  @include background-level-1;
+  padding: 20px;
+  max-width: 700px;
+  flex-grow: 1;
+  align-self: flex-start;
+  width: 100%;
+
+  .tf__dialog-container__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    > .tf__dialog-container__header-summary-data {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+
+      > svg,
+      > div {
+        margin-right: 10px;
+      }
+    }
+
+    > .tf__dialog-container__header-ui-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+    }
+  }
+
+  .tf__dialog-container__fees {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 10px 0 12px;
+
+    > div {
+      margin-right: 20px;
+    }
+  }
+
+  .tf__dialog__flex-row {
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+  }
+
+  .tf__dialog__flex-row-half-width {
+    width: 50%;
+  }
+
+  .tf__dialog__flex-col-space-between {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    height: 145px;
+  }
+
+  .tf__dialog__label-align-right {
+    width: 75px;
+    display: flex;
+    justify-content: flex-end;
+    margin-right: 13px;
+  }
+
+  .tf__dialog__content {
+    overflow: visible;
+
+    .tf__dialog__content-tab {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .MuiButton-root {
+      text-transform: none;
+      height: 40px;
+    }
+  }
+}
+
+.tf__user__details-container {
+  @include background-level-1;
+  padding: 20px;
+  width: 400px;
+  flex-shrink: 0;
+  flex-grow: 0;
+  align-self: flex-start;
+}

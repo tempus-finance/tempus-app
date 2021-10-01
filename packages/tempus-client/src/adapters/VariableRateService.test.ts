@@ -6,14 +6,16 @@ import VariableRate from './VariableRateService';
 jest.mock('@ethersproject/providers');
 const { JsonRpcProvider } = jest.requireMock('@ethersproject/providers');
 
-let instance: any;
+jest.mock('../services/TempusPoolService');
+const TempusPoolService = jest.requireMock('../services/TempusPoolService').default;
+
+let instance: VariableRate;
 const mockLiquidityRate = eth.BigNumber.from('123000000000000000000000000');
 const mockGetReserveData = jest.fn();
 const mockGetLastCompletedReportDelta = jest.fn();
 const mockPostTotalPooledEther = eth.BigNumber.from('10000000');
 const mockPreTotalPooledEther = eth.BigNumber.from('5000000');
 const mockTimeElapsed = eth.BigNumber.from('3000000');
-const mockSupplyRatePerBlock = jest.fn();
 const mockBorrowRatePerBlock = jest.fn();
 
 jest.spyOn(eth as any, 'Contract').mockImplementation((address: any) => {
@@ -25,10 +27,7 @@ jest.spyOn(eth as any, 'Contract').mockImplementation((address: any) => {
 
   if (address === cEthAddress) {
     return {
-      methods: {
-        supplyRatePerBlock: mockSupplyRatePerBlock,
-        borrowRatePerBlock: mockBorrowRatePerBlock,
-      },
+      borrowRatePerBlock: mockBorrowRatePerBlock,
     };
   }
 
@@ -70,9 +69,10 @@ describe('VariableRate', () => {
 
   describe('getAprRate(', () => {
     const mockProvider = new JsonRpcProvider();
+    const mockTempusPoolService = new TempusPoolService();
 
     instance = new VariableRate();
-    instance.init(mockProvider);
+    instance.init(mockProvider, mockTempusPoolService);
 
     test('returns a valid instance', () => {
       expect(instance).toBeInstanceOf(VariableRate);
@@ -85,25 +85,23 @@ describe('VariableRate', () => {
         };
       });
 
-      const apr = await instance.getAprRate('aave');
+      const tempusPoolAddress = 'abc';
+
+      const apr = await instance.getAprRate('aave', tempusPoolAddress);
       expect(apr).toEqual(0.123);
     });
 
-    test('returns the APR of `compound` protocol', async () => {
-      mockSupplyRatePerBlock.mockImplementation(() => {
-        return {
-          call: jest.fn().mockReturnValue(1000000),
-        };
-      });
-
+    xtest('returns the APR of `compound` protocol', async () => {
       mockBorrowRatePerBlock.mockImplementation(() => {
         return {
           call: jest.fn().mockReturnValue(200),
         };
       });
 
-      const apr = await instance.getAprRate('compound');
-      expect(apr).toEqual(0.0002398052903807013);
+      const tempusPoolAddress = 'dfg';
+
+      const apr = await instance.getAprRate('compound', tempusPoolAddress);
+      expect(apr).toEqual(0.48075880352207445);
     });
 
     test('returns the APR of `lido` protocol', async () => {

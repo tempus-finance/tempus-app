@@ -1,5 +1,9 @@
+import { Ticker } from '.';
+
 export type TempusPool = {
   address: string;
   ammAddress: string;
-  backingToken: string;
+  backingToken: Ticker;
+  spotPrice: string;
+  maxLeftoverShares: string;
 };

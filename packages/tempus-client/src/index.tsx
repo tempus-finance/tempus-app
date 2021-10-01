@@ -11,6 +11,12 @@ import './index.scss';
 const theme = createTheme({
   palette: {
     type: 'light',
+    primary: {
+      main: '#288195',
+    },
+    secondary: {
+      main: '#FF6B00',
+    },
   },
   overrides: {
     MuiTooltip: {

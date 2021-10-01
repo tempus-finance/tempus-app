@@ -195,7 +195,7 @@ class TempusPoolService {
     throw new Error(`Address '${address}' is not valid`);
   }
 
-  public getPrincipalTokenAddress(address: string): Promise<string> {
+  public getPrincipalsTokenAddress(address: string): Promise<string> {
     const tempusPool = this.tempusPoolsMap[address];
     if (tempusPool) {
       return tempusPool.principalShare();
@@ -255,6 +255,19 @@ class TempusPoolService {
       }
     }
     throw new Error(`TempusPoolService - currentInterestRate() - Address '${address}' is not valid`);
+  }
+
+  async getFeesConfig(address: string): Promise<BigNumber[]> {
+    const contract = this.tempusPoolsMap[address];
+    if (contract) {
+      try {
+        return await contract.getFeesConfig();
+      } catch (error) {
+        console.error('TempusPoolService - getFeesConfig() - Failed to fetch pool fees.', error);
+        return Promise.reject(error);
+      }
+    }
+    throw new Error(`TempusPoolService - getFeesConfig() - Address '${address}' is not valid`);
   }
 }
 

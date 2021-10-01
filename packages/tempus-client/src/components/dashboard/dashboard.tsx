@@ -42,8 +42,8 @@ type DashboardProps = DashboardInProps & DashboardOutProps;
 const Dashboard: FC<DashboardProps> = ({ hidden, userWalletAddress, rows, onRowActionClick }): JSX.Element => {
   const [tableColumnExtensions] = useState([
     { columnName: ColumnNames.TOKEN, align: 'left' as 'left', width: 160 },
-    { columnName: ColumnNames.PROTOCOL, align: 'left' as 'left', width: 115 },
-    { columnName: ColumnNames.MATURITY, align: 'right' as 'right' },
+    { columnName: ColumnNames.PROTOCOL, align: 'left' as 'left', width: 150 },
+    { columnName: ColumnNames.MATURITY, align: 'left' as 'left' },
     { columnName: ColumnNames.FIXED_APR, align: 'right' as 'right', width: 140 },
     { columnName: ColumnNames.VARIABLE_APY, align: 'right' as 'right', width: 160 },
     { columnName: ColumnNames.TVL, align: 'right' as 'right', width: 80 },
@@ -61,6 +61,7 @@ const Dashboard: FC<DashboardProps> = ({ hidden, userWalletAddress, rows, onRowA
     { columnName: ColumnNames.MATURITY, compare: compareMaturity },
     { columnName: ColumnNames.FIXED_APR, compare: compareAPY },
     { columnName: ColumnNames.VARIABLE_APY, compare: compareAPY },
+    { columnName: ColumnNames.PROTOCOL, compare: compareProtocol },
   ]);
 
   const [currentSorting, setCurrentSorting] = useState<Sorting[]>([]);
@@ -101,71 +102,83 @@ const Dashboard: FC<DashboardProps> = ({ hidden, userWalletAddress, rows, onRowA
     setFilterPopupOpen(!filterPopupOpen);
   };
 
-  const onApplyFilter = (filterData: FilterData) => {
-    let result = rows.filter(row => {
-      if (isParentRow(row)) {
-        return true;
+  /**
+   * If `null` is passed as `filterData`, all filters will be cleared.
+   */
+  const onApplyFilter = useCallback(
+    (filterData: FilterData | null) => {
+      if (!filterData) {
+        setFilteredRows(null);
+        return;
       }
 
-      // Check asset name matches
-      const assetNameMatched = filterData.assetName
-        ? row.token.toLowerCase().indexOf(filterData.assetName.toLowerCase()) > -1
-        : true;
-
-      // Check protocol name matches
-      let protocolNameMatched;
-      if (isChildRow(row)) {
-        protocolNameMatched = filterData.protocolName
-          ? row.protocol.toLowerCase().indexOf(filterData.protocolName.toLowerCase()) > -1
-          : true;
-      }
-
-      // Check APR matches
-      let aprMatched;
-      if (isChildRow(row)) {
-        const min = filterData.aPRRange.min;
-        const max = filterData.aPRRange.max;
-
-        aprMatched =
-          (min === 0 || min) && (max === 0 || max)
-            ? (row.fixedAPR > min && row.fixedAPR < max) || (row.variableAPY > min && row.variableAPY < max)
-            : true;
-      }
-
-      // Check maturity matches
-      let maturityMatched;
-      if (isChildRow(row)) {
-        const min = filterData.maturityRange.min;
-        const max = filterData.maturityRange.max;
-
-        if ((min === 0 || min) && (max === 0 || max)) {
-          const startFrom = Date.now() + min * SECONDS_IN_A_DAY * 1000;
-          const endTo = Date.now() + max * SECONDS_IN_A_DAY * 1000;
-
-          maturityMatched = row.maturityDate.getTime() > startFrom && row.maturityDate.getTime() < endTo;
-        } else {
-          maturityMatched = true;
+      let result = rows.filter(row => {
+        if (isParentRow(row)) {
+          return true;
         }
-      }
 
-      return assetNameMatched && protocolNameMatched && aprMatched && maturityMatched;
-    });
+        // Check asset name matches
+        const assetNameMatched = filterData.assetName
+          ? row.token.toLowerCase().indexOf(filterData.assetName.toLowerCase()) > -1
+          : true;
 
-    // Filter out parent rows without children
-    result = result.filter(row => {
-      if (isChildRow(row)) {
-        return true;
-      }
+        // Check protocol name matches
+        let protocolNameMatched;
+        if (isChildRow(row)) {
+          protocolNameMatched = filterData.protocolName
+            ? row.protocol.toLowerCase().indexOf(filterData.protocolName.toLowerCase()) > -1
+            : true;
+        }
 
-      const parentChildren = result.filter(r => {
-        return r.parentId !== null && r.parentId === row.id;
+        // Check APR matches
+        let aprMatched;
+        if (isChildRow(row)) {
+          const min = filterData.aPRRange.min;
+          const max = filterData.aPRRange.max;
+
+          aprMatched =
+            (min === 0 || min) && (max === 0 || max)
+              ? (row.fixedAPR && row.fixedAPR > min && row.fixedAPR < max) ||
+                (row.variableAPY > min && row.variableAPY < max)
+              : true;
+        }
+
+        // Check maturity matches
+        let maturityMatched;
+        if (isChildRow(row)) {
+          const min = filterData.maturityRange.min;
+          const max = filterData.maturityRange.max;
+
+          if ((min === 0 || min) && (max === 0 || max)) {
+            const startFrom = Date.now() + min * SECONDS_IN_A_DAY * 1000;
+            const endTo = Date.now() + max * SECONDS_IN_A_DAY * 1000;
+
+            maturityMatched = row.maturityDate.getTime() > startFrom && row.maturityDate.getTime() < endTo;
+          } else {
+            maturityMatched = true;
+          }
+        }
+
+        return assetNameMatched && protocolNameMatched && aprMatched && maturityMatched;
       });
 
-      return parentChildren.length > 0;
-    });
+      // Filter out parent rows without children
+      result = result.filter(row => {
+        if (isChildRow(row)) {
+          return true;
+        }
 
-    setFilteredRows(result);
-  };
+        const parentChildren = result.filter(r => {
+          return r.parentId !== null && r.parentId === row.id;
+        });
+
+        return parentChildren.length > 0;
+      });
+
+      setFilteredRows(result);
+    },
+    [rows],
+  );
 
   return (
     <div className="tf__dashboard__section__container" hidden={hidden}>
@@ -239,8 +252,34 @@ const Dashboard: FC<DashboardProps> = ({ hidden, userWalletAddress, rows, onRowA
 
 export default Dashboard;
 
-const compareMaturity = (a: number[], b: number[]) => a[0] - b[0];
-const compareAPY = (a: number[], b: number[]) => a[1] - b[1];
+const compareMaturity = (a: number[], b: number[]): number => a[0] - b[0];
+const compareAPY = (a: number[], b: number[]): number => a[1] - b[1];
+const compareProtocol = (a: string[] | string, b: string[] | string): number => {
+  // Sort child rows
+  if (typeof a === 'string' && typeof b === 'string') {
+    return a.localeCompare(b);
+  }
+
+  // Sort parent rows
+  const maxLength = Math.max(a.length, b.length);
+  for (let i = 0; i < maxLength; i++) {
+    if (a[i] !== b[i]) {
+      if (a[i] === undefined) {
+        return 1;
+      }
+      if (b[i] === undefined) {
+        return -1;
+      }
+
+      if (a[i] > b[i]) {
+        return -1;
+      } else if (a[i] < b[i]) {
+        return 1;
+      }
+    }
+  }
+  return 0;
+};
 
 const totalSummaryItems = [{ columnName: ColumnNames.TOKEN, type: 'count' }];
 

@@ -12,9 +12,9 @@ export interface DashboardRow {
 }
 
 export interface DashboardRowParent extends DashboardRow {
-  maturityRange: Date[];
-  fixedAPR: number[];
-  variableAPY: number[];
+  maturityRange: (Date | null)[];
+  fixedAPR: (number | null)[];
+  variableAPY: (number | null)[]; // TODO rename to variableAPR
   availableUSDToDeposit: BigNumber | undefined;
   protocols: ProtocolName[];
 }
@@ -25,10 +25,14 @@ export interface DashboardRowChild extends DashboardRow {
   supportedTokens: Ticker[];
   startDate: Date;
   maturityDate: Date;
-  fixedAPR: number;
-  variableAPY: number;
+  fixedAPR: number | null;
+  variableAPY: number; // TODO rename to variableAPR
   availableTokensToDeposit: AvailableToDeposit | undefined;
   availableUSDToDeposit: AvailableToDeposit | undefined;
+  principalTokenAddress: string;
+  yieldTokenAddress: string;
+  backingTokenAddress: string;
+  yieldBearingTokenAddress: string;
 }
 
 export interface AvailableToDeposit {

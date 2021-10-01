@@ -2,7 +2,7 @@ import { Column } from '@devexpress/dx-react-grid';
 import { ethers } from 'ethers';
 
 import { fixedAPRTooltipText, variableAPYTooltipText } from '../../constants';
-import { DashboardRow, DashboardRowChild, DashboardRowParent } from '../../interfaces';
+import { DashboardRow, DashboardRowChild, DashboardRowParent, isParentRow } from '../../interfaces';
 import NumberUtils from '../../services/NumberUtils';
 
 export interface ExtraDataColumn extends Column {
@@ -17,28 +17,12 @@ export const dashboardColumnsDefinitions: ExtraDataColumn[] = [
   {
     name: 'protocol',
     title: 'Protocol',
-  },
-
-  {
-    name: 'fixedAPR',
-    title: `Fixed APR`,
-    tooltip: fixedAPRTooltipText,
-    getCellValue: (row: any) => {
-      if (row.fixedAPR.length === 2) {
-        return row.fixedAPR;
+    getCellValue: (row: DashboardRowChild | DashboardRowParent) => {
+      if (isParentRow(row)) {
+        return row.protocols;
+      } else {
+        return row.protocol;
       }
-      return [row.fixedAPR];
-    },
-  },
-  {
-    name: 'variableAPY',
-    title: 'Variable APR',
-    tooltip: variableAPYTooltipText,
-    getCellValue: (row: any) => {
-      if (row.variableAPY.length === 2) {
-        return row.variableAPY;
-      }
-      return [row.variableAPY];
     },
   },
   {
@@ -54,6 +38,36 @@ export const dashboardColumnsDefinitions: ExtraDataColumn[] = [
         return [min.getTime(), max.getTime()];
       }
       return [row.maturityDate.getTime()];
+    },
+  },
+  {
+    name: 'fixedAPR',
+    title: `Fixed APR`,
+    tooltip: fixedAPRTooltipText,
+    getCellValue: (row: any) => {
+      if (!row.fixedAPR) {
+        return null;
+      }
+      else if (row.fixedAPR.length === 2) {
+        if (!row.fixedAPR[0] || !row.fixedAPR[1]) {
+          return null;
+        }
+        return row.fixedAPR;
+      }
+      else {
+        return [row.fixedAPR];
+      }
+    },
+  },
+  {
+    name: 'variableAPY',
+    title: 'Variable APR',
+    tooltip: variableAPYTooltipText,
+    getCellValue: (row: any) => {
+      if (row.variableAPY.length === 2) {
+        return row.variableAPY;
+      }
+      return [row.variableAPY];
     },
   },
   {

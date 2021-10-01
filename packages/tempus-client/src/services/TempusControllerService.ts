@@ -1,8 +1,9 @@
-import { BigNumber, Contract, ContractTransaction } from 'ethers';
+import { BigNumber, Contract, ContractTransaction, ethers } from 'ethers';
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
 import { TempusController } from '../abi/TempusController';
 import TempusControllerABI from '../abi/TempusController.json';
 import { TypedEvent } from '../abi/commons';
+import getConfig from '../utils/get-config';
 
 type TempusControllerServiceParameters = {
   Contract: typeof Contract;
@@ -48,7 +49,7 @@ class TempusControllerService {
     this.contract = new Contract(params.address, params.abi, params.signerOrProvider) as TempusController;
   }
 
-  public async getDepositedEvents(): Promise<DepositedEvent[]> {
+  public async getDepositedEvents(forPool?: string, forUser?: string): Promise<DepositedEvent[]> {
     if (!this.contract) {
       console.error(
         'TempusControllerService - getDepositedEvents() - Attempted to use TempusControllerService before initializing it!',
@@ -57,14 +58,14 @@ class TempusControllerService {
     }
 
     try {
-      return await this.contract.queryFilter(this.contract.filters.Deposited());
+      return await this.contract.queryFilter(this.contract.filters.Deposited(forPool, forUser));
     } catch (error) {
       console.error(`TempusControllerService getDepositedEvents() - Failed to get deposited events!`, error);
       return Promise.reject(error);
     }
   }
 
-  public async getRedeemedEvents(): Promise<RedeemedEvent[]> {
+  public async getRedeemedEvents(forPool?: string, forUser?: string): Promise<RedeemedEvent[]> {
     if (!this.contract) {
       console.error(
         'TempusControllerService - getRedeemedEvents() - Attempted to use TempusControllerService before initializing it!',
@@ -73,7 +74,7 @@ class TempusControllerService {
     }
 
     try {
-      return await this.contract.queryFilter(this.contract.filters.Redeemed());
+      return await this.contract.queryFilter(this.contract.filters.Redeemed(forPool, forUser));
     } catch (error) {
       console.error(`TempusControllerService getRedeemEvents() - Failed to get redeemed events!`, error);
       return Promise.reject(error);
@@ -85,6 +86,7 @@ class TempusControllerService {
     tokenAmount: BigNumber,
     isBackingToken: boolean,
     minTYSRate: BigNumber,
+    isEthDeposit?: boolean,
   ): Promise<ContractTransaction> {
     if (!this.contract) {
       console.error(
@@ -94,9 +96,86 @@ class TempusControllerService {
     }
 
     try {
-      return await this.contract.depositAndFix(tempusAMM, tokenAmount, isBackingToken, minTYSRate);
+      if (isEthDeposit) {
+        return await this.contract.depositAndFix(tempusAMM, tokenAmount, isBackingToken, minTYSRate, {
+          value: tokenAmount,
+        });
+      } else {
+        return await this.contract.depositAndFix(tempusAMM, tokenAmount, isBackingToken, minTYSRate);
+      }
     } catch (error) {
       console.error(`TempusControllerService depositAndFix() - Failed to deposit backing tokens!`, error);
+      return Promise.reject(error);
+    }
+  }
+
+  public async completeExitAndRedeem(tempusAMM: string, isBackingToken: boolean): Promise<ContractTransaction> {
+    if (!this.contract) {
+      console.error(
+        'TempusControllerService - completeExitAndRedeem() - Attempted to use TempusControllerService before initializing it!',
+      );
+      return Promise.reject();
+    }
+
+    const tempusPoolConfig = getConfig().tempusPools.find(
+      tempusPoolConfig => tempusPoolConfig.ammAddress === tempusAMM,
+    );
+    if (!tempusPoolConfig) {
+      console.error('TempusControllerService - completeExitAndRedeem() - Failed to get tempus pool config!');
+      return Promise.reject();
+    }
+
+    try {
+      return await this.contract.completeExitAndRedeem(
+        tempusAMM,
+        ethers.utils.parseEther(tempusPoolConfig.maxLeftoverShares),
+        isBackingToken,
+      );
+    } catch (error) {
+      console.error(`TempusControllerService completeExitAndRedeem() - Failed to redeem tokens!`, error);
+      return Promise.reject(error);
+    }
+  }
+
+  async depositYieldBearing(tempusPool: string, amount: BigNumber, recipient: string): Promise<ContractTransaction> {
+    if (!this.contract) {
+      console.error(
+        'TempusControllerService - depositYieldBearing() - Attempted to use TempusControllerService before initializing it!',
+      );
+      return Promise.reject();
+    }
+
+    try {
+      return await this.contract.depositYieldBearing(tempusPool, amount, recipient);
+    } catch (error) {
+      console.error('TempusControllerService - depositYieldBearing() - Failed to deposit yield bearing token!', error);
+      return Promise.reject(error);
+    }
+  }
+
+  async depositBacking(
+    tempusPool: string,
+    amount: BigNumber,
+    recipient: string,
+    isEthDeposit?: boolean,
+  ): Promise<ContractTransaction> {
+    if (!this.contract) {
+      console.error(
+        'TempusControllerService - depositBacking() - Attempted to use TempusControllerService before initializing it!',
+      );
+      return Promise.reject();
+    }
+
+    try {
+      if (isEthDeposit) {
+        return await this.contract.depositBacking(tempusPool, amount, recipient, {
+          value: amount,
+        });
+      } else {
+        return await this.contract.depositBacking(tempusPool, amount, recipient);
+      }
+    } catch (error) {
+      console.error('TempusControllerService - depositBacking() - Failed to deposit backing token!', error);
       return Promise.reject(error);
     }
   }

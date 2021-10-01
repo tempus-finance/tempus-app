@@ -19,7 +19,6 @@ import VariableRateService from './VariableRateService';
 
 type DashboardDataAdapterParameters = {
   signerOrProvider: JsonRpcProvider | JsonRpcSigner;
-  userWalletAddress: string;
   tempusPoolService: TempusPoolService;
   statisticsService: StatisticsService;
   tempusAMMService: TempusAMMService;
@@ -40,11 +39,12 @@ export default class DashboardDataAdapter {
     this.tempusPoolService = params.tempusPoolService;
     this.statisticsService = params.statisticsService;
     this.tempusAMMService = params.tempusAMMService;
-    this.userWalletAddress = params.userWalletAddress;
     this.variableRateService = params.variableRateService;
   }
 
-  public async getRows(): Promise<DashboardRow[]> {
+  public async getRows(userWalletAddress: string): Promise<DashboardRow[]> {
+    this.userWalletAddress = userWalletAddress;
+
     let childRows: DashboardRowChild[];
     try {
       childRows = await this.getChildRows();
@@ -76,9 +76,12 @@ export default class DashboardDataAdapter {
     }
 
     try {
+      const principalTokenAddress = await this.tempusPoolService.getPrincipalsTokenAddress(tempusPool.address);
+
       const [
         backingTokenTicker,
         yieldBearingTokenTicker,
+        yieldTokenAddress,
         protocol,
         startDate,
         maturityDate,
@@ -88,17 +91,20 @@ export default class DashboardDataAdapter {
       ] = await Promise.all([
         this.tempusPoolService.getBackingTokenTicker(tempusPool.address),
         this.tempusPoolService.getYieldBearingTokenTicker(tempusPool.address),
+        this.tempusPoolService.getYieldTokenAddress(tempusPool.address),
         this.tempusPoolService.getProtocolName(tempusPool.address),
         this.tempusPoolService.getStartTime(tempusPool.address),
         this.tempusPoolService.getMaturityTime(tempusPool.address),
-        this.tempusAMMService.getFixedAPR(tempusPool.ammAddress),
+        this.tempusAMMService.getFixedAPR(tempusPool.ammAddress, principalTokenAddress),
         this.getPresentValueInBackingTokensForPool(tempusPool),
         this.getAvailableToDepositForPool(tempusPool),
       ]);
 
-      const [tvl, poolBackingTokenRate] = await Promise.all([
+      const [tvl, poolBackingTokenRate, backingTokenAddress, yieldBearingTokenAddress] = await Promise.all([
         this.statisticsService.totalValueLockedUSD(tempusPool.address, backingTokenTicker),
         this.statisticsService.getRate(backingTokenTicker),
+        this.tempusPoolService.getBackingTokenAddress(tempusPool.address),
+        this.tempusPoolService.getYieldBearingTokenAddress(tempusPool.address),
       ]);
 
       const availableToDepositInUSD = await this.getAvailableToDepositInUSD(
@@ -115,10 +121,16 @@ export default class DashboardDataAdapter {
         token: backingTokenTicker,
         supportedTokens: [backingTokenTicker, yieldBearingTokenTicker],
         protocol,
+        principalTokenAddress,
+        yieldTokenAddress,
+        backingTokenAddress,
+        yieldBearingTokenAddress,
         startDate,
         maturityDate,
         fixedAPR,
-        variableAPY: this.variableRateService ? await this.variableRateService.getAprRate(protocol) : 0,
+        variableAPY: this.variableRateService
+          ? await this.variableRateService.getAprRate(protocol, tempusPool.address)
+          : 0,
         TVL: Number(ethers.utils.formatEther(tvl)),
         presentValue:
           presentValueInBackingTokens !== undefined
@@ -187,7 +199,7 @@ export default class DashboardDataAdapter {
           variableAPY: this.getRangeFrom<number>(childrenVariable),
           TVL: parentTVL,
           presentValue: this.userWalletAddress ? parentPresentValue : undefined,
-          availableUSDToDeposit: availableToDepositInUSD,
+          availableUSDToDeposit: this.userWalletAddress ? availableToDepositInUSD : undefined,
           protocols: Array.from(new Set(childrenProtocols)), // Converting list of protocols to set removes duplicate items
         };
 
@@ -210,14 +222,17 @@ export default class DashboardDataAdapter {
     });
   }
 
-  private getRangeFrom<ValueType>(values: ValueType[]): ValueType[] {
+  private getRangeFrom<ValueType>(values: (ValueType | null)[]): (ValueType | null)[] {
     let minValue = values[0];
     let maxValue = values[0];
     values.forEach(value => {
-      if (minValue > value) {
+      if (!value) {
+        return;
+      }
+      if (minValue && minValue > value) {
         minValue = value;
       }
-      if (maxValue < value) {
+      if (maxValue && maxValue < value) {
         maxValue = value;
       }
     });
@@ -240,7 +255,7 @@ export default class DashboardDataAdapter {
     try {
       const [yieldTokenAddress, principalTokenAddress, pricePerPrincipalShare, pricePerYieldShare] = await Promise.all([
         this.tempusPoolService.getYieldTokenAddress(pool.address),
-        this.tempusPoolService.getPrincipalTokenAddress(pool.address),
+        this.tempusPoolService.getPrincipalsTokenAddress(pool.address),
         this.tempusPoolService.pricePerPrincipalShareStored(pool.address),
         this.tempusPoolService.pricePerYieldShareStored(pool.address),
       ]);

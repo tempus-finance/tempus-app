@@ -1,12 +1,13 @@
-import { FC, useCallback, useContext, useMemo, useState } from 'react';
-import { DashboardRow } from '../../interfaces';
+import { FC, useCallback, useContext, useEffect, useState } from 'react';
+import { DashboardRow, DashboardRowChild } from '../../interfaces';
 import getDashboardDataAdapter from '../../adapters/getDashboardDataAdapter';
+import Detail from '../detail/detail';
 import Dashboard from './dashboard';
 import { Context } from '../../context';
 
 type DashboardManagerProps = {
-  selectedRow: DashboardRow | null;
-  onRowSelected?: (row: DashboardRow | null) => void;
+  selectedRow: DashboardRowChild | null;
+  onRowSelected?: (row: DashboardRowChild | null) => void;
 };
 
 const DashboardManager: FC<DashboardManagerProps> = ({ selectedRow, onRowSelected }): JSX.Element => {
@@ -16,14 +17,12 @@ const DashboardManager: FC<DashboardManagerProps> = ({ selectedRow, onRowSelecte
     data: { userWalletAddress },
   } = useContext(Context);
 
-  useMemo(() => {
+  useEffect(() => {
     const fetchRows = async () => {
-      const rows = await getDashboardDataAdapter(userWalletAddress).getRows();
-
-      setRows(rows);
+      setRows(await getDashboardDataAdapter().getRows(userWalletAddress));
     };
     fetchRows();
-  }, [setRows, userWalletAddress]);
+  }, [userWalletAddress]);
 
   const onRowActionClick = useCallback(
     (row: any) => {
@@ -46,9 +45,8 @@ const DashboardManager: FC<DashboardManagerProps> = ({ selectedRow, onRowSelecte
         userWalletAddress={userWalletAddress}
         onRowActionClick={onRowActionClick}
       />
-      <div className="tf__detail__section__container" hidden={!shouldShowDashboard}>
-        <div>Here the details</div> <div onClick={onCloseRowDetail}>Close</div>
-      </div>
+
+      {selectedRow && <Detail content={selectedRow} onClose={onCloseRowDetail} />}
     </>
   );
 };

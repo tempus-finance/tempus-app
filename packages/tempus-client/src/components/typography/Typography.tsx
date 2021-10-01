@@ -1,7 +1,7 @@
 import { CSSProperties, FC } from 'react';
 
 type TypographyVariant = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'body-text' | 'disclaimer-text';
-type TypographyColor = 'default' | 'accent' | 'inverted';
+type TypographyColor = 'default' | 'accent' | 'inverted' | 'link';
 
 const typographyStyleMap = new Map<TypographyVariant, CSSProperties>();
 typographyStyleMap.set('h1', {
@@ -56,7 +56,8 @@ typographyStyleMap.set('disclaimer-text', {
 
 interface TypographyProps {
   variant: TypographyVariant;
-  color: TypographyColor;
+  color?: TypographyColor;
+  capitalize?: boolean;
 }
 
 const Typography: FC<TypographyProps> = props => {
@@ -66,11 +67,16 @@ const Typography: FC<TypographyProps> = props => {
       color = '#222222';
       break;
     case 'accent':
-      color = '#F5AC37';
+      color = '#FF6B00';
       break;
     case 'inverted':
       color = '#FFFFFF';
       break;
+    case 'link':
+      color = '#047295';
+      break;
+    default:
+      color = '#222222';
   }
 
   return (
@@ -78,6 +84,7 @@ const Typography: FC<TypographyProps> = props => {
       style={{
         ...typographyStyleMap.get(props.variant),
         color: color,
+        textTransform: props.capitalize ? 'capitalize' : 'none',
       }}
     >
       {props.children}

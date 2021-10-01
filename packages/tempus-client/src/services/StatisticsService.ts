@@ -54,7 +54,7 @@ class StatisticsService {
 
   /**
    * Returns conversion rate of specified token to USD
-   */
+   **/
   public async getRate(tokenTicker: string, overrides?: CallOverrides): Promise<BigNumber> {
     if (!this.stats) {
       console.error(
@@ -80,6 +80,104 @@ class StatisticsService {
     }
 
     return div18f(rate, rateDenominator);
+  }
+
+  /**
+   * Returns estimated amount of Principals tokens on fixed yield deposit
+   **/
+  async estimatedDepositAndFix(
+    tempusAmmAddress: string,
+    tokenAmount: BigNumber,
+    isBackingToken: boolean,
+  ): Promise<BigNumber> {
+    if (!this.stats) {
+      console.error(
+        'StatisticsService - estimatedDepositAndFix: Attempted to use statistics contract before initializing it...',
+      );
+      return Promise.reject(0);
+    }
+
+    if (!tempusAmmAddress || !tokenAmount) {
+      console.error('StatisticsService - estimatedDepositAndFix: invalid tempusAmmAddress or tokenAmount');
+      return Promise.reject(0);
+    }
+
+    try {
+      return this.stats.estimatedDepositAndFix(tempusAmmAddress, tokenAmount, isBackingToken);
+    } catch (error) {
+      console.error(`StatisticsService - estimatedDepositAndFix - Failed to get estimated fixed deposit amount`, error);
+      return Promise.reject(0);
+    }
+  }
+
+  /**
+   * Returns estimated amount of Principals tokens on variable yield deposit
+   **/
+  async estimatedDepositAndProvideLiquidity(
+    tempusAmmAddress: string,
+    tokenAmount: BigNumber,
+    isBackingToken: boolean,
+  ): Promise<[BigNumber, BigNumber, BigNumber]> {
+    if (!this.stats) {
+      console.error(
+        'StatisticsService estimatedDepositAndProvideLiquidity Attempted to use statistics contract before initializing it...',
+      );
+      return Promise.reject(0);
+    }
+
+    try {
+      return this.stats.estimatedDepositAndProvideLiquidity(tempusAmmAddress, tokenAmount, isBackingToken);
+    } catch (error) {
+      console.error(`Failed to get estimated variable deposit amount`, error);
+      return Promise.reject(0);
+    }
+  }
+
+  /**
+   * Returns estimated amount of Backing/Yield Bearing tokens on deposit
+   **/
+  async estimateExitAndRedeem(
+    tempusAmmAddress: string,
+    principalAmount: BigNumber,
+    yieldsAmount: BigNumber,
+    lpAmount: BigNumber,
+    isBackingToken: boolean,
+  ): Promise<BigNumber> {
+    if (!this.stats) {
+      console.error(
+        'StatisticsService estimateExitAndRedeem Attempted to use statistics contract before initializing it...',
+      );
+      return Promise.reject();
+    }
+
+    try {
+      return this.stats.estimateExitAndRedeem(
+        tempusAmmAddress,
+        principalAmount,
+        yieldsAmount,
+        lpAmount,
+        isBackingToken,
+      );
+    } catch (error) {
+      console.error(`Failed to get estimated withdraw amount`, error);
+      return Promise.reject(error);
+    }
+  }
+
+  async estimatedMintedShares(tempusPool: string, amount: BigNumber, isBackingToken: boolean): Promise<BigNumber> {
+    if (!this.stats) {
+      console.error(
+        'StatisticsService - estimatedMintedShares() - Attempted to use statistics contract before initializing it!',
+      );
+      return Promise.reject();
+    }
+
+    try {
+      return await this.stats.estimatedMintedShares(tempusPool, amount, isBackingToken);
+    } catch (error) {
+      console.error('StatisticsService - estimatedMintedShares() - Failed to fetch estimated minted shares!', error);
+      return Promise.reject(error);
+    }
   }
 }
 

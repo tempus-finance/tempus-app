@@ -3,7 +3,7 @@
 .tf__dashboard__apy-graph {
   display: flex;
   margin-right: 10px;
-  margin-bottom: 3px;
+  margin-bottom: 6px;
 
   .tf__dashboard__apy-graph__bar-outer {
     width: 100%;
@@ -15,6 +15,7 @@
     div[class*='tf__dashboard__apy-graph__bar'] {
       width: 3px;
       margin-right: 1px;
+      background-color: $ui-element-color;
     }
 
     .tf__dashboard__apy-graph__bar-1 {
@@ -35,6 +36,10 @@
 
     .tf__dashboard__apy-graph__bar-5 {
       height: 20px;
+    }
+
+    .tf__dashboard__apy-graph__bar-active {
+      background-color: #ff6b00 !important;
     }
   }
 }

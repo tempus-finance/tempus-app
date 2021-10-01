@@ -1,0 +1,32 @@
+@import '../../../constants.scss';
+
+.tf__dialog__section-container {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  width: 100%;
+}
+
+.tf__dialog__section-title {
+  display: flex;
+  align-items: center;
+}
+
+.tf__dialog__section-content {
+  @include background-level-2;
+  width: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+  position: relative;
+}
+
+.tf__dialog__section-tick {
+  position: absolute;
+  right: 13px;
+  top: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 20px;
+  height: 20px;
+}
