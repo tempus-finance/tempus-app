@@ -42,7 +42,7 @@ type DashboardProps = DashboardInProps & DashboardOutProps;
 const Dashboard: FC<DashboardProps> = ({ hidden, userWalletAddress, rows, onRowActionClick }): JSX.Element => {
   const [tableColumnExtensions] = useState([
     { columnName: ColumnNames.TOKEN, align: 'left' as 'left', width: 160 },
-    { columnName: ColumnNames.PROTOCOL, align: 'left' as 'left', width: 115 },
+    { columnName: ColumnNames.PROTOCOL, align: 'left' as 'left', width: 150 },
     { columnName: ColumnNames.MATURITY, align: 'left' as 'left' },
     { columnName: ColumnNames.FIXED_APR, align: 'right' as 'right', width: 140 },
     { columnName: ColumnNames.VARIABLE_APY, align: 'right' as 'right', width: 160 },
@@ -138,7 +138,8 @@ const Dashboard: FC<DashboardProps> = ({ hidden, userWalletAddress, rows, onRowA
 
           aprMatched =
             (min === 0 || min) && (max === 0 || max)
-              ? (row.fixedAPR && row.fixedAPR > min && row.fixedAPR < max) || (row.variableAPY > min && row.variableAPY < max)
+              ? (row.fixedAPR && row.fixedAPR > min && row.fixedAPR < max) ||
+                (row.variableAPY > min && row.variableAPY < max)
               : true;
         }
 

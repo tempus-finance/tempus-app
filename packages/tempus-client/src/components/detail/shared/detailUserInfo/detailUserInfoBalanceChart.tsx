@@ -118,6 +118,8 @@ const DetailUserInfoBalanceChart: FC<DetailUserInfoBalanceChartProps> = props =>
         <SelectionState selection={chartHighlightedItems} />
       </Chart>
       <Spacer size={20} />
+      <Typography variant="h4">Primitives</Typography>
+      <Spacer size={10} />
       <div className="tf__detail__user__info-row">
         <div className="tf__detail__user__info-legend-label-container">
           <LegendDotSolid color="#FF6B00" />
@@ -132,6 +134,9 @@ const DetailUserInfoBalanceChart: FC<DetailUserInfoBalanceChartProps> = props =>
         </div>
         <Typography variant="body-text">{yieldShareValue}</Typography>
       </div>
+      <Spacer size={15} />
+      <Typography variant="h4">LP Token</Typography>
+      <Spacer size={10} />
       <div className="tf__detail__user__info-row">
         <div className="tf__detail__user__info-legend-label-container">
           <LegendDotGradient startColor="#F5AC37" endColor="#EB5A00" />

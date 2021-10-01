@@ -23,7 +23,7 @@ interface DetailUserInfoBalancesProps {
 const DetailUserInfoBalance: FC<DetailUserInfoBalancesProps> = props => {
   const { poolDataAdapter, signer, userWalletAddress, tempusPool, content } = props;
   const { address, ammAddress } = tempusPool;
-  const { supportedTokens, availableTokensToDeposit, presentValue, fixedAPR, variableAPY } = content;
+  const { supportedTokens, availableTokensToDeposit, presentValue } = content;
 
   const backingTokenTicker = supportedTokens[0];
   const yieldBearingTokenTicker = supportedTokens[1];
@@ -90,12 +90,6 @@ const DetailUserInfoBalance: FC<DetailUserInfoBalancesProps> = props => {
           <div className="tf__detail__user__info-row">
             <Typography variant="body-text">Value</Typography>
             <Typography variant="body-text">{formattedPresentValue}</Typography>
-          </div>
-          <div className="tf__detail__user__info-row">
-            <Typography variant="body-text">APR</Typography>
-            <Typography variant="body-text">
-              {NumberUtils.formatPercentage(fixedAPR)} / {NumberUtils.formatPercentage(variableAPY)}
-            </Typography>
           </div>
           <Divider />
           <Spacer size={20} />
