@@ -4,6 +4,7 @@ import { format } from 'date-fns';
 import Button from '@material-ui/core/Button';
 import NumberUtils from '../../../services/NumberUtils';
 import { ProtocolName, Ticker } from '../../../interfaces';
+import { mul18f } from '../../../utils/wei-math';
 import CurrencyInput from '../../currencyInput';
 import TokenSelector from '../../tokenSelector';
 import Typography from '../../typography/Typography';
@@ -33,8 +34,8 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
   const [minTYSRate] = useState<number>(0); // TODO where to get this value?
 
   const [fixedPrincipalsAmount, setFixedPrincipalsAmount] = useState<BigNumber | null>(null);
-  const [variablePrincipalsAmount, setVariablePrincipalsAmount] = useState<BigNumber>(BigNumber.from('0'));
-  const [variableLpTokensAmount, setVariableLpTokensAmount] = useState<BigNumber>(BigNumber.from('0'));
+  const [variablePrincipalsAmount, setVariablePrincipalsAmount] = useState<BigNumber | null>(null);
+  const [variableLpTokensAmount, setVariableLpTokensAmount] = useState<BigNumber | null>(null);
 
   const [backingTokenBalance, setBackingTokenBalance] = useState<BigNumber | null>(null);
   const [yieldBearingTokenBalance, setYieldBearingTokenBalance] = useState<BigNumber | null>(null);
@@ -251,7 +252,11 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
 
   useEffect(() => {
     const retrieveDepositAmount = async () => {
-      if (amount && ammAddress && poolDataAdapter) {
+      if (amount === 0) {
+        setFixedPrincipalsAmount(null);
+        setVariablePrincipalsAmount(null);
+        setVariableLpTokensAmount(null);
+      } else if (ammAddress && poolDataAdapter) {
         try {
           const isBackingToken = backingToken === selectedToken;
 
@@ -341,12 +346,22 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
   }, [variableLpTokensAmount]);
 
   const balanceFormatted = useMemo(() => {
-    if (!balance || !amount) {
+    if (!balance) {
       return null;
     }
 
     return NumberUtils.formatToCurrency(utils.formatEther(balance), 2);
-  }, [balance, amount]);
+  }, [balance]);
+
+  const usdValueFormatted = useMemo(() => {
+    if (!usdRate || !amount) {
+      return null;
+    }
+
+    let usdValue = mul18f(usdRate, utils.parseEther(amount.toString()));
+
+    return NumberUtils.formatToCurrency(utils.formatEther(usdValue), 2, '$');
+  }, [usdRate, amount]);
 
   useEffect(() => {
     const getEstimatedFixedApr = async () => {
@@ -386,7 +401,7 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
               <TokenSelector tickers={supportedTokens} onTokenChange={onTokenChange} />
               <Spacer size={20} />
               <Typography variant="body-text">
-                {selectedToken && balanceFormatted ? `Balance: ${balanceFormatted} ${selectedToken}` : '-'}
+                {selectedToken && balanceFormatted ? `Balance: ${balanceFormatted} ${selectedToken}` : ''}
               </Typography>
             </div>
             <Spacer size={14} />
@@ -394,7 +409,14 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
               <div className="tf__dialog__label-align-right">
                 <Typography variant="body-text">Amount</Typography>
               </div>
-              <CurrencyInput defaultValue={amount} onChange={onAmountChange} disabled={!selectedToken} />
+              <div className="tf__flex-column-start">
+                <CurrencyInput defaultValue={amount} onChange={onAmountChange} disabled={!selectedToken} />
+                {usdValueFormatted && (
+                  <div className="tf__input__label">
+                    <Typography variant="disclaimer-text">Approx {usdValueFormatted}</Typography>
+                  </div>
+                )}
+              </div>
               <Spacer size={20} />
               <Button variant="contained" size="small" value="0.25" onClick={onPercentageChange}>
                 25%
@@ -412,6 +434,7 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
                 Max
               </Button>
             </div>
+            <Spacer size={15} />
           </SectionContainer>
         </ActionContainer>
         <Spacer size={25} />
@@ -427,10 +450,10 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
                 <div className="tf__dialog__flex-col-space-between" yield-attribute="fixed" onClick={onSelectYield}>
                   <Typography variant="h4">Fixed Yield</Typography>
                   <Typography variant="body-text">
-                    est. {fixedPrincipalsAmountFormatted ? fixedPrincipalsAmountFormatted : '-'} Principals
+                    {fixedPrincipalsAmountFormatted && `est. ${fixedPrincipalsAmountFormatted} Principals`}
                   </Typography>
                   <Typography variant="h3" color="accent">
-                    est.{' '}
+                    est. APR{' '}
                     {estimatedFixedApr
                       ? NumberUtils.formatPercentage(utils.formatEther(estimatedFixedApr))
                       : NumberUtils.formatPercentage(fixedAPR, 2)}
@@ -452,14 +475,14 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
                   <Typography variant="h4">Variable Yield</Typography>
                   <div>
                     <Typography variant="body-text">
-                      est. {variablePrincipalsAmountFormatted ? variablePrincipalsAmountFormatted : '-'} Principals
+                      {variablePrincipalsAmountFormatted && `est. ${variablePrincipalsAmountFormatted} Principals`}
                     </Typography>
                     <Typography variant="body-text">
-                      est. {variableLpTokensAmountFormatted ? variableLpTokensAmountFormatted : '-'} LP Tokens
+                      {variableLpTokensAmountFormatted && `est.  ${variableLpTokensAmountFormatted} LP Tokens`}
                     </Typography>
                   </div>
                   <Typography variant="h3" color="accent">
-                    est. {NumberUtils.formatPercentage(variableAPY, 2)}
+                    est. APR {NumberUtils.formatPercentage(variableAPY, 2)}
                   </Typography>
                 </div>
               </SectionContainer>

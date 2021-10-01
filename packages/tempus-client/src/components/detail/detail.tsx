@@ -167,11 +167,17 @@ const Detail: FC<DetailProps> = ({ content, onClose }) => {
           <div className="tf__dialog-container__header-summary-data">
             <TokenIcon ticker={token} />
             <Typography color="default" variant="h4">
-              &nbsp;&nbsp;{token} via&nbsp;&nbsp;
+              {token} via
             </Typography>
             <TokenIcon ticker={getTickerFromProtocol(protocol)} />
             <Typography color="default" variant="h4" capitalize={true}>
-              &nbsp;&nbsp;{protocol}
+              {protocol}
+            </Typography>
+            <Typography color="default" variant="h4">
+              -
+            </Typography>
+            <Typography color="default" variant="h4">
+              Matures on {format(maturityDate, 'dd MMM yy')}
             </Typography>
           </div>
 
@@ -181,11 +187,6 @@ const Detail: FC<DetailProps> = ({ content, onClose }) => {
               Advanced options
             </Typography>
           </div>
-        </div>
-        <div>
-          <Typography color="default" variant="h5">
-            Matures on {format(maturityDate, 'dd MMM yy')}
-          </Typography>
         </div>
         <Spacer size={18} />
         <div className="tf__dialog__content">

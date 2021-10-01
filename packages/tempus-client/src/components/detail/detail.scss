@@ -23,6 +23,11 @@
       display: flex;
       align-items: center;
       justify-content: flex-start;
+
+      > svg,
+      > div {
+        margin-right: 10px;
+      }
     }
 
     > .tf__dialog-container__header-ui-toggle {
