@@ -323,21 +323,21 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
     if (!fixedPrincipalsAmount) {
       return null;
     }
-    return NumberUtils.formatWithMultiplier(utils.formatEther(fixedPrincipalsAmount), 2);
+    return NumberUtils.formatToCurrency(utils.formatEther(fixedPrincipalsAmount), 2);
   }, [fixedPrincipalsAmount]);
 
   const variablePrincipalsAmountFormatted = useMemo(() => {
     if (!variablePrincipalsAmount) {
       return null;
     }
-    return NumberUtils.formatWithMultiplier(utils.formatEther(variablePrincipalsAmount), 2);
+    return NumberUtils.formatToCurrency(utils.formatEther(variablePrincipalsAmount), 2);
   }, [variablePrincipalsAmount]);
 
   const variableLpTokensAmountFormatted = useMemo(() => {
     if (!variableLpTokensAmount) {
       return null;
     }
-    return NumberUtils.formatWithMultiplier(utils.formatEther(variableLpTokensAmount), 2);
+    return NumberUtils.formatToCurrency(utils.formatEther(variableLpTokensAmount), 2);
   }, [variableLpTokensAmount]);
 
   const balanceFormatted = useMemo(() => {
@@ -345,7 +345,7 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
       return null;
     }
 
-    return NumberUtils.formatWithMultiplier(utils.formatEther(balance), 2);
+    return NumberUtils.formatToCurrency(utils.formatEther(balance), 2);
   }, [balance, amount]);
 
   useEffect(() => {

@@ -213,21 +213,21 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = props => {
     if (!principalsBalance) {
       return null;
     }
-    return NumberUtils.formatWithMultiplier(ethers.utils.formatEther(principalsBalance), 3);
+    return NumberUtils.formatToCurrency(ethers.utils.formatEther(principalsBalance), 2);
   }, [principalsBalance]);
 
   const yieldsBalanceFormatted = useMemo(() => {
     if (!yieldsBalance) {
       return null;
     }
-    return NumberUtils.formatWithMultiplier(ethers.utils.formatEther(yieldsBalance), 3);
+    return NumberUtils.formatToCurrency(ethers.utils.formatEther(yieldsBalance), 2);
   }, [yieldsBalance]);
 
   const expectedLPTokensFormatted = useMemo(() => {
     if (!expectedLPTokens) {
       return null;
     }
-    return NumberUtils.formatWithMultiplier(ethers.utils.formatEther(expectedLPTokens), 3);
+    return NumberUtils.formatToCurrency(ethers.utils.formatEther(expectedLPTokens), 2);
   }, [expectedLPTokens]);
 
   return (

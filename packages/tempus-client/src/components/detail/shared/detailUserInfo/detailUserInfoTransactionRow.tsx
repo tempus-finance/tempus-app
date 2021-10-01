@@ -33,7 +33,7 @@ const DetailUserInfoTransactionRow: FC<DetailUserInfoTransactionRowProps> = prop
       setType('Redemption');
     }
 
-    setValue(NumberUtils.formatWithMultiplier(ethers.utils.formatEther(transaction.usdValue)));
+    setValue(NumberUtils.formatToCurrency(ethers.utils.formatEther(transaction.usdValue), 2, '$'));
   }, [transaction]);
 
   return (
@@ -49,7 +49,7 @@ const DetailUserInfoTransactionRow: FC<DetailUserInfoTransactionRowProps> = prop
           <Typography variant="body-text">{type}</Typography>
         </div>
         <div className="tf__detail__user_info__transaction-info-balance">
-          <Typography variant="body-text">${value}</Typography>
+          <Typography variant="body-text">{value}</Typography>
         </div>
       </div>
       <Spacer size={16} />

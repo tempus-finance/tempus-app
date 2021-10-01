@@ -112,21 +112,21 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = ({ content, pool
     if (!data.userLPBalance) {
       return null;
     }
-    return NumberUtils.formatWithMultiplier(ethers.utils.formatEther(data.userLPBalance), 3);
+    return NumberUtils.formatToCurrency(ethers.utils.formatEther(data.userLPBalance), 2);
   }, [data.userLPBalance]);
 
   const estimatedPrincipalsFormatted = useMemo(() => {
     if (!estimatedPrincipals) {
       return null;
     }
-    return NumberUtils.formatWithMultiplier(ethers.utils.formatEther(estimatedPrincipals), 3);
+    return NumberUtils.formatToCurrency(ethers.utils.formatEther(estimatedPrincipals), 2);
   }, [estimatedPrincipals]);
 
   const estimatedYieldsFormatted = useMemo(() => {
     if (!estimatedYields) {
       return null;
     }
-    return NumberUtils.formatWithMultiplier(ethers.utils.formatEther(estimatedYields), 3);
+    return NumberUtils.formatToCurrency(ethers.utils.formatEther(estimatedYields), 2);
   }, [estimatedYields]);
 
   return (
