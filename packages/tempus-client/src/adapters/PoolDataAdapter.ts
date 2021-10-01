@@ -415,7 +415,7 @@ export default class PoolDataAdapter {
     }
   }
 
-  async getPoolShareForLPTokensIn(amm: string, amountIn: BigNumber): Promise<number> {
+  async getPoolShareForLPTokensIn(tempusAmm: string, amountIn: BigNumber): Promise<number> {
     if (!this.vaultService || !this.eRC20TokenServiceGetter) {
       console.error(
         'PoolDataAdapter - getPoolShareForLPTokensIn() - Attempted to use PoolDataAdapter before initializing it!',
@@ -425,7 +425,7 @@ export default class PoolDataAdapter {
 
     let lpTotalSupply: BigNumber;
     try {
-      lpTotalSupply = await this.eRC20TokenServiceGetter(amm).totalSupply();
+      lpTotalSupply = await this.eRC20TokenServiceGetter(tempusAmm).totalSupply();
       if (lpTotalSupply.isZero()) {
         return 1;
       }
@@ -438,7 +438,7 @@ export default class PoolDataAdapter {
   }
 
   async provideLiquidity(
-    amm: string,
+    tempusAmm: string,
     userWalletAddress: string,
     principalsAddress: string,
     yieldsAddress: string,
@@ -451,7 +451,7 @@ export default class PoolDataAdapter {
     }
 
     try {
-      const poolId = await this.tempusAMMService.poolId(amm);
+      const poolId = await this.tempusAMMService.poolId(tempusAmm);
       return await this.vaultService.provideLiquidity(
         poolId,
         userWalletAddress,
@@ -467,7 +467,7 @@ export default class PoolDataAdapter {
   }
 
   async removeLiquidity(
-    amm: string,
+    tempusAmm: string,
     userWalletAddress: string,
     principalsAddress: string,
     yieldsAddress: string,
@@ -479,7 +479,7 @@ export default class PoolDataAdapter {
     }
 
     try {
-      const poolId = await this.tempusAMMService.poolId(amm);
+      const poolId = await this.tempusAMMService.poolId(tempusAmm);
       return await this.vaultService.removeLiquidity(
         poolId,
         userWalletAddress,
@@ -646,13 +646,13 @@ export default class PoolDataAdapter {
     }
   }
 
-  async getExpectedReturnForShareToken(amm: string, amount: BigNumber, yieldShareIn: boolean) {
+  async getExpectedReturnForShareToken(tempusAmm: string, amount: BigNumber, yieldShareIn: boolean) {
     if (!this.tempusAMMService) {
       return Promise.reject();
     }
 
     try {
-      return await this.tempusAMMService.getExpectedReturnGivenIn(amm, amount, yieldShareIn);
+      return await this.tempusAMMService.getExpectedReturnGivenIn(tempusAmm, amount, yieldShareIn);
     } catch (error) {
       console.error('PoolDataAdapter - getExpectedReturnForShareToken() - Failed to get expected return value!', error);
       return Promise.reject(error);
