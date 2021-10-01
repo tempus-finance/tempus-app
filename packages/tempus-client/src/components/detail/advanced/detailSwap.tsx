@@ -8,13 +8,11 @@ import PoolDataAdapter from '../../../adapters/PoolDataAdapter';
 import NumberUtils from '../../../services/NumberUtils';
 import { SwapKind } from '../../../services/VaultService';
 import getConfig from '../../../utils/get-config';
-import SwapIcon from '../../icons/SwapIcon';
 import Typography from '../../typography/Typography';
 import CurrencyInput from '../../currencyInput';
 import Spacer from '../../spacer/spacer';
 import Execute from '../shared/execute';
 import SectionContainer from '../shared/sectionContainer';
-import FloatingButton from '../shared/floatingButton';
 import ActionContainer from '../shared/actionContainer';
 import TokenSelector from '../../tokenSelector';
 
@@ -220,8 +218,6 @@ const DetailSwap: FC<DetailSwapProps> = props => {
   return (
     <div role="tabpanel">
       <div className="tf__dialog__content-tab">
-        <Spacer size={25} />
-
         <ActionContainer label="From">
           <Spacer size={18} />
           <SectionContainer>
