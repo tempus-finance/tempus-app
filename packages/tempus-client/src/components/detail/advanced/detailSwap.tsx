@@ -2,7 +2,7 @@ import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { ethers, BigNumber } from 'ethers';
 import { JsonRpcSigner } from '@ethersproject/providers';
 import Button from '@material-ui/core/Button';
-import { DashboardRowChild, PoolShares } from '../../../interfaces';
+import { DashboardRowChild, PoolShares, Ticker } from '../../../interfaces';
 import { TempusPool } from '../../../interfaces/TempusPool';
 import PoolDataAdapter from '../../../adapters/PoolDataAdapter';
 import NumberUtils from '../../../services/NumberUtils';
@@ -15,6 +15,8 @@ import Spacer from '../../spacer/spacer';
 import Execute from '../shared/execute';
 import SectionContainer from '../shared/sectionContainer';
 import FloatingButton from '../shared/floatingButton';
+import ActionContainer from '../shared/actionContainer';
+import TokenSelector from '../../tokenSelector';
 
 interface TokenDetail {
   tokenName: PoolShares;
@@ -45,6 +47,7 @@ const DetailSwap: FC<DetailSwapProps> = props => {
     tokenName: 'Yields',
     tokenAddress: yieldTokenAddress,
   });
+  const [selectedToken, setSelectedToken] = useState<Ticker>();
   const [amount, setAmount] = useState<number>(0);
   const [balance, setBalance] = useState<BigNumber | null>(null);
   const [receiveAmount, setReceiveAmount] = useState<BigNumber | null>(null);
@@ -66,20 +69,33 @@ const DetailSwap: FC<DetailSwapProps> = props => {
       const percentage = event.currentTarget.value;
 
       if (percentage && balance) {
-        // TODO - Do not convert BigNumber to Number - possible overflow issue. Update currency input to work with string numbers.
         setAmount(Number(ethers.utils.formatEther(balance)) * Number(percentage));
       }
     },
-    [balance],
+    [balance, setAmount],
   );
 
-  const onSwitchTokens = () => {
+  const switchTokens = useCallback(() => {
     const tokenFromOld: TokenDetail = { ...tokenFrom };
     const tokenToOld: TokenDetail = { ...tokenTo };
 
     setTokenFrom(tokenToOld);
     setTokenTo(tokenFromOld);
-  };
+  }, [tokenFrom, tokenTo]);
+
+  const onTokenChange = useCallback(
+    (token: Ticker | undefined) => {
+      if (!token) {
+        return;
+      }
+      setSelectedToken(token);
+
+      if (token !== tokenFrom.tokenName) {
+        switchTokens();
+      }
+    },
+    [switchTokens, tokenFrom.tokenName],
+  );
 
   const onApprove = useCallback(() => {
     const approve = async () => {
@@ -106,7 +122,7 @@ const DetailSwap: FC<DetailSwapProps> = props => {
     };
     setApproveDisabled(true);
     approve();
-  }, [balance, poolDataAdapter, signer, tokenFrom]);
+  }, [balance, poolDataAdapter, signer, tokenFrom, setApproveDisabled]);
 
   const onExecute = useCallback(() => {
     const execute = async () => {
@@ -135,7 +151,15 @@ const DetailSwap: FC<DetailSwapProps> = props => {
     };
     setExecuteDisabled(true);
     execute();
-  }, [amount, poolDataAdapter, tempusPool.ammAddress, tokenFrom.tokenAddress, tokenTo.tokenAddress, userWalletAddress]);
+  }, [
+    amount,
+    poolDataAdapter,
+    tempusPool.ammAddress,
+    tokenFrom.tokenAddress,
+    tokenTo.tokenAddress,
+    userWalletAddress,
+    setExecuteDisabled,
+  ]);
 
   // Fetch token from balance
   useEffect(() => {
@@ -151,7 +175,7 @@ const DetailSwap: FC<DetailSwapProps> = props => {
       }
     };
     getBalance();
-  }, [poolDataAdapter, signer, tokenFrom, userWalletAddress]);
+  }, [poolDataAdapter, signer, tokenFrom, userWalletAddress, setBalance]);
 
   // Fetch receive amount
   useEffect(() => {
@@ -177,7 +201,7 @@ const DetailSwap: FC<DetailSwapProps> = props => {
       }
     };
     getReceiveAmount();
-  }, [poolDataAdapter, amount, tempusPool, tokenFrom]);
+  }, [poolDataAdapter, amount, tempusPool, tokenFrom, setReceiveAmount]);
 
   const balanceFormatted = useMemo(() => {
     if (!balance) {
@@ -197,49 +221,61 @@ const DetailSwap: FC<DetailSwapProps> = props => {
     <div role="tabpanel">
       <div className="tf__dialog__content-tab">
         <Spacer size={25} />
-        <SectionContainer>
-          <Typography variant="h4">{tokenFrom.tokenName}</Typography> <Spacer size={16} />
-          <div className="tf__dialog__flex-row">
-            <Typography variant="body-text">Amount</Typography>
-            <Spacer size={10} />
-            <CurrencyInput defaultValue={amount} onChange={onAmountChange} />
-            <Spacer size={20} />
-            <Button variant="contained" size="small" value="0.25" onClick={onPercentageChange}>
-              25%
-            </Button>
-            <Spacer size={10} />
-            <Button variant="contained" size="small" value="0.5" onClick={onPercentageChange}>
-              50%
-            </Button>
-            <Spacer size={10} />
-            <Button variant="contained" size="small" value="0.75" onClick={onPercentageChange}>
-              75%
-            </Button>
-            <Spacer size={10} />
-            <Button variant="contained" size="small" value="1" onClick={onPercentageChange}>
-              Max
-            </Button>
-          </div>
-          <Spacer size={14} />
-          <div className="tf__dialog__flex-row">
-            <Typography variant="body-text">Balance: {balanceFormatted}</Typography>
-          </div>
-          <Spacer size={30} />
-        </SectionContainer>
-        <FloatingButton startOffset={20} onClick={onSwitchTokens}>
-          <SwapIcon />
-          <Spacer size={10} />
-          <Typography variant="body-text">Switch tokens</Typography>
-        </FloatingButton>
-        <SectionContainer>
+
+        <ActionContainer label="From">
+          <Spacer size={18} />
+          <SectionContainer>
+            <div className="tf__dialog__flex-row">
+              <div className="tf__dialog__label-align-right">
+                <Typography variant="body-text">Token</Typography>
+              </div>
+              <TokenSelector tickers={['Principals', 'Yields']} onTokenChange={onTokenChange} />
+              <Spacer size={20} />
+              <Typography variant="body-text">
+                {selectedToken && balanceFormatted && `Balance: ${balanceFormatted} ${selectedToken}`}
+              </Typography>
+            </div>
+            <Spacer size={14} />
+            <div className="tf__dialog__flex-row">
+              <div className="tf__dialog__label-align-right">
+                <Typography variant="body-text">Amount</Typography>
+              </div>
+              <CurrencyInput defaultValue={amount} onChange={onAmountChange} disabled={!selectedToken} />
+              <Spacer size={20} />
+              <Button variant="contained" size="small" value="0.25" onClick={onPercentageChange}>
+                25%
+              </Button>
+              <Spacer size={10} />
+              <Button variant="contained" size="small" value="0.5" onClick={onPercentageChange}>
+                50%
+              </Button>
+              <Spacer size={10} />
+              <Button variant="contained" size="small" value="0.75" onClick={onPercentageChange}>
+                75%
+              </Button>
+              <Spacer size={10} />
+              <Button variant="contained" size="small" value="1" onClick={onPercentageChange}>
+                Max
+              </Button>
+            </div>
+          </SectionContainer>
+        </ActionContainer>
+        <Spacer size={20} />
+        <ActionContainer label="To">
           <Spacer size={20} />
-          <Typography variant="h4">{tokenTo.tokenName}</Typography>
-          <Spacer size={15} />
           <div className="tf__dialog__flex-row">
-            <Typography variant="body-text">Estimated amount received:&nbsp;</Typography>
-            <Typography variant="body-text">{receiveAmountFormatted}</Typography>
+            <SectionContainer>
+              <Typography variant="h4">{tokenTo.tokenName}</Typography>
+              <Spacer size={14} />
+              <div className="tf__dialog__flex-row">
+                <Typography variant="body-text">Estimated amount received:&nbsp;</Typography>
+                <Typography variant="h5">
+                  {receiveAmountFormatted}&nbsp;{tokenTo.tokenName}
+                </Typography>
+              </div>
+            </SectionContainer>
           </div>
-        </SectionContainer>
+        </ActionContainer>
 
         <Execute
           onApprove={onApprove}

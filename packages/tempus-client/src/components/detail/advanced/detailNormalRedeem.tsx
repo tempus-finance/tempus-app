@@ -51,7 +51,7 @@ const DetailNormalRedeem: FC<DetailNormalRedeemProps> = ({ content }) => {
       <ActionContainer label="From">
         <ActionContainerGrid className="tf__detail-withdraw__grid">
           <div className="tf__dialog__tab__action-container-grid__top-left element1">
-            <TokenSelector tickers={['PRINCIPALS', 'YIELDS']} />
+            <TokenSelector tickers={['Principals', 'Yields']} />
           </div>
 
           <div className="tf__dialog__tab__action-container-grid__top-right element2">
