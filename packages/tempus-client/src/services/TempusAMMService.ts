@@ -122,7 +122,8 @@ class TempusAMMService {
         return Promise.reject(error);
       }
 
-      const spotPrice = poolPrincipalsBalance.mul(ethers.utils.parseEther('0.01'));
+      const onePercentScaleFactor = ethers.utils.parseEther('0.01');
+      const spotPrice = poolPrincipalsBalance.mul(onePercentScaleFactor);
 
       let expectedReturn: BigNumber;
       try {
