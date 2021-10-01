@@ -87,7 +87,7 @@ class TempusAMMService {
     throw new Error(`TempusAMMService - getTempusPoolAddress() - TempusAMM with address '${address}' does not exist`);
   }
 
-  public async getFixedAPR(address: string): Promise<number | null> {
+  public async getFixedAPR(address: string, principalsAddress: string): Promise<number | null> {
     if (!this.tempusPoolService) {
       console.error('TempusAMMService - getFixedAPR() - Attempted to se TempusAMMService before initializing it!');
       return Promise.reject();
@@ -105,11 +105,15 @@ class TempusAMMService {
         console.error('TempusAMMService - getFixedAPR() - Failed to get tempus pool data from AMM!');
         return Promise.reject();
       }
-      const spotPrice = ethers.utils.parseEther(tempusPool.spotPrice);
 
+      let poolPrincipalsBalance: BigNumber;
       try {
         const poolId = await service.getPoolId();
         const poolTokens = await vaultService.getPoolTokens(poolId);
+
+        const principalsIndex = poolTokens.tokens.findIndex(poolTokenAddress => principalsAddress === poolTokenAddress);
+        poolPrincipalsBalance = poolTokens.balances[principalsIndex];
+
         if (poolTokens.balances[0].isZero() || poolTokens.balances[1].isZero()) {
           return null;
         }
@@ -118,12 +122,15 @@ class TempusAMMService {
         return Promise.reject(error);
       }
 
+      const onePercentScaleFactor = ethers.utils.parseEther('0.01');
+      const spotPrice = poolPrincipalsBalance.mul(onePercentScaleFactor);
+
       let expectedReturn: BigNumber;
       try {
         expectedReturn = await service.getExpectedReturnGivenIn(spotPrice, YIELD_TO_PRINCIPAL);
       } catch (error) {
         console.error('TempusAMMService - getFixedAPR() - Failed to get expected return for yield share tokens!');
-        return Promise.reject(error);
+        return null;
       }
 
       let tempusPoolAddress: string;
