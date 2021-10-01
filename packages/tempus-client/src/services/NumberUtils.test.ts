@@ -41,7 +41,7 @@ describe('NumberUtils', () => {
       { value: '123.456', numberOfDecimals: undefined, symbol: '$', expected: '$123.45' },
       { value: '123.456', numberOfDecimals: 4, symbol: '$', expected: '$123.456' },
     ].forEach(item => {
-      test('It formats input string to currency format string', () => {
+      test(`It formats input string '${item.value}' to '${item.expected}'`, () => {
         const result = NumberUtils.formatToCurrency(item.value, item.numberOfDecimals, item.symbol);
         expect(result).toEqual(item.expected);
       });
