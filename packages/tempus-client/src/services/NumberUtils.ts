@@ -22,21 +22,27 @@ class NumberUtils {
       : '0';
   }
 
-  static formatToCurrency(value: string, numberOfDecimals?: number, symbol?: string) {
+  static formatToCurrency(value: string, numberOfDecimals?: number, symbol?: string): string {
     if (!value) {
       return `${symbol || ''}0`;
     }
 
     const [integerPart, fractionalPart] = value.split('.');
 
-    const integerPartFormatted = reverseString(
-      reverseString(integerPart)
-        .match(/.{1,3}/g)
-        ?.join(','),
-    );
-    const fractionPartFormatted = fractionalPart ? fractionalPart.slice(0, numberOfDecimals || 2) : '';
+    let integerPartSeparatorsAdded: string;
 
-    return `${symbol || ''}${integerPartFormatted}${fractionPartFormatted ? `.${fractionPartFormatted}` : ''}`;
+    const integerPartReversed = reverseString(integerPart);
+    const integerPartReversedSplitted = integerPartReversed.match(/.{1,3}/g);
+    if (integerPartReversedSplitted) {
+      const integerPartReversedSeparatorsAdded = integerPartReversedSplitted.join(',');
+      integerPartSeparatorsAdded = reverseString(integerPartReversedSeparatorsAdded);
+    } else {
+      integerPartSeparatorsAdded = '';
+    }
+
+    const fractionPartFormatted = fractionalPart ? fractionalPart.slice(0, numberOfDecimals ?? 2) : '';
+
+    return `${symbol || ''}${integerPartSeparatorsAdded}${fractionPartFormatted ? `.${fractionPartFormatted}` : ''}`;
   }
 
   static formatPercentage(value: any, precision: number = 2, roundValue?: boolean): string {
