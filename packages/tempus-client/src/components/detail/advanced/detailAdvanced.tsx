@@ -5,6 +5,7 @@ import { DashboardRowChild } from '../../../interfaces';
 import { TempusPool } from '../../../interfaces/TempusPool';
 import PoolDataAdapter from '../../../adapters/PoolDataAdapter';
 import Typography from '../../typography/Typography';
+import Spacer from '../../spacer/spacer';
 import DetailSwap from './detailSwap';
 import DetailMint from './detailMint';
 import DetailPool from './detailPool';
@@ -55,7 +56,7 @@ const DetailAdvanced: FC<DetailAdvancedProps> = (props: DetailAdvancedProps) => 
           className="tf__tab"
         />
       </Tabs>
-
+      <Spacer size={25} />
       {tab === 0 && (
         <DetailMint
           content={content}

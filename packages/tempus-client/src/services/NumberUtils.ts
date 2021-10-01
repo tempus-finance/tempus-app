@@ -1,3 +1,5 @@
+import { reverseString } from '../utils/reverse-string';
+
 const multiplierLookup = [
   { value: 1e18, symbol: 'Q' },
   { value: 1e15, symbol: 'q' },
@@ -18,6 +20,23 @@ class NumberUtils {
     return multiplier
       ? `${(sanitizedValue / multiplier.value).toFixed(precision).replace(regex, '$1')}${multiplier.symbol}`
       : '0';
+  }
+
+  static formatToCurrency(value: string, numberOfDecimals?: number, symbol?: string) {
+    if (!value) {
+      return `${symbol || ''}0`;
+    }
+
+    const [integerPart, fractionalPart] = value.split('.');
+
+    const integerPartFormatted = reverseString(
+      reverseString(integerPart)
+        .match(/.{1,3}/g)
+        ?.join(','),
+    );
+    const fractionPartFormatted = fractionalPart ? fractionalPart.slice(0, numberOfDecimals || 2) : '';
+
+    return `${symbol || ''}${integerPartFormatted}${fractionPartFormatted ? `.${fractionPartFormatted}` : ''}`;
   }
 
   static formatPercentage(value: any, precision: number = 2, roundValue?: boolean): string {

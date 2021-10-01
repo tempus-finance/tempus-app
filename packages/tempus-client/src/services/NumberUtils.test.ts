@@ -23,6 +23,31 @@ describe('NumberUtils', () => {
     });
   });
 
+  describe('formatToCurrency()', () => {
+    [
+      { value: '0', numberOfDecimals: 1, symbol: undefined, expected: '0' },
+      { value: '12', numberOfDecimals: 1, symbol: '$', expected: '$12' },
+      { value: '1234', numberOfDecimals: 1, symbol: '$', expected: '$1,234' },
+      { value: '100000000', numberOfDecimals: 1, symbol: undefined, expected: '100,000,000' },
+      { value: '299792458', numberOfDecimals: 1, symbol: undefined, expected: '299,792,458' },
+      { value: '759878', numberOfDecimals: 1, symbol: '$', expected: '$759,878' },
+      { value: '759878', numberOfDecimals: 0, symbol: undefined, expected: '759,878' },
+      { value: '123', numberOfDecimals: 1, symbol: '$', expected: '$123' },
+      { value: '123.456', numberOfDecimals: 1, symbol: '$', expected: '$123.4' },
+      { value: '123.456', numberOfDecimals: 2, symbol: undefined, expected: '123.45' },
+      { value: '123123', numberOfDecimals: undefined, symbol: '$', expected: '$123,123' },
+      { value: '123', numberOfDecimals: undefined, symbol: undefined, expected: '123' },
+      { value: '123.4', numberOfDecimals: undefined, symbol: undefined, expected: '123.4' },
+      { value: '123.456', numberOfDecimals: undefined, symbol: '$', expected: '$123.45' },
+      { value: '123.456', numberOfDecimals: 4, symbol: '$', expected: '$123.456' },
+    ].forEach(item => {
+      test('It formats input string to currency format string', () => {
+        const result = NumberUtils.formatToCurrency(item.value, item.numberOfDecimals, item.symbol);
+        expect(result).toEqual(item.expected);
+      });
+    });
+  });
+
   describe('formatPercentage()', () => {
     [
       { num: 0, expected: '0%' },
