@@ -1,4 +1,4 @@
-import { FC, useEffect, useMemo, useState } from 'react';
+import { FC, useContext, useEffect, useMemo, useState } from 'react';
 import { ethers, BigNumber } from 'ethers';
 import { JsonRpcSigner } from '@ethersproject/providers';
 import { Divider } from '@material-ui/core';
@@ -11,6 +11,7 @@ import Typography from '../../../typography/Typography';
 import ActionContainer from './../actionContainer';
 import SectionContainer from './../sectionContainer';
 import DetailUserInfoBalanceChart from './detailUserInfoBalanceChart';
+import { Context } from '../../../../context';
 
 interface DetailUserInfoBalancesProps {
   content: DashboardRowChild;
@@ -27,6 +28,8 @@ const DetailUserInfoBalance: FC<DetailUserInfoBalancesProps> = props => {
 
   const backingTokenTicker = supportedTokens[0];
   const yieldBearingTokenTicker = supportedTokens[1];
+
+  const { data } = useContext(Context);
 
   const [backingTokenValue, setBackingTokenValue] = useState<string>('');
   const [yieldBearingTokenValue, setYieldBearingTokenValue] = useState<string>('');
@@ -69,6 +72,14 @@ const DetailUserInfoBalance: FC<DetailUserInfoBalancesProps> = props => {
     retrieveBalances();
   }, [signer, address, ammAddress, userWalletAddress, poolDataAdapter]);
 
+  const showCurrentPosition = useMemo(() => {
+    if (!data.userPrincipalsBalance || !data.userYieldsBalance) {
+      return false;
+    }
+
+    return !data.userPrincipalsBalance.isZero() || !data.userYieldsBalance.isZero();
+  }, [data.userPrincipalsBalance, data.userYieldsBalance]);
+
   return (
     <>
       <SectionContainer>
@@ -85,20 +96,22 @@ const DetailUserInfoBalance: FC<DetailUserInfoBalancesProps> = props => {
         </ActionContainer>
       </SectionContainer>
       <Spacer size={20} />
-      <SectionContainer>
-        <ActionContainer label="Current position">
-          <div className="tf__detail__user__info-row">
-            <Typography variant="body-text">Value</Typography>
-            <Typography variant="body-text">{formattedPresentValue}</Typography>
-          </div>
-          <Divider />
-          <Spacer size={20} />
-          <DetailUserInfoBalanceChart
-            lpTokenPrincipalReturnBalance={lpTokenPrincipalReturnBalance}
-            lpTokenYieldReturnBalance={lpTokenYieldReturnBalance}
-          />
-        </ActionContainer>
-      </SectionContainer>
+      {showCurrentPosition && (
+        <SectionContainer>
+          <ActionContainer label="Current position">
+            <div className="tf__detail__user__info-row">
+              <Typography variant="body-text">Value</Typography>
+              <Typography variant="body-text">{formattedPresentValue}</Typography>
+            </div>
+            <Divider />
+            <Spacer size={20} />
+            <DetailUserInfoBalanceChart
+              lpTokenPrincipalReturnBalance={lpTokenPrincipalReturnBalance}
+              lpTokenYieldReturnBalance={lpTokenYieldReturnBalance}
+            />
+          </ActionContainer>
+        </SectionContainer>
+      )}
     </>
   );
 };
