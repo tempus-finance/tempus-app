@@ -1,7 +1,6 @@
 import { FC, useRef, useState } from 'react';
 import { List, ListItem, ListItemIcon, ListItemText, Popper } from '@material-ui/core';
 import WalletConnect from '../wallet-connect/wallet-connect';
-import Typography from '../typography/Typography';
 import Spacer from '../spacer/spacer';
 import MenuIcon from '../icons/MenuIcon';
 import AboutIcon from '../icons/AboutIcon';
@@ -56,8 +55,6 @@ const Header: FC<HeaderProps> = ({ onAnalyticsClick, onLogoClick }): JSX.Element
       </div>
       <div className="tf__header__actions">
         <div className="tf__header__action-options" ref={optionsMenuAnchor} onClick={toggleOptionsMenu}>
-          <Typography variant="h5">Options</Typography>
-          <Spacer size={5} />
           <div className="tf__header__action-icon-container">
             <MenuIcon />
           </div>
