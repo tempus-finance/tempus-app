@@ -237,6 +237,19 @@ class TempusAMMService {
       `TempusAMMService - getExpectedReturnGivenIn() - TempusAMM with address '${address}' does not exist!`,
     );
   }
+
+  async getSwapFeePercentage(address: string): Promise<BigNumber> {
+    const contract = this.tempusAMMMap.get(address);
+    if (contract) {
+      try {
+        return await contract.getSwapFeePercentage();
+      } catch (error) {
+        console.error('TempusAMMService - getSwapFeePercentage() - Failed to get swap fees', error);
+        return Promise.reject(error);
+      }
+    }
+    throw new Error(`TempusAMMService - getSwapFeePercentage() - TempusAMM with address '${address}' does not exist!`);
+  }
 }
 
 export default TempusAMMService;

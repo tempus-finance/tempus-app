@@ -782,4 +782,23 @@ export default class PoolDataAdapter {
 
     tokenContract.onTransfer(null, userWalletAddress, listener);
   }
+
+  async getPoolFees(tempusPoolAddress: string, tempusAMMAddress: string): Promise<BigNumber[]> {
+    if (!this.tempusPoolService || !this.tempusAMMService) {
+      console.error('PoolDataAdapter - getPoolFees() - Attempted to use PoolDataAdapter before initializing it!');
+      return Promise.reject();
+    }
+
+    try {
+      const [poolFees, swapFee] = await Promise.all([
+        this.tempusPoolService.getFeesConfig(tempusPoolAddress),
+        this.tempusAMMService.getSwapFeePercentage(tempusAMMAddress),
+      ]);
+      // => [deposit, early redeem, redeem, swap]
+      return [...poolFees, swapFee];
+    } catch (error) {
+      console.error('PoolDataAdapter - getPoolFees() - Failed to retrieve fees.', error);
+      return Promise.reject(error);
+    }
+  }
 }

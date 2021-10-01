@@ -12,7 +12,7 @@ const ActionContainer: FC<ActionContainerProps> = props => {
   return (
     <div className="tf__dialog__tab__action-container">
       <Typography variant="h4">{props.label}</Typography>
-      <div className="tf__dialog__tab_action-container-divider" />
+      <div className="tf__divider" />
       {props.children}
     </div>
   );
