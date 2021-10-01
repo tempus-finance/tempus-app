@@ -28,11 +28,9 @@ const Execute: FC<ExecuteProps> = ({
 }: ExecuteProps) => {
   return (
     <div className="tf__dialog__tab__execute">
-      <Tooltip title="Here goes some text">
-        <Button variant="contained" color="secondary" size="large" disabled={approveDisabled} onClick={onApprove}>
-          {approveLabel || 'Approve'}
-        </Button>
-      </Tooltip>
+      <Button variant="contained" color="secondary" size="large" disabled={approveDisabled} onClick={onApprove}>
+        {approveLabel || 'Approve'}
+      </Button>
       <Tooltip title={executeDisabled ? 'Execution disabled until approved' : 'Execute trade'}>
         <span>
           <Button
