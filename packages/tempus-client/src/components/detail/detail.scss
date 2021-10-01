@@ -37,6 +37,17 @@
     }
   }
 
+  .tf__dialog-container__fees {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 10px 0 12px;
+
+    > div {
+      margin-right: 20px;
+    }
+  }
+
   .tf__dialog__flex-row {
     display: flex;
     align-items: center;

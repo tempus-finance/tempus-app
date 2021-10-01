@@ -32,6 +32,7 @@ describe('TempusPoolService', () => {
   const mockYieldShare = jest.fn();
   const mockPrincipalShare = jest.fn();
   const mockNumAssetsPerYieldToken = jest.fn();
+  const mockGetFeesConfig = jest.fn();
 
   const mockSymbol = jest.fn();
 
@@ -53,6 +54,7 @@ describe('TempusPoolService', () => {
         yieldShare: mockYieldShare,
         principalShare: mockPrincipalShare,
         numAssetsPerYieldToken: mockNumAssetsPerYieldToken,
+        getFeesConfig: mockGetFeesConfig,
         provider: {
           getBlock: mockGetBlock,
         },
@@ -269,6 +271,17 @@ describe('TempusPoolService', () => {
       const numberOfAssets = await instance.numAssetsPerYieldToken(mockAddress, 1, 1);
 
       expect(numberOfAssets.toNumber()).toBe(3);
+    });
+
+    test('it returns the fees', async () => {
+      const depositFee = BigNumber.from(1);
+      const earlyRedeemFee = BigNumber.from(2);
+      const redeemFee = BigNumber.from(3);
+      mockGetFeesConfig.mockImplementation(() => Promise.resolve([depositFee, earlyRedeemFee, redeemFee]));
+
+      const fees = await instance.getFeesConfig(mockAddress);
+
+      expect(fees).toStrictEqual([depositFee, earlyRedeemFee, redeemFee]);
     });
   });
 });

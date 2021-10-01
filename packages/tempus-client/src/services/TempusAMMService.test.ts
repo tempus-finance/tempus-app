@@ -14,6 +14,7 @@ describe('TempusAMMService', () => {
 
   const mockGetPoolId = jest.fn();
   const mockTempusPool = jest.fn();
+  const mockGetSwapFeePercentage = jest.fn();
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -22,6 +23,7 @@ describe('TempusAMMService', () => {
       return {
         getPoolId: mockGetPoolId,
         tempusPool: mockTempusPool,
+        getSwapFeePercentage: mockGetSwapFeePercentage,
       };
     });
 
@@ -121,6 +123,16 @@ describe('TempusAMMService', () => {
       await expect(promise).rejects.toEqual(new Error('contract-error'));
 
       expect(consoleErrorSpy).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('getSwapFeePercentage()', () => {
+    test('returns tempus pool swap fee', async () => {
+      const fee = ejs.BigNumber.from('12');
+      mockGetSwapFeePercentage.mockResolvedValue(fee);
+      const swapFee = await tempusAMMService.getSwapFeePercentage(tempusAMMAddresses[0]);
+
+      expect(swapFee).toStrictEqual(fee);
     });
   });
 });

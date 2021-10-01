@@ -4,6 +4,9 @@ import PoolDataAdapter from './PoolDataAdapter';
 jest.mock('@ethersproject/providers');
 const { JsonRpcProvider } = jest.requireMock('@ethersproject/providers');
 
+const mockGetFeesConfig = jest.fn();
+const mockGetSwapFeePercentage = jest.fn();
+
 describe('PoolDataAdapter', () => {
   let instance: PoolDataAdapter;
 
@@ -67,6 +70,7 @@ describe('PoolDataAdapter', () => {
         getStartTime: jest.fn().mockResolvedValue(new Date('2022-03-01')),
         getMaturityTime: jest.fn().mockResolvedValue(new Date('2022-04-01')),
         currentInterestRate: jest.fn().mockResolvedValue(ethers.utils.parseEther('1')),
+        getFeesConfig: mockGetFeesConfig,
       };
     });
 
@@ -75,6 +79,7 @@ describe('PoolDataAdapter', () => {
         getExpectedTokensOutGivenBPTIn: jest
           .fn()
           .mockResolvedValue([ethers.utils.parseEther('202'), ethers.utils.parseEther('303')]),
+        getSwapFeePercentage: mockGetSwapFeePercentage,
       };
     });
 
@@ -174,6 +179,31 @@ describe('PoolDataAdapter', () => {
       if (apr) {
         expect(ethers.utils.formatEther(apr)).toBe('14482258064516116.305806451612904');
       }
+    });
+  });
+
+  describe('getPoolFees()', () => {
+    test('returns pool fees', async () => {
+      const fees = [
+        ethers.BigNumber.from('2'),
+        ethers.BigNumber.from('23'),
+        ethers.BigNumber.from('150'),
+        ethers.BigNumber.from('1'),
+      ];
+      const tempusPoolAddress = 'abc';
+      const tempusAMMAddress = 'xyz';
+
+      mockGetFeesConfig.mockResolvedValue([
+        ethers.BigNumber.from('2'),
+        ethers.BigNumber.from('23'),
+        ethers.BigNumber.from('150'),
+      ]);
+
+      mockGetSwapFeePercentage.mockResolvedValue(ethers.BigNumber.from('1'));
+
+      const result = await instance.getPoolFees(tempusPoolAddress, tempusAMMAddress);
+
+      expect(result).toStrictEqual(fees);
     });
   });
 });

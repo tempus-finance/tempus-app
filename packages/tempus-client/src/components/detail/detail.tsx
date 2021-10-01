@@ -1,3 +1,4 @@
+import { utils, BigNumber } from 'ethers';
 import { FC, ChangeEvent, useEffect, useCallback, useContext, useState } from 'react';
 import { format } from 'date-fns';
 import Switch from '@material-ui/core/Switch';
@@ -14,6 +15,7 @@ import DetailBasic from './basic/detailBasic';
 import DetailAdvanced from './advanced/detailAdvanced';
 
 import './detail.scss';
+import NumberUtils from '../../services/NumberUtils';
 
 type DetailInProps = {
   content: DashboardRowChild;
@@ -27,12 +29,15 @@ type DetailProps = DetailInProps & DetailOutPros;
 
 const Detail: FC<DetailProps> = ({ content, onClose }) => {
   const { token, protocol, maturityDate, tempusPool } = content;
+  const { address, ammAddress } = tempusPool || {};
 
   const [showAdvancedUI, setShowAdvancedUI] = useState<boolean>(false);
   const [poolDataAdapter, setPoolDataAdapter] = useState<PoolDataAdapter | null>(null);
 
   const { data, setData } = useContext(Context);
   const { userWalletAddress, userWalletSigner } = data;
+
+  const [poolFees, setPoolFees] = useState<BigNumber[] | []>([]);
 
   const onInterfaceChange = useCallback(
     (_: ChangeEvent<{}>, checked: boolean) => {
@@ -77,6 +82,23 @@ const Detail: FC<DetailProps> = ({ content, onClose }) => {
     userWalletAddress,
     userWalletSigner,
   ]);
+
+  useEffect(() => {
+    const getPoolFees = async () => {
+      if (!setPoolFees || !poolDataAdapter) {
+        return;
+      }
+
+      if (poolDataAdapter) {
+        const poolFees = await poolDataAdapter.getPoolFees(address, ammAddress);
+        if (poolFees && poolFees.length) {
+          setPoolFees(poolFees);
+        }
+      }
+    };
+
+    getPoolFees();
+  }, [address, ammAddress, setPoolFees, poolDataAdapter]);
 
   const onPrincipalReceived: TransferEventListener = useCallback(
     (from, to, value) => {
@@ -180,7 +202,6 @@ const Detail: FC<DetailProps> = ({ content, onClose }) => {
               Matures on {format(maturityDate, 'dd MMM yy')}
             </Typography>
           </div>
-
           <div className="tf__dialog-container__header-ui-toggle">
             <Switch checked={showAdvancedUI} onChange={onInterfaceChange} name="advanced-options" />
             <Typography color="default" variant="h4">
@@ -188,6 +209,25 @@ const Detail: FC<DetailProps> = ({ content, onClose }) => {
             </Typography>
           </div>
         </div>
+        <div className="tf__divider" />
+        <div className="tf__dialog-container__fees">
+          <Typography color="default" variant="h4">
+            Fees:
+          </Typography>
+          <Typography color="default" variant="h5">
+            Deposit {NumberUtils.formatPercentage(Number(utils.formatEther(poolFees[0])))}
+          </Typography>
+          <Typography color="default" variant="h5">
+            Redemption {NumberUtils.formatPercentage(Number(utils.formatEther(poolFees[2])))}
+          </Typography>
+          <Typography color="default" variant="h5">
+            Early Redemption {NumberUtils.formatPercentage(Number(utils.formatEther(poolFees[1])))}
+          </Typography>
+          <Typography color="default" variant="h5">
+            Swap {NumberUtils.formatPercentage(Number(utils.formatEther(poolFees[3])))}
+          </Typography>
+        </div>
+
         <Spacer size={18} />
         <div className="tf__dialog__content">
           {showAdvancedUI ? (
