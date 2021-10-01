@@ -205,14 +205,14 @@ const DetailSwap: FC<DetailSwapProps> = props => {
     if (!balance) {
       return null;
     }
-    return NumberUtils.formatWithMultiplier(ethers.utils.formatEther(balance), 4);
+    return NumberUtils.formatToCurrency(ethers.utils.formatEther(balance), 2);
   }, [balance]);
 
   const receiveAmountFormatted = useMemo(() => {
     if (!receiveAmount) {
       return null;
     }
-    return NumberUtils.formatWithMultiplier(ethers.utils.formatEther(receiveAmount), 4);
+    return NumberUtils.formatToCurrency(ethers.utils.formatEther(receiveAmount), 2);
   }, [receiveAmount]);
 
   return (

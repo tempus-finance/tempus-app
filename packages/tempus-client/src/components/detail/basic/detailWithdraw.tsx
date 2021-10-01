@@ -125,35 +125,35 @@ const DetailWithdraw: FC<PoolDetailProps> = ({ tempusPool, content, signer, user
     if (!principalsBalance) {
       return null;
     }
-    return NumberUtils.formatWithMultiplier(ethers.utils.formatEther(principalsBalance), 3);
+    return NumberUtils.formatToCurrency(ethers.utils.formatEther(principalsBalance), 2);
   }, [principalsBalance]);
 
   const yieldsBalanceFormatted = useMemo(() => {
     if (!yieldsBalance) {
       return null;
     }
-    return NumberUtils.formatWithMultiplier(ethers.utils.formatEther(yieldsBalance), 3);
+    return NumberUtils.formatToCurrency(ethers.utils.formatEther(yieldsBalance), 2);
   }, [yieldsBalance]);
 
   const lpBalanceFormatted = useMemo(() => {
     if (!lpBalance) {
       return null;
     }
-    return NumberUtils.formatWithMultiplier(ethers.utils.formatEther(lpBalance), 3);
+    return NumberUtils.formatToCurrency(ethers.utils.formatEther(lpBalance), 2);
   }, [lpBalance]);
 
   const estimatedWithdrawAmountFormatted = useMemo(() => {
     if (!estimatedWithdrawAmount) {
       return null;
     }
-    return NumberUtils.formatWithMultiplier(ethers.utils.formatEther(estimatedWithdrawAmount), 3);
+    return NumberUtils.formatToCurrency(ethers.utils.formatEther(estimatedWithdrawAmount), 2);
   }, [estimatedWithdrawAmount]);
 
   const estimatedWithdrawAmountUsdFormatted = useMemo(() => {
     if (!estimatedWithdrawAmount || !tokenRate) {
       return null;
     }
-    return NumberUtils.formatWithMultiplier(ethers.utils.formatEther(mul18f(estimatedWithdrawAmount, tokenRate)), 3);
+    return NumberUtils.formatToCurrency(ethers.utils.formatEther(mul18f(estimatedWithdrawAmount, tokenRate)), 2, '$');
   }, [estimatedWithdrawAmount, tokenRate]);
 
   return (
@@ -255,7 +255,7 @@ const DetailWithdraw: FC<PoolDetailProps> = ({ tempusPool, content, signer, user
                 <Typography variant="h5">
                   Estimate: {estimatedWithdrawAmountFormatted} {selectedToken}
                 </Typography>
-                <Typography variant="disclaimer-text">~${estimatedWithdrawAmountUsdFormatted}</Typography>
+                <Typography variant="disclaimer-text">~{estimatedWithdrawAmountUsdFormatted}</Typography>
               </div>
             </div>
           </SectionContainer>

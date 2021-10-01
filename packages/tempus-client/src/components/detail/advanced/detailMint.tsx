@@ -195,14 +195,14 @@ const DetailMint: FC<DetailMintProps> = props => {
     if (!balance) {
       return null;
     }
-    return NumberUtils.formatWithMultiplier(ethers.utils.formatEther(balance), 4);
+    return NumberUtils.formatToCurrency(ethers.utils.formatEther(balance), 2);
   }, [balance]);
 
   const estimatedTokensFormatted = useMemo(() => {
     if (!estimatedTokens) {
       return null;
     }
-    return NumberUtils.formatWithMultiplier(ethers.utils.formatEther(estimatedTokens), 4);
+    return NumberUtils.formatToCurrency(ethers.utils.formatEther(estimatedTokens), 2);
   }, [estimatedTokens]);
 
   const approveDisabled = useMemo(() => {

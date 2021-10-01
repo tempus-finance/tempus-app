@@ -23,7 +23,7 @@ class NumberUtils {
   }
 
   static formatToCurrency(value: string, numberOfDecimals?: number, symbol?: string): string {
-    if (!value) {
+    if (!value || value === '0' || value === '0.0') {
       return `${symbol || ''}0`;
     }
 

@@ -26,6 +26,9 @@ describe('NumberUtils', () => {
   describe('formatToCurrency()', () => {
     [
       { value: '0', numberOfDecimals: 1, symbol: undefined, expected: '0' },
+      { value: '0', numberOfDecimals: 1, symbol: '$', expected: '$0' },
+      { value: '0.0', numberOfDecimals: 1, symbol: undefined, expected: '0' },
+      { value: '0.0', numberOfDecimals: 1, symbol: '$', expected: '$0' },
       { value: '12', numberOfDecimals: 1, symbol: '$', expected: '$12' },
       { value: '.12123', numberOfDecimals: 4, symbol: '$', expected: '$.1212' },
       { value: '.12123124', numberOfDecimals: 3, symbol: '$', expected: '$.121' },

@@ -38,19 +38,15 @@ const DetailUserInfoBalanceChart: FC<DetailUserInfoBalanceChartProps> = props =>
 
   useMemo(() => {
     setPrincipalShareValue(
-      userPrincipalsBalance
-        ? NumberUtils.formatWithMultiplier(ethers.utils.formatEther(userPrincipalsBalance), 2)
-        : '-',
+      userPrincipalsBalance ? NumberUtils.formatToCurrency(ethers.utils.formatEther(userPrincipalsBalance), 2) : '-',
     );
     setYieldShareValue(
-      userYieldsBalance ? NumberUtils.formatWithMultiplier(ethers.utils.formatEther(userYieldsBalance), 2) : '-',
+      userYieldsBalance ? NumberUtils.formatToCurrency(ethers.utils.formatEther(userYieldsBalance), 2) : '-',
     );
     setLpTokenPrincipalReturnValue(
-      NumberUtils.formatWithMultiplier(ethers.utils.formatEther(lpTokenPrincipalReturnBalance), 2),
+      NumberUtils.formatToCurrency(ethers.utils.formatEther(lpTokenPrincipalReturnBalance), 2),
     );
-    setLpTokenYieldReturnValue(
-      NumberUtils.formatWithMultiplier(ethers.utils.formatEther(lpTokenYieldReturnBalance), 2),
-    );
+    setLpTokenYieldReturnValue(NumberUtils.formatToCurrency(ethers.utils.formatEther(lpTokenYieldReturnBalance), 2));
   }, [lpTokenPrincipalReturnBalance, lpTokenYieldReturnBalance, userPrincipalsBalance, userYieldsBalance]);
 
   useMemo(() => {

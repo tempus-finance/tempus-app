@@ -86,7 +86,7 @@ const WalletConnect: FC = (): JSX.Element => {
   }
 
   const formattedEthBalance = useMemo(() => {
-    return NumberUtils.formatWithMultiplier(ethers.utils.formatEther(userEthBalance), 2);
+    return NumberUtils.formatToCurrency(ethers.utils.formatEther(userEthBalance), 2);
   }, [userEthBalance]);
 
   return (
