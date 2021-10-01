@@ -215,16 +215,16 @@ const Detail: FC<DetailProps> = ({ content, onClose }) => {
             Fees:
           </Typography>
           <Typography color="default" variant="h5">
-            Deposit {NumberUtils.formatPercentage(Number(utils.formatEther(poolFees[0])))}
+            Deposit {poolFees[0] && NumberUtils.formatPercentage(Number(utils.formatEther(poolFees[0])))}
           </Typography>
           <Typography color="default" variant="h5">
-            Redemption {NumberUtils.formatPercentage(Number(utils.formatEther(poolFees[2])))}
+            Redemption {poolFees[2] && NumberUtils.formatPercentage(Number(utils.formatEther(poolFees[2])))}
           </Typography>
           <Typography color="default" variant="h5">
-            Early Redemption {NumberUtils.formatPercentage(Number(utils.formatEther(poolFees[1])))}
+            Early Redemption {poolFees[1] && NumberUtils.formatPercentage(Number(utils.formatEther(poolFees[1])))}
           </Typography>
           <Typography color="default" variant="h5">
-            Swap {NumberUtils.formatPercentage(Number(utils.formatEther(poolFees[3])))}
+            Swap {poolFees[3] && NumberUtils.formatPercentage(Number(utils.formatEther(poolFees[3])))}
           </Typography>
         </div>
 
