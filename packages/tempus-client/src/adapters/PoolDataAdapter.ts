@@ -687,7 +687,7 @@ export default class PoolDataAdapter {
     }
   }
 
-  async getBackingTokenRate(ticker: string) {
+  async getBackingTokenRate(ticker: Ticker) {
     if (!this.statisticService) {
       console.error(
         'PoolDataAdapter - getBackingTokenRate() - Attempted to use PoolDataAdapter before initializing it!',

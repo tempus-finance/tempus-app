@@ -30,7 +30,8 @@
     "recharts": "^2.0.9",
     "rxjs": "^7.3.0",
     "sass": "^1.35.1",
-    "uuid": "^8.3.2"
+    "uuid": "^8.3.2",
+    "axios": "^0.22.0"
   },
   "devDependencies": {
     "@types/recharts": "^2.0.0",
