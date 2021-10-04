@@ -10,6 +10,7 @@ import { TransferEventListener } from '../services/ERC20TokenService';
 import { div18f, mul18f } from '../utils/wei-math';
 import { DAYS_IN_A_YEAR, ONE_ETH_IN_WEI, SECONDS_IN_A_DAY, ZERO_ETH_ADDRESS } from '../constants';
 import { Ticker } from '../interfaces';
+import { SelectedYield } from '../components/detail/basic/detailDeposit';
 
 export interface UserTransaction {
   event: DepositedEvent | RedeemedEvent;
@@ -325,6 +326,7 @@ export default class PoolDataAdapter {
     tokenAmount: BigNumber,
     isBackingToken: boolean,
     minTYSRate: BigNumber,
+    yieldType: SelectedYield,
     isEthDeposit?: boolean,
   ): Promise<ContractTransaction | undefined> {
     if (!this.tempusControllerService) {
@@ -333,13 +335,22 @@ export default class PoolDataAdapter {
     }
 
     try {
-      return await this.tempusControllerService.depositAndFix(
-        tempusAMM,
-        tokenAmount,
-        isBackingToken,
-        minTYSRate,
-        isEthDeposit,
-      );
+      if (yieldType === 'fixed') {
+        return await this.tempusControllerService.depositAndFix(
+          tempusAMM,
+          tokenAmount,
+          isBackingToken,
+          minTYSRate,
+          isEthDeposit,
+        );
+      } else if (yieldType === 'variable') {
+        return await this.tempusControllerService.depositAndProvideLiquidity(
+          tempusAMM,
+          tokenAmount,
+          isBackingToken,
+          isEthDeposit,
+        );
+      }
     } catch (error) {
       console.error(`TempusPoolService - executeDeposit() - Failed to make a deposit to the pool!`, error);
       return Promise.reject(error);

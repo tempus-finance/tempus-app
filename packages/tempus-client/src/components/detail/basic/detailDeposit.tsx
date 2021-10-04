@@ -18,7 +18,7 @@ import PoolDetailProps from '../shared/PoolDetailProps';
 import '../shared/style.scss';
 import { interestRateProtectionTooltipText, liquidityProvisionTooltipText } from '../../../constants';
 
-type SelectedYield = 'fixed' | 'variable';
+export type SelectedYield = 'fixed' | 'variable';
 
 // TODO Component is too big, we may need to break it up
 const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userWalletAddress, poolDataAdapter }) => {
@@ -153,6 +153,7 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
             tokenAmount,
             isBackingToken,
             parsedMinTYSRate,
+            selectedYield,
             isEthDeposit,
           );
           await depositTransaction?.wait();

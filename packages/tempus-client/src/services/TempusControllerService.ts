@@ -109,6 +109,36 @@ class TempusControllerService {
     }
   }
 
+  public async depositAndProvideLiquidity(
+    tempusAMM: string,
+    tokenAmount: BigNumber,
+    isBackingToken: boolean,
+    isEthDeposit?: boolean,
+  ): Promise<ContractTransaction> {
+    if (!this.contract) {
+      console.error(
+        'TempusControllerService - depositAndProvideLiquidity() - Attempted to use TempusControllerService before initializing it!',
+      );
+      return Promise.reject();
+    }
+
+    try {
+      if (isEthDeposit) {
+        return await this.contract.depositAndProvideLiquidity(tempusAMM, tokenAmount, isBackingToken, {
+          value: tokenAmount,
+        });
+      } else {
+        return await this.contract.depositAndProvideLiquidity(tempusAMM, tokenAmount, isBackingToken);
+      }
+    } catch (error) {
+      console.error(
+        `TempusControllerService depositAndProvideLiquidity() - Failed to do deposit and provide liquidity!`,
+        error,
+      );
+      return Promise.reject(error);
+    }
+  }
+
   public async completeExitAndRedeem(tempusAMM: string, isBackingToken: boolean): Promise<ContractTransaction> {
     if (!this.contract) {
       console.error(
