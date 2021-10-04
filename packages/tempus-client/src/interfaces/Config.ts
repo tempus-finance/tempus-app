@@ -7,4 +7,6 @@ export type Config = {
   lidoOracle: string;
   vaultContract: string;
   networkUrl: string;
+  networkName: string;
+  alchemyKey: string;
 };

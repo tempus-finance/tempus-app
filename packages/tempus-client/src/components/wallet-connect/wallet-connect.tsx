@@ -19,7 +19,7 @@ const supportedChainIds = [
   // 1, // Mainnet
   // 3, // Ropsten
   // 4, // Rinkeby
-  // 5, // Goerli 31337
+  5, // Goerli 31337
   // 42, // Kovan
   1337, // Local
   31337, // AWS Private

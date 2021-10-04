@@ -1,13 +1,10 @@
-// External libraries
-import { JsonRpcProvider } from '@ethersproject/providers';
-
-// Config
+import { AlchemyProvider, JsonRpcProvider } from '@ethersproject/providers';
 import getConfig from '../utils/get-config';
 
 let defaultProvider: JsonRpcProvider;
 const getDefaultProvider = () => {
   if (!defaultProvider) {
-    defaultProvider = new JsonRpcProvider(getConfig().networkUrl, { chainId: 31337, name: 'localhost' });
+    defaultProvider = new AlchemyProvider(getConfig().networkName, getConfig().alchemyKey);
   }
 
   return defaultProvider;

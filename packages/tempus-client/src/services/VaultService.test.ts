@@ -66,7 +66,7 @@ describe('VaultService', () => {
 
     const events = await vaultService.getSwapEvents();
 
-    expect(events.length).toBe(2);
+    expect(events.length).toBe(4);
     expect(events[0].blockHash).toBe('test-swap-event-1');
     expect(events[1].blockHash).toBe('test-swap-event-2');
   });
