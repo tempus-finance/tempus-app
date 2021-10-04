@@ -6,4 +6,6 @@ export type Config = {
   tempusControllerContract: string;
   vaultContract: string;
   networkUrl: string;
+  networkName: string;
+  alchemyKey: string;
 };
