@@ -25,6 +25,7 @@ const config: Config = {
   networkUrl: 'https://eth-goerli.alchemyapi.io/v2/RUE8LXWaELu4_nyMgfK99eX3DWoxLtDw',
   networkName: 'goerli',
   alchemyKey: 'RUE8LXWaELu4_nyMgfK99eX3DWoxLtDw',
+  lidoOracle: '0x24d8451BC07e7aF4Ba94F69aCDD9ad3c6579D9FB',
 };
 
 export default config;

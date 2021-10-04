@@ -1,6 +1,7 @@
 import * as eth from 'ethers';
 
-import { aaveLendingPoolAddress, lidoOracleAddress, cEthAddress } from '../constants';
+import { aaveLendingPoolAddress, cEthAddress } from '../constants';
+import getConfig from '../utils/get-config';
 import VariableRate from './VariableRateService';
 
 jest.mock('@ethersproject/providers');
@@ -31,7 +32,7 @@ jest.spyOn(eth as any, 'Contract').mockImplementation((address: any) => {
     };
   }
 
-  if (address === lidoOracleAddress) {
+  if (address === getConfig().lidoOracle) {
     return { getLastCompletedReportDelta: mockGetLastCompletedReportDelta };
   }
 

@@ -1,8 +1,13 @@
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
 import { BigNumber, CallOverrides, Contract, ethers } from 'ethers';
+import Axios from 'axios';
 import { Stats } from '../abi/Stats';
 import StatsABI from '../abi/Stats.json';
-import { div18f } from '../utils/wei-math';
+import { div18f, mul18f } from '../utils/wei-math';
+import { Ticker } from '../interfaces';
+
+const backingTokenToCoingeckoIdMap = new Map<string, string>();
+backingTokenToCoingeckoIdMap.set('ETH', 'ethereum');
 
 type StatisticsServiceParameters = {
   Contract: typeof Contract;
@@ -20,7 +25,7 @@ class StatisticsService {
 
   public async totalValueLockedUSD(
     tempusPool: string,
-    poolBackingTokenTicker: string,
+    poolBackingTokenTicker: Ticker,
     overrides?: CallOverrides,
   ): Promise<BigNumber> {
     let totalValueLockedUSD = BigNumber.from('0');
@@ -45,17 +50,51 @@ class StatisticsService {
         totalValueLockedUSD = await this.stats.totalValueLockedAtGivenRate(tempusPool, chainlinkAggregatorEnsHash);
       }
     } catch (error) {
-      console.error(`StatisticsService totalValueLockedUSD ${error}`);
-      return Promise.reject(error);
+      console.warn(
+        'StatisticsService - totalValueLockedUSD() - Failed to get total value locked at given rate from contract. Falling back to CoinGecko API!',
+      );
+
+      const rate = await this.getCoingeckoRate(poolBackingTokenTicker);
+
+      let backingTokensLocked: BigNumber;
+      try {
+        backingTokensLocked = await this.stats.totalValueLockedInBackingTokens(tempusPool);
+      } catch (error) {
+        console.error(
+          'StatisticsService - totalValueLockedUSD() - Failed to get total value locked in backing tokens!',
+          error,
+        );
+        return Promise.reject(error);
+      }
+
+      return mul18f(rate, backingTokensLocked);
     }
 
     return totalValueLockedUSD;
   }
 
+  private async getCoingeckoRate(token: Ticker) {
+    let value: BigNumber;
+    try {
+      const response = await Axios.get<any>(
+        `https://api.coingecko.com/api/v3/simple/price?ids=${backingTokenToCoingeckoIdMap.get(
+          token,
+        )}&vs_currencies=usd`,
+      );
+
+      value = ethers.utils.parseEther(response.data.ethereum.usd.toString());
+    } catch (error) {
+      console.error(`Failed to get token '${token}' exchange rate from coin gecko!`, error);
+      return Promise.reject(error);
+    }
+
+    return value;
+  }
+
   /**
    * Returns conversion rate of specified token to USD
    **/
-  public async getRate(tokenTicker: string, overrides?: CallOverrides): Promise<BigNumber> {
+  public async getRate(tokenTicker: Ticker, overrides?: CallOverrides): Promise<BigNumber> {
     if (!this.stats) {
       console.error(
         'StatisticsService totalValueLockedUSD Attempted to use statistics contract before initializing it...',
@@ -75,8 +114,11 @@ class StatisticsService {
         [rate, rateDenominator] = await this.stats.getRate(ensNameHash);
       }
     } catch (error) {
-      console.error(`Failed to get exchange rate for ${tokenTicker}!`, error);
-      return Promise.reject(error);
+      console.warn(
+        `Failed to get exchange rate for ${tokenTicker} from stats contract, falling back to CoinGecko API!`,
+      );
+
+      return this.getCoingeckoRate(tokenTicker);
     }
 
     return div18f(rate, rateDenominator);
