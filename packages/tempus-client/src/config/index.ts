@@ -16,6 +16,7 @@ const config: Config = {
   tempusControllerContract: '',
   vaultContract: '',
   networkUrl: '',
+  lidoOracle: '0x24d8451BC07e7aF4Ba94F69aCDD9ad3c6579D9FB',
 };
 
 export default config;

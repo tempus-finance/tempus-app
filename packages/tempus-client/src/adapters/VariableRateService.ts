@@ -8,12 +8,12 @@ import {
   SECONDS_IN_YEAR,
   ONE_ETH_IN_WEI,
   aaveLendingPoolAddress,
-  lidoOracleAddress,
   COMPOUND_BLOCKS_PER_DAY,
 } from '../constants';
 import TempusPoolService from '../services/TempusPoolService';
 import { ProtocolName } from '../interfaces';
 import { wadToDai } from '../utils/rayToDai';
+import getConfig from '../utils/get-config';
 
 const BN_SECONDS_IN_YEAR = BigNumber.from(SECONDS_IN_YEAR);
 const BN_ONE_ETH_IN_WEI = BigNumber.from(ONE_ETH_IN_WEI);
@@ -42,7 +42,7 @@ class VariableRateService {
   init(signerOrProvider: JsonRpcSigner | JsonRpcProvider, tempusPoolService: TempusPoolService) {
     if (signerOrProvider) {
       this.aaveLendingPool = new Contract(aaveLendingPoolAddress, AaveLendingPoolABI, signerOrProvider);
-      this.lidoOracle = new Contract(lidoOracleAddress, lidoOracleABI.abi, signerOrProvider);
+      this.lidoOracle = new Contract(getConfig().lidoOracle, lidoOracleABI.abi, signerOrProvider);
       this.signerOrProvider = signerOrProvider;
       this.tempusPoolService = tempusPoolService;
     }
