@@ -6,16 +6,16 @@ import { DashboardRowChild, PoolShares, Ticker } from '../../../interfaces';
 import { TempusPool } from '../../../interfaces/TempusPool';
 import PoolDataAdapter from '../../../adapters/PoolDataAdapter';
 import NumberUtils from '../../../services/NumberUtils';
-import getNotificationService from '../../../services/getNotificationService';
 import { SwapKind } from '../../../services/VaultService';
 import getConfig from '../../../utils/get-config';
 import Typography from '../../typography/Typography';
 import CurrencyInput from '../../currencyInput';
 import Spacer from '../../spacer/spacer';
-import Execute from '../shared/execute';
 import SectionContainer from '../shared/sectionContainer';
 import ActionContainer from '../shared/actionContainer';
 import TokenSelector from '../../tokenSelector';
+import ApproveButton from '../shared/approveButton';
+import ExecuteButton from '../shared/executeButton';
 
 interface TokenDetail {
   tokenName: PoolShares;
@@ -51,8 +51,7 @@ const DetailSwap: FC<DetailSwapProps> = props => {
   const [balance, setBalance] = useState<BigNumber | null>(null);
   const [receiveAmount, setReceiveAmount] = useState<BigNumber | null>(null);
 
-  const [approveDisabled, setApproveDisabled] = useState<boolean>(false);
-  const [executeDisabled, setExecuteDisabled] = useState<boolean>(false);
+  const [executeDisabled, setExecuteDisabled] = useState<boolean>(true);
 
   const onAmountChange = useCallback(
     (amount: number | undefined) => {
@@ -96,80 +95,30 @@ const DetailSwap: FC<DetailSwapProps> = props => {
     [switchTokens, tokenFrom.tokenName],
   );
 
-  const onApprove = useCallback(() => {
-    const approve = async () => {
-      if (signer && balance && poolDataAdapter) {
-        try {
-          const approveTransaction = await poolDataAdapter.approveToken(
-            tokenFrom.tokenAddress,
-            getConfig().vaultContract,
-            balance,
-            signer,
-          );
-          if (approveTransaction) {
-            await approveTransaction.wait();
-            getNotificationService().notify('Token Approval successful', `Successfully approved ${selectedToken}!`);
-            setApproveDisabled(true);
-          }
-        } catch (error) {
-          console.log(
-            `DetailSwap - onApprove() - Failed to approve token '${tokenFrom.tokenAddress}' - ${tokenFrom.tokenName}`,
-            error,
-          );
-          getNotificationService().warn('Token Approval failed', `Failed to approve ${selectedToken}!`);
-          setApproveDisabled(false);
-        }
-      }
-    };
-    setApproveDisabled(true);
-    approve();
-  }, [signer, balance, poolDataAdapter, tokenFrom.tokenAddress, tokenFrom.tokenName, selectedToken]);
+  const onApproved = useCallback(() => {
+    setExecuteDisabled(false);
+  }, []);
 
-  const onExecute = useCallback(() => {
-    const execute = async () => {
-      if (!poolDataAdapter) {
-        return;
-      }
+  const onExecuted = useCallback(() => {
+    setExecuteDisabled(false);
+  }, []);
 
-      const amountParsed = ethers.utils.parseEther(amount.toString());
-
-      try {
-        const transaction = await poolDataAdapter.swapShareTokens(
-          tempusPool.ammAddress,
-          SwapKind.GIVEN_IN,
-          tokenFrom.tokenAddress,
-          tokenTo.tokenAddress,
-          amountParsed,
-          userWalletAddress,
-        );
-        await transaction.wait();
-
-        getNotificationService().notify(
-          'Swap Successful',
-          `Swap from ${tokenFrom.tokenName} to ${tokenTo.tokenName} successful!`,
-        );
-      } catch (error) {
-        setExecuteDisabled(false);
-        console.error('DetailSwap - execute() - Failed to execute swap transaction!', error);
-        getNotificationService().warn(
-          'Swap Failed',
-          `Swap from ${tokenFrom.tokenName} to ${tokenTo.tokenName} failed!`,
-        );
-      }
-      setExecuteDisabled(false);
-    };
+  const onExecute = useCallback((): Promise<ethers.ContractTransaction | undefined> => {
+    if (!poolDataAdapter) {
+      return Promise.resolve(undefined);
+    }
     setExecuteDisabled(true);
-    execute();
-  }, [
-    poolDataAdapter,
-    amount,
-    tempusPool.ammAddress,
-    tokenFrom.tokenAddress,
-    tokenFrom.tokenName,
-    tokenTo.tokenAddress,
-    tokenTo.tokenName,
-    userWalletAddress,
-  ]);
+
+    const amountParsed = ethers.utils.parseEther(amount.toString());
+    return poolDataAdapter.swapShareTokens(
+      tempusPool.ammAddress,
+      SwapKind.GIVEN_IN,
+      tokenFrom.tokenAddress,
+      tokenTo.tokenAddress,
+      amountParsed,
+      userWalletAddress,
+    );
+  }, [poolDataAdapter, amount, tempusPool.ammAddress, tokenFrom.tokenAddress, tokenTo.tokenAddress, userWalletAddress]);
 
   // Fetch token from balance
   useEffect(() => {
@@ -284,13 +233,21 @@ const DetailSwap: FC<DetailSwapProps> = props => {
             </SectionContainer>
           </div>
         </ActionContainer>
-
-        <Execute
-          onApprove={onApprove}
-          approveDisabled={approveDisabled}
-          onExecute={onExecute}
-          executeDisabled={executeDisabled}
-        />
+        <Spacer size={20} />
+        <div className="tf__flex-row-center-vh">
+          <ApproveButton
+            amountToApprove={balance}
+            onApproved={onApproved}
+            poolDataAdapter={poolDataAdapter}
+            signer={signer}
+            spenderAddress={getConfig().vaultContract}
+            tokenTicker={tokenFrom.tokenName}
+            userWalletAddress={userWalletAddress}
+            tokenToApprove={selectedToken ? tokenFrom.tokenAddress : ''}
+          />
+          <Spacer size={20} />
+          <ExecuteButton actionName="Swap" disabled={executeDisabled} onExecute={onExecute} onExecuted={onExecuted} />
+        </div>
       </div>
     </div>
   );

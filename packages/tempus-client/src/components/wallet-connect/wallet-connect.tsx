@@ -26,7 +26,10 @@ const supportedChainIds = [
 ];
 
 const WalletConnect: FC = (): JSX.Element => {
-  const { setData } = useContext(Context);
+  const {
+    data: { pendingTransactions },
+    setData,
+  } = useContext(Context);
 
   const [userEthBalance, setUserEthBalance] = useState<BigNumber>(BigNumber.from('0'));
   const { account, activate, active, library } = useWeb3React<Web3Provider>();
@@ -106,7 +109,12 @@ const WalletConnect: FC = (): JSX.Element => {
       <div className="tf__connect__wallet-button" onClick={onConnect}>
         <AccountBalanceWalletIcon />
         <Spacer size={4} />
-        <Typography variant="h5">{active ? shortenedAccount : CONNECT_WALLET}</Typography>
+        {pendingTransactions.length === 0 && (
+          <Typography variant="h5">{active ? shortenedAccount : CONNECT_WALLET}</Typography>
+        )}
+        {pendingTransactions.length > 0 && (
+          <Typography variant="h5">{pendingTransactions.length} Pending...</Typography>
+        )}
       </div>
     </div>
   );

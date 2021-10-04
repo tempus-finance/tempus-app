@@ -1,33 +1,33 @@
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
-import { utils, BigNumber } from 'ethers';
-import { format } from 'date-fns';
+import { utils, BigNumber, ethers } from 'ethers';
 import Button from '@material-ui/core/Button';
+import { interestRateProtectionTooltipText, liquidityProvisionTooltipText } from '../../../constants';
 import NumberUtils from '../../../services/NumberUtils';
-import { ProtocolName, Ticker } from '../../../interfaces';
+import { Ticker } from '../../../interfaces';
 import { mul18f } from '../../../utils/wei-math';
+import getConfig from '../../../utils/get-config';
 import CurrencyInput from '../../currencyInput';
 import TokenSelector from '../../tokenSelector';
 import Typography from '../../typography/Typography';
-import getNotificationService from '../../../services/getNotificationService';
 import Spacer from '../../spacer/spacer';
 import ActionContainer from '../shared/actionContainer';
-import Execute from '../shared/execute';
 import SectionContainer from '../shared/sectionContainer';
 import PoolDetailProps from '../shared/PoolDetailProps';
+import ApproveButton from '../shared/approveButton';
+import ExecuteButton from '../shared/executeButton';
 
 import '../shared/style.scss';
-import { interestRateProtectionTooltipText, liquidityProvisionTooltipText } from '../../../constants';
 
 export type SelectedYield = 'fixed' | 'variable';
 
 // TODO Component is too big, we may need to break it up
 const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userWalletAddress, poolDataAdapter }) => {
   const { address, ammAddress } = tempusPool || {};
-  const { supportedTokens = [], fixedAPR = 0, variableAPY = 0, protocol, maturityDate } = content || {};
+  const { supportedTokens = [], fixedAPR = 0, variableAPY = 0 } = content || {};
   const [triggerUpdateBalance, setTriggerUpdateBalance] = useState<boolean>(true);
   const [backingToken] = supportedTokens;
 
-  const [selectedToken, setSelectedToken] = useState<Ticker | undefined>(undefined);
+  const [selectedToken, setSelectedToken] = useState<Ticker | null>(null);
   const [amount, setAmount] = useState<number>(0);
   const [balance, setBalance] = useState<BigNumber | null>(null);
   const [usdRate, setUsdRate] = useState<BigNumber | null>(null);
@@ -45,7 +45,6 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
   const [backingTokenRate, setBackingTokenRate] = useState<BigNumber | null>(null);
   const [yieldBearingTokenRate, setYieldBearingTokenRate] = useState<BigNumber | null>(null);
 
-  const [approveDisabled, setApproveDisabled] = useState<boolean>(false);
   const [executeDisabled, setExecuteDisabled] = useState<boolean>(true);
 
   const onTokenChange = useCallback(
@@ -119,83 +118,43 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
     [setSelectedYield],
   );
 
-  const onApprove = useCallback(() => {
-    const approve = async () => {
-      if (signer && balance && poolDataAdapter) {
-        try {
-          const isBackingToken = backingToken === selectedToken;
-          const approveTransaction = await poolDataAdapter.approve(address, isBackingToken, signer, balance);
-          if (approveTransaction) {
-            await approveTransaction.wait();
-            setExecuteDisabled(false);
-            getNotificationService().notify('Token Approval successful', `Successfully approved ${selectedToken}!`);
-          }
-        } catch (err) {
-          // TODO handle errors
-          console.log('onApprove err', err);
-          getNotificationService().warn('Token Approval failed', `Failed to approve ${selectedToken}!`);
-        }
-      }
-    };
-    setApproveDisabled(true);
-    approve();
-  }, [address, signer, backingToken, selectedToken, balance, poolDataAdapter, setApproveDisabled, setExecuteDisabled]);
+  const onApproved = useCallback(() => {
+    setExecuteDisabled(false);
+  }, []);
 
-  const onExecute = useCallback(() => {
-    const execute = async () => {
-      if (signer && amount && poolDataAdapter) {
-        try {
-          const parsedAmount = amount.toString();
-          const tokenAmount = utils.parseEther(parsedAmount);
-          const isBackingToken = backingToken === selectedToken;
-          const parsedMinTYSRate = utils.parseEther(minTYSRate.toString());
-          const isEthDeposit = selectedToken === 'ETH';
-          const depositTransaction = await poolDataAdapter.executeDeposit(
-            ammAddress,
-            tokenAmount,
-            isBackingToken,
-            parsedMinTYSRate,
-            selectedYield,
-            isEthDeposit,
-          );
-          await depositTransaction?.wait();
-          // TODO
-          // how to get transaction address for Etherscan?
-          const link = 'someEtherscanLink';
-          getNotificationService().notify(
-            'Deposit Successful',
-            getSuccessfulNotification(selectedYield, backingToken, protocol, maturityDate),
-            link,
-            'View on Etherscan',
-          );
-          setExecuteDisabled(false);
-          setTriggerUpdateBalance(true);
-          setAmount(0);
-        } catch (err) {
-          // TODO handle errors
-          console.log('onExecute err', err);
+  const onExecuted = useCallback(() => {
+    setExecuteDisabled(false);
+  }, []);
 
-          getNotificationService().warn('Deposit Failed', `Deposit to TempusPool failed!`);
-        }
-      }
-    };
+  const onExecute = useCallback((): Promise<ethers.ContractTransaction | undefined> => {
+    if (signer && amount && poolDataAdapter) {
+      setExecuteDisabled(true);
 
-    setExecuteDisabled(true);
-    execute();
+      const tokenAmount = utils.parseEther(amount.toString());
+      const isBackingToken = backingToken === selectedToken;
+      const parsedMinTYSRate = utils.parseEther(minTYSRate.toString());
+      const isEthDeposit = selectedToken === 'ETH';
+      return poolDataAdapter.executeDeposit(
+        ammAddress,
+        tokenAmount,
+        isBackingToken,
+        parsedMinTYSRate,
+        selectedYield,
+        isEthDeposit,
+      );
+    } else {
+      return Promise.resolve(undefined);
+    }
   }, [
     signer,
     ammAddress,
     backingToken,
     selectedToken,
-    protocol,
-    maturityDate,
     selectedYield,
     amount,
     minTYSRate,
     poolDataAdapter,
     setExecuteDisabled,
-    setTriggerUpdateBalance,
-    setAmount,
   ]);
 
   useEffect(() => {
@@ -307,27 +266,6 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
   useEffect(() => {
     setExecuteDisabled(!amount || !selectedYield);
   }, [amount, selectedYield, setExecuteDisabled]);
-
-  useEffect(() => {
-    const getAllowance = async () => {
-      if (signer) {
-        const isBackingToken = backingToken === selectedToken;
-        const allowance = await poolDataAdapter?.getApprovedAllowance(
-          userWalletAddress,
-          address,
-          isBackingToken,
-          signer,
-        );
-        if (allowance) {
-          setApproveDisabled(true);
-        } else {
-          setApproveDisabled(false);
-        }
-      }
-    };
-
-    getAllowance();
-  }, [userWalletAddress, address, selectedToken, backingToken, signer, poolDataAdapter]);
 
   const fixedPrincipalsAmountFormatted = useMemo(() => {
     if (!fixedPrincipalsAmount) {
@@ -494,27 +432,31 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
             </div>
           </div>
         </ActionContainer>
-
-        <Execute
-          approveDisabled={approveDisabled}
-          executeDisabled={executeDisabled}
-          onApprove={onApprove}
-          onExecute={onExecute}
-        />
+        <Spacer size={20} />
+        <div className="tf__flex-row-center-vh">
+          <ApproveButton
+            amountToApprove={balance}
+            onApproved={onApproved}
+            poolDataAdapter={poolDataAdapter}
+            signer={signer}
+            spenderAddress={getConfig().tempusControllerContract}
+            tokenTicker={selectedToken}
+            userWalletAddress={userWalletAddress}
+            tokenToApprove={
+              selectedToken === backingToken ? content.backingTokenAddress : content.yieldBearingTokenAddress
+            }
+          />
+          <Spacer size={20} />
+          <ExecuteButton
+            actionName="Deposit"
+            disabled={executeDisabled}
+            onExecute={onExecute}
+            onExecuted={onExecuted}
+          />
+        </div>
       </div>
     </div>
   );
 };
 
 export default DetailDeposit;
-
-const getSuccessfulNotification = (
-  selectedYield: string,
-  backingToken: Ticker,
-  protocol: ProtocolName,
-  maturityDate: Date,
-): string => {
-  return `${selectedYield} Yield
-    ${backingToken} via ${protocol}
-    ${format(maturityDate, 'dd MMMM yyyy')}`;
-};

@@ -5,7 +5,6 @@ import { Context } from '../../../context';
 import { DashboardRowChild } from '../../../interfaces';
 import { TempusPool } from '../../../interfaces/TempusPool';
 import NumberUtils from '../../../services/NumberUtils';
-import getNotificationService from '../../../services/getNotificationService';
 import PoolDataAdapter from '../../../adapters/PoolDataAdapter';
 import getConfig from '../../../utils/get-config';
 import Typography from '../../typography/Typography';
@@ -15,6 +14,7 @@ import ActionContainer from '../shared/actionContainer';
 import SectionContainer from '../shared/sectionContainer';
 import PlusIconContainer from '../shared/plusIconContainer';
 import ApproveButton from '../shared/approveButton';
+import ExecuteButton from '../shared/executeButton';
 
 type DetailPoolAddLiquidityInProps = {
   content: DashboardRowChild;
@@ -77,40 +77,32 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = ({ content, pool
 
   const onApproved = useCallback(() => {
     setExecuteDisabled(false);
-  }, [setExecuteDisabled]);
+  }, []);
 
-  const onExecute = useCallback(() => {
-    const removeLiquidity = async () => {
-      if (!poolDataAdapter) {
-        return;
-      }
-      try {
-        const transaction = await poolDataAdapter.removeLiquidity(
-          tempusPool.ammAddress,
-          data.userWalletAddress,
-          content.principalTokenAddress,
-          content.yieldTokenAddress,
-          ethers.utils.parseEther(amount.toString()),
-        );
-        await transaction.wait();
+  const onExecuted = useCallback(() => {
+    setExecuteDisabled(false);
+  }, []);
 
-        getNotificationService().notify('Remove Liquidity successful', `Remove Liquidity successful!`);
-      } catch (error) {
-        console.error(
-          'DetailPoolRemoveLiquidity - removeLiquidity() - Failed to remove liquidity from tempus pool AMM!',
-          error,
-        );
-        getNotificationService().warn('Remove Liquidity failed', `Remove Liquidity failed!`);
-      }
-    };
-    removeLiquidity();
+  const onExecute = useCallback((): Promise<ethers.ContractTransaction | undefined> => {
+    if (!poolDataAdapter) {
+      return Promise.resolve(undefined);
+    }
+    setExecuteDisabled(true);
+
+    return poolDataAdapter.removeLiquidity(
+      tempusPool.ammAddress,
+      data.userWalletAddress,
+      content.principalTokenAddress,
+      content.yieldTokenAddress,
+      ethers.utils.parseEther(amount.toString()),
+    );
   }, [
-    amount,
-    content.principalTokenAddress,
-    content.yieldTokenAddress,
+    poolDataAdapter,
     tempusPool.ammAddress,
     data.userWalletAddress,
-    poolDataAdapter,
+    content.principalTokenAddress,
+    content.yieldTokenAddress,
+    amount,
   ]);
 
   const lpTokenBalanceFormatted = useMemo(() => {
@@ -209,11 +201,12 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = ({ content, pool
           tokenToApprove={tempusPool.ammAddress}
         />
         <Spacer size={18} />
-        <Button variant="contained" color="secondary" onClick={onExecute} disabled={executeDisabled || amount === 0}>
-          <Typography color="inverted" variant="h5">
-            Execute
-          </Typography>
-        </Button>
+        <ExecuteButton
+          actionName="Remove Liquidity"
+          disabled={executeDisabled}
+          onExecute={onExecute}
+          onExecuted={onExecuted}
+        />
       </div>
     </>
   );

@@ -8,6 +8,7 @@ interface ContextDataType {
   userPrincipalsBalance: BigNumber | null;
   userYieldsBalance: BigNumber | null;
   userLPBalance: BigNumber | null;
+  pendingTransactions: string[];
 }
 
 interface ContextType {
@@ -21,6 +22,7 @@ export const defaultContextValue: ContextDataType = {
   userPrincipalsBalance: null,
   userYieldsBalance: null,
   userLPBalance: null,
+  pendingTransactions: [],
 };
 export const Context = React.createContext<ContextType>({
   data: defaultContextValue,

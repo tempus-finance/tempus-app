@@ -1,9 +1,7 @@
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { ethers, BigNumber } from 'ethers';
-import { Button } from '@material-ui/core';
 import { Ticker } from '../../../interfaces/Token';
 import NumberUtils from '../../../services/NumberUtils';
-import getNotificationService from '../../../services/getNotificationService';
 import { mul18f } from '../../../utils/wei-math';
 import getConfig from '../../../utils/get-config';
 import Typography from '../../typography/Typography';
@@ -14,6 +12,7 @@ import PoolDetailProps from '../shared/PoolDetailProps';
 import SectionContainer from '../shared/sectionContainer';
 import PlusIconContainer from '../shared/plusIconContainer';
 import ApproveButton from '../shared/approveButton';
+import ExecuteButton from '../shared/executeButton';
 
 import '../shared/style.scss';
 
@@ -31,6 +30,7 @@ const DetailWithdraw: FC<PoolDetailProps> = ({ tempusPool, content, signer, user
 
   const [tokenRate, setTokenRate] = useState<BigNumber | null>(null);
 
+  const [executeDisabled, setExecuteDisabled] = useState<boolean>(true);
   const [principalsApproved, setPrincipalsApproved] = useState<boolean>(false);
   const [yieldsApproved, setYieldsApproved] = useState<boolean>(false);
   const [lpApproved, setLpApproved] = useState<boolean>(false);
@@ -41,33 +41,21 @@ const DetailWithdraw: FC<PoolDetailProps> = ({ tempusPool, content, signer, user
     }
   }, []);
 
-  const onExecute = useCallback(() => {
-    const execute = async () => {
-      if (signer && poolDataAdapter) {
-        const isBackingToken = backingToken === selectedToken;
-        try {
-          const depositTransaction = await poolDataAdapter.executeWithdraw(ammAddress, isBackingToken);
-          if (depositTransaction) {
-            await depositTransaction.wait();
+  const onExecuted = useCallback(() => {
+    setExecuteDisabled(false);
+  }, []);
 
-            getNotificationService().notify(
-              'Withdrawal Successful',
-              `Successfully made a withdrawal to ${isBackingToken ? 'backing token.' : 'yield bearing token.'}`,
-            );
-          }
-        } catch (error) {
-          console.log('DetailWithdraw - onExecute() - Failed to execute the transaction!', error);
+  const onExecute = useCallback((): Promise<ethers.ContractTransaction | undefined> => {
+    if (signer && poolDataAdapter) {
+      const isBackingToken = backingToken === selectedToken;
 
-          getNotificationService().warn(
-            'Withdrawal Failed',
-            `Withdrawal to ${isBackingToken ? 'backing token.' : 'yield bearing token.'} failed!`,
-          );
-        }
-      }
-    };
+      setExecuteDisabled(true);
 
-    execute();
-  }, [signer, ammAddress, backingToken, selectedToken, poolDataAdapter]);
+      return poolDataAdapter.executeWithdraw(ammAddress, isBackingToken);
+    } else {
+      return Promise.resolve(undefined);
+    }
+  }, [signer, poolDataAdapter, backingToken, selectedToken, ammAddress]);
 
   // Update token rate when selected token changes
   useEffect(() => {
@@ -275,16 +263,12 @@ const DetailWithdraw: FC<PoolDetailProps> = ({ tempusPool, content, signer, user
         </ActionContainer>
         <Spacer size={20} />
         <div className="tf__flex-row-center-v">
-          <Button
-            color="secondary"
-            variant="contained"
-            onClick={onExecute}
-            disabled={!principalsApproved || !yieldsApproved || !lpApproved}
-          >
-            <Typography variant="h5" color="inverted">
-              Execute
-            </Typography>
-          </Button>
+          <ExecuteButton
+            actionName="Remove Liquidity"
+            disabled={!principalsApproved || !yieldsApproved || !lpApproved || executeDisabled}
+            onExecute={onExecute}
+            onExecuted={onExecuted}
+          />
         </div>
       </div>
     </div>

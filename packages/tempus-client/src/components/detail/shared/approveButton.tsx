@@ -1,4 +1,4 @@
-import { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { BigNumber, ethers } from 'ethers';
 import { JsonRpcSigner } from '@ethersproject/providers';
 import { Button } from '@material-ui/core';
@@ -6,6 +6,7 @@ import PoolDataAdapter from '../../../adapters/PoolDataAdapter';
 import Typography from '../../typography/Typography';
 import getNotificationService from '../../../services/getNotificationService';
 import { Ticker } from '../../../interfaces';
+import { Context } from '../../../context';
 
 interface ApproveButtonProps {
   poolDataAdapter: PoolDataAdapter | null;
@@ -14,7 +15,7 @@ interface ApproveButtonProps {
   tokenToApprove: string;
   spenderAddress: string;
   amountToApprove: BigNumber | null;
-  tokenTicker: Ticker;
+  tokenTicker: Ticker | null;
   onApproved: () => void;
 }
 
@@ -30,46 +31,82 @@ const ApproveButton: FC<ApproveButtonProps> = props => {
     onApproved,
   } = props;
 
+  const { setData } = useContext(Context);
+
   const [approving, setApproving] = useState<boolean>(false);
   const [allowance, setAllowance] = useState<number | null>(null);
 
   const onApprove = useCallback(() => {
     const approve = async () => {
-      if (signer && poolDataAdapter && amountToApprove) {
-        try {
-          const approveTransaction = await poolDataAdapter.approveToken(
-            tokenToApprove,
-            spenderAddress,
-            amountToApprove,
-            signer,
-          );
-          if (approveTransaction) {
-            await approveTransaction.wait();
-
-            getNotificationService().notify('Token Approval successful', `Successfully approved ${tokenTicker}!`);
-
-            // Set new allowance
-            setAllowance(
-              await poolDataAdapter.getTokenAllowance(tokenToApprove, spenderAddress, userWalletAddress, signer),
-            );
-
-            onApproved();
-            setApproving(false);
-          }
-        } catch (error) {
-          console.log('ApproveButton - onApprove() - Error: ', error);
-
-          getNotificationService().warn('Token Approval failed', `Failed to approve ${tokenTicker}!`);
-        }
+      if (!signer || !poolDataAdapter || !amountToApprove || !setData) {
+        return;
       }
+
+      let transaction: ethers.ContractTransaction | undefined | void;
+      try {
+        transaction = await poolDataAdapter.approveToken(tokenToApprove, spenderAddress, amountToApprove, signer);
+      } catch (error) {
+        console.error('Failed to execute the transaction!', error);
+        getNotificationService().warn(`Token approval failed!`, `Token approval failed failed!`);
+        return;
+      }
+
+      if (!transaction) {
+        return;
+      }
+
+      setData(previousData => {
+        if (!transaction) {
+          return previousData;
+        }
+        return {
+          ...previousData,
+          pendingTransactions: [...previousData.pendingTransactions, transaction.hash],
+        };
+      });
+
+      try {
+        await transaction.wait();
+      } catch (error) {
+        console.error('Transaction failed to execute!', error);
+        setData(previousData => {
+          const filteredTransactions = previousData.pendingTransactions.filter(pendingTransaction => {
+            return pendingTransaction !== transaction?.hash;
+          });
+          return {
+            ...previousData,
+            pendingTransactions: filteredTransactions,
+          };
+        });
+        getNotificationService().warn(`Token approval failed!`, `Token approval failed failed!`);
+        return;
+      }
+
+      setData(previousData => {
+        const filteredTransactions = previousData.pendingTransactions.filter(pendingTransaction => {
+          return pendingTransaction !== transaction?.hash;
+        });
+        return {
+          ...previousData,
+          pendingTransactions: filteredTransactions,
+        };
+      });
+
+      getNotificationService().notify('Token Approval successful', `Successfully approved ${tokenTicker}!`);
+
+      // Set new allowance
+      setAllowance(await poolDataAdapter.getTokenAllowance(tokenToApprove, spenderAddress, userWalletAddress, signer));
+
+      onApproved();
+      setApproving(false);
     };
     approve();
-
     setApproving(true);
   }, [
     signer,
     poolDataAdapter,
     amountToApprove,
+    setData,
     tokenToApprove,
     spenderAddress,
     tokenTicker,
@@ -80,7 +117,7 @@ const ApproveButton: FC<ApproveButtonProps> = props => {
   // Fetch token allowance
   useEffect(() => {
     const getAllowance = async () => {
-      if (!poolDataAdapter || !signer) {
+      if (!poolDataAdapter || !signer || !tokenToApprove) {
         return;
       }
 
@@ -109,7 +146,7 @@ const ApproveButton: FC<ApproveButtonProps> = props => {
     <>
       {/* Show Approve button if tokens are not approved already */}
       {!approved && (
-        <Button color="primary" variant="contained" onClick={onApprove} disabled={approving}>
+        <Button color="primary" variant="contained" onClick={onApprove} disabled={approving || !tokenToApprove}>
           <Typography variant="h5" color="inverted">
             Approve
           </Typography>

@@ -6,16 +6,16 @@ import { DashboardRowChild, Ticker } from '../../../interfaces';
 import { TempusPool } from '../../../interfaces/TempusPool';
 import PoolDataAdapter from '../../../adapters/PoolDataAdapter';
 import NumberUtils from '../../../services/NumberUtils';
-import getNotificationService from '../../../services/getNotificationService';
 import getConfig from '../../../utils/get-config';
 import Typography from '../../typography/Typography';
 import Spacer from '../../spacer/spacer';
 import TokenSelector from '../../tokenSelector';
 import CurrencyInput from '../../currencyInput';
 import ActionContainer from '../shared/actionContainer';
-import Execute from '../shared/execute';
 import SectionContainer from '../shared/sectionContainer';
 import PlusIconContainer from '../shared/plusIconContainer';
+import ApproveButton from '../shared/approveButton';
+import ExecuteButton from '../shared/executeButton';
 
 import './detailMint.scss';
 
@@ -40,7 +40,7 @@ const DetailMint: FC<DetailMintProps> = props => {
   const [amount, setAmount] = useState<number>(0);
   const [balance, setBalance] = useState<BigNumber | null>(null);
   const [estimatedTokens, setEstimatedTokens] = useState<BigNumber | null>(null);
-  const [approvedAllowance, setApprovedAllowance] = useState<number | null>(null);
+  const [executeDisabled, setExecuteDisabled] = useState<boolean>(true);
 
   const onTokenChange = useCallback(
     (token: Ticker | undefined) => {
@@ -104,55 +104,28 @@ const DetailMint: FC<DetailMintProps> = props => {
     yieldBearingTokenAddress,
   ]);
 
-  const onApprove = useCallback(() => {
-    const approve = async () => {
-      if (signer && balance && poolDataAdapter) {
-        try {
-          const approveTransaction = await poolDataAdapter.approveToken(
-            selectedToken === backingToken ? backingTokenAddress : yieldBearingTokenAddress,
-            getConfig().tempusControllerContract,
-            balance,
-            signer,
-          );
-          if (approveTransaction) {
-            await approveTransaction.wait();
-            getNotificationService().notify('Token Approval successful', `Successfully approved ${selectedToken}!`);
-          }
-        } catch (error) {
-          console.log(`DetailMint - onApprove() - Failed to approve token!`, error);
-          getNotificationService().warn('Token Approval failed', `Failed to approve ${selectedToken}!`);
-        }
-      }
-    };
-    approve();
-  }, [backingToken, backingTokenAddress, balance, poolDataAdapter, selectedToken, signer, yieldBearingTokenAddress]);
+  const onApproved = useCallback(() => {
+    setExecuteDisabled(false);
+  }, []);
 
-  const onExecute = useCallback(() => {
-    const execute = async () => {
-      if (!poolDataAdapter) {
-        return;
-      }
+  const onExecuted = useCallback(() => {
+    setExecuteDisabled(false);
+  }, []);
 
-      const amountParsed = ethers.utils.parseEther(amount.toString());
+  const onExecute = useCallback((): Promise<ethers.ContractTransaction | undefined> => {
+    if (!poolDataAdapter) {
+      return Promise.resolve(undefined);
+    }
 
-      try {
-        const transaction = await poolDataAdapter.deposit(
-          tempusPool.address,
-          amountParsed,
-          userWalletAddress,
-          selectedToken === backingToken,
-          selectedToken === 'ETH',
-        );
-        await transaction.wait();
+    const amountParsed = ethers.utils.parseEther(amount.toString());
 
-        getNotificationService().notify('Mint Successful', `Mint from ${selectedToken} successful!`);
-      } catch (error) {
-        console.error('DetailMint - execute() - Failed to execute mint transaction!', error);
-
-        getNotificationService().warn('Mint Failed', `Mint from ${selectedToken} failed!`);
-      }
-    };
-    execute();
+    return poolDataAdapter.deposit(
+      tempusPool.address,
+      amountParsed,
+      userWalletAddress,
+      selectedToken === backingToken,
+      selectedToken === 'ETH',
+    );
   }, [amount, backingToken, poolDataAdapter, selectedToken, tempusPool.address, userWalletAddress]);
 
   // Fetch estimated tokens returned
@@ -175,29 +148,6 @@ const DetailMint: FC<DetailMintProps> = props => {
     getEstimates();
   }, [amount, backingToken, poolDataAdapter, selectedToken, tempusPool]);
 
-  // Fetch allowance for currently selected token
-  useEffect(() => {
-    const getApprovedAllowance = async () => {
-      if (!signer || !poolDataAdapter || !selectedToken) {
-        return;
-      }
-      const poolAddress = tempusPool.address;
-      const isBacking = selectedToken === backingToken;
-
-      try {
-        setApprovedAllowance(
-          await poolDataAdapter.getApprovedAllowance(userWalletAddress, poolAddress, isBacking, signer),
-        );
-      } catch (error) {
-        console.error(
-          'DetailMint - getApprovedAllowance() - Failed to get approved allowance for selected token!',
-          error,
-        );
-      }
-    };
-    getApprovedAllowance();
-  }, [backingToken, poolDataAdapter, selectedToken, signer, tempusPool.address, userWalletAddress]);
-
   const balanceFormatted = useMemo(() => {
     if (!balance) {
       return null;
@@ -211,20 +161,6 @@ const DetailMint: FC<DetailMintProps> = props => {
     }
     return NumberUtils.formatToCurrency(ethers.utils.formatEther(estimatedTokens), 2);
   }, [estimatedTokens]);
-
-  const approveDisabled = useMemo(() => {
-    const alreadyApproved = !!approvedAllowance && amount < approvedAllowance;
-    const amountHigherThenBalance = !!balance && ethers.utils.parseEther(amount.toString()).gt(balance);
-
-    return !selectedToken || alreadyApproved || amountHigherThenBalance;
-  }, [selectedToken, balance, amount, approvedAllowance]);
-
-  const executeDisabled = useMemo(() => {
-    const tokensApproved = !!approvedAllowance && amount < approvedAllowance;
-    const amountHigherThenBalance = !!balance && ethers.utils.parseEther(amount.toString()).gt(balance);
-
-    return !selectedToken || !amount || !tokensApproved || amountHigherThenBalance;
-  }, [amount, approvedAllowance, balance, selectedToken]);
 
   return (
     <div role="tabpanel">
@@ -288,12 +224,23 @@ const DetailMint: FC<DetailMintProps> = props => {
             </div>
           </div>
         </ActionContainer>
-        <Execute
-          onApprove={onApprove}
-          approveDisabled={approveDisabled}
-          onExecute={onExecute}
-          executeDisabled={executeDisabled}
-        />
+        <Spacer size={20} />
+        <div className="tf__flex-row-center-vh">
+          <ApproveButton
+            amountToApprove={balance}
+            onApproved={onApproved}
+            poolDataAdapter={poolDataAdapter}
+            signer={signer}
+            spenderAddress={getConfig().tempusControllerContract}
+            tokenTicker={selectedToken}
+            userWalletAddress={userWalletAddress}
+            tokenToApprove={
+              selectedToken === backingToken ? content.backingTokenAddress : content.yieldBearingTokenAddress
+            }
+          />
+          <Spacer size={20} />
+          <ExecuteButton actionName="Mint" disabled={executeDisabled} onExecute={onExecute} onExecuted={onExecuted} />
+        </div>
       </div>
     </div>
   );

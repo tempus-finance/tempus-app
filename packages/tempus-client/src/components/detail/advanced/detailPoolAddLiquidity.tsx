@@ -4,19 +4,19 @@ import { BigNumber, ethers } from 'ethers';
 import { JsonRpcSigner } from '@ethersproject/providers';
 import PoolDataAdapter from '../../../adapters/PoolDataAdapter';
 import NumberUtils from '../../../services/NumberUtils';
-import getNotificationService from '../../../services/getNotificationService';
 import { DashboardRowChild } from '../../../interfaces';
 import { TempusPool } from '../../../interfaces/TempusPool';
 import getConfig from '../../../utils/get-config';
 import { div18f } from '../../../utils/wei-math';
 import Typography from '../../typography/Typography';
 import Spacer from '../../spacer/spacer';
+import ScaleIcon from '../../icons/ScaleIcon';
 import CurrencyInput from '../../currencyInput';
 import ActionContainer from '../shared/actionContainer';
 import SectionContainer from '../shared/sectionContainer';
 import ApproveButton from '../shared/approveButton';
 import PlusIconContainer from '../shared/plusIconContainer';
-import ScaleIcon from '../../icons/ScaleIcon';
+import ExecuteButton from '../shared/executeButton';
 
 import './detailPoolAddLiquidity.scss';
 
@@ -46,6 +46,9 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = props => {
 
   const [expectedLPTokens, setExpectedLPTokens] = useState<BigNumber | null>(null);
   const [expectedPoolShare, setExpectedPoolShare] = useState<number | null>(null);
+
+  const [principalsApproved, setPrincipalsApproved] = useState<boolean>(false);
+  const [yieldsApproved, setYieldsApproved] = useState<boolean>(false);
 
   const onPrincipalsAmountChange = useCallback(
     (amount: number | undefined) => {
@@ -181,30 +184,21 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = props => {
     fetchExpectedPoolShare();
   }, [expectedLPTokens, poolDataAdapter, tempusPool.ammAddress]);
 
-  const onExecute = useCallback(() => {
-    const provideLiquidity = async () => {
-      if (!poolDataAdapter) {
-        return;
-      }
-      try {
-        const transaction = await poolDataAdapter.provideLiquidity(
-          tempusPool.ammAddress,
-          userWalletAddress,
-          content.principalTokenAddress,
-          content.yieldTokenAddress,
-          ethers.utils.parseEther(principalsAmount.toString()),
-          ethers.utils.parseEther(yieldsAmount.toString()),
-        );
-        await transaction.wait();
+  const onExecuted = useCallback(() => {}, []);
 
-        getNotificationService().notify('Add Liquidity successful', `Add Liquidity successful!`);
-      } catch (error) {
-        console.error('DetailPoolAddLiquidity - provideLiquidity() - Failed to provide liquidity!', error);
+  const onExecute = useCallback((): Promise<ethers.ContractTransaction | undefined> => {
+    if (!poolDataAdapter) {
+      return Promise.resolve(undefined);
+    }
 
-        getNotificationService().warn('Add Liquidity failed', `Add Liquidity failed!`);
-      }
-    };
-    provideLiquidity();
+    return poolDataAdapter.provideLiquidity(
+      tempusPool.ammAddress,
+      userWalletAddress,
+      content.principalTokenAddress,
+      content.yieldTokenAddress,
+      ethers.utils.parseEther(principalsAmount.toString()),
+      ethers.utils.parseEther(yieldsAmount.toString()),
+    );
   }, [
     content.principalTokenAddress,
     content.yieldTokenAddress,
@@ -309,7 +303,9 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = props => {
               <ApproveButton
                 tokenTicker="Principals"
                 amountToApprove={principalsBalance || BigNumber.from('0')}
-                onApproved={() => {}}
+                onApproved={() => {
+                  setPrincipalsApproved(true);
+                }}
                 poolDataAdapter={poolDataAdapter}
                 signer={signer}
                 spenderAddress={getConfig().vaultContract}
@@ -358,7 +354,9 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = props => {
               <ApproveButton
                 tokenTicker="Yields"
                 amountToApprove={yieldsBalance || BigNumber.from('0')}
-                onApproved={() => {}}
+                onApproved={() => {
+                  setYieldsApproved(true);
+                }}
                 poolDataAdapter={poolDataAdapter}
                 signer={signer}
                 spenderAddress={getConfig().vaultContract}
@@ -387,11 +385,12 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = props => {
 
       <Spacer size={20} />
       <div className="tf__flex-row-center-v">
-        <Button color="secondary" variant="contained" onClick={onExecute} disabled={false}>
-          <Typography variant="h5" color="inverted">
-            Execute
-          </Typography>
-        </Button>
+        <ExecuteButton
+          actionName="Add Liquidity"
+          disabled={!principalsApproved || !yieldsApproved}
+          onExecute={onExecute}
+          onExecuted={onExecuted}
+        />
       </div>
     </>
   );
