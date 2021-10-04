@@ -6,6 +6,7 @@ import { DashboardRowChild, PoolShares, Ticker } from '../../../interfaces';
 import { TempusPool } from '../../../interfaces/TempusPool';
 import PoolDataAdapter from '../../../adapters/PoolDataAdapter';
 import NumberUtils from '../../../services/NumberUtils';
+import getNotificationService from '../../../services/getNotificationService';
 import { SwapKind } from '../../../services/VaultService';
 import getConfig from '../../../utils/get-config';
 import Typography from '../../typography/Typography';
@@ -107,6 +108,7 @@ const DetailSwap: FC<DetailSwapProps> = props => {
           );
           if (approveTransaction) {
             await approveTransaction.wait();
+            getNotificationService().notify('Token Approval successful', `Successfully approved ${selectedToken}!`);
             setApproveDisabled(true);
           }
         } catch (error) {
@@ -114,13 +116,14 @@ const DetailSwap: FC<DetailSwapProps> = props => {
             `DetailSwap - onApprove() - Failed to approve token '${tokenFrom.tokenAddress}' - ${tokenFrom.tokenName}`,
             error,
           );
+          getNotificationService().warn('Token Approval failed', `Failed to approve ${selectedToken}!`);
           setApproveDisabled(false);
         }
       }
     };
     setApproveDisabled(true);
     approve();
-  }, [balance, poolDataAdapter, signer, tokenFrom, setApproveDisabled]);
+  }, [signer, balance, poolDataAdapter, tokenFrom.tokenAddress, tokenFrom.tokenName, selectedToken]);
 
   const onExecute = useCallback(() => {
     const execute = async () => {
@@ -131,7 +134,7 @@ const DetailSwap: FC<DetailSwapProps> = props => {
       const amountParsed = ethers.utils.parseEther(amount.toString());
 
       try {
-        await poolDataAdapter.swapShareTokens(
+        const transaction = await poolDataAdapter.swapShareTokens(
           tempusPool.ammAddress,
           SwapKind.GIVEN_IN,
           tokenFrom.tokenAddress,
@@ -139,24 +142,33 @@ const DetailSwap: FC<DetailSwapProps> = props => {
           amountParsed,
           userWalletAddress,
         );
+        await transaction.wait();
+
+        getNotificationService().notify(
+          'Swap Successful',
+          `Swap from ${tokenFrom.tokenName} to ${tokenTo.tokenName} successful!`,
+        );
       } catch (error) {
         setExecuteDisabled(false);
-
         console.error('DetailSwap - execute() - Failed to execute swap transaction!', error);
-        return Promise.reject(error);
+        getNotificationService().warn(
+          'Swap Failed',
+          `Swap from ${tokenFrom.tokenName} to ${tokenTo.tokenName} failed!`,
+        );
       }
       setExecuteDisabled(false);
     };
     setExecuteDisabled(true);
     execute();
   }, [
-    amount,
     poolDataAdapter,
+    amount,
     tempusPool.ammAddress,
     tokenFrom.tokenAddress,
+    tokenFrom.tokenName,
     tokenTo.tokenAddress,
+    tokenTo.tokenName,
     userWalletAddress,
-    setExecuteDisabled,
   ]);
 
   // Fetch token from balance

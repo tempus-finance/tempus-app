@@ -11,6 +11,7 @@ export type Ticker =
   | 'stETH'
   | 'USDC'
   | 'aDAI'
-  | 'cDAI';
+  | 'cDAI'
+  | 'LP';
 
 export type PoolShares = 'Principals' | 'Yields';

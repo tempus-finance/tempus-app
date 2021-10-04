@@ -4,6 +4,8 @@ import { JsonRpcSigner } from '@ethersproject/providers';
 import { Button } from '@material-ui/core';
 import PoolDataAdapter from '../../../adapters/PoolDataAdapter';
 import Typography from '../../typography/Typography';
+import getNotificationService from '../../../services/getNotificationService';
+import { Ticker } from '../../../interfaces';
 
 interface ApproveButtonProps {
   poolDataAdapter: PoolDataAdapter | null;
@@ -12,12 +14,21 @@ interface ApproveButtonProps {
   tokenToApprove: string;
   spenderAddress: string;
   amountToApprove: BigNumber | null;
+  tokenTicker: Ticker;
   onApproved: () => void;
 }
 
 const ApproveButton: FC<ApproveButtonProps> = props => {
-  const { signer, poolDataAdapter, tokenToApprove, spenderAddress, userWalletAddress, amountToApprove, onApproved } =
-    props;
+  const {
+    signer,
+    poolDataAdapter,
+    tokenToApprove,
+    spenderAddress,
+    userWalletAddress,
+    amountToApprove,
+    tokenTicker,
+    onApproved,
+  } = props;
 
   const [approving, setApproving] = useState<boolean>(false);
   const [allowance, setAllowance] = useState<number | null>(null);
@@ -35,6 +46,8 @@ const ApproveButton: FC<ApproveButtonProps> = props => {
           if (approveTransaction) {
             await approveTransaction.wait();
 
+            getNotificationService().notify('Token Approval successful', `Successfully approved ${tokenTicker}!`);
+
             // Set new allowance
             setAllowance(
               await poolDataAdapter.getTokenAllowance(tokenToApprove, spenderAddress, userWalletAddress, signer),
@@ -45,13 +58,24 @@ const ApproveButton: FC<ApproveButtonProps> = props => {
           }
         } catch (error) {
           console.log('ApproveButton - onApprove() - Error: ', error);
+
+          getNotificationService().warn('Token Approval failed', `Failed to approve ${tokenTicker}!`);
         }
       }
     };
     approve();
 
     setApproving(true);
-  }, [onApproved, tokenToApprove, signer, poolDataAdapter, amountToApprove, spenderAddress, userWalletAddress]);
+  }, [
+    signer,
+    poolDataAdapter,
+    amountToApprove,
+    tokenToApprove,
+    spenderAddress,
+    tokenTicker,
+    userWalletAddress,
+    onApproved,
+  ]);
 
   // Fetch token allowance
   useEffect(() => {
