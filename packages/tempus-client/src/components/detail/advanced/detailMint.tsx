@@ -6,6 +6,7 @@ import { DashboardRowChild, Ticker } from '../../../interfaces';
 import { TempusPool } from '../../../interfaces/TempusPool';
 import PoolDataAdapter from '../../../adapters/PoolDataAdapter';
 import NumberUtils from '../../../services/NumberUtils';
+import getNotificationService from '../../../services/getNotificationService';
 import getConfig from '../../../utils/get-config';
 import Typography from '../../typography/Typography';
 import Spacer from '../../spacer/spacer';
@@ -17,7 +18,6 @@ import SectionContainer from '../shared/sectionContainer';
 import PlusIconContainer from '../shared/plusIconContainer';
 
 import './detailMint.scss';
-import getNotificationService from '../../../services/getNotificationService';
 
 type DetailMintInProps = {
   content: DashboardRowChild;
