@@ -5,22 +5,22 @@ import { Config } from '../interfaces';
 const config: Config = {
   tempusPools: [
     {
-      address: '0x9edfCD33FEc28994289A5EC09C923E281F6D80C8',
-      ammAddress: '0x52e35951D49ff6B09E7ADD4ff8036Fec6340BC1b',
+      address: '0x1c5AbE736C6CCb743Bc933241AB462e6b38c6EA4',
+      ammAddress: '0xFb2dF41A618b44634a4E180248fAAA4dc755d84a',
       backingToken: 'ETH',
       spotPrice: '2',
       maxLeftoverShares: '0.00001',
     },
     {
-      address: '0x8A326f00944972F4a218Cc6062D62f093D0490a7',
-      ammAddress: '0x56643fe046eb8BFbE8D651501c4176D5CE7A3dcB',
+      address: '0x0749982cAD68506009C7f0341a9A7fD6107A40C2',
+      ammAddress: '0x1814562E59c704E8BC57D2d76e4eEc2bD8a694f3',
       backingToken: 'ETH',
       spotPrice: '2',
       maxLeftoverShares: '0.00001',
     },
   ],
-  statisticsContract: '0xD827934B65835F600aC4E22aeD9119b15C9AA93E',
-  tempusControllerContract: '0xFb2D2c4cF43468619A6df3f2f413bc777CA62091',
+  statisticsContract: '0x01fF82791D8414826ec7390dfE7902703F632F5C',
+  tempusControllerContract: '0xd4330638b87f97Ec1605D7EC7d67EA1de5Dd7aaA',
   vaultContract: '0xBA12222222228d8Ba445958a75a0704d566BF2C8',
   networkUrl: 'https://eth-goerli.alchemyapi.io/v2/RUE8LXWaELu4_nyMgfK99eX3DWoxLtDw',
   networkName: 'goerli',
