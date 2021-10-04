@@ -128,10 +128,12 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
           if (approveTransaction) {
             await approveTransaction.wait();
             setExecuteDisabled(false);
+            getNotificationService().notify('Token Approval successful', `Successfully approved ${selectedToken}!`);
           }
         } catch (err) {
           // TODO handle errors
           console.log('onApprove err', err);
+          getNotificationService().warn('Token Approval failed', `Failed to approve ${selectedToken}!`);
         }
       }
     };
@@ -172,6 +174,8 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
         } catch (err) {
           // TODO handle errors
           console.log('onExecute err', err);
+
+          getNotificationService().warn('Deposit Failed', `Deposit to TempusPool failed!`);
         }
       }
     };

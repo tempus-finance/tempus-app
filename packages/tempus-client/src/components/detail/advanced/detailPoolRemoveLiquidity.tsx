@@ -5,6 +5,7 @@ import { Context } from '../../../context';
 import { DashboardRowChild } from '../../../interfaces';
 import { TempusPool } from '../../../interfaces/TempusPool';
 import NumberUtils from '../../../services/NumberUtils';
+import getNotificationService from '../../../services/getNotificationService';
 import PoolDataAdapter from '../../../adapters/PoolDataAdapter';
 import getConfig from '../../../utils/get-config';
 import Typography from '../../typography/Typography';
@@ -84,18 +85,22 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = ({ content, pool
         return;
       }
       try {
-        poolDataAdapter.removeLiquidity(
+        const transaction = await poolDataAdapter.removeLiquidity(
           tempusPool.ammAddress,
           data.userWalletAddress,
           content.principalTokenAddress,
           content.yieldTokenAddress,
           ethers.utils.parseEther(amount.toString()),
         );
+        await transaction.wait();
+
+        getNotificationService().notify('Remove Liquidity successful', `Remove Liquidity successful!`);
       } catch (error) {
         console.error(
           'DetailPoolRemoveLiquidity - removeLiquidity() - Failed to remove liquidity from tempus pool AMM!',
           error,
         );
+        getNotificationService().warn('Remove Liquidity failed', `Remove Liquidity failed!`);
       }
     };
     removeLiquidity();
@@ -194,6 +199,7 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = ({ content, pool
       <Spacer size={20} />
       <div className="tf__flex-row-center-v">
         <ApproveButton
+          tokenTicker="LP"
           amountToApprove={data.userLPBalance}
           onApproved={onApproved}
           poolDataAdapter={poolDataAdapter}

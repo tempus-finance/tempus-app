@@ -6,6 +6,7 @@ import { DashboardRowChild, Ticker } from '../../../interfaces';
 import { TempusPool } from '../../../interfaces/TempusPool';
 import PoolDataAdapter from '../../../adapters/PoolDataAdapter';
 import NumberUtils from '../../../services/NumberUtils';
+import getNotificationService from '../../../services/getNotificationService';
 import getConfig from '../../../utils/get-config';
 import Typography from '../../typography/Typography';
 import Spacer from '../../spacer/spacer';
@@ -115,9 +116,11 @@ const DetailMint: FC<DetailMintProps> = props => {
           );
           if (approveTransaction) {
             await approveTransaction.wait();
+            getNotificationService().notify('Token Approval successful', `Successfully approved ${selectedToken}!`);
           }
         } catch (error) {
           console.log(`DetailMint - onApprove() - Failed to approve token!`, error);
+          getNotificationService().warn('Token Approval failed', `Failed to approve ${selectedToken}!`);
         }
       }
     };
@@ -133,16 +136,20 @@ const DetailMint: FC<DetailMintProps> = props => {
       const amountParsed = ethers.utils.parseEther(amount.toString());
 
       try {
-        await poolDataAdapter.deposit(
+        const transaction = await poolDataAdapter.deposit(
           tempusPool.address,
           amountParsed,
           userWalletAddress,
           selectedToken === backingToken,
           selectedToken === 'ETH',
         );
+        await transaction.wait();
+
+        getNotificationService().notify('Mint Successful', `Mint from ${selectedToken} successful!`);
       } catch (error) {
         console.error('DetailMint - execute() - Failed to execute mint transaction!', error);
-        return Promise.reject(error);
+
+        getNotificationService().warn('Mint Failed', `Mint from ${selectedToken} failed!`);
       }
     };
     execute();

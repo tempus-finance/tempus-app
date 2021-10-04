@@ -4,6 +4,7 @@ import { BigNumber, ethers } from 'ethers';
 import { JsonRpcSigner } from '@ethersproject/providers';
 import PoolDataAdapter from '../../../adapters/PoolDataAdapter';
 import NumberUtils from '../../../services/NumberUtils';
+import getNotificationService from '../../../services/getNotificationService';
 import { DashboardRowChild } from '../../../interfaces';
 import { TempusPool } from '../../../interfaces/TempusPool';
 import getConfig from '../../../utils/get-config';
@@ -186,7 +187,7 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = props => {
         return;
       }
       try {
-        await poolDataAdapter.provideLiquidity(
+        const transaction = await poolDataAdapter.provideLiquidity(
           tempusPool.ammAddress,
           userWalletAddress,
           content.principalTokenAddress,
@@ -194,8 +195,13 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = props => {
           ethers.utils.parseEther(principalsAmount.toString()),
           ethers.utils.parseEther(yieldsAmount.toString()),
         );
+        await transaction.wait();
+
+        getNotificationService().notify('Add Liquidity successful', `Add Liquidity successful!`);
       } catch (error) {
         console.error('DetailPoolAddLiquidity - provideLiquidity() - Failed to provide liquidity!', error);
+
+        getNotificationService().warn('Add Liquidity failed', `Add Liquidity failed!`);
       }
     };
     provideLiquidity();
@@ -301,6 +307,7 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = props => {
             <Spacer size={20} />
             <div className="tf__flex-column-space-between">
               <ApproveButton
+                tokenTicker="Principals"
                 amountToApprove={principalsBalance || BigNumber.from('0')}
                 onApproved={() => {}}
                 poolDataAdapter={poolDataAdapter}
@@ -349,6 +356,7 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = props => {
             <Spacer size={20} />
             <div className="tf__flex-column-space-between">
               <ApproveButton
+                tokenTicker="Yields"
                 amountToApprove={yieldsBalance || BigNumber.from('0')}
                 onApproved={() => {}}
                 poolDataAdapter={poolDataAdapter}

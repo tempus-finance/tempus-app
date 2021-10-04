@@ -3,6 +3,7 @@ import { ethers, BigNumber } from 'ethers';
 import { Button } from '@material-ui/core';
 import { Ticker } from '../../../interfaces/Token';
 import NumberUtils from '../../../services/NumberUtils';
+import getNotificationService from '../../../services/getNotificationService';
 import { mul18f } from '../../../utils/wei-math';
 import getConfig from '../../../utils/get-config';
 import Typography from '../../typography/Typography';
@@ -43,15 +44,24 @@ const DetailWithdraw: FC<PoolDetailProps> = ({ tempusPool, content, signer, user
   const onExecute = useCallback(() => {
     const execute = async () => {
       if (signer && poolDataAdapter) {
+        const isBackingToken = backingToken === selectedToken;
         try {
-          const isBackingToken = backingToken === selectedToken;
-
           const depositTransaction = await poolDataAdapter.executeWithdraw(ammAddress, isBackingToken);
           if (depositTransaction) {
             await depositTransaction.wait();
+
+            getNotificationService().notify(
+              'Withdrawal Successful',
+              `Successfully made a withdrawal to ${isBackingToken ? 'backing token.' : 'yield bearing token.'}`,
+            );
           }
         } catch (error) {
           console.log('DetailWithdraw - onExecute() - Failed to execute the transaction!', error);
+
+          getNotificationService().warn(
+            'Withdrawal Failed',
+            `Withdrawal to ${isBackingToken ? 'backing token.' : 'yield bearing token.'} failed!`,
+          );
         }
       }
     };
@@ -176,6 +186,7 @@ const DetailWithdraw: FC<PoolDetailProps> = ({ tempusPool, content, signer, user
               </div>
               <div className="tf__flex-column-center-end">
                 <ApproveButton
+                  tokenTicker="Principals"
                   poolDataAdapter={poolDataAdapter}
                   signer={signer}
                   amountToApprove={principalsBalance || BigNumber.from('0')}
@@ -199,6 +210,7 @@ const DetailWithdraw: FC<PoolDetailProps> = ({ tempusPool, content, signer, user
               </div>
               <div className="tf__flex-column-center-end">
                 <ApproveButton
+                  tokenTicker="Yields"
                   poolDataAdapter={poolDataAdapter}
                   signer={signer}
                   amountToApprove={yieldsBalance || BigNumber.from('0')}
@@ -222,6 +234,7 @@ const DetailWithdraw: FC<PoolDetailProps> = ({ tempusPool, content, signer, user
               </div>
               <div className="tf__flex-column-center-end">
                 <ApproveButton
+                  tokenTicker="LP"
                   poolDataAdapter={poolDataAdapter}
                   signer={signer}
                   amountToApprove={lpBalance || BigNumber.from('0')}
