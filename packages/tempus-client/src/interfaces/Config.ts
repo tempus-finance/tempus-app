@@ -4,6 +4,7 @@ export type Config = {
   tempusPools: TempusPool[];
   statisticsContract: string;
   tempusControllerContract: string;
+  lidoOracle: string;
   vaultContract: string;
   networkUrl: string;
 };
