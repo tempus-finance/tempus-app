@@ -8,6 +8,7 @@ import VaultService, { SwapEvent } from '../services/VaultService';
 import { getEventBackingTokenValue, getEventPoolAddress } from '../services/EventUtils';
 import TempusAMMService from '../services/TempusAMMService';
 import { div18f, mul18f } from '../utils/wei-math';
+import { Ticker } from '../interfaces';
 
 type VolumeChartDataAdapterParameters = {
   signerOrProvider: JsonRpcProvider | JsonRpcSigner;
@@ -191,7 +192,7 @@ class VolumeChartDataAdapter {
 
     const eventBlock = this.getEventBlock(event);
 
-    let eventPoolBackingToken: string;
+    let eventPoolBackingToken: Ticker;
     try {
       const eventPoolAddress = await getEventPoolAddress(event, this.tempusAMMService);
       eventPoolBackingToken = await this.tempusPoolService.getBackingTokenTicker(eventPoolAddress);
