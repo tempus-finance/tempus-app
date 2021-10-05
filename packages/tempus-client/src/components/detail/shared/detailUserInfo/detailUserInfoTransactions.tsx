@@ -6,6 +6,7 @@ import Spacer from '../../../spacer/spacer';
 import Typography from '../../../typography/Typography';
 import SectionContainer from '../sectionContainer';
 import DetailUserInfoTransactionRow from './detailUserInfoTransactionRow';
+import { CircularProgress } from '@material-ui/core';
 
 interface DetailUserInfoTransactionsProps {
   poolDataAdapter: PoolDataAdapter | null;
@@ -39,6 +40,7 @@ const timeFramesToShow = [
 const DetailUserInfoTransactions: FC<DetailUserInfoTransactionsProps> = props => {
   const { poolDataAdapter, userWalletAddress, tempusPool } = props;
 
+  const [loading, setLoading] = useState<boolean>(true);
   const [transactions, setTransactions] = useState<UserTransaction[]>([]);
 
   useEffect(() => {
@@ -50,44 +52,52 @@ const DetailUserInfoTransactions: FC<DetailUserInfoTransactionsProps> = props =>
       setTransactions(
         await poolDataAdapter.getUserTransactionEvents(tempusPool.address, userWalletAddress, tempusPool.backingToken),
       );
+      setLoading(false);
     };
     fetchUserTransactionEvents();
+    setLoading(true);
   }, [poolDataAdapter, userWalletAddress, tempusPool]);
 
   return (
     <SectionContainer>
-      {timeFramesToShow.map(timeFrame => {
-        const timeFrameTransactions = transactions.filter(transaction => {
-          const eventDate = new Date(transaction.block.timestamp * 1000);
+      {loading && (
+        <div className="tf__flex-row-center-vh">
+          <CircularProgress size={25} />
+        </div>
+      )}
+      {!loading &&
+        timeFramesToShow.map(timeFrame => {
+          const timeFrameTransactions = transactions.filter(transaction => {
+            const eventDate = new Date(transaction.block.timestamp * 1000);
 
-          if (eventDate > timeFrame.from && eventDate <= timeFrame.to) {
-            return true;
-          } else {
-            return false;
+            if (eventDate > timeFrame.from && eventDate <= timeFrame.to) {
+              return true;
+            } else {
+              return false;
+            }
+          });
+
+          if (timeFrameTransactions.length === 0) {
+            return null;
           }
-        });
 
-        if (timeFrameTransactions.length === 0) {
-          return null;
-        }
+          return (
+            <>
+              {/* Render time frame section label */}
+              <Typography variant="h3" color="accent">
+                {timeFrame.label}
+              </Typography>
+              <Spacer size={3} />
 
-        return (
-          <>
-            {/* Render time frame section label */}
-            <Typography variant="h3" color="accent">
-              {timeFrame.label}
-            </Typography>
-            <Spacer size={3} />
-
-            {/* Render all events for specific time section */}
-            {timeFrameTransactions
-              .sort((a, b) => b.block.timestamp - a.block.timestamp)
-              .map(transaction => {
-                return <DetailUserInfoTransactionRow transaction={transaction} />;
-              })}
-          </>
-        );
-      })}
+              {/* Render all events for specific time section */}
+              {timeFrameTransactions
+                .sort((a, b) => b.block.timestamp - a.block.timestamp)
+                .map(transaction => {
+                  return <DetailUserInfoTransactionRow transaction={transaction} />;
+                })}
+            </>
+          );
+        })}
     </SectionContainer>
   );
 };
