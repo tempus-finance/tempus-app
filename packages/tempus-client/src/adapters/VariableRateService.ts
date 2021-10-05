@@ -204,9 +204,7 @@ class VariableRateService {
         // Adjust pool balance based on swapped amounts
         if (event.args.tokenIn === principalsAddress) {
           principals = principals.add(event.args.amountIn);
-          yields = yields.sub(event.args.amountOut);
         } else {
-          yields = yields.add(event.args.amountIn);
           principals = principals.sub(event.args.amountOut);
         }
       }
@@ -216,15 +214,10 @@ class VariableRateService {
         const principalsIndexInBalanceChange = event.args.tokens.findIndex(
           poolTokenAddress => principalsAddress === poolTokenAddress,
         );
-        const yieldsIndexInBalanceChange = event.args.tokens.findIndex(
-          poolTokenAddress => yieldsAddress === poolTokenAddress,
-        );
         const principalsDelta = event.args.deltas[principalsIndexInBalanceChange];
-        const yieldsDelta = event.args.deltas[yieldsIndexInBalanceChange];
         principals = principalsDelta.isNegative()
           ? principals.add(principalsDelta.abs())
           : principals.sub(principalsDelta.abs());
-        yields = yieldsDelta.isNegative() ? yields.add(yieldsDelta.abs()) : yields.sub(yieldsDelta.abs());
       }
     });
 
