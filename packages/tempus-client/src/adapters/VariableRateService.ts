@@ -198,9 +198,7 @@ class VariableRateService {
         // Calculate swap fees for current swap event
         const swapFeesVolume = mul18f(eventVolume, swapFeePercentage);
         const liquidityProvided = principals.sub(swapFeesVolume);
-        const swapFeesToLiquidityProvidedRatio = div18f(swapFeesVolume, liquidityProvided);
-        const principalsToYieldsRatio = div18f(principals, yields);
-        const feePerPrincipalShare = mul18f(swapFeesToLiquidityProvidedRatio, principalsToYieldsRatio);
+        const feePerPrincipalShare = div18f(swapFeesVolume, liquidityProvided);
         totalFees = totalFees.add(feePerPrincipalShare);
 
         // Adjust pool balance based on swapped amounts
@@ -223,10 +221,10 @@ class VariableRateService {
         );
         const principalsDelta = event.args.deltas[principalsIndexInBalanceChange];
         const yieldsDelta = event.args.deltas[yieldsIndexInBalanceChange];
-        principalsDelta.isNegative()
-          ? (principals = principals.add(principalsDelta.abs()))
-          : (principals = principals.sub(principalsDelta.abs()));
-        yieldsDelta.isNegative() ? (yields = yields.add(yieldsDelta.abs())) : (yields = yields.sub(yieldsDelta.abs()));
+        principals = principalsDelta.isNegative()
+          ? principals.add(principalsDelta.abs())
+          : principals.sub(principalsDelta.abs());
+        yields = yieldsDelta.isNegative() ? yields.add(yieldsDelta.abs()) : yields.sub(yieldsDelta.abs());
       }
     });
 
