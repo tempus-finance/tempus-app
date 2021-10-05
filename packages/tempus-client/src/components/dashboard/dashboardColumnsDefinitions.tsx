@@ -47,21 +47,19 @@ export const dashboardColumnsDefinitions: ExtraDataColumn[] = [
     getCellValue: (row: any) => {
       if (!row.fixedAPR) {
         return null;
-      }
-      else if (row.fixedAPR.length === 2) {
+      } else if (row.fixedAPR.length === 2) {
         if (!row.fixedAPR[0] || !row.fixedAPR[1]) {
           return null;
         }
         return row.fixedAPR;
-      }
-      else {
+      } else {
         return [row.fixedAPR];
       }
     },
   },
   {
     name: 'variableAPY',
-    title: 'Variable APR',
+    title: 'LP APR',
     tooltip: variableAPYTooltipText,
     getCellValue: (row: any) => {
       if (row.variableAPY.length === 2) {
