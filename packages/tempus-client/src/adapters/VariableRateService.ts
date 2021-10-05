@@ -9,18 +9,20 @@ import {
   ONE_ETH_IN_WEI,
   aaveLendingPoolAddress,
   COMPOUND_BLOCKS_PER_DAY,
+  SECONDS_IN_A_DAY,
 } from '../constants';
 import TempusPoolService from '../services/TempusPoolService';
+import VaultService from '../services/VaultService';
+import TempusAMMService from '../services/TempusAMMService';
+import { isPoolBalanceChangedEvent, isSwapEvent } from '../services/EventUtils';
 import { ProtocolName } from '../interfaces';
 import { wadToDai } from '../utils/rayToDai';
 import getConfig from '../utils/get-config';
+import { div18f, mul18f } from '../utils/wei-math';
 
 const BN_SECONDS_IN_YEAR = BigNumber.from(SECONDS_IN_YEAR);
 const BN_ONE_ETH_IN_WEI = BigNumber.from(ONE_ETH_IN_WEI);
 const ethMantissa = 1e18;
-
-// TODO retrieve fees from contract?
-const fees = 0.1;
 
 class VariableRateService {
   static getAprFromApy(apy: number, periods: number = 1): number {
@@ -36,39 +38,53 @@ class VariableRateService {
   private aaveLendingPool: Contract | null = null;
   private lidoOracle: Contract | null = null;
   private tempusPoolService: TempusPoolService | null = null;
+  private vaultService: VaultService | null = null;
+  private tempusAMMService: TempusAMMService | null = null;
   private tokenAddressToContractMap: { [tokenAddress: string]: ethers.Contract } = {};
   private signerOrProvider: JsonRpcSigner | JsonRpcProvider | null = null;
 
-  init(signerOrProvider: JsonRpcSigner | JsonRpcProvider, tempusPoolService: TempusPoolService) {
+  init(
+    signerOrProvider: JsonRpcSigner | JsonRpcProvider,
+    tempusPoolService: TempusPoolService,
+    vaultService: VaultService,
+    tempusAMMService: TempusAMMService,
+  ) {
     if (signerOrProvider) {
       this.aaveLendingPool = new Contract(aaveLendingPoolAddress, AaveLendingPoolABI, signerOrProvider);
       this.lidoOracle = new Contract(getConfig().lidoOracle, lidoOracleABI.abi, signerOrProvider);
       this.signerOrProvider = signerOrProvider;
       this.tempusPoolService = tempusPoolService;
+      this.vaultService = vaultService;
+      this.tempusAMMService = tempusAMMService;
     }
   }
 
-  async getAprRate(protocol: ProtocolName, tempusPoolAddress?: string): Promise<number> {
-    let yieldBearingTokenAddress: string = '';
+  async getAprRate(
+    protocol: ProtocolName,
+    tempusPoolAddress: string,
+    tempusAMM: string,
+    principalsAddress: string,
+    yieldsAddress: string,
+  ): Promise<number> {
+    if (!this.tempusPoolService) {
+      return Promise.reject();
+    }
+
+    const fees = await this.calculateFees(tempusAMM, tempusPoolAddress, principalsAddress, yieldsAddress);
+    const feesFormatted = Number(ethers.utils.formatEther(fees));
+    const yieldBearingTokenAddress = await this.tempusPoolService.getYieldBearingTokenAddress(tempusPoolAddress);
+
     switch (protocol) {
       case 'aave': {
-        if (tempusPoolAddress && this.tempusPoolService) {
-          yieldBearingTokenAddress = await this.tempusPoolService.getYieldBearingTokenAddress(tempusPoolAddress);
-          return VariableRateService.getAprFromApy(await this.getAaveAPY(yieldBearingTokenAddress));
-        }
-        return 0;
+        return this.getAaveAPR(yieldBearingTokenAddress, feesFormatted);
       }
 
       case 'compound': {
-        if (tempusPoolAddress && this.tempusPoolService) {
-          yieldBearingTokenAddress = await this.tempusPoolService?.getYieldBearingTokenAddress(tempusPoolAddress);
-          return VariableRateService.getAprFromApy(await this.getCompoundAPY(yieldBearingTokenAddress));
-        }
-        return 0;
+        return this.getCompoundAPR(yieldBearingTokenAddress, feesFormatted);
       }
 
       case 'lido': {
-        return this.getLidoAPR(fees);
+        return this.getLidoAPR(feesFormatted);
       }
 
       default: {
@@ -77,13 +93,25 @@ class VariableRateService {
     }
   }
 
+  private async getAaveAPR(yieldBearingTokenAddress: string, fees: number) {
+    const aaveAPR = VariableRateService.getAprFromApy(await this.getAaveAPY(yieldBearingTokenAddress));
+    return aaveAPR + fees;
+  }
+
+  private async getCompoundAPR(yieldBearingTokenAddress: string, fees: number) {
+    if (!this.tempusPoolService) {
+      return Promise.reject();
+    }
+    const compoundAPR = VariableRateService.getAprFromApy(await this.getCompoundAPY(yieldBearingTokenAddress));
+    return compoundAPR + fees;
+  }
+
   private async getLidoAPR(fees: number): Promise<number> {
     try {
       const { postTotalPooledEther, preTotalPooledEther, timeElapsed } =
         await this.lidoOracle?.getLastCompletedReportDelta();
       const apr = this.calculateLidoAPR(postTotalPooledEther, preTotalPooledEther, timeElapsed);
-      const aprPlusFees = this.calculateLidoFees(apr, fees);
-      return Number(ethers.utils.formatEther(aprPlusFees));
+      return Number(ethers.utils.formatEther(apr.add(fees)));
     } catch (error) {
       console.error('VariableRateService - getLidoAPR', error);
       return 0;
@@ -102,20 +130,115 @@ class VariableRateService {
       .div(preTotalPooledEther.mul(timeElapsed));
   }
 
-  private calculateLidoFees(APR: BigNumber, fees: number): BigNumber {
-    let normalizedFees: number = fees;
-    if (fees < 0) {
-      normalizedFees = 0;
+  private async calculateFees(tempusAMM: string, tempusPool: string, principalsAddress: string, yieldsAddress: string) {
+    if (!this.tempusAMMService || !this.vaultService || !this.tempusPoolService) {
+      return Promise.reject();
     }
 
-    if (fees > 1) {
-      normalizedFees = 1;
+    const swapFeePercentage = await this.tempusAMMService.getSwapFeePercentage(tempusAMM);
+    const poolId = await this.tempusAMMService.poolId(tempusAMM);
+
+    // Fetch swap and poolBalanceChanged events
+    const [swapEvents, poolBalanceChangedEvents] = await Promise.all([
+      this.vaultService.getSwapEvents(poolId),
+      this.vaultService.getPoolBalanceChangedEvents(poolId),
+    ]);
+
+    const events = [...swapEvents, ...poolBalanceChangedEvents];
+
+    // Fetch block data for all events
+    const eventBlockPromises: Promise<ethers.providers.Block>[] = [];
+    events.forEach(swapEvent => {
+      eventBlockPromises.push(swapEvent.getBlock());
+    });
+    const eventBlocks = await Promise.all(eventBlockPromises);
+
+    // Filter out events older then 24 hours
+    const filteredEvents = events.filter(event => {
+      const eventBlock = eventBlocks.find(eventBlock => eventBlock.number === event.blockNumber);
+      if (!eventBlock) {
+        return false;
+      }
+      if (eventBlock.timestamp > Date.now() / 1000 - SECONDS_IN_A_DAY) {
+        return true;
+      }
+      return false;
+    });
+
+    // Sort events from newest to oldest
+    const sortedEvents = filteredEvents.sort((a, b) => b.blockNumber - a.blockNumber);
+
+    // Fetch current pool balance
+    let { principals, yields } = await this.getPoolTokens(poolId, principalsAddress, yieldsAddress);
+
+    // Calculate current principals to yields ratio
+    const currentPrincipalsToYieldsRatio = div18f(principals, yields);
+
+    // Total fees accumulated
+    let totalFees = BigNumber.from('0');
+
+    // Go over all events and accumulate total swap fees
+    sortedEvents.forEach(event => {
+      if (!this.tempusAMMService || !this.tempusPoolService) {
+        return Promise.reject();
+      }
+
+      if (isSwapEvent(event)) {
+        // Get swap event volume
+        let eventVolume: BigNumber = BigNumber.from('0');
+        if (event.args.tokenIn === principalsAddress) {
+          eventVolume = event.args.amountIn;
+        } else if (event.args.tokenOut === principalsAddress) {
+          eventVolume = mul18f(
+            div18f(swapFeePercentage, ethers.utils.parseEther('1').sub(swapFeePercentage)),
+            event.args.amountOut,
+          );
+        }
+
+        // Calculate swap fees for current swap event
+        const swapFeesVolume = mul18f(eventVolume, swapFeePercentage);
+        const liquidityProvided = principals.sub(swapFeesVolume);
+        const feePerPrincipalShare = div18f(swapFeesVolume, liquidityProvided);
+        totalFees = totalFees.add(feePerPrincipalShare);
+
+        // Adjust pool balance based on swapped amounts
+        if (event.args.tokenIn === principalsAddress) {
+          principals = principals.add(event.args.amountIn);
+        } else {
+          principals = principals.sub(event.args.amountOut);
+        }
+      }
+
+      if (isPoolBalanceChangedEvent(event)) {
+        // Adjust current balance based on PoolBalanceChangedEvent
+        const principalsIndexInBalanceChange = event.args.tokens.findIndex(
+          poolTokenAddress => principalsAddress === poolTokenAddress,
+        );
+        const principalsDelta = event.args.deltas[principalsIndexInBalanceChange];
+        principals = principalsDelta.isNegative()
+          ? principals.add(principalsDelta.abs())
+          : principals.sub(principalsDelta.abs());
+      }
+    });
+
+    // Scale accumulated fees to 1 year duration
+    const scaledFees = mul18f(totalFees, ethers.utils.parseEther(DAYS_IN_A_YEAR.toString()));
+
+    return mul18f(scaledFees, currentPrincipalsToYieldsRatio);
+  }
+
+  private async getPoolTokens(poolId: string, principalsAddress: string, yieldsAddress: string) {
+    if (!this.vaultService) {
+      return Promise.reject();
     }
 
-    const numerator = String((1 - normalizedFees) * 10000);
-    const denominator = String(10000);
-
-    return APR.mul(BigNumber.from(numerator)).div(BigNumber.from(denominator));
+    const poolTokens = await this.vaultService.getPoolTokens(poolId);
+    const principalsIndex = poolTokens.tokens.findIndex(poolTokenAddress => principalsAddress === poolTokenAddress);
+    const yieldsIndex = poolTokens.tokens.findIndex(poolTokenAddress => yieldsAddress === poolTokenAddress);
+    return {
+      principals: poolTokens.balances[principalsIndex],
+      yields: poolTokens.balances[yieldsIndex],
+    };
   }
 
   private async getAaveAPY(yieldBearingTokenAddress: string): Promise<number> {

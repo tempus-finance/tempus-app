@@ -129,7 +129,13 @@ export default class DashboardDataAdapter {
         maturityDate,
         fixedAPR,
         variableAPY: this.variableRateService
-          ? await this.variableRateService.getAprRate(protocol, tempusPool.address)
+          ? await this.variableRateService.getAprRate(
+              protocol,
+              tempusPool.address,
+              tempusPool.ammAddress,
+              principalTokenAddress,
+              yieldTokenAddress,
+            )
           : 0,
         TVL: Number(ethers.utils.formatEther(tvl)),
         presentValue:
