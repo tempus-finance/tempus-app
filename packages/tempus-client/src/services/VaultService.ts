@@ -134,7 +134,10 @@ class VaultService {
     const minimumReturn = 1;
     const deadline = latestBlock.timestamp + SECONDS_IN_AN_HOUR;
 
-    return this.contract.swap(singleSwap, fundManagement, minimumReturn, deadline);
+    const estimate = await this.contract.estimateGas.swap(singleSwap, fundManagement, minimumReturn, deadline);
+    return this.contract.swap(singleSwap, fundManagement, minimumReturn, deadline, {
+      gasLimit: Math.ceil(estimate.toNumber() * 1.05),
+    });
   }
 
   async provideLiquidity(
@@ -183,7 +186,15 @@ class VaultService {
     };
 
     try {
-      return await this.contract.joinPool(poolId, userWalletAddress, userWalletAddress, joinPoolRequest);
+      const estimate = await this.contract.estimateGas.joinPool(
+        poolId,
+        userWalletAddress,
+        userWalletAddress,
+        joinPoolRequest,
+      );
+      return await this.contract.joinPool(poolId, userWalletAddress, userWalletAddress, joinPoolRequest, {
+        gasLimit: Math.ceil(estimate.toNumber() * 1.05),
+      });
     } catch (error) {
       console.error('VaultService - provideLiquidity() - Failed to provide liquidity to tempus pool AMM!', error);
       return Promise.reject();
@@ -219,7 +230,15 @@ class VaultService {
     };
 
     try {
-      return await this.contract.exitPool(poolId, userWalletAddress, userWalletAddress, exitPoolRequest);
+      const estimate = await this.contract.estimateGas.exitPool(
+        poolId,
+        userWalletAddress,
+        userWalletAddress,
+        exitPoolRequest,
+      );
+      return await this.contract.exitPool(poolId, userWalletAddress, userWalletAddress, exitPoolRequest, {
+        gasLimit: Math.ceil(estimate.toNumber() * 1.05),
+      });
     } catch (error) {
       console.error('VaultService - removeLiquidity() - Failed to remove liquidity from tempus pool AMM!', error);
       return Promise.reject();

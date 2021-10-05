@@ -97,11 +97,29 @@ class TempusControllerService {
 
     try {
       if (isEthDeposit) {
+        const estimate = await this.contract.estimateGas.depositAndFix(
+          tempusAMM,
+          tokenAmount,
+          isBackingToken,
+          minTYSRate,
+          {
+            value: tokenAmount,
+          },
+        );
         return await this.contract.depositAndFix(tempusAMM, tokenAmount, isBackingToken, minTYSRate, {
           value: tokenAmount,
+          gasLimit: Math.ceil(estimate.toNumber() * 1.05),
         });
       } else {
-        return await this.contract.depositAndFix(tempusAMM, tokenAmount, isBackingToken, minTYSRate);
+        const estimate = await this.contract.estimateGas.depositAndFix(
+          tempusAMM,
+          tokenAmount,
+          isBackingToken,
+          minTYSRate,
+        );
+        return await this.contract.depositAndFix(tempusAMM, tokenAmount, isBackingToken, minTYSRate, {
+          gasLimit: Math.ceil(estimate.toNumber() * 1.05),
+        });
       }
     } catch (error) {
       console.error(`TempusControllerService depositAndFix() - Failed to deposit backing tokens!`, error);
@@ -124,11 +142,27 @@ class TempusControllerService {
 
     try {
       if (isEthDeposit) {
+        const estimate = await this.contract.estimateGas.depositAndProvideLiquidity(
+          tempusAMM,
+          tokenAmount,
+          isBackingToken,
+          {
+            value: tokenAmount,
+          },
+        );
         return await this.contract.depositAndProvideLiquidity(tempusAMM, tokenAmount, isBackingToken, {
           value: tokenAmount,
+          gasLimit: Math.ceil(estimate.toNumber() * 1.05),
         });
       } else {
-        return await this.contract.depositAndProvideLiquidity(tempusAMM, tokenAmount, isBackingToken);
+        const estimate = await this.contract.estimateGas.depositAndProvideLiquidity(
+          tempusAMM,
+          tokenAmount,
+          isBackingToken,
+        );
+        return await this.contract.depositAndProvideLiquidity(tempusAMM, tokenAmount, isBackingToken, {
+          gasLimit: Math.ceil(estimate.toNumber() * 1.05),
+        });
       }
     } catch (error) {
       console.error(
@@ -155,12 +189,16 @@ class TempusControllerService {
       return Promise.reject();
     }
 
+    const maxLeftoverSharesParsed = ethers.utils.parseEther(tempusPoolConfig.maxLeftoverShares);
     try {
-      return await this.contract.completeExitAndRedeem(
+      const estimate = await this.contract.estimateGas.completeExitAndRedeem(
         tempusAMM,
-        ethers.utils.parseEther(tempusPoolConfig.maxLeftoverShares),
+        maxLeftoverSharesParsed,
         isBackingToken,
       );
+      return await this.contract.completeExitAndRedeem(tempusAMM, maxLeftoverSharesParsed, isBackingToken, {
+        gasLimit: Math.ceil(estimate.toNumber() * 1.05),
+      });
     } catch (error) {
       console.error(`TempusControllerService completeExitAndRedeem() - Failed to redeem tokens!`, error);
       return Promise.reject(error);
@@ -176,7 +214,10 @@ class TempusControllerService {
     }
 
     try {
-      return await this.contract.depositYieldBearing(tempusPool, amount, recipient);
+      const estimate = await this.contract.estimateGas.depositYieldBearing(tempusPool, amount, recipient);
+      return await this.contract.depositYieldBearing(tempusPool, amount, recipient, {
+        gasLimit: Math.ceil(estimate.toNumber() * 1.05),
+      });
     } catch (error) {
       console.error('TempusControllerService - depositYieldBearing() - Failed to deposit yield bearing token!', error);
       return Promise.reject(error);
@@ -198,11 +239,18 @@ class TempusControllerService {
 
     try {
       if (isEthDeposit) {
-        return await this.contract.depositBacking(tempusPool, amount, recipient, {
+        const estimate = await this.contract.estimateGas.depositBacking(tempusPool, amount, recipient, {
           value: amount,
         });
+        return await this.contract.depositBacking(tempusPool, amount, recipient, {
+          value: amount,
+          gasLimit: Math.ceil(estimate.toNumber() * 1.05),
+        });
       } else {
-        return await this.contract.depositBacking(tempusPool, amount, recipient);
+        const estimate = await this.contract.estimateGas.depositBacking(tempusPool, amount, recipient);
+        return await this.contract.depositBacking(tempusPool, amount, recipient, {
+          gasLimit: Math.ceil(estimate.toNumber() * 1.05),
+        });
       }
     } catch (error) {
       console.error('TempusControllerService - depositBacking() - Failed to deposit backing token!', error);

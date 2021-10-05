@@ -102,7 +102,10 @@ class ERC20TokenService {
         return Promise.resolve();
       }
 
-      approveTransaction = await this.contract.approve(spenderAddress, amount);
+      const estimate = await this.contract.estimateGas.approve(spenderAddress, amount);
+      approveTransaction = await this.contract.approve(spenderAddress, amount, {
+        gasLimit: Math.ceil(estimate.toNumber() * 1.05),
+      });
     } catch (error) {
       console.log('ERC20TokenService - approve() - Approve transaction failed!', error);
       return Promise.reject(error);
