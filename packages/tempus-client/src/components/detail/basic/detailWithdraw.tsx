@@ -31,7 +31,6 @@ const DetailWithdraw: FC<PoolDetailProps> = ({ tempusPool, content, signer, user
 
   const [tokenRate, setTokenRate] = useState<BigNumber | null>(null);
 
-  const [executeDisabled, setExecuteDisabled] = useState<boolean>(true);
   const [principalsApproved, setPrincipalsApproved] = useState<boolean>(false);
   const [yieldsApproved, setYieldsApproved] = useState<boolean>(false);
   const [lpApproved, setLpApproved] = useState<boolean>(false);
@@ -42,15 +41,11 @@ const DetailWithdraw: FC<PoolDetailProps> = ({ tempusPool, content, signer, user
     }
   }, []);
 
-  const onExecuted = useCallback(() => {
-    setExecuteDisabled(false);
-  }, []);
+  const onExecuted = useCallback(() => {}, []);
 
   const onExecute = useCallback((): Promise<ethers.ContractTransaction | undefined> => {
     if (signer && poolDataAdapter) {
       const isBackingToken = backingToken === selectedToken;
-
-      setExecuteDisabled(true);
 
       return poolDataAdapter.executeWithdraw(ammAddress, isBackingToken);
     } else {
@@ -104,9 +99,10 @@ const DetailWithdraw: FC<PoolDetailProps> = ({ tempusPool, content, signer, user
 
           const amount = await poolDataAdapter.getEstimatedWithdrawAmount(
             ammAddress,
+            lpBalance,
             principalsBalance,
             yieldsBalance,
-            lpBalance,
+            tempusPool.maxLeftoverShares,
             isBackingToken,
           );
           setEstimatedWithdrawAmount(amount);
@@ -118,7 +114,16 @@ const DetailWithdraw: FC<PoolDetailProps> = ({ tempusPool, content, signer, user
     };
 
     retrieveEstimatedWithdrawAmount();
-  }, [ammAddress, selectedToken, backingToken, principalsBalance, yieldsBalance, lpBalance, poolDataAdapter]);
+  }, [
+    ammAddress,
+    selectedToken,
+    backingToken,
+    principalsBalance,
+    yieldsBalance,
+    lpBalance,
+    poolDataAdapter,
+    tempusPool.maxLeftoverShares,
+  ]);
 
   const principalsBalanceFormatted = useMemo(() => {
     if (!principalsBalance) {

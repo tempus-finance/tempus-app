@@ -180,9 +180,10 @@ class StatisticsService {
    **/
   async estimateExitAndRedeem(
     tempusAmmAddress: string,
+    lpAmount: BigNumber,
     principalAmount: BigNumber,
     yieldsAmount: BigNumber,
-    lpAmount: BigNumber,
+    maxLeftoverShares: string,
     isBackingToken: boolean,
   ): Promise<BigNumber> {
     if (!this.stats) {
@@ -195,9 +196,10 @@ class StatisticsService {
     try {
       return this.stats.estimateExitAndRedeem(
         tempusAmmAddress,
+        lpAmount,
         principalAmount,
         yieldsAmount,
-        lpAmount,
+        ethers.utils.parseEther(maxLeftoverShares),
         isBackingToken,
       );
     } catch (error) {

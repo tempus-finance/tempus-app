@@ -182,9 +182,10 @@ export default class PoolDataAdapter {
 
   async getEstimatedWithdrawAmount(
     tempusAmmAddress: string,
+    lpAmount: BigNumber,
     principalAmount: BigNumber,
     yieldsAmount: BigNumber,
-    lpAmount: BigNumber,
+    maxLeftoverShares: string,
     isBackingToken: boolean,
   ): Promise<BigNumber> {
     if (!this.statisticService) {
@@ -204,9 +205,10 @@ export default class PoolDataAdapter {
     try {
       const amount = await this.statisticService.estimateExitAndRedeem(
         tempusAmmAddress,
+        lpAmount,
         principalAmount,
         yieldsAmount,
-        lpAmount,
+        maxLeftoverShares,
         isBackingToken,
       );
       return amount;

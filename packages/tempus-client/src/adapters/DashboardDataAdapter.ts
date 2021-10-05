@@ -242,44 +242,39 @@ export default class DashboardDataAdapter {
   }
 
   private async getPresentValueInBackingTokensForPool(pool: TempusPool): Promise<BigNumber | undefined> {
-    if (!this.tempusPoolService || !this.statisticsService || !this.eRC20TokenServiceGetter) {
+    if (!this.statisticsService || !this.tempusPoolService || !this.eRC20TokenServiceGetter) {
       console.error(
-        'DashboardDataAdapter - getPresentValueInBackingTokensForPool() - Attempted to use DashboardDataAdapter before initializing it!',
+        'DashboardDataAdapter - getPresentValueInForPool() - Attempted to use DashboardDataAdapter before initializing it!',
       );
       return Promise.reject();
     }
 
-    if (!this.userWalletAddress) {
-      return undefined;
-    }
-
     try {
-      const [yieldTokenAddress, principalTokenAddress, pricePerPrincipalShare, pricePerYieldShare] = await Promise.all([
+      const [yieldTokenAddress, principalTokenAddress] = await Promise.all([
         this.tempusPoolService.getYieldTokenAddress(pool.address),
         this.tempusPoolService.getPrincipalsTokenAddress(pool.address),
-        this.tempusPoolService.pricePerPrincipalShareStored(pool.address),
-        this.tempusPoolService.pricePerYieldShareStored(pool.address),
       ]);
 
       const yieldToken = this.eRC20TokenServiceGetter(yieldTokenAddress);
       const principalToken = this.eRC20TokenServiceGetter(principalTokenAddress);
+      const lpToken = this.eRC20TokenServiceGetter(pool.ammAddress);
 
-      const [userYieldSupply, userPrincipalSupply] = await Promise.all([
+      const [userYieldSupply, userPrincipalSupply, userLpSupply] = await Promise.all([
         yieldToken.balanceOf(this.userWalletAddress),
         principalToken.balanceOf(this.userWalletAddress),
+        lpToken.balanceOf(this.userWalletAddress),
       ]);
 
-      const yieldValue = mul18f(userYieldSupply, pricePerYieldShare);
-      const principalValue = mul18f(userPrincipalSupply, pricePerPrincipalShare);
-
-      const totalValue = yieldValue.add(principalValue);
-
-      return totalValue;
-    } catch (error) {
-      console.error(
-        `DashboardDataAdapter - getPresentValueInBackingTokensForPool() ` +
-          `- Failed to get present value in backing tokens for user: "${this.userWalletAddress}", pool: "${pool.address}"`,
+      return await this.statisticsService.estimateExitAndRedeem(
+        pool.ammAddress,
+        userLpSupply,
+        userPrincipalSupply,
+        userYieldSupply,
+        pool.maxLeftoverShares,
+        true,
       );
+    } catch (error) {
+      console.log('DashboardDataAdapter - getPresentValueInForPool() - Failed to user balance for pool!', error);
       return Promise.reject(error);
     }
   }
