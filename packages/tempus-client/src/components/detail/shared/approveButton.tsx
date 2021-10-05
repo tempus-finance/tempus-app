@@ -5,6 +5,7 @@ import { Button } from '@material-ui/core';
 import PoolDataAdapter from '../../../adapters/PoolDataAdapter';
 import Typography from '../../typography/Typography';
 import getNotificationService from '../../../services/getNotificationService';
+import { generateEtherscanLink, getTokenApprovalNotification } from '../../../services/NotificationService';
 import { Ticker } from '../../../interfaces';
 import { Context } from '../../../context';
 
@@ -31,7 +32,7 @@ const ApproveButton: FC<ApproveButtonProps> = props => {
     onApproved,
   } = props;
 
-  const { setData } = useContext(Context);
+  const { data, setData } = useContext(Context);
 
   const [approving, setApproving] = useState<boolean>(false);
   const [allowance, setAllowance] = useState<number | null>(null);
@@ -47,7 +48,19 @@ const ApproveButton: FC<ApproveButtonProps> = props => {
         transaction = await poolDataAdapter.approveToken(tokenToApprove, spenderAddress, amountToApprove, signer);
       } catch (error) {
         console.error('Failed to execute the transaction!', error);
-        getNotificationService().warn(`Token approval failed!`, `Token approval failed failed!`);
+
+        if (tokenTicker && data.selectedRow) {
+          getNotificationService().warn(
+            `Approval Failed`,
+            getTokenApprovalNotification(
+              tokenTicker,
+              data.selectedRow.backingTokenTicker,
+              data.selectedRow.protocol,
+              data.selectedRow.maturityDate,
+            ),
+          );
+        }
+
         return;
       }
 
@@ -78,7 +91,19 @@ const ApproveButton: FC<ApproveButtonProps> = props => {
             pendingTransactions: filteredTransactions,
           };
         });
-        getNotificationService().warn(`Token approval failed!`, `Token approval failed failed!`);
+        if (tokenTicker && data.selectedRow) {
+          getNotificationService().warn(
+            `Approval Failed`,
+            getTokenApprovalNotification(
+              tokenTicker,
+              data.selectedRow.backingTokenTicker,
+              data.selectedRow.protocol,
+              data.selectedRow.maturityDate,
+            ),
+            generateEtherscanLink(transaction.hash),
+            'View on Etherscan',
+          );
+        }
         return;
       }
 
@@ -92,7 +117,19 @@ const ApproveButton: FC<ApproveButtonProps> = props => {
         };
       });
 
-      getNotificationService().notify('Token Approval successful', `Successfully approved ${tokenTicker}!`);
+      if (tokenTicker && data.selectedRow) {
+        getNotificationService().notify(
+          'Approval Successful',
+          getTokenApprovalNotification(
+            tokenTicker,
+            data.selectedRow.backingTokenTicker,
+            data.selectedRow.protocol,
+            data.selectedRow.maturityDate,
+          ),
+          generateEtherscanLink(transaction.hash),
+          'View on Etherscan',
+        );
+      }
 
       // Set new allowance
       setAllowance(await poolDataAdapter.getTokenAllowance(tokenToApprove, spenderAddress, userWalletAddress, signer));
@@ -107,9 +144,10 @@ const ApproveButton: FC<ApproveButtonProps> = props => {
     poolDataAdapter,
     amountToApprove,
     setData,
+    tokenTicker,
+    data.selectedRow,
     tokenToApprove,
     spenderAddress,
-    tokenTicker,
     userWalletAddress,
     onApproved,
   ]);

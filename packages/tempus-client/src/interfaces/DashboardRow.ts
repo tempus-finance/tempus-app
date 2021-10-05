@@ -33,6 +33,7 @@ export interface DashboardRowChild extends DashboardRow {
   yieldTokenAddress: string;
   backingTokenAddress: string;
   yieldBearingTokenAddress: string;
+  backingTokenTicker: Ticker;
 }
 
 export interface AvailableToDeposit {

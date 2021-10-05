@@ -11,6 +11,8 @@ type DashboardManagerProps = {
 };
 
 const DashboardManager: FC<DashboardManagerProps> = ({ selectedRow, onRowSelected }): JSX.Element => {
+  const { setData } = useContext(Context);
+
   const [rows, setRows] = useState<DashboardRow[]>([]);
 
   const {
@@ -27,8 +29,14 @@ const DashboardManager: FC<DashboardManagerProps> = ({ selectedRow, onRowSelecte
   const onRowActionClick = useCallback(
     (row: any) => {
       onRowSelected && onRowSelected(row);
+
+      setData &&
+        setData(previousData => ({
+          ...previousData,
+          selectedRow: row,
+        }));
     },
-    [onRowSelected],
+    [onRowSelected, setData],
   );
 
   const onCloseRowDetail = useCallback(() => {

@@ -3,6 +3,7 @@ import { utils, BigNumber, ethers } from 'ethers';
 import Button from '@material-ui/core/Button';
 import { interestRateProtectionTooltipText, liquidityProvisionTooltipText } from '../../../constants';
 import NumberUtils from '../../../services/NumberUtils';
+import { getDepositNotification } from '../../../services/NotificationService';
 import { Ticker } from '../../../interfaces';
 import { mul18f } from '../../../utils/wei-math';
 import getConfig from '../../../utils/get-config';
@@ -18,7 +19,7 @@ import ExecuteButton from '../shared/executeButton';
 
 import '../shared/style.scss';
 
-export type SelectedYield = 'fixed' | 'variable';
+export type SelectedYield = 'Fixed' | 'Variable';
 
 // TODO Component is too big, we may need to break it up
 const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userWalletAddress, poolDataAdapter }) => {
@@ -41,7 +42,7 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
   const [yieldBearingTokenBalance, setYieldBearingTokenBalance] = useState<BigNumber | null>(null);
 
   const [estimatedFixedApr, setEstimatedFixedApr] = useState<BigNumber | null>(null);
-  const [selectedYield, setSelectedYield] = useState<SelectedYield>('fixed');
+  const [selectedYield, setSelectedYield] = useState<SelectedYield>('Fixed');
   const [backingTokenRate, setBackingTokenRate] = useState<BigNumber | null>(null);
   const [yieldBearingTokenRate, setYieldBearingTokenRate] = useState<BigNumber | null>(null);
 
@@ -388,7 +389,7 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
                 title="Interest rate protection"
                 tooltip={interestRateProtectionTooltipText}
                 selectable={true}
-                selected={selectedYield === 'fixed'}
+                selected={selectedYield === 'Fixed'}
               >
                 <div className="tf__dialog__flex-col-space-between" yield-attribute="fixed" onClick={onSelectYield}>
                   <Typography variant="h4">Fixed Yield</Typography>
@@ -412,7 +413,7 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
                 title="Liquidity provision"
                 tooltip={liquidityProvisionTooltipText}
                 selectable={true}
-                selected={selectedYield === 'variable'}
+                selected={selectedYield === 'Variable'}
               >
                 <div className="tf__dialog__flex-col-space-between" yield-attribute="variable" onClick={onSelectYield}>
                   <Typography variant="h4">Variable Yield</Typography>
@@ -449,6 +450,12 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
           <Spacer size={20} />
           <ExecuteButton
             actionName="Deposit"
+            notificationText={getDepositNotification(
+              `${selectedYield} Yield`,
+              content.backingTokenTicker,
+              content.protocol,
+              content.maturityDate,
+            )}
             disabled={executeDisabled}
             onExecute={onExecute}
             onExecuted={onExecuted}

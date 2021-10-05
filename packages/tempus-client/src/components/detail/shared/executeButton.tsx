@@ -4,16 +4,18 @@ import { Button } from '@material-ui/core';
 import { Context } from '../../../context';
 import Typography from '../../typography/Typography';
 import getNotificationService from '../../../services/getNotificationService';
+import { generateEtherscanLink } from '../../../services/NotificationService';
 
 interface ExecuteButtonProps {
   disabled: boolean;
   actionName: string;
+  notificationText: string;
   onExecute: () => Promise<ethers.ContractTransaction | undefined>;
   onExecuted: () => void;
 }
 
 const ExecuteButton: FC<ExecuteButtonProps> = props => {
-  const { disabled, actionName, onExecute } = props;
+  const { disabled, actionName, notificationText, onExecute } = props;
 
   const { setData } = useContext(Context);
 
@@ -30,7 +32,7 @@ const ExecuteButton: FC<ExecuteButtonProps> = props => {
       } catch (error) {
         console.error('Failed to execute transaction!', error);
         // Notify user about failed action.
-        getNotificationService().warn(`${actionName} failed!`, `${actionName} failed!`);
+        getNotificationService().warn(`${actionName} Failed`, notificationText);
         return;
       }
 
@@ -67,7 +69,12 @@ const ExecuteButton: FC<ExecuteButtonProps> = props => {
         });
 
         // Notify user about failed action.
-        getNotificationService().warn(`${actionName} failed!`, `${actionName} failed!`);
+        getNotificationService().warn(
+          `${actionName} Failed`,
+          notificationText,
+          generateEtherscanLink(transaction.hash),
+          'View on Etherscan',
+        );
         return;
       }
 
@@ -83,7 +90,12 @@ const ExecuteButton: FC<ExecuteButtonProps> = props => {
       });
 
       // Notify user about successful action.
-      getNotificationService().notify(`${actionName} successful`, `${actionName} successful!`);
+      getNotificationService().notify(
+        `${actionName} Successful`,
+        notificationText,
+        generateEtherscanLink(transaction.hash),
+        'View on Etherscan',
+      );
     };
     runExecute();
   };

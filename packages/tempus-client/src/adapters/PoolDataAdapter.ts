@@ -335,7 +335,7 @@ export default class PoolDataAdapter {
     }
 
     try {
-      if (yieldType === 'fixed') {
+      if (yieldType === 'Fixed') {
         return await this.tempusControllerService.depositAndFix(
           tempusAMM,
           tokenAmount,
@@ -343,7 +343,7 @@ export default class PoolDataAdapter {
           minTYSRate,
           isEthDeposit,
         );
-      } else if (yieldType === 'variable') {
+      } else if (yieldType === 'Variable') {
         return await this.tempusControllerService.depositAndProvideLiquidity(
           tempusAMM,
           tokenAmount,

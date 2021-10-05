@@ -2,6 +2,7 @@ import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { ethers, BigNumber } from 'ethers';
 import { Ticker } from '../../../interfaces/Token';
 import NumberUtils from '../../../services/NumberUtils';
+import { getWithdrawNotification } from '../../../services/NotificationService';
 import { mul18f } from '../../../utils/wei-math';
 import getConfig from '../../../utils/get-config';
 import Typography from '../../typography/Typography';
@@ -264,8 +265,13 @@ const DetailWithdraw: FC<PoolDetailProps> = ({ tempusPool, content, signer, user
         <Spacer size={20} />
         <div className="tf__flex-row-center-v">
           <ExecuteButton
-            actionName="Remove Liquidity"
-            disabled={!principalsApproved || !yieldsApproved || !lpApproved || executeDisabled}
+            notificationText={getWithdrawNotification(
+              content.backingTokenTicker,
+              content.protocol,
+              content.maturityDate,
+            )}
+            actionName="Withdraw"
+            disabled={!principalsApproved || !yieldsApproved || !lpApproved}
             onExecute={onExecute}
             onExecuted={onExecuted}
           />

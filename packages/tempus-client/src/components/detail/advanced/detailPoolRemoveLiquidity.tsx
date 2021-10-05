@@ -5,6 +5,7 @@ import { Context } from '../../../context';
 import { DashboardRowChild } from '../../../interfaces';
 import { TempusPool } from '../../../interfaces/TempusPool';
 import NumberUtils from '../../../services/NumberUtils';
+import { getPoolLiquidityNotification } from '../../../services/NotificationService';
 import PoolDataAdapter from '../../../adapters/PoolDataAdapter';
 import getConfig from '../../../utils/get-config';
 import Typography from '../../typography/Typography';
@@ -202,7 +203,12 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = ({ content, pool
         />
         <Spacer size={18} />
         <ExecuteButton
-          actionName="Remove Liquidity"
+          notificationText={getPoolLiquidityNotification(
+            content.backingTokenTicker,
+            content.protocol,
+            content.maturityDate,
+          )}
+          actionName="Liquidity Withdrawal"
           disabled={executeDisabled}
           onExecute={onExecute}
           onExecuted={onExecuted}

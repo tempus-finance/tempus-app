@@ -18,6 +18,7 @@ import ApproveButton from '../shared/approveButton';
 import ExecuteButton from '../shared/executeButton';
 
 import './detailMint.scss';
+import { getMintNotification } from '../../../services/NotificationService';
 
 type DetailMintInProps = {
   content: DashboardRowChild;
@@ -239,7 +240,18 @@ const DetailMint: FC<DetailMintProps> = props => {
             }
           />
           <Spacer size={20} />
-          <ExecuteButton actionName="Mint" disabled={executeDisabled} onExecute={onExecute} onExecuted={onExecuted} />
+          <ExecuteButton
+            actionName="Mint"
+            notificationText={getMintNotification(
+              estimatedTokensFormatted || '',
+              content.backingTokenTicker,
+              content.protocol,
+              content.maturityDate,
+            )}
+            disabled={executeDisabled}
+            onExecute={onExecute}
+            onExecuted={onExecuted}
+          />
         </div>
       </div>
     </div>

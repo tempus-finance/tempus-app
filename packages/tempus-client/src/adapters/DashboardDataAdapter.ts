@@ -143,6 +143,7 @@ export default class DashboardDataAdapter {
           yieldBearingTokenTicker,
         },
         availableUSDToDeposit: availableToDepositInUSD,
+        backingTokenTicker: backingTokenTicker,
       };
     } catch (error) {
       console.error('DashboardDataAdapter - getChildRowData() - Failed to get data for child row!', error);

@@ -6,6 +6,7 @@ import { DashboardRowChild, PoolShares, Ticker } from '../../../interfaces';
 import { TempusPool } from '../../../interfaces/TempusPool';
 import PoolDataAdapter from '../../../adapters/PoolDataAdapter';
 import NumberUtils from '../../../services/NumberUtils';
+import { getSwapNotification } from '../../../services/NotificationService';
 import { SwapKind } from '../../../services/VaultService';
 import getConfig from '../../../utils/get-config';
 import Typography from '../../typography/Typography';
@@ -246,7 +247,21 @@ const DetailSwap: FC<DetailSwapProps> = props => {
             tokenToApprove={selectedToken ? tokenFrom.tokenAddress : ''}
           />
           <Spacer size={20} />
-          <ExecuteButton actionName="Swap" disabled={executeDisabled} onExecute={onExecute} onExecuted={onExecuted} />
+          <ExecuteButton
+            actionName="Swap"
+            notificationText={getSwapNotification(
+              selectedToken || '',
+              amount.toFixed(2),
+              tokenTo.tokenName,
+              receiveAmountFormatted || '',
+              content.backingTokenTicker,
+              content.protocol,
+              content.maturityDate,
+            )}
+            disabled={executeDisabled}
+            onExecute={onExecute}
+            onExecuted={onExecuted}
+          />
         </div>
       </div>
     </div>
