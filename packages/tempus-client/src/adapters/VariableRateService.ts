@@ -111,7 +111,7 @@ class VariableRateService {
       const { postTotalPooledEther, preTotalPooledEther, timeElapsed } =
         await this.lidoOracle?.getLastCompletedReportDelta();
       const apr = this.calculateLidoAPR(postTotalPooledEther, preTotalPooledEther, timeElapsed);
-      return Number(ethers.utils.formatEther(apr.add(fees)));
+      return Number(ethers.utils.formatEther(apr)) + fees;
     } catch (error) {
       console.error('VariableRateService - getLidoAPR', error);
       return 0;
@@ -203,9 +203,9 @@ class VariableRateService {
 
         // Adjust pool balance based on swapped amounts
         if (event.args.tokenIn === principalsAddress) {
-          principals = principals.add(event.args.amountIn);
+          principals = principals.sub(event.args.amountIn);
         } else {
-          principals = principals.sub(event.args.amountOut);
+          principals = principals.add(event.args.amountOut);
         }
       }
 
