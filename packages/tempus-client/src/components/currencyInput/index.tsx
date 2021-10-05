@@ -55,6 +55,7 @@ const CurrencyInput: FC<CurrencyInputProps> = ({
         disabled={disabled}
         variant="outlined"
         size="small"
+        autoComplete="off"
       />
     </FormControl>
   );

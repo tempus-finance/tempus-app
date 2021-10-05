@@ -50,22 +50,47 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = props => {
   const [principalsApproved, setPrincipalsApproved] = useState<boolean>(false);
   const [yieldsApproved, setYieldsApproved] = useState<boolean>(false);
 
+  // Calculate amount of principals based on the amount of yields
+  const setPrincipalsFromYields = useCallback(
+    (amountOfYields: number) => {
+      if (!yieldsPercentage || !principalsPercentage) {
+        return;
+      }
+      setPrincipalsAmount((principalsPercentage / yieldsPercentage) * amountOfYields);
+      //(75 / 25) * 50
+    },
+    [principalsPercentage, yieldsPercentage],
+  );
+
+  // Calculate amount of yields based on the amount of principals
+  const setYieldsFromPrincipals = useCallback(
+    (amountOfPrincipals: number) => {
+      if (!yieldsPercentage || !principalsPercentage) {
+        return;
+      }
+      setYieldsAmount((yieldsPercentage / principalsPercentage) * amountOfPrincipals);
+    },
+    [principalsPercentage, yieldsPercentage],
+  );
+
   const onPrincipalsAmountChange = useCallback(
     (amount: number | undefined) => {
       if (!!amount && !isNaN(amount)) {
         setPrincipalsAmount(amount);
+        setYieldsFromPrincipals(amount);
       }
     },
-    [setPrincipalsAmount],
+    [setYieldsFromPrincipals],
   );
 
   const onYieldsAmountChange = useCallback(
     (amount: number | undefined) => {
       if (!!amount && !isNaN(amount)) {
         setYieldsAmount(amount);
+        setPrincipalsFromYields(amount);
       }
     },
-    [setYieldsAmount],
+    [setPrincipalsFromYields],
   );
 
   const onPrincipalsPercentageChange = useCallback(
@@ -73,10 +98,12 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = props => {
       const percentage = event.currentTarget.value;
       if (!!principalsBalance && !isNaN(percentage)) {
         const balanceAsNumber = Number(ethers.utils.formatEther(principalsBalance));
-        setPrincipalsAmount(balanceAsNumber * Number(percentage));
+        const amount = balanceAsNumber * Number(percentage);
+        setPrincipalsAmount(amount);
+        setYieldsFromPrincipals(amount);
       }
     },
-    [principalsBalance, setPrincipalsAmount],
+    [principalsBalance, setYieldsFromPrincipals],
   );
 
   const onYieldsPercentageChange = useCallback(
@@ -84,10 +111,12 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = props => {
       const percentage = event.currentTarget.value;
       if (!!yieldsBalance && !isNaN(percentage)) {
         const balanceAsNumber = Number(ethers.utils.formatEther(yieldsBalance));
-        setYieldsAmount(balanceAsNumber * Number(percentage));
+        const amount = balanceAsNumber * Number(percentage);
+        setYieldsAmount(amount);
+        setPrincipalsFromYields(amount);
       }
     },
-    [yieldsBalance, setYieldsAmount],
+    [yieldsBalance, setPrincipalsFromYields],
   );
 
   // Fetch Principals and Yields balances
@@ -232,34 +261,36 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = props => {
 
   return (
     <>
-      <SectionContainer>
-        <Typography variant="h4">Pool rations</Typography>
-        <div className="tf__flex-row-center-vh">
-          <Typography variant="body-text">
-            {principalsPercentage !== null && NumberUtils.formatPercentage(principalsPercentage, 3)}
-          </Typography>
-          <Spacer size={20} />
-          <div className="tf__flex-column-center-vh">
-            <Typography variant="body-text">Principal</Typography>
-            <Divider orientation="horizontal" className="tf__full_width" />
-            <Typography variant="body-text">Yield</Typography>
+      {(principalsPercentage !== 0 || yieldsPercentage !== 0) && (
+        <SectionContainer>
+          <Typography variant="h4">Ratio of Assets</Typography>
+          <div className="tf__flex-row-center-vh">
+            <Typography variant="body-text">
+              {principalsPercentage !== null && NumberUtils.formatPercentage(principalsPercentage, 3)}
+            </Typography>
+            <Spacer size={20} />
+            <div className="tf__flex-column-center-vh">
+              <Typography variant="body-text">Principal</Typography>
+              <Divider orientation="horizontal" className="tf__full_width" />
+              <Typography variant="body-text">Yield</Typography>
+            </div>
+            <Spacer size={40} />
+            <div className="tf__detail__add__liquidity-icon-container">
+              <ScaleIcon />
+            </div>
+            <Spacer size={40} />
+            <div className="tf__flex-column-center-vh">
+              <Typography variant="body-text">Yield</Typography>
+              <Divider orientation="horizontal" className="tf__full_width" />
+              <Typography variant="body-text">Principal</Typography>
+            </div>
+            <Spacer size={20} />
+            <Typography variant="body-text">
+              {yieldsPercentage !== null && NumberUtils.formatPercentage(yieldsPercentage, 3)}
+            </Typography>
           </div>
-          <Spacer size={40} />
-          <div className="tf__detail__add__liquidity-icon-container">
-            <ScaleIcon />
-          </div>
-          <Spacer size={40} />
-          <div className="tf__flex-column-center-vh">
-            <Typography variant="body-text">Yield</Typography>
-            <Divider orientation="horizontal" className="tf__full_width" />
-            <Typography variant="body-text">Principal</Typography>
-          </div>
-          <Spacer size={20} />
-          <Typography variant="body-text">
-            {yieldsPercentage !== null && NumberUtils.formatPercentage(yieldsPercentage, 3)}
-          </Typography>
-        </div>
-      </SectionContainer>
+        </SectionContainer>
+      )}
       <Spacer size={15} />
       <ActionContainer label="From">
         <Spacer size={10} />
