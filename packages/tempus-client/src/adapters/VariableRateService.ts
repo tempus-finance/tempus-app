@@ -66,26 +66,25 @@ class VariableRateService {
     principalsAddress: string,
     yieldsAddress: string,
   ): Promise<number> {
-    let yieldBearingTokenAddress: string = '';
+    if (!this.tempusPoolService) {
+      return Promise.reject();
+    }
+
+    const fees = await this.calculateFees(tempusAMM, tempusPoolAddress, principalsAddress, yieldsAddress);
+    const feesFormatted = Number(ethers.utils.formatEther(fees));
+    const yieldBearingTokenAddress = await this.tempusPoolService.getYieldBearingTokenAddress(tempusPoolAddress);
+
     switch (protocol) {
       case 'aave': {
-        if (tempusPoolAddress && this.tempusPoolService) {
-          yieldBearingTokenAddress = await this.tempusPoolService.getYieldBearingTokenAddress(tempusPoolAddress);
-          return VariableRateService.getAprFromApy(await this.getAaveAPY(yieldBearingTokenAddress));
-        }
-        return 0;
+        return this.getAaveAPR(yieldBearingTokenAddress, feesFormatted);
       }
 
       case 'compound': {
-        if (tempusPoolAddress && this.tempusPoolService) {
-          yieldBearingTokenAddress = await this.tempusPoolService?.getYieldBearingTokenAddress(tempusPoolAddress);
-          return VariableRateService.getAprFromApy(await this.getCompoundAPY(yieldBearingTokenAddress));
-        }
-        return 0;
+        return this.getCompoundAPR(yieldBearingTokenAddress, feesFormatted);
       }
 
       case 'lido': {
-        return this.getLidoAPR(tempusAMM, tempusPoolAddress, principalsAddress, yieldsAddress);
+        return this.getLidoAPR(feesFormatted);
       }
 
       default: {
@@ -94,17 +93,24 @@ class VariableRateService {
     }
   }
 
-  private async getLidoAPR(
-    tempusAMM: string,
-    tempusPool: string,
-    principalsAddress: string,
-    yieldsAddress: string,
-  ): Promise<number> {
+  private async getAaveAPR(yieldBearingTokenAddress: string, fees: number) {
+    const aaveAPR = VariableRateService.getAprFromApy(await this.getAaveAPY(yieldBearingTokenAddress));
+    return aaveAPR + fees;
+  }
+
+  private async getCompoundAPR(yieldBearingTokenAddress: string, fees: number) {
+    if (!this.tempusPoolService) {
+      return Promise.reject();
+    }
+    const compoundAPR = VariableRateService.getAprFromApy(await this.getCompoundAPY(yieldBearingTokenAddress));
+    return compoundAPR + fees;
+  }
+
+  private async getLidoAPR(fees: number): Promise<number> {
     try {
       const { postTotalPooledEther, preTotalPooledEther, timeElapsed } =
         await this.lidoOracle?.getLastCompletedReportDelta();
       const apr = this.calculateLidoAPR(postTotalPooledEther, preTotalPooledEther, timeElapsed);
-      const fees = await this.calculateFees(tempusAMM, tempusPool, principalsAddress, yieldsAddress);
       return Number(ethers.utils.formatEther(apr.add(fees)));
     } catch (error) {
       console.error('VariableRateService - getLidoAPR', error);
@@ -159,29 +165,17 @@ class VariableRateService {
       return false;
     });
 
-    // Sort events by from newest to oldest
+    // Sort events from newest to oldest
     const sortedEvents = filteredEvents.sort((a, b) => b.blockNumber - a.blockNumber);
 
     // Fetch current pool balance
-    const poolTokens = await this.vaultService.getPoolTokens(poolId);
-    const principalsIndex = poolTokens.tokens.findIndex(poolTokenAddress => principalsAddress === poolTokenAddress);
-    const yieldsIndex = poolTokens.tokens.findIndex(poolTokenAddress => yieldsAddress === poolTokenAddress);
-    let poolPrincipalsBalance = poolTokens.balances[principalsIndex];
-    let poolYieldsBalance = poolTokens.balances[yieldsIndex];
+    let { principals, yields } = await this.getPoolTokens(poolId, principalsAddress, yieldsAddress);
 
-    // Total volume accumulated between two PoolBalanceChanged events
-    let totalVolume = BigNumber.from('0');
+    // Calculate current principals to yields ratio
+    const currentPrincipalsToYieldsRatio = div18f(principals, yields);
 
     // Total fees accumulated
     let totalFees = BigNumber.from('0');
-
-    // Calculate scale factor based on pool duration
-    const [tempusPoolStartTime, tempusPoolMaturityTime] = await Promise.all([
-      this.tempusPoolService.getStartTime(tempusPool),
-      this.tempusPoolService.getMaturityTime(tempusPool),
-    ]);
-    const poolDuration = (tempusPoolMaturityTime.getTime() - tempusPoolStartTime.getTime()) / 1000;
-    const scaleFactor = ethers.utils.parseEther(((SECONDS_IN_A_DAY * DAYS_IN_A_YEAR) / poolDuration).toString());
 
     // Go over all events and accumulate total swap fees
     sortedEvents.forEach(event => {
@@ -189,30 +183,37 @@ class VariableRateService {
         return Promise.reject();
       }
 
-      // If event is a swap event, add it's value to current totalVolume
       if (isSwapEvent(event)) {
+        // Get swap event volume
+        let eventVolume: BigNumber = BigNumber.from('0');
         if (event.args.tokenIn === principalsAddress) {
-          totalVolume = totalVolume.add(event.args.amountIn);
+          eventVolume = event.args.amountIn;
         } else if (event.args.tokenOut === principalsAddress) {
-          totalVolume = totalVolume.add(
-            mul18f(
-              div18f(swapFeePercentage, ethers.utils.parseEther('1').sub(swapFeePercentage)),
-              event.args.amountOut,
-            ),
+          eventVolume = mul18f(
+            div18f(swapFeePercentage, ethers.utils.parseEther('1').sub(swapFeePercentage)),
+            event.args.amountOut,
           );
         }
-      } else if (isPoolBalanceChangedEvent(event)) {
-        // Calculate swap fees for currently accumulated value
-        const swapFeesVolume = mul18f(totalVolume, swapFeePercentage);
-        const liquidityProvided = poolPrincipalsBalance.sub(swapFeesVolume);
+
+        // Calculate swap fees for current swap event
+        const swapFeesVolume = mul18f(eventVolume, swapFeePercentage);
+        const liquidityProvided = principals.sub(swapFeesVolume);
         const swapFeesToLiquidityProvidedRatio = div18f(swapFeesVolume, liquidityProvided);
-        const principalsToYieldsRatio = div18f(poolPrincipalsBalance, poolYieldsBalance);
+        const principalsToYieldsRatio = div18f(principals, yields);
         const feePerPrincipalShare = mul18f(swapFeesToLiquidityProvidedRatio, principalsToYieldsRatio);
         totalFees = totalFees.add(feePerPrincipalShare);
 
-        // Reset total volume accumulated
-        totalVolume = BigNumber.from('0');
+        // Adjust pool balance based on swapped amounts
+        if (event.args.tokenIn === principalsAddress) {
+          principals = principals.add(event.args.amountIn);
+          yields = yields.sub(event.args.amountOut);
+        } else {
+          yields = yields.add(event.args.amountIn);
+          principals = principals.sub(event.args.amountOut);
+        }
+      }
 
+      if (isPoolBalanceChangedEvent(event)) {
         // Adjust current balance based on PoolBalanceChangedEvent
         const principalsIndexInBalanceChange = event.args.tokens.findIndex(
           poolTokenAddress => principalsAddress === poolTokenAddress,
@@ -223,16 +224,30 @@ class VariableRateService {
         const principalsDelta = event.args.deltas[principalsIndexInBalanceChange];
         const yieldsDelta = event.args.deltas[yieldsIndexInBalanceChange];
         principalsDelta.isNegative()
-          ? (poolPrincipalsBalance = poolPrincipalsBalance.add(principalsDelta.abs()))
-          : (poolPrincipalsBalance = poolPrincipalsBalance.sub(principalsDelta.abs()));
-        yieldsDelta.isNegative()
-          ? (poolYieldsBalance = poolYieldsBalance.add(yieldsDelta.abs()))
-          : (poolYieldsBalance = poolYieldsBalance.sub(yieldsDelta.abs()));
+          ? (principals = principals.add(principalsDelta.abs()))
+          : (principals = principals.sub(principalsDelta.abs()));
+        yieldsDelta.isNegative() ? (yields = yields.add(yieldsDelta.abs())) : (yields = yields.sub(yieldsDelta.abs()));
       }
     });
 
     // Scale accumulated fees to 1 year duration
-    return mul18f(totalFees, scaleFactor);
+    const scaledFees = mul18f(totalFees, ethers.utils.parseEther(DAYS_IN_A_YEAR.toString()));
+
+    return mul18f(scaledFees, currentPrincipalsToYieldsRatio);
+  }
+
+  private async getPoolTokens(poolId: string, principalsAddress: string, yieldsAddress: string) {
+    if (!this.vaultService) {
+      return Promise.reject();
+    }
+
+    const poolTokens = await this.vaultService.getPoolTokens(poolId);
+    const principalsIndex = poolTokens.tokens.findIndex(poolTokenAddress => principalsAddress === poolTokenAddress);
+    const yieldsIndex = poolTokens.tokens.findIndex(poolTokenAddress => yieldsAddress === poolTokenAddress);
+    return {
+      principals: poolTokens.balances[principalsIndex],
+      yields: poolTokens.balances[yieldsIndex],
+    };
   }
 
   private async getAaveAPY(yieldBearingTokenAddress: string): Promise<number> {
