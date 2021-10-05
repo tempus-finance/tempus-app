@@ -391,7 +391,7 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
                 selectable={true}
                 selected={selectedYield === 'Fixed'}
               >
-                <div className="tf__dialog__flex-col-space-between" yield-attribute="fixed" onClick={onSelectYield}>
+                <div className="tf__dialog__flex-col-space-between" yield-attribute="Fixed" onClick={onSelectYield}>
                   <Typography variant="h4">Fixed Yield</Typography>
                   <Typography variant="body-text">
                     {fixedPrincipalsAmountFormatted && `est. ${fixedPrincipalsAmountFormatted} Principals`}
@@ -415,7 +415,7 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
                 selectable={true}
                 selected={selectedYield === 'Variable'}
               >
-                <div className="tf__dialog__flex-col-space-between" yield-attribute="variable" onClick={onSelectYield}>
+                <div className="tf__dialog__flex-col-space-between" yield-attribute="Variable" onClick={onSelectYield}>
                   <Typography variant="h4">Variable Yield</Typography>
                   <div>
                     <Typography variant="body-text">
