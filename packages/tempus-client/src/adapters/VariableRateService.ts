@@ -12,18 +12,13 @@ import {
   SECONDS_IN_A_DAY,
 } from '../constants';
 import TempusPoolService from '../services/TempusPoolService';
+import VaultService from '../services/VaultService';
+import TempusAMMService from '../services/TempusAMMService';
+import { isPoolBalanceChangedEvent, isSwapEvent } from '../services/EventUtils';
 import { ProtocolName } from '../interfaces';
 import { wadToDai } from '../utils/rayToDai';
 import getConfig from '../utils/get-config';
-import VaultService from '../services/VaultService';
-import TempusAMMService from '../services/TempusAMMService';
 import { div18f, mul18f } from '../utils/wei-math';
-import { isPoolBalanceChangedEvent, isSwapEvent } from '../services/EventUtils';
-
-interface FeeCalculationEvent {
-  type: 'Swap' | 'PoolBalanceChanged';
-  blockNumber: number;
-}
 
 const BN_SECONDS_IN_YEAR = BigNumber.from(SECONDS_IN_YEAR);
 const BN_ONE_ETH_IN_WEI = BigNumber.from(ONE_ETH_IN_WEI);
@@ -109,8 +104,8 @@ class VariableRateService {
       const { postTotalPooledEther, preTotalPooledEther, timeElapsed } =
         await this.lidoOracle?.getLastCompletedReportDelta();
       const apr = this.calculateLidoAPR(postTotalPooledEther, preTotalPooledEther, timeElapsed);
-      const aprPlusFees = this.calculateFees(tempusAMM, tempusPool, principalsAddress, yieldsAddress);
-      return Number(ethers.utils.formatEther('0'));
+      const fees = await this.calculateFees(tempusAMM, tempusPool, principalsAddress, yieldsAddress);
+      return Number(ethers.utils.formatEther(apr.add(fees)));
     } catch (error) {
       console.error('VariableRateService - getLidoAPR', error);
       return 0;
@@ -161,6 +156,7 @@ class VariableRateService {
       if (eventBlock.timestamp > Date.now() / 1000 - SECONDS_IN_A_DAY) {
         return true;
       }
+      return false;
     });
 
     // Sort events by from newest to oldest
@@ -236,7 +232,7 @@ class VariableRateService {
     });
 
     // Scale accumulated fees to 1 year duration
-    const feesScaled = mul18f(totalFees, scaleFactor);
+    return mul18f(totalFees, scaleFactor);
   }
 
   private async getAaveAPY(yieldBearingTokenAddress: string): Promise<number> {

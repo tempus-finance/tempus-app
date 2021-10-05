@@ -7,7 +7,6 @@ import getDefaultProvider from './getDefaultProvider';
 import TempusAMMService from './TempusAMMService';
 import { SECONDS_IN_AN_HOUR } from '../constants';
 import getConfig from '../utils/get-config';
-import { BytesLike } from 'ethers';
 
 type VaultServiceParameters = {
   Contract: typeof Contract;
