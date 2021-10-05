@@ -17,15 +17,17 @@ import { wadToDai } from '../utils/rayToDai';
 import getConfig from '../utils/get-config';
 import VaultService from '../services/VaultService';
 import TempusAMMService from '../services/TempusAMMService';
-import { getEventBackingTokenValue } from '../services/EventUtils';
 import { div18f, mul18f } from '../utils/wei-math';
+import { isPoolBalanceChangedEvent, isSwapEvent } from '../services/EventUtils';
+
+interface FeeCalculationEvent {
+  type: 'Swap' | 'PoolBalanceChanged';
+  blockNumber: number;
+}
 
 const BN_SECONDS_IN_YEAR = BigNumber.from(SECONDS_IN_YEAR);
 const BN_ONE_ETH_IN_WEI = BigNumber.from(ONE_ETH_IN_WEI);
 const ethMantissa = 1e18;
-
-// TODO retrieve fees from contract?
-const fees = 0.1;
 
 class VariableRateService {
   static getAprFromApy(apy: number, periods: number = 1): number {
@@ -134,77 +136,107 @@ class VariableRateService {
 
     const swapFeePercentage = await this.tempusAMMService.getSwapFeePercentage(tempusAMM);
     const poolId = await this.tempusAMMService.poolId(tempusAMM);
-    const swapEvents = await this.vaultService.getSwapEvents(poolId);
 
+    // Fetch swap and poolBalanceChanged events
+    const [swapEvents, poolBalanceChangedEvents] = await Promise.all([
+      this.vaultService.getSwapEvents(poolId),
+      this.vaultService.getPoolBalanceChangedEvents(poolId),
+    ]);
+
+    const events = [...swapEvents, ...poolBalanceChangedEvents];
+
+    // Fetch block data for all events
     const eventBlockPromises: Promise<ethers.providers.Block>[] = [];
-    swapEvents.forEach(swapEvent => {
+    events.forEach(swapEvent => {
       eventBlockPromises.push(swapEvent.getBlock());
     });
     const eventBlocks = await Promise.all(eventBlockPromises);
 
-    const eventValuePromises: Promise<BigNumber>[] = [];
-    swapEvents.forEach(swapEvent => {
-      if (!this.tempusAMMService || !this.tempusPoolService) {
-        return Promise.reject();
-      }
-
-      const eventBlock = eventBlocks.find(eventBlock => eventBlock.number === swapEvent.blockNumber);
+    // Filter out events older then 24 hours
+    const filteredEvents = events.filter(event => {
+      const eventBlock = eventBlocks.find(eventBlock => eventBlock.number === event.blockNumber);
       if (!eventBlock) {
-        return Promise.reject();
+        return false;
       }
-
-      // Only include swap events from last 24 hours
       if (eventBlock.timestamp > Date.now() / 1000 - SECONDS_IN_A_DAY) {
-        if (swapEvent.args.tokenIn === principalsAddress) {
-          eventValuePromises.push(Promise.resolve(swapEvent.args.amountIn));
-        } else if (swapEvent.args.tokenOut === principalsAddress) {
-          eventValuePromises.push(
-            Promise.resolve(
-              mul18f(
-                div18f(swapFeePercentage, ethers.utils.parseEther('1').sub(swapFeePercentage)),
-                swapEvent.args.amountOut,
-              ),
-            ),
-          );
-        }
+        return true;
       }
     });
 
-    const eventValues = await Promise.all(eventValuePromises);
-    let totalVolume = BigNumber.from('0');
-    eventValues.forEach(eventValue => {
-      totalVolume = totalVolume.add(eventValue);
-    });
+    // Sort events by from newest to oldest
+    const sortedEvents = filteredEvents.sort((a, b) => b.blockNumber - a.blockNumber);
 
-    const swapFees = mul18f(totalVolume, swapFeePercentage);
-
+    // Fetch current pool balance
     const poolTokens = await this.vaultService.getPoolTokens(poolId);
-
     const principalsIndex = poolTokens.tokens.findIndex(poolTokenAddress => principalsAddress === poolTokenAddress);
-    const poolPrincipalsBalance = poolTokens.balances[principalsIndex];
     const yieldsIndex = poolTokens.tokens.findIndex(poolTokenAddress => yieldsAddress === poolTokenAddress);
-    const poolYieldsBalance = poolTokens.balances[yieldsIndex];
+    let poolPrincipalsBalance = poolTokens.balances[principalsIndex];
+    let poolYieldsBalance = poolTokens.balances[yieldsIndex];
 
-    const liquidityProvided = poolPrincipalsBalance.sub(swapFees);
+    // Total volume accumulated between two PoolBalanceChanged events
+    let totalVolume = BigNumber.from('0');
 
-    const poolAPRFees = div18f(swapFees, liquidityProvided);
+    // Total fees accumulated
+    let totalFees = BigNumber.from('0');
 
-    const principalsInRatio = div18f(poolPrincipalsBalance, poolYieldsBalance);
-
+    // Calculate scale factor based on pool duration
     const [tempusPoolStartTime, tempusPoolMaturityTime] = await Promise.all([
       this.tempusPoolService.getStartTime(tempusPool),
       this.tempusPoolService.getMaturityTime(tempusPool),
     ]);
-
     const poolDuration = (tempusPoolMaturityTime.getTime() - tempusPoolStartTime.getTime()) / 1000;
-
     const scaleFactor = ethers.utils.parseEther(((SECONDS_IN_A_DAY * DAYS_IN_A_YEAR) / poolDuration).toString());
 
-    const fee = mul18f(poolAPRFees, principalsInRatio);
+    // Go over all events and accumulate total swap fees
+    sortedEvents.forEach(event => {
+      if (!this.tempusAMMService || !this.tempusPoolService) {
+        return Promise.reject();
+      }
 
-    const feeScaled = mul18f(fee, scaleFactor);
+      // If event is a swap event, add it's value to current totalVolume
+      if (isSwapEvent(event)) {
+        if (event.args.tokenIn === principalsAddress) {
+          totalVolume = totalVolume.add(event.args.amountIn);
+        } else if (event.args.tokenOut === principalsAddress) {
+          totalVolume = totalVolume.add(
+            mul18f(
+              div18f(swapFeePercentage, ethers.utils.parseEther('1').sub(swapFeePercentage)),
+              event.args.amountOut,
+            ),
+          );
+        }
+      } else if (isPoolBalanceChangedEvent(event)) {
+        // Calculate swap fees for currently accumulated value
+        const swapFeesVolume = mul18f(totalVolume, swapFeePercentage);
+        const liquidityProvided = poolPrincipalsBalance.sub(swapFeesVolume);
+        const swapFeesToLiquidityProvidedRatio = div18f(swapFeesVolume, liquidityProvided);
+        const principalsToYieldsRatio = div18f(poolPrincipalsBalance, poolYieldsBalance);
+        const feePerPrincipalShare = mul18f(swapFeesToLiquidityProvidedRatio, principalsToYieldsRatio);
+        totalFees = totalFees.add(feePerPrincipalShare);
 
-    debugger;
+        // Reset total volume accumulated
+        totalVolume = BigNumber.from('0');
+
+        // Adjust current balance based on PoolBalanceChangedEvent
+        const principalsIndexInBalanceChange = event.args.tokens.findIndex(
+          poolTokenAddress => principalsAddress === poolTokenAddress,
+        );
+        const yieldsIndexInBalanceChange = event.args.tokens.findIndex(
+          poolTokenAddress => yieldsAddress === poolTokenAddress,
+        );
+        const principalsDelta = event.args.deltas[principalsIndexInBalanceChange];
+        const yieldsDelta = event.args.deltas[yieldsIndexInBalanceChange];
+        principalsDelta.isNegative()
+          ? (poolPrincipalsBalance = poolPrincipalsBalance.add(principalsDelta.abs()))
+          : (poolPrincipalsBalance = poolPrincipalsBalance.sub(principalsDelta.abs()));
+        yieldsDelta.isNegative()
+          ? (poolYieldsBalance = poolYieldsBalance.add(yieldsDelta.abs()))
+          : (poolYieldsBalance = poolYieldsBalance.sub(yieldsDelta.abs()));
+      }
+    });
+
+    // Scale accumulated fees to 1 year duration
+    const feesScaled = mul18f(totalFees, scaleFactor);
   }
 
   private async getAaveAPY(yieldBearingTokenAddress: string): Promise<number> {

@@ -7,6 +7,7 @@ import getDefaultProvider from './getDefaultProvider';
 import TempusAMMService from './TempusAMMService';
 import { SECONDS_IN_AN_HOUR } from '../constants';
 import getConfig from '../utils/get-config';
+import { BytesLike } from 'ethers';
 
 type VaultServiceParameters = {
   Contract: typeof Contract;
@@ -26,6 +27,15 @@ export type SwapEvent = TypedEvent<
     tokenOut: string;
     amountIn: BigNumber;
     amountOut: BigNumber;
+  }
+>;
+export type PoolBalanceChangedEvent = TypedEvent<
+  [string, string, string[], BigNumber[], BigNumber[]] & {
+    poolId: string;
+    liquidityProvider: string;
+    tokens: string[];
+    deltas: BigNumber[];
+    protocolFeeAmounts: BigNumber[];
   }
 >;
 
@@ -103,6 +113,58 @@ class VaultService {
     }
 
     return (await Promise.all(fetchSwapEventPromises)).flat();
+  }
+
+  public async getPoolBalanceChangedEvents(forPoolId?: string): Promise<PoolBalanceChangedEvent[]> {
+    if (!this.contract || !this.tempusAMMService) {
+      console.error(
+        'VaultService - getPoolBalanceChangedEvents() - Attempted to use VaultService before initializing it!',
+      );
+      return Promise.reject();
+    }
+
+    const fetchEventsPromises: Promise<PoolBalanceChangedEvent[]>[] = [];
+    if (!forPoolId) {
+      let poolIDs: string[] = [];
+      try {
+        const fetchPoolIdPromises: Promise<string>[] = [];
+        getConfig().tempusPools.forEach(tempusPool => {
+          if (!this.tempusAMMService) {
+            throw new Error(
+              'VaultService - getPoolBalanceChangedEvents() - Attempted to use VaultService before initializing it!',
+            );
+          }
+          fetchPoolIdPromises.push(this.tempusAMMService.poolId(tempusPool.ammAddress));
+        });
+        poolIDs = await Promise.all(fetchPoolIdPromises);
+      } catch (error) {
+        console.error('VaultService - getPoolBalanceChangedEvents() - Failed to get IDs for tempus pools!', error);
+        return Promise.reject(error);
+      }
+      try {
+        poolIDs.forEach(poolID => {
+          if (!this.contract) {
+            throw new Error(
+              'VaultService - getPoolBalanceChangedEvents() - Attempted to use VaultService before initializing it!',
+            );
+          }
+
+          fetchEventsPromises.push(this.contract.queryFilter(this.contract.filters.PoolBalanceChanged(poolID)));
+        });
+      } catch (error) {
+        console.error(`VaultService - getPoolBalanceChangedEvents() - Failed to get swap events!`, error);
+        return Promise.reject(error);
+      }
+    } else {
+      try {
+        fetchEventsPromises.push(this.contract.queryFilter(this.contract.filters.PoolBalanceChanged(forPoolId)));
+      } catch (error) {
+        console.error(`VaultService - getPoolBalanceChangedEvents() - Failed to get swap events!`, error);
+        return Promise.reject(error);
+      }
+    }
+
+    return (await Promise.all(fetchEventsPromises)).flat();
   }
 
   /**
