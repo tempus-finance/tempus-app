@@ -167,15 +167,15 @@ const DetailSwap: FC<DetailSwapProps> = props => {
     if (!balance) {
       return null;
     }
-    return NumberUtils.formatToCurrency(ethers.utils.formatEther(balance), 2);
-  }, [balance]);
+    return NumberUtils.formatToCurrency(ethers.utils.formatEther(balance), tempusPool.decimalsForUI);
+  }, [balance, tempusPool.decimalsForUI]);
 
   const receiveAmountFormatted = useMemo(() => {
     if (!receiveAmount) {
       return null;
     }
-    return NumberUtils.formatToCurrency(ethers.utils.formatEther(receiveAmount), 2);
-  }, [receiveAmount]);
+    return NumberUtils.formatToCurrency(ethers.utils.formatEther(receiveAmount), tempusPool.decimalsForUI);
+  }, [receiveAmount, tempusPool.decimalsForUI]);
 
   return (
     <div role="tabpanel">

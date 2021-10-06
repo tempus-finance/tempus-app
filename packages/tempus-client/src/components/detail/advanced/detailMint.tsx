@@ -153,15 +153,15 @@ const DetailMint: FC<DetailMintProps> = props => {
     if (!balance) {
       return null;
     }
-    return NumberUtils.formatToCurrency(ethers.utils.formatEther(balance), 2);
-  }, [balance]);
+    return NumberUtils.formatToCurrency(ethers.utils.formatEther(balance), tempusPool.decimalsForUI);
+  }, [balance, tempusPool.decimalsForUI]);
 
   const estimatedTokensFormatted = useMemo(() => {
     if (!estimatedTokens) {
       return null;
     }
-    return NumberUtils.formatToCurrency(ethers.utils.formatEther(estimatedTokens), 2);
-  }, [estimatedTokens]);
+    return NumberUtils.formatToCurrency(ethers.utils.formatEther(estimatedTokens), tempusPool.decimalsForUI);
+  }, [estimatedTokens, tempusPool.decimalsForUI]);
 
   return (
     <div role="tabpanel">

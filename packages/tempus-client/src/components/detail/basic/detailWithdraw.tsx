@@ -129,29 +129,29 @@ const DetailWithdraw: FC<PoolDetailProps> = ({ tempusPool, content, signer, user
     if (!principalsBalance) {
       return null;
     }
-    return NumberUtils.formatToCurrency(ethers.utils.formatEther(principalsBalance), 2);
-  }, [principalsBalance]);
+    return NumberUtils.formatToCurrency(ethers.utils.formatEther(principalsBalance), tempusPool.decimalsForUI);
+  }, [principalsBalance, tempusPool.decimalsForUI]);
 
   const yieldsBalanceFormatted = useMemo(() => {
     if (!yieldsBalance) {
       return null;
     }
-    return NumberUtils.formatToCurrency(ethers.utils.formatEther(yieldsBalance), 2);
-  }, [yieldsBalance]);
+    return NumberUtils.formatToCurrency(ethers.utils.formatEther(yieldsBalance), tempusPool.decimalsForUI);
+  }, [yieldsBalance, tempusPool.decimalsForUI]);
 
   const lpBalanceFormatted = useMemo(() => {
     if (!lpBalance) {
       return null;
     }
-    return NumberUtils.formatToCurrency(ethers.utils.formatEther(lpBalance), 2);
-  }, [lpBalance]);
+    return NumberUtils.formatToCurrency(ethers.utils.formatEther(lpBalance), tempusPool.decimalsForUI);
+  }, [lpBalance, tempusPool.decimalsForUI]);
 
   const estimatedWithdrawAmountFormatted = useMemo(() => {
     if (!estimatedWithdrawAmount) {
       return null;
     }
-    return NumberUtils.formatToCurrency(ethers.utils.formatEther(estimatedWithdrawAmount), 2);
-  }, [estimatedWithdrawAmount]);
+    return NumberUtils.formatToCurrency(ethers.utils.formatEther(estimatedWithdrawAmount), tempusPool.decimalsForUI);
+  }, [estimatedWithdrawAmount, tempusPool.decimalsForUI]);
 
   const estimatedWithdrawAmountUsdFormatted = useMemo(() => {
     if (!estimatedWithdrawAmount || !tokenRate) {

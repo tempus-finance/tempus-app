@@ -3,6 +3,7 @@ import { BigNumber, ethers } from 'ethers';
 import { Palette, SelectionState, SeriesRef } from '@devexpress/dx-react-chart';
 import { Chart, PieSeries } from '@devexpress/dx-react-chart-material-ui';
 import { Context } from '../../../../context';
+import { TempusPool } from '../../../../interfaces/TempusPool';
 import { div18f } from '../../../../utils/wei-math';
 import NumberUtils from '../../../../services/NumberUtils';
 import Spacer from '../../../spacer/spacer';
@@ -19,10 +20,11 @@ interface UserBalanceChartDataPoint {
 interface DetailUserInfoBalanceChartProps {
   lpTokenPrincipalReturnBalance: BigNumber;
   lpTokenYieldReturnBalance: BigNumber;
+  tempusPool: TempusPool;
 }
 
 const DetailUserInfoBalanceChart: FC<DetailUserInfoBalanceChartProps> = props => {
-  const { lpTokenPrincipalReturnBalance, lpTokenYieldReturnBalance } = props;
+  const { lpTokenPrincipalReturnBalance, lpTokenYieldReturnBalance, tempusPool } = props;
 
   const {
     data: { userPrincipalsBalance, userYieldsBalance },
@@ -38,16 +40,28 @@ const DetailUserInfoBalanceChart: FC<DetailUserInfoBalanceChartProps> = props =>
 
   useMemo(() => {
     setPrincipalShareValue(
-      userPrincipalsBalance ? NumberUtils.formatToCurrency(ethers.utils.formatEther(userPrincipalsBalance), 2) : '-',
+      userPrincipalsBalance
+        ? NumberUtils.formatToCurrency(ethers.utils.formatEther(userPrincipalsBalance), tempusPool.decimalsForUI)
+        : '-',
     );
     setYieldShareValue(
-      userYieldsBalance ? NumberUtils.formatToCurrency(ethers.utils.formatEther(userYieldsBalance), 2) : '-',
+      userYieldsBalance
+        ? NumberUtils.formatToCurrency(ethers.utils.formatEther(userYieldsBalance), tempusPool.decimalsForUI)
+        : '-',
     );
     setLpTokenPrincipalReturnValue(
-      NumberUtils.formatToCurrency(ethers.utils.formatEther(lpTokenPrincipalReturnBalance), 2),
+      NumberUtils.formatToCurrency(ethers.utils.formatEther(lpTokenPrincipalReturnBalance), tempusPool.decimalsForUI),
     );
-    setLpTokenYieldReturnValue(NumberUtils.formatToCurrency(ethers.utils.formatEther(lpTokenYieldReturnBalance), 2));
-  }, [lpTokenPrincipalReturnBalance, lpTokenYieldReturnBalance, userPrincipalsBalance, userYieldsBalance]);
+    setLpTokenYieldReturnValue(
+      NumberUtils.formatToCurrency(ethers.utils.formatEther(lpTokenYieldReturnBalance), tempusPool.decimalsForUI),
+    );
+  }, [
+    lpTokenPrincipalReturnBalance,
+    lpTokenYieldReturnBalance,
+    userPrincipalsBalance,
+    userYieldsBalance,
+    tempusPool.decimalsForUI,
+  ]);
 
   useMemo(() => {
     if (!userPrincipalsBalance || !userYieldsBalance) {

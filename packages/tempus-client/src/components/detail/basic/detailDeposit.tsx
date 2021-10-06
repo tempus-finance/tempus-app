@@ -272,30 +272,30 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
     if (!fixedPrincipalsAmount) {
       return null;
     }
-    return NumberUtils.formatToCurrency(utils.formatEther(fixedPrincipalsAmount), 2);
-  }, [fixedPrincipalsAmount]);
+    return NumberUtils.formatToCurrency(utils.formatEther(fixedPrincipalsAmount), tempusPool.decimalsForUI);
+  }, [fixedPrincipalsAmount, tempusPool.decimalsForUI]);
 
   const variablePrincipalsAmountFormatted = useMemo(() => {
     if (!variablePrincipalsAmount) {
       return null;
     }
-    return NumberUtils.formatToCurrency(utils.formatEther(variablePrincipalsAmount), 2);
-  }, [variablePrincipalsAmount]);
+    return NumberUtils.formatToCurrency(utils.formatEther(variablePrincipalsAmount), tempusPool.decimalsForUI);
+  }, [variablePrincipalsAmount, tempusPool.decimalsForUI]);
 
   const variableLpTokensAmountFormatted = useMemo(() => {
     if (!variableLpTokensAmount) {
       return null;
     }
-    return NumberUtils.formatToCurrency(utils.formatEther(variableLpTokensAmount), 2);
-  }, [variableLpTokensAmount]);
+    return NumberUtils.formatToCurrency(utils.formatEther(variableLpTokensAmount), tempusPool.decimalsForUI);
+  }, [variableLpTokensAmount, tempusPool.decimalsForUI]);
 
   const balanceFormatted = useMemo(() => {
     if (!balance) {
       return null;
     }
 
-    return NumberUtils.formatToCurrency(utils.formatEther(balance), 2);
-  }, [balance]);
+    return NumberUtils.formatToCurrency(utils.formatEther(balance), tempusPool.decimalsForUI);
+  }, [balance, tempusPool.decimalsForUI]);
 
   const usdValueFormatted = useMemo(() => {
     if (!usdRate || !amount) {

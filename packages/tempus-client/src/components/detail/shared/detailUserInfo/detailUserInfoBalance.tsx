@@ -43,13 +43,19 @@ const DetailUserInfoBalance: FC<DetailUserInfoBalancesProps> = props => {
     }
 
     setBackingTokenValue(
-      NumberUtils.formatToCurrency(ethers.utils.formatEther(availableTokensToDeposit.backingToken), 2),
+      NumberUtils.formatToCurrency(
+        ethers.utils.formatEther(availableTokensToDeposit.backingToken),
+        tempusPool.decimalsForUI,
+      ),
     );
     setYieldBearingTokenValue(
-      NumberUtils.formatToCurrency(ethers.utils.formatEther(availableTokensToDeposit.yieldBearingToken), 2),
+      NumberUtils.formatToCurrency(
+        ethers.utils.formatEther(availableTokensToDeposit.yieldBearingToken),
+        tempusPool.decimalsForUI,
+      ),
     );
     setFormattedPresentValue(NumberUtils.formatToCurrency(ethers.utils.formatEther(presentValue), 2, '$'));
-  }, [availableTokensToDeposit, presentValue]);
+  }, [availableTokensToDeposit, presentValue, tempusPool.decimalsForUI]);
 
   useEffect(() => {
     const retrieveBalances = async () => {
@@ -108,6 +114,7 @@ const DetailUserInfoBalance: FC<DetailUserInfoBalancesProps> = props => {
             <DetailUserInfoBalanceChart
               lpTokenPrincipalReturnBalance={lpTokenPrincipalReturnBalance}
               lpTokenYieldReturnBalance={lpTokenYieldReturnBalance}
+              tempusPool={tempusPool}
             />
           </ActionContainer>
         </SectionContainer>

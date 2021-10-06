@@ -227,22 +227,22 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = props => {
     if (!userPrincipalsBalance) {
       return null;
     }
-    return NumberUtils.formatToCurrency(ethers.utils.formatEther(userPrincipalsBalance), 2);
-  }, [userPrincipalsBalance]);
+    return NumberUtils.formatToCurrency(ethers.utils.formatEther(userPrincipalsBalance), tempusPool.decimalsForUI);
+  }, [userPrincipalsBalance, tempusPool.decimalsForUI]);
 
   const yieldsBalanceFormatted = useMemo(() => {
     if (!userYieldsBalance) {
       return null;
     }
-    return NumberUtils.formatToCurrency(ethers.utils.formatEther(userYieldsBalance), 2);
-  }, [userYieldsBalance]);
+    return NumberUtils.formatToCurrency(ethers.utils.formatEther(userYieldsBalance), tempusPool.decimalsForUI);
+  }, [userYieldsBalance, tempusPool.decimalsForUI]);
 
   const expectedLPTokensFormatted = useMemo(() => {
     if (!expectedLPTokens) {
       return null;
     }
-    return NumberUtils.formatToCurrency(ethers.utils.formatEther(expectedLPTokens), 2);
-  }, [expectedLPTokens]);
+    return NumberUtils.formatToCurrency(ethers.utils.formatEther(expectedLPTokens), tempusPool.decimalsForUI);
+  }, [expectedLPTokens, tempusPool.decimalsForUI]);
 
   return (
     <>

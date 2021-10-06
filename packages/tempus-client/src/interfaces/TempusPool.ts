@@ -6,4 +6,5 @@ export type TempusPool = {
   backingToken: Ticker;
   spotPrice: string;
   maxLeftoverShares: string;
+  decimalsForUI: number;
 };

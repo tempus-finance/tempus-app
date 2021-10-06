@@ -10,6 +10,7 @@ const config: Config = {
       backingToken: 'ETH',
       spotPrice: '2',
       maxLeftoverShares: '0.00001',
+      decimalsForUI: 4,
     },
     {
       address: '0x0749982cAD68506009C7f0341a9A7fD6107A40C2',
@@ -17,6 +18,7 @@ const config: Config = {
       backingToken: 'ETH',
       spotPrice: '2',
       maxLeftoverShares: '0.00001',
+      decimalsForUI: 4,
     },
   ],
   statisticsContract: '0x01fF82791D8414826ec7390dfE7902703F632F5C',
