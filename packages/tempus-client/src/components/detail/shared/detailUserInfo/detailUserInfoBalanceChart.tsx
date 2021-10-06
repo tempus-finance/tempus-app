@@ -83,23 +83,21 @@ const DetailUserInfoBalanceChart: FC<DetailUserInfoBalanceChartProps> = props =>
         color: '#FF6B00',
       },
       {
-        name: 'Yields',
-        percentage: Number(ethers.utils.formatEther(div18f(userYieldsBalance, totalValue))),
-        color: '#288195',
-      },
-      {
         name: 'LP Token - Principals',
         percentage: Number(ethers.utils.formatEther(div18f(lpTokenPrincipalReturnBalance, totalValue))),
         color: '#e56000',
+      },
+      {
+        name: 'Yields',
+        percentage: Number(ethers.utils.formatEther(div18f(userYieldsBalance, totalValue))),
+        color: '#288195',
       },
       {
         name: 'LP Token - Yields',
         percentage: Number(ethers.utils.formatEther(div18f(lpTokenYieldReturnBalance, totalValue))),
         color: '#206777',
       },
-    ].sort((a, b) => {
-      return b.percentage - a.percentage;
-    });
+    ];
 
     const highlightedDataPoints: SeriesRef[] = [];
     dataPoints.forEach((dataPoint, index) => {
