@@ -60,7 +60,7 @@ const ApproveButton: FC<ApproveButtonProps> = props => {
             ),
           );
         }
-
+        setApproving(false);
         return;
       }
 
@@ -104,6 +104,7 @@ const ApproveButton: FC<ApproveButtonProps> = props => {
             'View on Etherscan',
           );
         }
+        setApproving(false);
         return;
       }
 
