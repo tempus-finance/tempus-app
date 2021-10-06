@@ -223,6 +223,22 @@ class StatisticsService {
       return Promise.reject(error);
     }
   }
+
+  async estimatedRedeem(
+    tempusPool: string,
+    principalsAmount: BigNumber,
+    yieldsAmount: BigNumber,
+    toBackingToken: boolean,
+  ) {
+    if (!this.stats) {
+      console.error(
+        'StatisticsService - estimatedMintedShares() - Attempted to use statistics contract before initializing it!',
+      );
+      return Promise.reject();
+    }
+
+    return this.stats.estimatedRedeem(tempusPool, principalsAmount, yieldsAmount, toBackingToken);
+  }
 }
 
 export default StatisticsService;

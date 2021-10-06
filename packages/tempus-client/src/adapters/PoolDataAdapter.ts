@@ -218,6 +218,20 @@ export default class PoolDataAdapter {
     }
   }
 
+  async estimatedRedeem(
+    tempusPool: string,
+    yieldsAmount: BigNumber,
+    principalsAmount: BigNumber,
+    toBackingToken: boolean,
+  ) {
+    if (!this.statisticService) {
+      console.error('PoolDataAdapter - estimateRedeem() - Attempted to use PoolDataAdapter before initializing it!');
+      return Promise.reject();
+    }
+
+    return this.statisticService.estimatedRedeem(tempusPool, yieldsAmount, principalsAmount, toBackingToken);
+  }
+
   async approve(
     tempusPoolAddress: string,
     isBackingToken: boolean,
@@ -871,6 +885,19 @@ export default class PoolDataAdapter {
     } catch (error) {
       console.error('PoolDataAdapter - getPoolFees() - Failed to retrieve fees.', error);
       return Promise.reject(error);
+    }
+  }
+
+  async executeRedeem(tempusPool: string, userWalletAddress: string, amountOfShares: BigNumber, toBacking: boolean) {
+    if (!this.tempusControllerService) {
+      console.error('PoolDataAdapter - executeRedeem() - Attempted to use PoolDataAdapter before initializing it!');
+      return Promise.reject();
+    }
+
+    if (toBacking) {
+      return this.tempusControllerService.redeemToBacking(tempusPool, userWalletAddress, amountOfShares);
+    } else {
+      return this.tempusControllerService.redeemToYieldBearing(tempusPool, userWalletAddress, amountOfShares);
     }
   }
 }

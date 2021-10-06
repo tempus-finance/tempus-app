@@ -9,6 +9,7 @@ import Spacer from '../../spacer/spacer';
 import DetailSwap from './detailSwap';
 import DetailMint from './detailMint';
 import DetailPool from './detailPool';
+import DetailRedeem from './detailRedeem';
 
 import '../shared/style.scss';
 
@@ -55,6 +56,14 @@ const DetailAdvanced: FC<DetailAdvancedProps> = (props: DetailAdvancedProps) => 
           }
           className="tf__tab"
         />
+        <Tab
+          label={
+            <Typography color="default" variant="h3">
+              Redeem
+            </Typography>
+          }
+          className="tf__tab"
+        />
       </Tabs>
       <Spacer size={25} />
       {tab === 0 && (
@@ -84,6 +93,7 @@ const DetailAdvanced: FC<DetailAdvancedProps> = (props: DetailAdvancedProps) => 
           tempusPool={tempusPool}
         />
       )}
+      {tab === 3 && <DetailRedeem content={content} poolDataAdapter={poolDataAdapter} tempusPool={tempusPool} />}
     </>
   );
 };

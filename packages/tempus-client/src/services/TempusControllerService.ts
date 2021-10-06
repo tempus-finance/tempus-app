@@ -257,6 +257,40 @@ class TempusControllerService {
       return Promise.reject(error);
     }
   }
+
+  async redeemToBacking(tempusPool: string, userWalletAddress: string, amountOfShares: BigNumber) {
+    if (!this.contract) {
+      console.error(
+        'TempusControllerService - redeemToBacking() - Attempted to use TempusControllerService before initializing it!',
+      );
+      return Promise.reject();
+    }
+
+    return this.contract.redeemToBacking(
+      tempusPool,
+      userWalletAddress,
+      amountOfShares,
+      amountOfShares,
+      userWalletAddress,
+    );
+  }
+
+  async redeemToYieldBearing(tempusPool: string, userWalletAddress: string, amountOfShares: BigNumber) {
+    if (!this.contract) {
+      console.error(
+        'TempusControllerService - redeemToYieldBearing() - Attempted to use TempusControllerService before initializing it!',
+      );
+      return Promise.reject();
+    }
+
+    return this.contract.redeemToYieldBearing(
+      tempusPool,
+      userWalletAddress,
+      amountOfShares,
+      amountOfShares,
+      userWalletAddress,
+    );
+  }
 }
 
 export default TempusControllerService;

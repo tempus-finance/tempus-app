@@ -1,7 +1,6 @@
 import { FC, useCallback, useState } from 'react';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
-import AddIcon from '@material-ui/icons/Add';
 import { Ticker } from '../../../interfaces/Token';
 import ConnectingArrow from '../shared/connectingArrow';
 import ActionContainer from '../shared/actionContainer';
@@ -12,16 +11,16 @@ import Execute from '../shared/execute';
 
 import './detailMint.scss';
 
-type DetailEarlyRedeemInProps = {
+type DetailNormalRedeemInProps = {
   content?: any;
 };
 
-type DetailEarlyRedeemOutProps = {};
+type DetailNormalRedeemOutProps = {};
 
-type DetailEarlyRedeemProps = DetailEarlyRedeemInProps & DetailEarlyRedeemOutProps;
+type DetailNormalRedeemProps = DetailNormalRedeemInProps & DetailNormalRedeemOutProps;
 
-const DetailEarlyRedeem: FC<DetailEarlyRedeemProps> = ({ content }) => {
-  const { token = '', protocol = '', balance = 0, defaultToken } = content || {};
+const DetailNormalRedeem: FC<DetailNormalRedeemProps> = ({ content }) => {
+  const { balance = 0, defaultToken } = content || {};
   const RandomUSDValue = 12.567;
 
   const [amount, setAmount] = useState<number>(0);
@@ -44,23 +43,14 @@ const DetailEarlyRedeem: FC<DetailEarlyRedeemProps> = ({ content }) => {
   const tpsValue = 42942;
   const tysValue = 6242;
 
-  const tickers = ['USDC', 'aDAI'] as Ticker[];
+  const tickers = ['ETH', 'USDC'] as Ticker[];
 
   return (
     <>
       <ActionContainer label="From">
         <ActionContainerGrid className="tf__detail-withdraw__grid">
           <div className="tf__dialog__tab__action-container-grid__top-left element1">
-            <div className="tf__tokens-returned__name">
-              <div className="tf__tokens-returned__ticker">
-                <span>Principals</span>
-                <span className="tf__tokens-returned__description">Principal Share</span>
-              </div>
-            </div>
-
-            <div className="add-icon-container">
-              <AddIcon />
-            </div>
+            <TokenSelector tickers={['Principals', 'Yields']} />
           </div>
 
           <div className="tf__dialog__tab__action-container-grid__top-right element2">
@@ -74,40 +64,6 @@ const DetailEarlyRedeem: FC<DetailEarlyRedeemProps> = ({ content }) => {
               <div className="tf__dialog__tab__action-container__balance-max">
                 <Button
                   value="tps"
-                  variant="contained"
-                  size="small"
-                  onClick={onClickMax}
-                  className="tf__action__max-balance"
-                >
-                  Max
-                </Button>
-              </div>
-            </div>
-            <div className="tf__dialog__tab__action-container__token-amount">
-              <CurrencyInput defaultValue={0} onChange={onAmountChange} />
-            </div>
-          </div>
-
-          <div className="tf__dialog__tab__action-container-grid__bottom-left element1">
-            <div className="tf__tokens-returned__name">
-              <div className="tf__tokens-returned__ticker">
-                <span>Yields</span>
-                <span className="tf__tokens-returned__description">Yield Share</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="tf__dialog__tab__action-container-grid__bottom-right element2">
-            <div className="tf__dialog__tab__action-container__balance">
-              <Typography variant="subtitle2" className="tf__dialog__tab__action-container__balance-title">
-                Balance
-              </Typography>
-              <div className="tf__dialog__tab__action-container__balance-value">
-                {new Intl.NumberFormat().format(balance)}
-              </div>
-              <div className="tf__dialog__tab__action-container__balance-max">
-                <Button
-                  value="tys"
                   variant="contained"
                   size="small"
                   onClick={onClickMax}
@@ -144,9 +100,9 @@ const DetailEarlyRedeem: FC<DetailEarlyRedeemProps> = ({ content }) => {
           </div>
         </ActionContainerGrid>
       </ActionContainer>
-      <Execute approveLabel="Approve TPS" onApprove={() => null} onExecute={() => null} />
+      <Execute onApprove={() => null} onExecute={() => null} />
     </>
   );
 };
 
-export default DetailEarlyRedeem;
+export default DetailNormalRedeem;
