@@ -196,8 +196,6 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = ({ content, pool
           amountToApprove={data.userLPBalance}
           onApproved={onApproved}
           poolDataAdapter={poolDataAdapter}
-          signer={data.userWalletSigner}
-          userWalletAddress={data.userWalletAddress}
           spenderAddress={getConfig().vaultContract}
           tokenToApprove={tempusPool.ammAddress}
         />

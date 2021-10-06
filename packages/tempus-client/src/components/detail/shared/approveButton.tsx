@@ -1,6 +1,5 @@
 import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { BigNumber, ethers } from 'ethers';
-import { JsonRpcSigner } from '@ethersproject/providers';
 import { Button } from '@material-ui/core';
 import PoolDataAdapter from '../../../adapters/PoolDataAdapter';
 import Typography from '../../typography/Typography';
@@ -11,25 +10,23 @@ import { Context } from '../../../context';
 
 interface ApproveButtonProps {
   poolDataAdapter: PoolDataAdapter | null;
-  signer: JsonRpcSigner | null;
-  userWalletAddress: string;
   tokenToApprove: string;
   spenderAddress: string;
   amountToApprove: BigNumber | null;
   tokenTicker: Ticker | null;
   onApproved: () => void;
+  onAllowanceExceeded?: () => void;
 }
 
 const ApproveButton: FC<ApproveButtonProps> = props => {
   const {
-    signer,
     poolDataAdapter,
     tokenToApprove,
     spenderAddress,
-    userWalletAddress,
     amountToApprove,
     tokenTicker,
     onApproved,
+    onAllowanceExceeded,
   } = props;
 
   const { data, setData } = useContext(Context);
@@ -39,13 +36,18 @@ const ApproveButton: FC<ApproveButtonProps> = props => {
 
   const onApprove = useCallback(() => {
     const approve = async () => {
-      if (!signer || !poolDataAdapter || !amountToApprove || !setData) {
+      if (!data.userWalletSigner || !poolDataAdapter || !amountToApprove || !setData) {
         return;
       }
 
       let transaction: ethers.ContractTransaction | undefined | void;
       try {
-        transaction = await poolDataAdapter.approveToken(tokenToApprove, spenderAddress, amountToApprove, signer);
+        transaction = await poolDataAdapter.approveToken(
+          tokenToApprove,
+          spenderAddress,
+          amountToApprove,
+          data.userWalletSigner,
+        );
       } catch (error) {
         console.error('Failed to execute the transaction!', error);
 
@@ -133,7 +135,14 @@ const ApproveButton: FC<ApproveButtonProps> = props => {
       }
 
       // Set new allowance
-      setAllowance(await poolDataAdapter.getTokenAllowance(tokenToApprove, spenderAddress, userWalletAddress, signer));
+      setAllowance(
+        await poolDataAdapter.getTokenAllowance(
+          tokenToApprove,
+          spenderAddress,
+          data.userWalletAddress,
+          data.userWalletSigner,
+        ),
+      );
 
       onApproved();
       setApproving(false);
@@ -141,7 +150,7 @@ const ApproveButton: FC<ApproveButtonProps> = props => {
     approve();
     setApproving(true);
   }, [
-    signer,
+    data.userWalletSigner,
     poolDataAdapter,
     amountToApprove,
     setData,
@@ -149,21 +158,28 @@ const ApproveButton: FC<ApproveButtonProps> = props => {
     data.selectedRow,
     tokenToApprove,
     spenderAddress,
-    userWalletAddress,
+    data.userWalletAddress,
     onApproved,
   ]);
 
   // Fetch token allowance
   useEffect(() => {
     const getAllowance = async () => {
-      if (!poolDataAdapter || !signer || !tokenToApprove) {
+      if (!poolDataAdapter || !data.userWalletSigner || !tokenToApprove) {
         return;
       }
 
-      setAllowance(await poolDataAdapter.getTokenAllowance(tokenToApprove, spenderAddress, userWalletAddress, signer));
+      setAllowance(
+        await poolDataAdapter.getTokenAllowance(
+          tokenToApprove,
+          spenderAddress,
+          data.userWalletAddress,
+          data.userWalletSigner,
+        ),
+      );
     };
     getAllowance();
-  }, [poolDataAdapter, signer, spenderAddress, tokenToApprove, userWalletAddress]);
+  }, [poolDataAdapter, data.userWalletSigner, spenderAddress, tokenToApprove, data.userWalletAddress]);
 
   const approved = useMemo(() => {
     if (!amountToApprove) {
@@ -183,6 +199,8 @@ const ApproveButton: FC<ApproveButtonProps> = props => {
 
   if (approved) {
     onApproved();
+  } else {
+    onAllowanceExceeded && onAllowanceExceeded();
   }
 
   return (

@@ -231,10 +231,8 @@ const DetailMint: FC<DetailMintProps> = props => {
             amountToApprove={balance}
             onApproved={onApproved}
             poolDataAdapter={poolDataAdapter}
-            signer={signer}
             spenderAddress={getConfig().tempusControllerContract}
             tokenTicker={selectedToken}
-            userWalletAddress={userWalletAddress}
             tokenToApprove={
               selectedToken === backingToken ? content.backingTokenAddress : content.yieldBearingTokenAddress
             }

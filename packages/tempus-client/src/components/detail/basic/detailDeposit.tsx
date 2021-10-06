@@ -123,6 +123,10 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
     setExecuteDisabled(false);
   }, []);
 
+  const onAllowanceExceeded = useCallback(() => {
+    setExecuteDisabled(true);
+  }, []);
+
   const onExecuted = useCallback(() => {
     setExecuteDisabled(false);
   }, []);
@@ -135,14 +139,12 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
       const isBackingToken = backingToken === selectedToken;
       const parsedMinTYSRate = utils.parseEther(minTYSRate.toString());
       const isEthDeposit = selectedToken === 'ETH';
-      return poolDataAdapter.executeDeposit(
-        ammAddress,
-        tokenAmount,
-        isBackingToken,
-        parsedMinTYSRate,
-        selectedYield,
-        isEthDeposit,
-      );
+      return poolDataAdapter
+        .executeDeposit(ammAddress, tokenAmount, isBackingToken, parsedMinTYSRate, selectedYield, isEthDeposit)
+        .catch(() => {
+          setExecuteDisabled(false);
+          return undefined;
+        });
     } else {
       return Promise.resolve(undefined);
     }
@@ -263,10 +265,6 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
     setVariablePrincipalsAmount,
     setVariableLpTokensAmount,
   ]);
-
-  useEffect(() => {
-    setExecuteDisabled(!amount || !selectedYield);
-  }, [amount, selectedYield, setExecuteDisabled]);
 
   const fixedPrincipalsAmountFormatted = useMemo(() => {
     if (!fixedPrincipalsAmount) {
@@ -436,16 +434,15 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
         <Spacer size={20} />
         <div className="tf__flex-row-center-vh">
           <ApproveButton
-            amountToApprove={balance}
-            onApproved={onApproved}
             poolDataAdapter={poolDataAdapter}
-            signer={signer}
-            spenderAddress={getConfig().tempusControllerContract}
-            tokenTicker={selectedToken}
-            userWalletAddress={userWalletAddress}
             tokenToApprove={
               selectedToken === backingToken ? content.backingTokenAddress : content.yieldBearingTokenAddress
             }
+            spenderAddress={getConfig().tempusControllerContract}
+            amountToApprove={balance}
+            tokenTicker={selectedToken}
+            onApproved={onApproved}
+            onAllowanceExceeded={onAllowanceExceeded}
           />
           <Spacer size={20} />
           <ExecuteButton
@@ -456,7 +453,7 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
               content.protocol,
               content.maturityDate,
             )}
-            disabled={executeDisabled}
+            disabled={executeDisabled || amount === 0}
             onExecute={onExecute}
             onExecuted={onExecuted}
           />

@@ -180,11 +180,9 @@ const DetailWithdraw: FC<PoolDetailProps> = ({ tempusPool, content, signer, user
                   <ApproveButton
                     tokenTicker="Principals"
                     poolDataAdapter={poolDataAdapter}
-                    signer={signer}
                     amountToApprove={principalsBalance || BigNumber.from('0')}
                     tokenToApprove={content.principalTokenAddress}
                     spenderAddress={getConfig().tempusControllerContract}
-                    userWalletAddress={userWalletAddress}
                     onApproved={() => {
                       setPrincipalsApproved(true);
                     }}
@@ -207,11 +205,9 @@ const DetailWithdraw: FC<PoolDetailProps> = ({ tempusPool, content, signer, user
                     <ApproveButton
                       tokenTicker="Yields"
                       poolDataAdapter={poolDataAdapter}
-                      signer={signer}
                       amountToApprove={yieldsBalance || BigNumber.from('0')}
                       tokenToApprove={content.yieldTokenAddress}
                       spenderAddress={getConfig().tempusControllerContract}
-                      userWalletAddress={userWalletAddress}
                       onApproved={() => {
                         setYieldsApproved(true);
                       }}
@@ -233,14 +229,12 @@ const DetailWithdraw: FC<PoolDetailProps> = ({ tempusPool, content, signer, user
                   </div>
                   <div className="tf__flex-column-center-end">
                     <ApproveButton
-                      tokenTicker="LP"
                       poolDataAdapter={poolDataAdapter}
-                      signer={signer}
-                      amountToApprove={lpBalance || BigNumber.from('0')}
-                      // TempusAMM address is used as LP token address
                       tokenToApprove={tempusPool.ammAddress}
                       spenderAddress={getConfig().tempusControllerContract}
-                      userWalletAddress={userWalletAddress}
+                      amountToApprove={lpBalance || BigNumber.from('0')}
+                      tokenTicker="LP"
+                      // TempusAMM address is used as LP token address
                       onApproved={() => {
                         setLpApproved(true);
                       }}

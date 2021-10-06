@@ -240,10 +240,8 @@ const DetailSwap: FC<DetailSwapProps> = props => {
             amountToApprove={balance}
             onApproved={onApproved}
             poolDataAdapter={poolDataAdapter}
-            signer={signer}
             spenderAddress={getConfig().vaultContract}
             tokenTicker={tokenFrom.tokenName}
-            userWalletAddress={userWalletAddress}
             tokenToApprove={selectedToken ? tokenFrom.tokenAddress : ''}
           />
           <Spacer size={20} />

@@ -9,7 +9,6 @@ import { getPoolLiquidityNotification } from '../../../services/NotificationServ
 import { DashboardRowChild } from '../../../interfaces';
 import { TempusPool } from '../../../interfaces/TempusPool';
 import getConfig from '../../../utils/get-config';
-import { div18f } from '../../../utils/wei-math';
 import Typography from '../../typography/Typography';
 import Spacer from '../../spacer/spacer';
 import ScaleIcon from '../../icons/ScaleIcon';
@@ -35,7 +34,7 @@ type DetailPoolAddLiquidityOutProps = {};
 type DetailPoolAddLiquidityProps = DetailPoolAddLiquidityInProps & DetailPoolAddLiquidityOutProps;
 
 const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = props => {
-  const { content, poolDataAdapter, signer, userWalletAddress, tempusPool } = props;
+  const { content, poolDataAdapter, userWalletAddress, tempusPool } = props;
 
   const {
     data: { userPrincipalsBalance, userYieldsBalance },
@@ -319,10 +318,8 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = props => {
                   setPrincipalsApproved(true);
                 }}
                 poolDataAdapter={poolDataAdapter}
-                signer={signer}
                 spenderAddress={getConfig().vaultContract}
                 tokenToApprove={content.principalTokenAddress}
-                userWalletAddress={userWalletAddress}
               />
             </div>
           </div>
@@ -370,10 +367,8 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = props => {
                   setYieldsApproved(true);
                 }}
                 poolDataAdapter={poolDataAdapter}
-                signer={signer}
                 spenderAddress={getConfig().vaultContract}
                 tokenToApprove={content.yieldTokenAddress}
-                userWalletAddress={userWalletAddress}
               />
             </div>
           </div>

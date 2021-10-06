@@ -9,7 +9,6 @@ import NumberUtils from '../../../../services/NumberUtils';
 import Spacer from '../../../spacer/spacer';
 import Typography from '../../../typography/Typography';
 import LegendDotSolid from '../legendDotSolid';
-import LegendDotGradient from '../legendDotGradient';
 
 interface UserBalanceChartDataPoint {
   name: string;
