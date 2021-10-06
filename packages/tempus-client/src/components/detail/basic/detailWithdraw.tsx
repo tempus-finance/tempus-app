@@ -286,7 +286,11 @@ const DetailWithdraw: FC<PoolDetailProps> = ({ tempusPool, content, signer, user
               content.maturityDate,
             )}
             actionName="Withdraw"
-            disabled={!principalsApproved || !yieldsApproved || !lpApproved}
+            disabled={
+              (!principalsApproved && !principalsBalance?.isZero()) ||
+              (!yieldsBalance?.isZero() && !yieldsApproved) ||
+              (!lpBalance?.isZero() && !lpApproved)
+            }
             onExecute={onExecute}
             onExecuted={onExecuted}
           />
