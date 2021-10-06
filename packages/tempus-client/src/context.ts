@@ -6,6 +6,8 @@ import { DashboardRowChild } from './interfaces';
 interface ContextDataType {
   userWalletAddress: string;
   userWalletSigner: JsonRpcSigner | null;
+  userBackingTokenBalance: BigNumber | null;
+  userYieldBearingTokenBalance: BigNumber | null;
   userPrincipalsBalance: BigNumber | null;
   userYieldsBalance: BigNumber | null;
   userLPBalance: BigNumber | null;
@@ -21,6 +23,8 @@ interface ContextType {
 export const defaultContextValue: ContextDataType = {
   userWalletAddress: '',
   userWalletSigner: null,
+  userBackingTokenBalance: null,
+  userYieldBearingTokenBalance: null,
   userPrincipalsBalance: null,
   userYieldsBalance: null,
   userLPBalance: null,

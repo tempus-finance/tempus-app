@@ -1,7 +1,8 @@
-import { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { FC, useCallback, useEffect, useMemo, useState, useContext } from 'react';
 import { Divider, Button } from '@material-ui/core';
 import { BigNumber, ethers } from 'ethers';
 import { JsonRpcSigner } from '@ethersproject/providers';
+import { Context } from '../../../context';
 import PoolDataAdapter from '../../../adapters/PoolDataAdapter';
 import NumberUtils from '../../../services/NumberUtils';
 import { getPoolLiquidityNotification } from '../../../services/NotificationService';
@@ -36,8 +37,9 @@ type DetailPoolAddLiquidityProps = DetailPoolAddLiquidityInProps & DetailPoolAdd
 const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = props => {
   const { content, poolDataAdapter, signer, userWalletAddress, tempusPool } = props;
 
-  const [principalsBalance, setPrincipalsBalance] = useState<BigNumber | null>(null);
-  const [yieldsBalance, setYieldsBalance] = useState<BigNumber | null>(null);
+  const {
+    data: { userPrincipalsBalance, userYieldsBalance },
+  } = useContext(Context);
 
   const [principalsPercentage, setPrincipalsPercentage] = useState<number | null>(null);
   const [yieldsPercentage, setYieldsPercentage] = useState<number | null>(null);
@@ -97,69 +99,51 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = props => {
   const onPrincipalsPercentageChange = useCallback(
     (event: any) => {
       const percentage = event.currentTarget.value;
-      if (!!principalsBalance && !isNaN(percentage)) {
-        const balanceAsNumber = Number(ethers.utils.formatEther(principalsBalance));
+      if (!!userPrincipalsBalance && !isNaN(percentage)) {
+        const balanceAsNumber = Number(ethers.utils.formatEther(userPrincipalsBalance));
         const amount = balanceAsNumber * Number(percentage);
         setPrincipalsAmount(amount);
         setYieldsFromPrincipals(amount);
       }
     },
-    [principalsBalance, setYieldsFromPrincipals],
+    [setYieldsFromPrincipals, userPrincipalsBalance],
   );
 
   const onYieldsPercentageChange = useCallback(
     (event: any) => {
       const percentage = event.currentTarget.value;
-      if (!!yieldsBalance && !isNaN(percentage)) {
-        const balanceAsNumber = Number(ethers.utils.formatEther(yieldsBalance));
+      if (!!userYieldsBalance && !isNaN(percentage)) {
+        const balanceAsNumber = Number(ethers.utils.formatEther(userYieldsBalance));
         const amount = balanceAsNumber * Number(percentage);
         setYieldsAmount(amount);
         setPrincipalsFromYields(amount);
       }
     },
-    [yieldsBalance, setPrincipalsFromYields],
+    [userYieldsBalance, setPrincipalsFromYields],
   );
-
-  // Fetch Principals and Yields balances
-  useEffect(() => {
-    const fetchTokenBalances = async () => {
-      if (!poolDataAdapter || !signer) {
-        return;
-      }
-
-      const [principalBalance, yieldBalance] = await Promise.all([
-        poolDataAdapter.getTokenBalance(content.principalTokenAddress, userWalletAddress, signer),
-        poolDataAdapter.getTokenBalance(content.yieldTokenAddress, userWalletAddress, signer),
-      ]);
-
-      setPrincipalsBalance(principalBalance);
-      setYieldsBalance(yieldBalance);
-    };
-    fetchTokenBalances();
-  }, [content.principalTokenAddress, content.yieldTokenAddress, poolDataAdapter, signer, userWalletAddress]);
 
   // Calculate pool ratios
   useEffect(() => {
-    if (!principalsBalance || !yieldsBalance) {
+    if (!userPrincipalsBalance || !userYieldsBalance) {
       return;
     }
 
-    if (principalsBalance.isZero() && yieldsBalance.isZero()) {
+    if (userPrincipalsBalance.isZero() && userYieldsBalance.isZero()) {
       setPrincipalsPercentage(0);
       setYieldsPercentage(0);
-    } else if (principalsBalance.isZero() && !yieldsBalance.isZero()) {
+    } else if (userPrincipalsBalance.isZero() && !userYieldsBalance.isZero()) {
       setPrincipalsPercentage(0);
       setYieldsPercentage(1);
-    } else if (!principalsBalance.isZero() && yieldsBalance.isZero()) {
+    } else if (!userPrincipalsBalance.isZero() && userYieldsBalance.isZero()) {
       setPrincipalsPercentage(1);
       setYieldsPercentage(0);
     } else {
-      const totalTokens = principalsBalance.add(yieldsBalance);
+      const totalTokens = userPrincipalsBalance.add(userYieldsBalance);
 
-      setPrincipalsPercentage(Number(ethers.utils.formatEther(div18f(principalsBalance, totalTokens))));
-      setYieldsPercentage(Number(ethers.utils.formatEther(div18f(yieldsBalance, totalTokens))));
+      setPrincipalsPercentage(Number(ethers.utils.formatEther(div18f(userPrincipalsBalance, totalTokens))));
+      setYieldsPercentage(Number(ethers.utils.formatEther(div18f(userYieldsBalance, totalTokens))));
     }
-  }, [principalsBalance, yieldsBalance, setPrincipalsPercentage, setYieldsPercentage]);
+  }, [userPrincipalsBalance, userYieldsBalance, setPrincipalsPercentage, setYieldsPercentage]);
 
   // Fetch estimated LP Token amount
   useEffect(() => {
@@ -240,18 +224,18 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = props => {
   ]);
 
   const principalsBalanceFormatted = useMemo(() => {
-    if (!principalsBalance) {
+    if (!userPrincipalsBalance) {
       return null;
     }
-    return NumberUtils.formatToCurrency(ethers.utils.formatEther(principalsBalance), 2);
-  }, [principalsBalance]);
+    return NumberUtils.formatToCurrency(ethers.utils.formatEther(userPrincipalsBalance), 2);
+  }, [userPrincipalsBalance]);
 
   const yieldsBalanceFormatted = useMemo(() => {
-    if (!yieldsBalance) {
+    if (!userYieldsBalance) {
       return null;
     }
-    return NumberUtils.formatToCurrency(ethers.utils.formatEther(yieldsBalance), 2);
-  }, [yieldsBalance]);
+    return NumberUtils.formatToCurrency(ethers.utils.formatEther(userYieldsBalance), 2);
+  }, [userYieldsBalance]);
 
   const expectedLPTokensFormatted = useMemo(() => {
     if (!expectedLPTokens) {
@@ -334,7 +318,7 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = props => {
             <div className="tf__flex-column-space-between">
               <ApproveButton
                 tokenTicker="Principals"
-                amountToApprove={principalsBalance || BigNumber.from('0')}
+                amountToApprove={userPrincipalsBalance || BigNumber.from('0')}
                 onApproved={() => {
                   setPrincipalsApproved(true);
                 }}
@@ -385,7 +369,7 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = props => {
             <div className="tf__flex-column-space-between">
               <ApproveButton
                 tokenTicker="Yields"
-                amountToApprove={yieldsBalance || BigNumber.from('0')}
+                amountToApprove={userYieldsBalance || BigNumber.from('0')}
                 onApproved={() => {
                   setYieldsApproved(true);
                 }}

@@ -796,6 +796,21 @@ export default class PoolDataAdapter {
     tokenContract.onTransfer(null, userWalletAddress, listener);
   }
 
+  async onTokenSent(
+    tokenAddress: string,
+    userWalletAddress: string,
+    signer: JsonRpcSigner,
+    listener: TransferEventListener,
+  ) {
+    if (!this.eRC20TokenServiceGetter) {
+      return;
+    }
+
+    const tokenContract = this.eRC20TokenServiceGetter(tokenAddress, signer);
+
+    tokenContract.onTransfer(userWalletAddress, null, listener);
+  }
+
   async getPoolFees(tempusPoolAddress: string, tempusAMMAddress: string): Promise<BigNumber[]> {
     if (!this.tempusPoolService || !this.tempusAMMService) {
       console.error('PoolDataAdapter - getPoolFees() - Attempted to use PoolDataAdapter before initializing it!');
