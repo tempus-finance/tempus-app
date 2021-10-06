@@ -169,6 +169,10 @@ const ApproveButton: FC<ApproveButtonProps> = props => {
       return false;
     }
 
+    if (amountToApprove.isZero()) {
+      return true;
+    }
+
     const amountToApproveParsed = Number(ethers.utils.formatEther(amountToApprove));
 
     const alreadyApproved = !!allowance && allowance >= amountToApproveParsed;
