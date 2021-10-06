@@ -4,6 +4,8 @@ describe('NumberUtils', () => {
   describe('formatWithMultiplier()', () => {
     [
       { num: 0, digits: 1, expected: '0' },
+      { num: 0.0546, digits: 3, expected: '0.054' },
+      { num: 0.0546, digits: 1, expected: '0.0' },
       { num: 12, digits: 1, expected: '12' },
       { num: 1234, digits: 1, expected: '1.2k' },
       { num: 100000000, digits: 1, expected: '100M' },

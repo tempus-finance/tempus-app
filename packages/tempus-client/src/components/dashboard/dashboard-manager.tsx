@@ -1,12 +1,12 @@
 import { FC, useCallback, useContext, useEffect, useState } from 'react';
 import { CircularProgress } from '@material-ui/core';
 import { DashboardRow, DashboardRowChild } from '../../interfaces';
+import { Context } from '../../context';
 import getDashboardDataAdapter from '../../adapters/getDashboardDataAdapter';
 import Detail from '../detail/detail';
 import Typography from '../typography/Typography';
-import Dashboard from './dashboard';
-import { Context } from '../../context';
 import Spacer from '../spacer/spacer';
+import Dashboard from './dashboard';
 
 type DashboardManagerProps = {
   selectedRow: DashboardRowChild | null;

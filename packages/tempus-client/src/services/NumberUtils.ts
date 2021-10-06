@@ -17,6 +17,11 @@ class NumberUtils {
     const sanitizedValue = Number(value);
     const multiplier = multiplierLookup.find(item => Math.abs(sanitizedValue) >= item.value);
 
+    if (sanitizedValue > 0 && sanitizedValue < 1) {
+      // Adding 2 to precision so that '0.' part of the number is ignored when slicing it
+      return sanitizedValue.toString().slice(0, precision + 2);
+    }
+
     return multiplier
       ? `${(sanitizedValue / multiplier.value).toFixed(precision).replace(regex, '$1')}${multiplier.symbol}`
       : '0';
