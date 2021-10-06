@@ -40,12 +40,12 @@ const DetailUserInfoBalanceChart: FC<DetailUserInfoBalanceChartProps> = props =>
   useMemo(() => {
     setPrincipalShareValue(
       userPrincipalsBalance
-        ? NumberUtils.formatToCurrency(ethers.utils.formatEther(userPrincipalsBalance), tempusPool.decimalsForUI)
+        ? NumberUtils.formatToCurrency(ethers.utils.formatEther(userPrincipalsBalance.add(lpTokenPrincipalReturnBalance)), tempusPool.decimalsForUI)
         : '-',
     );
     setYieldShareValue(
       userYieldsBalance
-        ? NumberUtils.formatToCurrency(ethers.utils.formatEther(userYieldsBalance), tempusPool.decimalsForUI)
+        ? NumberUtils.formatToCurrency(ethers.utils.formatEther(userYieldsBalance.add(lpTokenYieldReturnBalance)), tempusPool.decimalsForUI)
         : '-',
     );
     setLpTokenPrincipalReturnValue(
