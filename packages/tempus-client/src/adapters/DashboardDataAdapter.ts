@@ -125,6 +125,7 @@ export default class DashboardDataAdapter {
         yieldTokenAddress,
         backingTokenAddress,
         yieldBearingTokenAddress,
+        yieldBearingTokenTicker,
         startDate,
         maturityDate,
         fixedAPR,

@@ -19,8 +19,10 @@ import '../shared/style.scss';
 
 const DetailWithdraw: FC<PoolDetailProps> = ({ tempusPool, content, signer, userWalletAddress, poolDataAdapter }) => {
   const { address, ammAddress } = tempusPool;
-  const { supportedTokens } = content;
-  const [backingToken, yieldBearingToken] = supportedTokens;
+  // We do not support withdraw to ETH
+  const supportedTokens = content.supportedTokens.filter(token => token !== 'ETH');
+  const backingToken = content.backingTokenTicker;
+  const yieldBearingToken = content.yieldBearingTokenTicker;
 
   const [selectedToken, setSelectedToken] = useState<Ticker>(yieldBearingToken);
   const [estimatedWithdrawAmount, setEstimatedWithdrawAmount] = useState<BigNumber | null>(null);
