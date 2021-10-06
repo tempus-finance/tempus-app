@@ -1,5 +1,5 @@
 import { FC, useEffect, useState } from 'react';
-import { startOfDay, subDays } from 'date-fns';
+import { startOfDay, subDays, subMonths, subWeeks } from 'date-fns';
 import PoolDataAdapter, { UserTransaction } from '../../../../adapters/PoolDataAdapter';
 import { TempusPool } from '../../../../interfaces/TempusPool';
 import Spacer from '../../../spacer/spacer';
@@ -7,6 +7,7 @@ import Typography from '../../../typography/Typography';
 import SectionContainer from '../sectionContainer';
 import DetailUserInfoTransactionRow from './detailUserInfoTransactionRow';
 import { CircularProgress } from '@material-ui/core';
+import { startOfMonth, startOfWeek } from 'date-fns/esm';
 
 interface DetailUserInfoTransactionsProps {
   poolDataAdapter: PoolDataAdapter | null;
@@ -26,14 +27,19 @@ const timeFramesToShow = [
     to: startOfDay(Date.now()),
   },
   {
-    label: 'Last week',
-    from: startOfDay(subDays(Date.now(), 7)),
+    label: 'This week',
+    from: startOfWeek(Date.now()),
     to: startOfDay(subDays(Date.now(), 1)),
   },
   {
+    label: 'Last week',
+    from: startOfWeek(subWeeks(Date.now(), 1)),
+    to: startOfWeek(Date.now()),
+  },
+  {
     label: 'Last month',
-    from: startOfDay(subDays(Date.now(), 30)),
-    to: startOfDay(subDays(Date.now(), 7)),
+    from: startOfMonth(subMonths(Date.now(), 1)),
+    to: startOfWeek(subWeeks(Date.now(), 1)),
   },
 ];
 

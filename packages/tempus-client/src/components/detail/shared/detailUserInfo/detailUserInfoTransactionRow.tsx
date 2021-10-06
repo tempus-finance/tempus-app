@@ -1,7 +1,6 @@
 import { FC, useMemo, useState } from 'react';
 import { Divider } from '@material-ui/core';
 import { format } from 'date-fns';
-import { formatDate } from '../../../../utils/formatDate';
 import { ethers } from 'ethers';
 import { UserTransaction } from '../../../../adapters/PoolDataAdapter';
 import { TransactionAction } from '../../../../interfaces';
@@ -25,7 +24,7 @@ const DetailUserInfoTransactionRow: FC<DetailUserInfoTransactionRowProps> = prop
   useMemo(() => {
     const transactionDate = new Date(transaction.block.timestamp * 1000);
 
-    setDate(formatDate(transactionDate, 'dd LLL, yyyy'));
+    setDate(format(transactionDate, 'dd LLL, yyyy'));
     setTime(format(transactionDate, 'hh:mm:ss aa'));
 
     if (isDepositEvent(transaction.event)) {
