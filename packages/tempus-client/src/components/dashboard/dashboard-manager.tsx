@@ -1,9 +1,12 @@
 import { FC, useCallback, useContext, useEffect, useState } from 'react';
+import { CircularProgress } from '@material-ui/core';
 import { DashboardRow, DashboardRowChild } from '../../interfaces';
 import getDashboardDataAdapter from '../../adapters/getDashboardDataAdapter';
 import Detail from '../detail/detail';
+import Typography from '../typography/Typography';
 import Dashboard from './dashboard';
 import { Context } from '../../context';
+import Spacer from '../spacer/spacer';
 
 type DashboardManagerProps = {
   selectedRow: DashboardRowChild | null;
@@ -47,12 +50,22 @@ const DashboardManager: FC<DashboardManagerProps> = ({ selectedRow, onRowSelecte
 
   return (
     <>
-      <Dashboard
-        hidden={shouldShowDashboard}
-        rows={rows}
-        userWalletAddress={userWalletAddress}
-        onRowActionClick={onRowActionClick}
-      />
+      {rows.length !== 0 && (
+        <Dashboard
+          hidden={shouldShowDashboard}
+          rows={rows}
+          userWalletAddress={userWalletAddress}
+          onRowActionClick={onRowActionClick}
+        />
+      )}
+      {rows.length === 0 && (
+        <div className="tf__flex-column-center-vh">
+          <Spacer size={75} />
+          <Typography variant="h4">Fetching data</Typography>
+          <Spacer size={50} />
+          <CircularProgress size={50} />
+        </div>
+      )}
 
       {selectedRow && <Detail content={selectedRow} onClose={onCloseRowDetail} />}
     </>
