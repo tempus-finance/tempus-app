@@ -165,12 +165,7 @@ const DetailWithdraw: FC<PoolDetailProps> = ({ tempusPool, content, signer, user
   return (
     <div role="tabpanel">
       <div className="tf__dialog__content-tab">
-        <Spacer size={20} />
-        <Typography variant="body-text">
-          In order to withdraw from the Pool you have to approve withdrawal from all token balances and execute the
-          transaction.
-        </Typography>
-        <Spacer size={14} />
+        <Spacer size={25} />
         <ActionContainer label="From">
           <Spacer size={10} />
           {principalsBalance && !principalsBalance.isZero() && (
