@@ -128,38 +128,24 @@ const DetailUserInfoBalanceChart: FC<DetailUserInfoBalanceChartProps> = props =>
         <SelectionState selection={chartHighlightedItems} />
       </Chart>
       <Spacer size={20} />
-      <Typography variant="h4">Primitives</Typography>
-      <Spacer size={10} />
+
       <div className="tf__detail__user__info-row">
         <div className="tf__detail__user__info-legend-label-container">
           <LegendDotSolid color="#FF6B00" />
           <Typography variant="body-text">Principals</Typography>
         </div>
-        <Typography variant="body-text">{principalShareValue}</Typography>
+        <Typography variant="body-text">
+          {principalShareValue} ({lpTokenPrincipalReturnValue} staked)
+        </Typography>
       </div>
       <div className="tf__detail__user__info-row">
         <div className="tf__detail__user__info-legend-label-container">
           <LegendDotSolid color="#288195" />
           <Typography variant="body-text">Yields</Typography>
         </div>
-        <Typography variant="body-text">{yieldShareValue}</Typography>
-      </div>
-      <Spacer size={15} />
-      <Typography variant="h4">LP Token</Typography>
-      <Spacer size={10} />
-      <div className="tf__detail__user__info-row">
-        <div className="tf__detail__user__info-legend-label-container">
-          <LegendDotGradient startColor="#F5AC37" endColor="#EB5A00" />
-          <Typography variant="body-text">LP Token - Principals</Typography>
-        </div>
-        <Typography variant="body-text">{lpTokenPrincipalReturnValue}</Typography>
-      </div>
-      <div className="tf__detail__user__info-row">
-        <div className="tf__detail__user__info-legend-label-container">
-          <LegendDotGradient startColor="#288195" endColor="#00042C" />
-          <Typography variant="body-text">LP Token - Yields</Typography>
-        </div>
-        <Typography variant="body-text">{lpTokenYieldReturnValue}</Typography>
+        <Typography variant="body-text">
+          {yieldShareValue} ({lpTokenYieldReturnValue} staked)
+        </Typography>
       </div>
     </>
   );
