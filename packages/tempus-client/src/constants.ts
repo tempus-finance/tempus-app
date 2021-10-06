@@ -14,12 +14,6 @@ export const cEthAddress = '0x4ddc2d193948926d02f9b1fe9e1daa0718270ed5';
 
 export const COMPOUND_BLOCKS_PER_DAY = 6570; // 13.15 seconds per block
 
-export const variableAPYTooltipText =
-  'Calculated as the sum of the current estimated yield in the underlying Protocol and the current estimated yield from the AMM (swap fees received by providing maximum liquidity to the TYS/TPS pool).';
-
-export const fixedAPRTooltipText =
-  'Calculated based on the current TYS/TPS exchange rate and does not take into account slippage. For a more accurate calculation, please click on the "Open" icon for the relevant pool and use the deposit function.';
-
 export const volume24hTooltipText = 'Calculated as the sum of deposit, redeem, and swap amounts in a 24 hour period.';
 
 export const interestRateProtectionTooltipText =
