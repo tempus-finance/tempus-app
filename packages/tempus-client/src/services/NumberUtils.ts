@@ -40,7 +40,25 @@ class NumberUtils {
       integerPartSeparatorsAdded = '';
     }
 
-    const fractionPartFormatted = fractionalPart ? fractionalPart.slice(0, numberOfDecimals ?? 2) : '';
+    let leadingZeroCounter = 0;
+    if (fractionalPart) {
+      const fractionalPartSplitted = fractionalPart.split('');
+      for (var i = 0; i < fractionalPartSplitted.length; i++) {
+        const value = fractionalPartSplitted[i];
+        if (value === '0') {
+          leadingZeroCounter++;
+        } else {
+          break;
+        }
+      }
+    }
+
+    let decimalCount = leadingZeroCounter + 2;
+    if (numberOfDecimals === 0 || numberOfDecimals) {
+      decimalCount = leadingZeroCounter + numberOfDecimals;
+    }
+
+    const fractionPartFormatted = fractionalPart ? fractionalPart.slice(0, decimalCount) : '';
 
     return `${symbol || ''}${integerPartSeparatorsAdded}${fractionPartFormatted ? `.${fractionPartFormatted}` : ''}`;
   }

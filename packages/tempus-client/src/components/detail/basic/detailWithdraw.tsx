@@ -171,78 +171,88 @@ const DetailWithdraw: FC<PoolDetailProps> = ({ tempusPool, content, signer, user
         <Spacer size={14} />
         <ActionContainer label="From">
           <Spacer size={10} />
-          <SectionContainer>
-            <div className="tf__flex-row-space-between">
-              <div className="tf__flex-column-space-between">
-                <Typography variant="h4">Principals</Typography>
-                <Spacer size={10} />
-                <Typography variant="body-text">Balance {principalsBalanceFormatted} Principals</Typography>
+          {principalsBalance && !principalsBalance.isZero() && (
+            <SectionContainer>
+              <div className="tf__flex-row-space-between">
+                <div className="tf__flex-column-space-between">
+                  <Typography variant="h4">Principals</Typography>
+                  <Spacer size={10} />
+                  <Typography variant="body-text">Balance {principalsBalanceFormatted} Principals</Typography>
+                </div>
+                <div className="tf__flex-column-center-end">
+                  <ApproveButton
+                    tokenTicker="Principals"
+                    poolDataAdapter={poolDataAdapter}
+                    signer={signer}
+                    amountToApprove={principalsBalance || BigNumber.from('0')}
+                    tokenToApprove={content.principalTokenAddress}
+                    spenderAddress={getConfig().tempusControllerContract}
+                    userWalletAddress={userWalletAddress}
+                    onApproved={() => {
+                      setPrincipalsApproved(true);
+                    }}
+                  />
+                </div>
               </div>
-              <div className="tf__flex-column-center-end">
-                <ApproveButton
-                  tokenTicker="Principals"
-                  poolDataAdapter={poolDataAdapter}
-                  signer={signer}
-                  amountToApprove={principalsBalance || BigNumber.from('0')}
-                  tokenToApprove={content.principalTokenAddress}
-                  spenderAddress={getConfig().tempusControllerContract}
-                  userWalletAddress={userWalletAddress}
-                  onApproved={() => {
-                    setPrincipalsApproved(true);
-                  }}
-                />
-              </div>
-            </div>
-          </SectionContainer>
-          <PlusIconContainer orientation="horizontal" />
-          <SectionContainer>
-            <div className="tf__flex-row-space-between">
-              <div className="tf__flex-column-space-between">
-                <Typography variant="h4">Yields</Typography>
-                <Spacer size={10} />
-                <Typography variant="body-text">Balance {yieldsBalanceFormatted} Yields</Typography>
-              </div>
-              <div className="tf__flex-column-center-end">
-                <ApproveButton
-                  tokenTicker="Yields"
-                  poolDataAdapter={poolDataAdapter}
-                  signer={signer}
-                  amountToApprove={yieldsBalance || BigNumber.from('0')}
-                  tokenToApprove={content.yieldTokenAddress}
-                  spenderAddress={getConfig().tempusControllerContract}
-                  userWalletAddress={userWalletAddress}
-                  onApproved={() => {
-                    setYieldsApproved(true);
-                  }}
-                />
-              </div>
-            </div>
-          </SectionContainer>
-          <PlusIconContainer orientation="horizontal" />
-          <SectionContainer>
-            <div className="tf__flex-row-space-between">
-              <div className="tf__flex-column-space-between">
-                <Typography variant="h4">LP Tokens</Typography>
-                <Spacer size={10} />
-                <Typography variant="body-text">Balance {lpBalanceFormatted} LP Tokens</Typography>
-              </div>
-              <div className="tf__flex-column-center-end">
-                <ApproveButton
-                  tokenTicker="LP"
-                  poolDataAdapter={poolDataAdapter}
-                  signer={signer}
-                  amountToApprove={lpBalance || BigNumber.from('0')}
-                  // TempusAMM address is used as LP token address
-                  tokenToApprove={tempusPool.ammAddress}
-                  spenderAddress={getConfig().tempusControllerContract}
-                  userWalletAddress={userWalletAddress}
-                  onApproved={() => {
-                    setLpApproved(true);
-                  }}
-                />
-              </div>
-            </div>
-          </SectionContainer>
+            </SectionContainer>
+          )}
+          {yieldsBalance && !yieldsBalance.isZero() && (
+            <>
+              <PlusIconContainer orientation="horizontal" />
+              <SectionContainer>
+                <div className="tf__flex-row-space-between">
+                  <div className="tf__flex-column-space-between">
+                    <Typography variant="h4">Yields</Typography>
+                    <Spacer size={10} />
+                    <Typography variant="body-text">Balance {yieldsBalanceFormatted} Yields</Typography>
+                  </div>
+                  <div className="tf__flex-column-center-end">
+                    <ApproveButton
+                      tokenTicker="Yields"
+                      poolDataAdapter={poolDataAdapter}
+                      signer={signer}
+                      amountToApprove={yieldsBalance || BigNumber.from('0')}
+                      tokenToApprove={content.yieldTokenAddress}
+                      spenderAddress={getConfig().tempusControllerContract}
+                      userWalletAddress={userWalletAddress}
+                      onApproved={() => {
+                        setYieldsApproved(true);
+                      }}
+                    />
+                  </div>
+                </div>
+              </SectionContainer>
+            </>
+          )}
+          {lpBalance && !lpBalance.isZero() && (
+            <>
+              <PlusIconContainer orientation="horizontal" />
+              <SectionContainer>
+                <div className="tf__flex-row-space-between">
+                  <div className="tf__flex-column-space-between">
+                    <Typography variant="h4">LP Tokens</Typography>
+                    <Spacer size={10} />
+                    <Typography variant="body-text">Balance {lpBalanceFormatted} LP Tokens</Typography>
+                  </div>
+                  <div className="tf__flex-column-center-end">
+                    <ApproveButton
+                      tokenTicker="LP"
+                      poolDataAdapter={poolDataAdapter}
+                      signer={signer}
+                      amountToApprove={lpBalance || BigNumber.from('0')}
+                      // TempusAMM address is used as LP token address
+                      tokenToApprove={tempusPool.ammAddress}
+                      spenderAddress={getConfig().tempusControllerContract}
+                      userWalletAddress={userWalletAddress}
+                      onApproved={() => {
+                        setLpApproved(true);
+                      }}
+                    />
+                  </div>
+                </div>
+              </SectionContainer>
+            </>
+          )}
         </ActionContainer>
         <Spacer size={20} />
         <ActionContainer label="To">
