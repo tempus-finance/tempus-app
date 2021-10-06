@@ -255,6 +255,10 @@ export default class DashboardDataAdapter {
       return Promise.reject();
     }
 
+    if (!this.userWalletAddress) {
+      return undefined;
+    }
+
     try {
       const [yieldTokenAddress, principalTokenAddress] = await Promise.all([
         this.tempusPoolService.getYieldTokenAddress(pool.address),
