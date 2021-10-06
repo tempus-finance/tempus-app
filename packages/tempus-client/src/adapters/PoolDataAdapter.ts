@@ -428,6 +428,50 @@ export default class PoolDataAdapter {
     }
   }
 
+  async getPoolRatioOfAssets(
+    tempusAMM: string,
+    principalsAddress: string,
+    yieldsAddress: string,
+  ): Promise<{ principalsShare: number; yieldsShare: number }> {
+    if (!this.vaultService || !this.tempusAMMService) {
+      return Promise.reject();
+    }
+
+    const poolId = await this.tempusAMMService.poolId(tempusAMM);
+
+    const poolTokens = await this.vaultService.getPoolTokens(poolId);
+    const principalsIndex = poolTokens.tokens.findIndex(poolTokenAddress => principalsAddress === poolTokenAddress);
+    const yieldsIndex = poolTokens.tokens.findIndex(poolTokenAddress => yieldsAddress === poolTokenAddress);
+    const poolShareBalance = {
+      principals: poolTokens.balances[principalsIndex],
+      yields: poolTokens.balances[yieldsIndex],
+    };
+
+    if (poolShareBalance.principals.isZero() && poolShareBalance.yields.isZero()) {
+      return {
+        principalsShare: 0,
+        yieldsShare: 0,
+      };
+    } else if (poolShareBalance.principals.isZero() && !poolShareBalance.yields.isZero()) {
+      return {
+        principalsShare: 0,
+        yieldsShare: 1,
+      };
+    } else if (!poolShareBalance.principals.isZero() && poolShareBalance.yields.isZero()) {
+      return {
+        principalsShare: 1,
+        yieldsShare: 0,
+      };
+    } else {
+      const totalTokens = poolShareBalance.principals.add(poolShareBalance.yields);
+
+      return {
+        principalsShare: Number(ethers.utils.formatEther(div18f(poolShareBalance.principals, totalTokens))),
+        yieldsShare: Number(ethers.utils.formatEther(div18f(poolShareBalance.yields, totalTokens))),
+      };
+    }
+  }
+
   async getPoolShareForLPTokensIn(tempusAmm: string, amountIn: BigNumber): Promise<number> {
     if (!this.vaultService || !this.eRC20TokenServiceGetter) {
       console.error(

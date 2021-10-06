@@ -124,26 +124,22 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = props => {
 
   // Calculate pool ratios
   useEffect(() => {
-    if (!userPrincipalsBalance || !userYieldsBalance) {
-      return;
-    }
+    const getRatioOfAssetsInPool = async () => {
+      if (!poolDataAdapter) {
+        return;
+      }
 
-    if (userPrincipalsBalance.isZero() && userYieldsBalance.isZero()) {
-      setPrincipalsPercentage(0);
-      setYieldsPercentage(0);
-    } else if (userPrincipalsBalance.isZero() && !userYieldsBalance.isZero()) {
-      setPrincipalsPercentage(0);
-      setYieldsPercentage(1);
-    } else if (!userPrincipalsBalance.isZero() && userYieldsBalance.isZero()) {
-      setPrincipalsPercentage(1);
-      setYieldsPercentage(0);
-    } else {
-      const totalTokens = userPrincipalsBalance.add(userYieldsBalance);
+      const ratios = await poolDataAdapter.getPoolRatioOfAssets(
+        tempusPool.ammAddress,
+        content.principalTokenAddress,
+        content.yieldTokenAddress,
+      );
 
-      setPrincipalsPercentage(Number(ethers.utils.formatEther(div18f(userPrincipalsBalance, totalTokens))));
-      setYieldsPercentage(Number(ethers.utils.formatEther(div18f(userYieldsBalance, totalTokens))));
-    }
-  }, [userPrincipalsBalance, userYieldsBalance, setPrincipalsPercentage, setYieldsPercentage]);
+      setPrincipalsPercentage(ratios.principalsShare);
+      setYieldsPercentage(ratios.yieldsShare);
+    };
+    getRatioOfAssetsInPool();
+  }, [poolDataAdapter, tempusPool.ammAddress, content.principalTokenAddress, content.yieldTokenAddress]);
 
   // Fetch estimated LP Token amount
   useEffect(() => {
