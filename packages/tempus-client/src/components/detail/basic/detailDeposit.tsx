@@ -29,7 +29,7 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
   const [backingToken] = supportedTokens;
 
   const [selectedToken, setSelectedToken] = useState<Ticker | null>(null);
-  const [amount, setAmount] = useState<number>(0);
+  const [amount, setAmount] = useState<string>('0');
   const [balance, setBalance] = useState<BigNumber | null>(null);
   const [usdRate, setUsdRate] = useState<BigNumber | null>(null);
   const [minTYSRate] = useState<number>(0); // TODO where to get this value?
@@ -52,7 +52,7 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
     (token: Ticker | undefined) => {
       if (!!token) {
         setSelectedToken(token);
-        setAmount(0);
+        setAmount('0');
 
         if (backingToken === token) {
           if (backingTokenBalance !== null) {
@@ -88,11 +88,11 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
   );
 
   const onAmountChange = useCallback(
-    (value: number | undefined) => {
-      if (!!value && !isNaN(value)) {
+    (value: string) => {
+      if (value) {
         setAmount(value);
       } else {
-        setAmount(0);
+        setAmount('0');
       }
     },
     [setAmount],
@@ -103,7 +103,7 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
       const percentage = event.currentTarget.value;
       if (!!selectedToken && !!balance && !isNaN(percentage)) {
         const balanceAsNumber = Number(utils.formatEther(balance));
-        setAmount(balanceAsNumber * percentage);
+        setAmount(Number(balanceAsNumber * percentage).toString());
       }
     },
     [balance, selectedToken, setAmount],
@@ -219,7 +219,7 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
 
   useEffect(() => {
     const retrieveDepositAmount = async () => {
-      if (amount === 0) {
+      if (amount === '0') {
         setFixedPrincipalsAmount(null);
         setVariablePrincipalsAmount(null);
         setVariableLpTokensAmount(null);
@@ -307,7 +307,7 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
 
   useEffect(() => {
     const getEstimatedFixedApr = async () => {
-      if (amount && selectedToken) {
+      if (amount && amount !== '0' && selectedToken) {
         const isBackingToken = selectedToken === backingToken;
         const result = await poolDataAdapter?.getEstimatedFixedApr(
           utils.parseEther(amount.toString()),
@@ -453,7 +453,7 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
               content.protocol,
               content.maturityDate,
             )}
-            disabled={executeDisabled || amount === 0}
+            disabled={executeDisabled || amount === '0'}
             onExecute={onExecute}
             onExecuted={onExecuted}
           />

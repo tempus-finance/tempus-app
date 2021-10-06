@@ -38,7 +38,7 @@ const DetailMint: FC<DetailMintProps> = props => {
   const [backingToken, yieldBearingToken] = supportedTokens;
 
   const [selectedToken, setSelectedToken] = useState<Ticker | null>(null);
-  const [amount, setAmount] = useState<number>(0);
+  const [amount, setAmount] = useState<string>('0');
   const [balance, setBalance] = useState<BigNumber | null>(null);
   const [estimatedTokens, setEstimatedTokens] = useState<BigNumber | null>(null);
   const [executeDisabled, setExecuteDisabled] = useState<boolean>(true);
@@ -54,11 +54,11 @@ const DetailMint: FC<DetailMintProps> = props => {
   );
 
   const onAmountChange = useCallback(
-    (amount: number | undefined) => {
-      if (amount === 0 || amount) {
+    (amount: string) => {
+      if (amount) {
         setAmount(amount);
       } else {
-        setAmount(0);
+        setAmount('0');
       }
     },
     [setAmount],
@@ -68,7 +68,7 @@ const DetailMint: FC<DetailMintProps> = props => {
     (event: React.MouseEvent<HTMLButtonElement>) => {
       const percentage = event.currentTarget.value;
       if (balance) {
-        setAmount(Number(ethers.utils.formatEther(balance)) * Number(percentage));
+        setAmount((Number(ethers.utils.formatEther(balance)) * Number(percentage)).toString());
       }
     },
     [balance, setAmount],
@@ -118,7 +118,7 @@ const DetailMint: FC<DetailMintProps> = props => {
       return Promise.resolve(undefined);
     }
 
-    const amountParsed = ethers.utils.parseEther(amount.toString());
+    const amountParsed = ethers.utils.parseEther(amount);
 
     return poolDataAdapter.deposit(
       tempusPool.address,

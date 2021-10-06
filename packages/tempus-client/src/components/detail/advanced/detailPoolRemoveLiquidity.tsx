@@ -30,14 +30,14 @@ type DetailPoolAddLiquidityProps = DetailPoolAddLiquidityInProps & DetailPoolAdd
 const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = ({ content, poolDataAdapter, tempusPool }) => {
   const { data } = useContext(Context);
 
-  const [amount, setAmount] = useState<number>(0);
+  const [amount, setAmount] = useState<string>('0');
   const [estimatedPrincipals, setEstimatedPrincipals] = useState<BigNumber | null>(null);
   const [estimatedYields, setEstimatedYields] = useState<BigNumber | null>(null);
   const [executeDisabled, setExecuteDisabled] = useState<boolean>(true);
 
   const onAmountChange = useCallback(
-    (amount: number | undefined) => {
-      if (!!amount && !isNaN(amount)) {
+    (amount: string) => {
+      if (amount) {
         setAmount(amount);
       }
     },
@@ -49,7 +49,7 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = ({ content, pool
       const percentage = event.currentTarget.value;
       if (!!data.userLPBalance && !isNaN(percentage)) {
         const balanceAsNumber = Number(ethers.utils.formatEther(data.userLPBalance));
-        setAmount(balanceAsNumber * Number(percentage));
+        setAmount((balanceAsNumber * Number(percentage)).toString());
       }
     },
     [data.userLPBalance, setAmount],

@@ -23,13 +23,13 @@ const DetailNormalRedeem: FC<DetailNormalRedeemProps> = ({ content }) => {
   const { balance = 0, defaultToken } = content || {};
   const RandomUSDValue = 12.567;
 
-  const [amount, setAmount] = useState<number>(0);
+  const [amount, setAmount] = useState<string>('0');
   const [withdrawBalance] = useState<number>(123);
 
   const onAmountChange = useCallback(
-    (amount: number | undefined) => {
+    (amount: string) => {
       console.log('onAmountChange', amount);
-      if (!!amount && !isNaN(amount)) {
+      if (amount) {
         setAmount(amount);
       }
     },
@@ -74,7 +74,7 @@ const DetailNormalRedeem: FC<DetailNormalRedeemProps> = ({ content }) => {
               </div>
             </div>
             <div className="tf__dialog__tab__action-container__token-amount">
-              <CurrencyInput defaultValue={0} onChange={onAmountChange} />
+              <CurrencyInput defaultValue={amount} onChange={onAmountChange} />
             </div>
           </div>
         </ActionContainerGrid>

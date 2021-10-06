@@ -4,52 +4,49 @@ import TextField from '@material-ui/core/TextField';
 import { formatValueToCurrency, parseStringToNumber } from './currencyParser';
 
 type CurrencyInputInProps = {
-  defaultValue?: number;
+  defaultValue: string;
   placeholder?: string;
-  precision?: number; // TODO: use precision, default should be 0
+  precision?: number;
   disabled?: boolean;
 };
 
 type CurrencyInputOutProps = {
-  onChange: (currentValue: number | undefined) => void;
+  onChange: (currentValue: string) => void;
 };
 
 type CurrencyInputProps = CurrencyInputInProps & CurrencyInputOutProps;
 
 const CurrencyInput: FC<CurrencyInputProps> = ({
-  defaultValue = 0,
+  defaultValue,
   placeholder,
   disabled,
   onChange,
 }: CurrencyInputProps) => {
-  const [stringValue, setStringValue] = useState<string | undefined>(() =>
-    formatValueToCurrency(defaultValue.toString()),
-  );
+  const [value, setValue] = useState<string>('');
 
   useEffect(() => {
-    if (defaultValue !== undefined) {
-      setStringValue(formatValueToCurrency(defaultValue.toString()));
+    if (defaultValue) {
+      setValue(formatValueToCurrency(defaultValue));
     }
-  }, [defaultValue, setStringValue]);
+  }, [defaultValue]);
 
   const onValueChange = useCallback(
-    (event: any) => {
+    (event: React.ChangeEvent<HTMLInputElement>) => {
       const currentValue = event.currentTarget.value;
       const parsedCurrency = formatValueToCurrency(currentValue);
-      if (parsedCurrency !== undefined) {
-        setStringValue(parsedCurrency);
+      if (parsedCurrency) {
+        setValue(parsedCurrency);
       }
-      onChange && onChange(parseStringToNumber(currentValue));
+      onChange && onChange(parsedCurrency.replace(/[^0-9$.]/g, ''));
     },
-    [setStringValue, onChange],
+    [onChange],
   );
 
   return (
     <FormControl>
       <TextField
-        id="standard-basic"
         type="text"
-        value={stringValue}
+        value={value}
         onChange={onValueChange}
         placeholder={placeholder}
         disabled={disabled}

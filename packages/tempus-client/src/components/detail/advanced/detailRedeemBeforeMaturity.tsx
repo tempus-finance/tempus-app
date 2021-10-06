@@ -36,7 +36,7 @@ const DetailRedeemBeforeMaturity: FC<DetailRedeemBeforeMaturityProps> = props =>
     data: { userPrincipalsBalance, userYieldsBalance, userWalletAddress },
   } = useContext(Context);
 
-  const [amount, setAmount] = useState<number>(0);
+  const [amount, setAmount] = useState<string>('0');
   const [principalsApproved, setPrincipalsApproved] = useState<boolean>(false);
   const [yieldsApproved, setYieldsApproved] = useState<boolean>(false);
   const [selectedToken, setSelectedToken] = useState<Ticker>(yieldBearingToken);
@@ -44,8 +44,8 @@ const DetailRedeemBeforeMaturity: FC<DetailRedeemBeforeMaturityProps> = props =>
   const [tokenRate, setTokenRate] = useState<BigNumber | null>(null);
 
   const onAmountChange = useCallback(
-    (amount: number | undefined) => {
-      if (!!amount && !isNaN(amount)) {
+    (amount: string) => {
+      if (amount) {
         setAmount(amount);
       }
     },
@@ -68,7 +68,7 @@ const DetailRedeemBeforeMaturity: FC<DetailRedeemBeforeMaturityProps> = props =>
         } else {
           balanceAsNumber = Number(ethers.utils.formatEther(userYieldsBalance));
         }
-        setAmount(balanceAsNumber * percentage);
+        setAmount((balanceAsNumber * percentage).toString());
       }
     },
     [userPrincipalsBalance, userYieldsBalance],

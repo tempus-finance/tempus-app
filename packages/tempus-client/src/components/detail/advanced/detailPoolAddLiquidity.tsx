@@ -43,8 +43,8 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = props => {
   const [principalsPercentage, setPrincipalsPercentage] = useState<number | null>(null);
   const [yieldsPercentage, setYieldsPercentage] = useState<number | null>(null);
 
-  const [principalsAmount, setPrincipalsAmount] = useState<number>(0);
-  const [yieldsAmount, setYieldsAmount] = useState<number>(0);
+  const [principalsAmount, setPrincipalsAmount] = useState<string>('0');
+  const [yieldsAmount, setYieldsAmount] = useState<string>('0');
 
   const [expectedLPTokens, setExpectedLPTokens] = useState<BigNumber | null>(null);
   const [expectedPoolShare, setExpectedPoolShare] = useState<number | null>(null);
@@ -58,7 +58,7 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = props => {
       if (!yieldsPercentage || !principalsPercentage) {
         return;
       }
-      setPrincipalsAmount((principalsPercentage / yieldsPercentage) * amountOfYields);
+      setPrincipalsAmount(((principalsPercentage / yieldsPercentage) * amountOfYields).toString());
       //(75 / 25) * 50
     },
     [principalsPercentage, yieldsPercentage],
@@ -70,26 +70,26 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = props => {
       if (!yieldsPercentage || !principalsPercentage) {
         return;
       }
-      setYieldsAmount((yieldsPercentage / principalsPercentage) * amountOfPrincipals);
+      setYieldsAmount(((yieldsPercentage / principalsPercentage) * amountOfPrincipals).toString());
     },
     [principalsPercentage, yieldsPercentage],
   );
 
   const onPrincipalsAmountChange = useCallback(
-    (amount: number | undefined) => {
-      if (!!amount && !isNaN(amount)) {
+    (amount: string) => {
+      if (amount) {
         setPrincipalsAmount(amount);
-        setYieldsFromPrincipals(amount);
+        setYieldsFromPrincipals(Number(amount));
       }
     },
     [setYieldsFromPrincipals],
   );
 
   const onYieldsAmountChange = useCallback(
-    (amount: number | undefined) => {
-      if (!!amount && !isNaN(amount)) {
+    (amount: string) => {
+      if (amount) {
         setYieldsAmount(amount);
-        setPrincipalsFromYields(amount);
+        setPrincipalsFromYields(Number(amount));
       }
     },
     [setPrincipalsFromYields],
@@ -101,7 +101,7 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = props => {
       if (!!userPrincipalsBalance && !isNaN(percentage)) {
         const balanceAsNumber = Number(ethers.utils.formatEther(userPrincipalsBalance));
         const amount = balanceAsNumber * Number(percentage);
-        setPrincipalsAmount(amount);
+        setPrincipalsAmount(amount.toString());
         setYieldsFromPrincipals(amount);
       }
     },
@@ -114,7 +114,7 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = props => {
       if (!!userYieldsBalance && !isNaN(percentage)) {
         const balanceAsNumber = Number(ethers.utils.formatEther(userYieldsBalance));
         const amount = balanceAsNumber * Number(percentage);
-        setYieldsAmount(amount);
+        setYieldsAmount(amount.toString());
         setPrincipalsFromYields(amount);
       }
     },

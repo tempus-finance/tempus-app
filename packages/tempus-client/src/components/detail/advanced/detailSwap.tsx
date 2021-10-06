@@ -48,15 +48,15 @@ const DetailSwap: FC<DetailSwapProps> = props => {
     tokenAddress: yieldTokenAddress,
   });
   const [selectedToken, setSelectedToken] = useState<Ticker>();
-  const [amount, setAmount] = useState<number>(0);
+  const [amount, setAmount] = useState<string>('0');
   const [balance, setBalance] = useState<BigNumber | null>(null);
   const [receiveAmount, setReceiveAmount] = useState<BigNumber | null>(null);
 
   const [executeDisabled, setExecuteDisabled] = useState<boolean>(true);
 
   const onAmountChange = useCallback(
-    (amount: number | undefined) => {
-      if (!!amount && !isNaN(amount)) {
+    (amount: string) => {
+      if (amount) {
         setAmount(amount);
       }
     },
@@ -68,7 +68,7 @@ const DetailSwap: FC<DetailSwapProps> = props => {
       const percentage = event.currentTarget.value;
 
       if (percentage && balance) {
-        setAmount(Number(ethers.utils.formatEther(balance)) * Number(percentage));
+        setAmount((Number(ethers.utils.formatEther(balance)) * Number(percentage)).toString());
       }
     },
     [balance, setAmount],
@@ -249,7 +249,7 @@ const DetailSwap: FC<DetailSwapProps> = props => {
             actionName="Swap"
             notificationText={getSwapNotification(
               selectedToken || '',
-              amount.toFixed(2),
+              Number(amount).toFixed(2),
               tokenTo.tokenName,
               receiveAmountFormatted || '',
               content.backingTokenTicker,
