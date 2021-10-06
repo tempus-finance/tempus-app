@@ -1,6 +1,6 @@
 import { utils, BigNumber } from 'ethers';
 import { FC, ChangeEvent, useEffect, useCallback, useContext, useState } from 'react';
-import { format } from 'date-fns';
+import { formatDate } from '../../utils/formatDate';
 import Switch from '@material-ui/core/Switch';
 import { TransferEventListener } from '../../services/ERC20TokenService';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
@@ -363,7 +363,7 @@ const Detail: FC<DetailProps> = ({ content, onClose }) => {
               -
             </Typography>
             <Typography color="default" variant="h4">
-              Matures on {format(maturityDate, 'dd MMM yy')}
+              Matures on {formatDate(maturityDate, 'dd MMM yy')}
             </Typography>
           </div>
           <div className="tf__dialog-container__header-ui-toggle">
