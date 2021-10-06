@@ -1,4 +1,4 @@
-import { format } from 'date-fns';
+import { formatDate } from '../../../utils/formatDate';
 import differenceInSeconds from 'date-fns/differenceInSeconds';
 import Typography from '../../typography/Typography';
 import ProgressBar from '../../progressBar';
@@ -17,8 +17,8 @@ const MaturityFormatter = ({ value, row }: any) => {
     return (
       <div className="tf__dashboard__grid__maturity">
         <Typography color="default" variant="body-text">
-          {format(min, maturityFormat)}
-          {max && ` - ${format(max, maturityFormat)}`}
+          {formatDate(min, maturityFormat)}
+          {max && ` - ${formatDate(max, maturityFormat)}`}
         </Typography>
       </div>
     );
@@ -32,7 +32,7 @@ const MaturityFormatter = ({ value, row }: any) => {
   return (
     <div className="tf__dashboard__grid__maturity">
       <div className="tf__dashboard__grid__maturity-timeLeft">
-        <div>{format(value[0], maturityFormat)}</div>
+        <div>{formatDate(value[0], maturityFormat)}</div>
       </div>
       <ProgressBar value={progressBarValue} />
     </div>

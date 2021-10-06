@@ -1,4 +1,4 @@
-import { format } from 'date-fns';
+import { formatDate } from '../utils/formatDate';
 import { Observable, Subject } from 'rxjs';
 import { ProtocolName, Ticker } from '../interfaces';
 import { capitalize } from '../utils/capitalize-string';
@@ -55,7 +55,7 @@ export const getTokenApprovalNotification = (
 ) => {
   return `${tokenApproved}
     ${backingToken} via ${capitalize(protocol)}
-    ${format(maturityDate, 'dd MMMM yyyy')}`;
+    ${formatDate(maturityDate, 'dd MMMM yyyy')}`;
 };
 
 export const getDepositNotification = (
@@ -66,12 +66,12 @@ export const getDepositNotification = (
 ) => {
   return `${kind}
   ${backingToken} via ${capitalize(protocol)}
-  ${format(maturityDate, 'dd MMMM yyyy')}`;
+  ${formatDate(maturityDate, 'dd MMMM yyyy')}`;
 };
 
 export const getWithdrawNotification = (backingToken: Ticker, protocol: ProtocolName, maturityDate: Date) => {
   return `${backingToken} via ${capitalize(protocol)}
-  ${format(maturityDate, 'dd MMMM yyyy')}`;
+  ${formatDate(maturityDate, 'dd MMMM yyyy')}`;
 };
 
 export const getMintNotification = (
@@ -84,7 +84,7 @@ export const getMintNotification = (
   est. ${estimatedTokens} Yields
 
   ${backingToken} via ${capitalize(protocol)}
-  ${format(maturityDate, 'dd MMMM yyyy')}`;
+  ${formatDate(maturityDate, 'dd MMMM yyyy')}`;
 };
 
 export const getSwapNotification = (
@@ -100,12 +100,12 @@ export const getSwapNotification = (
   ${toAmount} ${tokenTo}
 
   ${backingToken} via ${capitalize(protocol)}
-  ${format(maturityDate, 'dd MMMM yyyy')}`;
+  ${formatDate(maturityDate, 'dd MMMM yyyy')}`;
 };
 
 export const getPoolLiquidityNotification = (backingToken: Ticker, protocol: ProtocolName, maturityDate: Date) => {
   return `${backingToken} via ${capitalize(protocol)}
-  ${format(maturityDate, 'dd MMMM yyyy')}`;
+  ${formatDate(maturityDate, 'dd MMMM yyyy')}`;
 };
 
 export default NotificationService;

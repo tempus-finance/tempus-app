@@ -1,5 +1,5 @@
 import { BigNumber } from 'ethers';
-import format from 'date-fns/format';
+import { formatDate } from '../utils/formatDate';
 import { formatDistanceToNow } from 'date-fns';
 import { v1 as uuid } from 'uuid';
 import { Block, JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
@@ -111,7 +111,7 @@ class TransactionsDataAdapter {
         await this.tempusPoolService.getMaturityTime(eventPoolAddress),
       ]);
 
-      const formattedDate = format(poolMaturityDate, 'dd/MM/yyyy');
+      const formattedDate = formatDate(poolMaturityDate, 'dd/MM/yyyy');
 
       transaction = {
         id: uuid(),
