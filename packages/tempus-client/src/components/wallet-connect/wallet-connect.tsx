@@ -1,7 +1,7 @@
 import { FC, useCallback, useState, useEffect, useContext, useMemo } from 'react';
 import { BigNumber, ethers } from 'ethers';
 import { Web3Provider } from '@ethersproject/providers';
-import { useWeb3React } from '@web3-react/core';
+import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core';
 import { InjectedConnector } from '@web3-react/injected-connector';
 import AccountBalanceWalletIcon from '@material-ui/icons/AccountBalanceWallet';
 import shortenAccount from '../../utils/shorten-account';
@@ -16,11 +16,7 @@ import './wallet-connect.scss';
 export const CONNECT_WALLET = 'Connect Wallet';
 
 const supportedChainIds = [
-  // 1, // Mainnet
-  // 3, // Ropsten
-  // 4, // Rinkeby
-  5, // Goerli 31337
-  // 42, // Kovan
+  5, // Goerli
   1337, // Local
   31337, // AWS Private
 ];
@@ -35,16 +31,24 @@ const WalletConnect: FC = (): JSX.Element => {
   const { account, activate, active, library } = useWeb3React<Web3Provider>();
 
   const onConnect = useCallback(() => {
-    if (!active) {
+    const connect = async () => {
+      if (active) {
+        return;
+      }
+
       const injectedConnector = new InjectedConnector({ supportedChainIds });
-      activate(injectedConnector)
-        .then(() => {
-          getNotificationService().notify('Wallet connected', '');
-        })
-        .catch(() => {
+      try {
+        await activate(injectedConnector, undefined, true);
+        getNotificationService().notify('Wallet connected', '');
+      } catch (error) {
+        if (error instanceof UnsupportedChainIdError) {
+          getNotificationService().warn('Unsupported wallet network', 'We support Goerli network');
+        } else {
           getNotificationService().warn('Error connecting wallet', '');
-        });
-    }
+        }
+      }
+    };
+    connect();
   }, [active, activate]);
 
   useEffect(() => {
