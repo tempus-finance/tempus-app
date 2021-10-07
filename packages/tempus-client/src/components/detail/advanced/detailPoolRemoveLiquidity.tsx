@@ -197,7 +197,7 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = ({ content, pool
       <Spacer size={20} />
       <div className="tf__flex-row-center-v">
         <ApproveButton
-          tokenTicker="LP"
+          tokenTicker="LP Token"
           amountToApprove={data.userLPBalance}
           onApproved={onApproved}
           poolDataAdapter={poolDataAdapter}

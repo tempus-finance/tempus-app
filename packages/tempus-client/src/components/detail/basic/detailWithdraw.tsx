@@ -233,7 +233,7 @@ const DetailWithdraw: FC<PoolDetailProps> = ({ tempusPool, content, signer, user
                       tokenToApprove={tempusPool.ammAddress}
                       spenderAddress={getConfig().tempusControllerContract}
                       amountToApprove={lpBalance || BigNumber.from('0')}
-                      tokenTicker="LP"
+                      tokenTicker="LP Token"
                       // TempusAMM address is used as LP token address
                       onApproved={() => {
                         setLpApproved(true);
