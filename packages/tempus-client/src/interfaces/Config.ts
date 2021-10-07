@@ -9,5 +9,4 @@ export type Config = {
   networkUrl: string;
   networkName: string;
   alchemyKey: string;
-  infuraKey: string;
 };

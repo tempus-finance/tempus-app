@@ -45,7 +45,6 @@ const config: Config = {
   networkUrl: 'https://eth-goerli.alchemyapi.io/v2/T39WUBd3Ugwtv6z7LHAjqWM6ODBVzGUA',
   networkName: 'goerli',
   alchemyKey: 'T39WUBd3Ugwtv6z7LHAjqWM6ODBVzGUA',
-  infuraKey: '14b353dcacf54116851a6ab15bb8de8a',
   lidoOracle: '0x24d8451BC07e7aF4Ba94F69aCDD9ad3c6579D9FB',
 };
 

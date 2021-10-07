@@ -1,10 +1,10 @@
-import { InfuraProvider, JsonRpcProvider } from '@ethersproject/providers';
+import { AlchemyProvider, JsonRpcProvider } from '@ethersproject/providers';
 import getConfig from '../utils/get-config';
 
 let defaultProvider: JsonRpcProvider;
 const getDefaultProvider = () => {
   if (!defaultProvider) {
-    defaultProvider = new InfuraProvider(getConfig().networkName, getConfig().infuraKey);
+    defaultProvider = new AlchemyProvider(getConfig().networkName, getConfig().alchemyKey);
   }
 
   return defaultProvider;
