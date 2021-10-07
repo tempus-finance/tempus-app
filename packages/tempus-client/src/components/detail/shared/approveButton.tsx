@@ -14,6 +14,7 @@ interface ApproveButtonProps {
   spenderAddress: string;
   amountToApprove: BigNumber | null;
   tokenTicker: Ticker | null;
+  disabled?: boolean;
   onApproved: () => void;
   onAllowanceExceeded?: () => void;
 }
@@ -25,6 +26,7 @@ const ApproveButton: FC<ApproveButtonProps> = props => {
     spenderAddress,
     amountToApprove,
     tokenTicker,
+    disabled,
     onApproved,
     onAllowanceExceeded,
   } = props;
@@ -207,7 +209,12 @@ const ApproveButton: FC<ApproveButtonProps> = props => {
     <>
       {/* Show Approve button if tokens are not approved already */}
       {!approved && (
-        <Button color="primary" variant="contained" onClick={onApprove} disabled={approving || !tokenToApprove}>
+        <Button
+          color="primary"
+          variant="contained"
+          onClick={onApprove}
+          disabled={disabled || approving || !tokenToApprove}
+        >
           <Typography variant="h5" color="inverted">
             Approve
           </Typography>

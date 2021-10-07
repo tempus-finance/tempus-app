@@ -447,6 +447,7 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
             spenderAddress={getConfig().tempusControllerContract}
             amountToApprove={balance}
             tokenTicker={selectedToken}
+            disabled={!amount || amount === '0'}
             onApproved={onApproved}
             onAllowanceExceeded={onAllowanceExceeded}
           />
