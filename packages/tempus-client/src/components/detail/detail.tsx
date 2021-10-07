@@ -374,23 +374,25 @@ const Detail: FC<DetailProps> = ({ content, onClose }) => {
           </div>
         </div>
         <div className="tf__divider" />
-        <div className="tf__dialog-container__fees">
-          <Typography color="default" variant="h4">
-            Fees:
-          </Typography>
-          <Typography color="default" variant="h5">
-            Deposit {poolFees[0] && NumberUtils.formatPercentage(Number(utils.formatEther(poolFees[0])))}
-          </Typography>
-          <Typography color="default" variant="h5">
-            Redemption {poolFees[2] && NumberUtils.formatPercentage(Number(utils.formatEther(poolFees[2])))}
-          </Typography>
-          <Typography color="default" variant="h5">
-            Early Redemption {poolFees[1] && NumberUtils.formatPercentage(Number(utils.formatEther(poolFees[1])))}
-          </Typography>
-          <Typography color="default" variant="h5">
-            Swap {poolFees[3] && NumberUtils.formatPercentage(Number(utils.formatEther(poolFees[3])))}
-          </Typography>
-        </div>
+        {showAdvancedUI && (
+          <div className="tf__dialog-container__fees">
+            <Typography color="default" variant="h4">
+              Fees:
+            </Typography>
+            <Typography color="default" variant="h5">
+              Deposit {poolFees[0] && NumberUtils.formatPercentage(Number(utils.formatEther(poolFees[0])))}
+            </Typography>
+            <Typography color="default" variant="h5">
+              Redemption {poolFees[2] && NumberUtils.formatPercentage(Number(utils.formatEther(poolFees[2])))}
+            </Typography>
+            <Typography color="default" variant="h5">
+              Early Redemption {poolFees[1] && NumberUtils.formatPercentage(Number(utils.formatEther(poolFees[1])))}
+            </Typography>
+            <Typography color="default" variant="h5">
+              Swap {poolFees[3] && NumberUtils.formatPercentage(Number(utils.formatEther(poolFees[3])))}
+            </Typography>
+          </div>
+        )}
 
         <Spacer size={18} />
         <div className="tf__dialog__content">
