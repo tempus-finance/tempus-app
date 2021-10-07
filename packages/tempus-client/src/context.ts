@@ -11,6 +11,7 @@ interface ContextDataType {
   userPrincipalsBalance: BigNumber | null;
   userYieldsBalance: BigNumber | null;
   userLPBalance: BigNumber | null;
+  userCurrentPoolPresentValue: BigNumber | null;
   pendingTransactions: string[];
   selectedRow: DashboardRowChild | null;
 }
@@ -30,6 +31,7 @@ export const defaultContextValue: ContextDataType = {
   userLPBalance: null,
   pendingTransactions: [],
   selectedRow: null,
+  userCurrentPoolPresentValue: null,
 };
 export const Context = React.createContext<ContextType>({
   data: defaultContextValue,

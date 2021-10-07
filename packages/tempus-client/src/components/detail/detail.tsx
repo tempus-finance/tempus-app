@@ -1,12 +1,14 @@
 import { utils, BigNumber } from 'ethers';
 import { FC, ChangeEvent, useEffect, useCallback, useContext, useState } from 'react';
-import { formatDate } from '../../utils/formatDate';
 import Switch from '@material-ui/core/Switch';
+import { formatDate } from '../../utils/formatDate';
 import { TransferEventListener } from '../../services/ERC20TokenService';
+import NumberUtils from '../../services/NumberUtils';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
 import PoolDataAdapter from '../../adapters/PoolDataAdapter';
 import { DashboardRowChild } from '../../interfaces';
 import { Context } from '../../context';
+import PresentValueProvider from '../../providers/presentValueProvider';
 import TokenIcon, { getTickerFromProtocol } from '../tokenIcon';
 import Typography from '../typography/Typography';
 import Spacer from '../spacer/spacer';
@@ -15,7 +17,6 @@ import DetailBasic from './basic/detailBasic';
 import DetailAdvanced from './advanced/detailAdvanced';
 
 import './detail.scss';
-import NumberUtils from '../../services/NumberUtils';
 
 type DetailInProps = {
   content: DashboardRowChild;
@@ -425,6 +426,7 @@ const Detail: FC<DetailProps> = ({ content, onClose }) => {
           userWalletAddress={userWalletAddress}
         />
       </div>
+      {poolDataAdapter && <PresentValueProvider poolDataAdapter={poolDataAdapter} tempusPool={tempusPool} />}
     </div>
   );
 };

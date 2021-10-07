@@ -10,6 +10,7 @@ import { TransferEventListener } from '../services/ERC20TokenService';
 import { div18f, mul18f } from '../utils/wei-math';
 import { DAYS_IN_A_YEAR, ONE_ETH_IN_WEI, SECONDS_IN_A_DAY, ZERO_ETH_ADDRESS } from '../constants';
 import { Ticker } from '../interfaces';
+import { TempusPool } from '../interfaces/TempusPool';
 import { SelectedYield } from '../components/detail/basic/detailDeposit';
 
 export interface UserTransaction {
@@ -898,6 +899,47 @@ export default class PoolDataAdapter {
       return this.tempusControllerService.redeemToBacking(tempusPool, userWalletAddress, amountOfShares);
     } else {
       return this.tempusControllerService.redeemToYieldBearing(tempusPool, userWalletAddress, amountOfShares);
+    }
+  }
+
+  async getPresentValueInBackingTokensForPool(pool: TempusPool, userWalletAddress: string): Promise<BigNumber> {
+    if (!this.statisticService || !this.tempusPoolService || !this.eRC20TokenServiceGetter) {
+      console.error(
+        'PoolDataAdapter - getPresentValueInBackingTokensForPool() - Attempted to use PoolDataAdapter before initializing it!',
+      );
+      return Promise.reject();
+    }
+
+    try {
+      const [yieldTokenAddress, principalTokenAddress] = await Promise.all([
+        this.tempusPoolService.getYieldTokenAddress(pool.address),
+        this.tempusPoolService.getPrincipalsTokenAddress(pool.address),
+      ]);
+
+      const yieldToken = this.eRC20TokenServiceGetter(yieldTokenAddress);
+      const principalToken = this.eRC20TokenServiceGetter(principalTokenAddress);
+      const lpToken = this.eRC20TokenServiceGetter(pool.ammAddress);
+
+      const [userYieldSupply, userPrincipalSupply, userLpSupply] = await Promise.all([
+        yieldToken.balanceOf(userWalletAddress),
+        principalToken.balanceOf(userWalletAddress),
+        lpToken.balanceOf(userWalletAddress),
+      ]);
+
+      return await this.statisticService.estimateExitAndRedeem(
+        pool.ammAddress,
+        userLpSupply,
+        userPrincipalSupply,
+        userYieldSupply,
+        pool.maxLeftoverShares,
+        true,
+      );
+    } catch (error) {
+      console.log(
+        'PoolDataAdapter - getPresentValueInBackingTokensForPool() - Failed to fetch present value in backing tokens for pool!',
+        error,
+      );
+      return Promise.reject(error);
     }
   }
 }

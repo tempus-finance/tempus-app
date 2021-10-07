@@ -24,21 +24,22 @@ interface DetailUserInfoBalancesProps {
 const DetailUserInfoBalance: FC<DetailUserInfoBalancesProps> = props => {
   const { poolDataAdapter, signer, userWalletAddress, tempusPool, content } = props;
   const { address, ammAddress } = tempusPool;
-  const { supportedTokens, availableTokensToDeposit, presentValue } = content;
+  const { supportedTokens, availableTokensToDeposit } = content;
 
   const backingTokenTicker = supportedTokens[0];
   const yieldBearingTokenTicker = supportedTokens[1];
 
-  const { data } = useContext(Context);
+  const {
+    data: { userCurrentPoolPresentValue, userPrincipalsBalance, userYieldsBalance },
+  } = useContext(Context);
 
   const [backingTokenValue, setBackingTokenValue] = useState<string>('');
   const [yieldBearingTokenValue, setYieldBearingTokenValue] = useState<string>('');
-  const [formattedPresentValue, setFormattedPresentValue] = useState<string>('');
   const [lpTokenPrincipalReturnBalance, setLpTokenPrincipalReturn] = useState<BigNumber>(BigNumber.from('0'));
   const [lpTokenYieldReturnBalance, setLpTokenYieldReturn] = useState<BigNumber>(BigNumber.from('0'));
 
   useMemo(() => {
-    if (!availableTokensToDeposit || !presentValue) {
+    if (!availableTokensToDeposit) {
       return;
     }
 
@@ -54,8 +55,7 @@ const DetailUserInfoBalance: FC<DetailUserInfoBalancesProps> = props => {
         tempusPool.decimalsForUI,
       ),
     );
-    setFormattedPresentValue(NumberUtils.formatToCurrency(ethers.utils.formatEther(presentValue), 2, '$'));
-  }, [availableTokensToDeposit, presentValue, tempusPool.decimalsForUI]);
+  }, [availableTokensToDeposit, tempusPool.decimalsForUI]);
 
   useEffect(() => {
     const retrieveBalances = async () => {
@@ -79,12 +79,19 @@ const DetailUserInfoBalance: FC<DetailUserInfoBalancesProps> = props => {
   }, [signer, address, ammAddress, userWalletAddress, poolDataAdapter]);
 
   const showCurrentPosition = useMemo(() => {
-    if (!data.userPrincipalsBalance || !data.userYieldsBalance) {
+    if (!userPrincipalsBalance || !userYieldsBalance) {
       return false;
     }
 
-    return !data.userPrincipalsBalance.isZero() || !data.userYieldsBalance.isZero();
-  }, [data.userPrincipalsBalance, data.userYieldsBalance]);
+    return !userPrincipalsBalance.isZero() || !userYieldsBalance.isZero();
+  }, [userPrincipalsBalance, userYieldsBalance]);
+
+  const formattedPresentValue = useMemo(() => {
+    if (!userCurrentPoolPresentValue) {
+      return null;
+    }
+    return NumberUtils.formatToCurrency(ethers.utils.formatEther(userCurrentPoolPresentValue), 2, '$');
+  }, [userCurrentPoolPresentValue]);
 
   return (
     <>
