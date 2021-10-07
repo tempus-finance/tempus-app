@@ -10,6 +10,7 @@ import AnalyticsIcon from '../icons/AnalyticsIcon';
 import TempusLogo from './tempusLogo';
 
 import './header.scss';
+import CodeIcon from '../icons/CodeIcon';
 
 export type HeaderLinks = 'Dashboard' | 'Portfolio' | 'Analytics';
 
@@ -35,6 +36,11 @@ const Header: FC<HeaderProps> = ({ onAnalyticsClick, onLogoClick }): JSX.Element
 
   const onDocsClick = () => {
     window.open('https://docs.tempus.finance', '_blank');
+    toggleOptionsMenu();
+  };
+
+  const onCodeClick = () => {
+    window.open('https://github.com/tempus-finance', '_blank');
     toggleOptionsMenu();
   };
 
@@ -78,6 +84,12 @@ const Header: FC<HeaderProps> = ({ onAnalyticsClick, onLogoClick }): JSX.Element
                   <DocsIcon />
                 </ListItemIcon>
                 <ListItemText primary="Docs" />
+              </ListItem>
+              <ListItem button onClick={onCodeClick}>
+                <ListItemIcon>
+                  <CodeIcon />
+                </ListItemIcon>
+                <ListItemText primary="Code" />
               </ListItem>
               <ListItem button onClick={onDiscordClick}>
                 <ListItemIcon>
