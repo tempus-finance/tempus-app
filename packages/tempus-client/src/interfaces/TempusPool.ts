@@ -11,6 +11,8 @@ export type TempusPool = {
   yieldsAddress: string;
   backingToken: Ticker;
   yieldBearingToken: Ticker;
+  yieldBearingTokenAddress: string;
+  backingTokenAddress: string;
   spotPrice: string;
   maxLeftoverShares: string;
   decimalsForUI: number;

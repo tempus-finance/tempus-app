@@ -10,6 +10,7 @@ import {
   aaveLendingPoolAddress,
   COMPOUND_BLOCKS_PER_DAY,
   SECONDS_IN_A_DAY,
+  BLOCK_DURATION_SECONDS,
 } from '../constants';
 import TempusPoolService from '../services/TempusPoolService';
 import VaultService from '../services/VaultService';
@@ -19,6 +20,7 @@ import { ProtocolName } from '../interfaces';
 import { wadToDai } from '../utils/rayToDai';
 import getConfig from '../utils/get-config';
 import { div18f, mul18f } from '../utils/wei-math';
+import getDefaultProvider from '../services/getDefaultProvider';
 
 const BN_SECONDS_IN_YEAR = BigNumber.from(SECONDS_IN_YEAR);
 const BN_ONE_ETH_IN_WEI = BigNumber.from(ONE_ETH_IN_WEI);
@@ -69,18 +71,21 @@ class VariableRateService {
     if (!this.tempusPoolService) {
       return Promise.reject();
     }
+    const poolConfig = getConfig().tempusPools.find(pool => pool.address === tempusPoolAddress);
+    if (!poolConfig) {
+      return Promise.reject();
+    }
 
     const fees = await this.calculateFees(tempusAMM, tempusPoolAddress, principalsAddress, yieldsAddress);
     const feesFormatted = Number(ethers.utils.formatEther(fees));
-    const yieldBearingTokenAddress = await this.tempusPoolService.getYieldBearingTokenAddress(tempusPoolAddress);
 
     switch (protocol) {
       case 'aave': {
-        return this.getAaveAPR(yieldBearingTokenAddress, feesFormatted);
+        return this.getAaveAPR(poolConfig.yieldBearingTokenAddress, feesFormatted);
       }
 
       case 'compound': {
-        return this.getCompoundAPR(yieldBearingTokenAddress, feesFormatted);
+        return this.getCompoundAPR(poolConfig.yieldBearingTokenAddress, feesFormatted);
       }
 
       case 'lido': {
@@ -135,41 +140,30 @@ class VariableRateService {
       return Promise.reject();
     }
 
+    const latestBlock = await getDefaultProvider().getBlock('latest');
+
+    const poolConfig = getConfig().tempusPools.find(pool => pool.address === tempusPool);
+    if (!poolConfig) {
+      return Promise.reject();
+    }
+
     const swapFeePercentage = await this.tempusAMMService.getSwapFeePercentage(tempusAMM);
-    const poolId = await this.tempusAMMService.poolId(tempusAMM);
+
+    const fetchEventsFromBlock = latestBlock.number - Math.floor(SECONDS_IN_A_DAY / BLOCK_DURATION_SECONDS);
 
     // Fetch swap and poolBalanceChanged events
     const [swapEvents, poolBalanceChangedEvents] = await Promise.all([
-      this.vaultService.getSwapEvents(poolId),
-      this.vaultService.getPoolBalanceChangedEvents(poolId),
+      this.vaultService.getSwapEvents(poolConfig.poolId, fetchEventsFromBlock),
+      this.vaultService.getPoolBalanceChangedEvents(poolConfig.poolId, fetchEventsFromBlock),
     ]);
 
     const events = [...swapEvents, ...poolBalanceChangedEvents];
 
-    // Fetch block data for all events
-    const eventBlockPromises: Promise<ethers.providers.Block>[] = [];
-    events.forEach(swapEvent => {
-      eventBlockPromises.push(swapEvent.getBlock());
-    });
-    const eventBlocks = await Promise.all(eventBlockPromises);
-
-    // Filter out events older then 24 hours
-    const filteredEvents = events.filter(event => {
-      const eventBlock = eventBlocks.find(eventBlock => eventBlock.number === event.blockNumber);
-      if (!eventBlock) {
-        return false;
-      }
-      if (eventBlock.timestamp > Date.now() / 1000 - SECONDS_IN_A_DAY) {
-        return true;
-      }
-      return false;
-    });
-
     // Sort events from newest to oldest
-    const sortedEvents = filteredEvents.sort((a, b) => b.blockNumber - a.blockNumber);
+    const sortedEvents = events.sort((a, b) => b.blockNumber - a.blockNumber);
 
     // Fetch current pool balance
-    let { principals, yields } = await this.getPoolTokens(poolId, principalsAddress, yieldsAddress);
+    let { principals, yields } = await this.getPoolTokens(poolConfig.poolId, principalsAddress, yieldsAddress);
 
     // Calculate current principals to yields ratio
     const currentPrincipalsToYieldsRatio = div18f(principals, yields);
