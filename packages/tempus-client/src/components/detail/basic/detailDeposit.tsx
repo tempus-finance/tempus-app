@@ -440,7 +440,9 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
           <ApproveButton
             poolDataAdapter={poolDataAdapter}
             tokenToApprove={
-              selectedToken === backingToken ? content.backingTokenAddress : content.yieldBearingTokenAddress
+              selectedToken && selectedToken === backingToken
+                ? content.backingTokenAddress
+                : content.yieldBearingTokenAddress
             }
             spenderAddress={getConfig().tempusControllerContract}
             amountToApprove={balance}
