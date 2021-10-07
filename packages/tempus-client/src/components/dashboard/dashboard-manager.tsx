@@ -1,4 +1,4 @@
-import { FC, useCallback, useContext, useEffect, useState } from 'react';
+import { FC, useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { CircularProgress } from '@material-ui/core';
 import { DashboardRow, DashboardRowChild } from '../../interfaces';
 import { Context } from '../../context';
@@ -18,15 +18,21 @@ const DashboardManager: FC<DashboardManagerProps> = ({ selectedRow, onRowSelecte
 
   const [rows, setRows] = useState<DashboardRow[]>([]);
 
+  const loading = useRef(false);
+
   const {
     data: { userWalletAddress },
   } = useContext(Context);
 
   useEffect(() => {
     const fetchRows = async () => {
+      loading.current = true;
       setRows(await getDashboardDataAdapter().getRows(userWalletAddress));
+      loading.current = false;
     };
-    fetchRows();
+    if (!loading.current) {
+      fetchRows();
+    }
   }, [userWalletAddress]);
 
   const onRowActionClick = useCallback(

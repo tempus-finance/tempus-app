@@ -76,33 +76,15 @@ export default class DashboardDataAdapter {
     }
 
     try {
-      const principalTokenAddress = await this.tempusPoolService.getPrincipalsTokenAddress(tempusPool.address);
-
-      const [
-        backingTokenTicker,
-        yieldBearingTokenTicker,
-        yieldTokenAddress,
-        protocol,
-        startDate,
-        maturityDate,
-        fixedAPR,
-        presentValueInBackingTokens,
-        availableToDeposit,
-      ] = await Promise.all([
-        this.tempusPoolService.getBackingTokenTicker(tempusPool.address),
-        this.tempusPoolService.getYieldBearingTokenTicker(tempusPool.address),
-        this.tempusPoolService.getYieldTokenAddress(tempusPool.address),
-        this.tempusPoolService.getProtocolName(tempusPool.address),
-        this.tempusPoolService.getStartTime(tempusPool.address),
-        this.tempusPoolService.getMaturityTime(tempusPool.address),
-        this.tempusAMMService.getFixedAPR(tempusPool.ammAddress, principalTokenAddress),
+      const [fixedAPR, presentValueInBackingTokens, availableToDeposit] = await Promise.all([
+        this.tempusAMMService.getFixedAPR(tempusPool.ammAddress, tempusPool.principalsAddress),
         this.getPresentValueInBackingTokensForPool(tempusPool),
         this.getAvailableToDepositForPool(tempusPool),
       ]);
 
       const [tvl, poolBackingTokenRate, backingTokenAddress, yieldBearingTokenAddress] = await Promise.all([
-        this.statisticsService.totalValueLockedUSD(tempusPool.address, backingTokenTicker),
-        this.statisticsService.getRate(backingTokenTicker),
+        this.statisticsService.totalValueLockedUSD(tempusPool.address, tempusPool.backingToken),
+        this.statisticsService.getRate(tempusPool.backingToken),
         this.tempusPoolService.getBackingTokenAddress(tempusPool.address),
         this.tempusPoolService.getYieldBearingTokenAddress(tempusPool.address),
       ]);
@@ -117,25 +99,25 @@ export default class DashboardDataAdapter {
       return {
         id: tempusPool.address,
         tempusPool: tempusPool,
-        parentId: backingTokenTicker,
-        token: backingTokenTicker,
-        supportedTokens: [backingTokenTicker, yieldBearingTokenTicker],
-        protocol,
-        principalTokenAddress,
-        yieldTokenAddress,
+        parentId: tempusPool.backingToken,
+        token: tempusPool.backingToken,
+        supportedTokens: [tempusPool.backingToken, tempusPool.yieldBearingToken],
+        protocol: tempusPool.protocol,
+        principalTokenAddress: tempusPool.principalsAddress,
+        yieldTokenAddress: tempusPool.yieldsAddress,
         backingTokenAddress,
         yieldBearingTokenAddress,
-        yieldBearingTokenTicker,
-        startDate,
-        maturityDate,
+        yieldBearingTokenTicker: tempusPool.yieldBearingToken,
+        startDate: new Date(tempusPool.startDate),
+        maturityDate: new Date(tempusPool.maturityDate),
         fixedAPR,
         variableAPY: this.variableRateService
           ? await this.variableRateService.getAprRate(
-              protocol,
+              tempusPool.protocol,
               tempusPool.address,
               tempusPool.ammAddress,
-              principalTokenAddress,
-              yieldTokenAddress,
+              tempusPool.principalsAddress,
+              tempusPool.yieldsAddress,
             )
           : 0,
         TVL: Number(ethers.utils.formatEther(tvl)),
@@ -145,12 +127,12 @@ export default class DashboardDataAdapter {
             : undefined,
         availableTokensToDeposit: availableToDeposit && {
           backingToken: availableToDeposit.backingToken,
-          backingTokenTicker,
+          backingTokenTicker: tempusPool.backingToken,
           yieldBearingToken: availableToDeposit.yieldBearingToken,
-          yieldBearingTokenTicker,
+          yieldBearingTokenTicker: tempusPool.yieldBearingToken,
         },
         availableUSDToDeposit: availableToDepositInUSD,
-        backingTokenTicker: backingTokenTicker,
+        backingTokenTicker: tempusPool.backingToken,
       };
     } catch (error) {
       console.error('DashboardDataAdapter - getChildRowData() - Failed to get data for child row!', error);
