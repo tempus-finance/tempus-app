@@ -317,8 +317,8 @@ export default class DashboardDataAdapter {
     }
 
     try {
-      const backingToken = this.eRC20TokenServiceGetter(pool.backingToken);
-      const yieldBearingToken = this.eRC20TokenServiceGetter(pool.yieldBearingToken);
+      const backingToken = this.eRC20TokenServiceGetter(pool.backingTokenAddress);
+      const yieldBearingToken = this.eRC20TokenServiceGetter(pool.yieldBearingTokenAddress);
 
       const [backingTokensAvailable, yieldTokensAvailable] = await Promise.all([
         backingToken.balanceOf(this.userWalletAddress),

@@ -18,21 +18,15 @@ const DashboardManager: FC<DashboardManagerProps> = ({ selectedRow, onRowSelecte
 
   const [rows, setRows] = useState<DashboardRow[]>([]);
 
-  const loading = useRef(false);
-
   const {
     data: { userWalletAddress },
   } = useContext(Context);
 
   useEffect(() => {
     const fetchRows = async () => {
-      loading.current = true;
       setRows(await getDashboardDataAdapter().getRows(userWalletAddress));
-      loading.current = false;
     };
-    if (!loading.current) {
-      fetchRows();
-    }
+    fetchRows();
   }, [userWalletAddress]);
 
   const onRowActionClick = useCallback(
