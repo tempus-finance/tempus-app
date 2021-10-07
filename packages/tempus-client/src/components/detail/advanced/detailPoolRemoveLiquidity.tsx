@@ -8,6 +8,7 @@ import NumberUtils from '../../../services/NumberUtils';
 import { getPoolLiquidityNotification } from '../../../services/NotificationService';
 import PoolDataAdapter from '../../../adapters/PoolDataAdapter';
 import getConfig from '../../../utils/get-config';
+import { mul18f } from '../../../utils/wei-math';
 import Typography from '../../typography/Typography';
 import CurrencyInput from '../../currencyInput';
 import Spacer from '../../spacer/spacer';
@@ -44,15 +45,19 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = ({ content, pool
     [setAmount],
   );
 
-  const onAmountPercentageChange = useCallback(
-    (event: any) => {
-      const percentage = event.currentTarget.value;
-      if (!!data.userLPBalance && !isNaN(percentage)) {
-        const balanceAsNumber = Number(ethers.utils.formatEther(data.userLPBalance));
-        setAmount((balanceAsNumber * Number(percentage)).toString());
+  /**
+   * Update amount field when user clicks on percentage buttons.
+   * - Requires user LP token balance to be loaded so we can calculate percentage of that.
+   */
+  const onPercentageChange = useCallback(
+    (event: React.MouseEvent<HTMLButtonElement>) => {
+      if (!data.userLPBalance) {
+        return;
       }
+      const percentage = ethers.utils.parseEther(event.currentTarget.value);
+      setAmount(ethers.utils.formatEther(mul18f(data.userLPBalance, percentage)));
     },
-    [data.userLPBalance, setAmount],
+    [data.userLPBalance],
   );
 
   // Fetch estimated share tokens returned
@@ -148,19 +153,19 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = ({ content, pool
               <Typography variant="body-text">Balance: {lpTokenBalanceFormatted} LP Tokens</Typography>
               <Spacer size={20} />
               <div className="tf__flex-row-center-v">
-                <Button variant="contained" size="small" value="0.25" onClick={onAmountPercentageChange}>
+                <Button variant="contained" size="small" value="0.25" onClick={onPercentageChange}>
                   25%
                 </Button>
                 <Spacer size={10} />
-                <Button variant="contained" size="small" value="0.5" onClick={onAmountPercentageChange}>
+                <Button variant="contained" size="small" value="0.5" onClick={onPercentageChange}>
                   50%
                 </Button>
                 <Spacer size={10} />
-                <Button variant="contained" size="small" value="0.75" onClick={onAmountPercentageChange}>
+                <Button variant="contained" size="small" value="0.75" onClick={onPercentageChange}>
                   75%
                 </Button>
                 <Spacer size={10} />
-                <Button variant="contained" size="small" value="1" onClick={onAmountPercentageChange}>
+                <Button variant="contained" size="small" value="1" onClick={onPercentageChange}>
                   Max
                 </Button>
               </div>

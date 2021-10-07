@@ -1,7 +1,7 @@
 import { FC, useCallback, useEffect, useState } from 'react';
 import FormControl from '@material-ui/core/FormControl';
 import TextField from '@material-ui/core/TextField';
-import { formatValueToCurrency, parseStringToNumber } from './currencyParser';
+import { formatValueToCurrency } from './currencyParser';
 
 type CurrencyInputInProps = {
   defaultValue: string;

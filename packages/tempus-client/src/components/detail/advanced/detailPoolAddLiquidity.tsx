@@ -9,6 +9,7 @@ import { getPoolLiquidityNotification } from '../../../services/NotificationServ
 import { DashboardRowChild } from '../../../interfaces';
 import { TempusPool } from '../../../interfaces/TempusPool';
 import getConfig from '../../../utils/get-config';
+import { mul18f } from '../../../utils/wei-math';
 import Typography from '../../typography/Typography';
 import Spacer from '../../spacer/spacer';
 import ScaleIcon from '../../icons/ScaleIcon';
@@ -52,71 +53,94 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = props => {
   const [principalsApproved, setPrincipalsApproved] = useState<boolean>(false);
   const [yieldsApproved, setYieldsApproved] = useState<boolean>(false);
 
-  // Calculate amount of principals based on the amount of yields
+  /**
+   * When user enters some amount of yields, we need to calculate amount of principals user
+   * also needs to deposit in order to keep principals/yields balance in the pool unchanged.
+   */
   const setPrincipalsFromYields = useCallback(
-    (amountOfYields: number) => {
+    (amountOfYields: BigNumber) => {
       if (!yieldsPercentage || !principalsPercentage) {
         return;
       }
-      setPrincipalsAmount(((principalsPercentage / yieldsPercentage) * amountOfYields).toString());
-      //(75 / 25) * 50
+      if (amountOfYields.isZero()) {
+        setPrincipalsAmount('0');
+        return;
+      }
+
+      const principalsToYieldsRatio = ethers.utils.parseEther((principalsPercentage / yieldsPercentage).toString());
+
+      setPrincipalsAmount(ethers.utils.formatEther(mul18f(principalsToYieldsRatio, amountOfYields)));
     },
     [principalsPercentage, yieldsPercentage],
   );
 
-  // Calculate amount of yields based on the amount of principals
+  /**
+   * When user enters some amount of principals, we need to calculate amount of yields user
+   * also needs to deposit in order to keep principals/yields balance in the pool unchanged.
+   */
   const setYieldsFromPrincipals = useCallback(
-    (amountOfPrincipals: number) => {
+    (amountOfPrincipals: BigNumber) => {
       if (!yieldsPercentage || !principalsPercentage) {
         return;
       }
-      setYieldsAmount(((yieldsPercentage / principalsPercentage) * amountOfPrincipals).toString());
+      if (amountOfPrincipals.isZero()) {
+        setYieldsAmount('0');
+        return;
+      }
+
+      const yieldsToPrincipalsRatio = ethers.utils.parseEther((yieldsPercentage / principalsPercentage).toString());
+
+      setYieldsAmount(ethers.utils.formatEther(mul18f(yieldsToPrincipalsRatio, amountOfPrincipals)));
     },
     [principalsPercentage, yieldsPercentage],
   );
 
   const onPrincipalsAmountChange = useCallback(
     (amount: string) => {
-      if (amount) {
-        setPrincipalsAmount(amount);
-        setYieldsFromPrincipals(Number(amount));
-      }
+      setPrincipalsAmount(amount);
+      setYieldsFromPrincipals(ethers.utils.parseEther(amount));
     },
     [setYieldsFromPrincipals],
   );
 
   const onYieldsAmountChange = useCallback(
     (amount: string) => {
-      if (amount) {
-        setYieldsAmount(amount);
-        setPrincipalsFromYields(Number(amount));
-      }
+      setYieldsAmount(amount);
+      setPrincipalsFromYields(ethers.utils.parseEther(amount));
     },
     [setPrincipalsFromYields],
   );
 
+  /**
+   * Update principals amount field when user clicks on percentage buttons.
+   * - Requires user principals balance to be loaded so we can calculate percentage of that.
+   */
   const onPrincipalsPercentageChange = useCallback(
-    (event: any) => {
-      const percentage = event.currentTarget.value;
-      if (!!userPrincipalsBalance && !isNaN(percentage)) {
-        const balanceAsNumber = Number(ethers.utils.formatEther(userPrincipalsBalance));
-        const amount = balanceAsNumber * Number(percentage);
-        setPrincipalsAmount(amount.toString());
-        setYieldsFromPrincipals(amount);
+    (event: React.MouseEvent<HTMLButtonElement>) => {
+      if (!userPrincipalsBalance) {
+        return;
       }
+      const percentage = ethers.utils.parseEther(event.currentTarget.value);
+      const calculatedAmount = mul18f(userPrincipalsBalance, percentage);
+      setPrincipalsAmount(ethers.utils.formatEther(calculatedAmount));
+      setYieldsFromPrincipals(calculatedAmount);
     },
-    [setYieldsFromPrincipals, userPrincipalsBalance],
+    [userPrincipalsBalance, setYieldsFromPrincipals],
   );
 
+  /**
+   * Update yields amount field when user clicks on percentage buttons.
+   * - Requires user yields balance to be loaded so we can calculate percentage of that.
+   */
   const onYieldsPercentageChange = useCallback(
-    (event: any) => {
-      const percentage = event.currentTarget.value;
-      if (!!userYieldsBalance && !isNaN(percentage)) {
-        const balanceAsNumber = Number(ethers.utils.formatEther(userYieldsBalance));
-        const amount = balanceAsNumber * Number(percentage);
-        setYieldsAmount(amount.toString());
-        setPrincipalsFromYields(amount);
+    (event: React.MouseEvent<HTMLButtonElement>) => {
+      if (!userYieldsBalance) {
+        return;
       }
+      const percentage = ethers.utils.parseEther(event.currentTarget.value);
+      const calculatedAmount = mul18f(userYieldsBalance, percentage);
+      setYieldsAmount(ethers.utils.formatEther(calculatedAmount));
+      setPrincipalsFromYields(calculatedAmount);
     },
     [userYieldsBalance, setPrincipalsFromYields],
   );

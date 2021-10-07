@@ -58,18 +58,25 @@ const DetailRedeemBeforeMaturity: FC<DetailRedeemBeforeMaturityProps> = props =>
     }
   }, []);
 
+  /**
+   * Update amount field when user clicks on percentage buttons.
+   * Checks which is lower from principals and yields and takes percentage of lower one.
+   * - Requires user principals and yields balance to be loaded so we can calculate percentage of the lower one.
+   */
   const onPercentageChange = useCallback(
-    (event: any) => {
-      const percentage = event.currentTarget.value;
-      if (!!userPrincipalsBalance && !!userYieldsBalance && !isNaN(percentage)) {
-        let balanceAsNumber = 0;
-        if (userPrincipalsBalance.lte(userYieldsBalance)) {
-          balanceAsNumber = Number(ethers.utils.formatEther(userPrincipalsBalance));
-        } else {
-          balanceAsNumber = Number(ethers.utils.formatEther(userYieldsBalance));
-        }
-        setAmount((balanceAsNumber * percentage).toString());
+    (event: React.MouseEvent<HTMLButtonElement>) => {
+      if (!userPrincipalsBalance || !userYieldsBalance) {
+        return;
       }
+      const percentage = ethers.utils.parseEther(event.currentTarget.value);
+
+      let balanceToUse: BigNumber;
+      if (userPrincipalsBalance.lte(userYieldsBalance)) {
+        balanceToUse = userPrincipalsBalance;
+      } else {
+        balanceToUse = userYieldsBalance;
+      }
+      setAmount(ethers.utils.formatEther(mul18f(balanceToUse, percentage)));
     },
     [userPrincipalsBalance, userYieldsBalance],
   );

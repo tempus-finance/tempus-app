@@ -1,4 +1,4 @@
-import { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { utils, BigNumber, ethers } from 'ethers';
 import Button from '@material-ui/core/Button';
 import { interestRateProtectionTooltipText, liquidityProvisionTooltipText } from '../../../constants';
@@ -98,15 +98,19 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
     [setAmount],
   );
 
+  /**
+   * Update amount field when user clicks on percentage buttons.
+   * - Requires token balance to be loaded so we can calculate percentage of that.
+   */
   const onPercentageChange = useCallback(
-    (event: any) => {
-      const percentage = event.currentTarget.value;
-      if (!!selectedToken && !!balance && !isNaN(percentage)) {
-        const balanceAsNumber = Number(utils.formatEther(balance));
-        setAmount(Number(balanceAsNumber * percentage).toString());
+    (event: React.MouseEvent<HTMLButtonElement>) => {
+      if (!balance) {
+        return;
       }
+      const percentage = ethers.utils.parseEther(event.currentTarget.value);
+      setAmount(ethers.utils.formatEther(mul18f(balance, percentage)));
     },
-    [balance, selectedToken, setAmount],
+    [balance],
   );
 
   const onSelectYield = useCallback(

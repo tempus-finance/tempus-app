@@ -7,6 +7,7 @@ import { TempusPool } from '../../../interfaces/TempusPool';
 import PoolDataAdapter from '../../../adapters/PoolDataAdapter';
 import NumberUtils from '../../../services/NumberUtils';
 import getConfig from '../../../utils/get-config';
+import { mul18f } from '../../../utils/wei-math';
 import Typography from '../../typography/Typography';
 import Spacer from '../../spacer/spacer';
 import TokenSelector from '../../tokenSelector';
@@ -64,14 +65,19 @@ const DetailMint: FC<DetailMintProps> = props => {
     [setAmount],
   );
 
+  /**
+   * Update amount field when user clicks on percentage buttons.
+   * - Requires token balance to be loaded so we can calculate percentage of that.
+   */
   const onPercentageChange = useCallback(
     (event: React.MouseEvent<HTMLButtonElement>) => {
-      const percentage = event.currentTarget.value;
-      if (balance) {
-        setAmount((Number(ethers.utils.formatEther(balance)) * Number(percentage)).toString());
+      if (!balance) {
+        return;
       }
+      const percentage = ethers.utils.parseEther(event.currentTarget.value);
+      setAmount(ethers.utils.formatEther(mul18f(balance, percentage)));
     },
-    [balance, setAmount],
+    [balance],
   );
 
   useEffect(() => {
