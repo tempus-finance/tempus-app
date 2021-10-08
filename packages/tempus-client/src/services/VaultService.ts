@@ -68,7 +68,7 @@ class VaultService {
     this.tempusAMMService = params.tempusAMMService;
   }
 
-  public async getSwapEvents(forPoolId?: string): Promise<SwapEvent[]> {
+  public async getSwapEvents(forPoolId?: string, fromBlock?: number): Promise<SwapEvent[]> {
     if (!this.contract || !this.tempusAMMService) {
       console.error('VaultService - getSwapEvents() - Attempted to use VaultService before initializing it!');
       return Promise.reject();
@@ -76,27 +76,15 @@ class VaultService {
 
     const fetchSwapEventPromises: Promise<SwapEvent[]>[] = [];
     if (!forPoolId) {
-      let poolIDs: string[] = [];
       try {
-        const fetchPoolIdPromises: Promise<string>[] = [];
         getConfig().tempusPools.forEach(tempusPool => {
-          if (!this.tempusAMMService) {
-            throw new Error('VaultService - getSwapEvents() - Attempted to use VaultService before initializing it!');
-          }
-          fetchPoolIdPromises.push(this.tempusAMMService.poolId(tempusPool.ammAddress));
-        });
-        poolIDs = await Promise.all(fetchPoolIdPromises);
-      } catch (error) {
-        console.error('VaultService - getSwapEvents() - Failed to get IDs for tempus pools!', error);
-        return Promise.reject(error);
-      }
-      try {
-        poolIDs.forEach(poolID => {
           if (!this.contract) {
             throw new Error('VaultService - getSwapEvents() - Attempted to use VaultService before initializing it!');
           }
 
-          fetchSwapEventPromises.push(this.contract.queryFilter(this.contract.filters.Swap(poolID)));
+          fetchSwapEventPromises.push(
+            this.contract.queryFilter(this.contract.filters.Swap(tempusPool.poolId), fromBlock),
+          );
         });
       } catch (error) {
         console.error(`VaultService - getSwapEvents() - Failed to get swap events!`, error);
@@ -104,7 +92,7 @@ class VaultService {
       }
     } else {
       try {
-        fetchSwapEventPromises.push(this.contract.queryFilter(this.contract.filters.Swap(forPoolId)));
+        fetchSwapEventPromises.push(this.contract.queryFilter(this.contract.filters.Swap(forPoolId), fromBlock));
       } catch (error) {
         console.error(`VaultService - getSwapEvents() - Failed to get swap events!`, error);
         return Promise.reject(error);
@@ -114,7 +102,7 @@ class VaultService {
     return (await Promise.all(fetchSwapEventPromises)).flat();
   }
 
-  public async getPoolBalanceChangedEvents(forPoolId?: string): Promise<PoolBalanceChangedEvent[]> {
+  public async getPoolBalanceChangedEvents(forPoolId?: string, fromBlock?: number): Promise<PoolBalanceChangedEvent[]> {
     if (!this.contract || !this.tempusAMMService) {
       console.error(
         'VaultService - getPoolBalanceChangedEvents() - Attempted to use VaultService before initializing it!',
@@ -124,31 +112,17 @@ class VaultService {
 
     const fetchEventsPromises: Promise<PoolBalanceChangedEvent[]>[] = [];
     if (!forPoolId) {
-      let poolIDs: string[] = [];
       try {
-        const fetchPoolIdPromises: Promise<string>[] = [];
-        getConfig().tempusPools.forEach(tempusPool => {
-          if (!this.tempusAMMService) {
-            throw new Error(
-              'VaultService - getPoolBalanceChangedEvents() - Attempted to use VaultService before initializing it!',
-            );
-          }
-          fetchPoolIdPromises.push(this.tempusAMMService.poolId(tempusPool.ammAddress));
-        });
-        poolIDs = await Promise.all(fetchPoolIdPromises);
-      } catch (error) {
-        console.error('VaultService - getPoolBalanceChangedEvents() - Failed to get IDs for tempus pools!', error);
-        return Promise.reject(error);
-      }
-      try {
-        poolIDs.forEach(poolID => {
+        getConfig().tempusPools.forEach(pool => {
           if (!this.contract) {
             throw new Error(
               'VaultService - getPoolBalanceChangedEvents() - Attempted to use VaultService before initializing it!',
             );
           }
 
-          fetchEventsPromises.push(this.contract.queryFilter(this.contract.filters.PoolBalanceChanged(poolID)));
+          fetchEventsPromises.push(
+            this.contract.queryFilter(this.contract.filters.PoolBalanceChanged(pool.poolId), fromBlock),
+          );
         });
       } catch (error) {
         console.error(`VaultService - getPoolBalanceChangedEvents() - Failed to get swap events!`, error);
@@ -156,7 +130,9 @@ class VaultService {
       }
     } else {
       try {
-        fetchEventsPromises.push(this.contract.queryFilter(this.contract.filters.PoolBalanceChanged(forPoolId)));
+        fetchEventsPromises.push(
+          this.contract.queryFilter(this.contract.filters.PoolBalanceChanged(forPoolId), fromBlock),
+        );
       } catch (error) {
         console.error(`VaultService - getPoolBalanceChangedEvents() - Failed to get swap events!`, error);
         return Promise.reject(error);

@@ -76,35 +76,12 @@ export default class DashboardDataAdapter {
     }
 
     try {
-      const principalTokenAddress = await this.tempusPoolService.getPrincipalsTokenAddress(tempusPool.address);
-
-      const [
-        backingTokenTicker,
-        yieldBearingTokenTicker,
-        yieldTokenAddress,
-        protocol,
-        startDate,
-        maturityDate,
-        fixedAPR,
-        presentValueInBackingTokens,
-        availableToDeposit,
-      ] = await Promise.all([
-        this.tempusPoolService.getBackingTokenTicker(tempusPool.address),
-        this.tempusPoolService.getYieldBearingTokenTicker(tempusPool.address),
-        this.tempusPoolService.getYieldTokenAddress(tempusPool.address),
-        this.tempusPoolService.getProtocolName(tempusPool.address),
-        this.tempusPoolService.getStartTime(tempusPool.address),
-        this.tempusPoolService.getMaturityTime(tempusPool.address),
-        this.tempusAMMService.getFixedAPR(tempusPool.ammAddress, principalTokenAddress),
+      const [fixedAPR, tvl, poolBackingTokenRate, presentValueInBackingTokens, availableToDeposit] = await Promise.all([
+        this.tempusAMMService.getFixedAPR(tempusPool.ammAddress, tempusPool.principalsAddress),
+        this.statisticsService.totalValueLockedUSD(tempusPool.address, tempusPool.backingToken),
+        this.statisticsService.getRate(tempusPool.backingToken),
         this.getPresentValueInBackingTokensForPool(tempusPool),
         this.getAvailableToDepositForPool(tempusPool),
-      ]);
-
-      const [tvl, poolBackingTokenRate, backingTokenAddress, yieldBearingTokenAddress] = await Promise.all([
-        this.statisticsService.totalValueLockedUSD(tempusPool.address, backingTokenTicker),
-        this.statisticsService.getRate(backingTokenTicker),
-        this.tempusPoolService.getBackingTokenAddress(tempusPool.address),
-        this.tempusPoolService.getYieldBearingTokenAddress(tempusPool.address),
       ]);
 
       const availableToDepositInUSD = await this.getAvailableToDepositInUSD(
@@ -113,29 +90,28 @@ export default class DashboardDataAdapter {
         poolBackingTokenRate,
       );
 
-      // TODO - Replace dummy data for each tempus pool (child row) with real data.
       return {
         id: tempusPool.address,
         tempusPool: tempusPool,
-        parentId: backingTokenTicker,
-        token: backingTokenTicker,
-        supportedTokens: [backingTokenTicker, yieldBearingTokenTicker],
-        protocol,
-        principalTokenAddress,
-        yieldTokenAddress,
-        backingTokenAddress,
-        yieldBearingTokenAddress,
-        yieldBearingTokenTicker,
-        startDate,
-        maturityDate,
+        parentId: tempusPool.backingToken,
+        token: tempusPool.backingToken,
+        supportedTokens: [tempusPool.backingToken, tempusPool.yieldBearingToken],
+        protocol: tempusPool.protocol,
+        principalTokenAddress: tempusPool.principalsAddress,
+        yieldTokenAddress: tempusPool.yieldsAddress,
+        backingTokenAddress: tempusPool.backingTokenAddress,
+        yieldBearingTokenAddress: tempusPool.yieldBearingTokenAddress,
+        yieldBearingTokenTicker: tempusPool.yieldBearingToken,
+        startDate: new Date(tempusPool.startDate),
+        maturityDate: new Date(tempusPool.maturityDate),
         fixedAPR,
         variableAPY: this.variableRateService
           ? await this.variableRateService.getAprRate(
-              protocol,
+              tempusPool.protocol,
               tempusPool.address,
               tempusPool.ammAddress,
-              principalTokenAddress,
-              yieldTokenAddress,
+              tempusPool.principalsAddress,
+              tempusPool.yieldsAddress,
             )
           : 0,
         TVL: Number(ethers.utils.formatEther(tvl)),
@@ -145,12 +121,12 @@ export default class DashboardDataAdapter {
             : undefined,
         availableTokensToDeposit: availableToDeposit && {
           backingToken: availableToDeposit.backingToken,
-          backingTokenTicker,
+          backingTokenTicker: tempusPool.backingToken,
           yieldBearingToken: availableToDeposit.yieldBearingToken,
-          yieldBearingTokenTicker,
+          yieldBearingTokenTicker: tempusPool.yieldBearingToken,
         },
         availableUSDToDeposit: availableToDepositInUSD,
-        backingTokenTicker: backingTokenTicker,
+        backingTokenTicker: tempusPool.backingToken,
       };
     } catch (error) {
       console.error('DashboardDataAdapter - getChildRowData() - Failed to get data for child row!', error);
@@ -260,16 +236,11 @@ export default class DashboardDataAdapter {
       return undefined;
     }
 
+    const yieldToken = this.eRC20TokenServiceGetter(pool.yieldsAddress);
+    const principalToken = this.eRC20TokenServiceGetter(pool.principalsAddress);
+    const lpToken = this.eRC20TokenServiceGetter(pool.ammAddress);
+
     try {
-      const [yieldTokenAddress, principalTokenAddress] = await Promise.all([
-        this.tempusPoolService.getYieldTokenAddress(pool.address),
-        this.tempusPoolService.getPrincipalsTokenAddress(pool.address),
-      ]);
-
-      const yieldToken = this.eRC20TokenServiceGetter(yieldTokenAddress);
-      const principalToken = this.eRC20TokenServiceGetter(principalTokenAddress);
-      const lpToken = this.eRC20TokenServiceGetter(pool.ammAddress);
-
       const [userYieldSupply, userPrincipalSupply, userLpSupply] = await Promise.all([
         yieldToken.balanceOf(this.userWalletAddress),
         principalToken.balanceOf(this.userWalletAddress),
@@ -346,27 +317,19 @@ export default class DashboardDataAdapter {
     }
 
     try {
-      const [poolBackingToken, poolYieldBearingToken] = await Promise.all([
-        this.tempusPoolService.getBackingTokenAddress(pool.address),
-        this.tempusPoolService.getYieldBearingTokenAddress(pool.address),
+      const backingToken = this.eRC20TokenServiceGetter(pool.backingTokenAddress);
+      const yieldBearingToken = this.eRC20TokenServiceGetter(pool.yieldBearingTokenAddress);
+
+      const [backingTokensAvailable, yieldTokensAvailable] = await Promise.all([
+        backingToken.balanceOf(this.userWalletAddress),
+        yieldBearingToken.balanceOf(this.userWalletAddress),
       ]);
-
-      const backingToken = this.eRC20TokenServiceGetter(poolBackingToken);
-      const yieldBearingToken = this.eRC20TokenServiceGetter(poolYieldBearingToken);
-
-      const [backingTokensAvailable, yieldTokensAvailable, backingTokenTicker, yieldBearingTokenTicker] =
-        await Promise.all([
-          backingToken.balanceOf(this.userWalletAddress),
-          yieldBearingToken.balanceOf(this.userWalletAddress),
-          backingToken.symbol(),
-          yieldBearingToken.symbol(),
-        ]);
 
       return {
         backingToken: backingTokensAvailable,
-        backingTokenTicker: backingTokenTicker,
+        backingTokenTicker: pool.backingToken,
         yieldBearingToken: yieldTokensAvailable,
-        yieldBearingTokenTicker: yieldBearingTokenTicker,
+        yieldBearingTokenTicker: pool.yieldBearingToken,
       };
     } catch (error) {
       console.error(

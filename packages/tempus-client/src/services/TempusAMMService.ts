@@ -108,8 +108,7 @@ class TempusAMMService {
 
       let poolPrincipalsBalance: BigNumber;
       try {
-        const poolId = await service.getPoolId();
-        const poolTokens = await vaultService.getPoolTokens(poolId);
+        const poolTokens = await vaultService.getPoolTokens(tempusPool.poolId);
 
         const principalsIndex = poolTokens.tokens.findIndex(poolTokenAddress => principalsAddress === poolTokenAddress);
         poolPrincipalsBalance = poolTokens.balances[principalsIndex];
@@ -132,28 +131,8 @@ class TempusAMMService {
         return null;
       }
 
-      let tempusPoolAddress: string;
-      try {
-        tempusPoolAddress = await this.getTempusPoolAddress(address);
-      } catch (error) {
-        console.error('TempusAMMService - getFixedAPR() - Failed to fetch tempus pool address!');
-        return Promise.reject(error);
-      }
-
-      let tempusPoolStartTime: Date;
-      let tempusPoolMaturityTime: Date;
-      try {
-        [tempusPoolStartTime, tempusPoolMaturityTime] = await Promise.all([
-          this.tempusPoolService.getStartTime(tempusPoolAddress),
-          this.tempusPoolService.getMaturityTime(tempusPoolAddress),
-        ]);
-      } catch (error) {
-        console.error('TempusAMMService - getFixedAPR() - Failed to fetch tempus pool maturity and start time.');
-        return Promise.reject(error);
-      }
-
       // Convert poolDuration from milliseconds to seconds.
-      const poolDuration = (tempusPoolMaturityTime.getTime() - tempusPoolStartTime.getTime()) / 1000;
+      const poolDuration = (tempusPool.maturityDate - tempusPool.startDate) / 1000;
 
       const scaleFactor = ethers.utils.parseEther(((SECONDS_IN_A_DAY * DAYS_IN_A_YEAR) / poolDuration).toString());
 
