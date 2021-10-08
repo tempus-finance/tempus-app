@@ -30,6 +30,42 @@ const WalletConnect: FC = (): JSX.Element => {
   const [userEthBalance, setUserEthBalance] = useState<BigNumber>(BigNumber.from('0'));
   const { account, activate, active, library } = useWeb3React<Web3Provider>();
 
+  const requestNetworkChange = useCallback(async () => {
+    const injectedConnector = new InjectedConnector({ supportedChainIds });
+    const provider = await injectedConnector.getProvider();
+    try {
+      // Request user to switch to Goerli testnet
+      await provider.request({
+        method: 'wallet_switchEthereumChain',
+        params: [{ chainId: '0x5' }],
+      });
+      // If user confirms request, connect the wallet
+      await activate(injectedConnector, undefined, true);
+      getNotificationService().notify('Wallet connected', '');
+      setData &&
+        setData(previousData => ({
+          ...previousData,
+          userWalletConnected: true,
+        }));
+    } catch (error: any) {
+      // User rejected request
+      if (error.code === 4001) {
+        getNotificationService().warn(
+          'Request to change network rejected by user',
+          'In order to use the app, please connect using Goerli network',
+        );
+      } else {
+        getNotificationService().warn('Unsupported wallet network', 'We support Goerli network');
+      }
+
+      setData &&
+        setData(previousData => ({
+          ...previousData,
+          userWalletConnected: false,
+        }));
+    }
+  }, [activate, setData]);
+
   const onConnect = useCallback(() => {
     const connect = async () => {
       if (active) {
@@ -47,19 +83,27 @@ const WalletConnect: FC = (): JSX.Element => {
           }));
       } catch (error) {
         if (error instanceof UnsupportedChainIdError) {
-          getNotificationService().warn('Unsupported wallet network', 'We support Goerli network');
+          requestNetworkChange();
         } else {
           getNotificationService().warn('Error connecting wallet', '');
         }
       }
     };
     connect();
-  }, [active, activate, setData]);
+  }, [active, activate, setData, requestNetworkChange]);
 
   useEffect(() => {
     const checkConnection = async () => {
       const injectedConnector = new InjectedConnector({ supportedChainIds });
-      injectedConnector.isAuthorized().then((authorized: boolean | null) => {
+      injectedConnector.isAuthorized().then(async (authorized: boolean | null) => {
+        const chainId = await injectedConnector.getChainId();
+
+        // User has connected wallet, but currently selected network in user wallet is not supported.
+        if (typeof chainId === 'string' && supportedChainIds.indexOf(parseInt(chainId)) === -1) {
+          requestNetworkChange();
+          return;
+        }
+
         if (authorized) {
           activate(injectedConnector);
         }
@@ -74,7 +118,7 @@ const WalletConnect: FC = (): JSX.Element => {
     if (!active) {
       checkConnection();
     }
-  }, [active, activate, setData]);
+  }, [active, activate, setData, requestNetworkChange]);
 
   useEffect(() => {
     setData &&
@@ -83,8 +127,7 @@ const WalletConnect: FC = (): JSX.Element => {
         userWalletSigner: library?.getSigner() || null,
         userWalletAddress: account || '',
       }));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [account, library]);
+  }, [account, library, setData]);
 
   // Fetch number of ETH user has
   useEffect(() => {
