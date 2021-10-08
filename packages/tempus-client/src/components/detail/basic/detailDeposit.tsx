@@ -46,7 +46,7 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
   const [backingTokenRate, setBackingTokenRate] = useState<BigNumber | null>(null);
   const [yieldBearingTokenRate, setYieldBearingTokenRate] = useState<BigNumber | null>(null);
 
-  const [executeDisabled, setExecuteDisabled] = useState<boolean>(true);
+  const [executeDisabled, setExecuteDisabled] = useState<boolean>(backingToken !== 'ETH');
 
   const onTokenChange = useCallback(
     (token: Ticker | undefined) => {
@@ -437,21 +437,25 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
         </ActionContainer>
         <Spacer size={20} />
         <div className="tf__flex-row-center-vh">
-          <ApproveButton
-            poolDataAdapter={poolDataAdapter}
-            tokenToApprove={
-              selectedToken && selectedToken === backingToken
-                ? content.backingTokenAddress
-                : content.yieldBearingTokenAddress
-            }
-            spenderAddress={getConfig().tempusControllerContract}
-            amountToApprove={balance}
-            tokenTicker={selectedToken}
-            disabled={!amount || amount === '0'}
-            onApproved={onApproved}
-            onAllowanceExceeded={onAllowanceExceeded}
-          />
-          <Spacer size={20} />
+          {selectedToken !== 'ETH' && (
+            <>
+              <ApproveButton
+                poolDataAdapter={poolDataAdapter}
+                tokenToApprove={
+                  selectedToken && selectedToken === backingToken
+                    ? content.backingTokenAddress
+                    : content.yieldBearingTokenAddress
+                }
+                spenderAddress={getConfig().tempusControllerContract}
+                amountToApprove={balance}
+                tokenTicker={selectedToken}
+                disabled={!amount || amount === '0'}
+                onApproved={onApproved}
+                onAllowanceExceeded={onAllowanceExceeded}
+              />
+              <Spacer size={20} />
+            </>
+          )}
           <ExecuteButton
             actionName="Deposit"
             notificationText={getDepositNotification(

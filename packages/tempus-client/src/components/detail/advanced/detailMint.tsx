@@ -42,7 +42,7 @@ const DetailMint: FC<DetailMintProps> = props => {
   const [amount, setAmount] = useState<string>('0');
   const [balance, setBalance] = useState<BigNumber | null>(null);
   const [estimatedTokens, setEstimatedTokens] = useState<BigNumber | null>(null);
-  const [executeDisabled, setExecuteDisabled] = useState<boolean>(true);
+  const [executeDisabled, setExecuteDisabled] = useState<boolean>(backingToken !== 'ETH');
 
   const onTokenChange = useCallback(
     (token: Ticker | undefined) => {
@@ -233,17 +233,21 @@ const DetailMint: FC<DetailMintProps> = props => {
         </ActionContainer>
         <Spacer size={20} />
         <div className="tf__flex-row-center-vh">
-          <ApproveButton
-            amountToApprove={balance}
-            onApproved={onApproved}
-            poolDataAdapter={poolDataAdapter}
-            spenderAddress={getConfig().tempusControllerContract}
-            tokenTicker={selectedToken}
-            tokenToApprove={
-              selectedToken === backingToken ? content.backingTokenAddress : content.yieldBearingTokenAddress
-            }
-          />
-          <Spacer size={20} />
+          {selectedToken !== 'ETH' && (
+            <>
+              <ApproveButton
+                amountToApprove={balance}
+                onApproved={onApproved}
+                poolDataAdapter={poolDataAdapter}
+                spenderAddress={getConfig().tempusControllerContract}
+                tokenTicker={selectedToken}
+                tokenToApprove={
+                  selectedToken === backingToken ? content.backingTokenAddress : content.yieldBearingTokenAddress
+                }
+              />
+              <Spacer size={20} />
+            </>
+          )}
           <ExecuteButton
             actionName="Mint"
             notificationText={getMintNotification(
