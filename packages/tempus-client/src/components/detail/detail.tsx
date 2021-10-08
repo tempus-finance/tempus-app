@@ -370,7 +370,7 @@ const Detail: FC<DetailProps> = ({ content, onClose }) => {
           <div className="tf__dialog-container__header-ui-toggle">
             <Switch checked={showAdvancedUI} onChange={onInterfaceChange} name="advanced-options" />
             <Typography color="default" variant="h4">
-              Advanced options
+              Advanced
             </Typography>
           </div>
         </div>
