@@ -40,6 +40,11 @@ const WalletConnect: FC = (): JSX.Element => {
       try {
         await activate(injectedConnector, undefined, true);
         getNotificationService().notify('Wallet connected', '');
+        setData &&
+          setData(previousData => ({
+            ...previousData,
+            userWalletConnected: true,
+          }));
       } catch (error) {
         if (error instanceof UnsupportedChainIdError) {
           getNotificationService().warn('Unsupported wallet network', 'We support Goerli network');
@@ -49,7 +54,7 @@ const WalletConnect: FC = (): JSX.Element => {
       }
     };
     connect();
-  }, [active, activate]);
+  }, [active, activate, setData]);
 
   useEffect(() => {
     const checkConnection = async () => {

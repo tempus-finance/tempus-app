@@ -14,24 +14,25 @@ type DashboardManagerProps = {
 };
 
 const DashboardManager: FC<DashboardManagerProps> = ({ selectedRow, onRowSelected }): JSX.Element => {
-  const { data, setData } = useContext(Context);
-
   const [rows, setRows] = useState<DashboardRow[]>([]);
 
   const {
-    data: { userWalletAddress },
+    data: { userWalletAddress, userWalletConnected, userWalletSigner },
+    setData,
   } = useContext(Context);
 
   useEffect(() => {
     const fetchRows = async () => {
-      if (data.userWalletConnected === true && userWalletAddress) {
-        setRows(await getDashboardDataAdapter().getRows(userWalletAddress));
-      } else if (data.userWalletConnected === false) {
+      if (userWalletConnected === true && userWalletAddress && userWalletSigner) {
+        console.time('load start');
+        setRows(await getDashboardDataAdapter(userWalletSigner).getRows(userWalletAddress));
+        console.timeEnd('load start');
+      } else if (userWalletConnected === false) {
         setRows(await getDashboardDataAdapter().getRows(''));
       }
     };
     fetchRows();
-  }, [data.userWalletConnected, userWalletAddress]);
+  }, [userWalletConnected, userWalletAddress, userWalletSigner]);
 
   const onRowActionClick = useCallback(
     (row: any) => {
