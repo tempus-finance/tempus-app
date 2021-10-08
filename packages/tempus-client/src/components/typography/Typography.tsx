@@ -86,7 +86,7 @@ const Typography: FC<TypographyProps> = props => {
         ...typographyStyleMap.get(props.variant),
         color: color,
         textTransform: props.capitalize ? 'capitalize' : 'none',
-        textAlign: props.align ? props.align : 'left',
+        textAlign: props.align ? props.align : 'unset',
       }}
     >
       {props.children}
