@@ -1,6 +1,7 @@
-import { formatDate } from '../utils/formatDate';
 import { Observable, Subject } from 'rxjs';
+import { v1 as uuid } from 'uuid';
 import { ProtocolName, Ticker } from '../interfaces';
+import { formatDate } from '../utils/formatDate';
 import { capitalize } from '../utils/capitalize-string';
 import getConfig from '../utils/get-config';
 
@@ -10,7 +11,7 @@ export enum NotificationLevel {
 }
 
 export type Notification = {
-  id: number;
+  id: string;
   level: NotificationLevel;
   title: string;
   content: string;
@@ -21,7 +22,6 @@ export type Notification = {
 // TODO add tests
 class NotificationService {
   private notificationQueue: Subject<Notification> = new Subject<Notification>();
-  private nextId: number = 0;
 
   warn(title: string, content: string, link?: string, linkText?: string) {
     this.addToQueue(NotificationLevel.WARNING, title, content, link, linkText);
@@ -36,7 +36,7 @@ class NotificationService {
   }
 
   private addToQueue(level: NotificationLevel, title: string, content: string, link?: string, linkText?: string) {
-    this.notificationQueue.next({ level, title, content, link, linkText, id: this.nextId++ });
+    this.notificationQueue.next({ level, title, content, link, linkText, id: uuid() });
   }
 }
 

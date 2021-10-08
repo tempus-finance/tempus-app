@@ -5,7 +5,7 @@ import { Context, defaultContextValue } from '../../context';
 import Header, { HeaderLinks } from '../header/header';
 import DashboardManager from '../dashboard/dashboard-manager';
 import Analytics from '../analytics/analytics';
-import NotificationContainer from '../notification';
+import NotificationContainer from '../notification/NotificationContainer';
 import MobileBanner from '../mobileBanner/mobileBanner';
 
 import './App.scss';

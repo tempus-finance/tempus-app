@@ -8,24 +8,38 @@ import './notification.scss';
 const NotificationContainer: FC = () => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
 
+  const onNotificationDelete = useCallback(
+    (id: string) => {
+      setNotifications(notifications.filter(notification => notification.id !== id));
+    },
+    [notifications, setNotifications],
+  );
+
+  const autoCloseNotification = useCallback(
+    (id: string) => {
+      setTimeout(() => {
+        onNotificationDelete(id);
+      }, 5000);
+    },
+    [onNotificationDelete],
+  );
+
   useEffect(() => {
     const notificationStream$ = getNotificationService()
       .getNextItem()
       .subscribe(notification => {
         if (notification) {
+          // Create auto close timer for new notification if web page tab is visible when notification is created
+          if (!document.hidden) {
+            autoCloseNotification(notification.id);
+          }
+
           setNotifications([...notifications, notification]);
         }
       });
 
     return () => notificationStream$.unsubscribe();
-  }, [notifications, setNotifications]);
-
-  const onNotificationDelete = useCallback(
-    (id: number) => {
-      setNotifications(notifications.filter(notification => notification.id !== id));
-    },
-    [notifications, setNotifications],
-  );
+  }, [autoCloseNotification, notifications, setNotifications]);
 
   return (
     <div className="tf__notification-container">

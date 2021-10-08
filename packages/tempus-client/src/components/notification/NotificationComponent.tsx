@@ -9,7 +9,7 @@ import './notification.scss';
 
 type NotificationComponentInProps = Notification;
 type NotificationComponentOutProps = {
-  onNotificationDelete: (id: number) => void;
+  onNotificationDelete: (id: string) => void;
 };
 
 type NotificationComponentProps = NotificationComponentInProps & NotificationComponentOutProps;
