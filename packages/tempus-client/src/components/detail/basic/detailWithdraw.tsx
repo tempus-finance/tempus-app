@@ -1,9 +1,9 @@
-import { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { ethers, BigNumber } from 'ethers';
+import { Context } from '../../../context';
 import { Ticker } from '../../../interfaces/Token';
 import NumberUtils from '../../../services/NumberUtils';
 import { getWithdrawNotification } from '../../../services/NotificationService';
-import { mul18f } from '../../../utils/wei-math';
 import getConfig from '../../../utils/get-config';
 import Typography from '../../typography/Typography';
 import Spacer from '../../spacer/spacer';
@@ -24,14 +24,16 @@ const DetailWithdraw: FC<PoolDetailProps> = ({ tempusPool, content, signer, user
   const backingToken = content.backingTokenTicker;
   const yieldBearingToken = content.yieldBearingTokenTicker;
 
+  const {
+    data: { userCurrentPoolPresentValue },
+  } = useContext(Context);
+
   const [selectedToken, setSelectedToken] = useState<Ticker>(yieldBearingToken);
   const [estimatedWithdrawAmount, setEstimatedWithdrawAmount] = useState<BigNumber | null>(null);
 
   const [principalsBalance, setPrincipalsBalance] = useState<BigNumber | null>(null);
   const [yieldsBalance, setYieldsBalance] = useState<BigNumber | null>(null);
   const [lpBalance, setLpBalance] = useState<BigNumber | null>(null);
-
-  const [tokenRate, setTokenRate] = useState<BigNumber | null>(null);
 
   const [principalsApproved, setPrincipalsApproved] = useState<boolean>(false);
   const [yieldsApproved, setYieldsApproved] = useState<boolean>(false);
@@ -54,23 +56,6 @@ const DetailWithdraw: FC<PoolDetailProps> = ({ tempusPool, content, signer, user
       return Promise.resolve(undefined);
     }
   }, [signer, poolDataAdapter, backingToken, selectedToken, ammAddress]);
-
-  // Update token rate when selected token changes
-  useEffect(() => {
-    const getRate = async () => {
-      if (!poolDataAdapter) {
-        return;
-      }
-
-      if (selectedToken === backingToken) {
-        setTokenRate(await poolDataAdapter.getBackingTokenRate(backingToken));
-      }
-      if (selectedToken === yieldBearingToken) {
-        setTokenRate(await poolDataAdapter.getYieldBearingTokenRate(tempusPool.address, backingToken));
-      }
-    };
-    getRate();
-  }, [backingToken, poolDataAdapter, selectedToken, tempusPool.address, yieldBearingToken]);
 
   // Fetch token balances when component mounts
   useEffect(() => {
@@ -156,11 +141,11 @@ const DetailWithdraw: FC<PoolDetailProps> = ({ tempusPool, content, signer, user
   }, [estimatedWithdrawAmount, tempusPool.decimalsForUI]);
 
   const estimatedWithdrawAmountUsdFormatted = useMemo(() => {
-    if (!estimatedWithdrawAmount || !tokenRate) {
+    if (!userCurrentPoolPresentValue) {
       return null;
     }
-    return NumberUtils.formatToCurrency(ethers.utils.formatEther(mul18f(estimatedWithdrawAmount, tokenRate)), 2, '$');
-  }, [estimatedWithdrawAmount, tokenRate]);
+    return NumberUtils.formatToCurrency(ethers.utils.formatEther(userCurrentPoolPresentValue), 2, '$');
+  }, [userCurrentPoolPresentValue]);
 
   return (
     <div role="tabpanel">
