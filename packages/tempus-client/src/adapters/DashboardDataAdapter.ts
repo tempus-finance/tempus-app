@@ -68,7 +68,7 @@ export default class DashboardDataAdapter {
   }
 
   private async getChildRowData(tempusPool: TempusPool): Promise<DashboardRowChild> {
-    if (!this.tempusPoolService || !this.statisticsService || !this.tempusAMMService) {
+    if (!this.tempusPoolService || !this.statisticsService || !this.tempusAMMService || !this.variableRateService) {
       console.error(
         'DashboardDataAdapter - getChildRowData() - Attempted to use DashboardDataAdapter before initializing it!',
       );
@@ -76,19 +76,32 @@ export default class DashboardDataAdapter {
     }
 
     try {
-      const [fixedAPR, tvl, poolBackingTokenRate, presentValueInBackingTokens, availableToDeposit] = await Promise.all([
-        this.tempusAMMService.getFixedAPR(tempusPool.ammAddress, tempusPool.principalsAddress),
-        this.statisticsService.totalValueLockedUSD(tempusPool.address, tempusPool.backingToken),
-        this.statisticsService.getRate(tempusPool.backingToken),
-        this.getPresentValueInBackingTokensForPool(tempusPool),
-        this.getAvailableToDepositForPool(tempusPool),
-      ]);
+      const [fixedAPR, tvl, poolBackingTokenRate, presentValueInBackingTokens, availableToDeposit, fees] =
+        await Promise.all([
+          this.tempusAMMService.getFixedAPR(tempusPool.ammAddress, tempusPool.principalsAddress),
+          this.statisticsService.totalValueLockedUSD(tempusPool.address, tempusPool.backingToken),
+          this.statisticsService.getRate(tempusPool.backingToken),
+          this.getPresentValueInBackingTokensForPool(tempusPool),
+          this.getAvailableToDepositForPool(tempusPool),
+          this.variableRateService.calculateFees(
+            tempusPool.ammAddress,
+            tempusPool.address,
+            tempusPool.principalsAddress,
+            tempusPool.yieldsAddress,
+          ),
+        ]);
 
-      const availableToDepositInUSD = await this.getAvailableToDepositInUSD(
-        tempusPool.address,
-        availableToDeposit,
-        poolBackingTokenRate,
-      );
+      const [availableToDepositInUSD, variableAPY] = await Promise.all([
+        this.getAvailableToDepositInUSD(tempusPool.address, availableToDeposit, poolBackingTokenRate),
+        this.variableRateService.getAprRate(
+          tempusPool.protocol,
+          tempusPool.address,
+          tempusPool.ammAddress,
+          tempusPool.principalsAddress,
+          tempusPool.yieldsAddress,
+          fees,
+        ),
+      ]);
 
       return {
         id: tempusPool.address,
@@ -105,15 +118,7 @@ export default class DashboardDataAdapter {
         startDate: new Date(tempusPool.startDate),
         maturityDate: new Date(tempusPool.maturityDate),
         fixedAPR,
-        variableAPY: this.variableRateService
-          ? await this.variableRateService.getAprRate(
-              tempusPool.protocol,
-              tempusPool.address,
-              tempusPool.ammAddress,
-              tempusPool.principalsAddress,
-              tempusPool.yieldsAddress,
-            )
-          : 0,
+        variableAPY,
         TVL: Number(ethers.utils.formatEther(tvl)),
         presentValue:
           presentValueInBackingTokens !== undefined

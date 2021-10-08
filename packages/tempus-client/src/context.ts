@@ -4,6 +4,7 @@ import { BigNumber } from 'ethers';
 import { DashboardRowChild } from './interfaces';
 
 interface ContextDataType {
+  userWalletConnected: boolean | null;
   userWalletAddress: string;
   userWalletSigner: JsonRpcSigner | null;
   userBackingTokenBalance: BigNumber | null;
@@ -22,6 +23,7 @@ interface ContextType {
 }
 
 export const defaultContextValue: ContextDataType = {
+  userWalletConnected: null,
   userWalletAddress: '',
   userWalletSigner: null,
   userBackingTokenBalance: null,

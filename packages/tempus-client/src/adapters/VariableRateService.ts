@@ -67,6 +67,7 @@ class VariableRateService {
     tempusAMM: string,
     principalsAddress: string,
     yieldsAddress: string,
+    fees: BigNumber,
   ): Promise<number> {
     if (!this.tempusPoolService) {
       return Promise.reject();
@@ -76,7 +77,6 @@ class VariableRateService {
       return Promise.reject();
     }
 
-    const fees = await this.calculateFees(tempusAMM, tempusPoolAddress, principalsAddress, yieldsAddress);
     const feesFormatted = Number(ethers.utils.formatEther(fees));
 
     switch (protocol) {
@@ -135,19 +135,20 @@ class VariableRateService {
       .div(preTotalPooledEther.mul(timeElapsed));
   }
 
-  private async calculateFees(tempusAMM: string, tempusPool: string, principalsAddress: string, yieldsAddress: string) {
+  public async calculateFees(tempusAMM: string, tempusPool: string, principalsAddress: string, yieldsAddress: string) {
     if (!this.tempusAMMService || !this.vaultService || !this.tempusPoolService) {
       return Promise.reject();
     }
-
-    const latestBlock = await getDefaultProvider().getBlock('latest');
 
     const poolConfig = getConfig().tempusPools.find(pool => pool.address === tempusPool);
     if (!poolConfig) {
       return Promise.reject();
     }
 
-    const swapFeePercentage = await this.tempusAMMService.getSwapFeePercentage(tempusAMM);
+    const [latestBlock, swapFeePercentage] = await Promise.all([
+      getDefaultProvider().getBlock('latest'),
+      this.tempusAMMService.getSwapFeePercentage(tempusAMM),
+    ]);
 
     const fetchEventsFromBlock = latestBlock.number - Math.floor(SECONDS_IN_A_DAY / BLOCK_DURATION_SECONDS);
 

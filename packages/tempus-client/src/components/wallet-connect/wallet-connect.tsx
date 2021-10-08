@@ -58,12 +58,18 @@ const WalletConnect: FC = (): JSX.Element => {
         if (authorized) {
           activate(injectedConnector);
         }
+
+        setData &&
+          setData(previousData => ({
+            ...previousData,
+            userWalletConnected: authorized,
+          }));
       });
     };
     if (!active) {
       checkConnection();
     }
-  }, [active, activate]);
+  }, [active, activate, setData]);
 
   useEffect(() => {
     setData &&
