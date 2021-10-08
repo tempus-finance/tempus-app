@@ -58,6 +58,7 @@ interface TypographyProps {
   variant: TypographyVariant;
   color?: TypographyColor;
   capitalize?: boolean;
+  align?: 'start' | 'end' | 'left' | 'right' | 'center' | 'justify' | 'match-parent';
 }
 
 const Typography: FC<TypographyProps> = props => {
@@ -85,6 +86,7 @@ const Typography: FC<TypographyProps> = props => {
         ...typographyStyleMap.get(props.variant),
         color: color,
         textTransform: props.capitalize ? 'capitalize' : 'none',
+        textAlign: props.align ? props.align : 'left',
       }}
     >
       {props.children}
