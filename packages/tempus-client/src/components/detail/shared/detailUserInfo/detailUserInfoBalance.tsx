@@ -22,50 +22,32 @@ interface DetailUserInfoBalancesProps {
 }
 
 const DetailUserInfoBalance: FC<DetailUserInfoBalancesProps> = props => {
-  const { poolDataAdapter, signer, userWalletAddress, tempusPool, content } = props;
-  const { address, ammAddress } = tempusPool;
-  const { supportedTokens, availableTokensToDeposit } = content;
+  const { poolDataAdapter, userWalletAddress, tempusPool, content } = props;
+  const { ammAddress } = tempusPool;
+  const { supportedTokens } = content;
 
   const backingTokenTicker = supportedTokens[0];
   const yieldBearingTokenTicker = supportedTokens[1];
 
   const {
-    data: { userCurrentPoolPresentValue, userPrincipalsBalance, userYieldsBalance },
+    data: {
+      userCurrentPoolPresentValue,
+      userBackingTokenBalance,
+      userYieldBearingTokenBalance,
+      userPrincipalsBalance,
+      userYieldsBalance,
+      userLPBalance,
+    },
   } = useContext(Context);
 
-  const [backingTokenValue, setBackingTokenValue] = useState<string>('');
-  const [yieldBearingTokenValue, setYieldBearingTokenValue] = useState<string>('');
   const [lpTokenPrincipalReturnBalance, setLpTokenPrincipalReturn] = useState<BigNumber>(BigNumber.from('0'));
   const [lpTokenYieldReturnBalance, setLpTokenYieldReturn] = useState<BigNumber>(BigNumber.from('0'));
 
-  useMemo(() => {
-    if (!availableTokensToDeposit) {
-      return;
-    }
-
-    setBackingTokenValue(
-      NumberUtils.formatToCurrency(
-        ethers.utils.formatEther(availableTokensToDeposit.backingToken),
-        tempusPool.decimalsForUI,
-      ),
-    );
-    setYieldBearingTokenValue(
-      NumberUtils.formatToCurrency(
-        ethers.utils.formatEther(availableTokensToDeposit.yieldBearingToken),
-        tempusPool.decimalsForUI,
-      ),
-    );
-  }, [availableTokensToDeposit, tempusPool.decimalsForUI]);
-
   useEffect(() => {
     const retrieveBalances = async () => {
-      if (signer && address && ammAddress && poolDataAdapter) {
+      if (ammAddress && poolDataAdapter && userLPBalance) {
         try {
-          const userBalance = await poolDataAdapter.retrieveBalances(address, ammAddress, userWalletAddress, signer);
-          const expectedLPTokenReturn = await poolDataAdapter.getExpectedReturnForLPTokens(
-            ammAddress,
-            userBalance.lpTokensBalance,
-          );
+          const expectedLPTokenReturn = await poolDataAdapter.getExpectedReturnForLPTokens(ammAddress, userLPBalance);
 
           setLpTokenPrincipalReturn(expectedLPTokenReturn.principals);
           setLpTokenYieldReturn(expectedLPTokenReturn.yields);
@@ -76,7 +58,7 @@ const DetailUserInfoBalance: FC<DetailUserInfoBalancesProps> = props => {
     };
 
     retrieveBalances();
-  }, [signer, address, ammAddress, userWalletAddress, poolDataAdapter]);
+  }, [ammAddress, userWalletAddress, poolDataAdapter, userLPBalance]);
 
   const showCurrentPosition = useMemo(() => {
     if (!userPrincipalsBalance || !userYieldsBalance) {
@@ -92,6 +74,23 @@ const DetailUserInfoBalance: FC<DetailUserInfoBalancesProps> = props => {
     }
     return NumberUtils.formatToCurrency(ethers.utils.formatEther(userCurrentPoolPresentValue), 2, '$');
   }, [userCurrentPoolPresentValue]);
+
+  const backingTokenValue = useMemo(() => {
+    if (!userBackingTokenBalance) {
+      return null;
+    }
+    return NumberUtils.formatToCurrency(ethers.utils.formatEther(userBackingTokenBalance), tempusPool.decimalsForUI);
+  }, [userBackingTokenBalance, tempusPool.decimalsForUI]);
+
+  const yieldBearingTokenValue = useMemo(() => {
+    if (!userYieldBearingTokenBalance) {
+      return null;
+    }
+    return NumberUtils.formatToCurrency(
+      ethers.utils.formatEther(userYieldBearingTokenBalance),
+      tempusPool.decimalsForUI,
+    );
+  }, [userYieldBearingTokenBalance, tempusPool.decimalsForUI]);
 
   return (
     <>

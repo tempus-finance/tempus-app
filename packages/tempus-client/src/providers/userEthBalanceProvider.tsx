@@ -1,6 +1,5 @@
 import { useCallback, useContext, useEffect } from 'react';
 import { Context } from '../context';
-import getDefaultProvider from '../services/getDefaultProvider';
 
 const UserETHBalanceProvider = () => {
   const { setData, data } = useContext(Context);
@@ -24,7 +23,11 @@ const UserETHBalanceProvider = () => {
    * Update user ETH balance on each mined block.
    */
   useEffect(() => {
-    const provider = getDefaultProvider();
+    if (!data.userWalletSigner) {
+      return;
+    }
+
+    const provider = data.userWalletSigner.provider;
     provider.on('block', fetchBalance);
 
     return () => {

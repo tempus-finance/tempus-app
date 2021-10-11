@@ -1,7 +1,8 @@
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { BigNumber, ethers } from 'ethers';
 import { JsonRpcSigner } from '@ethersproject/providers';
 import Button from '@material-ui/core/Button';
+import { Context } from '../../../context';
 import { DashboardRowChild, Ticker } from '../../../interfaces';
 import { TempusPool } from '../../../interfaces/TempusPool';
 import PoolDataAdapter from '../../../adapters/PoolDataAdapter';
@@ -34,13 +35,16 @@ type DetailMintOutProps = {};
 type DetailMintProps = DetailMintInProps & DetailMintOutProps;
 
 const DetailMint: FC<DetailMintProps> = props => {
-  const { content, tempusPool, userWalletAddress, signer, poolDataAdapter } = props;
-  const { supportedTokens, backingTokenAddress, yieldBearingTokenAddress } = content;
-  const [backingToken, yieldBearingToken] = supportedTokens;
+  const { content, tempusPool, userWalletAddress, poolDataAdapter } = props;
+  const { supportedTokens } = content;
+  const [backingToken] = supportedTokens;
+
+  const {
+    data: { userBackingTokenBalance, userYieldBearingTokenBalance },
+  } = useContext(Context);
 
   const [selectedToken, setSelectedToken] = useState<Ticker | null>(null);
   const [amount, setAmount] = useState<string>('0');
-  const [balance, setBalance] = useState<BigNumber | null>(null);
   const [estimatedTokens, setEstimatedTokens] = useState<BigNumber | null>(null);
   const [executeDisabled, setExecuteDisabled] = useState<boolean>(backingToken !== 'ETH');
 
@@ -71,45 +75,15 @@ const DetailMint: FC<DetailMintProps> = props => {
    */
   const onPercentageChange = useCallback(
     (event: React.MouseEvent<HTMLButtonElement>) => {
-      if (!balance) {
+      const currentBalance = selectedToken === backingToken ? userBackingTokenBalance : userYieldBearingTokenBalance;
+      if (!currentBalance) {
         return;
       }
       const percentage = ethers.utils.parseEther(event.currentTarget.value);
-      setAmount(ethers.utils.formatEther(mul18f(balance, percentage)));
+      setAmount(ethers.utils.formatEther(mul18f(currentBalance, percentage)));
     },
-    [balance],
+    [backingToken, selectedToken, userBackingTokenBalance, userYieldBearingTokenBalance],
   );
-
-  useEffect(() => {
-    const retrieveBalances = async () => {
-      if (signer && tempusPool.address && tempusPool.ammAddress && poolDataAdapter) {
-        try {
-          let balance: BigNumber | null = null;
-          if (selectedToken === backingToken) {
-            balance = await poolDataAdapter.getTokenBalance(backingTokenAddress, userWalletAddress, signer);
-          } else if (selectedToken === yieldBearingToken) {
-            balance = await poolDataAdapter.getTokenBalance(yieldBearingTokenAddress, userWalletAddress, signer);
-          }
-
-          setBalance(balance);
-        } catch (error) {
-          console.error('DetailMint - retrieveBalances() - Failed to retrieve balance for selected token!', error);
-          return Promise.reject(error);
-        }
-      }
-    };
-    retrieveBalances();
-  }, [
-    tempusPool,
-    userWalletAddress,
-    signer,
-    poolDataAdapter,
-    selectedToken,
-    backingToken,
-    yieldBearingToken,
-    backingTokenAddress,
-    yieldBearingTokenAddress,
-  ]);
 
   const onApproved = useCallback(() => {
     setExecuteDisabled(false);
@@ -156,11 +130,12 @@ const DetailMint: FC<DetailMintProps> = props => {
   }, [amount, backingToken, poolDataAdapter, selectedToken, tempusPool]);
 
   const balanceFormatted = useMemo(() => {
-    if (!balance) {
+    const currentBalance = selectedToken === backingToken ? userBackingTokenBalance : userYieldBearingTokenBalance;
+    if (!currentBalance) {
       return null;
     }
-    return NumberUtils.formatToCurrency(ethers.utils.formatEther(balance), tempusPool.decimalsForUI);
-  }, [balance, tempusPool.decimalsForUI]);
+    return NumberUtils.formatToCurrency(ethers.utils.formatEther(currentBalance), tempusPool.decimalsForUI);
+  }, [backingToken, selectedToken, tempusPool.decimalsForUI, userBackingTokenBalance, userYieldBearingTokenBalance]);
 
   const estimatedTokensFormatted = useMemo(() => {
     if (!estimatedTokens) {
@@ -236,7 +211,9 @@ const DetailMint: FC<DetailMintProps> = props => {
           {selectedToken && selectedToken !== 'ETH' && (
             <>
               <ApproveButton
-                amountToApprove={balance}
+                amountToApprove={
+                  selectedToken === backingToken ? userBackingTokenBalance : userYieldBearingTokenBalance
+                }
                 onApproved={onApproved}
                 poolDataAdapter={poolDataAdapter}
                 spenderAddress={getConfig().tempusControllerContract}

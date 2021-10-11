@@ -1,5 +1,5 @@
-import { FC, useCallback, useState, useEffect, useContext, useMemo } from 'react';
-import { BigNumber, ethers } from 'ethers';
+import { FC, useCallback, useEffect, useContext, useMemo } from 'react';
+import { ethers } from 'ethers';
 import { Web3Provider } from '@ethersproject/providers';
 import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core';
 import { InjectedConnector } from '@web3-react/injected-connector';

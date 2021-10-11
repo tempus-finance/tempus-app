@@ -1,7 +1,8 @@
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { FC, useCallback, useEffect, useMemo, useState, useContext } from 'react';
 import { ethers, BigNumber } from 'ethers';
 import { JsonRpcSigner } from '@ethersproject/providers';
 import Button from '@material-ui/core/Button';
+import { Context } from '../../../context';
 import { DashboardRowChild, PoolShares, Ticker } from '../../../interfaces';
 import { TempusPool } from '../../../interfaces/TempusPool';
 import PoolDataAdapter from '../../../adapters/PoolDataAdapter';
@@ -37,8 +38,12 @@ type DetailSwapOutProps = {};
 type DetailSwapProps = DetailSwapInProps & DetailSwapOutProps;
 
 const DetailSwap: FC<DetailSwapProps> = props => {
-  const { content, userWalletAddress, poolDataAdapter, signer, tempusPool } = props;
+  const { content, userWalletAddress, poolDataAdapter, tempusPool } = props;
   const { principalTokenAddress, yieldTokenAddress } = content;
+
+  const {
+    data: { userPrincipalsBalance, userYieldsBalance },
+  } = useContext(Context);
 
   const [tokenFrom, setTokenFrom] = useState<TokenDetail>({
     tokenName: 'Principals',
@@ -50,7 +55,6 @@ const DetailSwap: FC<DetailSwapProps> = props => {
   });
   const [selectedToken, setSelectedToken] = useState<Ticker>();
   const [amount, setAmount] = useState<string>('0');
-  const [balance, setBalance] = useState<BigNumber | null>(null);
   const [receiveAmount, setReceiveAmount] = useState<BigNumber | null>(null);
 
   const [executeDisabled, setExecuteDisabled] = useState<boolean>(true);
@@ -70,13 +74,14 @@ const DetailSwap: FC<DetailSwapProps> = props => {
    */
   const onPercentageChange = useCallback(
     (event: React.MouseEvent<HTMLButtonElement>) => {
-      if (!balance) {
+      const currentBalance = tokenFrom.tokenName === 'Principals' ? userPrincipalsBalance : userYieldsBalance;
+      if (!currentBalance) {
         return;
       }
       const percentage = ethers.utils.parseEther(event.currentTarget.value);
-      setAmount(ethers.utils.formatEther(mul18f(balance, percentage)));
+      setAmount(ethers.utils.formatEther(mul18f(currentBalance, percentage)));
     },
-    [balance],
+    [tokenFrom.tokenName, userPrincipalsBalance, userYieldsBalance],
   );
 
   const switchTokens = useCallback(() => {
@@ -126,22 +131,6 @@ const DetailSwap: FC<DetailSwapProps> = props => {
     );
   }, [poolDataAdapter, amount, tempusPool.ammAddress, tokenFrom.tokenAddress, tokenTo.tokenAddress, userWalletAddress]);
 
-  // Fetch token from balance
-  useEffect(() => {
-    if (!poolDataAdapter || !signer) {
-      return;
-    }
-    const getBalance = async () => {
-      try {
-        setBalance(await poolDataAdapter.getTokenBalance(tokenFrom.tokenAddress, userWalletAddress, signer));
-      } catch (error) {
-        console.error('DetailSwap - getBalance() - Failed to get token balance!', error);
-        return Promise.reject(error);
-      }
-    };
-    getBalance();
-  }, [poolDataAdapter, signer, tokenFrom, userWalletAddress, setBalance]);
-
   // Fetch receive amount
   useEffect(() => {
     const getReceiveAmount = async () => {
@@ -169,11 +158,12 @@ const DetailSwap: FC<DetailSwapProps> = props => {
   }, [poolDataAdapter, amount, tempusPool, tokenFrom, setReceiveAmount]);
 
   const balanceFormatted = useMemo(() => {
-    if (!balance) {
+    const currentBalance = tokenFrom.tokenName === 'Principals' ? userPrincipalsBalance : userYieldsBalance;
+    if (!currentBalance) {
       return null;
     }
-    return NumberUtils.formatToCurrency(ethers.utils.formatEther(balance), tempusPool.decimalsForUI);
-  }, [balance, tempusPool.decimalsForUI]);
+    return NumberUtils.formatToCurrency(ethers.utils.formatEther(currentBalance), tempusPool.decimalsForUI);
+  }, [tempusPool.decimalsForUI, tokenFrom.tokenName, userPrincipalsBalance, userYieldsBalance]);
 
   const receiveAmountFormatted = useMemo(() => {
     if (!receiveAmount) {
@@ -242,7 +232,7 @@ const DetailSwap: FC<DetailSwapProps> = props => {
         <Spacer size={20} />
         <div className="tf__flex-row-center-vh">
           <ApproveButton
-            amountToApprove={balance}
+            amountToApprove={tokenFrom.tokenName === 'Principals' ? userPrincipalsBalance : userYieldsBalance}
             onApproved={onApproved}
             poolDataAdapter={poolDataAdapter}
             spenderAddress={getConfig().vaultContract}

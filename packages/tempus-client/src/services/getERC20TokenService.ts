@@ -24,12 +24,14 @@ const getERC20TokenService = (
   if (signerOrProvider) {
     const tokenService = ERC20TokenServiceMap.get(address);
 
-    tokenService?.init({
-      Contract: Contract,
-      address: address,
-      abi: ERC20TokenABI,
-      signerOrProvider: signerOrProvider,
-    });
+    if (tokenService?.contract?.signer !== signerOrProvider && tokenService?.contract?.provider !== signerOrProvider) {
+      tokenService?.init({
+        Contract: Contract,
+        address: address,
+        abi: ERC20TokenABI,
+        signerOrProvider: signerOrProvider,
+      });
+    }
   }
 
   const service = ERC20TokenServiceMap.get(address);
