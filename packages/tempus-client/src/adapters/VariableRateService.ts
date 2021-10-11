@@ -64,16 +64,10 @@ class VariableRateService {
   async getAprRate(
     protocol: ProtocolName,
     tempusPoolAddress: string,
-    tempusAMM: string,
-    principalsAddress: string,
-    yieldsAddress: string,
+    yieldBearingTokenAddress: string,
     fees: BigNumber,
   ): Promise<number> {
     if (!this.tempusPoolService) {
-      return Promise.reject();
-    }
-    const poolConfig = getConfig().tempusPools.find(pool => pool.address === tempusPoolAddress);
-    if (!poolConfig) {
       return Promise.reject();
     }
 
@@ -81,11 +75,11 @@ class VariableRateService {
 
     switch (protocol) {
       case 'aave': {
-        return this.getAaveAPR(poolConfig.yieldBearingTokenAddress, feesFormatted);
+        return this.getAaveAPR(yieldBearingTokenAddress, feesFormatted);
       }
 
       case 'compound': {
-        return this.getCompoundAPR(poolConfig.yieldBearingTokenAddress, feesFormatted);
+        return this.getCompoundAPR(yieldBearingTokenAddress, feesFormatted);
       }
 
       case 'lido': {
