@@ -182,7 +182,7 @@ class VaultService {
 
     const estimate = await this.contract.estimateGas.swap(singleSwap, fundManagement, minimumReturn, deadline);
     return this.contract.swap(singleSwap, fundManagement, minimumReturn, deadline, {
-      gasLimit: Math.ceil(estimate.toNumber() * 1.05),
+      gasLimit: Math.ceil(estimate.toNumber() * 1.1),
     });
   }
 
