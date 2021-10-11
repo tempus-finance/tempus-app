@@ -19,8 +19,33 @@ type StatisticsServiceParameters = {
 class StatisticsService {
   private stats: Stats | null = null;
 
+  private coinGeckoCache = new Map<string, { promise: Promise<any>; cachedAt: number }>();
+
   init(params: StatisticsServiceParameters) {
     this.stats = new Contract(params.address, params.abi, params.signerOrProvider) as Stats;
+  }
+
+  public async totalValueLockedInBackingTokens(tempusPool: string, overrides?: CallOverrides) {
+    if (!this.stats) {
+      console.error(
+        'StatisticsService - totalValueLockedInBackingTokens() - Attempted to use statistics contract before initializing it!',
+      );
+      return Promise.reject();
+    }
+
+    try {
+      if (overrides) {
+        return await this.stats.totalValueLockedInBackingTokens(tempusPool, overrides);
+      } else {
+        return await this.stats.totalValueLockedInBackingTokens(tempusPool);
+      }
+    } catch (error) {
+      console.error(
+        'StatisticsService - totalValueLockedInBackingTokens() - Failed to get total value locked in backing tokens!',
+        error,
+      );
+      return Promise.reject(error);
+    }
   }
 
   public async totalValueLockedUSD(
@@ -74,15 +99,28 @@ class StatisticsService {
   }
 
   private async getCoingeckoRate(token: Ticker) {
+    const coinGeckoTokenId = backingTokenToCoingeckoIdMap.get(token);
+    if (!coinGeckoTokenId) {
+      return Promise.reject();
+    }
+
+    const cachedResponse = this.coinGeckoCache.get(coinGeckoTokenId);
+    if (cachedResponse && cachedResponse.cachedAt > Date.now() - 60000) {
+      return ethers.utils.parseEther((await cachedResponse.promise).data.ethereum.usd.toString());
+    }
+
     let value: BigNumber;
     try {
-      const response = await Axios.get<any>(
-        `https://api.coingecko.com/api/v3/simple/price?ids=${backingTokenToCoingeckoIdMap.get(
-          token,
-        )}&vs_currencies=usd`,
+      const promise = Axios.get<any>(
+        `https://api.coingecko.com/api/v3/simple/price?ids=${coinGeckoTokenId}&vs_currencies=usd`,
       );
 
-      value = ethers.utils.parseEther(response.data.ethereum.usd.toString());
+      this.coinGeckoCache.set(coinGeckoTokenId, {
+        promise: promise,
+        cachedAt: Date.now(),
+      });
+
+      value = ethers.utils.parseEther((await promise).data.ethereum.usd.toString());
     } catch (error) {
       console.error(`Failed to get token '${token}' exchange rate from coin gecko!`, error);
       return Promise.reject(error);
