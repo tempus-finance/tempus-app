@@ -19,7 +19,7 @@ const NotificationContainer: FC = () => {
     (id: string) => {
       setTimeout(() => {
         onNotificationDelete(id);
-      }, 5000);
+      }, 7000);
     },
     [onNotificationDelete],
   );

@@ -437,7 +437,7 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
         </ActionContainer>
         <Spacer size={20} />
         <div className="tf__flex-row-center-vh">
-          {selectedToken !== 'ETH' && (
+          {selectedToken && selectedToken !== 'ETH' && (
             <>
               <ApproveButton
                 poolDataAdapter={poolDataAdapter}
