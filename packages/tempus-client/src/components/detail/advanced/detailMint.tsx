@@ -233,7 +233,7 @@ const DetailMint: FC<DetailMintProps> = props => {
         </ActionContainer>
         <Spacer size={20} />
         <div className="tf__flex-row-center-vh">
-          {selectedToken !== 'ETH' && (
+          {selectedToken && selectedToken !== 'ETH' && (
             <>
               <ApproveButton
                 amountToApprove={balance}
