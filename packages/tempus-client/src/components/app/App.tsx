@@ -2,6 +2,7 @@ import { FC, useCallback, useState } from 'react';
 import isMobile from 'is-mobile';
 import { DashboardRowChild } from '../../interfaces';
 import { Context, defaultContextValue } from '../../context';
+import UserETHBalanceProvider from '../../providers/userEthBalanceProvider';
 import Header, { HeaderLinks } from '../header/header';
 import DashboardManager from '../dashboard/dashboard-manager';
 import Analytics from '../analytics/analytics';
@@ -39,6 +40,7 @@ const App: FC = (): JSX.Element => {
             )}
             {activePage === 'Analytics' && <Analytics />}
           </div>
+          <UserETHBalanceProvider />
         </Context.Provider>
       )}
     </>

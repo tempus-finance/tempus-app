@@ -23,11 +23,10 @@ const supportedChainIds = [
 
 const WalletConnect: FC = (): JSX.Element => {
   const {
-    data: { pendingTransactions },
+    data: { pendingTransactions, userEthBalance },
     setData,
   } = useContext(Context);
 
-  const [userEthBalance, setUserEthBalance] = useState<BigNumber>(BigNumber.from('0'));
   const { account, activate, active, library } = useWeb3React<Web3Provider>();
 
   const requestNetworkChange = useCallback(async () => {
@@ -129,24 +128,16 @@ const WalletConnect: FC = (): JSX.Element => {
       }));
   }, [account, library, setData]);
 
-  // Fetch number of ETH user has
-  useEffect(() => {
-    if (!account || !library) {
-      return;
-    }
-
-    const fetchEthBalance = async () => {
-      setUserEthBalance(await library.getBalance(account));
-    };
-    fetchEthBalance();
-  }, [account, library]);
-
   let shortenedAccount;
   if (account) {
     shortenedAccount = shortenAccount(account);
   }
 
   const formattedEthBalance = useMemo(() => {
+    if (!userEthBalance) {
+      return null;
+    }
+
     return NumberUtils.formatToCurrency(ethers.utils.formatEther(userEthBalance), 4);
   }, [userEthBalance]);
 
@@ -157,7 +148,7 @@ const WalletConnect: FC = (): JSX.Element => {
         cursor: active ? 'default' : 'pointer',
       }}
     >
-      {active && (
+      {active && formattedEthBalance && (
         <>
           <Spacer size={15} />
           <Typography variant="h5">ETH {formattedEthBalance}</Typography>
