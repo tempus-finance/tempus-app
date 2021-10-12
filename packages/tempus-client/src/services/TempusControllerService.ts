@@ -81,7 +81,13 @@ class TempusControllerService {
     }
 
     try {
-      return await this.contract.queryFilter(this.contract.filters.Redeemed(forPool, undefined, forUser));
+      const fetchEventsForPool = forPool;
+      const fetchEventsForRedeemer = undefined;
+      const fetchEventsForRecipient = forUser;
+
+      return await this.contract.queryFilter(
+        this.contract.filters.Redeemed(fetchEventsForPool, fetchEventsForRedeemer, fetchEventsForRecipient),
+      );
     } catch (error) {
       console.error(`TempusControllerService getRedeemEvents() - Failed to get redeemed events!`, error);
       return Promise.reject(error);
