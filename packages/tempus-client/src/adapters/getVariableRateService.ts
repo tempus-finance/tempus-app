@@ -3,6 +3,7 @@ import VariableRateService from './VariableRateService';
 import getTempusPoolService from '../services/getTempusPoolService';
 import getTempusAMMService from '../services/getTempusAMMService';
 import getVaultService from '../services/getVaultService';
+import getConfig from '../utils/get-config';
 
 let variableRateService: VariableRateService;
 let actualSignerOrProvider: JsonRpcSigner | JsonRpcProvider;
@@ -18,6 +19,7 @@ const getVariableRateService = (signerOrProvider?: JsonRpcSigner | JsonRpcProvid
       getTempusPoolService(actualSignerOrProvider),
       getVaultService(actualSignerOrProvider),
       getTempusAMMService(actualSignerOrProvider),
+      getConfig(),
     );
   }
 

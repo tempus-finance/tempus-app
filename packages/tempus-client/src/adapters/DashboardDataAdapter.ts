@@ -96,9 +96,7 @@ export default class DashboardDataAdapter {
         this.variableRateService.getAprRate(
           tempusPool.protocol,
           tempusPool.address,
-          tempusPool.ammAddress,
-          tempusPool.principalsAddress,
-          tempusPool.yieldsAddress,
+          tempusPool.yieldBearingTokenAddress,
           fees,
         ),
       ]);

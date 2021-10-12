@@ -5,7 +5,7 @@ import VaultABI from '../abi/Vault.json';
 import { TypedEvent } from '../abi/commons';
 import getDefaultProvider from './getDefaultProvider';
 import TempusAMMService from './TempusAMMService';
-import { SECONDS_IN_AN_HOUR } from '../constants';
+import { provideLiquidityGasIncrease, removeLiquidityGasIncrease, SECONDS_IN_AN_HOUR } from '../constants';
 import getConfig from '../utils/get-config';
 
 type VaultServiceParameters = {
@@ -239,7 +239,7 @@ class VaultService {
         joinPoolRequest,
       );
       return await this.contract.joinPool(poolId, userWalletAddress, userWalletAddress, joinPoolRequest, {
-        gasLimit: Math.ceil(estimate.toNumber() * 1.05),
+        gasLimit: Math.ceil(estimate.toNumber() * provideLiquidityGasIncrease),
       });
     } catch (error) {
       console.error('VaultService - provideLiquidity() - Failed to provide liquidity to tempus pool AMM!', error);
@@ -283,7 +283,7 @@ class VaultService {
         exitPoolRequest,
       );
       return await this.contract.exitPool(poolId, userWalletAddress, userWalletAddress, exitPoolRequest, {
-        gasLimit: Math.ceil(estimate.toNumber() * 1.05),
+        gasLimit: Math.ceil(estimate.toNumber() * removeLiquidityGasIncrease),
       });
     } catch (error) {
       console.error('VaultService - removeLiquidity() - Failed to remove liquidity from tempus pool AMM!', error);
