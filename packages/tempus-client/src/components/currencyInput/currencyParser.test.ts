@@ -2,6 +2,7 @@ import { formatValueToCurrency } from './currencyParser';
 
 describe('formatValueToCurrency()', () => {
   [
+    { value: '', expected: '' },
     { value: '0.237', expected: '0.237' },
     { value: '0.88', expected: '0.88' },
     { value: '0.001', expected: '0.001' },

@@ -5,7 +5,7 @@ export const removeLeadingZeroesRegExp = /^0+/;
 
 export const formatValueToCurrency = (value: string): string => {
   if (!value) {
-    return '0';
+    return '';
   }
 
   value = value.replace(removeLeadingZeroesRegExp, '');

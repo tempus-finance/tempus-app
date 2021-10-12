@@ -13,7 +13,7 @@ import { mul18f } from '../../../utils/wei-math';
 import Typography from '../../typography/Typography';
 import Spacer from '../../spacer/spacer';
 import ScaleIcon from '../../icons/ScaleIcon';
-import CurrencyInput from '../../currencyInput';
+import CurrencyInput from '../../currencyInput/currencyInput';
 import ActionContainer from '../shared/actionContainer';
 import SectionContainer from '../shared/sectionContainer';
 import ApproveButton from '../shared/approveButton';
@@ -44,8 +44,8 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = props => {
   const [principalsPercentage, setPrincipalsPercentage] = useState<number | null>(null);
   const [yieldsPercentage, setYieldsPercentage] = useState<number | null>(null);
 
-  const [principalsAmount, setPrincipalsAmount] = useState<string>('0');
-  const [yieldsAmount, setYieldsAmount] = useState<string>('0');
+  const [principalsAmount, setPrincipalsAmount] = useState<string>('');
+  const [yieldsAmount, setYieldsAmount] = useState<string>('');
 
   const [expectedLPTokens, setExpectedLPTokens] = useState<BigNumber | null>(null);
   const [expectedPoolShare, setExpectedPoolShare] = useState<number | null>(null);
@@ -63,7 +63,7 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = props => {
         return;
       }
       if (amountOfYields.isZero()) {
-        setPrincipalsAmount('0');
+        setPrincipalsAmount('');
         return;
       }
 
@@ -84,7 +84,7 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = props => {
         return;
       }
       if (amountOfPrincipals.isZero()) {
-        setYieldsAmount('0');
+        setYieldsAmount('');
         return;
       }
 
@@ -98,7 +98,7 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = props => {
   const onPrincipalsAmountChange = useCallback(
     (amount: string) => {
       setPrincipalsAmount(amount);
-      setYieldsFromPrincipals(ethers.utils.parseEther(amount));
+      setYieldsFromPrincipals(ethers.utils.parseEther(amount || '0'));
     },
     [setYieldsFromPrincipals],
   );
@@ -106,7 +106,7 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = props => {
   const onYieldsAmountChange = useCallback(
     (amount: string) => {
       setYieldsAmount(amount);
-      setPrincipalsFromYields(ethers.utils.parseEther(amount));
+      setPrincipalsFromYields(ethers.utils.parseEther(amount || '0'));
     },
     [setPrincipalsFromYields],
   );
@@ -167,7 +167,7 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = props => {
   // Fetch estimated LP Token amount
   useEffect(() => {
     const fetchEstimatedLPTokens = async () => {
-      if (!poolDataAdapter) {
+      if (!poolDataAdapter || !principalsAmount || !yieldsAmount) {
         return;
       }
 
