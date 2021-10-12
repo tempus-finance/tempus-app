@@ -3,7 +3,7 @@ import { BigNumber, ethers } from 'ethers';
 import Button from '@material-ui/core/Button';
 import { Ticker } from '../../../interfaces/Token';
 import { DashboardRowChild } from '../../../interfaces';
-import CurrencyInput from '../../currencyInput';
+import CurrencyInput from '../../currencyInput/currencyInput';
 import TokenSelector from '../../tokenSelector';
 import Typography from '../../typography/Typography';
 import ActionContainer from '../shared/actionContainer';
@@ -36,7 +36,7 @@ const DetailRedeemBeforeMaturity: FC<DetailRedeemBeforeMaturityProps> = props =>
     data: { userPrincipalsBalance, userYieldsBalance, userWalletAddress },
   } = useContext(Context);
 
-  const [amount, setAmount] = useState<string>('0');
+  const [amount, setAmount] = useState<string>('');
   const [principalsApproved, setPrincipalsApproved] = useState<boolean>(false);
   const [yieldsApproved, setYieldsApproved] = useState<boolean>(false);
   const [selectedToken, setSelectedToken] = useState<Ticker>(yieldBearingToken);
@@ -114,9 +114,9 @@ const DetailRedeemBeforeMaturity: FC<DetailRedeemBeforeMaturityProps> = props =>
   // Fetch estimated withdraw amount of tokens
   useEffect(() => {
     const retrieveEstimatedWithdrawAmount = async () => {
-      if (poolDataAdapter) {
+      if (poolDataAdapter && amount) {
         try {
-          const amountFormatted = ethers.utils.parseEther(amount.toString());
+          const amountFormatted = ethers.utils.parseEther(amount);
           const toBackingToken = selectedToken === backingToken;
 
           setEstimatedWithdrawAmount(

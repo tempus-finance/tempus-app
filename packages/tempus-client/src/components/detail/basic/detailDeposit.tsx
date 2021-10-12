@@ -8,7 +8,7 @@ import { getDepositNotification } from '../../../services/NotificationService';
 import { Ticker } from '../../../interfaces';
 import { mul18f } from '../../../utils/wei-math';
 import getConfig from '../../../utils/get-config';
-import CurrencyInput from '../../currencyInput';
+import CurrencyInput from '../../currencyInput/currencyInput';
 import TokenSelector from '../../tokenSelector';
 import Typography from '../../typography/Typography';
 import Spacer from '../../spacer/spacer';
@@ -33,7 +33,7 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
   } = useContext(Context);
 
   const [selectedToken, setSelectedToken] = useState<Ticker | null>(null);
-  const [amount, setAmount] = useState<string>('0');
+  const [amount, setAmount] = useState<string>('');
   const [triggerUpdateBalance, setTriggerUpdateBalance] = useState<boolean>(true);
   const [usdRate, setUsdRate] = useState<BigNumber | null>(null);
   const [minTYSRate] = useState<number>(0); // TODO where to get this value?
@@ -53,7 +53,7 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
     (token: Ticker | undefined) => {
       if (!!token) {
         setSelectedToken(token);
-        setAmount('0');
+        setAmount('');
 
         if (backingToken === token) {
           if (backingTokenRate !== null) {
@@ -76,7 +76,7 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
       if (value) {
         setAmount(value);
       } else {
-        setAmount('0');
+        setAmount('');
       }
     },
     [setAmount],

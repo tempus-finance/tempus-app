@@ -25,7 +25,7 @@ const CurrencyInput: FC<CurrencyInputProps> = ({
   const [value, setValue] = useState<string>('');
 
   useEffect(() => {
-    if (defaultValue) {
+    if (defaultValue || defaultValue === '') {
       setValue(formatValueToCurrency(defaultValue));
     }
   }, [defaultValue]);
@@ -34,7 +34,7 @@ const CurrencyInput: FC<CurrencyInputProps> = ({
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const currentValue = event.currentTarget.value;
       const parsedCurrency = formatValueToCurrency(currentValue);
-      if (parsedCurrency) {
+      if (parsedCurrency || parsedCurrency === '') {
         setValue(parsedCurrency);
       }
       onChange && onChange(parsedCurrency.replace(/[^0-9$.]/g, ''));

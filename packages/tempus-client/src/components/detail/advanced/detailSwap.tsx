@@ -12,7 +12,7 @@ import { SwapKind } from '../../../services/VaultService';
 import getConfig from '../../../utils/get-config';
 import { mul18f } from '../../../utils/wei-math';
 import Typography from '../../typography/Typography';
-import CurrencyInput from '../../currencyInput';
+import CurrencyInput from '../../currencyInput/currencyInput';
 import Spacer from '../../spacer/spacer';
 import SectionContainer from '../shared/sectionContainer';
 import ActionContainer from '../shared/actionContainer';
@@ -54,7 +54,7 @@ const DetailSwap: FC<DetailSwapProps> = props => {
     tokenAddress: yieldTokenAddress,
   });
   const [selectedToken, setSelectedToken] = useState<Ticker>();
-  const [amount, setAmount] = useState<string>('0');
+  const [amount, setAmount] = useState<string>('');
   const [receiveAmount, setReceiveAmount] = useState<BigNumber | null>(null);
 
   const [executeDisabled, setExecuteDisabled] = useState<boolean>(true);
@@ -134,10 +134,10 @@ const DetailSwap: FC<DetailSwapProps> = props => {
   // Fetch receive amount
   useEffect(() => {
     const getReceiveAmount = async () => {
-      if (!poolDataAdapter) {
+      if (!poolDataAdapter || !amount) {
         return;
       }
-      const amountParsed = ethers.utils.parseEther(amount.toString());
+      const amountParsed = ethers.utils.parseEther(amount);
       const yieldShareIn = tokenFrom.tokenName === 'Yields';
 
       if (amountParsed.isZero()) {
