@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
+import format from 'date-fns/format';
 import differenceInSeconds from 'date-fns/differenceInSeconds';
 import { dashboardChildMaturityFormat, dashboardParentMaturityFormat } from '../../../constants';
-import { formatDate } from '../../../utils/formatDate';
 import Typography from '../../typography/Typography';
 import ProgressBar from '../../progressBar';
 
@@ -22,8 +22,8 @@ const MaturityFormatter = ({ value, row }: any) => {
     return (
       <div className="tf__dashboard__grid__maturity">
         <Typography color="default" variant="body-text">
-          {formatDate(min, dashboardParentMaturityFormat)}
-          {max && ` - ${formatDate(max, dashboardParentMaturityFormat)}`}
+          {format(min, dashboardParentMaturityFormat)}
+          {max && ` - ${format(max, dashboardParentMaturityFormat)}`}
         </Typography>
       </div>
     );
@@ -32,7 +32,7 @@ const MaturityFormatter = ({ value, row }: any) => {
   return (
     <div className="tf__dashboard__grid__maturity">
       <div className="tf__dashboard__grid__maturity-timeLeft">
-        <div>{formatDate(value[0], dashboardChildMaturityFormat)}</div>
+        <div>{format(value[0], dashboardChildMaturityFormat)}</div>
       </div>
       <ProgressBar value={progressBarValue} />
     </div>
