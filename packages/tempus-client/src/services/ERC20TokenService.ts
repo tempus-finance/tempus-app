@@ -4,7 +4,7 @@ import { ERC20 } from '../abi/ERC20';
 import ERC20ABI from '../abi/ERC20.json';
 import { TypedListener } from '../abi/commons';
 import { Ticker } from '../interfaces';
-import { ZERO_ETH_ADDRESS } from '../constants';
+import { approveGasIncrease, ZERO_ETH_ADDRESS } from '../constants';
 
 export type TransferEventListener = TypedListener<
   [string, string, BigNumber],
@@ -104,7 +104,7 @@ class ERC20TokenService {
 
       const estimate = await this.contract.estimateGas.approve(spenderAddress, amount);
       approveTransaction = await this.contract.approve(spenderAddress, amount, {
-        gasLimit: Math.ceil(estimate.toNumber() * 1.05),
+        gasLimit: Math.ceil(estimate.toNumber() * approveGasIncrease),
       });
     } catch (error) {
       console.log('ERC20TokenService - approve() - Approve transaction failed!', error);
@@ -128,21 +128,15 @@ class ERC20TokenService {
   }
 
   onTransfer(from: string | null, to: string | null, listener: TransferEventListener) {
-    if (!this.contract) {
-      console.error('ERC20TokenService - approve() - Attempted to use ERC20TokenService before initializing it!');
-      return Promise.reject();
+    if (this.contract) {
+      this.contract.on(this.contract.filters.Transfer(from, to), listener);
     }
-
-    this.contract.on(this.contract.filters.Transfer(from, to), listener);
   }
 
   offTransfer(from: string | null, to: string | null, listener: TransferEventListener) {
-    if (!this.contract) {
-      console.error('ERC20TokenService - approve() - Attempted to use ERC20TokenService before initializing it!');
-      return Promise.reject();
+    if (this.contract) {
+      this.contract.off(this.contract.filters.Transfer(from, to), listener);
     }
-
-    this.contract.off(this.contract.filters.Transfer(from, to), listener);
   }
 }
 export default ERC20TokenService;

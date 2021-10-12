@@ -10,6 +10,12 @@ const { JsonRpcProvider } = jest.requireMock('@ethersproject/providers');
 jest.mock('../services/TempusPoolService');
 const TempusPoolService = jest.requireMock('../services/TempusPoolService').default;
 
+jest.mock('../services/VaultService');
+const VaultService = jest.requireMock('../services/VaultService').default;
+
+jest.mock('../services/TempusAMMService');
+const TempusAMMService = jest.requireMock('../services/TempusAMMService').default;
+
 let instance: VariableRate;
 const mockLiquidityRate = eth.BigNumber.from('123000000000000000000000000');
 const mockGetReserveData = jest.fn();
@@ -71,9 +77,11 @@ describe('VariableRate', () => {
   describe('getAprRate(', () => {
     const mockProvider = new JsonRpcProvider();
     const mockTempusPoolService = new TempusPoolService();
+    const mockVaultService = new VaultService();
+    const mockTempusAMMservice = new TempusAMMService();
 
     instance = new VariableRate();
-    instance.init(mockProvider, mockTempusPoolService);
+    instance.init(mockProvider, mockTempusPoolService, mockVaultService, mockTempusAMMservice, getConfig());
 
     test('returns a valid instance', () => {
       expect(instance).toBeInstanceOf(VariableRate);
@@ -87,9 +95,11 @@ describe('VariableRate', () => {
       });
 
       const tempusPoolAddress = 'abc';
+      const yieldBearingTokenAddress = 'ybt-address';
+      const fees = eth.utils.parseEther('0.001');
 
-      const apr = await instance.getAprRate('aave', tempusPoolAddress);
-      expect(apr).toEqual(0.123);
+      const apr = await instance.getAprRate('aave', tempusPoolAddress, yieldBearingTokenAddress, fees);
+      expect(apr).toEqual(0.124);
     });
 
     xtest('returns the APR of `compound` protocol', async () => {
@@ -100,8 +110,10 @@ describe('VariableRate', () => {
       });
 
       const tempusPoolAddress = 'dfg';
+      const yieldBearingTokenAddress = 'ybt-address';
+      const fees = eth.utils.parseEther('0.001');
 
-      const apr = await instance.getAprRate('compound', tempusPoolAddress);
+      const apr = await instance.getAprRate('compound', tempusPoolAddress, yieldBearingTokenAddress, fees);
       expect(apr).toEqual(0.48075880352207445);
     });
 
@@ -114,8 +126,12 @@ describe('VariableRate', () => {
         });
       });
 
-      const apr = await instance.getAprRate('lido');
-      expect(apr).toEqual(9.4608);
+      const tempusPoolAddress = 'dfg';
+      const yieldBearingTokenAddress = 'ybt-address';
+      const fees = eth.utils.parseEther('0.001');
+
+      const apr = await instance.getAprRate('lido', tempusPoolAddress, yieldBearingTokenAddress, fees);
+      expect(apr).toEqual(10.513);
     });
   });
 });

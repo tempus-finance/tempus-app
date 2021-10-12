@@ -16,7 +16,7 @@ import TempusPoolService from '../services/TempusPoolService';
 import VaultService from '../services/VaultService';
 import TempusAMMService from '../services/TempusAMMService';
 import { isPoolBalanceChangedEvent, isSwapEvent } from '../services/EventUtils';
-import { ProtocolName } from '../interfaces';
+import { Config, ProtocolName } from '../interfaces';
 import { wadToDai } from '../utils/rayToDai';
 import getConfig from '../utils/get-config';
 import { div18f, mul18f } from '../utils/wei-math';
@@ -50,10 +50,11 @@ class VariableRateService {
     tempusPoolService: TempusPoolService,
     vaultService: VaultService,
     tempusAMMService: TempusAMMService,
+    config: Config,
   ) {
     if (signerOrProvider) {
       this.aaveLendingPool = new Contract(aaveLendingPoolAddress, AaveLendingPoolABI, signerOrProvider);
-      this.lidoOracle = new Contract(getConfig().lidoOracle, lidoOracleABI.abi, signerOrProvider);
+      this.lidoOracle = new Contract(config.lidoOracle, lidoOracleABI.abi, signerOrProvider);
       this.signerOrProvider = signerOrProvider;
       this.tempusPoolService = tempusPoolService;
       this.vaultService = vaultService;
@@ -64,16 +65,10 @@ class VariableRateService {
   async getAprRate(
     protocol: ProtocolName,
     tempusPoolAddress: string,
-    tempusAMM: string,
-    principalsAddress: string,
-    yieldsAddress: string,
+    yieldBearingTokenAddress: string,
     fees: BigNumber,
   ): Promise<number> {
     if (!this.tempusPoolService) {
-      return Promise.reject();
-    }
-    const poolConfig = getConfig().tempusPools.find(pool => pool.address === tempusPoolAddress);
-    if (!poolConfig) {
       return Promise.reject();
     }
 
@@ -81,11 +76,11 @@ class VariableRateService {
 
     switch (protocol) {
       case 'aave': {
-        return this.getAaveAPR(poolConfig.yieldBearingTokenAddress, feesFormatted);
+        return this.getAaveAPR(yieldBearingTokenAddress, feesFormatted);
       }
 
       case 'compound': {
-        return this.getCompoundAPR(poolConfig.yieldBearingTokenAddress, feesFormatted);
+        return this.getCompoundAPR(yieldBearingTokenAddress, feesFormatted);
       }
 
       case 'lido': {

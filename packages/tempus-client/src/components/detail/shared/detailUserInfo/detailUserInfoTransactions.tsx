@@ -76,11 +76,7 @@ const DetailUserInfoTransactions: FC<DetailUserInfoTransactionsProps> = props =>
           const timeFrameTransactions = transactions.filter(transaction => {
             const eventDate = new Date(transaction.block.timestamp * 1000);
 
-            if (eventDate > timeFrame.from && eventDate <= timeFrame.to) {
-              return true;
-            } else {
-              return false;
-            }
+            return eventDate > timeFrame.from && eventDate <= timeFrame.to;
           });
 
           if (timeFrameTransactions.length === 0) {

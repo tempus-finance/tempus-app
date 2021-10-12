@@ -29,6 +29,9 @@ describe('VaultService', () => {
       return {
         queryFilter: mockQueryFilter,
         swap: mockSwap,
+        estimateGas: {
+          swap: jest.fn().mockResolvedValue(eth.BigNumber.from('1')),
+        },
         filters: {
           Swap: mockSwapFilter,
         },
@@ -107,6 +110,9 @@ describe('VaultService', () => {
       },
       1,
       3601,
+      {
+        gasLimit: 2,
+      },
     );
   });
 
