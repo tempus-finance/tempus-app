@@ -347,22 +347,26 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
                   </div>
                 )}
               </div>
-              <Spacer size={20} />
-              <Button variant="contained" size="small" value="0.25" onClick={onPercentageChange}>
-                25%
-              </Button>
-              <Spacer size={10} />
-              <Button variant="contained" size="small" value="0.5" onClick={onPercentageChange}>
-                50%
-              </Button>
-              <Spacer size={10} />
-              <Button variant="contained" size="small" value="0.75" onClick={onPercentageChange}>
-                75%
-              </Button>
-              <Spacer size={10} />
-              <Button variant="contained" size="small" value="1" onClick={onPercentageChange}>
-                Max
-              </Button>
+              {selectedToken && (
+                <>
+                  <Spacer size={20} />
+                  <Button variant="contained" size="small" value="0.25" onClick={onPercentageChange}>
+                    25%
+                  </Button>
+                  <Spacer size={10} />
+                  <Button variant="contained" size="small" value="0.5" onClick={onPercentageChange}>
+                    50%
+                  </Button>
+                  <Spacer size={10} />
+                  <Button variant="contained" size="small" value="0.75" onClick={onPercentageChange}>
+                    75%
+                  </Button>
+                  <Spacer size={10} />
+                  <Button variant="contained" size="small" value="1" onClick={onPercentageChange}>
+                    Max
+                  </Button>
+                </>
+              )}
             </div>
             <Spacer size={15} />
           </SectionContainer>
