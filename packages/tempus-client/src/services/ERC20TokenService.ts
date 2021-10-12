@@ -128,21 +128,15 @@ class ERC20TokenService {
   }
 
   onTransfer(from: string | null, to: string | null, listener: TransferEventListener) {
-    if (!this.contract) {
-      console.error('ERC20TokenService - approve() - Attempted to use ERC20TokenService before initializing it!');
-      return Promise.reject();
+    if (this.contract) {
+      this.contract.on(this.contract.filters.Transfer(from, to), listener);
     }
-
-    this.contract.on(this.contract.filters.Transfer(from, to), listener);
   }
 
   offTransfer(from: string | null, to: string | null, listener: TransferEventListener) {
-    if (!this.contract) {
-      console.error('ERC20TokenService - approve() - Attempted to use ERC20TokenService before initializing it!');
-      return Promise.reject();
+    if (this.contract) {
+      this.contract.off(this.contract.filters.Transfer(from, to), listener);
     }
-
-    this.contract.off(this.contract.filters.Transfer(from, to), listener);
   }
 }
 export default ERC20TokenService;
