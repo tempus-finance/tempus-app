@@ -21,3 +21,12 @@ export const interestRateProtectionTooltipText =
 
 export const liquidityProvisionTooltipText =
   'Provide liquidity to Tempus to earn extra yield. This function locks your Yield Bearing Token, mints Principals and Yields in exchange, and uses the maximum available number of Principals and Yields to provide liquidity to TempusAMM. This means that you will receive the underlying yield, and the Tempus swap fees, aggregated into one yield.';
+
+export const approveGasIncrease = 1.05;
+export const depositAndFixGasIncrease = 1.05;
+export const depositAndProvideLiquidityGasIncrease = 1.05;
+export const completeExitAndRedeemGasIncrease = 1.05;
+export const depositYieldBearingGasIncrease = 1.05;
+export const depositBackingGasIncrease = 1.05;
+export const provideLiquidityGasIncrease = 1.05;
+export const removeLiquidityGasIncrease = 1.05;

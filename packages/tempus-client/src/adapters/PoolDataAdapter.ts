@@ -759,7 +759,7 @@ export default class PoolDataAdapter {
     }
   }
 
-  async getBackingTokenRate(ticker: Ticker) {
+  async getBackingTokenRate(ticker: Ticker): Promise<BigNumber> {
     if (!this.statisticService) {
       console.error(
         'PoolDataAdapter - getBackingTokenRate() - Attempted to use PoolDataAdapter before initializing it!',
@@ -861,13 +861,11 @@ export default class PoolDataAdapter {
     signer: JsonRpcSigner,
     listener: TransferEventListener,
   ) {
-    if (!this.eRC20TokenServiceGetter) {
-      return;
+    if (this.eRC20TokenServiceGetter) {
+      const tokenContract = this.eRC20TokenServiceGetter(tokenAddress, signer);
+
+      tokenContract.onTransfer(userWalletAddress, null, listener);
     }
-
-    const tokenContract = this.eRC20TokenServiceGetter(tokenAddress, signer);
-
-    tokenContract.onTransfer(userWalletAddress, null, listener);
   }
 
   async getPoolFees(tempusPoolAddress: string, tempusAMMAddress: string): Promise<BigNumber[]> {
@@ -889,7 +887,12 @@ export default class PoolDataAdapter {
     }
   }
 
-  async executeRedeem(tempusPool: string, userWalletAddress: string, amountOfShares: BigNumber, toBacking: boolean) {
+  async executeRedeem(
+    tempusPool: string,
+    userWalletAddress: string,
+    amountOfShares: BigNumber,
+    toBacking: boolean,
+  ): Promise<ContractTransaction> {
     if (!this.tempusControllerService) {
       console.error('PoolDataAdapter - executeRedeem() - Attempted to use PoolDataAdapter before initializing it!');
       return Promise.reject();
@@ -897,9 +900,9 @@ export default class PoolDataAdapter {
 
     if (toBacking) {
       return this.tempusControllerService.redeemToBacking(tempusPool, userWalletAddress, amountOfShares);
-    } else {
-      return this.tempusControllerService.redeemToYieldBearing(tempusPool, userWalletAddress, amountOfShares);
     }
+
+    return this.tempusControllerService.redeemToYieldBearing(tempusPool, userWalletAddress, amountOfShares);
   }
 
   async getPresentValueInBackingTokensForPool(pool: TempusPool, userWalletAddress: string): Promise<BigNumber> {

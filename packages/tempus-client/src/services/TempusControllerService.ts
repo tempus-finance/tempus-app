@@ -4,6 +4,13 @@ import { TempusController } from '../abi/TempusController';
 import TempusControllerABI from '../abi/TempusController.json';
 import { TypedEvent } from '../abi/commons';
 import getConfig from '../utils/get-config';
+import {
+  completeExitAndRedeemGasIncrease,
+  depositAndFixGasIncrease,
+  depositAndProvideLiquidityGasIncrease,
+  depositBackingGasIncrease,
+  depositYieldBearingGasIncrease,
+} from '../constants';
 
 type TempusControllerServiceParameters = {
   Contract: typeof Contract;
@@ -108,7 +115,7 @@ class TempusControllerService {
         );
         return await this.contract.depositAndFix(tempusAMM, tokenAmount, isBackingToken, minTYSRate, {
           value: tokenAmount,
-          gasLimit: Math.ceil(estimate.toNumber() * 1.05),
+          gasLimit: Math.ceil(estimate.toNumber() * depositAndFixGasIncrease),
         });
       } else {
         const estimate = await this.contract.estimateGas.depositAndFix(
@@ -118,7 +125,7 @@ class TempusControllerService {
           minTYSRate,
         );
         return await this.contract.depositAndFix(tempusAMM, tokenAmount, isBackingToken, minTYSRate, {
-          gasLimit: Math.ceil(estimate.toNumber() * 1.05),
+          gasLimit: Math.ceil(estimate.toNumber() * depositAndFixGasIncrease),
         });
       }
     } catch (error) {
@@ -152,7 +159,7 @@ class TempusControllerService {
         );
         return await this.contract.depositAndProvideLiquidity(tempusAMM, tokenAmount, isBackingToken, {
           value: tokenAmount,
-          gasLimit: Math.ceil(estimate.toNumber() * 1.05),
+          gasLimit: Math.ceil(estimate.toNumber() * depositAndProvideLiquidityGasIncrease),
         });
       } else {
         const estimate = await this.contract.estimateGas.depositAndProvideLiquidity(
@@ -161,7 +168,7 @@ class TempusControllerService {
           isBackingToken,
         );
         return await this.contract.depositAndProvideLiquidity(tempusAMM, tokenAmount, isBackingToken, {
-          gasLimit: Math.ceil(estimate.toNumber() * 1.05),
+          gasLimit: Math.ceil(estimate.toNumber() * depositAndProvideLiquidityGasIncrease),
         });
       }
     } catch (error) {
@@ -197,7 +204,7 @@ class TempusControllerService {
         isBackingToken,
       );
       return await this.contract.completeExitAndRedeem(tempusAMM, maxLeftoverSharesParsed, isBackingToken, {
-        gasLimit: Math.ceil(estimate.toNumber() * 1.05),
+        gasLimit: Math.ceil(estimate.toNumber() * completeExitAndRedeemGasIncrease),
       });
     } catch (error) {
       console.error(`TempusControllerService completeExitAndRedeem() - Failed to redeem tokens!`, error);
@@ -216,7 +223,7 @@ class TempusControllerService {
     try {
       const estimate = await this.contract.estimateGas.depositYieldBearing(tempusPool, amount, recipient);
       return await this.contract.depositYieldBearing(tempusPool, amount, recipient, {
-        gasLimit: Math.ceil(estimate.toNumber() * 1.05),
+        gasLimit: Math.ceil(estimate.toNumber() * depositYieldBearingGasIncrease),
       });
     } catch (error) {
       console.error('TempusControllerService - depositYieldBearing() - Failed to deposit yield bearing token!', error);
@@ -244,12 +251,12 @@ class TempusControllerService {
         });
         return await this.contract.depositBacking(tempusPool, amount, recipient, {
           value: amount,
-          gasLimit: Math.ceil(estimate.toNumber() * 1.05),
+          gasLimit: Math.ceil(estimate.toNumber() * depositBackingGasIncrease),
         });
       } else {
         const estimate = await this.contract.estimateGas.depositBacking(tempusPool, amount, recipient);
         return await this.contract.depositBacking(tempusPool, amount, recipient, {
-          gasLimit: Math.ceil(estimate.toNumber() * 1.05),
+          gasLimit: Math.ceil(estimate.toNumber() * depositBackingGasIncrease),
         });
       }
     } catch (error) {

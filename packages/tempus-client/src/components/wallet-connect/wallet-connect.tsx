@@ -40,7 +40,9 @@ const WalletConnect: FC = (): JSX.Element => {
         params: [{ chainId: '0x5' }],
       });
       // If user confirms request, connect the wallet
-      await activate(injectedConnector, undefined, true);
+      const onError = undefined;
+      const shouldThrowErrors = true;
+      await activate(injectedConnector, onError, shouldThrowErrors);
       getNotificationService().notify('Wallet connected', '');
       setData &&
         setData(previousData => ({

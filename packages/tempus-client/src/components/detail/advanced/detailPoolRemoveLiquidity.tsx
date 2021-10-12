@@ -51,11 +51,10 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = ({ content, pool
    */
   const onPercentageChange = useCallback(
     (event: React.MouseEvent<HTMLButtonElement>) => {
-      if (!data.userLPBalance) {
-        return;
+      if (data.userLPBalance) {
+        const percentage = ethers.utils.parseEther(event.currentTarget.value);
+        setAmount(ethers.utils.formatEther(mul18f(data.userLPBalance, percentage)));
       }
-      const percentage = ethers.utils.parseEther(event.currentTarget.value);
-      setAmount(ethers.utils.formatEther(mul18f(data.userLPBalance, percentage)));
     },
     [data.userLPBalance],
   );
