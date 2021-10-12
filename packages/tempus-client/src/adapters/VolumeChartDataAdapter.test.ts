@@ -141,10 +141,10 @@ describe('generateChartData()', () => {
 
     expect(chartData.length).toBe(30);
 
-    expect(chartData[29].value).toBe('90.0');
-    expect(chartData[28].value).toBe('1016.0');
-    expect(chartData[27].value).toBe('52.0');
-    expect(chartData[26].value).toBe('0.0');
+    expect(chartData[29].value).toBe(90);
+    expect(chartData[28].value).toBe(1016);
+    expect(chartData[27].value).toBe(52);
+    expect(chartData[26].value).toBe(0);
 
     expect(Number(chartData[29].valueIncrease).toFixed(2)).toBe('-91.14');
     expect(Number(chartData[28].valueIncrease).toFixed(2)).toBe('1853.85');

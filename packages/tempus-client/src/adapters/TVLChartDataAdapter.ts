@@ -24,9 +24,13 @@ class TVLChartDataAdapter {
   private statisticsService: StatisticsService | null = null;
   private tempusPoolService: TempusPoolService | null = null;
 
+  private signerOrProvider: JsonRpcProvider | JsonRpcSigner | null = null;
+
   public init(params: TVLChartDataAdapterParameters): void {
     this.statisticsService = getStatisticsService(params.signerOrProvider);
     this.tempusPoolService = getTempusPoolService(params.signerOrProvider);
+
+    this.signerOrProvider = params.signerOrProvider;
   }
 
   public async generateChartData(): Promise<ChartDataPoint[]> {
@@ -78,13 +82,19 @@ class TVLChartDataAdapter {
   }
 
   private async fetchDataPointBlocks(): Promise<ethers.providers.Block[]> {
-    const provider = getDefaultProvider();
+    if (!this.signerOrProvider) {
+      return Promise.reject();
+    }
 
     const blockInterval = Math.floor(this.SECONDS_IN_A_DAY / this.AVERAGE_BLOCK_TIME_SECONDS);
 
     let currentBlock: ethers.providers.Block;
     try {
-      currentBlock = await provider.getBlock('latest');
+      if (this.signerOrProvider instanceof JsonRpcProvider) {
+        currentBlock = await this.signerOrProvider.getBlock('latest');
+      } else {
+        currentBlock = await this.signerOrProvider.provider.getBlock('latest');
+      }
     } catch (error) {
       console.error('TVLChartDataAdapter fetchDataPointBlocks() - Failed to fetch latest block data.');
       return Promise.reject(error);
@@ -96,7 +106,11 @@ class TVLChartDataAdapter {
       // Fetch Blocks for previous 29 days (1 block per day)
       for (let i = this.NUMBER_OF_PAST_DAYS; i > 0; i--) {
         const blockToQuery = currentBlock.number - (currentBlock.number % blockInterval) - i * blockInterval;
-        blockFetchPromises.push(provider.getBlock(blockToQuery));
+        if (this.signerOrProvider instanceof JsonRpcProvider) {
+          blockFetchPromises.push(this.signerOrProvider.getBlock(blockToQuery));
+        } else {
+          blockFetchPromises.push(this.signerOrProvider.provider.getBlock(blockToQuery));
+        }
       }
       pastBlocks = await Promise.all(blockFetchPromises);
     } catch (error) {
