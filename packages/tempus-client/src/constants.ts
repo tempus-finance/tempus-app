@@ -30,3 +30,6 @@ export const depositYieldBearingGasIncrease = 1.05;
 export const depositBackingGasIncrease = 1.05;
 export const provideLiquidityGasIncrease = 1.05;
 export const removeLiquidityGasIncrease = 1.05;
+
+export const dashboardParentMaturityFormat = 'MMM yyyy';
+export const dashboardChildMaturityFormat = 'd MMMM yyyy';
