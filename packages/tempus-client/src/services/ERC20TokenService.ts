@@ -23,7 +23,7 @@ type ERC20TokenServiceParameters = {
 };
 
 class ERC20TokenService {
-  private contract: ERC20 | null = null;
+  public contract: ERC20 | null = null;
 
   init(params: ERC20TokenServiceParameters) {
     this.contract = new Contract(params.address, params.abi, params.signerOrProvider) as ERC20;
@@ -127,13 +127,16 @@ class ERC20TokenService {
     }
   }
 
-  async onTransfer(from: string | null, to: string | null, listener: TransferEventListener) {
-    if (!this.contract) {
-      console.error('ERC20TokenService - approve() - Attempted to use ERC20TokenService before initializing it!');
-      return Promise.reject();
+  onTransfer(from: string | null, to: string | null, listener: TransferEventListener) {
+    if (this.contract) {
+      this.contract.on(this.contract.filters.Transfer(from, to), listener);
     }
+  }
 
-    this.contract.on(this.contract.filters.Transfer(from, to), listener);
+  offTransfer(from: string | null, to: string | null, listener: TransferEventListener) {
+    if (this.contract) {
+      this.contract.off(this.contract.filters.Transfer(from, to), listener);
+    }
   }
 }
 export default ERC20TokenService;

@@ -2,6 +2,11 @@ import { FC, useCallback, useState } from 'react';
 import isMobile from 'is-mobile';
 import { DashboardRowChild } from '../../interfaces';
 import { Context, defaultContextValue } from '../../context';
+import UserETHBalanceProvider from '../../providers/userEthBalanceProvider';
+import UserShareTokenBalanceProvider from '../../providers/userShareTokenBalanceProvider';
+import UserBackingTokenBalanceProvider from '../../providers/userBackingTokenBalanceProvider';
+import UserYieldBearingTokenBalanceProvider from '../../providers/userYieldBearingTokenBalanceProvider';
+import UserLiquidityProviderTokenBalanceProvider from '../../providers/userLiquidityProviderTokenBalanceProvider';
 import Header, { HeaderLinks } from '../header/header';
 import DashboardManager from '../dashboard/dashboard-manager';
 import Analytics from '../analytics/analytics';
@@ -39,6 +44,19 @@ const App: FC = (): JSX.Element => {
             )}
             {activePage === 'Analytics' && <Analytics />}
           </div>
+          <UserETHBalanceProvider />
+          <UserShareTokenBalanceProvider
+            tempusPool={contextData.selectedRow ? contextData.selectedRow.tempusPool : null}
+          />
+          <UserBackingTokenBalanceProvider
+            tempusPool={contextData.selectedRow ? contextData.selectedRow.tempusPool : null}
+          />
+          <UserYieldBearingTokenBalanceProvider
+            tempusPool={contextData.selectedRow ? contextData.selectedRow.tempusPool : null}
+          />
+          <UserLiquidityProviderTokenBalanceProvider
+            tempusPool={contextData.selectedRow ? contextData.selectedRow.tempusPool : null}
+          />
         </Context.Provider>
       )}
     </>

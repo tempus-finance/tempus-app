@@ -1,8 +1,9 @@
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { utils, BigNumber, ethers } from 'ethers';
 import Button from '@material-ui/core/Button';
 import { interestRateProtectionTooltipText, liquidityProvisionTooltipText } from '../../../constants';
 import NumberUtils from '../../../services/NumberUtils';
+import { Context } from '../../../context';
 import { getDepositNotification } from '../../../services/NotificationService';
 import { Ticker } from '../../../interfaces';
 import { mul18f } from '../../../utils/wei-math';
@@ -25,21 +26,21 @@ export type SelectedYield = 'Fixed' | 'Variable';
 const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userWalletAddress, poolDataAdapter }) => {
   const { address, ammAddress } = tempusPool || {};
   const { supportedTokens = [], fixedAPR = 0, variableAPY = 0 } = content || {};
-  const [triggerUpdateBalance, setTriggerUpdateBalance] = useState<boolean>(true);
   const [backingToken] = supportedTokens;
+
+  const {
+    data: { userBackingTokenBalance, userYieldBearingTokenBalance },
+  } = useContext(Context);
 
   const [selectedToken, setSelectedToken] = useState<Ticker | null>(null);
   const [amount, setAmount] = useState<string>('0');
-  const [balance, setBalance] = useState<BigNumber | null>(null);
+  const [triggerUpdateBalance, setTriggerUpdateBalance] = useState<boolean>(true);
   const [usdRate, setUsdRate] = useState<BigNumber | null>(null);
   const [minTYSRate] = useState<number>(0); // TODO where to get this value?
 
   const [fixedPrincipalsAmount, setFixedPrincipalsAmount] = useState<BigNumber | null>(null);
   const [variablePrincipalsAmount, setVariablePrincipalsAmount] = useState<BigNumber | null>(null);
   const [variableLpTokensAmount, setVariableLpTokensAmount] = useState<BigNumber | null>(null);
-
-  const [backingTokenBalance, setBackingTokenBalance] = useState<BigNumber | null>(null);
-  const [yieldBearingTokenBalance, setYieldBearingTokenBalance] = useState<BigNumber | null>(null);
 
   const [estimatedFixedApr, setEstimatedFixedApr] = useState<BigNumber | null>(null);
   const [selectedYield, setSelectedYield] = useState<SelectedYield>('Fixed');
@@ -55,36 +56,19 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
         setAmount('0');
 
         if (backingToken === token) {
-          if (backingTokenBalance !== null) {
-            setBalance(backingTokenBalance);
-          }
-
           if (backingTokenRate !== null) {
             setUsdRate(backingTokenRate);
           }
         }
 
         if (backingToken !== token) {
-          if (yieldBearingTokenBalance !== null) {
-            setBalance(yieldBearingTokenBalance);
-          }
-
           if (yieldBearingTokenRate !== null) {
             setUsdRate(yieldBearingTokenRate);
           }
         }
       }
     },
-    [
-      backingToken,
-      backingTokenBalance,
-      backingTokenRate,
-      yieldBearingTokenRate,
-      yieldBearingTokenBalance,
-      setSelectedToken,
-      setBalance,
-      setAmount,
-    ],
+    [backingToken, backingTokenRate, yieldBearingTokenRate, setSelectedToken, setAmount],
   );
 
   const onAmountChange = useCallback(
@@ -104,13 +88,23 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
    */
   const onPercentageChange = useCallback(
     (event: React.MouseEvent<HTMLButtonElement>) => {
-      if (!balance) {
-        return;
+      let currentBalance: BigNumber;
+      if (selectedToken === backingToken) {
+        if (!userBackingTokenBalance) {
+          return;
+        }
+        currentBalance = userBackingTokenBalance;
+      } else {
+        if (!userYieldBearingTokenBalance) {
+          return;
+        }
+        currentBalance = userYieldBearingTokenBalance;
       }
+
       const percentage = ethers.utils.parseEther(event.currentTarget.value);
-      setAmount(ethers.utils.formatEther(mul18f(balance, percentage)));
+      setAmount(ethers.utils.formatEther(mul18f(currentBalance, percentage)));
     },
-    [balance],
+    [backingToken, selectedToken, userBackingTokenBalance, userYieldBearingTokenBalance],
   );
 
   const onSelectYield = useCallback(
@@ -168,26 +162,11 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
     const retrieveBalances = async () => {
       if (signer && address && ammAddress && poolDataAdapter) {
         try {
-          const { backingTokenBalance, backingTokenRate, yieldBearingTokenBalance, yieldBearingTokenRate } =
+          const { backingTokenRate, yieldBearingTokenRate } =
             (await poolDataAdapter?.retrieveBalances(address, ammAddress, userWalletAddress, signer)) || {};
-
-          if (backingTokenBalance) {
-            setBackingTokenBalance(backingTokenBalance);
-
-            if (backingToken === selectedToken) {
-              setBalance(backingTokenBalance);
-            }
-          }
 
           if (backingTokenRate) {
             setBackingTokenRate(backingTokenRate);
-          }
-
-          if (yieldBearingTokenBalance) {
-            setYieldBearingTokenBalance(yieldBearingTokenBalance);
-            if (backingToken !== selectedToken) {
-              setBalance(yieldBearingTokenBalance);
-            }
           }
 
           if (yieldBearingTokenRate) {
@@ -214,10 +193,8 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
     ammAddress,
     userWalletAddress,
     poolDataAdapter,
-    setBackingTokenBalance,
     setBackingTokenRate,
     setYieldBearingTokenRate,
-    setYieldBearingTokenBalance,
     setTriggerUpdateBalance,
   ]);
 
@@ -292,12 +269,19 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
   }, [variableLpTokensAmount, tempusPool.decimalsForUI]);
 
   const balanceFormatted = useMemo(() => {
-    if (!balance) {
+    let currentBalance: BigNumber | null;
+    if (selectedToken === backingToken) {
+      currentBalance = userBackingTokenBalance;
+    } else {
+      currentBalance = userYieldBearingTokenBalance;
+    }
+
+    if (!currentBalance) {
       return null;
     }
 
-    return NumberUtils.formatToCurrency(utils.formatEther(balance), tempusPool.decimalsForUI);
-  }, [balance, tempusPool.decimalsForUI]);
+    return NumberUtils.formatToCurrency(utils.formatEther(currentBalance), tempusPool.decimalsForUI);
+  }, [backingToken, selectedToken, tempusPool.decimalsForUI, userBackingTokenBalance, userYieldBearingTokenBalance]);
 
   const usdValueFormatted = useMemo(() => {
     if (!usdRate || !amount) {
@@ -447,7 +431,9 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
                     : content.yieldBearingTokenAddress
                 }
                 spenderAddress={getConfig().tempusControllerContract}
-                amountToApprove={balance}
+                amountToApprove={
+                  backingToken === selectedToken ? userBackingTokenBalance : userYieldBearingTokenBalance
+                }
                 tokenTicker={selectedToken}
                 disabled={!amount || amount === '0'}
                 onApproved={onApproved}

@@ -2,7 +2,6 @@ import { utils, BigNumber } from 'ethers';
 import { FC, ChangeEvent, useEffect, useCallback, useContext, useState } from 'react';
 import Switch from '@material-ui/core/Switch';
 import { formatDate } from '../../utils/formatDate';
-import { TransferEventListener } from '../../services/ERC20TokenService';
 import NumberUtils from '../../services/NumberUtils';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
 import PoolDataAdapter from '../../adapters/PoolDataAdapter';
@@ -60,14 +59,19 @@ const Detail: FC<DetailProps> = ({ content, onClose }) => {
         return;
       }
 
-      const [principalsBalance, yieldsBalance, lpBalance] = await Promise.all([
-        poolDataAdapter.getTokenBalance(content.principalTokenAddress, userWalletAddress, userWalletSigner),
-        poolDataAdapter.getTokenBalance(content.yieldTokenAddress, userWalletAddress, userWalletSigner),
-        poolDataAdapter.getTokenBalance(tempusPool.ammAddress, userWalletAddress, userWalletSigner),
-      ]);
+      const [backingTokenBalance, yieldBearingTokenBalance, principalsBalance, yieldsBalance, lpBalance] =
+        await Promise.all([
+          poolDataAdapter.getTokenBalance(content.backingTokenAddress, userWalletAddress, userWalletSigner),
+          poolDataAdapter.getTokenBalance(content.yieldBearingTokenAddress, userWalletAddress, userWalletSigner),
+          poolDataAdapter.getTokenBalance(content.principalTokenAddress, userWalletAddress, userWalletSigner),
+          poolDataAdapter.getTokenBalance(content.yieldTokenAddress, userWalletAddress, userWalletSigner),
+          poolDataAdapter.getTokenBalance(tempusPool.ammAddress, userWalletAddress, userWalletSigner),
+        ]);
 
       setData(previousData => ({
         ...previousData,
+        userBackingTokenBalance: backingTokenBalance,
+        userYieldBearingTokenBalance: yieldBearingTokenBalance,
         userPrincipalsBalance: principalsBalance,
         userYieldsBalance: yieldsBalance,
         userLPBalance: lpBalance,
@@ -77,6 +81,8 @@ const Detail: FC<DetailProps> = ({ content, onClose }) => {
   }, [
     setData,
     poolDataAdapter,
+    content.backingTokenAddress,
+    content.yieldBearingTokenAddress,
     content.principalTokenAddress,
     content.yieldTokenAddress,
     tempusPool.ammAddress,
@@ -100,252 +106,6 @@ const Detail: FC<DetailProps> = ({ content, onClose }) => {
 
     getPoolFees();
   }, [address, ammAddress, setPoolFees, poolDataAdapter]);
-
-  const onBackingTokenReceived: TransferEventListener = useCallback(
-    (from, to, value) => {
-      if (!setData) {
-        return;
-      }
-
-      setData(previousData => {
-        if (!previousData.userBackingTokenBalance) {
-          return previousData;
-        }
-        return {
-          ...previousData,
-          userBackingTokenBalance: previousData.userBackingTokenBalance.add(value),
-        };
-      });
-    },
-    [setData],
-  );
-
-  const onBackingTokenSent: TransferEventListener = useCallback(
-    (from, to, value) => {
-      if (!setData) {
-        return;
-      }
-
-      setData(previousData => {
-        if (!previousData.userBackingTokenBalance) {
-          return previousData;
-        }
-        return {
-          ...previousData,
-          userBackingTokenBalance: previousData.userBackingTokenBalance.sub(value),
-        };
-      });
-    },
-    [setData],
-  );
-
-  const onYieldBearingTokenReceived: TransferEventListener = useCallback(
-    (from, to, value) => {
-      if (!setData) {
-        return;
-      }
-
-      setData(previousData => {
-        if (!previousData.userYieldBearingTokenBalance) {
-          return previousData;
-        }
-        return {
-          ...previousData,
-          userYieldBearingTokenBalance: previousData.userYieldBearingTokenBalance.add(value),
-        };
-      });
-    },
-    [setData],
-  );
-
-  const onYieldBearingTokenSent: TransferEventListener = useCallback(
-    (from, to, value) => {
-      if (!setData) {
-        return;
-      }
-
-      setData(previousData => {
-        if (!previousData.userYieldBearingTokenBalance) {
-          return previousData;
-        }
-        return {
-          ...previousData,
-          userYieldBearingTokenBalance: previousData.userYieldBearingTokenBalance.sub(value),
-        };
-      });
-    },
-    [setData],
-  );
-
-  const onPrincipalsReceived: TransferEventListener = useCallback(
-    (from, to, value) => {
-      if (!setData) {
-        return;
-      }
-
-      setData(previousData => {
-        if (!previousData.userPrincipalsBalance) {
-          return previousData;
-        }
-        return {
-          ...previousData,
-          userPrincipalsBalance: previousData.userPrincipalsBalance.add(value),
-        };
-      });
-    },
-    [setData],
-  );
-
-  const onPrincipalsSent: TransferEventListener = useCallback(
-    (from, to, value) => {
-      if (!setData) {
-        return;
-      }
-
-      setData(previousData => {
-        if (!previousData.userPrincipalsBalance) {
-          return previousData;
-        }
-        return {
-          ...previousData,
-          userPrincipalsBalance: previousData.userPrincipalsBalance.sub(value),
-        };
-      });
-    },
-    [setData],
-  );
-
-  const onYieldsReceived: TransferEventListener = useCallback(
-    (from, to, value) => {
-      if (!setData) {
-        return;
-      }
-
-      setData(previousData => {
-        if (!previousData.userYieldsBalance) {
-          return previousData;
-        }
-        return {
-          ...previousData,
-          userYieldsBalance: previousData.userYieldsBalance.add(value),
-        };
-      });
-    },
-    [setData],
-  );
-
-  const onYieldsSent: TransferEventListener = useCallback(
-    (from, to, value) => {
-      if (!setData) {
-        return;
-      }
-
-      setData(previousData => {
-        if (!previousData.userYieldsBalance) {
-          return previousData;
-        }
-        return {
-          ...previousData,
-          userYieldsBalance: previousData.userYieldsBalance.sub(value),
-        };
-      });
-    },
-    [setData],
-  );
-
-  const onLPReceived: TransferEventListener = useCallback(
-    (from, to, value) => {
-      if (!setData) {
-        return;
-      }
-
-      setData(previousData => {
-        if (!previousData.userLPBalance) {
-          return previousData;
-        }
-        return {
-          ...previousData,
-          userLPBalance: previousData.userLPBalance.add(value),
-        };
-      });
-    },
-    [setData],
-  );
-
-  const onLPSent: TransferEventListener = useCallback(
-    (from, to, value) => {
-      if (!setData) {
-        return;
-      }
-
-      setData(previousData => {
-        if (!previousData.userLPBalance) {
-          return previousData;
-        }
-        return {
-          ...previousData,
-          userLPBalance: previousData.userLPBalance.sub(value),
-        };
-      });
-    },
-    [setData],
-  );
-
-  // Subscribe to token balance updates
-  useEffect(() => {
-    if (!poolDataAdapter || !userWalletSigner) {
-      return;
-    }
-    poolDataAdapter.onTokenReceived(
-      content.backingTokenAddress,
-      userWalletAddress,
-      userWalletSigner,
-      onBackingTokenReceived,
-    );
-    poolDataAdapter.onTokenReceived(
-      content.yieldBearingTokenAddress,
-      userWalletAddress,
-      userWalletSigner,
-      onYieldBearingTokenReceived,
-    );
-    poolDataAdapter.onTokenReceived(
-      content.principalTokenAddress,
-      userWalletAddress,
-      userWalletSigner,
-      onPrincipalsReceived,
-    );
-    poolDataAdapter.onTokenReceived(content.yieldTokenAddress, userWalletAddress, userWalletSigner, onYieldsReceived);
-    poolDataAdapter.onTokenReceived(tempusPool.ammAddress, userWalletAddress, userWalletSigner, onLPReceived);
-    poolDataAdapter.onTokenSent(content.backingTokenAddress, userWalletAddress, userWalletSigner, onBackingTokenSent);
-    poolDataAdapter.onTokenSent(
-      content.yieldBearingTokenAddress,
-      userWalletAddress,
-      userWalletSigner,
-      onYieldBearingTokenSent,
-    );
-    poolDataAdapter.onTokenSent(content.principalTokenAddress, userWalletAddress, userWalletSigner, onPrincipalsSent);
-    poolDataAdapter.onTokenSent(content.yieldTokenAddress, userWalletAddress, userWalletSigner, onYieldsSent);
-    poolDataAdapter.onTokenSent(tempusPool.ammAddress, userWalletAddress, userWalletSigner, onLPSent);
-  }, [
-    onPrincipalsReceived,
-    onYieldsReceived,
-    onLPReceived,
-    poolDataAdapter,
-    content.principalTokenAddress,
-    content.yieldTokenAddress,
-    tempusPool.ammAddress,
-    userWalletSigner,
-    userWalletAddress,
-    onPrincipalsSent,
-    onYieldsSent,
-    onLPSent,
-    content.backingTokenAddress,
-    content.yieldBearingTokenAddress,
-    onBackingTokenReceived,
-    onYieldBearingTokenReceived,
-    onBackingTokenSent,
-    onYieldBearingTokenSent,
-  ]);
 
   return (
     <div className="tf__detail__section__container">
