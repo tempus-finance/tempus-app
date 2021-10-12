@@ -5,7 +5,7 @@ import { Ticker } from '../../../interfaces/Token';
 import ConnectingArrow from '../shared/connectingArrow';
 import ActionContainer from '../shared/actionContainer';
 import ActionContainerGrid from '../shared/actionContainerGrid';
-import CurrencyInput from '../../currencyInput';
+import CurrencyInput from '../../currencyInput/currencyInput';
 import TokenSelector from '../../tokenSelector';
 import Execute from '../shared/execute';
 

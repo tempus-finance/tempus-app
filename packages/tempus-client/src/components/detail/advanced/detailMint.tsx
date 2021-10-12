@@ -12,7 +12,7 @@ import { mul18f } from '../../../utils/wei-math';
 import Typography from '../../typography/Typography';
 import Spacer from '../../spacer/spacer';
 import TokenSelector from '../../tokenSelector';
-import CurrencyInput from '../../currencyInput';
+import CurrencyInput from '../../currencyInput/currencyInput';
 import ActionContainer from '../shared/actionContainer';
 import SectionContainer from '../shared/sectionContainer';
 import PlusIconContainer from '../shared/plusIconContainer';
@@ -44,7 +44,7 @@ const DetailMint: FC<DetailMintProps> = props => {
   } = useContext(Context);
 
   const [selectedToken, setSelectedToken] = useState<Ticker | null>(null);
-  const [amount, setAmount] = useState<string>('0');
+  const [amount, setAmount] = useState<string>('');
   const [estimatedTokens, setEstimatedTokens] = useState<BigNumber | null>(null);
   const [executeDisabled, setExecuteDisabled] = useState<boolean>(backingToken !== 'ETH');
 
@@ -63,7 +63,7 @@ const DetailMint: FC<DetailMintProps> = props => {
       if (amount) {
         setAmount(amount);
       } else {
-        setAmount('0');
+        setAmount('');
       }
     },
     [setAmount],
@@ -112,11 +112,11 @@ const DetailMint: FC<DetailMintProps> = props => {
   // Fetch estimated tokens returned
   useEffect(() => {
     const getEstimates = async () => {
-      if (!poolDataAdapter) {
+      if (!poolDataAdapter || !amount) {
         return;
       }
       const isBackingToken = selectedToken === backingToken;
-      const amountParsed = ethers.utils.parseEther(amount.toString());
+      const amountParsed = ethers.utils.parseEther(amount);
 
       try {
         setEstimatedTokens(

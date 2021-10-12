@@ -10,7 +10,7 @@ import PoolDataAdapter from '../../../adapters/PoolDataAdapter';
 import getConfig from '../../../utils/get-config';
 import { mul18f } from '../../../utils/wei-math';
 import Typography from '../../typography/Typography';
-import CurrencyInput from '../../currencyInput';
+import CurrencyInput from '../../currencyInput/currencyInput';
 import Spacer from '../../spacer/spacer';
 import ActionContainer from '../shared/actionContainer';
 import SectionContainer from '../shared/sectionContainer';
@@ -31,7 +31,7 @@ type DetailPoolAddLiquidityProps = DetailPoolAddLiquidityInProps & DetailPoolAdd
 const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = ({ content, poolDataAdapter, tempusPool }) => {
   const { data } = useContext(Context);
 
-  const [amount, setAmount] = useState<string>('0');
+  const [amount, setAmount] = useState<string>('');
   const [estimatedPrincipals, setEstimatedPrincipals] = useState<BigNumber | null>(null);
   const [estimatedYields, setEstimatedYields] = useState<BigNumber | null>(null);
   const [executeDisabled, setExecuteDisabled] = useState<boolean>(true);
@@ -62,14 +62,14 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = ({ content, pool
   // Fetch estimated share tokens returned
   useEffect(() => {
     const getTokensEstimate = async () => {
-      if (!poolDataAdapter) {
+      if (!poolDataAdapter || !amount) {
         return;
       }
 
       try {
         const estimate = await poolDataAdapter.getExpectedReturnForLPTokens(
           tempusPool.ammAddress,
-          ethers.utils.parseEther(amount.toString()),
+          ethers.utils.parseEther(amount),
         );
         setEstimatedPrincipals(estimate.principals);
         setEstimatedYields(estimate.yields);
