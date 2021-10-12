@@ -81,7 +81,7 @@ describe('VariableRate', () => {
     const mockTempusAMMservice = new TempusAMMService();
 
     instance = new VariableRate();
-    instance.init(mockProvider, mockTempusPoolService, mockVaultService, mockTempusAMMservice);
+    instance.init(mockProvider, mockTempusPoolService, mockVaultService, mockTempusAMMservice, getConfig());
 
     test('returns a valid instance', () => {
       expect(instance).toBeInstanceOf(VariableRate);
