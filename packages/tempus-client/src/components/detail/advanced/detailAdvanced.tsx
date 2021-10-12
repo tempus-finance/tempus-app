@@ -35,7 +35,7 @@ const DetailAdvanced: FC<DetailAdvancedProps> = (props: DetailAdvancedProps) => 
     setTab(value);
   };
 
-  const userHasBalance = useMemo(() => {
+  const isBalancePositive = useMemo(() => {
     if (userPrincipalsBalance && userYieldsBalance && userLPBalance) {
       return !userPrincipalsBalance.isZero() || !userYieldsBalance.isZero() || !userLPBalance.isZero();
     }
@@ -52,7 +52,7 @@ const DetailAdvanced: FC<DetailAdvancedProps> = (props: DetailAdvancedProps) => 
           }
           className="tf__tab"
         />
-        {userHasBalance && (
+        {isBalancePositive && (
           <Tab
             label={
               <Typography color="default" variant="h3">
@@ -62,7 +62,7 @@ const DetailAdvanced: FC<DetailAdvancedProps> = (props: DetailAdvancedProps) => 
             className="tf__tab"
           />
         )}
-        {userHasBalance && (
+        {isBalancePositive && (
           <Tab
             label={
               <Typography color="default" variant="h3">
@@ -72,7 +72,7 @@ const DetailAdvanced: FC<DetailAdvancedProps> = (props: DetailAdvancedProps) => 
             className="tf__tab"
           />
         )}
-        {userHasBalance && (
+        {isBalancePositive && (
           <Tab
             label={
               <Typography color="default" variant="h3">
@@ -93,7 +93,7 @@ const DetailAdvanced: FC<DetailAdvancedProps> = (props: DetailAdvancedProps) => 
           userWalletAddress={userWalletAddress}
         />
       )}
-      {tab === 1 && userHasBalance && (
+      {tab === 1 && isBalancePositive && (
         <DetailSwap
           content={content}
           userWalletAddress={userWalletAddress}
@@ -102,7 +102,7 @@ const DetailAdvanced: FC<DetailAdvancedProps> = (props: DetailAdvancedProps) => 
           tempusPool={tempusPool}
         />
       )}
-      {tab === 2 && userHasBalance && (
+      {tab === 2 && isBalancePositive && (
         <DetailPool
           content={content}
           poolDataAdapter={poolDataAdapter}
@@ -111,7 +111,7 @@ const DetailAdvanced: FC<DetailAdvancedProps> = (props: DetailAdvancedProps) => 
           tempusPool={tempusPool}
         />
       )}
-      {tab === 3 && userHasBalance && (
+      {tab === 3 && isBalancePositive && (
         <DetailRedeem content={content} poolDataAdapter={poolDataAdapter} tempusPool={tempusPool} />
       )}
     </>
