@@ -196,25 +196,6 @@
     "type": "function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "fixed18amount",
-        "type": "uint256"
-      }
-    ],
-    "name": "fixed18ToYieldTokenAmount",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "pure",
-    "type": "function"
-  },
-  {
     "inputs": [],
     "name": "getFeesConfig",
     "outputs": [
@@ -380,7 +361,7 @@
         "type": "uint256"
       }
     ],
-    "stateMutability": "view",
+    "stateMutability": "pure",
     "type": "function"
   },
   {
@@ -634,6 +615,11 @@
     "inputs": [
       {
         "internalType": "address",
+        "name": "authorizer",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
         "name": "recipient",
         "type": "address"
       }
@@ -693,25 +679,6 @@
       }
     ],
     "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "yieldTokens",
-        "type": "uint256"
-      }
-    ],
-    "name": "yieldTokenAmountToFixed18",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "pure",
     "type": "function"
   }
 ]

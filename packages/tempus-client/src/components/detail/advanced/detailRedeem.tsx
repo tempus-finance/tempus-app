@@ -1,34 +1,23 @@
-import { FC, MouseEvent, useCallback, useState } from 'react';
-import ToggleButton from '@material-ui/lab/ToggleButton';
-import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
-import DetailEarlyRedeem from './detailEarlyRedeem';
-import DetailNormalRedeem from './detailNormalRedeem';
+import { FC } from 'react';
+import PoolDataAdapter from '../../../adapters/PoolDataAdapter';
+import { DashboardRowChild } from '../../../interfaces';
+import { TempusPool } from '../../../interfaces/TempusPool';
+import DetailRedeemBeforeMaturity from './detailRedeemBeforeMaturity';
 
 type DetailRedeemProps = {
-  content?: any;
-  selectedTab: number;
+  content: DashboardRowChild;
+  poolDataAdapter: PoolDataAdapter | null;
+  tempusPool: TempusPool;
 };
 
-const DetailRedeem: FC<DetailRedeemProps> = ({ content, selectedTab }) => {
-  const [view, setView] = useState<string>('early');
-
-  const switchView = useCallback(
-    (event: MouseEvent<HTMLElement>, value) => {
-      setView(value);
-    },
-    [setView],
-  );
+const DetailRedeem: FC<DetailRedeemProps> = props => {
+  const { content, poolDataAdapter, tempusPool } = props;
 
   return (
-    <div role="tabpanel" hidden={selectedTab !== 3}>
+    <div role="tabpanel">
       <div className="tf__dialog__content-tab">
-        <div className="tf__dialog__swap-tab">
-          <ToggleButtonGroup value={view} exclusive onChange={switchView} size="small">
-            <ToggleButton value="early">Early Redeem</ToggleButton>
-            <ToggleButton value="redeem">Redeem</ToggleButton>
-          </ToggleButtonGroup>
-        </div>
-        {view === 'early' ? <DetailEarlyRedeem content={content} /> : <DetailNormalRedeem content={content} />}
+        {/* TODO - Check if pool matured, if it did, show DetailRedeemAfterMaturityUI */}
+        <DetailRedeemBeforeMaturity content={content} poolDataAdapter={poolDataAdapter} tempusPool={tempusPool} />
       </div>
     </div>
   );

@@ -3,12 +3,12 @@ import { BigNumber, ethers } from 'ethers';
 import { Palette, SelectionState, SeriesRef } from '@devexpress/dx-react-chart';
 import { Chart, PieSeries } from '@devexpress/dx-react-chart-material-ui';
 import { Context } from '../../../../context';
+import { TempusPool } from '../../../../interfaces/TempusPool';
 import { div18f } from '../../../../utils/wei-math';
 import NumberUtils from '../../../../services/NumberUtils';
 import Spacer from '../../../spacer/spacer';
 import Typography from '../../../typography/Typography';
 import LegendDotSolid from '../legendDotSolid';
-import LegendDotGradient from '../legendDotGradient';
 
 interface UserBalanceChartDataPoint {
   name: string;
@@ -19,10 +19,11 @@ interface UserBalanceChartDataPoint {
 interface DetailUserInfoBalanceChartProps {
   lpTokenPrincipalReturnBalance: BigNumber;
   lpTokenYieldReturnBalance: BigNumber;
+  tempusPool: TempusPool;
 }
 
 const DetailUserInfoBalanceChart: FC<DetailUserInfoBalanceChartProps> = props => {
-  const { lpTokenPrincipalReturnBalance, lpTokenYieldReturnBalance } = props;
+  const { lpTokenPrincipalReturnBalance, lpTokenYieldReturnBalance, tempusPool } = props;
 
   const {
     data: { userPrincipalsBalance, userYieldsBalance },
@@ -38,16 +39,28 @@ const DetailUserInfoBalanceChart: FC<DetailUserInfoBalanceChartProps> = props =>
 
   useMemo(() => {
     setPrincipalShareValue(
-      userPrincipalsBalance ? NumberUtils.formatToCurrency(ethers.utils.formatEther(userPrincipalsBalance), 2) : '-',
+      userPrincipalsBalance
+        ? NumberUtils.formatToCurrency(ethers.utils.formatEther(userPrincipalsBalance.add(lpTokenPrincipalReturnBalance)), tempusPool.decimalsForUI)
+        : '-',
     );
     setYieldShareValue(
-      userYieldsBalance ? NumberUtils.formatToCurrency(ethers.utils.formatEther(userYieldsBalance), 2) : '-',
+      userYieldsBalance
+        ? NumberUtils.formatToCurrency(ethers.utils.formatEther(userYieldsBalance.add(lpTokenYieldReturnBalance)), tempusPool.decimalsForUI)
+        : '-',
     );
     setLpTokenPrincipalReturnValue(
-      NumberUtils.formatToCurrency(ethers.utils.formatEther(lpTokenPrincipalReturnBalance), 2),
+      NumberUtils.formatToCurrency(ethers.utils.formatEther(lpTokenPrincipalReturnBalance), tempusPool.decimalsForUI),
     );
-    setLpTokenYieldReturnValue(NumberUtils.formatToCurrency(ethers.utils.formatEther(lpTokenYieldReturnBalance), 2));
-  }, [lpTokenPrincipalReturnBalance, lpTokenYieldReturnBalance, userPrincipalsBalance, userYieldsBalance]);
+    setLpTokenYieldReturnValue(
+      NumberUtils.formatToCurrency(ethers.utils.formatEther(lpTokenYieldReturnBalance), tempusPool.decimalsForUI),
+    );
+  }, [
+    lpTokenPrincipalReturnBalance,
+    lpTokenYieldReturnBalance,
+    userPrincipalsBalance,
+    userYieldsBalance,
+    tempusPool.decimalsForUI,
+  ]);
 
   useMemo(() => {
     if (!userPrincipalsBalance || !userYieldsBalance) {
@@ -69,23 +82,21 @@ const DetailUserInfoBalanceChart: FC<DetailUserInfoBalanceChartProps> = props =>
         color: '#FF6B00',
       },
       {
-        name: 'Yields',
-        percentage: Number(ethers.utils.formatEther(div18f(userYieldsBalance, totalValue))),
-        color: '#288195',
-      },
-      {
         name: 'LP Token - Principals',
         percentage: Number(ethers.utils.formatEther(div18f(lpTokenPrincipalReturnBalance, totalValue))),
         color: '#e56000',
+      },
+      {
+        name: 'Yields',
+        percentage: Number(ethers.utils.formatEther(div18f(userYieldsBalance, totalValue))),
+        color: '#288195',
       },
       {
         name: 'LP Token - Yields',
         percentage: Number(ethers.utils.formatEther(div18f(lpTokenYieldReturnBalance, totalValue))),
         color: '#206777',
       },
-    ].sort((a, b) => {
-      return b.percentage - a.percentage;
-    });
+    ];
 
     const highlightedDataPoints: SeriesRef[] = [];
     dataPoints.forEach((dataPoint, index) => {
@@ -114,38 +125,24 @@ const DetailUserInfoBalanceChart: FC<DetailUserInfoBalanceChartProps> = props =>
         <SelectionState selection={chartHighlightedItems} />
       </Chart>
       <Spacer size={20} />
-      <Typography variant="h4">Primitives</Typography>
-      <Spacer size={10} />
+
       <div className="tf__detail__user__info-row">
         <div className="tf__detail__user__info-legend-label-container">
           <LegendDotSolid color="#FF6B00" />
           <Typography variant="body-text">Principals</Typography>
         </div>
-        <Typography variant="body-text">{principalShareValue}</Typography>
+        <Typography variant="body-text">
+          {principalShareValue} ({lpTokenPrincipalReturnValue} staked)
+        </Typography>
       </div>
       <div className="tf__detail__user__info-row">
         <div className="tf__detail__user__info-legend-label-container">
           <LegendDotSolid color="#288195" />
           <Typography variant="body-text">Yields</Typography>
         </div>
-        <Typography variant="body-text">{yieldShareValue}</Typography>
-      </div>
-      <Spacer size={15} />
-      <Typography variant="h4">LP Token</Typography>
-      <Spacer size={10} />
-      <div className="tf__detail__user__info-row">
-        <div className="tf__detail__user__info-legend-label-container">
-          <LegendDotGradient startColor="#F5AC37" endColor="#EB5A00" />
-          <Typography variant="body-text">LP Token - Principals</Typography>
-        </div>
-        <Typography variant="body-text">{lpTokenPrincipalReturnValue}</Typography>
-      </div>
-      <div className="tf__detail__user__info-row">
-        <div className="tf__detail__user__info-legend-label-container">
-          <LegendDotGradient startColor="#288195" endColor="#00042C" />
-          <Typography variant="body-text">LP Token - Yields</Typography>
-        </div>
-        <Typography variant="body-text">{lpTokenYieldReturnValue}</Typography>
+        <Typography variant="body-text">
+          {yieldShareValue} ({lpTokenYieldReturnValue} staked)
+        </Typography>
       </div>
     </>
   );

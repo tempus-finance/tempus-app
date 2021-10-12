@@ -1,7 +1,7 @@
 import { FC, useCallback, useState, useEffect, useContext, useMemo } from 'react';
 import { BigNumber, ethers } from 'ethers';
 import { Web3Provider } from '@ethersproject/providers';
-import { useWeb3React } from '@web3-react/core';
+import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core';
 import { InjectedConnector } from '@web3-react/injected-connector';
 import AccountBalanceWalletIcon from '@material-ui/icons/AccountBalanceWallet';
 import shortenAccount from '../../utils/shorten-account';
@@ -16,47 +16,111 @@ import './wallet-connect.scss';
 export const CONNECT_WALLET = 'Connect Wallet';
 
 const supportedChainIds = [
-  // 1, // Mainnet
-  // 3, // Ropsten
-  // 4, // Rinkeby
-  // 5, // Goerli 31337
-  // 42, // Kovan
+  5, // Goerli
   1337, // Local
   31337, // AWS Private
 ];
 
 const WalletConnect: FC = (): JSX.Element => {
-  const { setData } = useContext(Context);
+  const {
+    data: { pendingTransactions },
+    setData,
+  } = useContext(Context);
 
   const [userEthBalance, setUserEthBalance] = useState<BigNumber>(BigNumber.from('0'));
   const { account, activate, active, library } = useWeb3React<Web3Provider>();
 
-  const onConnect = useCallback(() => {
-    if (!active) {
-      const injectedConnector = new InjectedConnector({ supportedChainIds });
-      activate(injectedConnector)
-        .then(() => {
-          getNotificationService().notify('Wallet connected', '');
-        })
-        .catch(() => {
-          getNotificationService().warn('Error connecting wallet', '');
-        });
+  const requestNetworkChange = useCallback(async () => {
+    const injectedConnector = new InjectedConnector({ supportedChainIds });
+    const provider = await injectedConnector.getProvider();
+    try {
+      // Request user to switch to Goerli testnet
+      await provider.request({
+        method: 'wallet_switchEthereumChain',
+        params: [{ chainId: '0x5' }],
+      });
+      // If user confirms request, connect the wallet
+      const onError = undefined;
+      const shouldThrowErrors = true;
+      await activate(injectedConnector, onError, shouldThrowErrors);
+      getNotificationService().notify('Wallet connected', '');
+      setData &&
+        setData(previousData => ({
+          ...previousData,
+          userWalletConnected: true,
+        }));
+    } catch (error: any) {
+      // User rejected request
+      if (error.code === 4001) {
+        getNotificationService().warn(
+          'Request to change network rejected by user',
+          'In order to use the app, please connect using Goerli network',
+        );
+      } else {
+        getNotificationService().warn('Unsupported wallet network', 'We support Goerli network');
+      }
+
+      setData &&
+        setData(previousData => ({
+          ...previousData,
+          userWalletConnected: false,
+        }));
     }
-  }, [active, activate]);
+  }, [activate, setData]);
+
+  const onConnect = useCallback(() => {
+    const connect = async () => {
+      if (active) {
+        return;
+      }
+
+      const injectedConnector = new InjectedConnector({ supportedChainIds });
+      try {
+        await activate(injectedConnector, undefined, true);
+        getNotificationService().notify('Wallet connected', '');
+        setData &&
+          setData(previousData => ({
+            ...previousData,
+            userWalletConnected: true,
+          }));
+      } catch (error) {
+        if (error instanceof UnsupportedChainIdError) {
+          requestNetworkChange();
+        } else {
+          getNotificationService().warn('Error connecting wallet', '');
+        }
+      }
+    };
+    connect();
+  }, [active, activate, setData, requestNetworkChange]);
 
   useEffect(() => {
     const checkConnection = async () => {
       const injectedConnector = new InjectedConnector({ supportedChainIds });
-      injectedConnector.isAuthorized().then((authorized: boolean | null) => {
+      injectedConnector.isAuthorized().then(async (authorized: boolean | null) => {
+        const chainId = await injectedConnector.getChainId();
+
+        // User has connected wallet, but currently selected network in user wallet is not supported.
+        if (typeof chainId === 'string' && supportedChainIds.indexOf(parseInt(chainId)) === -1) {
+          requestNetworkChange();
+          return;
+        }
+
         if (authorized) {
           activate(injectedConnector);
         }
+
+        setData &&
+          setData(previousData => ({
+            ...previousData,
+            userWalletConnected: authorized,
+          }));
       });
     };
     if (!active) {
       checkConnection();
     }
-  }, [active, activate]);
+  }, [active, activate, setData, requestNetworkChange]);
 
   useEffect(() => {
     setData &&
@@ -65,8 +129,7 @@ const WalletConnect: FC = (): JSX.Element => {
         userWalletSigner: library?.getSigner() || null,
         userWalletAddress: account || '',
       }));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [account, library]);
+  }, [account, library, setData]);
 
   // Fetch number of ETH user has
   useEffect(() => {
@@ -86,7 +149,7 @@ const WalletConnect: FC = (): JSX.Element => {
   }
 
   const formattedEthBalance = useMemo(() => {
-    return NumberUtils.formatToCurrency(ethers.utils.formatEther(userEthBalance), 2);
+    return NumberUtils.formatToCurrency(ethers.utils.formatEther(userEthBalance), 4);
   }, [userEthBalance]);
 
   return (
@@ -106,7 +169,12 @@ const WalletConnect: FC = (): JSX.Element => {
       <div className="tf__connect__wallet-button" onClick={onConnect}>
         <AccountBalanceWalletIcon />
         <Spacer size={4} />
-        <Typography variant="h5">{active ? shortenedAccount : CONNECT_WALLET}</Typography>
+        {pendingTransactions.length === 0 && (
+          <Typography variant="h5">{active ? shortenedAccount : CONNECT_WALLET}</Typography>
+        )}
+        {pendingTransactions.length > 0 && (
+          <Typography variant="h5">{pendingTransactions.length} Pending...</Typography>
+        )}
       </div>
     </div>
   );

@@ -39,6 +39,7 @@ interface TempusAMMInterface extends ethers.utils.Interface {
     "getPoolId()": FunctionFragment;
     "getRate()": FunctionFragment;
     "getScalingFactors()": FunctionFragment;
+    "getSwapAmountToEndWithEqualShares(uint256,uint256,uint256)": FunctionFragment;
     "getSwapFeePercentage()": FunctionFragment;
     "getVault()": FunctionFragment;
     "increaseAllowance(address,uint256)": FunctionFragment;
@@ -118,6 +119,10 @@ interface TempusAMMInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "getScalingFactors",
     values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getSwapAmountToEndWithEqualShares",
+    values: [BigNumberish, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "getSwapFeePercentage",
@@ -293,6 +298,10 @@ interface TempusAMMInterface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: "getRate", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "getScalingFactors",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getSwapAmountToEndWithEqualShares",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -487,6 +496,13 @@ export class TempusAMM extends BaseContract {
     getRate(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     getScalingFactors(overrides?: CallOverrides): Promise<[BigNumber[]]>;
+
+    getSwapAmountToEndWithEqualShares(
+      principals: BigNumberish,
+      yields: BigNumberish,
+      threshold: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber] & { amountIn: BigNumber }>;
 
     getSwapFeePercentage(overrides?: CallOverrides): Promise<[BigNumber]>;
 
@@ -720,6 +736,13 @@ export class TempusAMM extends BaseContract {
   getRate(overrides?: CallOverrides): Promise<BigNumber>;
 
   getScalingFactors(overrides?: CallOverrides): Promise<BigNumber[]>;
+
+  getSwapAmountToEndWithEqualShares(
+    principals: BigNumberish,
+    yields: BigNumberish,
+    threshold: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
 
   getSwapFeePercentage(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -956,6 +979,13 @@ export class TempusAMM extends BaseContract {
     getRate(overrides?: CallOverrides): Promise<BigNumber>;
 
     getScalingFactors(overrides?: CallOverrides): Promise<BigNumber[]>;
+
+    getSwapAmountToEndWithEqualShares(
+      principals: BigNumberish,
+      yields: BigNumberish,
+      threshold: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     getSwapFeePercentage(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1215,6 +1245,13 @@ export class TempusAMM extends BaseContract {
 
     getScalingFactors(overrides?: CallOverrides): Promise<BigNumber>;
 
+    getSwapAmountToEndWithEqualShares(
+      principals: BigNumberish,
+      yields: BigNumberish,
+      threshold: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     getSwapFeePercentage(overrides?: CallOverrides): Promise<BigNumber>;
 
     getVault(overrides?: CallOverrides): Promise<BigNumber>;
@@ -1431,6 +1468,13 @@ export class TempusAMM extends BaseContract {
     getRate(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     getScalingFactors(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    getSwapAmountToEndWithEqualShares(
+      principals: BigNumberish,
+      yields: BigNumberish,
+      threshold: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     getSwapFeePercentage(
       overrides?: CallOverrides

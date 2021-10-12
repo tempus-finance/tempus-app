@@ -1,9 +1,9 @@
-import { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { ethers, BigNumber } from 'ethers';
-import { Button } from '@material-ui/core';
+import { Context } from '../../../context';
 import { Ticker } from '../../../interfaces/Token';
 import NumberUtils from '../../../services/NumberUtils';
-import { mul18f } from '../../../utils/wei-math';
+import { getWithdrawNotification } from '../../../services/NotificationService';
 import getConfig from '../../../utils/get-config';
 import Typography from '../../typography/Typography';
 import Spacer from '../../spacer/spacer';
@@ -13,13 +13,20 @@ import PoolDetailProps from '../shared/PoolDetailProps';
 import SectionContainer from '../shared/sectionContainer';
 import PlusIconContainer from '../shared/plusIconContainer';
 import ApproveButton from '../shared/approveButton';
+import ExecuteButton from '../shared/executeButton';
 
 import '../shared/style.scss';
 
 const DetailWithdraw: FC<PoolDetailProps> = ({ tempusPool, content, signer, userWalletAddress, poolDataAdapter }) => {
   const { address, ammAddress } = tempusPool;
-  const { supportedTokens } = content;
-  const [backingToken, yieldBearingToken] = supportedTokens;
+  // We do not support withdraw to ETH
+  const supportedTokens = content.supportedTokens.filter(token => token !== 'ETH');
+  const backingToken = content.backingTokenTicker;
+  const yieldBearingToken = content.yieldBearingTokenTicker;
+
+  const {
+    data: { userCurrentPoolPresentValue },
+  } = useContext(Context);
 
   const [selectedToken, setSelectedToken] = useState<Ticker>(yieldBearingToken);
   const [estimatedWithdrawAmount, setEstimatedWithdrawAmount] = useState<BigNumber | null>(null);
@@ -27,8 +34,6 @@ const DetailWithdraw: FC<PoolDetailProps> = ({ tempusPool, content, signer, user
   const [principalsBalance, setPrincipalsBalance] = useState<BigNumber | null>(null);
   const [yieldsBalance, setYieldsBalance] = useState<BigNumber | null>(null);
   const [lpBalance, setLpBalance] = useState<BigNumber | null>(null);
-
-  const [tokenRate, setTokenRate] = useState<BigNumber | null>(null);
 
   const [principalsApproved, setPrincipalsApproved] = useState<boolean>(false);
   const [yieldsApproved, setYieldsApproved] = useState<boolean>(false);
@@ -40,41 +45,17 @@ const DetailWithdraw: FC<PoolDetailProps> = ({ tempusPool, content, signer, user
     }
   }, []);
 
-  const onExecute = useCallback(() => {
-    const execute = async () => {
-      if (signer && poolDataAdapter) {
-        try {
-          const isBackingToken = backingToken === selectedToken;
+  const onExecuted = useCallback(() => {}, []);
 
-          const depositTransaction = await poolDataAdapter.executeWithdraw(ammAddress, isBackingToken);
-          if (depositTransaction) {
-            await depositTransaction.wait();
-          }
-        } catch (error) {
-          console.log('DetailWithdraw - onExecute() - Failed to execute the transaction!', error);
-        }
-      }
-    };
+  const onExecute = useCallback((): Promise<ethers.ContractTransaction | undefined> => {
+    if (signer && poolDataAdapter) {
+      const isBackingToken = backingToken === selectedToken;
 
-    execute();
-  }, [signer, ammAddress, backingToken, selectedToken, poolDataAdapter]);
-
-  // Update token rate when selected token changes
-  useEffect(() => {
-    const getRate = async () => {
-      if (!poolDataAdapter) {
-        return;
-      }
-
-      if (selectedToken === backingToken) {
-        setTokenRate(await poolDataAdapter.getBackingTokenRate(backingToken));
-      }
-      if (selectedToken === yieldBearingToken) {
-        setTokenRate(await poolDataAdapter.getYieldBearingTokenRate(tempusPool.address, backingToken));
-      }
-    };
-    getRate();
-  }, [backingToken, poolDataAdapter, selectedToken, tempusPool.address, yieldBearingToken]);
+      return poolDataAdapter.executeWithdraw(ammAddress, isBackingToken);
+    } else {
+      return Promise.resolve(undefined);
+    }
+  }, [signer, poolDataAdapter, backingToken, selectedToken, ammAddress]);
 
   // Fetch token balances when component mounts
   useEffect(() => {
@@ -105,9 +86,10 @@ const DetailWithdraw: FC<PoolDetailProps> = ({ tempusPool, content, signer, user
 
           const amount = await poolDataAdapter.getEstimatedWithdrawAmount(
             ammAddress,
+            lpBalance,
             principalsBalance,
             yieldsBalance,
-            lpBalance,
+            tempusPool.maxLeftoverShares,
             isBackingToken,
           );
           setEstimatedWithdrawAmount(amount);
@@ -119,123 +101,134 @@ const DetailWithdraw: FC<PoolDetailProps> = ({ tempusPool, content, signer, user
     };
 
     retrieveEstimatedWithdrawAmount();
-  }, [ammAddress, selectedToken, backingToken, principalsBalance, yieldsBalance, lpBalance, poolDataAdapter]);
+  }, [
+    ammAddress,
+    selectedToken,
+    backingToken,
+    principalsBalance,
+    yieldsBalance,
+    lpBalance,
+    poolDataAdapter,
+    tempusPool.maxLeftoverShares,
+  ]);
 
   const principalsBalanceFormatted = useMemo(() => {
     if (!principalsBalance) {
       return null;
     }
-    return NumberUtils.formatToCurrency(ethers.utils.formatEther(principalsBalance), 2);
-  }, [principalsBalance]);
+    return NumberUtils.formatToCurrency(ethers.utils.formatEther(principalsBalance), tempusPool.decimalsForUI);
+  }, [principalsBalance, tempusPool.decimalsForUI]);
 
   const yieldsBalanceFormatted = useMemo(() => {
     if (!yieldsBalance) {
       return null;
     }
-    return NumberUtils.formatToCurrency(ethers.utils.formatEther(yieldsBalance), 2);
-  }, [yieldsBalance]);
+    return NumberUtils.formatToCurrency(ethers.utils.formatEther(yieldsBalance), tempusPool.decimalsForUI);
+  }, [yieldsBalance, tempusPool.decimalsForUI]);
 
   const lpBalanceFormatted = useMemo(() => {
     if (!lpBalance) {
       return null;
     }
-    return NumberUtils.formatToCurrency(ethers.utils.formatEther(lpBalance), 2);
-  }, [lpBalance]);
+    return NumberUtils.formatToCurrency(ethers.utils.formatEther(lpBalance), tempusPool.decimalsForUI);
+  }, [lpBalance, tempusPool.decimalsForUI]);
 
   const estimatedWithdrawAmountFormatted = useMemo(() => {
     if (!estimatedWithdrawAmount) {
       return null;
     }
-    return NumberUtils.formatToCurrency(ethers.utils.formatEther(estimatedWithdrawAmount), 2);
-  }, [estimatedWithdrawAmount]);
+    return NumberUtils.formatToCurrency(ethers.utils.formatEther(estimatedWithdrawAmount), tempusPool.decimalsForUI);
+  }, [estimatedWithdrawAmount, tempusPool.decimalsForUI]);
 
   const estimatedWithdrawAmountUsdFormatted = useMemo(() => {
-    if (!estimatedWithdrawAmount || !tokenRate) {
+    if (!userCurrentPoolPresentValue) {
       return null;
     }
-    return NumberUtils.formatToCurrency(ethers.utils.formatEther(mul18f(estimatedWithdrawAmount, tokenRate)), 2, '$');
-  }, [estimatedWithdrawAmount, tokenRate]);
+    return NumberUtils.formatToCurrency(ethers.utils.formatEther(userCurrentPoolPresentValue), 2, '$');
+  }, [userCurrentPoolPresentValue]);
 
   return (
     <div role="tabpanel">
       <div className="tf__dialog__content-tab">
-        <Spacer size={20} />
-        <Typography variant="body-text">
-          In order to withdraw from the Pool you have to approve withdrawal from all token balances and execute the
-          transaction.
-        </Typography>
-        <Spacer size={14} />
+        <Spacer size={25} />
         <ActionContainer label="From">
           <Spacer size={10} />
-          <SectionContainer>
-            <div className="tf__flex-row-space-between">
-              <div className="tf__flex-column-space-between">
-                <Typography variant="h4">Principals</Typography>
-                <Spacer size={10} />
-                <Typography variant="body-text">Balance {principalsBalanceFormatted} Principals</Typography>
+          {principalsBalance && !principalsBalance.isZero() && (
+            <SectionContainer>
+              <div className="tf__flex-row-space-between">
+                <div className="tf__flex-column-space-between">
+                  <Typography variant="h4">Principals</Typography>
+                  <Spacer size={10} />
+                  <Typography variant="body-text">Balance {principalsBalanceFormatted} Principals</Typography>
+                </div>
+                <div className="tf__flex-column-center-end">
+                  <ApproveButton
+                    tokenTicker="Principals"
+                    poolDataAdapter={poolDataAdapter}
+                    amountToApprove={principalsBalance || BigNumber.from('0')}
+                    tokenToApprove={content.principalTokenAddress}
+                    spenderAddress={getConfig().tempusControllerContract}
+                    onApproved={() => {
+                      setPrincipalsApproved(true);
+                    }}
+                  />
+                </div>
               </div>
-              <div className="tf__flex-column-center-end">
-                <ApproveButton
-                  poolDataAdapter={poolDataAdapter}
-                  signer={signer}
-                  amountToApprove={principalsBalance || BigNumber.from('0')}
-                  tokenToApprove={content.principalTokenAddress}
-                  spenderAddress={getConfig().tempusControllerContract}
-                  userWalletAddress={userWalletAddress}
-                  onApproved={() => {
-                    setPrincipalsApproved(true);
-                  }}
-                />
-              </div>
-            </div>
-          </SectionContainer>
-          <PlusIconContainer orientation="horizontal" />
-          <SectionContainer>
-            <div className="tf__flex-row-space-between">
-              <div className="tf__flex-column-space-between">
-                <Typography variant="h4">Yields</Typography>
-                <Spacer size={10} />
-                <Typography variant="body-text">Balance {yieldsBalanceFormatted} Yields</Typography>
-              </div>
-              <div className="tf__flex-column-center-end">
-                <ApproveButton
-                  poolDataAdapter={poolDataAdapter}
-                  signer={signer}
-                  amountToApprove={yieldsBalance || BigNumber.from('0')}
-                  tokenToApprove={content.yieldTokenAddress}
-                  spenderAddress={getConfig().tempusControllerContract}
-                  userWalletAddress={userWalletAddress}
-                  onApproved={() => {
-                    setYieldsApproved(true);
-                  }}
-                />
-              </div>
-            </div>
-          </SectionContainer>
-          <PlusIconContainer orientation="horizontal" />
-          <SectionContainer>
-            <div className="tf__flex-row-space-between">
-              <div className="tf__flex-column-space-between">
-                <Typography variant="h4">LP Tokens</Typography>
-                <Spacer size={10} />
-                <Typography variant="body-text">Balance {lpBalanceFormatted} LP Tokens</Typography>
-              </div>
-              <div className="tf__flex-column-center-end">
-                <ApproveButton
-                  poolDataAdapter={poolDataAdapter}
-                  signer={signer}
-                  amountToApprove={lpBalance || BigNumber.from('0')}
-                  // TempusAMM address is used as LP token address
-                  tokenToApprove={tempusPool.ammAddress}
-                  spenderAddress={getConfig().tempusControllerContract}
-                  userWalletAddress={userWalletAddress}
-                  onApproved={() => {
-                    setLpApproved(true);
-                  }}
-                />
-              </div>
-            </div>
-          </SectionContainer>
+            </SectionContainer>
+          )}
+          {yieldsBalance && !yieldsBalance.isZero() && (
+            <>
+              <PlusIconContainer orientation="horizontal" />
+              <SectionContainer>
+                <div className="tf__flex-row-space-between">
+                  <div className="tf__flex-column-space-between">
+                    <Typography variant="h4">Yields</Typography>
+                    <Spacer size={10} />
+                    <Typography variant="body-text">Balance {yieldsBalanceFormatted} Yields</Typography>
+                  </div>
+                  <div className="tf__flex-column-center-end">
+                    <ApproveButton
+                      tokenTicker="Yields"
+                      poolDataAdapter={poolDataAdapter}
+                      amountToApprove={yieldsBalance || BigNumber.from('0')}
+                      tokenToApprove={content.yieldTokenAddress}
+                      spenderAddress={getConfig().tempusControllerContract}
+                      onApproved={() => {
+                        setYieldsApproved(true);
+                      }}
+                    />
+                  </div>
+                </div>
+              </SectionContainer>
+            </>
+          )}
+          {lpBalance && !lpBalance.isZero() && (
+            <>
+              <PlusIconContainer orientation="horizontal" />
+              <SectionContainer>
+                <div className="tf__flex-row-space-between">
+                  <div className="tf__flex-column-space-between">
+                    <Typography variant="h4">LP Tokens</Typography>
+                    <Spacer size={10} />
+                    <Typography variant="body-text">Balance {lpBalanceFormatted} LP Tokens</Typography>
+                  </div>
+                  <div className="tf__flex-column-center-end">
+                    <ApproveButton
+                      poolDataAdapter={poolDataAdapter}
+                      tokenToApprove={tempusPool.ammAddress}
+                      spenderAddress={getConfig().tempusControllerContract}
+                      amountToApprove={lpBalance || BigNumber.from('0')}
+                      tokenTicker="LP Token"
+                      // TempusAMM address is used as LP token address
+                      onApproved={() => {
+                        setLpApproved(true);
+                      }}
+                    />
+                  </div>
+                </div>
+              </SectionContainer>
+            </>
+          )}
         </ActionContainer>
         <Spacer size={20} />
         <ActionContainer label="To">
@@ -262,16 +255,21 @@ const DetailWithdraw: FC<PoolDetailProps> = ({ tempusPool, content, signer, user
         </ActionContainer>
         <Spacer size={20} />
         <div className="tf__flex-row-center-v">
-          <Button
-            color="secondary"
-            variant="contained"
-            onClick={onExecute}
-            disabled={!principalsApproved || !yieldsApproved || !lpApproved}
-          >
-            <Typography variant="h5" color="inverted">
-              Execute
-            </Typography>
-          </Button>
+          <ExecuteButton
+            notificationText={getWithdrawNotification(
+              content.backingTokenTicker,
+              content.protocol,
+              content.maturityDate,
+            )}
+            actionName="Withdraw"
+            disabled={
+              (!principalsApproved && !principalsBalance?.isZero()) ||
+              (!yieldsBalance?.isZero() && !yieldsApproved) ||
+              (!lpBalance?.isZero() && !lpApproved)
+            }
+            onExecute={onExecute}
+            onExecuted={onExecuted}
+          />
         </div>
       </div>
     </div>

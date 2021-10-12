@@ -4,7 +4,7 @@ import { ERC20 } from '../abi/ERC20';
 import ERC20ABI from '../abi/ERC20.json';
 import { TypedListener } from '../abi/commons';
 import { Ticker } from '../interfaces';
-import { ZERO_ETH_ADDRESS } from '../constants';
+import { approveGasIncrease, ZERO_ETH_ADDRESS } from '../constants';
 
 export type TransferEventListener = TypedListener<
   [string, string, BigNumber],
@@ -102,7 +102,10 @@ class ERC20TokenService {
         return Promise.resolve();
       }
 
-      approveTransaction = await this.contract.approve(spenderAddress, amount);
+      const estimate = await this.contract.estimateGas.approve(spenderAddress, amount);
+      approveTransaction = await this.contract.approve(spenderAddress, amount, {
+        gasLimit: Math.ceil(estimate.toNumber() * approveGasIncrease),
+      });
     } catch (error) {
       console.log('ERC20TokenService - approve() - Approve transaction failed!', error);
       return Promise.reject(error);

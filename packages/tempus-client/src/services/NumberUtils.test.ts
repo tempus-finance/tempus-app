@@ -4,6 +4,8 @@ describe('NumberUtils', () => {
   describe('formatWithMultiplier()', () => {
     [
       { num: 0, digits: 1, expected: '0' },
+      { num: 0.0546, digits: 3, expected: '0.054' },
+      { num: 0.0546, digits: 1, expected: '0.0' },
       { num: 12, digits: 1, expected: '12' },
       { num: 1234, digits: 1, expected: '1.2k' },
       { num: 100000000, digits: 1, expected: '100M' },
@@ -46,6 +48,9 @@ describe('NumberUtils', () => {
       { value: '123.4', numberOfDecimals: undefined, symbol: undefined, expected: '123.4' },
       { value: '123.456', numberOfDecimals: undefined, symbol: '$', expected: '$123.45' },
       { value: '123.456', numberOfDecimals: 4, symbol: '$', expected: '$123.456' },
+      { value: '123.0000000000011', numberOfDecimals: 1, symbol: '$', expected: '$123.000000000001' },
+      { value: '123.00000000456', numberOfDecimals: undefined, symbol: '$', expected: '$123.0000000045' },
+      { value: '123.0000000045', numberOfDecimals: 3, symbol: '$', expected: '$123.0000000045' },
     ].forEach(item => {
       test(`It formats input string '${item.value}' to '${item.expected}'`, () => {
         const result = NumberUtils.formatToCurrency(item.value, item.numberOfDecimals, item.symbol);

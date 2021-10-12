@@ -330,40 +330,6 @@
     "type": "function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "contract ITempusAMM",
-        "name": "tempusAMM",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "principals",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "yields",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "threshold",
-        "type": "uint256"
-      }
-    ],
-    "name": "getSwapAmountToEndWithEqualShares",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "amountIn",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "inputs": [],
     "name": "owner",
     "outputs": [
@@ -488,6 +454,24 @@
       }
     ],
     "name": "swap",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "contract ITempusPool",
+        "name": "targetPool",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "recipient",
+        "type": "address"
+      }
+    ],
+    "name": "transferFees",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

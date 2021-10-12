@@ -2,7 +2,7 @@ import { BigNumber } from 'ethers';
 import TempusAMMService from './TempusAMMService';
 import { DepositedEvent, RedeemedEvent } from './TempusControllerService';
 import TempusPoolService from './TempusPoolService';
-import { SwapEvent } from './VaultService';
+import { PoolBalanceChangedEvent, SwapEvent } from './VaultService';
 
 /**
  * Type guard - Checks if provided event is of type DepositedEvent
@@ -21,8 +21,19 @@ export function isRedeemEvent(event: DepositedEvent | RedeemedEvent | SwapEvent)
 /**
  * Type guard - Checks if provided event is of type SwapEvent
  */
-export function isSwapEvent(event: DepositedEvent | RedeemedEvent | SwapEvent): event is SwapEvent {
+export function isSwapEvent(
+  event: DepositedEvent | RedeemedEvent | SwapEvent | PoolBalanceChangedEvent,
+): event is SwapEvent {
   return 'tokenIn' in event.args;
+}
+
+/**
+ * Type guard - Checks if provided event is of type SwapEvent
+ */
+export function isPoolBalanceChangedEvent(
+  event: SwapEvent | PoolBalanceChangedEvent,
+): event is PoolBalanceChangedEvent {
+  return 'liquidityProvider' in event.args;
 }
 
 export async function getEventPoolAddress(

@@ -5,8 +5,10 @@ import { Context } from '../../../context';
 import { DashboardRowChild } from '../../../interfaces';
 import { TempusPool } from '../../../interfaces/TempusPool';
 import NumberUtils from '../../../services/NumberUtils';
+import { getPoolLiquidityNotification } from '../../../services/NotificationService';
 import PoolDataAdapter from '../../../adapters/PoolDataAdapter';
 import getConfig from '../../../utils/get-config';
+import { mul18f } from '../../../utils/wei-math';
 import Typography from '../../typography/Typography';
 import CurrencyInput from '../../currencyInput';
 import Spacer from '../../spacer/spacer';
@@ -14,6 +16,7 @@ import ActionContainer from '../shared/actionContainer';
 import SectionContainer from '../shared/sectionContainer';
 import PlusIconContainer from '../shared/plusIconContainer';
 import ApproveButton from '../shared/approveButton';
+import ExecuteButton from '../shared/executeButton';
 
 type DetailPoolAddLiquidityInProps = {
   content: DashboardRowChild;
@@ -28,29 +31,32 @@ type DetailPoolAddLiquidityProps = DetailPoolAddLiquidityInProps & DetailPoolAdd
 const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = ({ content, poolDataAdapter, tempusPool }) => {
   const { data } = useContext(Context);
 
-  const [amount, setAmount] = useState<number>(0);
+  const [amount, setAmount] = useState<string>('0');
   const [estimatedPrincipals, setEstimatedPrincipals] = useState<BigNumber | null>(null);
   const [estimatedYields, setEstimatedYields] = useState<BigNumber | null>(null);
   const [executeDisabled, setExecuteDisabled] = useState<boolean>(true);
 
   const onAmountChange = useCallback(
-    (amount: number | undefined) => {
-      if (!!amount && !isNaN(amount)) {
+    (amount: string) => {
+      if (amount) {
         setAmount(amount);
       }
     },
     [setAmount],
   );
 
-  const onAmountPercentageChange = useCallback(
-    (event: any) => {
-      const percentage = event.currentTarget.value;
-      if (!!data.userLPBalance && !isNaN(percentage)) {
-        const balanceAsNumber = Number(ethers.utils.formatEther(data.userLPBalance));
-        setAmount(balanceAsNumber * Number(percentage));
+  /**
+   * Update amount field when user clicks on percentage buttons.
+   * - Requires user LP token balance to be loaded so we can calculate percentage of that.
+   */
+  const onPercentageChange = useCallback(
+    (event: React.MouseEvent<HTMLButtonElement>) => {
+      if (data.userLPBalance) {
+        const percentage = ethers.utils.parseEther(event.currentTarget.value);
+        setAmount(ethers.utils.formatEther(mul18f(data.userLPBalance, percentage)));
       }
     },
-    [data.userLPBalance, setAmount],
+    [data.userLPBalance],
   );
 
   // Fetch estimated share tokens returned
@@ -76,58 +82,54 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = ({ content, pool
 
   const onApproved = useCallback(() => {
     setExecuteDisabled(false);
-  }, [setExecuteDisabled]);
+  }, []);
 
-  const onExecute = useCallback(() => {
-    const removeLiquidity = async () => {
-      if (!poolDataAdapter) {
-        return;
-      }
-      try {
-        poolDataAdapter.removeLiquidity(
-          tempusPool.ammAddress,
-          data.userWalletAddress,
-          content.principalTokenAddress,
-          content.yieldTokenAddress,
-          ethers.utils.parseEther(amount.toString()),
-        );
-      } catch (error) {
-        console.error(
-          'DetailPoolRemoveLiquidity - removeLiquidity() - Failed to remove liquidity from tempus pool AMM!',
-          error,
-        );
-      }
-    };
-    removeLiquidity();
+  const onExecuted = useCallback(() => {
+    setExecuteDisabled(false);
+  }, []);
+
+  const onExecute = useCallback((): Promise<ethers.ContractTransaction | undefined> => {
+    if (!poolDataAdapter) {
+      return Promise.resolve(undefined);
+    }
+    setExecuteDisabled(true);
+
+    return poolDataAdapter.removeLiquidity(
+      tempusPool.ammAddress,
+      data.userWalletAddress,
+      content.principalTokenAddress,
+      content.yieldTokenAddress,
+      ethers.utils.parseEther(amount.toString()),
+    );
   }, [
-    amount,
-    content.principalTokenAddress,
-    content.yieldTokenAddress,
+    poolDataAdapter,
     tempusPool.ammAddress,
     data.userWalletAddress,
-    poolDataAdapter,
+    content.principalTokenAddress,
+    content.yieldTokenAddress,
+    amount,
   ]);
 
   const lpTokenBalanceFormatted = useMemo(() => {
     if (!data.userLPBalance) {
       return null;
     }
-    return NumberUtils.formatToCurrency(ethers.utils.formatEther(data.userLPBalance), 2);
-  }, [data.userLPBalance]);
+    return NumberUtils.formatToCurrency(ethers.utils.formatEther(data.userLPBalance), tempusPool.decimalsForUI);
+  }, [data.userLPBalance, tempusPool.decimalsForUI]);
 
   const estimatedPrincipalsFormatted = useMemo(() => {
     if (!estimatedPrincipals) {
       return null;
     }
-    return NumberUtils.formatToCurrency(ethers.utils.formatEther(estimatedPrincipals), 2);
-  }, [estimatedPrincipals]);
+    return NumberUtils.formatToCurrency(ethers.utils.formatEther(estimatedPrincipals), tempusPool.decimalsForUI);
+  }, [estimatedPrincipals, tempusPool.decimalsForUI]);
 
   const estimatedYieldsFormatted = useMemo(() => {
     if (!estimatedYields) {
       return null;
     }
-    return NumberUtils.formatToCurrency(ethers.utils.formatEther(estimatedYields), 2);
-  }, [estimatedYields]);
+    return NumberUtils.formatToCurrency(ethers.utils.formatEther(estimatedYields), tempusPool.decimalsForUI);
+  }, [estimatedYields, tempusPool.decimalsForUI]);
 
   return (
     <>
@@ -150,19 +152,19 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = ({ content, pool
               <Typography variant="body-text">Balance: {lpTokenBalanceFormatted} LP Tokens</Typography>
               <Spacer size={20} />
               <div className="tf__flex-row-center-v">
-                <Button variant="contained" size="small" value="0.25" onClick={onAmountPercentageChange}>
+                <Button variant="contained" size="small" value="0.25" onClick={onPercentageChange}>
                   25%
                 </Button>
                 <Spacer size={10} />
-                <Button variant="contained" size="small" value="0.5" onClick={onAmountPercentageChange}>
+                <Button variant="contained" size="small" value="0.5" onClick={onPercentageChange}>
                   50%
                 </Button>
                 <Spacer size={10} />
-                <Button variant="contained" size="small" value="0.75" onClick={onAmountPercentageChange}>
+                <Button variant="contained" size="small" value="0.75" onClick={onPercentageChange}>
                   75%
                 </Button>
                 <Spacer size={10} />
-                <Button variant="contained" size="small" value="1" onClick={onAmountPercentageChange}>
+                <Button variant="contained" size="small" value="1" onClick={onPercentageChange}>
                   Max
                 </Button>
               </div>
@@ -194,20 +196,25 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = ({ content, pool
       <Spacer size={20} />
       <div className="tf__flex-row-center-v">
         <ApproveButton
+          tokenTicker="LP Token"
           amountToApprove={data.userLPBalance}
           onApproved={onApproved}
           poolDataAdapter={poolDataAdapter}
-          signer={data.userWalletSigner}
-          userWalletAddress={data.userWalletAddress}
           spenderAddress={getConfig().vaultContract}
           tokenToApprove={tempusPool.ammAddress}
         />
         <Spacer size={18} />
-        <Button variant="contained" color="secondary" onClick={onExecute} disabled={executeDisabled || amount === 0}>
-          <Typography color="inverted" variant="h5">
-            Execute
-          </Typography>
-        </Button>
+        <ExecuteButton
+          notificationText={getPoolLiquidityNotification(
+            content.backingTokenTicker,
+            content.protocol,
+            content.maturityDate,
+          )}
+          actionName="Liquidity Withdrawal"
+          disabled={executeDisabled}
+          onExecute={onExecute}
+          onExecuted={onExecuted}
+        />
       </div>
     </>
   );

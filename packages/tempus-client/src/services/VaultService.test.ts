@@ -29,6 +29,9 @@ describe('VaultService', () => {
       return {
         queryFilter: mockQueryFilter,
         swap: mockSwap,
+        estimateGas: {
+          swap: jest.fn().mockResolvedValue(eth.BigNumber.from('1')),
+        },
         filters: {
           Swap: mockSwapFilter,
         },
@@ -66,7 +69,7 @@ describe('VaultService', () => {
 
     const events = await vaultService.getSwapEvents();
 
-    expect(events.length).toBe(2);
+    expect(events.length).toBe(4);
     expect(events[0].blockHash).toBe('test-swap-event-1');
     expect(events[1].blockHash).toBe('test-swap-event-2');
   });
@@ -107,6 +110,9 @@ describe('VaultService', () => {
       },
       1,
       3601,
+      {
+        gasLimit: 2,
+      },
     );
   });
 

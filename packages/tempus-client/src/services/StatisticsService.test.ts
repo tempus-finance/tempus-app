@@ -178,17 +178,19 @@ describe('StatisticsService', () => {
         return Promise.resolve(value);
       });
 
-      const tempusPool = 'abc';
-      const principalsAmount = 100;
-      const yieldsAmount = 200;
-      const lpTokensAmount = 300;
+      const tempusAmmAddress = 'abc';
+      const principalsAmount = ejs.utils.parseEther('100');
+      const yieldsAmount = ejs.utils.parseEther('200');
+      const lpTokensAmount = ejs.utils.parseEther('300');
+      const maxLeftoverShares = '0.0001';
       const isBackingToken = true;
 
       const result = await instance.estimateExitAndRedeem(
-        tempusPool,
+        tempusAmmAddress,
+        lpTokensAmount,
         principalsAmount,
         yieldsAmount,
-        lpTokensAmount,
+        maxLeftoverShares,
         isBackingToken,
       );
 

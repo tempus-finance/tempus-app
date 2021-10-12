@@ -1,13 +1,20 @@
 import React, { Dispatch, SetStateAction } from 'react';
 import { JsonRpcSigner } from '@ethersproject/providers';
 import { BigNumber } from 'ethers';
+import { DashboardRowChild } from './interfaces';
 
 interface ContextDataType {
+  userWalletConnected: boolean | null;
   userWalletAddress: string;
   userWalletSigner: JsonRpcSigner | null;
+  userBackingTokenBalance: BigNumber | null;
+  userYieldBearingTokenBalance: BigNumber | null;
   userPrincipalsBalance: BigNumber | null;
   userYieldsBalance: BigNumber | null;
   userLPBalance: BigNumber | null;
+  userCurrentPoolPresentValue: BigNumber | null;
+  pendingTransactions: string[];
+  selectedRow: DashboardRowChild | null;
 }
 
 interface ContextType {
@@ -16,11 +23,17 @@ interface ContextType {
 }
 
 export const defaultContextValue: ContextDataType = {
+  userWalletConnected: null,
   userWalletAddress: '',
   userWalletSigner: null,
+  userBackingTokenBalance: null,
+  userYieldBearingTokenBalance: null,
   userPrincipalsBalance: null,
   userYieldsBalance: null,
   userLPBalance: null,
+  pendingTransactions: [],
+  selectedRow: null,
+  userCurrentPoolPresentValue: null,
 };
 export const Context = React.createContext<ContextType>({
   data: defaultContextValue,

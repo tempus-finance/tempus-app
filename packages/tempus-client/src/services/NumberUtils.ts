@@ -17,6 +17,11 @@ class NumberUtils {
     const sanitizedValue = Number(value);
     const multiplier = multiplierLookup.find(item => Math.abs(sanitizedValue) >= item.value);
 
+    if (sanitizedValue > 0 && sanitizedValue < 1) {
+      // Adding 2 to precision so that '0.' part of the number is ignored when slicing it
+      return sanitizedValue.toString().slice(0, precision + 2);
+    }
+
     return multiplier
       ? `${(sanitizedValue / multiplier.value).toFixed(precision).replace(regex, '$1')}${multiplier.symbol}`
       : '0';
@@ -40,7 +45,25 @@ class NumberUtils {
       integerPartSeparatorsAdded = '';
     }
 
-    const fractionPartFormatted = fractionalPart ? fractionalPart.slice(0, numberOfDecimals ?? 2) : '';
+    let leadingZeroCounter = 0;
+    if (fractionalPart) {
+      const fractionalPartSplitted = fractionalPart.split('');
+      for (var i = 0; i < fractionalPartSplitted.length; i++) {
+        const value = fractionalPartSplitted[i];
+        if (value === '0') {
+          leadingZeroCounter++;
+        } else {
+          break;
+        }
+      }
+    }
+
+    let decimalCount = leadingZeroCounter + 2;
+    if (numberOfDecimals === 0 || numberOfDecimals) {
+      decimalCount = leadingZeroCounter + numberOfDecimals;
+    }
+
+    const fractionPartFormatted = fractionalPart ? fractionalPart.slice(0, decimalCount) : '';
 
     return `${symbol || ''}${integerPartSeparatorsAdded}${fractionPartFormatted ? `.${fractionPartFormatted}` : ''}`;
   }

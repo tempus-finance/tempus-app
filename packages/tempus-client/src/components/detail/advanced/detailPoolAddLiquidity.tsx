@@ -1,21 +1,24 @@
-import { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { FC, useCallback, useEffect, useMemo, useState, useContext } from 'react';
 import { Divider, Button } from '@material-ui/core';
 import { BigNumber, ethers } from 'ethers';
 import { JsonRpcSigner } from '@ethersproject/providers';
+import { Context } from '../../../context';
 import PoolDataAdapter from '../../../adapters/PoolDataAdapter';
 import NumberUtils from '../../../services/NumberUtils';
+import { getPoolLiquidityNotification } from '../../../services/NotificationService';
 import { DashboardRowChild } from '../../../interfaces';
 import { TempusPool } from '../../../interfaces/TempusPool';
 import getConfig from '../../../utils/get-config';
-import { div18f } from '../../../utils/wei-math';
+import { mul18f } from '../../../utils/wei-math';
 import Typography from '../../typography/Typography';
 import Spacer from '../../spacer/spacer';
+import ScaleIcon from '../../icons/ScaleIcon';
 import CurrencyInput from '../../currencyInput';
 import ActionContainer from '../shared/actionContainer';
 import SectionContainer from '../shared/sectionContainer';
 import ApproveButton from '../shared/approveButton';
 import PlusIconContainer from '../shared/plusIconContainer';
-import ScaleIcon from '../../icons/ScaleIcon';
+import ExecuteButton from '../shared/executeButton';
 
 import './detailPoolAddLiquidity.scss';
 
@@ -32,100 +35,134 @@ type DetailPoolAddLiquidityOutProps = {};
 type DetailPoolAddLiquidityProps = DetailPoolAddLiquidityInProps & DetailPoolAddLiquidityOutProps;
 
 const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = props => {
-  const { content, poolDataAdapter, signer, userWalletAddress, tempusPool } = props;
+  const { content, poolDataAdapter, userWalletAddress, tempusPool } = props;
 
-  const [principalsBalance, setPrincipalsBalance] = useState<BigNumber | null>(null);
-  const [yieldsBalance, setYieldsBalance] = useState<BigNumber | null>(null);
+  const {
+    data: { userPrincipalsBalance, userYieldsBalance },
+  } = useContext(Context);
 
   const [principalsPercentage, setPrincipalsPercentage] = useState<number | null>(null);
   const [yieldsPercentage, setYieldsPercentage] = useState<number | null>(null);
 
-  const [principalsAmount, setPrincipalsAmount] = useState<number>(0);
-  const [yieldsAmount, setYieldsAmount] = useState<number>(0);
+  const [principalsAmount, setPrincipalsAmount] = useState<string>('0');
+  const [yieldsAmount, setYieldsAmount] = useState<string>('0');
 
   const [expectedLPTokens, setExpectedLPTokens] = useState<BigNumber | null>(null);
   const [expectedPoolShare, setExpectedPoolShare] = useState<number | null>(null);
 
-  const onPrincipalsAmountChange = useCallback(
-    (amount: number | undefined) => {
-      if (!!amount && !isNaN(amount)) {
-        setPrincipalsAmount(amount);
-      }
-    },
-    [setPrincipalsAmount],
-  );
+  const [principalsApproved, setPrincipalsApproved] = useState<boolean>(false);
+  const [yieldsApproved, setYieldsApproved] = useState<boolean>(false);
 
-  const onYieldsAmountChange = useCallback(
-    (amount: number | undefined) => {
-      if (!!amount && !isNaN(amount)) {
-        setYieldsAmount(amount);
+  /**
+   * When user enters some amount of yields, we need to calculate amount of principals user
+   * also needs to deposit in order to keep principals/yields balance in the pool unchanged.
+   */
+  const setPrincipalsFromYields = useCallback(
+    (amountOfYields: BigNumber) => {
+      if (!yieldsPercentage || !principalsPercentage) {
+        return;
       }
-    },
-    [setYieldsAmount],
-  );
-
-  const onPrincipalsPercentageChange = useCallback(
-    (event: any) => {
-      const percentage = event.currentTarget.value;
-      if (!!principalsBalance && !isNaN(percentage)) {
-        const balanceAsNumber = Number(ethers.utils.formatEther(principalsBalance));
-        setPrincipalsAmount(balanceAsNumber * Number(percentage));
-      }
-    },
-    [principalsBalance, setPrincipalsAmount],
-  );
-
-  const onYieldsPercentageChange = useCallback(
-    (event: any) => {
-      const percentage = event.currentTarget.value;
-      if (!!yieldsBalance && !isNaN(percentage)) {
-        const balanceAsNumber = Number(ethers.utils.formatEther(yieldsBalance));
-        setYieldsAmount(balanceAsNumber * Number(percentage));
-      }
-    },
-    [yieldsBalance, setYieldsAmount],
-  );
-
-  // Fetch Principals and Yields balances
-  useEffect(() => {
-    const fetchTokenBalances = async () => {
-      if (!poolDataAdapter || !signer) {
+      if (amountOfYields.isZero()) {
+        setPrincipalsAmount('0');
         return;
       }
 
-      const [principalBalance, yieldBalance] = await Promise.all([
-        poolDataAdapter.getTokenBalance(content.principalTokenAddress, userWalletAddress, signer),
-        poolDataAdapter.getTokenBalance(content.yieldTokenAddress, userWalletAddress, signer),
-      ]);
+      const principalsToYieldsRatio = ethers.utils.parseEther((principalsPercentage / yieldsPercentage).toString());
 
-      setPrincipalsBalance(principalBalance);
-      setYieldsBalance(yieldBalance);
-    };
-    fetchTokenBalances();
-  }, [content.principalTokenAddress, content.yieldTokenAddress, poolDataAdapter, signer, userWalletAddress]);
+      setPrincipalsAmount(ethers.utils.formatEther(mul18f(principalsToYieldsRatio, amountOfYields)));
+    },
+    [principalsPercentage, yieldsPercentage],
+  );
+
+  /**
+   * When user enters some amount of principals, we need to calculate amount of yields user
+   * also needs to deposit in order to keep principals/yields balance in the pool unchanged.
+   */
+  const setYieldsFromPrincipals = useCallback(
+    (amountOfPrincipals: BigNumber) => {
+      if (!yieldsPercentage || !principalsPercentage) {
+        return;
+      }
+      if (amountOfPrincipals.isZero()) {
+        setYieldsAmount('0');
+        return;
+      }
+
+      const yieldsToPrincipalsRatio = ethers.utils.parseEther((yieldsPercentage / principalsPercentage).toString());
+
+      setYieldsAmount(ethers.utils.formatEther(mul18f(yieldsToPrincipalsRatio, amountOfPrincipals)));
+    },
+    [principalsPercentage, yieldsPercentage],
+  );
+
+  const onPrincipalsAmountChange = useCallback(
+    (amount: string) => {
+      setPrincipalsAmount(amount);
+      setYieldsFromPrincipals(ethers.utils.parseEther(amount));
+    },
+    [setYieldsFromPrincipals],
+  );
+
+  const onYieldsAmountChange = useCallback(
+    (amount: string) => {
+      setYieldsAmount(amount);
+      setPrincipalsFromYields(ethers.utils.parseEther(amount));
+    },
+    [setPrincipalsFromYields],
+  );
+
+  /**
+   * Update principals amount field when user clicks on percentage buttons.
+   * - Requires user principals balance to be loaded so we can calculate percentage of that.
+   */
+  const onPrincipalsPercentageChange = useCallback(
+    (event: React.MouseEvent<HTMLButtonElement>) => {
+      if (!userPrincipalsBalance) {
+        return;
+      }
+      const percentage = ethers.utils.parseEther(event.currentTarget.value);
+      const calculatedAmount = mul18f(userPrincipalsBalance, percentage);
+      setPrincipalsAmount(ethers.utils.formatEther(calculatedAmount));
+      setYieldsFromPrincipals(calculatedAmount);
+    },
+    [userPrincipalsBalance, setYieldsFromPrincipals],
+  );
+
+  /**
+   * Update yields amount field when user clicks on percentage buttons.
+   * - Requires user yields balance to be loaded so we can calculate percentage of that.
+   */
+  const onYieldsPercentageChange = useCallback(
+    (event: React.MouseEvent<HTMLButtonElement>) => {
+      if (!userYieldsBalance) {
+        return;
+      }
+      const percentage = ethers.utils.parseEther(event.currentTarget.value);
+      const calculatedAmount = mul18f(userYieldsBalance, percentage);
+      setYieldsAmount(ethers.utils.formatEther(calculatedAmount));
+      setPrincipalsFromYields(calculatedAmount);
+    },
+    [userYieldsBalance, setPrincipalsFromYields],
+  );
 
   // Calculate pool ratios
   useEffect(() => {
-    if (!principalsBalance || !yieldsBalance) {
-      return;
-    }
+    const getRatioOfAssetsInPool = async () => {
+      if (!poolDataAdapter) {
+        return;
+      }
 
-    if (principalsBalance.isZero() && yieldsBalance.isZero()) {
-      setPrincipalsPercentage(0);
-      setYieldsPercentage(0);
-    } else if (principalsBalance.isZero() && !yieldsBalance.isZero()) {
-      setPrincipalsPercentage(0);
-      setYieldsPercentage(1);
-    } else if (!principalsBalance.isZero() && yieldsBalance.isZero()) {
-      setPrincipalsPercentage(1);
-      setYieldsPercentage(0);
-    } else {
-      const totalTokens = principalsBalance.add(yieldsBalance);
+      const ratios = await poolDataAdapter.getPoolRatioOfAssets(
+        tempusPool.ammAddress,
+        content.principalTokenAddress,
+        content.yieldTokenAddress,
+      );
 
-      setPrincipalsPercentage(Number(ethers.utils.formatEther(div18f(principalsBalance, totalTokens))));
-      setYieldsPercentage(Number(ethers.utils.formatEther(div18f(yieldsBalance, totalTokens))));
-    }
-  }, [principalsBalance, yieldsBalance, setPrincipalsPercentage, setYieldsPercentage]);
+      setPrincipalsPercentage(ratios.principalsShare);
+      setYieldsPercentage(ratios.yieldsShare);
+    };
+    getRatioOfAssetsInPool();
+  }, [poolDataAdapter, tempusPool.ammAddress, content.principalTokenAddress, content.yieldTokenAddress]);
 
   // Fetch estimated LP Token amount
   useEffect(() => {
@@ -180,25 +217,21 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = props => {
     fetchExpectedPoolShare();
   }, [expectedLPTokens, poolDataAdapter, tempusPool.ammAddress]);
 
-  const onExecute = useCallback(() => {
-    const provideLiquidity = async () => {
-      if (!poolDataAdapter) {
-        return;
-      }
-      try {
-        await poolDataAdapter.provideLiquidity(
-          tempusPool.ammAddress,
-          userWalletAddress,
-          content.principalTokenAddress,
-          content.yieldTokenAddress,
-          ethers.utils.parseEther(principalsAmount.toString()),
-          ethers.utils.parseEther(yieldsAmount.toString()),
-        );
-      } catch (error) {
-        console.error('DetailPoolAddLiquidity - provideLiquidity() - Failed to provide liquidity!', error);
-      }
-    };
-    provideLiquidity();
+  const onExecuted = useCallback(() => {}, []);
+
+  const onExecute = useCallback((): Promise<ethers.ContractTransaction | undefined> => {
+    if (!poolDataAdapter) {
+      return Promise.resolve(undefined);
+    }
+
+    return poolDataAdapter.provideLiquidity(
+      tempusPool.ammAddress,
+      userWalletAddress,
+      content.principalTokenAddress,
+      content.yieldTokenAddress,
+      ethers.utils.parseEther(principalsAmount.toString()),
+      ethers.utils.parseEther(yieldsAmount.toString()),
+    );
   }, [
     content.principalTokenAddress,
     content.yieldTokenAddress,
@@ -210,56 +243,58 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = props => {
   ]);
 
   const principalsBalanceFormatted = useMemo(() => {
-    if (!principalsBalance) {
+    if (!userPrincipalsBalance) {
       return null;
     }
-    return NumberUtils.formatToCurrency(ethers.utils.formatEther(principalsBalance), 2);
-  }, [principalsBalance]);
+    return NumberUtils.formatToCurrency(ethers.utils.formatEther(userPrincipalsBalance), tempusPool.decimalsForUI);
+  }, [userPrincipalsBalance, tempusPool.decimalsForUI]);
 
   const yieldsBalanceFormatted = useMemo(() => {
-    if (!yieldsBalance) {
+    if (!userYieldsBalance) {
       return null;
     }
-    return NumberUtils.formatToCurrency(ethers.utils.formatEther(yieldsBalance), 2);
-  }, [yieldsBalance]);
+    return NumberUtils.formatToCurrency(ethers.utils.formatEther(userYieldsBalance), tempusPool.decimalsForUI);
+  }, [userYieldsBalance, tempusPool.decimalsForUI]);
 
   const expectedLPTokensFormatted = useMemo(() => {
     if (!expectedLPTokens) {
       return null;
     }
-    return NumberUtils.formatToCurrency(ethers.utils.formatEther(expectedLPTokens), 2);
-  }, [expectedLPTokens]);
+    return NumberUtils.formatToCurrency(ethers.utils.formatEther(expectedLPTokens), tempusPool.decimalsForUI);
+  }, [expectedLPTokens, tempusPool.decimalsForUI]);
 
   return (
     <>
-      <SectionContainer>
-        <Typography variant="h4">Pool rations</Typography>
-        <div className="tf__flex-row-center-vh">
-          <Typography variant="body-text">
-            {principalsPercentage !== null && NumberUtils.formatPercentage(principalsPercentage, 3)}
-          </Typography>
-          <Spacer size={20} />
-          <div className="tf__flex-column-center-vh">
-            <Typography variant="body-text">Principal</Typography>
-            <Divider orientation="horizontal" className="tf__full_width" />
-            <Typography variant="body-text">Yield</Typography>
+      {(principalsPercentage !== 0 || yieldsPercentage !== 0) && (
+        <SectionContainer>
+          <Typography variant="h4">Ratio of Assets</Typography>
+          <div className="tf__flex-row-center-vh">
+            <Typography variant="body-text">
+              {principalsPercentage !== null && NumberUtils.formatPercentage(principalsPercentage, 3)}
+            </Typography>
+            <Spacer size={20} />
+            <div className="tf__flex-column-center-vh">
+              <Typography variant="body-text">Principal</Typography>
+              <Divider orientation="horizontal" className="tf__full_width" />
+              <Typography variant="body-text">Yield</Typography>
+            </div>
+            <Spacer size={40} />
+            <div className="tf__detail__add__liquidity-icon-container">
+              <ScaleIcon />
+            </div>
+            <Spacer size={40} />
+            <div className="tf__flex-column-center-vh">
+              <Typography variant="body-text">Yield</Typography>
+              <Divider orientation="horizontal" className="tf__full_width" />
+              <Typography variant="body-text">Principal</Typography>
+            </div>
+            <Spacer size={20} />
+            <Typography variant="body-text">
+              {yieldsPercentage !== null && NumberUtils.formatPercentage(yieldsPercentage, 3)}
+            </Typography>
           </div>
-          <Spacer size={40} />
-          <div className="tf__detail__add__liquidity-icon-container">
-            <ScaleIcon />
-          </div>
-          <Spacer size={40} />
-          <div className="tf__flex-column-center-vh">
-            <Typography variant="body-text">Yield</Typography>
-            <Divider orientation="horizontal" className="tf__full_width" />
-            <Typography variant="body-text">Principal</Typography>
-          </div>
-          <Spacer size={20} />
-          <Typography variant="body-text">
-            {yieldsPercentage !== null && NumberUtils.formatPercentage(yieldsPercentage, 3)}
-          </Typography>
-        </div>
-      </SectionContainer>
+        </SectionContainer>
+      )}
       <Spacer size={15} />
       <ActionContainer label="From">
         <Spacer size={10} />
@@ -301,13 +336,14 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = props => {
             <Spacer size={20} />
             <div className="tf__flex-column-space-between">
               <ApproveButton
-                amountToApprove={principalsBalance || BigNumber.from('0')}
-                onApproved={() => {}}
+                tokenTicker="Principals"
+                amountToApprove={userPrincipalsBalance || BigNumber.from('0')}
+                onApproved={() => {
+                  setPrincipalsApproved(true);
+                }}
                 poolDataAdapter={poolDataAdapter}
-                signer={signer}
                 spenderAddress={getConfig().vaultContract}
                 tokenToApprove={content.principalTokenAddress}
-                userWalletAddress={userWalletAddress}
               />
             </div>
           </div>
@@ -349,13 +385,14 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = props => {
             <Spacer size={20} />
             <div className="tf__flex-column-space-between">
               <ApproveButton
-                amountToApprove={yieldsBalance || BigNumber.from('0')}
-                onApproved={() => {}}
+                tokenTicker="Yields"
+                amountToApprove={userYieldsBalance || BigNumber.from('0')}
+                onApproved={() => {
+                  setYieldsApproved(true);
+                }}
                 poolDataAdapter={poolDataAdapter}
-                signer={signer}
                 spenderAddress={getConfig().vaultContract}
                 tokenToApprove={content.yieldTokenAddress}
-                userWalletAddress={userWalletAddress}
               />
             </div>
           </div>
@@ -379,11 +416,17 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = props => {
 
       <Spacer size={20} />
       <div className="tf__flex-row-center-v">
-        <Button color="secondary" variant="contained" onClick={onExecute} disabled={false}>
-          <Typography variant="h5" color="inverted">
-            Execute
-          </Typography>
-        </Button>
+        <ExecuteButton
+          notificationText={getPoolLiquidityNotification(
+            content.backingTokenTicker,
+            content.protocol,
+            content.maturityDate,
+          )}
+          actionName="Liquidity Deposit"
+          disabled={!principalsApproved || !yieldsApproved}
+          onExecute={onExecute}
+          onExecuted={onExecuted}
+        />
       </div>
     </>
   );

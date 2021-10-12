@@ -1,12 +1,14 @@
 import { utils, BigNumber } from 'ethers';
 import { FC, ChangeEvent, useEffect, useCallback, useContext, useState } from 'react';
-import { format } from 'date-fns';
 import Switch from '@material-ui/core/Switch';
+import { formatDate } from '../../utils/formatDate';
 import { TransferEventListener } from '../../services/ERC20TokenService';
+import NumberUtils from '../../services/NumberUtils';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
 import PoolDataAdapter from '../../adapters/PoolDataAdapter';
 import { DashboardRowChild } from '../../interfaces';
 import { Context } from '../../context';
+import PresentValueProvider from '../../providers/presentValueProvider';
 import TokenIcon, { getTickerFromProtocol } from '../tokenIcon';
 import Typography from '../typography/Typography';
 import Spacer from '../spacer/spacer';
@@ -15,7 +17,6 @@ import DetailBasic from './basic/detailBasic';
 import DetailAdvanced from './advanced/detailAdvanced';
 
 import './detail.scss';
-import NumberUtils from '../../services/NumberUtils';
 
 type DetailInProps = {
   content: DashboardRowChild;
@@ -100,7 +101,83 @@ const Detail: FC<DetailProps> = ({ content, onClose }) => {
     getPoolFees();
   }, [address, ammAddress, setPoolFees, poolDataAdapter]);
 
-  const onPrincipalReceived: TransferEventListener = useCallback(
+  const onBackingTokenReceived: TransferEventListener = useCallback(
+    (from, to, value) => {
+      if (!setData) {
+        return;
+      }
+
+      setData(previousData => {
+        if (!previousData.userBackingTokenBalance) {
+          return previousData;
+        }
+        return {
+          ...previousData,
+          userBackingTokenBalance: previousData.userBackingTokenBalance.add(value),
+        };
+      });
+    },
+    [setData],
+  );
+
+  const onBackingTokenSent: TransferEventListener = useCallback(
+    (from, to, value) => {
+      if (!setData) {
+        return;
+      }
+
+      setData(previousData => {
+        if (!previousData.userBackingTokenBalance) {
+          return previousData;
+        }
+        return {
+          ...previousData,
+          userBackingTokenBalance: previousData.userBackingTokenBalance.sub(value),
+        };
+      });
+    },
+    [setData],
+  );
+
+  const onYieldBearingTokenReceived: TransferEventListener = useCallback(
+    (from, to, value) => {
+      if (!setData) {
+        return;
+      }
+
+      setData(previousData => {
+        if (!previousData.userYieldBearingTokenBalance) {
+          return previousData;
+        }
+        return {
+          ...previousData,
+          userYieldBearingTokenBalance: previousData.userYieldBearingTokenBalance.add(value),
+        };
+      });
+    },
+    [setData],
+  );
+
+  const onYieldBearingTokenSent: TransferEventListener = useCallback(
+    (from, to, value) => {
+      if (!setData) {
+        return;
+      }
+
+      setData(previousData => {
+        if (!previousData.userYieldBearingTokenBalance) {
+          return previousData;
+        }
+        return {
+          ...previousData,
+          userYieldBearingTokenBalance: previousData.userYieldBearingTokenBalance.sub(value),
+        };
+      });
+    },
+    [setData],
+  );
+
+  const onPrincipalsReceived: TransferEventListener = useCallback(
     (from, to, value) => {
       if (!setData) {
         return;
@@ -113,6 +190,25 @@ const Detail: FC<DetailProps> = ({ content, onClose }) => {
         return {
           ...previousData,
           userPrincipalsBalance: previousData.userPrincipalsBalance.add(value),
+        };
+      });
+    },
+    [setData],
+  );
+
+  const onPrincipalsSent: TransferEventListener = useCallback(
+    (from, to, value) => {
+      if (!setData) {
+        return;
+      }
+
+      setData(previousData => {
+        if (!previousData.userPrincipalsBalance) {
+          return previousData;
+        }
+        return {
+          ...previousData,
+          userPrincipalsBalance: previousData.userPrincipalsBalance.sub(value),
         };
       });
     },
@@ -138,6 +234,25 @@ const Detail: FC<DetailProps> = ({ content, onClose }) => {
     [setData],
   );
 
+  const onYieldsSent: TransferEventListener = useCallback(
+    (from, to, value) => {
+      if (!setData) {
+        return;
+      }
+
+      setData(previousData => {
+        if (!previousData.userYieldsBalance) {
+          return previousData;
+        }
+        return {
+          ...previousData,
+          userYieldsBalance: previousData.userYieldsBalance.sub(value),
+        };
+      });
+    },
+    [setData],
+  );
+
   const onLPReceived: TransferEventListener = useCallback(
     (from, to, value) => {
       if (!setData) {
@@ -157,21 +272,62 @@ const Detail: FC<DetailProps> = ({ content, onClose }) => {
     [setData],
   );
 
+  const onLPSent: TransferEventListener = useCallback(
+    (from, to, value) => {
+      if (!setData) {
+        return;
+      }
+
+      setData(previousData => {
+        if (!previousData.userLPBalance) {
+          return previousData;
+        }
+        return {
+          ...previousData,
+          userLPBalance: previousData.userLPBalance.sub(value),
+        };
+      });
+    },
+    [setData],
+  );
+
   // Subscribe to token balance updates
   useEffect(() => {
     if (!poolDataAdapter || !userWalletSigner) {
       return;
     }
     poolDataAdapter.onTokenReceived(
+      content.backingTokenAddress,
+      userWalletAddress,
+      userWalletSigner,
+      onBackingTokenReceived,
+    );
+    poolDataAdapter.onTokenReceived(
+      content.yieldBearingTokenAddress,
+      userWalletAddress,
+      userWalletSigner,
+      onYieldBearingTokenReceived,
+    );
+    poolDataAdapter.onTokenReceived(
       content.principalTokenAddress,
       userWalletAddress,
       userWalletSigner,
-      onPrincipalReceived,
+      onPrincipalsReceived,
     );
     poolDataAdapter.onTokenReceived(content.yieldTokenAddress, userWalletAddress, userWalletSigner, onYieldsReceived);
     poolDataAdapter.onTokenReceived(tempusPool.ammAddress, userWalletAddress, userWalletSigner, onLPReceived);
+    poolDataAdapter.onTokenSent(content.backingTokenAddress, userWalletAddress, userWalletSigner, onBackingTokenSent);
+    poolDataAdapter.onTokenSent(
+      content.yieldBearingTokenAddress,
+      userWalletAddress,
+      userWalletSigner,
+      onYieldBearingTokenSent,
+    );
+    poolDataAdapter.onTokenSent(content.principalTokenAddress, userWalletAddress, userWalletSigner, onPrincipalsSent);
+    poolDataAdapter.onTokenSent(content.yieldTokenAddress, userWalletAddress, userWalletSigner, onYieldsSent);
+    poolDataAdapter.onTokenSent(tempusPool.ammAddress, userWalletAddress, userWalletSigner, onLPSent);
   }, [
-    onPrincipalReceived,
+    onPrincipalsReceived,
     onYieldsReceived,
     onLPReceived,
     poolDataAdapter,
@@ -180,6 +336,15 @@ const Detail: FC<DetailProps> = ({ content, onClose }) => {
     tempusPool.ammAddress,
     userWalletSigner,
     userWalletAddress,
+    onPrincipalsSent,
+    onYieldsSent,
+    onLPSent,
+    content.backingTokenAddress,
+    content.yieldBearingTokenAddress,
+    onBackingTokenReceived,
+    onYieldBearingTokenReceived,
+    onBackingTokenSent,
+    onYieldBearingTokenSent,
   ]);
 
   return (
@@ -199,34 +364,36 @@ const Detail: FC<DetailProps> = ({ content, onClose }) => {
               -
             </Typography>
             <Typography color="default" variant="h4">
-              Matures on {format(maturityDate, 'dd MMM yy')}
+              Matures on {formatDate(maturityDate, 'dd MMM yy')}
             </Typography>
           </div>
           <div className="tf__dialog-container__header-ui-toggle">
             <Switch checked={showAdvancedUI} onChange={onInterfaceChange} name="advanced-options" />
             <Typography color="default" variant="h4">
-              Advanced options
+              Advanced
             </Typography>
           </div>
         </div>
         <div className="tf__divider" />
-        <div className="tf__dialog-container__fees">
-          <Typography color="default" variant="h4">
-            Fees:
-          </Typography>
-          <Typography color="default" variant="h5">
-            Deposit {poolFees[0] && NumberUtils.formatPercentage(Number(utils.formatEther(poolFees[0])))}
-          </Typography>
-          <Typography color="default" variant="h5">
-            Redemption {poolFees[2] && NumberUtils.formatPercentage(Number(utils.formatEther(poolFees[2])))}
-          </Typography>
-          <Typography color="default" variant="h5">
-            Early Redemption {poolFees[1] && NumberUtils.formatPercentage(Number(utils.formatEther(poolFees[1])))}
-          </Typography>
-          <Typography color="default" variant="h5">
-            Swap {poolFees[3] && NumberUtils.formatPercentage(Number(utils.formatEther(poolFees[3])))}
-          </Typography>
-        </div>
+        {showAdvancedUI && (
+          <div className="tf__dialog-container__fees">
+            <Typography color="default" variant="h4">
+              Fees:
+            </Typography>
+            <Typography color="default" variant="h5">
+              Deposit {poolFees[0] && NumberUtils.formatPercentage(Number(utils.formatEther(poolFees[0])))}
+            </Typography>
+            <Typography color="default" variant="h5">
+              Redemption {poolFees[2] && NumberUtils.formatPercentage(Number(utils.formatEther(poolFees[2])))}
+            </Typography>
+            <Typography color="default" variant="h5">
+              Early Redemption {poolFees[1] && NumberUtils.formatPercentage(Number(utils.formatEther(poolFees[1])))}
+            </Typography>
+            <Typography color="default" variant="h5">
+              Swap {poolFees[3] && NumberUtils.formatPercentage(Number(utils.formatEther(poolFees[3])))}
+            </Typography>
+          </div>
+        )}
 
         <Spacer size={18} />
         <div className="tf__dialog__content">
@@ -259,6 +426,7 @@ const Detail: FC<DetailProps> = ({ content, onClose }) => {
           userWalletAddress={userWalletAddress}
         />
       </div>
+      {poolDataAdapter && <PresentValueProvider poolDataAdapter={poolDataAdapter} tempusPool={tempusPool} />}
     </div>
   );
 };

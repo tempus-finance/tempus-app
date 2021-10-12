@@ -1,5 +1,5 @@
 import { GridValueGetterParams } from '@material-ui/data-grid';
-import format from 'date-fns/format';
+import { formatDate } from '../../../utils/formatDate'
 import { ethers } from 'ethers';
 
 const transactionsColumnDefinitions = [
@@ -35,7 +35,7 @@ const transactionsColumnDefinitions = [
   {
     field: 'time',
     headerName: 'Time',
-    valueGetter: (params: GridValueGetterParams) => format(params.row.time, 'MMM dd, yyyy, h:mm:ss a'),
+    valueGetter: (params: GridValueGetterParams) => formatDate(params.row.time, 'MMM dd, yyyy, h:mm:ss a'),
     flex: 1,
   },
 ];

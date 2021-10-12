@@ -6,15 +6,18 @@ import { DashboardRowChild, PoolShares, Ticker } from '../../../interfaces';
 import { TempusPool } from '../../../interfaces/TempusPool';
 import PoolDataAdapter from '../../../adapters/PoolDataAdapter';
 import NumberUtils from '../../../services/NumberUtils';
+import { getSwapNotification } from '../../../services/NotificationService';
 import { SwapKind } from '../../../services/VaultService';
 import getConfig from '../../../utils/get-config';
+import { mul18f } from '../../../utils/wei-math';
 import Typography from '../../typography/Typography';
 import CurrencyInput from '../../currencyInput';
 import Spacer from '../../spacer/spacer';
-import Execute from '../shared/execute';
 import SectionContainer from '../shared/sectionContainer';
 import ActionContainer from '../shared/actionContainer';
 import TokenSelector from '../../tokenSelector';
+import ApproveButton from '../shared/approveButton';
+import ExecuteButton from '../shared/executeButton';
 
 interface TokenDetail {
   tokenName: PoolShares;
@@ -46,31 +49,34 @@ const DetailSwap: FC<DetailSwapProps> = props => {
     tokenAddress: yieldTokenAddress,
   });
   const [selectedToken, setSelectedToken] = useState<Ticker>();
-  const [amount, setAmount] = useState<number>(0);
+  const [amount, setAmount] = useState<string>('0');
   const [balance, setBalance] = useState<BigNumber | null>(null);
   const [receiveAmount, setReceiveAmount] = useState<BigNumber | null>(null);
 
-  const [approveDisabled, setApproveDisabled] = useState<boolean>(false);
-  const [executeDisabled, setExecuteDisabled] = useState<boolean>(false);
+  const [executeDisabled, setExecuteDisabled] = useState<boolean>(true);
 
   const onAmountChange = useCallback(
-    (amount: number | undefined) => {
-      if (!!amount && !isNaN(amount)) {
+    (amount: string) => {
+      if (amount) {
         setAmount(amount);
       }
     },
     [setAmount],
   );
 
+  /**
+   * Update amount field when user clicks on percentage buttons.
+   * - Requires token balance to be loaded so we can calculate percentage of that.
+   */
   const onPercentageChange = useCallback(
     (event: React.MouseEvent<HTMLButtonElement>) => {
-      const percentage = event.currentTarget.value;
-
-      if (percentage && balance) {
-        setAmount(Number(ethers.utils.formatEther(balance)) * Number(percentage));
+      if (!balance) {
+        return;
       }
+      const percentage = ethers.utils.parseEther(event.currentTarget.value);
+      setAmount(ethers.utils.formatEther(mul18f(balance, percentage)));
     },
-    [balance, setAmount],
+    [balance],
   );
 
   const switchTokens = useCallback(() => {
@@ -95,69 +101,30 @@ const DetailSwap: FC<DetailSwapProps> = props => {
     [switchTokens, tokenFrom.tokenName],
   );
 
-  const onApprove = useCallback(() => {
-    const approve = async () => {
-      if (signer && balance && poolDataAdapter) {
-        try {
-          const approveTransaction = await poolDataAdapter.approveToken(
-            tokenFrom.tokenAddress,
-            getConfig().vaultContract,
-            balance,
-            signer,
-          );
-          if (approveTransaction) {
-            await approveTransaction.wait();
-            setApproveDisabled(true);
-          }
-        } catch (error) {
-          console.log(
-            `DetailSwap - onApprove() - Failed to approve token '${tokenFrom.tokenAddress}' - ${tokenFrom.tokenName}`,
-            error,
-          );
-          setApproveDisabled(false);
-        }
-      }
-    };
-    setApproveDisabled(true);
-    approve();
-  }, [balance, poolDataAdapter, signer, tokenFrom, setApproveDisabled]);
+  const onApproved = useCallback(() => {
+    setExecuteDisabled(false);
+  }, []);
 
-  const onExecute = useCallback(() => {
-    const execute = async () => {
-      if (!poolDataAdapter) {
-        return;
-      }
+  const onExecuted = useCallback(() => {
+    setExecuteDisabled(false);
+  }, []);
 
-      const amountParsed = ethers.utils.parseEther(amount.toString());
-
-      try {
-        await poolDataAdapter.swapShareTokens(
-          tempusPool.ammAddress,
-          SwapKind.GIVEN_IN,
-          tokenFrom.tokenAddress,
-          tokenTo.tokenAddress,
-          amountParsed,
-          userWalletAddress,
-        );
-      } catch (error) {
-        setExecuteDisabled(false);
-
-        console.error('DetailSwap - execute() - Failed to execute swap transaction!', error);
-        return Promise.reject(error);
-      }
-      setExecuteDisabled(false);
-    };
+  const onExecute = useCallback((): Promise<ethers.ContractTransaction | undefined> => {
+    if (!poolDataAdapter) {
+      return Promise.resolve(undefined);
+    }
     setExecuteDisabled(true);
-    execute();
-  }, [
-    amount,
-    poolDataAdapter,
-    tempusPool.ammAddress,
-    tokenFrom.tokenAddress,
-    tokenTo.tokenAddress,
-    userWalletAddress,
-    setExecuteDisabled,
-  ]);
+
+    const amountParsed = ethers.utils.parseEther(amount.toString());
+    return poolDataAdapter.swapShareTokens(
+      tempusPool.ammAddress,
+      SwapKind.GIVEN_IN,
+      tokenFrom.tokenAddress,
+      tokenTo.tokenAddress,
+      amountParsed,
+      userWalletAddress,
+    );
+  }, [poolDataAdapter, amount, tempusPool.ammAddress, tokenFrom.tokenAddress, tokenTo.tokenAddress, userWalletAddress]);
 
   // Fetch token from balance
   useEffect(() => {
@@ -205,15 +172,15 @@ const DetailSwap: FC<DetailSwapProps> = props => {
     if (!balance) {
       return null;
     }
-    return NumberUtils.formatToCurrency(ethers.utils.formatEther(balance), 2);
-  }, [balance]);
+    return NumberUtils.formatToCurrency(ethers.utils.formatEther(balance), tempusPool.decimalsForUI);
+  }, [balance, tempusPool.decimalsForUI]);
 
   const receiveAmountFormatted = useMemo(() => {
     if (!receiveAmount) {
       return null;
     }
-    return NumberUtils.formatToCurrency(ethers.utils.formatEther(receiveAmount), 2);
-  }, [receiveAmount]);
+    return NumberUtils.formatToCurrency(ethers.utils.formatEther(receiveAmount), tempusPool.decimalsForUI);
+  }, [receiveAmount, tempusPool.decimalsForUI]);
 
   return (
     <div role="tabpanel">
@@ -272,13 +239,33 @@ const DetailSwap: FC<DetailSwapProps> = props => {
             </SectionContainer>
           </div>
         </ActionContainer>
-
-        <Execute
-          onApprove={onApprove}
-          approveDisabled={approveDisabled}
-          onExecute={onExecute}
-          executeDisabled={executeDisabled}
-        />
+        <Spacer size={20} />
+        <div className="tf__flex-row-center-vh">
+          <ApproveButton
+            amountToApprove={balance}
+            onApproved={onApproved}
+            poolDataAdapter={poolDataAdapter}
+            spenderAddress={getConfig().vaultContract}
+            tokenTicker={tokenFrom.tokenName}
+            tokenToApprove={selectedToken ? tokenFrom.tokenAddress : ''}
+          />
+          <Spacer size={20} />
+          <ExecuteButton
+            actionName="Swap"
+            notificationText={getSwapNotification(
+              selectedToken || '',
+              Number(amount).toFixed(2),
+              tokenTo.tokenName,
+              receiveAmountFormatted || '',
+              content.backingTokenTicker,
+              content.protocol,
+              content.maturityDate,
+            )}
+            disabled={executeDisabled}
+            onExecute={onExecute}
+            onExecuted={onExecuted}
+          />
+        </div>
       </div>
     </div>
   );

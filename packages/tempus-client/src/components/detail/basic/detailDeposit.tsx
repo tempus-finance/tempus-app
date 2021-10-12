@@ -1,34 +1,35 @@
-import { FC, useCallback, useEffect, useMemo, useState } from 'react';
-import { utils, BigNumber } from 'ethers';
-import { format } from 'date-fns';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { utils, BigNumber, ethers } from 'ethers';
 import Button from '@material-ui/core/Button';
+import { interestRateProtectionTooltipText, liquidityProvisionTooltipText } from '../../../constants';
 import NumberUtils from '../../../services/NumberUtils';
-import { ProtocolName, Ticker } from '../../../interfaces';
+import { getDepositNotification } from '../../../services/NotificationService';
+import { Ticker } from '../../../interfaces';
 import { mul18f } from '../../../utils/wei-math';
+import getConfig from '../../../utils/get-config';
 import CurrencyInput from '../../currencyInput';
 import TokenSelector from '../../tokenSelector';
 import Typography from '../../typography/Typography';
-import getNotificationService from '../../../services/getNotificationService';
 import Spacer from '../../spacer/spacer';
 import ActionContainer from '../shared/actionContainer';
-import Execute from '../shared/execute';
 import SectionContainer from '../shared/sectionContainer';
 import PoolDetailProps from '../shared/PoolDetailProps';
+import ApproveButton from '../shared/approveButton';
+import ExecuteButton from '../shared/executeButton';
 
 import '../shared/style.scss';
-import { interestRateProtectionTooltipText, liquidityProvisionTooltipText } from '../../../constants';
 
-type SelectedYield = 'fixed' | 'variable';
+export type SelectedYield = 'Fixed' | 'Variable';
 
 // TODO Component is too big, we may need to break it up
 const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userWalletAddress, poolDataAdapter }) => {
   const { address, ammAddress } = tempusPool || {};
-  const { supportedTokens = [], fixedAPR = 0, variableAPY = 0, protocol, maturityDate } = content || {};
+  const { supportedTokens = [], fixedAPR = 0, variableAPY = 0 } = content || {};
   const [triggerUpdateBalance, setTriggerUpdateBalance] = useState<boolean>(true);
   const [backingToken] = supportedTokens;
 
-  const [selectedToken, setSelectedToken] = useState<Ticker | undefined>(undefined);
-  const [amount, setAmount] = useState<number>(0);
+  const [selectedToken, setSelectedToken] = useState<Ticker | null>(null);
+  const [amount, setAmount] = useState<string>('0');
   const [balance, setBalance] = useState<BigNumber | null>(null);
   const [usdRate, setUsdRate] = useState<BigNumber | null>(null);
   const [minTYSRate] = useState<number>(0); // TODO where to get this value?
@@ -41,18 +42,17 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
   const [yieldBearingTokenBalance, setYieldBearingTokenBalance] = useState<BigNumber | null>(null);
 
   const [estimatedFixedApr, setEstimatedFixedApr] = useState<BigNumber | null>(null);
-  const [selectedYield, setSelectedYield] = useState<SelectedYield>('fixed');
+  const [selectedYield, setSelectedYield] = useState<SelectedYield>('Fixed');
   const [backingTokenRate, setBackingTokenRate] = useState<BigNumber | null>(null);
   const [yieldBearingTokenRate, setYieldBearingTokenRate] = useState<BigNumber | null>(null);
 
-  const [approveDisabled, setApproveDisabled] = useState<boolean>(false);
-  const [executeDisabled, setExecuteDisabled] = useState<boolean>(true);
+  const [executeDisabled, setExecuteDisabled] = useState<boolean>(backingToken !== 'ETH');
 
   const onTokenChange = useCallback(
     (token: Ticker | undefined) => {
       if (!!token) {
         setSelectedToken(token);
-        setAmount(0);
+        setAmount('0');
 
         if (backingToken === token) {
           if (backingTokenBalance !== null) {
@@ -88,25 +88,29 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
   );
 
   const onAmountChange = useCallback(
-    (value: number | undefined) => {
-      if (!!value && !isNaN(value)) {
+    (value: string) => {
+      if (value) {
         setAmount(value);
       } else {
-        setAmount(0);
+        setAmount('0');
       }
     },
     [setAmount],
   );
 
+  /**
+   * Update amount field when user clicks on percentage buttons.
+   * - Requires token balance to be loaded so we can calculate percentage of that.
+   */
   const onPercentageChange = useCallback(
-    (event: any) => {
-      const percentage = event.currentTarget.value;
-      if (!!selectedToken && !!balance && !isNaN(percentage)) {
-        const balanceAsNumber = Number(utils.formatEther(balance));
-        setAmount(balanceAsNumber * percentage);
+    (event: React.MouseEvent<HTMLButtonElement>) => {
+      if (!balance) {
+        return;
       }
+      const percentage = ethers.utils.parseEther(event.currentTarget.value);
+      setAmount(ethers.utils.formatEther(mul18f(balance, percentage)));
     },
-    [balance, selectedToken, setAmount],
+    [balance],
   );
 
   const onSelectYield = useCallback(
@@ -119,78 +123,45 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
     [setSelectedYield],
   );
 
-  const onApprove = useCallback(() => {
-    const approve = async () => {
-      if (signer && balance && poolDataAdapter) {
-        try {
-          const isBackingToken = backingToken === selectedToken;
-          const approveTransaction = await poolDataAdapter.approve(address, isBackingToken, signer, balance);
-          if (approveTransaction) {
-            await approveTransaction.wait();
-            setExecuteDisabled(false);
-          }
-        } catch (err) {
-          // TODO handle errors
-          console.log('onApprove err', err);
-        }
-      }
-    };
-    setApproveDisabled(true);
-    approve();
-  }, [address, signer, backingToken, selectedToken, balance, poolDataAdapter, setApproveDisabled, setExecuteDisabled]);
+  const onApproved = useCallback(() => {
+    setExecuteDisabled(false);
+  }, []);
 
-  const onExecute = useCallback(() => {
-    const execute = async () => {
-      if (signer && amount && poolDataAdapter) {
-        try {
-          const parsedAmount = amount.toString();
-          const tokenAmount = utils.parseEther(parsedAmount);
-          const isBackingToken = backingToken === selectedToken;
-          const parsedMinTYSRate = utils.parseEther(minTYSRate.toString());
-          const isEthDeposit = selectedToken === 'ETH';
-          const depositTransaction = await poolDataAdapter.executeDeposit(
-            ammAddress,
-            tokenAmount,
-            isBackingToken,
-            parsedMinTYSRate,
-            isEthDeposit,
-          );
-          await depositTransaction?.wait();
-          // TODO
-          // how to get transaction address for Etherscan?
-          const link = 'someEtherscanLink';
-          getNotificationService().notify(
-            'Deposit Successful',
-            getSuccessfulNotification(selectedYield, backingToken, protocol, maturityDate),
-            link,
-            'View on Etherscan',
-          );
-          setExecuteDisabled(false);
-          setTriggerUpdateBalance(true);
-          setAmount(0);
-        } catch (err) {
-          // TODO handle errors
-          console.log('onExecute err', err);
-        }
-      }
-    };
-
+  const onAllowanceExceeded = useCallback(() => {
     setExecuteDisabled(true);
-    execute();
+  }, []);
+
+  const onExecuted = useCallback(() => {
+    setExecuteDisabled(false);
+  }, []);
+
+  const onExecute = useCallback((): Promise<ethers.ContractTransaction | undefined> => {
+    if (signer && amount && poolDataAdapter) {
+      setExecuteDisabled(true);
+
+      const tokenAmount = utils.parseEther(amount.toString());
+      const isBackingToken = backingToken === selectedToken;
+      const parsedMinTYSRate = utils.parseEther(minTYSRate.toString());
+      const isEthDeposit = selectedToken === 'ETH';
+      return poolDataAdapter
+        .executeDeposit(ammAddress, tokenAmount, isBackingToken, parsedMinTYSRate, selectedYield, isEthDeposit)
+        .catch(() => {
+          setExecuteDisabled(false);
+          return undefined;
+        });
+    } else {
+      return Promise.resolve(undefined);
+    }
   }, [
     signer,
     ammAddress,
     backingToken,
     selectedToken,
-    protocol,
-    maturityDate,
     selectedYield,
     amount,
     minTYSRate,
     poolDataAdapter,
     setExecuteDisabled,
-    setTriggerUpdateBalance,
-    setAmount,
   ]);
 
   useEffect(() => {
@@ -252,7 +223,7 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
 
   useEffect(() => {
     const retrieveDepositAmount = async () => {
-      if (amount === 0) {
+      if (amount === '0') {
         setFixedPrincipalsAmount(null);
         setVariablePrincipalsAmount(null);
         setVariableLpTokensAmount(null);
@@ -299,59 +270,34 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
     setVariableLpTokensAmount,
   ]);
 
-  useEffect(() => {
-    setExecuteDisabled(!amount || !selectedYield);
-  }, [amount, selectedYield, setExecuteDisabled]);
-
-  useEffect(() => {
-    const getAllowance = async () => {
-      if (signer) {
-        const isBackingToken = backingToken === selectedToken;
-        const allowance = await poolDataAdapter?.getApprovedAllowance(
-          userWalletAddress,
-          address,
-          isBackingToken,
-          signer,
-        );
-        if (allowance) {
-          setApproveDisabled(true);
-        } else {
-          setApproveDisabled(false);
-        }
-      }
-    };
-
-    getAllowance();
-  }, [userWalletAddress, address, selectedToken, backingToken, signer, poolDataAdapter]);
-
   const fixedPrincipalsAmountFormatted = useMemo(() => {
     if (!fixedPrincipalsAmount) {
       return null;
     }
-    return NumberUtils.formatToCurrency(utils.formatEther(fixedPrincipalsAmount), 2);
-  }, [fixedPrincipalsAmount]);
+    return NumberUtils.formatToCurrency(utils.formatEther(fixedPrincipalsAmount), tempusPool.decimalsForUI);
+  }, [fixedPrincipalsAmount, tempusPool.decimalsForUI]);
 
   const variablePrincipalsAmountFormatted = useMemo(() => {
     if (!variablePrincipalsAmount) {
       return null;
     }
-    return NumberUtils.formatToCurrency(utils.formatEther(variablePrincipalsAmount), 2);
-  }, [variablePrincipalsAmount]);
+    return NumberUtils.formatToCurrency(utils.formatEther(variablePrincipalsAmount), tempusPool.decimalsForUI);
+  }, [variablePrincipalsAmount, tempusPool.decimalsForUI]);
 
   const variableLpTokensAmountFormatted = useMemo(() => {
     if (!variableLpTokensAmount) {
       return null;
     }
-    return NumberUtils.formatToCurrency(utils.formatEther(variableLpTokensAmount), 2);
-  }, [variableLpTokensAmount]);
+    return NumberUtils.formatToCurrency(utils.formatEther(variableLpTokensAmount), tempusPool.decimalsForUI);
+  }, [variableLpTokensAmount, tempusPool.decimalsForUI]);
 
   const balanceFormatted = useMemo(() => {
     if (!balance) {
       return null;
     }
 
-    return NumberUtils.formatToCurrency(utils.formatEther(balance), 2);
-  }, [balance]);
+    return NumberUtils.formatToCurrency(utils.formatEther(balance), tempusPool.decimalsForUI);
+  }, [balance, tempusPool.decimalsForUI]);
 
   const usdValueFormatted = useMemo(() => {
     if (!usdRate || !amount) {
@@ -365,7 +311,7 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
 
   useEffect(() => {
     const getEstimatedFixedApr = async () => {
-      if (amount && selectedToken) {
+      if (amount && amount !== '0' && selectedToken) {
         const isBackingToken = selectedToken === backingToken;
         const result = await poolDataAdapter?.getEstimatedFixedApr(
           utils.parseEther(amount.toString()),
@@ -445,9 +391,9 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
                 title="Interest rate protection"
                 tooltip={interestRateProtectionTooltipText}
                 selectable={true}
-                selected={selectedYield === 'fixed'}
+                selected={selectedYield === 'Fixed'}
               >
-                <div className="tf__dialog__flex-col-space-between" yield-attribute="fixed" onClick={onSelectYield}>
+                <div className="tf__dialog__flex-col-space-between" yield-attribute="Fixed" onClick={onSelectYield}>
                   <Typography variant="h4">Fixed Yield</Typography>
                   <Typography variant="body-text">
                     {fixedPrincipalsAmountFormatted && `est. ${fixedPrincipalsAmountFormatted} Principals`}
@@ -469,9 +415,9 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
                 title="Liquidity provision"
                 tooltip={liquidityProvisionTooltipText}
                 selectable={true}
-                selected={selectedYield === 'variable'}
+                selected={selectedYield === 'Variable'}
               >
-                <div className="tf__dialog__flex-col-space-between" yield-attribute="variable" onClick={onSelectYield}>
+                <div className="tf__dialog__flex-col-space-between" yield-attribute="Variable" onClick={onSelectYield}>
                   <Typography variant="h4">Variable Yield</Typography>
                   <div>
                     <Typography variant="body-text">
@@ -489,27 +435,43 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
             </div>
           </div>
         </ActionContainer>
-
-        <Execute
-          approveDisabled={approveDisabled}
-          executeDisabled={executeDisabled}
-          onApprove={onApprove}
-          onExecute={onExecute}
-        />
+        <Spacer size={20} />
+        <div className="tf__flex-row-center-vh">
+          {selectedToken && selectedToken !== 'ETH' && (
+            <>
+              <ApproveButton
+                poolDataAdapter={poolDataAdapter}
+                tokenToApprove={
+                  selectedToken && selectedToken === backingToken
+                    ? content.backingTokenAddress
+                    : content.yieldBearingTokenAddress
+                }
+                spenderAddress={getConfig().tempusControllerContract}
+                amountToApprove={balance}
+                tokenTicker={selectedToken}
+                disabled={!amount || amount === '0'}
+                onApproved={onApproved}
+                onAllowanceExceeded={onAllowanceExceeded}
+              />
+              <Spacer size={20} />
+            </>
+          )}
+          <ExecuteButton
+            actionName="Deposit"
+            notificationText={getDepositNotification(
+              `${selectedYield} Yield`,
+              content.backingTokenTicker,
+              content.protocol,
+              content.maturityDate,
+            )}
+            disabled={executeDisabled || amount === '0'}
+            onExecute={onExecute}
+            onExecuted={onExecuted}
+          />
+        </div>
       </div>
     </div>
   );
 };
 
 export default DetailDeposit;
-
-const getSuccessfulNotification = (
-  selectedYield: string,
-  backingToken: Ticker,
-  protocol: ProtocolName,
-  maturityDate: Date,
-): string => {
-  return `${selectedYield} Yield
-    ${backingToken} via ${protocol}
-    ${format(maturityDate, 'dd MMMM yyyy')}`;
-};

@@ -68,7 +68,7 @@ export default class DashboardDataAdapter {
   }
 
   private async getChildRowData(tempusPool: TempusPool): Promise<DashboardRowChild> {
-    if (!this.tempusPoolService || !this.statisticsService || !this.tempusAMMService) {
+    if (!this.tempusPoolService || !this.statisticsService || !this.tempusAMMService || !this.variableRateService) {
       console.error(
         'DashboardDataAdapter - getChildRowData() - Attempted to use DashboardDataAdapter before initializing it!',
       );
@@ -76,61 +76,47 @@ export default class DashboardDataAdapter {
     }
 
     try {
-      const principalTokenAddress = await this.tempusPoolService.getPrincipalsTokenAddress(tempusPool.address);
+      const [fixedAPR, tvl, poolBackingTokenRate, presentValueInBackingTokens, availableToDeposit, fees] =
+        await Promise.all([
+          this.tempusAMMService.getFixedAPR(tempusPool.ammAddress, tempusPool.principalsAddress),
+          this.statisticsService.totalValueLockedUSD(tempusPool.address, tempusPool.backingToken),
+          this.statisticsService.getRate(tempusPool.backingToken),
+          this.getPresentValueInBackingTokensForPool(tempusPool),
+          this.getAvailableToDepositForPool(tempusPool),
+          this.variableRateService.calculateFees(
+            tempusPool.ammAddress,
+            tempusPool.address,
+            tempusPool.principalsAddress,
+            tempusPool.yieldsAddress,
+          ),
+        ]);
 
-      const [
-        backingTokenTicker,
-        yieldBearingTokenTicker,
-        yieldTokenAddress,
-        protocol,
-        startDate,
-        maturityDate,
-        fixedAPR,
-        presentValueInBackingTokens,
-        availableToDeposit,
-      ] = await Promise.all([
-        this.tempusPoolService.getBackingTokenTicker(tempusPool.address),
-        this.tempusPoolService.getYieldBearingTokenTicker(tempusPool.address),
-        this.tempusPoolService.getYieldTokenAddress(tempusPool.address),
-        this.tempusPoolService.getProtocolName(tempusPool.address),
-        this.tempusPoolService.getStartTime(tempusPool.address),
-        this.tempusPoolService.getMaturityTime(tempusPool.address),
-        this.tempusAMMService.getFixedAPR(tempusPool.ammAddress, principalTokenAddress),
-        this.getPresentValueInBackingTokensForPool(tempusPool),
-        this.getAvailableToDepositForPool(tempusPool),
+      const [availableToDepositInUSD, variableAPY] = await Promise.all([
+        this.getAvailableToDepositInUSD(tempusPool.address, availableToDeposit, poolBackingTokenRate),
+        this.variableRateService.getAprRate(
+          tempusPool.protocol,
+          tempusPool.address,
+          tempusPool.yieldBearingTokenAddress,
+          fees,
+        ),
       ]);
 
-      const [tvl, poolBackingTokenRate, backingTokenAddress, yieldBearingTokenAddress] = await Promise.all([
-        this.statisticsService.totalValueLockedUSD(tempusPool.address, backingTokenTicker),
-        this.statisticsService.getRate(backingTokenTicker),
-        this.tempusPoolService.getBackingTokenAddress(tempusPool.address),
-        this.tempusPoolService.getYieldBearingTokenAddress(tempusPool.address),
-      ]);
-
-      const availableToDepositInUSD = await this.getAvailableToDepositInUSD(
-        tempusPool.address,
-        availableToDeposit,
-        poolBackingTokenRate,
-      );
-
-      // TODO - Replace dummy data for each tempus pool (child row) with real data.
       return {
         id: tempusPool.address,
         tempusPool: tempusPool,
-        parentId: backingTokenTicker,
-        token: backingTokenTicker,
-        supportedTokens: [backingTokenTicker, yieldBearingTokenTicker],
-        protocol,
-        principalTokenAddress,
-        yieldTokenAddress,
-        backingTokenAddress,
-        yieldBearingTokenAddress,
-        startDate,
-        maturityDate,
+        parentId: tempusPool.backingToken,
+        token: tempusPool.backingToken,
+        supportedTokens: [tempusPool.backingToken, tempusPool.yieldBearingToken],
+        protocol: tempusPool.protocol,
+        principalTokenAddress: tempusPool.principalsAddress,
+        yieldTokenAddress: tempusPool.yieldsAddress,
+        backingTokenAddress: tempusPool.backingTokenAddress,
+        yieldBearingTokenAddress: tempusPool.yieldBearingTokenAddress,
+        yieldBearingTokenTicker: tempusPool.yieldBearingToken,
+        startDate: new Date(tempusPool.startDate),
+        maturityDate: new Date(tempusPool.maturityDate),
         fixedAPR,
-        variableAPY: this.variableRateService
-          ? await this.variableRateService.getAprRate(protocol, tempusPool.address)
-          : 0,
+        variableAPY,
         TVL: Number(ethers.utils.formatEther(tvl)),
         presentValue:
           presentValueInBackingTokens !== undefined
@@ -138,11 +124,12 @@ export default class DashboardDataAdapter {
             : undefined,
         availableTokensToDeposit: availableToDeposit && {
           backingToken: availableToDeposit.backingToken,
-          backingTokenTicker,
+          backingTokenTicker: tempusPool.backingToken,
           yieldBearingToken: availableToDeposit.yieldBearingToken,
-          yieldBearingTokenTicker,
+          yieldBearingTokenTicker: tempusPool.yieldBearingToken,
         },
         availableUSDToDeposit: availableToDepositInUSD,
+        backingTokenTicker: tempusPool.backingToken,
       };
     } catch (error) {
       console.error('DashboardDataAdapter - getChildRowData() - Failed to get data for child row!', error);
@@ -241,9 +228,9 @@ export default class DashboardDataAdapter {
   }
 
   private async getPresentValueInBackingTokensForPool(pool: TempusPool): Promise<BigNumber | undefined> {
-    if (!this.tempusPoolService || !this.statisticsService || !this.eRC20TokenServiceGetter) {
+    if (!this.statisticsService || !this.tempusPoolService || !this.eRC20TokenServiceGetter) {
       console.error(
-        'DashboardDataAdapter - getPresentValueInBackingTokensForPool() - Attempted to use DashboardDataAdapter before initializing it!',
+        'DashboardDataAdapter - getPresentValueInForPool() - Attempted to use DashboardDataAdapter before initializing it!',
       );
       return Promise.reject();
     }
@@ -252,33 +239,27 @@ export default class DashboardDataAdapter {
       return undefined;
     }
 
+    const yieldToken = this.eRC20TokenServiceGetter(pool.yieldsAddress);
+    const principalToken = this.eRC20TokenServiceGetter(pool.principalsAddress);
+    const lpToken = this.eRC20TokenServiceGetter(pool.ammAddress);
+
     try {
-      const [yieldTokenAddress, principalTokenAddress, pricePerPrincipalShare, pricePerYieldShare] = await Promise.all([
-        this.tempusPoolService.getYieldTokenAddress(pool.address),
-        this.tempusPoolService.getPrincipalsTokenAddress(pool.address),
-        this.tempusPoolService.pricePerPrincipalShareStored(pool.address),
-        this.tempusPoolService.pricePerYieldShareStored(pool.address),
-      ]);
-
-      const yieldToken = this.eRC20TokenServiceGetter(yieldTokenAddress);
-      const principalToken = this.eRC20TokenServiceGetter(principalTokenAddress);
-
-      const [userYieldSupply, userPrincipalSupply] = await Promise.all([
+      const [userYieldSupply, userPrincipalSupply, userLpSupply] = await Promise.all([
         yieldToken.balanceOf(this.userWalletAddress),
         principalToken.balanceOf(this.userWalletAddress),
+        lpToken.balanceOf(this.userWalletAddress),
       ]);
 
-      const yieldValue = mul18f(userYieldSupply, pricePerYieldShare);
-      const principalValue = mul18f(userPrincipalSupply, pricePerPrincipalShare);
-
-      const totalValue = yieldValue.add(principalValue);
-
-      return totalValue;
-    } catch (error) {
-      console.error(
-        `DashboardDataAdapter - getPresentValueInBackingTokensForPool() ` +
-          `- Failed to get present value in backing tokens for user: "${this.userWalletAddress}", pool: "${pool.address}"`,
+      return await this.statisticsService.estimateExitAndRedeem(
+        pool.ammAddress,
+        userLpSupply,
+        userPrincipalSupply,
+        userYieldSupply,
+        pool.maxLeftoverShares,
+        true,
       );
+    } catch (error) {
+      console.log('DashboardDataAdapter - getPresentValueInForPool() - Failed to user balance for pool!', error);
       return Promise.reject(error);
     }
   }
@@ -339,27 +320,19 @@ export default class DashboardDataAdapter {
     }
 
     try {
-      const [poolBackingToken, poolYieldBearingToken] = await Promise.all([
-        this.tempusPoolService.getBackingTokenAddress(pool.address),
-        this.tempusPoolService.getYieldBearingTokenAddress(pool.address),
+      const backingToken = this.eRC20TokenServiceGetter(pool.backingTokenAddress);
+      const yieldBearingToken = this.eRC20TokenServiceGetter(pool.yieldBearingTokenAddress);
+
+      const [backingTokensAvailable, yieldTokensAvailable] = await Promise.all([
+        backingToken.balanceOf(this.userWalletAddress),
+        yieldBearingToken.balanceOf(this.userWalletAddress),
       ]);
-
-      const backingToken = this.eRC20TokenServiceGetter(poolBackingToken);
-      const yieldBearingToken = this.eRC20TokenServiceGetter(poolYieldBearingToken);
-
-      const [backingTokensAvailable, yieldTokensAvailable, backingTokenTicker, yieldBearingTokenTicker] =
-        await Promise.all([
-          backingToken.balanceOf(this.userWalletAddress),
-          yieldBearingToken.balanceOf(this.userWalletAddress),
-          backingToken.symbol(),
-          yieldBearingToken.symbol(),
-        ]);
 
       return {
         backingToken: backingTokensAvailable,
-        backingTokenTicker: backingTokenTicker,
+        backingTokenTicker: pool.backingToken,
         yieldBearingToken: yieldTokensAvailable,
-        yieldBearingTokenTicker: yieldBearingTokenTicker,
+        yieldBearingTokenTicker: pool.yieldBearingToken,
       };
     } catch (error) {
       console.error(

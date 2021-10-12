@@ -253,7 +253,15 @@ const Dashboard: FC<DashboardProps> = ({ hidden, userWalletAddress, rows, onRowA
 export default Dashboard;
 
 const compareMaturity = (a: number[], b: number[]): number => a[0] - b[0];
-const compareAPY = (a: number[], b: number[]): number => a[1] - b[1];
+const compareAPY = (a: number[], b: number[]): number => {
+  // Sort children
+  if (a.length === 1 && b.length === 1) {
+    return a[0] - b[0];
+  }
+
+  // Sort parents
+  return a[1] - b[1];
+};
 const compareProtocol = (a: string[] | string, b: string[] | string): number => {
   // Sort child rows
   if (typeof a === 'string' && typeof b === 'string') {

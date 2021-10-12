@@ -1,7 +1,6 @@
 import { Column } from '@devexpress/dx-react-grid';
 import { ethers } from 'ethers';
 
-import { fixedAPRTooltipText, variableAPYTooltipText } from '../../constants';
 import { DashboardRow, DashboardRowChild, DashboardRowParent, isParentRow } from '../../interfaces';
 import NumberUtils from '../../services/NumberUtils';
 
@@ -43,26 +42,22 @@ export const dashboardColumnsDefinitions: ExtraDataColumn[] = [
   {
     name: 'fixedAPR',
     title: `Fixed APR`,
-    tooltip: fixedAPRTooltipText,
     getCellValue: (row: any) => {
       if (!row.fixedAPR) {
         return null;
-      }
-      else if (row.fixedAPR.length === 2) {
+      } else if (row.fixedAPR.length === 2) {
         if (!row.fixedAPR[0] || !row.fixedAPR[1]) {
           return null;
         }
         return row.fixedAPR;
-      }
-      else {
+      } else {
         return [row.fixedAPR];
       }
     },
   },
   {
     name: 'variableAPY',
-    title: 'Variable APR',
-    tooltip: variableAPYTooltipText,
+    title: 'LP APR',
     getCellValue: (row: any) => {
       if (row.variableAPY.length === 2) {
         return row.variableAPY;
@@ -80,7 +75,6 @@ export const dashboardColumnsDefinitions: ExtraDataColumn[] = [
   {
     name: 'presentValue',
     title: 'Balance',
-    tooltip: 'Waiting for text...',
     getCellValue: (row: DashboardRow) => {
       if (!row.presentValue) {
         return '-';

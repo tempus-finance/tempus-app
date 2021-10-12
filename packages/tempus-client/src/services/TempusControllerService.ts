@@ -4,6 +4,13 @@ import { TempusController } from '../abi/TempusController';
 import TempusControllerABI from '../abi/TempusController.json';
 import { TypedEvent } from '../abi/commons';
 import getConfig from '../utils/get-config';
+import {
+  completeExitAndRedeemGasIncrease,
+  depositAndFixGasIncrease,
+  depositAndProvideLiquidityGasIncrease,
+  depositBackingGasIncrease,
+  depositYieldBearingGasIncrease,
+} from '../constants';
 
 type TempusControllerServiceParameters = {
   Contract: typeof Contract;
@@ -74,7 +81,13 @@ class TempusControllerService {
     }
 
     try {
-      return await this.contract.queryFilter(this.contract.filters.Redeemed(forPool, forUser));
+      const fetchEventsForPool = forPool;
+      const fetchEventsForRedeemer = undefined;
+      const fetchEventsForRecipient = forUser;
+
+      return await this.contract.queryFilter(
+        this.contract.filters.Redeemed(fetchEventsForPool, fetchEventsForRedeemer, fetchEventsForRecipient),
+      );
     } catch (error) {
       console.error(`TempusControllerService getRedeemEvents() - Failed to get redeemed events!`, error);
       return Promise.reject(error);
@@ -97,14 +110,78 @@ class TempusControllerService {
 
     try {
       if (isEthDeposit) {
+        const estimate = await this.contract.estimateGas.depositAndFix(
+          tempusAMM,
+          tokenAmount,
+          isBackingToken,
+          minTYSRate,
+          {
+            value: tokenAmount,
+          },
+        );
         return await this.contract.depositAndFix(tempusAMM, tokenAmount, isBackingToken, minTYSRate, {
           value: tokenAmount,
+          gasLimit: Math.ceil(estimate.toNumber() * depositAndFixGasIncrease),
         });
       } else {
-        return await this.contract.depositAndFix(tempusAMM, tokenAmount, isBackingToken, minTYSRate);
+        const estimate = await this.contract.estimateGas.depositAndFix(
+          tempusAMM,
+          tokenAmount,
+          isBackingToken,
+          minTYSRate,
+        );
+        return await this.contract.depositAndFix(tempusAMM, tokenAmount, isBackingToken, minTYSRate, {
+          gasLimit: Math.ceil(estimate.toNumber() * depositAndFixGasIncrease),
+        });
       }
     } catch (error) {
       console.error(`TempusControllerService depositAndFix() - Failed to deposit backing tokens!`, error);
+      return Promise.reject(error);
+    }
+  }
+
+  public async depositAndProvideLiquidity(
+    tempusAMM: string,
+    tokenAmount: BigNumber,
+    isBackingToken: boolean,
+    isEthDeposit?: boolean,
+  ): Promise<ContractTransaction> {
+    if (!this.contract) {
+      console.error(
+        'TempusControllerService - depositAndProvideLiquidity() - Attempted to use TempusControllerService before initializing it!',
+      );
+      return Promise.reject();
+    }
+
+    try {
+      if (isEthDeposit) {
+        const estimate = await this.contract.estimateGas.depositAndProvideLiquidity(
+          tempusAMM,
+          tokenAmount,
+          isBackingToken,
+          {
+            value: tokenAmount,
+          },
+        );
+        return await this.contract.depositAndProvideLiquidity(tempusAMM, tokenAmount, isBackingToken, {
+          value: tokenAmount,
+          gasLimit: Math.ceil(estimate.toNumber() * depositAndProvideLiquidityGasIncrease),
+        });
+      } else {
+        const estimate = await this.contract.estimateGas.depositAndProvideLiquidity(
+          tempusAMM,
+          tokenAmount,
+          isBackingToken,
+        );
+        return await this.contract.depositAndProvideLiquidity(tempusAMM, tokenAmount, isBackingToken, {
+          gasLimit: Math.ceil(estimate.toNumber() * depositAndProvideLiquidityGasIncrease),
+        });
+      }
+    } catch (error) {
+      console.error(
+        `TempusControllerService depositAndProvideLiquidity() - Failed to do deposit and provide liquidity!`,
+        error,
+      );
       return Promise.reject(error);
     }
   }
@@ -125,12 +202,16 @@ class TempusControllerService {
       return Promise.reject();
     }
 
+    const maxLeftoverSharesParsed = ethers.utils.parseEther(tempusPoolConfig.maxLeftoverShares);
     try {
-      return await this.contract.completeExitAndRedeem(
+      const estimate = await this.contract.estimateGas.completeExitAndRedeem(
         tempusAMM,
-        ethers.utils.parseEther(tempusPoolConfig.maxLeftoverShares),
+        maxLeftoverSharesParsed,
         isBackingToken,
       );
+      return await this.contract.completeExitAndRedeem(tempusAMM, maxLeftoverSharesParsed, isBackingToken, {
+        gasLimit: Math.ceil(estimate.toNumber() * completeExitAndRedeemGasIncrease),
+      });
     } catch (error) {
       console.error(`TempusControllerService completeExitAndRedeem() - Failed to redeem tokens!`, error);
       return Promise.reject(error);
@@ -146,7 +227,10 @@ class TempusControllerService {
     }
 
     try {
-      return await this.contract.depositYieldBearing(tempusPool, amount, recipient);
+      const estimate = await this.contract.estimateGas.depositYieldBearing(tempusPool, amount, recipient);
+      return await this.contract.depositYieldBearing(tempusPool, amount, recipient, {
+        gasLimit: Math.ceil(estimate.toNumber() * depositYieldBearingGasIncrease),
+      });
     } catch (error) {
       console.error('TempusControllerService - depositYieldBearing() - Failed to deposit yield bearing token!', error);
       return Promise.reject(error);
@@ -168,16 +252,57 @@ class TempusControllerService {
 
     try {
       if (isEthDeposit) {
-        return await this.contract.depositBacking(tempusPool, amount, recipient, {
+        const estimate = await this.contract.estimateGas.depositBacking(tempusPool, amount, recipient, {
           value: amount,
         });
+        return await this.contract.depositBacking(tempusPool, amount, recipient, {
+          value: amount,
+          gasLimit: Math.ceil(estimate.toNumber() * depositBackingGasIncrease),
+        });
       } else {
-        return await this.contract.depositBacking(tempusPool, amount, recipient);
+        const estimate = await this.contract.estimateGas.depositBacking(tempusPool, amount, recipient);
+        return await this.contract.depositBacking(tempusPool, amount, recipient, {
+          gasLimit: Math.ceil(estimate.toNumber() * depositBackingGasIncrease),
+        });
       }
     } catch (error) {
       console.error('TempusControllerService - depositBacking() - Failed to deposit backing token!', error);
       return Promise.reject(error);
     }
+  }
+
+  async redeemToBacking(tempusPool: string, userWalletAddress: string, amountOfShares: BigNumber) {
+    if (!this.contract) {
+      console.error(
+        'TempusControllerService - redeemToBacking() - Attempted to use TempusControllerService before initializing it!',
+      );
+      return Promise.reject();
+    }
+
+    return this.contract.redeemToBacking(
+      tempusPool,
+      userWalletAddress,
+      amountOfShares,
+      amountOfShares,
+      userWalletAddress,
+    );
+  }
+
+  async redeemToYieldBearing(tempusPool: string, userWalletAddress: string, amountOfShares: BigNumber) {
+    if (!this.contract) {
+      console.error(
+        'TempusControllerService - redeemToYieldBearing() - Attempted to use TempusControllerService before initializing it!',
+      );
+      return Promise.reject();
+    }
+
+    return this.contract.redeemToYieldBearing(
+      tempusPool,
+      userWalletAddress,
+      amountOfShares,
+      amountOfShares,
+      userWalletAddress,
+    );
   }
 }
 

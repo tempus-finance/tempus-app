@@ -1,38 +1,43 @@
-const formatValueToCurrencyRegExp = /\d/;
-export const formatValueToCurrency = (value: any): string | undefined => {
+import NumberUtils from '../../services/NumberUtils';
+
+export const checkIfNumberRegExp = /\d/;
+export const removeLeadingZeroesRegExp = /^0+/;
+
+export const formatValueToCurrency = (value: string): string => {
   if (!value) {
-    return '';
+    return '0';
   }
 
-  const splitValue = value.toString().split('.');
+  value = value.replace(removeLeadingZeroesRegExp, '');
+
+  const splitValue = value.split('.');
 
   // no decimals
   if (splitValue.length === 1) {
-    const values = splitValue[0].split('');
+    const characters = splitValue[0].split('');
 
-    const filteredValues = values.filter((v: string) => formatValueToCurrencyRegExp.test(v));
-    return new Intl.NumberFormat().format(parseInt(filteredValues.join(''), 10));
+    // Remove non digit characters from string
+    const filteredValues = characters.filter((v: string) => checkIfNumberRegExp.test(v));
+    return NumberUtils.formatToCurrency(filteredValues.join(''));
   }
 
-  // decimals
+  // has decimals
   if (splitValue.length === 2) {
-    const leftValues = splitValue[0].split('');
-    const rightValues = splitValue[1].split('');
+    const leftCharacters = splitValue[0].split('');
+    const rightCharacters = splitValue[1].split('');
 
-    const filteredLeftValues = leftValues.filter((v: string) => formatValueToCurrencyRegExp.test(v));
-    const filteredRightValues = rightValues.filter((v: string) => formatValueToCurrencyRegExp.test(v));
+    const filteredLeftCharacters = leftCharacters.filter((v: string) => checkIfNumberRegExp.test(v));
+    const filteredRightCharacters = rightCharacters.filter((v: string) => checkIfNumberRegExp.test(v));
 
-    if (filteredRightValues.length) {
-      return `${new Intl.NumberFormat().format(parseInt(filteredLeftValues.join(''), 10))}.${filteredRightValues.join(
-        '',
-      )}`;
+    if (filteredRightCharacters.length) {
+      return `${NumberUtils.formatToCurrency(filteredLeftCharacters.join(''))}.${filteredRightCharacters.join('')}`;
     } else {
-      return `${new Intl.NumberFormat().format(parseInt(filteredLeftValues.join(''), 10))}.`;
+      return `${NumberUtils.formatToCurrency(filteredLeftCharacters.join(''))}.`;
     }
   }
 
   if (splitValue.length > 2) {
-    return undefined;
+    return '';
   }
 
   return value;

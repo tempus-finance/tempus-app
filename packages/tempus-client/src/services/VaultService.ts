@@ -5,7 +5,7 @@ import VaultABI from '../abi/Vault.json';
 import { TypedEvent } from '../abi/commons';
 import getDefaultProvider from './getDefaultProvider';
 import TempusAMMService from './TempusAMMService';
-import { SECONDS_IN_AN_HOUR } from '../constants';
+import { provideLiquidityGasIncrease, removeLiquidityGasIncrease, SECONDS_IN_AN_HOUR } from '../constants';
 import getConfig from '../utils/get-config';
 
 type VaultServiceParameters = {
@@ -26,6 +26,15 @@ export type SwapEvent = TypedEvent<
     tokenOut: string;
     amountIn: BigNumber;
     amountOut: BigNumber;
+  }
+>;
+export type PoolBalanceChangedEvent = TypedEvent<
+  [string, string, string[], BigNumber[], BigNumber[]] & {
+    poolId: string;
+    liquidityProvider: string;
+    tokens: string[];
+    deltas: BigNumber[];
+    protocolFeeAmounts: BigNumber[];
   }
 >;
 
@@ -59,41 +68,78 @@ class VaultService {
     this.tempusAMMService = params.tempusAMMService;
   }
 
-  public async getSwapEvents(): Promise<SwapEvent[]> {
+  public async getSwapEvents(forPoolId?: string, fromBlock?: number): Promise<SwapEvent[]> {
     if (!this.contract || !this.tempusAMMService) {
       console.error('VaultService - getSwapEvents() - Attempted to use VaultService before initializing it!');
       return Promise.reject();
     }
 
-    let poolIDs: string[] = [];
-    try {
-      const fetchPoolIdPromises: Promise<string>[] = [];
-      getConfig().tempusPools.forEach(tempusPool => {
-        if (!this.tempusAMMService) {
-          throw new Error('VaultService - getSwapEvents() - Attempted to use VaultService before initializing it!');
-        }
-        fetchPoolIdPromises.push(this.tempusAMMService.poolId(tempusPool.ammAddress));
-      });
-      poolIDs = await Promise.all(fetchPoolIdPromises);
-    } catch (error) {
-      console.error('VaultService - getSwapEvents() - Failed to get IDs for tempus pools!', error);
-      return Promise.reject(error);
+    const fetchSwapEventPromises: Promise<SwapEvent[]>[] = [];
+    if (!forPoolId) {
+      try {
+        getConfig().tempusPools.forEach(tempusPool => {
+          if (!this.contract) {
+            throw new Error('VaultService - getSwapEvents() - Attempted to use VaultService before initializing it!');
+          }
+
+          fetchSwapEventPromises.push(
+            this.contract.queryFilter(this.contract.filters.Swap(tempusPool.poolId), fromBlock),
+          );
+        });
+      } catch (error) {
+        console.error(`VaultService - getSwapEvents() - Failed to get swap events!`, error);
+        return Promise.reject(error);
+      }
+    } else {
+      try {
+        fetchSwapEventPromises.push(this.contract.queryFilter(this.contract.filters.Swap(forPoolId), fromBlock));
+      } catch (error) {
+        console.error(`VaultService - getSwapEvents() - Failed to get swap events!`, error);
+        return Promise.reject(error);
+      }
     }
 
-    try {
-      const fetchSwapEventPromises: Promise<SwapEvent[]>[] = [];
-      poolIDs.forEach(poolID => {
-        if (!this.contract) {
-          throw new Error('VaultService - getSwapEvents() - Attempted to use VaultService before initializing it!');
-        }
+    return (await Promise.all(fetchSwapEventPromises)).flat();
+  }
 
-        fetchSwapEventPromises.push(this.contract.queryFilter(this.contract.filters.Swap(poolID)));
-      });
-      return (await Promise.all(fetchSwapEventPromises)).flat();
-    } catch (error) {
-      console.error(`VaultService - getSwapEvents() - Failed to get swap events!`, error);
-      return Promise.reject(error);
+  public async getPoolBalanceChangedEvents(forPoolId?: string, fromBlock?: number): Promise<PoolBalanceChangedEvent[]> {
+    if (!this.contract || !this.tempusAMMService) {
+      console.error(
+        'VaultService - getPoolBalanceChangedEvents() - Attempted to use VaultService before initializing it!',
+      );
+      return Promise.reject();
     }
+
+    const fetchEventsPromises: Promise<PoolBalanceChangedEvent[]>[] = [];
+    if (!forPoolId) {
+      try {
+        getConfig().tempusPools.forEach(pool => {
+          if (!this.contract) {
+            throw new Error(
+              'VaultService - getPoolBalanceChangedEvents() - Attempted to use VaultService before initializing it!',
+            );
+          }
+
+          fetchEventsPromises.push(
+            this.contract.queryFilter(this.contract.filters.PoolBalanceChanged(pool.poolId), fromBlock),
+          );
+        });
+      } catch (error) {
+        console.error(`VaultService - getPoolBalanceChangedEvents() - Failed to get swap events!`, error);
+        return Promise.reject(error);
+      }
+    } else {
+      try {
+        fetchEventsPromises.push(
+          this.contract.queryFilter(this.contract.filters.PoolBalanceChanged(forPoolId), fromBlock),
+        );
+      } catch (error) {
+        console.error(`VaultService - getPoolBalanceChangedEvents() - Failed to get swap events!`, error);
+        return Promise.reject(error);
+      }
+    }
+
+    return (await Promise.all(fetchEventsPromises)).flat();
   }
 
   /**
@@ -134,7 +180,10 @@ class VaultService {
     const minimumReturn = 1;
     const deadline = latestBlock.timestamp + SECONDS_IN_AN_HOUR;
 
-    return this.contract.swap(singleSwap, fundManagement, minimumReturn, deadline);
+    const estimate = await this.contract.estimateGas.swap(singleSwap, fundManagement, minimumReturn, deadline);
+    return this.contract.swap(singleSwap, fundManagement, minimumReturn, deadline, {
+      gasLimit: Math.ceil(estimate.toNumber() * 1.1),
+    });
   }
 
   async provideLiquidity(
@@ -183,7 +232,15 @@ class VaultService {
     };
 
     try {
-      return await this.contract.joinPool(poolId, userWalletAddress, userWalletAddress, joinPoolRequest);
+      const estimate = await this.contract.estimateGas.joinPool(
+        poolId,
+        userWalletAddress,
+        userWalletAddress,
+        joinPoolRequest,
+      );
+      return await this.contract.joinPool(poolId, userWalletAddress, userWalletAddress, joinPoolRequest, {
+        gasLimit: Math.ceil(estimate.toNumber() * provideLiquidityGasIncrease),
+      });
     } catch (error) {
       console.error('VaultService - provideLiquidity() - Failed to provide liquidity to tempus pool AMM!', error);
       return Promise.reject();
@@ -219,7 +276,15 @@ class VaultService {
     };
 
     try {
-      return await this.contract.exitPool(poolId, userWalletAddress, userWalletAddress, exitPoolRequest);
+      const estimate = await this.contract.estimateGas.exitPool(
+        poolId,
+        userWalletAddress,
+        userWalletAddress,
+        exitPoolRequest,
+      );
+      return await this.contract.exitPool(poolId, userWalletAddress, userWalletAddress, exitPoolRequest, {
+        gasLimit: Math.ceil(estimate.toNumber() * removeLiquidityGasIncrease),
+      });
     } catch (error) {
       console.error('VaultService - removeLiquidity() - Failed to remove liquidity from tempus pool AMM!', error);
       return Promise.reject();

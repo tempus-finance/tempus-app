@@ -10,6 +10,8 @@ import { TransferEventListener } from '../services/ERC20TokenService';
 import { div18f, mul18f } from '../utils/wei-math';
 import { DAYS_IN_A_YEAR, ONE_ETH_IN_WEI, SECONDS_IN_A_DAY, ZERO_ETH_ADDRESS } from '../constants';
 import { Ticker } from '../interfaces';
+import { TempusPool } from '../interfaces/TempusPool';
+import { SelectedYield } from '../components/detail/basic/detailDeposit';
 
 export interface UserTransaction {
   event: DepositedEvent | RedeemedEvent;
@@ -181,9 +183,10 @@ export default class PoolDataAdapter {
 
   async getEstimatedWithdrawAmount(
     tempusAmmAddress: string,
+    lpAmount: BigNumber,
     principalAmount: BigNumber,
     yieldsAmount: BigNumber,
-    lpAmount: BigNumber,
+    maxLeftoverShares: string,
     isBackingToken: boolean,
   ): Promise<BigNumber> {
     if (!this.statisticService) {
@@ -203,9 +206,10 @@ export default class PoolDataAdapter {
     try {
       const amount = await this.statisticService.estimateExitAndRedeem(
         tempusAmmAddress,
+        lpAmount,
         principalAmount,
         yieldsAmount,
-        lpAmount,
+        maxLeftoverShares,
         isBackingToken,
       );
       return amount;
@@ -213,6 +217,20 @@ export default class PoolDataAdapter {
       console.error('PoolDataAdapter - getEstimatedWithdrawAmount() - Failed to retrieve balances!', error);
       return Promise.reject();
     }
+  }
+
+  async estimatedRedeem(
+    tempusPool: string,
+    yieldsAmount: BigNumber,
+    principalsAmount: BigNumber,
+    toBackingToken: boolean,
+  ) {
+    if (!this.statisticService) {
+      console.error('PoolDataAdapter - estimateRedeem() - Attempted to use PoolDataAdapter before initializing it!');
+      return Promise.reject();
+    }
+
+    return this.statisticService.estimatedRedeem(tempusPool, yieldsAmount, principalsAmount, toBackingToken);
   }
 
   async approve(
@@ -325,6 +343,7 @@ export default class PoolDataAdapter {
     tokenAmount: BigNumber,
     isBackingToken: boolean,
     minTYSRate: BigNumber,
+    yieldType: SelectedYield,
     isEthDeposit?: boolean,
   ): Promise<ContractTransaction | undefined> {
     if (!this.tempusControllerService) {
@@ -333,13 +352,22 @@ export default class PoolDataAdapter {
     }
 
     try {
-      return await this.tempusControllerService.depositAndFix(
-        tempusAMM,
-        tokenAmount,
-        isBackingToken,
-        minTYSRate,
-        isEthDeposit,
-      );
+      if (yieldType === 'Fixed') {
+        return await this.tempusControllerService.depositAndFix(
+          tempusAMM,
+          tokenAmount,
+          isBackingToken,
+          minTYSRate,
+          isEthDeposit,
+        );
+      } else if (yieldType === 'Variable') {
+        return await this.tempusControllerService.depositAndProvideLiquidity(
+          tempusAMM,
+          tokenAmount,
+          isBackingToken,
+          isEthDeposit,
+        );
+      }
     } catch (error) {
       console.error(`TempusPoolService - executeDeposit() - Failed to make a deposit to the pool!`, error);
       return Promise.reject(error);
@@ -412,6 +440,50 @@ export default class PoolDataAdapter {
         error,
       );
       return Promise.reject(error);
+    }
+  }
+
+  async getPoolRatioOfAssets(
+    tempusAMM: string,
+    principalsAddress: string,
+    yieldsAddress: string,
+  ): Promise<{ principalsShare: number; yieldsShare: number }> {
+    if (!this.vaultService || !this.tempusAMMService) {
+      return Promise.reject();
+    }
+
+    const poolId = await this.tempusAMMService.poolId(tempusAMM);
+
+    const poolTokens = await this.vaultService.getPoolTokens(poolId);
+    const principalsIndex = poolTokens.tokens.findIndex(poolTokenAddress => principalsAddress === poolTokenAddress);
+    const yieldsIndex = poolTokens.tokens.findIndex(poolTokenAddress => yieldsAddress === poolTokenAddress);
+    const poolShareBalance = {
+      principals: poolTokens.balances[principalsIndex],
+      yields: poolTokens.balances[yieldsIndex],
+    };
+
+    if (poolShareBalance.principals.isZero() && poolShareBalance.yields.isZero()) {
+      return {
+        principalsShare: 0,
+        yieldsShare: 0,
+      };
+    } else if (poolShareBalance.principals.isZero() && !poolShareBalance.yields.isZero()) {
+      return {
+        principalsShare: 0,
+        yieldsShare: 1,
+      };
+    } else if (!poolShareBalance.principals.isZero() && poolShareBalance.yields.isZero()) {
+      return {
+        principalsShare: 1,
+        yieldsShare: 0,
+      };
+    } else {
+      const totalTokens = poolShareBalance.principals.add(poolShareBalance.yields);
+
+      return {
+        principalsShare: Number(ethers.utils.formatEther(div18f(poolShareBalance.principals, totalTokens))),
+        yieldsShare: Number(ethers.utils.formatEther(div18f(poolShareBalance.yields, totalTokens))),
+      };
     }
   }
 
@@ -687,7 +759,7 @@ export default class PoolDataAdapter {
     }
   }
 
-  async getBackingTokenRate(ticker: string) {
+  async getBackingTokenRate(ticker: Ticker): Promise<BigNumber> {
     if (!this.statisticService) {
       console.error(
         'PoolDataAdapter - getBackingTokenRate() - Attempted to use PoolDataAdapter before initializing it!',
@@ -783,6 +855,19 @@ export default class PoolDataAdapter {
     tokenContract.onTransfer(null, userWalletAddress, listener);
   }
 
+  async onTokenSent(
+    tokenAddress: string,
+    userWalletAddress: string,
+    signer: JsonRpcSigner,
+    listener: TransferEventListener,
+  ) {
+    if (this.eRC20TokenServiceGetter) {
+      const tokenContract = this.eRC20TokenServiceGetter(tokenAddress, signer);
+
+      tokenContract.onTransfer(userWalletAddress, null, listener);
+    }
+  }
+
   async getPoolFees(tempusPoolAddress: string, tempusAMMAddress: string): Promise<BigNumber[]> {
     if (!this.tempusPoolService || !this.tempusAMMService) {
       console.error('PoolDataAdapter - getPoolFees() - Attempted to use PoolDataAdapter before initializing it!');
@@ -798,6 +883,65 @@ export default class PoolDataAdapter {
       return [...poolFees, swapFee];
     } catch (error) {
       console.error('PoolDataAdapter - getPoolFees() - Failed to retrieve fees.', error);
+      return Promise.reject(error);
+    }
+  }
+
+  async executeRedeem(
+    tempusPool: string,
+    userWalletAddress: string,
+    amountOfShares: BigNumber,
+    toBacking: boolean,
+  ): Promise<ContractTransaction> {
+    if (!this.tempusControllerService) {
+      console.error('PoolDataAdapter - executeRedeem() - Attempted to use PoolDataAdapter before initializing it!');
+      return Promise.reject();
+    }
+
+    if (toBacking) {
+      return this.tempusControllerService.redeemToBacking(tempusPool, userWalletAddress, amountOfShares);
+    }
+
+    return this.tempusControllerService.redeemToYieldBearing(tempusPool, userWalletAddress, amountOfShares);
+  }
+
+  async getPresentValueInBackingTokensForPool(pool: TempusPool, userWalletAddress: string): Promise<BigNumber> {
+    if (!this.statisticService || !this.tempusPoolService || !this.eRC20TokenServiceGetter) {
+      console.error(
+        'PoolDataAdapter - getPresentValueInBackingTokensForPool() - Attempted to use PoolDataAdapter before initializing it!',
+      );
+      return Promise.reject();
+    }
+
+    try {
+      const [yieldTokenAddress, principalTokenAddress] = await Promise.all([
+        this.tempusPoolService.getYieldTokenAddress(pool.address),
+        this.tempusPoolService.getPrincipalsTokenAddress(pool.address),
+      ]);
+
+      const yieldToken = this.eRC20TokenServiceGetter(yieldTokenAddress);
+      const principalToken = this.eRC20TokenServiceGetter(principalTokenAddress);
+      const lpToken = this.eRC20TokenServiceGetter(pool.ammAddress);
+
+      const [userYieldSupply, userPrincipalSupply, userLpSupply] = await Promise.all([
+        yieldToken.balanceOf(userWalletAddress),
+        principalToken.balanceOf(userWalletAddress),
+        lpToken.balanceOf(userWalletAddress),
+      ]);
+
+      return await this.statisticService.estimateExitAndRedeem(
+        pool.ammAddress,
+        userLpSupply,
+        userPrincipalSupply,
+        userYieldSupply,
+        pool.maxLeftoverShares,
+        true,
+      );
+    } catch (error) {
+      console.log(
+        'PoolDataAdapter - getPresentValueInBackingTokensForPool() - Failed to fetch present value in backing tokens for pool!',
+        error,
+      );
       return Promise.reject(error);
     }
   }
