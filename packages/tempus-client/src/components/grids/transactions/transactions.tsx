@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { CircularProgress, Typography } from '@material-ui/core';
 import { DataGrid } from '@material-ui/data-grid';
+import { Context } from '../../../context';
 import getTransactionsDataAdapter from '../../../adapters/getTransactionsDataAdapter';
 import { Transaction } from '../../../interfaces';
 import transactionsColumnDefinitions from './transactionsColumnDefinitions';
@@ -8,12 +9,16 @@ import transactionsColumnDefinitions from './transactionsColumnDefinitions';
 import './transactions.scss';
 
 const Transactions = (): JSX.Element => {
+  const {
+    data: { userWalletSigner },
+  } = useContext(Context);
+
   const [loading, setLoading] = useState<boolean>(false);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
 
   useEffect(() => {
     const fetchTransactions = async () => {
-      const dataAdapter = getTransactionsDataAdapter();
+      const dataAdapter = getTransactionsDataAdapter(userWalletSigner || undefined);
 
       const data = await dataAdapter.generateData();
       setTransactions(data);
@@ -21,7 +26,7 @@ const Transactions = (): JSX.Element => {
     };
     fetchTransactions();
     setLoading(true);
-  }, []);
+  }, [userWalletSigner]);
 
   return (
     <div className="tf__transactions">

@@ -1,5 +1,5 @@
 export default interface ChartDataPoint {
-  value: string;
+  value: number;
   date: Date;
   valueIncrease: string;
 }

@@ -1,7 +1,6 @@
 import { BigNumber, ethers } from 'ethers';
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
 
-import getDefaultProvider from '../services/getDefaultProvider';
 import getStatisticsService from '../services/getStatisticsService';
 import getTempusPoolService from '../services/getTempusPoolService';
 import StatisticsService from '../services/StatisticsService';
@@ -24,9 +23,13 @@ class TVLChartDataAdapter {
   private statisticsService: StatisticsService | null = null;
   private tempusPoolService: TempusPoolService | null = null;
 
+  private signerOrProvider: JsonRpcProvider | JsonRpcSigner | null = null;
+
   public init(params: TVLChartDataAdapterParameters): void {
     this.statisticsService = getStatisticsService(params.signerOrProvider);
     this.tempusPoolService = getTempusPoolService(params.signerOrProvider);
+
+    this.signerOrProvider = params.signerOrProvider;
   }
 
   public async generateChartData(): Promise<ChartDataPoint[]> {
@@ -68,7 +71,7 @@ class TVLChartDataAdapter {
       }
 
       return {
-        value: ethers.utils.formatEther(result),
+        value: Number(ethers.utils.formatEther(result)),
         date: new Date(blocksToQuery[index].timestamp * 1000),
         valueIncrease: ethers.utils.formatEther(valueIncrease),
       };
@@ -78,13 +81,19 @@ class TVLChartDataAdapter {
   }
 
   private async fetchDataPointBlocks(): Promise<ethers.providers.Block[]> {
-    const provider = getDefaultProvider();
+    if (!this.signerOrProvider) {
+      return Promise.reject();
+    }
 
     const blockInterval = Math.floor(this.SECONDS_IN_A_DAY / this.AVERAGE_BLOCK_TIME_SECONDS);
 
     let currentBlock: ethers.providers.Block;
     try {
-      currentBlock = await provider.getBlock('latest');
+      if (this.signerOrProvider instanceof JsonRpcProvider) {
+        currentBlock = await this.signerOrProvider.getBlock('latest');
+      } else {
+        currentBlock = await this.signerOrProvider.provider.getBlock('latest');
+      }
     } catch (error) {
       console.error('TVLChartDataAdapter fetchDataPointBlocks() - Failed to fetch latest block data.');
       return Promise.reject(error);
@@ -96,7 +105,11 @@ class TVLChartDataAdapter {
       // Fetch Blocks for previous 29 days (1 block per day)
       for (let i = this.NUMBER_OF_PAST_DAYS; i > 0; i--) {
         const blockToQuery = currentBlock.number - (currentBlock.number % blockInterval) - i * blockInterval;
-        blockFetchPromises.push(provider.getBlock(blockToQuery));
+        if (this.signerOrProvider instanceof JsonRpcProvider) {
+          blockFetchPromises.push(this.signerOrProvider.getBlock(blockToQuery));
+        } else {
+          blockFetchPromises.push(this.signerOrProvider.provider.getBlock(blockToQuery));
+        }
       }
       pastBlocks = await Promise.all(blockFetchPromises);
     } catch (error) {
@@ -107,66 +120,37 @@ class TVLChartDataAdapter {
     return [...pastBlocks, currentBlock];
   }
 
-  private async getTempusPoolStartTimes(): Promise<Map<string, Date>> {
-    let startTimes: Date[];
-    try {
-      const fetchStartTimePromises: Promise<Date>[] = [];
-      getConfig().tempusPools.forEach(tempusPoolConfig => {
-        if (this.tempusPoolService) {
-          const startTimePromise = this.tempusPoolService.getStartTime(tempusPoolConfig.address);
-          fetchStartTimePromises.push(startTimePromise);
-        }
-      });
-      startTimes = await Promise.all(fetchStartTimePromises);
-    } catch (error) {
-      console.error('TVLChartDataAdapter getTempusPoolStartTimes() - Failed to fetch Tempus pool start times');
-      return Promise.reject(error);
-    }
-
-    const startTimesMap = new Map<string, Date>();
-    startTimes.forEach((startTime, index) => {
-      startTimesMap.set(getConfig().tempusPools[index].address, startTime);
-    });
-
-    return startTimesMap;
-  }
-
   /**
    * Returns the sum of all Tempus Pools TVL at specified block number
    */
   private async getTempusTotalTVL(block: ethers.providers.Block): Promise<BigNumber> {
-    const fetchTVLPromises: Promise<BigNumber>[] = [];
-
-    let tempusPoolStartTimes: Map<string, Date>;
-    try {
-      tempusPoolStartTimes = await this.getTempusPoolStartTimes();
-    } catch (error) {
-      console.error('TVLChartDataAdapter getTempusTotalTVL() - Failed to fetch Tempus pool start times.');
-      return Promise.reject(error);
-    }
-
     let tempusPoolsTvl: BigNumber[];
     try {
-      // TODO - Fetch pools from factory contract - waiting for backend team to finish factory contract for this.
-      getConfig().tempusPools.forEach(tempusPoolConfig => {
-        const poolStartTime = tempusPoolStartTimes.get(tempusPoolConfig.address);
+      tempusPoolsTvl = (
+        await Promise.all(
+          getConfig().tempusPools.map(async (tempusPoolConfig): Promise<BigNumber> => {
+            if (!this.statisticsService) {
+              return BigNumber.from('0');
+            }
+            const poolStartTime = tempusPoolConfig.startDate;
 
-        // Do not query block if tempus pool contract did not exist at that point in time.
-        if (poolStartTime && poolStartTime.getTime() / 1000 > block.timestamp) {
-          return;
-        }
+            // Do not query block if tempus pool contract did not exist at that point in time.
+            if (poolStartTime && poolStartTime / 1000 > block.timestamp) {
+              return BigNumber.from('0');
+            }
 
-        const tvlPromise = this.statisticsService?.totalValueLockedUSD(
-          tempusPoolConfig.address,
-          tempusPoolConfig.backingToken,
-          { blockTag: block.number },
-        );
-        if (tvlPromise) {
-          fetchTVLPromises.push(tvlPromise);
-        }
-      });
-
-      tempusPoolsTvl = await Promise.all(fetchTVLPromises);
+            const [tvlInBackingTokens, backingTokenRate] = await Promise.all([
+              this.statisticsService.totalValueLockedInBackingTokens(tempusPoolConfig.address, {
+                blockTag: block.number,
+              }),
+              this.statisticsService.getRate(tempusPoolConfig.backingToken, {
+                blockTag: block.number,
+              }),
+            ]);
+            return mul18f(tvlInBackingTokens, backingTokenRate);
+          }),
+        )
+      ).flat();
     } catch (error) {
       console.error('TVLChartDataAdapter getTempusTotalTVL() - Failed to fetch TVL for tempus pools.');
       return Promise.reject(error);

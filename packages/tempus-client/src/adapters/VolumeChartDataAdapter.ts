@@ -76,15 +76,15 @@ class VolumeChartDataAdapter {
     });
 
     let valueIncrease = BigNumber.from('0');
-    if (previous && previous.value && !ethers.utils.parseEther(previous.value).isZero()) {
-      const valueDiff = value.sub(ethers.utils.parseEther(previous.value));
-      const valueRatio = div18f(valueDiff, ethers.utils.parseEther(previous.value));
+    if (previous && previous.value && !ethers.utils.parseEther(previous.value.toString()).isZero()) {
+      const valueDiff = value.sub(ethers.utils.parseEther(previous.value.toString()));
+      const valueRatio = div18f(valueDiff, ethers.utils.parseEther(previous.value.toString()));
 
       valueIncrease = mul18f(valueRatio, ethers.utils.parseEther('100'));
     }
 
     return {
-      value: ethers.utils.formatEther(value),
+      value: Number(ethers.utils.formatEther(value)),
       date: dateTo,
       valueIncrease: ethers.utils.formatEther(valueIncrease),
     };
@@ -190,8 +190,6 @@ class VolumeChartDataAdapter {
       return Promise.reject();
     }
 
-    const eventBlock = this.getEventBlock(event);
-
     let eventPoolBackingToken: Ticker;
     try {
       const eventPoolAddress = await getEventPoolAddress(event, this.tempusAMMService);
@@ -204,7 +202,7 @@ class VolumeChartDataAdapter {
     let poolBackingTokenRate: BigNumber;
     try {
       poolBackingTokenRate = await this.statisticsService.getRate(eventPoolBackingToken, {
-        blockTag: eventBlock.number,
+        blockTag: event.blockNumber,
       });
     } catch (error) {
       console.error('Failed to get tempus pool exchange rate to USD!');

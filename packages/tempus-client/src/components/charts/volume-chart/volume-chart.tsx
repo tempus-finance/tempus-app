@@ -1,6 +1,7 @@
-import { FC, useCallback, useEffect, useState } from 'react';
+import { FC, useCallback, useContext, useEffect, useState } from 'react';
 import { ResponsiveContainer, BarChart, Bar, Tooltip } from 'recharts';
 import getVolumeChartDataAdapter from '../../../adapters/getVolumeChartDataAdapter';
+import { Context } from '../../../context';
 import ChartDataPoint from '../../../interfaces/ChartDataPoint';
 
 interface VolumeChartProps {
@@ -9,6 +10,10 @@ interface VolumeChartProps {
 
 const VolumeChart: FC<VolumeChartProps> = (props: VolumeChartProps): JSX.Element => {
   const { onSetActiveDataPoint } = props;
+
+  const {
+    data: { userWalletSigner },
+  } = useContext(Context);
 
   const [chartData, setChartData] = useState<ChartDataPoint[]>([]);
 
@@ -31,13 +36,13 @@ const VolumeChart: FC<VolumeChartProps> = (props: VolumeChartProps): JSX.Element
 
   useEffect(() => {
     const fetchChartData = async () => {
-      const volumeChartDataAdapter = getVolumeChartDataAdapter();
+      const volumeChartDataAdapter = getVolumeChartDataAdapter(userWalletSigner || undefined);
 
       const data = await volumeChartDataAdapter.generateChartData();
       setChartData(data);
     };
     fetchChartData();
-  }, []);
+  }, [userWalletSigner]);
 
   useEffect(() => {
     onSetActiveDataPoint(chartData[chartData.length - 1]);

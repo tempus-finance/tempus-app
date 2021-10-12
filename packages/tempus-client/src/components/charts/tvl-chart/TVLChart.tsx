@@ -1,7 +1,8 @@
-import { FC, useEffect, useState, useCallback } from 'react';
+import { FC, useEffect, useState, useCallback, useContext } from 'react';
 import { AreaChart, Tooltip, Area, ResponsiveContainer } from 'recharts';
 
 import getTVLChartDataAdapter from '../../../adapters/getTVLChartDataAdapter';
+import { Context } from '../../../context';
 
 import ChartDataPoint from '../../../interfaces/ChartDataPoint';
 
@@ -11,6 +12,10 @@ interface TVLChartProps {
 
 const TLVChart: FC<TVLChartProps> = (props): JSX.Element => {
   const { onSetActiveDataPoint } = props;
+
+  const {
+    data: { userWalletSigner },
+  } = useContext(Context);
 
   const [chartData, setChartData] = useState<ChartDataPoint[]>([]);
 
@@ -33,13 +38,13 @@ const TLVChart: FC<TVLChartProps> = (props): JSX.Element => {
 
   useEffect(() => {
     const fetchChartData = async () => {
-      const tvlChartDataAdapter = getTVLChartDataAdapter();
+      const tvlChartDataAdapter = getTVLChartDataAdapter(userWalletSigner || undefined);
 
       const data = await tvlChartDataAdapter.generateChartData();
       setChartData(data);
     };
     fetchChartData();
-  }, []);
+  }, [userWalletSigner]);
 
   useEffect(() => {
     onSetActiveDataPoint(chartData[chartData.length - 1]);
