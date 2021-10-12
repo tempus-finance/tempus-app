@@ -1,6 +1,7 @@
-import { FC, useState, ChangeEvent } from 'react';
+import { FC, useState, ChangeEvent, useContext, useMemo } from 'react';
 import { JsonRpcSigner } from '@ethersproject/providers';
 import { Tab, Tabs } from '@material-ui/core';
+import { Context } from '../../../context';
 import { DashboardRowChild } from '../../../interfaces';
 import { TempusPool } from '../../../interfaces/TempusPool';
 import PoolDataAdapter from '../../../adapters/PoolDataAdapter';
@@ -23,11 +24,22 @@ type DetailAdvancedProps = {
 
 const DetailAdvanced: FC<DetailAdvancedProps> = (props: DetailAdvancedProps) => {
   const { content, userWalletAddress, poolDataAdapter, signer, tempusPool } = props;
+
+  const {
+    data: { userPrincipalsBalance, userYieldsBalance, userLPBalance },
+  } = useContext(Context);
+
   const [tab, setTab] = useState<number>(0);
 
   const onTabChange = (event: ChangeEvent<{}>, value: number) => {
     setTab(value);
   };
+
+  const isBalancePositive = useMemo(() => {
+    if (userPrincipalsBalance && userYieldsBalance && userLPBalance) {
+      return !userPrincipalsBalance.isZero() || !userYieldsBalance.isZero() || !userLPBalance.isZero();
+    }
+  }, [userLPBalance, userPrincipalsBalance, userYieldsBalance]);
 
   return (
     <>
@@ -40,30 +52,36 @@ const DetailAdvanced: FC<DetailAdvancedProps> = (props: DetailAdvancedProps) => 
           }
           className="tf__tab"
         />
-        <Tab
-          label={
-            <Typography color="default" variant="h3">
-              Swap
-            </Typography>
-          }
-          className="tf__tab"
-        />
-        <Tab
-          label={
-            <Typography color="default" variant="h3">
-              Pool
-            </Typography>
-          }
-          className="tf__tab"
-        />
-        <Tab
-          label={
-            <Typography color="default" variant="h3">
-              Redeem
-            </Typography>
-          }
-          className="tf__tab"
-        />
+        {isBalancePositive && (
+          <Tab
+            label={
+              <Typography color="default" variant="h3">
+                Swap
+              </Typography>
+            }
+            className="tf__tab"
+          />
+        )}
+        {isBalancePositive && (
+          <Tab
+            label={
+              <Typography color="default" variant="h3">
+                Pool
+              </Typography>
+            }
+            className="tf__tab"
+          />
+        )}
+        {isBalancePositive && (
+          <Tab
+            label={
+              <Typography color="default" variant="h3">
+                Redeem
+              </Typography>
+            }
+            className="tf__tab"
+          />
+        )}
       </Tabs>
       <Spacer size={25} />
       {tab === 0 && (
@@ -75,7 +93,7 @@ const DetailAdvanced: FC<DetailAdvancedProps> = (props: DetailAdvancedProps) => 
           userWalletAddress={userWalletAddress}
         />
       )}
-      {tab === 1 && (
+      {tab === 1 && isBalancePositive && (
         <DetailSwap
           content={content}
           userWalletAddress={userWalletAddress}
@@ -84,7 +102,7 @@ const DetailAdvanced: FC<DetailAdvancedProps> = (props: DetailAdvancedProps) => 
           tempusPool={tempusPool}
         />
       )}
-      {tab === 2 && (
+      {tab === 2 && isBalancePositive && (
         <DetailPool
           content={content}
           poolDataAdapter={poolDataAdapter}
@@ -93,7 +111,9 @@ const DetailAdvanced: FC<DetailAdvancedProps> = (props: DetailAdvancedProps) => 
           tempusPool={tempusPool}
         />
       )}
-      {tab === 3 && <DetailRedeem content={content} poolDataAdapter={poolDataAdapter} tempusPool={tempusPool} />}
+      {tab === 3 && isBalancePositive && (
+        <DetailRedeem content={content} poolDataAdapter={poolDataAdapter} tempusPool={tempusPool} />
+      )}
     </>
   );
 };
