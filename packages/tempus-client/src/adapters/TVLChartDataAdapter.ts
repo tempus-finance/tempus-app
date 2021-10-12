@@ -1,7 +1,6 @@
 import { BigNumber, ethers } from 'ethers';
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
 
-import getDefaultProvider from '../services/getDefaultProvider';
 import getStatisticsService from '../services/getStatisticsService';
 import getTempusPoolService from '../services/getTempusPoolService';
 import StatisticsService from '../services/StatisticsService';
