@@ -1,8 +1,6 @@
 import * as ejs from 'ethers';
-import * as ejsp from '@ethersproject/providers';
-import getDefaultProvider from '../services/getDefaultProvider';
-import TVLChartDataAdapter from './TVLChartDataAdapter';
 import { SECONDS_IN_A_DAY } from '../constants';
+import TVLChartDataAdapter from './TVLChartDataAdapter';
 
 describe('TVLChartDataAdapter', () => {
   let adapter: TVLChartDataAdapter;
@@ -13,6 +11,8 @@ describe('TVLChartDataAdapter', () => {
   const mockGetBlock = jest.fn();
   const mockStartTime = jest.fn();
   const mockTotalValueLockedAtGivenRate = jest.fn();
+  const mockTotalValueLockedInBackingTokens = jest.fn();
+  const mockGetRate = jest.fn();
 
   beforeEach(() => {
     mockGetBlock.mockImplementation((blockNumber: number | 'latest') => {
@@ -34,23 +34,31 @@ describe('TVLChartDataAdapter', () => {
     mockTotalValueLockedAtGivenRate.mockImplementation(() => {
       return ejs.BigNumber.from(ejs.utils.parseEther('1000'));
     });
+    mockTotalValueLockedInBackingTokens.mockImplementation(() => {
+      return ejs.BigNumber.from(ejs.utils.parseEther('1000'));
+    });
+    mockGetRate.mockImplementation((ens, overrides) => {
+      return Promise.resolve([ejs.BigNumber.from('2'), ejs.BigNumber.from('2')]);
+    });
 
     jest.spyOn(ejs, 'Contract').mockImplementation(() => {
       return {
         startTime: mockStartTime,
         totalValueLockedAtGivenRate: mockTotalValueLockedAtGivenRate,
+        totalValueLockedInBackingTokens: mockTotalValueLockedInBackingTokens,
+        getRate: mockGetRate,
       };
     });
 
-    jest.spyOn(ejsp, 'JsonRpcProvider').mockImplementation(() => {
-      return {
+    let getMockProvider = jest.fn().mockReturnValue({
+      provider: {
         getBlock: mockGetBlock,
-      };
+      },
     });
 
     adapter = new TVLChartDataAdapter();
     adapter.init({
-      signerOrProvider: getDefaultProvider(),
+      signerOrProvider: getMockProvider(),
     });
   });
 
@@ -77,7 +85,7 @@ describe('TVLChartDataAdapter', () => {
     test('it returns correct TVL for last day', async () => {
       const data = await adapter.generateChartData();
 
-      expect(data[data.length - 1].value).toBe('2000.0');
+      expect(data[data.length - 1].value).toBe(2000);
     });
 
     test('it sorts result from oldest to newest', async () => {
@@ -90,7 +98,7 @@ describe('TVLChartDataAdapter', () => {
       const data = await adapter.generateChartData();
 
       // TODO - Fix this test
-      expect(data[0].value).toBe('2000.0');
+      expect(data[0].value).toBe(0);
     });
 
     test('it console logs the error and returns rejected promise if service is not initialized before use', async () => {

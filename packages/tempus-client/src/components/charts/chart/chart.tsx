@@ -59,7 +59,9 @@ function Chart(props: ChartProps): JSX.Element {
       <Divider orientation="horizontal" />
       <div className="tf__chart-data-label">
         <p className="tf__chart-data-label-text">{getFormattedValue()}</p>
-        <p className="tf__chart-data-label-text-small">{activeDataPoint && `${activeDataPoint.valueIncrease}%`}</p>
+        <p className="tf__chart-data-label-text-small">
+          {activeDataPoint && `${Number(activeDataPoint.valueIncrease).toFixed(2)}%`}
+        </p>
       </div>
       <div className="tf__chart-row">
         <div className="tf__chart-graph-container">
