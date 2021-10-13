@@ -250,6 +250,7 @@ const DetailWithdraw: FC<PoolDetailProps> = ({ tempusPool, content, signer, user
             actionName="Withdraw"
             disabled={executeDisabled}
             onExecute={onExecute}
+            onExecuted={() => {}}
           />
         </div>
       </div>

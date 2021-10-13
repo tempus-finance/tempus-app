@@ -119,6 +119,10 @@ const DetailMint: FC<DetailMintProps> = props => {
     );
   }, [amount, backingToken, poolDataAdapter, selectedToken, tempusPool.address, userWalletAddress]);
 
+  const onExecuted = useCallback(() => {
+    setAmount('');
+  }, []);
+
   // Fetch estimated tokens returned
   useEffect(() => {
     const getEstimates = async () => {
@@ -259,6 +263,7 @@ const DetailMint: FC<DetailMintProps> = props => {
             )}
             disabled={executeDisabled}
             onExecute={onExecute}
+            onExecuted={onExecuted}
           />
         </div>
       </div>

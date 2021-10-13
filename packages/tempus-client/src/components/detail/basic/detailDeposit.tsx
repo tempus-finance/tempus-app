@@ -132,7 +132,7 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
 
   const onExecute = useCallback((): Promise<ethers.ContractTransaction | undefined> => {
     if (signer && amount && poolDataAdapter) {
-      const tokenAmount = utils.parseEther(amount.toString());
+      const tokenAmount = utils.parseEther(amount);
       const isBackingToken = backingToken === selectedToken;
       const parsedMinTYSRate = utils.parseEther(minTYSRate.toString());
       const isEthDeposit = selectedToken === 'ETH';
@@ -148,6 +148,10 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
       return Promise.resolve(undefined);
     }
   }, [signer, poolDataAdapter, ammAddress, backingToken, selectedToken, selectedYield, amount, minTYSRate]);
+
+  const onExecuted = useCallback(() => {
+    setAmount('');
+  }, []);
 
   const onApproveChange = useCallback(approved => {
     setTokensApproved(approved);
@@ -228,12 +232,7 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
       if (amount && amount !== '0' && selectedToken && poolDataAdapter) {
         const isBackingToken = selectedToken === backingToken;
         setEstimatedFixedApr(
-          await poolDataAdapter.getEstimatedFixedApr(
-            utils.parseEther(amount.toString()),
-            isBackingToken,
-            address,
-            ammAddress,
-          ),
+          await poolDataAdapter.getEstimatedFixedApr(utils.parseEther(amount), isBackingToken, address, ammAddress),
         );
       } else {
         setEstimatedFixedApr(null);
@@ -430,6 +429,7 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
             )}
             disabled={executeDisabled}
             onExecute={onExecute}
+            onExecuted={onExecuted}
           />
         </div>
       </div>
