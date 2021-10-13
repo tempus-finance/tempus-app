@@ -1,4 +1,4 @@
-import { FC, useContext } from 'react';
+import { FC, useContext, useState } from 'react';
 import { ethers } from 'ethers';
 import { Button } from '@material-ui/core';
 import { Context } from '../../../context';
@@ -11,7 +11,6 @@ interface ExecuteButtonProps {
   actionName: string;
   notificationText: string;
   onExecute: () => Promise<ethers.ContractTransaction | undefined>;
-  onExecuted: () => void;
 }
 
 const ExecuteButton: FC<ExecuteButtonProps> = props => {
@@ -19,11 +18,14 @@ const ExecuteButton: FC<ExecuteButtonProps> = props => {
 
   const { setData } = useContext(Context);
 
+  const [executeInProgress, setExecuteInProgress] = useState<boolean>(false);
+
   const execute = () => {
     const runExecute = async () => {
       if (!setData) {
         return;
       }
+      setExecuteInProgress(true);
 
       let transaction: ethers.ContractTransaction | undefined;
       try {
@@ -33,10 +35,12 @@ const ExecuteButton: FC<ExecuteButtonProps> = props => {
         console.error('Failed to execute transaction!', error);
         // Notify user about failed action.
         getNotificationService().warn(`${actionName} Failed`, notificationText);
+        setExecuteInProgress(false);
         return;
       }
 
       if (!transaction) {
+        setExecuteInProgress(false);
         return;
       }
 
@@ -75,6 +79,7 @@ const ExecuteButton: FC<ExecuteButtonProps> = props => {
           generateEtherscanLink(transaction.hash),
           'View on Etherscan',
         );
+        setExecuteInProgress(false);
         return;
       }
 
@@ -96,12 +101,19 @@ const ExecuteButton: FC<ExecuteButtonProps> = props => {
         generateEtherscanLink(transaction.hash),
         'View on Etherscan',
       );
+      setExecuteInProgress(false);
     };
     runExecute();
   };
 
   return (
-    <Button variant="contained" color="secondary" size="large" disabled={disabled} onClick={execute}>
+    <Button
+      variant="contained"
+      color="secondary"
+      size="large"
+      disabled={disabled || executeInProgress}
+      onClick={execute}
+    >
       <Typography variant="h5" color="inverted">
         Execute
       </Typography>

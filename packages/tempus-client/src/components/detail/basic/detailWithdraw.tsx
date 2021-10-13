@@ -41,8 +41,6 @@ const DetailWithdraw: FC<PoolDetailProps> = ({ tempusPool, content, signer, user
     }
   }, []);
 
-  const onExecuted = useCallback(() => {}, []);
-
   const onExecute = useCallback((): Promise<ethers.ContractTransaction | undefined> => {
     if (signer && poolDataAdapter) {
       const isBackingToken = backingToken === selectedToken;
@@ -123,6 +121,18 @@ const DetailWithdraw: FC<PoolDetailProps> = ({ tempusPool, content, signer, user
     return NumberUtils.formatToCurrency(ethers.utils.formatEther(userCurrentPoolPresentValue), 2, '$');
   }, [userCurrentPoolPresentValue]);
 
+  const executeDisabled = useMemo(() => {
+    const principalBalanceZero = userPrincipalsBalance && userPrincipalsBalance.isZero();
+    const yieldsBalanceZero = userYieldsBalance && userYieldsBalance.isZero();
+    const lpBalanceZero = userLPBalance && userLPBalance.isZero();
+
+    return (
+      (!principalBalanceZero && !principalsApproved) ||
+      (!yieldsBalanceZero && !yieldsApproved) ||
+      (!lpBalanceZero && !lpApproved)
+    );
+  }, [lpApproved, principalsApproved, userLPBalance, userPrincipalsBalance, userYieldsBalance, yieldsApproved]);
+
   return (
     <div role="tabpanel">
       <div className="tf__dialog__content-tab">
@@ -139,13 +149,13 @@ const DetailWithdraw: FC<PoolDetailProps> = ({ tempusPool, content, signer, user
                 </div>
                 <div className="tf__flex-column-center-end">
                   <ApproveButton
-                    tokenTicker="Principals"
                     poolDataAdapter={poolDataAdapter}
-                    amountToApprove={userPrincipalsBalance || BigNumber.from('0')}
-                    tokenToApprove={content.principalTokenAddress}
+                    tokenToApproveAddress={content.principalTokenAddress}
+                    tokenToApproveTicker="Principals"
+                    amountToApprove={userPrincipalsBalance}
                     spenderAddress={getConfig().tempusControllerContract}
-                    onApproved={() => {
-                      setPrincipalsApproved(true);
+                    onApproveChange={approved => {
+                      setPrincipalsApproved(approved);
                     }}
                   />
                 </div>
@@ -164,13 +174,13 @@ const DetailWithdraw: FC<PoolDetailProps> = ({ tempusPool, content, signer, user
                   </div>
                   <div className="tf__flex-column-center-end">
                     <ApproveButton
-                      tokenTicker="Yields"
                       poolDataAdapter={poolDataAdapter}
-                      amountToApprove={userYieldsBalance || BigNumber.from('0')}
-                      tokenToApprove={content.yieldTokenAddress}
+                      tokenToApproveAddress={content.yieldTokenAddress}
+                      tokenToApproveTicker="Yields"
+                      amountToApprove={userYieldsBalance}
                       spenderAddress={getConfig().tempusControllerContract}
-                      onApproved={() => {
-                        setYieldsApproved(true);
+                      onApproveChange={approved => {
+                        setYieldsApproved(approved);
                       }}
                     />
                   </div>
@@ -191,13 +201,13 @@ const DetailWithdraw: FC<PoolDetailProps> = ({ tempusPool, content, signer, user
                   <div className="tf__flex-column-center-end">
                     <ApproveButton
                       poolDataAdapter={poolDataAdapter}
-                      tokenToApprove={tempusPool.ammAddress}
+                      tokenToApproveAddress={tempusPool.ammAddress}
+                      tokenToApproveTicker="LP Token"
                       spenderAddress={getConfig().tempusControllerContract}
-                      amountToApprove={userLPBalance || BigNumber.from('0')}
-                      tokenTicker="LP Token"
+                      amountToApprove={userLPBalance}
                       // TempusAMM address is used as LP token address
-                      onApproved={() => {
-                        setLpApproved(true);
+                      onApproveChange={approved => {
+                        setLpApproved(approved);
                       }}
                     />
                   </div>
@@ -238,13 +248,8 @@ const DetailWithdraw: FC<PoolDetailProps> = ({ tempusPool, content, signer, user
               content.maturityDate,
             )}
             actionName="Withdraw"
-            disabled={
-              (!principalsApproved && !userPrincipalsBalance?.isZero()) ||
-              (!userYieldsBalance?.isZero() && !yieldsApproved) ||
-              (!userLPBalance?.isZero() && !lpApproved)
-            }
+            disabled={executeDisabled}
             onExecute={onExecute}
-            onExecuted={onExecuted}
           />
         </div>
       </div>
