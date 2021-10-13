@@ -34,12 +34,14 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = ({ content, pool
   const [amount, setAmount] = useState<string>('');
   const [estimatedPrincipals, setEstimatedPrincipals] = useState<BigNumber | null>(null);
   const [estimatedYields, setEstimatedYields] = useState<BigNumber | null>(null);
-  const [executeDisabled, setExecuteDisabled] = useState<boolean>(true);
+  const [tokensApproved, setTokensApproved] = useState<boolean>(false);
 
   const onAmountChange = useCallback(
     (amount: string) => {
       if (amount) {
         setAmount(amount);
+      } else {
+        setAmount('');
       }
     },
     [setAmount],
@@ -80,19 +82,14 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = ({ content, pool
     getTokensEstimate();
   }, [amount, poolDataAdapter, tempusPool.ammAddress]);
 
-  const onApproved = useCallback(() => {
-    setExecuteDisabled(false);
-  }, []);
-
-  const onExecuted = useCallback(() => {
-    setExecuteDisabled(false);
+  const onApproveChange = useCallback(approved => {
+    setTokensApproved(approved);
   }, []);
 
   const onExecute = useCallback((): Promise<ethers.ContractTransaction | undefined> => {
     if (!poolDataAdapter) {
       return Promise.resolve(undefined);
     }
-    setExecuteDisabled(true);
 
     return poolDataAdapter.removeLiquidity(
       tempusPool.ammAddress,
@@ -130,6 +127,19 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = ({ content, pool
     }
     return NumberUtils.formatToCurrency(ethers.utils.formatEther(estimatedYields), tempusPool.decimalsForUI);
   }, [estimatedYields, tempusPool.decimalsForUI]);
+
+  const approveDisabled = useMemo((): boolean => {
+    const zeroAmount = !amount || amount === '0';
+
+    return zeroAmount;
+  }, [amount]);
+
+  const executeDisabled = useMemo(() => {
+    const zeroAmount = !amount || amount === '0';
+    const amountExceedsBalance = ethers.utils.parseEther(amount || '0').gt(data.userLPBalance || BigNumber.from('0'));
+
+    return !tokensApproved || zeroAmount || amountExceedsBalance;
+  }, [amount, data.userLPBalance, tokensApproved]);
 
   return (
     <>
@@ -196,14 +206,15 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = ({ content, pool
       <Spacer size={20} />
       <div className="tf__flex-row-center-v">
         <ApproveButton
-          tokenTicker="LP Token"
+          tokenToApproveTicker="LP Token"
           amountToApprove={data.userLPBalance}
-          onApproved={onApproved}
+          onApproveChange={onApproveChange}
           poolDataAdapter={poolDataAdapter}
           spenderAddress={getConfig().vaultContract}
-          tokenToApprove={tempusPool.ammAddress}
+          tokenToApproveAddress={tempusPool.ammAddress}
+          marginRight={20}
+          disabled={approveDisabled}
         />
-        <Spacer size={18} />
         <ExecuteButton
           notificationText={getPoolLiquidityNotification(
             content.backingTokenTicker,
@@ -213,7 +224,6 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = ({ content, pool
           actionName="Liquidity Withdrawal"
           disabled={executeDisabled}
           onExecute={onExecute}
-          onExecuted={onExecuted}
         />
       </div>
     </>

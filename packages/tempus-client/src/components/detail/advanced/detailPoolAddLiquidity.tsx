@@ -217,8 +217,6 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = props => {
     fetchExpectedPoolShare();
   }, [expectedLPTokens, poolDataAdapter, tempusPool.ammAddress]);
 
-  const onExecuted = useCallback(() => {}, []);
-
   const onExecute = useCallback((): Promise<ethers.ContractTransaction | undefined> => {
     if (!poolDataAdapter) {
       return Promise.resolve(undefined);
@@ -262,6 +260,26 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = props => {
     }
     return NumberUtils.formatToCurrency(ethers.utils.formatEther(expectedLPTokens), tempusPool.decimalsForUI);
   }, [expectedLPTokens, tempusPool.decimalsForUI]);
+
+  const executeDisabled = useMemo(() => {
+    const zeroAmount = !principalsAmount || principalsAmount === '0' || !yieldsAmount || yieldsAmount === '0';
+    const principalBalanceZero = userPrincipalsBalance && userPrincipalsBalance.isZero();
+    const yieldsBalanceZero = userYieldsBalance && userYieldsBalance.isZero();
+    const principalsAmountExceedsBalance = ethers.utils
+      .parseEther(principalsAmount || '0')
+      .gt(userPrincipalsBalance || BigNumber.from('0'));
+    const yieldsAmountExceedsBalance = ethers.utils
+      .parseEther(yieldsAmount || '0')
+      .gt(userYieldsBalance || BigNumber.from('0'));
+
+    return (
+      (!principalBalanceZero && !principalsApproved) ||
+      (!yieldsBalanceZero && !yieldsApproved) ||
+      zeroAmount ||
+      principalsAmountExceedsBalance ||
+      yieldsAmountExceedsBalance
+    );
+  }, [principalsAmount, principalsApproved, userPrincipalsBalance, userYieldsBalance, yieldsAmount, yieldsApproved]);
 
   return (
     <>
@@ -336,14 +354,14 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = props => {
             <Spacer size={20} />
             <div className="tf__flex-column-space-between">
               <ApproveButton
-                tokenTicker="Principals"
-                amountToApprove={userPrincipalsBalance || BigNumber.from('0')}
-                onApproved={() => {
-                  setPrincipalsApproved(true);
+                tokenToApproveTicker="Principals"
+                amountToApprove={userPrincipalsBalance}
+                onApproveChange={approved => {
+                  setPrincipalsApproved(approved);
                 }}
                 poolDataAdapter={poolDataAdapter}
                 spenderAddress={getConfig().vaultContract}
-                tokenToApprove={content.principalTokenAddress}
+                tokenToApproveAddress={content.principalTokenAddress}
               />
             </div>
           </div>
@@ -385,14 +403,14 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = props => {
             <Spacer size={20} />
             <div className="tf__flex-column-space-between">
               <ApproveButton
-                tokenTicker="Yields"
-                amountToApprove={userYieldsBalance || BigNumber.from('0')}
-                onApproved={() => {
-                  setYieldsApproved(true);
+                tokenToApproveTicker="Yields"
+                amountToApprove={userYieldsBalance}
+                onApproveChange={approved => {
+                  setYieldsApproved(approved);
                 }}
                 poolDataAdapter={poolDataAdapter}
                 spenderAddress={getConfig().vaultContract}
-                tokenToApprove={content.yieldTokenAddress}
+                tokenToApproveAddress={content.yieldTokenAddress}
               />
             </div>
           </div>
@@ -423,9 +441,8 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = props => {
             content.maturityDate,
           )}
           actionName="Liquidity Deposit"
-          disabled={!principalsApproved || !yieldsApproved}
+          disabled={executeDisabled}
           onExecute={onExecute}
-          onExecuted={onExecuted}
         />
       </div>
     </>

@@ -312,7 +312,12 @@ export default class PoolDataAdapter {
     }
   }
 
-  async getTokenAllowance(tokenAddress: string, spender: string, userWalletAddress: string, signer: JsonRpcSigner) {
+  async getTokenAllowance(
+    tokenAddress: string,
+    spender: string,
+    userWalletAddress: string,
+    signer: JsonRpcSigner,
+  ): Promise<BigNumber> {
     if (!this.tempusPoolService || !this.eRC20TokenServiceGetter) {
       console.error(
         'PoolDataAdapter - getApprovedAllowance() - Attempted to use PoolDataAdapter before initializing it!',
@@ -323,15 +328,12 @@ export default class PoolDataAdapter {
     try {
       // In case of ETH, total user balance is always approved.
       if (tokenAddress === ZERO_ETH_ADDRESS) {
-        return Number(ethers.utils.formatEther(await signer.getBalance()));
+        return await signer.getBalance();
       }
 
       const tokenService = this.eRC20TokenServiceGetter(tokenAddress, signer);
-      const allowance = await tokenService.getAllowance(userWalletAddress, spender);
-      if (allowance) {
-        return parseFloat(ethers.utils.formatEther(allowance));
-      }
-      return 0;
+
+      return await tokenService.getAllowance(userWalletAddress, spender);
     } catch (error) {
       console.error('PoolDataAdapter - approve() - Failed to approve tokens for deposit!', error);
       return Promise.reject();
