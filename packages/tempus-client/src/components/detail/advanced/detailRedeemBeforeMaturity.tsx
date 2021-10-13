@@ -111,8 +111,6 @@ const DetailRedeemBeforeMaturity: FC<DetailRedeemBeforeMaturityProps> = props =>
     return poolDataAdapter.executeRedeem(tempusPool.address, userWalletAddress, amountFormatted, toBackingToken);
   }, [amount, backingToken, poolDataAdapter, selectedToken, tempusPool.address, userWalletAddress]);
 
-  const onExecuted = useCallback(() => {}, []);
-
   // Fetch estimated withdraw amount of tokens
   useEffect(() => {
     const retrieveEstimatedWithdrawAmount = async () => {

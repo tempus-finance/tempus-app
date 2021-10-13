@@ -40,6 +40,8 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = ({ content, pool
     (amount: string) => {
       if (amount) {
         setAmount(amount);
+      } else {
+        setAmount('');
       }
     },
     [setAmount],

@@ -217,8 +217,6 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = props => {
     fetchExpectedPoolShare();
   }, [expectedLPTokens, poolDataAdapter, tempusPool.ammAddress]);
 
-  const onExecuted = useCallback(() => {}, []);
-
   const onExecute = useCallback((): Promise<ethers.ContractTransaction | undefined> => {
     if (!poolDataAdapter) {
       return Promise.resolve(undefined);
@@ -265,6 +263,8 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = props => {
 
   const executeDisabled = useMemo(() => {
     const zeroAmount = !principalsAmount || principalsAmount === '0' || !yieldsAmount || yieldsAmount === '0';
+    const principalBalanceZero = userPrincipalsBalance && userPrincipalsBalance.isZero();
+    const yieldsBalanceZero = userYieldsBalance && userYieldsBalance.isZero();
     const principalsAmountExceedsBalance = ethers.utils
       .parseEther(principalsAmount || '0')
       .gt(userPrincipalsBalance || BigNumber.from('0'));
@@ -272,8 +272,14 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = props => {
       .parseEther(yieldsAmount || '0')
       .gt(userYieldsBalance || BigNumber.from('0'));
 
-    return zeroAmount || principalsAmountExceedsBalance || yieldsAmountExceedsBalance;
-  }, [principalsAmount, userPrincipalsBalance, userYieldsBalance, yieldsAmount]);
+    return (
+      (!principalBalanceZero && !principalsApproved) ||
+      (!yieldsBalanceZero && !yieldsApproved) ||
+      zeroAmount ||
+      principalsAmountExceedsBalance ||
+      yieldsAmountExceedsBalance
+    );
+  }, [principalsAmount, principalsApproved, userPrincipalsBalance, userYieldsBalance, yieldsAmount, yieldsApproved]);
 
   return (
     <>
