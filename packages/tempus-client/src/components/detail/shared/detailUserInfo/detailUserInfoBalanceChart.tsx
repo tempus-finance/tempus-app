@@ -40,12 +40,18 @@ const DetailUserInfoBalanceChart: FC<DetailUserInfoBalanceChartProps> = props =>
   useMemo(() => {
     setPrincipalShareValue(
       userPrincipalsBalance
-        ? NumberUtils.formatToCurrency(ethers.utils.formatEther(userPrincipalsBalance.add(lpTokenPrincipalReturnBalance)), tempusPool.decimalsForUI)
+        ? NumberUtils.formatToCurrency(
+            ethers.utils.formatEther(userPrincipalsBalance.add(lpTokenPrincipalReturnBalance)),
+            tempusPool.decimalsForUI,
+          )
         : '-',
     );
     setYieldShareValue(
       userYieldsBalance
-        ? NumberUtils.formatToCurrency(ethers.utils.formatEther(userYieldsBalance.add(lpTokenYieldReturnBalance)), tempusPool.decimalsForUI)
+        ? NumberUtils.formatToCurrency(
+            ethers.utils.formatEther(userYieldsBalance.add(lpTokenYieldReturnBalance)),
+            tempusPool.decimalsForUI,
+          )
         : '-',
     );
     setLpTokenPrincipalReturnValue(
@@ -82,11 +88,6 @@ const DetailUserInfoBalanceChart: FC<DetailUserInfoBalanceChartProps> = props =>
         color: '#FF6B00',
       },
       {
-        name: 'LP Token - Principals',
-        percentage: Number(ethers.utils.formatEther(div18f(lpTokenPrincipalReturnBalance, totalValue))),
-        color: '#e56000',
-      },
-      {
         name: 'Yields',
         percentage: Number(ethers.utils.formatEther(div18f(userYieldsBalance, totalValue))),
         color: '#288195',
@@ -95,6 +96,11 @@ const DetailUserInfoBalanceChart: FC<DetailUserInfoBalanceChartProps> = props =>
         name: 'LP Token - Yields',
         percentage: Number(ethers.utils.formatEther(div18f(lpTokenYieldReturnBalance, totalValue))),
         color: '#206777',
+      },
+      {
+        name: 'LP Token - Principals',
+        percentage: Number(ethers.utils.formatEther(div18f(lpTokenPrincipalReturnBalance, totalValue))),
+        color: '#e56000',
       },
     ];
 
