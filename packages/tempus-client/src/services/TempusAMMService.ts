@@ -128,6 +128,8 @@ class TempusAMMService {
         expectedReturn = await service.getExpectedReturnGivenIn(spotPrice, YIELD_TO_PRINCIPAL);
       } catch (error) {
         console.error('TempusAMMService - getFixedAPR() - Failed to get expected return for yield share tokens!');
+        console.log(`Spot price: ${spotPrice}`);
+        console.log(`YieldsToPrincipals" ${YIELD_TO_PRINCIPAL}`);
         return null;
       }
 
