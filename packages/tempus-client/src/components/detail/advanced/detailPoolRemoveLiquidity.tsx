@@ -35,6 +35,7 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = ({ content, pool
   const [estimatedPrincipals, setEstimatedPrincipals] = useState<BigNumber | null>(null);
   const [estimatedYields, setEstimatedYields] = useState<BigNumber | null>(null);
   const [tokensApproved, setTokensApproved] = useState<boolean>(false);
+  const [estimateInProgress, setEstimateInProgress] = useState<boolean>(false);
 
   const onAmountChange = useCallback(
     (amount: string) => {
@@ -69,14 +70,17 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = ({ content, pool
       }
 
       try {
+        setEstimateInProgress(true);
         const estimate = await poolDataAdapter.getExpectedReturnForLPTokens(
           tempusPool.ammAddress,
           ethers.utils.parseEther(amount),
         );
         setEstimatedPrincipals(estimate.principals);
         setEstimatedYields(estimate.yields);
+        setEstimateInProgress(false);
       } catch (error) {
         console.error('DetailPoolRemoveLiquidity - getTokensEstimate() - Failed to fetch estimated return!', error);
+        setEstimateInProgress(false);
       }
     };
     getTokensEstimate();
@@ -142,8 +146,8 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = ({ content, pool
     const zeroAmount = isZeroString(amount);
     const amountExceedsBalance = ethers.utils.parseEther(amount || '0').gt(data.userLPBalance || BigNumber.from('0'));
 
-    return !tokensApproved || zeroAmount || amountExceedsBalance;
-  }, [amount, data.userLPBalance, tokensApproved]);
+    return !tokensApproved || zeroAmount || amountExceedsBalance || estimateInProgress;
+  }, [amount, data.userLPBalance, tokensApproved, estimateInProgress]);
 
   return (
     <>

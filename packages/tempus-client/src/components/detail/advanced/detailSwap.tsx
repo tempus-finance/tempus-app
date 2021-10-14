@@ -57,6 +57,7 @@ const DetailSwap: FC<DetailSwapProps> = props => {
   const [amount, setAmount] = useState<string>('');
   const [receiveAmount, setReceiveAmount] = useState<BigNumber | null>(null);
   const [tokensApproved, setTokensApproved] = useState<boolean>(false);
+  const [estimateInProgress, setEstimateInProgress] = useState<boolean>(false);
 
   const getSelectedTokenBalance = useCallback((): BigNumber | null => {
     if (!selectedToken) {
@@ -160,12 +161,17 @@ const DetailSwap: FC<DetailSwapProps> = props => {
       }
 
       try {
-        setReceiveAmount(
-          await poolDataAdapter.getExpectedReturnForShareToken(tempusPool.ammAddress, amountParsed, yieldShareIn),
+        setEstimateInProgress(true);
+        const estimatedReceiveAmount = await poolDataAdapter.getExpectedReturnForShareToken(
+          tempusPool.ammAddress,
+          amountParsed,
+          yieldShareIn,
         );
+        setReceiveAmount(estimatedReceiveAmount);
+        setEstimateInProgress(false);
       } catch (error) {
         console.error('DetailSwap - getReceiveAmount() - Failed to fetch expected amount of returned tokens!', error);
-        return Promise.reject(error);
+        setEstimateInProgress(false);
       }
     };
     getReceiveAmount();
@@ -198,8 +204,8 @@ const DetailSwap: FC<DetailSwapProps> = props => {
       .parseEther(amount || '0')
       .gt(getSelectedTokenBalance() || BigNumber.from('0'));
 
-    return !tokensApproved || zeroAmount || amountExceedsBalance;
-  }, [amount, getSelectedTokenBalance, tokensApproved]);
+    return !tokensApproved || zeroAmount || amountExceedsBalance || estimateInProgress;
+  }, [amount, getSelectedTokenBalance, tokensApproved, estimateInProgress]);
 
   return (
     <div role="tabpanel">
