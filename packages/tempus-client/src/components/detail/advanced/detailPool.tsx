@@ -27,7 +27,9 @@ const DetailPool: FC<DetailPoolProps> = ({ content, poolDataAdapter, signer, use
 
   const switchView = useCallback(
     (event: MouseEvent<HTMLElement>, value) => {
-      setView(value);
+      if (value !== null) {
+        setView(value);
+      }
     },
     [setView],
   );
