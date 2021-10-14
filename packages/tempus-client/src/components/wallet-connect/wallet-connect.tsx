@@ -95,7 +95,7 @@ const WalletConnect: FC = (): JSX.Element => {
     connect();
   }, [active, activate, setData, requestNetworkChange]);
 
-  const onInstallMetamask = useCallback(() => {
+  const onInstallMetamaskClick = useCallback(() => {
     window.open('https://metamask.io', '_blank');
   }, []);
 
@@ -200,7 +200,7 @@ const WalletConnect: FC = (): JSX.Element => {
         </div>
       )}
       {metamaskInstalled === false && (
-        <div className="tf__connect__wallet-button" onClick={onInstallMetamask}>
+        <div className="tf__connect__wallet-button" onClick={onInstallMetamaskClick}>
           <Typography variant="h5">Install Metamask</Typography>
         </div>
       )}
