@@ -177,8 +177,8 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = props => {
             tempusPool.ammAddress,
             content.principalTokenAddress,
             content.yieldTokenAddress,
-            ethers.utils.parseEther(principalsAmount.toString()),
-            ethers.utils.parseEther(yieldsAmount.toString()),
+            ethers.utils.parseEther(principalsAmount),
+            ethers.utils.parseEther(yieldsAmount),
           ),
         );
       } catch (error) {
@@ -227,8 +227,8 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = props => {
       userWalletAddress,
       content.principalTokenAddress,
       content.yieldTokenAddress,
-      ethers.utils.parseEther(principalsAmount.toString()),
-      ethers.utils.parseEther(yieldsAmount.toString()),
+      ethers.utils.parseEther(principalsAmount),
+      ethers.utils.parseEther(yieldsAmount),
     );
   }, [
     content.principalTokenAddress,
@@ -239,6 +239,11 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = props => {
     poolDataAdapter,
     userWalletAddress,
   ]);
+
+  const onExecuted = useCallback(() => {
+    setPrincipalsAmount('');
+    setYieldsAmount('');
+  }, []);
 
   const principalsBalanceFormatted = useMemo(() => {
     if (!userPrincipalsBalance) {
@@ -443,6 +448,7 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = props => {
           actionName="Liquidity Deposit"
           disabled={executeDisabled}
           onExecute={onExecute}
+          onExecuted={onExecuted}
         />
       </div>
     </>

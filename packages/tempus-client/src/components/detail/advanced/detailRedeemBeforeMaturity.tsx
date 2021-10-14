@@ -105,11 +105,15 @@ const DetailRedeemBeforeMaturity: FC<DetailRedeemBeforeMaturityProps> = props =>
       return Promise.resolve(undefined);
     }
 
-    const amountFormatted = ethers.utils.parseEther(amount.toString());
+    const amountFormatted = ethers.utils.parseEther(amount);
     const toBackingToken = selectedToken === backingToken;
 
     return poolDataAdapter.executeRedeem(tempusPool.address, userWalletAddress, amountFormatted, toBackingToken);
   }, [amount, backingToken, poolDataAdapter, selectedToken, tempusPool.address, userWalletAddress]);
+
+  const onExecuted = useCallback(() => {
+    setAmount('');
+  }, []);
 
   // Fetch estimated withdraw amount of tokens
   useEffect(() => {
@@ -302,6 +306,7 @@ const DetailRedeemBeforeMaturity: FC<DetailRedeemBeforeMaturityProps> = props =>
           actionName="Redeem"
           disabled={executeDisabled}
           onExecute={onExecute}
+          onExecuted={onExecuted}
         />
       </div>
     </>

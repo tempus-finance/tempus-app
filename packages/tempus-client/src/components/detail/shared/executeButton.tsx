@@ -11,10 +11,11 @@ interface ExecuteButtonProps {
   actionName: string;
   notificationText: string;
   onExecute: () => Promise<ethers.ContractTransaction | undefined>;
+  onExecuted: (successful: boolean) => void;
 }
 
 const ExecuteButton: FC<ExecuteButtonProps> = props => {
-  const { disabled, actionName, notificationText, onExecute } = props;
+  const { disabled, actionName, notificationText, onExecute, onExecuted } = props;
 
   const { setData } = useContext(Context);
 
@@ -36,11 +37,13 @@ const ExecuteButton: FC<ExecuteButtonProps> = props => {
         // Notify user about failed action.
         getNotificationService().warn(`${actionName} Failed`, notificationText);
         setExecuteInProgress(false);
+        onExecuted(false);
         return;
       }
 
       if (!transaction) {
         setExecuteInProgress(false);
+        onExecuted(false);
         return;
       }
 
@@ -80,6 +83,7 @@ const ExecuteButton: FC<ExecuteButtonProps> = props => {
           'View on Etherscan',
         );
         setExecuteInProgress(false);
+        onExecuted(false);
         return;
       }
 
@@ -102,6 +106,7 @@ const ExecuteButton: FC<ExecuteButtonProps> = props => {
         'View on Etherscan',
       );
       setExecuteInProgress(false);
+      onExecuted(true);
     };
     runExecute();
   };

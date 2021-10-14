@@ -130,7 +130,7 @@ const DetailSwap: FC<DetailSwapProps> = props => {
       return Promise.resolve(undefined);
     }
 
-    const amountParsed = ethers.utils.parseEther(amount.toString());
+    const amountParsed = ethers.utils.parseEther(amount);
     return poolDataAdapter.swapShareTokens(
       tempusPool.ammAddress,
       SwapKind.GIVEN_IN,
@@ -140,6 +140,10 @@ const DetailSwap: FC<DetailSwapProps> = props => {
       userWalletAddress,
     );
   }, [poolDataAdapter, amount, tempusPool.ammAddress, tokenFrom.tokenAddress, tokenTo.tokenAddress, userWalletAddress]);
+
+  const onExecuted = useCallback(() => {
+    setAmount('');
+  }, []);
 
   // Fetch receive amount
   useEffect(() => {
@@ -283,6 +287,7 @@ const DetailSwap: FC<DetailSwapProps> = props => {
             )}
             disabled={executeDisabled}
             onExecute={onExecute}
+            onExecuted={onExecuted}
           />
         </div>
       </div>

@@ -96,7 +96,7 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = ({ content, pool
       data.userWalletAddress,
       content.principalTokenAddress,
       content.yieldTokenAddress,
-      ethers.utils.parseEther(amount.toString()),
+      ethers.utils.parseEther(amount),
     );
   }, [
     poolDataAdapter,
@@ -106,6 +106,10 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = ({ content, pool
     content.yieldTokenAddress,
     amount,
   ]);
+
+  const onExecuted = useCallback(() => {
+    setAmount('');
+  }, []);
 
   const lpTokenBalanceFormatted = useMemo(() => {
     if (!data.userLPBalance) {
@@ -224,6 +228,7 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = ({ content, pool
           actionName="Liquidity Withdrawal"
           disabled={executeDisabled}
           onExecute={onExecute}
+          onExecuted={onExecuted}
         />
       </div>
     </>
