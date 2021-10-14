@@ -11,6 +11,7 @@ import { getSwapNotification } from '../../../services/NotificationService';
 import { SwapKind } from '../../../services/VaultService';
 import getConfig from '../../../utils/get-config';
 import { mul18f } from '../../../utils/wei-math';
+import { isZeroString } from '../../../utils/isZeroString';
 import Typography from '../../typography/Typography';
 import CurrencyInput from '../../currencyInput/currencyInput';
 import Spacer from '../../spacer/spacer';
@@ -187,13 +188,13 @@ const DetailSwap: FC<DetailSwapProps> = props => {
   }, [receiveAmount, tempusPool.decimalsForUI]);
 
   const approveDisabled = useMemo((): boolean => {
-    const zeroAmount = !amount || amount === '0';
+    const zeroAmount = isZeroString(amount);
 
     return zeroAmount;
   }, [amount]);
 
   const executeDisabled = useMemo((): boolean => {
-    const zeroAmount = !amount || amount === '0';
+    const zeroAmount = isZeroString(amount);
     const amountExceedsBalance = ethers.utils
       .parseEther(amount || '0')
       .gt(getSelectedTokenBalance() || BigNumber.from('0'));
