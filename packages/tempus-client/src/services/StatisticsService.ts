@@ -232,7 +232,7 @@ class StatisticsService {
     }
 
     try {
-      return this.stats.estimateExitAndRedeem(
+      return await this.stats.estimateExitAndRedeem(
         tempusAmmAddress,
         lpAmount,
         principalAmount,
@@ -242,6 +242,15 @@ class StatisticsService {
       );
     } catch (error) {
       console.error(`Failed to get estimated withdraw amount`, error);
+      console.log('Debug info:');
+      console.log(`TempusAMM address: ${tempusAmmAddress}`);
+      console.log(`LP Token amount: ${lpAmount.toHexString()} ${ethers.utils.formatEther(lpAmount)}`);
+      console.log(`Principals amount: ${principalAmount.toHexString()} ${ethers.utils.formatEther(principalAmount)}`);
+      console.log(`Yields amount: ${yieldsAmount.toHexString()} ${ethers.utils.formatEther(yieldsAmount)}`);
+      console.log(
+        `Max leftover shares: ${ethers.utils.parseEther(maxLeftoverShares).toHexString()} ${maxLeftoverShares}`,
+      );
+      console.log(`Is backing token: ${isBackingToken}`);
       return Promise.reject(error);
     }
   }
