@@ -7,6 +7,7 @@ import { DashboardRowChild, Ticker } from '../../../interfaces';
 import { TempusPool } from '../../../interfaces/TempusPool';
 import PoolDataAdapter from '../../../adapters/PoolDataAdapter';
 import NumberUtils from '../../../services/NumberUtils';
+import { getMintNotification } from '../../../services/NotificationService';
 import getConfig from '../../../utils/get-config';
 import { mul18f } from '../../../utils/wei-math';
 import Typography from '../../typography/Typography';
@@ -20,7 +21,6 @@ import ApproveButton from '../shared/approveButton';
 import ExecuteButton from '../shared/executeButton';
 
 import './detailMint.scss';
-import { getMintNotification } from '../../../services/NotificationService';
 
 type DetailMintInProps = {
   content: DashboardRowChild;
@@ -46,7 +46,21 @@ const DetailMint: FC<DetailMintProps> = props => {
   const [selectedToken, setSelectedToken] = useState<Ticker | null>(null);
   const [amount, setAmount] = useState<string>('');
   const [estimatedTokens, setEstimatedTokens] = useState<BigNumber | null>(null);
-  const [executeDisabled, setExecuteDisabled] = useState<boolean>(backingToken !== 'ETH');
+  const [tokensApproved, setTokensApproved] = useState<boolean>(false);
+
+  const getSelectedTokenBalance = useCallback((): BigNumber | null => {
+    if (!selectedToken) {
+      return null;
+    }
+    return selectedToken === backingToken ? userBackingTokenBalance : userYieldBearingTokenBalance;
+  }, [backingToken, selectedToken, userBackingTokenBalance, userYieldBearingTokenBalance]);
+
+  const getSelectedTokenAddress = useCallback((): string | null => {
+    if (!selectedToken) {
+      return null;
+    }
+    return selectedToken === backingToken ? content.backingTokenAddress : content.yieldBearingTokenAddress;
+  }, [backingToken, content.backingTokenAddress, content.yieldBearingTokenAddress, selectedToken]);
 
   const onTokenChange = useCallback(
     (token: Ticker | undefined) => {
@@ -85,12 +99,8 @@ const DetailMint: FC<DetailMintProps> = props => {
     [backingToken, selectedToken, userBackingTokenBalance, userYieldBearingTokenBalance],
   );
 
-  const onApproved = useCallback(() => {
-    setExecuteDisabled(false);
-  }, []);
-
-  const onExecuted = useCallback(() => {
-    setExecuteDisabled(false);
+  const onApproveChange = useCallback(approved => {
+    setTokensApproved(approved);
   }, []);
 
   const onExecute = useCallback((): Promise<ethers.ContractTransaction | undefined> => {
@@ -108,6 +118,10 @@ const DetailMint: FC<DetailMintProps> = props => {
       selectedToken === 'ETH',
     );
   }, [amount, backingToken, poolDataAdapter, selectedToken, tempusPool.address, userWalletAddress]);
+
+  const onExecuted = useCallback(() => {
+    setAmount('');
+  }, []);
 
   // Fetch estimated tokens returned
   useEffect(() => {
@@ -143,6 +157,21 @@ const DetailMint: FC<DetailMintProps> = props => {
     }
     return NumberUtils.formatToCurrency(ethers.utils.formatEther(estimatedTokens), tempusPool.decimalsForUI);
   }, [estimatedTokens, tempusPool.decimalsForUI]);
+
+  const approveDisabled = useMemo((): boolean => {
+    const zeroAmount = !amount || amount === '0';
+
+    return zeroAmount;
+  }, [amount]);
+
+  const executeDisabled = useMemo((): boolean => {
+    const zeroAmount = !amount || amount === '0';
+    const amountExceedsBalance = ethers.utils
+      .parseEther(amount || '0')
+      .gt(getSelectedTokenBalance() || BigNumber.from('0'));
+
+    return !tokensApproved || zeroAmount || amountExceedsBalance;
+  }, [amount, getSelectedTokenBalance, tokensApproved]);
 
   return (
     <div role="tabpanel">
@@ -212,22 +241,17 @@ const DetailMint: FC<DetailMintProps> = props => {
         </ActionContainer>
         <Spacer size={20} />
         <div className="tf__flex-row-center-vh">
-          {selectedToken && selectedToken !== 'ETH' && (
-            <>
-              <ApproveButton
-                amountToApprove={
-                  selectedToken === backingToken ? userBackingTokenBalance : userYieldBearingTokenBalance
-                }
-                onApproved={onApproved}
-                poolDataAdapter={poolDataAdapter}
-                spenderAddress={getConfig().tempusControllerContract}
-                tokenTicker={selectedToken}
-                tokenToApprove={
-                  selectedToken === backingToken ? content.backingTokenAddress : content.yieldBearingTokenAddress
-                }
-              />
-              <Spacer size={20} />
-            </>
+          {selectedToken && (
+            <ApproveButton
+              poolDataAdapter={poolDataAdapter}
+              tokenToApproveAddress={getSelectedTokenAddress()}
+              tokenToApproveTicker={selectedToken}
+              amountToApprove={getSelectedTokenBalance()}
+              spenderAddress={getConfig().tempusControllerContract}
+              disabled={approveDisabled}
+              marginRight={20}
+              onApproveChange={onApproveChange}
+            />
           )}
           <ExecuteButton
             actionName="Mint"

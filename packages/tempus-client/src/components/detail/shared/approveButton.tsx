@@ -7,71 +7,93 @@ import getNotificationService from '../../../services/getNotificationService';
 import { generateEtherscanLink, getTokenApprovalNotification } from '../../../services/NotificationService';
 import { Ticker } from '../../../interfaces';
 import { Context } from '../../../context';
+import Spacer from '../../spacer/spacer';
 
 interface ApproveButtonProps {
   poolDataAdapter: PoolDataAdapter | null;
-  tokenToApprove: string;
-  spenderAddress: string;
+  tokenToApproveAddress: string | null;
+  tokenToApproveTicker: Ticker | null;
   amountToApprove: BigNumber | null;
-  tokenTicker: Ticker | null;
+  spenderAddress: string;
+  marginRight?: number;
   disabled?: boolean;
-  onApproved: () => void;
-  onAllowanceExceeded?: () => void;
+  onApproveChange: (approved: boolean) => void;
 }
 
+/**
+ * @description Approve button component used for token approvals across the app.
+ * @param poolDataAdapter Used for fetching current token allowance.
+ * @param tokenToApproveAddress Contract address of the token we want to approve.
+ * @param tokenToApproveTicker Ticker of the token we want to approve.
+ * @param amountToApprove Amount of tokens to approve.
+ * @param spenderAddress Address of the contract that will be spending approved tokens.
+ * @param marginRight If present, specified margin right will be set on approve button.
+ * @param disabled Disabled the approve button, approve button disabled conditions are:
+ * 1. If amount of user entered token amount is missing or equals zero.
+ * @param onApproveChange Called every time approve state changes, if user approved tokens or
+ * allowance already exceeds amount to approve it will be called with true as argument. If
+ * user did not approve tokens or if current allowance does not exceed amount to approve, it
+ * will be called with false as argument.
+ */
 const ApproveButton: FC<ApproveButtonProps> = props => {
   const {
     poolDataAdapter,
-    tokenToApprove,
-    spenderAddress,
+    tokenToApproveAddress,
+    tokenToApproveTicker,
     amountToApprove,
-    tokenTicker,
+    spenderAddress,
+    marginRight,
     disabled,
-    onApproved,
-    onAllowanceExceeded,
+    onApproveChange,
   } = props;
 
   const { data, setData } = useContext(Context);
 
-  const [approving, setApproving] = useState<boolean>(false);
-  const [allowance, setAllowance] = useState<number | null>(null);
+  const [approveInProgress, setApproveInProgress] = useState<boolean>(false);
+  const [allowance, setAllowance] = useState<BigNumber | null>(null);
 
+  /**
+   * Called when user clicks on the approve button.
+   */
   const onApprove = useCallback(() => {
     const approve = async () => {
-      if (!data.userWalletSigner || !poolDataAdapter || !amountToApprove || !setData) {
+      if (!data.userWalletSigner || !poolDataAdapter || !amountToApprove || !setData || !tokenToApproveAddress) {
         return;
       }
+      setApproveInProgress(true);
 
-      let transaction: ethers.ContractTransaction | undefined | void;
+      let transaction: ethers.ContractTransaction | void;
       try {
         transaction = await poolDataAdapter.approveToken(
-          tokenToApprove,
+          tokenToApproveAddress,
           spenderAddress,
           amountToApprove,
           data.userWalletSigner,
         );
       } catch (error) {
-        console.error('Failed to execute the transaction!', error);
+        console.error(`Failed to create approve transaction for ${tokenToApproveTicker} token!`, error);
 
-        if (tokenTicker && data.selectedRow) {
+        if (tokenToApproveTicker && data.selectedRow) {
           getNotificationService().warn(
             `Approval Failed`,
             getTokenApprovalNotification(
-              tokenTicker,
+              tokenToApproveTicker,
               data.selectedRow.backingTokenTicker,
               data.selectedRow.protocol,
               data.selectedRow.maturityDate,
             ),
           );
         }
-        setApproving(false);
+        setApproveInProgress(false);
         return;
       }
 
       if (!transaction) {
+        setApproveInProgress(false);
         return;
       }
 
+      // Add approve transaction to the list of pending transactions
       setData(previousData => {
         if (!transaction) {
           return previousData;
@@ -85,7 +107,9 @@ const ApproveButton: FC<ApproveButtonProps> = props => {
       try {
         await transaction.wait();
       } catch (error) {
-        console.error('Transaction failed to execute!', error);
+        console.error(`Failed to execute approve transaction for ${tokenToApproveTicker} token!`, error);
+
+        // Remove approve transaction from list of pending transactions when transaction fails.
         setData(previousData => {
           const filteredTransactions = previousData.pendingTransactions.filter(pendingTransaction => {
             return pendingTransaction !== transaction?.hash;
@@ -95,11 +119,13 @@ const ApproveButton: FC<ApproveButtonProps> = props => {
             pendingTransactions: filteredTransactions,
           };
         });
-        if (tokenTicker && data.selectedRow) {
+
+        // Show transaction failed notification.
+        if (tokenToApproveTicker && data.selectedRow) {
           getNotificationService().warn(
             `Approval Failed`,
             getTokenApprovalNotification(
-              tokenTicker,
+              tokenToApproveTicker,
               data.selectedRow.backingTokenTicker,
               data.selectedRow.protocol,
               data.selectedRow.maturityDate,
@@ -108,10 +134,12 @@ const ApproveButton: FC<ApproveButtonProps> = props => {
             'View on Etherscan',
           );
         }
-        setApproving(false);
+
+        setApproveInProgress(false);
         return;
       }
 
+      // Remove approve transaction from list of pending transactions when transaction succeeds.
       setData(previousData => {
         const filteredTransactions = previousData.pendingTransactions.filter(pendingTransaction => {
           return pendingTransaction !== transaction?.hash;
@@ -122,11 +150,12 @@ const ApproveButton: FC<ApproveButtonProps> = props => {
         };
       });
 
-      if (tokenTicker && data.selectedRow) {
+      // Show approve transaction completed notification
+      if (tokenToApproveTicker && data.selectedRow) {
         getNotificationService().notify(
           'Approval Successful',
           getTokenApprovalNotification(
-            tokenTicker,
+            tokenToApproveTicker,
             data.selectedRow.backingTokenTicker,
             data.selectedRow.protocol,
             data.selectedRow.maturityDate,
@@ -136,44 +165,41 @@ const ApproveButton: FC<ApproveButtonProps> = props => {
         );
       }
 
-      // Set new allowance
+      // After approve completes, we need to set new allowance value
       setAllowance(
         await poolDataAdapter.getTokenAllowance(
-          tokenToApprove,
+          tokenToApproveAddress,
           spenderAddress,
           data.userWalletAddress,
           data.userWalletSigner,
         ),
       );
 
-      onApproved();
-      setApproving(false);
+      setApproveInProgress(false);
     };
     approve();
-    setApproving(true);
   }, [
-    data.userWalletSigner,
     poolDataAdapter,
+    data.userWalletSigner,
+    data.selectedRow,
+    data.userWalletAddress,
+    tokenToApproveAddress,
+    tokenToApproveTicker,
+    spenderAddress,
     amountToApprove,
     setData,
-    tokenTicker,
-    data.selectedRow,
-    tokenToApprove,
-    spenderAddress,
-    data.userWalletAddress,
-    onApproved,
   ]);
 
-  // Fetch token allowance
+  // Fetch current token allowance from contract
   useEffect(() => {
     const getAllowance = async () => {
-      if (!poolDataAdapter || !data.userWalletSigner || !tokenToApprove) {
+      if (!poolDataAdapter || !data.userWalletSigner || !tokenToApproveAddress) {
         return;
       }
 
       setAllowance(
         await poolDataAdapter.getTokenAllowance(
-          tokenToApprove,
+          tokenToApproveAddress,
           spenderAddress,
           data.userWalletAddress,
           data.userWalletSigner,
@@ -181,8 +207,12 @@ const ApproveButton: FC<ApproveButtonProps> = props => {
       );
     };
     getAllowance();
-  }, [poolDataAdapter, data.userWalletSigner, spenderAddress, tokenToApprove, data.userWalletAddress]);
+  }, [poolDataAdapter, data.userWalletSigner, spenderAddress, tokenToApproveAddress, data.userWalletAddress]);
 
+  /**
+   * Checks if tokens are approved.
+   * If current allowance exceeds amount to approve, user does not have to approve tokens again.
+   */
   const approved = useMemo(() => {
     if (!amountToApprove) {
       return false;
@@ -192,17 +222,25 @@ const ApproveButton: FC<ApproveButtonProps> = props => {
       return true;
     }
 
-    const amountToApproveParsed = Number(ethers.utils.formatEther(amountToApprove));
-
-    const alreadyApproved = !!allowance && allowance >= amountToApproveParsed;
+    const alreadyApproved = allowance && allowance.gte(amountToApprove);
 
     return alreadyApproved;
   }, [allowance, amountToApprove]);
 
   if (approved) {
-    onApproved();
+    onApproveChange(true);
   } else {
-    onAllowanceExceeded && onAllowanceExceeded();
+    onApproveChange(false);
+  }
+
+  // In case of ETH we don't want to show Approve button at all
+  if (tokenToApproveTicker === 'ETH') {
+    return null;
+  }
+
+  // Do not show approve button if amount to approve is zero
+  if (amountToApprove && amountToApprove.isZero()) {
+    return null;
   }
 
   return (
@@ -213,7 +251,7 @@ const ApproveButton: FC<ApproveButtonProps> = props => {
           color="primary"
           variant="contained"
           onClick={onApprove}
-          disabled={disabled || approving || !tokenToApprove}
+          disabled={disabled || approveInProgress || !tokenToApproveAddress}
         >
           <Typography variant="h5" color="inverted">
             Approve
@@ -223,6 +261,9 @@ const ApproveButton: FC<ApproveButtonProps> = props => {
 
       {/* Show Approved label if tokens are approved */}
       {approved && <Typography variant="h5">Approved</Typography>}
+
+      {/* Set margin right if specified */}
+      {marginRight && <Spacer size={marginRight} />}
     </>
   );
 };

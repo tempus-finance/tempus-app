@@ -56,13 +56,28 @@ const DetailSwap: FC<DetailSwapProps> = props => {
   const [selectedToken, setSelectedToken] = useState<Ticker>();
   const [amount, setAmount] = useState<string>('');
   const [receiveAmount, setReceiveAmount] = useState<BigNumber | null>(null);
+  const [tokensApproved, setTokensApproved] = useState<boolean>(false);
 
-  const [executeDisabled, setExecuteDisabled] = useState<boolean>(true);
+  const getSelectedTokenBalance = useCallback((): BigNumber | null => {
+    if (!selectedToken) {
+      return null;
+    }
+    return selectedToken === 'Principals' ? userPrincipalsBalance : userYieldsBalance;
+  }, [selectedToken, userPrincipalsBalance, userYieldsBalance]);
+
+  const getSelectedTokenAddress = useCallback((): string | null => {
+    if (!selectedToken) {
+      return null;
+    }
+    return selectedToken === 'Principals' ? content.principalTokenAddress : content.yieldTokenAddress;
+  }, [content.principalTokenAddress, content.yieldTokenAddress, selectedToken]);
 
   const onAmountChange = useCallback(
     (amount: string) => {
       if (amount) {
         setAmount(amount);
+      } else {
+        setAmount('');
       }
     },
     [setAmount],
@@ -74,14 +89,14 @@ const DetailSwap: FC<DetailSwapProps> = props => {
    */
   const onPercentageChange = useCallback(
     (event: React.MouseEvent<HTMLButtonElement>) => {
-      const currentBalance = tokenFrom.tokenName === 'Principals' ? userPrincipalsBalance : userYieldsBalance;
+      const currentBalance = getSelectedTokenBalance();
       if (!currentBalance) {
         return;
       }
       const percentage = ethers.utils.parseEther(event.currentTarget.value);
       setAmount(ethers.utils.formatEther(mul18f(currentBalance, percentage)));
     },
-    [tokenFrom.tokenName, userPrincipalsBalance, userYieldsBalance],
+    [getSelectedTokenBalance],
   );
 
   const switchTokens = useCallback(() => {
@@ -106,21 +121,16 @@ const DetailSwap: FC<DetailSwapProps> = props => {
     [switchTokens, tokenFrom.tokenName],
   );
 
-  const onApproved = useCallback(() => {
-    setExecuteDisabled(false);
-  }, []);
-
-  const onExecuted = useCallback(() => {
-    setExecuteDisabled(false);
+  const onApproveChange = useCallback(approved => {
+    setTokensApproved(approved);
   }, []);
 
   const onExecute = useCallback((): Promise<ethers.ContractTransaction | undefined> => {
     if (!poolDataAdapter) {
       return Promise.resolve(undefined);
     }
-    setExecuteDisabled(true);
 
-    const amountParsed = ethers.utils.parseEther(amount.toString());
+    const amountParsed = ethers.utils.parseEther(amount);
     return poolDataAdapter.swapShareTokens(
       tempusPool.ammAddress,
       SwapKind.GIVEN_IN,
@@ -130,6 +140,10 @@ const DetailSwap: FC<DetailSwapProps> = props => {
       userWalletAddress,
     );
   }, [poolDataAdapter, amount, tempusPool.ammAddress, tokenFrom.tokenAddress, tokenTo.tokenAddress, userWalletAddress]);
+
+  const onExecuted = useCallback(() => {
+    setAmount('');
+  }, []);
 
   // Fetch receive amount
   useEffect(() => {
@@ -158,12 +172,12 @@ const DetailSwap: FC<DetailSwapProps> = props => {
   }, [poolDataAdapter, amount, tempusPool, tokenFrom, setReceiveAmount]);
 
   const balanceFormatted = useMemo(() => {
-    const currentBalance = tokenFrom.tokenName === 'Principals' ? userPrincipalsBalance : userYieldsBalance;
+    const currentBalance = getSelectedTokenBalance();
     if (!currentBalance) {
       return null;
     }
     return NumberUtils.formatToCurrency(ethers.utils.formatEther(currentBalance), tempusPool.decimalsForUI);
-  }, [tempusPool.decimalsForUI, tokenFrom.tokenName, userPrincipalsBalance, userYieldsBalance]);
+  }, [getSelectedTokenBalance, tempusPool.decimalsForUI]);
 
   const receiveAmountFormatted = useMemo(() => {
     if (!receiveAmount) {
@@ -171,6 +185,21 @@ const DetailSwap: FC<DetailSwapProps> = props => {
     }
     return NumberUtils.formatToCurrency(ethers.utils.formatEther(receiveAmount), tempusPool.decimalsForUI);
   }, [receiveAmount, tempusPool.decimalsForUI]);
+
+  const approveDisabled = useMemo((): boolean => {
+    const zeroAmount = !amount || amount === '0';
+
+    return zeroAmount;
+  }, [amount]);
+
+  const executeDisabled = useMemo((): boolean => {
+    const zeroAmount = !amount || amount === '0';
+    const amountExceedsBalance = ethers.utils
+      .parseEther(amount || '0')
+      .gt(getSelectedTokenBalance() || BigNumber.from('0'));
+
+    return !tokensApproved || zeroAmount || amountExceedsBalance;
+  }, [amount, getSelectedTokenBalance, tokensApproved]);
 
   return (
     <div role="tabpanel">
@@ -236,14 +265,15 @@ const DetailSwap: FC<DetailSwapProps> = props => {
         <Spacer size={20} />
         <div className="tf__flex-row-center-vh">
           <ApproveButton
-            amountToApprove={tokenFrom.tokenName === 'Principals' ? userPrincipalsBalance : userYieldsBalance}
-            onApproved={onApproved}
+            amountToApprove={getSelectedTokenBalance()}
+            onApproveChange={onApproveChange}
             poolDataAdapter={poolDataAdapter}
             spenderAddress={getConfig().vaultContract}
-            tokenTicker={tokenFrom.tokenName}
-            tokenToApprove={selectedToken ? tokenFrom.tokenAddress : ''}
+            tokenToApproveTicker={tokenFrom.tokenName}
+            tokenToApproveAddress={getSelectedTokenAddress()}
+            marginRight={20}
+            disabled={approveDisabled}
           />
-          <Spacer size={20} />
           <ExecuteButton
             actionName="Swap"
             notificationText={getSwapNotification(

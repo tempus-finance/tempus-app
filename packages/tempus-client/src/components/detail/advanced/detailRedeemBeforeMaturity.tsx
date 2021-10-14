@@ -47,6 +47,8 @@ const DetailRedeemBeforeMaturity: FC<DetailRedeemBeforeMaturityProps> = props =>
     (amount: string) => {
       if (amount) {
         setAmount(amount);
+      } else {
+        setAmount('');
       }
     },
     [setAmount],
@@ -103,13 +105,15 @@ const DetailRedeemBeforeMaturity: FC<DetailRedeemBeforeMaturityProps> = props =>
       return Promise.resolve(undefined);
     }
 
-    const amountFormatted = ethers.utils.parseEther(amount.toString());
+    const amountFormatted = ethers.utils.parseEther(amount);
     const toBackingToken = selectedToken === backingToken;
 
     return poolDataAdapter.executeRedeem(tempusPool.address, userWalletAddress, amountFormatted, toBackingToken);
   }, [amount, backingToken, poolDataAdapter, selectedToken, tempusPool.address, userWalletAddress]);
 
-  const onExecuted = useCallback(() => {}, []);
+  const onExecuted = useCallback(() => {
+    setAmount('');
+  }, []);
 
   // Fetch estimated withdraw amount of tokens
   useEffect(() => {
@@ -161,6 +165,26 @@ const DetailRedeemBeforeMaturity: FC<DetailRedeemBeforeMaturityProps> = props =>
     }
     return NumberUtils.formatToCurrency(ethers.utils.formatEther(mul18f(estimatedWithdrawAmount, tokenRate)), 2, '$');
   }, [estimatedWithdrawAmount, tokenRate]);
+
+  const executeDisabled = useMemo(() => {
+    const zeroAmount = !amount || amount === '0';
+    const amountExceedsPrincipalsBalance = ethers.utils
+      .parseEther(amount || '0')
+      .gt(userPrincipalsBalance || BigNumber.from('0'));
+    const amountExceedsYieldsBalance = ethers.utils
+      .parseEther(amount || '0')
+      .gt(userYieldsBalance || BigNumber.from('0'));
+    const principalBalanceZero = userPrincipalsBalance && userPrincipalsBalance.isZero();
+    const yieldsBalanceZero = userYieldsBalance && userYieldsBalance.isZero();
+
+    return (
+      (!principalBalanceZero && !principalsApproved) ||
+      (!yieldsBalanceZero && !yieldsApproved) ||
+      zeroAmount ||
+      amountExceedsPrincipalsBalance ||
+      amountExceedsYieldsBalance
+    );
+  }, [amount, principalsApproved, userPrincipalsBalance, userYieldsBalance, yieldsApproved]);
 
   return (
     <>
@@ -216,13 +240,13 @@ const DetailRedeemBeforeMaturity: FC<DetailRedeemBeforeMaturityProps> = props =>
               </div>
               <div className="tf__flex-column-center-end">
                 <ApproveButton
-                  tokenTicker="Principals"
+                  tokenToApproveTicker="Principals"
                   poolDataAdapter={poolDataAdapter}
-                  amountToApprove={userPrincipalsBalance || BigNumber.from('0')}
-                  tokenToApprove={content.principalTokenAddress}
+                  amountToApprove={userPrincipalsBalance}
+                  tokenToApproveAddress={content.principalTokenAddress}
                   spenderAddress={getConfig().tempusControllerContract}
-                  onApproved={() => {
-                    setPrincipalsApproved(true);
+                  onApproveChange={approved => {
+                    setPrincipalsApproved(approved);
                   }}
                 />
               </div>
@@ -238,13 +262,13 @@ const DetailRedeemBeforeMaturity: FC<DetailRedeemBeforeMaturityProps> = props =>
               </div>
               <div className="tf__flex-column-center-end">
                 <ApproveButton
-                  tokenTicker="Yields"
+                  tokenToApproveTicker="Yields"
                   poolDataAdapter={poolDataAdapter}
-                  amountToApprove={userYieldsBalance || BigNumber.from('0')}
-                  tokenToApprove={content.yieldTokenAddress}
+                  amountToApprove={userYieldsBalance}
+                  tokenToApproveAddress={content.yieldTokenAddress}
                   spenderAddress={getConfig().tempusControllerContract}
-                  onApproved={() => {
-                    setYieldsApproved(true);
+                  onApproveChange={approved => {
+                    setYieldsApproved(approved);
                   }}
                 />
               </div>
@@ -280,11 +304,7 @@ const DetailRedeemBeforeMaturity: FC<DetailRedeemBeforeMaturityProps> = props =>
         <ExecuteButton
           notificationText={getWithdrawNotification(content.backingTokenTicker, content.protocol, content.maturityDate)}
           actionName="Redeem"
-          disabled={
-            (!principalsApproved && !userPrincipalsBalance?.isZero()) ||
-            (!yieldsApproved && !userYieldsBalance?.isZero()) ||
-            !amount
-          }
+          disabled={executeDisabled}
           onExecute={onExecute}
           onExecuted={onExecuted}
         />
