@@ -10,6 +10,7 @@ import { DashboardRowChild } from '../../../interfaces';
 import { TempusPool } from '../../../interfaces/TempusPool';
 import getConfig from '../../../utils/get-config';
 import { mul18f } from '../../../utils/wei-math';
+import { isZeroString } from '../../../utils/isZeroString';
 import Typography from '../../typography/Typography';
 import Spacer from '../../spacer/spacer';
 import ScaleIcon from '../../icons/ScaleIcon';
@@ -267,7 +268,7 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = props => {
   }, [expectedLPTokens, tempusPool.decimalsForUI]);
 
   const executeDisabled = useMemo(() => {
-    const zeroAmount = !principalsAmount || principalsAmount === '0' || !yieldsAmount || yieldsAmount === '0';
+    const zeroAmount = isZeroString(principalsAmount) || isZeroString(yieldsAmount);
     const principalBalanceZero = userPrincipalsBalance && userPrincipalsBalance.isZero();
     const yieldsBalanceZero = userYieldsBalance && userYieldsBalance.isZero();
     const principalsAmountExceedsBalance = ethers.utils

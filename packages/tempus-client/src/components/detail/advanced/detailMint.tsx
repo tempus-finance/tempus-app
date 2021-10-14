@@ -10,6 +10,7 @@ import NumberUtils from '../../../services/NumberUtils';
 import { getMintNotification } from '../../../services/NotificationService';
 import getConfig from '../../../utils/get-config';
 import { mul18f } from '../../../utils/wei-math';
+import { isZeroString } from '../../../utils/isZeroString';
 import Typography from '../../typography/Typography';
 import Spacer from '../../spacer/spacer';
 import TokenSelector from '../../tokenSelector';
@@ -159,13 +160,13 @@ const DetailMint: FC<DetailMintProps> = props => {
   }, [estimatedTokens, tempusPool.decimalsForUI]);
 
   const approveDisabled = useMemo((): boolean => {
-    const zeroAmount = !amount || amount === '0';
+    const zeroAmount = isZeroString(amount);
 
     return zeroAmount;
   }, [amount]);
 
   const executeDisabled = useMemo((): boolean => {
-    const zeroAmount = !amount || amount === '0';
+    const zeroAmount = isZeroString(amount);
     const amountExceedsBalance = ethers.utils
       .parseEther(amount || '0')
       .gt(getSelectedTokenBalance() || BigNumber.from('0'));
