@@ -8,6 +8,7 @@ import { getDepositNotification } from '../../../services/NotificationService';
 import { Ticker } from '../../../interfaces';
 import { mul18f } from '../../../utils/wei-math';
 import getConfig from '../../../utils/get-config';
+import { isZeroString } from '../../../utils/isZeroString';
 import CurrencyInput from '../../currencyInput/currencyInput';
 import TokenSelector from '../../tokenSelector';
 import Typography from '../../typography/Typography';
@@ -190,7 +191,7 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
 
   useEffect(() => {
     const retrieveDepositAmount = async () => {
-      if (!amount || amount === '0') {
+      if (isZeroString(amount)) {
         setFixedPrincipalsAmount(null);
         setVariablePrincipalsAmount(null);
         setVariableLpTokensAmount(null);
@@ -283,13 +284,13 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
   }, [usdRate, amount]);
 
   const approveDisabled = useMemo((): boolean => {
-    const zeroAmount = !amount || amount === '0';
+    const zeroAmount = isZeroString(amount);
 
     return zeroAmount;
   }, [amount]);
 
   const executeDisabled = useMemo((): boolean => {
-    const zeroAmount = !amount || amount === '0';
+    const zeroAmount = isZeroString(amount);
     const amountExceedsBalance = ethers.utils
       .parseEther(amount || '0')
       .gt(getSelectedTokenBalance() || BigNumber.from('0'));

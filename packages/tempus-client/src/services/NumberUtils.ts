@@ -1,3 +1,4 @@
+import { isZeroString } from '../utils/isZeroString';
 import { reverseString } from '../utils/reverse-string';
 
 const multiplierLookup = [
@@ -28,7 +29,7 @@ class NumberUtils {
   }
 
   static formatToCurrency(value: string, numberOfDecimals?: number, symbol?: string): string {
-    if (!value || value === '0' || value === '0.0') {
+    if (!value || isZeroString(value)) {
       return `${symbol || ''}0`;
     }
 

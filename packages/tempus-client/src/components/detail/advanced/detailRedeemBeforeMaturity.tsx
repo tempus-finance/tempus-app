@@ -1,24 +1,24 @@
 import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { BigNumber, ethers } from 'ethers';
-import Button from '@material-ui/core/Button';
+import { Divider, Button } from '@material-ui/core';
+import { Context } from '../../../context';
 import { Ticker } from '../../../interfaces/Token';
 import { DashboardRowChild } from '../../../interfaces';
+import { TempusPool } from '../../../interfaces/TempusPool';
+import PoolDataAdapter from '../../../adapters/PoolDataAdapter';
+import NumberUtils from '../../../services/NumberUtils';
+import { getWithdrawNotification } from '../../../services/NotificationService';
+import { isZeroString } from '../../../utils/isZeroString';
+import getConfig from '../../../utils/get-config';
+import { mul18f } from '../../../utils/wei-math';
 import CurrencyInput from '../../currencyInput/currencyInput';
 import TokenSelector from '../../tokenSelector';
 import Typography from '../../typography/Typography';
-import ActionContainer from '../shared/actionContainer';
 import Spacer from '../../spacer/spacer';
+import ActionContainer from '../shared/actionContainer';
 import SectionContainer from '../shared/sectionContainer';
 import ApproveButton from '../shared/approveButton';
-import PoolDataAdapter from '../../../adapters/PoolDataAdapter';
-import { Context } from '../../../context';
-import getConfig from '../../../utils/get-config';
-import { Divider } from '@material-ui/core';
-import NumberUtils from '../../../services/NumberUtils';
-import { mul18f } from '../../../utils/wei-math';
-import { TempusPool } from '../../../interfaces/TempusPool';
 import ExecuteButton from '../shared/executeButton';
-import { getWithdrawNotification } from '../../../services/NotificationService';
 
 type DetailRedeemBeforeMaturityProps = {
   content: DashboardRowChild;
@@ -167,7 +167,7 @@ const DetailRedeemBeforeMaturity: FC<DetailRedeemBeforeMaturityProps> = props =>
   }, [estimatedWithdrawAmount, tokenRate]);
 
   const executeDisabled = useMemo(() => {
-    const zeroAmount = !amount || amount === '0';
+    const zeroAmount = isZeroString(amount);
     const amountExceedsPrincipalsBalance = ethers.utils
       .parseEther(amount || '0')
       .gt(userPrincipalsBalance || BigNumber.from('0'));

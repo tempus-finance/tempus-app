@@ -1,4 +1,4 @@
-import { FC, useCallback, useEffect, useContext, useMemo } from 'react';
+import { FC, useCallback, useEffect, useContext, useMemo, useState } from 'react';
 import { ethers } from 'ethers';
 import { Web3Provider } from '@ethersproject/providers';
 import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core';
@@ -28,6 +28,8 @@ const WalletConnect: FC = (): JSX.Element => {
   } = useContext(Context);
 
   const { account, activate, active, library } = useWeb3React<Web3Provider>();
+
+  const [metamaskInstalled, setMetamaskInstalled] = useState<boolean | null>(null);
 
   const requestNetworkChange = useCallback(async () => {
     const injectedConnector = new InjectedConnector({ supportedChainIds });
@@ -93,6 +95,24 @@ const WalletConnect: FC = (): JSX.Element => {
     connect();
   }, [active, activate, setData, requestNetworkChange]);
 
+  const onInstallMetamaskClick = useCallback(() => {
+    window.open('https://metamask.io', '_blank');
+  }, []);
+
+  useEffect(() => {
+    const checkIfMetamaskIsInstalled = async () => {
+      const injectedConnector = new InjectedConnector({ supportedChainIds });
+      const provider = await injectedConnector.getProvider();
+
+      if (provider && provider.isMetaMask) {
+        setMetamaskInstalled(true);
+      } else {
+        setMetamaskInstalled(false);
+      }
+    };
+    checkIfMetamaskIsInstalled();
+  }, []);
+
   useEffect(() => {
     const checkConnection = async () => {
       const injectedConnector = new InjectedConnector({ supportedChainIds });
@@ -116,10 +136,20 @@ const WalletConnect: FC = (): JSX.Element => {
           }));
       });
     };
-    if (!active) {
+    if (!active && metamaskInstalled) {
       checkConnection();
     }
-  }, [active, activate, setData, requestNetworkChange]);
+  }, [active, metamaskInstalled, activate, setData, requestNetworkChange]);
+
+  useEffect(() => {
+    if (metamaskInstalled === false) {
+      setData &&
+        setData(previousData => ({
+          ...previousData,
+          userWalletConnected: false,
+        }));
+    }
+  }, [metamaskInstalled, setData]);
 
   useEffect(() => {
     setData &&
@@ -157,64 +187,25 @@ const WalletConnect: FC = (): JSX.Element => {
           <Spacer size={10} />
         </>
       )}
-      <div className="tf__connect__wallet-button" onClick={onConnect}>
-        <AccountBalanceWalletIcon />
-        <Spacer size={4} />
-        {pendingTransactions.length === 0 && (
-          <Typography variant="h5">{active ? shortenedAccount : CONNECT_WALLET}</Typography>
-        )}
-        {pendingTransactions.length > 0 && (
-          <Typography variant="h5">{pendingTransactions.length} Pending...</Typography>
-        )}
-      </div>
+      {metamaskInstalled && (
+        <div className="tf__connect__wallet-button" onClick={onConnect}>
+          <AccountBalanceWalletIcon />
+          <Spacer size={4} />
+          {pendingTransactions.length === 0 && (
+            <Typography variant="h5">{active ? shortenedAccount : CONNECT_WALLET}</Typography>
+          )}
+          {pendingTransactions.length > 0 && (
+            <Typography variant="h5">{pendingTransactions.length} Pending...</Typography>
+          )}
+        </div>
+      )}
+      {metamaskInstalled === false && (
+        <div className="tf__connect__wallet-button" onClick={onInstallMetamaskClick}>
+          <Typography variant="h5">Install Metamask</Typography>
+        </div>
+      )}
     </div>
   );
 };
 
 export default WalletConnect;
-
-/*
-*** Example TPS/TYS swap
-
-// Get address of the TempusPool we want to make swap in and AMM for that tempus pool.
-// We have one AMM per tempus pool.
-const poolAddress = getConfig().tempusPools[0].address;
-const poolAMMAddress = getConfig().tempusPools[0].ammAddress;
-
-// Get required services for the swap. Initialize them using wallet signer.
-const vaultService = getVaultService(library.getSigner());
-const tempusAMMService = getTempusAMMService(library.getSigner());
-const tempusPoolService = getTempusPoolService(library.getSigner());
-
-// Get poolId from tempus AMM contract. PoolID is balancer internal ID for the pool, it's not same as pool address.
-const poolId = await tempusAMMService.poolId(poolAMMAddress);
-
-// Get address of the tokens we want to swap (TPS and TYS).
-const yieldShareAddress = await tempusPoolService.getYieldTokenAddress(poolAddress);
-const principalShareAddress = await tempusPoolService.getPrincipalsTokenAddress(poolAddress);
-
-// Get TPS token service.
-const principalShareService = getERC20TokenService(principalShareAddress, library.getSigner());
-
-// We are giving 20 TPS in this swap for unknown amount of TYS (based on current exchange rate).
-// In order to give 20 TPS we have to give approval to Vault contract for 20 TPS from user wallet.
-const approveTransaction = await principalShareService.approve(
-  getConfig().vaultContract,
-  BigNumber.from(ethers.utils.parseEther('20')),
-);
-// Wait for approval transaction to finish.
-await approveTransaction.wait();
-
-// Make swap using Vault service, with all required parameters.
-const swapTransaction = await vaultService.swap(
-  poolId,
-  SwapKind.GIVEN_IN,
-  account,
-  principalShareAddress,
-  yieldShareAddress,
-  20,
-);
-
-// Wait for swap event to finish.
-await swapTransaction.wait();
-*/
