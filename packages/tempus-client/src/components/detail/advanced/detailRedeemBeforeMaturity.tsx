@@ -42,6 +42,7 @@ const DetailRedeemBeforeMaturity: FC<DetailRedeemBeforeMaturityProps> = props =>
   const [selectedToken, setSelectedToken] = useState<Ticker>(yieldBearingToken);
   const [estimatedWithdrawAmount, setEstimatedWithdrawAmount] = useState<BigNumber | null>(null);
   const [tokenRate, setTokenRate] = useState<BigNumber | null>(null);
+  const [estimateInProgress, setEstimateInProgress] = useState<boolean>(false);
 
   const onAmountChange = useCallback(
     (amount: string) => {
@@ -123,15 +124,17 @@ const DetailRedeemBeforeMaturity: FC<DetailRedeemBeforeMaturityProps> = props =>
           const amountFormatted = ethers.utils.parseEther(amount);
           const toBackingToken = selectedToken === backingToken;
 
+          setEstimateInProgress(true);
           setEstimatedWithdrawAmount(
             await poolDataAdapter.estimatedRedeem(tempusPool.address, amountFormatted, amountFormatted, toBackingToken),
           );
+          setEstimateInProgress(false);
         } catch (error) {
           console.log(
             'DetailRedeem - retrieveEstimatedWithdrawAmount() - Failed to fetch estimated withdraw amount!',
             error,
           );
-          return Promise.reject(error);
+          setEstimateInProgress(false);
         }
       }
     };
@@ -182,9 +185,10 @@ const DetailRedeemBeforeMaturity: FC<DetailRedeemBeforeMaturityProps> = props =>
       (!yieldsBalanceZero && !yieldsApproved) ||
       zeroAmount ||
       amountExceedsPrincipalsBalance ||
-      amountExceedsYieldsBalance
+      amountExceedsYieldsBalance ||
+      estimateInProgress
     );
-  }, [amount, principalsApproved, userPrincipalsBalance, userYieldsBalance, yieldsApproved]);
+  }, [amount, principalsApproved, userPrincipalsBalance, userYieldsBalance, yieldsApproved, estimateInProgress]);
 
   return (
     <>

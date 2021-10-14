@@ -47,6 +47,9 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
   const [backingTokenRate, setBackingTokenRate] = useState<BigNumber | null>(null);
   const [yieldBearingTokenRate, setYieldBearingTokenRate] = useState<BigNumber | null>(null);
 
+  const [tokenEstimateInProgress, setTokenEstimateInProgress] = useState<boolean>(false);
+  const [rateEstimateInProgress, setRateEstimateInProgress] = useState<boolean>(false);
+
   const [tokensApproved, setTokensApproved] = useState<boolean>(false);
 
   const onTokenChange = useCallback(
@@ -197,6 +200,8 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
         setVariableLpTokensAmount(null);
       } else if (ammAddress && poolDataAdapter) {
         try {
+          setTokenEstimateInProgress(true);
+
           const isBackingToken = backingToken === selectedToken;
 
           const { fixedDeposit, variableDeposit } = await poolDataAdapter.getEstimatedDepositAmount(
@@ -209,9 +214,13 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
           const [variableLpTokens, variablePrincipals] = variableDeposit;
           setVariablePrincipalsAmount(variablePrincipals);
           setVariableLpTokensAmount(variableLpTokens);
+
+          setTokenEstimateInProgress(false);
         } catch (err) {
           // TODO handle errors
           console.log('Detail Deposit - retrieveDepositAmount -', err);
+
+          setTokenEstimateInProgress(false);
         }
       }
     };
@@ -231,10 +240,22 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
   useEffect(() => {
     const getEstimatedFixedApr = async () => {
       if (amount && amount !== '0' && selectedToken && poolDataAdapter) {
+        setRateEstimateInProgress(true);
         const isBackingToken = selectedToken === backingToken;
-        setEstimatedFixedApr(
-          await poolDataAdapter.getEstimatedFixedApr(utils.parseEther(amount), isBackingToken, address, ammAddress),
-        );
+        try {
+          const fixedAPREstimate = await poolDataAdapter.getEstimatedFixedApr(
+            utils.parseEther(amount),
+            isBackingToken,
+            address,
+            ammAddress,
+          );
+
+          setEstimatedFixedApr(fixedAPREstimate);
+          setRateEstimateInProgress(false);
+        } catch (error) {
+          console.log('DetailDeposit - getEstimatedFixedApr() - Failed to fetch estimated fixed APR!', error);
+          setRateEstimateInProgress(false);
+        }
       } else {
         setEstimatedFixedApr(null);
       }
@@ -295,8 +316,8 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
       .parseEther(amount || '0')
       .gt(getSelectedTokenBalance() || BigNumber.from('0'));
 
-    return !tokensApproved || zeroAmount || amountExceedsBalance;
-  }, [amount, getSelectedTokenBalance, tokensApproved]);
+    return !tokensApproved || zeroAmount || amountExceedsBalance || rateEstimateInProgress || tokenEstimateInProgress;
+  }, [amount, getSelectedTokenBalance, rateEstimateInProgress, tokenEstimateInProgress, tokensApproved]);
 
   return (
     <div role="tabpanel">
