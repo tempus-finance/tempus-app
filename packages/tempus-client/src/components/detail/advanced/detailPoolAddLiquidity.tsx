@@ -51,6 +51,9 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = props => {
   const [expectedLPTokens, setExpectedLPTokens] = useState<BigNumber | null>(null);
   const [expectedPoolShare, setExpectedPoolShare] = useState<number | null>(null);
 
+  const [tokenEstimateInProgress, setTokenEstimateInProgress] = useState<boolean>(false);
+  const [poolShareEstimateInProgress, setPoolShareEstimateInProgress] = useState<boolean>(false);
+
   const [principalsApproved, setPrincipalsApproved] = useState<boolean>(false);
   const [yieldsApproved, setYieldsApproved] = useState<boolean>(false);
 
@@ -173,6 +176,7 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = props => {
       }
 
       try {
+        setTokenEstimateInProgress(true);
         setExpectedLPTokens(
           await poolDataAdapter.getExpectedLPTokensForShares(
             tempusPool.ammAddress,
@@ -182,11 +186,13 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = props => {
             ethers.utils.parseEther(yieldsAmount),
           ),
         );
+        setTokenEstimateInProgress(false);
       } catch (error) {
         console.error(
           'DetailPoolAddLiquidity - fetchEstimatedLPTokens() - Failed to fetch estimated LP Tokens!',
           error,
         );
+        setTokenEstimateInProgress(false);
       }
     };
     fetchEstimatedLPTokens();
@@ -207,12 +213,15 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = props => {
       }
 
       try {
+        setPoolShareEstimateInProgress(true);
         setExpectedPoolShare(await poolDataAdapter.getPoolShareForLPTokensIn(tempusPool.ammAddress, expectedLPTokens));
+        setPoolShareEstimateInProgress(false);
       } catch (error) {
         console.error(
           'DetailPoolAddLiquidity - fetchExpectedPoolShare() - Failed to fetch expected pool share!',
           error,
         );
+        setPoolShareEstimateInProgress(false);
       }
     };
     fetchExpectedPoolShare();
@@ -283,9 +292,20 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = props => {
       (!yieldsBalanceZero && !yieldsApproved) ||
       zeroAmount ||
       principalsAmountExceedsBalance ||
-      yieldsAmountExceedsBalance
+      yieldsAmountExceedsBalance ||
+      tokenEstimateInProgress ||
+      poolShareEstimateInProgress
     );
-  }, [principalsAmount, principalsApproved, userPrincipalsBalance, userYieldsBalance, yieldsAmount, yieldsApproved]);
+  }, [
+    poolShareEstimateInProgress,
+    principalsAmount,
+    principalsApproved,
+    tokenEstimateInProgress,
+    userPrincipalsBalance,
+    userYieldsBalance,
+    yieldsAmount,
+    yieldsApproved,
+  ]);
 
   return (
     <>

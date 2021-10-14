@@ -48,6 +48,7 @@ const DetailMint: FC<DetailMintProps> = props => {
   const [amount, setAmount] = useState<string>('');
   const [estimatedTokens, setEstimatedTokens] = useState<BigNumber | null>(null);
   const [tokensApproved, setTokensApproved] = useState<boolean>(false);
+  const [estimateInProgress, setEstimateInProgress] = useState<boolean>(false);
 
   const getSelectedTokenBalance = useCallback((): BigNumber | null => {
     if (!selectedToken) {
@@ -134,11 +135,17 @@ const DetailMint: FC<DetailMintProps> = props => {
       const amountParsed = ethers.utils.parseEther(amount);
 
       try {
-        setEstimatedTokens(
-          await poolDataAdapter.estimatedMintedShares(tempusPool.address, amountParsed, isBackingToken),
+        setEstimateInProgress(true);
+        const estimatedMintedShares = await poolDataAdapter.estimatedMintedShares(
+          tempusPool.address,
+          amountParsed,
+          isBackingToken,
         );
+        setEstimatedTokens(estimatedMintedShares);
+        setEstimateInProgress(false);
       } catch (error) {
-        console.error('DetailMint - getEstimates() - Failed to get estimate for selected token!', error);
+        console.error('DetailMint - getEstimates() - Failed to get estimates for selected token!', error);
+        setEstimateInProgress(false);
       }
     };
     getEstimates();
@@ -171,8 +178,8 @@ const DetailMint: FC<DetailMintProps> = props => {
       .parseEther(amount || '0')
       .gt(getSelectedTokenBalance() || BigNumber.from('0'));
 
-    return !tokensApproved || zeroAmount || amountExceedsBalance;
-  }, [amount, getSelectedTokenBalance, tokensApproved]);
+    return !tokensApproved || zeroAmount || amountExceedsBalance || estimateInProgress;
+  }, [amount, getSelectedTokenBalance, tokensApproved, estimateInProgress]);
 
   return (
     <div role="tabpanel">
