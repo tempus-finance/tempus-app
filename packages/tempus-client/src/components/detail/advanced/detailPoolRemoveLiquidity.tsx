@@ -5,7 +5,6 @@ import { Context } from '../../../context';
 import { DashboardRowChild } from '../../../interfaces';
 import { TempusPool } from '../../../interfaces/TempusPool';
 import NumberUtils from '../../../services/NumberUtils';
-import { getPoolLiquidityNotification } from '../../../services/NotificationService';
 import PoolDataAdapter from '../../../adapters/PoolDataAdapter';
 import getConfig from '../../../utils/get-config';
 import { mul18f } from '../../../utils/wei-math';
@@ -221,12 +220,8 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = ({ content, pool
           disabled={approveDisabled}
         />
         <ExecuteButton
-          notificationText={getPoolLiquidityNotification(
-            content.backingTokenTicker,
-            content.protocol,
-            content.maturityDate,
-          )}
           actionName="Liquidity Withdrawal"
+          tempusPool={tempusPool}
           disabled={executeDisabled}
           onExecute={onExecute}
           onExecuted={onExecuted}

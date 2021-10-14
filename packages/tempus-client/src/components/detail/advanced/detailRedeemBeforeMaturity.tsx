@@ -7,7 +7,6 @@ import { DashboardRowChild } from '../../../interfaces';
 import { TempusPool } from '../../../interfaces/TempusPool';
 import PoolDataAdapter from '../../../adapters/PoolDataAdapter';
 import NumberUtils from '../../../services/NumberUtils';
-import { getWithdrawNotification } from '../../../services/NotificationService';
 import { isZeroString } from '../../../utils/isZeroString';
 import getConfig from '../../../utils/get-config';
 import { mul18f } from '../../../utils/wei-math';
@@ -302,7 +301,7 @@ const DetailRedeemBeforeMaturity: FC<DetailRedeemBeforeMaturityProps> = props =>
       <Spacer size={20} />
       <div className="tf__flex-row-center-v">
         <ExecuteButton
-          notificationText={getWithdrawNotification(content.backingTokenTicker, content.protocol, content.maturityDate)}
+          tempusPool={tempusPool}
           actionName="Redeem"
           disabled={executeDisabled}
           onExecute={onExecute}

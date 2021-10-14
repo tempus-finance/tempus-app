@@ -7,7 +7,6 @@ import { DashboardRowChild, PoolShares, Ticker } from '../../../interfaces';
 import { TempusPool } from '../../../interfaces/TempusPool';
 import PoolDataAdapter from '../../../adapters/PoolDataAdapter';
 import NumberUtils from '../../../services/NumberUtils';
-import { getSwapNotification } from '../../../services/NotificationService';
 import { SwapKind } from '../../../services/VaultService';
 import getConfig from '../../../utils/get-config';
 import { mul18f } from '../../../utils/wei-math';
@@ -277,15 +276,7 @@ const DetailSwap: FC<DetailSwapProps> = props => {
           />
           <ExecuteButton
             actionName="Swap"
-            notificationText={getSwapNotification(
-              selectedToken || '',
-              Number(amount).toFixed(2),
-              tokenTo.tokenName,
-              receiveAmountFormatted || '',
-              content.backingTokenTicker,
-              content.protocol,
-              content.maturityDate,
-            )}
+            tempusPool={tempusPool}
             disabled={executeDisabled}
             onExecute={onExecute}
             onExecuted={onExecuted}

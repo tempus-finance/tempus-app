@@ -5,7 +5,6 @@ import { JsonRpcSigner } from '@ethersproject/providers';
 import { Context } from '../../../context';
 import PoolDataAdapter from '../../../adapters/PoolDataAdapter';
 import NumberUtils from '../../../services/NumberUtils';
-import { getPoolLiquidityNotification } from '../../../services/NotificationService';
 import { DashboardRowChild } from '../../../interfaces';
 import { TempusPool } from '../../../interfaces/TempusPool';
 import getConfig from '../../../utils/get-config';
@@ -441,12 +440,8 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = props => {
       <Spacer size={20} />
       <div className="tf__flex-row-center-v">
         <ExecuteButton
-          notificationText={getPoolLiquidityNotification(
-            content.backingTokenTicker,
-            content.protocol,
-            content.maturityDate,
-          )}
           actionName="Liquidity Deposit"
+          tempusPool={tempusPool}
           disabled={executeDisabled}
           onExecute={onExecute}
           onExecuted={onExecuted}

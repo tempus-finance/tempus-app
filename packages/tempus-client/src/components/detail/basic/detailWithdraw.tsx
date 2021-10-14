@@ -3,7 +3,6 @@ import { ethers, BigNumber } from 'ethers';
 import { Context } from '../../../context';
 import { Ticker } from '../../../interfaces/Token';
 import NumberUtils from '../../../services/NumberUtils';
-import { getWithdrawNotification } from '../../../services/NotificationService';
 import getConfig from '../../../utils/get-config';
 import Typography from '../../typography/Typography';
 import Spacer from '../../spacer/spacer';
@@ -242,12 +241,8 @@ const DetailWithdraw: FC<PoolDetailProps> = ({ tempusPool, content, signer, user
         <Spacer size={20} />
         <div className="tf__flex-row-center-v">
           <ExecuteButton
-            notificationText={getWithdrawNotification(
-              content.backingTokenTicker,
-              content.protocol,
-              content.maturityDate,
-            )}
             actionName="Withdraw"
+            tempusPool={tempusPool}
             disabled={executeDisabled}
             onExecute={onExecute}
             onExecuted={() => {}}
