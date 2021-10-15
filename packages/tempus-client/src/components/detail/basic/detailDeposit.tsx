@@ -4,7 +4,6 @@ import Button from '@material-ui/core/Button';
 import { interestRateProtectionTooltipText, liquidityProvisionTooltipText } from '../../../constants';
 import NumberUtils from '../../../services/NumberUtils';
 import { Context } from '../../../context';
-import { getDepositNotification } from '../../../services/NotificationService';
 import { Ticker } from '../../../interfaces';
 import { mul18f } from '../../../utils/wei-math';
 import getConfig from '../../../utils/get-config';
@@ -443,12 +442,8 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
           )}
           <ExecuteButton
             actionName="Deposit"
-            notificationText={getDepositNotification(
-              `${selectedYield} Yield`,
-              content.backingTokenTicker,
-              content.protocol,
-              content.maturityDate,
-            )}
+            actionDescription={selectedYield === 'Fixed' ? 'Fixed Yield' : 'Variable Yield'}
+            tempusPool={tempusPool}
             disabled={executeDisabled}
             onExecute={onExecute}
             onExecuted={onExecuted}

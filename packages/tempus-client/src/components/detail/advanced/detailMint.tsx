@@ -7,7 +7,6 @@ import { DashboardRowChild, Ticker } from '../../../interfaces';
 import { TempusPool } from '../../../interfaces/TempusPool';
 import PoolDataAdapter from '../../../adapters/PoolDataAdapter';
 import NumberUtils from '../../../services/NumberUtils';
-import { getMintNotification } from '../../../services/NotificationService';
 import getConfig from '../../../utils/get-config';
 import { mul18f } from '../../../utils/wei-math';
 import { isZeroString } from '../../../utils/isZeroString';
@@ -263,12 +262,7 @@ const DetailMint: FC<DetailMintProps> = props => {
           )}
           <ExecuteButton
             actionName="Mint"
-            notificationText={getMintNotification(
-              estimatedTokensFormatted || '',
-              content.backingTokenTicker,
-              content.protocol,
-              content.maturityDate,
-            )}
+            tempusPool={content.tempusPool}
             disabled={executeDisabled}
             onExecute={onExecute}
             onExecuted={onExecuted}
