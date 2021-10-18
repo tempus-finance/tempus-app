@@ -947,4 +947,28 @@ export default class PoolDataAdapter {
       return Promise.reject(error);
     }
   }
+
+  async isCurrentYieldNegativeForPool(tempusPool: string) {
+    if (!this.tempusPoolService) {
+      console.error(
+        'PoolDataAdapter - isCurrentYieldNegativeForPool() - Attempted to use PoolDataAdapter before initializing it!',
+      );
+      return Promise.reject();
+    }
+
+    try {
+      const [currentInterestRate, initialInterestRate] = await Promise.all([
+        this.tempusPoolService.currentInterestRate(tempusPool),
+        this.tempusPoolService.initialInterestRate(tempusPool),
+      ]);
+
+      return currentInterestRate.lt(initialInterestRate);
+    } catch (error) {
+      console.error(
+        'PoolDataAdapter - isCurrentYieldNegativeForPool() - Failed to check if current pool yield is negative!',
+        error,
+      );
+      return Promise.reject(error);
+    }
+  }
 }

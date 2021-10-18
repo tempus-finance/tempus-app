@@ -18,6 +18,17 @@
   padding: 20px;
   box-sizing: border-box;
   position: relative;
+
+  .tf__tab__warning {
+    .tf__tab__warning__title {
+      display: flex;
+      margin-bottom: 22px;
+
+      svg {
+        margin-right: 10px;
+      }
+    }
+  }
 }
 
 .tf__dialog__section-tick {

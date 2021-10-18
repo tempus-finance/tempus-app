@@ -9,6 +9,7 @@ import { mul18f } from '../../../utils/wei-math';
 import getConfig from '../../../utils/get-config';
 import { isZeroString } from '../../../utils/isZeroString';
 import CurrencyInput from '../../currencyInput/currencyInput';
+import AlertIcon from '../../icons/AlertIcon';
 import TokenSelector from '../../tokenSelector';
 import Typography from '../../typography/Typography';
 import Spacer from '../../spacer/spacer';
@@ -32,6 +33,7 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
     data: { userBackingTokenBalance, userYieldBearingTokenBalance },
   } = useContext(Context);
 
+  const [isDepositDisabled, setIsDepositDisabled] = useState<boolean>(true);
   const [selectedToken, setSelectedToken] = useState<Ticker | null>(null);
   const [amount, setAmount] = useState<string>('');
   const [usdRate, setUsdRate] = useState<BigNumber | null>(null);
@@ -112,11 +114,11 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
   const onSelectYield = useCallback(
     (event: any) => {
       const element = event.target.closest('[yield-attribute]');
-      if (element) {
+      if (element && !isDepositDisabled) {
         setSelectedYield(element.getAttribute('yield-attribute'));
       }
     },
-    [setSelectedYield],
+    [isDepositDisabled, setSelectedYield],
   );
 
   const getSelectedTokenBalance = useCallback((): BigNumber | null => {
@@ -263,6 +265,17 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
     getEstimatedFixedApr();
   }, [amount, selectedToken, backingToken, address, ammAddress, poolDataAdapter, setEstimatedFixedApr]);
 
+  useEffect(() => {
+    const isDisabled = async () => {
+      if (poolDataAdapter) {
+        const isDisabled = await poolDataAdapter.isCurrentYieldNegativeForPool(address);
+        setIsDepositDisabled(isDisabled);
+      }
+    };
+
+    isDisabled();
+  }, [address, poolDataAdapter]);
+
   const fixedPrincipalsAmountFormatted = useMemo(() => {
     if (!fixedPrincipalsAmount) {
       return null;
@@ -319,138 +332,189 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
   }, [amount, getSelectedTokenBalance, rateEstimateInProgress, tokenEstimateInProgress, tokensApproved]);
 
   return (
-    <div role="tabpanel">
-      <div className="tf__dialog__content-tab">
-        <Spacer size={25} />
-        <ActionContainer label="From">
-          <Spacer size={18} />
-          <SectionContainer>
-            <div className="tf__dialog__flex-row">
-              <div className="tf__dialog__label-align-right">
-                <Typography variant="body-text">Token</Typography>
-              </div>
-              <TokenSelector tickers={supportedTokens} onTokenChange={onTokenChange} />
-              <Spacer size={20} />
-              <Typography variant="body-text">
-                {selectedToken && balanceFormatted ? `Balance: ${balanceFormatted} ${selectedToken}` : ''}
-              </Typography>
+    <>
+      {isDepositDisabled && (
+        <SectionContainer>
+          <div className="tf__tab__warning">
+            <div className="tf__tab__warning__title">
+              <AlertIcon fillColor="#FF0F0F" />
+              <Typography variant="h4">Negative Yield - Deposits Disabled</Typography>
             </div>
-            <Spacer size={14} />
-            <div className="tf__dialog__flex-row">
-              <div className="tf__dialog__label-align-right">
-                <Typography variant="body-text">Amount</Typography>
-              </div>
-              <div className="tf__flex-column-start">
-                <CurrencyInput defaultValue={amount} onChange={onAmountChange} disabled={!selectedToken} />
-                {usdValueFormatted && (
-                  <div className="tf__input__label">
-                    <Typography variant="disclaimer-text">Approx {usdValueFormatted}</Typography>
-                  </div>
-                )}
-              </div>
-              {selectedToken && (
-                <>
-                  <Spacer size={20} />
-                  <Button variant="contained" size="small" value="0.25" onClick={onPercentageChange}>
-                    25%
-                  </Button>
-                  <Spacer size={10} />
-                  <Button variant="contained" size="small" value="0.5" onClick={onPercentageChange}>
-                    50%
-                  </Button>
-                  <Spacer size={10} />
-                  <Button variant="contained" size="small" value="0.75" onClick={onPercentageChange}>
-                    75%
-                  </Button>
-                  <Spacer size={10} />
-                  <Button variant="contained" size="small" value="1" onClick={onPercentageChange}>
-                    Max
-                  </Button>
-                </>
-              )}
-            </div>
-            <Spacer size={15} />
-          </SectionContainer>
-        </ActionContainer>
-        <Spacer size={25} />
-        <ActionContainer label="To">
-          <div className="tf__dialog__flex-row">
-            <div className="tf__dialog__flex-row-half-width">
-              <SectionContainer
-                title="Interest rate protection"
-                tooltip={interestRateProtectionTooltipText}
-                selectable={true}
-                selected={selectedYield === 'Fixed'}
-              >
-                <div className="tf__dialog__flex-col-space-between" yield-attribute="Fixed" onClick={onSelectYield}>
-                  <Typography variant="h4">Fixed Yield</Typography>
-                  <Typography variant="body-text">
-                    {fixedPrincipalsAmountFormatted && `est. ${fixedPrincipalsAmountFormatted} Principals`}
-                  </Typography>
-                  <Typography variant="h3" color="accent">
-                    est. APR{' '}
-                    {estimatedFixedApr
-                      ? NumberUtils.formatPercentage(utils.formatEther(estimatedFixedApr))
-                      : NumberUtils.formatPercentage(fixedAPR, 2)}
-                  </Typography>
-                </div>
-              </SectionContainer>
-            </div>
-
-            <Spacer size={20} />
-
-            <div className="tf__dialog__flex-row-half-width">
-              <SectionContainer
-                title="Liquidity provision"
-                tooltip={liquidityProvisionTooltipText}
-                selectable={true}
-                selected={selectedYield === 'Variable'}
-              >
-                <div className="tf__dialog__flex-col-space-between" yield-attribute="Variable" onClick={onSelectYield}>
-                  <Typography variant="h4">Variable Yield</Typography>
-                  <div>
-                    <Typography variant="body-text">
-                      {variablePrincipalsAmountFormatted && `est. ${variablePrincipalsAmountFormatted} Principals`}
-                    </Typography>
-                    <Typography variant="body-text">
-                      {variableLpTokensAmountFormatted && `est.  ${variableLpTokensAmountFormatted} LP Tokens`}
-                    </Typography>
-                  </div>
-                  <Typography variant="h3" color="accent">
-                    est. APR {NumberUtils.formatPercentage(variableAPY, 2)}
-                  </Typography>
-                </div>
-              </SectionContainer>
+            <div className="tf__tab__warning__content">
+              <p>Depositing into this pool is temporarily disabled as the current yield in this pool is negative.</p>
+              <p>
+                Deposits will be automatically re-enabled once yield recovers into a neutral or positive territory.
+                Existing depositors are free to perform other actions (e.g. Withdraw, Swap, Pool, Redeem).
+              </p>
             </div>
           </div>
-        </ActionContainer>
-        <Spacer size={20} />
-        <div className="tf__flex-row-center-vh">
-          {selectedToken && (
-            <>
-              <ApproveButton
-                poolDataAdapter={poolDataAdapter}
-                tokenToApproveAddress={getSelectedTokenAddress()}
-                spenderAddress={getConfig().tempusControllerContract}
-                amountToApprove={getSelectedTokenBalance()}
-                tokenToApproveTicker={selectedToken}
-                disabled={approveDisabled}
-                marginRight={20}
-                onApproveChange={onApproveChange}
-              />
-            </>
-          )}
-          <ExecuteButton
-            actionName="Deposit"
-            actionDescription={selectedYield === 'Fixed' ? 'Fixed Yield' : 'Variable Yield'}
-            tempusPool={tempusPool}
-            disabled={executeDisabled}
-            onExecute={onExecute}
-            onExecuted={onExecuted}
-          />
+        </SectionContainer>
+      )}
+      <div role="tabpanel">
+        <div className="tf__dialog__content-tab">
+          <Spacer size={25} />
+          <ActionContainer label="From">
+            <Spacer size={18} />
+            <SectionContainer>
+              <div className="tf__dialog__flex-row">
+                <div className="tf__dialog__label-align-right">
+                  <Typography variant="body-text">Token</Typography>
+                </div>
+                <TokenSelector tickers={supportedTokens} disabled={isDepositDisabled} onTokenChange={onTokenChange} />
+                <Spacer size={20} />
+                <Typography variant="body-text">
+                  {selectedToken && balanceFormatted ? `Balance: ${balanceFormatted} ${selectedToken}` : ''}
+                </Typography>
+              </div>
+              <Spacer size={14} />
+              <div className="tf__dialog__flex-row">
+                <div className="tf__dialog__label-align-right">
+                  <Typography variant="body-text">Amount</Typography>
+                </div>
+                <div className="tf__flex-column-start">
+                  <CurrencyInput
+                    defaultValue={amount}
+                    onChange={onAmountChange}
+                    disabled={!selectedToken || isDepositDisabled}
+                  />
+                  {usdValueFormatted && (
+                    <div className="tf__input__label">
+                      <Typography variant="disclaimer-text">Approx {usdValueFormatted}</Typography>
+                    </div>
+                  )}
+                </div>
+                {selectedToken && (
+                  <>
+                    <Spacer size={20} />
+                    <Button
+                      variant="contained"
+                      size="small"
+                      value="0.25"
+                      disabled={isDepositDisabled}
+                      onClick={onPercentageChange}
+                    >
+                      25%
+                    </Button>
+                    <Spacer size={10} />
+                    <Button
+                      variant="contained"
+                      size="small"
+                      value="0.5"
+                      disabled={isDepositDisabled}
+                      onClick={onPercentageChange}
+                    >
+                      50%
+                    </Button>
+                    <Spacer size={10} />
+                    <Button
+                      variant="contained"
+                      size="small"
+                      value="0.75"
+                      disabled={isDepositDisabled}
+                      onClick={onPercentageChange}
+                    >
+                      75%
+                    </Button>
+                    <Spacer size={10} />
+                    <Button
+                      variant="contained"
+                      size="small"
+                      value="1"
+                      disabled={isDepositDisabled}
+                      onClick={onPercentageChange}
+                    >
+                      Max
+                    </Button>
+                  </>
+                )}
+              </div>
+              <Spacer size={15} />
+            </SectionContainer>
+          </ActionContainer>
+          <Spacer size={25} />
+          <ActionContainer label="To">
+            <div className="tf__dialog__flex-row">
+              <div className="tf__dialog__flex-row-half-width">
+                <SectionContainer
+                  title="Interest rate protection"
+                  tooltip={interestRateProtectionTooltipText}
+                  selectable={true}
+                  selected={selectedYield === 'Fixed'}
+                >
+                  <div className="tf__dialog__flex-col-space-between" yield-attribute="Fixed" onClick={onSelectYield}>
+                    <Typography variant="h4">Fixed Yield</Typography>
+                    <Typography variant="body-text">
+                      {fixedPrincipalsAmountFormatted && `est. ${fixedPrincipalsAmountFormatted} Principals`}
+                    </Typography>
+                    <Typography variant="h3" color="accent">
+                      est. APR{' '}
+                      {estimatedFixedApr
+                        ? NumberUtils.formatPercentage(utils.formatEther(estimatedFixedApr))
+                        : NumberUtils.formatPercentage(fixedAPR, 2)}
+                    </Typography>
+                  </div>
+                </SectionContainer>
+              </div>
+
+              <Spacer size={20} />
+
+              <div className="tf__dialog__flex-row-half-width">
+                <SectionContainer
+                  title="Liquidity provision"
+                  tooltip={liquidityProvisionTooltipText}
+                  selectable={true}
+                  selected={selectedYield === 'Variable'}
+                >
+                  <div
+                    className="tf__dialog__flex-col-space-between"
+                    yield-attribute="Variable"
+                    onClick={onSelectYield}
+                  >
+                    <Typography variant="h4">Variable Yield</Typography>
+                    <div>
+                      <Typography variant="body-text">
+                        {variablePrincipalsAmountFormatted && `est. ${variablePrincipalsAmountFormatted} Principals`}
+                      </Typography>
+                      <Typography variant="body-text">
+                        {variableLpTokensAmountFormatted && `est.  ${variableLpTokensAmountFormatted} LP Tokens`}
+                      </Typography>
+                    </div>
+                    <Typography variant="h3" color="accent">
+                      est. APR {NumberUtils.formatPercentage(variableAPY, 2)}
+                    </Typography>
+                  </div>
+                </SectionContainer>
+              </div>
+            </div>
+          </ActionContainer>
+          <Spacer size={20} />
+          <div className="tf__flex-row-center-vh">
+            {selectedToken && (
+              <>
+                <ApproveButton
+                  poolDataAdapter={poolDataAdapter}
+                  tokenToApproveAddress={getSelectedTokenAddress()}
+                  spenderAddress={getConfig().tempusControllerContract}
+                  amountToApprove={getSelectedTokenBalance()}
+                  tokenToApproveTicker={selectedToken}
+                  disabled={approveDisabled || isDepositDisabled}
+                  marginRight={20}
+                  onApproveChange={onApproveChange}
+                />
+              </>
+            )}
+            <ExecuteButton
+              actionName="Deposit"
+              actionDescription={selectedYield === 'Fixed' ? 'Fixed Yield' : 'Variable Yield'}
+              tempusPool={tempusPool}
+              disabled={executeDisabled || isDepositDisabled}
+              onExecute={onExecute}
+              onExecuted={onExecuted}
+            />
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
