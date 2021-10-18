@@ -244,6 +244,19 @@ class TempusPoolService {
     throw new Error(`Address '${address}' is not valid`);
   }
 
+  async initialInterestRate(address: string): Promise<BigNumber> {
+    const contract = this.tempusPoolsMap[address];
+    if (contract) {
+      try {
+        return await contract.initialInterestRate();
+      } catch (error) {
+        console.error('TempusPoolService - initialInterestRate() - Failed to fetch initial interest rate!', error);
+        return Promise.reject(error);
+      }
+    }
+    throw new Error(`TempusPoolService - currentInterestRate() - Address '${address}' is not valid`);
+  }
+
   public async currentInterestRate(address: string): Promise<BigNumber> {
     const contract = this.tempusPoolsMap[address];
     if (contract) {
