@@ -11,6 +11,7 @@ type TokenSelectorInProps = {
   defaultTicker?: Ticker;
   tickers?: Ticker[];
   classNames?: string;
+  disabled?: boolean;
 };
 
 type TokenSelectorOutProps = {
@@ -37,7 +38,13 @@ const getMenuItems = (items: string[]) => {
   });
 };
 
-const TokenSelector: FC<TokenSelectorProps> = ({ defaultTicker, tickers = [], classNames, onTokenChange }) => {
+const TokenSelector: FC<TokenSelectorProps> = ({
+  disabled,
+  defaultTicker,
+  tickers = [],
+  classNames,
+  onTokenChange,
+}) => {
   const [items, setItems] = useState<string[]>([]);
   const [token, setToken] = useState<string>('empty');
 
@@ -78,6 +85,7 @@ const TokenSelector: FC<TokenSelectorProps> = ({ defaultTicker, tickers = [], cl
         className="tf__token-selector"
         labelId="tf__token-selector"
         value={token}
+        disabled={disabled}
         onChange={handleChange}
       >
         {getMenuItems(items)}

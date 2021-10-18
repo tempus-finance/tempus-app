@@ -12,6 +12,7 @@ import { mul18f } from '../../../utils/wei-math';
 import { isZeroString } from '../../../utils/isZeroString';
 import Typography from '../../typography/Typography';
 import Spacer from '../../spacer/spacer';
+import AlertIcon from '../../icons/AlertIcon';
 import TokenSelector from '../../tokenSelector';
 import CurrencyInput from '../../currencyInput/currencyInput';
 import ActionContainer from '../shared/actionContainer';
@@ -43,6 +44,7 @@ const DetailMint: FC<DetailMintProps> = props => {
     data: { userBackingTokenBalance, userYieldBearingTokenBalance },
   } = useContext(Context);
 
+  const [isDepositDisabled, setIsDepositDisabled] = useState<boolean>(true);
   const [selectedToken, setSelectedToken] = useState<Ticker | null>(null);
   const [amount, setAmount] = useState<string>('');
   const [estimatedTokens, setEstimatedTokens] = useState<BigNumber | null>(null);
@@ -150,6 +152,17 @@ const DetailMint: FC<DetailMintProps> = props => {
     getEstimates();
   }, [amount, backingToken, poolDataAdapter, selectedToken, tempusPool]);
 
+  useEffect(() => {
+    const isDisabled = async () => {
+      if (poolDataAdapter) {
+        const isDisabled = await poolDataAdapter.isCurrentYieldNegativeForPool(tempusPool.address);
+        setIsDepositDisabled(isDisabled);
+      }
+    };
+
+    isDisabled();
+  }, [tempusPool, poolDataAdapter]);
+
   const balanceFormatted = useMemo(() => {
     const currentBalance = selectedToken === backingToken ? userBackingTokenBalance : userYieldBearingTokenBalance;
     if (!currentBalance) {
@@ -181,95 +194,114 @@ const DetailMint: FC<DetailMintProps> = props => {
   }, [amount, getSelectedTokenBalance, tokensApproved, estimateInProgress]);
 
   return (
-    <div role="tabpanel">
-      <div className="tf__dialog__content-tab">
-        <ActionContainer label="From">
-          <Spacer size={18} />
-          <SectionContainer>
-            <div className="tf__dialog__flex-row">
-              <div className="tf__dialog__label-align-right">
-                <Typography variant="body-text">Token</Typography>
-              </div>
-              <TokenSelector tickers={supportedTokens} onTokenChange={onTokenChange} />
-              <Spacer size={20} />
-              <Typography variant="body-text">
-                {selectedToken && balanceFormatted && `Balance: ${balanceFormatted} ${selectedToken}`}
-              </Typography>
+    <>
+      {isDepositDisabled && (
+        <SectionContainer>
+          <div className="tf__tab__warning">
+            <div className="tf__tab__warning__title">
+              <AlertIcon fillColor="#FF0F0F" />
+              <Typography variant="h4">Negative Yield - Deposits Disabled</Typography>
             </div>
-            <Spacer size={14} />
-            <div className="tf__dialog__flex-row">
-              <div className="tf__dialog__label-align-right">
-                <Typography variant="body-text">Amount</Typography>
-              </div>
-              <CurrencyInput defaultValue={amount} onChange={onAmountChange} disabled={!selectedToken} />
-              {selectedToken && (
-                <>
-                  <Spacer size={20} />
-                  <Button variant="contained" size="small" value="0.25" onClick={onPercentageChange}>
-                    25%
-                  </Button>
-                  <Spacer size={10} />
-                  <Button variant="contained" size="small" value="0.5" onClick={onPercentageChange}>
-                    50%
-                  </Button>
-                  <Spacer size={10} />
-                  <Button variant="contained" size="small" value="0.75" onClick={onPercentageChange}>
-                    75%
-                  </Button>
-                  <Spacer size={10} />
-                  <Button variant="contained" size="small" value="1" onClick={onPercentageChange}>
-                    Max
-                  </Button>
-                </>
-              )}
-            </div>
-          </SectionContainer>
-        </ActionContainer>
-        <Spacer size={20} />
-        <ActionContainer label="To">
-          <Spacer size={20} />
-          <div className="tf__dialog__flex-row">
-            <div className="tf__dialog__flex-row-half-width">
-              <SectionContainer>
-                <Typography variant="h4">Principals</Typography>
-                <Spacer size={14} />
-                <Typography variant="body-text">est. {estimatedTokensFormatted} Principals</Typography>
-              </SectionContainer>
-            </div>
-            <PlusIconContainer orientation="vertical" />
-            <div className="tf__dialog__flex-row-half-width">
-              <SectionContainer>
-                <Typography variant="h4">Yields</Typography>
-                <Spacer size={14} />
-                <Typography variant="body-text">est. {estimatedTokensFormatted} Yields</Typography>
-              </SectionContainer>
+            <div className="tf__tab__warning__content">
+              <p>Depositing into this pool is temporarily disabled as the current yield in this pool is negative.</p>
+              <p>
+                Deposits will be automatically re-enabled once yield recovers into a neutral or positive territory.
+                Existing depositors are free to perform other actions (e.g. Withdraw, Swap, Pool, Redeem).
+              </p>
             </div>
           </div>
-        </ActionContainer>
-        <Spacer size={20} />
-        <div className="tf__flex-row-center-vh">
-          {selectedToken && (
-            <ApproveButton
-              poolDataAdapter={poolDataAdapter}
-              tokenToApproveAddress={getSelectedTokenAddress()}
-              tokenToApproveTicker={selectedToken}
-              amountToApprove={getSelectedTokenBalance()}
-              spenderAddress={getConfig().tempusControllerContract}
-              disabled={approveDisabled}
-              marginRight={20}
-              onApproveChange={onApproveChange}
+        </SectionContainer>
+      )}
+      <div role="tabpanel">
+        <div className="tf__dialog__content-tab">
+          <ActionContainer label="From">
+            <Spacer size={18} />
+            <SectionContainer>
+              <div className="tf__dialog__flex-row">
+                <div className="tf__dialog__label-align-right">
+                  <Typography variant="body-text">Token</Typography>
+                </div>
+                <TokenSelector tickers={supportedTokens} disabled={isDepositDisabled} onTokenChange={onTokenChange} />
+                <Spacer size={20} />
+                <Typography variant="body-text">
+                  {selectedToken && balanceFormatted && `Balance: ${balanceFormatted} ${selectedToken}`}
+                </Typography>
+              </div>
+              <Spacer size={14} />
+              <div className="tf__dialog__flex-row">
+                <div className="tf__dialog__label-align-right">
+                  <Typography variant="body-text">Amount</Typography>
+                </div>
+                <CurrencyInput defaultValue={amount} onChange={onAmountChange} disabled={!selectedToken} />
+                {selectedToken && (
+                  <>
+                    <Spacer size={20} />
+                    <Button variant="contained" size="small" value="0.25" onClick={onPercentageChange}>
+                      25%
+                    </Button>
+                    <Spacer size={10} />
+                    <Button variant="contained" size="small" value="0.5" onClick={onPercentageChange}>
+                      50%
+                    </Button>
+                    <Spacer size={10} />
+                    <Button variant="contained" size="small" value="0.75" onClick={onPercentageChange}>
+                      75%
+                    </Button>
+                    <Spacer size={10} />
+                    <Button variant="contained" size="small" value="1" onClick={onPercentageChange}>
+                      Max
+                    </Button>
+                  </>
+                )}
+              </div>
+            </SectionContainer>
+          </ActionContainer>
+          <Spacer size={20} />
+          <ActionContainer label="To">
+            <Spacer size={20} />
+            <div className="tf__dialog__flex-row">
+              <div className="tf__dialog__flex-row-half-width">
+                <SectionContainer>
+                  <Typography variant="h4">Principals</Typography>
+                  <Spacer size={14} />
+                  <Typography variant="body-text">est. {estimatedTokensFormatted} Principals</Typography>
+                </SectionContainer>
+              </div>
+              <PlusIconContainer orientation="vertical" />
+              <div className="tf__dialog__flex-row-half-width">
+                <SectionContainer>
+                  <Typography variant="h4">Yields</Typography>
+                  <Spacer size={14} />
+                  <Typography variant="body-text">est. {estimatedTokensFormatted} Yields</Typography>
+                </SectionContainer>
+              </div>
+            </div>
+          </ActionContainer>
+          <Spacer size={20} />
+          <div className="tf__flex-row-center-vh">
+            {selectedToken && (
+              <ApproveButton
+                poolDataAdapter={poolDataAdapter}
+                tokenToApproveAddress={getSelectedTokenAddress()}
+                tokenToApproveTicker={selectedToken}
+                amountToApprove={getSelectedTokenBalance()}
+                spenderAddress={getConfig().tempusControllerContract}
+                disabled={approveDisabled}
+                marginRight={20}
+                onApproveChange={onApproveChange}
+              />
+            )}
+            <ExecuteButton
+              actionName="Mint"
+              tempusPool={content.tempusPool}
+              disabled={executeDisabled || isDepositDisabled}
+              onExecute={onExecute}
+              onExecuted={onExecuted}
             />
-          )}
-          <ExecuteButton
-            actionName="Mint"
-            tempusPool={content.tempusPool}
-            disabled={executeDisabled}
-            onExecute={onExecute}
-            onExecuted={onExecuted}
-          />
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
