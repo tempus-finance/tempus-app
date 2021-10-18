@@ -962,7 +962,7 @@ export default class PoolDataAdapter {
         this.tempusPoolService.initialInterestRate(tempusPool),
       ]);
 
-      return currentInterestRate < initialInterestRate;
+      return currentInterestRate.lt(initialInterestRate);
     } catch (error) {
       console.error(
         'PoolDataAdapter - isCurrentYieldNegativeForPool() - Failed to check if current pool yield is negative!',
