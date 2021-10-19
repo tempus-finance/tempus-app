@@ -7,14 +7,23 @@ import Typography from '../../typography/Typography';
 import './sectionContainer.scss';
 
 interface SectionContainerProps {
+  id?: string;
   title?: string;
   tooltip?: string;
   selectable?: boolean;
   selected?: boolean;
+  disabled?: boolean;
+  onSelected?: (id: string | undefined) => void;
 }
 
 const SectionContainer: FC<SectionContainerProps> = props => {
-  const { title, tooltip, selectable, selected } = props;
+  const { id, title, tooltip, selectable, selected, disabled, onSelected } = props;
+
+  const onClick = () => {
+    if (!disabled) {
+      onSelected && onSelected(id);
+    }
+  };
 
   return (
     <div className="tf__dialog__section-container">
@@ -31,6 +40,7 @@ const SectionContainer: FC<SectionContainerProps> = props => {
           border: selected ? '1px solid #F24C00' : '1px solid transparent',
           cursor: selectable ? 'pointer' : 'default',
         }}
+        onClick={onClick}
       >
         {props.children}
         {selected && (

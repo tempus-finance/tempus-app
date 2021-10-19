@@ -133,7 +133,6 @@ const DetailWithdraw: FC<PoolDetailProps> = ({ tempusPool, content, signer, user
   return (
     <div role="tabpanel">
       <div className="tf__dialog__content-tab">
-        <Spacer size={25} />
         <ActionContainer label="From">
           <Spacer size={10} />
           {userPrincipalsBalance && !userPrincipalsBalance.isZero() && (

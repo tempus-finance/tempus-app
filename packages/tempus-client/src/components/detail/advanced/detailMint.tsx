@@ -44,7 +44,7 @@ const DetailMint: FC<DetailMintProps> = props => {
     data: { userBackingTokenBalance, userYieldBearingTokenBalance },
   } = useContext(Context);
 
-  const [isDepositDisabled, setIsDepositDisabled] = useState<boolean>(true);
+  const [isYieldNegative, setIsYieldNegative] = useState<boolean | null>(null);
   const [selectedToken, setSelectedToken] = useState<Ticker | null>(null);
   const [amount, setAmount] = useState<string>('');
   const [estimatedTokens, setEstimatedTokens] = useState<BigNumber | null>(null);
@@ -153,14 +153,14 @@ const DetailMint: FC<DetailMintProps> = props => {
   }, [amount, backingToken, poolDataAdapter, selectedToken, tempusPool]);
 
   useEffect(() => {
-    const isDisabled = async () => {
+    const fetchIsYieldNegative = async () => {
       if (poolDataAdapter) {
-        const isDisabled = await poolDataAdapter.isCurrentYieldNegativeForPool(tempusPool.address);
-        setIsDepositDisabled(isDisabled);
+        const isYieldNegative = await poolDataAdapter.isCurrentYieldNegativeForPool(tempusPool.address);
+        setIsYieldNegative(isYieldNegative);
       }
     };
 
-    isDisabled();
+    fetchIsYieldNegative();
   }, [tempusPool, poolDataAdapter]);
 
   const balanceFormatted = useMemo(() => {
@@ -184,36 +184,47 @@ const DetailMint: FC<DetailMintProps> = props => {
     return zeroAmount;
   }, [amount]);
 
+  const mintDisabled = useMemo((): boolean => {
+    return isYieldNegative === null ? true : isYieldNegative;
+  }, [isYieldNegative]);
+
   const executeDisabled = useMemo((): boolean => {
     const zeroAmount = isZeroString(amount);
     const amountExceedsBalance = ethers.utils
       .parseEther(amount || '0')
       .gt(getSelectedTokenBalance() || BigNumber.from('0'));
 
-    return !tokensApproved || zeroAmount || amountExceedsBalance || estimateInProgress;
-  }, [amount, getSelectedTokenBalance, tokensApproved, estimateInProgress]);
+    return !tokensApproved || zeroAmount || amountExceedsBalance || estimateInProgress || mintDisabled;
+  }, [amount, getSelectedTokenBalance, tokensApproved, estimateInProgress, mintDisabled]);
 
   return (
     <>
-      {isDepositDisabled && (
-        <SectionContainer>
-          <div className="tf__tab__warning">
-            <div className="tf__tab__warning__title">
-              <AlertIcon fillColor="#FF0F0F" />
-              <Typography variant="h4">Negative Yield - Deposits Disabled</Typography>
-            </div>
-            <div className="tf__tab__warning__content">
-              <p>Depositing into this pool is temporarily disabled as the current yield in this pool is negative.</p>
-              <p>
-                Deposits will be automatically re-enabled once yield recovers into a neutral or positive territory.
-                Existing depositors are free to perform other actions (e.g. Withdraw, Swap, Pool, Redeem).
-              </p>
-            </div>
-          </div>
-        </SectionContainer>
-      )}
       <div role="tabpanel">
         <div className="tf__dialog__content-tab">
+          {isYieldNegative && (
+            <>
+              <SectionContainer>
+                <div className="tf__tab__warning">
+                  <div className="tf__tab__warning__title">
+                    <AlertIcon fillColor="#FF0F0F" />
+                    <Typography variant="h4">Negative Yield - Deposits Disabled</Typography>
+                  </div>
+                  <div className="tf__tab__warning__content">
+                    <p>
+                      Depositing into this pool is temporarily disabled as the current yield in this pool is negative.
+                    </p>
+                    <p>
+                      Deposits will be automatically re-enabled once yield recovers into a neutral or positive
+                      territory. Existing depositors are free to perform other actions (e.g. Withdraw, Swap, Pool,
+                      Redeem).
+                    </p>
+                  </div>
+                </div>
+              </SectionContainer>
+              <Spacer size={25} />
+            </>
+          )}
+
           <ActionContainer label="From">
             <Spacer size={18} />
             <SectionContainer>
@@ -221,7 +232,7 @@ const DetailMint: FC<DetailMintProps> = props => {
                 <div className="tf__dialog__label-align-right">
                   <Typography variant="body-text">Token</Typography>
                 </div>
-                <TokenSelector tickers={supportedTokens} disabled={isDepositDisabled} onTokenChange={onTokenChange} />
+                <TokenSelector tickers={supportedTokens} disabled={mintDisabled} onTokenChange={onTokenChange} />
                 <Spacer size={20} />
                 <Typography variant="body-text">
                   {selectedToken && balanceFormatted && `Balance: ${balanceFormatted} ${selectedToken}`}
@@ -294,7 +305,7 @@ const DetailMint: FC<DetailMintProps> = props => {
             <ExecuteButton
               actionName="Mint"
               tempusPool={content.tempusPool}
-              disabled={executeDisabled || isDepositDisabled}
+              disabled={executeDisabled}
               onExecute={onExecute}
               onExecuted={onExecuted}
             />
