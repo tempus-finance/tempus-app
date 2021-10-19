@@ -1,4 +1,4 @@
-import { ChangeEvent, FC, useCallback, useContext, useMemo, useState } from 'react';
+import { ChangeEvent, FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { JsonRpcSigner } from '@ethersproject/providers';
 import { Tab, Tabs } from '@material-ui/core';
 import { Context } from '../../../context';
@@ -47,6 +47,13 @@ const DetailBasic: FC<DetailBasicProps> = ({
       return false;
     }
   }, [data.userLPBalance, data.userPrincipalsBalance, data.userYieldsBalance]);
+
+  // Every time we hide withdraw tab, automatically switch to deposit tab
+  useEffect(() => {
+    if (!withdrawVisible) {
+      setTab(0);
+    }
+  }, [withdrawVisible]);
 
   return (
     <>
