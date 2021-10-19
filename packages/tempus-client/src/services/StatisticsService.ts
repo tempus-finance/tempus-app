@@ -236,6 +236,11 @@ class StatisticsService {
       return Promise.reject();
     }
 
+    // If user does not have any tokens in in the pool - skip calling contract and return zero
+    if (lpAmount.isZero() && principalAmount.isZero() && yieldsAmount.isZero()) {
+      return BigNumber.from('0');
+    }
+      
     let maxLeftoverShares: BigNumber;
     try {
       maxLeftoverShares = await this.tempusAMMService.getMaxLeftoverShares(tempusAmmAddress, principalAmount, lpAmount);
