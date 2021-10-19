@@ -236,10 +236,6 @@ class StatisticsService {
       return Promise.reject();
     }
 
-    if (lpAmount.isZero() && principalAmount.isZero() && yieldsAmount.isZero()) {
-      return BigNumber.from('0');
-    }
-
     let maxLeftoverShares: BigNumber;
     try {
       maxLeftoverShares = await this.tempusAMMService.getMaxLeftoverShares(tempusAmmAddress, principalAmount, lpAmount);
