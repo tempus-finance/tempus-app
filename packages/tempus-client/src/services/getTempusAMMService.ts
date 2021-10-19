@@ -5,6 +5,7 @@ import getConfig from '../utils/get-config';
 import TempusAMMService from './TempusAMMService';
 import getDefaultProvider from './getDefaultProvider';
 import getTempusPoolService from './getTempusPoolService';
+import getERC20TokenService from './getERC20TokenService';
 
 let tempusAMMService: TempusAMMService;
 const getTempusAMMService = (signerOrProvider?: JsonRpcSigner | JsonRpcProvider): TempusAMMService => {
@@ -16,6 +17,7 @@ const getTempusAMMService = (signerOrProvider?: JsonRpcSigner | JsonRpcProvider)
       TempusAMMABI: TempusAMMABI,
       signerOrProvider: getDefaultProvider(),
       tempusPoolService: getTempusPoolService(),
+      eRC20TokenServiceGetter: getERC20TokenService,
     });
   }
 
@@ -26,6 +28,7 @@ const getTempusAMMService = (signerOrProvider?: JsonRpcSigner | JsonRpcProvider)
       TempusAMMABI: TempusAMMABI,
       signerOrProvider: signerOrProvider,
       tempusPoolService: getTempusPoolService(signerOrProvider),
+      eRC20TokenServiceGetter: getERC20TokenService,
     });
   }
 

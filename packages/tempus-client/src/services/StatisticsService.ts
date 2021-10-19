@@ -5,6 +5,7 @@ import { Stats } from '../abi/Stats';
 import StatsABI from '../abi/Stats.json';
 import { div18f, mul18f } from '../utils/wei-math';
 import { Ticker } from '../interfaces';
+import TempusAMMService from './TempusAMMService';
 
 const backingTokenToCoingeckoIdMap = new Map<string, string>();
 backingTokenToCoingeckoIdMap.set('ETH', 'ethereum');
@@ -14,15 +15,20 @@ type StatisticsServiceParameters = {
   address: string;
   abi: typeof StatsABI;
   signerOrProvider: JsonRpcProvider | JsonRpcSigner;
+  tempusAMMService: TempusAMMService;
 };
 
 class StatisticsService {
   private stats: Stats | null = null;
 
+  private tempusAMMService: TempusAMMService | null = null;
+
   private coinGeckoCache = new Map<string, { promise: Promise<any>; cachedAt: number }>();
 
   init(params: StatisticsServiceParameters) {
     this.stats = new Contract(params.address, params.abi, params.signerOrProvider) as Stats;
+
+    this.tempusAMMService = params.tempusAMMService;
   }
 
   public async totalValueLockedInBackingTokens(tempusPool: string, overrides?: CallOverrides) {
@@ -221,10 +227,9 @@ class StatisticsService {
     lpAmount: BigNumber,
     principalAmount: BigNumber,
     yieldsAmount: BigNumber,
-    maxLeftoverShares: string,
     isBackingToken: boolean,
   ): Promise<BigNumber> {
-    if (!this.stats) {
+    if (!this.stats || !this.tempusAMMService) {
       console.error(
         'StatisticsService estimateExitAndRedeem Attempted to use statistics contract before initializing it...',
       );
@@ -235,6 +240,14 @@ class StatisticsService {
     if (lpAmount.isZero() && principalAmount.isZero() && yieldsAmount.isZero()) {
       return BigNumber.from('0');
     }
+      
+    let maxLeftoverShares: BigNumber;
+    try {
+      maxLeftoverShares = await this.tempusAMMService.getMaxLeftoverShares(tempusAmmAddress, principalAmount, lpAmount);
+    } catch (error) {
+      console.error('StatisticsService - estimateExitAndRedeem() - Failed to fetch max leftover shares!');
+      return Promise.reject();
+    }
 
     try {
       return await this.stats.estimateExitAndRedeem(
@@ -242,7 +255,7 @@ class StatisticsService {
         lpAmount,
         principalAmount,
         yieldsAmount,
-        ethers.utils.parseEther(maxLeftoverShares),
+        maxLeftoverShares,
         isBackingToken,
       );
     } catch (error) {
@@ -253,7 +266,7 @@ class StatisticsService {
       console.log(`Principals amount: ${principalAmount.toHexString()} ${ethers.utils.formatEther(principalAmount)}`);
       console.log(`Yields amount: ${yieldsAmount.toHexString()} ${ethers.utils.formatEther(yieldsAmount)}`);
       console.log(
-        `Max leftover shares: ${ethers.utils.parseEther(maxLeftoverShares).toHexString()} ${maxLeftoverShares}`,
+        `Max leftover shares: ${maxLeftoverShares.toHexString()} ${ethers.utils.formatEther(maxLeftoverShares)}`,
       );
       console.log(`Is backing token: ${isBackingToken}`);
       return Promise.reject(error);

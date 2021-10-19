@@ -41,14 +41,14 @@ const DetailWithdraw: FC<PoolDetailProps> = ({ tempusPool, content, signer, user
   }, []);
 
   const onExecute = useCallback((): Promise<ethers.ContractTransaction | undefined> => {
-    if (signer && poolDataAdapter) {
+    if (signer && poolDataAdapter && userPrincipalsBalance && userLPBalance) {
       const isBackingToken = backingToken === selectedToken;
 
-      return poolDataAdapter.executeWithdraw(ammAddress, isBackingToken);
+      return poolDataAdapter.executeWithdraw(ammAddress, userPrincipalsBalance, userLPBalance, isBackingToken);
     } else {
       return Promise.resolve(undefined);
     }
-  }, [signer, poolDataAdapter, backingToken, selectedToken, ammAddress]);
+  }, [signer, poolDataAdapter, backingToken, selectedToken, ammAddress, userPrincipalsBalance, userLPBalance]);
 
   // Fetch estimated withdraw amount of tokens
   useEffect(() => {
@@ -62,7 +62,6 @@ const DetailWithdraw: FC<PoolDetailProps> = ({ tempusPool, content, signer, user
             userLPBalance,
             userPrincipalsBalance,
             userYieldsBalance,
-            tempusPool.maxLeftoverShares,
             isBackingToken,
           );
           setEstimatedWithdrawAmount(amount);
@@ -79,7 +78,6 @@ const DetailWithdraw: FC<PoolDetailProps> = ({ tempusPool, content, signer, user
     selectedToken,
     backingToken,
     poolDataAdapter,
-    tempusPool.maxLeftoverShares,
     userPrincipalsBalance,
     userYieldsBalance,
     userLPBalance,

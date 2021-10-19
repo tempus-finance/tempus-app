@@ -1,9 +1,10 @@
 import { Contract } from 'ethers';
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
 import TempusControllerABI from '../abi/TempusController.json';
+import getConfig from '../utils/get-config';
 import TempusControllerService from './TempusControllerService';
 import getDefaultProvider from './getDefaultProvider';
-import getConfig from '../utils/get-config';
+import getTempusAMMService from './getTempusAMMService';
 
 let tempusControllerService: TempusControllerService;
 const getTempusControllerService = (signerOrProvider?: JsonRpcSigner | JsonRpcProvider): TempusControllerService => {
@@ -14,6 +15,7 @@ const getTempusControllerService = (signerOrProvider?: JsonRpcSigner | JsonRpcPr
       address: getConfig().tempusControllerContract,
       abi: TempusControllerABI,
       signerOrProvider: getDefaultProvider(),
+      tempusAMMService: getTempusAMMService(),
     });
   }
 
@@ -23,6 +25,7 @@ const getTempusControllerService = (signerOrProvider?: JsonRpcSigner | JsonRpcPr
       address: getConfig().tempusControllerContract,
       abi: TempusControllerABI,
       signerOrProvider: signerOrProvider,
+      tempusAMMService: getTempusAMMService(signerOrProvider),
     });
   }
 

@@ -17,6 +17,9 @@ describe('StatisticsService', () => {
   const mockEstimatedDepositAndProvideLiquidity = jest.fn();
   const mockEstimateExitAndRedeem = jest.fn();
 
+  const mockGetTempusAMMService = jest.fn();
+  const mockGetMaxLeftoverShares = jest.fn();
+
   beforeEach(() => {
     jest.spyOn(ejs as any, 'Contract').mockImplementation(() => {
       return {
@@ -26,6 +29,10 @@ describe('StatisticsService', () => {
         estimatedDepositAndProvideLiquidity: mockEstimatedDepositAndProvideLiquidity,
         estimateExitAndRedeem: mockEstimateExitAndRedeem,
       };
+    });
+
+    mockGetTempusAMMService.mockReturnValue({
+      getMaxLeftoverShares: mockGetMaxLeftoverShares,
     });
   });
 
@@ -50,6 +57,7 @@ describe('StatisticsService', () => {
         address: mockAddress,
         abi: StatisticsABI,
         signerOrProvider: mockProvider,
+        tempusAMMService: mockGetTempusAMMService(),
       });
 
       expect(instance).toBeInstanceOf(StatisticsService);
@@ -67,6 +75,7 @@ describe('StatisticsService', () => {
         address: mockAddress,
         abi: StatisticsABI,
         signerOrProvider: mockProvider,
+        tempusAMMService: mockGetTempusAMMService(),
       });
     });
 
@@ -75,7 +84,7 @@ describe('StatisticsService', () => {
         Promise.resolve(ejs.BigNumber.from('0x36461af5a4ad877d37')),
       );
 
-      const result = await instance.totalValueLockedUSD('tempus-tool-address', 'dai');
+      const result = await instance.totalValueLockedUSD('tempus-tool-address', 'DAI');
 
       expect(result.toString()).toBe('1001175799999999999287');
     });
@@ -92,6 +101,7 @@ describe('StatisticsService', () => {
         address: mockAddress,
         abi: StatisticsABI,
         signerOrProvider: mockProvider,
+        tempusAMMService: mockGetTempusAMMService(),
       });
     });
 
@@ -100,7 +110,7 @@ describe('StatisticsService', () => {
         return Promise.resolve([ejs.BigNumber.from('100'), ejs.BigNumber.from('2')]);
       });
 
-      const result = await instance.getRate('dai');
+      const result = await instance.getRate('DAI');
 
       expect(ejs.utils.formatEther(result)).toBe('50.0');
     });
@@ -117,6 +127,7 @@ describe('StatisticsService', () => {
         address: mockAddress,
         abi: StatisticsABI,
         signerOrProvider: mockProvider,
+        tempusAMMService: mockGetTempusAMMService(),
       });
     });
 
@@ -127,7 +138,7 @@ describe('StatisticsService', () => {
       });
 
       const tempusPool = 'abc';
-      const tokenAmount = 100;
+      const tokenAmount = ejs.utils.parseEther('100');
       const isBackingToken = true;
 
       const result = await instance.estimatedDepositAndFix(tempusPool, tokenAmount, isBackingToken);
@@ -146,7 +157,7 @@ describe('StatisticsService', () => {
       });
 
       const tempusPool = 'abc';
-      const tokenAmount = 2;
+      const tokenAmount = ejs.utils.parseEther('2');
       const isBackingToken = true;
 
       const result = await instance.estimatedDepositAndProvideLiquidity(tempusPool, tokenAmount, isBackingToken);
@@ -168,6 +179,7 @@ describe('StatisticsService', () => {
         address: mockAddress,
         abi: StatisticsABI,
         signerOrProvider: mockProvider,
+        tempusAMMService: mockGetTempusAMMService(),
       });
     });
 
@@ -177,12 +189,12 @@ describe('StatisticsService', () => {
       mockEstimateExitAndRedeem.mockImplementation(() => {
         return Promise.resolve(value);
       });
+      mockGetMaxLeftoverShares.mockResolvedValue(ejs.utils.parseEther('0.00001'));
 
       const tempusAmmAddress = 'abc';
       const principalsAmount = ejs.utils.parseEther('100');
       const yieldsAmount = ejs.utils.parseEther('200');
       const lpTokensAmount = ejs.utils.parseEther('300');
-      const maxLeftoverShares = '0.0001';
       const isBackingToken = true;
 
       const result = await instance.estimateExitAndRedeem(
@@ -190,7 +202,6 @@ describe('StatisticsService', () => {
         lpTokensAmount,
         principalsAmount,
         yieldsAmount,
-        maxLeftoverShares,
         isBackingToken,
       );
 

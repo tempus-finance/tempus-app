@@ -11,6 +11,7 @@ import getConfig from '../utils/get-config';
 // Service
 import StatisticsService from './StatisticsService';
 import getDefaultProvider from './getDefaultProvider';
+import getTempusAMMService from './getTempusAMMService';
 
 let statisticsService: StatisticsService;
 const getStatisticsService = (signerOrProvider?: JsonRpcSigner | JsonRpcProvider) => {
@@ -21,6 +22,7 @@ const getStatisticsService = (signerOrProvider?: JsonRpcSigner | JsonRpcProvider
       address: getConfig().statisticsContract,
       abi: StatisticsABI,
       signerOrProvider: getDefaultProvider(),
+      tempusAMMService: getTempusAMMService(),
     });
   }
 
@@ -30,6 +32,7 @@ const getStatisticsService = (signerOrProvider?: JsonRpcSigner | JsonRpcProvider
       address: getConfig().statisticsContract,
       abi: StatisticsABI,
       signerOrProvider: signerOrProvider,
+      tempusAMMService: getTempusAMMService(signerOrProvider),
     });
   }
 
