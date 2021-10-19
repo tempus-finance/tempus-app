@@ -41,7 +41,7 @@ describe('TVLChartDataAdapter', () => {
       return Promise.resolve([ejs.BigNumber.from('2'), ejs.BigNumber.from('2')]);
     });
 
-    jest.spyOn(ejs, 'Contract').mockImplementation(() => {
+    jest.spyOn(ejs as any, 'Contract').mockImplementation(() => {
       return {
         startTime: mockStartTime,
         totalValueLockedAtGivenRate: mockTotalValueLockedAtGivenRate,
@@ -85,7 +85,7 @@ describe('TVLChartDataAdapter', () => {
     test('it returns correct TVL for last day', async () => {
       const data = await adapter.generateChartData();
 
-      expect(data[data.length - 1].value).toBe(2000);
+      expect(data[data.length - 1].value).toBe(3000);
     });
 
     test('it sorts result from oldest to newest', async () => {

@@ -1,4 +1,4 @@
-import { BigNumber, Contract, ContractTransaction, ethers } from 'ethers';
+import { BigNumber, Contract, ContractTransaction } from 'ethers';
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
 import { TempusController } from '../abi/TempusController';
 import TempusControllerABI from '../abi/TempusController.json';
@@ -11,12 +11,14 @@ import {
   depositBackingGasIncrease,
   depositYieldBearingGasIncrease,
 } from '../constants';
+import TempusAMMService from './TempusAMMService';
 
 type TempusControllerServiceParameters = {
   Contract: typeof Contract;
   address: string;
   abi: typeof TempusControllerABI;
   signerOrProvider: JsonRpcProvider | JsonRpcSigner;
+  tempusAMMService: TempusAMMService;
 };
 
 // I need to define event types like this, because TypeChain plugin for Hardhat does not generate them.
@@ -52,8 +54,12 @@ export type RedeemedEvent = TypedEvent<
 class TempusControllerService {
   private contract: TempusController | null = null;
 
+  private tempusAMMService: TempusAMMService | null = null;
+
   init(params: TempusControllerServiceParameters) {
     this.contract = new Contract(params.address, params.abi, params.signerOrProvider) as TempusController;
+
+    this.tempusAMMService = params.tempusAMMService;
   }
 
   public async getDepositedEvents(forPool?: string, forUser?: string): Promise<DepositedEvent[]> {
@@ -186,8 +192,13 @@ class TempusControllerService {
     }
   }
 
-  public async completeExitAndRedeem(tempusAMM: string, isBackingToken: boolean): Promise<ContractTransaction> {
-    if (!this.contract) {
+  public async completeExitAndRedeem(
+    tempusAMM: string,
+    userPrincipalsBalance: BigNumber,
+    userLPBalance: BigNumber,
+    isBackingToken: boolean,
+  ): Promise<ContractTransaction> {
+    if (!this.contract || !this.tempusAMMService) {
       console.error(
         'TempusControllerService - completeExitAndRedeem() - Attempted to use TempusControllerService before initializing it!',
       );
@@ -202,14 +213,25 @@ class TempusControllerService {
       return Promise.reject();
     }
 
-    const maxLeftoverSharesParsed = ethers.utils.parseEther(tempusPoolConfig.maxLeftoverShares);
+    let maxLeftoverShares: BigNumber;
+    try {
+      maxLeftoverShares = await this.tempusAMMService.getMaxLeftoverShares(
+        tempusAMM,
+        userPrincipalsBalance,
+        userLPBalance,
+      );
+    } catch (error) {
+      console.error('TempusControllerService - completeExitAndRedeem() - Failed to fetch max leftover shares!', error);
+      return Promise.reject();
+    }
+
     try {
       const estimate = await this.contract.estimateGas.completeExitAndRedeem(
         tempusAMM,
-        maxLeftoverSharesParsed,
+        maxLeftoverShares,
         isBackingToken,
       );
-      return await this.contract.completeExitAndRedeem(tempusAMM, maxLeftoverSharesParsed, isBackingToken, {
+      return await this.contract.completeExitAndRedeem(tempusAMM, maxLeftoverShares, isBackingToken, {
         gasLimit: Math.ceil(estimate.toNumber() * completeExitAndRedeemGasIncrease),
       });
     } catch (error) {

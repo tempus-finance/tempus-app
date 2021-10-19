@@ -138,7 +138,7 @@ const DetailRedeemBeforeMaturity: FC<DetailRedeemBeforeMaturityProps> = props =>
       }
     };
     retrieveEstimatedWithdrawAmount();
-  }, [selectedToken, backingToken, poolDataAdapter, tempusPool.maxLeftoverShares, tempusPool.address, amount]);
+  }, [selectedToken, backingToken, poolDataAdapter, tempusPool.address, amount]);
 
   const principalsBalanceFormatted = useMemo(() => {
     if (!userPrincipalsBalance) {

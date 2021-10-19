@@ -186,7 +186,6 @@ export default class PoolDataAdapter {
     lpAmount: BigNumber,
     principalAmount: BigNumber,
     yieldsAmount: BigNumber,
-    maxLeftoverShares: string,
     isBackingToken: boolean,
   ): Promise<BigNumber> {
     if (!this.statisticService) {
@@ -209,7 +208,6 @@ export default class PoolDataAdapter {
         lpAmount,
         principalAmount,
         yieldsAmount,
-        maxLeftoverShares,
         isBackingToken,
       );
       return amount;
@@ -376,14 +374,24 @@ export default class PoolDataAdapter {
     }
   }
 
-  async executeWithdraw(tempusAMM: string, isBackingToken: boolean): Promise<ContractTransaction | undefined> {
+  async executeWithdraw(
+    tempusAMM: string,
+    userPrincipalsBalance: BigNumber,
+    userLPBalance: BigNumber,
+    isBackingToken: boolean,
+  ): Promise<ContractTransaction | undefined> {
     if (!this.tempusControllerService) {
       console.error('PoolDataAdapter - executeWithdraw() - Attempted to use PoolDataAdapter before initializing it!');
       return Promise.reject();
     }
 
     try {
-      return await this.tempusControllerService.completeExitAndRedeem(tempusAMM, isBackingToken);
+      return await this.tempusControllerService.completeExitAndRedeem(
+        tempusAMM,
+        userPrincipalsBalance,
+        userLPBalance,
+        isBackingToken,
+      );
     } catch (error) {
       console.error(`TempusPoolService - executeWithdraw() - Failed to make a deposit to the pool!`, error);
       return Promise.reject(error);
@@ -936,7 +944,6 @@ export default class PoolDataAdapter {
         userLpSupply,
         userPrincipalSupply,
         userYieldSupply,
-        pool.maxLeftoverShares,
         true,
       );
     } catch (error) {
