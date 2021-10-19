@@ -7,6 +7,7 @@ import { mul18f, div18f } from '../utils/wei-math';
 import getConfig from '../utils/get-config';
 import TempusPoolService from './TempusPoolService';
 import getVaultService from './getVaultService';
+import getERC20TokenService from './getERC20TokenService';
 
 interface TempusPoolAddressData {
   poolAddress: string;
@@ -19,13 +20,20 @@ type TempusAMMServiceParameters = {
   TempusAMMABI: typeof TempusAMMABI;
   signerOrProvider: JsonRpcSigner | JsonRpcProvider;
   tempusPoolService: TempusPoolService;
+  eRC20TokenServiceGetter: typeof getERC20TokenService;
 };
 
 class TempusAMMService {
   private tempusAMMMap: Map<string, TempusAMM> = new Map<string, TempusAMM>();
   private tempusPoolService: TempusPoolService | null = null;
+  private eRC20TokenServiceGetter: typeof getERC20TokenService | null = null;
 
-  public init({ tempusAMMAddresses, signerOrProvider, tempusPoolService }: TempusAMMServiceParameters) {
+  public init({
+    tempusAMMAddresses,
+    signerOrProvider,
+    tempusPoolService,
+    eRC20TokenServiceGetter,
+  }: TempusAMMServiceParameters) {
     this.tempusAMMMap.clear();
 
     tempusAMMAddresses.forEach((address: string) => {
@@ -33,6 +41,7 @@ class TempusAMMService {
     });
 
     this.tempusPoolService = tempusPoolService;
+    this.eRC20TokenServiceGetter = eRC20TokenServiceGetter;
   }
 
   public poolId(address: string): Promise<string> {
@@ -236,6 +245,22 @@ class TempusAMMService {
       }
     }
     throw new Error(`TempusAMMService - getSwapFeePercentage() - TempusAMM with address '${address}' does not exist!`);
+  }
+
+  async getMaxLeftoverShares(
+    tempusAMM: string,
+    userPrincipalsBalance: BigNumber,
+    userLPBalance: BigNumber,
+  ): Promise<BigNumber> {
+    if (!this.eRC20TokenServiceGetter) {
+      return Promise.reject('TempusAMMService not initialized!');
+    }
+
+    // Fetch amount of staked principals and yields
+    const result = await this.getExpectedTokensOutGivenBPTIn(tempusAMM, userLPBalance);
+
+    // Max leftover shares is 0.1% of principals + stakedPrincipals
+    return userPrincipalsBalance.add(result.principals).div(BigNumber.from('1000'));
   }
 }
 

@@ -41,7 +41,7 @@ describe('TVLChartDataAdapter', () => {
       return Promise.resolve([ejs.BigNumber.from('2'), ejs.BigNumber.from('2')]);
     });
 
-    jest.spyOn(ejs, 'Contract').mockImplementation(() => {
+    jest.spyOn(ejs as any, 'Contract').mockImplementation(() => {
       return {
         startTime: mockStartTime,
         totalValueLockedAtGivenRate: mockTotalValueLockedAtGivenRate,

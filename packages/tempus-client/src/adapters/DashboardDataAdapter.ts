@@ -257,7 +257,6 @@ export default class DashboardDataAdapter {
         userLpSupply,
         userPrincipalSupply,
         userYieldSupply,
-        pool.maxLeftoverShares,
         true,
       );
     } catch (error) {
