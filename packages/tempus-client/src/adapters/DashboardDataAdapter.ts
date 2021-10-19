@@ -149,8 +149,10 @@ export default class DashboardDataAdapter {
 
         const childrenMaturityDate = parentChildren.map(child => child.maturityDate);
         const childrenProtocols = parentChildren.map(child => child.protocol as ProtocolName);
-        const childrenFixedAPR = parentChildren.map(child => child.fixedAPR);
-        const childrenVariable = parentChildren.map(child => child.variableAPY);
+        const childrenFixedAPR = parentChildren.map(child => child.fixedAPR).filter(fixedAPR => fixedAPR !== null);
+        const childrenVariable = parentChildren
+          .map(child => child.variableAPY)
+          .filter(variableAPR => variableAPR !== null);
         const parentTVL = parentChildren.reduce((accumulator, currentValue) => {
           return accumulator + currentValue.TVL;
         }, 0);
