@@ -1,7 +1,8 @@
-import { FC, MouseEvent, useCallback, useState } from 'react';
+import { FC, MouseEvent, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { JsonRpcSigner } from '@ethersproject/providers';
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
+import { Context } from '../../../context';
 import { DashboardRowChild } from '../../../interfaces';
 import { TempusPool } from '../../../interfaces/TempusPool';
 import PoolDataAdapter from '../../../adapters/PoolDataAdapter';
@@ -23,6 +24,10 @@ type DetailPoolOutProps = {};
 type DetailPoolProps = DetailPoolInProps & DetailPoolOutProps;
 
 const DetailPool: FC<DetailPoolProps> = ({ content, poolDataAdapter, signer, userWalletAddress, tempusPool }) => {
+  const {
+    data: { userLPBalance },
+  } = useContext(Context);
+
   const [view, setView] = useState<'add' | 'remove'>('add');
 
   const switchView = useCallback(
@@ -34,6 +39,20 @@ const DetailPool: FC<DetailPoolProps> = ({ content, poolDataAdapter, signer, use
     [setView],
   );
 
+  const removeLiquidityVisible = useMemo(() => {
+    if (!userLPBalance) {
+      return false;
+    }
+    return !userLPBalance.isZero();
+  }, [userLPBalance]);
+
+  // Every time we hide remove liquidity tab, automatically switch to add liquidity tab
+  useEffect(() => {
+    if (!removeLiquidityVisible) {
+      setView('add');
+    }
+  }, [removeLiquidityVisible]);
+
   return (
     <div role="tabpanel">
       <div className="tf__dialog__content-tab">
@@ -42,9 +61,11 @@ const DetailPool: FC<DetailPoolProps> = ({ content, poolDataAdapter, signer, use
           <ToggleButton value="add">
             <Typography variant="body-text">Add Liquidity</Typography>
           </ToggleButton>
-          <ToggleButton value="remove">
-            <Typography variant="body-text">Remove Liquidity</Typography>
-          </ToggleButton>
+          {removeLiquidityVisible && (
+            <ToggleButton value="remove">
+              <Typography variant="body-text">Remove Liquidity</Typography>
+            </ToggleButton>
+          )}
         </ToggleButtonGroup>
         <Spacer size={10} />
         {view === 'add' && (
