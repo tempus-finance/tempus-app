@@ -3,6 +3,7 @@ import { JsonRpcSigner } from '@ethersproject/providers';
 import { Tab, Tabs } from '@material-ui/core';
 import { Context } from '../../../context';
 import Typography from '../../typography/Typography';
+import Spacer from '../../spacer/spacer';
 import PoolDataAdapter from '../../../adapters/PoolDataAdapter';
 import { TempusPool } from '../../../interfaces/TempusPool';
 import { DashboardRowChild } from '../../../interfaces';
@@ -75,6 +76,7 @@ const DetailBasic: FC<DetailBasicProps> = ({
           />
         )}
       </Tabs>
+      <Spacer size={25} />
       {tab === 0 && (
         <DetailDeposit
           content={content}

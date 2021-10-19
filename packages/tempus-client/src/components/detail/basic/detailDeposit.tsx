@@ -33,7 +33,7 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
     data: { userBackingTokenBalance, userYieldBearingTokenBalance },
   } = useContext(Context);
 
-  const [isDepositDisabled, setIsDepositDisabled] = useState<boolean>(true);
+  const [isYieldNegative, setIsYieldNegative] = useState<boolean | null>(null);
   const [selectedToken, setSelectedToken] = useState<Ticker | null>(null);
   const [amount, setAmount] = useState<string>('');
   const [usdRate, setUsdRate] = useState<BigNumber | null>(null);
@@ -112,13 +112,12 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
   );
 
   const onSelectYield = useCallback(
-    (event: any) => {
-      const element = event.target.closest('[yield-attribute]');
-      if (element && !isDepositDisabled) {
-        setSelectedYield(element.getAttribute('yield-attribute'));
+    (id: string | undefined) => {
+      if (id && (id === 'Fixed' || id === 'Variable')) {
+        setSelectedYield(id);
       }
     },
-    [isDepositDisabled, setSelectedYield],
+    [setSelectedYield],
   );
 
   const getSelectedTokenBalance = useCallback((): BigNumber | null => {
@@ -266,14 +265,14 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
   }, [amount, selectedToken, backingToken, address, ammAddress, poolDataAdapter, setEstimatedFixedApr]);
 
   useEffect(() => {
-    const isDisabled = async () => {
+    const fetchIsYieldNegative = async () => {
       if (poolDataAdapter) {
-        const isDisabled = await poolDataAdapter.isCurrentYieldNegativeForPool(address);
-        setIsDepositDisabled(isDisabled);
+        const isYieldNegative = await poolDataAdapter.isCurrentYieldNegativeForPool(address);
+        setIsYieldNegative(isYieldNegative);
       }
     };
 
-    isDisabled();
+    fetchIsYieldNegative();
   }, [address, poolDataAdapter]);
 
   const fixedPrincipalsAmountFormatted = useMemo(() => {
@@ -316,11 +315,15 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
     return NumberUtils.formatToCurrency(utils.formatEther(usdValue), 2, '$');
   }, [usdRate, amount]);
 
+  const depositDisabled = useMemo((): boolean => {
+    return isYieldNegative === null ? true : isYieldNegative;
+  }, [isYieldNegative]);
+
   const approveDisabled = useMemo((): boolean => {
     const zeroAmount = isZeroString(amount);
 
-    return zeroAmount;
-  }, [amount]);
+    return zeroAmount || depositDisabled;
+  }, [amount, depositDisabled]);
 
   const executeDisabled = useMemo((): boolean => {
     const zeroAmount = isZeroString(amount);
@@ -328,31 +331,50 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
       .parseEther(amount || '0')
       .gt(getSelectedTokenBalance() || BigNumber.from('0'));
 
-    return !tokensApproved || zeroAmount || amountExceedsBalance || rateEstimateInProgress || tokenEstimateInProgress;
-  }, [amount, getSelectedTokenBalance, rateEstimateInProgress, tokenEstimateInProgress, tokensApproved]);
+    return (
+      !tokensApproved ||
+      zeroAmount ||
+      amountExceedsBalance ||
+      rateEstimateInProgress ||
+      tokenEstimateInProgress ||
+      depositDisabled
+    );
+  }, [
+    amount,
+    getSelectedTokenBalance,
+    rateEstimateInProgress,
+    tokenEstimateInProgress,
+    tokensApproved,
+    depositDisabled,
+  ]);
 
   return (
     <>
-      {isDepositDisabled && (
-        <SectionContainer>
-          <div className="tf__tab__warning">
-            <div className="tf__tab__warning__title">
-              <AlertIcon fillColor="#FF0F0F" />
-              <Typography variant="h4">Negative Yield - Deposits Disabled</Typography>
-            </div>
-            <div className="tf__tab__warning__content">
-              <p>Depositing into this pool is temporarily disabled as the current yield in this pool is negative.</p>
-              <p>
-                Deposits will be automatically re-enabled once yield recovers into a neutral or positive territory.
-                Existing depositors are free to perform other actions (e.g. Withdraw, Swap, Pool, Redeem).
-              </p>
-            </div>
-          </div>
-        </SectionContainer>
-      )}
       <div role="tabpanel">
         <div className="tf__dialog__content-tab">
-          <Spacer size={25} />
+          {isYieldNegative && (
+            <>
+              <SectionContainer>
+                <div className="tf__tab__warning">
+                  <div className="tf__tab__warning__title">
+                    <AlertIcon fillColor="#FF0F0F" />
+                    <Typography variant="h4">Negative Yield - Deposits Disabled</Typography>
+                  </div>
+                  <div className="tf__tab__warning__content">
+                    <p>
+                      Depositing into this pool is temporarily disabled as the current yield in this pool is negative.
+                    </p>
+                    <p>
+                      Deposits will be automatically re-enabled once yield recovers into a neutral or positive
+                      territory. Existing depositors are free to perform other actions (e.g. Withdraw, Swap, Pool,
+                      Redeem).
+                    </p>
+                  </div>
+                </div>
+              </SectionContainer>
+              <Spacer size={25} />
+            </>
+          )}
           <ActionContainer label="From">
             <Spacer size={18} />
             <SectionContainer>
@@ -360,7 +382,7 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
                 <div className="tf__dialog__label-align-right">
                   <Typography variant="body-text">Token</Typography>
                 </div>
-                <TokenSelector tickers={supportedTokens} disabled={isDepositDisabled} onTokenChange={onTokenChange} />
+                <TokenSelector tickers={supportedTokens} disabled={depositDisabled} onTokenChange={onTokenChange} />
                 <Spacer size={20} />
                 <Typography variant="body-text">
                   {selectedToken && balanceFormatted ? `Balance: ${balanceFormatted} ${selectedToken}` : ''}
@@ -375,7 +397,7 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
                   <CurrencyInput
                     defaultValue={amount}
                     onChange={onAmountChange}
-                    disabled={!selectedToken || isDepositDisabled}
+                    disabled={!selectedToken || depositDisabled}
                   />
                   {usdValueFormatted && (
                     <div className="tf__input__label">
@@ -390,7 +412,7 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
                       variant="contained"
                       size="small"
                       value="0.25"
-                      disabled={isDepositDisabled}
+                      disabled={depositDisabled}
                       onClick={onPercentageChange}
                     >
                       25%
@@ -400,7 +422,7 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
                       variant="contained"
                       size="small"
                       value="0.5"
-                      disabled={isDepositDisabled}
+                      disabled={depositDisabled}
                       onClick={onPercentageChange}
                     >
                       50%
@@ -410,7 +432,7 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
                       variant="contained"
                       size="small"
                       value="0.75"
-                      disabled={isDepositDisabled}
+                      disabled={depositDisabled}
                       onClick={onPercentageChange}
                     >
                       75%
@@ -420,7 +442,7 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
                       variant="contained"
                       size="small"
                       value="1"
-                      disabled={isDepositDisabled}
+                      disabled={depositDisabled}
                       onClick={onPercentageChange}
                     >
                       Max
@@ -436,12 +458,15 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
             <div className="tf__dialog__flex-row">
               <div className="tf__dialog__flex-row-half-width">
                 <SectionContainer
+                  id="Fixed"
                   title="Interest rate protection"
                   tooltip={interestRateProtectionTooltipText}
                   selectable={true}
                   selected={selectedYield === 'Fixed'}
+                  disabled={depositDisabled}
+                  onSelected={onSelectYield}
                 >
-                  <div className="tf__dialog__flex-col-space-between" yield-attribute="Fixed" onClick={onSelectYield}>
+                  <div className="tf__dialog__flex-col-space-between">
                     <Typography variant="h4">Fixed Yield</Typography>
                     <Typography variant="body-text">
                       {fixedPrincipalsAmountFormatted && `est. ${fixedPrincipalsAmountFormatted} Principals`}
@@ -460,16 +485,15 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
 
               <div className="tf__dialog__flex-row-half-width">
                 <SectionContainer
+                  id="Variable"
                   title="Liquidity provision"
                   tooltip={liquidityProvisionTooltipText}
                   selectable={true}
                   selected={selectedYield === 'Variable'}
+                  disabled={depositDisabled}
+                  onSelected={onSelectYield}
                 >
-                  <div
-                    className="tf__dialog__flex-col-space-between"
-                    yield-attribute="Variable"
-                    onClick={onSelectYield}
-                  >
+                  <div className="tf__dialog__flex-col-space-between">
                     <Typography variant="h4">Variable Yield</Typography>
                     <div>
                       <Typography variant="body-text">
@@ -497,7 +521,7 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
                   spenderAddress={getConfig().tempusControllerContract}
                   amountToApprove={getSelectedTokenBalance()}
                   tokenToApproveTicker={selectedToken}
-                  disabled={approveDisabled || isDepositDisabled}
+                  disabled={approveDisabled}
                   marginRight={20}
                   onApproveChange={onApproveChange}
                 />
@@ -507,7 +531,7 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
               actionName="Deposit"
               actionDescription={selectedYield === 'Fixed' ? 'Fixed Yield' : 'Variable Yield'}
               tempusPool={tempusPool}
-              disabled={executeDisabled || isDepositDisabled}
+              disabled={executeDisabled}
               onExecute={onExecute}
               onExecuted={onExecuted}
             />
