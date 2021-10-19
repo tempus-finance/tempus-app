@@ -26,11 +26,11 @@ export type SelectedYield = 'Fixed' | 'Variable';
 // TODO Component is too big, we may need to break it up
 const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userWalletAddress, poolDataAdapter }) => {
   const { address, ammAddress } = tempusPool || {};
-  const { supportedTokens = [], fixedAPR = 0, variableAPY = 0 } = content || {};
+  const { supportedTokens = [], fixedAPR = 0 } = content || {};
   const [backingToken] = supportedTokens;
 
   const {
-    data: { userBackingTokenBalance, userYieldBearingTokenBalance },
+    data: { userBackingTokenBalance, userYieldBearingTokenBalance, poolData },
   } = useContext(Context);
 
   const [isYieldNegative, setIsYieldNegative] = useState<boolean | null>(null);
@@ -315,6 +315,15 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
     return NumberUtils.formatToCurrency(utils.formatEther(usdValue), 2, '$');
   }, [usdRate, amount]);
 
+  const variableAPYFormatted = useMemo(() => {
+    const poolContextData = poolData.find(data => data.address === content.tempusPool.address);
+    if (!poolContextData) {
+      return null;
+    }
+
+    return NumberUtils.formatPercentage(poolContextData.variableAPR, 2);
+  }, [content.tempusPool.address, poolData]);
+
   const depositDisabled = useMemo((): boolean => {
     return isYieldNegative === null ? true : isYieldNegative;
   }, [isYieldNegative]);
@@ -504,7 +513,7 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
                       </Typography>
                     </div>
                     <Typography variant="h3" color="accent">
-                      est. APR {NumberUtils.formatPercentage(variableAPY, 2)}
+                      est. APR {variableAPYFormatted}
                     </Typography>
                   </div>
                 </SectionContainer>

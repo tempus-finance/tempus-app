@@ -76,29 +76,16 @@ export default class DashboardDataAdapter {
     }
 
     try {
-      const [fixedAPR, tvl, poolBackingTokenRate, presentValueInBackingTokens, availableToDeposit, fees] =
-        await Promise.all([
-          this.tempusAMMService.getFixedAPR(tempusPool.ammAddress, tempusPool.principalsAddress),
-          this.statisticsService.totalValueLockedUSD(tempusPool.address, tempusPool.backingToken),
-          this.statisticsService.getRate(tempusPool.backingToken),
-          this.getPresentValueInBackingTokensForPool(tempusPool),
-          this.getAvailableToDepositForPool(tempusPool),
-          this.variableRateService.calculateFees(
-            tempusPool.ammAddress,
-            tempusPool.address,
-            tempusPool.principalsAddress,
-            tempusPool.yieldsAddress,
-          ),
-        ]);
+      const [fixedAPR, tvl, poolBackingTokenRate, presentValueInBackingTokens, availableToDeposit] = await Promise.all([
+        this.tempusAMMService.getFixedAPR(tempusPool.ammAddress, tempusPool.principalsAddress),
+        this.statisticsService.totalValueLockedUSD(tempusPool.address, tempusPool.backingToken),
+        this.statisticsService.getRate(tempusPool.backingToken),
+        this.getPresentValueInBackingTokensForPool(tempusPool),
+        this.getAvailableToDepositForPool(tempusPool),
+      ]);
 
-      const [availableToDepositInUSD, variableAPY] = await Promise.all([
+      const [availableToDepositInUSD] = await Promise.all([
         this.getAvailableToDepositInUSD(tempusPool.address, availableToDeposit, poolBackingTokenRate),
-        this.variableRateService.getAprRate(
-          tempusPool.protocol,
-          tempusPool.address,
-          tempusPool.yieldBearingTokenAddress,
-          fees,
-        ),
       ]);
 
       return {
@@ -116,7 +103,6 @@ export default class DashboardDataAdapter {
         startDate: new Date(tempusPool.startDate),
         maturityDate: new Date(tempusPool.maturityDate),
         fixedAPR,
-        variableAPY,
         TVL: Number(ethers.utils.formatEther(tvl)),
         presentValue:
           presentValueInBackingTokens !== undefined
@@ -150,9 +136,6 @@ export default class DashboardDataAdapter {
         const childrenMaturityDate = parentChildren.map(child => child.maturityDate);
         const childrenProtocols = parentChildren.map(child => child.protocol as ProtocolName);
         const childrenFixedAPR = parentChildren.map(child => child.fixedAPR).filter(fixedAPR => fixedAPR !== null);
-        const childrenVariable = parentChildren
-          .map(child => child.variableAPY)
-          .filter(variableAPR => variableAPR !== null);
         const parentTVL = parentChildren.reduce((accumulator, currentValue) => {
           return accumulator + currentValue.TVL;
         }, 0);
@@ -185,7 +168,6 @@ export default class DashboardDataAdapter {
           token: child.token,
           maturityRange: this.getRangeFrom<Date>(childrenMaturityDate),
           fixedAPR: this.getRangeFrom<number>(childrenFixedAPR),
-          variableAPY: this.getRangeFrom<number>(childrenVariable),
           TVL: parentTVL,
           presentValue: this.userWalletAddress ? parentPresentValue : undefined,
           availableUSDToDeposit: this.userWalletAddress ? availableToDepositInUSD : undefined,

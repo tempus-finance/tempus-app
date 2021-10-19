@@ -58,12 +58,6 @@ export const dashboardColumnsDefinitions: ExtraDataColumn[] = [
   {
     name: 'variableAPY',
     title: 'LP APR',
-    getCellValue: (row: any) => {
-      if (row.variableAPY.length === 2) {
-        return row.variableAPY;
-      }
-      return [row.variableAPY];
-    },
   },
   {
     name: 'TVL',

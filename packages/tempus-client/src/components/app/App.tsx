@@ -14,6 +14,7 @@ import NotificationContainer from '../notification/NotificationContainer';
 import MobileBanner from '../mobileBanner/mobileBanner';
 
 import './App.scss';
+import VariableAPRProvider from '../../providers/variableAPRProvider';
 
 const App: FC = (): JSX.Element => {
   const [contextData, setContextData] = useState(defaultContextValue);
@@ -57,6 +58,7 @@ const App: FC = (): JSX.Element => {
           <UserLiquidityProviderTokenBalanceProvider
             tempusPool={contextData.selectedRow ? contextData.selectedRow.tempusPool : null}
           />
+          <VariableAPRProvider />
         </Context.Provider>
       )}
     </>

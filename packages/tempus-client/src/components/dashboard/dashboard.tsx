@@ -1,4 +1,4 @@
-import { FC, useCallback, useRef, useState } from 'react';
+import { FC, useCallback, useContext, useRef, useState } from 'react';
 import {
   CustomTreeData,
   IntegratedSummary,
@@ -22,10 +22,12 @@ import HeaderRow from './headerSection/headerRow';
 import HeaderContent from './headerSection/headerContent';
 import MaturityProvider from './providers/maturityProvider';
 import TVLProvider from './providers/tvlProvider';
+import VariableAPRProvider from './providers/variableAPRProvider';
 import AvailableToDepositProvider from './providers/availableToDepositProvider';
 
 import './dashboard.scss';
 import { SECONDS_IN_A_DAY } from '../../constants';
+import { Context } from '../../context';
 
 type DashboardInProps = {
   hidden: boolean;
@@ -40,6 +42,10 @@ type DashboardOutProps = {
 type DashboardProps = DashboardInProps & DashboardOutProps;
 
 const Dashboard: FC<DashboardProps> = ({ hidden, userWalletAddress, rows, onRowActionClick }): JSX.Element => {
+  const {
+    data: { poolData },
+  } = useContext(Context);
+
   const [tableColumnExtensions] = useState([
     { columnName: ColumnNames.TOKEN, align: 'left' as 'left', width: 160 },
     { columnName: ColumnNames.PROTOCOL, align: 'left' as 'left', width: 150 },
@@ -136,10 +142,15 @@ const Dashboard: FC<DashboardProps> = ({ hidden, userWalletAddress, rows, onRowA
           const min = filterData.aPRRange.min;
           const max = filterData.aPRRange.max;
 
+          const poolContextData = poolData.find(data => data.address === row.tempusPool.address);
+          if (!poolContextData) {
+            return true;
+          }
+
           aprMatched =
             (min === 0 || min) && (max === 0 || max)
               ? (row.fixedAPR && row.fixedAPR > min && row.fixedAPR < max) ||
-                (row.variableAPY > min && row.variableAPY < max)
+                (poolContextData.variableAPR > min && poolContextData.variableAPR < max)
               : true;
         }
 
@@ -177,7 +188,7 @@ const Dashboard: FC<DashboardProps> = ({ hidden, userWalletAddress, rows, onRowA
 
       setFilteredRows(result);
     },
-    [rows],
+    [poolData, rows],
   );
 
   return (
@@ -216,6 +227,7 @@ const Dashboard: FC<DashboardProps> = ({ hidden, userWalletAddress, rows, onRowA
               <MaturityProvider for={[ColumnNames.MATURITY]} />
               <AvailableToDepositProvider for={[ColumnNames.AVAILABLE_TO_DEPOSIT]} />
               <TVLProvider for={[ColumnNames.TVL]} />
+              <VariableAPRProvider for={[ColumnNames.VARIABLE_APY]} />
               <CustomTreeData getChildRows={getChildRows} />
               <IntegratedSummary />
               <IntegratedSorting columnExtensions={integratedSortingColumnExtensions} />

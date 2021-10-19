@@ -20,7 +20,6 @@ import { Config, ProtocolName } from '../interfaces';
 import { wadToDai } from '../utils/rayToDai';
 import getConfig from '../utils/get-config';
 import { div18f, mul18f } from '../utils/wei-math';
-import getDefaultProvider from '../services/getDefaultProvider';
 
 const BN_SECONDS_IN_YEAR = BigNumber.from(SECONDS_IN_YEAR);
 const BN_ONE_ETH_IN_WEI = BigNumber.from(ONE_ETH_IN_WEI);
@@ -140,8 +139,18 @@ class VariableRateService {
       return Promise.reject();
     }
 
+    let provider: JsonRpcProvider | null;
+    if (this.signerOrProvider instanceof JsonRpcSigner) {
+      provider = this.signerOrProvider.provider;
+    } else {
+      provider = this.signerOrProvider;
+    }
+    if (!provider) {
+      return Promise.reject('Failed to get provider!');
+    }
+
     const [latestBlock, swapFeePercentage] = await Promise.all([
-      getDefaultProvider().getBlock('latest'),
+      provider.getBlock('latest'),
       this.tempusAMMService.getSwapFeePercentage(tempusAMM),
     ]);
 

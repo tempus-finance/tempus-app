@@ -3,6 +3,11 @@ import { JsonRpcSigner } from '@ethersproject/providers';
 import { BigNumber } from 'ethers';
 import { DashboardRowChild } from './interfaces';
 
+interface ContextPoolData {
+  address: string;
+  variableAPR: number;
+}
+
 interface ContextDataType {
   userWalletConnected: boolean | null;
   userWalletAddress: string;
@@ -16,6 +21,7 @@ interface ContextDataType {
   selectedRow: DashboardRowChild | null;
   userCurrentPoolPresentValue: BigNumber | null;
   userEthBalance: BigNumber | null;
+  poolData: ContextPoolData[];
 }
 
 interface ContextType {
@@ -36,6 +42,7 @@ export const defaultContextValue: ContextDataType = {
   selectedRow: null,
   userCurrentPoolPresentValue: null,
   userEthBalance: null,
+  poolData: [],
 };
 export const Context = React.createContext<ContextType>({
   data: defaultContextValue,
