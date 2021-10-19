@@ -49,7 +49,6 @@ const config: Config = {
       startDate: 1634588114000,
       maturityDate: 1672491600000,
       decimalsForUI: 4,
-      maxLeftoverShares: '0.00001',
       protocol: 'lido',
       spotPrice: '2',
     },
