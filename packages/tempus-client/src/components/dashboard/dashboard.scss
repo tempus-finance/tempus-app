@@ -135,9 +135,8 @@ $padding: 20px;
       }
 
       .tf__dashboard__header__cell {
-        padding-left: 0;
-        padding-right: 0;
-        padding-bottom: 3px;
+        padding: 0px 0px 3px 0px;
+        border-bottom: none;
 
         &.tf__dashboard__header__maturity {
           padding-right: 8px;
