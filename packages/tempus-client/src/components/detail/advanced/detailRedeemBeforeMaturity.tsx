@@ -1,4 +1,5 @@
 import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { combineLatest } from 'rxjs';
 import { BigNumber, ethers } from 'ethers';
 import { Divider, Button } from '@material-ui/core';
 import { Context } from '../../../context';
@@ -85,19 +86,26 @@ const DetailRedeemBeforeMaturity: FC<DetailRedeemBeforeMaturityProps> = props =>
 
   // Update token rate when selected token changes
   useEffect(() => {
-    const getRate = async () => {
-      if (!poolDataAdapter) {
-        return;
-      }
+    if (!poolDataAdapter) {
+      return;
+    }
 
-      if (selectedToken === backingToken) {
-        setTokenRate(await poolDataAdapter.getBackingTokenRate(backingToken));
-      }
-      if (selectedToken === yieldBearingToken) {
-        setTokenRate(await poolDataAdapter.getYieldBearingTokenRate(tempusPool.address, backingToken));
-      }
-    };
-    getRate();
+    const getBackingTokenRate$ = poolDataAdapter.getBackingTokenRate(backingToken);
+    const getYieldBearingTokenRate$ = poolDataAdapter.getYieldBearingTokenRate(tempusPool.address, backingToken);
+
+    const stream = combineLatest([getBackingTokenRate$, getYieldBearingTokenRate$]).subscribe(
+      ([backingTokenRate, yieldBearingTokenRate]) => {
+        if (selectedToken === backingToken) {
+          setTokenRate(backingTokenRate);
+        }
+
+        if (selectedToken === yieldBearingToken) {
+          setTokenRate(yieldBearingTokenRate);
+        }
+      },
+    );
+
+    return () => stream.unsubscribe();
   }, [backingToken, poolDataAdapter, selectedToken, tempusPool.address, yieldBearingToken]);
 
   const onExecute = useCallback(() => {

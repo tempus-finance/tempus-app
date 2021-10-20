@@ -1,4 +1,5 @@
 import { FC, useContext, useEffect } from 'react';
+import { combineLatest } from 'rxjs';
 import PoolDataAdapter from '../adapters/PoolDataAdapter';
 import { Context } from '../context';
 import { TempusPool } from '../interfaces/TempusPool';
@@ -18,22 +19,26 @@ const PresentValueProvider: FC<PresentValueProviderProps> = props => {
    * Update user pool value when user balance for any of the pool tokens (Principals, Yields, LP Tokens) changes.
    */
   useEffect(() => {
-    const updateValue = async () => {
-      if (!setData) {
-        return;
-      }
+    if (!setData) {
+      return;
+    }
 
-      const [valueInBackingTokens, backingTokenRate] = await Promise.all([
-        poolDataAdapter.getPresentValueInBackingTokensForPool(tempusPool, data.userWalletAddress),
-        poolDataAdapter.getBackingTokenRate(tempusPool.backingToken),
-      ]);
+    const getBackingTokenRate$ = poolDataAdapter.getBackingTokenRate(tempusPool.backingToken);
+    const getPresentValueInBackingTokensForPool$ = poolDataAdapter.getPresentValueInBackingTokensForPool(
+      tempusPool,
+      data.userWalletAddress,
+    );
 
-      setData(prevData => ({
-        ...prevData,
-        userCurrentPoolPresentValue: mul18f(valueInBackingTokens, backingTokenRate),
-      }));
-    };
-    updateValue();
+    const stream = combineLatest([getBackingTokenRate$, getPresentValueInBackingTokensForPool$]).subscribe(
+      ([valueInBackingTokens, backingTokenRate]) => {
+        setData(prevData => ({
+          ...prevData,
+          userCurrentPoolPresentValue: mul18f(valueInBackingTokens, backingTokenRate),
+        }));
+      },
+    );
+
+    return () => stream.unsubscribe();
   }, [
     data.userWalletAddress,
     poolDataAdapter,

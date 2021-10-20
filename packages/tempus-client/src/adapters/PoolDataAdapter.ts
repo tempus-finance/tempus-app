@@ -1,5 +1,6 @@
 import { BigNumber, ContractTransaction, ethers } from 'ethers';
 import { JsonRpcSigner } from '@ethersproject/providers';
+import { Observable, from, of, interval, switchMap } from 'rxjs';
 import TempusAMMService from '../services/TempusAMMService';
 import StatisticsService from '../services/StatisticsService';
 import TempusControllerService, { DepositedEvent, RedeemedEvent } from '../services/TempusControllerService';
@@ -398,7 +399,7 @@ export default class PoolDataAdapter {
     }
   }
 
-  public async getExpectedReturnForLPTokens(
+  async getExpectedReturnForLPTokens(
     tempusAMMAddress: string,
     lpTokenAmount: BigNumber,
   ): Promise<{
@@ -575,7 +576,7 @@ export default class PoolDataAdapter {
     }
   }
 
-  public async getUserTransactionEvents(
+  async getUserTransactionEvents(
     tempusPoolAddress: string,
     userWalletAddress: string,
     backingTokenTicker: Ticker,
@@ -694,40 +695,6 @@ export default class PoolDataAdapter {
     }
   }
 
-  private async getTokenServices(tempusPoolAddress: string, tempusAMMAddress: string, signer: JsonRpcSigner) {
-    if (!this.tempusPoolService || !this.statisticService || !this.eRC20TokenServiceGetter) {
-      console.error('PoolDataAdapter - getTokenServices() - Attempted to use PoolDataAdapter before initializing it!');
-      return Promise.reject();
-    }
-
-    try {
-      const [backingTokenAddress, yieldBearingTokenAddress, principalsTokenAddress, yieldsTokenAddress] =
-        await Promise.all([
-          this.tempusPoolService.getBackingTokenAddress(tempusPoolAddress),
-          this.tempusPoolService.getYieldBearingTokenAddress(tempusPoolAddress),
-          this.tempusPoolService.getPrincipalsTokenAddress(tempusPoolAddress),
-          this.tempusPoolService.getYieldTokenAddress(tempusPoolAddress),
-        ]);
-
-      const backingTokenService = this.eRC20TokenServiceGetter(backingTokenAddress, signer);
-      const yieldBearingTokenService = this.eRC20TokenServiceGetter(yieldBearingTokenAddress, signer);
-      const principalsTokenService = this.eRC20TokenServiceGetter(principalsTokenAddress, signer);
-      const yieldsTokenService = this.eRC20TokenServiceGetter(yieldsTokenAddress, signer);
-      const lpTokenService = this.eRC20TokenServiceGetter(tempusAMMAddress, signer);
-
-      return {
-        backingTokenService,
-        yieldBearingTokenService,
-        principalsTokenService,
-        yieldsTokenService,
-        lpTokenService,
-      };
-    } catch (error) {
-      console.error('PoolDataAdapter - getTokenServices() - Failed to retrieve services!', error);
-      return Promise.reject();
-    }
-  }
-
   async getExpectedReturnForShareToken(tempusAmm: string, amount: BigNumber, yieldShareIn: boolean) {
     if (!this.tempusAMMService) {
       return Promise.reject();
@@ -769,19 +736,28 @@ export default class PoolDataAdapter {
     }
   }
 
-  async getBackingTokenRate(ticker: Ticker): Promise<BigNumber> {
+  getBackingTokenRate(ticker: Ticker): Observable<BigNumber> {
     if (!this.statisticService) {
       console.error(
         'PoolDataAdapter - getBackingTokenRate() - Attempted to use PoolDataAdapter before initializing it!',
       );
-      return Promise.reject();
+      return of(BigNumber.from('0'));
     }
 
     try {
-      return await this.statisticService.getRate(ticker);
+      const getRate$ = interval(POLLING_INTERVAL);
+
+      return getRate$.pipe(
+        switchMap(() => {
+          if (this.statisticService) {
+            return from(this.statisticService.getRate(ticker));
+          }
+          return of(BigNumber.from('0'));
+        }),
+      );
     } catch (error) {
       console.error('PoolDataAdapter - getBackingTokenRate() - Failed to get backing token rate!', error);
-      return Promise.reject(error);
+      return of(BigNumber.from('0'));
     }
   }
 
@@ -978,4 +954,40 @@ export default class PoolDataAdapter {
       return Promise.reject(error);
     }
   }
+
+  private async getTokenServices(tempusPoolAddress: string, tempusAMMAddress: string, signer: JsonRpcSigner) {
+    if (!this.tempusPoolService || !this.statisticService || !this.eRC20TokenServiceGetter) {
+      console.error('PoolDataAdapter - getTokenServices() - Attempted to use PoolDataAdapter before initializing it!');
+      return Promise.reject();
+    }
+
+    try {
+      const [backingTokenAddress, yieldBearingTokenAddress, principalsTokenAddress, yieldsTokenAddress] =
+        await Promise.all([
+          this.tempusPoolService.getBackingTokenAddress(tempusPoolAddress),
+          this.tempusPoolService.getYieldBearingTokenAddress(tempusPoolAddress),
+          this.tempusPoolService.getPrincipalsTokenAddress(tempusPoolAddress),
+          this.tempusPoolService.getYieldTokenAddress(tempusPoolAddress),
+        ]);
+
+      const backingTokenService = this.eRC20TokenServiceGetter(backingTokenAddress, signer);
+      const yieldBearingTokenService = this.eRC20TokenServiceGetter(yieldBearingTokenAddress, signer);
+      const principalsTokenService = this.eRC20TokenServiceGetter(principalsTokenAddress, signer);
+      const yieldsTokenService = this.eRC20TokenServiceGetter(yieldsTokenAddress, signer);
+      const lpTokenService = this.eRC20TokenServiceGetter(tempusAMMAddress, signer);
+
+      return {
+        backingTokenService,
+        yieldBearingTokenService,
+        principalsTokenService,
+        yieldsTokenService,
+        lpTokenService,
+      };
+    } catch (error) {
+      console.error('PoolDataAdapter - getTokenServices() - Failed to retrieve services!', error);
+      return Promise.reject();
+    }
+  }
 }
+
+const POLLING_INTERVAL = 5 * 1000;
