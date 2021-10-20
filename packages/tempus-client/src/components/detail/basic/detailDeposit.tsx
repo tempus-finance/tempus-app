@@ -265,14 +265,15 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
   }, [amount, selectedToken, backingToken, address, ammAddress, poolDataAdapter, setEstimatedFixedApr]);
 
   useEffect(() => {
-    const fetchIsYieldNegative = async () => {
-      if (poolDataAdapter) {
-        const isYieldNegative = await poolDataAdapter.isCurrentYieldNegativeForPool(address);
-        setIsYieldNegative(isYieldNegative);
-      }
-    };
+    if (!poolDataAdapter) {
+      return;
+    }
 
-    fetchIsYieldNegative();
+    const stream = poolDataAdapter.isCurrentYieldNegativeForPool(address).subscribe(isYieldNegative => {
+      setIsYieldNegative(isYieldNegative);
+    });
+
+    return () => stream.unsubscribe();
   }, [address, poolDataAdapter]);
 
   const fixedPrincipalsAmountFormatted = useMemo(() => {

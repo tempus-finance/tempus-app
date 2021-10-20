@@ -1,6 +1,6 @@
 import { BigNumber, ContractTransaction, ethers } from 'ethers';
 import { JsonRpcSigner } from '@ethersproject/providers';
-import { Observable, from, of, interval, switchMap } from 'rxjs';
+import { Observable, from, of, interval, switchMap, combineLatest, map, tap, filter } from 'rxjs';
 import TempusAMMService from '../services/TempusAMMService';
 import StatisticsService from '../services/StatisticsService';
 import TempusControllerService, { DepositedEvent, RedeemedEvent } from '../services/TempusControllerService';
@@ -745,9 +745,9 @@ export default class PoolDataAdapter {
     }
 
     try {
-      const getRate$ = interval(POLLING_INTERVAL);
+      const ticker$ = interval(POLLING_INTERVAL);
 
-      return getRate$.pipe(
+      return ticker$.pipe(
         switchMap(() => {
           if (this.statisticService) {
             return from(this.statisticService.getRate(ticker));
@@ -931,27 +931,47 @@ export default class PoolDataAdapter {
     }
   }
 
-  async isCurrentYieldNegativeForPool(tempusPool: string) {
+  isCurrentYieldNegativeForPool(tempusPool: string): Observable<boolean> {
     if (!this.tempusPoolService) {
       console.error(
         'PoolDataAdapter - isCurrentYieldNegativeForPool() - Attempted to use PoolDataAdapter before initializing it!',
       );
-      return Promise.reject();
+      return of(false);
     }
 
     try {
-      const [currentInterestRate, initialInterestRate] = await Promise.all([
-        this.tempusPoolService.currentInterestRate(tempusPool),
-        this.tempusPoolService.initialInterestRate(tempusPool),
-      ]);
+      const ticker$ = interval(POLLING_INTERVAL);
+      const currentInterestRate$ = switchMap(() => {
+        if (this.tempusPoolService) {
+          return this.tempusPoolService.currentInterestRate(tempusPool);
+        }
+        return of(null);
+      });
 
-      return currentInterestRate.lt(initialInterestRate);
+      const initialInterestRate$ = switchMap((currentInterestRate: BigNumber | null) => {
+        if (currentInterestRate && this.tempusPoolService) {
+          return combineLatest([of(currentInterestRate), this.tempusPoolService.initialInterestRate(tempusPool)]);
+        }
+        return of(null);
+      });
+      return ticker$.pipe(
+        currentInterestRate$,
+        initialInterestRate$,
+        map(values => {
+          if (values) {
+            const [currentInterestRate, initialInterestRate] = values;
+            return currentInterestRate.lt(initialInterestRate);
+          }
+
+          return false;
+        }),
+      );
     } catch (error) {
       console.error(
         'PoolDataAdapter - isCurrentYieldNegativeForPool() - Failed to check if current pool yield is negative!',
         error,
       );
-      return Promise.reject(error);
+      return of(false);
     }
   }
 
