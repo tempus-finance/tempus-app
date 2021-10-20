@@ -14,7 +14,7 @@ type TokenButtonInProps = {
   value: any;
   column: any;
   row: any;
-  expandedRows: number[];
+  expandedrows: number[];
   isWalletConnected: boolean;
 };
 
@@ -25,15 +25,15 @@ type TokenButtonOutProps = {
 type TokenButtonProps = TokenButtonInProps & TokenButtonOutProps;
 
 const TokenButton: FC<TokenButtonProps> = (props: TokenButtonProps) => {
-  const { children, expandedRows, tableRow, row, isWalletConnected, actionHandler } = props;
+  const { children, expandedrows, tableRow, row, isWalletConnected, actionHandler } = props;
   const { rowId } = tableRow;
   const [indentComponent, expandButton, , contentComponent] = children;
 
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
 
   useEffect(() => {
-    setIsExpanded(expandedRows.includes(rowId));
-  }, [rowId, expandedRows, setIsExpanded]);
+    setIsExpanded(expandedrows.includes(rowId));
+  }, [rowId, expandedrows, setIsExpanded]);
 
   const className = `tf__dashboard__body__token ${
     indentComponent.props.level === 1 ? 'tf__dashboard__body__token-child' : ''

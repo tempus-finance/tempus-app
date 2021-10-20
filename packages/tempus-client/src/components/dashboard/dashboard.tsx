@@ -51,7 +51,7 @@ const Dashboard: FC<DashboardProps> = ({ hidden, userWalletAddress, rows, onRowA
     { columnName: ColumnNames.AVAILABLE_TO_DEPOSIT, align: 'right' as 'right', width: 180 },
   ]);
 
-  const [expandedRows, setExpandedRows] = useState<number[]>([]);
+  const [expandedrows, setExpandedRows] = useState<number[]>([]);
 
   const [sortingStateColumnExtensions] = useState([
     { columnName: ColumnNames.AVAILABLE_TO_DEPOSIT, sortingEnabled: false },
@@ -236,7 +236,7 @@ const Dashboard: FC<DashboardProps> = ({ hidden, userWalletAddress, rows, onRowA
                 cellComponent={(props: any) => (
                   <TokenButton
                     {...props}
-                    expandedRows={expandedRows}
+                    expandedrows={expandedrows}
                     isWalletConnected={!!userWalletAddress}
                     actionHandler={onRowActionClick}
                   />
