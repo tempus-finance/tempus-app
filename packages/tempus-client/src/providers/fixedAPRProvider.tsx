@@ -1,12 +1,15 @@
 import { useCallback, useContext, useEffect } from 'react';
-import getDefaultProvider from '../services/getDefaultProvider';
 import { Context } from '../context';
-import getVariableRateService from '../adapters/getVariableRateService';
 import getConfig from '../utils/get-config';
+import getDefaultProvider from '../services/getDefaultProvider';
+import getTempusAMMService from '../services/getTempusAMMService';
 
-const VariableAPRProvider = () => {
+const FixedAPRProvider = () => {
   const { setData, data } = useContext(Context);
 
+  /**
+   * If user connected wallet, use wallet as a provider, otherwise use Alchemy as a provider.
+   */
   const getProvider = useCallback(() => {
     if (data.userWalletConnected && data.userWalletSigner) {
       return data.userWalletSigner.provider;
@@ -16,7 +19,7 @@ const VariableAPRProvider = () => {
   }, [data.userWalletConnected, data.userWalletSigner]);
 
   /**
-   * Fetch APR for all tempus pools on each block event
+   * Fetch Fixed APR for all tempus pools on each block event
    */
   const fetchAPR = useCallback(async () => {
     if (!setData) {
@@ -28,30 +31,17 @@ const VariableAPRProvider = () => {
     }
 
     const config = getConfig();
-    const variableRateService = getVariableRateService(provider);
+    const tempusAMMSService = getTempusAMMService(provider);
 
     // Fetch APR for all Tempus Pools
     const fetchedPoolAPRData = await Promise.all(
       config.tempusPools.map(async tempusPool => {
         // Get fees for Tempus Pool
-        const fees = await variableRateService.calculateFees(
-          tempusPool.ammAddress,
-          tempusPool.address,
-          tempusPool.principalsAddress,
-          tempusPool.yieldsAddress,
-        );
-
-        // Get variable APR for Tempus Pool
-        const variableAPR = await variableRateService.getAprRate(
-          tempusPool.protocol,
-          tempusPool.address,
-          tempusPool.yieldBearingTokenAddress,
-          fees,
-        );
+        const fixedAPR = await tempusAMMSService.getFixedAPR(tempusPool.ammAddress, tempusPool.principalsAddress);
 
         return {
           address: tempusPool.address,
-          variableAPR: variableAPR,
+          fixedAPR: fixedAPR,
         };
       }),
     );
@@ -62,14 +52,14 @@ const VariableAPRProvider = () => {
         const poolAPRData = fetchedPoolAPRData.find(data => data.address === previousPoolData.address);
         return {
           ...previousPoolData,
-          variableAPR: poolAPRData?.variableAPR || 0,
+          fixedAPR: poolAPRData ? poolAPRData.fixedAPR : null,
         };
       }),
     }));
   }, [getProvider, setData]);
 
   /**
-   * Update APR for all pools on each block.
+   * Update Fixed APR for all pools on each block.
    */
   useEffect(() => {
     const provider = getProvider();
@@ -88,4 +78,4 @@ const VariableAPRProvider = () => {
    */
   return null;
 };
-export default VariableAPRProvider;
+export default FixedAPRProvider;

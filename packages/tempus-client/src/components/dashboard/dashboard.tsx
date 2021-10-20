@@ -24,6 +24,7 @@ import HeaderContent from './headerSection/headerContent';
 import MaturityProvider from './providers/maturityProvider';
 import TVLProvider from './providers/tvlProvider';
 import VariableAPRProvider from './providers/variableAPRProvider';
+import FixedAPRProvider from './providers/fixedAPRProvider';
 import AvailableToDepositProvider from './providers/availableToDepositProvider';
 import { dashboardColumnsDefinitions } from './dashboardColumnsDefinitions';
 
@@ -145,7 +146,7 @@ const Dashboard: FC<DashboardProps> = ({ hidden, userWalletAddress, rows, onRowA
           const poolContextData = getDataForPool(row.tempusPool.address, poolData);
           aprMatched =
             (min === 0 || min) && (max === 0 || max)
-              ? (row.fixedAPR && row.fixedAPR > min && row.fixedAPR < max) ||
+              ? (poolContextData.fixedAPR && poolContextData.fixedAPR > min && poolContextData.fixedAPR < max) ||
                 (poolContextData.variableAPR > min && poolContextData.variableAPR < max)
               : true;
         }
@@ -224,6 +225,7 @@ const Dashboard: FC<DashboardProps> = ({ hidden, userWalletAddress, rows, onRowA
               <AvailableToDepositProvider for={[ColumnNames.AVAILABLE_TO_DEPOSIT]} />
               <TVLProvider for={[ColumnNames.TVL]} />
               <VariableAPRProvider for={[ColumnNames.VARIABLE_APY]} />
+              <FixedAPRProvider for={[ColumnNames.FIXED_APR]} />
               <CustomTreeData getChildRows={getChildRows} />
               <IntegratedSummary />
               <IntegratedSorting columnExtensions={integratedSortingColumnExtensions} />
