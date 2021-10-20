@@ -48,7 +48,14 @@ const TokenButton: FC<TokenButtonProps> = (props: TokenButtonProps) => {
   );
 
   return (
-    <TableTreeColumn.Cell {...props} className={className}>
+    <TableTreeColumn.Cell
+      value={props.value}
+      row={props.row}
+      column={props.column}
+      tableRow={props.tableRow}
+      tableColumn={props.tableColumn}
+      className={className}
+    >
       {indentComponent.props.level === 0 && (
         <Button className="tf__dashboard__body__token-button" onClick={expandButton.props.onToggle}>
           <div className="tf__dashboard__asset-ticker">
