@@ -7,6 +7,7 @@ import UserShareTokenBalanceProvider from '../../providers/userShareTokenBalance
 import UserBackingTokenBalanceProvider from '../../providers/userBackingTokenBalanceProvider';
 import UserYieldBearingTokenBalanceProvider from '../../providers/userYieldBearingTokenBalanceProvider';
 import UserLiquidityProviderTokenBalanceProvider from '../../providers/userLiquidityProviderTokenBalanceProvider';
+import VariableAPRProvider from '../../providers/variableAPRProvider';
 import Header, { HeaderLinks } from '../header/header';
 import DashboardManager from '../dashboard/dashboard-manager';
 import Analytics from '../analytics/analytics';
@@ -57,6 +58,7 @@ const App: FC = (): JSX.Element => {
           <UserLiquidityProviderTokenBalanceProvider
             tempusPool={contextData.selectedRow ? contextData.selectedRow.tempusPool : null}
           />
+          <VariableAPRProvider />
         </Context.Provider>
       )}
     </>

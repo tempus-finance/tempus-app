@@ -14,7 +14,6 @@ export interface DashboardRow {
 export interface DashboardRowParent extends DashboardRow {
   maturityRange: (Date | null)[];
   fixedAPR: (number | null)[];
-  variableAPY: (number | null)[]; // TODO rename to variableAPR
   availableUSDToDeposit: BigNumber | undefined;
   protocols: ProtocolName[];
 }
@@ -26,7 +25,6 @@ export interface DashboardRowChild extends DashboardRow {
   startDate: Date;
   maturityDate: Date;
   fixedAPR: number | null;
-  variableAPY: number; // TODO rename to variableAPR
   availableTokensToDeposit: AvailableToDeposit | undefined;
   availableUSDToDeposit: AvailableToDeposit | undefined;
   principalTokenAddress: string;

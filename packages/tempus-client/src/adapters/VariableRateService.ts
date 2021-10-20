@@ -20,7 +20,7 @@ import { Config, ProtocolName } from '../interfaces';
 import { wadToDai } from '../utils/rayToDai';
 import getConfig from '../utils/get-config';
 import { div18f, mul18f } from '../utils/wei-math';
-import getDefaultProvider from '../services/getDefaultProvider';
+import getProvider from '../utils/getProvider';
 
 const BN_SECONDS_IN_YEAR = BigNumber.from(SECONDS_IN_YEAR);
 const BN_ONE_ETH_IN_WEI = BigNumber.from(ONE_ETH_IN_WEI);
@@ -131,7 +131,7 @@ class VariableRateService {
   }
 
   public async calculateFees(tempusAMM: string, tempusPool: string, principalsAddress: string, yieldsAddress: string) {
-    if (!this.tempusAMMService || !this.vaultService || !this.tempusPoolService) {
+    if (!this.tempusAMMService || !this.vaultService || !this.tempusPoolService || !this.signerOrProvider) {
       return Promise.reject();
     }
 
@@ -140,8 +140,10 @@ class VariableRateService {
       return Promise.reject();
     }
 
+    let provider = getProvider(this.signerOrProvider);
+
     const [latestBlock, swapFeePercentage] = await Promise.all([
-      getDefaultProvider().getBlock('latest'),
+      provider.getBlock('latest'),
       this.tempusAMMService.getSwapFeePercentage(tempusAMM),
     ]);
 

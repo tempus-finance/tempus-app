@@ -1,7 +1,14 @@
 import React, { Dispatch, SetStateAction } from 'react';
 import { JsonRpcSigner } from '@ethersproject/providers';
 import { BigNumber } from 'ethers';
-import { DashboardRowChild } from './interfaces';
+import { DashboardRowChild, Ticker } from './interfaces';
+import getConfig from './utils/get-config';
+
+export interface ContextPoolData {
+  address: string;
+  backingTokenTicker: Ticker;
+  variableAPR: number;
+}
 
 interface ContextDataType {
   userWalletConnected: boolean | null;
@@ -16,6 +23,7 @@ interface ContextDataType {
   selectedRow: DashboardRowChild | null;
   userCurrentPoolPresentValue: BigNumber | null;
   userEthBalance: BigNumber | null;
+  poolData: ContextPoolData[];
 }
 
 interface ContextType {
@@ -36,8 +44,21 @@ export const defaultContextValue: ContextDataType = {
   selectedRow: null,
   userCurrentPoolPresentValue: null,
   userEthBalance: null,
+  poolData: getConfig().tempusPools.map(tempusPoolConfig => ({
+    address: tempusPoolConfig.address,
+    backingTokenTicker: tempusPoolConfig.backingToken,
+    variableAPR: 0,
+  })),
 };
 export const Context = React.createContext<ContextType>({
   data: defaultContextValue,
   setData: null,
 });
+
+export function getDataForPool(address: string, poolData: ContextPoolData[]): ContextPoolData {
+  const result = poolData.find(data => data.address === address);
+  if (!result) {
+    throw new Error('Context - getDataForPool() - Failed to fetch data for pool!');
+  }
+  return result;
+}
