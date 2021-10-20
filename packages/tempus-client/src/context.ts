@@ -2,6 +2,7 @@ import React, { Dispatch, SetStateAction } from 'react';
 import { JsonRpcSigner } from '@ethersproject/providers';
 import { BigNumber } from 'ethers';
 import { DashboardRowChild, Ticker } from './interfaces';
+import getConfig from './utils/get-config';
 
 export interface ContextPoolData {
   address: string;
@@ -43,25 +44,21 @@ export const defaultContextValue: ContextDataType = {
   selectedRow: null,
   userCurrentPoolPresentValue: null,
   userEthBalance: null,
-  poolData: [
-    {
-      address: '0x1c5AbE736C6CCb743Bc933241AB462e6b38c6EA4',
-      backingTokenTicker: 'ETH',
-      variableAPR: 0,
-    },
-    {
-      address: '0x0749982cAD68506009C7f0341a9A7fD6107A40C2',
-      backingTokenTicker: 'ETH',
-      variableAPR: 0,
-    },
-    {
-      address: '0x68Dbc29bf19Ce959859B828BFFAB4082Af8e38C5',
-      backingTokenTicker: 'ETH',
-      variableAPR: 0,
-    },
-  ],
+  poolData: getConfig().tempusPools.map(tempusPoolConfig => ({
+    address: tempusPoolConfig.address,
+    backingTokenTicker: tempusPoolConfig.backingToken,
+    variableAPR: 0,
+  })),
 };
 export const Context = React.createContext<ContextType>({
   data: defaultContextValue,
   setData: null,
 });
+
+export function getDataForPool(address: string, poolData: ContextPoolData[]): ContextPoolData {
+  const result = poolData.find(data => data.address === address);
+  if (!result) {
+    throw new Error('Context - getDataForPool() - Failed to fetch data for pool!');
+  }
+  return result;
+}

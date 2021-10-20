@@ -7,6 +7,7 @@ import UserShareTokenBalanceProvider from '../../providers/userShareTokenBalance
 import UserBackingTokenBalanceProvider from '../../providers/userBackingTokenBalanceProvider';
 import UserYieldBearingTokenBalanceProvider from '../../providers/userYieldBearingTokenBalanceProvider';
 import UserLiquidityProviderTokenBalanceProvider from '../../providers/userLiquidityProviderTokenBalanceProvider';
+import VariableAPRProvider from '../../providers/variableAPRProvider';
 import Header, { HeaderLinks } from '../header/header';
 import DashboardManager from '../dashboard/dashboard-manager';
 import Analytics from '../analytics/analytics';
@@ -14,7 +15,6 @@ import NotificationContainer from '../notification/NotificationContainer';
 import MobileBanner from '../mobileBanner/mobileBanner';
 
 import './App.scss';
-import VariableAPRProvider from '../../providers/variableAPRProvider';
 
 const App: FC = (): JSX.Element => {
   const [contextData, setContextData] = useState(defaultContextValue);

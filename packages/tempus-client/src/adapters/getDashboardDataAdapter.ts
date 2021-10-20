@@ -5,7 +5,6 @@ import getStatisticsService from '../services/getStatisticsService';
 import getTempusAMMService from '../services/getTempusAMMService';
 import getTempusPoolService from '../services/getTempusPoolService';
 import DashboardDataAdapter from './DashboardDataAdapter';
-import getVariableRateService from './getVariableRateService';
 
 let dashboardDataAdapter: DashboardDataAdapter;
 const getDashboardDataAdapter = (signerOrProvider?: JsonRpcSigner | JsonRpcProvider): DashboardDataAdapter => {
@@ -17,7 +16,6 @@ const getDashboardDataAdapter = (signerOrProvider?: JsonRpcSigner | JsonRpcProvi
       statisticsService: getStatisticsService(),
       tempusAMMService: getTempusAMMService(),
       tempusPoolService: getTempusPoolService(),
-      variableRateService: getVariableRateService(getDefaultProvider()),
     });
   }
 
@@ -28,7 +26,6 @@ const getDashboardDataAdapter = (signerOrProvider?: JsonRpcSigner | JsonRpcProvi
       statisticsService: getStatisticsService(signerOrProvider),
       tempusAMMService: getTempusAMMService(signerOrProvider),
       tempusPoolService: getTempusPoolService(signerOrProvider),
-      variableRateService: getVariableRateService(signerOrProvider),
     });
   }
 

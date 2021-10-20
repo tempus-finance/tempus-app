@@ -15,7 +15,6 @@ import getERC20TokenService from '../services/getERC20TokenService';
 import getConfig from '../utils/get-config';
 import { mul18f } from '../utils/wei-math';
 import TempusAMMService from '../services/TempusAMMService';
-import VariableRateService from './VariableRateService';
 
 type DashboardDataAdapterParameters = {
   signerOrProvider: JsonRpcProvider | JsonRpcSigner;
@@ -23,7 +22,6 @@ type DashboardDataAdapterParameters = {
   statisticsService: StatisticsService;
   tempusAMMService: TempusAMMService;
   eRC20TokenServiceGetter: typeof getERC20TokenService;
-  variableRateService: VariableRateService;
 };
 
 export default class DashboardDataAdapter {
@@ -32,14 +30,12 @@ export default class DashboardDataAdapter {
   private statisticsService: StatisticsService | null = null;
   private tempusAMMService: TempusAMMService | null = null;
   private userWalletAddress: string = '';
-  private variableRateService: VariableRateService | null = null;
 
   public init(params: DashboardDataAdapterParameters) {
     this.eRC20TokenServiceGetter = params.eRC20TokenServiceGetter;
     this.tempusPoolService = params.tempusPoolService;
     this.statisticsService = params.statisticsService;
     this.tempusAMMService = params.tempusAMMService;
-    this.variableRateService = params.variableRateService;
   }
 
   public async getRows(userWalletAddress: string): Promise<DashboardRow[]> {
@@ -68,7 +64,7 @@ export default class DashboardDataAdapter {
   }
 
   private async getChildRowData(tempusPool: TempusPool): Promise<DashboardRowChild> {
-    if (!this.tempusPoolService || !this.statisticsService || !this.tempusAMMService || !this.variableRateService) {
+    if (!this.tempusPoolService || !this.statisticsService || !this.tempusAMMService) {
       console.error(
         'DashboardDataAdapter - getChildRowData() - Attempted to use DashboardDataAdapter before initializing it!',
       );
@@ -84,9 +80,11 @@ export default class DashboardDataAdapter {
         this.getAvailableToDepositForPool(tempusPool),
       ]);
 
-      const [availableToDepositInUSD] = await Promise.all([
-        this.getAvailableToDepositInUSD(tempusPool.address, availableToDeposit, poolBackingTokenRate),
-      ]);
+      const availableToDepositInUSD = await this.getAvailableToDepositInUSD(
+        tempusPool.address,
+        availableToDeposit,
+        poolBackingTokenRate,
+      );
 
       return {
         id: tempusPool.address,

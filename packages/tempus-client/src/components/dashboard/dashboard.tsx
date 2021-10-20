@@ -9,10 +9,11 @@ import {
   Sorting,
 } from '@devexpress/dx-react-grid';
 import { Grid, TableHeaderRow, VirtualTable, TableTreeColumn } from '@devexpress/dx-react-grid-material-ui';
+import { SECONDS_IN_A_DAY } from '../../constants';
+import { Context, getDataForPool } from '../../context';
 import { ColumnNames, DashboardRow, isChildRow, isParentRow } from '../../interfaces';
 import Typography from '../typography/Typography';
 import FilterIcon from '../icons/FilterIcon';
-import { dashboardColumnsDefinitions } from './dashboardColumnsDefinitions';
 import FilterPopup, { FilterData } from './popups/filter-popup';
 import TokenButton from './bodySection/tokenButton';
 import BodyCellFactory from './bodySection/bodyCellFactory';
@@ -24,10 +25,9 @@ import MaturityProvider from './providers/maturityProvider';
 import TVLProvider from './providers/tvlProvider';
 import VariableAPRProvider from './providers/variableAPRProvider';
 import AvailableToDepositProvider from './providers/availableToDepositProvider';
+import { dashboardColumnsDefinitions } from './dashboardColumnsDefinitions';
 
 import './dashboard.scss';
-import { SECONDS_IN_A_DAY } from '../../constants';
-import { Context } from '../../context';
 
 type DashboardInProps = {
   hidden: boolean;
@@ -142,11 +142,7 @@ const Dashboard: FC<DashboardProps> = ({ hidden, userWalletAddress, rows, onRowA
           const min = filterData.aPRRange.min;
           const max = filterData.aPRRange.max;
 
-          const poolContextData = poolData.find(data => data.address === row.tempusPool.address);
-          if (!poolContextData) {
-            return true;
-          }
-
+          const poolContextData = getDataForPool(row.tempusPool.address, poolData);
           aprMatched =
             (min === 0 || min) && (max === 0 || max)
               ? (row.fixedAPR && row.fixedAPR > min && row.fixedAPR < max) ||

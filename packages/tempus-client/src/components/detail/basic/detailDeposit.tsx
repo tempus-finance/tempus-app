@@ -3,7 +3,7 @@ import { utils, BigNumber, ethers } from 'ethers';
 import Button from '@material-ui/core/Button';
 import { interestRateProtectionTooltipText, liquidityProvisionTooltipText } from '../../../constants';
 import NumberUtils from '../../../services/NumberUtils';
-import { Context } from '../../../context';
+import { Context, getDataForPool } from '../../../context';
 import { Ticker } from '../../../interfaces';
 import { mul18f } from '../../../utils/wei-math';
 import getConfig from '../../../utils/get-config';
@@ -316,10 +316,7 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
   }, [usdRate, amount]);
 
   const variableAPYFormatted = useMemo(() => {
-    const poolContextData = poolData.find(data => data.address === content.tempusPool.address);
-    if (!poolContextData) {
-      return null;
-    }
+    const poolContextData = getDataForPool(content.tempusPool.address, poolData);
 
     return NumberUtils.formatPercentage(poolContextData.variableAPR, 2);
   }, [content.tempusPool.address, poolData]);
