@@ -157,11 +157,11 @@ const DetailMint: FC<DetailMintProps> = props => {
       return;
     }
 
-    const stream = poolDataAdapter.isCurrentYieldNegativeForPool(tempusPool.address).subscribe(isYieldNegative => {
+    const stream$ = poolDataAdapter.isCurrentYieldNegativeForPool(tempusPool.address).subscribe(isYieldNegative => {
       setIsYieldNegative(isYieldNegative);
     });
 
-    return () => stream.unsubscribe();
+    return () => stream$.unsubscribe();
   }, [tempusPool, poolDataAdapter]);
 
   const balanceFormatted = useMemo(() => {

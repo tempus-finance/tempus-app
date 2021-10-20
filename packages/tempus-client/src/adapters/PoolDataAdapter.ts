@@ -1,6 +1,6 @@
 import { BigNumber, ContractTransaction, ethers } from 'ethers';
 import { JsonRpcSigner } from '@ethersproject/providers';
-import { Observable, from, of, interval, switchMap, combineLatest, map, tap, filter } from 'rxjs';
+import { Observable, from, of, interval, switchMap, combineLatest, map, throwError } from 'rxjs';
 import TempusAMMService from '../services/TempusAMMService';
 import StatisticsService from '../services/StatisticsService';
 import TempusControllerService, { DepositedEvent, RedeemedEvent } from '../services/TempusControllerService';
@@ -57,12 +57,12 @@ export default class PoolDataAdapter {
     this.eRC20TokenServiceGetter = eRC20TokenServiceGetter;
   }
 
-  async retrieveBalances(
+  retrieveBalances(
     tempusPoolAddress: string,
     tempusAMMAddress: string,
     userWalletAddress: string,
     signer: JsonRpcSigner,
-  ): Promise<{
+  ): Observable<{
     backingTokenBalance: BigNumber;
     backingTokenRate: BigNumber;
     yieldBearingTokenBalance: BigNumber;
@@ -75,60 +75,97 @@ export default class PoolDataAdapter {
       console.error(
         'PoolDataAdapter - retrieveBalances() - Attempted to use PoolDataAdapter before connecting user wallet!',
       );
-      return Promise.reject();
+      return throwError(() => new Error());
     }
 
     if (!this.tempusPoolService || !this.statisticService || !this.eRC20TokenServiceGetter) {
       console.error('PoolDataAdapter - retrieveBalances() - Attempted to use PoolDataAdapter before initializing it!');
-      return Promise.reject();
+      return throwError(() => new Error());
     }
 
     const yieldTokenAmount = ethers.utils.parseEther('1');
 
     try {
-      const [
-        { backingTokenService, yieldBearingTokenService, principalsTokenService, yieldsTokenService, lpTokenService },
-        interestRate,
-      ] = await Promise.all([
-        this.getTokenServices(tempusPoolAddress, tempusAMMAddress, signer),
-        this.tempusPoolService.currentInterestRate(tempusPoolAddress),
-      ]);
+      const ticker$ = interval(POLLING_INTERVAL);
 
-      const [backingTokenTicker, yieldBearingTokenConversionRate] = await Promise.all([
-        this.tempusPoolService.getBackingTokenTicker(tempusPoolAddress),
-        this.tempusPoolService.numAssetsPerYieldToken(tempusPoolAddress, yieldTokenAmount, interestRate),
-      ]);
+      return combineLatest([
+        from(this.getTokenServices(tempusPoolAddress, tempusAMMAddress, signer)),
+        from(this.tempusPoolService.currentInterestRate(tempusPoolAddress)),
+        from(this.tempusPoolService.getBackingTokenTicker(tempusPoolAddress)),
+        ticker$,
+      ]).pipe(
+        map(([services, interestRate, backingTokenTicker]) => {
+          return {
+            services,
+            interestRate,
+            backingTokenTicker,
+          };
+        }),
+        switchMap(payload => {
+          if (this.tempusPoolService) {
+            return combineLatest([
+              of(payload),
+              from(
+                this.tempusPoolService.numAssetsPerYieldToken(
+                  tempusPoolAddress,
+                  yieldTokenAmount,
+                  payload.interestRate,
+                ),
+              ),
+            ]);
+          }
+          return throwError(() => new Error());
+        }),
+        switchMap(payload => {
+          if (payload && this.statisticService) {
+            const [originalPayload, yieldBearingTokenConversionRate] = payload;
+            const {
+              backingTokenTicker,
+              services: {
+                backingTokenService,
+                yieldBearingTokenService,
+                principalsTokenService,
+                yieldsTokenService,
+                lpTokenService,
+              },
+            } = originalPayload;
 
-      const [
-        backingTokenBalance,
-        yieldBearingTokenBalance,
-        principalsTokenBalance,
-        yieldsTokenBalance,
-        backingTokenRate,
-        lpTokensBalance,
-      ] = await Promise.all([
-        backingTokenService.balanceOf(userWalletAddress),
-        yieldBearingTokenService.balanceOf(userWalletAddress),
-        principalsTokenService.balanceOf(userWalletAddress),
-        yieldsTokenService.balanceOf(userWalletAddress),
-        this.statisticService.getRate(backingTokenTicker),
-        lpTokenService.balanceOf(userWalletAddress),
-      ]);
-
-      const yieldBearingTokenRate = mul18f(yieldBearingTokenConversionRate, backingTokenRate);
-
-      return {
-        backingTokenBalance,
-        backingTokenRate,
-        yieldBearingTokenBalance,
-        yieldBearingTokenRate,
-        principalsTokenBalance,
-        yieldsTokenBalance,
-        lpTokensBalance,
-      };
+            return combineLatest([
+              from(backingTokenService.balanceOf(userWalletAddress)),
+              from(yieldBearingTokenService.balanceOf(userWalletAddress)),
+              from(principalsTokenService.balanceOf(userWalletAddress)),
+              from(yieldsTokenService.balanceOf(userWalletAddress)),
+              from(this.statisticService.getRate(backingTokenTicker)),
+              from(lpTokenService.balanceOf(userWalletAddress)),
+              of(yieldBearingTokenConversionRate),
+            ]);
+          }
+          return throwError(() => new Error());
+        }),
+        map(result => {
+          const [
+            backingTokenBalance,
+            yieldBearingTokenBalance,
+            principalsTokenBalance,
+            yieldsTokenBalance,
+            backingTokenRate,
+            lpTokensBalance,
+            yieldBearingTokenConversionRate,
+          ] = result;
+          return {
+            backingTokenBalance,
+            backingTokenRate,
+            yieldBearingTokenBalance,
+            yieldBearingTokenRate: mul18f(yieldBearingTokenConversionRate, backingTokenRate),
+            principalsTokenBalance,
+            yieldsTokenBalance,
+            lpTokensBalance,
+          };
+        }),
+      );
     } catch (error) {
       console.error('PoolDataAdapter - retrieveBalances() - Failed to retrieve balances!', error);
-      return Promise.reject();
+      return throwError(() => new Error());
     }
   }
 
@@ -936,7 +973,7 @@ export default class PoolDataAdapter {
       console.error(
         'PoolDataAdapter - isCurrentYieldNegativeForPool() - Attempted to use PoolDataAdapter before initializing it!',
       );
-      return of(false);
+      return throwError(() => new Error());
     }
 
     try {
@@ -945,15 +982,16 @@ export default class PoolDataAdapter {
         if (this.tempusPoolService) {
           return this.tempusPoolService.currentInterestRate(tempusPool);
         }
-        return of(null);
+        return throwError(() => new Error());
       });
 
       const initialInterestRate$ = switchMap((currentInterestRate: BigNumber | null) => {
         if (currentInterestRate && this.tempusPoolService) {
           return combineLatest([of(currentInterestRate), this.tempusPoolService.initialInterestRate(tempusPool)]);
         }
-        return of(null);
+        return throwError(() => new Error());
       });
+
       return ticker$.pipe(
         currentInterestRate$,
         initialInterestRate$,
@@ -971,7 +1009,7 @@ export default class PoolDataAdapter {
         'PoolDataAdapter - isCurrentYieldNegativeForPool() - Failed to check if current pool yield is negative!',
         error,
       );
-      return of(false);
+      return throwError(() => new Error());
     }
   }
 

@@ -29,7 +29,7 @@ const PresentValueProvider: FC<PresentValueProviderProps> = props => {
       data.userWalletAddress,
     );
 
-    const stream = combineLatest([getBackingTokenRate$, getPresentValueInBackingTokensForPool$]).subscribe(
+    const stream$ = combineLatest([getBackingTokenRate$, getPresentValueInBackingTokensForPool$]).subscribe(
       ([valueInBackingTokens, backingTokenRate]) => {
         setData(prevData => ({
           ...prevData,
@@ -38,7 +38,7 @@ const PresentValueProvider: FC<PresentValueProviderProps> = props => {
       },
     );
 
-    return () => stream.unsubscribe();
+    return () => stream$.unsubscribe();
   }, [
     data.userWalletAddress,
     poolDataAdapter,
