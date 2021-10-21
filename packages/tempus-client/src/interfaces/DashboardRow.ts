@@ -12,7 +12,6 @@ export interface DashboardRow {
 
 export interface DashboardRowParent extends DashboardRow {
   maturityRange: (Date | null)[];
-  fixedAPR: (number | null)[];
   availableUSDToDeposit: BigNumber | undefined;
   protocols: ProtocolName[];
 }
@@ -23,7 +22,6 @@ export interface DashboardRowChild extends DashboardRow {
   supportedTokens: Ticker[];
   startDate: Date;
   maturityDate: Date;
-  fixedAPR: number | null;
   availableTokensToDeposit: AvailableToDeposit | undefined;
   availableUSDToDeposit: AvailableToDeposit | undefined;
   principalTokenAddress: string;

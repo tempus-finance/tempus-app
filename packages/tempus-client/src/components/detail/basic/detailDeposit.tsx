@@ -1,5 +1,6 @@
 import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { utils, BigNumber, ethers } from 'ethers';
+import { catchError } from 'rxjs';
 import Button from '@material-ui/core/Button';
 import { interestRateProtectionTooltipText, liquidityProvisionTooltipText } from '../../../constants';
 import NumberUtils from '../../../services/NumberUtils';
@@ -26,7 +27,7 @@ export type SelectedYield = 'Fixed' | 'Variable';
 // TODO Component is too big, we may need to break it up
 const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userWalletAddress, poolDataAdapter }) => {
   const { address, ammAddress } = tempusPool || {};
-  const { supportedTokens = [], fixedAPR = 0 } = content || {};
+  const { supportedTokens = [] } = content || {};
   const [backingToken] = supportedTokens;
 
   const {
@@ -162,24 +163,24 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
   }, []);
 
   useEffect(() => {
-    const retrieveTokenRates = async () => {
-      if (signer && address && ammAddress && poolDataAdapter) {
-        try {
-          const { backingTokenRate, yieldBearingTokenRate } = await poolDataAdapter.retrieveBalances(
-            address,
-            ammAddress,
-            userWalletAddress,
-            signer,
-          );
+    if (signer && address && ammAddress && poolDataAdapter) {
+      const stream$ = poolDataAdapter
+        .retrieveBalances(address, ammAddress, userWalletAddress, signer)
+        .pipe(
+          catchError((error, caught) => {
+            console.log('DetailDeposit - retrieveTokenRates - Failed to retrieve token rates!', error);
+            return caught;
+          }),
+        )
+        .subscribe((result: { backingTokenRate: BigNumber; yieldBearingTokenRate: BigNumber }) => {
+          if (result) {
+            setBackingTokenRate(result.backingTokenRate);
+            setYieldBearingTokenRate(result.yieldBearingTokenRate);
+          }
+        });
 
-          setBackingTokenRate(backingTokenRate);
-          setYieldBearingTokenRate(yieldBearingTokenRate);
-        } catch (error) {
-          console.log('DetailDeposit - retrieveTokenRates - Failed to retrieve token rates!', error);
-        }
-      }
-    };
-    retrieveTokenRates();
+      return () => stream$.unsubscribe();
+    }
   }, [
     backingToken,
     selectedToken,
@@ -265,14 +266,15 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
   }, [amount, selectedToken, backingToken, address, ammAddress, poolDataAdapter, setEstimatedFixedApr]);
 
   useEffect(() => {
-    const fetchIsYieldNegative = async () => {
-      if (poolDataAdapter) {
-        const isYieldNegative = await poolDataAdapter.isCurrentYieldNegativeForPool(address);
-        setIsYieldNegative(isYieldNegative);
-      }
-    };
+    if (!poolDataAdapter) {
+      return;
+    }
 
-    fetchIsYieldNegative();
+    const stream$ = poolDataAdapter.isCurrentYieldNegativeForPool(address).subscribe(isYieldNegative => {
+      setIsYieldNegative(isYieldNegative);
+    });
+
+    return () => stream$.unsubscribe();
   }, [address, poolDataAdapter]);
 
   const fixedPrincipalsAmountFormatted = useMemo(() => {
@@ -315,10 +317,16 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
     return NumberUtils.formatToCurrency(utils.formatEther(usdValue), 2, '$');
   }, [usdRate, amount]);
 
-  const variableAPYFormatted = useMemo(() => {
+  const variableAPRFormatted = useMemo(() => {
     const poolContextData = getDataForPool(content.tempusPool.address, poolData);
 
     return NumberUtils.formatPercentage(poolContextData.variableAPR, 2);
+  }, [content.tempusPool.address, poolData]);
+
+  const fixedAPRFormatted = useMemo(() => {
+    const poolContextData = getDataForPool(content.tempusPool.address, poolData);
+
+    return NumberUtils.formatPercentage(poolContextData.fixedAPR, 2);
   }, [content.tempusPool.address, poolData]);
 
   const depositDisabled = useMemo((): boolean => {
@@ -481,7 +489,7 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
                       est. APR{' '}
                       {estimatedFixedApr
                         ? NumberUtils.formatPercentage(utils.formatEther(estimatedFixedApr))
-                        : NumberUtils.formatPercentage(fixedAPR, 2)}
+                        : fixedAPRFormatted}
                     </Typography>
                   </div>
                 </SectionContainer>
@@ -510,7 +518,7 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
                       </Typography>
                     </div>
                     <Typography variant="h3" color="accent">
-                      est. APR {variableAPYFormatted}
+                      est. APR {variableAPRFormatted}
                     </Typography>
                   </div>
                 </SectionContainer>

@@ -5,7 +5,7 @@ import NumberUtils from '../../../services/NumberUtils';
 import Typography from '../../typography/Typography';
 import APYGraph from '../bodySection/apyGraph';
 
-const VariableAPRFormatter = ({ row }: any) => {
+const FixedAPRFormatter = ({ row }: any) => {
   const { data } = useContext(Context);
 
   const isChild = Boolean(row.parentId);
@@ -17,6 +17,10 @@ const VariableAPRFormatter = ({ row }: any) => {
       return getParentAPR(row.id, data.poolData);
     }
   }, [data.poolData, isChild, row.id]);
+
+  if (!apr) {
+    return <Typography variant="body-text">-</Typography>;
+  }
 
   if (!isChild) {
     return (
@@ -39,20 +43,23 @@ const VariableAPRFormatter = ({ row }: any) => {
     </div>
   );
 };
-export default VariableAPRFormatter;
+export default FixedAPRFormatter;
 
-function getParentAPR(parentId: Ticker, poolData: ContextPoolData[]): number {
+function getParentAPR(parentId: Ticker, poolData: ContextPoolData[]): number | null {
   const parentChildren = poolData.filter(data => {
     return data.backingTokenTicker === parentId;
   });
 
-  const childrenVariableAPR = parentChildren
-    .map(child => child.variableAPR)
-    .filter(variableAPR => variableAPR !== null);
+  const childrenFixedAPR: number[] = parentChildren
+    .map(child => child.fixedAPR)
+    .filter(fixedAPR => fixedAPR !== null) as number[];
+  if (childrenFixedAPR.length === 0) {
+    return null;
+  }
 
-  return Math.max(...childrenVariableAPR);
+  return Math.max(...childrenFixedAPR);
 }
 
-function getChildAPR(id: string, poolData: ContextPoolData[]): number {
-  return getDataForPool(id, poolData).variableAPR;
+function getChildAPR(id: string, poolData: ContextPoolData[]): number | null {
+  return getDataForPool(id, poolData).fixedAPR;
 }
