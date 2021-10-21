@@ -8,6 +8,7 @@ export interface ContextPoolData {
   address: string;
   backingTokenTicker: Ticker;
   variableAPR: number;
+  tvl: BigNumber | null;
 }
 
 interface ContextDataType {
@@ -48,6 +49,7 @@ export const defaultContextValue: ContextDataType = {
     address: tempusPoolConfig.address,
     backingTokenTicker: tempusPoolConfig.backingToken,
     variableAPR: 0,
+    tvl: null,
   })),
 };
 export const Context = React.createContext<ContextType>({

@@ -9,7 +9,7 @@ import getERC20TokenService from '../services/getERC20TokenService';
 import VaultService, { SwapKind } from '../services/VaultService';
 import { TransferEventListener } from '../services/ERC20TokenService';
 import { div18f, mul18f } from '../utils/wei-math';
-import { DAYS_IN_A_YEAR, ONE_ETH_IN_WEI, SECONDS_IN_A_DAY, ZERO_ETH_ADDRESS } from '../constants';
+import { DAYS_IN_A_YEAR, ONE_ETH_IN_WEI, POLLING_INTERVAL, SECONDS_IN_A_DAY, ZERO_ETH_ADDRESS } from '../constants';
 import { Ticker } from '../interfaces';
 import { TempusPool } from '../interfaces/TempusPool';
 import { SelectedYield } from '../components/detail/basic/detailDeposit';
@@ -989,5 +989,3 @@ export default class PoolDataAdapter {
     }
   }
 }
-
-const POLLING_INTERVAL = 5 * 1000;

@@ -61,8 +61,7 @@ const VariableAPRProvider = () => {
       poolData: previousData.poolData.map(previousPoolData => {
         const poolAPRData = fetchedPoolAPRData.find(data => data.address === previousPoolData.address);
         return {
-          address: previousPoolData.address,
-          backingTokenTicker: previousPoolData.backingTokenTicker,
+          ...previousPoolData,
           variableAPR: poolAPRData?.variableAPR || 0,
         };
       }),

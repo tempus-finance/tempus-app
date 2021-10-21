@@ -7,7 +7,6 @@ export interface DashboardRow {
   id: string;
   parentId: string | null;
   token: Ticker;
-  TVL: number;
   presentValue: BigNumber | undefined;
 }
 
