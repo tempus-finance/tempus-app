@@ -93,7 +93,7 @@ const DetailRedeemBeforeMaturity: FC<DetailRedeemBeforeMaturityProps> = props =>
     const getBackingTokenRate$ = poolDataAdapter.getBackingTokenRate(backingToken);
     const getYieldBearingTokenRate$ = poolDataAdapter.getYieldBearingTokenRate(tempusPool.address, backingToken);
 
-    const stream = combineLatest([getBackingTokenRate$, getYieldBearingTokenRate$]).subscribe(
+    const stream$ = combineLatest([getBackingTokenRate$, getYieldBearingTokenRate$]).subscribe(
       ([backingTokenRate, yieldBearingTokenRate]) => {
         if (selectedToken === backingToken) {
           setTokenRate(backingTokenRate);
@@ -105,7 +105,7 @@ const DetailRedeemBeforeMaturity: FC<DetailRedeemBeforeMaturityProps> = props =>
       },
     );
 
-    return () => stream.unsubscribe();
+    return () => stream$.unsubscribe();
   }, [backingToken, poolDataAdapter, selectedToken, tempusPool.address, yieldBearingToken]);
 
   const onExecute = useCallback(() => {

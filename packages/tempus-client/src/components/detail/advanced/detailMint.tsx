@@ -153,14 +153,15 @@ const DetailMint: FC<DetailMintProps> = props => {
   }, [amount, backingToken, poolDataAdapter, selectedToken, tempusPool]);
 
   useEffect(() => {
-    const fetchIsYieldNegative = async () => {
-      if (poolDataAdapter) {
-        const isYieldNegative = await poolDataAdapter.isCurrentYieldNegativeForPool(tempusPool.address);
-        setIsYieldNegative(isYieldNegative);
-      }
-    };
+    if (!poolDataAdapter) {
+      return;
+    }
 
-    fetchIsYieldNegative();
+    const stream$ = poolDataAdapter.isCurrentYieldNegativeForPool(tempusPool.address).subscribe(isYieldNegative => {
+      setIsYieldNegative(isYieldNegative);
+    });
+
+    return () => stream$.unsubscribe();
   }, [tempusPool, poolDataAdapter]);
 
   const balanceFormatted = useMemo(() => {

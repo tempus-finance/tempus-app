@@ -105,24 +105,24 @@ describe('PoolDataAdapter', () => {
   });
 
   describe('retrieveBalances()', () => {
-    test('returns an object containing balances ', async () => {
+    test('returns an object containing balances ', () => {
       const tempusPoolAddress = 'abc';
       const userWalletAddress = 'xyz';
       const tempusAmmAddress = '123';
       const signer = mockProvider;
 
-      const balances = await instance.retrieveBalances(tempusPoolAddress, tempusAmmAddress, userWalletAddress, signer);
-
-      expect(balances).toBeDefined();
-      if (balances) {
-        expect(ethers.utils.formatEther(balances.backingTokenBalance)).toBe('10.0');
-        expect(ethers.utils.formatEther(balances.backingTokenRate)).toBe('0.5');
-        expect(ethers.utils.formatEther(balances.yieldBearingTokenBalance)).toBe('20.0');
-        expect(ethers.utils.formatEther(balances.yieldBearingTokenRate)).toBe('0.5');
-        expect(ethers.utils.formatEther(balances.principalsTokenBalance)).toBe('31.0');
-        expect(ethers.utils.formatEther(balances.yieldsTokenBalance)).toBe('12.0');
-        expect(ethers.utils.formatEther(balances.lpTokensBalance)).toBe('7.0');
-      }
+      instance.retrieveBalances(tempusPoolAddress, tempusAmmAddress, userWalletAddress, signer).subscribe(balances => {
+        expect(balances).toBeDefined();
+        if (balances) {
+          expect(ethers.utils.formatEther(balances.backingTokenBalance)).toBe('10.0');
+          expect(ethers.utils.formatEther(balances.backingTokenRate)).toBe('0.5');
+          expect(ethers.utils.formatEther(balances.yieldBearingTokenBalance)).toBe('20.0');
+          expect(ethers.utils.formatEther(balances.yieldBearingTokenRate)).toBe('0.5');
+          expect(ethers.utils.formatEther(balances.principalsTokenBalance)).toBe('31.0');
+          expect(ethers.utils.formatEther(balances.yieldsTokenBalance)).toBe('12.0');
+          expect(ethers.utils.formatEther(balances.lpTokensBalance)).toBe('7.0');
+        }
+      });
     });
   });
 

@@ -44,7 +44,7 @@ const DetailUserInfoBalance: FC<DetailUserInfoBalancesProps> = props => {
   const [lpTokenYieldReturnBalance, setLpTokenYieldReturn] = useState<BigNumber>(BigNumber.from('0'));
 
   useEffect(() => {
-    const retrieveBalances = async () => {
+    const retrieveUserBalances = async () => {
       if (ammAddress && poolDataAdapter && userLPBalance) {
         try {
           const expectedLPTokenReturn = await poolDataAdapter.getExpectedReturnForLPTokens(ammAddress, userLPBalance);
@@ -52,12 +52,15 @@ const DetailUserInfoBalance: FC<DetailUserInfoBalancesProps> = props => {
           setLpTokenPrincipalReturn(expectedLPTokenReturn.principals);
           setLpTokenYieldReturn(expectedLPTokenReturn.yields);
         } catch (error) {
-          console.error('Detail User Info - retrieveBalances() - Failed to fetch token balances for the user!', error);
+          console.error(
+            'Detail User Info - retrieveUserBalances() - Failed to fetch token balances for the user!',
+            error,
+          );
         }
       }
     };
 
-    retrieveBalances();
+    retrieveUserBalances();
   }, [ammAddress, userWalletAddress, poolDataAdapter, userLPBalance]);
 
   const showCurrentPosition = useMemo(() => {
