@@ -53,7 +53,7 @@ export default class DashboardDataAdapter {
     return [...parentRows, ...childRows];
   }
 
-  public getTempusPoolTVL(tempusPool: string, backingTokenTicker: Ticker): Observable<BigNumber | null> {
+  getTempusPoolTVL(tempusPool: string, backingTokenTicker: Ticker): Observable<BigNumber | null> {
     if (!this.statisticsService) {
       return of(null);
     }
