@@ -241,23 +241,14 @@ export default class PoolDataAdapter {
     }
 
     try {
-      const ticker$ = interval(POLLING_INTERVAL);
-
-      return ticker$.pipe(
-        switchMap(() => {
-          if (this.statisticService) {
-            return from(
-              this.statisticService.estimateExitAndRedeem(
-                tempusAmmAddress,
-                lpAmount,
-                principalAmount,
-                yieldsAmount,
-                isBackingToken,
-              ),
-            );
-          }
-          return of(BigNumber.from('0'));
-        }),
+      return from(
+        this.statisticService.estimateExitAndRedeem(
+          tempusAmmAddress,
+          lpAmount,
+          principalAmount,
+          yieldsAmount,
+          isBackingToken,
+        ),
       );
     } catch (error) {
       console.error('PoolDataAdapter - getEstimatedWithdrawAmount() - Failed to retrieve balances!', error);
@@ -808,19 +799,28 @@ export default class PoolDataAdapter {
     }
   }
 
-  async estimatedMintedShares(tempusPool: string, amount: BigNumber, isBackingToken: boolean): Promise<BigNumber> {
+  estimatedMintedShares(tempusPool: string, amount: BigNumber, isBackingToken: boolean): Observable<BigNumber> {
     if (!this.statisticService) {
       console.error(
         'PoolDataAdapter - estimatedMintedShares() - Attempted to use PoolDataAdapter before initializing it!',
       );
-      return Promise.reject();
+      return throwError(() => new Error());
     }
 
     try {
-      return await this.statisticService.estimatedMintedShares(tempusPool, amount, isBackingToken);
+      const ticker$ = interval(POLLING_INTERVAL);
+
+      return ticker$.pipe(
+        switchMap(() => {
+          if (this.statisticService) {
+            return from(this.statisticService.estimatedMintedShares(tempusPool, amount, isBackingToken));
+          }
+          return of(BigNumber.from('0'));
+        }),
+      );
     } catch (error) {
       console.error('PoolDataAdapter - estimatedMintedShares() - Failed to fetch estimated minted shares!', error);
-      return Promise.reject(error);
+      return throwError(() => new Error());
     }
   }
 
