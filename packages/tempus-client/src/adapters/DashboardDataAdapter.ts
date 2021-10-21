@@ -14,13 +14,11 @@ import TempusPoolService from '../services/TempusPoolService';
 import getERC20TokenService from '../services/getERC20TokenService';
 import getConfig from '../utils/get-config';
 import { mul18f } from '../utils/wei-math';
-import TempusAMMService from '../services/TempusAMMService';
 
 type DashboardDataAdapterParameters = {
   signerOrProvider: JsonRpcProvider | JsonRpcSigner;
   tempusPoolService: TempusPoolService;
   statisticsService: StatisticsService;
-  tempusAMMService: TempusAMMService;
   eRC20TokenServiceGetter: typeof getERC20TokenService;
 };
 
@@ -28,14 +26,12 @@ export default class DashboardDataAdapter {
   private eRC20TokenServiceGetter: typeof getERC20TokenService | null = null;
   private tempusPoolService: TempusPoolService | null = null;
   private statisticsService: StatisticsService | null = null;
-  private tempusAMMService: TempusAMMService | null = null;
   private userWalletAddress: string = '';
 
   public init(params: DashboardDataAdapterParameters) {
     this.eRC20TokenServiceGetter = params.eRC20TokenServiceGetter;
     this.tempusPoolService = params.tempusPoolService;
     this.statisticsService = params.statisticsService;
-    this.tempusAMMService = params.tempusAMMService;
   }
 
   public async getRows(userWalletAddress: string): Promise<DashboardRow[]> {
@@ -64,7 +60,7 @@ export default class DashboardDataAdapter {
   }
 
   private async getChildRowData(tempusPool: TempusPool): Promise<DashboardRowChild> {
-    if (!this.tempusPoolService || !this.statisticsService || !this.tempusAMMService) {
+    if (!this.tempusPoolService || !this.statisticsService) {
       console.error(
         'DashboardDataAdapter - getChildRowData() - Attempted to use DashboardDataAdapter before initializing it!',
       );
@@ -72,8 +68,7 @@ export default class DashboardDataAdapter {
     }
 
     try {
-      const [fixedAPR, tvl, poolBackingTokenRate, presentValueInBackingTokens, availableToDeposit] = await Promise.all([
-        this.tempusAMMService.getFixedAPR(tempusPool.ammAddress, tempusPool.principalsAddress),
+      const [tvl, poolBackingTokenRate, presentValueInBackingTokens, availableToDeposit] = await Promise.all([
         this.statisticsService.totalValueLockedUSD(tempusPool.address, tempusPool.backingToken),
         this.statisticsService.getRate(tempusPool.backingToken),
         this.getPresentValueInBackingTokensForPool(tempusPool),
@@ -100,7 +95,6 @@ export default class DashboardDataAdapter {
         yieldBearingTokenTicker: tempusPool.yieldBearingToken,
         startDate: new Date(tempusPool.startDate),
         maturityDate: new Date(tempusPool.maturityDate),
-        fixedAPR,
         TVL: Number(ethers.utils.formatEther(tvl)),
         presentValue:
           presentValueInBackingTokens !== undefined
@@ -133,7 +127,6 @@ export default class DashboardDataAdapter {
 
         const childrenMaturityDate = parentChildren.map(child => child.maturityDate);
         const childrenProtocols = parentChildren.map(child => child.protocol as ProtocolName);
-        const childrenFixedAPR = parentChildren.map(child => child.fixedAPR).filter(fixedAPR => fixedAPR !== null);
         const parentTVL = parentChildren.reduce((accumulator, currentValue) => {
           return accumulator + currentValue.TVL;
         }, 0);
@@ -165,7 +158,6 @@ export default class DashboardDataAdapter {
           parentId: null, // Always null for parent rows
           token: child.token,
           maturityRange: this.getRangeFrom<Date>(childrenMaturityDate),
-          fixedAPR: this.getRangeFrom<number>(childrenFixedAPR),
           TVL: parentTVL,
           presentValue: this.userWalletAddress ? parentPresentValue : undefined,
           availableUSDToDeposit: this.userWalletAddress ? availableToDepositInUSD : undefined,

@@ -27,7 +27,7 @@ export type SelectedYield = 'Fixed' | 'Variable';
 // TODO Component is too big, we may need to break it up
 const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userWalletAddress, poolDataAdapter }) => {
   const { address, ammAddress } = tempusPool || {};
-  const { supportedTokens = [], fixedAPR = 0 } = content || {};
+  const { supportedTokens = [] } = content || {};
   const [backingToken] = supportedTokens;
 
   const {
@@ -317,10 +317,16 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
     return NumberUtils.formatToCurrency(utils.formatEther(usdValue), 2, '$');
   }, [usdRate, amount]);
 
-  const variableAPYFormatted = useMemo(() => {
+  const variableAPRFormatted = useMemo(() => {
     const poolContextData = getDataForPool(content.tempusPool.address, poolData);
 
     return NumberUtils.formatPercentage(poolContextData.variableAPR, 2);
+  }, [content.tempusPool.address, poolData]);
+
+  const fixedAPRFormatted = useMemo(() => {
+    const poolContextData = getDataForPool(content.tempusPool.address, poolData);
+
+    return NumberUtils.formatPercentage(poolContextData.fixedAPR, 2);
   }, [content.tempusPool.address, poolData]);
 
   const depositDisabled = useMemo((): boolean => {
@@ -483,7 +489,7 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
                       est. APR{' '}
                       {estimatedFixedApr
                         ? NumberUtils.formatPercentage(utils.formatEther(estimatedFixedApr))
-                        : NumberUtils.formatPercentage(fixedAPR, 2)}
+                        : fixedAPRFormatted}
                     </Typography>
                   </div>
                 </SectionContainer>
@@ -512,7 +518,7 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
                       </Typography>
                     </div>
                     <Typography variant="h3" color="accent">
-                      est. APR {variableAPYFormatted}
+                      est. APR {variableAPRFormatted}
                     </Typography>
                   </div>
                 </SectionContainer>

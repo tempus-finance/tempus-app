@@ -2,7 +2,6 @@ import { JsonRpcSigner, JsonRpcProvider } from '@ethersproject/providers';
 import getDefaultProvider from '../services/getDefaultProvider';
 import getERC20TokenService from '../services/getERC20TokenService';
 import getStatisticsService from '../services/getStatisticsService';
-import getTempusAMMService from '../services/getTempusAMMService';
 import getTempusPoolService from '../services/getTempusPoolService';
 import DashboardDataAdapter from './DashboardDataAdapter';
 
@@ -14,7 +13,6 @@ const getDashboardDataAdapter = (signerOrProvider?: JsonRpcSigner | JsonRpcProvi
       signerOrProvider: getDefaultProvider(),
       eRC20TokenServiceGetter: getERC20TokenService,
       statisticsService: getStatisticsService(),
-      tempusAMMService: getTempusAMMService(),
       tempusPoolService: getTempusPoolService(),
     });
   }
@@ -24,7 +22,6 @@ const getDashboardDataAdapter = (signerOrProvider?: JsonRpcSigner | JsonRpcProvi
       signerOrProvider: signerOrProvider,
       eRC20TokenServiceGetter: getERC20TokenService,
       statisticsService: getStatisticsService(signerOrProvider),
-      tempusAMMService: getTempusAMMService(signerOrProvider),
       tempusPoolService: getTempusPoolService(signerOrProvider),
     });
   }

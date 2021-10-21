@@ -96,7 +96,7 @@ class TempusAMMService {
     throw new Error(`TempusAMMService - getTempusPoolAddress() - TempusAMM with address '${address}' does not exist`);
   }
 
-  public async getFixedAPR(address: string, principalsAddress: string): Promise<number | null> {
+  public async getFixedAPR(tempusAMM: string, principalsAddress: string): Promise<number | null> {
     if (!this.tempusPoolService) {
       console.error('TempusAMMService - getFixedAPR() - Attempted to se TempusAMMService before initializing it!');
       return Promise.reject();
@@ -105,11 +105,11 @@ class TempusAMMService {
     // If we try to inject vault service in AMM it create infinite dependency loop - this is a quick workaround.
     const vaultService = getVaultService();
 
-    const service = this.tempusAMMMap.get(address);
+    const service = this.tempusAMMMap.get(tempusAMM);
     if (service) {
       const YIELD_TO_PRINCIPAL = true;
 
-      const tempusPool = getConfig().tempusPools.find(pool => pool.ammAddress === address);
+      const tempusPool = getConfig().tempusPools.find(pool => pool.ammAddress === tempusAMM);
       if (!tempusPool) {
         console.error('TempusAMMService - getFixedAPR() - Failed to get tempus pool data from AMM!');
         return Promise.reject();
@@ -149,7 +149,7 @@ class TempusAMMService {
 
       return Number(ethers.utils.formatEther(mul18f(div18f(expectedReturn, spotPrice), scaleFactor)));
     }
-    throw new Error(`TempusAMMService - getFixedAPR() - TempusAMM with address '${address}' does not exist`);
+    throw new Error(`TempusAMMService - getFixedAPR() - TempusAMM with address '${tempusAMM}' does not exist`);
   }
 
   public async getExpectedTokensOutGivenBPTIn(

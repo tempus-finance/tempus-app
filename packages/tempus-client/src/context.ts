@@ -7,6 +7,7 @@ import getConfig from './utils/get-config';
 export interface ContextPoolData {
   address: string;
   backingTokenTicker: Ticker;
+  fixedAPR: number | null;
   variableAPR: number;
 }
 
@@ -48,6 +49,7 @@ export const defaultContextValue: ContextDataType = {
     address: tempusPoolConfig.address,
     backingTokenTicker: tempusPoolConfig.backingToken,
     variableAPR: 0,
+    fixedAPR: null,
   })),
 };
 export const Context = React.createContext<ContextType>({
