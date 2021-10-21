@@ -50,9 +50,6 @@ export const dashboardColumnsDefinitions: ExtraDataColumn[] = [
   {
     name: 'TVL',
     title: 'TVL',
-    getCellValue: (row: any) => {
-      return row.TVL;
-    },
   },
   {
     name: 'presentValue',

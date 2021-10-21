@@ -33,3 +33,5 @@ export const removeLiquidityGasIncrease = 1.05;
 
 export const dashboardParentMaturityFormat = 'MMM yyyy';
 export const dashboardChildMaturityFormat = 'd MMMM yyyy';
+
+export const POLLING_INTERVAL = 30 * 1000;

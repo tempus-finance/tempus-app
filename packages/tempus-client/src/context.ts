@@ -9,6 +9,7 @@ export interface ContextPoolData {
   backingTokenTicker: Ticker;
   fixedAPR: number | null;
   variableAPR: number;
+  tvl: BigNumber | null;
 }
 
 interface ContextDataType {
@@ -49,6 +50,7 @@ export const defaultContextValue: ContextDataType = {
     address: tempusPoolConfig.address,
     backingTokenTicker: tempusPoolConfig.backingToken,
     variableAPR: 0,
+    tvl: null,
     fixedAPR: null,
   })),
 };
