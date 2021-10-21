@@ -1,5 +1,6 @@
 import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { utils, BigNumber, ethers } from 'ethers';
+import { catchError } from 'rxjs';
 import Button from '@material-ui/core/Button';
 import { interestRateProtectionTooltipText, liquidityProvisionTooltipText } from '../../../constants';
 import NumberUtils from '../../../services/NumberUtils';
@@ -162,24 +163,24 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
   }, []);
 
   useEffect(() => {
-    const retrieveTokenRates = async () => {
-      if (signer && address && ammAddress && poolDataAdapter) {
-        try {
-          const { backingTokenRate, yieldBearingTokenRate } = await poolDataAdapter.retrieveBalances(
-            address,
-            ammAddress,
-            userWalletAddress,
-            signer,
-          );
+    if (signer && address && ammAddress && poolDataAdapter) {
+      const stream$ = poolDataAdapter
+        .retrieveBalances(address, ammAddress, userWalletAddress, signer)
+        .pipe(
+          catchError((error, caught) => {
+            console.log('DetailDeposit - retrieveTokenRates - Failed to retrieve token rates!', error);
+            return caught;
+          }),
+        )
+        .subscribe((result: { backingTokenRate: BigNumber; yieldBearingTokenRate: BigNumber }) => {
+          if (result) {
+            setBackingTokenRate(result.backingTokenRate);
+            setYieldBearingTokenRate(result.yieldBearingTokenRate);
+          }
+        });
 
-          setBackingTokenRate(backingTokenRate);
-          setYieldBearingTokenRate(yieldBearingTokenRate);
-        } catch (error) {
-          console.log('DetailDeposit - retrieveTokenRates - Failed to retrieve token rates!', error);
-        }
-      }
-    };
-    retrieveTokenRates();
+      return () => stream$.unsubscribe();
+    }
   }, [
     backingToken,
     selectedToken,
@@ -265,14 +266,15 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
   }, [amount, selectedToken, backingToken, address, ammAddress, poolDataAdapter, setEstimatedFixedApr]);
 
   useEffect(() => {
-    const fetchIsYieldNegative = async () => {
-      if (poolDataAdapter) {
-        const isYieldNegative = await poolDataAdapter.isCurrentYieldNegativeForPool(address);
-        setIsYieldNegative(isYieldNegative);
-      }
-    };
+    if (!poolDataAdapter) {
+      return;
+    }
 
-    fetchIsYieldNegative();
+    const stream$ = poolDataAdapter.isCurrentYieldNegativeForPool(address).subscribe(isYieldNegative => {
+      setIsYieldNegative(isYieldNegative);
+    });
+
+    return () => stream$.unsubscribe();
   }, [address, poolDataAdapter]);
 
   const fixedPrincipalsAmountFormatted = useMemo(() => {
