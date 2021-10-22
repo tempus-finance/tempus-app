@@ -1,6 +1,6 @@
 import { BigNumber, ContractTransaction, ethers } from 'ethers';
 import { JsonRpcSigner } from '@ethersproject/providers';
-import { Observable, from, of, interval, switchMap, combineLatest, map, throwError } from 'rxjs';
+import { Observable, from, of, interval, switchMap, combineLatest, map, throwError, timer } from 'rxjs';
 import TempusAMMService from '../services/TempusAMMService';
 import StatisticsService from '../services/StatisticsService';
 import TempusControllerService, { DepositedEvent, RedeemedEvent } from '../services/TempusControllerService';
@@ -977,7 +977,7 @@ export default class PoolDataAdapter {
     }
 
     try {
-      const ticker$ = interval(POLLING_INTERVAL);
+      const ticker$ = timer(0, POLLING_INTERVAL);
       const currentInterestRate$ = switchMap(() => {
         if (this.tempusPoolService) {
           return this.tempusPoolService.currentInterestRate(tempusPool);
