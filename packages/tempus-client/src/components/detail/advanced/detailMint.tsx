@@ -128,28 +128,27 @@ const DetailMint: FC<DetailMintProps> = props => {
 
   // Fetch estimated tokens returned
   useEffect(() => {
-    const getEstimates = async () => {
-      if (!poolDataAdapter || !amount) {
-        return;
-      }
-      const isBackingToken = selectedToken === backingToken;
-      const amountParsed = ethers.utils.parseEther(amount);
+    if (!poolDataAdapter || !amount) {
+      return;
+    }
 
-      try {
-        setEstimateInProgress(true);
-        const estimatedMintedShares = await poolDataAdapter.estimatedMintedShares(
-          tempusPool.address,
-          amountParsed,
-          isBackingToken,
-        );
-        setEstimatedTokens(estimatedMintedShares);
-        setEstimateInProgress(false);
-      } catch (error) {
-        console.error('DetailMint - getEstimates() - Failed to get estimates for selected token!', error);
-        setEstimateInProgress(false);
-      }
-    };
-    getEstimates();
+    const isBackingToken = selectedToken === backingToken;
+    const amountParsed = ethers.utils.parseEther(amount);
+
+    try {
+      setEstimateInProgress(true);
+      const stream$ = poolDataAdapter
+        .estimatedMintedShares(tempusPool.address, amountParsed, isBackingToken)
+        .subscribe(estimatedMintedShares => {
+          setEstimatedTokens(estimatedMintedShares);
+          setEstimateInProgress(false);
+        });
+
+      return () => stream$.unsubscribe();
+    } catch (error) {
+      console.error('DetailMint - getEstimates() - Failed to get estimates for selected token!', error);
+      setEstimateInProgress(false);
+    }
   }, [amount, backingToken, poolDataAdapter, selectedToken, tempusPool]);
 
   useEffect(() => {
