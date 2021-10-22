@@ -1,11 +1,10 @@
 import { BigNumber } from 'ethers';
 import { combineLatest, from, Observable, of, switchMap, throwError, timer } from 'rxjs';
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
-import StatisticsService from '../services/StatisticsService';
-
 import { POLLING_INTERVAL } from '../constants';
 import { TempusPool } from '../interfaces/TempusPool';
 import { mul18f } from '../utils/wei-math';
+import StatisticsService from '../services/StatisticsService';
 import getERC20TokenService from '../services/getERC20TokenService';
 
 type UserBalanceDataAdapterParameters = {

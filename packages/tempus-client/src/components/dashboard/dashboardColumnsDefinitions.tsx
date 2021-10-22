@@ -1,6 +1,5 @@
-import { Column } from '@devexpress/dx-react-grid';
 import { ethers } from 'ethers';
-
+import { Column } from '@devexpress/dx-react-grid';
 import { DashboardRowChild, DashboardRowParent, isParentRow } from '../../interfaces';
 import NumberUtils from '../../services/NumberUtils';
 

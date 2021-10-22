@@ -1,6 +1,6 @@
-import { CircularProgress } from '@material-ui/core';
 import { ethers, BigNumber } from 'ethers';
 import { useContext, useMemo } from 'react';
+import { CircularProgress } from '@material-ui/core';
 import { Context, ContextPoolData, getDataForPool } from '../../../context';
 import { Ticker } from '../../../interfaces';
 import NumberUtils from '../../../services/NumberUtils';

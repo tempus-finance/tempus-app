@@ -42,6 +42,7 @@ const BalanceProvider: FC<PresentValueProviderProps> = props => {
 
     getConfig().tempusPools.forEach(poolConfig => {
       if (userWalletSigner) {
+        console.log(`Fetching ${poolConfig.address} user USD balance!`);
         const userUSDBalanceStream$ = userBalanceDataAdapter.getUserUSDBalanceForPool(
           poolConfig,
           userWalletAddress,
@@ -79,8 +80,9 @@ const BalanceProvider: FC<PresentValueProviderProps> = props => {
     }
 
     getConfig().tempusPools.forEach(poolConfig => {
+      console.log(`Subscribing to token updates for ${poolConfig.address}`);
       const principalsService = getERC20TokenService(poolConfig.principalsAddress, userWalletSigner);
-      const yieldsService = getERC20TokenService(poolConfig.principalsAddress, userWalletSigner);
+      const yieldsService = getERC20TokenService(poolConfig.yieldsAddress, userWalletSigner);
       const lpTokenService = getERC20TokenService(poolConfig.ammAddress, userWalletSigner);
 
       principalsService.onTransfer(userWalletAddress, null, updateUserBalance);
@@ -95,8 +97,9 @@ const BalanceProvider: FC<PresentValueProviderProps> = props => {
 
     return () => {
       getConfig().tempusPools.forEach(poolConfig => {
+        console.log(`Unsubscribing to token updates for ${poolConfig.address}`);
         const principalsService = getERC20TokenService(poolConfig.principalsAddress, userWalletSigner);
-        const yieldsService = getERC20TokenService(poolConfig.principalsAddress, userWalletSigner);
+        const yieldsService = getERC20TokenService(poolConfig.yieldsAddress, userWalletSigner);
         const lpTokenService = getERC20TokenService(poolConfig.ammAddress, userWalletSigner);
 
         principalsService.offTransfer(userWalletAddress, null, updateUserBalance);

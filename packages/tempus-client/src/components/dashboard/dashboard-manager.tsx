@@ -1,7 +1,7 @@
 import { FC, useCallback, useContext, useEffect, useState } from 'react';
 import { CircularProgress } from '@material-ui/core';
 import { DashboardRow, DashboardRowChild } from '../../interfaces';
-import { Context, getDataForPool } from '../../context';
+import { Context } from '../../context';
 import getDashboardDataAdapter from '../../adapters/getDashboardDataAdapter';
 import DashboardDataAdapter from '../../adapters/DashboardDataAdapter';
 import TVLProvider from '../../providers/tvlProvider';
@@ -24,7 +24,7 @@ const DashboardManager: FC<DashboardManagerProps> = ({ selectedRow, onRowSelecte
   const [rows, setRows] = useState<DashboardRow[]>([]);
 
   const {
-    data: { userWalletAddress, userWalletConnected, userWalletSigner, poolData },
+    data: { userWalletAddress, userWalletConnected, userWalletSigner },
     setData,
   } = useContext(Context);
 
@@ -55,16 +55,13 @@ const DashboardManager: FC<DashboardManagerProps> = ({ selectedRow, onRowSelecte
     (row: DashboardRowChild) => {
       onRowSelected && onRowSelected(row);
 
-      const data = getDataForPool(row.tempusPool.address, poolData);
-
       setData &&
         setData(previousData => ({
           ...previousData,
           selectedRow: row,
-          activePool: data,
         }));
     },
-    [onRowSelected, poolData, setData],
+    [onRowSelected, setData],
   );
 
   const onCloseRowDetail = useCallback(() => {
