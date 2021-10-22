@@ -19,14 +19,19 @@ const BalanceProvider: FC<PresentValueProviderProps> = props => {
   } = useContext(Context);
 
   const updateUserBalanceForPool = useCallback(
-    (balance: BigNumber) => {
+    (tempusPool: string, balance: BigNumber) => {
       setData &&
         setData(previousData => ({
           ...previousData,
-          poolData: previousData.poolData.map(previousPoolData => ({
-            ...previousPoolData,
-            balance: balance,
-          })),
+          poolData: previousData.poolData.map(previousPoolData => {
+            if (previousPoolData.address !== tempusPool) {
+              return previousPoolData;
+            }
+            return {
+              ...previousPoolData,
+              balance: balance,
+            };
+          }),
         }));
     },
     [setData],
@@ -45,7 +50,7 @@ const BalanceProvider: FC<PresentValueProviderProps> = props => {
 
         streams.push(
           userUSDBalanceStream$.subscribe(balance => {
-            updateUserBalanceForPool(balance);
+            updateUserBalanceForPool(poolConfig.address, balance);
           }),
         );
       }
@@ -57,6 +62,13 @@ const BalanceProvider: FC<PresentValueProviderProps> = props => {
       });
     };
   }, [userWalletSigner, userBalanceDataAdapter, userWalletAddress, updateUserBalanceForPool]);
+
+  /**
+   * Fetch user balance when component mounts
+   */
+  useEffect(() => {
+    updateUserBalance();
+  }, [updateUserBalance]);
 
   /**
    * Subscribe to user principals, yields and LP Token transfer events for all pools
