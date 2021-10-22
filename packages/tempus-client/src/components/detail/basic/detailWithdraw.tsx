@@ -1,6 +1,6 @@
 import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { ethers, BigNumber } from 'ethers';
-import { Context } from '../../../context';
+import { Context, getDataForPool } from '../../../context';
 import { Ticker } from '../../../interfaces/Token';
 import NumberUtils from '../../../services/NumberUtils';
 import getConfig from '../../../utils/get-config';
@@ -24,7 +24,7 @@ const DetailWithdraw: FC<PoolDetailProps> = ({ tempusPool, content, signer, user
   const yieldBearingToken = content.yieldBearingTokenTicker;
 
   const {
-    data: { userCurrentPoolPresentValue, userPrincipalsBalance, userYieldsBalance, userLPBalance },
+    data: { userPrincipalsBalance, userYieldsBalance, userLPBalance, poolData },
   } = useContext(Context);
 
   const [selectedToken, setSelectedToken] = useState<Ticker>(yieldBearingToken);
@@ -112,11 +112,13 @@ const DetailWithdraw: FC<PoolDetailProps> = ({ tempusPool, content, signer, user
   }, [estimatedWithdrawAmount, tempusPool.decimalsForUI]);
 
   const estimatedWithdrawAmountUsdFormatted = useMemo(() => {
-    if (!userCurrentPoolPresentValue) {
+    const data = getDataForPool(content.tempusPool.address, poolData);
+
+    if (!data.balance) {
       return null;
     }
-    return NumberUtils.formatToCurrency(ethers.utils.formatEther(userCurrentPoolPresentValue), 2, '$');
-  }, [userCurrentPoolPresentValue]);
+    return NumberUtils.formatToCurrency(ethers.utils.formatEther(data.balance), 2, '$');
+  }, [content.tempusPool.address, poolData]);
 
   const executeDisabled = useMemo(() => {
     const principalBalanceZero = userPrincipalsBalance && userPrincipalsBalance.isZero();

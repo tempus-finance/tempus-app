@@ -1,7 +1,7 @@
 import { FC, useCallback, useContext, useEffect, useState } from 'react';
 import { CircularProgress } from '@material-ui/core';
 import { DashboardRow, DashboardRowChild } from '../../interfaces';
-import { Context } from '../../context';
+import { Context, getDataForPool } from '../../context';
 import getDashboardDataAdapter from '../../adapters/getDashboardDataAdapter';
 import DashboardDataAdapter from '../../adapters/DashboardDataAdapter';
 import TVLProvider from '../../providers/tvlProvider';
@@ -9,6 +9,9 @@ import Detail from '../detail/detail';
 import Typography from '../typography/Typography';
 import Spacer from '../spacer/spacer';
 import Dashboard from './dashboard';
+import BalanceProvider from '../../providers/balanceProvider';
+import UserBalanceDataAdapter from '../../adapters/UserBalanceDataAdapter';
+import getUserBalanceDataAdapter from '../../adapters/getUserBalanceDataAdapter';
 
 type DashboardManagerProps = {
   selectedRow: DashboardRowChild | null;
@@ -17,23 +20,32 @@ type DashboardManagerProps = {
 
 const DashboardManager: FC<DashboardManagerProps> = ({ selectedRow, onRowSelected }): JSX.Element => {
   const [dashboardDataAdapter, setDashboardDataAdapter] = useState<DashboardDataAdapter | null>(null);
+  const [userBalanceDataAdapter, setUserBalanceDataAdapter] = useState<UserBalanceDataAdapter | null>(null);
   const [rows, setRows] = useState<DashboardRow[]>([]);
 
   const {
-    data: { userWalletAddress, userWalletConnected, userWalletSigner },
+    data: { userWalletAddress, userWalletConnected, userWalletSigner, poolData },
     setData,
   } = useContext(Context);
 
   useEffect(() => {
     const fetchRows = async () => {
       if (userWalletConnected === true && userWalletAddress && userWalletSigner) {
-        const adapter = getDashboardDataAdapter(userWalletSigner);
-        setDashboardDataAdapter(adapter);
-        setRows(await adapter.getRows(userWalletAddress));
+        const dashboardDataAdapter = getDashboardDataAdapter(userWalletSigner);
+        const userBalanceDataAdapter = getUserBalanceDataAdapter(userWalletSigner);
+
+        setDashboardDataAdapter(dashboardDataAdapter);
+        setUserBalanceDataAdapter(userBalanceDataAdapter);
+
+        setRows(await dashboardDataAdapter.getRows(userWalletAddress));
       } else if (userWalletConnected === false) {
-        const adapter = getDashboardDataAdapter();
-        setDashboardDataAdapter(adapter);
-        setRows(await adapter.getRows(''));
+        const dashboardDataAdapter = getDashboardDataAdapter();
+        const userBalanceDataAdapter = getUserBalanceDataAdapter();
+
+        setUserBalanceDataAdapter(userBalanceDataAdapter);
+        setDashboardDataAdapter(dashboardDataAdapter);
+
+        setRows(await dashboardDataAdapter.getRows(''));
       }
     };
     fetchRows();
@@ -43,13 +55,16 @@ const DashboardManager: FC<DashboardManagerProps> = ({ selectedRow, onRowSelecte
     (row: DashboardRowChild) => {
       onRowSelected && onRowSelected(row);
 
+      const data = getDataForPool(row.tempusPool.address, poolData);
+
       setData &&
         setData(previousData => ({
           ...previousData,
           selectedRow: row,
+          activePool: data,
         }));
     },
-    [onRowSelected, setData],
+    [onRowSelected, poolData, setData],
   );
 
   const onCloseRowDetail = useCallback(() => {
@@ -79,6 +94,7 @@ const DashboardManager: FC<DashboardManagerProps> = ({ selectedRow, onRowSelecte
 
       {selectedRow && <Detail content={selectedRow} onClose={onCloseRowDetail} />}
       {dashboardDataAdapter && <TVLProvider dashboardDataAdapter={dashboardDataAdapter} />}
+      {userBalanceDataAdapter && <BalanceProvider userBalanceDataAdapter={userBalanceDataAdapter} />}
     </>
   );
 };

@@ -7,7 +7,6 @@ import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
 import PoolDataAdapter from '../../adapters/PoolDataAdapter';
 import { DashboardRowChild } from '../../interfaces';
 import { Context } from '../../context';
-import PresentValueProvider from '../../providers/presentValueProvider';
 import TokenIcon, { getTickerFromProtocol } from '../tokenIcon';
 import Typography from '../typography/Typography';
 import Spacer from '../spacer/spacer';
@@ -186,7 +185,6 @@ const Detail: FC<DetailProps> = ({ content, onClose }) => {
           userWalletAddress={userWalletAddress}
         />
       </div>
-      {poolDataAdapter && <PresentValueProvider poolDataAdapter={poolDataAdapter} tempusPool={tempusPool} />}
     </div>
   );
 };

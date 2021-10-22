@@ -25,6 +25,7 @@ import MaturityProvider from './providers/maturityProvider';
 import TVLProvider from './providers/tvlProvider';
 import VariableAPRProvider from './providers/variableAPRProvider';
 import FixedAPRProvider from './providers/fixedAPRProvider';
+import BalanceProvider from './providers/balanceProvider';
 import AvailableToDepositProvider from './providers/availableToDepositProvider';
 import { dashboardColumnsDefinitions } from './dashboardColumnsDefinitions';
 
@@ -226,6 +227,7 @@ const Dashboard: FC<DashboardProps> = ({ hidden, userWalletAddress, rows, onRowA
               <TVLProvider for={[ColumnNames.TVL]} />
               <VariableAPRProvider for={[ColumnNames.VARIABLE_APY]} />
               <FixedAPRProvider for={[ColumnNames.FIXED_APR]} />
+              <BalanceProvider for={[ColumnNames.PRESENT_VALUE]} />
               <CustomTreeData getChildRows={getChildRows} />
               <IntegratedSummary />
               <IntegratedSorting columnExtensions={integratedSortingColumnExtensions} />
