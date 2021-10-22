@@ -52,27 +52,26 @@ const DetailWithdraw: FC<PoolDetailProps> = ({ tempusPool, content, signer, user
 
   // Fetch estimated withdraw amount of tokens
   useEffect(() => {
-    const retrieveEstimatedWithdrawAmount = async () => {
-      if (poolDataAdapter && userPrincipalsBalance && userYieldsBalance && userLPBalance) {
-        try {
-          const isBackingToken = backingToken === selectedToken;
-
-          const amount = await poolDataAdapter.getEstimatedWithdrawAmount(
+    if (poolDataAdapter && userPrincipalsBalance && userYieldsBalance && userLPBalance) {
+      try {
+        const isBackingToken = backingToken === selectedToken;
+        const stream$ = poolDataAdapter
+          .getEstimatedWithdrawAmount(
             ammAddress,
             userLPBalance,
             userPrincipalsBalance,
             userYieldsBalance,
             isBackingToken,
-          );
-          setEstimatedWithdrawAmount(amount);
-        } catch (error) {
-          console.log('DetailWithdraw - retrieveWithdrawAmount() - Failed to fetch estimated withdraw amount!', error);
-          return Promise.reject(error);
-        }
-      }
-    };
+          )
+          .subscribe(amount => {
+            setEstimatedWithdrawAmount(amount);
+          });
 
-    retrieveEstimatedWithdrawAmount();
+        return () => stream$.unsubscribe();
+      } catch (error) {
+        console.log('DetailWithdraw - retrieveWithdrawAmount() - Failed to fetch estimated withdraw amount!', error);
+      }
+    }
   }, [
     ammAddress,
     selectedToken,
