@@ -1,4 +1,4 @@
-import { FC, useCallback, useContext, useEffect } from 'react';
+import { useCallback, useContext, useEffect } from 'react';
 import { Context } from '../context';
 import { TempusPool } from '../interfaces/TempusPool';
 import getERC20TokenService from '../services/getERC20TokenService';

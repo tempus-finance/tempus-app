@@ -66,7 +66,6 @@ const DetailUserInfoBalance: FC<DetailUserInfoBalancesProps> = props => {
 
   const formattedPresentValue = useMemo(() => {
     const data = getDataForPool(content.tempusPool.address, poolData);
-
     if (!data.userBalanceUSD) {
       return null;
     }
