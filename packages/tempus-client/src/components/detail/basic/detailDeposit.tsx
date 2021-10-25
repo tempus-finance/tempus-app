@@ -114,7 +114,7 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
       }
 
       const percentage = ethers.utils.parseUnits(event.currentTarget.value, tokenPrecision);
-      setAmount(ethers.utils.formatEther(mul18f(currentBalance, percentage)));
+      setAmount(ethers.utils.formatUnits(mul18f(currentBalance, percentage, tokenPrecision), tokenPrecision));
     },
     [content.tempusPool.address, poolData, selectedToken, backingToken, tokenPrecision],
   );
@@ -148,7 +148,7 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
     if (signer && amount && poolDataAdapter) {
       const tokenAmount = utils.parseUnits(amount, tokenPrecision);
       const isBackingToken = backingToken === selectedToken;
-      const parsedMinTYSRate = utils.parseEther(minTYSRate.toString());
+      const parsedMinTYSRate = utils.parseUnits(minTYSRate.toString(), tokenPrecision);
       const isEthDeposit = selectedToken === 'ETH';
       return poolDataAdapter.executeDeposit(
         ammAddress,
@@ -266,7 +266,7 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
         const isBackingToken = selectedToken === backingToken;
         try {
           const fixedAPREstimate = await poolDataAdapter.getEstimatedFixedApr(
-            utils.parseEther(amount),
+            utils.parseUnits(amount, tokenPrecision),
             isBackingToken,
             address,
             ammAddress,
@@ -284,7 +284,7 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
     };
 
     getEstimatedFixedApr();
-  }, [amount, selectedToken, backingToken, address, ammAddress, poolDataAdapter, setEstimatedFixedApr]);
+  }, [amount, selectedToken, backingToken, address, tokenPrecision, ammAddress, poolDataAdapter, setEstimatedFixedApr]);
 
   useEffect(() => {
     if (!poolDataAdapter) {
@@ -302,22 +302,31 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
     if (!fixedPrincipalsAmount) {
       return null;
     }
-    return NumberUtils.formatToCurrency(utils.formatEther(fixedPrincipalsAmount), tempusPool.decimalsForUI);
-  }, [fixedPrincipalsAmount, tempusPool.decimalsForUI]);
+    return NumberUtils.formatToCurrency(
+      utils.formatUnits(fixedPrincipalsAmount, tokenPrecision),
+      tempusPool.decimalsForUI,
+    );
+  }, [fixedPrincipalsAmount, tokenPrecision, tempusPool.decimalsForUI]);
 
   const variablePrincipalsAmountFormatted = useMemo(() => {
     if (!variablePrincipalsAmount) {
       return null;
     }
-    return NumberUtils.formatToCurrency(utils.formatEther(variablePrincipalsAmount), tempusPool.decimalsForUI);
-  }, [variablePrincipalsAmount, tempusPool.decimalsForUI]);
+    return NumberUtils.formatToCurrency(
+      utils.formatUnits(variablePrincipalsAmount, tokenPrecision),
+      tempusPool.decimalsForUI,
+    );
+  }, [variablePrincipalsAmount, tokenPrecision, tempusPool.decimalsForUI]);
 
   const variableLpTokensAmountFormatted = useMemo(() => {
     if (!variableLpTokensAmount) {
       return null;
     }
-    return NumberUtils.formatToCurrency(utils.formatEther(variableLpTokensAmount), tempusPool.decimalsForUI);
-  }, [variableLpTokensAmount, tempusPool.decimalsForUI]);
+    return NumberUtils.formatToCurrency(
+      utils.formatUnits(variableLpTokensAmount, tokenPrecision),
+      tempusPool.decimalsForUI,
+    );
+  }, [variableLpTokensAmount, tokenPrecision, tempusPool.decimalsForUI]);
 
   const balanceFormatted = useMemo(() => {
     let currentBalance = getSelectedTokenBalance();
@@ -325,17 +334,17 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
       return null;
     }
 
-    return NumberUtils.formatToCurrency(utils.formatEther(currentBalance), tempusPool.decimalsForUI);
-  }, [getSelectedTokenBalance, tempusPool.decimalsForUI]);
+    return NumberUtils.formatToCurrency(utils.formatUnits(currentBalance, tokenPrecision), tempusPool.decimalsForUI);
+  }, [getSelectedTokenBalance, tokenPrecision, tempusPool.decimalsForUI]);
 
   const usdValueFormatted = useMemo(() => {
     if (!usdRate || !amount) {
       return null;
     }
 
-    let usdValue = mul18f(usdRate, utils.parseUnits(amount, tokenPrecision));
+    let usdValue = mul18f(usdRate, utils.parseUnits(amount, tokenPrecision), tokenPrecision);
 
-    return NumberUtils.formatToCurrency(utils.formatEther(usdValue), 2, '$');
+    return NumberUtils.formatToCurrency(utils.formatUnits(usdValue, tokenPrecision), 2, '$');
   }, [tokenPrecision, usdRate, amount]);
 
   const variableAPRFormatted = useMemo(() => {
@@ -363,7 +372,7 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
   const executeDisabled = useMemo((): boolean => {
     const zeroAmount = isZeroString(amount);
     const amountExceedsBalance = ethers.utils
-      .parseEther(amount || '0')
+      .parseUnits(amount || '0', tokenPrecision)
       .gt(getSelectedTokenBalance() || BigNumber.from('0'));
 
     return (
@@ -376,6 +385,7 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
     );
   }, [
     amount,
+    tokenPrecision,
     getSelectedTokenBalance,
     rateEstimateInProgress,
     tokenEstimateInProgress,
@@ -509,7 +519,7 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
                     <Typography variant="h3" color="accent">
                       est. APR{' '}
                       {estimatedFixedApr
-                        ? NumberUtils.formatPercentage(utils.formatEther(estimatedFixedApr))
+                        ? NumberUtils.formatPercentage(utils.formatUnits(estimatedFixedApr, tokenPrecision))
                         : fixedAPRFormatted}
                     </Typography>
                   </div>
