@@ -113,10 +113,10 @@ const DetailWithdraw: FC<PoolDetailProps> = ({ tempusPool, content, signer, user
   const estimatedWithdrawAmountUsdFormatted = useMemo(() => {
     const data = getDataForPool(content.tempusPool.address, poolData);
 
-    if (!data.balance) {
+    if (!data.userBalanceUSD) {
       return null;
     }
-    return NumberUtils.formatToCurrency(ethers.utils.formatEther(data.balance), 2, '$');
+    return NumberUtils.formatToCurrency(ethers.utils.formatEther(data.userBalanceUSD), 2, '$');
   }, [content.tempusPool.address, poolData]);
 
   const executeDisabled = useMemo(() => {

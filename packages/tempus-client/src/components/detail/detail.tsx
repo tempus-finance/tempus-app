@@ -58,19 +58,14 @@ const Detail: FC<DetailProps> = ({ content, onClose }) => {
         return;
       }
 
-      const [backingTokenBalance, yieldBearingTokenBalance, principalsBalance, yieldsBalance, lpBalance] =
-        await Promise.all([
-          poolDataAdapter.getTokenBalance(content.backingTokenAddress, userWalletAddress, userWalletSigner),
-          poolDataAdapter.getTokenBalance(content.yieldBearingTokenAddress, userWalletAddress, userWalletSigner),
-          poolDataAdapter.getTokenBalance(content.principalTokenAddress, userWalletAddress, userWalletSigner),
-          poolDataAdapter.getTokenBalance(content.yieldTokenAddress, userWalletAddress, userWalletSigner),
-          poolDataAdapter.getTokenBalance(tempusPool.ammAddress, userWalletAddress, userWalletSigner),
-        ]);
+      const [principalsBalance, yieldsBalance, lpBalance] = await Promise.all([
+        poolDataAdapter.getTokenBalance(content.principalTokenAddress, userWalletAddress, userWalletSigner),
+        poolDataAdapter.getTokenBalance(content.yieldTokenAddress, userWalletAddress, userWalletSigner),
+        poolDataAdapter.getTokenBalance(tempusPool.ammAddress, userWalletAddress, userWalletSigner),
+      ]);
 
       setData(previousData => ({
         ...previousData,
-        userBackingTokenBalance: backingTokenBalance,
-        userYieldBearingTokenBalance: yieldBearingTokenBalance,
         userPrincipalsBalance: principalsBalance,
         userYieldsBalance: yieldsBalance,
         userLPBalance: lpBalance,
@@ -80,8 +75,6 @@ const Detail: FC<DetailProps> = ({ content, onClose }) => {
   }, [
     setData,
     poolDataAdapter,
-    content.backingTokenAddress,
-    content.yieldBearingTokenAddress,
     content.principalTokenAddress,
     content.yieldTokenAddress,
     tempusPool.ammAddress,

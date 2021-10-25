@@ -30,14 +30,7 @@ const DetailUserInfoBalance: FC<DetailUserInfoBalancesProps> = props => {
   const yieldBearingTokenTicker = supportedTokens[1];
 
   const {
-    data: {
-      userBackingTokenBalance,
-      userYieldBearingTokenBalance,
-      userPrincipalsBalance,
-      userYieldsBalance,
-      userLPBalance,
-      poolData,
-    },
+    data: { userPrincipalsBalance, userYieldsBalance, userLPBalance, poolData },
   } = useContext(Context);
 
   const [lpTokenPrincipalReturnBalance, setLpTokenPrincipalReturn] = useState<BigNumber>(BigNumber.from('0'));
@@ -74,28 +67,34 @@ const DetailUserInfoBalance: FC<DetailUserInfoBalancesProps> = props => {
   const formattedPresentValue = useMemo(() => {
     const data = getDataForPool(content.tempusPool.address, poolData);
 
-    if (!data.balance) {
+    if (!data.userBalanceUSD) {
       return null;
     }
-    return NumberUtils.formatToCurrency(ethers.utils.formatEther(data.balance), 2, '$');
+    return NumberUtils.formatToCurrency(ethers.utils.formatEther(data.userBalanceUSD), 2, '$');
   }, [content.tempusPool.address, poolData]);
 
   const backingTokenValue = useMemo(() => {
-    if (!userBackingTokenBalance) {
+    const data = getDataForPool(content.tempusPool.address, poolData);
+    if (!data.userBackingTokenBalance) {
       return null;
     }
-    return NumberUtils.formatToCurrency(ethers.utils.formatEther(userBackingTokenBalance), tempusPool.decimalsForUI);
-  }, [userBackingTokenBalance, tempusPool.decimalsForUI]);
+
+    return NumberUtils.formatToCurrency(
+      ethers.utils.formatEther(data.userBackingTokenBalance),
+      tempusPool.decimalsForUI,
+    );
+  }, [content.tempusPool.address, poolData, tempusPool.decimalsForUI]);
 
   const yieldBearingTokenValue = useMemo(() => {
-    if (!userYieldBearingTokenBalance) {
+    const data = getDataForPool(content.tempusPool.address, poolData);
+    if (!data.userYieldBearingTokenBalance) {
       return null;
     }
     return NumberUtils.formatToCurrency(
-      ethers.utils.formatEther(userYieldBearingTokenBalance),
+      ethers.utils.formatEther(data.userYieldBearingTokenBalance),
       tempusPool.decimalsForUI,
     );
-  }, [userYieldBearingTokenBalance, tempusPool.decimalsForUI]);
+  }, [content.tempusPool.address, poolData, tempusPool.decimalsForUI]);
 
   return (
     <>

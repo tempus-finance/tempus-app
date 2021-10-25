@@ -4,21 +4,28 @@ import { BigNumber } from 'ethers';
 import { DashboardRowChild, Ticker } from './interfaces';
 import getConfig from './utils/get-config';
 
+export interface AvailableToDeposit {
+  backingTokenAmount: BigNumber;
+  yieldBearingTokenAmount: BigNumber;
+}
+
 export interface ContextPoolData {
   address: string;
   backingTokenTicker: Ticker;
+  yieldBearingTokenTicker: Ticker;
+  userBackingTokenBalance: BigNumber | null;
+  userYieldBearingTokenBalance: BigNumber | null;
   fixedAPR: number | null;
   variableAPR: number;
   tvl: BigNumber | null;
-  balance: BigNumber | null;
+  userBalanceUSD: BigNumber | null;
+  userAvailableToDepositUSD: AvailableToDeposit | null;
 }
 
 interface ContextDataType {
   userWalletConnected: boolean | null;
   userWalletAddress: string;
   userWalletSigner: JsonRpcSigner | null;
-  userBackingTokenBalance: BigNumber | null;
-  userYieldBearingTokenBalance: BigNumber | null;
   userPrincipalsBalance: BigNumber | null;
   userYieldsBalance: BigNumber | null;
   userLPBalance: BigNumber | null;
@@ -37,8 +44,6 @@ export const defaultContextValue: ContextDataType = {
   userWalletConnected: null,
   userWalletAddress: '',
   userWalletSigner: null,
-  userBackingTokenBalance: null,
-  userYieldBearingTokenBalance: null,
   userPrincipalsBalance: null,
   userYieldsBalance: null,
   userLPBalance: null,
@@ -48,10 +53,14 @@ export const defaultContextValue: ContextDataType = {
   poolData: getConfig().tempusPools.map(tempusPoolConfig => ({
     address: tempusPoolConfig.address,
     backingTokenTicker: tempusPoolConfig.backingToken,
+    yieldBearingTokenTicker: tempusPoolConfig.yieldBearingToken,
     variableAPR: 0,
     tvl: null,
     fixedAPR: null,
-    balance: null,
+    userBalanceUSD: null,
+    userAvailableToDepositUSD: null,
+    userBackingTokenBalance: null,
+    userYieldBearingTokenBalance: null,
   })),
 };
 export const Context = React.createContext<ContextType>({
