@@ -1,4 +1,5 @@
 import { ProtocolName, Ticker } from '.';
+import { TokenPrecision } from './TokenPrecision';
 
 export type TempusPool = {
   address: string;
@@ -15,4 +16,5 @@ export type TempusPool = {
   backingTokenAddress: string;
   spotPrice: string;
   decimalsForUI: number;
+  tokenPrecision?: TokenPrecision;
 };
