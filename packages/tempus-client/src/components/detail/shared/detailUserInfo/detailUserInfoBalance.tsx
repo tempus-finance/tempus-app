@@ -11,7 +11,7 @@ import Typography from '../../../typography/Typography';
 import ActionContainer from './../actionContainer';
 import SectionContainer from './../sectionContainer';
 import DetailUserInfoBalanceChart from './detailUserInfoBalanceChart';
-import { Context } from '../../../../context';
+import { Context, getDataForPool } from '../../../../context';
 
 interface DetailUserInfoBalancesProps {
   content: DashboardRowChild;
@@ -31,12 +31,12 @@ const DetailUserInfoBalance: FC<DetailUserInfoBalancesProps> = props => {
 
   const {
     data: {
-      userCurrentPoolPresentValue,
       userBackingTokenBalance,
       userYieldBearingTokenBalance,
       userPrincipalsBalance,
       userYieldsBalance,
       userLPBalance,
+      poolData,
     },
   } = useContext(Context);
 
@@ -72,11 +72,13 @@ const DetailUserInfoBalance: FC<DetailUserInfoBalancesProps> = props => {
   }, [userPrincipalsBalance, userYieldsBalance]);
 
   const formattedPresentValue = useMemo(() => {
-    if (!userCurrentPoolPresentValue) {
+    const data = getDataForPool(content.tempusPool.address, poolData);
+
+    if (!data.balance) {
       return null;
     }
-    return NumberUtils.formatToCurrency(ethers.utils.formatEther(userCurrentPoolPresentValue), 2, '$');
-  }, [userCurrentPoolPresentValue]);
+    return NumberUtils.formatToCurrency(ethers.utils.formatEther(data.balance), 2, '$');
+  }, [content.tempusPool.address, poolData]);
 
   const backingTokenValue = useMemo(() => {
     if (!userBackingTokenBalance) {

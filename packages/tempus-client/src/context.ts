@@ -10,6 +10,7 @@ export interface ContextPoolData {
   fixedAPR: number | null;
   variableAPR: number;
   tvl: BigNumber | null;
+  balance: BigNumber | null;
 }
 
 interface ContextDataType {
@@ -23,7 +24,6 @@ interface ContextDataType {
   userLPBalance: BigNumber | null;
   pendingTransactions: string[];
   selectedRow: DashboardRowChild | null;
-  userCurrentPoolPresentValue: BigNumber | null;
   userEthBalance: BigNumber | null;
   poolData: ContextPoolData[];
 }
@@ -44,7 +44,6 @@ export const defaultContextValue: ContextDataType = {
   userLPBalance: null,
   pendingTransactions: [],
   selectedRow: null,
-  userCurrentPoolPresentValue: null,
   userEthBalance: null,
   poolData: getConfig().tempusPools.map(tempusPoolConfig => ({
     address: tempusPoolConfig.address,
@@ -52,6 +51,7 @@ export const defaultContextValue: ContextDataType = {
     variableAPR: 0,
     tvl: null,
     fixedAPR: null,
+    balance: null,
   })),
 };
 export const Context = React.createContext<ContextType>({

@@ -1,7 +1,6 @@
-import { Column } from '@devexpress/dx-react-grid';
 import { ethers } from 'ethers';
-
-import { DashboardRow, DashboardRowChild, DashboardRowParent, isParentRow } from '../../interfaces';
+import { Column } from '@devexpress/dx-react-grid';
+import { DashboardRowChild, DashboardRowParent, isParentRow } from '../../interfaces';
 import NumberUtils from '../../services/NumberUtils';
 
 export interface ExtraDataColumn extends Column {
@@ -54,13 +53,6 @@ export const dashboardColumnsDefinitions: ExtraDataColumn[] = [
   {
     name: 'presentValue',
     title: 'Balance',
-    getCellValue: (row: DashboardRow) => {
-      if (!row.presentValue) {
-        return '-';
-      }
-
-      return `$${NumberUtils.formatWithMultiplier(Number(ethers.utils.formatEther(row.presentValue)), 2)}`;
-    },
   },
   {
     name: 'availableToDeposit',

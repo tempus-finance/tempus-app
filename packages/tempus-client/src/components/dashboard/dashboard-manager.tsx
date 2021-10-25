@@ -9,6 +9,9 @@ import Detail from '../detail/detail';
 import Typography from '../typography/Typography';
 import Spacer from '../spacer/spacer';
 import Dashboard from './dashboard';
+import BalanceProvider from '../../providers/balanceProvider';
+import UserBalanceDataAdapter from '../../adapters/UserBalanceDataAdapter';
+import getUserBalanceDataAdapter from '../../adapters/getUserBalanceDataAdapter';
 
 type DashboardManagerProps = {
   selectedRow: DashboardRowChild | null;
@@ -17,6 +20,7 @@ type DashboardManagerProps = {
 
 const DashboardManager: FC<DashboardManagerProps> = ({ selectedRow, onRowSelected }): JSX.Element => {
   const [dashboardDataAdapter, setDashboardDataAdapter] = useState<DashboardDataAdapter | null>(null);
+  const [userBalanceDataAdapter, setUserBalanceDataAdapter] = useState<UserBalanceDataAdapter | null>(null);
   const [rows, setRows] = useState<DashboardRow[]>([]);
 
   const {
@@ -27,13 +31,21 @@ const DashboardManager: FC<DashboardManagerProps> = ({ selectedRow, onRowSelecte
   useEffect(() => {
     const fetchRows = async () => {
       if (userWalletConnected === true && userWalletAddress && userWalletSigner) {
-        const adapter = getDashboardDataAdapter(userWalletSigner);
-        setDashboardDataAdapter(adapter);
-        setRows(await adapter.getRows(userWalletAddress));
+        const dashboardDataAdapter = getDashboardDataAdapter(userWalletSigner);
+        const userBalanceDataAdapter = getUserBalanceDataAdapter(userWalletSigner);
+
+        setDashboardDataAdapter(dashboardDataAdapter);
+        setUserBalanceDataAdapter(userBalanceDataAdapter);
+
+        setRows(await dashboardDataAdapter.getRows(userWalletAddress));
       } else if (userWalletConnected === false) {
-        const adapter = getDashboardDataAdapter();
-        setDashboardDataAdapter(adapter);
-        setRows(await adapter.getRows(''));
+        const dashboardDataAdapter = getDashboardDataAdapter();
+        const userBalanceDataAdapter = getUserBalanceDataAdapter();
+
+        setUserBalanceDataAdapter(userBalanceDataAdapter);
+        setDashboardDataAdapter(dashboardDataAdapter);
+
+        setRows(await dashboardDataAdapter.getRows(''));
       }
     };
     fetchRows();
@@ -79,6 +91,7 @@ const DashboardManager: FC<DashboardManagerProps> = ({ selectedRow, onRowSelecte
 
       {selectedRow && <Detail content={selectedRow} onClose={onCloseRowDetail} />}
       {dashboardDataAdapter && <TVLProvider dashboardDataAdapter={dashboardDataAdapter} />}
+      {userBalanceDataAdapter && <BalanceProvider userBalanceDataAdapter={userBalanceDataAdapter} />}
     </>
   );
 };

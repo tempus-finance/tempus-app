@@ -86,9 +86,8 @@ export default class DashboardDataAdapter {
     }
 
     try {
-      const [poolBackingTokenRate, presentValueInBackingTokens, availableToDeposit] = await Promise.all([
+      const [poolBackingTokenRate, availableToDeposit] = await Promise.all([
         this.statisticsService.getRate(tempusPool.backingToken),
-        this.getPresentValueInBackingTokensForPool(tempusPool),
         this.getAvailableToDepositForPool(tempusPool),
       ]);
 
@@ -112,10 +111,6 @@ export default class DashboardDataAdapter {
         yieldBearingTokenTicker: tempusPool.yieldBearingToken,
         startDate: new Date(tempusPool.startDate),
         maturityDate: new Date(tempusPool.maturityDate),
-        presentValue:
-          presentValueInBackingTokens !== undefined
-            ? mul18f(presentValueInBackingTokens, poolBackingTokenRate)
-            : undefined,
         availableTokensToDeposit: availableToDeposit && {
           backingToken: availableToDeposit.backingToken,
           backingTokenTicker: tempusPool.backingToken,
@@ -144,13 +139,6 @@ export default class DashboardDataAdapter {
         const childrenMaturityDate = parentChildren.map(child => child.maturityDate);
         const childrenProtocols = parentChildren.map(child => child.protocol as ProtocolName);
 
-        let parentPresentValue = BigNumber.from('0');
-        parentChildren.forEach(child => {
-          if (child.presentValue) {
-            parentPresentValue = parentPresentValue.add(child.presentValue);
-          }
-        });
-
         const processedTokens: Ticker[] = [];
         let availableToDepositInUSD = BigNumber.from('0');
         parentChildren.forEach(child => {
@@ -171,7 +159,6 @@ export default class DashboardDataAdapter {
           parentId: null, // Always null for parent rows
           token: child.token,
           maturityRange: this.getRangeFrom<Date>(childrenMaturityDate),
-          presentValue: this.userWalletAddress ? parentPresentValue : undefined,
           availableUSDToDeposit: this.userWalletAddress ? availableToDepositInUSD : undefined,
           protocols: Array.from(new Set(childrenProtocols)), // Converting list of protocols to set removes duplicate items
         };
@@ -211,42 +198,6 @@ export default class DashboardDataAdapter {
     });
 
     return [minValue, maxValue];
-  }
-
-  private async getPresentValueInBackingTokensForPool(pool: TempusPool): Promise<BigNumber | undefined> {
-    if (!this.statisticsService || !this.tempusPoolService || !this.eRC20TokenServiceGetter) {
-      console.error(
-        'DashboardDataAdapter - getPresentValueInForPool() - Attempted to use DashboardDataAdapter before initializing it!',
-      );
-      return Promise.reject();
-    }
-
-    if (!this.userWalletAddress) {
-      return undefined;
-    }
-
-    const yieldToken = this.eRC20TokenServiceGetter(pool.yieldsAddress);
-    const principalToken = this.eRC20TokenServiceGetter(pool.principalsAddress);
-    const lpToken = this.eRC20TokenServiceGetter(pool.ammAddress);
-
-    try {
-      const [userYieldSupply, userPrincipalSupply, userLpSupply] = await Promise.all([
-        yieldToken.balanceOf(this.userWalletAddress),
-        principalToken.balanceOf(this.userWalletAddress),
-        lpToken.balanceOf(this.userWalletAddress),
-      ]);
-
-      return await this.statisticsService.estimateExitAndRedeem(
-        pool.ammAddress,
-        userLpSupply,
-        userPrincipalSupply,
-        userYieldSupply,
-        true,
-      );
-    } catch (error) {
-      console.log('DashboardDataAdapter - getPresentValueInForPool() - Failed to user balance for pool!', error);
-      return Promise.reject(error);
-    }
   }
 
   private async getAvailableToDepositInUSD(
