@@ -64,16 +64,16 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
         setAmount('');
 
         if (backingToken === token) {
+          setTokenPrecision(getTokenPrecision(address, 'backingToken'));
           if (backingTokenRate !== null) {
             setUsdRate(backingTokenRate);
-            setTokenPrecision(getTokenPrecision(address, 'backingToken'));
           }
         }
 
         if (backingToken !== token) {
+          setTokenPrecision(getTokenPrecision(address, 'yieldBearingToken'));
           if (yieldBearingTokenRate !== null) {
             setUsdRate(yieldBearingTokenRate);
-            setTokenPrecision(getTokenPrecision(address, 'yieldBearingToken'));
           }
         }
       }
@@ -291,9 +291,17 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
       return;
     }
 
-    const stream$ = poolDataAdapter.isCurrentYieldNegativeForPool(address).subscribe(isYieldNegative => {
-      setIsYieldNegative(isYieldNegative);
-    });
+    const stream$ = poolDataAdapter
+      .isCurrentYieldNegativeForPool(address)
+      .pipe(
+        catchError((error, caught) => {
+          console.log('DetailDeposit - isCurrentYieldNegativeForPool - Failed to retrieve current yield!', error);
+          return caught;
+        }),
+      )
+      .subscribe(isYieldNegative => {
+        setIsYieldNegative(isYieldNegative);
+      });
 
     return () => stream$.unsubscribe();
   }, [address, poolDataAdapter]);

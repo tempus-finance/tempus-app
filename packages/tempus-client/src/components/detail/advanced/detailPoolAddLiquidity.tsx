@@ -10,6 +10,7 @@ import { TempusPool } from '../../../interfaces/TempusPool';
 import getConfig from '../../../utils/get-config';
 import { mul18f } from '../../../utils/wei-math';
 import { isZeroString } from '../../../utils/isZeroString';
+import getTokenPrecision from '../../../utils/getTokenPrecision';
 import Typography from '../../typography/Typography';
 import Spacer from '../../spacer/spacer';
 import ScaleIcon from '../../icons/ScaleIcon';
@@ -56,6 +57,9 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = props => {
   const [principalsApproved, setPrincipalsApproved] = useState<boolean>(false);
   const [yieldsApproved, setYieldsApproved] = useState<boolean>(false);
 
+  const [principalsPrecision, setPrincipalsPrecision] = useState<number>(0);
+  const [yieldsPrecision, setYieldsPrecision] = useState<number>(0);
+  const [lpTokensPrecision, setLpTokensPrecision] = useState<number>(0);
   /**
    * When user enters some amount of yields, we need to calculate amount of principals user
    * also needs to deposit in order to keep principals/yields balance in the pool unchanged.
@@ -70,11 +74,19 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = props => {
         return;
       }
 
-      const principalsToYieldsRatio = ethers.utils.parseEther((principalsPercentage / yieldsPercentage).toString());
+      const principalsToYieldsRatio = ethers.utils.parseUnits(
+        (principalsPercentage / yieldsPercentage).toString(),
+        principalsPrecision,
+      );
 
-      setPrincipalsAmount(ethers.utils.formatEther(mul18f(principalsToYieldsRatio, amountOfYields)));
+      setPrincipalsAmount(
+        ethers.utils.formatUnits(
+          mul18f(principalsToYieldsRatio, amountOfYields, principalsPrecision),
+          principalsPrecision,
+        ),
+      );
     },
-    [principalsPercentage, yieldsPercentage],
+    [principalsPercentage, yieldsPercentage, principalsPrecision],
   );
 
   /**
@@ -91,27 +103,32 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = props => {
         return;
       }
 
-      const yieldsToPrincipalsRatio = ethers.utils.parseEther((yieldsPercentage / principalsPercentage).toString());
+      const yieldsToPrincipalsRatio = ethers.utils.parseUnits(
+        (yieldsPercentage / principalsPercentage).toString(),
+        yieldsPrecision,
+      );
 
-      setYieldsAmount(ethers.utils.formatEther(mul18f(yieldsToPrincipalsRatio, amountOfPrincipals)));
+      setYieldsAmount(
+        ethers.utils.formatUnits(mul18f(yieldsToPrincipalsRatio, amountOfPrincipals, yieldsPrecision), yieldsPrecision),
+      );
     },
-    [principalsPercentage, yieldsPercentage],
+    [principalsPercentage, yieldsPercentage, yieldsPrecision],
   );
 
   const onPrincipalsAmountChange = useCallback(
     (amount: string) => {
       setPrincipalsAmount(amount);
-      setYieldsFromPrincipals(ethers.utils.parseEther(amount || '0'));
+      setYieldsFromPrincipals(ethers.utils.parseUnits(amount || '0', principalsPrecision));
     },
-    [setYieldsFromPrincipals],
+    [principalsPrecision, setYieldsFromPrincipals],
   );
 
   const onYieldsAmountChange = useCallback(
     (amount: string) => {
       setYieldsAmount(amount);
-      setPrincipalsFromYields(ethers.utils.parseEther(amount || '0'));
+      setPrincipalsFromYields(ethers.utils.parseUnits(amount || '0', yieldsPrecision));
     },
-    [setPrincipalsFromYields],
+    [yieldsPrecision, setPrincipalsFromYields],
   );
 
   /**
@@ -123,12 +140,12 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = props => {
       if (!userPrincipalsBalance) {
         return;
       }
-      const percentage = ethers.utils.parseEther(event.currentTarget.value);
-      const calculatedAmount = mul18f(userPrincipalsBalance, percentage);
-      setPrincipalsAmount(ethers.utils.formatEther(calculatedAmount));
+      const percentage = ethers.utils.parseUnits(event.currentTarget.value, principalsPrecision);
+      const calculatedAmount = mul18f(userPrincipalsBalance, percentage, principalsPrecision);
+      setPrincipalsAmount(ethers.utils.formatUnits(calculatedAmount, principalsPrecision));
       setYieldsFromPrincipals(calculatedAmount);
     },
-    [userPrincipalsBalance, setYieldsFromPrincipals],
+    [userPrincipalsBalance, principalsPrecision, setYieldsFromPrincipals],
   );
 
   /**
@@ -140,12 +157,12 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = props => {
       if (!userYieldsBalance) {
         return;
       }
-      const percentage = ethers.utils.parseEther(event.currentTarget.value);
-      const calculatedAmount = mul18f(userYieldsBalance, percentage);
-      setYieldsAmount(ethers.utils.formatEther(calculatedAmount));
+      const percentage = ethers.utils.parseUnits(event.currentTarget.value, yieldsPrecision);
+      const calculatedAmount = mul18f(userYieldsBalance, percentage, yieldsPrecision);
+      setYieldsAmount(ethers.utils.formatUnits(calculatedAmount, yieldsPrecision));
       setPrincipalsFromYields(calculatedAmount);
     },
-    [userYieldsBalance, setPrincipalsFromYields],
+    [userYieldsBalance, yieldsPrecision, setPrincipalsFromYields],
   );
 
   // Calculate pool ratios
@@ -181,8 +198,8 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = props => {
             tempusPool.ammAddress,
             content.principalTokenAddress,
             content.yieldTokenAddress,
-            ethers.utils.parseEther(principalsAmount),
-            ethers.utils.parseEther(yieldsAmount),
+            ethers.utils.parseUnits(principalsAmount, principalsPrecision),
+            ethers.utils.parseUnits(yieldsAmount, yieldsPrecision),
           ),
         );
         setTokenEstimateInProgress(false);
@@ -194,14 +211,23 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = props => {
         setTokenEstimateInProgress(false);
       }
     };
+    setPrincipalsPrecision(getTokenPrecision(tempusPool.address, 'principals'));
+    setYieldsPrecision(getTokenPrecision(tempusPool.address, 'yields'));
+    setLpTokensPrecision(getTokenPrecision(tempusPool.address, 'lpTokens'));
     fetchEstimatedLPTokens();
   }, [
     tempusPool.ammAddress,
+    tempusPool.address,
     content.principalTokenAddress,
     content.yieldTokenAddress,
     principalsAmount,
     yieldsAmount,
+    principalsPrecision,
+    yieldsPrecision,
     poolDataAdapter,
+    setPrincipalsPrecision,
+    setYieldsPrecision,
+    setLpTokensPrecision,
   ]);
 
   // Fetch pool share for amount in
@@ -236,8 +262,8 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = props => {
       userWalletAddress,
       content.principalTokenAddress,
       content.yieldTokenAddress,
-      ethers.utils.parseEther(principalsAmount),
-      ethers.utils.parseEther(yieldsAmount),
+      ethers.utils.parseUnits(principalsAmount, principalsPrecision),
+      ethers.utils.parseUnits(yieldsAmount, yieldsPrecision),
     );
   }, [
     content.principalTokenAddress,
@@ -246,6 +272,8 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = props => {
     principalsAmount,
     yieldsAmount,
     poolDataAdapter,
+    principalsPrecision,
+    yieldsPrecision,
     userWalletAddress,
   ]);
 
@@ -258,32 +286,41 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = props => {
     if (!userPrincipalsBalance) {
       return null;
     }
-    return NumberUtils.formatToCurrency(ethers.utils.formatEther(userPrincipalsBalance), tempusPool.decimalsForUI);
-  }, [userPrincipalsBalance, tempusPool.decimalsForUI]);
+    return NumberUtils.formatToCurrency(
+      ethers.utils.formatUnits(userPrincipalsBalance, principalsPrecision),
+      tempusPool.decimalsForUI,
+    );
+  }, [userPrincipalsBalance, principalsPrecision, tempusPool.decimalsForUI]);
 
   const yieldsBalanceFormatted = useMemo(() => {
     if (!userYieldsBalance) {
       return null;
     }
-    return NumberUtils.formatToCurrency(ethers.utils.formatEther(userYieldsBalance), tempusPool.decimalsForUI);
-  }, [userYieldsBalance, tempusPool.decimalsForUI]);
+    return NumberUtils.formatToCurrency(
+      ethers.utils.formatUnits(userYieldsBalance, yieldsPrecision),
+      tempusPool.decimalsForUI,
+    );
+  }, [userYieldsBalance, yieldsPrecision, tempusPool.decimalsForUI]);
 
   const expectedLPTokensFormatted = useMemo(() => {
     if (!expectedLPTokens) {
       return null;
     }
-    return NumberUtils.formatToCurrency(ethers.utils.formatEther(expectedLPTokens), tempusPool.decimalsForUI);
-  }, [expectedLPTokens, tempusPool.decimalsForUI]);
+    return NumberUtils.formatToCurrency(
+      ethers.utils.formatUnits(expectedLPTokens, lpTokensPrecision),
+      tempusPool.decimalsForUI,
+    );
+  }, [expectedLPTokens, lpTokensPrecision, tempusPool.decimalsForUI]);
 
   const executeDisabled = useMemo(() => {
     const zeroAmount = isZeroString(principalsAmount) || isZeroString(yieldsAmount);
     const principalBalanceZero = userPrincipalsBalance && userPrincipalsBalance.isZero();
     const yieldsBalanceZero = userYieldsBalance && userYieldsBalance.isZero();
     const principalsAmountExceedsBalance = ethers.utils
-      .parseEther(principalsAmount || '0')
+      .parseUnits(principalsAmount || '0', principalsPrecision)
       .gt(userPrincipalsBalance || BigNumber.from('0'));
     const yieldsAmountExceedsBalance = ethers.utils
-      .parseEther(yieldsAmount || '0')
+      .parseUnits(yieldsAmount || '0', yieldsPrecision)
       .gt(userYieldsBalance || BigNumber.from('0'));
 
     return (
@@ -298,6 +335,8 @@ const DetailPoolAddLiquidity: FC<DetailPoolAddLiquidityProps> = props => {
   }, [
     poolShareEstimateInProgress,
     principalsAmount,
+    principalsPrecision,
+    yieldsPrecision,
     principalsApproved,
     tokenEstimateInProgress,
     userPrincipalsBalance,

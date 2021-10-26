@@ -1,6 +1,7 @@
 import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { BigNumber, ethers } from 'ethers';
 import { JsonRpcSigner } from '@ethersproject/providers';
+import { catchError } from 'rxjs';
 import Button from '@material-ui/core/Button';
 import { Context, getDataForPool } from '../../../context';
 import { DashboardRowChild, Ticker } from '../../../interfaces';
@@ -153,6 +154,12 @@ const DetailMint: FC<DetailMintProps> = props => {
       setEstimateInProgress(true);
       const stream$ = poolDataAdapter
         .estimatedMintedShares(address, amountParsed, isBackingToken)
+        .pipe(
+          catchError((error, caught) => {
+            console.log('DetailMint - estimatedMintedShares - Failed to retrieve estimated minted shares!', error);
+            return caught;
+          }),
+        )
         .subscribe(estimatedMintedShares => {
           setEstimatedTokens(estimatedMintedShares);
           setEstimateInProgress(false);
@@ -170,9 +177,17 @@ const DetailMint: FC<DetailMintProps> = props => {
       return;
     }
 
-    const stream$ = poolDataAdapter.isCurrentYieldNegativeForPool(address).subscribe(isYieldNegative => {
-      setIsYieldNegative(isYieldNegative);
-    });
+    const stream$ = poolDataAdapter
+      .isCurrentYieldNegativeForPool(address)
+      .pipe(
+        catchError((error, caught) => {
+          console.log('DetailMint - isCurrentYieldNegativeForPool - Failed to retrieve current yield!', error);
+          return caught;
+        }),
+      )
+      .subscribe(isYieldNegative => {
+        setIsYieldNegative(isYieldNegative);
+      });
 
     return () => stream$.unsubscribe();
   }, [address, poolDataAdapter]);

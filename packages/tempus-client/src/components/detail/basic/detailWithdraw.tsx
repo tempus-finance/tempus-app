@@ -77,6 +77,12 @@ const DetailWithdraw: FC<PoolDetailProps> = ({ tempusPool, content, signer, user
           )
           .subscribe(amount => {
             setEstimatedWithdrawAmount(amount);
+
+            if (backingToken === selectedToken) {
+              setTokenPrecision(getTokenPrecision(address, 'backingToken'));
+            } else {
+              setTokenPrecision(getTokenPrecision(address, 'yieldBearingToken'));
+            }
           });
 
         return () => stream$.unsubscribe();
@@ -85,6 +91,7 @@ const DetailWithdraw: FC<PoolDetailProps> = ({ tempusPool, content, signer, user
       }
     }
   }, [
+    address,
     ammAddress,
     selectedToken,
     backingToken,
