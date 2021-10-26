@@ -84,7 +84,7 @@ const DetailMint: FC<DetailMintProps> = props => {
 
       setSelectedToken(token);
     },
-    [address, setSelectedToken],
+    [address, backingToken, setSelectedToken],
   );
 
   const onAmountChange = useCallback(
