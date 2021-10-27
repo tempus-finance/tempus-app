@@ -227,11 +227,13 @@ const ApproveButton: FC<ApproveButtonProps> = props => {
     return alreadyApproved;
   }, [allowance, amountToApprove]);
 
-  if (approved) {
-    onApproveChange(true);
-  } else {
-    onApproveChange(false);
-  }
+  useEffect(() => {
+    if (approved) {
+      onApproveChange(true);
+    } else {
+      onApproveChange(false);
+    }
+  }, [approved, onApproveChange]);
 
   // In case of ETH we don't want to show Approve button at all
   if (tokenToApproveTicker === 'ETH') {
