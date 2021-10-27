@@ -7,7 +7,7 @@
       "request": "launch",
       "runtimeExecutable": "${workspaceRoot}/packages/tempus-client/node_modules/.bin/react-scripts",
       "args": ["test", "--runInBand", "--no-cache", "--env=jsdom"],
-      "cwd": "${workspaceRoot}/packages/tempus-client",
+      "cwd": "${workspaceRoot}/packages/tempus-client_v2",
       "protocol": "inspector",
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen"
