@@ -18,10 +18,9 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react"
+    "jsx": "react-jsx"
   },
   "include": [
-    "packages/tempus-client/src",
-    "packages/tempus-client_v2/src"
+    "src"
   ]
 }
