@@ -1,0 +1,13 @@
+.tc__navBar__links {
+  > ul {
+    list-style-type: none;
+    display: flex;
+    flex-direction: row;
+    flex: 1;
+    align-items: center;
+
+    > li {
+      margin-right: 40px;
+    }
+  }
+}
