@@ -1,6 +1,7 @@
 {
   "dashboard": "Dashboard",
   "analytics": "Analisi",
-  "community": "Communita'",
-  "settings": "Impostazioni"
+  "community": "Comunita'",
+  "settings": "Impostazioni",
+  "connectWallet": "Connetti Portafogli"
 }

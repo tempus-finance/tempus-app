@@ -53,6 +53,9 @@ const Languages: FC<LanguagesOutProps> = ({ onChangeLanguage }) => {
         <MenuItem onClick={handleClose} data-value="it">
           Italiano
         </MenuItem>
+        <MenuItem onClick={handleClose} data-value="ru">
+          Русский язык
+        </MenuItem>
       </Menu>
     </div>
   );
