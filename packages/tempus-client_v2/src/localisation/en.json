@@ -2,5 +2,6 @@
   "dashboard": "Dashboard",
   "analytics": "Analytics",
   "community": "Community",
-  "settings": "Settings"
+  "settings": "Settings",
+  "connectWallet": "Connect Wallet"
 }

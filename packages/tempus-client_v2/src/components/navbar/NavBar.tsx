@@ -16,7 +16,7 @@ const NavBar: FC = () => {
 
       <div className="tc__navBar__right">
         <Links language={language} changeLanguage={changeLanguage} />
-        <Wallet />
+        <Wallet language={language} />
       </div>
     </div>
   );

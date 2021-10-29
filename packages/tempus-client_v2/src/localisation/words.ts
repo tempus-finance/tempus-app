@@ -1,3 +1,3 @@
-type Words = 'dashboard' | 'analytics' | 'community' | 'settings';
+type Words = 'dashboard' | 'analytics' | 'community' | 'settings' | 'connectWallet';
 
 export default Words;
