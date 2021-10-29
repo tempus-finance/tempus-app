@@ -1,0 +1,12 @@
+.tc__navBar {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  height: 55px;
+}
+
+.tc__navBar__left,
+.tc__navBar__right {
+  display: flex;
+}

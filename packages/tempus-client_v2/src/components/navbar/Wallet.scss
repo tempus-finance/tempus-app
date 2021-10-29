@@ -1,0 +1,29 @@
+@import '../constants.scss';
+.tc__navBar__wallet {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+}
+
+.tc__connect-wallet-button__container {
+  @include background-level-2;
+
+  display: flex;
+  border-radius: 30px;
+  height: 45px;
+  background-color: $ui-element-color;
+  align-items: center;
+}
+
+.tc__connect-wallet-button {
+  height: 45px;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: white;
+  border-radius: 30px;
+  padding: 13px 15px 13px 15px;
+  box-shadow: -2px 0px 2px rgba(0, 0, 0, 0.25);
+}
