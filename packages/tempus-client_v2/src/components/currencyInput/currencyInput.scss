@@ -1,0 +1,18 @@
+.tc__currencyInput-container {
+  display: flex;
+  align-items: center;
+  box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 5px;
+  background-color: white;
+  padding-left: 15px;
+  height: 40px;
+
+  input {
+    padding: 0px;
+  }
+
+  .MuiButton-root {
+    height: 40px;
+    border-radius: 0px 5px 5px 0px;
+  }
+}
