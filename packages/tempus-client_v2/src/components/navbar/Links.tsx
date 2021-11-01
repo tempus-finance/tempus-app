@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useCallback } from 'react';
 import getText, { Language } from '../../localisation/getText';
 import SharedProps from '../../sharedProps';
 import Languages from './Languages';
@@ -7,9 +7,12 @@ import './Links.scss';
 type LinksInProps = SharedProps & { changeLanguage: any };
 
 const Links: FC<LinksInProps> = ({ language, changeLanguage }) => {
-  const onChangeLanguage = (language: Language) => {
-    changeLanguage(language);
-  };
+  const onChangeLanguage = useCallback(
+    (language: Language) => {
+      changeLanguage(language);
+    },
+    [changeLanguage],
+  );
 
   return (
     <div className="tc__navBar__links">
