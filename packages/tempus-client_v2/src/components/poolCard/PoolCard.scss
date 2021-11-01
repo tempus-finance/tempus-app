@@ -1,0 +1,23 @@
+@import '../../constants.scss';
+
+.tc__poolCard-container {
+  @include card;
+
+  margin-left: 15px;
+  margin-top: 15px;
+  align-self: baseline;
+}
+
+.tc__poolCard-row {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+}
+
+.tc__poolCard-row-title {
+  width: 200px;
+}
+
+.tc__poolCard-percentage {
+  width: 75px;
+}

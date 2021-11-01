@@ -1,7 +1,7 @@
 import { CSSProperties, FC } from 'react';
 
 type TypographyVariant = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'body-text' | 'disclaimer-text';
-type TypographyColor = 'default' | 'accent' | 'inverted' | 'link' | 'title';
+type TypographyColor = 'default' | 'accent' | 'inverted' | 'link' | 'title' | 'error';
 
 const typographyStyleMap = new Map<TypographyVariant, CSSProperties>();
 typographyStyleMap.set('h1', {
@@ -78,6 +78,9 @@ const Typography: FC<TypographyProps> = props => {
       break;
     case 'title':
       color = '#7A7A7A';
+      break;
+    case 'error':
+      color = '#FF0F0F';
       break;
     default:
       color = '#222222';

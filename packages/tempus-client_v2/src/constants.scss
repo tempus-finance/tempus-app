@@ -16,6 +16,14 @@ $background-color: #f1f1f1;
   border: 1px solid #fcfcfc;
   border-radius: 5px;
 }
+@mixin card {
+  background: rgba(255, 255, 255, 0.7);
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.25);
+  box-sizing: border-box;
+  border: 1px solid #f1f1f1;
+  border-radius: 5px;
+  padding: 15px;
+}
 $text-color: #222222;
 $ui-element-color: #e2e2e2;
 $accent-color-1: #f5ac37;
