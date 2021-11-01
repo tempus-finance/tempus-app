@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useCallback } from 'react';
 import Button from '@material-ui/core/Button';
 import CloseIcon from '@material-ui/icons/Close';
 import Typography from '../typography/Typography';
@@ -23,9 +23,7 @@ const NotificationComponent: FC<NotificationComponentProps> = ({
   linkText,
   onNotificationDelete,
 }) => {
-  const onDelete = () => onNotificationDelete(id);
-
-  console.log('NotificationComponent', linkText);
+  const onDelete = useCallback(() => onNotificationDelete(id), [id, onNotificationDelete]);
 
   return (
     <div className="tf__notification">
