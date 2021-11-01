@@ -6,7 +6,7 @@ import Wallet from './Wallet';
 import './NavBar.scss';
 
 const NavBar: FC = () => {
-  const { language, changeLanguage } = useContext(LanguageContext);
+  const { language, setLanguage } = useContext(LanguageContext);
 
   return (
     <div className="tc__navBar">
@@ -15,7 +15,7 @@ const NavBar: FC = () => {
       </div>
 
       <div className="tc__navBar__right">
-        <Links language={language} changeLanguage={changeLanguage} />
+        <Links language={language} changeLanguage={setLanguage} />
         <Wallet />
       </div>
     </div>

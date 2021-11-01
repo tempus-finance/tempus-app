@@ -6,7 +6,7 @@ interface ContextData {
 }
 
 interface ContextActions {
-  changeLanguage: Dispatch<SetStateAction<Language>> | null;
+  setLanguage: Dispatch<SetStateAction<ContextData>> | null;
 }
 
 interface ContextType extends ContextActions, ContextData {}
@@ -17,5 +17,5 @@ export const defaultLanguageContextValue: ContextData = {
 
 export const LanguageContext = React.createContext<ContextType>({
   ...defaultLanguageContextValue,
-  changeLanguage: null,
+  setLanguage: null,
 });
