@@ -1,4 +1,4 @@
-import { FC, MouseEvent, useState } from 'react';
+import { FC, MouseEvent, useCallback, useState } from 'react';
 import LanguageIcon from '@material-ui/icons/Language';
 import { Button } from '@material-ui/core';
 import { Menu } from '@material-ui/core';
@@ -15,16 +15,22 @@ const Languages: FC<LanguagesOutProps> = ({ onChangeLanguage }) => {
 
   const open = Boolean(anchorEl);
 
-  const handleClick = (event: any) => {
-    setAnchorEl(event.currentTarget);
-  };
+  const handleClick = useCallback(
+    (event: any) => {
+      setAnchorEl(event.currentTarget);
+    },
+    [setAnchorEl],
+  );
 
-  const handleClose = (event: MouseEvent<HTMLLIElement>) => {
-    setAnchorEl(null);
-    const language = (event.target as HTMLLIElement).getAttribute('data-value') as Language;
-    setSelectedLanguage(language);
-    onChangeLanguage(language);
-  };
+  const handleClose = useCallback(
+    (event: MouseEvent<HTMLLIElement>) => {
+      setAnchorEl(null);
+      const language = (event.target as HTMLLIElement).getAttribute('data-value') as Language;
+      setSelectedLanguage(language);
+      onChangeLanguage(language);
+    },
+    [onChangeLanguage],
+  );
 
   return (
     <div>

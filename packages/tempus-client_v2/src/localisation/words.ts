@@ -1,3 +1,25 @@
-type Words = 'dashboard' | 'analytics' | 'community' | 'settings' | 'connectWallet';
+type Words =
+  | 'dashboard'
+  | 'analytics'
+  | 'community'
+  | 'settings'
+  | 'connectWallet'
+  | 'tvl'
+  | 'pool'
+  | 'marketImpliedYield'
+  | 'volume'
+  | 'fees'
+  | 'term'
+  | 'startDate'
+  | 'maturity'
+  | 'timeLeft'
+  | 'currentPosition'
+  | 'principals'
+  | 'yields'
+  | 'staked'
+  | 'approve'
+  | 'execute'
+  | 'profitLoss'
+  | 'liquidationValue';
 
 export default Words;

@@ -3,5 +3,22 @@
   "analytics": "Аналитика",
   "community": "Сообщество",
   "settings": "Настройки",
-  "connectWallet": "Подключить кошелек"
+  "connectWallet": "Подключить кошелек",
+  "pool": "Pool",
+  "tvl": "TVL",
+  "marketImpliedYield": "Market Implied Yield",
+  "volume": "Объем",
+  "fees": "Fees",
+  "term": "Term",
+  "startDate": "Start Date",
+  "maturity": "Maturity",
+  "timeLeft": "Time Remaining",
+  "currentPosition": "Current Position",
+  "principals": "Principals",
+  "yields": "Yields",
+  "staked": "Staked",
+  "approve": "Approve",
+  "execute": "Execute",
+  "profitLoss": "Profit & Loss",
+  "liquidationValue": "Liquidation Value"
 }

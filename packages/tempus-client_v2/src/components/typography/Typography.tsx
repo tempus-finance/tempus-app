@@ -1,22 +1,22 @@
 import { CSSProperties, FC } from 'react';
 
-type TypographyVariant = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'body-text' | 'disclaimer-text';
+type TypographyVariant = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'body-text' | 'disclaimer-text' | 'button-text';
 type TypographyColor = 'default' | 'accent' | 'inverted' | 'link' | 'title';
 
 const typographyStyleMap = new Map<TypographyVariant, CSSProperties>();
 typographyStyleMap.set('h1', {
   fontFamily: "'Manrope', sans-serif",
-  fontWeight: 900,
-  fontSize: '36px',
-  fontStyle: 'normal',
-  lineHeight: '44px',
-});
-typographyStyleMap.set('h2', {
-  fontFamily: "'Manrope', sans-serif",
-  fontWeight: 900,
+  fontWeight: 600,
   fontSize: '22px',
   fontStyle: 'normal',
   lineHeight: '30px',
+});
+typographyStyleMap.set('h2', {
+  fontFamily: "'Manrope', sans-serif",
+  fontWeight: 600,
+  fontSize: '18px',
+  fontStyle: 'normal',
+  lineHeight: '25px',
 });
 typographyStyleMap.set('h3', {
   fontFamily: "'Source Sans Pro', sans-serif;",
@@ -52,6 +52,13 @@ typographyStyleMap.set('disclaimer-text', {
   fontSize: '12px',
   fontStyle: 'normal',
   lineHeight: '14px',
+});
+typographyStyleMap.set('button-text', {
+  fontFamily: "'Source Sans Pro', sans-serif",
+  fontWeight: 600,
+  fontSize: '16px',
+  fontStyle: 'normal',
+  lineHeight: '20px',
 });
 
 interface TypographyProps {

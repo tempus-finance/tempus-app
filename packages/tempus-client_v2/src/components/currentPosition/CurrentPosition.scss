@@ -1,0 +1,121 @@
+.tc__currentPosition {
+  display: flex;
+  flex-direction: column;
+  flex: 40;
+  padding: 15px;
+  box-sizing: border-box;
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid #f1f1f1;
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 5px;
+  height: 195px;
+  margin: 0 15px 15px 0;
+}
+
+.tc__currentPosition_body {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+
+  .tc__currentPosition_body__bar {
+    width: 100%;
+    margin: 30px auto 10px;
+    height: 22px;
+    border-radius: 5px;
+    position: relative;
+
+    .tc__currentPosition_body__bar__1 {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      width: 10%;
+      border-radius: 5px 0 0 5px;
+      background-color: #f5ac37;
+    }
+
+    .tc__currentPosition_body__bar__2 {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 10%;
+      width: 12%;
+      border-radius: 0;
+      background-color: #ffe2b3;
+    }
+
+    .tc__currentPosition_body__bar__3 {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 22%;
+      width: 40%;
+      border-radius: 0;
+      background-color: #5aaec0;
+    }
+
+    .tc__currentPosition_body__bar__4 {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 62%;
+      right: 0;
+      border-radius: 0 5px 5px 0;
+      background-color: #288195;
+    }
+  }
+
+  .tc__currentPosition_body__item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 10px 0 4px;
+    border-bottom: 1px solid #e4e4e4; // TODO add to constants
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    > .tc__currentPosition_body__item__with-icon {
+      display: flex;
+      align-items: center;
+    }
+  }
+
+  .tc__currentPosition__icon {
+    display: flex;
+    justify-content: center;
+    position: relative;
+    margin-right: 15px;
+    width: 12px;
+    height: 12px;
+    border-radius: 12px;
+
+    &:after {
+      position: absolute;
+      top: 0;
+      left: 6px;
+      content: '';
+      height: 12px;
+      width: 12px;
+      border-radius: 12px;
+    }
+  }
+
+  .tc__currentPosition__icon-principals {
+    background: #f5ac37;
+
+    &:after {
+      background: #ffe2b2;
+    }
+  }
+
+  .tc__currentPosition__icon-yields {
+    background: #288195;
+
+    &:after {
+      background: #5aaec0;
+    }
+  }
+}
