@@ -20,6 +20,7 @@ export interface ContextPoolData {
   tvl: BigNumber | null;
   userBalanceUSD: BigNumber | null;
   userAvailableToDepositUSD: AvailableToDeposit | null;
+  isNegativeYield: boolean;
 }
 
 interface ContextDataType {
@@ -61,6 +62,7 @@ export const defaultContextValue: ContextDataType = {
     userAvailableToDepositUSD: null,
     userBackingTokenBalance: null,
     userYieldBearingTokenBalance: null,
+    isNegativeYield: true,
   })),
 };
 export const Context = React.createContext<ContextType>({

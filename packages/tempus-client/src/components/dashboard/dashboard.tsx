@@ -202,11 +202,11 @@ const Dashboard: FC<DashboardProps> = ({ hidden, userWalletAddress, rows, onRowA
         const pool = poolMap[row.id];
 
         if (pool) {
-          if (pool?.variableAPR > 0) {
+          if (!pool.isNegativeYield) {
             return true;
           }
 
-          return pool && pool?.userBalanceUSD?.gt(ZERO);
+          return pool && pool.userBalanceUSD && pool.userBalanceUSD.gt(ZERO);
         }
 
         return true;
