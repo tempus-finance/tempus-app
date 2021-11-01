@@ -1,6 +1,6 @@
 import { BigNumber } from '@ethersproject/bignumber';
 import { FC, useCallback, useContext, useEffect } from 'react';
-import { Subscription } from 'rxjs';
+import { Subscription, catchError } from 'rxjs';
 import UserBalanceDataAdapter from '../adapters/UserBalanceDataAdapter';
 import { Context } from '../context';
 import getERC20TokenService from '../services/getERC20TokenService';
@@ -50,9 +50,16 @@ const BalanceProvider: FC<PresentValueProviderProps> = props => {
         );
 
         streams.push(
-          userUSDBalanceStream$.subscribe(balance => {
-            updateUserBalanceForPool(poolConfig.address, balance);
-          }),
+          userUSDBalanceStream$
+            .pipe(
+              catchError((error, caught) => {
+                console.log('BalanceProvider - updateUserBalance - Failed to user USD rates!', error);
+                return caught;
+              }),
+            )
+            .subscribe(balance => {
+              updateUserBalanceForPool(poolConfig.address, balance);
+            }),
         );
       }
     });
