@@ -11,6 +11,7 @@ import NumberUtils from '../../../services/NumberUtils';
 import { isZeroString } from '../../../utils/isZeroString';
 import getConfig from '../../../utils/get-config';
 import { mul18f } from '../../../utils/wei-math';
+import getTokenPrecision from '../../../utils/getTokenPrecision';
 import CurrencyInput from '../../currencyInput/currencyInput';
 import TokenSelector from '../../tokenSelector';
 import Typography from '../../typography/Typography';
@@ -43,6 +44,7 @@ const DetailRedeemBeforeMaturity: FC<DetailRedeemBeforeMaturityProps> = props =>
   const [estimatedWithdrawAmount, setEstimatedWithdrawAmount] = useState<BigNumber | null>(null);
   const [tokenRate, setTokenRate] = useState<BigNumber | null>(null);
   const [estimateInProgress, setEstimateInProgress] = useState<boolean>(false);
+  const [tokenPrecision, setTokenPrecision] = useState<number>(0);
 
   const onAmountChange = useCallback(
     (amount: string) => {
@@ -71,7 +73,7 @@ const DetailRedeemBeforeMaturity: FC<DetailRedeemBeforeMaturityProps> = props =>
       if (!userPrincipalsBalance || !userYieldsBalance) {
         return;
       }
-      const percentage = ethers.utils.parseEther(event.currentTarget.value);
+      const percentage = ethers.utils.parseUnits(event.currentTarget.value, tokenPrecision);
 
       let balanceToUse: BigNumber;
       if (userPrincipalsBalance.lte(userYieldsBalance)) {
@@ -79,9 +81,9 @@ const DetailRedeemBeforeMaturity: FC<DetailRedeemBeforeMaturityProps> = props =>
       } else {
         balanceToUse = userYieldsBalance;
       }
-      setAmount(ethers.utils.formatEther(mul18f(balanceToUse, percentage)));
+      setAmount(ethers.utils.formatUnits(mul18f(balanceToUse, percentage, tokenPrecision)));
     },
-    [userPrincipalsBalance, userYieldsBalance],
+    [userPrincipalsBalance, userYieldsBalance, tokenPrecision],
   );
 
   // Update token rate when selected token changes
@@ -89,6 +91,8 @@ const DetailRedeemBeforeMaturity: FC<DetailRedeemBeforeMaturityProps> = props =>
     if (!poolDataAdapter) {
       return;
     }
+
+    setTokenPrecision(getTokenPrecision(tempusPool.address, 'principals'));
 
     const getBackingTokenRate$ = poolDataAdapter.getBackingTokenRate(backingToken);
     const getYieldBearingTokenRate$ = poolDataAdapter.getYieldBearingTokenRate(tempusPool.address, backingToken);
@@ -113,11 +117,11 @@ const DetailRedeemBeforeMaturity: FC<DetailRedeemBeforeMaturityProps> = props =>
       return Promise.resolve(undefined);
     }
 
-    const amountFormatted = ethers.utils.parseEther(amount);
+    const amountFormatted = ethers.utils.parseUnits(amount, tokenPrecision);
     const toBackingToken = selectedToken === backingToken;
 
     return poolDataAdapter.executeRedeem(tempusPool.address, userWalletAddress, amountFormatted, toBackingToken);
-  }, [amount, backingToken, poolDataAdapter, selectedToken, tempusPool.address, userWalletAddress]);
+  }, [amount, backingToken, poolDataAdapter, selectedToken, tempusPool.address, userWalletAddress, tokenPrecision]);
 
   const onExecuted = useCallback(() => {
     setAmount('');
@@ -128,7 +132,7 @@ const DetailRedeemBeforeMaturity: FC<DetailRedeemBeforeMaturityProps> = props =>
     const retrieveEstimatedWithdrawAmount = async () => {
       if (poolDataAdapter && amount) {
         try {
-          const amountFormatted = ethers.utils.parseEther(amount);
+          const amountFormatted = ethers.utils.parseUnits(amount, tokenPrecision);
           const toBackingToken = selectedToken === backingToken;
 
           setEstimateInProgress(true);
@@ -146,43 +150,56 @@ const DetailRedeemBeforeMaturity: FC<DetailRedeemBeforeMaturityProps> = props =>
       }
     };
     retrieveEstimatedWithdrawAmount();
-  }, [selectedToken, backingToken, poolDataAdapter, tempusPool.address, amount]);
+  }, [tokenPrecision, selectedToken, backingToken, poolDataAdapter, tempusPool.address, amount]);
 
   const principalsBalanceFormatted = useMemo(() => {
     if (!userPrincipalsBalance) {
       return null;
     }
-    return NumberUtils.formatToCurrency(ethers.utils.formatEther(userPrincipalsBalance), tempusPool.decimalsForUI);
-  }, [tempusPool.decimalsForUI, userPrincipalsBalance]);
+    return NumberUtils.formatToCurrency(
+      ethers.utils.formatUnits(userPrincipalsBalance, tokenPrecision),
+      tempusPool.decimalsForUI,
+    );
+  }, [tempusPool.decimalsForUI, userPrincipalsBalance, tokenPrecision]);
 
   const yieldsBalanceFormatted = useMemo(() => {
     if (!userYieldsBalance) {
       return null;
     }
-    return NumberUtils.formatToCurrency(ethers.utils.formatEther(userYieldsBalance), tempusPool.decimalsForUI);
-  }, [tempusPool.decimalsForUI, userYieldsBalance]);
+    return NumberUtils.formatToCurrency(
+      ethers.utils.formatUnits(userYieldsBalance, tokenPrecision),
+      tempusPool.decimalsForUI,
+    );
+  }, [tempusPool.decimalsForUI, userYieldsBalance, tokenPrecision]);
 
   const estimatedWithdrawAmountFormatted = useMemo(() => {
     if (!estimatedWithdrawAmount) {
       return null;
     }
-    return NumberUtils.formatToCurrency(ethers.utils.formatEther(estimatedWithdrawAmount), tempusPool.decimalsForUI);
-  }, [estimatedWithdrawAmount, tempusPool.decimalsForUI]);
+    return NumberUtils.formatToCurrency(
+      ethers.utils.formatUnits(estimatedWithdrawAmount, tokenPrecision),
+      tempusPool.decimalsForUI,
+    );
+  }, [estimatedWithdrawAmount, tempusPool.decimalsForUI, tokenPrecision]);
 
   const estimatedWithdrawAmountUsdFormatted = useMemo(() => {
     if (!estimatedWithdrawAmount || !tokenRate) {
       return null;
     }
-    return NumberUtils.formatToCurrency(ethers.utils.formatEther(mul18f(estimatedWithdrawAmount, tokenRate)), 2, '$');
-  }, [estimatedWithdrawAmount, tokenRate]);
+    return NumberUtils.formatToCurrency(
+      ethers.utils.formatUnits(mul18f(estimatedWithdrawAmount, tokenRate, tokenPrecision), tokenPrecision),
+      2,
+      '$',
+    );
+  }, [estimatedWithdrawAmount, tokenRate, tokenPrecision]);
 
   const executeDisabled = useMemo(() => {
     const zeroAmount = isZeroString(amount);
     const amountExceedsPrincipalsBalance = ethers.utils
-      .parseEther(amount || '0')
+      .parseUnits(amount || '0', tokenPrecision)
       .gt(userPrincipalsBalance || BigNumber.from('0'));
     const amountExceedsYieldsBalance = ethers.utils
-      .parseEther(amount || '0')
+      .parseUnits(amount || '0', tokenPrecision)
       .gt(userYieldsBalance || BigNumber.from('0'));
     const principalBalanceZero = userPrincipalsBalance && userPrincipalsBalance.isZero();
     const yieldsBalanceZero = userYieldsBalance && userYieldsBalance.isZero();
@@ -195,7 +212,15 @@ const DetailRedeemBeforeMaturity: FC<DetailRedeemBeforeMaturityProps> = props =>
       amountExceedsYieldsBalance ||
       estimateInProgress
     );
-  }, [amount, principalsApproved, userPrincipalsBalance, userYieldsBalance, yieldsApproved, estimateInProgress]);
+  }, [
+    amount,
+    principalsApproved,
+    userPrincipalsBalance,
+    userYieldsBalance,
+    yieldsApproved,
+    estimateInProgress,
+    tokenPrecision,
+  ]);
 
   return (
     <>
