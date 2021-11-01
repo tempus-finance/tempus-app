@@ -7,18 +7,17 @@ import ETHBalanceProvider from '../../providers/ethBalanceProvider';
 import NotificationContainer from '../notification/NotificationContainer';
 import NavBar from '../navbar/NavBar';
 import Main from '../main/Main';
-import { Language } from '../../localisation/getText';
 
 import './App.scss';
 
 const App = () => {
-  const [language, setLanguage] = useState<Language>(defaultLanguageContextValue.language);
+  const [language, setLanguage] = useState(defaultLanguageContextValue);
   const [ethBalance, setETHBalance] = useState(defaultETHBalanceContextValue);
   const [walletData, setWalletData] = useState(defaultWalletContextValue);
   const [pendingTransactions, setPendingTransactions] = useState(defaultPendingTransactionsContextValue);
 
   return (
-    <LanguageContext.Provider value={{ language, changeLanguage: setLanguage }}>
+    <LanguageContext.Provider value={{ ...language, setLanguage }}>
       <ETHBalanceContext.Provider value={{ ...ethBalance, setETHBalance }}>
         <WalletContext.Provider value={{ ...walletData, setWalletData }}>
           <PendingTransactionsContext.Provider value={{ ...pendingTransactions, setPendingTransactions }}>
