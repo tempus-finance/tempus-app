@@ -2,6 +2,7 @@ import { FC, useContext, useState } from 'react';
 import { LanguageContext } from '../../context/language';
 import { TransactionView } from '../../interfaces/TransactionView';
 import CurrentPosition from '../currentPosition/CurrentPosition';
+import Deposit from '../deposit/Deposit';
 import Pool from '../pool/Pool';
 import ProfitLoss from '../profitLoss/ProfitLoss';
 import Sidebar from '../sidebar/Sidebar';
@@ -24,7 +25,11 @@ const Main: FC = () => {
           <Term language={language} />
           <CurrentPosition language={language} />
         </div>
-        <div className="tc__dashboard__row">{showExtraInfo && <ProfitLoss language={language} />}</div>
+        <div className="tc__dashboard__row">
+          {selectedView === 'Deposit' && <Deposit />}
+
+          {showExtraInfo && <ProfitLoss language={language} />}
+        </div>
       </div>
     </div>
   );

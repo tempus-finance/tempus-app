@@ -1,32 +1,14 @@
+@import '../shared/style.scss';
+
 .tc__term {
-  display: flex;
-  flex-direction: column;
+  @include cardContainer;
   flex: 27;
-  padding: 15px;
-  box-sizing: border-box;
-  background: rgba(255, 255, 255, 0.7);
-  border: 1px solid #f1f1f1;
-  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.25);
-  border-radius: 5px;
-  height: 195px;
-  margin: 0 15px 15px 0;
 }
 
-.tc__term_body {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
+.tc__term__body {
+  @include cardBody;
 
-  .tc__term_body__item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    padding: 10px 0 4px;
-    border-bottom: 1px solid #e4e4e4; // TODO add to constants
-
-    &:last-child {
-      border-bottom: none;
-    }
+  .tc__term__body__item {
+    @include cardBodyItem;
   }
 }

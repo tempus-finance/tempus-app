@@ -20,5 +20,7 @@
   "approve": "Approve",
   "execute": "Execute",
   "profitLoss": "Profit & Loss",
-  "liquidationValue": "Liquidation Value"
+  "liquidationValue": "Liquidation Value",
+  "from": "From",
+  "to": "To"
 }
