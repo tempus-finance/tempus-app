@@ -1,7 +1,6 @@
 import { FC, useContext } from 'react';
 import { LanguageContext } from '../../context/language';
-import Approve from '../buttons/Approve';
-import Execute from '../buttons/Execute';
+
 import CurrentPosition from '../currentPosition/CurrentPosition';
 import Pool from '../pool/Pool';
 import ProfitLoss from '../profitLoss/ProfitLoss';
@@ -22,10 +21,6 @@ const Main: FC = () => {
           <CurrentPosition language={language} />
         </div>
         <div className="tc__dashboard__row">
-          <div className="test">
-            <Approve language={language} />
-            <Execute language={language} />
-          </div>
           <ProfitLoss language={language} />
         </div>
       </div>
