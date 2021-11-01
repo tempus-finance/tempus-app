@@ -10,7 +10,7 @@
   @include background-level-2;
 
   display: flex;
-  border-radius: 30px;
+  border-radius: 5px;
   height: 45px;
   background-color: $ui-element-color;
   align-items: center;
@@ -22,8 +22,9 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: white;
-  border-radius: 30px;
-  padding: 13px 15px 13px 15px;
+  background-color: #fcfcfc;
+  border-radius: 5px;
+  padding-left: 15px;
+  padding-right: 15px;
   box-shadow: -2px 0px 2px rgba(0, 0, 0, 0.25);
 }
