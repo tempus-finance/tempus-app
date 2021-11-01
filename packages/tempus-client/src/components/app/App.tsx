@@ -4,8 +4,6 @@ import { DashboardRowChild } from '../../interfaces';
 import { Context, defaultContextValue } from '../../context';
 import UserETHBalanceProvider from '../../providers/userEthBalanceProvider';
 import UserShareTokenBalanceProvider from '../../providers/userShareTokenBalanceProvider';
-import UserBackingTokenBalanceProvider from '../../providers/userBackingTokenBalanceProvider';
-import UserYieldBearingTokenBalanceProvider from '../../providers/userYieldBearingTokenBalanceProvider';
 import UserLiquidityProviderTokenBalanceProvider from '../../providers/userLiquidityProviderTokenBalanceProvider';
 import VariableAPRProvider from '../../providers/variableAPRProvider';
 import FixedAPRProvider from '../../providers/fixedAPRProvider';
@@ -48,12 +46,6 @@ const App: FC = (): JSX.Element => {
           </div>
           <UserETHBalanceProvider />
           <UserShareTokenBalanceProvider
-            tempusPool={contextData.selectedRow ? contextData.selectedRow.tempusPool : null}
-          />
-          <UserBackingTokenBalanceProvider
-            tempusPool={contextData.selectedRow ? contextData.selectedRow.tempusPool : null}
-          />
-          <UserYieldBearingTokenBalanceProvider
             tempusPool={contextData.selectedRow ? contextData.selectedRow.tempusPool : null}
           />
           <UserLiquidityProviderTokenBalanceProvider

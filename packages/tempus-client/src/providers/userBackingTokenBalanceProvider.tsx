@@ -1,78 +1,70 @@
-import { FC, useCallback, useContext, useEffect } from 'react';
-import { ZERO_ETH_ADDRESS } from '../constants';
+import { useCallback, useContext, useEffect } from 'react';
 import { Context } from '../context';
 import { TempusPool } from '../interfaces/TempusPool';
 import getERC20TokenService from '../services/getERC20TokenService';
+import getConfig from '../utils/get-config';
 
-interface UserBackingTokenBalanceProviderProps {
-  tempusPool: TempusPool | null;
-}
+const UserBackingTokenBalanceProvider = () => {
+  const {
+    setData,
+    data: { userWalletAddress, userWalletSigner },
+  } = useContext(Context);
 
-const UserBackingTokenBalanceProvider: FC<UserBackingTokenBalanceProviderProps> = props => {
-  const { tempusPool } = props;
+  const updateBalanceForPool = useCallback(
+    async (tempusPool: TempusPool) => {
+      if (userWalletSigner) {
+        const backingTokenService = getERC20TokenService(tempusPool.backingTokenAddress, userWalletSigner);
+        const backingTokenBalance = await backingTokenService.balanceOf(userWalletAddress);
 
-  const { setData, data } = useContext(Context);
+        setData &&
+          setData(previousData => ({
+            ...previousData,
+            poolData: previousData.poolData.map(previousPoolData => {
+              if (previousPoolData.address !== tempusPool.address) {
+                return previousPoolData;
+              }
+              return {
+                ...previousPoolData,
+                userBackingTokenBalance: backingTokenBalance,
+              };
+            }),
+          }));
+      }
+    },
+    [setData, userWalletAddress, userWalletSigner],
+  );
 
-  /**
-   * In case backing token is an ERC20 token, fetch user balance from contract
-   */
   const updateBalance = useCallback(async () => {
-    if (!setData || !data.userWalletSigner || !tempusPool) {
-      return;
-    }
-    const backingTokenService = getERC20TokenService(tempusPool.backingTokenAddress, data.userWalletSigner);
+    getConfig().tempusPools.forEach(poolConfig => {
+      updateBalanceForPool(poolConfig);
+    });
+  }, [updateBalanceForPool]);
 
-    const balance = await backingTokenService.balanceOf(data.userWalletAddress);
-    setData(prevData => ({
-      ...prevData,
-      userBackingTokenBalance: balance,
-    }));
-  }, [data.userWalletAddress, data.userWalletSigner, tempusPool, setData]);
-
-  /**
-   * In case backing token is ETH, fetch user balance from provider.
-   */
-  const updateETHBalance = useCallback(async () => {
-    if (!setData || !data.userWalletSigner) {
-      return;
-    }
-
-    const balance = await data.userWalletSigner.getBalance();
-    setData(prevData => ({
-      ...prevData,
-      userBackingTokenBalance: balance,
-    }));
-  }, [data.userWalletSigner, setData]);
-
-  /**
-   * Subscribe to user backing token transfer event
-   */
   useEffect(() => {
-    if (!data.userWalletSigner || !tempusPool) {
+    updateBalance();
+  }, [updateBalance]);
+
+  useEffect(() => {
+    if (!userWalletSigner) {
       return;
     }
 
-    if (tempusPool.backingTokenAddress === ZERO_ETH_ADDRESS) {
-      data.userWalletSigner.provider.on('block', updateETHBalance);
+    getConfig().tempusPools.forEach(poolConfig => {
+      const backingTokenService = getERC20TokenService(poolConfig.backingTokenAddress, userWalletSigner);
 
-      return () => {
-        if (!data.userWalletSigner) {
-          return;
-        }
-        data.userWalletSigner.provider.off('block', updateETHBalance);
-      };
-    } else {
-      const backingTokenService = getERC20TokenService(tempusPool.backingTokenAddress, data.userWalletSigner);
+      backingTokenService.onTransfer(userWalletAddress, null, updateBalance);
+      backingTokenService.onTransfer(null, userWalletAddress, updateBalance);
+    });
 
-      backingTokenService.onTransfer(data.userWalletAddress, null, updateBalance);
-      backingTokenService.onTransfer(null, data.userWalletAddress, updateBalance);
+    return () => {
+      getConfig().tempusPools.forEach(poolConfig => {
+        const backingTokenService = getERC20TokenService(poolConfig.backingTokenAddress, userWalletSigner);
 
-      return () => {
-        backingTokenService.offTransfer(data.userWalletAddress, null, updateBalance);
-        backingTokenService.offTransfer(null, data.userWalletAddress, updateBalance);
-      };
-    }
-  }, [data.userWalletAddress, data.userWalletSigner, tempusPool, updateBalance, updateETHBalance, setData]);
+        backingTokenService.offTransfer(userWalletAddress, null, updateBalance);
+        backingTokenService.offTransfer(null, userWalletAddress, updateBalance);
+      });
+    };
+  }, [setData, userWalletSigner, userWalletAddress, updateBalance]);
 
   /**
    * Provider component only updates context value when needed. It does not show anything in the UI.

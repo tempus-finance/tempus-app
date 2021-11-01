@@ -2,7 +2,7 @@ import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from
 import { BigNumber, ethers } from 'ethers';
 import { JsonRpcSigner } from '@ethersproject/providers';
 import Button from '@material-ui/core/Button';
-import { Context } from '../../../context';
+import { Context, getDataForPool } from '../../../context';
 import { DashboardRowChild, Ticker } from '../../../interfaces';
 import { TempusPool } from '../../../interfaces/TempusPool';
 import PoolDataAdapter from '../../../adapters/PoolDataAdapter';
@@ -41,7 +41,7 @@ const DetailMint: FC<DetailMintProps> = props => {
   const [backingToken] = supportedTokens;
 
   const {
-    data: { userBackingTokenBalance, userYieldBearingTokenBalance },
+    data: { poolData },
   } = useContext(Context);
 
   const [isYieldNegative, setIsYieldNegative] = useState<boolean | null>(null);
@@ -55,8 +55,10 @@ const DetailMint: FC<DetailMintProps> = props => {
     if (!selectedToken) {
       return null;
     }
-    return selectedToken === backingToken ? userBackingTokenBalance : userYieldBearingTokenBalance;
-  }, [backingToken, selectedToken, userBackingTokenBalance, userYieldBearingTokenBalance]);
+    const data = getDataForPool(content.tempusPool.address, poolData);
+
+    return selectedToken === backingToken ? data.userBackingTokenBalance : data.userYieldBearingTokenBalance;
+  }, [backingToken, content.tempusPool.address, poolData, selectedToken]);
 
   const getSelectedTokenAddress = useCallback((): string | null => {
     if (!selectedToken) {
@@ -92,14 +94,17 @@ const DetailMint: FC<DetailMintProps> = props => {
    */
   const onPercentageChange = useCallback(
     (event: React.MouseEvent<HTMLButtonElement>) => {
-      const currentBalance = selectedToken === backingToken ? userBackingTokenBalance : userYieldBearingTokenBalance;
+      const data = getDataForPool(content.tempusPool.address, poolData);
+
+      const currentBalance =
+        selectedToken === backingToken ? data.userBackingTokenBalance : data.userYieldBearingTokenBalance;
       if (!currentBalance) {
         return;
       }
       const percentage = ethers.utils.parseEther(event.currentTarget.value);
       setAmount(ethers.utils.formatEther(mul18f(currentBalance, percentage)));
     },
-    [backingToken, selectedToken, userBackingTokenBalance, userYieldBearingTokenBalance],
+    [backingToken, content.tempusPool.address, poolData, selectedToken],
   );
 
   const onApproveChange = useCallback(approved => {
@@ -164,12 +169,15 @@ const DetailMint: FC<DetailMintProps> = props => {
   }, [tempusPool, poolDataAdapter]);
 
   const balanceFormatted = useMemo(() => {
-    const currentBalance = selectedToken === backingToken ? userBackingTokenBalance : userYieldBearingTokenBalance;
+    const data = getDataForPool(content.tempusPool.address, poolData);
+
+    const currentBalance =
+      selectedToken === backingToken ? data.userBackingTokenBalance : data.userYieldBearingTokenBalance;
     if (!currentBalance) {
       return null;
     }
     return NumberUtils.formatToCurrency(ethers.utils.formatEther(currentBalance), tempusPool.decimalsForUI);
-  }, [backingToken, selectedToken, tempusPool.decimalsForUI, userBackingTokenBalance, userYieldBearingTokenBalance]);
+  }, [backingToken, content.tempusPool.address, poolData, selectedToken, tempusPool.decimalsForUI]);
 
   const estimatedTokensFormatted = useMemo(() => {
     if (!estimatedTokens) {

@@ -32,7 +32,7 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
   const [backingToken] = supportedTokens;
 
   const {
-    data: { userBackingTokenBalance, userYieldBearingTokenBalance, poolData },
+    data: { poolData },
   } = useContext(Context);
 
   const [isYieldNegative, setIsYieldNegative] = useState<boolean | null>(null);
@@ -98,23 +98,25 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
    */
   const onPercentageChange = useCallback(
     (event: React.MouseEvent<HTMLButtonElement>) => {
+      const data = getDataForPool(content.tempusPool.address, poolData);
+
       let currentBalance: BigNumber;
       if (selectedToken === backingToken) {
-        if (!userBackingTokenBalance) {
+        if (!data.userBackingTokenBalance) {
           return;
         }
-        currentBalance = userBackingTokenBalance;
+        currentBalance = data.userBackingTokenBalance;
       } else {
-        if (!userYieldBearingTokenBalance) {
+        if (!data.userYieldBearingTokenBalance) {
           return;
         }
-        currentBalance = userYieldBearingTokenBalance;
+        currentBalance = data.userYieldBearingTokenBalance;
       }
 
       const percentage = ethers.utils.parseUnits(event.currentTarget.value, tokenPrecision);
       setAmount(ethers.utils.formatEther(mul18f(currentBalance, percentage)));
     },
-    [tokenPrecision, backingToken, selectedToken, userBackingTokenBalance, userYieldBearingTokenBalance],
+    [content.tempusPool.address, poolData, selectedToken, backingToken, tokenPrecision],
   );
 
   const onSelectYield = useCallback(
@@ -130,8 +132,10 @@ const DetailDeposit: FC<PoolDetailProps> = ({ tempusPool, content, signer, userW
     if (!selectedToken) {
       return null;
     }
-    return selectedToken === backingToken ? userBackingTokenBalance : userYieldBearingTokenBalance;
-  }, [backingToken, selectedToken, userBackingTokenBalance, userYieldBearingTokenBalance]);
+    const data = getDataForPool(content.tempusPool.address, poolData);
+
+    return selectedToken === backingToken ? data.userBackingTokenBalance : data.userYieldBearingTokenBalance;
+  }, [backingToken, content.tempusPool.address, poolData, selectedToken]);
 
   const getSelectedTokenAddress = useCallback((): string | null => {
     if (!selectedToken) {

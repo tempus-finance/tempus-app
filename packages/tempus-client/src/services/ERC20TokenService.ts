@@ -129,13 +129,23 @@ class ERC20TokenService {
 
   onTransfer(from: string | null, to: string | null, listener: TransferEventListener) {
     if (this.contract) {
-      this.contract.on(this.contract.filters.Transfer(from, to), listener);
+      // In case of ETH trigger transfer event on every new block
+      if (this.contract.address === ZERO_ETH_ADDRESS) {
+        this.contract.provider.on('block', listener);
+      } else {
+        this.contract.on(this.contract.filters.Transfer(from, to), listener);
+      }
     }
   }
 
   offTransfer(from: string | null, to: string | null, listener: TransferEventListener) {
     if (this.contract) {
-      this.contract.off(this.contract.filters.Transfer(from, to), listener);
+      // In case of ETH remove block transfer event listener
+      if (this.contract.address === ZERO_ETH_ADDRESS) {
+        this.contract.provider.off('block', listener);
+      } else {
+        this.contract.off(this.contract.filters.Transfer(from, to), listener);
+      }
     }
   }
 }

@@ -1,7 +1,5 @@
-import { ethers } from 'ethers';
 import { Column } from '@devexpress/dx-react-grid';
 import { DashboardRowChild, DashboardRowParent, isParentRow } from '../../interfaces';
-import NumberUtils from '../../services/NumberUtils';
 
 export interface ExtraDataColumn extends Column {
   tooltip?: string;
@@ -57,36 +55,5 @@ export const dashboardColumnsDefinitions: ExtraDataColumn[] = [
   {
     name: 'availableToDeposit',
     title: 'Available to Deposit',
-    getCellValue: (row: DashboardRowParent | DashboardRowChild) => {
-      // Parent row
-      if ('protocols' in row) {
-        if (row.availableUSDToDeposit === undefined) {
-          return '-';
-        }
-
-        return new Intl.NumberFormat('en-US', {
-          style: 'currency',
-          currency: 'USD',
-          maximumFractionDigits: 2,
-          minimumFractionDigits: 0,
-        }).format(row.availableUSDToDeposit.toBigInt());
-      }
-      // Child row
-      else {
-        if (row.availableTokensToDeposit === undefined) {
-          return '-';
-        }
-        return (
-          `${NumberUtils.formatWithMultiplier(
-            Number(ethers.utils.formatEther(row.availableTokensToDeposit.backingToken)),
-            2,
-          )} ${row.availableTokensToDeposit.backingTokenTicker} / ` +
-          `${NumberUtils.formatWithMultiplier(
-            Number(ethers.utils.formatEther(row.availableTokensToDeposit.yieldBearingToken)),
-            2,
-          )} ${row.availableTokensToDeposit.yieldBearingTokenTicker}`
-        );
-      }
-    },
   },
 ];
