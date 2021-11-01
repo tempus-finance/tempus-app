@@ -1,0 +1,54 @@
+@import '../../../constants.scss';
+
+.tf__filter__popup-popper {
+  padding-top: 10px;
+  z-index: 999;
+
+  > .MuiPaper-root {
+    border-radius: 12px;
+  }
+}
+
+.tf__filter__popup-container {
+  padding: 20px;
+  z-index: 999;
+}
+
+.tf__filter__popup-row-container {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  height: 48px;
+}
+
+.tf__filter__popup-row-label-container {
+  margin-right: 10px;
+}
+
+.tf__filter__popup-row-input-container {
+  display: flex;
+  justify-content: space-between;
+  width: 180px;
+
+  p {
+    margin: 0px 8px 0px 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
+
+.tf__filter__popup-actions-container {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-top: 15px;
+
+  > .MuiButton-contained {
+    color: white;
+  }
+
+  > .MuiButton-root {
+    text-transform: none;
+  }
+}
