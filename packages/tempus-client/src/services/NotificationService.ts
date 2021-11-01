@@ -1,5 +1,5 @@
 import { ethers, BigNumber } from 'ethers';
-import { Observable, Subject } from 'rxjs';
+import { Observable, Subject, interval, tap, filter } from 'rxjs';
 import { v1 as uuid } from 'uuid';
 import ERC20ABI from '../abi/ERC20.json';
 import { ProtocolName, Ticker } from '../interfaces';
@@ -8,6 +8,9 @@ import { formatDate } from '../utils/formatDate';
 import { capitalize } from '../utils/capitalize-string';
 import getConfig from '../utils/get-config';
 import NumberUtils from './NumberUtils';
+import StorageService from './StorageService';
+
+const NOTIFICATIONS_KEY = 'notifications';
 
 export enum NotificationLevel {
   WARNING = 'warning',
@@ -26,6 +29,11 @@ export type Notification = {
 // TODO add tests
 class NotificationService {
   private notificationQueue: Subject<Notification> = new Subject<Notification>();
+  private notificationList: Array<Notification> = [];
+
+  constructor(private storageService: StorageService) {
+    this.restoreNotifications();
+  }
 
   warn(title: string, content: string, link?: string, linkText?: string) {
     this.addToQueue(NotificationLevel.WARNING, title, content, link, linkText);
@@ -35,12 +43,53 @@ class NotificationService {
     this.addToQueue(NotificationLevel.INFO, title, content, link, linkText);
   }
 
-  getNextItem(): Observable<Notification> {
+  getNotifications(): Observable<Notification> {
     return this.notificationQueue.asObservable();
   }
 
+  delete(id: string) {
+    this.notificationList = this.notificationList.filter(notification => notification.id !== id);
+    this.storeNotifications();
+  }
+
   private addToQueue(level: NotificationLevel, title: string, content: string, link?: string, linkText?: string) {
-    this.notificationQueue.next({ level, title, content, link, linkText, id: uuid() });
+    const notification = { level, title, content, link, linkText, id: uuid() };
+    this.notificationList.push(notification);
+    this.emit(notification);
+  }
+
+  private emit(notification: Notification) {
+    this.storeNotifications();
+    this.notificationQueue.next(notification);
+  }
+
+  private storeNotifications() {
+    this.storageService.delete(NOTIFICATIONS_KEY);
+    this.storageService.set(NOTIFICATIONS_KEY, this.notificationList);
+  }
+
+  private restoreNotifications() {
+    this.retrieveNotifications();
+    const restoreNotificationStream$ = interval(1000)
+      .pipe(
+        filter(() => this.notificationQueue.observed),
+        tap(() => {
+          this.notificationList.forEach(notification => {
+            this.emit(notification);
+          });
+          this.notificationList = [];
+          restoreNotificationStream$.unsubscribe();
+        }),
+      )
+      .subscribe();
+  }
+
+  private retrieveNotifications() {
+    const notificationList = this.storageService.get(NOTIFICATIONS_KEY);
+    if (notificationList && Array.isArray(notificationList)) {
+      this.notificationList = notificationList;
+    }
+    this.storageService.delete(NOTIFICATIONS_KEY);
   }
 }
 
