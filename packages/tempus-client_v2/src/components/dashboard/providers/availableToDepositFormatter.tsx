@@ -7,7 +7,7 @@ import Spacer from '../../spacer/spacer';
 import Typography from '../../typography/Typography';
 import TokenIcon from '../../tokenIcon';
 import './availableToDepositFormatter.scss';
-import { PoolDataContext, ContextPoolData, getDataForPool } from '../../../context/poolData';
+import { PoolDataContext, PoolData, getDataForPool } from '../../../context/poolDataContext';
 import { useContext, useMemo } from 'react';
 import { CircularProgress } from '@material-ui/core';
 
@@ -55,9 +55,9 @@ const AvailableToDepositFormatter = (props: DataTypeProvider.ValueFormatterProps
               )}
             </p>
             <div className="tf__dashboard__grid__avail-to-deposit-token-ticker-container">
-              <Typography variant="body-text">{row.backingTokenTicker}</Typography>
+              <Typography variant="body-text">{row.tempusPool.backingToken}</Typography>
               <Spacer size={5} />
-              <TokenIcon ticker={row.backingTokenTicker} />
+              <TokenIcon ticker={row.tempusPool.backingToken} />
             </div>
           </>
         </div>
@@ -70,9 +70,9 @@ const AvailableToDepositFormatter = (props: DataTypeProvider.ValueFormatterProps
               )}
             </p>
             <div className="tf__dashboard__grid__avail-to-deposit-token-ticker-container">
-              <Typography variant="body-text">{row.yieldBearingTokenTicker}</Typography>
+              <Typography variant="body-text">{row.tempusPool.yieldBearingToken}</Typography>
               <Spacer size={5} />
-              <TokenIcon ticker={row.yieldBearingTokenTicker} />
+              <TokenIcon ticker={row.tempusPool.yieldBearingToken} />
             </div>
           </>
         </div>
@@ -81,7 +81,7 @@ const AvailableToDepositFormatter = (props: DataTypeProvider.ValueFormatterProps
   }
 };
 
-function getParentAvailableToDeposit(parentId: Ticker, poolData: ContextPoolData[]) {
+function getParentAvailableToDeposit(parentId: Ticker, poolData: PoolData[]) {
   const parentChildren = poolData.filter(data => {
     return data.backingTokenTicker === parentId;
   });
@@ -112,7 +112,7 @@ function getParentAvailableToDeposit(parentId: Ticker, poolData: ContextPoolData
   return parentAvailableToDeposit;
 }
 
-function getChildAvailableToDeposit(id: string, poolData: ContextPoolData[]) {
+function getChildAvailableToDeposit(id: string, poolData: PoolData[]) {
   const data = getDataForPool(id, poolData);
 
   if (!data.userYieldBearingTokenBalance || !data.userBackingTokenBalance) {

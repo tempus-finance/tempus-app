@@ -7,24 +7,16 @@ export interface DashboardRow {
   parentId: string | null;
   token: Ticker;
 }
-
 export interface DashboardRowParent extends DashboardRow {
   maturityRange: (Date | null)[];
   protocols: ProtocolName[];
 }
 
 export interface DashboardRowChild extends DashboardRow {
-  protocol: ProtocolName;
   tempusPool: TempusPool;
   supportedTokens: Ticker[];
   startDate: Date;
   maturityDate: Date;
-  principalTokenAddress: string;
-  yieldTokenAddress: string;
-  backingTokenAddress: string;
-  yieldBearingTokenAddress: string;
-  backingTokenTicker: Ticker;
-  yieldBearingTokenTicker: Ticker;
 }
 
 /**

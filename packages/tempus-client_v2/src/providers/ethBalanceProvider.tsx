@@ -1,6 +1,6 @@
 import { useCallback, useContext, useEffect } from 'react';
-import { ETHBalanceContext } from '../context/ethBalance';
-import { WalletContext } from '../context/wallet';
+import { ETHBalanceContext } from '../context/ethBalanceContext';
+import { WalletContext } from '../context/walletContext';
 
 const ETHBalanceProvider = () => {
   const { setETHBalance } = useContext(ETHBalanceContext);

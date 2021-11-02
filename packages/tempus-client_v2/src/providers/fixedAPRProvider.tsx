@@ -2,8 +2,8 @@ import { useCallback, useContext, useEffect } from 'react';
 import getConfig from '../utils/getConfig';
 import getDefaultProvider from '../services/getDefaultProvider';
 import getTempusAMMService from '../services/getTempusAMMService';
-import { PoolDataContext } from '../context/poolData';
-import { WalletContext } from '../context/wallet';
+import { PoolDataContext } from '../context/poolDataContext';
+import { WalletContext } from '../context/walletContext';
 
 const FixedAPRProvider = () => {
   const { setPoolData } = useContext(PoolDataContext);

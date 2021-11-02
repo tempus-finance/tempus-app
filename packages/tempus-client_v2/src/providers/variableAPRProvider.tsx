@@ -5,8 +5,8 @@ import getVariableRateService from '../services/getVariableRateService';
 import getConfig from '../utils/getConfig';
 import getTokenPrecision from '../utils/getTokenPrecision';
 import { ZERO } from '../constants';
-import { PoolDataContext } from '../context/poolData';
-import { WalletContext } from '../context/wallet';
+import { PoolDataContext } from '../context/poolDataContext';
+import { WalletContext } from '../context/walletContext';
 
 const VariableAPRProvider = () => {
   const { setPoolData } = useContext(PoolDataContext);

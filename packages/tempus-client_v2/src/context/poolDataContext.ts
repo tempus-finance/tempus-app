@@ -8,7 +8,7 @@ export interface AvailableToDeposit {
   yieldBearingTokenAmount: BigNumber;
 }
 
-export interface ContextPoolData {
+export interface PoolData {
   address: string;
   ammAddress: string;
   backingTokenTicker: Ticker;
@@ -27,18 +27,18 @@ export interface ContextPoolData {
   decimalsForUI: number;
 }
 
-interface ContextData {
-  selectedPool: string;
-  poolData: ContextPoolData[];
+interface PoolDataContextData {
+  selectedPool: string; // is the address
+  poolData: PoolData[];
 }
 
-interface ContextActions {
-  setPoolData: Dispatch<SetStateAction<ContextData>> | null;
+interface PoolDataContextActions {
+  setPoolData: Dispatch<SetStateAction<PoolDataContextData>> | null;
 }
 
-interface ContextType extends ContextActions, ContextData {}
+interface PoolDataContextType extends PoolDataContextActions, PoolDataContextData {}
 
-export const defaultPoolDataContextValue: ContextData = {
+export const defaultPoolDataContextValue: PoolDataContextData = {
   selectedPool: '',
   poolData: getConfig().tempusPools.map(tempusPoolConfig => ({
     address: tempusPoolConfig.address,
@@ -60,12 +60,13 @@ export const defaultPoolDataContextValue: ContextData = {
   })),
 };
 
-export const PoolDataContext = React.createContext<ContextType>({
+export const PoolDataContext = React.createContext<PoolDataContextType>({
   ...defaultPoolDataContextValue,
   setPoolData: null,
 });
 
-export function getDataForPool(address: string, poolData: ContextPoolData[]): ContextPoolData {
+// TODO use a map to speedup retrieval
+export function getDataForPool(address: string, poolData: PoolData[]): PoolData {
   const result = poolData.find(data => data.address === address);
   if (!result) {
     throw new Error('Context - getDataForPool() - Failed to fetch data for pool!');

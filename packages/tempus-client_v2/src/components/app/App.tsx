@@ -1,15 +1,18 @@
 import { useState } from 'react';
-import { LanguageContext, defaultLanguageContextValue } from '../../context/language';
-import { ETHBalanceContext, defaultETHBalanceContextValue } from '../../context/ethBalance';
-import { defaultWalletContextValue, WalletContext } from '../../context/wallet';
-import { defaultPendingTransactionsContextValue, PendingTransactionsContext } from '../../context/pendingTransactions';
+import { LanguageContext, defaultLanguageContextValue } from '../../context/languageContext';
+import { ETHBalanceContext, defaultETHBalanceContextValue } from '../../context/ethBalanceContext';
+import { defaultWalletContextValue, WalletContext } from '../../context/walletContext';
+import {
+  defaultPendingTransactionsContextValue,
+  PendingTransactionsContext,
+} from '../../context/pendingTransactionsContext';
+import { defaultPoolDataContextValue, PoolDataContext } from '../../context/poolDataContext';
 import ETHBalanceProvider from '../../providers/ethBalanceProvider';
 import NotificationContainer from '../notification/NotificationContainer';
 import NavBar from '../navbar/NavBar';
 import Main from '../main/Main';
 
 import './App.scss';
-import { defaultPoolDataContextValue, PoolDataContext } from '../../context/poolData';
 
 const App = () => {
   const [language, setLanguage] = useState(defaultLanguageContextValue);
