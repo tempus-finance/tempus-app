@@ -20,6 +20,8 @@ type Words =
   | 'approve'
   | 'execute'
   | 'profitLoss'
-  | 'liquidationValue';
+  | 'liquidationValue'
+  | 'from'
+  | 'to';
 
 export default Words;

@@ -1,0 +1,43 @@
+@import '../shared/style.scss';
+
+.tc__deposit {
+  display: flex;
+  flex-direction: column;
+  flex: 67;
+}
+
+.tc__deposit__from,
+.tc__deposit__to {
+  @include cardContainer;
+  background: rgba(255, 255, 255, 0.7); // TODO add to constants
+  height: 100%;
+}
+
+.tc__deposit__from__body {
+  @include cardBody;
+  height: 100%;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.tc__deposit__to__body {
+  @include cardBody;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+}
+
+.tc__deposit__select-yield {
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+
+  > div {
+    height: 100px;
+    width: 100px;
+    margin: 10px 20px;
+    padding: 10px;
+    border: 1px solid red;
+  }
+}

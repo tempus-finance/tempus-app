@@ -1,4 +1,4 @@
-import { BigNumber } from 'ethers';
+import { BigNumber, ethers } from 'ethers';
 import { combineLatest, from, Observable, of, switchMap, throwError, timer } from 'rxjs';
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
 import { POLLING_INTERVAL } from '../constants';
@@ -6,19 +6,24 @@ import { TempusPool } from '../interfaces/TempusPool';
 import { mul18f } from '../utils/wei-math';
 import StatisticsService from '../services/StatisticsService';
 import getERC20TokenService from '../services/getERC20TokenService';
+import TempusPoolService from '../services/TempusPoolService';
+import { AvailableToDeposit } from '../context';
 
 type UserBalanceDataAdapterParameters = {
   signerOrProvider: JsonRpcProvider | JsonRpcSigner;
   statisticsService: StatisticsService;
+  tempusPoolService: TempusPoolService;
   eRC20TokenServiceGetter: typeof getERC20TokenService;
 };
 
 export default class UserBalanceDataAdapter {
   private statisticsService: StatisticsService | null = null;
+  private tempusPoolService: TempusPoolService | null = null;
   private eRC20TokenServiceGetter: null | typeof getERC20TokenService = null;
 
   public init(params: UserBalanceDataAdapterParameters) {
     this.statisticsService = params.statisticsService;
+    this.tempusPoolService = params.tempusPoolService;
     this.eRC20TokenServiceGetter = params.eRC20TokenServiceGetter;
   }
 
@@ -84,5 +89,38 @@ export default class UserBalanceDataAdapter {
           );
         }),
       );
+  }
+
+  async getUserUSDAvailableToDepositForPool(
+    tempusPool: TempusPool,
+    userWalletAddress: string,
+  ): Promise<AvailableToDeposit> {
+    if (!this.statisticsService || !this.tempusPoolService || !this.eRC20TokenServiceGetter) {
+      return Promise.reject('UserBalanceDataAdapter - getUserBalanceForPool() - Adapter not initialized!');
+    }
+
+    const backingToken = this.eRC20TokenServiceGetter(tempusPool.backingTokenAddress);
+    const yieldBearingToken = this.eRC20TokenServiceGetter(tempusPool.yieldBearingTokenAddress);
+    const [backingTokensAvailable, yieldTokensAvailable, backingTokenToUSD, interestRate] = await Promise.all([
+      backingToken.balanceOf(userWalletAddress),
+      yieldBearingToken.balanceOf(userWalletAddress),
+      this.statisticsService.getRate(tempusPool.backingToken),
+      this.tempusPoolService.currentInterestRate(tempusPool.address),
+    ]);
+
+    const yieldBearingToBackingTokenRate = await this.tempusPoolService.numAssetsPerYieldToken(
+      tempusPool.address,
+      ethers.utils.parseEther('1'),
+      interestRate,
+    );
+
+    const backingTokenUSDValue = mul18f(backingTokensAvailable, backingTokenToUSD);
+    const yieldBearingToBackingAmount = mul18f(yieldTokensAvailable, yieldBearingToBackingTokenRate);
+    const yieldBearingTokenUSDValue = mul18f(yieldBearingToBackingAmount, backingTokenToUSD);
+
+    return {
+      backingTokenAmount: backingTokenUSDValue,
+      yieldBearingTokenAmount: yieldBearingTokenUSDValue,
+    };
   }
 }

@@ -1,12 +1,14 @@
 import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { BigNumber, ethers } from 'ethers';
 import { JsonRpcSigner } from '@ethersproject/providers';
+import { catchError } from 'rxjs';
 import Button from '@material-ui/core/Button';
-import { Context } from '../../../context';
+import { Context, getDataForPool } from '../../../context';
 import { DashboardRowChild, Ticker } from '../../../interfaces';
 import { TempusPool } from '../../../interfaces/TempusPool';
 import PoolDataAdapter from '../../../adapters/PoolDataAdapter';
 import NumberUtils from '../../../services/NumberUtils';
+import getTokenPrecision from '../../../utils/getTokenPrecision';
 import getConfig from '../../../utils/get-config';
 import { mul18f } from '../../../utils/wei-math';
 import { isZeroString } from '../../../utils/isZeroString';
@@ -37,11 +39,12 @@ type DetailMintProps = DetailMintInProps & DetailMintOutProps;
 
 const DetailMint: FC<DetailMintProps> = props => {
   const { content, tempusPool, userWalletAddress, poolDataAdapter } = props;
+  const { address } = tempusPool;
   const { supportedTokens } = content;
   const [backingToken] = supportedTokens;
 
   const {
-    data: { userBackingTokenBalance, userYieldBearingTokenBalance },
+    data: { poolData },
   } = useContext(Context);
 
   const [isYieldNegative, setIsYieldNegative] = useState<boolean | null>(null);
@@ -50,13 +53,16 @@ const DetailMint: FC<DetailMintProps> = props => {
   const [estimatedTokens, setEstimatedTokens] = useState<BigNumber | null>(null);
   const [tokensApproved, setTokensApproved] = useState<boolean>(false);
   const [estimateInProgress, setEstimateInProgress] = useState<boolean>(false);
+  const [tokenPrecision, setTokenPrecision] = useState<number>(0);
 
   const getSelectedTokenBalance = useCallback((): BigNumber | null => {
     if (!selectedToken) {
       return null;
     }
-    return selectedToken === backingToken ? userBackingTokenBalance : userYieldBearingTokenBalance;
-  }, [backingToken, selectedToken, userBackingTokenBalance, userYieldBearingTokenBalance]);
+    const data = getDataForPool(content.tempusPool.address, poolData);
+
+    return selectedToken === backingToken ? data.userBackingTokenBalance : data.userYieldBearingTokenBalance;
+  }, [backingToken, content.tempusPool.address, poolData, selectedToken]);
 
   const getSelectedTokenAddress = useCallback((): string | null => {
     if (!selectedToken) {
@@ -70,9 +76,15 @@ const DetailMint: FC<DetailMintProps> = props => {
       if (!token) {
         return;
       }
+      if (backingToken === token) {
+        setTokenPrecision(getTokenPrecision(address, 'backingToken'));
+      } else {
+        setTokenPrecision(getTokenPrecision(address, 'yieldBearingToken'));
+      }
+
       setSelectedToken(token);
     },
-    [setSelectedToken],
+    [address, backingToken, setSelectedToken],
   );
 
   const onAmountChange = useCallback(
@@ -92,14 +104,17 @@ const DetailMint: FC<DetailMintProps> = props => {
    */
   const onPercentageChange = useCallback(
     (event: React.MouseEvent<HTMLButtonElement>) => {
-      const currentBalance = selectedToken === backingToken ? userBackingTokenBalance : userYieldBearingTokenBalance;
+      const data = getDataForPool(content.tempusPool.address, poolData);
+
+      const currentBalance =
+        selectedToken === backingToken ? data.userBackingTokenBalance : data.userYieldBearingTokenBalance;
       if (!currentBalance) {
         return;
       }
-      const percentage = ethers.utils.parseEther(event.currentTarget.value);
-      setAmount(ethers.utils.formatEther(mul18f(currentBalance, percentage)));
+      const percentage = ethers.utils.parseUnits(event.currentTarget.value, tokenPrecision);
+      setAmount(ethers.utils.formatUnits(mul18f(currentBalance, percentage, tokenPrecision), tokenPrecision));
     },
-    [backingToken, selectedToken, userBackingTokenBalance, userYieldBearingTokenBalance],
+    [backingToken, content.tempusPool.address, poolData, selectedToken, tokenPrecision],
   );
 
   const onApproveChange = useCallback(approved => {
@@ -111,16 +126,16 @@ const DetailMint: FC<DetailMintProps> = props => {
       return Promise.resolve(undefined);
     }
 
-    const amountParsed = ethers.utils.parseEther(amount);
+    const amountParsed = ethers.utils.parseUnits(amount, tokenPrecision);
 
     return poolDataAdapter.deposit(
-      tempusPool.address,
+      address,
       amountParsed,
       userWalletAddress,
       selectedToken === backingToken,
       selectedToken === 'ETH',
     );
-  }, [amount, backingToken, poolDataAdapter, selectedToken, tempusPool.address, userWalletAddress]);
+  }, [amount, backingToken, tokenPrecision, poolDataAdapter, selectedToken, address, userWalletAddress]);
 
   const onExecuted = useCallback(() => {
     setAmount('');
@@ -133,12 +148,18 @@ const DetailMint: FC<DetailMintProps> = props => {
     }
 
     const isBackingToken = selectedToken === backingToken;
-    const amountParsed = ethers.utils.parseEther(amount);
+    const amountParsed = ethers.utils.parseUnits(amount, tokenPrecision);
 
     try {
       setEstimateInProgress(true);
       const stream$ = poolDataAdapter
-        .estimatedMintedShares(tempusPool.address, amountParsed, isBackingToken)
+        .estimatedMintedShares(address, amountParsed, isBackingToken)
+        .pipe(
+          catchError((error, caught) => {
+            console.log('DetailMint - estimatedMintedShares - Failed to retrieve estimated minted shares!', error);
+            return caught;
+          }),
+        )
         .subscribe(estimatedMintedShares => {
           setEstimatedTokens(estimatedMintedShares);
           setEstimateInProgress(false);
@@ -149,34 +170,51 @@ const DetailMint: FC<DetailMintProps> = props => {
       console.error('DetailMint - getEstimates() - Failed to get estimates for selected token!', error);
       setEstimateInProgress(false);
     }
-  }, [amount, backingToken, poolDataAdapter, selectedToken, tempusPool]);
+  }, [tokenPrecision, amount, backingToken, poolDataAdapter, selectedToken, address]);
 
   useEffect(() => {
     if (!poolDataAdapter) {
       return;
     }
 
-    const stream$ = poolDataAdapter.isCurrentYieldNegativeForPool(tempusPool.address).subscribe(isYieldNegative => {
-      setIsYieldNegative(isYieldNegative);
-    });
+    const stream$ = poolDataAdapter
+      .isCurrentYieldNegativeForPool(address)
+      .pipe(
+        catchError((error, caught) => {
+          console.log('DetailMint - isCurrentYieldNegativeForPool - Failed to retrieve current yield!', error);
+          return caught;
+        }),
+      )
+      .subscribe(isYieldNegative => {
+        setIsYieldNegative(isYieldNegative);
+      });
 
     return () => stream$.unsubscribe();
-  }, [tempusPool, poolDataAdapter]);
+  }, [address, poolDataAdapter]);
 
   const balanceFormatted = useMemo(() => {
-    const currentBalance = selectedToken === backingToken ? userBackingTokenBalance : userYieldBearingTokenBalance;
+    const data = getDataForPool(content.tempusPool.address, poolData);
+
+    const currentBalance =
+      selectedToken === backingToken ? data.userBackingTokenBalance : data.userYieldBearingTokenBalance;
     if (!currentBalance) {
       return null;
     }
-    return NumberUtils.formatToCurrency(ethers.utils.formatEther(currentBalance), tempusPool.decimalsForUI);
-  }, [backingToken, selectedToken, tempusPool.decimalsForUI, userBackingTokenBalance, userYieldBearingTokenBalance]);
+    return NumberUtils.formatToCurrency(
+      ethers.utils.formatUnits(currentBalance, tokenPrecision),
+      tempusPool.decimalsForUI,
+    );
+  }, [backingToken, content.tempusPool.address, poolData, selectedToken, tokenPrecision, tempusPool.decimalsForUI]);
 
   const estimatedTokensFormatted = useMemo(() => {
     if (!estimatedTokens) {
       return null;
     }
-    return NumberUtils.formatToCurrency(ethers.utils.formatEther(estimatedTokens), tempusPool.decimalsForUI);
-  }, [estimatedTokens, tempusPool.decimalsForUI]);
+    return NumberUtils.formatToCurrency(
+      ethers.utils.formatUnits(estimatedTokens, tokenPrecision),
+      tempusPool.decimalsForUI,
+    );
+  }, [estimatedTokens, tokenPrecision, tempusPool.decimalsForUI]);
 
   const approveDisabled = useMemo((): boolean => {
     const zeroAmount = isZeroString(amount);
@@ -191,11 +229,11 @@ const DetailMint: FC<DetailMintProps> = props => {
   const executeDisabled = useMemo((): boolean => {
     const zeroAmount = isZeroString(amount);
     const amountExceedsBalance = ethers.utils
-      .parseEther(amount || '0')
+      .parseUnits(amount || '0', tokenPrecision)
       .gt(getSelectedTokenBalance() || BigNumber.from('0'));
 
     return !tokensApproved || zeroAmount || amountExceedsBalance || estimateInProgress || mintDisabled;
-  }, [amount, getSelectedTokenBalance, tokensApproved, estimateInProgress, mintDisabled]);
+  }, [amount, tokenPrecision, getSelectedTokenBalance, tokensApproved, estimateInProgress, mintDisabled]);
 
   return (
     <>
@@ -304,7 +342,7 @@ const DetailMint: FC<DetailMintProps> = props => {
             )}
             <ExecuteButton
               actionName="Mint"
-              tempusPool={content.tempusPool}
+              tempusPool={tempusPool}
               disabled={executeDisabled}
               onExecute={onExecute}
               onExecuted={onExecuted}

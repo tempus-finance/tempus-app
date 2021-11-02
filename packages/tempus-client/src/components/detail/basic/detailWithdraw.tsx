@@ -4,6 +4,7 @@ import { Context, getDataForPool } from '../../../context';
 import { Ticker } from '../../../interfaces/Token';
 import NumberUtils from '../../../services/NumberUtils';
 import getConfig from '../../../utils/get-config';
+import getTokenPrecision from '../../../utils/getTokenPrecision';
 import Typography from '../../typography/Typography';
 import Spacer from '../../spacer/spacer';
 import TokenSelector from '../../tokenSelector';
@@ -17,7 +18,7 @@ import ExecuteButton from '../shared/executeButton';
 import '../shared/style.scss';
 
 const DetailWithdraw: FC<PoolDetailProps> = ({ tempusPool, content, signer, userWalletAddress, poolDataAdapter }) => {
-  const { ammAddress } = tempusPool;
+  const { address, ammAddress } = tempusPool;
   // We do not support withdraw to ETH
   const supportedTokens = content.supportedTokens.filter(token => token !== 'ETH');
   const backingToken = content.backingTokenTicker;
@@ -34,11 +35,22 @@ const DetailWithdraw: FC<PoolDetailProps> = ({ tempusPool, content, signer, user
   const [yieldsApproved, setYieldsApproved] = useState<boolean>(false);
   const [lpApproved, setLpApproved] = useState<boolean>(false);
 
-  const onTokenChange = useCallback((token: Ticker | undefined) => {
-    if (token) {
-      setSelectedToken(token);
-    }
-  }, []);
+  const [tokenPrecision, setTokenPrecision] = useState<number>(0);
+
+  const onTokenChange = useCallback(
+    (token: Ticker | undefined) => {
+      if (token) {
+        if (backingToken === token) {
+          setTokenPrecision(getTokenPrecision(address, 'backingToken'));
+        } else {
+          setTokenPrecision(getTokenPrecision(address, 'yieldBearingToken'));
+        }
+
+        setSelectedToken(token);
+      }
+    },
+    [address, backingToken],
+  );
 
   const onExecute = useCallback((): Promise<ethers.ContractTransaction | undefined> => {
     if (signer && poolDataAdapter && userPrincipalsBalance && userLPBalance) {
@@ -65,6 +77,12 @@ const DetailWithdraw: FC<PoolDetailProps> = ({ tempusPool, content, signer, user
           )
           .subscribe(amount => {
             setEstimatedWithdrawAmount(amount);
+
+            if (backingToken === selectedToken) {
+              setTokenPrecision(getTokenPrecision(address, 'backingToken'));
+            } else {
+              setTokenPrecision(getTokenPrecision(address, 'yieldBearingToken'));
+            }
           });
 
         return () => stream$.unsubscribe();
@@ -73,6 +91,7 @@ const DetailWithdraw: FC<PoolDetailProps> = ({ tempusPool, content, signer, user
       }
     }
   }, [
+    address,
     ammAddress,
     selectedToken,
     backingToken,
@@ -86,38 +105,50 @@ const DetailWithdraw: FC<PoolDetailProps> = ({ tempusPool, content, signer, user
     if (!userPrincipalsBalance) {
       return null;
     }
-    return NumberUtils.formatToCurrency(ethers.utils.formatEther(userPrincipalsBalance), tempusPool.decimalsForUI);
-  }, [userPrincipalsBalance, tempusPool.decimalsForUI]);
+    return NumberUtils.formatToCurrency(
+      ethers.utils.formatUnits(userPrincipalsBalance, getTokenPrecision(address, 'principals')),
+      tempusPool.decimalsForUI,
+    );
+  }, [userPrincipalsBalance, address, tempusPool.decimalsForUI]);
 
   const yieldsBalanceFormatted = useMemo(() => {
     if (!userYieldsBalance) {
       return null;
     }
-    return NumberUtils.formatToCurrency(ethers.utils.formatEther(userYieldsBalance), tempusPool.decimalsForUI);
-  }, [userYieldsBalance, tempusPool.decimalsForUI]);
+    return NumberUtils.formatToCurrency(
+      ethers.utils.formatUnits(userYieldsBalance, getTokenPrecision(address, 'yields')),
+      tempusPool.decimalsForUI,
+    );
+  }, [userYieldsBalance, address, tempusPool.decimalsForUI]);
 
   const lpBalanceFormatted = useMemo(() => {
     if (!userLPBalance) {
       return null;
     }
-    return NumberUtils.formatToCurrency(ethers.utils.formatEther(userLPBalance), tempusPool.decimalsForUI);
-  }, [userLPBalance, tempusPool.decimalsForUI]);
+    return NumberUtils.formatToCurrency(
+      ethers.utils.formatUnits(userLPBalance, getTokenPrecision(address, 'lpTokens')),
+      tempusPool.decimalsForUI,
+    );
+  }, [userLPBalance, address, tempusPool.decimalsForUI]);
 
   const estimatedWithdrawAmountFormatted = useMemo(() => {
     if (!estimatedWithdrawAmount) {
       return null;
     }
-    return NumberUtils.formatToCurrency(ethers.utils.formatEther(estimatedWithdrawAmount), tempusPool.decimalsForUI);
-  }, [estimatedWithdrawAmount, tempusPool.decimalsForUI]);
+    return NumberUtils.formatToCurrency(
+      ethers.utils.formatUnits(estimatedWithdrawAmount, tokenPrecision),
+      tempusPool.decimalsForUI,
+    );
+  }, [estimatedWithdrawAmount, tokenPrecision, tempusPool.decimalsForUI]);
 
   const estimatedWithdrawAmountUsdFormatted = useMemo(() => {
     const data = getDataForPool(content.tempusPool.address, poolData);
 
-    if (!data.balance) {
+    if (!data.userBalanceUSD) {
       return null;
     }
-    return NumberUtils.formatToCurrency(ethers.utils.formatEther(data.balance), 2, '$');
-  }, [content.tempusPool.address, poolData]);
+    return NumberUtils.formatToCurrency(ethers.utils.formatUnits(data.userBalanceUSD, tokenPrecision), 2, '$');
+  }, [content.tempusPool.address, poolData, tokenPrecision]);
 
   const executeDisabled = useMemo(() => {
     const principalBalanceZero = userPrincipalsBalance && userPrincipalsBalance.isZero();

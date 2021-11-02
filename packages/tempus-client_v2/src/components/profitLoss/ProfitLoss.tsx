@@ -10,8 +10,8 @@ const ProfitLoss: FC<ProfitLossInProps> = ({ language }) => {
   return (
     <div className="tc__profitLoss">
       <Typography variant="h1">{getText('profitLoss', language)}</Typography>
-      <div className="tc__profitLoss_body">
-        <div className="tc__profitLoss_body__item">
+      <div className="tc__profitLoss__body">
+        <div className="tc__profitLoss__body__item">
           <Typography variant="h5">{getText('liquidationValue', language)}</Typography>
           <Typography variant="h5">0.21</Typography>
         </div>

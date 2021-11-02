@@ -11,6 +11,7 @@ import { SwapKind } from '../../../services/VaultService';
 import getConfig from '../../../utils/get-config';
 import { mul18f } from '../../../utils/wei-math';
 import { isZeroString } from '../../../utils/isZeroString';
+import getTokenPrecision from '../../../utils/getTokenPrecision';
 import Typography from '../../typography/Typography';
 import CurrencyInput from '../../currencyInput/currencyInput';
 import Spacer from '../../spacer/spacer';
@@ -39,6 +40,7 @@ type DetailSwapProps = DetailSwapInProps & DetailSwapOutProps;
 
 const DetailSwap: FC<DetailSwapProps> = props => {
   const { content, userWalletAddress, poolDataAdapter, tempusPool } = props;
+  const { address } = tempusPool;
   const { principalTokenAddress, yieldTokenAddress } = content;
 
   const {
@@ -58,6 +60,7 @@ const DetailSwap: FC<DetailSwapProps> = props => {
   const [receiveAmount, setReceiveAmount] = useState<BigNumber | null>(null);
   const [tokensApproved, setTokensApproved] = useState<boolean>(false);
   const [estimateInProgress, setEstimateInProgress] = useState<boolean>(false);
+  const [tokenPrecision, setTokenPrecision] = useState<number>(0);
 
   const getSelectedTokenBalance = useCallback((): BigNumber | null => {
     if (!selectedToken) {
@@ -94,10 +97,10 @@ const DetailSwap: FC<DetailSwapProps> = props => {
       if (!currentBalance) {
         return;
       }
-      const percentage = ethers.utils.parseEther(event.currentTarget.value);
-      setAmount(ethers.utils.formatEther(mul18f(currentBalance, percentage)));
+      const percentage = ethers.utils.parseUnits(event.currentTarget.value, tokenPrecision);
+      setAmount(ethers.utils.formatUnits(mul18f(currentBalance, percentage, tokenPrecision), tokenPrecision));
     },
-    [getSelectedTokenBalance],
+    [tokenPrecision, getSelectedTokenBalance],
   );
 
   const switchTokens = useCallback(() => {
@@ -113,13 +116,22 @@ const DetailSwap: FC<DetailSwapProps> = props => {
       if (!token) {
         return;
       }
+
+      if (token === 'Principals') {
+        setTokenPrecision(getTokenPrecision(address, 'principals'));
+      }
+
+      if (token === 'Yields') {
+        setTokenPrecision(getTokenPrecision(address, 'yields'));
+      }
+
       setSelectedToken(token);
 
       if (token !== tokenFrom.tokenName) {
         switchTokens();
       }
     },
-    [switchTokens, tokenFrom.tokenName],
+    [address, switchTokens, tokenFrom.tokenName],
   );
 
   const onApproveChange = useCallback(approved => {
@@ -131,7 +143,7 @@ const DetailSwap: FC<DetailSwapProps> = props => {
       return Promise.resolve(undefined);
     }
 
-    const amountParsed = ethers.utils.parseEther(amount);
+    const amountParsed = ethers.utils.parseUnits(amount, tokenPrecision);
     return poolDataAdapter.swapShareTokens(
       tempusPool.ammAddress,
       SwapKind.GIVEN_IN,
@@ -140,7 +152,15 @@ const DetailSwap: FC<DetailSwapProps> = props => {
       amountParsed,
       userWalletAddress,
     );
-  }, [poolDataAdapter, amount, tempusPool.ammAddress, tokenFrom.tokenAddress, tokenTo.tokenAddress, userWalletAddress]);
+  }, [
+    poolDataAdapter,
+    tokenPrecision,
+    amount,
+    tempusPool.ammAddress,
+    tokenFrom.tokenAddress,
+    tokenTo.tokenAddress,
+    userWalletAddress,
+  ]);
 
   const onExecuted = useCallback(() => {
     setAmount('');
@@ -152,7 +172,7 @@ const DetailSwap: FC<DetailSwapProps> = props => {
       if (!poolDataAdapter || !amount) {
         return;
       }
-      const amountParsed = ethers.utils.parseEther(amount);
+      const amountParsed = ethers.utils.parseUnits(amount, tokenPrecision);
       const yieldShareIn = tokenFrom.tokenName === 'Yields';
 
       if (amountParsed.isZero()) {
@@ -175,22 +195,28 @@ const DetailSwap: FC<DetailSwapProps> = props => {
       }
     };
     getReceiveAmount();
-  }, [poolDataAdapter, amount, tempusPool, tokenFrom, setReceiveAmount]);
+  }, [poolDataAdapter, tokenPrecision, amount, tempusPool, tokenFrom, setReceiveAmount]);
 
   const balanceFormatted = useMemo(() => {
     const currentBalance = getSelectedTokenBalance();
     if (!currentBalance) {
       return null;
     }
-    return NumberUtils.formatToCurrency(ethers.utils.formatEther(currentBalance), tempusPool.decimalsForUI);
-  }, [getSelectedTokenBalance, tempusPool.decimalsForUI]);
+    return NumberUtils.formatToCurrency(
+      ethers.utils.formatUnits(currentBalance, tokenPrecision),
+      tempusPool.decimalsForUI,
+    );
+  }, [tokenPrecision, getSelectedTokenBalance, tempusPool.decimalsForUI]);
 
   const receiveAmountFormatted = useMemo(() => {
     if (!receiveAmount) {
       return null;
     }
-    return NumberUtils.formatToCurrency(ethers.utils.formatEther(receiveAmount), tempusPool.decimalsForUI);
-  }, [receiveAmount, tempusPool.decimalsForUI]);
+    return NumberUtils.formatToCurrency(
+      ethers.utils.formatUnits(receiveAmount, tokenPrecision),
+      tempusPool.decimalsForUI,
+    );
+  }, [receiveAmount, tokenPrecision, tempusPool.decimalsForUI]);
 
   const approveDisabled = useMemo((): boolean => {
     const zeroAmount = isZeroString(amount);
@@ -201,11 +227,11 @@ const DetailSwap: FC<DetailSwapProps> = props => {
   const executeDisabled = useMemo((): boolean => {
     const zeroAmount = isZeroString(amount);
     const amountExceedsBalance = ethers.utils
-      .parseEther(amount || '0')
+      .parseUnits(amount || '0', tokenPrecision)
       .gt(getSelectedTokenBalance() || BigNumber.from('0'));
 
     return !tokensApproved || zeroAmount || amountExceedsBalance || estimateInProgress;
-  }, [amount, getSelectedTokenBalance, tokensApproved, estimateInProgress]);
+  }, [amount, tokenPrecision, getSelectedTokenBalance, tokensApproved, estimateInProgress]);
 
   return (
     <div role="tabpanel">
