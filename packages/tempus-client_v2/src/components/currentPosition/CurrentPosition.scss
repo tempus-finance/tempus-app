@@ -2,7 +2,6 @@
 
 .tc__currentPosition {
   @include cardContainer;
-  flex: 40;
   background: rgba(255, 255, 255, 0.5); // TODO add to constants
 }
 
