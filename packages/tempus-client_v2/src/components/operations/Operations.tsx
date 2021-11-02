@@ -1,6 +1,8 @@
 import { FC, useContext, useState } from 'react';
 import { LanguageContext } from '../../context/language';
 import { TransactionView } from '../../interfaces/TransactionView';
+import UserLPTokenBalanceProvider from '../../providers/userLPTokenBalanceProvider';
+import UserShareTokenBalanceProvider from '../../providers/userShareTokenBalanceProvider';
 import CurrentPosition from '../currentPosition/CurrentPosition';
 import Deposit from '../deposit/Deposit';
 import Pool from '../pool/Pool';
@@ -35,6 +37,8 @@ const Operations: FC<OperationsInProps> = () => {
           {showExtraInfo && <ProfitLoss language={language} />}
         </div>
       </div>
+      <UserShareTokenBalanceProvider />
+      <UserLPTokenBalanceProvider />
     </div>
   );
 };
