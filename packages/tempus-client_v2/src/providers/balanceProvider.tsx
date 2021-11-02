@@ -2,8 +2,8 @@ import { BigNumber } from '@ethersproject/bignumber';
 import { FC, useCallback, useContext, useEffect } from 'react';
 import { Subscription, catchError } from 'rxjs';
 import UserBalanceDataAdapter from '../adapters/UserBalanceDataAdapter';
-import { PoolDataContext } from '../context/poolData';
-import { WalletContext } from '../context/wallet';
+import { PoolDataContext } from '../context/poolDataContext';
+import { WalletContext } from '../context/walletContext';
 import getERC20TokenService from '../services/getERC20TokenService';
 import getConfig from '../utils/getConfig';
 

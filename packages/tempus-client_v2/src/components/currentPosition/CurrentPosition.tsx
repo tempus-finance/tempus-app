@@ -1,8 +1,8 @@
 import { ethers, BigNumber } from 'ethers';
 import { FC, useContext, useEffect, useMemo, useState } from 'react';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
-import { getDataForPool, PoolDataContext } from '../../context/poolData';
-import { WalletContext } from '../../context/wallet';
+import { getDataForPool, PoolDataContext } from '../../context/poolDataContext';
+import { WalletContext } from '../../context/walletContext';
 import getText from '../../localisation/getText';
 import NumberUtils from '../../services/NumberUtils';
 import SharedProps from '../../sharedProps';

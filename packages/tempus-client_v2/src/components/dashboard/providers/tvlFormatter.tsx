@@ -1,7 +1,7 @@
 import { CircularProgress } from '@material-ui/core';
 import { ethers, BigNumber } from 'ethers';
 import { useContext, useMemo } from 'react';
-import { ContextPoolData, getDataForPool, PoolDataContext } from '../../../context/poolData';
+import { PoolData, getDataForPool, PoolDataContext } from '../../../context/poolDataContext';
 import { Ticker } from '../../../interfaces/Token';
 import NumberUtils from '../../../services/NumberUtils';
 import Typography from '../../typography/Typography';
@@ -38,7 +38,7 @@ const TVLFormatter = ({ row }: any) => {
 };
 export default TVLFormatter;
 
-function getParentTVL(parentId: Ticker, poolData: ContextPoolData[]): BigNumber | null {
+function getParentTVL(parentId: Ticker, poolData: PoolData[]): BigNumber | null {
   const parentChildren = poolData.filter(data => {
     return data.backingTokenTicker === parentId;
   });
@@ -57,6 +57,6 @@ function getParentTVL(parentId: Ticker, poolData: ContextPoolData[]): BigNumber 
   return parentTVL;
 }
 
-function getChildTVL(childId: string, poolData: ContextPoolData[]): BigNumber | null {
+function getChildTVL(childId: string, poolData: PoolData[]): BigNumber | null {
   return getDataForPool(childId, poolData).tvl;
 }

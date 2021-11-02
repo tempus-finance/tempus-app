@@ -1,6 +1,6 @@
 import { FC, useCallback, useContext, useEffect, useState } from 'react';
-import { WalletContext } from '../../context/wallet';
-import { PoolDataContext } from '../../context/poolData';
+import { WalletContext } from '../../context/walletContext';
+import { PoolDataContext } from '../../context/poolDataContext';
 import { DashboardRow, DashboardRowChild } from '../../interfaces/DashboardRow';
 import getDashboardDataAdapter from '../../adapters/getDashboardDataAdapter';
 import DashboardDataAdapter from '../../adapters/DashboardDataAdapter';

@@ -55,19 +55,12 @@ export default class DashboardDataAdapter {
   private getChildRowData(tempusPool: TempusPool): DashboardRowChild {
     return {
       id: tempusPool.address,
-      tempusPool: tempusPool,
       parentId: tempusPool.backingToken,
       token: tempusPool.backingToken,
+      tempusPool: tempusPool,
       supportedTokens: [tempusPool.backingToken, tempusPool.yieldBearingToken],
-      protocol: tempusPool.protocol,
-      principalTokenAddress: tempusPool.principalsAddress,
-      yieldTokenAddress: tempusPool.yieldsAddress,
-      backingTokenAddress: tempusPool.backingTokenAddress,
-      yieldBearingTokenAddress: tempusPool.yieldBearingTokenAddress,
-      yieldBearingTokenTicker: tempusPool.yieldBearingToken,
       startDate: new Date(tempusPool.startDate),
       maturityDate: new Date(tempusPool.maturityDate),
-      backingTokenTicker: tempusPool.backingToken,
     };
   }
 
@@ -82,7 +75,7 @@ export default class DashboardDataAdapter {
         const parentChildren = this.getParentChildren(child.token, childRows);
 
         const childrenMaturityDate = parentChildren.map(child => child.maturityDate);
-        const childrenProtocols = parentChildren.map(child => child.protocol as ProtocolName);
+        const childrenProtocols = parentChildren.map(child => child.tempusPool.protocol);
 
         const parentRow: DashboardRowParent = {
           id: child.token, // Using token as parent ID, this way multiple children with same token will fall under same parent.

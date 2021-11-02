@@ -1,5 +1,5 @@
 import { FC, useCallback, useContext } from 'react';
-import { PoolDataContext } from '../../context/poolData';
+import { PoolDataContext } from '../../context/poolDataContext';
 import getText, { Language } from '../../localisation/getText';
 import SharedProps from '../../sharedProps';
 import Languages from './Languages';
