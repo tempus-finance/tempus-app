@@ -3,8 +3,8 @@ import { ethers } from 'ethers';
 import { LanguageContext } from '../../context/language';
 import { Ticker } from '../../interfaces/Token';
 import getText from '../../localisation/getText';
-import Approve from '../buttons/Approve';
-import Execute from '../buttons/Execute';
+//import Approve from '../buttons/Approve';
+//import Execute from '../buttons/Execute';
 import CurrencyInput from '../currencyInput/currencyInput';
 import TokenSelector from '../tokenSelector/tokenSelector';
 import Typography from '../typography/Typography';
@@ -110,8 +110,8 @@ const Deposit = () => {
           </div>
         </div>
         <div className="tc__deposit__actions">
-          <Approve language={language} />
-          <Execute language={language} />
+          {/* TODO - Add missing props and uncomment <Approve language={language} /> */}
+          {/* TODO - Add missing props and uncomment <Execute language={language} /> */}
         </div>
       </div>
     </div>

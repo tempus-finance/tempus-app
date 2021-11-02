@@ -2,6 +2,7 @@ import React, { Dispatch, SetStateAction } from 'react';
 import { BigNumber } from 'ethers';
 import { Ticker } from '../interfaces/Token';
 import getConfig from '../utils/getConfig';
+import { ProtocolName } from '../interfaces/ProtocolName';
 
 export interface AvailableToDeposit {
   backingTokenAmount: BigNumber;
@@ -11,6 +12,8 @@ export interface AvailableToDeposit {
 export interface ContextPoolData {
   address: string;
   ammAddress: string;
+  protocol: ProtocolName;
+  maturityDate: number;
   backingTokenTicker: Ticker;
   yieldBearingTokenTicker: Ticker;
   userBackingTokenBalance: BigNumber | null;
@@ -46,6 +49,8 @@ export const defaultPoolDataContextValue: ContextData = {
     yieldBearingTokenTicker: tempusPoolConfig.yieldBearingToken,
     decimalsForUI: tempusPoolConfig.decimalsForUI,
     ammAddress: tempusPoolConfig.ammAddress,
+    protocol: tempusPoolConfig.protocol,
+    maturityDate: tempusPoolConfig.maturityDate,
     variableAPR: 0,
     tvl: null,
     fixedAPR: null,
