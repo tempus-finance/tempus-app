@@ -1,19 +1,46 @@
-import { useCallback, useState } from 'react';
+import { FC, useCallback, useEffect, useState } from 'react';
+import { AdvancedTransactionView, BasicTransactionView, TransactionView } from '../../interfaces/TransactionView';
 import Typography from '../typography/Typography';
 import Spacer from '../spacer/spacer';
 import TokenPairIcon from './tokenPairIcon/TokenPairIcon';
 
 import './Sidebar.scss';
 
-const basicViews = ['Deposit', 'Withdraw'];
-const advancedViews = ['Mint', 'Swap', 'Provide Liquidity', 'Remove Liquidity', 'Early Redeem'];
+const basicViews: BasicTransactionView[] = ['Deposit', 'Withdraw'];
+const advancedViews: AdvancedTransactionView[] = [
+  'Mint',
+  'Swap',
+  'Provide Liquidity',
+  'Remove Liquidity',
+  'Early Redeem',
+];
 
-const Sidebar = () => {
-  const [selectedView, setSelectedView] = useState<string>('Deposit');
+type SidebarOutProps = {
+  onSelectedView: (selectedView: TransactionView) => void;
+};
 
-  const onItemClick = useCallback((itemName: string) => {
-    setSelectedView(itemName);
-  }, []);
+type SidebarInProps = {
+  initialView: TransactionView;
+};
+
+type SidebarProps = SidebarInProps & SidebarOutProps;
+
+const Sidebar: FC<SidebarProps> = ({ initialView, onSelectedView }) => {
+  const [selectedView, setSelectedView] = useState<TransactionView | null>(null);
+
+  const onItemClick = useCallback(
+    (itemName: string) => {
+      setSelectedView(itemName as TransactionView);
+      onSelectedView(itemName as TransactionView);
+    },
+    [onSelectedView],
+  );
+
+  useEffect(() => {
+    if (initialView) {
+      setSelectedView(initialView);
+    }
+  }, [initialView]);
 
   return (
     <div className="tc__sidebar-container">
