@@ -2,6 +2,7 @@ import { JsonRpcSigner, JsonRpcProvider } from '@ethersproject/providers';
 import getDefaultProvider from '../services/getDefaultProvider';
 import getERC20TokenService from '../services/getERC20TokenService';
 import getStatisticsService from '../services/getStatisticsService';
+import getTempusPoolService from '../services/getTempusPoolService';
 import UserBalanceDataAdapter from './UserBalanceDataAdapter';
 
 let userBalanceDataAdapter: UserBalanceDataAdapter;
@@ -11,6 +12,7 @@ const getUserBalanceDataAdapter = (signerOrProvider?: JsonRpcSigner | JsonRpcPro
     userBalanceDataAdapter.init({
       signerOrProvider: getDefaultProvider(),
       statisticsService: getStatisticsService(),
+      tempusPoolService: getTempusPoolService(),
       eRC20TokenServiceGetter: getERC20TokenService,
     });
   }
@@ -19,6 +21,7 @@ const getUserBalanceDataAdapter = (signerOrProvider?: JsonRpcSigner | JsonRpcPro
     userBalanceDataAdapter.init({
       signerOrProvider: signerOrProvider,
       statisticsService: getStatisticsService(signerOrProvider),
+      tempusPoolService: getTempusPoolService(signerOrProvider),
       eRC20TokenServiceGetter: getERC20TokenService,
     });
   }

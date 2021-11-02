@@ -1,4 +1,3 @@
-import { BigNumber } from 'ethers';
 import { TempusPool } from './TempusPool';
 import { Ticker } from './Token';
 import { ProtocolName } from './ProtocolName';
@@ -11,7 +10,6 @@ export interface DashboardRow {
 
 export interface DashboardRowParent extends DashboardRow {
   maturityRange: (Date | null)[];
-  availableUSDToDeposit: BigNumber | undefined;
   protocols: ProtocolName[];
 }
 
@@ -21,20 +19,11 @@ export interface DashboardRowChild extends DashboardRow {
   supportedTokens: Ticker[];
   startDate: Date;
   maturityDate: Date;
-  availableTokensToDeposit: AvailableToDeposit | undefined;
-  availableUSDToDeposit: AvailableToDeposit | undefined;
   principalTokenAddress: string;
   yieldTokenAddress: string;
   backingTokenAddress: string;
   yieldBearingTokenAddress: string;
   backingTokenTicker: Ticker;
-  yieldBearingTokenTicker: Ticker;
-}
-
-export interface AvailableToDeposit {
-  backingToken: BigNumber;
-  backingTokenTicker: Ticker;
-  yieldBearingToken: BigNumber;
   yieldBearingTokenTicker: Ticker;
 }
 

@@ -44,19 +44,19 @@ function getParentBalance(parentId: Ticker, poolData: ContextPoolData[]): BigNum
   });
 
   // In case balance is still loading for some of the parent children, return null (show loading circle in dashboard)
-  const childrenStillLoading = parentChildren.some(child => child.balance === null);
+  const childrenStillLoading = parentChildren.some(child => child.userBalanceUSD === null);
   if (childrenStillLoading) {
     return null;
   }
 
   let parentBalance = BigNumber.from('0');
   parentChildren.forEach(child => {
-    parentBalance = parentBalance.add(child.balance || BigNumber.from('0'));
+    parentBalance = parentBalance.add(child.userBalanceUSD || BigNumber.from('0'));
   });
 
   return parentBalance;
 }
 
 function getChildBalance(childId: string, poolData: ContextPoolData[]): BigNumber | null {
-  return getDataForPool(childId, poolData).balance;
+  return getDataForPool(childId, poolData).userBalanceUSD;
 }

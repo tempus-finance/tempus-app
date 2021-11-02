@@ -1,5 +1,4 @@
 import { FC, useCallback, useContext, useEffect, useState } from 'react';
-import { CircularProgress } from '@material-ui/core';
 import { WalletContext } from '../../context/wallet';
 import { PoolDataContext } from '../../context/poolData';
 import { DashboardRow, DashboardRowChild } from '../../interfaces/DashboardRow';
@@ -9,11 +8,12 @@ import UserBalanceDataAdapter from '../../adapters/UserBalanceDataAdapter';
 import getUserBalanceDataAdapter from '../../adapters/getUserBalanceDataAdapter';
 import TVLProvider from '../../providers/tvlProvider';
 import BalanceProvider from '../../providers/balanceProvider';
-import Typography from '../typography/Typography';
-import Spacer from '../spacer/spacer';
 import Dashboard from './dashboard';
 import FixedAPRProvider from '../../providers/fixedAPRProvider';
 import VariableAPRProvider from '../../providers/variableAPRProvider';
+import AvailableToDepositUSDProvider from '../../providers/availableToDepositUSDProvider';
+import UserBackingTokenBalanceProvider from '../../providers/userBackingTokenBalanceProvider';
+import UserYieldBearingTokenBalanceProvider from '../../providers/userYieldBearingTokenBalanceProvider';
 
 type DashboardManagerProps = {
   onRowSelected?: (row: DashboardRowChild | null) => void;
@@ -29,14 +29,14 @@ const DashboardManager: FC<DashboardManagerProps> = ({ onRowSelected }): JSX.Ele
 
   useEffect(() => {
     const fetchRows = async () => {
-      if (userWalletConnected === true && userWalletAddress && userWalletSigner) {
+      if (userWalletSigner) {
         const dashboardDataAdapter = getDashboardDataAdapter(userWalletSigner);
         const userBalanceDataAdapter = getUserBalanceDataAdapter(userWalletSigner);
 
         setDashboardDataAdapter(dashboardDataAdapter);
         setUserBalanceDataAdapter(userBalanceDataAdapter);
 
-        setRows(await dashboardDataAdapter.getRows(userWalletAddress));
+        setRows(dashboardDataAdapter.getRows());
       } else if (userWalletConnected === false) {
         const dashboardDataAdapter = getDashboardDataAdapter();
         const userBalanceDataAdapter = getUserBalanceDataAdapter();
@@ -44,7 +44,7 @@ const DashboardManager: FC<DashboardManagerProps> = ({ onRowSelected }): JSX.Ele
         setUserBalanceDataAdapter(userBalanceDataAdapter);
         setDashboardDataAdapter(dashboardDataAdapter);
 
-        setRows(await dashboardDataAdapter.getRows(''));
+        setRows(dashboardDataAdapter.getRows());
       }
     };
     fetchRows();
@@ -71,20 +71,15 @@ const DashboardManager: FC<DashboardManagerProps> = ({ onRowSelected }): JSX.Ele
           onRowActionClick={onRowActionClick}
         />
       )}
-      {rows.length === 0 && (
-        <div className="tf__flex-column-center-vh">
-          <Spacer size={75} />
-          <Typography variant="h4">Fetching data</Typography>
-          <Spacer size={50} />
-          <CircularProgress size={50} />
-        </div>
-      )}
 
       {/*selectedRow && <Detail /> */}
       {dashboardDataAdapter && <TVLProvider dashboardDataAdapter={dashboardDataAdapter} />}
       {userBalanceDataAdapter && <BalanceProvider userBalanceDataAdapter={userBalanceDataAdapter} />}
       <FixedAPRProvider />
       <VariableAPRProvider />
+      {userBalanceDataAdapter && <AvailableToDepositUSDProvider userBalanceDataAdapter={userBalanceDataAdapter} />}
+      {userBalanceDataAdapter && <UserBackingTokenBalanceProvider />}
+      {userBalanceDataAdapter && <UserYieldBearingTokenBalanceProvider />}
     </>
   );
 };

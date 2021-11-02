@@ -28,7 +28,7 @@ const BalanceProvider: FC<PresentValueProviderProps> = props => {
             }
             return {
               ...previousPoolData,
-              balance: balance,
+              userBalanceUSD: balance,
             };
           }),
         }));

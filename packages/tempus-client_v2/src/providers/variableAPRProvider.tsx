@@ -1,9 +1,12 @@
 import { useCallback, useContext, useEffect } from 'react';
-import { PoolDataContext } from '../context/poolData';
-import { WalletContext } from '../context/wallet';
+import { ethers } from 'ethers';
 import getDefaultProvider from '../services/getDefaultProvider';
 import getVariableRateService from '../services/getVariableRateService';
 import getConfig from '../utils/getConfig';
+import getTokenPrecision from '../utils/getTokenPrecision';
+import { ZERO } from '../constants';
+import { PoolDataContext } from '../context/poolData';
+import { WalletContext } from '../context/wallet';
 
 const VariableAPRProvider = () => {
   const { setPoolData } = useContext(PoolDataContext);
@@ -54,6 +57,8 @@ const VariableAPRProvider = () => {
         return {
           address: tempusPool.address,
           variableAPR: variableAPR,
+          fees,
+          tokenPrecision: tempusPool.tokenPrecision,
         };
       }),
     );
@@ -62,9 +67,20 @@ const VariableAPRProvider = () => {
       ...previousData,
       poolData: previousData.poolData.map(previousPoolData => {
         const poolAPRData = fetchedPoolAPRData.find(data => data.address === previousPoolData.address);
+        const variableAPR = poolAPRData?.variableAPR || 0;
+
+        let isNegativeYield: boolean = true;
+        if (poolAPRData) {
+          const precision = getTokenPrecision(poolAPRData.address, 'backingToken');
+          const temp =
+            variableAPR && variableAPR > 0 ? ethers.utils.parseUnits(variableAPR.toString(), precision) : ZERO;
+          isNegativeYield = poolAPRData ? poolAPRData.fees.add(temp).gt(ZERO) : true;
+        }
+
         return {
           ...previousPoolData,
-          variableAPR: poolAPRData?.variableAPR || 0,
+          variableAPR,
+          isNegativeYield,
         };
       }),
     }));

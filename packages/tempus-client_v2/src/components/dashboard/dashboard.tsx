@@ -1,4 +1,4 @@
-import { FC, useCallback, useContext, useRef, useState } from 'react';
+import { FC, useCallback, useContext, useEffect, useRef, useState } from 'react';
 import {
   CustomTreeData,
   IntegratedSummary,
@@ -9,7 +9,7 @@ import {
   Sorting,
 } from '@devexpress/dx-react-grid';
 import { Grid, TableHeaderRow, VirtualTable, TableTreeColumn } from '@devexpress/dx-react-grid-material-ui';
-import { SECONDS_IN_A_DAY } from '../../constants';
+import { SECONDS_IN_A_DAY, ZERO } from '../../constants';
 import { DashboardRow, isChildRow, isParentRow } from '../../interfaces/DashboardRow';
 import { ColumnNames } from '../../interfaces/ColumnNames';
 import Typography from '../typography/Typography';
@@ -23,13 +23,14 @@ import HeaderRow from './headerSection/headerRow';
 import HeaderContent from './headerSection/headerContent';
 import MaturityProvider from './providers/maturityProvider';
 import TVLProvider from './providers/tvlProvider';
-import VariableAPRProvider from './providers/variableAPRProvider';
+import GridVariableAPRProvider from './providers/gridVariableAPRProvider';
 import FixedAPRProvider from './providers/fixedAPRProvider';
-import BalanceProvider from './providers/balanceProvider';
+import GridBalanceProvider from './providers/gridBalanceProvider';
 import AvailableToDepositProvider from './providers/availableToDepositProvider';
 import { dashboardColumnsDefinitions } from './dashboardColumnsDefinitions';
 
 import './dashboard.scss';
+import { getDataForPool, PoolDataContext } from '../../context/poolData';
 
 type DashboardInProps = {
   hidden: boolean;
@@ -44,6 +45,10 @@ type DashboardOutProps = {
 type DashboardProps = DashboardInProps & DashboardOutProps;
 
 const Dashboard: FC<DashboardProps> = ({ hidden, userWalletAddress, rows, onRowActionClick }): JSX.Element => {
+  const { poolData } = useContext(PoolDataContext);
+
+  const [displayedRows, setDisplayedRows] = useState<DashboardRow[]>([]);
+
   const [tableColumnExtensions] = useState([
     { columnName: ColumnNames.TOKEN, align: 'left' as 'left', width: 160 },
     { columnName: ColumnNames.PROTOCOL, align: 'left' as 'left', width: 150 },
@@ -116,7 +121,7 @@ const Dashboard: FC<DashboardProps> = ({ hidden, userWalletAddress, rows, onRowA
         return;
       }
 
-      let result = rows.filter(row => {
+      let result = displayedRows.filter(row => {
         if (isParentRow(row)) {
           return true;
         }
@@ -140,12 +145,12 @@ const Dashboard: FC<DashboardProps> = ({ hidden, userWalletAddress, rows, onRowA
           const min = filterData.aPRRange.min;
           const max = filterData.aPRRange.max;
 
-          /*const poolContextData = getDataForPool(row.tempusPool.address, poolData);
+          const poolContextData = getDataForPool(row.tempusPool.address, poolData);
           aprMatched =
             (min === 0 || min) && (max === 0 || max)
               ? (poolContextData.fixedAPR && poolContextData.fixedAPR > min && poolContextData.fixedAPR < max) ||
                 (poolContextData.variableAPR > min && poolContextData.variableAPR < max)
-              : true;*/
+              : true;
         }
 
         // Check maturity matches
@@ -182,8 +187,33 @@ const Dashboard: FC<DashboardProps> = ({ hidden, userWalletAddress, rows, onRowA
 
       setFilteredRows(result);
     },
-    [rows],
+    [poolData, displayedRows],
   );
+
+  useEffect(() => {
+    if (poolData && rows && poolData.length && rows.length) {
+      const poolMap: { [address: string]: any } = {};
+      poolData.forEach(pool => {
+        poolMap[pool.address] = pool;
+      });
+
+      let rowsToDisplay = rows.filter((row: DashboardRow) => {
+        const pool = poolMap[row.id];
+
+        if (pool) {
+          if (!pool.isNegativeYield) {
+            return true;
+          }
+
+          return pool && pool.userBalanceUSD && pool.userBalanceUSD.gt(ZERO);
+        }
+
+        return true;
+      });
+
+      setDisplayedRows(rowsToDisplay);
+    }
+  }, [rows, poolData, setDisplayedRows]);
 
   return (
     <div className="tf__dashboard__section__container" hidden={hidden}>
@@ -210,7 +240,7 @@ const Dashboard: FC<DashboardProps> = ({ hidden, userWalletAddress, rows, onRowA
         <hr />
         <div className="tf__dashboard">
           <div className="tf__dashboard__grid">
-            <Grid rows={filteredRows || rows} columns={dashboardColumnsDefinitions}>
+            <Grid rows={filteredRows || displayedRows} columns={dashboardColumnsDefinitions}>
               <SortingState
                 sorting={currentSorting}
                 onSortingChange={onSortingChange}
@@ -221,9 +251,9 @@ const Dashboard: FC<DashboardProps> = ({ hidden, userWalletAddress, rows, onRowA
               <MaturityProvider for={[ColumnNames.MATURITY]} />
               <AvailableToDepositProvider for={[ColumnNames.AVAILABLE_TO_DEPOSIT]} />
               <TVLProvider for={[ColumnNames.TVL]} />
-              <VariableAPRProvider for={[ColumnNames.VARIABLE_APY]} />
+              <GridVariableAPRProvider for={[ColumnNames.VARIABLE_APY]} />
               <FixedAPRProvider for={[ColumnNames.FIXED_APR]} />
-              <BalanceProvider for={[ColumnNames.PRESENT_VALUE]} />
+              <GridBalanceProvider for={[ColumnNames.PRESENT_VALUE]} />
               <CustomTreeData getChildRows={getChildRows} />
               <IntegratedSummary />
               <IntegratedSorting columnExtensions={integratedSortingColumnExtensions} />

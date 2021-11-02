@@ -3,13 +3,23 @@ import { BigNumber } from 'ethers';
 import { Ticker } from '../interfaces/Token';
 import getConfig from '../utils/getConfig';
 
+export interface AvailableToDeposit {
+  backingTokenAmount: BigNumber;
+  yieldBearingTokenAmount: BigNumber;
+}
+
 export interface ContextPoolData {
   address: string;
   backingTokenTicker: Ticker;
+  yieldBearingTokenTicker: Ticker;
+  userBackingTokenBalance: BigNumber | null;
+  userYieldBearingTokenBalance: BigNumber | null;
   fixedAPR: number | null;
   variableAPR: number;
   tvl: BigNumber | null;
-  balance: BigNumber | null;
+  userBalanceUSD: BigNumber | null;
+  userAvailableToDepositUSD: AvailableToDeposit | null;
+  isNegativeYield: boolean;
 }
 
 interface ContextData {
@@ -28,10 +38,15 @@ export const defaultPoolDataContextValue: ContextData = {
   poolData: getConfig().tempusPools.map(tempusPoolConfig => ({
     address: tempusPoolConfig.address,
     backingTokenTicker: tempusPoolConfig.backingToken,
+    yieldBearingTokenTicker: tempusPoolConfig.yieldBearingToken,
     variableAPR: 0,
     tvl: null,
     fixedAPR: null,
-    balance: null,
+    userBalanceUSD: null,
+    userAvailableToDepositUSD: null,
+    userBackingTokenBalance: null,
+    userYieldBearingTokenBalance: null,
+    isNegativeYield: true,
   })),
 };
 
