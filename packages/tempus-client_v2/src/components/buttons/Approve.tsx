@@ -6,10 +6,10 @@ import Typography from '../typography/Typography';
 import getNotificationService from '../../services/getNotificationService';
 import { generateEtherscanLink, getTokenApprovalNotification } from '../../services/NotificationService';
 import { Ticker } from '../../interfaces/Token';
-import { PendingTransactionsContext } from '../../context/pendingTransactions';
-import { getDataForPool, PoolDataContext } from '../../context/poolData';
-import { LanguageContext } from '../../context/language';
-import { WalletContext } from '../../context/wallet';
+import { PendingTransactionsContext } from '../../context/pendingTransactionsContext';
+import { getDataForPool, PoolDataContext } from '../../context/poolDataContext';
+import { LanguageContext } from '../../context/languageContext';
+import { WalletContext } from '../../context/walletContext';
 import getText from '../../localisation/getText';
 import Spacer from '../spacer/spacer';
 

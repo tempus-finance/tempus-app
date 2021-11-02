@@ -10,10 +10,10 @@ import {
 import { TempusPool } from '../../interfaces/TempusPool';
 import Typography from '../typography/Typography';
 import getText from '../../localisation/getText';
-import { PendingTransactionsContext } from '../../context/pendingTransactions';
-import { PoolDataContext, getDataForPool } from '../../context/poolData';
-import { WalletContext } from '../../context/wallet';
-import { LanguageContext } from '../../context/language';
+import { PendingTransactionsContext } from '../../context/pendingTransactionsContext';
+import { PoolDataContext, getDataForPool } from '../../context/poolDataContext';
+import { WalletContext } from '../../context/walletContext';
+import { LanguageContext } from '../../context/languageContext';
 
 import './Execute.scss';
 
