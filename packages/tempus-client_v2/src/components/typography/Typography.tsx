@@ -1,6 +1,15 @@
 import { CSSProperties, FC } from 'react';
 
-type TypographyVariant = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'body-text' | 'disclaimer-text' | 'button-text';
+type TypographyVariant =
+  | 'h1'
+  | 'h2'
+  | 'h3'
+  | 'h4'
+  | 'h5'
+  | 'body-text'
+  | 'disclaimer-text'
+  | 'button-text'
+  | 'dropdown-text';
 type TypographyColor = 'default' | 'accent' | 'inverted' | 'link' | 'title';
 
 const typographyStyleMap = new Map<TypographyVariant, CSSProperties>();
@@ -56,6 +65,13 @@ typographyStyleMap.set('disclaimer-text', {
 typographyStyleMap.set('button-text', {
   fontFamily: "'Source Sans Pro', sans-serif",
   fontWeight: 600,
+  fontSize: '16px',
+  fontStyle: 'normal',
+  lineHeight: '20px',
+});
+typographyStyleMap.set('dropdown-text', {
+  fontFamily: "'Source Sans Pro', sans-serif",
+  fontWeight: 400,
   fontSize: '16px',
   fontStyle: 'normal',
   lineHeight: '20px',
