@@ -1,12 +1,12 @@
-import { FC, useContext, useState } from 'react';
+import { FC, useContext, useMemo, useState } from 'react';
 import { LanguageContext } from '../../context/language';
+import { getDataForPool, PoolDataContext } from '../../context/poolData';
 import { TransactionView } from '../../interfaces/TransactionView';
 import UserLPTokenBalanceProvider from '../../providers/userLPTokenBalanceProvider';
 import UserShareTokenBalanceProvider from '../../providers/userShareTokenBalanceProvider';
 import CurrentPosition from '../currentPosition/CurrentPosition';
 import Deposit from '../deposit/Deposit';
 import Pool from '../pool/Pool';
-import ProfitLoss from '../profitLoss/ProfitLoss';
 import Sidebar from '../sidebar/Sidebar';
 import Term from '../term/Term';
 import './Operations.scss';
@@ -17,25 +17,48 @@ type OperationsInProps = {
 
 const Operations: FC<OperationsInProps> = () => {
   const { language } = useContext(LanguageContext);
-  const [selectedView, setSelectedView] = useState<TransactionView>('Deposit');
-  const [showExtraInfo] = useState<boolean>(true);
+  const { poolData, selectedPool } = useContext(PoolDataContext);
 
-  // TODO: showExtraInfo should be true only if the user has a positive balance in the pool
+  const [selectedView, setSelectedView] = useState<TransactionView>('Deposit');
+
+  const activePoolData = useMemo(() => {
+    return getDataForPool(selectedPool, poolData);
+  }, [poolData, selectedPool]);
+
+  const hideUserData = useMemo(() => {
+    const { userPrincipalsBalance, userYieldsBalance, userLPTokenBalance } = activePoolData;
+
+    if (!userPrincipalsBalance || !userYieldsBalance || !userLPTokenBalance) {
+      return true;
+    }
+
+    return userPrincipalsBalance.isZero() && userYieldsBalance.isZero() && userLPTokenBalance?.isZero();
+  }, [activePoolData]);
 
   return (
     <div className="tc__operations">
-      <Sidebar initialView="Deposit" onSelectedView={setSelectedView} />
-      <div className="tc__dashboard">
-        <div className="tc__dashboard__row">
-          <Pool language={language} />
-          <Term language={language} />
-          <CurrentPosition language={language} />
+      {/* Sidebar */}
+      <div className="tc__operations-sidebar">
+        <Sidebar initialView="Deposit" onSelectedView={setSelectedView} />
+      </div>
+      {/* Right side of sidebar (All cards) */}
+      <div className="tc__operations-cards-container">
+        {/* Middle part (Pool, Term, Selected tab options) */}
+        <div className="tc__operations-poolData">
+          {/* Middle Top part (Pool, Term) */}
+          <div className="tc__operations-poolStats">
+            <Pool language={language} />
+            <Term language={language} />
+          </div>
+          {/* Middle bottom part (Selected tab options) */}
+          <div className="tc__operations-poolManage">{selectedView === 'Deposit' && <Deposit />}</div>
         </div>
-        <div className="tc__dashboard__row">
-          {selectedView === 'Deposit' && <Deposit showExtraInfo={showExtraInfo} />}
-
-          {showExtraInfo && <ProfitLoss language={language} />}
-        </div>
+        {/* Right side (Current Position, Profit/Loss) - Only visible if user has balance in the pool */}
+        {!hideUserData && (
+          <div className="tc__operations-poolUserStats">
+            <CurrentPosition language={language} />
+          </div>
+        )}
       </div>
       <UserShareTokenBalanceProvider />
       <UserLPTokenBalanceProvider />
