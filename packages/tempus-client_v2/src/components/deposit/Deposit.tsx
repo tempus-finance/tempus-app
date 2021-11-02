@@ -22,7 +22,7 @@ const Deposit = () => {
   const [tokenPrecision] = useState<number>(0);
 
   return (
-    <div className={`tc__deposit`}>
+    <div className="tc__deposit">
       <div className="tc__deposit__from">
         <Typography variant="h1">{getText('from', language)}</Typography>
         <div className="tc__deposit__from__body">
