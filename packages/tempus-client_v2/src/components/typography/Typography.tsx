@@ -9,8 +9,10 @@ type TypographyVariant =
   | 'body-text'
   | 'disclaimer-text'
   | 'button-text'
-  | 'dropdown-text';
-type TypographyColor = 'default' | 'accent' | 'inverted' | 'link' | 'title';
+  | 'dropdown-text'
+  | 'card-title'
+  | 'card-body-text';
+type TypographyColor = 'default' | 'accent' | 'inverted' | 'link' | 'title' | 'error' | 'success';
 
 const typographyStyleMap = new Map<TypographyVariant, CSSProperties>();
 typographyStyleMap.set('h1', {
@@ -76,6 +78,20 @@ typographyStyleMap.set('dropdown-text', {
   fontStyle: 'normal',
   lineHeight: '20px',
 });
+typographyStyleMap.set('card-title', {
+  fontFamily: "'Source Sans Pro', sans-serif",
+  fontWeight: 400,
+  fontSize: '22px',
+  fontStyle: 'normal',
+  lineHeight: '30px',
+});
+typographyStyleMap.set('card-body-text', {
+  fontFamily: "'Source Sans Pro', sans-serif",
+  fontWeight: 400,
+  fontSize: '16px',
+  fontStyle: 'normal',
+  lineHeight: '20px',
+});
 
 interface TypographyProps {
   variant: TypographyVariant;
@@ -101,6 +117,12 @@ const Typography: FC<TypographyProps> = props => {
       break;
     case 'title':
       color = '#7A7A7A';
+      break;
+    case 'error':
+      color = '#FF0F0F';
+      break;
+    case 'success':
+      color = '#4BB543';
       break;
     default:
       color = '#222222';
