@@ -14,46 +14,23 @@
     margin: 30px auto 10px;
     height: 22px;
     border-radius: 5px;
-    position: relative;
+    display: flex;
+    overflow: hidden;
 
     .tc__currentPosition__body__bar__1 {
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      left: 0;
-      width: 10%;
-      border-radius: 5px 0 0 5px;
       background-color: #f5ac37; // TODO add to constants
     }
 
     .tc__currentPosition__body__bar__2 {
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      left: 10%;
-      width: 12%;
-      border-radius: 0;
       background-color: #ffe2b3; // TODO add to constants
     }
 
     .tc__currentPosition__body__bar__3 {
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      left: 22%;
-      width: 40%;
-      border-radius: 0;
-      background-color: #5aaec0; // TODO add to constants
+      background-color: #288195; // TODO add to constants
     }
 
     .tc__currentPosition__body__bar__4 {
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      left: 62%;
-      right: 0;
-      border-radius: 0 5px 5px 0;
-      background-color: #288195; // TODO add to constants
+      background-color: #5aaec0; // TODO add to constants
     }
   }
 

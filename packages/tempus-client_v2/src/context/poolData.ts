@@ -10,16 +10,21 @@ export interface AvailableToDeposit {
 
 export interface ContextPoolData {
   address: string;
+  ammAddress: string;
   backingTokenTicker: Ticker;
   yieldBearingTokenTicker: Ticker;
   userBackingTokenBalance: BigNumber | null;
   userYieldBearingTokenBalance: BigNumber | null;
+  userPrincipalsBalance: BigNumber | null;
+  userYieldsBalance: BigNumber | null;
+  userLPTokenBalance: BigNumber | null;
   fixedAPR: number | null;
   variableAPR: number;
   tvl: BigNumber | null;
   userBalanceUSD: BigNumber | null;
   userAvailableToDepositUSD: AvailableToDeposit | null;
   isNegativeYield: boolean;
+  decimalsForUI: number;
 }
 
 interface ContextData {
@@ -39,6 +44,8 @@ export const defaultPoolDataContextValue: ContextData = {
     address: tempusPoolConfig.address,
     backingTokenTicker: tempusPoolConfig.backingToken,
     yieldBearingTokenTicker: tempusPoolConfig.yieldBearingToken,
+    decimalsForUI: tempusPoolConfig.decimalsForUI,
+    ammAddress: tempusPoolConfig.ammAddress,
     variableAPR: 0,
     tvl: null,
     fixedAPR: null,
@@ -46,6 +53,9 @@ export const defaultPoolDataContextValue: ContextData = {
     userAvailableToDepositUSD: null,
     userBackingTokenBalance: null,
     userYieldBearingTokenBalance: null,
+    userPrincipalsBalance: null,
+    userYieldsBalance: null,
+    userLPTokenBalance: null,
     isNegativeYield: true,
   })),
 };
