@@ -10,5 +10,9 @@
 
   .tc__pool__body__item {
     @include cardBodyItem;
+
+    .tc__pool__body__item-title {
+      width: 250px;
+    }
   }
 }
