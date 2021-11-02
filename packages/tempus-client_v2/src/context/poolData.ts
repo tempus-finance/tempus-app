@@ -1,6 +1,7 @@
 import React, { Dispatch, SetStateAction } from 'react';
 import { BigNumber } from 'ethers';
 import { Ticker } from '../interfaces/Token';
+import getConfig from '../utils/getConfig';
 
 export interface ContextPoolData {
   address: string;
@@ -12,6 +13,7 @@ export interface ContextPoolData {
 }
 
 interface ContextData {
+  selectedPool: string;
   poolData: ContextPoolData[];
 }
 
@@ -22,7 +24,15 @@ interface ContextActions {
 interface ContextType extends ContextActions, ContextData {}
 
 export const defaultPoolDataContextValue: ContextData = {
-  poolData: [],
+  selectedPool: '',
+  poolData: getConfig().tempusPools.map(tempusPoolConfig => ({
+    address: tempusPoolConfig.address,
+    backingTokenTicker: tempusPoolConfig.backingToken,
+    variableAPR: 0,
+    tvl: null,
+    fixedAPR: null,
+    balance: null,
+  })),
 };
 
 export const PoolDataContext = React.createContext<ContextType>({

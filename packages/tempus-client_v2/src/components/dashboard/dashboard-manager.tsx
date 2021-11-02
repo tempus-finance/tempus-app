@@ -1,6 +1,7 @@
 import { FC, useCallback, useContext, useEffect, useState } from 'react';
 import { CircularProgress } from '@material-ui/core';
 import { WalletContext } from '../../context/wallet';
+import { PoolDataContext } from '../../context/poolData';
 import { DashboardRow, DashboardRowChild } from '../../interfaces/DashboardRow';
 import getDashboardDataAdapter from '../../adapters/getDashboardDataAdapter';
 import DashboardDataAdapter from '../../adapters/DashboardDataAdapter';
@@ -11,6 +12,8 @@ import BalanceProvider from '../../providers/balanceProvider';
 import Typography from '../typography/Typography';
 import Spacer from '../spacer/spacer';
 import Dashboard from './dashboard';
+import FixedAPRProvider from '../../providers/fixedAPRProvider';
+import VariableAPRProvider from '../../providers/variableAPRProvider';
 
 type DashboardManagerProps = {
   onRowSelected?: (row: DashboardRowChild | null) => void;
@@ -18,6 +21,7 @@ type DashboardManagerProps = {
 
 const DashboardManager: FC<DashboardManagerProps> = ({ onRowSelected }): JSX.Element => {
   const { userWalletAddress, userWalletConnected, userWalletSigner } = useContext(WalletContext);
+  const { selectedPool } = useContext(PoolDataContext);
 
   const [dashboardDataAdapter, setDashboardDataAdapter] = useState<DashboardDataAdapter | null>(null);
   const [userBalanceDataAdapter, setUserBalanceDataAdapter] = useState<UserBalanceDataAdapter | null>(null);
@@ -55,7 +59,7 @@ const DashboardManager: FC<DashboardManagerProps> = ({ onRowSelected }): JSX.Ele
     [onRowSelected],
   );
 
-  const shouldShowDashboard = !!userWalletAddress && !!selectedRow;
+  const shouldShowDashboard = !!selectedPool;
 
   return (
     <>
@@ -79,6 +83,8 @@ const DashboardManager: FC<DashboardManagerProps> = ({ onRowSelected }): JSX.Ele
       {/*selectedRow && <Detail /> */}
       {dashboardDataAdapter && <TVLProvider dashboardDataAdapter={dashboardDataAdapter} />}
       {userBalanceDataAdapter && <BalanceProvider userBalanceDataAdapter={userBalanceDataAdapter} />}
+      <FixedAPRProvider />
+      <VariableAPRProvider />
     </>
   );
 };
