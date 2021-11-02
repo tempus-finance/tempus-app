@@ -12,6 +12,7 @@ import { div18f, mul18f } from '../utils/weiMath';
 import { DAYS_IN_A_YEAR, ONE_ETH_IN_WEI, POLLING_INTERVAL, SECONDS_IN_A_DAY, ZERO_ETH_ADDRESS } from '../constants';
 import { Ticker } from '../interfaces/Token';
 import { TempusPool } from '../interfaces/TempusPool';
+import { SelectedYield } from '../interfaces/SelectedYield';
 
 export interface UserTransaction {
   event: DepositedEvent | RedeemedEvent;
@@ -381,7 +382,7 @@ export default class PoolDataAdapter {
     tokenAmount: BigNumber,
     isBackingToken: boolean,
     minTYSRate: BigNumber,
-    yieldType: /*SelectedYield TODO Use selected yield type when it's added in deposit component*/ any,
+    yieldType: SelectedYield,
     isEthDeposit?: boolean,
   ): Promise<ContractTransaction | undefined> {
     if (!this.tempusControllerService) {
