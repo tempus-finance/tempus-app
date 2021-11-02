@@ -10,7 +10,7 @@ const Term: FC<TermInProps> = ({ language }) => {
   return (
     <div className="tc__term">
       <Typography variant="h1">{getText('term', language)}</Typography>
-      <div className="tc__term_body">
+      <div className="tc__term__body">
         <div className="tc__term__body__item">
           <Typography variant="h5">{getText('startDate', language)}</Typography>
           <Typography variant="h5">01 Apr 2021</Typography>

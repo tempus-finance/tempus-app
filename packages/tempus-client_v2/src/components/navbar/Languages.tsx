@@ -9,6 +9,10 @@ type LanguagesOutProps = {
   onChangeLanguage: (language: Language) => void;
 };
 
+// TODO
+// style mouse over
+// check icon with design
+
 const Languages: FC<LanguagesOutProps> = ({ onChangeLanguage }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedLanguage, setSelectedLanguage] = useState<string>('en');
