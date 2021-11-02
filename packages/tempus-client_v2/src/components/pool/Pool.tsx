@@ -10,7 +10,7 @@ const Pool: FC<PoolInProps> = ({ language }) => {
   return (
     <div className="tc__pool">
       <Typography variant="h1">{getText('pool', language)}</Typography>
-      <div className="tc__pool_body">
+      <div className="tc__pool__body">
         <div className="tc__pool__body__item">
           <Typography variant="h5">{getText('marketImpliedYield', language)}</Typography>
           <Typography variant="h5">5.52%</Typography>

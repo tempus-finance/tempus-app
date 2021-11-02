@@ -8,6 +8,11 @@
 
     > li {
       margin-right: 40px;
+
+      &:hover {
+        cursor: pointer;
+        color: #285a95; // TODO confirm colour and add to constants
+      }
     }
   }
 }

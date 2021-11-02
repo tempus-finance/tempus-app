@@ -8,12 +8,13 @@ import UserBalanceDataAdapter from '../../adapters/UserBalanceDataAdapter';
 import getUserBalanceDataAdapter from '../../adapters/getUserBalanceDataAdapter';
 import TVLProvider from '../../providers/tvlProvider';
 import BalanceProvider from '../../providers/balanceProvider';
-import Dashboard from './dashboard';
 import FixedAPRProvider from '../../providers/fixedAPRProvider';
 import VariableAPRProvider from '../../providers/variableAPRProvider';
 import AvailableToDepositUSDProvider from '../../providers/availableToDepositUSDProvider';
 import UserBackingTokenBalanceProvider from '../../providers/userBackingTokenBalanceProvider';
 import UserYieldBearingTokenBalanceProvider from '../../providers/userYieldBearingTokenBalanceProvider';
+import Operations from '../operations/Operations';
+import Dashboard from './dashboard';
 
 type DashboardManagerProps = {
   onRowSelected?: (row: DashboardRowChild | null) => void;
@@ -21,7 +22,7 @@ type DashboardManagerProps = {
 
 const DashboardManager: FC<DashboardManagerProps> = ({ onRowSelected }): JSX.Element => {
   const { userWalletAddress, userWalletConnected, userWalletSigner } = useContext(WalletContext);
-  const { selectedPool } = useContext(PoolDataContext);
+  const { selectedPool, setPoolData } = useContext(PoolDataContext);
 
   const [dashboardDataAdapter, setDashboardDataAdapter] = useState<DashboardDataAdapter | null>(null);
   const [userBalanceDataAdapter, setUserBalanceDataAdapter] = useState<UserBalanceDataAdapter | null>(null);
@@ -54,9 +55,13 @@ const DashboardManager: FC<DashboardManagerProps> = ({ onRowSelected }): JSX.Ele
     (row: DashboardRowChild) => {
       onRowSelected && onRowSelected(row);
 
-      // TODO - Set selected row data in context
+      setPoolData &&
+        setPoolData(previousContext => ({
+          poolData: previousContext.poolData,
+          selectedPool: row.id,
+        }));
     },
-    [onRowSelected],
+    [onRowSelected, setPoolData],
   );
 
   const shouldShowDashboard = !!selectedPool;
@@ -72,7 +77,7 @@ const DashboardManager: FC<DashboardManagerProps> = ({ onRowSelected }): JSX.Ele
         />
       )}
 
-      {/*selectedRow && <Detail /> */}
+      {selectedPool && <Operations selectedPool={selectedPool} />}
       {dashboardDataAdapter && <TVLProvider dashboardDataAdapter={dashboardDataAdapter} />}
       {userBalanceDataAdapter && <BalanceProvider userBalanceDataAdapter={userBalanceDataAdapter} />}
       <FixedAPRProvider />
