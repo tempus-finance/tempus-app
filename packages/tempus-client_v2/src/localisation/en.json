@@ -16,11 +16,19 @@
   "currentPosition": "Current Position",
   "principals": "Principals",
   "yields": "Yields",
+  "lpTokens": "LP Tokens",
   "staked": "Staked",
   "approve": "Approve",
   "execute": "Execute",
   "profitLoss": "Profit & Loss",
   "liquidationValue": "Liquidation Value",
   "from": "From",
-  "to": "To"
+  "to": "To",
+  "balance": "Balance",
+  "fixYourFutureYield": "Fix Your Future Yield",
+  "fixedYield": "Fixed Yield",
+  "fixedYieldAtMaturity": "Fixed Yield At Maturity",
+  "totalAvailableAtMaturity": "Total Available At Maturity",
+  "provideLiquidity": "Provide Liquidity",
+  "variableYield": "Variable Yield"
 }

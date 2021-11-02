@@ -16,12 +16,20 @@ type Words =
   | 'currentPosition'
   | 'principals'
   | 'yields'
+  | 'lpTokens'
   | 'staked'
   | 'approve'
   | 'execute'
   | 'profitLoss'
   | 'liquidationValue'
   | 'from'
-  | 'to';
+  | 'to'
+  | 'balance'
+  | 'fixYourFutureYield'
+  | 'fixedYield'
+  | 'fixedYieldAtMaturity'
+  | 'totalAvailableAtMaturity'
+  | 'provideLiquidity'
+  | 'variableYield';
 
 export default Words;

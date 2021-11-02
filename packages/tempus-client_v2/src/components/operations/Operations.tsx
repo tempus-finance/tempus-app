@@ -30,7 +30,7 @@ const Operations: FC<OperationsInProps> = () => {
           <CurrentPosition language={language} />
         </div>
         <div className="tc__dashboard__row">
-          {selectedView === 'Deposit' && <Deposit />}
+          {selectedView === 'Deposit' && <Deposit showExtraInfo={showExtraInfo} />}
 
           {showExtraInfo && <ProfitLoss language={language} />}
         </div>
