@@ -1,5 +1,5 @@
 import { useContext, useMemo } from 'react';
-import { ContextPoolData, getDataForPool, PoolDataContext } from '../../../context/poolData';
+import { PoolData, getDataForPool, PoolDataContext } from '../../../context/poolDataContext';
 import { Ticker } from '../../../interfaces/Token';
 import NumberUtils from '../../../services/NumberUtils';
 import Typography from '../../typography/Typography';
@@ -45,7 +45,7 @@ const FixedAPRFormatter = ({ row }: any) => {
 };
 export default FixedAPRFormatter;
 
-function getParentAPR(parentId: Ticker, poolData: ContextPoolData[]): number | null {
+function getParentAPR(parentId: Ticker, poolData: PoolData[]): number | null {
   const parentChildren = poolData.filter(data => {
     return data.backingTokenTicker === parentId;
   });
@@ -60,6 +60,6 @@ function getParentAPR(parentId: Ticker, poolData: ContextPoolData[]): number | n
   return Math.max(...childrenFixedAPR);
 }
 
-function getChildAPR(id: string, poolData: ContextPoolData[]): number | null {
+function getChildAPR(id: string, poolData: PoolData[]): number | null {
   return getDataForPool(id, poolData).fixedAPR;
 }

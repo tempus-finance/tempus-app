@@ -8,21 +8,21 @@ import './protocolCell.scss';
 
 const ProtocolCell: FC<Table.DataCellProps> = props => {
   const isParent: boolean = !props.row.parentId;
-  const protocol: ProtocolName = props.row.protocol;
+  const row = props.row;
 
   return (
     <VirtualTable.Cell {...props}>
       {isParent && (
         <div className="tf__dashboard__body__protocol-icons_container">
-          {props.row.protocols.map((protocol: ProtocolName, index: number) => {
+          {row.protocols.map((protocol: ProtocolName, index: number) => {
             return <TokenIcon key={index} ticker={getTickerFromProtocol(protocol)} />;
           })}
         </div>
       )}
       {!isParent && (
         <div className="tf__dashboard__body__protocol_container">
-          <TokenIcon ticker={getTickerFromProtocol(protocol)} />
-          <span className="tf__dashboard__body__protocol_label">{protocol}</span>
+          <TokenIcon ticker={getTickerFromProtocol(row.tempusPool.protocol)} />
+          <span className="tf__dashboard__body__protocol_label">{row.tempusPool.protocol}</span>
         </div>
       )}
     </VirtualTable.Cell>

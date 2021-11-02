@@ -17,7 +17,7 @@ export const dashboardColumnsDefinitions: ExtraDataColumn[] = [
       if (isParentRow(row)) {
         return row.protocols;
       } else {
-        return row.protocol;
+        return row.tempusPool.protocol;
       }
     },
   },

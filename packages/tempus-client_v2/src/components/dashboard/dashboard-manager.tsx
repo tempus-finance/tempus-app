@@ -1,6 +1,6 @@
 import { FC, useCallback, useContext, useEffect, useState } from 'react';
-import { WalletContext } from '../../context/wallet';
-import { PoolDataContext } from '../../context/poolData';
+import { WalletContext } from '../../context/walletContext';
+import { PoolDataContext } from '../../context/poolDataContext';
 import { DashboardRow, DashboardRowChild } from '../../interfaces/DashboardRow';
 import getDashboardDataAdapter from '../../adapters/getDashboardDataAdapter';
 import DashboardDataAdapter from '../../adapters/DashboardDataAdapter';
@@ -16,11 +16,7 @@ import UserYieldBearingTokenBalanceProvider from '../../providers/userYieldBeari
 import Operations from '../operations/Operations';
 import Dashboard from './dashboard';
 
-type DashboardManagerProps = {
-  onRowSelected?: (row: DashboardRowChild | null) => void;
-};
-
-const DashboardManager: FC<DashboardManagerProps> = ({ onRowSelected }): JSX.Element => {
+const DashboardManager: FC = (): JSX.Element => {
   const { userWalletAddress, userWalletConnected, userWalletSigner } = useContext(WalletContext);
   const { selectedPool, setPoolData } = useContext(PoolDataContext);
 
@@ -53,15 +49,13 @@ const DashboardManager: FC<DashboardManagerProps> = ({ onRowSelected }): JSX.Ele
 
   const onRowActionClick = useCallback(
     (row: DashboardRowChild) => {
-      onRowSelected && onRowSelected(row);
-
       setPoolData &&
         setPoolData(previousContext => ({
           poolData: previousContext.poolData,
           selectedPool: row.id,
         }));
     },
-    [onRowSelected, setPoolData],
+    [setPoolData],
   );
 
   const shouldShowDashboard = !!selectedPool;

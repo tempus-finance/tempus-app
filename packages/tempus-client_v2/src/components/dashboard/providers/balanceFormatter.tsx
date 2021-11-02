@@ -4,7 +4,7 @@ import { CircularProgress } from '@material-ui/core';
 import { Ticker } from '../../../interfaces/Token';
 import NumberUtils from '../../../services/NumberUtils';
 import Typography from '../../typography/Typography';
-import { ContextPoolData, getDataForPool, PoolDataContext } from '../../../context/poolData';
+import { PoolData, getDataForPool, PoolDataContext } from '../../../context/poolDataContext';
 
 const BalanceFormatter = ({ row }: any) => {
   const isChild = Boolean(row.parentId);
@@ -38,7 +38,7 @@ const BalanceFormatter = ({ row }: any) => {
 };
 export default BalanceFormatter;
 
-function getParentBalance(parentId: Ticker, poolData: ContextPoolData[]): BigNumber | null {
+function getParentBalance(parentId: Ticker, poolData: PoolData[]): BigNumber | null {
   const parentChildren = poolData.filter(data => {
     return data.backingTokenTicker === parentId;
   });
@@ -57,6 +57,6 @@ function getParentBalance(parentId: Ticker, poolData: ContextPoolData[]): BigNum
   return parentBalance;
 }
 
-function getChildBalance(childId: string, poolData: ContextPoolData[]): BigNumber | null {
+function getChildBalance(childId: string, poolData: PoolData[]): BigNumber | null {
   return getDataForPool(childId, poolData).userBalanceUSD;
 }

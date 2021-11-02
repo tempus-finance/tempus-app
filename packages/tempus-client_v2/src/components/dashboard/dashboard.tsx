@@ -10,6 +10,7 @@ import {
 } from '@devexpress/dx-react-grid';
 import { Grid, TableHeaderRow, VirtualTable, TableTreeColumn } from '@devexpress/dx-react-grid-material-ui';
 import { SECONDS_IN_A_DAY, ZERO } from '../../constants';
+import { getDataForPool, PoolDataContext } from '../../context/poolDataContext';
 import { DashboardRow, isChildRow, isParentRow } from '../../interfaces/DashboardRow';
 import { ColumnNames } from '../../interfaces/ColumnNames';
 import Typography from '../typography/Typography';
@@ -30,7 +31,6 @@ import AvailableToDepositProvider from './providers/availableToDepositProvider';
 import { dashboardColumnsDefinitions } from './dashboardColumnsDefinitions';
 
 import './dashboard.scss';
-import { getDataForPool, PoolDataContext } from '../../context/poolData';
 
 type DashboardInProps = {
   hidden: boolean;
@@ -135,7 +135,7 @@ const Dashboard: FC<DashboardProps> = ({ hidden, userWalletAddress, rows, onRowA
         let protocolNameMatched;
         if (isChildRow(row)) {
           protocolNameMatched = filterData.protocolName
-            ? row.protocol.toLowerCase().indexOf(filterData.protocolName.toLowerCase()) > -1
+            ? row.tempusPool.protocol.toLowerCase().indexOf(filterData.protocolName.toLowerCase()) > -1
             : true;
         }
 
@@ -217,7 +217,7 @@ const Dashboard: FC<DashboardProps> = ({ hidden, userWalletAddress, rows, onRowA
 
   return (
     <div className="tf__dashboard__section__container" hidden={hidden}>
-      <div className="tf__dashboard__container">
+      <div className="tc__dashboard__container">
         <div className="tf__dashboard__header">
           <Typography color="default" variant="h4">
             Available Pools

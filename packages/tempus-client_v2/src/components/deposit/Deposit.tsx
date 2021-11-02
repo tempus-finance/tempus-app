@@ -1,6 +1,6 @@
 import { useContext, useState } from 'react';
 import { ethers } from 'ethers';
-import { LanguageContext } from '../../context/language';
+import { LanguageContext } from '../../context/languageContext';
 import { Ticker } from '../../interfaces/Token';
 import getText from '../../localisation/getText';
 //import Approve from '../buttons/Approve';
@@ -10,8 +10,6 @@ import TokenSelector from '../tokenSelector/tokenSelector';
 import Typography from '../typography/Typography';
 import TokenIcon from '../tokenIcon';
 import './Deposit.scss';
-
-export type SelectedYield = 'Fixed' | 'Variable';
 
 const Deposit = () => {
   const { language } = useContext(LanguageContext);

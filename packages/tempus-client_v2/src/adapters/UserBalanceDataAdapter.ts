@@ -7,7 +7,7 @@ import { mul18f } from '../utils/weiMath';
 import StatisticsService from '../services/StatisticsService';
 import getERC20TokenService from '../services/getERC20TokenService';
 import TempusPoolService from '../services/TempusPoolService';
-import { AvailableToDeposit } from '../context/poolData';
+import { AvailableToDeposit } from '../context/poolDataContext';
 
 type UserBalanceDataAdapterParameters = {
   signerOrProvider: JsonRpcProvider | JsonRpcSigner;

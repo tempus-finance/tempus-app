@@ -4,7 +4,7 @@ import { FC, useCallback, useContext, useEffect } from 'react';
 import getConfig from '../utils/getConfig';
 import DashboardDataAdapter from '../adapters/DashboardDataAdapter';
 import { TempusPool } from '../interfaces/TempusPool';
-import { PoolDataContext } from '../context/poolData';
+import { PoolDataContext } from '../context/poolDataContext';
 
 interface TVLProviderProps {
   dashboardDataAdapter: DashboardDataAdapter;

@@ -1,5 +1,5 @@
 import { FC, useContext } from 'react';
-import { LanguageContext } from '../../context/language';
+import { LanguageContext } from '../../context/languageContext';
 import TempusLogo from './tempusLogo';
 import Links from './Links';
 import Wallet from './Wallet';

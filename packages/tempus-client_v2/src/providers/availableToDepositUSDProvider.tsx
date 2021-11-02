@@ -1,7 +1,7 @@
 import { FC, useCallback, useContext, useEffect } from 'react';
 import UserBalanceDataAdapter from '../adapters/UserBalanceDataAdapter';
-import { PoolDataContext } from '../context/poolData';
-import { WalletContext } from '../context/wallet';
+import { PoolDataContext } from '../context/poolDataContext';
+import { WalletContext } from '../context/walletContext';
 import { TempusPool } from '../interfaces/TempusPool';
 import getERC20TokenService from '../services/getERC20TokenService';
 import getConfig from '../utils/getConfig';
