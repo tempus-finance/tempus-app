@@ -16,11 +16,7 @@ import UserYieldBearingTokenBalanceProvider from '../../providers/userYieldBeari
 import Operations from '../operations/Operations';
 import Dashboard from './dashboard';
 
-type DashboardManagerProps = {
-  onRowSelected?: (row: DashboardRowChild | null) => void;
-};
-
-const DashboardManager: FC<DashboardManagerProps> = ({ onRowSelected }): JSX.Element => {
+const DashboardManager: FC = (): JSX.Element => {
   const { userWalletAddress, userWalletConnected, userWalletSigner } = useContext(WalletContext);
   const { selectedPool, setPoolData } = useContext(PoolDataContext);
 
@@ -53,15 +49,13 @@ const DashboardManager: FC<DashboardManagerProps> = ({ onRowSelected }): JSX.Ele
 
   const onRowActionClick = useCallback(
     (row: DashboardRowChild) => {
-      onRowSelected && onRowSelected(row);
-
       setPoolData &&
         setPoolData(previousContext => ({
           poolData: previousContext.poolData,
           selectedPool: row.id,
         }));
     },
-    [onRowSelected, setPoolData],
+    [setPoolData],
   );
 
   const shouldShowDashboard = !!selectedPool;

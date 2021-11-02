@@ -1,6 +1,5 @@
-import { FC, useContext, useMemo, useState } from 'react';
-import { LanguageContext } from '../../context/language';
-import { getDataForPool, PoolDataContext } from '../../context/poolData';
+import { FC, useContext, useEffect, useMemo, useState } from 'react';
+import { LanguageContext } from '../../context/languageContext';
 import { TransactionView } from '../../interfaces/TransactionView';
 import UserLPTokenBalanceProvider from '../../providers/userLPTokenBalanceProvider';
 import UserShareTokenBalanceProvider from '../../providers/userShareTokenBalanceProvider';

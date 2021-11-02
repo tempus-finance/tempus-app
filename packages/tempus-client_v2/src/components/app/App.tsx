@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { LanguageContext, defaultLanguageContextValue } from '../../context/language';
+import { LanguageContext, defaultLanguageContextValue } from '../../context/languageContext';
 import { ETHBalanceContext, defaultETHBalanceContextValue } from '../../context/ethBalance';
 import { defaultWalletContextValue, WalletContext } from '../../context/wallet';
 import { defaultPendingTransactionsContextValue, PendingTransactionsContext } from '../../context/pendingTransactions';
