@@ -1,0 +1,66 @@
+@import './constants.scss';
+
+body {
+  font-family: Manrope, 'sans-serif';
+  color: $text-color;
+  background-color: $background-color;
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-y: scroll;
+}
+
+.tf__backdrop {
+  position: fixed;
+  left: 0px;
+  top: 0px;
+  right: 0px;
+  bottom: 0px;
+  z-index: 998;
+  cursor: default !important;
+}
+
+.tf__flex-row-center-v {
+  display: flex;
+  align-items: center;
+}
+
+.tf__flex-row-center-vh {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.tf__flex-row-space-between {
+  display: flex;
+  justify-content: space-between;
+}
+
+.tf__flex-column-space-between {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.tf__flex-column-center-end {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-end;
+}
+
+.tf__flex-column-center-vh {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.tf__full_width {
+  width: 100%;
+}
+
+.tf__input__label {
+  padding-top: 5px;
+  position: absolute;
+}

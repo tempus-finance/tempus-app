@@ -13,7 +13,10 @@ export interface PoolData {
   address: string;
   id: string; // Balancer internal ID for pool. User in Vault Contract.
   ammAddress: string;
+  backingTokenAddress: string;
+  yieldBearingTokenAddress: string;
   principalsAddress: string;
+  yieldsAddress: string;
   protocol: ProtocolName;
   startDate: number;
   maturityDate: number;
@@ -52,7 +55,10 @@ export const defaultPoolDataContextValue: PoolDataContextData = {
   poolData: getConfig().tempusPools.map(tempusPoolConfig => ({
     address: tempusPoolConfig.address,
     id: tempusPoolConfig.poolId,
+    backingTokenAddress: tempusPoolConfig.backingTokenAddress,
+    yieldBearingTokenAddress: tempusPoolConfig.yieldBearingTokenAddress,
     principalsAddress: tempusPoolConfig.principalsAddress,
+    yieldsAddress: tempusPoolConfig.yieldsAddress,
     backingTokenTicker: tempusPoolConfig.backingToken,
     yieldBearingTokenTicker: tempusPoolConfig.yieldBearingToken,
     decimalsForUI: tempusPoolConfig.decimalsForUI,

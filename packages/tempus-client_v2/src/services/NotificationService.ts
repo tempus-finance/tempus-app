@@ -3,9 +3,9 @@ import { Observable, Subject } from 'rxjs';
 import format from 'date-fns/format';
 import { v1 as uuid } from 'uuid';
 import ERC20ABI from '../abi/ERC20.json';
+import { PoolData } from '../context/poolDataContext';
 import { Ticker } from '../interfaces/Token';
 import { ProtocolName } from '../interfaces/ProtocolName';
-import { TempusPool } from '../interfaces/TempusPool';
 import { capitalize } from '../utils/capitalizeString';
 import getConfig from '../utils/getConfig';
 import NumberUtils from './NumberUtils';
@@ -74,7 +74,7 @@ export const generateNotificationInfo = (
   receipt: ethers.ContractReceipt,
   transaction: ethers.ContractTransaction,
   userWallet: string,
-  tempusPool: TempusPool,
+  tempusPool: PoolData,
 ) => {
   switch (action) {
     case 'Deposit':
@@ -98,7 +98,7 @@ const getDepositNotificationContent = (
   receipt: ethers.ContractReceipt,
   transaction: ethers.ContractTransaction,
   userWallet: string,
-  tempusPool: TempusPool,
+  tempusPool: PoolData,
   actionDescription: string,
 ) => {
   let tokenSentTicker: Ticker | null = null;
@@ -109,7 +109,7 @@ const getDepositNotificationContent = (
   // ETH was transferred
   if (!transaction.value.isZero()) {
     tokenSentAmount = transaction.value;
-    tokenSentTicker = tempusPool.backingToken;
+    tokenSentTicker = tempusPool.backingTokenTicker;
   }
 
   const ifc = new ethers.utils.Interface(ERC20ABI);
@@ -120,12 +120,12 @@ const getDepositNotificationContent = (
         // User sent backing token
         if (tempusPool.backingTokenAddress === log.address) {
           tokenSentAmount = logData.args.value;
-          tokenSentTicker = tempusPool.backingToken;
+          tokenSentTicker = tempusPool.backingTokenTicker;
         }
         // User sent yield bearing token
         if (tempusPool.yieldBearingTokenAddress === log.address) {
           tokenSentAmount = logData.args.value;
-          tokenSentTicker = tempusPool.yieldBearingToken;
+          tokenSentTicker = tempusPool.yieldBearingTokenTicker;
         }
       }
 
@@ -162,22 +162,26 @@ const getDepositNotificationContent = (
     ${principalsReceivedFormatted} Principals
     ${actionDescription}
   
-    ${generatePoolNotificationInfo(tempusPool.backingToken, tempusPool.protocol, new Date(tempusPool.maturityDate))}`;
+    ${generatePoolNotificationInfo(
+      tempusPool.backingTokenTicker,
+      tempusPool.protocol,
+      new Date(tempusPool.maturityDate),
+    )}`;
   } else if (actionDescription === 'Variable Yield') {
     return `${tokenSentAmountFormatted} ${tokenSentTicker} to
     ${principalsReceivedFormatted} Principals and
     ${lpTokensReceivedFormatted} LP Tokens
     ${actionDescription}
     
-    ${generatePoolNotificationInfo(tempusPool.backingToken, tempusPool.protocol, new Date(tempusPool.maturityDate))}`;
+    ${generatePoolNotificationInfo(
+      tempusPool.backingTokenTicker,
+      tempusPool.protocol,
+      new Date(tempusPool.maturityDate),
+    )}`;
   }
 };
 
-const getWithdrawNotificationContent = (
-  receipt: ethers.ContractReceipt,
-  userWallet: string,
-  tempusPool: TempusPool,
-) => {
+const getWithdrawNotificationContent = (receipt: ethers.ContractReceipt, userWallet: string, tempusPool: PoolData) => {
   let principalsSent = BigNumber.from('0');
   let yieldsSent = BigNumber.from('0');
   let lpTokensSent = BigNumber.from('0');
@@ -206,12 +210,12 @@ const getWithdrawNotificationContent = (
         // User received backing tokens
         if (log.address === tempusPool.backingTokenAddress) {
           tokensReceived = logData.args.value;
-          tokenReceivedTicker = tempusPool.backingToken;
+          tokenReceivedTicker = tempusPool.backingTokenTicker;
         }
         // User received yield bearing tokens
         if (log.address === tempusPool.yieldBearingTokenAddress) {
           tokensReceived = logData.args.value;
-          tokenReceivedTicker = tempusPool.yieldBearingToken;
+          tokenReceivedTicker = tempusPool.yieldBearingTokenTicker;
         }
       }
     } catch (error) {
@@ -241,7 +245,11 @@ const getWithdrawNotificationContent = (
   ${lpTokensSentFormatted} LP Tokens to
   ${tokensReceivedFormatted} ${tokenReceivedTicker}
   
-  ${generatePoolNotificationInfo(tempusPool.backingToken, tempusPool.protocol, new Date(tempusPool.maturityDate))}`;
+  ${generatePoolNotificationInfo(
+    tempusPool.backingTokenTicker,
+    tempusPool.protocol,
+    new Date(tempusPool.maturityDate),
+  )}`;
 };
 
 /**
@@ -251,7 +259,7 @@ const getMintNotificationContent = (
   receipt: ethers.ContractReceipt,
   transaction: ethers.ContractTransaction,
   userWallet: string,
-  tempusPool: TempusPool,
+  tempusPool: PoolData,
 ) => {
   let tokenSentTicker: Ticker | null = null;
   let tokenSentAmount = BigNumber.from('0');
@@ -261,7 +269,7 @@ const getMintNotificationContent = (
   // ETH was transferred
   if (!transaction.value.isZero()) {
     tokenSentAmount = transaction.value;
-    tokenSentTicker = tempusPool.backingToken;
+    tokenSentTicker = tempusPool.backingTokenTicker;
   }
 
   const ifc = new ethers.utils.Interface(ERC20ABI);
@@ -272,12 +280,12 @@ const getMintNotificationContent = (
         // User sent backing token
         if (tempusPool.backingTokenAddress === log.address) {
           tokenSentAmount = logData.args.value;
-          tokenSentTicker = tempusPool.backingToken;
+          tokenSentTicker = tempusPool.backingTokenTicker;
         }
         // User sent yield bearing token
         if (tempusPool.yieldBearingTokenAddress === log.address) {
           tokenSentAmount = logData.args.value;
-          tokenSentTicker = tempusPool.yieldBearingToken;
+          tokenSentTicker = tempusPool.yieldBearingTokenTicker;
         }
       }
 
@@ -313,13 +321,17 @@ const getMintNotificationContent = (
   ${principalsMintedFormatted} Principals and
   ${yieldsMintedFormatted} Yields
 
-  ${generatePoolNotificationInfo(tempusPool.backingToken, tempusPool.protocol, new Date(tempusPool.maturityDate))}`;
+  ${generatePoolNotificationInfo(
+    tempusPool.backingTokenTicker,
+    tempusPool.protocol,
+    new Date(tempusPool.maturityDate),
+  )}`;
 };
 
 /**
  * Generates notification message for Swap action that includes number of Principals and Yields swapped.
  */
-const getSwapNotificationContent = (receipt: ethers.ContractReceipt, userWallet: string, tempusPool: TempusPool) => {
+const getSwapNotificationContent = (receipt: ethers.ContractReceipt, userWallet: string, tempusPool: PoolData) => {
   let tokenSentTicker: Ticker | null = null;
   let tokenSentValue: BigNumber = BigNumber.from('0');
   let tokenReceivedTicker: Ticker | null = null;
@@ -370,13 +382,17 @@ const getSwapNotificationContent = (receipt: ethers.ContractReceipt, userWallet:
   return `${tokenSentValueFormatted} ${tokenSentTicker} to
   ${tokenReceivedValueFormatted} ${tokenReceivedTicker}
   
-  ${generatePoolNotificationInfo(tempusPool.backingToken, tempusPool.protocol, new Date(tempusPool.maturityDate))}`;
+  ${generatePoolNotificationInfo(
+    tempusPool.backingTokenTicker,
+    tempusPool.protocol,
+    new Date(tempusPool.maturityDate),
+  )}`;
 };
 
 const getLiquidityDepositNotificationContent = (
   receipt: ethers.ContractReceipt,
   userWallet: string,
-  tempusPool: TempusPool,
+  tempusPool: PoolData,
 ) => {
   let amountOfPrincipalsSent = BigNumber.from('0');
   let amountOfYieldsSent = BigNumber.from('0');
@@ -422,13 +438,17 @@ const getLiquidityDepositNotificationContent = (
   ${amountOfYieldsSentFormatted} Yields to
   ${amountOfLPTokensReceivedFormatted} LP Tokens
   
-  ${generatePoolNotificationInfo(tempusPool.backingToken, tempusPool.protocol, new Date(tempusPool.maturityDate))}`;
+  ${generatePoolNotificationInfo(
+    tempusPool.backingTokenTicker,
+    tempusPool.protocol,
+    new Date(tempusPool.maturityDate),
+  )}`;
 };
 
 const getLiquidityWithdrawalNotificationContent = (
   receipt: ethers.ContractReceipt,
   userWallet: string,
-  tempusPool: TempusPool,
+  tempusPool: PoolData,
 ) => {
   let amountOfLPTokensSent = BigNumber.from('0');
   let amountOfPrincipalsReceived = BigNumber.from('0');
@@ -476,10 +496,14 @@ const getLiquidityWithdrawalNotificationContent = (
   ${amountOfPrincipalsReceivedFormatted} Principals and
   ${amountOfYieldsReceivedFormatted} Yields
   
-  ${generatePoolNotificationInfo(tempusPool.backingToken, tempusPool.protocol, new Date(tempusPool.maturityDate))}`;
+  ${generatePoolNotificationInfo(
+    tempusPool.backingTokenTicker,
+    tempusPool.protocol,
+    new Date(tempusPool.maturityDate),
+  )}`;
 };
 
-const getRedeemNotificationContent = (receipt: ethers.ContractReceipt, userWallet: string, tempusPool: TempusPool) => {
+const getRedeemNotificationContent = (receipt: ethers.ContractReceipt, userWallet: string, tempusPool: PoolData) => {
   let primitivesSent = BigNumber.from('0');
   let tokensReceived = BigNumber.from('0');
   let tokenReceivedTicker: Ticker | null = null;
@@ -496,12 +520,12 @@ const getRedeemNotificationContent = (receipt: ethers.ContractReceipt, userWalle
         // User received backing tokens
         if (log.address === tempusPool.backingTokenAddress) {
           tokensReceived = logData.args.value;
-          tokenReceivedTicker = tempusPool.backingToken;
+          tokenReceivedTicker = tempusPool.backingTokenTicker;
         }
         // User received yield bearing tokens
         if (log.address === tempusPool.yieldBearingTokenAddress) {
           tokensReceived = logData.args.value;
-          tokenReceivedTicker = tempusPool.yieldBearingToken;
+          tokenReceivedTicker = tempusPool.yieldBearingTokenTicker;
         }
       }
     } catch (error) {
@@ -521,7 +545,11 @@ const getRedeemNotificationContent = (receipt: ethers.ContractReceipt, userWalle
   return `${primitivesSentFormatted} Principals and Yields to
   ${tokensReceivedFormatted} ${tokenReceivedTicker}
   
-  ${generatePoolNotificationInfo(tempusPool.backingToken, tempusPool.protocol, new Date(tempusPool.maturityDate))}`;
+  ${generatePoolNotificationInfo(
+    tempusPool.backingTokenTicker,
+    tempusPool.protocol,
+    new Date(tempusPool.maturityDate),
+  )}`;
 };
 
 export default NotificationService;

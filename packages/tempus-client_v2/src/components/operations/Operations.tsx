@@ -10,6 +10,7 @@ import Pool from '../pool/Pool';
 import ProfitLoss from '../profitLoss/ProfitLoss';
 import Sidebar from '../sidebar/Sidebar';
 import Term from '../term/Term';
+import Withdraw from '../withdraw/Withdraw';
 import './Operations.scss';
 
 type OperationsInProps = {
@@ -54,6 +55,7 @@ const Operations: FC<OperationsInProps> = () => {
           {/* Middle bottom part (Selected tab options) */}
           <div className="tc__operations-poolManage">
             {selectedView === 'Deposit' && <Deposit narrow={!hideUserData} />}
+            {selectedView === 'Withdraw' && <Withdraw />}
           </div>
         </div>
         {/* Right side (Current Position, Profit/Loss) - Only visible if user has balance in the pool */}
