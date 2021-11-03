@@ -51,7 +51,9 @@ const Operations: FC<OperationsInProps> = () => {
             <Term language={language} />
           </div>
           {/* Middle bottom part (Selected tab options) */}
-          <div className="tc__operations-poolManage">{selectedView === 'Deposit' && <Deposit />}</div>
+          <div className="tc__operations-poolManage">
+            {selectedView === 'Deposit' && <Deposit narrow={!hideUserData} />}
+          </div>
         </div>
         {/* Right side (Current Position, Profit/Loss) - Only visible if user has balance in the pool */}
         {!hideUserData && (

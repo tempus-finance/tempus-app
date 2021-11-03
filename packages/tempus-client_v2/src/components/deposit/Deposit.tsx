@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { FC, useContext, useState } from 'react';
 import { ethers } from 'ethers';
 import { LanguageContext } from '../../context/languageContext';
 import { Ticker } from '../../interfaces/Token';
@@ -11,7 +11,15 @@ import Typography from '../typography/Typography';
 import TokenIcon from '../tokenIcon';
 import './Deposit.scss';
 
-const Deposit = () => {
+type DepositInProps = {
+  narrow: boolean;
+};
+
+type DepositOutProps = {};
+
+type DepositProps = DepositInProps & DepositOutProps;
+
+const Deposit: FC<DepositProps> = ({ narrow }) => {
   const { language } = useContext(LanguageContext);
 
   const [balance] = useState<number>(123);
@@ -20,7 +28,7 @@ const Deposit = () => {
   const [tokenPrecision] = useState<number>(0);
 
   return (
-    <div className="tc__deposit">
+    <div className={`tc__deposit ${narrow ? 'tc__deposit__narrow' : ''}`}>
       <div className="tc__deposit__from">
         <Typography variant="h1">{getText('from', language)}</Typography>
         <div className="tc__deposit__from__body">
