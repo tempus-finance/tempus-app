@@ -8,6 +8,7 @@ import UserLPTokenBalanceProvider from '../../providers/userLPTokenBalanceProvid
 import UserShareTokenBalanceProvider from '../../providers/userShareTokenBalanceProvider';
 import CurrentPosition from '../currentPosition/CurrentPosition';
 import Deposit from '../deposit/Deposit';
+import EarlyRedeem from '../earlyRedeem/EarlyRedeem';
 import Mint from '../mint/Mint';
 import Pool from '../pool/Pool';
 import ProfitLoss from '../profitLoss/ProfitLoss';
@@ -65,6 +66,7 @@ const Operations: FC<OperationsInProps> = () => {
               )}
               {selectedView === 'Withdraw' && <Withdraw />}
               {selectedView === 'Mint' && <Mint narrow={!hideUserData} />}
+              {selectedView === 'Early Redeem' && <EarlyRedeem />}
             </div>
           </div>
           {/* Right side (Current Position, Profit/Loss) - Only visible if user has balance in the pool */}

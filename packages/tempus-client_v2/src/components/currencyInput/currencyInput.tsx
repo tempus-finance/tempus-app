@@ -1,5 +1,7 @@
-import { FC, useCallback, useEffect, useState } from 'react';
+import { FC, useCallback, useContext, useEffect, useState } from 'react';
 import { FormControl, TextField, Button, Divider } from '@material-ui/core';
+import { LanguageContext } from '../../context/languageContext';
+import getText from '../../localisation/getText';
 import { formatValueToCurrency } from './currencyParser';
 
 import './currencyInput.scss';
@@ -25,6 +27,7 @@ const CurrencyInput: FC<CurrencyInputProps> = ({
   onChange,
   onMaxClick,
 }: CurrencyInputProps) => {
+  const { language } = useContext(LanguageContext);
   const [value, setValue] = useState<string>('');
 
   useEffect(() => {
@@ -67,7 +70,7 @@ const CurrencyInput: FC<CurrencyInputProps> = ({
           }}
         />
         <Divider orientation="vertical" />
-        <Button onClick={handleMaxClick}>Max</Button>
+        <Button onClick={handleMaxClick}>{getText('max', language)}</Button>
       </div>
     </FormControl>
   );
