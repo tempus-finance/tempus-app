@@ -14,6 +14,7 @@ export interface PoolData {
   address: string;
   ammAddress: string;
   principalsAddress: string;
+  yieldsAddress: string;
   protocol: ProtocolName;
   startDate: number;
   maturityDate: number;
@@ -21,7 +22,6 @@ export interface PoolData {
   backingTokenAddress: string;
   yieldBearingToken: Ticker;
   yieldBearingTokenAddress: string;
-  yieldsAddress: string;
   userBackingTokenBalance: BigNumber | null;
   userYieldBearingTokenBalance: BigNumber | null;
   userPrincipalsBalance: BigNumber | null;

@@ -7,11 +7,10 @@ import {
   generateNotificationInfo,
   generatePoolNotificationInfo,
 } from '../../services/NotificationService';
-import { TempusPool } from '../../interfaces/TempusPool';
 import Typography from '../typography/Typography';
 import getText from '../../localisation/getText';
 import { PendingTransactionsContext } from '../../context/pendingTransactionsContext';
-import { PoolDataContext, getDataForPool } from '../../context/poolDataContext';
+import { PoolDataContext, getDataForPool, PoolData } from '../../context/poolDataContext';
 import { WalletContext } from '../../context/walletContext';
 import { LanguageContext } from '../../context/languageContext';
 
@@ -21,7 +20,7 @@ interface ExecuteButtonProps {
   disabled: boolean;
   actionName: string;
   actionDescription?: string;
-  tempusPool: TempusPool;
+  tempusPool: PoolData;
   onExecute: () => Promise<ethers.ContractTransaction | undefined>;
   onExecuted: (successful: boolean) => void;
 }

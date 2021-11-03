@@ -12,6 +12,7 @@ import Pool from '../pool/Pool';
 import ProfitLoss from '../profitLoss/ProfitLoss';
 import Sidebar from '../sidebar/Sidebar';
 import Term from '../term/Term';
+import Withdraw from '../withdraw/Withdraw';
 import './Operations.scss';
 
 type OperationsInProps = {
@@ -61,6 +62,7 @@ const Operations: FC<OperationsInProps> = () => {
               {selectedView === 'Deposit' && (
                 <Deposit poolDataAdapter={getPoolDataAdapter(userWalletSigner)} narrow={!hideUserData} />
               )}
+              {selectedView === 'Withdraw' && <Withdraw />}
             </div>
           </div>
           {/* Right side (Current Position, Profit/Loss) - Only visible if user has balance in the pool */}

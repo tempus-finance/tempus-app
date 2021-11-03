@@ -528,7 +528,6 @@ const Deposit: FC<DepositProps> = ({ narrow, poolDataAdapter }) => {
         </div>
         <div className="tc__deposit__actions">
           <Approve
-            poolDataAdapter={poolDataAdapter}
             tokenToApproveAddress={getSelectedTokenAddress()}
             spenderAddress={getConfig().tempusControllerContract}
             amountToApprove={getSelectedTokenBalance()}
