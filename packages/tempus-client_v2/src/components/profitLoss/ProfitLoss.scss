@@ -5,6 +5,7 @@
   flex: 38;
   background: rgba(255, 255, 255, 0.5); // TODO add to constants
   height: 393px;
+  flex-grow: 0;
 
   .tc__profitLoss__body__item {
     @include cardBodyItem;
