@@ -1,5 +1,5 @@
-import { ethers, BigNumber } from 'ethers';
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { ethers, BigNumber } from 'ethers';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
 import { getDataForPool, PoolDataContext } from '../../context/poolDataContext';
 import { WalletContext } from '../../context/walletContext';
@@ -60,7 +60,6 @@ const Withdraw = () => {
       const poolDataAdapter = getPoolDataAdapter(userWalletSigner);
 
       const isBackingToken = backingToken === selectedToken;
-
       return poolDataAdapter.executeWithdraw(ammAddress, userPrincipalsBalance, userLPTokenBalance, isBackingToken);
     } else {
       return Promise.resolve(undefined);
@@ -69,12 +68,10 @@ const Withdraw = () => {
 
   // Fetch estimated withdraw amount of tokens
   useEffect(() => {
-    const { address, ammAddress, userPrincipalsBalance, userYieldsBalance, userLPTokenBalance, backingToken } =
-      selectedPoolData;
+    const { ammAddress, userPrincipalsBalance, userYieldsBalance, userLPTokenBalance, backingToken } = selectedPoolData;
 
     if (userWalletSigner && userPrincipalsBalance && userYieldsBalance && userLPTokenBalance) {
       const poolDataAdapter = getPoolDataAdapter(userWalletSigner);
-
       try {
         const isBackingToken = backingToken === selectedToken;
         const stream$ = poolDataAdapter
@@ -87,17 +84,11 @@ const Withdraw = () => {
           )
           .subscribe(amount => {
             setEstimatedWithdrawAmount(amount);
-
-            if (backingToken === selectedToken) {
-              setTokenPrecision(getTokenPrecision(address, 'backingToken'));
-            } else {
-              setTokenPrecision(getTokenPrecision(address, 'yieldBearingToken'));
-            }
           });
 
         return () => stream$.unsubscribe();
       } catch (error) {
-        console.log('DetailWithdraw - retrieveWithdrawAmount() - Failed to fetch estimated withdraw amount!', error);
+        console.log('Withdraw - retrieveWithdrawAmount() - Failed to fetch estimated withdraw amount!', error);
       }
     }
   }, [selectedToken, selectedPoolData, userWalletSigner]);
