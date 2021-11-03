@@ -7,6 +7,7 @@ import UserShareTokenBalanceProvider from '../../providers/userShareTokenBalance
 import CurrentPosition from '../currentPosition/CurrentPosition';
 import Deposit from '../deposit/Deposit';
 import Pool from '../pool/Pool';
+import ProfitLoss from '../profitLoss/ProfitLoss';
 import Sidebar from '../sidebar/Sidebar';
 import Term from '../term/Term';
 import './Operations.scss';
@@ -59,6 +60,7 @@ const Operations: FC<OperationsInProps> = () => {
         {!hideUserData && (
           <div className="tc__operations-poolUserStats">
             <CurrentPosition language={language} />
+            <ProfitLoss language={language} />
           </div>
         )}
       </div>
