@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useCallback } from 'react';
 import TickIcon from '../icons/TickIcon';
 import InfoTooltip from '../infoTooltip/infoTooltip';
 import Spacer from '../spacer/spacer';
@@ -18,30 +18,31 @@ interface SectionContainerProps {
 }
 
 const SectionContainer: FC<SectionContainerProps> = props => {
-  const { id, title, tooltip, selectable, selected, disabled, elevation, onSelected } = props;
+  const { id, title, tooltip, selectable, selected, disabled, elevation = 1, onSelected } = props;
 
-  const onClick = () => {
+  const onClick = useCallback(() => {
     if (!disabled) {
       onSelected && onSelected(id);
     }
-  };
+  }, [disabled, id, onSelected]);
+
+  let contentClasses = 'tc__dialog__section-content';
+  if (selected) {
+    contentClasses += ' tc__dialog__section-content-selected';
+  }
+  if (selectable) {
+    contentClasses += ' tc__dialog__section-content-selectable';
+  }
 
   return (
-    <div className={`tf__dialog__section-elevation-${elevation || 1}`}>
+    <div className={`tf__dialog__section-elevation-${elevation}`}>
       <div className="tf__dialog__section-title">
         {title && <Typography variant="card-title">{title}</Typography>}
         {title && <Spacer size={15} />}
         {tooltip && <InfoTooltip text={tooltip} />}
       </div>
       {title && <Spacer size={15} />}
-      <div
-        className="tf__dialog__section-content"
-        style={{
-          border: selected ? '1px solid #F24C00' : '1px solid transparent',
-          cursor: selectable ? 'pointer' : 'default',
-        }}
-        onClick={onClick}
-      >
+      <div className={contentClasses} onClick={onClick}>
         {props.children}
         {selected && (
           <div className="tf__dialog__section-tick">
