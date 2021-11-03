@@ -15,6 +15,7 @@ export interface PoolData {
   ammAddress: string;
   principalsAddress: string;
   protocol: ProtocolName;
+  startDate: number;
   maturityDate: number;
   backingTokenTicker: Ticker;
   yieldBearingTokenTicker: Ticker;
@@ -57,6 +58,7 @@ export const defaultPoolDataContextValue: PoolDataContextData = {
     decimalsForUI: tempusPoolConfig.decimalsForUI,
     ammAddress: tempusPoolConfig.ammAddress,
     protocol: tempusPoolConfig.protocol,
+    startDate: tempusPoolConfig.startDate,
     maturityDate: tempusPoolConfig.maturityDate,
     variableAPR: 0,
     tvl: null,
