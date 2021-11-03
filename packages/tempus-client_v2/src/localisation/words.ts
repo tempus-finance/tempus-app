@@ -30,6 +30,8 @@ type Words =
   | 'fixedYieldAtMaturity'
   | 'totalAvailableAtMaturity'
   | 'provideLiquidity'
-  | 'variableYield';
+  | 'variableYield'
+  | 'amountReceived'
+  | 'approx';
 
 export default Words;

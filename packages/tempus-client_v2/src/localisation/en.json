@@ -30,5 +30,7 @@
   "fixedYieldAtMaturity": "Fixed Yield At Maturity",
   "totalAvailableAtMaturity": "Total Available At Maturity",
   "provideLiquidity": "Provide Liquidity",
-  "variableYield": "Variable Yield"
+  "variableYield": "Variable Yield",
+  "amountReceived": "Amount Received",
+  "approx": "Approx"
 }
