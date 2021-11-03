@@ -1,4 +1,5 @@
 type Words =
+  | 'max'
   | 'dashboard'
   | 'analytics'
   | 'community'
@@ -32,6 +33,7 @@ type Words =
   | 'provideLiquidity'
   | 'variableYield'
   | 'amountReceived'
-  | 'approx';
+  | 'approx'
+  | 'estimatedAmountReceived';
 
 export default Words;
