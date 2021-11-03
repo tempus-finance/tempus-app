@@ -1,13 +1,10 @@
-import { FC, useContext } from 'react';
-import { LanguageContext } from '../../context/languageContext';
+import { FC } from 'react';
 import TempusLogo from './tempusLogo';
 import Links from './Links';
 import Wallet from './Wallet';
 import './NavBar.scss';
 
 const NavBar: FC = () => {
-  const { language, setLanguage } = useContext(LanguageContext);
-
   return (
     <div className="tc__navBar">
       <div className="tc__navBar__left">
@@ -15,7 +12,7 @@ const NavBar: FC = () => {
       </div>
 
       <div className="tc__navBar__right">
-        <Links language={language} changeLanguage={setLanguage} />
+        <Links />
         <Wallet />
       </div>
     </div>
