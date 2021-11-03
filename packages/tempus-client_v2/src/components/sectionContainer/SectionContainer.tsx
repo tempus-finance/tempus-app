@@ -1,4 +1,7 @@
-import { FC, useCallback } from 'react';
+import { FC, useCallback, useContext } from 'react';
+import { LanguageContext } from '../../context/languageContext';
+import getText from '../../localisation/getText';
+import Words from '../../localisation/words';
 import TickIcon from '../icons/TickIcon';
 import InfoTooltip from '../infoTooltip/infoTooltip';
 import Spacer from '../spacer/spacer';
@@ -8,7 +11,7 @@ import './SectionContainer.scss';
 
 interface SectionContainerProps {
   id?: string;
-  title?: string;
+  title?: Words;
   tooltip?: string;
   selectable?: boolean;
   selected?: boolean;
@@ -19,6 +22,8 @@ interface SectionContainerProps {
 
 const SectionContainer: FC<SectionContainerProps> = props => {
   const { id, title, tooltip, selectable, selected, disabled, elevation = 1, onSelected } = props;
+
+  const { language } = useContext(LanguageContext);
 
   const onClick = useCallback(() => {
     if (!disabled) {
@@ -37,7 +42,7 @@ const SectionContainer: FC<SectionContainerProps> = props => {
   return (
     <div className={`tf__dialog__section-elevation-${elevation}`}>
       <div className="tf__dialog__section-title">
-        {title && <Typography variant="card-title">{title}</Typography>}
+        {title && <Typography variant="card-title">{getText(title, language)}</Typography>}
         {title && <Spacer size={15} />}
         {tooltip && <InfoTooltip text={tooltip} />}
       </div>

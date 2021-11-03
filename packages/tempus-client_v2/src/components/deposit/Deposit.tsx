@@ -25,9 +25,7 @@ type DepositInProps = {
   narrow: boolean;
 };
 
-type DepositOutProps = {};
-
-type DepositProps = DepositInProps & DepositOutProps & OperationsSharedProps;
+type DepositProps = DepositInProps & OperationsSharedProps;
 
 const Deposit: FC<DepositProps> = ({ narrow, poolDataAdapter }) => {
   const { language } = useContext(LanguageContext);
@@ -273,7 +271,7 @@ const Deposit: FC<DepositProps> = ({ narrow, poolDataAdapter }) => {
           setEstimatedFixedApr(fixedAPREstimate);
           setRateEstimateInProgress(false);
         } catch (error) {
-          console.log('DetailDeposit - getEstimatedFixedApr() - Failed to fetch estimated fixed APR!', error);
+          console.log('Deposit - getEstimatedFixedApr() - Failed to fetch estimated fixed APR!', error);
           setRateEstimateInProgress(false);
         }
       } else {
@@ -293,7 +291,7 @@ const Deposit: FC<DepositProps> = ({ narrow, poolDataAdapter }) => {
       .isCurrentYieldNegativeForPool(activePoolData.address)
       .pipe(
         catchError((error, caught) => {
-          console.log('DetailDeposit - isCurrentYieldNegativeForPool - Failed to retrieve current yield!', error);
+          console.log('Deposit - isCurrentYieldNegativeForPool - Failed to retrieve current yield!', error);
           return caught;
         }),
       )

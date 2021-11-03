@@ -8,6 +8,7 @@ import UserLPTokenBalanceProvider from '../../providers/userLPTokenBalanceProvid
 import UserShareTokenBalanceProvider from '../../providers/userShareTokenBalanceProvider';
 import CurrentPosition from '../currentPosition/CurrentPosition';
 import Deposit from '../deposit/Deposit';
+import Mint from '../mint/Mint';
 import Pool from '../pool/Pool';
 import ProfitLoss from '../profitLoss/ProfitLoss';
 import Sidebar from '../sidebar/Sidebar';
@@ -63,6 +64,7 @@ const Operations: FC<OperationsInProps> = () => {
                 <Deposit poolDataAdapter={getPoolDataAdapter(userWalletSigner)} narrow={!hideUserData} />
               )}
               {selectedView === 'Withdraw' && <Withdraw />}
+              {selectedView === 'Mint' && <Mint narrow={!hideUserData} />}
             </div>
           </div>
           {/* Right side (Current Position, Profit/Loss) - Only visible if user has balance in the pool */}
