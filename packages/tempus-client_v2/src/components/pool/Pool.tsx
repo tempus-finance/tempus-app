@@ -42,7 +42,7 @@ const Pool = () => {
         setTVLChangePercentage(
           await poolDataAdapter.getPoolTVLChangeData(
             activePoolData.address,
-            activePoolData.backingTokenTicker,
+            activePoolData.backingToken,
             activePoolData.tvl,
           ),
         );
@@ -67,8 +67,8 @@ const Pool = () => {
         setVolume(
           await poolDataAdapter.getPoolVolumeData(
             activePoolData.address,
-            activePoolData.id,
-            activePoolData.backingTokenTicker,
+            activePoolData.poolId,
+            activePoolData.backingToken,
             activePoolData.principalsAddress,
             activePoolData.precision.backingToken,
           ),

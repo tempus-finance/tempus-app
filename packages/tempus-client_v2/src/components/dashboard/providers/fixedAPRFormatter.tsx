@@ -47,7 +47,7 @@ export default FixedAPRFormatter;
 
 function getParentAPR(parentId: Ticker, poolData: PoolData[]): number | null {
   const parentChildren = poolData.filter(data => {
-    return data.backingTokenTicker === parentId;
+    return data.backingToken === parentId;
   });
 
   const childrenFixedAPR: number[] = parentChildren

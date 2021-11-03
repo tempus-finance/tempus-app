@@ -83,7 +83,7 @@ const AvailableToDepositFormatter = (props: DataTypeProvider.ValueFormatterProps
 
 function getParentAvailableToDeposit(parentId: Ticker, poolData: PoolData[]) {
   const parentChildren = poolData.filter(data => {
-    return data.backingTokenTicker === parentId;
+    return data.backingToken === parentId;
   });
 
   // In case balance is still loading for some of the parent children, return null (show loading circle in dashboard)
@@ -96,15 +96,15 @@ function getParentAvailableToDeposit(parentId: Ticker, poolData: PoolData[]) {
   let parentAvailableToDeposit = BigNumber.from('0');
   parentChildren.forEach(child => {
     if (child.userAvailableToDepositUSD) {
-      if (processedTokens.indexOf(child.backingTokenTicker) === -1) {
+      if (processedTokens.indexOf(child.backingToken) === -1) {
         parentAvailableToDeposit = parentAvailableToDeposit.add(child.userAvailableToDepositUSD.backingTokenAmount);
-        processedTokens.push(child.backingTokenTicker);
+        processedTokens.push(child.backingToken);
       }
-      if (processedTokens.indexOf(child.yieldBearingTokenTicker) === -1) {
+      if (processedTokens.indexOf(child.yieldBearingToken) === -1) {
         parentAvailableToDeposit = parentAvailableToDeposit.add(
           child.userAvailableToDepositUSD.yieldBearingTokenAmount,
         );
-        processedTokens.push(child.yieldBearingTokenTicker);
+        processedTokens.push(child.yieldBearingToken);
       }
     }
   });

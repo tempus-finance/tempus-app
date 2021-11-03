@@ -10,20 +10,24 @@ export interface AvailableToDeposit {
 }
 
 export interface PoolData {
+  poolId: string;
   address: string;
-  id: string; // Balancer internal ID for pool. User in Vault Contract.
   ammAddress: string;
   principalsAddress: string;
   protocol: ProtocolName;
   startDate: number;
   maturityDate: number;
-  backingTokenTicker: Ticker;
-  yieldBearingTokenTicker: Ticker;
+  backingToken: Ticker;
+  backingTokenAddress: string;
+  yieldBearingToken: Ticker;
+  yieldBearingTokenAddress: string;
+  yieldsAddress: string;
   userBackingTokenBalance: BigNumber | null;
   userYieldBearingTokenBalance: BigNumber | null;
   userPrincipalsBalance: BigNumber | null;
   userYieldsBalance: BigNumber | null;
   userLPTokenBalance: BigNumber | null;
+  spotPrice: string;
   fixedAPR: number | null;
   variableAPR: number;
   tvl: BigNumber | null;
@@ -50,16 +54,20 @@ interface PoolDataContextType extends PoolDataContextActions, PoolDataContextDat
 export const defaultPoolDataContextValue: PoolDataContextData = {
   selectedPool: '',
   poolData: getConfig().tempusPools.map(tempusPoolConfig => ({
+    poolId: tempusPoolConfig.poolId,
     address: tempusPoolConfig.address,
-    id: tempusPoolConfig.poolId,
     principalsAddress: tempusPoolConfig.principalsAddress,
-    backingTokenTicker: tempusPoolConfig.backingToken,
-    yieldBearingTokenTicker: tempusPoolConfig.yieldBearingToken,
+    backingToken: tempusPoolConfig.backingToken,
+    backingTokenAddress: tempusPoolConfig.backingTokenAddress,
+    yieldBearingToken: tempusPoolConfig.yieldBearingToken,
+    yieldBearingTokenAddress: tempusPoolConfig.yieldBearingTokenAddress,
+    yieldsAddress: tempusPoolConfig.yieldsAddress,
     decimalsForUI: tempusPoolConfig.decimalsForUI,
     ammAddress: tempusPoolConfig.ammAddress,
     protocol: tempusPoolConfig.protocol,
     startDate: tempusPoolConfig.startDate,
     maturityDate: tempusPoolConfig.maturityDate,
+    spotPrice: tempusPoolConfig.spotPrice,
     variableAPR: 0,
     tvl: null,
     fixedAPR: null,
