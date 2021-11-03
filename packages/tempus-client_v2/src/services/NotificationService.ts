@@ -109,7 +109,7 @@ const getDepositNotificationContent = (
   // ETH was transferred
   if (!transaction.value.isZero()) {
     tokenSentAmount = transaction.value;
-    tokenSentTicker = tempusPool.backingTokenTicker;
+    tokenSentTicker = tempusPool.backingToken;
   }
 
   const ifc = new ethers.utils.Interface(ERC20ABI);
@@ -120,12 +120,12 @@ const getDepositNotificationContent = (
         // User sent backing token
         if (tempusPool.backingTokenAddress === log.address) {
           tokenSentAmount = logData.args.value;
-          tokenSentTicker = tempusPool.backingTokenTicker;
+          tokenSentTicker = tempusPool.backingToken;
         }
         // User sent yield bearing token
         if (tempusPool.yieldBearingTokenAddress === log.address) {
           tokenSentAmount = logData.args.value;
-          tokenSentTicker = tempusPool.yieldBearingTokenTicker;
+          tokenSentTicker = tempusPool.yieldBearingToken;
         }
       }
 
@@ -162,22 +162,14 @@ const getDepositNotificationContent = (
     ${principalsReceivedFormatted} Principals
     ${actionDescription}
   
-    ${generatePoolNotificationInfo(
-      tempusPool.backingTokenTicker,
-      tempusPool.protocol,
-      new Date(tempusPool.maturityDate),
-    )}`;
+    ${generatePoolNotificationInfo(tempusPool.backingToken, tempusPool.protocol, new Date(tempusPool.maturityDate))}`;
   } else if (actionDescription === 'Variable Yield') {
     return `${tokenSentAmountFormatted} ${tokenSentTicker} to
     ${principalsReceivedFormatted} Principals and
     ${lpTokensReceivedFormatted} LP Tokens
     ${actionDescription}
     
-    ${generatePoolNotificationInfo(
-      tempusPool.backingTokenTicker,
-      tempusPool.protocol,
-      new Date(tempusPool.maturityDate),
-    )}`;
+    ${generatePoolNotificationInfo(tempusPool.backingToken, tempusPool.protocol, new Date(tempusPool.maturityDate))}`;
   }
 };
 
@@ -210,12 +202,12 @@ const getWithdrawNotificationContent = (receipt: ethers.ContractReceipt, userWal
         // User received backing tokens
         if (log.address === tempusPool.backingTokenAddress) {
           tokensReceived = logData.args.value;
-          tokenReceivedTicker = tempusPool.backingTokenTicker;
+          tokenReceivedTicker = tempusPool.backingToken;
         }
         // User received yield bearing tokens
         if (log.address === tempusPool.yieldBearingTokenAddress) {
           tokensReceived = logData.args.value;
-          tokenReceivedTicker = tempusPool.yieldBearingTokenTicker;
+          tokenReceivedTicker = tempusPool.yieldBearingToken;
         }
       }
     } catch (error) {
@@ -245,11 +237,7 @@ const getWithdrawNotificationContent = (receipt: ethers.ContractReceipt, userWal
   ${lpTokensSentFormatted} LP Tokens to
   ${tokensReceivedFormatted} ${tokenReceivedTicker}
   
-  ${generatePoolNotificationInfo(
-    tempusPool.backingTokenTicker,
-    tempusPool.protocol,
-    new Date(tempusPool.maturityDate),
-  )}`;
+  ${generatePoolNotificationInfo(tempusPool.backingToken, tempusPool.protocol, new Date(tempusPool.maturityDate))}`;
 };
 
 /**
@@ -269,7 +257,7 @@ const getMintNotificationContent = (
   // ETH was transferred
   if (!transaction.value.isZero()) {
     tokenSentAmount = transaction.value;
-    tokenSentTicker = tempusPool.backingTokenTicker;
+    tokenSentTicker = tempusPool.backingToken;
   }
 
   const ifc = new ethers.utils.Interface(ERC20ABI);
@@ -280,12 +268,12 @@ const getMintNotificationContent = (
         // User sent backing token
         if (tempusPool.backingTokenAddress === log.address) {
           tokenSentAmount = logData.args.value;
-          tokenSentTicker = tempusPool.backingTokenTicker;
+          tokenSentTicker = tempusPool.backingToken;
         }
         // User sent yield bearing token
         if (tempusPool.yieldBearingTokenAddress === log.address) {
           tokenSentAmount = logData.args.value;
-          tokenSentTicker = tempusPool.yieldBearingTokenTicker;
+          tokenSentTicker = tempusPool.yieldBearingToken;
         }
       }
 
@@ -321,11 +309,7 @@ const getMintNotificationContent = (
   ${principalsMintedFormatted} Principals and
   ${yieldsMintedFormatted} Yields
 
-  ${generatePoolNotificationInfo(
-    tempusPool.backingTokenTicker,
-    tempusPool.protocol,
-    new Date(tempusPool.maturityDate),
-  )}`;
+  ${generatePoolNotificationInfo(tempusPool.backingToken, tempusPool.protocol, new Date(tempusPool.maturityDate))}`;
 };
 
 /**
@@ -382,11 +366,7 @@ const getSwapNotificationContent = (receipt: ethers.ContractReceipt, userWallet:
   return `${tokenSentValueFormatted} ${tokenSentTicker} to
   ${tokenReceivedValueFormatted} ${tokenReceivedTicker}
   
-  ${generatePoolNotificationInfo(
-    tempusPool.backingTokenTicker,
-    tempusPool.protocol,
-    new Date(tempusPool.maturityDate),
-  )}`;
+  ${generatePoolNotificationInfo(tempusPool.backingToken, tempusPool.protocol, new Date(tempusPool.maturityDate))}`;
 };
 
 const getLiquidityDepositNotificationContent = (
@@ -438,11 +418,7 @@ const getLiquidityDepositNotificationContent = (
   ${amountOfYieldsSentFormatted} Yields to
   ${amountOfLPTokensReceivedFormatted} LP Tokens
   
-  ${generatePoolNotificationInfo(
-    tempusPool.backingTokenTicker,
-    tempusPool.protocol,
-    new Date(tempusPool.maturityDate),
-  )}`;
+  ${generatePoolNotificationInfo(tempusPool.backingToken, tempusPool.protocol, new Date(tempusPool.maturityDate))}`;
 };
 
 const getLiquidityWithdrawalNotificationContent = (
@@ -496,11 +472,7 @@ const getLiquidityWithdrawalNotificationContent = (
   ${amountOfPrincipalsReceivedFormatted} Principals and
   ${amountOfYieldsReceivedFormatted} Yields
   
-  ${generatePoolNotificationInfo(
-    tempusPool.backingTokenTicker,
-    tempusPool.protocol,
-    new Date(tempusPool.maturityDate),
-  )}`;
+  ${generatePoolNotificationInfo(tempusPool.backingToken, tempusPool.protocol, new Date(tempusPool.maturityDate))}`;
 };
 
 const getRedeemNotificationContent = (receipt: ethers.ContractReceipt, userWallet: string, tempusPool: PoolData) => {
@@ -520,12 +492,12 @@ const getRedeemNotificationContent = (receipt: ethers.ContractReceipt, userWalle
         // User received backing tokens
         if (log.address === tempusPool.backingTokenAddress) {
           tokensReceived = logData.args.value;
-          tokenReceivedTicker = tempusPool.backingTokenTicker;
+          tokenReceivedTicker = tempusPool.backingToken;
         }
         // User received yield bearing tokens
         if (log.address === tempusPool.yieldBearingTokenAddress) {
           tokensReceived = logData.args.value;
-          tokenReceivedTicker = tempusPool.yieldBearingTokenTicker;
+          tokenReceivedTicker = tempusPool.yieldBearingToken;
         }
       }
     } catch (error) {
@@ -545,11 +517,7 @@ const getRedeemNotificationContent = (receipt: ethers.ContractReceipt, userWalle
   return `${primitivesSentFormatted} Principals and Yields to
   ${tokensReceivedFormatted} ${tokenReceivedTicker}
   
-  ${generatePoolNotificationInfo(
-    tempusPool.backingTokenTicker,
-    tempusPool.protocol,
-    new Date(tempusPool.maturityDate),
-  )}`;
+  ${generatePoolNotificationInfo(tempusPool.backingToken, tempusPool.protocol, new Date(tempusPool.maturityDate))}`;
 };
 
 export default NotificationService;

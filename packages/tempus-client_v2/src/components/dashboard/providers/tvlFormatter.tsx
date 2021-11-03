@@ -40,7 +40,7 @@ export default TVLFormatter;
 
 function getParentTVL(parentId: Ticker, poolData: PoolData[]): BigNumber | null {
   const parentChildren = poolData.filter(data => {
-    return data.backingTokenTicker === parentId;
+    return data.backingToken === parentId;
   });
 
   // In case TVL is still loading for some of the parent children, return null (show loading circle in dashboard)

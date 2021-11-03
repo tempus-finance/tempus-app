@@ -25,11 +25,11 @@ const Withdraw = () => {
     return getDataForPool(selectedPool, poolData);
   }, [poolData, selectedPool]);
 
-  const supportedTokens = [selectedPoolData.backingTokenTicker, selectedPoolData.yieldBearingTokenTicker].filter(
+  const supportedTokens = [selectedPoolData.backingToken, selectedPoolData.yieldBearingToken].filter(
     token => token !== 'ETH',
   );
 
-  const [selectedToken, setSelectedToken] = useState<Ticker>(selectedPoolData.yieldBearingTokenTicker);
+  const [selectedToken, setSelectedToken] = useState<Ticker>(selectedPoolData.yieldBearingToken);
   const [estimatedWithdrawAmount, setEstimatedWithdrawAmount] = useState<BigNumber | null>(null);
 
   const [principalsApproved, setPrincipalsApproved] = useState<boolean>(false);
@@ -41,7 +41,7 @@ const Withdraw = () => {
   const onTokenChange = useCallback(
     (token: Ticker | undefined) => {
       if (token) {
-        if (selectedPoolData.backingTokenTicker === token) {
+        if (selectedPoolData.backingToken === token) {
           setTokenPrecision(getTokenPrecision(selectedPoolData.address, 'backingToken'));
         } else {
           setTokenPrecision(getTokenPrecision(selectedPoolData.address, 'yieldBearingToken'));
@@ -54,12 +54,12 @@ const Withdraw = () => {
   );
 
   const onExecute = useCallback((): Promise<ethers.ContractTransaction | undefined> => {
-    const { ammAddress, userPrincipalsBalance, userLPTokenBalance, backingTokenTicker } = selectedPoolData;
+    const { ammAddress, userPrincipalsBalance, userLPTokenBalance, backingToken } = selectedPoolData;
 
     if (userWalletSigner && userPrincipalsBalance && userLPTokenBalance) {
       const poolDataAdapter = getPoolDataAdapter(userWalletSigner);
 
-      const isBackingToken = backingTokenTicker === selectedToken;
+      const isBackingToken = backingToken === selectedToken;
 
       return poolDataAdapter.executeWithdraw(ammAddress, userPrincipalsBalance, userLPTokenBalance, isBackingToken);
     } else {
@@ -69,14 +69,14 @@ const Withdraw = () => {
 
   // Fetch estimated withdraw amount of tokens
   useEffect(() => {
-    const { address, ammAddress, userPrincipalsBalance, userYieldsBalance, userLPTokenBalance, backingTokenTicker } =
+    const { address, ammAddress, userPrincipalsBalance, userYieldsBalance, userLPTokenBalance, backingToken } =
       selectedPoolData;
 
     if (userWalletSigner && userPrincipalsBalance && userYieldsBalance && userLPTokenBalance) {
       const poolDataAdapter = getPoolDataAdapter(userWalletSigner);
 
       try {
-        const isBackingToken = backingTokenTicker === selectedToken;
+        const isBackingToken = backingToken === selectedToken;
         const stream$ = poolDataAdapter
           .getEstimatedWithdrawAmount(
             ammAddress,
@@ -88,7 +88,7 @@ const Withdraw = () => {
           .subscribe(amount => {
             setEstimatedWithdrawAmount(amount);
 
-            if (backingTokenTicker === selectedToken) {
+            if (backingToken === selectedToken) {
               setTokenPrecision(getTokenPrecision(address, 'backingToken'));
             } else {
               setTokenPrecision(getTokenPrecision(address, 'yieldBearingToken'));

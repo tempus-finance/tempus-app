@@ -56,7 +56,7 @@ const Execute: FC<ExecuteButtonProps> = props => {
         getNotificationService().warn(
           `${actionName} Failed`,
           generatePoolNotificationInfo(
-            selectedPoolData.backingTokenTicker,
+            selectedPoolData.backingToken,
             selectedPoolData.protocol,
             new Date(selectedPoolData.maturityDate),
           ),
@@ -104,7 +104,7 @@ const Execute: FC<ExecuteButtonProps> = props => {
         getNotificationService().warn(
           `${actionName} Failed`,
           generatePoolNotificationInfo(
-            selectedPoolData.backingTokenTicker,
+            selectedPoolData.backingToken,
             selectedPoolData.protocol,
             new Date(selectedPoolData.maturityDate),
           ),

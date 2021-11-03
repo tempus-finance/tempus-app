@@ -40,7 +40,7 @@ export default BalanceFormatter;
 
 function getParentBalance(parentId: Ticker, poolData: PoolData[]): BigNumber | null {
   const parentChildren = poolData.filter(data => {
-    return data.backingTokenTicker === parentId;
+    return data.backingToken === parentId;
   });
 
   // In case balance is still loading for some of the parent children, return null (show loading circle in dashboard)
