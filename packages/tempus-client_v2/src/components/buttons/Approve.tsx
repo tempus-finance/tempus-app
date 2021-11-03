@@ -97,7 +97,7 @@ const ApproveButton: FC<ApproveButtonProps> = props => {
             `Approval Failed`,
             getTokenApprovalNotification(
               tokenToApproveTicker,
-              selectedPoolData.backingTokenTicker,
+              selectedPoolData.backingToken,
               selectedPoolData.protocol,
               new Date(selectedPoolData.maturityDate),
             ),
@@ -145,7 +145,7 @@ const ApproveButton: FC<ApproveButtonProps> = props => {
             `Approval Failed`,
             getTokenApprovalNotification(
               tokenToApproveTicker,
-              selectedPoolData.backingTokenTicker,
+              selectedPoolData.backingToken,
               selectedPoolData.protocol,
               new Date(selectedPoolData.maturityDate),
             ),
@@ -175,7 +175,7 @@ const ApproveButton: FC<ApproveButtonProps> = props => {
           'Approval Successful',
           getTokenApprovalNotification(
             tokenToApproveTicker,
-            selectedPoolData.backingTokenTicker,
+            selectedPoolData.backingToken,
             selectedPoolData.protocol,
             new Date(selectedPoolData.maturityDate),
           ),

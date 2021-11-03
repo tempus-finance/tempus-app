@@ -43,7 +43,7 @@ export default VariableAPRFormatter;
 
 function getParentAPR(parentId: Ticker, poolData: PoolData[]): number {
   const parentChildren = poolData.filter(data => {
-    return data.backingTokenTicker === parentId;
+    return data.backingToken === parentId;
   });
 
   const childrenVariableAPR = parentChildren
