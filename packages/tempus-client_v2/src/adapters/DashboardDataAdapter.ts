@@ -1,7 +1,6 @@
 import { BigNumber } from 'ethers';
 import { from, interval, Observable, of, startWith, switchMap } from 'rxjs';
 import { DashboardRow, DashboardRowChild, DashboardRowParent } from '../interfaces/DashboardRow';
-import { ProtocolName } from '../interfaces/ProtocolName';
 import { Ticker } from '../interfaces/Token';
 import { TempusPool } from '../interfaces/TempusPool';
 import StatisticsService from '../services/StatisticsService';

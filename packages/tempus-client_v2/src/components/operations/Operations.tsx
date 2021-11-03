@@ -47,7 +47,7 @@ const Operations: FC<OperationsInProps> = () => {
         <div className="tc__operations-poolData">
           {/* Middle Top part (Pool, Term) */}
           <div className="tc__operations-poolStats">
-            <Pool language={language} />
+            <Pool />
             <Term language={language} />
           </div>
           {/* Middle bottom part (Selected tab options) */}

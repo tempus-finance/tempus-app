@@ -11,7 +11,9 @@ export interface AvailableToDeposit {
 
 export interface PoolData {
   address: string;
+  id: string; // Balancer internal ID for pool. User in Vault Contract.
   ammAddress: string;
+  principalsAddress: string;
   protocol: ProtocolName;
   maturityDate: number;
   backingTokenTicker: Ticker;
@@ -45,6 +47,8 @@ export const defaultPoolDataContextValue: PoolDataContextData = {
   selectedPool: '',
   poolData: getConfig().tempusPools.map(tempusPoolConfig => ({
     address: tempusPoolConfig.address,
+    id: tempusPoolConfig.poolId,
+    principalsAddress: tempusPoolConfig.principalsAddress,
     backingTokenTicker: tempusPoolConfig.backingToken,
     yieldBearingTokenTicker: tempusPoolConfig.yieldBearingToken,
     decimalsForUI: tempusPoolConfig.decimalsForUI,

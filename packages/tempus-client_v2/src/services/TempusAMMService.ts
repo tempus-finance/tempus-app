@@ -8,6 +8,7 @@ import getConfig from '../utils/getConfig';
 import TempusPoolService from './TempusPoolService';
 import getVaultService from './getVaultService';
 import getERC20TokenService from './getERC20TokenService';
+import { Config } from '../interfaces/Config';
 
 interface TempusPoolAddressData {
   poolAddress: string;
@@ -21,6 +22,7 @@ type TempusAMMServiceParameters = {
   signerOrProvider: JsonRpcSigner | JsonRpcProvider;
   tempusPoolService: TempusPoolService;
   eRC20TokenServiceGetter: typeof getERC20TokenService;
+  config: Config;
 };
 
 class TempusAMMService {
@@ -28,10 +30,13 @@ class TempusAMMService {
   private tempusPoolService: TempusPoolService | null = null;
   private eRC20TokenServiceGetter: typeof getERC20TokenService | null = null;
 
+  private config: Config | null = null;
+
   public init({
     tempusAMMAddresses,
     signerOrProvider,
     tempusPoolService,
+    config,
     eRC20TokenServiceGetter,
   }: TempusAMMServiceParameters) {
     this.tempusAMMMap.clear();
@@ -42,6 +47,8 @@ class TempusAMMService {
 
     this.tempusPoolService = tempusPoolService;
     this.eRC20TokenServiceGetter = eRC20TokenServiceGetter;
+
+    this.config = config;
   }
 
   public poolId(address: string): Promise<string> {
@@ -58,29 +65,19 @@ class TempusAMMService {
     throw new Error(`TempusAMMService - poolId('${address}') - Invalid AMM address provided!`);
   }
 
-  public async getTempusPoolAddressFromId(poolId: string): Promise<string> {
-    const addressDataFetchPromises: Promise<TempusPoolAddressData>[] = [];
-    this.tempusAMMMap.forEach(tempusAMM => {
-      addressDataFetchPromises.push(this.fetchTempusPoolAddressData(tempusAMM));
-    });
-    let addressData: TempusPoolAddressData[];
-    try {
-      addressData = await Promise.all(addressDataFetchPromises);
-    } catch (error) {
-      console.error(
-        'TempusAMMService - getTempusPoolAddressFromId() - Failed to get address data for tempus pools!',
-        error,
+  getTempusPoolAddressFromId(poolId: string): string {
+    if (!this.config) {
+      throw new Error(
+        'TempusAMMService - getTempusPoolAddressFromId() - Attempted to se TempusAMMService before initializing it!',
       );
-      return Promise.reject(error);
     }
 
-    for (let i = 0; i < addressData.length; i++) {
-      if (addressData[i].tempusPoolId === poolId) {
-        return addressData[i].poolAddress;
-      }
+    const poolConfig = this.config.tempusPools.find(pool => pool.poolId === poolId);
+    if (!poolConfig) {
+      throw new Error(`Failed to find tempus pool config for pool with ${poolId} PoolID`);
     }
 
-    throw new Error('Failed to get tempus pool address from ID!');
+    return poolConfig.address;
   }
 
   public async getTempusPoolAddress(address: string): Promise<string> {
