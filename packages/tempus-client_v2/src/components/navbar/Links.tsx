@@ -1,21 +1,24 @@
-import { FC, useCallback, useContext } from 'react';
+import { useCallback, useContext } from 'react';
+import { LanguageContext } from '../../context/languageContext';
 import { PoolDataContext } from '../../context/poolDataContext';
-import getText, { Language } from '../../localisation/getText';
-import SharedProps from '../../sharedProps';
-import Languages from './Languages';
+import getText /*, { Language }*/ from '../../localisation/getText';
+
 import './Links.scss';
 
-type LinksInProps = SharedProps & { changeLanguage: any };
-
-const Links: FC<LinksInProps> = ({ language, changeLanguage }) => {
+const Links = () => {
   const { setPoolData } = useContext(PoolDataContext);
+  const { language /*setLanguage*/ } = useContext(LanguageContext);
 
-  const onChangeLanguage = useCallback(
-    (language: Language) => {
-      changeLanguage(language);
+  // Implement language selector once the design for it is finalized.
+  /*const onChangeLanguage = useCallback(
+    (selectedLanguage: Language) => {
+      setLanguage &&
+        setLanguage({
+          language: selectedLanguage,
+        });
     },
-    [changeLanguage],
-  );
+    [setLanguage],
+  );*/
 
   const onDashboardClick = useCallback(() => {
     setPoolData && setPoolData(previousContext => ({ selectedPool: '', poolData: previousContext.poolData }));
@@ -31,9 +34,6 @@ const Links: FC<LinksInProps> = ({ language, changeLanguage }) => {
         <li>{getText('analytics', language)}</li>
         <li>{getText('community', language)}</li>
         <li>{getText('settings', language)}</li>
-        <li>
-          <Languages onChangeLanguage={onChangeLanguage} />
-        </li>
       </ul>
     </div>
   );
