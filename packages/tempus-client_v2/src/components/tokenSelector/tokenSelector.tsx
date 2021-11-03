@@ -29,9 +29,11 @@ const getMenuItems = (items: string[]) => {
           {item !== 'empty' && (
             <>
               <Typography variant="dropdown-text">{item}</Typography>
-              <div className="tc__token-selector-ticker-container">
-                <TokenIcon ticker={item as Ticker} width={18} height={18} />
-              </div>
+              {item !== 'Principals' && item !== 'Yields' && (
+                <div className="tc__token-selector-ticker-container">
+                  <TokenIcon ticker={item as Ticker} width={18} height={18} />
+                </div>
+              )}
             </>
           )}
           {item === 'empty' && <Typography variant="dropdown-text">Please select</Typography>}
