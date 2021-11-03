@@ -11,7 +11,9 @@ export interface AvailableToDeposit {
 
 export interface PoolData {
   address: string;
+  id: string; // Balancer internal ID for pool. User in Vault Contract.
   ammAddress: string;
+  principalsAddress: string;
   protocol: ProtocolName;
   startDate: number;
   maturityDate: number;
@@ -29,6 +31,9 @@ export interface PoolData {
   userAvailableToDepositUSD: AvailableToDeposit | null;
   isNegativeYield: boolean;
   decimalsForUI: number;
+  precision: {
+    backingToken?: number;
+  };
 }
 
 interface PoolDataContextData {
@@ -46,6 +51,8 @@ export const defaultPoolDataContextValue: PoolDataContextData = {
   selectedPool: '',
   poolData: getConfig().tempusPools.map(tempusPoolConfig => ({
     address: tempusPoolConfig.address,
+    id: tempusPoolConfig.poolId,
+    principalsAddress: tempusPoolConfig.principalsAddress,
     backingTokenTicker: tempusPoolConfig.backingToken,
     yieldBearingTokenTicker: tempusPoolConfig.yieldBearingToken,
     decimalsForUI: tempusPoolConfig.decimalsForUI,
@@ -64,6 +71,9 @@ export const defaultPoolDataContextValue: PoolDataContextData = {
     userYieldsBalance: null,
     userLPTokenBalance: null,
     isNegativeYield: true,
+    precision: {
+      backingToken: tempusPoolConfig.tokenPrecision?.backingToken,
+    },
   })),
 };
 

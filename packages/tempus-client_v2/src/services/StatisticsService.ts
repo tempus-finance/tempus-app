@@ -104,7 +104,7 @@ class StatisticsService {
     return totalValueLockedUSD;
   }
 
-  private async getCoingeckoRate(token: Ticker) {
+  async getCoingeckoRate(token: Ticker) {
     const coinGeckoTokenId = backingTokenToCoingeckoIdMap.get(token);
     if (!coinGeckoTokenId) {
       return Promise.reject();

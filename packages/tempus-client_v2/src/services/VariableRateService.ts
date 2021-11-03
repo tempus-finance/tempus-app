@@ -152,7 +152,7 @@ class VariableRateService {
 
     // Fetch swap and poolBalanceChanged events
     const [swapEvents, poolBalanceChangedEvents] = await Promise.all([
-      this.vaultService.getSwapEvents(poolConfig.poolId, fetchEventsFromBlock),
+      this.vaultService.getSwapEvents({ forPoolId: poolConfig.poolId, fromBlock: fetchEventsFromBlock }),
       this.vaultService.getPoolBalanceChangedEvents(poolConfig.poolId, fetchEventsFromBlock),
     ]);
 

@@ -6,10 +6,19 @@ import StatisticsService from '../services/StatisticsService';
 import TempusControllerService, { DepositedEvent, RedeemedEvent } from '../services/TempusControllerService';
 import TempusPoolService from '../services/TempusPoolService';
 import getERC20TokenService from '../services/getERC20TokenService';
-import VaultService, { SwapKind } from '../services/VaultService';
+import VaultService, { SwapEvent, SwapKind } from '../services/VaultService';
 import { TransferEventListener } from '../services/ERC20TokenService';
+import getDefaultProvider from '../services/getDefaultProvider';
+import { getEventBackingTokenValue } from '../services/EventUtils';
 import { div18f, mul18f } from '../utils/weiMath';
-import { DAYS_IN_A_YEAR, ONE_ETH_IN_WEI, POLLING_INTERVAL, SECONDS_IN_A_DAY, ZERO_ETH_ADDRESS } from '../constants';
+import {
+  BLOCK_DURATION_SECONDS,
+  DAYS_IN_A_YEAR,
+  ONE_ETH_IN_WEI,
+  POLLING_INTERVAL,
+  SECONDS_IN_A_DAY,
+  ZERO_ETH_ADDRESS,
+} from '../constants';
 import { Ticker } from '../interfaces/Token';
 import { TempusPool } from '../interfaces/TempusPool';
 import { SelectedYield } from '../interfaces/SelectedYield';
@@ -630,8 +639,8 @@ export default class PoolDataAdapter {
     try {
       // TODO - Swap events (transactions) do not contain user address - if they do at some point we should include them here.
       const [depositedEvents, redeemedEvents] = await Promise.all([
-        this.tempusControllerService.getDepositedEvents(tempusPoolAddress, userWalletAddress),
-        this.tempusControllerService.getRedeemedEvents(tempusPoolAddress, userWalletAddress),
+        this.tempusControllerService.getDepositedEvents({ forPool: tempusPoolAddress, forUser: userWalletAddress }),
+        this.tempusControllerService.getRedeemedEvents({ forPool: tempusPoolAddress, forUser: userWalletAddress }),
       ]);
       events = [...depositedEvents, ...redeemedEvents];
     } catch (error) {
@@ -1055,5 +1064,126 @@ export default class PoolDataAdapter {
       console.error('PoolDataAdapter - getTokenServices() - Failed to retrieve services!', error);
       return Promise.reject();
     }
+  }
+
+  async getPoolTVLChangeData(
+    tempusPool: string,
+    backingToken: Ticker,
+    currentTVL: BigNumber,
+    backingTokenPrecision?: number,
+  ): Promise<BigNumber> {
+    if (!this.statisticService) {
+      console.error('PoolDataAdapter - getTokenServices() - Attempted to use PoolDataAdapter before initializing it!');
+      return Promise.reject();
+    }
+
+    const provider = getDefaultProvider();
+    let latestBlock;
+    try {
+      latestBlock = await provider.getBlock('latest');
+    } catch (error) {
+      console.error('Failed to get latest block data!');
+      return Promise.reject();
+    }
+
+    // Get block number from 7 days ago (approximate - we need to find a better way to fetch exact block number)
+    // TODO - Do not attempt to fetch TVL for blocks that were mined before tempus pool contract was deployed
+    const fetchForBlock = latestBlock.number - Math.round(SECONDS_IN_A_DAY / BLOCK_DURATION_SECONDS) * 7;
+    try {
+      const [tvlInBackingTokens, backingTokenRate] = await Promise.all([
+        this.statisticService.totalValueLockedInBackingTokens(tempusPool, {
+          blockTag: fetchForBlock,
+        }),
+        this.statisticService.getRate(backingToken, {
+          blockTag: fetchForBlock,
+        }),
+      ]);
+      const pastTVL = mul18f(tvlInBackingTokens, backingTokenRate, backingTokenPrecision);
+
+      const tvlDiff = currentTVL.sub(pastTVL);
+      const tvlRatio = div18f(tvlDiff, pastTVL, backingTokenPrecision);
+
+      return tvlRatio;
+    } catch (error) {
+      console.error('PoolDataAdapter - getPoolTVLChangeData() - Failed to fetch TVL data change percentage for pool.');
+      return Promise.reject(error);
+    }
+  }
+
+  async getPoolVolumeData(
+    tempusPool: string,
+    tempusPoolId: string,
+    backingToken: Ticker,
+    principalsAddress: string,
+    backingTokenPrecision?: number,
+  ): Promise<BigNumber> {
+    if (
+      !this.tempusPoolService ||
+      !this.statisticService ||
+      !this.tempusAMMService ||
+      !this.tempusControllerService ||
+      !this.vaultService
+    ) {
+      console.error('Attempted to use VolumeChartDataAdapter before initializing it!');
+      return Promise.reject();
+    }
+
+    const provider = getDefaultProvider();
+    let latestBlock;
+    try {
+      latestBlock = await provider.getBlock('latest');
+    } catch (error) {
+      console.error('Failed to get latest block data!');
+      return Promise.reject();
+    }
+
+    // Get block number from 7 days ago (approximate - we need to find a better way to fetch exact block number)
+    // TODO - Do not attempt to fetch TVL for blocks that were mined before tempus pool contract was deployed
+    // TODO - Maximum number of events returned is 10k if block range is larger then 2k. We need to fetch events in batches to make sure
+    // this is going to work when usage of the app goes up and we have more then 10k events per week.
+    const fetchFromBlock = latestBlock.number - Math.round(SECONDS_IN_A_DAY / BLOCK_DURATION_SECONDS) * 7;
+
+    let depositEvents: DepositedEvent[];
+    let redeemEvents: RedeemedEvent[];
+    let swapEvents: SwapEvent[];
+    try {
+      const eventsForUser = undefined;
+      [depositEvents, redeemEvents, swapEvents] = await Promise.all([
+        this.tempusControllerService.getDepositedEvents({
+          forPool: tempusPool,
+          forUser: eventsForUser,
+          fromBlock: fetchFromBlock,
+        }),
+        this.tempusControllerService.getRedeemedEvents({
+          forPool: tempusPool,
+          forUser: eventsForUser,
+          fromBlock: fetchFromBlock,
+        }),
+        this.vaultService.getSwapEvents({ forPoolId: tempusPoolId, fromBlock: fetchFromBlock }),
+      ]);
+    } catch (error) {
+      console.error('Failed to fetch deposit and redeem events for volume chart', error);
+      return Promise.reject(error);
+    }
+
+    let poolBackingTokenRate: BigNumber;
+    try {
+      // TODO - Use chainlink historical data once we go to mainnet
+      poolBackingTokenRate = await this.statisticService.getCoingeckoRate(backingToken);
+    } catch (error) {
+      console.error('Failed to get tempus pool exchange rate to USD!');
+      return Promise.reject(error);
+    }
+
+    let totalVolume: BigNumber = BigNumber.from('0');
+
+    const events = [...depositEvents, ...redeemEvents, ...swapEvents];
+    events.forEach(event => {
+      const eventBackingTokenValue = getEventBackingTokenValue(event, principalsAddress);
+
+      totalVolume = totalVolume.add(mul18f(poolBackingTokenRate, eventBackingTokenValue, backingTokenPrecision));
+    });
+
+    return totalVolume;
   }
 }

@@ -18,6 +18,7 @@ const getTempusAMMService = (signerOrProvider?: JsonRpcSigner | JsonRpcProvider)
       signerOrProvider: getDefaultProvider(),
       tempusPoolService: getTempusPoolService(),
       eRC20TokenServiceGetter: getERC20TokenService,
+      config: getConfig(),
     });
   }
 
@@ -29,6 +30,7 @@ const getTempusAMMService = (signerOrProvider?: JsonRpcSigner | JsonRpcProvider)
       signerOrProvider: signerOrProvider,
       tempusPoolService: getTempusPoolService(signerOrProvider),
       eRC20TokenServiceGetter: getERC20TokenService,
+      config: getConfig(),
     });
   }
 

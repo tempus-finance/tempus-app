@@ -1,7 +1,6 @@
 import { BigNumber } from 'ethers';
 import TempusAMMService from './TempusAMMService';
 import { DepositedEvent, RedeemedEvent } from './TempusControllerService';
-import TempusPoolService from './TempusPoolService';
 import { PoolBalanceChangedEvent, SwapEvent } from './VaultService';
 
 /**
@@ -55,24 +54,16 @@ export async function getEventPoolAddress(
   throw new Error('EventUtils - getEventPoolAddress() - Invalid event type!');
 }
 
-export async function getEventBackingTokenValue(
+export function getEventBackingTokenValue(
   event: DepositedEvent | RedeemedEvent | SwapEvent,
-  amm: TempusAMMService,
-  pool: TempusPoolService,
-): Promise<BigNumber> {
+  principalsAddress: string,
+): BigNumber {
   if (isDepositEvent(event) || isRedeemEvent(event)) {
     return event.args.backingTokenValue;
   }
   if (isSwapEvent(event)) {
-    try {
-      const tempusPoolAddress = await amm.getTempusPoolAddressFromId(event.args.poolId);
-      const principalAddress = await pool.getPrincipalsTokenAddress(tempusPoolAddress);
-
-      // If tokenIn is principal token, return amountIn as an event value, otherwise return amountOut as an event value.
-      return event.args.tokenIn === principalAddress ? event.args.amountIn : event.args.amountOut;
-    } catch (error) {
-      console.error('EventUtils - getEventBackingTokenValue() - Failed to get event value in backing tokens.', error);
-    }
+    // If tokenIn is principal token, return amountIn as an event value, otherwise return amountOut as an event value.
+    return event.args.tokenIn === principalsAddress ? event.args.amountIn : event.args.amountOut;
   }
 
   throw new Error('EventUtils - getEventBackingTokenValue() - Invalid event type!');

@@ -1,4 +1,5 @@
 import { FC } from 'react';
+import NumberUtils from '../../../services/NumberUtils';
 import GreenArrowUp from '../../icons/GreenArrowUp';
 import RedArrowDown from '../../icons/RedArrowDown';
 import Spacer from '../../spacer/spacer';
@@ -19,7 +20,7 @@ const PercentageLabel: FC<PercentageLabelProps> = props => {
       {percentage < 0 && <RedArrowDown />}
       <Spacer size={4} />
       <Typography variant="card-body-text" color={percentage < 0 ? 'error' : 'success'}>
-        {percentage}%
+        {NumberUtils.formatPercentage(percentage, 2)}
       </Typography>
     </div>
   );
