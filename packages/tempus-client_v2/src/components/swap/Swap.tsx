@@ -1,8 +1,14 @@
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { BigNumber, ethers } from 'ethers';
 import { getDataForPool, PoolDataContext } from '../../context/poolDataContext';
+import { WalletContext } from '../../context/walletContext';
 import { PoolShares, Ticker } from '../../interfaces/Token';
 import getConfig from '../../utils/getConfig';
+import getTokenPrecision from '../../utils/getTokenPrecision';
+import { isZeroString } from '../../utils/isZeroString';
+import { SwapKind } from '../../services/VaultService';
+import NumberUtils from '../../services/NumberUtils';
+import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
 import Approve from '../buttons/Approve';
 import Execute from '../buttons/Execute';
 import CurrencyInput from '../currencyInput/currencyInput';
@@ -10,12 +16,6 @@ import SectionContainer from '../sectionContainer/SectionContainer';
 import Spacer from '../spacer/spacer';
 import TokenSelector from '../tokenSelector/tokenSelector';
 import Typography from '../typography/Typography';
-import getTokenPrecision from '../../utils/getTokenPrecision';
-import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
-import { WalletContext } from '../../context/walletContext';
-import { SwapKind } from '../../services/VaultService';
-import NumberUtils from '../../services/NumberUtils';
-import { isZeroString } from '../../utils/isZeroString';
 
 import './Swap.scss';
 
