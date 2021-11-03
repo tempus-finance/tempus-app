@@ -5,10 +5,10 @@ import TempusAMMABI from '../abi/TempusAMM.json';
 import { DAYS_IN_A_YEAR, SECONDS_IN_A_DAY } from '../constants';
 import { mul18f, div18f } from '../utils/weiMath';
 import getConfig from '../utils/getConfig';
+import { Config } from '../interfaces/Config';
 import TempusPoolService from './TempusPoolService';
 import getVaultService from './getVaultService';
 import getERC20TokenService from './getERC20TokenService';
-import { Config } from '../interfaces/Config';
 
 interface TempusPoolAddressData {
   poolAddress: string;
