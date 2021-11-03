@@ -639,8 +639,8 @@ export default class PoolDataAdapter {
     try {
       // TODO - Swap events (transactions) do not contain user address - if they do at some point we should include them here.
       const [depositedEvents, redeemedEvents] = await Promise.all([
-        this.tempusControllerService.getDepositedEvents(tempusPoolAddress, userWalletAddress),
-        this.tempusControllerService.getRedeemedEvents(tempusPoolAddress, userWalletAddress),
+        this.tempusControllerService.getDepositedEvents({ forPool: tempusPoolAddress, forUser: userWalletAddress }),
+        this.tempusControllerService.getRedeemedEvents({ forPool: tempusPoolAddress, forUser: userWalletAddress }),
       ]);
       events = [...depositedEvents, ...redeemedEvents];
     } catch (error) {
@@ -1066,7 +1066,12 @@ export default class PoolDataAdapter {
     }
   }
 
-  async getPoolTVLChangeData(tempusPool: string, backingToken: Ticker, currentTVL: BigNumber): Promise<BigNumber> {
+  async getPoolTVLChangeData(
+    tempusPool: string,
+    backingToken: Ticker,
+    currentTVL: BigNumber,
+    backingTokenPrecision?: number,
+  ): Promise<BigNumber> {
     if (!this.statisticService) {
       console.error('PoolDataAdapter - getTokenServices() - Attempted to use PoolDataAdapter before initializing it!');
       return Promise.reject();
@@ -1093,10 +1098,10 @@ export default class PoolDataAdapter {
           blockTag: fetchForBlock,
         }),
       ]);
-      const pastTVL = mul18f(tvlInBackingTokens, backingTokenRate);
+      const pastTVL = mul18f(tvlInBackingTokens, backingTokenRate, backingTokenPrecision);
 
       const tvlDiff = currentTVL.sub(pastTVL);
-      const tvlRatio = div18f(tvlDiff, pastTVL);
+      const tvlRatio = div18f(tvlDiff, pastTVL, backingTokenPrecision);
 
       return tvlRatio;
     } catch (error) {
@@ -1110,6 +1115,7 @@ export default class PoolDataAdapter {
     tempusPoolId: string,
     backingToken: Ticker,
     principalsAddress: string,
+    backingTokenPrecision?: number,
   ): Promise<BigNumber> {
     if (
       !this.tempusPoolService ||
@@ -1143,9 +1149,17 @@ export default class PoolDataAdapter {
     try {
       const eventsForUser = undefined;
       [depositEvents, redeemEvents, swapEvents] = await Promise.all([
-        this.tempusControllerService.getDepositedEvents(tempusPool, eventsForUser, fetchFromBlock),
-        this.tempusControllerService.getRedeemedEvents(tempusPool, eventsForUser, fetchFromBlock),
-        this.vaultService.getSwapEvents(tempusPoolId, fetchFromBlock),
+        this.tempusControllerService.getDepositedEvents({
+          forPool: tempusPool,
+          forUser: eventsForUser,
+          fromBlock: fetchFromBlock,
+        }),
+        this.tempusControllerService.getRedeemedEvents({
+          forPool: tempusPool,
+          forUser: eventsForUser,
+          fromBlock: fetchFromBlock,
+        }),
+        this.vaultService.getSwapEvents({ forPoolId: tempusPoolId, fromBlock: fetchFromBlock }),
       ]);
     } catch (error) {
       console.error('Failed to fetch deposit and redeem events for volume chart', error);
@@ -1167,7 +1181,7 @@ export default class PoolDataAdapter {
     events.forEach(event => {
       const eventBackingTokenValue = getEventBackingTokenValue(event, principalsAddress);
 
-      totalVolume = totalVolume.add(mul18f(poolBackingTokenRate, eventBackingTokenValue));
+      totalVolume = totalVolume.add(mul18f(poolBackingTokenRate, eventBackingTokenValue, backingTokenPrecision));
     });
 
     return totalVolume;

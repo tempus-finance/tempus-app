@@ -30,6 +30,9 @@ export interface PoolData {
   userAvailableToDepositUSD: AvailableToDeposit | null;
   isNegativeYield: boolean;
   decimalsForUI: number;
+  precision: {
+    backingToken?: number;
+  };
 }
 
 interface PoolDataContextData {
@@ -66,6 +69,9 @@ export const defaultPoolDataContextValue: PoolDataContextData = {
     userYieldsBalance: null,
     userLPTokenBalance: null,
     isNegativeYield: true,
+    precision: {
+      backingToken: tempusPoolConfig.tokenPrecision?.backingToken,
+    },
   })),
 };
 

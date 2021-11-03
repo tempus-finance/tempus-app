@@ -51,7 +51,7 @@ const Pool = () => {
       }
     };
     fetchTVLChangeData();
-  }, [activePoolData.address, activePoolData.backingTokenTicker, activePoolData.tvl, userWalletSigner]);
+  }, [activePoolData, userWalletSigner]);
 
   /**
    * Fetch Volume for pool in last 7 days
@@ -70,6 +70,7 @@ const Pool = () => {
             activePoolData.id,
             activePoolData.backingTokenTicker,
             activePoolData.principalsAddress,
+            activePoolData.precision.backingToken,
           ),
         );
       } catch (error) {
@@ -77,34 +78,31 @@ const Pool = () => {
       }
     };
     fetchVolume();
-  }, [
-    activePoolData.address,
-    activePoolData.backingTokenTicker,
-    activePoolData.id,
-    activePoolData.principalsAddress,
-    userWalletSigner,
-  ]);
+  }, [activePoolData, userWalletSigner]);
 
   const tvlFormatted = useMemo(() => {
     if (!activePoolData.tvl) {
       return null;
     }
-    return NumberUtils.formatWithMultiplier(ethers.utils.formatEther(activePoolData.tvl), 2);
-  }, [activePoolData.tvl]);
+    return NumberUtils.formatWithMultiplier(
+      ethers.utils.formatUnits(activePoolData.tvl, activePoolData.precision.backingToken),
+      2,
+    );
+  }, [activePoolData.precision.backingToken, activePoolData.tvl]);
 
   const tvlChangePercentageFormatted = useMemo(() => {
     if (!tvlChangePercentage) {
       return null;
     }
-    return Number(ethers.utils.formatEther(tvlChangePercentage));
-  }, [tvlChangePercentage]);
+    return Number(ethers.utils.formatUnits(tvlChangePercentage, activePoolData.precision.backingToken));
+  }, [activePoolData.precision.backingToken, tvlChangePercentage]);
 
   const volumeFormatted = useMemo(() => {
     if (!volume) {
       return null;
     }
-    return NumberUtils.formatWithMultiplier(ethers.utils.formatEther(volume), 2);
-  }, [volume]);
+    return NumberUtils.formatWithMultiplier(ethers.utils.formatUnits(volume, activePoolData.precision.backingToken), 2);
+  }, [activePoolData.precision.backingToken, volume]);
 
   return (
     <div className="tc__pool">
