@@ -24,6 +24,10 @@ code {
   cursor: default !important;
 }
 
+.tc__flex-row {
+  display: flex;
+}
+
 .tf__flex-row-center-v {
   display: flex;
   align-items: center;

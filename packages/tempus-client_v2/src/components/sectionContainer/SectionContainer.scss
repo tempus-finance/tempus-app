@@ -1,19 +1,26 @@
 @import '../../constants.scss';
 @import '../shared/style.scss';
 
-.tf__dialog__section-elevation-1 {
+.tf__dialog__section {
+  border: 2px solid transparent !important;
   width: 100%;
+}
+
+.tf__dialog__section-elevation-1 {
   @include background-level-1;
 }
 
 .tf__dialog__section-elevation-2 {
-  width: 100%;
   @include background-level-2;
 }
 
 .tf__dialog__section-elevation-3 {
-  width: 100%;
   @include background-level-3;
+}
+
+.tc__dialog__section-selected {
+  border: 2px solid #5098a9 !important;
+  background-color: white;
 }
 
 .tf__dialog__section-title {
@@ -23,7 +30,6 @@
 
 .tc__dialog__section-content {
   width: 100%;
-  position: relative;
 
   .tf__tab__warning {
     .tf__tab__warning__title {
@@ -36,22 +42,7 @@
     }
   }
 
-  .tc__dialog__section-content-selected {
-    border: 1px solid $accent-color-2;
-  }
-
   .tc__dialog__section-content-selectable {
     cursor: pointer;
   }
-}
-
-.tf__dialog__section-tick {
-  position: absolute;
-  right: 13px;
-  top: 10px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 20px;
-  height: 20px;
 }

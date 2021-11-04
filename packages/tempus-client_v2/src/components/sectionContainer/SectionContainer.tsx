@@ -2,7 +2,6 @@ import { FC, useCallback, useContext } from 'react';
 import { LanguageContext } from '../../context/languageContext';
 import getText from '../../localisation/getText';
 import Words from '../../localisation/words';
-import TickIcon from '../icons/TickIcon';
 import InfoTooltip from '../infoTooltip/infoTooltip';
 import Spacer from '../spacer/spacer';
 import Typography from '../typography/Typography';
@@ -17,7 +16,7 @@ interface SectionContainerProps {
   selected?: boolean;
   disabled?: boolean;
   elevation?: number;
-  onSelected?: (id: string | undefined) => void;
+  onSelected?: (id: string) => void;
 }
 
 const SectionContainer: FC<SectionContainerProps> = props => {
@@ -26,21 +25,23 @@ const SectionContainer: FC<SectionContainerProps> = props => {
   const { language } = useContext(LanguageContext);
 
   const onClick = useCallback(() => {
-    if (!disabled) {
+    if (!disabled && id) {
       onSelected && onSelected(id);
     }
   }, [disabled, id, onSelected]);
 
   let contentClasses = 'tc__dialog__section-content';
-  if (selected) {
-    contentClasses += ' tc__dialog__section-content-selected';
-  }
   if (selectable) {
     contentClasses += ' tc__dialog__section-content-selectable';
   }
 
+  let rootClasses = `tf__dialog__section tf__dialog__section-elevation-${elevation}`;
+  if (selected) {
+    rootClasses += ' tc__dialog__section-selected';
+  }
+
   return (
-    <div className={`tf__dialog__section-elevation-${elevation}`}>
+    <div className={rootClasses}>
       <div className="tf__dialog__section-title">
         {title && <Typography variant="card-title">{getText(title, language)}</Typography>}
         {title && <Spacer size={15} />}
@@ -49,11 +50,6 @@ const SectionContainer: FC<SectionContainerProps> = props => {
       {title && <Spacer size={15} />}
       <div className={contentClasses} onClick={onClick}>
         {props.children}
-        {selected && (
-          <div className="tf__dialog__section-tick">
-            <TickIcon fillColor="#FF6B00" />
-          </div>
-        )}
       </div>
     </div>
   );

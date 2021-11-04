@@ -42,6 +42,12 @@ body {
   justify-content: space-between;
 }
 
+.tf__flex-row-space-between-v {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .tf__flex-column-space-between {
   display: flex;
   flex-direction: column;
