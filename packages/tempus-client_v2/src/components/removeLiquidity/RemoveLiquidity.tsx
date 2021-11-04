@@ -6,9 +6,11 @@ import SectionContainer from '../sectionContainer/SectionContainer';
 import Spacer from '../spacer/spacer';
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { BigNumber, ethers } from 'ethers';
+import { LanguageContext } from '../../context/languageContext';
 import { getDataForPool, PoolDataContext } from '../../context/poolDataContext';
 import { WalletContext } from '../../context/walletContext';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
+import getText from '../../localisation/getText';
 import NumberUtils from '../../services/NumberUtils';
 import { isZeroString } from '../../utils/isZeroString';
 import getConfig from '../../utils/getConfig';
@@ -17,6 +19,7 @@ import Approve from '../buttons/Approve';
 import './RemoveLiquidity.scss';
 
 const RemoveLiquidity = () => {
+  const { language } = useContext(LanguageContext);
   const { poolData, selectedPool } = useContext(PoolDataContext);
   const { userWalletAddress, userWalletSigner } = useContext(WalletContext);
 
@@ -170,20 +173,20 @@ const RemoveLiquidity = () => {
       <SectionContainer title="to">
         <div className="tf__flex-row-center-v">
           <SectionContainer>
-            <Typography variant="h4">Principals</Typography>
+            <Typography variant="h4">{getText('principals', language)}</Typography>
             <Spacer size={10} />
             <div className="tf__flex-row-center-v">
-              <Typography variant="card-body-text">Estimated</Typography>
+              <Typography variant="card-body-text">{getText('estimatedAmountReceived', language)}</Typography>
               <Spacer size={15} />
               <Typography variant="card-body-text">{estimatedPrincipalsFormatted}</Typography>
             </div>
           </SectionContainer>
           <PlusIconContainer orientation="vertical" />
           <SectionContainer>
-            <Typography variant="h4">Yields</Typography>
+            <Typography variant="h4">{getText('yields', language)}</Typography>
             <Spacer size={10} />
             <div className="tf__flex-row-center-v">
-              <Typography variant="card-body-text">Estimated</Typography>
+              <Typography variant="card-body-text">{getText('estimatedAmountReceived', language)}</Typography>
               <Spacer size={15} />
               <Typography variant="card-body-text">{estimatedYieldsFormatted}</Typography>
             </div>

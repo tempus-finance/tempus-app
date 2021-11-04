@@ -34,5 +34,6 @@
   "variableYield": "Variable Yield",
   "amountReceived": "Amount Received",
   "approx": "Approx",
-  "estimatedAmountReceived": "Estimated Amount Received"
+  "estimatedAmountReceived": "Estimated Amount Received",
+  "estimated": "Estimated"
 }
