@@ -1,15 +1,17 @@
 import { ethers, BigNumber } from 'ethers';
 import { useContext, useMemo } from 'react';
 import { CircularProgress } from '@material-ui/core';
+import { PoolData, getDataForPool, PoolDataContext } from '../../../context/poolDataContext';
+import { WalletContext } from '../../../context/walletContext';
 import { Ticker } from '../../../interfaces/Token';
 import NumberUtils from '../../../services/NumberUtils';
 import Typography from '../../typography/Typography';
-import { PoolData, getDataForPool, PoolDataContext } from '../../../context/poolDataContext';
 
 const BalanceFormatter = ({ row }: any) => {
   const isChild = Boolean(row.parentId);
 
   const { poolData } = useContext(PoolDataContext);
+  const { userWalletConnected } = useContext(WalletContext);
 
   const balanceFormatted = useMemo(() => {
     let balance: BigNumber | null;
@@ -24,6 +26,10 @@ const BalanceFormatter = ({ row }: any) => {
     }
     return NumberUtils.formatWithMultiplier(ethers.utils.formatEther(balance));
   }, [isChild, poolData, row.id]);
+
+  if (!userWalletConnected) {
+    return <div></div>;
+  }
 
   return (
     <>
