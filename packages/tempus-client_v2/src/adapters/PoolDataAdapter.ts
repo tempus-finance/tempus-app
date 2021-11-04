@@ -242,13 +242,6 @@ export default class PoolDataAdapter {
       return throwError(() => new Error());
     }
 
-    if (!tempusAmmAddress || principalAmount === undefined || yieldsAmount === undefined || lpAmount === undefined) {
-      console.error(
-        'PoolDataAdapter - getEstimatedDepositAmount() - Tempus AMM address, principals, yields or lp tokens amount not valid',
-      );
-      return throwError(() => new Error());
-    }
-
     try {
       return from(
         this.statisticService.estimateExitAndRedeem(
@@ -260,7 +253,10 @@ export default class PoolDataAdapter {
         ),
       );
     } catch (error) {
-      console.error('PoolDataAdapter - getEstimatedWithdrawAmount() - Failed to retrieve balances!', error);
+      console.error(
+        'PoolDataAdapter - getEstimatedWithdrawAmount() - Failed to retrieve estimated withdraw amount!',
+        error,
+      );
       return throwError(() => new Error());
     }
   }
