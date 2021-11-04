@@ -12,6 +12,7 @@ import EarlyRedeem from '../earlyRedeem/EarlyRedeem';
 import Mint from '../mint/Mint';
 import Pool from '../pool/Pool';
 import ProfitLoss from '../profitLoss/ProfitLoss';
+import ProvideLiquidity from '../provideLiquidity/ProvideLiquidity';
 import Sidebar from '../sidebar/Sidebar';
 import Swap from '../swap/Swap';
 import Term from '../term/Term';
@@ -68,6 +69,7 @@ const Operations: FC<OperationsInProps> = () => {
               {selectedView === 'Withdraw' && <Withdraw />}
               {selectedView === 'Mint' && <Mint narrow={!hideUserData} />}
               {selectedView === 'Swap' && <Swap />}
+              {selectedView === 'Provide Liquidity' && <ProvideLiquidity />}
               {selectedView === 'Early Redeem' && <EarlyRedeem />}
             </div>
           </div>

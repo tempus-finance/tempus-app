@@ -72,8 +72,13 @@ const VariableAPRProvider = () => {
         let isNegativeYield: boolean = true;
         if (poolAPRData) {
           const precision = getTokenPrecision(poolAPRData.address, 'backingToken');
-          const temp =
-            variableAPR && variableAPR > 0 ? ethers.utils.parseUnits(variableAPR.toString(), precision) : ZERO;
+          // In case APR has more decimals then 'precision', parseUnits will fail.
+          // This slices any extra decimals (above precision)
+          let aprString = variableAPR.toString();
+          if (aprString.indexOf('.') > -1) {
+            aprString = aprString.slice(0, aprString.indexOf('.') + 1 + precision);
+          }
+          const temp = variableAPR && variableAPR > 0 ? ethers.utils.parseUnits(aprString, precision) : ZERO;
           isNegativeYield = poolAPRData ? poolAPRData.fees.add(temp).gt(ZERO) : true;
         }
 
