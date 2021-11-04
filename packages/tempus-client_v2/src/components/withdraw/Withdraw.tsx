@@ -167,7 +167,7 @@ const Withdraw = () => {
 
   return (
     <div className="tc__withdraw">
-      <SectionContainer title="From" elevation={1}>
+      <SectionContainer title="from" elevation={1}>
         {selectedPoolData.userPrincipalsBalance && !selectedPoolData.userPrincipalsBalance.isZero() && (
           <SectionContainer elevation={2}>
             <div className="tf__flex-row-space-between">
@@ -243,9 +243,9 @@ const Withdraw = () => {
         )}
       </SectionContainer>
       <Spacer size={20} />
-      <SectionContainer title="To">
+      <SectionContainer title="to">
         <SectionContainer elevation={2}>
-          <div className="tf__flex-row-center-v">
+          <div className="tf__flex-row-center-vh">
             <TokenSelector
               tickers={supportedTokens}
               defaultTicker={selectedToken as Ticker}
@@ -261,17 +261,17 @@ const Withdraw = () => {
             <Typography variant="card-body-text">({estimatedWithdrawAmountUsdFormatted})</Typography>
           </div>
         </SectionContainer>
+        <Spacer size={20} />
+        <div className="tf__flex-row-center-vh">
+          <Execute
+            actionName="Withdraw"
+            tempusPool={selectedPoolData}
+            disabled={executeDisabled}
+            onExecute={onExecute}
+            onExecuted={() => {}}
+          />
+        </div>
       </SectionContainer>
-      <Spacer size={20} />
-      <div className="tf__flex-row-center-v">
-        <Execute
-          actionName="Withdraw"
-          tempusPool={selectedPoolData}
-          disabled={executeDisabled}
-          onExecute={onExecute}
-          onExecuted={() => {}}
-        />
-      </div>
     </div>
   );
 };

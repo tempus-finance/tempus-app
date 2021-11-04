@@ -1,4 +1,5 @@
 type Words =
+  | 'max'
   | 'dashboard'
   | 'analytics'
   | 'community'
@@ -30,6 +31,9 @@ type Words =
   | 'fixedYieldAtMaturity'
   | 'totalAvailableAtMaturity'
   | 'provideLiquidity'
-  | 'variableYield';
+  | 'variableYield'
+  | 'amountReceived'
+  | 'approx'
+  | 'estimatedAmountReceived';
 
 export default Words;

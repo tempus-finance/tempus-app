@@ -222,7 +222,7 @@ const Swap = () => {
 
   return (
     <div className="tc__swap">
-      <SectionContainer title="From" elevation={1}>
+      <SectionContainer title="from" elevation={1}>
         <div className="tf__flex-row-center-v">
           <TokenSelector
             defaultTicker={tokenFrom.tokenName}
@@ -243,7 +243,7 @@ const Swap = () => {
         </div>
       </SectionContainer>
       <Spacer size={15} />
-      <SectionContainer title="To" elevation={1}>
+      <SectionContainer title="to" elevation={1}>
         <div className="tf__flex-row-center-v">
           <TokenSelector
             defaultTicker={tokenTo.tokenName}
