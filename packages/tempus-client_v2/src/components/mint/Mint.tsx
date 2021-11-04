@@ -290,39 +290,39 @@ const Mint: FC<MintInProps> = ({ narrow }) => {
 
   return (
     <div className="tc__mint">
-      <SectionContainer title="from" elevation={1}>
-        <SectionContainer elevation={2}>
-          <div className="tf__flex-row-center-vh">
-            <TokenSelector
-              tickers={[activePoolData.backingToken, activePoolData.yieldBearingToken]}
-              onTokenChange={onTokenChange}
+      <SectionContainer title="from">
+        <div className="tf__flex-row-center-v">
+          <TokenSelector
+            tickers={[activePoolData.backingToken, activePoolData.yieldBearingToken]}
+            onTokenChange={onTokenChange}
+          />
+          <Spacer size={15} />
+          <div className="tf__flex-column-start">
+            <CurrencyInput
+              defaultValue={amount}
+              onChange={onAmountChange}
+              onMaxClick={onClickMax}
+              disabled={!selectedToken || depositDisabled}
             />
-            <Spacer size={15} />
-            <div>
-              <CurrencyInput
-                defaultValue={amount}
-                onChange={onAmountChange}
-                onMaxClick={onClickMax}
-                disabled={!selectedToken || depositDisabled}
-              />
-              {usdValueFormatted && (
-                <div className="tf__input__label">
-                  <Typography variant="disclaimer-text">
-                    {getText('approx', language)} {usdValueFormatted}
-                  </Typography>
-                </div>
-              )}
-            </div>
-            <Spacer size={15} />
+            {usdValueFormatted && (
+              <div className="tf__input__label">
+                <Typography variant="disclaimer-text">{usdValueFormatted}</Typography>
+              </div>
+            )}
+          </div>
+          <Spacer size={15} />
+          {selectedToken && balanceFormatted && (
             <Typography variant="body-text">
               {getText('balance', language)}{' '}
               {selectedToken && balanceFormatted ? `${balanceFormatted} ${selectedToken}` : ''}
             </Typography>
-            <Spacer size={8} />
-            {selectedToken && <TokenIcon ticker={selectedToken} />}
-          </div>
-        </SectionContainer>
+          )}
+          <Spacer size={10} />
+          {selectedToken && <TokenIcon ticker={selectedToken} width={20} height={20} />}
+        </div>
+        <Spacer size={20} />
       </SectionContainer>
+      <Spacer size={15} />
       <SectionContainer title="to">
         <div className={narrow ? '' : 'tf__flex-row-center-v'}>
           <>
