@@ -13,6 +13,7 @@ import Mint from '../mint/Mint';
 import Pool from '../pool/Pool';
 import ProfitLoss from '../profitLoss/ProfitLoss';
 import Sidebar from '../sidebar/Sidebar';
+import Swap from '../swap/Swap';
 import Term from '../term/Term';
 import Withdraw from '../withdraw/Withdraw';
 import './Operations.scss';
@@ -66,6 +67,7 @@ const Operations: FC<OperationsInProps> = () => {
               )}
               {selectedView === 'Withdraw' && <Withdraw />}
               {selectedView === 'Mint' && <Mint narrow={!hideUserData} />}
+              {selectedView === 'Swap' && <Swap />}
               {selectedView === 'Early Redeem' && <EarlyRedeem />}
             </div>
           </div>
