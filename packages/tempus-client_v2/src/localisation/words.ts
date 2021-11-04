@@ -34,6 +34,7 @@ type Words =
   | 'variableYield'
   | 'amountReceived'
   | 'approx'
-  | 'estimatedAmountReceived';
+  | 'estimatedAmountReceived'
+  | 'estimated';
 
 export default Words;
