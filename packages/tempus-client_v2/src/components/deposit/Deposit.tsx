@@ -20,6 +20,8 @@ import TokenSelector from '../tokenSelector/tokenSelector';
 import Typography from '../typography/Typography';
 import TokenIcon from '../tokenIcon';
 import './Deposit.scss';
+import SectionContainer from '../sectionContainer/SectionContainer';
+import Spacer from '../spacer/spacer';
 
 type DepositInProps = {
   narrow: boolean;
@@ -115,10 +117,9 @@ const Deposit: FC<DepositProps> = ({ narrow, poolDataAdapter }) => {
   }, [activePoolData, poolData, selectedToken, tokenPrecision]);
 
   const onSelectYield = useCallback(
-    (event: MouseEvent<HTMLDivElement>) => {
-      const selectedYield = (event.currentTarget as HTMLDivElement).getAttribute('data-value');
-      if (selectedYield && (selectedYield === 'Fixed' || selectedYield === 'Variable')) {
-        setSelectedYield(selectedYield);
+    (value: string) => {
+      if (value === 'Fixed' || value === 'Variable') {
+        setSelectedYield(value);
       }
     },
     [setSelectedYield],
@@ -402,16 +403,14 @@ const Deposit: FC<DepositProps> = ({ narrow, poolDataAdapter }) => {
 
   return (
     <div className={`tc__deposit ${narrow ? 'tc__deposit__narrow' : ''}`}>
-      <div className="tc__deposit__from">
-        <Typography variant="h1">{getText('from', language)}</Typography>
-        <div className="tc__deposit__from__body">
-          <div>
-            <TokenSelector
-              tickers={[activePoolData.backingToken, activePoolData.yieldBearingToken]}
-              onTokenChange={onTokenChange}
-            />
-          </div>
-          <div>
+      <SectionContainer title="from">
+        <div className="tf__flex-row-center-v">
+          <TokenSelector
+            tickers={[activePoolData.backingToken, activePoolData.yieldBearingToken]}
+            onTokenChange={onTokenChange}
+          />
+          <Spacer size={15} />
+          <div className="tf__flex-column-start">
             <CurrencyInput
               defaultValue={amount}
               onChange={onAmountChange}
@@ -420,109 +419,103 @@ const Deposit: FC<DepositProps> = ({ narrow, poolDataAdapter }) => {
             />
             {usdValueFormatted && (
               <div className="tf__input__label">
-                <Typography variant="disclaimer-text">Approx {usdValueFormatted}</Typography>
+                <Typography variant="disclaimer-text">{usdValueFormatted}</Typography>
               </div>
             )}
           </div>
-          <div>
+          <Spacer size={15} />
+          {selectedToken && balanceFormatted && (
             <Typography variant="body-text">
-              {getText('balance', language)}{' '}
-              {selectedToken && balanceFormatted ? `${balanceFormatted} ${selectedToken}` : ''}
+              {getText('balance', language)} {balanceFormatted}
             </Typography>
-            {selectedToken && <TokenIcon ticker={selectedToken} />}
-          </div>
+          )}
+          <Spacer size={10} />
+          {selectedToken && <TokenIcon ticker={selectedToken} width={20} height={20} />}
         </div>
-      </div>
-      <div className="tc__deposit__to">
-        <Typography variant="h1">{getText('to', language)}</Typography>
+        <Spacer size={20} />
+      </SectionContainer>
+      <Spacer size={15} />
+      <SectionContainer title="to">
         <div className="tc__deposit__to__body">
-          <div className="tc__deposit__select-yield">
-            <div
-              className={`tc__deposit__yield tc__deposit__fixed-yield ${
-                selectedYield === 'Fixed' ? 'tc__deposit__yield__selected' : ''
-              }`}
-              data-value="Fixed"
-              onClick={onSelectYield}
-            >
-              <div className="tc__deposit__yield-title">
-                <Typography variant="h2">{getText('fixYourFutureYield', language)}</Typography>
+          <SectionContainer id="Fixed" selectable selected={selectedYield === 'Fixed'} onSelected={onSelectYield}>
+            <div className="tf__flex-row-space-between-v">
+              <Typography variant="h2">{getText('fixYourFutureYield', language)}</Typography>
+              <Typography variant="body-text" color="title">
+                {getText('fixedYield', language)}
+              </Typography>
+            </div>
+            <Spacer size={20} />
+            <div className="tc__deposit__yield-body__row">
+              <div className="tc__deposit__card-row-title">
                 <Typography variant="body-text" color="title">
-                  {getText('fixedYield', language)}
+                  {getText('fixedYieldAtMaturity', language)}
                 </Typography>
               </div>
-              <div className="tc__deposit__yield-body">
-                <div className="tc__deposit__yield-body__row">
-                  <Typography variant="body-text" color="title">
-                    {getText('fixedYieldAtMaturity', language)}
-                  </Typography>
-                  <div className="tc__deposit__yield-body__right">
-                    <Typography variant="body-text" color="success">
-                      +000.6{selectedToken}
-                    </Typography>
-                    <Typography variant="body-text" color="success">
-                      +$400.123$
-                    </Typography>
-                  </div>
-                </div>
-                <div className="tc__deposit__yield-body__row">
-                  <Typography variant="body-text" color="title">
-                    {getText('totalAvailableAtMaturity', language)}
-                  </Typography>
-                  <div className="tc__deposit__yield-body__right">
-                    <Typography variant="body-text">
-                      {balanceFormatted}
-                      {selectedToken}
-                    </Typography>
-
-                    <Typography variant="body-text">$1400.123$</Typography>
-                  </div>
-                </div>
-              </div>
-              <div className="tc__deposit__yield-bottom">
-                <Typography variant="button-text">
-                  {fixedPrincipalsAmountFormatted &&
-                    `${fixedPrincipalsAmountFormatted} ${getText('principals', language)}`}
+              <div className="tc__deposit__card-row-change">
+                <Typography variant="body-text" color="success">
+                  +000.6{selectedToken}
                 </Typography>
-                <Typography variant="button-text" color="accent">
-                  APR{' '}
-                  {estimatedFixedApr
-                    ? NumberUtils.formatPercentage(ethers.utils.formatUnits(estimatedFixedApr, tokenPrecision))
-                    : fixedAPRFormatted}
+              </div>
+              <div className="tc__deposit__card-row-value">
+                <Typography variant="body-text" color="success">
+                  +$400.123$
                 </Typography>
               </div>
             </div>
-            <div
-              className={`tc__deposit__yield tc__deposit__variable-yield ${
-                selectedYield === 'Variable' ? 'tc__deposit__yield__selected' : ''
-              }`}
-              data-value="Variable"
-              onClick={onSelectYield}
-            >
-              <div className="tc__deposit__yield-title">
-                <Typography variant="h2">{getText('provideLiquidity', language)}</Typography>
+            <div className="tc__deposit__yield-body__row">
+              <div className="tc__deposit__card-row-title">
                 <Typography variant="body-text" color="title">
-                  {getText('variableYield', language)}
+                  {getText('totalAvailableAtMaturity', language)}
                 </Typography>
               </div>
-              <div className="tc__deposit__yield-body"></div>
-              <div className="tc__deposit__yield-bottom">
-                <Typography variant="button-text">
-                  {' '}
-                  {variablePrincipalsAmountFormatted &&
-                    `${variablePrincipalsAmountFormatted} ${getText('principals', language)}`}
+              <div className="tc__deposit__card-row-change">
+                <Typography variant="body-text">
+                  {balanceFormatted}
+                  {selectedToken}
                 </Typography>
               </div>
-              <div className="tc__deposit__yield-bottom">
-                <Typography variant="button-text">
-                  {variableLpTokensAmountFormatted &&
-                    `${variableLpTokensAmountFormatted} ${getText('lpTokens', language)}`}
-                </Typography>
-                <Typography variant="button-text" color="accent">
-                  APR {variableAPRFormatted}
-                </Typography>
+              <div className="tc__deposit__card-row-value">
+                <Typography variant="body-text">$1400.123$</Typography>
               </div>
             </div>
-          </div>
+            <Spacer size={30} />
+            <div className="tf__flex-row-space-between-v">
+              <Typography variant="button-text">
+                {fixedPrincipalsAmountFormatted &&
+                  `${fixedPrincipalsAmountFormatted} ${getText('principals', language)}`}
+              </Typography>
+              <Typography variant="button-text" color="accent">
+                APR{' '}
+                {estimatedFixedApr
+                  ? NumberUtils.formatPercentage(ethers.utils.formatUnits(estimatedFixedApr, tokenPrecision))
+                  : fixedAPRFormatted}
+              </Typography>
+            </div>
+          </SectionContainer>
+          <SectionContainer>
+            <div className="tf__flex-row-space-between-v">
+              <Typography variant="h2">{getText('provideLiquidity', language)}</Typography>
+              <Typography variant="body-text" color="title">
+                {getText('variableYield', language)}
+              </Typography>
+            </div>
+            <div className="tf__flex-row-space-between-v">
+              <Typography variant="button-text">
+                {' '}
+                {variablePrincipalsAmountFormatted &&
+                  `${variablePrincipalsAmountFormatted} ${getText('principals', language)}`}
+              </Typography>
+            </div>
+            <div className="tf__flex-row-space-between-v">
+              <Typography variant="button-text">
+                {variableLpTokensAmountFormatted &&
+                  `${variableLpTokensAmountFormatted} ${getText('lpTokens', language)}`}
+              </Typography>
+              <Typography variant="button-text" color="accent">
+                APR {variableAPRFormatted}
+              </Typography>
+            </div>
+          </SectionContainer>
         </div>
         <div className="tc__deposit__actions">
           <Approve
@@ -543,7 +536,7 @@ const Deposit: FC<DepositProps> = ({ narrow, poolDataAdapter }) => {
             onExecuted={onExecuted}
           />
         </div>
-      </div>
+      </SectionContainer>
     </div>
   );
 };

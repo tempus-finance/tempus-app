@@ -95,7 +95,7 @@ export default class PoolDataAdapter {
     const yieldTokenAmount = ethers.utils.parseEther('1');
 
     try {
-      const ticker$ = interval(POLLING_INTERVAL);
+      const ticker$ = timer(0, POLLING_INTERVAL);
 
       return combineLatest([
         from(this.getTokenServices(tempusPoolAddress, tempusAMMAddress, signer)),
