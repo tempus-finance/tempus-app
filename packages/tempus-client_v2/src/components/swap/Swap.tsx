@@ -40,12 +40,12 @@ const Swap = () => {
     tokenName: 'Yields',
     tokenAddress: activePoolData.yieldsAddress,
   });
-  const [selectedToken, setSelectedToken] = useState<Ticker>();
+  const [selectedToken, setSelectedToken] = useState<Ticker>(tokenFrom.tokenName);
   const [amount, setAmount] = useState<string>('');
   const [receiveAmount, setReceiveAmount] = useState<BigNumber | null>(null);
   const [tokensApproved, setTokensApproved] = useState<boolean>(false);
   const [estimateInProgress, setEstimateInProgress] = useState<boolean>(false);
-  const [tokenPrecision, setTokenPrecision] = useState<number>(0);
+  const [tokenPrecision, setTokenPrecision] = useState<number>(getTokenPrecision(activePoolData.address, 'principals'));
 
   const getSelectedTokenBalance = useCallback((): BigNumber | null => {
     if (!selectedToken) {
