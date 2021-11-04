@@ -8,6 +8,7 @@ import Typography from '../../typography/Typography';
 import TokenIcon from '../../tokenIcon';
 import './availableToDepositFormatter.scss';
 import { PoolDataContext, PoolData, getDataForPool } from '../../../context/poolDataContext';
+import { WalletContext } from '../../../context/walletContext';
 import { useContext, useMemo } from 'react';
 import { CircularProgress } from '@material-ui/core';
 
@@ -15,6 +16,7 @@ const AvailableToDepositFormatter = (props: DataTypeProvider.ValueFormatterProps
   const row = props.row as DashboardRow;
 
   const { poolData } = useContext(PoolDataContext);
+  const { userWalletConnected } = useContext(WalletContext);
 
   const parentAvailableToDeposit = useMemo(() => {
     return getParentAvailableToDeposit(row.token, poolData);
@@ -26,6 +28,10 @@ const AvailableToDepositFormatter = (props: DataTypeProvider.ValueFormatterProps
     }
     return null;
   }, [poolData, row]);
+
+  if (!userWalletConnected) {
+    return <div></div>;
+  }
 
   if (isParentRow(row)) {
     if (!parentAvailableToDeposit) {

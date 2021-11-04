@@ -26,8 +26,6 @@ const NotificationComponent: FC<NotificationComponentProps> = ({
 }) => {
   const onDelete = () => onNotificationDelete(id);
 
-  console.log('NotificationComponent', linkText);
-
   return (
     <div className="tf__notification">
       <div className="tf__notification__header">
