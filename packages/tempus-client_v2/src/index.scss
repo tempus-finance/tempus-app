@@ -25,6 +25,12 @@ body {
   align-items: center;
 }
 
+.tf__flex-row-center-v-end {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
 .tf__flex-row-center-vh {
   display: flex;
   justify-content: center;
