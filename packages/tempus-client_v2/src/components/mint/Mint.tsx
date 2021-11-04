@@ -324,7 +324,7 @@ const Mint: FC<MintInProps> = ({ narrow }) => {
         </SectionContainer>
       </SectionContainer>
       <SectionContainer title="to">
-        <div className={narrow ? '' : 'class tf__flex-row-center-v'}>
+        <div className={narrow ? '' : 'tf__flex-row-center-v'}>
           <>
             <SectionContainer elevation={2}>
               <div className="tf__flex-row-space-between">
