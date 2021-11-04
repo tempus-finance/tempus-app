@@ -13,7 +13,10 @@ import Mint from '../mint/Mint';
 import Pool from '../pool/Pool';
 import ProfitLoss from '../profitLoss/ProfitLoss';
 import ProvideLiquidity from '../provideLiquidity/ProvideLiquidity';
+<<<<<<< HEAD
 import RemoveLiquidity from '../removeLiquidity/RemoveLiquidity';
+=======
+>>>>>>> client_v2
 import Sidebar from '../sidebar/Sidebar';
 import Swap from '../swap/Swap';
 import Term from '../term/Term';
