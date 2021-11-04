@@ -176,7 +176,7 @@ const RemoveLiquidity = () => {
             <Typography variant="h4">{getText('principals', language)}</Typography>
             <Spacer size={10} />
             <div className="tf__flex-row-center-v">
-              <Typography variant="card-body-text">{getText('estimatedAmountReceived', language)}</Typography>
+              <Typography variant="card-body-text">{getText('estimated', language)}</Typography>
               <Spacer size={15} />
               <Typography variant="card-body-text">{estimatedPrincipalsFormatted}</Typography>
             </div>
@@ -186,7 +186,7 @@ const RemoveLiquidity = () => {
             <Typography variant="h4">{getText('yields', language)}</Typography>
             <Spacer size={10} />
             <div className="tf__flex-row-center-v">
-              <Typography variant="card-body-text">{getText('estimatedAmountReceived', language)}</Typography>
+              <Typography variant="card-body-text">{getText('estimated', language)}</Typography>
               <Spacer size={15} />
               <Typography variant="card-body-text">{estimatedYieldsFormatted}</Typography>
             </div>
