@@ -35,7 +35,7 @@ const SectionContainer: FC<SectionContainerProps> = props => {
     contentClasses += ' tc__dialog__section-content-selectable';
   }
 
-  let rootClasses = `tf__dialog__section-elevation-${elevation}`;
+  let rootClasses = `tf__dialog__section tf__dialog__section-elevation-${elevation}`;
   if (selected) {
     rootClasses += ' tc__dialog__section-selected';
   }

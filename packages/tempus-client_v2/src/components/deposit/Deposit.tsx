@@ -19,9 +19,10 @@ import CurrencyInput from '../currencyInput/currencyInput';
 import TokenSelector from '../tokenSelector/tokenSelector';
 import Typography from '../typography/Typography';
 import TokenIcon from '../tokenIcon';
-import './Deposit.scss';
 import SectionContainer from '../sectionContainer/SectionContainer';
 import Spacer from '../spacer/spacer';
+
+import './Deposit.scss';
 
 type DepositInProps = {
   narrow: boolean;
@@ -492,13 +493,15 @@ const Deposit: FC<DepositProps> = ({ narrow, poolDataAdapter }) => {
               </Typography>
             </div>
           </SectionContainer>
-          <SectionContainer>
+          <Spacer size={15} />
+          <SectionContainer id="Variable" selectable selected={selectedYield === 'Variable'} onSelected={onSelectYield}>
             <div className="tf__flex-row-space-between-v">
               <Typography variant="h2">{getText('provideLiquidity', language)}</Typography>
               <Typography variant="body-text" color="title">
                 {getText('variableYield', language)}
               </Typography>
             </div>
+            <Spacer size={15} />
             <div className="tf__flex-row-space-between-v">
               <Typography variant="button-text">
                 {' '}
@@ -517,7 +520,8 @@ const Deposit: FC<DepositProps> = ({ narrow, poolDataAdapter }) => {
             </div>
           </SectionContainer>
         </div>
-        <div className="tc__deposit__actions">
+        <Spacer size={15} />
+        <div className="tf__flex-row-center-vh">
           <Approve
             tokenToApproveAddress={getSelectedTokenAddress()}
             spenderAddress={getConfig().tempusControllerContract}

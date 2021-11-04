@@ -1,23 +1,26 @@
 @import '../../constants.scss';
 @import '../shared/style.scss';
 
-.tf__dialog__section-elevation-1 {
+.tf__dialog__section {
+  border: 2px solid transparent !important;
   width: 100%;
+}
+
+.tf__dialog__section-elevation-1 {
   @include background-level-1;
 }
 
 .tf__dialog__section-elevation-2 {
-  width: 100%;
   @include background-level-2;
 }
 
 .tf__dialog__section-elevation-3 {
-  width: 100%;
   @include background-level-3;
 }
 
 .tc__dialog__section-selected {
-  border: 2px solid #5098a9;
+  border: 2px solid #5098a9 !important;
+  background-color: white;
 }
 
 .tf__dialog__section-title {
