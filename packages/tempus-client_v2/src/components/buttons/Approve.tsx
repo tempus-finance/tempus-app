@@ -1,6 +1,6 @@
 import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { BigNumber, ethers } from 'ethers';
-import { Button } from '@material-ui/core';
+import { Button, CircularProgress } from '@material-ui/core';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
 import Typography from '../typography/Typography';
 import getNotificationService from '../../services/getNotificationService';
@@ -10,6 +10,7 @@ import { PendingTransactionsContext } from '../../context/pendingTransactionsCon
 import { getDataForPool, PoolDataContext } from '../../context/poolDataContext';
 import { LanguageContext } from '../../context/languageContext';
 import { WalletContext } from '../../context/walletContext';
+import TickIcon from '../icons/TickIcon';
 import getText from '../../localisation/getText';
 import Spacer from '../spacer/spacer';
 
@@ -227,6 +228,7 @@ const Approve: FC<ApproveButtonProps> = props => {
    * If current allowance exceeds amount to approve, user does not have to approve tokens again.
    */
   const approved = useMemo(() => {
+    // return true;
     if (!amountToApprove) {
       return false;
     }
@@ -258,26 +260,33 @@ const Approve: FC<ApproveButtonProps> = props => {
     return null;
   }
 
+  const approve = !approveInProgress && !approved;
+
   return (
     <>
       {/* Show Approve button if tokens are not approved already */}
-      {!approved && (
-        <Button
-          color="primary"
-          variant="contained"
-          onClick={onApprove}
-          disabled={disabled || approveInProgress || !tokenToApproveAddress}
-          className="tc__approve-button"
-        >
-          <Typography variant="button-text" color="inverted">
-            {getText('approve', language)}
-          </Typography>
-        </Button>
-      )}
+      <Button
+        color="primary"
+        variant="contained"
+        onClick={onApprove}
+        disabled={disabled || approveInProgress || !tokenToApproveAddress}
+        className={`tc__approve-button ${approveInProgress && 'tc__approve-button__pending'}`}
+      >
+        <Typography variant="button-text" color="inverted">
+          {approveInProgress && (
+            <>
+              <CircularProgress size={16} color="inherit" /> {getText('approving', language)}
+            </>
+          )}
+          {approved && (
+            <>
+              {getText('approved', language)} <TickIcon />
+            </>
+          )}
 
-      {/* Show Approved label if tokens are approved */}
-      {approved && <Typography variant="h5">Approved</Typography>}
-
+          {approve && getText('approve', language)}
+        </Typography>
+      </Button>
       {/* Set margin right if specified */}
       {marginRight && <Spacer size={marginRight} />}
     </>
