@@ -1,6 +1,7 @@
 import { CircularProgress } from '@material-ui/core';
 import { ethers, BigNumber } from 'ethers';
 import { useContext, useMemo } from 'react';
+import { ZERO } from '../../../constants';
 import { PoolData, getDataForPool, PoolDataContext } from '../../../context/poolDataContext';
 import { Ticker } from '../../../interfaces/Token';
 import NumberUtils from '../../../services/NumberUtils';
@@ -51,6 +52,10 @@ function getParentTVL(parentId: Ticker, poolData: PoolData[]): BigNumber | null 
 
   let parentTVL = BigNumber.from('0');
   parentChildren.forEach(child => {
+    if (child.isNegativeYield && child.userBalanceUSD?.lte(ZERO)) {
+      return;
+    }
+
     parentTVL = parentTVL.add(child.tvl || BigNumber.from('0'));
   });
 

@@ -11,6 +11,7 @@ import { PoolDataContext, PoolData, getDataForPool } from '../../../context/pool
 import { WalletContext } from '../../../context/walletContext';
 import { useContext, useMemo } from 'react';
 import { CircularProgress } from '@material-ui/core';
+import { ZERO } from '../../../constants';
 
 const AvailableToDepositFormatter = (props: DataTypeProvider.ValueFormatterProps) => {
   const row = props.row as DashboardRow;
@@ -101,6 +102,10 @@ function getParentAvailableToDeposit(parentId: Ticker, poolData: PoolData[]) {
   const processedTokens: Ticker[] = [];
   let parentAvailableToDeposit = BigNumber.from('0');
   parentChildren.forEach(child => {
+    if (child.isNegativeYield && child.userBalanceUSD?.lte(ZERO)) {
+      return;
+    }
+
     if (child.userAvailableToDepositUSD) {
       if (processedTokens.indexOf(child.backingToken) === -1) {
         parentAvailableToDeposit = parentAvailableToDeposit.add(child.userAvailableToDepositUSD.backingTokenAmount);

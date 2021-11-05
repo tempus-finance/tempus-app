@@ -6,6 +6,7 @@ import { WalletContext } from '../../../context/walletContext';
 import { Ticker } from '../../../interfaces/Token';
 import NumberUtils from '../../../services/NumberUtils';
 import Typography from '../../typography/Typography';
+import { ZERO } from '../../../constants';
 
 const BalanceFormatter = ({ row }: any) => {
   const isChild = Boolean(row.parentId);
@@ -57,6 +58,10 @@ function getParentBalance(parentId: Ticker, poolData: PoolData[]): BigNumber | n
 
   let parentBalance = BigNumber.from('0');
   parentChildren.forEach(child => {
+    if (child.isNegativeYield && child.userBalanceUSD?.lte(ZERO)) {
+      return;
+    }
+
     parentBalance = parentBalance.add(child.userBalanceUSD || BigNumber.from('0'));
   });
 
