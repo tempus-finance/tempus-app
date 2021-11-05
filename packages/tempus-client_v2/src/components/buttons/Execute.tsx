@@ -1,6 +1,6 @@
 import { FC, useContext, useState, useMemo } from 'react';
 import { ethers } from 'ethers';
-import { Button } from '@material-ui/core';
+import { Button, CircularProgress } from '@material-ui/core';
 import getNotificationService from '../../services/getNotificationService';
 import {
   generateEtherscanLink,
@@ -153,10 +153,16 @@ const Execute: FC<ExecuteButtonProps> = props => {
       variant="contained"
       onClick={execute}
       disabled={disabled || executeInProgress}
-      className="tc__execute-button"
+      className={`tc__execute-button ${executeInProgress && 'tc__execute-button__pending'}`}
     >
-      <Typography variant="h5" color="inverted">
-        {getText('execute', language)}
+      <Typography variant="button-text" color="inverted">
+        {executeInProgress && (
+          <>
+            <CircularProgress size={16} color="inherit" /> {getText('executing', language)}
+          </>
+        )}
+
+        {!executeInProgress && getText('execute', language)}
       </Typography>
     </Button>
   );

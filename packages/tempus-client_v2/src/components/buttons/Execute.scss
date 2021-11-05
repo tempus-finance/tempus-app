@@ -6,4 +6,26 @@ button.tc__execute-button {
   mix-blend-mode: normal;
   box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.25);
   border-radius: 5px;
+
+  &:hover:not([disabled]) {
+    background: linear-gradient(97.53deg, #ff6b00 99.99%, #ffc499 100%);
+  }
+
+  &.tc__execute-button__pending {
+    opacity: 0.6;
+  }
+
+  &[disabled] {
+    opacity: 0.5;
+  }
+
+  > .MuiButton-label > div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    > div {
+      margin-right: 10px;
+    }
+  }
 }
