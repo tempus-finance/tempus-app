@@ -3,7 +3,7 @@ import NumberUtils from '../../services/NumberUtils';
 export const checkIfNumberRegExp = /\d/;
 export const removeLeadingZeroesRegExp = /^0+/;
 
-export const formatValueToCurrency = (value: string): string => {
+export const formatValueToCurrency = (value: string, precision?: number): string => {
   if (!value) {
     return '';
   }
@@ -28,9 +28,10 @@ export const formatValueToCurrency = (value: string): string => {
 
     const filteredLeftCharacters = leftCharacters.filter((v: string) => checkIfNumberRegExp.test(v));
     const filteredRightCharacters = rightCharacters.filter((v: string) => checkIfNumberRegExp.test(v));
+    const truncatedRightCharacters = precision ? rightCharacters.slice(0, precision) : rightCharacters;
 
     if (filteredRightCharacters.length) {
-      return `${NumberUtils.formatToCurrency(filteredLeftCharacters.join(''))}.${filteredRightCharacters.join('')}`;
+      return `${NumberUtils.formatToCurrency(filteredLeftCharacters.join(''))}.${truncatedRightCharacters.join('')}`;
     } else {
       return `${NumberUtils.formatToCurrency(filteredLeftCharacters.join(''))}.`;
     }

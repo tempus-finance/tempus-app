@@ -21,3 +21,19 @@ describe('formatValueToCurrency()', () => {
     });
   });
 });
+
+describe('formatValueToCurrency() with precision', () => {
+  [
+    { value: '', precision: 4, expected: '' },
+    { value: '0.237', precision: 4, expected: '0.237' },
+    { value: '1.456', precision: 2, expected: '1.45' },
+    { value: '1.0000', precision: 2, expected: '1.00' },
+    { value: '-0.9876', precision: 1, expected: '0.9' },
+  ].forEach(({ value, precision, expected }) => {
+    test(`when value is '${value}' the result should be '${expected}' `, () => {
+      const result = formatValueToCurrency(value, precision);
+
+      expect(result).toBe(expected);
+    });
+  });
+});
