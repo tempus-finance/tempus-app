@@ -1,5 +1,8 @@
-import { FC, useCallback, useEffect, useState } from 'react';
+import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { getDataForPool, PoolDataContext } from '../../context/poolDataContext';
 import { AdvancedTransactionView, BasicTransactionView, TransactionView } from '../../interfaces/TransactionView';
+import getConfig from '../../utils/getConfig';
+import shortenAccount from '../../utils/shortenAccount';
 import Typography from '../typography/Typography';
 import Spacer from '../spacer/spacer';
 import TokenPairIcon from './tokenPairIcon/TokenPairIcon';
@@ -26,7 +29,13 @@ type SidebarInProps = {
 type SidebarProps = SidebarInProps & SidebarOutProps;
 
 const Sidebar: FC<SidebarProps> = ({ initialView, onSelectedView }) => {
+  const { poolData, selectedPool } = useContext(PoolDataContext);
+
   const [selectedView, setSelectedView] = useState<TransactionView | null>(null);
+
+  const activePoolData = useMemo(() => {
+    return getDataForPool(selectedPool, poolData);
+  }, [poolData, selectedPool]);
 
   const onItemClick = useCallback(
     (itemName: string) => {
@@ -42,20 +51,27 @@ const Sidebar: FC<SidebarProps> = ({ initialView, onSelectedView }) => {
     }
   }, [initialView]);
 
+  const onPoolAddressClick = useCallback(() => {
+    const config = getConfig();
+
+    if (config.networkName === 'homestead') {
+      window.open(`https://etherscan.io/address/${activePoolData.address}`, '_blank');
+    } else {
+      window.open(`https://${config.networkName}.etherscan.io/address/${activePoolData.address}`, '_blank');
+    }
+  }, [activePoolData.address]);
+
   return (
     <div className="tc__sidebar-container">
-      {/* TODO Update ticker based on selected pool (will be added once we add dashboard grid) */}
-      <TokenPairIcon parentTicker="ETH" childTicker="stETH" />
+      <TokenPairIcon parentTicker={activePoolData.backingToken} childTicker={activePoolData.yieldBearingToken} />
       <Spacer size={5} />
-      <Typography variant="h4">
-        {/* TODO Update ticker based on selected pool */}
-        {'stETH'} Pool
-      </Typography>
+      <Typography variant="h4">{activePoolData.yieldBearingToken} Pool</Typography>
       <Spacer size={10} />
-      <Typography variant="body-text" color="link">
-        {/* TODO Show selected pool address here - it should be clickable, and it should open pool etherscan link in new tab */}
-        {'0x123...50E'}
-      </Typography>
+      <div onClick={onPoolAddressClick} className="tc__sidebar-pool-link">
+        <Typography variant="body-text" color="link">
+          {shortenAccount(activePoolData.address)}
+        </Typography>
+      </div>
 
       {/* Basic Section */}
       <div className="tc__sidebar-section-title">
