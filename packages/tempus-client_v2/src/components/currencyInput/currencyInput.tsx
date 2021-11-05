@@ -20,6 +20,8 @@ type CurrencyInputOutProps = {
 
 type CurrencyInputProps = CurrencyInputInProps & CurrencyInputOutProps;
 
+const currencyPrecision = 8;
+
 const CurrencyInput: FC<CurrencyInputProps> = ({
   defaultValue,
   placeholder,
@@ -32,14 +34,14 @@ const CurrencyInput: FC<CurrencyInputProps> = ({
 
   useEffect(() => {
     if (defaultValue || defaultValue === '') {
-      setValue(formatValueToCurrency(defaultValue));
+      setValue(formatValueToCurrency(defaultValue, currencyPrecision));
     }
   }, [defaultValue]);
 
   const onValueChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const currentValue = event.currentTarget.value;
-      const parsedCurrency = formatValueToCurrency(currentValue);
+      const parsedCurrency = formatValueToCurrency(currentValue, currencyPrecision);
       if (parsedCurrency || parsedCurrency === '') {
         setValue(parsedCurrency);
       }
@@ -70,7 +72,9 @@ const CurrencyInput: FC<CurrencyInputProps> = ({
           }}
         />
         <Divider orientation="vertical" />
-        <Button onClick={handleMaxClick}>{getText('max', language)}</Button>
+        <Button disabled={disabled} onClick={handleMaxClick}>
+          {getText('max', language)}
+        </Button>
       </div>
     </FormControl>
   );
