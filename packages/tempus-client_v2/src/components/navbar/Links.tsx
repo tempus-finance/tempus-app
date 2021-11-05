@@ -2,6 +2,7 @@ import { useCallback, useContext } from 'react';
 import { LanguageContext } from '../../context/languageContext';
 import { PoolDataContext } from '../../context/poolDataContext';
 import getText /*, { Language }*/ from '../../localisation/getText';
+import Community from './Community';
 
 import './Links.scss';
 
@@ -31,8 +32,8 @@ const Links = () => {
     <div className="tc__navBar__links">
       <ul>
         <li onClick={onDashboardClick}>{getText('dashboard', language)}</li>
-        <li>{getText('analytics', language)}</li>
-        <li>{getText('community', language)}</li>
+        {/* <li>{getText('analytics', language)}</li> */}
+        <Community />
         <li>{getText('settings', language)}</li>
       </ul>
     </div>

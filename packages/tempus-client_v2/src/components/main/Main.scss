@@ -26,18 +26,3 @@
     }
   }
 }
-
-.test {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-around;
-  flex: 62;
-  padding: 15px;
-  box-sizing: border-box;
-  background: rgba(255, 255, 255, 1);
-  border: 1px solid #f1f1f1;
-  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.25);
-  border-radius: 5px;
-  height: 195px;
-  margin: 0 15px 15px 0;
-}
