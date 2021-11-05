@@ -1,13 +1,13 @@
 import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { getDataForPool, PoolDataContext } from '../../context/poolDataContext';
 import { AdvancedTransactionView, BasicTransactionView, TransactionView } from '../../interfaces/TransactionView';
+import getConfig from '../../utils/getConfig';
+import shortenAccount from '../../utils/shortenAccount';
 import Typography from '../typography/Typography';
 import Spacer from '../spacer/spacer';
 import TokenPairIcon from './tokenPairIcon/TokenPairIcon';
 
 import './Sidebar.scss';
-import { getDataForPool, PoolDataContext } from '../../context/poolDataContext';
-import getConfig from '../../utils/getConfig';
-import shortenAccount from '../../utils/shortenAccount';
 
 const basicViews: BasicTransactionView[] = ['Deposit', 'Withdraw'];
 const advancedViews: AdvancedTransactionView[] = [
