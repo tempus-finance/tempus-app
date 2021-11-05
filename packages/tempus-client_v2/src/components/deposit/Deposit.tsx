@@ -368,6 +368,50 @@ const Deposit: FC<DepositProps> = ({ narrow, poolDataAdapter }) => {
     return NumberUtils.formatPercentage(poolContextData.fixedAPR, 2);
   }, [activePoolData, poolData]);
 
+  const fixedYieldAtMaturityFormatted = useMemo(() => {
+    if (!fixedPrincipalsAmount || !amount || isZeroString(amount)) {
+      return null;
+    }
+
+    const value = fixedPrincipalsAmount.sub(ethers.utils.parseEther(amount));
+
+    return NumberUtils.formatToCurrency(ethers.utils.formatUnits(value, tokenPrecision), 2);
+  }, [amount, fixedPrincipalsAmount, tokenPrecision]);
+
+  const fixedYieldAtMaturityUSDFormatted = useMemo(() => {
+    if (!fixedPrincipalsAmount || !yieldBearingTokenRate || !amount || isZeroString(amount)) {
+      return null;
+    }
+
+    const value = fixedPrincipalsAmount.sub(ethers.utils.parseEther(amount));
+
+    return NumberUtils.formatToCurrency(
+      ethers.utils.formatUnits(mul18f(value, yieldBearingTokenRate, tokenPrecision), tokenPrecision),
+      2,
+      '$',
+    );
+  }, [amount, fixedPrincipalsAmount, tokenPrecision, yieldBearingTokenRate]);
+
+  const totalAvailableAtMaturityFormatted = useMemo(() => {
+    if (!fixedPrincipalsAmount) {
+      return null;
+    }
+
+    return NumberUtils.formatToCurrency(ethers.utils.formatUnits(fixedPrincipalsAmount, tokenPrecision), 2);
+  }, [fixedPrincipalsAmount, tokenPrecision]);
+
+  const totalAvailableAtMaturityUSDFormatted = useMemo(() => {
+    if (!fixedPrincipalsAmount || !yieldBearingTokenRate) {
+      return null;
+    }
+
+    return NumberUtils.formatToCurrency(
+      ethers.utils.formatUnits(mul18f(fixedPrincipalsAmount, yieldBearingTokenRate, tokenPrecision), tokenPrecision),
+      2,
+      '$',
+    );
+  }, [fixedPrincipalsAmount, tokenPrecision, yieldBearingTokenRate]);
+
   const depositDisabled = useMemo((): boolean => {
     return isYieldNegative === null ? true : isYieldNegative;
   }, [isYieldNegative]);
@@ -453,14 +497,18 @@ const Deposit: FC<DepositProps> = ({ narrow, poolDataAdapter }) => {
                 </Typography>
               </div>
               <div className="tc__deposit__card-row-change">
-                <Typography variant="body-text" color="success">
-                  +000.6{selectedToken}
-                </Typography>
+                {fixedYieldAtMaturityFormatted && (
+                  <Typography variant="body-text" color="success">
+                    {`+${fixedYieldAtMaturityFormatted} ${activePoolData.yieldBearingToken}`}
+                  </Typography>
+                )}
               </div>
               <div className="tc__deposit__card-row-value">
-                <Typography variant="body-text" color="success">
-                  +$400.123$
-                </Typography>
+                {fixedYieldAtMaturityUSDFormatted && (
+                  <Typography variant="body-text" color="success">
+                    {`+${fixedYieldAtMaturityUSDFormatted}`}
+                  </Typography>
+                )}
               </div>
             </div>
             <div className="tc__deposit__yield-body__row">
@@ -470,13 +518,14 @@ const Deposit: FC<DepositProps> = ({ narrow, poolDataAdapter }) => {
                 </Typography>
               </div>
               <div className="tc__deposit__card-row-change">
-                <Typography variant="body-text">
-                  {balanceFormatted}
-                  {selectedToken}
-                </Typography>
+                {totalAvailableAtMaturityFormatted && (
+                  <Typography variant="body-text">
+                    {`${totalAvailableAtMaturityFormatted} ${activePoolData.yieldBearingToken}`}
+                  </Typography>
+                )}
               </div>
               <div className="tc__deposit__card-row-value">
-                <Typography variant="body-text">$1400.123$</Typography>
+                <Typography variant="body-text">{totalAvailableAtMaturityUSDFormatted}</Typography>
               </div>
             </div>
             <Spacer size={30} />
