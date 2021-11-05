@@ -1,4 +1,4 @@
-import { FC, useContext, useMemo, useState } from 'react';
+import { FC, useCallback, useContext, useMemo, useState } from 'react';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
 import { LanguageContext } from '../../context/languageContext';
 import { getDataForPool, PoolDataContext } from '../../context/poolDataContext';
@@ -45,13 +45,17 @@ const Operations: FC<OperationsInProps> = () => {
     return userPrincipalsBalance.isZero() && userYieldsBalance.isZero() && userLPTokenBalance?.isZero();
   }, [activePoolData]);
 
+  const handleWithdraw = useCallback(() => {
+    setSelectedView('Deposit');
+  }, []);
+
   return (
     userWalletSigner &&
     poolData && (
       <div className="tc__operations">
         {/* Sidebar */}
         <div className="tc__operations-sidebar">
-          <Sidebar initialView="Deposit" onSelectedView={setSelectedView} />
+          <Sidebar initialView={selectedView} onSelectedView={setSelectedView} />
         </div>
         {/* Right side of sidebar (All cards) */}
         <div className="tc__operations-cards-container">
@@ -67,7 +71,7 @@ const Operations: FC<OperationsInProps> = () => {
               {selectedView === 'Deposit' && (
                 <Deposit poolDataAdapter={getPoolDataAdapter(userWalletSigner)} narrow={!hideUserData} />
               )}
-              {selectedView === 'Withdraw' && <Withdraw />}
+              {selectedView === 'Withdraw' && <Withdraw onWithdraw={handleWithdraw} />}
               {selectedView === 'Mint' && <Mint narrow={!hideUserData} />}
               {selectedView === 'Swap' && <Swap />}
               {selectedView === 'Provide Liquidity' && <ProvideLiquidity />}

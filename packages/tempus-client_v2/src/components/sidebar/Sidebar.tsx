@@ -46,10 +46,10 @@ const Sidebar: FC<SidebarProps> = ({ initialView, onSelectedView }) => {
   );
 
   useEffect(() => {
-    if (initialView) {
+    if (initialView && initialView !== selectedView) {
       setSelectedView(initialView);
     }
-  }, [initialView]);
+  }, [initialView, selectedView]);
 
   const onPoolAddressClick = useCallback(() => {
     const config = getConfig();
