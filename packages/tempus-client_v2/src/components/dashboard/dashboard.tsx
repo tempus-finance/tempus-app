@@ -10,7 +10,7 @@ import {
 } from '@devexpress/dx-react-grid';
 import { Grid, TableHeaderRow, VirtualTable, TableTreeColumn } from '@devexpress/dx-react-grid-material-ui';
 import { SECONDS_IN_A_DAY, ZERO } from '../../constants';
-import { getDataForPool, PoolDataContext } from '../../context/poolDataContext';
+import { getDataForPool, PoolData, PoolDataContext } from '../../context/poolDataContext';
 import { DashboardRow, isChildRow, isParentRow } from '../../interfaces/DashboardRow';
 import { ColumnNames } from '../../interfaces/ColumnNames';
 import Typography from '../typography/Typography';
@@ -192,7 +192,7 @@ const Dashboard: FC<DashboardProps> = ({ hidden, userWalletAddress, rows, onRowA
 
   useEffect(() => {
     if (poolData && rows && poolData.length && rows.length) {
-      const poolMap: { [address: string]: any } = {};
+      const poolMap: { [address: string]: PoolData } = {};
       poolData.forEach(pool => {
         poolMap[pool.address] = pool;
       });

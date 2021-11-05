@@ -1,12 +1,10 @@
 import { useCallback, useContext, useEffect } from 'react';
-import { ethers } from 'ethers';
 import getDefaultProvider from '../services/getDefaultProvider';
 import getVariableRateService from '../services/getVariableRateService';
 import getConfig from '../utils/getConfig';
-import getTokenPrecision from '../utils/getTokenPrecision';
-import { ZERO } from '../constants';
 import { PoolDataContext } from '../context/poolDataContext';
 import { WalletContext } from '../context/walletContext';
+import getTempusPoolService from '../services/getTempusPoolService';
 
 const VariableAPRProvider = () => {
   const { setPoolData } = useContext(PoolDataContext);
@@ -34,6 +32,7 @@ const VariableAPRProvider = () => {
 
     const config = getConfig();
     const variableRateService = getVariableRateService(provider);
+    const tempusPoolService = getTempusPoolService(provider);
 
     // Fetch APR for all Tempus Pools
     const fetchedPoolAPRData = await Promise.all(
@@ -54,11 +53,18 @@ const VariableAPRProvider = () => {
           fees,
         );
 
+        // Check if yield is negative
+        const [currentInterestRate, initialInterestRate] = await Promise.all([
+          tempusPoolService.currentInterestRate(tempusPool.address),
+          tempusPoolService.initialInterestRate(tempusPool.address),
+        ]);
+
         return {
           address: tempusPool.address,
           variableAPR: variableAPR,
           fees,
           tokenPrecision: tempusPool.tokenPrecision,
+          negativeYield: currentInterestRate.lt(initialInterestRate),
         };
       }),
     );
@@ -67,25 +73,12 @@ const VariableAPRProvider = () => {
       ...previousData,
       poolData: previousData.poolData.map(previousPoolData => {
         const poolAPRData = fetchedPoolAPRData.find(data => data.address === previousPoolData.address);
-        const variableAPR = poolAPRData?.variableAPR || 0;
-
-        let isNegativeYield: boolean = true;
-        if (poolAPRData) {
-          const precision = getTokenPrecision(poolAPRData.address, 'backingToken');
-          // In case APR has more decimals then 'precision', parseUnits will fail.
-          // This slices any extra decimals (above precision)
-          let aprString = variableAPR.toString();
-          if (aprString.indexOf('.') > -1) {
-            aprString = aprString.slice(0, aprString.indexOf('.') + 1 + precision);
-          }
-          const temp = variableAPR && variableAPR > 0 ? ethers.utils.parseUnits(aprString, precision) : ZERO;
-          isNegativeYield = poolAPRData ? poolAPRData.fees.add(temp).gt(ZERO) : true;
-        }
+        const variableAPR = poolAPRData?.variableAPR ?? previousPoolData.variableAPR;
 
         return {
           ...previousPoolData,
           variableAPR,
-          isNegativeYield,
+          isNegativeYield: poolAPRData?.negativeYield ?? previousPoolData.isNegativeYield,
         };
       }),
     }));
