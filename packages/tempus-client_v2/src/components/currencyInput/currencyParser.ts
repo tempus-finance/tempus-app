@@ -28,9 +28,9 @@ export const formatValueToCurrency = (value: string, precision?: number): string
 
     const filteredLeftCharacters = leftCharacters.filter((v: string) => checkIfNumberRegExp.test(v));
     const filteredRightCharacters = rightCharacters.filter((v: string) => checkIfNumberRegExp.test(v));
-    const truncatedRightCharacters = precision ? rightCharacters.slice(0, precision) : rightCharacters;
+    const truncatedRightCharacters = precision ? filteredRightCharacters.slice(0, precision) : filteredRightCharacters;
 
-    if (filteredRightCharacters.length) {
+    if (truncatedRightCharacters.length) {
       return `${NumberUtils.formatToCurrency(filteredLeftCharacters.join(''))}.${truncatedRightCharacters.join('')}`;
     } else {
       return `${NumberUtils.formatToCurrency(filteredLeftCharacters.join(''))}.`;
