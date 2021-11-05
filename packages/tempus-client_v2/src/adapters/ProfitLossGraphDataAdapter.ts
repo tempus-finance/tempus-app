@@ -2,13 +2,13 @@ import { BigNumber, ethers } from 'ethers';
 import { JsonRpcSigner } from '@ethersproject/providers';
 import getStatisticsService from '../services/getStatisticsService';
 import StatisticsService from '../services/StatisticsService';
-import ChartDataPoint from '../interfaces/ChartDataPoint';
-import { div18f, mul18f } from '../utils/weiMath';
 import TempusControllerService from '../services/TempusControllerService';
 import getTempusControllerService from '../services/getTempusControllerService';
+import getERC20TokenService from '../services/getERC20TokenService';
+import ChartDataPoint from '../interfaces/ChartDataPoint';
+import { div18f, mul18f } from '../utils/weiMath';
 import { BLOCK_DURATION_SECONDS, SECONDS_IN_A_DAY } from '../constants';
 import { PoolData } from '../context/poolDataContext';
-import getERC20TokenService from '../services/getERC20TokenService';
 
 type ProfitLossGraphDataAdapterParameters = {
   signer: JsonRpcSigner;
@@ -42,7 +42,7 @@ class ProfitLossGraphDataAdapter {
     try {
       blocksToQuery = await this.fetchDataPointBlocks();
     } catch (error) {
-      console.error('TVLChartDataAdapter generateChartData() - Failed to fetch data point blocks.', error);
+      console.error('Failed to fetch data point blocks.', error);
       return Promise.reject(error);
     }
 
@@ -61,7 +61,7 @@ class ProfitLossGraphDataAdapter {
       });
       liquidationValues = await Promise.all(liquidationValuesPromises);
     } catch (error) {
-      console.error('TVLChartDataAdapter generateChartData() - Failed to fetch TVL for Tempus pools.', error);
+      console.error('Failed to fetch liquidation value for user.', error);
       return Promise.reject(error);
     }
 
@@ -125,7 +125,7 @@ class ProfitLossGraphDataAdapter {
     try {
       currentBlock = await this.signer.provider.getBlock('latest');
     } catch (error) {
-      console.error('TVLChartDataAdapter fetchDataPointBlocks() - Failed to fetch latest block data.');
+      console.error('Failed to fetch latest block data.');
       return Promise.reject(error);
     }
 
@@ -139,7 +139,7 @@ class ProfitLossGraphDataAdapter {
       }
       pastBlocks = await Promise.all(blockFetchPromises);
     } catch (error) {
-      console.error('TVLChartDataAdapter fetchDataPointBlocks() - Failed to fetch block block data for past days.');
+      console.error('Failed to fetch block block data for past days.');
       return Promise.reject(error);
     }
 
@@ -147,7 +147,7 @@ class ProfitLossGraphDataAdapter {
   }
 
   /**
-   * Returns the sum of all Tempus Pools TVL at specified block number
+   * Returns user liquidation value for specific block
    */
   private async getUserLiquidationValueForBlock(
     block: ethers.providers.Block,
@@ -198,7 +198,7 @@ class ProfitLossGraphDataAdapter {
       ]);
       return mul18f(liquidationValueInBackingTokens, backingTokenRate);
     } catch (error) {
-      console.error('TVLChartDataAdapter getTempusTotalTVL() - Failed to fetch TVL for tempus pools.');
+      console.error('Failed to fetch liquidation value for user.');
       return Promise.reject(error);
     }
   }
