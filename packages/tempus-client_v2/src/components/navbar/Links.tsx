@@ -34,7 +34,7 @@ const Links = () => {
         <li onClick={onDashboardClick}>{getText('dashboard', language)}</li>
         {/* <li>{getText('analytics', language)}</li> */}
         <Community />
-        <li>{getText('settings', language)}</li>
+        {/*<li>{getText('settings', language)}</li>*/}
       </ul>
     </div>
   );

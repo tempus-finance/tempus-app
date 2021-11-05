@@ -61,6 +61,22 @@ const Sidebar: FC<SidebarProps> = ({ initialView, onSelectedView }) => {
     }
   }, [activePoolData.address]);
 
+  const withdrawHidden = useMemo(() => {
+    const { userPrincipalsBalance, userYieldsBalance, userLPTokenBalance } = activePoolData;
+
+    if (!userPrincipalsBalance || !userYieldsBalance || !userLPTokenBalance) {
+      return true;
+    }
+    return userPrincipalsBalance.isZero() && userYieldsBalance.isZero() && userLPTokenBalance.isZero();
+  }, [activePoolData]);
+
+  const swapHidden = useMemo(() => {
+    if (!activePoolData.userPrincipalsBalance || !activePoolData.userYieldsBalance) {
+      return true;
+    }
+    return activePoolData.userPrincipalsBalance.isZero() && activePoolData.userYieldsBalance.isZero();
+  }, [activePoolData.userPrincipalsBalance, activePoolData.userYieldsBalance]);
+
   return (
     <div className="tc__sidebar-container">
       <TokenPairIcon parentTicker={activePoolData.backingToken} childTicker={activePoolData.yieldBearingToken} />
@@ -80,6 +96,10 @@ const Sidebar: FC<SidebarProps> = ({ initialView, onSelectedView }) => {
         </Typography>
       </div>
       {basicViews.map(basicViewName => {
+        if (basicViewName === 'Withdraw' && withdrawHidden) {
+          return null;
+        }
+
         const selected = selectedView === basicViewName;
         return (
           <div
@@ -101,6 +121,10 @@ const Sidebar: FC<SidebarProps> = ({ initialView, onSelectedView }) => {
         </Typography>
       </div>
       {advancedViews.map(advancedViewName => {
+        if (advancedViewName === 'Swap' && swapHidden) {
+          return null;
+        }
+
         const selected = selectedView === advancedViewName;
         return (
           <div

@@ -87,6 +87,7 @@ const TokenSelector: FC<TokenSelectorProps> = ({
     <FormControl size="medium">
       <div className="tc__token-selector-container">
         <Select
+          fullWidth
           variant="standard"
           labelId="tf__token-selector"
           value={token}
