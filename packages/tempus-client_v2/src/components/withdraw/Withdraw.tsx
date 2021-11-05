@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { ethers, BigNumber } from 'ethers';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
 import { getDataForPool, PoolDataContext } from '../../context/poolDataContext';
@@ -17,7 +17,11 @@ import Typography from '../typography/Typography';
 
 import './Withdraw.scss';
 
-const Withdraw = () => {
+type WithdrawOutProps = {
+  onWithdraw: () => void;
+};
+
+const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
   const { poolData, selectedPool } = useContext(PoolDataContext);
   const { userWalletSigner } = useContext(WalletContext);
 
@@ -268,7 +272,7 @@ const Withdraw = () => {
             tempusPool={selectedPoolData}
             disabled={executeDisabled}
             onExecute={onExecute}
-            onExecuted={() => {}}
+            onExecuted={onWithdraw}
           />
         </div>
       </SectionContainer>
