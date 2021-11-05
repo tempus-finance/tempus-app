@@ -74,7 +74,7 @@ class ProfitLossGraphDataAdapter {
         const valueDiff = currentValue.sub(previousValue);
         const valueRatio = div18f(valueDiff, previousValue);
 
-        valueIncrease = mul18f(valueRatio, ethers.utils.parseEther('100'));
+        valueIncrease = valueRatio;
       }
 
       return {
@@ -133,7 +133,7 @@ class ProfitLossGraphDataAdapter {
     try {
       const blockFetchPromises = [];
       // Fetch Blocks for previous 29 days (1 block per day)
-      for (let i = 29; i > 0; i--) {
+      for (let i = 29; i > 0; i -= 2) {
         const blockToQuery = currentBlock.number - (currentBlock.number % blockInterval) - i * blockInterval;
         blockFetchPromises.push(this.signer.provider.getBlock(blockToQuery));
       }

@@ -2,20 +2,17 @@ import { format } from 'date-fns';
 import { useMemo } from 'react';
 import { TooltipProps } from 'recharts';
 import { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent';
+import NumberUtils from '../../../services/NumberUtils';
 import Typography from '../../typography/Typography';
+import PercentageLabel from '../../pool/percentageLabel/PercentageLabel';
+import Spacer from '../../spacer/spacer';
 
 const ProfitLossChartTooltip = (props: TooltipProps<ValueType, NameType>) => {
   const { active, payload } = props;
 
   const valueFormatted = useMemo(() => {
     if (active && payload && payload[0]) {
-      return payload[0].payload.value;
-    }
-  }, [active, payload]);
-
-  const dateFormatted = useMemo(() => {
-    if (active && payload && payload[0]) {
-      return format(payload[0].payload.date, 'd MMM yyyy');
+      return NumberUtils.formatToCurrency(payload[0].payload.value.toString(), 2, '$');
     }
   }, [active, payload]);
 
@@ -25,11 +22,21 @@ const ProfitLossChartTooltip = (props: TooltipProps<ValueType, NameType>) => {
     }
   }, [active, payload]);
 
+  const dateFormatted = useMemo(() => {
+    if (active && payload && payload[0]) {
+      return format(payload[0].payload.date, 'd MMM yyyy');
+    }
+  }, [active, payload]);
+
   return (
     <div className="tc__profitLossChartTooltip">
-      <Typography variant="body-text">{valueFormatted}</Typography>
-      <Typography variant="body-text">{valueIncreaseFormatted}</Typography>
-      <Typography variant="body-text">{dateFormatted}</Typography>
+      <Typography variant="h4">{valueFormatted}</Typography>
+      <Spacer size={6} />
+      <PercentageLabel percentage={valueIncreaseFormatted} />
+      <Spacer size={6} />
+      <Typography variant="body-text" color="title">
+        {dateFormatted}
+      </Typography>
     </div>
   );
 };
