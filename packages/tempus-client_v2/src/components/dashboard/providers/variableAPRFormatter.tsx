@@ -1,4 +1,5 @@
 import { useContext, useMemo } from 'react';
+import { ZERO } from '../../../constants';
 import { PoolData, getDataForPool, PoolDataContext } from '../../../context/poolDataContext';
 import { Ticker } from '../../../interfaces/Token';
 import NumberUtils from '../../../services/NumberUtils';
@@ -47,7 +48,12 @@ function getParentAPR(parentId: Ticker, poolData: PoolData[]): number {
   });
 
   const childrenVariableAPR = parentChildren
-    .map(child => child.variableAPR)
+    .map(child => {
+      if (child.isNegativeYield && child.userBalanceUSD?.lte(ZERO)) {
+        return Number.MIN_SAFE_INTEGER;
+      }
+      return child.variableAPR;
+    })
     .filter(variableAPR => variableAPR !== null);
 
   return Math.max(...childrenVariableAPR);

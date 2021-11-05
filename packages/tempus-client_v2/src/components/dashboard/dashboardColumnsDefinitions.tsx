@@ -13,6 +13,7 @@ export const dashboardColumnsDefinitions: ExtraDataColumn[] = [
   {
     name: 'protocol',
     title: 'Protocol',
+    // TODO - Hide protocol icons from children that are hidden
     getCellValue: (row: DashboardRowChild | DashboardRowParent) => {
       if (isParentRow(row)) {
         return row.protocols;
@@ -24,17 +25,6 @@ export const dashboardColumnsDefinitions: ExtraDataColumn[] = [
   {
     name: 'maturity',
     title: 'Maturity',
-    getCellValue: row => {
-      if (row.maturityRange && row.maturityRange.length === 2) {
-        const [min, max] = row.maturityRange;
-        if (min.getTime() === max.getTime()) {
-          return [min.getTime()];
-        }
-
-        return [min.getTime(), max.getTime()];
-      }
-      return [row.maturityDate.getTime()];
-    },
   },
   {
     name: 'fixedAPR',
