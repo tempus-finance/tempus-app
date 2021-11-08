@@ -30,7 +30,10 @@ class ProfitLossGraphDataAdapter {
     this.signer = params.signer;
   }
 
-  public async generateChartData(poolData: PoolData, userWalletAddress: string): Promise<ChartDataPoint[]> {
+  public async generateChartData(
+    poolData: PoolData,
+    userWalletAddress: string,
+  ): Promise<{ data: ChartDataPoint[]; numberOfPastDays: number }> {
     if (!this.statisticsService) {
       console.error(`Attempted to use ProfitLossGraphDataAdapter before initializing it.`);
       return Promise.reject();
@@ -84,7 +87,18 @@ class ProfitLossGraphDataAdapter {
       };
     });
 
-    return chartData;
+    let numberOfPastDays = 30;
+    if (minBlockNumberForUser) {
+      numberOfPastDays = (Date.now() - minBlockNumberForUser) / (SECONDS_IN_A_DAY * 1000);
+    }
+
+    return {
+      data: chartData.slice(
+        chartData.findIndex(data => data.value > 0),
+        chartData.length - 1,
+      ),
+      numberOfPastDays: Math.min(30, Math.floor(numberOfPastDays)),
+    };
   }
 
   private async getFirstDepositBlockForUser(poolAddress: string, userWalletAddress: string): Promise<number | null> {
