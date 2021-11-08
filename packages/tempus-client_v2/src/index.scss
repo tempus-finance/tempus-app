@@ -1,13 +1,24 @@
 @import './constants.scss';
 
+html,
+body,
+#root {
+  height: 100%;
+}
+
 body {
-  font-family: Manrope, 'sans-serif';
+  font-family: 'Source Sans Pro', sans-serif;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 20px;
   color: $text-color;
-  background-color: $background-color;
+  background: $background;
   margin: 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-y: scroll;
+  height: 100%;
 }
 
 .tc__backdrop {
