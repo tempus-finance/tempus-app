@@ -490,44 +490,42 @@ const Deposit: FC<DepositProps> = ({ narrow, poolDataAdapter }) => {
               </Typography>
             </div>
             <Spacer size={20} />
-            <div className="tc__deposit__yield-body__row">
-              <div className="tc__deposit__card-row-title">
-                <Typography variant="body-text" color="title">
-                  {getText('fixedYieldAtMaturity', language)}
-                </Typography>
-              </div>
-              <div className="tc__deposit__card-row-change">
-                {fixedYieldAtMaturityFormatted && (
+            {fixedYieldAtMaturityFormatted && fixedYieldAtMaturityUSDFormatted && (
+              <div className="tc__deposit__yield-body__row">
+                <div className="tc__deposit__card-row-title">
+                  <Typography variant="body-text" color="title">
+                    {getText('fixedYieldAtMaturity', language)}
+                  </Typography>
+                </div>
+                <div className="tc__deposit__card-row-change">
                   <Typography variant="body-text" color="success">
                     {`+${fixedYieldAtMaturityFormatted} ${activePoolData.yieldBearingToken}`}
                   </Typography>
-                )}
-              </div>
-              <div className="tc__deposit__card-row-value">
-                {fixedYieldAtMaturityUSDFormatted && (
+                </div>
+                <div className="tc__deposit__card-row-value">
                   <Typography variant="body-text" color="success">
                     {`+${fixedYieldAtMaturityUSDFormatted}`}
                   </Typography>
-                )}
+                </div>
               </div>
-            </div>
-            <div className="tc__deposit__yield-body__row">
-              <div className="tc__deposit__card-row-title">
-                <Typography variant="body-text" color="title">
-                  {getText('totalAvailableAtMaturity', language)}
-                </Typography>
-              </div>
-              <div className="tc__deposit__card-row-change">
-                {totalAvailableAtMaturityFormatted && (
+            )}
+            {totalAvailableAtMaturityFormatted && totalAvailableAtMaturityUSDFormatted && (
+              <div className="tc__deposit__yield-body__row">
+                <div className="tc__deposit__card-row-title">
+                  <Typography variant="body-text" color="title">
+                    {getText('totalAvailableAtMaturity', language)}
+                  </Typography>
+                </div>
+                <div className="tc__deposit__card-row-change">
                   <Typography variant="body-text">
                     {`${totalAvailableAtMaturityFormatted} ${activePoolData.yieldBearingToken}`}
                   </Typography>
-                )}
+                </div>
+                <div className="tc__deposit__card-row-value">
+                  <Typography variant="body-text">{totalAvailableAtMaturityUSDFormatted}</Typography>
+                </div>
               </div>
-              <div className="tc__deposit__card-row-value">
-                <Typography variant="body-text">{totalAvailableAtMaturityUSDFormatted}</Typography>
-              </div>
-            </div>
+            )}
             <Spacer size={30} />
             <div className="tf__flex-row-space-between-v">
               <Typography variant="button-text">
