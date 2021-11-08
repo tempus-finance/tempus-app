@@ -1,4 +1,5 @@
 .tc__currencyInput-container {
+  position: relative;
   display: flex;
   align-items: center;
   box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.25);
@@ -15,4 +16,19 @@
     height: 40px;
     border-radius: 0px 5px 5px 0px;
   }
+}
+
+.tc__currencyInput-disabled {
+  background-color: #e8e8e8;
+}
+
+.tc__currencyInput-tooltip {
+  position: absolute;
+  transform: translateY(100%);
+  bottom: -8px;
+  left: 0px;
+  background: #fcfcfc;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 5px;
+  padding: 15px;
 }
