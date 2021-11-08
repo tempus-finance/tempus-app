@@ -486,7 +486,7 @@ const Deposit: FC<DepositProps> = ({ narrow, poolDataAdapter }) => {
         <div className="tc__deposit__to__body">
           <SectionContainer id="Fixed" selectable selected={selectedYield === 'Fixed'} onSelected={onSelectYield}>
             <div className="tf__flex-row-space-between-v">
-              <Typography variant="h2">{getText('fixYourFutureYield', language)}</Typography>
+              <Typography variant="h4">{getText('fixYourFutureYield', language)}</Typography>
               <Typography variant="body-text" color="title">
                 {getText('fixedYield', language)}
               </Typography>
@@ -545,7 +545,7 @@ const Deposit: FC<DepositProps> = ({ narrow, poolDataAdapter }) => {
           <Spacer size={15} />
           <SectionContainer id="Variable" selectable selected={selectedYield === 'Variable'} onSelected={onSelectYield}>
             <div className="tf__flex-row-space-between-v">
-              <Typography variant="h2">{getText('provideLiquidity', language)}</Typography>
+              <Typography variant="h4">{getText('provideLiquidity', language)}</Typography>
               <Typography variant="body-text" color="title">
                 {getText('variableYield', language)}
               </Typography>
