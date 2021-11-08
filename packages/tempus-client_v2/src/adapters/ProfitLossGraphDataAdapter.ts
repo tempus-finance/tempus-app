@@ -132,7 +132,7 @@ class ProfitLossGraphDataAdapter {
     let pastBlocks: ethers.providers.Block[];
     try {
       const blockFetchPromises = [];
-      // Fetch Blocks for previous 29 days (1 block per day)
+      // Fetch Blocks for previous 29 days (1 block per day) (every other day is included)
       for (let i = 29; i > 0; i -= 2) {
         const blockToQuery = currentBlock.number - (currentBlock.number % blockInterval) - i * blockInterval;
         blockFetchPromises.push(this.signer.provider.getBlock(blockToQuery));
