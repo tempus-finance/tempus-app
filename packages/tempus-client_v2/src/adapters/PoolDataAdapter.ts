@@ -817,7 +817,7 @@ export default class PoolDataAdapter {
     }
 
     try {
-      const ticker$ = interval(POLLING_INTERVAL);
+      const ticker$ = timer(0, POLLING_INTERVAL);
 
       return ticker$.pipe(
         switchMap(() => {

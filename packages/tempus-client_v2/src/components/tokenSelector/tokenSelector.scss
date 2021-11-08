@@ -9,6 +9,7 @@
   align-items: center;
   padding-left: 10px;
   padding-right: 10px;
+  min-width: 90px;
 
   .MuiSelect-select:focus {
     background-color: white;
@@ -31,5 +32,5 @@
 .tf__token-selector__menu-item {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
 }

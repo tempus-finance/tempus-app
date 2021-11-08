@@ -13,6 +13,13 @@
 
     .tc__pool__body__item-title {
       width: 150px;
+      display: flex;
+      align-items: center;
     }
   }
+}
+
+.tc__pool-feesTooltip {
+  position: relative;
+  cursor: pointer;
 }

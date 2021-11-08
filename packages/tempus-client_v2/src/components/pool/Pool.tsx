@@ -1,4 +1,4 @@
-import { useContext, useEffect, useMemo, useState } from 'react';
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { ethers, BigNumber } from 'ethers';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
 import { LanguageContext } from '../../context/languageContext';
@@ -10,6 +10,9 @@ import Typography from '../typography/Typography';
 import PercentageLabel from './percentageLabel/PercentageLabel';
 
 import './Pool.scss';
+import InfoIcon from '../icons/InfoIcon';
+import Spacer from '../spacer/spacer';
+import FeesTooltip from './feesTooltip/feesTooltip';
 
 const Pool = () => {
   const { userWalletSigner } = useContext(WalletContext);
@@ -18,6 +21,7 @@ const Pool = () => {
 
   const [tvlChangePercentage, setTVLChangePercentage] = useState<BigNumber | null>(null);
   const [volume, setVolume] = useState<BigNumber | null>(null);
+  const [feesTooltipOpen, setFeesTooltipOpen] = useState<boolean>(false);
 
   /**
    * Currently selected pool in the dashboard
@@ -80,6 +84,12 @@ const Pool = () => {
     fetchVolume();
   }, [activePoolData, userWalletSigner]);
 
+  const onToggleFeesTooltip = useCallback(() => {
+    setFeesTooltipOpen(prevValue => {
+      return !prevValue;
+    });
+  }, []);
+
   const tvlFormatted = useMemo(() => {
     if (!activePoolData.tvl) {
       return null;
@@ -140,6 +150,16 @@ const Pool = () => {
             <Typography variant="card-body-text" color="title">
               {getText('fees', language)}
             </Typography>
+            <Spacer size={5} />
+            <div className="tc__pool-feesTooltip" onClick={onToggleFeesTooltip}>
+              <InfoIcon width={14} height={14} fillColor="#7A7A7A" />
+              {feesTooltipOpen && (
+                <>
+                  <div className="tc__backdrop" />
+                  <FeesTooltip />
+                </>
+              )}
+            </div>
           </div>
         </div>
       </div>

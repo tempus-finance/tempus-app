@@ -172,7 +172,7 @@ const Mint: FC<MintInProps> = ({ narrow }) => {
       const isEthDeposit = selectedToken === 'ETH';
 
       return poolDataAdapter.deposit(
-        activePoolData.ammAddress,
+        activePoolData.address,
         tokenAmount,
         userWalletAddress,
         isBackingToken,
