@@ -269,7 +269,7 @@ const Approve: FC<ApproveButtonProps> = props => {
         color="primary"
         variant="contained"
         onClick={onApprove}
-        disabled={disabled || approveInProgress || !tokenToApproveAddress}
+        disabled={disabled || approveInProgress || !tokenToApproveAddress || Boolean(approved)}
         className={`tc__approve-button ${approveInProgress && 'tc__approve-button__pending'}`}
       >
         <Typography variant="button-text" color="inverted">
@@ -280,7 +280,7 @@ const Approve: FC<ApproveButtonProps> = props => {
           )}
           {approved && (
             <>
-              {getText('approved', language)} <TickIcon />
+              {getText('approved', language)} <TickIcon fillColor="white" />
             </>
           )}
 
