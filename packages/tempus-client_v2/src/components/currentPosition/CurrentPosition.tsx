@@ -143,8 +143,8 @@ const CurrentPosition: FC<CurrentPositionInProps> = ({ language }) => {
         <div className="tc__currentPosition__body__bar">
           <div className="tc__currentPosition__body__bar__1" style={{ width: `${principalsPercentage}%` }} />
           <div className="tc__currentPosition__body__bar__2" style={{ width: `${stakedPrincipalsPercentage}%` }} />
-          <div className="tc__currentPosition__body__bar__3" style={{ width: `${yieldsPercentage}%` }} />
-          <div className="tc__currentPosition__body__bar__4" style={{ width: `${stakedYieldsPercentage}%` }} />
+          <div className="tc__currentPosition__body__bar__3" style={{ width: `${stakedYieldsPercentage}%` }} />
+          <div className="tc__currentPosition__body__bar__4" style={{ width: `${yieldsPercentage}%` }} />
         </div>
         <div className="tc__currentPosition__body__item">
           <div className="tc__currentPosition__body__item__with-icon">
