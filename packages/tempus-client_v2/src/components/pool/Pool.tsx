@@ -134,7 +134,7 @@ const Pool = () => {
               {getText('tvl', language)}
             </Typography>
           </div>
-          {tvlChangePercentageFormatted && <PercentageLabel percentage={tvlChangePercentageFormatted} />}
+          {/*TODO - Show this for all rows after 14 days of pool lifetime {tvlChangePercentageFormatted && <PercentageLabel percentage={tvlChangePercentageFormatted} />} */}
           <Typography variant="card-body-text">${tvlFormatted}</Typography>
         </div>
         <div className="tc__pool__body__item">
