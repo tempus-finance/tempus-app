@@ -46,7 +46,9 @@ const MaturityFormatter = ({ value, row }: any) => {
     return (
       <div className="tf__dashboard__grid__maturity">
         <div className="tf__dashboard__grid__maturity-timeLeft">
-          <div>{format(getChildMaturity(row.id, poolData), dashboardChildMaturityFormat)}</div>
+          <Typography color="default" variant="body-text">
+            {format(getChildMaturity(row.id, poolData), dashboardChildMaturityFormat)}
+          </Typography>
         </div>
         <ProgressBar value={progressBarValue} />
       </div>

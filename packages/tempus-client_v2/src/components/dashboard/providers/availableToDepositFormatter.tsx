@@ -55,12 +55,12 @@ const AvailableToDepositFormatter = (props: DataTypeProvider.ValueFormatterProps
       <div className="tf__dashboard__grid__avail-to-deposit-container">
         <div className="tf__dashboard__grid__avail-to-deposit-token-row">
           <>
-            <p>
+            <Typography color="default" variant="body-text">
               {NumberUtils.formatWithMultiplier(
                 Number(ethers.utils.formatEther(childAvailableToDeposit.backingToken)),
                 2,
               )}
-            </p>
+            </Typography>
             <div className="tf__dashboard__grid__avail-to-deposit-token-ticker-container">
               <Typography variant="body-text">{row.tempusPool.backingToken}</Typography>
               <Spacer size={5} />
@@ -70,12 +70,12 @@ const AvailableToDepositFormatter = (props: DataTypeProvider.ValueFormatterProps
         </div>
         <div className="tf__dashboard__grid__avail-to-deposit-token-row">
           <>
-            <p>
+            <Typography color="default" variant="body-text">
               {NumberUtils.formatWithMultiplier(
                 Number(ethers.utils.formatEther(childAvailableToDeposit.yieldBearingToken)),
                 2,
               )}
-            </p>
+            </Typography>
             <div className="tf__dashboard__grid__avail-to-deposit-token-ticker-container">
               <Typography variant="body-text">{row.tempusPool.yieldBearingToken}</Typography>
               <Spacer size={5} />

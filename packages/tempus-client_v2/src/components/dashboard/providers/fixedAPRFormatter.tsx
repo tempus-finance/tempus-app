@@ -40,7 +40,11 @@ const FixedAPRFormatter = ({ row }: any) => {
   return (
     <div className="tf__dashboard__body__apy">
       <APYGraph apy={apr} />
-      <div className="tf__dashboard__body__apy-value">{NumberUtils.formatPercentage(apr, 2)}</div>
+      <div className="tf__dashboard__body__apy-value">
+        <Typography color="default" variant="body-text">
+          {NumberUtils.formatPercentage(apr, 2)}
+        </Typography>
+      </div>
     </div>
   );
 };
