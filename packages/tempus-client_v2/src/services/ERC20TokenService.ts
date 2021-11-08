@@ -1,4 +1,4 @@
-import { BigNumber, Contract, ContractTransaction } from 'ethers';
+import { BigNumber, Contract, ContractTransaction, CallOverrides } from 'ethers';
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
 import { ERC20 } from '../abi/ERC20';
 import ERC20ABI from '../abi/ERC20.json';
@@ -29,7 +29,7 @@ class ERC20TokenService {
     this.contract = new Contract(params.address, params.abi, params.signerOrProvider) as ERC20;
   }
 
-  async balanceOf(address: string): Promise<BigNumber> {
+  async balanceOf(address: string, overrides?: CallOverrides): Promise<BigNumber> {
     if (!this.contract) {
       console.error('ERC20TokenService - balanceOf() - Attempted to use ERC20TokenService before initializing it!');
       return Promise.reject();
@@ -39,10 +39,18 @@ class ERC20TokenService {
     try {
       // ETH is a native token that does not have an ERC20 contract, we need to get balance for it like this.
       if (this.contract.address === ZERO_ETH_ADDRESS) {
-        return this.contract.provider.getBalance(address);
+        if (overrides) {
+          return this.contract.provider.getBalance(address, overrides.blockTag);
+        } else {
+          return this.contract.provider.getBalance(address);
+        }
       }
 
-      balance = await this.contract.balanceOf(address);
+      if (overrides) {
+        balance = await this.contract.balanceOf(address, overrides);
+      } else {
+        balance = await this.contract.balanceOf(address);
+      }
     } catch (error) {
       console.error(`ERC20TokenService - balanceOf() - Failed to get balance of ${address}!`);
       return Promise.reject(error);

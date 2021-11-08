@@ -228,6 +228,7 @@ class StatisticsService {
     principalAmount: BigNumber,
     yieldsAmount: BigNumber,
     isBackingToken: boolean,
+    overrides?: CallOverrides,
   ): Promise<BigNumber> {
     if (!this.stats || !this.tempusAMMService) {
       console.error(
@@ -250,14 +251,26 @@ class StatisticsService {
     }
 
     try {
-      return await this.stats.estimateExitAndRedeem(
-        tempusAmmAddress,
-        lpAmount,
-        principalAmount,
-        yieldsAmount,
-        maxLeftoverShares,
-        isBackingToken,
-      );
+      if (overrides) {
+        return await this.stats.estimateExitAndRedeem(
+          tempusAmmAddress,
+          lpAmount,
+          principalAmount,
+          yieldsAmount,
+          maxLeftoverShares,
+          isBackingToken,
+          overrides,
+        );
+      } else {
+        return await this.stats.estimateExitAndRedeem(
+          tempusAmmAddress,
+          lpAmount,
+          principalAmount,
+          yieldsAmount,
+          maxLeftoverShares,
+          isBackingToken,
+        );
+      }
     } catch (error) {
       console.error(`Failed to get estimated withdraw amount`, error);
       console.log('Debug info:');

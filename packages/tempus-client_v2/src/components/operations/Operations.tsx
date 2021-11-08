@@ -83,7 +83,7 @@ const Operations: FC<OperationsInProps> = () => {
           {!hideUserData && (
             <div className="tc__operations-poolUserStats">
               <CurrentPosition language={language} />
-              <ProfitLoss language={language} />
+              <ProfitLoss />
             </div>
           )}
         </div>

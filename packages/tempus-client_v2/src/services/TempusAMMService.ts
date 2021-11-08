@@ -254,10 +254,21 @@ class TempusAMMService {
     }
 
     // Fetch amount of staked principals and yields
-    const result = await this.getExpectedTokensOutGivenBPTIn(tempusAMM, userLPBalance);
+    let stakedTokens: {
+      principals: BigNumber;
+      yields: BigNumber;
+    };
+    if (userLPBalance.isZero()) {
+      stakedTokens = {
+        principals: BigNumber.from('0'),
+        yields: BigNumber.from('0'),
+      };
+    } else {
+      stakedTokens = await this.getExpectedTokensOutGivenBPTIn(tempusAMM, userLPBalance);
+    }
 
     // Max leftover shares is 0.1% of principals + stakedPrincipals
-    return userPrincipalsBalance.add(result.principals).div(BigNumber.from('1000'));
+    return userPrincipalsBalance.add(stakedTokens.principals).div(BigNumber.from('1000'));
   }
 }
 
