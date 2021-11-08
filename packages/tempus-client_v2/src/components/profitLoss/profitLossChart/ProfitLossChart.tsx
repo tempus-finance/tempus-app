@@ -13,6 +13,7 @@ const ProfitLossChart = () => {
   const { poolData, selectedPool } = useContext(PoolDataContext);
 
   const [chartData, setChartData] = useState<ChartDataPoint[]>([]);
+  const [startDate, setStartDate] = useState<number | null>(null);
 
   const activePoolData = useMemo(() => {
     return getDataForPool(selectedPool, poolData);
@@ -25,7 +26,10 @@ const ProfitLossChart = () => {
       }
       const profitLossGraphDataAdapter = getProfitLossGraphDataAdapter(userWalletSigner);
 
-      setChartData(await profitLossGraphDataAdapter.generateChartData(activePoolData, userWalletAddress));
+      const result = await profitLossGraphDataAdapter.generateChartData(activePoolData, userWalletAddress);
+
+      setChartData(result.data);
+      setStartDate(result.numberOfPastDays);
     };
     fetchChartData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -53,11 +57,12 @@ const ProfitLossChart = () => {
         </AreaChart>
       </ResponsiveContainer>
       <div className="tf__flex-row-space-between">
-        {getPastDaysNumber(30, 3).map((value: number) => (
-          <Typography key={value} variant="card-body-text">
-            {value}
-          </Typography>
-        ))}
+        {startDate &&
+          getPastDaysNumber(startDate, 3).map((value: number) => (
+            <Typography key={value} variant="card-body-text">
+              {value}
+            </Typography>
+          ))}
       </div>
     </>
   );
