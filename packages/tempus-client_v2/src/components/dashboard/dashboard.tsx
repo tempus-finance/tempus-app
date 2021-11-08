@@ -219,7 +219,7 @@ const Dashboard: FC<DashboardProps> = ({ hidden, userWalletAddress, rows, onRowA
     <div className="tf__dashboard__section__container" hidden={hidden}>
       <div className="tc__dashboard__container">
         <div className="tf__dashboard__header">
-          <Typography color="default" variant="h4">
+          <Typography color="default" variant="h2">
             Available Pools
           </Typography>
           <div className="tf__dashboard__header__actions">
