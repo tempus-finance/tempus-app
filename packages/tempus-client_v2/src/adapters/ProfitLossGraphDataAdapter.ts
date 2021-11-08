@@ -95,7 +95,7 @@ class ProfitLossGraphDataAdapter {
     return {
       data: chartData.slice(
         chartData.findIndex(data => data.value > 0),
-        chartData.length - 1,
+        chartData.length,
       ),
       numberOfPastDays: Math.min(30, Math.floor(numberOfPastDays)),
     };
