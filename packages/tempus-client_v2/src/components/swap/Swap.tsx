@@ -235,6 +235,7 @@ const Swap = () => {
             onChange={onAmountChange}
             disabled={!selectedToken}
             onMaxClick={onMaxClick}
+            disabledTooltip="Please select the token first"
           />
           <Spacer size={15} />
           <Typography variant="card-body-text">Balance</Typography>

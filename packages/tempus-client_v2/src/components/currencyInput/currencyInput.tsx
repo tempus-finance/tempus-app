@@ -2,6 +2,7 @@ import { FC, useCallback, useContext, useEffect, useState } from 'react';
 import { FormControl, TextField, Button, Divider } from '@material-ui/core';
 import { LanguageContext } from '../../context/languageContext';
 import getText from '../../localisation/getText';
+import Typography from '../typography/Typography';
 import { formatValueToCurrency } from './currencyParser';
 
 import './currencyInput.scss';
@@ -11,6 +12,7 @@ type CurrencyInputInProps = {
   placeholder?: string;
   precision?: number;
   disabled?: boolean;
+  disabledTooltip?: string;
 };
 
 type CurrencyInputOutProps = {
@@ -26,11 +28,14 @@ const CurrencyInput: FC<CurrencyInputProps> = ({
   defaultValue,
   placeholder,
   disabled,
+  disabledTooltip,
   onChange,
   onMaxClick,
 }: CurrencyInputProps) => {
   const { language } = useContext(LanguageContext);
+
   const [value, setValue] = useState<string>('');
+  const [disabledTooltipOpen, setDisabledTooltipOpen] = useState<boolean>(false);
 
   useEffect(() => {
     if (defaultValue || defaultValue === '') {
@@ -56,9 +61,20 @@ const CurrencyInput: FC<CurrencyInputProps> = ({
     }
   }, [onMaxClick]);
 
+  const handleContainerClick = useCallback(() => {
+    if (disabled) {
+      setDisabledTooltipOpen(prevState => !prevState);
+    }
+  }, [disabled]);
+
+  let containerClasses = 'tc__currencyInput-container';
+  if (disabled) {
+    containerClasses += ' tc__currencyInput-disabled';
+  }
+
   return (
     <FormControl>
-      <div className="tc__currencyInput-container">
+      <div className={containerClasses} onClick={handleContainerClick}>
         <TextField
           type="text"
           value={value}
@@ -75,6 +91,14 @@ const CurrencyInput: FC<CurrencyInputProps> = ({
         <Button disabled={disabled} onClick={handleMaxClick}>
           {getText('max', language)}
         </Button>
+        {disabledTooltipOpen && (
+          <>
+            <div className="tc__currencyInput-tooltip">
+              <Typography variant="card-body-text">{disabledTooltip}</Typography>
+            </div>
+            <div className="tc__backdrop" />
+          </>
+        )}
       </div>
     </FormControl>
   );

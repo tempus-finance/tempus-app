@@ -461,6 +461,8 @@ const Deposit: FC<DepositProps> = ({ narrow, poolDataAdapter }) => {
               onChange={onAmountChange}
               onMaxClick={onClickMax}
               disabled={!selectedToken || depositDisabled}
+              // TODO - Update text in case input is disabled because of negative yield
+              disabledTooltip="Please select the token first"
             />
             {usdValueFormatted && (
               <div className="tf__input__label">
