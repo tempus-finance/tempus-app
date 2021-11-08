@@ -25,21 +25,22 @@ const ProfitLoss = () => {
   }, [poolData, selectedPool]);
 
   useEffect(() => {
-    const fetchEstimatedWithdrawAmount = async () => {
-      const { ammAddress, userLPTokenBalance, userPrincipalsBalance, userYieldsBalance } = activePoolData;
+    const { ammAddress, userLPTokenBalance, userPrincipalsBalance, userYieldsBalance } = activePoolData;
 
-      if (!userWalletSigner || !userLPTokenBalance || !userPrincipalsBalance || !userYieldsBalance) {
-        return;
-      }
+    if (!userWalletSigner || !userLPTokenBalance || !userPrincipalsBalance || !userYieldsBalance) {
+      return;
+    }
 
-      const poolDataAdapter = getPoolDataAdapter(userWalletSigner);
-      poolDataAdapter
-        .getEstimatedWithdrawAmount(ammAddress, userLPTokenBalance, userPrincipalsBalance, userYieldsBalance, true)
-        .subscribe(estimate => {
-          setEstimatedWithdrawAmount(estimate);
-        });
+    const poolDataAdapter = getPoolDataAdapter(userWalletSigner);
+    const withdrawStream$ = poolDataAdapter
+      .getEstimatedWithdrawAmount(ammAddress, userLPTokenBalance, userPrincipalsBalance, userYieldsBalance, true)
+      .subscribe(estimate => {
+        setEstimatedWithdrawAmount(estimate);
+      });
+
+    return () => {
+      withdrawStream$.unsubscribe();
     };
-    fetchEstimatedWithdrawAmount();
   }, [activePoolData, userWalletSigner]);
 
   const estimatedWithdrawAmountFormatted = useMemo(() => {
