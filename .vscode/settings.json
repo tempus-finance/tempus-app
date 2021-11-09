@@ -3,6 +3,7 @@
   "typescript.tsdk": "./node_modules/typescript/lib",
   "files.exclude": {
     "**/node_modules/": true,
-    "**/._*": true
+    "**/._*": true,
+    "**/build": true
   }
 }

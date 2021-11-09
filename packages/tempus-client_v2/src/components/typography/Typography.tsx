@@ -11,7 +11,9 @@ type TypographyVariant =
   | 'button-text'
   | 'dropdown-text'
   | 'card-title'
-  | 'card-body-text';
+  | 'card-body-text'
+  | 'fractional';
+
 type TypographyColor = 'default' | 'accent' | 'inverted' | 'link' | 'title' | 'error' | 'success';
 
 const typographyStyleMap = new Map<TypographyVariant, CSSProperties>();
@@ -91,6 +93,13 @@ typographyStyleMap.set('card-body-text', {
   fontSize: '16px',
   fontStyle: 'normal',
   lineHeight: '20px',
+});
+typographyStyleMap.set('fractional', {
+  fontFamily: "'Source Sans Pro', sans-serif",
+  fontWeight: 400,
+  fontSize: '14px',
+  fontStyle: 'normal',
+  lineHeight: '17.6px',
 });
 
 interface TypographyProps {
