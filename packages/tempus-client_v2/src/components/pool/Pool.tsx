@@ -7,12 +7,13 @@ import { WalletContext } from '../../context/walletContext';
 import getText from '../../localisation/getText';
 import NumberUtils from '../../services/NumberUtils';
 import Typography from '../typography/Typography';
-// import PercentageLabel from './percentageLabel/PercentageLabel';
-
-import './Pool.scss';
 import InfoIcon from '../icons/InfoIcon';
 import Spacer from '../spacer/spacer';
 import FeesTooltip from './feesTooltip/feesTooltip';
+import AprTooltip from './aprTooltip/aprTooltip';
+// import PercentageLabel from './percentageLabel/PercentageLabel';
+
+import './Pool.scss';
 
 const Pool = () => {
   const { userWalletSigner } = useContext(WalletContext);
@@ -21,6 +22,7 @@ const Pool = () => {
 
   //const [tvlChangePercentage, setTVLChangePercentage] = useState<BigNumber | null>(null);
   const [volume, setVolume] = useState<BigNumber | null>(null);
+  const [aprTooltipOpen, setAprTooltipOpen] = useState<boolean>(false);
   const [feesTooltipOpen, setFeesTooltipOpen] = useState<boolean>(false);
 
   /**
@@ -84,6 +86,12 @@ const Pool = () => {
     fetchVolume();
   }, [activePoolData, userWalletSigner]);
 
+  const onToggleAprTooltip = useCallback(() => {
+    setAprTooltipOpen(prevValue => {
+      return !prevValue;
+    });
+  }, []);
+
   const onToggleFeesTooltip = useCallback(() => {
     setFeesTooltipOpen(prevValue => {
       return !prevValue;
@@ -123,6 +131,16 @@ const Pool = () => {
             <Typography variant="card-body-text" color="title">
               {getText('marketImpliedYield', language)}
             </Typography>
+            <Spacer size={5} />
+            <div className="tc__pool-aprTooltip" onClick={onToggleAprTooltip}>
+              <InfoIcon width={14} height={14} fillColor="#7A7A7A" />
+              {aprTooltipOpen && (
+                <>
+                  <div className="tc__backdrop" />
+                  <AprTooltip />
+                </>
+              )}
+            </div>
           </div>
           <Typography variant="card-body-text" color="accent">
             {NumberUtils.formatPercentage(activePoolData.fixedAPR, 2)}
