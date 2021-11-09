@@ -7,7 +7,7 @@ import { WalletContext } from '../../context/walletContext';
 import getText from '../../localisation/getText';
 import NumberUtils from '../../services/NumberUtils';
 import Typography from '../typography/Typography';
-import PercentageLabel from './percentageLabel/PercentageLabel';
+// import PercentageLabel from './percentageLabel/PercentageLabel';
 
 import './Pool.scss';
 import InfoIcon from '../icons/InfoIcon';
@@ -19,7 +19,7 @@ const Pool = () => {
   const { language } = useContext(LanguageContext);
   const { poolData, selectedPool } = useContext(PoolDataContext);
 
-  const [tvlChangePercentage, setTVLChangePercentage] = useState<BigNumber | null>(null);
+  //const [tvlChangePercentage, setTVLChangePercentage] = useState<BigNumber | null>(null);
   const [volume, setVolume] = useState<BigNumber | null>(null);
   const [feesTooltipOpen, setFeesTooltipOpen] = useState<boolean>(false);
 
@@ -35,7 +35,7 @@ const Pool = () => {
    * TVL from one week ago is used to calculate TVL change over time (percentage increase/decrease)
    * compared to current TVL.
    */
-  useEffect(() => {
+  /*useEffect(() => {
     const fetchTVLChangeData = async () => {
       if (!userWalletSigner || !activePoolData.tvl) {
         return;
@@ -55,7 +55,7 @@ const Pool = () => {
       }
     };
     fetchTVLChangeData();
-  }, [activePoolData, userWalletSigner]);
+  }, [activePoolData, userWalletSigner]);*/
 
   /**
    * Fetch Volume for pool in last 7 days
@@ -100,12 +100,12 @@ const Pool = () => {
     );
   }, [activePoolData.precision.backingToken, activePoolData.tvl]);
 
-  const tvlChangePercentageFormatted = useMemo(() => {
+  /*const tvlChangePercentageFormatted = useMemo(() => {
     if (!tvlChangePercentage) {
       return null;
     }
     return Number(ethers.utils.formatUnits(tvlChangePercentage, activePoolData.precision.backingToken));
-  }, [activePoolData.precision.backingToken, tvlChangePercentage]);
+  }, [activePoolData.precision.backingToken, tvlChangePercentage]);*/
 
   const volumeFormatted = useMemo(() => {
     if (!volume) {
