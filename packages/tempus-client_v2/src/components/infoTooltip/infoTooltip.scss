@@ -1,0 +1,17 @@
+.tc__infoTooltip {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.tc__infoTooltip-popup {
+  background: #fcfcfc;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 5px;
+  padding: 10px;
+  width: 350px;
+  z-index: 1;
+}

@@ -1,6 +1,7 @@
 import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { ethers, BigNumber } from 'ethers';
 import { catchError } from 'rxjs';
+import { interestRateProtectionTooltipText, liquidityProvisionTooltipText } from '../../constants';
 import { LanguageContext } from '../../context/languageContext';
 import { getDataForPool, PoolDataContext } from '../../context/poolDataContext';
 import { WalletContext } from '../../context/walletContext';
@@ -21,6 +22,7 @@ import Typography from '../typography/Typography';
 import TokenIcon from '../tokenIcon';
 import SectionContainer from '../sectionContainer/SectionContainer';
 import Spacer from '../spacer/spacer';
+import InfoTooltip from '../infoTooltip/infoTooltip';
 
 import './Deposit.scss';
 
@@ -486,7 +488,11 @@ const Deposit: FC<DepositProps> = ({ narrow, poolDataAdapter }) => {
         <div className="tc__deposit__to__body">
           <SectionContainer id="Fixed" selectable selected={selectedYield === 'Fixed'} onSelected={onSelectYield}>
             <div className="tf__flex-row-space-between-v">
-              <Typography variant="h4">{getText('fixYourFutureYield', language)}</Typography>
+              <div className="tf__flex-row-center-v">
+                <Typography variant="h4">{getText('fixYourFutureYield', language)}</Typography>
+                <Spacer size={10} />
+                <InfoTooltip text={interestRateProtectionTooltipText} />
+              </div>
               <Typography variant="body-text" color="title">
                 {getText('fixedYield', language)}
               </Typography>
@@ -545,7 +551,11 @@ const Deposit: FC<DepositProps> = ({ narrow, poolDataAdapter }) => {
           <Spacer size={15} />
           <SectionContainer id="Variable" selectable selected={selectedYield === 'Variable'} onSelected={onSelectYield}>
             <div className="tf__flex-row-space-between-v">
-              <Typography variant="h4">{getText('provideLiquidity', language)}</Typography>
+              <div className="tf__flex-row-center-v">
+                <Typography variant="h4">{getText('provideLiquidity', language)}</Typography>
+                <Spacer size={10} />
+                <InfoTooltip text={liquidityProvisionTooltipText} />
+              </div>
               <Typography variant="body-text" color="title">
                 {getText('variableYield', language)}
               </Typography>
