@@ -1,0 +1,40 @@
+@import '../../constants.scss';
+
+.tc__navBar__links {
+  > ul {
+    list-style-type: none;
+    display: flex;
+    flex-direction: row;
+    flex: 1;
+    align-items: center;
+
+    > li {
+      margin-right: 40px;
+      display: inline-block;
+
+      &:hover {
+        cursor: pointer;
+
+        &:after {
+          transform: scaleX(1);
+        }
+      }
+
+      &::after {
+        display: block;
+        content: '';
+        padding-bottom: 3px;
+        margin-bottom: -3px;
+        border-bottom: solid 3px $text-color;
+        transform: scaleX(0);
+        transition: transform 250ms ease-in-out;
+      }
+
+      &.active {
+        &::after {
+          transform: scaleX(1);
+        }
+      }
+    }
+  }
+}

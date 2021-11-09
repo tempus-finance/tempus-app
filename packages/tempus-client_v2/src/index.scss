@@ -1,0 +1,94 @@
+@import './constants.scss';
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  font-family: 'Source Sans Pro', sans-serif;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 20px;
+  color: $text-color;
+  background: $background;
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-y: scroll;
+  height: 100%;
+}
+
+.tc__backdrop {
+  position: fixed;
+  left: 0px;
+  top: 0px;
+  right: 0px;
+  bottom: 0px;
+  z-index: 998;
+  cursor: default !important;
+}
+
+.tf__flex-row-center-v {
+  display: flex;
+  align-items: center;
+}
+
+.tf__flex-row-center-v-end {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.tf__flex-row-center-vh {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.tf__flex-row-space-between {
+  display: flex;
+  justify-content: space-between;
+}
+
+.tf__flex-row-space-between-v {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.tf__flex-column-space-between {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.tf__flex-column-center-end {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-end;
+}
+
+.tf__flex-column-center-vh {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.tc__underline {
+  padding-bottom: 5px;
+  border-bottom: 1px solid #e4e4e4;
+}
+
+.tf__full_width {
+  width: 100%;
+}
+
+.tf__input__label {
+  padding-top: 5px;
+  position: absolute;
+}

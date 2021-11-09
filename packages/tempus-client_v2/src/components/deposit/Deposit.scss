@@ -1,0 +1,28 @@
+.tc__deposit {
+  margin-right: 15px;
+}
+
+.tc__deposit__yield-body__row {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid #e4e4e4;
+  padding-bottom: 8px;
+  padding-top: 6px;
+  box-sizing: border-box;
+}
+
+.tc__deposit__card-row-title {
+  width: 200px;
+  flex-shrink: 0;
+}
+
+.tc__deposit__card-row-change {
+  width: 100%;
+  text-align: right;
+}
+
+.tc__deposit__card-row-value {
+  width: 130px;
+  text-align: right;
+  flex-shrink: 0;
+}

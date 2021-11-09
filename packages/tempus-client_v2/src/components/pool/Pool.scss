@@ -1,0 +1,25 @@
+@import '../shared/style.scss';
+
+.tc__pool {
+  @include cardContainer;
+  flex: 33;
+}
+
+.tc__pool__body {
+  @include cardBody;
+
+  .tc__pool__body__item {
+    @include cardBodyItem;
+
+    .tc__pool__body__item-title {
+      width: 150px;
+      display: flex;
+      align-items: center;
+    }
+  }
+}
+
+.tc__pool-feesTooltip {
+  position: relative;
+  cursor: pointer;
+}

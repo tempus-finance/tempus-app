@@ -1,0 +1,244 @@
+[
+  {
+    "inputs": [
+      {
+        "internalType": "contract ITempusAMM",
+        "name": "tempusAMM",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "lpTokens",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "principals",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "yields",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "threshold",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bool",
+        "name": "toBackingToken",
+        "type": "bool"
+      }
+    ],
+    "name": "estimateExitAndRedeem",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "contract ITempusAMM",
+        "name": "tempusAMM",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bool",
+        "name": "isBackingToken",
+        "type": "bool"
+      }
+    ],
+    "name": "estimatedDepositAndFix",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "principals",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "contract ITempusAMM",
+        "name": "tempusAMM",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bool",
+        "name": "isBackingToken",
+        "type": "bool"
+      }
+    ],
+    "name": "estimatedDepositAndProvideLiquidity",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "lpTokens",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "principals",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "yields",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "contract ITempusPool",
+        "name": "pool",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bool",
+        "name": "isBackingToken",
+        "type": "bool"
+      }
+    ],
+    "name": "estimatedMintedShares",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "contract ITempusPool",
+        "name": "pool",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "principals",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "yields",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bool",
+        "name": "toBackingToken",
+        "type": "bool"
+      }
+    ],
+    "name": "estimatedRedeem",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "chainlinkAggregatorNodeHash",
+        "type": "bytes32"
+      }
+    ],
+    "name": "getRate",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "rate",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "rateDenominator",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "contract ITempusPool",
+        "name": "pool",
+        "type": "address"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "rateConversionData",
+        "type": "bytes32"
+      }
+    ],
+    "name": "totalValueLockedAtGivenRate",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "contract ITempusPool",
+        "name": "pool",
+        "type": "address"
+      }
+    ],
+    "name": "totalValueLockedInBackingTokens",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  }
+]

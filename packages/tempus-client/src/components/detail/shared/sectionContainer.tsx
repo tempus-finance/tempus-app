@@ -13,14 +13,14 @@ interface SectionContainerProps {
   selectable?: boolean;
   selected?: boolean;
   disabled?: boolean;
-  onSelected?: (id: string | undefined) => void;
+  onSelected?: (id: string) => void;
 }
 
 const SectionContainer: FC<SectionContainerProps> = props => {
   const { id, title, tooltip, selectable, selected, disabled, onSelected } = props;
 
   const onClick = () => {
-    if (!disabled) {
+    if (!disabled && id) {
       onSelected && onSelected(id);
     }
   };

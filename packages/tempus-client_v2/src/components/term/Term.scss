@@ -1,0 +1,14 @@
+@import '../shared/style.scss';
+
+.tc__term {
+  @include cardContainer;
+  flex: 27;
+}
+
+.tc__term__body {
+  @include cardBody;
+
+  .tc__term__body__item {
+    @include cardBodyItem;
+  }
+}

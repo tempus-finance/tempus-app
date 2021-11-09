@@ -1,0 +1,56 @@
+// Colors - Light Theme
+$background: linear-gradient(0deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.4)),
+  linear-gradient(117.67deg, #d6d6d6 6.84%, #597b91 84.65%);
+
+$background-color: #f1f1f1;
+
+@mixin background-level-1 {
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid #f1f1f1;
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 5px;
+  box-sizing: border-box;
+  padding: 15px;
+}
+
+@mixin background-level-2 {
+  background: #fcfcfc;
+  border: 1px solid #f1f1f1;
+  box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.25);
+  border-radius: 5px;
+  box-sizing: border-box;
+  padding: 15px;
+}
+
+@mixin background-level-3 {
+  background-color: #ffffff;
+  box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.25);
+  border: 1px solid #fcfcfc;
+  border-radius: 5px;
+}
+
+$text-color: #222222;
+$ui-element-color: #e2e2e2;
+$accent-color-1: #f5ac37;
+$accent-color-2: #f24c00;
+$accent-color-3: #065f73;
+$success: #4bb543;
+$alert: #ff0f0f;
+$link-color: #047295;
+$card-background: rgba(255, 255, 255, 0.7);
+
+// Breakpoints
+$breakpoint-xs: 0px;
+$breakpoint-sm: 600px;
+$breakpoint-md: 960px;
+$breakpoint-lg: 1500px;
+$breakpoint-xl: 1920px;
+
+// Spacing
+$grid-template-rows: 74px;
+$row-gap: 7px;
+
+$grid-template-columns: 196px;
+$column-gap: 0;
+
+$sidebar-margin-top: $grid-template-rows + $row-gap;

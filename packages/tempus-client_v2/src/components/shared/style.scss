@@ -1,0 +1,30 @@
+@mixin cardContainer {
+  display: flex;
+  flex-direction: column;
+  padding: 15px;
+  box-sizing: border-box;
+  background: rgba(255, 255, 255, 0.7); // TODO add to constants
+  border: 1px solid #f1f1f1; // TODO add to constants
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.25); // TODO add to constants
+  border-radius: 5px;
+  margin: 0 15px 15px 0;
+}
+
+@mixin cardBody {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+@mixin cardBodyItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding-top: 10px;
+  border-bottom: 1px solid #e4e4e4; // TODO add to constants
+
+  &:last-child {
+    border-bottom: none;
+  }
+}

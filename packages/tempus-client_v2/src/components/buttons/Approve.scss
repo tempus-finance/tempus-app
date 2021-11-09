@@ -1,0 +1,35 @@
+button.tc__approve-button {
+  width: 140px;
+  height: 40px;
+  padding: 10px 40px;
+  background: linear-gradient(97.53deg, #5098a9 0%, #285a95 100%);
+  mix-blend-mode: normal;
+  box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.25);
+  border-radius: 5px;
+
+  &:hover:not([disabled]) {
+    background: linear-gradient(97.53deg, #5098a9 0%, #285a95 0.01%);
+  }
+
+  &.tc__approve-button__pending {
+    opacity: 0.6;
+  }
+
+  &[disabled] {
+    opacity: 0.5;
+  }
+
+  > .MuiButton-label > div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    > svg {
+      margin-left: 10px;
+    }
+
+    > div {
+      margin-right: 10px;
+    }
+  }
+}
