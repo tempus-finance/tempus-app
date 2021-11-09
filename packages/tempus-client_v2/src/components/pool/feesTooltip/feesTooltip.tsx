@@ -2,15 +2,19 @@ import { BigNumber } from '@ethersproject/bignumber';
 import { ethers } from 'ethers';
 import { useContext, useEffect, useMemo, useState } from 'react';
 import getPoolDataAdapter from '../../../adapters/getPoolDataAdapter';
+import { LanguageContext } from '../../../context/languageContext';
 import { getDataForPool, PoolDataContext } from '../../../context/poolDataContext';
 import { WalletContext } from '../../../context/walletContext';
+import getText from '../../../localisation/getText';
 import NumberUtils from '../../../services/NumberUtils';
+import Spacer from '../../spacer/spacer';
 import Typography from '../../typography/Typography';
 
 import './feesTooltip.scss';
 
 const FeesTooltip = () => {
   const { userWalletSigner } = useContext(WalletContext);
+  const { language } = useContext(LanguageContext);
   const { poolData, selectedPool } = useContext(PoolDataContext);
 
   const [poolFees, setPoolFees] = useState<BigNumber[] | null>(null);
@@ -62,6 +66,9 @@ const FeesTooltip = () => {
   return (
     <div className="tc__feesTooltip">
       <Typography variant="card-title">Fees</Typography>
+      <Spacer size={15} />
+      <Typography variant="card-body-text">{getText('feesTooltipInfo', language)}</Typography>
+      <Spacer size={15} />
       <div className="tc__feesTooltip-row">
         <Typography variant="card-body-text" color="title">
           Deposit
