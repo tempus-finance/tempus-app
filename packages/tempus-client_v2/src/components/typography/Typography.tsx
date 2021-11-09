@@ -102,6 +102,7 @@ typographyStyleMap.set('tooltip-card-text', {
   fontSize: '16px',
   fontStyle: 'normal',
   lineHeight: '22px',
+});
 typographyStyleMap.set('fractional', {
   fontFamily: "'Source Sans Pro', sans-serif",
   fontWeight: 400,
