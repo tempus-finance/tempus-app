@@ -1,8 +1,9 @@
 import { FC } from 'react';
 import { Table } from '@devexpress/dx-react-grid';
 import { VirtualTable } from '@devexpress/dx-react-grid-material-ui';
-import TokenIcon, { getTickerFromProtocol } from '../../tokenIcon';
 import { ProtocolName } from '../../../interfaces/ProtocolName';
+import Typography from '../../typography/Typography';
+import TokenIcon, { getTickerFromProtocol } from '../../tokenIcon';
 
 import './protocolCell.scss';
 
@@ -22,7 +23,9 @@ const ProtocolCell: FC<Table.DataCellProps> = props => {
       {!isParent && (
         <div className="tf__dashboard__body__protocol_container">
           <TokenIcon ticker={getTickerFromProtocol(row.tempusPool.protocol)} />
-          <span className="tf__dashboard__body__protocol_label">{row.tempusPool.protocol}</span>
+          <Typography color="default" variant="body-text">
+            <span className="tf__dashboard__body__protocol_label">{row.tempusPool.protocol}</span>
+          </Typography>
         </div>
       )}
     </VirtualTable.Cell>
