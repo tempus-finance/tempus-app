@@ -38,6 +38,7 @@ type Words =
   | 'amountReceived'
   | 'approx'
   | 'estimatedAmountReceived'
-  | 'estimated';
+  | 'estimated'
+  | 'feesTooltipInfo';
 
 export default Words;
