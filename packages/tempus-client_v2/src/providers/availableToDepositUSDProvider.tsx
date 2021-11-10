@@ -18,9 +18,13 @@ const AvailableToDepositUSDProvider: FC<PresentValueProviderProps> = props => {
 
   const updateUserAvailableToDepositUSDForPool = useCallback(
     async (tempusPool: TempusPool) => {
+      if (!userWalletSigner) {
+        return;
+      }
       const userAvailableToDepositUSDForPool = await userBalanceDataAdapter.getUserUSDAvailableToDepositForPool(
         tempusPool,
         userWalletAddress,
+        userWalletSigner,
       );
 
       setPoolData &&
@@ -37,7 +41,7 @@ const AvailableToDepositUSDProvider: FC<PresentValueProviderProps> = props => {
           }),
         }));
     },
-    [setPoolData, userBalanceDataAdapter, userWalletAddress],
+    [setPoolData, userBalanceDataAdapter, userWalletAddress, userWalletSigner],
   );
 
   const updateAvailableToDepositUSD = useCallback(() => {

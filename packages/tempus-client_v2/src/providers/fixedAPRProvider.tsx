@@ -24,7 +24,7 @@ const FixedAPRProvider = () => {
    * Fetch Fixed APR for all tempus pools on each block event
    */
   const fetchAPR = useCallback(async () => {
-    if (!setPoolData) {
+    if (!setPoolData || !document.hasFocus()) {
       return;
     }
     const provider = getProvider();

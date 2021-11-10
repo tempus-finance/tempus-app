@@ -94,13 +94,14 @@ export default class UserBalanceDataAdapter {
   async getUserUSDAvailableToDepositForPool(
     tempusPool: TempusPool,
     userWalletAddress: string,
+    userWalletSigner: JsonRpcSigner,
   ): Promise<AvailableToDeposit> {
     if (!this.statisticsService || !this.tempusPoolService || !this.eRC20TokenServiceGetter) {
       return Promise.reject('UserBalanceDataAdapter - getUserBalanceForPool() - Adapter not initialized!');
     }
 
-    const backingToken = this.eRC20TokenServiceGetter(tempusPool.backingTokenAddress);
-    const yieldBearingToken = this.eRC20TokenServiceGetter(tempusPool.yieldBearingTokenAddress);
+    const backingToken = this.eRC20TokenServiceGetter(tempusPool.backingTokenAddress, userWalletSigner);
+    const yieldBearingToken = this.eRC20TokenServiceGetter(tempusPool.yieldBearingTokenAddress, userWalletSigner);
     const [backingTokensAvailable, yieldTokensAvailable, backingTokenToUSD, interestRate] = await Promise.all([
       backingToken.balanceOf(userWalletAddress),
       yieldBearingToken.balanceOf(userWalletAddress),
