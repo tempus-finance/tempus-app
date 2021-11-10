@@ -1111,6 +1111,7 @@ export default class PoolDataAdapter {
     tempusPoolId: string,
     backingToken: Ticker,
     principalsAddress: string,
+    userWalletSigner: JsonRpcSigner,
     backingTokenPrecision?: number,
   ): Promise<BigNumber> {
     if (
@@ -1124,10 +1125,9 @@ export default class PoolDataAdapter {
       return Promise.reject();
     }
 
-    const provider = getDefaultProvider();
     let latestBlock;
     try {
-      latestBlock = await provider.getBlock('latest');
+      latestBlock = await userWalletSigner.provider.getBlock('latest');
     } catch (error) {
       console.error('Failed to get latest block data!');
       return Promise.reject();
