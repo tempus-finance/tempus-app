@@ -1,4 +1,5 @@
 import { CSSProperties, FC } from 'react';
+import parse from 'html-react-parser';
 
 type TypographyVariant =
   | 'h1'
@@ -12,6 +13,7 @@ type TypographyVariant =
   | 'dropdown-text'
   | 'card-title'
   | 'card-body-text'
+  | 'tooltip-card-text'
   | 'fractional';
 
 type TypographyColor = 'default' | 'accent' | 'inverted' | 'link' | 'title' | 'error' | 'success';
@@ -94,6 +96,13 @@ typographyStyleMap.set('card-body-text', {
   fontStyle: 'normal',
   lineHeight: '20px',
 });
+typographyStyleMap.set('tooltip-card-text', {
+  fontFamily: "'Source Sans Pro', sans-serif",
+  fontWeight: 400,
+  fontSize: '16px',
+  fontStyle: 'normal',
+  lineHeight: '22px',
+});
 typographyStyleMap.set('fractional', {
   fontFamily: "'Source Sans Pro', sans-serif",
   fontWeight: 400,
@@ -106,10 +115,13 @@ interface TypographyProps {
   variant: TypographyVariant;
   color?: TypographyColor;
   capitalize?: boolean;
+  html?: string;
   align?: 'start' | 'end' | 'left' | 'right' | 'center' | 'justify' | 'match-parent';
 }
 
 const Typography: FC<TypographyProps> = props => {
+  const { html, children } = props;
+
   let color: string;
   switch (props.color) {
     case 'default':
@@ -146,7 +158,7 @@ const Typography: FC<TypographyProps> = props => {
         textAlign: props.align ? props.align : 'unset',
       }}
     >
-      {props.children}
+      {html ? parse(html) : children}
     </div>
   );
 };
