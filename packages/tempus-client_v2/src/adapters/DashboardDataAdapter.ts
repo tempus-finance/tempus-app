@@ -1,5 +1,5 @@
 import { BigNumber } from 'ethers';
-import { from, interval, Observable, of, startWith, switchMap } from 'rxjs';
+import { filter, from, interval, Observable, of, startWith, switchMap } from 'rxjs';
 import { DashboardRow, DashboardRowChild, DashboardRowParent } from '../interfaces/DashboardRow';
 import { Ticker } from '../interfaces/Token';
 import { TempusPool } from '../interfaces/TempusPool';
@@ -34,6 +34,9 @@ export default class DashboardDataAdapter {
 
     const interval$ = interval(POLLING_INTERVAL).pipe(startWith(0));
     return interval$.pipe(
+      filter(() => {
+        return document.hasFocus();
+      }),
       switchMap(() => {
         if (this.statisticsService) {
           return from(this.statisticsService.totalValueLockedUSD(tempusPool, backingTokenTicker));
