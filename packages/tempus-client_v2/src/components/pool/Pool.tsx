@@ -76,6 +76,7 @@ const Pool = () => {
             activePoolData.poolId,
             activePoolData.backingToken,
             activePoolData.principalsAddress,
+            userWalletSigner,
             activePoolData.precision.backingToken,
           ),
         );
