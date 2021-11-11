@@ -77,6 +77,27 @@ const Sidebar: FC<SidebarProps> = ({ initialView, onSelectedView }) => {
     return activePoolData.userPrincipalsBalance.isZero() && activePoolData.userYieldsBalance.isZero();
   }, [activePoolData.userPrincipalsBalance, activePoolData.userYieldsBalance]);
 
+  const provideLiquidityHidden = useMemo(() => {
+    if (!activePoolData.userPrincipalsBalance || !activePoolData.userYieldsBalance) {
+      return true;
+    }
+    return activePoolData.userPrincipalsBalance.isZero() && activePoolData.userYieldsBalance.isZero();
+  }, [activePoolData.userPrincipalsBalance, activePoolData.userYieldsBalance]);
+
+  const removeLiquidityHidden = useMemo(() => {
+    if (!activePoolData.userLPTokenBalance) {
+      return true;
+    }
+    return activePoolData.userLPTokenBalance.isZero();
+  }, [activePoolData.userLPTokenBalance]);
+
+  const earlyRedeemHidden = useMemo(() => {
+    if (!activePoolData.userPrincipalsBalance || !activePoolData.userYieldsBalance) {
+      return true;
+    }
+    return activePoolData.userPrincipalsBalance.isZero() && activePoolData.userYieldsBalance.isZero();
+  }, [activePoolData.userPrincipalsBalance, activePoolData.userYieldsBalance]);
+
   return (
     <div className="tc__sidebar-container">
       <TokenPairIcon parentTicker={activePoolData.backingToken} childTicker={activePoolData.yieldBearingToken} />
@@ -122,6 +143,12 @@ const Sidebar: FC<SidebarProps> = ({ initialView, onSelectedView }) => {
       </div>
       {advancedViews.map(advancedViewName => {
         if (advancedViewName === 'Swap' && swapHidden) {
+          return null;
+        } else if (advancedViewName === 'Provide Liquidity' && provideLiquidityHidden) {
+          return null;
+        } else if (advancedViewName === 'Remove Liquidity' && removeLiquidityHidden) {
+          return null;
+        } else if (advancedViewName === 'Early Redeem' && earlyRedeemHidden) {
           return null;
         }
 
