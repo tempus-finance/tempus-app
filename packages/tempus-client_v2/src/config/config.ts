@@ -56,9 +56,9 @@ const config: Config = {
   statisticsContract: '0x01fF82791D8414826ec7390dfE7902703F632F5C',
   tempusControllerContract: '0xd4330638b87f97Ec1605D7EC7d67EA1de5Dd7aaA',
   vaultContract: '0xBA12222222228d8Ba445958a75a0704d566BF2C8',
-  networkUrl: 'https://eth-goerli.alchemyapi.io/v2/T39WUBd3Ugwtv6z7LHAjqWM6ODBVzGUA',
+  networkUrl: 'https://eth-goerli.alchemyapi.io/v2/RUE8LXWaELu4_nyMgfK99eX3DWoxLtDw',
   networkName: 'goerli',
-  alchemyKey: 'T39WUBd3Ugwtv6z7LHAjqWM6ODBVzGUA',
+  alchemyKey: 'RUE8LXWaELu4_nyMgfK99eX3DWoxLtDw',
   lidoOracle: '0x24d8451BC07e7aF4Ba94F69aCDD9ad3c6579D9FB',
 };
 
