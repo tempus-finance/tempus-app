@@ -1,6 +1,6 @@
 import { FC, useState } from 'react';
 import 'date-fns';
-import { Box, Button, Paper, Popper, TextField } from '@material-ui/core';
+import { Box, Button, InputAdornment, Paper, Popper, TextField } from '@material-ui/core';
 
 import './filter-popup.scss';
 
@@ -126,6 +126,9 @@ const FilterPopup: FC<FilterPopupProps> = (props: FilterPopupProps) => {
                 placeholder="min"
                 value={aPRRangeMin}
                 onChange={onAPRRangeMinChange}
+                InputProps={{
+                  endAdornment: <InputAdornment position="end">%</InputAdornment>,
+                }}
               />
               <p>-</p>
               <TextField
@@ -134,6 +137,9 @@ const FilterPopup: FC<FilterPopupProps> = (props: FilterPopupProps) => {
                 placeholder="max"
                 value={aPRRangeMax}
                 onChange={onAPRRangeMaxChange}
+                InputProps={{
+                  endAdornment: <InputAdornment position="end">%</InputAdornment>,
+                }}
               />
             </div>
           </div>
