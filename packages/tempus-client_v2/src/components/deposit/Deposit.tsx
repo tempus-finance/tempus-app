@@ -497,7 +497,7 @@ const Deposit: FC<DepositProps> = ({ narrow, poolDataAdapter }) => {
                 {getText('fixedYield', language)}
               </Typography>
             </div>
-            <Spacer size={20} />
+            <Spacer size={15} />
             {fixedYieldAtMaturityFormatted && fixedYieldAtMaturityUSDFormatted && (
               <div className="tc__deposit__yield-body__row">
                 <div className="tc__deposit__card-row-title">
@@ -534,7 +534,8 @@ const Deposit: FC<DepositProps> = ({ narrow, poolDataAdapter }) => {
                 </div>
               </div>
             )}
-            <Spacer size={30} />
+            {((fixedYieldAtMaturityFormatted && fixedYieldAtMaturityUSDFormatted) ||
+              (totalAvailableAtMaturityFormatted && totalAvailableAtMaturityUSDFormatted)) && <Spacer size={30} />}
             <div className="tf__flex-row-space-between-v">
               <Typography variant="button-text">
                 {fixedPrincipalsAmountFormatted &&
