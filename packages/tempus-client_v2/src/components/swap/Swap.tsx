@@ -225,7 +225,7 @@ const Swap = () => {
       <SectionContainer title="from" elevation={1}>
         <div className="tf__flex-row-center-v">
           <TokenSelector
-            defaultTicker={tokenFrom.tokenName}
+            value={tokenFrom.tokenName}
             tickers={['Principals', 'Yields']}
             onTokenChange={onTokenFromChange}
           />
@@ -246,11 +246,7 @@ const Swap = () => {
       <Spacer size={15} />
       <SectionContainer title="to" elevation={1}>
         <div className="tf__flex-row-center-v">
-          <TokenSelector
-            defaultTicker={tokenTo.tokenName}
-            tickers={['Principals', 'Yields']}
-            onTokenChange={onTokenToChange}
-          />
+          <TokenSelector value={tokenTo.tokenName} tickers={['Principals', 'Yields']} onTokenChange={onTokenToChange} />
           <Spacer size={15} />
           <Typography variant="card-body-text">Estimated amount received</Typography>
           <Spacer size={15} />

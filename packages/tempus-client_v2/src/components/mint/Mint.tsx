@@ -293,6 +293,7 @@ const Mint: FC<MintInProps> = ({ narrow }) => {
       <SectionContainer title="from">
         <div className="tf__flex-row-center-v">
           <TokenSelector
+            value={selectedToken}
             tickers={[activePoolData.backingToken, activePoolData.yieldBearingToken]}
             onTokenChange={onTokenChange}
           />
