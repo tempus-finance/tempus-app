@@ -1,0 +1,15 @@
+@import '../../constants.scss';
+
+.tc__descriptor {
+  @include background-level-1;
+  background-color: $card-background;
+}
+
+.tc__descriptor__title {
+  display: flex;
+  align-items: center;
+}
+
+.tc__descriptor__content {
+  width: 100%;
+}
