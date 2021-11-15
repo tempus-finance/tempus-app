@@ -20,7 +20,7 @@ const BalanceProvider: FC<PresentValueProviderProps> = props => {
   const [subscriptions$] = useState<Subscription>(new Subscription());
 
   const updateUserBalanceForPool = useCallback(
-    (tempusPool: string, balance: BigNumber) => {
+    (tempusPool: string, balances: BigNumber[]) => {
       setPoolData &&
         setPoolData(previousData => ({
           ...previousData,
@@ -28,9 +28,11 @@ const BalanceProvider: FC<PresentValueProviderProps> = props => {
             if (previousPoolData.address !== tempusPool) {
               return previousPoolData;
             }
+            const [userBalanceUSD, userBalanceInBackingToken] = balances;
             return {
               ...previousPoolData,
-              userBalanceUSD: balance,
+              userBalanceUSD,
+              userBalanceInBackingToken,
             };
           }),
         }));
@@ -38,12 +40,9 @@ const BalanceProvider: FC<PresentValueProviderProps> = props => {
     [setPoolData],
   );
 
-  const triggerUpdateBalance = useCallback(
-    (value: boolean) => {
-      updateBalanceSubject.next(value);
-    },
-    [updateBalanceSubject],
-  );
+  const triggerUpdateBalance = useCallback(() => {
+    updateBalanceSubject.next(true);
+  }, [updateBalanceSubject]);
 
   useMemo(() => {
     getConfig().tempusPools.forEach(poolConfig => {
@@ -51,9 +50,9 @@ const BalanceProvider: FC<PresentValueProviderProps> = props => {
         console.log(`Fetching ${poolConfig.address} user USD balance!`);
 
         const stream$ = updateBalanceSubject.pipe(
-          switchMap(() =>
-            userBalanceDataAdapter.getUserUSDBalanceForPool(poolConfig, userWalletAddress, userWalletSigner),
-          ),
+          switchMap(() => {
+            return userBalanceDataAdapter.getUserUSDBalanceForPool(poolConfig, userWalletAddress, userWalletSigner);
+          }),
           catchError((error, caught) => {
             console.log('BalanceProvider - updateUserBalance - Failed to user USD rates!', error);
             return caught;
@@ -61,8 +60,8 @@ const BalanceProvider: FC<PresentValueProviderProps> = props => {
         );
 
         subscriptions$.add(
-          stream$.subscribe(balance => {
-            updateUserBalanceForPool(poolConfig.address, balance);
+          stream$.subscribe((balances: BigNumber[]) => {
+            updateUserBalanceForPool(poolConfig.address, balances);
           }),
         );
       }
@@ -80,8 +79,7 @@ const BalanceProvider: FC<PresentValueProviderProps> = props => {
    * Fetch user balance when component mounts
    */
   useEffect(() => {
-    const value = true;
-    triggerUpdateBalance(value);
+    triggerUpdateBalance();
 
     return () => subscriptions$.unsubscribe();
   }, [triggerUpdateBalance, subscriptions$]);
@@ -94,22 +92,20 @@ const BalanceProvider: FC<PresentValueProviderProps> = props => {
       return;
     }
 
-    const value = true;
-
     getConfig().tempusPools.forEach(poolConfig => {
       console.log(`Subscribing to token updates for ${poolConfig.address}`);
       const principalsService = getERC20TokenService(poolConfig.principalsAddress, userWalletSigner);
       const yieldsService = getERC20TokenService(poolConfig.yieldsAddress, userWalletSigner);
       const lpTokenService = getERC20TokenService(poolConfig.ammAddress, userWalletSigner);
 
-      principalsService.onTransfer(userWalletAddress, null, () => triggerUpdateBalance(value));
-      principalsService.onTransfer(null, userWalletAddress, () => triggerUpdateBalance(value));
+      principalsService.onTransfer(userWalletAddress, null, () => triggerUpdateBalance());
+      principalsService.onTransfer(null, userWalletAddress, () => triggerUpdateBalance());
 
-      yieldsService.onTransfer(userWalletAddress, null, () => triggerUpdateBalance(value));
-      yieldsService.onTransfer(null, userWalletAddress, () => triggerUpdateBalance(value));
+      yieldsService.onTransfer(userWalletAddress, null, () => triggerUpdateBalance());
+      yieldsService.onTransfer(null, userWalletAddress, () => triggerUpdateBalance());
 
-      lpTokenService.onTransfer(userWalletAddress, null, () => triggerUpdateBalance(value));
-      lpTokenService.onTransfer(null, userWalletAddress, () => triggerUpdateBalance(value));
+      lpTokenService.onTransfer(userWalletAddress, null, () => triggerUpdateBalance());
+      lpTokenService.onTransfer(null, userWalletAddress, () => triggerUpdateBalance());
     });
 
     return () => {
@@ -119,14 +115,14 @@ const BalanceProvider: FC<PresentValueProviderProps> = props => {
         const yieldsService = getERC20TokenService(poolConfig.yieldsAddress, userWalletSigner);
         const lpTokenService = getERC20TokenService(poolConfig.ammAddress, userWalletSigner);
 
-        principalsService.offTransfer(userWalletAddress, null, () => triggerUpdateBalance(value));
-        principalsService.offTransfer(null, userWalletAddress, () => triggerUpdateBalance(value));
+        principalsService.offTransfer(userWalletAddress, null, () => triggerUpdateBalance());
+        principalsService.offTransfer(null, userWalletAddress, () => triggerUpdateBalance());
 
-        yieldsService.offTransfer(userWalletAddress, null, () => triggerUpdateBalance(value));
-        yieldsService.offTransfer(null, userWalletAddress, () => triggerUpdateBalance(value));
+        yieldsService.offTransfer(userWalletAddress, null, () => triggerUpdateBalance());
+        yieldsService.offTransfer(null, userWalletAddress, () => triggerUpdateBalance());
 
-        lpTokenService.offTransfer(userWalletAddress, null, () => triggerUpdateBalance(value));
-        lpTokenService.offTransfer(null, userWalletAddress, () => triggerUpdateBalance(value));
+        lpTokenService.offTransfer(userWalletAddress, null, () => triggerUpdateBalance());
+        lpTokenService.offTransfer(null, userWalletAddress, () => triggerUpdateBalance());
       });
     };
   }, [setPoolData, userWalletSigner, userWalletAddress, triggerUpdateBalance]);

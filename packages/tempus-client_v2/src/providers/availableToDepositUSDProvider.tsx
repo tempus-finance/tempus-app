@@ -21,7 +21,7 @@ const AvailableToDepositUSDProvider: FC<PresentValueProviderProps> = props => {
       if (!userWalletSigner) {
         return;
       }
-      const userAvailableToDepositUSDForPool = await userBalanceDataAdapter.getUserUSDAvailableToDepositForPool(
+      const userAvailableToDepositUSDForPool = await userBalanceDataAdapter.getUserAvailableToDepositForPool(
         tempusPool,
         userWalletAddress,
         userWalletSigner,

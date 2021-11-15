@@ -28,6 +28,7 @@ import GridVariableAPRProvider from './providers/gridVariableAPRProvider';
 import FixedAPRProvider from './providers/fixedAPRProvider';
 import GridBalanceProvider from './providers/gridBalanceProvider';
 import AvailableToDepositProvider from './providers/availableToDepositProvider';
+import CurrencySwitch from './currencySwitch/CurrencySwitch';
 import { dashboardColumnsDefinitions } from './dashboardColumnsDefinitions';
 
 import './dashboard.scss';
@@ -218,11 +219,12 @@ const Dashboard: FC<DashboardProps> = ({ hidden, userWalletAddress, rows, onRowA
   return (
     <div className="tf__dashboard__section__container" hidden={hidden}>
       <div className="tc__dashboard__container">
-        <div className="tf__dashboard__header">
-          <Typography color="default" variant="h2">
+        <div className="tc__dashboard__header">
+          <Typography color="default" variant="h4">
             Available Pools
           </Typography>
-          <div className="tf__dashboard__header__actions">
+          <div className="tc__dashboard__header__actions">
+            <CurrencySwitch />
             <div onClick={onToggleFilterPopup} ref={filterButtonRef}>
               <Typography color="default" variant="h4">
                 Filter
