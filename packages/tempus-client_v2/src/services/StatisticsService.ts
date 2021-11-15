@@ -310,6 +310,7 @@ class StatisticsService {
     }
   }
 
+  // TODO missing return type
   async estimatedRedeem(
     tempusPool: string,
     principalsAmount: BigNumber,
@@ -323,6 +324,7 @@ class StatisticsService {
       return Promise.reject();
     }
 
+    // TODO try catch
     return this.stats.estimatedRedeem(tempusPool, principalsAmount, yieldsAmount, toBackingToken);
   }
 }

@@ -13,6 +13,7 @@ import { isZeroString } from '../../utils/isZeroString';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
 import NumberUtils from '../../services/NumberUtils';
 import Typography from '../typography/Typography';
+import Descriptor from '../descriptor/Descriptor';
 import CurrencyInput from '../currencyInput/currencyInput';
 import SectionContainer from '../sectionContainer/SectionContainer';
 import PlusIconContainer from '../plusIconContainer/PlusIconContainer';
@@ -422,6 +423,10 @@ const ProvideLiquidity = () => {
 
   return (
     <div className="tc__provideLiquidity">
+      <Descriptor title="Easy Deposit info label">
+        In order to withdraw from the Pool you have to approve withdrawal from all token balances and execute the
+        transaction.
+      </Descriptor>
       <SectionContainer title="from">
         <SectionContainer elevation={2}>
           <div className="tc__title-and-balance">

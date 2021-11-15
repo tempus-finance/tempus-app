@@ -17,6 +17,7 @@ import NumberUtils from '../../services/NumberUtils';
 import Approve from '../buttons/Approve';
 import Execute from '../buttons/Execute';
 import { ETH_ALLOWANCE_FOR_GAS, ZERO } from '../../constants';
+import Descriptor from '../descriptor/Descriptor';
 import CurrencyInput from '../currencyInput/currencyInput';
 import PlusIconContainer from '../plusIconContainer/PlusIconContainer';
 import SectionContainer from '../sectionContainer/SectionContainer';
@@ -24,7 +25,6 @@ import Spacer from '../spacer/spacer';
 import TokenSelector from '../tokenSelector/tokenSelector';
 import Typography from '../typography/Typography';
 import TokenIcon from '../tokenIcon';
-
 import './Mint.scss';
 
 type MintInProps = {
@@ -305,6 +305,10 @@ const Mint: FC<MintInProps> = ({ narrow }) => {
 
   return (
     <div className="tc__mint">
+      <Descriptor title="Easy Deposit info label">
+        In order to withdraw from the Pool you have to approve withdrawal from all token balances and execute the
+        transaction.
+      </Descriptor>
       <SectionContainer title="from">
         {selectedToken && balanceFormatted && (
           <div className="tc__title-and-balance bottom-padded">

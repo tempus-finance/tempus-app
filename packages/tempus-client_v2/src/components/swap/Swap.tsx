@@ -18,6 +18,7 @@ import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
 import Approve from '../buttons/Approve';
 import Execute from '../buttons/Execute';
 import CurrencyInput from '../currencyInput/currencyInput';
+import Descriptor from '../descriptor/Descriptor';
 import SectionContainer from '../sectionContainer/SectionContainer';
 import Spacer from '../spacer/spacer';
 import TokenSelector from '../tokenSelector/tokenSelector';
@@ -266,6 +267,10 @@ const Swap = () => {
 
   return (
     <div className="tc__swap">
+      <Descriptor title="Easy Deposit info label">
+        In order to withdraw from the Pool you have to approve withdrawal from all token balances and execute the
+        transaction.
+      </Descriptor>
       <SectionContainer title="from" elevation={1}>
         {selectedToken && balanceFormatted && (
           <div className="tc__title-and-balance bottom-padded">
