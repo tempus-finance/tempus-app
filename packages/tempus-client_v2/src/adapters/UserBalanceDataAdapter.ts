@@ -87,7 +87,6 @@ export default class UserBalanceDataAdapter {
         }),
       )
       .pipe(
-        // Convert balance in backing tokens to USD
         switchMap(([backingTokenRate, userPoolBalanceInBackingTokens]) => {
           if (this.statisticsService && backingTokenRate && userPoolBalanceInBackingTokens) {
             const userPoolBalanceInFiat = mul18f(userPoolBalanceInBackingTokens, backingTokenRate);
