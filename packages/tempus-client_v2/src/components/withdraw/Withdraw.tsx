@@ -250,11 +250,7 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
       <SectionContainer title="to">
         <SectionContainer elevation={2}>
           <div className="tf__flex-row-center-vh">
-            <TokenSelector
-              tickers={supportedTokens}
-              defaultTicker={selectedToken as Ticker}
-              onTokenChange={onTokenChange}
-            />
+            <TokenSelector tickers={supportedTokens} value={selectedToken} onTokenChange={onTokenChange} />
             <Spacer size={15} />
             <Typography variant="card-body-text">Estimated amount received</Typography>
             <Spacer size={15} />

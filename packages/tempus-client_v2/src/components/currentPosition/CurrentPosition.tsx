@@ -8,6 +8,7 @@ import NumberUtils from '../../services/NumberUtils';
 import SharedProps from '../../sharedProps';
 import { div18f } from '../../utils/weiMath';
 import Typography from '../typography/Typography';
+
 import './CurrentPosition.scss';
 
 type CurrentPositionInProps = SharedProps;
