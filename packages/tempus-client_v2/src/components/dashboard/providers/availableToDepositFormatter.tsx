@@ -89,12 +89,14 @@ const AvailableToDepositFormatter = (props: DataTypeProvider.ValueFormatterProps
 };
 
 function getParentAvailableToDeposit(parentId: Ticker, poolData: PoolData[]) {
-  const parentChildren = poolData.filter(data => {
-    return data.backingToken === parentId;
-  });
+  const parentChildren = poolData
+    .filter(pool => pool.backingToken === parentId)
+    .filter(child => !child.isNegativeYield || (child.isNegativeYield && child.userBalanceUSD?.gte(ZERO)));
 
   // In case balance is still loading for some of the parent children, return null (show loading circle in dashboard)
-  const childrenStillLoading = parentChildren.some(child => child.userAvailableToDepositUSD === null);
+  const childrenStillLoading = parentChildren.some(
+    child => child.backingTokenValueInFiat === null || child.yieldBearingTokenValueInFiat === null,
+  );
   if (childrenStillLoading) {
     return null;
   }
@@ -102,19 +104,13 @@ function getParentAvailableToDeposit(parentId: Ticker, poolData: PoolData[]) {
   const processedTokens: Ticker[] = [];
   let parentAvailableToDeposit = BigNumber.from('0');
   parentChildren.forEach(child => {
-    if (child.isNegativeYield && child.userBalanceUSD?.lte(ZERO)) {
-      return;
-    }
-
-    if (child.userAvailableToDepositUSD) {
+    if (child.backingTokenValueInFiat !== null && child.yieldBearingTokenValueInFiat !== null) {
       if (processedTokens.indexOf(child.backingToken) === -1) {
-        parentAvailableToDeposit = parentAvailableToDeposit.add(child.userAvailableToDepositUSD.backingTokenAmount);
+        parentAvailableToDeposit = parentAvailableToDeposit.add(child.backingTokenValueInFiat || '0');
         processedTokens.push(child.backingToken);
       }
       if (processedTokens.indexOf(child.yieldBearingToken) === -1) {
-        parentAvailableToDeposit = parentAvailableToDeposit.add(
-          child.userAvailableToDepositUSD.yieldBearingTokenAmount,
-        );
+        parentAvailableToDeposit = parentAvailableToDeposit.add(child.yieldBearingTokenValueInFiat || '0');
         processedTokens.push(child.yieldBearingToken);
       }
     }
