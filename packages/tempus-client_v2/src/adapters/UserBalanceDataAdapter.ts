@@ -129,15 +129,14 @@ export default class UserBalanceDataAdapter {
       );
 
       const backingTokenValueInFiat = mul18f(backingTokensAvailable, backingTokenToUSD);
-      const yieldBearingToBackingAmount = mul18f(yieldTokensAvailable, yieldBearingToBackingTokenRate);
-      const yieldBearingTokenValueInFiat = mul18f(yieldBearingToBackingAmount, backingTokenToUSD);
-
-      const totalValueInBackingToken = backingTokensAvailable.add(yieldBearingToBackingAmount);
+      const yieldBearingTokenValueInBackingToken = mul18f(yieldTokensAvailable, yieldBearingToBackingTokenRate);
+      const yieldBearingTokenValueInFiat = mul18f(yieldBearingTokenValueInBackingToken, backingTokenToUSD);
 
       return {
         backingTokenValueInFiat,
         yieldBearingTokenValueInFiat,
-        totalValueInBackingToken,
+        backingTokensAvailable,
+        yieldBearingTokenValueInBackingToken,
       };
     } catch (error) {
       console.error('UserBalanceDatAdapter - getUserUSDAvailableToDepositForPool', error);

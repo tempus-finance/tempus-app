@@ -58,7 +58,7 @@ const config: Config = {
   vaultContract: '0xBA12222222228d8Ba445958a75a0704d566BF2C8',
   networkUrl: 'https://eth-goerli.alchemyapi.io/v2/RUE8LXWaELu4_nyMgfK99eX3DWoxLtDw',
   networkName: 'goerli',
-  alchemyKey: 'RUE8LXWaELu4_nyMgfK99eX3DWoxLtDw',
+  alchemyKey: 'Hz57g3uvMUx9K9mCmAODf75Wba8N2Fjp',
   lidoOracle: '0x24d8451BC07e7aF4Ba94F69aCDD9ad3c6579D9FB',
 };
 
