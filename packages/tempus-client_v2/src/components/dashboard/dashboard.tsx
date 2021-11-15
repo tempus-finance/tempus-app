@@ -142,14 +142,14 @@ const Dashboard: FC<DashboardProps> = ({ hidden, userWalletAddress, rows, onRowA
         // Check APR matches
         let aprMatched;
         if (isChildRow(row)) {
-          const min = filterData.aPRRange.min;
-          const max = filterData.aPRRange.max;
+          const min = filterData.aPRRange.min ?? (filterData.aPRRange.max ? -Infinity : null);
+          const max = filterData.aPRRange.max ?? (filterData.aPRRange.min ? Infinity : null);
 
           const poolContextData = getDataForPool(row.tempusPool.address, poolData);
           aprMatched =
             (min === 0 || min) && (max === 0 || max)
-              ? (poolContextData.fixedAPR && poolContextData.fixedAPR > min && poolContextData.fixedAPR < max) ||
-                (poolContextData.variableAPR > min && poolContextData.variableAPR < max)
+              ? (poolContextData.fixedAPR && poolContextData.fixedAPR >= min && poolContextData.fixedAPR <= max) ||
+                (poolContextData.variableAPR >= min && poolContextData.variableAPR <= max)
               : true;
         }
 
