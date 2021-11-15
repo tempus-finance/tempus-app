@@ -1,86 +1,58 @@
-import { FC, ChangeEvent, useCallback, useEffect, useState } from 'react';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
+import { FC, useCallback } from 'react';
+import { MenuItem, FormControl, Select } from '@material-ui/core';
 import { Ticker } from '../../interfaces/Token';
-import TokenIcon from '../tokenIcon';
 import Typography from '../typography/Typography';
+import TokenIcon from '../tokenIcon';
 
 import './tokenSelector.scss';
 
 type TokenSelectorInProps = {
-  defaultTicker?: Ticker;
-  tickers?: Ticker[];
-  classNames?: string;
+  value: Ticker | null;
+  tickers: Ticker[];
   disabled?: boolean;
 };
 
 type TokenSelectorOutProps = {
-  onTokenChange?: (token: Ticker | undefined) => void;
+  onTokenChange: (token: Ticker) => void;
 };
 
 type TokenSelectorProps = TokenSelectorInProps & TokenSelectorOutProps;
 
-const getMenuItems = (items: string[]) => {
-  return items.map((item: string) => {
+const getMenuItems = (value: Ticker | null, tickers: Ticker[]) => {
+  const menuItems = tickers.map(ticker => {
     return (
-      <MenuItem key={item} value={item} className="tf__token-selector__menu-item__container">
+      <MenuItem key={ticker} value={ticker}>
         <div className="tf__token-selector__menu-item">
-          {item !== 'empty' && (
-            <>
-              <Typography variant="dropdown-text">{item}</Typography>
-              {item !== 'Principals' && item !== 'Yields' && (
-                <div className="tc__token-selector-ticker-container">
-                  <TokenIcon ticker={item as Ticker} width={18} height={18} />
-                </div>
-              )}
-            </>
+          <Typography variant="dropdown-text">{ticker}</Typography>
+          {ticker !== 'Principals' && ticker !== 'Yields' && (
+            <div className="tc__token-selector-ticker-container">
+              <TokenIcon ticker={ticker} width={18} height={18} />
+            </div>
           )}
-          {item === 'empty' && <Typography variant="dropdown-text">Please select</Typography>}
         </div>
       </MenuItem>
     );
   });
+
+  if (value === null) {
+    menuItems.unshift(
+      <MenuItem key="empty" value="empty">
+        <Typography variant="dropdown-text">Please select</Typography>
+      </MenuItem>,
+    );
+  }
+
+  return menuItems;
 };
 
-const TokenSelector: FC<TokenSelectorProps> = ({
-  disabled,
-  defaultTicker,
-  tickers = [],
-  classNames,
-  onTokenChange,
-}) => {
-  const [items, setItems] = useState<string[]>([]);
-  const [token, setToken] = useState<string>('empty');
-
-  useEffect(() => {
-    if (defaultTicker && defaultTicker !== token) {
-      setToken(defaultTicker);
-    }
-  }, [defaultTicker, token, setToken]);
-
-  useEffect(() => {
-    if (tickers && tickers.length && items.length === 0) {
-      if (!defaultTicker) {
-        setItems([...tickers, 'empty']);
-      } else {
-        setItems([...tickers]);
-      }
-    }
-  }, [tickers, defaultTicker, items, setItems]);
+const TokenSelector: FC<TokenSelectorProps> = props => {
+  const { value, tickers, disabled, onTokenChange } = props;
 
   const handleChange = useCallback(
-    (event: ChangeEvent<{ value: unknown }>) => {
-      const newToken = event.target.value as Ticker;
-      setToken(newToken);
-
-      setItems([...tickers]);
-
-      if (onTokenChange) {
-        onTokenChange(newToken);
-      }
+    (event: React.ChangeEvent<{ value: unknown }>) => {
+      onTokenChange(event.target.value as Ticker);
     },
-    [tickers, setToken, setItems, onTokenChange],
+    [onTokenChange],
   );
 
   return (
@@ -90,12 +62,12 @@ const TokenSelector: FC<TokenSelectorProps> = ({
           fullWidth
           variant="standard"
           labelId="tf__token-selector"
-          value={token}
+          value={value || 'empty'}
           disabled={disabled}
           onChange={handleChange}
           disableUnderline
         >
-          {getMenuItems(items)}
+          {getMenuItems(value, tickers)}
         </Select>
       </div>
     </FormControl>

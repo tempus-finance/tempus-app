@@ -282,11 +282,7 @@ const EarlyRedeem: FC = () => {
       <SectionContainer title="to">
         <SectionContainer elevation={2}>
           <div className="tf__flex-row-center-v">
-            <TokenSelector
-              tickers={supportedTokens}
-              defaultTicker={selectedToken as Ticker}
-              onTokenChange={onTokenChange}
-            />
+            <TokenSelector tickers={supportedTokens} value={selectedToken} onTokenChange={onTokenChange} />
             <Spacer size={20} />
             <Typography variant="body-text">{getText('estimatedAmountReceived', language)}</Typography>
             <Spacer size={20} />
