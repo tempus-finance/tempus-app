@@ -453,6 +453,7 @@ const Deposit: FC<DepositProps> = ({ narrow, poolDataAdapter }) => {
       <SectionContainer title="from">
         <div className="tf__flex-row-center-v">
           <TokenSelector
+            value={selectedToken}
             tickers={[activePoolData.backingToken, activePoolData.yieldBearingToken]}
             onTokenChange={onTokenChange}
           />
