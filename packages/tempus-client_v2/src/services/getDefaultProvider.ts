@@ -9,7 +9,11 @@ const getDefaultProvider = () => {
     if (config.networkName === 'localhost') {
       defaultProvider = new JsonRpcProvider('http://127.0.0.1:8545', { chainId: 31337, name: 'unknown' });
     } else {
-      defaultProvider = new AlchemyProvider(config.networkName, config.alchemyKey);
+      try {
+        defaultProvider = new AlchemyProvider(config.networkName, config.alchemyKey);
+      } catch (error) {
+        console.error('getDefaultProvider - Alchemy not available', error);
+      }
     }
   }
 

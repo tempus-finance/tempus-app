@@ -21,25 +21,29 @@ const AvailableToDepositUSDProvider: FC<PresentValueProviderProps> = props => {
       if (!userWalletSigner) {
         return;
       }
-      const userAvailableToDepositUSDForPool = await userBalanceDataAdapter.getUserUSDAvailableToDepositForPool(
-        tempusPool,
-        userWalletAddress,
-        userWalletSigner,
-      );
+      try {
+        const userAvailableToDepositUSDForPool = await userBalanceDataAdapter.getUserUSDAvailableToDepositForPool(
+          tempusPool,
+          userWalletAddress,
+          userWalletSigner,
+        );
 
-      setPoolData &&
-        setPoolData(previousData => ({
-          ...previousData,
-          poolData: previousData.poolData.map(previousPoolData => {
-            if (previousPoolData.address !== tempusPool.address) {
-              return previousPoolData;
-            }
-            return {
-              ...previousPoolData,
-              userAvailableToDepositUSD: userAvailableToDepositUSDForPool,
-            };
-          }),
-        }));
+        setPoolData &&
+          setPoolData(previousData => ({
+            ...previousData,
+            poolData: previousData.poolData.map(previousPoolData => {
+              if (previousPoolData.address !== tempusPool.address) {
+                return previousPoolData;
+              }
+              return {
+                ...previousPoolData,
+                userAvailableToDepositUSD: userAvailableToDepositUSDForPool,
+              };
+            }),
+          }));
+      } catch (error) {
+        console.error('AvailableToDepositUSDProvider - updateUserAvailableToDepositUSDForPool', error);
+      }
     },
     [setPoolData, userBalanceDataAdapter, userWalletAddress, userWalletSigner],
   );
@@ -67,29 +71,29 @@ const AvailableToDepositUSDProvider: FC<PresentValueProviderProps> = props => {
       return;
     }
 
-    getConfig().tempusPools.forEach(poolConfig => {
-      const backingTokenService = getERC20TokenService(poolConfig.backingToken, userWalletSigner);
-      const yieldBearingTokenService = getERC20TokenService(poolConfig.yieldBearingTokenAddress, userWalletSigner);
-
-      backingTokenService.onTransfer(userWalletAddress, null, updateAvailableToDepositUSD);
-      backingTokenService.onTransfer(null, userWalletAddress, updateAvailableToDepositUSD);
-
-      yieldBearingTokenService.onTransfer(userWalletAddress, null, updateAvailableToDepositUSD);
-      yieldBearingTokenService.onTransfer(null, userWalletAddress, updateAvailableToDepositUSD);
-    });
-
-    return () => {
+    try {
       getConfig().tempusPools.forEach(poolConfig => {
-        const backingTokenService = getERC20TokenService(poolConfig.backingToken, userWalletSigner);
+        const backingTokenService = getERC20TokenService(poolConfig.backingTokenAddress, userWalletSigner);
         const yieldBearingTokenService = getERC20TokenService(poolConfig.yieldBearingTokenAddress, userWalletSigner);
-
-        backingTokenService.offTransfer(userWalletAddress, null, updateAvailableToDepositUSD);
-        backingTokenService.offTransfer(null, userWalletAddress, updateAvailableToDepositUSD);
-
-        yieldBearingTokenService.offTransfer(userWalletAddress, null, updateAvailableToDepositUSD);
-        yieldBearingTokenService.offTransfer(null, userWalletAddress, updateAvailableToDepositUSD);
+        backingTokenService.onTransfer(userWalletAddress, null, updateAvailableToDepositUSD);
+        backingTokenService.onTransfer(null, userWalletAddress, updateAvailableToDepositUSD);
+        yieldBearingTokenService.onTransfer(userWalletAddress, null, updateAvailableToDepositUSD);
+        yieldBearingTokenService.onTransfer(null, userWalletAddress, updateAvailableToDepositUSD);
       });
-    };
+
+      return () => {
+        getConfig().tempusPools.forEach(poolConfig => {
+          const backingTokenService = getERC20TokenService(poolConfig.backingTokenAddress, userWalletSigner);
+          const yieldBearingTokenService = getERC20TokenService(poolConfig.yieldBearingTokenAddress, userWalletSigner);
+          backingTokenService.offTransfer(userWalletAddress, null, updateAvailableToDepositUSD);
+          backingTokenService.offTransfer(null, userWalletAddress, updateAvailableToDepositUSD);
+          yieldBearingTokenService.offTransfer(userWalletAddress, null, updateAvailableToDepositUSD);
+          yieldBearingTokenService.offTransfer(null, userWalletAddress, updateAvailableToDepositUSD);
+        });
+      };
+    } catch (error) {
+      console.error('AvailableToDepositUSDProvider - subscriber', error);
+    }
   }, [userWalletSigner, userWalletAddress, updateAvailableToDepositUSD]);
 
   /**

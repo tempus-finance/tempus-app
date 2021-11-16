@@ -1,6 +1,6 @@
-import { BigNumber } from 'ethers';
+import { FC, useCallback, useContext, useEffect, useState } from 'react';
 import { Subscription } from 'rxjs';
-import { FC, useCallback, useContext, useEffect } from 'react';
+import { BigNumber } from 'ethers';
 import getConfig from '../utils/getConfig';
 import DashboardDataAdapter from '../adapters/DashboardDataAdapter';
 import { TempusPool } from '../interfaces/TempusPool';
@@ -14,6 +14,7 @@ const TVLProvider: FC<TVLProviderProps> = props => {
   const { dashboardDataAdapter } = props;
 
   const { setPoolData } = useContext(PoolDataContext);
+  const [subscriptions$] = useState<Subscription>(new Subscription());
 
   /**
    * Updates pool TVL data in context.
@@ -41,23 +42,21 @@ const TVLProvider: FC<TVLProviderProps> = props => {
    * Update TVL for all pools every POLLING_INTERVAL.
    */
   useEffect(() => {
-    const streams: Subscription[] = [];
-
     getConfig().tempusPools.forEach(poolConfig => {
-      const tempusPoolTVLStream$ = dashboardDataAdapter.getTempusPoolTVL(poolConfig.address, poolConfig.backingToken);
-      streams.push(
-        tempusPoolTVLStream$.subscribe(poolTvl => {
-          updatePoolTVL(poolConfig, poolTvl);
-        }),
-      );
+      try {
+        const tempusPoolTVLStream$ = dashboardDataAdapter.getTempusPoolTVL(poolConfig.address, poolConfig.backingToken);
+        subscriptions$.add(
+          tempusPoolTVLStream$.subscribe(poolTvl => {
+            updatePoolTVL(poolConfig, poolTvl);
+          }),
+        );
+      } catch (error) {
+        console.error('TVLProvider - subscriptions', error);
+      }
     });
 
-    return () => {
-      streams.forEach(stream$ => {
-        stream$.unsubscribe();
-      });
-    };
-  }, [dashboardDataAdapter, updatePoolTVL]);
+    return () => subscriptions$.unsubscribe();
+  }, [dashboardDataAdapter, updatePoolTVL, subscriptions$]);
 
   /**
    * Provider component only updates context value when needed. It does not show anything in the UI.

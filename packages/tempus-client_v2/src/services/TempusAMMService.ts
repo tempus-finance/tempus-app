@@ -42,7 +42,11 @@ class TempusAMMService {
     this.tempusAMMMap.clear();
 
     tempusAMMAddresses.forEach((address: string) => {
-      this.tempusAMMMap.set(address, new Contract(address, TempusAMMABI, signerOrProvider) as TempusAMM);
+      try {
+        this.tempusAMMMap.set(address, new Contract(address, TempusAMMABI, signerOrProvider) as TempusAMM);
+      } catch (error) {
+        console.error('TempusAMMService - init - error setting contract', error);
+      }
     });
 
     this.tempusPoolService = tempusPoolService;

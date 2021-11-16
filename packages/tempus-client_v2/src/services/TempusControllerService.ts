@@ -57,7 +57,11 @@ class TempusControllerService {
   private tempusAMMService: TempusAMMService | null = null;
 
   init(params: TempusControllerServiceParameters) {
-    this.contract = new Contract(params.address, params.abi, params.signerOrProvider) as TempusController;
+    try {
+      this.contract = new Contract(params.address, params.abi, params.signerOrProvider) as TempusController;
+    } catch (error) {
+      console.error('TempusControllerService - init', error);
+    }
 
     this.tempusAMMService = params.tempusAMMService;
   }

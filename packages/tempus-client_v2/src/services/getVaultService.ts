@@ -24,7 +24,7 @@ const getVaultService = (signerOrProvider?: JsonRpcSigner | JsonRpcProvider): Va
       Contract: Contract,
       address: getConfig().vaultContract,
       abi: VaultABI,
-      signerOrProvider: signerOrProvider,
+      signerOrProvider,
       tempusAMMService: getTempusAMMService(signerOrProvider),
     });
   }

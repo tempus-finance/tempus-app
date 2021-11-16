@@ -34,54 +34,58 @@ const VariableAPRProvider = () => {
     const variableRateService = getVariableRateService(provider);
     const tempusPoolService = getTempusPoolService(provider);
 
-    // Fetch APR for all Tempus Pools
-    const fetchedPoolAPRData = await Promise.all(
-      config.tempusPools.map(async tempusPool => {
-        // Get fees for Tempus Pool
-        const fees = await variableRateService.calculateFees(
-          tempusPool.ammAddress,
-          tempusPool.address,
-          tempusPool.principalsAddress,
-          tempusPool.yieldsAddress,
-        );
+    try {
+      // Fetch APR for all Tempus Pools
+      const fetchedPoolAPRData = await Promise.all(
+        config.tempusPools.map(async tempusPool => {
+          // Get fees for Tempus Pool
+          const fees = await variableRateService.calculateFees(
+            tempusPool.ammAddress,
+            tempusPool.address,
+            tempusPool.principalsAddress,
+            tempusPool.yieldsAddress,
+          );
 
-        // Get variable APR for Tempus Pool
-        const variableAPR = await variableRateService.getAprRate(
-          tempusPool.protocol,
-          tempusPool.address,
-          tempusPool.yieldBearingTokenAddress,
-          fees,
-        );
+          // Get variable APR for Tempus Pool
+          const variableAPR = await variableRateService.getAprRate(
+            tempusPool.protocol,
+            tempusPool.address,
+            tempusPool.yieldBearingTokenAddress,
+            fees,
+          );
 
-        // Check if yield is negative
-        const [currentInterestRate, initialInterestRate] = await Promise.all([
-          tempusPoolService.currentInterestRate(tempusPool.address),
-          tempusPoolService.initialInterestRate(tempusPool.address),
-        ]);
+          // Check if yield is negative
+          const [currentInterestRate, initialInterestRate] = await Promise.all([
+            tempusPoolService.currentInterestRate(tempusPool.address),
+            tempusPoolService.initialInterestRate(tempusPool.address),
+          ]);
 
-        return {
-          address: tempusPool.address,
-          variableAPR: variableAPR,
-          fees,
-          tokenPrecision: tempusPool.tokenPrecision,
-          negativeYield: currentInterestRate.lt(initialInterestRate),
-        };
-      }),
-    );
+          return {
+            address: tempusPool.address,
+            variableAPR: variableAPR,
+            fees,
+            tokenPrecision: tempusPool.tokenPrecision,
+            negativeYield: currentInterestRate.lt(initialInterestRate),
+          };
+        }),
+      );
 
-    setPoolData(previousData => ({
-      ...previousData,
-      poolData: previousData.poolData.map(previousPoolData => {
-        const poolAPRData = fetchedPoolAPRData.find(data => data.address === previousPoolData.address);
-        const variableAPR = poolAPRData?.variableAPR ?? previousPoolData.variableAPR;
+      setPoolData(previousData => ({
+        ...previousData,
+        poolData: previousData.poolData.map(previousPoolData => {
+          const poolAPRData = fetchedPoolAPRData.find(data => data.address === previousPoolData.address);
+          const variableAPR = poolAPRData?.variableAPR ?? previousPoolData.variableAPR;
 
-        return {
-          ...previousPoolData,
-          variableAPR,
-          isNegativeYield: poolAPRData?.negativeYield ?? previousPoolData.isNegativeYield,
-        };
-      }),
-    }));
+          return {
+            ...previousPoolData,
+            variableAPR,
+            isNegativeYield: poolAPRData?.negativeYield ?? previousPoolData.isNegativeYield,
+          };
+        }),
+      }));
+    } catch (error) {
+      console.log('VariableAPRProvider - fetchAPR', error);
+    }
   }, [getProvider, setPoolData]);
 
   /**

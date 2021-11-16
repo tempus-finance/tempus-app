@@ -38,13 +38,20 @@ const FixedAPRProvider = () => {
     // Fetch APR for all Tempus Pools
     const fetchedPoolAPRData = await Promise.all(
       config.tempusPools.map(async tempusPool => {
-        // Get fees for Tempus Pool
-        const fixedAPR = await tempusAMMSService.getFixedAPR(tempusPool.ammAddress, tempusPool.principalsAddress);
-
-        return {
-          address: tempusPool.address,
-          fixedAPR: fixedAPR,
-        };
+        try {
+          // Get fees for Tempus Pool
+          const fixedAPR = await tempusAMMSService.getFixedAPR(tempusPool.ammAddress, tempusPool.principalsAddress);
+          return {
+            address: tempusPool.address,
+            fixedAPR,
+          };
+        } catch (error) {
+          console.error('fetchedPoolAPRData error', error);
+          return {
+            address: tempusPool.address,
+            fixedAPR: null,
+          };
+        }
       }),
     );
 
