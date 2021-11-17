@@ -40,13 +40,17 @@ $padding: 20px;
   }
 }
 
-.tf__dashboard__header {
+.tc__dashboard__header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   width: 100%;
 
-  .tf__dashboard__header__actions {
+  .tc__dashboard__header__actions {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
     > div {
       display: flex;
       align-items: center;

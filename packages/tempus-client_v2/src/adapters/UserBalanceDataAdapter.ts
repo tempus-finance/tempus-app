@@ -31,7 +31,7 @@ export default class UserBalanceDataAdapter {
     tempusPool: TempusPool,
     userWalletAddress: string,
     userWalletSigner: JsonRpcSigner,
-  ): Observable<BigNumber> {
+  ): Observable<BigNumber[]> {
     if (!this.statisticsService) {
       return throwError(() => new Error('UserBalanceDataAdapter - getUserBalanceForPool() - Adapter not initialized!'));
     }
@@ -88,9 +88,10 @@ export default class UserBalanceDataAdapter {
       )
       .pipe(
         // Convert balance in backing tokens to USD
-        switchMap(([backingTokenRate, presentValueInBackingTokens]) => {
-          if (this.statisticsService && backingTokenRate && presentValueInBackingTokens) {
-            return of(mul18f(presentValueInBackingTokens, backingTokenRate));
+        switchMap(([backingTokenRate, userPoolBalanceInBackingTokens]) => {
+          if (this.statisticsService && backingTokenRate && userPoolBalanceInBackingTokens) {
+            const userPoolBalanceInFiat = mul18f(userPoolBalanceInBackingTokens, backingTokenRate);
+            return of([userPoolBalanceInFiat, userPoolBalanceInBackingTokens]);
           }
           return throwError(
             () => new Error('UserBalanceDataAdapter - getUserBalanceForPool() - Adapter not initialized!'),
@@ -98,12 +99,12 @@ export default class UserBalanceDataAdapter {
         }),
         catchError(error => {
           console.error('UserBalanceDataAdapter - getUserBalanceForPool() - Adapter not initialized!', error);
-          return of(ZERO);
+          return of([ZERO, ZERO]);
         }),
       );
   }
 
-  async getUserUSDAvailableToDepositForPool(
+  async getUserAvailableToDepositForPool(
     tempusPool: TempusPool,
     userWalletAddress: string,
     userWalletSigner: JsonRpcSigner,
@@ -128,13 +129,16 @@ export default class UserBalanceDataAdapter {
         interestRate,
       );
 
-      const backingTokenUSDValue = mul18f(backingTokensAvailable, backingTokenToUSD);
+      const backingTokenValueInFiat = mul18f(backingTokensAvailable, backingTokenToUSD);
       const yieldBearingToBackingAmount = mul18f(yieldTokensAvailable, yieldBearingToBackingTokenRate);
-      const yieldBearingTokenUSDValue = mul18f(yieldBearingToBackingAmount, backingTokenToUSD);
+      const yieldBearingTokenValueInFiat = mul18f(yieldBearingToBackingAmount, backingTokenToUSD);
+
+      const totalValueInBackingToken = backingTokensAvailable.add(yieldBearingToBackingAmount);
 
       return {
-        backingTokenAmount: backingTokenUSDValue,
-        yieldBearingTokenAmount: yieldBearingTokenUSDValue,
+        backingTokenValueInFiat,
+        yieldBearingTokenValueInFiat,
+        totalValueInBackingToken,
       };
     } catch (error) {
       console.error('UserBalanceDatAdapter - getUserUSDAvailableToDepositForPool', error);

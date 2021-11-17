@@ -5,11 +5,12 @@ import getConfig from '../utils/getConfig';
 import { ProtocolName } from '../interfaces/ProtocolName';
 
 export interface AvailableToDeposit {
-  backingTokenAmount: BigNumber;
-  yieldBearingTokenAmount: BigNumber;
+  backingTokenValueInFiat: BigNumber | null;
+  yieldBearingTokenValueInFiat: BigNumber | null;
+  totalValueInBackingToken: BigNumber | null;
 }
 
-export interface PoolData {
+export interface PoolData extends AvailableToDeposit {
   poolId: string;
   address: string;
   ammAddress: string;
@@ -32,7 +33,7 @@ export interface PoolData {
   variableAPR: number;
   tvl: BigNumber | null;
   userBalanceUSD: BigNumber | null;
-  userAvailableToDepositUSD: AvailableToDeposit | null;
+  userBalanceInBackingToken: BigNumber | null;
   isNegativeYield: boolean;
   decimalsForUI: number;
   precision: {
@@ -72,7 +73,10 @@ export const defaultPoolDataContextValue: PoolDataContextData = {
     tvl: null,
     fixedAPR: null,
     userBalanceUSD: null,
-    userAvailableToDepositUSD: null,
+    userBalanceInBackingToken: null,
+    backingTokenValueInFiat: null,
+    yieldBearingTokenValueInFiat: null,
+    totalValueInBackingToken: null,
     userBackingTokenBalance: null,
     userYieldBearingTokenBalance: null,
     userPrincipalsBalance: null,
