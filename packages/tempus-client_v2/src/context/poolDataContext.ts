@@ -6,8 +6,9 @@ import { ProtocolName } from '../interfaces/ProtocolName';
 
 export interface AvailableToDeposit {
   backingTokenValueInFiat: BigNumber | null;
+  backingTokensAvailable: BigNumber | null;
   yieldBearingTokenValueInFiat: BigNumber | null;
-  totalValueInBackingToken: BigNumber | null;
+  yieldBearingTokenValueInBackingToken: BigNumber | null;
 }
 
 export interface PoolData extends AvailableToDeposit {
@@ -60,6 +61,7 @@ export const defaultPoolDataContextValue: PoolDataContextData = {
     principalsAddress: tempusPoolConfig.principalsAddress,
     backingToken: tempusPoolConfig.backingToken,
     backingTokenAddress: tempusPoolConfig.backingTokenAddress,
+    backingTokensAvailable: null,
     yieldBearingToken: tempusPoolConfig.yieldBearingToken,
     yieldBearingTokenAddress: tempusPoolConfig.yieldBearingTokenAddress,
     yieldsAddress: tempusPoolConfig.yieldsAddress,
@@ -76,7 +78,7 @@ export const defaultPoolDataContextValue: PoolDataContextData = {
     userBalanceInBackingToken: null,
     backingTokenValueInFiat: null,
     yieldBearingTokenValueInFiat: null,
-    totalValueInBackingToken: null,
+    yieldBearingTokenValueInBackingToken: null,
     userBackingTokenBalance: null,
     userYieldBearingTokenBalance: null,
     userPrincipalsBalance: null,
