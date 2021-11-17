@@ -1,5 +1,5 @@
 import { BigNumber } from 'ethers';
-import { filter, from, interval, Observable, of, startWith, switchMap } from 'rxjs';
+import { filter, from, interval, Observable, of, startWith, switchMap, catchError } from 'rxjs';
 import { DashboardRow, DashboardRowChild, DashboardRowParent } from '../interfaces/DashboardRow';
 import { Ticker } from '../interfaces/Token';
 import { TempusPool } from '../interfaces/TempusPool';
@@ -41,6 +41,10 @@ export default class DashboardDataAdapter {
         if (this.statisticsService) {
           return from(this.statisticsService.totalValueLockedUSD(tempusPool, backingTokenTicker));
         }
+        return of(null);
+      }),
+      catchError(error => {
+        console.error('DashboardAdapter - getTempusPoolTVL', error);
         return of(null);
       }),
     );

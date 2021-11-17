@@ -26,7 +26,11 @@ class StatisticsService {
   private coinGeckoCache = new Map<string, { promise: Promise<any>; cachedAt: number }>();
 
   init(params: StatisticsServiceParameters) {
-    this.stats = new Contract(params.address, params.abi, params.signerOrProvider) as Stats;
+    try {
+      this.stats = new Contract(params.address, params.abi, params.signerOrProvider) as Stats;
+    } catch (error) {
+      console.error('StatisticsService - init', error);
+    }
 
     this.tempusAMMService = params.tempusAMMService;
   }
@@ -81,7 +85,7 @@ class StatisticsService {
         totalValueLockedUSD = await this.stats.totalValueLockedAtGivenRate(tempusPool, chainlinkAggregatorEnsHash);
       }
     } catch (error) {
-      console.warn(
+      console.error(
         'StatisticsService - totalValueLockedUSD() - Failed to get total value locked at given rate from contract. Falling back to CoinGecko API!',
       );
 

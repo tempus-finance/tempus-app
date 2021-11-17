@@ -32,7 +32,11 @@ class TempusPoolService {
     this.tempusPoolsMap = {};
 
     this.poolAddresses.forEach((address: string) => {
-      this.tempusPoolsMap[address] = new Contract(address, TempusPoolABI, signerOrProvider) as TempusPool;
+      try {
+        this.tempusPoolsMap[address] = new Contract(address, TempusPoolABI, signerOrProvider) as TempusPool;
+      } catch (error) {
+        console.error('TempusPoolService - init', error);
+      }
     });
 
     this.eRC20TokenServiceGetter = eRC20TokenServiceGetter;
