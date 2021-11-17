@@ -1,4 +1,6 @@
 import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { useState as useHookState } from '@hookstate/core';
+import { selectedPoolState } from '../../state/PoolDataState';
 import { getDataForPool, PoolDataContext } from '../../context/poolDataContext';
 import { AdvancedTransactionView, BasicTransactionView, TransactionView } from '../../interfaces/TransactionView';
 import getConfig from '../../utils/getConfig';
@@ -29,12 +31,14 @@ type SidebarInProps = {
 type SidebarProps = SidebarInProps & SidebarOutProps;
 
 const Sidebar: FC<SidebarProps> = ({ initialView, onSelectedView }) => {
-  const { poolData, selectedPool } = useContext(PoolDataContext);
+  const selectedPool = useHookState(selectedPoolState);
+
+  const { poolData } = useContext(PoolDataContext);
 
   const [selectedView, setSelectedView] = useState<TransactionView | null>(null);
 
   const activePoolData = useMemo(() => {
-    return getDataForPool(selectedPool, poolData);
+    return getDataForPool(selectedPool.get(), poolData);
   }, [poolData, selectedPool]);
 
   const onItemClick = useCallback(

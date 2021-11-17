@@ -1,6 +1,7 @@
 import { FC, useCallback, useContext, useEffect, useState } from 'react';
+import { useState as useHookState } from '@hookstate/core';
+import { selectedPoolState } from '../../state/PoolDataState';
 import { WalletContext } from '../../context/walletContext';
-import { PoolDataContext } from '../../context/poolDataContext';
 import { DashboardRow, DashboardRowChild } from '../../interfaces/DashboardRow';
 import getDashboardDataAdapter from '../../adapters/getDashboardDataAdapter';
 import DashboardDataAdapter from '../../adapters/DashboardDataAdapter';
@@ -17,8 +18,9 @@ import Operations from '../operations/Operations';
 import Dashboard from './dashboard';
 
 const DashboardManager: FC = (): JSX.Element => {
+  const selectedPool = useHookState(selectedPoolState);
+
   const { userWalletAddress, userWalletConnected, userWalletSigner } = useContext(WalletContext);
-  const { selectedPool, setPoolData } = useContext(PoolDataContext);
 
   const [dashboardDataAdapter, setDashboardDataAdapter] = useState<DashboardDataAdapter | null>(null);
   const [userBalanceDataAdapter, setUserBalanceDataAdapter] = useState<UserBalanceDataAdapter | null>(null);
@@ -49,16 +51,12 @@ const DashboardManager: FC = (): JSX.Element => {
 
   const onRowActionClick = useCallback(
     (row: DashboardRowChild) => {
-      setPoolData &&
-        setPoolData(previousContext => ({
-          poolData: previousContext.poolData,
-          selectedPool: row.id,
-        }));
+      selectedPool.set(row.id);
     },
-    [setPoolData],
+    [selectedPool],
   );
 
-  const shouldShowDashboard = !!selectedPool;
+  const shouldShowDashboard = !!selectedPool.get();
 
   return (
     <>
@@ -71,7 +69,7 @@ const DashboardManager: FC = (): JSX.Element => {
         />
       )}
 
-      {selectedPool && <Operations selectedPool={selectedPool} />}
+      {selectedPool.get() && <Operations />}
       {dashboardDataAdapter && <TVLProvider dashboardDataAdapter={dashboardDataAdapter} />}
       {userBalanceDataAdapter && <BalanceProvider userBalanceDataAdapter={userBalanceDataAdapter} />}
       <FixedAPRProvider />

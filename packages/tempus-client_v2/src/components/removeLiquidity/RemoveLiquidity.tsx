@@ -1,3 +1,5 @@
+import { useState as useHookState } from '@hookstate/core';
+import { selectedPoolState } from '../../state/PoolDataState';
 import Typography from '../typography/Typography';
 import Execute from '../buttons/Execute';
 import CurrencyInput from '../currencyInput/currencyInput';
@@ -19,8 +21,10 @@ import Approve from '../buttons/Approve';
 import './RemoveLiquidity.scss';
 
 const RemoveLiquidity = () => {
+  const selectedPool = useHookState(selectedPoolState);
+
   const { language } = useContext(LanguageContext);
-  const { poolData, selectedPool } = useContext(PoolDataContext);
+  const { poolData } = useContext(PoolDataContext);
   const { userWalletAddress, userWalletSigner } = useContext(WalletContext);
 
   const [amount, setAmount] = useState<string>('');
@@ -30,7 +34,7 @@ const RemoveLiquidity = () => {
   const [estimateInProgress, setEstimateInProgress] = useState<boolean>(false);
 
   const activePoolData = useMemo(() => {
-    return getDataForPool(selectedPool, poolData);
+    return getDataForPool(selectedPool.get(), poolData);
   }, [poolData, selectedPool]);
 
   const onAmountChange = useCallback(

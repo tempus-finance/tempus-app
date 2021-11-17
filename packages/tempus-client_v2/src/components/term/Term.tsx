@@ -1,19 +1,22 @@
-import { useContext, useMemo } from 'react';
+import { useContext } from 'react';
 import { format, formatDistanceStrict } from 'date-fns';
+import { useState as useHookState } from '@hookstate/core';
+import { poolMaturityDateState, poolStartDateState, selectedPoolState } from '../../state/PoolDataState';
 import { LanguageContext } from '../../context/languageContext';
-import { getDataForPool, PoolDataContext } from '../../context/poolDataContext';
 import getText from '../../localisation/getText';
 import Typography from '../typography/Typography';
 
 import './Term.scss';
 
 const Term = () => {
-  const { language } = useContext(LanguageContext);
-  const { poolData, selectedPool } = useContext(PoolDataContext);
+  const selectedPool = useHookState(selectedPoolState);
+  const poolMaturity = useHookState(poolMaturityDateState);
+  const poolStartDate = useHookState(poolStartDateState);
 
-  const activePoolData = useMemo(() => {
-    return getDataForPool(selectedPool, poolData);
-  }, [poolData, selectedPool]);
+  const { language } = useContext(LanguageContext);
+
+  const activePoolMaturityDate = poolMaturity[selectedPool.get()];
+  const activePoolStartDate = poolStartDate[selectedPool.get()];
 
   return (
     <div className="tc__term">
@@ -23,20 +26,20 @@ const Term = () => {
           <Typography variant="card-body-text" color="title">
             {getText('startDate', language)}
           </Typography>
-          <Typography variant="card-body-text">{format(activePoolData.startDate, 'dd MMM y')}</Typography>
+          <Typography variant="card-body-text">{format(activePoolStartDate.get(), 'dd MMM y')}</Typography>
         </div>
         <div className="tc__term__body__item">
           <Typography variant="card-body-text" color="title">
             {getText('maturity', language)}
           </Typography>
-          <Typography variant="card-body-text">{format(activePoolData.maturityDate, 'dd MMM y')}</Typography>
+          <Typography variant="card-body-text">{format(activePoolMaturityDate.get(), 'dd MMM y')}</Typography>
         </div>
         <div className="tc__term__body__item">
           <Typography variant="card-body-text" color="title">
             {getText('timeLeft', language)}
           </Typography>
           <Typography variant="card-body-text">
-            {formatDistanceStrict(activePoolData.startDate, activePoolData.maturityDate, { unit: 'day' })}
+            {formatDistanceStrict(activePoolStartDate.get(), activePoolMaturityDate.get(), { unit: 'day' })}
           </Typography>
         </div>
       </div>

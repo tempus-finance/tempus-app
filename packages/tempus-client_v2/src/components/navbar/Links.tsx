@@ -1,13 +1,15 @@
 import { useCallback, useContext } from 'react';
+import { useState as useHookState } from '@hookstate/core';
+import { selectedPoolState } from '../../state/PoolDataState';
 import { LanguageContext } from '../../context/languageContext';
-import { PoolDataContext } from '../../context/poolDataContext';
 import getText /*, { Language }*/ from '../../localisation/getText';
 import Community from './Community';
 
 import './Links.scss';
 
 const Links = () => {
-  const { setPoolData } = useContext(PoolDataContext);
+  const selectedPool = useHookState(selectedPoolState);
+
   const { language /*setLanguage*/ } = useContext(LanguageContext);
 
   // Implement language selector once the design for it is finalized.
@@ -22,8 +24,8 @@ const Links = () => {
   );*/
 
   const onDashboardClick = useCallback(() => {
-    setPoolData && setPoolData(previousContext => ({ selectedPool: '', poolData: previousContext.poolData }));
-  }, [setPoolData]);
+    selectedPool.set('');
+  }, [selectedPool]);
 
   // TODO
   // link active state

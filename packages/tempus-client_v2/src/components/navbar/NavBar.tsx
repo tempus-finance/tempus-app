@@ -1,5 +1,6 @@
-import { FC, useCallback, useContext } from 'react';
-import { PoolDataContext } from '../../context/poolDataContext';
+import { FC, useCallback } from 'react';
+import { useState as useHookState } from '@hookstate/core';
+import { selectedPoolState } from '../../state/PoolDataState';
 import TempusLogo from './tempusLogo';
 import Links from './Links';
 import Wallet from './Wallet';
@@ -7,11 +8,11 @@ import Wallet from './Wallet';
 import './NavBar.scss';
 
 const NavBar: FC = () => {
-  const { setPoolData } = useContext(PoolDataContext);
+  const selectedPool = useHookState(selectedPoolState);
 
   const onLogoClick = useCallback(() => {
-    setPoolData && setPoolData(previousContext => ({ selectedPool: '', poolData: previousContext.poolData }));
-  }, [setPoolData]);
+    selectedPool.set('');
+  }, [selectedPool]);
 
   return (
     <div className="tc__navBar">

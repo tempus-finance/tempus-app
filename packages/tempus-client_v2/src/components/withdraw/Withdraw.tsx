@@ -1,5 +1,7 @@
 import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { ethers, BigNumber } from 'ethers';
+import { useState as useHookState } from '@hookstate/core';
+import { selectedPoolState } from '../../state/PoolDataState';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
 import { getDataForPool, PoolDataContext } from '../../context/poolDataContext';
 import { WalletContext } from '../../context/walletContext';
@@ -22,11 +24,13 @@ type WithdrawOutProps = {
 };
 
 const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
-  const { poolData, selectedPool } = useContext(PoolDataContext);
+  const selectedPool = useHookState(selectedPoolState);
+
+  const { poolData } = useContext(PoolDataContext);
   const { userWalletSigner } = useContext(WalletContext);
 
   const selectedPoolData = useMemo(() => {
-    return getDataForPool(selectedPool, poolData);
+    return getDataForPool(selectedPool.get(), poolData);
   }, [poolData, selectedPool]);
 
   const supportedTokens = [selectedPoolData.backingToken, selectedPoolData.yieldBearingToken].filter(

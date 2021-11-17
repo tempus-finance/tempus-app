@@ -1,5 +1,7 @@
 import { useContext, useEffect, useMemo, useState } from 'react';
+import { useState as useHookState } from '@hookstate/core';
 import { AreaChart, Tooltip, Area, ResponsiveContainer } from 'recharts';
+import { selectedPoolState } from '../../../state/PoolDataState';
 import getProfitLossGraphDataAdapter from '../../../adapters/getProfitLossGraphDataAdapter';
 import { getDataForPool, PoolDataContext } from '../../../context/poolDataContext';
 import { WalletContext } from '../../../context/walletContext';
@@ -9,14 +11,16 @@ import Typography from '../../typography/Typography';
 import ProfitLossChartTooltip from './ProfitLossChartTooltip';
 
 const ProfitLossChart = () => {
+  const selectedPool = useHookState(selectedPoolState);
+
   const { userWalletAddress, userWalletSigner } = useContext(WalletContext);
-  const { poolData, selectedPool } = useContext(PoolDataContext);
+  const { poolData } = useContext(PoolDataContext);
 
   const [chartData, setChartData] = useState<ChartDataPoint[]>([]);
   const [startDate, setStartDate] = useState<number | null>(null);
 
   const activePoolData = useMemo(() => {
-    return getDataForPool(selectedPool, poolData);
+    return getDataForPool(selectedPool.get(), poolData);
   }, [poolData, selectedPool]);
 
   useEffect(() => {

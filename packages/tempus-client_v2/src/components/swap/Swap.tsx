@@ -1,5 +1,7 @@
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { BigNumber, ethers } from 'ethers';
+import { useState as useHookState } from '@hookstate/core';
+import { selectedPoolState } from '../../state/PoolDataState';
 import { getDataForPool, PoolDataContext } from '../../context/poolDataContext';
 import { WalletContext } from '../../context/walletContext';
 import { PoolShares, Ticker } from '../../interfaces/Token';
@@ -25,11 +27,13 @@ interface TokenDetail {
 }
 
 const Swap = () => {
-  const { poolData, selectedPool } = useContext(PoolDataContext);
+  const selectedPool = useHookState(selectedPoolState);
+
+  const { poolData } = useContext(PoolDataContext);
   const { userWalletSigner, userWalletAddress } = useContext(WalletContext);
 
   const activePoolData = useMemo(() => {
-    return getDataForPool(selectedPool, poolData);
+    return getDataForPool(selectedPool.get(), poolData);
   }, [poolData, selectedPool]);
 
   const [tokenFrom, setTokenFrom] = useState<TokenDetail>({

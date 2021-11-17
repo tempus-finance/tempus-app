@@ -1,6 +1,8 @@
 import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { useState as useHookState } from '@hookstate/core';
 import { ethers, BigNumber } from 'ethers';
 import { catchError } from 'rxjs';
+import { selectedPoolState } from '../../state/PoolDataState';
 import { interestRateProtectionTooltipText, liquidityProvisionTooltipText } from '../../constants';
 import { LanguageContext } from '../../context/languageContext';
 import { getDataForPool, PoolDataContext } from '../../context/poolDataContext';
@@ -33,10 +35,12 @@ type DepositInProps = {
 type DepositProps = DepositInProps & OperationsSharedProps;
 
 const Deposit: FC<DepositProps> = ({ narrow, poolDataAdapter }) => {
+  const selectedPool = useHookState(selectedPoolState);
+
   const { language } = useContext(LanguageContext);
   const { userWalletSigner } = useContext(WalletContext);
   const { userWalletAddress } = useContext(WalletContext);
-  const { poolData, selectedPool } = useContext(PoolDataContext);
+  const { poolData } = useContext(PoolDataContext);
 
   const [isYieldNegative, setIsYieldNegative] = useState<boolean | null>(null);
   const [selectedToken, setSelectedToken] = useState<Ticker | null>(null);
@@ -62,7 +66,7 @@ const Deposit: FC<DepositProps> = ({ narrow, poolDataAdapter }) => {
   const [tokenPrecision, setTokenPrecision] = useState<number>(0);
 
   const activePoolData = useMemo(() => {
-    return getDataForPool(selectedPool, poolData);
+    return getDataForPool(selectedPool.get(), poolData);
   }, [poolData, selectedPool]);
 
   const onTokenChange = useCallback(

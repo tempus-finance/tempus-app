@@ -1,5 +1,7 @@
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { useState as useHookState } from '@hookstate/core';
 import { ethers, BigNumber } from 'ethers';
+import { selectedPoolState } from '../../state/PoolDataState';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
 import { LanguageContext } from '../../context/languageContext';
 import { getDataForPool, PoolDataContext } from '../../context/poolDataContext';
@@ -16,9 +18,11 @@ import AprTooltip from './aprTooltip/aprTooltip';
 import './Pool.scss';
 
 const Pool = () => {
+  const selectedPool = useHookState(selectedPoolState);
+
   const { userWalletSigner } = useContext(WalletContext);
   const { language } = useContext(LanguageContext);
-  const { poolData, selectedPool } = useContext(PoolDataContext);
+  const { poolData } = useContext(PoolDataContext);
 
   //const [tvlChangePercentage, setTVLChangePercentage] = useState<BigNumber | null>(null);
   const [volume, setVolume] = useState<BigNumber | null>(null);
@@ -29,7 +33,7 @@ const Pool = () => {
    * Currently selected pool in the dashboard
    */
   const activePoolData = useMemo(() => {
-    return getDataForPool(selectedPool, poolData);
+    return getDataForPool(selectedPool.get(), poolData);
   }, [poolData, selectedPool]);
 
   /**

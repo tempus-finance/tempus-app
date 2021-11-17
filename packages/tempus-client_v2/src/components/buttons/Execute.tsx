@@ -1,6 +1,8 @@
 import { FC, useContext, useState, useMemo } from 'react';
+import { useState as useHookState } from '@hookstate/core';
 import { ethers } from 'ethers';
 import { Button, CircularProgress } from '@material-ui/core';
+import { selectedPoolState } from '../../state/PoolDataState';
 import getNotificationService from '../../services/getNotificationService';
 import {
   generateEtherscanLink,
@@ -28,15 +30,17 @@ interface ExecuteButtonProps {
 const Execute: FC<ExecuteButtonProps> = props => {
   const { disabled, actionName, actionDescription, tempusPool, onExecute, onExecuted } = props;
 
+  const selectedPool = useHookState(selectedPoolState);
+
   const { setPendingTransactions } = useContext(PendingTransactionsContext);
-  const { poolData, selectedPool } = useContext(PoolDataContext);
+  const { poolData } = useContext(PoolDataContext);
   const { language } = useContext(LanguageContext);
   const { userWalletAddress } = useContext(WalletContext);
 
   const [executeInProgress, setExecuteInProgress] = useState<boolean>(false);
 
   const selectedPoolData = useMemo(() => {
-    return getDataForPool(selectedPool, poolData);
+    return getDataForPool(selectedPool.get(), poolData);
   }, [poolData, selectedPool]);
 
   const execute = () => {

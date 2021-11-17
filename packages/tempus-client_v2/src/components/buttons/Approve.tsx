@@ -1,6 +1,8 @@
 import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { useState as useHookState } from '@hookstate/core';
 import { BigNumber, ethers } from 'ethers';
 import { Button, CircularProgress } from '@material-ui/core';
+import { selectedPoolState } from '../../state/PoolDataState';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
 import Typography from '../typography/Typography';
 import getNotificationService from '../../services/getNotificationService';
@@ -52,7 +54,9 @@ const Approve: FC<ApproveButtonProps> = props => {
     onApproveChange,
   } = props;
 
-  const { poolData, selectedPool } = useContext(PoolDataContext);
+  const selectedPool = useHookState(selectedPoolState);
+
+  const { poolData } = useContext(PoolDataContext);
   const { setPendingTransactions } = useContext(PendingTransactionsContext);
   const { userWalletAddress, userWalletSigner } = useContext(WalletContext);
   const { language } = useContext(LanguageContext);
@@ -61,7 +65,7 @@ const Approve: FC<ApproveButtonProps> = props => {
   const [allowance, setAllowance] = useState<BigNumber | null>(null);
 
   const selectedPoolData = useMemo(() => {
-    return getDataForPool(selectedPool, poolData);
+    return getDataForPool(selectedPool.get(), poolData);
   }, [poolData, selectedPool]);
 
   /**
