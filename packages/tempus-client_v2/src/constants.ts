@@ -19,14 +19,6 @@ export const cEthAddress = '0x4ddc2d193948926d02f9b1fe9e1daa0718270ed5';
 
 export const COMPOUND_BLOCKS_PER_DAY = 6570; // 13.15 seconds per block
 
-export const volume24hTooltipText = 'Calculated as the sum of deposit, redeem, and swap amounts in a 24 hour period.';
-
-export const interestRateProtectionTooltipText =
-  'Fix your future yield with Tempus. This function locks your Yield Bearing Token, mints Principals and Yields in exchange, and swaps all Yields for Principals through TempusAMM.<br/><br/>You will receive Principals which will be redeemable 1:1 to the Underlying asset on Maturity.';
-
-export const liquidityProvisionTooltipText =
-  'Provide liquidity to Tempus to earn extra yield. This function locks your Yield Bearing Token, mints Principals and Yields in exchange, and uses the maximum available number of Principals and Yields to provide liquidity to TempusAMM.<br/><br/>This means that you will receive the underlying yield, and the Tempus swap fees, aggregated into one yield.';
-
 export const approveGasIncrease = 1.05;
 export const depositAndFixGasIncrease = 1.05;
 export const depositAndProvideLiquidityGasIncrease = 1.05;

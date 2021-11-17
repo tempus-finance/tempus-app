@@ -1,6 +1,8 @@
 import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { LanguageContext } from '../../context/languageContext';
 import { getDataForPool, PoolDataContext } from '../../context/poolDataContext';
-import { AdvancedTransactionView, BasicTransactionView, TransactionView } from '../../interfaces/TransactionView';
+import getText from '../../localisation/getText';
+import { TransactionView } from '../../interfaces/TransactionView';
 import getConfig from '../../utils/getConfig';
 import shortenAccount from '../../utils/shortenAccount';
 import Typography from '../typography/Typography';
@@ -9,14 +11,8 @@ import TokenPairIcon from './tokenPairIcon/TokenPairIcon';
 
 import './Sidebar.scss';
 
-const basicViews: BasicTransactionView[] = ['Deposit', 'Withdraw'];
-const advancedViews: AdvancedTransactionView[] = [
-  'Mint',
-  'Swap',
-  'Provide Liquidity',
-  'Remove Liquidity',
-  'Early Redeem',
-];
+const basicViews: TransactionView[] = ['deposit', 'withdraw'];
+const advancedViews: TransactionView[] = ['mint', 'swap', 'provideLiquidity', 'removeLiquidity', 'earlyRedeem'];
 
 type SidebarOutProps = {
   onSelectedView: (selectedView: TransactionView) => void;
@@ -29,6 +25,7 @@ type SidebarInProps = {
 type SidebarProps = SidebarInProps & SidebarOutProps;
 
 const Sidebar: FC<SidebarProps> = ({ initialView, onSelectedView }) => {
+  const { language } = useContext(LanguageContext);
   const { poolData, selectedPool } = useContext(PoolDataContext);
 
   const [selectedView, setSelectedView] = useState<TransactionView | null>(null);
@@ -38,7 +35,7 @@ const Sidebar: FC<SidebarProps> = ({ initialView, onSelectedView }) => {
   }, [poolData, selectedPool]);
 
   const onItemClick = useCallback(
-    (itemName: string) => {
+    (itemName: TransactionView) => {
       setSelectedView(itemName as TransactionView);
       onSelectedView(itemName as TransactionView);
     },
@@ -113,11 +110,11 @@ const Sidebar: FC<SidebarProps> = ({ initialView, onSelectedView }) => {
       {/* Basic Section */}
       <div className="tc__sidebar-section-title">
         <Typography variant="h5" color="title">
-          BASIC
+          {getText('basic', language)}
         </Typography>
       </div>
-      {basicViews.map(basicViewName => {
-        if (basicViewName === 'Withdraw' && withdrawHidden) {
+      {basicViews.map((basicViewName: TransactionView) => {
+        if (basicViewName === 'withdraw' && withdrawHidden) {
           return null;
         }
 
@@ -129,7 +126,7 @@ const Sidebar: FC<SidebarProps> = ({ initialView, onSelectedView }) => {
             onClick={() => onItemClick(basicViewName)}
           >
             <Typography variant="h5" color={selectedView === basicViewName ? 'inverted' : 'default'}>
-              {basicViewName}
+              {getText(basicViewName, language)}
             </Typography>
           </div>
         );
@@ -138,17 +135,17 @@ const Sidebar: FC<SidebarProps> = ({ initialView, onSelectedView }) => {
       {/* Advanced Section */}
       <div className="tc__sidebar-section-title">
         <Typography variant="h5" color="title">
-          ADVANCED
+          {getText('advanced', language)}
         </Typography>
       </div>
       {advancedViews.map(advancedViewName => {
-        if (advancedViewName === 'Swap' && swapHidden) {
+        if (advancedViewName === 'swap' && swapHidden) {
           return null;
-        } else if (advancedViewName === 'Provide Liquidity' && provideLiquidityHidden) {
+        } else if (advancedViewName === 'provideLiquidity' && provideLiquidityHidden) {
           return null;
-        } else if (advancedViewName === 'Remove Liquidity' && removeLiquidityHidden) {
+        } else if (advancedViewName === 'removeLiquidity' && removeLiquidityHidden) {
           return null;
-        } else if (advancedViewName === 'Early Redeem' && earlyRedeemHidden) {
+        } else if (advancedViewName === 'earlyRedeem' && earlyRedeemHidden) {
           return null;
         }
 
@@ -160,7 +157,7 @@ const Sidebar: FC<SidebarProps> = ({ initialView, onSelectedView }) => {
             onClick={() => onItemClick(advancedViewName)}
           >
             <Typography variant="h5" color={selected ? 'inverted' : 'default'}>
-              {advancedViewName}
+              {getText(advancedViewName, language)}
             </Typography>
           </div>
         );

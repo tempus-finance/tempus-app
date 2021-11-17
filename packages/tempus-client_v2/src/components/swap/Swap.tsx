@@ -1,8 +1,10 @@
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { BigNumber, ethers } from 'ethers';
+import { LanguageContext } from '../../context/languageContext';
 import { getDataForPool, PoolDataContext } from '../../context/poolDataContext';
 import { WalletContext } from '../../context/walletContext';
 import { PoolShares, Ticker } from '../../interfaces/Token';
+import getText from '../../localisation/getText';
 import getConfig from '../../utils/getConfig';
 import getTokenPrecision from '../../utils/getTokenPrecision';
 import { isZeroString } from '../../utils/isZeroString';
@@ -27,6 +29,7 @@ interface TokenDetail {
 const Swap = () => {
   const { poolData, selectedPool } = useContext(PoolDataContext);
   const { userWalletSigner, userWalletAddress } = useContext(WalletContext);
+  const { language } = useContext(LanguageContext);
 
   const activePoolData = useMemo(() => {
     return getDataForPool(selectedPool, poolData);
@@ -235,10 +238,10 @@ const Swap = () => {
             onChange={onAmountChange}
             disabled={!selectedToken}
             onMaxClick={onMaxClick}
-            disabledTooltip="Please select the token first"
+            disabledTooltip={getText('selectTokenFirst', language)}
           />
           <Spacer size={15} />
-          <Typography variant="card-body-text">Balance</Typography>
+          <Typography variant="card-body-text">{getText('balance', language)}</Typography>
           <Spacer size={15} />
           {selectedToken && balanceFormatted && <Typography variant="card-body-text">{balanceFormatted}</Typography>}
         </div>
@@ -248,7 +251,7 @@ const Swap = () => {
         <div className="tf__flex-row-center-v">
           <TokenSelector value={tokenTo.tokenName} tickers={['Principals', 'Yields']} onTokenChange={onTokenToChange} />
           <Spacer size={15} />
-          <Typography variant="card-body-text">Estimated amount received</Typography>
+          <Typography variant="card-body-text">{getText('estimatedAmountReceived', language)}</Typography>
           <Spacer size={15} />
           <Typography variant="card-body-text">{receiveAmountFormatted}</Typography>
         </div>
