@@ -1,16 +1,16 @@
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { BigNumber, ethers } from 'ethers';
+import { LanguageContext } from '../../context/languageContext';
+import { getDataForPool, PoolDataContext } from '../../context/poolDataContext';
+import { WalletContext } from '../../context/walletContext';
+import getText from '../../localisation/getText';
 import Typography from '../typography/Typography';
 import Execute from '../buttons/Execute';
 import CurrencyInput from '../currencyInput/currencyInput';
 import PlusIconContainer from '../plusIconContainer/PlusIconContainer';
 import SectionContainer from '../sectionContainer/SectionContainer';
 import Spacer from '../spacer/spacer';
-import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { BigNumber, ethers } from 'ethers';
-import { LanguageContext } from '../../context/languageContext';
-import { getDataForPool, PoolDataContext } from '../../context/poolDataContext';
-import { WalletContext } from '../../context/walletContext';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
-import getText from '../../localisation/getText';
 import NumberUtils from '../../services/NumberUtils';
 import { isZeroString } from '../../utils/isZeroString';
 import getConfig from '../../utils/getConfig';
@@ -146,13 +146,13 @@ const RemoveLiquidity = () => {
     <div className="tc__removeLiquidity">
       <SectionContainer title="from">
         <SectionContainer elevation={2}>
-          <Typography variant="h4">LP Tokens</Typography>
+          <Typography variant="h4">{getText('lpTokens', language)}</Typography>
           <Spacer size={15} />
           <div className="tf__flex-row-space-between">
             <div className="tf__flex-row-center-v">
               <CurrencyInput defaultValue={amount} onChange={onAmountChange} onMaxClick={onPercentageChange} />
               <Spacer size={15} />
-              <Typography variant="card-body-text">Balance</Typography>
+              <Typography variant="card-body-text">{getText('balance', language)}</Typography>
               <Spacer size={15} />
               <Typography variant="card-body-text">{lpTokenBalanceFormatted}</Typography>
             </div>

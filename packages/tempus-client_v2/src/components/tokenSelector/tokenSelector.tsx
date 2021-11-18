@@ -1,5 +1,7 @@
-import { FC, useCallback } from 'react';
+import { FC, useCallback, useContext } from 'react';
 import { MenuItem, FormControl, Select } from '@material-ui/core';
+import { LanguageContext } from '../../context/languageContext';
+import getText, { Language } from '../../localisation/getText';
 import { Ticker } from '../../interfaces/Token';
 import Typography from '../typography/Typography';
 import TokenIcon from '../tokenIcon';
@@ -18,7 +20,7 @@ type TokenSelectorOutProps = {
 
 type TokenSelectorProps = TokenSelectorInProps & TokenSelectorOutProps;
 
-const getMenuItems = (value: Ticker | null, tickers: Ticker[]) => {
+const getMenuItems = (value: Ticker | null, tickers: Ticker[], language: Language) => {
   const menuItems = tickers.map(ticker => {
     return (
       <MenuItem key={ticker} value={ticker}>
@@ -37,7 +39,7 @@ const getMenuItems = (value: Ticker | null, tickers: Ticker[]) => {
   if (value === null) {
     menuItems.unshift(
       <MenuItem key="empty" value="empty">
-        <Typography variant="dropdown-text">Please select</Typography>
+        <Typography variant="dropdown-text">{getText('selectPlaceholder', language)}</Typography>
       </MenuItem>,
     );
   }
@@ -47,6 +49,7 @@ const getMenuItems = (value: Ticker | null, tickers: Ticker[]) => {
 
 const TokenSelector: FC<TokenSelectorProps> = props => {
   const { value, tickers, disabled, onTokenChange } = props;
+  const { language } = useContext(LanguageContext);
 
   const handleChange = useCallback(
     (event: React.ChangeEvent<{ value: unknown }>) => {
@@ -67,7 +70,7 @@ const TokenSelector: FC<TokenSelectorProps> = props => {
           onChange={handleChange}
           disableUnderline
         >
-          {getMenuItems(value, tickers)}
+          {getMenuItems(value, tickers, language)}
         </Select>
       </div>
     </FormControl>

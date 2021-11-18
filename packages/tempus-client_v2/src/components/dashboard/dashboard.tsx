@@ -11,8 +11,10 @@ import {
 import { Grid, TableHeaderRow, VirtualTable, TableTreeColumn } from '@devexpress/dx-react-grid-material-ui';
 import { SECONDS_IN_A_DAY, ZERO } from '../../constants';
 import { getDataForPool, PoolData, PoolDataContext } from '../../context/poolDataContext';
+import { LanguageContext } from '../../context/languageContext';
 import { DashboardRow, isChildRow, isParentRow } from '../../interfaces/DashboardRow';
 import { ColumnNames } from '../../interfaces/ColumnNames';
+import getText from '../../localisation/getText';
 import Typography from '../typography/Typography';
 import FilterIcon from '../icons/FilterIcon';
 import FilterPopup, { FilterData } from './popups/filter-popup';
@@ -47,6 +49,7 @@ type DashboardProps = DashboardInProps & DashboardOutProps;
 
 const Dashboard: FC<DashboardProps> = ({ hidden, userWalletAddress, rows, onRowActionClick }): JSX.Element => {
   const { poolData } = useContext(PoolDataContext);
+  const { language } = useContext(LanguageContext);
 
   const [displayedRows, setDisplayedRows] = useState<DashboardRow[]>([]);
 
@@ -221,13 +224,13 @@ const Dashboard: FC<DashboardProps> = ({ hidden, userWalletAddress, rows, onRowA
       <div className="tc__dashboard__container">
         <div className="tc__dashboard__header">
           <Typography color="default" variant="h4">
-            Available Pools
+            {getText('availablePools', language)}
           </Typography>
           <div className="tc__dashboard__header__actions">
             <CurrencySwitch />
             <div onClick={onToggleFilterPopup} ref={filterButtonRef}>
               <Typography color="default" variant="h4">
-                Filter
+                {getText('filter', language)}
               </Typography>
               <FilterIcon />
             </div>
@@ -242,7 +245,7 @@ const Dashboard: FC<DashboardProps> = ({ hidden, userWalletAddress, rows, onRowA
         <hr />
         <div className="tf__dashboard">
           <div className="tf__dashboard__grid">
-            <Grid rows={filteredRows || displayedRows} columns={dashboardColumnsDefinitions}>
+            <Grid rows={filteredRows || displayedRows} columns={dashboardColumnsDefinitions(language)}>
               <SortingState
                 sorting={currentSorting}
                 onSortingChange={onSortingChange}

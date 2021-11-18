@@ -1,5 +1,3 @@
-export type BasicTransactionView = 'Deposit' | 'Withdraw';
+import Words from '../localisation/words';
 
-export type AdvancedTransactionView = 'Mint' | 'Swap' | 'Provide Liquidity' | 'Remove Liquidity' | 'Early Redeem';
-
-export type TransactionView = BasicTransactionView | AdvancedTransactionView;
+export type TransactionView = Partial<Words>;

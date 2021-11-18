@@ -19,7 +19,6 @@ const Community = () => {
   const [communityMenuOpen, setCommunityMenuOpen] = useState<boolean>(false);
 
   const toggleCommunityMenu = useCallback(() => {
-    console.log('test =====>');
     setCommunityMenuOpen(prevValue => !prevValue);
   }, [setCommunityMenuOpen]);
 
@@ -100,13 +99,13 @@ const Community = () => {
               <ListItemIcon className="tc__header__community-menu__icon-container">
                 <TelegramIcon />
               </ListItemIcon>
-              <ListItemText primary="Tempus Announcements" />
+              <ListItemText primary={getText('tempusAnnouncements', language)} />
             </ListItem>
             <ListItem button onClick={onChatClick}>
               <ListItemIcon className="tc__header__community-menu__icon-container">
                 <TelegramIcon />
               </ListItemIcon>
-              <ListItemText primary="Tempus Chat" />
+              <ListItemText primary={getText('tempusChat', language)} />
             </ListItem>
             <ListItem button onClick={onChineseChatClick}>
               <ListItemIcon className="tc__header__community-menu__icon-container">

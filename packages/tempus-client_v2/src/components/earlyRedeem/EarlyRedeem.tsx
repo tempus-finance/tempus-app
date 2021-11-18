@@ -274,7 +274,7 @@ const EarlyRedeem: FC = () => {
               onChange={onAmountChange}
               onMaxClick={onClickMax}
               disabled={!selectedToken || depositDisabled}
-              disabledTooltip="Please select the token first"
+              disabledTooltip={getText('selectTokenFirst', language)}
             />
           </div>
         </SectionContainer>

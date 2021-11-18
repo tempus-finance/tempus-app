@@ -29,7 +29,7 @@ const Operations: FC<OperationsInProps> = () => {
   const { userWalletSigner } = useContext(WalletContext);
   const { poolData, selectedPool } = useContext(PoolDataContext);
 
-  const [selectedView, setSelectedView] = useState<TransactionView>('Deposit');
+  const [selectedView, setSelectedView] = useState<TransactionView>('deposit');
 
   const activePoolData = useMemo(() => {
     return getDataForPool(selectedPool, poolData);
@@ -46,7 +46,7 @@ const Operations: FC<OperationsInProps> = () => {
   }, [activePoolData]);
 
   const handleWithdraw = useCallback(() => {
-    setSelectedView('Deposit');
+    setSelectedView('deposit');
   }, []);
 
   return (
@@ -68,15 +68,15 @@ const Operations: FC<OperationsInProps> = () => {
             </div>
             {/* Middle bottom part (Selected tab options) */}
             <div className="tc__operations-poolManage">
-              {selectedView === 'Deposit' && (
+              {selectedView === 'deposit' && (
                 <Deposit poolDataAdapter={getPoolDataAdapter(userWalletSigner)} narrow={!hideUserData} />
               )}
-              {selectedView === 'Withdraw' && <Withdraw onWithdraw={handleWithdraw} />}
-              {selectedView === 'Mint' && <Mint narrow={!hideUserData} />}
-              {selectedView === 'Swap' && <Swap />}
-              {selectedView === 'Provide Liquidity' && <ProvideLiquidity />}
-              {selectedView === 'Remove Liquidity' && <RemoveLiquidity />}
-              {selectedView === 'Early Redeem' && <EarlyRedeem />}
+              {selectedView === 'withdraw' && <Withdraw onWithdraw={handleWithdraw} />}
+              {selectedView === 'mint' && <Mint narrow={!hideUserData} />}
+              {selectedView === 'swap' && <Swap />}
+              {selectedView === 'provideLiquidity' && <ProvideLiquidity />}
+              {selectedView === 'removeLiquidity' && <RemoveLiquidity />}
+              {selectedView === 'earlyRedeem' && <EarlyRedeem />}
             </div>
           </div>
           {/* Right side (Current Position, Profit/Loss) - Only visible if user has balance in the pool */}

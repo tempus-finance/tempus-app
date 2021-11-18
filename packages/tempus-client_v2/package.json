@@ -27,13 +27,13 @@
     "axios": "^0.22.0",
     "date-fns": "^2.22.1",
     "ethers": "^5.4.1",
+    "html-react-parser": "^1.4.0",
     "is-mobile": "^3.0.0",
     "react-scripts": "4.0.3",
     "recharts": "^2.1.6",
     "rxjs": "^7.3.0",
     "sass": "^1.35.1",
-    "uuid": "^8.3.2",
-    "html-react-parser": "^1.4.0"
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@types/recharts": "^2.0.0",
