@@ -1,7 +1,7 @@
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { ethers, BigNumber } from 'ethers';
 import { useState as useHookState } from '@hookstate/core';
-import { selectedPoolState } from '../../state/PoolDataState';
+import { dynamicPoolDataState, selectedPoolState } from '../../state/PoolDataState';
 import { LanguageContext } from '../../context/languageContext';
 import { getDataForPool, PoolDataContext } from '../../context/poolDataContext';
 import { WalletContext } from '../../context/walletContext';
@@ -24,6 +24,7 @@ import './ProvideLiquidity.scss';
 
 const ProvideLiquidity = () => {
   const selectedPool = useHookState(selectedPoolState);
+  const dynamicPoolData = useHookState(dynamicPoolDataState);
 
   const { poolData } = useContext(PoolDataContext);
   const { language } = useContext(LanguageContext);
@@ -48,6 +49,9 @@ const ProvideLiquidity = () => {
   const [principalsPrecision, setPrincipalsPrecision] = useState<number>(0);
   const [yieldsPrecision, setYieldsPrecision] = useState<number>(0);
   const [lpTokensPrecision, setLpTokensPrecision] = useState<number>(0);
+
+  const userPrincipalsBalance = dynamicPoolData[selectedPool.get()].userPrincipalsBalance.get();
+  const userYieldsBalance = dynamicPoolData[selectedPool.get()].userYieldsBalance.get();
 
   const activePoolData = useMemo(() => {
     return getDataForPool(selectedPool.get(), poolData);
@@ -129,12 +133,7 @@ const ProvideLiquidity = () => {
    * - Requires user principals balance to be loaded so we can calculate percentage of that.
    */
   const onPrincipalsPercentageChange = useCallback(() => {
-    if (
-      !activePoolData.userPrincipalsBalance ||
-      !activePoolData.userYieldsBalance ||
-      !yieldsPercentage ||
-      !principalsPercentage
-    ) {
+    if (!userPrincipalsBalance || !userYieldsBalance || !yieldsPercentage || !principalsPercentage) {
       return;
     }
 
@@ -142,18 +141,18 @@ const ProvideLiquidity = () => {
       (yieldsPercentage / principalsPercentage).toString(),
       yieldsPrecision,
     );
-    const resultingYields = mul18f(activePoolData.userPrincipalsBalance, yieldsToPrincipalsRatio, yieldsPrecision);
-    if (resultingYields.gt(activePoolData.userYieldsBalance)) {
-      setYieldsAmount(ethers.utils.formatUnits(activePoolData.userYieldsBalance, yieldsPrecision));
-      setPrincipalsFromYields(activePoolData.userYieldsBalance);
+    const resultingYields = mul18f(userPrincipalsBalance, yieldsToPrincipalsRatio, yieldsPrecision);
+    if (resultingYields.gt(userYieldsBalance)) {
+      setYieldsAmount(ethers.utils.formatUnits(userYieldsBalance, yieldsPrecision));
+      setPrincipalsFromYields(userYieldsBalance);
       return;
     }
 
-    setPrincipalsAmount(ethers.utils.formatUnits(activePoolData.userPrincipalsBalance, principalsPrecision));
-    setYieldsFromPrincipals(activePoolData.userPrincipalsBalance);
+    setPrincipalsAmount(ethers.utils.formatUnits(userPrincipalsBalance, principalsPrecision));
+    setYieldsFromPrincipals(userPrincipalsBalance);
   }, [
-    activePoolData.userPrincipalsBalance,
-    activePoolData.userYieldsBalance,
+    userPrincipalsBalance,
+    userYieldsBalance,
     principalsPercentage,
     principalsPrecision,
     setPrincipalsFromYields,
@@ -167,12 +166,7 @@ const ProvideLiquidity = () => {
    * - Requires user yields balance to be loaded so we can calculate percentage of that.
    */
   const onYieldsPercentageChange = useCallback(() => {
-    if (
-      !activePoolData.userPrincipalsBalance ||
-      !activePoolData.userYieldsBalance ||
-      !yieldsPercentage ||
-      !principalsPercentage
-    ) {
+    if (!userPrincipalsBalance || !userYieldsBalance || !yieldsPercentage || !principalsPercentage) {
       return;
     }
 
@@ -180,18 +174,18 @@ const ProvideLiquidity = () => {
       (principalsPercentage / yieldsPercentage).toString(),
       principalsPrecision,
     );
-    const resultingPrincipals = mul18f(activePoolData.userYieldsBalance, principalsToYieldsRatio, principalsPrecision);
-    if (resultingPrincipals.gt(activePoolData.userPrincipalsBalance)) {
-      setPrincipalsAmount(ethers.utils.formatUnits(activePoolData.userPrincipalsBalance, principalsPrecision));
-      setYieldsFromPrincipals(activePoolData.userPrincipalsBalance);
+    const resultingPrincipals = mul18f(userYieldsBalance, principalsToYieldsRatio, principalsPrecision);
+    if (resultingPrincipals.gt(userPrincipalsBalance)) {
+      setPrincipalsAmount(ethers.utils.formatUnits(userPrincipalsBalance, principalsPrecision));
+      setYieldsFromPrincipals(userPrincipalsBalance);
       return;
     }
 
-    setYieldsAmount(ethers.utils.formatUnits(activePoolData.userYieldsBalance, yieldsPrecision));
-    setPrincipalsFromYields(activePoolData.userYieldsBalance);
+    setYieldsAmount(ethers.utils.formatUnits(userYieldsBalance, yieldsPrecision));
+    setPrincipalsFromYields(userYieldsBalance);
   }, [
-    activePoolData.userPrincipalsBalance,
-    activePoolData.userYieldsBalance,
+    userPrincipalsBalance,
+    userYieldsBalance,
     yieldsPercentage,
     principalsPercentage,
     principalsPrecision,
@@ -321,24 +315,24 @@ const ProvideLiquidity = () => {
   }, []);
 
   const principalsBalanceFormatted = useMemo(() => {
-    if (!activePoolData.userPrincipalsBalance) {
+    if (!userPrincipalsBalance) {
       return null;
     }
     return NumberUtils.formatToCurrency(
-      ethers.utils.formatUnits(activePoolData.userPrincipalsBalance, principalsPrecision),
+      ethers.utils.formatUnits(userPrincipalsBalance, principalsPrecision),
       activePoolData.decimalsForUI,
     );
-  }, [activePoolData, principalsPrecision]);
+  }, [activePoolData, principalsPrecision, userPrincipalsBalance]);
 
   const yieldsBalanceFormatted = useMemo(() => {
-    if (!activePoolData.userYieldsBalance) {
+    if (!userYieldsBalance) {
       return null;
     }
     return NumberUtils.formatToCurrency(
-      ethers.utils.formatUnits(activePoolData.userYieldsBalance, yieldsPrecision),
+      ethers.utils.formatUnits(userYieldsBalance, yieldsPrecision),
       activePoolData.decimalsForUI,
     );
-  }, [activePoolData, yieldsPrecision]);
+  }, [activePoolData, yieldsPrecision, userYieldsBalance]);
 
   const expectedLPTokensFormatted = useMemo(() => {
     if (!expectedLPTokens) {
@@ -352,14 +346,14 @@ const ProvideLiquidity = () => {
 
   const executeDisabled = useMemo(() => {
     const zeroAmount = isZeroString(principalsAmount) || isZeroString(yieldsAmount);
-    const principalBalanceZero = activePoolData.userPrincipalsBalance && activePoolData.userPrincipalsBalance.isZero();
-    const yieldsBalanceZero = activePoolData.userYieldsBalance && activePoolData.userYieldsBalance.isZero();
+    const principalBalanceZero = userPrincipalsBalance && userPrincipalsBalance.isZero();
+    const yieldsBalanceZero = userYieldsBalance && userYieldsBalance.isZero();
     const principalsAmountExceedsBalance = ethers.utils
       .parseUnits(principalsAmount || '0', principalsPrecision)
-      .gt(activePoolData.userPrincipalsBalance || BigNumber.from('0'));
+      .gt(userPrincipalsBalance || BigNumber.from('0'));
     const yieldsAmountExceedsBalance = ethers.utils
       .parseUnits(yieldsAmount || '0', yieldsPrecision)
-      .gt(activePoolData.userYieldsBalance || BigNumber.from('0'));
+      .gt(userYieldsBalance || BigNumber.from('0'));
 
     return (
       (!principalBalanceZero && !principalsApproved) ||
@@ -371,15 +365,16 @@ const ProvideLiquidity = () => {
       poolShareEstimateInProgress
     );
   }, [
-    poolShareEstimateInProgress,
     principalsAmount,
+    yieldsAmount,
+    userPrincipalsBalance,
+    userYieldsBalance,
     principalsPrecision,
     yieldsPrecision,
     principalsApproved,
-    tokenEstimateInProgress,
-    activePoolData,
-    yieldsAmount,
     yieldsApproved,
+    tokenEstimateInProgress,
+    poolShareEstimateInProgress,
   ]);
 
   return (
@@ -408,7 +403,7 @@ const ProvideLiquidity = () => {
             <div className="tf__flex-row-center-v-end">
               <Approve
                 tokenToApproveTicker="Principals"
-                amountToApprove={activePoolData.userPrincipalsBalance}
+                amountToApprove={userPrincipalsBalance}
                 onApproveChange={approved => {
                   setPrincipalsApproved(approved);
                 }}
@@ -442,7 +437,7 @@ const ProvideLiquidity = () => {
             <div className="tf__flex-row-center-v-end">
               <Approve
                 tokenToApproveTicker="Yields"
-                amountToApprove={activePoolData.userYieldsBalance}
+                amountToApprove={userYieldsBalance}
                 onApproveChange={approved => {
                   setYieldsApproved(approved);
                 }}

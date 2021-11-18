@@ -1,6 +1,6 @@
 import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useState as useHookState } from '@hookstate/core';
-import { selectedPoolState } from '../../state/PoolDataState';
+import { dynamicPoolDataState, selectedPoolState } from '../../state/PoolDataState';
 import { LanguageContext } from '../../context/languageContext';
 import { getDataForPool, PoolDataContext } from '../../context/poolDataContext';
 import getText from '../../localisation/getText';
@@ -28,11 +28,16 @@ type SidebarProps = SidebarInProps & SidebarOutProps;
 
 const Sidebar: FC<SidebarProps> = ({ initialView, onSelectedView }) => {
   const selectedPool = useHookState(selectedPoolState);
+  const dynamicPoolData = useHookState(dynamicPoolDataState);
 
   const { language } = useContext(LanguageContext);
   const { poolData } = useContext(PoolDataContext);
 
   const [selectedView, setSelectedView] = useState<TransactionView | null>(null);
+
+  const userPrincipalsBalance = dynamicPoolData[selectedPool.get()].userPrincipalsBalance.get();
+  const userYieldsBalance = dynamicPoolData[selectedPool.get()].userYieldsBalance.get();
+  const userLPTokenBalance = dynamicPoolData[selectedPool.get()].userLPTokenBalance.get();
 
   const activePoolData = useMemo(() => {
     return getDataForPool(selectedPool.get(), poolData);
@@ -63,41 +68,39 @@ const Sidebar: FC<SidebarProps> = ({ initialView, onSelectedView }) => {
   }, [activePoolData.address]);
 
   const withdrawHidden = useMemo(() => {
-    const { userPrincipalsBalance, userYieldsBalance, userLPTokenBalance } = activePoolData;
-
     if (!userPrincipalsBalance || !userYieldsBalance || !userLPTokenBalance) {
       return true;
     }
     return userPrincipalsBalance.isZero() && userYieldsBalance.isZero() && userLPTokenBalance.isZero();
-  }, [activePoolData]);
+  }, [userLPTokenBalance, userPrincipalsBalance, userYieldsBalance]);
 
   const swapHidden = useMemo(() => {
-    if (!activePoolData.userPrincipalsBalance || !activePoolData.userYieldsBalance) {
+    if (!userPrincipalsBalance || !userYieldsBalance) {
       return true;
     }
-    return activePoolData.userPrincipalsBalance.isZero() && activePoolData.userYieldsBalance.isZero();
-  }, [activePoolData.userPrincipalsBalance, activePoolData.userYieldsBalance]);
+    return userPrincipalsBalance.isZero() && userYieldsBalance.isZero();
+  }, [userPrincipalsBalance, userYieldsBalance]);
 
   const provideLiquidityHidden = useMemo(() => {
-    if (!activePoolData.userPrincipalsBalance || !activePoolData.userYieldsBalance) {
+    if (!userPrincipalsBalance || !userYieldsBalance) {
       return true;
     }
-    return activePoolData.userPrincipalsBalance.isZero() && activePoolData.userYieldsBalance.isZero();
-  }, [activePoolData.userPrincipalsBalance, activePoolData.userYieldsBalance]);
+    return userPrincipalsBalance.isZero() && userYieldsBalance.isZero();
+  }, [userPrincipalsBalance, userYieldsBalance]);
 
   const removeLiquidityHidden = useMemo(() => {
-    if (!activePoolData.userLPTokenBalance) {
+    if (!userLPTokenBalance) {
       return true;
     }
-    return activePoolData.userLPTokenBalance.isZero();
-  }, [activePoolData.userLPTokenBalance]);
+    return userLPTokenBalance.isZero();
+  }, [userLPTokenBalance]);
 
   const earlyRedeemHidden = useMemo(() => {
-    if (!activePoolData.userPrincipalsBalance || !activePoolData.userYieldsBalance) {
+    if (!userPrincipalsBalance || !userYieldsBalance) {
       return true;
     }
-    return activePoolData.userPrincipalsBalance.isZero() && activePoolData.userYieldsBalance.isZero();
-  }, [activePoolData.userPrincipalsBalance, activePoolData.userYieldsBalance]);
+    return userPrincipalsBalance.isZero() && userYieldsBalance.isZero();
+  }, [userPrincipalsBalance, userYieldsBalance]);
 
   return (
     <div className="tc__sidebar-container">

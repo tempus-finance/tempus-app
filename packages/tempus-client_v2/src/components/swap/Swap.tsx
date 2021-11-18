@@ -1,7 +1,7 @@
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { BigNumber, ethers } from 'ethers';
 import { useState as useHookState } from '@hookstate/core';
-import { selectedPoolState } from '../../state/PoolDataState';
+import { dynamicPoolDataState, selectedPoolState } from '../../state/PoolDataState';
 import { LanguageContext } from '../../context/languageContext';
 import { getDataForPool, PoolDataContext } from '../../context/poolDataContext';
 import { WalletContext } from '../../context/walletContext';
@@ -30,6 +30,7 @@ interface TokenDetail {
 
 const Swap = () => {
   const selectedPool = useHookState(selectedPoolState);
+  const dynamicPoolData = useHookState(dynamicPoolDataState);
 
   const { poolData } = useContext(PoolDataContext);
   const { userWalletSigner, userWalletAddress } = useContext(WalletContext);
@@ -54,12 +55,15 @@ const Swap = () => {
   const [estimateInProgress, setEstimateInProgress] = useState<boolean>(false);
   const [tokenPrecision, setTokenPrecision] = useState<number>(getTokenPrecision(activePoolData.address, 'principals'));
 
+  const userPrincipalsBalance = dynamicPoolData[selectedPool.get()].userPrincipalsBalance.get();
+  const userYieldsBalance = dynamicPoolData[selectedPool.get()].userYieldsBalance.get();
+
   const getSelectedTokenBalance = useCallback((): BigNumber | null => {
     if (!selectedToken) {
       return null;
     }
-    return selectedToken === 'Principals' ? activePoolData.userPrincipalsBalance : activePoolData.userYieldsBalance;
-  }, [selectedToken, activePoolData]);
+    return selectedToken === 'Principals' ? userPrincipalsBalance : userYieldsBalance;
+  }, [selectedToken, userPrincipalsBalance, userYieldsBalance]);
 
   const getSelectedTokenAddress = useCallback((): string | null => {
     if (!selectedToken) {

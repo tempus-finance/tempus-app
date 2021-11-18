@@ -1,12 +1,14 @@
 import { useCallback, useContext, useEffect } from 'react';
-import { PoolDataContext } from '../context/poolDataContext';
+import { useState as useHookState } from '@hookstate/core';
+import { dynamicPoolDataState } from '../state/PoolDataState';
 import { WalletContext } from '../context/walletContext';
 import { TempusPool } from '../interfaces/TempusPool';
 import getERC20TokenService from '../services/getERC20TokenService';
 import getConfig from '../utils/getConfig';
 
 const UserShareTokenBalanceProvider = () => {
-  const { setPoolData } = useContext(PoolDataContext);
+  const dynamicPoolData = useHookState(dynamicPoolDataState);
+
   const { userWalletAddress, userWalletSigner } = useContext(WalletContext);
 
   /**
@@ -18,22 +20,10 @@ const UserShareTokenBalanceProvider = () => {
         const principalsService = getERC20TokenService(poolConfig.principalsAddress, userWalletSigner);
         const balance = await principalsService.balanceOf(userWalletAddress);
 
-        setPoolData &&
-          setPoolData(previousData => ({
-            ...previousData,
-            poolData: previousData.poolData.map(previousPoolData => {
-              if (previousPoolData.address !== poolConfig.address) {
-                return previousPoolData;
-              }
-              return {
-                ...previousPoolData,
-                userPrincipalsBalance: balance,
-              };
-            }),
-          }));
+        dynamicPoolData[poolConfig.address].userPrincipalsBalance.set(balance);
       }
     },
-    [userWalletAddress, userWalletSigner, setPoolData],
+    [userWalletSigner, userWalletAddress, dynamicPoolData],
   );
 
   /**
@@ -45,22 +35,10 @@ const UserShareTokenBalanceProvider = () => {
         const yieldsService = getERC20TokenService(poolConfig.yieldsAddress, userWalletSigner);
         const balance = await yieldsService.balanceOf(userWalletAddress);
 
-        setPoolData &&
-          setPoolData(previousData => ({
-            ...previousData,
-            poolData: previousData.poolData.map(previousPoolData => {
-              if (previousPoolData.address !== poolConfig.address) {
-                return previousPoolData;
-              }
-              return {
-                ...previousPoolData,
-                userYieldsBalance: balance,
-              };
-            }),
-          }));
+        dynamicPoolData[poolConfig.address].userYieldsBalance.set(balance);
       }
     },
-    [userWalletAddress, userWalletSigner, setPoolData],
+    [userWalletSigner, userWalletAddress, dynamicPoolData],
   );
 
   const updatePrincipalsBalance = useCallback(async () => {

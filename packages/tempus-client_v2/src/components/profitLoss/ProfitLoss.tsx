@@ -1,7 +1,7 @@
 import { ethers, BigNumber } from 'ethers';
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { useState as useHookState } from '@hookstate/core';
-import { selectedPoolState } from '../../state/PoolDataState';
+import { dynamicPoolDataState, selectedPoolState } from '../../state/PoolDataState';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
 import { LanguageContext } from '../../context/languageContext';
 import { getDataForPool, PoolDataContext } from '../../context/poolDataContext';
@@ -17,6 +17,7 @@ import ProfitLossChart from './profitLossChart/ProfitLossChart';
 
 const ProfitLoss = () => {
   const selectedPool = useHookState(selectedPoolState);
+  const dynamicPoolData = useHookState(dynamicPoolDataState);
 
   const { userWalletSigner } = useContext(WalletContext);
   const { language } = useContext(LanguageContext);
@@ -24,12 +25,16 @@ const ProfitLoss = () => {
 
   const [estimatedWithdrawAmount, setEstimatedWithdrawAmount] = useState<BigNumber | null>(null);
 
+  const userPrincipalsBalance = dynamicPoolData[selectedPool.get()].userPrincipalsBalance.get();
+  const userYieldsBalance = dynamicPoolData[selectedPool.get()].userYieldsBalance.get();
+  const userLPTokenBalance = dynamicPoolData[selectedPool.get()].userLPTokenBalance.get();
+
   const activePoolData = useMemo(() => {
     return getDataForPool(selectedPool.get(), poolData);
   }, [poolData, selectedPool]);
 
   useEffect(() => {
-    const { ammAddress, userLPTokenBalance, userPrincipalsBalance, userYieldsBalance } = activePoolData;
+    const { ammAddress } = activePoolData;
 
     if (!userWalletSigner || !userLPTokenBalance || !userPrincipalsBalance || !userYieldsBalance) {
       return;
@@ -45,7 +50,7 @@ const ProfitLoss = () => {
     return () => {
       withdrawStream$.unsubscribe();
     };
-  }, [activePoolData, userWalletSigner]);
+  }, [activePoolData, userWalletSigner, userPrincipalsBalance, userYieldsBalance, userLPTokenBalance]);
 
   const estimatedWithdrawAmountFormatted = useMemo(() => {
     if (!estimatedWithdrawAmount) {

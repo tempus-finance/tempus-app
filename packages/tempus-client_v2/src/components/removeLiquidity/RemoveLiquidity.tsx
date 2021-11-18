@@ -1,5 +1,5 @@
 import { useState as useHookState } from '@hookstate/core';
-import { selectedPoolState } from '../../state/PoolDataState';
+import { dynamicPoolDataState, selectedPoolState } from '../../state/PoolDataState';
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { BigNumber, ethers } from 'ethers';
 import { LanguageContext } from '../../context/languageContext';
@@ -22,6 +22,7 @@ import './RemoveLiquidity.scss';
 
 const RemoveLiquidity = () => {
   const selectedPool = useHookState(selectedPoolState);
+  const dynamicPoolData = useHookState(dynamicPoolDataState);
 
   const { language } = useContext(LanguageContext);
   const { poolData } = useContext(PoolDataContext);
@@ -32,6 +33,8 @@ const RemoveLiquidity = () => {
   const [estimatedYields, setEstimatedYields] = useState<BigNumber | null>(null);
   const [tokensApproved, setTokensApproved] = useState<boolean>(false);
   const [estimateInProgress, setEstimateInProgress] = useState<boolean>(false);
+
+  const userLPTokenBalance = dynamicPoolData[selectedPool.get()].userLPTokenBalance.get();
 
   const activePoolData = useMemo(() => {
     return getDataForPool(selectedPool.get(), poolData);
@@ -53,10 +56,10 @@ const RemoveLiquidity = () => {
    * - Requires user LP token balance to be loaded so we can calculate percentage of that.
    */
   const onPercentageChange = useCallback(() => {
-    if (activePoolData.userLPTokenBalance) {
-      setAmount(ethers.utils.formatEther(activePoolData.userLPTokenBalance));
+    if (userLPTokenBalance) {
+      setAmount(ethers.utils.formatEther(userLPTokenBalance));
     }
-  }, [activePoolData.userLPTokenBalance]);
+  }, [userLPTokenBalance]);
 
   // Fetch estimated share tokens returned
   useEffect(() => {
@@ -108,14 +111,11 @@ const RemoveLiquidity = () => {
   }, []);
 
   const lpTokenBalanceFormatted = useMemo(() => {
-    if (!activePoolData.userLPTokenBalance) {
+    if (!userLPTokenBalance) {
       return null;
     }
-    return NumberUtils.formatToCurrency(
-      ethers.utils.formatEther(activePoolData.userLPTokenBalance),
-      activePoolData.decimalsForUI,
-    );
-  }, [activePoolData]);
+    return NumberUtils.formatToCurrency(ethers.utils.formatEther(userLPTokenBalance), activePoolData.decimalsForUI);
+  }, [activePoolData, userLPTokenBalance]);
 
   const estimatedPrincipalsFormatted = useMemo(() => {
     if (!estimatedPrincipals) {
@@ -139,12 +139,10 @@ const RemoveLiquidity = () => {
 
   const executeDisabled = useMemo(() => {
     const zeroAmount = isZeroString(amount);
-    const amountExceedsBalance = ethers.utils
-      .parseEther(amount || '0')
-      .gt(activePoolData.userLPTokenBalance || BigNumber.from('0'));
+    const amountExceedsBalance = ethers.utils.parseEther(amount || '0').gt(userLPTokenBalance || BigNumber.from('0'));
 
     return !tokensApproved || zeroAmount || amountExceedsBalance || estimateInProgress;
-  }, [amount, activePoolData.userLPTokenBalance, tokensApproved, estimateInProgress]);
+  }, [amount, userLPTokenBalance, tokensApproved, estimateInProgress]);
 
   return (
     <div className="tc__removeLiquidity">
@@ -163,7 +161,7 @@ const RemoveLiquidity = () => {
             <div className="tf__flex-row-center-v-end">
               <Approve
                 tokenToApproveTicker="LP Token"
-                amountToApprove={activePoolData.userLPTokenBalance}
+                amountToApprove={userLPTokenBalance}
                 onApproveChange={onApproveChange}
                 spenderAddress={getConfig().vaultContract}
                 tokenToApproveAddress={activePoolData.ammAddress}

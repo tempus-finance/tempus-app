@@ -2,7 +2,7 @@ import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react
 import { useState as useHookState } from '@hookstate/core';
 import { ethers, BigNumber } from 'ethers';
 import { catchError, combineLatest } from 'rxjs';
-import { selectedPoolState } from '../../state/PoolDataState';
+import { dynamicPoolDataState, selectedPoolState } from '../../state/PoolDataState';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
 import { LanguageContext } from '../../context/languageContext';
 import { getDataForPool, PoolDataContext } from '../../context/poolDataContext';
@@ -25,6 +25,7 @@ import './EarlyRedeem.scss';
 
 const EarlyRedeem: FC = () => {
   const selectedPool = useHookState(selectedPoolState);
+  const dynamicPoolData = useHookState(dynamicPoolDataState);
 
   const { language } = useContext(LanguageContext);
   const { userWalletSigner } = useContext(WalletContext);
@@ -46,6 +47,9 @@ const EarlyRedeem: FC = () => {
   const [tokenRate, setTokenRate] = useState<BigNumber | null>(null);
 
   const [tokenPrecision, setTokenPrecision] = useState<number>(0);
+
+  const userPrincipalsBalance = dynamicPoolData[selectedPool.get()].userPrincipalsBalance.get();
+  const userYieldsBalance = dynamicPoolData[selectedPool.get()].userYieldsBalance.get();
 
   const supportedTokens = useMemo(() => {
     return [activePoolData.backingToken, activePoolData.yieldBearingToken].filter(token => token !== 'ETH');
@@ -231,12 +235,12 @@ const EarlyRedeem: FC = () => {
     const zeroAmount = isZeroString(amount);
     const amountExceedsPrincipalsBalance = ethers.utils
       .parseUnits(amount || '0', tokenPrecision)
-      .gt(activePoolData.userPrincipalsBalance || BigNumber.from('0'));
+      .gt(userPrincipalsBalance || BigNumber.from('0'));
     const amountExceedsYieldsBalance = ethers.utils
       .parseUnits(amount || '0', tokenPrecision)
-      .gt(activePoolData.userYieldsBalance || BigNumber.from('0'));
-    const principalBalanceZero = activePoolData.userPrincipalsBalance && activePoolData.userPrincipalsBalance.isZero();
-    const yieldsBalanceZero = activePoolData.userYieldsBalance && activePoolData.userYieldsBalance.isZero();
+      .gt(userYieldsBalance || BigNumber.from('0'));
+    const principalBalanceZero = userPrincipalsBalance && userPrincipalsBalance.isZero();
+    const yieldsBalanceZero = userYieldsBalance && userYieldsBalance.isZero();
 
     return (
       (!principalBalanceZero && !principalsApproved) ||
@@ -246,7 +250,15 @@ const EarlyRedeem: FC = () => {
       amountExceedsYieldsBalance ||
       estimateInProgress
     );
-  }, [activePoolData, amount, principalsApproved, yieldsApproved, tokenPrecision, estimateInProgress]);
+  }, [
+    amount,
+    tokenPrecision,
+    userPrincipalsBalance,
+    userYieldsBalance,
+    principalsApproved,
+    yieldsApproved,
+    estimateInProgress,
+  ]);
 
   const onExecute = useCallback(() => {
     if (!userWalletSigner) {

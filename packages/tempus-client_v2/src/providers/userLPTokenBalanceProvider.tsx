@@ -1,12 +1,14 @@
 import { useCallback, useContext, useEffect } from 'react';
-import { PoolDataContext } from '../context/poolDataContext';
+import { useState as useHookState } from '@hookstate/core';
+import { dynamicPoolDataState } from '../state/PoolDataState';
 import { WalletContext } from '../context/walletContext';
 import { TempusPool } from '../interfaces/TempusPool';
 import getERC20TokenService from '../services/getERC20TokenService';
 import getConfig from '../utils/getConfig';
 
 const UserLPTokenBalanceProvider = () => {
-  const { setPoolData } = useContext(PoolDataContext);
+  const dynamicPoolData = useHookState(dynamicPoolDataState);
+
   const { userWalletAddress, userWalletSigner } = useContext(WalletContext);
 
   /**
@@ -18,22 +20,10 @@ const UserLPTokenBalanceProvider = () => {
         const lpTokenService = getERC20TokenService(tempusPool.ammAddress, userWalletSigner);
         const balance = await lpTokenService.balanceOf(userWalletAddress);
 
-        setPoolData &&
-          setPoolData(previousData => ({
-            ...previousData,
-            poolData: previousData.poolData.map(previousPoolData => {
-              if (previousPoolData.address !== tempusPool.address) {
-                return previousPoolData;
-              }
-              return {
-                ...previousPoolData,
-                userLPTokenBalance: balance,
-              };
-            }),
-          }));
+        dynamicPoolData[tempusPool.address].userLPTokenBalance.set(balance);
       }
     },
-    [userWalletAddress, userWalletSigner, setPoolData],
+    [userWalletSigner, userWalletAddress, dynamicPoolData],
   );
 
   const updateBalance = useCallback(async () => {

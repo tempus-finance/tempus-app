@@ -26,9 +26,6 @@ export interface PoolData extends AvailableToDeposit {
   yieldBearingTokenAddress: string;
   userBackingTokenBalance: BigNumber | null;
   userYieldBearingTokenBalance: BigNumber | null;
-  userPrincipalsBalance: BigNumber | null;
-  userYieldsBalance: BigNumber | null;
-  userLPTokenBalance: BigNumber | null;
   spotPrice: string;
   fixedAPR: number | null;
   variableAPR: number;
@@ -79,9 +76,6 @@ export const defaultPoolDataContextValue: PoolDataContextData = {
     yieldBearingTokenValueInBackingToken: null,
     userBackingTokenBalance: null,
     userYieldBearingTokenBalance: null,
-    userPrincipalsBalance: null,
-    userYieldsBalance: null,
-    userLPTokenBalance: null,
     isNegativeYield: true,
     precision: {
       backingToken: tempusPoolConfig.tokenPrecision?.backingToken,
