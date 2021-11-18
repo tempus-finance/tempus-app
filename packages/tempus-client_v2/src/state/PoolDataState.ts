@@ -4,16 +4,20 @@ import getConfig from '../utils/getConfig';
 // Currently selected pool (Pool Address)
 export const selectedPoolState = createState('');
 
-// Maturity data for all Tempus Pools
-const poolMaturityStateData: { [poolAddress: string]: number } = {};
-getConfig().tempusPools.forEach(tempusPoolConfig => {
-  poolMaturityStateData[tempusPoolConfig.address] = tempusPoolConfig.maturityDate;
-});
-export const poolMaturityDateState = createState(poolMaturityStateData);
+// Static pool data
+interface StaticPoolData {
+  address: string;
+  maturityDate: number;
+  startDate: number;
+}
 
-// Start date data for all Tempus Pools
-const poolStartDateStateData: { [poolAddress: string]: number } = {};
+// Static pool data state object
+const staticPoolDataStateInitialValue: { [poolAddress: string]: StaticPoolData } = {};
 getConfig().tempusPools.forEach(tempusPoolConfig => {
-  poolStartDateStateData[tempusPoolConfig.address] = tempusPoolConfig.startDate;
+  staticPoolDataStateInitialValue[tempusPoolConfig.address] = {
+    address: tempusPoolConfig.address,
+    maturityDate: tempusPoolConfig.maturityDate,
+    startDate: tempusPoolConfig.startDate,
+  };
 });
-export const poolStartDateState = createState(poolStartDateStateData);
+export const staticPoolDataState = createState(staticPoolDataStateInitialValue);

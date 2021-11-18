@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 import { format, formatDistanceStrict } from 'date-fns';
 import { useState as useHookState } from '@hookstate/core';
-import { poolMaturityDateState, poolStartDateState, selectedPoolState } from '../../state/PoolDataState';
+import { selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
 import { LanguageContext } from '../../context/languageContext';
 import getText from '../../localisation/getText';
 import Typography from '../typography/Typography';
@@ -10,13 +10,12 @@ import './Term.scss';
 
 const Term = () => {
   const selectedPool = useHookState(selectedPoolState);
-  const poolMaturity = useHookState(poolMaturityDateState);
-  const poolStartDate = useHookState(poolStartDateState);
+  const staticPoolData = useHookState(staticPoolDataState);
 
   const { language } = useContext(LanguageContext);
 
-  const activePoolMaturityDate = poolMaturity[selectedPool.get()];
-  const activePoolStartDate = poolStartDate[selectedPool.get()];
+  const activePoolMaturityDate = staticPoolData[selectedPool.get()].maturityDate;
+  const activePoolStartDate = staticPoolData[selectedPool.get()].startDate;
 
   return (
     <div className="tc__term">
