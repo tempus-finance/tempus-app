@@ -1,7 +1,9 @@
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { ethers, BigNumber } from 'ethers';
+import { LanguageContext } from '../../context/languageContext';
 import { getDataForPool, PoolDataContext } from '../../context/poolDataContext';
 import { WalletContext } from '../../context/walletContext';
+import getText from '../../localisation/getText';
 import getConfig from '../../utils/getConfig';
 import { mul18f } from '../../utils/weiMath';
 import getTokenPrecision from '../../utils/getTokenPrecision';
@@ -19,6 +21,7 @@ import Execute from '../buttons/Execute';
 import './ProvideLiquidity.scss';
 
 const ProvideLiquidity = () => {
+  const { language } = useContext(LanguageContext);
   const { poolData, selectedPool } = useContext(PoolDataContext);
   const { userWalletAddress, userWalletSigner } = useContext(WalletContext);
 
@@ -390,7 +393,7 @@ const ProvideLiquidity = () => {
               <Spacer size={15} />
               {principalsBalanceFormatted && (
                 <>
-                  <Typography variant="card-body-text">Balance</Typography>
+                  <Typography variant="card-body-text">{getText('balance', language)}</Typography>
                   <Spacer size={15} />
                   <Typography variant="card-body-text">{principalsBalanceFormatted}</Typography>
                 </>
@@ -424,7 +427,7 @@ const ProvideLiquidity = () => {
               <Spacer size={15} />
               {yieldsBalanceFormatted && (
                 <>
-                  <Typography variant="card-body-text">Balance</Typography>
+                  <Typography variant="card-body-text">{getText('balance', language)}</Typography>
                   <Spacer size={15} />
                   <Typography variant="card-body-text">{yieldsBalanceFormatted}</Typography>
                 </>
@@ -448,17 +451,19 @@ const ProvideLiquidity = () => {
       <Spacer size={15} />
       <SectionContainer title="to">
         <SectionContainer elevation={2}>
-          <Typography variant="h4">LP Tokens</Typography>
+          <Typography variant="h4">{getText('lpTokens', language)}</Typography>
           <Spacer size={10} />
           <div className="tf__flex-row-space-between">
             <div className="tf__flex-row-center-v">
-              <Typography variant="card-body-text">Estimated amount received</Typography>
+              <Typography variant="card-body-text">{getText('estimatedAmountReceived', language)}</Typography>
               <Spacer size={15} />
-              <Typography variant="card-body-text">{expectedLPTokensFormatted} LP Tokens</Typography>
+              <Typography variant="card-body-text">
+                {expectedLPTokensFormatted} {getText('lpTokens', language)}
+              </Typography>
             </div>
             <div className="tf__flex-row-center-v-end">
               <Typography variant="card-body-text">
-                {NumberUtils.formatPercentage(expectedPoolShare)} of the Pool
+                {NumberUtils.formatPercentage(expectedPoolShare)} {getText('ofPool', language)}
               </Typography>
             </div>
           </div>

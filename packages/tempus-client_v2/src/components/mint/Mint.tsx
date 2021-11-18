@@ -305,7 +305,7 @@ const Mint: FC<MintInProps> = ({ narrow }) => {
               onMaxClick={onClickMax}
               disabled={!selectedToken || depositDisabled}
               // TODO - Update text in case input is disabled because of negative yield
-              disabledTooltip="Please select the token first"
+              disabledTooltip={getText('selectTokenFirst', language)}
             />
             {usdValueFormatted && (
               <div className="tf__input__label">

@@ -3,6 +3,8 @@ import { ethers, BigNumber } from 'ethers';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
 import { getDataForPool, PoolDataContext } from '../../context/poolDataContext';
 import { WalletContext } from '../../context/walletContext';
+import { LanguageContext } from '../../context/languageContext';
+import getText from '../../localisation/getText';
 import { Ticker } from '../../interfaces/Token';
 import NumberUtils from '../../services/NumberUtils';
 import getConfig from '../../utils/getConfig';
@@ -24,6 +26,7 @@ type WithdrawOutProps = {
 const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
   const { poolData, selectedPool } = useContext(PoolDataContext);
   const { userWalletSigner } = useContext(WalletContext);
+  const { language } = useContext(LanguageContext);
 
   const selectedPoolData = useMemo(() => {
     return getDataForPool(selectedPool, poolData);
@@ -176,9 +179,11 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
           <SectionContainer elevation={2}>
             <div className="tf__flex-row-space-between">
               <div className="tf__flex-column-space-between">
-                <Typography variant="h4">Principals</Typography>
+                <Typography variant="h4">{getText('principals', language)}</Typography>
                 <Spacer size={10} />
-                <Typography variant="card-body-text">Balance {principalsBalanceFormatted} Principals</Typography>
+                <Typography variant="card-body-text">
+                  {getText('balance', language)} {principalsBalanceFormatted} {getText('principals', language)}
+                </Typography>
               </div>
               <div className="tf__flex-column-center-end">
                 <Approve
@@ -200,9 +205,11 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
             <SectionContainer elevation={2}>
               <div className="tf__flex-row-space-between">
                 <div className="tf__flex-column-space-between">
-                  <Typography variant="h4">Yields</Typography>
+                  <Typography variant="h4">{getText('yields', language)}</Typography>
                   <Spacer size={10} />
-                  <Typography variant="card-body-text">Balance {yieldsBalanceFormatted} Yields</Typography>
+                  <Typography variant="card-body-text">
+                    {getText('balance', language)} {yieldsBalanceFormatted} {getText('yields', language)}
+                  </Typography>
                 </div>
                 <div className="tf__flex-column-center-end">
                   <Approve
@@ -225,9 +232,11 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
             <SectionContainer elevation={2}>
               <div className="tf__flex-row-space-between">
                 <div className="tf__flex-column-space-between">
-                  <Typography variant="h4">LP Tokens</Typography>
+                  <Typography variant="h4">{getText('lpTokens', language)}</Typography>
                   <Spacer size={10} />
-                  <Typography variant="card-body-text">Balance {lpBalanceFormatted} LP Tokens</Typography>
+                  <Typography variant="card-body-text">
+                    {getText('balance', language)} {lpBalanceFormatted} {getText('lpTokens', language)}
+                  </Typography>
                 </div>
                 <div className="tf__flex-column-center-end">
                   <Approve
@@ -252,7 +261,7 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
           <div className="tf__flex-row-center-vh">
             <TokenSelector tickers={supportedTokens} value={selectedToken} onTokenChange={onTokenChange} />
             <Spacer size={15} />
-            <Typography variant="card-body-text">Estimated amount received</Typography>
+            <Typography variant="card-body-text">{getText('estimatedAmountReceived', language)}</Typography>
             <Spacer size={15} />
             <Typography variant="card-body-text">
               {estimatedWithdrawAmountFormatted} {selectedToken}

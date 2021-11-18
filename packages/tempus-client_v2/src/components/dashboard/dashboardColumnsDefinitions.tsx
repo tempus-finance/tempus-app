@@ -1,18 +1,19 @@
 import { Column } from '@devexpress/dx-react-grid';
 import { DashboardRowChild, DashboardRowParent, isParentRow } from '../../interfaces/DashboardRow';
+import getText, { Language } from '../../localisation/getText';
 
 export interface ExtraDataColumn extends Column {
   tooltip?: string;
 }
 
-export const dashboardColumnsDefinitions: ExtraDataColumn[] = [
+export const dashboardColumnsDefinitions = (language: Language): ExtraDataColumn[] => [
   {
     name: 'token',
-    title: 'Asset',
+    title: getText('asset', language),
   },
   {
     name: 'protocol',
-    title: 'Protocol',
+    title: getText('protocol', language),
     // TODO - Hide protocol icons from children that are hidden
     getCellValue: (row: DashboardRowChild | DashboardRowParent) => {
       if (isParentRow(row)) {
@@ -24,26 +25,26 @@ export const dashboardColumnsDefinitions: ExtraDataColumn[] = [
   },
   {
     name: 'maturity',
-    title: 'Maturity',
+    title: getText('maturity', language),
   },
   {
     name: 'fixedAPR',
-    title: `Fixed APR`,
+    title: getText('fixedApr', language),
   },
   {
     name: 'variableAPY',
-    title: 'LP APR',
+    title: getText('lpApr', language),
   },
   {
     name: 'TVL',
-    title: 'TVL',
+    title: getText('tvl', language),
   },
   {
     name: 'presentValue',
-    title: 'Balance',
+    title: getText('balance', language),
   },
   {
     name: 'availableToDeposit',
-    title: 'Available to Deposit',
+    title: getText('availableToDeposit', language),
   },
 ];
