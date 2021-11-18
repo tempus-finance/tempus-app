@@ -94,11 +94,17 @@ export const PoolDataContext = React.createContext<PoolDataContextType>({
   setPoolData: null,
 });
 
-// TODO use a map to speedup retrieval
-export function getDataForPool(address: string, poolData: PoolData[]): PoolData {
-  const result = poolData.find(data => data.address === address);
+const poolDataMap: { [address: string]: PoolData } = {};
+export function getDataForPool(address: string, poolDataList: PoolData[]): PoolData {
+  if (poolDataMap[address] !== undefined) {
+    return poolDataMap[address];
+  }
+
+  const result = poolDataList.find(poolData => poolData.address === address);
   if (!result) {
     throw new Error('Context - getDataForPool() - Failed to fetch data for pool!');
   }
+
+  poolDataMap[address] = result;
   return result;
 }
