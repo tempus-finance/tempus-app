@@ -197,13 +197,15 @@ const Wallet = () => {
               <Typography variant="h5">{active ? shortenedAccount : getText('connectWallet', language)}</Typography>
             )}
             {pendingTransactions.length > 0 && (
-              <Typography variant="h5">{pendingTransactions.length} Pending...</Typography>
+              <Typography variant="h5">
+                {pendingTransactions.length} {getText('pending', language)}
+              </Typography>
             )}
           </div>
         )}
         {metamaskInstalled === false && (
           <div className="tc__connect-wallet-button" onClick={onInstallMetamaskClick}>
-            <Typography variant="h5">Install Metamask</Typography>
+            <Typography variant="h5">{getText('installMetamask', language)}</Typography>
           </div>
         )}
       </div>

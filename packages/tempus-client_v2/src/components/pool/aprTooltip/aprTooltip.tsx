@@ -3,8 +3,10 @@ import { useContext, useEffect, useMemo, useState } from 'react';
 import { useState as useHookState } from '@hookstate/core';
 import { selectedPoolState } from '../../../state/PoolDataState';
 import getPoolDataAdapter from '../../../adapters/getPoolDataAdapter';
+import { LanguageContext } from '../../../context/languageContext';
 import { getDataForPool, PoolDataContext } from '../../../context/poolDataContext';
 import { WalletContext } from '../../../context/walletContext';
+import getText from '../../../localisation/getText';
 import NumberUtils from '../../../services/NumberUtils';
 import Typography from '../../typography/Typography';
 
@@ -15,6 +17,7 @@ const AprTooltip = () => {
 
   const { userWalletSigner } = useContext(WalletContext);
   const { poolData } = useContext(PoolDataContext);
+  const { language } = useContext(LanguageContext);
 
   const [poolRatio, setPoolRatio] = useState<number[] | null>(null);
 
@@ -94,32 +97,32 @@ const AprTooltip = () => {
     <div className="tc__aprTooltip">
       <div className="tc__aprTooltip-row">
         <Typography variant="card-body-text" color="title">
-          Future APR
+          {getText('futureApr', language)}
         </Typography>
         <Typography variant="card-body-text">{futureAprFormatted}</Typography>
       </div>
       <div className="tc__aprTooltip-row">
         <Typography variant="card-body-text" color="title">
-          Future Yield
+          {getText('futureYield', language)}
         </Typography>
         <Typography variant="card-body-text">{futureYieldFormatted}</Typography>
       </div>
       <hr />
       <div className="tc__aprTooltip-row">
         <Typography variant="card-body-text" color="title">
-          Lifetime APR
+          {getText('lifeTimeApr', language)}
         </Typography>
         <Typography variant="card-body-text">{lifetimeAprFormatted}</Typography>
       </div>
       <div className="tc__aprTooltip-row">
         <Typography variant="card-body-text" color="title">
-          Lifetime Yield
+          {getText('lifeTimeYield', language)}
         </Typography>
         <Typography variant="card-body-text">{lifetimeYieldFormatted}</Typography>
       </div>
       <div className="tc__aprTooltip-row">
         <Typography variant="card-body-text" color="title">
-          Pool Ratio (Principals / Yields)
+          {getText('poolRatio', language)}
         </Typography>
         <div className="tc__aprPoolRation">
           <Typography variant="fractional">{principalsPoolRatio}</Typography>

@@ -3,7 +3,6 @@ import { useState as useHookState } from '@hookstate/core';
 import { ethers, BigNumber } from 'ethers';
 import { catchError } from 'rxjs';
 import { selectedPoolState } from '../../state/PoolDataState';
-import { interestRateProtectionTooltipText, liquidityProvisionTooltipText } from '../../constants';
 import { LanguageContext } from '../../context/languageContext';
 import { getDataForPool, PoolDataContext } from '../../context/poolDataContext';
 import { WalletContext } from '../../context/walletContext';
@@ -469,7 +468,7 @@ const Deposit: FC<DepositProps> = ({ narrow, poolDataAdapter }) => {
               onMaxClick={onClickMax}
               disabled={!selectedToken || depositDisabled}
               // TODO - Update text in case input is disabled because of negative yield
-              disabledTooltip="Please select the token first"
+              disabledTooltip={getText('selectTokenFirst', language)}
             />
             {usdValueFormatted && (
               <div className="tf__input__label">
@@ -496,7 +495,7 @@ const Deposit: FC<DepositProps> = ({ narrow, poolDataAdapter }) => {
               <div className="tf__flex-row-center-v">
                 <Typography variant="h4">{getText('fixYourFutureYield', language)}</Typography>
                 <Spacer size={10} />
-                <InfoTooltip text={interestRateProtectionTooltipText} />
+                <InfoTooltip text={getText('interestRateProtectionTooltipText', language)} />
               </div>
               <Typography variant="body-text" color="title">
                 {getText('fixedYield', language)}
@@ -560,7 +559,7 @@ const Deposit: FC<DepositProps> = ({ narrow, poolDataAdapter }) => {
               <div className="tf__flex-row-center-v">
                 <Typography variant="h4">{getText('provideLiquidity', language)}</Typography>
                 <Spacer size={10} />
-                <InfoTooltip text={liquidityProvisionTooltipText} />
+                <InfoTooltip text={getText('liquidityProvisionTooltipText', language)} />
               </div>
               <Typography variant="body-text" color="title">
                 {getText('variableYield', language)}
@@ -580,7 +579,7 @@ const Deposit: FC<DepositProps> = ({ narrow, poolDataAdapter }) => {
                   `${variableLpTokensAmountFormatted} ${getText('lpTokens', language)}`}
               </Typography>
               <Typography variant="button-text" color="accent">
-                APR {variableAPRFormatted}
+                {getText('apr', language)} {variableAPRFormatted}
               </Typography>
             </div>
           </SectionContainer>

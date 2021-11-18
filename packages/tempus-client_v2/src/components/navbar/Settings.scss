@@ -1,0 +1,15 @@
+@import '../../constants.scss';
+
+.tc__header__popper {
+  padding-top: 5px;
+  z-index: 999;
+}
+
+.tc__header__settings-menu__container {
+  @include background-level-2;
+  padding: 10px;
+
+  .tc__header__settings-menu__icon-container {
+    min-width: 30px;
+  }
+}

@@ -1,6 +1,6 @@
+import { useContext, useEffect, useMemo, useState } from 'react';
 import { BigNumber } from '@ethersproject/bignumber';
 import { ethers } from 'ethers';
-import { useContext, useEffect, useMemo, useState } from 'react';
 import { useState as useHookState } from '@hookstate/core';
 import { selectedPoolState } from '../../../state/PoolDataState';
 import getPoolDataAdapter from '../../../adapters/getPoolDataAdapter';
@@ -75,25 +75,25 @@ const FeesTooltip = () => {
       <Spacer size={15} />
       <div className="tc__feesTooltip-row">
         <Typography variant="card-body-text" color="title">
-          Deposit
+          {getText('deposit', language)}
         </Typography>
         <Typography variant="card-body-text">{depositFeesFormatted}</Typography>
       </div>
       <div className="tc__feesTooltip-row">
         <Typography variant="card-body-text" color="title">
-          Redemption
+          {getText('redemption', language)}
         </Typography>
         <Typography variant="card-body-text">{redemptionFeesFormatted}</Typography>
       </div>
       <div className="tc__feesTooltip-row">
         <Typography variant="card-body-text" color="title">
-          Early Redemption
+          {getText('earlyRedemption', language)}
         </Typography>
         <Typography variant="card-body-text">{earlyRedemptionFeesFormatted}</Typography>
       </div>
       <div className="tc__feesTooltip-row">
         <Typography variant="card-body-text" color="title">
-          Swap
+          {getText('swap', language)}
         </Typography>
         <Typography variant="card-body-text">{swapFeesFormatted}</Typography>
       </div>
