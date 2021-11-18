@@ -1,4 +1,6 @@
-import { FC, useCallback, useContext, useMemo, useState } from 'react';
+import { useCallback, useContext, useMemo, useState } from 'react';
+import { useState as useHookState } from '@hookstate/core';
+import { selectedPoolState } from '../../state/PoolDataState';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
 import { LanguageContext } from '../../context/languageContext';
 import { getDataForPool, PoolDataContext } from '../../context/poolDataContext';
@@ -20,19 +22,17 @@ import Term from '../term/Term';
 import Withdraw from '../withdraw/Withdraw';
 import './Operations.scss';
 
-type OperationsInProps = {
-  selectedPool: string;
-};
+const Operations = () => {
+  const selectedPool = useHookState(selectedPoolState);
 
-const Operations: FC<OperationsInProps> = () => {
   const { language } = useContext(LanguageContext);
   const { userWalletSigner } = useContext(WalletContext);
-  const { poolData, selectedPool } = useContext(PoolDataContext);
+  const { poolData } = useContext(PoolDataContext);
 
   const [selectedView, setSelectedView] = useState<TransactionView>('deposit');
 
   const activePoolData = useMemo(() => {
-    return getDataForPool(selectedPool, poolData);
+    return getDataForPool(selectedPool.get(), poolData);
   }, [poolData, selectedPool]);
 
   const hideUserData = useMemo(() => {

@@ -1,5 +1,7 @@
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { ethers, BigNumber } from 'ethers';
+import { useState as useHookState } from '@hookstate/core';
+import { selectedPoolState } from '../../state/PoolDataState';
 import { LanguageContext } from '../../context/languageContext';
 import { getDataForPool, PoolDataContext } from '../../context/poolDataContext';
 import { WalletContext } from '../../context/walletContext';
@@ -21,8 +23,11 @@ import Execute from '../buttons/Execute';
 import './ProvideLiquidity.scss';
 
 const ProvideLiquidity = () => {
+  const selectedPool = useHookState(selectedPoolState);
+
+  const { poolData } = useContext(PoolDataContext);
   const { language } = useContext(LanguageContext);
-  const { poolData, selectedPool } = useContext(PoolDataContext);
+
   const { userWalletAddress, userWalletSigner } = useContext(WalletContext);
 
   const [principalsPercentage, setPrincipalsPercentage] = useState<number | null>(null);
@@ -45,7 +50,7 @@ const ProvideLiquidity = () => {
   const [lpTokensPrecision, setLpTokensPrecision] = useState<number>(0);
 
   const activePoolData = useMemo(() => {
-    return getDataForPool(selectedPool, poolData);
+    return getDataForPool(selectedPool.get(), poolData);
   }, [poolData, selectedPool]);
 
   /**

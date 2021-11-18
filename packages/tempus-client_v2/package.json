@@ -10,6 +10,7 @@
     "@devexpress/dx-react-grid": "^2.7.6",
     "@devexpress/dx-react-grid-material-ui": "^2.7.6",
     "@ethersproject/providers": "^5.4.1",
+    "@hookstate/core": "^3.0.13",
     "@material-ui/core": "^4.12.1",
     "@material-ui/data-grid": "^4.0.0-alpha.33",
     "@material-ui/icons": "^4.11.2",
@@ -36,9 +37,9 @@
     "uuid": "^8.3.2"
   },
   "devDependencies": {
+    "@types/react-html-parser": "^2.0.2",
     "@types/recharts": "^2.0.0",
     "@types/uuid": "^8.3.1",
-    "@types/react-html-parser": "^2.0.2",
     "react": "^17.0.2",
     "react-dom": "^17.0.2"
   },

@@ -1,5 +1,7 @@
 import { differenceInDays } from 'date-fns';
 import { useContext, useEffect, useMemo, useState } from 'react';
+import { useState as useHookState } from '@hookstate/core';
+import { selectedPoolState } from '../../../state/PoolDataState';
 import getPoolDataAdapter from '../../../adapters/getPoolDataAdapter';
 import { LanguageContext } from '../../../context/languageContext';
 import { getDataForPool, PoolDataContext } from '../../../context/poolDataContext';
@@ -11,14 +13,16 @@ import Typography from '../../typography/Typography';
 import './aprTooltip.scss';
 
 const AprTooltip = () => {
+  const selectedPool = useHookState(selectedPoolState);
+
   const { userWalletSigner } = useContext(WalletContext);
+  const { poolData } = useContext(PoolDataContext);
   const { language } = useContext(LanguageContext);
-  const { poolData, selectedPool } = useContext(PoolDataContext);
 
   const [poolRatio, setPoolRatio] = useState<number[] | null>(null);
 
   const activePoolData = useMemo(() => {
-    return getDataForPool(selectedPool, poolData);
+    return getDataForPool(selectedPool.get(), poolData);
   }, [poolData, selectedPool]);
 
   useEffect(() => {

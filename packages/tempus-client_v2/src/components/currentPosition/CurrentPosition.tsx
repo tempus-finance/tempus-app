@@ -1,5 +1,7 @@
 import { ethers, BigNumber } from 'ethers';
 import { FC, useContext, useEffect, useMemo, useState } from 'react';
+import { useState as useHookState } from '@hookstate/core';
+import { selectedPoolState } from '../../state/PoolDataState';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
 import { getDataForPool, PoolDataContext } from '../../context/poolDataContext';
 import { WalletContext } from '../../context/walletContext';
@@ -14,14 +16,16 @@ import './CurrentPosition.scss';
 type CurrentPositionInProps = SharedProps;
 
 const CurrentPosition: FC<CurrentPositionInProps> = ({ language }) => {
-  const { poolData, selectedPool } = useContext(PoolDataContext);
+  const selectedPool = useHookState(selectedPoolState);
+
+  const { poolData } = useContext(PoolDataContext);
   const { userWalletSigner } = useContext(WalletContext);
 
   const [lpTokenPrincipalReturnBalance, setLpTokenPrincipalReturn] = useState<BigNumber | null>(null);
   const [lpTokenYieldReturnBalance, setLpTokenYieldReturn] = useState<BigNumber | null>(null);
 
   const activePoolData = useMemo(() => {
-    return getDataForPool(selectedPool, poolData);
+    return getDataForPool(selectedPool.get(), poolData);
   }, [poolData, selectedPool]);
 
   useEffect(() => {

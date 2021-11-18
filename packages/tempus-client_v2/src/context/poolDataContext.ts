@@ -43,7 +43,6 @@ export interface PoolData extends AvailableToDeposit {
 }
 
 interface PoolDataContextData {
-  selectedPool: string; // is the address
   poolData: PoolData[];
 }
 
@@ -54,7 +53,6 @@ interface PoolDataContextActions {
 interface PoolDataContextType extends PoolDataContextActions, PoolDataContextData {}
 
 export const defaultPoolDataContextValue: PoolDataContextData = {
-  selectedPool: '',
   poolData: getConfig().tempusPools.map(tempusPoolConfig => ({
     poolId: tempusPoolConfig.poolId,
     address: tempusPoolConfig.address,

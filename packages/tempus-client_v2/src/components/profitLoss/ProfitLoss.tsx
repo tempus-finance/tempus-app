@@ -1,5 +1,7 @@
 import { ethers, BigNumber } from 'ethers';
 import { useContext, useEffect, useMemo, useState } from 'react';
+import { useState as useHookState } from '@hookstate/core';
+import { selectedPoolState } from '../../state/PoolDataState';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
 import { LanguageContext } from '../../context/languageContext';
 import { getDataForPool, PoolDataContext } from '../../context/poolDataContext';
@@ -14,14 +16,16 @@ import './ProfitLoss.scss';
 import ProfitLossChart from './profitLossChart/ProfitLossChart';
 
 const ProfitLoss = () => {
+  const selectedPool = useHookState(selectedPoolState);
+
   const { userWalletSigner } = useContext(WalletContext);
   const { language } = useContext(LanguageContext);
-  const { poolData, selectedPool } = useContext(PoolDataContext);
+  const { poolData } = useContext(PoolDataContext);
 
   const [estimatedWithdrawAmount, setEstimatedWithdrawAmount] = useState<BigNumber | null>(null);
 
   const activePoolData = useMemo(() => {
-    return getDataForPool(selectedPool, poolData);
+    return getDataForPool(selectedPool.get(), poolData);
   }, [poolData, selectedPool]);
 
   useEffect(() => {
