@@ -1,6 +1,6 @@
 import { ethers, BigNumber } from 'ethers';
 import { FC, useContext, useEffect, useMemo, useState } from 'react';
-import { useState as useHookState } from '@hookstate/core';
+import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { dynamicPoolDataState, selectedPoolState } from '../../state/PoolDataState';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
 import { getDataForPool, PoolDataContext } from '../../context/poolDataContext';
@@ -25,9 +25,9 @@ const CurrentPosition: FC<CurrentPositionInProps> = ({ language }) => {
   const [lpTokenPrincipalReturnBalance, setLpTokenPrincipalReturn] = useState<BigNumber | null>(null);
   const [lpTokenYieldReturnBalance, setLpTokenYieldReturn] = useState<BigNumber | null>(null);
 
-  const userPrincipalsBalance = dynamicPoolData[selectedPool.get()].userPrincipalsBalance.get();
-  const userYieldsBalance = dynamicPoolData[selectedPool.get()].userYieldsBalance.get();
-  const userLPBalance = dynamicPoolData[selectedPool.get()].userLPTokenBalance.get();
+  const userPrincipalsBalance = dynamicPoolData[selectedPool.get()].userPrincipalsBalance.attach(Downgraded).get();
+  const userYieldsBalance = dynamicPoolData[selectedPool.get()].userYieldsBalance.attach(Downgraded).get();
+  const userLPBalance = dynamicPoolData[selectedPool.get()].userLPTokenBalance.attach(Downgraded).get();
 
   const activePoolData = useMemo(() => {
     return getDataForPool(selectedPool.get(), poolData);
@@ -35,6 +35,8 @@ const CurrentPosition: FC<CurrentPositionInProps> = ({ language }) => {
 
   useEffect(() => {
     const retrieveExpectedReturn = async () => {
+      console.log('getting expected return');
+
       if (!userWalletSigner) {
         return;
       }
@@ -105,6 +107,8 @@ const CurrentPosition: FC<CurrentPositionInProps> = ({ language }) => {
     if (!userPrincipalsBalance || !userYieldsBalance || !lpTokenPrincipalReturnBalance || !lpTokenYieldReturnBalance) {
       return null;
     }
+
+    console.log('getting total value');
 
     return userPrincipalsBalance
       .add(userYieldsBalance)

@@ -1,7 +1,7 @@
 import { differenceInDays } from 'date-fns';
 import { useContext, useEffect, useMemo, useState } from 'react';
-import { useState as useHookState } from '@hookstate/core';
-import { selectedPoolState } from '../../../state/PoolDataState';
+import { Downgraded, useState as useHookState } from '@hookstate/core';
+import { dynamicPoolDataState, selectedPoolState } from '../../../state/PoolDataState';
 import getPoolDataAdapter from '../../../adapters/getPoolDataAdapter';
 import { LanguageContext } from '../../../context/languageContext';
 import { getDataForPool, PoolDataContext } from '../../../context/poolDataContext';
@@ -14,12 +14,15 @@ import './aprTooltip.scss';
 
 const AprTooltip = () => {
   const selectedPool = useHookState(selectedPoolState);
+  const dynamicPoolData = useHookState(dynamicPoolDataState);
 
   const { userWalletSigner } = useContext(WalletContext);
   const { poolData } = useContext(PoolDataContext);
   const { language } = useContext(LanguageContext);
 
   const [poolRatio, setPoolRatio] = useState<number[] | null>(null);
+
+  const fixedAPR = dynamicPoolData[selectedPool.get()].fixedAPR.attach(Downgraded).get();
 
   const activePoolData = useMemo(() => {
     return getDataForPool(selectedPool.get(), poolData);
@@ -45,21 +48,18 @@ const AprTooltip = () => {
   }, [activePoolData, userWalletSigner]);
 
   const futureAprFormatted = useMemo(() => {
-    if (!activePoolData) {
-      return null;
-    }
-    return NumberUtils.formatPercentage(activePoolData.fixedAPR, 2);
-  }, [activePoolData]);
+    return NumberUtils.formatPercentage(fixedAPR, 2);
+  }, [fixedAPR]);
 
   const futureYieldFormatted = useMemo(() => {
-    if (activePoolData && activePoolData.fixedAPR) {
+    if (activePoolData && fixedAPR) {
       const daysToMaturity = differenceInDays(activePoolData.maturityDate, activePoolData.startDate);
-      const dailyInterest = (activePoolData.fixedAPR || 1) / 365;
+      const dailyInterest = (fixedAPR || 1) / 365;
       return NumberUtils.formatPercentage(dailyInterest * daysToMaturity, 2);
     }
 
     return null;
-  }, [activePoolData]);
+  }, [activePoolData, fixedAPR]);
 
   const lifetimeAprFormatted = useMemo(() => {
     if (activePoolData !== null && poolRatio !== null && poolRatio[0] && poolRatio[1]) {

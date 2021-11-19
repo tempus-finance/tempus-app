@@ -1,6 +1,6 @@
 import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { ethers, BigNumber } from 'ethers';
-import { useState as useHookState } from '@hookstate/core';
+import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { dynamicPoolDataState, selectedPoolState } from '../../state/PoolDataState';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
 import { getDataForPool, PoolDataContext } from '../../context/poolDataContext';
@@ -50,9 +50,10 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
 
   const [tokenPrecision, setTokenPrecision] = useState<number | undefined>();
 
-  const userPrincipalsBalance = dynamicPoolData[selectedPool.get()].userPrincipalsBalance.get();
-  const userYieldsBalance = dynamicPoolData[selectedPool.get()].userYieldsBalance.get();
-  const userLPTokenBalance = dynamicPoolData[selectedPool.get()].userLPTokenBalance.get();
+  const userPrincipalsBalance = dynamicPoolData[selectedPool.get()].userPrincipalsBalance.attach(Downgraded).get();
+  const userYieldsBalance = dynamicPoolData[selectedPool.get()].userYieldsBalance.attach(Downgraded).get();
+  const userLPTokenBalance = dynamicPoolData[selectedPool.get()].userLPTokenBalance.attach(Downgraded).get();
+  const userBalanceUSD = dynamicPoolDataState[selectedPool.get()].userBalanceUSD.attach(Downgraded).get();
 
   const onTokenChange = useCallback(
     (token: Ticker | undefined) => {
@@ -150,13 +151,11 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
   }, [estimatedWithdrawAmount, tokenPrecision, selectedPoolData.decimalsForUI]);
 
   const estimatedWithdrawAmountUsdFormatted = useMemo(() => {
-    const data = getDataForPool(selectedPoolData.address, poolData);
-
-    if (!data.userBalanceUSD) {
+    if (!userBalanceUSD) {
       return null;
     }
-    return NumberUtils.formatToCurrency(ethers.utils.formatUnits(data.userBalanceUSD, tokenPrecision), 2, '$');
-  }, [selectedPoolData.address, poolData, tokenPrecision]);
+    return NumberUtils.formatToCurrency(ethers.utils.formatUnits(userBalanceUSD, tokenPrecision), 2, '$');
+  }, [userBalanceUSD, tokenPrecision]);
 
   const executeDisabled = useMemo(() => {
     const principalBalanceZero = userPrincipalsBalance && userPrincipalsBalance.isZero();

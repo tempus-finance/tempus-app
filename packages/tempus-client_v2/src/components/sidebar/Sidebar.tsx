@@ -1,5 +1,5 @@
 import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { useState as useHookState } from '@hookstate/core';
+import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { dynamicPoolDataState, selectedPoolState } from '../../state/PoolDataState';
 import { LanguageContext } from '../../context/languageContext';
 import { getDataForPool, PoolDataContext } from '../../context/poolDataContext';
@@ -35,9 +35,9 @@ const Sidebar: FC<SidebarProps> = ({ initialView, onSelectedView }) => {
 
   const [selectedView, setSelectedView] = useState<TransactionView | null>(null);
 
-  const userPrincipalsBalance = dynamicPoolData[selectedPool.get()].userPrincipalsBalance.get();
-  const userYieldsBalance = dynamicPoolData[selectedPool.get()].userYieldsBalance.get();
-  const userLPTokenBalance = dynamicPoolData[selectedPool.get()].userLPTokenBalance.get();
+  const userPrincipalsBalance = dynamicPoolData[selectedPool.get()].userPrincipalsBalance.attach(Downgraded).get();
+  const userYieldsBalance = dynamicPoolData[selectedPool.get()].userYieldsBalance.attach(Downgraded).get();
+  const userLPTokenBalance = dynamicPoolData[selectedPool.get()].userLPTokenBalance.attach(Downgraded).get();
 
   const activePoolData = useMemo(() => {
     return getDataForPool(selectedPool.get(), poolData);

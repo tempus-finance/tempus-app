@@ -23,7 +23,9 @@ const UserShareTokenBalanceProvider = () => {
         dynamicPoolData[poolConfig.address].userPrincipalsBalance.set(balance);
       }
     },
-    [userWalletSigner, userWalletAddress, dynamicPoolData],
+    // TODO - We can now probably remove this provider components and update state directly from service classes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [userWalletSigner, userWalletAddress],
   );
 
   /**
@@ -38,7 +40,9 @@ const UserShareTokenBalanceProvider = () => {
         dynamicPoolData[poolConfig.address].userYieldsBalance.set(balance);
       }
     },
-    [userWalletSigner, userWalletAddress, dynamicPoolData],
+    // TODO - We can now probably remove this provider components and update state directly from service classes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [userWalletSigner, userWalletAddress],
   );
 
   const updatePrincipalsBalance = useCallback(async () => {

@@ -1,6 +1,6 @@
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { BigNumber, ethers } from 'ethers';
-import { useState as useHookState } from '@hookstate/core';
+import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { dynamicPoolDataState, selectedPoolState } from '../../state/PoolDataState';
 import { LanguageContext } from '../../context/languageContext';
 import { getDataForPool, PoolDataContext } from '../../context/poolDataContext';
@@ -55,13 +55,17 @@ const Swap = () => {
   const [estimateInProgress, setEstimateInProgress] = useState<boolean>(false);
   const [tokenPrecision, setTokenPrecision] = useState<number>(getTokenPrecision(activePoolData.address, 'principals'));
 
-  const userPrincipalsBalance = dynamicPoolData[selectedPool.get()].userPrincipalsBalance.get();
-  const userYieldsBalance = dynamicPoolData[selectedPool.get()].userYieldsBalance.get();
+  const userPrincipalsBalance = dynamicPoolData[selectedPool.get()].userPrincipalsBalance.attach(Downgraded).get();
+  const userYieldsBalance = dynamicPoolData[selectedPool.get()].userYieldsBalance.attach(Downgraded).get();
 
+  console.log('rendering swap component');
   const getSelectedTokenBalance = useCallback((): BigNumber | null => {
     if (!selectedToken) {
       return null;
     }
+
+    console.log('Getting selected token balance!');
+
     return selectedToken === 'Principals' ? userPrincipalsBalance : userYieldsBalance;
   }, [selectedToken, userPrincipalsBalance, userYieldsBalance]);
 

@@ -1,68 +1,87 @@
 import { useContext, useMemo } from 'react';
+import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { ZERO } from '../../../constants';
-import { PoolData, getDataForPool, PoolDataContext } from '../../../context/poolDataContext';
+import { PoolData, PoolDataContext } from '../../../context/poolDataContext';
 import { Ticker } from '../../../interfaces/Token';
 import NumberUtils from '../../../services/NumberUtils';
 import Typography from '../../typography/Typography';
 import APYGraph from '../bodySection/apyGraph';
+import {
+  dynamicPoolDataState,
+  DynamicPoolStateData,
+  negativeYieldPoolDataState,
+  NegativeYieldStateData,
+} from '../../../state/PoolDataState';
 
 const VariableAPRFormatter = ({ row }: any) => {
+  const dynamicPoolData = useHookState(dynamicPoolDataState).attach(Downgraded).get();
+  const negativeYieldPoolData = useHookState(negativeYieldPoolDataState).attach(Downgraded).get();
+
   const { poolData } = useContext(PoolDataContext);
 
   const isChild = Boolean(row.parentId);
 
   const apr = useMemo(() => {
     if (isChild) {
-      return getChildAPR(row.id, poolData);
+      return getChildAPR(row.id, dynamicPoolData);
     } else {
-      return getParentAPR(row.id, poolData);
+      return getParentAPR(row.id, poolData, dynamicPoolData, negativeYieldPoolData);
     }
-  }, [poolData, isChild, row.id]);
+  }, [isChild, row.id, poolData, dynamicPoolData, negativeYieldPoolData]);
 
   if (!isChild) {
     return (
-      <div className="tf__dashboard__body__apy">
-        <Typography color="default" variant="body-text">
-          Up to&nbsp;
-        </Typography>
-        <Typography color={apr > 0.2 ? 'accent' : 'default'} variant="body-text">
-          {NumberUtils.formatPercentage(apr, 2)}
-        </Typography>
-      </div>
+      apr && (
+        <div className="tf__dashboard__body__apy">
+          <Typography color="default" variant="body-text">
+            Up to&nbsp;
+          </Typography>
+          <Typography color={apr > 0.2 ? 'accent' : 'default'} variant="body-text">
+            {NumberUtils.formatPercentage(apr, 2)}
+          </Typography>
+        </div>
+      )
     );
   }
 
   // If it's a child row
   return (
-    <div className="tf__dashboard__body__apy">
-      <APYGraph apy={apr} />
-      <div className="tf__dashboard__body__apy-value">
-        <Typography color="default" variant="body-text">
-          {NumberUtils.formatPercentage(apr, 2)}
-        </Typography>
+    apr && (
+      <div className="tf__dashboard__body__apy">
+        <APYGraph apy={apr} />
+        <div className="tf__dashboard__body__apy-value">
+          <Typography color="default" variant="body-text">
+            {NumberUtils.formatPercentage(apr, 2)}
+          </Typography>
+        </div>
       </div>
-    </div>
+    )
   );
 };
 export default VariableAPRFormatter;
 
-function getParentAPR(parentId: Ticker, poolData: PoolData[]): number {
+function getParentAPR(
+  parentId: Ticker,
+  poolData: PoolData[],
+  dynamicPoolData: DynamicPoolStateData,
+  negativeYieldPoolData: NegativeYieldStateData,
+): number {
   const parentChildren = poolData.filter(data => {
     return data.backingToken === parentId;
   });
 
   const childrenVariableAPR = parentChildren
     .map(child => {
-      if (child.isNegativeYield && child.userBalanceUSD?.lte(ZERO)) {
+      if (negativeYieldPoolData[child.address] && dynamicPoolData[child.address].userBalanceUSD?.lte(ZERO)) {
         return Number.MIN_SAFE_INTEGER;
       }
-      return child.variableAPR;
+      return dynamicPoolData[child.address].variableAPR || 0;
     })
     .filter(variableAPR => variableAPR !== null);
 
   return Math.max(...childrenVariableAPR);
 }
 
-function getChildAPR(id: string, poolData: PoolData[]): number {
-  return getDataForPool(id, poolData).variableAPR;
+function getChildAPR(id: string, dynamicPoolData: DynamicPoolStateData): number | null {
+  return dynamicPoolData[id].variableAPR;
 }

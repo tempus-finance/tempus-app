@@ -1,8 +1,8 @@
 import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { useState as useHookState } from '@hookstate/core';
+import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { ethers, BigNumber } from 'ethers';
 import { catchError } from 'rxjs';
-import { selectedPoolState } from '../../state/PoolDataState';
+import { dynamicPoolDataState, selectedPoolState } from '../../state/PoolDataState';
 import { LanguageContext } from '../../context/languageContext';
 import { getDataForPool, PoolDataContext } from '../../context/poolDataContext';
 import { WalletContext } from '../../context/walletContext';
@@ -35,6 +35,7 @@ type DepositProps = DepositInProps & OperationsSharedProps;
 
 const Deposit: FC<DepositProps> = ({ narrow, poolDataAdapter }) => {
   const selectedPool = useHookState(selectedPoolState);
+  const dynamicPoolData = useHookState(dynamicPoolDataState);
 
   const { language } = useContext(LanguageContext);
   const { userWalletSigner } = useContext(WalletContext);
@@ -63,6 +64,9 @@ const Deposit: FC<DepositProps> = ({ narrow, poolDataAdapter }) => {
   const [tokensApproved, setTokensApproved] = useState<boolean>(false);
 
   const [tokenPrecision, setTokenPrecision] = useState<number>(0);
+
+  const fixedAPR = dynamicPoolData[selectedPool.get()].fixedAPR.attach(Downgraded).get();
+  const variableAPR = dynamicPoolData[selectedPool.get()].variableAPR.attach(Downgraded).get();
 
   const activePoolData = useMemo(() => {
     return getDataForPool(selectedPool.get(), poolData);
@@ -362,16 +366,12 @@ const Deposit: FC<DepositProps> = ({ narrow, poolDataAdapter }) => {
   }, [tokenPrecision, usdRate, amount]);
 
   const variableAPRFormatted = useMemo(() => {
-    const poolContextData = getDataForPool(activePoolData.address, poolData);
-
-    return NumberUtils.formatPercentage(poolContextData.variableAPR, 2);
-  }, [activePoolData, poolData]);
+    return NumberUtils.formatPercentage(variableAPR, 2);
+  }, [variableAPR]);
 
   const fixedAPRFormatted = useMemo(() => {
-    const poolContextData = getDataForPool(activePoolData.address, poolData);
-
-    return NumberUtils.formatPercentage(poolContextData.fixedAPR, 2);
-  }, [activePoolData, poolData]);
+    return NumberUtils.formatPercentage(fixedAPR, 2);
+  }, [fixedAPR]);
 
   const fixedYieldAtMaturityFormatted = useMemo(() => {
     if (!fixedPrincipalsAmount || !amount || isZeroString(amount)) {

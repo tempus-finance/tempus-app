@@ -1,5 +1,6 @@
 import { DataTypeProvider } from '@devexpress/dx-react-grid';
 import { ethers, BigNumber } from 'ethers';
+import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { DashboardRow, isChildRow, isParentRow } from '../../../interfaces/DashboardRow';
 import { Ticker } from '../../../interfaces/Token';
 import NumberUtils from '../../../services/NumberUtils';
@@ -13,9 +14,18 @@ import { WalletContext } from '../../../context/walletContext';
 import { useContext, useMemo } from 'react';
 import { CircularProgress } from '@material-ui/core';
 import { ZERO } from '../../../constants';
+import {
+  dynamicPoolDataState,
+  DynamicPoolStateData,
+  negativeYieldPoolDataState,
+  NegativeYieldStateData,
+} from '../../../state/PoolDataState';
 
 const AvailableToDepositFormatter = (props: DataTypeProvider.ValueFormatterProps) => {
   const row = props.row as DashboardRow;
+
+  const dynamicPoolData = useHookState(dynamicPoolDataState).attach(Downgraded).get();
+  const negativeYieldPoolData = useHookState(negativeYieldPoolDataState).attach(Downgraded).get();
 
   const { poolData } = useContext(PoolDataContext);
   const { userWalletConnected } = useContext(WalletContext);
@@ -23,11 +33,11 @@ const AvailableToDepositFormatter = (props: DataTypeProvider.ValueFormatterProps
 
   const parentAvailableToDeposit = useMemo(() => {
     if (showFiat) {
-      return getParentAvailableToDepositInFiat(row.token, poolData);
+      return getParentAvailableToDepositInFiat(row.token, poolData, dynamicPoolData, negativeYieldPoolData);
     }
 
-    return getParentAvailableToDepositInBackingToken(row.token, poolData);
-  }, [poolData, row.token, showFiat]);
+    return getParentAvailableToDepositInBackingToken(row.token, poolData, dynamicPoolData, negativeYieldPoolData);
+  }, [dynamicPoolData, negativeYieldPoolData, poolData, row.token, showFiat]);
 
   const parentAvailableToDepositFormatted = useMemo(() => {
     if (!parentAvailableToDeposit) {
@@ -121,15 +131,20 @@ const AvailableToDepositFormatter = (props: DataTypeProvider.ValueFormatterProps
   }
 };
 
-const getParentAvailableToDepositInFiat = (parentId: Ticker, poolData: PoolData[]) => {
+const getParentAvailableToDepositInFiat = (
+  parentId: Ticker,
+  poolData: PoolData[],
+  dynamicPoolData: DynamicPoolStateData,
+  negativeYieldPoolData: NegativeYieldStateData,
+) => {
   const parentChildren = poolData
     .filter(pool => pool.backingToken === parentId)
     .filter(child => {
-      if (!child.isNegativeYield) {
+      if (!negativeYieldPoolData[child.address]) {
         return true;
       }
 
-      return child.userBalanceUSD?.gt(ZERO);
+      return dynamicPoolData[child.address].userBalanceUSD?.gt(ZERO);
     });
 
   // In case balance is still loading for some of the parent children, return null (show loading circle in dashboard)
@@ -159,15 +174,20 @@ const getParentAvailableToDepositInFiat = (parentId: Ticker, poolData: PoolData[
   return parentAvailableToDeposit;
 };
 
-const getParentAvailableToDepositInBackingToken = (parentId: Ticker, poolData: PoolData[]) => {
+const getParentAvailableToDepositInBackingToken = (
+  parentId: Ticker,
+  poolData: PoolData[],
+  dynamicPoolData: DynamicPoolStateData,
+  negativeYieldPoolData: NegativeYieldStateData,
+) => {
   const parentChildren = poolData
     .filter(pool => pool.backingToken === parentId)
     .filter(child => {
-      if (!child.isNegativeYield) {
+      if (!negativeYieldPoolData[child.address]) {
         return true;
       }
 
-      return child.userBalanceUSD?.gt(ZERO);
+      return dynamicPoolData[child.address].userBalanceUSD?.gt(ZERO);
     });
 
   // In case balance is still loading for some of the parent children, return null (show loading circle in dashboard)

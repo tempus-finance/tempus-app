@@ -8,9 +8,9 @@ import {
   SortingState,
   Sorting,
 } from '@devexpress/dx-react-grid';
+import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { Grid, TableHeaderRow, VirtualTable, TableTreeColumn } from '@devexpress/dx-react-grid-material-ui';
 import { SECONDS_IN_A_DAY, ZERO } from '../../constants';
-import { getDataForPool, PoolData, PoolDataContext } from '../../context/poolDataContext';
 import { LanguageContext } from '../../context/languageContext';
 import { DashboardRow, isChildRow, isParentRow } from '../../interfaces/DashboardRow';
 import { ColumnNames } from '../../interfaces/ColumnNames';
@@ -34,6 +34,7 @@ import CurrencySwitch from './currencySwitch/CurrencySwitch';
 import { dashboardColumnsDefinitions } from './dashboardColumnsDefinitions';
 
 import './dashboard.scss';
+import { dynamicPoolDataState, negativeYieldPoolDataState } from '../../state/PoolDataState';
 
 type DashboardInProps = {
   hidden: boolean;
@@ -48,7 +49,9 @@ type DashboardOutProps = {
 type DashboardProps = DashboardInProps & DashboardOutProps;
 
 const Dashboard: FC<DashboardProps> = ({ hidden, userWalletAddress, rows, onRowActionClick }): JSX.Element => {
-  const { poolData } = useContext(PoolDataContext);
+  const dynamicPoolData = useHookState(dynamicPoolDataState).attach(Downgraded).get();
+  const negativeYieldPoolData = useHookState(negativeYieldPoolDataState).attach(Downgraded).get();
+
   const { language } = useContext(LanguageContext);
 
   const [displayedRows, setDisplayedRows] = useState<DashboardRow[]>([]);
@@ -149,11 +152,13 @@ const Dashboard: FC<DashboardProps> = ({ hidden, userWalletAddress, rows, onRowA
           const min = filterData.aPRRange.min ?? (filterData.aPRRange.max ? -Infinity : null);
           const max = filterData.aPRRange.max ?? (filterData.aPRRange.min ? Infinity : null);
 
-          const poolContextData = getDataForPool(row.tempusPool.address, poolData);
+          const poolContextData = dynamicPoolData[row.tempusPool.address];
           aprMatched =
             (min === 0 || min) && (max === 0 || max)
               ? (poolContextData.fixedAPR && poolContextData.fixedAPR >= min && poolContextData.fixedAPR <= max) ||
-                (poolContextData.variableAPR >= min && poolContextData.variableAPR <= max)
+                (poolContextData.variableAPR &&
+                  poolContextData.variableAPR >= min &&
+                  poolContextData.variableAPR <= max)
               : true;
         }
 
@@ -191,24 +196,21 @@ const Dashboard: FC<DashboardProps> = ({ hidden, userWalletAddress, rows, onRowA
 
       setFilteredRows(result);
     },
-    [poolData, displayedRows],
+    [displayedRows, dynamicPoolData],
   );
 
   useEffect(() => {
-    if (poolData && rows && poolData.length && rows.length) {
-      const poolMap: { [address: string]: PoolData } = {};
-      poolData.forEach(pool => {
-        poolMap[pool.address] = pool;
-      });
-
+    if (rows?.length) {
       let rowsToDisplay = rows.filter((row: DashboardRow) => {
-        const pool = poolMap[row.id];
+        const pool = dynamicPoolData[row.id];
+        const poolNegativeYield = negativeYieldPoolData[row.id];
 
         if (pool) {
-          if (!pool.isNegativeYield) {
+          if (!poolNegativeYield) {
             return true;
           }
 
+          console.log(`Reading pool ${row.id} negative yield: ${poolNegativeYield}`);
           return pool && pool.userBalanceUSD && pool.userBalanceUSD.gt(ZERO);
         }
 
@@ -217,7 +219,7 @@ const Dashboard: FC<DashboardProps> = ({ hidden, userWalletAddress, rows, onRowA
 
       setDisplayedRows(rowsToDisplay);
     }
-  }, [rows, poolData, setDisplayedRows]);
+  }, [rows, dynamicPoolData, negativeYieldPoolData]);
 
   return (
     <div className="tf__dashboard__section__container" hidden={hidden}>

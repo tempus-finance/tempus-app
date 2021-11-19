@@ -25,18 +25,39 @@ export const staticPoolDataState = createState(staticPoolDataStateInitialValue);
 
 // Dynamic pool data
 interface DynamicPoolData {
+  userBalanceUSD: BigNumber | null;
   userPrincipalsBalance: BigNumber | null;
   userYieldsBalance: BigNumber | null;
   userLPTokenBalance: BigNumber | null;
+  tvl: BigNumber | null;
+  variableAPR: number | null;
+  fixedAPR: number | null;
+}
+
+export interface DynamicPoolStateData {
+  [poolAddress: string]: DynamicPoolData;
 }
 
 // Dynamic pool data state object
-const dynamicPoolDataStateInitialValue: { [poolAddress: string]: DynamicPoolData } = {};
+const dynamicPoolDataStateInitialValue: DynamicPoolStateData = {};
 getConfig().tempusPools.forEach(tempusPoolConfig => {
   dynamicPoolDataStateInitialValue[tempusPoolConfig.address] = {
+    userBalanceUSD: null,
     userPrincipalsBalance: null,
     userYieldsBalance: null,
     userLPTokenBalance: null,
+    tvl: null,
+    variableAPR: null,
+    fixedAPR: null,
   };
 });
 export const dynamicPoolDataState = createState(dynamicPoolDataStateInitialValue);
+
+export interface NegativeYieldStateData {
+  [poolAddress: string]: boolean;
+}
+const negativeYieldPoolDataStateInitialVale: NegativeYieldStateData = {};
+getConfig().tempusPools.forEach(tempusPoolConfig => {
+  negativeYieldPoolDataStateInitialVale[tempusPoolConfig.address] = true;
+});
+export const negativeYieldPoolDataState = createState(negativeYieldPoolDataStateInitialVale);

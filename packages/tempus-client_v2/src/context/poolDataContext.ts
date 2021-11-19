@@ -27,12 +27,7 @@ export interface PoolData extends AvailableToDeposit {
   userBackingTokenBalance: BigNumber | null;
   userYieldBearingTokenBalance: BigNumber | null;
   spotPrice: string;
-  fixedAPR: number | null;
-  variableAPR: number;
-  tvl: BigNumber | null;
-  userBalanceUSD: BigNumber | null;
   userBalanceInBackingToken: BigNumber | null;
-  isNegativeYield: boolean;
   decimalsForUI: number;
   precision: {
     backingToken?: number;
@@ -66,17 +61,12 @@ export const defaultPoolDataContextValue: PoolDataContextData = {
     startDate: tempusPoolConfig.startDate,
     maturityDate: tempusPoolConfig.maturityDate,
     spotPrice: tempusPoolConfig.spotPrice,
-    variableAPR: 0,
-    tvl: null,
-    fixedAPR: null,
-    userBalanceUSD: null,
     userBalanceInBackingToken: null,
     backingTokenValueInFiat: null,
     yieldBearingTokenValueInFiat: null,
     yieldBearingTokenValueInBackingToken: null,
     userBackingTokenBalance: null,
     userYieldBearingTokenBalance: null,
-    isNegativeYield: true,
     precision: {
       backingToken: tempusPoolConfig.tokenPrecision?.backingToken,
     },

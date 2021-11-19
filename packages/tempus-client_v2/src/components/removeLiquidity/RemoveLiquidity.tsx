@@ -1,4 +1,4 @@
-import { useState as useHookState } from '@hookstate/core';
+import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { dynamicPoolDataState, selectedPoolState } from '../../state/PoolDataState';
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { BigNumber, ethers } from 'ethers';
@@ -34,7 +34,7 @@ const RemoveLiquidity = () => {
   const [tokensApproved, setTokensApproved] = useState<boolean>(false);
   const [estimateInProgress, setEstimateInProgress] = useState<boolean>(false);
 
-  const userLPTokenBalance = dynamicPoolData[selectedPool.get()].userLPTokenBalance.get();
+  const userLPTokenBalance = dynamicPoolData[selectedPool.get()].userLPTokenBalance.attach(Downgraded).get();
 
   const activePoolData = useMemo(() => {
     return getDataForPool(selectedPool.get(), poolData);

@@ -1,6 +1,6 @@
 import { ethers, BigNumber } from 'ethers';
 import { useContext, useEffect, useMemo, useState } from 'react';
-import { useState as useHookState } from '@hookstate/core';
+import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { dynamicPoolDataState, selectedPoolState } from '../../state/PoolDataState';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
 import { LanguageContext } from '../../context/languageContext';
@@ -25,9 +25,10 @@ const ProfitLoss = () => {
 
   const [estimatedWithdrawAmount, setEstimatedWithdrawAmount] = useState<BigNumber | null>(null);
 
-  const userPrincipalsBalance = dynamicPoolData[selectedPool.get()].userPrincipalsBalance.get();
-  const userYieldsBalance = dynamicPoolData[selectedPool.get()].userYieldsBalance.get();
-  const userLPTokenBalance = dynamicPoolData[selectedPool.get()].userLPTokenBalance.get();
+  const userPrincipalsBalance = dynamicPoolData[selectedPool.get()].userPrincipalsBalance.attach(Downgraded).get();
+  const userYieldsBalance = dynamicPoolData[selectedPool.get()].userYieldsBalance.attach(Downgraded).get();
+  const userLPTokenBalance = dynamicPoolData[selectedPool.get()].userLPTokenBalance.attach(Downgraded).get();
+  const userBalanceUSD = dynamicPoolDataState[selectedPool.get()].userBalanceUSD.attach(Downgraded).get();
 
   const activePoolData = useMemo(() => {
     return getDataForPool(selectedPool.get(), poolData);
@@ -63,11 +64,11 @@ const ProfitLoss = () => {
   }, [activePoolData.decimalsForUI, estimatedWithdrawAmount]);
 
   const liquidationValueFormatted = useMemo(() => {
-    if (!activePoolData.userBalanceUSD) {
+    if (!userBalanceUSD) {
       return null;
     }
-    return NumberUtils.formatToCurrency(ethers.utils.formatEther(activePoolData.userBalanceUSD), 2, '$');
-  }, [activePoolData]);
+    return NumberUtils.formatToCurrency(ethers.utils.formatEther(userBalanceUSD), 2, '$');
+  }, [userBalanceUSD]);
 
   return (
     <div className="tc__profitLoss">

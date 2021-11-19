@@ -1,12 +1,17 @@
 import { useCallback, useContext, useEffect } from 'react';
+import { useState as useHookState } from '@hookstate/core';
 import getDefaultProvider from '../services/getDefaultProvider';
 import getVariableRateService from '../services/getVariableRateService';
 import getConfig from '../utils/getConfig';
 import { PoolDataContext } from '../context/poolDataContext';
 import { WalletContext } from '../context/walletContext';
 import getTempusPoolService from '../services/getTempusPoolService';
+import { dynamicPoolDataState, negativeYieldPoolDataState, NegativeYieldStateData } from '../state/PoolDataState';
 
 const VariableAPRProvider = () => {
+  const dynamicPoolData = useHookState(dynamicPoolDataState);
+  const negativeYieldPoolData = useHookState(negativeYieldPoolDataState);
+
   const { setPoolData } = useContext(PoolDataContext);
   const { userWalletConnected, userWalletSigner } = useContext(WalletContext);
 
@@ -70,22 +75,20 @@ const VariableAPRProvider = () => {
         }),
       );
 
-      setPoolData(previousData => ({
-        ...previousData,
-        poolData: previousData.poolData.map(previousPoolData => {
-          const poolAPRData = fetchedPoolAPRData.find(data => data.address === previousPoolData.address);
-          const variableAPR = poolAPRData?.variableAPR ?? previousPoolData.variableAPR;
+      fetchedPoolAPRData.forEach(fetchedAPRData => {
+        dynamicPoolData[fetchedAPRData.address].variableAPR.set(fetchedAPRData.variableAPR);
+      });
 
-          return {
-            ...previousPoolData,
-            variableAPR,
-            isNegativeYield: poolAPRData?.negativeYield ?? previousPoolData.isNegativeYield,
-          };
-        }),
-      }));
+      const negativeYieldData: NegativeYieldStateData = {};
+      fetchedPoolAPRData.forEach(data => {
+        negativeYieldData[data.address] = data.negativeYield;
+      });
+      console.log(`Negative yield state set to ${JSON.stringify(negativeYieldData)}`);
+      negativeYieldPoolData.set(negativeYieldData);
     } catch (error) {
       console.log('VariableAPRProvider - fetchAPR', error);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [getProvider, setPoolData]);
 
   /**

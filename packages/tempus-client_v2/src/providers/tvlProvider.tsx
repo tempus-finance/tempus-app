@@ -1,10 +1,11 @@
-import { FC, useCallback, useContext, useEffect, useState } from 'react';
+import { FC, useCallback, useEffect, useState } from 'react';
 import { Subscription } from 'rxjs';
 import { BigNumber } from 'ethers';
 import getConfig from '../utils/getConfig';
 import DashboardDataAdapter from '../adapters/DashboardDataAdapter';
 import { TempusPool } from '../interfaces/TempusPool';
-import { PoolDataContext } from '../context/poolDataContext';
+import { useState as useHookState } from '@hookstate/core';
+import { dynamicPoolDataState } from '../state/PoolDataState';
 
 interface TVLProviderProps {
   dashboardDataAdapter: DashboardDataAdapter;
@@ -13,7 +14,8 @@ interface TVLProviderProps {
 const TVLProvider: FC<TVLProviderProps> = props => {
   const { dashboardDataAdapter } = props;
 
-  const { setPoolData } = useContext(PoolDataContext);
+  const dynamicPoolData = useHookState(dynamicPoolDataState);
+
   const [subscriptions$] = useState<Subscription>(new Subscription());
 
   /**
@@ -21,21 +23,10 @@ const TVLProvider: FC<TVLProviderProps> = props => {
    */
   const updatePoolTVL = useCallback(
     (tempusPool: TempusPool, tvl: BigNumber | null) => {
-      setPoolData &&
-        setPoolData(previousData => ({
-          ...previousData,
-          poolData: previousData.poolData.map(previousPoolData => {
-            if (previousPoolData.address !== tempusPool.address) {
-              return previousPoolData;
-            }
-            return {
-              ...previousPoolData,
-              tvl: tvl,
-            };
-          }),
-        }));
+      dynamicPoolData[tempusPool.address].tvl.set(tvl);
     },
-    [setPoolData],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
   );
 
   /**

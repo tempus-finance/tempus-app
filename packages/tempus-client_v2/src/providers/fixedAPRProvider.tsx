@@ -1,11 +1,15 @@
 import { useCallback, useContext, useEffect } from 'react';
+import { useState as useHookState } from '@hookstate/core';
 import getConfig from '../utils/getConfig';
 import getDefaultProvider from '../services/getDefaultProvider';
 import getTempusAMMService from '../services/getTempusAMMService';
 import { PoolDataContext } from '../context/poolDataContext';
 import { WalletContext } from '../context/walletContext';
+import { dynamicPoolDataState } from '../state/PoolDataState';
 
 const FixedAPRProvider = () => {
+  const dynamicPoolData = useHookState(dynamicPoolDataState);
+
   const { setPoolData } = useContext(PoolDataContext);
   const { userWalletConnected, userWalletSigner } = useContext(WalletContext);
 
@@ -55,16 +59,11 @@ const FixedAPRProvider = () => {
       }),
     );
 
-    setPoolData(previousData => ({
-      ...previousData,
-      poolData: previousData.poolData.map(previousPoolData => {
-        const poolAPRData = fetchedPoolAPRData.find(data => data.address === previousPoolData.address);
-        return {
-          ...previousPoolData,
-          fixedAPR: poolAPRData ? poolAPRData.fixedAPR : null,
-        };
-      }),
-    }));
+    fetchedPoolAPRData.forEach(fetchedAPRData => {
+      dynamicPoolData[fetchedAPRData.address].fixedAPR.set(fetchedAPRData.fixedAPR);
+    });
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [getProvider, setPoolData]);
 
   /**

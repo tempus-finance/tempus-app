@@ -23,7 +23,8 @@ const UserLPTokenBalanceProvider = () => {
         dynamicPoolData[tempusPool.address].userLPTokenBalance.set(balance);
       }
     },
-    [userWalletSigner, userWalletAddress, dynamicPoolData],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [userWalletSigner, userWalletAddress],
   );
 
   const updateBalance = useCallback(async () => {

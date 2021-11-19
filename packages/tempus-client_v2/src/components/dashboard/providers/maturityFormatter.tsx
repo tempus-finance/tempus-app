@@ -1,4 +1,5 @@
 import { useContext, useMemo } from 'react';
+import { Downgraded, useState as useHookState } from '@hookstate/core';
 import format from 'date-fns/format';
 import differenceInSeconds from 'date-fns/differenceInSeconds';
 import { dashboardChildMaturityFormat, dashboardParentMaturityFormat, ZERO } from '../../../constants';
@@ -10,8 +11,17 @@ import { Ticker } from '../../../interfaces/Token';
 import { getDataForPool, PoolData, PoolDataContext } from '../../../context/poolDataContext';
 import getRangeFrom from '../../../utils/getRangeFrom';
 import { CircularProgress } from '@material-ui/core';
+import {
+  dynamicPoolDataState,
+  DynamicPoolStateData,
+  negativeYieldPoolDataState,
+  NegativeYieldStateData,
+} from '../../../state/PoolDataState';
 
 const MaturityFormatter = ({ value, row }: any) => {
+  const dynamicPoolData = useHookState(dynamicPoolDataState).attach(Downgraded).get();
+  const negativeYieldPoolData = useHookState(negativeYieldPoolDataState).attach(Downgraded).get();
+
   const { poolData } = useContext(PoolDataContext);
 
   const isParent = !row.parentId;
@@ -30,7 +40,7 @@ const MaturityFormatter = ({ value, row }: any) => {
   }, [poolData, row.id, row.startDate]);
 
   if (isParent) {
-    const [min, max] = getParentMaturity(row.id, poolData);
+    const [min, max] = getParentMaturity(row.id, poolData, dynamicPoolData, negativeYieldPoolData);
     return (
       <div className="tf__dashboard__grid__maturity">
         <Typography color="default" variant="body-text">
@@ -58,13 +68,21 @@ const MaturityFormatter = ({ value, row }: any) => {
 
 export default MaturityFormatter;
 
-function getParentMaturity(parentId: Ticker, poolData: PoolData[]): number[] {
+function getParentMaturity(
+  parentId: Ticker,
+  poolData: PoolData[],
+  dynamicPoolData: DynamicPoolStateData,
+  negativeYieldPoolData: NegativeYieldStateData,
+): number[] {
   const parentChildren = poolData.filter(data => {
     return data.backingToken === parentId;
   });
 
   const validChildren = parentChildren.filter(child => {
-    return !child.isNegativeYield || (child.isNegativeYield && child.userBalanceUSD?.gt(ZERO));
+    return (
+      !negativeYieldPoolData[child.address] ||
+      (negativeYieldPoolData[child.address] && dynamicPoolData[child.address].userBalanceUSD?.gt(ZERO))
+    );
   });
 
   const childrenMaturityDates = validChildren.map(child => child.maturityDate);

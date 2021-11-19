@@ -1,5 +1,5 @@
 import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { useState as useHookState } from '@hookstate/core';
+import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { ethers, BigNumber } from 'ethers';
 import { catchError, combineLatest } from 'rxjs';
 import { dynamicPoolDataState, selectedPoolState } from '../../state/PoolDataState';
@@ -48,8 +48,8 @@ const EarlyRedeem: FC = () => {
 
   const [tokenPrecision, setTokenPrecision] = useState<number>(0);
 
-  const userPrincipalsBalance = dynamicPoolData[selectedPool.get()].userPrincipalsBalance.get();
-  const userYieldsBalance = dynamicPoolData[selectedPool.get()].userYieldsBalance.get();
+  const userPrincipalsBalance = dynamicPoolData[selectedPool.get()].userPrincipalsBalance.attach(Downgraded).get();
+  const userYieldsBalance = dynamicPoolData[selectedPool.get()].userYieldsBalance.attach(Downgraded).get();
 
   const supportedTokens = useMemo(() => {
     return [activePoolData.backingToken, activePoolData.yieldBearingToken].filter(token => token !== 'ETH');
