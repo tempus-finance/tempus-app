@@ -1,10 +1,9 @@
 import { differenceInDays } from 'date-fns';
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
-import { dynamicPoolDataState, selectedPoolState } from '../../../state/PoolDataState';
+import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../../state/PoolDataState';
 import getPoolDataAdapter from '../../../adapters/getPoolDataAdapter';
 import { LanguageContext } from '../../../context/languageContext';
-import { getDataForPool, PoolDataContext } from '../../../context/poolDataContext';
 import { WalletContext } from '../../../context/walletContext';
 import getText from '../../../localisation/getText';
 import NumberUtils from '../../../services/NumberUtils';
@@ -14,19 +13,20 @@ import './aprTooltip.scss';
 
 const AprTooltip = () => {
   const selectedPool = useHookState(selectedPoolState);
+  const staticPoolData = useHookState(staticPoolDataState);
   const dynamicPoolData = useHookState(dynamicPoolDataState);
 
   const { userWalletSigner } = useContext(WalletContext);
-  const { poolData } = useContext(PoolDataContext);
   const { language } = useContext(LanguageContext);
 
   const [poolRatio, setPoolRatio] = useState<number[] | null>(null);
 
   const fixedAPR = dynamicPoolData[selectedPool.get()].fixedAPR.attach(Downgraded).get();
-
-  const activePoolData = useMemo(() => {
-    return getDataForPool(selectedPool.get(), poolData);
-  }, [poolData, selectedPool]);
+  const ammAddress = staticPoolData[selectedPool.get()].ammAddress.attach(Downgraded).get();
+  const principalsAddress = staticPoolData[selectedPool.get()].principalsAddress.attach(Downgraded).get();
+  const yieldsAddress = staticPoolData[selectedPool.get()].yieldsAddress.attach(Downgraded).get();
+  const startDate = staticPoolData[selectedPool.get()].startDate.attach(Downgraded).get();
+  const maturityDate = staticPoolData[selectedPool.get()].maturityDate.attach(Downgraded).get();
 
   useEffect(() => {
     const fetchPoolRation = async () => {
@@ -36,40 +36,40 @@ const AprTooltip = () => {
       const poolDataAdapter = getPoolDataAdapter(userWalletSigner);
 
       const { principalsShare, yieldsShare } = await poolDataAdapter.getPoolRatioOfAssets(
-        activePoolData.ammAddress,
-        activePoolData.principalsAddress,
-        activePoolData.yieldsAddress,
+        ammAddress,
+        principalsAddress,
+        yieldsAddress,
       );
 
       setPoolRatio([principalsShare, yieldsShare]);
     };
 
     fetchPoolRation();
-  }, [activePoolData, userWalletSigner]);
+  }, [ammAddress, principalsAddress, userWalletSigner, yieldsAddress]);
 
   const futureAprFormatted = useMemo(() => {
     return NumberUtils.formatPercentage(fixedAPR, 2);
   }, [fixedAPR]);
 
   const futureYieldFormatted = useMemo(() => {
-    if (activePoolData && fixedAPR) {
-      const daysToMaturity = differenceInDays(activePoolData.maturityDate, activePoolData.startDate);
+    if (fixedAPR) {
+      const daysToMaturity = differenceInDays(maturityDate, startDate);
       const dailyInterest = (fixedAPR || 1) / 365;
       return NumberUtils.formatPercentage(dailyInterest * daysToMaturity, 2);
     }
 
     return null;
-  }, [activePoolData, fixedAPR]);
+  }, [fixedAPR, maturityDate, startDate]);
 
   const lifetimeAprFormatted = useMemo(() => {
-    if (activePoolData !== null && poolRatio !== null && poolRatio[0] && poolRatio[1]) {
-      const daysToMaturity = differenceInDays(activePoolData.maturityDate, activePoolData.startDate);
+    if (poolRatio !== null && poolRatio[0] && poolRatio[1]) {
+      const daysToMaturity = differenceInDays(maturityDate, startDate);
       const dailyInterest = poolRatio[0] / poolRatio[1] / 365;
       return NumberUtils.formatPercentage(dailyInterest * daysToMaturity, 2);
     }
 
     return null;
-  }, [poolRatio, activePoolData]);
+  }, [maturityDate, poolRatio, startDate]);
 
   const lifetimeYieldFormatted = useMemo(() => {
     if (poolRatio !== null) {

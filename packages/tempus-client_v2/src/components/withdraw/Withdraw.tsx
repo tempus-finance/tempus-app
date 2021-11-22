@@ -1,9 +1,8 @@
 import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { ethers, BigNumber } from 'ethers';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
-import { dynamicPoolDataState, selectedPoolState } from '../../state/PoolDataState';
+import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
-import { getDataForPool, PoolDataContext } from '../../context/poolDataContext';
 import { WalletContext } from '../../context/walletContext';
 import { LanguageContext } from '../../context/languageContext';
 import getText from '../../localisation/getText';
@@ -28,20 +27,22 @@ type WithdrawOutProps = {
 const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
   const selectedPool = useHookState(selectedPoolState);
   const dynamicPoolData = useHookState(dynamicPoolDataState);
+  const staticPoolData = useHookState(staticPoolDataState);
 
-  const { poolData } = useContext(PoolDataContext);
   const { userWalletSigner } = useContext(WalletContext);
   const { language } = useContext(LanguageContext);
 
-  const selectedPoolData = useMemo(() => {
-    return getDataForPool(selectedPool.get(), poolData);
-  }, [poolData, selectedPool]);
+  const selectedPoolAddress = selectedPool.attach(Downgraded).get();
+  const backingToken = staticPoolData[selectedPool.get()].backingToken.attach(Downgraded).get();
+  const yieldBearingToken = staticPoolData[selectedPool.get()].yieldBearingToken.attach(Downgraded).get();
+  const ammAddress = staticPoolData[selectedPool.get()].ammAddress.attach(Downgraded).get();
+  const principalsAddress = staticPoolData[selectedPool.get()].principalsAddress.attach(Downgraded).get();
+  const yieldsAddress = staticPoolData[selectedPool.get()].yieldsAddress.attach(Downgraded).get();
+  const decimalsForUI = staticPoolData[selectedPool.get()].decimalsForUI.attach(Downgraded).get();
 
-  const supportedTokens = [selectedPoolData.backingToken, selectedPoolData.yieldBearingToken].filter(
-    token => token !== 'ETH',
-  );
+  const supportedTokens = [backingToken, yieldBearingToken].filter(token => token !== 'ETH');
 
-  const [selectedToken, setSelectedToken] = useState<Ticker>(selectedPoolData.yieldBearingToken);
+  const [selectedToken, setSelectedToken] = useState<Ticker>(yieldBearingToken);
   const [estimatedWithdrawAmount, setEstimatedWithdrawAmount] = useState<BigNumber | null>(null);
 
   const [principalsApproved, setPrincipalsApproved] = useState<boolean>(false);
@@ -58,21 +59,19 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
   const onTokenChange = useCallback(
     (token: Ticker | undefined) => {
       if (token) {
-        if (selectedPoolData.backingToken === token) {
-          setTokenPrecision(getTokenPrecision(selectedPoolData.address, 'backingToken'));
+        if (backingToken === token) {
+          setTokenPrecision(getTokenPrecision(selectedPoolAddress, 'backingToken'));
         } else {
-          setTokenPrecision(getTokenPrecision(selectedPoolData.address, 'yieldBearingToken'));
+          setTokenPrecision(getTokenPrecision(selectedPoolAddress, 'yieldBearingToken'));
         }
 
         setSelectedToken(token);
       }
     },
-    [selectedPoolData],
+    [backingToken, selectedPoolAddress],
   );
 
   const onExecute = useCallback((): Promise<ethers.ContractTransaction | undefined> => {
-    const { ammAddress, backingToken } = selectedPoolData;
-
     if (userWalletSigner && userPrincipalsBalance && userLPTokenBalance) {
       const poolDataAdapter = getPoolDataAdapter(userWalletSigner);
 
@@ -81,12 +80,10 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
     } else {
       return Promise.resolve(undefined);
     }
-  }, [selectedPoolData, userWalletSigner, userPrincipalsBalance, userLPTokenBalance, selectedToken]);
+  }, [userWalletSigner, userPrincipalsBalance, userLPTokenBalance, backingToken, selectedToken, ammAddress]);
 
   // Fetch estimated withdraw amount of tokens
   useEffect(() => {
-    const { ammAddress, backingToken } = selectedPoolData;
-
     if (userWalletSigner && userPrincipalsBalance && userYieldsBalance && userLPTokenBalance) {
       const poolDataAdapter = getPoolDataAdapter(userWalletSigner);
       try {
@@ -108,37 +105,45 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
         console.log('Withdraw - retrieveWithdrawAmount() - Failed to fetch estimated withdraw amount!', error);
       }
     }
-  }, [selectedToken, selectedPoolData, userWalletSigner, userPrincipalsBalance, userYieldsBalance, userLPTokenBalance]);
+  }, [
+    selectedToken,
+    userWalletSigner,
+    userPrincipalsBalance,
+    userYieldsBalance,
+    userLPTokenBalance,
+    backingToken,
+    ammAddress,
+  ]);
 
   const principalsBalanceFormatted = useMemo(() => {
     if (!userPrincipalsBalance) {
       return null;
     }
     return NumberUtils.formatToCurrency(
-      ethers.utils.formatUnits(userPrincipalsBalance, getTokenPrecision(selectedPoolData.address, 'principals')),
-      selectedPoolData.decimalsForUI,
+      ethers.utils.formatUnits(userPrincipalsBalance, getTokenPrecision(selectedPoolAddress, 'principals')),
+      decimalsForUI,
     );
-  }, [selectedPoolData.address, selectedPoolData.decimalsForUI, userPrincipalsBalance]);
+  }, [selectedPoolAddress, decimalsForUI, userPrincipalsBalance]);
 
   const yieldsBalanceFormatted = useMemo(() => {
     if (!userYieldsBalance) {
       return null;
     }
     return NumberUtils.formatToCurrency(
-      ethers.utils.formatUnits(userYieldsBalance, getTokenPrecision(selectedPoolData.address, 'yields')),
-      selectedPoolData.decimalsForUI,
+      ethers.utils.formatUnits(userYieldsBalance, getTokenPrecision(selectedPoolAddress, 'yields')),
+      decimalsForUI,
     );
-  }, [selectedPoolData.address, selectedPoolData.decimalsForUI, userYieldsBalance]);
+  }, [selectedPoolAddress, decimalsForUI, userYieldsBalance]);
 
   const lpBalanceFormatted = useMemo(() => {
     if (!userLPTokenBalance) {
       return null;
     }
     return NumberUtils.formatToCurrency(
-      ethers.utils.formatUnits(userLPTokenBalance, getTokenPrecision(selectedPoolData.address, 'lpTokens')),
-      selectedPoolData.decimalsForUI,
+      ethers.utils.formatUnits(userLPTokenBalance, getTokenPrecision(selectedPoolAddress, 'lpTokens')),
+      decimalsForUI,
     );
-  }, [selectedPoolData.address, selectedPoolData.decimalsForUI, userLPTokenBalance]);
+  }, [selectedPoolAddress, decimalsForUI, userLPTokenBalance]);
 
   const estimatedWithdrawAmountFormatted = useMemo(() => {
     if (!estimatedWithdrawAmount) {
@@ -146,9 +151,9 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
     }
     return NumberUtils.formatToCurrency(
       ethers.utils.formatUnits(estimatedWithdrawAmount, tokenPrecision),
-      selectedPoolData.decimalsForUI,
+      decimalsForUI,
     );
-  }, [estimatedWithdrawAmount, tokenPrecision, selectedPoolData.decimalsForUI]);
+  }, [estimatedWithdrawAmount, tokenPrecision, decimalsForUI]);
 
   const estimatedWithdrawAmountUsdFormatted = useMemo(() => {
     if (!userBalanceUSD) {
@@ -184,7 +189,7 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
               </div>
               <div className="tf__flex-column-center-end">
                 <Approve
-                  tokenToApproveAddress={selectedPoolData.principalsAddress}
+                  tokenToApproveAddress={principalsAddress}
                   tokenToApproveTicker="Principals"
                   amountToApprove={userPrincipalsBalance}
                   spenderAddress={getConfig().tempusControllerContract}
@@ -210,7 +215,7 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
                 </div>
                 <div className="tf__flex-column-center-end">
                   <Approve
-                    tokenToApproveAddress={selectedPoolData.yieldsAddress}
+                    tokenToApproveAddress={yieldsAddress}
                     tokenToApproveTicker="Yields"
                     amountToApprove={userYieldsBalance}
                     spenderAddress={getConfig().tempusControllerContract}
@@ -237,7 +242,7 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
                 </div>
                 <div className="tf__flex-column-center-end">
                   <Approve
-                    tokenToApproveAddress={selectedPoolData.ammAddress}
+                    tokenToApproveAddress={ammAddress}
                     tokenToApproveTicker="LP Token"
                     spenderAddress={getConfig().tempusControllerContract}
                     amountToApprove={userLPTokenBalance}
@@ -269,13 +274,7 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
         </SectionContainer>
         <Spacer size={20} />
         <div className="tf__flex-row-center-vh">
-          <Execute
-            actionName="Withdraw"
-            tempusPool={selectedPoolData}
-            disabled={executeDisabled}
-            onExecute={onExecute}
-            onExecuted={onWithdraw}
-          />
+          <Execute actionName="Withdraw" disabled={executeDisabled} onExecute={onExecute} onExecuted={onWithdraw} />
         </div>
       </SectionContainer>
     </div>

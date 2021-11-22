@@ -1,10 +1,9 @@
 import { ethers, BigNumber } from 'ethers';
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
-import { dynamicPoolDataState, selectedPoolState } from '../../state/PoolDataState';
+import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
 import { LanguageContext } from '../../context/languageContext';
-import { getDataForPool, PoolDataContext } from '../../context/poolDataContext';
 import { WalletContext } from '../../context/walletContext';
 import getText from '../../localisation/getText';
 import NumberUtils from '../../services/NumberUtils';
@@ -18,25 +17,21 @@ import ProfitLossChart from './profitLossChart/ProfitLossChart';
 const ProfitLoss = () => {
   const selectedPool = useHookState(selectedPoolState);
   const dynamicPoolData = useHookState(dynamicPoolDataState);
+  const staticPoolData = useHookState(staticPoolDataState);
 
   const { userWalletSigner } = useContext(WalletContext);
   const { language } = useContext(LanguageContext);
-  const { poolData } = useContext(PoolDataContext);
 
   const [estimatedWithdrawAmount, setEstimatedWithdrawAmount] = useState<BigNumber | null>(null);
 
+  const decimalsForUI = staticPoolData[selectedPool.get()].decimalsForUI.attach(Downgraded).get();
+  const ammAddress = staticPoolData[selectedPool.get()].ammAddress.attach(Downgraded).get();
   const userPrincipalsBalance = dynamicPoolData[selectedPool.get()].userPrincipalsBalance.attach(Downgraded).get();
   const userYieldsBalance = dynamicPoolData[selectedPool.get()].userYieldsBalance.attach(Downgraded).get();
   const userLPTokenBalance = dynamicPoolData[selectedPool.get()].userLPTokenBalance.attach(Downgraded).get();
   const userBalanceUSD = dynamicPoolDataState[selectedPool.get()].userBalanceUSD.attach(Downgraded).get();
 
-  const activePoolData = useMemo(() => {
-    return getDataForPool(selectedPool.get(), poolData);
-  }, [poolData, selectedPool]);
-
   useEffect(() => {
-    const { ammAddress } = activePoolData;
-
     if (!userWalletSigner || !userLPTokenBalance || !userPrincipalsBalance || !userYieldsBalance) {
       return;
     }
@@ -51,17 +46,14 @@ const ProfitLoss = () => {
     return () => {
       withdrawStream$.unsubscribe();
     };
-  }, [activePoolData, userWalletSigner, userPrincipalsBalance, userYieldsBalance, userLPTokenBalance]);
+  }, [userWalletSigner, userPrincipalsBalance, userYieldsBalance, userLPTokenBalance, ammAddress]);
 
   const estimatedWithdrawAmountFormatted = useMemo(() => {
     if (!estimatedWithdrawAmount) {
       return null;
     }
-    return NumberUtils.formatToCurrency(
-      ethers.utils.formatEther(estimatedWithdrawAmount),
-      activePoolData.decimalsForUI,
-    );
-  }, [activePoolData.decimalsForUI, estimatedWithdrawAmount]);
+    return NumberUtils.formatToCurrency(ethers.utils.formatEther(estimatedWithdrawAmount), decimalsForUI);
+  }, [decimalsForUI, estimatedWithdrawAmount]);
 
   const liquidationValueFormatted = useMemo(() => {
     if (!userBalanceUSD) {

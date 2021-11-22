@@ -3,7 +3,6 @@ import { useState as useHookState } from '@hookstate/core';
 import getDefaultProvider from '../services/getDefaultProvider';
 import getVariableRateService from '../services/getVariableRateService';
 import getConfig from '../utils/getConfig';
-import { PoolDataContext } from '../context/poolDataContext';
 import { WalletContext } from '../context/walletContext';
 import getTempusPoolService from '../services/getTempusPoolService';
 import { dynamicPoolDataState, negativeYieldPoolDataState, NegativeYieldStateData } from '../state/PoolDataState';
@@ -12,7 +11,6 @@ const VariableAPRProvider = () => {
   const dynamicPoolData = useHookState(dynamicPoolDataState);
   const negativeYieldPoolData = useHookState(negativeYieldPoolDataState);
 
-  const { setPoolData } = useContext(PoolDataContext);
   const { userWalletConnected, userWalletSigner } = useContext(WalletContext);
 
   const getProvider = useCallback(() => {
@@ -27,7 +25,7 @@ const VariableAPRProvider = () => {
    * Fetch APR for all tempus pools on each block event
    */
   const fetchAPR = useCallback(async () => {
-    if (!setPoolData || !document.hasFocus()) {
+    if (!document.hasFocus()) {
       return;
     }
     const provider = getProvider();
@@ -89,7 +87,7 @@ const VariableAPRProvider = () => {
       console.log('VariableAPRProvider - fetchAPR', error);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [getProvider, setPoolData]);
+  }, [getProvider]);
 
   /**
    * Update APR for all pools on each block.

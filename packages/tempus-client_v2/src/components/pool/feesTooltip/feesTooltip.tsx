@@ -1,11 +1,10 @@
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { BigNumber } from '@ethersproject/bignumber';
 import { ethers } from 'ethers';
-import { useState as useHookState } from '@hookstate/core';
-import { selectedPoolState } from '../../../state/PoolDataState';
+import { Downgraded, useState as useHookState } from '@hookstate/core';
+import { selectedPoolState, staticPoolDataState } from '../../../state/PoolDataState';
 import getPoolDataAdapter from '../../../adapters/getPoolDataAdapter';
 import { LanguageContext } from '../../../context/languageContext';
-import { getDataForPool, PoolDataContext } from '../../../context/poolDataContext';
 import { WalletContext } from '../../../context/walletContext';
 import getText from '../../../localisation/getText';
 import NumberUtils from '../../../services/NumberUtils';
@@ -16,16 +15,15 @@ import './feesTooltip.scss';
 
 const FeesTooltip = () => {
   const selectedPool = useHookState(selectedPoolState);
+  const staticPoolData = useHookState(staticPoolDataState);
 
   const { userWalletSigner } = useContext(WalletContext);
   const { language } = useContext(LanguageContext);
-  const { poolData } = useContext(PoolDataContext);
 
   const [poolFees, setPoolFees] = useState<BigNumber[] | null>(null);
 
-  const activePoolData = useMemo(() => {
-    return getDataForPool(selectedPool.get(), poolData);
-  }, [poolData, selectedPool]);
+  const ammAddress = staticPoolData[selectedPool.get()].ammAddress.attach(Downgraded).get();
+  const selectedPoolAddress = selectedPool.attach(Downgraded).get();
 
   useEffect(() => {
     const fetchPoolFees = async () => {
@@ -34,10 +32,10 @@ const FeesTooltip = () => {
       }
       const poolDataAdapter = getPoolDataAdapter(userWalletSigner);
 
-      setPoolFees(await poolDataAdapter.getPoolFees(activePoolData.address, activePoolData.ammAddress));
+      setPoolFees(await poolDataAdapter.getPoolFees(selectedPoolAddress, ammAddress));
     };
     fetchPoolFees();
-  }, [activePoolData.address, activePoolData.ammAddress, userWalletSigner]);
+  }, [selectedPoolAddress, ammAddress, userWalletSigner]);
 
   const depositFeesFormatted = useMemo(() => {
     if (!poolFees || !poolFees[0]) {

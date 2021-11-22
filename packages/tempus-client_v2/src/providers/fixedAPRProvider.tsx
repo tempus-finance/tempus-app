@@ -3,14 +3,12 @@ import { useState as useHookState } from '@hookstate/core';
 import getConfig from '../utils/getConfig';
 import getDefaultProvider from '../services/getDefaultProvider';
 import getTempusAMMService from '../services/getTempusAMMService';
-import { PoolDataContext } from '../context/poolDataContext';
 import { WalletContext } from '../context/walletContext';
 import { dynamicPoolDataState } from '../state/PoolDataState';
 
 const FixedAPRProvider = () => {
   const dynamicPoolData = useHookState(dynamicPoolDataState);
 
-  const { setPoolData } = useContext(PoolDataContext);
   const { userWalletConnected, userWalletSigner } = useContext(WalletContext);
 
   /**
@@ -28,7 +26,7 @@ const FixedAPRProvider = () => {
    * Fetch Fixed APR for all tempus pools on each block event
    */
   const fetchAPR = useCallback(async () => {
-    if (!setPoolData || !document.hasFocus()) {
+    if (!document.hasFocus()) {
       return;
     }
     const provider = getProvider();
@@ -64,7 +62,7 @@ const FixedAPRProvider = () => {
     });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [getProvider, setPoolData]);
+  }, [getProvider]);
 
   /**
    * Update Fixed APR for all pools on each block.

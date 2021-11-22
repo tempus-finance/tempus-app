@@ -9,7 +9,6 @@ import getNotificationService from '../../services/getNotificationService';
 import { generateEtherscanLink, getTokenApprovalNotification } from '../../services/NotificationService';
 import { Ticker } from '../../interfaces/Token';
 import { PendingTransactionsContext } from '../../context/pendingTransactionsContext';
-import { getDataForPool, PoolDataContext } from '../../context/poolDataContext';
 import { LanguageContext } from '../../context/languageContext';
 import { WalletContext } from '../../context/walletContext';
 import TickIcon from '../icons/TickIcon';
@@ -57,7 +56,6 @@ const Approve: FC<ApproveButtonProps> = props => {
   const selectedPool = useHookState(selectedPoolState);
   const staticPoolData = useHookState(staticPoolDataState);
 
-  const { poolData } = useContext(PoolDataContext);
   const { setPendingTransactions } = useContext(PendingTransactionsContext);
   const { userWalletAddress, userWalletSigner } = useContext(WalletContext);
   const { language } = useContext(LanguageContext);
@@ -66,10 +64,8 @@ const Approve: FC<ApproveButtonProps> = props => {
   const [allowance, setAllowance] = useState<BigNumber | null>(null);
 
   const backingToken = staticPoolData[selectedPool.get()].backingToken.attach(Downgraded).get();
-
-  const selectedPoolData = useMemo(() => {
-    return getDataForPool(selectedPool.get(), poolData);
-  }, [poolData, selectedPool]);
+  const protocol = staticPoolData[selectedPool.get()].protocol.attach(Downgraded).get();
+  const maturityDate = staticPoolData[selectedPool.get()].maturityDate.attach(Downgraded).get();
 
   /**
    * Called when user clicks on the approve button.
@@ -94,15 +90,10 @@ const Approve: FC<ApproveButtonProps> = props => {
       } catch (error) {
         console.error(`Failed to create approve transaction for ${tokenToApproveTicker} token!`, error);
 
-        if (tokenToApproveTicker && selectedPoolData) {
+        if (tokenToApproveTicker) {
           getNotificationService().warn(
             `Approval Failed`,
-            getTokenApprovalNotification(
-              tokenToApproveTicker,
-              backingToken,
-              selectedPoolData.protocol,
-              new Date(selectedPoolData.maturityDate),
-            ),
+            getTokenApprovalNotification(tokenToApproveTicker, backingToken, protocol, new Date(maturityDate)),
           );
         }
         setApproveInProgress(false);
@@ -142,15 +133,10 @@ const Approve: FC<ApproveButtonProps> = props => {
         });
 
         // Show transaction failed notification.
-        if (tokenToApproveTicker && selectedPoolData) {
+        if (tokenToApproveTicker) {
           getNotificationService().warn(
             `Approval Failed`,
-            getTokenApprovalNotification(
-              tokenToApproveTicker,
-              backingToken,
-              selectedPoolData.protocol,
-              new Date(selectedPoolData.maturityDate),
-            ),
+            getTokenApprovalNotification(tokenToApproveTicker, backingToken, protocol, new Date(maturityDate)),
             generateEtherscanLink(transaction.hash),
             'View on Etherscan',
           );
@@ -172,15 +158,10 @@ const Approve: FC<ApproveButtonProps> = props => {
       });
 
       // Show approve transaction completed notification
-      if (tokenToApproveTicker && selectedPoolData) {
+      if (tokenToApproveTicker) {
         getNotificationService().notify(
           'Approval Successful',
-          getTokenApprovalNotification(
-            tokenToApproveTicker,
-            backingToken,
-            selectedPoolData.protocol,
-            new Date(selectedPoolData.maturityDate),
-          ),
+          getTokenApprovalNotification(tokenToApproveTicker, backingToken, protocol, new Date(maturityDate)),
           generateEtherscanLink(transaction.hash),
           'View on Etherscan',
         );
@@ -200,15 +181,16 @@ const Approve: FC<ApproveButtonProps> = props => {
     };
     approve();
   }, [
-    backingToken,
     userWalletSigner,
-    userWalletAddress,
-    selectedPoolData,
+    amountToApprove,
+    setPendingTransactions,
     tokenToApproveAddress,
     tokenToApproveTicker,
     spenderAddress,
-    amountToApprove,
-    setPendingTransactions,
+    userWalletAddress,
+    backingToken,
+    protocol,
+    maturityDate,
   ]);
 
   // Fetch current token allowance from contract

@@ -1,10 +1,11 @@
 import { FC, useCallback, useContext, useEffect } from 'react';
+import { useState as useHookState } from '@hookstate/core';
 import UserBalanceDataAdapter from '../adapters/UserBalanceDataAdapter';
-import { PoolDataContext } from '../context/poolDataContext';
 import { WalletContext } from '../context/walletContext';
 import { TempusPool } from '../interfaces/TempusPool';
 import getERC20TokenService from '../services/getERC20TokenService';
 import getConfig from '../utils/getConfig';
+import { dynamicPoolDataState } from '../state/PoolDataState';
 
 interface PresentValueProviderProps {
   userBalanceDataAdapter: UserBalanceDataAdapter;
@@ -13,7 +14,8 @@ interface PresentValueProviderProps {
 const AvailableToDepositUSDProvider: FC<PresentValueProviderProps> = props => {
   const { userBalanceDataAdapter } = props;
 
-  const { setPoolData } = useContext(PoolDataContext);
+  const dynamicPoolData = useHookState(dynamicPoolDataState);
+
   const { userWalletAddress, userWalletSigner } = useContext(WalletContext);
 
   const updateUserAvailableToDepositUSDForPool = useCallback(
@@ -28,24 +30,24 @@ const AvailableToDepositUSDProvider: FC<PresentValueProviderProps> = props => {
           userWalletSigner,
         );
 
-        setPoolData &&
-          setPoolData(previousData => ({
-            ...previousData,
-            poolData: previousData.poolData.map(previousPoolData => {
-              if (previousPoolData.address !== tempusPool.address) {
-                return previousPoolData;
-              }
-              return {
-                ...previousPoolData,
-                ...userAvailableToDepositForPool,
-              };
-            }),
-          }));
+        dynamicPoolData[tempusPool.address].backingTokenValueInFiat.set(
+          userAvailableToDepositForPool.backingTokenValueInFiat,
+        );
+        dynamicPoolData[tempusPool.address].backingTokensAvailable.set(
+          userAvailableToDepositForPool.backingTokensAvailable,
+        );
+        dynamicPoolData[tempusPool.address].yieldBearingTokenValueInBackingToken.set(
+          userAvailableToDepositForPool.yieldBearingTokenValueInBackingToken,
+        );
+        dynamicPoolData[tempusPool.address].yieldBearingTokenValueInFiat.set(
+          userAvailableToDepositForPool.yieldBearingTokenValueInFiat,
+        );
       } catch (error) {
         console.error('AvailableToDepositUSDProvider - updateUserAvailableToDepositUSDForPool', error);
       }
     },
-    [setPoolData, userBalanceDataAdapter, userWalletAddress, userWalletSigner],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [userBalanceDataAdapter, userWalletAddress, userWalletSigner],
   );
 
   const updateAvailableToDepositUSD = useCallback(() => {

@@ -6,7 +6,6 @@ import {
   defaultPendingTransactionsContextValue,
   PendingTransactionsContext,
 } from '../../context/pendingTransactionsContext';
-import { defaultPoolDataContextValue, PoolDataContext } from '../../context/poolDataContext';
 import { UserSettingsContext, defaultUserSettingsContextValue } from '../../context/userSettingsContext';
 import ETHBalanceProvider from '../../providers/ethBalanceProvider';
 import NotificationContainer from '../notification/NotificationContainer';
@@ -21,7 +20,6 @@ const App = () => {
   const [ethBalance, setETHBalance] = useState(defaultETHBalanceContextValue);
   const [walletData, setWalletData] = useState(defaultWalletContextValue);
   const [pendingTransactions, setPendingTransactions] = useState(defaultPendingTransactionsContextValue);
-  const [poolData, setPoolData] = useState(defaultPoolDataContextValue);
 
   return (
     <UserSettingsContext.Provider value={{ ...showFiat, setShowFiat }}>
@@ -29,13 +27,11 @@ const App = () => {
         <ETHBalanceContext.Provider value={{ ...ethBalance, setETHBalance }}>
           <WalletContext.Provider value={{ ...walletData, setWalletData }}>
             <PendingTransactionsContext.Provider value={{ ...pendingTransactions, setPendingTransactions }}>
-              <PoolDataContext.Provider value={{ ...poolData, setPoolData }}>
-                <div className="tc__app__container">
-                  <NavBar />
-                  <Main />
-                  <NotificationContainer />
-                </div>
-              </PoolDataContext.Provider>
+              <div className="tc__app__container">
+                <NavBar />
+                <Main />
+                <NotificationContainer />
+              </div>
             </PendingTransactionsContext.Provider>
             <ETHBalanceProvider />
           </WalletContext.Provider>

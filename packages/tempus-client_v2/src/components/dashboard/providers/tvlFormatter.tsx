@@ -1,9 +1,8 @@
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { CircularProgress } from '@material-ui/core';
 import { ethers, BigNumber } from 'ethers';
-import { useContext, useMemo } from 'react';
+import { useMemo } from 'react';
 import { ZERO } from '../../../constants';
-import { PoolData, PoolDataContext } from '../../../context/poolDataContext';
 import { Ticker } from '../../../interfaces/Token';
 import NumberUtils from '../../../services/NumberUtils';
 import {
@@ -11,6 +10,8 @@ import {
   DynamicPoolStateData,
   negativeYieldPoolDataState,
   NegativeYieldStateData,
+  staticPoolDataState,
+  StaticPoolStateData,
 } from '../../../state/PoolDataState';
 import Typography from '../../typography/Typography';
 
@@ -18,14 +19,13 @@ const TVLFormatter = ({ row }: any) => {
   const isChild = Boolean(row.parentId);
 
   const dynamicPoolData = useHookState(dynamicPoolDataState).attach(Downgraded).get();
+  const staticPoolData = useHookState(staticPoolDataState).attach(Downgraded).get();
   const negativeYieldPoolData = useHookState(negativeYieldPoolDataState).attach(Downgraded).get();
-
-  const { poolData } = useContext(PoolDataContext);
 
   const tvlFormatted = useMemo(() => {
     let tvl: BigNumber | null;
     if (!isChild) {
-      tvl = getParentTVL(row.id, poolData, dynamicPoolData, negativeYieldPoolData);
+      tvl = getParentTVL(row.id, staticPoolData, dynamicPoolData, negativeYieldPoolData);
     } else {
       tvl = getChildTVL(row.id, dynamicPoolData);
     }
@@ -34,7 +34,7 @@ const TVLFormatter = ({ row }: any) => {
       return null;
     }
     return NumberUtils.formatWithMultiplier(ethers.utils.formatEther(tvl));
-  }, [dynamicPoolData, negativeYieldPoolData, isChild, poolData, row.id]);
+  }, [isChild, row.id, staticPoolData, dynamicPoolData, negativeYieldPoolData]);
 
   return (
     <>
@@ -51,27 +51,29 @@ export default TVLFormatter;
 
 function getParentTVL(
   parentId: Ticker,
-  poolData: PoolData[],
+  staticPoolData: StaticPoolStateData,
   dynamicPoolData: DynamicPoolStateData,
   negativeYieldPoolData: NegativeYieldStateData,
 ): BigNumber | null {
-  const parentChildren = poolData.filter(data => {
-    return data.backingToken === parentId;
-  });
+  const parentChildrenAddresses: string[] = [];
+  for (const key in dynamicPoolData) {
+    if (
+      staticPoolData[key].backingToken === parentId &&
+      (!negativeYieldPoolData[key] || dynamicPoolData[key].userBalanceUSD?.gt(ZERO))
+    ) {
+      parentChildrenAddresses.push(key);
+    }
+  }
 
   // In case TVL is still loading for some of the parent children, return null (show loading circle in dashboard)
-  const childrenStillLoading = parentChildren.some(child => dynamicPoolData[child.address].tvl === null);
+  const childrenStillLoading = parentChildrenAddresses.some(address => dynamicPoolData[address].tvl === null);
   if (childrenStillLoading) {
     return null;
   }
 
   let parentTVL = BigNumber.from('0');
-  parentChildren.forEach(child => {
-    if (negativeYieldPoolData[child.address] && dynamicPoolData[child.address].userBalanceUSD?.lte(ZERO)) {
-      return;
-    }
-
-    parentTVL = parentTVL.add(dynamicPoolData[child.address].tvl || BigNumber.from('0'));
+  parentChildrenAddresses.forEach(address => {
+    parentTVL = parentTVL.add(dynamicPoolData[address].tvl || BigNumber.from('0'));
   });
 
   return parentTVL;

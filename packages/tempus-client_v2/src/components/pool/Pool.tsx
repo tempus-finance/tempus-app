@@ -4,7 +4,6 @@ import { ethers, BigNumber } from 'ethers';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
 import { LanguageContext } from '../../context/languageContext';
-import { getDataForPool, PoolDataContext } from '../../context/poolDataContext';
 import { WalletContext } from '../../context/walletContext';
 import getText from '../../localisation/getText';
 import NumberUtils from '../../services/NumberUtils';
@@ -24,23 +23,19 @@ const Pool = () => {
 
   const { userWalletSigner } = useContext(WalletContext);
   const { language } = useContext(LanguageContext);
-  const { poolData } = useContext(PoolDataContext);
 
   //const [tvlChangePercentage, setTVLChangePercentage] = useState<BigNumber | null>(null);
   const [volume, setVolume] = useState<BigNumber | null>(null);
   const [aprTooltipOpen, setAprTooltipOpen] = useState<boolean>(false);
   const [feesTooltipOpen, setFeesTooltipOpen] = useState<boolean>(false);
 
+  const selectedPoolAddress = selectedPool.attach(Downgraded).get();
   const poolId = staticPoolData[selectedPool.get()].poolId.attach(Downgraded).get();
+  const backingToken = staticPoolData[selectedPool.get()].backingToken.attach(Downgraded).get();
+  const principalsAddress = staticPoolData[selectedPool.get()].principalsAddress.attach(Downgraded).get();
+  const backingTokenPrecision = staticPoolData[selectedPool.get()].precision.backingToken.attach(Downgraded).get();
   const tvl = dynamicPoolData[selectedPool.get()].tvl.attach(Downgraded).get();
   const fixedAPR = dynamicPoolDataState[selectedPool.get()].fixedAPR.get();
-
-  /**
-   * Currently selected pool in the dashboard
-   */
-  const activePoolData = useMemo(() => {
-    return getDataForPool(selectedPool.get(), poolData);
-  }, [poolData, selectedPool]);
 
   /**
    * Fetch current TVL and TVL from one week ago (or less if pool lifespan is less then one week).
@@ -82,12 +77,12 @@ const Pool = () => {
       try {
         setVolume(
           await poolDataAdapter.getPoolVolumeData(
-            activePoolData.address,
+            selectedPoolAddress,
             poolId,
-            activePoolData.backingToken,
-            activePoolData.principalsAddress,
+            backingToken,
+            principalsAddress,
             userWalletSigner,
-            activePoolData.precision.backingToken,
+            backingTokenPrecision,
           ),
         );
       } catch (error) {
@@ -95,7 +90,7 @@ const Pool = () => {
       }
     };
     fetchVolume();
-  }, [activePoolData, userWalletSigner, poolId]);
+  }, [selectedPoolAddress, userWalletSigner, poolId, backingToken, principalsAddress, backingTokenPrecision]);
 
   const onToggleAprTooltip = useCallback(() => {
     setAprTooltipOpen(prevValue => {
@@ -113,8 +108,8 @@ const Pool = () => {
     if (!tvl) {
       return null;
     }
-    return NumberUtils.formatWithMultiplier(ethers.utils.formatUnits(tvl, activePoolData.precision.backingToken), 2);
-  }, [activePoolData.precision.backingToken, tvl]);
+    return NumberUtils.formatWithMultiplier(ethers.utils.formatUnits(tvl, backingTokenPrecision), 2);
+  }, [backingTokenPrecision, tvl]);
 
   /*const tvlChangePercentageFormatted = useMemo(() => {
     if (!tvlChangePercentage) {
@@ -127,8 +122,8 @@ const Pool = () => {
     if (!volume) {
       return null;
     }
-    return NumberUtils.formatWithMultiplier(ethers.utils.formatUnits(volume, activePoolData.precision.backingToken), 2);
-  }, [activePoolData.precision.backingToken, volume]);
+    return NumberUtils.formatWithMultiplier(ethers.utils.formatUnits(volume, backingTokenPrecision), 2);
+  }, [backingTokenPrecision, volume]);
 
   return (
     <div className="tc__pool">

@@ -3,7 +3,6 @@ import { FC, useContext, useEffect, useMemo, useState } from 'react';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
-import { getDataForPool, PoolDataContext } from '../../context/poolDataContext';
 import { WalletContext } from '../../context/walletContext';
 import getText from '../../localisation/getText';
 import NumberUtils from '../../services/NumberUtils';
@@ -20,7 +19,6 @@ const CurrentPosition: FC<CurrentPositionInProps> = ({ language }) => {
   const dynamicPoolData = useHookState(dynamicPoolDataState);
   const staticPoolData = useHookState(staticPoolDataState);
 
-  const { poolData } = useContext(PoolDataContext);
   const { userWalletSigner } = useContext(WalletContext);
 
   const [lpTokenPrincipalReturnBalance, setLpTokenPrincipalReturn] = useState<BigNumber | null>(null);
@@ -30,10 +28,7 @@ const CurrentPosition: FC<CurrentPositionInProps> = ({ language }) => {
   const userYieldsBalance = dynamicPoolData[selectedPool.get()].userYieldsBalance.attach(Downgraded).get();
   const userLPBalance = dynamicPoolData[selectedPool.get()].userLPTokenBalance.attach(Downgraded).get();
   const ammAddress = staticPoolData[selectedPool.get()].ammAddress.attach(Downgraded).get();
-
-  const activePoolData = useMemo(() => {
-    return getDataForPool(selectedPool.get(), poolData);
-  }, [poolData, selectedPool]);
+  const decimalsForUI = staticPoolData[selectedPool.get()].decimalsForUI.attach(Downgraded).get();
 
   useEffect(() => {
     const retrieveExpectedReturn = async () => {
@@ -66,9 +61,9 @@ const CurrentPosition: FC<CurrentPositionInProps> = ({ language }) => {
     }
     return NumberUtils.formatToCurrency(
       ethers.utils.formatEther(userPrincipalsBalance.add(lpTokenPrincipalReturnBalance)),
-      activePoolData.decimalsForUI,
+      decimalsForUI,
     );
-  }, [activePoolData.decimalsForUI, userPrincipalsBalance, lpTokenPrincipalReturnBalance]);
+  }, [decimalsForUI, userPrincipalsBalance, lpTokenPrincipalReturnBalance]);
 
   const yieldsBalanceFormatted = useMemo(() => {
     if (!userYieldsBalance || !lpTokenYieldReturnBalance) {
@@ -76,29 +71,23 @@ const CurrentPosition: FC<CurrentPositionInProps> = ({ language }) => {
     }
     return NumberUtils.formatToCurrency(
       ethers.utils.formatEther(userYieldsBalance.add(lpTokenYieldReturnBalance)),
-      activePoolData.decimalsForUI,
+      decimalsForUI,
     );
-  }, [activePoolData.decimalsForUI, userYieldsBalance, lpTokenYieldReturnBalance]);
+  }, [decimalsForUI, userYieldsBalance, lpTokenYieldReturnBalance]);
 
   const stakedPrincipalsFormatted = useMemo(() => {
     if (!lpTokenPrincipalReturnBalance) {
       return null;
     }
-    return NumberUtils.formatToCurrency(
-      ethers.utils.formatEther(lpTokenPrincipalReturnBalance),
-      activePoolData.decimalsForUI,
-    );
-  }, [activePoolData.decimalsForUI, lpTokenPrincipalReturnBalance]);
+    return NumberUtils.formatToCurrency(ethers.utils.formatEther(lpTokenPrincipalReturnBalance), decimalsForUI);
+  }, [decimalsForUI, lpTokenPrincipalReturnBalance]);
 
   const stakedYieldsFormatted = useMemo(() => {
     if (!lpTokenYieldReturnBalance) {
       return null;
     }
-    return NumberUtils.formatToCurrency(
-      ethers.utils.formatEther(lpTokenYieldReturnBalance),
-      activePoolData.decimalsForUI,
-    );
-  }, [activePoolData.decimalsForUI, lpTokenYieldReturnBalance]);
+    return NumberUtils.formatToCurrency(ethers.utils.formatEther(lpTokenYieldReturnBalance), decimalsForUI);
+  }, [decimalsForUI, lpTokenYieldReturnBalance]);
 
   const totalValue = useMemo(() => {
     if (!userPrincipalsBalance || !userYieldsBalance || !lpTokenPrincipalReturnBalance || !lpTokenYieldReturnBalance) {
