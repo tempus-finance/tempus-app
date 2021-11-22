@@ -1,8 +1,8 @@
 import { FC, useContext, useState, useMemo } from 'react';
-import { useState as useHookState } from '@hookstate/core';
+import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { ethers } from 'ethers';
 import { Button, CircularProgress } from '@material-ui/core';
-import { selectedPoolState } from '../../state/PoolDataState';
+import { selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
 import getNotificationService from '../../services/getNotificationService';
 import {
   generateEtherscanLink,
@@ -31,6 +31,7 @@ const Execute: FC<ExecuteButtonProps> = props => {
   const { disabled, actionName, actionDescription, tempusPool, onExecute, onExecuted } = props;
 
   const selectedPool = useHookState(selectedPoolState);
+  const staticPoolData = useHookState(staticPoolDataState);
 
   const { setPendingTransactions } = useContext(PendingTransactionsContext);
   const { poolData } = useContext(PoolDataContext);
@@ -38,6 +39,8 @@ const Execute: FC<ExecuteButtonProps> = props => {
   const { userWalletAddress } = useContext(WalletContext);
 
   const [executeInProgress, setExecuteInProgress] = useState<boolean>(false);
+
+  const backingToken = staticPoolData[selectedPool.get()].backingToken.attach(Downgraded).get();
 
   const selectedPoolData = useMemo(() => {
     return getDataForPool(selectedPool.get(), poolData);
@@ -60,7 +63,7 @@ const Execute: FC<ExecuteButtonProps> = props => {
         getNotificationService().warn(
           `${actionName} Failed`,
           generatePoolNotificationInfo(
-            selectedPoolData.backingToken,
+            backingToken,
             selectedPoolData.protocol,
             new Date(selectedPoolData.maturityDate),
           ),
@@ -108,7 +111,7 @@ const Execute: FC<ExecuteButtonProps> = props => {
         getNotificationService().warn(
           `${actionName} Failed`,
           generatePoolNotificationInfo(
-            selectedPoolData.backingToken,
+            backingToken,
             selectedPoolData.protocol,
             new Date(selectedPoolData.maturityDate),
           ),

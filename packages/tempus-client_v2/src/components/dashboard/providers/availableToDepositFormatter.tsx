@@ -1,17 +1,7 @@
-import { DataTypeProvider } from '@devexpress/dx-react-grid';
+import { useContext, useMemo } from 'react';
 import { ethers, BigNumber } from 'ethers';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
-import { DashboardRow, isChildRow, isParentRow } from '../../../interfaces/DashboardRow';
-import { Ticker } from '../../../interfaces/Token';
-import NumberUtils from '../../../services/NumberUtils';
-import Spacer from '../../spacer/spacer';
-import Typography from '../../typography/Typography';
-import TokenIcon from '../../tokenIcon';
-import './availableToDepositFormatter.scss';
-import { PoolDataContext, PoolData, getDataForPool } from '../../../context/poolDataContext';
-import { UserSettingsContext } from '../../../context/userSettingsContext';
-import { WalletContext } from '../../../context/walletContext';
-import { useContext, useMemo } from 'react';
+import { DataTypeProvider } from '@devexpress/dx-react-grid';
 import { CircularProgress } from '@material-ui/core';
 import { ZERO } from '../../../constants';
 import {
@@ -20,6 +10,17 @@ import {
   negativeYieldPoolDataState,
   NegativeYieldStateData,
 } from '../../../state/PoolDataState';
+import { PoolDataContext, PoolData, getDataForPool } from '../../../context/poolDataContext';
+import { UserSettingsContext } from '../../../context/userSettingsContext';
+import { WalletContext } from '../../../context/walletContext';
+import { DashboardRow, isChildRow, isParentRow } from '../../../interfaces/DashboardRow';
+import { Ticker } from '../../../interfaces/Token';
+import NumberUtils from '../../../services/NumberUtils';
+import Spacer from '../../spacer/spacer';
+import Typography from '../../typography/Typography';
+import TokenIcon from '../../tokenIcon';
+
+import './availableToDepositFormatter.scss';
 
 const AvailableToDepositFormatter = (props: DataTypeProvider.ValueFormatterProps) => {
   const row = props.row as DashboardRow;

@@ -1,7 +1,7 @@
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { Downgraded, useHookstate, useState as useHookState } from '@hookstate/core';
 import { ethers, BigNumber } from 'ethers';
-import { dynamicPoolDataState, selectedPoolState } from '../../state/PoolDataState';
+import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
 import { LanguageContext } from '../../context/languageContext';
 import { getDataForPool, PoolDataContext } from '../../context/poolDataContext';
@@ -20,6 +20,7 @@ import './Pool.scss';
 const Pool = () => {
   const selectedPool = useHookState(selectedPoolState);
   const dynamicPoolData = useHookstate(dynamicPoolDataState);
+  const staticPoolData = useHookState(staticPoolDataState);
 
   const { userWalletSigner } = useContext(WalletContext);
   const { language } = useContext(LanguageContext);
@@ -30,6 +31,7 @@ const Pool = () => {
   const [aprTooltipOpen, setAprTooltipOpen] = useState<boolean>(false);
   const [feesTooltipOpen, setFeesTooltipOpen] = useState<boolean>(false);
 
+  const poolId = staticPoolData[selectedPool.get()].poolId.attach(Downgraded).get();
   const tvl = dynamicPoolData[selectedPool.get()].tvl.attach(Downgraded).get();
   const fixedAPR = dynamicPoolDataState[selectedPool.get()].fixedAPR.get();
 
@@ -81,7 +83,7 @@ const Pool = () => {
         setVolume(
           await poolDataAdapter.getPoolVolumeData(
             activePoolData.address,
-            activePoolData.poolId,
+            poolId,
             activePoolData.backingToken,
             activePoolData.principalsAddress,
             userWalletSigner,
@@ -93,7 +95,7 @@ const Pool = () => {
       }
     };
     fetchVolume();
-  }, [activePoolData, userWalletSigner]);
+  }, [activePoolData, userWalletSigner, poolId]);
 
   const onToggleAprTooltip = useCallback(() => {
     setAprTooltipOpen(prevValue => {

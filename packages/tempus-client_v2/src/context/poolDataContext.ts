@@ -12,15 +12,10 @@ export interface AvailableToDeposit {
 }
 
 export interface PoolData extends AvailableToDeposit {
-  poolId: string;
   address: string;
-  ammAddress: string;
-  principalsAddress: string;
-  yieldsAddress: string;
   protocol: ProtocolName;
   startDate: number;
   maturityDate: number;
-  backingToken: Ticker;
   backingTokenAddress: string;
   yieldBearingToken: Ticker;
   yieldBearingTokenAddress: string;
@@ -46,17 +41,12 @@ interface PoolDataContextType extends PoolDataContextActions, PoolDataContextDat
 
 export const defaultPoolDataContextValue: PoolDataContextData = {
   poolData: getConfig().tempusPools.map(tempusPoolConfig => ({
-    poolId: tempusPoolConfig.poolId,
     address: tempusPoolConfig.address,
-    principalsAddress: tempusPoolConfig.principalsAddress,
-    backingToken: tempusPoolConfig.backingToken,
     backingTokenAddress: tempusPoolConfig.backingTokenAddress,
     backingTokensAvailable: null,
     yieldBearingToken: tempusPoolConfig.yieldBearingToken,
     yieldBearingTokenAddress: tempusPoolConfig.yieldBearingTokenAddress,
-    yieldsAddress: tempusPoolConfig.yieldsAddress,
     decimalsForUI: tempusPoolConfig.decimalsForUI,
-    ammAddress: tempusPoolConfig.ammAddress,
     protocol: tempusPoolConfig.protocol,
     startDate: tempusPoolConfig.startDate,
     maturityDate: tempusPoolConfig.maturityDate,

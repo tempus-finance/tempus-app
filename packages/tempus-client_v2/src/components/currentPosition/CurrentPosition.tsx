@@ -1,7 +1,7 @@
 import { ethers, BigNumber } from 'ethers';
 import { FC, useContext, useEffect, useMemo, useState } from 'react';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
-import { dynamicPoolDataState, selectedPoolState } from '../../state/PoolDataState';
+import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
 import { getDataForPool, PoolDataContext } from '../../context/poolDataContext';
 import { WalletContext } from '../../context/walletContext';
@@ -18,6 +18,7 @@ type CurrentPositionInProps = SharedProps;
 const CurrentPosition: FC<CurrentPositionInProps> = ({ language }) => {
   const selectedPool = useHookState(selectedPoolState);
   const dynamicPoolData = useHookState(dynamicPoolDataState);
+  const staticPoolData = useHookState(staticPoolDataState);
 
   const { poolData } = useContext(PoolDataContext);
   const { userWalletSigner } = useContext(WalletContext);
@@ -28,6 +29,7 @@ const CurrentPosition: FC<CurrentPositionInProps> = ({ language }) => {
   const userPrincipalsBalance = dynamicPoolData[selectedPool.get()].userPrincipalsBalance.attach(Downgraded).get();
   const userYieldsBalance = dynamicPoolData[selectedPool.get()].userYieldsBalance.attach(Downgraded).get();
   const userLPBalance = dynamicPoolData[selectedPool.get()].userLPTokenBalance.attach(Downgraded).get();
+  const ammAddress = staticPoolData[selectedPool.get()].ammAddress.attach(Downgraded).get();
 
   const activePoolData = useMemo(() => {
     return getDataForPool(selectedPool.get(), poolData);
@@ -35,20 +37,15 @@ const CurrentPosition: FC<CurrentPositionInProps> = ({ language }) => {
 
   useEffect(() => {
     const retrieveExpectedReturn = async () => {
-      console.log('getting expected return');
-
       if (!userWalletSigner) {
         return;
       }
 
       const poolDataAdapter = getPoolDataAdapter(userWalletSigner);
 
-      if (activePoolData.ammAddress && poolDataAdapter && userLPBalance) {
+      if (ammAddress && poolDataAdapter && userLPBalance) {
         try {
-          const expectedLPTokenReturn = await poolDataAdapter.getExpectedReturnForLPTokens(
-            activePoolData.ammAddress,
-            userLPBalance,
-          );
+          const expectedLPTokenReturn = await poolDataAdapter.getExpectedReturnForLPTokens(ammAddress, userLPBalance);
 
           setLpTokenPrincipalReturn(expectedLPTokenReturn.principals);
           setLpTokenYieldReturn(expectedLPTokenReturn.yields);
@@ -61,7 +58,7 @@ const CurrentPosition: FC<CurrentPositionInProps> = ({ language }) => {
       }
     };
     retrieveExpectedReturn();
-  }, [userWalletSigner, activePoolData.ammAddress, userLPBalance]);
+  }, [userWalletSigner, ammAddress, userLPBalance]);
 
   const principalsBalanceFormatted = useMemo(() => {
     if (!userPrincipalsBalance || !lpTokenPrincipalReturnBalance) {
@@ -107,8 +104,6 @@ const CurrentPosition: FC<CurrentPositionInProps> = ({ language }) => {
     if (!userPrincipalsBalance || !userYieldsBalance || !lpTokenPrincipalReturnBalance || !lpTokenYieldReturnBalance) {
       return null;
     }
-
-    console.log('getting total value');
 
     return userPrincipalsBalance
       .add(userYieldsBalance)

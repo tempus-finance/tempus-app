@@ -1,24 +1,39 @@
 import { BigNumber } from 'ethers';
 import { createState } from '@hookstate/core';
 import getConfig from '../utils/getConfig';
+import { Ticker } from '../interfaces/Token';
 
 // Currently selected pool (Pool Address)
 export const selectedPoolState = createState('');
 
 // Static pool data
-interface StaticPoolData {
+export interface StaticPoolData {
   address: string;
+  poolId: string;
+  ammAddress: string;
   maturityDate: number;
   startDate: number;
+  principalsAddress: string;
+  yieldsAddress: string;
+  backingToken: Ticker;
+}
+
+export interface StaticPoolStateData {
+  [poolAddress: string]: StaticPoolData;
 }
 
 // Static pool data state object
-const staticPoolDataStateInitialValue: { [poolAddress: string]: StaticPoolData } = {};
+const staticPoolDataStateInitialValue: StaticPoolStateData = {};
 getConfig().tempusPools.forEach(tempusPoolConfig => {
   staticPoolDataStateInitialValue[tempusPoolConfig.address] = {
     address: tempusPoolConfig.address,
+    poolId: tempusPoolConfig.poolId,
+    ammAddress: tempusPoolConfig.ammAddress,
     maturityDate: tempusPoolConfig.maturityDate,
     startDate: tempusPoolConfig.startDate,
+    principalsAddress: tempusPoolConfig.principalsAddress,
+    yieldsAddress: tempusPoolConfig.yieldsAddress,
+    backingToken: tempusPoolConfig.backingToken,
   };
 });
 export const staticPoolDataState = createState(staticPoolDataStateInitialValue);

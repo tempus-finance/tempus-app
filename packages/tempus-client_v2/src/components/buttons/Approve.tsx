@@ -1,8 +1,8 @@
 import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { useState as useHookState } from '@hookstate/core';
+import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { BigNumber, ethers } from 'ethers';
 import { Button, CircularProgress } from '@material-ui/core';
-import { selectedPoolState } from '../../state/PoolDataState';
+import { selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
 import Typography from '../typography/Typography';
 import getNotificationService from '../../services/getNotificationService';
@@ -55,6 +55,7 @@ const Approve: FC<ApproveButtonProps> = props => {
   } = props;
 
   const selectedPool = useHookState(selectedPoolState);
+  const staticPoolData = useHookState(staticPoolDataState);
 
   const { poolData } = useContext(PoolDataContext);
   const { setPendingTransactions } = useContext(PendingTransactionsContext);
@@ -63,6 +64,8 @@ const Approve: FC<ApproveButtonProps> = props => {
 
   const [approveInProgress, setApproveInProgress] = useState<boolean>(false);
   const [allowance, setAllowance] = useState<BigNumber | null>(null);
+
+  const backingToken = staticPoolData[selectedPool.get()].backingToken.attach(Downgraded).get();
 
   const selectedPoolData = useMemo(() => {
     return getDataForPool(selectedPool.get(), poolData);
@@ -96,7 +99,7 @@ const Approve: FC<ApproveButtonProps> = props => {
             `Approval Failed`,
             getTokenApprovalNotification(
               tokenToApproveTicker,
-              selectedPoolData.backingToken,
+              backingToken,
               selectedPoolData.protocol,
               new Date(selectedPoolData.maturityDate),
             ),
@@ -144,7 +147,7 @@ const Approve: FC<ApproveButtonProps> = props => {
             `Approval Failed`,
             getTokenApprovalNotification(
               tokenToApproveTicker,
-              selectedPoolData.backingToken,
+              backingToken,
               selectedPoolData.protocol,
               new Date(selectedPoolData.maturityDate),
             ),
@@ -174,7 +177,7 @@ const Approve: FC<ApproveButtonProps> = props => {
           'Approval Successful',
           getTokenApprovalNotification(
             tokenToApproveTicker,
-            selectedPoolData.backingToken,
+            backingToken,
             selectedPoolData.protocol,
             new Date(selectedPoolData.maturityDate),
           ),
@@ -197,6 +200,7 @@ const Approve: FC<ApproveButtonProps> = props => {
     };
     approve();
   }, [
+    backingToken,
     userWalletSigner,
     userWalletAddress,
     selectedPoolData,

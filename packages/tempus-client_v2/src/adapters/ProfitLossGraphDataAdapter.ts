@@ -8,7 +8,7 @@ import getERC20TokenService from '../services/getERC20TokenService';
 import ChartDataPoint from '../interfaces/ChartDataPoint';
 import { div18f, mul18f } from '../utils/weiMath';
 import { BLOCK_DURATION_SECONDS, SECONDS_IN_A_DAY } from '../constants';
-import { PoolData } from '../context/poolDataContext';
+import { StaticPoolData } from '../state/PoolDataState';
 
 type ProfitLossGraphDataAdapterParameters = {
   signer: JsonRpcSigner;
@@ -31,7 +31,7 @@ class ProfitLossGraphDataAdapter {
   }
 
   public async generateChartData(
-    poolData: PoolData,
+    poolData: StaticPoolData,
     userWalletAddress: string,
   ): Promise<{ data: ChartDataPoint[]; numberOfPastDays: number }> {
     if (!this.statisticsService) {
@@ -167,7 +167,7 @@ class ProfitLossGraphDataAdapter {
     block: ethers.providers.Block,
     userWalletAddress: string,
     sinceDate: number,
-    poolData: PoolData,
+    poolData: StaticPoolData,
   ): Promise<BigNumber> {
     if (!this.statisticsService || !this.eRC20TokenServiceGetter) {
       return BigNumber.from('0');
