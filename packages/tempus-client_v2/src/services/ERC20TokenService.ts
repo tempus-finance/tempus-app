@@ -26,6 +26,10 @@ class ERC20TokenService {
   public contract: ERC20 | null = null;
 
   init(params: ERC20TokenServiceParameters) {
+    if (this.contract) {
+      this.contract.removeAllListeners();
+    }
+
     this.contract = new Contract(params.address, params.abi, params.signerOrProvider) as ERC20;
   }
 
