@@ -3,9 +3,9 @@ import { Observable, Subject } from 'rxjs';
 import format from 'date-fns/format';
 import { v1 as uuid } from 'uuid';
 import ERC20ABI from '../abi/ERC20.json';
-import { StaticPoolData } from '../state/PoolDataState';
 import { Ticker } from '../interfaces/Token';
 import { ProtocolName } from '../interfaces/ProtocolName';
+import { TempusPool } from '../interfaces/TempusPool';
 import { capitalize } from '../utils/capitalizeString';
 import getConfig from '../utils/getConfig';
 import NumberUtils from './NumberUtils';
@@ -74,7 +74,7 @@ export const generateNotificationInfo = (
   receipt: ethers.ContractReceipt,
   transaction: ethers.ContractTransaction,
   userWallet: string,
-  staticPoolData: StaticPoolData,
+  staticPoolData: TempusPool,
 ) => {
   switch (action) {
     case 'Deposit':
@@ -99,7 +99,7 @@ const getDepositNotificationContent = (
   transaction: ethers.ContractTransaction,
   userWallet: string,
   actionDescription: string,
-  staticPoolData: StaticPoolData,
+  staticPoolData: TempusPool,
 ) => {
   let tokenSentTicker: Ticker | null = null;
   let tokenSentAmount = BigNumber.from('0');
@@ -184,7 +184,7 @@ const getDepositNotificationContent = (
 const getWithdrawNotificationContent = (
   receipt: ethers.ContractReceipt,
   userWallet: string,
-  staticPoolData: StaticPoolData,
+  staticPoolData: TempusPool,
 ) => {
   let principalsSent = BigNumber.from('0');
   let yieldsSent = BigNumber.from('0');
@@ -263,7 +263,7 @@ const getMintNotificationContent = (
   receipt: ethers.ContractReceipt,
   transaction: ethers.ContractTransaction,
   userWallet: string,
-  staticPoolData: StaticPoolData,
+  staticPoolData: TempusPool,
 ) => {
   let tokenSentTicker: Ticker | null = null;
   let tokenSentAmount = BigNumber.from('0');
@@ -338,7 +338,7 @@ const getMintNotificationContent = (
 const getSwapNotificationContent = (
   receipt: ethers.ContractReceipt,
   userWallet: string,
-  staticPoolData: StaticPoolData,
+  staticPoolData: TempusPool,
 ) => {
   let tokenSentTicker: Ticker | null = null;
   let tokenSentValue: BigNumber = BigNumber.from('0');
@@ -400,7 +400,7 @@ const getSwapNotificationContent = (
 const getLiquidityDepositNotificationContent = (
   receipt: ethers.ContractReceipt,
   userWallet: string,
-  staticPoolData: StaticPoolData,
+  staticPoolData: TempusPool,
 ) => {
   let amountOfPrincipalsSent = BigNumber.from('0');
   let amountOfYieldsSent = BigNumber.from('0');
@@ -456,7 +456,7 @@ const getLiquidityDepositNotificationContent = (
 const getLiquidityWithdrawalNotificationContent = (
   receipt: ethers.ContractReceipt,
   userWallet: string,
-  staticPoolData: StaticPoolData,
+  staticPoolData: TempusPool,
 ) => {
   let amountOfLPTokensSent = BigNumber.from('0');
   let amountOfPrincipalsReceived = BigNumber.from('0');
@@ -514,7 +514,7 @@ const getLiquidityWithdrawalNotificationContent = (
 const getRedeemNotificationContent = (
   receipt: ethers.ContractReceipt,
   userWallet: string,
-  staticPoolData: StaticPoolData,
+  staticPoolData: TempusPool,
 ) => {
   let primitivesSent = BigNumber.from('0');
   let tokensReceived = BigNumber.from('0');

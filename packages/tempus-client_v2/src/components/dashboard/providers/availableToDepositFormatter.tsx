@@ -10,7 +10,7 @@ import {
   negativeYieldPoolDataState,
   NegativeYieldStateData,
   staticPoolDataState,
-  StaticPoolStateData,
+  StaticPoolDataMap,
 } from '../../../state/PoolDataState';
 import { UserSettingsContext } from '../../../context/userSettingsContext';
 import { WalletContext } from '../../../context/walletContext';
@@ -139,7 +139,7 @@ const AvailableToDepositFormatter = (props: DataTypeProvider.ValueFormatterProps
 
 const getParentAvailableToDepositInFiat = (
   parentId: Ticker,
-  staticPoolData: StaticPoolStateData,
+  staticPoolData: StaticPoolDataMap,
   dynamicPoolData: DynamicPoolStateData,
   negativeYieldPoolData: NegativeYieldStateData,
 ) => {
@@ -183,7 +183,7 @@ const getParentAvailableToDepositInFiat = (
 
 const getParentAvailableToDepositInBackingToken = (
   parentId: Ticker,
-  staticPoolData: StaticPoolStateData,
+  staticPoolData: StaticPoolDataMap,
   dynamicPoolData: DynamicPoolStateData,
   negativeYieldPoolData: NegativeYieldStateData,
 ) => {

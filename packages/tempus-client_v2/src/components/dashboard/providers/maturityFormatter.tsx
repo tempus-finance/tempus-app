@@ -16,7 +16,7 @@ import {
   negativeYieldPoolDataState,
   NegativeYieldStateData,
   staticPoolDataState,
-  StaticPoolStateData,
+  StaticPoolDataMap,
 } from '../../../state/PoolDataState';
 
 const MaturityFormatter = ({ value, row }: any) => {
@@ -70,7 +70,7 @@ export default MaturityFormatter;
 
 function getParentMaturity(
   parentId: Ticker,
-  staticPoolData: StaticPoolStateData,
+  staticPoolData: StaticPoolDataMap,
   dynamicPoolData: DynamicPoolStateData,
   negativeYieldPoolData: NegativeYieldStateData,
 ): number[] {
@@ -93,6 +93,6 @@ function getParentMaturity(
   return getRangeFrom<number>(childrenMaturityDates);
 }
 
-function getChildMaturity(childId: string, staticPoolData: StaticPoolStateData): number {
+function getChildMaturity(childId: string, staticPoolData: StaticPoolDataMap): number {
   return staticPoolData[childId].maturityDate;
 }

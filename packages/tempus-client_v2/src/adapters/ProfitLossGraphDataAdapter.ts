@@ -6,9 +6,9 @@ import TempusControllerService from '../services/TempusControllerService';
 import getTempusControllerService from '../services/getTempusControllerService';
 import getERC20TokenService from '../services/getERC20TokenService';
 import ChartDataPoint from '../interfaces/ChartDataPoint';
+import { TempusPool } from '../interfaces/TempusPool';
 import { div18f, mul18f } from '../utils/weiMath';
 import { BLOCK_DURATION_SECONDS, SECONDS_IN_A_DAY } from '../constants';
-import { StaticPoolData } from '../state/PoolDataState';
 
 type ProfitLossGraphDataAdapterParameters = {
   signer: JsonRpcSigner;
@@ -31,7 +31,7 @@ class ProfitLossGraphDataAdapter {
   }
 
   public async generateChartData(
-    poolData: StaticPoolData,
+    poolData: TempusPool,
     userWalletAddress: string,
   ): Promise<{ data: ChartDataPoint[]; numberOfPastDays: number }> {
     if (!this.statisticsService) {
@@ -167,7 +167,7 @@ class ProfitLossGraphDataAdapter {
     block: ethers.providers.Block,
     userWalletAddress: string,
     sinceDate: number,
-    poolData: StaticPoolData,
+    poolData: TempusPool,
   ): Promise<BigNumber> {
     if (!this.statisticsService || !this.eRC20TokenServiceGetter) {
       return BigNumber.from('0');

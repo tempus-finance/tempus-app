@@ -1,57 +1,19 @@
 import { BigNumber } from 'ethers';
 import { createState } from '@hookstate/core';
 import getConfig from '../utils/getConfig';
-import { Ticker } from '../interfaces/Token';
-import { ProtocolName } from '../interfaces/ProtocolName';
+import { TempusPool } from '../interfaces/TempusPool';
 
 // Currently selected pool (Pool Address)
 export const selectedPoolState = createState('');
 
-// Static pool data
-export interface StaticPoolData {
-  address: string;
-  poolId: string;
-  protocol: ProtocolName;
-  ammAddress: string;
-  maturityDate: number;
-  startDate: number;
-  principalsAddress: string;
-  yieldsAddress: string;
-  backingToken: Ticker;
-  yieldBearingToken: Ticker;
-  backingTokenAddress: string;
-  yieldBearingTokenAddress: string;
-  decimalsForUI: number;
-  precision: {
-    backingToken?: number;
-  };
-}
-
-export interface StaticPoolStateData {
-  [poolAddress: string]: StaticPoolData;
+export interface StaticPoolDataMap {
+  [poolAddress: string]: TempusPool;
 }
 
 // Static pool data state object
-const staticPoolDataStateInitialValue: StaticPoolStateData = {};
+const staticPoolDataStateInitialValue: StaticPoolDataMap = {};
 getConfig().tempusPools.forEach(tempusPoolConfig => {
-  staticPoolDataStateInitialValue[tempusPoolConfig.address] = {
-    address: tempusPoolConfig.address,
-    poolId: tempusPoolConfig.poolId,
-    protocol: tempusPoolConfig.protocol,
-    ammAddress: tempusPoolConfig.ammAddress,
-    maturityDate: tempusPoolConfig.maturityDate,
-    startDate: tempusPoolConfig.startDate,
-    principalsAddress: tempusPoolConfig.principalsAddress,
-    yieldsAddress: tempusPoolConfig.yieldsAddress,
-    backingToken: tempusPoolConfig.backingToken,
-    yieldBearingToken: tempusPoolConfig.yieldBearingToken,
-    backingTokenAddress: tempusPoolConfig.backingTokenAddress,
-    yieldBearingTokenAddress: tempusPoolConfig.yieldBearingTokenAddress,
-    decimalsForUI: tempusPoolConfig.decimalsForUI,
-    precision: {
-      backingToken: tempusPoolConfig.tokenPrecision?.backingToken,
-    },
-  };
+  staticPoolDataStateInitialValue[tempusPoolConfig.address] = { ...tempusPoolConfig };
 });
 export const staticPoolDataState = createState(staticPoolDataStateInitialValue);
 

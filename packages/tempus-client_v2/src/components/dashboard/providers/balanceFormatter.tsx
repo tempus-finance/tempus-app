@@ -18,7 +18,7 @@ import {
   negativeYieldPoolDataState,
   NegativeYieldStateData,
   staticPoolDataState,
-  StaticPoolStateData,
+  StaticPoolDataMap,
 } from '../../../state/PoolDataState';
 
 const BalanceFormatter = ({ row }: any) => {
@@ -90,7 +90,7 @@ export default BalanceFormatter;
 
 const getParentBalanceInFiat = (
   parentId: Ticker,
-  staticPoolData: StaticPoolStateData,
+  staticPoolData: StaticPoolDataMap,
   dynamicPoolData: DynamicPoolStateData,
   negativeYieldPoolData: NegativeYieldStateData,
 ): BigNumber | null => {
@@ -120,7 +120,7 @@ const getParentBalanceInFiat = (
 
 const getParentBalanceInBackingToken = (
   parentId: Ticker,
-  staticPoolData: StaticPoolStateData,
+  staticPoolData: StaticPoolDataMap,
   dynamicPoolData: DynamicPoolStateData,
   negativeYieldPoolData: NegativeYieldStateData,
 ): BigNumber | null => {

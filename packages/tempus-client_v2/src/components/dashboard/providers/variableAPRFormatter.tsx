@@ -10,7 +10,7 @@ import {
   negativeYieldPoolDataState,
   NegativeYieldStateData,
   staticPoolDataState,
-  StaticPoolStateData,
+  StaticPoolDataMap,
 } from '../../../state/PoolDataState';
 
 const VariableAPRFormatter = ({ row }: any) => {
@@ -62,7 +62,7 @@ export default VariableAPRFormatter;
 
 function getParentAPR(
   parentId: Ticker,
-  staticPoolData: StaticPoolStateData,
+  staticPoolData: StaticPoolDataMap,
   dynamicPoolData: DynamicPoolStateData,
   negativeYieldPoolData: NegativeYieldStateData,
 ): number {

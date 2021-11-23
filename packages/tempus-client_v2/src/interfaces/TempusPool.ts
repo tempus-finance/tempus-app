@@ -17,5 +17,5 @@ export type TempusPool = {
   backingTokenAddress: string;
   spotPrice: string;
   decimalsForUI: number;
-  tokenPrecision?: TokenPrecision;
+  tokenPrecision: TokenPrecision;
 };

@@ -19,6 +19,13 @@ const config: Config = {
       yieldBearingToken: 'stETH',
       spotPrice: '2',
       decimalsForUI: 4,
+      tokenPrecision: {
+        backingToken: 18,
+        lpTokens: 18,
+        principals: 18,
+        yieldBearingToken: 18,
+        yields: 18,
+      },
     },
     {
       address: '0x0749982cAD68506009C7f0341a9A7fD6107A40C2',
@@ -35,6 +42,13 @@ const config: Config = {
       yieldBearingToken: 'stETH',
       spotPrice: '2',
       decimalsForUI: 4,
+      tokenPrecision: {
+        backingToken: 18,
+        lpTokens: 18,
+        principals: 18,
+        yieldBearingToken: 18,
+        yields: 18,
+      },
     },
     {
       address: '0x68Dbc29bf19Ce959859B828BFFAB4082Af8e38C5',
@@ -51,6 +65,13 @@ const config: Config = {
       decimalsForUI: 4,
       protocol: 'lido',
       spotPrice: '2',
+      tokenPrecision: {
+        backingToken: 18,
+        lpTokens: 18,
+        principals: 18,
+        yieldBearingToken: 18,
+        yields: 18,
+      },
     },
   ],
   statisticsContract: '0x01fF82791D8414826ec7390dfE7902703F632F5C',

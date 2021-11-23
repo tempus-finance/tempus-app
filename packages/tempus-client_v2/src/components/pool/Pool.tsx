@@ -33,7 +33,7 @@ const Pool = () => {
   const poolId = staticPoolData[selectedPool.get()].poolId.attach(Downgraded).get();
   const backingToken = staticPoolData[selectedPool.get()].backingToken.attach(Downgraded).get();
   const principalsAddress = staticPoolData[selectedPool.get()].principalsAddress.attach(Downgraded).get();
-  const backingTokenPrecision = staticPoolData[selectedPool.get()].precision.backingToken.attach(Downgraded).get();
+  const backingTokenPrecision = staticPoolData[selectedPool.get()].tokenPrecision.backingToken.attach(Downgraded).get();
   const tvl = dynamicPoolData[selectedPool.get()].tvl.attach(Downgraded).get();
   const fixedAPR = dynamicPoolDataState[selectedPool.get()].fixedAPR.get();
 
