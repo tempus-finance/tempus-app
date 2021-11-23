@@ -20,7 +20,11 @@ const UserLPTokenBalanceProvider = () => {
         const lpTokenService = getERC20TokenService(tempusPool.ammAddress, userWalletSigner);
         const balance = await lpTokenService.balanceOf(userWalletAddress);
 
-        dynamicPoolData[tempusPool.address].userLPTokenBalance.set(balance);
+        const currentBalance = dynamicPoolData[tempusPool.address].userLPTokenBalance.get();
+        // Only update state if fetched user LP Token balance is different from current user LP Token balance
+        if (!currentBalance || !currentBalance.eq(balance)) {
+          dynamicPoolData[tempusPool.address].userLPTokenBalance.set(balance);
+        }
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -1,4 +1,4 @@
-import { useContext, useMemo } from 'react';
+import { useContext } from 'react';
 import { ethers, BigNumber } from 'ethers';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { DataTypeProvider } from '@devexpress/dx-react-grid';
@@ -33,15 +33,16 @@ const AvailableToDepositFormatter = (props: DataTypeProvider.ValueFormatterProps
   const { userWalletConnected } = useContext(WalletContext);
   const { showFiat } = useContext(UserSettingsContext);
 
-  const parentAvailableToDeposit = useMemo(() => {
+  const getParentAvailableToDeposit = () => {
     if (showFiat) {
       return getParentAvailableToDepositInFiat(row.token, staticPoolData, dynamicPoolData, negativeYieldPoolData);
     }
 
     return getParentAvailableToDepositInBackingToken(row.token, staticPoolData, dynamicPoolData, negativeYieldPoolData);
-  }, [dynamicPoolData, negativeYieldPoolData, row.token, showFiat, staticPoolData]);
+  };
+  const parentAvailableToDeposit = getParentAvailableToDeposit();
 
-  const parentAvailableToDepositFormatted = useMemo(() => {
+  const getParentAvailableToDepositFormatted = () => {
     if (!parentAvailableToDeposit) {
       return null;
     }
@@ -65,9 +66,10 @@ const AvailableToDepositFormatter = (props: DataTypeProvider.ValueFormatterProps
     }
 
     return <div className="tc__dashboard__grid__avail-to-deposit__container">{content}</div>;
-  }, [parentAvailableToDeposit, showFiat, row.token]);
+  };
+  const parentAvailableToDepositFormatted = getParentAvailableToDepositFormatted();
 
-  const childAvailableToDeposit = useMemo(() => {
+  const getChildAvailableToDeposit = () => {
     if (isChildRow(row)) {
       if (showFiat) {
         return getChildAvailableToDepositInFiat(row.id, dynamicPoolData);
@@ -76,9 +78,10 @@ const AvailableToDepositFormatter = (props: DataTypeProvider.ValueFormatterProps
       return getChildAvailableToDepositInBackingToken(row.id, dynamicPoolData);
     }
     return null;
-  }, [dynamicPoolData, row, showFiat]);
+  };
+  const childAvailableToDeposit = getChildAvailableToDeposit();
 
-  const childAvailableToDepositFormatted = useMemo(() => {
+  const getChildAvailableToDepositFormatted = () => {
     if (!childAvailableToDeposit) {
       return null;
     }
@@ -102,7 +105,8 @@ const AvailableToDepositFormatter = (props: DataTypeProvider.ValueFormatterProps
     }
 
     return <div className="tc__dashboard__grid__avail-to-deposit__container">{content}</div>;
-  }, [childAvailableToDeposit, showFiat, row.token]);
+  };
+  const childAvailableToDepositFormatted = getChildAvailableToDepositFormatted();
 
   if (!userWalletConnected) {
     return <div></div>;

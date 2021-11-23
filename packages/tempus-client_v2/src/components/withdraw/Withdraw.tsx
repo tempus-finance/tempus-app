@@ -32,7 +32,6 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
   const { userWalletSigner } = useContext(WalletContext);
   const { language } = useContext(LanguageContext);
 
-  const selectedPoolAddress = selectedPool.attach(Downgraded).get();
   const backingToken = staticPoolData[selectedPool.get()].backingToken.attach(Downgraded).get();
   const yieldBearingToken = staticPoolData[selectedPool.get()].yieldBearingToken.attach(Downgraded).get();
   const ammAddress = staticPoolData[selectedPool.get()].ammAddress.attach(Downgraded).get();
@@ -51,6 +50,7 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
 
   const [tokenPrecision, setTokenPrecision] = useState<number | undefined>();
 
+  const selectedPoolAddress = selectedPool.attach(Downgraded).get();
   const userPrincipalsBalance = dynamicPoolData[selectedPool.get()].userPrincipalsBalance.attach(Downgraded).get();
   const userYieldsBalance = dynamicPoolData[selectedPool.get()].userYieldsBalance.attach(Downgraded).get();
   const userLPTokenBalance = dynamicPoolData[selectedPool.get()].userLPTokenBalance.attach(Downgraded).get();

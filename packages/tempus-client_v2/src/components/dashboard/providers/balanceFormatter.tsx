@@ -1,5 +1,5 @@
 import { ethers, BigNumber } from 'ethers';
-import { useContext, useEffect, useMemo, useState } from 'react';
+import { useContext, useMemo } from 'react';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { CircularProgress } from '@material-ui/core';
 import { UserSettingsContext } from '../../../context/userSettingsContext';
@@ -30,7 +30,23 @@ const BalanceFormatter = ({ row }: any) => {
 
   const { userWalletConnected } = useContext(WalletContext);
   const { showFiat } = useContext(UserSettingsContext);
-  const [balance, setBalance] = useState<BigNumber | null>(null);
+
+  const getBalance = () => {
+    if (!isChild) {
+      if (showFiat) {
+        return getParentBalanceInFiat(row.id, staticPoolData, dynamicPoolData, negativeYieldPoolData);
+      } else {
+        return getParentBalanceInBackingToken(row.id, staticPoolData, dynamicPoolData, negativeYieldPoolData);
+      }
+    } else {
+      if (showFiat) {
+        return getChildBalanceInFiat(row.id, dynamicPoolData);
+      } else {
+        return getChildBalanceInBackingToken(row.id, dynamicPoolData);
+      }
+    }
+  };
+  const balance = getBalance();
 
   const balanceFormatted = useMemo(() => {
     if (!balance) {
@@ -47,29 +63,13 @@ const BalanceFormatter = ({ row }: any) => {
         <>
           {NumberUtils.formatWithMultiplier(ethers.utils.formatEther(balance), 2)}
           <Spacer size={5} />
-          <TokenIcon ticker={row.backingToken} />
+          <TokenIcon ticker={row.token} />
         </>
       );
     }
 
     return <div className="tc__dashboard__grid__balance__container">{content}</div>;
-  }, [balance, showFiat, row.backingToken]);
-
-  useEffect(() => {
-    if (!isChild) {
-      if (showFiat) {
-        setBalance(getParentBalanceInFiat(row.id, staticPoolData, dynamicPoolData, negativeYieldPoolData));
-      } else {
-        setBalance(getParentBalanceInBackingToken(row.id, staticPoolData, dynamicPoolData, negativeYieldPoolData));
-      }
-    } else {
-      if (showFiat) {
-        setBalance(getChildBalanceInFiat(row.id, dynamicPoolData));
-      } else {
-        setBalance(getChildBalanceInBackingToken(row.id, dynamicPoolData));
-      }
-    }
-  }, [dynamicPoolData, negativeYieldPoolData, isChild, row.id, showFiat, staticPoolData]);
+  }, [balance, showFiat, row.token]);
 
   if (!userWalletConnected) {
     return <div></div>;
@@ -103,10 +103,6 @@ const getParentBalanceInFiat = (
       parentChildrenAddresses.push(key);
     }
   }
-
-  /* const parentChildren = poolData.filter(data => {
-    return data.backingToken === parentId;
-  }); */
 
   // In case balance is still loading for some of the parent children, return null (show loading circle in dashboard)
   const childrenStillLoading = getChildrenStillLoadingInFiat(parentChildrenAddresses, dynamicPoolData);

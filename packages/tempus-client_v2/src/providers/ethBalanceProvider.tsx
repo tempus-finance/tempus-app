@@ -3,7 +3,7 @@ import { ETHBalanceContext } from '../context/ethBalanceContext';
 import { WalletContext } from '../context/walletContext';
 
 const ETHBalanceProvider = () => {
-  const { setETHBalance } = useContext(ETHBalanceContext);
+  const { eth, setETHBalance } = useContext(ETHBalanceContext);
   const { userWalletSigner } = useContext(WalletContext);
 
   /**
@@ -15,11 +15,14 @@ const ETHBalanceProvider = () => {
     }
 
     const balance = await userWalletSigner.getBalance();
-    setETHBalance(prevData => ({
-      ...prevData,
-      eth: balance,
-    }));
-  }, [userWalletSigner, setETHBalance]);
+
+    if (!eth || !eth.eq(balance)) {
+      setETHBalance(prevData => ({
+        ...prevData,
+        eth: balance,
+      }));
+    }
+  }, [userWalletSigner, eth, setETHBalance]);
 
   /**
    * Update user ETH balance on each mined block.

@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { ZERO } from '../../../constants';
 import { Ticker } from '../../../interfaces/Token';
@@ -21,13 +20,14 @@ const FixedAPRFormatter = ({ row }: any) => {
 
   const isChild = Boolean(row.parentId);
 
-  const apr = useMemo(() => {
+  const getApr = () => {
     if (isChild) {
       return getChildAPR(row.id, dynamicPoolData);
     } else {
       return getParentAPR(row.id, staticPoolData, dynamicPoolData, negativeYieldPoolData);
     }
-  }, [isChild, row.id, dynamicPoolData, staticPoolData, negativeYieldPoolData]);
+  };
+  const apr = getApr();
 
   if (!apr) {
     return <Typography variant="body-text">-</Typography>;

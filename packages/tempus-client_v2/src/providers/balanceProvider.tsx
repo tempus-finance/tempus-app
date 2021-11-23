@@ -25,8 +25,15 @@ const BalanceProvider: FC<PresentValueProviderProps> = props => {
     (tempusPoolAddress: string, balances: BigNumber[]) => {
       const [userBalanceUSD, userBalanceInBackingToken] = balances;
 
-      dynamicPoolData[tempusPoolAddress].userBalanceUSD.set(userBalanceUSD);
-      dynamicPoolData[tempusPoolAddress].userBalanceInBackingToken.set(userBalanceInBackingToken);
+      const currentUSDBalance = dynamicPoolData[tempusPoolAddress].userBalanceUSD.get();
+      if (!currentUSDBalance || !currentUSDBalance.eq(userBalanceUSD)) {
+        dynamicPoolData[tempusPoolAddress].userBalanceUSD.set(userBalanceUSD);
+      }
+
+      const currentUserBalanceInBackingToken = dynamicPoolData[tempusPoolAddress].userBalanceInBackingToken.get();
+      if (!currentUserBalanceInBackingToken || !currentUserBalanceInBackingToken.eq(userBalanceInBackingToken)) {
+        dynamicPoolData[tempusPoolAddress].userBalanceInBackingToken.set(userBalanceInBackingToken);
+      }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [],

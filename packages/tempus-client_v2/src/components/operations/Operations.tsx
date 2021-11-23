@@ -48,7 +48,6 @@ const Operations = () => {
     (!userYieldsBalance || userYieldsBalance.isZero()) &&
     (!userLPBalance || userLPBalance.isZero());
 
-  console.log('rendering operations component');
   return (
     <div className="tc__operations">
       {/* Sidebar */}

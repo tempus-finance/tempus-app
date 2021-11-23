@@ -30,18 +30,53 @@ const AvailableToDepositUSDProvider: FC<PresentValueProviderProps> = props => {
           userWalletSigner,
         );
 
-        dynamicPoolData[tempusPool.address].backingTokenValueInFiat.set(
-          userAvailableToDepositForPool.backingTokenValueInFiat,
-        );
-        dynamicPoolData[tempusPool.address].backingTokensAvailable.set(
-          userAvailableToDepositForPool.backingTokensAvailable,
-        );
-        dynamicPoolData[tempusPool.address].yieldBearingTokenValueInBackingToken.set(
-          userAvailableToDepositForPool.yieldBearingTokenValueInBackingToken,
-        );
-        dynamicPoolData[tempusPool.address].yieldBearingTokenValueInFiat.set(
-          userAvailableToDepositForPool.yieldBearingTokenValueInFiat,
-        );
+        const currentBackingTokenValueInFiat = dynamicPoolData[tempusPool.address].backingTokenValueInFiat.get();
+        if (
+          !currentBackingTokenValueInFiat ||
+          (userAvailableToDepositForPool.backingTokenValueInFiat &&
+            !currentBackingTokenValueInFiat.eq(userAvailableToDepositForPool.backingTokenValueInFiat))
+        ) {
+          dynamicPoolData[tempusPool.address].backingTokenValueInFiat.set(
+            userAvailableToDepositForPool.backingTokenValueInFiat,
+          );
+        }
+
+        const currentBackingTokensAvailable = dynamicPoolData[tempusPool.address].backingTokensAvailable.get();
+        if (
+          !currentBackingTokensAvailable ||
+          (userAvailableToDepositForPool.backingTokensAvailable &&
+            !currentBackingTokensAvailable.eq(userAvailableToDepositForPool.backingTokensAvailable))
+        ) {
+          dynamicPoolData[tempusPool.address].backingTokensAvailable.set(
+            userAvailableToDepositForPool.backingTokensAvailable,
+          );
+        }
+
+        const currentYieldBearingTokenValueInBackingToken =
+          dynamicPoolData[tempusPool.address].yieldBearingTokenValueInBackingToken.get();
+        if (
+          !currentYieldBearingTokenValueInBackingToken ||
+          (userAvailableToDepositForPool.yieldBearingTokenValueInBackingToken &&
+            !currentYieldBearingTokenValueInBackingToken.eq(
+              userAvailableToDepositForPool.yieldBearingTokenValueInBackingToken,
+            ))
+        ) {
+          dynamicPoolData[tempusPool.address].yieldBearingTokenValueInBackingToken.set(
+            userAvailableToDepositForPool.yieldBearingTokenValueInBackingToken,
+          );
+        }
+
+        const currentYieldBearingTokenValueInFiat =
+          dynamicPoolData[tempusPool.address].yieldBearingTokenValueInFiat.get();
+        if (
+          !currentYieldBearingTokenValueInFiat ||
+          (userAvailableToDepositForPool.yieldBearingTokenValueInFiat &&
+            !currentYieldBearingTokenValueInFiat.eq(userAvailableToDepositForPool.yieldBearingTokenValueInFiat))
+        ) {
+          dynamicPoolData[tempusPool.address].yieldBearingTokenValueInFiat.set(
+            userAvailableToDepositForPool.yieldBearingTokenValueInFiat,
+          );
+        }
       } catch (error) {
         console.error('AvailableToDepositUSDProvider - updateUserAvailableToDepositUSDForPool', error);
       }

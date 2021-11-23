@@ -1,4 +1,4 @@
-import { FC, useCallback, useContext, useEffect, useRef, useState } from 'react';
+import { FC, useCallback, useContext, useRef, useState } from 'react';
 import {
   CustomTreeData,
   IntegratedSummary,
@@ -11,6 +11,7 @@ import {
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { Grid, TableHeaderRow, VirtualTable, TableTreeColumn } from '@devexpress/dx-react-grid-material-ui';
 import { SECONDS_IN_A_DAY, ZERO } from '../../constants';
+import { dynamicPoolDataState, negativeYieldPoolDataState } from '../../state/PoolDataState';
 import { LanguageContext } from '../../context/languageContext';
 import { DashboardRow, isChildRow, isParentRow } from '../../interfaces/DashboardRow';
 import { ColumnNames } from '../../interfaces/ColumnNames';
@@ -34,7 +35,6 @@ import CurrencySwitch from './currencySwitch/CurrencySwitch';
 import { dashboardColumnsDefinitions } from './dashboardColumnsDefinitions';
 
 import './dashboard.scss';
-import { dynamicPoolDataState, negativeYieldPoolDataState } from '../../state/PoolDataState';
 
 type DashboardInProps = {
   hidden: boolean;
@@ -53,8 +53,6 @@ const Dashboard: FC<DashboardProps> = ({ hidden, userWalletAddress, rows, onRowA
   const negativeYieldPoolData = useHookState(negativeYieldPoolDataState).attach(Downgraded).get();
 
   const { language } = useContext(LanguageContext);
-
-  const [displayedRows, setDisplayedRows] = useState<DashboardRow[]>([]);
 
   const [tableColumnExtensions] = useState([
     { columnName: ColumnNames.TOKEN, align: 'left' as 'left', width: 160 },
@@ -118,88 +116,7 @@ const Dashboard: FC<DashboardProps> = ({ hidden, userWalletAddress, rows, onRowA
     setFilterPopupOpen(!filterPopupOpen);
   };
 
-  /**
-   * If `null` is passed as `filterData`, all filters will be cleared.
-   */
-  const onApplyFilter = useCallback(
-    (filterData: FilterData | null) => {
-      if (!filterData) {
-        setFilteredRows(null);
-        return;
-      }
-
-      let result = displayedRows.filter(row => {
-        if (isParentRow(row)) {
-          return true;
-        }
-
-        // Check asset name matches
-        const assetNameMatched = filterData.assetName
-          ? row.token.toLowerCase().indexOf(filterData.assetName.toLowerCase()) > -1
-          : true;
-
-        // Check protocol name matches
-        let protocolNameMatched;
-        if (isChildRow(row)) {
-          protocolNameMatched = filterData.protocolName
-            ? row.tempusPool.protocol.toLowerCase().indexOf(filterData.protocolName.toLowerCase()) > -1
-            : true;
-        }
-
-        // Check APR matches
-        let aprMatched;
-        if (isChildRow(row)) {
-          const min = filterData.aPRRange.min ?? (filterData.aPRRange.max ? -Infinity : null);
-          const max = filterData.aPRRange.max ?? (filterData.aPRRange.min ? Infinity : null);
-
-          const poolContextData = dynamicPoolData[row.tempusPool.address];
-          aprMatched =
-            (min === 0 || min) && (max === 0 || max)
-              ? (poolContextData.fixedAPR && poolContextData.fixedAPR >= min && poolContextData.fixedAPR <= max) ||
-                (poolContextData.variableAPR &&
-                  poolContextData.variableAPR >= min &&
-                  poolContextData.variableAPR <= max)
-              : true;
-        }
-
-        // Check maturity matches
-        let maturityMatched;
-        if (isChildRow(row)) {
-          const min = filterData.maturityRange.min;
-          const max = filterData.maturityRange.max;
-
-          if ((min === 0 || min) && (max === 0 || max)) {
-            const startFrom = Date.now() + min * SECONDS_IN_A_DAY * 1000;
-            const endTo = Date.now() + max * SECONDS_IN_A_DAY * 1000;
-
-            maturityMatched = row.maturityDate.getTime() > startFrom && row.maturityDate.getTime() < endTo;
-          } else {
-            maturityMatched = true;
-          }
-        }
-
-        return assetNameMatched && protocolNameMatched && aprMatched && maturityMatched;
-      });
-
-      // Filter out parent rows without children
-      result = result.filter(row => {
-        if (isChildRow(row)) {
-          return true;
-        }
-
-        const parentChildren = result.filter(r => {
-          return r.parentId !== null && r.parentId === row.id;
-        });
-
-        return parentChildren.length > 0;
-      });
-
-      setFilteredRows(result);
-    },
-    [displayedRows, dynamicPoolData],
-  );
-
-  useEffect(() => {
+  const getRowsToDisplay = () => {
     if (rows?.length) {
       let rowsToDisplay = rows.filter((row: DashboardRow) => {
         const pool = dynamicPoolData[row.id];
@@ -209,17 +126,92 @@ const Dashboard: FC<DashboardProps> = ({ hidden, userWalletAddress, rows, onRowA
           if (!poolNegativeYield) {
             return true;
           }
-
-          console.log(`Reading pool ${row.id} negative yield: ${poolNegativeYield}`);
           return pool && pool.userBalanceUSD && pool.userBalanceUSD.gt(ZERO);
         }
 
         return true;
       });
-
-      setDisplayedRows(rowsToDisplay);
+      return rowsToDisplay;
     }
-  }, [rows, dynamicPoolData, negativeYieldPoolData]);
+    return [];
+  };
+  const rowsToDisplay = getRowsToDisplay();
+
+  /**
+   * If `null` is passed as `filterData`, all filters will be cleared.
+   */
+  const onApplyFilter = (filterData: FilterData | null) => {
+    if (!filterData) {
+      setFilteredRows(null);
+      return;
+    }
+
+    let result = rowsToDisplay.filter(row => {
+      if (isParentRow(row)) {
+        return true;
+      }
+
+      // Check asset name matches
+      const assetNameMatched = filterData.assetName
+        ? row.token.toLowerCase().indexOf(filterData.assetName.toLowerCase()) > -1
+        : true;
+
+      // Check protocol name matches
+      let protocolNameMatched;
+      if (isChildRow(row)) {
+        protocolNameMatched = filterData.protocolName
+          ? row.tempusPool.protocol.toLowerCase().indexOf(filterData.protocolName.toLowerCase()) > -1
+          : true;
+      }
+
+      // Check APR matches
+      let aprMatched;
+      if (isChildRow(row)) {
+        const min = filterData.aPRRange.min ?? (filterData.aPRRange.max ? -Infinity : null);
+        const max = filterData.aPRRange.max ?? (filterData.aPRRange.min ? Infinity : null);
+
+        const poolContextData = dynamicPoolData[row.tempusPool.address];
+        aprMatched =
+          (min === 0 || min) && (max === 0 || max)
+            ? (poolContextData.fixedAPR && poolContextData.fixedAPR >= min && poolContextData.fixedAPR <= max) ||
+              (poolContextData.variableAPR && poolContextData.variableAPR >= min && poolContextData.variableAPR <= max)
+            : true;
+      }
+
+      // Check maturity matches
+      let maturityMatched;
+      if (isChildRow(row)) {
+        const min = filterData.maturityRange.min;
+        const max = filterData.maturityRange.max;
+
+        if ((min === 0 || min) && (max === 0 || max)) {
+          const startFrom = Date.now() + min * SECONDS_IN_A_DAY * 1000;
+          const endTo = Date.now() + max * SECONDS_IN_A_DAY * 1000;
+
+          maturityMatched = row.maturityDate.getTime() > startFrom && row.maturityDate.getTime() < endTo;
+        } else {
+          maturityMatched = true;
+        }
+      }
+
+      return assetNameMatched && protocolNameMatched && aprMatched && maturityMatched;
+    });
+
+    // Filter out parent rows without children
+    result = result.filter(row => {
+      if (isChildRow(row)) {
+        return true;
+      }
+
+      const parentChildren = result.filter(r => {
+        return r.parentId !== null && r.parentId === row.id;
+      });
+
+      return parentChildren.length > 0;
+    });
+
+    setFilteredRows(result);
+  };
 
   return (
     <div className="tf__dashboard__section__container" hidden={hidden}>
@@ -247,7 +239,7 @@ const Dashboard: FC<DashboardProps> = ({ hidden, userWalletAddress, rows, onRowA
         <hr />
         <div className="tf__dashboard">
           <div className="tf__dashboard__grid">
-            <Grid rows={filteredRows || displayedRows} columns={dashboardColumnsDefinitions(language)}>
+            <Grid rows={filteredRows || rowsToDisplay} columns={dashboardColumnsDefinitions(language)}>
               <SortingState
                 sorting={currentSorting}
                 onSortingChange={onSortingChange}

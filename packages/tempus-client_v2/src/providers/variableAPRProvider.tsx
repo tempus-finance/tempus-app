@@ -5,7 +5,7 @@ import getVariableRateService from '../services/getVariableRateService';
 import getConfig from '../utils/getConfig';
 import { WalletContext } from '../context/walletContext';
 import getTempusPoolService from '../services/getTempusPoolService';
-import { dynamicPoolDataState, negativeYieldPoolDataState, NegativeYieldStateData } from '../state/PoolDataState';
+import { dynamicPoolDataState, negativeYieldPoolDataState } from '../state/PoolDataState';
 
 const VariableAPRProvider = () => {
   const dynamicPoolData = useHookState(dynamicPoolDataState);
@@ -74,15 +74,20 @@ const VariableAPRProvider = () => {
       );
 
       fetchedPoolAPRData.forEach(fetchedAPRData => {
-        dynamicPoolData[fetchedAPRData.address].variableAPR.set(fetchedAPRData.variableAPR);
+        const currentAPR = dynamicPoolData[fetchedAPRData.address].variableAPR.get();
+        // Only update state if fetched APR is different from current APR
+        // (if APR fetch failed, ie: "fetchedAPRData.variableAPR === null" -> keep current APR value)
+        if (!currentAPR || (fetchedAPRData.variableAPR && currentAPR !== fetchedAPRData.variableAPR)) {
+          dynamicPoolData[fetchedAPRData.address].variableAPR.set(fetchedAPRData.variableAPR);
+        }
       });
 
-      const negativeYieldData: NegativeYieldStateData = {};
       fetchedPoolAPRData.forEach(data => {
-        negativeYieldData[data.address] = data.negativeYield;
+        // Only update state if fetched negative yield flag is different from current negative yield flag
+        if (negativeYieldPoolData[data.address].get() !== data.negativeYield) {
+          negativeYieldPoolData[data.address].set(data.negativeYield);
+        }
       });
-      console.log(`Negative yield state set to ${JSON.stringify(negativeYieldData)}`);
-      negativeYieldPoolData.set(negativeYieldData);
     } catch (error) {
       console.log('VariableAPRProvider - fetchAPR', error);
     }

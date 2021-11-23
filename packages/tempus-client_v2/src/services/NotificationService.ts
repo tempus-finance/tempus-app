@@ -3,12 +3,12 @@ import { Observable, Subject } from 'rxjs';
 import format from 'date-fns/format';
 import { v1 as uuid } from 'uuid';
 import ERC20ABI from '../abi/ERC20.json';
+import { StaticPoolData } from '../state/PoolDataState';
 import { Ticker } from '../interfaces/Token';
 import { ProtocolName } from '../interfaces/ProtocolName';
 import { capitalize } from '../utils/capitalizeString';
 import getConfig from '../utils/getConfig';
 import NumberUtils from './NumberUtils';
-import { StaticPoolData } from '../state/PoolDataState';
 
 export enum NotificationLevel {
   WARNING = 'warning',

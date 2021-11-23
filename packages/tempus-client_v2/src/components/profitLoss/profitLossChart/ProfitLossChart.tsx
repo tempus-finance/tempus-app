@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from 'react';
-import { useState as useHookState } from '@hookstate/core';
+import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { AreaChart, Tooltip, Area, ResponsiveContainer } from 'recharts';
 import { selectedPoolState, staticPoolDataState } from '../../../state/PoolDataState';
 import getProfitLossGraphDataAdapter from '../../../adapters/getProfitLossGraphDataAdapter';
@@ -18,6 +18,8 @@ const ProfitLossChart = () => {
   const [chartData, setChartData] = useState<ChartDataPoint[]>([]);
   const [startDate, setStartDate] = useState<number | null>(null);
 
+  const selectedPoolStaticData = staticPoolData[selectedPool.get()].attach(Downgraded).get();
+
   useEffect(() => {
     const fetchChartData = async () => {
       if (!userWalletSigner) {
@@ -25,17 +27,13 @@ const ProfitLossChart = () => {
       }
       const profitLossGraphDataAdapter = getProfitLossGraphDataAdapter(userWalletSigner);
 
-      const result = await profitLossGraphDataAdapter.generateChartData(
-        staticPoolData[selectedPool.get()].get(),
-        userWalletAddress,
-      );
+      const result = await profitLossGraphDataAdapter.generateChartData(selectedPoolStaticData, userWalletAddress);
 
       setChartData(result.data);
       setStartDate(result.numberOfPastDays);
     };
     fetchChartData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userWalletAddress, userWalletSigner]);
+  }, [userWalletAddress, userWalletSigner, selectedPoolStaticData]);
 
   return (
     <>

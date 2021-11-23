@@ -35,6 +35,8 @@ const Swap = () => {
   const selectedPoolAddress = selectedPool.attach(Downgraded).get();
   const principalsAddress = staticPoolData[selectedPool.get()].principalsAddress.attach(Downgraded).get();
   const yieldsAddress = staticPoolData[selectedPool.get()].yieldsAddress.attach(Downgraded).get();
+  const decimalsForUI = staticPoolData[selectedPool.get()].decimalsForUI.attach(Downgraded).get();
+  const ammAddress = staticPoolData[selectedPool.get()].ammAddress.attach(Downgraded).get();
 
   const { userWalletSigner, userWalletAddress } = useContext(WalletContext);
   const { language } = useContext(LanguageContext);
@@ -54,18 +56,13 @@ const Swap = () => {
   const [estimateInProgress, setEstimateInProgress] = useState<boolean>(false);
   const [tokenPrecision, setTokenPrecision] = useState<number>(getTokenPrecision(selectedPoolAddress, 'principals'));
 
-  const decimalsForUI = staticPoolData[selectedPool.get()].decimalsForUI.attach(Downgraded).get();
-  const ammAddress = staticPoolData[selectedPool.get()].ammAddress.attach(Downgraded).get();
   const userPrincipalsBalance = dynamicPoolData[selectedPool.get()].userPrincipalsBalance.attach(Downgraded).get();
   const userYieldsBalance = dynamicPoolData[selectedPool.get()].userYieldsBalance.attach(Downgraded).get();
 
-  console.log('rendering swap component');
   const getSelectedTokenBalance = useCallback((): BigNumber | null => {
     if (!selectedToken) {
       return null;
     }
-
-    console.log('Getting selected token balance!');
 
     return selectedToken === 'Principals' ? userPrincipalsBalance : userYieldsBalance;
   }, [selectedToken, userPrincipalsBalance, userYieldsBalance]);
@@ -198,7 +195,7 @@ const Swap = () => {
       }
     };
     getReceiveAmount();
-  }, [tokenPrecision, amount, tokenFrom, setReceiveAmount, userWalletSigner, ammAddress]);
+  }, [tokenPrecision, amount, tokenFrom, userWalletSigner, ammAddress]);
 
   const balanceFormatted = useMemo(() => {
     const currentBalance = getSelectedTokenBalance();

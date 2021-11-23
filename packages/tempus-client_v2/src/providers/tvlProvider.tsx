@@ -23,7 +23,11 @@ const TVLProvider: FC<TVLProviderProps> = props => {
    */
   const updatePoolTVL = useCallback(
     (tempusPool: TempusPool, tvl: BigNumber | null) => {
-      dynamicPoolData[tempusPool.address].tvl.set(tvl);
+      const currentTVL = dynamicPoolData[tempusPool.address].tvl.get();
+      // Only update state if fetched TVL is different from current TVL value
+      if ((tvl && !currentTVL) || (tvl && currentTVL && !currentTVL.eq(tvl))) {
+        dynamicPoolData[tempusPool.address].tvl.set(tvl);
+      }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [],

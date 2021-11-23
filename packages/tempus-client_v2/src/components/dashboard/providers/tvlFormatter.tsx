@@ -1,7 +1,6 @@
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { CircularProgress } from '@material-ui/core';
 import { ethers, BigNumber } from 'ethers';
-import { useMemo } from 'react';
 import { ZERO } from '../../../constants';
 import { Ticker } from '../../../interfaces/Token';
 import NumberUtils from '../../../services/NumberUtils';
@@ -22,7 +21,7 @@ const TVLFormatter = ({ row }: any) => {
   const staticPoolData = useHookState(staticPoolDataState).attach(Downgraded).get();
   const negativeYieldPoolData = useHookState(negativeYieldPoolDataState).attach(Downgraded).get();
 
-  const tvlFormatted = useMemo(() => {
+  const getTvlFormatted = () => {
     let tvl: BigNumber | null;
     if (!isChild) {
       tvl = getParentTVL(row.id, staticPoolData, dynamicPoolData, negativeYieldPoolData);
@@ -34,7 +33,8 @@ const TVLFormatter = ({ row }: any) => {
       return null;
     }
     return NumberUtils.formatWithMultiplier(ethers.utils.formatEther(tvl));
-  }, [isChild, row.id, staticPoolData, dynamicPoolData, negativeYieldPoolData]);
+  };
+  const tvlFormatted = getTvlFormatted();
 
   return (
     <>

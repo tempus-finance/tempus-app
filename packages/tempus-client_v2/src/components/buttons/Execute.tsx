@@ -37,6 +37,7 @@ const Execute: FC<ExecuteButtonProps> = props => {
 
   const [executeInProgress, setExecuteInProgress] = useState<boolean>(false);
 
+  const selectedPoolData = staticPoolData[selectedPool.get()].attach(Downgraded).get();
   const backingToken = staticPoolData[selectedPool.get()].backingToken.attach(Downgraded).get();
   const protocol = staticPoolData[selectedPool.get()].protocol.attach(Downgraded).get();
   const maturityDate = staticPoolData[selectedPool.get()].maturityDate.attach(Downgraded).get();
@@ -130,7 +131,7 @@ const Execute: FC<ExecuteButtonProps> = props => {
           confirmations,
           transaction,
           userWalletAddress,
-          staticPoolData[selectedPool.get()].get(),
+          selectedPoolData,
         )}`,
         generateEtherscanLink(transaction.hash),
         'View on Etherscan',

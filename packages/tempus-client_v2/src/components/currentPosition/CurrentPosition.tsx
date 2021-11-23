@@ -37,8 +37,7 @@ const CurrentPosition: FC<CurrentPositionInProps> = ({ language }) => {
       }
 
       const poolDataAdapter = getPoolDataAdapter(userWalletSigner);
-
-      if (ammAddress && poolDataAdapter && userLPBalance) {
+      if (userLPBalance) {
         try {
           const expectedLPTokenReturn = await poolDataAdapter.getExpectedReturnForLPTokens(ammAddress, userLPBalance);
 

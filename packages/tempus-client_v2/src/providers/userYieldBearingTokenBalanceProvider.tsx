@@ -17,7 +17,12 @@ const UserYieldBearingTokenBalanceProvider = () => {
         const yieldBearingTokenAddress = getERC20TokenService(tempusPool.yieldBearingTokenAddress, userWalletSigner);
         const yieldBearingTokenBalance = await yieldBearingTokenAddress.balanceOf(userWalletAddress);
 
-        dynamicPoolData[tempusPool.address].userYieldBearingTokenBalance.set(yieldBearingTokenBalance);
+        const currentBalance = dynamicPoolData[tempusPool.address].userYieldBearingTokenBalance.get();
+
+        // Only update state if user yield bearing token balance is different from current user yield bearing token balance
+        if (!currentBalance || !currentBalance.eq(yieldBearingTokenBalance)) {
+          dynamicPoolData[tempusPool.address].userYieldBearingTokenBalance.set(yieldBearingTokenBalance);
+        }
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps

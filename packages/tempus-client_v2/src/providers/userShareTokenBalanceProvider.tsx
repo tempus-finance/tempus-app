@@ -20,7 +20,11 @@ const UserShareTokenBalanceProvider = () => {
         const principalsService = getERC20TokenService(poolConfig.principalsAddress, userWalletSigner);
         const balance = await principalsService.balanceOf(userWalletAddress);
 
-        dynamicPoolData[poolConfig.address].userPrincipalsBalance.set(balance);
+        const currentBalance = dynamicPoolData[poolConfig.address].userPrincipalsBalance.get();
+        // Only update state if fetched user principals balance is different from current user principals balance
+        if (!currentBalance || !currentBalance.eq(balance)) {
+          dynamicPoolData[poolConfig.address].userPrincipalsBalance.set(balance);
+        }
       }
     },
     // TODO - We can now probably remove this provider components and update state directly from service classes
@@ -37,7 +41,11 @@ const UserShareTokenBalanceProvider = () => {
         const yieldsService = getERC20TokenService(poolConfig.yieldsAddress, userWalletSigner);
         const balance = await yieldsService.balanceOf(userWalletAddress);
 
-        dynamicPoolData[poolConfig.address].userYieldsBalance.set(balance);
+        const currentBalance = dynamicPoolData[poolConfig.address].userYieldsBalance.get();
+        // Only update state if fetched user yields balance is different from current user yields balance
+        if (!currentBalance || !currentBalance.eq(balance)) {
+          dynamicPoolData[poolConfig.address].userYieldsBalance.set(balance);
+        }
       }
     },
     // TODO - We can now probably remove this provider components and update state directly from service classes
