@@ -456,6 +456,13 @@ export default class PoolDataAdapter {
       return Promise.reject();
     }
 
+    if (lpTokenAmount.isZero()) {
+      return {
+        principals: BigNumber.from('0'),
+        yields: BigNumber.from('0'),
+      };
+    }
+
     try {
       return await this.tempusAMMService.getExpectedTokensOutGivenBPTIn(tempusAMMAddress, lpTokenAmount);
     } catch (error) {
