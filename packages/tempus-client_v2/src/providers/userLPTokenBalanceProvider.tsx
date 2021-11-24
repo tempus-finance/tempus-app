@@ -1,12 +1,14 @@
 import { useCallback, useContext, useEffect } from 'react';
-import { PoolDataContext } from '../context/poolDataContext';
+import { useState as useHookState } from '@hookstate/core';
+import { dynamicPoolDataState } from '../state/PoolDataState';
 import { WalletContext } from '../context/walletContext';
 import { TempusPool } from '../interfaces/TempusPool';
 import getERC20TokenService from '../services/getERC20TokenService';
 import getConfig from '../utils/getConfig';
 
 const UserLPTokenBalanceProvider = () => {
-  const { setPoolData } = useContext(PoolDataContext);
+  const dynamicPoolData = useHookState(dynamicPoolDataState);
+
   const { userWalletAddress, userWalletSigner } = useContext(WalletContext);
 
   /**
@@ -18,22 +20,15 @@ const UserLPTokenBalanceProvider = () => {
         const lpTokenService = getERC20TokenService(tempusPool.ammAddress, userWalletSigner);
         const balance = await lpTokenService.balanceOf(userWalletAddress);
 
-        setPoolData &&
-          setPoolData(previousData => ({
-            ...previousData,
-            poolData: previousData.poolData.map(previousPoolData => {
-              if (previousPoolData.address !== tempusPool.address) {
-                return previousPoolData;
-              }
-              return {
-                ...previousPoolData,
-                userLPTokenBalance: balance,
-              };
-            }),
-          }));
+        const currentBalance = dynamicPoolData[tempusPool.address].userLPTokenBalance.get();
+        // Only update state if fetched user LP Token balance is different from current user LP Token balance
+        if (!currentBalance || !currentBalance.eq(balance)) {
+          dynamicPoolData[tempusPool.address].userLPTokenBalance.set(balance);
+        }
       }
     },
-    [userWalletAddress, userWalletSigner, setPoolData],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [userWalletSigner, userWalletAddress],
   );
 
   const updateBalance = useCallback(async () => {

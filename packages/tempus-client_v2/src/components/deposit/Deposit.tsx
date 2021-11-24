@@ -1,10 +1,9 @@
 import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { useState as useHookState } from '@hookstate/core';
+import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { ethers, BigNumber } from 'ethers';
 import { catchError } from 'rxjs';
-import { selectedPoolState } from '../../state/PoolDataState';
+import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
 import { LanguageContext } from '../../context/languageContext';
-import { getDataForPool, PoolDataContext } from '../../context/poolDataContext';
 import { WalletContext } from '../../context/walletContext';
 import { Ticker } from '../../interfaces/Token';
 import { SelectedYield } from '../../interfaces/SelectedYield';
@@ -35,11 +34,12 @@ type DepositProps = DepositInProps & OperationsSharedProps;
 
 const Deposit: FC<DepositProps> = ({ narrow, poolDataAdapter }) => {
   const selectedPool = useHookState(selectedPoolState);
+  const staticPoolData = useHookState(staticPoolDataState);
+  const dynamicPoolData = useHookState(dynamicPoolDataState);
 
   const { language } = useContext(LanguageContext);
   const { userWalletSigner } = useContext(WalletContext);
   const { userWalletAddress } = useContext(WalletContext);
-  const { poolData } = useContext(PoolDataContext);
 
   const [isYieldNegative, setIsYieldNegative] = useState<boolean | null>(null);
   const [selectedToken, setSelectedToken] = useState<Ticker | null>(null);
@@ -64,32 +64,41 @@ const Deposit: FC<DepositProps> = ({ narrow, poolDataAdapter }) => {
 
   const [tokenPrecision, setTokenPrecision] = useState<number>(0);
 
-  const activePoolData = useMemo(() => {
-    return getDataForPool(selectedPool.get(), poolData);
-  }, [poolData, selectedPool]);
-
+  const selectedPoolAddress = selectedPool.attach(Downgraded).get();
+  const fixedAPR = dynamicPoolData[selectedPool.get()].fixedAPR.attach(Downgraded).get();
+  const variableAPR = dynamicPoolData[selectedPool.get()].variableAPR.attach(Downgraded).get();
+  const userBackingTokenBalance = dynamicPoolData[selectedPool.get()].userBackingTokenBalance.attach(Downgraded).get();
+  const userYieldBearingTokenBalance = dynamicPoolData[selectedPool.get()].userYieldBearingTokenBalance
+    .attach(Downgraded)
+    .get();
+  const backingToken = staticPoolData[selectedPool.get()].backingToken.attach(Downgraded).get();
+  const yieldBearingToken = staticPoolData[selectedPool.get()].yieldBearingToken.attach(Downgraded).get();
+  const ammAddress = staticPoolData[selectedPool.get()].ammAddress.attach(Downgraded).get();
+  const backingTokenAddress = staticPoolData[selectedPool.get()].backingTokenAddress.attach(Downgraded).get();
+  const yieldBearingTokenAddress = staticPoolData[selectedPool.get()].yieldBearingTokenAddress.attach(Downgraded).get();
+  const decimalsForUI = staticPoolData[selectedPool.get()].decimalsForUI.attach(Downgraded).get();
   const onTokenChange = useCallback(
     (token: Ticker | undefined) => {
       if (!!token) {
         setSelectedToken(token);
         setAmount('');
 
-        if (activePoolData.backingToken === token) {
-          setTokenPrecision(getTokenPrecision(activePoolData.address, 'backingToken'));
+        if (backingToken === token) {
+          setTokenPrecision(getTokenPrecision(selectedPoolAddress, 'backingToken'));
           if (backingTokenRate !== null) {
             setUsdRate(backingTokenRate);
           }
         }
 
-        if (activePoolData.backingToken !== token) {
-          setTokenPrecision(getTokenPrecision(activePoolData.address, 'yieldBearingToken'));
+        if (backingToken !== token) {
+          setTokenPrecision(getTokenPrecision(selectedPoolAddress, 'yieldBearingToken'));
           if (yieldBearingTokenRate !== null) {
             setUsdRate(yieldBearingTokenRate);
           }
         }
       }
     },
-    [activePoolData, backingTokenRate, yieldBearingTokenRate, setSelectedToken, setAmount],
+    [backingToken, selectedPoolAddress, backingTokenRate, yieldBearingTokenRate],
   );
 
   const onAmountChange = useCallback(
@@ -104,23 +113,21 @@ const Deposit: FC<DepositProps> = ({ narrow, poolDataAdapter }) => {
   );
 
   const onClickMax = useCallback(() => {
-    const data = getDataForPool(activePoolData.address, poolData);
-
     let currentBalance: BigNumber;
-    if (selectedToken === activePoolData.backingToken) {
-      if (!data.userBackingTokenBalance) {
+    if (selectedToken === backingToken) {
+      if (!userBackingTokenBalance) {
         return;
       }
-      currentBalance = data.userBackingTokenBalance;
+      currentBalance = userBackingTokenBalance;
     } else {
-      if (!data.userYieldBearingTokenBalance) {
+      if (!userYieldBearingTokenBalance) {
         return;
       }
-      currentBalance = data.userYieldBearingTokenBalance;
+      currentBalance = userYieldBearingTokenBalance;
     }
 
     setAmount(ethers.utils.formatUnits(currentBalance, tokenPrecision));
-  }, [activePoolData, poolData, selectedToken, tokenPrecision]);
+  }, [backingToken, selectedToken, tokenPrecision, userBackingTokenBalance, userYieldBearingTokenBalance]);
 
   const onSelectYield = useCallback(
     (value: string) => {
@@ -135,30 +142,25 @@ const Deposit: FC<DepositProps> = ({ narrow, poolDataAdapter }) => {
     if (!selectedToken) {
       return null;
     }
-    const data = getDataForPool(activePoolData.address, poolData);
 
-    return selectedToken === activePoolData.backingToken
-      ? data.userBackingTokenBalance
-      : data.userYieldBearingTokenBalance;
-  }, [activePoolData, poolData, selectedToken]);
+    return selectedToken === backingToken ? userBackingTokenBalance : userYieldBearingTokenBalance;
+  }, [backingToken, selectedToken, userBackingTokenBalance, userYieldBearingTokenBalance]);
 
   const getSelectedTokenAddress = useCallback((): string | null => {
     if (!selectedToken) {
       return null;
     }
-    return selectedToken === activePoolData.backingToken
-      ? activePoolData.backingTokenAddress
-      : activePoolData.yieldBearingTokenAddress;
-  }, [activePoolData, selectedToken]);
+    return selectedToken === backingToken ? backingTokenAddress : yieldBearingTokenAddress;
+  }, [backingTokenAddress, yieldBearingTokenAddress, backingToken, selectedToken]);
 
   const onExecute = useCallback((): Promise<ethers.ContractTransaction | undefined> => {
     if (userWalletSigner && amount && poolDataAdapter) {
       const tokenAmount = ethers.utils.parseUnits(amount, tokenPrecision);
-      const isBackingToken = activePoolData.backingToken === selectedToken;
+      const isBackingToken = backingToken === selectedToken;
       const parsedMinTYSRate = ethers.utils.parseUnits(minTYSRate.toString(), tokenPrecision);
       const isEthDeposit = selectedToken === 'ETH';
       return poolDataAdapter.executeDeposit(
-        activePoolData.ammAddress,
+        ammAddress,
         tokenAmount,
         isBackingToken,
         parsedMinTYSRate,
@@ -169,14 +171,15 @@ const Deposit: FC<DepositProps> = ({ narrow, poolDataAdapter }) => {
       return Promise.resolve(undefined);
     }
   }, [
-    activePoolData,
     userWalletSigner,
+    amount,
     poolDataAdapter,
     tokenPrecision,
+    backingToken,
     selectedToken,
-    selectedYield,
-    amount,
     minTYSRate,
+    ammAddress,
+    selectedYield,
   ]);
 
   const onExecuted = useCallback(() => {
@@ -188,9 +191,9 @@ const Deposit: FC<DepositProps> = ({ narrow, poolDataAdapter }) => {
   }, []);
 
   useEffect(() => {
-    if (userWalletSigner && activePoolData.address && activePoolData.ammAddress && poolDataAdapter) {
+    if (userWalletSigner && selectedPoolAddress && ammAddress && poolDataAdapter) {
       const stream$ = poolDataAdapter
-        .retrieveBalances(activePoolData.address, activePoolData.ammAddress, userWalletAddress, userWalletSigner)
+        .retrieveBalances(selectedPoolAddress, ammAddress, userWalletAddress, userWalletSigner)
         .pipe(
           catchError((error, caught) => {
             console.log('DetailDeposit - retrieveTokenRates - Failed to retrieve token rates!', error);
@@ -207,13 +210,14 @@ const Deposit: FC<DepositProps> = ({ narrow, poolDataAdapter }) => {
       return () => stream$.unsubscribe();
     }
   }, [
-    activePoolData,
+    selectedPoolAddress,
     userWalletSigner,
     userWalletAddress,
     selectedToken,
     poolDataAdapter,
     setBackingTokenRate,
     setYieldBearingTokenRate,
+    ammAddress,
   ]);
 
   useEffect(() => {
@@ -222,15 +226,15 @@ const Deposit: FC<DepositProps> = ({ narrow, poolDataAdapter }) => {
         setFixedPrincipalsAmount(null);
         setVariablePrincipalsAmount(null);
         setVariableLpTokensAmount(null);
-      } else if (activePoolData.ammAddress && poolDataAdapter) {
+      } else if (ammAddress && poolDataAdapter) {
         try {
           setTokenEstimateInProgress(true);
 
-          const isBackingToken = activePoolData.backingToken === selectedToken;
+          const isBackingToken = backingToken === selectedToken;
 
           const { fixedDeposit, variableDeposit } =
             (await poolDataAdapter.getEstimatedDepositAmount(
-              activePoolData.ammAddress,
+              ammAddress,
               ethers.utils.parseUnits(amount, tokenPrecision),
               isBackingToken,
             )) || {};
@@ -252,7 +256,6 @@ const Deposit: FC<DepositProps> = ({ narrow, poolDataAdapter }) => {
 
     retrieveDepositAmount();
   }, [
-    activePoolData,
     amount,
     tokenPrecision,
     selectedToken,
@@ -260,19 +263,21 @@ const Deposit: FC<DepositProps> = ({ narrow, poolDataAdapter }) => {
     setFixedPrincipalsAmount,
     setVariablePrincipalsAmount,
     setVariableLpTokensAmount,
+    ammAddress,
+    backingToken,
   ]);
 
   useEffect(() => {
     const getEstimatedFixedApr = async () => {
       if (amount && amount !== '0' && selectedToken && poolDataAdapter) {
         setRateEstimateInProgress(true);
-        const isBackingToken = selectedToken === activePoolData.backingToken;
+        const isBackingToken = selectedToken === backingToken;
         try {
           const fixedAPREstimate = await poolDataAdapter.getEstimatedFixedApr(
             ethers.utils.parseUnits(amount, tokenPrecision),
             isBackingToken,
-            activePoolData.address,
-            activePoolData.ammAddress,
+            selectedPoolAddress,
+            ammAddress,
           );
 
           setEstimatedFixedApr(fixedAPREstimate);
@@ -287,7 +292,16 @@ const Deposit: FC<DepositProps> = ({ narrow, poolDataAdapter }) => {
     };
 
     getEstimatedFixedApr();
-  }, [activePoolData, amount, selectedToken, tokenPrecision, poolDataAdapter, setEstimatedFixedApr]);
+  }, [
+    selectedPoolAddress,
+    amount,
+    selectedToken,
+    tokenPrecision,
+    poolDataAdapter,
+    setEstimatedFixedApr,
+    backingToken,
+    ammAddress,
+  ]);
 
   useEffect(() => {
     if (!poolDataAdapter) {
@@ -295,7 +309,7 @@ const Deposit: FC<DepositProps> = ({ narrow, poolDataAdapter }) => {
     }
 
     const stream$ = poolDataAdapter
-      .isCurrentYieldNegativeForPool(activePoolData.address)
+      .isCurrentYieldNegativeForPool(selectedPoolAddress)
       .pipe(
         catchError((error, caught) => {
           console.log('Deposit - isCurrentYieldNegativeForPool - Failed to retrieve current yield!', error);
@@ -307,17 +321,14 @@ const Deposit: FC<DepositProps> = ({ narrow, poolDataAdapter }) => {
       });
 
     return () => stream$.unsubscribe();
-  }, [activePoolData, poolDataAdapter]);
+  }, [selectedPoolAddress, poolDataAdapter]);
 
   const fixedPrincipalsAmountFormatted = useMemo(() => {
     if (!fixedPrincipalsAmount) {
       return null;
     }
-    return NumberUtils.formatToCurrency(
-      ethers.utils.formatUnits(fixedPrincipalsAmount, tokenPrecision),
-      activePoolData.decimalsForUI,
-    );
-  }, [activePoolData, fixedPrincipalsAmount, tokenPrecision]);
+    return NumberUtils.formatToCurrency(ethers.utils.formatUnits(fixedPrincipalsAmount, tokenPrecision), decimalsForUI);
+  }, [decimalsForUI, fixedPrincipalsAmount, tokenPrecision]);
 
   const variablePrincipalsAmountFormatted = useMemo(() => {
     if (!variablePrincipalsAmount) {
@@ -325,9 +336,9 @@ const Deposit: FC<DepositProps> = ({ narrow, poolDataAdapter }) => {
     }
     return NumberUtils.formatToCurrency(
       ethers.utils.formatUnits(variablePrincipalsAmount, tokenPrecision),
-      activePoolData.decimalsForUI,
+      decimalsForUI,
     );
-  }, [activePoolData, variablePrincipalsAmount, tokenPrecision]);
+  }, [variablePrincipalsAmount, tokenPrecision, decimalsForUI]);
 
   const variableLpTokensAmountFormatted = useMemo(() => {
     if (!variableLpTokensAmount) {
@@ -335,9 +346,9 @@ const Deposit: FC<DepositProps> = ({ narrow, poolDataAdapter }) => {
     }
     return NumberUtils.formatToCurrency(
       ethers.utils.formatUnits(variableLpTokensAmount, tokenPrecision),
-      activePoolData.decimalsForUI,
+      decimalsForUI,
     );
-  }, [activePoolData, variableLpTokensAmount, tokenPrecision]);
+  }, [variableLpTokensAmount, tokenPrecision, decimalsForUI]);
 
   const balanceFormatted = useMemo(() => {
     let currentBalance = getSelectedTokenBalance();
@@ -345,11 +356,8 @@ const Deposit: FC<DepositProps> = ({ narrow, poolDataAdapter }) => {
       return null;
     }
 
-    return NumberUtils.formatToCurrency(
-      ethers.utils.formatUnits(currentBalance, tokenPrecision),
-      activePoolData.decimalsForUI,
-    );
-  }, [activePoolData, getSelectedTokenBalance, tokenPrecision]);
+    return NumberUtils.formatToCurrency(ethers.utils.formatUnits(currentBalance, tokenPrecision), decimalsForUI);
+  }, [decimalsForUI, getSelectedTokenBalance, tokenPrecision]);
 
   const usdValueFormatted = useMemo(() => {
     if (!usdRate || !amount) {
@@ -362,16 +370,12 @@ const Deposit: FC<DepositProps> = ({ narrow, poolDataAdapter }) => {
   }, [tokenPrecision, usdRate, amount]);
 
   const variableAPRFormatted = useMemo(() => {
-    const poolContextData = getDataForPool(activePoolData.address, poolData);
-
-    return NumberUtils.formatPercentage(poolContextData.variableAPR, 2);
-  }, [activePoolData, poolData]);
+    return NumberUtils.formatPercentage(variableAPR, 2);
+  }, [variableAPR]);
 
   const fixedAPRFormatted = useMemo(() => {
-    const poolContextData = getDataForPool(activePoolData.address, poolData);
-
-    return NumberUtils.formatPercentage(poolContextData.fixedAPR, 2);
-  }, [activePoolData, poolData]);
+    return NumberUtils.formatPercentage(fixedAPR, 2);
+  }, [fixedAPR]);
 
   const fixedYieldAtMaturityFormatted = useMemo(() => {
     if (!fixedPrincipalsAmount || !amount || isZeroString(amount)) {
@@ -457,7 +461,7 @@ const Deposit: FC<DepositProps> = ({ narrow, poolDataAdapter }) => {
         <div className="tf__flex-row-center-v">
           <TokenSelector
             value={selectedToken}
-            tickers={[activePoolData.backingToken, activePoolData.yieldBearingToken]}
+            tickers={[backingToken, yieldBearingToken]}
             onTokenChange={onTokenChange}
           />
           <Spacer size={15} />
@@ -511,7 +515,7 @@ const Deposit: FC<DepositProps> = ({ narrow, poolDataAdapter }) => {
                 </div>
                 <div className="tc__deposit__card-row-change">
                   <Typography variant="body-text" color="success">
-                    {`+${fixedYieldAtMaturityFormatted} ${activePoolData.yieldBearingToken}`}
+                    {`+${fixedYieldAtMaturityFormatted} ${yieldBearingToken}`}
                   </Typography>
                 </div>
                 <div className="tc__deposit__card-row-value">
@@ -530,7 +534,7 @@ const Deposit: FC<DepositProps> = ({ narrow, poolDataAdapter }) => {
                 </div>
                 <div className="tc__deposit__card-row-change">
                   <Typography variant="body-text">
-                    {`${totalAvailableAtMaturityFormatted} ${activePoolData.yieldBearingToken}`}
+                    {`${totalAvailableAtMaturityFormatted} ${yieldBearingToken}`}
                   </Typography>
                 </div>
                 <div className="tc__deposit__card-row-value">
@@ -598,7 +602,6 @@ const Deposit: FC<DepositProps> = ({ narrow, poolDataAdapter }) => {
           <Execute
             actionName="Deposit"
             actionDescription={selectedYield === 'Fixed' ? 'Fixed Yield' : 'Variable Yield'}
-            tempusPool={activePoolData}
             disabled={executeDisabled}
             onExecute={onExecute}
             onExecuted={onExecuted}

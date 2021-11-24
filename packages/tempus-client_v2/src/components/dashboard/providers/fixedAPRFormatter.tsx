@@ -1,23 +1,33 @@
-import { useContext, useMemo } from 'react';
+import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { ZERO } from '../../../constants';
-import { PoolData, getDataForPool, PoolDataContext } from '../../../context/poolDataContext';
 import { Ticker } from '../../../interfaces/Token';
 import NumberUtils from '../../../services/NumberUtils';
 import Typography from '../../typography/Typography';
 import APYGraph from '../bodySection/apyGraph';
+import {
+  dynamicPoolDataState,
+  DynamicPoolStateData,
+  negativeYieldPoolDataState,
+  NegativeYieldStateData,
+  staticPoolDataState,
+  StaticPoolDataMap,
+} from '../../../state/PoolDataState';
 
 const FixedAPRFormatter = ({ row }: any) => {
-  const { poolData } = useContext(PoolDataContext);
+  const dynamicPoolData = useHookState(dynamicPoolDataState).attach(Downgraded).get();
+  const staticPoolData = useHookState(staticPoolDataState).attach(Downgraded).get();
+  const negativeYieldPoolData = useHookState(negativeYieldPoolDataState).attach(Downgraded).get();
 
   const isChild = Boolean(row.parentId);
 
-  const apr = useMemo(() => {
+  const getApr = () => {
     if (isChild) {
-      return getChildAPR(row.id, poolData);
+      return getChildAPR(row.id, dynamicPoolData);
     } else {
-      return getParentAPR(row.id, poolData);
+      return getParentAPR(row.id, staticPoolData, dynamicPoolData, negativeYieldPoolData);
     }
-  }, [poolData, isChild, row.id]);
+  };
+  const apr = getApr();
 
   if (!apr) {
     return <Typography variant="body-text">-</Typography>;
@@ -50,17 +60,25 @@ const FixedAPRFormatter = ({ row }: any) => {
 };
 export default FixedAPRFormatter;
 
-function getParentAPR(parentId: Ticker, poolData: PoolData[]): number | null {
-  const parentChildren = poolData.filter(data => {
-    return data.backingToken === parentId;
-  });
+function getParentAPR(
+  parentId: Ticker,
+  staticPoolData: StaticPoolDataMap,
+  dynamicPoolData: DynamicPoolStateData,
+  negativeYieldPoolData: NegativeYieldStateData,
+): number | null {
+  const parentChildrenAddresses: string[] = [];
+  for (const key in dynamicPoolData) {
+    if (
+      staticPoolData[key].backingToken === parentId &&
+      (!negativeYieldPoolData[key] || dynamicPoolData[key].userBalanceUSD?.gt(ZERO))
+    ) {
+      parentChildrenAddresses.push(key);
+    }
+  }
 
-  const childrenFixedAPR: number[] = parentChildren
-    .map(child => {
-      if (child.isNegativeYield && child.userBalanceUSD?.lte(ZERO)) {
-        return Number.MIN_SAFE_INTEGER;
-      }
-      return child.fixedAPR;
+  const childrenFixedAPR: number[] = parentChildrenAddresses
+    .map(address => {
+      return dynamicPoolData[address].fixedAPR;
     })
     .filter(fixedAPR => fixedAPR !== null) as number[];
   if (childrenFixedAPR.length === 0) {
@@ -70,6 +88,6 @@ function getParentAPR(parentId: Ticker, poolData: PoolData[]): number | null {
   return Math.max(...childrenFixedAPR);
 }
 
-function getChildAPR(id: string, poolData: PoolData[]): number | null {
-  return getDataForPool(id, poolData).fixedAPR;
+function getChildAPR(id: string, dynamicPoolData: DynamicPoolStateData): number | null {
+  return dynamicPoolData[id].fixedAPR;
 }

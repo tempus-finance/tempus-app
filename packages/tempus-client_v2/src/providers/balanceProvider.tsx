@@ -1,10 +1,11 @@
 import { BigNumber } from '@ethersproject/bignumber';
+import { useState as useHookState } from '@hookstate/core';
 import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { Subscription, catchError, Subject, switchMap } from 'rxjs';
 import UserBalanceDataAdapter from '../adapters/UserBalanceDataAdapter';
-import { PoolDataContext } from '../context/poolDataContext';
 import { WalletContext } from '../context/walletContext';
 import getERC20TokenService from '../services/getERC20TokenService';
+import { dynamicPoolDataState } from '../state/PoolDataState';
 import getConfig from '../utils/getConfig';
 
 interface PresentValueProviderProps {
@@ -14,30 +15,28 @@ interface PresentValueProviderProps {
 const BalanceProvider: FC<PresentValueProviderProps> = props => {
   const { userBalanceDataAdapter } = props;
 
-  const { setPoolData } = useContext(PoolDataContext);
+  const dynamicPoolData = useHookState(dynamicPoolDataState);
+
   const { userWalletAddress, userWalletSigner } = useContext(WalletContext);
   const [updateBalanceSubject] = useState<Subject<boolean>>(new Subject<boolean>());
   const [subscriptions$] = useState<Subscription>(new Subscription());
 
   const updateUserBalanceForPool = useCallback(
-    (tempusPool: string, balances: BigNumber[]) => {
-      setPoolData &&
-        setPoolData(previousData => ({
-          ...previousData,
-          poolData: previousData.poolData.map(previousPoolData => {
-            if (previousPoolData.address !== tempusPool) {
-              return previousPoolData;
-            }
-            const [userBalanceUSD, userBalanceInBackingToken] = balances;
-            return {
-              ...previousPoolData,
-              userBalanceUSD,
-              userBalanceInBackingToken,
-            };
-          }),
-        }));
+    (tempusPoolAddress: string, balances: BigNumber[]) => {
+      const [userBalanceUSD, userBalanceInBackingToken] = balances;
+
+      const currentUSDBalance = dynamicPoolData[tempusPoolAddress].userBalanceUSD.get();
+      if (!currentUSDBalance || !currentUSDBalance.eq(userBalanceUSD)) {
+        dynamicPoolData[tempusPoolAddress].userBalanceUSD.set(userBalanceUSD);
+      }
+
+      const currentUserBalanceInBackingToken = dynamicPoolData[tempusPoolAddress].userBalanceInBackingToken.get();
+      if (!currentUserBalanceInBackingToken || !currentUserBalanceInBackingToken.eq(userBalanceInBackingToken)) {
+        dynamicPoolData[tempusPoolAddress].userBalanceInBackingToken.set(userBalanceInBackingToken);
+      }
     },
-    [setPoolData],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
   );
 
   const triggerUpdateBalance = useCallback(() => {
@@ -125,7 +124,7 @@ const BalanceProvider: FC<PresentValueProviderProps> = props => {
         lpTokenService.offTransfer(null, userWalletAddress, () => triggerUpdateBalance());
       });
     };
-  }, [setPoolData, userWalletSigner, userWalletAddress, triggerUpdateBalance]);
+  }, [userWalletSigner, userWalletAddress, triggerUpdateBalance]);
 
   /**
    * Provider component only updates context value when needed. It does not show anything in the UI.

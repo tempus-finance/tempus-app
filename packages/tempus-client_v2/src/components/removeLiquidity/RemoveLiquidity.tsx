@@ -1,9 +1,8 @@
-import { useState as useHookState } from '@hookstate/core';
-import { selectedPoolState } from '../../state/PoolDataState';
+import { Downgraded, useState as useHookState } from '@hookstate/core';
+import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { BigNumber, ethers } from 'ethers';
 import { LanguageContext } from '../../context/languageContext';
-import { getDataForPool, PoolDataContext } from '../../context/poolDataContext';
 import { WalletContext } from '../../context/walletContext';
 import getText from '../../localisation/getText';
 import Typography from '../typography/Typography';
@@ -22,9 +21,10 @@ import './RemoveLiquidity.scss';
 
 const RemoveLiquidity = () => {
   const selectedPool = useHookState(selectedPoolState);
+  const dynamicPoolData = useHookState(dynamicPoolDataState);
+  const staticPoolData = useHookState(staticPoolDataState);
 
   const { language } = useContext(LanguageContext);
-  const { poolData } = useContext(PoolDataContext);
   const { userWalletAddress, userWalletSigner } = useContext(WalletContext);
 
   const [amount, setAmount] = useState<string>('');
@@ -33,9 +33,11 @@ const RemoveLiquidity = () => {
   const [tokensApproved, setTokensApproved] = useState<boolean>(false);
   const [estimateInProgress, setEstimateInProgress] = useState<boolean>(false);
 
-  const activePoolData = useMemo(() => {
-    return getDataForPool(selectedPool.get(), poolData);
-  }, [poolData, selectedPool]);
+  const ammAddress = staticPoolData[selectedPool.get()].ammAddress.attach(Downgraded).get();
+  const principalsAddress = staticPoolData[selectedPool.get()].principalsAddress.attach(Downgraded).get();
+  const yieldsAddress = staticPoolData[selectedPool.get()].yieldsAddress.attach(Downgraded).get();
+  const decimalsForUI = staticPoolData[selectedPool.get()].decimalsForUI.attach(Downgraded).get();
+  const userLPTokenBalance = dynamicPoolData[selectedPool.get()].userLPTokenBalance.attach(Downgraded).get();
 
   const onAmountChange = useCallback(
     (amount: string) => {
@@ -53,10 +55,10 @@ const RemoveLiquidity = () => {
    * - Requires user LP token balance to be loaded so we can calculate percentage of that.
    */
   const onPercentageChange = useCallback(() => {
-    if (activePoolData.userLPTokenBalance) {
-      setAmount(ethers.utils.formatEther(activePoolData.userLPTokenBalance));
+    if (userLPTokenBalance) {
+      setAmount(ethers.utils.formatEther(userLPTokenBalance));
     }
-  }, [activePoolData.userLPTokenBalance]);
+  }, [userLPTokenBalance]);
 
   // Fetch estimated share tokens returned
   useEffect(() => {
@@ -70,7 +72,7 @@ const RemoveLiquidity = () => {
 
         setEstimateInProgress(true);
         const estimate = await poolDataAdapter.getExpectedReturnForLPTokens(
-          activePoolData.ammAddress,
+          ammAddress,
           ethers.utils.parseEther(amount),
         );
         setEstimatedPrincipals(estimate.principals);
@@ -82,7 +84,7 @@ const RemoveLiquidity = () => {
       }
     };
     getTokensEstimate();
-  }, [amount, activePoolData.ammAddress, userWalletSigner]);
+  }, [amount, ammAddress, userWalletSigner]);
 
   const onApproveChange = useCallback(approved => {
     setTokensApproved(approved);
@@ -95,41 +97,38 @@ const RemoveLiquidity = () => {
     const poolDataAdapter = getPoolDataAdapter(userWalletSigner);
 
     return poolDataAdapter.removeLiquidity(
-      activePoolData.ammAddress,
+      ammAddress,
       userWalletAddress,
-      activePoolData.principalsAddress,
-      activePoolData.yieldsAddress,
+      principalsAddress,
+      yieldsAddress,
       ethers.utils.parseEther(amount),
     );
-  }, [amount, activePoolData, userWalletAddress, userWalletSigner]);
+  }, [userWalletSigner, ammAddress, userWalletAddress, principalsAddress, yieldsAddress, amount]);
 
   const onExecuted = useCallback(() => {
     setAmount('');
   }, []);
 
   const lpTokenBalanceFormatted = useMemo(() => {
-    if (!activePoolData.userLPTokenBalance) {
+    if (!userLPTokenBalance) {
       return null;
     }
-    return NumberUtils.formatToCurrency(
-      ethers.utils.formatEther(activePoolData.userLPTokenBalance),
-      activePoolData.decimalsForUI,
-    );
-  }, [activePoolData]);
+    return NumberUtils.formatToCurrency(ethers.utils.formatEther(userLPTokenBalance), decimalsForUI);
+  }, [decimalsForUI, userLPTokenBalance]);
 
   const estimatedPrincipalsFormatted = useMemo(() => {
     if (!estimatedPrincipals) {
       return null;
     }
-    return NumberUtils.formatToCurrency(ethers.utils.formatEther(estimatedPrincipals), activePoolData.decimalsForUI);
-  }, [estimatedPrincipals, activePoolData.decimalsForUI]);
+    return NumberUtils.formatToCurrency(ethers.utils.formatEther(estimatedPrincipals), decimalsForUI);
+  }, [estimatedPrincipals, decimalsForUI]);
 
   const estimatedYieldsFormatted = useMemo(() => {
     if (!estimatedYields) {
       return null;
     }
-    return NumberUtils.formatToCurrency(ethers.utils.formatEther(estimatedYields), activePoolData.decimalsForUI);
-  }, [estimatedYields, activePoolData.decimalsForUI]);
+    return NumberUtils.formatToCurrency(ethers.utils.formatEther(estimatedYields), decimalsForUI);
+  }, [estimatedYields, decimalsForUI]);
 
   const approveDisabled = useMemo((): boolean => {
     const zeroAmount = isZeroString(amount);
@@ -139,12 +138,10 @@ const RemoveLiquidity = () => {
 
   const executeDisabled = useMemo(() => {
     const zeroAmount = isZeroString(amount);
-    const amountExceedsBalance = ethers.utils
-      .parseEther(amount || '0')
-      .gt(activePoolData.userLPTokenBalance || BigNumber.from('0'));
+    const amountExceedsBalance = ethers.utils.parseEther(amount || '0').gt(userLPTokenBalance || BigNumber.from('0'));
 
     return !tokensApproved || zeroAmount || amountExceedsBalance || estimateInProgress;
-  }, [amount, activePoolData.userLPTokenBalance, tokensApproved, estimateInProgress]);
+  }, [amount, userLPTokenBalance, tokensApproved, estimateInProgress]);
 
   return (
     <div className="tc__removeLiquidity">
@@ -163,10 +160,10 @@ const RemoveLiquidity = () => {
             <div className="tf__flex-row-center-v-end">
               <Approve
                 tokenToApproveTicker="LP Token"
-                amountToApprove={activePoolData.userLPTokenBalance}
+                amountToApprove={userLPTokenBalance}
                 onApproveChange={onApproveChange}
                 spenderAddress={getConfig().vaultContract}
-                tokenToApproveAddress={activePoolData.ammAddress}
+                tokenToApproveAddress={ammAddress}
                 disabled={approveDisabled}
               />
             </div>
@@ -200,7 +197,6 @@ const RemoveLiquidity = () => {
         <div className="tf__flex-row-center-vh">
           <Execute
             actionName="Liquidity Withdrawal"
-            tempusPool={activePoolData}
             disabled={executeDisabled}
             onExecute={onExecute}
             onExecuted={onExecuted}

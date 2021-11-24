@@ -1,8 +1,7 @@
 import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { useState as useHookState } from '@hookstate/core';
-import { selectedPoolState } from '../../state/PoolDataState';
+import { Downgraded, useState as useHookState } from '@hookstate/core';
+import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
 import { LanguageContext } from '../../context/languageContext';
-import { getDataForPool, PoolDataContext } from '../../context/poolDataContext';
 import getText from '../../localisation/getText';
 import { TransactionView } from '../../interfaces/TransactionView';
 import getConfig from '../../utils/getConfig';
@@ -28,15 +27,19 @@ type SidebarProps = SidebarInProps & SidebarOutProps;
 
 const Sidebar: FC<SidebarProps> = ({ initialView, onSelectedView }) => {
   const selectedPool = useHookState(selectedPoolState);
+  const dynamicPoolData = useHookState(dynamicPoolDataState);
+  const staticPoolData = useHookState(staticPoolDataState);
 
   const { language } = useContext(LanguageContext);
-  const { poolData } = useContext(PoolDataContext);
 
   const [selectedView, setSelectedView] = useState<TransactionView | null>(null);
 
-  const activePoolData = useMemo(() => {
-    return getDataForPool(selectedPool.get(), poolData);
-  }, [poolData, selectedPool]);
+  const selectedPoolAddress = selectedPool.attach(Downgraded).get();
+  const backingToken = staticPoolData[selectedPool.get()].backingToken.attach(Downgraded).get();
+  const yieldBearingToken = staticPoolData[selectedPool.get()].yieldBearingToken.attach(Downgraded).get();
+  const userPrincipalsBalance = dynamicPoolData[selectedPool.get()].userPrincipalsBalance.attach(Downgraded).get();
+  const userYieldsBalance = dynamicPoolData[selectedPool.get()].userYieldsBalance.attach(Downgraded).get();
+  const userLPTokenBalance = dynamicPoolData[selectedPool.get()].userLPTokenBalance.attach(Downgraded).get();
 
   const onItemClick = useCallback(
     (itemName: TransactionView) => {
@@ -56,58 +59,56 @@ const Sidebar: FC<SidebarProps> = ({ initialView, onSelectedView }) => {
     const config = getConfig();
 
     if (config.networkName === 'homestead') {
-      window.open(`https://etherscan.io/address/${activePoolData.address}`, '_blank');
+      window.open(`https://etherscan.io/address/${selectedPoolAddress}`, '_blank');
     } else {
-      window.open(`https://${config.networkName}.etherscan.io/address/${activePoolData.address}`, '_blank');
+      window.open(`https://${config.networkName}.etherscan.io/address/${selectedPoolAddress}`, '_blank');
     }
-  }, [activePoolData.address]);
+  }, [selectedPoolAddress]);
 
   const withdrawHidden = useMemo(() => {
-    const { userPrincipalsBalance, userYieldsBalance, userLPTokenBalance } = activePoolData;
-
     if (!userPrincipalsBalance || !userYieldsBalance || !userLPTokenBalance) {
       return true;
     }
     return userPrincipalsBalance.isZero() && userYieldsBalance.isZero() && userLPTokenBalance.isZero();
-  }, [activePoolData]);
+  }, [userLPTokenBalance, userPrincipalsBalance, userYieldsBalance]);
 
   const swapHidden = useMemo(() => {
-    if (!activePoolData.userPrincipalsBalance || !activePoolData.userYieldsBalance) {
+    if (!userPrincipalsBalance || !userYieldsBalance) {
       return true;
     }
-    return activePoolData.userPrincipalsBalance.isZero() && activePoolData.userYieldsBalance.isZero();
-  }, [activePoolData.userPrincipalsBalance, activePoolData.userYieldsBalance]);
+    return userPrincipalsBalance.isZero() && userYieldsBalance.isZero();
+  }, [userPrincipalsBalance, userYieldsBalance]);
 
   const provideLiquidityHidden = useMemo(() => {
-    if (!activePoolData.userPrincipalsBalance || !activePoolData.userYieldsBalance) {
+    if (!userPrincipalsBalance || !userYieldsBalance) {
       return true;
     }
-    return activePoolData.userPrincipalsBalance.isZero() && activePoolData.userYieldsBalance.isZero();
-  }, [activePoolData.userPrincipalsBalance, activePoolData.userYieldsBalance]);
+    return userPrincipalsBalance.isZero() && userYieldsBalance.isZero();
+  }, [userPrincipalsBalance, userYieldsBalance]);
 
   const removeLiquidityHidden = useMemo(() => {
-    if (!activePoolData.userLPTokenBalance) {
+    if (!userLPTokenBalance) {
       return true;
     }
-    return activePoolData.userLPTokenBalance.isZero();
-  }, [activePoolData.userLPTokenBalance]);
+    return userLPTokenBalance.isZero();
+  }, [userLPTokenBalance]);
 
   const earlyRedeemHidden = useMemo(() => {
-    if (!activePoolData.userPrincipalsBalance || !activePoolData.userYieldsBalance) {
+    if (!userPrincipalsBalance || !userYieldsBalance) {
       return true;
     }
-    return activePoolData.userPrincipalsBalance.isZero() && activePoolData.userYieldsBalance.isZero();
-  }, [activePoolData.userPrincipalsBalance, activePoolData.userYieldsBalance]);
+    return userPrincipalsBalance.isZero() && userYieldsBalance.isZero();
+  }, [userPrincipalsBalance, userYieldsBalance]);
 
   return (
     <div className="tc__sidebar-container">
-      <TokenPairIcon parentTicker={activePoolData.backingToken} childTicker={activePoolData.yieldBearingToken} />
+      <TokenPairIcon parentTicker={backingToken} childTicker={yieldBearingToken} />
       <Spacer size={5} />
-      <Typography variant="h4">{activePoolData.yieldBearingToken} Pool</Typography>
+      <Typography variant="h4">{yieldBearingToken} Pool</Typography>
       <Spacer size={10} />
       <div onClick={onPoolAddressClick} className="tc__sidebar-pool-link">
         <Typography variant="body-text" color="link">
-          {shortenAccount(activePoolData.address)}
+          {shortenAccount(selectedPoolAddress)}
         </Typography>
       </div>
 

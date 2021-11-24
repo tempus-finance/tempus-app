@@ -1,12 +1,14 @@
 import { useCallback, useContext, useEffect } from 'react';
-import { PoolDataContext } from '../context/poolDataContext';
+import { useState as useHookState } from '@hookstate/core';
+import { dynamicPoolDataState } from '../state/PoolDataState';
 import { WalletContext } from '../context/walletContext';
 import { TempusPool } from '../interfaces/TempusPool';
 import getERC20TokenService from '../services/getERC20TokenService';
 import getConfig from '../utils/getConfig';
 
 const UserShareTokenBalanceProvider = () => {
-  const { setPoolData } = useContext(PoolDataContext);
+  const dynamicPoolData = useHookState(dynamicPoolDataState);
+
   const { userWalletAddress, userWalletSigner } = useContext(WalletContext);
 
   /**
@@ -18,22 +20,16 @@ const UserShareTokenBalanceProvider = () => {
         const principalsService = getERC20TokenService(poolConfig.principalsAddress, userWalletSigner);
         const balance = await principalsService.balanceOf(userWalletAddress);
 
-        setPoolData &&
-          setPoolData(previousData => ({
-            ...previousData,
-            poolData: previousData.poolData.map(previousPoolData => {
-              if (previousPoolData.address !== poolConfig.address) {
-                return previousPoolData;
-              }
-              return {
-                ...previousPoolData,
-                userPrincipalsBalance: balance,
-              };
-            }),
-          }));
+        const currentBalance = dynamicPoolData[poolConfig.address].userPrincipalsBalance.get();
+        // Only update state if fetched user principals balance is different from current user principals balance
+        if (!currentBalance || !currentBalance.eq(balance)) {
+          dynamicPoolData[poolConfig.address].userPrincipalsBalance.set(balance);
+        }
       }
     },
-    [userWalletAddress, userWalletSigner, setPoolData],
+    // TODO - We can now probably remove this provider components and update state directly from service classes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [userWalletSigner, userWalletAddress],
   );
 
   /**
@@ -45,22 +41,16 @@ const UserShareTokenBalanceProvider = () => {
         const yieldsService = getERC20TokenService(poolConfig.yieldsAddress, userWalletSigner);
         const balance = await yieldsService.balanceOf(userWalletAddress);
 
-        setPoolData &&
-          setPoolData(previousData => ({
-            ...previousData,
-            poolData: previousData.poolData.map(previousPoolData => {
-              if (previousPoolData.address !== poolConfig.address) {
-                return previousPoolData;
-              }
-              return {
-                ...previousPoolData,
-                userYieldsBalance: balance,
-              };
-            }),
-          }));
+        const currentBalance = dynamicPoolData[poolConfig.address].userYieldsBalance.get();
+        // Only update state if fetched user yields balance is different from current user yields balance
+        if (!currentBalance || !currentBalance.eq(balance)) {
+          dynamicPoolData[poolConfig.address].userYieldsBalance.set(balance);
+        }
       }
     },
-    [userWalletAddress, userWalletSigner, setPoolData],
+    // TODO - We can now probably remove this provider components and update state directly from service classes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [userWalletSigner, userWalletAddress],
   );
 
   const updatePrincipalsBalance = useCallback(async () => {

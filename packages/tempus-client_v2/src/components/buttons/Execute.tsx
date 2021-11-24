@@ -1,8 +1,8 @@
-import { FC, useContext, useState, useMemo } from 'react';
-import { useState as useHookState } from '@hookstate/core';
+import { FC, useContext, useState } from 'react';
+import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { ethers } from 'ethers';
 import { Button, CircularProgress } from '@material-ui/core';
-import { selectedPoolState } from '../../state/PoolDataState';
+import { selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
 import getNotificationService from '../../services/getNotificationService';
 import {
   generateEtherscanLink,
@@ -12,7 +12,6 @@ import {
 import Typography from '../typography/Typography';
 import getText from '../../localisation/getText';
 import { PendingTransactionsContext } from '../../context/pendingTransactionsContext';
-import { PoolDataContext, getDataForPool, PoolData } from '../../context/poolDataContext';
 import { WalletContext } from '../../context/walletContext';
 import { LanguageContext } from '../../context/languageContext';
 
@@ -22,30 +21,30 @@ interface ExecuteButtonProps {
   disabled: boolean;
   actionName: string;
   actionDescription?: string;
-  tempusPool: PoolData;
   onExecute: () => Promise<ethers.ContractTransaction | undefined>;
   onExecuted: (successful: boolean) => void;
 }
 
 const Execute: FC<ExecuteButtonProps> = props => {
-  const { disabled, actionName, actionDescription, tempusPool, onExecute, onExecuted } = props;
+  const { disabled, actionName, actionDescription, onExecute, onExecuted } = props;
 
   const selectedPool = useHookState(selectedPoolState);
+  const staticPoolData = useHookState(staticPoolDataState);
 
   const { setPendingTransactions } = useContext(PendingTransactionsContext);
-  const { poolData } = useContext(PoolDataContext);
   const { language } = useContext(LanguageContext);
   const { userWalletAddress } = useContext(WalletContext);
 
   const [executeInProgress, setExecuteInProgress] = useState<boolean>(false);
 
-  const selectedPoolData = useMemo(() => {
-    return getDataForPool(selectedPool.get(), poolData);
-  }, [poolData, selectedPool]);
+  const selectedPoolData = staticPoolData[selectedPool.get()].attach(Downgraded).get();
+  const backingToken = staticPoolData[selectedPool.get()].backingToken.attach(Downgraded).get();
+  const protocol = staticPoolData[selectedPool.get()].protocol.attach(Downgraded).get();
+  const maturityDate = staticPoolData[selectedPool.get()].maturityDate.attach(Downgraded).get();
 
   const execute = () => {
     const runExecute = async () => {
-      if (!setPendingTransactions || !selectedPoolData) {
+      if (!setPendingTransactions) {
         return;
       }
       setExecuteInProgress(true);
@@ -59,11 +58,7 @@ const Execute: FC<ExecuteButtonProps> = props => {
         // Notify user about failed action.
         getNotificationService().warn(
           `${actionName} Failed`,
-          generatePoolNotificationInfo(
-            selectedPoolData.backingToken,
-            selectedPoolData.protocol,
-            new Date(selectedPoolData.maturityDate),
-          ),
+          generatePoolNotificationInfo(backingToken, protocol, new Date(maturityDate)),
         );
         setExecuteInProgress(false);
         onExecuted(false);
@@ -107,11 +102,7 @@ const Execute: FC<ExecuteButtonProps> = props => {
         // Notify user about failed action.
         getNotificationService().warn(
           `${actionName} Failed`,
-          generatePoolNotificationInfo(
-            selectedPoolData.backingToken,
-            selectedPoolData.protocol,
-            new Date(selectedPoolData.maturityDate),
-          ),
+          generatePoolNotificationInfo(backingToken, protocol, new Date(maturityDate)),
           generateEtherscanLink(transaction.hash),
           'View on Etherscan',
         );
@@ -140,7 +131,7 @@ const Execute: FC<ExecuteButtonProps> = props => {
           confirmations,
           transaction,
           userWalletAddress,
-          tempusPool,
+          selectedPoolData,
         )}`,
         generateEtherscanLink(transaction.hash),
         'View on Etherscan',

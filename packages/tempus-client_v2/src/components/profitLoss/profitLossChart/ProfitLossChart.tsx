@@ -1,9 +1,8 @@
-import { useContext, useEffect, useMemo, useState } from 'react';
-import { useState as useHookState } from '@hookstate/core';
+import { useContext, useEffect, useState } from 'react';
+import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { AreaChart, Tooltip, Area, ResponsiveContainer } from 'recharts';
-import { selectedPoolState } from '../../../state/PoolDataState';
+import { selectedPoolState, staticPoolDataState } from '../../../state/PoolDataState';
 import getProfitLossGraphDataAdapter from '../../../adapters/getProfitLossGraphDataAdapter';
-import { getDataForPool, PoolDataContext } from '../../../context/poolDataContext';
 import { WalletContext } from '../../../context/walletContext';
 import ChartDataPoint from '../../../interfaces/ChartDataPoint';
 import getPastDaysNumber from '../../../utils/getPastDaysNumber';
@@ -12,16 +11,14 @@ import ProfitLossChartTooltip from './ProfitLossChartTooltip';
 
 const ProfitLossChart = () => {
   const selectedPool = useHookState(selectedPoolState);
+  const staticPoolData = useHookState(staticPoolDataState);
 
   const { userWalletAddress, userWalletSigner } = useContext(WalletContext);
-  const { poolData } = useContext(PoolDataContext);
 
   const [chartData, setChartData] = useState<ChartDataPoint[]>([]);
   const [startDate, setStartDate] = useState<number | null>(null);
 
-  const activePoolData = useMemo(() => {
-    return getDataForPool(selectedPool.get(), poolData);
-  }, [poolData, selectedPool]);
+  const selectedPoolStaticData = staticPoolData[selectedPool.get()].attach(Downgraded).get();
 
   useEffect(() => {
     const fetchChartData = async () => {
@@ -30,14 +27,13 @@ const ProfitLossChart = () => {
       }
       const profitLossGraphDataAdapter = getProfitLossGraphDataAdapter(userWalletSigner);
 
-      const result = await profitLossGraphDataAdapter.generateChartData(activePoolData, userWalletAddress);
+      const result = await profitLossGraphDataAdapter.generateChartData(selectedPoolStaticData, userWalletAddress);
 
       setChartData(result.data);
       setStartDate(result.numberOfPastDays);
     };
     fetchChartData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userWalletAddress, userWalletSigner]);
+  }, [userWalletAddress, userWalletSigner, selectedPoolStaticData]);
 
   return (
     <>

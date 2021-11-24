@@ -1,11 +1,10 @@
 import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { useState as useHookState } from '@hookstate/core';
+import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { ethers, BigNumber } from 'ethers';
 import { catchError, combineLatest } from 'rxjs';
-import { selectedPoolState } from '../../state/PoolDataState';
+import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
 import { LanguageContext } from '../../context/languageContext';
-import { getDataForPool, PoolDataContext } from '../../context/poolDataContext';
 import { WalletContext } from '../../context/walletContext';
 import { Ticker } from '../../interfaces/Token';
 import getText from '../../localisation/getText';
@@ -25,18 +24,17 @@ import './EarlyRedeem.scss';
 
 const EarlyRedeem: FC = () => {
   const selectedPool = useHookState(selectedPoolState);
+  const dynamicPoolData = useHookState(dynamicPoolDataState);
+  const staticPoolData = useHookState(staticPoolDataState);
+
+  const yieldBearingToken = staticPoolData[selectedPool.get()].yieldBearingToken.attach(Downgraded).get();
 
   const { language } = useContext(LanguageContext);
   const { userWalletSigner } = useContext(WalletContext);
   const { userWalletAddress } = useContext(WalletContext);
-  const { poolData } = useContext(PoolDataContext);
-
-  const activePoolData = useMemo(() => {
-    return getDataForPool(selectedPool.get(), poolData);
-  }, [poolData, selectedPool]);
 
   const [isYieldNegative, setIsYieldNegative] = useState<boolean | null>(null);
-  const [selectedToken, setSelectedToken] = useState<Ticker | null>(activePoolData.yieldBearingToken);
+  const [selectedToken, setSelectedToken] = useState<Ticker | null>(yieldBearingToken);
   const [principalsApproved, setPrincipalsApproved] = useState<boolean>(false);
   const [yieldsApproved, setYieldsApproved] = useState<boolean>(false);
   const [amount, setAmount] = useState<string>('');
@@ -47,9 +45,21 @@ const EarlyRedeem: FC = () => {
 
   const [tokenPrecision, setTokenPrecision] = useState<number>(0);
 
+  const selectedPoolAddress = selectedPool.attach(Downgraded).get();
+  const userPrincipalsBalance = dynamicPoolData[selectedPool.get()].userPrincipalsBalance.attach(Downgraded).get();
+  const userYieldsBalance = dynamicPoolData[selectedPool.get()].userYieldsBalance.attach(Downgraded).get();
+  const userBackingTokenBalance = dynamicPoolData[selectedPool.get()].userBackingTokenBalance.attach(Downgraded).get();
+  const userYieldBearingTokenBalance = dynamicPoolData[selectedPool.get()].userYieldBearingTokenBalance
+    .attach(Downgraded)
+    .get();
+  const backingToken = staticPoolData[selectedPool.get()].backingToken.attach(Downgraded).get();
+  const backingTokenAddress = staticPoolData[selectedPool.get()].backingTokenAddress.attach(Downgraded).get();
+  const yieldBearingTokenAddress = staticPoolData[selectedPool.get()].yieldBearingTokenAddress.attach(Downgraded).get();
+  const decimalsForUI = staticPoolData[selectedPool.get()].decimalsForUI.attach(Downgraded).get();
+
   const supportedTokens = useMemo(() => {
-    return [activePoolData.backingToken, activePoolData.yieldBearingToken].filter(token => token !== 'ETH');
-  }, [activePoolData]);
+    return [backingToken, yieldBearingToken].filter(token => token !== 'ETH');
+  }, [backingToken, yieldBearingToken]);
 
   const onTokenChange = useCallback((token: Ticker | undefined) => {
     if (token) {
@@ -69,43 +79,36 @@ const EarlyRedeem: FC = () => {
   );
 
   const onClickMax = useCallback(() => {
-    const data = getDataForPool(activePoolData.address, poolData);
-
     let currentBalance: BigNumber;
-    if (selectedToken === activePoolData.backingToken) {
-      if (!data.userBackingTokenBalance) {
+    if (selectedToken === backingToken) {
+      if (!userBackingTokenBalance) {
         return;
       }
-      currentBalance = data.userBackingTokenBalance;
+      currentBalance = userBackingTokenBalance;
     } else {
-      if (!data.userYieldBearingTokenBalance) {
+      if (!userYieldBearingTokenBalance) {
         return;
       }
-      currentBalance = data.userYieldBearingTokenBalance;
+      currentBalance = userYieldBearingTokenBalance;
     }
 
     setAmount(ethers.utils.formatUnits(currentBalance, tokenPrecision));
-  }, [activePoolData, poolData, selectedToken, tokenPrecision]);
+  }, [backingToken, selectedToken, tokenPrecision, userBackingTokenBalance, userYieldBearingTokenBalance]);
 
   const getSelectedTokenAddress = useCallback((): string | null => {
     if (!selectedToken) {
       return null;
     }
-    return selectedToken === activePoolData.backingToken
-      ? activePoolData.backingTokenAddress
-      : activePoolData.yieldBearingTokenAddress;
-  }, [activePoolData, selectedToken]);
+    return selectedToken === backingToken ? backingTokenAddress : yieldBearingTokenAddress;
+  }, [backingTokenAddress, yieldBearingTokenAddress, backingToken, selectedToken]);
 
   const getSelectedTokenBalance = useCallback((): BigNumber | null => {
     if (!selectedToken) {
       return null;
     }
-    const data = getDataForPool(activePoolData.address, poolData);
 
-    return selectedToken === activePoolData.backingToken
-      ? data.userBackingTokenBalance
-      : data.userYieldBearingTokenBalance;
-  }, [activePoolData, poolData, selectedToken]);
+    return selectedToken === backingToken ? userBackingTokenBalance : userYieldBearingTokenBalance;
+  }, [backingToken, selectedToken, userBackingTokenBalance, userYieldBearingTokenBalance]);
 
   useEffect(() => {
     if (!userWalletSigner) {
@@ -115,7 +118,7 @@ const EarlyRedeem: FC = () => {
     const poolDataAdapter = getPoolDataAdapter(userWalletSigner);
 
     const stream$ = poolDataAdapter
-      .isCurrentYieldNegativeForPool(activePoolData.address)
+      .isCurrentYieldNegativeForPool(selectedPoolAddress)
       .pipe(
         catchError((error, caught) => {
           console.log('Early Redeem - isCurrentYieldNegativeForPool - Failed to retrieve current yield!', error);
@@ -127,7 +130,7 @@ const EarlyRedeem: FC = () => {
       });
 
     return () => stream$.unsubscribe();
-  }, [activePoolData, userWalletSigner]);
+  }, [selectedPoolAddress, userWalletSigner]);
 
   useEffect(() => {
     if (!userWalletSigner) {
@@ -136,28 +139,25 @@ const EarlyRedeem: FC = () => {
 
     const poolDataAdapter = getPoolDataAdapter(userWalletSigner);
 
-    setTokenPrecision(getTokenPrecision(activePoolData.address, 'principals'));
+    setTokenPrecision(getTokenPrecision(selectedPoolAddress, 'principals'));
 
-    const getBackingTokenRate$ = poolDataAdapter.getBackingTokenRate(activePoolData.backingToken);
-    const getYieldBearingTokenRate$ = poolDataAdapter.getYieldBearingTokenRate(
-      activePoolData.address,
-      activePoolData.backingToken,
-    );
+    const getBackingTokenRate$ = poolDataAdapter.getBackingTokenRate(backingToken);
+    const getYieldBearingTokenRate$ = poolDataAdapter.getYieldBearingTokenRate(selectedPoolAddress, backingToken);
 
     const stream$ = combineLatest([getBackingTokenRate$, getYieldBearingTokenRate$]).subscribe(
       ([backingTokenRate, yieldBearingTokenRate]) => {
-        if (selectedToken === activePoolData.backingToken) {
+        if (selectedToken === backingToken) {
           setTokenRate(backingTokenRate);
         }
 
-        if (selectedToken === activePoolData.yieldBearingToken) {
+        if (selectedToken === yieldBearingToken) {
           setTokenRate(yieldBearingTokenRate);
         }
       },
     );
 
     return () => stream$.unsubscribe();
-  }, [activePoolData, userWalletSigner, selectedToken]);
+  }, [selectedPoolAddress, userWalletSigner, selectedToken, backingToken, yieldBearingToken]);
 
   // Fetch estimated withdraw amount of tokens
   useEffect(() => {
@@ -167,12 +167,12 @@ const EarlyRedeem: FC = () => {
 
         try {
           const amountFormatted = ethers.utils.parseUnits(amount, tokenPrecision);
-          const toBackingToken = selectedToken === activePoolData.backingToken;
+          const toBackingToken = selectedToken === backingToken;
 
           setEstimateInProgress(true);
           setEstimatedWithdrawAmount(
             await poolDataAdapter.estimatedRedeem(
-              activePoolData.address,
+              selectedPoolAddress,
               amountFormatted,
               amountFormatted,
               toBackingToken,
@@ -189,7 +189,7 @@ const EarlyRedeem: FC = () => {
       }
     };
     retrieveEstimatedWithdrawAmount();
-  }, [userWalletSigner, activePoolData, tokenPrecision, selectedToken, amount]);
+  }, [userWalletSigner, selectedPoolAddress, tokenPrecision, selectedToken, amount, backingToken]);
 
   const depositDisabled = useMemo((): boolean => {
     return isYieldNegative === null ? true : isYieldNegative;
@@ -201,9 +201,9 @@ const EarlyRedeem: FC = () => {
     }
     return NumberUtils.formatToCurrency(
       ethers.utils.formatUnits(estimatedWithdrawAmount, tokenPrecision),
-      activePoolData.decimalsForUI,
+      decimalsForUI,
     );
-  }, [activePoolData, estimatedWithdrawAmount, tokenPrecision]);
+  }, [decimalsForUI, estimatedWithdrawAmount, tokenPrecision]);
 
   const estimatedWithdrawAmountUsdFormatted = useMemo(() => {
     if (!estimatedWithdrawAmount || !tokenRate) {
@@ -231,12 +231,12 @@ const EarlyRedeem: FC = () => {
     const zeroAmount = isZeroString(amount);
     const amountExceedsPrincipalsBalance = ethers.utils
       .parseUnits(amount || '0', tokenPrecision)
-      .gt(activePoolData.userPrincipalsBalance || BigNumber.from('0'));
+      .gt(userPrincipalsBalance || BigNumber.from('0'));
     const amountExceedsYieldsBalance = ethers.utils
       .parseUnits(amount || '0', tokenPrecision)
-      .gt(activePoolData.userYieldsBalance || BigNumber.from('0'));
-    const principalBalanceZero = activePoolData.userPrincipalsBalance && activePoolData.userPrincipalsBalance.isZero();
-    const yieldsBalanceZero = activePoolData.userYieldsBalance && activePoolData.userYieldsBalance.isZero();
+      .gt(userYieldsBalance || BigNumber.from('0'));
+    const principalBalanceZero = userPrincipalsBalance && userPrincipalsBalance.isZero();
+    const yieldsBalanceZero = userYieldsBalance && userYieldsBalance.isZero();
 
     return (
       (!principalBalanceZero && !principalsApproved) ||
@@ -246,7 +246,15 @@ const EarlyRedeem: FC = () => {
       amountExceedsYieldsBalance ||
       estimateInProgress
     );
-  }, [activePoolData, amount, principalsApproved, yieldsApproved, tokenPrecision, estimateInProgress]);
+  }, [
+    amount,
+    tokenPrecision,
+    userPrincipalsBalance,
+    userYieldsBalance,
+    principalsApproved,
+    yieldsApproved,
+    estimateInProgress,
+  ]);
 
   const onExecute = useCallback(() => {
     if (!userWalletSigner) {
@@ -255,10 +263,10 @@ const EarlyRedeem: FC = () => {
 
     const poolDataAdapter = getPoolDataAdapter(userWalletSigner);
     const amountFormatted = ethers.utils.parseUnits(amount, tokenPrecision);
-    const toBackingToken = selectedToken === activePoolData.backingToken;
+    const toBackingToken = selectedToken === backingToken;
 
-    return poolDataAdapter.executeRedeem(activePoolData.address, userWalletAddress, amountFormatted, toBackingToken);
-  }, [userWalletSigner, activePoolData, amount, selectedToken, userWalletAddress, tokenPrecision]);
+    return poolDataAdapter.executeRedeem(selectedPoolAddress, userWalletAddress, amountFormatted, toBackingToken);
+  }, [userWalletSigner, amount, tokenPrecision, selectedToken, backingToken, selectedPoolAddress, userWalletAddress]);
 
   const onExecuted = useCallback(() => {
     setAmount('');
@@ -309,13 +317,7 @@ const EarlyRedeem: FC = () => {
             marginRight={20}
             onApproveChange={onApproveChange}
           />
-          <Execute
-            actionName="Mint"
-            tempusPool={activePoolData}
-            disabled={executeDisabled}
-            onExecute={onExecute}
-            onExecuted={onExecuted}
-          />
+          <Execute actionName="Mint" disabled={executeDisabled} onExecute={onExecute} onExecuted={onExecuted} />
         </div>
       </SectionContainer>
     </div>

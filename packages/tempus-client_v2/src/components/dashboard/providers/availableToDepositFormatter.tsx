@@ -1,35 +1,48 @@
-import { DataTypeProvider } from '@devexpress/dx-react-grid';
+import { useContext } from 'react';
 import { ethers, BigNumber } from 'ethers';
+import { Downgraded, useState as useHookState } from '@hookstate/core';
+import { DataTypeProvider } from '@devexpress/dx-react-grid';
+import { CircularProgress } from '@material-ui/core';
+import { ZERO } from '../../../constants';
+import {
+  dynamicPoolDataState,
+  DynamicPoolStateData,
+  negativeYieldPoolDataState,
+  NegativeYieldStateData,
+  staticPoolDataState,
+  StaticPoolDataMap,
+} from '../../../state/PoolDataState';
+import { UserSettingsContext } from '../../../context/userSettingsContext';
+import { WalletContext } from '../../../context/walletContext';
 import { DashboardRow, isChildRow, isParentRow } from '../../../interfaces/DashboardRow';
 import { Ticker } from '../../../interfaces/Token';
 import NumberUtils from '../../../services/NumberUtils';
 import Spacer from '../../spacer/spacer';
 import Typography from '../../typography/Typography';
 import TokenIcon from '../../tokenIcon';
+
 import './availableToDepositFormatter.scss';
-import { PoolDataContext, PoolData, getDataForPool } from '../../../context/poolDataContext';
-import { UserSettingsContext } from '../../../context/userSettingsContext';
-import { WalletContext } from '../../../context/walletContext';
-import { useContext, useMemo } from 'react';
-import { CircularProgress } from '@material-ui/core';
-import { ZERO } from '../../../constants';
 
 const AvailableToDepositFormatter = (props: DataTypeProvider.ValueFormatterProps) => {
   const row = props.row as DashboardRow;
 
-  const { poolData } = useContext(PoolDataContext);
+  const dynamicPoolData = useHookState(dynamicPoolDataState).attach(Downgraded).get();
+  const staticPoolData = useHookState(staticPoolDataState).attach(Downgraded).get();
+  const negativeYieldPoolData = useHookState(negativeYieldPoolDataState).attach(Downgraded).get();
+
   const { userWalletConnected } = useContext(WalletContext);
   const { showFiat } = useContext(UserSettingsContext);
 
-  const parentAvailableToDeposit = useMemo(() => {
+  const getParentAvailableToDeposit = () => {
     if (showFiat) {
-      return getParentAvailableToDepositInFiat(row.token, poolData);
+      return getParentAvailableToDepositInFiat(row.token, staticPoolData, dynamicPoolData, negativeYieldPoolData);
     }
 
-    return getParentAvailableToDepositInBackingToken(row.token, poolData);
-  }, [poolData, row.token, showFiat]);
+    return getParentAvailableToDepositInBackingToken(row.token, staticPoolData, dynamicPoolData, negativeYieldPoolData);
+  };
+  const parentAvailableToDeposit = getParentAvailableToDeposit();
 
-  const parentAvailableToDepositFormatted = useMemo(() => {
+  const getParentAvailableToDepositFormatted = () => {
     if (!parentAvailableToDeposit) {
       return null;
     }
@@ -47,26 +60,28 @@ const AvailableToDepositFormatter = (props: DataTypeProvider.ValueFormatterProps
         <>
           {NumberUtils.formatWithMultiplier(ethers.utils.formatEther(parentAvailableToDeposit), 2)}
           <Spacer size={5} />
-          <TokenIcon ticker={poolData[0].backingToken} />
+          <TokenIcon ticker={row.token} />
         </>
       );
     }
 
     return <div className="tc__dashboard__grid__avail-to-deposit__container">{content}</div>;
-  }, [poolData, parentAvailableToDeposit, showFiat]);
+  };
+  const parentAvailableToDepositFormatted = getParentAvailableToDepositFormatted();
 
-  const childAvailableToDeposit = useMemo(() => {
+  const getChildAvailableToDeposit = () => {
     if (isChildRow(row)) {
       if (showFiat) {
-        return getChildAvailableToDepositInFiat(row.id, poolData);
+        return getChildAvailableToDepositInFiat(row.id, dynamicPoolData);
       }
 
-      return getChildAvailableToDepositInBackingToken(row.id, poolData);
+      return getChildAvailableToDepositInBackingToken(row.id, dynamicPoolData);
     }
     return null;
-  }, [poolData, row, showFiat]);
+  };
+  const childAvailableToDeposit = getChildAvailableToDeposit();
 
-  const childAvailableToDepositFormatted = useMemo(() => {
+  const getChildAvailableToDepositFormatted = () => {
     if (!childAvailableToDeposit) {
       return null;
     }
@@ -84,13 +99,14 @@ const AvailableToDepositFormatter = (props: DataTypeProvider.ValueFormatterProps
         <>
           {NumberUtils.formatWithMultiplier(ethers.utils.formatEther(childAvailableToDeposit), 2)}
           <Spacer size={5} />
-          <TokenIcon ticker={poolData[0].backingToken} />
+          <TokenIcon ticker={row.token} />
         </>
       );
     }
 
     return <div className="tc__dashboard__grid__avail-to-deposit__container">{content}</div>;
-  }, [poolData, childAvailableToDeposit, showFiat]);
+  };
+  const childAvailableToDepositFormatted = getChildAvailableToDepositFormatted();
 
   if (!userWalletConnected) {
     return <div></div>;
@@ -121,19 +137,24 @@ const AvailableToDepositFormatter = (props: DataTypeProvider.ValueFormatterProps
   }
 };
 
-const getParentAvailableToDepositInFiat = (parentId: Ticker, poolData: PoolData[]) => {
-  const parentChildren = poolData
-    .filter(pool => pool.backingToken === parentId)
-    .filter(child => {
-      if (!child.isNegativeYield) {
-        return true;
-      }
-
-      return child.userBalanceUSD?.gt(ZERO);
-    });
+const getParentAvailableToDepositInFiat = (
+  parentId: Ticker,
+  staticPoolData: StaticPoolDataMap,
+  dynamicPoolData: DynamicPoolStateData,
+  negativeYieldPoolData: NegativeYieldStateData,
+) => {
+  const parentChildrenAddresses: string[] = [];
+  for (const key in dynamicPoolData) {
+    if (
+      staticPoolData[key].backingToken === parentId &&
+      (!negativeYieldPoolData[key] || dynamicPoolData[key].userBalanceUSD?.gt(ZERO))
+    ) {
+      parentChildrenAddresses.push(key);
+    }
+  }
 
   // In case balance is still loading for some of the parent children, return null (show loading circle in dashboard)
-  const childrenStillLoading = getChildrenStillLoadingInFiat(parentChildren);
+  const childrenStillLoading = getChildrenStillLoadingInFiat(parentChildrenAddresses, dynamicPoolData);
   if (childrenStillLoading) {
     return null;
   }
@@ -142,8 +163,9 @@ const getParentAvailableToDepositInFiat = (parentId: Ticker, poolData: PoolData[
 
   let parentAvailableToDeposit = BigNumber.from('0');
 
-  parentChildren.forEach((child: PoolData) => {
-    const { backingToken, backingTokenValueInFiat, yieldBearingToken, yieldBearingTokenValueInFiat } = child;
+  parentChildrenAddresses.forEach((address: string) => {
+    const { backingToken, yieldBearingToken } = staticPoolData[address];
+    const { backingTokenValueInFiat, yieldBearingTokenValueInFiat } = dynamicPoolData[address];
 
     if (processedTokens[backingToken] === undefined) {
       processedTokens[backingToken] = true;
@@ -159,19 +181,24 @@ const getParentAvailableToDepositInFiat = (parentId: Ticker, poolData: PoolData[
   return parentAvailableToDeposit;
 };
 
-const getParentAvailableToDepositInBackingToken = (parentId: Ticker, poolData: PoolData[]) => {
-  const parentChildren = poolData
-    .filter(pool => pool.backingToken === parentId)
-    .filter(child => {
-      if (!child.isNegativeYield) {
-        return true;
-      }
-
-      return child.userBalanceUSD?.gt(ZERO);
-    });
+const getParentAvailableToDepositInBackingToken = (
+  parentId: Ticker,
+  staticPoolData: StaticPoolDataMap,
+  dynamicPoolData: DynamicPoolStateData,
+  negativeYieldPoolData: NegativeYieldStateData,
+) => {
+  const parentChildrenAddresses: string[] = [];
+  for (const key in dynamicPoolData) {
+    if (
+      staticPoolData[key].backingToken === parentId &&
+      (!negativeYieldPoolData[key] || dynamicPoolData[key].userBalanceUSD?.gt(ZERO))
+    ) {
+      parentChildrenAddresses.push(key);
+    }
+  }
 
   // In case balance is still loading for some of the parent children, return null (show loading circle in dashboard)
-  const childrenStillLoading = getChildrenStillLoadingInBackingToken(parentChildren);
+  const childrenStillLoading = getChildrenStillLoadingInBackingToken(parentChildrenAddresses, dynamicPoolData);
   if (childrenStillLoading) {
     return null;
   }
@@ -180,8 +207,9 @@ const getParentAvailableToDepositInBackingToken = (parentId: Ticker, poolData: P
 
   let parentAvailableToDeposit = BigNumber.from('0');
 
-  parentChildren.forEach((child: PoolData) => {
-    const { backingToken, backingTokensAvailable, yieldBearingToken, yieldBearingTokenValueInBackingToken } = child;
+  parentChildrenAddresses.forEach((address: string) => {
+    const { backingToken, yieldBearingToken } = staticPoolData[address];
+    const { backingTokensAvailable, yieldBearingTokenValueInBackingToken } = dynamicPoolData[address];
 
     if (processedTokens[backingToken] === undefined) {
       processedTokens[backingToken] = true;
@@ -197,22 +225,28 @@ const getParentAvailableToDepositInBackingToken = (parentId: Ticker, poolData: P
   return parentAvailableToDeposit;
 };
 
-const getChildrenStillLoadingInFiat = (children: PoolData[]): boolean =>
-  children.some(child => child.backingTokenValueInFiat === null || child.yieldBearingTokenValueInFiat === null);
+const getChildrenStillLoadingInFiat = (childrenAddresses: string[], dynamicPoolData: DynamicPoolStateData): boolean =>
+  childrenAddresses.some(
+    address =>
+      dynamicPoolData[address].backingTokenValueInFiat === null ||
+      dynamicPoolData[address].yieldBearingTokenValueInFiat === null,
+  );
 
-const getChildrenStillLoadingInBackingToken = (children: PoolData[]): boolean =>
-  children.some(child => child.userBalanceInBackingToken === null);
+const getChildrenStillLoadingInBackingToken = (
+  childrenAddresses: string[],
+  dynamicPoolData: DynamicPoolStateData,
+): boolean => childrenAddresses.some(address => dynamicPoolData[address].userBalanceInBackingToken === null);
 
-const getChildAvailableToDepositInFiat = (id: string, poolData: PoolData[]) => {
-  const child = getDataForPool(id, poolData);
-
-  return (child.backingTokenValueInFiat || ZERO).add(child.yieldBearingTokenValueInFiat || ZERO);
+const getChildAvailableToDepositInFiat = (id: string, dynamicPoolData: DynamicPoolStateData) => {
+  return (dynamicPoolData[id].backingTokenValueInFiat || ZERO).add(
+    dynamicPoolData[id].yieldBearingTokenValueInFiat || ZERO,
+  );
 };
 
-const getChildAvailableToDepositInBackingToken = (id: string, poolData: PoolData[]) => {
-  const child = getDataForPool(id, poolData);
-
-  return (child.backingTokensAvailable || ZERO).add(child.yieldBearingTokenValueInBackingToken || ZERO);
+const getChildAvailableToDepositInBackingToken = (id: string, dynamicPoolData: DynamicPoolStateData) => {
+  return (dynamicPoolData[id].backingTokensAvailable || ZERO).add(
+    dynamicPoolData[id].yieldBearingTokenValueInBackingToken || ZERO,
+  );
 };
 
 export default AvailableToDepositFormatter;

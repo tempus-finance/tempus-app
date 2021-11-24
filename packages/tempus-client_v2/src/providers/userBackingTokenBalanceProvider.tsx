@@ -1,13 +1,15 @@
+import { useState as useHookState } from '@hookstate/core';
 import { useCallback, useContext, useEffect } from 'react';
-import { PoolDataContext } from '../context/poolDataContext';
 import { WalletContext } from '../context/walletContext';
 import { TempusPool } from '../interfaces/TempusPool';
 import getERC20TokenService from '../services/getERC20TokenService';
+import { dynamicPoolDataState } from '../state/PoolDataState';
 import getConfig from '../utils/getConfig';
 
 const UserBackingTokenBalanceProvider = () => {
+  const dynamicPoolData = useHookState(dynamicPoolDataState);
+
   const { userWalletAddress, userWalletSigner } = useContext(WalletContext);
-  const { setPoolData } = useContext(PoolDataContext);
 
   const updateBalanceForPool = useCallback(
     async (tempusPool: TempusPool) => {
@@ -15,22 +17,15 @@ const UserBackingTokenBalanceProvider = () => {
         const backingTokenService = getERC20TokenService(tempusPool.backingTokenAddress, userWalletSigner);
         const backingTokenBalance = await backingTokenService.balanceOf(userWalletAddress);
 
-        setPoolData &&
-          setPoolData(previousData => ({
-            ...previousData,
-            poolData: previousData.poolData.map(previousPoolData => {
-              if (previousPoolData.address !== tempusPool.address) {
-                return previousPoolData;
-              }
-              return {
-                ...previousPoolData,
-                userBackingTokenBalance: backingTokenBalance,
-              };
-            }),
-          }));
+        const currentBalance = dynamicPoolData[tempusPool.address].userBackingTokenBalance.get();
+        // Only update state if fetched user backing token balance is different from current user backing token balance
+        if (!currentBalance || !currentBalance.eq(backingTokenBalance)) {
+          dynamicPoolData[tempusPool.address].userBackingTokenBalance.set(backingTokenBalance);
+        }
       }
     },
-    [setPoolData, userWalletAddress, userWalletSigner],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [userWalletAddress, userWalletSigner],
   );
 
   const updateBalance = useCallback(async () => {

@@ -1,9 +1,8 @@
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { BigNumber, ethers } from 'ethers';
-import { useState as useHookState } from '@hookstate/core';
-import { selectedPoolState } from '../../state/PoolDataState';
+import { Downgraded, useState as useHookState } from '@hookstate/core';
+import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
 import { LanguageContext } from '../../context/languageContext';
-import { getDataForPool, PoolDataContext } from '../../context/poolDataContext';
 import { WalletContext } from '../../context/walletContext';
 import { PoolShares, Ticker } from '../../interfaces/Token';
 import getText from '../../localisation/getText';
@@ -30,43 +29,50 @@ interface TokenDetail {
 
 const Swap = () => {
   const selectedPool = useHookState(selectedPoolState);
+  const dynamicPoolData = useHookState(dynamicPoolDataState);
+  const staticPoolData = useHookState(staticPoolDataState);
 
-  const { poolData } = useContext(PoolDataContext);
+  const selectedPoolAddress = selectedPool.attach(Downgraded).get();
+  const principalsAddress = staticPoolData[selectedPool.get()].principalsAddress.attach(Downgraded).get();
+  const yieldsAddress = staticPoolData[selectedPool.get()].yieldsAddress.attach(Downgraded).get();
+  const decimalsForUI = staticPoolData[selectedPool.get()].decimalsForUI.attach(Downgraded).get();
+  const ammAddress = staticPoolData[selectedPool.get()].ammAddress.attach(Downgraded).get();
+
   const { userWalletSigner, userWalletAddress } = useContext(WalletContext);
   const { language } = useContext(LanguageContext);
 
-  const activePoolData = useMemo(() => {
-    return getDataForPool(selectedPool.get(), poolData);
-  }, [poolData, selectedPool]);
-
   const [tokenFrom, setTokenFrom] = useState<TokenDetail>({
     tokenName: 'Principals',
-    tokenAddress: activePoolData.principalsAddress,
+    tokenAddress: principalsAddress,
   });
   const [tokenTo, setTokenTo] = useState<TokenDetail>({
     tokenName: 'Yields',
-    tokenAddress: activePoolData.yieldsAddress,
+    tokenAddress: yieldsAddress,
   });
   const [selectedToken, setSelectedToken] = useState<Ticker>(tokenFrom.tokenName);
   const [amount, setAmount] = useState<string>('');
   const [receiveAmount, setReceiveAmount] = useState<BigNumber | null>(null);
   const [tokensApproved, setTokensApproved] = useState<boolean>(false);
   const [estimateInProgress, setEstimateInProgress] = useState<boolean>(false);
-  const [tokenPrecision, setTokenPrecision] = useState<number>(getTokenPrecision(activePoolData.address, 'principals'));
+  const [tokenPrecision, setTokenPrecision] = useState<number>(getTokenPrecision(selectedPoolAddress, 'principals'));
+
+  const userPrincipalsBalance = dynamicPoolData[selectedPool.get()].userPrincipalsBalance.attach(Downgraded).get();
+  const userYieldsBalance = dynamicPoolData[selectedPool.get()].userYieldsBalance.attach(Downgraded).get();
 
   const getSelectedTokenBalance = useCallback((): BigNumber | null => {
     if (!selectedToken) {
       return null;
     }
-    return selectedToken === 'Principals' ? activePoolData.userPrincipalsBalance : activePoolData.userYieldsBalance;
-  }, [selectedToken, activePoolData]);
+
+    return selectedToken === 'Principals' ? userPrincipalsBalance : userYieldsBalance;
+  }, [selectedToken, userPrincipalsBalance, userYieldsBalance]);
 
   const getSelectedTokenAddress = useCallback((): string | null => {
     if (!selectedToken) {
       return null;
     }
-    return selectedToken === 'Principals' ? activePoolData.principalsAddress : activePoolData.yieldsAddress;
-  }, [activePoolData, selectedToken]);
+    return selectedToken === 'Principals' ? principalsAddress : yieldsAddress;
+  }, [principalsAddress, selectedToken, yieldsAddress]);
 
   const onAmountChange = useCallback(
     (amount: string) => {
@@ -101,11 +107,11 @@ const Swap = () => {
     setSelectedToken(tokenToOld.tokenName);
 
     if (tokenToOld.tokenName === 'Principals') {
-      setTokenPrecision(getTokenPrecision(activePoolData.address, 'principals'));
+      setTokenPrecision(getTokenPrecision(selectedPoolAddress, 'principals'));
     } else {
-      setTokenPrecision(getTokenPrecision(activePoolData.address, 'yields'));
+      setTokenPrecision(getTokenPrecision(selectedPoolAddress, 'yields'));
     }
-  }, [activePoolData.address, tokenFrom, tokenTo]);
+  }, [selectedPoolAddress, tokenFrom, tokenTo]);
 
   const onTokenFromChange = useCallback(
     (token: Ticker | undefined) => {
@@ -137,7 +143,7 @@ const Swap = () => {
 
     const amountParsed = ethers.utils.parseUnits(amount, tokenPrecision);
     return poolDataAdapter.swapShareTokens(
-      activePoolData.ammAddress,
+      ammAddress,
       SwapKind.GIVEN_IN,
       tokenFrom.tokenAddress,
       tokenTo.tokenAddress,
@@ -148,7 +154,7 @@ const Swap = () => {
     userWalletSigner,
     amount,
     tokenPrecision,
-    activePoolData.ammAddress,
+    ammAddress,
     tokenFrom.tokenAddress,
     tokenTo.tokenAddress,
     userWalletAddress,
@@ -177,7 +183,7 @@ const Swap = () => {
       try {
         setEstimateInProgress(true);
         const estimatedReceiveAmount = await poolDataAdapter.getExpectedReturnForShareToken(
-          activePoolData.ammAddress,
+          ammAddress,
           amountParsed,
           yieldShareIn,
         );
@@ -189,28 +195,22 @@ const Swap = () => {
       }
     };
     getReceiveAmount();
-  }, [tokenPrecision, amount, tokenFrom, setReceiveAmount, userWalletSigner, activePoolData]);
+  }, [tokenPrecision, amount, tokenFrom, userWalletSigner, ammAddress]);
 
   const balanceFormatted = useMemo(() => {
     const currentBalance = getSelectedTokenBalance();
     if (!currentBalance) {
       return null;
     }
-    return NumberUtils.formatToCurrency(
-      ethers.utils.formatUnits(currentBalance, tokenPrecision),
-      activePoolData.decimalsForUI,
-    );
-  }, [tokenPrecision, getSelectedTokenBalance, activePoolData]);
+    return NumberUtils.formatToCurrency(ethers.utils.formatUnits(currentBalance, tokenPrecision), decimalsForUI);
+  }, [getSelectedTokenBalance, tokenPrecision, decimalsForUI]);
 
   const receiveAmountFormatted = useMemo(() => {
     if (!receiveAmount) {
       return null;
     }
-    return NumberUtils.formatToCurrency(
-      ethers.utils.formatUnits(receiveAmount, tokenPrecision),
-      activePoolData.decimalsForUI,
-    );
-  }, [receiveAmount, tokenPrecision, activePoolData]);
+    return NumberUtils.formatToCurrency(ethers.utils.formatUnits(receiveAmount, tokenPrecision), decimalsForUI);
+  }, [receiveAmount, tokenPrecision, decimalsForUI]);
 
   const approveDisabled = useMemo((): boolean => {
     const zeroAmount = isZeroString(amount);
@@ -270,13 +270,7 @@ const Swap = () => {
             marginRight={20}
             disabled={approveDisabled}
           />
-          <Execute
-            actionName="Swap"
-            tempusPool={activePoolData}
-            disabled={executeDisabled}
-            onExecute={onExecute}
-            onExecuted={onExecuted}
-          />
+          <Execute actionName="Swap" disabled={executeDisabled} onExecute={onExecute} onExecuted={onExecuted} />
         </div>
       </SectionContainer>
     </div>

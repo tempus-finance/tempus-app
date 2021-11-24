@@ -1,11 +1,10 @@
 import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { useState as useHookState } from '@hookstate/core';
+import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { ethers, BigNumber } from 'ethers';
 import { catchError } from 'rxjs';
-import { selectedPoolState } from '../../state/PoolDataState';
+import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
 import { LanguageContext } from '../../context/languageContext';
-import { getDataForPool, PoolDataContext } from '../../context/poolDataContext';
 import { WalletContext } from '../../context/walletContext';
 import { Ticker } from '../../interfaces/Token';
 import getText from '../../localisation/getText';
@@ -31,11 +30,12 @@ type MintInProps = {
 
 const Mint: FC<MintInProps> = ({ narrow }) => {
   const selectedPool = useHookState(selectedPoolState);
+  const staticPoolData = useHookState(staticPoolDataState);
+  const dynamicPoolData = useHookState(dynamicPoolDataState);
 
   const { language } = useContext(LanguageContext);
   const { userWalletSigner } = useContext(WalletContext);
   const { userWalletAddress } = useContext(WalletContext);
-  const { poolData } = useContext(PoolDataContext);
 
   const [isYieldNegative, setIsYieldNegative] = useState<boolean | null>(null);
   const [selectedToken, setSelectedToken] = useState<Ticker | null>(null);
@@ -54,9 +54,17 @@ const Mint: FC<MintInProps> = ({ narrow }) => {
 
   const [tokenPrecision, setTokenPrecision] = useState<number>(0);
 
-  const activePoolData = useMemo(() => {
-    return getDataForPool(selectedPool.get(), poolData);
-  }, [poolData, selectedPool]);
+  const selectedPoolAddress = selectedPool.attach(Downgraded).get();
+  const ammAddress = staticPoolData[selectedPool.get()].ammAddress.attach(Downgraded).get();
+  const backingToken = staticPoolData[selectedPool.get()].backingToken.attach(Downgraded).get();
+  const yieldBearingToken = staticPoolData[selectedPool.get()].yieldBearingToken.attach(Downgraded).get();
+  const backingTokenAddress = staticPoolData[selectedPool.get()].backingTokenAddress.attach(Downgraded).get();
+  const yieldBearingTokenAddress = staticPoolData[selectedPool.get()].yieldBearingTokenAddress.attach(Downgraded).get();
+  const decimalsForUI = staticPoolData[selectedPool.get()].decimalsForUI.attach(Downgraded).get();
+  const userBackingTokenBalance = dynamicPoolData[selectedPool.get()].userBackingTokenBalance.attach(Downgraded).get();
+  const userYieldBearingTokenBalance = dynamicPoolData[selectedPool.get()].userYieldBearingTokenBalance
+    .attach(Downgraded)
+    .get();
 
   const onTokenChange = useCallback(
     (token: Ticker | undefined) => {
@@ -64,22 +72,22 @@ const Mint: FC<MintInProps> = ({ narrow }) => {
         setSelectedToken(token);
         setAmount('');
 
-        if (activePoolData.backingToken === token) {
-          setTokenPrecision(getTokenPrecision(activePoolData.address, 'backingToken'));
+        if (backingToken === token) {
+          setTokenPrecision(getTokenPrecision(selectedPoolAddress, 'backingToken'));
           if (backingTokenRate !== null) {
             setUsdRate(backingTokenRate);
           }
         }
 
-        if (activePoolData.backingToken !== token) {
-          setTokenPrecision(getTokenPrecision(activePoolData.address, 'yieldBearingToken'));
+        if (backingToken !== token) {
+          setTokenPrecision(getTokenPrecision(selectedPoolAddress, 'yieldBearingToken'));
           if (yieldBearingTokenRate !== null) {
             setUsdRate(yieldBearingTokenRate);
           }
         }
       }
     },
-    [activePoolData, backingTokenRate, yieldBearingTokenRate, setSelectedToken, setAmount],
+    [backingToken, selectedPoolAddress, backingTokenRate, yieldBearingTokenRate],
   );
 
   const onAmountChange = useCallback(
@@ -94,34 +102,29 @@ const Mint: FC<MintInProps> = ({ narrow }) => {
   );
 
   const onClickMax = useCallback(() => {
-    const data = getDataForPool(activePoolData.address, poolData);
-
     let currentBalance: BigNumber;
-    if (selectedToken === activePoolData.backingToken) {
-      if (!data.userBackingTokenBalance) {
+    if (selectedToken === backingToken) {
+      if (!userBackingTokenBalance) {
         return;
       }
-      currentBalance = data.userBackingTokenBalance;
+      currentBalance = userBackingTokenBalance;
     } else {
-      if (!data.userYieldBearingTokenBalance) {
+      if (!userYieldBearingTokenBalance) {
         return;
       }
-      currentBalance = data.userYieldBearingTokenBalance;
+      currentBalance = userYieldBearingTokenBalance;
     }
 
     setAmount(ethers.utils.formatUnits(currentBalance, tokenPrecision));
-  }, [activePoolData, poolData, selectedToken, tokenPrecision]);
+  }, [backingToken, selectedToken, tokenPrecision, userBackingTokenBalance, userYieldBearingTokenBalance]);
 
   const getSelectedTokenBalance = useCallback((): BigNumber | null => {
     if (!selectedToken) {
       return null;
     }
-    const data = getDataForPool(activePoolData.address, poolData);
 
-    return selectedToken === activePoolData.backingToken
-      ? data.userBackingTokenBalance
-      : data.userYieldBearingTokenBalance;
-  }, [activePoolData, poolData, selectedToken]);
+    return selectedToken === backingToken ? userBackingTokenBalance : userYieldBearingTokenBalance;
+  }, [backingToken, selectedToken, userBackingTokenBalance, userYieldBearingTokenBalance]);
 
   const balanceFormatted = useMemo(() => {
     let currentBalance = getSelectedTokenBalance();
@@ -129,21 +132,15 @@ const Mint: FC<MintInProps> = ({ narrow }) => {
       return null;
     }
 
-    return NumberUtils.formatToCurrency(
-      ethers.utils.formatUnits(currentBalance, tokenPrecision),
-      activePoolData.decimalsForUI,
-    );
-  }, [activePoolData, getSelectedTokenBalance, tokenPrecision]);
+    return NumberUtils.formatToCurrency(ethers.utils.formatUnits(currentBalance, tokenPrecision), decimalsForUI);
+  }, [decimalsForUI, getSelectedTokenBalance, tokenPrecision]);
 
   const estimatedTokensFormatted = useMemo(() => {
     if (!estimatedTokens) {
       return null;
     }
-    return NumberUtils.formatToCurrency(
-      ethers.utils.formatUnits(estimatedTokens, tokenPrecision),
-      activePoolData.decimalsForUI,
-    );
-  }, [activePoolData, estimatedTokens, tokenPrecision]);
+    return NumberUtils.formatToCurrency(ethers.utils.formatUnits(estimatedTokens, tokenPrecision), decimalsForUI);
+  }, [decimalsForUI, estimatedTokens, tokenPrecision]);
 
   const usdValueFormatted = useMemo(() => {
     if (!usdRate || !amount) {
@@ -163,29 +160,21 @@ const Mint: FC<MintInProps> = ({ narrow }) => {
     if (!selectedToken) {
       return null;
     }
-    return selectedToken === activePoolData.backingToken
-      ? activePoolData.backingTokenAddress
-      : activePoolData.yieldBearingTokenAddress;
-  }, [activePoolData, selectedToken]);
+    return selectedToken === backingToken ? backingTokenAddress : yieldBearingTokenAddress;
+  }, [backingTokenAddress, yieldBearingTokenAddress, backingToken, selectedToken]);
 
   const onExecute = useCallback((): Promise<ethers.ContractTransaction | undefined> => {
     if (userWalletSigner && amount) {
       const poolDataAdapter = getPoolDataAdapter(userWalletSigner);
       const tokenAmount = ethers.utils.parseUnits(amount, tokenPrecision);
-      const isBackingToken = activePoolData.backingToken === selectedToken;
+      const isBackingToken = backingToken === selectedToken;
       const isEthDeposit = selectedToken === 'ETH';
 
-      return poolDataAdapter.deposit(
-        activePoolData.address,
-        tokenAmount,
-        userWalletAddress,
-        isBackingToken,
-        isEthDeposit,
-      );
+      return poolDataAdapter.deposit(selectedPoolAddress, tokenAmount, userWalletAddress, isBackingToken, isEthDeposit);
     } else {
       return Promise.resolve(undefined);
     }
-  }, [activePoolData, userWalletSigner, userWalletAddress, tokenPrecision, selectedToken, amount]);
+  }, [userWalletSigner, amount, tokenPrecision, backingToken, selectedToken, selectedPoolAddress, userWalletAddress]);
 
   const onExecuted = useCallback(() => {
     setAmount('');
@@ -196,10 +185,10 @@ const Mint: FC<MintInProps> = ({ narrow }) => {
   }, []);
 
   useEffect(() => {
-    if (userWalletSigner && activePoolData.address && activePoolData.ammAddress) {
+    if (userWalletSigner && selectedPoolAddress && ammAddress) {
       const poolDataAdapter = getPoolDataAdapter(userWalletSigner);
       const stream$ = poolDataAdapter
-        .retrieveBalances(activePoolData.address, activePoolData.ammAddress, userWalletAddress, userWalletSigner)
+        .retrieveBalances(selectedPoolAddress, ammAddress, userWalletAddress, userWalletSigner)
         .pipe(
           catchError((error, caught) => {
             console.log('Mint - retrieveTokenRates - Failed to retrieve token rates!', error);
@@ -216,12 +205,13 @@ const Mint: FC<MintInProps> = ({ narrow }) => {
       return () => stream$.unsubscribe();
     }
   }, [
-    activePoolData,
+    selectedPoolAddress,
     userWalletSigner,
     userWalletAddress,
     selectedToken,
     setBackingTokenRate,
     setYieldBearingTokenRate,
+    ammAddress,
   ]);
 
   useEffect(() => {
@@ -230,13 +220,13 @@ const Mint: FC<MintInProps> = ({ narrow }) => {
     }
 
     const poolDataAdapter = getPoolDataAdapter(userWalletSigner);
-    const isBackingToken = selectedToken === activePoolData.backingToken;
+    const isBackingToken = selectedToken === backingToken;
     const amountParsed = ethers.utils.parseUnits(amount, tokenPrecision);
 
     try {
       setEstimateInProgress(true);
       const stream$ = poolDataAdapter
-        .estimatedMintedShares(activePoolData.address, amountParsed, isBackingToken)
+        .estimatedMintedShares(selectedPoolAddress, amountParsed, isBackingToken)
         .pipe(
           catchError((error, caught) => {
             console.log('Mint - estimatedMintedShares - Failed to retrieve estimated minted shares!', error);
@@ -253,7 +243,7 @@ const Mint: FC<MintInProps> = ({ narrow }) => {
       console.error('Mint - getEstimates() - Failed to get estimates for selected token!', error);
       setEstimateInProgress(false);
     }
-  }, [activePoolData, tokenPrecision, amount, userWalletSigner, selectedToken]);
+  }, [tokenPrecision, amount, userWalletSigner, selectedToken, backingToken, selectedPoolAddress]);
 
   useEffect(() => {
     if (!userWalletSigner) {
@@ -263,7 +253,7 @@ const Mint: FC<MintInProps> = ({ narrow }) => {
     const poolDataAdapter = getPoolDataAdapter(userWalletSigner);
 
     const stream$ = poolDataAdapter
-      .isCurrentYieldNegativeForPool(activePoolData.address)
+      .isCurrentYieldNegativeForPool(selectedPoolAddress)
       .pipe(
         catchError((error, caught) => {
           console.log('Mint - isCurrentYieldNegativeForPool - Failed to retrieve current yield!', error);
@@ -275,7 +265,7 @@ const Mint: FC<MintInProps> = ({ narrow }) => {
       });
 
     return () => stream$.unsubscribe();
-  }, [activePoolData, userWalletSigner]);
+  }, [selectedPoolAddress, userWalletSigner]);
 
   const approveDisabled = useMemo((): boolean => {
     const zeroAmount = isZeroString(amount);
@@ -298,7 +288,7 @@ const Mint: FC<MintInProps> = ({ narrow }) => {
         <div className="tf__flex-row-center-v">
           <TokenSelector
             value={selectedToken}
-            tickers={[activePoolData.backingToken, activePoolData.yieldBearingToken]}
+            tickers={[backingToken, yieldBearingToken]}
             onTokenChange={onTokenChange}
           />
           <Spacer size={15} />
@@ -382,13 +372,7 @@ const Mint: FC<MintInProps> = ({ narrow }) => {
             marginRight={20}
             onApproveChange={onApproveChange}
           />
-          <Execute
-            actionName="Mint"
-            tempusPool={activePoolData}
-            disabled={executeDisabled}
-            onExecute={onExecute}
-            onExecuted={onExecuted}
-          />
+          <Execute actionName="Mint" disabled={executeDisabled} onExecute={onExecute} onExecuted={onExecuted} />
         </div>
       </SectionContainer>
     </div>

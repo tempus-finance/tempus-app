@@ -1,7 +1,7 @@
 import { ethers, BigNumber } from 'ethers';
-import { useContext, useEffect, useMemo, useState } from 'react';
+import { useContext, useMemo } from 'react';
+import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { CircularProgress } from '@material-ui/core';
-import { PoolData, getDataForPool, PoolDataContext } from '../../../context/poolDataContext';
 import { UserSettingsContext } from '../../../context/userSettingsContext';
 import { WalletContext } from '../../../context/walletContext';
 import { Ticker } from '../../../interfaces/Token';
@@ -12,14 +12,41 @@ import Spacer from '../../spacer/spacer';
 import TokenIcon from '../../tokenIcon';
 
 import './balanceFormatter.scss';
+import {
+  dynamicPoolDataState,
+  DynamicPoolStateData,
+  negativeYieldPoolDataState,
+  NegativeYieldStateData,
+  staticPoolDataState,
+  StaticPoolDataMap,
+} from '../../../state/PoolDataState';
 
 const BalanceFormatter = ({ row }: any) => {
   const isChild = useMemo(() => Boolean(row.parentId), [row.parentId]);
 
-  const { poolData } = useContext(PoolDataContext);
+  const dynamicPoolData = useHookState(dynamicPoolDataState).attach(Downgraded).get();
+  const staticPoolData = useHookState(staticPoolDataState).attach(Downgraded).get();
+  const negativeYieldPoolData = useHookState(negativeYieldPoolDataState).attach(Downgraded).get();
+
   const { userWalletConnected } = useContext(WalletContext);
   const { showFiat } = useContext(UserSettingsContext);
-  const [balance, setBalance] = useState<BigNumber | null>(null);
+
+  const getBalance = () => {
+    if (!isChild) {
+      if (showFiat) {
+        return getParentBalanceInFiat(row.id, staticPoolData, dynamicPoolData, negativeYieldPoolData);
+      } else {
+        return getParentBalanceInBackingToken(row.id, staticPoolData, dynamicPoolData, negativeYieldPoolData);
+      }
+    } else {
+      if (showFiat) {
+        return getChildBalanceInFiat(row.id, dynamicPoolData);
+      } else {
+        return getChildBalanceInBackingToken(row.id, dynamicPoolData);
+      }
+    }
+  };
+  const balance = getBalance();
 
   const balanceFormatted = useMemo(() => {
     if (!balance) {
@@ -36,29 +63,13 @@ const BalanceFormatter = ({ row }: any) => {
         <>
           {NumberUtils.formatWithMultiplier(ethers.utils.formatEther(balance), 2)}
           <Spacer size={5} />
-          <TokenIcon ticker={poolData[0].backingToken} />
+          <TokenIcon ticker={row.token} />
         </>
       );
     }
 
     return <div className="tc__dashboard__grid__balance__container">{content}</div>;
-  }, [poolData, balance, showFiat]);
-
-  useEffect(() => {
-    if (!isChild) {
-      if (showFiat) {
-        setBalance(getParentBalanceInFiat(row.id, poolData));
-      } else {
-        setBalance(getParentBalanceInBackingToken(row.id, poolData));
-      }
-    } else {
-      if (showFiat) {
-        setBalance(getChildBalanceInFiat(row.id, poolData));
-      } else {
-        setBalance(getChildBalanceInBackingToken(row.id, poolData));
-      }
-    }
-  }, [isChild, poolData, row.id, showFiat]);
+  }, [balance, showFiat, row.token]);
 
   if (!userWalletConnected) {
     return <div></div>;
@@ -77,59 +88,75 @@ const BalanceFormatter = ({ row }: any) => {
 };
 export default BalanceFormatter;
 
-const getParentBalanceInFiat = (parentId: Ticker, poolData: PoolData[]): BigNumber | null => {
-  const parentChildren = poolData.filter(data => {
-    return data.backingToken === parentId;
-  });
+const getParentBalanceInFiat = (
+  parentId: Ticker,
+  staticPoolData: StaticPoolDataMap,
+  dynamicPoolData: DynamicPoolStateData,
+  negativeYieldPoolData: NegativeYieldStateData,
+): BigNumber | null => {
+  const parentChildrenAddresses: string[] = [];
+  for (const key in dynamicPoolData) {
+    if (
+      staticPoolData[key].backingToken === parentId &&
+      (!negativeYieldPoolData[key] || dynamicPoolData[key].userBalanceUSD?.gt(ZERO))
+    ) {
+      parentChildrenAddresses.push(key);
+    }
+  }
 
   // In case balance is still loading for some of the parent children, return null (show loading circle in dashboard)
-  const childrenStillLoading = getChildrenStillLoadingInFiat(parentChildren);
+  const childrenStillLoading = getChildrenStillLoadingInFiat(parentChildrenAddresses, dynamicPoolData);
   if (childrenStillLoading) {
     return null;
   }
 
   let parentBalance = BigNumber.from('0');
-  parentChildren.forEach(child => {
-    if (child.isNegativeYield && child.userBalanceUSD?.lte(ZERO)) {
-      return;
-    }
-
-    parentBalance = parentBalance.add(child.userBalanceUSD || BigNumber.from('0'));
+  parentChildrenAddresses.forEach(address => {
+    parentBalance = parentBalance.add(dynamicPoolData[address].userBalanceUSD || BigNumber.from('0'));
   });
 
   return parentBalance;
 };
 
-const getParentBalanceInBackingToken = (parentId: Ticker, poolData: PoolData[]): BigNumber | null => {
-  const parentChildren = poolData.filter(data => {
-    return data.backingToken === parentId;
-  });
+const getParentBalanceInBackingToken = (
+  parentId: Ticker,
+  staticPoolData: StaticPoolDataMap,
+  dynamicPoolData: DynamicPoolStateData,
+  negativeYieldPoolData: NegativeYieldStateData,
+): BigNumber | null => {
+  const parentChildrenAddresses: string[] = [];
+  for (const key in dynamicPoolData) {
+    if (
+      staticPoolData[key].backingToken === parentId &&
+      (!negativeYieldPoolData[key] || dynamicPoolData[key].userBalanceUSD?.gt(ZERO))
+    ) {
+      parentChildrenAddresses.push(key);
+    }
+  }
 
   // In case balance is still loading for some of the parent children, return null (show loading circle in dashboard)
-  const childrenStillLoading = getChildrenStillLoadingInBackingToken(parentChildren);
+  const childrenStillLoading = getChildrenStillLoadingInBackingToken(parentChildrenAddresses, dynamicPoolData);
   if (childrenStillLoading) {
     return null;
   }
 
   let parentBalance = BigNumber.from('0');
-  parentChildren.forEach(child => {
-    if (child.isNegativeYield && child.userBalanceInBackingToken?.lte(ZERO)) {
-      return;
-    }
-
-    parentBalance = parentBalance.add(child.userBalanceInBackingToken || BigNumber.from('0'));
+  parentChildrenAddresses.forEach(address => {
+    parentBalance = parentBalance.add(dynamicPoolData[address].userBalanceInBackingToken || BigNumber.from('0'));
   });
 
   return parentBalance;
 };
 
-const getChildrenStillLoadingInFiat = (children: PoolData[]): boolean =>
-  children.some(child => child.userBalanceUSD === null);
-const getChildrenStillLoadingInBackingToken = (children: PoolData[]): boolean =>
-  children.some(child => child.userBackingTokenBalance === null);
+const getChildrenStillLoadingInFiat = (childrenAddresses: string[], dynamicPoolData: DynamicPoolStateData): boolean =>
+  childrenAddresses.some(address => dynamicPoolData[address].userBalanceUSD === null);
+const getChildrenStillLoadingInBackingToken = (
+  childrenAddresses: string[],
+  dynamicPoolData: DynamicPoolStateData,
+): boolean => childrenAddresses.some(address => dynamicPoolData[address].userBackingTokenBalance === null);
 
-const getChildBalanceInFiat = (childId: string, poolData: PoolData[]): BigNumber | null =>
-  getDataForPool(childId, poolData).userBalanceUSD;
+const getChildBalanceInFiat = (childId: string, dynamicPoolData: DynamicPoolStateData): BigNumber | null =>
+  dynamicPoolData[childId].userBalanceUSD;
 
-const getChildBalanceInBackingToken = (childId: string, poolData: PoolData[]): BigNumber | null =>
-  getDataForPool(childId, poolData).userBalanceInBackingToken;
+const getChildBalanceInBackingToken = (childId: string, dynamicPoolData: DynamicPoolStateData): BigNumber | null =>
+  dynamicPoolData[childId].userBalanceInBackingToken;

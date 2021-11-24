@@ -1,12 +1,14 @@
 import { useCallback, useContext, useEffect } from 'react';
+import { useState as useHookState } from '@hookstate/core';
 import getConfig from '../utils/getConfig';
 import getDefaultProvider from '../services/getDefaultProvider';
 import getTempusAMMService from '../services/getTempusAMMService';
-import { PoolDataContext } from '../context/poolDataContext';
 import { WalletContext } from '../context/walletContext';
+import { dynamicPoolDataState } from '../state/PoolDataState';
 
 const FixedAPRProvider = () => {
-  const { setPoolData } = useContext(PoolDataContext);
+  const dynamicPoolData = useHookState(dynamicPoolDataState);
+
   const { userWalletConnected, userWalletSigner } = useContext(WalletContext);
 
   /**
@@ -24,7 +26,7 @@ const FixedAPRProvider = () => {
    * Fetch Fixed APR for all tempus pools on each block event
    */
   const fetchAPR = useCallback(async () => {
-    if (!setPoolData || !document.hasFocus()) {
+    if (!document.hasFocus()) {
       return;
     }
     const provider = getProvider();
@@ -55,17 +57,17 @@ const FixedAPRProvider = () => {
       }),
     );
 
-    setPoolData(previousData => ({
-      ...previousData,
-      poolData: previousData.poolData.map(previousPoolData => {
-        const poolAPRData = fetchedPoolAPRData.find(data => data.address === previousPoolData.address);
-        return {
-          ...previousPoolData,
-          fixedAPR: poolAPRData ? poolAPRData.fixedAPR : null,
-        };
-      }),
-    }));
-  }, [getProvider, setPoolData]);
+    fetchedPoolAPRData.forEach(fetchedAPRData => {
+      const currentFixedAPR = dynamicPoolData[fetchedAPRData.address].fixedAPR.get();
+      // Only update state if fetched APR is different from current APR
+      // (if APR fetch failed, ie: "fetchedAPRData.fixedAPR === null" -> keep current APR value)
+      if (!currentFixedAPR || (fetchedAPRData.fixedAPR && currentFixedAPR !== fetchedAPRData.fixedAPR)) {
+        dynamicPoolData[fetchedAPRData.address].fixedAPR.set(fetchedAPRData.fixedAPR);
+      }
+    });
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [getProvider]);
 
   /**
    * Update Fixed APR for all pools on each block.
