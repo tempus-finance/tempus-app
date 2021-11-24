@@ -30,6 +30,7 @@ export interface DynamicPoolData extends AvailableToDeposit {
   userPrincipalsBalance: BigNumber | null;
   userYieldsBalance: BigNumber | null;
   userLPTokenBalance: BigNumber | null;
+  userBackingTokenBalance: BigNumber | null;
   userBalanceInBackingToken: BigNumber | null;
   userYieldBearingTokenBalance: BigNumber | null;
   tvl: BigNumber | null;
@@ -52,6 +53,7 @@ getConfig().tempusPools.forEach(tempusPoolConfig => {
     backingTokenValueInFiat: null,
     yieldBearingTokenValueInFiat: null,
     userBalanceInBackingToken: null,
+    userBackingTokenBalance: null,
     backingTokensAvailable: null,
     yieldBearingTokenValueInBackingToken: null,
     userYieldBearingTokenBalance: null,

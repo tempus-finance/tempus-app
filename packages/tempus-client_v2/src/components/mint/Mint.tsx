@@ -61,9 +61,7 @@ const Mint: FC<MintInProps> = ({ narrow }) => {
   const backingTokenAddress = staticPoolData[selectedPool.get()].backingTokenAddress.attach(Downgraded).get();
   const yieldBearingTokenAddress = staticPoolData[selectedPool.get()].yieldBearingTokenAddress.attach(Downgraded).get();
   const decimalsForUI = staticPoolData[selectedPool.get()].decimalsForUI.attach(Downgraded).get();
-  const userBalanceInBackingToken = dynamicPoolData[selectedPool.get()].userBalanceInBackingToken
-    .attach(Downgraded)
-    .get();
+  const userBackingTokenBalance = dynamicPoolData[selectedPool.get()].userBackingTokenBalance.attach(Downgraded).get();
   const userYieldBearingTokenBalance = dynamicPoolData[selectedPool.get()].userYieldBearingTokenBalance
     .attach(Downgraded)
     .get();
@@ -106,10 +104,10 @@ const Mint: FC<MintInProps> = ({ narrow }) => {
   const onClickMax = useCallback(() => {
     let currentBalance: BigNumber;
     if (selectedToken === backingToken) {
-      if (!userBalanceInBackingToken) {
+      if (!userBackingTokenBalance) {
         return;
       }
-      currentBalance = userBalanceInBackingToken;
+      currentBalance = userBackingTokenBalance;
     } else {
       if (!userYieldBearingTokenBalance) {
         return;
@@ -118,15 +116,15 @@ const Mint: FC<MintInProps> = ({ narrow }) => {
     }
 
     setAmount(ethers.utils.formatUnits(currentBalance, tokenPrecision));
-  }, [backingToken, selectedToken, tokenPrecision, userBalanceInBackingToken, userYieldBearingTokenBalance]);
+  }, [backingToken, selectedToken, tokenPrecision, userBackingTokenBalance, userYieldBearingTokenBalance]);
 
   const getSelectedTokenBalance = useCallback((): BigNumber | null => {
     if (!selectedToken) {
       return null;
     }
 
-    return selectedToken === backingToken ? userBalanceInBackingToken : userYieldBearingTokenBalance;
-  }, [backingToken, selectedToken, userBalanceInBackingToken, userYieldBearingTokenBalance]);
+    return selectedToken === backingToken ? userBackingTokenBalance : userYieldBearingTokenBalance;
+  }, [backingToken, selectedToken, userBackingTokenBalance, userYieldBearingTokenBalance]);
 
   const balanceFormatted = useMemo(() => {
     let currentBalance = getSelectedTokenBalance();

@@ -67,9 +67,7 @@ const Deposit: FC<DepositProps> = ({ narrow, poolDataAdapter }) => {
   const selectedPoolAddress = selectedPool.attach(Downgraded).get();
   const fixedAPR = dynamicPoolData[selectedPool.get()].fixedAPR.attach(Downgraded).get();
   const variableAPR = dynamicPoolData[selectedPool.get()].variableAPR.attach(Downgraded).get();
-  const userBalanceInBackingToken = dynamicPoolData[selectedPool.get()].userBalanceInBackingToken
-    .attach(Downgraded)
-    .get();
+  const userBackingTokenBalance = dynamicPoolData[selectedPool.get()].userBackingTokenBalance.attach(Downgraded).get();
   const userYieldBearingTokenBalance = dynamicPoolData[selectedPool.get()].userYieldBearingTokenBalance
     .attach(Downgraded)
     .get();
@@ -117,10 +115,10 @@ const Deposit: FC<DepositProps> = ({ narrow, poolDataAdapter }) => {
   const onClickMax = useCallback(() => {
     let currentBalance: BigNumber;
     if (selectedToken === backingToken) {
-      if (!userBalanceInBackingToken) {
+      if (!userBackingTokenBalance) {
         return;
       }
-      currentBalance = userBalanceInBackingToken;
+      currentBalance = userBackingTokenBalance;
     } else {
       if (!userYieldBearingTokenBalance) {
         return;
@@ -129,7 +127,7 @@ const Deposit: FC<DepositProps> = ({ narrow, poolDataAdapter }) => {
     }
 
     setAmount(ethers.utils.formatUnits(currentBalance, tokenPrecision));
-  }, [backingToken, selectedToken, tokenPrecision, userBalanceInBackingToken, userYieldBearingTokenBalance]);
+  }, [backingToken, selectedToken, tokenPrecision, userBackingTokenBalance, userYieldBearingTokenBalance]);
 
   const onSelectYield = useCallback(
     (value: string) => {
@@ -145,8 +143,8 @@ const Deposit: FC<DepositProps> = ({ narrow, poolDataAdapter }) => {
       return null;
     }
 
-    return selectedToken === backingToken ? userBalanceInBackingToken : userYieldBearingTokenBalance;
-  }, [backingToken, selectedToken, userBalanceInBackingToken, userYieldBearingTokenBalance]);
+    return selectedToken === backingToken ? userBackingTokenBalance : userYieldBearingTokenBalance;
+  }, [backingToken, selectedToken, userBackingTokenBalance, userYieldBearingTokenBalance]);
 
   const getSelectedTokenAddress = useCallback((): string | null => {
     if (!selectedToken) {

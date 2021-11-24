@@ -48,9 +48,7 @@ const EarlyRedeem: FC = () => {
   const selectedPoolAddress = selectedPool.attach(Downgraded).get();
   const userPrincipalsBalance = dynamicPoolData[selectedPool.get()].userPrincipalsBalance.attach(Downgraded).get();
   const userYieldsBalance = dynamicPoolData[selectedPool.get()].userYieldsBalance.attach(Downgraded).get();
-  const userBalanceInBackingToken = dynamicPoolData[selectedPool.get()].userBalanceInBackingToken
-    .attach(Downgraded)
-    .get();
+  const userBackingTokenBalance = dynamicPoolData[selectedPool.get()].userBackingTokenBalance.attach(Downgraded).get();
   const userYieldBearingTokenBalance = dynamicPoolData[selectedPool.get()].userYieldBearingTokenBalance
     .attach(Downgraded)
     .get();
@@ -83,10 +81,10 @@ const EarlyRedeem: FC = () => {
   const onClickMax = useCallback(() => {
     let currentBalance: BigNumber;
     if (selectedToken === backingToken) {
-      if (!userBalanceInBackingToken) {
+      if (!userBackingTokenBalance) {
         return;
       }
-      currentBalance = userBalanceInBackingToken;
+      currentBalance = userBackingTokenBalance;
     } else {
       if (!userYieldBearingTokenBalance) {
         return;
@@ -95,7 +93,7 @@ const EarlyRedeem: FC = () => {
     }
 
     setAmount(ethers.utils.formatUnits(currentBalance, tokenPrecision));
-  }, [backingToken, selectedToken, tokenPrecision, userBalanceInBackingToken, userYieldBearingTokenBalance]);
+  }, [backingToken, selectedToken, tokenPrecision, userBackingTokenBalance, userYieldBearingTokenBalance]);
 
   const getSelectedTokenAddress = useCallback((): string | null => {
     if (!selectedToken) {
@@ -109,8 +107,8 @@ const EarlyRedeem: FC = () => {
       return null;
     }
 
-    return selectedToken === backingToken ? userBalanceInBackingToken : userYieldBearingTokenBalance;
-  }, [backingToken, selectedToken, userBalanceInBackingToken, userYieldBearingTokenBalance]);
+    return selectedToken === backingToken ? userBackingTokenBalance : userYieldBearingTokenBalance;
+  }, [backingToken, selectedToken, userBackingTokenBalance, userYieldBearingTokenBalance]);
 
   useEffect(() => {
     if (!userWalletSigner) {

@@ -153,7 +153,7 @@ const getChildrenStillLoadingInFiat = (childrenAddresses: string[], dynamicPoolD
 const getChildrenStillLoadingInBackingToken = (
   childrenAddresses: string[],
   dynamicPoolData: DynamicPoolStateData,
-): boolean => childrenAddresses.some(address => dynamicPoolData[address].userBalanceInBackingToken === null);
+): boolean => childrenAddresses.some(address => dynamicPoolData[address].userBackingTokenBalance === null);
 
 const getChildBalanceInFiat = (childId: string, dynamicPoolData: DynamicPoolStateData): BigNumber | null =>
   dynamicPoolData[childId].userBalanceUSD;
