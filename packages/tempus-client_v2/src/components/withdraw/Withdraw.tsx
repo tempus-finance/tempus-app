@@ -42,7 +42,13 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
   const supportedTokens = [backingToken, yieldBearingToken].filter(token => token !== 'ETH');
 
   const [selectedToken, setSelectedToken] = useState<Ticker>(yieldBearingToken);
-  const [estimatedWithdrawAmount, setEstimatedWithdrawAmount] = useState<BigNumber | null>(null);
+  const [estimatedWithdrawData, setEstimatedWithdrawData] = useState<{
+    tokenAmount: BigNumber;
+    principalsStaked: BigNumber;
+    yieldsStaked: BigNumber;
+    principalsRate: BigNumber;
+    yieldsRate: BigNumber;
+  } | null>(null);
 
   const [principalsApproved, setPrincipalsApproved] = useState<boolean>(false);
   const [yieldsApproved, setYieldsApproved] = useState<boolean>(false);
@@ -72,15 +78,32 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
   );
 
   const onExecute = useCallback((): Promise<ethers.ContractTransaction | undefined> => {
-    if (userWalletSigner && userPrincipalsBalance && userLPTokenBalance) {
+    if (userWalletSigner && userPrincipalsBalance && userYieldsBalance && userLPTokenBalance && estimatedWithdrawData) {
       const poolDataAdapter = getPoolDataAdapter(userWalletSigner);
 
       const isBackingToken = backingToken === selectedToken;
-      return poolDataAdapter.executeWithdraw(ammAddress, userPrincipalsBalance, userLPTokenBalance, isBackingToken);
+      return poolDataAdapter.executeWithdraw(
+        ammAddress,
+        userPrincipalsBalance,
+        userYieldsBalance,
+        userLPTokenBalance,
+        estimatedWithdrawData.principalsStaked.sub(estimatedWithdrawData.principalsStaked.div(BigNumber.from('100'))),
+        estimatedWithdrawData.yieldsStaked.sub(estimatedWithdrawData.yieldsStaked.div(BigNumber.from('100'))),
+        isBackingToken,
+      );
     } else {
       return Promise.resolve(undefined);
     }
-  }, [userWalletSigner, userPrincipalsBalance, userLPTokenBalance, backingToken, selectedToken, ammAddress]);
+  }, [
+    userWalletSigner,
+    userPrincipalsBalance,
+    userYieldsBalance,
+    userLPTokenBalance,
+    estimatedWithdrawData,
+    backingToken,
+    selectedToken,
+    ammAddress,
+  ]);
 
   // Fetch estimated withdraw amount of tokens
   useEffect(() => {
@@ -97,7 +120,7 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
             isBackingToken,
           )
           .subscribe(amount => {
-            setEstimatedWithdrawAmount(amount);
+            setEstimatedWithdrawData(amount);
           });
 
         return () => stream$.unsubscribe();
@@ -146,14 +169,14 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
   }, [selectedPoolAddress, decimalsForUI, userLPTokenBalance]);
 
   const estimatedWithdrawAmountFormatted = useMemo(() => {
-    if (!estimatedWithdrawAmount) {
+    if (!estimatedWithdrawData) {
       return null;
     }
     return NumberUtils.formatToCurrency(
-      ethers.utils.formatUnits(estimatedWithdrawAmount, tokenPrecision),
+      ethers.utils.formatUnits(estimatedWithdrawData.tokenAmount, tokenPrecision),
       decimalsForUI,
     );
-  }, [estimatedWithdrawAmount, tokenPrecision, decimalsForUI]);
+  }, [estimatedWithdrawData, tokenPrecision, decimalsForUI]);
 
   const estimatedWithdrawAmountUsdFormatted = useMemo(() => {
     if (!userBalanceUSD) {

@@ -138,24 +138,40 @@ class TempusControllerService {
           tokenAmount,
           isBackingToken,
           minTYSRate,
+          BigNumber.from('8640000000000000'),
           {
             value: tokenAmount,
           },
         );
-        return await this.contract.depositAndFix(tempusAMM, tokenAmount, isBackingToken, minTYSRate, {
-          value: tokenAmount,
-          gasLimit: Math.ceil(estimate.toNumber() * depositAndFixGasIncrease),
-        });
+        return await this.contract.depositAndFix(
+          tempusAMM,
+          tokenAmount,
+          isBackingToken,
+          minTYSRate,
+          BigNumber.from('8640000000000000'),
+          {
+            value: tokenAmount,
+            gasLimit: Math.ceil(estimate.toNumber() * depositAndFixGasIncrease),
+          },
+        );
       } else {
         const estimate = await this.contract.estimateGas.depositAndFix(
           tempusAMM,
           tokenAmount,
           isBackingToken,
           minTYSRate,
+          BigNumber.from('8640000000000000'),
         );
-        return await this.contract.depositAndFix(tempusAMM, tokenAmount, isBackingToken, minTYSRate, {
-          gasLimit: Math.ceil(estimate.toNumber() * depositAndFixGasIncrease),
-        });
+        return await this.contract.depositAndFix(
+          tempusAMM,
+          tokenAmount,
+          isBackingToken,
+          minTYSRate,
+          BigNumber.from('8640000000000000'),
+          {
+            gasLimit: Math.ceil(estimate.toNumber() * depositAndFixGasIncrease),
+          },
+        );
       }
     } catch (error) {
       console.error(`TempusControllerService depositAndFix() - Failed to deposit backing tokens!`, error);
@@ -209,15 +225,18 @@ class TempusControllerService {
     }
   }
 
-  public async completeExitAndRedeem(
+  public async exitTempusAmmAndRedeem(
     tempusAMM: string,
-    userPrincipalsBalance: BigNumber,
-    userLPBalance: BigNumber,
+    lpTokensAmount: BigNumber,
+    principalsAmount: BigNumber,
+    yieldsAmount: BigNumber,
+    minPrincipalsStaked: BigNumber,
+    minYieldsStaked: BigNumber,
     isBackingToken: boolean,
   ): Promise<ContractTransaction> {
     if (!this.contract || !this.tempusAMMService) {
       console.error(
-        'TempusControllerService - completeExitAndRedeem() - Attempted to use TempusControllerService before initializing it!',
+        'TempusControllerService - exitTempusAmmAndRedeem() - Attempted to use TempusControllerService before initializing it!',
       );
       return Promise.reject();
     }
@@ -226,33 +245,48 @@ class TempusControllerService {
       tempusPoolConfig => tempusPoolConfig.ammAddress === tempusAMM,
     );
     if (!tempusPoolConfig) {
-      console.error('TempusControllerService - completeExitAndRedeem() - Failed to get tempus pool config!');
+      console.error('TempusControllerService - exitTempusAmmAndRedeem() - Failed to get tempus pool config!');
       return Promise.reject();
     }
 
     let maxLeftoverShares: BigNumber;
     try {
-      maxLeftoverShares = await this.tempusAMMService.getMaxLeftoverShares(
-        tempusAMM,
-        userPrincipalsBalance,
-        userLPBalance,
-      );
+      maxLeftoverShares = await this.tempusAMMService.getMaxLeftoverShares(tempusAMM, principalsAmount, lpTokensAmount);
     } catch (error) {
-      console.error('TempusControllerService - completeExitAndRedeem() - Failed to fetch max leftover shares!', error);
+      console.error('TempusControllerService - exitTempusAmmAndRedeem() - Failed to fetch max leftover shares!', error);
       return Promise.reject();
     }
 
     try {
-      const estimate = await this.contract.estimateGas.completeExitAndRedeem(
+      const estimate = await this.contract.estimateGas.exitTempusAmmAndRedeem(
         tempusAMM,
+        lpTokensAmount,
+        principalsAmount,
+        yieldsAmount,
+        minPrincipalsStaked,
+        minYieldsStaked,
         maxLeftoverShares,
+        BigNumber.from('0'),
         isBackingToken,
+        BigNumber.from('8640000000000000'),
       );
-      return await this.contract.completeExitAndRedeem(tempusAMM, maxLeftoverShares, isBackingToken, {
-        gasLimit: Math.ceil(estimate.toNumber() * completeExitAndRedeemGasIncrease),
-      });
+      return await this.contract.exitTempusAmmAndRedeem(
+        tempusAMM,
+        lpTokensAmount,
+        principalsAmount,
+        yieldsAmount,
+        minPrincipalsStaked,
+        minYieldsStaked,
+        maxLeftoverShares,
+        BigNumber.from('0'),
+        isBackingToken,
+        BigNumber.from('8640000000000000'),
+        {
+          gasLimit: Math.ceil(estimate.toNumber() * completeExitAndRedeemGasIncrease),
+        },
+      );
     } catch (error) {
-      console.error(`TempusControllerService completeExitAndRedeem() - Failed to redeem tokens!`, error);
+      console.error(`TempusControllerService exitTempusAmmAndRedeem() - Failed to redeem tokens!`, error);
       return Promise.reject(error);
     }
   }
@@ -318,13 +352,7 @@ class TempusControllerService {
       return Promise.reject();
     }
 
-    return this.contract.redeemToBacking(
-      tempusPool,
-      userWalletAddress,
-      amountOfShares,
-      amountOfShares,
-      userWalletAddress,
-    );
+    return this.contract.redeemToBacking(tempusPool, amountOfShares, amountOfShares, userWalletAddress);
   }
 
   async redeemToYieldBearing(tempusPool: string, userWalletAddress: string, amountOfShares: BigNumber) {
@@ -335,13 +363,7 @@ class TempusControllerService {
       return Promise.reject();
     }
 
-    return this.contract.redeemToYieldBearing(
-      tempusPool,
-      userWalletAddress,
-      amountOfShares,
-      amountOfShares,
-      userWalletAddress,
-    );
+    return this.contract.redeemToYieldBearing(tempusPool, amountOfShares, amountOfShares, userWalletAddress);
   }
 }
 

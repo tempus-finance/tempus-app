@@ -233,7 +233,13 @@ class StatisticsService {
     yieldsAmount: BigNumber,
     isBackingToken: boolean,
     overrides?: CallOverrides,
-  ): Promise<BigNumber> {
+  ): Promise<{
+    tokenAmount: BigNumber;
+    principalsStaked: BigNumber;
+    yieldsStaked: BigNumber;
+    principalsRate: BigNumber;
+    yieldsRate: BigNumber;
+  }> {
     if (!this.stats || !this.tempusAMMService) {
       console.error(
         'StatisticsService estimateExitAndRedeem Attempted to use statistics contract before initializing it...',
@@ -243,7 +249,13 @@ class StatisticsService {
 
     // If user does not have any tokens in in the pool - skip calling contract and return zero
     if (lpAmount.isZero() && principalAmount.isZero() && yieldsAmount.isZero()) {
-      return BigNumber.from('0');
+      return {
+        tokenAmount: BigNumber.from('0'),
+        principalsStaked: BigNumber.from('0'),
+        yieldsStaked: BigNumber.from('0'),
+        principalsRate: BigNumber.from('0'),
+        yieldsRate: BigNumber.from('0'),
+      };
     }
 
     let maxLeftoverShares: BigNumber;
