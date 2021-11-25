@@ -35,7 +35,7 @@ export interface DynamicPoolData extends AvailableToDeposit {
   userYieldBearingTokenBalance: BigNumber | null;
   tvl: BigNumber | null;
   variableAPR: number | null;
-  fixedAPR: number | null;
+  fixedAPR: number | null | 'unavailable';
 }
 
 export interface DynamicPoolStateData {

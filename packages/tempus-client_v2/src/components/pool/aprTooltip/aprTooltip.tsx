@@ -52,7 +52,7 @@ const AprTooltip = () => {
   }, [fixedAPR]);
 
   const futureYieldFormatted = useMemo(() => {
-    if (fixedAPR) {
+    if (fixedAPR && fixedAPR !== 'unavailable') {
       const daysToMaturity = differenceInDays(maturityDate, startDate);
       const dailyInterest = (fixedAPR || 1) / 365;
       return NumberUtils.formatPercentage(dailyInterest * daysToMaturity, 2);

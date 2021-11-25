@@ -1,4 +1,5 @@
 import { Downgraded, useState as useHookState } from '@hookstate/core';
+import { CircularProgress } from '@material-ui/core';
 import { ZERO } from '../../../constants';
 import { Ticker } from '../../../interfaces/Token';
 import NumberUtils from '../../../services/NumberUtils';
@@ -29,8 +30,15 @@ const FixedAPRFormatter = ({ row }: any) => {
   };
   const apr = getApr();
 
-  if (!apr) {
+  // In case APR is unavailable - for example when pool does not have any
+  // liquidity it's not possible to calculate fixed APR
+  if (apr === 'unavailable') {
     return <Typography variant="body-text">-</Typography>;
+  }
+
+  // In case APR is still loading - show loading circle
+  if (apr === null) {
+    return <CircularProgress size={16} />;
   }
 
   if (!isChild) {
@@ -65,7 +73,7 @@ function getParentAPR(
   staticPoolData: StaticPoolDataMap,
   dynamicPoolData: DynamicPoolStateData,
   negativeYieldPoolData: NegativeYieldStateData,
-): number | null {
+): number | null | 'unavailable' {
   const parentChildrenAddresses: string[] = [];
   for (const key in dynamicPoolData) {
     if (
@@ -76,18 +84,26 @@ function getParentAPR(
     }
   }
 
+  const childrenStillLoading =
+    parentChildrenAddresses.length === 0 ||
+    parentChildrenAddresses.some(address => dynamicPoolData[address].fixedAPR === null);
+  if (childrenStillLoading) {
+    return null;
+  }
+
   const childrenFixedAPR: number[] = parentChildrenAddresses
     .map(address => {
       return dynamicPoolData[address].fixedAPR;
     })
-    .filter(fixedAPR => fixedAPR !== null) as number[];
+    .filter(fixedAPR => fixedAPR !== 'unavailable') as number[];
+
   if (childrenFixedAPR.length === 0) {
-    return null;
+    return 'unavailable';
   }
 
   return Math.max(...childrenFixedAPR);
 }
 
-function getChildAPR(id: string, dynamicPoolData: DynamicPoolStateData): number | null {
+function getChildAPR(id: string, dynamicPoolData: DynamicPoolStateData): number | null | 'unavailable' {
   return dynamicPoolData[id].fixedAPR;
 }
