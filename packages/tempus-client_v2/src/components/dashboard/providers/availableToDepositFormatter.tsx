@@ -112,6 +112,8 @@ const AvailableToDepositFormatter = (props: DataTypeProvider.ValueFormatterProps
     return <div></div>;
   }
 
+  console.log(childAvailableToDeposit);
+
   if (isParentRow(row)) {
     if (!parentAvailableToDeposit) {
       return <CircularProgress size={16} />;
@@ -154,7 +156,8 @@ const getParentAvailableToDepositInFiat = (
   }
 
   // In case balance is still loading for some of the parent children, return null (show loading circle in dashboard)
-  const childrenStillLoading = getChildrenStillLoadingInFiat(parentChildrenAddresses, dynamicPoolData);
+  const childrenStillLoading =
+    parentChildrenAddresses.length === 0 || getChildrenStillLoadingInFiat(parentChildrenAddresses, dynamicPoolData);
   if (childrenStillLoading) {
     return null;
   }
@@ -198,7 +201,9 @@ const getParentAvailableToDepositInBackingToken = (
   }
 
   // In case balance is still loading for some of the parent children, return null (show loading circle in dashboard)
-  const childrenStillLoading = getChildrenStillLoadingInBackingToken(parentChildrenAddresses, dynamicPoolData);
+  const childrenStillLoading =
+    parentChildrenAddresses.length === 0 ||
+    getChildrenStillLoadingInBackingToken(parentChildrenAddresses, dynamicPoolData);
   if (childrenStillLoading) {
     return null;
   }
