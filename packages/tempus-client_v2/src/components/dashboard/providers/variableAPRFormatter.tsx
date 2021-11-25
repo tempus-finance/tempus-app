@@ -1,3 +1,4 @@
+import { CircularProgress } from '@material-ui/core';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { ZERO } from '../../../constants';
 import { Ticker } from '../../../interfaces/Token';
@@ -29,33 +30,33 @@ const VariableAPRFormatter = ({ row }: any) => {
   };
   const apr = getAPR();
 
+  if (apr === null) {
+    return <CircularProgress size={16} />;
+  }
+
   if (!isChild) {
     return (
-      apr && (
-        <div className="tf__dashboard__body__apy">
-          <Typography color="default" variant="body-text">
-            Up to&nbsp;
-          </Typography>
-          <Typography color={apr > 0.2 ? 'accent' : 'default'} variant="body-text">
-            {NumberUtils.formatPercentage(apr, 2)}
-          </Typography>
-        </div>
-      )
+      <div className="tf__dashboard__body__apy">
+        <Typography color="default" variant="body-text">
+          Up to&nbsp;
+        </Typography>
+        <Typography color={apr > 0.2 ? 'accent' : 'default'} variant="body-text">
+          {NumberUtils.formatPercentage(apr, 2)}
+        </Typography>
+      </div>
     );
   }
 
   // If it's a child row
   return (
-    apr && (
-      <div className="tf__dashboard__body__apy">
-        <APYGraph apy={apr} />
-        <div className="tf__dashboard__body__apy-value">
-          <Typography color="default" variant="body-text">
-            {NumberUtils.formatPercentage(apr, 2)}
-          </Typography>
-        </div>
+    <div className="tf__dashboard__body__apy">
+      <APYGraph apy={apr} />
+      <div className="tf__dashboard__body__apy-value">
+        <Typography color="default" variant="body-text">
+          {NumberUtils.formatPercentage(apr, 2)}
+        </Typography>
       </div>
-    )
+    </div>
   );
 };
 export default VariableAPRFormatter;
@@ -65,7 +66,7 @@ function getParentAPR(
   staticPoolData: StaticPoolDataMap,
   dynamicPoolData: DynamicPoolStateData,
   negativeYieldPoolData: NegativeYieldStateData,
-): number {
+): number | null {
   const parentChildrenAddresses: string[] = [];
   for (const key in dynamicPoolData) {
     if (
@@ -81,6 +82,10 @@ function getParentAPR(
       return dynamicPoolData[address].variableAPR;
     })
     .filter(variableAPR => variableAPR !== null) as number[];
+
+  if (childrenVariableAPR.length === 0) {
+    return null;
+  }
 
   return Math.max(...childrenVariableAPR);
 }
