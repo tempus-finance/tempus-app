@@ -1,8 +1,10 @@
-import { Downgraded, useState as useHookState } from '@hookstate/core';
-import { CircularProgress } from '@material-ui/core';
 import { ethers, BigNumber } from 'ethers';
+import { CircularProgress } from '@material-ui/core';
+import { DataTypeProvider } from '@devexpress/dx-react-grid';
+import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { ZERO } from '../../../constants';
 import { Ticker } from '../../../interfaces/Token';
+import { DashboardRow } from '../../../interfaces/DashboardRow';
 import NumberUtils from '../../../services/NumberUtils';
 import {
   dynamicPoolDataState,
@@ -14,7 +16,9 @@ import {
 } from '../../../state/PoolDataState';
 import Typography from '../../typography/Typography';
 
-const TVLFormatter = ({ row }: any) => {
+const TVLFormatter = (props: DataTypeProvider.ValueFormatterProps) => {
+  const row = props.row as DashboardRow;
+
   const isChild = Boolean(row.parentId);
 
   const dynamicPoolData = useHookState(dynamicPoolDataState).attach(Downgraded).get();
@@ -24,7 +28,7 @@ const TVLFormatter = ({ row }: any) => {
   const getTvlFormatted = () => {
     let tvl: BigNumber | null;
     if (!isChild) {
-      tvl = getParentTVL(row.id, staticPoolData, dynamicPoolData, negativeYieldPoolData);
+      tvl = getParentTVL(row.token, staticPoolData, dynamicPoolData, negativeYieldPoolData);
     } else {
       tvl = getChildTVL(row.id, dynamicPoolData);
     }
@@ -66,7 +70,9 @@ function getParentTVL(
   }
 
   // In case TVL is still loading for some of the parent children, return null (show loading circle in dashboard)
-  const childrenStillLoading = parentChildrenAddresses.some(address => dynamicPoolData[address].tvl === null);
+  const childrenStillLoading =
+    parentChildrenAddresses.length === 0 ||
+    parentChildrenAddresses.some(address => dynamicPoolData[address].tvl === null);
   if (childrenStillLoading) {
     return null;
   }
