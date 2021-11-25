@@ -36,6 +36,7 @@ export interface DynamicPoolData extends AvailableToDeposit {
   tvl: BigNumber | null;
   variableAPR: number | null;
   fixedAPR: number | null;
+  negativeYield: boolean;
 }
 
 export interface DynamicPoolStateData {
@@ -60,15 +61,7 @@ getConfig().tempusPools.forEach(tempusPoolConfig => {
     tvl: null,
     variableAPR: null,
     fixedAPR: null,
+    negativeYield: true,
   };
 });
 export const dynamicPoolDataState = createState(dynamicPoolDataStateInitialValue);
-
-export interface NegativeYieldStateData {
-  [poolAddress: string]: boolean;
-}
-const negativeYieldPoolDataStateInitialVale: NegativeYieldStateData = {};
-getConfig().tempusPools.forEach(tempusPoolConfig => {
-  negativeYieldPoolDataStateInitialVale[tempusPoolConfig.address] = true;
-});
-export const negativeYieldPoolDataState = createState(negativeYieldPoolDataStateInitialVale);

@@ -8,8 +8,6 @@ import APYGraph from '../bodySection/apyGraph';
 import {
   dynamicPoolDataState,
   DynamicPoolStateData,
-  negativeYieldPoolDataState,
-  NegativeYieldStateData,
   staticPoolDataState,
   StaticPoolDataMap,
 } from '../../../state/PoolDataState';
@@ -17,7 +15,6 @@ import {
 const VariableAPRFormatter = ({ row }: any) => {
   const dynamicPoolData = useHookState(dynamicPoolDataState).attach(Downgraded).get();
   const staticPoolData = useHookState(staticPoolDataState).attach(Downgraded).get();
-  const negativeYieldPoolData = useHookState(negativeYieldPoolDataState).attach(Downgraded).get();
 
   const isChild = Boolean(row.parentId);
 
@@ -25,7 +22,7 @@ const VariableAPRFormatter = ({ row }: any) => {
     if (isChild) {
       return getChildAPR(row.id, dynamicPoolData);
     } else {
-      return getParentAPR(row.id, staticPoolData, dynamicPoolData, negativeYieldPoolData);
+      return getParentAPR(row.id, staticPoolData, dynamicPoolData);
     }
   };
   const apr = getAPR();
@@ -65,13 +62,12 @@ function getParentAPR(
   parentId: Ticker,
   staticPoolData: StaticPoolDataMap,
   dynamicPoolData: DynamicPoolStateData,
-  negativeYieldPoolData: NegativeYieldStateData,
 ): number | null {
   const parentChildrenAddresses: string[] = [];
   for (const key in dynamicPoolData) {
     if (
       staticPoolData[key].backingToken === parentId &&
-      (!negativeYieldPoolData[key] || dynamicPoolData[key].userBalanceUSD?.gt(ZERO))
+      (!dynamicPoolData[key].negativeYield || dynamicPoolData[key].userBalanceUSD?.gt(ZERO))
     ) {
       parentChildrenAddresses.push(key);
     }

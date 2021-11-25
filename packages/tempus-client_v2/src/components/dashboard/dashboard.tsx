@@ -11,7 +11,7 @@ import {
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { Grid, TableHeaderRow, VirtualTable, TableTreeColumn } from '@devexpress/dx-react-grid-material-ui';
 import { SECONDS_IN_A_DAY, ZERO } from '../../constants';
-import { dynamicPoolDataState, negativeYieldPoolDataState } from '../../state/PoolDataState';
+import { dynamicPoolDataState } from '../../state/PoolDataState';
 import { LanguageContext } from '../../context/languageContext';
 import { DashboardRow, isChildRow, isParentRow } from '../../interfaces/DashboardRow';
 import { ColumnNames } from '../../interfaces/ColumnNames';
@@ -50,7 +50,6 @@ type DashboardProps = DashboardInProps & DashboardOutProps;
 
 const Dashboard: FC<DashboardProps> = ({ hidden, userWalletAddress, rows, onRowActionClick }): JSX.Element => {
   const dynamicPoolData = useHookState(dynamicPoolDataState).attach(Downgraded).get();
-  const negativeYieldPoolData = useHookState(negativeYieldPoolDataState).attach(Downgraded).get();
 
   const { language } = useContext(LanguageContext);
 
@@ -120,10 +119,9 @@ const Dashboard: FC<DashboardProps> = ({ hidden, userWalletAddress, rows, onRowA
     if (rows?.length) {
       let rowsToDisplay = rows.filter((row: DashboardRow) => {
         const pool = dynamicPoolData[row.id];
-        const poolNegativeYield = negativeYieldPoolData[row.id];
 
         if (pool) {
-          if (!poolNegativeYield) {
+          if (!pool.negativeYield) {
             return true;
           }
           return pool && pool.userBalanceUSD && pool.userBalanceUSD.gt(ZERO);
