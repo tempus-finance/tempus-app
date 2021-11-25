@@ -112,8 +112,6 @@ const AvailableToDepositFormatter = (props: DataTypeProvider.ValueFormatterProps
     return <div></div>;
   }
 
-  console.log(childAvailableToDeposit);
-
   if (isParentRow(row)) {
     if (!parentAvailableToDeposit) {
       return <CircularProgress size={16} />;
