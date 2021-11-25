@@ -66,8 +66,6 @@ const VariableAPRProvider = () => {
           return {
             address: tempusPool.address,
             variableAPR: variableAPR,
-            fees,
-            tokenPrecision: tempusPool.tokenPrecision,
             negativeYield: currentInterestRate.lt(initialInterestRate),
           };
         }),
