@@ -97,7 +97,7 @@ class TempusAMMService {
     throw new Error(`TempusAMMService - getTempusPoolAddress() - TempusAMM with address '${address}' does not exist`);
   }
 
-  public async getFixedAPR(tempusAMM: string, principalsAddress: string): Promise<number | null | 'fetching'> {
+  public async getFixedAPR(tempusAMM: string, principalsAddress: string): Promise<number | null> {
     if (!this.tempusPoolService) {
       console.error('TempusAMMService - getFixedAPR() - Attempted to se TempusAMMService before initializing it!');
       return Promise.reject();
