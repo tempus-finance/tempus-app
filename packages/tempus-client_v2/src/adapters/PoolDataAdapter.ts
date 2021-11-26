@@ -1189,4 +1189,30 @@ export default class PoolDataAdapter {
 
     return totalVolume;
   }
+
+  async getPoolShareBalances(
+    poolId: string,
+    principalsAddress: string,
+    yieldsAddress: string,
+  ): Promise<{
+    principals: BigNumber;
+    yields: BigNumber;
+  }> {
+    if (!this.vaultService) {
+      console.error(
+        'PoolDataAdapter - getPoolShareBalances() - Attempted to use PoolDataAdapter before initializing it!',
+      );
+      return Promise.reject();
+    }
+
+    const poolTokens = await this.vaultService.getPoolTokens(poolId);
+
+    const principalsIndex = poolTokens.tokens.findIndex(poolTokenAddress => principalsAddress === poolTokenAddress);
+    const yieldsIndex = poolTokens.tokens.findIndex(poolTokenAddress => yieldsAddress === poolTokenAddress);
+
+    return {
+      principals: poolTokens.balances[principalsIndex],
+      yields: poolTokens.balances[yieldsIndex],
+    };
+  }
 }
