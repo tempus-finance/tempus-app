@@ -36,19 +36,17 @@ const CurrencySwitch = () => {
   }, [showFiat]);
 
   return (
-    <div className="tc__currency-switch">
-      <div className="tc__switch" onClick={onSwitchClick}>
-        <div className="tc__switch__selector" style={style}></div>
-        <div className={`tc__switch__label ${showFiat ? 'tc__switch__label-selected' : ''}`} data-id="fiat">
-          <Typography variant="body-text" color={showFiat ? 'inverted' : 'default'}>
-            {getText('fiat', language)}
-          </Typography>
-        </div>
-        <div className={`tc__switch__label ${showFiat ? '' : 'tc__switch__label-selected'}`} data-id="crypto">
-          <Typography variant="body-text" color={showFiat ? 'default' : 'inverted'}>
-            {getText('crypto', language)}
-          </Typography>
-        </div>
+    <div className="tc__switch" onClick={onSwitchClick}>
+      <div className="tc__switch__selector" style={style}></div>
+      <div className={`tc__switch__label ${showFiat ? 'tc__switch__label-selected' : ''}`} data-id="fiat">
+        <Typography variant="body-text" color={showFiat ? 'inverted' : 'default'}>
+          {getText('fiat', language)}
+        </Typography>
+      </div>
+      <div className={`tc__switch__label ${showFiat ? '' : 'tc__switch__label-selected'}`} data-id="crypto">
+        <Typography variant="body-text" color={showFiat ? 'default' : 'inverted'}>
+          {getText('crypto', language)}
+        </Typography>
       </div>
     </div>
   );
