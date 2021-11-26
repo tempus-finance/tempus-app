@@ -35,7 +35,7 @@ export interface DynamicPoolData extends AvailableToDeposit {
   userYieldBearingTokenBalance: BigNumber | null;
   tvl: BigNumber | null;
   variableAPR: number | null;
-  fixedAPR: number | null;
+  fixedAPR: number | null | 'fetching';
   negativeYield: boolean;
 }
 
@@ -60,7 +60,7 @@ getConfig().tempusPools.forEach(tempusPoolConfig => {
     userYieldBearingTokenBalance: null,
     tvl: null,
     variableAPR: null,
-    fixedAPR: null,
+    fixedAPR: 'fetching',
     negativeYield: true,
   };
 });
