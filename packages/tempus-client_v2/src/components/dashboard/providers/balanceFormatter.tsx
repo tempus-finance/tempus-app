@@ -17,8 +17,6 @@ import './balanceFormatter.scss';
 import {
   dynamicPoolDataState,
   DynamicPoolStateData,
-  negativeYieldPoolDataState,
-  NegativeYieldStateData,
   staticPoolDataState,
   StaticPoolDataMap,
 } from '../../../state/PoolDataState';
@@ -30,7 +28,6 @@ const BalanceFormatter = (props: DataTypeProvider.ValueFormatterProps) => {
 
   const dynamicPoolData = useHookState(dynamicPoolDataState).attach(Downgraded).get();
   const staticPoolData = useHookState(staticPoolDataState).attach(Downgraded).get();
-  const negativeYieldPoolData = useHookState(negativeYieldPoolDataState).attach(Downgraded).get();
 
   const { userWalletConnected } = useContext(WalletContext);
   const { showFiat } = useContext(UserSettingsContext);
@@ -38,9 +35,9 @@ const BalanceFormatter = (props: DataTypeProvider.ValueFormatterProps) => {
   const getBalance = () => {
     if (!isChild) {
       if (showFiat) {
-        return getParentBalanceInFiat(row.token, staticPoolData, dynamicPoolData, negativeYieldPoolData);
+        return getParentBalanceInFiat(row.token, staticPoolData, dynamicPoolData);
       } else {
-        return getParentBalanceInBackingToken(row.token, staticPoolData, dynamicPoolData, negativeYieldPoolData);
+        return getParentBalanceInBackingToken(row.token, staticPoolData, dynamicPoolData);
       }
     } else {
       if (showFiat) {
@@ -96,13 +93,12 @@ const getParentBalanceInFiat = (
   parentId: Ticker,
   staticPoolData: StaticPoolDataMap,
   dynamicPoolData: DynamicPoolStateData,
-  negativeYieldPoolData: NegativeYieldStateData,
 ): BigNumber | null => {
   const parentChildrenAddresses: string[] = [];
   for (const key in dynamicPoolData) {
     if (
       staticPoolData[key].backingToken === parentId &&
-      (!negativeYieldPoolData[key] || dynamicPoolData[key].userBalanceUSD?.gt(ZERO))
+      (!dynamicPoolData[key].negativeYield || dynamicPoolData[key].userBalanceUSD?.gt(ZERO))
     ) {
       parentChildrenAddresses.push(key);
     }
@@ -127,13 +123,12 @@ const getParentBalanceInBackingToken = (
   parentId: Ticker,
   staticPoolData: StaticPoolDataMap,
   dynamicPoolData: DynamicPoolStateData,
-  negativeYieldPoolData: NegativeYieldStateData,
 ): BigNumber | null => {
   const parentChildrenAddresses: string[] = [];
   for (const key in dynamicPoolData) {
     if (
       staticPoolData[key].backingToken === parentId &&
-      (!negativeYieldPoolData[key] || dynamicPoolData[key].userBalanceUSD?.gt(ZERO))
+      (!dynamicPoolData[key].negativeYield || dynamicPoolData[key].userBalanceUSD?.gt(ZERO))
     ) {
       parentChildrenAddresses.push(key);
     }
