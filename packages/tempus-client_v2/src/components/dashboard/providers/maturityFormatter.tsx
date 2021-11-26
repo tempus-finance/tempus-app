@@ -13,8 +13,6 @@ import { CircularProgress } from '@material-ui/core';
 import {
   dynamicPoolDataState,
   DynamicPoolStateData,
-  negativeYieldPoolDataState,
-  NegativeYieldStateData,
   staticPoolDataState,
   StaticPoolDataMap,
 } from '../../../state/PoolDataState';
@@ -22,7 +20,6 @@ import {
 const MaturityFormatter = ({ value, row }: any) => {
   const dynamicPoolData = useHookState(dynamicPoolDataState).attach(Downgraded).get();
   const staticPoolData = useHookState(staticPoolDataState).attach(Downgraded).get();
-  const negativeYieldPoolData = useHookState(negativeYieldPoolDataState).attach(Downgraded).get();
 
   const isParent = !row.parentId;
 
@@ -40,7 +37,7 @@ const MaturityFormatter = ({ value, row }: any) => {
   }, [row.id, row.startDate, staticPoolData]);
 
   if (isParent) {
-    const [min, max] = getParentMaturity(row.id, staticPoolData, dynamicPoolData, negativeYieldPoolData);
+    const [min, max] = getParentMaturity(row.id, staticPoolData, dynamicPoolData);
     return (
       <div className="tf__dashboard__grid__maturity">
         <Typography color="default" variant="body-text">
@@ -72,13 +69,12 @@ function getParentMaturity(
   parentId: Ticker,
   staticPoolData: StaticPoolDataMap,
   dynamicPoolData: DynamicPoolStateData,
-  negativeYieldPoolData: NegativeYieldStateData,
 ): number[] {
   const parentChildrenAddresses: string[] = [];
   for (const key in dynamicPoolData) {
     if (
       staticPoolData[key].backingToken === parentId &&
-      (!negativeYieldPoolData[key] || dynamicPoolData[key].userBalanceUSD?.gt(ZERO))
+      (!dynamicPoolData[key].negativeYield || dynamicPoolData[key].userBalanceUSD?.gt(ZERO))
     ) {
       parentChildrenAddresses.push(key);
     }

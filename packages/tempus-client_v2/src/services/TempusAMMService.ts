@@ -97,7 +97,7 @@ class TempusAMMService {
     throw new Error(`TempusAMMService - getTempusPoolAddress() - TempusAMM with address '${address}' does not exist`);
   }
 
-  public async getFixedAPR(tempusAMM: string, principalsAddress: string): Promise<number | null | 'unavailable'> {
+  public async getFixedAPR(tempusAMM: string, principalsAddress: string): Promise<number | null | 'fetching'> {
     if (!this.tempusPoolService) {
       console.error('TempusAMMService - getFixedAPR() - Attempted to se TempusAMMService before initializing it!');
       return Promise.reject();
@@ -124,7 +124,7 @@ class TempusAMMService {
         poolPrincipalsBalance = poolTokens.balances[principalsIndex];
 
         if (poolTokens.balances[0].isZero() || poolTokens.balances[1].isZero()) {
-          return 'unavailable';
+          return null;
         }
       } catch (error) {
         console.error('TempusAMMService - getFixedAPR() - Failed to fetch pool balances!', error);

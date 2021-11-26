@@ -11,6 +11,7 @@ import TVLProvider from '../../providers/tvlProvider';
 import BalanceProvider from '../../providers/balanceProvider';
 import FixedAPRProvider from '../../providers/fixedAPRProvider';
 import VariableAPRProvider from '../../providers/variableAPRProvider';
+import NegativeYieldProvider from '../../providers/negativeYieldProvider';
 import AvailableToDepositUSDProvider from '../../providers/availableToDepositUSDProvider';
 import UserBackingTokenBalanceProvider from '../../providers/userBackingTokenBalanceProvider';
 import UserYieldBearingTokenBalanceProvider from '../../providers/userYieldBearingTokenBalanceProvider';
@@ -74,6 +75,7 @@ const DashboardManager: FC = (): JSX.Element => {
       {userBalanceDataAdapter && <BalanceProvider userBalanceDataAdapter={userBalanceDataAdapter} />}
       <FixedAPRProvider />
       <VariableAPRProvider />
+      <NegativeYieldProvider />
       {userBalanceDataAdapter && <AvailableToDepositUSDProvider userBalanceDataAdapter={userBalanceDataAdapter} />}
       {userBalanceDataAdapter && <UserBackingTokenBalanceProvider />}
       {userBalanceDataAdapter && <UserYieldBearingTokenBalanceProvider />}
