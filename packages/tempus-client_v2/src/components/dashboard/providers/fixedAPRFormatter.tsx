@@ -27,8 +27,6 @@ const FixedAPRFormatter = ({ row }: any) => {
   };
   const apr = getApr();
 
-  console.log(apr);
-
   // In case APR is unavailable - for example when pool does not have any
   // liquidity it's not possible to calculate fixed APR
   if (apr === null) {
