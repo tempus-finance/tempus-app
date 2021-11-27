@@ -2,7 +2,7 @@ import { BigNumber, Contract, ethers, ContractTransaction } from 'ethers';
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
 import { Vault } from '../abi/Vault';
 import VaultABI from '../abi/Vault.json';
-import { TypedEvent } from '../abi/commons';
+import { TypedEvent, TypedListener } from '../abi/commons';
 import getDefaultProvider from './getDefaultProvider';
 import TempusAMMService from './TempusAMMService';
 import { provideLiquidityGasIncrease, removeLiquidityGasIncrease, SECONDS_IN_AN_HOUR } from '../constants';
@@ -30,6 +30,17 @@ export type SwapEvent = TypedEvent<
 >;
 export type PoolBalanceChangedEvent = TypedEvent<
   [string, string, string[], BigNumber[], BigNumber[]] & {
+    poolId: string;
+    liquidityProvider: string;
+    tokens: string[];
+    deltas: BigNumber[];
+    protocolFeeAmounts: BigNumber[];
+  }
+>;
+
+export type PoolBalanceChangedEventListener = TypedListener<
+  [string, string, string[], BigNumber[], BigNumber[]],
+  {
     poolId: string;
     liquidityProvider: string;
     tokens: string[];
@@ -318,6 +329,18 @@ class VaultService {
     } catch (error) {
       console.error(`VaultService - getPoolTokens() - Failed to get pool tokens!`, error);
       return Promise.reject(error);
+    }
+  }
+
+  onPoolBalanceChanged(poolId: string, listener: PoolBalanceChangedEventListener) {
+    if (this.contract) {
+      this.contract.on(this.contract.filters.PoolBalanceChanged(poolId), listener);
+    }
+  }
+
+  offPoolBalanceChanged(poolId: string, listener: PoolBalanceChangedEventListener) {
+    if (this.contract) {
+      this.contract.off(this.contract.filters.PoolBalanceChanged(poolId), listener);
     }
   }
 }
