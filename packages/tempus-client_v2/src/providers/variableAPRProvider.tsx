@@ -4,12 +4,10 @@ import getDefaultProvider from '../services/getDefaultProvider';
 import getVariableRateService from '../services/getVariableRateService';
 import getConfig from '../utils/getConfig';
 import { WalletContext } from '../context/walletContext';
-import getTempusPoolService from '../services/getTempusPoolService';
-import { dynamicPoolDataState, negativeYieldPoolDataState } from '../state/PoolDataState';
+import { dynamicPoolDataState } from '../state/PoolDataState';
 
 const VariableAPRProvider = () => {
   const dynamicPoolData = useHookState(dynamicPoolDataState);
-  const negativeYieldPoolData = useHookState(negativeYieldPoolDataState);
 
   const { userWalletConnected, userWalletSigner } = useContext(WalletContext);
 
@@ -35,7 +33,6 @@ const VariableAPRProvider = () => {
 
     const config = getConfig();
     const variableRateService = getVariableRateService(provider);
-    const tempusPoolService = getTempusPoolService(provider);
 
     try {
       // Fetch APR for all Tempus Pools
@@ -57,18 +54,9 @@ const VariableAPRProvider = () => {
             fees,
           );
 
-          // Check if yield is negative
-          const [currentInterestRate, initialInterestRate] = await Promise.all([
-            tempusPoolService.currentInterestRate(tempusPool.address),
-            tempusPoolService.initialInterestRate(tempusPool.address),
-          ]);
-
           return {
             address: tempusPool.address,
             variableAPR: variableAPR,
-            fees,
-            tokenPrecision: tempusPool.tokenPrecision,
-            negativeYield: currentInterestRate.lt(initialInterestRate),
           };
         }),
       );
@@ -79,13 +67,6 @@ const VariableAPRProvider = () => {
         // (if APR fetch failed, ie: "fetchedAPRData.variableAPR === null" -> keep current APR value)
         if (!currentAPR || (fetchedAPRData.variableAPR && currentAPR !== fetchedAPRData.variableAPR)) {
           dynamicPoolData[fetchedAPRData.address].variableAPR.set(fetchedAPRData.variableAPR);
-        }
-      });
-
-      fetchedPoolAPRData.forEach(data => {
-        // Only update state if fetched negative yield flag is different from current negative yield flag
-        if (negativeYieldPoolData[data.address].get() !== data.negativeYield) {
-          negativeYieldPoolData[data.address].set(data.negativeYield);
         }
       });
     } catch (error) {

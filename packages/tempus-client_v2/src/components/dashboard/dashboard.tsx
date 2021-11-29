@@ -1,4 +1,4 @@
-import { FC, useCallback, useContext, useRef, useState } from 'react';
+import { FC, useCallback, useContext, useState } from 'react';
 import {
   CustomTreeData,
   IntegratedSummary,
@@ -10,15 +10,13 @@ import {
 } from '@devexpress/dx-react-grid';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { Grid, TableHeaderRow, VirtualTable, TableTreeColumn } from '@devexpress/dx-react-grid-material-ui';
-import { SECONDS_IN_A_DAY, ZERO } from '../../constants';
-import { dynamicPoolDataState, negativeYieldPoolDataState } from '../../state/PoolDataState';
+import { ZERO } from '../../constants';
+import { dynamicPoolDataState } from '../../state/PoolDataState';
 import { LanguageContext } from '../../context/languageContext';
-import { DashboardRow, isChildRow, isParentRow } from '../../interfaces/DashboardRow';
+import { DashboardRow } from '../../interfaces/DashboardRow';
 import { ColumnNames } from '../../interfaces/ColumnNames';
 import getText from '../../localisation/getText';
 import Typography from '../typography/Typography';
-import FilterIcon from '../icons/FilterIcon';
-import FilterPopup, { FilterData } from './popups/filter-popup';
 import TokenButton from './bodySection/tokenButton';
 import BodyCellFactory from './bodySection/bodyCellFactory';
 import BodyRow from './bodySection/bodyRow';
@@ -50,7 +48,6 @@ type DashboardProps = DashboardInProps & DashboardOutProps;
 
 const Dashboard: FC<DashboardProps> = ({ hidden, userWalletAddress, rows, onRowActionClick }): JSX.Element => {
   const dynamicPoolData = useHookState(dynamicPoolDataState).attach(Downgraded).get();
-  const negativeYieldPoolData = useHookState(negativeYieldPoolDataState).attach(Downgraded).get();
 
   const { language } = useContext(LanguageContext);
 
@@ -80,10 +77,10 @@ const Dashboard: FC<DashboardProps> = ({ hidden, userWalletAddress, rows, onRowA
 
   const [currentSorting, setCurrentSorting] = useState<Sorting[]>([]);
 
-  const [filterPopupOpen, setFilterPopupOpen] = useState<boolean>(false);
-  const [filteredRows, setFilteredRows] = useState<DashboardRow[] | null>(null);
+  // const [filterPopupOpen, setFilterPopupOpen] = useState<boolean>(false);
+  // const [filteredRows, setFilteredRows] = useState<DashboardRow[] | null>(null);
 
-  const filterButtonRef = useRef<HTMLDivElement>(null);
+  // const filterButtonRef = useRef<HTMLDivElement>(null);
 
   const onExpandedRowIdsChange = useCallback(
     (expandedRowIds: Array<number | string>) => {
@@ -112,18 +109,17 @@ const Dashboard: FC<DashboardProps> = ({ hidden, userWalletAddress, rows, onRowA
     [setCurrentSorting, currentSorting],
   );
 
-  const onToggleFilterPopup = () => {
+  /* const onToggleFilterPopup = () => {
     setFilterPopupOpen(!filterPopupOpen);
-  };
+  }; */
 
   const getRowsToDisplay = () => {
     if (rows?.length) {
       let rowsToDisplay = rows.filter((row: DashboardRow) => {
         const pool = dynamicPoolData[row.id];
-        const poolNegativeYield = negativeYieldPoolData[row.id];
 
         if (pool) {
-          if (!poolNegativeYield) {
+          if (!pool.negativeYield) {
             return true;
           }
           return pool && pool.userBalanceUSD && pool.userBalanceUSD.gt(ZERO);
@@ -140,7 +136,7 @@ const Dashboard: FC<DashboardProps> = ({ hidden, userWalletAddress, rows, onRowA
   /**
    * If `null` is passed as `filterData`, all filters will be cleared.
    */
-  const onApplyFilter = (filterData: FilterData | null) => {
+  /* const onApplyFilter = (filterData: FilterData | null) => {
     if (!filterData) {
       setFilteredRows(null);
       return;
@@ -211,7 +207,7 @@ const Dashboard: FC<DashboardProps> = ({ hidden, userWalletAddress, rows, onRowA
     });
 
     setFilteredRows(result);
-  };
+  }; */
 
   return (
     <div className="tf__dashboard__section__container" hidden={hidden}>
@@ -222,7 +218,7 @@ const Dashboard: FC<DashboardProps> = ({ hidden, userWalletAddress, rows, onRowA
           </Typography>
           <div className="tc__dashboard__header__actions">
             <CurrencySwitch />
-            <div onClick={onToggleFilterPopup} ref={filterButtonRef}>
+            {/* <div onClick={onToggleFilterPopup} ref={filterButtonRef}>
               <Typography color="default" variant="h4">
                 {getText('filter', language)}
               </Typography>
@@ -233,13 +229,13 @@ const Dashboard: FC<DashboardProps> = ({ hidden, userWalletAddress, rows, onRowA
               anchor={filterButtonRef.current}
               onClose={onToggleFilterPopup}
               onFilter={onApplyFilter}
-            />
+            /> */}
           </div>
         </div>
         <hr />
         <div className="tf__dashboard">
           <div className="tf__dashboard__grid">
-            <Grid rows={filteredRows || rowsToDisplay} columns={dashboardColumnsDefinitions(language)}>
+            <Grid rows={/*filteredRows || */ rowsToDisplay} columns={dashboardColumnsDefinitions(language)}>
               <SortingState
                 sorting={currentSorting}
                 onSortingChange={onSortingChange}

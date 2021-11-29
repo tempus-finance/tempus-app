@@ -1,4 +1,5 @@
 import { Downgraded, useState as useHookState } from '@hookstate/core';
+import { CircularProgress } from '@material-ui/core';
 import { ZERO } from '../../../constants';
 import { Ticker } from '../../../interfaces/Token';
 import NumberUtils from '../../../services/NumberUtils';
@@ -7,8 +8,6 @@ import APYGraph from '../bodySection/apyGraph';
 import {
   dynamicPoolDataState,
   DynamicPoolStateData,
-  negativeYieldPoolDataState,
-  NegativeYieldStateData,
   staticPoolDataState,
   StaticPoolDataMap,
 } from '../../../state/PoolDataState';
@@ -16,7 +15,6 @@ import {
 const FixedAPRFormatter = ({ row }: any) => {
   const dynamicPoolData = useHookState(dynamicPoolDataState).attach(Downgraded).get();
   const staticPoolData = useHookState(staticPoolDataState).attach(Downgraded).get();
-  const negativeYieldPoolData = useHookState(negativeYieldPoolDataState).attach(Downgraded).get();
 
   const isChild = Boolean(row.parentId);
 
@@ -24,13 +22,20 @@ const FixedAPRFormatter = ({ row }: any) => {
     if (isChild) {
       return getChildAPR(row.id, dynamicPoolData);
     } else {
-      return getParentAPR(row.id, staticPoolData, dynamicPoolData, negativeYieldPoolData);
+      return getParentAPR(row.id, staticPoolData, dynamicPoolData);
     }
   };
   const apr = getApr();
 
-  if (!apr) {
+  // In case APR is unavailable - for example when pool does not have any
+  // liquidity it's not possible to calculate fixed APR
+  if (apr === null) {
     return <Typography variant="body-text">-</Typography>;
+  }
+
+  // In case APR is still loading - show loading circle
+  if (apr === 'fetching') {
+    return <CircularProgress size={16} />;
   }
 
   if (!isChild) {
@@ -64,16 +69,22 @@ function getParentAPR(
   parentId: Ticker,
   staticPoolData: StaticPoolDataMap,
   dynamicPoolData: DynamicPoolStateData,
-  negativeYieldPoolData: NegativeYieldStateData,
-): number | null {
+): number | null | 'fetching' {
   const parentChildrenAddresses: string[] = [];
   for (const key in dynamicPoolData) {
     if (
       staticPoolData[key].backingToken === parentId &&
-      (!negativeYieldPoolData[key] || dynamicPoolData[key].userBalanceUSD?.gt(ZERO))
+      (!dynamicPoolData[key].negativeYield || dynamicPoolData[key].userBalanceUSD?.gt(ZERO))
     ) {
       parentChildrenAddresses.push(key);
     }
+  }
+
+  const childrenStillLoading =
+    parentChildrenAddresses.length === 0 ||
+    parentChildrenAddresses.some(address => dynamicPoolData[address].fixedAPR === 'fetching');
+  if (childrenStillLoading) {
+    return 'fetching';
   }
 
   const childrenFixedAPR: number[] = parentChildrenAddresses
@@ -81,6 +92,7 @@ function getParentAPR(
       return dynamicPoolData[address].fixedAPR;
     })
     .filter(fixedAPR => fixedAPR !== null) as number[];
+
   if (childrenFixedAPR.length === 0) {
     return null;
   }
@@ -88,6 +100,6 @@ function getParentAPR(
   return Math.max(...childrenFixedAPR);
 }
 
-function getChildAPR(id: string, dynamicPoolData: DynamicPoolStateData): number | null {
+function getChildAPR(id: string, dynamicPoolData: DynamicPoolStateData): number | null | 'fetching' {
   return dynamicPoolData[id].fixedAPR;
 }

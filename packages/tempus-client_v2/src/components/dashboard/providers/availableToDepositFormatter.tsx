@@ -7,8 +7,6 @@ import { ZERO } from '../../../constants';
 import {
   dynamicPoolDataState,
   DynamicPoolStateData,
-  negativeYieldPoolDataState,
-  NegativeYieldStateData,
   staticPoolDataState,
   StaticPoolDataMap,
 } from '../../../state/PoolDataState';
@@ -28,17 +26,16 @@ const AvailableToDepositFormatter = (props: DataTypeProvider.ValueFormatterProps
 
   const dynamicPoolData = useHookState(dynamicPoolDataState).attach(Downgraded).get();
   const staticPoolData = useHookState(staticPoolDataState).attach(Downgraded).get();
-  const negativeYieldPoolData = useHookState(negativeYieldPoolDataState).attach(Downgraded).get();
 
   const { userWalletConnected } = useContext(WalletContext);
   const { showFiat } = useContext(UserSettingsContext);
 
   const getParentAvailableToDeposit = () => {
     if (showFiat) {
-      return getParentAvailableToDepositInFiat(row.token, staticPoolData, dynamicPoolData, negativeYieldPoolData);
+      return getParentAvailableToDepositInFiat(row.token, staticPoolData, dynamicPoolData);
     }
 
-    return getParentAvailableToDepositInBackingToken(row.token, staticPoolData, dynamicPoolData, negativeYieldPoolData);
+    return getParentAvailableToDepositInBackingToken(row.token, staticPoolData, dynamicPoolData);
   };
   const parentAvailableToDeposit = getParentAvailableToDeposit();
 
@@ -141,20 +138,20 @@ const getParentAvailableToDepositInFiat = (
   parentId: Ticker,
   staticPoolData: StaticPoolDataMap,
   dynamicPoolData: DynamicPoolStateData,
-  negativeYieldPoolData: NegativeYieldStateData,
 ) => {
   const parentChildrenAddresses: string[] = [];
   for (const key in dynamicPoolData) {
     if (
       staticPoolData[key].backingToken === parentId &&
-      (!negativeYieldPoolData[key] || dynamicPoolData[key].userBalanceUSD?.gt(ZERO))
+      (!dynamicPoolData[key].negativeYield || dynamicPoolData[key].userBalanceUSD?.gt(ZERO))
     ) {
       parentChildrenAddresses.push(key);
     }
   }
 
   // In case balance is still loading for some of the parent children, return null (show loading circle in dashboard)
-  const childrenStillLoading = getChildrenStillLoadingInFiat(parentChildrenAddresses, dynamicPoolData);
+  const childrenStillLoading =
+    parentChildrenAddresses.length === 0 || getChildrenStillLoadingInFiat(parentChildrenAddresses, dynamicPoolData);
   if (childrenStillLoading) {
     return null;
   }
@@ -185,20 +182,21 @@ const getParentAvailableToDepositInBackingToken = (
   parentId: Ticker,
   staticPoolData: StaticPoolDataMap,
   dynamicPoolData: DynamicPoolStateData,
-  negativeYieldPoolData: NegativeYieldStateData,
 ) => {
   const parentChildrenAddresses: string[] = [];
   for (const key in dynamicPoolData) {
     if (
       staticPoolData[key].backingToken === parentId &&
-      (!negativeYieldPoolData[key] || dynamicPoolData[key].userBalanceUSD?.gt(ZERO))
+      (!dynamicPoolData[key].negativeYield || dynamicPoolData[key].userBalanceUSD?.gt(ZERO))
     ) {
       parentChildrenAddresses.push(key);
     }
   }
 
   // In case balance is still loading for some of the parent children, return null (show loading circle in dashboard)
-  const childrenStillLoading = getChildrenStillLoadingInBackingToken(parentChildrenAddresses, dynamicPoolData);
+  const childrenStillLoading =
+    parentChildrenAddresses.length === 0 ||
+    getChildrenStillLoadingInBackingToken(parentChildrenAddresses, dynamicPoolData);
   if (childrenStillLoading) {
     return null;
   }

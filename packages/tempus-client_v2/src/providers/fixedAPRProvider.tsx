@@ -61,7 +61,11 @@ const FixedAPRProvider = () => {
       const currentFixedAPR = dynamicPoolData[fetchedAPRData.address].fixedAPR.get();
       // Only update state if fetched APR is different from current APR
       // (if APR fetch failed, ie: "fetchedAPRData.fixedAPR === null" -> keep current APR value)
-      if (!currentFixedAPR || (fetchedAPRData.fixedAPR && currentFixedAPR !== fetchedAPRData.fixedAPR)) {
+      if (
+        !currentFixedAPR ||
+        currentFixedAPR === 'fetching' ||
+        (fetchedAPRData.fixedAPR && currentFixedAPR !== fetchedAPRData.fixedAPR)
+      ) {
         dynamicPoolData[fetchedAPRData.address].fixedAPR.set(fetchedAPRData.fixedAPR);
       }
     });

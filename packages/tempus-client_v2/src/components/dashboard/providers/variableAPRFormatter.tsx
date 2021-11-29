@@ -1,3 +1,4 @@
+import { CircularProgress } from '@material-ui/core';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { ZERO } from '../../../constants';
 import { Ticker } from '../../../interfaces/Token';
@@ -7,8 +8,6 @@ import APYGraph from '../bodySection/apyGraph';
 import {
   dynamicPoolDataState,
   DynamicPoolStateData,
-  negativeYieldPoolDataState,
-  NegativeYieldStateData,
   staticPoolDataState,
   StaticPoolDataMap,
 } from '../../../state/PoolDataState';
@@ -16,7 +15,6 @@ import {
 const VariableAPRFormatter = ({ row }: any) => {
   const dynamicPoolData = useHookState(dynamicPoolDataState).attach(Downgraded).get();
   const staticPoolData = useHookState(staticPoolDataState).attach(Downgraded).get();
-  const negativeYieldPoolData = useHookState(negativeYieldPoolDataState).attach(Downgraded).get();
 
   const isChild = Boolean(row.parentId);
 
@@ -24,38 +22,38 @@ const VariableAPRFormatter = ({ row }: any) => {
     if (isChild) {
       return getChildAPR(row.id, dynamicPoolData);
     } else {
-      return getParentAPR(row.id, staticPoolData, dynamicPoolData, negativeYieldPoolData);
+      return getParentAPR(row.id, staticPoolData, dynamicPoolData);
     }
   };
   const apr = getAPR();
 
+  if (apr === null) {
+    return <CircularProgress size={16} />;
+  }
+
   if (!isChild) {
     return (
-      apr && (
-        <div className="tf__dashboard__body__apy">
-          <Typography color="default" variant="body-text">
-            Up to&nbsp;
-          </Typography>
-          <Typography color={apr > 0.2 ? 'accent' : 'default'} variant="body-text">
-            {NumberUtils.formatPercentage(apr, 2)}
-          </Typography>
-        </div>
-      )
+      <div className="tf__dashboard__body__apy">
+        <Typography color="default" variant="body-text">
+          Up to&nbsp;
+        </Typography>
+        <Typography color={apr > 0.2 ? 'accent' : 'default'} variant="body-text">
+          {NumberUtils.formatPercentage(apr, 2)}
+        </Typography>
+      </div>
     );
   }
 
   // If it's a child row
   return (
-    apr && (
-      <div className="tf__dashboard__body__apy">
-        <APYGraph apy={apr} />
-        <div className="tf__dashboard__body__apy-value">
-          <Typography color="default" variant="body-text">
-            {NumberUtils.formatPercentage(apr, 2)}
-          </Typography>
-        </div>
+    <div className="tf__dashboard__body__apy">
+      <APYGraph apy={apr} />
+      <div className="tf__dashboard__body__apy-value">
+        <Typography color="default" variant="body-text">
+          {NumberUtils.formatPercentage(apr, 2)}
+        </Typography>
       </div>
-    )
+    </div>
   );
 };
 export default VariableAPRFormatter;
@@ -64,13 +62,12 @@ function getParentAPR(
   parentId: Ticker,
   staticPoolData: StaticPoolDataMap,
   dynamicPoolData: DynamicPoolStateData,
-  negativeYieldPoolData: NegativeYieldStateData,
-): number {
+): number | null {
   const parentChildrenAddresses: string[] = [];
   for (const key in dynamicPoolData) {
     if (
       staticPoolData[key].backingToken === parentId &&
-      (!negativeYieldPoolData[key] || dynamicPoolData[key].userBalanceUSD?.gt(ZERO))
+      (!dynamicPoolData[key].negativeYield || dynamicPoolData[key].userBalanceUSD?.gt(ZERO))
     ) {
       parentChildrenAddresses.push(key);
     }
@@ -81,6 +78,10 @@ function getParentAPR(
       return dynamicPoolData[address].variableAPR;
     })
     .filter(variableAPR => variableAPR !== null) as number[];
+
+  if (childrenVariableAPR.length === 0) {
+    return null;
+  }
 
   return Math.max(...childrenVariableAPR);
 }
