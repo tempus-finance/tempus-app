@@ -9,6 +9,9 @@ const en: { [word in Words]: string } = {
   settings: 'Settings',
   connectWallet: 'Connect Wallet',
   pending: 'Pending...',
+  selectWallet: ' Select Wallet',
+  walletSelectorDisclaimer:
+    'By connecting a wallet, you agree <a href="https://tempus.finance/terms-of-service" target="_blank">Tempus Terms of Service</a> and acknowledge that you have read and understand the <a href="https://tempus.finance/terms-of-service" target="_blank">Tempus Protocol Disclaimer</a>.',
   installMetamask: 'Install Metamask',
   availablePools: 'Available Pools',
   filter: 'Filter',
