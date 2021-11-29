@@ -10,6 +10,7 @@ import {
   depositAndProvideLiquidityGasIncrease,
   depositBackingGasIncrease,
   depositYieldBearingGasIncrease,
+  INFINITE_DEADLINE,
 } from '../constants';
 import TempusAMMService from './TempusAMMService';
 
@@ -138,7 +139,7 @@ class TempusControllerService {
           tokenAmount,
           isBackingToken,
           minTYSRate,
-          BigNumber.from('8640000000000000'),
+          INFINITE_DEADLINE,
           {
             value: tokenAmount,
           },
@@ -148,7 +149,7 @@ class TempusControllerService {
           tokenAmount,
           isBackingToken,
           minTYSRate,
-          BigNumber.from('8640000000000000'),
+          INFINITE_DEADLINE,
           {
             value: tokenAmount,
             gasLimit: Math.ceil(estimate.toNumber() * depositAndFixGasIncrease),
@@ -160,14 +161,14 @@ class TempusControllerService {
           tokenAmount,
           isBackingToken,
           minTYSRate,
-          BigNumber.from('8640000000000000'),
+          INFINITE_DEADLINE,
         );
         return await this.contract.depositAndFix(
           tempusAMM,
           tokenAmount,
           isBackingToken,
           minTYSRate,
-          BigNumber.from('8640000000000000'),
+          INFINITE_DEADLINE,
           {
             gasLimit: Math.ceil(estimate.toNumber() * depositAndFixGasIncrease),
           },
@@ -232,6 +233,7 @@ class TempusControllerService {
     yieldsAmount: BigNumber,
     minPrincipalsStaked: BigNumber,
     minYieldsStaked: BigNumber,
+    minRate: BigNumber,
     isBackingToken: boolean,
   ): Promise<ContractTransaction> {
     if (!this.contract || !this.tempusAMMService) {
@@ -266,9 +268,9 @@ class TempusControllerService {
         minPrincipalsStaked,
         minYieldsStaked,
         maxLeftoverShares,
-        BigNumber.from('0'),
+        minRate,
         isBackingToken,
-        BigNumber.from('8640000000000000'),
+        INFINITE_DEADLINE,
       );
       return await this.contract.exitTempusAmmAndRedeem(
         tempusAMM,
@@ -278,9 +280,9 @@ class TempusControllerService {
         minPrincipalsStaked,
         minYieldsStaked,
         maxLeftoverShares,
-        BigNumber.from('0'),
+        minRate,
         isBackingToken,
-        BigNumber.from('8640000000000000'),
+        INFINITE_DEADLINE,
         {
           gasLimit: Math.ceil(estimate.toNumber() * completeExitAndRedeemGasIncrease),
         },

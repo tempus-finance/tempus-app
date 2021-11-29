@@ -54,8 +54,8 @@ const PercentageInput: FC<PercentageInputProps> = ({
   );
 
   const handleOnAutoClick = useCallback(() => {
-    setValue('1');
-    onChange && onChange('1');
+    setValue('100');
+    onChange && onChange('100');
   }, [onChange]);
 
   const handleContainerClick = useCallback(() => {

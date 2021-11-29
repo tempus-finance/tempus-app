@@ -19,6 +19,8 @@ import TokenSelector from '../tokenSelector/tokenSelector';
 import Typography from '../typography/Typography';
 
 import './Withdraw.scss';
+import { mul18f } from '../../utils/weiMath';
+import { UserSettingsContext } from '../../context/userSettingsContext';
 
 type WithdrawOutProps = {
   onWithdraw: () => void;
@@ -31,6 +33,7 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
 
   const { userWalletSigner } = useContext(WalletContext);
   const { language } = useContext(LanguageContext);
+  const { slippage } = useContext(UserSettingsContext);
 
   const backingToken = staticPoolData[selectedPool.get()].backingToken.attach(Downgraded).get();
   const yieldBearingToken = staticPoolData[selectedPool.get()].yieldBearingToken.attach(Downgraded).get();
@@ -81,14 +84,37 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
     if (userWalletSigner && userPrincipalsBalance && userYieldsBalance && userLPTokenBalance && estimatedWithdrawData) {
       const poolDataAdapter = getPoolDataAdapter(userWalletSigner);
 
+      const minPrincipalsStaked = mul18f(
+        estimatedWithdrawData.principalsStaked,
+        ethers.utils.parseUnits((slippage / 100).toString(), getTokenPrecision(selectedPoolAddress, 'principals')),
+      );
+      const minYieldsStaked = mul18f(
+        estimatedWithdrawData.yieldsStaked,
+        ethers.utils.parseUnits((slippage / 100).toString(), getTokenPrecision(selectedPoolAddress, 'yields')),
+      );
+
+      let minRate = BigNumber.from('0');
+      if (userPrincipalsBalance.gt(userYieldsBalance)) {
+        minRate = mul18f(
+          estimatedWithdrawData.principalsRate,
+          ethers.utils.parseUnits((slippage / 100).toString(), getTokenPrecision(selectedPoolAddress, 'principals')),
+        );
+      } else if (userYieldsBalance.gt(userPrincipalsBalance)) {
+        minRate = mul18f(
+          estimatedWithdrawData.yieldsRate,
+          ethers.utils.parseUnits((slippage / 100).toString(), getTokenPrecision(selectedPoolAddress, 'principals')),
+        );
+      }
+
       const isBackingToken = backingToken === selectedToken;
       return poolDataAdapter.executeWithdraw(
         ammAddress,
         userPrincipalsBalance,
         userYieldsBalance,
         userLPTokenBalance,
-        estimatedWithdrawData.principalsStaked.sub(estimatedWithdrawData.principalsStaked.div(BigNumber.from('100'))),
-        estimatedWithdrawData.yieldsStaked.sub(estimatedWithdrawData.yieldsStaked.div(BigNumber.from('100'))),
+        minPrincipalsStaked,
+        minYieldsStaked,
+        minRate,
         isBackingToken,
       );
     } else {
@@ -100,6 +126,8 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
     userYieldsBalance,
     userLPTokenBalance,
     estimatedWithdrawData,
+    slippage,
+    selectedPoolAddress,
     backingToken,
     selectedToken,
     ammAddress,
