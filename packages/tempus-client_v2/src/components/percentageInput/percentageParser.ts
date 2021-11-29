@@ -1,14 +1,33 @@
 export const checkIfNumberRegExp = /\d/;
 export const removeLeadingZeroesRegExp = /^0+/;
 
-export const formatValueToPercentage = (value: string): string => {
+export const formatValueToPercentage = (
+  value: string,
+): {
+  parsedValue: string;
+  percentageValue: string;
+} => {
   if (!value) {
-    return '';
+    return {
+      parsedValue: '',
+      percentageValue: '',
+    };
   }
 
-  value = value.replace(removeLeadingZeroesRegExp, '');
+  // If provided value is negative, return 0
+  if (value.startsWith('-')) {
+    return {
+      parsedValue: '0',
+      percentageValue: '0',
+    };
+  }
 
-  const splitValue = value.split('.');
+  let sanitizedValue = value.replace(removeLeadingZeroesRegExp, '');
+  if (sanitizedValue.startsWith('.')) {
+    sanitizedValue = `0${sanitizedValue}`;
+  }
+
+  const splitValue = sanitizedValue.split('.');
 
   // no decimals
   if (splitValue.length === 1) {
@@ -17,11 +36,17 @@ export const formatValueToPercentage = (value: string): string => {
     // Remove non digit characters from string
     const filteredValues = characters.filter((v: string) => checkIfNumberRegExp.test(v));
 
-    const value = Number(filteredValues.join(''));
-    if (value > 100) {
-      return '100';
+    const integerPartNumber = Number(filteredValues.join(''));
+    if (integerPartNumber > 100) {
+      return {
+        parsedValue: '100',
+        percentageValue: '100',
+      };
     } else {
-      return value.toString();
+      return {
+        parsedValue: integerPartNumber.toString(),
+        percentageValue: integerPartNumber.toString().replace(/[^0-9$.]/g, ''),
+      };
     }
   }
 
@@ -36,19 +61,36 @@ export const formatValueToPercentage = (value: string): string => {
 
     const leftValue = Number(filteredLeftCharacters.join(''));
     if (leftValue > 100) {
-      return '100';
+      return {
+        parsedValue: '100',
+        percentageValue: '100',
+      };
     }
 
     if (truncatedRightCharacters.length) {
-      return `${filteredLeftCharacters.join('')}.${truncatedRightCharacters.join('')}`;
+      const parsedValue = `${filteredLeftCharacters.join('')}.${truncatedRightCharacters.join('')}`;
+      return {
+        parsedValue,
+        percentageValue: parsedValue.replace(/[^0-9$.]/g, ''),
+      };
     } else {
-      return `${filteredLeftCharacters.join('')}.`;
+      const parsedValue = `${filteredLeftCharacters.join('')}.`;
+      return {
+        parsedValue,
+        percentageValue: parsedValue.replace(/[^0-9$.]/g, ''),
+      };
     }
   }
 
   if (splitValue.length > 2) {
-    return '';
+    return {
+      parsedValue: '',
+      percentageValue: '',
+    };
   }
 
-  return value;
+  return {
+    parsedValue: value,
+    percentageValue: value.replace(/[^0-9$.]/g, ''),
+  };
 };

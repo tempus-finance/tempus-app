@@ -45,11 +45,13 @@ const Settings = () => {
 
   const onSlippageChange = useCallback(
     (value: string) => {
-      setUserSettings &&
-        setUserSettings(prevState => ({
-          ...prevState,
-          slippage: Number(value),
-        }));
+      if (value !== '') {
+        setUserSettings &&
+          setUserSettings(prevState => ({
+            ...prevState,
+            slippage: Number(value),
+          }));
+      }
     },
     [setUserSettings],
   );

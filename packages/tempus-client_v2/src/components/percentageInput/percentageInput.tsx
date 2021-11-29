@@ -37,7 +37,7 @@ const PercentageInput: FC<PercentageInputProps> = ({
 
   useEffect(() => {
     if (defaultValue || defaultValue === '') {
-      setValue(formatValueToPercentage(defaultValue));
+      setValue(formatValueToPercentage(defaultValue).parsedValue);
     }
   }, [defaultValue]);
 
@@ -45,10 +45,10 @@ const PercentageInput: FC<PercentageInputProps> = ({
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const currentValue = event.currentTarget.value;
       const parsedPercentage = formatValueToPercentage(currentValue);
-      if (parsedPercentage || parsedPercentage === '') {
-        setValue(parsedPercentage);
+      if (parsedPercentage.parsedValue || parsedPercentage.parsedValue === '') {
+        setValue(parsedPercentage.parsedValue);
       }
-      onChange && onChange(parsedPercentage.replace(/[^0-9$.]/g, ''));
+      onChange && onChange(parsedPercentage.percentageValue);
     },
     [onChange],
   );
