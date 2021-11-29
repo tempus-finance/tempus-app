@@ -5,10 +5,12 @@ import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '..
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
 import { WalletContext } from '../../context/walletContext';
 import { LanguageContext } from '../../context/languageContext';
+import { UserSettingsContext } from '../../context/userSettingsContext';
 import getText from '../../localisation/getText';
 import { Ticker } from '../../interfaces/Token';
 import NumberUtils from '../../services/NumberUtils';
 import getConfig from '../../utils/getConfig';
+import { mul18f } from '../../utils/weiMath';
 import getTokenPrecision from '../../utils/getTokenPrecision';
 import Approve from '../buttons/Approve';
 import Execute from '../buttons/Execute';
@@ -19,8 +21,6 @@ import TokenSelector from '../tokenSelector/tokenSelector';
 import Typography from '../typography/Typography';
 
 import './Withdraw.scss';
-import { mul18f } from '../../utils/weiMath';
-import { UserSettingsContext } from '../../context/userSettingsContext';
 
 type WithdrawOutProps = {
   onWithdraw: () => void;
