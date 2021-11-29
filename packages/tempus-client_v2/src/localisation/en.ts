@@ -87,5 +87,8 @@ const en: { [word in Words]: string } = {
     'Fix your future yield with Tempus. This function locks your Yield Bearing Token, mints Principals and Yields in exchange, and swaps all Yields for Principals through TempusAMM.<br/><br/>You will receive Principals which will be redeemable 1:1 to the Underlying asset on Maturity.',
   liquidityProvisionTooltipText:
     'Provide liquidity to Tempus to earn extra yield. This function locks your Yield Bearing Token, mints Principals and Yields in exchange, and uses the maximum available number of Principals and Yields to provide liquidity to TempusAMM.<br/><br/>This means that you will receive the underlying yield, and the Tempus swap fees, aggregated into one yield.',
+  slippageTolerance: 'Slippage tolerance',
+  slippageTooltip: 'Your transaction will revert if the price changes unfavorably by more than this percentage.',
+  auto: 'Auto',
 };
 export default en;

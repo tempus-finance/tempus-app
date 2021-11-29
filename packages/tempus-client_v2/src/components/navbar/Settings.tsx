@@ -1,7 +1,13 @@
-import { MouseEvent, useCallback, useContext, useState, useRef } from 'react';
-import { List, ListItem, ListItemText, Popper } from '@material-ui/core';
-import getText, { Language } from '../../localisation/getText';
+import { useCallback, useState, useRef, useContext } from 'react';
+import { Popper } from '@material-ui/core';
 import { LanguageContext } from '../../context/languageContext';
+import { UserSettingsContext } from '../../context/userSettingsContext';
+import getText from '../../localisation/getText';
+import SlippageIcon from '../icons/SlippageIcon';
+import Typography from '../typography/Typography';
+import Spacer from '../spacer/spacer';
+import InfoTooltip from '../infoTooltip/infoTooltip';
+import PercentageInput from '../percentageInput/percentageInput';
 
 import './Settings.scss';
 
@@ -10,11 +16,15 @@ import './Settings.scss';
 // check icon with design
 
 const Settings = () => {
-  const { language, setLanguage } = useContext(LanguageContext);
+  const { language } = useContext(LanguageContext);
+  const { slippage, setUserSettings } = useContext(UserSettingsContext);
+
+  const settingsMenuAnchor = useRef<HTMLLIElement>(null);
 
   const [settingsMenuOpen, setSettingsMenuOpen] = useState<boolean>(false);
 
-  const onChangeLanguage = useCallback(
+  /* TODO - Add new language selector UI */
+  /* const onChangeLanguage = useCallback(
     (event: MouseEvent<HTMLDivElement>) => {
       const selectedLanguage = (event.target as HTMLDivElement)
         .closest('[role="button"]')
@@ -27,13 +37,22 @@ const Settings = () => {
         });
     },
     [setLanguage],
-  );
+  ); */
 
   const toggleSettingsMenu = useCallback(() => {
     setSettingsMenuOpen(prevValue => !prevValue);
   }, [setSettingsMenuOpen]);
 
-  const settingsMenuAnchor = useRef<HTMLLIElement>(null);
+  const onSlippageChange = useCallback(
+    (value: string) => {
+      setUserSettings &&
+        setUserSettings(prevState => ({
+          ...prevState,
+          slippage: Number(value),
+        }));
+    },
+    [setUserSettings],
+  );
 
   return (
     <>
@@ -47,14 +66,24 @@ const Settings = () => {
         placement="bottom-end"
       >
         <div className="tc__header__settings-menu__container">
-          <List>
+          <div className="tc__header__settings-menu__section-header">
+            <SlippageIcon />
+            <Spacer size={10} />
+            <Typography variant="card-body-text">{getText('slippageTolerance', language)}</Typography>
+            <div className="tc__header__settings-menu__section-header-action">
+              <InfoTooltip text={getText('slippageTooltip', language)} />
+            </div>
+          </div>
+          <PercentageInput defaultValue={slippage.toString()} onChange={onSlippageChange} />
+          {/* TODO - Add new language selector UI */}
+          {/* <List>
             <ListItem button onClick={onChangeLanguage} data-id="en">
               <ListItemText primary="English" />
             </ListItem>
             <ListItem button onClick={onChangeLanguage} data-id="it">
               <ListItemText primary="Italiano" />
             </ListItem>
-          </List>
+          </List> */}
         </div>
       </Popper>
       {settingsMenuOpen && <div className="tc__backdrop" onClick={toggleSettingsMenu} />}

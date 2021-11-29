@@ -24,10 +24,10 @@ const InfoTooltip: FC<InfoToolTipProps> = props => {
 
   return (
     <div className="tc__infoTooltip">
-      <div onClick={toggle} ref={anchorRef}>
+      <div onClick={toggle} ref={anchorRef} className="tc__infoTooltip-icon">
         <InfoIcon />
       </div>
-      <Popper open={open} anchorEl={anchorRef.current} placement="bottom-start">
+      <Popper open={open} anchorEl={anchorRef.current} placement="bottom-start" disablePortal>
         <div className="tc__infoTooltip-popup">
           <Typography variant="tooltip-card-text" html={text} />
         </div>

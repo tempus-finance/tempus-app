@@ -2,7 +2,7 @@ import { useCallback, useContext } from 'react';
 import { useState as useHookState } from '@hookstate/core';
 import { selectedPoolState } from '../../state/PoolDataState';
 import { LanguageContext } from '../../context/languageContext';
-import getText /*, { Language }*/ from '../../localisation/getText';
+import getText from '../../localisation/getText';
 import Community from './Community';
 import Settings from './Settings';
 
@@ -24,7 +24,6 @@ const Links = () => {
     <div className="tc__navBar__links">
       <ul>
         <li onClick={onDashboardClick}>{getText('dashboard', language)}</li>
-        {/* <li>{getText('analytics', language)}</li> */}
         <Community />
         <Settings />
       </ul>

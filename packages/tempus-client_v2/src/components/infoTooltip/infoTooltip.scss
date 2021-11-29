@@ -5,6 +5,12 @@
   align-items: center;
   justify-content: center;
   position: relative;
+  cursor: pointer;
+}
+
+.tc__infoTooltip-icon {
+  width: 20px;
+  height: 20px;
 }
 
 .tc__infoTooltip-popup {
@@ -14,4 +20,5 @@
   padding: 10px;
   width: 350px;
   z-index: 1;
+  cursor: default;
 }
