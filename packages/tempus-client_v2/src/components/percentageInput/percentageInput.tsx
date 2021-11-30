@@ -47,8 +47,8 @@ const PercentageInput: FC<PercentageInputProps> = ({
       const parsedPercentage = formatValueToPercentage(currentValue);
       if (parsedPercentage || parsedPercentage === '') {
         setValue(parsedPercentage);
+        onChange && onChange(parsedPercentage);
       }
-      onChange && onChange(parsedPercentage);
     },
     [onChange],
   );
