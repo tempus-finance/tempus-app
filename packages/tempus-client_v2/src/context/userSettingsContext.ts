@@ -2,19 +2,21 @@ import React, { Dispatch, SetStateAction } from 'react';
 
 interface UserSettingsContextData {
   showFiat: boolean;
+  slippage: number; // value from 0 to 100
 }
 
 interface UserSettingsContextActions {
-  setShowFiat: Dispatch<SetStateAction<UserSettingsContextData>> | null;
+  setUserSettings: Dispatch<SetStateAction<UserSettingsContextData>> | null;
 }
 
 interface UserSettingsContextType extends UserSettingsContextActions, UserSettingsContextData {}
 
 export const defaultUserSettingsContextValue: UserSettingsContextData = {
   showFiat: false,
+  slippage: 1, // 1%
 };
 
 export const UserSettingsContext = React.createContext<UserSettingsContextType>({
   ...defaultUserSettingsContextValue,
-  setShowFiat: null,
+  setUserSettings: null,
 });

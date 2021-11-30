@@ -87,10 +87,10 @@ export default class UserBalanceDataAdapter {
         }),
       )
       .pipe(
-        switchMap(([backingTokenRate, userPoolBalanceInBackingTokens]) => {
-          if (this.statisticsService && backingTokenRate && userPoolBalanceInBackingTokens) {
-            const userPoolBalanceInFiat = mul18f(userPoolBalanceInBackingTokens, backingTokenRate);
-            return of([userPoolBalanceInFiat, userPoolBalanceInBackingTokens]);
+        switchMap(([backingTokenRate, exitEstimate]) => {
+          if (this.statisticsService && backingTokenRate && exitEstimate.tokenAmount) {
+            const userPoolBalanceInFiat = mul18f(exitEstimate.tokenAmount, backingTokenRate);
+            return of([userPoolBalanceInFiat, exitEstimate.tokenAmount]);
           }
           return throwError(
             () => new Error('UserBalanceDataAdapter - getUserBalanceForPool() - Adapter not initialized!'),

@@ -234,7 +234,13 @@ export default class PoolDataAdapter {
     principalAmount: BigNumber,
     yieldsAmount: BigNumber,
     isBackingToken: boolean,
-  ): Observable<BigNumber> {
+  ): Observable<{
+    tokenAmount: BigNumber;
+    principalsStaked: BigNumber;
+    yieldsStaked: BigNumber;
+    principalsRate: BigNumber;
+    yieldsRate: BigNumber;
+  }> {
     if (!this.statisticService) {
       console.error(
         'PoolDataAdapter - getEstimatedWithdrawAmount() - Attempted to use PoolDataAdapter before initializing it!',
@@ -421,7 +427,11 @@ export default class PoolDataAdapter {
   async executeWithdraw(
     tempusAMM: string,
     userPrincipalsBalance: BigNumber,
+    userYieldsBalance: BigNumber,
     userLPBalance: BigNumber,
+    minPrincipalsStaked: BigNumber,
+    minYieldsStaked: BigNumber,
+    minRate: BigNumber,
     isBackingToken: boolean,
   ): Promise<ContractTransaction | undefined> {
     if (!this.tempusControllerService) {
@@ -430,10 +440,14 @@ export default class PoolDataAdapter {
     }
 
     try {
-      return await this.tempusControllerService.completeExitAndRedeem(
+      return await this.tempusControllerService.exitTempusAmmAndRedeem(
         tempusAMM,
-        userPrincipalsBalance,
         userLPBalance,
+        userPrincipalsBalance,
+        userYieldsBalance,
+        minPrincipalsStaked,
+        minYieldsStaked,
+        minRate,
         isBackingToken,
       );
     } catch (error) {
@@ -950,7 +964,16 @@ export default class PoolDataAdapter {
     return this.tempusControllerService.redeemToYieldBearing(tempusPool, userWalletAddress, amountOfShares);
   }
 
-  async getPresentValueInBackingTokensForPool(pool: TempusPool, userWalletAddress: string): Promise<BigNumber> {
+  async getPresentValueInBackingTokensForPool(
+    pool: TempusPool,
+    userWalletAddress: string,
+  ): Promise<{
+    tokenAmount: BigNumber;
+    principalsStaked: BigNumber;
+    yieldsStaked: BigNumber;
+    principalsRate: BigNumber;
+    yieldsRate: BigNumber;
+  }> {
     if (!this.statisticService || !this.tempusPoolService || !this.eRC20TokenServiceGetter) {
       console.error(
         'PoolDataAdapter - getPresentValueInBackingTokensForPool() - Attempted to use PoolDataAdapter before initializing it!',

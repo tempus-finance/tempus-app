@@ -5,10 +5,12 @@ import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '..
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
 import { WalletContext } from '../../context/walletContext';
 import { LanguageContext } from '../../context/languageContext';
+import { UserSettingsContext } from '../../context/userSettingsContext';
 import getText from '../../localisation/getText';
 import { Ticker } from '../../interfaces/Token';
 import NumberUtils from '../../services/NumberUtils';
 import getConfig from '../../utils/getConfig';
+import { mul18f } from '../../utils/weiMath';
 import getTokenPrecision from '../../utils/getTokenPrecision';
 import Approve from '../buttons/Approve';
 import Execute from '../buttons/Execute';
@@ -31,6 +33,7 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
 
   const { userWalletSigner } = useContext(WalletContext);
   const { language } = useContext(LanguageContext);
+  const { slippage } = useContext(UserSettingsContext);
 
   const backingToken = staticPoolData[selectedPool.get()].backingToken.attach(Downgraded).get();
   const yieldBearingToken = staticPoolData[selectedPool.get()].yieldBearingToken.attach(Downgraded).get();
@@ -42,7 +45,13 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
   const supportedTokens = [backingToken, yieldBearingToken].filter(token => token !== 'ETH');
 
   const [selectedToken, setSelectedToken] = useState<Ticker>(yieldBearingToken);
-  const [estimatedWithdrawAmount, setEstimatedWithdrawAmount] = useState<BigNumber | null>(null);
+  const [estimatedWithdrawData, setEstimatedWithdrawData] = useState<{
+    tokenAmount: BigNumber;
+    principalsStaked: BigNumber;
+    yieldsStaked: BigNumber;
+    principalsRate: BigNumber;
+    yieldsRate: BigNumber;
+  } | null>(null);
 
   const [principalsApproved, setPrincipalsApproved] = useState<boolean>(false);
   const [yieldsApproved, setYieldsApproved] = useState<boolean>(false);
@@ -72,15 +81,57 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
   );
 
   const onExecute = useCallback((): Promise<ethers.ContractTransaction | undefined> => {
-    if (userWalletSigner && userPrincipalsBalance && userLPTokenBalance) {
+    if (userWalletSigner && userPrincipalsBalance && userYieldsBalance && userLPTokenBalance && estimatedWithdrawData) {
       const poolDataAdapter = getPoolDataAdapter(userWalletSigner);
 
+      const minPrincipalsStaked = mul18f(
+        estimatedWithdrawData.principalsStaked,
+        ethers.utils.parseUnits((slippage / 100).toString(), getTokenPrecision(selectedPoolAddress, 'principals')),
+      );
+      const minYieldsStaked = mul18f(
+        estimatedWithdrawData.yieldsStaked,
+        ethers.utils.parseUnits((slippage / 100).toString(), getTokenPrecision(selectedPoolAddress, 'yields')),
+      );
+
+      let minRate = BigNumber.from('0');
+      if (userPrincipalsBalance.gt(userYieldsBalance)) {
+        minRate = mul18f(
+          estimatedWithdrawData.principalsRate,
+          ethers.utils.parseUnits((slippage / 100).toString(), getTokenPrecision(selectedPoolAddress, 'principals')),
+        );
+      } else if (userYieldsBalance.gt(userPrincipalsBalance)) {
+        minRate = mul18f(
+          estimatedWithdrawData.yieldsRate,
+          ethers.utils.parseUnits((slippage / 100).toString(), getTokenPrecision(selectedPoolAddress, 'principals')),
+        );
+      }
+
       const isBackingToken = backingToken === selectedToken;
-      return poolDataAdapter.executeWithdraw(ammAddress, userPrincipalsBalance, userLPTokenBalance, isBackingToken);
+      return poolDataAdapter.executeWithdraw(
+        ammAddress,
+        userPrincipalsBalance,
+        userYieldsBalance,
+        userLPTokenBalance,
+        minPrincipalsStaked,
+        minYieldsStaked,
+        minRate,
+        isBackingToken,
+      );
     } else {
       return Promise.resolve(undefined);
     }
-  }, [userWalletSigner, userPrincipalsBalance, userLPTokenBalance, backingToken, selectedToken, ammAddress]);
+  }, [
+    userWalletSigner,
+    userPrincipalsBalance,
+    userYieldsBalance,
+    userLPTokenBalance,
+    estimatedWithdrawData,
+    slippage,
+    selectedPoolAddress,
+    backingToken,
+    selectedToken,
+    ammAddress,
+  ]);
 
   // Fetch estimated withdraw amount of tokens
   useEffect(() => {
@@ -97,7 +148,7 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
             isBackingToken,
           )
           .subscribe(amount => {
-            setEstimatedWithdrawAmount(amount);
+            setEstimatedWithdrawData(amount);
           });
 
         return () => stream$.unsubscribe();
@@ -146,14 +197,14 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
   }, [selectedPoolAddress, decimalsForUI, userLPTokenBalance]);
 
   const estimatedWithdrawAmountFormatted = useMemo(() => {
-    if (!estimatedWithdrawAmount) {
+    if (!estimatedWithdrawData) {
       return null;
     }
     return NumberUtils.formatToCurrency(
-      ethers.utils.formatUnits(estimatedWithdrawAmount, tokenPrecision),
+      ethers.utils.formatUnits(estimatedWithdrawData.tokenAmount, tokenPrecision),
       decimalsForUI,
     );
-  }, [estimatedWithdrawAmount, tokenPrecision, decimalsForUI]);
+  }, [estimatedWithdrawData, tokenPrecision, decimalsForUI]);
 
   const estimatedWithdrawAmountUsdFormatted = useMemo(() => {
     if (!userBalanceUSD) {

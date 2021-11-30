@@ -8,23 +8,23 @@ import './CurrencySwitch.scss';
 type CurrencySwitchOptions = 'fiat' | 'crypto';
 
 const CurrencySwitch = () => {
-  const { showFiat, setShowFiat } = useContext(UserSettingsContext);
+  const { showFiat, setUserSettings } = useContext(UserSettingsContext);
   const { language } = useContext(LanguageContext);
 
   const onSwitchClick = useCallback(
     (event: MouseEvent<HTMLDivElement>) => {
       const label = (event.target as HTMLDivElement).parentElement?.getAttribute('data-id') as CurrencySwitchOptions;
-      if (setShowFiat && label) {
-        setShowFiat(({ showFiat }) => {
-          if ((label === 'fiat' && !showFiat) || (label === 'crypto' && showFiat)) {
-            return { showFiat: !showFiat };
+      if (setUserSettings && label) {
+        setUserSettings(prevState => {
+          if ((label === 'fiat' && !prevState.showFiat) || (label === 'crypto' && prevState.showFiat)) {
+            return { ...prevState, showFiat: !prevState.showFiat };
           }
 
-          return { showFiat };
+          return { ...prevState, showFiat: prevState.showFiat };
         });
       }
     },
-    [setShowFiat],
+    [setUserSettings],
   );
 
   const style = useMemo(() => {
