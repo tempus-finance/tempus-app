@@ -195,7 +195,7 @@ class ProfitLossGraphDataAdapter {
         }),
       ]);
 
-      const [liquidationValueInBackingTokens, backingTokenRate] = await Promise.all([
+      const [exitEstimateData, backingTokenRate] = await Promise.all([
         this.statisticsService.estimateExitAndRedeem(
           poolData.ammAddress,
           lpBalance,
@@ -210,7 +210,7 @@ class ProfitLossGraphDataAdapter {
           blockTag: block.number,
         }),
       ]);
-      return mul18f(liquidationValueInBackingTokens, backingTokenRate);
+      return mul18f(exitEstimateData.tokenAmount, backingTokenRate);
     } catch (error) {
       console.error('Failed to fetch liquidation value for user.');
       return Promise.reject(error);

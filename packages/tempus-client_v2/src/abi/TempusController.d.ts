@@ -22,30 +22,30 @@ import { TypedEventFilter, TypedEvent, TypedListener } from "./commons";
 
 interface TempusControllerInterface extends ethers.utils.Interface {
   functions: {
-    "completeExitAndRedeem(address,uint256,bool)": FunctionFragment;
-    "depositAndFix(address,uint256,bool,uint256)": FunctionFragment;
+    "acceptOwnership()": FunctionFragment;
+    "depositAndFix(address,uint256,bool,uint256,uint256)": FunctionFragment;
     "depositAndProvideLiquidity(address,uint256,bool)": FunctionFragment;
     "depositBacking(address,uint256,address)": FunctionFragment;
     "depositYieldBearing(address,uint256,address)": FunctionFragment;
     "exitTempusAMM(address,uint256,uint256,uint256,bool)": FunctionFragment;
-    "exitTempusAMMAndRedeem(address,uint256,bool)": FunctionFragment;
-    "finalize(address)": FunctionFragment;
+    "exitTempusAMMAndRedeem(address,uint256,uint256,uint256,uint256,uint256,bool)": FunctionFragment;
+    "exitTempusAmmAndRedeem(address,uint256,uint256,uint256,uint256,uint256,uint256,uint256,bool,uint256)": FunctionFragment;
     "owner()": FunctionFragment;
-    "redeemToBacking(address,address,uint256,uint256,address)": FunctionFragment;
-    "redeemToYieldBearing(address,address,uint256,uint256,address)": FunctionFragment;
-    "renounceOwnership()": FunctionFragment;
-    "swap(address,address,address,uint256,address,address,uint256)": FunctionFragment;
+    "provideLiquidity(address,uint256)": FunctionFragment;
+    "redeemToBacking(address,uint256,uint256,address)": FunctionFragment;
+    "redeemToYieldBearing(address,uint256,uint256,address)": FunctionFragment;
+    "register(address,bool)": FunctionFragment;
     "transferFees(address,address)": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
   };
 
   encodeFunctionData(
-    functionFragment: "completeExitAndRedeem",
-    values: [string, BigNumberish, boolean]
+    functionFragment: "acceptOwnership",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "depositAndFix",
-    values: [string, BigNumberish, boolean, BigNumberish]
+    values: [string, BigNumberish, boolean, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "depositAndProvideLiquidity",
@@ -65,25 +65,47 @@ interface TempusControllerInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "exitTempusAMMAndRedeem",
-    values: [string, BigNumberish, boolean]
+    values: [
+      string,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      boolean
+    ]
   ): string;
-  encodeFunctionData(functionFragment: "finalize", values: [string]): string;
+  encodeFunctionData(
+    functionFragment: "exitTempusAmmAndRedeem",
+    values: [
+      string,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      boolean,
+      BigNumberish
+    ]
+  ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
+    functionFragment: "provideLiquidity",
+    values: [string, BigNumberish]
+  ): string;
+  encodeFunctionData(
     functionFragment: "redeemToBacking",
-    values: [string, string, BigNumberish, BigNumberish, string]
+    values: [string, BigNumberish, BigNumberish, string]
   ): string;
   encodeFunctionData(
     functionFragment: "redeemToYieldBearing",
-    values: [string, string, BigNumberish, BigNumberish, string]
+    values: [string, BigNumberish, BigNumberish, string]
   ): string;
   encodeFunctionData(
-    functionFragment: "renounceOwnership",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "swap",
-    values: [string, string, string, BigNumberish, string, string, BigNumberish]
+    functionFragment: "register",
+    values: [string, boolean]
   ): string;
   encodeFunctionData(
     functionFragment: "transferFees",
@@ -95,7 +117,7 @@ interface TempusControllerInterface extends ethers.utils.Interface {
   ): string;
 
   decodeFunctionResult(
-    functionFragment: "completeExitAndRedeem",
+    functionFragment: "acceptOwnership",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -122,8 +144,15 @@ interface TempusControllerInterface extends ethers.utils.Interface {
     functionFragment: "exitTempusAMMAndRedeem",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "finalize", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "exitTempusAmmAndRedeem",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "provideLiquidity",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "redeemToBacking",
     data: BytesLike
@@ -132,11 +161,7 @@ interface TempusControllerInterface extends ethers.utils.Interface {
     functionFragment: "redeemToYieldBearing",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "renounceOwnership",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "swap", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "register", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "transferFees",
     data: BytesLike
@@ -148,11 +173,13 @@ interface TempusControllerInterface extends ethers.utils.Interface {
 
   events: {
     "Deposited(address,address,address,uint256,uint256,uint256,uint256,uint256)": EventFragment;
+    "OwnershipProposed(address,address)": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
     "Redeemed(address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bool)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "Deposited"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "OwnershipProposed"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Redeemed"): EventFragment;
 }
@@ -201,10 +228,7 @@ export class TempusController extends BaseContract {
   interface: TempusControllerInterface;
 
   functions: {
-    completeExitAndRedeem(
-      tempusAMM: string,
-      maxLeftoverShares: BigNumberish,
-      toBackingToken: boolean,
+    acceptOwnership(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -213,6 +237,7 @@ export class TempusController extends BaseContract {
       tokenAmount: BigNumberish,
       isBackingToken: boolean,
       minTYSRate: BigNumberish,
+      deadline: BigNumberish,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -248,21 +273,39 @@ export class TempusController extends BaseContract {
 
     exitTempusAMMAndRedeem(
       tempusAMM: string,
-      sharesAmount: BigNumberish,
+      principals: BigNumberish,
+      yields: BigNumberish,
+      principalsStaked: BigNumberish,
+      yieldsStaked: BigNumberish,
+      maxLpTokensToRedeem: BigNumberish,
       toBackingToken: boolean,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    finalize(
-      targetPool: string,
+    exitTempusAmmAndRedeem(
+      tempusAMM: string,
+      lpTokens: BigNumberish,
+      principals: BigNumberish,
+      yields: BigNumberish,
+      minPrincipalsStaked: BigNumberish,
+      minYieldsStaked: BigNumberish,
+      maxLeftoverShares: BigNumberish,
+      minRate: BigNumberish,
+      toBackingToken: boolean,
+      deadline: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     owner(overrides?: CallOverrides): Promise<[string]>;
 
+    provideLiquidity(
+      tempusAMM: string,
+      sharesAmount: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     redeemToBacking(
       targetPool: string,
-      sender: string,
       principalAmount: BigNumberish,
       yieldAmount: BigNumberish,
       recipient: string,
@@ -271,25 +314,15 @@ export class TempusController extends BaseContract {
 
     redeemToYieldBearing(
       targetPool: string,
-      sender: string,
       principalAmount: BigNumberish,
       yieldAmount: BigNumberish,
       recipient: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    renounceOwnership(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    swap(
-      tempusAMM: string,
-      sender: string,
-      recipient: string,
-      swapAmount: BigNumberish,
-      tokenIn: string,
-      tokenOut: string,
-      minReturn: BigNumberish,
+    register(
+      authorizedContract: string,
+      isValid: boolean,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -305,10 +338,7 @@ export class TempusController extends BaseContract {
     ): Promise<ContractTransaction>;
   };
 
-  completeExitAndRedeem(
-    tempusAMM: string,
-    maxLeftoverShares: BigNumberish,
-    toBackingToken: boolean,
+  acceptOwnership(
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -317,6 +347,7 @@ export class TempusController extends BaseContract {
     tokenAmount: BigNumberish,
     isBackingToken: boolean,
     minTYSRate: BigNumberish,
+    deadline: BigNumberish,
     overrides?: PayableOverrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -352,21 +383,39 @@ export class TempusController extends BaseContract {
 
   exitTempusAMMAndRedeem(
     tempusAMM: string,
-    sharesAmount: BigNumberish,
+    principals: BigNumberish,
+    yields: BigNumberish,
+    principalsStaked: BigNumberish,
+    yieldsStaked: BigNumberish,
+    maxLpTokensToRedeem: BigNumberish,
     toBackingToken: boolean,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  finalize(
-    targetPool: string,
+  exitTempusAmmAndRedeem(
+    tempusAMM: string,
+    lpTokens: BigNumberish,
+    principals: BigNumberish,
+    yields: BigNumberish,
+    minPrincipalsStaked: BigNumberish,
+    minYieldsStaked: BigNumberish,
+    maxLeftoverShares: BigNumberish,
+    minRate: BigNumberish,
+    toBackingToken: boolean,
+    deadline: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   owner(overrides?: CallOverrides): Promise<string>;
 
+  provideLiquidity(
+    tempusAMM: string,
+    sharesAmount: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   redeemToBacking(
     targetPool: string,
-    sender: string,
     principalAmount: BigNumberish,
     yieldAmount: BigNumberish,
     recipient: string,
@@ -375,25 +424,15 @@ export class TempusController extends BaseContract {
 
   redeemToYieldBearing(
     targetPool: string,
-    sender: string,
     principalAmount: BigNumberish,
     yieldAmount: BigNumberish,
     recipient: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  renounceOwnership(
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  swap(
-    tempusAMM: string,
-    sender: string,
-    recipient: string,
-    swapAmount: BigNumberish,
-    tokenIn: string,
-    tokenOut: string,
-    minReturn: BigNumberish,
+  register(
+    authorizedContract: string,
+    isValid: boolean,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -409,18 +448,14 @@ export class TempusController extends BaseContract {
   ): Promise<ContractTransaction>;
 
   callStatic: {
-    completeExitAndRedeem(
-      tempusAMM: string,
-      maxLeftoverShares: BigNumberish,
-      toBackingToken: boolean,
-      overrides?: CallOverrides
-    ): Promise<void>;
+    acceptOwnership(overrides?: CallOverrides): Promise<void>;
 
     depositAndFix(
       tempusAMM: string,
       tokenAmount: BigNumberish,
       isBackingToken: boolean,
       minTYSRate: BigNumberish,
+      deadline: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -456,18 +491,39 @@ export class TempusController extends BaseContract {
 
     exitTempusAMMAndRedeem(
       tempusAMM: string,
-      sharesAmount: BigNumberish,
+      principals: BigNumberish,
+      yields: BigNumberish,
+      principalsStaked: BigNumberish,
+      yieldsStaked: BigNumberish,
+      maxLpTokensToRedeem: BigNumberish,
       toBackingToken: boolean,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    finalize(targetPool: string, overrides?: CallOverrides): Promise<void>;
+    exitTempusAmmAndRedeem(
+      tempusAMM: string,
+      lpTokens: BigNumberish,
+      principals: BigNumberish,
+      yields: BigNumberish,
+      minPrincipalsStaked: BigNumberish,
+      minYieldsStaked: BigNumberish,
+      maxLeftoverShares: BigNumberish,
+      minRate: BigNumberish,
+      toBackingToken: boolean,
+      deadline: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     owner(overrides?: CallOverrides): Promise<string>;
 
+    provideLiquidity(
+      tempusAMM: string,
+      sharesAmount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     redeemToBacking(
       targetPool: string,
-      sender: string,
       principalAmount: BigNumberish,
       yieldAmount: BigNumberish,
       recipient: string,
@@ -476,23 +532,15 @@ export class TempusController extends BaseContract {
 
     redeemToYieldBearing(
       targetPool: string,
-      sender: string,
       principalAmount: BigNumberish,
       yieldAmount: BigNumberish,
       recipient: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    renounceOwnership(overrides?: CallOverrides): Promise<void>;
-
-    swap(
-      tempusAMM: string,
-      sender: string,
-      recipient: string,
-      swapAmount: BigNumberish,
-      tokenIn: string,
-      tokenOut: string,
-      minReturn: BigNumberish,
+    register(
+      authorizedContract: string,
+      isValid: boolean,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -539,6 +587,14 @@ export class TempusController extends BaseContract {
         interestRate: BigNumber;
         fee: BigNumber;
       }
+    >;
+
+    OwnershipProposed(
+      currentOwner?: string | null,
+      proposedOwner?: string | null
+    ): TypedEventFilter<
+      [string, string],
+      { currentOwner: string; proposedOwner: string }
     >;
 
     OwnershipTransferred(
@@ -589,10 +645,7 @@ export class TempusController extends BaseContract {
   };
 
   estimateGas: {
-    completeExitAndRedeem(
-      tempusAMM: string,
-      maxLeftoverShares: BigNumberish,
-      toBackingToken: boolean,
+    acceptOwnership(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -601,6 +654,7 @@ export class TempusController extends BaseContract {
       tokenAmount: BigNumberish,
       isBackingToken: boolean,
       minTYSRate: BigNumberish,
+      deadline: BigNumberish,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -636,21 +690,39 @@ export class TempusController extends BaseContract {
 
     exitTempusAMMAndRedeem(
       tempusAMM: string,
-      sharesAmount: BigNumberish,
+      principals: BigNumberish,
+      yields: BigNumberish,
+      principalsStaked: BigNumberish,
+      yieldsStaked: BigNumberish,
+      maxLpTokensToRedeem: BigNumberish,
       toBackingToken: boolean,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    finalize(
-      targetPool: string,
+    exitTempusAmmAndRedeem(
+      tempusAMM: string,
+      lpTokens: BigNumberish,
+      principals: BigNumberish,
+      yields: BigNumberish,
+      minPrincipalsStaked: BigNumberish,
+      minYieldsStaked: BigNumberish,
+      maxLeftoverShares: BigNumberish,
+      minRate: BigNumberish,
+      toBackingToken: boolean,
+      deadline: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     owner(overrides?: CallOverrides): Promise<BigNumber>;
 
+    provideLiquidity(
+      tempusAMM: string,
+      sharesAmount: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     redeemToBacking(
       targetPool: string,
-      sender: string,
       principalAmount: BigNumberish,
       yieldAmount: BigNumberish,
       recipient: string,
@@ -659,25 +731,15 @@ export class TempusController extends BaseContract {
 
     redeemToYieldBearing(
       targetPool: string,
-      sender: string,
       principalAmount: BigNumberish,
       yieldAmount: BigNumberish,
       recipient: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    renounceOwnership(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    swap(
-      tempusAMM: string,
-      sender: string,
-      recipient: string,
-      swapAmount: BigNumberish,
-      tokenIn: string,
-      tokenOut: string,
-      minReturn: BigNumberish,
+    register(
+      authorizedContract: string,
+      isValid: boolean,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -694,10 +756,7 @@ export class TempusController extends BaseContract {
   };
 
   populateTransaction: {
-    completeExitAndRedeem(
-      tempusAMM: string,
-      maxLeftoverShares: BigNumberish,
-      toBackingToken: boolean,
+    acceptOwnership(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -706,6 +765,7 @@ export class TempusController extends BaseContract {
       tokenAmount: BigNumberish,
       isBackingToken: boolean,
       minTYSRate: BigNumberish,
+      deadline: BigNumberish,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -741,21 +801,39 @@ export class TempusController extends BaseContract {
 
     exitTempusAMMAndRedeem(
       tempusAMM: string,
-      sharesAmount: BigNumberish,
+      principals: BigNumberish,
+      yields: BigNumberish,
+      principalsStaked: BigNumberish,
+      yieldsStaked: BigNumberish,
+      maxLpTokensToRedeem: BigNumberish,
       toBackingToken: boolean,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    finalize(
-      targetPool: string,
+    exitTempusAmmAndRedeem(
+      tempusAMM: string,
+      lpTokens: BigNumberish,
+      principals: BigNumberish,
+      yields: BigNumberish,
+      minPrincipalsStaked: BigNumberish,
+      minYieldsStaked: BigNumberish,
+      maxLeftoverShares: BigNumberish,
+      minRate: BigNumberish,
+      toBackingToken: boolean,
+      deadline: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    provideLiquidity(
+      tempusAMM: string,
+      sharesAmount: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
     redeemToBacking(
       targetPool: string,
-      sender: string,
       principalAmount: BigNumberish,
       yieldAmount: BigNumberish,
       recipient: string,
@@ -764,25 +842,15 @@ export class TempusController extends BaseContract {
 
     redeemToYieldBearing(
       targetPool: string,
-      sender: string,
       principalAmount: BigNumberish,
       yieldAmount: BigNumberish,
       recipient: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    renounceOwnership(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    swap(
-      tempusAMM: string,
-      sender: string,
-      recipient: string,
-      swapAmount: BigNumberish,
-      tokenIn: string,
-      tokenOut: string,
-      minReturn: BigNumberish,
+    register(
+      authorizedContract: string,
+      isValid: boolean,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

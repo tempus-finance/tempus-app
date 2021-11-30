@@ -40,7 +40,7 @@ const ProfitLoss = () => {
     const withdrawStream$ = poolDataAdapter
       .getEstimatedWithdrawAmount(ammAddress, userLPTokenBalance, userPrincipalsBalance, userYieldsBalance, true)
       .subscribe(estimate => {
-        setEstimatedWithdrawAmount(estimate);
+        setEstimatedWithdrawAmount(estimate.tokenAmount);
       });
 
     return () => {

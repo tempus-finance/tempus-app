@@ -87,5 +87,8 @@ const it: { [word in Words]: string } = {
     "Fissa il rendimento futuro con Tempus. Questa funzione blocca il tuo Yield Bearing Token, forgia i Principals e gli Yields in cambio e scambia tutti gli Yields per Principals attraverso il TempusAMM.<br/><br/>Riceverai Principals i quali sono riscattabili 1:1 con l'attività sottostante a scadenza.",
   liquidityProvisionTooltipText:
     'Fornisci liquidità a Tempus per ottenere un rendimento aggiuntivo. Questa funzione blocca il tuo  Yield Bearing Token, forgia i Principals e gli Yields in cambio e usa il maggior numero di Principals e Yields per immettere liquidità al TempusAMM.<br/><br/>Questo significa che riceverai il rendimento sottostante e le commissioni di scambio Tempus aggregate in un unico rendimento.',
+  slippageTolerance: 'Slippage tolerance',
+  slippageTooltip: 'Your transaction will revert if the price changes unfavorably by more than this percentage.',
+  auto: 'Auto',
 };
 export default it;

@@ -81,6 +81,9 @@ type Words =
   | 'tempusAnnouncements'
   | 'tempusChat'
   | 'interestRateProtectionTooltipText'
-  | 'liquidityProvisionTooltipText';
+  | 'liquidityProvisionTooltipText'
+  | 'slippageTolerance'
+  | 'slippageTooltip'
+  | 'auto';
 
 export default Words;

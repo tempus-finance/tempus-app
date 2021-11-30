@@ -15,14 +15,14 @@ import Main from '../main/Main';
 import './App.scss';
 
 const App = () => {
-  const [showFiat, setShowFiat] = useState(defaultUserSettingsContextValue);
+  const [userSettings, setUserSettings] = useState(defaultUserSettingsContextValue);
   const [language, setLanguage] = useState(defaultLanguageContextValue);
   const [ethBalance, setETHBalance] = useState(defaultETHBalanceContextValue);
   const [walletData, setWalletData] = useState(defaultWalletContextValue);
   const [pendingTransactions, setPendingTransactions] = useState(defaultPendingTransactionsContextValue);
 
   return (
-    <UserSettingsContext.Provider value={{ ...showFiat, setShowFiat }}>
+    <UserSettingsContext.Provider value={{ ...userSettings, setUserSettings }}>
       <LanguageContext.Provider value={{ ...language, setLanguage }}>
         <ETHBalanceContext.Provider value={{ ...ethBalance, setETHBalance }}>
           <WalletContext.Provider value={{ ...walletData, setWalletData }}>
