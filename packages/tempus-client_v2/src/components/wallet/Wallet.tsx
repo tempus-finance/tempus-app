@@ -34,7 +34,7 @@ const Wallet = () => {
   const [availableWallets, setAvailableWallets] = useState<{ [w in UserWallet]?: boolean }>({
     WalletConnect: true,
   });
-  const [connecting, toggleConnecting] = useState<boolean>(false);
+  const [connecting, setConnecting] = useState<boolean>(false);
 
   const onSelectWallet = useCallback(() => {
     setWalletSelectorOpen(true);
@@ -89,7 +89,7 @@ const Wallet = () => {
   }, [activate, setWalletData]);
 
   const onMetaMaskSelected = useCallback(() => {
-    toggleConnecting(prev => !prev);
+    setConnecting(true);
     const connect = async () => {
       if (active) {
         return;
@@ -113,13 +113,13 @@ const Wallet = () => {
           getNotificationService().warn('Error connecting wallet', '');
         }
       }
-      toggleConnecting(prev => !prev);
+      setConnecting(false);
     };
     connect();
   }, [active, activate, setWalletData, requestNetworkChange]);
 
   const onWalletConnectSelected = useCallback(() => {
-    toggleConnecting(prev => !prev);
+    setConnecting(true);
     const connect = async () => {
       if (active) {
         return;
@@ -148,7 +148,7 @@ const Wallet = () => {
           getNotificationService().warn('Error connecting wallet', '');
         }
       }
-      toggleConnecting(prev => !prev);
+      setConnecting(false);
     };
     connect();
   }, [active, activate, setWalletData, requestNetworkChange]);
@@ -198,13 +198,16 @@ const Wallet = () => {
               ...previousData,
               userWalletConnected: authorized,
             }));
+          const isMetaMask = provider.isMetaMask;
+          setSelectedWallet(!!isMetaMask ? 'MetaMask' : 'WalletConnect');
         });
       }
+      setSelectedWallet(null);
     };
     if (!active) {
       checkConnection();
     }
-  }, [active, setWalletData, activate, requestNetworkChange]);
+  }, [active, setWalletData, activate, requestNetworkChange, setSelectedWallet]);
 
   useEffect(() => {
     setWalletData &&
