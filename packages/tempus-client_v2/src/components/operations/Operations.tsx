@@ -1,6 +1,6 @@
 import { useCallback, useContext, useEffect, useState } from 'react';
-import { Downgraded, useState as useHookState } from '@hookstate/core';
-import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
+import { useState as useHookState } from '@hookstate/core';
+import { dynamicPoolDataState, selectedPoolState } from '../../state/PoolDataState';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
 import { LanguageContext } from '../../context/languageContext';
 import { WalletContext } from '../../context/walletContext';
@@ -25,17 +25,13 @@ import './Operations.scss';
 const Operations = () => {
   const selectedPool = useHookState(selectedPoolState);
   const dynamicPoolData = useHookState(dynamicPoolDataState);
-  const staticPoolData = useHookState(staticPoolDataState);
 
   const { language } = useContext(LanguageContext);
   const { userWalletSigner } = useContext(WalletContext);
 
-  const [poolHasBalance, setPoolHasBalance] = useState<boolean | null>(null);
   const [selectedView, setSelectedView] = useState<TransactionView>('deposit');
 
-  const poolId = staticPoolData[selectedPool.get()].poolId.attach(Downgraded).get();
-  const principalsAddress = staticPoolData[selectedPool.get()].principalsAddress.attach(Downgraded).get();
-  const yieldsAddress = staticPoolData[selectedPool.get()].yieldsAddress.attach(Downgraded).get();
+  const poolShareBalance = dynamicPoolData[selectedPool.get()].poolShareBalance.get();
   const userPrincipalsBalance = dynamicPoolData[selectedPool.get()].userPrincipalsBalance.get();
   const userYieldsBalance = dynamicPoolData[selectedPool.get()].userYieldsBalance.get();
   const userLPBalance = dynamicPoolData[selectedPool.get()].userLPTokenBalance.get();
@@ -45,24 +41,13 @@ const Operations = () => {
   }, []);
 
   useEffect(() => {
-    const fetchPoolBalances = async () => {
-      if (!userWalletSigner) {
-        return;
-      }
-      const poolDataAdapter = getPoolDataAdapter(userWalletSigner);
+    const principals = poolShareBalance.principals;
+    const yields = poolShareBalance.yields;
 
-      const poolShares = await poolDataAdapter.getPoolShareBalances(poolId, principalsAddress, yieldsAddress);
-
-      setPoolHasBalance(!poolShares.principals.isZero() || !poolShares.yields.isZero());
-    };
-    fetchPoolBalances();
-  }, [principalsAddress, poolId, userWalletSigner, yieldsAddress]);
-
-  useEffect(() => {
-    if (poolHasBalance === false) {
+    if (!principals || !yields || principals.isZero() || yields.isZero()) {
       setSelectedView('mint');
     }
-  }, [poolHasBalance]);
+  }, [poolShareBalance.principals, poolShareBalance.yields]);
 
   if (!userWalletSigner || !selectedPool.get()) {
     return null;

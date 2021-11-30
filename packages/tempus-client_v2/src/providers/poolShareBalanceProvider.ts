@@ -7,7 +7,7 @@ class PoolShareBalanceProvider {
   /**
    * Subscribes to PoolBalanceChanged event, every time this event is fired on blockchain we trigger pool share balance fetch for all tempus pools.
    */
-  init() {
+  constructor() {
     getConfig().tempusPools.forEach(poolConfig => {
       const vaultService = getVaultService();
 

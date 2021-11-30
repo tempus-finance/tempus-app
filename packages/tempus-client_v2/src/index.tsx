@@ -3,12 +3,8 @@ import ReactDOM from 'react-dom';
 import { Web3ReactProvider } from '@web3-react/core';
 import App from './components/app/App';
 import getLibrary from './utils/getLibrary';
-import getPoolShareBalanceProvider from './providers/getPoolShareBalanceProvider';
 
 import './index.scss';
-
-const poolShareBalanceProvider = getPoolShareBalanceProvider();
-poolShareBalanceProvider.init();
 
 ReactDOM.render(
   <React.StrictMode>
