@@ -1,7 +1,6 @@
 import { Config } from '../interfaces/Config';
-
+import { TempusPool } from '../interfaces/TempusPool';
 import config from '../config/config';
-
 import getCookie from './getCookie';
 
 export default function getConfig(): Config {
@@ -17,4 +16,15 @@ export default function getConfig(): Config {
     console.error('Failed to parse environment config from cookie. Using default config as a fallback.');
     return config;
   }
+}
+
+export function getConfigForPoolId(poolId: string): TempusPool {
+  const poolConfig = getConfig().tempusPools.find(tempusPool => {
+    return tempusPool.poolId === poolId;
+  });
+  if (!poolConfig) {
+    throw new Error(`Failed to get pool config with poolId ${poolId}`);
+  }
+
+  return poolConfig;
 }

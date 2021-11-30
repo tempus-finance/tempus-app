@@ -82,5 +82,4 @@ const config: Config = {
   alchemyKey: 'Hz57g3uvMUx9K9mCmAODf75Wba8N2Fjp',
   lidoOracle: '0x24d8451BC07e7aF4Ba94F69aCDD9ad3c6579D9FB',
 };
-
 export default config;
