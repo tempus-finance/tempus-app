@@ -40,6 +40,9 @@ const Operations = () => {
     setSelectedView('deposit');
   }, []);
 
+  /**
+   * If pool does not have any liquidity, set Mint view as a default one
+   */
   useEffect(() => {
     const principals = poolShareBalance.principals;
     const yields = poolShareBalance.yields;
