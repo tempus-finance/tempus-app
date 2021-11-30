@@ -1,5 +1,5 @@
 import { useCallback, useContext, useEffect, useState } from 'react';
-import { useState as useHookState } from '@hookstate/core';
+import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { dynamicPoolDataState, selectedPoolState } from '../../state/PoolDataState';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
 import { LanguageContext } from '../../context/languageContext';
@@ -31,7 +31,7 @@ const Operations = () => {
 
   const [selectedView, setSelectedView] = useState<TransactionView>('deposit');
 
-  const poolShareBalance = dynamicPoolData[selectedPool.get()].poolShareBalance.get();
+  const poolShareBalance = dynamicPoolData[selectedPool.get()].poolShareBalance.attach(Downgraded).get();
   const userPrincipalsBalance = dynamicPoolData[selectedPool.get()].userPrincipalsBalance.get();
   const userYieldsBalance = dynamicPoolData[selectedPool.get()].userYieldsBalance.get();
   const userLPBalance = dynamicPoolData[selectedPool.get()].userLPTokenBalance.get();

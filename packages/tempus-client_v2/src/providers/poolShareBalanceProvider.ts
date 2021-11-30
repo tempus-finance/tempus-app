@@ -41,9 +41,9 @@ class PoolShareBalanceProvider {
     this.fetchPoolBalance(poolId);
   }
 
-  private async onPoolBalanceChanged(poolId: string) {
+  private onPoolBalanceChanged = async (poolId: string) => {
     this.fetchPoolBalance(poolId);
-  }
+  };
 
   private async fetchPoolBalance(poolId: string) {
     const poolConfig = getConfigForPoolId(poolId);
