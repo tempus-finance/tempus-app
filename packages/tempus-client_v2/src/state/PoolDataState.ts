@@ -26,6 +26,10 @@ export interface AvailableToDeposit {
 }
 
 export interface DynamicPoolData extends AvailableToDeposit {
+  poolShareBalance: {
+    principals: BigNumber | null;
+    yields: BigNumber | null;
+  };
   userBalanceUSD: BigNumber | null;
   userPrincipalsBalance: BigNumber | null;
   userYieldsBalance: BigNumber | null;
@@ -47,6 +51,10 @@ export interface DynamicPoolStateData {
 const dynamicPoolDataStateInitialValue: DynamicPoolStateData = {};
 getConfig().tempusPools.forEach(tempusPoolConfig => {
   dynamicPoolDataStateInitialValue[tempusPoolConfig.address] = {
+    poolShareBalance: {
+      principals: null,
+      yields: null,
+    },
     userBalanceUSD: null,
     userPrincipalsBalance: null,
     userYieldsBalance: null,

@@ -40,6 +40,7 @@ const Sidebar: FC<SidebarProps> = ({ initialView, onSelectedView }) => {
   const userPrincipalsBalance = dynamicPoolData[selectedPool.get()].userPrincipalsBalance.attach(Downgraded).get();
   const userYieldsBalance = dynamicPoolData[selectedPool.get()].userYieldsBalance.attach(Downgraded).get();
   const userLPTokenBalance = dynamicPoolData[selectedPool.get()].userLPTokenBalance.attach(Downgraded).get();
+  const poolShareBalance = dynamicPoolData[selectedPool.get()].poolShareBalance.attach(Downgraded).get();
 
   const onItemClick = useCallback(
     (itemName: TransactionView) => {
@@ -100,6 +101,13 @@ const Sidebar: FC<SidebarProps> = ({ initialView, onSelectedView }) => {
     return userPrincipalsBalance.isZero() && userYieldsBalance.isZero();
   }, [userPrincipalsBalance, userYieldsBalance]);
 
+  const basicSectionHidden = useMemo(() => {
+    if (!poolShareBalance.principals || !poolShareBalance.yields) {
+      return true;
+    }
+    return poolShareBalance.principals.isZero() && poolShareBalance.yields.isZero();
+  }, [poolShareBalance.principals, poolShareBalance.yields]);
+
   return (
     <div className="tc__sidebar-container">
       <TokenPairIcon parentTicker={backingToken} childTicker={yieldBearingToken} />
@@ -113,30 +121,33 @@ const Sidebar: FC<SidebarProps> = ({ initialView, onSelectedView }) => {
       </div>
 
       {/* Basic Section */}
-      <div className="tc__sidebar-section-title">
-        <Typography variant="h5" color="title">
-          {getText('basic', language)}
-        </Typography>
-      </div>
-      {basicViews.map((basicViewName: TransactionView) => {
-        if (basicViewName === 'withdraw' && withdrawHidden) {
-          return null;
-        }
-
-        const selected = selectedView === basicViewName;
-        return (
-          <div
-            key={basicViewName}
-            className={`tc__sidebar-view-item ${selected ? 'selected' : ''}`}
-            onClick={() => onItemClick(basicViewName)}
-          >
-            <Typography variant="h5" color={selectedView === basicViewName ? 'inverted' : 'default'}>
-              {getText(basicViewName, language)}
+      {!basicSectionHidden && (
+        <>
+          <div className="tc__sidebar-section-title">
+            <Typography variant="h5" color="title">
+              {getText('basic', language)}
             </Typography>
           </div>
-        );
-      })}
+          {basicViews.map((basicViewName: TransactionView) => {
+            if (basicViewName === 'withdraw' && withdrawHidden) {
+              return null;
+            }
 
+            const selected = selectedView === basicViewName;
+            return (
+              <div
+                key={basicViewName}
+                className={`tc__sidebar-view-item ${selected ? 'selected' : ''}`}
+                onClick={() => onItemClick(basicViewName)}
+              >
+                <Typography variant="h5" color={selectedView === basicViewName ? 'inverted' : 'default'}>
+                  {getText(basicViewName, language)}
+                </Typography>
+              </div>
+            );
+          })}
+        </>
+      )}
       {/* Advanced Section */}
       <div className="tc__sidebar-section-title">
         <Typography variant="h5" color="title">
