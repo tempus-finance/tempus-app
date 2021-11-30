@@ -1,25 +1,14 @@
 export const checkIfNumberRegExp = /\d/;
 export const removeLeadingZeroesRegExp = /^0+/;
 
-export const formatValueToPercentage = (
-  value: string,
-): {
-  parsedValue: string;
-  percentageValue: string;
-} => {
+export const formatValueToPercentage = (value: string): string => {
   if (!value) {
-    return {
-      parsedValue: '',
-      percentageValue: '',
-    };
+    return '';
   }
 
   // If provided value is negative, return 0
   if (value.startsWith('-')) {
-    return {
-      parsedValue: '0',
-      percentageValue: '0',
-    };
+    return '0';
   }
 
   let sanitizedValue = value.replace(removeLeadingZeroesRegExp, '');
@@ -38,15 +27,9 @@ export const formatValueToPercentage = (
 
     const integerPartNumber = Number(filteredValues.join(''));
     if (integerPartNumber > 100) {
-      return {
-        parsedValue: '100',
-        percentageValue: '100',
-      };
+      return '100';
     } else {
-      return {
-        parsedValue: integerPartNumber.toString(),
-        percentageValue: integerPartNumber.toString().replace(/[^0-9$.]/g, ''),
-      };
+      return integerPartNumber.toString();
     }
   }
 
@@ -61,36 +44,21 @@ export const formatValueToPercentage = (
 
     const leftValue = Number(filteredLeftCharacters.join(''));
     if (leftValue > 100) {
-      return {
-        parsedValue: '100',
-        percentageValue: '100',
-      };
+      return '100';
     }
 
     if (truncatedRightCharacters.length) {
       const parsedValue = `${filteredLeftCharacters.join('')}.${truncatedRightCharacters.join('')}`;
-      return {
-        parsedValue,
-        percentageValue: parsedValue.replace(/[^0-9$.]/g, ''),
-      };
+      return parsedValue;
     } else {
       const parsedValue = `${filteredLeftCharacters.join('')}.`;
-      return {
-        parsedValue,
-        percentageValue: parsedValue.replace(/[^0-9$.]/g, ''),
-      };
+      return parsedValue;
     }
   }
 
   if (splitValue.length > 2) {
-    return {
-      parsedValue: '',
-      percentageValue: '',
-    };
+    return '';
   }
 
-  return {
-    parsedValue: value,
-    percentageValue: value.replace(/[^0-9$.]/g, ''),
-  };
+  return value;
 };
