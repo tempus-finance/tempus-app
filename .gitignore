@@ -28,3 +28,4 @@ yarn-error.log*
 .firebase
 
 packages/tempus-client/cookie-config.json
+packages/**/*.env

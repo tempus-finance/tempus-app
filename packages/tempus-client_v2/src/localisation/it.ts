@@ -7,8 +7,11 @@ const it: { [word in Words]: string } = {
   analytics: 'Analisi',
   community: 'Comunità',
   settings: 'Impostazioni',
-  connectWallet: 'Connetti Portafogli',
+  connectWallet: 'Connetti Portafoglio',
   pending: 'In corso...',
+  selectWallet: 'Seleziona Portafoglio',
+  walletSelectorDisclaimer:
+    'Connettendo un portafoglio, dichiari di essere d\'accordo con i<a href="https://tempus.finance/terms-of-service" target="_blank">Termini di Servizio di Tempus</a> e confermi di avere letto e compreso l\'avvertimento sul <a href="https://tempus.finance/terms-of-service" target="_blank">Protocollo Tempus</a>.',
   installMetamask: 'Installa Metamask',
   availablePools: 'Pool Disponibili',
   filter: 'Filtro',

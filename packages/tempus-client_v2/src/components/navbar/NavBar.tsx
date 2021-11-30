@@ -3,7 +3,7 @@ import { useState as useHookState } from '@hookstate/core';
 import { selectedPoolState } from '../../state/PoolDataState';
 import TempusLogo from './tempusLogo';
 import Links from './Links';
-import Wallet from './Wallet';
+import Wallet from '../wallet/Wallet';
 
 import './NavBar.scss';
 

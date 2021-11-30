@@ -7,6 +7,8 @@ type Words =
   | 'settings'
   | 'connectWallet'
   | 'pending'
+  | 'selectWallet'
+  | 'walletSelectorDisclaimer'
   | 'installMetamask'
   | 'availablePools'
   | 'filter'
