@@ -5,15 +5,15 @@ import { Config } from '../interfaces/Config';
 const config: Config = {
   tempusPools: [
     {
-      address: '0xe0D7829484DD3619C6ee5B701e09a43BF75116BF',
-      poolId: '0x39b81aedf7cdb68e66c20f20a16cb433e0361d3b000200000000000000000042',
-      ammAddress: '0x39B81AEDf7CdB68E66C20f20a16cb433e0361d3b',
-      principalsAddress: '0x0F796423402E5E24210Cd538973855BCAcb42411',
-      yieldsAddress: '0xa0cf2C8f1Eac72FDd8562710B3D3b6b2AAdDb0C0',
-      yieldBearingTokenAddress: '0x1643E812aE58766192Cf7D2Cf9567dF2C37e9B7F',
+      address: '0x5805D67782F23e193F4818A0B1e27fbb47086638',
+      poolId: '0xc66a272890ef3c811afe718bceec0cad5e2cb286000200000000000000000043',
+      ammAddress: '0xc66A272890Ef3C811afe718BcEec0cAD5E2Cb286',
+      principalsAddress: '0x27d4F1b6999379ee9e5BE0D44fdF4b372Eb80854',
+      yieldsAddress: '0x89dd29CaF097E706aA4D16D449d48496CeCb317B',
+      yieldBearingTokenAddress: '0x209b1C2B038ef377f6f86d33C5Ca94d10ed9C89d',
       backingTokenAddress: '0x0000000000000000000000000000000000000000',
-      startDate: 1638357310000,
-      maturityDate: 1646092800000,
+      startDate: 1638382591000,
+      maturityDate: 1651363200000,
       protocol: 'lido',
       backingToken: 'ETH',
       yieldBearingToken: 'stETH',
