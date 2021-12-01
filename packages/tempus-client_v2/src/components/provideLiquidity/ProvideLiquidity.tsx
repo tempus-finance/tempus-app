@@ -35,6 +35,7 @@ const ProvideLiquidity = () => {
 
   const [principalsAmount, setPrincipalsAmount] = useState<string>('');
   const [yieldsAmount, setYieldsAmount] = useState<string>('');
+  const [maxDisabled, setMaxDisabled] = useState<boolean>(false);
 
   const [expectedLPTokens, setExpectedLPTokens] = useState<BigNumber | null>(null);
   const [expectedPoolShare, setExpectedPoolShare] = useState<number | null>(null);
@@ -114,6 +115,7 @@ const ProvideLiquidity = () => {
 
   const onPrincipalsAmountChange = useCallback(
     (amount: string) => {
+      setMaxDisabled(false);
       setPrincipalsAmount(amount);
       setYieldsFromPrincipals(ethers.utils.parseUnits(amount || '0', principalsPrecision));
     },
@@ -122,6 +124,7 @@ const ProvideLiquidity = () => {
 
   const onYieldsAmountChange = useCallback(
     (amount: string) => {
+      setMaxDisabled(false);
       setYieldsAmount(amount);
       setPrincipalsFromYields(ethers.utils.parseUnits(amount || '0', yieldsPrecision));
     },
@@ -137,6 +140,7 @@ const ProvideLiquidity = () => {
       return;
     }
 
+    setMaxDisabled(true);
     const yieldsToPrincipalsRatio = ethers.utils.parseUnits(
       (yieldsPercentage / principalsPercentage).toString(),
       yieldsPrecision,
@@ -169,7 +173,7 @@ const ProvideLiquidity = () => {
     if (!userPrincipalsBalance || !userYieldsBalance || !yieldsPercentage || !principalsPercentage) {
       return;
     }
-
+    setMaxDisabled(true);
     const principalsToYieldsRatio = ethers.utils.parseUnits(
       (principalsPercentage / yieldsPercentage).toString(),
       principalsPrecision,
@@ -381,6 +385,7 @@ const ProvideLiquidity = () => {
               <CurrencyInput
                 defaultValue={principalsAmount}
                 onChange={onPrincipalsAmountChange}
+                maxDisabled={maxDisabled}
                 onMaxClick={onPrincipalsPercentageChange}
               />
               <Spacer size={15} />
@@ -415,6 +420,7 @@ const ProvideLiquidity = () => {
               <CurrencyInput
                 defaultValue={yieldsAmount}
                 onChange={onYieldsAmountChange}
+                maxDisabled={maxDisabled}
                 onMaxClick={onYieldsPercentageChange}
               />
               <Spacer size={15} />
