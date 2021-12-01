@@ -1,8 +1,9 @@
 import { useCallback, useState, useRef, useContext } from 'react';
-import { Popper } from '@material-ui/core';
+import { Divider, FormControl, MenuItem, Popper, Select } from '@material-ui/core';
 import { LanguageContext } from '../../context/languageContext';
 import { UserSettingsContext } from '../../context/userSettingsContext';
-import getText from '../../localisation/getText';
+import getText, { Language } from '../../localisation/getText';
+import LanguageIcon from '../icons/LanguageIcon';
 import SlippageIcon from '../icons/SlippageIcon';
 import Typography from '../typography/Typography';
 import Spacer from '../spacer/spacer';
@@ -16,19 +17,16 @@ import './Settings.scss';
 // check icon with design
 
 const Settings = () => {
-  const { language } = useContext(LanguageContext);
+  const { language, setLanguage } = useContext(LanguageContext);
   const { slippage, setUserSettings } = useContext(UserSettingsContext);
 
   const settingsMenuAnchor = useRef<HTMLLIElement>(null);
 
   const [settingsMenuOpen, setSettingsMenuOpen] = useState<boolean>(false);
 
-  /* TODO - Add new language selector UI */
-  /* const onChangeLanguage = useCallback(
-    (event: MouseEvent<HTMLDivElement>) => {
-      const selectedLanguage = (event.target as HTMLDivElement)
-        .closest('[role="button"]')
-        ?.getAttribute('data-id') as Language;
+  const onChangeLanguage = useCallback(
+    (event: React.ChangeEvent<{ value: unknown }>) => {
+      const selectedLanguage = event.target.value as Language;
 
       setLanguage &&
         selectedLanguage &&
@@ -37,7 +35,7 @@ const Settings = () => {
         });
     },
     [setLanguage],
-  ); */
+  );
 
   const toggleSettingsMenu = useCallback(() => {
     setSettingsMenuOpen(prevValue => !prevValue);
@@ -76,16 +74,38 @@ const Settings = () => {
               <InfoTooltip text={getText('slippageTooltip', language)} />
             </div>
           </div>
-          <PercentageInput defaultValue={slippage.toString()} onChange={onSlippageChange} />
-          {/* TODO - Add new language selector UI */}
-          {/* <List>
-            <ListItem button onClick={onChangeLanguage} data-id="en">
-              <ListItemText primary="English" />
-            </ListItem>
-            <ListItem button onClick={onChangeLanguage} data-id="it">
-              <ListItemText primary="Italiano" />
-            </ListItem>
-          </List> */}
+          <div className="tc__header__settings-menu__section-row">
+            <PercentageInput defaultValue={slippage.toString()} onChange={onSlippageChange} />
+          </div>
+          <Spacer size={15} />
+          <Divider orientation="horizontal" />
+          <Spacer size={15} />
+          <div className="tc__header__settings-menu__section-header">
+            <LanguageIcon />
+            <Spacer size={10} />
+            <Typography variant="card-body-text">{getText('language', language)}</Typography>
+          </div>
+          <div className="tc__header__settings-menu__section-row">
+            <FormControl size="medium" fullWidth>
+              <div className="tc__header__settings-menu__language-selector">
+                <Select
+                  fullWidth
+                  variant="standard"
+                  labelId="language-selector"
+                  value={language}
+                  onChange={onChangeLanguage}
+                  disableUnderline
+                >
+                  <MenuItem value="en">
+                    <Typography variant="dropdown-text">English</Typography>
+                  </MenuItem>
+                  <MenuItem value="it">
+                    <Typography variant="dropdown-text">Italiano</Typography>
+                  </MenuItem>
+                </Select>
+              </div>
+            </FormControl>
+          </div>
         </div>
       </Popper>
       {settingsMenuOpen && <div className="tc__backdrop" onClick={toggleSettingsMenu} />}
