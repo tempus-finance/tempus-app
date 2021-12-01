@@ -43,6 +43,6 @@
   box-sizing: border-box;
 
   .MuiSelect-select:focus {
-    background-color: white;
+    background-color: $mui-select-focused-background;
   }
 }

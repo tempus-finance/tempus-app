@@ -3,6 +3,7 @@ import { Divider, FormControl, MenuItem, Popper, Select } from '@material-ui/cor
 import { LanguageContext } from '../../context/languageContext';
 import { UserSettingsContext } from '../../context/userSettingsContext';
 import getText, { Language } from '../../localisation/getText';
+import LanguageIcon from '../icons/LanguageIcon';
 import SlippageIcon from '../icons/SlippageIcon';
 import Typography from '../typography/Typography';
 import Spacer from '../spacer/spacer';
@@ -10,7 +11,6 @@ import InfoTooltip from '../infoTooltip/infoTooltip';
 import PercentageInput from '../percentageInput/percentageInput';
 
 import './Settings.scss';
-import LanguageIcon from '../icons/LanguageIcon';
 
 // TODO
 // style mouse over
