@@ -74,7 +74,7 @@ const Settings = () => {
               <InfoTooltip text={getText('slippageTooltip', language)} />
             </div>
           </div>
-          <div className="tc__header__settings-menu-section-row">
+          <div className="tc__header__settings-menu__section-row">
             <PercentageInput defaultValue={slippage.toString()} onChange={onSlippageChange} />
           </div>
           <Spacer size={15} />
