@@ -38,7 +38,7 @@ const Term = () => {
             {getText('timeLeft', language)}
           </Typography>
           <Typography variant="card-body-text">
-            {formatDistanceStrict(activePoolStartDate.get(), activePoolMaturityDate.get(), { unit: 'day' })}
+            {formatDistanceStrict(Date.now(), activePoolMaturityDate.get(), { unit: 'day' })}
           </Typography>
         </div>
       </div>
