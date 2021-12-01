@@ -86,6 +86,7 @@ type Words =
   | 'liquidityProvisionTooltipText'
   | 'slippageTolerance'
   | 'slippageTooltip'
-  | 'auto';
+  | 'auto'
+  | 'language';
 
 export default Words;

@@ -93,5 +93,6 @@ const it: { [word in Words]: string } = {
   slippageTolerance: 'Slippage tolerance',
   slippageTooltip: 'Your transaction will revert if the price changes unfavorably by more than this percentage.',
   auto: 'Auto',
+  language: 'Language',
 };
 export default it;
