@@ -32,6 +32,17 @@
           "destination": "/index.html"
         }
       ]
+    },
+    {
+      "site": "tempus-app-testnet-v2",
+      "public": "build",
+      "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+      "rewrites": [
+        {
+          "source": "**",
+          "destination": "/index.html"
+        }
+      ]
     }
   ]
 }
