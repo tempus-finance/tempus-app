@@ -12,6 +12,7 @@ type CurrencyInputInProps = {
   placeholder?: string;
   precision?: number;
   disabled?: boolean;
+  maxDisabled?: boolean;
   disabledTooltip?: string;
 };
 
@@ -28,6 +29,7 @@ const CurrencyInput: FC<CurrencyInputProps> = ({
   defaultValue,
   placeholder,
   disabled,
+  maxDisabled,
   disabledTooltip,
   onChange,
   onMaxClick,
@@ -56,10 +58,10 @@ const CurrencyInput: FC<CurrencyInputProps> = ({
   );
 
   const handleMaxClick = useCallback(() => {
-    if (onMaxClick) {
+    if (onMaxClick && !maxDisabled) {
       onMaxClick();
     }
-  }, [onMaxClick]);
+  }, [maxDisabled, onMaxClick]);
 
   const handleContainerClick = useCallback(() => {
     if (disabled) {
@@ -88,7 +90,7 @@ const CurrencyInput: FC<CurrencyInputProps> = ({
           }}
         />
         <Divider orientation="vertical" />
-        <Button disabled={disabled} onClick={handleMaxClick}>
+        <Button disabled={disabled || maxDisabled} onClick={handleMaxClick}>
           {getText('max', language)}
         </Button>
         {disabledTooltipOpen && (
