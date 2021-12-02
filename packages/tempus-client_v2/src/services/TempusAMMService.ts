@@ -248,31 +248,16 @@ class TempusAMMService {
     throw new Error(`TempusAMMService - getSwapFeePercentage() - TempusAMM with address '${address}' does not exist!`);
   }
 
-  async getMaxLeftoverShares(
-    tempusAMM: string,
-    userPrincipalsBalance: BigNumber,
-    userLPBalance: BigNumber,
-  ): Promise<BigNumber> {
+  getMaxLeftoverShares(
+    principalsToWithdraw: BigNumber,
+    yieldsToWithdraw: BigNumber,
+    lpTokensToWithdraw: BigNumber,
+  ): BigNumber {
     if (!this.eRC20TokenServiceGetter) {
-      return Promise.reject('TempusAMMService not initialized!');
+      throw new Error('TempusAMMService - getMaxLeftoverShares() - Service not not initialized!');
     }
 
-    // Fetch amount of staked principals and yields
-    let stakedTokens: {
-      principals: BigNumber;
-      yields: BigNumber;
-    };
-    if (userLPBalance.isZero()) {
-      stakedTokens = {
-        principals: BigNumber.from('0'),
-        yields: BigNumber.from('0'),
-      };
-    } else {
-      stakedTokens = await this.getExpectedTokensOutGivenBPTIn(tempusAMM, userLPBalance);
-    }
-
-    // Max leftover shares is 0.1% of principals + stakedPrincipals
-    return userPrincipalsBalance.add(stakedTokens.principals).div(BigNumber.from('1000'));
+    return principalsToWithdraw.add(yieldsToWithdraw).add(lpTokensToWithdraw).div(BigNumber.from('1000'));
   }
 }
 

@@ -251,13 +251,7 @@ class TempusControllerService {
       return Promise.reject();
     }
 
-    let maxLeftoverShares: BigNumber;
-    try {
-      maxLeftoverShares = await this.tempusAMMService.getMaxLeftoverShares(tempusAMM, principalsAmount, lpTokensAmount);
-    } catch (error) {
-      console.error('TempusControllerService - exitTempusAmmAndRedeem() - Failed to fetch max leftover shares!', error);
-      return Promise.reject();
-    }
+    let maxLeftoverShares = this.tempusAMMService.getMaxLeftoverShares(principalsAmount, yieldsAmount, lpTokensAmount);
 
     try {
       const estimate = await this.contract.estimateGas.exitTempusAmmAndRedeem(
