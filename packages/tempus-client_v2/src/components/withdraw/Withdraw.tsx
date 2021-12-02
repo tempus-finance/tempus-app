@@ -184,15 +184,18 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
         ),
       );
 
+      const totalPrincipalsToWithdraw = principalsAmountParsed.add(estimatedWithdrawData.principalsStaked);
+      const totalYieldsToWithdraw = yieldsAmountParsed.add(estimatedWithdrawData.yieldsStaked);
+
       let minRate = BigNumber.from('0');
-      if (principalsAmountParsed.gt(yieldsAmountParsed)) {
+      if (totalPrincipalsToWithdraw.gt(totalYieldsToWithdraw)) {
         minRate = estimatedWithdrawData.principalsRate.sub(
           mul18f(
             estimatedWithdrawData.principalsRate,
             ethers.utils.parseUnits((slippage / 100).toString(), getTokenPrecision(selectedPoolAddress, 'principals')),
           ),
         );
-      } else if (yieldsAmountParsed.gt(principalsAmountParsed)) {
+      } else if (totalYieldsToWithdraw.gt(totalPrincipalsToWithdraw)) {
         minRate = estimatedWithdrawData.yieldsRate.sub(
           mul18f(
             estimatedWithdrawData.yieldsRate,
