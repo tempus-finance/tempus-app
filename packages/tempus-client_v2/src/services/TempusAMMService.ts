@@ -253,10 +253,6 @@ class TempusAMMService {
     yieldsToWithdraw: BigNumber,
     lpTokensToWithdraw: BigNumber,
   ): BigNumber {
-    if (!this.eRC20TokenServiceGetter) {
-      throw new Error('TempusAMMService - getMaxLeftoverShares() - Service not not initialized!');
-    }
-
     return principalsToWithdraw.add(yieldsToWithdraw).add(lpTokensToWithdraw).div(BigNumber.from('1000'));
   }
 }
