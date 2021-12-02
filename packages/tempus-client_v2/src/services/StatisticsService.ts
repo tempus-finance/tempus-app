@@ -247,7 +247,6 @@ class StatisticsService {
       return Promise.reject();
     }
 
-    // If user does not have any tokens in in the pool - skip calling contract and return zero
     if (lpAmount.isZero() && principalAmount.isZero() && yieldsAmount.isZero()) {
       return {
         tokenAmount: BigNumber.from('0'),
@@ -258,14 +257,7 @@ class StatisticsService {
       };
     }
 
-    let maxLeftoverShares: BigNumber;
-    try {
-      maxLeftoverShares = await this.tempusAMMService.getMaxLeftoverShares(tempusAmmAddress, principalAmount, lpAmount);
-    } catch (error) {
-      console.error('StatisticsService - estimateExitAndRedeem() - Failed to fetch max leftover shares!');
-      return Promise.reject();
-    }
-
+    let maxLeftoverShares = this.tempusAMMService.getMaxLeftoverShares(principalAmount, yieldsAmount, lpAmount);
     try {
       if (overrides) {
         return await this.stats.estimateExitAndRedeem(
