@@ -188,21 +188,22 @@ const Wallet = () => {
             requestNetworkChange();
             return;
           }
-
           if (authorized) {
             activate(injectedConnector);
+            const isMetaMask = provider.isMetaMask;
+            setSelectedWallet(!!isMetaMask ? 'MetaMask' : 'WalletConnect');
+          } else {
+            setSelectedWallet(null);
           }
-
           setWalletData &&
             setWalletData(previousData => ({
               ...previousData,
               userWalletConnected: authorized,
             }));
-          const isMetaMask = provider.isMetaMask;
-          setSelectedWallet(!!isMetaMask ? 'MetaMask' : 'WalletConnect');
         });
+      } else {
+        setSelectedWallet(null);
       }
-      setSelectedWallet(null);
     };
     if (!active) {
       checkConnection();
