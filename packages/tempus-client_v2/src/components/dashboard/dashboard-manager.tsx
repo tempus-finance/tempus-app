@@ -1,5 +1,4 @@
 import { FC, useCallback, useContext, useEffect, useState } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { useState as useHookState } from '@hookstate/core';
 import { selectedPoolState } from '../../state/PoolDataState';
 import { WalletContext } from '../../context/walletContext';
@@ -61,38 +60,27 @@ const DashboardManager: FC = (): JSX.Element => {
   const shouldShowDashboard = !!selectedPool.get();
 
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route
-          path="/"
-          element={
-            <>
-              {rows.length !== 0 && (
-                <Dashboard
-                  hidden={shouldShowDashboard}
-                  rows={rows}
-                  userWalletAddress={userWalletAddress}
-                  onRowActionClick={onRowActionClick}
-                />
-              )}
-
-              {/* TODO - Move Operations component to separate route */}
-              {selectedPool.get() && <Operations />}
-              {dashboardDataAdapter && <TVLProvider dashboardDataAdapter={dashboardDataAdapter} />}
-              {userBalanceDataAdapter && <BalanceProvider userBalanceDataAdapter={userBalanceDataAdapter} />}
-              <FixedAPRProvider />
-              <VariableAPRProvider />
-              <NegativeYieldProvider />
-              {userBalanceDataAdapter && (
-                <AvailableToDepositUSDProvider userBalanceDataAdapter={userBalanceDataAdapter} />
-              )}
-              {userBalanceDataAdapter && <UserBackingTokenBalanceProvider />}
-              {userBalanceDataAdapter && <UserYieldBearingTokenBalanceProvider />}
-            </>
-          }
+    <>
+      {rows.length !== 0 && (
+        <Dashboard
+          hidden={shouldShowDashboard}
+          rows={rows}
+          userWalletAddress={userWalletAddress}
+          onRowActionClick={onRowActionClick}
         />
-      </Routes>
-    </BrowserRouter>
+      )}
+
+      {/* TODO - Move Operations component to separate route */}
+      {selectedPool.get() && <Operations />}
+      {dashboardDataAdapter && <TVLProvider dashboardDataAdapter={dashboardDataAdapter} />}
+      {userBalanceDataAdapter && <BalanceProvider userBalanceDataAdapter={userBalanceDataAdapter} />}
+      <FixedAPRProvider />
+      <VariableAPRProvider />
+      <NegativeYieldProvider />
+      {userBalanceDataAdapter && <AvailableToDepositUSDProvider userBalanceDataAdapter={userBalanceDataAdapter} />}
+      {userBalanceDataAdapter && <UserBackingTokenBalanceProvider />}
+      {userBalanceDataAdapter && <UserYieldBearingTokenBalanceProvider />}
+    </>
   );
 };
 
