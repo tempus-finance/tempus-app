@@ -70,6 +70,7 @@ const DashboardManager: FC = (): JSX.Element => {
         />
       )}
 
+      {/* TODO - Move Operations component to separate route */}
       {selectedPool.get() && <Operations />}
       {dashboardDataAdapter && <TVLProvider dashboardDataAdapter={dashboardDataAdapter} />}
       {userBalanceDataAdapter && <BalanceProvider userBalanceDataAdapter={userBalanceDataAdapter} />}
