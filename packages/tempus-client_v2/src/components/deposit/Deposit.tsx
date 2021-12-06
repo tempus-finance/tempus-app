@@ -269,7 +269,7 @@ const Deposit: FC<DepositProps> = ({ narrow, poolDataAdapter }) => {
 
   useEffect(() => {
     const getEstimatedFixedApr = async () => {
-      if (amount && amount !== '0' && selectedToken && poolDataAdapter) {
+      if (!isZeroString(amount) && selectedToken && poolDataAdapter) {
         setRateEstimateInProgress(true);
         const isBackingToken = selectedToken === backingToken;
         try {
