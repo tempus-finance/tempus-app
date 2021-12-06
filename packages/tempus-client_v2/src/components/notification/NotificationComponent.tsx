@@ -1,6 +1,8 @@
-import { FC } from 'react';
+import { FC, MouseEvent, useCallback, useContext } from 'react';
 import Button from '@material-ui/core/Button';
 import CloseIcon from '@material-ui/icons/Close';
+import { LanguageContext } from '../../context/languageContext';
+import getText from '../../localisation/getText';
 import Typography from '../typography/Typography';
 import TickIcon from '../icons/TickIcon';
 import AlertIcon from '../icons/AlertIcon';
@@ -9,8 +11,10 @@ import { Notification } from '../../services/NotificationService';
 import './Notification.scss';
 
 type NotificationComponentInProps = Notification;
+
 type NotificationComponentOutProps = {
   onNotificationDelete: (id: string) => void;
+  openTransactions: () => void;
 };
 
 type NotificationComponentProps = NotificationComponentInProps & NotificationComponentOutProps;
@@ -21,15 +25,25 @@ const NotificationComponent: FC<NotificationComponentProps> = ({
   title,
   content,
   link,
-  linkText,
   onNotificationDelete,
+  openTransactions,
 }) => {
-  const onDelete = () => onNotificationDelete(id);
+  const { language } = useContext(LanguageContext);
+
+  const onDelete = useCallback(() => onNotificationDelete(id), [id, onNotificationDelete]);
+
+  const onClick = useCallback(
+    (event: MouseEvent<HTMLAnchorElement>) => {
+      event.preventDefault();
+      openTransactions();
+    },
+    [openTransactions],
+  );
 
   return (
-    <div className="tf__notification">
-      <div className="tf__notification__header">
-        <div className="tf__notification__title">
+    <div className="tc__notification">
+      <div className="tc__notification__header">
+        <div className="tc__notification__title">
           {level === 'info' && <TickIcon fillColor="#4BB543" />}
           {level === 'warning' && <AlertIcon fillColor="#FF0F0F" />}
           <Typography variant="h5">{title}</Typography>
@@ -39,13 +53,13 @@ const NotificationComponent: FC<NotificationComponentProps> = ({
         </Button>
       </div>
 
-      <div className="tf__notification__content">
+      <div className="tc__notification__content">
         <Typography variant="body-text">{content}</Typography>
         {link && (
-          <div className="tf__notification__link">
-            <a href={link} target="_blank" rel="noreferrer">
+          <div className="tc__notification__link">
+            <a href={link} onClick={onClick}>
               <Typography variant="body-text" color="link">
-                {linkText}
+                {getText('viewRecentTransactions', language)}
               </Typography>
             </a>
           </div>
