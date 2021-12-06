@@ -317,7 +317,7 @@ const EarlyRedeem: FC = () => {
             marginRight={20}
             onApproveChange={onApproveChange}
           />
-          <Execute actionName="Mint" disabled={executeDisabled} onExecute={onExecute} onExecuted={onExecuted} />
+          <Execute actionName="Redeem" disabled={executeDisabled} onExecute={onExecute} onExecuted={onExecuted} />
         </div>
       </SectionContainer>
     </div>
