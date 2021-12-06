@@ -45,7 +45,7 @@ class ProfitLossGraphDataAdapter {
     try {
       blocksToQuery = await this.fetchDataPointBlocks();
     } catch (error) {
-      console.error('Failed to fetch data point blocks.', error);
+      console.error('ProfitLossGraphDataAdapter - generateChartData() - Failed to fetch data point blocks.', error);
       return Promise.reject(error);
     }
 
@@ -64,7 +64,10 @@ class ProfitLossGraphDataAdapter {
       });
       liquidationValues = await Promise.all(liquidationValuesPromises);
     } catch (error) {
-      console.error('Failed to fetch liquidation value for user.', error);
+      console.error(
+        'ProfitLossGraphDataAdapter - generateChartData() - Failed to fetch liquidation value for user.',
+        error,
+      );
       return Promise.reject(error);
     }
 
