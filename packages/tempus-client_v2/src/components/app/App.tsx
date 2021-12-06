@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { BrowserRouter } from 'react-router-dom';
 import { LanguageContext, defaultLanguageContextValue } from '../../context/languageContext';
 import { ETHBalanceContext, defaultETHBalanceContextValue } from '../../context/ethBalanceContext';
 import { defaultWalletContextValue, WalletContext } from '../../context/walletContext';
@@ -27,11 +28,13 @@ const App = () => {
         <ETHBalanceContext.Provider value={{ ...ethBalance, setETHBalance }}>
           <WalletContext.Provider value={{ ...walletData, setWalletData }}>
             <PendingTransactionsContext.Provider value={{ ...pendingTransactions, setPendingTransactions }}>
-              <div className="tc__app__container">
-                <NavBar />
-                <Main />
-                <NotificationContainer />
-              </div>
+              <BrowserRouter>
+                <div className="tc__app__container">
+                  <NavBar />
+                  <Main />
+                  <NotificationContainer />
+                </div>
+              </BrowserRouter>
             </PendingTransactionsContext.Provider>
             <ETHBalanceProvider />
           </WalletContext.Provider>
