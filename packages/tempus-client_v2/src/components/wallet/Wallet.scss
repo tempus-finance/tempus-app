@@ -30,4 +30,14 @@
   padding-left: 15px;
   padding-right: 15px;
   box-shadow: -2px 0px 2px rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+
+  &.tc__connect-wallet-button__connected:hover {
+    background-color: $link-color;
+    color: $inverted-text-color;
+
+    > div {
+      color: $inverted-text-color !important;
+    }
+  }
 }

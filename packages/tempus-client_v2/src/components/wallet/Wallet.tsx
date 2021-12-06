@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { ethers } from 'ethers';
 import { Web3Provider } from '@ethersproject/providers';
 import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core';
@@ -10,6 +10,7 @@ import { supportedChainIds, NETWORK_URLS } from '../../constants';
 import { LanguageContext } from '../../context/languageContext';
 import { ETHBalanceContext } from '../../context/ethBalanceContext';
 import { PendingTransactionsContext } from '../../context/pendingTransactionsContext';
+import { UserSettingsContext } from '../../context/userSettingsContext';
 import { WalletContext } from '../../context/walletContext';
 import NumberUtils from '../../services/NumberUtils';
 import UserWallet from '../../interfaces/UserWallet';
@@ -19,6 +20,7 @@ import getNotificationService from '../../services/getNotificationService';
 import Typography from '../typography/Typography';
 import Spacer from '../spacer/spacer';
 import WalletSelector from './WalletSelector';
+import WalletPopup from './WalletPopup';
 import './Wallet.scss';
 
 const Wallet = () => {
@@ -28,6 +30,9 @@ const Wallet = () => {
   const { eth } = useContext(ETHBalanceContext);
   const { setWalletData } = useContext(WalletContext);
   const { pendingTransactions } = useContext(PendingTransactionsContext);
+  const { openWalletPopup, setUserSettings } = useContext(UserSettingsContext);
+
+  const walletPopupAnchor = useRef<HTMLDivElement>(null);
 
   const [walletSelectorOpen, setWalletSelectorOpen] = useState<boolean>(false);
   const [selectedWallet, setSelectedWallet] = useState<UserWallet | null>(null);
@@ -50,6 +55,18 @@ const Wallet = () => {
     [setWalletSelectorOpen],
   );
 
+  const onOpenWalletPopup = useCallback(() => {
+    if (setUserSettings) {
+      setUserSettings(prevState => ({ ...prevState, openWalletPopup: true }));
+    }
+  }, [setUserSettings]);
+
+  const onCloseWalletPopup = useCallback(() => {
+    if (setUserSettings) {
+      setUserSettings(prevState => ({ ...prevState, openWalletPopup: false }));
+    }
+  }, [setUserSettings]);
+
   const requestNetworkChange = useCallback(async () => {
     const injectedConnector = new InjectedConnector({ supportedChainIds });
     const provider = await injectedConnector.getProvider();
@@ -63,21 +80,24 @@ const Wallet = () => {
       const onError = undefined;
       const shouldThrowErrors = true;
       await activate(injectedConnector, onError, shouldThrowErrors);
-      getNotificationService().notify('Wallet connected', '');
+      getNotificationService().notify(getText('metamaskConnected', language), '');
       setWalletData &&
         setWalletData(previousData => ({
           ...previousData,
           userWalletConnected: true,
         }));
-    } catch (error: any) {
+    } catch (error) {
       // User rejected request
-      if (error.code === 4001) {
+      if ((error as any).code === 4001) {
         getNotificationService().warn(
-          'Request to change network rejected by user',
-          'In order to use the app, please connect using Goerli network',
+          getText('changeNetworkRejected', language),
+          getText('changeNetworkRejectedExplain', language),
         );
       } else {
-        getNotificationService().warn('Unsupported wallet network', 'We support Goerli network');
+        getNotificationService().warn(
+          getText('unsupportedNetwork', language),
+          getText('unsupportedNetworkExplain', language),
+        );
       }
 
       setWalletData &&
@@ -86,7 +106,7 @@ const Wallet = () => {
           userWalletConnected: false,
         }));
     }
-  }, [activate, setWalletData]);
+  }, [language, activate, setWalletData]);
 
   const onMetaMaskSelected = useCallback(() => {
     setConnecting(true);
@@ -98,7 +118,7 @@ const Wallet = () => {
       const injectedConnector = new InjectedConnector({ supportedChainIds });
       try {
         await activate(injectedConnector, undefined, true);
-        getNotificationService().notify('Wallet connected', '');
+        getNotificationService().notify(getText('metamaskConnected', language), '');
         setWalletData &&
           setWalletData(previousData => ({
             ...previousData,
@@ -110,13 +130,13 @@ const Wallet = () => {
         if (error instanceof UnsupportedChainIdError) {
           requestNetworkChange();
         } else {
-          getNotificationService().warn('Error connecting wallet', '');
+          getNotificationService().warn(getText('errorConnectingWallet', language), '');
         }
       }
       setConnecting(false);
     };
     connect();
-  }, [active, activate, setWalletData, requestNetworkChange]);
+  }, [language, active, activate, setWalletData, requestNetworkChange]);
 
   const onWalletConnectSelected = useCallback(() => {
     setConnecting(true);
@@ -133,7 +153,7 @@ const Wallet = () => {
 
       try {
         await activate(walletConnector, undefined, true);
-        getNotificationService().notify('Wallet connected', '');
+        getNotificationService().notify(getText('walletConnectConnected', language), '');
         setWalletData &&
           setWalletData(previousData => ({
             ...previousData,
@@ -145,13 +165,13 @@ const Wallet = () => {
         if (error instanceof UnsupportedChainIdError) {
           requestNetworkChange();
         } else {
-          getNotificationService().warn('Error connecting wallet', '');
+          getNotificationService().warn(getText('errorConnectingWallet', language), '');
         }
       }
       setConnecting(false);
     };
     connect();
-  }, [active, activate, setWalletData, requestNetworkChange]);
+  }, [language, active, activate, setWalletData, requestNetworkChange]);
 
   useEffect(() => {
     if (selectedWallet === 'MetaMask') {
@@ -262,7 +282,11 @@ const Wallet = () => {
           )}
 
           {!connecting && selectedWallet && active && (
-            <div className="tc__connect-wallet-button" onClick={onSelectWallet}>
+            <div
+              className="tc__connect-wallet-button tc__connect-wallet-button__connected"
+              onClick={onOpenWalletPopup}
+              ref={walletPopupAnchor}
+            >
               <AccountBalanceWalletIcon />
               <Spacer size={4} />
               {pendingTransactions.length === 0 && <Typography variant="h5">{shortenedAccount}</Typography>}
@@ -275,6 +299,12 @@ const Wallet = () => {
           )}
         </div>
       </div>
+      <WalletPopup
+        anchorElement={walletPopupAnchor}
+        open={openWalletPopup}
+        account={account}
+        onClose={onCloseWalletPopup}
+      />
     </>
   );
 };

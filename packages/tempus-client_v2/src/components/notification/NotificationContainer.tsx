@@ -1,4 +1,5 @@
-import { FC, useCallback, useEffect, useState } from 'react';
+import { FC, useCallback, useContext, useEffect, useState } from 'react';
+import { UserSettingsContext } from '../../context/userSettingsContext';
 import getNotificationService from '../../services/getNotificationService';
 import { Notification } from '../../services/NotificationService';
 import NotificationComponent from './NotificationComponent';
@@ -6,6 +7,7 @@ import NotificationComponent from './NotificationComponent';
 import './Notification.scss';
 
 const NotificationContainer: FC = () => {
+  const { setUserSettings } = useContext(UserSettingsContext);
   const [notifications, setNotifications] = useState<Notification[]>([]);
 
   const onNotificationDelete = useCallback(
@@ -14,6 +16,12 @@ const NotificationContainer: FC = () => {
     },
     [setNotifications],
   );
+
+  const openTransactions = useCallback(() => {
+    if (setUserSettings) {
+      setUserSettings(prevState => ({ ...prevState, openWalletPopup: true }));
+    }
+  }, [setUserSettings]);
 
   const autoCloseNotification = useCallback(
     (id: string) => {
@@ -42,10 +50,15 @@ const NotificationContainer: FC = () => {
   }, [autoCloseNotification, setNotifications]);
 
   return (
-    <div className="tf__notification-container">
+    <div className="tc__notification-container">
       {notifications &&
         notifications.map(notification => (
-          <NotificationComponent {...notification} onNotificationDelete={onNotificationDelete} />
+          <NotificationComponent
+            {...notification}
+            key={notification.id}
+            onNotificationDelete={onNotificationDelete}
+            openTransactions={openTransactions}
+          />
         ))}
     </div>
   );
