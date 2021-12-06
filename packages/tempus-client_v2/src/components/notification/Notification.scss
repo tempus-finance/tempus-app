@@ -1,13 +1,13 @@
 @import '../../constants.scss';
 
-.tf__notification-container {
+.tc__notification-container {
   position: absolute;
   top: 65px;
   right: 0;
   z-index: 9999;
 }
 
-.tf__notification {
+.tc__notification {
   @include background-level-3;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25), 2px 0px 2px rgba(0, 0, 0, 0.25);
   border-radius: 5px;
@@ -17,17 +17,17 @@
   display: flex;
   flex-direction: column;
 
-  .tf__notification__header {
+  .tc__notification__header {
     display: flex;
     flex-direction: row;
     align-items: center;
   }
 
-  .tf__notification__header {
+  .tc__notification__header {
     margin-bottom: 14px;
   }
 
-  .tf__notification__title {
+  .tc__notification__title {
     display: flex;
     align-items: center;
     flex: 1;
@@ -37,7 +37,7 @@
     }
   }
 
-  .tf__notification__content {
+  .tc__notification__content {
     display: flex;
     flex: 1;
     flex-direction: column;
@@ -45,7 +45,7 @@
     padding-left: 28px;
   }
 
-  .tf__notification__link {
+  .tc__notification__link {
     margin-top: 14px;
     > a {
       color: $link-color;
