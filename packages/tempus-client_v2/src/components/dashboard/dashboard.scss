@@ -8,10 +8,6 @@ $padding: 20px;
   border-radius: 5px;
   padding: $padding;
   @include background-level-1;
-
-  &[hidden] {
-    display: none;
-  }
 }
 
 .tf__detail__section__container {
