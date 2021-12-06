@@ -12,6 +12,19 @@ const it: { [word in Words]: string } = {
   selectWallet: 'Seleziona Portafoglio',
   walletSelectorDisclaimer:
     'Connettendo un portafoglio, dichiari di essere d\'accordo con i<a href="https://tempus.finance/terms-of-service" target="_blank">Termini di Servizio di Tempus</a> e confermi di avere letto e compreso l\'avvertimento sul <a href="https://tempus.finance/terms-of-service" target="_blank">Protocollo Tempus</a>.',
+  metamaskConnected: 'MetaMask connesso',
+  changeNetworkRejected: 'Richiesta cambiamento network rifiutata dall`utente',
+  changeNetworkRejectedExplain: "Per poter usare l'applicazione, per favore connettiti al network Goerli",
+  unsupportedNetwork: 'Network del portafoglio non supportato',
+  unsupportedNetworkExplain: 'Supportiamo solo il network Goerli',
+  walletConnectConnected: 'WalletConnect connesso',
+  errorConnectingWallet: 'Error nella connessione del portafoglio',
+  viewRecentTransactions: 'Vedi transazioni recenti',
+  walletOverview: 'Panoramica del portafoglio',
+  connectedWallet: 'Portafoglio collegato',
+  pendingTransactions: 'Transazioni in corso',
+  transactionHistory: 'Storico Transazioni',
+  clear: 'Rimuovi',
   installMetamask: 'Installa Metamask',
   availablePools: 'Pool Disponibili',
   filter: 'Filtro',
@@ -19,7 +32,7 @@ const it: { [word in Words]: string } = {
   assetName: 'Nome Attività',
   protocol: 'Protocollo',
   protocolName: 'Nome Protocollo',
-  clearFilter: 'Cancella',
+  clearFilter: 'Rimuovi',
   apply: 'Applica',
   token: 'token',
   fixedApr: 'APR Fisso',
@@ -90,9 +103,10 @@ const it: { [word in Words]: string } = {
     "Fissa il rendimento futuro con Tempus. Questa funzione blocca il tuo Yield Bearing Token, forgia i Principals e gli Yields in cambio e scambia tutti gli Yields per Principals attraverso il TempusAMM.<br/><br/>Riceverai Principals i quali sono riscattabili 1:1 con l'attività sottostante a scadenza.",
   liquidityProvisionTooltipText:
     'Fornisci liquidità a Tempus per ottenere un rendimento aggiuntivo. Questa funzione blocca il tuo  Yield Bearing Token, forgia i Principals e gli Yields in cambio e usa il maggior numero di Principals e Yields per immettere liquidità al TempusAMM.<br/><br/>Questo significa che riceverai il rendimento sottostante e le commissioni di scambio Tempus aggregate in un unico rendimento.',
-  slippageTolerance: 'Slippage tolerance',
-  slippageTooltip: 'Your transaction will revert if the price changes unfavorably by more than this percentage.',
+  slippageTolerance: 'Tolleranza di slittamento',
+  slippageTooltip:
+    'La tua transazione non verrà completata se il prezzo cambia sfavorevolmente in misura maggiore di questa percentuale.',
   auto: 'Auto',
-  language: 'Language',
+  language: 'Lingua',
 };
 export default it;

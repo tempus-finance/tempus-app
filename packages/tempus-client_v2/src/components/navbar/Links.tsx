@@ -1,6 +1,5 @@
 import { useCallback, useContext } from 'react';
-import { useState as useHookState } from '@hookstate/core';
-import { selectedPoolState } from '../../state/PoolDataState';
+import { useNavigate } from 'react-router-dom';
 import { LanguageContext } from '../../context/languageContext';
 import getText from '../../localisation/getText';
 import Community from './Community';
@@ -9,13 +8,13 @@ import Settings from './Settings';
 import './Links.scss';
 
 const Links = () => {
-  const selectedPool = useHookState(selectedPoolState);
-
   const { language } = useContext(LanguageContext);
 
+  const navigate = useNavigate();
+
   const onDashboardClick = useCallback(() => {
-    selectedPool.set('');
-  }, [selectedPool]);
+    navigate('/');
+  }, [navigate]);
 
   // TODO
   // link active state
