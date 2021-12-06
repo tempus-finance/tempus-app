@@ -10,9 +10,9 @@ import NumberUtils from '../../services/NumberUtils';
 import Spacer from '../spacer/spacer';
 import TokenIcon from '../tokenIcon';
 import Typography from '../typography/Typography';
+import ProfitLossChart from './profitLossChart/ProfitLossChart';
 
 import './ProfitLoss.scss';
-import ProfitLossChart from './profitLossChart/ProfitLossChart';
 
 const ProfitLoss = () => {
   const selectedPool = useHookState(selectedPoolState);
@@ -40,7 +40,9 @@ const ProfitLoss = () => {
     const withdrawStream$ = poolDataAdapter
       .getEstimatedWithdrawAmount(ammAddress, userLPTokenBalance, userPrincipalsBalance, userYieldsBalance, true)
       .subscribe(estimate => {
-        setEstimatedWithdrawAmount(estimate.tokenAmount);
+        if (estimate) {
+          setEstimatedWithdrawAmount(estimate.tokenAmount);
+        }
       });
 
     return () => {
