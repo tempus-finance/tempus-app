@@ -35,6 +35,11 @@ const ProfitLossChart = () => {
     fetchChartData();
   }, [userWalletAddress, userWalletSigner, selectedPoolStaticData]);
 
+  // Hide Profit Loss chart if there is no historical data (ie. we only have data for present day)
+  if (chartData.length <= 1) {
+    return null;
+  }
+
   return (
     <>
       <ResponsiveContainer width="100%" height={275}>
