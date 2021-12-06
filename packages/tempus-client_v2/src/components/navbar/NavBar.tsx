@@ -1,6 +1,5 @@
 import { FC, useCallback } from 'react';
-import { useState as useHookState } from '@hookstate/core';
-import { selectedPoolState } from '../../state/PoolDataState';
+import { useNavigate } from 'react-router-dom';
 import TempusLogo from './tempusLogo';
 import Links from './Links';
 import Wallet from '../wallet/Wallet';
@@ -8,11 +7,11 @@ import Wallet from '../wallet/Wallet';
 import './NavBar.scss';
 
 const NavBar: FC = () => {
-  const selectedPool = useHookState(selectedPoolState);
+  const navigate = useNavigate();
 
   const onLogoClick = useCallback(() => {
-    selectedPool.set('');
-  }, [selectedPool]);
+    navigate('/');
+  }, [navigate]);
 
   return (
     <div className="tc__navBar">

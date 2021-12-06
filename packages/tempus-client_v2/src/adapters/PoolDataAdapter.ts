@@ -1,6 +1,6 @@
 import { BigNumber, ContractTransaction, ethers } from 'ethers';
 import { JsonRpcSigner } from '@ethersproject/providers';
-import { Observable, from, of, switchMap, combineLatest, map, throwError, timer } from 'rxjs';
+import { Observable, from, of, switchMap, combineLatest, map, throwError, timer, catchError } from 'rxjs';
 import TempusAMMService from '../services/TempusAMMService';
 import StatisticsService from '../services/StatisticsService';
 import TempusControllerService, { DepositedEvent, RedeemedEvent } from '../services/TempusControllerService';
@@ -240,7 +240,7 @@ export default class PoolDataAdapter {
     yieldsStaked: BigNumber;
     principalsRate: BigNumber;
     yieldsRate: BigNumber;
-  }> {
+  } | null> {
     if (!this.statisticService) {
       console.error(
         'PoolDataAdapter - getEstimatedWithdrawAmount() - Attempted to use PoolDataAdapter before initializing it!',
@@ -257,6 +257,10 @@ export default class PoolDataAdapter {
           yieldsAmount,
           isBackingToken,
         ),
+      ).pipe(
+        catchError(() => {
+          return of(null);
+        }),
       );
     } catch (error) {
       console.error(
