@@ -35,7 +35,6 @@ import { dashboardColumnsDefinitions } from './dashboardColumnsDefinitions';
 import './dashboard.scss';
 
 type DashboardInProps = {
-  hidden: boolean;
   userWalletAddress?: string;
   rows: DashboardRow[];
 };
@@ -46,7 +45,7 @@ type DashboardOutProps = {
 
 type DashboardProps = DashboardInProps & DashboardOutProps;
 
-const Dashboard: FC<DashboardProps> = ({ hidden, userWalletAddress, rows, onRowActionClick }): JSX.Element => {
+const Dashboard: FC<DashboardProps> = ({ userWalletAddress, rows, onRowActionClick }): JSX.Element => {
   const dynamicPoolData = useHookState(dynamicPoolDataState).attach(Downgraded).get();
 
   const { language } = useContext(LanguageContext);
@@ -210,7 +209,7 @@ const Dashboard: FC<DashboardProps> = ({ hidden, userWalletAddress, rows, onRowA
   }; */
 
   return (
-    <div className="tf__dashboard__section__container" hidden={hidden}>
+    <div className="tf__dashboard__section__container">
       <div className="tc__dashboard__container">
         <div className="tc__dashboard__header">
           <Typography color="default" variant="h4">
