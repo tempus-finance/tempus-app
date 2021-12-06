@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import IconProps from './IconProps';
 
-const ArrowDown: FC<IconProps> = props => {
+const PlusIcon: FC<IconProps> = props => {
   return (
     <svg width="31" height="30" viewBox="0 0 31 30" fill="none" xmlns="http://www.w3.org/2000/svg">
       <ellipse cx="15.4989" cy="15" rx="14.975" ry="15" fill="white" />
@@ -12,4 +12,4 @@ const ArrowDown: FC<IconProps> = props => {
     </svg>
   );
 };
-export default ArrowDown;
+export default PlusIcon;

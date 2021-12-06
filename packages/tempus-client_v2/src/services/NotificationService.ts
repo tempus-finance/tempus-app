@@ -1,5 +1,5 @@
 import { ethers, BigNumber } from 'ethers';
-import { Observable, Subject } from 'rxjs';
+import { Observable, ReplaySubject } from 'rxjs';
 import format from 'date-fns/format';
 import { v1 as uuid } from 'uuid';
 import ERC20ABI from '../abi/ERC20.json';
@@ -17,6 +17,7 @@ export enum NotificationLevel {
 
 export type Notification = {
   id: string;
+  timestamp: number;
   level: NotificationLevel;
   title: string;
   content: string;
@@ -26,7 +27,7 @@ export type Notification = {
 
 // TODO add tests
 class NotificationService {
-  private notificationQueue: Subject<Notification> = new Subject<Notification>();
+  private notificationQueue: ReplaySubject<Notification> = new ReplaySubject<Notification>(5);
 
   warn(title: string, content: string, link?: string, linkText?: string) {
     this.addToQueue(NotificationLevel.WARNING, title, content, link, linkText);
@@ -41,7 +42,7 @@ class NotificationService {
   }
 
   private addToQueue(level: NotificationLevel, title: string, content: string, link?: string, linkText?: string) {
-    this.notificationQueue.next({ level, title, content, link, linkText, id: uuid() });
+    this.notificationQueue.next({ level, title, content, link, linkText, id: uuid(), timestamp: Date.now() });
   }
 }
 

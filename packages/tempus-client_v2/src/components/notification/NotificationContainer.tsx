@@ -10,9 +10,9 @@ const NotificationContainer: FC = () => {
 
   const onNotificationDelete = useCallback(
     (id: string) => {
-      setNotifications(notifications.filter(notification => notification.id !== id));
+      setNotifications(prev => prev.filter(notification => notification.id !== id));
     },
-    [notifications, setNotifications],
+    [setNotifications],
   );
 
   const autoCloseNotification = useCallback(
@@ -34,27 +34,18 @@ const NotificationContainer: FC = () => {
             autoCloseNotification(notification.id);
           }
 
-          setNotifications([...notifications, notification]);
+          setNotifications((prev: any) => [notification, ...prev]);
         }
       });
 
     return () => notificationStream$.unsubscribe();
-  }, [autoCloseNotification, notifications, setNotifications]);
+  }, [autoCloseNotification, setNotifications]);
 
   return (
     <div className="tf__notification-container">
       {notifications &&
-        notifications.map(({ id, level, title, content, link, linkText }) => (
-          <NotificationComponent
-            key={id}
-            id={id}
-            level={level}
-            title={title}
-            content={content}
-            link={link}
-            linkText={linkText}
-            onNotificationDelete={onNotificationDelete}
-          />
+        notifications.map(notification => (
+          <NotificationComponent {...notification} onNotificationDelete={onNotificationDelete} />
         ))}
     </div>
   );
