@@ -1,5 +1,5 @@
 import { ethers, BigNumber } from 'ethers';
-import { Observable, ReplaySubject } from 'rxjs';
+import { Observable, ReplaySubject, interval, tap, filter } from 'rxjs';
 import format from 'date-fns/format';
 import { v1 as uuid } from 'uuid';
 import ERC20ABI from '../abi/ERC20.json';
@@ -9,6 +9,7 @@ import { TempusPool } from '../interfaces/TempusPool';
 import { capitalize } from '../utils/capitalizeString';
 import getConfig from '../utils/getConfig';
 import NumberUtils from './NumberUtils';
+import StorageService from './StorageService';
 
 export enum NotificationLevel {
   WARNING = 'warning',
@@ -25,9 +26,14 @@ export type Notification = {
   linkText?: string;
 };
 
-// TODO add tests
+const NOTIFICATIONS_KEY = 'notifications';
+
 class NotificationService {
   private notificationQueue: ReplaySubject<Notification> = new ReplaySubject<Notification>(5);
+
+  constructor(private storageService: StorageService) {
+    this.restoreNotifications();
+  }
 
   warn(title: string, content: string, link?: string, linkText?: string) {
     this.addToQueue(NotificationLevel.WARNING, title, content, link, linkText);
@@ -41,8 +47,48 @@ class NotificationService {
     return this.notificationQueue.asObservable();
   }
 
+  deleteNotifications(): void {
+    this.storageService.delete(NOTIFICATIONS_KEY);
+  }
+
   private addToQueue(level: NotificationLevel, title: string, content: string, link?: string, linkText?: string) {
-    this.notificationQueue.next({ level, title, content, link, linkText, id: uuid(), timestamp: Date.now() });
+    const notification = { level, title, content, link, linkText, id: uuid(), timestamp: Date.now() };
+    this.emitNotification(notification);
+  }
+
+  private emitNotification(notification: Notification) {
+    this.storeNotifications(notification);
+    this.notificationQueue.next(notification);
+  }
+
+  private storeNotifications(notification: Notification) {
+    const updatedNotifications = [notification, ...this.retrieveNotifications().slice(0, 4)];
+    this.storageService.set(NOTIFICATIONS_KEY, updatedNotifications);
+  }
+
+  private restoreNotifications() {
+    const restoreNotificationStream$ = interval(100)
+      .pipe(
+        filter(() => this.notificationQueue.observed),
+        tap(() => {
+          const retrievedNotifications = this.retrieveNotifications();
+          this.deleteNotifications();
+          retrievedNotifications.forEach(notification => {
+            this.emitNotification(notification);
+          });
+          restoreNotificationStream$.unsubscribe();
+        }),
+      )
+      .subscribe();
+  }
+
+  private retrieveNotifications(): Notification[] {
+    const notificationList = this.storageService.get(NOTIFICATIONS_KEY);
+    if (notificationList && Array.isArray(notificationList)) {
+      return notificationList.reverse();
+    }
+
+    return [];
   }
 }
 

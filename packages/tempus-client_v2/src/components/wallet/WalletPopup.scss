@@ -1,0 +1,41 @@
+@import '../../constants.scss';
+
+.tc__wallet__popper {
+  z-index: 9999;
+}
+
+.tc__wallet__popper__container {
+  @include background-level-2;
+  padding: 5px 0px;
+  margin-top: 15px;
+}
+
+.tc__wallet__popper__section {
+  display: flex;
+  padding: 10px 15px;
+
+  .tc__wallet__popper__section__title {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+  }
+}
+
+.tc__wallet__popper__section-header {
+  align-items: center;
+  justify-content: space-between;
+}
+
+.tc__wallet__popper__section-account {
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.tc__wallet__popper__section-transactions {
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  box-sizing: border-box;
+}

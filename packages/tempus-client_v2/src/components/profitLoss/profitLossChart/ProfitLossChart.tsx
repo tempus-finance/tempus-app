@@ -27,13 +27,22 @@ const ProfitLossChart = () => {
       }
       const profitLossGraphDataAdapter = getProfitLossGraphDataAdapter(userWalletSigner);
 
-      const result = await profitLossGraphDataAdapter.generateChartData(selectedPoolStaticData, userWalletAddress);
+      try {
+        const result = await profitLossGraphDataAdapter.generateChartData(selectedPoolStaticData, userWalletAddress);
 
-      setChartData(result.data);
-      setStartDate(result.numberOfPastDays);
+        setChartData(result.data);
+        setStartDate(result.numberOfPastDays);
+      } catch (error) {
+        console.error('ProfitLossChart - fetchChartData() - ', error);
+      }
     };
     fetchChartData();
   }, [userWalletAddress, userWalletSigner, selectedPoolStaticData]);
+
+  // Hide Profit Loss chart if there is no historical data (ie. we only have data for present day)
+  if (chartData.length <= 1) {
+    return null;
+  }
 
   return (
     <>
