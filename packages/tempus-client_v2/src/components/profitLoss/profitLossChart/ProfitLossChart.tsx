@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { AreaChart, Tooltip, Area, ResponsiveContainer } from 'recharts';
 import { selectedPoolState, staticPoolDataState } from '../../../state/PoolDataState';
@@ -17,6 +17,8 @@ const ProfitLossChart = () => {
 
   const [chartData, setChartData] = useState<ChartDataPoint[]>([]);
   const [startDate, setStartDate] = useState<number | null>(null);
+
+  const pastDaysNumber = useMemo(() => (startDate ? getPastDaysNumber(startDate, 3) : []), [startDate]);
 
   const selectedPoolStaticData = staticPoolData[selectedPool.get()].attach(Downgraded).get();
 
@@ -66,8 +68,8 @@ const ProfitLossChart = () => {
         </AreaChart>
       </ResponsiveContainer>
       <div className="tf__flex-row-space-between">
-        {startDate &&
-          getPastDaysNumber(startDate, 3).map((value: number) => (
+        {pastDaysNumber.length > 0 &&
+          pastDaysNumber.map((value: number) => (
             <Typography key={value} variant="card-body-text">
               {value}
             </Typography>
