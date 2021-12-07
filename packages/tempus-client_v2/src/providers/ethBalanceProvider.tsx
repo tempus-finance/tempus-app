@@ -10,7 +10,7 @@ const ETHBalanceProvider = () => {
    * Fetch current ETH balance for user.
    */
   const fetchBalance = useCallback(async () => {
-    if (!setETHBalance || !userWalletSigner || !document.hasFocus()) {
+    if (!setETHBalance || !userWalletSigner || (!document.hasFocus() && eth !== null)) {
       return;
     }
 
