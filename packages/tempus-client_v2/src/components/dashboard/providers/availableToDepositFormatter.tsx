@@ -55,7 +55,8 @@ const AvailableToDepositFormatter = (props: DataTypeProvider.ValueFormatterProps
     } else {
       content = (
         <>
-          {NumberUtils.formatWithMultiplier(ethers.utils.formatEther(parentAvailableToDeposit), 2)}
+          {/* TODO - Use decimalsForUI precision from child items (max precision) */}
+          {NumberUtils.formatWithMultiplier(ethers.utils.formatEther(parentAvailableToDeposit), 4)}
           <Spacer size={5} />
           <TokenIcon ticker={row.token} />
         </>
@@ -94,7 +95,10 @@ const AvailableToDepositFormatter = (props: DataTypeProvider.ValueFormatterProps
     } else {
       content = (
         <>
-          {NumberUtils.formatWithMultiplier(ethers.utils.formatEther(childAvailableToDeposit), 2)}
+          {NumberUtils.formatWithMultiplier(
+            ethers.utils.formatEther(childAvailableToDeposit),
+            staticPoolData[row.id].decimalsForUI,
+          )}
           <Spacer size={5} />
           <TokenIcon ticker={row.token} />
         </>
