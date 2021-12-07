@@ -78,7 +78,7 @@ const it: { [word in Words]: string } = {
   execute: 'Esegui',
   executing: 'In Esecuzione',
   profitLoss: 'Profitti & Perdite',
-  currentValue: 'Current Value',
+  currentValue: 'Valore attuale',
   from: 'Da',
   to: 'A',
   balance: 'Saldo',
