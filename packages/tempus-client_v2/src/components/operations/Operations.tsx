@@ -6,7 +6,6 @@ import { LanguageContext } from '../../context/languageContext';
 import { WalletContext } from '../../context/walletContext';
 import { TransactionView } from '../../interfaces/TransactionView';
 import UserLPTokenBalanceProvider from '../../providers/userLPTokenBalanceProvider';
-import UserShareTokenBalanceProvider from '../../providers/userShareTokenBalanceProvider';
 import CurrentPosition from '../currentPosition/CurrentPosition';
 import Deposit from '../deposit/Deposit';
 import EarlyRedeem from '../earlyRedeem/EarlyRedeem';
@@ -97,7 +96,6 @@ const Operations = () => {
           </div>
         )}
       </div>
-      <UserShareTokenBalanceProvider />
       <UserLPTokenBalanceProvider />
     </div>
   );

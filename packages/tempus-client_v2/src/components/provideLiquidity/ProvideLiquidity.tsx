@@ -2,6 +2,7 @@ import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { ethers, BigNumber } from 'ethers';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
+import getUserShareTokenBalanceProvider from '../../providers/getUserShareTokenBalanceProvider';
 import { LanguageContext } from '../../context/languageContext';
 import { WalletContext } from '../../context/walletContext';
 import getText from '../../localisation/getText';
@@ -315,7 +316,12 @@ const ProvideLiquidity = () => {
   const onExecuted = useCallback(() => {
     setPrincipalsAmount('');
     setYieldsAmount('');
-  }, []);
+
+    // Trigger user pool share balance update when execute is finished
+    getUserShareTokenBalanceProvider({
+      userWalletAddress,
+    }).fetchForPool(selectedPoolAddress);
+  }, [selectedPoolAddress, userWalletAddress]);
 
   const principalsBalanceFormatted = useMemo(() => {
     if (!userPrincipalsBalance) {

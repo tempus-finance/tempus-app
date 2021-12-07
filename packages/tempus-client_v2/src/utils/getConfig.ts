@@ -18,12 +18,23 @@ export default function getConfig(): Config {
   }
 }
 
-export function getConfigForPoolId(poolId: string): TempusPool {
+export function getConfigForPoolWithId(poolId: string): TempusPool {
   const poolConfig = getConfig().tempusPools.find(tempusPool => {
     return tempusPool.poolId === poolId;
   });
   if (!poolConfig) {
-    throw new Error(`Failed to get pool config with poolId ${poolId}`);
+    throw new Error(`Failed to get pool config with pool id ${poolId}`);
+  }
+
+  return poolConfig;
+}
+
+export function getConfigForPoolWithAddress(poolAddress: string): TempusPool {
+  const poolConfig = getConfig().tempusPools.find(tempusPool => {
+    return tempusPool.address === poolAddress;
+  });
+  if (!poolConfig) {
+    throw new Error(`Failed to get pool config with pool address ${poolAddress}`);
   }
 
   return poolConfig;
