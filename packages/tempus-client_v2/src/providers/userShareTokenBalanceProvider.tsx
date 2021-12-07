@@ -1,10 +1,10 @@
 import { Contract } from 'ethers';
-import { TempusPool } from '../interfaces/TempusPool';
-import { dynamicPoolDataState } from '../state/PoolDataState';
 import { ERC20 } from '../abi/ERC20';
 import ERC20ABI from '../abi/ERC20.json';
-import getConfig, { getConfigForPoolWithAddress } from '../utils/getConfig';
+import { TempusPool } from '../interfaces/TempusPool';
+import { dynamicPoolDataState } from '../state/PoolDataState';
 import getDefaultProvider from '../services/getDefaultProvider';
+import getConfig, { getConfigForPoolWithAddress } from '../utils/getConfig';
 
 export interface UserShareTokenBalanceProviderParams {
   userWalletAddress: string;
