@@ -58,11 +58,12 @@ const BalanceFormatter = (props: DataTypeProvider.ValueFormatterProps) => {
 
     if (showFiat) {
       const currencySymbol = '$';
-      content = `${currencySymbol}${NumberUtils.formatWithMultiplier(ethers.utils.formatEther(balance))}`;
+      content = `${currencySymbol}${NumberUtils.formatWithMultiplier(ethers.utils.formatEther(balance), 2)}`;
     } else {
       content = (
         <>
-          {NumberUtils.formatWithMultiplier(ethers.utils.formatEther(balance), 2)}
+          {/* TODO - Use decimalsForUI precision from child items (max precision) */}
+          {NumberUtils.formatWithMultiplier(ethers.utils.formatEther(balance), 4)}
           <Spacer size={5} />
           <TokenIcon ticker={row.token} />
         </>
