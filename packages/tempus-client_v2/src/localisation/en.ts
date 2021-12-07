@@ -78,7 +78,7 @@ const en: { [word in Words]: string } = {
   execute: 'Execute',
   executing: 'Executing',
   profitLoss: 'Profit & Loss',
-  liquidationValue: 'Liquidation Value',
+  currentValue: 'Current Value',
   from: 'From',
   to: 'To',
   balance: 'Balance',

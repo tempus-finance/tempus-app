@@ -75,7 +75,7 @@ type Words =
   | 'execute'
   | 'executing'
   | 'profitLoss'
-  | 'liquidationValue'
+  | 'currentValue'
   | 'from'
   | 'to'
   | 'balance'

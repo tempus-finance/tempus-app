@@ -71,7 +71,7 @@ const ProfitLoss = () => {
       <div className="tc__profitLoss__body">
         <div className="tf__flex-row-space-between tc__underline">
           <Typography variant="card-body-text" color="title">
-            {getText('liquidationValue', language)}
+            {getText('currentValue', language)}
           </Typography>
           <div className="tf__flex-row-center-v">
             <Typography variant="card-body-text">{estimatedWithdrawAmountFormatted}</Typography>

@@ -20,7 +20,7 @@ const ru = {
   approve: 'Approve',
   execute: 'Execute',
   profitLoss: 'Profit & Loss',
-  liquidationValue: 'Liquidation Value',
+  currentValue: 'Current Value',
   from: 'From',
   to: 'To',
 };
