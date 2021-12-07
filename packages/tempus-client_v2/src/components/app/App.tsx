@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import { LanguageContext, defaultLanguageContextValue } from '../../context/languageContext';
 import { ETHBalanceContext, defaultETHBalanceContextValue } from '../../context/ethBalanceContext';
@@ -9,6 +9,7 @@ import {
 } from '../../context/pendingTransactionsContext';
 import { UserSettingsContext, defaultUserSettingsContextValue } from '../../context/userSettingsContext';
 import ETHBalanceProvider from '../../providers/ethBalanceProvider';
+import getUserShareTokenBalanceProvider from '../../providers/getUserShareTokenBalanceProvider';
 import NotificationContainer from '../notification/NotificationContainer';
 import NavBar from '../navbar/NavBar';
 import Main from '../main/Main';
@@ -21,6 +22,17 @@ const App = () => {
   const [ethBalance, setETHBalance] = useState(defaultETHBalanceContextValue);
   const [walletData, setWalletData] = useState(defaultWalletContextValue);
   const [pendingTransactions, setPendingTransactions] = useState(defaultPendingTransactionsContextValue);
+
+  // Initialize user share token balance provider every time user wallet address changes
+  useEffect(() => {
+    if (!walletData.userWalletAddress) {
+      return;
+    }
+
+    getUserShareTokenBalanceProvider({
+      userWalletAddress: walletData.userWalletAddress,
+    }).init();
+  }, [walletData.userWalletAddress]);
 
   return (
     <UserSettingsContext.Provider value={{ ...userSettings, setUserSettings }}>

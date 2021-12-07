@@ -1,128 +1,93 @@
-import { useCallback, useContext, useEffect } from 'react';
-import { useState as useHookState } from '@hookstate/core';
-import { dynamicPoolDataState } from '../state/PoolDataState';
-import { WalletContext } from '../context/walletContext';
+import { Contract } from 'ethers';
+import { ERC20 } from '../abi/ERC20';
+import ERC20ABI from '../abi/ERC20.json';
 import { TempusPool } from '../interfaces/TempusPool';
-import getERC20TokenService from '../services/getERC20TokenService';
-import getConfig from '../utils/getConfig';
+import { dynamicPoolDataState } from '../state/PoolDataState';
+import getDefaultProvider from '../services/getDefaultProvider';
+import getConfig, { getConfigForPoolWithAddress } from '../utils/getConfig';
 
-const UserShareTokenBalanceProvider = () => {
-  const dynamicPoolData = useHookState(dynamicPoolDataState);
+export interface UserShareTokenBalanceProviderParams {
+  userWalletAddress: string;
+}
 
-  const { userWalletAddress, userWalletSigner } = useContext(WalletContext);
+class UserShareTokenBalanceProvider {
+  private userWalletAddress: string = '';
+  private tokenContracts: ERC20[] = [];
 
-  /**
-   * Fetch current principals balance for user.
-   */
-  const updatePrincipalsBalanceForPool = useCallback(
-    async (poolConfig: TempusPool) => {
-      if (userWalletSigner) {
-        const principalsService = getERC20TokenService(poolConfig.principalsAddress, userWalletSigner);
-        const balance = await principalsService.balanceOf(userWalletAddress);
+  constructor(params: UserShareTokenBalanceProviderParams) {
+    this.userWalletAddress = params.userWalletAddress;
+  }
 
-        const currentBalance = dynamicPoolData[poolConfig.address].userPrincipalsBalance.get();
-        // Only update state if fetched user principals balance is different from current user principals balance
-        if (!currentBalance || !currentBalance.eq(balance)) {
-          dynamicPoolData[poolConfig.address].userPrincipalsBalance.set(balance);
-        }
-      }
-    },
-    // TODO - We can now probably remove this provider components and update state directly from service classes
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [userWalletSigner, userWalletAddress],
-  );
+  init() {
+    // Make sure to clean previous data before crating new subscriptions
+    this.destroy();
 
-  /**
-   * Fetch current yields balance for user.
-   */
-  const updateYieldsBalanceForPool = useCallback(
-    async (poolConfig: TempusPool) => {
-      if (userWalletSigner) {
-        const yieldsService = getERC20TokenService(poolConfig.yieldsAddress, userWalletSigner);
-        const balance = await yieldsService.balanceOf(userWalletAddress);
-
-        const currentBalance = dynamicPoolData[poolConfig.address].userYieldsBalance.get();
-        // Only update state if fetched user yields balance is different from current user yields balance
-        if (!currentBalance || !currentBalance.eq(balance)) {
-          dynamicPoolData[poolConfig.address].userYieldsBalance.set(balance);
-        }
-      }
-    },
-    // TODO - We can now probably remove this provider components and update state directly from service classes
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [userWalletSigner, userWalletAddress],
-  );
-
-  const updatePrincipalsBalance = useCallback(async () => {
     getConfig().tempusPools.forEach(poolConfig => {
-      updatePrincipalsBalanceForPool(poolConfig);
-    });
-  }, [updatePrincipalsBalanceForPool]);
+      const tpsContract = new Contract(poolConfig.principalsAddress, ERC20ABI, getDefaultProvider()) as ERC20;
+      tpsContract.on(tpsContract.filters.Transfer(this.userWalletAddress, null), this.updatePrincipalsBalance);
+      tpsContract.on(tpsContract.filters.Transfer(null, this.userWalletAddress), this.updatePrincipalsBalance);
 
-  const updateYieldsBalance = useCallback(async () => {
-    getConfig().tempusPools.forEach(poolConfig => {
-      updateYieldsBalanceForPool(poolConfig);
+      const tysContract = new Contract(poolConfig.yieldsAddress, ERC20ABI, getDefaultProvider()) as ERC20;
+      tysContract.on(tysContract.filters.Transfer(this.userWalletAddress, null), this.updateYieldsBalance);
+      tysContract.on(tysContract.filters.Transfer(null, this.userWalletAddress), this.updateYieldsBalance);
+
+      this.tokenContracts.push(tpsContract, tysContract);
     });
-  }, [updateYieldsBalanceForPool]);
+
+    // Fetch initial balances on app load
+    this.updatePrincipalsBalance();
+    this.updateYieldsBalance();
+  }
+
+  destroy() {
+    this.tokenContracts.forEach(tokenContract => {
+      tokenContract.removeAllListeners();
+    });
+    this.tokenContracts = [];
+  }
 
   /**
-   * Subscribe to user principals token transfer event
+   * Manually trigger user balance update. Can be called after user action that affects user balance.
    */
-  useEffect(() => {
-    if (!userWalletSigner) {
-      return;
+  fetchForPool(address: string) {
+    const poolConfig = getConfigForPoolWithAddress(address);
+
+    this.updatePrincipalsBalanceForPool(poolConfig);
+    this.updateYieldsBalanceForPool(poolConfig);
+  }
+
+  private async updatePrincipalsBalanceForPool(poolConfig: TempusPool) {
+    const tpsContract = new Contract(poolConfig.principalsAddress, ERC20ABI, getDefaultProvider()) as ERC20;
+    const balance = await tpsContract.balanceOf(this.userWalletAddress);
+
+    const currentBalance = dynamicPoolDataState[poolConfig.address].userPrincipalsBalance.get();
+    // Only update state if fetched user principals balance is different from current user principals balance
+    if (!currentBalance || !currentBalance.eq(balance)) {
+      dynamicPoolDataState[poolConfig.address].userPrincipalsBalance.set(balance);
     }
+  }
 
-    getConfig().tempusPools.forEach(poolConfig => {
-      const principalsService = getERC20TokenService(poolConfig.principalsAddress, userWalletSigner);
+  private async updateYieldsBalanceForPool(poolConfig: TempusPool) {
+    const tysContract = new Contract(poolConfig.yieldsAddress, ERC20ABI, getDefaultProvider()) as ERC20;
+    const balance = await tysContract.balanceOf(this.userWalletAddress);
 
-      principalsService.onTransfer(userWalletAddress, null, updatePrincipalsBalance);
-      principalsService.onTransfer(null, userWalletAddress, updatePrincipalsBalance);
-    });
-
-    return () => {
-      getConfig().tempusPools.forEach(poolConfig => {
-        const principalsService = getERC20TokenService(poolConfig.principalsAddress, userWalletSigner);
-
-        principalsService.offTransfer(userWalletAddress, null, updatePrincipalsBalance);
-        principalsService.offTransfer(null, userWalletAddress, updatePrincipalsBalance);
-      });
-    };
-  }, [userWalletAddress, userWalletSigner, updatePrincipalsBalance]);
-
-  useEffect(() => {
-    updatePrincipalsBalance();
-    updateYieldsBalance();
-  }, [updatePrincipalsBalance, updateYieldsBalance]);
-
-  /**
-   * Subscribe to user yields token transfer event
-   */
-  useEffect(() => {
-    if (!userWalletSigner) {
-      return;
+    const currentBalance = dynamicPoolDataState[poolConfig.address].userYieldsBalance.get();
+    // Only update state if fetched user yields balance is different from current user yields balance
+    if (!currentBalance || !currentBalance.eq(balance)) {
+      dynamicPoolDataState[poolConfig.address].userYieldsBalance.set(balance);
     }
+  }
 
+  private updatePrincipalsBalance = () => {
     getConfig().tempusPools.forEach(poolConfig => {
-      const yieldsService = getERC20TokenService(poolConfig.yieldsAddress, userWalletSigner);
-
-      yieldsService.onTransfer(userWalletAddress, null, updateYieldsBalance);
-      yieldsService.onTransfer(null, userWalletAddress, updateYieldsBalance);
+      this.updatePrincipalsBalanceForPool(poolConfig);
     });
+  };
 
-    return () => {
-      getConfig().tempusPools.forEach(poolConfig => {
-        const yieldsService = getERC20TokenService(poolConfig.yieldsAddress, userWalletSigner);
-
-        yieldsService.offTransfer(userWalletAddress, null, updateYieldsBalance);
-        yieldsService.offTransfer(null, userWalletAddress, updateYieldsBalance);
-      });
-    };
-  }, [userWalletAddress, userWalletSigner, updateYieldsBalance]);
-
-  /**
-   * Provider component only updates context value when needed. It does not show anything in the UI.
-   */
-  return null;
-};
+  private updateYieldsBalance = () => {
+    getConfig().tempusPools.forEach(poolConfig => {
+      this.updateYieldsBalanceForPool(poolConfig);
+    });
+  };
+}
 export default UserShareTokenBalanceProvider;

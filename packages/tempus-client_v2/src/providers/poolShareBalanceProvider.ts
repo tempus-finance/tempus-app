@@ -1,7 +1,7 @@
 import { BigNumber } from 'ethers';
 import getVaultService from '../services/getVaultService';
 import { dynamicPoolDataState } from '../state/PoolDataState';
-import getConfig, { getConfigForPoolId } from '../utils/getConfig';
+import getConfig, { getConfigForPoolWithId } from '../utils/getConfig';
 
 class PoolShareBalanceProvider {
   /**
@@ -46,7 +46,7 @@ class PoolShareBalanceProvider {
   };
 
   private async fetchPoolBalance(poolId: string) {
-    const poolConfig = getConfigForPoolId(poolId);
+    const poolConfig = getConfigForPoolWithId(poolId);
     const vaultService = getVaultService();
 
     let poolTokens: {

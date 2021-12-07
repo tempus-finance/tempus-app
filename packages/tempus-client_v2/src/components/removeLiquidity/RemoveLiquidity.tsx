@@ -1,7 +1,8 @@
 import { Downgraded, useState as useHookState } from '@hookstate/core';
-import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { BigNumber, ethers } from 'ethers';
+import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
+import getUserShareTokenBalanceProvider from '../../providers/getUserShareTokenBalanceProvider';
 import { LanguageContext } from '../../context/languageContext';
 import { WalletContext } from '../../context/walletContext';
 import getText from '../../localisation/getText';
@@ -33,6 +34,7 @@ const RemoveLiquidity = () => {
   const [tokensApproved, setTokensApproved] = useState<boolean>(false);
   const [estimateInProgress, setEstimateInProgress] = useState<boolean>(false);
 
+  const selectedPoolAddress = selectedPool.attach(Downgraded).get();
   const ammAddress = staticPoolData[selectedPool.get()].ammAddress.attach(Downgraded).get();
   const principalsAddress = staticPoolData[selectedPool.get()].principalsAddress.attach(Downgraded).get();
   const yieldsAddress = staticPoolData[selectedPool.get()].yieldsAddress.attach(Downgraded).get();
@@ -107,7 +109,12 @@ const RemoveLiquidity = () => {
 
   const onExecuted = useCallback(() => {
     setAmount('');
-  }, []);
+
+    // Trigger user pool share balance update when execute is finished
+    getUserShareTokenBalanceProvider({
+      userWalletAddress,
+    }).fetchForPool(selectedPoolAddress);
+  }, [selectedPoolAddress, userWalletAddress]);
 
   const lpTokenBalanceFormatted = useMemo(() => {
     if (!userLPTokenBalance) {

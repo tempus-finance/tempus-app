@@ -3,6 +3,7 @@ import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { ethers, BigNumber } from 'ethers';
 import { catchError } from 'rxjs';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
+import getUserShareTokenBalanceProvider from '../../providers/getUserShareTokenBalanceProvider';
 import { LanguageContext } from '../../context/languageContext';
 import { WalletContext } from '../../context/walletContext';
 import { Ticker } from '../../interfaces/Token';
@@ -184,7 +185,12 @@ const Deposit: FC<DepositProps> = ({ narrow, poolDataAdapter }) => {
 
   const onExecuted = useCallback(() => {
     setAmount('');
-  }, []);
+
+    // Trigger user pool share balance update when execute is finished
+    getUserShareTokenBalanceProvider({
+      userWalletAddress,
+    }).fetchForPool(selectedPoolAddress);
+  }, [selectedPoolAddress, userWalletAddress]);
 
   const onApproveChange = useCallback(approved => {
     setTokensApproved(approved);

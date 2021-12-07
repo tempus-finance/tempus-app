@@ -3,6 +3,7 @@ import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { ethers, BigNumber } from 'ethers';
 import { catchError } from 'rxjs';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
+import getUserShareTokenBalanceProvider from '../../providers/getUserShareTokenBalanceProvider';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
 import { LanguageContext } from '../../context/languageContext';
 import { WalletContext } from '../../context/walletContext';
@@ -22,6 +23,7 @@ import Spacer from '../spacer/spacer';
 import TokenSelector from '../tokenSelector/tokenSelector';
 import Typography from '../typography/Typography';
 import TokenIcon from '../tokenIcon';
+
 import './Mint.scss';
 
 type MintInProps = {
@@ -178,7 +180,12 @@ const Mint: FC<MintInProps> = ({ narrow }) => {
 
   const onExecuted = useCallback(() => {
     setAmount('');
-  }, []);
+
+    // Trigger user pool share balance update when execute is finished
+    getUserShareTokenBalanceProvider({
+      userWalletAddress,
+    }).fetchForPool(selectedPoolAddress);
+  }, [selectedPoolAddress, userWalletAddress]);
 
   const onApproveChange = useCallback(approved => {
     setTokensApproved(approved);

@@ -2,6 +2,7 @@ import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { BigNumber, ethers } from 'ethers';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
+import getUserShareTokenBalanceProvider from '../../providers/getUserShareTokenBalanceProvider';
 import { LanguageContext } from '../../context/languageContext';
 import { WalletContext } from '../../context/walletContext';
 import { PoolShares, Ticker } from '../../interfaces/Token';
@@ -162,7 +163,12 @@ const Swap = () => {
 
   const onExecuted = useCallback(() => {
     setAmount('');
-  }, []);
+
+    // Trigger user pool share balance update when execute is finished
+    getUserShareTokenBalanceProvider({
+      userWalletAddress,
+    }).fetchForPool(selectedPoolAddress);
+  }, [selectedPoolAddress, userWalletAddress]);
 
   // Fetch receive amount
   useEffect(() => {

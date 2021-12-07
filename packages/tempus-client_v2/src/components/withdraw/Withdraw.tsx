@@ -3,6 +3,7 @@ import { ethers, BigNumber } from 'ethers';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { combineLatest } from 'rxjs';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
+import getUserShareTokenBalanceProvider from '../../providers/getUserShareTokenBalanceProvider';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
 import { WalletContext } from '../../context/walletContext';
 import { LanguageContext } from '../../context/languageContext';
@@ -34,7 +35,7 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
   const dynamicPoolData = useHookState(dynamicPoolDataState);
   const staticPoolData = useHookState(staticPoolDataState);
 
-  const { userWalletSigner } = useContext(WalletContext);
+  const { userWalletSigner, userWalletAddress } = useContext(WalletContext);
   const { language } = useContext(LanguageContext);
   const { slippage } = useContext(UserSettingsContext);
 
@@ -280,6 +281,15 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
     lpTokenAmount,
   ]);
 
+  const onExecuted = useCallback(() => {
+    onWithdraw();
+
+    // Trigger user pool share balance update when execute is finished
+    getUserShareTokenBalanceProvider({
+      userWalletAddress,
+    }).fetchForPool(selectedPoolAddress);
+  }, [onWithdraw, selectedPoolAddress, userWalletAddress]);
+
   useEffect(() => {
     if (!tokenRate || !estimatedWithdrawData) {
       setEstimateInProgress(true);
@@ -481,7 +491,7 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
         </SectionContainer>
         <Spacer size={20} />
         <div className="tf__flex-row-center-vh">
-          <Execute actionName="Withdraw" disabled={executeDisabled} onExecute={onExecute} onExecuted={onWithdraw} />
+          <Execute actionName="Withdraw" disabled={executeDisabled} onExecute={onExecute} onExecuted={onExecuted} />
         </div>
       </SectionContainer>
     </div>
