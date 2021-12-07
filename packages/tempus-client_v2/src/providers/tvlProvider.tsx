@@ -39,7 +39,14 @@ const TVLProvider: FC<TVLProviderProps> = props => {
   useEffect(() => {
     getConfig().tempusPools.forEach(poolConfig => {
       try {
-        const tempusPoolTVLStream$ = dashboardDataAdapter.getTempusPoolTVL(poolConfig.address, poolConfig.backingToken);
+        // If case we want to force TVL fetch (even if app is not in focus)
+        const forceFetch = dynamicPoolData[poolConfig.address].tvl.get() === null;
+
+        const tempusPoolTVLStream$ = dashboardDataAdapter.getTempusPoolTVL(
+          poolConfig.address,
+          poolConfig.backingToken,
+          forceFetch,
+        );
         subscriptions$.add(
           tempusPoolTVLStream$.subscribe(poolTvl => {
             updatePoolTVL(poolConfig, poolTvl);
@@ -51,6 +58,7 @@ const TVLProvider: FC<TVLProviderProps> = props => {
     });
 
     return () => subscriptions$.unsubscribe();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dashboardDataAdapter, updatePoolTVL, subscriptions$]);
 
   /**

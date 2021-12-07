@@ -27,7 +27,7 @@ export default class DashboardDataAdapter {
     return [...parentRows, ...childRows];
   }
 
-  getTempusPoolTVL(tempusPool: string, backingTokenTicker: Ticker): Observable<BigNumber | null> {
+  getTempusPoolTVL(tempusPool: string, backingTokenTicker: Ticker, forceFetch?: boolean): Observable<BigNumber | null> {
     if (!this.statisticsService) {
       return of(null);
     }
@@ -35,6 +35,9 @@ export default class DashboardDataAdapter {
     const interval$ = interval(POLLING_INTERVAL).pipe(startWith(0));
     return interval$.pipe(
       filter(() => {
+        if (forceFetch) {
+          return true;
+        }
         return document.hasFocus();
       }),
       switchMap(() => {
