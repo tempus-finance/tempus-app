@@ -4,6 +4,7 @@ import { ethers, BigNumber } from 'ethers';
 import { catchError } from 'rxjs';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
 import getUserShareTokenBalanceProvider from '../../providers/getUserShareTokenBalanceProvider';
+import { ZERO } from '../../constants';
 import { LanguageContext } from '../../context/languageContext';
 import { WalletContext } from '../../context/walletContext';
 import { Ticker } from '../../interfaces/Token';
@@ -437,6 +438,14 @@ const Deposit: FC<DepositProps> = ({ narrow, poolDataAdapter }) => {
     return zeroAmount || depositDisabled;
   }, [amount, depositDisabled]);
 
+  const amountToApprove = useMemo(() => {
+    if (amount) {
+      return ethers.utils.parseEther(amount);
+    }
+
+    return ZERO;
+  }, [amount]);
+
   const executeDisabled = useMemo((): boolean => {
     const zeroAmount = isZeroString(amount);
     const amountExceedsBalance = ethers.utils
@@ -599,7 +608,7 @@ const Deposit: FC<DepositProps> = ({ narrow, poolDataAdapter }) => {
           <Approve
             tokenToApproveAddress={getSelectedTokenAddress()}
             spenderAddress={getConfig().tempusControllerContract}
-            amountToApprove={getSelectedTokenBalance()}
+            amountToApprove={amountToApprove}
             tokenToApproveTicker={selectedToken}
             disabled={approveDisabled}
             marginRight={20}
