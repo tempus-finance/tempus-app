@@ -37,20 +37,20 @@ jobs:
           root: ./
           paths:
             - ./
-
-  build:
-    docker:
-      - image: cimg/node:15.1
-    steps:
-      - attach_workspace:
-          at: ./
-      - run:
-          name: Build
-          command: npm run build
-      - persist_to_workspace:
-          root: ./
-          paths:
-            - ./
+  # Build step is disabled because CircleCI is constantly hanging/crashing on it.
+  #build:
+  #docker:
+  #- image: cimg/node:15.1
+  #steps:
+  #- attach_workspace:
+  #at: ./
+  #- run:
+  #name: Build
+  #command: npm run build
+  #- persist_to_workspace:
+  #root: ./
+  #paths:
+  #- ./
 
   deploy-to-stage:
     docker:
