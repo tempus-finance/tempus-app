@@ -23,9 +23,6 @@ const VariableAPRProvider = () => {
    * Fetch APR for all tempus pools on each block event
    */
   const fetchAPR = useCallback(async () => {
-    if (!document.hasFocus()) {
-      return;
-    }
     const provider = getProvider();
     if (!provider) {
       return;
@@ -38,6 +35,10 @@ const VariableAPRProvider = () => {
       // Fetch APR for all Tempus Pools
       const fetchedPoolAPRData = await Promise.all(
         config.tempusPools.map(async tempusPool => {
+          if (!document.hasFocus() && dynamicPoolData[tempusPool.address].variableAPR.get() !== null) {
+            return null;
+          }
+
           // Get fees for Tempus Pool
           const fees = await variableRateService.calculateFees(
             tempusPool.ammAddress,
@@ -62,6 +63,10 @@ const VariableAPRProvider = () => {
       );
 
       fetchedPoolAPRData.forEach(fetchedAPRData => {
+        if (fetchedAPRData === null) {
+          return;
+        }
+
         const currentAPR = dynamicPoolData[fetchedAPRData.address].variableAPR.get();
         // Only update state if fetched APR is different from current APR
         // (if APR fetch failed, ie: "fetchedAPRData.variableAPR === null" -> keep current APR value)

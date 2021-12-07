@@ -29,7 +29,7 @@ const NegativeYieldProvider = () => {
    */
   const fetchPoolNegativeYieldFlag = useCallback(
     async (tempusPool: TempusPool) => {
-      if (!document.hasFocus()) {
+      if (!document.hasFocus() && dynamicPoolData[tempusPool.address].negativeYield.get() === false) {
         return;
       }
       const provider = getProvider();
