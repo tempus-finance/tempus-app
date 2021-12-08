@@ -14,4 +14,5 @@ export type Notification = {
   content: string;
   link?: string;
   linkText?: string;
+  dismissed: boolean;
 };

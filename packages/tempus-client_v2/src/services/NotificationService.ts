@@ -42,6 +42,16 @@ class NotificationService {
     this.storageService.delete(NOTIFICATIONS_KEY);
   }
 
+  dismissNotification(id: string): void {
+    const storedNotifications = this.retrieveNotifications();
+    const targetNotificationIdx = storedNotifications.findIndex(notification => notification.id === id);
+    if (targetNotificationIdx > -1) {
+      this.deleteNotifications();
+      storedNotifications[targetNotificationIdx].dismissed = true;
+      this.storageService.set(NOTIFICATIONS_KEY, storedNotifications);
+    }
+  }
+
   private addToQueue(
     category: NotificationCategory,
     level: NotificationLevel,
@@ -50,20 +60,32 @@ class NotificationService {
     link?: string,
     linkText?: string,
   ) {
-    const notification = { category, level, title, content, link, linkText, id: uuid(), timestamp: Date.now() };
+    const notification = {
+      category,
+      level,
+      title,
+      content,
+      link,
+      linkText,
+      id: uuid(),
+      timestamp: Date.now(),
+      dismissed: false,
+    };
     this.emitNotification(notification);
   }
 
   private emitNotification(notification: Notification) {
-    const { category } = notification;
+    const { category, dismissed } = notification;
     if (category === 'Transaction') {
-      this.storeNotifications(notification);
+      this.storeNotification(notification);
       this.notificationHistory.next(notification);
     }
-    this.notificationQueue.next(notification);
+    if (!dismissed) {
+      this.notificationQueue.next(notification);
+    }
   }
 
-  private storeNotifications(notification: Notification) {
+  private storeNotification(notification: Notification) {
     const updatedNotifications = [notification, ...this.retrieveNotifications().slice(0, 4)];
     this.storageService.set(NOTIFICATIONS_KEY, updatedNotifications);
   }
@@ -73,9 +95,9 @@ class NotificationService {
       .pipe(
         filter(() => this.notificationHistory.observed),
         tap(() => {
-          const retrievedNotifications = this.retrieveNotifications();
+          const storedNotifications = this.retrieveNotifications();
           this.deleteNotifications();
-          retrievedNotifications.forEach(notification => {
+          storedNotifications.forEach(notification => {
             this.emitNotification(notification);
           });
           restoreNotificationStream$.unsubscribe();
