@@ -17,7 +17,6 @@ import { Ticker } from '../../../interfaces/Token';
 import NumberUtils from '../../../services/NumberUtils';
 import Spacer from '../../spacer/spacer';
 import Typography from '../../typography/Typography';
-import TokenIcon from '../../tokenIcon';
 
 import './availableToDepositFormatter.scss';
 
@@ -58,7 +57,7 @@ const AvailableToDepositFormatter = (props: DataTypeProvider.ValueFormatterProps
           {/* TODO - Use decimalsForUI precision from child items (max precision) */}
           {NumberUtils.formatWithMultiplier(ethers.utils.formatEther(parentAvailableToDeposit), 4)}
           <Spacer size={5} />
-          <TokenIcon ticker={row.token} />
+          {row.token}
         </>
       );
     }
@@ -100,7 +99,7 @@ const AvailableToDepositFormatter = (props: DataTypeProvider.ValueFormatterProps
             staticPoolData[row.id].decimalsForUI,
           )}
           <Spacer size={5} />
-          <TokenIcon ticker={row.token} />
+          {row.token}
         </>
       );
     }

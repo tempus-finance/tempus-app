@@ -75,21 +75,16 @@ const EarlyRedeem: FC = () => {
   );
 
   const onClickMax = useCallback(() => {
-    let currentBalance: BigNumber;
-    if (selectedToken === backingToken) {
-      if (!userBackingTokenBalance) {
-        return;
-      }
-      currentBalance = userBackingTokenBalance;
-    } else {
-      if (!userYieldBearingTokenBalance) {
-        return;
-      }
-      currentBalance = userYieldBearingTokenBalance;
+    if (!userPrincipalsBalance || !userYieldsBalance) {
+      return;
     }
 
-    setAmount(ethers.utils.formatUnits(currentBalance, tokenPrecision));
-  }, [backingToken, selectedToken, tokenPrecision, userBackingTokenBalance, userYieldBearingTokenBalance]);
+    if (userPrincipalsBalance.gte(userYieldsBalance)) {
+      setAmount(ethers.utils.formatUnits(userYieldsBalance, tokenPrecision));
+    } else if (userYieldsBalance.gt(userPrincipalsBalance)) {
+      setAmount(ethers.utils.formatUnits(userPrincipalsBalance, tokenPrecision));
+    }
+  }, [tokenPrecision, userPrincipalsBalance, userYieldsBalance]);
 
   useEffect(() => {
     if (!userWalletSigner) {

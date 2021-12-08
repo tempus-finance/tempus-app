@@ -11,7 +11,6 @@ import NumberUtils from '../../../services/NumberUtils';
 import Typography from '../../typography/Typography';
 import { ZERO } from '../../../constants';
 import Spacer from '../../spacer/spacer';
-import TokenIcon from '../../tokenIcon';
 
 import './balanceFormatter.scss';
 import {

@@ -13,7 +13,7 @@ interface UserSettingsContextActions {
 interface UserSettingsContextType extends UserSettingsContextActions, UserSettingsContextData {}
 
 export const defaultUserSettingsContextValue: UserSettingsContextData = {
-  showFiat: false,
+  showFiat: true,
   slippage: 1, // 1%
   openWalletPopup: false,
 };
