@@ -9,12 +9,10 @@ import { LanguageContext } from '../../context/languageContext';
 import { WalletContext } from '../../context/walletContext';
 import { Ticker } from '../../interfaces/Token';
 import getText from '../../localisation/getText';
-import getConfig from '../../utils/getConfig';
 import getTokenPrecision from '../../utils/getTokenPrecision';
 import { isZeroString } from '../../utils/isZeroString';
 import { mul18f } from '../../utils/weiMath';
 import NumberUtils from '../../services/NumberUtils';
-import Approve from '../buttons/Approve';
 import Execute from '../buttons/Execute';
 import CurrencyInput from '../currencyInput/currencyInput';
 import SectionContainer from '../sectionContainer/SectionContainer';
@@ -37,8 +35,6 @@ const EarlyRedeem: FC = () => {
 
   const [isYieldNegative, setIsYieldNegative] = useState<boolean | null>(null);
   const [selectedToken, setSelectedToken] = useState<Ticker | null>(yieldBearingToken);
-  const [principalsApproved, setPrincipalsApproved] = useState<boolean>(false);
-  const [yieldsApproved, setYieldsApproved] = useState<boolean>(false);
   const [amount, setAmount] = useState<string>('');
 
   const [estimatedWithdrawAmount, setEstimatedWithdrawAmount] = useState<BigNumber | null>(null);
@@ -55,8 +51,6 @@ const EarlyRedeem: FC = () => {
     .attach(Downgraded)
     .get();
   const backingToken = staticPoolData[selectedPool.get()].backingToken.attach(Downgraded).get();
-  const backingTokenAddress = staticPoolData[selectedPool.get()].backingTokenAddress.attach(Downgraded).get();
-  const yieldBearingTokenAddress = staticPoolData[selectedPool.get()].yieldBearingTokenAddress.attach(Downgraded).get();
   const decimalsForUI = staticPoolData[selectedPool.get()].decimalsForUI.attach(Downgraded).get();
 
   const supportedTokens = useMemo(() => {
@@ -96,21 +90,6 @@ const EarlyRedeem: FC = () => {
 
     setAmount(ethers.utils.formatUnits(currentBalance, tokenPrecision));
   }, [backingToken, selectedToken, tokenPrecision, userBackingTokenBalance, userYieldBearingTokenBalance]);
-
-  const getSelectedTokenAddress = useCallback((): string | null => {
-    if (!selectedToken) {
-      return null;
-    }
-    return selectedToken === backingToken ? backingTokenAddress : yieldBearingTokenAddress;
-  }, [backingTokenAddress, yieldBearingTokenAddress, backingToken, selectedToken]);
-
-  const getSelectedTokenBalance = useCallback((): BigNumber | null => {
-    if (!selectedToken) {
-      return null;
-    }
-
-    return selectedToken === backingToken ? userBackingTokenBalance : userYieldBearingTokenBalance;
-  }, [backingToken, selectedToken, userBackingTokenBalance, userYieldBearingTokenBalance]);
 
   useEffect(() => {
     if (!userWalletSigner) {
@@ -218,17 +197,6 @@ const EarlyRedeem: FC = () => {
     );
   }, [estimatedWithdrawAmount, tokenRate, tokenPrecision]);
 
-  const approveDisabled = useMemo((): boolean => {
-    const zeroAmount = isZeroString(amount);
-
-    return zeroAmount || depositDisabled;
-  }, [amount, depositDisabled]);
-
-  const onApproveChange = useCallback(approved => {
-    setPrincipalsApproved(approved);
-    setYieldsApproved(approved);
-  }, []);
-
   const executeDisabled = useMemo(() => {
     const zeroAmount = isZeroString(amount);
     const amountExceedsPrincipalsBalance = ethers.utils
@@ -241,22 +209,14 @@ const EarlyRedeem: FC = () => {
     const yieldsBalanceZero = userYieldsBalance && userYieldsBalance.isZero();
 
     return (
-      (!principalBalanceZero && !principalsApproved) ||
-      (!yieldsBalanceZero && !yieldsApproved) ||
+      principalBalanceZero ||
+      yieldsBalanceZero ||
       zeroAmount ||
       amountExceedsPrincipalsBalance ||
       amountExceedsYieldsBalance ||
       estimateInProgress
     );
-  }, [
-    amount,
-    tokenPrecision,
-    userPrincipalsBalance,
-    userYieldsBalance,
-    principalsApproved,
-    yieldsApproved,
-    estimateInProgress,
-  ]);
+  }, [amount, tokenPrecision, userPrincipalsBalance, userYieldsBalance, estimateInProgress]);
 
   const onExecute = useCallback(() => {
     if (!userWalletSigner) {
@@ -315,15 +275,6 @@ const EarlyRedeem: FC = () => {
         </SectionContainer>
         <Spacer size={20} />
         <div className="tf__flex-row-center-vh">
-          <Approve
-            tokenToApproveAddress={getSelectedTokenAddress()}
-            spenderAddress={getConfig().tempusControllerContract}
-            amountToApprove={getSelectedTokenBalance()}
-            tokenToApproveTicker={selectedToken}
-            disabled={approveDisabled}
-            marginRight={20}
-            onApproveChange={onApproveChange}
-          />
           <Execute actionName="Redeem" disabled={executeDisabled} onExecute={onExecute} onExecuted={onExecuted} />
         </div>
       </SectionContainer>
