@@ -1,63 +1,65 @@
 import { ethers, BigNumber } from 'ethers';
-import { Observable, ReplaySubject, interval, tap, filter } from 'rxjs';
+import { Observable, ReplaySubject, Subject, interval, tap, filter } from 'rxjs';
 import format from 'date-fns/format';
 import { v1 as uuid } from 'uuid';
 import ERC20ABI from '../abi/ERC20.json';
 import { Ticker } from '../interfaces/Token';
 import { ProtocolName } from '../interfaces/ProtocolName';
 import { TempusPool } from '../interfaces/TempusPool';
+import { Notification, NotificationCategory, NotificationLevel } from '../interfaces/Notification';
 import { capitalize } from '../utils/capitalizeString';
 import getConfig from '../utils/getConfig';
 import NumberUtils from './NumberUtils';
 import StorageService from './StorageService';
 
-export enum NotificationLevel {
-  WARNING = 'warning',
-  INFO = 'info',
-}
-
-export type Notification = {
-  id: string;
-  timestamp: number;
-  level: NotificationLevel;
-  title: string;
-  content: string;
-  link?: string;
-  linkText?: string;
-};
-
 const NOTIFICATIONS_KEY = 'notifications';
 
 class NotificationService {
-  private notificationQueue: ReplaySubject<Notification> = new ReplaySubject<Notification>(5);
+  private notificationQueue: Subject<Notification> = new Subject<Notification>();
+  private notificationHistory: ReplaySubject<Notification> = new ReplaySubject<Notification>(5);
 
   constructor(private storageService: StorageService) {
     this.restoreNotifications();
   }
 
-  warn(title: string, content: string, link?: string, linkText?: string) {
-    this.addToQueue(NotificationLevel.WARNING, title, content, link, linkText);
+  warn(category: NotificationCategory, title: string, content: string, link?: string, linkText?: string) {
+    this.addToQueue(category, NotificationLevel.WARNING, title, content, link, linkText);
   }
 
-  notify(title: string, content: string, link?: string, linkText?: string) {
-    this.addToQueue(NotificationLevel.INFO, title, content, link, linkText);
+  notify(category: NotificationCategory, title: string, content: string, link?: string, linkText?: string) {
+    this.addToQueue(category, NotificationLevel.INFO, title, content, link, linkText);
   }
 
   getNextItem(): Observable<Notification> {
     return this.notificationQueue.asObservable();
   }
 
+  getLastItems(): Observable<Notification> {
+    return this.notificationHistory.asObservable();
+  }
+
   deleteNotifications(): void {
     this.storageService.delete(NOTIFICATIONS_KEY);
   }
 
-  private addToQueue(level: NotificationLevel, title: string, content: string, link?: string, linkText?: string) {
-    const notification = { level, title, content, link, linkText, id: uuid(), timestamp: Date.now() };
+  private addToQueue(
+    category: NotificationCategory,
+    level: NotificationLevel,
+    title: string,
+    content: string,
+    link?: string,
+    linkText?: string,
+  ) {
+    const notification = { category, level, title, content, link, linkText, id: uuid(), timestamp: Date.now() };
     this.emitNotification(notification);
   }
 
   private emitNotification(notification: Notification) {
-    this.storeNotifications(notification);
+    const { category } = notification;
+    if (category === 'Transaction') {
+      this.storeNotifications(notification);
+      this.notificationHistory.next(notification);
+    }
     this.notificationQueue.next(notification);
   }
 
@@ -69,7 +71,7 @@ class NotificationService {
   private restoreNotifications() {
     const restoreNotificationStream$ = interval(100)
       .pipe(
-        filter(() => this.notificationQueue.observed),
+        filter(() => this.notificationHistory.observed),
         tap(() => {
           const retrievedNotifications = this.retrieveNotifications();
           this.deleteNotifications();
