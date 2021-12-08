@@ -109,6 +109,8 @@ const RemoveLiquidity = () => {
 
   const onExecuted = useCallback(() => {
     setAmount('');
+    setEstimatedPrincipals(null);
+    setEstimatedYields(null);
 
     // Trigger user pool share balance update when execute is finished
     getUserShareTokenBalanceProvider({
