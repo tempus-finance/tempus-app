@@ -42,12 +42,16 @@ const Execute: FC<ExecuteButtonProps> = props => {
   const protocol = staticPoolData[selectedPool.get()].protocol.attach(Downgraded).get();
   const maturityDate = staticPoolData[selectedPool.get()].maturityDate.attach(Downgraded).get();
 
+  const viewLinkText = getText('viewLinkText', language);
+
   const execute = () => {
     const runExecute = async () => {
       if (!setPendingTransactions) {
         return;
       }
       setExecuteInProgress(true);
+
+      const content = generatePoolNotificationInfo(backingToken, protocol, new Date(maturityDate));
 
       let transaction: ethers.ContractTransaction | undefined;
       try {
@@ -56,11 +60,7 @@ const Execute: FC<ExecuteButtonProps> = props => {
       } catch (error) {
         console.error('Failed to execute transaction!', error);
         // Notify user about failed action.
-        getNotificationService().warn(
-          'Transaction',
-          `${actionName} Failed`,
-          generatePoolNotificationInfo(backingToken, protocol, new Date(maturityDate)),
-        );
+        getNotificationService().warn('Transaction', `${actionName} Failed`, content);
         setExecuteInProgress(false);
         onExecuted(false);
         return;
@@ -80,7 +80,10 @@ const Execute: FC<ExecuteButtonProps> = props => {
 
         return {
           ...previousData,
-          pendingTransactions: [...previousData.pendingTransactions, transaction.hash],
+          pendingTransactions: [
+            ...previousData.pendingTransactions,
+            { ...transaction, title: `Executing ${actionName}`, content },
+          ],
         };
       });
       let confirmations: ethers.ContractReceipt;
@@ -91,9 +94,9 @@ const Execute: FC<ExecuteButtonProps> = props => {
         console.error('Transaction failed to execute!', error);
         // Remove transaction from pending transactions if it failed.
         setPendingTransactions(previousData => {
-          const filteredTransactions = previousData.pendingTransactions.filter(pendingTransaction => {
-            return pendingTransaction !== transaction?.hash;
-          });
+          const filteredTransactions = previousData.pendingTransactions.filter(
+            ({ hash }) => hash !== transaction?.hash,
+          );
           return {
             ...previousData,
             pendingTransactions: filteredTransactions,
@@ -104,9 +107,9 @@ const Execute: FC<ExecuteButtonProps> = props => {
         getNotificationService().warn(
           'Transaction',
           `${actionName} Failed`,
-          generatePoolNotificationInfo(backingToken, protocol, new Date(maturityDate)),
+          content,
           generateEtherscanLink(transaction.hash),
-          'View on Etherscan',
+          viewLinkText,
         );
         setExecuteInProgress(false);
         onExecuted(false);
@@ -115,9 +118,7 @@ const Execute: FC<ExecuteButtonProps> = props => {
 
       // Remove transaction from pending transactions if it succeeded.
       setPendingTransactions(previousData => {
-        const filteredTransactions = previousData.pendingTransactions.filter(pendingTransaction => {
-          return pendingTransaction !== transaction?.hash;
-        });
+        const filteredTransactions = previousData.pendingTransactions.filter(({ hash }) => hash !== transaction?.hash);
         return {
           ...previousData,
           pendingTransactions: filteredTransactions,
@@ -137,7 +138,7 @@ const Execute: FC<ExecuteButtonProps> = props => {
           selectedPoolData,
         )}`,
         generateEtherscanLink(transaction.hash),
-        'View on Etherscan',
+        viewLinkText,
       );
       setExecuteInProgress(false);
       onExecuted(true);
