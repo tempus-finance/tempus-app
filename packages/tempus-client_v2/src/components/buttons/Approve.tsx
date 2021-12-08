@@ -92,6 +92,7 @@ const Approve: FC<ApproveButtonProps> = props => {
 
         if (tokenToApproveTicker) {
           getNotificationService().warn(
+            'Transaction',
             `Approval Failed`,
             getTokenApprovalNotification(tokenToApproveTicker, backingToken, protocol, new Date(maturityDate)),
           );
@@ -135,6 +136,7 @@ const Approve: FC<ApproveButtonProps> = props => {
         // Show transaction failed notification.
         if (tokenToApproveTicker) {
           getNotificationService().warn(
+            'Transaction',
             `Approval Failed`,
             getTokenApprovalNotification(tokenToApproveTicker, backingToken, protocol, new Date(maturityDate)),
             generateEtherscanLink(transaction.hash),
@@ -160,6 +162,7 @@ const Approve: FC<ApproveButtonProps> = props => {
       // Show approve transaction completed notification
       if (tokenToApproveTicker) {
         getNotificationService().notify(
+          'Transaction',
           'Approval Successful',
           getTokenApprovalNotification(tokenToApproveTicker, backingToken, protocol, new Date(maturityDate)),
           generateEtherscanLink(transaction.hash),
