@@ -1,73 +1,58 @@
-import { FC, MouseEvent, useCallback, useState } from 'react';
-import LanguageIcon from '@material-ui/icons/Language';
-import { Button } from '@material-ui/core';
-import { Menu } from '@material-ui/core';
-import { MenuItem } from '@material-ui/core';
-import { Language } from '../../localisation/getText';
+import { useCallback, useContext } from 'react';
+import { FormControl, MenuItem, Select } from '@material-ui/core';
+import { LanguageContext } from '../../context/languageContext';
+import getText, { Language } from '../../localisation/getText';
+import LanguageIcon from '../icons/LanguageIcon';
+import Typography from '../typography/Typography';
+import Spacer from '../spacer/spacer';
+import './Languages.scss';
 
-type LanguagesOutProps = {
-  onChangeLanguage: (language: Language) => void;
-};
+const Languages = () => {
+  const { language, setLanguage } = useContext(LanguageContext);
 
-// TODO
-// style mouse over
-// check icon with design
+  const onChangeLanguage = useCallback(
+    (event: React.ChangeEvent<{ value: unknown }>) => {
+      const selectedLanguage = event.target.value as Language;
 
-const Languages: FC<LanguagesOutProps> = ({ onChangeLanguage }) => {
-  const [anchorEl, setAnchorEl] = useState(null);
-  const [selectedLanguage, setSelectedLanguage] = useState<string>('en');
-
-  const open = Boolean(anchorEl);
-
-  const handleClick = useCallback(
-    (event: any) => {
-      setAnchorEl(event.currentTarget);
+      setLanguage &&
+        selectedLanguage &&
+        setLanguage({
+          language: selectedLanguage,
+        });
     },
-    [setAnchorEl],
-  );
-
-  const handleClose = useCallback(
-    (event: MouseEvent<HTMLLIElement>) => {
-      setAnchorEl(null);
-      const language = (event.target as HTMLLIElement).getAttribute('data-value') as Language;
-      setSelectedLanguage(language);
-      onChangeLanguage(language);
-    },
-    [onChangeLanguage],
+    [setLanguage],
   );
 
   return (
-    <div>
-      <Button
-        id="language-button"
-        aria-controls="language-button"
-        aria-haspopup="true"
-        aria-expanded={open ? 'true' : undefined}
-        onClick={handleClick}
-      >
+    <>
+      <Spacer size={15} />
+      <div className="tc__header__settings-menu__section-header">
         <LanguageIcon />
-        {selectedLanguage.toUpperCase()}
-      </Button>
-      <Menu
-        id="language-menu"
-        anchorEl={anchorEl}
-        open={open}
-        onClose={handleClose}
-        MenuListProps={{
-          'aria-labelledby': 'language-menu',
-        }}
-      >
-        <MenuItem onClick={handleClose} data-value="en">
-          English
-        </MenuItem>
-        <MenuItem onClick={handleClose} data-value="it">
-          Italiano
-        </MenuItem>
-        <MenuItem onClick={handleClose} data-value="ru">
-          Русский язык
-        </MenuItem>
-      </Menu>
-    </div>
+        <Spacer size={10} />
+        <Typography variant="card-body-text">{getText('language', language)}</Typography>
+      </div>
+      <div className="tc__header__settings-menu__section-row">
+        <FormControl size="medium" fullWidth>
+          <div className="tc__header__settings-menu__language-selector">
+            <Select
+              fullWidth
+              variant="standard"
+              labelId="language-selector"
+              value={language}
+              onChange={onChangeLanguage}
+              disableUnderline
+            >
+              <MenuItem value="en">
+                <Typography variant="dropdown-text">English</Typography>
+              </MenuItem>
+              <MenuItem value="it">
+                <Typography variant="dropdown-text">Italiano</Typography>
+              </MenuItem>
+            </Select>
+          </div>
+        </FormControl>
+      </div>
+    </>
   );
 };
 

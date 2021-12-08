@@ -1,3 +1,5 @@
+@import '../../constants.scss';
+
 .tc__percentage-input-container {
   position: relative;
   display: flex;
@@ -17,11 +19,17 @@
     height: 40px;
     border-radius: 0px 5px 5px 0px;
     text-transform: none;
+
+    &.MuiButton-textPrimary {
+      background: linear-gradient(97.53deg, #4ea3c8 0%, #285a95 100%);
+    }
   }
 }
 
 .tc__percentage-input-disabled {
-  background-color: #e8e8e8;
+  input[type='text'] {
+    color: $faint-text-color;
+  }
 }
 
 .tc__percentage-input-tooltip {
