@@ -57,6 +57,7 @@ const Execute: FC<ExecuteButtonProps> = props => {
         console.error('Failed to execute transaction!', error);
         // Notify user about failed action.
         getNotificationService().warn(
+          'Transaction',
           `${actionName} Failed`,
           generatePoolNotificationInfo(backingToken, protocol, new Date(maturityDate)),
         );
@@ -101,6 +102,7 @@ const Execute: FC<ExecuteButtonProps> = props => {
 
         // Notify user about failed action.
         getNotificationService().warn(
+          'Transaction',
           `${actionName} Failed`,
           generatePoolNotificationInfo(backingToken, protocol, new Date(maturityDate)),
           generateEtherscanLink(transaction.hash),
@@ -124,6 +126,7 @@ const Execute: FC<ExecuteButtonProps> = props => {
 
       // Notify user about successful action.
       getNotificationService().notify(
+        'Transaction',
         `${actionName} Successful`,
         `${generateNotificationInfo(
           actionName,

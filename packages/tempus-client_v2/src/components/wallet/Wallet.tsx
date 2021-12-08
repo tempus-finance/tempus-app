@@ -80,7 +80,7 @@ const Wallet = () => {
       const onError = undefined;
       const shouldThrowErrors = true;
       await activate(injectedConnector, onError, shouldThrowErrors);
-      getNotificationService().notify(getText('metamaskConnected', language), '');
+      getNotificationService().notify('Wallet', getText('metamaskConnected', language), '');
       setWalletData &&
         setWalletData(previousData => ({
           ...previousData,
@@ -90,11 +90,13 @@ const Wallet = () => {
       // User rejected request
       if ((error as any).code === 4001) {
         getNotificationService().warn(
+          'Wallet',
           getText('changeNetworkRejected', language),
           getText('changeNetworkRejectedExplain', language),
         );
       } else {
         getNotificationService().warn(
+          'Wallet',
           getText('unsupportedNetwork', language),
           getText('unsupportedNetworkExplain', language),
         );
@@ -118,7 +120,7 @@ const Wallet = () => {
       const injectedConnector = new InjectedConnector({ supportedChainIds });
       try {
         await activate(injectedConnector, undefined, true);
-        getNotificationService().notify(getText('metamaskConnected', language), '');
+        getNotificationService().notify('Wallet', getText('metamaskConnected', language), '');
         setWalletData &&
           setWalletData(previousData => ({
             ...previousData,
@@ -130,7 +132,7 @@ const Wallet = () => {
         if (error instanceof UnsupportedChainIdError) {
           requestNetworkChange();
         } else {
-          getNotificationService().warn(getText('errorConnectingWallet', language), '');
+          getNotificationService().warn('Wallet', getText('errorConnectingWallet', language), '');
         }
       }
       setConnecting(false);
@@ -153,7 +155,7 @@ const Wallet = () => {
 
       try {
         await activate(walletConnector, undefined, true);
-        getNotificationService().notify(getText('walletConnectConnected', language), '');
+        getNotificationService().notify('Wallet', getText('walletConnectConnected', language), '');
         setWalletData &&
           setWalletData(previousData => ({
             ...previousData,
@@ -165,7 +167,7 @@ const Wallet = () => {
         if (error instanceof UnsupportedChainIdError) {
           requestNetworkChange();
         } else {
-          getNotificationService().warn(getText('errorConnectingWallet', language), '');
+          getNotificationService().warn('Wallet', getText('errorConnectingWallet', language), '');
         }
       }
       setConnecting(false);

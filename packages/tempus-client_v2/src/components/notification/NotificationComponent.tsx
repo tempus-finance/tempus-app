@@ -2,11 +2,11 @@ import { FC, MouseEvent, useCallback, useContext } from 'react';
 import Button from '@material-ui/core/Button';
 import CloseIcon from '@material-ui/icons/Close';
 import { LanguageContext } from '../../context/languageContext';
+import { Notification } from '../../interfaces/Notification';
 import getText from '../../localisation/getText';
 import Typography from '../typography/Typography';
 import TickIcon from '../icons/TickIcon';
 import AlertIcon from '../icons/AlertIcon';
-import { Notification } from '../../services/NotificationService';
 
 import './Notification.scss';
 
