@@ -354,17 +354,33 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
     const yieldsAmountZero = !yieldsAmount || isZeroString(yieldsAmount);
     const lpTokenAmountZero = !lpTokenAmount || isZeroString(lpTokenAmount);
 
+    const principalsExceedsBalance = ethers.utils
+      .parseEther(principalsAmount || '0')
+      .gt(userPrincipalsBalance || BigNumber.from('0'));
+    const yieldsExceedsBalance = ethers.utils
+      .parseEther(yieldsAmount || '0')
+      .gt(userYieldsBalance || BigNumber.from('0'));
+    const lpTokensExceedsBalance = ethers.utils
+      .parseEther(lpTokenAmount || '0')
+      .gt(userLPTokenBalance || BigNumber.from('0'));
+
     return (
-      !principalsApproved ||
-      !yieldsApproved ||
-      !lpTokenApproved ||
+      (!principalsApproved && !principalAmountZero) ||
+      (!yieldsApproved && !yieldsAmountZero) ||
+      (!lpTokenApproved && !lpTokenAmountZero) ||
       (principalAmountZero && yieldsAmountZero && lpTokenAmountZero) ||
+      principalsExceedsBalance ||
+      yieldsExceedsBalance ||
+      lpTokensExceedsBalance ||
       estimateInProgress
     );
   }, [
     principalsAmount,
     yieldsAmount,
     lpTokenAmount,
+    userPrincipalsBalance,
+    userYieldsBalance,
+    userLPTokenBalance,
     principalsApproved,
     yieldsApproved,
     lpTokenApproved,
