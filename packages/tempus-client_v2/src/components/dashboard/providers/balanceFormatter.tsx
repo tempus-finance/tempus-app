@@ -65,7 +65,7 @@ const BalanceFormatter = (props: DataTypeProvider.ValueFormatterProps) => {
           {/* TODO - Use decimalsForUI precision from child items (max precision) */}
           {NumberUtils.formatWithMultiplier(ethers.utils.formatEther(balance), 4)}
           <Spacer size={5} />
-          <TokenIcon ticker={row.token} />
+          {row.token}
         </>
       );
     }
