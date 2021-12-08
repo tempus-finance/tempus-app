@@ -13,6 +13,7 @@ const NotificationContainer: FC = () => {
   const onNotificationDelete = useCallback(
     (id: string) => {
       setNotifications(prev => prev.filter(notification => notification.id !== id));
+      getNotificationService().dismissNotification(id);
     },
     [setNotifications],
   );
