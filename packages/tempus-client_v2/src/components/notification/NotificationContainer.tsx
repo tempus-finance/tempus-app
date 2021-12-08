@@ -1,7 +1,7 @@
 import { FC, useCallback, useContext, useEffect, useState } from 'react';
 import { UserSettingsContext } from '../../context/userSettingsContext';
+import { Notification } from '../../interfaces/Notification';
 import getNotificationService from '../../services/getNotificationService';
-import { Notification } from '../../services/NotificationService';
 import NotificationComponent from './NotificationComponent';
 
 import './Notification.scss';

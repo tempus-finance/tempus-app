@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import { Accordion, AccordionSummary, AccordionDetails } from '@material-ui/core';
-import { Notification } from '../../services/NotificationService';
+import { Notification } from '../../interfaces/Notification';
 import Typography from '../typography/Typography';
 import ArrowDown from '../icons/ArrowDownIcon';
 import TickIcon from '../icons/TickIcon';
