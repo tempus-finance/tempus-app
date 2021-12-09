@@ -99,7 +99,7 @@ const en: { [word in Words]: string } = {
   selectPlaceholder: 'Please select',
   selectTokenFirst: 'Please select the token first',
   tempusAnnouncements: 'Tempus Announcements',
-  tempusChat: 'TempusChat',
+  tempusChat: 'Tempus Chat',
   interestRateProtectionTooltipText:
     'Fix your future yield with Tempus. This function locks your Yield Bearing Token, mints Principals and Yields in exchange, and swaps all Yields for Principals through TempusAMM.<br/><br/>You will receive Principals which will be redeemable 1:1 to the Underlying asset on Maturity.',
   liquidityProvisionTooltipText:
