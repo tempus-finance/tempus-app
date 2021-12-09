@@ -11,7 +11,7 @@ const it: { [word in Words]: string } = {
   pending: 'In corso...',
   selectWallet: 'Seleziona Portafoglio',
   walletSelectorDisclaimer:
-    'Connettendo un portafoglio, dichiari di essere d\'accordo con i<a href="https://tempus.finance/terms-of-service" target="_blank">Termini di Servizio di Tempus</a> e confermi di avere letto e compreso l\'avvertimento sul <a href="https://tempus.finance/terms-of-service" target="_blank">Protocollo Tempus</a>.',
+    'Connettendo un portafoglio, dichiari di essere soggetto ai <a href="https://tempus.finance/terms-of-service" target="_blank">Termini di Servizio di Tempus</a> e confermi di avere letto e compreso <a href="https://tempus.finance/disclaimer" target="_blank">l\'avvertimento sul Protocollo Tempus</a>.',
   metamaskConnected: 'MetaMask connesso',
   changeNetworkRejected: 'Richiesta cambiamento network rifiutata dall`utente',
   changeNetworkRejectedExplain: "Per poter usare l'applicazione, per favore connettiti al network Goerli",

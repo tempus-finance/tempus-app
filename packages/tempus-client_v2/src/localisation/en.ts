@@ -11,7 +11,7 @@ const en: { [word in Words]: string } = {
   pending: 'Pending...',
   selectWallet: ' Select Wallet',
   walletSelectorDisclaimer:
-    'By connecting a wallet, you agree <a href="https://tempus.finance/terms-of-service" target="_blank">Tempus Terms of Service</a> and acknowledge that you have read and understand the <a href="https://tempus.finance/terms-of-service" target="_blank">Tempus Protocol Disclaimer</a>.',
+    'By connecting your wallet, you agree to be bound by the <a href="https://tempus.finance/terms-of-service" target="_blank">Tempus Terms of Service</a> and acknowledge that you have read and understand the <a href="https://tempus.finance/disclaimer" target="_blank">Tempus Protocol Disclaimer</a>.',
   metamaskConnected: 'MetaMask connected',
   changeNetworkRejected: 'Request to change network rejected by user',
   changeNetworkRejectedExplain: 'In order to use the app, please connect using Goerli network',
