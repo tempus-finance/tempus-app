@@ -45,6 +45,9 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
   const principalsAddress = staticPoolData[selectedPool.get()].principalsAddress.attach(Downgraded).get();
   const yieldsAddress = staticPoolData[selectedPool.get()].yieldsAddress.attach(Downgraded).get();
   const decimalsForUI = staticPoolData[selectedPool.get()].decimalsForUI.attach(Downgraded).get();
+  const principalsPrecision = staticPoolData[selectedPool.get()].tokenPrecision.principals.attach(Downgraded).get();
+  const yieldsPrecision = staticPoolData[selectedPool.get()].tokenPrecision.yields.attach(Downgraded).get();
+  const lpTokenPrecision = staticPoolData[selectedPool.get()].tokenPrecision.lpTokens.attach(Downgraded).get();
 
   const supportedTokens = [backingToken, yieldBearingToken].filter(token => token !== 'ETH');
 
@@ -354,20 +357,39 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
     const yieldsAmountZero = !yieldsAmount || isZeroString(yieldsAmount);
     const lpTokenAmountZero = !lpTokenAmount || isZeroString(lpTokenAmount);
 
+    const principalsExceedsBalance = ethers.utils
+      .parseUnits(principalsAmount || '0', principalsPrecision)
+      .gt(userPrincipalsBalance || BigNumber.from('0'));
+    const yieldsExceedsBalance = ethers.utils
+      .parseUnits(yieldsAmount || '0', yieldsPrecision)
+      .gt(userYieldsBalance || BigNumber.from('0'));
+    const lpTokensExceedsBalance = ethers.utils
+      .parseUnits(lpTokenAmount || '0', lpTokenPrecision)
+      .gt(userLPTokenBalance || BigNumber.from('0'));
+
     return (
-      !principalsApproved ||
-      !yieldsApproved ||
-      !lpTokenApproved ||
+      (!principalsApproved && !principalAmountZero) ||
+      (!yieldsApproved && !yieldsAmountZero) ||
+      (!lpTokenApproved && !lpTokenAmountZero) ||
       (principalAmountZero && yieldsAmountZero && lpTokenAmountZero) ||
+      principalsExceedsBalance ||
+      yieldsExceedsBalance ||
+      lpTokensExceedsBalance ||
       estimateInProgress
     );
   }, [
-    principalsAmount,
-    yieldsAmount,
-    lpTokenAmount,
     principalsApproved,
     yieldsApproved,
     lpTokenApproved,
+    principalsAmount,
+    yieldsAmount,
+    lpTokenAmount,
+    principalsPrecision,
+    yieldsPrecision,
+    lpTokenPrecision,
+    userPrincipalsBalance,
+    userYieldsBalance,
+    userLPTokenBalance,
     estimateInProgress,
   ]);
 
