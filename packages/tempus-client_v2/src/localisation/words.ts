@@ -19,6 +19,7 @@ type Words =
   | 'walletConnectConnected'
   | 'walletOverview'
   | 'connectedWallet'
+  | 'viewLinkText'
   | 'pendingTransactions'
   | 'transactionHistory'
   | 'clear'

@@ -67,6 +67,8 @@ const Approve: FC<ApproveButtonProps> = props => {
   const protocol = staticPoolData[selectedPool.get()].protocol.attach(Downgraded).get();
   const maturityDate = staticPoolData[selectedPool.get()].maturityDate.attach(Downgraded).get();
 
+  const viewLinkText = getText('viewLinkText', language);
+
   /**
    * Called when user clicks on the approve button.
    */
@@ -78,6 +80,12 @@ const Approve: FC<ApproveButtonProps> = props => {
       setApproveInProgress(true);
 
       const poolDataAdapter = getPoolDataAdapter(userWalletSigner);
+      let content: string = '';
+      let link: string = '';
+
+      if (tokenToApproveTicker) {
+        content = getTokenApprovalNotification(tokenToApproveTicker, backingToken, protocol, new Date(maturityDate));
+      }
 
       let transaction: ethers.ContractTransaction | void;
       try {
@@ -87,15 +95,14 @@ const Approve: FC<ApproveButtonProps> = props => {
           amountToApprove,
           userWalletSigner,
         );
+        if (transaction) {
+          link = generateEtherscanLink(transaction.hash);
+        }
       } catch (error) {
         console.error(`Failed to create approve transaction for ${tokenToApproveTicker} token!`, error);
 
         if (tokenToApproveTicker) {
-          getNotificationService().warn(
-            'Transaction',
-            `Approval Failed`,
-            getTokenApprovalNotification(tokenToApproveTicker, backingToken, protocol, new Date(maturityDate)),
-          );
+          getNotificationService().warn('Transaction', `Approval Failed`, content);
         }
         setApproveInProgress(false);
         return;
@@ -113,7 +120,16 @@ const Approve: FC<ApproveButtonProps> = props => {
         }
         return {
           ...previousData,
-          pendingTransactions: [...previousData.pendingTransactions, transaction.hash],
+          pendingTransactions: [
+            ...previousData.pendingTransactions,
+            {
+              ...transaction,
+              title: `Approving ${tokenToApproveTicker}`,
+              content,
+              link,
+              viewLinkText,
+            },
+          ],
         };
       });
 
@@ -124,9 +140,9 @@ const Approve: FC<ApproveButtonProps> = props => {
 
         // Remove approve transaction from list of pending transactions when transaction fails.
         setPendingTransactions(previousData => {
-          const filteredTransactions = previousData.pendingTransactions.filter(pendingTransaction => {
-            return pendingTransaction !== transaction?.hash;
-          });
+          const filteredTransactions = previousData.pendingTransactions.filter(
+            ({ hash }) => hash !== transaction?.hash,
+          );
           return {
             ...previousData,
             pendingTransactions: filteredTransactions,
@@ -135,13 +151,7 @@ const Approve: FC<ApproveButtonProps> = props => {
 
         // Show transaction failed notification.
         if (tokenToApproveTicker) {
-          getNotificationService().warn(
-            'Transaction',
-            `Approval Failed`,
-            getTokenApprovalNotification(tokenToApproveTicker, backingToken, protocol, new Date(maturityDate)),
-            generateEtherscanLink(transaction.hash),
-            'View on Etherscan',
-          );
+          getNotificationService().warn('Transaction', `Approval Failed`, content, link, viewLinkText);
         }
 
         setApproveInProgress(false);
@@ -150,9 +160,7 @@ const Approve: FC<ApproveButtonProps> = props => {
 
       // Remove approve transaction from list of pending transactions when transaction succeeds.
       setPendingTransactions(previousData => {
-        const filteredTransactions = previousData.pendingTransactions.filter(pendingTransaction => {
-          return pendingTransaction !== transaction?.hash;
-        });
+        const filteredTransactions = previousData.pendingTransactions.filter(({ hash }) => hash !== transaction?.hash);
         return {
           ...previousData,
           pendingTransactions: filteredTransactions,
@@ -161,13 +169,7 @@ const Approve: FC<ApproveButtonProps> = props => {
 
       // Show approve transaction completed notification
       if (tokenToApproveTicker) {
-        getNotificationService().notify(
-          'Transaction',
-          'Approval Successful',
-          getTokenApprovalNotification(tokenToApproveTicker, backingToken, protocol, new Date(maturityDate)),
-          generateEtherscanLink(transaction.hash),
-          'View on Etherscan',
-        );
+        getNotificationService().notify('Transaction', 'Approval Successful', content, link, viewLinkText);
       }
 
       // After approve completes, we need to set new allowance value
@@ -184,6 +186,7 @@ const Approve: FC<ApproveButtonProps> = props => {
     };
     approve();
   }, [
+    viewLinkText,
     userWalletSigner,
     amountToApprove,
     setPendingTransactions,
