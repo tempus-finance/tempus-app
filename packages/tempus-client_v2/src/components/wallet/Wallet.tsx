@@ -6,7 +6,7 @@ import { InjectedConnector } from '@web3-react/injected-connector';
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
 import { CircularProgress } from '@material-ui/core';
 import AccountBalanceWalletIcon from '@material-ui/icons/AccountBalanceWallet';
-import { supportedChainIds, NETWORK_URLS } from '../../constants';
+import { supportedChainIds, NETWORK_URLS, SupportedChainId } from '../../constants';
 import { LanguageContext } from '../../context/languageContext';
 import { ETHBalanceContext } from '../../context/ethBalanceContext';
 import { PendingTransactionsContext } from '../../context/pendingTransactionsContext';
@@ -73,10 +73,10 @@ const Wallet = () => {
     const injectedConnector = new InjectedConnector({ supportedChainIds });
     const provider = await injectedConnector.getProvider();
     try {
-      // Request user to switch to Goerli testnet
+      // Request user to switch to Mainnet
       await provider.request({
         method: 'wallet_switchEthereumChain',
-        params: [{ chainId: '0x5' }],
+        params: [{ chainId: SupportedChainId.MAINNET }],
       });
       // If user confirms request, connect the wallet
       const onError = undefined;
@@ -214,7 +214,7 @@ const Wallet = () => {
           const chainId = await injectedConnector.getChainId();
 
           // User has connected wallet, but currently selected network in user wallet is not supported.
-          if (typeof chainId === 'string' && supportedChainIds.indexOf(parseInt(chainId)) === -1) {
+          if (typeof chainId === 'string' && !supportedChainIds.includes(parseInt(chainId))) {
             requestNetworkChange();
             return;
           }

@@ -37,7 +37,7 @@ export const POLLING_INTERVAL = 30 * 1000;
 const INFURA_KEY = process.env.REACT_APP_INFURA_KEY;
 
 export enum SupportedChainId {
-  // MAINNET = 1,
+  MAINNET = 1,
   // ROPSTEN = 3,
   // RINKEBY = 4,
   GOERLI = 5,
@@ -51,10 +51,15 @@ export enum SupportedChainId {
   TEMPUS_AWS = 31337,
 }
 
-export const supportedChainIds = [SupportedChainId.GOERLI, SupportedChainId.LOCAL, SupportedChainId.TEMPUS_AWS];
+export const supportedChainIds = [
+  SupportedChainId.MAINNET,
+  SupportedChainId.GOERLI,
+  SupportedChainId.LOCAL,
+  SupportedChainId.TEMPUS_AWS,
+];
 
 export const NETWORK_URLS: { [key in SupportedChainId]: string } = {
-  // [SupportedChainId.MAINNET]: `https://mainnet.infura.io/v3/${INFURA_KEY}`,
+  [SupportedChainId.MAINNET]: `https://mainnet.infura.io/v3/${INFURA_KEY}`,
   // [SupportedChainId.RINKEBY]: `https://rinkeby.infura.io/v3/${INFURA_KEY}`,
   // [SupportedChainId.ROPSTEN]: `https://ropsten.infura.io/v3/${INFURA_KEY}`,
   [SupportedChainId.GOERLI]: `https://goerli.infura.io/v3/${INFURA_KEY}`,
