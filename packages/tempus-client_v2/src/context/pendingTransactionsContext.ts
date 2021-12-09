@@ -1,7 +1,8 @@
 import React, { Dispatch, SetStateAction } from 'react';
+import { PendingTransaction } from '../interfaces/PendingTransaction';
 
 interface PendingTransactionsContextData {
-  pendingTransactions: string[];
+  pendingTransactions: PendingTransaction[];
 }
 
 interface PendingTransactionsContextActions {

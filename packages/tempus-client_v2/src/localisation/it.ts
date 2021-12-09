@@ -22,6 +22,7 @@ const it: { [word in Words]: string } = {
   viewRecentTransactions: 'Vedi transazioni recenti',
   walletOverview: 'Panoramica del portafoglio',
   connectedWallet: 'Portafoglio collegato',
+  viewLinkText: 'Vedi su Etherscan',
   pendingTransactions: 'Transazioni in corso',
   transactionHistory: 'Storico Transazioni',
   clear: 'Rimuovi',

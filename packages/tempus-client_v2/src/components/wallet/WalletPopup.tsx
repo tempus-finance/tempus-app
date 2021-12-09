@@ -3,11 +3,13 @@ import { Button, Divider, Popper } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import { LanguageContext } from '../../context/languageContext';
 import { Notification } from '../../interfaces/Notification';
+import { PendingTransactionsContext } from '../../context/pendingTransactionsContext';
 import getNotificationService from '../../services/getNotificationService';
 import getText from '../../localisation/getText';
 import Typography from '../typography/Typography';
 import Spacer from '../spacer/spacer';
 import WalletNotification from './WalletNotification';
+import WalletPending from './WalletPending';
 import './WalletPopup.scss';
 
 type WalletPopupInProps = {
@@ -24,6 +26,7 @@ type WalletPopupProps = WalletPopupInProps & WalletPopupOutProps;
 
 const WalletPopup: FC<WalletPopupProps> = ({ anchorElement, open, account, onClose }) => {
   const { language } = useContext(LanguageContext);
+  const { pendingTransactions } = useContext(PendingTransactionsContext);
 
   const [notifications, setNotifications] = useState<Notification[]>([]);
 
@@ -63,6 +66,22 @@ const WalletPopup: FC<WalletPopupProps> = ({ anchorElement, open, account, onClo
             </div>
             <Typography variant="dropdown-text">{account}</Typography>
           </div>
+          {pendingTransactions && pendingTransactions.length > 0 && (
+            <>
+              <Divider />
+              <div className="tc__wallet__popper__section tc__wallet__popper__section-transactions">
+                <div className="tc__wallet__popper__section__title">
+                  <Typography variant="dropdown-text" color="title">
+                    {getText('pendingTransactions', language)}
+                  </Typography>
+                </div>
+                <Spacer size={15} />
+                {pendingTransactions.map(pendingTransaction => (
+                  <WalletPending key={pendingTransaction.hash} {...pendingTransaction} />
+                ))}
+              </div>
+            </>
+          )}
           {notifications && notifications.length > 0 && (
             <>
               <Divider />
