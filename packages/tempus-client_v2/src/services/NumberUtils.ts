@@ -19,8 +19,13 @@ class NumberUtils {
     const multiplier = multiplierLookup.find(item => Math.abs(sanitizedValue) >= item.value);
 
     if (sanitizedValue > 0 && sanitizedValue < 1) {
+      const sanitizedValueString = sanitizedValue.toString();
+      if (sanitizedValueString.indexOf('e') > -1) {
+        return sanitizedValue.toFixed(precision);
+      }
+
       // Adding 2 to precision so that '0.' part of the number is ignored when slicing it
-      return sanitizedValue.toString().slice(0, precision + 2);
+      return sanitizedValueString.slice(0, precision + 2);
     }
 
     return multiplier
