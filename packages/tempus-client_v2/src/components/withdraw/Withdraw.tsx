@@ -37,7 +37,7 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
 
   const { userWalletSigner, userWalletAddress } = useContext(WalletContext);
   const { language } = useContext(LanguageContext);
-  const { slippage } = useContext(UserSettingsContext);
+  const { slippage, autoSlippage } = useContext(UserSettingsContext);
 
   const backingToken = staticPoolData[selectedPool.get()].backingToken.attach(Downgraded).get();
   const yieldBearingToken = staticPoolData[selectedPool.get()].yieldBearingToken.attach(Downgraded).get();
@@ -175,16 +175,18 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
         getTokenPrecision(selectedPoolAddress, 'lpTokens'),
       );
 
+      const actualSlippage = (autoSlippage ? 1 : slippage / 100).toString();
+
       const minPrincipalsStaked = estimatedWithdrawData.principalsStaked.sub(
         mul18f(
           estimatedWithdrawData.principalsStaked,
-          ethers.utils.parseUnits((slippage / 100).toString(), getTokenPrecision(selectedPoolAddress, 'principals')),
+          ethers.utils.parseUnits(actualSlippage, getTokenPrecision(selectedPoolAddress, 'principals')),
         ),
       );
       const minYieldsStaked = estimatedWithdrawData.yieldsStaked.sub(
         mul18f(
           estimatedWithdrawData.yieldsStaked,
-          ethers.utils.parseUnits((slippage / 100).toString(), getTokenPrecision(selectedPoolAddress, 'yields')),
+          ethers.utils.parseUnits(actualSlippage, getTokenPrecision(selectedPoolAddress, 'yields')),
         ),
       );
 
@@ -196,14 +198,14 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
         minRate = estimatedWithdrawData.principalsRate.sub(
           mul18f(
             estimatedWithdrawData.principalsRate,
-            ethers.utils.parseUnits((slippage / 100).toString(), getTokenPrecision(selectedPoolAddress, 'principals')),
+            ethers.utils.parseUnits(actualSlippage, getTokenPrecision(selectedPoolAddress, 'principals')),
           ),
         );
       } else if (totalYieldsToWithdraw.gt(totalPrincipalsToWithdraw)) {
         minRate = estimatedWithdrawData.yieldsRate.sub(
           mul18f(
             estimatedWithdrawData.yieldsRate,
-            ethers.utils.parseUnits((slippage / 100).toString(), getTokenPrecision(selectedPoolAddress, 'principals')),
+            ethers.utils.parseUnits(actualSlippage, getTokenPrecision(selectedPoolAddress, 'principals')),
           ),
         );
       }
@@ -226,6 +228,7 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
     userWalletSigner,
     estimatedWithdrawData,
     slippage,
+    autoSlippage,
     selectedPoolAddress,
     principalsAmount,
     yieldsAmount,
