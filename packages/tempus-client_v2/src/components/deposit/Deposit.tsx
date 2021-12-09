@@ -391,8 +391,8 @@ const Deposit: FC<DepositProps> = ({ narrow, poolDataAdapter }) => {
 
     const value = fixedPrincipalsAmount.sub(ethers.utils.parseEther(amount));
 
-    return NumberUtils.formatToCurrency(ethers.utils.formatUnits(value, tokenPrecision), 2);
-  }, [amount, fixedPrincipalsAmount, tokenPrecision]);
+    return NumberUtils.formatToCurrency(ethers.utils.formatUnits(value, tokenPrecision), decimalsForUI);
+  }, [amount, fixedPrincipalsAmount, tokenPrecision, decimalsForUI]);
 
   const fixedYieldAtMaturityUSDFormatted = useMemo(() => {
     if (!fixedPrincipalsAmount || !yieldBearingTokenRate || !amount || isZeroString(amount)) {
@@ -413,8 +413,8 @@ const Deposit: FC<DepositProps> = ({ narrow, poolDataAdapter }) => {
       return null;
     }
 
-    return NumberUtils.formatToCurrency(ethers.utils.formatUnits(fixedPrincipalsAmount, tokenPrecision), 2);
-  }, [fixedPrincipalsAmount, tokenPrecision]);
+    return NumberUtils.formatToCurrency(ethers.utils.formatUnits(fixedPrincipalsAmount, tokenPrecision), decimalsForUI);
+  }, [fixedPrincipalsAmount, tokenPrecision, decimalsForUI]);
 
   const totalAvailableAtMaturityUSDFormatted = useMemo(() => {
     if (!fixedPrincipalsAmount || !yieldBearingTokenRate) {
