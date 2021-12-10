@@ -58,6 +58,7 @@ const ProvideLiquidity = () => {
   const decimalsForUI = staticPoolData[selectedPool.get()].decimalsForUI.attach(Downgraded).get();
   const userPrincipalsBalance = dynamicPoolData[selectedPool.get()].userPrincipalsBalance.attach(Downgraded).get();
   const userYieldsBalance = dynamicPoolData[selectedPool.get()].userYieldsBalance.attach(Downgraded).get();
+  const poolShareBalance = dynamicPoolData[selectedPool.get()].poolShareBalance.attach(Downgraded).get();
 
   /**
    * When user enters some amount of yields, we need to calculate amount of principals user
@@ -137,11 +138,25 @@ const ProvideLiquidity = () => {
    * - Requires user principals balance to be loaded so we can calculate percentage of that.
    */
   const onPrincipalsPercentageChange = useCallback(() => {
-    if (!userPrincipalsBalance || !userYieldsBalance || !yieldsPercentage || !principalsPercentage) {
+    if (
+      !userPrincipalsBalance ||
+      !userYieldsBalance ||
+      (yieldsPercentage !== 0 && !yieldsPercentage) ||
+      (principalsPercentage !== 0 && !principalsPercentage) ||
+      !poolShareBalance.principals ||
+      !poolShareBalance.yields
+    ) {
       return;
     }
 
     setMaxDisabled(true);
+    if (poolShareBalance.principals.isZero() && poolShareBalance.yields.isZero()) {
+      setPrincipalsAmount(ethers.utils.formatUnits(userPrincipalsBalance, principalsPrecision));
+      setYieldsAmount(ethers.utils.formatUnits(userYieldsBalance, yieldsPrecision));
+
+      return;
+    }
+
     const yieldsToPrincipalsRatio = ethers.utils.parseUnits(
       (yieldsPercentage / principalsPercentage).toString(),
       yieldsPrecision,
@@ -158,12 +173,14 @@ const ProvideLiquidity = () => {
   }, [
     userPrincipalsBalance,
     userYieldsBalance,
-    principalsPercentage,
-    principalsPrecision,
-    setPrincipalsFromYields,
-    setYieldsFromPrincipals,
     yieldsPercentage,
+    principalsPercentage,
+    poolShareBalance.principals,
+    poolShareBalance.yields,
     yieldsPrecision,
+    principalsPrecision,
+    setYieldsFromPrincipals,
+    setPrincipalsFromYields,
   ]);
 
   /**
@@ -171,10 +188,25 @@ const ProvideLiquidity = () => {
    * - Requires user yields balance to be loaded so we can calculate percentage of that.
    */
   const onYieldsPercentageChange = useCallback(() => {
-    if (!userPrincipalsBalance || !userYieldsBalance || !yieldsPercentage || !principalsPercentage) {
+    if (
+      !userPrincipalsBalance ||
+      !userYieldsBalance ||
+      (yieldsPercentage !== 0 && !yieldsPercentage) ||
+      (principalsPercentage !== 0 && !principalsPercentage) ||
+      !poolShareBalance.principals ||
+      !poolShareBalance.yields
+    ) {
       return;
     }
+
     setMaxDisabled(true);
+    if (poolShareBalance.principals.isZero() && poolShareBalance.yields.isZero()) {
+      setPrincipalsAmount(ethers.utils.formatUnits(userPrincipalsBalance, principalsPrecision));
+      setYieldsAmount(ethers.utils.formatUnits(userYieldsBalance, yieldsPrecision));
+
+      return;
+    }
+
     const principalsToYieldsRatio = ethers.utils.parseUnits(
       (principalsPercentage / yieldsPercentage).toString(),
       principalsPrecision,
@@ -193,6 +225,8 @@ const ProvideLiquidity = () => {
     userYieldsBalance,
     yieldsPercentage,
     principalsPercentage,
+    poolShareBalance.principals,
+    poolShareBalance.yields,
     principalsPrecision,
     yieldsPrecision,
     setPrincipalsFromYields,
@@ -316,6 +350,7 @@ const ProvideLiquidity = () => {
   const onExecuted = useCallback(() => {
     setPrincipalsAmount('');
     setYieldsAmount('');
+    setMaxDisabled(false);
 
     // Trigger user pool share balance update when execute is finished
     getUserShareTokenBalanceProvider({

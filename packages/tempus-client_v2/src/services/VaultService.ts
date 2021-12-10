@@ -245,14 +245,18 @@ class VaultService {
 
     const initUserData = ethers.utils.defaultAbiCoder.encode(['uint256', 'uint256[]'], [kind, initialBalances]);
 
+    const assetAddresses = assets.map(({ address }) => address);
+
     const joinPoolRequest = {
-      assets: assets.map(({ address }) => address),
+      assets: assetAddresses,
       maxAmountsIn: initialBalances,
       userData: initUserData,
       fromInternalBalance: false,
     };
 
     try {
+      debugger;
+
       const estimate = await this.contract.estimateGas.joinPool(
         poolId,
         userWalletAddress,
