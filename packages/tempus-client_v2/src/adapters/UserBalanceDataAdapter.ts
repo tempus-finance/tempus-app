@@ -42,15 +42,19 @@ export default class UserBalanceDataAdapter {
         // Fetch user balance for (principals, yields and LP tokens)
         switchMap(() => {
           if (this.eRC20TokenServiceGetter) {
-            const principalsService = this.eRC20TokenServiceGetter(tempusPool.principalsAddress, userWalletSigner);
-            const yieldsService = this.eRC20TokenServiceGetter(tempusPool.yieldsAddress, userWalletSigner);
-            const lpTokenService = this.eRC20TokenServiceGetter(tempusPool.ammAddress, userWalletSigner);
+            try {
+              const principalsService = this.eRC20TokenServiceGetter(tempusPool.principalsAddress, userWalletSigner);
+              const yieldsService = this.eRC20TokenServiceGetter(tempusPool.yieldsAddress, userWalletSigner);
+              const lpTokenService = this.eRC20TokenServiceGetter(tempusPool.ammAddress, userWalletSigner);
 
-            const principalsBalance$ = from(principalsService.balanceOf(userWalletAddress));
-            const yieldsBalance$ = from(yieldsService.balanceOf(userWalletAddress));
-            const lpTokenBalance$ = from(lpTokenService.balanceOf(userWalletAddress));
+              const principalsBalance$ = from(principalsService.balanceOf(userWalletAddress));
+              const yieldsBalance$ = from(yieldsService.balanceOf(userWalletAddress));
+              const lpTokenBalance$ = from(lpTokenService.balanceOf(userWalletAddress));
 
-            return combineLatest([principalsBalance$, yieldsBalance$, lpTokenBalance$]);
+              return combineLatest([principalsBalance$, yieldsBalance$, lpTokenBalance$]);
+            } catch (error: any) {
+              throwError(() => new Error(error));
+            }
           }
           return throwError(
             () => new Error('UserBalanceDataAdapter - getUserBalanceForPool() - Adapter not initialized!'),

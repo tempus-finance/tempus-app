@@ -21,6 +21,7 @@ const it: { [word in Words]: string } = {
   errorConnectingWallet: 'Error nella connessione del portafoglio',
   viewRecentTransactions: 'Vedi transazioni recenti',
   walletOverview: 'Panoramica del portafoglio',
+  switchWallet: 'Cambia portafoglio',
   connectedWallet: 'Portafoglio collegato',
   viewLinkText: 'Vedi su Etherscan',
   pendingTransactions: 'Transazioni in corso',
