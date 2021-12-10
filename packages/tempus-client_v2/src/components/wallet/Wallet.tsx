@@ -16,6 +16,7 @@ import NumberUtils from '../../services/NumberUtils';
 import UserWallet from '../../interfaces/UserWallet';
 import getText from '../../localisation/getText';
 import shortenAccount from '../../utils/shortenAccount';
+import getStorageService from '../../services/getStorageService';
 import getNotificationService from '../../services/getNotificationService';
 import Typography from '../typography/Typography';
 import Spacer from '../spacer/spacer';
@@ -23,8 +24,10 @@ import WalletSelector from './WalletSelector';
 import WalletPopup from './WalletPopup';
 import './Wallet.scss';
 
+const WALLET_KEY = 'lastConnectedWallet';
+
 const Wallet = () => {
-  const { account, activate, active, library } = useWeb3React<Web3Provider>();
+  const { account, activate, deactivate, active, library } = useWeb3React<Web3Provider>();
 
   const { language } = useContext(LanguageContext);
   const { eth } = useContext(ETHBalanceContext);
@@ -68,6 +71,12 @@ const Wallet = () => {
       setUserSettings(prevState => ({ ...prevState, openWalletPopup: false }));
     }
   }, [setUserSettings]);
+
+  const onSwitchWallet = useCallback(async () => {
+    onCloseWalletPopup();
+    setConnecting(false);
+    setWalletSelectorOpen(true);
+  }, [onCloseWalletPopup]);
 
   const requestNetworkChange = useCallback(async () => {
     const injectedConnector = new InjectedConnector({ supportedChainIds });
@@ -114,82 +123,95 @@ const Wallet = () => {
     }
   }, [isUserSelected, language, activate, setWalletData]);
 
-  const onMetaMaskSelected = useCallback(() => {
-    setConnecting(true);
-    const connect = async () => {
-      if (active) {
-        return;
-      }
-
-      const injectedConnector = new InjectedConnector({ supportedChainIds });
-      try {
-        await activate(injectedConnector, undefined, true);
-        if (isUserSelected) {
-          getNotificationService().notify('Wallet', getText('metamaskConnected', language), '');
+  const onMetaMaskSelected = useCallback(
+    (lastSelectedWallet?: UserWallet) => {
+      const connect = async (lastSelectedWallet?: UserWallet) => {
+        if (active && lastSelectedWallet === 'MetaMask') {
+          setConnecting(false);
+          return;
         }
-        setWalletData &&
-          setWalletData(previousData => ({
-            ...previousData,
-            userWalletConnected: true,
-          }));
-      } catch (error) {
-        setSelectedWallet(null);
-        console.error('onMetaMaskSelected', error);
-        if (error instanceof UnsupportedChainIdError) {
-          requestNetworkChange();
-        } else {
-          getNotificationService().warn('Wallet', getText('errorConnectingWallet', language), '');
+
+        if (active) {
+          deactivate();
         }
-      }
-      setConnecting(false);
-    };
-    connect();
-  }, [isUserSelected, language, active, activate, setWalletData, requestNetworkChange]);
-
-  const onWalletConnectSelected = useCallback(() => {
-    setConnecting(true);
-    const connect = async () => {
-      if (active) {
-        return;
-      }
-
-      const walletConnector = new WalletConnectConnector({
-        supportedChainIds: [...supportedChainIds],
-        rpc: NETWORK_URLS,
-        qrcode: true,
-      });
-
-      try {
-        await activate(walletConnector, undefined, true);
-        if (isUserSelected) {
-          getNotificationService().notify('Wallet', getText('walletConnectConnected', language), '');
+        const injectedConnector = new InjectedConnector({ supportedChainIds });
+        try {
+          await activate(injectedConnector, undefined, true);
+          getStorageService().set(WALLET_KEY, 'MetaMask');
+          setSelectedWallet('MetaMask');
+          if (isUserSelected) {
+            getNotificationService().notify('Wallet', getText('metamaskConnected', language), '');
+          }
+          setWalletData &&
+            setWalletData(previousData => ({
+              ...previousData,
+              userWalletConnected: true,
+            }));
+        } catch (error) {
+          setSelectedWallet(null);
+          console.error('onMetaMaskSelected', error);
+          if (error instanceof UnsupportedChainIdError) {
+            requestNetworkChange();
+          } else {
+            getNotificationService().warn('Wallet', getText('errorConnectingWallet', language), '');
+          }
         }
-        setWalletData &&
-          setWalletData(previousData => ({
-            ...previousData,
-            userWalletConnected: true,
-          }));
-      } catch (error) {
-        setSelectedWallet(null);
-        console.error('onWalletConnectSelected', error);
-        if (error instanceof UnsupportedChainIdError) {
-          requestNetworkChange();
-        } else {
-          getNotificationService().warn('Wallet', getText('errorConnectingWallet', language), '');
-        }
-      }
-      setConnecting(false);
-    };
-    connect();
-  }, [isUserSelected, language, active, activate, setWalletData, requestNetworkChange]);
+        setConnecting(false);
+      };
 
-  useEffect(() => {
-    if (selectedWallet === 'MetaMask') {
-      onMetaMaskSelected();
-    } else if (selectedWallet === 'WalletConnect') {
-      onWalletConnectSelected();
-    }
-  }, [selectedWallet, onMetaMaskSelected, onWalletConnectSelected]);
+      setConnecting(true);
+      connect(lastSelectedWallet);
+    },
+    [isUserSelected, language, active, activate, deactivate, setWalletData, requestNetworkChange],
+  );
+
+  const onWalletConnectSelected = useCallback(
+    (lastSelectedWallet?: UserWallet) => {
+      const connect = async (lastSelectedWallet?: UserWallet) => {
+        if (active && lastSelectedWallet === 'WalletConnect') {
+          setConnecting(false);
+          return;
+        }
+
+        if (active) {
+          deactivate();
+        }
+
+        const walletConnector = new WalletConnectConnector({
+          supportedChainIds: [...supportedChainIds],
+          rpc: NETWORK_URLS,
+          qrcode: true,
+        });
+
+        try {
+          await activate(walletConnector, undefined, true);
+          getStorageService().set(WALLET_KEY, 'WalletConnect');
+          setSelectedWallet('WalletConnect');
+          if (isUserSelected) {
+            getNotificationService().notify('Wallet', getText('walletConnectConnected', language), '');
+          }
+          setWalletData &&
+            setWalletData(previousData => ({
+              ...previousData,
+              userWalletConnected: true,
+            }));
+        } catch (error) {
+          setSelectedWallet(null);
+          console.error('onWalletConnectSelected', error);
+          if (error instanceof UnsupportedChainIdError) {
+            requestNetworkChange();
+          } else {
+            getNotificationService().warn('Wallet', getText('errorConnectingWallet', language), '');
+          }
+        }
+        setConnecting(false);
+      };
+
+      setConnecting(true);
+      connect(lastSelectedWallet);
+    },
+    [isUserSelected, language, active, activate, deactivate, setWalletData, requestNetworkChange],
+  );
 
   useEffect(() => {
     const checkIfMetamaskIsInstalled = async () => {
@@ -206,7 +228,7 @@ const Wallet = () => {
   }, []);
 
   useEffect(() => {
-    const checkConnection = async () => {
+    const checkMetaMaskConnection = async () => {
       const injectedConnector = new InjectedConnector({ supportedChainIds });
       const provider = await injectedConnector.getProvider();
       if (provider) {
@@ -219,9 +241,8 @@ const Wallet = () => {
             return;
           }
           if (authorized) {
-            activate(injectedConnector);
-            const isMetaMask = provider.isMetaMask;
-            setSelectedWallet(!!isMetaMask ? 'MetaMask' : 'WalletConnect');
+            await activate(injectedConnector, undefined, true);
+            setSelectedWallet('MetaMask');
           } else {
             setSelectedWallet(null);
           }
@@ -235,10 +256,59 @@ const Wallet = () => {
         setSelectedWallet(null);
       }
     };
+
+    const checkWalletConnectConnection = async () => {
+      const walletConnector = new WalletConnectConnector({
+        supportedChainIds: [...supportedChainIds],
+        rpc: NETWORK_URLS,
+        qrcode: true,
+      });
+
+      const provider = await walletConnector.getProvider();
+      if (provider) {
+        walletConnector.walletConnectProvider.isAuthorized().then(async (authorized: boolean | null) => {
+          const chainId = await walletConnector.getChainId();
+
+          // User has connected wallet, but currently selected network in user wallet is not supported.
+          if (typeof chainId === 'string' && !supportedChainIds.includes(parseInt(chainId))) {
+            requestNetworkChange();
+            return;
+          }
+          if (authorized) {
+            await activate(walletConnector, undefined, true);
+            setSelectedWallet('WalletConnect');
+          } else {
+            setSelectedWallet(null);
+          }
+          setWalletData &&
+            setWalletData(previousData => ({
+              ...previousData,
+              userWalletConnected: authorized,
+            }));
+        });
+      } else {
+        setSelectedWallet(null);
+      }
+    };
+
     if (!active) {
-      checkConnection();
+      const lastSelectedWallet = getStorageService().get(WALLET_KEY) as UserWallet;
+      if (lastSelectedWallet === 'WalletConnect') {
+        checkWalletConnectConnection();
+      } else {
+        checkMetaMaskConnection();
+      }
     }
   }, [active, setWalletData, activate, requestNetworkChange, setSelectedWallet]);
+
+  useEffect(() => {
+    const lastSelectedWallet = getStorageService().get(WALLET_KEY) as UserWallet;
+    if (selectedWallet === 'MetaMask') {
+      onMetaMaskSelected(lastSelectedWallet);
+    } else if (selectedWallet === 'WalletConnect') {
+      onWalletConnectSelected(lastSelectedWallet);
+    }
+  }, [selectedWallet, onMetaMaskSelected, onWalletConnectSelected]);
 
   useEffect(() => {
     setWalletData &&
@@ -255,12 +325,12 @@ const Wallet = () => {
   }
 
   const formattedEthBalance = useMemo(() => {
-    if (!eth) {
+    if (!eth || !selectedWallet) {
       return null;
     }
 
     return NumberUtils.formatToCurrency(ethers.utils.formatEther(eth), 4);
-  }, [eth]);
+  }, [eth, selectedWallet]);
 
   return (
     <>
@@ -313,6 +383,7 @@ const Wallet = () => {
         anchorElement={walletPopupAnchor}
         open={openWalletPopup}
         account={account}
+        onSwitchWallet={onSwitchWallet}
         onClose={onCloseWalletPopup}
       />
     </>
