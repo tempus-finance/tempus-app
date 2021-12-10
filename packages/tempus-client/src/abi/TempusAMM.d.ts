@@ -30,6 +30,7 @@ interface TempusAMMInterface extends ethers.utils.Interface {
     "getActionId(bytes4)": FunctionFragment;
     "getAmplificationParameter()": FunctionFragment;
     "getAuthorizer()": FunctionFragment;
+    "getExpectedBPTInGivenTokensOut(uint256,uint256)": FunctionFragment;
     "getExpectedLPTokensForTokensIn(uint256[])": FunctionFragment;
     "getExpectedReturnGivenIn(uint256,bool)": FunctionFragment;
     "getExpectedTokensOutGivenBPTIn(uint256)": FunctionFragment;
@@ -47,7 +48,7 @@ interface TempusAMMInterface extends ethers.utils.Interface {
     "nonces(address)": FunctionFragment;
     "onExitPool(bytes32,address,address,uint256[],uint256,uint256,bytes)": FunctionFragment;
     "onJoinPool(bytes32,address,address,uint256[],uint256,uint256,bytes)": FunctionFragment;
-    "onSwap(tuple,uint256[],uint256,uint256)": FunctionFragment;
+    "onSwap(tuple,uint256,uint256)": FunctionFragment;
     "permit(address,address,uint256,uint256,uint8,bytes32,bytes32)": FunctionFragment;
     "queryExit(bytes32,address,address,uint256[],uint256,uint256,bytes)": FunctionFragment;
     "queryJoin(bytes32,address,address,uint256[],uint256,uint256,bytes)": FunctionFragment;
@@ -92,6 +93,10 @@ interface TempusAMMInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "getAuthorizer",
     values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getExpectedBPTInGivenTokensOut",
+    values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "getExpectedLPTokensForTokensIn",
@@ -173,7 +178,6 @@ interface TempusAMMInterface extends ethers.utils.Interface {
         to: string;
         userData: BytesLike;
       },
-      BigNumberish[],
       BigNumberish,
       BigNumberish
     ]
@@ -271,6 +275,10 @@ interface TempusAMMInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "getAuthorizer",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getExpectedBPTInGivenTokensOut",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -452,6 +460,12 @@ export class TempusAMM extends BaseContract {
 
     getAuthorizer(overrides?: CallOverrides): Promise<[string]>;
 
+    getExpectedBPTInGivenTokensOut(
+      principalsStaked: BigNumberish,
+      yieldsStaked: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber] & { lpTokens: BigNumber }>;
+
     getExpectedLPTokensForTokensIn(
       amountsIn: BigNumberish[],
       overrides?: CallOverrides
@@ -540,25 +554,7 @@ export class TempusAMM extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    "onSwap((uint8,address,address,uint256,bytes32,uint256,address,address,bytes),uint256[],uint256,uint256)"(
-      swapRequest: {
-        kind: BigNumberish;
-        tokenIn: string;
-        tokenOut: string;
-        amount: BigNumberish;
-        poolId: BytesLike;
-        lastChangeBlock: BigNumberish;
-        from: string;
-        to: string;
-        userData: BytesLike;
-      },
-      balances: BigNumberish[],
-      indexIn: BigNumberish,
-      indexOut: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    "onSwap((uint8,address,address,uint256,bytes32,uint256,address,address,bytes),uint256,uint256)"(
+    onSwap(
       request: {
         kind: BigNumberish;
         tokenIn: string;
@@ -692,6 +688,12 @@ export class TempusAMM extends BaseContract {
 
   getAuthorizer(overrides?: CallOverrides): Promise<string>;
 
+  getExpectedBPTInGivenTokensOut(
+    principalsStaked: BigNumberish,
+    yieldsStaked: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
   getExpectedLPTokensForTokensIn(
     amountsIn: BigNumberish[],
     overrides?: CallOverrides
@@ -780,25 +782,7 @@ export class TempusAMM extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  "onSwap((uint8,address,address,uint256,bytes32,uint256,address,address,bytes),uint256[],uint256,uint256)"(
-    swapRequest: {
-      kind: BigNumberish;
-      tokenIn: string;
-      tokenOut: string;
-      amount: BigNumberish;
-      poolId: BytesLike;
-      lastChangeBlock: BigNumberish;
-      from: string;
-      to: string;
-      userData: BytesLike;
-    },
-    balances: BigNumberish[],
-    indexIn: BigNumberish,
-    indexOut: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  "onSwap((uint8,address,address,uint256,bytes32,uint256,address,address,bytes),uint256,uint256)"(
+  onSwap(
     request: {
       kind: BigNumberish;
       tokenIn: string;
@@ -935,6 +919,12 @@ export class TempusAMM extends BaseContract {
 
     getAuthorizer(overrides?: CallOverrides): Promise<string>;
 
+    getExpectedBPTInGivenTokensOut(
+      principalsStaked: BigNumberish,
+      yieldsStaked: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     getExpectedLPTokensForTokensIn(
       amountsIn: BigNumberish[],
       overrides?: CallOverrides
@@ -1023,25 +1013,7 @@ export class TempusAMM extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[BigNumber[], BigNumber[]]>;
 
-    "onSwap((uint8,address,address,uint256,bytes32,uint256,address,address,bytes),uint256[],uint256,uint256)"(
-      swapRequest: {
-        kind: BigNumberish;
-        tokenIn: string;
-        tokenOut: string;
-        amount: BigNumberish;
-        poolId: BytesLike;
-        lastChangeBlock: BigNumberish;
-        from: string;
-        to: string;
-        userData: BytesLike;
-      },
-      balances: BigNumberish[],
-      indexIn: BigNumberish,
-      indexOut: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "onSwap((uint8,address,address,uint256,bytes32,uint256,address,address,bytes),uint256,uint256)"(
+    onSwap(
       request: {
         kind: BigNumberish;
         tokenIn: string;
@@ -1217,6 +1189,12 @@ export class TempusAMM extends BaseContract {
 
     getAuthorizer(overrides?: CallOverrides): Promise<BigNumber>;
 
+    getExpectedBPTInGivenTokensOut(
+      principalsStaked: BigNumberish,
+      yieldsStaked: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     getExpectedLPTokensForTokensIn(
       amountsIn: BigNumberish[],
       overrides?: CallOverrides
@@ -1288,25 +1266,7 @@ export class TempusAMM extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    "onSwap((uint8,address,address,uint256,bytes32,uint256,address,address,bytes),uint256[],uint256,uint256)"(
-      swapRequest: {
-        kind: BigNumberish;
-        tokenIn: string;
-        tokenOut: string;
-        amount: BigNumberish;
-        poolId: BytesLike;
-        lastChangeBlock: BigNumberish;
-        from: string;
-        to: string;
-        userData: BytesLike;
-      },
-      balances: BigNumberish[],
-      indexIn: BigNumberish,
-      indexOut: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    "onSwap((uint8,address,address,uint256,bytes32,uint256,address,address,bytes),uint256,uint256)"(
+    onSwap(
       request: {
         kind: BigNumberish;
         tokenIn: string;
@@ -1441,6 +1401,12 @@ export class TempusAMM extends BaseContract {
 
     getAuthorizer(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    getExpectedBPTInGivenTokensOut(
+      principalsStaked: BigNumberish,
+      yieldsStaked: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     getExpectedLPTokensForTokensIn(
       amountsIn: BigNumberish[],
       overrides?: CallOverrides
@@ -1517,25 +1483,7 @@ export class TempusAMM extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    "onSwap((uint8,address,address,uint256,bytes32,uint256,address,address,bytes),uint256[],uint256,uint256)"(
-      swapRequest: {
-        kind: BigNumberish;
-        tokenIn: string;
-        tokenOut: string;
-        amount: BigNumberish;
-        poolId: BytesLike;
-        lastChangeBlock: BigNumberish;
-        from: string;
-        to: string;
-        userData: BytesLike;
-      },
-      balances: BigNumberish[],
-      indexIn: BigNumberish,
-      indexOut: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    "onSwap((uint8,address,address,uint256,bytes32,uint256,address,address,bytes),uint256,uint256)"(
+    onSwap(
       request: {
         kind: BigNumberish;
         tokenIn: string;

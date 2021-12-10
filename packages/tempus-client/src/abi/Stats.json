@@ -1,5 +1,10 @@
 [
   {
+    "inputs": [],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
     "inputs": [
       {
         "internalType": "contract ITempusAMM",
@@ -36,7 +41,76 @@
     "outputs": [
       {
         "internalType": "uint256",
-        "name": "",
+        "name": "tokenAmount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "principalsStaked",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "yieldsStaked",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "principalsRate",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "yieldsRate",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "contract ITempusAMM",
+        "name": "tempusAMM",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "principals",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "yields",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "principalsStaked",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "yieldsStaked",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bool",
+        "name": "toBackingToken",
+        "type": "bool"
+      }
+    ],
+    "name": "estimateExitAndRedeemGivenStakedOut",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "tokenAmount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "lpTokensRedeemed",
         "type": "uint256"
       }
     ],
@@ -236,6 +310,36 @@
         "internalType": "uint256",
         "name": "",
         "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "version",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint16",
+            "name": "major",
+            "type": "uint16"
+          },
+          {
+            "internalType": "uint16",
+            "name": "minor",
+            "type": "uint16"
+          },
+          {
+            "internalType": "uint16",
+            "name": "patch",
+            "type": "uint16"
+          }
+        ],
+        "internalType": "struct IVersioned.Version",
+        "name": "",
+        "type": "tuple"
       }
     ],
     "stateMutability": "view",
