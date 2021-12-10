@@ -19,6 +19,7 @@ import './Execute.scss';
 
 interface ExecuteButtonProps {
   disabled: boolean;
+  executeDisabledText?: string;
   actionName: string;
   actionDescription?: string;
   onExecute: () => Promise<ethers.ContractTransaction | undefined>;
@@ -26,7 +27,7 @@ interface ExecuteButtonProps {
 }
 
 const Execute: FC<ExecuteButtonProps> = props => {
-  const { disabled, actionName, actionDescription, onExecute, onExecuted } = props;
+  const { disabled, executeDisabledText, actionName, actionDescription, onExecute, onExecuted } = props;
 
   const selectedPool = useHookState(selectedPoolState);
   const staticPoolData = useHookState(staticPoolDataState);
@@ -161,7 +162,9 @@ const Execute: FC<ExecuteButtonProps> = props => {
           </>
         )}
 
-        {!executeInProgress && getText('execute', language)}
+        {!executeInProgress && !disabled && getText('execute', language)}
+
+        {!executeInProgress && disabled && (executeDisabledText || getText('execute', language))}
       </Typography>
     </Button>
   );
