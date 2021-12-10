@@ -37,15 +37,19 @@ const NegativeYieldProvider = () => {
         return;
       }
 
-      const tempusPoolService = getTempusPoolService(provider);
-      const [currentInterestRate, initialInterestRate] = await Promise.all([
-        tempusPoolService.currentInterestRate(tempusPool.address),
-        tempusPoolService.initialInterestRate(tempusPool.address),
-      ]);
-      const negativeYield = currentInterestRate.lt(initialInterestRate);
+      try {
+        const tempusPoolService = getTempusPoolService(provider);
+        const [currentInterestRate, initialInterestRate] = await Promise.all([
+          tempusPoolService.currentInterestRate(tempusPool.address),
+          tempusPoolService.initialInterestRate(tempusPool.address),
+        ]);
+        const negativeYield = currentInterestRate.lt(initialInterestRate);
 
-      if (dynamicPoolData[tempusPool.address].negativeYield.get() !== negativeYield) {
-        dynamicPoolData[tempusPool.address].negativeYield.set(negativeYield);
+        if (dynamicPoolData[tempusPool.address].negativeYield.get() !== negativeYield) {
+          dynamicPoolData[tempusPool.address].negativeYield.set(negativeYield);
+        }
+      } catch (error) {
+        console.error('NegativeYieldProvider - fetchPoolNegativeYieldFlag: ', error);
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
