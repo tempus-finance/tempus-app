@@ -33,11 +33,10 @@ const Wallet = () => {
   const { eth } = useContext(ETHBalanceContext);
   const { setWalletData } = useContext(WalletContext);
   const { pendingTransactions } = useContext(PendingTransactionsContext);
-  const { openWalletPopup, setUserSettings } = useContext(UserSettingsContext);
+  const { setUserSettings } = useContext(UserSettingsContext);
 
   const walletPopupAnchor = useRef<HTMLDivElement>(null);
 
-  const [walletSelectorOpen, setWalletSelectorOpen] = useState<boolean>(false);
   const [selectedWallet, setSelectedWallet] = useState<UserWallet | null>(null);
   const [isUserSelected, setIsUserSelected] = useState<boolean>(false);
   const [availableWallets, setAvailableWallets] = useState<{ [w in UserWallet]?: boolean }>({
@@ -46,18 +45,23 @@ const Wallet = () => {
   const [connecting, setConnecting] = useState<boolean>(false);
 
   const onSelectWallet = useCallback(() => {
-    setWalletSelectorOpen(true);
-  }, []);
+    if (setUserSettings) {
+      setUserSettings(prevState => ({ ...prevState, openWalletSelector: true, isWalletSelectorIrremovable: false }));
+    }
+  }, [setUserSettings]);
 
   const onCloseWalletSelector = useCallback(
     (value: UserWallet | null) => {
-      setWalletSelectorOpen(false);
+      if (setUserSettings) {
+        setUserSettings(prevState => ({ ...prevState, openWalletSelector: false }));
+      }
+
       if (value) {
         setSelectedWallet(value);
         setIsUserSelected(true);
       }
     },
-    [setWalletSelectorOpen, setIsUserSelected],
+    [setUserSettings, setIsUserSelected],
   );
 
   const onOpenWalletPopup = useCallback(() => {
@@ -73,10 +77,11 @@ const Wallet = () => {
   }, [setUserSettings]);
 
   const onSwitchWallet = useCallback(async () => {
-    onCloseWalletPopup();
     setConnecting(false);
-    setWalletSelectorOpen(true);
-  }, [onCloseWalletPopup]);
+    if (setUserSettings) {
+      setUserSettings(prevState => ({ ...prevState, openWalletPopup: false, openWalletSelector: true }));
+    }
+  }, [setUserSettings]);
 
   const requestNetworkChange = useCallback(async () => {
     const injectedConnector = new InjectedConnector({ supportedChainIds });
@@ -335,7 +340,6 @@ const Wallet = () => {
   return (
     <>
       <WalletSelector
-        open={walletSelectorOpen}
         currentWallet={selectedWallet}
         availableWallets={availableWallets}
         onClose={onCloseWalletSelector}
@@ -381,7 +385,6 @@ const Wallet = () => {
       </div>
       <WalletPopup
         anchorElement={walletPopupAnchor}
-        open={openWalletPopup}
         account={account}
         onSwitchWallet={onSwitchWallet}
         onClose={onCloseWalletPopup}
