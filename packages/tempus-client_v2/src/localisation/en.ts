@@ -21,6 +21,7 @@ const en: { [word in Words]: string } = {
   errorConnectingWallet: 'Error connecting wallet',
   viewRecentTransactions: 'View recent transactions',
   walletOverview: 'Wallet overview',
+  switchWallet: 'Switch Wallet',
   connectedWallet: 'Connected Wallet',
   viewLinkText: 'View on Etherscan',
   pendingTransactions: 'Pending Transactions',

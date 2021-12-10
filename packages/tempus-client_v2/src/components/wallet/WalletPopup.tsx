@@ -19,12 +19,13 @@ type WalletPopupInProps = {
 };
 
 type WalletPopupOutProps = {
+  onSwitchWallet: () => void;
   onClose: () => void;
 };
 
 type WalletPopupProps = WalletPopupInProps & WalletPopupOutProps;
 
-const WalletPopup: FC<WalletPopupProps> = ({ anchorElement, open, account, onClose }) => {
+const WalletPopup: FC<WalletPopupProps> = ({ anchorElement, open, account, onSwitchWallet, onClose }) => {
   const { language } = useContext(LanguageContext);
   const { pendingTransactions } = useContext(PendingTransactionsContext);
 
@@ -34,6 +35,10 @@ const WalletPopup: FC<WalletPopupProps> = ({ anchorElement, open, account, onClo
     getNotificationService().deleteNotifications();
     setNotifications([]);
   }, []);
+
+  const switchWallet = useCallback(() => {
+    onSwitchWallet && onSwitchWallet();
+  }, [onSwitchWallet]);
 
   useEffect(() => {
     const notificationStream$ = getNotificationService()
@@ -63,6 +68,11 @@ const WalletPopup: FC<WalletPopupProps> = ({ anchorElement, open, account, onClo
               <Typography variant="dropdown-text" color="title">
                 {getText('connectedWallet', language)}
               </Typography>
+              <Button onClick={switchWallet}>
+                <Typography variant="disclaimer-text" color="title">
+                  {getText('switchWallet', language)}
+                </Typography>
+              </Button>
             </div>
             <Typography variant="dropdown-text">{account}</Typography>
           </div>
