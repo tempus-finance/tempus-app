@@ -29,6 +29,7 @@ interface StatsInterface extends ethers.utils.Interface {
     "getRate(bytes32)": FunctionFragment;
     "totalValueLockedAtGivenRate(address,bytes32)": FunctionFragment;
     "totalValueLockedInBackingTokens(address)": FunctionFragment;
+    "version()": FunctionFragment;
   };
 
   encodeFunctionData(
@@ -78,6 +79,7 @@ interface StatsInterface extends ethers.utils.Interface {
     functionFragment: "totalValueLockedInBackingTokens",
     values: [string]
   ): string;
+  encodeFunctionData(functionFragment: "version", values?: undefined): string;
 
   decodeFunctionResult(
     functionFragment: "estimateExitAndRedeem",
@@ -112,6 +114,7 @@ interface StatsInterface extends ethers.utils.Interface {
     functionFragment: "totalValueLockedInBackingTokens",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "version", data: BytesLike): Result;
 
   events: {};
 }
@@ -245,6 +248,18 @@ export class Stats extends BaseContract {
       pool: string,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
+
+    version(
+      overrides?: CallOverrides
+    ): Promise<
+      [
+        [number, number, number] & {
+          major: number;
+          minor: number;
+          patch: number;
+        }
+      ]
+    >;
   };
 
   estimateExitAndRedeem(
@@ -333,6 +348,12 @@ export class Stats extends BaseContract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
+  version(
+    overrides?: CallOverrides
+  ): Promise<
+    [number, number, number] & { major: number; minor: number; patch: number }
+  >;
+
   callStatic: {
     estimateExitAndRedeem(
       tempusAMM: string,
@@ -419,6 +440,12 @@ export class Stats extends BaseContract {
       pool: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    version(
+      overrides?: CallOverrides
+    ): Promise<
+      [number, number, number] & { major: number; minor: number; patch: number }
+    >;
   };
 
   filters: {};
@@ -488,6 +515,8 @@ export class Stats extends BaseContract {
       pool: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    version(overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -555,5 +584,7 @@ export class Stats extends BaseContract {
       pool: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
+
+    version(overrides?: CallOverrides): Promise<PopulatedTransaction>;
   };
 }
