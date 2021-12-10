@@ -61,23 +61,23 @@ const AprTooltip = () => {
     return null;
   }, [fixedAPR, maturityDate, startDate]);
 
-  const lifetimeAprFormatted = useMemo(() => {
-    if (poolRatio !== null && poolRatio[0] && poolRatio[1]) {
-      const daysToMaturity = differenceInDays(maturityDate, startDate);
-      const dailyInterest = poolRatio[0] / poolRatio[1] / 365;
-      return NumberUtils.formatPercentage(dailyInterest * daysToMaturity, 2);
-    }
+  // const lifetimeAprFormatted = useMemo(() => {
+  //   if (poolRatio !== null && poolRatio[0] && poolRatio[1]) {
+  //     const daysToMaturity = differenceInDays(maturityDate, startDate);
+  //     const dailyInterest = poolRatio[0] / poolRatio[1] / 365;
+  //     return NumberUtils.formatPercentage(dailyInterest * daysToMaturity, 2);
+  //   }
 
-    return null;
-  }, [maturityDate, poolRatio, startDate]);
+  //   return null;
+  // }, [maturityDate, poolRatio, startDate]);
 
-  const lifetimeYieldFormatted = useMemo(() => {
-    if (poolRatio !== null) {
-      return NumberUtils.formatPercentage(poolRatio[0] / poolRatio[1], 2);
-    }
+  // const lifetimeYieldFormatted = useMemo(() => {
+  //   if (poolRatio !== null) {
+  //     return NumberUtils.formatPercentage(poolRatio[0] / poolRatio[1], 2);
+  //   }
 
-    return null;
-  }, [poolRatio]);
+  //   return null;
+  // }, [poolRatio]);
 
   const principalsPoolRatio = useMemo(() => {
     if (!poolRatio || !poolRatio[0]) {
@@ -108,18 +108,18 @@ const AprTooltip = () => {
         <Typography variant="card-body-text">{futureYieldFormatted}</Typography>
       </div>
       <hr />
-      <div className="tc__aprTooltip-row">
+      {/* <div className="tc__aprTooltip-row">
         <Typography variant="card-body-text" color="title">
           {getText('lifeTimeApr', language)}
         </Typography>
         <Typography variant="card-body-text">{lifetimeAprFormatted}</Typography>
-      </div>
-      <div className="tc__aprTooltip-row">
+      </div> */}
+      {/* <div className="tc__aprTooltip-row">
         <Typography variant="card-body-text" color="title">
           {getText('lifeTimeYield', language)}
         </Typography>
         <Typography variant="card-body-text">{lifetimeYieldFormatted}</Typography>
-      </div>
+      </div> */}
       <div className="tc__aprTooltip-row">
         <Typography variant="card-body-text" color="title">
           {getText('poolRatio', language)}
