@@ -1,4 +1,5 @@
 import { JsonRpcSigner, JsonRpcProvider } from '@ethersproject/providers';
+import getDefaultProvider from '../services/getDefaultProvider';
 import getERC20TokenService from '../services/getERC20TokenService';
 import getStatisticsService from '../services/getStatisticsService';
 import getTempusAMMService from '../services/getTempusAMMService';
@@ -9,14 +10,21 @@ import getConfig from '../utils/getConfig';
 import PoolDataAdapter from './PoolDataAdapter';
 
 let poolDataAdapter: PoolDataAdapter;
-let actualSignerOrProvider: JsonRpcSigner | JsonRpcProvider;
 const getPoolDataAdapter = (signerOrProvider?: JsonRpcSigner | JsonRpcProvider): PoolDataAdapter => {
   if (!poolDataAdapter) {
     poolDataAdapter = new PoolDataAdapter();
+    poolDataAdapter.init({
+      tempusControllerAddress: getConfig().tempusControllerContract,
+      tempusControllerService: getTempusControllerService(getDefaultProvider()),
+      tempusPoolService: getTempusPoolService(getDefaultProvider()),
+      statisticService: getStatisticsService(getDefaultProvider()),
+      tempusAMMService: getTempusAMMService(getDefaultProvider()),
+      vaultService: getVaultService(getDefaultProvider()),
+      eRC20TokenServiceGetter: getERC20TokenService,
+    });
   }
 
-  if (signerOrProvider !== undefined && signerOrProvider !== actualSignerOrProvider) {
-    actualSignerOrProvider = signerOrProvider;
+  if (signerOrProvider) {
     poolDataAdapter.init({
       tempusControllerAddress: getConfig().tempusControllerContract,
       tempusControllerService: getTempusControllerService(signerOrProvider),

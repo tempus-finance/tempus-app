@@ -21,6 +21,7 @@ import { TypedEventFilter, TypedEvent, TypedListener } from "./commons";
 interface StatsInterface extends ethers.utils.Interface {
   functions: {
     "estimateExitAndRedeem(address,uint256,uint256,uint256,uint256,bool)": FunctionFragment;
+    "estimateExitAndRedeemGivenStakedOut(address,uint256,uint256,uint256,uint256,bool)": FunctionFragment;
     "estimatedDepositAndFix(address,uint256,bool)": FunctionFragment;
     "estimatedDepositAndProvideLiquidity(address,uint256,bool)": FunctionFragment;
     "estimatedMintedShares(address,uint256,bool)": FunctionFragment;
@@ -28,10 +29,22 @@ interface StatsInterface extends ethers.utils.Interface {
     "getRate(bytes32)": FunctionFragment;
     "totalValueLockedAtGivenRate(address,bytes32)": FunctionFragment;
     "totalValueLockedInBackingTokens(address)": FunctionFragment;
+    "version()": FunctionFragment;
   };
 
   encodeFunctionData(
     functionFragment: "estimateExitAndRedeem",
+    values: [
+      string,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      boolean
+    ]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "estimateExitAndRedeemGivenStakedOut",
     values: [
       string,
       BigNumberish,
@@ -66,9 +79,14 @@ interface StatsInterface extends ethers.utils.Interface {
     functionFragment: "totalValueLockedInBackingTokens",
     values: [string]
   ): string;
+  encodeFunctionData(functionFragment: "version", values?: undefined): string;
 
   decodeFunctionResult(
     functionFragment: "estimateExitAndRedeem",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "estimateExitAndRedeemGivenStakedOut",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -96,6 +114,7 @@ interface StatsInterface extends ethers.utils.Interface {
     functionFragment: "totalValueLockedInBackingTokens",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "version", data: BytesLike): Result;
 
   events: {};
 }
@@ -152,7 +171,30 @@ export class Stats extends BaseContract {
       threshold: BigNumberish,
       toBackingToken: boolean,
       overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
+    ): Promise<
+      [BigNumber, BigNumber, BigNumber, BigNumber, BigNumber] & {
+        tokenAmount: BigNumber;
+        principalsStaked: BigNumber;
+        yieldsStaked: BigNumber;
+        principalsRate: BigNumber;
+        yieldsRate: BigNumber;
+      }
+    >;
+
+    estimateExitAndRedeemGivenStakedOut(
+      tempusAMM: string,
+      principals: BigNumberish,
+      yields: BigNumberish,
+      principalsStaked: BigNumberish,
+      yieldsStaked: BigNumberish,
+      toBackingToken: boolean,
+      overrides?: CallOverrides
+    ): Promise<
+      [BigNumber, BigNumber] & {
+        tokenAmount: BigNumber;
+        lpTokensRedeemed: BigNumber;
+      }
+    >;
 
     estimatedDepositAndFix(
       tempusAMM: string,
@@ -206,6 +248,18 @@ export class Stats extends BaseContract {
       pool: string,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
+
+    version(
+      overrides?: CallOverrides
+    ): Promise<
+      [
+        [number, number, number] & {
+          major: number;
+          minor: number;
+          patch: number;
+        }
+      ]
+    >;
   };
 
   estimateExitAndRedeem(
@@ -216,7 +270,30 @@ export class Stats extends BaseContract {
     threshold: BigNumberish,
     toBackingToken: boolean,
     overrides?: CallOverrides
-  ): Promise<BigNumber>;
+  ): Promise<
+    [BigNumber, BigNumber, BigNumber, BigNumber, BigNumber] & {
+      tokenAmount: BigNumber;
+      principalsStaked: BigNumber;
+      yieldsStaked: BigNumber;
+      principalsRate: BigNumber;
+      yieldsRate: BigNumber;
+    }
+  >;
+
+  estimateExitAndRedeemGivenStakedOut(
+    tempusAMM: string,
+    principals: BigNumberish,
+    yields: BigNumberish,
+    principalsStaked: BigNumberish,
+    yieldsStaked: BigNumberish,
+    toBackingToken: boolean,
+    overrides?: CallOverrides
+  ): Promise<
+    [BigNumber, BigNumber] & {
+      tokenAmount: BigNumber;
+      lpTokensRedeemed: BigNumber;
+    }
+  >;
 
   estimatedDepositAndFix(
     tempusAMM: string,
@@ -271,6 +348,12 @@ export class Stats extends BaseContract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
+  version(
+    overrides?: CallOverrides
+  ): Promise<
+    [number, number, number] & { major: number; minor: number; patch: number }
+  >;
+
   callStatic: {
     estimateExitAndRedeem(
       tempusAMM: string,
@@ -280,7 +363,30 @@ export class Stats extends BaseContract {
       threshold: BigNumberish,
       toBackingToken: boolean,
       overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    ): Promise<
+      [BigNumber, BigNumber, BigNumber, BigNumber, BigNumber] & {
+        tokenAmount: BigNumber;
+        principalsStaked: BigNumber;
+        yieldsStaked: BigNumber;
+        principalsRate: BigNumber;
+        yieldsRate: BigNumber;
+      }
+    >;
+
+    estimateExitAndRedeemGivenStakedOut(
+      tempusAMM: string,
+      principals: BigNumberish,
+      yields: BigNumberish,
+      principalsStaked: BigNumberish,
+      yieldsStaked: BigNumberish,
+      toBackingToken: boolean,
+      overrides?: CallOverrides
+    ): Promise<
+      [BigNumber, BigNumber] & {
+        tokenAmount: BigNumber;
+        lpTokensRedeemed: BigNumber;
+      }
+    >;
 
     estimatedDepositAndFix(
       tempusAMM: string,
@@ -334,6 +440,12 @@ export class Stats extends BaseContract {
       pool: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    version(
+      overrides?: CallOverrides
+    ): Promise<
+      [number, number, number] & { major: number; minor: number; patch: number }
+    >;
   };
 
   filters: {};
@@ -349,6 +461,16 @@ export class Stats extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    estimateExitAndRedeemGivenStakedOut(
+      tempusAMM: string,
+      principals: BigNumberish,
+      yields: BigNumberish,
+      principalsStaked: BigNumberish,
+      yieldsStaked: BigNumberish,
+      toBackingToken: boolean,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     estimatedDepositAndFix(
       tempusAMM: string,
       amount: BigNumberish,
@@ -393,6 +515,8 @@ export class Stats extends BaseContract {
       pool: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    version(overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -406,6 +530,16 @@ export class Stats extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    estimateExitAndRedeemGivenStakedOut(
+      tempusAMM: string,
+      principals: BigNumberish,
+      yields: BigNumberish,
+      principalsStaked: BigNumberish,
+      yieldsStaked: BigNumberish,
+      toBackingToken: boolean,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     estimatedDepositAndFix(
       tempusAMM: string,
       amount: BigNumberish,
@@ -450,5 +584,7 @@ export class Stats extends BaseContract {
       pool: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
+
+    version(overrides?: CallOverrides): Promise<PopulatedTransaction>;
   };
 }
