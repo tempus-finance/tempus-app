@@ -6,6 +6,7 @@ import { Notification } from '../../interfaces/Notification';
 import { UserSettingsContext } from '../../context/userSettingsContext';
 import { PendingTransactionsContext } from '../../context/pendingTransactionsContext';
 import getNotificationService from '../../services/getNotificationService';
+import getConfig from '../../utils/getConfig';
 import getText from '../../localisation/getText';
 import Typography from '../typography/Typography';
 import Spacer from '../spacer/spacer';
@@ -40,6 +41,16 @@ const WalletPopup: FC<WalletPopupProps> = ({ anchorElement, account, onSwitchWal
   const switchWallet = useCallback(() => {
     onSwitchWallet && onSwitchWallet();
   }, [onSwitchWallet]);
+
+  const onAccountAddressClick = useCallback(() => {
+    const config = getConfig();
+
+    if (config.networkName === 'homestead') {
+      window.open(`https://etherscan.io/address/${account}`, '_blank');
+    } else {
+      window.open(`https://${config.networkName}.etherscan.io/address/${account}`, '_blank');
+    }
+  }, [account]);
 
   useEffect(() => {
     const notificationStream$ = getNotificationService()
@@ -80,7 +91,11 @@ const WalletPopup: FC<WalletPopupProps> = ({ anchorElement, account, onSwitchWal
                 </Typography>
               </Button>
             </div>
-            <Typography variant="dropdown-text">{account}</Typography>
+            <div onClick={onAccountAddressClick} className="tc__sidebar-pool-link">
+              <Typography variant="dropdown-text" color="link">
+                {account}
+              </Typography>
+            </div>
           </div>
           {pendingTransactions && pendingTransactions.length > 0 && (
             <>
