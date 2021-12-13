@@ -2,6 +2,7 @@ import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react
 import { ethers, BigNumber } from 'ethers';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { combineLatest } from 'rxjs';
+import { SLIPPAGE_PRECISION } from '../../constants';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
 import getUserShareTokenBalanceProvider from '../../providers/getUserShareTokenBalanceProvider';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
@@ -199,7 +200,7 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
         minPrincipalsStaked,
         minYieldsStaked,
         estimatedWithdrawData.yieldsRate,
-        ethers.utils.parseEther(actualSlippage),
+        ethers.utils.parseUnits(actualSlippage, SLIPPAGE_PRECISION),
         isBackingToken,
       );
     } else {
