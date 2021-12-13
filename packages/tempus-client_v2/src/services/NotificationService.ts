@@ -8,7 +8,6 @@ import { ProtocolName } from '../interfaces/ProtocolName';
 import { TempusPool } from '../interfaces/TempusPool';
 import { Notification, NotificationCategory, NotificationLevel } from '../interfaces/Notification';
 import { capitalize } from '../utils/capitalizeString';
-import getConfig from '../utils/getConfig';
 import NumberUtils from './NumberUtils';
 import StorageService from './StorageService';
 
@@ -117,10 +116,11 @@ class NotificationService {
 }
 
 export const generateEtherscanLink = (tx: string) => {
-  const config = getConfig();
-
+  // const config = getConfig();
   // TODO - No need to specify network name for mainnet
-  return `https://${config.networkName}.etherscan.io/tx/${tx}`;
+  // return `https://${config.networkName}.etherscan.io/tx/${tx}`;
+
+  return `https://etherscan.io/tx/${tx}`;
 };
 
 export const generatePoolNotificationInfo = (ticker: Ticker, protocol: ProtocolName, maturityDate: Date) => {
