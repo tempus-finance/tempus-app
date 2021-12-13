@@ -23,7 +23,7 @@ type CurrencyInputOutProps = {
 
 type CurrencyInputProps = CurrencyInputInProps & CurrencyInputOutProps;
 
-const currencyPrecision = 8;
+const currencyPrecision = 18;
 
 const CurrencyInput: FC<CurrencyInputProps> = ({
   defaultValue,

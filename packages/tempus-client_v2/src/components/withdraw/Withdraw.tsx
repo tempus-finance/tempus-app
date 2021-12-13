@@ -383,7 +383,16 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
       <SectionContainer title="from" elevation={1}>
         {userPrincipalsBalance && !userPrincipalsBalance.isZero() && (
           <SectionContainer elevation={2}>
-            <Typography variant="h4">{getText('principals', language)}</Typography>
+            <div className="tc__title-and-balance">
+              <Typography variant="h4">{getText('principals', language)}</Typography>
+              {principalsBalanceFormatted && (
+                <div>
+                  <Typography variant="card-body-text">{getText('balance', language)}</Typography>
+                  <Spacer size={15} />
+                  <Typography variant="card-body-text">{principalsBalanceFormatted}</Typography>
+                </div>
+              )}
+            </div>
             <Spacer size={10} />
             <div className="tf__flex-row-space-between">
               <div className="tf__flex-row-center-v">
@@ -392,10 +401,6 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
                   onChange={onPrincipalsAmountChange}
                   onMaxClick={onPrincipalsMaxClick}
                 />
-                <Spacer size={15} />
-                <Typography variant="card-body-text">{getText('balance', language)}</Typography>
-                <Spacer size={10} />
-                <Typography variant="card-body-text">{principalsBalanceFormatted}</Typography>
               </div>
               <Spacer size={15} />
               <div className="tf__flex-row-center-v-end">
@@ -416,7 +421,17 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
           <>
             <PlusIconContainer orientation="horizontal" />
             <SectionContainer elevation={2}>
-              <Typography variant="h4">{getText('yields', language)}</Typography>
+              <div className="tc__title-and-balance">
+                <Typography variant="h4">{getText('yields', language)}</Typography>
+                {yieldsBalanceFormatted && (
+                  <div>
+                    <Typography variant="card-body-text">{getText('balance', language)}</Typography>
+                    <Spacer size={15} />
+
+                    <Typography variant="card-body-text">{yieldsBalanceFormatted}</Typography>
+                  </div>
+                )}
+              </div>
               <Spacer size={10} />
               <div className="tf__flex-row-space-between">
                 <div className="tf__flex-row-center-v">
@@ -425,10 +440,8 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
                     onChange={onYieldsAmountChange}
                     onMaxClick={onYieldsMaxClick}
                   />
-                  <Spacer size={15} />
-                  <Typography variant="card-body-text">{getText('balance', language)}</Typography>
+
                   <Spacer size={10} />
-                  <Typography variant="card-body-text">{yieldsBalanceFormatted}</Typography>
                 </div>
                 <Spacer size={15} />
                 <div className="tf__flex-row-center-v-end">
@@ -450,7 +463,16 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
           <>
             <PlusIconContainer orientation="horizontal" />
             <SectionContainer elevation={2}>
-              <Typography variant="h4">{getText('lpTokens', language)}</Typography>
+              <div className="tc__title-and-balance">
+                <Typography variant="h4">{getText('lpTokens', language)}</Typography>
+                {lpTokenBalanceFormatted && (
+                  <div>
+                    <Typography variant="card-body-text">{getText('balance', language)}</Typography>
+                    <Spacer size={10} />
+                    <Typography variant="card-body-text">{lpTokenBalanceFormatted}</Typography>
+                  </div>
+                )}
+              </div>
               <Spacer size={10} />
               <div className="tf__flex-row-space-between">
                 <div className="tf__flex-row-center-v">
@@ -460,9 +482,6 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
                     onMaxClick={onLpTokensMaxClick}
                   />
                   <Spacer size={15} />
-                  <Typography variant="card-body-text">{getText('balance', language)}</Typography>
-                  <Spacer size={10} />
-                  <Typography variant="card-body-text">{lpTokenBalanceFormatted}</Typography>
                 </div>
                 <Spacer size={15} />
                 <div className="tf__flex-row-center-v-end">
