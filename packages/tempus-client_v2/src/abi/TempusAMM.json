@@ -23,7 +23,12 @@
       },
       {
         "internalType": "uint256",
-        "name": "amplificationParameter",
+        "name": "amplificationStart",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "amplificationEnd",
         "type": "uint256"
       },
       {
@@ -550,6 +555,11 @@
         "internalType": "uint256",
         "name": "amountIn",
         "type": "uint256"
+      },
+      {
+        "internalType": "bool",
+        "name": "yieldsIn",
+        "type": "bool"
       }
     ],
     "stateMutability": "view",

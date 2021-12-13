@@ -233,7 +233,8 @@ class TempusControllerService {
     yieldsAmount: BigNumber,
     minPrincipalsStaked: BigNumber,
     minYieldsStaked: BigNumber,
-    minRate: BigNumber,
+    yieldsRate: BigNumber,
+    maxSlippage: BigNumber,
     isBackingToken: boolean,
   ): Promise<ContractTransaction> {
     if (!this.contract || !this.tempusAMMService) {
@@ -254,7 +255,7 @@ class TempusControllerService {
     let maxLeftoverShares = this.tempusAMMService.getMaxLeftoverShares(principalsAmount, yieldsAmount, lpTokensAmount);
 
     try {
-      const estimate = await this.contract.estimateGas.exitTempusAmmAndRedeem(
+      const estimate = await this.contract.estimateGas.exitAmmGivenLpAndRedeem(
         tempusAMM,
         lpTokensAmount,
         principalsAmount,
@@ -262,11 +263,12 @@ class TempusControllerService {
         minPrincipalsStaked,
         minYieldsStaked,
         maxLeftoverShares,
-        minRate,
+        yieldsRate,
+        maxSlippage,
         isBackingToken,
         INFINITE_DEADLINE,
       );
-      return await this.contract.exitTempusAmmAndRedeem(
+      return await this.contract.exitAmmGivenLpAndRedeem(
         tempusAMM,
         lpTokensAmount,
         principalsAmount,
@@ -274,7 +276,8 @@ class TempusControllerService {
         minPrincipalsStaked,
         minYieldsStaked,
         maxLeftoverShares,
-        minRate,
+        yieldsRate,
+        maxSlippage,
         isBackingToken,
         INFINITE_DEADLINE,
         {

@@ -2,6 +2,7 @@ import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react
 import { ethers, BigNumber } from 'ethers';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { combineLatest } from 'rxjs';
+import { SLIPPAGE_PRECISION } from '../../constants';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
 import getUserShareTokenBalanceProvider from '../../providers/getUserShareTokenBalanceProvider';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
@@ -190,26 +191,6 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
         ),
       );
 
-      const totalPrincipalsToWithdraw = principalsAmountParsed.add(estimatedWithdrawData.principalsStaked);
-      const totalYieldsToWithdraw = yieldsAmountParsed.add(estimatedWithdrawData.yieldsStaked);
-
-      let minRate = BigNumber.from('0');
-      if (totalPrincipalsToWithdraw.gt(totalYieldsToWithdraw)) {
-        minRate = estimatedWithdrawData.principalsRate.sub(
-          mul18f(
-            estimatedWithdrawData.principalsRate,
-            ethers.utils.parseUnits(actualSlippage, getTokenPrecision(selectedPoolAddress, 'principals')),
-          ),
-        );
-      } else if (totalYieldsToWithdraw.gt(totalPrincipalsToWithdraw)) {
-        minRate = estimatedWithdrawData.yieldsRate.sub(
-          mul18f(
-            estimatedWithdrawData.yieldsRate,
-            ethers.utils.parseUnits(actualSlippage, getTokenPrecision(selectedPoolAddress, 'principals')),
-          ),
-        );
-      }
-
       const isBackingToken = backingToken === selectedToken;
       return poolDataAdapter.executeWithdraw(
         ammAddress,
@@ -218,7 +199,8 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
         lpTokenAmountParsed,
         minPrincipalsStaked,
         minYieldsStaked,
-        minRate,
+        estimatedWithdrawData.yieldsRate,
+        ethers.utils.parseUnits(actualSlippage, SLIPPAGE_PRECISION),
         isBackingToken,
       );
     } else {

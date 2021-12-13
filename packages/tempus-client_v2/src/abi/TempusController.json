@@ -1,5 +1,10 @@
 [
   {
+    "inputs": [],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
     "anonymous": false,
     "inputs": [
       {
@@ -277,39 +282,6 @@
       },
       {
         "internalType": "uint256",
-        "name": "lpTokensAmount",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "principalAmountOutMin",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "yieldAmountOutMin",
-        "type": "uint256"
-      },
-      {
-        "internalType": "bool",
-        "name": "toInternalBalances",
-        "type": "bool"
-      }
-    ],
-    "name": "exitTempusAMM",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "contract ITempusAMM",
-        "name": "tempusAMM",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
         "name": "principals",
         "type": "uint256"
       },
@@ -339,7 +311,7 @@
         "type": "bool"
       }
     ],
-    "name": "exitTempusAMMAndRedeem",
+    "name": "exitAmmGivenAmountsOutAndEarlyRedeem",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -383,7 +355,12 @@
       },
       {
         "internalType": "uint256",
-        "name": "minRate",
+        "name": "yieldsRate",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "maxSlippage",
         "type": "uint256"
       },
       {
@@ -397,7 +374,40 @@
         "type": "uint256"
       }
     ],
-    "name": "exitTempusAmmAndRedeem",
+    "name": "exitAmmGivenLpAndRedeem",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "contract ITempusAMM",
+        "name": "tempusAMM",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "lpTokensAmount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "principalAmountOutMin",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "yieldAmountOutMin",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bool",
+        "name": "toInternalBalances",
+        "type": "bool"
+      }
+    ],
+    "name": "exitTempusAMM",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -510,24 +520,6 @@
   {
     "inputs": [
       {
-        "internalType": "contract ITempusPool",
-        "name": "targetPool",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "recipient",
-        "type": "address"
-      }
-    ],
-    "name": "transferFees",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
         "internalType": "address",
         "name": "newOwner",
         "type": "address"
@@ -536,6 +528,36 @@
     "name": "transferOwnership",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "version",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint16",
+            "name": "major",
+            "type": "uint16"
+          },
+          {
+            "internalType": "uint16",
+            "name": "minor",
+            "type": "uint16"
+          },
+          {
+            "internalType": "uint16",
+            "name": "patch",
+            "type": "uint16"
+          }
+        ],
+        "internalType": "struct IVersioned.Version",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   }
 ]

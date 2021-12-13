@@ -13,6 +13,7 @@ export const ONE_DAI_IN_RAY = '1000000000000000000000000000'; // 10^27
 export const INFINITE_DEADLINE = BigNumber.from('8640000000000000');
 
 export const DEFAULT_TOKEN_PRECISION = 18;
+export const SLIPPAGE_PRECISION = 18;
 
 export const aaveLendingPoolAddress = '0x7d2768dE32b0b80b7a3454c06BdAc94A69DDc7A9';
 export const daiAddress = '0x6b175474e89094c44da98b954eedeac495271d0f';

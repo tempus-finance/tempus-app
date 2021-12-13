@@ -516,7 +516,9 @@ export class TempusAMM extends BaseContract {
       yields: BigNumberish,
       threshold: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<[BigNumber] & { amountIn: BigNumber }>;
+    ): Promise<
+      [BigNumber, boolean] & { amountIn: BigNumber; yieldsIn: boolean }
+    >;
 
     getSwapFeePercentage(overrides?: CallOverrides): Promise<[BigNumber]>;
 
@@ -744,7 +746,7 @@ export class TempusAMM extends BaseContract {
     yields: BigNumberish,
     threshold: BigNumberish,
     overrides?: CallOverrides
-  ): Promise<BigNumber>;
+  ): Promise<[BigNumber, boolean] & { amountIn: BigNumber; yieldsIn: boolean }>;
 
   getSwapFeePercentage(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -975,7 +977,9 @@ export class TempusAMM extends BaseContract {
       yields: BigNumberish,
       threshold: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    ): Promise<
+      [BigNumber, boolean] & { amountIn: BigNumber; yieldsIn: boolean }
+    >;
 
     getSwapFeePercentage(overrides?: CallOverrides): Promise<BigNumber>;
 

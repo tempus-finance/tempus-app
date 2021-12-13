@@ -22,12 +22,14 @@ import { TypedEventFilter, TypedEvent, TypedListener } from "./commons";
 
 interface TempusPoolInterface extends ethers.utils.Interface {
   functions: {
+    "acceptOwnership()": FunctionFragment;
     "backingToken()": FunctionFragment;
     "backingTokenONE()": FunctionFragment;
     "controller()": FunctionFragment;
     "currentInterestRate()": FunctionFragment;
     "estimatedMintedShares(uint256,bool)": FunctionFragment;
     "estimatedRedeem(uint256,uint256,bool)": FunctionFragment;
+    "exceptionalHaltTime()": FunctionFragment;
     "exchangeRateONE()": FunctionFragment;
     "finalize()": FunctionFragment;
     "getFeesConfig()": FunctionFragment;
@@ -38,6 +40,7 @@ interface TempusPoolInterface extends ethers.utils.Interface {
     "maxDepositFee()": FunctionFragment;
     "maxEarlyRedeemFee()": FunctionFragment;
     "maxMatureRedeemFee()": FunctionFragment;
+    "maximumNegativeYieldDuration()": FunctionFragment;
     "numAssetsPerYieldToken(uint256,uint256)": FunctionFragment;
     "numYieldTokensPerAsset(uint256,uint256)": FunctionFragment;
     "onDepositBacking(uint256,address)": FunctionFragment;
@@ -54,13 +57,18 @@ interface TempusPoolInterface extends ethers.utils.Interface {
     "setFeesConfig(tuple)": FunctionFragment;
     "startTime()": FunctionFragment;
     "totalFees()": FunctionFragment;
-    "transferFees(address,address)": FunctionFragment;
+    "transferFees(address)": FunctionFragment;
+    "transferOwnership(address)": FunctionFragment;
     "version()": FunctionFragment;
     "yieldBearingONE()": FunctionFragment;
     "yieldBearingToken()": FunctionFragment;
     "yieldShare()": FunctionFragment;
   };
 
+  encodeFunctionData(
+    functionFragment: "acceptOwnership",
+    values?: undefined
+  ): string;
   encodeFunctionData(
     functionFragment: "backingToken",
     values?: undefined
@@ -84,6 +92,10 @@ interface TempusPoolInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "estimatedRedeem",
     values: [BigNumberish, BigNumberish, boolean]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "exceptionalHaltTime",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "exchangeRateONE",
@@ -117,6 +129,10 @@ interface TempusPoolInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "maxMatureRedeemFee",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "maximumNegativeYieldDuration",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -182,7 +198,11 @@ interface TempusPoolInterface extends ethers.utils.Interface {
   encodeFunctionData(functionFragment: "totalFees", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "transferFees",
-    values: [string, string]
+    values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "transferOwnership",
+    values: [string]
   ): string;
   encodeFunctionData(functionFragment: "version", values?: undefined): string;
   encodeFunctionData(
@@ -198,6 +218,10 @@ interface TempusPoolInterface extends ethers.utils.Interface {
     values?: undefined
   ): string;
 
+  decodeFunctionResult(
+    functionFragment: "acceptOwnership",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "backingToken",
     data: BytesLike
@@ -217,6 +241,10 @@ interface TempusPoolInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "estimatedRedeem",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "exceptionalHaltTime",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -251,6 +279,10 @@ interface TempusPoolInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "maxMatureRedeemFee",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "maximumNegativeYieldDuration",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -309,6 +341,10 @@ interface TempusPoolInterface extends ethers.utils.Interface {
     functionFragment: "transferFees",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "transferOwnership",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "version", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "yieldBearingONE",
@@ -320,7 +356,13 @@ interface TempusPoolInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "yieldShare", data: BytesLike): Result;
 
-  events: {};
+  events: {
+    "OwnershipProposed(address,address)": EventFragment;
+    "OwnershipTransferred(address,address)": EventFragment;
+  };
+
+  getEvent(nameOrSignatureOrTopic: "OwnershipProposed"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
 }
 
 export class TempusPool extends BaseContract {
@@ -367,6 +409,10 @@ export class TempusPool extends BaseContract {
   interface: TempusPoolInterface;
 
   functions: {
+    acceptOwnership(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     backingToken(overrides?: CallOverrides): Promise<[string]>;
 
     backingTokenONE(overrides?: CallOverrides): Promise<[BigNumber]>;
@@ -387,6 +433,8 @@ export class TempusPool extends BaseContract {
       toBackingToken: boolean,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
+
+    exceptionalHaltTime(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     exchangeRateONE(overrides?: CallOverrides): Promise<[BigNumber]>;
 
@@ -419,6 +467,10 @@ export class TempusPool extends BaseContract {
     maxEarlyRedeemFee(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     maxMatureRedeemFee(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    maximumNegativeYieldDuration(
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
 
     numAssetsPerYieldToken(
       yieldTokens: BigNumberish,
@@ -494,12 +546,26 @@ export class TempusPool extends BaseContract {
     totalFees(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     transferFees(
-      authorizer: string,
       recipient: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    version(overrides?: CallOverrides): Promise<[BigNumber]>;
+    transferOwnership(
+      newOwner: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    version(
+      overrides?: CallOverrides
+    ): Promise<
+      [
+        [number, number, number] & {
+          major: number;
+          minor: number;
+          patch: number;
+        }
+      ]
+    >;
 
     yieldBearingONE(overrides?: CallOverrides): Promise<[BigNumber]>;
 
@@ -507,6 +573,10 @@ export class TempusPool extends BaseContract {
 
     yieldShare(overrides?: CallOverrides): Promise<[string]>;
   };
+
+  acceptOwnership(
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
 
   backingToken(overrides?: CallOverrides): Promise<string>;
 
@@ -528,6 +598,8 @@ export class TempusPool extends BaseContract {
     toBackingToken: boolean,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
+
+  exceptionalHaltTime(overrides?: CallOverrides): Promise<BigNumber>;
 
   exchangeRateONE(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -558,6 +630,8 @@ export class TempusPool extends BaseContract {
   maxEarlyRedeemFee(overrides?: CallOverrides): Promise<BigNumber>;
 
   maxMatureRedeemFee(overrides?: CallOverrides): Promise<BigNumber>;
+
+  maximumNegativeYieldDuration(overrides?: CallOverrides): Promise<BigNumber>;
 
   numAssetsPerYieldToken(
     yieldTokens: BigNumberish,
@@ -631,12 +705,20 @@ export class TempusPool extends BaseContract {
   totalFees(overrides?: CallOverrides): Promise<BigNumber>;
 
   transferFees(
-    authorizer: string,
     recipient: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  version(overrides?: CallOverrides): Promise<BigNumber>;
+  transferOwnership(
+    newOwner: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  version(
+    overrides?: CallOverrides
+  ): Promise<
+    [number, number, number] & { major: number; minor: number; patch: number }
+  >;
 
   yieldBearingONE(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -645,6 +727,8 @@ export class TempusPool extends BaseContract {
   yieldShare(overrides?: CallOverrides): Promise<string>;
 
   callStatic: {
+    acceptOwnership(overrides?: CallOverrides): Promise<void>;
+
     backingToken(overrides?: CallOverrides): Promise<string>;
 
     backingTokenONE(overrides?: CallOverrides): Promise<BigNumber>;
@@ -665,6 +749,8 @@ export class TempusPool extends BaseContract {
       toBackingToken: boolean,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    exceptionalHaltTime(overrides?: CallOverrides): Promise<BigNumber>;
 
     exchangeRateONE(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -693,6 +779,8 @@ export class TempusPool extends BaseContract {
     maxEarlyRedeemFee(overrides?: CallOverrides): Promise<BigNumber>;
 
     maxMatureRedeemFee(overrides?: CallOverrides): Promise<BigNumber>;
+
+    maximumNegativeYieldDuration(overrides?: CallOverrides): Promise<BigNumber>;
 
     numAssetsPerYieldToken(
       yieldTokens: BigNumberish,
@@ -788,13 +876,18 @@ export class TempusPool extends BaseContract {
 
     totalFees(overrides?: CallOverrides): Promise<BigNumber>;
 
-    transferFees(
-      authorizer: string,
-      recipient: string,
+    transferFees(recipient: string, overrides?: CallOverrides): Promise<void>;
+
+    transferOwnership(
+      newOwner: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    version(overrides?: CallOverrides): Promise<BigNumber>;
+    version(
+      overrides?: CallOverrides
+    ): Promise<
+      [number, number, number] & { major: number; minor: number; patch: number }
+    >;
 
     yieldBearingONE(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -803,9 +896,29 @@ export class TempusPool extends BaseContract {
     yieldShare(overrides?: CallOverrides): Promise<string>;
   };
 
-  filters: {};
+  filters: {
+    OwnershipProposed(
+      currentOwner?: string | null,
+      proposedOwner?: string | null
+    ): TypedEventFilter<
+      [string, string],
+      { currentOwner: string; proposedOwner: string }
+    >;
+
+    OwnershipTransferred(
+      previousOwner?: string | null,
+      newOwner?: string | null
+    ): TypedEventFilter<
+      [string, string],
+      { previousOwner: string; newOwner: string }
+    >;
+  };
 
   estimateGas: {
+    acceptOwnership(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     backingToken(overrides?: CallOverrides): Promise<BigNumber>;
 
     backingTokenONE(overrides?: CallOverrides): Promise<BigNumber>;
@@ -826,6 +939,8 @@ export class TempusPool extends BaseContract {
       toBackingToken: boolean,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    exceptionalHaltTime(overrides?: CallOverrides): Promise<BigNumber>;
 
     exchangeRateONE(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -848,6 +963,8 @@ export class TempusPool extends BaseContract {
     maxEarlyRedeemFee(overrides?: CallOverrides): Promise<BigNumber>;
 
     maxMatureRedeemFee(overrides?: CallOverrides): Promise<BigNumber>;
+
+    maximumNegativeYieldDuration(overrides?: CallOverrides): Promise<BigNumber>;
 
     numAssetsPerYieldToken(
       yieldTokens: BigNumberish,
@@ -921,8 +1038,12 @@ export class TempusPool extends BaseContract {
     totalFees(overrides?: CallOverrides): Promise<BigNumber>;
 
     transferFees(
-      authorizer: string,
       recipient: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    transferOwnership(
+      newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -936,6 +1057,10 @@ export class TempusPool extends BaseContract {
   };
 
   populateTransaction: {
+    acceptOwnership(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
     backingToken(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     backingTokenONE(overrides?: CallOverrides): Promise<PopulatedTransaction>;
@@ -956,6 +1081,10 @@ export class TempusPool extends BaseContract {
       principals: BigNumberish,
       yields: BigNumberish,
       toBackingToken: boolean,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    exceptionalHaltTime(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -984,6 +1113,10 @@ export class TempusPool extends BaseContract {
     maxEarlyRedeemFee(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     maxMatureRedeemFee(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    maximumNegativeYieldDuration(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -1063,8 +1196,12 @@ export class TempusPool extends BaseContract {
     totalFees(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     transferFees(
-      authorizer: string,
       recipient: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    transferOwnership(
+      newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

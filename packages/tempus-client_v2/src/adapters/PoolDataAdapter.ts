@@ -435,7 +435,8 @@ export default class PoolDataAdapter {
     userLPBalance: BigNumber,
     minPrincipalsStaked: BigNumber,
     minYieldsStaked: BigNumber,
-    minRate: BigNumber,
+    yieldsRate: BigNumber,
+    maxSlippage: BigNumber,
     isBackingToken: boolean,
   ): Promise<ContractTransaction | undefined> {
     if (!this.tempusControllerService) {
@@ -451,7 +452,8 @@ export default class PoolDataAdapter {
         userYieldsBalance,
         minPrincipalsStaked,
         minYieldsStaked,
-        minRate,
+        yieldsRate,
+        maxSlippage,
         isBackingToken,
       );
     } catch (error) {
