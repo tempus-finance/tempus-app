@@ -127,6 +127,9 @@ const Sidebar: FC<SidebarProps> = ({ initialView, onSelectedView }) => {
             <Typography variant="h5" color="title">
               {getText('basic', language)}
             </Typography>
+            <Typography variant="sub-title" color="title">
+              {getText('basicSubTitle', language)}
+            </Typography>
           </div>
           {basicViews.map((basicViewName: TransactionView) => {
             if (basicViewName === 'withdraw' && withdrawHidden) {
@@ -152,6 +155,9 @@ const Sidebar: FC<SidebarProps> = ({ initialView, onSelectedView }) => {
       <div className="tc__sidebar-section-title">
         <Typography variant="h5" color="title">
           {getText('advanced', language)}
+        </Typography>
+        <Typography variant="sub-title" color="title">
+          {getText('advancedSubTitle', language)}
         </Typography>
       </div>
       {advancedViews.map(advancedViewName => {

@@ -7,6 +7,7 @@ type TypographyVariant =
   | 'h3'
   | 'h4'
   | 'h5'
+  | 'sub-title'
   | 'body-text'
   | 'disclaimer-text'
   | 'button-text'
@@ -53,6 +54,13 @@ typographyStyleMap.set('h5', {
   fontSize: '16px',
   fontStyle: 'normal',
   lineHeight: '19px',
+});
+typographyStyleMap.set('sub-title', {
+  fontFamily: "'Source Sans Pro', sans-serif",
+  fontWeight: 600,
+  fontSize: '12px',
+  fontStyle: 'normal',
+  lineHeight: '15px',
 });
 typographyStyleMap.set('body-text', {
   fontFamily: "'Source Sans Pro', sans-serif",
