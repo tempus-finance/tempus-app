@@ -66,6 +66,8 @@ const Deposit: FC<DepositProps> = ({ narrow, poolDataAdapter }) => {
 
   const [tokenPrecision, setTokenPrecision] = useState<number>(0);
 
+  const [executeDisabledText, setExecuteDisabledText] = useState<string | undefined>(undefined);
+
   const selectedPoolAddress = selectedPool.attach(Downgraded).get();
   const fixedAPR = dynamicPoolData[selectedPool.get()].fixedAPR.attach(Downgraded).get();
   const variableAPR = dynamicPoolData[selectedPool.get()].variableAPR.attach(Downgraded).get();
@@ -380,9 +382,20 @@ const Deposit: FC<DepositProps> = ({ narrow, poolDataAdapter }) => {
     return NumberUtils.formatPercentage(variableAPR, 2);
   }, [variableAPR]);
 
-  const fixedAPRFormatted = useMemo(() => {
-    return NumberUtils.formatPercentage(fixedAPR, 2);
-  }, [fixedAPR]);
+  const fixedAPRFormatted = useMemo(() => NumberUtils.formatPercentage(fixedAPR, 2), [fixedAPR]);
+
+  const estimatedFixedAPRFormatted = useMemo(() => {
+    if (estimatedFixedApr) {
+      if (estimatedFixedApr.gt(ZERO)) {
+        setExecuteDisabledText(undefined);
+        return NumberUtils.formatPercentage(ethers.utils.formatUnits(estimatedFixedApr, tokenPrecision));
+      } else {
+        setExecuteDisabledText(getText('insufficientLiquidity', language));
+        return ZERO;
+      }
+    }
+    return null;
+  }, [estimatedFixedApr, tokenPrecision, language]);
 
   const fixedYieldAtMaturityFormatted = useMemo(() => {
     if (!fixedPrincipalsAmount || !amount || isZeroString(amount)) {
@@ -453,6 +466,7 @@ const Deposit: FC<DepositProps> = ({ narrow, poolDataAdapter }) => {
       .gt(getSelectedTokenBalance() || BigNumber.from('0'));
 
     return (
+      (estimatedFixedApr && estimatedFixedApr.lte(ZERO)) ||
       !tokensApproved ||
       zeroAmount ||
       amountExceedsBalance ||
@@ -464,6 +478,7 @@ const Deposit: FC<DepositProps> = ({ narrow, poolDataAdapter }) => {
     amount,
     tokenPrecision,
     getSelectedTokenBalance,
+    estimatedFixedApr,
     rateEstimateInProgress,
     tokenEstimateInProgress,
     tokensApproved,
@@ -565,10 +580,7 @@ const Deposit: FC<DepositProps> = ({ narrow, poolDataAdapter }) => {
                   `${fixedPrincipalsAmountFormatted} ${getText('principals', language)}`}
               </Typography>
               <Typography variant="button-text" color="accent">
-                APR{' '}
-                {estimatedFixedApr
-                  ? NumberUtils.formatPercentage(ethers.utils.formatUnits(estimatedFixedApr, tokenPrecision))
-                  : fixedAPRFormatted}
+                APR {estimatedFixedApr ? estimatedFixedAPRFormatted : fixedAPRFormatted}
               </Typography>
             </div>
           </SectionContainer>
@@ -618,6 +630,7 @@ const Deposit: FC<DepositProps> = ({ narrow, poolDataAdapter }) => {
             actionName="Deposit"
             actionDescription={selectedYield === 'Fixed' ? 'Fixed Yield' : 'Variable Yield'}
             disabled={executeDisabled}
+            executeDisabledText={executeDisabledText}
             onExecute={onExecute}
             onExecuted={onExecuted}
           />

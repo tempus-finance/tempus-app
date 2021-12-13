@@ -76,6 +76,7 @@ type Words =
   | 'approving'
   | 'execute'
   | 'executing'
+  | 'insufficientLiquidity'
   | 'profitLoss'
   | 'currentValue'
   | 'from'
