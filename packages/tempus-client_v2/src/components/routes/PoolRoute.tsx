@@ -1,11 +1,16 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { BigNumber } from 'ethers';
 import { Downgraded, useHookstate } from '@hookstate/core';
+import { UserSettingsContext } from '../../context/userSettingsContext';
+import { WalletContext } from '../../context/walletContext';
 import { dynamicPoolDataState, selectedPoolState } from '../../state/PoolDataState';
 import Operations from '../operations/Operations';
 
 const PoolRoute = () => {
+  const { userWalletConnected } = useContext(WalletContext);
+  const { setUserSettings } = useContext(UserSettingsContext);
+
   const selectedPool = useHookstate(selectedPoolState);
   const dynamicPoolData = useHookstate(dynamicPoolDataState);
 
@@ -25,12 +30,12 @@ const PoolRoute = () => {
   }
 
   useEffect(() => {
-    if (params.poolAddress) {
+    if (params.poolAddress && userWalletConnected) {
       if (poolShareBalance.principals && poolShareBalance.yields) {
         setPoolShareBalanceLoaded(true);
       }
     }
-  }, [params.poolAddress, poolShareBalance.principals, poolShareBalance.yields]);
+  }, [params.poolAddress, poolShareBalance.principals, poolShareBalance.yields, userWalletConnected]);
 
   useEffect(() => {
     if (params.poolAddress) {
@@ -39,6 +44,12 @@ const PoolRoute = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params.poolAddress]);
+
+  useEffect(() => {
+    if (setUserSettings && !userWalletConnected) {
+      setUserSettings(prevState => ({ ...prevState, openWalletSelector: true, isWalletSelectorIrremovable: true }));
+    }
+  }, [userWalletConnected, setUserSettings]);
 
   if (!selectedPool.get()) {
     return null;

@@ -2,6 +2,7 @@ import { FC, MouseEvent, useCallback, useContext } from 'react';
 import { Dialog, DialogContent, DialogTitle, IconButton, List, ListItem, ListItemText } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import { LanguageContext } from '../../context/languageContext';
+import { UserSettingsContext } from '../../context/userSettingsContext';
 import getText from '../../localisation/getText';
 import Typography from '../typography/Typography';
 import WalletIcon from '../walletIcon/WalletIcon';
@@ -9,7 +10,6 @@ import UserWallet from '../../interfaces/UserWallet';
 import './WalletSelector.scss';
 
 type WalletSelectorInProps = {
-  open: boolean;
   availableWallets: { [w in UserWallet]?: boolean };
   currentWallet: UserWallet | null;
 };
@@ -20,12 +20,13 @@ type WalletSelectorOutProps = {
 
 type WalletSelectorProps = WalletSelectorInProps & WalletSelectorOutProps;
 
-const WalletSelector: FC<WalletSelectorProps> = ({ open, availableWallets, currentWallet, onClose }) => {
+const WalletSelector: FC<WalletSelectorProps> = ({ availableWallets, currentWallet, onClose }) => {
   const { language } = useContext(LanguageContext);
+  const { openWalletSelector, isWalletSelectorIrremovable } = useContext(UserSettingsContext);
 
-  const handleClose = () => {
-    onClose(currentWallet);
-  };
+  const handleClose = useCallback(() => {
+    !isWalletSelectorIrremovable && onClose(currentWallet);
+  }, [isWalletSelectorIrremovable, currentWallet, onClose]);
 
   const handleWalletClick = useCallback(
     (event: MouseEvent<HTMLDivElement>) => {
@@ -36,17 +37,17 @@ const WalletSelector: FC<WalletSelectorProps> = ({ open, availableWallets, curre
 
         if (userWallet === 'installMetaMask') {
           window.open('https://metamask.io', '_blank');
-          onClose(currentWallet);
+          !isWalletSelectorIrremovable && onClose(currentWallet);
         } else {
           onClose(userWallet as UserWallet);
         }
       }
     },
-    [currentWallet, onClose],
+    [isWalletSelectorIrremovable, currentWallet, onClose],
   );
 
   return (
-    <Dialog onClose={handleClose} open={open} className="tc__walletSelector">
+    <Dialog onClose={handleClose} open={openWalletSelector} className="tc__walletSelector">
       <DialogTitle>
         <Typography variant="h4">{getText('selectWallet', language)}</Typography>
         <IconButton aria-label="close" onClick={handleClose}>

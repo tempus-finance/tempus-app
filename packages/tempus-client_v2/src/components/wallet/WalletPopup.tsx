@@ -3,6 +3,7 @@ import { Button, Divider, Popper } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import { LanguageContext } from '../../context/languageContext';
 import { Notification } from '../../interfaces/Notification';
+import { UserSettingsContext } from '../../context/userSettingsContext';
 import { PendingTransactionsContext } from '../../context/pendingTransactionsContext';
 import getNotificationService from '../../services/getNotificationService';
 import getText from '../../localisation/getText';
@@ -14,7 +15,6 @@ import './WalletPopup.scss';
 
 type WalletPopupInProps = {
   anchorElement: RefObject<HTMLDivElement>;
-  open: boolean;
   account?: string | null;
 };
 
@@ -25,7 +25,8 @@ type WalletPopupOutProps = {
 
 type WalletPopupProps = WalletPopupInProps & WalletPopupOutProps;
 
-const WalletPopup: FC<WalletPopupProps> = ({ anchorElement, open, account, onSwitchWallet, onClose }) => {
+const WalletPopup: FC<WalletPopupProps> = ({ anchorElement, account, onSwitchWallet, onClose }) => {
+  const { openWalletPopup } = useContext(UserSettingsContext);
   const { language } = useContext(LanguageContext);
   const { pendingTransactions } = useContext(PendingTransactionsContext);
 
@@ -54,7 +55,12 @@ const WalletPopup: FC<WalletPopupProps> = ({ anchorElement, open, account, onSwi
 
   return (
     <>
-      <Popper className="tc__wallet__popper" open={open} anchorEl={anchorElement.current} placement="top-end">
+      <Popper
+        className="tc__wallet__popper"
+        open={openWalletPopup}
+        anchorEl={anchorElement.current}
+        placement="top-end"
+      >
         <div className="tc__wallet__popper__container">
           <div className="tc__wallet__popper__section tc__wallet__popper__section-header">
             <Typography variant="dropdown-text">{getText('walletOverview', language)}</Typography>
@@ -115,7 +121,7 @@ const WalletPopup: FC<WalletPopupProps> = ({ anchorElement, open, account, onSwi
           )}
         </div>
       </Popper>
-      {open && <div className="tc__backdrop" onClick={onClose} />}
+      {openWalletPopup && <div className="tc__backdrop" onClick={onClose} />}
     </>
   );
 };
