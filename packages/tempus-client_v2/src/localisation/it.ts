@@ -79,6 +79,7 @@ const it: { [word in Words]: string } = {
   approving: 'In Approvazione',
   execute: 'Esegui',
   executing: 'In Esecuzione',
+  insufficientLiquidity: 'Liquidità insufficiente',
   profitLoss: 'Profitti & Perdite',
   currentValue: 'Valore attuale',
   from: 'Da',
