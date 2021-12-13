@@ -419,7 +419,16 @@ const ProvideLiquidity = () => {
     <div className="tc__provideLiquidity">
       <SectionContainer title="from">
         <SectionContainer elevation={2}>
-          <Typography variant="h4">Principals</Typography>
+          <div className="tc__title-and-balance">
+            <Typography variant="h4">{getText('principals', language)}</Typography>
+            {principalsBalanceFormatted && (
+              <div>
+                <Typography variant="card-body-text">{getText('balance', language)}</Typography>
+                <Spacer size={15} />
+                <Typography variant="card-body-text">{principalsBalanceFormatted}</Typography>
+              </div>
+            )}
+          </div>
           <Spacer size={15} />
           <div className="tf__flex-row-space-between">
             <div className="tf__flex-row-center-v">
@@ -430,13 +439,6 @@ const ProvideLiquidity = () => {
                 onMaxClick={onPrincipalsPercentageChange}
               />
               <Spacer size={15} />
-              {principalsBalanceFormatted && (
-                <>
-                  <Typography variant="card-body-text">{getText('balance', language)}</Typography>
-                  <Spacer size={15} />
-                  <Typography variant="card-body-text">{principalsBalanceFormatted}</Typography>
-                </>
-              )}
             </div>
             <Spacer size={15} />
             <div className="tf__flex-row-center-v-end">
@@ -454,7 +456,18 @@ const ProvideLiquidity = () => {
         </SectionContainer>
         <PlusIconContainer orientation="horizontal" />
         <SectionContainer elevation={2}>
-          <Typography variant="h4">Yields</Typography>
+          <div className="tc__title-and-balance">
+            <Typography variant="h4">Yields</Typography>
+            <div>
+              {yieldsBalanceFormatted && (
+                <>
+                  <Typography variant="card-body-text">{getText('balance', language)}</Typography>
+                  <Spacer size={15} />
+                  <Typography variant="card-body-text">{yieldsBalanceFormatted}</Typography>
+                </>
+              )}
+            </div>
+          </div>
           <Spacer size={15} />
           <div className="tf__flex-row-space-between">
             <div className="tf__flex-row-center-v">
@@ -465,13 +478,6 @@ const ProvideLiquidity = () => {
                 onMaxClick={onYieldsPercentageChange}
               />
               <Spacer size={15} />
-              {yieldsBalanceFormatted && (
-                <>
-                  <Typography variant="card-body-text">{getText('balance', language)}</Typography>
-                  <Spacer size={15} />
-                  <Typography variant="card-body-text">{yieldsBalanceFormatted}</Typography>
-                </>
-              )}
             </div>
             <Spacer size={15} />
             <div className="tf__flex-row-center-v-end">

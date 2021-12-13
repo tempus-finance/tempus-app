@@ -292,6 +292,15 @@ const Mint: FC<MintInProps> = ({ narrow }) => {
   return (
     <div className="tc__mint">
       <SectionContainer title="from">
+        {selectedToken && balanceFormatted && (
+          <div className="tc__title-and-balance bottom-padded">
+            <div></div>
+            <Typography variant="body-text">
+              {getText('balance', language)}{' '}
+              {selectedToken && balanceFormatted ? `${balanceFormatted} ${selectedToken}` : ''}
+            </Typography>
+          </div>
+        )}
         <div className="tf__flex-row-center-v">
           <TokenSelector
             value={selectedToken}
@@ -314,13 +323,6 @@ const Mint: FC<MintInProps> = ({ narrow }) => {
               </div>
             )}
           </div>
-          <Spacer size={15} />
-          {selectedToken && balanceFormatted && (
-            <Typography variant="body-text">
-              {getText('balance', language)}{' '}
-              {selectedToken && balanceFormatted ? `${balanceFormatted} ${selectedToken}` : ''}
-            </Typography>
-          )}
           <Spacer size={10} />
           {selectedToken && <TokenIcon ticker={selectedToken} width={20} height={20} />}
         </div>

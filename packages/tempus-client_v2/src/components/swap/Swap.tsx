@@ -236,6 +236,14 @@ const Swap = () => {
   return (
     <div className="tc__swap">
       <SectionContainer title="from" elevation={1}>
+        {selectedToken && balanceFormatted && (
+          <div className="tc__title-and-balance bottom-padded">
+            <div></div>
+            <Typography variant="body-text">
+              {getText('balance', language)} {balanceFormatted}
+            </Typography>
+          </div>
+        )}
         <div className="tf__flex-row-center-v">
           <TokenSelector
             value={tokenFrom.tokenName}
@@ -251,9 +259,6 @@ const Swap = () => {
             disabledTooltip={getText('selectTokenFirst', language)}
           />
           <Spacer size={15} />
-          <Typography variant="card-body-text">{getText('balance', language)}</Typography>
-          <Spacer size={15} />
-          {selectedToken && balanceFormatted && <Typography variant="card-body-text">{balanceFormatted}</Typography>}
         </div>
       </SectionContainer>
       <Spacer size={15} />
