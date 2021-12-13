@@ -98,6 +98,7 @@ type Words =
   | 'feesTooltipInfo'
   | 'selectTokenFirst'
   | 'selectPlaceholder'
+  | 'about'
   | 'tempusAnnouncements'
   | 'tempusChat'
   | 'interestRateProtectionTooltipText'

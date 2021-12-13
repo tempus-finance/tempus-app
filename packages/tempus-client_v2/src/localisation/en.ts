@@ -102,6 +102,7 @@ const en: { [word in Words]: string } = {
     'Deposit, Redemption, Early Redemption fees accrue to the Tempus Treasury. Swap fees accrue to liquidity providers.',
   selectPlaceholder: 'Please select',
   selectTokenFirst: 'Please select the token first',
+  about: 'About',
   tempusAnnouncements: 'Tempus Announcements',
   tempusChat: 'Tempus Chat',
   interestRateProtectionTooltipText:

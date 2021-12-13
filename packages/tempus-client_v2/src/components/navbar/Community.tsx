@@ -7,6 +7,7 @@ import DiscordIcon from '../icons/DiscordIcon';
 import MediumIcon from '../icons/MediumIcon';
 import GithubIcon from '../icons/GithubIcon';
 import TelegramIcon from '../icons/TelegramIcon';
+import TempusIcon from '../icons/TempusIcon';
 import './Community.scss';
 
 // TODO
@@ -23,6 +24,11 @@ const Community = () => {
   }, [setCommunityMenuOpen]);
 
   const communityMenuAnchor = useRef<HTMLLIElement>(null);
+
+  const onWebSiteClick = () => {
+    window.open('https://tempus.finance', '_blank');
+    toggleCommunityMenu();
+  };
 
   const onTwitterClick = () => {
     window.open('https://twitter.com/tempusfinance', '_blank');
@@ -71,6 +77,12 @@ const Community = () => {
       >
         <div className="tc__header__community-menu__container">
           <List>
+            <ListItem button onClick={onWebSiteClick}>
+              <ListItemIcon className="tc__header__community-menu__icon-container">
+                <TempusIcon />
+              </ListItemIcon>
+              <ListItemText primary="About" />
+            </ListItem>
             <ListItem button onClick={onTwitterClick}>
               <ListItemIcon className="tc__header__community-menu__icon-container">
                 <TwitterIcon />
