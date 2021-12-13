@@ -8,6 +8,10 @@
   cursor: pointer;
 }
 
+.tc__infoTooltip__popper {
+  z-index: 999;
+}
+
 .tc__infoTooltip-icon {
   width: 20px;
   height: 20px;
