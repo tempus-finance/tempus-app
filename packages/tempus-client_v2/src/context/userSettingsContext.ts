@@ -5,6 +5,8 @@ interface UserSettingsContextData {
   slippage: number; // value from 0 to 100
   autoSlippage: boolean;
   openWalletPopup: boolean;
+  openWalletSelector: boolean;
+  isWalletSelectorIrremovable: boolean;
 }
 
 interface UserSettingsContextActions {
@@ -18,6 +20,8 @@ export const defaultUserSettingsContextValue: UserSettingsContextData = {
   slippage: 1, // 1%
   autoSlippage: false,
   openWalletPopup: false,
+  openWalletSelector: false,
+  isWalletSelectorIrremovable: false,
 };
 
 export const UserSettingsContext = React.createContext<UserSettingsContextType>({
