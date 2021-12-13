@@ -488,6 +488,14 @@ const Deposit: FC<DepositProps> = ({ narrow, poolDataAdapter }) => {
   return (
     <div className={`tc__deposit ${narrow ? 'tc__deposit__narrow' : ''}`}>
       <SectionContainer title="from">
+        {selectedToken && balanceFormatted && (
+          <div className="tc__title-and-balance bottom-padded">
+            <div></div>
+            <Typography variant="body-text">
+              {getText('balance', language)} {balanceFormatted}
+            </Typography>
+          </div>
+        )}
         <div className="tf__flex-row-center-v">
           <TokenSelector
             value={selectedToken}
@@ -510,12 +518,6 @@ const Deposit: FC<DepositProps> = ({ narrow, poolDataAdapter }) => {
               </div>
             )}
           </div>
-          <Spacer size={15} />
-          {selectedToken && balanceFormatted && (
-            <Typography variant="body-text">
-              {getText('balance', language)} {balanceFormatted}
-            </Typography>
-          )}
           <Spacer size={10} />
           {selectedToken && <TokenIcon ticker={selectedToken} width={20} height={20} />}
         </div>

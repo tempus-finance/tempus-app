@@ -28,3 +28,20 @@
     border-bottom: none;
   }
 }
+
+.tc__title-and-balance {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+
+  &.bottom-padded {
+    margin-top: -15px;
+    margin-bottom: 10px;
+  }
+
+  > div + div {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+}
