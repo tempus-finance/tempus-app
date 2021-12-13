@@ -107,12 +107,18 @@ class VariableRateService {
     return compoundAPR + fees;
   }
 
+  // Ref - https://docs.lido.fi/contracts/lido-oracle/#add-calculation-of-staker-rewards-apr
   private async getLidoAPR(fees: number): Promise<number> {
     try {
       const { postTotalPooledEther, preTotalPooledEther, timeElapsed } =
         await this.lidoOracle?.getLastCompletedReportDelta();
+
       const apr = this.calculateLidoAPR(postTotalPooledEther, preTotalPooledEther, timeElapsed);
-      return Number(ethers.utils.formatEther(apr)) + fees;
+
+      // currently 10%. it's possible to query it using Lido.getFee()
+      const aprMinusLidoFees = apr.mul(BigNumber.from('9000')).div(BigNumber.from('10000'));
+
+      return Number(ethers.utils.formatEther(aprMinusLidoFees)) + fees;
     } catch (error) {
       console.error('VariableRateService - getLidoAPR', error);
       return 0;
