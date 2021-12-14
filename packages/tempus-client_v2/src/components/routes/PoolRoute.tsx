@@ -60,8 +60,12 @@ const PoolRoute = () => {
   }, [params.poolAddress]);
 
   useEffect(() => {
-    if (setUserSettings && !userWalletConnected) {
-      setUserSettings(prevState => ({ ...prevState, openWalletSelector: true, isWalletSelectorIrremovable: true }));
+    if (setUserSettings) {
+      setUserSettings(prevState => ({
+        ...prevState,
+        openWalletSelector: !userWalletConnected,
+        isWalletSelectorIrremovable: !userWalletConnected,
+      }));
     }
   }, [userWalletConnected, setUserSettings]);
 
