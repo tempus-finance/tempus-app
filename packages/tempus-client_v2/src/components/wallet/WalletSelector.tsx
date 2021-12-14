@@ -50,9 +50,11 @@ const WalletSelector: FC<WalletSelectorProps> = ({ availableWallets, currentWall
     <Dialog onClose={handleClose} open={openWalletSelector} className="tc__walletSelector">
       <DialogTitle>
         <Typography variant="h4">{getText('selectWallet', language)}</Typography>
-        <IconButton aria-label="close" onClick={handleClose}>
-          <CloseIcon />
-        </IconButton>
+        {!isWalletSelectorIrremovable && (
+          <IconButton aria-label="close" onClick={handleClose}>
+            <CloseIcon />
+          </IconButton>
+        )}
       </DialogTitle>
       <DialogContent>
         <List>
