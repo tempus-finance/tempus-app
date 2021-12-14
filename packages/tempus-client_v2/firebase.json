@@ -1,7 +1,7 @@
 {
   "hosting": [
     {
-      "site": "tempus-app",
+      "site": "tempus-app-4209e",
       "public": "build",
       "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
       "rewrites": [
