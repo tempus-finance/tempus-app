@@ -1,3 +1,4 @@
+import { CircularProgress } from '@material-ui/core';
 import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { ethers, BigNumber } from 'ethers';
@@ -109,6 +110,8 @@ const Deposit: FC<DepositProps> = ({ narrow, poolDataAdapter }) => {
     (value: string) => {
       if (value) {
         setAmount(value);
+        setFixedPrincipalsAmount(null);
+        setEstimatedFixedApr(null);
       } else {
         setAmount('');
       }
@@ -538,7 +541,7 @@ const Deposit: FC<DepositProps> = ({ narrow, poolDataAdapter }) => {
               </Typography>
             </div>
             <Spacer size={15} />
-            {fixedYieldAtMaturityFormatted && fixedYieldAtMaturityUSDFormatted && (
+            {(tokenEstimateInProgress || (fixedYieldAtMaturityFormatted && fixedYieldAtMaturityUSDFormatted)) && (
               <div className="tc__deposit__yield-body__row">
                 <div className="tc__deposit__card-row-title">
                   <Typography variant="body-text" color="title">
@@ -547,17 +550,26 @@ const Deposit: FC<DepositProps> = ({ narrow, poolDataAdapter }) => {
                 </div>
                 <div className="tc__deposit__card-row-change">
                   <Typography variant="body-text" color="success">
-                    {`+${fixedYieldAtMaturityFormatted} ${yieldBearingToken}`}
+                    {fixedYieldAtMaturityFormatted ? (
+                      `+${fixedYieldAtMaturityFormatted} ${yieldBearingToken}`
+                    ) : (
+                      <CircularProgress size={14} />
+                    )}
                   </Typography>
                 </div>
                 <div className="tc__deposit__card-row-value">
                   <Typography variant="body-text" color="success">
-                    {`+${fixedYieldAtMaturityUSDFormatted}`}
+                    {fixedYieldAtMaturityUSDFormatted ? (
+                      `+${fixedYieldAtMaturityUSDFormatted}`
+                    ) : (
+                      <CircularProgress size={14} />
+                    )}
                   </Typography>
                 </div>
               </div>
             )}
-            {totalAvailableAtMaturityFormatted && totalAvailableAtMaturityUSDFormatted && (
+            {(tokenEstimateInProgress ||
+              (totalAvailableAtMaturityFormatted && totalAvailableAtMaturityUSDFormatted)) && (
               <div className="tc__deposit__yield-body__row">
                 <div className="tc__deposit__card-row-title">
                   <Typography variant="body-text" color="title">
@@ -566,23 +578,33 @@ const Deposit: FC<DepositProps> = ({ narrow, poolDataAdapter }) => {
                 </div>
                 <div className="tc__deposit__card-row-change">
                   <Typography variant="body-text">
-                    {`${totalAvailableAtMaturityFormatted} ${yieldBearingToken}`}
+                    {totalAvailableAtMaturityFormatted ? (
+                      `${totalAvailableAtMaturityFormatted} ${yieldBearingToken}`
+                    ) : (
+                      <CircularProgress size={14} />
+                    )}
                   </Typography>
                 </div>
                 <div className="tc__deposit__card-row-value">
-                  <Typography variant="body-text">{totalAvailableAtMaturityUSDFormatted}</Typography>
+                  <Typography variant="body-text">
+                    {totalAvailableAtMaturityUSDFormatted || <CircularProgress size={14} />}
+                  </Typography>
                 </div>
               </div>
             )}
-            {((fixedYieldAtMaturityFormatted && fixedYieldAtMaturityUSDFormatted) ||
+            {(tokenEstimateInProgress ||
+              (fixedYieldAtMaturityFormatted && fixedYieldAtMaturityUSDFormatted) ||
               (totalAvailableAtMaturityFormatted && totalAvailableAtMaturityUSDFormatted)) && <Spacer size={30} />}
             <div className="tf__flex-row-space-between-v">
               <Typography variant="button-text">
                 {fixedPrincipalsAmountFormatted &&
                   `${fixedPrincipalsAmountFormatted} ${getText('principals', language)}`}
+                {tokenEstimateInProgress && <CircularProgress size={14} />}
               </Typography>
               <Typography variant="button-text" color="accent">
-                APR {estimatedFixedApr ? estimatedFixedAPRFormatted : fixedAPRFormatted}
+                {estimatedFixedApr && `APR ${estimatedFixedAPRFormatted}`}
+                {!estimatedFixedApr && !rateEstimateInProgress && `APR ${fixedAPRFormatted}`}
+                {rateEstimateInProgress && <CircularProgress size={14} />}
               </Typography>
             </div>
           </SectionContainer>
