@@ -114,5 +114,8 @@ const it: { [word in Words]: string } = {
     'La tua transazione non verrà completata se il prezzo cambia sfavorevolmente in misura maggiore di questa percentuale.',
   auto: 'Auto',
   language: 'Lingua',
+  mobileNotSupported:
+    'Il supporto per smathphone e tablet non è ancora disponibile, ma lo sarà successivamente.<br />Grazie per la comprensione.',
+  mobileLink: 'Leggi di più su Tempus',
 };
 export default it;
