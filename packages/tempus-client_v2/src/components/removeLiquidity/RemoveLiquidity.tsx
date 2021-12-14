@@ -156,15 +156,21 @@ const RemoveLiquidity = () => {
     <div className="tc__removeLiquidity">
       <SectionContainer title="from">
         <SectionContainer elevation={2}>
-          <Typography variant="h4">{getText('lpTokens', language)}</Typography>
+          <div className="tc__title-and-balance">
+            <Typography variant="h4">{getText('lpTokens', language)}</Typography>
+            {lpTokenBalanceFormatted && (
+              <div>
+                <Typography variant="card-body-text">{getText('balance', language)}</Typography>
+                <Spacer size={15} />
+                <Typography variant="card-body-text">{lpTokenBalanceFormatted}</Typography>
+              </div>
+            )}
+          </div>
           <Spacer size={15} />
           <div className="tf__flex-row-space-between">
             <div className="tf__flex-row-center-v">
               <CurrencyInput defaultValue={amount} onChange={onAmountChange} onMaxClick={onPercentageChange} />
               <Spacer size={15} />
-              <Typography variant="card-body-text">{getText('balance', language)}</Typography>
-              <Spacer size={15} />
-              <Typography variant="card-body-text">{lpTokenBalanceFormatted}</Typography>
             </div>
             <div className="tf__flex-row-center-v-end">
               <Approve
