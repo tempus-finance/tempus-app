@@ -80,6 +80,10 @@ const VariableAPRProvider = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [getProvider]);
 
+  useEffect(() => {
+    fetchAPR();
+  }, [fetchAPR]);
+
   /**
    * Update APR for all pools on each block.
    */

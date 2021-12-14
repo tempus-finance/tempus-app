@@ -78,12 +78,17 @@ const Execute: FC<ExecuteButtonProps> = props => {
         if (!transaction) {
           return previousData;
         }
-
         return {
           ...previousData,
           pendingTransactions: [
             ...previousData.pendingTransactions,
-            { ...transaction, title: `Executing ${actionName}`, content },
+            {
+              ...transaction,
+              title: `Executing ${actionName}`,
+              content,
+              link: generateEtherscanLink(transaction.hash),
+              linkText: viewLinkText,
+            },
           ],
         };
       });
