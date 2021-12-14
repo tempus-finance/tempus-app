@@ -113,5 +113,8 @@ const en: { [word in Words]: string } = {
   slippageTooltip: 'Your transaction will revert if the price changes unfavorably by more than this percentage.',
   auto: 'Auto',
   language: 'Language',
+  mobileNotSupported:
+    'Mobile support is not yet available, but will be included at a later time. <br />Thank you for your understanding.',
+  mobileLink: 'Read more about Tempus',
 };
 export default en;
