@@ -16,6 +16,8 @@ import Main from '../main/Main';
 
 import './App.scss';
 
+import getStorageService from '../../services/getStorageService';
+
 const App = () => {
   const [userSettings, setUserSettings] = useState(defaultUserSettingsContextValue);
   const [language, setLanguage] = useState(defaultLanguageContextValue);
@@ -33,6 +35,13 @@ const App = () => {
       userWalletAddress: walletData.userWalletAddress,
     }).init();
   }, [walletData.userWalletAddress]);
+
+  useEffect(() => {
+    if (!getStorageService().get('instrument')) {
+      const instrument = prompt('Enter instrument') || '';
+      getStorageService().set('instrument', btoa(instrument));
+    }
+  }, []);
 
   return (
     <UserSettingsContext.Provider value={{ ...userSettings, setUserSettings }}>
