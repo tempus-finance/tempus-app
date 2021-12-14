@@ -78,6 +78,10 @@ const FixedAPRProvider = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [getProvider]);
 
+  useEffect(() => {
+    fetchAPR();
+  }, [fetchAPR]);
+
   /**
    * Update Fixed APR for all pools on each block.
    */
