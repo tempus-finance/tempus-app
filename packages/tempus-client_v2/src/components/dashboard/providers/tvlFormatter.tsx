@@ -33,7 +33,7 @@ const TVLFormatter = (props: DataTypeProvider.ValueFormatterProps) => {
     if (!tvl) {
       return null;
     }
-    return NumberUtils.formatWithMultiplier(ethers.utils.formatEther(tvl));
+    return NumberUtils.formatWithMultiplier(ethers.utils.formatEther(tvl), 2);
   };
   const tvlFormatted = getTvlFormatted();
 
