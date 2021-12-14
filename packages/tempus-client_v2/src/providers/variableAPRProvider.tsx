@@ -50,7 +50,6 @@ const VariableAPRProvider = () => {
           // Get variable APR for Tempus Pool
           const variableAPR = await variableRateService.getAprRate(
             tempusPool.protocol,
-            tempusPool.address,
             tempusPool.yieldBearingTokenAddress,
             fees,
           );
