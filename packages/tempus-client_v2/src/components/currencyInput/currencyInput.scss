@@ -1,4 +1,4 @@
-.tc__currencyInput-container {
+div.tc__currencyInput-container {
   position: relative;
   display: flex;
   align-items: center;
@@ -13,12 +13,21 @@
   }
 
   input {
+    font-family: 'Source Sans Pro', sans-serif;
+    font-size: 16px;
+    line-height: 20px;
     padding: 0px;
   }
 
   .MuiButton-root {
     height: 40px;
     border-radius: 0px 5px 5px 0px;
+
+    > .MuiButton-label {
+      font-family: 'Source Sans Pro', sans-serif;
+      font-size: 16px;
+      line-height: 20px;
+    }
   }
 }
 
