@@ -445,7 +445,8 @@ export default class PoolDataAdapter {
     userLPBalance: BigNumber,
     minPrincipalsStaked: BigNumber,
     minYieldsStaked: BigNumber,
-    yieldsRate: BigNumber,
+    totalPrincipals: BigNumber,
+    totalYields: BigNumber,
     maxSlippage: BigNumber,
     isBackingToken: boolean,
   ): Promise<ContractTransaction | undefined> {
@@ -455,6 +456,15 @@ export default class PoolDataAdapter {
     }
 
     try {
+      let tokenSwapAmount = totalPrincipals;
+      if (totalYields.gt(totalPrincipals)) {
+        tokenSwapAmount = totalYields;
+      }
+
+      const estimatedYields = await this.getExpectedReturnForShareToken(tempusAMM, tokenSwapAmount, true);
+
+      const yieldsRate = div18f(estimatedYields, totalYields);
+
       return await this.tempusControllerService.exitTempusAmmAndRedeem(
         tempusAMM,
         userLPBalance,
