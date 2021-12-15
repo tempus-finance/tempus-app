@@ -274,15 +274,18 @@ class VaultService {
     principalAddress: string,
     yieldsAddress: string,
     lpAmount: BigNumber,
+    minPrincipalsReceived: BigNumber,
+    minYieldsReceived: BigNumber,
   ): Promise<ethers.ContractTransaction> {
     if (!this.contract) {
       console.error('VaultService - removeLiquidity() - Attempted to use VaultService before initializing it!');
       return Promise.reject();
     }
 
-    const assets = [{ address: principalAddress }, { address: yieldsAddress }].sort(
-      (a, b) => parseInt(a.address) - parseInt(b.address),
-    );
+    const assets = [
+      { address: principalAddress, minAmount: minPrincipalsReceived },
+      { address: yieldsAddress, minAmount: minYieldsReceived },
+    ].sort((a, b) => parseInt(a.address) - parseInt(b.address));
 
     const exitUserData = ethers.utils.defaultAbiCoder.encode(
       ['uint256', 'uint256'],
@@ -291,7 +294,7 @@ class VaultService {
 
     const exitPoolRequest = {
       assets: assets.map(({ address }) => address),
-      minAmountsOut: [10000, 10000],
+      minAmountsOut: assets.map(({ minAmount }) => minAmount),
       userData: exitUserData,
       toInternalBalance: false,
     };
