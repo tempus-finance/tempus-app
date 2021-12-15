@@ -173,6 +173,7 @@ class VaultService {
     assetIn: string,
     assetOut: string,
     amount: BigNumber,
+    minReturn: BigNumber,
   ): Promise<ethers.ContractTransaction> {
     if (!this.contract) {
       console.error('VaultService - swap() - Attempted to use VaultService before initializing it!');
@@ -198,11 +199,10 @@ class VaultService {
       toInternalBalance: false,
     };
 
-    const minimumReturn = 1;
     const deadline = latestBlock.timestamp + SECONDS_IN_AN_HOUR;
 
-    const estimate = await this.contract.estimateGas.swap(singleSwap, fundManagement, minimumReturn, deadline);
-    return this.contract.swap(singleSwap, fundManagement, minimumReturn, deadline, {
+    const estimate = await this.contract.estimateGas.swap(singleSwap, fundManagement, minReturn, deadline);
+    return this.contract.swap(singleSwap, fundManagement, minReturn, deadline, {
       gasLimit: Math.ceil(estimate.toNumber() * 1.1),
     });
   }
