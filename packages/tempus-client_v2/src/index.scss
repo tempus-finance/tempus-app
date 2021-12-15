@@ -26,6 +26,12 @@ body {
   cursor: default !important;
 }
 
+.tf__flex-row-flex-start-v {
+  display: flex;
+  align-items: flex-start;
+  padding-top: 20px;
+}
+
 .tf__flex-row-center-v {
   display: flex;
   align-items: center;
@@ -84,6 +90,7 @@ body {
 }
 
 .tf__input__label {
-  padding-top: 5px;
-  position: absolute;
+  margin-top: 5px;
+  padding-bottom: 5px;
+  margin-bottom: -5px;
 }
