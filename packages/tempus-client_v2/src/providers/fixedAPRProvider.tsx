@@ -1,10 +1,13 @@
+import { ethers } from 'ethers';
 import { useCallback, useContext, useEffect } from 'react';
 import { useState as useHookState } from '@hookstate/core';
 import getConfig from '../utils/getConfig';
+import getTokenPrecision from '../utils/getTokenPrecision';
 import getDefaultProvider from '../services/getDefaultProvider';
-import getTempusAMMService from '../services/getTempusAMMService';
 import { WalletContext } from '../context/walletContext';
 import { dynamicPoolDataState } from '../state/PoolDataState';
+import getPoolDataAdapter from '../adapters/getPoolDataAdapter';
+import { FIXED_APR_PRECISION } from '../constants';
 
 const FixedAPRProvider = () => {
   const dynamicPoolData = useHookState(dynamicPoolDataState);
@@ -32,7 +35,7 @@ const FixedAPRProvider = () => {
     }
 
     const config = getConfig();
-    const tempusAMMSService = getTempusAMMService(provider);
+    const poolDataAdapter = getPoolDataAdapter(provider);
 
     // Fetch APR for all Tempus Pools
     const fetchedPoolAPRData = await Promise.all(
@@ -42,11 +45,17 @@ const FixedAPRProvider = () => {
         }
 
         try {
-          // Get fees for Tempus Pool
-          const fixedAPR = await tempusAMMSService.getFixedAPR(tempusPool.ammAddress, tempusPool.principalsAddress);
+          const spotPrice = ethers.utils.parseUnits('1', getTokenPrecision(tempusPool.address, 'backingToken'));
+
+          const fixedAPR = await poolDataAdapter.getEstimatedFixedApr(
+            spotPrice,
+            true,
+            tempusPool.address,
+            tempusPool.ammAddress,
+          );
           return {
             address: tempusPool.address,
-            fixedAPR,
+            fixedAPR: Number(ethers.utils.formatUnits(fixedAPR, FIXED_APR_PRECISION)),
           };
         } catch (error) {
           console.error('fetchedPoolAPRData error', error);
