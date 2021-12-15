@@ -445,7 +445,8 @@ export default class PoolDataAdapter {
     userLPBalance: BigNumber,
     minPrincipalsStaked: BigNumber,
     minYieldsStaked: BigNumber,
-    yieldsRate: BigNumber,
+    totalPrincipals: BigNumber,
+    totalYields: BigNumber,
     maxSlippage: BigNumber,
     isBackingToken: boolean,
   ): Promise<ContractTransaction | undefined> {
@@ -455,6 +456,27 @@ export default class PoolDataAdapter {
     }
 
     try {
+      let yieldsRate;
+
+      let tokenSwapAmount;
+      if (totalYields.gt(totalPrincipals)) {
+        tokenSwapAmount = totalYields.sub(totalPrincipals);
+
+        const estimatedPrincipals = await this.getExpectedReturnForShareToken(tempusAMM, tokenSwapAmount, true);
+        yieldsRate = div18f(estimatedPrincipals, tokenSwapAmount);
+      } else if (totalPrincipals.gt(totalYields)) {
+        tokenSwapAmount = totalPrincipals.sub(totalYields);
+
+        const estimatedYields = await this.getExpectedReturnForShareToken(tempusAMM, tokenSwapAmount, false);
+        yieldsRate = div18f(estimatedYields, tokenSwapAmount);
+      } else {
+        // In case we have equal amounts, use 1 as swapAmount just in case estimate was wrong, and swap is going to happen anyways
+        tokenSwapAmount = ethers.utils.parseEther('1');
+
+        const estimatedPrincipals = await this.getExpectedReturnForShareToken(tempusAMM, tokenSwapAmount, true);
+        yieldsRate = div18f(estimatedPrincipals, tokenSwapAmount);
+      }
+
       return await this.tempusControllerService.exitTempusAmmAndRedeem(
         tempusAMM,
         userLPBalance,
