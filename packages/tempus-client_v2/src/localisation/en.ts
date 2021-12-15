@@ -14,9 +14,9 @@ const en: { [word in Words]: string } = {
     'By connecting your wallet, you agree to be bound by the <a href="https://tempus.finance/terms-of-service" target="_blank">Tempus Terms of Service</a> and acknowledge that you have read and understand the <a href="https://tempus.finance/disclaimer" target="_blank">Tempus Protocol Disclaimer</a>.',
   metamaskConnected: 'MetaMask connected',
   changeNetworkRejected: 'Request to change network rejected by user',
-  changeNetworkRejectedExplain: 'In order to use the app, please connect using Goerli network',
+  changeNetworkRejectedExplain: 'In order to use the app, please connect using Mainnet network',
   unsupportedNetwork: 'Unsupported wallet network',
-  unsupportedNetworkExplain: 'We support Goerli network',
+  unsupportedNetworkExplain: 'We support Mainnet network',
   walletConnectConnected: 'WalletConnect connected',
   errorConnectingWallet: 'Error connecting wallet',
   viewRecentTransactions: 'View recent transactions',
@@ -113,5 +113,8 @@ const en: { [word in Words]: string } = {
   slippageTooltip: 'Your transaction will revert if the price changes unfavorably by more than this percentage.',
   auto: 'Auto',
   language: 'Language',
+  mobileNotSupported:
+    'Mobile support is not yet available, but will be included at a later time. <br />Thank you for your understanding.',
+  mobileLink: 'Read more about Tempus',
 };
 export default en;

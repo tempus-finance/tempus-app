@@ -106,6 +106,8 @@ type Words =
   | 'slippageTolerance'
   | 'slippageTooltip'
   | 'auto'
-  | 'language';
+  | 'language'
+  | 'mobileNotSupported'
+  | 'mobileLink';
 
 export default Words;

@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { BrowserRouter } from 'react-router-dom';
-import isMobile from 'is-mobile';
 import { LanguageContext, defaultLanguageContextValue } from '../../context/languageContext';
 import { ETHBalanceContext, defaultETHBalanceContextValue } from '../../context/ethBalanceContext';
 import { defaultWalletContextValue, WalletContext } from '../../context/walletContext';
@@ -16,7 +15,6 @@ import NotificationContainer from '../notification/NotificationContainer';
 import getStorageService from '../../services/getStorageService';
 import NavBar from '../navbar/NavBar';
 import Main from '../main/Main';
-import MobileBanner from '../mobileBanner/MobileBanner';
 
 import './App.scss';
 
@@ -56,31 +54,26 @@ const App = () => {
     }
   }, []);
 
-  const mobile = isMobile();
-
   return (
     <>
-      {mobile && <MobileBanner />}
-      {!mobile && (
-        <UserSettingsContext.Provider value={{ ...userSettings, setUserSettings }}>
-          <LanguageContext.Provider value={{ ...language, setLanguage }}>
-            <ETHBalanceContext.Provider value={{ ...ethBalance, setETHBalance }}>
-              <WalletContext.Provider value={{ ...walletData, setWalletData }}>
-                <PendingTransactionsContext.Provider value={{ ...pendingTransactions, setPendingTransactions }}>
-                  <BrowserRouter>
-                    <div className="tc__app__container">
-                      <NavBar />
-                      <Main />
-                      <NotificationContainer />
-                    </div>
-                  </BrowserRouter>
-                </PendingTransactionsContext.Provider>
-                <ETHBalanceProvider />
-              </WalletContext.Provider>
-            </ETHBalanceContext.Provider>
-          </LanguageContext.Provider>
-        </UserSettingsContext.Provider>
-      )}
+      <UserSettingsContext.Provider value={{ ...userSettings, setUserSettings }}>
+        <LanguageContext.Provider value={{ ...language, setLanguage }}>
+          <ETHBalanceContext.Provider value={{ ...ethBalance, setETHBalance }}>
+            <WalletContext.Provider value={{ ...walletData, setWalletData }}>
+              <PendingTransactionsContext.Provider value={{ ...pendingTransactions, setPendingTransactions }}>
+                <BrowserRouter>
+                  <div className="tc__app__container">
+                    <NavBar />
+                    <Main />
+                    <NotificationContainer />
+                  </div>
+                </BrowserRouter>
+              </PendingTransactionsContext.Provider>
+              <ETHBalanceProvider />
+            </WalletContext.Provider>
+          </ETHBalanceContext.Provider>
+        </LanguageContext.Provider>
+      </UserSettingsContext.Provider>
     </>
   );
 };

@@ -14,9 +14,9 @@ const it: { [word in Words]: string } = {
     'Connettendo un portafoglio, dichiari di essere soggetto ai <a href="https://tempus.finance/terms-of-service" target="_blank">Termini di Servizio di Tempus</a> e confermi di avere letto e compreso <a href="https://tempus.finance/disclaimer" target="_blank">l\'avvertimento sul Protocollo Tempus</a>.',
   metamaskConnected: 'MetaMask connesso',
   changeNetworkRejected: 'Richiesta cambiamento network rifiutata dall`utente',
-  changeNetworkRejectedExplain: "Per poter usare l'applicazione, per favore connettiti al network Goerli",
+  changeNetworkRejectedExplain: "Per poter usare l'applicazione, per favore connettiti al network Mainnet",
   unsupportedNetwork: 'Network del portafoglio non supportato',
-  unsupportedNetworkExplain: 'Supportiamo solo il network Goerli',
+  unsupportedNetworkExplain: 'Supportiamo solo il network Mainnet',
   walletConnectConnected: 'WalletConnect connesso',
   errorConnectingWallet: 'Error nella connessione del portafoglio',
   viewRecentTransactions: 'Vedi transazioni recenti',
@@ -114,5 +114,8 @@ const it: { [word in Words]: string } = {
     'La tua transazione non verrà completata se il prezzo cambia sfavorevolmente in misura maggiore di questa percentuale.',
   auto: 'Auto',
   language: 'Lingua',
+  mobileNotSupported:
+    'Il supporto per smathphone e tablet non è ancora disponibile, ma lo sarà successivamente.<br />Grazie per la comprensione.',
+  mobileLink: 'Leggi di più su Tempus',
 };
 export default it;
