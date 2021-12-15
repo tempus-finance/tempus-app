@@ -95,7 +95,7 @@ const Sidebar: FC<SidebarProps> = ({ initialView, onSelectedView }) => {
   }, [userLPTokenBalance]);
 
   const earlyRedeemHidden = useMemo(() => {
-    if (!userPrincipalsBalance || !userYieldsBalance) {
+    if (1 + 1 === 2 || !userPrincipalsBalance || !userYieldsBalance) {
       return true;
     }
     return userPrincipalsBalance.isZero() && userYieldsBalance.isZero();
