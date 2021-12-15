@@ -8,7 +8,7 @@ import { TransactionView } from '../../interfaces/TransactionView';
 import UserLPTokenBalanceProvider from '../../providers/userLPTokenBalanceProvider';
 import CurrentPosition from '../currentPosition/CurrentPosition';
 import Deposit from '../deposit/Deposit';
-import EarlyRedeem from '../earlyRedeem/EarlyRedeem';
+// import EarlyRedeem from '../earlyRedeem/EarlyRedeem';
 import Mint from '../mint/Mint';
 import Pool from '../pool/Pool';
 import ProfitLoss from '../profitLoss/ProfitLoss';
@@ -85,7 +85,7 @@ const Operations = () => {
             {selectedView === 'swap' && <Swap />}
             {selectedView === 'provideLiquidity' && <ProvideLiquidity />}
             {selectedView === 'removeLiquidity' && <RemoveLiquidity />}
-            {selectedView === 'earlyRedeem' && <EarlyRedeem />}
+            {/* {selectedView === 'earlyRedeem' && <EarlyRedeem />} */}
           </div>
         </div>
         {/* Right side (Current Position, Profit/Loss) - Only visible if user has balance in the pool */}
