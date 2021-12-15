@@ -16,6 +16,7 @@ import { mul18f } from '../../utils/weiMath';
 import NumberUtils from '../../services/NumberUtils';
 import Approve from '../buttons/Approve';
 import Execute from '../buttons/Execute';
+import { ETH_ALLOWANCE_FOR_GAS, ZERO } from '../../constants';
 import CurrencyInput from '../currencyInput/currencyInput';
 import PlusIconContainer from '../plusIconContainer/PlusIconContainer';
 import SectionContainer from '../sectionContainer/SectionContainer';
@@ -109,7 +110,15 @@ const Mint: FC<MintInProps> = ({ narrow }) => {
       if (!userBackingTokenBalance) {
         return;
       }
-      currentBalance = userBackingTokenBalance;
+
+      const isEthDeposit = selectedToken === 'ETH';
+      if (isEthDeposit) {
+        currentBalance = userBackingTokenBalance.gt(ETH_ALLOWANCE_FOR_GAS)
+          ? userBackingTokenBalance.sub(ETH_ALLOWANCE_FOR_GAS)
+          : ZERO;
+      } else {
+        currentBalance = userBackingTokenBalance;
+      }
     } else {
       if (!userYieldBearingTokenBalance) {
         return;
@@ -301,14 +310,14 @@ const Mint: FC<MintInProps> = ({ narrow }) => {
             </Typography>
           </div>
         )}
-        <div className="tf__flex-row-center-v">
+        <div className="tf__flex-row-flex-start-v">
           <TokenSelector
             value={selectedToken}
             tickers={[backingToken, yieldBearingToken]}
             onTokenChange={onTokenChange}
           />
           <Spacer size={15} />
-          <div className="tf__flex-column-start">
+          <div>
             <CurrencyInput
               defaultValue={amount}
               onChange={onAmountChange}
@@ -317,6 +326,13 @@ const Mint: FC<MintInProps> = ({ narrow }) => {
               // TODO - Update text in case input is disabled because of negative yield
               disabledTooltip={getText('selectTokenFirst', language)}
             />
+            {selectedToken === 'ETH' && amount && (
+              <div className="tf__input__label">
+                <Typography variant="disclaimer-text" color="accent">
+                  {getText('warningEthGasFees', language)}
+                </Typography>
+              </div>
+            )}
             {usdValueFormatted && (
               <div className="tf__input__label">
                 <Typography variant="disclaimer-text">{usdValueFormatted}</Typography>
@@ -324,7 +340,14 @@ const Mint: FC<MintInProps> = ({ narrow }) => {
             )}
           </div>
           <Spacer size={10} />
-          {selectedToken && <TokenIcon ticker={selectedToken} width={20} height={20} />}
+          {selectedToken && (
+            <>
+              <Spacer size={10} />
+              <div style={{ paddingTop: 10 }}>
+                <TokenIcon ticker={selectedToken} width={20} height={20} />
+              </div>
+            </>
+          )}
         </div>
         <Spacer size={20} />
       </SectionContainer>
