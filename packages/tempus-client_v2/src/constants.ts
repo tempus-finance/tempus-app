@@ -74,5 +74,3 @@ export const NETWORK_URLS: { [key in SupportedChainId]: string } = {
   [SupportedChainId.LOCAL]: `https://goerli.infura.io/v3/${INFURA_KEY}`,
   [SupportedChainId.TEMPUS_AWS]: `https://goerli.infura.io/v3/${INFURA_KEY}`,
 };
-
-(() => ((window as any).x = 'c2hvd21ldGhlcG9vbHM='))();
