@@ -101,6 +101,7 @@ const en: { [word in Words]: string } = {
   feesTooltipInfo:
     'Deposit, Redemption, Early Redemption fees accrue to the Tempus Treasury. Swap fees accrue to liquidity providers.',
   selectPlaceholder: 'Please select',
+  warningEthGasFees: 'At least 0.05 ETH must be left in your wallet to pay for gas fees.',
   selectTokenFirst: 'Please select the token first',
   about: 'About',
   tempusAnnouncements: 'Tempus Announcements',

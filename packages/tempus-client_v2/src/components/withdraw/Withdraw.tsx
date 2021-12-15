@@ -163,33 +163,25 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
     if (userWalletSigner && estimatedWithdrawData) {
       const poolDataAdapter = getPoolDataAdapter(userWalletSigner);
 
-      const principalsAmountParsed = ethers.utils.parseUnits(
-        principalsAmount || '0',
-        getTokenPrecision(selectedPoolAddress, 'principals'),
-      );
-      const yieldsAmountParsed = ethers.utils.parseUnits(
-        yieldsAmount || '0',
-        getTokenPrecision(selectedPoolAddress, 'yields'),
-      );
-      const lpTokenAmountParsed = ethers.utils.parseUnits(
-        lpTokenAmount || '0',
-        getTokenPrecision(selectedPoolAddress, 'lpTokens'),
-      );
+      const principalsPrecision = getTokenPrecision(selectedPoolAddress, 'principals');
+      const yieldsPrecision = getTokenPrecision(selectedPoolAddress, 'yields');
+      const lpTokensPrecision = getTokenPrecision(selectedPoolAddress, 'lpTokens');
+
+      const principalsAmountParsed = ethers.utils.parseUnits(principalsAmount || '0', principalsPrecision);
+      const yieldsAmountParsed = ethers.utils.parseUnits(yieldsAmount || '0', yieldsPrecision);
+      const lpTokenAmountParsed = ethers.utils.parseUnits(lpTokenAmount || '0', lpTokensPrecision);
 
       const actualSlippage = (autoSlippage ? 1 : slippage / 100).toString();
 
       const minPrincipalsStaked = estimatedWithdrawData.principalsStaked.sub(
-        mul18f(
-          estimatedWithdrawData.principalsStaked,
-          ethers.utils.parseUnits(actualSlippage, getTokenPrecision(selectedPoolAddress, 'principals')),
-        ),
+        mul18f(estimatedWithdrawData.principalsStaked, ethers.utils.parseUnits(actualSlippage, principalsPrecision)),
       );
       const minYieldsStaked = estimatedWithdrawData.yieldsStaked.sub(
-        mul18f(
-          estimatedWithdrawData.yieldsStaked,
-          ethers.utils.parseUnits(actualSlippage, getTokenPrecision(selectedPoolAddress, 'yields')),
-        ),
+        mul18f(estimatedWithdrawData.yieldsStaked, ethers.utils.parseUnits(actualSlippage, yieldsPrecision)),
       );
+
+      const totalPrincipals = principalsAmountParsed.add(estimatedWithdrawData.principalsStaked);
+      const totalYields = yieldsAmountParsed.add(estimatedWithdrawData.yieldsStaked);
 
       const isBackingToken = backingToken === selectedToken;
       return poolDataAdapter.executeWithdraw(
@@ -199,7 +191,8 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
         lpTokenAmountParsed,
         minPrincipalsStaked,
         minYieldsStaked,
-        estimatedWithdrawData.yieldsRate,
+        totalPrincipals,
+        totalYields,
         ethers.utils.parseUnits(actualSlippage, SLIPPAGE_PRECISION),
         isBackingToken,
       );
