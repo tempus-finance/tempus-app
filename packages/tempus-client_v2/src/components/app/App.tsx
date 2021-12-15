@@ -10,6 +10,7 @@ import {
 import { UserSettingsContext, defaultUserSettingsContextValue } from '../../context/userSettingsContext';
 import ETHBalanceProvider from '../../providers/ethBalanceProvider';
 import getUserShareTokenBalanceProvider from '../../providers/getUserShareTokenBalanceProvider';
+import getUserBalanceProvider from '../../providers/getBalanceProvider';
 import NotificationContainer from '../notification/NotificationContainer';
 import getStorageService from '../../services/getStorageService';
 import NavBar from '../navbar/NavBar';
@@ -31,6 +32,17 @@ const App = () => {
     }
 
     getUserShareTokenBalanceProvider({
+      userWalletAddress: walletData.userWalletAddress,
+    }).init();
+  }, [walletData.userWalletAddress]);
+
+  // Initialize user pool balance provider every time user wallet address changes
+  useEffect(() => {
+    if (!walletData.userWalletAddress) {
+      return;
+    }
+
+    getUserBalanceProvider({
       userWalletAddress: walletData.userWalletAddress,
     }).init();
   }, [walletData.userWalletAddress]);

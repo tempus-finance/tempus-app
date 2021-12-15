@@ -11,7 +11,6 @@ import TVLProvider from '../../providers/tvlProvider';
 import UserBackingTokenBalanceProvider from '../../providers/userBackingTokenBalanceProvider';
 import UserYieldBearingTokenBalanceProvider from '../../providers/userYieldBearingTokenBalanceProvider';
 import FixedAPRProvider from '../../providers/fixedAPRProvider';
-import BalanceProvider from '../../providers/balanceProvider';
 import VariableAPRProvider from '../../providers/variableAPRProvider';
 import RootRoute from '../routes/RootRoute';
 import PoolRoute from '../routes/PoolRoute';
@@ -50,7 +49,6 @@ const Main = () => {
       <VariableAPRProvider />
       <NegativeYieldProvider />
       {dashboardDataAdapter && <TVLProvider dashboardDataAdapter={dashboardDataAdapter} />}
-      {userBalanceDataAdapter && <BalanceProvider userBalanceDataAdapter={userBalanceDataAdapter} />}
       {userBalanceDataAdapter && <AvailableToDepositUSDProvider userBalanceDataAdapter={userBalanceDataAdapter} />}
       {userBalanceDataAdapter && <UserBackingTokenBalanceProvider />}
       {userBalanceDataAdapter && <UserYieldBearingTokenBalanceProvider />}
