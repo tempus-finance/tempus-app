@@ -8,6 +8,7 @@ import getUserShareTokenBalanceProvider from '../../providers/getUserShareTokenB
 import { ZERO } from '../../constants';
 import { LanguageContext } from '../../context/languageContext';
 import { WalletContext } from '../../context/walletContext';
+import { UserSettingsContext } from '../../context/userSettingsContext';
 import { Ticker } from '../../interfaces/Token';
 import { SelectedYield } from '../../interfaces/SelectedYield';
 import getText from '../../localisation/getText';
@@ -43,13 +44,13 @@ const Deposit: FC<DepositProps> = ({ narrow, poolDataAdapter }) => {
   const { language } = useContext(LanguageContext);
   const { userWalletSigner } = useContext(WalletContext);
   const { userWalletAddress } = useContext(WalletContext);
+  const { slippage, autoSlippage } = useContext(UserSettingsContext);
 
   const [isYieldNegative, setIsYieldNegative] = useState<boolean | null>(null);
   const [selectedToken, setSelectedToken] = useState<Ticker | null>(null);
   const [amount, setAmount] = useState<string>('');
 
   const [usdRate, setUsdRate] = useState<BigNumber | null>(null);
-  const [minTYSRate] = useState<number>(0); // TODO where to get this value?
 
   const [fixedPrincipalsAmount, setFixedPrincipalsAmount] = useState<BigNumber | null>(null);
   const [variablePrincipalsAmount, setVariablePrincipalsAmount] = useState<BigNumber | null>(null);
@@ -164,14 +165,19 @@ const Deposit: FC<DepositProps> = ({ narrow, poolDataAdapter }) => {
     if (userWalletSigner && amount && poolDataAdapter) {
       const tokenAmount = ethers.utils.parseUnits(amount, tokenPrecision);
       const isBackingToken = backingToken === selectedToken;
-      const parsedMinTYSRate = ethers.utils.parseUnits(minTYSRate.toString(), tokenPrecision);
       const isEthDeposit = selectedToken === 'ETH';
+      const actualSlippage = (autoSlippage ? 1 : slippage / 100).toString();
+      const principalsPrecision = getTokenPrecision(selectedPoolAddress, 'principals');
+      const yieldsPrecision = getTokenPrecision(selectedPoolAddress, 'yields');
+      const slippageFormatted = ethers.utils.parseUnits(actualSlippage, principalsPrecision);
+
       return poolDataAdapter.executeDeposit(
         ammAddress,
         tokenAmount,
         isBackingToken,
-        parsedMinTYSRate,
         selectedYield,
+        slippageFormatted,
+        yieldsPrecision,
         isEthDeposit,
       );
     } else {
@@ -184,7 +190,9 @@ const Deposit: FC<DepositProps> = ({ narrow, poolDataAdapter }) => {
     tokenPrecision,
     backingToken,
     selectedToken,
-    minTYSRate,
+    autoSlippage,
+    slippage,
+    selectedPoolAddress,
     ammAddress,
     selectedYield,
   ]);
