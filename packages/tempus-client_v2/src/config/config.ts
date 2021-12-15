@@ -34,7 +34,7 @@ const config: Config = {
       protocol: 'lido',
       backingToken: 'ETH',
       yieldBearingToken: 'stETH',
-      spotPrice: '2',
+      spotPrice: '1',
       decimalsForUI: 4,
       tokenPrecision: {
         backingToken: 18,
@@ -57,7 +57,7 @@ const config: Config = {
       protocol: 'lido',
       backingToken: 'ETH',
       yieldBearingToken: 'stETH',
-      spotPrice: '2',
+      spotPrice: '1',
       decimalsForUI: 4,
       tokenPrecision: {
         backingToken: 18,

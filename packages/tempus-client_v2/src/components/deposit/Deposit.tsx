@@ -77,6 +77,7 @@ const Deposit: FC<DepositProps> = ({ narrow, poolDataAdapter }) => {
   const userYieldBearingTokenBalance = dynamicPoolData[selectedPool.get()].userYieldBearingTokenBalance
     .attach(Downgraded)
     .get();
+  const spotPrice = staticPoolData[selectedPool.get()].spotPrice.attach(Downgraded).get();
   const backingToken = staticPoolData[selectedPool.get()].backingToken.attach(Downgraded).get();
   const yieldBearingToken = staticPoolData[selectedPool.get()].yieldBearingToken.attach(Downgraded).get();
   const ammAddress = staticPoolData[selectedPool.get()].ammAddress.attach(Downgraded).get();
@@ -178,6 +179,7 @@ const Deposit: FC<DepositProps> = ({ narrow, poolDataAdapter }) => {
         selectedYield,
         slippageFormatted,
         yieldsPrecision,
+        spotPrice,
         isEthDeposit,
       );
     } else {
@@ -195,6 +197,7 @@ const Deposit: FC<DepositProps> = ({ narrow, poolDataAdapter }) => {
     selectedPoolAddress,
     ammAddress,
     selectedYield,
+    spotPrice,
   ]);
 
   const onExecuted = useCallback(() => {

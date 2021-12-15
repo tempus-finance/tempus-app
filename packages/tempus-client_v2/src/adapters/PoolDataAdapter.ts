@@ -399,6 +399,7 @@ export default class PoolDataAdapter {
     yieldType: SelectedYield,
     slippage: BigNumber,
     yieldsPrecision: number,
+    spotPrice: string,
     isEthDeposit?: boolean,
   ): Promise<ContractTransaction | undefined> {
     if (!this.tempusControllerService) {
@@ -410,7 +411,7 @@ export default class PoolDataAdapter {
       if (yieldType === 'Fixed') {
         const tysRate = await this.getExpectedReturnForShareToken(
           tempusAMM,
-          ethers.utils.parseUnits('1', yieldsPrecision),
+          ethers.utils.parseUnits(spotPrice, yieldsPrecision),
           true,
         );
 
