@@ -784,6 +784,7 @@ export default class PoolDataAdapter {
     fromToken: string,
     toToken: string,
     amount: BigNumber,
+    minReturn: BigNumber,
     userWallet: string,
   ) {
     if (!this.vaultService || !this.tempusAMMService) {
@@ -799,7 +800,7 @@ export default class PoolDataAdapter {
     }
 
     try {
-      return await this.vaultService.swap(poolId, kind, userWallet, fromToken, toToken, amount);
+      return await this.vaultService.swap(poolId, kind, userWallet, fromToken, toToken, amount, minReturn);
     } catch (error) {
       console.error('PoolDataAdapter - swapShareTokens() - Failed to swap tokens!');
       return Promise.reject(error);
