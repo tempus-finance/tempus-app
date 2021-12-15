@@ -7,10 +7,11 @@
 
 .tc__currentPosition__body {
   @include cardBody;
+  height: 155;
 
   .tc__currentPosition__body__bar {
     width: 100%;
-    margin: 30px auto 10px;
+    margin: 13px auto 12px;
     height: 22px;
     border-radius: 5px;
     display: flex;
@@ -80,5 +81,51 @@
       background: #288195; // TODO add to constants
       background-image: url('../../images/pattern-yields.svg');
     }
+  }
+
+  .tc__currentPosition-legend {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .tc__currentPosition-legend-row {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .tc__currentPosition-legend-row-half {
+    width: 48%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .tc__currentPosition-legend-icon {
+    width: 12px;
+    height: 12px;
+    border-radius: 6px;
+    margin-right: 5px;
+  }
+
+  .tc__currentPosition-unstaked-principals-icon {
+    @extend .tc__currentPosition-legend-icon;
+    background: #f5ac37;
+  }
+
+  .tc__currentPosition-unstaked-yields-icon {
+    @extend .tc__currentPosition-legend-icon;
+    background: #288195;
+  }
+
+  .tc__currentPosition-staked-principals-icon {
+    @extend .tc__currentPosition-legend-icon;
+    background-color: #f5ac37;
+    background-image: url('../../images/pattern-principals.svg');
+  }
+
+  .tc__currentPosition-staked-yields-icon {
+    @extend .tc__currentPosition-legend-icon;
+    background-color: #288195;
+    background-image: url('../../images/pattern-yields.svg');
   }
 }
