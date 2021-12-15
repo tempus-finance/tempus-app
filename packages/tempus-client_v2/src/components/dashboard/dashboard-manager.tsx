@@ -1,11 +1,9 @@
-import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { FC, useCallback, useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { WalletContext } from '../../context/walletContext';
 import { DashboardRow, DashboardRowChild } from '../../interfaces/DashboardRow';
 import getDashboardDataAdapter from '../../adapters/getDashboardDataAdapter';
 import Dashboard from './dashboard';
-
-import getStorageService from '../../services/getStorageService';
 
 const DashboardManager: FC = (): JSX.Element => {
   let navigate = useNavigate();
@@ -14,21 +12,9 @@ const DashboardManager: FC = (): JSX.Element => {
 
   const [rows, setRows] = useState<DashboardRow[]>([]);
 
-  const missingPiece = useMemo(() => {
-    const instrument = getStorageService().get('instrument');
-    if (instrument && instrument !== '') {
-      try {
-        return instrument === (window as any).x;
-      } catch (error) {
-        console.error('wrong instrument');
-      }
-    }
-    return false;
-  }, []);
-
   useEffect(() => {
     const fetchRows = async () => {
-      if (userWalletSigner && missingPiece) {
+      if (userWalletSigner) {
         const dashboardDataAdapter = getDashboardDataAdapter(userWalletSigner);
         setRows(dashboardDataAdapter.getRows());
       } else if (userWalletConnected === false) {
@@ -37,7 +23,7 @@ const DashboardManager: FC = (): JSX.Element => {
       }
     };
     fetchRows();
-  }, [userWalletConnected, userWalletAddress, userWalletSigner, missingPiece]);
+  }, [userWalletConnected, userWalletAddress, userWalletSigner]);
 
   const onRowActionClick = useCallback(
     (row: DashboardRowChild) => {
