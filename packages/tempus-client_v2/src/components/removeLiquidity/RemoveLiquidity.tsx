@@ -5,6 +5,7 @@ import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '..
 import getUserShareTokenBalanceProvider from '../../providers/getUserShareTokenBalanceProvider';
 import { LanguageContext } from '../../context/languageContext';
 import { WalletContext } from '../../context/walletContext';
+import { UserSettingsContext } from '../../context/userSettingsContext';
 import getText from '../../localisation/getText';
 import Typography from '../typography/Typography';
 import Execute from '../buttons/Execute';
@@ -16,6 +17,8 @@ import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
 import NumberUtils from '../../services/NumberUtils';
 import { isZeroString } from '../../utils/isZeroString';
 import getConfig from '../../utils/getConfig';
+import { mul18f } from '../../utils/weiMath';
+import getTokenPrecision from '../../utils/getTokenPrecision';
 import Approve from '../buttons/Approve';
 
 import './RemoveLiquidity.scss';
@@ -27,6 +30,7 @@ const RemoveLiquidity = () => {
 
   const { language } = useContext(LanguageContext);
   const { userWalletAddress, userWalletSigner } = useContext(WalletContext);
+  const { slippage, autoSlippage } = useContext(UserSettingsContext);
 
   const [amount, setAmount] = useState<string>('');
   const [estimatedPrincipals, setEstimatedPrincipals] = useState<BigNumber | null>(null);
@@ -93,10 +97,24 @@ const RemoveLiquidity = () => {
   }, []);
 
   const onExecute = useCallback((): Promise<ethers.ContractTransaction | undefined> => {
-    if (!userWalletSigner) {
+    if (!userWalletSigner || !estimatedPrincipals || !estimatedYields) {
       return Promise.resolve(undefined);
     }
     const poolDataAdapter = getPoolDataAdapter(userWalletSigner);
+
+    const actualSlippage = (autoSlippage ? 1 : slippage / 100).toString();
+    const minPrincipalsReceived = estimatedPrincipals.sub(
+      mul18f(
+        estimatedPrincipals,
+        ethers.utils.parseUnits(actualSlippage, getTokenPrecision(selectedPoolAddress, 'principals')),
+      ),
+    );
+    const minYieldsReceived = estimatedYields.sub(
+      mul18f(
+        estimatedYields,
+        ethers.utils.parseUnits(actualSlippage, getTokenPrecision(selectedPoolAddress, 'yields')),
+      ),
+    );
 
     return poolDataAdapter.removeLiquidity(
       ammAddress,
@@ -104,8 +122,22 @@ const RemoveLiquidity = () => {
       principalsAddress,
       yieldsAddress,
       ethers.utils.parseEther(amount),
+      minPrincipalsReceived,
+      minYieldsReceived,
     );
-  }, [userWalletSigner, ammAddress, userWalletAddress, principalsAddress, yieldsAddress, amount]);
+  }, [
+    userWalletSigner,
+    estimatedPrincipals,
+    estimatedYields,
+    autoSlippage,
+    slippage,
+    selectedPoolAddress,
+    ammAddress,
+    userWalletAddress,
+    principalsAddress,
+    yieldsAddress,
+    amount,
+  ]);
 
   const onExecuted = useCallback(() => {
     setAmount('');

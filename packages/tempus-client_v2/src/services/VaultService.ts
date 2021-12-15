@@ -173,6 +173,7 @@ class VaultService {
     assetIn: string,
     assetOut: string,
     amount: BigNumber,
+    minReturn: BigNumber,
   ): Promise<ethers.ContractTransaction> {
     if (!this.contract) {
       console.error('VaultService - swap() - Attempted to use VaultService before initializing it!');
@@ -198,11 +199,10 @@ class VaultService {
       toInternalBalance: false,
     };
 
-    const minimumReturn = 1;
     const deadline = latestBlock.timestamp + SECONDS_IN_AN_HOUR;
 
-    const estimate = await this.contract.estimateGas.swap(singleSwap, fundManagement, minimumReturn, deadline);
-    return this.contract.swap(singleSwap, fundManagement, minimumReturn, deadline, {
+    const estimate = await this.contract.estimateGas.swap(singleSwap, fundManagement, minReturn, deadline);
+    return this.contract.swap(singleSwap, fundManagement, minReturn, deadline, {
       gasLimit: Math.ceil(estimate.toNumber() * 1.1),
     });
   }
@@ -274,15 +274,18 @@ class VaultService {
     principalAddress: string,
     yieldsAddress: string,
     lpAmount: BigNumber,
+    minPrincipalsReceived: BigNumber,
+    minYieldsReceived: BigNumber,
   ): Promise<ethers.ContractTransaction> {
     if (!this.contract) {
       console.error('VaultService - removeLiquidity() - Attempted to use VaultService before initializing it!');
       return Promise.reject();
     }
 
-    const assets = [{ address: principalAddress }, { address: yieldsAddress }].sort(
-      (a, b) => parseInt(a.address) - parseInt(b.address),
-    );
+    const assets = [
+      { address: principalAddress, minAmount: minPrincipalsReceived },
+      { address: yieldsAddress, minAmount: minYieldsReceived },
+    ].sort((a, b) => parseInt(a.address) - parseInt(b.address));
 
     const exitUserData = ethers.utils.defaultAbiCoder.encode(
       ['uint256', 'uint256'],
@@ -291,7 +294,7 @@ class VaultService {
 
     const exitPoolRequest = {
       assets: assets.map(({ address }) => address),
-      minAmountsOut: [10000, 10000],
+      minAmountsOut: assets.map(({ minAmount }) => minAmount),
       userData: exitUserData,
       toInternalBalance: false,
     };

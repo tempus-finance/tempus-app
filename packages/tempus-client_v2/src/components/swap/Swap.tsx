@@ -5,9 +5,11 @@ import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '..
 import getUserShareTokenBalanceProvider from '../../providers/getUserShareTokenBalanceProvider';
 import { LanguageContext } from '../../context/languageContext';
 import { WalletContext } from '../../context/walletContext';
+import { UserSettingsContext } from '../../context/userSettingsContext';
 import { PoolShares, Ticker } from '../../interfaces/Token';
 import getText from '../../localisation/getText';
 import getConfig from '../../utils/getConfig';
+import { mul18f } from '../../utils/weiMath';
 import getTokenPrecision from '../../utils/getTokenPrecision';
 import { isZeroString } from '../../utils/isZeroString';
 import { SwapKind } from '../../services/VaultService';
@@ -40,6 +42,7 @@ const Swap = () => {
   const ammAddress = staticPoolData[selectedPool.get()].ammAddress.attach(Downgraded).get();
 
   const { userWalletSigner, userWalletAddress } = useContext(WalletContext);
+  const { slippage, autoSlippage } = useContext(UserSettingsContext);
   const { language } = useContext(LanguageContext);
 
   const [tokenFrom, setTokenFrom] = useState<TokenDetail>({
@@ -137,10 +140,26 @@ const Swap = () => {
   }, []);
 
   const onExecute = useCallback((): Promise<ethers.ContractTransaction | undefined> => {
-    if (!userWalletSigner) {
+    if (!userWalletSigner || !receiveAmount) {
       return Promise.resolve(undefined);
     }
     const poolDataAdapter = getPoolDataAdapter(userWalletSigner);
+
+    let tokenOutPrecision;
+    if (tokenTo.tokenAddress === principalsAddress) {
+      tokenOutPrecision = getTokenPrecision(selectedPoolAddress, 'principals');
+    } else if (tokenTo.tokenAddress === yieldsAddress) {
+      tokenOutPrecision = getTokenPrecision(selectedPoolAddress, 'yields');
+    }
+
+    if (!tokenOutPrecision) {
+      return Promise.resolve(undefined);
+    }
+
+    const actualSlippage = (autoSlippage ? 1 : slippage / 100).toString();
+    const minReturn = receiveAmount.sub(
+      mul18f(receiveAmount, ethers.utils.parseUnits(actualSlippage, tokenOutPrecision)),
+    );
 
     const amountParsed = ethers.utils.parseUnits(amount, tokenPrecision);
     return poolDataAdapter.swapShareTokens(
@@ -149,16 +168,23 @@ const Swap = () => {
       tokenFrom.tokenAddress,
       tokenTo.tokenAddress,
       amountParsed,
+      minReturn,
       userWalletAddress,
     );
   }, [
-    userWalletSigner,
-    amount,
-    tokenPrecision,
     ammAddress,
+    amount,
+    slippage,
+    autoSlippage,
+    selectedPoolAddress,
+    principalsAddress,
+    yieldsAddress,
+    receiveAmount,
+    tokenPrecision,
     tokenFrom.tokenAddress,
     tokenTo.tokenAddress,
     userWalletAddress,
+    userWalletSigner,
   ]);
 
   const onExecuted = useCallback(() => {

@@ -625,6 +625,8 @@ export default class PoolDataAdapter {
     principalsAddress: string,
     yieldsAddress: string,
     lpAmount: BigNumber,
+    minPrincipalsReceived: BigNumber,
+    minYieldsReceived: BigNumber,
   ): Promise<ContractTransaction> {
     if (!this.vaultService || !this.tempusAMMService) {
       console.error('PoolDataAdapter - removeLiquidity() - Attempted to use PoolDataAdapter before initializing it!');
@@ -639,6 +641,8 @@ export default class PoolDataAdapter {
         principalsAddress,
         yieldsAddress,
         lpAmount,
+        minPrincipalsReceived,
+        minYieldsReceived,
       );
     } catch (error) {
       console.error('PoolDataAdapter - removeLiquidity() - Failed to remove liquidity from tempus pool AMM!', error);
@@ -784,6 +788,7 @@ export default class PoolDataAdapter {
     fromToken: string,
     toToken: string,
     amount: BigNumber,
+    minReturn: BigNumber,
     userWallet: string,
   ) {
     if (!this.vaultService || !this.tempusAMMService) {
@@ -799,7 +804,7 @@ export default class PoolDataAdapter {
     }
 
     try {
-      return await this.vaultService.swap(poolId, kind, userWallet, fromToken, toToken, amount);
+      return await this.vaultService.swap(poolId, kind, userWallet, fromToken, toToken, amount, minReturn);
     } catch (error) {
       console.error('PoolDataAdapter - swapShareTokens() - Failed to swap tokens!');
       return Promise.reject(error);
