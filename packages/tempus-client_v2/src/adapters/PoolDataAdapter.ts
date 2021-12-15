@@ -468,7 +468,7 @@ export default class PoolDataAdapter {
         tokenSwapAmount = totalPrincipals.sub(totalYields);
 
         const estimatedYields = await this.getExpectedReturnForShareToken(tempusAMM, tokenSwapAmount, false);
-        yieldsRate = div18f(estimatedYields, tokenSwapAmount);
+        yieldsRate = div18f(tokenSwapAmount, estimatedYields);
       } else {
         // In case we have equal amounts, use 1 as swapAmount just in case estimate was wrong, and swap is going to happen anyways
         tokenSwapAmount = ethers.utils.parseEther('1');
