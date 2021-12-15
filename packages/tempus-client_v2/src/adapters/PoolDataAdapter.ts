@@ -625,6 +625,8 @@ export default class PoolDataAdapter {
     principalsAddress: string,
     yieldsAddress: string,
     lpAmount: BigNumber,
+    minPrincipalsReceived: BigNumber,
+    minYieldsReceived: BigNumber,
   ): Promise<ContractTransaction> {
     if (!this.vaultService || !this.tempusAMMService) {
       console.error('PoolDataAdapter - removeLiquidity() - Attempted to use PoolDataAdapter before initializing it!');
@@ -639,6 +641,8 @@ export default class PoolDataAdapter {
         principalsAddress,
         yieldsAddress,
         lpAmount,
+        minPrincipalsReceived,
+        minYieldsReceived,
       );
     } catch (error) {
       console.error('PoolDataAdapter - removeLiquidity() - Failed to remove liquidity from tempus pool AMM!', error);
