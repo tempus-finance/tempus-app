@@ -102,6 +102,7 @@ const it: { [word in Words]: string } = {
     'Le commissioni di Deposito, Rimborso e Rimborso Anticipato sono versate nel Tesoro di Tempus Treasury (Tempus Treasury). La commissione di Scambio è versata ai fornitori di liquidità.',
   selectPlaceholder: 'Seleziona',
   selectTokenFirst: 'Prima Seleziona il Token',
+  warningEthGasFees: 'Almeno 0.05 ETH devono rimanere nel portafoglio per pagare la commissione del gas.',
   about: 'Su di noi',
   tempusAnnouncements: 'Tempus Annunci',
   tempusChat: 'Tempus Chat',
