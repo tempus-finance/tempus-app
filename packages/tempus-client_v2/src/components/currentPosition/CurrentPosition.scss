@@ -57,7 +57,7 @@
     &:after {
       position: absolute;
       top: 0;
-      left: 6px;
+      left: 10px;
       content: '';
       height: 12px;
       width: 12px;
@@ -69,7 +69,8 @@
     background: #f5ac37; // TODO add to constants
 
     &:after {
-      background: #ffe2b2; // TODO add to constants
+      background: #f5ac37; // TODO add to constants
+      background-image: url('../../images/pattern-principals.svg');
     }
   }
 
@@ -77,7 +78,8 @@
     background: #288195; // TODO add to constants
 
     &:after {
-      background: #5aaec0; // TODO add to constants
+      background: #288195; // TODO add to constants
+      background-image: url('../../images/pattern-yields.svg');
     }
   }
 
