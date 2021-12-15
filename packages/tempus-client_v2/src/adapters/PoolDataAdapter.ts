@@ -456,14 +456,26 @@ export default class PoolDataAdapter {
     }
 
     try {
-      let tokenSwapAmount = totalPrincipals;
+      let yieldsRate;
+
+      let tokenSwapAmount;
       if (totalYields.gt(totalPrincipals)) {
-        tokenSwapAmount = totalYields;
+        tokenSwapAmount = totalYields.sub(totalPrincipals);
+
+        const estimatedPrincipals = await this.getExpectedReturnForShareToken(tempusAMM, tokenSwapAmount, true);
+        yieldsRate = div18f(estimatedPrincipals, tokenSwapAmount);
+      } else if (totalPrincipals.gt(totalYields)) {
+        tokenSwapAmount = totalPrincipals.sub(totalYields);
+
+        const estimatedYields = await this.getExpectedReturnForShareToken(tempusAMM, tokenSwapAmount, false);
+        yieldsRate = div18f(estimatedYields, tokenSwapAmount);
+      } else {
+        // In case we have equal amounts, use 1 as swapAmount just in case estimate was wrong, and swap is going to happen anyways
+        tokenSwapAmount = ethers.utils.parseEther('1');
+
+        const estimatedPrincipals = await this.getExpectedReturnForShareToken(tempusAMM, tokenSwapAmount, true);
+        yieldsRate = div18f(estimatedPrincipals, tokenSwapAmount);
       }
-
-      const estimatedYields = await this.getExpectedReturnForShareToken(tempusAMM, tokenSwapAmount, true);
-
-      const yieldsRate = div18f(estimatedYields, totalYields);
 
       return await this.tempusControllerService.exitTempusAmmAndRedeem(
         tempusAMM,
