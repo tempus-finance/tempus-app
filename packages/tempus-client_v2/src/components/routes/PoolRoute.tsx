@@ -1,4 +1,4 @@
-import { useContext, useEffect, useMemo, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { BigNumber } from 'ethers';
 import { Downgraded, useHookstate } from '@hookstate/core';
@@ -6,8 +6,6 @@ import { UserSettingsContext } from '../../context/userSettingsContext';
 import { WalletContext } from '../../context/walletContext';
 import { dynamicPoolDataState, selectedPoolState } from '../../state/PoolDataState';
 import Operations from '../operations/Operations';
-
-import getStorageService from '../../services/getStorageService';
 
 const PoolRoute = () => {
   const { userWalletConnected } = useContext(WalletContext);
@@ -30,18 +28,6 @@ const PoolRoute = () => {
   if (params.poolAddress) {
     poolShareBalance = dynamicPoolData[params.poolAddress].poolShareBalance.attach(Downgraded).get();
   }
-
-  const leftPart = useMemo(() => {
-    const instrument = getStorageService().get('instrument');
-    if (instrument && instrument !== '') {
-      try {
-        return instrument === (window as any).x;
-      } catch (error) {
-        console.error('wrong instrument');
-      }
-    }
-    return false;
-  }, []);
 
   useEffect(() => {
     if (params.poolAddress && userWalletConnected) {
@@ -68,10 +54,6 @@ const PoolRoute = () => {
       }));
     }
   }, [userWalletConnected, setUserSettings]);
-
-  if (!leftPart) {
-    return null;
-  }
 
   if (!selectedPool.get()) {
     return null;

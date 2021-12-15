@@ -12,7 +12,6 @@ import ETHBalanceProvider from '../../providers/ethBalanceProvider';
 import getUserShareTokenBalanceProvider from '../../providers/getUserShareTokenBalanceProvider';
 import getUserBalanceProvider from '../../providers/getBalanceProvider';
 import NotificationContainer from '../notification/NotificationContainer';
-import getStorageService from '../../services/getStorageService';
 import NavBar from '../navbar/NavBar';
 import Main from '../main/Main';
 
@@ -46,13 +45,6 @@ const App = () => {
       userWalletAddress: walletData.userWalletAddress,
     }).init();
   }, [walletData.userWalletAddress]);
-
-  useEffect(() => {
-    if (!getStorageService().get('instrument')) {
-      const instrument = prompt('Enter instrument') || '';
-      getStorageService().set('instrument', btoa(instrument));
-    }
-  }, []);
 
   return (
     <>
