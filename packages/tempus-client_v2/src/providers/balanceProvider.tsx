@@ -38,7 +38,7 @@ class UserBalanceProvider {
       lpTokenContract.on(lpTokenContract.filters.Transfer(this.userWalletAddress, null), this.updateUserBalance);
       lpTokenContract.on(lpTokenContract.filters.Transfer(null, this.userWalletAddress), this.updateUserBalance);
 
-      this.tokenContracts.push(tpsContract, tysContract);
+      this.tokenContracts.push(tpsContract, tysContract, lpTokenContract);
     });
 
     // Fetch initial balances on app load
@@ -75,12 +75,13 @@ class UserBalanceProvider {
       statisticsService.getRate(poolConfig.backingToken),
     ]);
 
+    const estimateExitToBackingToken = true;
     const exitEstimate = await statisticsService.estimateExitAndRedeem(
       poolConfig.ammAddress,
       lpTokenBalance,
       principalsBalance,
       yieldsBalance,
-      true,
+      estimateExitToBackingToken,
     );
 
     const userPoolBalanceInBackingTokens = exitEstimate.tokenAmount;
