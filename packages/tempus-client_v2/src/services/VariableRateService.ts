@@ -23,6 +23,8 @@ import getConfig from '../utils/getConfig';
 import { div18f, mul18f } from '../utils/weiMath';
 import getProvider from '../utils/getProvider';
 
+const SECONDS_IN_A_WEEK = SECONDS_IN_A_DAY * 7;
+const HOURS_IN_A_YEAR = DAYS_IN_A_YEAR * 24;
 const BN_SECONDS_IN_YEAR = BigNumber.from(SECONDS_IN_YEAR);
 const BN_ONE_ETH_IN_WEI = BigNumber.from(ONE_ETH_IN_WEI);
 const ethMantissa = 1e18;
@@ -63,12 +65,7 @@ class VariableRateService {
     }
   }
 
-  async getAprRate(
-    protocol: ProtocolName,
-    tempusPoolAddress: string,
-    yieldBearingTokenAddress: string,
-    fees: BigNumber,
-  ): Promise<number> {
+  async getAprRate(protocol: ProtocolName, yieldBearingTokenAddress: string, fees: BigNumber): Promise<number> {
     if (!this.tempusPoolService) {
       return Promise.reject();
     }
@@ -154,7 +151,16 @@ class VariableRateService {
       this.tempusAMMService.getSwapFeePercentage(tempusAMM),
     ]);
 
-    const fetchEventsFromBlock = latestBlock.number - Math.floor(SECONDS_IN_A_DAY / BLOCK_DURATION_SECONDS);
+    const { startDate } = poolConfig;
+
+    const earlierBlock = await provider.getBlock(
+      latestBlock.number - Math.floor(SECONDS_IN_A_WEEK / BLOCK_DURATION_SECONDS),
+    );
+
+    const laterBlock = startDate >= earlierBlock.timestamp * 1000 ? startDate : earlierBlock.timestamp * 1000;
+    const hoursBetweenLatestAndLater = Math.floor((latestBlock.timestamp * 1000 - laterBlock) / (60 * 60 * 1000));
+
+    const fetchEventsFromBlock = latestBlock.number - earlierBlock.number;
 
     // Fetch swap and poolBalanceChanged events
     const [swapEvents, poolBalanceChangedEvents] = await Promise.all([
@@ -224,7 +230,11 @@ class VariableRateService {
     });
 
     // Scale accumulated fees to 1 year duration
-    const scaledFees = mul18f(totalFees, ethers.utils.parseEther(DAYS_IN_A_YEAR.toString()));
+
+    const scaledFees = mul18f(
+      div18f(totalFees, ethers.utils.parseEther(hoursBetweenLatestAndLater.toString())),
+      ethers.utils.parseEther(HOURS_IN_A_YEAR.toString()),
+    );
 
     return mul18f(scaledFees, currentPrincipalsToYieldsRatio);
   }
