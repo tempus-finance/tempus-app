@@ -87,16 +87,16 @@ const VariableAPRProvider = () => {
    * Update APR for all pools on each block.
    */
   useEffect(() => {
-    const provider = getProvider();
-    if (!provider) {
+    if (!userWalletSigner) {
       return;
     }
+    const provider = userWalletSigner.provider;
 
     provider.on('block', fetchAPR);
     return () => {
       provider.off('block', fetchAPR);
     };
-  }, [fetchAPR, getProvider]);
+  }, [fetchAPR, userWalletSigner]);
 
   /**
    * Provider component only updates context value when needed. It does not show anything in the UI.
