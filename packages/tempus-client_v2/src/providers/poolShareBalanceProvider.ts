@@ -1,17 +1,45 @@
-import { BigNumber } from 'ethers';
-import getVaultService from '../services/getVaultService';
+import { JsonRpcSigner } from '@ethersproject/providers';
+import { BigNumber, Contract } from 'ethers';
+import VaultABI from '../abi/Vault.json';
 import { dynamicPoolDataState } from '../state/PoolDataState';
 import getConfig, { getConfigForPoolWithId } from '../utils/getConfig';
 
+export interface PoolShareBalanceProviderParams {
+  userWalletSigner: JsonRpcSigner;
+}
+
 class PoolShareBalanceProvider {
+  private userWalletSigner: JsonRpcSigner | null = null;
+
+  private vaultContract: Contract | null = null;
+
   /**
    * Subscribes to PoolBalanceChanged event, every time this event is fired on blockchain we trigger pool share balance fetch for all tempus pools.
    */
-  constructor() {
-    getConfig().tempusPools.forEach(poolConfig => {
-      const vaultService = getVaultService();
+  constructor(params: PoolShareBalanceProviderParams) {
+    this.userWalletSigner = params.userWalletSigner;
+  }
 
-      vaultService.onPoolBalanceChanged(poolConfig.poolId, this.onPoolBalanceChanged);
+  init() {
+    if (!this.userWalletSigner) {
+      return;
+    }
+
+    // Clean up previous subscriptions
+    this.destroy();
+
+    const config = getConfig();
+
+    this.vaultContract = new Contract(config.vaultContract, VaultABI, this.userWalletSigner);
+    config.tempusPools.forEach(poolConfig => {
+      if (!this.vaultContract) {
+        return;
+      }
+
+      this.vaultContract.on(
+        this.vaultContract.filters.PoolBalanceChanged(poolConfig.poolId),
+        this.onPoolBalanceChanged,
+      );
 
       // Fetch balance on app load
       this.fetchPoolBalance(poolConfig.poolId);
@@ -22,11 +50,10 @@ class PoolShareBalanceProvider {
    * Call this to cleanup PoolBalanceChanged event subscriptions.
    */
   destroy() {
-    getConfig().tempusPools.forEach(poolConfig => {
-      const vaultService = getVaultService();
-
-      vaultService.offPoolBalanceChanged(poolConfig.poolId, this.onPoolBalanceChanged);
-    });
+    if (this.vaultContract) {
+      this.vaultContract.removeAllListeners();
+      this.vaultContract = null;
+    }
   }
 
   /**
@@ -46,8 +73,11 @@ class PoolShareBalanceProvider {
   };
 
   private async fetchPoolBalance(poolId: string) {
+    if (!this.vaultContract) {
+      return;
+    }
+
     const poolConfig = getConfigForPoolWithId(poolId);
-    const vaultService = getVaultService();
 
     let poolTokens: {
       tokens: string[];
@@ -55,7 +85,7 @@ class PoolShareBalanceProvider {
       lastChangeBlock: BigNumber;
     };
     try {
-      poolTokens = await vaultService.getPoolTokens(poolId);
+      poolTokens = await this.vaultContract.getPoolTokens(poolId);
     } catch (error) {
       console.error(
         'PoolShareBalanceProvider - fetchPoolBalance() - Failed to fetch pool balance, skipping state update!',

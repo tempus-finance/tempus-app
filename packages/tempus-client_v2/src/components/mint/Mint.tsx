@@ -190,11 +190,16 @@ const Mint: FC<MintInProps> = ({ narrow }) => {
   const onExecuted = useCallback(() => {
     setAmount('');
 
+    if (!userWalletSigner) {
+      return;
+    }
+
     // Trigger user pool share balance update when execute is finished
     getUserShareTokenBalanceProvider({
       userWalletAddress,
+      userWalletSigner,
     }).fetchForPool(selectedPoolAddress);
-  }, [selectedPoolAddress, userWalletAddress]);
+  }, [selectedPoolAddress, userWalletAddress, userWalletSigner]);
 
   const onApproveChange = useCallback(approved => {
     setTokensApproved(approved);

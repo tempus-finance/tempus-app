@@ -1,7 +1,11 @@
-import PoolShareBalanceProvider from './poolShareBalanceProvider';
+import PoolShareBalanceProvider, { PoolShareBalanceProviderParams } from './poolShareBalanceProvider';
 
-const poolShareBalanceProvider = new PoolShareBalanceProvider();
-const getPoolShareBalanceProvider = (): PoolShareBalanceProvider => {
+let poolShareBalanceProvider: PoolShareBalanceProvider;
+const getPoolShareBalanceProvider = (params: PoolShareBalanceProviderParams): PoolShareBalanceProvider => {
+  if (!poolShareBalanceProvider) {
+    poolShareBalanceProvider = new PoolShareBalanceProvider(params);
+  }
+
   return poolShareBalanceProvider;
 };
 
