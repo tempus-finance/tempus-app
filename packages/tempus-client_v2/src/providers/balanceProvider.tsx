@@ -1,9 +1,9 @@
 import { Contract } from 'ethers';
+import { JsonRpcSigner } from '@ethersproject/providers';
 import { ERC20 } from '../abi/ERC20';
 import ERC20ABI from '../abi/ERC20.json';
 import { TempusPool } from '../interfaces/TempusPool';
 import { dynamicPoolDataState } from '../state/PoolDataState';
-import getDefaultProvider from '../services/getDefaultProvider';
 import getStatisticsService from '../services/getStatisticsService';
 import getERC20TokenService from '../services/getERC20TokenService';
 import getConfig, { getConfigForPoolWithAddress } from '../utils/getConfig';
@@ -11,14 +11,18 @@ import { mul18f } from '../utils/weiMath';
 
 export interface UserBalanceProviderParams {
   userWalletAddress: string;
+  userWalletSigner: JsonRpcSigner;
 }
 
 class UserBalanceProvider {
   private userWalletAddress: string = '';
+  private userWalletSigner: JsonRpcSigner | null = null;
+
   private tokenContracts: ERC20[] = [];
 
   constructor(params: UserBalanceProviderParams) {
     this.userWalletAddress = params.userWalletAddress;
+    this.userWalletSigner = params.userWalletSigner;
   }
 
   init() {
@@ -26,15 +30,19 @@ class UserBalanceProvider {
     this.destroy();
 
     getConfig().tempusPools.forEach(poolConfig => {
-      const tpsContract = new Contract(poolConfig.principalsAddress, ERC20ABI, getDefaultProvider()) as ERC20;
+      if (!this.userWalletSigner) {
+        return;
+      }
+
+      const tpsContract = new Contract(poolConfig.principalsAddress, ERC20ABI, this.userWalletSigner) as ERC20;
       tpsContract.on(tpsContract.filters.Transfer(this.userWalletAddress, null), this.updateUserBalance);
       tpsContract.on(tpsContract.filters.Transfer(null, this.userWalletAddress), this.updateUserBalance);
 
-      const tysContract = new Contract(poolConfig.yieldsAddress, ERC20ABI, getDefaultProvider()) as ERC20;
+      const tysContract = new Contract(poolConfig.yieldsAddress, ERC20ABI, this.userWalletSigner) as ERC20;
       tysContract.on(tysContract.filters.Transfer(this.userWalletAddress, null), this.updateUserBalance);
       tysContract.on(tysContract.filters.Transfer(null, this.userWalletAddress), this.updateUserBalance);
 
-      const lpTokenContract = new Contract(poolConfig.ammAddress, ERC20ABI, getDefaultProvider()) as ERC20;
+      const lpTokenContract = new Contract(poolConfig.ammAddress, ERC20ABI, this.userWalletSigner) as ERC20;
       lpTokenContract.on(lpTokenContract.filters.Transfer(this.userWalletAddress, null), this.updateUserBalance);
       lpTokenContract.on(lpTokenContract.filters.Transfer(null, this.userWalletAddress), this.updateUserBalance);
 
@@ -62,11 +70,15 @@ class UserBalanceProvider {
   }
 
   private async updateUserBalanceForPool(poolConfig: TempusPool) {
-    const statisticsService = getStatisticsService();
+    if (!this.userWalletSigner) {
+      return;
+    }
 
-    const principalsService = getERC20TokenService(poolConfig.principalsAddress);
-    const yieldsService = getERC20TokenService(poolConfig.yieldsAddress);
-    const lpTokenService = getERC20TokenService(poolConfig.ammAddress);
+    const statisticsService = getStatisticsService(this.userWalletSigner);
+
+    const principalsService = getERC20TokenService(poolConfig.principalsAddress, this.userWalletSigner);
+    const yieldsService = getERC20TokenService(poolConfig.yieldsAddress, this.userWalletSigner);
+    const lpTokenService = getERC20TokenService(poolConfig.ammAddress, this.userWalletSigner);
 
     const [principalsBalance, yieldsBalance, lpTokenBalance, backingTokenRate] = await Promise.all([
       principalsService.balanceOf(this.userWalletAddress),

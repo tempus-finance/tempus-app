@@ -265,11 +265,16 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
   const onExecuted = useCallback(() => {
     onWithdraw();
 
+    if (!userWalletSigner) {
+      return;
+    }
+
     // Trigger user pool share balance update when execute is finished
     getUserShareTokenBalanceProvider({
       userWalletAddress,
+      userWalletSigner,
     }).fetchForPool(selectedPoolAddress);
-  }, [onWithdraw, selectedPoolAddress, userWalletAddress]);
+  }, [onWithdraw, selectedPoolAddress, userWalletAddress, userWalletSigner]);
 
   useEffect(() => {
     if (!tokenRate || !estimatedWithdrawData) {
