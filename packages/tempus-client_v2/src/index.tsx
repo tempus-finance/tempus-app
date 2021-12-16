@@ -6,8 +6,6 @@ import MobileBanner from './components/mobileBanner/MobileBanner';
 import App from './components/app/App';
 import getLibrary from './utils/getLibrary';
 
-import './providers/getPoolShareBalanceProvider';
-
 import './index.scss';
 
 const mobile = isMobile();

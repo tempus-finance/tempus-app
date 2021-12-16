@@ -144,11 +144,16 @@ const RemoveLiquidity = () => {
     setEstimatedPrincipals(null);
     setEstimatedYields(null);
 
+    if (!userWalletSigner) {
+      return;
+    }
+
     // Trigger user pool share balance update when execute is finished
     getUserShareTokenBalanceProvider({
       userWalletAddress,
+      userWalletSigner,
     }).fetchForPool(selectedPoolAddress);
-  }, [selectedPoolAddress, userWalletAddress]);
+  }, [selectedPoolAddress, userWalletAddress, userWalletSigner]);
 
   const lpTokenBalanceFormatted = useMemo(() => {
     if (!userLPTokenBalance) {

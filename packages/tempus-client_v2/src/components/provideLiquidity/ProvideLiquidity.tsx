@@ -352,11 +352,16 @@ const ProvideLiquidity = () => {
     setYieldsAmount('');
     setMaxDisabled(false);
 
+    if (!userWalletSigner) {
+      return;
+    }
+
     // Trigger user pool share balance update when execute is finished
     getUserShareTokenBalanceProvider({
       userWalletAddress,
+      userWalletSigner,
     }).fetchForPool(selectedPoolAddress);
-  }, [selectedPoolAddress, userWalletAddress]);
+  }, [selectedPoolAddress, userWalletAddress, userWalletSigner]);
 
   const principalsBalanceFormatted = useMemo(() => {
     if (!userPrincipalsBalance) {

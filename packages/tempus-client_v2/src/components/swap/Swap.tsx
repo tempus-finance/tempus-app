@@ -190,11 +190,16 @@ const Swap = () => {
   const onExecuted = useCallback(() => {
     setAmount('');
 
+    if (!userWalletSigner) {
+      return;
+    }
+
     // Trigger user pool share balance update when execute is finished
     getUserShareTokenBalanceProvider({
       userWalletAddress,
+      userWalletSigner,
     }).fetchForPool(selectedPoolAddress);
-  }, [selectedPoolAddress, userWalletAddress]);
+  }, [selectedPoolAddress, userWalletAddress, userWalletSigner]);
 
   // Fetch receive amount
   useEffect(() => {
