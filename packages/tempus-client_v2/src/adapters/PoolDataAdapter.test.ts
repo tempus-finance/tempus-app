@@ -1,4 +1,4 @@
-import { ethers } from 'ethers';
+import { BigNumber, ethers } from 'ethers';
 import PoolDataAdapter from './PoolDataAdapter';
 
 jest.mock('@ethersproject/providers');
@@ -83,7 +83,9 @@ describe('PoolDataAdapter', () => {
       };
     });
 
-    const mockGetVaultService = jest.fn().mockReturnValue({});
+    const mockGetVaultService = jest.fn().mockReturnValue({
+      getPoolTokens: () => Promise.resolve({ balances: [BigNumber.from('1'), BigNumber.from('2')] }),
+    });
 
     instance = new PoolDataAdapter();
     instance.init({
@@ -171,9 +173,16 @@ describe('PoolDataAdapter', () => {
       const tokenAmount = ethers.BigNumber.from('100000');
       const isBackingToken = true;
       const tempusPoolAddress = 'abc';
+      const tempusPoolId = '123';
       const tempusAMMAddress = 'xyz';
 
-      const apr = await instance.getEstimatedFixedApr(tokenAmount, isBackingToken, tempusPoolAddress, tempusAMMAddress);
+      const apr = await instance.getEstimatedFixedApr(
+        tokenAmount,
+        isBackingToken,
+        tempusPoolAddress,
+        tempusPoolId,
+        tempusAMMAddress,
+      );
 
       expect(apr).toBeDefined();
       if (apr) {
