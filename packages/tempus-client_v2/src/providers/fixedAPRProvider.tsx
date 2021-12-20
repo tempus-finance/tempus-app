@@ -52,11 +52,12 @@ const FixedAPRProvider = () => {
             spotPrice,
             estimateDepositAndFixFromBackingToken,
             tempusPool.address,
+            tempusPool.poolId,
             tempusPool.ammAddress,
           );
           return {
             address: tempusPool.address,
-            fixedAPR: Number(ethers.utils.formatUnits(fixedAPR, FIXED_APR_PRECISION)),
+            fixedAPR: fixedAPR ? Number(ethers.utils.formatUnits(fixedAPR, FIXED_APR_PRECISION)) : null,
           };
         } catch (error) {
           console.error('fetchedPoolAPRData error', error);

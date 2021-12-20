@@ -84,6 +84,8 @@ const Deposit: FC<DepositProps> = ({ narrow, poolDataAdapter }) => {
   const backingTokenAddress = staticPoolData[selectedPool.get()].backingTokenAddress.attach(Downgraded).get();
   const yieldBearingTokenAddress = staticPoolData[selectedPool.get()].yieldBearingTokenAddress.attach(Downgraded).get();
   const decimalsForUI = staticPoolData[selectedPool.get()].decimalsForUI.attach(Downgraded).get();
+  const poolId = staticPoolData[selectedPool.get()].poolId.attach(Downgraded).get();
+
   const onTokenChange = useCallback(
     (token: Ticker | undefined) => {
       if (!!token) {
@@ -313,6 +315,7 @@ const Deposit: FC<DepositProps> = ({ narrow, poolDataAdapter }) => {
             ethers.utils.parseUnits(amount, tokenPrecision),
             isBackingToken,
             selectedPoolAddress,
+            poolId,
             ammAddress,
           );
 
@@ -332,6 +335,7 @@ const Deposit: FC<DepositProps> = ({ narrow, poolDataAdapter }) => {
     selectedPoolAddress,
     amount,
     selectedToken,
+    poolId,
     tokenPrecision,
     poolDataAdapter,
     setEstimatedFixedApr,

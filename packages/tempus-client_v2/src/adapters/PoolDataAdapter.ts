@@ -750,9 +750,10 @@ export default class PoolDataAdapter {
     tokenAmount: BigNumber,
     isBackingToken: boolean,
     tempusPoolAddress: string,
+    tempusPoolId: string,
     tempusAMMAddress: string,
-  ): Promise<BigNumber> {
-    if (!this.tempusPoolService || !this.tempusAMMService || !this.statisticService) {
+  ): Promise<BigNumber | null> {
+    if (!this.tempusPoolService || !this.tempusAMMService || !this.statisticService || !this.vaultService) {
       console.error(
         'PoolDataAdapter - getEstimatedFixedApr() - Attempted to use PoolDataAdapter before initializing it.',
       );
@@ -762,6 +763,18 @@ export default class PoolDataAdapter {
     if (!tokenAmount) {
       console.error('PoolDataAdapter - getEstimatedFixedApr() - Invalid backingTokenAmount amount.');
       return Promise.reject();
+    }
+
+    // Check if pool has any liquidity, if not, return null
+    try {
+      const poolTokens = await this.vaultService.getPoolTokens(tempusPoolId);
+
+      if (poolTokens.balances[0].isZero() || poolTokens.balances[1].isZero()) {
+        return null;
+      }
+    } catch (error) {
+      console.error('PoolDataAdapter - getEstimatedFixedApr() - Failed to fetch pool balances!', error);
+      return Promise.reject(error);
     }
 
     try {
