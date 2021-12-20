@@ -158,7 +158,7 @@ class VariableRateService {
     );
 
     const laterBlock = startDate >= earlierBlock.timestamp * 1000 ? startDate : earlierBlock.timestamp * 1000;
-    const hoursBetweenLatestAndLater = (latestBlock.timestamp * 1000 - laterBlock) / (60 * 60 * 1000);
+    const hoursBetweenLatestAndLater = ((latestBlock.timestamp * 1000 - laterBlock) / (60 * 60 * 1000)).toFixed(18);
 
     const fetchEventsFromBlock = latestBlock.number - earlierBlock.number;
 
@@ -232,7 +232,7 @@ class VariableRateService {
     // Scale accumulated fees to 1 year duration
 
     const scaledFees = mul18f(
-      div18f(totalFees, ethers.utils.parseEther(hoursBetweenLatestAndLater.toString())),
+      div18f(totalFees, ethers.utils.parseEther(hoursBetweenLatestAndLater)),
       ethers.utils.parseEther(HOURS_IN_A_YEAR.toString()),
     );
 
