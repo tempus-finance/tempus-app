@@ -158,7 +158,7 @@ class VariableRateService {
     );
 
     const laterBlock = startDate >= earlierBlock.timestamp * 1000 ? startDate : earlierBlock.timestamp * 1000;
-    const hoursBetweenLatestAndLater = Math.floor((latestBlock.timestamp * 1000 - laterBlock) / (60 * 60 * 1000));
+    const hoursBetweenLatestAndLater = (latestBlock.timestamp * 1000 - laterBlock) / (60 * 60 * 1000);
 
     const fetchEventsFromBlock = latestBlock.number - earlierBlock.number;
 
