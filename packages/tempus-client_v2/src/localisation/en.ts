@@ -117,5 +117,6 @@ const en: { [word in Words]: string } = {
   mobileNotSupported:
     'Mobile support is not yet available, but will be included at a later time. <br />Thank you for your understanding.',
   mobileLink: 'Read more about Tempus',
+  unstaked: 'Unstaked',
 };
 export default en;

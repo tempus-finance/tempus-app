@@ -118,5 +118,6 @@ const it: { [word in Words]: string } = {
   mobileNotSupported:
     'Il supporto per smathphone e tablet non è ancora disponibile, ma lo sarà successivamente.<br />Grazie per la comprensione.',
   mobileLink: 'Leggi di più su Tempus',
+  unstaked: 'Unstaked',
 };
 export default it;

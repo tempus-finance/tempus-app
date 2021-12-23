@@ -73,6 +73,7 @@ type Words =
   | 'yields'
   | 'lpTokens'
   | 'staked'
+  | 'unstaked'
   | 'approve'
   | 'approved'
   | 'approving'

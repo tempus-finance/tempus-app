@@ -1,7 +1,6 @@
 import { ethers, BigNumber } from 'ethers';
 import { FC, useContext, useEffect, useMemo, useState } from 'react';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
-import { Divider } from '@material-ui/core';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
 import { WalletContext } from '../../context/walletContext';
@@ -76,26 +75,19 @@ const CurrentPosition: FC<CurrentPositionInProps> = ({ language }) => {
     );
   }, [decimalsForUI, userYieldsBalance, lpTokenYieldReturnBalance]);
 
-  const stakedPrincipalsFormatted = useMemo(() => {
-    if (!lpTokenPrincipalReturnBalance) {
-      return null;
-    }
-    return NumberUtils.formatWithMultiplier(ethers.utils.formatEther(lpTokenPrincipalReturnBalance), decimalsForUI);
-  }, [decimalsForUI, lpTokenPrincipalReturnBalance]);
-
-  const stakedYieldsFormatted = useMemo(() => {
-    if (!lpTokenYieldReturnBalance) {
-      return null;
-    }
-    return NumberUtils.formatWithMultiplier(ethers.utils.formatEther(lpTokenYieldReturnBalance), decimalsForUI);
-  }, [decimalsForUI, lpTokenYieldReturnBalance]);
-
   const unstakedPrincipalsFormatted = useMemo(() => {
     if (!userPrincipalsBalance) {
       return null;
     }
     return NumberUtils.formatWithMultiplier(ethers.utils.formatEther(userPrincipalsBalance), decimalsForUI);
   }, [decimalsForUI, userPrincipalsBalance]);
+
+  const stakedPrincipalsFormatted = useMemo(() => {
+    if (!lpTokenPrincipalReturnBalance) {
+      return null;
+    }
+    return NumberUtils.formatWithMultiplier(ethers.utils.formatEther(lpTokenPrincipalReturnBalance), decimalsForUI);
+  }, [decimalsForUI, lpTokenPrincipalReturnBalance]);
 
   const unstakedYieldsFormatted = useMemo(() => {
     if (!userYieldsBalance) {
@@ -104,106 +96,136 @@ const CurrentPosition: FC<CurrentPositionInProps> = ({ language }) => {
     return NumberUtils.formatWithMultiplier(ethers.utils.formatEther(userYieldsBalance), decimalsForUI);
   }, [decimalsForUI, userYieldsBalance]);
 
-  const totalValue = useMemo(() => {
-    if (!userPrincipalsBalance || !userYieldsBalance || !lpTokenPrincipalReturnBalance || !lpTokenYieldReturnBalance) {
+  const stakedYieldsFormatted = useMemo(() => {
+    if (!lpTokenYieldReturnBalance) {
       return null;
     }
+    return NumberUtils.formatWithMultiplier(ethers.utils.formatEther(lpTokenYieldReturnBalance), decimalsForUI);
+  }, [decimalsForUI, lpTokenYieldReturnBalance]);
 
-    return userPrincipalsBalance
-      .add(userYieldsBalance)
-      .add(lpTokenPrincipalReturnBalance)
-      .add(lpTokenYieldReturnBalance);
-  }, [userPrincipalsBalance, userYieldsBalance, lpTokenPrincipalReturnBalance, lpTokenYieldReturnBalance]);
-
-  const principalsPercentage = useMemo(() => {
-    if (!userPrincipalsBalance || !totalValue) {
+  const unstakedPrincipalsPercentage = useMemo(() => {
+    if (!userPrincipalsBalance || !lpTokenPrincipalReturnBalance) {
       return 0;
     }
 
-    return Number(ethers.utils.formatEther(div18f(userPrincipalsBalance, totalValue))) * 100;
-  }, [userPrincipalsBalance, totalValue]);
-
-  const yieldsPercentage = useMemo(() => {
-    if (!userYieldsBalance || !totalValue) {
-      return 0;
-    }
-
-    return Number(ethers.utils.formatEther(div18f(userYieldsBalance, totalValue))) * 100;
-  }, [userYieldsBalance, totalValue]);
+    return NumberUtils.formatPercentage(
+      ethers.utils.formatEther(div18f(userPrincipalsBalance, userPrincipalsBalance.add(lpTokenPrincipalReturnBalance))),
+    );
+  }, [userPrincipalsBalance, lpTokenPrincipalReturnBalance]);
 
   const stakedPrincipalsPercentage = useMemo(() => {
-    if (!lpTokenPrincipalReturnBalance || !totalValue) {
+    if (!userPrincipalsBalance || !lpTokenPrincipalReturnBalance) {
       return 0;
     }
 
-    return Number(ethers.utils.formatEther(div18f(lpTokenPrincipalReturnBalance, totalValue))) * 100;
-  }, [lpTokenPrincipalReturnBalance, totalValue]);
+    return NumberUtils.formatPercentage(
+      ethers.utils.formatEther(
+        div18f(lpTokenPrincipalReturnBalance, lpTokenPrincipalReturnBalance.add(userPrincipalsBalance)),
+      ),
+    );
+  }, [userPrincipalsBalance, lpTokenPrincipalReturnBalance]);
+
+  const unstakedYieldsPercentage = useMemo(() => {
+    if (!userYieldsBalance || !lpTokenYieldReturnBalance) {
+      return 0;
+    }
+
+    return NumberUtils.formatPercentage(
+      ethers.utils.formatEther(div18f(userYieldsBalance, userYieldsBalance.add(lpTokenYieldReturnBalance))),
+    );
+  }, [userYieldsBalance, lpTokenYieldReturnBalance]);
 
   const stakedYieldsPercentage = useMemo(() => {
-    if (!lpTokenYieldReturnBalance || !totalValue) {
+    if (!userYieldsBalance || !lpTokenYieldReturnBalance) {
       return 0;
     }
 
-    return Number(ethers.utils.formatEther(div18f(lpTokenYieldReturnBalance, totalValue))) * 100;
-  }, [lpTokenYieldReturnBalance, totalValue]);
+    return NumberUtils.formatPercentage(
+      ethers.utils.formatEther(div18f(lpTokenYieldReturnBalance, lpTokenYieldReturnBalance.add(userYieldsBalance))),
+    );
+  }, [lpTokenYieldReturnBalance, userYieldsBalance]);
 
   return (
     <div className="tc__currentPosition">
       <Typography variant="card-title">{getText('currentPosition', language)}</Typography>
-      <div className="tc__currentPosition__body">
-        <div className="tc__currentPosition__body__bar">
-          <div className="tc__currentPosition__body__bar__1" style={{ width: `${principalsPercentage}%` }} />
-          <div className="tc__currentPosition__body__bar__2" style={{ width: `${stakedPrincipalsPercentage}%` }} />
-          <div className="tc__currentPosition__body__bar__3" style={{ width: `${stakedYieldsPercentage}%` }} />
-          <div className="tc__currentPosition__body__bar__4" style={{ width: `${yieldsPercentage}%` }} />
+      <Spacer size={12} />
+      <div className="tc__currentPosition-header-row">
+        <Typography variant="card-body-text">{getText('principals', language)}</Typography>
+        <Typography variant="card-body-text">{principalsBalanceFormatted}</Typography>
+      </div>
+
+      <Spacer size={13} />
+
+      <div className="tc__currentPosition-data-row">
+        <div className="tc__currentPosition-data-row-label">
+          <div className="tc__currentPosition-unstaked-principals-icon" />
+          <Typography variant="card-body-text">{getText('unstaked', language)}</Typography>
         </div>
-        <div className="tc__currentPosition-legend">
-          <div className="tc__currentPosition-legend-row">
-            <div className="tc__currentPosition-legend-row-half">
-              <Typography variant="card-body-text">{getText('principals', language)}</Typography>
-              {principalsBalanceFormatted}
-            </div>
-            <div className="tc__currentPosition-legend-row-half">
-              <Typography variant="card-body-text">{getText('yields', language)}</Typography>
-              {yieldsBalanceFormatted}
-            </div>
-          </div>
-          <Spacer size={3} />
-          <Divider />
-          <Spacer size={8} />
-          <div className="tc__currentPosition-legend-row">
-            <div className="tc__currentPosition-legend-row-half">
-              <div className="tf__flex-row-space-between-v">
-                <div className="tc__currentPosition-unstaked-principals-icon" />
-                <Typography variant="card-body-text">Unstaked</Typography>
-              </div>
-              {unstakedPrincipalsFormatted}
-            </div>
-            <div className="tc__currentPosition-legend-row-half">
-              <div className="tf__flex-row-space-between-v">
-                <div className="tc__currentPosition-unstaked-yields-icon" />
-                <Typography variant="card-body-text">Unstaked</Typography>
-              </div>
-              {unstakedYieldsFormatted}
-            </div>
-          </div>
-          <Spacer size={4} />
-          <div className="tc__currentPosition-legend-row">
-            <div className="tc__currentPosition-legend-row-half">
-              <div className="tf__flex-row-space-between-v">
-                <div className="tc__currentPosition-staked-principals-icon" />
-                <Typography variant="card-body-text">Staked</Typography>
-              </div>
-              {stakedPrincipalsFormatted}
-            </div>
-            <div className="tc__currentPosition-legend-row-half">
-              <div className="tf__flex-row-space-between-v">
-                <div className="tc__currentPosition-staked-yields-icon" />
-                <Typography variant="card-body-text">Staked</Typography>
-              </div>
-              {stakedYieldsFormatted}
-            </div>
-          </div>
+
+        <div className="tc__currentPosition-data-row-percentage">
+          <Typography variant="card-body-text">{unstakedPrincipalsPercentage}</Typography>
+        </div>
+
+        <div className="tc__currentPosition-data-row-value">
+          <Typography variant="card-body-text">{unstakedPrincipalsFormatted}</Typography>
+        </div>
+      </div>
+
+      <Spacer size={13} />
+
+      <div className="tc__currentPosition-data-row">
+        <div className="tc__currentPosition-data-row-label">
+          <div className="tc__currentPosition-staked-principals-icon" />
+          <Typography variant="card-body-text">{getText('staked', language)}</Typography>
+        </div>
+
+        <div className="tc__currentPosition-data-row-percentage">
+          <Typography variant="card-body-text">{stakedPrincipalsPercentage}</Typography>
+        </div>
+
+        <div className="tc__currentPosition-data-row-value">
+          <Typography variant="card-body-text">{stakedPrincipalsFormatted}</Typography>
+        </div>
+      </div>
+
+      <Spacer size={20} />
+
+      <div className="tc__currentPosition-header-row">
+        <Typography variant="card-body-text">{getText('yields', language)}</Typography>
+        <Typography variant="card-body-text">{yieldsBalanceFormatted}</Typography>
+      </div>
+
+      <Spacer size={13} />
+
+      <div className="tc__currentPosition-data-row">
+        <div className="tc__currentPosition-data-row-label">
+          <div className="tc__currentPosition-unstaked-yields-icon" />
+          <Typography variant="card-body-text">{getText('unstaked', language)}</Typography>
+        </div>
+
+        <div className="tc__currentPosition-data-row-percentage">
+          <Typography variant="card-body-text">{unstakedYieldsPercentage}</Typography>
+        </div>
+
+        <div className="tc__currentPosition-data-row-value">
+          <Typography variant="card-body-text">{unstakedYieldsFormatted}</Typography>
+        </div>
+      </div>
+
+      <Spacer size={13} />
+
+      <div className="tc__currentPosition-data-row">
+        <div className="tc__currentPosition-data-row-label">
+          <div className="tc__currentPosition-staked-yields-icon" />
+          <Typography variant="card-body-text">{getText('staked', language)}</Typography>
+        </div>
+
+        <div className="tc__currentPosition-data-row-percentage">
+          <Typography variant="card-body-text">{stakedYieldsPercentage}</Typography>
+        </div>
+
+        <div className="tc__currentPosition-data-row-value">
+          <Typography variant="card-body-text">{stakedYieldsFormatted}</Typography>
         </div>
       </div>
     </div>
