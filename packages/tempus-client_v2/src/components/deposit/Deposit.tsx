@@ -27,8 +27,7 @@ import TokenIcon from '../tokenIcon';
 import SectionContainer from '../sectionContainer/SectionContainer';
 import Spacer from '../spacer/spacer';
 import InfoTooltip from '../infoTooltip/infoTooltip';
-import SelectedIcon from '../icons/SelectedIcon';
-import UnselectedIcon from '../icons/UnselectedIcon';
+import SelectIcon from '../icons/SelectIcon';
 
 import './Deposit.scss';
 
@@ -667,7 +666,7 @@ const Deposit: FC<DepositProps> = ({ narrow, poolDataAdapter }) => {
           <SectionContainer id="Fixed" selectable selected={selectedYield === 'Fixed'} onSelected={onSelectYield}>
             <div className="tf__flex-row-space-between-v">
               <div className="tf__flex-row-center-v">
-                {selectedYield === 'Fixed' ? <SelectedIcon /> : <UnselectedIcon />}
+                <SelectIcon selected={selectedYield === 'Fixed'} />
                 <Spacer size={10} />
                 <Typography variant="yield-card-header">{getText('fixYourFutureYield', language)}</Typography>
                 <Spacer size={10} />
@@ -753,7 +752,7 @@ const Deposit: FC<DepositProps> = ({ narrow, poolDataAdapter }) => {
           <SectionContainer id="Variable" selectable selected={selectedYield === 'Variable'} onSelected={onSelectYield}>
             <div className="tf__flex-row-space-between-v">
               <div className="tf__flex-row-center-v">
-                {selectedYield === 'Variable' ? <SelectedIcon /> : <UnselectedIcon />}
+                <SelectIcon selected={selectedYield === 'Variable'} />
                 <Spacer size={10} />
                 <Typography variant="yield-card-header">{getText('provideLiquidity', language)}</Typography>
                 <Spacer size={10} />
