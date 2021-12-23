@@ -91,8 +91,9 @@ const it: { [word in Words]: string } = {
   lifeTimeYield: 'Rendimento a Termine',
   fixYourFutureYield: 'Fissa il Rendimento Futuro',
   fixedYield: 'Rendimento Fisso',
-  fixedYieldAtMaturity: 'Rendimento Fisso a Scadenza',
-  totalAvailableAtMaturity: 'Totale Disponibile a Scadenza',
+  yieldAtMaturity: 'Yield at maturity',
+  estimatedYieldAtMaturity: 'Est. yield at maturity',
+  totalAvailableAtMaturity: 'Totale disponibile a scadenza',
   variableYield: 'Rendimento Variabile',
   amountReceived: 'Importo Ricevuto',
   approx: 'Appross.',
@@ -119,5 +120,7 @@ const it: { [word in Words]: string } = {
     'Il supporto per smathphone e tablet non è ancora disponibile, ma lo sarà successivamente.<br />Grazie per la comprensione.',
   mobileLink: 'Leggi di più su Tempus',
   unstaked: 'Unstaked',
+  stakedPrincipals: 'Staked Principals',
+  stakedYields: 'Staked Yields',
 };
 export default it;

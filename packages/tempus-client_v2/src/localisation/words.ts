@@ -89,7 +89,8 @@ type Words =
   | 'futureYield'
   | 'lifeTimeYield'
   | 'fixedYield'
-  | 'fixedYieldAtMaturity'
+  | 'estimatedYieldAtMaturity'
+  | 'yieldAtMaturity'
   | 'totalAvailableAtMaturity'
   | 'variableYield'
   | 'amountReceived'
@@ -110,6 +111,8 @@ type Words =
   | 'auto'
   | 'language'
   | 'mobileNotSupported'
-  | 'mobileLink';
+  | 'mobileLink'
+  | 'stakedPrincipals'
+  | 'stakedYields';
 
 export default Words;
