@@ -17,9 +17,9 @@ import getTokenPrecision from '../../utils/getTokenPrecision';
 import { isZeroString } from '../../utils/isZeroString';
 import { mul18f } from '../../utils/weiMath';
 import NumberUtils from '../../services/NumberUtils';
+import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
 import Approve from '../buttons/Approve';
 import Execute from '../buttons/Execute';
-import OperationsSharedProps from '../shared/OperationsSharedProps';
 import CurrencyInput from '../currencyInput/currencyInput';
 import TokenSelector from '../tokenSelector/tokenSelector';
 import Typography from '../typography/Typography';
@@ -35,9 +35,9 @@ type DepositInProps = {
   narrow: boolean;
 };
 
-type DepositProps = DepositInProps & OperationsSharedProps;
+type DepositProps = DepositInProps;
 
-const Deposit: FC<DepositProps> = ({ narrow, poolDataAdapter }) => {
+const Deposit: FC<DepositProps> = ({ narrow }) => {
   const selectedPool = useHookState(selectedPoolState);
   const staticPoolData = useHookState(staticPoolDataState);
   const dynamicPoolData = useHookState(dynamicPoolDataState);
@@ -180,7 +180,9 @@ const Deposit: FC<DepositProps> = ({ narrow, poolDataAdapter }) => {
   }, [backingTokenAddress, yieldBearingTokenAddress, backingToken, selectedToken]);
 
   const onExecute = useCallback((): Promise<ethers.ContractTransaction | undefined> => {
-    if (userWalletSigner && amount && poolDataAdapter) {
+    if (userWalletSigner && amount) {
+      const poolDataAdapter = getPoolDataAdapter(userWalletSigner);
+
       const tokenAmount = ethers.utils.parseUnits(amount, tokenPrecision);
       const isBackingToken = backingToken === selectedToken;
       const isEthDeposit = selectedToken === 'ETH';
@@ -205,7 +207,6 @@ const Deposit: FC<DepositProps> = ({ narrow, poolDataAdapter }) => {
   }, [
     userWalletSigner,
     amount,
-    poolDataAdapter,
     tokenPrecision,
     backingToken,
     selectedToken,
@@ -236,7 +237,9 @@ const Deposit: FC<DepositProps> = ({ narrow, poolDataAdapter }) => {
   }, []);
 
   useEffect(() => {
-    if (userWalletSigner && selectedPoolAddress && ammAddress && poolDataAdapter) {
+    if (userWalletSigner && selectedPoolAddress && ammAddress) {
+      const poolDataAdapter = getPoolDataAdapter(userWalletSigner);
+
       const stream$ = poolDataAdapter
         .retrieveBalances(selectedPoolAddress, ammAddress, userWalletAddress, userWalletSigner)
         .pipe(
@@ -259,7 +262,6 @@ const Deposit: FC<DepositProps> = ({ narrow, poolDataAdapter }) => {
     userWalletSigner,
     userWalletAddress,
     selectedToken,
-    poolDataAdapter,
     setBackingTokenRate,
     setYieldBearingTokenRate,
     ammAddress,
@@ -272,9 +274,11 @@ const Deposit: FC<DepositProps> = ({ narrow, poolDataAdapter }) => {
         setVariableUnstakedPrincipalsAmount(null);
         setVariableStakedPrincipalsAmount(null);
         setVariableStakedYieldsAmount(null);
-      } else if (ammAddress && poolDataAdapter) {
+      } else if (ammAddress && userWalletSigner) {
         try {
           setTokenEstimateInProgress(true);
+
+          const poolDataAdapter = getPoolDataAdapter(userWalletSigner);
 
           const isBackingToken = backingToken === selectedToken;
 
@@ -301,12 +305,15 @@ const Deposit: FC<DepositProps> = ({ narrow, poolDataAdapter }) => {
     };
 
     retrieveDepositAmount();
-  }, [amount, tokenPrecision, selectedToken, poolDataAdapter, ammAddress, backingToken]);
+  }, [amount, tokenPrecision, selectedToken, ammAddress, backingToken, userWalletSigner]);
 
   useEffect(() => {
     const getEstimatedFixedApr = async () => {
-      if (!isZeroString(amount) && selectedToken && poolDataAdapter) {
+      if (!isZeroString(amount) && selectedToken && userWalletSigner) {
         setRateEstimateInProgress(true);
+
+        const poolDataAdapter = getPoolDataAdapter(userWalletSigner);
+
         const isBackingToken = selectedToken === backingToken;
         try {
           const fixedAPREstimate = await poolDataAdapter.getEstimatedFixedApr(
@@ -335,16 +342,18 @@ const Deposit: FC<DepositProps> = ({ narrow, poolDataAdapter }) => {
     selectedToken,
     poolId,
     tokenPrecision,
-    poolDataAdapter,
+    userWalletSigner,
     setEstimatedFixedApr,
     backingToken,
     ammAddress,
   ]);
 
   useEffect(() => {
-    if (!poolDataAdapter) {
+    if (!userWalletSigner) {
       return;
     }
+
+    const poolDataAdapter = getPoolDataAdapter(userWalletSigner);
 
     const stream$ = poolDataAdapter
       .isCurrentYieldNegativeForPool(selectedPoolAddress)
@@ -359,7 +368,7 @@ const Deposit: FC<DepositProps> = ({ narrow, poolDataAdapter }) => {
       });
 
     return () => stream$.unsubscribe();
-  }, [selectedPoolAddress, poolDataAdapter]);
+  }, [selectedPoolAddress, userWalletSigner]);
 
   const fixedPrincipalsAmountFormatted = useMemo(() => {
     if (!fixedPrincipalsAmount) {
