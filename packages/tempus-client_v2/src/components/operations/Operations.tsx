@@ -1,7 +1,6 @@
 import { useCallback, useContext, useEffect, useState } from 'react';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { dynamicPoolDataState, selectedPoolState } from '../../state/PoolDataState';
-import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
 import { LanguageContext } from '../../context/languageContext';
 import { WalletContext } from '../../context/walletContext';
 import { TransactionView } from '../../interfaces/TransactionView';
@@ -77,9 +76,7 @@ const Operations = () => {
           </div>
           {/* Middle bottom part (Selected tab options) */}
           <div className="tc__operations-poolManage">
-            {selectedView === 'deposit' && (
-              <Deposit poolDataAdapter={getPoolDataAdapter(userWalletSigner)} narrow={!hideUserData} />
-            )}
+            {selectedView === 'deposit' && <Deposit narrow={!hideUserData} />}
             {selectedView === 'withdraw' && <Withdraw onWithdraw={handleWithdraw} />}
             {selectedView === 'mint' && <Mint narrow={!hideUserData} />}
             {selectedView === 'swap' && <Swap />}
