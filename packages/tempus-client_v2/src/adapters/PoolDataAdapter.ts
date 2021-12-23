@@ -198,7 +198,11 @@ export default class PoolDataAdapter {
     isBackingToken: boolean,
   ): Promise<{
     fixedDeposit: BigNumber;
-    variableDeposit: BigNumber[];
+    variableDeposit: {
+      unstakedPrincipals: BigNumber;
+      stakedPrincipals: BigNumber;
+      stakedYields: BigNumber;
+    };
   }> {
     if (!this.statisticService) {
       console.error(
@@ -215,12 +219,21 @@ export default class PoolDataAdapter {
     try {
       const [fixedDeposit, variableDeposit] = await Promise.all([
         this.statisticService.estimatedDepositAndFix(tempusAmmAddress, tokenAmount, isBackingToken),
+        // Returns [LPTokens, Principals, Yields]
         this.statisticService.estimatedDepositAndProvideLiquidity(tempusAmmAddress, tokenAmount, isBackingToken),
       ]);
 
+      const [lpTokensEstimate, principals] = variableDeposit;
+
+      const estimatedSharesFromLPTokens = await this.getExpectedReturnForLPTokens(tempusAmmAddress, lpTokensEstimate);
+
       return {
         fixedDeposit,
-        variableDeposit, // [lpTokens, principals, yields]
+        variableDeposit: {
+          stakedPrincipals: estimatedSharesFromLPTokens.principals,
+          stakedYields: estimatedSharesFromLPTokens.yields,
+          unstakedPrincipals: principals,
+        },
       };
     } catch (error) {
       console.error('PoolDataAdapter - getEstimatedDepositAmount() - Failed to retrieve balances!', error);

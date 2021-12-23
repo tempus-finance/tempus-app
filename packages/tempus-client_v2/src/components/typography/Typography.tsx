@@ -15,9 +15,11 @@ type TypographyVariant =
   | 'card-title'
   | 'card-body-text'
   | 'tooltip-card-text'
-  | 'fractional';
+  | 'fractional'
+  | 'yield-card-header'
+  | 'yield-card-type';
 
-type TypographyColor = 'default' | 'accent' | 'inverted' | 'link' | 'title' | 'error' | 'success';
+type TypographyColor = 'default' | 'primary' | 'accent' | 'inverted' | 'link' | 'title' | 'error' | 'success';
 
 const typographyStyleMap = new Map<TypographyVariant, CSSProperties>();
 typographyStyleMap.set('h1', {
@@ -118,6 +120,20 @@ typographyStyleMap.set('fractional', {
   fontStyle: 'normal',
   lineHeight: '17.6px',
 });
+typographyStyleMap.set('yield-card-header', {
+  fontFamily: "'Manrope', sans-serif",
+  fontWeight: 400,
+  fontSize: '16px',
+  fontStyle: 'normal',
+  lineHeight: '22px',
+});
+typographyStyleMap.set('yield-card-type', {
+  fontFamily: "'Source Sans Pro', sans-serif",
+  fontWeight: 700,
+  fontSize: '16px',
+  fontStyle: 'normal',
+  lineHeight: '20px',
+});
 
 interface TypographyProps {
   variant: TypographyVariant;
@@ -134,6 +150,9 @@ const Typography: FC<TypographyProps> = props => {
   switch (props.color) {
     case 'default':
       color = '#222222';
+      break;
+    case 'primary':
+      color = '#288195';
       break;
     case 'accent':
       color = '#FF6B00';

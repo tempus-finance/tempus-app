@@ -91,8 +91,9 @@ const en: { [word in Words]: string } = {
   lifeTimeYield: 'Lifetime Yield',
   fixYourFutureYield: 'Fix Your Future Yield',
   fixedYield: 'Fixed Yield',
-  fixedYieldAtMaturity: 'Fixed Yield At Maturity',
-  totalAvailableAtMaturity: 'Total Available At Maturity',
+  yieldAtMaturity: 'Yield at maturity',
+  estimatedYieldAtMaturity: 'Est. yield at maturity',
+  totalAvailableAtMaturity: 'Total available at maturity',
   variableYield: 'Variable Yield',
   amountReceived: 'Amount Received',
   approx: 'Approx',
@@ -117,5 +118,7 @@ const en: { [word in Words]: string } = {
   mobileNotSupported:
     'Mobile support is not yet available, but will be included at a later time. <br />Thank you for your understanding.',
   mobileLink: 'Read more about Tempus',
+  stakedPrincipals: 'Staked Principals',
+  stakedYields: 'Staked Yields',
 };
 export default en;
