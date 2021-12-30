@@ -23,6 +23,8 @@ import Spacer from '../spacer/spacer';
 import WalletSelector from './WalletSelector';
 import WalletPopup from './WalletPopup';
 import './Wallet.scss';
+import useENS from '../../utils/useENS';
+import Davatar from '@davatar/react';
 
 const WALLET_KEY = 'lastConnectedWallet';
 
@@ -323,6 +325,7 @@ const Wallet = () => {
         userWalletAddress: account || '',
       }));
   }, [account, library, setWalletData]);
+  const { ensName } = useENS(account);
 
   let shortenedAccount;
   if (account) {
@@ -373,7 +376,14 @@ const Wallet = () => {
             >
               <AccountBalanceWalletIcon />
               <Spacer size={4} />
-              {pendingTransactions.length === 0 && <Typography variant="h5">{shortenedAccount}</Typography>}
+              {pendingTransactions.length === 0 && (
+                <div className="tc__connect-wallet-button__profile">
+                  {account && (
+                    <Davatar size={20} address={account} style={{ marginRight: 8 }} generatedAvatarType="jazzicon" />
+                  )}
+                  <Typography variant="h5">{ensName || shortenedAccount}</Typography>
+                </div>
+              )}
               {pendingTransactions.length > 0 && (
                 <Typography variant="h5">
                   {pendingTransactions.length} {getText('pending', language)}
