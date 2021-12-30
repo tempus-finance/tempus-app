@@ -4,6 +4,7 @@ import { Web3Provider } from '@ethersproject/providers';
 import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core';
 import { InjectedConnector } from '@web3-react/injected-connector';
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
+import Davatar from '@davatar/react';
 import { CircularProgress } from '@material-ui/core';
 import AccountBalanceWalletIcon from '@material-ui/icons/AccountBalanceWallet';
 import { supportedChainIds, NETWORK_URLS, SupportedChainId } from '../../constants';
@@ -15,6 +16,7 @@ import { WalletContext } from '../../context/walletContext';
 import NumberUtils from '../../services/NumberUtils';
 import UserWallet from '../../interfaces/UserWallet';
 import getText from '../../localisation/getText';
+import useENS from '../../utils/useENS';
 import shortenAccount from '../../utils/shortenAccount';
 import getStorageService from '../../services/getStorageService';
 import getNotificationService from '../../services/getNotificationService';
@@ -23,8 +25,6 @@ import Spacer from '../spacer/spacer';
 import WalletSelector from './WalletSelector';
 import WalletPopup from './WalletPopup';
 import './Wallet.scss';
-import useENS from '../../utils/useENS';
-import Davatar from '@davatar/react';
 
 const WALLET_KEY = 'lastConnectedWallet';
 
