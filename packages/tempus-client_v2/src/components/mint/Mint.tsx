@@ -303,6 +303,21 @@ const Mint: FC<MintInProps> = ({ narrow }) => {
     return !tokensApproved || zeroAmount || amountExceedsBalance || depositDisabled || estimateInProgress;
   }, [amount, tokenPrecision, getSelectedTokenBalance, tokensApproved, estimateInProgress, depositDisabled]);
 
+  const ethAllowanceForGasExceeded = useMemo(() => {
+    const currentBalance = getSelectedTokenBalance();
+
+    if (!amount || !currentBalance) {
+      return false;
+    }
+
+    const amountParsed = ethers.utils.parseUnits(amount, tokenPrecision);
+
+    const ethSelected = selectedToken === 'ETH';
+    const gasAllowanceExceeded = amountParsed.add(ETH_ALLOWANCE_FOR_GAS).gt(currentBalance);
+
+    return ethSelected && gasAllowanceExceeded;
+  }, [amount, getSelectedTokenBalance, selectedToken, tokenPrecision]);
+
   return (
     <div className="tc__mint">
       <SectionContainer title="from">
@@ -331,9 +346,9 @@ const Mint: FC<MintInProps> = ({ narrow }) => {
               // TODO - Update text in case input is disabled because of negative yield
               disabledTooltip={getText('selectTokenFirst', language)}
             />
-            {selectedToken === 'ETH' && amount && (
+            {ethAllowanceForGasExceeded && (
               <div className="tf__input__label">
-                <Typography variant="disclaimer-text" color="accent">
+                <Typography variant="disclaimer-text" color="error">
                   {getText('warningEthGasFees', language)}
                 </Typography>
               </div>
