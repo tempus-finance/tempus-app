@@ -113,6 +113,10 @@ type Words =
   | 'mobileNotSupported'
   | 'mobileLink'
   | 'stakedPrincipals'
-  | 'stakedYields';
+  | 'stakedYields'
+  | 'mintDescription'
+  | 'swapDescription'
+  | 'provideLiquidityDescription'
+  | 'removeLiquidityDescription';
 
 export default Words;

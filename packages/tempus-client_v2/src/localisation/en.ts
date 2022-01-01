@@ -121,5 +121,9 @@ const en: { [word in Words]: string } = {
   unstaked: 'Unstaked',
   stakedPrincipals: 'Staked Principals',
   stakedYields: 'Staked Yields',
+  mintDescription: 'Split your yield bearing token into Principals and Yields',
+  swapDescription: 'Swap between Principals and Yields',
+  provideLiquidityDescription: 'Use your LP tokens to provide liquidity to the pool and earn rewards',
+  removeLiquidityDescription: 'Remove your liquidity from the pool with the accrued rewards in the form of your initial LP tokens'
 };
 export default en;

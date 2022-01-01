@@ -267,10 +267,7 @@ const Swap = () => {
 
   return (
     <div className="tc__swap">
-      <Descriptor title="Easy Deposit info label">
-        In order to withdraw from the Pool you have to approve withdrawal from all token balances and execute the
-        transaction.
-      </Descriptor>
+      <Descriptor>{getText('swapDescription', language)}</Descriptor>
       <SectionContainer title="from" elevation={1}>
         {selectedToken && balanceFormatted && (
           <div className="tc__title-and-balance bottom-padded">

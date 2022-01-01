@@ -192,10 +192,7 @@ const RemoveLiquidity = () => {
 
   return (
     <div className="tc__removeLiquidity">
-      <Descriptor title="Easy Deposit info label">
-        In order to withdraw from the Pool you have to approve withdrawal from all token balances and execute the
-        transaction.
-      </Descriptor>
+      <Descriptor>{getText('removeLiquidityDescription', language)}</Descriptor>
       <SectionContainer title="from">
         <SectionContainer elevation={2}>
           <div className="tc__title-and-balance">

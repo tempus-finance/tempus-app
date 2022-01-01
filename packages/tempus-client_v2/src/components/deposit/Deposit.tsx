@@ -30,7 +30,6 @@ import InfoTooltip from '../infoTooltip/infoTooltip';
 import SelectIcon from '../icons/SelectIcon';
 
 import './Deposit.scss';
-import Descriptor from '../descriptor/Descriptor';
 
 type DepositInProps = {
   narrow: boolean;
@@ -621,11 +620,6 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
 
   return (
     <div className={`tc__deposit ${narrow ? 'tc__deposit__narrow' : ''}`}>
-      <Descriptor title="Easy Deposit info label">
-        In order to withdraw from the Pool you have to approve withdrawal from all token balances and execute the
-        transaction.
-      </Descriptor>
-      <Spacer size={15} />
       <SectionContainer title="from">
         {selectedToken && balanceFormatted && (
           <div className="tc__title-and-balance bottom-padded">

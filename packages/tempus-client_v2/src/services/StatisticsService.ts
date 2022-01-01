@@ -310,13 +310,12 @@ class StatisticsService {
     }
   }
 
-  // TODO missing return type
   async estimatedRedeem(
     tempusPool: string,
     principalsAmount: BigNumber,
     yieldsAmount: BigNumber,
     toBackingToken: boolean,
-  ) {
+  ): Promise<BigNumber> {
     if (!this.stats) {
       console.error(
         'StatisticsService - estimatedMintedShares() - Attempted to use statistics contract before initializing it!',
@@ -324,8 +323,13 @@ class StatisticsService {
       return Promise.reject();
     }
 
-    // TODO try catch
-    return this.stats.estimatedRedeem(tempusPool, principalsAmount, yieldsAmount, toBackingToken);
+    try {
+      return this.stats.estimatedRedeem(tempusPool, principalsAmount, yieldsAmount, toBackingToken);
+    }
+    catch (error) {
+      console.error('StatisticsService - estimatedRedeem() - Failed to fetch estimated redeem amount!');
+      return Promise.reject(error);
+    }
   }
 }
 

@@ -25,6 +25,7 @@ import Spacer from '../spacer/spacer';
 import TokenSelector from '../tokenSelector/tokenSelector';
 import Typography from '../typography/Typography';
 import TokenIcon from '../tokenIcon';
+
 import './Mint.scss';
 
 type MintInProps = {
@@ -305,10 +306,7 @@ const Mint: FC<MintInProps> = ({ narrow }) => {
 
   return (
     <div className="tc__mint">
-      <Descriptor title="Easy Deposit info label">
-        In order to withdraw from the Pool you have to approve withdrawal from all token balances and execute the
-        transaction.
-      </Descriptor>
+      <Descriptor>{getText('mintDescription', language)}</Descriptor>
       <SectionContainer title="from">
         {selectedToken && balanceFormatted && (
           <div className="tc__title-and-balance bottom-padded">
