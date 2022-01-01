@@ -1163,10 +1163,11 @@ export default class PoolDataAdapter {
 
   async getPoolTVLChangeData(
     tempusPool: string,
+    poolStartTimestamp: number,
     backingToken: Ticker,
     currentTVL: BigNumber,
     backingTokenPrecision?: number,
-  ): Promise<BigNumber> {
+  ): Promise<BigNumber | null> {
     if (!this.statisticService) {
       console.error('PoolDataAdapter - getTokenServices() - Attempted to use PoolDataAdapter before initializing it!');
       return Promise.reject();
@@ -1184,6 +1185,13 @@ export default class PoolDataAdapter {
     // Get block number from 7 days ago (approximate - we need to find a better way to fetch exact block number)
     // TODO - Do not attempt to fetch TVL for blocks that were mined before tempus pool contract was deployed
     const fetchForBlock = latestBlock.number - Math.round(SECONDS_IN_A_DAY / BLOCK_DURATION_SECONDS) * 7;
+
+    const pastBlock = await provider.getBlock(fetchForBlock);
+    // Convert block timestamp from seconds to milliseconds
+    if (pastBlock.timestamp * 1000 < poolStartTimestamp) {
+      return null;
+    }
+
     try {
       const [tvlInBackingTokens, backingTokenRate] = await Promise.all([
         this.statisticService.totalValueLockedInBackingTokens(tempusPool, {
@@ -1210,7 +1218,8 @@ export default class PoolDataAdapter {
     tempusPoolId: string,
     backingToken: Ticker,
     principalsAddress: string,
-    userWalletSigner: JsonRpcSigner,
+    fromBlock: number,
+    toBlock: number,
     backingTokenPrecision?: number,
   ): Promise<BigNumber> {
     if (
@@ -1224,20 +1233,6 @@ export default class PoolDataAdapter {
       return Promise.reject();
     }
 
-    let latestBlock;
-    try {
-      latestBlock = await userWalletSigner.provider.getBlock('latest');
-    } catch (error) {
-      console.error('Failed to get latest block data!');
-      return Promise.reject();
-    }
-
-    // Get block number from 7 days ago (approximate - we need to find a better way to fetch exact block number)
-    // TODO - Do not attempt to fetch TVL for blocks that were mined before tempus pool contract was deployed
-    // TODO - Maximum number of events returned is 10k if block range is larger then 2k. We need to fetch events in batches to make sure
-    // this is going to work when usage of the app goes up and we have more then 10k events per week.
-    const fetchFromBlock = latestBlock.number - Math.round(SECONDS_IN_A_DAY / BLOCK_DURATION_SECONDS) * 7;
-
     let depositEvents: DepositedEvent[];
     let redeemEvents: RedeemedEvent[];
     let swapEvents: SwapEvent[];
@@ -1247,14 +1242,16 @@ export default class PoolDataAdapter {
         this.tempusControllerService.getDepositedEvents({
           forPool: tempusPool,
           forUser: eventsForUser,
-          fromBlock: fetchFromBlock,
+          fromBlock,
+          toBlock,
         }),
         this.tempusControllerService.getRedeemedEvents({
           forPool: tempusPool,
           forUser: eventsForUser,
-          fromBlock: fetchFromBlock,
+          fromBlock,
+          toBlock
         }),
-        this.vaultService.getSwapEvents({ forPoolId: tempusPoolId, fromBlock: fetchFromBlock }),
+        this.vaultService.getSwapEvents({ forPoolId: tempusPoolId, fromBlock, toBlock }),
       ]);
     } catch (error) {
       console.error('Failed to fetch deposit and redeem events for volume chart', error);
