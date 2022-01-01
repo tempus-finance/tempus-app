@@ -5,6 +5,7 @@ import { combineLatest } from 'rxjs';
 import { SLIPPAGE_PRECISION } from '../../constants';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
 import getUserShareTokenBalanceProvider from '../../providers/getUserShareTokenBalanceProvider';
+import getUserBalanceProvider from '../../providers/getBalanceProvider';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
 import { WalletContext } from '../../context/walletContext';
 import { LanguageContext } from '../../context/languageContext';
@@ -271,6 +272,12 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
 
     // Trigger user pool share balance update when execute is finished
     getUserShareTokenBalanceProvider({
+      userWalletAddress,
+      userWalletSigner,
+    }).fetchForPool(selectedPoolAddress);
+
+    // Trigger user balance update when execute is finished
+    getUserBalanceProvider({
       userWalletAddress,
       userWalletSigner,
     }).fetchForPool(selectedPoolAddress);
