@@ -1,6 +1,8 @@
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { Downgraded, useHookstate, useState as useHookState } from '@hookstate/core';
 import { ethers, BigNumber } from 'ethers';
+import { BLOCK_DURATION_SECONDS, SECONDS_IN_A_DAY } from '../../constants';
+import { div18f } from '../../utils/weiMath';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
 import { LanguageContext } from '../../context/languageContext';
@@ -15,8 +17,6 @@ import AprTooltip from './aprTooltip/aprTooltip';
 import PercentageLabel from './percentageLabel/PercentageLabel';
 
 import './Pool.scss';
-import { BLOCK_DURATION_SECONDS, SECONDS_IN_A_DAY } from '../../constants';
-import { div18f } from '../../utils/weiMath';
 
 const Pool = () => {
   const selectedPool = useHookState(selectedPoolState);
