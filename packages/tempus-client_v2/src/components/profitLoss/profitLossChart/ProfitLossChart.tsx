@@ -1,3 +1,4 @@
+import { ethers } from 'ethers';
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { AreaChart, Tooltip, Area, ResponsiveContainer } from 'recharts';
@@ -8,7 +9,6 @@ import ChartDataPoint from '../../../interfaces/ChartDataPoint';
 import getPastDaysNumber from '../../../utils/getPastDaysNumber';
 import Typography from '../../typography/Typography';
 import ProfitLossChartTooltip from './ProfitLossChartTooltip';
-import { ethers } from 'ethers';
 
 const ProfitLossChart = () => {
   const selectedPool = useHookState(selectedPoolState);
@@ -62,9 +62,9 @@ const ProfitLossChart = () => {
     // USD Values are always in 18 decimal precision
     lastChartEntry.value = Number(ethers.utils.formatEther(userBalanceUSD));
 
+    // Calculate new value increase
     const previousEntry = currentChartData[currentChartData.length - 1];
     if (previousEntry && previousEntry.value !== 0) {
-      // Calculate new value increase
       const valueDiff = lastChartEntry.value - previousEntry.value;
       const valueRatio = valueDiff / previousEntry.value;
 
@@ -78,9 +78,9 @@ const ProfitLossChart = () => {
   }, [userBalanceUSD]);
 
   // Hide Profit Loss chart if there is no historical data (ie. we only have data for present day)
-  /*if (chartData.length <= 1) {
+  if (chartData.length <= 1) {
     return null;
-  }*/
+  }
 
   return (
     <>
