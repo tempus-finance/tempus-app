@@ -56,6 +56,7 @@ describe('PoolDataAdapter', () => {
       return {
         getRate: jest.fn().mockResolvedValue(ethers.utils.parseEther('0.5')),
         estimatedDepositAndFix: jest.fn().mockResolvedValue(ethers.utils.parseEther('123')),
+        estimatedMintedShares: jest.fn().mockResolvedValue(BigNumber.from('100')),
       };
     });
 
@@ -170,7 +171,7 @@ describe('PoolDataAdapter', () => {
 
   describe('getEstimatedFixedApr()', () => {
     test('returns an estimated fixed apr value', async () => {
-      const tokenAmount = ethers.BigNumber.from('100000');
+      const tokenAmount = ethers.BigNumber.from('1');
       const isBackingToken = true;
       const tempusPoolAddress = 'abc';
       const tempusPoolId = '123';
@@ -186,7 +187,7 @@ describe('PoolDataAdapter', () => {
 
       expect(apr).toBeDefined();
       if (apr) {
-        expect(ethers.utils.formatEther(apr)).toBe('14482258064516116.305806451612904');
+        expect(ethers.utils.formatEther(apr)).toBe('14482258064516128068.225806451612904');
       }
     });
   });
