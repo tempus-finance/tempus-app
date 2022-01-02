@@ -805,20 +805,13 @@ export default class PoolDataAdapter {
         isBackingToken,
       );
 
-      if (isBackingToken) {
-        const ratio = div18f(principals, tokenAmount);
-        const pureInterest = ratio.sub(BigNumber.from(ONE_ETH_IN_WEI));
-        return mul18f(pureInterest, scaleFactor);
-      }
-      const interestRate = await this.tempusPoolService.currentInterestRate(tempusPoolAddress);
-
-      const backingAmount = await this.tempusPoolService.numAssetsPerYieldToken(
+      const estimatedMintedShares = await this.statisticService.estimatedMintedShares(
         tempusPoolAddress,
         tokenAmount,
-        interestRate,
+        isBackingToken
       );
 
-      const ratio = div18f(principals, backingAmount);
+      const ratio = div18f(principals, estimatedMintedShares);
       const pureInterest = ratio.sub(BigNumber.from(ONE_ETH_IN_WEI));
       return mul18f(pureInterest, scaleFactor);
     } catch (error) {
