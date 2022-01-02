@@ -765,6 +765,7 @@ export default class PoolDataAdapter {
     tempusPoolAddress: string,
     tempusPoolId: string,
     tempusAMMAddress: string,
+    blockTag?: number,
   ): Promise<BigNumber | null> {
     if (!this.tempusPoolService || !this.tempusAMMService || !this.statisticService || !this.vaultService) {
       console.error(
@@ -778,9 +779,11 @@ export default class PoolDataAdapter {
       return Promise.reject();
     }
 
+    const callOverrideData = blockTag ? { blockTag } : undefined;
+
     // Check if pool has any liquidity, if not, return null
     try {
-      const poolTokens = await this.vaultService.getPoolTokens(tempusPoolId);
+      const poolTokens = await this.vaultService.getPoolTokens(tempusPoolId, callOverrideData);
 
       if (poolTokens.balances[0].isZero() || poolTokens.balances[1].isZero()) {
         return null;
@@ -808,7 +811,8 @@ export default class PoolDataAdapter {
       const estimatedMintedShares = await this.statisticService.estimatedMintedShares(
         tempusPoolAddress,
         tokenAmount,
-        isBackingToken
+        isBackingToken,
+        callOverrideData,
       );
 
       const ratio = div18f(principals, estimatedMintedShares);
@@ -1242,7 +1246,7 @@ export default class PoolDataAdapter {
           forPool: tempusPool,
           forUser: eventsForUser,
           fromBlock,
-          toBlock
+          toBlock,
         }),
         this.vaultService.getSwapEvents({ forPoolId: tempusPoolId, fromBlock, toBlock }),
       ]);

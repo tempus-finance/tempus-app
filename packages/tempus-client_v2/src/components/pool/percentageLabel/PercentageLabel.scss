@@ -1,6 +1,7 @@
 .tc__percentage-label__container {
   display: flex;
-  align-items: center;
+  justify-content: flex-end;
+  flex-direction: row;
   height: 100%;
-  width: 80px;
+  width: 100px;
 }

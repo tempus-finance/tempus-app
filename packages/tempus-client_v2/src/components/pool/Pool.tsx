@@ -1,7 +1,7 @@
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { Downgraded, useHookstate, useState as useHookState } from '@hookstate/core';
 import { ethers, BigNumber } from 'ethers';
-import { BLOCK_DURATION_SECONDS, SECONDS_IN_A_DAY } from '../../constants';
+import { BLOCK_DURATION_SECONDS, FIXED_APR_PRECISION, SECONDS_IN_A_DAY } from '../../constants';
 import { div18f } from '../../utils/weiMath';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
@@ -17,6 +17,7 @@ import AprTooltip from './aprTooltip/aprTooltip';
 import PercentageLabel from './percentageLabel/PercentageLabel';
 
 import './Pool.scss';
+import getTokenPrecision from '../../utils/getTokenPrecision';
 
 const Pool = () => {
   const selectedPool = useHookState(selectedPoolState);
@@ -26,6 +27,7 @@ const Pool = () => {
   const { userWalletSigner } = useContext(WalletContext);
   const { language } = useContext(LanguageContext);
 
+  const [fixedAPRChangePercentage, setFixedAPRChangePercentage] = useState<number | null>(null);
   const [tvlChangePercentage, setTVLChangePercentage] = useState<BigNumber | null>(null);
   const [volumeChangePercentage, setVolumeChangePercentage] = useState<BigNumber | null>(null);
   const [volume, setVolume] = useState<BigNumber | null>(null);
@@ -35,6 +37,7 @@ const Pool = () => {
   const selectedPoolAddress = selectedPool.attach(Downgraded).get();
   const poolId = staticPoolData[selectedPool.get()].poolId.attach(Downgraded).get();
   const startDate = staticPoolData[selectedPool.get()].startDate.attach(Downgraded).get();
+  const ammAddress = staticPoolData[selectedPool.get()].ammAddress.attach(Downgraded).get();
   const backingToken = staticPoolData[selectedPool.get()].backingToken.attach(Downgraded).get();
   const principalsAddress = staticPoolData[selectedPool.get()].principalsAddress.attach(Downgraded).get();
   const backingTokenPrecision = staticPoolData[selectedPool.get()].tokenPrecision.backingToken.attach(Downgraded).get();
@@ -65,7 +68,58 @@ const Pool = () => {
   }, [backingToken, selectedPoolAddress, tvl, userWalletSigner, startDate]);
 
   /**
-   * Fetch Volume for pool in last 7 days
+   * Fetch Fixed APR from one week ago.
+   * Fixed APR from one week ago is used to calculate Fixed APR change over time (percentage increase/decrease)
+   * compared to current Fixed APR.
+   */
+  useEffect(() => {
+    const fetchFixedAPRChangeData = async () => {
+      if (!userWalletSigner || !fixedAPR) {
+        return;
+      }
+      const poolDataAdapter = getPoolDataAdapter(userWalletSigner);
+
+      try {
+        let latestBlock;
+        try {
+          latestBlock = await userWalletSigner.provider.getBlock('latest');
+        } catch (error) {
+          console.error('Pool - fetchFixedAPRChangeData() - Failed to get latest block data!');
+          return Promise.reject();
+        }
+
+        // Get block number from 7 days ago (approximate - we need to find a better way to fetch exact block number)
+        const sevenDaysOldBlock = latestBlock.number - Math.round(SECONDS_IN_A_DAY / BLOCK_DURATION_SECONDS) * 7;
+
+        const spotPrice = ethers.utils.parseUnits('1', getTokenPrecision(selectedPoolAddress, 'backingToken'));
+
+        const oldFixedAPR = await poolDataAdapter.getEstimatedFixedApr(
+          spotPrice,
+          true,
+          selectedPoolAddress,
+          poolId,
+          ammAddress,
+          sevenDaysOldBlock,
+        );
+        if (!oldFixedAPR || fixedAPR === 'fetching') {
+          return;
+        }
+
+        const oldFixedAPRParsed = Number(ethers.utils.formatUnits(oldFixedAPR, FIXED_APR_PRECISION));
+
+        const fixedAPRDiff = fixedAPR - oldFixedAPRParsed;
+        const fixedAPRRatio = fixedAPRDiff / oldFixedAPRParsed;
+
+        setFixedAPRChangePercentage(fixedAPRRatio);
+      } catch (error) {
+        console.error('fetchTVLChangeData() - Failed to fetch Fixed APR change percentage!');
+      }
+    };
+    fetchFixedAPRChangeData();
+  }, [ammAddress, fixedAPR, poolId, selectedPoolAddress, userWalletSigner]);
+
+  /**
+   * Fetch Volume for pool in last 7 days, and 7 days before that
    */
   useEffect(() => {
     const fetchVolume = async () => {
@@ -83,8 +137,6 @@ const Pool = () => {
       }
 
       // Get block number from 7 days ago (approximate - we need to find a better way to fetch exact block number)
-      // TODO - Maximum number of events returned is 10k if block range is larger then 2k. We need to fetch events in batches to make sure
-      // this is going to work when usage of the app goes up and we have more then 10k events per week.
       // TODO - Use the graph service for this. Much faster and precise.
       const sevenDaysOldBlock = latestBlock.number - Math.round(SECONDS_IN_A_DAY / BLOCK_DURATION_SECONDS) * 7;
       const fourteenDaysOldBlock = latestBlock.number - Math.round(SECONDS_IN_A_DAY / BLOCK_DURATION_SECONDS) * 14;
@@ -182,9 +234,12 @@ const Pool = () => {
               )}
             </div>
           </div>
-          <Typography variant="card-body-text" color="accent">
-            {NumberUtils.formatPercentage(fixedAPR, 2)}
-          </Typography>
+          {fixedAPRChangePercentage && <PercentageLabel percentage={fixedAPRChangePercentage} />}
+          <div className="tc__pool-item-value">
+            <Typography variant="card-body-text" color="accent">
+              {NumberUtils.formatPercentage(fixedAPR, 2)}
+            </Typography>
+          </div>
         </div>
         <div className="tc__pool__body__item">
           <div className="tc__pool__body__item-title">
@@ -193,7 +248,9 @@ const Pool = () => {
             </Typography>
           </div>
           {tvlChangePercentageFormatted && <PercentageLabel percentage={tvlChangePercentageFormatted} />}
-          <Typography variant="card-body-text">${tvlFormatted}</Typography>
+          <div className="tc__pool-item-value">
+            <Typography variant="card-body-text">${tvlFormatted}</Typography>
+          </div>
         </div>
         <div className="tc__pool__body__item">
           <div className="tc__pool__body__item-title">
@@ -202,7 +259,9 @@ const Pool = () => {
             </Typography>
           </div>
           {volumeChangePercentageFormatted && <PercentageLabel percentage={volumeChangePercentageFormatted} />}
-          <Typography variant="card-body-text">${volumeFormatted}</Typography>
+          <div className="tc__pool-item-value">
+            <Typography variant="card-body-text">${volumeFormatted}</Typography>
+          </div>
         </div>
         <div className="tc__pool__body__item">
           <div className="tc__pool__body__item-title">
