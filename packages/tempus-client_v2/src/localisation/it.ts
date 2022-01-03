@@ -119,12 +119,13 @@ const it: { [word in Words]: string } = {
   mobileNotSupported:
     'Il supporto per smathphone e tablet non è ancora disponibile, ma lo sarà successivamente.<br />Grazie per la comprensione.',
   mobileLink: 'Leggi di più su Tempus',
-  unstaked: 'Unstaked',
-  stakedPrincipals: 'Staked Principals',
-  stakedYields: 'Staked Yields',
-  mintDescription: 'Split your yield bearing token into Principals and Yields',
-  swapDescription: 'Swap between Principals and Yields',
-  provideLiquidityDescription: 'Use your LP tokens to provide liquidity to the pool and earn rewards',
-  removeLiquidityDescription: 'Remove your liquidity from the pool with the accrued rewards in the form of your initial LP tokens'
+  unstaked: 'Non accumulati',
+  stakedPrincipals: 'Principals accumulati',
+  stakedYields: 'Yields accumulati',
+  mintDescription: 'Dividi i tuoi yield bearing token in Principals e Yields',
+  swapDescription: 'Scambia tra Principals e Yields',
+  provideLiquidityDescription: 'Usa i tuoi LP token per immettere liquidità nella pool e guadagnare commissioni',
+  removeLiquidityDescription:
+    'Rimuovi liquidità dalla pool insieme alle commissioni sotto forma degli LP token iniziali',
 };
 export default it;
