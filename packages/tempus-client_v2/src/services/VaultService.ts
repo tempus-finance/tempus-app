@@ -146,7 +146,7 @@ class VaultService {
           );
         });
       } catch (error) {
-        console.error(`VaultService - getPoolBalanceChangedEvents() - Failed to get swap events!`, error);
+        console.error(`VaultService - getPoolBalanceChangedEvents() - Failed to get PoolBalanceChanged events!`, error);
         return Promise.reject(error);
       }
     } else {
@@ -155,7 +155,7 @@ class VaultService {
           this.contract.queryFilter(this.contract.filters.PoolBalanceChanged(forPoolId), fromBlock),
         );
       } catch (error) {
-        console.error(`VaultService - getPoolBalanceChangedEvents() - Failed to get swap events!`, error);
+        console.error(`VaultService - getPoolBalanceChangedEvents() - Failed to get PoolBalanceChanged events!`, error);
         return Promise.reject(error);
       }
     }
