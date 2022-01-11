@@ -294,7 +294,12 @@ class StatisticsService {
     }
   }
 
-  async estimatedMintedShares(tempusPool: string, amount: BigNumber, isBackingToken: boolean): Promise<BigNumber> {
+  async estimatedMintedShares(
+    tempusPool: string,
+    amount: BigNumber,
+    isBackingToken: boolean,
+    overrides?: CallOverrides,
+  ): Promise<BigNumber> {
     if (!this.stats) {
       console.error(
         'StatisticsService - estimatedMintedShares() - Attempted to use statistics contract before initializing it!',
@@ -303,7 +308,11 @@ class StatisticsService {
     }
 
     try {
-      return await this.stats.estimatedMintedShares(tempusPool, amount, isBackingToken);
+      if (overrides) {
+        return await this.stats.estimatedMintedShares(tempusPool, amount, isBackingToken, overrides);
+      } else {
+        return await this.stats.estimatedMintedShares(tempusPool, amount, isBackingToken);
+      }
     } catch (error) {
       console.error('StatisticsService - estimatedMintedShares() - Failed to fetch estimated minted shares!', error);
       return Promise.reject(error);
@@ -315,7 +324,7 @@ class StatisticsService {
     principalsAmount: BigNumber,
     yieldsAmount: BigNumber,
     toBackingToken: boolean,
-  ) {
+  ): Promise<BigNumber> {
     if (!this.stats) {
       console.error(
         'StatisticsService - estimatedMintedShares() - Attempted to use statistics contract before initializing it!',
@@ -323,7 +332,13 @@ class StatisticsService {
       return Promise.reject();
     }
 
-    return this.stats.estimatedRedeem(tempusPool, principalsAmount, yieldsAmount, toBackingToken);
+    try {
+      return this.stats.estimatedRedeem(tempusPool, principalsAmount, yieldsAmount, toBackingToken);
+    }
+    catch (error) {
+      console.error('StatisticsService - estimatedRedeem() - Failed to fetch estimated redeem amount!');
+      return Promise.reject(error);
+    }
   }
 }
 

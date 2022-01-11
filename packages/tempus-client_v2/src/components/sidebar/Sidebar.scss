@@ -40,7 +40,7 @@
     transition: font-size 150ms linear;
   }
 
-  &:hover:not(.selected) {
+  &:hover:not(.selected):not(.disabled) {
     & > div {
       font-size: 17px !important;
     }
@@ -48,6 +48,13 @@
 
   &.selected {
     background: linear-gradient(97.53deg, #4ea3c8 0%, #285a95 100%);
+  }
+
+  &.disabled {
+    > div {
+      color: $faint-text-color;
+    }
+    cursor: default;
   }
 }
 

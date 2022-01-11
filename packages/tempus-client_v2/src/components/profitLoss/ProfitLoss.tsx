@@ -8,7 +8,6 @@ import { WalletContext } from '../../context/walletContext';
 import getText from '../../localisation/getText';
 import NumberUtils from '../../services/NumberUtils';
 import Spacer from '../spacer/spacer';
-import TokenIcon from '../tokenIcon';
 import Typography from '../typography/Typography';
 import ProfitLossChart from './profitLossChart/ProfitLossChart';
 
@@ -26,6 +25,7 @@ const ProfitLoss = () => {
 
   const decimalsForUI = staticPoolData[selectedPool.get()].decimalsForUI.attach(Downgraded).get();
   const ammAddress = staticPoolData[selectedPool.get()].ammAddress.attach(Downgraded).get();
+  const ticker = staticPoolData[selectedPool.get()].backingToken.attach(Downgraded).get();
   const userPrincipalsBalance = dynamicPoolData[selectedPool.get()].userPrincipalsBalance.attach(Downgraded).get();
   const userYieldsBalance = dynamicPoolData[selectedPool.get()].userYieldsBalance.attach(Downgraded).get();
   const userLPTokenBalance = dynamicPoolData[selectedPool.get()].userLPTokenBalance.attach(Downgraded).get();
@@ -76,7 +76,7 @@ const ProfitLoss = () => {
           <div className="tf__flex-row-center-v">
             <Typography variant="card-body-text">{estimatedWithdrawAmountFormatted}</Typography>
             <Spacer size={5} />
-            <TokenIcon ticker="ETH" width={14} height={14} />
+            <Typography variant="card-body-text">{ticker}</Typography>
             <Spacer size={10} />
             <Typography variant="card-body-text" color="title">
               ({liquidationValueFormatted})
