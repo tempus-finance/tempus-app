@@ -7,6 +7,24 @@ const { JsonRpcProvider } = jest.requireMock('@ethersproject/providers');
 const mockGetFeesConfig = jest.fn();
 const mockGetSwapFeePercentage = jest.fn();
 
+jest.mock(
+  '../state/PoolDataState',
+  () => {
+    return {
+      staticPoolDataState: {
+        ...jest.requireActual('../state/PoolDataState'),
+        abc: {
+          get: () => ({
+            startDate: 1639157275000,
+            maturityDate: 1648742400000,
+          }),
+        },
+      },
+    };
+  },
+  { virtual: true },
+);
+
 describe('PoolDataAdapter', () => {
   let instance: PoolDataAdapter;
 
@@ -112,20 +130,23 @@ describe('PoolDataAdapter', () => {
       const tempusPoolAddress = 'abc';
       const userWalletAddress = 'xyz';
       const tempusAmmAddress = '123';
+      const tokenPrecision = 18;
       const signer = mockProvider;
 
-      instance.retrieveBalances(tempusPoolAddress, tempusAmmAddress, userWalletAddress, signer).subscribe(balances => {
-        expect(balances).toBeDefined();
-        if (balances) {
-          expect(ethers.utils.formatEther(balances.backingTokenBalance)).toBe('10.0');
-          expect(ethers.utils.formatEther(balances.backingTokenRate)).toBe('0.5');
-          expect(ethers.utils.formatEther(balances.yieldBearingTokenBalance)).toBe('20.0');
-          expect(ethers.utils.formatEther(balances.yieldBearingTokenRate)).toBe('0.5');
-          expect(ethers.utils.formatEther(balances.principalsTokenBalance)).toBe('31.0');
-          expect(ethers.utils.formatEther(balances.yieldsTokenBalance)).toBe('12.0');
-          expect(ethers.utils.formatEther(balances.lpTokensBalance)).toBe('7.0');
-        }
-      });
+      instance
+        .retrieveBalances(tempusPoolAddress, tempusAmmAddress, tokenPrecision, userWalletAddress, signer)
+        .subscribe(balances => {
+          expect(balances).toBeDefined();
+          if (balances) {
+            expect(ethers.utils.formatEther(balances.backingTokenBalance)).toBe('10.0');
+            expect(ethers.utils.formatEther(balances.backingTokenRate)).toBe('0.5');
+            expect(ethers.utils.formatEther(balances.yieldBearingTokenBalance)).toBe('20.0');
+            expect(ethers.utils.formatEther(balances.yieldBearingTokenRate)).toBe('0.5');
+            expect(ethers.utils.formatEther(balances.principalsTokenBalance)).toBe('31.0');
+            expect(ethers.utils.formatEther(balances.yieldsTokenBalance)).toBe('12.0');
+            expect(ethers.utils.formatEther(balances.lpTokensBalance)).toBe('7.0');
+          }
+        });
     });
   });
 
@@ -187,7 +208,7 @@ describe('PoolDataAdapter', () => {
 
       expect(apr).toBeDefined();
       if (apr) {
-        expect(ethers.utils.formatEther(apr)).toBe('14482258064516128068.225806451612904');
+        expect(ethers.utils.formatEther(apr)).toBe('4046820464000208956.709902061788448');
       }
     });
   });
