@@ -17,6 +17,7 @@ import NumberUtils from '../../services/NumberUtils';
 import Approve from '../buttons/Approve';
 import Execute from '../buttons/Execute';
 import { ETH_ALLOWANCE_FOR_GAS, ZERO } from '../../constants';
+import Descriptor from '../descriptor/Descriptor';
 import CurrencyInput from '../currencyInput/currencyInput';
 import PlusIconContainer from '../plusIconContainer/PlusIconContainer';
 import SectionContainer from '../sectionContainer/SectionContainer';
@@ -305,6 +306,7 @@ const Mint: FC<MintInProps> = ({ narrow }) => {
 
   return (
     <div className="tc__mint">
+      <Descriptor>{getText('mintDescription', language)}</Descriptor>
       <SectionContainer title="from">
         {selectedToken && balanceFormatted && (
           <div className="tc__title-and-balance bottom-padded">
