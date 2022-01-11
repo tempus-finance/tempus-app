@@ -152,5 +152,10 @@ const it: { [word in Words]: string } = {
   unstaked: 'Non accumulati',
   stakedPrincipals: 'Principals accumulati',
   stakedYields: 'Yields accumulati',
+  mintDescription: 'Dividi i tuoi yield bearing token in Principals e Yields',
+  swapDescription: 'Scambia tra Principals e Yields',
+  provideLiquidityDescription: 'Usa i tuoi LP token per immettere liquidità nella pool e guadagnare commissioni',
+  removeLiquidityDescription:
+    'Rimuovi liquidità dalla pool insieme alle commissioni sotto forma degli LP token iniziali',
 };
 export default it;

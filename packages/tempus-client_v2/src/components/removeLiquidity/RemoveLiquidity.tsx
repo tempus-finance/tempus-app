@@ -10,6 +10,7 @@ import getText from '../../localisation/getText';
 import Typography from '../typography/Typography';
 import Execute from '../buttons/Execute';
 import CurrencyInput from '../currencyInput/currencyInput';
+import Descriptor from '../descriptor/Descriptor';
 import PlusIconContainer from '../plusIconContainer/PlusIconContainer';
 import SectionContainer from '../sectionContainer/SectionContainer';
 import Spacer from '../spacer/spacer';
@@ -191,6 +192,7 @@ const RemoveLiquidity = () => {
 
   return (
     <div className="tc__removeLiquidity">
+      <Descriptor>{getText('removeLiquidityDescription', language)}</Descriptor>
       <SectionContainer title="from">
         <SectionContainer elevation={2}>
           <div className="tc__title-and-balance">
