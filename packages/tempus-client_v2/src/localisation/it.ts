@@ -63,6 +63,36 @@ const it: { [word in Words]: string } = {
   removeLiquidity: 'Rimuovi Liquidità',
   provideLiquidity: 'Immetti Liquidità',
   earlyRedeem: 'Riscatto Anticipato',
+  depositDisabledNoLiquidity:
+    'Il deposito è momentaneamente disabilitato a causa di liquidità insufficiente nella pool selezionata. Per favore riprova più tardi.',
+  depositDisabledPoolMaturity: 'Il deposito non è disponibile perchè questa pool ha raggiunto la scadenza.',
+  depositDisabledNegative:
+    'Il deposito è stato momentaneamente disabilitato a causa del rendimento negativo della pool. Per favore riprova più tardi.',
+  withdrawDisabledNoLiquidity:
+    'Il ritiro  è stato momentaneamente disabilitato a causa di liquidità insufficiente nella pool selezionata. Per favore riprova più tardi.',
+  withdrawDisabledNoDeposit: 'Il ritiro sarà disponibile una volta effettuato un deposito.',
+  withdrawDisabledNegative:
+    'Il ritiro è stato momentaneamente disabilitato a causa del rendimento negativo della pool. Per favore riprova più tardi.',
+  mintDisabledPoolMaturity: 'La forgia non è disponibile perchè questa pool ha raggiunto la scadenza.',
+  swapDisabledNoLiquidity:
+    'Lo scambio è stato momentaneamente disabilitato a causa di liquidità insufficiente nella pool selezionata. Per favore riprova più tardi.',
+  swapDisabledNoShares: 'Lo scambio sarà disponibile una volta effettuato un deposito.',
+  swapDisabledPoolMaturity: 'Lo scambio non è disponibile perchè questa pool ha raggiunto la scadenza.',
+  provideLiquidityDisabledNoDeposit:
+    "L'immissione di liquidità non è disponibile fino a quando non hai effettuato un deposito o una forgia.",
+  provideLiquidityDisabledNoPrincipals:
+    "L'immissione di liquidità non è disponibile fino a quando non hai acquisito ulteriori Principal token.",
+  provideLiquidityDisabledNoYields:
+    "L'immissione di liquidità non è disponibile fino a quando non hai acquisito ulteriori Yields token.",
+  provideLiquidityDisabledPoolMaturity:
+    "L'immissione di liquidità non è disponibile perchè questa pool ha raggiunto la scadenza.",
+  removeLiquidityDisabledNoDeposit:
+    'La rimozione di liquidità sarà disponibile una volta che hai accumulato i tuoi token (depositati presso il TempusAMM).',
+  removeLiquidityDisabledNoLpTokens: 'La rimozione di liquidità sarà disponibile una volta immessa liquidità',
+  removeLiquidityDisabledPoolMaturity:
+    "La rimozione di liquidità non è disponibile perchè questa pool ha raggiunto la scadenza. Per favore usa 'Ritiro'",
+  earlyRedemptionDisabledNoLiquidity:
+    'Il rimborso anticipato è stato momentaneamente disabilitato a causa di liquidità insufficiente nella pool selezionata. Per favore riprova più tardi.',
   availableToDeposit: 'Disponibilità Deposito',
   marketImpliedYield: 'APR Futuro',
   volume: 'Volume',
@@ -91,8 +121,8 @@ const it: { [word in Words]: string } = {
   lifeTimeYield: 'Rendimento a Termine',
   fixYourFutureYield: 'Fissa il Rendimento Futuro',
   fixedYield: 'Rendimento Fisso',
-  yieldAtMaturity: 'Yield at maturity',
-  estimatedYieldAtMaturity: 'Est. yield at maturity',
+  yieldAtMaturity: 'Rendimento a scadenza',
+  estimatedYieldAtMaturity: 'Rendimento stimato a scadenza',
   totalAvailableAtMaturity: 'Totale disponibile a scadenza',
   variableYield: 'Rendimento Variabile',
   amountReceived: 'Importo Ricevuto',
@@ -103,7 +133,7 @@ const it: { [word in Words]: string } = {
     'Le commissioni di Deposito, Rimborso e Rimborso Anticipato sono versate nel Tesoro di Tempus Treasury (Tempus Treasury). La commissione di Scambio è versata ai fornitori di liquidità.',
   selectPlaceholder: 'Seleziona',
   selectTokenFirst: 'Prima Seleziona il Token',
-  warningEthGasFees: 'Almeno 0.05 ETH devono rimanere nel portafoglio per pagare la commissione del gas.',
+  warningEthGasFees: 'Almeno 0.05 ETH devono rimanere nel portafoglio per pagare le commissioni del gas.',
   about: 'Su di noi',
   tempusAnnouncements: 'Tempus Annunci',
   tempusChat: 'Tempus Chat',
