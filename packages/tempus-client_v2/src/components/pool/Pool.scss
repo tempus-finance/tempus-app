@@ -23,3 +23,9 @@
   position: relative;
   cursor: pointer;
 }
+
+.tc__pool-item-value {
+  width: 75px;
+  display: flex;
+  justify-content: flex-end;
+}
