@@ -63,6 +63,35 @@ const en: { [word in Words]: string } = {
   removeLiquidity: 'Remove Liquidity',
   provideLiquidity: 'Provide Liquidity',
   earlyRedeem: 'Early Redeem',
+  depositDisabledNoLiquidity:
+    'Depositing is currently disabled due to insufficient liquidity in the pool you have selected. Please try again later.',
+  depositDisabledPoolMaturity: 'Deposit is not available because this pool has reached maturity.',
+  depositDisabledNegative:
+    'Deposit has temporarily disabled due to negative yield in the pool. Please check back soon.',
+  withdrawDisabledNoLiquidity:
+    'Withdrawing is currently disabled due to insufficient liquidity in the pool you have selected. Please try again later.',
+  withdrawDisabledNoDeposit: 'Withdraw will be available once you have deposited into the pool.',
+  withdrawDisabledNegative:
+    'Withdrawal has temporarily disabled due to negative yield in the pool. Please check back soon.',
+  mintDisabledPoolMaturity: 'Mint is not available because this pool has reached maturity.',
+  swapDisabledNoLiquidity:
+    'Swapping is currently disabled due to insufficient liquidity in the pool you have selected. Please try again later.',
+  swapDisabledNoShares: 'Swap will be available once you have deposited into the pool',
+  swapDisabledPoolMaturity: 'Swap is not available because this pool has reached maturity.',
+  provideLiquidityDisabledNoDeposit: 'Manual Liquidity Provision is not available until you have Deposited or Minted.',
+  provideLiquidityDisabledNoPrincipals:
+    'Manual Liquidity Provision is not available until you have purchased more Principal tokens.',
+  provideLiquidityDisabledNoYields:
+    'Manual Liquidity Provision is not available until you have purchased more Yield tokens.',
+  provideLiquidityDisabledPoolMaturity:
+    'Manual Liquidity Provision is not available because this pool has reached maturity.',
+  removeLiquidityDisabledNoDeposit:
+    'Remove Liquidity will be available once you have staked your tokens (deposited into the TempusAMM).',
+  removeLiquidityDisabledNoLpTokens: 'Remove Liquidity will be available once you have added liquidity.',
+  removeLiquidityDisabledPoolMaturity:
+    "Remove Liquidity is not available because this pool has reached maturity. Please use 'Withdraw'.",
+  earlyRedemptionDisabledNoLiquidity:
+    'Early redemption is currently disabled due to insufficient liquidity in the pool you have selected. Please try again later.',
   availableToDeposit: 'Available to Deposit',
   marketImpliedYield: 'Future APR ',
   volume: 'Volume',
