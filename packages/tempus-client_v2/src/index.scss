@@ -1,12 +1,7 @@
 @import './constants.scss';
 
 body {
-  font-family: 'Source Sans Pro', sans-serif;
-  font-style: normal;
-  font-weight: normal;
-  font-size: 16px;
-  line-height: 20px;
-  color: $text-color;
+  @include default-font-face;
   background: $background;
   margin: 0;
   -webkit-font-smoothing: antialiased;
@@ -93,4 +88,12 @@ body {
   margin-top: 5px;
   padding-bottom: 5px;
   margin-bottom: -5px;
+}
+
+div.MuiTooltip-popper {
+  > div.MuiTooltip-tooltip {
+    @include default-font-face;
+    @include tooltip;
+    max-width: 150px;
+  }
 }
