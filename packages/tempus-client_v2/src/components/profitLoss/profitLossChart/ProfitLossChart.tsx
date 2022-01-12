@@ -1,7 +1,8 @@
+import { ethers } from 'ethers';
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { AreaChart, Tooltip, Area, ResponsiveContainer } from 'recharts';
-import { selectedPoolState, staticPoolDataState } from '../../../state/PoolDataState';
+import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../../state/PoolDataState';
 import getProfitLossGraphDataAdapter from '../../../adapters/getProfitLossGraphDataAdapter';
 import { WalletContext } from '../../../context/walletContext';
 import ChartDataPoint from '../../../interfaces/ChartDataPoint';
@@ -12,6 +13,7 @@ import ProfitLossChartTooltip from './ProfitLossChartTooltip';
 const ProfitLossChart = () => {
   const selectedPool = useHookState(selectedPoolState);
   const staticPoolData = useHookState(staticPoolDataState);
+  const dynamicPoolData = useHookState(dynamicPoolDataState);
 
   const { userWalletAddress, userWalletSigner } = useContext(WalletContext);
 
@@ -21,6 +23,7 @@ const ProfitLossChart = () => {
   const pastDaysNumber = useMemo(() => (startDate ? getPastDaysNumber(startDate, 3) : []), [startDate]);
 
   const selectedPoolStaticData = staticPoolData[selectedPool.get()].attach(Downgraded).get();
+  const userBalanceUSD = dynamicPoolData[selectedPool.get()].userBalanceUSD.attach(Downgraded).get();
 
   useEffect(() => {
     const fetchChartData = async () => {
@@ -40,6 +43,39 @@ const ProfitLossChart = () => {
     };
     fetchChartData();
   }, [userWalletAddress, userWalletSigner, selectedPoolStaticData]);
+
+  /**
+   * Update chart data every time user USD balance changes for the pool
+   */
+  useEffect(() => {
+    if (!userBalanceUSD || chartData.length === 0) {
+      return;
+    }
+
+    const currentChartData = [...chartData];
+
+    const lastChartEntry = currentChartData.pop();
+    if (!lastChartEntry) {
+      return;
+    }
+
+    // USD Values are always in 18 decimal precision
+    lastChartEntry.value = Number(ethers.utils.formatEther(userBalanceUSD));
+
+    // Calculate new value increase
+    const previousEntry = currentChartData[currentChartData.length - 1];
+    if (previousEntry && previousEntry.value !== 0) {
+      const valueDiff = lastChartEntry.value - previousEntry.value;
+      const valueRatio = valueDiff / previousEntry.value;
+
+      lastChartEntry.valueIncrease = valueRatio.toString();
+    }
+
+    // Update chart with new data
+    currentChartData.push(lastChartEntry);
+    setChartData(currentChartData);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userBalanceUSD]);
 
   // Hide Profit Loss chart if there is no historical data (ie. we only have data for present day)
   if (chartData.length <= 1) {
