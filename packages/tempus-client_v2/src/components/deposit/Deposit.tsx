@@ -5,6 +5,7 @@ import { ethers, BigNumber } from 'ethers';
 import { catchError } from 'rxjs';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
 import getUserShareTokenBalanceProvider from '../../providers/getUserShareTokenBalanceProvider';
+import getUserBalanceProvider from '../../providers/getBalanceProvider';
 import { ETH_ALLOWANCE_FOR_GAS, ZERO } from '../../constants';
 import { LanguageContext } from '../../context/languageContext';
 import { WalletContext } from '../../context/walletContext';
@@ -227,6 +228,12 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
 
     // Trigger user pool share balance update when execute is finished
     getUserShareTokenBalanceProvider({
+      userWalletAddress,
+      userWalletSigner,
+    }).fetchForPool(selectedPoolAddress);
+
+    // Trigger user balance update when execute is finished
+    getUserBalanceProvider({
       userWalletAddress,
       userWalletSigner,
     }).fetchForPool(selectedPoolAddress);
