@@ -17,6 +17,7 @@ import NumberUtils from '../../services/NumberUtils';
 import Approve from '../buttons/Approve';
 import Execute from '../buttons/Execute';
 import { ETH_ALLOWANCE_FOR_GAS, ZERO } from '../../constants';
+import Descriptor from '../descriptor/Descriptor';
 import CurrencyInput from '../currencyInput/currencyInput';
 import PlusIconContainer from '../plusIconContainer/PlusIconContainer';
 import SectionContainer from '../sectionContainer/SectionContainer';
@@ -303,8 +304,24 @@ const Mint: FC<MintInProps> = ({ narrow }) => {
     return !tokensApproved || zeroAmount || amountExceedsBalance || depositDisabled || estimateInProgress;
   }, [amount, tokenPrecision, getSelectedTokenBalance, tokensApproved, estimateInProgress, depositDisabled]);
 
+  const ethAllowanceForGasExceeded = useMemo(() => {
+    const currentBalance = getSelectedTokenBalance();
+
+    if (!amount || !currentBalance) {
+      return false;
+    }
+
+    const amountParsed = ethers.utils.parseUnits(amount, tokenPrecision);
+
+    const ethSelected = selectedToken === 'ETH';
+    const gasAllowanceExceeded = amountParsed.add(ETH_ALLOWANCE_FOR_GAS).gt(currentBalance);
+
+    return ethSelected && gasAllowanceExceeded;
+  }, [amount, getSelectedTokenBalance, selectedToken, tokenPrecision]);
+
   return (
     <div className="tc__mint">
+      <Descriptor>{getText('mintDescription', language)}</Descriptor>
       <SectionContainer title="from">
         {selectedToken && balanceFormatted && (
           <div className="tc__title-and-balance bottom-padded">
@@ -331,9 +348,9 @@ const Mint: FC<MintInProps> = ({ narrow }) => {
               // TODO - Update text in case input is disabled because of negative yield
               disabledTooltip={getText('selectTokenFirst', language)}
             />
-            {selectedToken === 'ETH' && amount && (
+            {ethAllowanceForGasExceeded && (
               <div className="tf__input__label">
-                <Typography variant="disclaimer-text" color="accent">
+                <Typography variant="disclaimer-text" color="error">
                   {getText('warningEthGasFees', language)}
                 </Typography>
               </div>

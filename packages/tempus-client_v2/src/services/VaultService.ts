@@ -1,4 +1,4 @@
-import { BigNumber, Contract, ethers, ContractTransaction } from 'ethers';
+import { BigNumber, Contract, ethers, ContractTransaction, CallOverrides } from 'ethers';
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
 import { Vault } from '../abi/Vault';
 import VaultABI from '../abi/Vault.json';
@@ -146,7 +146,7 @@ class VaultService {
           );
         });
       } catch (error) {
-        console.error(`VaultService - getPoolBalanceChangedEvents() - Failed to get swap events!`, error);
+        console.error(`VaultService - getPoolBalanceChangedEvents() - Failed to get PoolBalanceChanged events!`, error);
         return Promise.reject(error);
       }
     } else {
@@ -155,7 +155,7 @@ class VaultService {
           this.contract.queryFilter(this.contract.filters.PoolBalanceChanged(forPoolId), fromBlock),
         );
       } catch (error) {
-        console.error(`VaultService - getPoolBalanceChangedEvents() - Failed to get swap events!`, error);
+        console.error(`VaultService - getPoolBalanceChangedEvents() - Failed to get PoolBalanceChanged events!`, error);
         return Promise.reject(error);
       }
     }
@@ -315,7 +315,10 @@ class VaultService {
     }
   }
 
-  async getPoolTokens(poolId: string): Promise<
+  async getPoolTokens(
+    poolId: string,
+    overrides?: CallOverrides,
+  ): Promise<
     [string[], BigNumber[], BigNumber] & {
       tokens: string[];
       balances: BigNumber[];
@@ -328,7 +331,11 @@ class VaultService {
     }
 
     try {
-      return this.contract.getPoolTokens(poolId);
+      if (overrides) {
+        return this.contract.getPoolTokens(poolId, overrides);
+      } else {
+        return this.contract.getPoolTokens(poolId);
+      }
     } catch (error) {
       console.error(`VaultService - getPoolTokens() - Failed to get pool tokens!`, error);
       return Promise.reject(error);

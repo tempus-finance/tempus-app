@@ -108,6 +108,10 @@ const CurrentPosition: FC<CurrentPositionInProps> = ({ language }) => {
       return 0;
     }
 
+    if (userPrincipalsBalance.add(lpTokenPrincipalReturnBalance).isZero()) {
+      return 0;
+    }
+
     return NumberUtils.formatPercentage(
       ethers.utils.formatEther(div18f(userPrincipalsBalance, userPrincipalsBalance.add(lpTokenPrincipalReturnBalance))),
     );
@@ -115,6 +119,10 @@ const CurrentPosition: FC<CurrentPositionInProps> = ({ language }) => {
 
   const stakedPrincipalsPercentage = useMemo(() => {
     if (!userPrincipalsBalance || !lpTokenPrincipalReturnBalance) {
+      return 0;
+    }
+
+    if (lpTokenPrincipalReturnBalance.add(userPrincipalsBalance).isZero()) {
       return 0;
     }
 
@@ -130,6 +138,10 @@ const CurrentPosition: FC<CurrentPositionInProps> = ({ language }) => {
       return 0;
     }
 
+    if (userYieldsBalance.add(lpTokenYieldReturnBalance).isZero()) {
+      return 0;
+    }
+
     return NumberUtils.formatPercentage(
       ethers.utils.formatEther(div18f(userYieldsBalance, userYieldsBalance.add(lpTokenYieldReturnBalance))),
     );
@@ -137,6 +149,10 @@ const CurrentPosition: FC<CurrentPositionInProps> = ({ language }) => {
 
   const stakedYieldsPercentage = useMemo(() => {
     if (!userYieldsBalance || !lpTokenYieldReturnBalance) {
+      return 0;
+    }
+
+    if (lpTokenYieldReturnBalance.add(userYieldsBalance).isZero()) {
       return 0;
     }
 

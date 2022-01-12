@@ -1,6 +1,8 @@
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { Downgraded, useHookstate, useState as useHookState } from '@hookstate/core';
 import { ethers, BigNumber } from 'ethers';
+import { BLOCK_DURATION_SECONDS, FIXED_APR_PRECISION, SECONDS_IN_A_DAY } from '../../constants';
+import { div18f } from '../../utils/weiMath';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
 import { LanguageContext } from '../../context/languageContext';
@@ -12,9 +14,10 @@ import InfoIcon from '../icons/InfoIcon';
 import Spacer from '../spacer/spacer';
 import FeesTooltip from './feesTooltip/feesTooltip';
 import AprTooltip from './aprTooltip/aprTooltip';
-// import PercentageLabel from './percentageLabel/PercentageLabel';
+import PercentageLabel from './percentageLabel/PercentageLabel';
 
 import './Pool.scss';
+import getTokenPrecision from '../../utils/getTokenPrecision';
 
 const Pool = () => {
   const selectedPool = useHookState(selectedPoolState);
@@ -24,13 +27,17 @@ const Pool = () => {
   const { userWalletSigner } = useContext(WalletContext);
   const { language } = useContext(LanguageContext);
 
-  //const [tvlChangePercentage, setTVLChangePercentage] = useState<BigNumber | null>(null);
+  const [fixedAPRChangePercentage, setFixedAPRChangePercentage] = useState<number | null>(null);
+  const [tvlChangePercentage, setTVLChangePercentage] = useState<BigNumber | null>(null);
+  const [volumeChangePercentage, setVolumeChangePercentage] = useState<BigNumber | null>(null);
   const [volume, setVolume] = useState<BigNumber | null>(null);
   const [aprTooltipOpen, setAprTooltipOpen] = useState<boolean>(false);
   const [feesTooltipOpen, setFeesTooltipOpen] = useState<boolean>(false);
 
   const selectedPoolAddress = selectedPool.attach(Downgraded).get();
   const poolId = staticPoolData[selectedPool.get()].poolId.attach(Downgraded).get();
+  const startDate = staticPoolData[selectedPool.get()].startDate.attach(Downgraded).get();
+  const ammAddress = staticPoolData[selectedPool.get()].ammAddress.attach(Downgraded).get();
   const backingToken = staticPoolData[selectedPool.get()].backingToken.attach(Downgraded).get();
   const principalsAddress = staticPoolData[selectedPool.get()].principalsAddress.attach(Downgraded).get();
   const backingTokenPrecision = staticPoolData[selectedPool.get()].tokenPrecision.backingToken.attach(Downgraded).get();
@@ -38,34 +45,81 @@ const Pool = () => {
   const fixedAPR = dynamicPoolData[selectedPool.get()].fixedAPR.get();
 
   /**
-   * Fetch current TVL and TVL from one week ago (or less if pool lifespan is less then one week).
+   * Fetch TVL from one week ago.
    * TVL from one week ago is used to calculate TVL change over time (percentage increase/decrease)
    * compared to current TVL.
    */
-  /*useEffect(() => {
+  useEffect(() => {
     const fetchTVLChangeData = async () => {
-      if (!userWalletSigner || !activePoolData.tvl) {
+      if (!userWalletSigner || !tvl) {
         return;
       }
       const poolDataAdapter = getPoolDataAdapter(userWalletSigner);
 
       try {
         setTVLChangePercentage(
-          await poolDataAdapter.getPoolTVLChangeData(
-            activePoolData.address,
-            activePoolData.backingToken,
-            activePoolData.tvl,
-          ),
+          await poolDataAdapter.getPoolTVLChangeData(selectedPoolAddress, startDate, backingToken, tvl),
         );
       } catch (error) {
         console.error('fetchTVLChangeData() - Failed to fetch TVL change percentage!');
       }
     };
     fetchTVLChangeData();
-  }, [activePoolData, userWalletSigner]);*/
+  }, [backingToken, selectedPoolAddress, tvl, userWalletSigner, startDate]);
 
   /**
-   * Fetch Volume for pool in last 7 days
+   * Fetch Fixed APR from one week ago.
+   * Fixed APR from one week ago is used to calculate Fixed APR change over time (percentage increase/decrease)
+   * compared to current Fixed APR.
+   */
+  useEffect(() => {
+    const fetchFixedAPRChangeData = async () => {
+      if (!userWalletSigner || !fixedAPR) {
+        return;
+      }
+      const poolDataAdapter = getPoolDataAdapter(userWalletSigner);
+
+      try {
+        let latestBlock;
+        try {
+          latestBlock = await userWalletSigner.provider.getBlock('latest');
+        } catch (error) {
+          console.error('Pool - fetchFixedAPRChangeData() - Failed to get latest block data!');
+          return Promise.reject();
+        }
+
+        // Get block number from 7 days ago (approximate - we need to find a better way to fetch exact block number)
+        const sevenDaysOldBlock = latestBlock.number - Math.round(SECONDS_IN_A_DAY / BLOCK_DURATION_SECONDS) * 7;
+
+        const spotPrice = ethers.utils.parseUnits('1', getTokenPrecision(selectedPoolAddress, 'backingToken'));
+
+        const oldFixedAPR = await poolDataAdapter.getEstimatedFixedApr(
+          spotPrice,
+          true,
+          selectedPoolAddress,
+          poolId,
+          ammAddress,
+          sevenDaysOldBlock,
+        );
+        if (!oldFixedAPR || fixedAPR === 'fetching') {
+          return;
+        }
+
+        const oldFixedAPRParsed = Number(ethers.utils.formatUnits(oldFixedAPR, FIXED_APR_PRECISION));
+
+        const fixedAPRDiff = fixedAPR - oldFixedAPRParsed;
+        const fixedAPRRatio = fixedAPRDiff / oldFixedAPRParsed;
+
+        setFixedAPRChangePercentage(fixedAPRRatio);
+      } catch (error) {
+        console.error('fetchTVLChangeData() - Failed to fetch Fixed APR change percentage!');
+      }
+    };
+    fetchFixedAPRChangeData();
+  }, [ammAddress, fixedAPR, poolId, selectedPoolAddress, userWalletSigner]);
+
+  /**
+   * Fetch Volume for pool in last 7 days, and 7 days before that
    */
   useEffect(() => {
     const fetchVolume = async () => {
@@ -74,17 +128,45 @@ const Pool = () => {
       }
       const poolDataAdapter = getPoolDataAdapter(userWalletSigner);
 
+      let latestBlock;
       try {
-        setVolume(
-          await poolDataAdapter.getPoolVolumeData(
-            selectedPoolAddress,
-            poolId,
-            backingToken,
-            principalsAddress,
-            userWalletSigner,
-            backingTokenPrecision,
-          ),
+        latestBlock = await userWalletSigner.provider.getBlock('latest');
+      } catch (error) {
+        console.error('Pool - fetchVolume() - Failed to get latest block data!');
+        return Promise.reject();
+      }
+
+      // Get block number from 7 days ago (approximate - we need to find a better way to fetch exact block number)
+      // TODO - Use the graph service for this. Much faster and precise.
+      const sevenDaysOldBlock = latestBlock.number - Math.round(SECONDS_IN_A_DAY / BLOCK_DURATION_SECONDS) * 7;
+      const fourteenDaysOldBlock = latestBlock.number - Math.round(SECONDS_IN_A_DAY / BLOCK_DURATION_SECONDS) * 14;
+
+      try {
+        const currentVolume = await poolDataAdapter.getPoolVolumeData(
+          selectedPoolAddress,
+          poolId,
+          backingToken,
+          principalsAddress,
+          sevenDaysOldBlock,
+          latestBlock.number,
+          backingTokenPrecision,
         );
+
+        const pastVolume = await poolDataAdapter.getPoolVolumeData(
+          selectedPoolAddress,
+          poolId,
+          backingToken,
+          principalsAddress,
+          fourteenDaysOldBlock,
+          sevenDaysOldBlock,
+          backingTokenPrecision,
+        );
+
+        const volumeDiff = currentVolume.sub(pastVolume);
+        const volumeRatio = div18f(volumeDiff, pastVolume, backingTokenPrecision);
+
+        setVolume(currentVolume);
+        setVolumeChangePercentage(volumeRatio);
       } catch (error) {
         console.error('fetchVolume() - Failed to fetch 7D volume for pool!');
       }
@@ -111,12 +193,12 @@ const Pool = () => {
     return NumberUtils.formatWithMultiplier(ethers.utils.formatUnits(tvl, backingTokenPrecision), 2);
   }, [backingTokenPrecision, tvl]);
 
-  /*const tvlChangePercentageFormatted = useMemo(() => {
+  const tvlChangePercentageFormatted = useMemo(() => {
     if (!tvlChangePercentage) {
       return null;
     }
-    return Number(ethers.utils.formatUnits(tvlChangePercentage, activePoolData.precision.backingToken));
-  }, [activePoolData.precision.backingToken, tvlChangePercentage]);*/
+    return Number(ethers.utils.formatUnits(tvlChangePercentage, backingTokenPrecision));
+  }, [backingTokenPrecision, tvlChangePercentage]);
 
   const volumeFormatted = useMemo(() => {
     if (!volume) {
@@ -124,6 +206,13 @@ const Pool = () => {
     }
     return NumberUtils.formatWithMultiplier(ethers.utils.formatUnits(volume, backingTokenPrecision), 2);
   }, [backingTokenPrecision, volume]);
+
+  const volumeChangePercentageFormatted = useMemo(() => {
+    if (!volumeChangePercentage) {
+      return null;
+    }
+    return Number(ethers.utils.formatUnits(volumeChangePercentage, backingTokenPrecision));
+  }, [backingTokenPrecision, volumeChangePercentage]);
 
   return (
     <div className="tc__pool">
@@ -145,9 +234,12 @@ const Pool = () => {
               )}
             </div>
           </div>
-          <Typography variant="card-body-text" color="accent">
-            {NumberUtils.formatPercentage(fixedAPR, 2)}
-          </Typography>
+          {fixedAPRChangePercentage && <PercentageLabel percentage={fixedAPRChangePercentage} />}
+          <div className="tc__pool-item-value">
+            <Typography variant="card-body-text" color="accent">
+              {NumberUtils.formatPercentage(fixedAPR, 2)}
+            </Typography>
+          </div>
         </div>
         <div className="tc__pool__body__item">
           <div className="tc__pool__body__item-title">
@@ -155,8 +247,10 @@ const Pool = () => {
               {getText('tvl', language)}
             </Typography>
           </div>
-          {/*TODO - Show this for all rows after 14 days of pool lifetime {tvlChangePercentageFormatted && <PercentageLabel percentage={tvlChangePercentageFormatted} />} */}
-          <Typography variant="card-body-text">${tvlFormatted}</Typography>
+          {tvlChangePercentageFormatted && <PercentageLabel percentage={tvlChangePercentageFormatted} />}
+          <div className="tc__pool-item-value">
+            <Typography variant="card-body-text">${tvlFormatted}</Typography>
+          </div>
         </div>
         <div className="tc__pool__body__item">
           <div className="tc__pool__body__item-title">
@@ -164,7 +258,10 @@ const Pool = () => {
               {getText('volume', language)} (7d)
             </Typography>
           </div>
-          <Typography variant="card-body-text">${volumeFormatted}</Typography>
+          {volumeChangePercentageFormatted && <PercentageLabel percentage={volumeChangePercentageFormatted} />}
+          <div className="tc__pool-item-value">
+            <Typography variant="card-body-text">${volumeFormatted}</Typography>
+          </div>
         </div>
         <div className="tc__pool__body__item">
           <div className="tc__pool__body__item-title">
