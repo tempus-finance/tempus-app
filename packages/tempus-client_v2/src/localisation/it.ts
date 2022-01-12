@@ -32,7 +32,7 @@ const it: { [word in Words]: string } = {
   filter: 'Filtro',
   asset: 'Attività',
   assetName: 'Nome Attività',
-  protocol: 'Protocollo',
+  protocol: 'Origine',
   protocolName: 'Nome Protocollo',
   clearFilter: 'Rimuovi',
   apply: 'Applica',
