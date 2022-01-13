@@ -21,7 +21,6 @@
     "jsx": "react"
   },
   "include": [
-    "packages/tempus-client/src",
     "packages/tempus-client_v2/src"
   ]
 }
