@@ -6,6 +6,7 @@ import StatsABI from '../abi/Stats.json';
 import { div18f, mul18f } from '../utils/weiMath';
 import { Ticker } from '../interfaces/Token';
 import TempusAMMService from './TempusAMMService';
+import { tokenPrecision } from '../constants';
 
 const backingTokenToCoingeckoIdMap = new Map<string, string>();
 backingTokenToCoingeckoIdMap.set('ETH', 'ethereum');
@@ -169,7 +170,10 @@ class StatisticsService {
       return this.getCoingeckoRate(tokenTicker);
     }
 
-    return div18f(rate, rateDenominator);
+    // TODO - Refactor getRate function to accept token precision as well as a parameter
+    const precision = tokenPrecision[tokenTicker];
+
+    return div18f(rate, rateDenominator, precision);
   }
 
   /**
@@ -334,8 +338,7 @@ class StatisticsService {
 
     try {
       return this.stats.estimatedRedeem(tempusPool, principalsAmount, yieldsAmount, toBackingToken);
-    }
-    catch (error) {
+    } catch (error) {
       console.error('StatisticsService - estimatedRedeem() - Failed to fetch estimated redeem amount!');
       return Promise.reject(error);
     }
