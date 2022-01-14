@@ -1,4 +1,4 @@
-import { FC, useCallback, useContext, useEffect, useState } from 'react';
+import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { Tooltip } from '@material-ui/core';
 import getSidebarDataAdapter from '../../adapters/getSidebarDataAdapter';
@@ -9,9 +9,9 @@ import Words from '../../localisation/words';
 import { TransactionView } from '../../interfaces/TransactionView';
 import getConfig from '../../utils/getConfig';
 import shortenAccount from '../../utils/shortenAccount';
+import TokenIcon from '../tokenIcon';
 import Typography from '../typography/Typography';
 import Spacer from '../spacer/spacer';
-import TokenPairIcon from './tokenPairIcon/TokenPairIcon';
 
 import './Sidebar.scss';
 
@@ -46,7 +46,6 @@ const Sidebar: FC<SidebarProps> = ({ initialView, onSelectedView }) => {
 
   const selectedPoolAddress = selectedPool.attach(Downgraded).get();
   const backingToken = staticPoolData[selectedPool.get()].backingToken.attach(Downgraded).get();
-  const yieldBearingToken = staticPoolData[selectedPool.get()].yieldBearingToken.attach(Downgraded).get();
   const protocol = staticPoolData[selectedPool.get()].protocol.attach(Downgraded).get();
 
   const onItemClick = useCallback(
@@ -56,6 +55,16 @@ const Sidebar: FC<SidebarProps> = ({ initialView, onSelectedView }) => {
     },
     [onSelectedView],
   );
+
+  const poolProtocol = useMemo(() => {
+    if (protocol === 'rari') {
+      return 'Rari Capital';
+    }
+
+    if (protocol === 'lido') {
+      return 'Lido';
+    }
+  }, [protocol]);
 
   useEffect(() => {
     if (initialView && initialView !== selectedView) {
@@ -113,15 +122,11 @@ const Sidebar: FC<SidebarProps> = ({ initialView, onSelectedView }) => {
 
   return (
     <div className="tc__sidebar-container">
-      <TokenPairIcon parentTicker={backingToken} childTicker={yieldBearingToken} hideChild={protocol === 'rari'} />
-      {protocol === 'rari' && (
-        <>
-          <Spacer size={5} />
-          <Typography variant="h4">Rari Capital</Typography>
-        </>
-      )}
+      <TokenIcon ticker={backingToken} large />
       <Spacer size={5} />
-      <Typography variant="h4">{yieldBearingToken} Pool</Typography>
+      <Typography variant="h4">{poolProtocol}</Typography>
+      <Spacer size={5} />
+      <Typography variant="h4">{backingToken} Pool</Typography>
       <Spacer size={10} />
       <div onClick={onPoolAddressClick} className="tc__sidebar-pool-link">
         <Typography variant="body-text" color="link">
