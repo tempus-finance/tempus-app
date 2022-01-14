@@ -368,15 +368,6 @@ const Mint: FC<MintInProps> = ({ narrow }) => {
               </div>
             )}
           </div>
-          <Spacer size={10} />
-          {selectedToken && (
-            <>
-              <Spacer size={10} />
-              <div style={{ paddingTop: 10 }}>
-                <TokenIcon ticker={selectedToken} />
-              </div>
-            </>
-          )}
         </div>
         <Spacer size={20} />
       </SectionContainer>

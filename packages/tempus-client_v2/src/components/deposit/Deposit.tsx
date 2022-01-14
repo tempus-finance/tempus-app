@@ -443,14 +443,14 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
     if (estimatedFixedApr) {
       if (estimatedFixedApr.gt(ZERO)) {
         setExecuteDisabledText(undefined);
-        return NumberUtils.formatPercentage(ethers.utils.formatUnits(estimatedFixedApr, tokenPrecision));
+        return NumberUtils.formatPercentage(ethers.utils.formatEther(estimatedFixedApr));
       } else {
         setExecuteDisabledText(getText('insufficientLiquidity', language));
         return ZERO;
       }
     }
     return null;
-  }, [estimatedFixedApr, tokenPrecision, language]);
+  }, [estimatedFixedApr, language]);
 
   const fixedYieldAtMaturityFormatted = useMemo(() => {
     if (!fixedPrincipalsAmount || !amount || isZeroString(amount)) {
@@ -459,8 +459,11 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
 
     const value = fixedPrincipalsAmount.sub(ethers.utils.parseEther(amount));
 
-    return NumberUtils.formatToCurrency(ethers.utils.formatUnits(value, tokenPrecision), decimalsForUI);
-  }, [amount, fixedPrincipalsAmount, tokenPrecision, decimalsForUI]);
+    return NumberUtils.formatToCurrency(
+      ethers.utils.formatUnits(value, getTokenPrecision(selectedPoolAddress, 'yieldBearingToken')),
+      decimalsForUI,
+    );
+  }, [amount, fixedPrincipalsAmount, selectedPoolAddress, decimalsForUI]);
 
   const fixedYieldAtMaturityUSDFormatted = useMemo(() => {
     if (!fixedPrincipalsAmount || !yieldBearingTokenRate || !amount || isZeroString(amount)) {
@@ -680,14 +683,6 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
               </div>
             )}
           </div>
-          {selectedToken && (
-            <>
-              <Spacer size={10} />
-              <div style={{ paddingTop: 10 }}>
-                <TokenIcon ticker={selectedToken} />
-              </div>
-            </>
-          )}
         </div>
         <Spacer size={20} />
       </SectionContainer>
