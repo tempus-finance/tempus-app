@@ -24,7 +24,6 @@ import Execute from '../buttons/Execute';
 import CurrencyInput from '../currencyInput/currencyInput';
 import TokenSelector from '../tokenSelector/tokenSelector';
 import Typography from '../typography/Typography';
-import TokenIcon from '../tokenIcon';
 import SectionContainer from '../sectionContainer/SectionContainer';
 import Spacer from '../spacer/spacer';
 import InfoTooltip from '../infoTooltip/infoTooltip';
