@@ -21,7 +21,7 @@ const getVariableRateService = (signerOrProvider?: JsonRpcSigner | JsonRpcProvid
       getTempusPoolService(actualSignerOrProvider),
       getVaultService(actualSignerOrProvider),
       getTempusAMMService(actualSignerOrProvider),
-      new Vaults(getProvider(signerOrProvider)),
+      new Vaults(getProvider(signerOrProvider) as any),
       getConfig(),
     );
   }

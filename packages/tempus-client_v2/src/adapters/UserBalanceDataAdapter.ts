@@ -132,9 +132,17 @@ export default class UserBalanceDataAdapter {
         interestRate,
       );
 
-      const backingTokenValueInFiat = mul18f(backingTokensAvailable, backingTokenToUSD);
+      const backingTokenValueInFiat = mul18f(
+        backingTokensAvailable,
+        backingTokenToUSD,
+        tempusPool.tokenPrecision.backingToken,
+      );
       const yieldBearingTokenValueInBackingToken = mul18f(yieldTokensAvailable, yieldBearingToBackingTokenRate);
-      const yieldBearingTokenValueInFiat = mul18f(yieldBearingTokenValueInBackingToken, backingTokenToUSD);
+      const yieldBearingTokenValueInFiat = mul18f(
+        yieldBearingTokenValueInBackingToken,
+        backingTokenToUSD,
+        tempusPool.tokenPrecision.yieldBearingToken,
+      );
 
       return {
         backingTokenValueInFiat,

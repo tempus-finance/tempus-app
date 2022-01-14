@@ -3,7 +3,7 @@ import { ethers, BigNumber } from 'ethers';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { DataTypeProvider } from '@devexpress/dx-react-grid';
 import { CircularProgress } from '@material-ui/core';
-import { ZERO } from '../../../constants';
+import { tokenPrecision, ZERO } from '../../../constants';
 import {
   dynamicPoolDataState,
   DynamicPoolStateData,
@@ -48,14 +48,19 @@ const AvailableToDepositFormatter = (props: DataTypeProvider.ValueFormatterProps
     if (showFiat) {
       const currencySymbol = '$';
       content = `${currencySymbol}${NumberUtils.formatWithMultiplier(
-        ethers.utils.formatEther(parentAvailableToDeposit),
+        // TODO - Use backing token precision from child items
+        ethers.utils.formatUnits(parentAvailableToDeposit, tokenPrecision[row.id]),
         2,
       )}`;
     } else {
       content = (
         <>
           {/* TODO - Use decimalsForUI precision from child items (max precision) */}
-          {NumberUtils.formatWithMultiplier(ethers.utils.formatEther(parentAvailableToDeposit), 4)}
+          {/* TODO - Use backing token precision from child items */}
+          {NumberUtils.formatWithMultiplier(
+            ethers.utils.formatUnits(parentAvailableToDeposit, tokenPrecision[row.id]),
+            4,
+          )}
           <Spacer size={5} />
           {row.token}
         </>
@@ -88,14 +93,14 @@ const AvailableToDepositFormatter = (props: DataTypeProvider.ValueFormatterProps
     if (showFiat) {
       const currencySymbol = '$';
       content = `${currencySymbol}${NumberUtils.formatWithMultiplier(
-        ethers.utils.formatEther(childAvailableToDeposit),
+        ethers.utils.formatUnits(childAvailableToDeposit, staticPoolData[row.id].tokenPrecision.backingToken),
         2,
       )}`;
     } else {
       content = (
         <>
           {NumberUtils.formatWithMultiplier(
-            ethers.utils.formatEther(childAvailableToDeposit),
+            ethers.utils.formatUnits(childAvailableToDeposit, staticPoolData[row.id].tokenPrecision.backingToken),
             staticPoolData[row.id].decimalsForUI,
           )}
           <Spacer size={5} />
