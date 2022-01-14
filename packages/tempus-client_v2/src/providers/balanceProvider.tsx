@@ -97,7 +97,11 @@ class UserBalanceProvider {
     );
 
     const userPoolBalanceInBackingTokens = exitEstimate.tokenAmount;
-    const userPoolBalanceInUSD = mul18f(userPoolBalanceInBackingTokens, backingTokenRate);
+    const userPoolBalanceInUSD = mul18f(
+      userPoolBalanceInBackingTokens,
+      backingTokenRate,
+      poolConfig.tokenPrecision.backingToken,
+    );
 
     const currentUSDBalance = dynamicPoolDataState[poolConfig.address].userBalanceUSD.get();
     if (!currentUSDBalance || !currentUSDBalance.eq(userPoolBalanceInUSD)) {
