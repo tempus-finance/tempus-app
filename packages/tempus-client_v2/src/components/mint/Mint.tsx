@@ -373,7 +373,7 @@ const Mint: FC<MintInProps> = ({ narrow }) => {
             <>
               <Spacer size={10} />
               <div style={{ paddingTop: 10 }}>
-                <TokenIcon ticker={selectedToken} width={20} height={20} />
+                <TokenIcon ticker={selectedToken} />
               </div>
             </>
           )}
