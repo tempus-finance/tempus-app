@@ -84,7 +84,7 @@ const config: Config = {
       decimalsForUI: 4,
       tokenPrecision: {
         backingToken: 6,
-        lpTokens: 6,
+        lpTokens: 18,
         principals: 6,
         yieldBearingToken: 18,
         yields: 6,
