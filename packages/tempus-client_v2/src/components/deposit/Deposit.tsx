@@ -507,7 +507,7 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
     const scaleFactor = ethers.utils.parseEther((timeUntilMaturity / poolDuration).toString());
 
     const amountParsed = ethers.utils.parseUnits(amount, tokenPrecision);
-    const variableAPRParsed = ethers.utils.parseUnits(variableAPR.toString(), tokenPrecision);
+    const variableAPRParsed = ethers.utils.parseEther(variableAPR.toString() || '1');
 
     const estimatedYieldForPool = mul18f(amountParsed, variableAPRParsed);
 
