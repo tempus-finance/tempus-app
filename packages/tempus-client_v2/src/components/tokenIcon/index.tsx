@@ -32,8 +32,12 @@ const TokenIcon: FC<IconInProps> = ({ ticker, large, width, height }): JSX.Eleme
   }, [height, large]);
 
   const viewBox = useMemo(() => {
+    if (height && width) {
+      return `0 0 ${height} ${width}`;
+    }
+
     return large ? '0 0 40 40' : '0 0 20 20';
-  }, [large]);
+  }, [height, width, large]);
 
   const __html = useMemo(() => `<title>${ticker}</title>${icon}`, [ticker, icon]);
 
