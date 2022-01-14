@@ -26,6 +26,7 @@ const ProfitLoss = () => {
   const decimalsForUI = staticPoolData[selectedPool.get()].decimalsForUI.attach(Downgraded).get();
   const ammAddress = staticPoolData[selectedPool.get()].ammAddress.attach(Downgraded).get();
   const ticker = staticPoolData[selectedPool.get()].backingToken.attach(Downgraded).get();
+  const tokenPrecision = staticPoolData[selectedPool.get()].tokenPrecision.attach(Downgraded).get();
   const userPrincipalsBalance = dynamicPoolData[selectedPool.get()].userPrincipalsBalance.attach(Downgraded).get();
   const userYieldsBalance = dynamicPoolData[selectedPool.get()].userYieldsBalance.attach(Downgraded).get();
   const userLPTokenBalance = dynamicPoolData[selectedPool.get()].userLPTokenBalance.attach(Downgraded).get();
@@ -54,15 +55,18 @@ const ProfitLoss = () => {
     if (!estimatedWithdrawAmount) {
       return null;
     }
-    return NumberUtils.formatToCurrency(ethers.utils.formatEther(estimatedWithdrawAmount), decimalsForUI);
-  }, [decimalsForUI, estimatedWithdrawAmount]);
+    return NumberUtils.formatToCurrency(
+      ethers.utils.formatUnits(estimatedWithdrawAmount, tokenPrecision.backingToken),
+      decimalsForUI,
+    );
+  }, [decimalsForUI, estimatedWithdrawAmount, tokenPrecision.backingToken]);
 
   const liquidationValueFormatted = useMemo(() => {
     if (!userBalanceUSD) {
       return null;
     }
-    return NumberUtils.formatToCurrency(ethers.utils.formatEther(userBalanceUSD), 2, '$');
-  }, [userBalanceUSD]);
+    return NumberUtils.formatToCurrency(ethers.utils.formatUnits(userBalanceUSD, tokenPrecision.backingToken), 2, '$');
+  }, [userBalanceUSD, tokenPrecision.backingToken]);
 
   return (
     <div className="tc__profitLoss">
