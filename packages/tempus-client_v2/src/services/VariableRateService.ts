@@ -1,5 +1,6 @@
 import { ethers, BigNumber, Contract } from 'ethers';
 import { JsonRpcSigner, JsonRpcProvider } from '@ethersproject/providers';
+import { Vaults } from 'rari-sdk';
 import lidoOracleABI from '../abi/LidoOracle.json';
 import AaveLendingPoolABI from '../abi/AaveLendingPool.json';
 import cERC20Token from '../abi/cERC20Token.json';
@@ -42,6 +43,7 @@ class VariableRateService {
 
   private aaveLendingPool: Contract | null = null;
   private lidoOracle: Contract | null = null;
+  private rariVault: Vaults | null = null;
   private tempusPoolService: TempusPoolService | null = null;
   private vaultService: VaultService | null = null;
   private tempusAMMService: TempusAMMService | null = null;
@@ -53,11 +55,13 @@ class VariableRateService {
     tempusPoolService: TempusPoolService,
     vaultService: VaultService,
     tempusAMMService: TempusAMMService,
+    rariVault: Vaults,
     config: Config,
   ) {
     if (signerOrProvider) {
       this.aaveLendingPool = new Contract(aaveLendingPoolAddress, AaveLendingPoolABI, signerOrProvider);
       this.lidoOracle = new Contract(config.lidoOracle, lidoOracleABI.abi, signerOrProvider);
+      this.rariVault = rariVault;
       this.signerOrProvider = signerOrProvider;
       this.tempusPoolService = tempusPoolService;
       this.vaultService = vaultService;
@@ -65,76 +69,7 @@ class VariableRateService {
     }
   }
 
-  async getAprRate(protocol: ProtocolName, yieldBearingTokenAddress: string, fees: BigNumber): Promise<number> {
-    if (!this.tempusPoolService) {
-      return Promise.reject();
-    }
-
-    const feesFormatted = Number(ethers.utils.formatEther(fees));
-
-    switch (protocol) {
-      case 'aave': {
-        return this.getAaveAPR(yieldBearingTokenAddress, feesFormatted);
-      }
-
-      case 'compound': {
-        return this.getCompoundAPR(yieldBearingTokenAddress, feesFormatted);
-      }
-
-      case 'lido': {
-        return this.getLidoAPR(feesFormatted);
-      }
-
-      default: {
-        return 0;
-      }
-    }
-  }
-
-  private async getAaveAPR(yieldBearingTokenAddress: string, fees: number) {
-    const aaveAPR = VariableRateService.getAprFromApy(await this.getAaveAPY(yieldBearingTokenAddress));
-    return aaveAPR + fees;
-  }
-
-  private async getCompoundAPR(yieldBearingTokenAddress: string, fees: number) {
-    if (!this.tempusPoolService) {
-      return Promise.reject();
-    }
-    const compoundAPR = VariableRateService.getAprFromApy(await this.getCompoundAPY(yieldBearingTokenAddress));
-    return compoundAPR + fees;
-  }
-
-  // Ref - https://docs.lido.fi/contracts/lido-oracle/#add-calculation-of-staker-rewards-apr
-  private async getLidoAPR(fees: number): Promise<number> {
-    try {
-      const { postTotalPooledEther, preTotalPooledEther, timeElapsed } =
-        await this.lidoOracle?.getLastCompletedReportDelta();
-
-      const apr = this.calculateLidoAPR(postTotalPooledEther, preTotalPooledEther, timeElapsed);
-
-      // currently 10%. it's possible to query it using Lido.getFee()
-      const aprMinusLidoFees = apr.mul(BigNumber.from('9000')).div(BigNumber.from('10000'));
-
-      return Number(ethers.utils.formatEther(aprMinusLidoFees)) + fees;
-    } catch (error) {
-      console.error('VariableRateService - getLidoAPR', error);
-      return 0;
-    }
-  }
-
-  private calculateLidoAPR(
-    postTotalPooledEther: BigNumber,
-    preTotalPooledEther: BigNumber,
-    timeElapsed: BigNumber,
-  ): BigNumber {
-    return postTotalPooledEther
-      .sub(preTotalPooledEther)
-      .mul(BN_SECONDS_IN_YEAR)
-      .mul(BN_ONE_ETH_IN_WEI)
-      .div(preTotalPooledEther.mul(timeElapsed));
-  }
-
-  public async calculateFees(tempusAMM: string, tempusPool: string, principalsAddress: string, yieldsAddress: string) {
+  async calculateFees(tempusAMM: string, tempusPool: string, principalsAddress: string, yieldsAddress: string) {
     if (!this.tempusAMMService || !this.vaultService || !this.tempusPoolService || !this.signerOrProvider) {
       return Promise.reject();
     }
@@ -237,6 +172,92 @@ class VariableRateService {
     );
 
     return mul18f(scaledFees, currentPrincipalsToYieldsRatio);
+  }
+
+  async getAprRate(protocol: ProtocolName, yieldBearingTokenAddress: string, fees: BigNumber): Promise<number> {
+    if (!this.tempusPoolService) {
+      return Promise.reject();
+    }
+
+    const feesFormatted = Number(ethers.utils.formatEther(fees));
+
+    switch (protocol) {
+      case 'aave': {
+        return this.getAaveAPR(yieldBearingTokenAddress, feesFormatted);
+      }
+
+      case 'compound': {
+        return this.getCompoundAPR(yieldBearingTokenAddress, feesFormatted);
+      }
+
+      case 'lido': {
+        return this.getLidoAPR(feesFormatted);
+      }
+
+      case 'rari': {
+        return this.getRariAPR(feesFormatted);
+      }
+
+      default: {
+        return 0;
+      }
+    }
+  }
+
+  private async getAaveAPR(yieldBearingTokenAddress: string, fees: number) {
+    const aaveAPR = VariableRateService.getAprFromApy(await this.getAaveAPY(yieldBearingTokenAddress));
+    return aaveAPR + fees;
+  }
+
+  private async getCompoundAPR(yieldBearingTokenAddress: string, fees: number) {
+    if (!this.tempusPoolService) {
+      return Promise.reject();
+    }
+    const compoundAPR = VariableRateService.getAprFromApy(await this.getCompoundAPY(yieldBearingTokenAddress));
+    return compoundAPR + fees;
+  }
+
+  // Ref - https://docs.lido.fi/contracts/lido-oracle/#add-calculation-of-staker-rewards-apr
+  private async getLidoAPR(fees: number): Promise<number> {
+    try {
+      const { postTotalPooledEther, preTotalPooledEther, timeElapsed } =
+        await this.lidoOracle?.getLastCompletedReportDelta();
+
+      const apr = this.calculateLidoAPR(postTotalPooledEther, preTotalPooledEther, timeElapsed);
+
+      // currently 10%. it's possible to query it using Lido.getFee()
+      const aprMinusLidoFees = apr.mul(BigNumber.from('9000')).div(BigNumber.from('10000'));
+
+      return Number(ethers.utils.formatEther(aprMinusLidoFees)) + fees;
+    } catch (error) {
+      console.error('VariableRateService - getLidoAPR', error);
+      return 0;
+    }
+  }
+
+  private calculateLidoAPR(
+    postTotalPooledEther: BigNumber,
+    preTotalPooledEther: BigNumber,
+    timeElapsed: BigNumber,
+  ): BigNumber {
+    return postTotalPooledEther
+      .sub(preTotalPooledEther)
+      .mul(BN_SECONDS_IN_YEAR)
+      .mul(BN_ONE_ETH_IN_WEI)
+      .div(preTotalPooledEther.mul(timeElapsed));
+  }
+
+  // https://github.com/Rari-Capital/RariSDK/blob/d6293e09c36a4ac6914725f5a5528a9c1e7cb178/src/Vaults/pools/stable.ts#L473
+  private async getRariAPR(fees: number) {
+    if (!this.rariVault) {
+      return Promise.reject();
+    }
+
+    const currentRariApy: BigNumber = await this.rariVault.pools.stable.apy.getCurrentApy();
+    const parsedCurrentRariApy: number = Number(ethers.utils.formatEther(currentRariApy));
+    const rariAPR = VariableRateService.getAprFromApy(parsedCurrentRariApy);
+
+    return rariAPR + fees;
   }
 
   private async getPoolTokens(poolId: string, principalsAddress: string, yieldsAddress: string) {

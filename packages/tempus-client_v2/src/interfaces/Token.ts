@@ -12,6 +12,8 @@ export type Ticker =
   | 'USDC'
   | 'aDAI'
   | 'cDAI'
-  | 'LP Token';
+  | 'LP Token'
+  | 'RARI'
+  | 'RSPT';
 
 export type PoolShares = 'Principals' | 'Yields';
