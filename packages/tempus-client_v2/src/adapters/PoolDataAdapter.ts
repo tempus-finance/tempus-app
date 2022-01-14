@@ -69,6 +69,7 @@ export default class PoolDataAdapter {
   retrieveBalances(
     tempusPoolAddress: string,
     tempusAMMAddress: string,
+    backingTokenPrecision: number,
     userWalletAddress: string,
     signer: JsonRpcSigner,
   ): Observable<{
@@ -165,7 +166,7 @@ export default class PoolDataAdapter {
             backingTokenBalance,
             backingTokenRate,
             yieldBearingTokenBalance,
-            yieldBearingTokenRate: mul18f(yieldBearingTokenConversionRate, backingTokenRate),
+            yieldBearingTokenRate: mul18f(yieldBearingTokenConversionRate, backingTokenRate, backingTokenPrecision),
             principalsTokenBalance,
             yieldsTokenBalance,
             lpTokensBalance,
