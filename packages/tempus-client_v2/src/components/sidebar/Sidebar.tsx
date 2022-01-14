@@ -47,6 +47,7 @@ const Sidebar: FC<SidebarProps> = ({ initialView, onSelectedView }) => {
   const selectedPoolAddress = selectedPool.attach(Downgraded).get();
   const backingToken = staticPoolData[selectedPool.get()].backingToken.attach(Downgraded).get();
   const yieldBearingToken = staticPoolData[selectedPool.get()].yieldBearingToken.attach(Downgraded).get();
+  const protocol = staticPoolData[selectedPool.get()].protocol.attach(Downgraded).get();
 
   const onItemClick = useCallback(
     (itemName: TransactionView) => {
@@ -112,7 +113,13 @@ const Sidebar: FC<SidebarProps> = ({ initialView, onSelectedView }) => {
 
   return (
     <div className="tc__sidebar-container">
-      <TokenPairIcon parentTicker={backingToken} childTicker={yieldBearingToken} />
+      <TokenPairIcon parentTicker={backingToken} childTicker={yieldBearingToken} hideChild={protocol === 'rari'} />
+      {protocol === 'rari' && (
+        <>
+          <Spacer size={5} />
+          <Typography variant="h4">Rari Capital</Typography>
+        </>
+      )}
       <Spacer size={5} />
       <Typography variant="h4">{yieldBearingToken} Pool</Typography>
       <Spacer size={10} />

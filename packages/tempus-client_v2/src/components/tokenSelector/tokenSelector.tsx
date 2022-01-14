@@ -28,7 +28,7 @@ const getMenuItems = (value: Ticker | null, tickers: Ticker[], language: Languag
           <Typography variant="dropdown-text">{ticker}</Typography>
           {ticker !== 'Principals' && ticker !== 'Yields' && (
             <div className="tc__token-selector-ticker-container">
-              <TokenIcon ticker={ticker} width={18} height={18} />
+              <TokenIcon ticker={ticker} />
             </div>
           )}
         </div>
