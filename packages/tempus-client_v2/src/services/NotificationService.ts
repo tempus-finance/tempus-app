@@ -338,6 +338,7 @@ const getMintNotificationContent = (
   userWallet: string,
   staticPoolData: TempusPool,
 ) => {
+  let tokenSentPrecision: number | null = null;
   let tokenSentTicker: Ticker | null = null;
   let tokenSentAmount = BigNumber.from('0');
   let principalsMinted = BigNumber.from('0');
@@ -347,6 +348,7 @@ const getMintNotificationContent = (
   if (!transaction.value.isZero()) {
     tokenSentAmount = transaction.value;
     tokenSentTicker = staticPoolData.backingToken;
+    tokenSentPrecision = staticPoolData.tokenPrecision.backingToken;
   }
 
   const ifc = new ethers.utils.Interface(ERC20ABI);
@@ -355,24 +357,26 @@ const getMintNotificationContent = (
       const logData = ifc.parseLog(log);
       if (logData.name === 'Transfer' && logData.args.from === userWallet) {
         // User sent backing token
-        if (staticPoolData.backingTokenAddress === log.address) {
+        if (staticPoolData.backingTokenAddress.toLowerCase() === log.address.toLowerCase()) {
           tokenSentAmount = logData.args.value;
           tokenSentTicker = staticPoolData.backingToken;
+          tokenSentPrecision = staticPoolData.tokenPrecision.backingToken;
         }
         // User sent yield bearing token
-        if (staticPoolData.yieldBearingTokenAddress === log.address) {
+        if (staticPoolData.yieldBearingTokenAddress.toLowerCase() === log.address.toLowerCase()) {
           tokenSentAmount = logData.args.value;
           tokenSentTicker = staticPoolData.yieldBearingToken;
+          tokenSentPrecision = staticPoolData.tokenPrecision.yieldBearingToken;
         }
       }
 
       if (logData.name === 'Transfer' && logData.args.to === userWallet) {
         // Principals minted amount
-        if (staticPoolData.principalsAddress === log.address) {
+        if (staticPoolData.principalsAddress.toLowerCase() === log.address.toLowerCase()) {
           principalsMinted = logData.args.value;
         }
         // Yields minted amount
-        if (staticPoolData.yieldsAddress === log.address) {
+        if (staticPoolData.yieldsAddress.toLowerCase() === log.address.toLowerCase()) {
           yieldsMinted = logData.args.value;
         }
       }
@@ -382,15 +386,15 @@ const getMintNotificationContent = (
   });
 
   const tokenSentAmountFormatted = NumberUtils.formatToCurrency(
-    ethers.utils.formatEther(tokenSentAmount),
+    ethers.utils.formatUnits(tokenSentAmount, tokenSentPrecision || 18),
     staticPoolData.decimalsForUI,
   );
   const principalsMintedFormatted = NumberUtils.formatToCurrency(
-    ethers.utils.formatEther(principalsMinted),
+    ethers.utils.formatUnits(principalsMinted, staticPoolData.tokenPrecision.principals),
     staticPoolData.decimalsForUI,
   );
   const yieldsMintedFormatted = NumberUtils.formatToCurrency(
-    ethers.utils.formatEther(yieldsMinted),
+    ethers.utils.formatUnits(yieldsMinted, staticPoolData.tokenPrecision.yields),
     staticPoolData.decimalsForUI,
   );
 
