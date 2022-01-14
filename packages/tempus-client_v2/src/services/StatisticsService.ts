@@ -10,6 +10,7 @@ import { tokenPrecision } from '../constants';
 
 const backingTokenToCoingeckoIdMap = new Map<string, string>();
 backingTokenToCoingeckoIdMap.set('ETH', 'ethereum');
+backingTokenToCoingeckoIdMap.set('USDC', 'usd-coin');
 
 type StatisticsServiceParameters = {
   Contract: typeof Contract;
@@ -117,7 +118,7 @@ class StatisticsService {
 
     const cachedResponse = this.coinGeckoCache.get(coinGeckoTokenId);
     if (cachedResponse && cachedResponse.cachedAt > Date.now() - 60000) {
-      return ethers.utils.parseEther((await cachedResponse.promise).data.ethereum.usd.toString());
+      return ethers.utils.parseEther((await cachedResponse.promise).data[coinGeckoTokenId].usd.toString());
     }
 
     let value: BigNumber;
@@ -131,7 +132,9 @@ class StatisticsService {
         cachedAt: Date.now(),
       });
 
-      value = ethers.utils.parseEther((await promise).data.ethereum.usd.toString());
+      const result = await promise;
+
+      value = ethers.utils.parseUnits(result.data[coinGeckoTokenId].usd.toString(), tokenPrecision[token]);
     } catch (error) {
       console.error(`Failed to get token '${token}' exchange rate from coin gecko!`, error);
       return Promise.reject(error);

@@ -162,11 +162,14 @@ const Pool = () => {
           backingTokenPrecision,
         );
 
-        const volumeDiff = currentVolume.sub(pastVolume);
-        const volumeRatio = div18f(volumeDiff, pastVolume, backingTokenPrecision);
+        if (!pastVolume.isZero()) {
+          const volumeDiff = currentVolume.sub(pastVolume);
+          const volumeRatio = div18f(volumeDiff, pastVolume, backingTokenPrecision);
+
+          setVolumeChangePercentage(volumeRatio);
+        }
 
         setVolume(currentVolume);
-        setVolumeChangePercentage(volumeRatio);
       } catch (error) {
         console.error('fetchVolume() - Failed to fetch 7D volume for pool!');
       }
