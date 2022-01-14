@@ -30,6 +30,7 @@ const CurrentPosition: FC<CurrentPositionInProps> = ({ language }) => {
   const userLPBalance = dynamicPoolData[selectedPool.get()].userLPTokenBalance.attach(Downgraded).get();
   const ammAddress = staticPoolData[selectedPool.get()].ammAddress.attach(Downgraded).get();
   const decimalsForUI = staticPoolData[selectedPool.get()].decimalsForUI.attach(Downgraded).get();
+  const tokenPrecision = staticPoolData[selectedPool.get()].tokenPrecision.attach(Downgraded).get();
 
   useEffect(() => {
     const retrieveExpectedReturn = async () => {
@@ -60,48 +61,60 @@ const CurrentPosition: FC<CurrentPositionInProps> = ({ language }) => {
       return null;
     }
     return NumberUtils.formatWithMultiplier(
-      ethers.utils.formatEther(userPrincipalsBalance.add(lpTokenPrincipalReturnBalance)),
+      ethers.utils.formatUnits(userPrincipalsBalance.add(lpTokenPrincipalReturnBalance), tokenPrecision.principals),
       decimalsForUI,
     );
-  }, [decimalsForUI, userPrincipalsBalance, lpTokenPrincipalReturnBalance]);
+  }, [decimalsForUI, userPrincipalsBalance, lpTokenPrincipalReturnBalance, tokenPrecision.principals]);
 
   const yieldsBalanceFormatted = useMemo(() => {
     if (!userYieldsBalance || !lpTokenYieldReturnBalance) {
       return null;
     }
     return NumberUtils.formatWithMultiplier(
-      ethers.utils.formatEther(userYieldsBalance.add(lpTokenYieldReturnBalance)),
+      ethers.utils.formatUnits(userYieldsBalance.add(lpTokenYieldReturnBalance), tokenPrecision.yields),
       decimalsForUI,
     );
-  }, [decimalsForUI, userYieldsBalance, lpTokenYieldReturnBalance]);
+  }, [decimalsForUI, userYieldsBalance, lpTokenYieldReturnBalance, tokenPrecision.yields]);
 
   const unstakedPrincipalsFormatted = useMemo(() => {
     if (!userPrincipalsBalance) {
       return null;
     }
-    return NumberUtils.formatWithMultiplier(ethers.utils.formatEther(userPrincipalsBalance), decimalsForUI);
-  }, [decimalsForUI, userPrincipalsBalance]);
+    return NumberUtils.formatWithMultiplier(
+      ethers.utils.formatUnits(userPrincipalsBalance, tokenPrecision.principals),
+      decimalsForUI,
+    );
+  }, [decimalsForUI, userPrincipalsBalance, tokenPrecision.principals]);
 
   const stakedPrincipalsFormatted = useMemo(() => {
     if (!lpTokenPrincipalReturnBalance) {
       return null;
     }
-    return NumberUtils.formatWithMultiplier(ethers.utils.formatEther(lpTokenPrincipalReturnBalance), decimalsForUI);
-  }, [decimalsForUI, lpTokenPrincipalReturnBalance]);
+    return NumberUtils.formatWithMultiplier(
+      ethers.utils.formatUnits(lpTokenPrincipalReturnBalance, tokenPrecision.principals),
+      decimalsForUI,
+    );
+  }, [decimalsForUI, lpTokenPrincipalReturnBalance, tokenPrecision.principals]);
 
   const unstakedYieldsFormatted = useMemo(() => {
     if (!userYieldsBalance) {
       return null;
     }
-    return NumberUtils.formatWithMultiplier(ethers.utils.formatEther(userYieldsBalance), decimalsForUI);
-  }, [decimalsForUI, userYieldsBalance]);
+    return NumberUtils.formatWithMultiplier(
+      ethers.utils.formatUnits(userYieldsBalance, tokenPrecision.yields),
+      decimalsForUI,
+    );
+  }, [decimalsForUI, userYieldsBalance, tokenPrecision.yields]);
 
   const stakedYieldsFormatted = useMemo(() => {
     if (!lpTokenYieldReturnBalance) {
       return null;
     }
-    return NumberUtils.formatWithMultiplier(ethers.utils.formatEther(lpTokenYieldReturnBalance), decimalsForUI);
-  }, [decimalsForUI, lpTokenYieldReturnBalance]);
+    return NumberUtils.formatWithMultiplier(
+      ethers.utils.formatUnits(lpTokenYieldReturnBalance, tokenPrecision.yields),
+      decimalsForUI,
+    );
+  }, [decimalsForUI, lpTokenYieldReturnBalance, tokenPrecision.yields]);
 
   const unstakedPrincipalsPercentage = useMemo(() => {
     if (!userPrincipalsBalance || !lpTokenPrincipalReturnBalance) {
@@ -113,9 +126,16 @@ const CurrentPosition: FC<CurrentPositionInProps> = ({ language }) => {
     }
 
     return NumberUtils.formatPercentage(
-      ethers.utils.formatEther(div18f(userPrincipalsBalance, userPrincipalsBalance.add(lpTokenPrincipalReturnBalance))),
+      ethers.utils.formatUnits(
+        div18f(
+          userPrincipalsBalance,
+          userPrincipalsBalance.add(lpTokenPrincipalReturnBalance),
+          tokenPrecision.principals,
+        ),
+        tokenPrecision.principals,
+      ),
     );
-  }, [userPrincipalsBalance, lpTokenPrincipalReturnBalance]);
+  }, [userPrincipalsBalance, lpTokenPrincipalReturnBalance, tokenPrecision.principals]);
 
   const stakedPrincipalsPercentage = useMemo(() => {
     if (!userPrincipalsBalance || !lpTokenPrincipalReturnBalance) {
@@ -127,11 +147,16 @@ const CurrentPosition: FC<CurrentPositionInProps> = ({ language }) => {
     }
 
     return NumberUtils.formatPercentage(
-      ethers.utils.formatEther(
-        div18f(lpTokenPrincipalReturnBalance, lpTokenPrincipalReturnBalance.add(userPrincipalsBalance)),
+      ethers.utils.formatUnits(
+        div18f(
+          lpTokenPrincipalReturnBalance,
+          lpTokenPrincipalReturnBalance.add(userPrincipalsBalance),
+          tokenPrecision.principals,
+        ),
+        tokenPrecision.principals,
       ),
     );
-  }, [userPrincipalsBalance, lpTokenPrincipalReturnBalance]);
+  }, [userPrincipalsBalance, lpTokenPrincipalReturnBalance, tokenPrecision.principals]);
 
   const unstakedYieldsPercentage = useMemo(() => {
     if (!userYieldsBalance || !lpTokenYieldReturnBalance) {
@@ -143,9 +168,12 @@ const CurrentPosition: FC<CurrentPositionInProps> = ({ language }) => {
     }
 
     return NumberUtils.formatPercentage(
-      ethers.utils.formatEther(div18f(userYieldsBalance, userYieldsBalance.add(lpTokenYieldReturnBalance))),
+      ethers.utils.formatUnits(
+        div18f(userYieldsBalance, userYieldsBalance.add(lpTokenYieldReturnBalance), tokenPrecision.yields),
+        tokenPrecision.yields,
+      ),
     );
-  }, [userYieldsBalance, lpTokenYieldReturnBalance]);
+  }, [userYieldsBalance, lpTokenYieldReturnBalance, tokenPrecision.yields]);
 
   const stakedYieldsPercentage = useMemo(() => {
     if (!userYieldsBalance || !lpTokenYieldReturnBalance) {
@@ -157,9 +185,12 @@ const CurrentPosition: FC<CurrentPositionInProps> = ({ language }) => {
     }
 
     return NumberUtils.formatPercentage(
-      ethers.utils.formatEther(div18f(lpTokenYieldReturnBalance, lpTokenYieldReturnBalance.add(userYieldsBalance))),
+      ethers.utils.formatUnits(
+        div18f(lpTokenYieldReturnBalance, lpTokenYieldReturnBalance.add(userYieldsBalance), tokenPrecision.yields),
+        tokenPrecision.yields,
+      ),
     );
-  }, [lpTokenYieldReturnBalance, userYieldsBalance]);
+  }, [lpTokenYieldReturnBalance, userYieldsBalance, tokenPrecision.yields]);
 
   return (
     <div className="tc__currentPosition">

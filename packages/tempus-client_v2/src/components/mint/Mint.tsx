@@ -25,7 +25,6 @@ import SectionContainer from '../sectionContainer/SectionContainer';
 import Spacer from '../spacer/spacer';
 import TokenSelector from '../tokenSelector/tokenSelector';
 import Typography from '../typography/Typography';
-import TokenIcon from '../tokenIcon';
 
 import './Mint.scss';
 
