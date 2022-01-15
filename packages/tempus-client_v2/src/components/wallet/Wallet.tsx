@@ -325,7 +325,7 @@ const Wallet = () => {
         userWalletAddress: account || '',
       }));
   }, [account, library, setWalletData]);
-  const { ensName } = useENS(account);
+  const { ensName, ensAvatar } = useENS(account);
 
   let shortenedAccount;
   if (account) {
@@ -378,9 +378,7 @@ const Wallet = () => {
               <Spacer size={4} />
               {pendingTransactions.length === 0 && (
                 <div className="tc__connect-wallet-button__profile">
-                  {account && (
-                    <Davatar size={20} address={account} style={{ marginRight: 8 }} generatedAvatarType="jazzicon" />
-                  )}
+                  {ensAvatar && <img src={ensAvatar} alt={shortenedAccount} />}
                   <Typography variant="h5">{ensName || shortenedAccount}</Typography>
                 </div>
               )}
