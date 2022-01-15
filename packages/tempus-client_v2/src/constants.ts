@@ -37,6 +37,12 @@ export const dashboardChildMaturityFormat = 'd MMMM yyyy';
 
 export const POLLING_INTERVAL = 30 * 1000;
 
+export const tokenPrecision: { [ticker: string]: number } = {
+  ETH: 18,
+  USDC: 6,
+  DAI: 18,
+};
+
 const INFURA_KEY = process.env.REACT_APP_INFURA_KEY;
 
 export enum SupportedChainId {

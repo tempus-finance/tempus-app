@@ -25,7 +25,6 @@ import SectionContainer from '../sectionContainer/SectionContainer';
 import Spacer from '../spacer/spacer';
 import TokenSelector from '../tokenSelector/tokenSelector';
 import Typography from '../typography/Typography';
-import TokenIcon from '../tokenIcon';
 
 import './Mint.scss';
 
@@ -57,7 +56,7 @@ const Mint: FC<MintInProps> = ({ narrow }) => {
 
   const [tokensApproved, setTokensApproved] = useState<boolean>(false);
 
-  const [tokenPrecision, setTokenPrecision] = useState<number>(0);
+  const [selectedTokenPrecision, setSelectedTokenPrecision] = useState<number>(0);
 
   const selectedPoolAddress = selectedPool.attach(Downgraded).get();
   const ammAddress = staticPoolData[selectedPool.get()].ammAddress.attach(Downgraded).get();
@@ -66,6 +65,7 @@ const Mint: FC<MintInProps> = ({ narrow }) => {
   const backingTokenAddress = staticPoolData[selectedPool.get()].backingTokenAddress.attach(Downgraded).get();
   const yieldBearingTokenAddress = staticPoolData[selectedPool.get()].yieldBearingTokenAddress.attach(Downgraded).get();
   const decimalsForUI = staticPoolData[selectedPool.get()].decimalsForUI.attach(Downgraded).get();
+  const tokenPrecision = staticPoolData[selectedPool.get()].tokenPrecision.attach(Downgraded).get();
   const userBackingTokenBalance = dynamicPoolData[selectedPool.get()].userBackingTokenBalance.attach(Downgraded).get();
   const userYieldBearingTokenBalance = dynamicPoolData[selectedPool.get()].userYieldBearingTokenBalance
     .attach(Downgraded)
@@ -78,14 +78,14 @@ const Mint: FC<MintInProps> = ({ narrow }) => {
         setAmount('');
 
         if (backingToken === token) {
-          setTokenPrecision(getTokenPrecision(selectedPoolAddress, 'backingToken'));
+          setSelectedTokenPrecision(getTokenPrecision(selectedPoolAddress, 'backingToken'));
           if (backingTokenRate !== null) {
             setUsdRate(backingTokenRate);
           }
         }
 
         if (backingToken !== token) {
-          setTokenPrecision(getTokenPrecision(selectedPoolAddress, 'yieldBearingToken'));
+          setSelectedTokenPrecision(getTokenPrecision(selectedPoolAddress, 'yieldBearingToken'));
           if (yieldBearingTokenRate !== null) {
             setUsdRate(yieldBearingTokenRate);
           }
@@ -128,8 +128,8 @@ const Mint: FC<MintInProps> = ({ narrow }) => {
       currentBalance = userYieldBearingTokenBalance;
     }
 
-    setAmount(ethers.utils.formatUnits(currentBalance, tokenPrecision));
-  }, [backingToken, selectedToken, tokenPrecision, userBackingTokenBalance, userYieldBearingTokenBalance]);
+    setAmount(ethers.utils.formatUnits(currentBalance, selectedTokenPrecision));
+  }, [backingToken, selectedToken, selectedTokenPrecision, userBackingTokenBalance, userYieldBearingTokenBalance]);
 
   const getSelectedTokenBalance = useCallback((): BigNumber | null => {
     if (!selectedToken) {
@@ -145,25 +145,31 @@ const Mint: FC<MintInProps> = ({ narrow }) => {
       return null;
     }
 
-    return NumberUtils.formatToCurrency(ethers.utils.formatUnits(currentBalance, tokenPrecision), decimalsForUI);
-  }, [decimalsForUI, getSelectedTokenBalance, tokenPrecision]);
+    return NumberUtils.formatToCurrency(
+      ethers.utils.formatUnits(currentBalance, selectedTokenPrecision),
+      decimalsForUI,
+    );
+  }, [decimalsForUI, getSelectedTokenBalance, selectedTokenPrecision]);
 
   const estimatedTokensFormatted = useMemo(() => {
     if (!estimatedTokens) {
       return null;
     }
-    return NumberUtils.formatToCurrency(ethers.utils.formatUnits(estimatedTokens, tokenPrecision), decimalsForUI);
-  }, [decimalsForUI, estimatedTokens, tokenPrecision]);
+    return NumberUtils.formatToCurrency(
+      ethers.utils.formatUnits(estimatedTokens, selectedTokenPrecision),
+      decimalsForUI,
+    );
+  }, [decimalsForUI, estimatedTokens, selectedTokenPrecision]);
 
   const usdValueFormatted = useMemo(() => {
     if (!usdRate || !amount) {
       return null;
     }
 
-    let usdValue = mul18f(usdRate, ethers.utils.parseUnits(amount, tokenPrecision), tokenPrecision);
+    let usdValue = mul18f(usdRate, ethers.utils.parseUnits(amount, selectedTokenPrecision), selectedTokenPrecision);
 
-    return NumberUtils.formatToCurrency(ethers.utils.formatUnits(usdValue, tokenPrecision), 2, '$');
-  }, [tokenPrecision, usdRate, amount]);
+    return NumberUtils.formatToCurrency(ethers.utils.formatUnits(usdValue, selectedTokenPrecision), 2, '$');
+  }, [selectedTokenPrecision, usdRate, amount]);
 
   const depositDisabled = useMemo((): boolean => {
     return isYieldNegative === null ? true : isYieldNegative;
@@ -179,7 +185,7 @@ const Mint: FC<MintInProps> = ({ narrow }) => {
   const onExecute = useCallback((): Promise<ethers.ContractTransaction | undefined> => {
     if (userWalletSigner && amount) {
       const poolDataAdapter = getPoolDataAdapter(userWalletSigner);
-      const tokenAmount = ethers.utils.parseUnits(amount, tokenPrecision);
+      const tokenAmount = ethers.utils.parseUnits(amount, selectedTokenPrecision);
       const isBackingToken = backingToken === selectedToken;
       const isEthDeposit = selectedToken === 'ETH';
 
@@ -187,7 +193,15 @@ const Mint: FC<MintInProps> = ({ narrow }) => {
     } else {
       return Promise.resolve(undefined);
     }
-  }, [userWalletSigner, amount, tokenPrecision, backingToken, selectedToken, selectedPoolAddress, userWalletAddress]);
+  }, [
+    userWalletSigner,
+    amount,
+    selectedTokenPrecision,
+    backingToken,
+    selectedToken,
+    selectedPoolAddress,
+    userWalletAddress,
+  ]);
 
   const onExecuted = useCallback(() => {
     setAmount('');
@@ -217,7 +231,13 @@ const Mint: FC<MintInProps> = ({ narrow }) => {
     if (userWalletSigner && selectedPoolAddress && ammAddress) {
       const poolDataAdapter = getPoolDataAdapter(userWalletSigner);
       const stream$ = poolDataAdapter
-        .retrieveBalances(selectedPoolAddress, ammAddress, userWalletAddress, userWalletSigner)
+        .retrieveBalances(
+          selectedPoolAddress,
+          ammAddress,
+          tokenPrecision.backingToken,
+          userWalletAddress,
+          userWalletSigner,
+        )
         .pipe(
           catchError((error, caught) => {
             console.log('Mint - retrieveTokenRates - Failed to retrieve token rates!', error);
@@ -234,6 +254,7 @@ const Mint: FC<MintInProps> = ({ narrow }) => {
       return () => stream$.unsubscribe();
     }
   }, [
+    tokenPrecision.backingToken,
     selectedPoolAddress,
     userWalletSigner,
     userWalletAddress,
@@ -250,7 +271,7 @@ const Mint: FC<MintInProps> = ({ narrow }) => {
 
     const poolDataAdapter = getPoolDataAdapter(userWalletSigner);
     const isBackingToken = selectedToken === backingToken;
-    const amountParsed = ethers.utils.parseUnits(amount, tokenPrecision);
+    const amountParsed = ethers.utils.parseUnits(amount, selectedTokenPrecision);
 
     try {
       setEstimateInProgress(true);
@@ -272,7 +293,7 @@ const Mint: FC<MintInProps> = ({ narrow }) => {
       console.error('Mint - getEstimates() - Failed to get estimates for selected token!', error);
       setEstimateInProgress(false);
     }
-  }, [tokenPrecision, amount, userWalletSigner, selectedToken, backingToken, selectedPoolAddress]);
+  }, [selectedTokenPrecision, amount, userWalletSigner, selectedToken, backingToken, selectedPoolAddress]);
 
   useEffect(() => {
     if (!userWalletSigner) {
@@ -305,11 +326,11 @@ const Mint: FC<MintInProps> = ({ narrow }) => {
   const executeDisabled = useMemo((): boolean => {
     const zeroAmount = isZeroString(amount);
     const amountExceedsBalance = ethers.utils
-      .parseUnits(amount || '0', tokenPrecision)
+      .parseUnits(amount || '0', selectedTokenPrecision)
       .gt(getSelectedTokenBalance() || BigNumber.from('0'));
 
     return !tokensApproved || zeroAmount || amountExceedsBalance || depositDisabled || estimateInProgress;
-  }, [amount, tokenPrecision, getSelectedTokenBalance, tokensApproved, estimateInProgress, depositDisabled]);
+  }, [amount, selectedTokenPrecision, getSelectedTokenBalance, tokensApproved, estimateInProgress, depositDisabled]);
 
   const ethAllowanceForGasExceeded = useMemo(() => {
     const currentBalance = getSelectedTokenBalance();
@@ -318,13 +339,13 @@ const Mint: FC<MintInProps> = ({ narrow }) => {
       return false;
     }
 
-    const amountParsed = ethers.utils.parseUnits(amount, tokenPrecision);
+    const amountParsed = ethers.utils.parseUnits(amount, selectedTokenPrecision);
 
     const ethSelected = selectedToken === 'ETH';
     const gasAllowanceExceeded = amountParsed.add(ETH_ALLOWANCE_FOR_GAS).gt(currentBalance);
 
     return ethSelected && gasAllowanceExceeded;
-  }, [amount, getSelectedTokenBalance, selectedToken, tokenPrecision]);
+  }, [amount, getSelectedTokenBalance, selectedToken, selectedTokenPrecision]);
 
   return (
     <div className="tc__mint">
@@ -368,15 +389,6 @@ const Mint: FC<MintInProps> = ({ narrow }) => {
               </div>
             )}
           </div>
-          <Spacer size={10} />
-          {selectedToken && (
-            <>
-              <Spacer size={10} />
-              <div style={{ paddingTop: 10 }}>
-                <TokenIcon ticker={selectedToken} width={20} height={20} />
-              </div>
-            </>
-          )}
         </div>
         <Spacer size={20} />
       </SectionContainer>

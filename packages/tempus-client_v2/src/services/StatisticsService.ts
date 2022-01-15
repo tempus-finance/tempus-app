@@ -6,9 +6,11 @@ import StatsABI from '../abi/Stats.json';
 import { div18f, mul18f } from '../utils/weiMath';
 import { Ticker } from '../interfaces/Token';
 import TempusAMMService from './TempusAMMService';
+import { tokenPrecision } from '../constants';
 
 const backingTokenToCoingeckoIdMap = new Map<string, string>();
 backingTokenToCoingeckoIdMap.set('ETH', 'ethereum');
+backingTokenToCoingeckoIdMap.set('USDC', 'usd-coin');
 
 type StatisticsServiceParameters = {
   Contract: typeof Contract;
@@ -116,7 +118,7 @@ class StatisticsService {
 
     const cachedResponse = this.coinGeckoCache.get(coinGeckoTokenId);
     if (cachedResponse && cachedResponse.cachedAt > Date.now() - 60000) {
-      return ethers.utils.parseEther((await cachedResponse.promise).data.ethereum.usd.toString());
+      return ethers.utils.parseEther((await cachedResponse.promise).data[coinGeckoTokenId].usd.toString());
     }
 
     let value: BigNumber;
@@ -130,7 +132,9 @@ class StatisticsService {
         cachedAt: Date.now(),
       });
 
-      value = ethers.utils.parseEther((await promise).data.ethereum.usd.toString());
+      const result = await promise;
+
+      value = ethers.utils.parseUnits(result.data[coinGeckoTokenId].usd.toString(), tokenPrecision[token]);
     } catch (error) {
       console.error(`Failed to get token '${token}' exchange rate from coin gecko!`, error);
       return Promise.reject(error);
@@ -169,7 +173,10 @@ class StatisticsService {
       return this.getCoingeckoRate(tokenTicker);
     }
 
-    return div18f(rate, rateDenominator);
+    // TODO - Refactor getRate function to accept token precision as well as a parameter
+    const precision = tokenPrecision[tokenTicker];
+
+    return div18f(rate, rateDenominator, precision);
   }
 
   /**
@@ -334,8 +341,7 @@ class StatisticsService {
 
     try {
       return this.stats.estimatedRedeem(tempusPool, principalsAmount, yieldsAmount, toBackingToken);
-    }
-    catch (error) {
+    } catch (error) {
       console.error('StatisticsService - estimatedRedeem() - Failed to fetch estimated redeem amount!');
       return Promise.reject(error);
     }

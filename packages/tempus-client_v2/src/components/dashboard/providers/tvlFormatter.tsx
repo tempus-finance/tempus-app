@@ -24,16 +24,22 @@ const TVLFormatter = (props: DataTypeProvider.ValueFormatterProps) => {
 
   const getTvlFormatted = () => {
     let tvl: BigNumber | null;
+    let tokenPrecision;
+
     if (!isChild) {
       tvl = getParentTVL(row.token, staticPoolData, dynamicPoolData);
+      const firstChildAddress = getParentChildrenAddresses(row.token, staticPoolData, dynamicPoolData)[0];
+      tokenPrecision = firstChildAddress && staticPoolData[firstChildAddress].tokenPrecision.backingToken;
     } else {
       tvl = getChildTVL(row.id, dynamicPoolData);
+      tokenPrecision = staticPoolData[row.id].tokenPrecision.backingToken;
     }
 
     if (!tvl) {
       return null;
     }
-    return NumberUtils.formatWithMultiplier(ethers.utils.formatEther(tvl), 2);
+
+    return NumberUtils.formatWithMultiplier(ethers.utils.formatUnits(tvl, tokenPrecision), 2);
   };
   const tvlFormatted = getTvlFormatted();
 
@@ -55,15 +61,7 @@ function getParentTVL(
   staticPoolData: StaticPoolDataMap,
   dynamicPoolData: DynamicPoolStateData,
 ): BigNumber | null {
-  const parentChildrenAddresses: string[] = [];
-  for (const key in dynamicPoolData) {
-    if (
-      staticPoolData[key].backingToken === parentId &&
-      (!dynamicPoolData[key].negativeYield || dynamicPoolData[key].userBalanceUSD?.gt(ZERO))
-    ) {
-      parentChildrenAddresses.push(key);
-    }
-  }
+  const parentChildrenAddresses: string[] = getParentChildrenAddresses(parentId, staticPoolData, dynamicPoolData);
 
   // In case TVL is still loading for some of the parent children, return null (show loading circle in dashboard)
   const childrenStillLoading =
@@ -84,3 +82,20 @@ function getParentTVL(
 function getChildTVL(childId: string, dynamicPoolData: DynamicPoolStateData): BigNumber | null {
   return dynamicPoolData[childId].tvl;
 }
+
+const getParentChildrenAddresses = (
+  parentId: Ticker,
+  staticPoolData: StaticPoolDataMap,
+  dynamicPoolData: DynamicPoolStateData,
+): string[] => {
+  const parentChildrenAddresses: string[] = [];
+  for (const key in dynamicPoolData) {
+    if (
+      staticPoolData[key].backingToken === parentId &&
+      (!dynamicPoolData[key].negativeYield || dynamicPoolData[key].userBalanceUSD?.gt(ZERO))
+    ) {
+      parentChildrenAddresses.push(key);
+    }
+  }
+  return parentChildrenAddresses;
+};
