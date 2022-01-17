@@ -166,7 +166,6 @@ const Mint: FC<MintInProps> = ({ narrow }) => {
       return null;
     }
 
-<<<<<<< HEAD
     let usdValue = mul18f(
       usdRate,
       ethers.utils.parseUnits(amount, tokenPrecision.backingToken),
@@ -175,12 +174,6 @@ const Mint: FC<MintInProps> = ({ narrow }) => {
 
     return NumberUtils.formatToCurrency(ethers.utils.formatUnits(usdValue, tokenPrecision.backingToken), 2, '$');
   }, [usdRate, amount, tokenPrecision.backingToken]);
-=======
-    let usdValue = mul18f(usdRate, ethers.utils.parseUnits(amount, selectedTokenPrecision), selectedTokenPrecision);
-
-    return NumberUtils.formatToCurrency(ethers.utils.formatUnits(usdValue, selectedTokenPrecision), 2, '$');
-  }, [selectedTokenPrecision, usdRate, amount]);
->>>>>>> master
 
   const depositDisabled = useMemo((): boolean => {
     return isYieldNegative === null ? true : isYieldNegative;
