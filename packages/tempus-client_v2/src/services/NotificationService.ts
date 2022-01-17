@@ -569,15 +569,15 @@ const getLiquidityWithdrawalNotificationContent = (
   });
 
   const amountOfLPTokensSentFormatted = NumberUtils.formatToCurrency(
-    ethers.utils.formatEther(amountOfLPTokensSent),
+    ethers.utils.formatUnits(amountOfLPTokensSent, staticPoolData.tokenPrecision.lpTokens),
     staticPoolData.decimalsForUI,
   );
   const amountOfPrincipalsReceivedFormatted = NumberUtils.formatToCurrency(
-    ethers.utils.formatEther(amountOfPrincipalsReceived),
+    ethers.utils.formatUnits(amountOfPrincipalsReceived, staticPoolData.tokenPrecision.principals),
     staticPoolData.decimalsForUI,
   );
   const amountOfYieldsReceivedFormatted = NumberUtils.formatToCurrency(
-    ethers.utils.formatEther(amountOfYieldsReceived),
+    ethers.utils.formatUnits(amountOfYieldsReceived, staticPoolData.tokenPrecision.yields),
     staticPoolData.decimalsForUI,
   );
 
