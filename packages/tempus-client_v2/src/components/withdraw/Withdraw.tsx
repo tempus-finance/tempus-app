@@ -47,9 +47,7 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
   const principalsAddress = staticPoolData[selectedPool.get()].principalsAddress.attach(Downgraded).get();
   const yieldsAddress = staticPoolData[selectedPool.get()].yieldsAddress.attach(Downgraded).get();
   const decimalsForUI = staticPoolData[selectedPool.get()].decimalsForUI.attach(Downgraded).get();
-  const principalsPrecision = staticPoolData[selectedPool.get()].tokenPrecision.principals.attach(Downgraded).get();
-  const yieldsPrecision = staticPoolData[selectedPool.get()].tokenPrecision.yields.attach(Downgraded).get();
-  const lpTokenPrecision = staticPoolData[selectedPool.get()].tokenPrecision.lpTokens.attach(Downgraded).get();
+  const tokenPrecision = staticPoolData[selectedPool.get()].tokenPrecision.attach(Downgraded).get();
 
   const supportedTokens = [backingToken, yieldBearingToken].filter(token => token !== 'ETH');
 
@@ -70,7 +68,7 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
   const [principalsApproved, setPrincipalsApproved] = useState<boolean>(false);
   const [yieldsApproved, setYieldsApproved] = useState<boolean>(false);
   const [lpTokenApproved, setLpTokenApproved] = useState<boolean>(false);
-  const [tokenPrecision, setTokenPrecision] = useState<number | undefined>();
+  const [selectedTokenPrecision, setSelectedTokenPrecision] = useState<number | undefined>();
 
   const selectedPoolAddress = selectedPool.attach(Downgraded).get();
   const userPrincipalsBalance = dynamicPoolData[selectedPool.get()].userPrincipalsBalance.attach(Downgraded).get();
@@ -123,9 +121,9 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
     (token: Ticker | undefined) => {
       if (token) {
         if (backingToken === token) {
-          setTokenPrecision(getTokenPrecision(selectedPoolAddress, 'backingToken'));
+          setSelectedTokenPrecision(getTokenPrecision(selectedPoolAddress, 'backingToken'));
         } else {
-          setTokenPrecision(getTokenPrecision(selectedPoolAddress, 'yieldBearingToken'));
+          setSelectedTokenPrecision(getTokenPrecision(selectedPoolAddress, 'yieldBearingToken'));
         }
 
         setSelectedToken(token);
@@ -143,7 +141,12 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
     const poolDataAdapter = getPoolDataAdapter(userWalletSigner);
 
     const getBackingTokenRate$ = poolDataAdapter.getBackingTokenRate(backingToken);
-    const getYieldBearingTokenRate$ = poolDataAdapter.getYieldBearingTokenRate(selectedPoolAddress, backingToken);
+    const getYieldBearingTokenRate$ = poolDataAdapter.getYieldBearingTokenRate(
+      selectedPoolAddress,
+      backingToken,
+      tokenPrecision.backingToken,
+      tokenPrecision.yieldBearingToken,
+    );
 
     const stream$ = combineLatest([getBackingTokenRate$, getYieldBearingTokenRate$]).subscribe(
       ([backingTokenRate, yieldBearingTokenRate]) => {
@@ -158,7 +161,15 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
     );
 
     return () => stream$.unsubscribe();
-  }, [selectedPoolAddress, userWalletSigner, selectedToken, backingToken, yieldBearingToken]);
+  }, [
+    selectedPoolAddress,
+    userWalletSigner,
+    selectedToken,
+    backingToken,
+    yieldBearingToken,
+    tokenPrecision.backingToken,
+    tokenPrecision.yieldBearingToken,
+  ]);
 
   const onExecute = useCallback((): Promise<ethers.ContractTransaction | undefined> => {
     if (userWalletSigner && estimatedWithdrawData) {
@@ -326,21 +337,24 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
       return null;
     }
     return NumberUtils.formatToCurrency(
-      ethers.utils.formatUnits(estimatedWithdrawData.tokenAmount, tokenPrecision),
+      ethers.utils.formatUnits(estimatedWithdrawData.tokenAmount, selectedTokenPrecision),
       decimalsForUI,
     );
-  }, [estimatedWithdrawData, tokenPrecision, decimalsForUI]);
+  }, [estimatedWithdrawData, selectedTokenPrecision, decimalsForUI]);
 
   const estimatedWithdrawAmountUsdFormatted = useMemo(() => {
     if (!estimatedWithdrawData || !tokenRate) {
       return null;
     }
     return NumberUtils.formatToCurrency(
-      ethers.utils.formatUnits(mul18f(estimatedWithdrawData.tokenAmount, tokenRate, tokenPrecision), tokenPrecision),
+      ethers.utils.formatUnits(
+        mul18f(estimatedWithdrawData.tokenAmount, tokenRate, selectedTokenPrecision),
+        selectedTokenPrecision,
+      ),
       2,
       '$',
     );
-  }, [estimatedWithdrawData, tokenPrecision, tokenRate]);
+  }, [estimatedWithdrawData, selectedTokenPrecision, tokenRate]);
 
   const executeDisabled = useMemo(() => {
     const principalAmountZero = !principalsAmount || isZeroString(principalsAmount);
@@ -348,13 +362,13 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
     const lpTokenAmountZero = !lpTokenAmount || isZeroString(lpTokenAmount);
 
     const principalsExceedsBalance = ethers.utils
-      .parseUnits(principalsAmount || '0', principalsPrecision)
+      .parseUnits(principalsAmount || '0', tokenPrecision.principals)
       .gt(userPrincipalsBalance || BigNumber.from('0'));
     const yieldsExceedsBalance = ethers.utils
-      .parseUnits(yieldsAmount || '0', yieldsPrecision)
+      .parseUnits(yieldsAmount || '0', tokenPrecision.yields)
       .gt(userYieldsBalance || BigNumber.from('0'));
     const lpTokensExceedsBalance = ethers.utils
-      .parseUnits(lpTokenAmount || '0', lpTokenPrecision)
+      .parseUnits(lpTokenAmount || '0', tokenPrecision.lpTokens)
       .gt(userLPTokenBalance || BigNumber.from('0'));
 
     return (
@@ -374,9 +388,9 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
     principalsAmount,
     yieldsAmount,
     lpTokenAmount,
-    principalsPrecision,
-    yieldsPrecision,
-    lpTokenPrecision,
+    tokenPrecision.principals,
+    tokenPrecision.yields,
+    tokenPrecision.lpTokens,
     userPrincipalsBalance,
     userYieldsBalance,
     userLPTokenBalance,

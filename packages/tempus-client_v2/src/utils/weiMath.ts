@@ -12,3 +12,8 @@ export function div18f(dividend: BigNumber, divisor: BigNumber, precision?: numb
   const bigNumberPrecision = precision ? BigNumber.from(Math.pow(10, precision).toString()) : weiInEth;
   return dividend.mul(bigNumberPrecision).div(divisor);
 }
+
+export function increasePrecision(value: BigNumber, amount: number) {
+  const multiplier = BigNumber.from(Math.pow(10, amount).toString());
+  return value.mul(multiplier);
+}
