@@ -41,13 +41,14 @@ const EarlyRedeem: FC = () => {
   const [estimateInProgress, setEstimateInProgress] = useState<boolean>(false);
   const [tokenRate, setTokenRate] = useState<BigNumber | null>(null);
 
-  const [tokenPrecision, setTokenPrecision] = useState<number>(0);
+  const [selectedTokenPrecision, setSelectedTokenPrecision] = useState<number>(0);
 
   const selectedPoolAddress = selectedPool.attach(Downgraded).get();
   const userPrincipalsBalance = dynamicPoolData[selectedPool.get()].userPrincipalsBalance.attach(Downgraded).get();
   const userYieldsBalance = dynamicPoolData[selectedPool.get()].userYieldsBalance.attach(Downgraded).get();
   const backingToken = staticPoolData[selectedPool.get()].backingToken.attach(Downgraded).get();
   const decimalsForUI = staticPoolData[selectedPool.get()].decimalsForUI.attach(Downgraded).get();
+  const tokenPrecision = staticPoolData[selectedPool.get()].tokenPrecision.attach(Downgraded).get();
 
   const supportedTokens = useMemo(() => {
     return [backingToken, yieldBearingToken].filter(token => token !== 'ETH');
@@ -76,11 +77,11 @@ const EarlyRedeem: FC = () => {
     }
 
     if (userPrincipalsBalance.gte(userYieldsBalance)) {
-      setAmount(ethers.utils.formatUnits(userYieldsBalance, tokenPrecision));
+      setAmount(ethers.utils.formatUnits(userYieldsBalance, selectedTokenPrecision));
     } else if (userYieldsBalance.gt(userPrincipalsBalance)) {
-      setAmount(ethers.utils.formatUnits(userPrincipalsBalance, tokenPrecision));
+      setAmount(ethers.utils.formatUnits(userPrincipalsBalance, selectedTokenPrecision));
     }
-  }, [tokenPrecision, userPrincipalsBalance, userYieldsBalance]);
+  }, [selectedTokenPrecision, userPrincipalsBalance, userYieldsBalance]);
 
   useEffect(() => {
     if (!userWalletSigner) {
@@ -111,10 +112,15 @@ const EarlyRedeem: FC = () => {
 
     const poolDataAdapter = getPoolDataAdapter(userWalletSigner);
 
-    setTokenPrecision(getTokenPrecision(selectedPoolAddress, 'principals'));
+    setSelectedTokenPrecision(getTokenPrecision(selectedPoolAddress, 'principals'));
 
     const getBackingTokenRate$ = poolDataAdapter.getBackingTokenRate(backingToken);
-    const getYieldBearingTokenRate$ = poolDataAdapter.getYieldBearingTokenRate(selectedPoolAddress, backingToken);
+    const getYieldBearingTokenRate$ = poolDataAdapter.getYieldBearingTokenRate(
+      selectedPoolAddress,
+      backingToken,
+      tokenPrecision.backingToken,
+      tokenPrecision.yieldBearingToken,
+    );
 
     const stream$ = combineLatest([getBackingTokenRate$, getYieldBearingTokenRate$]).subscribe(
       ([backingTokenRate, yieldBearingTokenRate]) => {
@@ -129,7 +135,15 @@ const EarlyRedeem: FC = () => {
     );
 
     return () => stream$.unsubscribe();
-  }, [selectedPoolAddress, userWalletSigner, selectedToken, backingToken, yieldBearingToken]);
+  }, [
+    selectedPoolAddress,
+    userWalletSigner,
+    selectedToken,
+    backingToken,
+    yieldBearingToken,
+    tokenPrecision.backingToken,
+    tokenPrecision.yieldBearingToken,
+  ]);
 
   // Fetch estimated withdraw amount of tokens
   useEffect(() => {
@@ -138,7 +152,7 @@ const EarlyRedeem: FC = () => {
         const poolDataAdapter = getPoolDataAdapter(userWalletSigner);
 
         try {
-          const amountFormatted = ethers.utils.parseUnits(amount, tokenPrecision);
+          const amountFormatted = ethers.utils.parseUnits(amount, selectedTokenPrecision);
           const toBackingToken = selectedToken === backingToken;
 
           setEstimateInProgress(true);
@@ -161,7 +175,7 @@ const EarlyRedeem: FC = () => {
       }
     };
     retrieveEstimatedWithdrawAmount();
-  }, [userWalletSigner, selectedPoolAddress, tokenPrecision, selectedToken, amount, backingToken]);
+  }, [userWalletSigner, selectedPoolAddress, selectedTokenPrecision, selectedToken, amount, backingToken]);
 
   const depositDisabled = useMemo((): boolean => {
     return isYieldNegative === null ? true : isYieldNegative;
@@ -172,29 +186,32 @@ const EarlyRedeem: FC = () => {
       return null;
     }
     return NumberUtils.formatToCurrency(
-      ethers.utils.formatUnits(estimatedWithdrawAmount, tokenPrecision),
+      ethers.utils.formatUnits(estimatedWithdrawAmount, selectedTokenPrecision),
       decimalsForUI,
     );
-  }, [decimalsForUI, estimatedWithdrawAmount, tokenPrecision]);
+  }, [decimalsForUI, estimatedWithdrawAmount, selectedTokenPrecision]);
 
   const estimatedWithdrawAmountUsdFormatted = useMemo(() => {
     if (!estimatedWithdrawAmount || !tokenRate) {
       return null;
     }
     return NumberUtils.formatToCurrency(
-      ethers.utils.formatUnits(mul18f(estimatedWithdrawAmount, tokenRate, tokenPrecision), tokenPrecision),
+      ethers.utils.formatUnits(
+        mul18f(estimatedWithdrawAmount, tokenRate, selectedTokenPrecision),
+        selectedTokenPrecision,
+      ),
       2,
       '$',
     );
-  }, [estimatedWithdrawAmount, tokenRate, tokenPrecision]);
+  }, [estimatedWithdrawAmount, tokenRate, selectedTokenPrecision]);
 
   const executeDisabled = useMemo(() => {
     const zeroAmount = isZeroString(amount);
     const amountExceedsPrincipalsBalance = ethers.utils
-      .parseUnits(amount || '0', tokenPrecision)
+      .parseUnits(amount || '0', selectedTokenPrecision)
       .gt(userPrincipalsBalance || BigNumber.from('0'));
     const amountExceedsYieldsBalance = ethers.utils
-      .parseUnits(amount || '0', tokenPrecision)
+      .parseUnits(amount || '0', selectedTokenPrecision)
       .gt(userYieldsBalance || BigNumber.from('0'));
     const principalBalanceZero = userPrincipalsBalance && userPrincipalsBalance.isZero();
     const yieldsBalanceZero = userYieldsBalance && userYieldsBalance.isZero();
@@ -207,7 +224,7 @@ const EarlyRedeem: FC = () => {
       amountExceedsYieldsBalance ||
       estimateInProgress
     );
-  }, [amount, tokenPrecision, userPrincipalsBalance, userYieldsBalance, estimateInProgress]);
+  }, [amount, selectedTokenPrecision, userPrincipalsBalance, userYieldsBalance, estimateInProgress]);
 
   const onExecute = useCallback(() => {
     if (!userWalletSigner) {
@@ -215,11 +232,19 @@ const EarlyRedeem: FC = () => {
     }
 
     const poolDataAdapter = getPoolDataAdapter(userWalletSigner);
-    const amountFormatted = ethers.utils.parseUnits(amount, tokenPrecision);
+    const amountFormatted = ethers.utils.parseUnits(amount, selectedTokenPrecision);
     const toBackingToken = selectedToken === backingToken;
 
     return poolDataAdapter.executeRedeem(selectedPoolAddress, userWalletAddress, amountFormatted, toBackingToken);
-  }, [userWalletSigner, amount, tokenPrecision, selectedToken, backingToken, selectedPoolAddress, userWalletAddress]);
+  }, [
+    userWalletSigner,
+    amount,
+    selectedTokenPrecision,
+    selectedToken,
+    backingToken,
+    selectedPoolAddress,
+    userWalletAddress,
+  ]);
 
   const onExecuted = useCallback(() => {
     setAmount('');
