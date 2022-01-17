@@ -268,6 +268,7 @@ const getWithdrawNotificationContent = (
   let lpTokensSent = BigNumber.from('0');
   let tokensReceived = BigNumber.from('0');
   let tokenReceivedTicker: Ticker | null = null;
+  let tokenReceivedPrecision: number | null = null;
 
   const ifc = new ethers.utils.Interface(ERC20ABI);
   receipt.logs.forEach(log => {
@@ -275,28 +276,30 @@ const getWithdrawNotificationContent = (
       const logData = ifc.parseLog(log);
       if (logData.name === 'Transfer' && logData.args.from === userWallet) {
         // Amount of principals sent
-        if (log.address === staticPoolData.principalsAddress) {
+        if (log.address.toLowerCase() === staticPoolData.principalsAddress.toLowerCase()) {
           principalsSent = logData.args.value;
         }
         // Amount of yields sent
-        if (log.address === staticPoolData.yieldsAddress) {
+        if (log.address.toLowerCase() === staticPoolData.yieldsAddress.toLowerCase()) {
           yieldsSent = logData.args.value;
         }
         // Amount of LP Tokens sent
-        if (log.address === staticPoolData.ammAddress) {
+        if (log.address.toLowerCase() === staticPoolData.ammAddress.toLowerCase()) {
           lpTokensSent = logData.args.value;
         }
       }
       if (logData.name === 'Transfer' && logData.args.to === userWallet) {
         // User received backing tokens
-        if (log.address === staticPoolData.backingTokenAddress) {
+        if (log.address.toLowerCase() === staticPoolData.backingTokenAddress.toLowerCase()) {
           tokensReceived = logData.args.value;
           tokenReceivedTicker = staticPoolData.backingToken;
+          tokenReceivedPrecision = staticPoolData.tokenPrecision.backingToken;
         }
         // User received yield bearing tokens
-        if (log.address === staticPoolData.yieldBearingTokenAddress) {
+        if (log.address.toLowerCase() === staticPoolData.yieldBearingTokenAddress.toLowerCase()) {
           tokensReceived = logData.args.value;
           tokenReceivedTicker = staticPoolData.yieldBearingToken;
+          tokenReceivedPrecision = staticPoolData.tokenPrecision.yieldBearingToken;
         }
       }
     } catch (error) {
@@ -305,19 +308,19 @@ const getWithdrawNotificationContent = (
   });
 
   const principalsSentFormatted = NumberUtils.formatToCurrency(
-    ethers.utils.formatEther(principalsSent),
+    ethers.utils.formatUnits(principalsSent, staticPoolData.tokenPrecision.principals),
     staticPoolData.decimalsForUI,
   );
   const yieldsSentFormatted = NumberUtils.formatToCurrency(
-    ethers.utils.formatEther(yieldsSent),
+    ethers.utils.formatUnits(yieldsSent, staticPoolData.tokenPrecision.yields),
     staticPoolData.decimalsForUI,
   );
   const lpTokensSentFormatted = NumberUtils.formatToCurrency(
-    ethers.utils.formatEther(lpTokensSent),
+    ethers.utils.formatUnits(lpTokensSent, staticPoolData.tokenPrecision.lpTokens),
     staticPoolData.decimalsForUI,
   );
   const tokensReceivedFormatted = NumberUtils.formatToCurrency(
-    ethers.utils.formatEther(tokensReceived),
+    ethers.utils.formatUnits(tokensReceived, tokenReceivedPrecision || 18),
     staticPoolData.decimalsForUI,
   );
 
