@@ -412,7 +412,7 @@ export default class PoolDataAdapter {
     isBackingToken: boolean,
     yieldType: SelectedYield,
     slippage: BigNumber,
-    yieldsPrecision: number,
+    principalsPrecision: number,
     spotPrice: string,
     isEthDeposit?: boolean,
   ): Promise<ContractTransaction | undefined> {
@@ -425,11 +425,12 @@ export default class PoolDataAdapter {
       if (yieldType === 'Fixed') {
         const tysRate = await this.getExpectedReturnForShareToken(
           tempusAMM,
-          ethers.utils.parseUnits(spotPrice, yieldsPrecision),
+          // We want to check how many TPS we get for 1 TYS
+          ethers.utils.parseUnits('1', principalsPrecision),
           true,
         );
 
-        const minTYSRate = tysRate.sub(mul18f(tysRate, slippage));
+        const minTYSRate = tysRate.sub(mul18f(tysRate, slippage, principalsPrecision));
 
         return await this.tempusControllerService.depositAndFix(
           tempusAMM,
