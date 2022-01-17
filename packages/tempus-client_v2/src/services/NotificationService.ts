@@ -520,15 +520,15 @@ const getLiquidityDepositNotificationContent = (
   });
 
   const amountOfPrincipalsSentFormatted = NumberUtils.formatToCurrency(
-    ethers.utils.formatEther(amountOfPrincipalsSent),
+    ethers.utils.formatUnits(amountOfPrincipalsSent, staticPoolData.tokenPrecision.principals),
     staticPoolData.decimalsForUI,
   );
   const amountOfYieldsSentFormatted = NumberUtils.formatToCurrency(
-    ethers.utils.formatEther(amountOfYieldsSent),
+    ethers.utils.formatUnits(amountOfYieldsSent, staticPoolData.tokenPrecision.yields),
     staticPoolData.decimalsForUI,
   );
   const amountOfLPTokensReceivedFormatted = NumberUtils.formatToCurrency(
-    ethers.utils.formatEther(amountOfLPTokensReceived),
+    ethers.utils.formatUnits(amountOfLPTokensReceived, staticPoolData.tokenPrecision.lpTokens || 18),
     staticPoolData.decimalsForUI,
   );
 
