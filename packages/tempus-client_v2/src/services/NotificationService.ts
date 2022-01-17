@@ -230,7 +230,7 @@ const getDepositNotificationContent = (
     staticPoolData.decimalsForUI,
   );
   const lpTokensReceivedFormatted = NumberUtils.formatToCurrency(
-    ethers.utils.formatUnits(lpTokensReceived, staticPoolData.tokenPrecision.yields),
+    ethers.utils.formatUnits(lpTokensReceived, staticPoolData.tokenPrecision.lpTokens),
     staticPoolData.decimalsForUI,
   );
 
