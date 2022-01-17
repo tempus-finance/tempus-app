@@ -189,7 +189,6 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
       const isEthDeposit = selectedToken === 'ETH';
       const actualSlippage = (autoSlippage ? 1 : slippage / 100).toString();
       const principalsPrecision = getTokenPrecision(selectedPoolAddress, 'principals');
-      const yieldsPrecision = getTokenPrecision(selectedPoolAddress, 'yields');
       const slippageFormatted = ethers.utils.parseUnits(actualSlippage, principalsPrecision);
 
       return poolDataAdapter.executeDeposit(
@@ -198,7 +197,7 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
         isBackingToken,
         selectedYield,
         slippageFormatted,
-        yieldsPrecision,
+        principalsPrecision,
         spotPrice,
         isEthDeposit,
       );
