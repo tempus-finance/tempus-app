@@ -633,11 +633,11 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
 
   const amountToApprove = useMemo(() => {
     if (amount) {
-      return ethers.utils.parseEther(amount);
+      return ethers.utils.parseUnits(amount, selectedTokenPrecision);
     }
 
     return ZERO;
-  }, [amount]);
+  }, [amount, selectedTokenPrecision]);
 
   const executeDisabled = useMemo((): boolean => {
     const zeroAmount = isZeroString(amount);
