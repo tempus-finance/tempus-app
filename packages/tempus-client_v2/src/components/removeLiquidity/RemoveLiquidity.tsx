@@ -44,6 +44,7 @@ const RemoveLiquidity = () => {
   const principalsAddress = staticPoolData[selectedPool.get()].principalsAddress.attach(Downgraded).get();
   const yieldsAddress = staticPoolData[selectedPool.get()].yieldsAddress.attach(Downgraded).get();
   const decimalsForUI = staticPoolData[selectedPool.get()].decimalsForUI.attach(Downgraded).get();
+  const tokenPrecision = staticPoolData[selectedPool.get()].tokenPrecision.attach(Downgraded).get();
   const userLPTokenBalance = dynamicPoolData[selectedPool.get()].userLPTokenBalance.attach(Downgraded).get();
 
   const onAmountChange = useCallback(
@@ -167,15 +168,21 @@ const RemoveLiquidity = () => {
     if (!estimatedPrincipals) {
       return null;
     }
-    return NumberUtils.formatToCurrency(ethers.utils.formatEther(estimatedPrincipals), decimalsForUI);
-  }, [estimatedPrincipals, decimalsForUI]);
+    return NumberUtils.formatToCurrency(
+      ethers.utils.formatUnits(estimatedPrincipals, tokenPrecision.principals),
+      decimalsForUI,
+    );
+  }, [estimatedPrincipals, decimalsForUI, tokenPrecision.principals]);
 
   const estimatedYieldsFormatted = useMemo(() => {
     if (!estimatedYields) {
       return null;
     }
-    return NumberUtils.formatToCurrency(ethers.utils.formatEther(estimatedYields), decimalsForUI);
-  }, [estimatedYields, decimalsForUI]);
+    return NumberUtils.formatToCurrency(
+      ethers.utils.formatUnits(estimatedYields, tokenPrecision.yields),
+      decimalsForUI,
+    );
+  }, [estimatedYields, decimalsForUI, tokenPrecision.yields]);
 
   const approveDisabled = useMemo((): boolean => {
     const zeroAmount = isZeroString(amount);
