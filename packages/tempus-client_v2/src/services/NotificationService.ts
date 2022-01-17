@@ -421,8 +421,10 @@ const getSwapNotificationContent = (
   userWallet: string,
   staticPoolData: TempusPool,
 ) => {
+  let tokenSentPrecision: number | null = null;
   let tokenSentTicker: Ticker | null = null;
   let tokenSentValue: BigNumber = BigNumber.from('0');
+  let tokenReceivedPrecision: number | null = null;
   let tokenReceivedTicker: Ticker | null = null;
   let tokenReceivedValue: BigNumber = BigNumber.from('0');
 
@@ -435,11 +437,13 @@ const getSwapNotificationContent = (
         if (log.address === staticPoolData.principalsAddress) {
           tokenSentTicker = 'Principals';
           tokenSentValue = logData.args.value;
+          tokenSentPrecision = staticPoolData.tokenPrecision.principals;
         }
         // User sent yields
         if (log.address === staticPoolData.yieldsAddress) {
           tokenSentTicker = 'Yields';
           tokenSentValue = logData.args.value;
+          tokenSentPrecision = staticPoolData.tokenPrecision.yields;
         }
       }
       if (logData.name === 'Transfer' && logData.args.to === userWallet) {
@@ -447,11 +451,13 @@ const getSwapNotificationContent = (
         if (log.address === staticPoolData.principalsAddress) {
           tokenReceivedTicker = 'Principals';
           tokenReceivedValue = logData.args.value;
+          tokenReceivedPrecision = staticPoolData.tokenPrecision.principals;
         }
         // User received yields
         if (log.address === staticPoolData.yieldsAddress) {
           tokenReceivedTicker = 'Yields';
           tokenReceivedValue = logData.args.value;
+          tokenReceivedPrecision = staticPoolData.tokenPrecision.yields;
         }
       }
     } catch (error) {
@@ -460,11 +466,11 @@ const getSwapNotificationContent = (
   });
 
   const tokenSentValueFormatted = NumberUtils.formatToCurrency(
-    ethers.utils.formatEther(tokenSentValue),
+    ethers.utils.formatUnits(tokenSentValue, tokenSentPrecision || 18),
     staticPoolData.decimalsForUI,
   );
   const tokenReceivedValueFormatted = NumberUtils.formatToCurrency(
-    ethers.utils.formatEther(tokenReceivedValue),
+    ethers.utils.formatUnits(tokenReceivedValue, tokenReceivedPrecision || 18),
     staticPoolData.decimalsForUI,
   );
 
