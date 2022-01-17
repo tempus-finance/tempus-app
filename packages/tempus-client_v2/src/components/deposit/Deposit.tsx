@@ -389,10 +389,10 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
       return null;
     }
     return NumberUtils.formatToCurrency(
-      ethers.utils.formatUnits(fixedPrincipalsAmount, selectedTokenPrecision),
+      ethers.utils.formatUnits(fixedPrincipalsAmount, tokenPrecision.principals),
       decimalsForUI,
     );
-  }, [decimalsForUI, fixedPrincipalsAmount, selectedTokenPrecision]);
+  }, [decimalsForUI, fixedPrincipalsAmount, tokenPrecision.principals]);
 
   const variableUnstakedPrincipalsAmountFormatted = useMemo(() => {
     if (!variableUnstakedPrincipalsAmount) {
@@ -474,27 +474,27 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
       return null;
     }
 
-    const value = fixedPrincipalsAmount.sub(ethers.utils.parseEther(amount));
+    const value = fixedPrincipalsAmount.sub(ethers.utils.parseUnits(amount, tokenPrecision.principals));
 
-    return NumberUtils.formatToCurrency(
-      ethers.utils.formatUnits(value, getTokenPrecision(selectedPoolAddress, 'yieldBearingToken')),
-      decimalsForUI,
-    );
-  }, [amount, fixedPrincipalsAmount, selectedPoolAddress, decimalsForUI]);
+    return NumberUtils.formatToCurrency(ethers.utils.formatUnits(value, tokenPrecision.principals), decimalsForUI);
+  }, [amount, fixedPrincipalsAmount, decimalsForUI, tokenPrecision.principals]);
 
   const fixedYieldAtMaturityUSDFormatted = useMemo(() => {
     if (!fixedPrincipalsAmount || !yieldBearingTokenRate || !amount || isZeroString(amount)) {
       return null;
     }
 
-    const value = fixedPrincipalsAmount.sub(ethers.utils.parseEther(amount));
+    const value = fixedPrincipalsAmount.sub(ethers.utils.parseUnits(amount, tokenPrecision.principals));
 
     return NumberUtils.formatToCurrency(
-      ethers.utils.formatUnits(mul18f(value, yieldBearingTokenRate, selectedTokenPrecision), selectedTokenPrecision),
+      ethers.utils.formatUnits(
+        mul18f(value, yieldBearingTokenRate, tokenPrecision.principals),
+        tokenPrecision.principals,
+      ),
       2,
       '$',
     );
-  }, [amount, fixedPrincipalsAmount, selectedTokenPrecision, yieldBearingTokenRate]);
+  }, [amount, fixedPrincipalsAmount, tokenPrecision.principals, yieldBearingTokenRate]);
 
   const fixedTotalAvailableAtMaturityFormatted = useMemo(() => {
     if (!fixedPrincipalsAmount) {
@@ -502,10 +502,10 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
     }
 
     return NumberUtils.formatToCurrency(
-      ethers.utils.formatUnits(fixedPrincipalsAmount, selectedTokenPrecision),
+      ethers.utils.formatUnits(fixedPrincipalsAmount, tokenPrecision.principals),
       decimalsForUI,
     );
-  }, [fixedPrincipalsAmount, selectedTokenPrecision, decimalsForUI]);
+  }, [fixedPrincipalsAmount, tokenPrecision.principals, decimalsForUI]);
 
   const fixedTotalAvailableAtMaturityUSDFormatted = useMemo(() => {
     if (!fixedPrincipalsAmount || !yieldBearingTokenRate) {
@@ -514,13 +514,13 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
 
     return NumberUtils.formatToCurrency(
       ethers.utils.formatUnits(
-        mul18f(fixedPrincipalsAmount, yieldBearingTokenRate, selectedTokenPrecision),
-        selectedTokenPrecision,
+        mul18f(fixedPrincipalsAmount, yieldBearingTokenRate, tokenPrecision.principals),
+        tokenPrecision.principals,
       ),
       2,
       '$',
     );
-  }, [fixedPrincipalsAmount, selectedTokenPrecision, yieldBearingTokenRate]);
+  }, [fixedPrincipalsAmount, tokenPrecision.principals, yieldBearingTokenRate]);
 
   const estimatedYieldAtMaturity = useMemo(() => {
     if (!variableAPR || !amount) {
