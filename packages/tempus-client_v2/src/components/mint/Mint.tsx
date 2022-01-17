@@ -156,10 +156,11 @@ const Mint: FC<MintInProps> = ({ narrow }) => {
       return null;
     }
     return NumberUtils.formatToCurrency(
-      ethers.utils.formatUnits(estimatedTokens, selectedTokenPrecision),
+      // TODO - In case principalsPrecision !== yieldsPrecision this is not going to work.
+      ethers.utils.formatUnits(estimatedTokens, tokenPrecision.principals),
       decimalsForUI,
     );
-  }, [decimalsForUI, estimatedTokens, selectedTokenPrecision]);
+  }, [decimalsForUI, estimatedTokens, tokenPrecision.principals]);
 
   const usdValueFormatted = useMemo(() => {
     if (!usdRate || !amount) {
