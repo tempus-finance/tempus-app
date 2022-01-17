@@ -2,7 +2,7 @@ import { CircularProgress } from '@material-ui/core';
 import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { ethers, BigNumber } from 'ethers';
-import { catchError } from 'rxjs';
+import { catchError, of } from 'rxjs';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
 import getUserShareTokenBalanceProvider from '../../providers/getUserShareTokenBalanceProvider';
 import getUserBalanceProvider from '../../providers/getBalanceProvider';
@@ -255,12 +255,12 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
           userWalletSigner,
         )
         .pipe(
-          catchError((error, caught) => {
-            console.log('DetailDeposit - retrieveTokenRates - Failed to retrieve token rates!', error);
-            return caught;
+          catchError(error => {
+            console.error('DetailDeposit - retrieveTokenRates - Failed to retrieve token rates!', error);
+            return of(null);
           }),
         )
-        .subscribe((result: { backingTokenRate: BigNumber; yieldBearingTokenRate: BigNumber }) => {
+        .subscribe((result: { backingTokenRate: BigNumber; yieldBearingTokenRate: BigNumber } | null) => {
           if (result) {
             setBackingTokenRate(result.backingTokenRate);
             setYieldBearingTokenRate(result.yieldBearingTokenRate);
