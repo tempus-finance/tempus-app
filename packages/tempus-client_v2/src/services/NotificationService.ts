@@ -174,6 +174,7 @@ const getDepositNotificationContent = (
   actionDescription: string,
   staticPoolData: TempusPool,
 ) => {
+  let tokenSentPrecision: number | null = null;
   let tokenSentTicker: Ticker | null = null;
   let tokenSentAmount = BigNumber.from('0');
   let principalsReceived = BigNumber.from('0');
@@ -183,6 +184,7 @@ const getDepositNotificationContent = (
   if (!transaction.value.isZero()) {
     tokenSentAmount = transaction.value;
     tokenSentTicker = staticPoolData.backingToken;
+    tokenSentPrecision = staticPoolData.tokenPrecision.backingToken;
   }
 
   const ifc = new ethers.utils.Interface(ERC20ABI);
@@ -191,24 +193,26 @@ const getDepositNotificationContent = (
       const logData = ifc.parseLog(log);
       if (logData.name === 'Transfer' && logData.args.from === userWallet) {
         // User sent backing token
-        if (staticPoolData.backingTokenAddress === log.address) {
+        if (staticPoolData.backingTokenAddress.toLowerCase() === log.address.toLowerCase()) {
           tokenSentAmount = logData.args.value;
           tokenSentTicker = staticPoolData.backingToken;
+          tokenSentPrecision = staticPoolData.tokenPrecision.backingToken;
         }
         // User sent yield bearing token
-        if (staticPoolData.yieldBearingTokenAddress === log.address) {
+        if (staticPoolData.yieldBearingTokenAddress.toLowerCase() === log.address.toLowerCase()) {
           tokenSentAmount = logData.args.value;
           tokenSentTicker = staticPoolData.yieldBearingToken;
+          tokenSentPrecision = staticPoolData.tokenPrecision.yieldBearingToken;
         }
       }
 
       if (logData.name === 'Transfer' && logData.args.to === userWallet) {
         // Principals received amount
-        if (staticPoolData.principalsAddress === log.address) {
+        if (staticPoolData.principalsAddress.toLowerCase() === log.address.toLowerCase()) {
           principalsReceived = logData.args.value;
         }
         // LP Tokens received amount
-        if (staticPoolData.ammAddress === log.address) {
+        if (staticPoolData.ammAddress.toLowerCase() === log.address.toLowerCase()) {
           lpTokensReceived = logData.args.value;
         }
       }
@@ -218,15 +222,15 @@ const getDepositNotificationContent = (
   });
 
   const tokenSentAmountFormatted = NumberUtils.formatToCurrency(
-    ethers.utils.formatEther(tokenSentAmount),
+    ethers.utils.formatUnits(tokenSentAmount, tokenSentPrecision || 18),
     staticPoolData.decimalsForUI,
   );
   const principalsReceivedFormatted = NumberUtils.formatToCurrency(
-    ethers.utils.formatEther(principalsReceived),
+    ethers.utils.formatUnits(principalsReceived, staticPoolData.tokenPrecision.principals),
     staticPoolData.decimalsForUI,
   );
   const lpTokensReceivedFormatted = NumberUtils.formatToCurrency(
-    ethers.utils.formatEther(lpTokensReceived),
+    ethers.utils.formatUnits(lpTokensReceived, staticPoolData.tokenPrecision.lpTokens),
     staticPoolData.decimalsForUI,
   );
 
@@ -264,6 +268,7 @@ const getWithdrawNotificationContent = (
   let lpTokensSent = BigNumber.from('0');
   let tokensReceived = BigNumber.from('0');
   let tokenReceivedTicker: Ticker | null = null;
+  let tokenReceivedPrecision: number | null = null;
 
   const ifc = new ethers.utils.Interface(ERC20ABI);
   receipt.logs.forEach(log => {
@@ -271,28 +276,30 @@ const getWithdrawNotificationContent = (
       const logData = ifc.parseLog(log);
       if (logData.name === 'Transfer' && logData.args.from === userWallet) {
         // Amount of principals sent
-        if (log.address === staticPoolData.principalsAddress) {
+        if (log.address.toLowerCase() === staticPoolData.principalsAddress.toLowerCase()) {
           principalsSent = logData.args.value;
         }
         // Amount of yields sent
-        if (log.address === staticPoolData.yieldsAddress) {
+        if (log.address.toLowerCase() === staticPoolData.yieldsAddress.toLowerCase()) {
           yieldsSent = logData.args.value;
         }
         // Amount of LP Tokens sent
-        if (log.address === staticPoolData.ammAddress) {
+        if (log.address.toLowerCase() === staticPoolData.ammAddress.toLowerCase()) {
           lpTokensSent = logData.args.value;
         }
       }
       if (logData.name === 'Transfer' && logData.args.to === userWallet) {
         // User received backing tokens
-        if (log.address === staticPoolData.backingTokenAddress) {
+        if (log.address.toLowerCase() === staticPoolData.backingTokenAddress.toLowerCase()) {
           tokensReceived = logData.args.value;
           tokenReceivedTicker = staticPoolData.backingToken;
+          tokenReceivedPrecision = staticPoolData.tokenPrecision.backingToken;
         }
         // User received yield bearing tokens
-        if (log.address === staticPoolData.yieldBearingTokenAddress) {
+        if (log.address.toLowerCase() === staticPoolData.yieldBearingTokenAddress.toLowerCase()) {
           tokensReceived = logData.args.value;
           tokenReceivedTicker = staticPoolData.yieldBearingToken;
+          tokenReceivedPrecision = staticPoolData.tokenPrecision.yieldBearingToken;
         }
       }
     } catch (error) {
@@ -301,19 +308,19 @@ const getWithdrawNotificationContent = (
   });
 
   const principalsSentFormatted = NumberUtils.formatToCurrency(
-    ethers.utils.formatEther(principalsSent),
+    ethers.utils.formatUnits(principalsSent, staticPoolData.tokenPrecision.principals),
     staticPoolData.decimalsForUI,
   );
   const yieldsSentFormatted = NumberUtils.formatToCurrency(
-    ethers.utils.formatEther(yieldsSent),
+    ethers.utils.formatUnits(yieldsSent, staticPoolData.tokenPrecision.yields),
     staticPoolData.decimalsForUI,
   );
   const lpTokensSentFormatted = NumberUtils.formatToCurrency(
-    ethers.utils.formatEther(lpTokensSent),
+    ethers.utils.formatUnits(lpTokensSent, staticPoolData.tokenPrecision.lpTokens),
     staticPoolData.decimalsForUI,
   );
   const tokensReceivedFormatted = NumberUtils.formatToCurrency(
-    ethers.utils.formatEther(tokensReceived),
+    ethers.utils.formatUnits(tokensReceived, tokenReceivedPrecision || 18),
     staticPoolData.decimalsForUI,
   );
 
@@ -417,8 +424,10 @@ const getSwapNotificationContent = (
   userWallet: string,
   staticPoolData: TempusPool,
 ) => {
+  let tokenSentPrecision: number | null = null;
   let tokenSentTicker: Ticker | null = null;
   let tokenSentValue: BigNumber = BigNumber.from('0');
+  let tokenReceivedPrecision: number | null = null;
   let tokenReceivedTicker: Ticker | null = null;
   let tokenReceivedValue: BigNumber = BigNumber.from('0');
 
@@ -431,11 +440,13 @@ const getSwapNotificationContent = (
         if (log.address === staticPoolData.principalsAddress) {
           tokenSentTicker = 'Principals';
           tokenSentValue = logData.args.value;
+          tokenSentPrecision = staticPoolData.tokenPrecision.principals;
         }
         // User sent yields
         if (log.address === staticPoolData.yieldsAddress) {
           tokenSentTicker = 'Yields';
           tokenSentValue = logData.args.value;
+          tokenSentPrecision = staticPoolData.tokenPrecision.yields;
         }
       }
       if (logData.name === 'Transfer' && logData.args.to === userWallet) {
@@ -443,11 +454,13 @@ const getSwapNotificationContent = (
         if (log.address === staticPoolData.principalsAddress) {
           tokenReceivedTicker = 'Principals';
           tokenReceivedValue = logData.args.value;
+          tokenReceivedPrecision = staticPoolData.tokenPrecision.principals;
         }
         // User received yields
         if (log.address === staticPoolData.yieldsAddress) {
           tokenReceivedTicker = 'Yields';
           tokenReceivedValue = logData.args.value;
+          tokenReceivedPrecision = staticPoolData.tokenPrecision.yields;
         }
       }
     } catch (error) {
@@ -456,11 +469,11 @@ const getSwapNotificationContent = (
   });
 
   const tokenSentValueFormatted = NumberUtils.formatToCurrency(
-    ethers.utils.formatEther(tokenSentValue),
+    ethers.utils.formatUnits(tokenSentValue, tokenSentPrecision || 18),
     staticPoolData.decimalsForUI,
   );
   const tokenReceivedValueFormatted = NumberUtils.formatToCurrency(
-    ethers.utils.formatEther(tokenReceivedValue),
+    ethers.utils.formatUnits(tokenReceivedValue, tokenReceivedPrecision || 18),
     staticPoolData.decimalsForUI,
   );
 
@@ -507,15 +520,15 @@ const getLiquidityDepositNotificationContent = (
   });
 
   const amountOfPrincipalsSentFormatted = NumberUtils.formatToCurrency(
-    ethers.utils.formatEther(amountOfPrincipalsSent),
+    ethers.utils.formatUnits(amountOfPrincipalsSent, staticPoolData.tokenPrecision.principals),
     staticPoolData.decimalsForUI,
   );
   const amountOfYieldsSentFormatted = NumberUtils.formatToCurrency(
-    ethers.utils.formatEther(amountOfYieldsSent),
+    ethers.utils.formatUnits(amountOfYieldsSent, staticPoolData.tokenPrecision.yields),
     staticPoolData.decimalsForUI,
   );
   const amountOfLPTokensReceivedFormatted = NumberUtils.formatToCurrency(
-    ethers.utils.formatEther(amountOfLPTokensReceived),
+    ethers.utils.formatUnits(amountOfLPTokensReceived, staticPoolData.tokenPrecision.lpTokens || 18),
     staticPoolData.decimalsForUI,
   );
 
@@ -565,15 +578,15 @@ const getLiquidityWithdrawalNotificationContent = (
   });
 
   const amountOfLPTokensSentFormatted = NumberUtils.formatToCurrency(
-    ethers.utils.formatEther(amountOfLPTokensSent),
+    ethers.utils.formatUnits(amountOfLPTokensSent, staticPoolData.tokenPrecision.lpTokens),
     staticPoolData.decimalsForUI,
   );
   const amountOfPrincipalsReceivedFormatted = NumberUtils.formatToCurrency(
-    ethers.utils.formatEther(amountOfPrincipalsReceived),
+    ethers.utils.formatUnits(amountOfPrincipalsReceived, staticPoolData.tokenPrecision.principals),
     staticPoolData.decimalsForUI,
   );
   const amountOfYieldsReceivedFormatted = NumberUtils.formatToCurrency(
-    ethers.utils.formatEther(amountOfYieldsReceived),
+    ethers.utils.formatUnits(amountOfYieldsReceived, staticPoolData.tokenPrecision.yields),
     staticPoolData.decimalsForUI,
   );
 

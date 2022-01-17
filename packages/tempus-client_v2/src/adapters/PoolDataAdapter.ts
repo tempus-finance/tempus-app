@@ -10,7 +10,7 @@ import VaultService, { SwapEvent, SwapKind } from '../services/VaultService';
 import { TransferEventListener } from '../services/ERC20TokenService';
 import getDefaultProvider from '../services/getDefaultProvider';
 import { getEventBackingTokenValue } from '../services/EventUtils';
-import { div18f, mul18f } from '../utils/weiMath';
+import { div18f, increasePrecision, mul18f } from '../utils/weiMath';
 import {
   BLOCK_DURATION_SECONDS,
   DAYS_IN_A_YEAR,
@@ -412,7 +412,7 @@ export default class PoolDataAdapter {
     isBackingToken: boolean,
     yieldType: SelectedYield,
     slippage: BigNumber,
-    yieldsPrecision: number,
+    principalsPrecision: number,
     spotPrice: string,
     isEthDeposit?: boolean,
   ): Promise<ContractTransaction | undefined> {
@@ -425,11 +425,12 @@ export default class PoolDataAdapter {
       if (yieldType === 'Fixed') {
         const tysRate = await this.getExpectedReturnForShareToken(
           tempusAMM,
-          ethers.utils.parseUnits(spotPrice, yieldsPrecision),
+          // We want to check how many TPS we get for 1 TYS
+          ethers.utils.parseUnits('1', principalsPrecision),
           true,
         );
 
-        const minTYSRate = tysRate.sub(mul18f(tysRate, slippage));
+        const minTYSRate = tysRate.sub(mul18f(tysRate, slippage, principalsPrecision));
 
         return await this.tempusControllerService.depositAndFix(
           tempusAMM,
@@ -917,7 +918,7 @@ export default class PoolDataAdapter {
     }
   }
 
-  async getYieldBearingTokenRate(tempusPool: string, backingTokenTicker: Ticker) {
+  async getYieldBearingTokenRate(tempusPool: string, backingTokenTicker: Ticker, backingTokenPrecision: number, yieldBearingTokenPrecision: number) {
     if (!this.statisticService || !this.tempusPoolService) {
       console.error(
         'PoolDataAdapter - getYieldBearingTokenRate() - Attempted to use PoolDataAdapter before initializing it!',
@@ -935,7 +936,17 @@ export default class PoolDataAdapter {
       );
       const backingTokenRate = await this.statisticService.getRate(backingTokenTicker);
 
-      return mul18f(yieldBearingTokenConversionRate, backingTokenRate);
+      // TODO - Handle a case in which backing token precision is bigger then yield bearing token precision
+      if (yieldBearingTokenPrecision > backingTokenPrecision) {
+        const precisionDiff = yieldBearingTokenPrecision - backingTokenPrecision;
+
+        const yieldBearingTokenConversionRateParsed = increasePrecision(yieldBearingTokenConversionRate, precisionDiff);
+        const backingTokenRateParsed = increasePrecision(backingTokenRate, precisionDiff)
+
+        return mul18f(yieldBearingTokenConversionRateParsed, backingTokenRateParsed, yieldBearingTokenPrecision);
+      }
+      
+      return mul18f(yieldBearingTokenConversionRate, backingTokenRate, backingTokenPrecision);
     } catch (error) {
       console.error('PoolDataAdapter - getBackingTokenRate() - Failed to get backing token rate!', error);
       return Promise.reject(error);

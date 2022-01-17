@@ -76,7 +76,7 @@ const ProvideLiquidity = () => {
       }
 
       const principalsToYieldsRatio = ethers.utils.parseUnits(
-        (principalsPercentage / yieldsPercentage).toString(),
+        (principalsPercentage / yieldsPercentage).toFixed(principalsPrecision),
         principalsPrecision,
       );
 
@@ -105,7 +105,7 @@ const ProvideLiquidity = () => {
       }
 
       const yieldsToPrincipalsRatio = ethers.utils.parseUnits(
-        (yieldsPercentage / principalsPercentage).toString(),
+        (yieldsPercentage / principalsPercentage).toFixed(yieldsPrecision),
         yieldsPrecision,
       );
 
@@ -159,7 +159,7 @@ const ProvideLiquidity = () => {
     }
 
     const yieldsToPrincipalsRatio = ethers.utils.parseUnits(
-      (yieldsPercentage / principalsPercentage).toString(),
+      (yieldsPercentage / principalsPercentage).toFixed(yieldsPrecision),
       yieldsPrecision,
     );
     const resultingYields = mul18f(userPrincipalsBalance, yieldsToPrincipalsRatio, yieldsPrecision);
@@ -209,7 +209,7 @@ const ProvideLiquidity = () => {
     }
 
     const principalsToYieldsRatio = ethers.utils.parseUnits(
-      (principalsPercentage / yieldsPercentage).toString(),
+      (principalsPercentage / yieldsPercentage).toFixed(principalsPrecision),
       principalsPrecision,
     );
     const resultingPrincipals = mul18f(userYieldsBalance, principalsToYieldsRatio, principalsPrecision);

@@ -1,7 +1,7 @@
 import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { ethers, BigNumber } from 'ethers';
-import { catchError } from 'rxjs';
+import { catchError, of } from 'rxjs';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
 import getUserShareTokenBalanceProvider from '../../providers/getUserShareTokenBalanceProvider';
 import getUserBalanceProvider from '../../providers/getBalanceProvider';
@@ -156,20 +156,25 @@ const Mint: FC<MintInProps> = ({ narrow }) => {
       return null;
     }
     return NumberUtils.formatToCurrency(
-      ethers.utils.formatUnits(estimatedTokens, selectedTokenPrecision),
+      // TODO - In case principalsPrecision !== yieldsPrecision this is not going to work.
+      ethers.utils.formatUnits(estimatedTokens, tokenPrecision.principals),
       decimalsForUI,
     );
-  }, [decimalsForUI, estimatedTokens, selectedTokenPrecision]);
+  }, [decimalsForUI, estimatedTokens, tokenPrecision.principals]);
 
   const usdValueFormatted = useMemo(() => {
     if (!usdRate || !amount) {
       return null;
     }
 
-    let usdValue = mul18f(usdRate, ethers.utils.parseUnits(amount, selectedTokenPrecision), selectedTokenPrecision);
+    let usdValue = mul18f(
+      usdRate,
+      ethers.utils.parseUnits(amount, tokenPrecision.backingToken),
+      tokenPrecision.backingToken,
+    );
 
-    return NumberUtils.formatToCurrency(ethers.utils.formatUnits(usdValue, selectedTokenPrecision), 2, '$');
-  }, [selectedTokenPrecision, usdRate, amount]);
+    return NumberUtils.formatToCurrency(ethers.utils.formatUnits(usdValue, tokenPrecision.backingToken), 2, '$');
+  }, [usdRate, amount, tokenPrecision.backingToken]);
 
   const depositDisabled = useMemo((): boolean => {
     return isYieldNegative === null ? true : isYieldNegative;
@@ -239,12 +244,12 @@ const Mint: FC<MintInProps> = ({ narrow }) => {
           userWalletSigner,
         )
         .pipe(
-          catchError((error, caught) => {
-            console.log('Mint - retrieveTokenRates - Failed to retrieve token rates!', error);
-            return caught;
+          catchError(error => {
+            console.error('Mint - retrieveTokenRates - Failed to retrieve token rates!', error);
+            return of(null);
           }),
         )
-        .subscribe((result: { backingTokenRate: BigNumber; yieldBearingTokenRate: BigNumber }) => {
+        .subscribe((result: { backingTokenRate: BigNumber; yieldBearingTokenRate: BigNumber } | null) => {
           if (result) {
             setBackingTokenRate(result.backingTokenRate);
             setYieldBearingTokenRate(result.yieldBearingTokenRate);
