@@ -6,7 +6,7 @@ import { catchError, of } from 'rxjs';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
 import getUserShareTokenBalanceProvider from '../../providers/getUserShareTokenBalanceProvider';
 import getUserBalanceProvider from '../../providers/getBalanceProvider';
-import { ETH_ALLOWANCE_FOR_GAS, ZERO } from '../../constants';
+import { ETH_ALLOWANCE_FOR_GAS, MILLISECONDS_IN_A_YEAR, ZERO } from '../../constants';
 import { LanguageContext } from '../../context/languageContext';
 import { WalletContext } from '../../context/walletContext';
 import { UserSettingsContext } from '../../context/userSettingsContext';
@@ -526,10 +526,9 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
       return null;
     }
 
-    const poolDuration = maturityDate - startDate;
     const timeUntilMaturity = maturityDate - Date.now();
 
-    const scaleFactor = ethers.utils.parseEther((timeUntilMaturity / poolDuration).toString());
+    const scaleFactor = ethers.utils.parseEther((timeUntilMaturity / MILLISECONDS_IN_A_YEAR).toString());
 
     const amountParsed = ethers.utils.parseUnits(amount, selectedTokenPrecision);
     const variableAPRParsed = ethers.utils.parseEther(variableAPR.toString() || '1');
@@ -537,7 +536,7 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
     const estimatedYieldForPool = mul18f(amountParsed, variableAPRParsed);
 
     return mul18f(estimatedYieldForPool, scaleFactor);
-  }, [amount, maturityDate, startDate, selectedTokenPrecision, variableAPR]);
+  }, [amount, maturityDate, selectedTokenPrecision, variableAPR]);
 
   const estimatedYieldAtMaturityFormatted = useMemo(() => {
     if (!estimatedYieldAtMaturity) {
