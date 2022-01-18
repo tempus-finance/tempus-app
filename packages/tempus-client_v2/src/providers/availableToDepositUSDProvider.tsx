@@ -28,6 +28,8 @@ const AvailableToDepositUSDProvider: FC<PresentValueProviderProps> = props => {
           tempusPool,
           userWalletAddress,
           userWalletSigner,
+          tempusPool.tokenPrecision.backingToken,
+          tempusPool.tokenPrecision.yieldBearingToken,
         );
 
         const currentBackingTokenValueInFiat = dynamicPoolData[tempusPool.address].backingTokenValueInFiat.get();

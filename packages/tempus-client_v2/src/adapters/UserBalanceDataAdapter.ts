@@ -3,7 +3,7 @@ import { combineLatest, from, Observable, of, switchMap, throwError, timer, catc
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
 import { POLLING_INTERVAL, ZERO } from '../constants';
 import { TempusPool } from '../interfaces/TempusPool';
-import { mul18f } from '../utils/weiMath';
+import { increasePrecision, mul18f } from '../utils/weiMath';
 import StatisticsService from '../services/StatisticsService';
 import getERC20TokenService from '../services/getERC20TokenService';
 import TempusPoolService from '../services/TempusPoolService';
@@ -111,6 +111,8 @@ export default class UserBalanceDataAdapter {
     tempusPool: TempusPool,
     userWalletAddress: string,
     userWalletSigner: JsonRpcSigner,
+    backingTokenPrecision: number,
+    yieldBearingTokenPrecision: number,
   ): Promise<AvailableToDeposit> {
     if (!this.statisticsService || !this.tempusPoolService || !this.eRC20TokenServiceGetter) {
       return Promise.reject('UserBalanceDataAdapter - getUserBalanceForPool() - Adapter not initialized!');
@@ -140,7 +142,10 @@ export default class UserBalanceDataAdapter {
       const yieldBearingTokenValueInBackingToken = mul18f(yieldTokensAvailable, yieldBearingToBackingTokenRate);
       const yieldBearingTokenValueInFiat = mul18f(
         yieldBearingTokenValueInBackingToken,
-        backingTokenToUSD,
+        // TODO - Handle a case in which backingTokenPrecision > yieldBearingTokenPrecision
+        backingTokenPrecision < yieldBearingTokenPrecision
+          ? increasePrecision(backingTokenToUSD, yieldBearingTokenPrecision - backingTokenPrecision)
+          : backingTokenToUSD,
         tempusPool.tokenPrecision.yieldBearingToken,
       );
 
