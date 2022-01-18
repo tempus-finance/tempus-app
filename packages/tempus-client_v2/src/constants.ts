@@ -1,5 +1,6 @@
 import { BigNumber } from '@ethersproject/bignumber';
 
+export const MILLISECONDS_IN_A_YEAR = 31536000000;
 export const DAYS_IN_A_YEAR = 365;
 export const SECONDS_IN_AN_HOUR = 3600;
 export const SECONDS_IN_A_DAY = SECONDS_IN_AN_HOUR * 24;
