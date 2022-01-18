@@ -36,6 +36,7 @@ const config: Config = {
       yieldBearingToken: 'stETH',
       spotPrice: '1',
       decimalsForUI: 4,
+      showEstimatesInBackingToken: false,
       tokenPrecision: {
         backingToken: 18,
         lpTokens: 18,
@@ -59,6 +60,7 @@ const config: Config = {
       yieldBearingToken: 'stETH',
       spotPrice: '1',
       decimalsForUI: 4,
+      showEstimatesInBackingToken: false,
       tokenPrecision: {
         backingToken: 18,
         lpTokens: 18,
@@ -82,6 +84,7 @@ const config: Config = {
       yieldBearingToken: 'RSPT',
       spotPrice: '1',
       decimalsForUI: 4,
+      showEstimatesInBackingToken: true,
       tokenPrecision: {
         backingToken: 6,
         lpTokens: 18,

@@ -90,6 +90,9 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
   const startDate = staticPoolData[selectedPool.get()].startDate.attach(Downgraded).get();
   const maturityDate = staticPoolData[selectedPool.get()].maturityDate.attach(Downgraded).get();
   const tokenPrecision = staticPoolData[selectedPool.get()].tokenPrecision.attach(Downgraded).get();
+  const showEstimatesInBackingToken = staticPoolData[selectedPool.get()].showEstimatesInBackingToken
+    .attach(Downgraded)
+    .get();
 
   const onTokenChange = useCallback(
     (token: Ticker | undefined) => {
@@ -752,7 +755,9 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
                 <div className="tc__deposit__card-row-change">
                   <Typography variant="body-text" color="success">
                     {fixedYieldAtMaturityFormatted ? (
-                      `+${fixedYieldAtMaturityFormatted} ${yieldBearingToken}`
+                      `+${fixedYieldAtMaturityFormatted} ${
+                        showEstimatesInBackingToken ? backingToken : yieldBearingToken
+                      }`
                     ) : (
                       <CircularProgress size={14} />
                     )}
@@ -780,7 +785,9 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
                 <div className="tc__deposit__card-row-change">
                   <Typography variant="body-text">
                     {fixedTotalAvailableAtMaturityFormatted ? (
-                      `${fixedTotalAvailableAtMaturityFormatted} ${yieldBearingToken}`
+                      `${fixedTotalAvailableAtMaturityFormatted} ${
+                        showEstimatesInBackingToken ? backingToken : yieldBearingToken
+                      }`
                     ) : (
                       <CircularProgress size={14} />
                     )}
@@ -839,7 +846,9 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
                 <div className="tc__deposit__card-row-change">
                   <Typography variant="body-text" color="success">
                     {estimatedYieldAtMaturityFormatted ? (
-                      `+${estimatedYieldAtMaturityFormatted} ${yieldBearingToken}`
+                      `+${estimatedYieldAtMaturityFormatted} ${
+                        showEstimatesInBackingToken ? backingToken : yieldBearingToken
+                      }`
                     ) : (
                       <CircularProgress size={14} />
                     )}
@@ -867,7 +876,9 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
                 <div className="tc__deposit__card-row-change">
                   <Typography variant="body-text">
                     {variableTotalAvailableAtMaturityFormatted ? (
-                      `${variableTotalAvailableAtMaturityFormatted} ${yieldBearingToken}`
+                      `${variableTotalAvailableAtMaturityFormatted} ${
+                        showEstimatesInBackingToken ? backingToken : yieldBearingToken
+                      }`
                     ) : (
                       <CircularProgress size={14} />
                     )}
