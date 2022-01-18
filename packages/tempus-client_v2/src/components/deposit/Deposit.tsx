@@ -482,21 +482,18 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
   }, [amount, fixedPrincipalsAmount, decimalsForUI, tokenPrecision.principals]);
 
   const fixedYieldAtMaturityUSDFormatted = useMemo(() => {
-    if (!fixedPrincipalsAmount || !yieldBearingTokenRate || !amount || isZeroString(amount)) {
+    if (!fixedPrincipalsAmount || !backingTokenRate || !amount || isZeroString(amount)) {
       return null;
     }
 
     const value = fixedPrincipalsAmount.sub(ethers.utils.parseUnits(amount, tokenPrecision.principals));
 
     return NumberUtils.formatToCurrency(
-      ethers.utils.formatUnits(
-        mul18f(value, yieldBearingTokenRate, tokenPrecision.principals),
-        tokenPrecision.principals,
-      ),
+      ethers.utils.formatUnits(mul18f(value, backingTokenRate, tokenPrecision.principals), tokenPrecision.principals),
       2,
       '$',
     );
-  }, [amount, fixedPrincipalsAmount, tokenPrecision.principals, yieldBearingTokenRate]);
+  }, [amount, fixedPrincipalsAmount, tokenPrecision.principals, backingTokenRate]);
 
   const fixedTotalAvailableAtMaturityFormatted = useMemo(() => {
     if (!fixedPrincipalsAmount) {
@@ -510,19 +507,19 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
   }, [fixedPrincipalsAmount, tokenPrecision.principals, decimalsForUI]);
 
   const fixedTotalAvailableAtMaturityUSDFormatted = useMemo(() => {
-    if (!fixedPrincipalsAmount || !yieldBearingTokenRate) {
+    if (!fixedPrincipalsAmount || !backingTokenRate) {
       return null;
     }
 
     return NumberUtils.formatToCurrency(
       ethers.utils.formatUnits(
-        mul18f(fixedPrincipalsAmount, yieldBearingTokenRate, tokenPrecision.principals),
+        mul18f(fixedPrincipalsAmount, backingTokenRate, tokenPrecision.principals),
         tokenPrecision.principals,
       ),
       2,
       '$',
     );
-  }, [fixedPrincipalsAmount, tokenPrecision.principals, yieldBearingTokenRate]);
+  }, [fixedPrincipalsAmount, tokenPrecision.principals, backingTokenRate]);
 
   const estimatedYieldAtMaturity = useMemo(() => {
     if (!variableAPR || !amount) {
@@ -575,54 +572,34 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
   }, [decimalsForUI, selectedTokenPrecision, variableTotalAvailableAtMaturity]);
 
   const estimatedYieldAtMaturityUSDFormatted = useMemo(() => {
-    if (!estimatedYieldAtMaturity || !yieldBearingTokenRate || !backingTokenRate) {
+    if (!estimatedYieldAtMaturity || !backingTokenRate || !backingTokenRate) {
       return;
     }
 
-    const tokenRate = selectedToken === backingToken ? backingTokenRate : yieldBearingTokenRate;
-
     return NumberUtils.formatToCurrency(
       ethers.utils.formatUnits(
-        mul18f(estimatedYieldAtMaturity, tokenRate, tokenPrecision.backingToken),
+        mul18f(estimatedYieldAtMaturity, backingTokenRate, tokenPrecision.backingToken),
         selectedTokenPrecision,
       ),
       2,
       '$',
     );
-  }, [
-    backingToken,
-    backingTokenRate,
-    estimatedYieldAtMaturity,
-    selectedToken,
-    tokenPrecision.backingToken,
-    selectedTokenPrecision,
-    yieldBearingTokenRate,
-  ]);
+  }, [estimatedYieldAtMaturity, backingTokenRate, tokenPrecision.backingToken, selectedTokenPrecision]);
 
   const variableTotalAvailableAtMaturityUSDFormatted = useMemo(() => {
-    if (!variableTotalAvailableAtMaturity || !yieldBearingTokenRate || !backingTokenRate) {
+    if (!variableTotalAvailableAtMaturity || !backingTokenRate || !backingTokenRate) {
       return;
     }
 
-    const tokenRate = selectedToken === backingToken ? backingTokenRate : yieldBearingTokenRate;
-
     return NumberUtils.formatToCurrency(
       ethers.utils.formatUnits(
-        mul18f(variableTotalAvailableAtMaturity, tokenRate, tokenPrecision.backingToken),
+        mul18f(variableTotalAvailableAtMaturity, backingTokenRate, tokenPrecision.backingToken),
         selectedTokenPrecision,
       ),
       2,
       '$',
     );
-  }, [
-    backingToken,
-    backingTokenRate,
-    variableTotalAvailableAtMaturity,
-    selectedToken,
-    selectedTokenPrecision,
-    tokenPrecision.backingToken,
-    yieldBearingTokenRate,
-  ]);
+  }, [backingTokenRate, variableTotalAvailableAtMaturity, selectedTokenPrecision, tokenPrecision.backingToken]);
 
   const depositDisabled = useMemo((): boolean => {
     return isYieldNegative === null ? true : isYieldNegative;
