@@ -87,7 +87,6 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
   const yieldBearingTokenAddress = staticPoolData[selectedPool.get()].yieldBearingTokenAddress.attach(Downgraded).get();
   const decimalsForUI = staticPoolData[selectedPool.get()].decimalsForUI.attach(Downgraded).get();
   const poolId = staticPoolData[selectedPool.get()].poolId.attach(Downgraded).get();
-  const startDate = staticPoolData[selectedPool.get()].startDate.attach(Downgraded).get();
   const maturityDate = staticPoolData[selectedPool.get()].maturityDate.attach(Downgraded).get();
   const tokenPrecision = staticPoolData[selectedPool.get()].tokenPrecision.attach(Downgraded).get();
   const showEstimatesInBackingToken = staticPoolData[selectedPool.get()].showEstimatesInBackingToken
@@ -682,6 +681,7 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
               defaultValue={amount}
               onChange={onAmountChange}
               onMaxClick={onClickMax}
+              precision={selectedTokenPrecision}
               disabled={!selectedToken || depositDisabled}
               // TODO - Update text in case input is disabled because of negative yield
               disabledTooltip={getText('selectTokenFirst', language)}
