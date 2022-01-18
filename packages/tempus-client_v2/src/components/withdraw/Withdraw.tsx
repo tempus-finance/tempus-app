@@ -101,21 +101,21 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
 
   const onPrincipalsMaxClick = useCallback(() => {
     if (userPrincipalsBalance) {
-      setPrincipalsAmount(ethers.utils.formatEther(userPrincipalsBalance));
+      setPrincipalsAmount(ethers.utils.formatUnits(userPrincipalsBalance, tokenPrecision.principals));
     }
-  }, [userPrincipalsBalance]);
+  }, [userPrincipalsBalance, tokenPrecision.principals]);
 
   const onYieldsMaxClick = useCallback(() => {
     if (userYieldsBalance) {
-      setYieldsAmount(ethers.utils.formatEther(userYieldsBalance));
+      setYieldsAmount(ethers.utils.formatUnits(userYieldsBalance, tokenPrecision.yields));
     }
-  }, [userYieldsBalance]);
+  }, [userYieldsBalance, tokenPrecision.yields]);
 
   const onLpTokensMaxClick = useCallback(() => {
     if (userLPTokenBalance) {
-      setLpTokenAmount(ethers.utils.formatEther(userLPTokenBalance));
+      setLpTokenAmount(ethers.utils.formatUnits(userLPTokenBalance, tokenPrecision.lpTokens));
     }
-  }, [userLPTokenBalance]);
+  }, [userLPTokenBalance, tokenPrecision.lpTokens]);
 
   const onTokenChange = useCallback(
     (token: Ticker | undefined) => {
