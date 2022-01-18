@@ -80,6 +80,7 @@ export default class PoolDataAdapter {
     principalsTokenBalance: BigNumber;
     yieldsTokenBalance: BigNumber;
     lpTokensBalance: BigNumber;
+    yieldBearingTokenConversionRate: BigNumber;
   }> {
     if (!userWalletAddress) {
       console.error(
@@ -170,6 +171,7 @@ export default class PoolDataAdapter {
             principalsTokenBalance,
             yieldsTokenBalance,
             lpTokensBalance,
+            yieldBearingTokenConversionRate,
           };
         }),
       );
@@ -918,7 +920,12 @@ export default class PoolDataAdapter {
     }
   }
 
-  async getYieldBearingTokenRate(tempusPool: string, backingTokenTicker: Ticker, backingTokenPrecision: number, yieldBearingTokenPrecision: number) {
+  async getYieldBearingTokenRate(
+    tempusPool: string,
+    backingTokenTicker: Ticker,
+    backingTokenPrecision: number,
+    yieldBearingTokenPrecision: number,
+  ) {
     if (!this.statisticService || !this.tempusPoolService) {
       console.error(
         'PoolDataAdapter - getYieldBearingTokenRate() - Attempted to use PoolDataAdapter before initializing it!',
@@ -941,11 +948,11 @@ export default class PoolDataAdapter {
         const precisionDiff = yieldBearingTokenPrecision - backingTokenPrecision;
 
         const yieldBearingTokenConversionRateParsed = increasePrecision(yieldBearingTokenConversionRate, precisionDiff);
-        const backingTokenRateParsed = increasePrecision(backingTokenRate, precisionDiff)
+        const backingTokenRateParsed = increasePrecision(backingTokenRate, precisionDiff);
 
         return mul18f(yieldBearingTokenConversionRateParsed, backingTokenRateParsed, yieldBearingTokenPrecision);
       }
-      
+
       return mul18f(yieldBearingTokenConversionRate, backingTokenRate, backingTokenPrecision);
     } catch (error) {
       console.error('PoolDataAdapter - getBackingTokenRate() - Failed to get backing token rate!', error);
