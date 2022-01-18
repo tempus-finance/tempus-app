@@ -752,7 +752,7 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
                 <div className="tc__deposit__card-row-change">
                   <Typography variant="body-text" color="success">
                     {fixedYieldAtMaturityFormatted ? (
-                      `+${fixedYieldAtMaturityFormatted} ${yieldBearingToken}`
+                      `+${fixedYieldAtMaturityFormatted} ${selectedToken}`
                     ) : (
                       <CircularProgress size={14} />
                     )}
@@ -780,7 +780,7 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
                 <div className="tc__deposit__card-row-change">
                   <Typography variant="body-text">
                     {fixedTotalAvailableAtMaturityFormatted ? (
-                      `${fixedTotalAvailableAtMaturityFormatted} ${yieldBearingToken}`
+                      `${fixedTotalAvailableAtMaturityFormatted} ${selectedToken}`
                     ) : (
                       <CircularProgress size={14} />
                     )}
@@ -839,7 +839,7 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
                 <div className="tc__deposit__card-row-change">
                   <Typography variant="body-text" color="success">
                     {estimatedYieldAtMaturityFormatted ? (
-                      `+${estimatedYieldAtMaturityFormatted} ${yieldBearingToken}`
+                      `+${estimatedYieldAtMaturityFormatted} ${selectedToken}`
                     ) : (
                       <CircularProgress size={14} />
                     )}
@@ -867,7 +867,7 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
                 <div className="tc__deposit__card-row-change">
                   <Typography variant="body-text">
                     {variableTotalAvailableAtMaturityFormatted ? (
-                      `${variableTotalAvailableAtMaturityFormatted} ${yieldBearingToken}`
+                      `${variableTotalAvailableAtMaturityFormatted} ${selectedToken}`
                     ) : (
                       <CircularProgress size={14} />
                     )}
