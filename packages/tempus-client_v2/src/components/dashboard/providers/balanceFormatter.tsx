@@ -9,7 +9,7 @@ import { Ticker } from '../../../interfaces/Token';
 import { DashboardRow } from '../../../interfaces/DashboardRow';
 import NumberUtils from '../../../services/NumberUtils';
 import Typography from '../../typography/Typography';
-import { ZERO } from '../../../constants';
+import { tokenPrecision, ZERO } from '../../../constants';
 import Spacer from '../../spacer/spacer';
 
 import './balanceFormatter.scss';
@@ -57,12 +57,17 @@ const BalanceFormatter = (props: DataTypeProvider.ValueFormatterProps) => {
 
     if (showFiat) {
       const currencySymbol = '$';
-      content = `${currencySymbol}${NumberUtils.formatWithMultiplier(ethers.utils.formatEther(balance), 2)}`;
+      content = `${currencySymbol}${NumberUtils.formatWithMultiplier(
+        // TODO - Use backing token precision from child items
+        ethers.utils.formatUnits(balance, tokenPrecision[row.token]),
+        2,
+      )}`;
     } else {
       content = (
         <>
           {/* TODO - Use decimalsForUI precision from child items (max precision) */}
-          {NumberUtils.formatWithMultiplier(ethers.utils.formatEther(balance), 4)}
+          {/* TODO - Use backing token precision from child items */}
+          {NumberUtils.formatWithMultiplier(ethers.utils.formatUnits(balance, tokenPrecision[row.token]), 4)}
           <Spacer size={5} />
           {row.token}
         </>
