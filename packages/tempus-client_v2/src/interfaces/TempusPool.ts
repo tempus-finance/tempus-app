@@ -18,4 +18,5 @@ export type TempusPool = {
   spotPrice: string;
   decimalsForUI: number;
   tokenPrecision: TokenPrecision;
+  showEstimatesInBackingToken: boolean;
 };
