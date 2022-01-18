@@ -14,7 +14,7 @@ import {
   BLOCK_DURATION_SECONDS,
 } from '../constants';
 import TempusPoolService from '../services/TempusPoolService';
-import VaultService from '../services/VaultService';
+import VaultService, { PoolBalanceChangedEvent, SwapEvent } from '../services/VaultService';
 import TempusAMMService from '../services/TempusAMMService';
 import { isPoolBalanceChangedEvent, isSwapEvent } from '../services/EventUtils';
 import { ProtocolName } from '../interfaces/ProtocolName';
@@ -23,6 +23,7 @@ import { wadToDai } from '../utils/rayToDai';
 import getConfig from '../utils/getConfig';
 import { div18f, mul18f } from '../utils/weiMath';
 import getProvider from '../utils/getProvider';
+import { TempusPool } from '../interfaces/TempusPool';
 
 const SECONDS_IN_A_WEEK = SECONDS_IN_A_DAY * 7;
 const HOURS_IN_A_YEAR = DAYS_IN_A_YEAR * 24;
@@ -86,27 +87,16 @@ class VariableRateService {
       this.tempusAMMService.getSwapFeePercentage(tempusAMM),
     ]);
 
-    const { startDate } = poolConfig;
-
     const earlierBlock = await provider.getBlock(
       latestBlock.number - Math.floor(SECONDS_IN_A_WEEK / BLOCK_DURATION_SECONDS),
     );
 
-    const laterBlock = startDate >= earlierBlock.timestamp * 1000 ? startDate : earlierBlock.timestamp * 1000;
+    const laterBlock = Math.max(poolConfig.startDate, earlierBlock.timestamp * 1000);
     const hoursBetweenLatestAndLater = ((latestBlock.timestamp * 1000 - laterBlock) / (60 * 60 * 1000)).toFixed(18);
 
     const fetchEventsFromBlock = latestBlock.number - earlierBlock.number;
 
-    // Fetch swap and poolBalanceChanged events
-    const [swapEvents, poolBalanceChangedEvents] = await Promise.all([
-      this.vaultService.getSwapEvents({ forPoolId: poolConfig.poolId, fromBlock: fetchEventsFromBlock }),
-      this.vaultService.getPoolBalanceChangedEvents(poolConfig.poolId, fetchEventsFromBlock),
-    ]);
-
-    const events = [...swapEvents, ...poolBalanceChangedEvents];
-
-    // Sort events from newest to oldest
-    const sortedEvents = events.sort((a, b) => b.blockNumber - a.blockNumber);
+    const sortedEvents = await this.getSwapAndPoolBalanceChangedEvents(poolConfig, fetchEventsFromBlock);
 
     // Fetch current pool balance
     let { principals, yields } = await this.getPoolTokens(poolConfig.poolId, principalsAddress, yieldsAddress);
@@ -122,45 +112,20 @@ class VariableRateService {
 
     // Go over all events and accumulate total swap fees
     sortedEvents.forEach(event => {
-      if (!this.tempusAMMService || !this.tempusPoolService) {
-        return Promise.reject();
-      }
-
       if (isSwapEvent(event)) {
-        // Get swap event volume
-        let eventVolume: BigNumber = BigNumber.from('0');
-        if (event.args.tokenIn === principalsAddress) {
-          eventVolume = event.args.amountIn;
-        } else if (event.args.tokenOut === principalsAddress) {
-          eventVolume = mul18f(
-            div18f(swapFeePercentage, ethers.utils.parseEther('1').sub(swapFeePercentage)),
-            event.args.amountOut,
-          );
-        }
-
-        // Calculate swap fees for current swap event
-        const swapFeesVolume = mul18f(eventVolume, swapFeePercentage);
-        const liquidityProvided = principals.sub(swapFeesVolume);
-        const feePerPrincipalShare = div18f(swapFeesVolume, liquidityProvided);
-        totalFees = totalFees.add(feePerPrincipalShare);
-
-        // Adjust pool balance based on swapped amounts
-        if (event.args.tokenIn === principalsAddress) {
-          principals = principals.sub(event.args.amountIn);
-        } else {
-          principals = principals.add(event.args.amountOut);
-        }
+        const adjust = this.adjustPrincipalForSwapEvent(
+          event,
+          principalsAddress,
+          principals,
+          totalFees,
+          swapFeePercentage,
+        );
+        principals = adjust.principals;
+        totalFees = adjust.totalFees;
       }
 
       if (isPoolBalanceChangedEvent(event)) {
-        // Adjust current balance based on PoolBalanceChangedEvent
-        const principalsIndexInBalanceChange = event.args.tokens.findIndex(
-          poolTokenAddress => principalsAddress === poolTokenAddress,
-        );
-        const principalsDelta = event.args.deltas[principalsIndexInBalanceChange];
-        principals = principalsDelta.isNegative()
-          ? principals.add(principalsDelta.abs())
-          : principals.sub(principalsDelta.abs());
+        principals = this.adjustPrincipalForPoolBalanceChangedEvent(event, principalsAddress, principals);
       }
     });
 
@@ -172,6 +137,79 @@ class VariableRateService {
     );
 
     return mul18f(scaledFees, currentPrincipalsToYieldsRatio);
+  }
+
+  private async getSwapAndPoolBalanceChangedEvents(
+    poolConfig: TempusPool,
+    fetchEventsFromBlock: number,
+  ): Promise<(SwapEvent | PoolBalanceChangedEvent)[]> {
+    if (!this.vaultService) {
+      return Promise.reject();
+    }
+
+    // Fetch swap and poolBalanceChanged events
+    const [swapEvents, poolBalanceChangedEvents] = await Promise.all([
+      this.vaultService.getSwapEvents({ forPoolId: poolConfig.poolId, fromBlock: fetchEventsFromBlock }),
+      this.vaultService.getPoolBalanceChangedEvents(poolConfig.poolId, fetchEventsFromBlock),
+    ]);
+
+    const events = [...swapEvents, ...poolBalanceChangedEvents];
+
+    // Sort events from newest to oldest
+    const sortedEvents = events.sort((a, b) => b.blockNumber - a.blockNumber);
+
+    return sortedEvents;
+  }
+
+  private adjustPrincipalForSwapEvent(
+    event: SwapEvent,
+    principalsAddress: string,
+    principals: BigNumber,
+    totalFees: BigNumber,
+    swapFeePercentage: BigNumber,
+  ): { principals: BigNumber; totalFees: BigNumber } {
+    // Get swap event volume
+    let eventVolume: BigNumber = BigNumber.from('0');
+    if (event.args.tokenIn === principalsAddress) {
+      eventVolume = event.args.amountIn;
+    } else if (event.args.tokenOut === principalsAddress) {
+      eventVolume = mul18f(
+        div18f(swapFeePercentage, ethers.utils.parseEther('1').sub(swapFeePercentage)),
+        event.args.amountOut,
+      );
+    }
+
+    // Calculate swap fees for current swap event
+    const swapFeesVolume = mul18f(eventVolume, swapFeePercentage);
+    const liquidityProvided = principals.sub(swapFeesVolume);
+    const feePerPrincipalShare = div18f(swapFeesVolume, liquidityProvided);
+    totalFees = totalFees.add(feePerPrincipalShare);
+
+    // Adjust pool balance based on swapped amounts
+    if (event.args.tokenIn === principalsAddress) {
+      principals = principals.sub(event.args.amountIn);
+    } else if (event.args.tokenOut === principalsAddress) {
+      principals = principals.add(event.args.amountOut);
+    }
+
+    return { principals, totalFees };
+  }
+
+  private adjustPrincipalForPoolBalanceChangedEvent(
+    event: PoolBalanceChangedEvent,
+    principalsAddress: string,
+    principals: BigNumber,
+  ): BigNumber {
+    // Adjust current balance based on PoolBalanceChangedEvent
+    const principalsIndexInBalanceChange = event.args.tokens.findIndex(
+      poolTokenAddress => principalsAddress === poolTokenAddress,
+    );
+    const principalsDelta = event.args.deltas[principalsIndexInBalanceChange];
+    principals = principalsDelta.isNegative()
+      ? principals.add(principalsDelta.abs())
+      : principals.sub(principalsDelta.abs());
+
+    return principals;
   }
 
   async getAprRate(protocol: ProtocolName, yieldBearingTokenAddress: string, fees: BigNumber): Promise<number> {
@@ -240,11 +278,16 @@ class VariableRateService {
     preTotalPooledEther: BigNumber,
     timeElapsed: BigNumber,
   ): BigNumber {
-    return postTotalPooledEther
-      .sub(preTotalPooledEther)
-      .mul(BN_SECONDS_IN_YEAR)
-      .mul(BN_ONE_ETH_IN_WEI)
-      .div(preTotalPooledEther.mul(timeElapsed));
+    try {
+      return postTotalPooledEther
+        .sub(preTotalPooledEther)
+        .mul(BN_SECONDS_IN_YEAR)
+        .mul(BN_ONE_ETH_IN_WEI)
+        .div(preTotalPooledEther.mul(timeElapsed));
+    } catch (error) {
+      console.error('VariableRateService - calculateLidoAPR', error);
+      return BigNumber.from(0);
+    }
   }
 
   // https://github.com/Rari-Capital/RariSDK/blob/d6293e09c36a4ac6914725f5a5528a9c1e7cb178/src/Vaults/pools/stable.ts#L473
@@ -280,7 +323,7 @@ class VariableRateService {
       const aaveAPY = Number(ethers.utils.formatEther(wadToDai(currentLiquidityRate)));
       return aaveAPY;
     } catch (error) {
-      console.error('VariableRateService - getAaveAPR', error);
+      console.error('VariableRateService - getAaveAPY', error);
       return 0;
     }
   }
