@@ -159,7 +159,7 @@ const Swap = () => {
 
     const actualSlippage = (autoSlippage ? 1 : slippage / 100).toString();
     const minReturn = receiveAmount.sub(
-      mul18f(receiveAmount, ethers.utils.parseUnits(actualSlippage, tokenOutPrecision)),
+      mul18f(receiveAmount, ethers.utils.parseUnits(actualSlippage, tokenOutPrecision), tokenOutPrecision),
     );
 
     const amountParsed = ethers.utils.parseUnits(amount, tokenPrecision);
