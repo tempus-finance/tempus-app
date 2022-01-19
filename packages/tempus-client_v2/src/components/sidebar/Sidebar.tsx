@@ -46,7 +46,7 @@ const Sidebar: FC<SidebarProps> = ({ initialView, onSelectedView }) => {
 
   const selectedPoolAddress = selectedPool.attach(Downgraded).get();
   const backingToken = staticPoolData[selectedPool.get()].backingToken.attach(Downgraded).get();
-  const protocol = staticPoolData[selectedPool.get()].protocol.attach(Downgraded).get();
+  const protocolDisplayName = staticPoolData[selectedPool.get()].protocolDisplayName.attach(Downgraded).get();
 
   const onItemClick = useCallback(
     (itemName: TransactionView) => {
@@ -55,16 +55,6 @@ const Sidebar: FC<SidebarProps> = ({ initialView, onSelectedView }) => {
     },
     [onSelectedView],
   );
-
-  const poolProtocol = useMemo(() => {
-    if (protocol === 'rari') {
-      return 'Rari Capital';
-    }
-
-    if (protocol === 'lido') {
-      return 'Lido';
-    }
-  }, [protocol]);
 
   useEffect(() => {
     if (initialView && initialView !== selectedView) {
@@ -124,7 +114,7 @@ const Sidebar: FC<SidebarProps> = ({ initialView, onSelectedView }) => {
     <div className="tc__sidebar-container">
       <TokenIcon ticker={backingToken} large />
       <Spacer size={5} />
-      <Typography variant="h4">{poolProtocol}</Typography>
+      <Typography variant="h4">{protocolDisplayName}</Typography>
       <Spacer size={5} />
       <Typography variant="h4">{backingToken} Pool</Typography>
       <Spacer size={10} />
