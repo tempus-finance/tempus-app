@@ -33,6 +33,12 @@ jest.mock('ethers', () => ({
   Contract: jest.fn(),
 }));
 
+global.fetch = jest.fn(() =>
+  Promise.resolve({
+    json: () => Promise.resolve([]),
+  }),
+);
+
 describe('VariableRateService', () => {
   let variableRateService: VariableRateService;
   const mockProvider = new JsonRpcProvider();
@@ -993,6 +999,34 @@ describe('VariableRateService', () => {
       expect((variableRateService as any).tokenAddressToContractMap[yieldBearingTokenAddress]).toEqual(
         new Contract(yieldBearingTokenAddress, cERC20Token, (variableRateService as any).signerOrProvider),
       );
+    });
+  });
+
+  describe('getYearnAPR()', () => {
+    test('test with no init() invoked (i.e. this.lidoOracle is undefined), should log an error and return 0', async () => {
+      const fees = Math.random() * 0.05;
+      const yieldBearingTokenAddress = '0x0000000000000000000000000000000000000001';
+
+      variableRateService = new VariableRateService();
+
+      await expect((variableRateService as any).getYearnAPR(yieldBearingTokenAddress, fees)).resolves.toEqual(0);
+      expect(console.error).toHaveBeenCalled();
+      expect((console.error as jest.Mock<void, any>).mock.calls[0][0]).toEqual('VariableRateService - getYearnData');
+      expect((console.error as jest.Mock<void, any>).mock.calls[0][1]).toBeInstanceOf(Error);
+    });
+
+    test('should call fetchYearnData(), getYearnAPY() and getAprFromApy() and return APR + fee', async () => {
+      const fees = Math.random() * 0.05;
+      const yieldBearingTokenAddress = '0x0000000000000000000000000000000000000001';
+
+      jest
+        .spyOn(variableRateService as any, 'fetchYearnData')
+        .mockReturnValue([{ address: 'abc', apy: { net_apy: 1.23 } }]);
+
+      jest.spyOn(variableRateService as any, 'getYearnAPY').mockReturnValue(10);
+      const expected = 10 + fees;
+
+      await expect((variableRateService as any).getYearnAPR(yieldBearingTokenAddress, fees)).resolves.toEqual(expected);
     });
   });
 });

@@ -1,6 +1,7 @@
 import { ethers, BigNumber, Contract } from 'ethers';
 import { JsonRpcSigner, JsonRpcProvider } from '@ethersproject/providers';
-import { Vaults } from 'rari-sdk';
+import { debounceTime, from, Observable, of, switchMap } from 'rxjs';
+import { Vaults as RariVault } from 'rari-sdk';
 import lidoOracleABI from '../abi/LidoOracle.json';
 import AaveLendingPoolABI from '../abi/AaveLendingPool.json';
 import cERC20Token from '../abi/cERC20Token.json';
@@ -24,12 +25,16 @@ import getConfig from '../utils/getConfig';
 import { div18f, mul18f } from '../utils/weiMath';
 import getProvider from '../utils/getProvider';
 import { TempusPool } from '../interfaces/TempusPool';
+import { YearnData } from '../interfaces/YearnData';
 
 const SECONDS_IN_A_WEEK = SECONDS_IN_A_DAY * 7;
 const HOURS_IN_A_YEAR = DAYS_IN_A_YEAR * 24;
 const BN_SECONDS_IN_YEAR = BigNumber.from(SECONDS_IN_YEAR);
 const BN_ONE_ETH_IN_WEI = BigNumber.from(ONE_ETH_IN_WEI);
 const ethMantissa = 1e18;
+
+const yearnEndpoint = 'https://api.yearn.finance/v1/chains/1/vaults/all';
+const intervalBetweenHttpRequestsInMilliseconds = 1000;
 
 class VariableRateService {
   static getAprFromApy(apy: number, periods: number = 1): number {
@@ -44,7 +49,7 @@ class VariableRateService {
 
   private aaveLendingPool: Contract | null = null;
   private lidoOracle: Contract | null = null;
-  private rariVault: Vaults | null = null;
+  private rariVault: RariVault | null = null;
   private tempusPoolService: TempusPoolService | null = null;
   private vaultService: VaultService | null = null;
   private tempusAMMService: TempusAMMService | null = null;
@@ -56,7 +61,7 @@ class VariableRateService {
     tempusPoolService: TempusPoolService,
     vaultService: VaultService,
     tempusAMMService: TempusAMMService,
-    rariVault: Vaults,
+    rariVault: RariVault,
     config: Config,
   ) {
     if (signerOrProvider) {
@@ -236,6 +241,10 @@ class VariableRateService {
         return this.getRariAPR(feesFormatted);
       }
 
+      case 'yearn': {
+        return this.getYearnAPR(yieldBearingTokenAddress, feesFormatted);
+      }
+
       default: {
         return 0;
       }
@@ -349,6 +358,41 @@ class VariableRateService {
     } catch (error) {
       console.error('VariableRateService - getCompoundAPY', error);
       return 0;
+    }
+  }
+
+  // https://docs.yearn.finance/vaults/yearn-api
+  private async getYearnAPR(yieldBearingTokenAddress: string, fees: number): Promise<number> {
+    const yearnAPY = await this.getYearnAPY(yieldBearingTokenAddress);
+    const yearnAPR = VariableRateService.getAprFromApy(yearnAPY);
+
+    return yearnAPR ? yearnAPR + fees : 0;
+  }
+
+  private async getYearnAPY(yieldBearingTokenAddress: string): Promise<number> {
+    return new Promise(resolve => {
+      this.fetchYearnData().subscribe(yearnData => {
+        if (yearnData) {
+          const data = yearnData.filter(data => data.address === yieldBearingTokenAddress);
+          if (data) {
+            return resolve(data[0].apy.net_apy);
+          }
+        }
+
+        return resolve(0);
+      });
+    });
+  }
+
+  private fetchYearnData(): Observable<YearnData[] | null> {
+    try {
+      return from(fetch(yearnEndpoint)).pipe(
+        debounceTime(intervalBetweenHttpRequestsInMilliseconds),
+        switchMap((response: Response) => response.json()),
+      );
+    } catch (error) {
+      console.error('VariableRateService - getYearnData', error);
+      return of(null);
     }
   }
 }
