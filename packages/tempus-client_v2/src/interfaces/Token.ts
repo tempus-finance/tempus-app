@@ -15,6 +15,7 @@ export type Ticker =
   | 'LP Token'
   | 'RARI'
   | 'RSPT'
-  | 'yvDAI';
+  | 'yvDAI'
+  | 'YEARN';
 
 export type PoolShares = 'Principals' | 'Yields';
