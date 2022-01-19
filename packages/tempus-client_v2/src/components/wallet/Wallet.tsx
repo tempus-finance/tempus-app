@@ -15,6 +15,7 @@ import { WalletContext } from '../../context/walletContext';
 import NumberUtils from '../../services/NumberUtils';
 import UserWallet from '../../interfaces/UserWallet';
 import getText from '../../localisation/getText';
+import useENS from '../../utils/useENS';
 import shortenAccount from '../../utils/shortenAccount';
 import getStorageService from '../../services/getStorageService';
 import getNotificationService from '../../services/getNotificationService';
@@ -323,6 +324,7 @@ const Wallet = () => {
         userWalletAddress: account || '',
       }));
   }, [account, library, setWalletData]);
+  const { ensName, ensAvatar } = useENS(account);
 
   let shortenedAccount;
   if (account) {
@@ -373,7 +375,12 @@ const Wallet = () => {
             >
               <AccountBalanceWalletIcon />
               <Spacer size={4} />
-              {pendingTransactions.length === 0 && <Typography variant="h5">{shortenedAccount}</Typography>}
+              {pendingTransactions.length === 0 && (
+                <div className="tc__connect-wallet-button__profile">
+                  {ensAvatar && <img src={ensAvatar} alt={shortenedAccount} />}
+                  <Typography variant="h5">{ensName || shortenedAccount}</Typography>
+                </div>
+              )}
               {pendingTransactions.length > 0 && (
                 <Typography variant="h5">
                   {pendingTransactions.length} {getText('pending', language)}
