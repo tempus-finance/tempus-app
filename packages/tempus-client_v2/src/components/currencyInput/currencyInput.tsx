@@ -7,6 +7,8 @@ import { formatValueToCurrency } from './currencyParser';
 
 import './currencyInput.scss';
 
+const defaultPrecision = 18;
+
 type CurrencyInputInProps = {
   defaultValue: string;
   placeholder?: string;
@@ -23,11 +25,10 @@ type CurrencyInputOutProps = {
 
 type CurrencyInputProps = CurrencyInputInProps & CurrencyInputOutProps;
 
-const currencyPrecision = 18;
-
 const CurrencyInput: FC<CurrencyInputProps> = ({
   defaultValue,
   placeholder,
+  precision = defaultPrecision,
   disabled,
   maxDisabled,
   disabledTooltip,
@@ -41,20 +42,20 @@ const CurrencyInput: FC<CurrencyInputProps> = ({
 
   useEffect(() => {
     if (defaultValue || defaultValue === '') {
-      setValue(formatValueToCurrency(defaultValue, currencyPrecision));
+      setValue(formatValueToCurrency(defaultValue, precision));
     }
-  }, [defaultValue]);
+  }, [defaultValue, precision]);
 
   const onValueChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const currentValue = event.currentTarget.value;
-      const parsedCurrency = formatValueToCurrency(currentValue, currencyPrecision);
+      const parsedCurrency = formatValueToCurrency(currentValue, precision);
       if (parsedCurrency || parsedCurrency === '') {
         setValue(parsedCurrency);
       }
       onChange && onChange(parsedCurrency.replace(/[^0-9$.]/g, ''));
     },
-    [onChange],
+    [precision, onChange],
   );
 
   const handleMaxClick = useCallback(() => {

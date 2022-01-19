@@ -6,7 +6,7 @@ import { catchError, of } from 'rxjs';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
 import getUserShareTokenBalanceProvider from '../../providers/getUserShareTokenBalanceProvider';
 import getUserBalanceProvider from '../../providers/getBalanceProvider';
-import { ETH_ALLOWANCE_FOR_GAS, ZERO } from '../../constants';
+import { ETH_ALLOWANCE_FOR_GAS, MILLISECONDS_IN_A_YEAR, ZERO } from '../../constants';
 import { LanguageContext } from '../../context/languageContext';
 import { WalletContext } from '../../context/walletContext';
 import { UserSettingsContext } from '../../context/userSettingsContext';
@@ -16,7 +16,7 @@ import getText from '../../localisation/getText';
 import getConfig from '../../utils/getConfig';
 import getTokenPrecision from '../../utils/getTokenPrecision';
 import { isZeroString } from '../../utils/isZeroString';
-import { mul18f } from '../../utils/weiMath';
+import { increasePrecision, mul18f } from '../../utils/weiMath';
 import NumberUtils from '../../services/NumberUtils';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
 import Approve from '../buttons/Approve';
@@ -62,6 +62,7 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
   const [selectedYield, setSelectedYield] = useState<SelectedYield>('Fixed');
   const [backingTokenRate, setBackingTokenRate] = useState<BigNumber | null>(null);
   const [yieldBearingTokenRate, setYieldBearingTokenRate] = useState<BigNumber | null>(null);
+  const [yieldBearingToBackingToken, setYieldBearingToBackingToken] = useState<BigNumber | null>(null);
 
   const [tokenEstimateInProgress, setTokenEstimateInProgress] = useState<boolean>(false);
   const [rateEstimateInProgress, setRateEstimateInProgress] = useState<boolean>(false);
@@ -87,9 +88,11 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
   const yieldBearingTokenAddress = staticPoolData[selectedPool.get()].yieldBearingTokenAddress.attach(Downgraded).get();
   const decimalsForUI = staticPoolData[selectedPool.get()].decimalsForUI.attach(Downgraded).get();
   const poolId = staticPoolData[selectedPool.get()].poolId.attach(Downgraded).get();
-  const startDate = staticPoolData[selectedPool.get()].startDate.attach(Downgraded).get();
   const maturityDate = staticPoolData[selectedPool.get()].maturityDate.attach(Downgraded).get();
   const tokenPrecision = staticPoolData[selectedPool.get()].tokenPrecision.attach(Downgraded).get();
+  const showEstimatesInBackingToken = staticPoolData[selectedPool.get()].showEstimatesInBackingToken
+    .attach(Downgraded)
+    .get();
 
   const onTokenChange = useCallback(
     (token: Ticker | undefined) => {
@@ -260,12 +263,21 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
             return of(null);
           }),
         )
-        .subscribe((result: { backingTokenRate: BigNumber; yieldBearingTokenRate: BigNumber } | null) => {
-          if (result) {
-            setBackingTokenRate(result.backingTokenRate);
-            setYieldBearingTokenRate(result.yieldBearingTokenRate);
-          }
-        });
+        .subscribe(
+          (
+            result: {
+              backingTokenRate: BigNumber;
+              yieldBearingTokenRate: BigNumber;
+              yieldBearingTokenConversionRate: BigNumber;
+            } | null,
+          ) => {
+            if (result) {
+              setBackingTokenRate(result.backingTokenRate);
+              setYieldBearingTokenRate(result.yieldBearingTokenRate);
+              setYieldBearingToBackingToken(result.yieldBearingTokenConversionRate);
+            }
+          },
+        );
 
       return () => stream$.unsubscribe();
     }
@@ -440,14 +452,26 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
       return null;
     }
 
-    let usdValue = mul18f(
-      usdRate,
-      ethers.utils.parseUnits(amount, tokenPrecision.backingToken),
-      tokenPrecision.backingToken,
-    );
+    let usdValue: BigNumber;
+    let precision = tokenPrecision.backingToken;
+    if (tokenPrecision.yieldBearingToken > tokenPrecision.backingToken) {
+      usdValue = mul18f(
+        increasePrecision(usdRate, tokenPrecision.yieldBearingToken - tokenPrecision.backingToken),
+        ethers.utils.parseUnits(amount, tokenPrecision.yieldBearingToken),
+        tokenPrecision.yieldBearingToken,
+      );
+      precision = tokenPrecision.yieldBearingToken;
+    } else {
+      usdValue = mul18f(
+        usdRate,
+        ethers.utils.parseUnits(amount, tokenPrecision.backingToken),
+        tokenPrecision.backingToken,
+      );
+      precision = tokenPrecision.backingToken;
+    }
 
-    return NumberUtils.formatToCurrency(ethers.utils.formatUnits(usdValue, tokenPrecision.backingToken), 2, '$');
-  }, [tokenPrecision.backingToken, usdRate, amount]);
+    return NumberUtils.formatToCurrency(ethers.utils.formatUnits(usdValue, precision), 2, '$');
+  }, [usdRate, amount, tokenPrecision.backingToken, tokenPrecision.yieldBearingToken]);
 
   const variableAPRFormatted = useMemo(() => {
     return NumberUtils.formatPercentage(variableAPR, 2);
@@ -469,31 +493,69 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
   }, [estimatedFixedApr, language]);
 
   const fixedYieldAtMaturityFormatted = useMemo(() => {
-    if (!fixedPrincipalsAmount || !amount || isZeroString(amount)) {
+    if (!fixedPrincipalsAmount || !amount || isZeroString(amount) || !yieldBearingToBackingToken) {
       return null;
     }
 
-    const value = fixedPrincipalsAmount.sub(ethers.utils.parseUnits(amount, tokenPrecision.principals));
+    let value: BigNumber;
+    if (selectedToken === yieldBearingToken) {
+      const amountFormatted = ethers.utils.parseUnits(
+        Number(amount).toFixed(tokenPrecision.backingToken),
+        tokenPrecision.backingToken,
+      );
 
-    return NumberUtils.formatToCurrency(ethers.utils.formatUnits(value, tokenPrecision.principals), decimalsForUI);
-  }, [amount, fixedPrincipalsAmount, decimalsForUI, tokenPrecision.principals]);
+      const backingTokenAmount = mul18f(amountFormatted, yieldBearingToBackingToken, tokenPrecision.backingToken);
+
+      value = fixedPrincipalsAmount.sub(backingTokenAmount);
+    } else {
+      value = fixedPrincipalsAmount.sub(ethers.utils.parseUnits(amount, tokenPrecision.backingToken));
+    }
+
+    return NumberUtils.formatToCurrency(ethers.utils.formatUnits(value, tokenPrecision.backingToken), decimalsForUI);
+  }, [
+    fixedPrincipalsAmount,
+    amount,
+    yieldBearingToBackingToken,
+    selectedToken,
+    yieldBearingToken,
+    tokenPrecision.backingToken,
+    decimalsForUI,
+  ]);
 
   const fixedYieldAtMaturityUSDFormatted = useMemo(() => {
-    if (!fixedPrincipalsAmount || !yieldBearingTokenRate || !amount || isZeroString(amount)) {
+    if (!fixedPrincipalsAmount || !backingTokenRate || !amount || isZeroString(amount) || !yieldBearingToBackingToken) {
       return null;
     }
 
-    const value = fixedPrincipalsAmount.sub(ethers.utils.parseUnits(amount, tokenPrecision.principals));
+    let value: BigNumber;
+    if (selectedToken === yieldBearingToken) {
+      const amountFormatted = ethers.utils.parseUnits(
+        Number(amount).toFixed(tokenPrecision.backingToken),
+        tokenPrecision.backingToken,
+      );
+
+      const backingTokenAmount = mul18f(amountFormatted, yieldBearingToBackingToken, tokenPrecision.backingToken);
+
+      value = fixedPrincipalsAmount.sub(backingTokenAmount);
+    } else {
+      value = fixedPrincipalsAmount.sub(ethers.utils.parseUnits(amount, tokenPrecision.backingToken));
+    }
 
     return NumberUtils.formatToCurrency(
-      ethers.utils.formatUnits(
-        mul18f(value, yieldBearingTokenRate, tokenPrecision.principals),
-        tokenPrecision.principals,
-      ),
+      ethers.utils.formatUnits(mul18f(value, backingTokenRate, tokenPrecision.principals), tokenPrecision.principals),
       2,
       '$',
     );
-  }, [amount, fixedPrincipalsAmount, tokenPrecision.principals, yieldBearingTokenRate]);
+  }, [
+    fixedPrincipalsAmount,
+    backingTokenRate,
+    amount,
+    yieldBearingToBackingToken,
+    selectedToken,
+    yieldBearingToken,
+    tokenPrecision.principals,
+    tokenPrecision.backingToken,
+  ]);
 
   const fixedTotalAvailableAtMaturityFormatted = useMemo(() => {
     if (!fixedPrincipalsAmount) {
@@ -507,37 +569,66 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
   }, [fixedPrincipalsAmount, tokenPrecision.principals, decimalsForUI]);
 
   const fixedTotalAvailableAtMaturityUSDFormatted = useMemo(() => {
-    if (!fixedPrincipalsAmount || !yieldBearingTokenRate) {
+    if (!fixedPrincipalsAmount || !backingTokenRate) {
       return null;
     }
 
     return NumberUtils.formatToCurrency(
       ethers.utils.formatUnits(
-        mul18f(fixedPrincipalsAmount, yieldBearingTokenRate, tokenPrecision.principals),
+        mul18f(fixedPrincipalsAmount, backingTokenRate, tokenPrecision.principals),
         tokenPrecision.principals,
       ),
       2,
       '$',
     );
-  }, [fixedPrincipalsAmount, tokenPrecision.principals, yieldBearingTokenRate]);
+  }, [fixedPrincipalsAmount, tokenPrecision.principals, backingTokenRate]);
 
   const estimatedYieldAtMaturity = useMemo(() => {
-    if (!variableAPR || !amount) {
+    if (!variableAPR || !amount || !yieldBearingToBackingToken) {
       return null;
     }
 
-    const poolDuration = maturityDate - startDate;
     const timeUntilMaturity = maturityDate - Date.now();
 
-    const scaleFactor = ethers.utils.parseEther((timeUntilMaturity / poolDuration).toString());
+    const scaleFactor = ethers.utils.parseEther((timeUntilMaturity / MILLISECONDS_IN_A_YEAR).toString());
 
-    const amountParsed = ethers.utils.parseUnits(amount, selectedTokenPrecision);
+    let amountParsed: BigNumber;
+    if (selectedToken === yieldBearingToken) {
+      const amountFormatted = ethers.utils.parseUnits(
+        Number(amount).toFixed(tokenPrecision.yieldBearingToken),
+        tokenPrecision.yieldBearingToken,
+      );
+
+      let yieldBearingToBackingTokenParsed: BigNumber;
+      if (tokenPrecision.yieldBearingToken > tokenPrecision.backingToken) {
+        yieldBearingToBackingTokenParsed = increasePrecision(
+          yieldBearingToBackingToken,
+          tokenPrecision.yieldBearingToken - tokenPrecision.backingToken,
+        );
+      } else {
+        yieldBearingToBackingTokenParsed = yieldBearingToBackingToken;
+      }
+
+      amountParsed = mul18f(amountFormatted, yieldBearingToBackingTokenParsed, tokenPrecision.yieldBearingToken);
+    } else {
+      amountParsed = ethers.utils.parseUnits(amount, tokenPrecision.backingToken);
+    }
+
     const variableAPRParsed = ethers.utils.parseEther(variableAPR.toString() || '1');
 
     const estimatedYieldForPool = mul18f(amountParsed, variableAPRParsed);
 
     return mul18f(estimatedYieldForPool, scaleFactor);
-  }, [amount, maturityDate, startDate, selectedTokenPrecision, variableAPR]);
+  }, [
+    amount,
+    maturityDate,
+    selectedToken,
+    tokenPrecision.backingToken,
+    tokenPrecision.yieldBearingToken,
+    variableAPR,
+    yieldBearingToBackingToken,
+    yieldBearingToken,
+  ]);
 
   const estimatedYieldAtMaturityFormatted = useMemo(() => {
     if (!estimatedYieldAtMaturity) {
@@ -572,54 +663,34 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
   }, [decimalsForUI, selectedTokenPrecision, variableTotalAvailableAtMaturity]);
 
   const estimatedYieldAtMaturityUSDFormatted = useMemo(() => {
-    if (!estimatedYieldAtMaturity || !yieldBearingTokenRate || !backingTokenRate) {
+    if (!estimatedYieldAtMaturity || !backingTokenRate || !backingTokenRate) {
       return;
     }
 
-    const tokenRate = selectedToken === backingToken ? backingTokenRate : yieldBearingTokenRate;
-
     return NumberUtils.formatToCurrency(
       ethers.utils.formatUnits(
-        mul18f(estimatedYieldAtMaturity, tokenRate, tokenPrecision.backingToken),
+        mul18f(estimatedYieldAtMaturity, backingTokenRate, tokenPrecision.backingToken),
         selectedTokenPrecision,
       ),
       2,
       '$',
     );
-  }, [
-    backingToken,
-    backingTokenRate,
-    estimatedYieldAtMaturity,
-    selectedToken,
-    tokenPrecision.backingToken,
-    selectedTokenPrecision,
-    yieldBearingTokenRate,
-  ]);
+  }, [estimatedYieldAtMaturity, backingTokenRate, tokenPrecision.backingToken, selectedTokenPrecision]);
 
   const variableTotalAvailableAtMaturityUSDFormatted = useMemo(() => {
-    if (!variableTotalAvailableAtMaturity || !yieldBearingTokenRate || !backingTokenRate) {
+    if (!variableTotalAvailableAtMaturity || !backingTokenRate || !backingTokenRate) {
       return;
     }
 
-    const tokenRate = selectedToken === backingToken ? backingTokenRate : yieldBearingTokenRate;
-
     return NumberUtils.formatToCurrency(
       ethers.utils.formatUnits(
-        mul18f(variableTotalAvailableAtMaturity, tokenRate, tokenPrecision.backingToken),
+        mul18f(variableTotalAvailableAtMaturity, backingTokenRate, tokenPrecision.backingToken),
         selectedTokenPrecision,
       ),
       2,
       '$',
     );
-  }, [
-    backingToken,
-    backingTokenRate,
-    variableTotalAvailableAtMaturity,
-    selectedToken,
-    selectedTokenPrecision,
-    tokenPrecision.backingToken,
-    yieldBearingTokenRate,
-  ]);
+  }, [backingTokenRate, variableTotalAvailableAtMaturity, selectedTokenPrecision, tokenPrecision.backingToken]);
 
   const depositDisabled = useMemo((): boolean => {
     return isYieldNegative === null ? true : isYieldNegative;
@@ -703,6 +774,7 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
               defaultValue={amount}
               onChange={onAmountChange}
               onMaxClick={onClickMax}
+              precision={selectedTokenPrecision}
               disabled={!selectedToken || depositDisabled}
               // TODO - Update text in case input is disabled because of negative yield
               disabledTooltip={getText('selectTokenFirst', language)}
@@ -752,7 +824,9 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
                 <div className="tc__deposit__card-row-change">
                   <Typography variant="body-text" color="success">
                     {fixedYieldAtMaturityFormatted ? (
-                      `+${fixedYieldAtMaturityFormatted} ${yieldBearingToken}`
+                      `+${fixedYieldAtMaturityFormatted} ${
+                        showEstimatesInBackingToken ? backingToken : yieldBearingToken
+                      }`
                     ) : (
                       <CircularProgress size={14} />
                     )}
@@ -780,7 +854,9 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
                 <div className="tc__deposit__card-row-change">
                   <Typography variant="body-text">
                     {fixedTotalAvailableAtMaturityFormatted ? (
-                      `${fixedTotalAvailableAtMaturityFormatted} ${yieldBearingToken}`
+                      `${fixedTotalAvailableAtMaturityFormatted} ${
+                        showEstimatesInBackingToken ? backingToken : yieldBearingToken
+                      }`
                     ) : (
                       <CircularProgress size={14} />
                     )}
@@ -839,7 +915,9 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
                 <div className="tc__deposit__card-row-change">
                   <Typography variant="body-text" color="success">
                     {estimatedYieldAtMaturityFormatted ? (
-                      `+${estimatedYieldAtMaturityFormatted} ${yieldBearingToken}`
+                      `+${estimatedYieldAtMaturityFormatted} ${
+                        showEstimatesInBackingToken ? backingToken : yieldBearingToken
+                      }`
                     ) : (
                       <CircularProgress size={14} />
                     )}
@@ -867,7 +945,9 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
                 <div className="tc__deposit__card-row-change">
                   <Typography variant="body-text">
                     {variableTotalAvailableAtMaturityFormatted ? (
-                      `${variableTotalAvailableAtMaturityFormatted} ${yieldBearingToken}`
+                      `${variableTotalAvailableAtMaturityFormatted} ${
+                        showEstimatesInBackingToken ? backingToken : yieldBearingToken
+                      }`
                     ) : (
                       <CircularProgress size={14} />
                     )}
