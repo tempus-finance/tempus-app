@@ -6,7 +6,6 @@
   align-items: center;
   height: 100%;
   padding-top: 25px;
-  padding-right: 15px;
   border-radius: 5px 0px 0px 5px;
   box-shadow: 2px 0px 4px rgba(0, 0, 0, 0.25);
   background: $card-background;
@@ -22,6 +21,12 @@
 
 .tc__sidebar-section-title {
   align-self: flex-start;
+}
+
+.tc__sidebar-list-items-wrapper {
+  width: 100%;
+  padding-right: 15px;
+  box-sizing: border-box;
 }
 
 .tc__sidebar-view-item {

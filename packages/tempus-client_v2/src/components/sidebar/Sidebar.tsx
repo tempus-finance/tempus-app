@@ -134,101 +134,103 @@ const Sidebar: FC<SidebarProps> = ({ initialView, onSelectedView }) => {
         </Typography>
       </div>
 
-      {/* Basic Section */}
-      <div className="tc__sidebar-section-title">
-        <Typography variant="h5" color="title">
-          {getText('basic', language)}
-        </Typography>
-        <Typography variant="sub-title" color="title">
-          {getText('basicSubTitle', language)}
-        </Typography>
-      </div>
-      {basicViews.map((basicViewName: TransactionView) => {
-        let disabledReason: Words | null = null;
+      <div className="tc__sidebar-list-items-wrapper">
+        {/* Basic Section */}
+        <div className="tc__sidebar-section-title">
+          <Typography variant="h5" color="title">
+            {getText('basic', language)}
+          </Typography>
+          <Typography variant="sub-title" color="title">
+            {getText('basicSubTitle', language)}
+          </Typography>
+        </div>
+        {basicViews.map((basicViewName: TransactionView) => {
+          let disabledReason: Words | null = null;
 
-        if (basicViewName === 'deposit' && depositDisabledReason) {
-          disabledReason = depositDisabledReason;
-        } else if (basicViewName === 'withdraw' && withdrawDisabledReason) {
-          disabledReason = withdrawDisabledReason;
-        }
+          if (basicViewName === 'deposit' && depositDisabledReason) {
+            disabledReason = depositDisabledReason;
+          } else if (basicViewName === 'withdraw' && withdrawDisabledReason) {
+            disabledReason = withdrawDisabledReason;
+          }
 
-        const selected = selectedView === basicViewName;
-        return (
-          <>
-            {disabledReason && (
-              <Tooltip title={disabledReason ? getText(disabledReason, language) : ''}>
-                <div key={basicViewName} className="tc__sidebar-view-item disabled">
-                  <Typography variant="h5" color="title">
+          const selected = selectedView === basicViewName;
+          return (
+            <>
+              {disabledReason && (
+                <Tooltip title={disabledReason ? getText(disabledReason, language) : ''}>
+                  <div key={basicViewName} className="tc__sidebar-view-item disabled">
+                    <Typography variant="h5" color="title">
+                      {getText(basicViewName, language)}
+                    </Typography>
+                  </div>
+                </Tooltip>
+              )}
+
+              {!disabledReason && (
+                <div
+                  key={basicViewName}
+                  className={`tc__sidebar-view-item ${selected ? 'selected' : ''}`}
+                  onClick={() => onItemClick(basicViewName)}
+                >
+                  <Typography variant="h5" color={selected ? 'inverted' : 'default'}>
                     {getText(basicViewName, language)}
                   </Typography>
                 </div>
-              </Tooltip>
-            )}
+              )}
+            </>
+          );
+        })}
+        {/* Advanced Section */}
+        <div className="tc__sidebar-section-title">
+          <Typography variant="h5" color="title">
+            {getText('advanced', language)}
+          </Typography>
+          <Typography variant="sub-title" color="title">
+            {getText('advancedSubTitle', language)}
+          </Typography>
+        </div>
+        {advancedViews.map(advancedViewName => {
+          let disabledReason: Words | null = null;
 
-            {!disabledReason && (
-              <div
-                key={basicViewName}
-                className={`tc__sidebar-view-item ${selected ? 'selected' : ''}`}
-                onClick={() => onItemClick(basicViewName)}
-              >
-                <Typography variant="h5" color={selected ? 'inverted' : 'default'}>
-                  {getText(basicViewName, language)}
-                </Typography>
-              </div>
-            )}
-          </>
-        );
-      })}
-      {/* Advanced Section */}
-      <div className="tc__sidebar-section-title">
-        <Typography variant="h5" color="title">
-          {getText('advanced', language)}
-        </Typography>
-        <Typography variant="sub-title" color="title">
-          {getText('advancedSubTitle', language)}
-        </Typography>
-      </div>
-      {advancedViews.map(advancedViewName => {
-        let disabledReason: Words | null = null;
+          if (advancedViewName === 'mint' && mintDisabledReason) {
+            disabledReason = mintDisabledReason;
+          } else if (advancedViewName === 'swap' && swapDisabledReason) {
+            disabledReason = swapDisabledReason;
+          } else if (advancedViewName === 'provideLiquidity' && provideLiquidityDisabledReason) {
+            disabledReason = provideLiquidityDisabledReason;
+          } else if (advancedViewName === 'removeLiquidity' && removeLiquidityDisabledReason) {
+            disabledReason = removeLiquidityDisabledReason;
+          } else if (advancedViewName === 'earlyRedeem') {
+            return null;
+          }
 
-        if (advancedViewName === 'mint' && mintDisabledReason) {
-          disabledReason = mintDisabledReason;
-        } else if (advancedViewName === 'swap' && swapDisabledReason) {
-          disabledReason = swapDisabledReason;
-        } else if (advancedViewName === 'provideLiquidity' && provideLiquidityDisabledReason) {
-          disabledReason = provideLiquidityDisabledReason;
-        } else if (advancedViewName === 'removeLiquidity' && removeLiquidityDisabledReason) {
-          disabledReason = removeLiquidityDisabledReason;
-        } else if (advancedViewName === 'earlyRedeem') {
-          return null;
-        }
-
-        const selected = selectedView === advancedViewName;
-        return (
-          <>
-            {disabledReason && (
-              <Tooltip title={disabledReason ? getText(disabledReason, language) : ''}>
-                <div key={advancedViewName} className="tc__sidebar-view-item disabled">
-                  <Typography variant="h5" color="title">
+          const selected = selectedView === advancedViewName;
+          return (
+            <>
+              {disabledReason && (
+                <Tooltip title={disabledReason ? getText(disabledReason, language) : ''}>
+                  <div key={advancedViewName} className="tc__sidebar-view-item disabled">
+                    <Typography variant="h5" color="title">
+                      {getText(advancedViewName, language)}
+                    </Typography>
+                  </div>
+                </Tooltip>
+              )}
+              {!disabledReason && (
+                <div
+                  key={advancedViewName}
+                  className={`tc__sidebar-view-item ${selected ? 'selected' : ''}`}
+                  onClick={() => onItemClick(advancedViewName)}
+                >
+                  <Typography variant="h5" color={selected ? 'inverted' : 'default'}>
                     {getText(advancedViewName, language)}
                   </Typography>
                 </div>
-              </Tooltip>
-            )}
-            {!disabledReason && (
-              <div
-                key={advancedViewName}
-                className={`tc__sidebar-view-item ${selected ? 'selected' : ''}`}
-                onClick={() => onItemClick(advancedViewName)}
-              >
-                <Typography variant="h5" color={selected ? 'inverted' : 'default'}>
-                  {getText(advancedViewName, language)}
-                </Typography>
-              </div>
-            )}
-          </>
-        );
-      })}
+              )}
+            </>
+          );
+        })}
+      </div>
     </div>
   );
 };
