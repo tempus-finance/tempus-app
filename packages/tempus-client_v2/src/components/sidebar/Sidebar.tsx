@@ -1,4 +1,4 @@
-import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { FC, useCallback, useContext, useEffect, useState } from 'react';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { Tooltip } from '@material-ui/core';
 import getSidebarDataAdapter from '../../adapters/getSidebarDataAdapter';
