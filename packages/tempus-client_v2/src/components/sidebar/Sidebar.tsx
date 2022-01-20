@@ -145,10 +145,10 @@ const Sidebar: FC<SidebarProps> = ({ initialView, onSelectedView }) => {
 
           const selected = selectedView === basicViewName;
           return (
-            <>
+            <div key={basicViewName}>
               {disabledReason && (
                 <Tooltip title={disabledReason ? getText(disabledReason, language) : ''}>
-                  <div key={basicViewName} className="tc__sidebar-view-item disabled">
+                  <div className="tc__sidebar-view-item disabled">
                     <Typography variant="h5" color="title">
                       {getText(basicViewName, language)}
                     </Typography>
@@ -158,7 +158,6 @@ const Sidebar: FC<SidebarProps> = ({ initialView, onSelectedView }) => {
 
               {!disabledReason && (
                 <div
-                  key={basicViewName}
                   className={`tc__sidebar-view-item ${selected ? 'selected' : ''}`}
                   onClick={() => onItemClick(basicViewName)}
                 >
@@ -167,7 +166,7 @@ const Sidebar: FC<SidebarProps> = ({ initialView, onSelectedView }) => {
                   </Typography>
                 </div>
               )}
-            </>
+            </div>
           );
         })}
         {/* Advanced Section */}
@@ -196,10 +195,10 @@ const Sidebar: FC<SidebarProps> = ({ initialView, onSelectedView }) => {
 
           const selected = selectedView === advancedViewName;
           return (
-            <>
+            <div key={advancedViewName}>
               {disabledReason && (
                 <Tooltip title={disabledReason ? getText(disabledReason, language) : ''}>
-                  <div key={advancedViewName} className="tc__sidebar-view-item disabled">
+                  <div className="tc__sidebar-view-item disabled">
                     <Typography variant="h5" color="title">
                       {getText(advancedViewName, language)}
                     </Typography>
@@ -208,7 +207,6 @@ const Sidebar: FC<SidebarProps> = ({ initialView, onSelectedView }) => {
               )}
               {!disabledReason && (
                 <div
-                  key={advancedViewName}
                   className={`tc__sidebar-view-item ${selected ? 'selected' : ''}`}
                   onClick={() => onItemClick(advancedViewName)}
                 >
@@ -217,7 +215,7 @@ const Sidebar: FC<SidebarProps> = ({ initialView, onSelectedView }) => {
                   </Typography>
                 </div>
               )}
-            </>
+            </div>
           );
         })}
       </div>
