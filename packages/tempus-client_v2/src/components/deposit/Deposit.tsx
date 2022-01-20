@@ -6,6 +6,7 @@ import { catchError, of } from 'rxjs';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
 import getUserShareTokenBalanceProvider from '../../providers/getUserShareTokenBalanceProvider';
 import getUserBalanceProvider from '../../providers/getBalanceProvider';
+import getUserLPTokenBalanceProvider from '../../providers/getUserLPTokenBalanceProvider';
 import { ETH_ALLOWANCE_FOR_GAS, MILLISECONDS_IN_A_YEAR, ZERO } from '../../constants';
 import { LanguageContext } from '../../context/languageContext';
 import { WalletContext } from '../../context/walletContext';
@@ -236,6 +237,12 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
 
     // Trigger user balance update when execute is finished
     getUserBalanceProvider({
+      userWalletAddress,
+      userWalletSigner,
+    }).fetchForPool(selectedPoolAddress);
+
+    // Trigger user LP Token balance update when execute is finished
+    getUserLPTokenBalanceProvider({
       userWalletAddress,
       userWalletSigner,
     }).fetchForPool(selectedPoolAddress);

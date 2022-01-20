@@ -3,6 +3,8 @@ import { ethers, BigNumber } from 'ethers';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
 import getUserShareTokenBalanceProvider from '../../providers/getUserShareTokenBalanceProvider';
+import getPoolShareBalanceProvider from '../../providers/getPoolShareBalanceProvider';
+import getUserLPTokenBalanceProvider from '../../providers/getUserLPTokenBalanceProvider';
 import { LanguageContext } from '../../context/languageContext';
 import { WalletContext } from '../../context/walletContext';
 import getText from '../../localisation/getText';
@@ -57,6 +59,7 @@ const ProvideLiquidity = () => {
   const principalsAddress = staticPoolData[selectedPool.get()].principalsAddress.attach(Downgraded).get();
   const yieldsAddress = staticPoolData[selectedPool.get()].yieldsAddress.attach(Downgraded).get();
   const decimalsForUI = staticPoolData[selectedPool.get()].decimalsForUI.attach(Downgraded).get();
+  const poolId = staticPoolData[selectedPool.get()].poolId.attach(Downgraded).get();
   const userPrincipalsBalance = dynamicPoolData[selectedPool.get()].userPrincipalsBalance.attach(Downgraded).get();
   const userYieldsBalance = dynamicPoolData[selectedPool.get()].userYieldsBalance.attach(Downgraded).get();
   const poolShareBalance = dynamicPoolData[selectedPool.get()].poolShareBalance.attach(Downgraded).get();
@@ -362,7 +365,18 @@ const ProvideLiquidity = () => {
       userWalletAddress,
       userWalletSigner,
     }).fetchForPool(selectedPoolAddress);
-  }, [selectedPoolAddress, userWalletAddress, userWalletSigner]);
+
+    // Trigger user LP Token balance update when execute is finished
+    getUserLPTokenBalanceProvider({
+      userWalletAddress,
+      userWalletSigner,
+    }).fetchForPool(selectedPoolAddress);
+
+    // Trigger pool share balance update when execute is finished
+    getPoolShareBalanceProvider({
+      userWalletSigner,
+    }).fetchForPoolWithId(poolId);
+  }, [poolId, selectedPoolAddress, userWalletAddress, userWalletSigner]);
 
   const principalsBalanceFormatted = useMemo(() => {
     if (!userPrincipalsBalance) {
