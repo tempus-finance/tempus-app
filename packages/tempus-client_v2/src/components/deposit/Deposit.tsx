@@ -642,14 +642,42 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
   }, [decimalsForUI, estimatedYieldAtMaturity, selectedTokenPrecision]);
 
   const variableTotalAvailableAtMaturity = useMemo(() => {
-    if (!estimatedYieldAtMaturity) {
+    if (!estimatedYieldAtMaturity || !yieldBearingToBackingToken) {
       return null;
     }
 
-    const amountParsed = ethers.utils.parseUnits(amount, selectedTokenPrecision);
+    let amountParsed: BigNumber;
+    if (selectedToken === yieldBearingToken) {
+      const amountFormatted = ethers.utils.parseUnits(
+        Number(amount).toFixed(tokenPrecision.yieldBearingToken),
+        tokenPrecision.yieldBearingToken,
+      );
+
+      let yieldBearingToBackingTokenParsed: BigNumber;
+      if (tokenPrecision.yieldBearingToken > tokenPrecision.backingToken) {
+        yieldBearingToBackingTokenParsed = increasePrecision(
+          yieldBearingToBackingToken,
+          tokenPrecision.yieldBearingToken - tokenPrecision.backingToken,
+        );
+      } else {
+        yieldBearingToBackingTokenParsed = yieldBearingToBackingToken;
+      }
+
+      amountParsed = mul18f(amountFormatted, yieldBearingToBackingTokenParsed, tokenPrecision.yieldBearingToken);
+    } else {
+      amountParsed = ethers.utils.parseUnits(amount, tokenPrecision.backingToken);
+    }
 
     return amountParsed.add(estimatedYieldAtMaturity);
-  }, [amount, estimatedYieldAtMaturity, selectedTokenPrecision]);
+  }, [
+    amount,
+    estimatedYieldAtMaturity,
+    selectedToken,
+    tokenPrecision.backingToken,
+    tokenPrecision.yieldBearingToken,
+    yieldBearingToBackingToken,
+    yieldBearingToken,
+  ]);
 
   const variableTotalAvailableAtMaturityFormatted = useMemo(() => {
     if (!variableTotalAvailableAtMaturity) {
