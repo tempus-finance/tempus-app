@@ -23,6 +23,9 @@ import {
 import { Ticker } from '../interfaces/Token';
 import { TempusPool } from '../interfaces/TempusPool';
 import { SelectedYield } from '../interfaces/SelectedYield';
+import getStatisticsService from '../services/getStatisticsService';
+import getTempusControllerService from '../services/getTempusControllerService';
+import getVaultService from '../services/getVaultService';
 
 export interface UserTransaction {
   event: DepositedEvent | RedeemedEvent;
@@ -1165,6 +1168,17 @@ export default class PoolDataAdapter {
     }
   }
 
+  /**
+   * Calculates tempus pool volume from specified block range in USD currency
+   * @param tempusPool Address of the TempusPool we want to get volume for
+   * @param tempusPoolId ID of the TempusPool we want to get volume for
+   * @param backingToken TempusPool backing token ticker
+   * @param principalsAddress TempusPool principals address
+   * @param fromBlock Block number from which we want to calculate volume
+   * @param toBlock Block number up to which we want to calculate volume
+   * @param backingTokenPrecision Precision of backing token for TempusPool
+   * @returns Volume of the pool in USD currency.
+   */
   async getPoolVolumeData(
     tempusPool: string,
     tempusPoolId: string,
@@ -1174,58 +1188,71 @@ export default class PoolDataAdapter {
     toBlock: number,
     backingTokenPrecision?: number,
   ): Promise<BigNumber> {
-    if (
-      !this.tempusPoolService ||
-      !this.statisticService ||
-      !this.tempusAMMService ||
-      !this.tempusControllerService ||
-      !this.vaultService
-    ) {
-      console.error('Attempted to use VolumeChartDataAdapter before initializing it!');
-      return Promise.reject();
-    }
+    const tempusControllerService = getTempusControllerService();
+    const vaultService = getVaultService();
 
     let depositEvents: DepositedEvent[];
     let redeemEvents: RedeemedEvent[];
     let swapEvents: SwapEvent[];
     try {
+      // Setting user wallet address to undefined means we want to fetch events for all users
       const eventsForUser = undefined;
       [depositEvents, redeemEvents, swapEvents] = await Promise.all([
-        this.tempusControllerService.getDepositedEvents({
+        tempusControllerService.getDepositedEvents({
           forPool: tempusPool,
           forUser: eventsForUser,
           fromBlock,
           toBlock,
         }),
-        this.tempusControllerService.getRedeemedEvents({
+        tempusControllerService.getRedeemedEvents({
           forPool: tempusPool,
           forUser: eventsForUser,
           fromBlock,
           toBlock,
         }),
-        this.vaultService.getSwapEvents({ forPoolId: tempusPoolId, fromBlock, toBlock }),
+        vaultService.getSwapEvents({ forPoolId: tempusPoolId, fromBlock, toBlock }),
       ]);
     } catch (error) {
-      console.error('Failed to fetch deposit and redeem events for volume chart', error);
+      console.error(
+        `PoolDataAdapter - getPoolVolumeData() - Failed to fetch deposit, redeem and swap events for pool ${tempusPool}!`,
+        error,
+      );
       return Promise.reject(error);
     }
-
-    let poolBackingTokenRate: BigNumber;
-    try {
-      // TODO - Use chainlink historical data once we go to mainnet
-      poolBackingTokenRate = await this.statisticService.getCoingeckoRate(backingToken);
-    } catch (error) {
-      console.error('Failed to get tempus pool exchange rate to USD!');
-      return Promise.reject(error);
-    }
-
-    let totalVolume: BigNumber = BigNumber.from('0');
 
     const events = [...depositEvents, ...redeemEvents, ...swapEvents];
-    events.forEach(event => {
-      const eventBackingTokenValue = getEventBackingTokenValue(event, principalsAddress);
 
-      totalVolume = totalVolume.add(mul18f(poolBackingTokenRate, eventBackingTokenValue, backingTokenPrecision));
+    let eventsVolume: BigNumber[] = [];
+    try {
+      eventsVolume = await Promise.all(
+        events.map(async event => {
+          const eventBackingTokenValue = getEventBackingTokenValue(event, principalsAddress);
+
+          let poolBackingTokenRate: BigNumber;
+          try {
+            const statisticService = getStatisticsService();
+            poolBackingTokenRate = await statisticService.getRate(backingToken, {
+              blockTag: event.blockNumber,
+            });
+          } catch (error) {
+            console.error(
+              `PoolDataAdapter - getPoolVolumeData() - Failed to get backing token (${backingToken}) exchange rate to USD for block ${event.blockNumber}!`,
+              error,
+            );
+            return Promise.reject(error);
+          }
+
+          return mul18f(poolBackingTokenRate, eventBackingTokenValue, backingTokenPrecision);
+        }),
+      );
+    } catch (error) {
+      console.error(`PoolDataAdapter - getPoolVolumeData() - Failed to fetch volume for events!`, error);
+      return Promise.reject(error);
+    }
+
+    let totalVolume = BigNumber.from('0');
+    eventsVolume.forEach(eventVolume => {
+      totalVolume = totalVolume.add(eventVolume);
     });
 
     return totalVolume;
