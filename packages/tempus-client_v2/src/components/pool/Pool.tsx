@@ -1,5 +1,6 @@
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { Downgraded, useHookstate, useState as useHookState } from '@hookstate/core';
+import { CircularProgress } from '@material-ui/core';
 import { ethers, BigNumber } from 'ethers';
 import { BLOCK_DURATION_SECONDS, FIXED_APR_PRECISION, SECONDS_IN_A_DAY } from '../../constants';
 import { div18f } from '../../utils/weiMath';
@@ -263,7 +264,11 @@ const Pool = () => {
           </div>
           {volumeChangePercentageFormatted && <PercentageLabel percentage={volumeChangePercentageFormatted} />}
           <div className="tc__pool-item-value">
-            <Typography variant="card-body-text">${volumeFormatted}</Typography>
+            {volumeFormatted ? (
+              <Typography variant="card-body-text">${volumeFormatted}</Typography>
+            ) : (
+              <CircularProgress size={14} />
+            )}
           </div>
         </div>
         <div className="tc__pool__body__item">
