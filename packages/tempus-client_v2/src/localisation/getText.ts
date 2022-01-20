@@ -10,8 +10,6 @@ const getText = (word: Words, language?: Language): string => {
   switch (language) {
     case 'it':
       return it[word];
-    // case 'ru':
-    //   return ru[word];
     default:
       return en[word];
   }

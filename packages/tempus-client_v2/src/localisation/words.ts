@@ -72,6 +72,7 @@ type Words =
   | 'fiat'
   | 'crypto'
   | 'tvl'
+  | 'totalValueLocked'
   | 'manage'
   | 'pool'
   | 'ofPool'
