@@ -708,6 +708,7 @@ export default class PoolDataAdapter {
     tempusPoolAddress: string,
     tempusPoolId: string,
     tempusAMMAddress: string,
+    tempusPoolStartTime?: number,
     blockTag?: number,
   ): Promise<BigNumber | null> {
     if (!this.tempusPoolService || !this.tempusAMMService || !this.statisticService || !this.vaultService) {
@@ -720,6 +721,17 @@ export default class PoolDataAdapter {
     if (!tokenAmount) {
       console.error('PoolDataAdapter - getEstimatedFixedApr() - Invalid backingTokenAmount amount.');
       return Promise.reject();
+    }
+
+    // Skip Fixed APR fetch if target block tag is older then the Tempus Pool
+    if (blockTag && tempusPoolStartTime) {
+      const provider = getDefaultProvider();
+
+      const pastBlock = await provider.getBlock(blockTag);
+      // Convert block timestamp from seconds to milliseconds
+      if (pastBlock.timestamp * 1000 < tempusPoolStartTime) {
+        return null;
+      }
     }
 
     const callOverrideData = blockTag ? { blockTag } : undefined;

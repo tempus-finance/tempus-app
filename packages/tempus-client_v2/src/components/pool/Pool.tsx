@@ -100,6 +100,7 @@ const Pool = () => {
           selectedPoolAddress,
           poolId,
           ammAddress,
+          startDate,
           sevenDaysOldBlock,
         );
         if (!oldFixedAPR || fixedAPR === 'fetching') {
@@ -117,7 +118,7 @@ const Pool = () => {
       }
     };
     fetchFixedAPRChangeData();
-  }, [ammAddress, fixedAPR, poolId, selectedPoolAddress, userWalletSigner]);
+  }, [ammAddress, fixedAPR, poolId, selectedPoolAddress, userWalletSigner, startDate]);
 
   /**
    * Fetch Volume for pool in last 7 days, and 7 days before that
