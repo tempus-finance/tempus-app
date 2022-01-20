@@ -52,6 +52,7 @@ const en: { [word in Words]: string } = {
   earlyRedemption: 'Early Redemption',
   swap: 'Swap',
   tvl: 'TVL',
+  totalValueLocked: 'Total Value Locked',
   manage: 'Manage',
   basic: 'Basic',
   basicSubTitle: 'Recommended option',
@@ -153,6 +154,7 @@ const en: { [word in Words]: string } = {
   mintDescription: 'Split your yield bearing token into Principals and Yields',
   swapDescription: 'Swap between Principals and Yields',
   provideLiquidityDescription: 'Use your LP tokens to provide liquidity to the pool and earn rewards',
-  removeLiquidityDescription: 'Remove your liquidity from the pool with the accrued rewards in the form of your initial LP tokens'
+  removeLiquidityDescription:
+    'Remove your liquidity from the pool with the accrued rewards in the form of your initial LP tokens',
 };
 export default en;

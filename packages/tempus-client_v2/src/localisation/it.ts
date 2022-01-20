@@ -52,6 +52,7 @@ const it: { [word in Words]: string } = {
   earlyRedemption: 'Rimborso Anticipato',
   swap: 'Scambio',
   tvl: 'TVL',
+  totalValueLocked: 'Valore totale bloccato',
   manage: 'Gestisci',
   basic: 'Normale',
   basicSubTitle: 'Opzioni raccomandate',
