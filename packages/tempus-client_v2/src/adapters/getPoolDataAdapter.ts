@@ -6,7 +6,6 @@ import getTempusAMMService from '../services/getTempusAMMService';
 import getTempusControllerService from '../services/getTempusControllerService';
 import getTempusPoolService from '../services/getTempusPoolService';
 import getVaultService from '../services/getVaultService';
-import getConfig from '../utils/getConfig';
 import PoolDataAdapter from './PoolDataAdapter';
 
 let poolDataAdapter: PoolDataAdapter;
@@ -14,7 +13,6 @@ const getPoolDataAdapter = (signerOrProvider?: JsonRpcSigner | JsonRpcProvider):
   if (!poolDataAdapter) {
     poolDataAdapter = new PoolDataAdapter();
     poolDataAdapter.init({
-      tempusControllerAddress: getConfig().tempusControllerContract,
       tempusControllerService: getTempusControllerService(getDefaultProvider()),
       tempusPoolService: getTempusPoolService(getDefaultProvider()),
       statisticService: getStatisticsService(getDefaultProvider()),
@@ -26,7 +24,6 @@ const getPoolDataAdapter = (signerOrProvider?: JsonRpcSigner | JsonRpcProvider):
 
   if (signerOrProvider) {
     poolDataAdapter.init({
-      tempusControllerAddress: getConfig().tempusControllerContract,
       tempusControllerService: getTempusControllerService(signerOrProvider),
       tempusPoolService: getTempusPoolService(signerOrProvider),
       statisticService: getStatisticsService(signerOrProvider),
