@@ -11,6 +11,7 @@ import { TransferEventListener } from '../services/ERC20TokenService';
 import getDefaultProvider from '../services/getDefaultProvider';
 import { getEventBackingTokenValue } from '../services/EventUtils';
 import { div18f, increasePrecision, mul18f } from '../utils/weiMath';
+import { staticPoolDataState } from '../state/PoolDataState';
 import {
   BLOCK_DURATION_SECONDS,
   DAYS_IN_A_YEAR,
@@ -733,13 +734,13 @@ export default class PoolDataAdapter {
     }
 
     try {
-      const [tempusPoolStartTime, tempusPoolMaturityTime] = await Promise.all([
-        this.tempusPoolService.getStartTime(tempusPoolAddress),
-        this.tempusPoolService.getMaturityTime(tempusPoolAddress),
-      ]);
+      const { startDate: tempusPoolStartTime, maturityDate: tempusPoolMaturityTime } =
+        staticPoolDataState[tempusPoolAddress].get();
 
-      const poolDuration = (tempusPoolMaturityTime.getTime() - tempusPoolStartTime.getTime()) / 1000;
-      const scaleFactor = ethers.utils.parseEther(((SECONDS_IN_A_DAY * DAYS_IN_A_YEAR) / poolDuration).toString());
+      const poolDurationInSeconds = (tempusPoolMaturityTime - tempusPoolStartTime) / 1000;
+      const scaleFactor = ethers.utils.parseEther(
+        ((SECONDS_IN_A_DAY * DAYS_IN_A_YEAR) / poolDurationInSeconds).toString(),
+      );
 
       const principals = await this.statisticService.estimatedDepositAndFix(
         tempusAMMAddress,
