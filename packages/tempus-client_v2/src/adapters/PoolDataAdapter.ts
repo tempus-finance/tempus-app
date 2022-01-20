@@ -30,7 +30,6 @@ export interface UserTransaction {
 }
 
 type PoolDataAdapterParameters = {
-  tempusControllerAddress: string;
   tempusControllerService: TempusControllerService;
   tempusPoolService: TempusPoolService;
   statisticService: StatisticsService;
@@ -41,7 +40,6 @@ type PoolDataAdapterParameters = {
 
 export default class PoolDataAdapter {
   private tempusControllerService: TempusControllerService | undefined = undefined;
-  private tempusControllerAddress: string = '';
   private tempusPoolService: TempusPoolService | null = null;
   private statisticService: StatisticsService | null = null;
   private tempusAMMService: TempusAMMService | null = null;
@@ -50,7 +48,6 @@ export default class PoolDataAdapter {
 
   init({
     tempusControllerService,
-    tempusControllerAddress,
     tempusPoolService,
     statisticService,
     tempusAMMService,
@@ -58,7 +55,6 @@ export default class PoolDataAdapter {
     eRC20TokenServiceGetter,
   }: PoolDataAdapterParameters) {
     this.tempusControllerService = tempusControllerService;
-    this.tempusControllerAddress = tempusControllerAddress;
     this.tempusPoolService = tempusPoolService;
     this.statisticService = statisticService;
     this.tempusAMMService = tempusAMMService;
@@ -301,30 +297,6 @@ export default class PoolDataAdapter {
     return this.statisticService.estimatedRedeem(tempusPool, yieldsAmount, principalsAmount, toBackingToken);
   }
 
-  async approve(
-    tempusPoolAddress: string,
-    isBackingToken: boolean,
-    signer: JsonRpcSigner,
-    approveAmount: BigNumber,
-  ): Promise<ContractTransaction | void> {
-    if (!this.tempusPoolService || !this.eRC20TokenServiceGetter) {
-      console.error('PoolDataAdapter - approve() - Attempted to use PoolDataAdapter before initializing it!');
-      return Promise.reject();
-    }
-
-    try {
-      const tokenAddress = isBackingToken
-        ? await this.tempusPoolService.getBackingTokenAddress(tempusPoolAddress)
-        : await this.tempusPoolService.getYieldBearingTokenAddress(tempusPoolAddress);
-
-      const tokenService = this.eRC20TokenServiceGetter(tokenAddress, signer);
-      return tokenService.approve(this.tempusControllerAddress, approveAmount);
-    } catch (error) {
-      console.error('PoolDataAdapter - approve() - Failed to approve tokens for deposit!', error);
-      Promise.reject();
-    }
-  }
-
   async approveToken(
     tokenAddress: string,
     spenderAddress: string,
@@ -345,41 +317,6 @@ export default class PoolDataAdapter {
     }
   }
 
-  async getApprovedAllowance(
-    userWalletAddress: string,
-    tempusPoolAddress: string,
-    isBackingToken: boolean,
-    signer: JsonRpcSigner,
-  ): Promise<number> {
-    if (!this.tempusPoolService || !this.eRC20TokenServiceGetter) {
-      console.error(
-        'PoolDataAdapter - getApprovedAllowance() - Attempted to use PoolDataAdapter before initializing it!',
-      );
-      return Promise.reject();
-    }
-
-    try {
-      const tokenAddress = isBackingToken
-        ? await this.tempusPoolService.getBackingTokenAddress(tempusPoolAddress)
-        : await this.tempusPoolService.getYieldBearingTokenAddress(tempusPoolAddress);
-
-      // In case of ETH, total user balance is always approved.
-      if (tokenAddress === ZERO_ETH_ADDRESS) {
-        return Number(ethers.utils.formatEther(await signer.getBalance()));
-      }
-
-      const tokenService = this.eRC20TokenServiceGetter(tokenAddress, signer);
-      const allowance = await tokenService.getAllowance(userWalletAddress, this.tempusControllerAddress);
-      if (allowance) {
-        return parseFloat(ethers.utils.formatEther(allowance));
-      }
-      return 0;
-    } catch (error) {
-      console.error('PoolDataAdapter - approve() - Failed to approve tokens for deposit!', error);
-      return Promise.reject();
-    }
-  }
-
   async getTokenAllowance(
     tokenAddress: string,
     spender: string,
@@ -387,9 +324,7 @@ export default class PoolDataAdapter {
     signer: JsonRpcSigner,
   ): Promise<BigNumber> {
     if (!this.tempusPoolService || !this.eRC20TokenServiceGetter) {
-      console.error(
-        'PoolDataAdapter - getApprovedAllowance() - Attempted to use PoolDataAdapter before initializing it!',
-      );
+      console.error('PoolDataAdapter - getTokenAllowance() - Attempted to use PoolDataAdapter before initializing it!');
       return Promise.reject();
     }
 

@@ -129,46 +129,6 @@ describe('PoolDataAdapter', () => {
     });
   });
 
-  describe('getApprovedAllowance()', () => {
-    test('returns a backing token allowance', async () => {
-      const tempusPoolAddress = 'abc';
-      const userWalletAddress = 'xyz';
-      const signer = mockProvider;
-      const isBackingToken = true;
-
-      const allowance = await instance.getApprovedAllowance(
-        userWalletAddress,
-        tempusPoolAddress,
-        isBackingToken,
-        signer,
-      );
-
-      expect(allowance).toBeDefined();
-      if (allowance) {
-        expect(allowance).toBe(12300000);
-      }
-    });
-
-    test('returns a yield bearing token token allowance', async () => {
-      const tempusPoolAddress = 'abc';
-      const userWalletAddress = 'xyz';
-      const signer = mockProvider;
-      const isBackingToken = false;
-
-      const allowance = await instance.getApprovedAllowance(
-        userWalletAddress,
-        tempusPoolAddress,
-        isBackingToken,
-        signer,
-      );
-
-      expect(allowance).toBeDefined();
-      if (allowance) {
-        expect(allowance).toBe(23400000);
-      }
-    });
-  });
-
   describe('getEstimatedFixedApr()', () => {
     test('returns an estimated fixed apr value', async () => {
       const tokenAmount = ethers.BigNumber.from('1');
