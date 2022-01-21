@@ -6,6 +6,7 @@ import { catchError, of } from 'rxjs';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
 import getUserShareTokenBalanceProvider from '../../providers/getUserShareTokenBalanceProvider';
 import getUserBalanceProvider from '../../providers/getBalanceProvider';
+import getUserLPTokenBalanceProvider from '../../providers/getUserLPTokenBalanceProvider';
 import { ETH_ALLOWANCE_FOR_GAS, MILLISECONDS_IN_A_YEAR, ZERO } from '../../constants';
 import { LanguageContext } from '../../context/languageContext';
 import { WalletContext } from '../../context/walletContext';
@@ -236,6 +237,12 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
 
     // Trigger user balance update when execute is finished
     getUserBalanceProvider({
+      userWalletAddress,
+      userWalletSigner,
+    }).fetchForPool(selectedPoolAddress);
+
+    // Trigger user LP Token balance update when execute is finished
+    getUserLPTokenBalanceProvider({
       userWalletAddress,
       userWalletSigner,
     }).fetchForPool(selectedPoolAddress);
@@ -642,14 +649,42 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
   }, [decimalsForUI, estimatedYieldAtMaturity, selectedTokenPrecision]);
 
   const variableTotalAvailableAtMaturity = useMemo(() => {
-    if (!estimatedYieldAtMaturity) {
+    if (!estimatedYieldAtMaturity || !yieldBearingToBackingToken) {
       return null;
     }
 
-    const amountParsed = ethers.utils.parseUnits(amount, selectedTokenPrecision);
+    let amountParsed: BigNumber;
+    if (selectedToken === yieldBearingToken) {
+      const amountFormatted = ethers.utils.parseUnits(
+        Number(amount).toFixed(tokenPrecision.yieldBearingToken),
+        tokenPrecision.yieldBearingToken,
+      );
+
+      let yieldBearingToBackingTokenParsed: BigNumber;
+      if (tokenPrecision.yieldBearingToken > tokenPrecision.backingToken) {
+        yieldBearingToBackingTokenParsed = increasePrecision(
+          yieldBearingToBackingToken,
+          tokenPrecision.yieldBearingToken - tokenPrecision.backingToken,
+        );
+      } else {
+        yieldBearingToBackingTokenParsed = yieldBearingToBackingToken;
+      }
+
+      amountParsed = mul18f(amountFormatted, yieldBearingToBackingTokenParsed, tokenPrecision.yieldBearingToken);
+    } else {
+      amountParsed = ethers.utils.parseUnits(amount, tokenPrecision.backingToken);
+    }
 
     return amountParsed.add(estimatedYieldAtMaturity);
-  }, [amount, estimatedYieldAtMaturity, selectedTokenPrecision]);
+  }, [
+    amount,
+    estimatedYieldAtMaturity,
+    selectedToken,
+    tokenPrecision.backingToken,
+    tokenPrecision.yieldBearingToken,
+    yieldBearingToBackingToken,
+    yieldBearingToken,
+  ]);
 
   const variableTotalAvailableAtMaturityFormatted = useMemo(() => {
     if (!variableTotalAvailableAtMaturity) {

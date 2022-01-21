@@ -1,5 +1,5 @@
 import { JsonRpcSigner, JsonRpcProvider } from '@ethersproject/providers';
-import { Vaults } from 'rari-sdk';
+import { Vaults as RariVault } from 'rari-sdk';
 import VariableRateService from './VariableRateService';
 import getTempusPoolService from '../services/getTempusPoolService';
 import getTempusAMMService from '../services/getTempusAMMService';
@@ -21,7 +21,7 @@ const getVariableRateService = (signerOrProvider?: JsonRpcSigner | JsonRpcProvid
       getTempusPoolService(actualSignerOrProvider),
       getVaultService(actualSignerOrProvider),
       getTempusAMMService(actualSignerOrProvider),
-      new Vaults(getProvider(signerOrProvider) as any),
+      new RariVault(getProvider(signerOrProvider) as any),
       getConfig(),
     );
   }

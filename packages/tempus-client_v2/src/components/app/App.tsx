@@ -10,6 +10,7 @@ import {
 import { UserSettingsContext, defaultUserSettingsContextValue } from '../../context/userSettingsContext';
 import ETHBalanceProvider from '../../providers/ethBalanceProvider';
 import getUserShareTokenBalanceProvider from '../../providers/getUserShareTokenBalanceProvider';
+import getUserLPTokenBalanceProvider from '../../providers/getUserLPTokenBalanceProvider';
 import getUserBalanceProvider from '../../providers/getBalanceProvider';
 import getPoolShareBalanceProvider from '../../providers/getPoolShareBalanceProvider';
 import NotificationContainer from '../notification/NotificationContainer';
@@ -33,6 +34,19 @@ const App = () => {
 
     // Trigger user pool share balance update when execute is finished
     getUserShareTokenBalanceProvider({
+      userWalletAddress: walletData.userWalletAddress,
+      userWalletSigner: walletData.userWalletSigner,
+    }).init();
+  }, [walletData.userWalletAddress, walletData.userWalletSigner]);
+
+  // Initialize user LP Token balance provider every time user wallet address changes
+  useEffect(() => {
+    if (!walletData.userWalletAddress || !walletData.userWalletSigner) {
+      return;
+    }
+
+    // Trigger user LP Token balance update when execute is finished
+    getUserLPTokenBalanceProvider({
       userWalletAddress: walletData.userWalletAddress,
       userWalletSigner: walletData.userWalletSigner,
     }).init();

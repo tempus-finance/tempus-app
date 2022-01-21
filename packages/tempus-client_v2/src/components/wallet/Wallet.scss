@@ -19,6 +19,17 @@
   border: none;
 }
 
+.tc__connect-wallet-button__profile {
+  display: flex;
+  margin-left: 10px;
+
+  img {
+    height: 20px;
+    border-radius: 100px;
+    margin-right: 10px;
+  }
+}
+
 .tc__connect-wallet-button {
   height: 45px;
   box-sizing: border-box;

@@ -9,7 +9,6 @@ import VaultService, {
 } from './VaultService';
 import * as getConfig from '../utils/getConfig';
 import * as getDefaultProvider from './getDefaultProvider';
-import { TempusPool } from '../interfaces/TempusPool';
 import { Config } from '../interfaces/Config';
 import { provideLiquidityGasIncrease, removeLiquidityGasIncrease, SECONDS_IN_AN_HOUR } from '../constants';
 
@@ -25,7 +24,7 @@ jest.mock('ethers', () => ({
 describe('VaultService', () => {
   let vaultService: VaultService;
   const DUMMY_ADDR = '0x0000000000000000000000000000000000000000';
-  const DUMMY_TEMPUS_POOL: TempusPool[] = [
+  const DUMMY_TEMPUS_POOL = [
     {
       address: DUMMY_ADDR,
       poolId: 'DUMMY_POOL_ID_1',
@@ -981,6 +980,21 @@ describe('VaultService', () => {
 
       await expect(vaultService.getPoolTokens(poolId)).resolves.toEqual(mockPoolTokens);
       expect(mockGetPoolTokens).toHaveBeenCalledWith(poolId);
+    });
+
+    test('test with success, should pass overrides to contract.getPoolTokens', async () => {
+      const poolId = 'POOL_ID_' + Math.random().toString(36).substring(2);
+      const mockOverride = { aaa: Math.random().toString(36).substring(2) } as any;
+      const mockPoolTokens = {
+        balances: [BigNumber.from(3), BigNumber.from(4)],
+      };
+      const mockGetPoolTokens = jest.fn().mockResolvedValue(mockPoolTokens);
+      Reflect.set(vaultService, 'contract', {
+        getPoolTokens: mockGetPoolTokens,
+      });
+
+      await expect(vaultService.getPoolTokens(poolId, mockOverride)).resolves.toEqual(mockPoolTokens);
+      expect(mockGetPoolTokens).toHaveBeenCalledWith(poolId, mockOverride);
     });
   });
 

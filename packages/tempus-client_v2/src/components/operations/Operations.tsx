@@ -4,7 +4,6 @@ import { dynamicPoolDataState, selectedPoolState } from '../../state/PoolDataSta
 import { LanguageContext } from '../../context/languageContext';
 import { WalletContext } from '../../context/walletContext';
 import { TransactionView } from '../../interfaces/TransactionView';
-import UserLPTokenBalanceProvider from '../../providers/userLPTokenBalanceProvider';
 import CurrentPosition from '../currentPosition/CurrentPosition';
 import Deposit from '../deposit/Deposit';
 // import EarlyRedeem from '../earlyRedeem/EarlyRedeem';
@@ -93,7 +92,6 @@ const Operations = () => {
           </div>
         )}
       </div>
-      <UserLPTokenBalanceProvider />
     </div>
   );
 };
