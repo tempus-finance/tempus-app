@@ -108,9 +108,8 @@ const Pool = () => {
         const oldFixedAPRParsed = Number(ethers.utils.formatUnits(oldFixedAPR, FIXED_APR_PRECISION));
 
         const fixedAPRDiff = fixedAPR - oldFixedAPRParsed;
-        const fixedAPRRatio = fixedAPRDiff / oldFixedAPRParsed;
 
-        setFixedAPRChangePercentage(fixedAPRRatio);
+        setFixedAPRChangePercentage(fixedAPRDiff);
       } catch (error) {
         console.error('fetchTVLChangeData() - Failed to fetch Fixed APR change percentage!');
       }
