@@ -45,6 +45,9 @@ const Languages = () => {
               <MenuItem value="en">
                 <Typography variant="dropdown-text">English</Typography>
               </MenuItem>
+              <MenuItem value="es">
+                <Typography variant="dropdown-text">Español</Typography>
+              </MenuItem>
               <MenuItem value="it">
                 <Typography variant="dropdown-text">Italiano</Typography>
               </MenuItem>
