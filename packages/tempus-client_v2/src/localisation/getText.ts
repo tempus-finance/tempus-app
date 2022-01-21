@@ -1,13 +1,14 @@
 import Words from './words';
 import en from './en';
+import es from './es';
 import it from './it';
-// import ru from './ru';
 
-// export type Language = 'en' | 'it' | 'ru';
-export type Language = 'en' | 'it';
+export type Language = 'en' | 'es' | 'it';
 
 const getText = (word: Words, language?: Language): string => {
   switch (language) {
+    case 'es':
+      return es[word];
     case 'it':
       return it[word];
     default:

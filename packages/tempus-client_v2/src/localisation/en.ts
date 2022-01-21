@@ -9,7 +9,7 @@ const en: { [word in Words]: string } = {
   settings: 'Settings',
   connectWallet: 'Connect Wallet',
   pending: 'Pending...',
-  selectWallet: ' Select Wallet',
+  selectWallet: 'Select Wallet',
   walletSelectorDisclaimer:
     'By connecting your wallet, you agree to be bound by the <a href="https://tempus.finance/terms-of-service" target="_blank">Tempus Terms of Service</a> and acknowledge that you have read and understand the <a href="https://tempus.finance/disclaimer" target="_blank">Tempus Protocol Disclaimer</a>.',
   metamaskConnected: 'MetaMask connected',
@@ -77,7 +77,7 @@ const en: { [word in Words]: string } = {
   mintDisabledPoolMaturity: 'Mint is not available because this pool has reached maturity.',
   swapDisabledNoLiquidity:
     'Swapping is currently disabled due to insufficient liquidity in the pool you have selected. Please try again later.',
-  swapDisabledNoShares: 'Swap will be available once you have deposited into the pool',
+  swapDisabledNoShares: 'Swap will be available once you have deposited into the pool.',
   swapDisabledPoolMaturity: 'Swap is not available because this pool has reached maturity.',
   provideLiquidityDisabledNoDeposit: 'Manual Liquidity Provision is not available until you have Deposited or Minted.',
   provideLiquidityDisabledNoPrincipals:
@@ -151,10 +151,10 @@ const en: { [word in Words]: string } = {
   unstaked: 'Unstaked',
   stakedPrincipals: 'Staked Principals',
   stakedYields: 'Staked Yields',
-  mintDescription: 'Split your yield bearing token into Principals and Yields',
-  swapDescription: 'Swap between Principals and Yields',
-  provideLiquidityDescription: 'Use your LP tokens to provide liquidity to the pool and earn rewards',
+  mintDescription: 'Split your yield bearing token into Principals and Yields.',
+  swapDescription: 'Swap between Principals and Yields.',
+  provideLiquidityDescription: 'Use your LP tokens to provide liquidity to the pool and earn rewards.',
   removeLiquidityDescription:
-    'Remove your liquidity from the pool with the accrued rewards in the form of your initial LP tokens',
+    'Remove your liquidity from the pool with the accrued rewards in the form of your initial LP tokens.',
 };
 export default en;

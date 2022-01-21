@@ -60,7 +60,7 @@ const it: { [word in Words]: string } = {
   advancedSubTitle: 'Per utenti esperti',
   deposit: 'Deposito',
   withdraw: 'Ritiro',
-  mint: 'Forgia',
+  mint: 'Emetti',
   removeLiquidity: 'Rimuovi Liquidità',
   provideLiquidity: 'Immetti Liquidità',
   earlyRedeem: 'Riscatto Anticipato',
@@ -74,13 +74,13 @@ const it: { [word in Words]: string } = {
   withdrawDisabledNoDeposit: 'Il ritiro sarà disponibile una volta effettuato un deposito.',
   withdrawDisabledNegative:
     'Il ritiro è stato momentaneamente disabilitato a causa del rendimento negativo della pool. Per favore riprova più tardi.',
-  mintDisabledPoolMaturity: 'La forgia non è disponibile perchè questa pool ha raggiunto la scadenza.',
+  mintDisabledPoolMaturity: "L'emissione non è disponibile perchè questa pool ha raggiunto la scadenza.",
   swapDisabledNoLiquidity:
     'Lo scambio è stato momentaneamente disabilitato a causa di liquidità insufficiente nella pool selezionata. Per favore riprova più tardi.',
   swapDisabledNoShares: 'Lo scambio sarà disponibile una volta effettuato un deposito.',
   swapDisabledPoolMaturity: 'Lo scambio non è disponibile perchè questa pool ha raggiunto la scadenza.',
   provideLiquidityDisabledNoDeposit:
-    "L'immissione di liquidità non è disponibile fino a quando non hai effettuato un deposito o una forgia.",
+    "L'immissione di liquidità non è disponibile fino a quando non hai effettuato un deposito o un emissione.",
   provideLiquidityDisabledNoPrincipals:
     "L'immissione di liquidità non è disponibile fino a quando non hai acquisito ulteriori Principal token.",
   provideLiquidityDisabledNoYields:
@@ -135,13 +135,13 @@ const it: { [word in Words]: string } = {
   selectPlaceholder: 'Seleziona',
   selectTokenFirst: 'Prima Seleziona il Token',
   warningEthGasFees: 'Almeno 0.05 ETH devono rimanere nel portafoglio per pagare le commissioni del gas.',
-  about: 'Su di noi',
+  about: 'A proposito di noi',
   tempusAnnouncements: 'Tempus Annunci',
   tempusChat: 'Tempus Chat',
   interestRateProtectionTooltipText:
-    "Fissa il rendimento futuro con Tempus. Questa funzione blocca il tuo Yield Bearing Token, forgia i Principals e gli Yields in cambio e scambia tutti gli Yields per Principals attraverso il TempusAMM.<br/><br/>Riceverai Principals i quali sono riscattabili 1:1 con l'attività sottostante a scadenza.",
+    "Fissa il rendimento futuro con Tempus. Questa funzione blocca il tuo Yield Bearing Token, emetti i Principals e gli Yields in cambio e scambia tutti gli Yields per Principals attraverso il TempusAMM.<br/><br/>Riceverai Principals i quali sono riscattabili 1:1 con l'attività sottostante a scadenza.",
   liquidityProvisionTooltipText:
-    'Fornisci liquidità a Tempus per ottenere un rendimento aggiuntivo. Questa funzione blocca il tuo  Yield Bearing Token, forgia i Principals e gli Yields in cambio e usa il maggior numero di Principals e Yields per immettere liquidità al TempusAMM.<br/><br/>Questo significa che riceverai il rendimento sottostante e le commissioni di scambio Tempus aggregate in un unico rendimento.',
+    'Fornisci liquidità a Tempus per ottenere un rendimento aggiuntivo. Questa funzione blocca il tuo  Yield Bearing Token, emetti i Principals e gli Yields in cambio e usa il maggior numero di Principals e Yields per immettere liquidità al TempusAMM.<br/><br/>Questo significa che riceverai il rendimento sottostante e le commissioni di scambio Tempus aggregate in un unico rendimento.',
   slippageTolerance: 'Tolleranza di slittamento',
   slippageTooltip:
     'La tua transazione non verrà completata se il prezzo cambia sfavorevolmente in misura maggiore di questa percentuale.',
@@ -153,10 +153,10 @@ const it: { [word in Words]: string } = {
   unstaked: 'Non accumulati',
   stakedPrincipals: 'Principals accumulati',
   stakedYields: 'Yields accumulati',
-  mintDescription: 'Dividi i tuoi yield bearing token in Principals e Yields',
-  swapDescription: 'Scambia tra Principals e Yields',
-  provideLiquidityDescription: 'Usa i tuoi LP token per immettere liquidità nella pool e guadagnare commissioni',
+  mintDescription: 'Dividi i tuoi yield bearing token in Principals e Yields.',
+  swapDescription: 'Scambia tra Principals e Yields.',
+  provideLiquidityDescription: 'Usa i tuoi LP token per immettere liquidità nella pool e guadagnare commissioni.',
   removeLiquidityDescription:
-    'Rimuovi liquidità dalla pool insieme alle commissioni sotto forma degli LP token iniziali',
+    'Rimuovi liquidità dalla pool insieme alle commissioni sotto forma degli LP token iniziali.',
 };
 export default it;
