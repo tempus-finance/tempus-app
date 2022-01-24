@@ -405,6 +405,8 @@ export default class PoolDataAdapter {
     totalYields: BigNumber,
     maxSlippage: BigNumber,
     isBackingToken: boolean,
+    principalsPrecision: number,
+    lpTokenPrecision: number,
   ): Promise<ContractTransaction | undefined> {
     if (!this.tempusControllerService) {
       console.error('PoolDataAdapter - executeWithdraw() - Attempted to use PoolDataAdapter before initializing it!');
@@ -443,6 +445,8 @@ export default class PoolDataAdapter {
         yieldsRate,
         maxSlippage,
         isBackingToken,
+        principalsPrecision,
+        lpTokenPrecision,
       );
     } catch (error) {
       console.error(`TempusPoolService - executeWithdraw() - Failed to make a deposit to the pool!`, error);
