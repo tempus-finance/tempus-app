@@ -17,3 +17,8 @@ export function increasePrecision(value: BigNumber, amount: number) {
   const multiplier = BigNumber.from(Math.pow(10, amount).toString());
   return value.mul(multiplier);
 }
+
+export function decreasePrecision(value: BigNumber, amount: number) {
+  const divider = BigNumber.from(Math.pow(10, amount).toString());
+  return value.div(divider);
+}
