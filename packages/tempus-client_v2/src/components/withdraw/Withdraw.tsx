@@ -207,6 +207,8 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
         totalYields,
         ethers.utils.parseUnits(actualSlippage, SLIPPAGE_PRECISION),
         isBackingToken,
+        tokenPrecision.principals,
+        tokenPrecision.lpTokens,
       );
     } else {
       return Promise.resolve(undefined);
@@ -223,6 +225,8 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
     backingToken,
     selectedToken,
     ammAddress,
+    tokenPrecision.principals,
+    tokenPrecision.lpTokens,
   ]);
 
   // Fetch estimated withdraw amount of tokens
