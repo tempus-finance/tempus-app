@@ -75,6 +75,8 @@
     "test": "react-scripts test",
     "ci:test": "CI=true react-scripts test",
     "eject": "react-scripts eject",
-    "deploy-stage": "firebase deploy --only hosting:tempus-app-stage --token $FIREBASE_TOKEN"
+    "deploy-stage": "firebase deploy --only hosting:tempus-app-stage --token $FIREBASE_TOKEN",
+    "prestart": "./scripts/get-release-version.sh",
+    "prebuild": "./scripts/get-release-version.sh build"
   }
 }
