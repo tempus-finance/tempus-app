@@ -245,6 +245,7 @@ export default class PoolDataAdapter {
   }
 
   getEstimatedWithdrawAmount(
+    tempusPoolAddress: string,
     tempusAmmAddress: string,
     lpAmount: BigNumber,
     principalAmount: BigNumber,
@@ -267,6 +268,7 @@ export default class PoolDataAdapter {
     try {
       return from(
         this.statisticService.estimateExitAndRedeem(
+          tempusPoolAddress,
           tempusAmmAddress,
           lpAmount,
           principalAmount,
@@ -467,6 +469,7 @@ export default class PoolDataAdapter {
     maxSlippage: BigNumber,
     isBackingToken: boolean,
     principalsPrecision: number,
+    yieldsPrecision: number,
     lpTokenPrecision: number,
   ): Promise<ContractTransaction | undefined> {
     if (!this.tempusControllerService) {
@@ -482,18 +485,18 @@ export default class PoolDataAdapter {
         tokenSwapAmount = totalYields.sub(totalPrincipals);
 
         const estimatedPrincipals = await this.getExpectedReturnForShareToken(tempusAMM, tokenSwapAmount, true);
-        yieldsRate = div18f(estimatedPrincipals, tokenSwapAmount);
+        yieldsRate = div18f(estimatedPrincipals, tokenSwapAmount, principalsPrecision);
       } else if (totalPrincipals.gt(totalYields)) {
         tokenSwapAmount = totalPrincipals.sub(totalYields);
 
         const estimatedYields = await this.getExpectedReturnForShareToken(tempusAMM, tokenSwapAmount, false);
-        yieldsRate = div18f(tokenSwapAmount, estimatedYields);
+        yieldsRate = div18f(tokenSwapAmount, estimatedYields, yieldsPrecision);
       } else {
         // In case we have equal amounts, use 1 as swapAmount just in case estimate was wrong, and swap is going to happen anyways
-        tokenSwapAmount = ethers.utils.parseEther('1');
+        tokenSwapAmount = ethers.utils.parseUnits('1', yieldsPrecision);
 
         const estimatedPrincipals = await this.getExpectedReturnForShareToken(tempusAMM, tokenSwapAmount, true);
-        yieldsRate = div18f(estimatedPrincipals, tokenSwapAmount);
+        yieldsRate = div18f(estimatedPrincipals, tokenSwapAmount, principalsPrecision);
       }
 
       return await this.tempusControllerService.exitTempusAmmAndRedeem(
@@ -1087,6 +1090,7 @@ export default class PoolDataAdapter {
       ]);
 
       return await this.statisticService.estimateExitAndRedeem(
+        pool.address,
         pool.ammAddress,
         userLpSupply,
         userPrincipalSupply,

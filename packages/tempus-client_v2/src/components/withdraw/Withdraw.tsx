@@ -186,10 +186,18 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
       const actualSlippage = (autoSlippage ? 1 : slippage / 100).toString();
 
       const minPrincipalsStaked = estimatedWithdrawData.principalsStaked.sub(
-        mul18f(estimatedWithdrawData.principalsStaked, ethers.utils.parseUnits(actualSlippage, principalsPrecision)),
+        mul18f(
+          estimatedWithdrawData.principalsStaked,
+          ethers.utils.parseUnits(actualSlippage, principalsPrecision),
+          principalsPrecision,
+        ),
       );
       const minYieldsStaked = estimatedWithdrawData.yieldsStaked.sub(
-        mul18f(estimatedWithdrawData.yieldsStaked, ethers.utils.parseUnits(actualSlippage, yieldsPrecision)),
+        mul18f(
+          estimatedWithdrawData.yieldsStaked,
+          ethers.utils.parseUnits(actualSlippage, yieldsPrecision),
+          yieldsPrecision,
+        ),
       );
 
       const totalPrincipals = principalsAmountParsed.add(estimatedWithdrawData.principalsStaked);
@@ -208,6 +216,7 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
         ethers.utils.parseUnits(actualSlippage, SLIPPAGE_PRECISION),
         isBackingToken,
         tokenPrecision.principals,
+        tokenPrecision.yields,
         tokenPrecision.lpTokens,
       );
     } else {
@@ -226,6 +235,7 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
     selectedToken,
     ammAddress,
     tokenPrecision.principals,
+    tokenPrecision.yields,
     tokenPrecision.lpTokens,
   ]);
 
@@ -252,6 +262,7 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
         const isBackingToken = backingToken === selectedToken;
         const stream$ = poolDataAdapter
           .getEstimatedWithdrawAmount(
+            selectedPoolAddress,
             ammAddress,
             lpTokenAmountParsed,
             principalsAmountParsed,
