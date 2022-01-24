@@ -11,6 +11,7 @@ import {
   depositBackingGasIncrease,
   depositYieldBearingGasIncrease,
   INFINITE_DEADLINE,
+  ZERO,
 } from '../constants';
 import TempusAMMService from './TempusAMMService';
 
@@ -253,6 +254,20 @@ class TempusControllerService {
     }
 
     let maxLeftoverShares = this.tempusAMMService.getMaxLeftoverShares(principalsAmount, yieldsAmount, lpTokensAmount);
+
+    let maxLeftoverSharesThreshold;
+
+    if (principalsAmount.sub(yieldsAmount).gt(ZERO)) {
+      // principals amount > yields amount
+      maxLeftoverSharesThreshold = yieldsAmount.mul(BigNumber.from('9900')).div(BigNumber.from('10000'));
+    } else {
+      // principals amount <= yields amount
+      maxLeftoverSharesThreshold = principalsAmount.mul(BigNumber.from('9900')).div(BigNumber.from('10000'));
+    }
+
+    if (maxLeftoverShares.gt(maxLeftoverSharesThreshold)) {
+      maxLeftoverShares = maxLeftoverSharesThreshold;
+    }
 
     try {
       const estimate = await this.contract.estimateGas.exitAmmGivenLpAndRedeem(
