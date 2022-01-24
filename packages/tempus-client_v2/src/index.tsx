@@ -10,6 +10,11 @@ import './index.scss';
 
 const mobile = isMobile();
 
+try {
+  const release = require('./release.json');
+  console.log(`Current version: ${release.releaseVersion}`);
+} catch (e) {}
+
 if (mobile) {
   ReactDOM.render(
     <React.StrictMode>
