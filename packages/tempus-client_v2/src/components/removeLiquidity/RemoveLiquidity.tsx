@@ -110,12 +110,14 @@ const RemoveLiquidity = () => {
       mul18f(
         estimatedPrincipals,
         ethers.utils.parseUnits(actualSlippage, getTokenPrecision(selectedPoolAddress, 'principals')),
+        getTokenPrecision(selectedPoolAddress, 'principals'),
       ),
     );
     const minYieldsReceived = estimatedYields.sub(
       mul18f(
         estimatedYields,
         ethers.utils.parseUnits(actualSlippage, getTokenPrecision(selectedPoolAddress, 'yields')),
+        getTokenPrecision(selectedPoolAddress, 'yields'),
       ),
     );
 
