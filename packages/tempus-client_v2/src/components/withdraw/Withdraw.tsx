@@ -200,23 +200,18 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
         ),
       );
 
-      const totalPrincipals = principalsAmountParsed.add(estimatedWithdrawData.principalsStaked);
-      const totalYields = yieldsAmountParsed.add(estimatedWithdrawData.yieldsStaked);
-
       const isBackingToken = backingToken === selectedToken;
       return poolDataAdapter.executeWithdraw(
+        selectedPoolAddress,
         ammAddress,
         principalsAmountParsed,
         yieldsAmountParsed,
         lpTokenAmountParsed,
         minPrincipalsStaked,
         minYieldsStaked,
-        totalPrincipals,
-        totalYields,
         ethers.utils.parseUnits(actualSlippage, SLIPPAGE_PRECISION),
         isBackingToken,
         tokenPrecision.principals,
-        tokenPrecision.yields,
         tokenPrecision.lpTokens,
       );
     } else {
@@ -235,7 +230,6 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
     selectedToken,
     ammAddress,
     tokenPrecision.principals,
-    tokenPrecision.yields,
     tokenPrecision.lpTokens,
   ]);
 
