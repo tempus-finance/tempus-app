@@ -3,10 +3,11 @@ import { BigNumber, CallOverrides, Contract, ethers } from 'ethers';
 import Axios from 'axios';
 import { Stats } from '../abi/Stats';
 import StatsABI from '../abi/Stats.json';
-import { div18f, mul18f } from '../utils/weiMath';
+import { decreasePrecision, div18f, mul18f } from '../utils/weiMath';
 import { Ticker } from '../interfaces/Token';
 import TempusAMMService from './TempusAMMService';
 import { tokenPrecision } from '../constants';
+import getTokenPrecision from '../utils/getTokenPrecision';
 
 const backingTokenToCoingeckoIdMap = new Map<string, string>();
 backingTokenToCoingeckoIdMap.set('ETH', 'ethereum');
@@ -234,6 +235,7 @@ class StatisticsService {
    * Returns estimated amount of Backing/Yield Bearing tokens on deposit
    **/
   async estimateExitAndRedeem(
+    tempusPoolAddress: string,
     tempusAmmAddress: string,
     lpAmount: BigNumber,
     principalAmount: BigNumber,
@@ -264,7 +266,20 @@ class StatisticsService {
       };
     }
 
-    let maxLeftoverShares = this.tempusAMMService.getMaxLeftoverShares(principalAmount, yieldsAmount, lpAmount);
+    const principalsPrecision = getTokenPrecision(tempusPoolAddress, 'principals');
+    const lpTokenPrecision = getTokenPrecision(tempusPoolAddress, 'lpTokens');
+
+    let lpTokensAmountParsed = lpAmount;
+    if (lpTokenPrecision > principalsPrecision) {
+      lpTokensAmountParsed = decreasePrecision(lpAmount, lpTokenPrecision - principalsPrecision);
+    }
+
+    let maxLeftoverShares = this.tempusAMMService.getMaxLeftoverShares(
+      principalAmount,
+      yieldsAmount,
+      lpTokensAmountParsed,
+    );
+
     try {
       if (overrides) {
         return await this.stats.estimateExitAndRedeem(
