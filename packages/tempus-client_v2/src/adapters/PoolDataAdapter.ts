@@ -11,6 +11,7 @@ import { TransferEventListener } from '../services/ERC20TokenService';
 import getDefaultProvider from '../services/getDefaultProvider';
 import { getEventBackingTokenValue } from '../services/EventUtils';
 import { div18f, increasePrecision, mul18f } from '../utils/weiMath';
+import { selectedChainState } from '../state/ChainState';
 import { staticPoolDataState } from '../state/PoolDataState';
 import {
   BLOCK_DURATION_SECONDS,
@@ -20,6 +21,7 @@ import {
   SECONDS_IN_A_DAY,
   ZERO_ETH_ADDRESS,
 } from '../constants';
+import { Chain } from '../interfaces/Chain';
 import { Ticker } from '../interfaces/Token';
 import { TempusPool } from '../interfaces/TempusPool';
 import { SelectedYield } from '../interfaces/SelectedYield';
@@ -67,6 +69,7 @@ export default class PoolDataAdapter {
   }
 
   retrieveBalances(
+    chain: Chain,
     tempusPoolAddress: string,
     tempusAMMAddress: string,
     backingTokenPrecision: number,
@@ -146,7 +149,7 @@ export default class PoolDataAdapter {
               from(yieldBearingTokenService.balanceOf(userWalletAddress)),
               from(principalsTokenService.balanceOf(userWalletAddress)),
               from(yieldsTokenService.balanceOf(userWalletAddress)),
-              from(this.statisticService.getRate(backingTokenTicker)),
+              from(this.statisticService.getRate(chain, backingTokenTicker)),
               from(lpTokenService.balanceOf(userWalletAddress)),
               of(yieldBearingTokenConversionRate),
             ]);
@@ -665,7 +668,7 @@ export default class PoolDataAdapter {
 
     let backingTokenRate: BigNumber;
     try {
-      backingTokenRate = await this.statisticService.getRate(backingTokenTicker);
+      backingTokenRate = await this.statisticService.getRate(selectedChainState.get(), backingTokenTicker);
     } catch (error) {
       console.error(
         'PoolDataAdapter - getUserTransactions() - Failed to fetch backing token conversion rate to USD!',
@@ -835,7 +838,7 @@ export default class PoolDataAdapter {
       return ticker$.pipe(
         switchMap(() => {
           if (this.statisticService) {
-            return from(this.statisticService.getRate(ticker));
+            return from(this.statisticService.getRate(selectedChainState.get(), ticker));
           }
           return of(BigNumber.from('0'));
         }),
@@ -892,7 +895,7 @@ export default class PoolDataAdapter {
         yieldTokenAmount,
         interestRate,
       );
-      const backingTokenRate = await this.statisticService.getRate(backingTokenTicker);
+      const backingTokenRate = await this.statisticService.getRate(selectedChainState.get(), backingTokenTicker);
 
       // TODO - Handle a case in which backing token precision is bigger then yield bearing token precision
       if (yieldBearingTokenPrecision > backingTokenPrecision) {
@@ -1164,7 +1167,7 @@ export default class PoolDataAdapter {
         this.statisticService.totalValueLockedInBackingTokens(tempusPool, {
           blockTag: fetchForBlock,
         }),
-        this.statisticService.getRate(backingToken, {
+        this.statisticService.getRate(selectedChainState.get(), backingToken, {
           blockTag: fetchForBlock,
         }),
       ]);
@@ -1243,7 +1246,7 @@ export default class PoolDataAdapter {
           let poolBackingTokenRate: BigNumber;
           try {
             const statisticService = getStatisticsService();
-            poolBackingTokenRate = await statisticService.getRate(backingToken, {
+            poolBackingTokenRate = await statisticService.getRate(selectedChainState.get(), backingToken, {
               blockTag: event.blockNumber,
             });
           } catch (error) {

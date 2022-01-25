@@ -7,6 +7,7 @@ import getTempusControllerService from '../services/getTempusControllerService';
 import getERC20TokenService from '../services/getERC20TokenService';
 import ChartDataPoint from '../interfaces/ChartDataPoint';
 import { TempusPool } from '../interfaces/TempusPool';
+import { selectedChainState } from '../state/ChainState';
 import { div18f, mul18f } from '../utils/weiMath';
 import { BLOCK_DURATION_SECONDS, SECONDS_IN_A_DAY } from '../constants';
 
@@ -209,7 +210,7 @@ class ProfitLossGraphDataAdapter {
             blockTag: block.number,
           },
         ),
-        this.statisticsService.getRate(poolData.backingToken, {
+        this.statisticsService.getRate(selectedChainState.get(), poolData.backingToken, {
           blockTag: block.number,
         }),
       ]);

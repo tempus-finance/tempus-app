@@ -85,7 +85,7 @@ class UserBalanceProvider {
       principalsService.balanceOf(this.userWalletAddress),
       yieldsService.balanceOf(this.userWalletAddress),
       lpTokenService.balanceOf(this.userWalletAddress),
-      statisticsService.getRate(poolConfig.backingToken),
+      statisticsService.getRate(selectedChainState.get(), poolConfig.backingToken),
     ]);
 
     const estimateExitToBackingToken = true;
