@@ -200,6 +200,7 @@ class ProfitLossGraphDataAdapter {
 
       const [exitEstimateData, backingTokenRate] = await Promise.all([
         this.statisticsService.estimateExitAndRedeem(
+          poolData.address,
           poolData.ammAddress,
           lpBalance,
           principalsBalance,
