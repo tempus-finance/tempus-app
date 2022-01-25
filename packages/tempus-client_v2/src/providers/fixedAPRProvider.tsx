@@ -8,6 +8,7 @@ import { WalletContext } from '../context/walletContext';
 import { dynamicPoolDataState } from '../state/PoolDataState';
 import getPoolDataAdapter from '../adapters/getPoolDataAdapter';
 import { FIXED_APR_PRECISION } from '../constants';
+import { selectedChainState } from '../state/ChainState';
 
 const FixedAPRProvider = () => {
   const dynamicPoolData = useHookState(dynamicPoolDataState);
@@ -34,7 +35,7 @@ const FixedAPRProvider = () => {
       return;
     }
 
-    const config = getConfig();
+    const config = getConfig()[selectedChainState.get()];
     const poolDataAdapter = getPoolDataAdapter(provider);
 
     // Fetch APR for all Tempus Pools

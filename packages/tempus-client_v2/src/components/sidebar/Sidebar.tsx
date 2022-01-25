@@ -14,6 +14,7 @@ import Typography from '../typography/Typography';
 import Spacer from '../spacer/spacer';
 
 import './Sidebar.scss';
+import { selectedChainState } from '../../state/ChainState';
 
 const basicViews: TransactionView[] = ['deposit', 'withdraw'];
 const advancedViews: TransactionView[] = ['mint', 'swap', 'provideLiquidity', 'removeLiquidity', 'earlyRedeem'];
@@ -63,7 +64,7 @@ const Sidebar: FC<SidebarProps> = ({ initialView, onSelectedView }) => {
   }, [initialView, selectedView]);
 
   const onPoolAddressClick = useCallback(() => {
-    const config = getConfig();
+    const config = getConfig()[selectedChainState.get()];
 
     if (config.networkName === 'homestead') {
       window.open(`https://etherscan.io/address/${selectedPoolAddress}`, '_blank');

@@ -11,6 +11,7 @@ import { capitalize } from '../utils/capitalizeString';
 import getConfig from '../utils/getConfig';
 import NumberUtils from './NumberUtils';
 import StorageService from './StorageService';
+import { selectedChainState } from '../state/ChainState';
 
 const NOTIFICATIONS_KEY = 'notifications';
 
@@ -117,7 +118,7 @@ class NotificationService {
 }
 
 export const generateEtherscanLink = (tx: string) => {
-  const config = getConfig();
+  const config = getConfig()[selectedChainState.get()];
 
   if (config.networkName === 'homestead') {
     return `https://etherscan.io/tx/${tx}`;

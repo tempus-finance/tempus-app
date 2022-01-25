@@ -5,6 +5,7 @@ import getVariableRateService from '../services/getVariableRateService';
 import getConfig from '../utils/getConfig';
 import { WalletContext } from '../context/walletContext';
 import { dynamicPoolDataState } from '../state/PoolDataState';
+import { selectedChainState } from '../state/ChainState';
 
 const VariableAPRProvider = () => {
   const dynamicPoolData = useHookState(dynamicPoolDataState);
@@ -28,7 +29,7 @@ const VariableAPRProvider = () => {
       return;
     }
 
-    const config = getConfig();
+    const config = getConfig()[selectedChainState.get()];
     const variableRateService = getVariableRateService(provider);
 
     try {

@@ -24,6 +24,7 @@ import getTokenPrecision from '../../utils/getTokenPrecision';
 import Approve from '../buttons/Approve';
 
 import './RemoveLiquidity.scss';
+import { selectedChainState } from '../../state/ChainState';
 
 const RemoveLiquidity = () => {
   const selectedPool = useHookState(selectedPoolState);
@@ -230,7 +231,7 @@ const RemoveLiquidity = () => {
                 tokenToApproveTicker="LP Token"
                 amountToApprove={userLPTokenBalance}
                 onApproveChange={onApproveChange}
-                spenderAddress={getConfig().vaultContract}
+                spenderAddress={getConfig()[selectedChainState.get()].vaultContract}
                 tokenToApproveAddress={ammAddress}
                 disabled={approveDisabled}
               />

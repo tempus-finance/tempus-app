@@ -6,6 +6,7 @@ import TempusPoolService from './TempusPoolService';
 import getDefaultProvider from './getDefaultProvider';
 import getERC20TokenService from './getERC20TokenService';
 import getConfig from '../utils/getConfig';
+import { selectedChainState } from '../state/ChainState';
 
 let tempusPoolService: TempusPoolService;
 const getTempusPoolService = (signerOrProvider?: JsonRpcSigner | JsonRpcProvider) => {
@@ -15,7 +16,9 @@ const getTempusPoolService = (signerOrProvider?: JsonRpcSigner | JsonRpcProvider
     tempusPoolService = new TempusPoolService();
     tempusPoolService.init({
       Contract,
-      tempusPoolAddresses: getConfig().tempusPools.map(tempusPoolConfig => tempusPoolConfig.address),
+      tempusPoolAddresses: getConfig()[selectedChainState.get()].tempusPools.map(
+        tempusPoolConfig => tempusPoolConfig.address,
+      ),
       TempusPoolABI: TempusPoolABI,
       signerOrProvider: defaultProvider,
       eRC20TokenServiceGetter: getERC20TokenService,
@@ -25,7 +28,9 @@ const getTempusPoolService = (signerOrProvider?: JsonRpcSigner | JsonRpcProvider
   if (signerOrProvider) {
     tempusPoolService.init({
       Contract: Contract,
-      tempusPoolAddresses: getConfig().tempusPools.map(tempusPoolConfig => tempusPoolConfig.address),
+      tempusPoolAddresses: getConfig()[selectedChainState.get()].tempusPools.map(
+        tempusPoolConfig => tempusPoolConfig.address,
+      ),
       TempusPoolABI: TempusPoolABI,
       signerOrProvider: signerOrProvider,
       eRC20TokenServiceGetter: getERC20TokenService,

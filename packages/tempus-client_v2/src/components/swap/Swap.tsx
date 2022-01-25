@@ -25,6 +25,7 @@ import TokenSelector from '../tokenSelector/tokenSelector';
 import Typography from '../typography/Typography';
 
 import './Swap.scss';
+import { selectedChainState } from '../../state/ChainState';
 
 interface TokenDetail {
   tokenName: PoolShares;
@@ -308,7 +309,7 @@ const Swap = () => {
           <Approve
             amountToApprove={getSelectedTokenBalance()}
             onApproveChange={onApproveChange}
-            spenderAddress={getConfig().vaultContract}
+            spenderAddress={getConfig()[selectedChainState.get()].vaultContract}
             tokenToApproveTicker={tokenFrom.tokenName}
             tokenToApproveAddress={getSelectedTokenAddress()}
             marginRight={20}

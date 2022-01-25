@@ -6,6 +6,7 @@ import TempusAMMService from './TempusAMMService';
 import getDefaultProvider from './getDefaultProvider';
 import getTempusPoolService from './getTempusPoolService';
 import getERC20TokenService from './getERC20TokenService';
+import { selectedChainState } from '../state/ChainState';
 
 let tempusAMMService: TempusAMMService;
 const getTempusAMMService = (signerOrProvider?: JsonRpcSigner | JsonRpcProvider): TempusAMMService => {
@@ -13,24 +14,28 @@ const getTempusAMMService = (signerOrProvider?: JsonRpcSigner | JsonRpcProvider)
     tempusAMMService = new TempusAMMService();
     tempusAMMService.init({
       Contract,
-      tempusAMMAddresses: getConfig().tempusPools.map(tempusPoolConfig => tempusPoolConfig.ammAddress),
+      tempusAMMAddresses: getConfig()[selectedChainState.get()].tempusPools.map(
+        tempusPoolConfig => tempusPoolConfig.ammAddress,
+      ),
       TempusAMMABI: TempusAMMABI,
       signerOrProvider: getDefaultProvider(),
       tempusPoolService: getTempusPoolService(),
       eRC20TokenServiceGetter: getERC20TokenService,
-      config: getConfig(),
+      config: getConfig()[selectedChainState.get()],
     });
   }
 
   if (signerOrProvider) {
     tempusAMMService.init({
       Contract: Contract,
-      tempusAMMAddresses: getConfig().tempusPools.map(tempusPoolConfig => tempusPoolConfig.ammAddress),
+      tempusAMMAddresses: getConfig()[selectedChainState.get()].tempusPools.map(
+        tempusPoolConfig => tempusPoolConfig.ammAddress,
+      ),
       TempusAMMABI: TempusAMMABI,
       signerOrProvider: signerOrProvider,
       tempusPoolService: getTempusPoolService(signerOrProvider),
       eRC20TokenServiceGetter: getERC20TokenService,
-      config: getConfig(),
+      config: getConfig()[selectedChainState.get()],
     });
   }
 

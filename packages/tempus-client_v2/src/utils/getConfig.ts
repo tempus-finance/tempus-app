@@ -2,6 +2,7 @@ import { Config } from '../interfaces/Config';
 import { TempusPool } from '../interfaces/TempusPool';
 import config from '../config/config';
 import getCookie from './getCookie';
+import { selectedChainState } from '../state/ChainState';
 
 export default function getConfig(): Config {
   const overridingConfig = getCookie('TEMPUS_OVERRIDING_CONFIG');
@@ -19,7 +20,7 @@ export default function getConfig(): Config {
 }
 
 export function getConfigForPoolWithId(poolId: string): TempusPool {
-  const poolConfig = getConfig().tempusPools.find(tempusPool => {
+  const poolConfig = getConfig()[selectedChainState.get()].tempusPools.find(tempusPool => {
     return tempusPool.poolId === poolId;
   });
   if (!poolConfig) {
@@ -30,7 +31,7 @@ export function getConfigForPoolWithId(poolId: string): TempusPool {
 }
 
 export function getConfigForPoolWithAddress(poolAddress: string): TempusPool {
-  const poolConfig = getConfig().tempusPools.find(tempusPool => {
+  const poolConfig = getConfig()[selectedChainState.get()].tempusPools.find(tempusPool => {
     return tempusPool.address === poolAddress;
   });
   if (!poolConfig) {

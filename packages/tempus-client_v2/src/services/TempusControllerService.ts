@@ -13,6 +13,7 @@ import {
   INFINITE_DEADLINE,
 } from '../constants';
 import TempusAMMService from './TempusAMMService';
+import { selectedChainState } from '../state/ChainState';
 
 type TempusControllerServiceParameters = {
   Contract: typeof Contract;
@@ -244,7 +245,7 @@ class TempusControllerService {
       return Promise.reject();
     }
 
-    const tempusPoolConfig = getConfig().tempusPools.find(
+    const tempusPoolConfig = getConfig()[selectedChainState.get()].tempusPools.find(
       tempusPoolConfig => tempusPoolConfig.ammAddress === tempusAMM,
     );
     if (!tempusPoolConfig) {

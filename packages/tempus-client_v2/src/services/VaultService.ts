@@ -7,6 +7,7 @@ import getDefaultProvider from './getDefaultProvider';
 import TempusAMMService from './TempusAMMService';
 import { provideLiquidityGasIncrease, removeLiquidityGasIncrease, SECONDS_IN_AN_HOUR } from '../constants';
 import getConfig from '../utils/getConfig';
+import { selectedChainState } from '../state/ChainState';
 
 type VaultServiceParameters = {
   Contract: typeof Contract;
@@ -92,7 +93,7 @@ class VaultService {
     const fetchSwapEventPromises: Promise<SwapEvent[]>[] = [];
     if (!filters.forPoolId) {
       try {
-        getConfig().tempusPools.forEach(tempusPool => {
+        getConfig()[selectedChainState.get()].tempusPools.forEach(tempusPool => {
           if (!this.contract) {
             throw new Error('VaultService - getSwapEvents() - Attempted to use VaultService before initializing it!');
           }
@@ -134,7 +135,7 @@ class VaultService {
     const fetchEventsPromises: Promise<PoolBalanceChangedEvent[]>[] = [];
     if (!forPoolId) {
       try {
-        getConfig().tempusPools.forEach(pool => {
+        getConfig()[selectedChainState.get()].tempusPools.forEach(pool => {
           if (!this.contract) {
             throw new Error(
               'VaultService - getPoolBalanceChangedEvents() - Attempted to use VaultService before initializing it!',

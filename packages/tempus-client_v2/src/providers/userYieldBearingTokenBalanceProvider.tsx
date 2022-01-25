@@ -5,6 +5,7 @@ import { TempusPool } from '../interfaces/TempusPool';
 import getERC20TokenService from '../services/getERC20TokenService';
 import getConfig from '../utils/getConfig';
 import { dynamicPoolDataState } from '../state/PoolDataState';
+import { selectedChainState } from '../state/ChainState';
 
 const UserYieldBearingTokenBalanceProvider = () => {
   const dynamicPoolData = useHookState(dynamicPoolDataState);
@@ -30,7 +31,7 @@ const UserYieldBearingTokenBalanceProvider = () => {
   );
 
   const updateBalance = useCallback(async () => {
-    getConfig().tempusPools.forEach(poolConfig => {
+    getConfig()[selectedChainState.get()].tempusPools.forEach(poolConfig => {
       updateBalanceForPool(poolConfig);
     });
   }, [updateBalanceForPool]);
@@ -44,7 +45,7 @@ const UserYieldBearingTokenBalanceProvider = () => {
       return;
     }
 
-    getConfig().tempusPools.forEach(poolConfig => {
+    getConfig()[selectedChainState.get()].tempusPools.forEach(poolConfig => {
       const yieldBearingTokenService = getERC20TokenService(poolConfig.yieldBearingTokenAddress, userWalletSigner);
 
       yieldBearingTokenService.onTransfer(userWalletAddress, null, updateBalance);
@@ -52,7 +53,7 @@ const UserYieldBearingTokenBalanceProvider = () => {
     });
 
     return () => {
-      getConfig().tempusPools.forEach(poolConfig => {
+      getConfig()[selectedChainState.get()].tempusPools.forEach(poolConfig => {
         const yieldBearingTokenService = getERC20TokenService(poolConfig.yieldBearingTokenAddress, userWalletSigner);
 
         yieldBearingTokenService.offTransfer(userWalletAddress, null, updateBalance);

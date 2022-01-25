@@ -3,6 +3,7 @@ import { Contract } from 'ethers';
 import { ERC20 } from '../abi/ERC20';
 import ERC20ABI from '../abi/ERC20.json';
 import { TempusPool } from '../interfaces/TempusPool';
+import { selectedChainState } from '../state/ChainState';
 import { dynamicPoolDataState } from '../state/PoolDataState';
 import getConfig, { getConfigForPoolWithAddress } from '../utils/getConfig';
 
@@ -26,7 +27,7 @@ class UserShareTokenBalanceProvider {
     // Make sure to clean previous data before crating new subscriptions
     this.destroy();
 
-    getConfig().tempusPools.forEach(poolConfig => {
+    getConfig()[selectedChainState.get()].tempusPools.forEach(poolConfig => {
       if (!this.userWalletSigner) {
         return;
       }
@@ -95,13 +96,13 @@ class UserShareTokenBalanceProvider {
   }
 
   private updatePrincipalsBalance = () => {
-    getConfig().tempusPools.forEach(poolConfig => {
+    getConfig()[selectedChainState.get()].tempusPools.forEach(poolConfig => {
       this.updatePrincipalsBalanceForPool(poolConfig);
     });
   };
 
   private updateYieldsBalance = () => {
-    getConfig().tempusPools.forEach(poolConfig => {
+    getConfig()[selectedChainState.get()].tempusPools.forEach(poolConfig => {
       this.updateYieldsBalanceForPool(poolConfig);
     });
   };

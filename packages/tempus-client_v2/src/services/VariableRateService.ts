@@ -19,13 +19,14 @@ import VaultService, { PoolBalanceChangedEvent, SwapEvent } from '../services/Va
 import TempusAMMService from '../services/TempusAMMService';
 import { isPoolBalanceChangedEvent, isSwapEvent } from '../services/EventUtils';
 import { ProtocolName } from '../interfaces/ProtocolName';
-import { Config } from '../interfaces/Config';
+import { BlockchainConfig } from '../interfaces/Config';
 import { wadToDai } from '../utils/rayToDai';
 import getConfig from '../utils/getConfig';
 import { div18f, mul18f } from '../utils/weiMath';
 import getProvider from '../utils/getProvider';
 import { TempusPool } from '../interfaces/TempusPool';
 import { YearnData } from '../interfaces/YearnData';
+import { selectedChainState } from '../state/ChainState';
 
 const SECONDS_IN_A_WEEK = SECONDS_IN_A_DAY * 7;
 const HOURS_IN_A_YEAR = DAYS_IN_A_YEAR * 24;
@@ -62,7 +63,7 @@ class VariableRateService {
     vaultService: VaultService,
     tempusAMMService: TempusAMMService,
     rariVault: RariVault,
-    config: Config,
+    config: BlockchainConfig,
   ) {
     if (signerOrProvider) {
       this.aaveLendingPool = new Contract(aaveLendingPoolAddress, AaveLendingPoolABI, signerOrProvider);
@@ -80,7 +81,7 @@ class VariableRateService {
       return Promise.reject();
     }
 
-    const poolConfig = getConfig().tempusPools.find(pool => pool.address === tempusPool);
+    const poolConfig = getConfig()[selectedChainState.get()].tempusPools.find(pool => pool.address === tempusPool);
     if (!poolConfig) {
       return Promise.reject();
     }

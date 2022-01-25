@@ -5,6 +5,7 @@ import getConfig from '../utils/getConfig';
 import TempusControllerService from './TempusControllerService';
 import getDefaultProvider from './getDefaultProvider';
 import getTempusAMMService from './getTempusAMMService';
+import { selectedChainState } from '../state/ChainState';
 
 let tempusControllerService: TempusControllerService;
 const getTempusControllerService = (signerOrProvider?: JsonRpcSigner | JsonRpcProvider): TempusControllerService => {
@@ -12,7 +13,7 @@ const getTempusControllerService = (signerOrProvider?: JsonRpcSigner | JsonRpcPr
     tempusControllerService = new TempusControllerService();
     tempusControllerService.init({
       Contract: Contract,
-      address: getConfig().tempusControllerContract,
+      address: getConfig()[selectedChainState.get()].tempusControllerContract,
       abi: TempusControllerABI,
       signerOrProvider: getDefaultProvider(),
       tempusAMMService: getTempusAMMService(),
@@ -22,7 +23,7 @@ const getTempusControllerService = (signerOrProvider?: JsonRpcSigner | JsonRpcPr
   if (signerOrProvider) {
     tempusControllerService.init({
       Contract: Contract,
-      address: getConfig().tempusControllerContract,
+      address: getConfig()[selectedChainState.get()].tempusControllerContract,
       abi: TempusControllerABI,
       signerOrProvider: signerOrProvider,
       tempusAMMService: getTempusAMMService(signerOrProvider),

@@ -1,6 +1,7 @@
 import { JsonRpcSigner } from '@ethersproject/providers';
 import { BigNumber, Contract } from 'ethers';
 import VaultABI from '../abi/Vault.json';
+import { selectedChainState } from '../state/ChainState';
 import { dynamicPoolDataState } from '../state/PoolDataState';
 import getConfig, { getConfigForPoolWithId } from '../utils/getConfig';
 
@@ -28,7 +29,7 @@ class PoolShareBalanceProvider {
     // Clean up previous subscriptions
     this.destroy();
 
-    const config = getConfig();
+    const config = getConfig()[selectedChainState.get()];
 
     this.vaultContract = new Contract(config.vaultContract, VaultABI, this.userWalletSigner);
     config.tempusPools.forEach(poolConfig => {

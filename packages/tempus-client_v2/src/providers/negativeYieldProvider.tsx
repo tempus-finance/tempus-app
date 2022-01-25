@@ -8,6 +8,7 @@ import { dynamicPoolDataState } from '../state/PoolDataState';
 import { WalletContext } from '../context/walletContext';
 import getDefaultProvider from '../services/getDefaultProvider';
 import getTempusPoolService from '../services/getTempusPoolService';
+import { selectedChainState } from '../state/ChainState';
 
 const subscriptions$ = new Subscription();
 
@@ -60,7 +61,7 @@ const NegativeYieldProvider = () => {
    * Fetch/Update Negative Yield Flag for all pools every POLLING_INTERVAL.
    */
   useEffect(() => {
-    getConfig().tempusPools.forEach(poolConfig => {
+    getConfig()[selectedChainState.get()].tempusPools.forEach(poolConfig => {
       try {
         const fetchInterval$ = interval(POLLING_INTERVAL).pipe(startWith(0));
         subscriptions$.add(

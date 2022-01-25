@@ -6,6 +6,7 @@ import DashboardDataAdapter from '../adapters/DashboardDataAdapter';
 import { TempusPool } from '../interfaces/TempusPool';
 import { useState as useHookState } from '@hookstate/core';
 import { dynamicPoolDataState } from '../state/PoolDataState';
+import { selectedChainState } from '../state/ChainState';
 
 interface TVLProviderProps {
   dashboardDataAdapter: DashboardDataAdapter;
@@ -37,7 +38,7 @@ const TVLProvider: FC<TVLProviderProps> = props => {
    * Update TVL for all pools every POLLING_INTERVAL.
    */
   useEffect(() => {
-    getConfig().tempusPools.forEach(poolConfig => {
+    getConfig()[selectedChainState.get()].tempusPools.forEach(poolConfig => {
       try {
         // If case we want to force TVL fetch (even if app is not in focus)
         const forceFetch = dynamicPoolData[poolConfig.address].tvl.get() === null;

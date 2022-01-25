@@ -12,6 +12,7 @@ import getConfig from '../utils/getConfig';
 import StatisticsService from './StatisticsService';
 import getDefaultProvider from './getDefaultProvider';
 import getTempusAMMService from './getTempusAMMService';
+import { selectedChainState } from '../state/ChainState';
 
 let statisticsService: StatisticsService;
 const getStatisticsService = (signerOrProvider?: JsonRpcSigner | JsonRpcProvider) => {
@@ -19,7 +20,7 @@ const getStatisticsService = (signerOrProvider?: JsonRpcSigner | JsonRpcProvider
     statisticsService = new StatisticsService();
     statisticsService.init({
       Contract: Contract,
-      address: getConfig().statisticsContract,
+      address: getConfig()[selectedChainState.get()].statisticsContract,
       abi: StatisticsABI,
       signerOrProvider: getDefaultProvider(),
       tempusAMMService: getTempusAMMService(),
@@ -29,7 +30,7 @@ const getStatisticsService = (signerOrProvider?: JsonRpcSigner | JsonRpcProvider
   if (signerOrProvider) {
     statisticsService.init({
       Contract: Contract,
-      address: getConfig().statisticsContract,
+      address: getConfig()[selectedChainState.get()].statisticsContract,
       abi: StatisticsABI,
       signerOrProvider: signerOrProvider,
       tempusAMMService: getTempusAMMService(signerOrProvider),

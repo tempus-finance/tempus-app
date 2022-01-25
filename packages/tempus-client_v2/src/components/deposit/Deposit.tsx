@@ -31,6 +31,7 @@ import InfoTooltip from '../infoTooltip/infoTooltip';
 import SelectIcon from '../icons/SelectIcon';
 
 import './Deposit.scss';
+import { selectedChainState } from '../../state/ChainState';
 
 type DepositInProps = {
   narrow: boolean;
@@ -1045,7 +1046,7 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
         <div className="tf__flex-row-center-vh">
           <Approve
             tokenToApproveAddress={getSelectedTokenAddress()}
-            spenderAddress={getConfig().tempusControllerContract}
+            spenderAddress={getConfig()[selectedChainState.get()].tempusControllerContract}
             amountToApprove={amountToApprove}
             tokenToApproveTicker={selectedToken}
             disabled={approveDisabled}

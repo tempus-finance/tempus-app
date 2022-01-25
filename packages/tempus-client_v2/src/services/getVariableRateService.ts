@@ -6,6 +6,7 @@ import getTempusAMMService from '../services/getTempusAMMService';
 import getVaultService from '../services/getVaultService';
 import getConfig from '../utils/getConfig';
 import getProvider from '../utils/getProvider';
+import { selectedChainState } from '../state/ChainState';
 
 let variableRateService: VariableRateService;
 let actualSignerOrProvider: JsonRpcSigner | JsonRpcProvider;
@@ -22,7 +23,7 @@ const getVariableRateService = (signerOrProvider?: JsonRpcSigner | JsonRpcProvid
       getVaultService(actualSignerOrProvider),
       getTempusAMMService(actualSignerOrProvider),
       new RariVault(getProvider(signerOrProvider) as any),
-      getConfig(),
+      getConfig()[selectedChainState.get()],
     );
   }
 

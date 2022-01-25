@@ -4,8 +4,7 @@ import { TempusAMM } from '../abi/TempusAMM';
 import TempusAMMABI from '../abi/TempusAMM.json';
 import { DAYS_IN_A_YEAR, SECONDS_IN_A_DAY } from '../constants';
 import { mul18f, div18f } from '../utils/weiMath';
-import getConfig from '../utils/getConfig';
-import { Config } from '../interfaces/Config';
+import { BlockchainConfig } from '../interfaces/Config';
 import TempusPoolService from './TempusPoolService';
 import getVaultService from './getVaultService';
 import getERC20TokenService from './getERC20TokenService';
@@ -22,7 +21,7 @@ type TempusAMMServiceParameters = {
   signerOrProvider: JsonRpcSigner | JsonRpcProvider;
   tempusPoolService: TempusPoolService;
   eRC20TokenServiceGetter: typeof getERC20TokenService;
-  config: Config;
+  config: BlockchainConfig;
 };
 
 class TempusAMMService {
@@ -30,7 +29,7 @@ class TempusAMMService {
   private tempusPoolService: TempusPoolService | null = null;
   private eRC20TokenServiceGetter: typeof getERC20TokenService | null = null;
 
-  private config: Config | null = null;
+  private config: BlockchainConfig | null = null;
 
   public init({
     tempusAMMAddresses,
@@ -98,7 +97,7 @@ class TempusAMMService {
   }
 
   public async getFixedAPR(tempusAMM: string, principalsAddress: string): Promise<number | null> {
-    if (!this.tempusPoolService) {
+    if (!this.tempusPoolService || !this.config) {
       console.error('TempusAMMService - getFixedAPR() - Attempted to se TempusAMMService before initializing it!');
       return Promise.reject();
     }
@@ -110,7 +109,7 @@ class TempusAMMService {
     if (service) {
       const YIELD_TO_PRINCIPAL = true;
 
-      const tempusPool = getConfig().tempusPools.find(pool => pool.ammAddress === tempusAMM);
+      const tempusPool = this.config.tempusPools.find(pool => pool.ammAddress === tempusAMM);
       if (!tempusPool) {
         console.error('TempusAMMService - getFixedAPR() - Failed to get tempus pool data from AMM!');
         return Promise.reject();

@@ -24,6 +24,7 @@ import Approve from '../buttons/Approve';
 import Execute from '../buttons/Execute';
 
 import './ProvideLiquidity.scss';
+import { selectedChainState } from '../../state/ChainState';
 
 const ProvideLiquidity = () => {
   const selectedPool = useHookState(selectedPoolState);
@@ -469,7 +470,7 @@ const ProvideLiquidity = () => {
                 onApproveChange={approved => {
                   setPrincipalsApproved(approved);
                 }}
-                spenderAddress={getConfig().vaultContract}
+                spenderAddress={getConfig()[selectedChainState.get()].vaultContract}
                 tokenToApproveAddress={principalsAddress}
               />
             </div>
@@ -508,7 +509,7 @@ const ProvideLiquidity = () => {
                 onApproveChange={approved => {
                   setYieldsApproved(approved);
                 }}
-                spenderAddress={getConfig().vaultContract}
+                spenderAddress={getConfig()[selectedChainState.get()].vaultContract}
                 tokenToApproveAddress={yieldsAddress}
               />
             </div>

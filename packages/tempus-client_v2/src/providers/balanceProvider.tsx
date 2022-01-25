@@ -8,6 +8,7 @@ import getStatisticsService from '../services/getStatisticsService';
 import getERC20TokenService from '../services/getERC20TokenService';
 import getConfig, { getConfigForPoolWithAddress } from '../utils/getConfig';
 import { mul18f } from '../utils/weiMath';
+import { selectedChainState } from '../state/ChainState';
 
 export interface UserBalanceProviderParams {
   userWalletAddress: string;
@@ -29,7 +30,7 @@ class UserBalanceProvider {
     // Make sure to clean previous data before crating new subscriptions
     this.destroy();
 
-    getConfig().tempusPools.forEach(poolConfig => {
+    getConfig()[selectedChainState.get()].tempusPools.forEach(poolConfig => {
       if (!this.userWalletSigner) {
         return;
       }
@@ -115,7 +116,7 @@ class UserBalanceProvider {
   }
 
   private updateUserBalance = () => {
-    getConfig().tempusPools.forEach(poolConfig => {
+    getConfig()[selectedChainState.get()].tempusPools.forEach(poolConfig => {
       this.updateUserBalanceForPool(poolConfig);
     });
   };

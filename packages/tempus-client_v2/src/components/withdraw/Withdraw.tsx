@@ -28,6 +28,7 @@ import Typography from '../typography/Typography';
 import CurrencyInput from '../currencyInput/currencyInput';
 
 import './Withdraw.scss';
+import { selectedChainState } from '../../state/ChainState';
 
 type WithdrawOutProps = {
   onWithdraw: () => void;
@@ -436,7 +437,7 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
                   onApproveChange={approved => {
                     setPrincipalsApproved(approved);
                   }}
-                  spenderAddress={getConfig().tempusControllerContract}
+                  spenderAddress={getConfig()[selectedChainState.get()].tempusControllerContract}
                   tokenToApproveAddress={principalsAddress}
                 />
               </div>
@@ -477,7 +478,7 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
                     onApproveChange={approved => {
                       setYieldsApproved(approved);
                     }}
-                    spenderAddress={getConfig().tempusControllerContract}
+                    spenderAddress={getConfig()[selectedChainState.get()].tempusControllerContract}
                     tokenToApproveAddress={yieldsAddress}
                   />
                 </div>
@@ -517,7 +518,7 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
                     onApproveChange={approved => {
                       setLpTokenApproved(approved);
                     }}
-                    spenderAddress={getConfig().tempusControllerContract}
+                    spenderAddress={getConfig()[selectedChainState.get()].tempusControllerContract}
                     tokenToApproveAddress={ammAddress}
                   />
                 </div>

@@ -27,6 +27,7 @@ import TokenSelector from '../tokenSelector/tokenSelector';
 import Typography from '../typography/Typography';
 
 import './Mint.scss';
+import { selectedChainState } from '../../state/ChainState';
 
 type MintInProps = {
   narrow: boolean;
@@ -443,7 +444,7 @@ const Mint: FC<MintInProps> = ({ narrow }) => {
         <div className="tf__flex-row-center-vh">
           <Approve
             tokenToApproveAddress={getSelectedTokenAddress()}
-            spenderAddress={getConfig().tempusControllerContract}
+            spenderAddress={getConfig()[selectedChainState.get()].tempusControllerContract}
             amountToApprove={getSelectedTokenBalance()}
             tokenToApproveTicker={selectedToken}
             disabled={approveDisabled}

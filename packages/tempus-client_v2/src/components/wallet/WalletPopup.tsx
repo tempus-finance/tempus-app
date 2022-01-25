@@ -13,6 +13,7 @@ import Spacer from '../spacer/spacer';
 import WalletNotification from './WalletNotification';
 import WalletPending from './WalletPending';
 import './WalletPopup.scss';
+import { selectedChainState } from '../../state/ChainState';
 
 type WalletPopupInProps = {
   anchorElement: RefObject<HTMLDivElement>;
@@ -43,7 +44,7 @@ const WalletPopup: FC<WalletPopupProps> = ({ anchorElement, account, onSwitchWal
   }, [onSwitchWallet]);
 
   const onAccountAddressClick = useCallback(() => {
-    const config = getConfig();
+    const config = getConfig()[selectedChainState.get()];
 
     if (config.networkName === 'homestead') {
       window.open(`https://etherscan.io/address/${account}`, '_blank');

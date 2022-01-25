@@ -5,6 +5,7 @@ import VaultService from './VaultService';
 import getDefaultProvider from './getDefaultProvider';
 import getConfig from '../utils/getConfig';
 import getTempusAMMService from '../../../tempus-client_v2/src/services/getTempusAMMService';
+import { selectedChainState } from '../state/ChainState';
 
 let vaultService: VaultService;
 const getVaultService = (signerOrProvider?: JsonRpcSigner | JsonRpcProvider): VaultService => {
@@ -12,7 +13,7 @@ const getVaultService = (signerOrProvider?: JsonRpcSigner | JsonRpcProvider): Va
     vaultService = new VaultService();
     vaultService.init({
       Contract: Contract,
-      address: getConfig().vaultContract,
+      address: getConfig()[selectedChainState.get()].vaultContract,
       abi: VaultABI,
       signerOrProvider: getDefaultProvider(),
       tempusAMMService: getTempusAMMService(),
@@ -22,7 +23,7 @@ const getVaultService = (signerOrProvider?: JsonRpcSigner | JsonRpcProvider): Va
   if (signerOrProvider) {
     vaultService.init({
       Contract: Contract,
-      address: getConfig().vaultContract,
+      address: getConfig()[selectedChainState.get()].vaultContract,
       abi: VaultABI,
       signerOrProvider,
       tempusAMMService: getTempusAMMService(signerOrProvider),

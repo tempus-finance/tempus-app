@@ -6,6 +6,7 @@ import { TempusPool } from '../interfaces/TempusPool';
 import getERC20TokenService from '../services/getERC20TokenService';
 import getConfig from '../utils/getConfig';
 import { dynamicPoolDataState } from '../state/PoolDataState';
+import { selectedChainState } from '../state/ChainState';
 
 interface PresentValueProviderProps {
   userBalanceDataAdapter: UserBalanceDataAdapter;
@@ -88,7 +89,7 @@ const AvailableToDepositUSDProvider: FC<PresentValueProviderProps> = props => {
   );
 
   const updateAvailableToDepositUSD = useCallback(() => {
-    getConfig().tempusPools.forEach(poolConfig => {
+    getConfig()[selectedChainState.get()].tempusPools.forEach(poolConfig => {
       if (userWalletSigner) {
         updateUserAvailableToDepositUSDForPool(poolConfig);
       }
@@ -111,7 +112,7 @@ const AvailableToDepositUSDProvider: FC<PresentValueProviderProps> = props => {
     }
 
     try {
-      getConfig().tempusPools.forEach(poolConfig => {
+      getConfig()[selectedChainState.get()].tempusPools.forEach(poolConfig => {
         const backingTokenService = getERC20TokenService(poolConfig.backingTokenAddress, userWalletSigner);
         const yieldBearingTokenService = getERC20TokenService(poolConfig.yieldBearingTokenAddress, userWalletSigner);
         backingTokenService.onTransfer(userWalletAddress, null, updateAvailableToDepositUSD);
@@ -121,7 +122,7 @@ const AvailableToDepositUSDProvider: FC<PresentValueProviderProps> = props => {
       });
 
       return () => {
-        getConfig().tempusPools.forEach(poolConfig => {
+        getConfig()[selectedChainState.get()].tempusPools.forEach(poolConfig => {
           const backingTokenService = getERC20TokenService(poolConfig.backingTokenAddress, userWalletSigner);
           const yieldBearingTokenService = getERC20TokenService(poolConfig.yieldBearingTokenAddress, userWalletSigner);
           backingTokenService.offTransfer(userWalletAddress, null, updateAvailableToDepositUSD);

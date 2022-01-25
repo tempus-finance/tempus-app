@@ -6,6 +6,7 @@ import { TempusPool } from '../interfaces/TempusPool';
 import StatisticsService from '../services/StatisticsService';
 import getConfig from '../utils/getConfig';
 import { POLLING_INTERVAL } from '../constants';
+import { selectedChainState } from '../state/ChainState';
 
 type DashboardDataAdapterParameters = {
   statisticsService: StatisticsService;
@@ -55,7 +56,7 @@ export default class DashboardDataAdapter {
 
   private getChildRows(): DashboardRowChild[] {
     const childRows: DashboardRowChild[] = [];
-    getConfig().tempusPools.forEach(tempusPool => {
+    getConfig()[selectedChainState.get()].tempusPools.forEach(tempusPool => {
       childRows.push(this.getChildRowData(tempusPool));
     });
     return childRows;
