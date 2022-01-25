@@ -3,6 +3,7 @@ import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { BigNumber, ethers } from 'ethers';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
 import getUserShareTokenBalanceProvider from '../../providers/getUserShareTokenBalanceProvider';
+import getUserLPTokenBalanceProvider from '../../providers/getUserLPTokenBalanceProvider';
 import { LanguageContext } from '../../context/languageContext';
 import { WalletContext } from '../../context/walletContext';
 import { UserSettingsContext } from '../../context/userSettingsContext';
@@ -154,6 +155,12 @@ const RemoveLiquidity = () => {
 
     // Trigger user pool share balance update when execute is finished
     getUserShareTokenBalanceProvider({
+      userWalletAddress,
+      userWalletSigner,
+    }).fetchForPool(selectedPoolAddress);
+
+    // Trigger user LP Token balance update when execute is finished
+    getUserLPTokenBalanceProvider({
       userWalletAddress,
       userWalletSigner,
     }).fetchForPool(selectedPoolAddress);

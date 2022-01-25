@@ -12,6 +12,7 @@ import getTokenPrecision from '../utils/getTokenPrecision';
 const backingTokenToCoingeckoIdMap = new Map<string, string>();
 backingTokenToCoingeckoIdMap.set('ETH', 'ethereum');
 backingTokenToCoingeckoIdMap.set('USDC', 'usd-coin');
+backingTokenToCoingeckoIdMap.set('DAI', 'dai');
 
 type StatisticsServiceParameters = {
   Contract: typeof Contract;

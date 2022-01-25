@@ -1,11 +1,12 @@
 import { Ticker } from './Token';
-import { ProtocolName } from './ProtocolName';
+import { ProtocolDisplayName, ProtocolName } from './ProtocolName';
 import { TokenPrecision } from './TokenPrecision';
 
 export type TempusPool = {
   address: string;
   poolId: string;
   protocol: ProtocolName;
+  protocolDisplayName: ProtocolDisplayName;
   startDate: number;
   maturityDate: number;
   ammAddress: string;
