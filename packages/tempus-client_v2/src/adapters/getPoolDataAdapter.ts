@@ -6,29 +6,32 @@ import getTempusAMMService from '../services/getTempusAMMService';
 import getTempusControllerService from '../services/getTempusControllerService';
 import getTempusPoolService from '../services/getTempusPoolService';
 import getVaultService from '../services/getVaultService';
+import { Networks } from '../state/NetworkState';
 import PoolDataAdapter from './PoolDataAdapter';
 
 let poolDataAdapter: PoolDataAdapter;
-const getPoolDataAdapter = (signerOrProvider?: JsonRpcSigner | JsonRpcProvider): PoolDataAdapter => {
+const getPoolDataAdapter = (network: Networks, signerOrProvider?: JsonRpcSigner | JsonRpcProvider): PoolDataAdapter => {
   if (!poolDataAdapter) {
     poolDataAdapter = new PoolDataAdapter();
     poolDataAdapter.init({
-      tempusControllerService: getTempusControllerService(getDefaultProvider()),
-      tempusPoolService: getTempusPoolService(getDefaultProvider()),
-      statisticService: getStatisticsService(getDefaultProvider()),
-      tempusAMMService: getTempusAMMService(getDefaultProvider()),
-      vaultService: getVaultService(getDefaultProvider()),
+      tempusControllerService: getTempusControllerService(network, getDefaultProvider(network)),
+      tempusPoolService: getTempusPoolService(network, getDefaultProvider(network)),
+      statisticService: getStatisticsService(network, getDefaultProvider(network)),
+      tempusAMMService: getTempusAMMService(network, getDefaultProvider(network)),
+      vaultService: getVaultService(network, getDefaultProvider(network)),
+      network,
       eRC20TokenServiceGetter: getERC20TokenService,
     });
   }
 
   if (signerOrProvider) {
     poolDataAdapter.init({
-      tempusControllerService: getTempusControllerService(signerOrProvider),
-      tempusPoolService: getTempusPoolService(signerOrProvider),
-      statisticService: getStatisticsService(signerOrProvider),
-      tempusAMMService: getTempusAMMService(signerOrProvider),
-      vaultService: getVaultService(signerOrProvider),
+      tempusControllerService: getTempusControllerService(network, signerOrProvider),
+      tempusPoolService: getTempusPoolService(network, signerOrProvider),
+      statisticService: getStatisticsService(network, signerOrProvider),
+      tempusAMMService: getTempusAMMService(network, signerOrProvider),
+      vaultService: getVaultService(network, signerOrProvider),
+      network,
       eRC20TokenServiceGetter: getERC20TokenService,
     });
   }

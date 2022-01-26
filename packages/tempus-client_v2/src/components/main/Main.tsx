@@ -1,3 +1,4 @@
+import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { useContext, useEffect, useState } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { WalletContext } from '../../context/walletContext';
@@ -16,8 +17,13 @@ import RootRoute from '../routes/RootRoute';
 import PoolRoute from '../routes/PoolRoute';
 
 import './Main.scss';
+import { selectedNetworkState } from '../../state/NetworkState';
 
 const Main = () => {
+  const selectedNetwork = useHookState(selectedNetworkState);
+
+  const selectedNetworkName = selectedNetwork.attach(Downgraded).get();
+
   const { userWalletConnected, userWalletSigner } = useContext(WalletContext);
 
   const [dashboardDataAdapter, setDashboardDataAdapter] = useState<DashboardDataAdapter | null>(null);
@@ -26,21 +32,21 @@ const Main = () => {
   useEffect(() => {
     const fetchRows = async () => {
       if (userWalletSigner) {
-        const dashboardDataAdapter = getDashboardDataAdapter(userWalletSigner);
-        const userBalanceDataAdapter = getUserBalanceDataAdapter(userWalletSigner);
+        const dashboardDataAdapter = getDashboardDataAdapter(selectedNetworkName, userWalletSigner);
+        const userBalanceDataAdapter = getUserBalanceDataAdapter(selectedNetworkName, userWalletSigner);
 
         setDashboardDataAdapter(dashboardDataAdapter);
         setUserBalanceDataAdapter(userBalanceDataAdapter);
       } else if (userWalletConnected === false) {
-        const dashboardDataAdapter = getDashboardDataAdapter();
-        const userBalanceDataAdapter = getUserBalanceDataAdapter();
+        const dashboardDataAdapter = getDashboardDataAdapter(selectedNetworkName);
+        const userBalanceDataAdapter = getUserBalanceDataAdapter(selectedNetworkName);
 
         setDashboardDataAdapter(dashboardDataAdapter);
         setUserBalanceDataAdapter(userBalanceDataAdapter);
       }
     };
     fetchRows();
-  }, [userWalletConnected, userWalletSigner, userBalanceDataAdapter]);
+  }, [userWalletConnected, userWalletSigner, userBalanceDataAdapter, selectedNetworkName]);
 
   return (
     <div className="tc__main">

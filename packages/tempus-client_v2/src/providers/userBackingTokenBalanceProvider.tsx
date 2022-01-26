@@ -1,21 +1,28 @@
-import { useState as useHookState } from '@hookstate/core';
+import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { useCallback, useContext, useEffect } from 'react';
 import { WalletContext } from '../context/walletContext';
 import { TempusPool } from '../interfaces/TempusPool';
 import getERC20TokenService from '../services/getERC20TokenService';
-import { selectedChainState } from '../state/ChainState';
+import { selectedNetworkState } from '../state/NetworkState';
 import { dynamicPoolDataState } from '../state/PoolDataState';
-import getConfig from '../utils/getConfig';
+import { getNetworkConfig } from '../utils/getConfig';
 
 const UserBackingTokenBalanceProvider = () => {
   const dynamicPoolData = useHookState(dynamicPoolDataState);
+  const selectedNetwork = useHookState(selectedNetworkState);
+
+  const selectedNetworkName = selectedNetwork.attach(Downgraded).get();
 
   const { userWalletAddress, userWalletSigner } = useContext(WalletContext);
 
   const updateBalanceForPool = useCallback(
     async (tempusPool: TempusPool) => {
       if (userWalletSigner) {
-        const backingTokenService = getERC20TokenService(tempusPool.backingTokenAddress, userWalletSigner);
+        const backingTokenService = getERC20TokenService(
+          tempusPool.backingTokenAddress,
+          selectedNetworkName,
+          userWalletSigner,
+        );
         const backingTokenBalance = await backingTokenService.balanceOf(userWalletAddress);
 
         const currentBalance = dynamicPoolData[tempusPool.address].userBackingTokenBalance.get();
@@ -30,10 +37,10 @@ const UserBackingTokenBalanceProvider = () => {
   );
 
   const updateBalance = useCallback(async () => {
-    getConfig()[selectedChainState.get()].tempusPools.forEach(poolConfig => {
+    getNetworkConfig(selectedNetworkName).tempusPools.forEach(poolConfig => {
       updateBalanceForPool(poolConfig);
     });
-  }, [updateBalanceForPool]);
+  }, [selectedNetworkName, updateBalanceForPool]);
 
   useEffect(() => {
     updateBalance();
@@ -44,22 +51,30 @@ const UserBackingTokenBalanceProvider = () => {
       return;
     }
 
-    getConfig()[selectedChainState.get()].tempusPools.forEach(poolConfig => {
-      const backingTokenService = getERC20TokenService(poolConfig.backingTokenAddress, userWalletSigner);
+    getNetworkConfig(selectedNetworkName).tempusPools.forEach(poolConfig => {
+      const backingTokenService = getERC20TokenService(
+        poolConfig.backingTokenAddress,
+        selectedNetworkName,
+        userWalletSigner,
+      );
 
       backingTokenService.onTransfer(userWalletAddress, null, updateBalance);
       backingTokenService.onTransfer(null, userWalletAddress, updateBalance);
     });
 
     return () => {
-      getConfig()[selectedChainState.get()].tempusPools.forEach(poolConfig => {
-        const backingTokenService = getERC20TokenService(poolConfig.backingTokenAddress, userWalletSigner);
+      getNetworkConfig(selectedNetworkName).tempusPools.forEach(poolConfig => {
+        const backingTokenService = getERC20TokenService(
+          poolConfig.backingTokenAddress,
+          selectedNetworkName,
+          userWalletSigner,
+        );
 
         backingTokenService.offTransfer(userWalletAddress, null, updateBalance);
         backingTokenService.offTransfer(null, userWalletAddress, updateBalance);
       });
     };
-  }, [userWalletSigner, userWalletAddress, updateBalance]);
+  }, [userWalletSigner, userWalletAddress, selectedNetworkName, updateBalance]);
 
   /**
    * Provider component only updates context value when needed. It does not show anything in the UI.

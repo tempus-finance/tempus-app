@@ -16,6 +16,7 @@ import { WalletContext } from '../../context/walletContext';
 import { LanguageContext } from '../../context/languageContext';
 
 import './Execute.scss';
+import { selectedNetworkState } from '../../state/NetworkState';
 
 interface ExecuteButtonProps {
   disabled: boolean;
@@ -31,6 +32,7 @@ const Execute: FC<ExecuteButtonProps> = props => {
 
   const selectedPool = useHookState(selectedPoolState);
   const staticPoolData = useHookState(staticPoolDataState);
+  const selectedNetwork = useHookState(selectedNetworkState);
 
   const { setPendingTransactions } = useContext(PendingTransactionsContext);
   const { language } = useContext(LanguageContext);
@@ -38,6 +40,7 @@ const Execute: FC<ExecuteButtonProps> = props => {
 
   const [executeInProgress, setExecuteInProgress] = useState<boolean>(false);
 
+  const selectedNetworkName = selectedNetwork.attach(Downgraded).get();
   const selectedPoolData = staticPoolData[selectedPool.get()].attach(Downgraded).get();
   const backingToken = staticPoolData[selectedPool.get()].backingToken.attach(Downgraded).get();
   const protocol = staticPoolData[selectedPool.get()].protocol.attach(Downgraded).get();
@@ -86,7 +89,7 @@ const Execute: FC<ExecuteButtonProps> = props => {
               ...transaction,
               title: `Executing ${actionName}`,
               content,
-              link: generateEtherscanLink(transaction.hash),
+              link: generateEtherscanLink(transaction.hash, selectedNetworkName),
               linkText: viewLinkText,
             },
           ],
@@ -114,7 +117,7 @@ const Execute: FC<ExecuteButtonProps> = props => {
           'Transaction',
           `${actionName} Failed`,
           content,
-          generateEtherscanLink(transaction.hash),
+          generateEtherscanLink(transaction.hash, selectedNetworkName),
           viewLinkText,
         );
         setExecuteInProgress(false);
@@ -143,7 +146,7 @@ const Execute: FC<ExecuteButtonProps> = props => {
           userWalletAddress,
           selectedPoolData,
         )}`,
-        generateEtherscanLink(transaction.hash),
+        generateEtherscanLink(transaction.hash, selectedNetworkName),
         viewLinkText,
       );
       setExecuteInProgress(false);

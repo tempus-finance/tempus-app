@@ -1,39 +1,32 @@
-// External libraries
 import { Contract } from 'ethers';
 import { JsonRpcSigner, JsonRpcProvider } from '@ethersproject/providers';
-
-// ABI
 import StatisticsABI from '../abi/Stats.json';
-
-// Config
-import getConfig from '../utils/getConfig';
-
-// Service
 import StatisticsService from './StatisticsService';
 import getDefaultProvider from './getDefaultProvider';
 import getTempusAMMService from './getTempusAMMService';
-import { selectedChainState } from '../state/ChainState';
+import { Networks } from '../state/NetworkState';
+import { getNetworkConfig } from '../utils/getConfig';
 
 let statisticsService: StatisticsService;
-const getStatisticsService = (signerOrProvider?: JsonRpcSigner | JsonRpcProvider) => {
+const getStatisticsService = (network: Networks, signerOrProvider?: JsonRpcSigner | JsonRpcProvider) => {
   if (!statisticsService) {
     statisticsService = new StatisticsService();
     statisticsService.init({
       Contract: Contract,
-      address: getConfig()[selectedChainState.get()].statisticsContract,
       abi: StatisticsABI,
-      signerOrProvider: getDefaultProvider(),
-      tempusAMMService: getTempusAMMService(),
+      signerOrProvider: getDefaultProvider(network),
+      tempusAMMService: getTempusAMMService(network),
+      address: getNetworkConfig(network).statisticsContract,
     });
   }
 
   if (signerOrProvider) {
     statisticsService.init({
       Contract: Contract,
-      address: getConfig()[selectedChainState.get()].statisticsContract,
       abi: StatisticsABI,
       signerOrProvider: signerOrProvider,
-      tempusAMMService: getTempusAMMService(signerOrProvider),
+      tempusAMMService: getTempusAMMService(network, signerOrProvider),
+      address: getNetworkConfig(network).statisticsContract,
     });
   }
 

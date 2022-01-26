@@ -7,14 +7,14 @@ import { LanguageContext } from '../../context/languageContext';
 import getText from '../../localisation/getText';
 import Words from '../../localisation/words';
 import { TransactionView } from '../../interfaces/TransactionView';
-import getConfig from '../../utils/getConfig';
+import { getNetworkConfig } from '../../utils/getConfig';
 import shortenAccount from '../../utils/shortenAccount';
 import TokenIcon from '../tokenIcon';
 import Typography from '../typography/Typography';
 import Spacer from '../spacer/spacer';
 
 import './Sidebar.scss';
-import { selectedChainState } from '../../state/ChainState';
+import { selectedNetworkState } from '../../state/NetworkState';
 
 const basicViews: TransactionView[] = ['deposit', 'withdraw'];
 const advancedViews: TransactionView[] = ['mint', 'swap', 'provideLiquidity', 'removeLiquidity', 'earlyRedeem'];
@@ -45,6 +45,7 @@ const Sidebar: FC<SidebarProps> = ({ initialView, onSelectedView }) => {
   const [provideLiquidityDisabledReason, setProvideLiquidityDisabledReason] = useState<Words | null>(null);
   const [removeLiquidityDisabledReason, setRemoveLiquidityDisabledReason] = useState<Words | null>(null);
 
+  const selectedNetwork = selectedNetworkState.attach(Downgraded).get();
   const selectedPoolAddress = selectedPool.attach(Downgraded).get();
   const backingToken = staticPoolData[selectedPool.get()].backingToken.attach(Downgraded).get();
   const protocolDisplayName = staticPoolData[selectedPool.get()].protocolDisplayName.attach(Downgraded).get();
@@ -64,14 +65,14 @@ const Sidebar: FC<SidebarProps> = ({ initialView, onSelectedView }) => {
   }, [initialView, selectedView]);
 
   const onPoolAddressClick = useCallback(() => {
-    const config = getConfig()[selectedChainState.get()];
+    const config = getNetworkConfig(selectedNetwork);
 
     if (config.networkName === 'homestead') {
       window.open(`https://etherscan.io/address/${selectedPoolAddress}`, '_blank');
     } else {
       window.open(`https://${config.networkName}.etherscan.io/address/${selectedPoolAddress}`, '_blank');
     }
-  }, [selectedPoolAddress]);
+  }, [selectedPoolAddress, selectedNetwork]);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {

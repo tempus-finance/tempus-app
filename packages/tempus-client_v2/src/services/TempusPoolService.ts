@@ -5,6 +5,7 @@ import { BLOCK_DURATION_SECONDS, DAYS_IN_A_YEAR, SECONDS_IN_A_DAY } from '../con
 import { ProtocolName } from '../interfaces/ProtocolName';
 import { Ticker } from '../interfaces/Token';
 import getERC20TokenService from './getERC20TokenService';
+import { Networks } from '../state/NetworkState';
 
 type TempusPoolsMap = { [key: string]: TempusPool };
 
@@ -14,9 +15,11 @@ type TempusPoolServiceParameters = {
   TempusPoolABI: any;
   eRC20TokenServiceGetter: typeof getERC20TokenService;
   signerOrProvider: JsonRpcSigner | JsonRpcProvider;
+  network: Networks;
 };
 
 class TempusPoolService {
+  private network: Networks | null = null;
   private poolAddresses: string[] = [];
   private tempusPoolsMap: TempusPoolsMap = {};
   private eRC20TokenServiceGetter: typeof getERC20TokenService | null = null;
@@ -26,6 +29,7 @@ class TempusPoolService {
     tempusPoolAddresses = [],
     TempusPoolABI = {},
     signerOrProvider,
+    network,
     eRC20TokenServiceGetter,
   }: TempusPoolServiceParameters) {
     this.poolAddresses = [...tempusPoolAddresses];
@@ -39,6 +43,7 @@ class TempusPoolService {
       }
     });
 
+    this.network = network;
     this.eRC20TokenServiceGetter = eRC20TokenServiceGetter;
   }
 
@@ -47,7 +52,7 @@ class TempusPoolService {
   }
 
   public async getBackingTokenTicker(address: string): Promise<Ticker> {
-    if (!this.eRC20TokenServiceGetter) {
+    if (!this.eRC20TokenServiceGetter || !this.network) {
       console.error('TempusPoolService - getBackingTokenTicker() - Attempted to use service before initializing it!');
       return Promise.reject();
     }
@@ -62,12 +67,17 @@ class TempusPoolService {
         return Promise.reject(error);
       }
 
-      return this.eRC20TokenServiceGetter(backingTokenAddress).symbol();
+      return this.eRC20TokenServiceGetter(backingTokenAddress, this.network).symbol();
     }
     throw new Error(`Address '${address}' is not valid`);
   }
 
   public async getYieldBearingTokenTicker(address: string): Promise<Ticker> {
+    if (!this.eRC20TokenServiceGetter || !this.network) {
+      console.error('TempusPoolService - getBackingTokenTicker() - Attempted to use service before initializing it!');
+      return Promise.reject();
+    }
+
     const tempusPool = this.tempusPoolsMap[address];
     if (tempusPool) {
       let yieldBearingTokenAddress: string;
@@ -78,7 +88,7 @@ class TempusPoolService {
         return Promise.reject(error);
       }
 
-      return getERC20TokenService(yieldBearingTokenAddress).symbol();
+      return this.eRC20TokenServiceGetter(yieldBearingTokenAddress, this.network).symbol();
     }
     throw new Error(`Address '${address}' is not valid`);
   }

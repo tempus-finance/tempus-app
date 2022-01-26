@@ -6,8 +6,8 @@ import { TypedEvent, TypedListener } from '../abi/commons';
 import getDefaultProvider from './getDefaultProvider';
 import TempusAMMService from './TempusAMMService';
 import { provideLiquidityGasIncrease, removeLiquidityGasIncrease, SECONDS_IN_AN_HOUR } from '../constants';
-import getConfig from '../utils/getConfig';
-import { selectedChainState } from '../state/ChainState';
+import { getNetworkConfig } from '../utils/getConfig';
+import { Networks } from '../state/NetworkState';
 
 type VaultServiceParameters = {
   Contract: typeof Contract;
@@ -15,6 +15,7 @@ type VaultServiceParameters = {
   abi: typeof VaultABI;
   signerOrProvider: JsonRpcProvider | JsonRpcSigner;
   tempusAMMService: TempusAMMService;
+  network: Networks;
 };
 
 // I need to define event types like this, because TypeChain plugin for Hardhat does not generate them.
@@ -70,6 +71,7 @@ export enum TempusAMMExitKind {
 }
 
 class VaultService {
+  private network: Networks | null = null;
   private contract: Vault | null = null;
 
   private tempusAMMService: TempusAMMService | null = null;
@@ -78,6 +80,7 @@ class VaultService {
     this.contract = new Contract(params.address, params.abi, params.signerOrProvider) as Vault;
 
     this.tempusAMMService = params.tempusAMMService;
+    this.network = params.network;
   }
 
   public async getSwapEvents(filters: {
@@ -85,7 +88,7 @@ class VaultService {
     fromBlock?: number;
     toBlock?: number;
   }): Promise<SwapEvent[]> {
-    if (!this.contract || !this.tempusAMMService) {
+    if (!this.contract || !this.tempusAMMService || !this.network) {
       console.error('VaultService - getSwapEvents() - Attempted to use VaultService before initializing it!');
       return Promise.reject();
     }
@@ -93,7 +96,7 @@ class VaultService {
     const fetchSwapEventPromises: Promise<SwapEvent[]>[] = [];
     if (!filters.forPoolId) {
       try {
-        getConfig()[selectedChainState.get()].tempusPools.forEach(tempusPool => {
+        getNetworkConfig(this.network).tempusPools.forEach(tempusPool => {
           if (!this.contract) {
             throw new Error('VaultService - getSwapEvents() - Attempted to use VaultService before initializing it!');
           }
@@ -125,7 +128,7 @@ class VaultService {
   }
 
   public async getPoolBalanceChangedEvents(forPoolId?: string, fromBlock?: number): Promise<PoolBalanceChangedEvent[]> {
-    if (!this.contract || !this.tempusAMMService) {
+    if (!this.contract || !this.tempusAMMService || !this.network) {
       console.error(
         'VaultService - getPoolBalanceChangedEvents() - Attempted to use VaultService before initializing it!',
       );
@@ -135,7 +138,7 @@ class VaultService {
     const fetchEventsPromises: Promise<PoolBalanceChangedEvent[]>[] = [];
     if (!forPoolId) {
       try {
-        getConfig()[selectedChainState.get()].tempusPools.forEach(pool => {
+        getNetworkConfig(this.network).tempusPools.forEach(pool => {
           if (!this.contract) {
             throw new Error(
               'VaultService - getPoolBalanceChangedEvents() - Attempted to use VaultService before initializing it!',
@@ -176,12 +179,12 @@ class VaultService {
     amount: BigNumber,
     minReturn: BigNumber,
   ): Promise<ethers.ContractTransaction> {
-    if (!this.contract) {
+    if (!this.contract || !this.network) {
       console.error('VaultService - swap() - Attempted to use VaultService before initializing it!');
       return Promise.reject();
     }
 
-    const provider = getDefaultProvider();
+    const provider = getDefaultProvider(this.network);
     const latestBlock = await provider.getBlock('latest');
 
     const singleSwap = {

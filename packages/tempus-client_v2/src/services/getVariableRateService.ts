@@ -4,13 +4,16 @@ import VariableRateService from './VariableRateService';
 import getTempusPoolService from '../services/getTempusPoolService';
 import getTempusAMMService from '../services/getTempusAMMService';
 import getVaultService from '../services/getVaultService';
-import getConfig from '../utils/getConfig';
+import { getNetworkConfig } from '../utils/getConfig';
 import getProvider from '../utils/getProvider';
-import { selectedChainState } from '../state/ChainState';
+import { Networks } from '../state/NetworkState';
 
 let variableRateService: VariableRateService;
 let actualSignerOrProvider: JsonRpcSigner | JsonRpcProvider;
-const getVariableRateService = (signerOrProvider?: JsonRpcSigner | JsonRpcProvider): VariableRateService => {
+const getVariableRateService = (
+  network: Networks,
+  signerOrProvider?: JsonRpcSigner | JsonRpcProvider,
+): VariableRateService => {
   if (!variableRateService) {
     variableRateService = new VariableRateService();
   }
@@ -19,11 +22,11 @@ const getVariableRateService = (signerOrProvider?: JsonRpcSigner | JsonRpcProvid
     actualSignerOrProvider = signerOrProvider;
     variableRateService.init(
       actualSignerOrProvider,
-      getTempusPoolService(actualSignerOrProvider),
-      getVaultService(actualSignerOrProvider),
-      getTempusAMMService(actualSignerOrProvider),
+      getTempusPoolService(network, actualSignerOrProvider),
+      getVaultService(network, actualSignerOrProvider),
+      getTempusAMMService(network, actualSignerOrProvider),
       new RariVault(getProvider(signerOrProvider) as any),
-      getConfig()[selectedChainState.get()],
+      getNetworkConfig(network),
     );
   }
 

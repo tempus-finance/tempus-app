@@ -3,30 +3,32 @@ import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
 import VaultABI from '../abi/Vault.json';
 import VaultService from './VaultService';
 import getDefaultProvider from './getDefaultProvider';
-import getConfig from '../utils/getConfig';
+import { getNetworkConfig } from '../utils/getConfig';
 import getTempusAMMService from '../../../tempus-client_v2/src/services/getTempusAMMService';
-import { selectedChainState } from '../state/ChainState';
+import { Networks } from '../state/NetworkState';
 
 let vaultService: VaultService;
-const getVaultService = (signerOrProvider?: JsonRpcSigner | JsonRpcProvider): VaultService => {
+const getVaultService = (network: Networks, signerOrProvider?: JsonRpcSigner | JsonRpcProvider): VaultService => {
   if (!vaultService) {
     vaultService = new VaultService();
     vaultService.init({
       Contract: Contract,
-      address: getConfig()[selectedChainState.get()].vaultContract,
+      address: getNetworkConfig(network).vaultContract,
       abi: VaultABI,
-      signerOrProvider: getDefaultProvider(),
-      tempusAMMService: getTempusAMMService(),
+      signerOrProvider: getDefaultProvider(network),
+      tempusAMMService: getTempusAMMService(network),
+      network,
     });
   }
 
   if (signerOrProvider) {
     vaultService.init({
       Contract: Contract,
-      address: getConfig()[selectedChainState.get()].vaultContract,
+      address: getNetworkConfig(network).vaultContract,
       abi: VaultABI,
       signerOrProvider,
-      tempusAMMService: getTempusAMMService(signerOrProvider),
+      tempusAMMService: getTempusAMMService(network, signerOrProvider),
+      network,
     });
   }
 

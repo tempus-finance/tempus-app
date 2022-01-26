@@ -1,5 +1,7 @@
+import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { useEffect, useState } from 'react';
 import { BrowserRouter } from 'react-router-dom';
+import { selectedNetworkState } from '../../state/NetworkState';
 import { LanguageContext, defaultLanguageContextValue } from '../../context/languageContext';
 import { ETHBalanceContext, defaultETHBalanceContextValue } from '../../context/ethBalanceContext';
 import { defaultWalletContextValue, WalletContext } from '../../context/walletContext';
@@ -20,6 +22,10 @@ import Main from '../main/Main';
 import './App.scss';
 
 const App = () => {
+  const selectedNetwork = useHookState(selectedNetworkState);
+
+  const selectedNetworkName = selectedNetwork.attach(Downgraded).get();
+
   const [userSettings, setUserSettings] = useState(defaultUserSettingsContextValue);
   const [language, setLanguage] = useState(defaultLanguageContextValue);
   const [ethBalance, setETHBalance] = useState(defaultETHBalanceContextValue);
@@ -36,8 +42,9 @@ const App = () => {
     getUserShareTokenBalanceProvider({
       userWalletAddress: walletData.userWalletAddress,
       userWalletSigner: walletData.userWalletSigner,
+      network: selectedNetworkName,
     }).init();
-  }, [walletData.userWalletAddress, walletData.userWalletSigner]);
+  }, [walletData.userWalletAddress, walletData.userWalletSigner, selectedNetworkName]);
 
   // Initialize user LP Token balance provider every time user wallet address changes
   useEffect(() => {
@@ -49,8 +56,9 @@ const App = () => {
     getUserLPTokenBalanceProvider({
       userWalletAddress: walletData.userWalletAddress,
       userWalletSigner: walletData.userWalletSigner,
+      network: selectedNetworkName,
     }).init();
-  }, [walletData.userWalletAddress, walletData.userWalletSigner]);
+  }, [walletData.userWalletAddress, walletData.userWalletSigner, selectedNetworkName]);
 
   // Initialize user pool balance provider every time user wallet address changes
   useEffect(() => {
@@ -61,8 +69,9 @@ const App = () => {
     getUserBalanceProvider({
       userWalletSigner: walletData.userWalletSigner,
       userWalletAddress: walletData.userWalletAddress,
+      network: selectedNetworkName,
     }).init();
-  }, [walletData.userWalletAddress, walletData.userWalletSigner]);
+  }, [walletData.userWalletAddress, walletData.userWalletSigner, selectedNetworkName]);
 
   // Initialize pool share balance provider every time user wallet address changes
   useEffect(() => {
@@ -72,8 +81,9 @@ const App = () => {
 
     getPoolShareBalanceProvider({
       userWalletSigner: walletData.userWalletSigner,
+      network: selectedNetworkName,
     }).init();
-  }, [walletData.userWalletSigner]);
+  }, [walletData.userWalletSigner, selectedNetworkName]);
 
   return (
     <>

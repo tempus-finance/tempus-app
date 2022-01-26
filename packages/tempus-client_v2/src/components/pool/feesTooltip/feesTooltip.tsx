@@ -12,16 +12,19 @@ import Spacer from '../../spacer/spacer';
 import Typography from '../../typography/Typography';
 
 import './feesTooltip.scss';
+import { selectedNetworkState } from '../../../state/NetworkState';
 
 const FeesTooltip = () => {
   const selectedPool = useHookState(selectedPoolState);
   const staticPoolData = useHookState(staticPoolDataState);
+  const selectedNetwork = useHookState(selectedNetworkState);
 
   const { userWalletSigner } = useContext(WalletContext);
   const { language } = useContext(LanguageContext);
 
   const [poolFees, setPoolFees] = useState<BigNumber[] | null>(null);
 
+  const selectedNetworkName = selectedNetwork.attach(Downgraded).get();
   const ammAddress = staticPoolData[selectedPool.get()].ammAddress.attach(Downgraded).get();
   const selectedPoolAddress = selectedPool.attach(Downgraded).get();
 
@@ -30,12 +33,12 @@ const FeesTooltip = () => {
       if (!userWalletSigner) {
         return;
       }
-      const poolDataAdapter = getPoolDataAdapter(userWalletSigner);
+      const poolDataAdapter = getPoolDataAdapter(selectedNetworkName, userWalletSigner);
 
       setPoolFees(await poolDataAdapter.getPoolFees(selectedPoolAddress, ammAddress));
     };
     fetchPoolFees();
-  }, [selectedPoolAddress, ammAddress, userWalletSigner]);
+  }, [selectedPoolAddress, ammAddress, userWalletSigner, selectedNetworkName]);
 
   const depositFeesFormatted = useMemo(() => {
     if (!poolFees || !poolFees[0]) {

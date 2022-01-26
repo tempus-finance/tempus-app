@@ -1,32 +1,37 @@
 import { Contract } from 'ethers';
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
 import TempusControllerABI from '../abi/TempusController.json';
-import getConfig from '../utils/getConfig';
+import { getNetworkConfig } from '../utils/getConfig';
 import TempusControllerService from './TempusControllerService';
 import getDefaultProvider from './getDefaultProvider';
 import getTempusAMMService from './getTempusAMMService';
-import { selectedChainState } from '../state/ChainState';
+import { Networks } from '../state/NetworkState';
 
 let tempusControllerService: TempusControllerService;
-const getTempusControllerService = (signerOrProvider?: JsonRpcSigner | JsonRpcProvider): TempusControllerService => {
+const getTempusControllerService = (
+  network: Networks,
+  signerOrProvider?: JsonRpcSigner | JsonRpcProvider,
+): TempusControllerService => {
   if (!tempusControllerService) {
     tempusControllerService = new TempusControllerService();
     tempusControllerService.init({
       Contract: Contract,
-      address: getConfig()[selectedChainState.get()].tempusControllerContract,
+      address: getNetworkConfig(network).tempusControllerContract,
       abi: TempusControllerABI,
-      signerOrProvider: getDefaultProvider(),
-      tempusAMMService: getTempusAMMService(),
+      signerOrProvider: getDefaultProvider(network),
+      tempusAMMService: getTempusAMMService(network),
+      network,
     });
   }
 
   if (signerOrProvider) {
     tempusControllerService.init({
       Contract: Contract,
-      address: getConfig()[selectedChainState.get()].tempusControllerContract,
+      address: getNetworkConfig(network).tempusControllerContract,
       abi: TempusControllerABI,
       signerOrProvider: signerOrProvider,
-      tempusAMMService: getTempusAMMService(signerOrProvider),
+      tempusAMMService: getTempusAMMService(network, signerOrProvider),
+      network,
     });
   }
 

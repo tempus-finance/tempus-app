@@ -1,14 +1,17 @@
 import { useCallback, useContext, useEffect } from 'react';
-import { useState as useHookState } from '@hookstate/core';
+import { Downgraded, useState as useHookState } from '@hookstate/core';
 import getDefaultProvider from '../services/getDefaultProvider';
 import getVariableRateService from '../services/getVariableRateService';
-import getConfig from '../utils/getConfig';
+import { getNetworkConfig } from '../utils/getConfig';
 import { WalletContext } from '../context/walletContext';
 import { dynamicPoolDataState } from '../state/PoolDataState';
-import { selectedChainState } from '../state/ChainState';
+import { selectedNetworkState } from '../state/NetworkState';
 
 const VariableAPRProvider = () => {
   const dynamicPoolData = useHookState(dynamicPoolDataState);
+  const selectedNetwork = useHookState(selectedNetworkState);
+
+  const selectedNetworkName = selectedNetwork.attach(Downgraded).get();
 
   const { userWalletConnected, userWalletSigner } = useContext(WalletContext);
 
@@ -16,9 +19,9 @@ const VariableAPRProvider = () => {
     if (userWalletConnected && userWalletSigner) {
       return userWalletSigner.provider;
     } else if (userWalletConnected === false) {
-      return getDefaultProvider();
+      return getDefaultProvider(selectedNetworkName);
     }
-  }, [userWalletConnected, userWalletSigner]);
+  }, [userWalletConnected, userWalletSigner, selectedNetworkName]);
 
   /**
    * Fetch APR for all tempus pools on each block event
@@ -29,8 +32,8 @@ const VariableAPRProvider = () => {
       return;
     }
 
-    const config = getConfig()[selectedChainState.get()];
-    const variableRateService = getVariableRateService(provider);
+    const config = getNetworkConfig(selectedNetworkName);
+    const variableRateService = getVariableRateService(selectedNetworkName, provider);
 
     try {
       // Fetch APR for all Tempus Pools
@@ -46,6 +49,7 @@ const VariableAPRProvider = () => {
             tempusPool.address,
             tempusPool.principalsAddress,
             tempusPool.yieldsAddress,
+            selectedNetworkName,
           );
 
           // Get variable APR for Tempus Pool
@@ -78,7 +82,7 @@ const VariableAPRProvider = () => {
       console.log('VariableAPRProvider - fetchAPR', error);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [getProvider]);
+  }, [selectedNetworkName, getProvider]);
 
   useEffect(() => {
     fetchAPR();

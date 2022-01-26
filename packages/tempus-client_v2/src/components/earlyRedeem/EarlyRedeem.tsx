@@ -21,11 +21,13 @@ import TokenSelector from '../tokenSelector/tokenSelector';
 import Typography from '../typography/Typography';
 
 import './EarlyRedeem.scss';
+import { selectedNetworkState } from '../../state/NetworkState';
 
 const EarlyRedeem: FC = () => {
   const selectedPool = useHookState(selectedPoolState);
   const dynamicPoolData = useHookState(dynamicPoolDataState);
   const staticPoolData = useHookState(staticPoolDataState);
+  const selectedNetwork = useHookState(selectedNetworkState);
 
   const yieldBearingToken = staticPoolData[selectedPool.get()].yieldBearingToken.attach(Downgraded).get();
 
@@ -43,6 +45,7 @@ const EarlyRedeem: FC = () => {
 
   const [selectedTokenPrecision, setSelectedTokenPrecision] = useState<number>(0);
 
+  const selectedNetworkName = selectedNetwork.attach(Downgraded).get();
   const selectedPoolAddress = selectedPool.attach(Downgraded).get();
   const userPrincipalsBalance = dynamicPoolData[selectedPool.get()].userPrincipalsBalance.attach(Downgraded).get();
   const userYieldsBalance = dynamicPoolData[selectedPool.get()].userYieldsBalance.attach(Downgraded).get();
@@ -88,7 +91,7 @@ const EarlyRedeem: FC = () => {
       return;
     }
 
-    const poolDataAdapter = getPoolDataAdapter(userWalletSigner);
+    const poolDataAdapter = getPoolDataAdapter(selectedNetworkName, userWalletSigner);
 
     const stream$ = poolDataAdapter
       .isCurrentYieldNegativeForPool(selectedPoolAddress)
@@ -103,14 +106,14 @@ const EarlyRedeem: FC = () => {
       });
 
     return () => stream$.unsubscribe();
-  }, [selectedPoolAddress, userWalletSigner]);
+  }, [selectedPoolAddress, userWalletSigner, selectedNetworkName]);
 
   useEffect(() => {
     if (!userWalletSigner) {
       return;
     }
 
-    const poolDataAdapter = getPoolDataAdapter(userWalletSigner);
+    const poolDataAdapter = getPoolDataAdapter(selectedNetworkName, userWalletSigner);
 
     setSelectedTokenPrecision(getTokenPrecision(selectedPoolAddress, 'principals'));
 
@@ -143,13 +146,14 @@ const EarlyRedeem: FC = () => {
     yieldBearingToken,
     tokenPrecision.backingToken,
     tokenPrecision.yieldBearingToken,
+    selectedNetworkName,
   ]);
 
   // Fetch estimated withdraw amount of tokens
   useEffect(() => {
     const retrieveEstimatedWithdrawAmount = async () => {
       if (userWalletSigner && amount) {
-        const poolDataAdapter = getPoolDataAdapter(userWalletSigner);
+        const poolDataAdapter = getPoolDataAdapter(selectedNetworkName, userWalletSigner);
 
         try {
           const amountFormatted = ethers.utils.parseUnits(amount, selectedTokenPrecision);
@@ -175,7 +179,15 @@ const EarlyRedeem: FC = () => {
       }
     };
     retrieveEstimatedWithdrawAmount();
-  }, [userWalletSigner, selectedPoolAddress, selectedTokenPrecision, selectedToken, amount, backingToken]);
+  }, [
+    userWalletSigner,
+    selectedPoolAddress,
+    selectedTokenPrecision,
+    selectedToken,
+    amount,
+    backingToken,
+    selectedNetworkName,
+  ]);
 
   const depositDisabled = useMemo((): boolean => {
     return isYieldNegative === null ? true : isYieldNegative;
@@ -231,7 +243,7 @@ const EarlyRedeem: FC = () => {
       return Promise.resolve(undefined);
     }
 
-    const poolDataAdapter = getPoolDataAdapter(userWalletSigner);
+    const poolDataAdapter = getPoolDataAdapter(selectedNetworkName, userWalletSigner);
     const amountFormatted = ethers.utils.parseUnits(amount, selectedTokenPrecision);
     const toBackingToken = selectedToken === backingToken;
 
@@ -244,6 +256,7 @@ const EarlyRedeem: FC = () => {
     backingToken,
     selectedPoolAddress,
     userWalletAddress,
+    selectedNetworkName,
   ]);
 
   const onExecuted = useCallback(() => {
@@ -255,10 +268,11 @@ const EarlyRedeem: FC = () => {
 
     // Trigger user pool share balance update when execute is finished
     getUserShareTokenBalanceProvider({
+      network: selectedNetworkName,
       userWalletAddress,
       userWalletSigner,
     }).fetchForPool(selectedPoolAddress);
-  }, [selectedPoolAddress, userWalletAddress, userWalletSigner]);
+  }, [selectedPoolAddress, userWalletAddress, userWalletSigner, selectedNetworkName]);
 
   return (
     <div className="tc__earlyRedeem">

@@ -8,7 +8,7 @@ import getUserLPTokenBalanceProvider from '../../providers/getUserLPTokenBalance
 import { LanguageContext } from '../../context/languageContext';
 import { WalletContext } from '../../context/walletContext';
 import getText from '../../localisation/getText';
-import getConfig from '../../utils/getConfig';
+import { getNetworkConfig } from '../../utils/getConfig';
 import { mul18f } from '../../utils/weiMath';
 import getTokenPrecision from '../../utils/getTokenPrecision';
 import { isZeroString } from '../../utils/isZeroString';
@@ -24,12 +24,13 @@ import Approve from '../buttons/Approve';
 import Execute from '../buttons/Execute';
 
 import './ProvideLiquidity.scss';
-import { selectedChainState } from '../../state/ChainState';
+import { selectedNetworkState } from '../../state/NetworkState';
 
 const ProvideLiquidity = () => {
   const selectedPool = useHookState(selectedPoolState);
   const dynamicPoolData = useHookState(dynamicPoolDataState);
   const staticPoolData = useHookState(staticPoolDataState);
+  const selectedNetwork = useHookState(selectedNetworkState);
 
   const { language } = useContext(LanguageContext);
 
@@ -55,6 +56,7 @@ const ProvideLiquidity = () => {
   const [yieldsPrecision, setYieldsPrecision] = useState<number>(0);
   const [lpTokensPrecision, setLpTokensPrecision] = useState<number>(0);
 
+  const selectedNetworkName = selectedNetwork.attach(Downgraded).get();
   const selectedPoolAddress = selectedPool.attach(Downgraded).get();
   const ammAddress = staticPoolData[selectedPool.get()].ammAddress.attach(Downgraded).get();
   const principalsAddress = staticPoolData[selectedPool.get()].principalsAddress.attach(Downgraded).get();
@@ -244,7 +246,7 @@ const ProvideLiquidity = () => {
       if (!userWalletSigner) {
         return;
       }
-      const poolDataAdapter = getPoolDataAdapter(userWalletSigner);
+      const poolDataAdapter = getPoolDataAdapter(selectedNetworkName, userWalletSigner);
 
       const ratios = await poolDataAdapter.getPoolRatioOfAssets(ammAddress, principalsAddress, yieldsAddress);
 
@@ -252,7 +254,7 @@ const ProvideLiquidity = () => {
       setYieldsPercentage(ratios.yieldsShare);
     };
     getRatioOfAssetsInPool();
-  }, [ammAddress, principalsAddress, userWalletSigner, yieldsAddress]);
+  }, [ammAddress, principalsAddress, userWalletSigner, yieldsAddress, selectedNetworkName]);
 
   // Fetch estimated LP Token amount
   useEffect(() => {
@@ -262,7 +264,7 @@ const ProvideLiquidity = () => {
       }
 
       try {
-        const poolDataAdapter = getPoolDataAdapter(userWalletSigner);
+        const poolDataAdapter = getPoolDataAdapter(selectedNetworkName, userWalletSigner);
 
         setTokenEstimateInProgress(true);
         setExpectedLPTokens(
@@ -300,6 +302,7 @@ const ProvideLiquidity = () => {
     ammAddress,
     principalsAddress,
     yieldsAddress,
+    selectedNetworkName,
   ]);
 
   // Fetch pool share for amount in
@@ -310,7 +313,7 @@ const ProvideLiquidity = () => {
       }
 
       try {
-        const poolDataAdapter = getPoolDataAdapter(userWalletSigner);
+        const poolDataAdapter = getPoolDataAdapter(selectedNetworkName, userWalletSigner);
 
         setPoolShareEstimateInProgress(true);
         setExpectedPoolShare(await poolDataAdapter.getPoolShareForLPTokensIn(ammAddress, expectedLPTokens));
@@ -324,13 +327,13 @@ const ProvideLiquidity = () => {
       }
     };
     fetchExpectedPoolShare();
-  }, [expectedLPTokens, userWalletSigner, ammAddress]);
+  }, [expectedLPTokens, userWalletSigner, ammAddress, selectedNetworkName]);
 
   const onExecute = useCallback((): Promise<ethers.ContractTransaction | undefined> => {
     if (!userWalletSigner) {
       return Promise.resolve(undefined);
     }
-    const poolDataAdapter = getPoolDataAdapter(userWalletSigner);
+    const poolDataAdapter = getPoolDataAdapter(selectedNetworkName, userWalletSigner);
 
     return poolDataAdapter.provideLiquidity(
       ammAddress,
@@ -350,6 +353,7 @@ const ProvideLiquidity = () => {
     principalsPrecision,
     yieldsAmount,
     yieldsPrecision,
+    selectedNetworkName,
   ]);
 
   const onExecuted = useCallback(() => {
@@ -363,21 +367,24 @@ const ProvideLiquidity = () => {
 
     // Trigger user pool share balance update when execute is finished
     getUserShareTokenBalanceProvider({
+      network: selectedNetworkName,
       userWalletAddress,
       userWalletSigner,
     }).fetchForPool(selectedPoolAddress);
 
     // Trigger user LP Token balance update when execute is finished
     getUserLPTokenBalanceProvider({
+      network: selectedNetworkName,
       userWalletAddress,
       userWalletSigner,
     }).fetchForPool(selectedPoolAddress);
 
     // Trigger pool share balance update when execute is finished
     getPoolShareBalanceProvider({
+      network: selectedNetworkName,
       userWalletSigner,
     }).fetchForPoolWithId(poolId);
-  }, [poolId, selectedPoolAddress, userWalletAddress, userWalletSigner]);
+  }, [poolId, selectedPoolAddress, userWalletAddress, userWalletSigner, selectedNetworkName]);
 
   const principalsBalanceFormatted = useMemo(() => {
     if (!userPrincipalsBalance) {
@@ -470,7 +477,7 @@ const ProvideLiquidity = () => {
                 onApproveChange={approved => {
                   setPrincipalsApproved(approved);
                 }}
-                spenderAddress={getConfig()[selectedChainState.get()].vaultContract}
+                spenderAddress={getNetworkConfig(selectedNetworkName).vaultContract}
                 tokenToApproveAddress={principalsAddress}
               />
             </div>
@@ -509,7 +516,7 @@ const ProvideLiquidity = () => {
                 onApproveChange={approved => {
                   setYieldsApproved(approved);
                 }}
-                spenderAddress={getConfig()[selectedChainState.get()].vaultContract}
+                spenderAddress={getNetworkConfig(selectedNetworkName).vaultContract}
                 tokenToApproveAddress={yieldsAddress}
               />
             </div>

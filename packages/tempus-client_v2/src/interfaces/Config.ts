@@ -1,6 +1,6 @@
 import { TempusPool } from './TempusPool';
 
-export interface BlockchainConfig {
+export interface NetworkConfig {
   tempusPools: TempusPool[];
   statisticsContract: string;
   tempusControllerContract: string;
@@ -12,6 +12,7 @@ export interface BlockchainConfig {
 }
 
 export type Config = {
-  ethereum: BlockchainConfig;
-  fantom: BlockchainConfig;
+  'ethereum-mainnet': NetworkConfig;
+  'fantom-mainnet': NetworkConfig;
+  localhost?: NetworkConfig;
 };

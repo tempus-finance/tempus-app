@@ -4,10 +4,12 @@ import { TempusAMM } from '../abi/TempusAMM';
 import TempusAMMABI from '../abi/TempusAMM.json';
 import { DAYS_IN_A_YEAR, SECONDS_IN_A_DAY } from '../constants';
 import { mul18f, div18f } from '../utils/weiMath';
-import { BlockchainConfig } from '../interfaces/Config';
+import { NetworkConfig } from '../interfaces/Config';
 import TempusPoolService from './TempusPoolService';
 import getVaultService from './getVaultService';
 import getERC20TokenService from './getERC20TokenService';
+import { Networks } from '../state/NetworkState';
+import { getNetworkConfig } from '../utils/getConfig';
 
 interface TempusPoolAddressData {
   poolAddress: string;
@@ -21,7 +23,7 @@ type TempusAMMServiceParameters = {
   signerOrProvider: JsonRpcSigner | JsonRpcProvider;
   tempusPoolService: TempusPoolService;
   eRC20TokenServiceGetter: typeof getERC20TokenService;
-  config: BlockchainConfig;
+  network: Networks;
 };
 
 class TempusAMMService {
@@ -29,13 +31,14 @@ class TempusAMMService {
   private tempusPoolService: TempusPoolService | null = null;
   private eRC20TokenServiceGetter: typeof getERC20TokenService | null = null;
 
-  private config: BlockchainConfig | null = null;
+  private network: Networks | null = null;
+  private config: NetworkConfig | null = null;
 
   public init({
     tempusAMMAddresses,
     signerOrProvider,
     tempusPoolService,
-    config,
+    network,
     eRC20TokenServiceGetter,
   }: TempusAMMServiceParameters) {
     this.tempusAMMMap.clear();
@@ -51,7 +54,8 @@ class TempusAMMService {
     this.tempusPoolService = tempusPoolService;
     this.eRC20TokenServiceGetter = eRC20TokenServiceGetter;
 
-    this.config = config;
+    this.network = network;
+    this.config = getNetworkConfig(this.network);
   }
 
   public poolId(address: string): Promise<string> {
@@ -97,13 +101,13 @@ class TempusAMMService {
   }
 
   public async getFixedAPR(tempusAMM: string, principalsAddress: string): Promise<number | null> {
-    if (!this.tempusPoolService || !this.config) {
+    if (!this.tempusPoolService || !this.config || !this.network) {
       console.error('TempusAMMService - getFixedAPR() - Attempted to se TempusAMMService before initializing it!');
       return Promise.reject();
     }
 
     // If we try to inject vault service in AMM it create infinite dependency loop - this is a quick workaround.
-    const vaultService = getVaultService();
+    const vaultService = getVaultService(this.network);
 
     const service = this.tempusAMMMap.get(tempusAMM);
     if (service) {

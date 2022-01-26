@@ -3,25 +3,31 @@ import getDefaultProvider from '../services/getDefaultProvider';
 import getERC20TokenService from '../services/getERC20TokenService';
 import getStatisticsService from '../services/getStatisticsService';
 import getTempusPoolService from '../services/getTempusPoolService';
+import { Networks } from '../state/NetworkState';
 import UserBalanceDataAdapter from './UserBalanceDataAdapter';
 
 let userBalanceDataAdapter: UserBalanceDataAdapter;
-const getUserBalanceDataAdapter = (signerOrProvider?: JsonRpcSigner | JsonRpcProvider): UserBalanceDataAdapter => {
+const getUserBalanceDataAdapter = (
+  network: Networks,
+  signerOrProvider?: JsonRpcSigner | JsonRpcProvider,
+): UserBalanceDataAdapter => {
   if (!userBalanceDataAdapter) {
     userBalanceDataAdapter = new UserBalanceDataAdapter();
     userBalanceDataAdapter.init({
-      signerOrProvider: getDefaultProvider(),
-      statisticsService: getStatisticsService(),
-      tempusPoolService: getTempusPoolService(),
+      network,
+      signerOrProvider: getDefaultProvider(network),
+      statisticsService: getStatisticsService(network),
+      tempusPoolService: getTempusPoolService(network),
       eRC20TokenServiceGetter: getERC20TokenService,
     });
   }
 
   if (signerOrProvider) {
     userBalanceDataAdapter.init({
+      network,
       signerOrProvider: signerOrProvider,
-      statisticsService: getStatisticsService(signerOrProvider),
-      tempusPoolService: getTempusPoolService(signerOrProvider),
+      statisticsService: getStatisticsService(network, signerOrProvider),
+      tempusPoolService: getTempusPoolService(network, signerOrProvider),
       eRC20TokenServiceGetter: getERC20TokenService,
     });
   }
