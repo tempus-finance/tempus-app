@@ -1,6 +1,7 @@
 import Words from './words';
 
 const en: { [word in Words]: string } = {
+  tempus: 'Tempus',
   max: 'max',
   min: 'min',
   dashboard: 'Dashboard',
@@ -156,5 +157,6 @@ const en: { [word in Words]: string } = {
   provideLiquidityDescription: 'Use your LP tokens to provide liquidity to the pool and earn rewards.',
   removeLiquidityDescription:
     'Remove your liquidity from the pool with the accrued rewards in the form of your initial LP tokens.',
+  combinedApr: 'Combined APR',
 };
 export default en;

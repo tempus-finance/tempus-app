@@ -1,4 +1,5 @@
 type Words =
+  | 'tempus'
   | 'max'
   | 'min'
   | 'dashboard'
@@ -136,6 +137,7 @@ type Words =
   | 'mintDescription'
   | 'swapDescription'
   | 'provideLiquidityDescription'
-  | 'removeLiquidityDescription';
+  | 'removeLiquidityDescription'
+  | 'combinedApr';
 
 export default Words;

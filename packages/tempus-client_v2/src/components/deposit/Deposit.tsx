@@ -840,7 +840,7 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
                 <Spacer size={10} />
                 <Typography variant="yield-card-header">{getText('fixYourFutureYield', language)}</Typography>
                 <Spacer size={10} />
-                <InfoTooltip text={getText('interestRateProtectionTooltipText', language)} />
+                <InfoTooltip content={getText('interestRateProtectionTooltipText', language)} />
               </div>
               <div className="tc__deposit__yield-name-card">
                 <Typography variant="yield-card-type" color="primary">
@@ -930,7 +930,7 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
                 <Spacer size={10} />
                 <Typography variant="yield-card-header">{getText('provideLiquidity', language)}</Typography>
                 <Spacer size={10} />
-                <InfoTooltip text={getText('liquidityProvisionTooltipText', language)} />
+                <InfoTooltip content={getText('liquidityProvisionTooltipText', language)} />
               </div>
               <div className="tc__deposit__yield-name-card">
                 <Typography variant="yield-card-type" color="accent">
