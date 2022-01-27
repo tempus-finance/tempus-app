@@ -1,6 +1,6 @@
 import { BigNumber, Contract, utils, providers, ethers } from 'ethers';
 import { JsonRpcProvider } from '@ethersproject/providers';
-import { Config } from '../interfaces/Config';
+import { ChainConfig, Config } from '../interfaces/Config';
 import * as getConfig from '../utils/getConfig';
 import * as getProvider from '../utils/getProvider';
 import * as weiMath from '../utils/weiMath';
@@ -426,7 +426,7 @@ describe('VariableRateService', () => {
       const tempusAMM = '0x0000000000000000000000000000000000000001';
       const principalsAddress = '0x0000000000000000000000000000000000000002';
       const yieldsAddress = '0x0000000000000000000000000000000000000003';
-      jest.spyOn(getConfig, 'default').mockReturnValue({ tempusPools: [] } as unknown as Config);
+      jest.spyOn(getConfig, 'getChainConfig').mockReturnValue({ tempusPools: [] } as unknown as ChainConfig);
 
       await expect(
         (variableRateService as any).calculateFees(tempusAMM, tempusPool, principalsAddress, yieldsAddress),
@@ -467,7 +467,7 @@ describe('VariableRateService', () => {
           }),
       }));
       const mockProvider = new JsonRpcProvider();
-      jest.spyOn(getConfig, 'default').mockReturnValue({ tempusPools: DUMMY_TEMPUS_POOL } as Config);
+      jest.spyOn(getConfig, 'getChainConfig').mockReturnValue({ tempusPools: DUMMY_TEMPUS_POOL } as ChainConfig);
       jest.spyOn(getProvider, 'default').mockReturnValue(mockProvider);
       jest.spyOn(variableRateService as any, 'getSwapAndPoolBalanceChangedEvents').mockResolvedValue(mockEvents);
       jest.spyOn(variableRateService as any, 'getPoolTokens').mockResolvedValue(mockPoolTokens);
@@ -492,7 +492,7 @@ describe('VariableRateService', () => {
           weiMath.mul18f(BigNumber.from(2), weiMath.div18f(mockPoolTokens.principals, mockPoolTokens.yields)),
         ),
       );
-      expect(getConfig.default).toHaveBeenCalled();
+      expect(getConfig.getChainConfig).toHaveBeenCalled();
       expect(getProvider.default).toHaveBeenCalled();
       expect(mockProvider.getBlock).toHaveBeenCalledTimes(2);
       expect(mockProvider.getBlock).toHaveBeenNthCalledWith(1, 'latest');
@@ -557,7 +557,7 @@ describe('VariableRateService', () => {
           }),
       }));
       const mockProvider = new JsonRpcProvider();
-      jest.spyOn(getConfig, 'default').mockReturnValue({ tempusPools: DUMMY_TEMPUS_POOL } as Config);
+      jest.spyOn(getConfig, 'getChainConfig').mockReturnValue({ tempusPools: DUMMY_TEMPUS_POOL } as ChainConfig);
       jest.spyOn(getProvider, 'default').mockReturnValue(mockProvider);
       jest.spyOn(variableRateService as any, 'getSwapAndPoolBalanceChangedEvents').mockResolvedValue(mockEvents);
       jest.spyOn(variableRateService as any, 'getPoolTokens').mockResolvedValue(mockPoolTokens);
@@ -578,7 +578,7 @@ describe('VariableRateService', () => {
       await expect(
         (variableRateService as any).calculateFees(tempusAMM, tempusPool, principalsAddress, yieldsAddress),
       ).resolves.toEqual(BigNumber.from(0));
-      expect(getConfig.default).toHaveBeenCalled();
+      expect(getConfig.getChainConfig).toHaveBeenCalled();
       expect(getProvider.default).toHaveBeenCalled();
       expect(mockProvider.getBlock).toHaveBeenCalledTimes(2);
       expect(mockProvider.getBlock).toHaveBeenNthCalledWith(1, 'latest');
@@ -647,7 +647,7 @@ describe('VariableRateService', () => {
           }),
       }));
       const mockProvider = new JsonRpcProvider();
-      jest.spyOn(getConfig, 'default').mockReturnValue({ tempusPools: DUMMY_TEMPUS_POOL } as Config);
+      jest.spyOn(getConfig, 'getChainConfig').mockReturnValue({ tempusPools: DUMMY_TEMPUS_POOL } as ChainConfig);
       jest.spyOn(getProvider, 'default').mockReturnValue(mockProvider);
       jest.spyOn(variableRateService as any, 'getSwapAndPoolBalanceChangedEvents').mockResolvedValue(mockEvents);
       jest.spyOn(variableRateService as any, 'getPoolTokens').mockResolvedValue(mockPoolTokens);
@@ -664,7 +664,7 @@ describe('VariableRateService', () => {
       await expect(
         (variableRateService as any).calculateFees(tempusAMM, tempusPool, principalsAddress, yieldsAddress),
       ).resolves.toEqual(BigNumber.from(0));
-      expect(getConfig.default).toHaveBeenCalled();
+      expect(getConfig.getChainConfig).toHaveBeenCalled();
       expect(getProvider.default).toHaveBeenCalled();
       expect(mockProvider.getBlock).toHaveBeenCalledTimes(2);
       expect(mockProvider.getBlock).toHaveBeenNthCalledWith(1, 'latest');

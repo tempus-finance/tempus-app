@@ -43,7 +43,7 @@ describe('DashboardDataAdapter', () => {
 
   describe('getDashboardDataAdapter()', () => {
     test('returns a not null DashboardDataAdapter instance', () => {
-      const instance: DashboardDataAdapter = getDashboardDataService();
+      const instance: DashboardDataAdapter = getDashboardDataService('fantom');
 
       expect(instance).toBeInstanceOf(DashboardDataAdapter);
       expect(instance).not.toBe(null);

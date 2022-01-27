@@ -110,11 +110,11 @@ describe('PoolDataAdapter', () => {
     instance.init({
       eRC20TokenServiceGetter: mockGetERC20TokenService,
       statisticService: mockGetStatisticsService(),
-      tempusControllerAddress: 'mock-tempus-controller-address',
       tempusControllerService: mockGetTempusControllerService(),
       tempusAMMService: mockTempusAMMService(),
       tempusPoolService: mockGetTempusPoolService(),
       vaultService: mockGetVaultService(),
+      chain: 'fantom',
     });
   });
 
