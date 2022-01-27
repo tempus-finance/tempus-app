@@ -9,9 +9,9 @@ import { selectedChainState } from '../state/ChainState';
 
 const VariableAPRProvider = () => {
   const dynamicPoolData = useHookState(dynamicPoolDataState);
-  const selectedNetwork = useHookState(selectedChainState);
+  const selectedChain = useHookState(selectedChainState);
 
-  const selectedNetworkName = selectedNetwork.attach(Downgraded).get();
+  const selectedChainName = selectedChain.attach(Downgraded).get();
 
   const { userWalletConnected, userWalletSigner } = useContext(WalletContext);
 
@@ -19,9 +19,9 @@ const VariableAPRProvider = () => {
     if (userWalletConnected && userWalletSigner) {
       return userWalletSigner.provider;
     } else if (userWalletConnected === false) {
-      return getDefaultProvider(selectedNetworkName);
+      return getDefaultProvider(selectedChainName);
     }
-  }, [userWalletConnected, userWalletSigner, selectedNetworkName]);
+  }, [userWalletConnected, userWalletSigner, selectedChainName]);
 
   /**
    * Fetch APR for all tempus pools on each block event
@@ -32,8 +32,8 @@ const VariableAPRProvider = () => {
       return;
     }
 
-    const config = getChainConfig(selectedNetworkName);
-    const variableRateService = getVariableRateService(selectedNetworkName, provider);
+    const config = getChainConfig(selectedChainName);
+    const variableRateService = getVariableRateService(selectedChainName, provider);
 
     try {
       // Fetch APR for all Tempus Pools
@@ -49,7 +49,7 @@ const VariableAPRProvider = () => {
             tempusPool.address,
             tempusPool.principalsAddress,
             tempusPool.yieldsAddress,
-            selectedNetworkName,
+            selectedChainName,
           );
 
           // Get variable APR for Tempus Pool
@@ -82,7 +82,7 @@ const VariableAPRProvider = () => {
       console.log('VariableAPRProvider - fetchAPR', error);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedNetworkName, getProvider]);
+  }, [selectedChainName, getProvider]);
 
   useEffect(() => {
     fetchAPR();

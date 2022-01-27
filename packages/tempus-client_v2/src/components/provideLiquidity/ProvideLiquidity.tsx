@@ -30,7 +30,7 @@ const ProvideLiquidity = () => {
   const selectedPool = useHookState(selectedPoolState);
   const dynamicPoolData = useHookState(dynamicPoolDataState);
   const staticPoolData = useHookState(staticPoolDataState);
-  const selectedNetwork = useHookState(selectedChainState);
+  const selectedChain = useHookState(selectedChainState);
 
   const { language } = useContext(LanguageContext);
 
@@ -56,7 +56,7 @@ const ProvideLiquidity = () => {
   const [yieldsPrecision, setYieldsPrecision] = useState<number>(0);
   const [lpTokensPrecision, setLpTokensPrecision] = useState<number>(0);
 
-  const selectedNetworkName = selectedNetwork.attach(Downgraded).get();
+  const selectedChainName = selectedChain.attach(Downgraded).get();
   const selectedPoolAddress = selectedPool.attach(Downgraded).get();
   const ammAddress = staticPoolData[selectedPool.get()].ammAddress.attach(Downgraded).get();
   const principalsAddress = staticPoolData[selectedPool.get()].principalsAddress.attach(Downgraded).get();
@@ -246,7 +246,7 @@ const ProvideLiquidity = () => {
       if (!userWalletSigner) {
         return;
       }
-      const poolDataAdapter = getPoolDataAdapter(selectedNetworkName, userWalletSigner);
+      const poolDataAdapter = getPoolDataAdapter(selectedChainName, userWalletSigner);
 
       const ratios = await poolDataAdapter.getPoolRatioOfAssets(ammAddress, principalsAddress, yieldsAddress);
 
@@ -254,7 +254,7 @@ const ProvideLiquidity = () => {
       setYieldsPercentage(ratios.yieldsShare);
     };
     getRatioOfAssetsInPool();
-  }, [ammAddress, principalsAddress, userWalletSigner, yieldsAddress, selectedNetworkName]);
+  }, [ammAddress, principalsAddress, userWalletSigner, yieldsAddress, selectedChainName]);
 
   // Fetch estimated LP Token amount
   useEffect(() => {
@@ -264,7 +264,7 @@ const ProvideLiquidity = () => {
       }
 
       try {
-        const poolDataAdapter = getPoolDataAdapter(selectedNetworkName, userWalletSigner);
+        const poolDataAdapter = getPoolDataAdapter(selectedChainName, userWalletSigner);
 
         setTokenEstimateInProgress(true);
         setExpectedLPTokens(
@@ -302,7 +302,7 @@ const ProvideLiquidity = () => {
     ammAddress,
     principalsAddress,
     yieldsAddress,
-    selectedNetworkName,
+    selectedChainName,
   ]);
 
   // Fetch pool share for amount in
@@ -313,7 +313,7 @@ const ProvideLiquidity = () => {
       }
 
       try {
-        const poolDataAdapter = getPoolDataAdapter(selectedNetworkName, userWalletSigner);
+        const poolDataAdapter = getPoolDataAdapter(selectedChainName, userWalletSigner);
 
         setPoolShareEstimateInProgress(true);
         setExpectedPoolShare(await poolDataAdapter.getPoolShareForLPTokensIn(ammAddress, expectedLPTokens));
@@ -327,13 +327,13 @@ const ProvideLiquidity = () => {
       }
     };
     fetchExpectedPoolShare();
-  }, [expectedLPTokens, userWalletSigner, ammAddress, selectedNetworkName]);
+  }, [expectedLPTokens, userWalletSigner, ammAddress, selectedChainName]);
 
   const onExecute = useCallback((): Promise<ethers.ContractTransaction | undefined> => {
     if (!userWalletSigner) {
       return Promise.resolve(undefined);
     }
-    const poolDataAdapter = getPoolDataAdapter(selectedNetworkName, userWalletSigner);
+    const poolDataAdapter = getPoolDataAdapter(selectedChainName, userWalletSigner);
 
     return poolDataAdapter.provideLiquidity(
       ammAddress,
@@ -353,7 +353,7 @@ const ProvideLiquidity = () => {
     principalsPrecision,
     yieldsAmount,
     yieldsPrecision,
-    selectedNetworkName,
+    selectedChainName,
   ]);
 
   const onExecuted = useCallback(() => {
@@ -367,24 +367,24 @@ const ProvideLiquidity = () => {
 
     // Trigger user pool share balance update when execute is finished
     getUserShareTokenBalanceProvider({
-      chain: selectedNetworkName,
+      chain: selectedChainName,
       userWalletAddress,
       userWalletSigner,
     }).fetchForPool(selectedPoolAddress);
 
     // Trigger user LP Token balance update when execute is finished
     getUserLPTokenBalanceProvider({
-      chain: selectedNetworkName,
+      chain: selectedChainName,
       userWalletAddress,
       userWalletSigner,
     }).fetchForPool(selectedPoolAddress);
 
     // Trigger pool share balance update when execute is finished
     getPoolShareBalanceProvider({
-      chain: selectedNetworkName,
+      chain: selectedChainName,
       userWalletSigner,
     }).fetchForPoolWithId(poolId);
-  }, [poolId, selectedPoolAddress, userWalletAddress, userWalletSigner, selectedNetworkName]);
+  }, [poolId, selectedPoolAddress, userWalletAddress, userWalletSigner, selectedChainName]);
 
   const principalsBalanceFormatted = useMemo(() => {
     if (!userPrincipalsBalance) {
@@ -477,7 +477,7 @@ const ProvideLiquidity = () => {
                 onApproveChange={approved => {
                   setPrincipalsApproved(approved);
                 }}
-                spenderAddress={getChainConfig(selectedNetworkName).vaultContract}
+                spenderAddress={getChainConfig(selectedChainName).vaultContract}
                 tokenToApproveAddress={principalsAddress}
               />
             </div>
@@ -516,7 +516,7 @@ const ProvideLiquidity = () => {
                 onApproveChange={approved => {
                   setYieldsApproved(approved);
                 }}
-                spenderAddress={getChainConfig(selectedNetworkName).vaultContract}
+                spenderAddress={getChainConfig(selectedChainName).vaultContract}
                 tokenToApproveAddress={yieldsAddress}
               />
             </div>

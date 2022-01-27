@@ -20,14 +20,14 @@ const CurrentPosition: FC<CurrentPositionInProps> = ({ language }) => {
   const selectedPool = useHookState(selectedPoolState);
   const dynamicPoolData = useHookState(dynamicPoolDataState);
   const staticPoolData = useHookState(staticPoolDataState);
-  const selectedNetwork = useHookState(selectedChainState);
+  const selectedChain = useHookState(selectedChainState);
 
   const { userWalletSigner } = useContext(WalletContext);
 
   const [lpTokenPrincipalReturnBalance, setLpTokenPrincipalReturn] = useState<BigNumber | null>(null);
   const [lpTokenYieldReturnBalance, setLpTokenYieldReturn] = useState<BigNumber | null>(null);
 
-  const selectedNetworkName = selectedNetwork.attach(Downgraded).get();
+  const selectedChainName = selectedChain.attach(Downgraded).get();
   const userPrincipalsBalance = dynamicPoolData[selectedPool.get()].userPrincipalsBalance.attach(Downgraded).get();
   const userYieldsBalance = dynamicPoolData[selectedPool.get()].userYieldsBalance.attach(Downgraded).get();
   const userLPBalance = dynamicPoolData[selectedPool.get()].userLPTokenBalance.attach(Downgraded).get();
@@ -41,7 +41,7 @@ const CurrentPosition: FC<CurrentPositionInProps> = ({ language }) => {
         return;
       }
 
-      const poolDataAdapter = getPoolDataAdapter(selectedNetworkName, userWalletSigner);
+      const poolDataAdapter = getPoolDataAdapter(selectedChainName, userWalletSigner);
       if (userLPBalance) {
         try {
           const expectedLPTokenReturn = await poolDataAdapter.getExpectedReturnForLPTokens(ammAddress, userLPBalance);
@@ -57,7 +57,7 @@ const CurrentPosition: FC<CurrentPositionInProps> = ({ language }) => {
       }
     };
     retrieveExpectedReturn();
-  }, [userWalletSigner, ammAddress, userLPBalance, selectedNetworkName]);
+  }, [userWalletSigner, ammAddress, userLPBalance, selectedChainName]);
 
   const principalsBalanceFormatted = useMemo(() => {
     if (!userPrincipalsBalance || !lpTokenPrincipalReturnBalance) {

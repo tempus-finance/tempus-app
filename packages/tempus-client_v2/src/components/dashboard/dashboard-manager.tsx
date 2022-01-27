@@ -10,9 +10,9 @@ import Dashboard from './dashboard';
 const DashboardManager: FC = (): JSX.Element => {
   let navigate = useNavigate();
 
-  const selectedNetwork = useHookState(selectedChainState);
+  const selectedChain = useHookState(selectedChainState);
 
-  const selectedNetworkName = selectedNetwork.attach(Downgraded).get();
+  const selectedChainName = selectedChain.attach(Downgraded).get();
 
   const { userWalletAddress, userWalletConnected, userWalletSigner } = useContext(WalletContext);
 
@@ -21,15 +21,15 @@ const DashboardManager: FC = (): JSX.Element => {
   useEffect(() => {
     const fetchRows = async () => {
       if (userWalletSigner) {
-        const dashboardDataAdapter = getDashboardDataAdapter(selectedNetworkName, userWalletSigner);
-        setRows(dashboardDataAdapter.getRows(selectedNetworkName));
+        const dashboardDataAdapter = getDashboardDataAdapter(selectedChainName, userWalletSigner);
+        setRows(dashboardDataAdapter.getRows(selectedChainName));
       } else if (userWalletConnected === false) {
-        const dashboardDataAdapter = getDashboardDataAdapter(selectedNetworkName);
-        setRows(dashboardDataAdapter.getRows(selectedNetworkName));
+        const dashboardDataAdapter = getDashboardDataAdapter(selectedChainName);
+        setRows(dashboardDataAdapter.getRows(selectedChainName));
       }
     };
     fetchRows();
-  }, [userWalletConnected, userWalletAddress, userWalletSigner, selectedNetworkName]);
+  }, [userWalletConnected, userWalletAddress, userWalletSigner, selectedChainName]);
 
   const onRowActionClick = useCallback(
     (row: DashboardRowChild) => {

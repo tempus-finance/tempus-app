@@ -36,9 +36,9 @@ const Swap = () => {
   const selectedPool = useHookState(selectedPoolState);
   const dynamicPoolData = useHookState(dynamicPoolDataState);
   const staticPoolData = useHookState(staticPoolDataState);
-  const selectedNetwork = useHookState(selectedChainState);
+  const selectedChain = useHookState(selectedChainState);
 
-  const selectedNetworkName = selectedNetwork.attach(Downgraded).get();
+  const selectedChainName = selectedChain.attach(Downgraded).get();
   const selectedPoolAddress = selectedPool.attach(Downgraded).get();
   const principalsAddress = staticPoolData[selectedPool.get()].principalsAddress.attach(Downgraded).get();
   const yieldsAddress = staticPoolData[selectedPool.get()].yieldsAddress.attach(Downgraded).get();
@@ -147,7 +147,7 @@ const Swap = () => {
     if (!userWalletSigner || !receiveAmount) {
       return Promise.resolve(undefined);
     }
-    const poolDataAdapter = getPoolDataAdapter(selectedNetworkName, userWalletSigner);
+    const poolDataAdapter = getPoolDataAdapter(selectedChainName, userWalletSigner);
 
     let tokenOutPrecision;
     if (tokenTo.tokenAddress === principalsAddress) {
@@ -189,7 +189,7 @@ const Swap = () => {
     tokenTo.tokenAddress,
     userWalletAddress,
     userWalletSigner,
-    selectedNetworkName,
+    selectedChainName,
   ]);
 
   const onExecuted = useCallback(() => {
@@ -201,11 +201,11 @@ const Swap = () => {
 
     // Trigger user pool share balance update when execute is finished
     getUserShareTokenBalanceProvider({
-      chain: selectedNetworkName,
+      chain: selectedChainName,
       userWalletAddress,
       userWalletSigner,
     }).fetchForPool(selectedPoolAddress);
-  }, [selectedPoolAddress, userWalletAddress, userWalletSigner, selectedNetworkName]);
+  }, [selectedPoolAddress, userWalletAddress, userWalletSigner, selectedChainName]);
 
   // Fetch receive amount
   useEffect(() => {
@@ -213,7 +213,7 @@ const Swap = () => {
       if (!userWalletSigner || !amount) {
         return;
       }
-      const poolDataAdapter = getPoolDataAdapter(selectedNetworkName, userWalletSigner);
+      const poolDataAdapter = getPoolDataAdapter(selectedChainName, userWalletSigner);
 
       const amountParsed = ethers.utils.parseUnits(amount, tokenPrecision);
       const yieldShareIn = tokenFrom.tokenName === 'Yields';
@@ -238,7 +238,7 @@ const Swap = () => {
       }
     };
     getReceiveAmount();
-  }, [tokenPrecision, amount, tokenFrom, userWalletSigner, ammAddress, selectedNetworkName]);
+  }, [tokenPrecision, amount, tokenFrom, userWalletSigner, ammAddress, selectedChainName]);
 
   const balanceFormatted = useMemo(() => {
     const currentBalance = getSelectedTokenBalance();
@@ -313,7 +313,7 @@ const Swap = () => {
           <Approve
             amountToApprove={getSelectedTokenBalance()}
             onApproveChange={onApproveChange}
-            spenderAddress={getChainConfig(selectedNetworkName).vaultContract}
+            spenderAddress={getChainConfig(selectedChainName).vaultContract}
             tokenToApproveTicker={tokenFrom.tokenName}
             tokenToApproveAddress={getSelectedTokenAddress()}
             marginRight={20}

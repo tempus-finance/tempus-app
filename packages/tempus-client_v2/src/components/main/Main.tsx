@@ -20,9 +20,9 @@ import PoolRoute from '../routes/PoolRoute';
 import './Main.scss';
 
 const Main = () => {
-  const selectedNetwork = useHookState(selectedChainState);
+  const selectedChain = useHookState(selectedChainState);
 
-  const selectedNetworkName = selectedNetwork.attach(Downgraded).get();
+  const selectedChainName = selectedChain.attach(Downgraded).get();
 
   const { userWalletConnected, userWalletSigner } = useContext(WalletContext);
 
@@ -32,21 +32,21 @@ const Main = () => {
   useEffect(() => {
     const fetchRows = async () => {
       if (userWalletSigner) {
-        const dashboardDataAdapter = getDashboardDataAdapter(selectedNetworkName, userWalletSigner);
-        const userBalanceDataAdapter = getUserBalanceDataAdapter(selectedNetworkName, userWalletSigner);
+        const dashboardDataAdapter = getDashboardDataAdapter(selectedChainName, userWalletSigner);
+        const userBalanceDataAdapter = getUserBalanceDataAdapter(selectedChainName, userWalletSigner);
 
         setDashboardDataAdapter(dashboardDataAdapter);
         setUserBalanceDataAdapter(userBalanceDataAdapter);
       } else if (userWalletConnected === false) {
-        const dashboardDataAdapter = getDashboardDataAdapter(selectedNetworkName);
-        const userBalanceDataAdapter = getUserBalanceDataAdapter(selectedNetworkName);
+        const dashboardDataAdapter = getDashboardDataAdapter(selectedChainName);
+        const userBalanceDataAdapter = getUserBalanceDataAdapter(selectedChainName);
 
         setDashboardDataAdapter(dashboardDataAdapter);
         setUserBalanceDataAdapter(userBalanceDataAdapter);
       }
     };
     fetchRows();
-  }, [userWalletConnected, userWalletSigner, userBalanceDataAdapter, selectedNetworkName]);
+  }, [userWalletConnected, userWalletSigner, userBalanceDataAdapter, selectedChainName]);
 
   return (
     <div className="tc__main">

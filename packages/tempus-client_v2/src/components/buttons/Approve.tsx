@@ -56,7 +56,7 @@ const Approve: FC<ApproveButtonProps> = props => {
 
   const selectedPool = useHookState(selectedPoolState);
   const staticPoolData = useHookState(staticPoolDataState);
-  const selectedNetwork = useHookState(selectedChainState);
+  const selectedChain = useHookState(selectedChainState);
 
   const { setPendingTransactions } = useContext(PendingTransactionsContext);
   const { userWalletAddress, userWalletSigner } = useContext(WalletContext);
@@ -65,7 +65,7 @@ const Approve: FC<ApproveButtonProps> = props => {
   const [approveInProgress, setApproveInProgress] = useState<boolean>(false);
   const [allowance, setAllowance] = useState<BigNumber | null>(null);
 
-  const selectedNetworkName = selectedNetwork.attach(Downgraded).get();
+  const selectedChainName = selectedChain.attach(Downgraded).get();
   const backingToken = staticPoolData[selectedPool.get()].backingToken.attach(Downgraded).get();
   const protocol = staticPoolData[selectedPool.get()].protocol.attach(Downgraded).get();
   const maturityDate = staticPoolData[selectedPool.get()].maturityDate.attach(Downgraded).get();
@@ -82,7 +82,7 @@ const Approve: FC<ApproveButtonProps> = props => {
       }
       setApproveInProgress(true);
 
-      const poolDataAdapter = getPoolDataAdapter(selectedNetworkName, userWalletSigner);
+      const poolDataAdapter = getPoolDataAdapter(selectedChainName, userWalletSigner);
       let content: string = '';
       let link: string = '';
 
@@ -99,7 +99,7 @@ const Approve: FC<ApproveButtonProps> = props => {
           userWalletSigner,
         );
         if (transaction) {
-          link = generateEtherscanLink(transaction.hash, selectedNetworkName);
+          link = generateEtherscanLink(transaction.hash, selectedChainName);
         }
       } catch (error) {
         console.error(`Failed to create approve transaction for ${tokenToApproveTicker} token!`, error);
@@ -200,7 +200,7 @@ const Approve: FC<ApproveButtonProps> = props => {
     backingToken,
     protocol,
     maturityDate,
-    selectedNetworkName,
+    selectedChainName,
   ]);
 
   // Fetch current token allowance from contract
@@ -210,7 +210,7 @@ const Approve: FC<ApproveButtonProps> = props => {
         return;
       }
 
-      const poolDataAdapter = getPoolDataAdapter(selectedNetworkName, userWalletSigner);
+      const poolDataAdapter = getPoolDataAdapter(selectedChainName, userWalletSigner);
       setAllowance(
         await poolDataAdapter.getTokenAllowance(
           tokenToApproveAddress,
@@ -221,7 +221,7 @@ const Approve: FC<ApproveButtonProps> = props => {
       );
     };
     getAllowance();
-  }, [userWalletSigner, spenderAddress, tokenToApproveAddress, userWalletAddress, selectedNetworkName]);
+  }, [userWalletSigner, spenderAddress, tokenToApproveAddress, userWalletAddress, selectedChainName]);
 
   /**
    * Checks if tokens are approved.

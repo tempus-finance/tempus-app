@@ -43,7 +43,7 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
   const selectedPool = useHookState(selectedPoolState);
   const staticPoolData = useHookState(staticPoolDataState);
   const dynamicPoolData = useHookState(dynamicPoolDataState);
-  const selectedNetwork = useHookState(selectedChainState);
+  const selectedChain = useHookState(selectedChainState);
 
   const { language } = useContext(LanguageContext);
   const { userWalletSigner } = useContext(WalletContext);
@@ -76,7 +76,7 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
 
   const [executeDisabledText, setExecuteDisabledText] = useState<string | undefined>(undefined);
 
-  const selectedNetworkName = selectedNetwork.attach(Downgraded).get();
+  const selectedChainName = selectedChain.attach(Downgraded).get();
   const selectedPoolAddress = selectedPool.attach(Downgraded).get();
   const fixedAPR = dynamicPoolData[selectedPool.get()].fixedAPR.attach(Downgraded).get();
   const variableAPR = dynamicPoolData[selectedPool.get()].variableAPR.attach(Downgraded).get();
@@ -189,7 +189,7 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
 
   const onExecute = useCallback((): Promise<ethers.ContractTransaction | undefined> => {
     if (userWalletSigner && amount) {
-      const poolDataAdapter = getPoolDataAdapter(selectedNetworkName, userWalletSigner);
+      const poolDataAdapter = getPoolDataAdapter(selectedChainName, userWalletSigner);
 
       const tokenAmount = ethers.utils.parseUnits(amount, selectedTokenPrecision);
       const isBackingToken = backingToken === selectedToken;
@@ -223,7 +223,7 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
     ammAddress,
     selectedYield,
     spotPrice,
-    selectedNetworkName,
+    selectedChainName,
   ]);
 
   const onExecuted = useCallback(() => {
@@ -235,25 +235,25 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
 
     // Trigger user pool share balance update when execute is finished
     getUserShareTokenBalanceProvider({
-      chain: selectedNetworkName,
+      chain: selectedChainName,
       userWalletAddress,
       userWalletSigner,
     }).fetchForPool(selectedPoolAddress);
 
     // Trigger user balance update when execute is finished
     getUserBalanceProvider({
-      chain: selectedNetworkName,
+      chain: selectedChainName,
       userWalletAddress,
       userWalletSigner,
     }).fetchForPool(selectedPoolAddress);
 
     // Trigger user LP Token balance update when execute is finished
     getUserLPTokenBalanceProvider({
-      chain: selectedNetworkName,
+      chain: selectedChainName,
       userWalletAddress,
       userWalletSigner,
     }).fetchForPool(selectedPoolAddress);
-  }, [selectedPoolAddress, userWalletAddress, userWalletSigner, selectedNetworkName]);
+  }, [selectedPoolAddress, userWalletAddress, userWalletSigner, selectedChainName]);
 
   const onApproveChange = useCallback(approved => {
     setTokensApproved(approved);
@@ -261,7 +261,7 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
 
   useEffect(() => {
     if (userWalletSigner && selectedPoolAddress && ammAddress) {
-      const poolDataAdapter = getPoolDataAdapter(selectedNetworkName, userWalletSigner);
+      const poolDataAdapter = getPoolDataAdapter(selectedChainName, userWalletSigner);
 
       const stream$ = poolDataAdapter
         .retrieveBalances(
@@ -304,7 +304,7 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
     setBackingTokenRate,
     setYieldBearingTokenRate,
     ammAddress,
-    selectedNetworkName,
+    selectedChainName,
   ]);
 
   useEffect(() => {
@@ -318,7 +318,7 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
         try {
           setTokenEstimateInProgress(true);
 
-          const poolDataAdapter = getPoolDataAdapter(selectedNetworkName, userWalletSigner);
+          const poolDataAdapter = getPoolDataAdapter(selectedChainName, userWalletSigner);
 
           const isBackingToken = backingToken === selectedToken;
 
@@ -345,14 +345,14 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
     };
 
     retrieveDepositAmount();
-  }, [amount, selectedTokenPrecision, selectedToken, ammAddress, backingToken, userWalletSigner, selectedNetworkName]);
+  }, [amount, selectedTokenPrecision, selectedToken, ammAddress, backingToken, userWalletSigner, selectedChainName]);
 
   useEffect(() => {
     const getEstimatedFixedApr = async () => {
       if (!isZeroString(amount) && selectedToken && userWalletSigner) {
         setRateEstimateInProgress(true);
 
-        const poolDataAdapter = getPoolDataAdapter(selectedNetworkName, userWalletSigner);
+        const poolDataAdapter = getPoolDataAdapter(selectedChainName, userWalletSigner);
 
         const isBackingToken = selectedToken === backingToken;
         try {
@@ -386,7 +386,7 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
     setEstimatedFixedApr,
     backingToken,
     ammAddress,
-    selectedNetworkName,
+    selectedChainName,
   ]);
 
   useEffect(() => {
@@ -394,7 +394,7 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
       return;
     }
 
-    const poolDataAdapter = getPoolDataAdapter(selectedNetworkName, userWalletSigner);
+    const poolDataAdapter = getPoolDataAdapter(selectedChainName, userWalletSigner);
 
     const stream$ = poolDataAdapter
       .isCurrentYieldNegativeForPool(selectedPoolAddress)
@@ -409,7 +409,7 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
       });
 
     return () => stream$.unsubscribe();
-  }, [selectedPoolAddress, userWalletSigner, selectedNetworkName]);
+  }, [selectedPoolAddress, userWalletSigner, selectedChainName]);
 
   const fixedPrincipalsAmountFormatted = useMemo(() => {
     if (!fixedPrincipalsAmount) {
@@ -1054,7 +1054,7 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
         <div className="tf__flex-row-center-vh">
           <Approve
             tokenToApproveAddress={getSelectedTokenAddress()}
-            spenderAddress={getChainConfig(selectedNetworkName).tempusControllerContract}
+            spenderAddress={getChainConfig(selectedChainName).tempusControllerContract}
             amountToApprove={amountToApprove}
             tokenToApproveTicker={selectedToken}
             disabled={approveDisabled}

@@ -59,10 +59,10 @@ export default class PoolDataAdapter {
     statisticService,
     tempusAMMService,
     vaultService,
-    chain: network,
+    chain,
     eRC20TokenServiceGetter,
   }: PoolDataAdapterParameters) {
-    this.chain = network;
+    this.chain = chain;
     this.tempusControllerService = tempusControllerService;
     this.tempusPoolService = tempusPoolService;
     this.statisticService = statisticService;

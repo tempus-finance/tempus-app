@@ -14,9 +14,9 @@ const subscriptions$ = new Subscription();
 
 const NegativeYieldProvider = () => {
   const dynamicPoolData = useHookState(dynamicPoolDataState);
-  const selectedNetwork = useHookState(selectedChainState);
+  const selectedChain = useHookState(selectedChainState);
 
-  const selectedNetworkName = selectedNetwork.attach(Downgraded).get();
+  const selectedChainName = selectedChain.attach(Downgraded).get();
 
   const { userWalletConnected, userWalletSigner } = useContext(WalletContext);
 
@@ -24,9 +24,9 @@ const NegativeYieldProvider = () => {
     if (userWalletConnected && userWalletSigner) {
       return userWalletSigner.provider;
     } else if (userWalletConnected === false) {
-      return getDefaultProvider(selectedNetworkName);
+      return getDefaultProvider(selectedChainName);
     }
-  }, [userWalletConnected, userWalletSigner, selectedNetworkName]);
+  }, [userWalletConnected, userWalletSigner, selectedChainName]);
 
   /**
    * Fetch APR for all tempus pools on each block event
@@ -42,7 +42,7 @@ const NegativeYieldProvider = () => {
       }
 
       try {
-        const tempusPoolService = getTempusPoolService(selectedNetworkName, provider);
+        const tempusPoolService = getTempusPoolService(selectedChainName, provider);
         const [currentInterestRate, initialInterestRate] = await Promise.all([
           tempusPoolService.currentInterestRate(tempusPool.address),
           tempusPoolService.initialInterestRate(tempusPool.address),
@@ -57,14 +57,14 @@ const NegativeYieldProvider = () => {
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [selectedNetworkName, getProvider],
+    [selectedChainName, getProvider],
   );
 
   /**
    * Fetch/Update Negative Yield Flag for all pools every POLLING_INTERVAL.
    */
   useEffect(() => {
-    getChainConfig(selectedNetworkName).tempusPools.forEach(poolConfig => {
+    getChainConfig(selectedChainName).tempusPools.forEach(poolConfig => {
       try {
         const fetchInterval$ = interval(POLLING_INTERVAL).pipe(startWith(0));
         subscriptions$.add(
@@ -78,7 +78,7 @@ const NegativeYieldProvider = () => {
     });
 
     return () => subscriptions$.unsubscribe();
-  }, [selectedNetworkName, fetchPoolNegativeYieldFlag]);
+  }, [selectedChainName, fetchPoolNegativeYieldFlag]);
 
   /**
    * Provider component only updates state value when needed. It does not show anything in the UI.

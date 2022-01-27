@@ -16,14 +16,14 @@ const AprTooltip = () => {
   const selectedPool = useHookState(selectedPoolState);
   const staticPoolData = useHookState(staticPoolDataState);
   const dynamicPoolData = useHookState(dynamicPoolDataState);
-  const selectedNetwork = useHookState(selectedChainState);
+  const selectedChain = useHookState(selectedChainState);
 
   const { userWalletSigner } = useContext(WalletContext);
   const { language } = useContext(LanguageContext);
 
   const [poolRatio, setPoolRatio] = useState<number[] | null>(null);
 
-  const selectedNetworkName = selectedNetwork.attach(Downgraded).get();
+  const selectedChainName = selectedChain.attach(Downgraded).get();
   const fixedAPR = dynamicPoolData[selectedPool.get()].fixedAPR.attach(Downgraded).get();
   const ammAddress = staticPoolData[selectedPool.get()].ammAddress.attach(Downgraded).get();
   const principalsAddress = staticPoolData[selectedPool.get()].principalsAddress.attach(Downgraded).get();
@@ -36,7 +36,7 @@ const AprTooltip = () => {
       if (!userWalletSigner) {
         return;
       }
-      const poolDataAdapter = getPoolDataAdapter(selectedNetworkName, userWalletSigner);
+      const poolDataAdapter = getPoolDataAdapter(selectedChainName, userWalletSigner);
 
       const { principalsShare, yieldsShare } = await poolDataAdapter.getPoolRatioOfAssets(
         ammAddress,
@@ -48,7 +48,7 @@ const AprTooltip = () => {
     };
 
     fetchPoolRation();
-  }, [ammAddress, principalsAddress, userWalletSigner, yieldsAddress, selectedNetworkName]);
+  }, [ammAddress, principalsAddress, userWalletSigner, yieldsAddress, selectedChainName]);
 
   const futureAprFormatted = useMemo(() => {
     return NumberUtils.formatPercentage(fixedAPR, 2);

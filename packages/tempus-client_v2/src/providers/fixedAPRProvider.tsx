@@ -12,9 +12,9 @@ import { FIXED_APR_PRECISION } from '../constants';
 
 const FixedAPRProvider = () => {
   const dynamicPoolData = useHookState(dynamicPoolDataState);
-  const selectedNetwork = useHookState(selectedChainState);
+  const selectedChain = useHookState(selectedChainState);
 
-  const selectedNetworkName = selectedNetwork.attach(Downgraded).get();
+  const selectedChainName = selectedChain.attach(Downgraded).get();
 
   const { userWalletConnected, userWalletSigner } = useContext(WalletContext);
 
@@ -25,9 +25,9 @@ const FixedAPRProvider = () => {
     if (userWalletConnected && userWalletSigner) {
       return userWalletSigner.provider;
     } else if (userWalletConnected === false) {
-      return getDefaultProvider(selectedNetworkName);
+      return getDefaultProvider(selectedChainName);
     }
-  }, [userWalletConnected, userWalletSigner, selectedNetworkName]);
+  }, [userWalletConnected, userWalletSigner, selectedChainName]);
 
   /**
    * Fetch Fixed APR for all tempus pools on each block event
@@ -38,8 +38,8 @@ const FixedAPRProvider = () => {
       return;
     }
 
-    const config = getChainConfig(selectedNetworkName);
-    const poolDataAdapter = getPoolDataAdapter(selectedNetworkName, provider);
+    const config = getChainConfig(selectedChainName);
+    const poolDataAdapter = getPoolDataAdapter(selectedChainName, provider);
 
     // Fetch APR for all Tempus Pools
     const fetchedPoolAPRData = await Promise.all(
@@ -91,7 +91,7 @@ const FixedAPRProvider = () => {
     });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedNetworkName, getProvider]);
+  }, [selectedChainName, getProvider]);
 
   useEffect(() => {
     fetchAPR();

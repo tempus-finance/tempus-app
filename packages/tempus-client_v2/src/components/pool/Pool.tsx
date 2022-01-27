@@ -25,7 +25,7 @@ const Pool = () => {
   const selectedPool = useHookState(selectedPoolState);
   const dynamicPoolData = useHookstate(dynamicPoolDataState);
   const staticPoolData = useHookState(staticPoolDataState);
-  const selectedNetwork = useHookState(selectedChainState);
+  const selectedChain = useHookState(selectedChainState);
 
   const { userWalletSigner } = useContext(WalletContext);
   const { language } = useContext(LanguageContext);
@@ -37,7 +37,7 @@ const Pool = () => {
   const [aprTooltipOpen, setAprTooltipOpen] = useState<boolean>(false);
   const [feesTooltipOpen, setFeesTooltipOpen] = useState<boolean>(false);
 
-  const selectedNetworkName = selectedNetwork.attach(Downgraded).get();
+  const selectedChainName = selectedChain.attach(Downgraded).get();
   const selectedPoolAddress = selectedPool.attach(Downgraded).get();
   const poolId = staticPoolData[selectedPool.get()].poolId.attach(Downgraded).get();
   const startDate = staticPoolData[selectedPool.get()].startDate.attach(Downgraded).get();
@@ -58,7 +58,7 @@ const Pool = () => {
       if (!userWalletSigner || !tvl) {
         return;
       }
-      const poolDataAdapter = getPoolDataAdapter(selectedNetworkName, userWalletSigner);
+      const poolDataAdapter = getPoolDataAdapter(selectedChainName, userWalletSigner);
 
       try {
         setTVLChangePercentage(
@@ -69,7 +69,7 @@ const Pool = () => {
       }
     };
     fetchTVLChangeData();
-  }, [backingToken, selectedPoolAddress, tvl, userWalletSigner, startDate, selectedNetworkName]);
+  }, [backingToken, selectedPoolAddress, tvl, userWalletSigner, startDate, selectedChainName]);
 
   /**
    * Fetch Fixed APR from one week ago.
@@ -81,7 +81,7 @@ const Pool = () => {
       if (!userWalletSigner || !fixedAPR) {
         return;
       }
-      const poolDataAdapter = getPoolDataAdapter(selectedNetworkName, userWalletSigner);
+      const poolDataAdapter = getPoolDataAdapter(selectedChainName, userWalletSigner);
 
       try {
         let latestBlock;
@@ -120,7 +120,7 @@ const Pool = () => {
       }
     };
     fetchFixedAPRChangeData();
-  }, [ammAddress, fixedAPR, poolId, selectedPoolAddress, userWalletSigner, startDate, selectedNetworkName]);
+  }, [ammAddress, fixedAPR, poolId, selectedPoolAddress, userWalletSigner, startDate, selectedChainName]);
 
   /**
    * Fetch Volume for pool in last 7 days, and 7 days before that
@@ -130,7 +130,7 @@ const Pool = () => {
       if (!userWalletSigner) {
         return;
       }
-      const poolDataAdapter = getPoolDataAdapter(selectedNetworkName, userWalletSigner);
+      const poolDataAdapter = getPoolDataAdapter(selectedChainName, userWalletSigner);
 
       let latestBlock;
       try {
@@ -186,7 +186,7 @@ const Pool = () => {
     backingToken,
     principalsAddress,
     backingTokenPrecision,
-    selectedNetworkName,
+    selectedChainName,
   ]);
 
   const onToggleAprTooltip = useCallback(() => {

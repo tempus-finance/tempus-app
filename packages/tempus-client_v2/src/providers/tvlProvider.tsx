@@ -16,9 +16,9 @@ const TVLProvider: FC<TVLProviderProps> = props => {
   const { dashboardDataAdapter } = props;
 
   const dynamicPoolData = useHookState(dynamicPoolDataState);
-  const selectedNetwork = useHookState(selectedChainState);
+  const selectedChain = useHookState(selectedChainState);
 
-  const selectedNetworkName = selectedNetwork.attach(Downgraded).get();
+  const selectedChainName = selectedChain.attach(Downgraded).get();
 
   const [subscriptions$] = useState<Subscription>(new Subscription());
 
@@ -41,7 +41,7 @@ const TVLProvider: FC<TVLProviderProps> = props => {
    * Update TVL for all pools every POLLING_INTERVAL.
    */
   useEffect(() => {
-    getChainConfig(selectedNetworkName).tempusPools.forEach(poolConfig => {
+    getChainConfig(selectedChainName).tempusPools.forEach(poolConfig => {
       try {
         // If case we want to force TVL fetch (even if app is not in focus)
         const forceFetch = dynamicPoolData[poolConfig.address].tvl.get() === null;
@@ -63,7 +63,7 @@ const TVLProvider: FC<TVLProviderProps> = props => {
 
     return () => subscriptions$.unsubscribe();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedNetworkName, dashboardDataAdapter, updatePoolTVL, subscriptions$]);
+  }, [selectedChainName, dashboardDataAdapter, updatePoolTVL, subscriptions$]);
 
   /**
    * Provider component only updates context value when needed. It does not show anything in the UI.

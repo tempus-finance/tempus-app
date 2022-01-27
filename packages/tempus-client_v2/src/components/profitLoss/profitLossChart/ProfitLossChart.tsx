@@ -15,7 +15,7 @@ const ProfitLossChart = () => {
   const selectedPool = useHookState(selectedPoolState);
   const staticPoolData = useHookState(staticPoolDataState);
   const dynamicPoolData = useHookState(dynamicPoolDataState);
-  const selectedNetwork = useHookState(selectedChainState);
+  const selectedChain = useHookState(selectedChainState);
 
   const { userWalletAddress, userWalletSigner } = useContext(WalletContext);
 
@@ -24,7 +24,7 @@ const ProfitLossChart = () => {
 
   const pastDaysNumber = useMemo(() => (startDate ? getPastDaysNumber(startDate, 3) : []), [startDate]);
 
-  const selectedNetworkName = selectedNetwork.attach(Downgraded).get();
+  const selectedChainName = selectedChain.attach(Downgraded).get();
   const selectedPoolStaticData = staticPoolData[selectedPool.get()].attach(Downgraded).get();
   const userBalanceUSD = dynamicPoolData[selectedPool.get()].userBalanceUSD.attach(Downgraded).get();
 
@@ -33,7 +33,7 @@ const ProfitLossChart = () => {
       if (!userWalletSigner) {
         return;
       }
-      const profitLossGraphDataAdapter = getProfitLossGraphDataAdapter(selectedNetworkName, userWalletSigner);
+      const profitLossGraphDataAdapter = getProfitLossGraphDataAdapter(selectedChainName, userWalletSigner);
 
       try {
         const result = await profitLossGraphDataAdapter.generateChartData(selectedPoolStaticData, userWalletAddress);
@@ -45,7 +45,7 @@ const ProfitLossChart = () => {
       }
     };
     fetchChartData();
-  }, [userWalletAddress, userWalletSigner, selectedPoolStaticData, selectedNetworkName]);
+  }, [userWalletAddress, userWalletSigner, selectedPoolStaticData, selectedChainName]);
 
   /**
    * Update chart data every time user USD balance changes for the pool

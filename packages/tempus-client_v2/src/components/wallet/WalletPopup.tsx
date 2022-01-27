@@ -30,13 +30,13 @@ type WalletPopupOutProps = {
 type WalletPopupProps = WalletPopupInProps & WalletPopupOutProps;
 
 const WalletPopup: FC<WalletPopupProps> = ({ anchorElement, account, onSwitchWallet, onClose }) => {
-  const selectedNetwork = useHookState(selectedChainState);
+  const selectedChain = useHookState(selectedChainState);
 
   const { openWalletPopup } = useContext(UserSettingsContext);
   const { language } = useContext(LanguageContext);
   const { pendingTransactions } = useContext(PendingTransactionsContext);
 
-  const selectedNetworkName = selectedNetwork.attach(Downgraded).get();
+  const selectedChainName = selectedChain.attach(Downgraded).get();
 
   const [notifications, setNotifications] = useState<Notification[]>([]);
 
@@ -50,7 +50,7 @@ const WalletPopup: FC<WalletPopupProps> = ({ anchorElement, account, onSwitchWal
   }, [onSwitchWallet]);
 
   const onAccountAddressClick = useCallback(() => {
-    const config = getChainConfig(selectedNetworkName);
+    const config = getChainConfig(selectedChainName);
 
     // TODO - Handle Fantom network
     if (config.networkName === 'homestead') {
@@ -58,7 +58,7 @@ const WalletPopup: FC<WalletPopupProps> = ({ anchorElement, account, onSwitchWal
     } else {
       window.open(`https://${config.networkName}.etherscan.io/address/${account}`, '_blank');
     }
-  }, [account, selectedNetworkName]);
+  }, [account, selectedChainName]);
 
   useEffect(() => {
     const notificationStream$ = getNotificationService()
