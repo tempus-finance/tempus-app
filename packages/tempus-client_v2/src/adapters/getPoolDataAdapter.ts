@@ -6,32 +6,38 @@ import getTempusAMMService from '../services/getTempusAMMService';
 import getTempusControllerService from '../services/getTempusControllerService';
 import getTempusPoolService from '../services/getTempusPoolService';
 import getVaultService from '../services/getVaultService';
-import { Networks } from '../state/NetworkState';
+import { Chain } from '../interfaces/Chain';
 import PoolDataAdapter from './PoolDataAdapter';
 
-let poolDataAdapter: PoolDataAdapter;
-const getPoolDataAdapter = (network: Networks, signerOrProvider?: JsonRpcSigner | JsonRpcProvider): PoolDataAdapter => {
-  if (!poolDataAdapter) {
-    poolDataAdapter = new PoolDataAdapter();
+let poolDataAdapters = new Map<Chain, PoolDataAdapter>();
+const getPoolDataAdapter = (chain: Chain, signerOrProvider?: JsonRpcSigner | JsonRpcProvider): PoolDataAdapter => {
+  if (!poolDataAdapters.get(chain)) {
+    const poolDataAdapter = new PoolDataAdapter();
     poolDataAdapter.init({
-      tempusControllerService: getTempusControllerService(network, getDefaultProvider(network)),
-      tempusPoolService: getTempusPoolService(network, getDefaultProvider(network)),
-      statisticService: getStatisticsService(network, getDefaultProvider(network)),
-      tempusAMMService: getTempusAMMService(network, getDefaultProvider(network)),
-      vaultService: getVaultService(network, getDefaultProvider(network)),
-      network,
+      tempusControllerService: getTempusControllerService(chain, getDefaultProvider(chain)),
+      tempusPoolService: getTempusPoolService(chain, getDefaultProvider(chain)),
+      statisticService: getStatisticsService(chain, getDefaultProvider(chain)),
+      tempusAMMService: getTempusAMMService(chain, getDefaultProvider(chain)),
+      vaultService: getVaultService(chain, getDefaultProvider(chain)),
+      chain: chain,
       eRC20TokenServiceGetter: getERC20TokenService,
     });
+    poolDataAdapters.set(chain, poolDataAdapter);
+  }
+
+  const poolDataAdapter = poolDataAdapters.get(chain);
+  if (!poolDataAdapter) {
+    throw new Error(`Failed to get PoolDataAdapter for ${chain} network!`);
   }
 
   if (signerOrProvider) {
     poolDataAdapter.init({
-      tempusControllerService: getTempusControllerService(network, signerOrProvider),
-      tempusPoolService: getTempusPoolService(network, signerOrProvider),
-      statisticService: getStatisticsService(network, signerOrProvider),
-      tempusAMMService: getTempusAMMService(network, signerOrProvider),
-      vaultService: getVaultService(network, signerOrProvider),
-      network,
+      tempusControllerService: getTempusControllerService(chain, signerOrProvider),
+      tempusPoolService: getTempusPoolService(chain, signerOrProvider),
+      statisticService: getStatisticsService(chain, signerOrProvider),
+      tempusAMMService: getTempusAMMService(chain, signerOrProvider),
+      vaultService: getVaultService(chain, signerOrProvider),
+      chain: chain,
       eRC20TokenServiceGetter: getERC20TokenService,
     });
   }

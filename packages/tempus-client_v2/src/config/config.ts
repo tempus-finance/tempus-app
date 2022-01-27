@@ -3,7 +3,7 @@ import { Config } from '../interfaces/Config';
 const ETHEREUM_MAINNET_ALCHEMY_KEY = process.env.REACT_APP_MAINNET_ALCHEMY_KEY || '';
 
 const config: Config = {
-  'ethereum-mainnet': {
+  ethereum: {
     tempusPools: [
       {
         address: '0x6320E6844EEEa57343d5Ca47D3166822Ec78b116',
@@ -89,7 +89,7 @@ const config: Config = {
     networkName: 'homestead',
     alchemyKey: ETHEREUM_MAINNET_ALCHEMY_KEY,
   },
-  'fantom-mainnet': {
+  fantom: {
     tempusPools: [
       {
         address: '0x53F4B5d3Aa90070dfF7f0Fbc0434BeDe22CBa6DD',

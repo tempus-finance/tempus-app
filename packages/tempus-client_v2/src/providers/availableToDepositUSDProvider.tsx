@@ -6,7 +6,7 @@ import { TempusPool } from '../interfaces/TempusPool';
 import getERC20TokenService from '../services/getERC20TokenService';
 import { getNetworkConfig } from '../utils/getConfig';
 import { dynamicPoolDataState } from '../state/PoolDataState';
-import { selectedNetworkState } from '../state/NetworkState';
+import { selectedChainState } from '../state/ChainState';
 
 interface PresentValueProviderProps {
   userBalanceDataAdapter: UserBalanceDataAdapter;
@@ -16,7 +16,7 @@ const AvailableToDepositUSDProvider: FC<PresentValueProviderProps> = props => {
   const { userBalanceDataAdapter } = props;
 
   const dynamicPoolData = useHookState(dynamicPoolDataState);
-  const selectedNetwork = useHookState(selectedNetworkState);
+  const selectedNetwork = useHookState(selectedChainState);
 
   const selectedNetworkName = selectedNetwork.attach(Downgraded).get();
 

@@ -4,36 +4,36 @@ import { ERC20 } from '../abi/ERC20';
 import ERC20ABI from '../abi/ERC20.json';
 import { TempusPool } from '../interfaces/TempusPool';
 import { dynamicPoolDataState } from '../state/PoolDataState';
+import { Chain } from '../interfaces/Chain';
 import getStatisticsService from '../services/getStatisticsService';
 import getERC20TokenService from '../services/getERC20TokenService';
 import { getConfigForPoolWithAddress, getNetworkConfig } from '../utils/getConfig';
 import { mul18f } from '../utils/weiMath';
-import { Networks } from '../state/NetworkState';
 
 export interface UserBalanceProviderParams {
   userWalletAddress: string;
   userWalletSigner: JsonRpcSigner;
-  network: Networks;
+  chain: Chain;
 }
 
 class UserBalanceProvider {
   private userWalletAddress: string = '';
   private userWalletSigner: JsonRpcSigner;
-  private network: Networks;
+  private chain: Chain;
 
   private tokenContracts: ERC20[] = [];
 
   constructor(params: UserBalanceProviderParams) {
     this.userWalletAddress = params.userWalletAddress;
     this.userWalletSigner = params.userWalletSigner;
-    this.network = params.network;
+    this.chain = params.chain;
   }
 
   init() {
     // Make sure to clean previous data before crating new subscriptions
     this.destroy();
 
-    getNetworkConfig(this.network).tempusPools.forEach(poolConfig => {
+    getNetworkConfig(this.chain).tempusPools.forEach(poolConfig => {
       if (!this.userWalletSigner) {
         return;
       }
@@ -78,11 +78,11 @@ class UserBalanceProvider {
       return;
     }
 
-    const statisticsService = getStatisticsService(this.network, this.userWalletSigner);
+    const statisticsService = getStatisticsService(this.chain, this.userWalletSigner);
 
-    const principalsService = getERC20TokenService(poolConfig.principalsAddress, this.network, this.userWalletSigner);
-    const yieldsService = getERC20TokenService(poolConfig.yieldsAddress, this.network, this.userWalletSigner);
-    const lpTokenService = getERC20TokenService(poolConfig.ammAddress, this.network, this.userWalletSigner);
+    const principalsService = getERC20TokenService(poolConfig.principalsAddress, this.chain, this.userWalletSigner);
+    const yieldsService = getERC20TokenService(poolConfig.yieldsAddress, this.chain, this.userWalletSigner);
+    const lpTokenService = getERC20TokenService(poolConfig.ammAddress, this.chain, this.userWalletSigner);
 
     const [principalsBalance, yieldsBalance, lpTokenBalance, backingTokenRate] = await Promise.all([
       principalsService.balanceOf(this.userWalletAddress),
@@ -119,7 +119,7 @@ class UserBalanceProvider {
   }
 
   private updateUserBalance = () => {
-    getNetworkConfig(this.network).tempusPools.forEach(poolConfig => {
+    getNetworkConfig(this.chain).tempusPools.forEach(poolConfig => {
       this.updateUserBalanceForPool(poolConfig);
     });
   };

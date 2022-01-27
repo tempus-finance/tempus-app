@@ -2,6 +2,7 @@ import { ethers, BigNumber } from 'ethers';
 import { FC, useContext, useEffect, useMemo, useState } from 'react';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
+import { selectedChainState } from '../../state/ChainState';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
 import { WalletContext } from '../../context/walletContext';
 import getText from '../../localisation/getText';
@@ -12,7 +13,6 @@ import Typography from '../typography/Typography';
 import Spacer from '../spacer/spacer';
 
 import './CurrentPosition.scss';
-import { selectedNetworkState } from '../../state/NetworkState';
 
 type CurrentPositionInProps = SharedProps;
 
@@ -20,7 +20,7 @@ const CurrentPosition: FC<CurrentPositionInProps> = ({ language }) => {
   const selectedPool = useHookState(selectedPoolState);
   const dynamicPoolData = useHookState(dynamicPoolDataState);
   const staticPoolData = useHookState(staticPoolDataState);
-  const selectedNetwork = useHookState(selectedNetworkState);
+  const selectedNetwork = useHookState(selectedChainState);
 
   const { userWalletSigner } = useContext(WalletContext);
 

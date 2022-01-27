@@ -12,8 +12,8 @@ import {
   depositYieldBearingGasIncrease,
   INFINITE_DEADLINE,
 } from '../constants';
+import { Chain } from '../interfaces/Chain';
 import TempusAMMService from './TempusAMMService';
-import { Networks } from '../state/NetworkState';
 
 type TempusControllerServiceParameters = {
   Contract: typeof Contract;
@@ -21,7 +21,7 @@ type TempusControllerServiceParameters = {
   abi: typeof TempusControllerABI;
   signerOrProvider: JsonRpcProvider | JsonRpcSigner;
   tempusAMMService: TempusAMMService;
-  network: Networks;
+  chain: Chain;
 };
 
 // I need to define event types like this, because TypeChain plugin for Hardhat does not generate them.
@@ -55,7 +55,7 @@ export type RedeemedEvent = TypedEvent<
 >;
 
 class TempusControllerService {
-  private network: Networks | null = null;
+  private chain: Chain | null = null;
   private contract: TempusController | null = null;
 
   private tempusAMMService: TempusAMMService | null = null;
@@ -67,7 +67,7 @@ class TempusControllerService {
       console.error('TempusControllerService - init', error);
     }
 
-    this.network = params.network;
+    this.chain = params.chain;
     this.tempusAMMService = params.tempusAMMService;
   }
 
@@ -241,14 +241,14 @@ class TempusControllerService {
     maxSlippage: BigNumber,
     isBackingToken: boolean,
   ): Promise<ContractTransaction> {
-    if (!this.contract || !this.tempusAMMService || !this.network) {
+    if (!this.contract || !this.tempusAMMService || !this.chain) {
       console.error(
         'TempusControllerService - exitTempusAmmAndRedeem() - Attempted to use TempusControllerService before initializing it!',
       );
       return Promise.reject();
     }
 
-    const tempusPoolConfig = getNetworkConfig(this.network).tempusPools.find(
+    const tempusPoolConfig = getNetworkConfig(this.chain).tempusPools.find(
       tempusPoolConfig => tempusPoolConfig.ammAddress === tempusAMM,
     );
     if (!tempusPoolConfig) {

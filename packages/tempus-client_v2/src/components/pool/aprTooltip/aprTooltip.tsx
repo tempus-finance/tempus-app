@@ -2,6 +2,7 @@ import { differenceInDays } from 'date-fns';
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../../state/PoolDataState';
+import { selectedChainState } from '../../../state/ChainState';
 import getPoolDataAdapter from '../../../adapters/getPoolDataAdapter';
 import { LanguageContext } from '../../../context/languageContext';
 import { WalletContext } from '../../../context/walletContext';
@@ -10,13 +11,12 @@ import NumberUtils from '../../../services/NumberUtils';
 import Typography from '../../typography/Typography';
 
 import './aprTooltip.scss';
-import { selectedNetworkState } from '../../../state/NetworkState';
 
 const AprTooltip = () => {
   const selectedPool = useHookState(selectedPoolState);
   const staticPoolData = useHookState(staticPoolDataState);
   const dynamicPoolData = useHookState(dynamicPoolDataState);
-  const selectedNetwork = useHookState(selectedNetworkState);
+  const selectedNetwork = useHookState(selectedChainState);
 
   const { userWalletSigner } = useContext(WalletContext);
   const { language } = useContext(LanguageContext);

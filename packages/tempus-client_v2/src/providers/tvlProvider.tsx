@@ -1,12 +1,12 @@
+import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { FC, useCallback, useEffect, useState } from 'react';
 import { Subscription } from 'rxjs';
 import { BigNumber } from 'ethers';
 import { getNetworkConfig } from '../utils/getConfig';
 import DashboardDataAdapter from '../adapters/DashboardDataAdapter';
 import { TempusPool } from '../interfaces/TempusPool';
-import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { dynamicPoolDataState } from '../state/PoolDataState';
-import { selectedNetworkState } from '../state/NetworkState';
+import { selectedChainState } from '../state/ChainState';
 
 interface TVLProviderProps {
   dashboardDataAdapter: DashboardDataAdapter;
@@ -16,7 +16,7 @@ const TVLProvider: FC<TVLProviderProps> = props => {
   const { dashboardDataAdapter } = props;
 
   const dynamicPoolData = useHookState(dynamicPoolDataState);
-  const selectedNetwork = useHookState(selectedNetworkState);
+  const selectedNetwork = useHookState(selectedChainState);
 
   const selectedNetworkName = selectedNetwork.attach(Downgraded).get();
 

@@ -9,9 +9,9 @@ import { TempusPool } from '../interfaces/TempusPool';
 import { Notification, NotificationCategory, NotificationLevel } from '../interfaces/Notification';
 import { capitalize } from '../utils/capitalizeString';
 import { getNetworkConfig } from '../utils/getConfig';
+import { Chain } from '../interfaces/Chain';
 import NumberUtils from './NumberUtils';
 import StorageService from './StorageService';
-import { Networks } from '../state/NetworkState';
 
 const NOTIFICATIONS_KEY = 'notifications';
 
@@ -117,9 +117,10 @@ class NotificationService {
   }
 }
 
-export const generateEtherscanLink = (tx: string, networkName: Networks) => {
-  const config = getNetworkConfig(networkName);
+export const generateEtherscanLink = (tx: string, chainName: Chain) => {
+  const config = getNetworkConfig(chainName);
 
+  // TODO - Handle Fantom network
   if (config.networkName === 'homestead') {
     return `https://etherscan.io/tx/${tx}`;
   }

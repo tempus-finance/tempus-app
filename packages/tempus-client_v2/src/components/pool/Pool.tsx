@@ -4,7 +4,9 @@ import { CircularProgress } from '@material-ui/core';
 import { ethers, BigNumber } from 'ethers';
 import { BLOCK_DURATION_SECONDS, FIXED_APR_PRECISION, SECONDS_IN_A_DAY } from '../../constants';
 import { div18f } from '../../utils/weiMath';
+import getTokenPrecision from '../../utils/getTokenPrecision';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
+import { selectedChainState } from '../../state/ChainState';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
 import { LanguageContext } from '../../context/languageContext';
 import { WalletContext } from '../../context/walletContext';
@@ -18,14 +20,12 @@ import AprTooltip from './aprTooltip/aprTooltip';
 import PercentageLabel from './percentageLabel/PercentageLabel';
 
 import './Pool.scss';
-import getTokenPrecision from '../../utils/getTokenPrecision';
-import { selectedNetworkState } from '../../state/NetworkState';
 
 const Pool = () => {
   const selectedPool = useHookState(selectedPoolState);
   const dynamicPoolData = useHookstate(dynamicPoolDataState);
   const staticPoolData = useHookState(staticPoolDataState);
-  const selectedNetwork = useHookState(selectedNetworkState);
+  const selectedNetwork = useHookState(selectedChainState);
 
   const { userWalletSigner } = useContext(WalletContext);
   const { language } = useContext(LanguageContext);

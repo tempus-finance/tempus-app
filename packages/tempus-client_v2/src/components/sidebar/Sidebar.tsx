@@ -3,6 +3,7 @@ import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { Tooltip } from '@material-ui/core';
 import getSidebarDataAdapter from '../../adapters/getSidebarDataAdapter';
 import { selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
+import { selectedChainState } from '../../state/ChainState';
 import { LanguageContext } from '../../context/languageContext';
 import getText from '../../localisation/getText';
 import Words from '../../localisation/words';
@@ -14,7 +15,6 @@ import Typography from '../typography/Typography';
 import Spacer from '../spacer/spacer';
 
 import './Sidebar.scss';
-import { selectedNetworkState } from '../../state/NetworkState';
 
 const basicViews: TransactionView[] = ['deposit', 'withdraw'];
 const advancedViews: TransactionView[] = ['mint', 'swap', 'provideLiquidity', 'removeLiquidity', 'earlyRedeem'];
@@ -45,7 +45,7 @@ const Sidebar: FC<SidebarProps> = ({ initialView, onSelectedView }) => {
   const [provideLiquidityDisabledReason, setProvideLiquidityDisabledReason] = useState<Words | null>(null);
   const [removeLiquidityDisabledReason, setRemoveLiquidityDisabledReason] = useState<Words | null>(null);
 
-  const selectedNetwork = selectedNetworkState.attach(Downgraded).get();
+  const selectedNetwork = selectedChainState.attach(Downgraded).get();
   const selectedPoolAddress = selectedPool.attach(Downgraded).get();
   const backingToken = staticPoolData[selectedPool.get()].backingToken.attach(Downgraded).get();
   const protocolDisplayName = staticPoolData[selectedPool.get()].protocolDisplayName.attach(Downgraded).get();

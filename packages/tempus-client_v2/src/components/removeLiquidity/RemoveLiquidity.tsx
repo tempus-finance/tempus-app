@@ -2,6 +2,7 @@ import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { BigNumber, ethers } from 'ethers';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
+import { selectedChainState } from '../../state/ChainState';
 import getUserShareTokenBalanceProvider from '../../providers/getUserShareTokenBalanceProvider';
 import getUserLPTokenBalanceProvider from '../../providers/getUserLPTokenBalanceProvider';
 import { LanguageContext } from '../../context/languageContext';
@@ -24,13 +25,12 @@ import getTokenPrecision from '../../utils/getTokenPrecision';
 import Approve from '../buttons/Approve';
 
 import './RemoveLiquidity.scss';
-import { selectedNetworkState } from '../../state/NetworkState';
 
 const RemoveLiquidity = () => {
   const selectedPool = useHookState(selectedPoolState);
   const dynamicPoolData = useHookState(dynamicPoolDataState);
   const staticPoolData = useHookState(staticPoolDataState);
-  const selectedNetwork = useHookState(selectedNetworkState);
+  const selectedNetwork = useHookState(selectedChainState);
 
   const { language } = useContext(LanguageContext);
   const { userWalletAddress, userWalletSigner } = useContext(WalletContext);
@@ -157,14 +157,14 @@ const RemoveLiquidity = () => {
 
     // Trigger user pool share balance update when execute is finished
     getUserShareTokenBalanceProvider({
-      network: selectedNetworkName,
+      chain: selectedNetworkName,
       userWalletAddress,
       userWalletSigner,
     }).fetchForPool(selectedPoolAddress);
 
     // Trigger user LP Token balance update when execute is finished
     getUserLPTokenBalanceProvider({
-      network: selectedNetworkName,
+      chain: selectedNetworkName,
       userWalletAddress,
       userWalletSigner,
     }).fetchForPool(selectedPoolAddress);

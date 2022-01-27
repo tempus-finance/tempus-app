@@ -3,6 +3,7 @@ import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { ethers } from 'ethers';
 import { Button, CircularProgress } from '@material-ui/core';
 import { selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
+import { selectedChainState } from '../../state/ChainState';
 import getNotificationService from '../../services/getNotificationService';
 import {
   generateEtherscanLink,
@@ -16,7 +17,6 @@ import { WalletContext } from '../../context/walletContext';
 import { LanguageContext } from '../../context/languageContext';
 
 import './Execute.scss';
-import { selectedNetworkState } from '../../state/NetworkState';
 
 interface ExecuteButtonProps {
   disabled: boolean;
@@ -32,7 +32,7 @@ const Execute: FC<ExecuteButtonProps> = props => {
 
   const selectedPool = useHookState(selectedPoolState);
   const staticPoolData = useHookState(staticPoolDataState);
-  const selectedNetwork = useHookState(selectedNetworkState);
+  const selectedNetwork = useHookState(selectedChainState);
 
   const { setPendingTransactions } = useContext(PendingTransactionsContext);
   const { language } = useContext(LanguageContext);

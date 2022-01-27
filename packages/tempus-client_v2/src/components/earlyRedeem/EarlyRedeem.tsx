@@ -3,6 +3,7 @@ import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { ethers, BigNumber } from 'ethers';
 import { catchError, combineLatest } from 'rxjs';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
+import { selectedChainState } from '../../state/ChainState';
 import getUserShareTokenBalanceProvider from '../../providers/getUserShareTokenBalanceProvider';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
 import { LanguageContext } from '../../context/languageContext';
@@ -21,13 +22,12 @@ import TokenSelector from '../tokenSelector/tokenSelector';
 import Typography from '../typography/Typography';
 
 import './EarlyRedeem.scss';
-import { selectedNetworkState } from '../../state/NetworkState';
 
 const EarlyRedeem: FC = () => {
   const selectedPool = useHookState(selectedPoolState);
   const dynamicPoolData = useHookState(dynamicPoolDataState);
   const staticPoolData = useHookState(staticPoolDataState);
-  const selectedNetwork = useHookState(selectedNetworkState);
+  const selectedNetwork = useHookState(selectedChainState);
 
   const yieldBearingToken = staticPoolData[selectedPool.get()].yieldBearingToken.attach(Downgraded).get();
 
@@ -268,7 +268,7 @@ const EarlyRedeem: FC = () => {
 
     // Trigger user pool share balance update when execute is finished
     getUserShareTokenBalanceProvider({
-      network: selectedNetworkName,
+      chain: selectedNetworkName,
       userWalletAddress,
       userWalletSigner,
     }).fetchForPool(selectedPoolAddress);

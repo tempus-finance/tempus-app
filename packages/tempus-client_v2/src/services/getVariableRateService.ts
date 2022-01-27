@@ -1,32 +1,39 @@
 import { JsonRpcSigner, JsonRpcProvider } from '@ethersproject/providers';
 import { Vaults as RariVault } from 'rari-sdk';
-import VariableRateService from './VariableRateService';
 import getTempusPoolService from '../services/getTempusPoolService';
 import getTempusAMMService from '../services/getTempusAMMService';
 import getVaultService from '../services/getVaultService';
 import { getNetworkConfig } from '../utils/getConfig';
 import getProvider from '../utils/getProvider';
-import { Networks } from '../state/NetworkState';
+import { Chain } from '../interfaces/Chain';
+import VariableRateService from './VariableRateService';
 
-let variableRateService: VariableRateService;
-let actualSignerOrProvider: JsonRpcSigner | JsonRpcProvider;
+let variableRateServices = new Map<Chain, VariableRateService>();
+let actualSignerOrProviders = new Map<Chain, JsonRpcSigner | JsonRpcProvider>();
 const getVariableRateService = (
-  network: Networks,
+  chain: Chain,
   signerOrProvider?: JsonRpcSigner | JsonRpcProvider,
 ): VariableRateService => {
-  if (!variableRateService) {
-    variableRateService = new VariableRateService();
+  if (!variableRateServices.get(chain)) {
+    variableRateServices.set(chain, new VariableRateService());
   }
 
+  const variableRateService = variableRateServices.get(chain);
+  if (!variableRateService) {
+    throw new Error(`Failed to get VariableRateService for ${chain} network!`);
+  }
+
+  const actualSignerOrProvider = actualSignerOrProviders.get(chain);
+
   if (signerOrProvider !== undefined && signerOrProvider !== actualSignerOrProvider) {
-    actualSignerOrProvider = signerOrProvider;
+    actualSignerOrProviders.set(chain, signerOrProvider);
     variableRateService.init(
-      actualSignerOrProvider,
-      getTempusPoolService(network, actualSignerOrProvider),
-      getVaultService(network, actualSignerOrProvider),
-      getTempusAMMService(network, actualSignerOrProvider),
+      signerOrProvider,
+      getTempusPoolService(chain, signerOrProvider),
+      getVaultService(chain, signerOrProvider),
+      getTempusAMMService(chain, signerOrProvider),
       new RariVault(getProvider(signerOrProvider) as any),
-      getNetworkConfig(network),
+      getNetworkConfig(chain),
     );
   }
 

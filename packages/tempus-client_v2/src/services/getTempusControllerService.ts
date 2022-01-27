@@ -2,36 +2,42 @@ import { Contract } from 'ethers';
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
 import TempusControllerABI from '../abi/TempusController.json';
 import { getNetworkConfig } from '../utils/getConfig';
+import { Chain } from '../interfaces/Chain';
 import TempusControllerService from './TempusControllerService';
 import getDefaultProvider from './getDefaultProvider';
 import getTempusAMMService from './getTempusAMMService';
-import { Networks } from '../state/NetworkState';
 
-let tempusControllerService: TempusControllerService;
+let tempusControllerServices = new Map<Chain, TempusControllerService>();
 const getTempusControllerService = (
-  network: Networks,
+  chain: Chain,
   signerOrProvider?: JsonRpcSigner | JsonRpcProvider,
 ): TempusControllerService => {
-  if (!tempusControllerService) {
-    tempusControllerService = new TempusControllerService();
+  if (!tempusControllerServices.get(chain)) {
+    const tempusControllerService = new TempusControllerService();
     tempusControllerService.init({
       Contract: Contract,
-      address: getNetworkConfig(network).tempusControllerContract,
+      address: getNetworkConfig(chain).tempusControllerContract,
       abi: TempusControllerABI,
-      signerOrProvider: getDefaultProvider(network),
-      tempusAMMService: getTempusAMMService(network),
-      network,
+      signerOrProvider: getDefaultProvider(chain),
+      tempusAMMService: getTempusAMMService(chain),
+      chain: chain,
     });
+    tempusControllerServices.set(chain, tempusControllerService);
+  }
+
+  const tempusControllerService = tempusControllerServices.get(chain);
+  if (!tempusControllerService) {
+    throw new Error(`Failed to get TempusControllerService for ${chain} network!`);
   }
 
   if (signerOrProvider) {
     tempusControllerService.init({
       Contract: Contract,
-      address: getNetworkConfig(network).tempusControllerContract,
+      address: getNetworkConfig(chain).tempusControllerContract,
       abi: TempusControllerABI,
       signerOrProvider: signerOrProvider,
-      tempusAMMService: getTempusAMMService(network, signerOrProvider),
-      network,
+      tempusAMMService: getTempusAMMService(chain, signerOrProvider),
+      chain: chain,
     });
   }
 

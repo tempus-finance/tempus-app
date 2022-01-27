@@ -19,14 +19,14 @@ import VaultService, { PoolBalanceChangedEvent, SwapEvent } from '../services/Va
 import TempusAMMService from '../services/TempusAMMService';
 import { isPoolBalanceChangedEvent, isSwapEvent } from '../services/EventUtils';
 import { ProtocolName } from '../interfaces/ProtocolName';
-import { NetworkConfig } from '../interfaces/Config';
+import { TempusPool } from '../interfaces/TempusPool';
+import { YearnData } from '../interfaces/YearnData';
+import { ChainConfig } from '../interfaces/Config';
 import { wadToDai } from '../utils/rayToDai';
 import { getNetworkConfig } from '../utils/getConfig';
 import { div18f, mul18f } from '../utils/weiMath';
 import getProvider from '../utils/getProvider';
-import { TempusPool } from '../interfaces/TempusPool';
-import { YearnData } from '../interfaces/YearnData';
-import { Networks } from '../state/NetworkState';
+import { Chain } from '../interfaces/Chain';
 
 const SECONDS_IN_A_WEEK = SECONDS_IN_A_DAY * 7;
 const HOURS_IN_A_YEAR = DAYS_IN_A_YEAR * 24;
@@ -63,7 +63,7 @@ class VariableRateService {
     vaultService: VaultService,
     tempusAMMService: TempusAMMService,
     rariVault: RariVault,
-    config: NetworkConfig,
+    config: ChainConfig,
   ) {
     if (signerOrProvider) {
       this.aaveLendingPool = new Contract(aaveLendingPoolAddress, AaveLendingPoolABI, signerOrProvider);
@@ -81,13 +81,13 @@ class VariableRateService {
     tempusPool: string,
     principalsAddress: string,
     yieldsAddress: string,
-    network: Networks,
+    chain: Chain,
   ) {
     if (!this.tempusAMMService || !this.vaultService || !this.tempusPoolService || !this.signerOrProvider) {
       return Promise.reject();
     }
 
-    const poolConfig = getNetworkConfig(network).tempusPools.find(pool => pool.address === tempusPool);
+    const poolConfig = getNetworkConfig(chain).tempusPools.find(pool => pool.address === tempusPool);
     if (!poolConfig) {
       return Promise.reject();
     }

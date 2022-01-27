@@ -2,6 +2,7 @@ import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { ethers, BigNumber } from 'ethers';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
+import { selectedChainState } from '../../state/ChainState';
 import getUserShareTokenBalanceProvider from '../../providers/getUserShareTokenBalanceProvider';
 import getPoolShareBalanceProvider from '../../providers/getPoolShareBalanceProvider';
 import getUserLPTokenBalanceProvider from '../../providers/getUserLPTokenBalanceProvider';
@@ -24,13 +25,12 @@ import Approve from '../buttons/Approve';
 import Execute from '../buttons/Execute';
 
 import './ProvideLiquidity.scss';
-import { selectedNetworkState } from '../../state/NetworkState';
 
 const ProvideLiquidity = () => {
   const selectedPool = useHookState(selectedPoolState);
   const dynamicPoolData = useHookState(dynamicPoolDataState);
   const staticPoolData = useHookState(staticPoolDataState);
-  const selectedNetwork = useHookState(selectedNetworkState);
+  const selectedNetwork = useHookState(selectedChainState);
 
   const { language } = useContext(LanguageContext);
 
@@ -367,21 +367,21 @@ const ProvideLiquidity = () => {
 
     // Trigger user pool share balance update when execute is finished
     getUserShareTokenBalanceProvider({
-      network: selectedNetworkName,
+      chain: selectedNetworkName,
       userWalletAddress,
       userWalletSigner,
     }).fetchForPool(selectedPoolAddress);
 
     // Trigger user LP Token balance update when execute is finished
     getUserLPTokenBalanceProvider({
-      network: selectedNetworkName,
+      chain: selectedNetworkName,
       userWalletAddress,
       userWalletSigner,
     }).fetchForPool(selectedPoolAddress);
 
     // Trigger pool share balance update when execute is finished
     getPoolShareBalanceProvider({
-      network: selectedNetworkName,
+      chain: selectedNetworkName,
       userWalletSigner,
     }).fetchForPoolWithId(poolId);
   }, [poolId, selectedPoolAddress, userWalletAddress, userWalletSigner, selectedNetworkName]);

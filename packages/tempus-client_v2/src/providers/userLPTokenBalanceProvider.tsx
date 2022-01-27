@@ -3,34 +3,34 @@ import { JsonRpcSigner } from '@ethersproject/providers';
 import ERC20ABI from '../abi/ERC20.json';
 import { ERC20 } from '../abi/ERC20';
 import { dynamicPoolDataState } from '../state/PoolDataState';
+import { Chain } from '../interfaces/Chain';
 import { TempusPool } from '../interfaces/TempusPool';
 import { getConfigForPoolWithAddress, getNetworkConfig } from '../utils/getConfig';
-import { Networks } from '../state/NetworkState';
 
 export interface UserLPTokenBalanceProviderParams {
   userWalletAddress: string;
   userWalletSigner: JsonRpcSigner;
-  network: Networks;
+  chain: Chain;
 }
 
 class UserLPTokenBalanceProvider {
   private userWalletAddress: string = '';
   private userWalletSigner: JsonRpcSigner;
-  private network: Networks;
+  private chain: Chain;
 
   private tokenContracts: ERC20[] = [];
 
   constructor(params: UserLPTokenBalanceProviderParams) {
     this.userWalletAddress = params.userWalletAddress;
     this.userWalletSigner = params.userWalletSigner;
-    this.network = params.network;
+    this.chain = params.chain;
   }
 
   init() {
     // Make sure to clean previous data before crating new subscriptions
     this.destroy();
 
-    getNetworkConfig(this.network).tempusPools.forEach(poolConfig => {
+    getNetworkConfig(this.chain).tempusPools.forEach(poolConfig => {
       if (!this.userWalletSigner) {
         return;
       }
@@ -78,7 +78,7 @@ class UserLPTokenBalanceProvider {
   }
 
   private updateLPTokenBalance = () => {
-    getNetworkConfig(this.network).tempusPools.forEach(poolConfig => {
+    getNetworkConfig(this.chain).tempusPools.forEach(poolConfig => {
       this.updateLPTokenBalanceForPool(poolConfig);
     });
   };

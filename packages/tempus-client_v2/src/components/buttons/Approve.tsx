@@ -3,6 +3,7 @@ import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { BigNumber, ethers } from 'ethers';
 import { Button, CircularProgress } from '@material-ui/core';
 import { selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
+import { selectedChainState } from '../../state/ChainState';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
 import Typography from '../typography/Typography';
 import getNotificationService from '../../services/getNotificationService';
@@ -16,7 +17,6 @@ import getText from '../../localisation/getText';
 import Spacer from '../spacer/spacer';
 
 import './Approve.scss';
-import { selectedNetworkState } from '../../state/NetworkState';
 
 interface ApproveButtonProps {
   tokenToApproveAddress: string | null;
@@ -56,7 +56,7 @@ const Approve: FC<ApproveButtonProps> = props => {
 
   const selectedPool = useHookState(selectedPoolState);
   const staticPoolData = useHookState(staticPoolDataState);
-  const selectedNetwork = useHookState(selectedNetworkState);
+  const selectedNetwork = useHookState(selectedChainState);
 
   const { setPendingTransactions } = useContext(PendingTransactionsContext);
   const { userWalletAddress, userWalletSigner } = useContext(WalletContext);

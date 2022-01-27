@@ -3,31 +3,37 @@ import getDefaultProvider from '../services/getDefaultProvider';
 import getERC20TokenService from '../services/getERC20TokenService';
 import getStatisticsService from '../services/getStatisticsService';
 import getTempusPoolService from '../services/getTempusPoolService';
-import { Networks } from '../state/NetworkState';
+import { Chain } from '../interfaces/Chain';
 import UserBalanceDataAdapter from './UserBalanceDataAdapter';
 
-let userBalanceDataAdapter: UserBalanceDataAdapter;
+let userBalanceDataAdapters = new Map<Chain, UserBalanceDataAdapter>();
 const getUserBalanceDataAdapter = (
-  network: Networks,
+  chain: Chain,
   signerOrProvider?: JsonRpcSigner | JsonRpcProvider,
 ): UserBalanceDataAdapter => {
-  if (!userBalanceDataAdapter) {
-    userBalanceDataAdapter = new UserBalanceDataAdapter();
+  if (!userBalanceDataAdapters.get(chain)) {
+    const userBalanceDataAdapter = new UserBalanceDataAdapter();
     userBalanceDataAdapter.init({
-      network,
-      signerOrProvider: getDefaultProvider(network),
-      statisticsService: getStatisticsService(network),
-      tempusPoolService: getTempusPoolService(network),
+      chain: chain,
+      signerOrProvider: getDefaultProvider(chain),
+      statisticsService: getStatisticsService(chain),
+      tempusPoolService: getTempusPoolService(chain),
       eRC20TokenServiceGetter: getERC20TokenService,
     });
+    userBalanceDataAdapters.set(chain, userBalanceDataAdapter);
+  }
+
+  const userBalanceDataAdapter = userBalanceDataAdapters.get(chain);
+  if (!userBalanceDataAdapter) {
+    throw new Error(`Failed to get UserBalanceDataAdapter for ${chain} network!`);
   }
 
   if (signerOrProvider) {
     userBalanceDataAdapter.init({
-      network,
+      chain: chain,
       signerOrProvider: signerOrProvider,
-      statisticsService: getStatisticsService(network, signerOrProvider),
-      tempusPoolService: getTempusPoolService(network, signerOrProvider),
+      statisticsService: getStatisticsService(chain, signerOrProvider),
+      tempusPoolService: getTempusPoolService(chain, signerOrProvider),
       eRC20TokenServiceGetter: getERC20TokenService,
     });
   }

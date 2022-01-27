@@ -2,6 +2,7 @@ import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { BigNumber, ethers } from 'ethers';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
+import { selectedChainState } from '../../state/ChainState';
 import getUserShareTokenBalanceProvider from '../../providers/getUserShareTokenBalanceProvider';
 import { LanguageContext } from '../../context/languageContext';
 import { WalletContext } from '../../context/walletContext';
@@ -25,7 +26,6 @@ import TokenSelector from '../tokenSelector/tokenSelector';
 import Typography from '../typography/Typography';
 
 import './Swap.scss';
-import { selectedNetworkState } from '../../state/NetworkState';
 
 interface TokenDetail {
   tokenName: PoolShares;
@@ -36,7 +36,7 @@ const Swap = () => {
   const selectedPool = useHookState(selectedPoolState);
   const dynamicPoolData = useHookState(dynamicPoolDataState);
   const staticPoolData = useHookState(staticPoolDataState);
-  const selectedNetwork = useHookState(selectedNetworkState);
+  const selectedNetwork = useHookState(selectedChainState);
 
   const selectedNetworkName = selectedNetwork.attach(Downgraded).get();
   const selectedPoolAddress = selectedPool.attach(Downgraded).get();
@@ -201,7 +201,7 @@ const Swap = () => {
 
     // Trigger user pool share balance update when execute is finished
     getUserShareTokenBalanceProvider({
-      network: selectedNetworkName,
+      chain: selectedNetworkName,
       userWalletAddress,
       userWalletSigner,
     }).fetchForPool(selectedPoolAddress);

@@ -4,6 +4,7 @@ import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { combineLatest } from 'rxjs';
 import { SLIPPAGE_PRECISION } from '../../constants';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
+import { selectedChainState } from '../../state/ChainState';
 import getUserShareTokenBalanceProvider from '../../providers/getUserShareTokenBalanceProvider';
 import getUserBalanceProvider from '../../providers/getBalanceProvider';
 import getUserLPTokenBalanceProvider from '../../providers/getUserLPTokenBalanceProvider';
@@ -28,7 +29,6 @@ import Typography from '../typography/Typography';
 import CurrencyInput from '../currencyInput/currencyInput';
 
 import './Withdraw.scss';
-import { selectedNetworkState } from '../../state/NetworkState';
 
 type WithdrawOutProps = {
   onWithdraw: () => void;
@@ -38,7 +38,7 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
   const selectedPool = useHookState(selectedPoolState);
   const dynamicPoolData = useHookState(dynamicPoolDataState);
   const staticPoolData = useHookState(staticPoolDataState);
-  const selectedNetwork = useHookState(selectedNetworkState);
+  const selectedNetwork = useHookState(selectedChainState);
 
   const { userWalletSigner, userWalletAddress } = useContext(WalletContext);
   const { language } = useContext(LanguageContext);
@@ -290,21 +290,21 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
 
     // Trigger user pool share balance update when execute is finished
     getUserShareTokenBalanceProvider({
-      network: selectedNetworkName,
+      chain: selectedNetworkName,
       userWalletAddress,
       userWalletSigner,
     }).fetchForPool(selectedPoolAddress);
 
     // Trigger user balance update when execute is finished
     getUserBalanceProvider({
-      network: selectedNetworkName,
+      chain: selectedNetworkName,
       userWalletAddress,
       userWalletSigner,
     }).fetchForPool(selectedPoolAddress);
 
     // Trigger user LP Token balance update when execute is finished
     getUserLPTokenBalanceProvider({
-      network: selectedNetworkName,
+      chain: selectedNetworkName,
       userWalletAddress,
       userWalletSigner,
     }).fetchForPool(selectedPoolAddress);

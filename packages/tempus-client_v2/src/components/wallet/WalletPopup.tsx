@@ -2,19 +2,20 @@ import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { FC, RefObject, useCallback, useContext, useEffect, useState } from 'react';
 import { Button, Divider, Popper } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
-import { LanguageContext } from '../../context/languageContext';
 import { Notification } from '../../interfaces/Notification';
+import { LanguageContext } from '../../context/languageContext';
 import { UserSettingsContext } from '../../context/userSettingsContext';
 import { PendingTransactionsContext } from '../../context/pendingTransactionsContext';
 import getNotificationService from '../../services/getNotificationService';
 import { getNetworkConfig } from '../../utils/getConfig';
+import { selectedChainState } from '../../state/ChainState';
 import getText from '../../localisation/getText';
 import Typography from '../typography/Typography';
 import Spacer from '../spacer/spacer';
 import WalletNotification from './WalletNotification';
 import WalletPending from './WalletPending';
+
 import './WalletPopup.scss';
-import { selectedNetworkState } from '../../state/NetworkState';
 
 type WalletPopupInProps = {
   anchorElement: RefObject<HTMLDivElement>;
@@ -29,7 +30,7 @@ type WalletPopupOutProps = {
 type WalletPopupProps = WalletPopupInProps & WalletPopupOutProps;
 
 const WalletPopup: FC<WalletPopupProps> = ({ anchorElement, account, onSwitchWallet, onClose }) => {
-  const selectedNetwork = useHookState(selectedNetworkState);
+  const selectedNetwork = useHookState(selectedChainState);
 
   const { openWalletPopup } = useContext(UserSettingsContext);
   const { language } = useContext(LanguageContext);

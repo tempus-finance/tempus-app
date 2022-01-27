@@ -5,16 +5,16 @@ import { POLLING_INTERVAL } from '../constants';
 import { getNetworkConfig } from '../utils/getConfig';
 import { TempusPool } from '../interfaces/TempusPool';
 import { dynamicPoolDataState } from '../state/PoolDataState';
+import { selectedChainState } from '../state/ChainState';
 import { WalletContext } from '../context/walletContext';
 import getDefaultProvider from '../services/getDefaultProvider';
 import getTempusPoolService from '../services/getTempusPoolService';
-import { selectedNetworkState } from '../state/NetworkState';
 
 const subscriptions$ = new Subscription();
 
 const NegativeYieldProvider = () => {
   const dynamicPoolData = useHookState(dynamicPoolDataState);
-  const selectedNetwork = useHookState(selectedNetworkState);
+  const selectedNetwork = useHookState(selectedChainState);
 
   const selectedNetworkName = selectedNetwork.attach(Downgraded).get();
 
@@ -57,7 +57,7 @@ const NegativeYieldProvider = () => {
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [getProvider],
+    [selectedNetworkName, getProvider],
   );
 
   /**

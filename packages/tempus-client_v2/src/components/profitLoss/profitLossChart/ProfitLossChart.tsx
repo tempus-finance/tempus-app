@@ -3,19 +3,19 @@ import { useContext, useEffect, useMemo, useState } from 'react';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { AreaChart, Tooltip, Area, ResponsiveContainer } from 'recharts';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../../state/PoolDataState';
+import { selectedChainState } from '../../../state/ChainState';
 import getProfitLossGraphDataAdapter from '../../../adapters/getProfitLossGraphDataAdapter';
 import { WalletContext } from '../../../context/walletContext';
 import ChartDataPoint from '../../../interfaces/ChartDataPoint';
 import getPastDaysNumber from '../../../utils/getPastDaysNumber';
 import Typography from '../../typography/Typography';
 import ProfitLossChartTooltip from './ProfitLossChartTooltip';
-import { selectedNetworkState } from '../../../state/NetworkState';
 
 const ProfitLossChart = () => {
   const selectedPool = useHookState(selectedPoolState);
   const staticPoolData = useHookState(staticPoolDataState);
   const dynamicPoolData = useHookState(dynamicPoolDataState);
-  const selectedNetwork = useHookState(selectedNetworkState);
+  const selectedNetwork = useHookState(selectedChainState);
 
   const { userWalletAddress, userWalletSigner } = useContext(WalletContext);
 

@@ -1,7 +1,7 @@
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { useEffect, useState } from 'react';
 import { BrowserRouter } from 'react-router-dom';
-import { selectedNetworkState } from '../../state/NetworkState';
+import { selectedChainState } from '../../state/ChainState';
 import { LanguageContext, defaultLanguageContextValue } from '../../context/languageContext';
 import { ETHBalanceContext, defaultETHBalanceContextValue } from '../../context/ethBalanceContext';
 import { defaultWalletContextValue, WalletContext } from '../../context/walletContext';
@@ -22,7 +22,7 @@ import Main from '../main/Main';
 import './App.scss';
 
 const App = () => {
-  const selectedNetwork = useHookState(selectedNetworkState);
+  const selectedNetwork = useHookState(selectedChainState);
 
   const selectedNetworkName = selectedNetwork.attach(Downgraded).get();
 
@@ -42,7 +42,7 @@ const App = () => {
     getUserShareTokenBalanceProvider({
       userWalletAddress: walletData.userWalletAddress,
       userWalletSigner: walletData.userWalletSigner,
-      network: selectedNetworkName,
+      chain: selectedNetworkName,
     }).init();
   }, [walletData.userWalletAddress, walletData.userWalletSigner, selectedNetworkName]);
 
@@ -56,7 +56,7 @@ const App = () => {
     getUserLPTokenBalanceProvider({
       userWalletAddress: walletData.userWalletAddress,
       userWalletSigner: walletData.userWalletSigner,
-      network: selectedNetworkName,
+      chain: selectedNetworkName,
     }).init();
   }, [walletData.userWalletAddress, walletData.userWalletSigner, selectedNetworkName]);
 
@@ -69,7 +69,7 @@ const App = () => {
     getUserBalanceProvider({
       userWalletSigner: walletData.userWalletSigner,
       userWalletAddress: walletData.userWalletAddress,
-      network: selectedNetworkName,
+      chain: selectedNetworkName,
     }).init();
   }, [walletData.userWalletAddress, walletData.userWalletSigner, selectedNetworkName]);
 
@@ -81,7 +81,7 @@ const App = () => {
 
     getPoolShareBalanceProvider({
       userWalletSigner: walletData.userWalletSigner,
-      network: selectedNetworkName,
+      chain: selectedNetworkName,
     }).init();
   }, [walletData.userWalletSigner, selectedNetworkName]);
 

@@ -4,6 +4,7 @@ import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { ethers, BigNumber } from 'ethers';
 import { catchError, of } from 'rxjs';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
+import { selectedChainState } from '../../state/ChainState';
 import getUserShareTokenBalanceProvider from '../../providers/getUserShareTokenBalanceProvider';
 import getUserBalanceProvider from '../../providers/getBalanceProvider';
 import getUserLPTokenBalanceProvider from '../../providers/getUserLPTokenBalanceProvider';
@@ -31,7 +32,6 @@ import InfoTooltip from '../infoTooltip/infoTooltip';
 import SelectIcon from '../icons/SelectIcon';
 
 import './Deposit.scss';
-import { selectedNetworkState } from '../../state/NetworkState';
 
 type DepositInProps = {
   narrow: boolean;
@@ -43,7 +43,7 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
   const selectedPool = useHookState(selectedPoolState);
   const staticPoolData = useHookState(staticPoolDataState);
   const dynamicPoolData = useHookState(dynamicPoolDataState);
-  const selectedNetwork = useHookState(selectedNetworkState);
+  const selectedNetwork = useHookState(selectedChainState);
 
   const { language } = useContext(LanguageContext);
   const { userWalletSigner } = useContext(WalletContext);
@@ -235,21 +235,21 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
 
     // Trigger user pool share balance update when execute is finished
     getUserShareTokenBalanceProvider({
-      network: selectedNetworkName,
+      chain: selectedNetworkName,
       userWalletAddress,
       userWalletSigner,
     }).fetchForPool(selectedPoolAddress);
 
     // Trigger user balance update when execute is finished
     getUserBalanceProvider({
-      network: selectedNetworkName,
+      chain: selectedNetworkName,
       userWalletAddress,
       userWalletSigner,
     }).fetchForPool(selectedPoolAddress);
 
     // Trigger user LP Token balance update when execute is finished
     getUserLPTokenBalanceProvider({
-      network: selectedNetworkName,
+      chain: selectedNetworkName,
       userWalletAddress,
       userWalletSigner,
     }).fetchForPool(selectedPoolAddress);

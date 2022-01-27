@@ -5,11 +5,11 @@ import { TempusPool } from '../interfaces/TempusPool';
 import getERC20TokenService from '../services/getERC20TokenService';
 import { getNetworkConfig } from '../utils/getConfig';
 import { dynamicPoolDataState } from '../state/PoolDataState';
-import { selectedNetworkState } from '../state/NetworkState';
+import { selectedChainState } from '../state/ChainState';
 
 const UserYieldBearingTokenBalanceProvider = () => {
   const dynamicPoolData = useHookState(dynamicPoolDataState);
-  const selectedNetwork = useHookState(selectedNetworkState);
+  const selectedNetwork = useHookState(selectedChainState);
 
   const selectedNetworkName = selectedNetwork.attach(Downgraded).get();
 
@@ -34,7 +34,7 @@ const UserYieldBearingTokenBalanceProvider = () => {
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [userWalletAddress, userWalletSigner],
+    [userWalletAddress, userWalletSigner, selectedNetworkName],
   );
 
   const updateBalance = useCallback(async () => {

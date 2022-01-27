@@ -1,8 +1,8 @@
-import { Config, NetworkConfig } from '../interfaces/Config';
+import { Config, ChainConfig } from '../interfaces/Config';
 import { TempusPool } from '../interfaces/TempusPool';
 import config from '../config/config';
+import { Chain } from '../interfaces/Chain';
 import getCookie from './getCookie';
-import { Networks } from '../state/NetworkState';
 
 export function getConfig(): Config {
   const overridingConfig = getCookie('TEMPUS_OVERRIDING_CONFIG');
@@ -19,24 +19,24 @@ export function getConfig(): Config {
   }
 }
 
-export function getNetworkConfig(network: Networks): NetworkConfig {
+export function getNetworkConfig(chain: Chain): ChainConfig {
   const overridingConfig = getCookie('TEMPUS_OVERRIDING_CONFIG');
   // Return default config if cookie config is not specified - empty config for now.
   if (!overridingConfig) {
-    const networkConfig = config[network];
+    const networkConfig = config[chain];
     if (!networkConfig) {
-      throw new Error(`Failed to get config for ${network} network from config!`);
+      throw new Error(`Failed to get config for ${chain} network from config!`);
     }
     return networkConfig;
   }
 
   try {
-    return JSON.parse(overridingConfig)[network];
+    return JSON.parse(overridingConfig)[chain];
   } catch (error) {
     console.error('Failed to parse environment config from cookie. Using default config as a fallback.');
-    const networkConfig = config[network];
+    const networkConfig = config[chain];
     if (!networkConfig) {
-      throw new Error(`Failed to get config for ${network} network from cookie!`);
+      throw new Error(`Failed to get config for ${chain} network from cookie!`);
     }
     return networkConfig;
   }
@@ -47,7 +47,7 @@ export function getConfigForPoolWithId(poolId: string): TempusPool {
 
   const tempusPoolsConfig: TempusPool[] = [];
   for (const networkName in config) {
-    tempusPoolsConfig.push(...config[networkName as Networks].tempusPools);
+    tempusPoolsConfig.push(...config[networkName as Chain].tempusPools);
   }
 
   const poolConfig = tempusPoolsConfig.find(tempusPool => {
@@ -65,7 +65,7 @@ export function getConfigForPoolWithAddress(poolAddress: string): TempusPool {
 
   const tempusPoolsConfig: TempusPool[] = [];
   for (const networkName in config) {
-    tempusPoolsConfig.push(...config[networkName as Networks].tempusPools);
+    tempusPoolsConfig.push(...config[networkName as Chain].tempusPools);
   }
 
   const poolConfig = tempusPoolsConfig.find(tempusPool => {

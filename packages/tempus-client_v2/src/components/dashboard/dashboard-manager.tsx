@@ -4,13 +4,13 @@ import { useNavigate } from 'react-router-dom';
 import { WalletContext } from '../../context/walletContext';
 import { DashboardRow, DashboardRowChild } from '../../interfaces/DashboardRow';
 import getDashboardDataAdapter from '../../adapters/getDashboardDataAdapter';
+import { selectedChainState } from '../../state/ChainState';
 import Dashboard from './dashboard';
-import { selectedNetworkState } from '../../state/NetworkState';
 
 const DashboardManager: FC = (): JSX.Element => {
   let navigate = useNavigate();
 
-  const selectedNetwork = useHookState(selectedNetworkState);
+  const selectedNetwork = useHookState(selectedChainState);
 
   const selectedNetworkName = selectedNetwork.attach(Downgraded).get();
 

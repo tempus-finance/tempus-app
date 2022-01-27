@@ -1,18 +1,18 @@
 import { JsonRpcSigner } from '@ethersproject/providers';
 import { BigNumber, Contract } from 'ethers';
 import VaultABI from '../abi/Vault.json';
-import { Networks } from '../state/NetworkState';
+import { Chain } from '../interfaces/Chain';
 import { dynamicPoolDataState } from '../state/PoolDataState';
 import { getNetworkConfig, getConfigForPoolWithId } from '../utils/getConfig';
 
 export interface PoolShareBalanceProviderParams {
   userWalletSigner: JsonRpcSigner;
-  network: Networks;
+  chain: Chain;
 }
 
 class PoolShareBalanceProvider {
   private userWalletSigner: JsonRpcSigner;
-  private network: Networks;
+  private chain: Chain;
 
   private vaultContract: Contract | null = null;
 
@@ -21,14 +21,14 @@ class PoolShareBalanceProvider {
    */
   constructor(params: PoolShareBalanceProviderParams) {
     this.userWalletSigner = params.userWalletSigner;
-    this.network = params.network;
+    this.chain = params.chain;
   }
 
   init() {
     // Clean up previous subscriptions
     this.destroy();
 
-    const config = getNetworkConfig(this.network);
+    const config = getNetworkConfig(this.chain);
 
     this.vaultContract = new Contract(config.vaultContract, VaultABI, this.userWalletSigner);
     config.tempusPools.forEach(poolConfig => {

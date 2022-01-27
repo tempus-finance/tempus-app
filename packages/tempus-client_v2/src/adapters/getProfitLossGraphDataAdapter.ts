@@ -1,23 +1,23 @@
 import { JsonRpcSigner } from '@ethersproject/providers';
 import getERC20TokenService from '../services/getERC20TokenService';
-import { Networks } from '../state/NetworkState';
+import { Chain } from '../interfaces/Chain';
 import ProfitLossGraphDataAdapter from './ProfitLossGraphDataAdapter';
 
-let profitLossGraphDataAdapter: ProfitLossGraphDataAdapter;
-const getProfitLossGraphDataAdapter = (
-  network: Networks,
-  signerOrProvider: JsonRpcSigner,
-): ProfitLossGraphDataAdapter => {
+let profitLossGraphDataAdapters = new Map<Chain, ProfitLossGraphDataAdapter>();
+const getProfitLossGraphDataAdapter = (chain: Chain, signer: JsonRpcSigner): ProfitLossGraphDataAdapter => {
+  let profitLossGraphDataAdapter = profitLossGraphDataAdapters.get(chain);
   if (profitLossGraphDataAdapter) {
     return profitLossGraphDataAdapter;
   }
 
   profitLossGraphDataAdapter = new ProfitLossGraphDataAdapter();
   profitLossGraphDataAdapter.init({
-    signer: signerOrProvider,
-    network,
+    signer: signer,
+    chain: chain,
     eRC20TokenServiceGetter: getERC20TokenService,
   });
+
+  profitLossGraphDataAdapters.set(chain, profitLossGraphDataAdapter);
 
   return profitLossGraphDataAdapter;
 };

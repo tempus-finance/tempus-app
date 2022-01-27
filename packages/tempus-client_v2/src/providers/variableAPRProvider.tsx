@@ -5,11 +5,11 @@ import getVariableRateService from '../services/getVariableRateService';
 import { getNetworkConfig } from '../utils/getConfig';
 import { WalletContext } from '../context/walletContext';
 import { dynamicPoolDataState } from '../state/PoolDataState';
-import { selectedNetworkState } from '../state/NetworkState';
+import { selectedChainState } from '../state/ChainState';
 
 const VariableAPRProvider = () => {
   const dynamicPoolData = useHookState(dynamicPoolDataState);
-  const selectedNetwork = useHookState(selectedNetworkState);
+  const selectedNetwork = useHookState(selectedChainState);
 
   const selectedNetworkName = selectedNetwork.attach(Downgraded).get();
 

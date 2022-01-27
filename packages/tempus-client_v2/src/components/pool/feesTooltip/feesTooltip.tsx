@@ -3,6 +3,7 @@ import { BigNumber } from '@ethersproject/bignumber';
 import { ethers } from 'ethers';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { selectedPoolState, staticPoolDataState } from '../../../state/PoolDataState';
+import { selectedChainState } from '../../../state/ChainState';
 import getPoolDataAdapter from '../../../adapters/getPoolDataAdapter';
 import { LanguageContext } from '../../../context/languageContext';
 import { WalletContext } from '../../../context/walletContext';
@@ -12,12 +13,11 @@ import Spacer from '../../spacer/spacer';
 import Typography from '../../typography/Typography';
 
 import './feesTooltip.scss';
-import { selectedNetworkState } from '../../../state/NetworkState';
 
 const FeesTooltip = () => {
   const selectedPool = useHookState(selectedPoolState);
   const staticPoolData = useHookState(staticPoolDataState);
-  const selectedNetwork = useHookState(selectedNetworkState);
+  const selectedNetwork = useHookState(selectedChainState);
 
   const { userWalletSigner } = useContext(WalletContext);
   const { language } = useContext(LanguageContext);

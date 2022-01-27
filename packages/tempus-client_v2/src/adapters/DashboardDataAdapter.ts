@@ -6,7 +6,7 @@ import { TempusPool } from '../interfaces/TempusPool';
 import StatisticsService from '../services/StatisticsService';
 import { getNetworkConfig } from '../utils/getConfig';
 import { POLLING_INTERVAL } from '../constants';
-import { Networks } from '../state/NetworkState';
+import { Chain } from '../interfaces/Chain';
 
 type DashboardDataAdapterParameters = {
   statisticsService: StatisticsService;
@@ -19,8 +19,8 @@ export default class DashboardDataAdapter {
     this.statisticsService = params.statisticsService;
   }
 
-  getRows(networkName: Networks): DashboardRow[] {
-    let childRows = this.getChildRows(networkName);
+  getRows(chainName: Chain): DashboardRow[] {
+    let childRows = this.getChildRows(chainName);
 
     // Generates parent rows based on children rows
     const parentRows = this.getParentRows(childRows);
@@ -54,9 +54,9 @@ export default class DashboardDataAdapter {
     );
   }
 
-  private getChildRows(networkName: Networks): DashboardRowChild[] {
+  private getChildRows(chainName: Chain): DashboardRowChild[] {
     const childRows: DashboardRowChild[] = [];
-    getNetworkConfig(networkName).tempusPools.forEach(tempusPool => {
+    getNetworkConfig(chainName).tempusPools.forEach(tempusPool => {
       childRows.push(this.getChildRowData(tempusPool));
     });
     return childRows;

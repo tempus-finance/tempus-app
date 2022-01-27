@@ -6,13 +6,13 @@ import getTokenPrecision from '../utils/getTokenPrecision';
 import getDefaultProvider from '../services/getDefaultProvider';
 import { WalletContext } from '../context/walletContext';
 import { dynamicPoolDataState } from '../state/PoolDataState';
+import { selectedChainState } from '../state/ChainState';
 import getPoolDataAdapter from '../adapters/getPoolDataAdapter';
 import { FIXED_APR_PRECISION } from '../constants';
-import { selectedNetworkState } from '../state/NetworkState';
 
 const FixedAPRProvider = () => {
   const dynamicPoolData = useHookState(dynamicPoolDataState);
-  const selectedNetwork = useHookState(selectedNetworkState);
+  const selectedNetwork = useHookState(selectedChainState);
 
   const selectedNetworkName = selectedNetwork.attach(Downgraded).get();
 

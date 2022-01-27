@@ -1,6 +1,7 @@
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { useContext, useEffect, useState } from 'react';
 import { Routes, Route } from 'react-router-dom';
+import { selectedChainState } from '../../state/ChainState';
 import { WalletContext } from '../../context/walletContext';
 import DashboardDataAdapter from '../../adapters/DashboardDataAdapter';
 import getDashboardDataAdapter from '../../adapters/getDashboardDataAdapter';
@@ -17,10 +18,9 @@ import RootRoute from '../routes/RootRoute';
 import PoolRoute from '../routes/PoolRoute';
 
 import './Main.scss';
-import { selectedNetworkState } from '../../state/NetworkState';
 
 const Main = () => {
-  const selectedNetwork = useHookState(selectedNetworkState);
+  const selectedNetwork = useHookState(selectedChainState);
 
   const selectedNetworkName = selectedNetwork.attach(Downgraded).get();
 

@@ -12,10 +12,10 @@ export interface StaticPoolDataMap {
 
 // Static pool data state object
 const staticPoolDataStateInitialValue: StaticPoolDataMap = {};
-getNetworkConfig('ethereum-mainnet').tempusPools.forEach(tempusPoolConfig => {
+getNetworkConfig('ethereum').tempusPools.forEach(tempusPoolConfig => {
   staticPoolDataStateInitialValue[tempusPoolConfig.address] = { ...tempusPoolConfig };
 });
-getNetworkConfig('fantom-mainnet').tempusPools.forEach(tempusPoolConfig => {
+getNetworkConfig('fantom').tempusPools.forEach(tempusPoolConfig => {
   staticPoolDataStateInitialValue[tempusPoolConfig.address] = { ...tempusPoolConfig };
 });
 export const staticPoolDataState = createState(staticPoolDataStateInitialValue);
@@ -53,7 +53,7 @@ export interface DynamicPoolStateData {
 // Dynamic pool data state object
 const dynamicPoolDataStateInitialValue: DynamicPoolStateData = {};
 
-getNetworkConfig('ethereum-mainnet').tempusPools.forEach(tempusPoolConfig => {
+getNetworkConfig('ethereum').tempusPools.forEach(tempusPoolConfig => {
   dynamicPoolDataStateInitialValue[tempusPoolConfig.address] = {
     poolShareBalance: {
       principals: null,
@@ -77,7 +77,7 @@ getNetworkConfig('ethereum-mainnet').tempusPools.forEach(tempusPoolConfig => {
   };
 });
 
-getNetworkConfig('fantom-mainnet').tempusPools.forEach(tempusPoolConfig => {
+getNetworkConfig('fantom').tempusPools.forEach(tempusPoolConfig => {
   dynamicPoolDataStateInitialValue[tempusPoolConfig.address] = {
     poolShareBalance: {
       principals: null,
