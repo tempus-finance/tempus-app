@@ -265,6 +265,7 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
 
       const stream$ = poolDataAdapter
         .retrieveBalances(
+          selectedChainName,
           selectedPoolAddress,
           ammAddress,
           tokenPrecision.backingToken,

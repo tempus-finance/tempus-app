@@ -80,8 +80,8 @@ export default class UserBalanceDataAdapter {
       .pipe(
         // Fetch backing token rate and user balance in backing tokens
         switchMap(([userPrincipalsBalance, userYieldsBalance, userLPBalance]) => {
-          if (this.statisticsService && userPrincipalsBalance && userYieldsBalance && userLPBalance) {
-            const backingTokenRate$ = from(this.statisticsService.getRate(tempusPool.backingToken));
+          if (this.statisticsService && userPrincipalsBalance && userYieldsBalance && userLPBalance && this.chain) {
+            const backingTokenRate$ = from(this.statisticsService.getRate(this.chain, tempusPool.backingToken));
             const presentValueInBackingTokens$ = from(
               this.statisticsService.estimateExitAndRedeem(
                 tempusPool.ammAddress,
@@ -140,7 +140,7 @@ export default class UserBalanceDataAdapter {
       const [backingTokensAvailable, yieldTokensAvailable, backingTokenToUSD, interestRate] = await Promise.all([
         backingToken.balanceOf(userWalletAddress),
         yieldBearingToken.balanceOf(userWalletAddress),
-        this.statisticsService.getRate(tempusPool.backingToken),
+        this.statisticsService.getRate(this.chain, tempusPool.backingToken),
         this.tempusPoolService.currentInterestRate(tempusPool.address),
       ]);
 

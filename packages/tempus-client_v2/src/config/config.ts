@@ -117,7 +117,7 @@ const config: Config = {
         },
       },
     ],
-    statisticsContract: '0x14BD78f7fBAECc9f971691CB423be768DD7765CD',
+    statisticsContract: '0x7008d1f94088c8AA012B4F370A4fe672ad592Ee3',
     tempusControllerContract: '0xdDcAC414190e0deCCD381d141449E40776d888C4',
     vaultContract: '0x94d380bf540b6084d0c4828893ab27e273fba3d2',
     lidoOracle: '', // We need to set if we want to add Lido pools for Fantom chain

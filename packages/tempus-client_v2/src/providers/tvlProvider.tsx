@@ -47,6 +47,7 @@ const TVLProvider: FC<TVLProviderProps> = props => {
         const forceFetch = dynamicPoolData[poolConfig.address].tvl.get() === null;
 
         const tempusPoolTVLStream$ = dashboardDataAdapter.getTempusPoolTVL(
+          selectedChainName,
           poolConfig.address,
           poolConfig.backingToken,
           forceFetch,

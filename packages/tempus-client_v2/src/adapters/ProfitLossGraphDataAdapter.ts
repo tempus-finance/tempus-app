@@ -213,7 +213,7 @@ class ProfitLossGraphDataAdapter {
             blockTag: block.number,
           },
         ),
-        this.statisticsService.getRate(poolData.backingToken, {
+        this.statisticsService.getRate(this.chain, poolData.backingToken, {
           blockTag: block.number,
         }),
       ]);

@@ -243,6 +243,7 @@ const Mint: FC<MintInProps> = ({ narrow }) => {
       const poolDataAdapter = getPoolDataAdapter(selectedChainName, userWalletSigner);
       const stream$ = poolDataAdapter
         .retrieveBalances(
+          selectedChainName,
           selectedPoolAddress,
           ammAddress,
           tokenPrecision.backingToken,

@@ -28,7 +28,12 @@ export default class DashboardDataAdapter {
     return [...parentRows, ...childRows];
   }
 
-  getTempusPoolTVL(tempusPool: string, backingTokenTicker: Ticker, forceFetch?: boolean): Observable<BigNumber | null> {
+  getTempusPoolTVL(
+    chain: Chain,
+    tempusPool: string,
+    backingTokenTicker: Ticker,
+    forceFetch?: boolean,
+  ): Observable<BigNumber | null> {
     if (!this.statisticsService) {
       return of(null);
     }
@@ -43,7 +48,7 @@ export default class DashboardDataAdapter {
       }),
       switchMap(() => {
         if (this.statisticsService) {
-          return from(this.statisticsService.totalValueLockedUSD(tempusPool, backingTokenTicker));
+          return from(this.statisticsService.totalValueLockedUSD(chain, tempusPool, backingTokenTicker));
         }
         return of(null);
       }),
