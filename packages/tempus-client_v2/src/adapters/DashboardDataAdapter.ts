@@ -4,7 +4,7 @@ import { DashboardRow, DashboardRowChild, DashboardRowParent } from '../interfac
 import { Ticker } from '../interfaces/Token';
 import { TempusPool } from '../interfaces/TempusPool';
 import StatisticsService from '../services/StatisticsService';
-import { getNetworkConfig } from '../utils/getConfig';
+import { getChainConfig } from '../utils/getConfig';
 import { POLLING_INTERVAL } from '../constants';
 import { Chain } from '../interfaces/Chain';
 
@@ -56,7 +56,7 @@ export default class DashboardDataAdapter {
 
   private getChildRows(chainName: Chain): DashboardRowChild[] {
     const childRows: DashboardRowChild[] = [];
-    getNetworkConfig(chainName).tempusPools.forEach(tempusPool => {
+    getChainConfig(chainName).tempusPools.forEach(tempusPool => {
       childRows.push(this.getChildRowData(tempusPool));
     });
     return childRows;

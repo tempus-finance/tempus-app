@@ -3,7 +3,7 @@ import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
 import VaultABI from '../abi/Vault.json';
 import VaultService from './VaultService';
 import getDefaultProvider from './getDefaultProvider';
-import { getNetworkConfig } from '../utils/getConfig';
+import { getChainConfig } from '../utils/getConfig';
 import getTempusAMMService from '../../../tempus-client_v2/src/services/getTempusAMMService';
 import { Chain } from '../interfaces/Chain';
 
@@ -13,7 +13,7 @@ const getVaultService = (chain: Chain, signerOrProvider?: JsonRpcSigner | JsonRp
     const vaultService = new VaultService();
     vaultService.init({
       Contract: Contract,
-      address: getNetworkConfig(chain).vaultContract,
+      address: getChainConfig(chain).vaultContract,
       abi: VaultABI,
       signerOrProvider: getDefaultProvider(chain),
       tempusAMMService: getTempusAMMService(chain),
@@ -30,7 +30,7 @@ const getVaultService = (chain: Chain, signerOrProvider?: JsonRpcSigner | JsonRp
   if (signerOrProvider) {
     vaultService.init({
       Contract: Contract,
-      address: getNetworkConfig(chain).vaultContract,
+      address: getChainConfig(chain).vaultContract,
       abi: VaultABI,
       signerOrProvider,
       tempusAMMService: getTempusAMMService(chain, signerOrProvider),

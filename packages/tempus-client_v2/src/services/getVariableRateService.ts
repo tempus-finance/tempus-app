@@ -3,7 +3,7 @@ import { Vaults as RariVault } from 'rari-sdk';
 import getTempusPoolService from '../services/getTempusPoolService';
 import getTempusAMMService from '../services/getTempusAMMService';
 import getVaultService from '../services/getVaultService';
-import { getNetworkConfig } from '../utils/getConfig';
+import { getChainConfig } from '../utils/getConfig';
 import getProvider from '../utils/getProvider';
 import { Chain } from '../interfaces/Chain';
 import VariableRateService from './VariableRateService';
@@ -33,7 +33,7 @@ const getVariableRateService = (
       getVaultService(chain, signerOrProvider),
       getTempusAMMService(chain, signerOrProvider),
       new RariVault(getProvider(signerOrProvider) as any),
-      getNetworkConfig(chain),
+      getChainConfig(chain),
     );
   }
 

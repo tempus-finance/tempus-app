@@ -3,7 +3,7 @@ import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
 import { TempusController } from '../abi/TempusController';
 import TempusControllerABI from '../abi/TempusController.json';
 import { TypedEvent } from '../abi/commons';
-import { getNetworkConfig } from '../utils/getConfig';
+import { getChainConfig } from '../utils/getConfig';
 import {
   completeExitAndRedeemGasIncrease,
   depositAndFixGasIncrease,
@@ -248,7 +248,7 @@ class TempusControllerService {
       return Promise.reject();
     }
 
-    const tempusPoolConfig = getNetworkConfig(this.chain).tempusPools.find(
+    const tempusPoolConfig = getChainConfig(this.chain).tempusPools.find(
       tempusPoolConfig => tempusPoolConfig.ammAddress === tempusAMM,
     );
     if (!tempusPoolConfig) {

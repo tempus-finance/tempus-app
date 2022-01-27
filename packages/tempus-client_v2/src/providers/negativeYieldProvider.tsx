@@ -2,7 +2,7 @@ import { interval, startWith, Subscription } from 'rxjs';
 import { useCallback, useContext, useEffect } from 'react';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { POLLING_INTERVAL } from '../constants';
-import { getNetworkConfig } from '../utils/getConfig';
+import { getChainConfig } from '../utils/getConfig';
 import { TempusPool } from '../interfaces/TempusPool';
 import { dynamicPoolDataState } from '../state/PoolDataState';
 import { selectedChainState } from '../state/ChainState';
@@ -64,7 +64,7 @@ const NegativeYieldProvider = () => {
    * Fetch/Update Negative Yield Flag for all pools every POLLING_INTERVAL.
    */
   useEffect(() => {
-    getNetworkConfig(selectedNetworkName).tempusPools.forEach(poolConfig => {
+    getChainConfig(selectedNetworkName).tempusPools.forEach(poolConfig => {
       try {
         const fetchInterval$ = interval(POLLING_INTERVAL).pipe(startWith(0));
         subscriptions$.add(

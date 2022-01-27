@@ -1,6 +1,6 @@
 import { BigNumber } from 'ethers';
 import { createState } from '@hookstate/core';
-import { getNetworkConfig } from '../utils/getConfig';
+import { getChainConfig } from '../utils/getConfig';
 import { TempusPool } from '../interfaces/TempusPool';
 
 // Currently selected pool (Pool Address)
@@ -12,10 +12,10 @@ export interface StaticPoolDataMap {
 
 // Static pool data state object
 const staticPoolDataStateInitialValue: StaticPoolDataMap = {};
-getNetworkConfig('ethereum').tempusPools.forEach(tempusPoolConfig => {
+getChainConfig('ethereum').tempusPools.forEach(tempusPoolConfig => {
   staticPoolDataStateInitialValue[tempusPoolConfig.address] = { ...tempusPoolConfig };
 });
-getNetworkConfig('fantom').tempusPools.forEach(tempusPoolConfig => {
+getChainConfig('fantom').tempusPools.forEach(tempusPoolConfig => {
   staticPoolDataStateInitialValue[tempusPoolConfig.address] = { ...tempusPoolConfig };
 });
 export const staticPoolDataState = createState(staticPoolDataStateInitialValue);
@@ -53,7 +53,7 @@ export interface DynamicPoolStateData {
 // Dynamic pool data state object
 const dynamicPoolDataStateInitialValue: DynamicPoolStateData = {};
 
-getNetworkConfig('ethereum').tempusPools.forEach(tempusPoolConfig => {
+getChainConfig('ethereum').tempusPools.forEach(tempusPoolConfig => {
   dynamicPoolDataStateInitialValue[tempusPoolConfig.address] = {
     poolShareBalance: {
       principals: null,
@@ -77,7 +77,7 @@ getNetworkConfig('ethereum').tempusPools.forEach(tempusPoolConfig => {
   };
 });
 
-getNetworkConfig('fantom').tempusPools.forEach(tempusPoolConfig => {
+getChainConfig('fantom').tempusPools.forEach(tempusPoolConfig => {
   dynamicPoolDataStateInitialValue[tempusPoolConfig.address] = {
     poolShareBalance: {
       principals: null,

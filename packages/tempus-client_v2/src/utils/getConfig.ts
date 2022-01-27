@@ -19,7 +19,7 @@ export function getConfig(): Config {
   }
 }
 
-export function getNetworkConfig(chain: Chain): ChainConfig {
+export function getChainConfig(chain: Chain): ChainConfig {
   const overridingConfig = getCookie('TEMPUS_OVERRIDING_CONFIG');
   // Return default config if cookie config is not specified - empty config for now.
   if (!overridingConfig) {

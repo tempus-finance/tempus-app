@@ -9,7 +9,7 @@ import getUserLPTokenBalanceProvider from '../../providers/getUserLPTokenBalance
 import { LanguageContext } from '../../context/languageContext';
 import { WalletContext } from '../../context/walletContext';
 import getText from '../../localisation/getText';
-import { getNetworkConfig } from '../../utils/getConfig';
+import { getChainConfig } from '../../utils/getConfig';
 import { mul18f } from '../../utils/weiMath';
 import getTokenPrecision from '../../utils/getTokenPrecision';
 import { isZeroString } from '../../utils/isZeroString';
@@ -477,7 +477,7 @@ const ProvideLiquidity = () => {
                 onApproveChange={approved => {
                   setPrincipalsApproved(approved);
                 }}
-                spenderAddress={getNetworkConfig(selectedNetworkName).vaultContract}
+                spenderAddress={getChainConfig(selectedNetworkName).vaultContract}
                 tokenToApproveAddress={principalsAddress}
               />
             </div>
@@ -516,7 +516,7 @@ const ProvideLiquidity = () => {
                 onApproveChange={approved => {
                   setYieldsApproved(approved);
                 }}
-                spenderAddress={getNetworkConfig(selectedNetworkName).vaultContract}
+                spenderAddress={getChainConfig(selectedNetworkName).vaultContract}
                 tokenToApproveAddress={yieldsAddress}
               />
             </div>

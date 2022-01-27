@@ -3,7 +3,7 @@ import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { WalletContext } from '../context/walletContext';
 import { TempusPool } from '../interfaces/TempusPool';
 import getERC20TokenService from '../services/getERC20TokenService';
-import { getNetworkConfig } from '../utils/getConfig';
+import { getChainConfig } from '../utils/getConfig';
 import { dynamicPoolDataState } from '../state/PoolDataState';
 import { selectedChainState } from '../state/ChainState';
 
@@ -38,7 +38,7 @@ const UserYieldBearingTokenBalanceProvider = () => {
   );
 
   const updateBalance = useCallback(async () => {
-    getNetworkConfig(selectedNetworkName).tempusPools.forEach(poolConfig => {
+    getChainConfig(selectedNetworkName).tempusPools.forEach(poolConfig => {
       updateBalanceForPool(poolConfig);
     });
   }, [selectedNetworkName, updateBalanceForPool]);
@@ -52,7 +52,7 @@ const UserYieldBearingTokenBalanceProvider = () => {
       return;
     }
 
-    getNetworkConfig(selectedNetworkName).tempusPools.forEach(poolConfig => {
+    getChainConfig(selectedNetworkName).tempusPools.forEach(poolConfig => {
       const yieldBearingTokenService = getERC20TokenService(
         poolConfig.yieldBearingTokenAddress,
         selectedNetworkName,
@@ -64,7 +64,7 @@ const UserYieldBearingTokenBalanceProvider = () => {
     });
 
     return () => {
-      getNetworkConfig(selectedNetworkName).tempusPools.forEach(poolConfig => {
+      getChainConfig(selectedNetworkName).tempusPools.forEach(poolConfig => {
         const yieldBearingTokenService = getERC20TokenService(
           poolConfig.yieldBearingTokenAddress,
           selectedNetworkName,

@@ -2,7 +2,7 @@ import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { FC, useCallback, useEffect, useState } from 'react';
 import { Subscription } from 'rxjs';
 import { BigNumber } from 'ethers';
-import { getNetworkConfig } from '../utils/getConfig';
+import { getChainConfig } from '../utils/getConfig';
 import DashboardDataAdapter from '../adapters/DashboardDataAdapter';
 import { TempusPool } from '../interfaces/TempusPool';
 import { dynamicPoolDataState } from '../state/PoolDataState';
@@ -41,7 +41,7 @@ const TVLProvider: FC<TVLProviderProps> = props => {
    * Update TVL for all pools every POLLING_INTERVAL.
    */
   useEffect(() => {
-    getNetworkConfig(selectedNetworkName).tempusPools.forEach(poolConfig => {
+    getChainConfig(selectedNetworkName).tempusPools.forEach(poolConfig => {
       try {
         // If case we want to force TVL fetch (even if app is not in focus)
         const forceFetch = dynamicPoolData[poolConfig.address].tvl.get() === null;

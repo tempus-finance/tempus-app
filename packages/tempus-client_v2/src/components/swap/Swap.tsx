@@ -9,7 +9,7 @@ import { WalletContext } from '../../context/walletContext';
 import { UserSettingsContext } from '../../context/userSettingsContext';
 import { PoolShares, Ticker } from '../../interfaces/Token';
 import getText from '../../localisation/getText';
-import { getNetworkConfig } from '../../utils/getConfig';
+import { getChainConfig } from '../../utils/getConfig';
 import { mul18f } from '../../utils/weiMath';
 import getTokenPrecision from '../../utils/getTokenPrecision';
 import { isZeroString } from '../../utils/isZeroString';
@@ -313,7 +313,7 @@ const Swap = () => {
           <Approve
             amountToApprove={getSelectedTokenBalance()}
             onApproveChange={onApproveChange}
-            spenderAddress={getNetworkConfig(selectedNetworkName).vaultContract}
+            spenderAddress={getChainConfig(selectedNetworkName).vaultContract}
             tokenToApproveTicker={tokenFrom.tokenName}
             tokenToApproveAddress={getSelectedTokenAddress()}
             marginRight={20}

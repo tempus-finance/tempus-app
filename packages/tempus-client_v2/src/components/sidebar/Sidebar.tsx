@@ -8,7 +8,7 @@ import { LanguageContext } from '../../context/languageContext';
 import getText from '../../localisation/getText';
 import Words from '../../localisation/words';
 import { TransactionView } from '../../interfaces/TransactionView';
-import { getNetworkConfig } from '../../utils/getConfig';
+import { getChainConfig } from '../../utils/getConfig';
 import shortenAccount from '../../utils/shortenAccount';
 import TokenIcon from '../tokenIcon';
 import Typography from '../typography/Typography';
@@ -65,7 +65,7 @@ const Sidebar: FC<SidebarProps> = ({ initialView, onSelectedView }) => {
   }, [initialView, selectedView]);
 
   const onPoolAddressClick = useCallback(() => {
-    const config = getNetworkConfig(selectedNetwork);
+    const config = getChainConfig(selectedNetwork);
 
     if (config.networkName === 'homestead') {
       window.open(`https://etherscan.io/address/${selectedPoolAddress}`, '_blank');

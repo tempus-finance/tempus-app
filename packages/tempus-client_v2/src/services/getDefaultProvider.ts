@@ -1,11 +1,11 @@
 import { AlchemyProvider, JsonRpcProvider } from '@ethersproject/providers';
 import { Chain } from '../interfaces/Chain';
-import { getNetworkConfig } from '../utils/getConfig';
+import { getChainConfig } from '../utils/getConfig';
 
 let defaultProviders = new Map<Chain, JsonRpcProvider>();
 const getDefaultProvider = (chain: Chain) => {
   if (!defaultProviders.get(chain)) {
-    const config = getNetworkConfig(chain);
+    const config = getChainConfig(chain);
 
     if (config.networkName === 'localhost') {
       defaultProviders.set(chain, new JsonRpcProvider('http://127.0.0.1:8545', { chainId: 31337, name: 'unknown' }));

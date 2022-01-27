@@ -5,7 +5,7 @@ import { TempusPool } from '../interfaces/TempusPool';
 import getERC20TokenService from '../services/getERC20TokenService';
 import { selectedChainState } from '../state/ChainState';
 import { dynamicPoolDataState } from '../state/PoolDataState';
-import { getNetworkConfig } from '../utils/getConfig';
+import { getChainConfig } from '../utils/getConfig';
 
 const UserBackingTokenBalanceProvider = () => {
   const dynamicPoolData = useHookState(dynamicPoolDataState);
@@ -37,7 +37,7 @@ const UserBackingTokenBalanceProvider = () => {
   );
 
   const updateBalance = useCallback(async () => {
-    getNetworkConfig(selectedNetworkName).tempusPools.forEach(poolConfig => {
+    getChainConfig(selectedNetworkName).tempusPools.forEach(poolConfig => {
       updateBalanceForPool(poolConfig);
     });
   }, [selectedNetworkName, updateBalanceForPool]);
@@ -51,7 +51,7 @@ const UserBackingTokenBalanceProvider = () => {
       return;
     }
 
-    getNetworkConfig(selectedNetworkName).tempusPools.forEach(poolConfig => {
+    getChainConfig(selectedNetworkName).tempusPools.forEach(poolConfig => {
       const backingTokenService = getERC20TokenService(
         poolConfig.backingTokenAddress,
         selectedNetworkName,
@@ -63,7 +63,7 @@ const UserBackingTokenBalanceProvider = () => {
     });
 
     return () => {
-      getNetworkConfig(selectedNetworkName).tempusPools.forEach(poolConfig => {
+      getChainConfig(selectedNetworkName).tempusPools.forEach(poolConfig => {
         const backingTokenService = getERC20TokenService(
           poolConfig.backingTokenAddress,
           selectedNetworkName,

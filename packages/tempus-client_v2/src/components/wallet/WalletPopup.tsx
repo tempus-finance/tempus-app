@@ -7,7 +7,7 @@ import { LanguageContext } from '../../context/languageContext';
 import { UserSettingsContext } from '../../context/userSettingsContext';
 import { PendingTransactionsContext } from '../../context/pendingTransactionsContext';
 import getNotificationService from '../../services/getNotificationService';
-import { getNetworkConfig } from '../../utils/getConfig';
+import { getChainConfig } from '../../utils/getConfig';
 import { selectedChainState } from '../../state/ChainState';
 import getText from '../../localisation/getText';
 import Typography from '../typography/Typography';
@@ -50,7 +50,7 @@ const WalletPopup: FC<WalletPopupProps> = ({ anchorElement, account, onSwitchWal
   }, [onSwitchWallet]);
 
   const onAccountAddressClick = useCallback(() => {
-    const config = getNetworkConfig(selectedNetworkName);
+    const config = getChainConfig(selectedNetworkName);
 
     // TODO - Handle Fantom network
     if (config.networkName === 'homestead') {

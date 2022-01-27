@@ -1,7 +1,7 @@
 import { Contract } from 'ethers';
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
 import TempusAMMABI from '../abi/TempusAMM.json';
-import { getNetworkConfig } from '../utils/getConfig';
+import { getChainConfig } from '../utils/getConfig';
 import { Chain } from '../interfaces/Chain';
 import TempusAMMService from './TempusAMMService';
 import getDefaultProvider from './getDefaultProvider';
@@ -14,7 +14,7 @@ const getTempusAMMService = (chain: Chain, signerOrProvider?: JsonRpcSigner | Js
     const tempusAMMService = new TempusAMMService();
     tempusAMMService.init({
       Contract,
-      tempusAMMAddresses: getNetworkConfig(chain).tempusPools.map(tempusPoolConfig => tempusPoolConfig.ammAddress),
+      tempusAMMAddresses: getChainConfig(chain).tempusPools.map(tempusPoolConfig => tempusPoolConfig.ammAddress),
       TempusAMMABI: TempusAMMABI,
       signerOrProvider: getDefaultProvider(chain),
       tempusPoolService: getTempusPoolService(chain),
@@ -32,7 +32,7 @@ const getTempusAMMService = (chain: Chain, signerOrProvider?: JsonRpcSigner | Js
   if (signerOrProvider) {
     tempusAMMService.init({
       Contract: Contract,
-      tempusAMMAddresses: getNetworkConfig(chain).tempusPools.map(tempusPoolConfig => tempusPoolConfig.ammAddress),
+      tempusAMMAddresses: getChainConfig(chain).tempusPools.map(tempusPoolConfig => tempusPoolConfig.ammAddress),
       TempusAMMABI: TempusAMMABI,
       signerOrProvider: signerOrProvider,
       tempusPoolService: getTempusPoolService(chain, signerOrProvider),

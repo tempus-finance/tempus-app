@@ -4,7 +4,7 @@ import { TempusAMM } from '../abi/TempusAMM';
 import TempusAMMABI from '../abi/TempusAMM.json';
 import { DAYS_IN_A_YEAR, SECONDS_IN_A_DAY } from '../constants';
 import { mul18f, div18f } from '../utils/weiMath';
-import { getNetworkConfig } from '../utils/getConfig';
+import { getChainConfig } from '../utils/getConfig';
 import { ChainConfig } from '../interfaces/Config';
 import { Chain } from '../interfaces/Chain';
 import TempusPoolService from './TempusPoolService';
@@ -55,7 +55,7 @@ class TempusAMMService {
     this.eRC20TokenServiceGetter = eRC20TokenServiceGetter;
 
     this.chain = network;
-    this.config = getNetworkConfig(this.chain);
+    this.config = getChainConfig(this.chain);
   }
 
   public poolId(address: string): Promise<string> {

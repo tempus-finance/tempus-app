@@ -2,7 +2,7 @@ import { useCallback, useContext, useEffect } from 'react';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import getDefaultProvider from '../services/getDefaultProvider';
 import getVariableRateService from '../services/getVariableRateService';
-import { getNetworkConfig } from '../utils/getConfig';
+import { getChainConfig } from '../utils/getConfig';
 import { WalletContext } from '../context/walletContext';
 import { dynamicPoolDataState } from '../state/PoolDataState';
 import { selectedChainState } from '../state/ChainState';
@@ -32,7 +32,7 @@ const VariableAPRProvider = () => {
       return;
     }
 
-    const config = getNetworkConfig(selectedNetworkName);
+    const config = getChainConfig(selectedNetworkName);
     const variableRateService = getVariableRateService(selectedNetworkName, provider);
 
     try {

@@ -5,7 +5,7 @@ import { ERC20 } from '../abi/ERC20';
 import { dynamicPoolDataState } from '../state/PoolDataState';
 import { Chain } from '../interfaces/Chain';
 import { TempusPool } from '../interfaces/TempusPool';
-import { getConfigForPoolWithAddress, getNetworkConfig } from '../utils/getConfig';
+import { getConfigForPoolWithAddress, getChainConfig } from '../utils/getConfig';
 
 export interface UserLPTokenBalanceProviderParams {
   userWalletAddress: string;
@@ -30,7 +30,7 @@ class UserLPTokenBalanceProvider {
     // Make sure to clean previous data before crating new subscriptions
     this.destroy();
 
-    getNetworkConfig(this.chain).tempusPools.forEach(poolConfig => {
+    getChainConfig(this.chain).tempusPools.forEach(poolConfig => {
       if (!this.userWalletSigner) {
         return;
       }
@@ -78,7 +78,7 @@ class UserLPTokenBalanceProvider {
   }
 
   private updateLPTokenBalance = () => {
-    getNetworkConfig(this.chain).tempusPools.forEach(poolConfig => {
+    getChainConfig(this.chain).tempusPools.forEach(poolConfig => {
       this.updateLPTokenBalanceForPool(poolConfig);
     });
   };

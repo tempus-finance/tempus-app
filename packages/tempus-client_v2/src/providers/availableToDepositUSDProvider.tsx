@@ -4,7 +4,7 @@ import UserBalanceDataAdapter from '../adapters/UserBalanceDataAdapter';
 import { WalletContext } from '../context/walletContext';
 import { TempusPool } from '../interfaces/TempusPool';
 import getERC20TokenService from '../services/getERC20TokenService';
-import { getNetworkConfig } from '../utils/getConfig';
+import { getChainConfig } from '../utils/getConfig';
 import { dynamicPoolDataState } from '../state/PoolDataState';
 import { selectedChainState } from '../state/ChainState';
 
@@ -92,7 +92,7 @@ const AvailableToDepositUSDProvider: FC<PresentValueProviderProps> = props => {
   );
 
   const updateAvailableToDepositUSD = useCallback(() => {
-    getNetworkConfig(selectedNetworkName).tempusPools.forEach(poolConfig => {
+    getChainConfig(selectedNetworkName).tempusPools.forEach(poolConfig => {
       if (userWalletSigner) {
         updateUserAvailableToDepositUSDForPool(poolConfig);
       }
@@ -115,7 +115,7 @@ const AvailableToDepositUSDProvider: FC<PresentValueProviderProps> = props => {
     }
 
     try {
-      getNetworkConfig(selectedNetworkName).tempusPools.forEach(poolConfig => {
+      getChainConfig(selectedNetworkName).tempusPools.forEach(poolConfig => {
         const backingTokenService = getERC20TokenService(
           poolConfig.backingTokenAddress,
           selectedNetworkName,
@@ -133,7 +133,7 @@ const AvailableToDepositUSDProvider: FC<PresentValueProviderProps> = props => {
       });
 
       return () => {
-        getNetworkConfig(selectedNetworkName).tempusPools.forEach(poolConfig => {
+        getChainConfig(selectedNetworkName).tempusPools.forEach(poolConfig => {
           const backingTokenService = getERC20TokenService(
             poolConfig.backingTokenAddress,
             selectedNetworkName,

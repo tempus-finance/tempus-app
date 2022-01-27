@@ -11,7 +11,7 @@ import { LanguageContext } from '../../context/languageContext';
 import { WalletContext } from '../../context/walletContext';
 import { Ticker } from '../../interfaces/Token';
 import getText from '../../localisation/getText';
-import { getNetworkConfig } from '../../utils/getConfig';
+import { getChainConfig } from '../../utils/getConfig';
 import getTokenPrecision from '../../utils/getTokenPrecision';
 import { isZeroString } from '../../utils/isZeroString';
 import { mul18f } from '../../utils/weiMath';
@@ -458,7 +458,7 @@ const Mint: FC<MintInProps> = ({ narrow }) => {
         <div className="tf__flex-row-center-vh">
           <Approve
             tokenToApproveAddress={getSelectedTokenAddress()}
-            spenderAddress={getNetworkConfig(selectedNetworkName).tempusControllerContract}
+            spenderAddress={getChainConfig(selectedNetworkName).tempusControllerContract}
             amountToApprove={getSelectedTokenBalance()}
             tokenToApproveTicker={selectedToken}
             disabled={approveDisabled}

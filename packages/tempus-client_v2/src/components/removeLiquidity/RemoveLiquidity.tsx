@@ -19,7 +19,7 @@ import Spacer from '../spacer/spacer';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
 import NumberUtils from '../../services/NumberUtils';
 import { isZeroString } from '../../utils/isZeroString';
-import { getNetworkConfig } from '../../utils/getConfig';
+import { getChainConfig } from '../../utils/getConfig';
 import { mul18f } from '../../utils/weiMath';
 import getTokenPrecision from '../../utils/getTokenPrecision';
 import Approve from '../buttons/Approve';
@@ -236,7 +236,7 @@ const RemoveLiquidity = () => {
                 tokenToApproveTicker="LP Token"
                 amountToApprove={userLPTokenBalance}
                 onApproveChange={onApproveChange}
-                spenderAddress={getNetworkConfig(selectedNetworkName).vaultContract}
+                spenderAddress={getChainConfig(selectedNetworkName).vaultContract}
                 tokenToApproveAddress={ammAddress}
                 disabled={approveDisabled}
               />

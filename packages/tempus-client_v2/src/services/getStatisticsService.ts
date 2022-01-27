@@ -1,7 +1,7 @@
 import { Contract } from 'ethers';
 import { JsonRpcSigner, JsonRpcProvider } from '@ethersproject/providers';
 import StatisticsABI from '../abi/Stats.json';
-import { getNetworkConfig } from '../utils/getConfig';
+import { getChainConfig } from '../utils/getConfig';
 import { Chain } from '../interfaces/Chain';
 import StatisticsService from './StatisticsService';
 import getDefaultProvider from './getDefaultProvider';
@@ -16,7 +16,7 @@ const getStatisticsService = (chain: Chain, signerOrProvider?: JsonRpcSigner | J
       abi: StatisticsABI,
       signerOrProvider: getDefaultProvider(chain),
       tempusAMMService: getTempusAMMService(chain),
-      address: getNetworkConfig(chain).statisticsContract,
+      address: getChainConfig(chain).statisticsContract,
     });
     statisticsServices.set(chain, statisticsService);
   }
@@ -32,7 +32,7 @@ const getStatisticsService = (chain: Chain, signerOrProvider?: JsonRpcSigner | J
       abi: StatisticsABI,
       signerOrProvider: signerOrProvider,
       tempusAMMService: getTempusAMMService(chain, signerOrProvider),
-      address: getNetworkConfig(chain).statisticsContract,
+      address: getChainConfig(chain).statisticsContract,
     });
   }
 

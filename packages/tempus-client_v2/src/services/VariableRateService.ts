@@ -23,7 +23,7 @@ import { TempusPool } from '../interfaces/TempusPool';
 import { YearnData } from '../interfaces/YearnData';
 import { ChainConfig } from '../interfaces/Config';
 import { wadToDai } from '../utils/rayToDai';
-import { getNetworkConfig } from '../utils/getConfig';
+import { getChainConfig } from '../utils/getConfig';
 import { div18f, mul18f } from '../utils/weiMath';
 import getProvider from '../utils/getProvider';
 import { Chain } from '../interfaces/Chain';
@@ -87,7 +87,7 @@ class VariableRateService {
       return Promise.reject();
     }
 
-    const poolConfig = getNetworkConfig(chain).tempusPools.find(pool => pool.address === tempusPool);
+    const poolConfig = getChainConfig(chain).tempusPools.find(pool => pool.address === tempusPool);
     if (!poolConfig) {
       return Promise.reject();
     }

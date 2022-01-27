@@ -15,7 +15,7 @@ import { UserSettingsContext } from '../../context/userSettingsContext';
 import getText from '../../localisation/getText';
 import { Ticker } from '../../interfaces/Token';
 import NumberUtils from '../../services/NumberUtils';
-import { getNetworkConfig } from '../../utils/getConfig';
+import { getChainConfig } from '../../utils/getConfig';
 import { mul18f } from '../../utils/weiMath';
 import { isZeroString } from '../../utils/isZeroString';
 import getTokenPrecision from '../../utils/getTokenPrecision';
@@ -445,7 +445,7 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
                   onApproveChange={approved => {
                     setPrincipalsApproved(approved);
                   }}
-                  spenderAddress={getNetworkConfig(selectedNetworkName).tempusControllerContract}
+                  spenderAddress={getChainConfig(selectedNetworkName).tempusControllerContract}
                   tokenToApproveAddress={principalsAddress}
                 />
               </div>
@@ -486,7 +486,7 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
                     onApproveChange={approved => {
                       setYieldsApproved(approved);
                     }}
-                    spenderAddress={getNetworkConfig(selectedNetworkName).tempusControllerContract}
+                    spenderAddress={getChainConfig(selectedNetworkName).tempusControllerContract}
                     tokenToApproveAddress={yieldsAddress}
                   />
                 </div>
@@ -526,7 +526,7 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
                     onApproveChange={approved => {
                       setLpTokenApproved(approved);
                     }}
-                    spenderAddress={getNetworkConfig(selectedNetworkName).tempusControllerContract}
+                    spenderAddress={getChainConfig(selectedNetworkName).tempusControllerContract}
                     tokenToApproveAddress={ammAddress}
                   />
                 </div>

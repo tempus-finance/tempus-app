@@ -1,7 +1,7 @@
 import { ethers } from 'ethers';
 import { useCallback, useContext, useEffect } from 'react';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
-import { getNetworkConfig } from '../utils/getConfig';
+import { getChainConfig } from '../utils/getConfig';
 import getTokenPrecision from '../utils/getTokenPrecision';
 import getDefaultProvider from '../services/getDefaultProvider';
 import { WalletContext } from '../context/walletContext';
@@ -38,7 +38,7 @@ const FixedAPRProvider = () => {
       return;
     }
 
-    const config = getNetworkConfig(selectedNetworkName);
+    const config = getChainConfig(selectedNetworkName);
     const poolDataAdapter = getPoolDataAdapter(selectedNetworkName, provider);
 
     // Fetch APR for all Tempus Pools
