@@ -1,3 +1,4 @@
+import React, { useMemo } from 'react';
 import { CircularProgress } from '@material-ui/core';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { ZERO } from '../../../constants';
@@ -11,21 +12,17 @@ import {
   staticPoolDataState,
   StaticPoolDataMap,
 } from '../../../state/PoolDataState';
+import InfoTooltip from '../../infoTooltip/infoTooltip';
+import VariableAPRBreakDownTooltip from '../popups/variableAPRBreakDownTooltip';
 
 const VariableAPRFormatter = ({ row }: any) => {
   const dynamicPoolData = useHookState(dynamicPoolDataState).attach(Downgraded).get();
   const staticPoolData = useHookState(staticPoolDataState).attach(Downgraded).get();
 
   const isChild = Boolean(row.parentId);
-
-  const getAPR = () => {
-    if (isChild) {
-      return getChildAPR(row.id, dynamicPoolData);
-    } else {
-      return getParentAPR(row.id, staticPoolData, dynamicPoolData);
-    }
-  };
-  const apr = getAPR();
+  // if useMemo is used here, anything inside dynamicPoolData state changes
+  //  this use memo will not re-run, and APR will stay the same. so skip using useMemo here
+  const apr = isChild ? getChildAPR(row.id, dynamicPoolData) : getParentAPR(row.id, staticPoolData, dynamicPoolData);
 
   if (apr === null) {
     return <CircularProgress size={16} />;
@@ -45,13 +42,21 @@ const VariableAPRFormatter = ({ row }: any) => {
   }
 
   // If it's a child row
+  const fees = dynamicPoolData[row.id].tempusFees;
+  const protocolName = row.tempusPool.protocolDisplayName;
+  const tooltipContent = <VariableAPRBreakDownTooltip protocolName={protocolName} apr={apr} tempusFees={fees || 0} />;
+
   return (
     <div className="tf__dashboard__body__apy">
       <APYGraph apy={apr} />
       <div className="tf__dashboard__body__apy-value">
-        <Typography color="default" variant="body-text">
-          {NumberUtils.formatPercentage(apr, 2)}
-        </Typography>
+        <InfoTooltip content={tooltipContent}>
+          <button className="tf__dashboard__body__apy-anchor">
+            <Typography color="default" variant="body-text">
+              {NumberUtils.formatPercentage(apr, 2)}
+            </Typography>
+          </button>
+        </InfoTooltip>
       </div>
     </div>
   );

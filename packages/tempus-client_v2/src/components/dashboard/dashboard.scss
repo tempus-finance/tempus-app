@@ -187,6 +187,31 @@ $padding: 20px;
       .tf__dashboard__body__apy-value {
         display: flex;
         align-items: flex-end;
+
+        .tf__dashboard__body__apy-anchor {
+          cursor: pointer;
+          text-decoration: none;
+          background: inherit;
+          border: none;
+          padding: 0;
+          display: block;
+
+          &:hover {
+            border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+          }
+        }
+
+        .tc__infoTooltip {
+          .tc__infoTooltip-popup {
+            width: inherit;
+          }
+
+          .tc__infoTooltip-anchor.tc__infoTooltip-active {
+            .tf__dashboard__body__apy-anchor {
+              border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+            }
+          }
+        }
       }
     }
 

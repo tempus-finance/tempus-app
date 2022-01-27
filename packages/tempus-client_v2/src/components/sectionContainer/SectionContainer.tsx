@@ -45,7 +45,7 @@ const SectionContainer: FC<SectionContainerProps> = props => {
       <div className="tf__dialog__section-title">
         {title && <Typography variant="card-title">{getText(title, language)}</Typography>}
         {title && <Spacer size={15} />}
-        {tooltip && <InfoTooltip text={tooltip} />}
+        {tooltip && <InfoTooltip content={tooltip} />}
       </div>
       {title && <Spacer size={15} />}
       <div className={contentClasses} onClick={onClick}>
