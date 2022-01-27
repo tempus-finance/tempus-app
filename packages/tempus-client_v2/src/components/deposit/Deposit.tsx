@@ -27,11 +27,11 @@ import TokenSelector from '../tokenSelector/tokenSelector';
 import Typography from '../typography/Typography';
 import SectionContainer from '../sectionContainer/SectionContainer';
 import Spacer from '../spacer/spacer';
+import { selectedChainState } from '../../state/ChainState';
 import InfoTooltip from '../infoTooltip/infoTooltip';
 import SelectIcon from '../icons/SelectIcon';
 
 import './Deposit.scss';
-import { selectedChainState } from '../../state/ChainState';
 
 type DepositInProps = {
   narrow: boolean;
@@ -95,6 +95,8 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
   const showEstimatesInBackingToken = staticPoolData[selectedPool.get()].showEstimatesInBackingToken
     .attach(Downgraded)
     .get();
+
+  const chain = selectedChainState.get();
 
   const onTokenChange = useCallback(
     (token: Ticker | undefined) => {
@@ -259,6 +261,7 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
 
       const stream$ = poolDataAdapter
         .retrieveBalances(
+          chain,
           selectedPoolAddress,
           ammAddress,
           tokenPrecision.backingToken,
@@ -290,6 +293,7 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
       return () => stream$.unsubscribe();
     }
   }, [
+    chain,
     selectedPoolAddress,
     userWalletSigner,
     tokenPrecision.backingToken,
@@ -1046,7 +1050,7 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
         <div className="tf__flex-row-center-vh">
           <Approve
             tokenToApproveAddress={getSelectedTokenAddress()}
-            spenderAddress={getConfig()[selectedChainState.get()].tempusControllerContract}
+            spenderAddress={getConfig()[chain].tempusControllerContract}
             amountToApprove={amountToApprove}
             tokenToApproveTicker={selectedToken}
             disabled={approveDisabled}

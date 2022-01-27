@@ -23,11 +23,11 @@ import CurrencyInput from '../currencyInput/currencyInput';
 import PlusIconContainer from '../plusIconContainer/PlusIconContainer';
 import SectionContainer from '../sectionContainer/SectionContainer';
 import Spacer from '../spacer/spacer';
+import { selectedChainState } from '../../state/ChainState';
 import TokenSelector from '../tokenSelector/tokenSelector';
 import Typography from '../typography/Typography';
 
 import './Mint.scss';
-import { selectedChainState } from '../../state/ChainState';
 
 type MintInProps = {
   narrow: boolean;
@@ -71,6 +71,8 @@ const Mint: FC<MintInProps> = ({ narrow }) => {
   const userYieldBearingTokenBalance = dynamicPoolData[selectedPool.get()].userYieldBearingTokenBalance
     .attach(Downgraded)
     .get();
+
+  const chain = selectedChainState.get();
 
   const onTokenChange = useCallback(
     (token: Ticker | undefined) => {
@@ -238,6 +240,7 @@ const Mint: FC<MintInProps> = ({ narrow }) => {
       const poolDataAdapter = getPoolDataAdapter(userWalletSigner);
       const stream$ = poolDataAdapter
         .retrieveBalances(
+          chain,
           selectedPoolAddress,
           ammAddress,
           tokenPrecision.backingToken,
@@ -260,6 +263,7 @@ const Mint: FC<MintInProps> = ({ narrow }) => {
       return () => stream$.unsubscribe();
     }
   }, [
+    chain,
     tokenPrecision.backingToken,
     selectedPoolAddress,
     userWalletSigner,
@@ -444,7 +448,7 @@ const Mint: FC<MintInProps> = ({ narrow }) => {
         <div className="tf__flex-row-center-vh">
           <Approve
             tokenToApproveAddress={getSelectedTokenAddress()}
-            spenderAddress={getConfig()[selectedChainState.get()].tempusControllerContract}
+            spenderAddress={getConfig()[chain].tempusControllerContract}
             amountToApprove={getSelectedTokenBalance()}
             tokenToApproveTicker={selectedToken}
             disabled={approveDisabled}

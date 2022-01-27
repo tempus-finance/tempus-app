@@ -38,12 +38,14 @@ const TVLProvider: FC<TVLProviderProps> = props => {
    * Update TVL for all pools every POLLING_INTERVAL.
    */
   useEffect(() => {
-    getConfig()[selectedChainState.get()].tempusPools.forEach(poolConfig => {
+    const chain = selectedChainState.get();
+    getConfig()[chain].tempusPools.forEach(poolConfig => {
       try {
         // If case we want to force TVL fetch (even if app is not in focus)
         const forceFetch = dynamicPoolData[poolConfig.address].tvl.get() === null;
 
         const tempusPoolTVLStream$ = dashboardDataAdapter.getTempusPoolTVL(
+          chain,
           poolConfig.address,
           poolConfig.backingToken,
           forceFetch,

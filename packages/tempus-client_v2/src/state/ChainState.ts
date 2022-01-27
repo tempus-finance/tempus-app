@@ -1,6 +1,5 @@
 import { createState } from '@hookstate/core';
-
-type Chains = 'ethereum' | 'fantom';
+import { Chain } from '../interfaces/Chain';
 
 // Currently selected chain (ethereum or fantom for now)
-export const selectedChainState = createState<Chains>('fantom');
+export const selectedChainState = createState<Chain>('fantom');

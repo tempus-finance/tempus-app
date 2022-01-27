@@ -7,6 +7,7 @@ import StatisticsService from '../services/StatisticsService';
 import getConfig from '../utils/getConfig';
 import { POLLING_INTERVAL } from '../constants';
 import { selectedChainState } from '../state/ChainState';
+import { Chain } from '../interfaces/Chain';
 
 type DashboardDataAdapterParameters = {
   statisticsService: StatisticsService;
@@ -28,7 +29,12 @@ export default class DashboardDataAdapter {
     return [...parentRows, ...childRows];
   }
 
-  getTempusPoolTVL(tempusPool: string, backingTokenTicker: Ticker, forceFetch?: boolean): Observable<BigNumber | null> {
+  getTempusPoolTVL(
+    chain: Chain,
+    tempusPool: string,
+    backingTokenTicker: Ticker,
+    forceFetch?: boolean,
+  ): Observable<BigNumber | null> {
     if (!this.statisticsService) {
       return of(null);
     }
@@ -43,7 +49,7 @@ export default class DashboardDataAdapter {
       }),
       switchMap(() => {
         if (this.statisticsService) {
-          return from(this.statisticsService.totalValueLockedUSD(tempusPool, backingTokenTicker));
+          return from(this.statisticsService.totalValueLockedUSD(chain, tempusPool, backingTokenTicker));
         }
         return of(null);
       }),

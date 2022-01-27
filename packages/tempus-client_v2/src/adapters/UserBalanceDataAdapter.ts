@@ -8,6 +8,7 @@ import StatisticsService from '../services/StatisticsService';
 import getERC20TokenService from '../services/getERC20TokenService';
 import TempusPoolService from '../services/TempusPoolService';
 import { AvailableToDeposit } from '../state/PoolDataState';
+import { selectedChainState } from '../state/ChainState';
 
 type UserBalanceDataAdapterParameters = {
   signerOrProvider: JsonRpcProvider | JsonRpcSigner;
@@ -69,7 +70,9 @@ export default class UserBalanceDataAdapter {
         // Fetch backing token rate and user balance in backing tokens
         switchMap(([userPrincipalsBalance, userYieldsBalance, userLPBalance]) => {
           if (this.statisticsService && userPrincipalsBalance && userYieldsBalance && userLPBalance) {
-            const backingTokenRate$ = from(this.statisticsService.getRate(tempusPool.backingToken));
+            const backingTokenRate$ = from(
+              this.statisticsService.getRate(selectedChainState.get(), tempusPool.backingToken),
+            );
             const presentValueInBackingTokens$ = from(
               this.statisticsService.estimateExitAndRedeem(
                 tempusPool.ammAddress,
@@ -124,7 +127,7 @@ export default class UserBalanceDataAdapter {
       const [backingTokensAvailable, yieldTokensAvailable, backingTokenToUSD, interestRate] = await Promise.all([
         backingToken.balanceOf(userWalletAddress),
         yieldBearingToken.balanceOf(userWalletAddress),
-        this.statisticsService.getRate(tempusPool.backingToken),
+        this.statisticsService.getRate(selectedChainState.get(), tempusPool.backingToken),
         this.tempusPoolService.currentInterestRate(tempusPool.address),
       ]);
 
