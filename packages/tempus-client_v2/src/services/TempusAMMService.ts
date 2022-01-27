@@ -38,7 +38,7 @@ class TempusAMMService {
     tempusAMMAddresses,
     signerOrProvider,
     tempusPoolService,
-    chain: network,
+    chain,
     eRC20TokenServiceGetter,
   }: TempusAMMServiceParameters) {
     this.tempusAMMMap.clear();
@@ -54,7 +54,7 @@ class TempusAMMService {
     this.tempusPoolService = tempusPoolService;
     this.eRC20TokenServiceGetter = eRC20TokenServiceGetter;
 
-    this.chain = network;
+    this.chain = chain;
     this.config = getChainConfig(this.chain);
   }
 

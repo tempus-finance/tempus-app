@@ -14,7 +14,7 @@ const getUserBalanceDataAdapter = (
   if (!userBalanceDataAdapters.get(chain)) {
     const userBalanceDataAdapter = new UserBalanceDataAdapter();
     userBalanceDataAdapter.init({
-      chain: chain,
+      chain,
       signerOrProvider: getDefaultProvider(chain),
       statisticsService: getStatisticsService(chain),
       tempusPoolService: getTempusPoolService(chain),
@@ -25,12 +25,12 @@ const getUserBalanceDataAdapter = (
 
   const userBalanceDataAdapter = userBalanceDataAdapters.get(chain);
   if (!userBalanceDataAdapter) {
-    throw new Error(`Failed to get UserBalanceDataAdapter for ${chain} network!`);
+    throw new Error(`Failed to get UserBalanceDataAdapter for ${chain} chain!`);
   }
 
   if (signerOrProvider) {
     userBalanceDataAdapter.init({
-      chain: chain,
+      chain,
       signerOrProvider: signerOrProvider,
       statisticsService: getStatisticsService(chain, signerOrProvider),
       tempusPoolService: getTempusPoolService(chain, signerOrProvider),

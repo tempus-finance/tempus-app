@@ -12,8 +12,8 @@ const getProfitLossGraphDataAdapter = (chain: Chain, signer: JsonRpcSigner): Pro
 
   profitLossGraphDataAdapter = new ProfitLossGraphDataAdapter();
   profitLossGraphDataAdapter.init({
-    signer: signer,
-    chain: chain,
+    signer,
+    chain,
     eRC20TokenServiceGetter: getERC20TokenService,
   });
 

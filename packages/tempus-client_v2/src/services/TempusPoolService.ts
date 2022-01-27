@@ -29,7 +29,7 @@ class TempusPoolService {
     tempusPoolAddresses = [],
     TempusPoolABI = {},
     signerOrProvider,
-    chain: network,
+    chain,
     eRC20TokenServiceGetter,
   }: TempusPoolServiceParameters) {
     this.poolAddresses = [...tempusPoolAddresses];
@@ -43,7 +43,7 @@ class TempusPoolService {
       }
     });
 
-    this.chain = network;
+    this.chain = chain;
     this.eRC20TokenServiceGetter = eRC20TokenServiceGetter;
   }
 

@@ -120,7 +120,7 @@ class NotificationService {
 export const generateEtherscanLink = (tx: string, chainName: Chain) => {
   const config = getChainConfig(chainName);
 
-  // TODO - Handle Fantom network
+  // TODO - Handle Fantom chain
   if (config.networkName === 'homestead') {
     return `https://etherscan.io/tx/${tx}`;
   }

@@ -25,7 +25,7 @@ export function getChainConfig(chain: Chain): ChainConfig {
   if (!overridingConfig) {
     const networkConfig = config[chain];
     if (!networkConfig) {
-      throw new Error(`Failed to get config for ${chain} network from config!`);
+      throw new Error(`Failed to get config for ${chain} chain from config!`);
     }
     return networkConfig;
   }
@@ -36,7 +36,7 @@ export function getChainConfig(chain: Chain): ChainConfig {
     console.error('Failed to parse environment config from cookie. Using default config as a fallback.');
     const networkConfig = config[chain];
     if (!networkConfig) {
-      throw new Error(`Failed to get config for ${chain} network from cookie!`);
+      throw new Error(`Failed to get config for ${chain} chain from cookie!`);
     }
     return networkConfig;
   }

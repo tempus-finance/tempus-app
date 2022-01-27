@@ -20,7 +20,7 @@ const getVariableRateService = (
 
   const variableRateService = variableRateServices.get(chain);
   if (!variableRateService) {
-    throw new Error(`Failed to get VariableRateService for ${chain} network!`);
+    throw new Error(`Failed to get VariableRateService for ${chain} chain!`);
   }
 
   const actualSignerOrProvider = actualSignerOrProviders.get(chain);

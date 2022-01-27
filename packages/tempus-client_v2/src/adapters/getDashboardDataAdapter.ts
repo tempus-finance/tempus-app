@@ -18,7 +18,7 @@ const getDashboardDataAdapter = (
 
   const dashboardDataAdapter = dashboardDataAdapters.get(chain);
   if (!dashboardDataAdapter) {
-    throw new Error(`Failed to get DashboardDataAdapter for ${chain} network!`);
+    throw new Error(`Failed to get DashboardDataAdapter for ${chain} chain!`);
   }
 
   if (signerOrProvider) {

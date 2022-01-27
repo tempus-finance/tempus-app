@@ -20,14 +20,14 @@ const getTempusPoolService = (chain: Chain, signerOrProvider?: JsonRpcSigner | J
       TempusPoolABI: TempusPoolABI,
       signerOrProvider: defaultProvider,
       eRC20TokenServiceGetter: getERC20TokenService,
-      chain: chain,
+      chain,
     });
     tempusPoolServices.set(chain, tempusPoolService);
   }
 
   const tempusPoolService = tempusPoolServices.get(chain);
   if (!tempusPoolService) {
-    throw new Error(`Failed to get TempusPoolService for ${chain} network!`);
+    throw new Error(`Failed to get TempusPoolService for ${chain} chain!`);
   }
 
   if (signerOrProvider) {
@@ -37,7 +37,7 @@ const getTempusPoolService = (chain: Chain, signerOrProvider?: JsonRpcSigner | J
       TempusPoolABI: TempusPoolABI,
       signerOrProvider: signerOrProvider,
       eRC20TokenServiceGetter: getERC20TokenService,
-      chain: chain,
+      chain,
     });
   }
 

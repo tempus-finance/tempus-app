@@ -20,14 +20,14 @@ const getTempusControllerService = (
       abi: TempusControllerABI,
       signerOrProvider: getDefaultProvider(chain),
       tempusAMMService: getTempusAMMService(chain),
-      chain: chain,
+      chain,
     });
     tempusControllerServices.set(chain, tempusControllerService);
   }
 
   const tempusControllerService = tempusControllerServices.get(chain);
   if (!tempusControllerService) {
-    throw new Error(`Failed to get TempusControllerService for ${chain} network!`);
+    throw new Error(`Failed to get TempusControllerService for ${chain} chain!`);
   }
 
   if (signerOrProvider) {
@@ -37,7 +37,7 @@ const getTempusControllerService = (
       abi: TempusControllerABI,
       signerOrProvider: signerOrProvider,
       tempusAMMService: getTempusAMMService(chain, signerOrProvider),
-      chain: chain,
+      chain,
     });
   }
 

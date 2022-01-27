@@ -19,7 +19,7 @@ const getPoolDataAdapter = (chain: Chain, signerOrProvider?: JsonRpcSigner | Jso
       statisticService: getStatisticsService(chain, getDefaultProvider(chain)),
       tempusAMMService: getTempusAMMService(chain, getDefaultProvider(chain)),
       vaultService: getVaultService(chain, getDefaultProvider(chain)),
-      chain: chain,
+      chain,
       eRC20TokenServiceGetter: getERC20TokenService,
     });
     poolDataAdapters.set(chain, poolDataAdapter);
@@ -27,7 +27,7 @@ const getPoolDataAdapter = (chain: Chain, signerOrProvider?: JsonRpcSigner | Jso
 
   const poolDataAdapter = poolDataAdapters.get(chain);
   if (!poolDataAdapter) {
-    throw new Error(`Failed to get PoolDataAdapter for ${chain} network!`);
+    throw new Error(`Failed to get PoolDataAdapter for ${chain} chain!`);
   }
 
   if (signerOrProvider) {
@@ -37,7 +37,7 @@ const getPoolDataAdapter = (chain: Chain, signerOrProvider?: JsonRpcSigner | Jso
       statisticService: getStatisticsService(chain, signerOrProvider),
       tempusAMMService: getTempusAMMService(chain, signerOrProvider),
       vaultService: getVaultService(chain, signerOrProvider),
-      chain: chain,
+      chain,
       eRC20TokenServiceGetter: getERC20TokenService,
     });
   }

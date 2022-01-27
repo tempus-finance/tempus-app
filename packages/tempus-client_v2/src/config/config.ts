@@ -123,7 +123,7 @@ const config: Config = {
     lidoOracle: '', // We need to set if we want to add Lido pools for Fantom chain
     networkUrl: `https://rpc.ftm.tools/`,
     networkName: 'fantom-mainnet',
-    alchemyKey: '', // We don't need alchemy for Fantom network
+    alchemyKey: '', // We don't need alchemy for Fantom chain
   },
 };
 

@@ -25,7 +25,7 @@ const getDefaultProvider = (chain: Chain) => {
 
   const provider = defaultProviders.get(chain);
   if (!provider) {
-    throw new Error(`Failed to get default provider for ${chain} network!`);
+    throw new Error(`Failed to get default provider for ${chain} chain!`);
   }
   return provider;
 };

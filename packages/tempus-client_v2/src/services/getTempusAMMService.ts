@@ -19,14 +19,14 @@ const getTempusAMMService = (chain: Chain, signerOrProvider?: JsonRpcSigner | Js
       signerOrProvider: getDefaultProvider(chain),
       tempusPoolService: getTempusPoolService(chain),
       eRC20TokenServiceGetter: getERC20TokenService,
-      chain: chain,
+      chain,
     });
     tempusAMMServices.set(chain, tempusAMMService);
   }
 
   const tempusAMMService = tempusAMMServices.get(chain);
   if (!tempusAMMService) {
-    throw new Error(`Failed to get TempusAMMService for ${chain} network!`);
+    throw new Error(`Failed to get TempusAMMService for ${chain} chain!`);
   }
 
   if (signerOrProvider) {
@@ -37,7 +37,7 @@ const getTempusAMMService = (chain: Chain, signerOrProvider?: JsonRpcSigner | Js
       signerOrProvider: signerOrProvider,
       tempusPoolService: getTempusPoolService(chain, signerOrProvider),
       eRC20TokenServiceGetter: getERC20TokenService,
-      chain: chain,
+      chain,
     });
   }
 

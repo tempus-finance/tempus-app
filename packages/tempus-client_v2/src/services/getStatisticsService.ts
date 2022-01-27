@@ -23,7 +23,7 @@ const getStatisticsService = (chain: Chain, signerOrProvider?: JsonRpcSigner | J
 
   const statisticsService = statisticsServices.get(chain);
   if (!statisticsService) {
-    throw new Error(`Failed to get StatisticsService for ${chain} network!`);
+    throw new Error(`Failed to get StatisticsService for ${chain} chain!`);
   }
 
   if (signerOrProvider) {

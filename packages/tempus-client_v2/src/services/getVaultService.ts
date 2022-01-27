@@ -17,14 +17,14 @@ const getVaultService = (chain: Chain, signerOrProvider?: JsonRpcSigner | JsonRp
       abi: VaultABI,
       signerOrProvider: getDefaultProvider(chain),
       tempusAMMService: getTempusAMMService(chain),
-      chain: chain,
+      chain,
     });
     vaultServices.set(chain, vaultService);
   }
 
   const vaultService = vaultServices.get(chain);
   if (!vaultService) {
-    throw new Error(`Failed to get VaultService for ${chain} network!`);
+    throw new Error(`Failed to get VaultService for ${chain} chain!`);
   }
 
   if (signerOrProvider) {
@@ -34,7 +34,7 @@ const getVaultService = (chain: Chain, signerOrProvider?: JsonRpcSigner | JsonRp
       abi: VaultABI,
       signerOrProvider,
       tempusAMMService: getTempusAMMService(chain, signerOrProvider),
-      chain: chain,
+      chain,
     });
   }
 
