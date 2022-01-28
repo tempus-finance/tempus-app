@@ -64,5 +64,5 @@ export const NETWORK_URLS: { [key in SupportedChainId]: string } = {
   [SupportedChainId.MAINNET]: `https://mainnet.infura.io/v3/${INFURA_KEY}`,
   [SupportedChainId.LOCAL]: `https://goerli.infura.io/v3/${INFURA_KEY}`,
   [SupportedChainId.TEMPUS_AWS]: `https://goerli.infura.io/v3/${INFURA_KEY}`,
-  [SupportedChainId.FANTOM]: `https://rpc.ftm.tools/`,
+  [SupportedChainId.FANTOM]: `https://rpcapi.fantom.network/`,
 };
