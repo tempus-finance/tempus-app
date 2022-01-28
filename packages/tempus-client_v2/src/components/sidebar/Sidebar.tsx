@@ -70,6 +70,8 @@ const Sidebar: FC<SidebarProps> = ({ initialView, onSelectedView }) => {
 
     if (config.networkName === 'homestead') {
       window.open(`https://etherscan.io/address/${selectedPoolAddress}`, '_blank');
+    } else if (config.networkName === 'fantom-mainnet') {
+      window.open(`https://ftmscan.com/address/${selectedPoolAddress}`, '_blank');
     } else {
       window.open(`https://${config.networkName}.etherscan.io/address/${selectedPoolAddress}`, '_blank');
     }
