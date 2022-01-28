@@ -44,7 +44,8 @@
     "@types/recharts": "^2.0.0",
     "@types/uuid": "^8.3.1",
     "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "react-dom": "^17.0.2",
+    "react-error-overlay": "6.0.9"
   },
   "peerDependencies": {
     "@typescript-eslint/eslint-plugin": "^4.28.1",
