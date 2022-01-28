@@ -1,9 +1,10 @@
-import { Config } from '../interfaces/Config';
+import { Config, ChainConfig } from '../interfaces/Config';
 import { TempusPool } from '../interfaces/TempusPool';
 import config from '../config/config';
+import { Chain } from '../interfaces/Chain';
 import getCookie from './getCookie';
 
-export default function getConfig(): Config {
+export function getConfig(): Config {
   const overridingConfig = getCookie('TEMPUS_OVERRIDING_CONFIG');
   // Return default config if cookie config is not specified - empty config for now.
   if (!overridingConfig) {
@@ -18,8 +19,21 @@ export default function getConfig(): Config {
   }
 }
 
+export function getChainConfig(chain: Chain): ChainConfig {
+  const configData = getConfig();
+
+  return configData[chain];
+}
+
 export function getConfigForPoolWithId(poolId: string): TempusPool {
-  const poolConfig = getConfig().tempusPools.find(tempusPool => {
+  const configData = getConfig();
+
+  const tempusPoolsConfig: TempusPool[] = [];
+  for (const networkName in configData) {
+    tempusPoolsConfig.push(...configData[networkName as Chain].tempusPools);
+  }
+
+  const poolConfig = tempusPoolsConfig.find(tempusPool => {
     return tempusPool.poolId === poolId;
   });
   if (!poolConfig) {
@@ -30,7 +44,14 @@ export function getConfigForPoolWithId(poolId: string): TempusPool {
 }
 
 export function getConfigForPoolWithAddress(poolAddress: string): TempusPool {
-  const poolConfig = getConfig().tempusPools.find(tempusPool => {
+  const configData = getConfig();
+
+  const tempusPoolsConfig: TempusPool[] = [];
+  for (const networkName in configData) {
+    tempusPoolsConfig.push(...configData[networkName as Chain].tempusPools);
+  }
+
+  const poolConfig = tempusPoolsConfig.find(tempusPool => {
     return tempusPool.address === poolAddress;
   });
   if (!poolConfig) {

@@ -1,17 +1,20 @@
+import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { FC, RefObject, useCallback, useContext, useEffect, useState } from 'react';
 import { Button, Divider, Popper } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
-import { LanguageContext } from '../../context/languageContext';
 import { Notification } from '../../interfaces/Notification';
+import { LanguageContext } from '../../context/languageContext';
 import { UserSettingsContext } from '../../context/userSettingsContext';
 import { PendingTransactionsContext } from '../../context/pendingTransactionsContext';
 import getNotificationService from '../../services/getNotificationService';
-import getConfig from '../../utils/getConfig';
+import { getChainConfig } from '../../utils/getConfig';
+import { selectedChainState } from '../../state/ChainState';
 import getText from '../../localisation/getText';
 import Typography from '../typography/Typography';
 import Spacer from '../spacer/spacer';
 import WalletNotification from './WalletNotification';
 import WalletPending from './WalletPending';
+
 import './WalletPopup.scss';
 
 type WalletPopupInProps = {
@@ -27,9 +30,13 @@ type WalletPopupOutProps = {
 type WalletPopupProps = WalletPopupInProps & WalletPopupOutProps;
 
 const WalletPopup: FC<WalletPopupProps> = ({ anchorElement, account, onSwitchWallet, onClose }) => {
+  const selectedChain = useHookState(selectedChainState);
+
   const { openWalletPopup } = useContext(UserSettingsContext);
   const { language } = useContext(LanguageContext);
   const { pendingTransactions } = useContext(PendingTransactionsContext);
+
+  const selectedChainName = selectedChain.attach(Downgraded).get();
 
   const [notifications, setNotifications] = useState<Notification[]>([]);
 
@@ -43,14 +50,15 @@ const WalletPopup: FC<WalletPopupProps> = ({ anchorElement, account, onSwitchWal
   }, [onSwitchWallet]);
 
   const onAccountAddressClick = useCallback(() => {
-    const config = getConfig();
+    const config = getChainConfig(selectedChainName);
 
+    // TODO - Handle Fantom chain
     if (config.networkName === 'homestead') {
       window.open(`https://etherscan.io/address/${account}`, '_blank');
     } else {
       window.open(`https://${config.networkName}.etherscan.io/address/${account}`, '_blank');
     }
-  }, [account]);
+  }, [account, selectedChainName]);
 
   useEffect(() => {
     const notificationStream$ = getNotificationService()

@@ -4,6 +4,7 @@ import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { ethers, BigNumber } from 'ethers';
 import { catchError, of } from 'rxjs';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
+import { selectedChainState } from '../../state/ChainState';
 import getUserShareTokenBalanceProvider from '../../providers/getUserShareTokenBalanceProvider';
 import getUserBalanceProvider from '../../providers/getBalanceProvider';
 import getUserLPTokenBalanceProvider from '../../providers/getUserLPTokenBalanceProvider';
@@ -14,7 +15,7 @@ import { UserSettingsContext } from '../../context/userSettingsContext';
 import { Ticker } from '../../interfaces/Token';
 import { SelectedYield } from '../../interfaces/SelectedYield';
 import getText from '../../localisation/getText';
-import getConfig from '../../utils/getConfig';
+import { getChainConfig } from '../../utils/getConfig';
 import getTokenPrecision from '../../utils/getTokenPrecision';
 import { isZeroString } from '../../utils/isZeroString';
 import { increasePrecision, mul18f } from '../../utils/weiMath';
@@ -42,6 +43,7 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
   const selectedPool = useHookState(selectedPoolState);
   const staticPoolData = useHookState(staticPoolDataState);
   const dynamicPoolData = useHookState(dynamicPoolDataState);
+  const selectedChain = useHookState(selectedChainState);
 
   const { language } = useContext(LanguageContext);
   const { userWalletSigner } = useContext(WalletContext);
@@ -74,6 +76,7 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
 
   const [executeDisabledText, setExecuteDisabledText] = useState<string | undefined>(undefined);
 
+  const selectedChainName = selectedChain.attach(Downgraded).get();
   const selectedPoolAddress = selectedPool.attach(Downgraded).get();
   const fixedAPR = dynamicPoolData[selectedPool.get()].fixedAPR.attach(Downgraded).get();
   const variableAPR = dynamicPoolData[selectedPool.get()].variableAPR.attach(Downgraded).get();
@@ -186,7 +189,7 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
 
   const onExecute = useCallback((): Promise<ethers.ContractTransaction | undefined> => {
     if (userWalletSigner && amount) {
-      const poolDataAdapter = getPoolDataAdapter(userWalletSigner);
+      const poolDataAdapter = getPoolDataAdapter(selectedChainName, userWalletSigner);
 
       const tokenAmount = ethers.utils.parseUnits(amount, selectedTokenPrecision);
       const isBackingToken = backingToken === selectedToken;
@@ -220,6 +223,7 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
     ammAddress,
     selectedYield,
     spotPrice,
+    selectedChainName,
   ]);
 
   const onExecuted = useCallback(() => {
@@ -231,22 +235,25 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
 
     // Trigger user pool share balance update when execute is finished
     getUserShareTokenBalanceProvider({
+      chain: selectedChainName,
       userWalletAddress,
       userWalletSigner,
     }).fetchForPool(selectedPoolAddress);
 
     // Trigger user balance update when execute is finished
     getUserBalanceProvider({
+      chain: selectedChainName,
       userWalletAddress,
       userWalletSigner,
     }).fetchForPool(selectedPoolAddress);
 
     // Trigger user LP Token balance update when execute is finished
     getUserLPTokenBalanceProvider({
+      chain: selectedChainName,
       userWalletAddress,
       userWalletSigner,
     }).fetchForPool(selectedPoolAddress);
-  }, [selectedPoolAddress, userWalletAddress, userWalletSigner]);
+  }, [selectedPoolAddress, userWalletAddress, userWalletSigner, selectedChainName]);
 
   const onApproveChange = useCallback(approved => {
     setTokensApproved(approved);
@@ -254,10 +261,11 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
 
   useEffect(() => {
     if (userWalletSigner && selectedPoolAddress && ammAddress) {
-      const poolDataAdapter = getPoolDataAdapter(userWalletSigner);
+      const poolDataAdapter = getPoolDataAdapter(selectedChainName, userWalletSigner);
 
       const stream$ = poolDataAdapter
         .retrieveBalances(
+          selectedChainName,
           selectedPoolAddress,
           ammAddress,
           tokenPrecision.backingToken,
@@ -297,6 +305,7 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
     setBackingTokenRate,
     setYieldBearingTokenRate,
     ammAddress,
+    selectedChainName,
   ]);
 
   useEffect(() => {
@@ -310,7 +319,7 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
         try {
           setTokenEstimateInProgress(true);
 
-          const poolDataAdapter = getPoolDataAdapter(userWalletSigner);
+          const poolDataAdapter = getPoolDataAdapter(selectedChainName, userWalletSigner);
 
           const isBackingToken = backingToken === selectedToken;
 
@@ -337,14 +346,14 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
     };
 
     retrieveDepositAmount();
-  }, [amount, selectedTokenPrecision, selectedToken, ammAddress, backingToken, userWalletSigner]);
+  }, [amount, selectedTokenPrecision, selectedToken, ammAddress, backingToken, userWalletSigner, selectedChainName]);
 
   useEffect(() => {
     const getEstimatedFixedApr = async () => {
       if (!isZeroString(amount) && selectedToken && userWalletSigner) {
         setRateEstimateInProgress(true);
 
-        const poolDataAdapter = getPoolDataAdapter(userWalletSigner);
+        const poolDataAdapter = getPoolDataAdapter(selectedChainName, userWalletSigner);
 
         const isBackingToken = selectedToken === backingToken;
         try {
@@ -378,6 +387,7 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
     setEstimatedFixedApr,
     backingToken,
     ammAddress,
+    selectedChainName,
   ]);
 
   useEffect(() => {
@@ -385,7 +395,7 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
       return;
     }
 
-    const poolDataAdapter = getPoolDataAdapter(userWalletSigner);
+    const poolDataAdapter = getPoolDataAdapter(selectedChainName, userWalletSigner);
 
     const stream$ = poolDataAdapter
       .isCurrentYieldNegativeForPool(selectedPoolAddress)
@@ -400,7 +410,7 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
       });
 
     return () => stream$.unsubscribe();
-  }, [selectedPoolAddress, userWalletSigner]);
+  }, [selectedPoolAddress, userWalletSigner, selectedChainName]);
 
   const fixedPrincipalsAmountFormatted = useMemo(() => {
     if (!fixedPrincipalsAmount) {
@@ -1045,7 +1055,7 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
         <div className="tf__flex-row-center-vh">
           <Approve
             tokenToApproveAddress={getSelectedTokenAddress()}
-            spenderAddress={getConfig().tempusControllerContract}
+            spenderAddress={getChainConfig(selectedChainName).tempusControllerContract}
             amountToApprove={amountToApprove}
             tokenToApproveTicker={selectedToken}
             disabled={approveDisabled}

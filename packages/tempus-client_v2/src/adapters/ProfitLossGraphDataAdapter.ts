@@ -9,13 +9,16 @@ import ChartDataPoint from '../interfaces/ChartDataPoint';
 import { TempusPool } from '../interfaces/TempusPool';
 import { div18f, mul18f } from '../utils/weiMath';
 import { BLOCK_DURATION_SECONDS, SECONDS_IN_A_DAY } from '../constants';
+import { Chain } from '../interfaces/Chain';
 
 type ProfitLossGraphDataAdapterParameters = {
   signer: JsonRpcSigner;
+  chain: Chain;
   eRC20TokenServiceGetter: typeof getERC20TokenService;
 };
 
 class ProfitLossGraphDataAdapter {
+  private chain: Chain | null = null;
   private statisticsService: StatisticsService | null = null;
   private tempusControllerService: TempusControllerService | null = null;
   private eRC20TokenServiceGetter: null | typeof getERC20TokenService = null;
@@ -23,8 +26,9 @@ class ProfitLossGraphDataAdapter {
   private signer: JsonRpcSigner | null = null;
 
   public init(params: ProfitLossGraphDataAdapterParameters): void {
-    this.statisticsService = getStatisticsService(params.signer);
-    this.tempusControllerService = getTempusControllerService(params.signer);
+    this.chain = params.chain;
+    this.statisticsService = getStatisticsService(this.chain, params.signer);
+    this.tempusControllerService = getTempusControllerService(this.chain, params.signer);
     this.eRC20TokenServiceGetter = params.eRC20TokenServiceGetter;
 
     this.signer = params.signer;
@@ -172,7 +176,7 @@ class ProfitLossGraphDataAdapter {
     sinceDate: number,
     poolData: TempusPool,
   ): Promise<BigNumber> {
-    if (!this.statisticsService || !this.eRC20TokenServiceGetter) {
+    if (!this.statisticsService || !this.eRC20TokenServiceGetter || !this.chain) {
       return BigNumber.from('0');
     }
 
@@ -181,9 +185,9 @@ class ProfitLossGraphDataAdapter {
       return BigNumber.from('0');
     }
 
-    const lpTokenService = this.eRC20TokenServiceGetter(poolData.ammAddress);
-    const principalsService = this.eRC20TokenServiceGetter(poolData.principalsAddress);
-    const yieldsService = this.eRC20TokenServiceGetter(poolData.yieldsAddress);
+    const lpTokenService = this.eRC20TokenServiceGetter(poolData.ammAddress, this.chain);
+    const principalsService = this.eRC20TokenServiceGetter(poolData.principalsAddress, this.chain);
+    const yieldsService = this.eRC20TokenServiceGetter(poolData.yieldsAddress, this.chain);
 
     try {
       const [lpBalance, principalsBalance, yieldsBalance] = await Promise.all([
@@ -210,7 +214,7 @@ class ProfitLossGraphDataAdapter {
             blockTag: block.number,
           },
         ),
-        this.statisticsService.getRate(poolData.backingToken, {
+        this.statisticsService.getRate(this.chain, poolData.backingToken, {
           blockTag: block.number,
         }),
       ]);

@@ -3,10 +3,12 @@ import { BigNumber, CallOverrides, Contract, ethers } from 'ethers';
 import Axios from 'axios';
 import { Stats } from '../abi/Stats';
 import StatsABI from '../abi/Stats.json';
+import { tokenPrecision } from '../constants';
+import { Chain } from '../interfaces/Chain';
 import { decreasePrecision, div18f, mul18f } from '../utils/weiMath';
 import { Ticker } from '../interfaces/Token';
 import TempusAMMService from './TempusAMMService';
-import { tokenPrecision } from '../constants';
+import getChainlinkFeed from './getChainlinkFeed';
 import getTokenPrecision from '../utils/getTokenPrecision';
 
 const backingTokenToCoingeckoIdMap = new Map<string, string>();
@@ -63,6 +65,7 @@ class StatisticsService {
   }
 
   public async totalValueLockedUSD(
+    chain: Chain,
     tempusPool: string,
     poolBackingTokenTicker: Ticker,
     overrides?: CallOverrides,
@@ -77,20 +80,18 @@ class StatisticsService {
       return Promise.reject(totalValueLockedUSD);
     }
 
-    const chainlinkAggregatorEnsHash = ethers.utils.namehash(`${poolBackingTokenTicker.toLowerCase()}-usd.data.eth`);
+    const chainLinkAggregator = getChainlinkFeed(chain, poolBackingTokenTicker);
+
     try {
       if (overrides) {
-        totalValueLockedUSD = await this.stats.totalValueLockedAtGivenRate(
-          tempusPool,
-          chainlinkAggregatorEnsHash,
-          overrides,
-        );
+        totalValueLockedUSD = await this.stats.totalValueLockedAtGivenRate(tempusPool, chainLinkAggregator, overrides);
       } else {
-        totalValueLockedUSD = await this.stats.totalValueLockedAtGivenRate(tempusPool, chainlinkAggregatorEnsHash);
+        totalValueLockedUSD = await this.stats.totalValueLockedAtGivenRate(tempusPool, chainLinkAggregator);
       }
     } catch (error) {
       console.error(
         'StatisticsService - totalValueLockedUSD() - Failed to get total value locked at given rate from contract. Falling back to CoinGecko API!',
+        error,
       );
 
       const rate = await this.getCoingeckoRate(poolBackingTokenTicker);
@@ -139,6 +140,9 @@ class StatisticsService {
       value = ethers.utils.parseUnits(result.data[coinGeckoTokenId].usd.toString(), tokenPrecision[token]);
     } catch (error) {
       console.error(`Failed to get token '${token}' exchange rate from coin gecko!`, error);
+      if (['USDC', 'DAI'].includes(token)) {
+        return ethers.utils.parseUnits('1.00', tokenPrecision[token]);
+      }
       return Promise.reject(error);
     }
 
@@ -148,7 +152,7 @@ class StatisticsService {
   /**
    * Returns conversion rate of specified token to USD
    **/
-  public async getRate(tokenTicker: Ticker, overrides?: CallOverrides): Promise<BigNumber> {
+  public async getRate(chain: Chain, tokenTicker: Ticker, overrides?: CallOverrides): Promise<BigNumber> {
     if (!this.stats) {
       console.error(
         'StatisticsService totalValueLockedUSD Attempted to use statistics contract before initializing it...',
@@ -157,15 +161,15 @@ class StatisticsService {
       return Promise.reject(0);
     }
 
-    const ensNameHash = ethers.utils.namehash(`${tokenTicker.toLowerCase()}-usd.data.eth`);
+    const chainLinkAggregator = getChainlinkFeed(chain, tokenTicker);
 
     let rate: BigNumber;
     let rateDenominator: BigNumber;
     try {
       if (overrides) {
-        [rate, rateDenominator] = await this.stats.getRate(ensNameHash, overrides);
+        [rate, rateDenominator] = await this.stats.getRate(chainLinkAggregator, overrides);
       } else {
-        [rate, rateDenominator] = await this.stats.getRate(ensNameHash);
+        [rate, rateDenominator] = await this.stats.getRate(chainLinkAggregator);
       }
     } catch (error) {
       console.warn(

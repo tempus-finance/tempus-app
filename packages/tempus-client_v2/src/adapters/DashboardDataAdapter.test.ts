@@ -1,10 +1,9 @@
 import DashboardDataAdapter from './DashboardDataAdapter';
 import * as getConfig from '../utils/getConfig';
-import { Config } from '../interfaces/Config';
+import { ChainConfig } from '../interfaces/Config';
 import { TempusPool } from '../interfaces/TempusPool';
 import { BigNumber } from 'ethers';
 import * as rxjs from 'rxjs';
-import { errorMonitor } from 'events';
 
 jest.mock('@ethersproject/providers', () => ({
   ...jest.requireActual('@ethersproject/providers'),
@@ -77,7 +76,7 @@ describe('DashboardDataAdapter', () => {
       jest.spyOn(dashboardDataAdapter as any, 'getChildRows').mockReturnValue(mockChildRows);
       jest.spyOn(dashboardDataAdapter as any, 'getParentRows').mockReturnValue(mockParentRows);
 
-      expect(dashboardDataAdapter.getRows()).toEqual([...mockParentRows, ...mockChildRows]);
+      expect(dashboardDataAdapter.getRows('fantom')).toEqual([...mockParentRows, ...mockChildRows]);
       expect(dashboardDataAdapter['getChildRows']).toHaveBeenCalledTimes(1);
       expect(dashboardDataAdapter['getParentRows']).toHaveBeenCalledTimes(1);
     });
@@ -88,7 +87,7 @@ describe('DashboardDataAdapter', () => {
       const tempusPoolAddr = MOCK_TEMPUS_POOL[0].address;
       const backingTokenTicker = 'USDC';
 
-      const observable = dashboardDataAdapter.getTempusPoolTVL(tempusPoolAddr, backingTokenTicker);
+      const observable = dashboardDataAdapter.getTempusPoolTVL('fantom', tempusPoolAddr, backingTokenTicker);
       const result = await rxjs.firstValueFrom(observable);
       expect(result).toBe(null);
     });
@@ -103,7 +102,7 @@ describe('DashboardDataAdapter', () => {
       const backingTokenTicker = 'USDC';
       jest.spyOn(rxjs, 'interval').mockReturnValue(rxjs.of(0));
 
-      const observable = dashboardDataAdapter.getTempusPoolTVL(tempusPoolAddr, backingTokenTicker);
+      const observable = dashboardDataAdapter.getTempusPoolTVL('fantom', tempusPoolAddr, backingTokenTicker);
       await expect(rxjs.firstValueFrom(observable)).rejects.toBeInstanceOf(rxjs.EmptyError);
     });
 
@@ -117,7 +116,7 @@ describe('DashboardDataAdapter', () => {
       const backingTokenTicker = 'USDC';
       jest.spyOn(rxjs, 'interval').mockReturnValue(rxjs.of(0));
 
-      const observable = dashboardDataAdapter.getTempusPoolTVL(tempusPoolAddr, backingTokenTicker, true);
+      const observable = dashboardDataAdapter.getTempusPoolTVL('fantom', tempusPoolAddr, backingTokenTicker, true);
       const result = await rxjs.firstValueFrom(observable);
       expect(result).toBe(mockTVL);
     });
@@ -133,7 +132,7 @@ describe('DashboardDataAdapter', () => {
       jest.spyOn(document, 'hasFocus').mockReturnValue(true);
       jest.spyOn(rxjs, 'interval').mockReturnValue(rxjs.of(0));
 
-      const observable = dashboardDataAdapter.getTempusPoolTVL(tempusPoolAddr, backingTokenTicker);
+      const observable = dashboardDataAdapter.getTempusPoolTVL('fantom', tempusPoolAddr, backingTokenTicker);
       const result = await rxjs.firstValueFrom(observable);
       expect(result).toBe(mockTVL);
     });
@@ -151,7 +150,7 @@ describe('DashboardDataAdapter', () => {
         return rxjs.of(0);
       });
 
-      const observable = dashboardDataAdapter.getTempusPoolTVL(tempusPoolAddr, backingTokenTicker, true);
+      const observable = dashboardDataAdapter.getTempusPoolTVL('fantom', tempusPoolAddr, backingTokenTicker, true);
       const result = await rxjs.firstValueFrom(observable);
       expect(result).toBe(null);
     });
@@ -168,7 +167,7 @@ describe('DashboardDataAdapter', () => {
       const backingTokenTicker = 'USDC';
       jest.spyOn(rxjs, 'interval').mockReturnValue(rxjs.of(0));
 
-      const observable = dashboardDataAdapter.getTempusPoolTVL(tempusPoolAddr, backingTokenTicker, true);
+      const observable = dashboardDataAdapter.getTempusPoolTVL('fantom', tempusPoolAddr, backingTokenTicker, true);
       const result = await rxjs.firstValueFrom(observable);
       expect(result).toBe(null);
       expect(console.error).toHaveBeenCalledWith('DashboardAdapter - getTempusPoolTVL', new Error(errMessage));
@@ -177,13 +176,13 @@ describe('DashboardDataAdapter', () => {
 
   describe('getChildRows()', () => {
     test('returns an array of child rows', () => {
-      jest.spyOn(getConfig, 'default').mockReturnValue({ tempusPools: MOCK_TEMPUS_POOL } as Config);
+      jest.spyOn(getConfig, 'getChainConfig').mockReturnValue({ tempusPools: MOCK_TEMPUS_POOL } as ChainConfig);
       const mockGetChildRowData = jest.fn().mockImplementation((dashboardDataAdapter as any).getChildRowData);
       jest.spyOn(dashboardDataAdapter as any, 'getChildRowData').mockImplementation(mockGetChildRowData);
       const expected = MOCK_TEMPUS_POOL.map(mockGetChildRowData);
 
       expect((dashboardDataAdapter as any).getChildRows()).toEqual(expected);
-      expect(getConfig.default).toHaveBeenCalled();
+      expect(getConfig.getChainConfig).toHaveBeenCalled();
       MOCK_TEMPUS_POOL.forEach((tempusPool, i) => {
         expect(dashboardDataAdapter['getChildRowData']).toHaveBeenNthCalledWith(i + 1, tempusPool);
       });

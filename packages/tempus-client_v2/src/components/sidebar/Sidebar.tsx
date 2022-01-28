@@ -3,11 +3,12 @@ import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { Tooltip } from '@material-ui/core';
 import getSidebarDataAdapter from '../../adapters/getSidebarDataAdapter';
 import { selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
+import { selectedChainState } from '../../state/ChainState';
 import { LanguageContext } from '../../context/languageContext';
 import getText from '../../localisation/getText';
 import Words from '../../localisation/words';
 import { TransactionView } from '../../interfaces/TransactionView';
-import getConfig from '../../utils/getConfig';
+import { getChainConfig } from '../../utils/getConfig';
 import shortenAccount from '../../utils/shortenAccount';
 import TokenIcon from '../tokenIcon';
 import Typography from '../typography/Typography';
@@ -31,6 +32,7 @@ type SidebarProps = SidebarInProps & SidebarOutProps;
 const Sidebar: FC<SidebarProps> = ({ initialView, onSelectedView }) => {
   const selectedPool = useHookState(selectedPoolState);
   const staticPoolData = useHookState(staticPoolDataState);
+  const selectedChain = useHookState(selectedChainState);
 
   const { language } = useContext(LanguageContext);
 
@@ -44,6 +46,7 @@ const Sidebar: FC<SidebarProps> = ({ initialView, onSelectedView }) => {
   const [provideLiquidityDisabledReason, setProvideLiquidityDisabledReason] = useState<Words | null>(null);
   const [removeLiquidityDisabledReason, setRemoveLiquidityDisabledReason] = useState<Words | null>(null);
 
+  const selectedChainName = selectedChain.attach(Downgraded).get();
   const selectedPoolAddress = selectedPool.attach(Downgraded).get();
   const backingToken = staticPoolData[selectedPool.get()].backingToken.attach(Downgraded).get();
   const protocolDisplayName = staticPoolData[selectedPool.get()].protocolDisplayName.attach(Downgraded).get();
@@ -63,14 +66,14 @@ const Sidebar: FC<SidebarProps> = ({ initialView, onSelectedView }) => {
   }, [initialView, selectedView]);
 
   const onPoolAddressClick = useCallback(() => {
-    const config = getConfig();
+    const config = getChainConfig(selectedChainName);
 
     if (config.networkName === 'homestead') {
       window.open(`https://etherscan.io/address/${selectedPoolAddress}`, '_blank');
     } else {
       window.open(`https://${config.networkName}.etherscan.io/address/${selectedPoolAddress}`, '_blank');
     }
-  }, [selectedPoolAddress]);
+  }, [selectedPoolAddress, selectedChainName]);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {

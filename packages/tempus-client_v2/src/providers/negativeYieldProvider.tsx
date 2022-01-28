@@ -1,10 +1,11 @@
 import { interval, startWith, Subscription } from 'rxjs';
 import { useCallback, useContext, useEffect } from 'react';
-import { useState as useHookState } from '@hookstate/core';
+import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { POLLING_INTERVAL } from '../constants';
-import getConfig from '../utils/getConfig';
+import { getChainConfig } from '../utils/getConfig';
 import { TempusPool } from '../interfaces/TempusPool';
 import { dynamicPoolDataState } from '../state/PoolDataState';
+import { selectedChainState } from '../state/ChainState';
 import { WalletContext } from '../context/walletContext';
 import getDefaultProvider from '../services/getDefaultProvider';
 import getTempusPoolService from '../services/getTempusPoolService';
@@ -13,6 +14,9 @@ const subscriptions$ = new Subscription();
 
 const NegativeYieldProvider = () => {
   const dynamicPoolData = useHookState(dynamicPoolDataState);
+  const selectedChain = useHookState(selectedChainState);
+
+  const selectedChainName = selectedChain.attach(Downgraded).get();
 
   const { userWalletConnected, userWalletSigner } = useContext(WalletContext);
 
@@ -20,9 +24,9 @@ const NegativeYieldProvider = () => {
     if (userWalletConnected && userWalletSigner) {
       return userWalletSigner.provider;
     } else if (userWalletConnected === false) {
-      return getDefaultProvider();
+      return getDefaultProvider(selectedChainName);
     }
-  }, [userWalletConnected, userWalletSigner]);
+  }, [userWalletConnected, userWalletSigner, selectedChainName]);
 
   /**
    * Fetch APR for all tempus pools on each block event
@@ -38,7 +42,7 @@ const NegativeYieldProvider = () => {
       }
 
       try {
-        const tempusPoolService = getTempusPoolService(provider);
+        const tempusPoolService = getTempusPoolService(selectedChainName, provider);
         const [currentInterestRate, initialInterestRate] = await Promise.all([
           tempusPoolService.currentInterestRate(tempusPool.address),
           tempusPoolService.initialInterestRate(tempusPool.address),
@@ -53,14 +57,14 @@ const NegativeYieldProvider = () => {
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [getProvider],
+    [selectedChainName, getProvider],
   );
 
   /**
    * Fetch/Update Negative Yield Flag for all pools every POLLING_INTERVAL.
    */
   useEffect(() => {
-    getConfig().tempusPools.forEach(poolConfig => {
+    getChainConfig(selectedChainName).tempusPools.forEach(poolConfig => {
       try {
         const fetchInterval$ = interval(POLLING_INTERVAL).pipe(startWith(0));
         subscriptions$.add(
@@ -74,7 +78,7 @@ const NegativeYieldProvider = () => {
     });
 
     return () => subscriptions$.unsubscribe();
-  }, [fetchPoolNegativeYieldFlag]);
+  }, [selectedChainName, fetchPoolNegativeYieldFlag]);
 
   /**
    * Provider component only updates state value when needed. It does not show anything in the UI.

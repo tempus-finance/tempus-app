@@ -1,6 +1,8 @@
 import { DEFAULT_TOKEN_PRECISION } from '../constants';
+import { TempusPool } from '../interfaces/TempusPool';
 import { TokenTypePrecision } from '../interfaces/TokenPrecision';
-import getConfig from './getConfig';
+import { Chain } from '../interfaces/Chain';
+import { getConfig } from './getConfig';
 
 const tokenPrecisionCache: { [address: string]: { [key in TokenTypePrecision]?: number } } = {};
 
@@ -9,7 +11,14 @@ const getTokenPrecision = (poolAddress: string, tokenTypePrecision: TokenTypePre
     return tokenPrecisionCache?.[poolAddress]?.[tokenTypePrecision] || 0;
   }
 
-  const pool = getConfig().tempusPools.find(config => config.address === poolAddress);
+  const config = getConfig();
+
+  const tempusPoolsConfig: TempusPool[] = [];
+  for (const networkName in config) {
+    tempusPoolsConfig.push(...config[networkName as Chain].tempusPools);
+  }
+
+  const pool = tempusPoolsConfig.find(config => config.address === poolAddress);
 
   if (!pool) {
     return 0;

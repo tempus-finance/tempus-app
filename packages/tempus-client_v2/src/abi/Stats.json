@@ -251,9 +251,9 @@
   {
     "inputs": [
       {
-        "internalType": "bytes32",
-        "name": "chainlinkAggregatorNodeHash",
-        "type": "bytes32"
+        "internalType": "address",
+        "name": "chainlinkAggregatorNode",
+        "type": "address"
       }
     ],
     "name": "getRate",
@@ -280,9 +280,9 @@
         "type": "address"
       },
       {
-        "internalType": "bytes32",
-        "name": "rateConversionData",
-        "type": "bytes32"
+        "internalType": "address",
+        "name": "chainlinkAggregatorNode",
+        "type": "address"
       }
     ],
     "name": "totalValueLockedAtGivenRate",

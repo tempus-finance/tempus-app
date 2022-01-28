@@ -26,8 +26,8 @@ interface StatsInterface extends ethers.utils.Interface {
     "estimatedDepositAndProvideLiquidity(address,uint256,bool)": FunctionFragment;
     "estimatedMintedShares(address,uint256,bool)": FunctionFragment;
     "estimatedRedeem(address,uint256,uint256,bool)": FunctionFragment;
-    "getRate(bytes32)": FunctionFragment;
-    "totalValueLockedAtGivenRate(address,bytes32)": FunctionFragment;
+    "getRate(address)": FunctionFragment;
+    "totalValueLockedAtGivenRate(address,address)": FunctionFragment;
     "totalValueLockedInBackingTokens(address)": FunctionFragment;
     "version()": FunctionFragment;
   };
@@ -70,10 +70,10 @@ interface StatsInterface extends ethers.utils.Interface {
     functionFragment: "estimatedRedeem",
     values: [string, BigNumberish, BigNumberish, boolean]
   ): string;
-  encodeFunctionData(functionFragment: "getRate", values: [BytesLike]): string;
+  encodeFunctionData(functionFragment: "getRate", values: [string]): string;
   encodeFunctionData(
     functionFragment: "totalValueLockedAtGivenRate",
-    values: [string, BytesLike]
+    values: [string, string]
   ): string;
   encodeFunctionData(
     functionFragment: "totalValueLockedInBackingTokens",
@@ -232,7 +232,7 @@ export class Stats extends BaseContract {
     ): Promise<[BigNumber]>;
 
     getRate(
-      chainlinkAggregatorNodeHash: BytesLike,
+      chainlinkAggregatorNode: string,
       overrides?: CallOverrides
     ): Promise<
       [BigNumber, BigNumber] & { rate: BigNumber; rateDenominator: BigNumber }
@@ -240,7 +240,7 @@ export class Stats extends BaseContract {
 
     totalValueLockedAtGivenRate(
       pool: string,
-      rateConversionData: BytesLike,
+      chainlinkAggregatorNode: string,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
@@ -331,7 +331,7 @@ export class Stats extends BaseContract {
   ): Promise<BigNumber>;
 
   getRate(
-    chainlinkAggregatorNodeHash: BytesLike,
+    chainlinkAggregatorNode: string,
     overrides?: CallOverrides
   ): Promise<
     [BigNumber, BigNumber] & { rate: BigNumber; rateDenominator: BigNumber }
@@ -339,7 +339,7 @@ export class Stats extends BaseContract {
 
   totalValueLockedAtGivenRate(
     pool: string,
-    rateConversionData: BytesLike,
+    chainlinkAggregatorNode: string,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
@@ -424,7 +424,7 @@ export class Stats extends BaseContract {
     ): Promise<BigNumber>;
 
     getRate(
-      chainlinkAggregatorNodeHash: BytesLike,
+      chainlinkAggregatorNode: string,
       overrides?: CallOverrides
     ): Promise<
       [BigNumber, BigNumber] & { rate: BigNumber; rateDenominator: BigNumber }
@@ -432,7 +432,7 @@ export class Stats extends BaseContract {
 
     totalValueLockedAtGivenRate(
       pool: string,
-      rateConversionData: BytesLike,
+      chainlinkAggregatorNode: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -501,13 +501,13 @@ export class Stats extends BaseContract {
     ): Promise<BigNumber>;
 
     getRate(
-      chainlinkAggregatorNodeHash: BytesLike,
+      chainlinkAggregatorNode: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     totalValueLockedAtGivenRate(
       pool: string,
-      rateConversionData: BytesLike,
+      chainlinkAggregatorNode: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -570,13 +570,13 @@ export class Stats extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     getRate(
-      chainlinkAggregatorNodeHash: BytesLike,
+      chainlinkAggregatorNode: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     totalValueLockedAtGivenRate(
       pool: string,
-      rateConversionData: BytesLike,
+      chainlinkAggregatorNode: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

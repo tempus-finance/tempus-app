@@ -4,8 +4,9 @@ import { DashboardRow, DashboardRowChild, DashboardRowParent } from '../interfac
 import { Ticker } from '../interfaces/Token';
 import { TempusPool } from '../interfaces/TempusPool';
 import StatisticsService from '../services/StatisticsService';
-import getConfig from '../utils/getConfig';
+import { getChainConfig } from '../utils/getConfig';
 import { POLLING_INTERVAL } from '../constants';
+import { Chain } from '../interfaces/Chain';
 import getRangeFrom from '../utils/getRangeFrom';
 
 type DashboardDataAdapterParameters = {
@@ -19,8 +20,8 @@ export default class DashboardDataAdapter {
     this.statisticsService = params.statisticsService;
   }
 
-  getRows(): DashboardRow[] {
-    const childRows = this.getChildRows();
+  getRows(chainName: Chain): DashboardRow[] {
+    let childRows = this.getChildRows(chainName);
 
     // Generates parent rows based on children rows
     const parentRows = this.getParentRows(childRows);
@@ -28,7 +29,12 @@ export default class DashboardDataAdapter {
     return [...parentRows, ...childRows];
   }
 
-  getTempusPoolTVL(tempusPool: string, backingTokenTicker: Ticker, forceFetch?: boolean): Observable<BigNumber | null> {
+  getTempusPoolTVL(
+    chain: Chain,
+    tempusPool: string,
+    backingTokenTicker: Ticker,
+    forceFetch?: boolean,
+  ): Observable<BigNumber | null> {
     if (!this.statisticsService) {
       return of(null);
     }
@@ -43,7 +49,7 @@ export default class DashboardDataAdapter {
       }),
       switchMap(() => {
         if (this.statisticsService) {
-          return from(this.statisticsService.totalValueLockedUSD(tempusPool, backingTokenTicker));
+          return from(this.statisticsService.totalValueLockedUSD(chain, tempusPool, backingTokenTicker));
         }
         return of(null);
       }),
@@ -54,9 +60,11 @@ export default class DashboardDataAdapter {
     );
   }
 
-  private getChildRows(): DashboardRowChild[] {
-    const tempusPools = getConfig().tempusPools;
-    const childRows: DashboardRowChild[] = tempusPools.map(tempusPool => this.getChildRowData(tempusPool));
+  private getChildRows(chainName: Chain): DashboardRowChild[] {
+    const childRows: DashboardRowChild[] = [];
+    getChainConfig(chainName).tempusPools.forEach(tempusPool => {
+      childRows.push(this.getChildRowData(tempusPool));
+    });
     return childRows;
   }
 
