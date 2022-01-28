@@ -1,6 +1,6 @@
 import { BigNumber, Contract, utils, providers } from 'ethers';
 import { JsonRpcProvider } from '@ethersproject/providers';
-import { ChainConfig, Config } from '../interfaces/Config';
+import { ChainConfig } from '../interfaces/Config';
 import * as getConfig from '../utils/getConfig';
 import * as getProvider from '../utils/getProvider';
 import * as weiMath from '../utils/weiMath';

@@ -52,7 +52,6 @@ const WalletPopup: FC<WalletPopupProps> = ({ anchorElement, account, onSwitchWal
   const onAccountAddressClick = useCallback(() => {
     const config = getChainConfig(selectedChainName);
 
-    // TODO - Handle Fantom chain
     if (config.networkName === 'homestead') {
       window.open(`https://etherscan.io/address/${account}`, '_blank');
     } else if (config.networkName === 'fantom-mainnet') {
