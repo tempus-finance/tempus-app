@@ -37,7 +37,7 @@ global.fetch = jest.fn(() =>
   Promise.resolve({
     json: () => Promise.resolve([]),
   }),
-);
+) as any;
 
 describe('VariableRateService', () => {
   let variableRateService: VariableRateService;
@@ -71,7 +71,7 @@ describe('VariableRateService', () => {
   let mockVaultService: jest.Mock<VaultService, []>;
   let mockTempusAMMService: jest.Mock<TempusAMMService, []>;
   let mockVaults: jest.Mock<Vaults, []>;
-  let mockConfig: jest.Mock<Config, []>;
+  let mockConfig: jest.Mock<ChainConfig, []>;
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -88,7 +88,7 @@ describe('VariableRateService', () => {
         },
       },
     });
-    mockConfig = jest.fn().mockReturnValue({ lidoOracle: '0x0000000000000000000000000000000000000000' });
+    mockConfig = jest.fn().mockReturnValue({ chainId: 250, lidoOracle: '0x0000000000000000000000000000000000000000' });
 
     variableRateService = new VariableRateService();
     variableRateService.init(
@@ -150,8 +150,8 @@ describe('VariableRateService', () => {
     });
 
     test('should create Contractor instance twice', () => {
-      expect(Contract).toHaveBeenNthCalledWith(1, aaveLendingPoolAddress, AaveLendingPoolABI, mockProvider);
-      expect(Contract).toHaveBeenNthCalledWith(2, mockConfig().lidoOracle, lidoOracleABI.abi, mockProvider);
+      expect(Contract).toHaveBeenNthCalledWith(1, mockConfig().lidoOracle, lidoOracleABI.abi, mockProvider);
+      expect(Contract).toHaveBeenNthCalledWith(2, aaveLendingPoolAddress, AaveLendingPoolABI, mockProvider);
     });
   });
 
@@ -1003,16 +1003,19 @@ describe('VariableRateService', () => {
   });
 
   describe('getYearnAPR()', () => {
-    test('test with no init() invoked (i.e. this.lidoOracle is undefined), should log an error and return 0', async () => {
+    test('test with no init() invoked (i.e. this.chainId is undefined), should throw an error', async () => {
       const fees = Math.random() * 0.05;
       const yieldBearingTokenAddress = '0x0000000000000000000000000000000000000001';
 
       variableRateService = new VariableRateService();
 
-      await expect((variableRateService as any).getYearnAPR(yieldBearingTokenAddress, fees)).resolves.toEqual(0);
-      expect(console.error).toHaveBeenCalled();
-      expect((console.error as jest.Mock<void, any>).mock.calls[0][0]).toEqual('VariableRateService - getYearnData');
-      expect((console.error as jest.Mock<void, any>).mock.calls[0][1]).toBeInstanceOf(Error);
+      try {
+        await variableRateService['getYearnAPR'](yieldBearingTokenAddress, fees);
+      } catch (error) {
+        expect((error as any).message).toBe(
+          'VariableRateService - fetchYearnData() - Attempted to use VariableRateService before initializing it!',
+        );
+      }
     });
 
     test('should call fetchYearnData(), getYearnAPY() and getAprFromApy() and return APR + fee', async () => {

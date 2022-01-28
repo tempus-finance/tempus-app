@@ -1,6 +1,6 @@
 import { ethers, BigNumber, Contract } from 'ethers';
 import { JsonRpcSigner, JsonRpcProvider } from '@ethersproject/providers';
-import { debounceTime, from, Observable, of, switchMap, throwError } from 'rxjs';
+import { debounceTime, from, Observable, of, switchMap } from 'rxjs';
 import { Vaults as RariVault } from 'rari-sdk';
 import lidoOracleABI from '../abi/LidoOracle.json';
 import AaveLendingPoolABI from '../abi/AaveLendingPool.json';
@@ -398,11 +398,8 @@ class VariableRateService {
 
   private fetchYearnData(): Observable<YearnData[] | null> {
     if (!this.chainConfig) {
-      return throwError(
-        () =>
-          new Error(
-            'VariableRateService - fetchYearnData() - Attempted to use VariableRateService before initializing it!',
-          ),
+      throw new Error(
+        'VariableRateService - fetchYearnData() - Attempted to use VariableRateService before initializing it!',
       );
     }
 
