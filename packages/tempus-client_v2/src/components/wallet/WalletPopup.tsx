@@ -55,6 +55,8 @@ const WalletPopup: FC<WalletPopupProps> = ({ anchorElement, account, onSwitchWal
     // TODO - Handle Fantom chain
     if (config.networkName === 'homestead') {
       window.open(`https://etherscan.io/address/${account}`, '_blank');
+    } else if (config.networkName === 'fantom-mainnet') {
+      window.open(`https://ftmscan.com/address/${account}`, '_blank');
     } else {
       window.open(`https://${config.networkName}.etherscan.io/address/${account}`, '_blank');
     }
