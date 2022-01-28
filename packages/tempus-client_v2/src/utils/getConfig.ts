@@ -20,34 +20,17 @@ export function getConfig(): Config {
 }
 
 export function getChainConfig(chain: Chain): ChainConfig {
-  const overridingConfig = getCookie('TEMPUS_OVERRIDING_CONFIG');
-  // Return default config if cookie config is not specified - empty config for now.
-  if (!overridingConfig) {
-    const networkConfig = config[chain];
-    if (!networkConfig) {
-      throw new Error(`Failed to get config for ${chain} chain from config!`);
-    }
-    return networkConfig;
-  }
+  const configData = getConfig();
 
-  try {
-    return JSON.parse(overridingConfig)[chain];
-  } catch (error) {
-    console.error('Failed to parse environment config from cookie. Using default config as a fallback.');
-    const networkConfig = config[chain];
-    if (!networkConfig) {
-      throw new Error(`Failed to get config for ${chain} chain from cookie!`);
-    }
-    return networkConfig;
-  }
+  return configData[chain];
 }
 
 export function getConfigForPoolWithId(poolId: string): TempusPool {
-  const config = getConfig();
+  const configData = getConfig();
 
   const tempusPoolsConfig: TempusPool[] = [];
-  for (const networkName in config) {
-    tempusPoolsConfig.push(...config[networkName as Chain].tempusPools);
+  for (const networkName in configData) {
+    tempusPoolsConfig.push(...configData[networkName as Chain].tempusPools);
   }
 
   const poolConfig = tempusPoolsConfig.find(tempusPool => {
@@ -61,11 +44,11 @@ export function getConfigForPoolWithId(poolId: string): TempusPool {
 }
 
 export function getConfigForPoolWithAddress(poolAddress: string): TempusPool {
-  const config = getConfig();
+  const configData = getConfig();
 
   const tempusPoolsConfig: TempusPool[] = [];
-  for (const networkName in config) {
-    tempusPoolsConfig.push(...config[networkName as Chain].tempusPools);
+  for (const networkName in configData) {
+    tempusPoolsConfig.push(...configData[networkName as Chain].tempusPools);
   }
 
   const poolConfig = tempusPoolsConfig.find(tempusPool => {
