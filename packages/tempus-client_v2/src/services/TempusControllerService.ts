@@ -4,6 +4,7 @@ import { TempusController } from '../abi/TempusController';
 import TempusControllerABI from '../abi/TempusController.json';
 import { TypedEvent } from '../abi/commons';
 import { getChainConfig } from '../utils/getConfig';
+import { decreasePrecision } from '../utils/weiMath';
 import {
   completeExitAndRedeemGasIncrease,
   depositAndFixGasIncrease,
@@ -240,6 +241,8 @@ class TempusControllerService {
     yieldsRate: BigNumber,
     maxSlippage: BigNumber,
     isBackingToken: boolean,
+    principalsPrecision: number,
+    lpTokenPrecision: number,
   ): Promise<ContractTransaction> {
     if (!this.contract || !this.tempusAMMService || !this.chain) {
       console.error(
@@ -256,7 +259,16 @@ class TempusControllerService {
       return Promise.reject();
     }
 
-    let maxLeftoverShares = this.tempusAMMService.getMaxLeftoverShares(principalsAmount, yieldsAmount, lpTokensAmount);
+    let lpTokensAmountParsed = lpTokensAmount;
+    if (lpTokenPrecision > principalsPrecision) {
+      lpTokensAmountParsed = decreasePrecision(lpTokensAmount, lpTokenPrecision - principalsPrecision);
+    }
+
+    let maxLeftoverShares = this.tempusAMMService.getMaxLeftoverShares(
+      principalsAmount,
+      yieldsAmount,
+      lpTokensAmountParsed,
+    );
 
     try {
       const estimate = await this.contract.estimateGas.exitAmmGivenLpAndRedeem(

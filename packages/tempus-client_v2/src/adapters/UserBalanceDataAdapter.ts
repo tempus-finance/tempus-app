@@ -84,6 +84,7 @@ export default class UserBalanceDataAdapter {
             const backingTokenRate$ = from(this.statisticsService.getRate(this.chain, tempusPool.backingToken));
             const presentValueInBackingTokens$ = from(
               this.statisticsService.estimateExitAndRedeem(
+                tempusPool.address,
                 tempusPool.ammAddress,
                 userLPBalance,
                 userPrincipalsBalance,

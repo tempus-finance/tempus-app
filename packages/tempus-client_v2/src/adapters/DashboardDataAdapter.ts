@@ -7,6 +7,7 @@ import StatisticsService from '../services/StatisticsService';
 import { getChainConfig } from '../utils/getConfig';
 import { POLLING_INTERVAL } from '../constants';
 import { Chain } from '../interfaces/Chain';
+import getRangeFrom from '../utils/getRangeFrom';
 
 type DashboardDataAdapterParameters = {
   statisticsService: StatisticsService;
@@ -96,7 +97,7 @@ export default class DashboardDataAdapter {
           id: child.token, // Using token as parent ID, this way multiple children with same token will fall under same parent.
           parentId: null, // Always null for parent rows
           token: child.token,
-          maturityRange: this.getRangeFrom<Date>(childrenMaturityDate),
+          maturityRange: getRangeFrom<Date>(childrenMaturityDate),
           protocols: Array.from(new Set(childrenProtocols)), // Converting list of protocols to set removes duplicate items
         };
 
@@ -108,32 +109,10 @@ export default class DashboardDataAdapter {
   }
 
   private getChildParent(child: DashboardRowChild, parentRows: DashboardRowParent[]): DashboardRowParent | undefined {
-    return parentRows.find(parent => {
-      return parent.id === child.parentId;
-    });
+    return parentRows.find(parent => parent.id === child.parentId);
   }
 
   private getParentChildren(parentId: string, childRows: DashboardRowChild[]): DashboardRowChild[] {
-    return childRows.filter(child => {
-      return child.parentId === parentId;
-    });
-  }
-
-  private getRangeFrom<ValueType>(values: (ValueType | null)[]): (ValueType | null)[] {
-    let minValue = values[0];
-    let maxValue = values[0];
-    values.forEach(value => {
-      if (!value) {
-        return;
-      }
-      if (minValue && minValue > value) {
-        minValue = value;
-      }
-      if (maxValue && maxValue < value) {
-        maxValue = value;
-      }
-    });
-
-    return [minValue, maxValue];
+    return childRows.filter(child => child.parentId === parentId);
   }
 }

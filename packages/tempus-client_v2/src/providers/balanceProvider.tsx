@@ -93,6 +93,7 @@ class UserBalanceProvider {
 
     const estimateExitToBackingToken = true;
     const exitEstimate = await statisticsService.estimateExitAndRedeem(
+      poolConfig.address,
       poolConfig.ammAddress,
       lpTokenBalance,
       principalsBalance,

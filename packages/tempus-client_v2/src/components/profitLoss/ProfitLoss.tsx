@@ -26,6 +26,7 @@ const ProfitLoss = () => {
   const [estimatedWithdrawAmount, setEstimatedWithdrawAmount] = useState<BigNumber | null>(null);
 
   const selectedChainName = selectedChain.attach(Downgraded).get();
+  const selectedPoolAddress = selectedPool.attach(Downgraded).get();
   const decimalsForUI = staticPoolData[selectedPool.get()].decimalsForUI.attach(Downgraded).get();
   const ammAddress = staticPoolData[selectedPool.get()].ammAddress.attach(Downgraded).get();
   const ticker = staticPoolData[selectedPool.get()].backingToken.attach(Downgraded).get();
@@ -42,7 +43,14 @@ const ProfitLoss = () => {
 
     const poolDataAdapter = getPoolDataAdapter(selectedChainName, userWalletSigner);
     const withdrawStream$ = poolDataAdapter
-      .getEstimatedWithdrawAmount(ammAddress, userLPTokenBalance, userPrincipalsBalance, userYieldsBalance, true)
+      .getEstimatedWithdrawAmount(
+        selectedPoolAddress,
+        ammAddress,
+        userLPTokenBalance,
+        userPrincipalsBalance,
+        userYieldsBalance,
+        true,
+      )
       .subscribe(estimate => {
         if (estimate) {
           setEstimatedWithdrawAmount(estimate.tokenAmount);
@@ -52,7 +60,15 @@ const ProfitLoss = () => {
     return () => {
       withdrawStream$.unsubscribe();
     };
-  }, [userWalletSigner, userPrincipalsBalance, userYieldsBalance, userLPTokenBalance, ammAddress, selectedChainName]);
+  }, [
+    userWalletSigner,
+    userPrincipalsBalance,
+    userYieldsBalance,
+    userLPTokenBalance,
+    ammAddress,
+    selectedPoolAddress,
+    selectedChainName,
+  ]);
 
   const estimatedWithdrawAmountFormatted = useMemo(() => {
     if (!estimatedWithdrawAmount) {
