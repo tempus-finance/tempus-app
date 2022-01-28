@@ -2,6 +2,7 @@ import { ethers, BigNumber } from 'ethers';
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
+import { selectedChainState } from '../../state/ChainState';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
 import { LanguageContext } from '../../context/languageContext';
 import { WalletContext } from '../../context/walletContext';
@@ -17,12 +18,14 @@ const ProfitLoss = () => {
   const selectedPool = useHookState(selectedPoolState);
   const dynamicPoolData = useHookState(dynamicPoolDataState);
   const staticPoolData = useHookState(staticPoolDataState);
+  const selectedChain = useHookState(selectedChainState);
 
   const { userWalletSigner } = useContext(WalletContext);
   const { language } = useContext(LanguageContext);
 
   const [estimatedWithdrawAmount, setEstimatedWithdrawAmount] = useState<BigNumber | null>(null);
 
+  const selectedChainName = selectedChain.attach(Downgraded).get();
   const decimalsForUI = staticPoolData[selectedPool.get()].decimalsForUI.attach(Downgraded).get();
   const ammAddress = staticPoolData[selectedPool.get()].ammAddress.attach(Downgraded).get();
   const ticker = staticPoolData[selectedPool.get()].backingToken.attach(Downgraded).get();
@@ -37,7 +40,7 @@ const ProfitLoss = () => {
       return;
     }
 
-    const poolDataAdapter = getPoolDataAdapter(userWalletSigner);
+    const poolDataAdapter = getPoolDataAdapter(selectedChainName, userWalletSigner);
     const withdrawStream$ = poolDataAdapter
       .getEstimatedWithdrawAmount(ammAddress, userLPTokenBalance, userPrincipalsBalance, userYieldsBalance, true)
       .subscribe(estimate => {
@@ -49,7 +52,7 @@ const ProfitLoss = () => {
     return () => {
       withdrawStream$.unsubscribe();
     };
-  }, [userWalletSigner, userPrincipalsBalance, userYieldsBalance, userLPTokenBalance, ammAddress]);
+  }, [userWalletSigner, userPrincipalsBalance, userYieldsBalance, userLPTokenBalance, ammAddress, selectedChainName]);
 
   const estimatedWithdrawAmountFormatted = useMemo(() => {
     if (!estimatedWithdrawAmount) {

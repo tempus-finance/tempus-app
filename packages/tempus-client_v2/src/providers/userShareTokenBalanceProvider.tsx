@@ -3,31 +3,34 @@ import { Contract } from 'ethers';
 import { ERC20 } from '../abi/ERC20';
 import ERC20ABI from '../abi/ERC20.json';
 import { TempusPool } from '../interfaces/TempusPool';
-import { selectedChainState } from '../state/ChainState';
+import { Chain } from '../interfaces/Chain';
 import { dynamicPoolDataState } from '../state/PoolDataState';
-import getConfig, { getConfigForPoolWithAddress } from '../utils/getConfig';
+import { getChainConfig, getConfigForPoolWithAddress } from '../utils/getConfig';
 
 export interface UserShareTokenBalanceProviderParams {
   userWalletAddress: string;
   userWalletSigner: JsonRpcSigner;
+  chain: Chain;
 }
 
 class UserShareTokenBalanceProvider {
-  private userWalletAddress: string = '';
-  private userWalletSigner: JsonRpcSigner | null = null;
+  private userWalletAddress: string;
+  private userWalletSigner: JsonRpcSigner;
+  private chain: Chain;
 
   private tokenContracts: ERC20[] = [];
 
   constructor(params: UserShareTokenBalanceProviderParams) {
     this.userWalletAddress = params.userWalletAddress;
     this.userWalletSigner = params.userWalletSigner;
+    this.chain = params.chain;
   }
 
   init() {
     // Make sure to clean previous data before crating new subscriptions
     this.destroy();
 
-    getConfig()[selectedChainState.get()].tempusPools.forEach(poolConfig => {
+    getChainConfig(this.chain).tempusPools.forEach(poolConfig => {
       if (!this.userWalletSigner) {
         return;
       }
@@ -96,13 +99,13 @@ class UserShareTokenBalanceProvider {
   }
 
   private updatePrincipalsBalance = () => {
-    getConfig()[selectedChainState.get()].tempusPools.forEach(poolConfig => {
+    getChainConfig(this.chain).tempusPools.forEach(poolConfig => {
       this.updatePrincipalsBalanceForPool(poolConfig);
     });
   };
 
   private updateYieldsBalance = () => {
-    getConfig()[selectedChainState.get()].tempusPools.forEach(poolConfig => {
+    getChainConfig(this.chain).tempusPools.forEach(poolConfig => {
       this.updateYieldsBalanceForPool(poolConfig);
     });
   };

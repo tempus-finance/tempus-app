@@ -2,6 +2,7 @@ import { differenceInDays } from 'date-fns';
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../../state/PoolDataState';
+import { selectedChainState } from '../../../state/ChainState';
 import getPoolDataAdapter from '../../../adapters/getPoolDataAdapter';
 import { LanguageContext } from '../../../context/languageContext';
 import { WalletContext } from '../../../context/walletContext';
@@ -15,12 +16,14 @@ const AprTooltip = () => {
   const selectedPool = useHookState(selectedPoolState);
   const staticPoolData = useHookState(staticPoolDataState);
   const dynamicPoolData = useHookState(dynamicPoolDataState);
+  const selectedChain = useHookState(selectedChainState);
 
   const { userWalletSigner } = useContext(WalletContext);
   const { language } = useContext(LanguageContext);
 
   const [poolRatio, setPoolRatio] = useState<number[] | null>(null);
 
+  const selectedChainName = selectedChain.attach(Downgraded).get();
   const fixedAPR = dynamicPoolData[selectedPool.get()].fixedAPR.attach(Downgraded).get();
   const ammAddress = staticPoolData[selectedPool.get()].ammAddress.attach(Downgraded).get();
   const principalsAddress = staticPoolData[selectedPool.get()].principalsAddress.attach(Downgraded).get();
@@ -33,7 +36,7 @@ const AprTooltip = () => {
       if (!userWalletSigner) {
         return;
       }
-      const poolDataAdapter = getPoolDataAdapter(userWalletSigner);
+      const poolDataAdapter = getPoolDataAdapter(selectedChainName, userWalletSigner);
 
       const { principalsShare, yieldsShare } = await poolDataAdapter.getPoolRatioOfAssets(
         ammAddress,
@@ -45,7 +48,7 @@ const AprTooltip = () => {
     };
 
     fetchPoolRation();
-  }, [ammAddress, principalsAddress, userWalletSigner, yieldsAddress]);
+  }, [ammAddress, principalsAddress, userWalletSigner, yieldsAddress, selectedChainName]);
 
   const futureAprFormatted = useMemo(() => {
     return NumberUtils.formatPercentage(fixedAPR, 2);

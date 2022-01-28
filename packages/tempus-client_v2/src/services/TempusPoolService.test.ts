@@ -94,6 +94,7 @@ describe('TempusPoolService', () => {
         TempusPoolABI: mockABI,
         signerOrProvider: mockProvider,
         eRC20TokenServiceGetter: getERC20TokenService,
+        chain: 'fantom',
       });
 
       expect(instance).toBeInstanceOf(TempusPoolService);
@@ -121,6 +122,7 @@ describe('TempusPoolService', () => {
         TempusPoolABI: mockABI,
         signerOrProvider: mockProvider,
         eRC20TokenServiceGetter: getERC20TokenService,
+        chain: 'fantom',
       });
     });
 

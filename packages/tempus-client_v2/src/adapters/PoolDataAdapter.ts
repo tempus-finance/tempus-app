@@ -11,7 +11,6 @@ import { TransferEventListener } from '../services/ERC20TokenService';
 import getDefaultProvider from '../services/getDefaultProvider';
 import { getEventBackingTokenValue } from '../services/EventUtils';
 import { div18f, increasePrecision, mul18f } from '../utils/weiMath';
-import { selectedChainState } from '../state/ChainState';
 import { staticPoolDataState } from '../state/PoolDataState';
 import {
   BLOCK_DURATION_SECONDS,
@@ -41,10 +40,12 @@ type PoolDataAdapterParameters = {
   statisticService: StatisticsService;
   tempusAMMService: TempusAMMService;
   vaultService: VaultService;
+  chain: Chain;
   eRC20TokenServiceGetter: typeof getERC20TokenService;
 };
 
 export default class PoolDataAdapter {
+  private chain: Chain | null = null;
   private tempusControllerService: TempusControllerService | undefined = undefined;
   private tempusPoolService: TempusPoolService | null = null;
   private statisticService: StatisticsService | null = null;
@@ -58,8 +59,10 @@ export default class PoolDataAdapter {
     statisticService,
     tempusAMMService,
     vaultService,
+    chain,
     eRC20TokenServiceGetter,
   }: PoolDataAdapterParameters) {
+    this.chain = chain;
     this.tempusControllerService = tempusControllerService;
     this.tempusPoolService = tempusPoolService;
     this.statisticService = statisticService;
@@ -185,11 +188,11 @@ export default class PoolDataAdapter {
   }
 
   async getTokenBalance(address: string, userAddress: string, signer: JsonRpcSigner): Promise<BigNumber> {
-    if (!this.eRC20TokenServiceGetter) {
+    if (!this.eRC20TokenServiceGetter || !this.chain) {
       return Promise.reject();
     }
 
-    const tokenService = this.eRC20TokenServiceGetter(address, signer);
+    const tokenService = this.eRC20TokenServiceGetter(address, this.chain, signer);
     try {
       return await tokenService.balanceOf(userAddress);
     } catch (error) {
@@ -310,12 +313,12 @@ export default class PoolDataAdapter {
     amount: BigNumber,
     signer: JsonRpcSigner,
   ): Promise<ContractTransaction | void> {
-    if (!this.eRC20TokenServiceGetter) {
+    if (!this.eRC20TokenServiceGetter || !this.chain) {
       console.error('PoolDataAdapter - approveToken() - Attempted to use PoolDataAdapter before initializing it!');
       return Promise.reject();
     }
 
-    const tokenService = this.eRC20TokenServiceGetter(tokenAddress, signer);
+    const tokenService = this.eRC20TokenServiceGetter(tokenAddress, this.chain, signer);
     try {
       return await tokenService.approve(spenderAddress, amount);
     } catch (error) {
@@ -330,7 +333,7 @@ export default class PoolDataAdapter {
     userWalletAddress: string,
     signer: JsonRpcSigner,
   ): Promise<BigNumber> {
-    if (!this.tempusPoolService || !this.eRC20TokenServiceGetter) {
+    if (!this.tempusPoolService || !this.eRC20TokenServiceGetter || !this.chain) {
       console.error('PoolDataAdapter - getTokenAllowance() - Attempted to use PoolDataAdapter before initializing it!');
       return Promise.reject();
     }
@@ -341,7 +344,7 @@ export default class PoolDataAdapter {
         return await signer.getBalance();
       }
 
-      const tokenService = this.eRC20TokenServiceGetter(tokenAddress, signer);
+      const tokenService = this.eRC20TokenServiceGetter(tokenAddress, this.chain, signer);
 
       return await tokenService.getAllowance(userWalletAddress, spender);
     } catch (error) {
@@ -560,7 +563,7 @@ export default class PoolDataAdapter {
   }
 
   async getPoolShareForLPTokensIn(tempusAmm: string, amountIn: BigNumber): Promise<number> {
-    if (!this.vaultService || !this.eRC20TokenServiceGetter) {
+    if (!this.vaultService || !this.eRC20TokenServiceGetter || !this.chain) {
       console.error(
         'PoolDataAdapter - getPoolShareForLPTokensIn() - Attempted to use PoolDataAdapter before initializing it!',
       );
@@ -569,7 +572,7 @@ export default class PoolDataAdapter {
 
     let lpTotalSupply: BigNumber;
     try {
-      lpTotalSupply = await this.eRC20TokenServiceGetter(tempusAmm).totalSupply();
+      lpTotalSupply = await this.eRC20TokenServiceGetter(tempusAmm, this.chain).totalSupply();
       if (lpTotalSupply.isZero()) {
         return 1;
       }
@@ -646,7 +649,7 @@ export default class PoolDataAdapter {
     userWalletAddress: string,
     backingTokenTicker: Ticker,
   ): Promise<UserTransaction[]> {
-    if (!this.tempusControllerService || !this.statisticService) {
+    if (!this.tempusControllerService || !this.statisticService || !this.chain) {
       console.error(
         'PoolDataAdapter - getUserTransactions() - Attempted to use PoolDataAdapter before initializing it!',
       );
@@ -668,7 +671,7 @@ export default class PoolDataAdapter {
 
     let backingTokenRate: BigNumber;
     try {
-      backingTokenRate = await this.statisticService.getRate(selectedChainState.get(), backingTokenTicker);
+      backingTokenRate = await this.statisticService.getRate(this.chain, backingTokenTicker);
     } catch (error) {
       console.error(
         'PoolDataAdapter - getUserTransactions() - Failed to fetch backing token conversion rate to USD!',
@@ -714,7 +717,13 @@ export default class PoolDataAdapter {
     tempusPoolStartTime?: number,
     blockTag?: number,
   ): Promise<BigNumber | null> {
-    if (!this.tempusPoolService || !this.tempusAMMService || !this.statisticService || !this.vaultService) {
+    if (
+      !this.tempusPoolService ||
+      !this.tempusAMMService ||
+      !this.statisticService ||
+      !this.vaultService ||
+      !this.chain
+    ) {
       console.error(
         'PoolDataAdapter - getEstimatedFixedApr() - Attempted to use PoolDataAdapter before initializing it.',
       );
@@ -728,7 +737,7 @@ export default class PoolDataAdapter {
 
     // Skip Fixed APR fetch if target block tag is older then the Tempus Pool
     if (blockTag && tempusPoolStartTime) {
-      const provider = getDefaultProvider();
+      const provider = getDefaultProvider(this.chain);
 
       const pastBlock = await provider.getBlock(blockTag);
       // Convert block timestamp from seconds to milliseconds
@@ -837,8 +846,8 @@ export default class PoolDataAdapter {
 
       return ticker$.pipe(
         switchMap(() => {
-          if (this.statisticService) {
-            return from(this.statisticService.getRate(selectedChainState.get(), ticker));
+          if (this.statisticService && this.chain) {
+            return from(this.statisticService.getRate(this.chain, ticker));
           }
           return of(BigNumber.from('0'));
         }),
@@ -880,7 +889,7 @@ export default class PoolDataAdapter {
     backingTokenPrecision: number,
     yieldBearingTokenPrecision: number,
   ) {
-    if (!this.statisticService || !this.tempusPoolService) {
+    if (!this.statisticService || !this.tempusPoolService || !this.chain) {
       console.error(
         'PoolDataAdapter - getYieldBearingTokenRate() - Attempted to use PoolDataAdapter before initializing it!',
       );
@@ -895,7 +904,7 @@ export default class PoolDataAdapter {
         yieldTokenAmount,
         interestRate,
       );
-      const backingTokenRate = await this.statisticService.getRate(selectedChainState.get(), backingTokenTicker);
+      const backingTokenRate = await this.statisticService.getRate(this.chain, backingTokenTicker);
 
       // TODO - Handle a case in which backing token precision is bigger then yield bearing token precision
       if (yieldBearingTokenPrecision > backingTokenPrecision) {
@@ -944,11 +953,11 @@ export default class PoolDataAdapter {
     signer: JsonRpcSigner,
     listener: TransferEventListener,
   ) {
-    if (!this.eRC20TokenServiceGetter) {
+    if (!this.eRC20TokenServiceGetter || !this.chain) {
       return;
     }
 
-    const tokenContract = this.eRC20TokenServiceGetter(tokenAddress, signer);
+    const tokenContract = this.eRC20TokenServiceGetter(tokenAddress, this.chain, signer);
 
     tokenContract.onTransfer(null, userWalletAddress, listener);
   }
@@ -959,8 +968,8 @@ export default class PoolDataAdapter {
     signer: JsonRpcSigner,
     listener: TransferEventListener,
   ) {
-    if (this.eRC20TokenServiceGetter) {
-      const tokenContract = this.eRC20TokenServiceGetter(tokenAddress, signer);
+    if (this.eRC20TokenServiceGetter && this.chain) {
+      const tokenContract = this.eRC20TokenServiceGetter(tokenAddress, this.chain, signer);
 
       tokenContract.onTransfer(userWalletAddress, null, listener);
     }
@@ -1013,7 +1022,7 @@ export default class PoolDataAdapter {
     principalsRate: BigNumber;
     yieldsRate: BigNumber;
   }> {
-    if (!this.statisticService || !this.tempusPoolService || !this.eRC20TokenServiceGetter) {
+    if (!this.statisticService || !this.tempusPoolService || !this.eRC20TokenServiceGetter || !this.chain) {
       console.error(
         'PoolDataAdapter - getPresentValueInBackingTokensForPool() - Attempted to use PoolDataAdapter before initializing it!',
       );
@@ -1026,9 +1035,9 @@ export default class PoolDataAdapter {
         this.tempusPoolService.getPrincipalsTokenAddress(pool.address),
       ]);
 
-      const yieldToken = this.eRC20TokenServiceGetter(yieldTokenAddress);
-      const principalToken = this.eRC20TokenServiceGetter(principalTokenAddress);
-      const lpToken = this.eRC20TokenServiceGetter(pool.ammAddress);
+      const yieldToken = this.eRC20TokenServiceGetter(yieldTokenAddress, this.chain);
+      const principalToken = this.eRC20TokenServiceGetter(principalTokenAddress, this.chain);
+      const lpToken = this.eRC20TokenServiceGetter(pool.ammAddress, this.chain);
 
       const [userYieldSupply, userPrincipalSupply, userLpSupply] = await Promise.all([
         yieldToken.balanceOf(userWalletAddress),
@@ -1098,7 +1107,7 @@ export default class PoolDataAdapter {
   }
 
   private async getTokenServices(tempusPoolAddress: string, tempusAMMAddress: string, signer: JsonRpcSigner) {
-    if (!this.tempusPoolService || !this.statisticService || !this.eRC20TokenServiceGetter) {
+    if (!this.tempusPoolService || !this.statisticService || !this.eRC20TokenServiceGetter || !this.chain) {
       console.error('PoolDataAdapter - getTokenServices() - Attempted to use PoolDataAdapter before initializing it!');
       return Promise.reject();
     }
@@ -1112,11 +1121,11 @@ export default class PoolDataAdapter {
           this.tempusPoolService.getYieldTokenAddress(tempusPoolAddress),
         ]);
 
-      const backingTokenService = this.eRC20TokenServiceGetter(backingTokenAddress, signer);
-      const yieldBearingTokenService = this.eRC20TokenServiceGetter(yieldBearingTokenAddress, signer);
-      const principalsTokenService = this.eRC20TokenServiceGetter(principalsTokenAddress, signer);
-      const yieldsTokenService = this.eRC20TokenServiceGetter(yieldsTokenAddress, signer);
-      const lpTokenService = this.eRC20TokenServiceGetter(tempusAMMAddress, signer);
+      const backingTokenService = this.eRC20TokenServiceGetter(backingTokenAddress, this.chain, signer);
+      const yieldBearingTokenService = this.eRC20TokenServiceGetter(yieldBearingTokenAddress, this.chain, signer);
+      const principalsTokenService = this.eRC20TokenServiceGetter(principalsTokenAddress, this.chain, signer);
+      const yieldsTokenService = this.eRC20TokenServiceGetter(yieldsTokenAddress, this.chain, signer);
+      const lpTokenService = this.eRC20TokenServiceGetter(tempusAMMAddress, this.chain, signer);
 
       return {
         backingTokenService,
@@ -1138,12 +1147,12 @@ export default class PoolDataAdapter {
     currentTVL: BigNumber,
     backingTokenPrecision?: number,
   ): Promise<BigNumber | null> {
-    if (!this.statisticService) {
+    if (!this.statisticService || !this.chain) {
       console.error('PoolDataAdapter - getTokenServices() - Attempted to use PoolDataAdapter before initializing it!');
       return Promise.reject();
     }
 
-    const provider = getDefaultProvider();
+    const provider = getDefaultProvider(this.chain);
     let latestBlock;
     try {
       latestBlock = await provider.getBlock('latest');
@@ -1167,7 +1176,7 @@ export default class PoolDataAdapter {
         this.statisticService.totalValueLockedInBackingTokens(tempusPool, {
           blockTag: fetchForBlock,
         }),
-        this.statisticService.getRate(selectedChainState.get(), backingToken, {
+        this.statisticService.getRate(this.chain, backingToken, {
           blockTag: fetchForBlock,
         }),
       ]);
@@ -1203,8 +1212,13 @@ export default class PoolDataAdapter {
     toBlock: number,
     backingTokenPrecision?: number,
   ): Promise<BigNumber> {
-    const tempusControllerService = getTempusControllerService();
-    const vaultService = getVaultService();
+    if (!this.chain) {
+      console.error('PoolDataAdapter - getPoolVolumeData() - Attempted to use PoolDataAdapter before initializing it!');
+      return Promise.reject();
+    }
+
+    const tempusControllerService = getTempusControllerService(this.chain);
+    const vaultService = getVaultService(this.chain);
 
     let depositEvents: DepositedEvent[];
     let redeemEvents: RedeemedEvent[];
@@ -1241,12 +1255,19 @@ export default class PoolDataAdapter {
     try {
       eventsVolume = await Promise.all(
         events.map(async event => {
+          if (!this.chain) {
+            console.error(
+              'PoolDataAdapter - getPoolVolumeData() - Attempted to use PoolDataAdapter before initializing it!',
+            );
+            return Promise.reject();
+          }
+
           const eventBackingTokenValue = getEventBackingTokenValue(event, principalsAddress);
 
           let poolBackingTokenRate: BigNumber;
           try {
-            const statisticService = getStatisticsService();
-            poolBackingTokenRate = await statisticService.getRate(selectedChainState.get(), backingToken, {
+            const statisticService = getStatisticsService(this.chain);
+            poolBackingTokenRate = await statisticService.getRate(this.chain, backingToken, {
               blockTag: event.blockNumber,
             });
           } catch (error) {

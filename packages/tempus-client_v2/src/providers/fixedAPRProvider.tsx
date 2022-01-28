@@ -1,17 +1,20 @@
 import { ethers } from 'ethers';
 import { useCallback, useContext, useEffect } from 'react';
-import { useState as useHookState } from '@hookstate/core';
-import getConfig from '../utils/getConfig';
+import { Downgraded, useState as useHookState } from '@hookstate/core';
+import { getChainConfig } from '../utils/getConfig';
 import getTokenPrecision from '../utils/getTokenPrecision';
 import getDefaultProvider from '../services/getDefaultProvider';
 import { WalletContext } from '../context/walletContext';
 import { dynamicPoolDataState } from '../state/PoolDataState';
+import { selectedChainState } from '../state/ChainState';
 import getPoolDataAdapter from '../adapters/getPoolDataAdapter';
 import { FIXED_APR_PRECISION } from '../constants';
-import { selectedChainState } from '../state/ChainState';
 
 const FixedAPRProvider = () => {
   const dynamicPoolData = useHookState(dynamicPoolDataState);
+  const selectedChain = useHookState(selectedChainState);
+
+  const selectedChainName = selectedChain.attach(Downgraded).get();
 
   const { userWalletConnected, userWalletSigner } = useContext(WalletContext);
 
@@ -22,9 +25,9 @@ const FixedAPRProvider = () => {
     if (userWalletConnected && userWalletSigner) {
       return userWalletSigner.provider;
     } else if (userWalletConnected === false) {
-      return getDefaultProvider();
+      return getDefaultProvider(selectedChainName);
     }
-  }, [userWalletConnected, userWalletSigner]);
+  }, [userWalletConnected, userWalletSigner, selectedChainName]);
 
   /**
    * Fetch Fixed APR for all tempus pools on each block event
@@ -35,8 +38,8 @@ const FixedAPRProvider = () => {
       return;
     }
 
-    const config = getConfig()[selectedChainState.get()];
-    const poolDataAdapter = getPoolDataAdapter(provider);
+    const config = getChainConfig(selectedChainName);
+    const poolDataAdapter = getPoolDataAdapter(selectedChainName, provider);
 
     // Fetch APR for all Tempus Pools
     const fetchedPoolAPRData = await Promise.all(
@@ -88,7 +91,7 @@ const FixedAPRProvider = () => {
     });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [getProvider]);
+  }, [selectedChainName, getProvider]);
 
   useEffect(() => {
     fetchAPR();

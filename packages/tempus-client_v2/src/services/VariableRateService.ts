@@ -19,14 +19,14 @@ import VaultService, { PoolBalanceChangedEvent, SwapEvent } from '../services/Va
 import TempusAMMService from '../services/TempusAMMService';
 import { isPoolBalanceChangedEvent, isSwapEvent } from '../services/EventUtils';
 import { ProtocolName } from '../interfaces/ProtocolName';
-import { BlockchainConfig } from '../interfaces/Config';
-import { wadToDai } from '../utils/rayToDai';
-import getConfig from '../utils/getConfig';
-import { div18f, mul18f } from '../utils/weiMath';
-import getProvider from '../utils/getProvider';
 import { TempusPool } from '../interfaces/TempusPool';
 import { YearnData } from '../interfaces/YearnData';
-import { selectedChainState } from '../state/ChainState';
+import { ChainConfig } from '../interfaces/Config';
+import { wadToDai } from '../utils/rayToDai';
+import { getChainConfig } from '../utils/getConfig';
+import { div18f, mul18f } from '../utils/weiMath';
+import getProvider from '../utils/getProvider';
+import { Chain } from '../interfaces/Chain';
 
 const SECONDS_IN_A_WEEK = SECONDS_IN_A_DAY * 7;
 const HOURS_IN_A_YEAR = DAYS_IN_A_YEAR * 24;
@@ -63,7 +63,7 @@ class VariableRateService {
     vaultService: VaultService,
     tempusAMMService: TempusAMMService,
     rariVault: RariVault,
-    config: BlockchainConfig,
+    config: ChainConfig,
   ) {
     if (signerOrProvider) {
       this.aaveLendingPool = new Contract(aaveLendingPoolAddress, AaveLendingPoolABI, signerOrProvider);
@@ -76,12 +76,18 @@ class VariableRateService {
     }
   }
 
-  async calculateFees(tempusAMM: string, tempusPool: string, principalsAddress: string, yieldsAddress: string) {
+  async calculateFees(
+    tempusAMM: string,
+    tempusPool: string,
+    principalsAddress: string,
+    yieldsAddress: string,
+    chain: Chain,
+  ) {
     if (!this.tempusAMMService || !this.vaultService || !this.tempusPoolService || !this.signerOrProvider) {
       return Promise.reject();
     }
 
-    const poolConfig = getConfig()[selectedChainState.get()].tempusPools.find(pool => pool.address === tempusPool);
+    const poolConfig = getChainConfig(chain).tempusPools.find(pool => pool.address === tempusPool);
     if (!poolConfig) {
       return Promise.reject();
     }

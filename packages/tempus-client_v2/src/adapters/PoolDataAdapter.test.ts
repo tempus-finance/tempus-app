@@ -114,6 +114,7 @@ describe('PoolDataAdapter', () => {
       tempusAMMService: mockTempusAMMService(),
       tempusPoolService: mockGetTempusPoolService(),
       vaultService: mockGetVaultService(),
+      chain: 'fantom',
     });
   });
 

@@ -1,5 +1,7 @@
+import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { useContext, useEffect, useState } from 'react';
 import { Routes, Route } from 'react-router-dom';
+import { selectedChainState } from '../../state/ChainState';
 import { WalletContext } from '../../context/walletContext';
 import DashboardDataAdapter from '../../adapters/DashboardDataAdapter';
 import getDashboardDataAdapter from '../../adapters/getDashboardDataAdapter';
@@ -18,6 +20,10 @@ import PoolRoute from '../routes/PoolRoute';
 import './Main.scss';
 
 const Main = () => {
+  const selectedChain = useHookState(selectedChainState);
+
+  const selectedChainName = selectedChain.attach(Downgraded).get();
+
   const { userWalletConnected, userWalletSigner } = useContext(WalletContext);
 
   const [dashboardDataAdapter, setDashboardDataAdapter] = useState<DashboardDataAdapter | null>(null);
@@ -26,21 +32,21 @@ const Main = () => {
   useEffect(() => {
     const fetchRows = async () => {
       if (userWalletSigner) {
-        const dashboardDataAdapter = getDashboardDataAdapter(userWalletSigner);
-        const userBalanceDataAdapter = getUserBalanceDataAdapter(userWalletSigner);
+        const dashboardDataAdapter = getDashboardDataAdapter(selectedChainName, userWalletSigner);
+        const userBalanceDataAdapter = getUserBalanceDataAdapter(selectedChainName, userWalletSigner);
 
         setDashboardDataAdapter(dashboardDataAdapter);
         setUserBalanceDataAdapter(userBalanceDataAdapter);
       } else if (userWalletConnected === false) {
-        const dashboardDataAdapter = getDashboardDataAdapter();
-        const userBalanceDataAdapter = getUserBalanceDataAdapter();
+        const dashboardDataAdapter = getDashboardDataAdapter(selectedChainName);
+        const userBalanceDataAdapter = getUserBalanceDataAdapter(selectedChainName);
 
         setDashboardDataAdapter(dashboardDataAdapter);
         setUserBalanceDataAdapter(userBalanceDataAdapter);
       }
     };
     fetchRows();
-  }, [userWalletConnected, userWalletSigner, userBalanceDataAdapter]);
+  }, [userWalletConnected, userWalletSigner, userBalanceDataAdapter, selectedChainName]);
 
   return (
     <div className="tc__main">

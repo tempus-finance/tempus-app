@@ -1,12 +1,18 @@
+import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { FC, useCallback, useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { WalletContext } from '../../context/walletContext';
 import { DashboardRow, DashboardRowChild } from '../../interfaces/DashboardRow';
 import getDashboardDataAdapter from '../../adapters/getDashboardDataAdapter';
+import { selectedChainState } from '../../state/ChainState';
 import Dashboard from './dashboard';
 
 const DashboardManager: FC = (): JSX.Element => {
   let navigate = useNavigate();
+
+  const selectedChain = useHookState(selectedChainState);
+
+  const selectedChainName = selectedChain.attach(Downgraded).get();
 
   const { userWalletAddress, userWalletConnected, userWalletSigner } = useContext(WalletContext);
 
@@ -15,15 +21,15 @@ const DashboardManager: FC = (): JSX.Element => {
   useEffect(() => {
     const fetchRows = async () => {
       if (userWalletSigner) {
-        const dashboardDataAdapter = getDashboardDataAdapter(userWalletSigner);
-        setRows(dashboardDataAdapter.getRows());
+        const dashboardDataAdapter = getDashboardDataAdapter(selectedChainName, userWalletSigner);
+        setRows(dashboardDataAdapter.getRows(selectedChainName));
       } else if (userWalletConnected === false) {
-        const dashboardDataAdapter = getDashboardDataAdapter();
-        setRows(dashboardDataAdapter.getRows());
+        const dashboardDataAdapter = getDashboardDataAdapter(selectedChainName);
+        setRows(dashboardDataAdapter.getRows(selectedChainName));
       }
     };
     fetchRows();
-  }, [userWalletConnected, userWalletAddress, userWalletSigner]);
+  }, [userWalletConnected, userWalletAddress, userWalletSigner, selectedChainName]);
 
   const onRowActionClick = useCallback(
     (row: DashboardRowChild) => {

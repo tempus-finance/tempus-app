@@ -1,32 +1,43 @@
 import { Contract } from 'ethers';
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
 import TempusControllerABI from '../abi/TempusController.json';
-import getConfig from '../utils/getConfig';
+import { getChainConfig } from '../utils/getConfig';
+import { Chain } from '../interfaces/Chain';
 import TempusControllerService from './TempusControllerService';
 import getDefaultProvider from './getDefaultProvider';
 import getTempusAMMService from './getTempusAMMService';
-import { selectedChainState } from '../state/ChainState';
 
-let tempusControllerService: TempusControllerService;
-const getTempusControllerService = (signerOrProvider?: JsonRpcSigner | JsonRpcProvider): TempusControllerService => {
-  if (!tempusControllerService) {
-    tempusControllerService = new TempusControllerService();
+let tempusControllerServices = new Map<Chain, TempusControllerService>();
+const getTempusControllerService = (
+  chain: Chain,
+  signerOrProvider?: JsonRpcSigner | JsonRpcProvider,
+): TempusControllerService => {
+  if (!tempusControllerServices.get(chain)) {
+    const tempusControllerService = new TempusControllerService();
     tempusControllerService.init({
       Contract: Contract,
-      address: getConfig()[selectedChainState.get()].tempusControllerContract,
+      address: getChainConfig(chain).tempusControllerContract,
       abi: TempusControllerABI,
-      signerOrProvider: getDefaultProvider(),
-      tempusAMMService: getTempusAMMService(),
+      signerOrProvider: getDefaultProvider(chain),
+      tempusAMMService: getTempusAMMService(chain),
+      chain,
     });
+    tempusControllerServices.set(chain, tempusControllerService);
+  }
+
+  const tempusControllerService = tempusControllerServices.get(chain);
+  if (!tempusControllerService) {
+    throw new Error(`Failed to get TempusControllerService for ${chain} chain!`);
   }
 
   if (signerOrProvider) {
     tempusControllerService.init({
       Contract: Contract,
-      address: getConfig()[selectedChainState.get()].tempusControllerContract,
+      address: getChainConfig(chain).tempusControllerContract,
       abi: TempusControllerABI,
       signerOrProvider: signerOrProvider,
-      tempusAMMService: getTempusAMMService(signerOrProvider),
+      tempusAMMService: getTempusAMMService(chain, signerOrProvider),
+      chain,
     });
   }
 

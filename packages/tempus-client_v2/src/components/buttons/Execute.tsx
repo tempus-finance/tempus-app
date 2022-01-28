@@ -3,6 +3,7 @@ import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { ethers } from 'ethers';
 import { Button, CircularProgress } from '@material-ui/core';
 import { selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
+import { selectedChainState } from '../../state/ChainState';
 import getNotificationService from '../../services/getNotificationService';
 import {
   generateEtherscanLink,
@@ -31,6 +32,7 @@ const Execute: FC<ExecuteButtonProps> = props => {
 
   const selectedPool = useHookState(selectedPoolState);
   const staticPoolData = useHookState(staticPoolDataState);
+  const selectedChain = useHookState(selectedChainState);
 
   const { setPendingTransactions } = useContext(PendingTransactionsContext);
   const { language } = useContext(LanguageContext);
@@ -38,6 +40,7 @@ const Execute: FC<ExecuteButtonProps> = props => {
 
   const [executeInProgress, setExecuteInProgress] = useState<boolean>(false);
 
+  const selectedChainName = selectedChain.attach(Downgraded).get();
   const selectedPoolData = staticPoolData[selectedPool.get()].attach(Downgraded).get();
   const backingToken = staticPoolData[selectedPool.get()].backingToken.attach(Downgraded).get();
   const protocol = staticPoolData[selectedPool.get()].protocol.attach(Downgraded).get();
@@ -86,7 +89,7 @@ const Execute: FC<ExecuteButtonProps> = props => {
               ...transaction,
               title: `Executing ${actionName}`,
               content,
-              link: generateEtherscanLink(transaction.hash),
+              link: generateEtherscanLink(transaction.hash, selectedChainName),
               linkText: viewLinkText,
             },
           ],
@@ -114,7 +117,7 @@ const Execute: FC<ExecuteButtonProps> = props => {
           'Transaction',
           `${actionName} Failed`,
           content,
-          generateEtherscanLink(transaction.hash),
+          generateEtherscanLink(transaction.hash, selectedChainName),
           viewLinkText,
         );
         setExecuteInProgress(false);
@@ -143,7 +146,7 @@ const Execute: FC<ExecuteButtonProps> = props => {
           userWalletAddress,
           selectedPoolData,
         )}`,
-        generateEtherscanLink(transaction.hash),
+        generateEtherscanLink(transaction.hash, selectedChainName),
         viewLinkText,
       );
       setExecuteInProgress(false);

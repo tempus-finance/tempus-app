@@ -1,15 +1,9 @@
 import { Config } from '../interfaces/Config';
 
 const ETHEREUM_MAINNET_ALCHEMY_KEY = process.env.REACT_APP_MAINNET_ALCHEMY_KEY || '';
-const ETHEREUM_MAINNET_ALCHEMY_CONFIG = {
-  networkUrl: `https://eth-mainnet.alchemyapi.io/v2/${ETHEREUM_MAINNET_ALCHEMY_KEY}`,
-  networkName: 'homestead',
-  alchemyKey: ETHEREUM_MAINNET_ALCHEMY_KEY,
-};
 
 const config: Config = {
   ethereum: {
-    ...ETHEREUM_MAINNET_ALCHEMY_CONFIG,
     tempusPools: [
       {
         address: '0x6320E6844EEEa57343d5Ca47D3166822Ec78b116',
@@ -91,9 +85,11 @@ const config: Config = {
     tempusControllerContract: '0xdB5fD0678eED82246b599da6BC36B56157E4beD8',
     vaultContract: '0x6f419298Ad53f82BA8dFFa9B34F9C7888b43BB13',
     lidoOracle: '0x442af784a788a5bd6f42a01ebe9f287a871243fb',
+    networkUrl: `https://eth-mainnet.alchemyapi.io/v2/${ETHEREUM_MAINNET_ALCHEMY_KEY}`,
+    networkName: 'homestead',
+    alchemyKey: ETHEREUM_MAINNET_ALCHEMY_KEY,
   },
   fantom: {
-    ...ETHEREUM_MAINNET_ALCHEMY_CONFIG,
     tempusPools: [
       {
         address: '0x53F4B5d3Aa90070dfF7f0Fbc0434BeDe22CBa6DD',
@@ -125,6 +121,9 @@ const config: Config = {
     tempusControllerContract: '0xdDcAC414190e0deCCD381d141449E40776d888C4',
     vaultContract: '0x94d380bf540b6084d0c4828893ab27e273fba3d2',
     lidoOracle: '', // We need to set if we want to add Lido pools for Fantom chain
+    networkUrl: `https://rpc.ftm.tools/`,
+    networkName: 'fantom-mainnet',
+    alchemyKey: '', // We don't need alchemy for Fantom chain
   },
 };
 

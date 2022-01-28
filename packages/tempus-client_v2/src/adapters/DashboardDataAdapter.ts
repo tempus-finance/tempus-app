@@ -4,9 +4,8 @@ import { DashboardRow, DashboardRowChild, DashboardRowParent } from '../interfac
 import { Ticker } from '../interfaces/Token';
 import { TempusPool } from '../interfaces/TempusPool';
 import StatisticsService from '../services/StatisticsService';
-import getConfig from '../utils/getConfig';
+import { getChainConfig } from '../utils/getConfig';
 import { POLLING_INTERVAL } from '../constants';
-import { selectedChainState } from '../state/ChainState';
 import { Chain } from '../interfaces/Chain';
 
 type DashboardDataAdapterParameters = {
@@ -20,8 +19,8 @@ export default class DashboardDataAdapter {
     this.statisticsService = params.statisticsService;
   }
 
-  getRows(): DashboardRow[] {
-    let childRows = this.getChildRows();
+  getRows(chainName: Chain): DashboardRow[] {
+    let childRows = this.getChildRows(chainName);
 
     // Generates parent rows based on children rows
     const parentRows = this.getParentRows(childRows);
@@ -60,9 +59,9 @@ export default class DashboardDataAdapter {
     );
   }
 
-  private getChildRows(): DashboardRowChild[] {
+  private getChildRows(chainName: Chain): DashboardRowChild[] {
     const childRows: DashboardRowChild[] = [];
-    getConfig()[selectedChainState.get()].tempusPools.forEach(tempusPool => {
+    getChainConfig(chainName).tempusPools.forEach(tempusPool => {
       childRows.push(this.getChildRowData(tempusPool));
     });
     return childRows;
