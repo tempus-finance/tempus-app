@@ -9,6 +9,7 @@ export interface ChainConfig {
   networkUrl: string;
   networkName: string;
   alchemyKey: string;
+  chainId: number;
 }
 
 export type Config = {
