@@ -1,6 +1,6 @@
 import { ethers, BigNumber, Contract } from 'ethers';
 import { JsonRpcSigner, JsonRpcProvider } from '@ethersproject/providers';
-import { debounceTime, from, Observable, of, switchMap } from 'rxjs';
+import { debounceTime, from, Observable, of, switchMap, throwError } from 'rxjs';
 import { Vaults as RariVault } from 'rari-sdk';
 import lidoOracleABI from '../abi/LidoOracle.json';
 import AaveLendingPoolABI from '../abi/AaveLendingPool.json';
@@ -34,7 +34,6 @@ const BN_SECONDS_IN_YEAR = BigNumber.from(SECONDS_IN_YEAR);
 const BN_ONE_ETH_IN_WEI = BigNumber.from(ONE_ETH_IN_WEI);
 const ethMantissa = 1e18;
 
-const yearnEndpoint = 'https://api.yearn.finance/v1/chains/1/vaults/all';
 const intervalBetweenHttpRequestsInMilliseconds = 1000;
 
 class VariableRateService {
@@ -56,6 +55,7 @@ class VariableRateService {
   private tempusAMMService: TempusAMMService | null = null;
   private tokenAddressToContractMap: { [tokenAddress: string]: ethers.Contract } = {};
   private signerOrProvider: JsonRpcSigner | JsonRpcProvider | null = null;
+  private chainConfig: ChainConfig | null = null;
 
   init(
     signerOrProvider: JsonRpcSigner | JsonRpcProvider,
@@ -66,13 +66,18 @@ class VariableRateService {
     config: ChainConfig,
   ) {
     if (signerOrProvider) {
+      // Only connect to Lido Oracle contract if address for it is specified in blockchain config
+      if (config.lidoOracle) {
+        this.lidoOracle = new Contract(config.lidoOracle, lidoOracleABI.abi, signerOrProvider);
+      }
+
       this.aaveLendingPool = new Contract(aaveLendingPoolAddress, AaveLendingPoolABI, signerOrProvider);
-      this.lidoOracle = new Contract(config.lidoOracle, lidoOracleABI.abi, signerOrProvider);
       this.rariVault = rariVault;
       this.signerOrProvider = signerOrProvider;
       this.tempusPoolService = tempusPoolService;
       this.vaultService = vaultService;
       this.tempusAMMService = tempusAMMService;
+      this.chainConfig = config;
     }
   }
 
@@ -392,7 +397,18 @@ class VariableRateService {
   }
 
   private fetchYearnData(): Observable<YearnData[] | null> {
+    if (!this.chainConfig) {
+      return throwError(
+        () =>
+          new Error(
+            'VariableRateService - fetchYearnData() - Attempted to use VariableRateService before initializing it!',
+          ),
+      );
+    }
+
     try {
+      const yearnEndpoint = `https://api.yearn.finance/v1/chains/${this.chainConfig?.chainId}/vaults/all`;
+
       return from(fetch(yearnEndpoint)).pipe(
         debounceTime(intervalBetweenHttpRequestsInMilliseconds),
         switchMap((response: Response) => response.json()),

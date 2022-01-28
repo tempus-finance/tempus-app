@@ -88,6 +88,7 @@ const config: Config = {
     networkUrl: `https://eth-mainnet.alchemyapi.io/v2/${ETHEREUM_MAINNET_ALCHEMY_KEY}`,
     networkName: 'homestead',
     alchemyKey: ETHEREUM_MAINNET_ALCHEMY_KEY,
+    chainId: 1,
   },
   fantom: {
     tempusPools: [
@@ -124,6 +125,7 @@ const config: Config = {
     networkUrl: `https://rpc.ftm.tools/`,
     networkName: 'fantom-mainnet',
     alchemyKey: '', // We don't need alchemy for Fantom chain
+    chainId: 250,
   },
 };
 
