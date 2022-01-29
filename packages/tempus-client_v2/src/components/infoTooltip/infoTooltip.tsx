@@ -13,10 +13,10 @@ const InfoTooltip: FC<InfoToolTipProps> = props => {
   const { content, children = <InfoIcon /> } = props;
 
   const [open, setOpen] = useState<boolean>(false);
-  const anchorRef = useRef<HTMLDivElement>(null);
+  const anchorRef = useRef<HTMLButtonElement>(null);
   const arrowRef = useRef<HTMLDivElement>(null);
 
-  const toggle = useCallback((event: React.MouseEvent<HTMLDivElement>) => {
+  const toggle = useCallback((event: React.MouseEvent<HTMLButtonElement | HTMLDivElement>) => {
     event.stopPropagation();
 
     setOpen(prevState => !prevState);
@@ -24,20 +24,20 @@ const InfoTooltip: FC<InfoToolTipProps> = props => {
   const popupAnchor = useMemo(() => {
     if (children) {
       return (
-        <div onClick={toggle} ref={anchorRef}>
+        <button onClick={toggle} ref={anchorRef}>
           {children}
-        </div>
+        </button>
       );
     }
     return (
-      <div onClick={toggle} ref={anchorRef} className="tc__infoTooltip-icon">
+      <button onClick={toggle} ref={anchorRef} className="tc__infoTooltip-icon">
         <InfoIcon />
-      </div>
+      </button>
     );
   }, [children, toggle]);
   const popupContent = useMemo(() => {
     if (typeof content === 'string') {
-      return <Typography variant="tooltip-card-text" html={content} />;
+      return <Typography className="tc__infoTooltip-popup-text" variant="tooltip-card-text" html={content} />;
     }
     return content;
   }, [content]);
