@@ -10,7 +10,7 @@ import './SectionContainer.scss';
 
 interface SectionContainerProps {
   id?: string;
-  title?: Words;
+  title?: Words | React.ReactNode;
   tooltip?: string;
   selectable?: boolean;
   selected?: boolean;
@@ -40,13 +40,20 @@ const SectionContainer: FC<SectionContainerProps> = props => {
     rootClasses += ' tc__dialog__section-selected';
   }
 
+  let titleNode = title;
+  if (typeof title === 'string') {
+    titleNode = (
+      <>
+        <Typography variant="card-title">{getText(title as Words, language)}</Typography>
+        <Spacer size={15} />
+        {tooltip && <InfoTooltip content={tooltip} />}
+      </>
+    );
+  }
+
   return (
     <div className={rootClasses}>
-      <div className="tf__dialog__section-title">
-        {title && <Typography variant="card-title">{getText(title, language)}</Typography>}
-        {title && <Spacer size={15} />}
-        {tooltip && <InfoTooltip content={tooltip} />}
-      </div>
+      <div className="tf__dialog__section-title">{titleNode}</div>
       {title && <Spacer size={15} />}
       <div className={contentClasses} onClick={onClick}>
         {props.children}
