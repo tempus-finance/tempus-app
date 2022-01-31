@@ -51,11 +51,9 @@ const VariableAPRFormatter = ({ row }: any) => {
       <APYGraph apy={apr} />
       <div className="tf__dashboard__body__apy-value">
         <InfoTooltip content={tooltipContent}>
-          <button className="tf__dashboard__body__apy-anchor">
-            <Typography color="default" variant="body-text">
-              {NumberUtils.formatPercentage(apr, 2)}
-            </Typography>
-          </button>
+          <Typography color="default" variant="body-text" className="tf__dashboard__body__apy-anchor">
+            {NumberUtils.formatPercentage(apr, 2)}
+          </Typography>
         </InfoTooltip>
       </div>
     </div>
