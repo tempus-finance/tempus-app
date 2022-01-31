@@ -6,10 +6,9 @@ import StatisticsService from '../services/StatisticsService';
 import TempusControllerService, { DepositedEvent, RedeemedEvent } from '../services/TempusControllerService';
 import TempusPoolService from '../services/TempusPoolService';
 import getERC20TokenService from '../services/getERC20TokenService';
-import VaultService, { SwapEvent, SwapKind } from '../services/VaultService';
+import VaultService, { SwapKind } from '../services/VaultService';
 import { TransferEventListener } from '../services/ERC20TokenService';
 import getDefaultProvider from '../services/getDefaultProvider';
-import { getEventBackingTokenValue } from '../services/EventUtils';
 import { div18f, increasePrecision, mul18f } from '../utils/weiMath';
 import { staticPoolDataState } from '../state/PoolDataState';
 import { DAYS_IN_A_YEAR, ONE_ETH_IN_WEI, POLLING_INTERVAL, SECONDS_IN_A_DAY, ZERO_ETH_ADDRESS } from '../constants';
@@ -17,9 +16,6 @@ import { Chain } from '../interfaces/Chain';
 import { Ticker } from '../interfaces/Token';
 import { TempusPool } from '../interfaces/TempusPool';
 import { SelectedYield } from '../interfaces/SelectedYield';
-import getStatisticsService from '../services/getStatisticsService';
-import getTempusControllerService from '../services/getTempusControllerService';
-import getVaultService from '../services/getVaultService';
 
 export interface UserTransaction {
   event: DepositedEvent | RedeemedEvent;
@@ -1176,107 +1172,5 @@ export default class PoolDataAdapter {
       console.error('PoolDataAdapter - getPoolTVLChangeData() - Failed to fetch TVL data change percentage for pool.');
       return Promise.reject(error);
     }
-  }
-
-  /**
-   * Calculates tempus pool volume from specified block range in USD currency
-   * @param tempusPool Address of the TempusPool we want to get volume for
-   * @param tempusPoolId ID of the TempusPool we want to get volume for
-   * @param backingToken TempusPool backing token ticker
-   * @param principalsAddress TempusPool principals address
-   * @param fromBlock Block number from which we want to calculate volume
-   * @param toBlock Block number up to which we want to calculate volume
-   * @param backingTokenPrecision Precision of backing token for TempusPool
-   * @returns Volume of the pool in USD currency.
-   */
-  async getPoolVolumeData(
-    tempusPool: string,
-    tempusPoolId: string,
-    backingToken: Ticker,
-    principalsAddress: string,
-    fromBlock: number,
-    toBlock: number,
-    backingTokenPrecision?: number,
-  ): Promise<BigNumber> {
-    if (!this.chain) {
-      console.error('PoolDataAdapter - getPoolVolumeData() - Attempted to use PoolDataAdapter before initializing it!');
-      return Promise.reject();
-    }
-
-    const tempusControllerService = getTempusControllerService(this.chain);
-    const vaultService = getVaultService(this.chain);
-
-    let depositEvents: DepositedEvent[];
-    let redeemEvents: RedeemedEvent[];
-    let swapEvents: SwapEvent[];
-    try {
-      // Setting user wallet address to undefined means we want to fetch events for all users
-      const eventsForUser = undefined;
-      [depositEvents, redeemEvents, swapEvents] = await Promise.all([
-        tempusControllerService.getDepositedEvents({
-          forPool: tempusPool,
-          forUser: eventsForUser,
-          fromBlock,
-          toBlock,
-        }),
-        tempusControllerService.getRedeemedEvents({
-          forPool: tempusPool,
-          forUser: eventsForUser,
-          fromBlock,
-          toBlock,
-        }),
-        vaultService.getSwapEvents({ forPoolId: tempusPoolId, fromBlock, toBlock }),
-      ]);
-    } catch (error) {
-      console.error(
-        `PoolDataAdapter - getPoolVolumeData() - Failed to fetch deposit, redeem and swap events for pool ${tempusPool}!`,
-        error,
-      );
-      return Promise.reject(error);
-    }
-
-    const events = [...depositEvents, ...redeemEvents, ...swapEvents];
-
-    let eventsVolume: BigNumber[] = [];
-    try {
-      eventsVolume = await Promise.all(
-        events.map(async event => {
-          if (!this.chain) {
-            console.error(
-              'PoolDataAdapter - getPoolVolumeData() - Attempted to use PoolDataAdapter before initializing it!',
-            );
-            return Promise.reject();
-          }
-
-          const eventBackingTokenValue = getEventBackingTokenValue(event, principalsAddress);
-
-          let poolBackingTokenRate: BigNumber;
-          try {
-            const statisticService = getStatisticsService(this.chain);
-            poolBackingTokenRate = await statisticService.getRate(this.chain, backingToken, {
-              blockTag: event.blockNumber,
-            });
-          } catch (error) {
-            console.error(
-              `PoolDataAdapter - getPoolVolumeData() - Failed to get backing token (${backingToken}) exchange rate to USD for block ${event.blockNumber}!`,
-              error,
-            );
-            return Promise.reject(error);
-          }
-
-          return mul18f(poolBackingTokenRate, eventBackingTokenValue, backingTokenPrecision);
-        }),
-      );
-    } catch (error) {
-      console.error(`PoolDataAdapter - getPoolVolumeData() - Failed to fetch volume for events!`, error);
-      return Promise.reject(error);
-    }
-
-    let totalVolume = BigNumber.from('0');
-    eventsVolume.forEach(eventVolume => {
-      totalVolume = totalVolume.add(eventVolume);
-    });
-
-    return totalVolume;
   }
 }
