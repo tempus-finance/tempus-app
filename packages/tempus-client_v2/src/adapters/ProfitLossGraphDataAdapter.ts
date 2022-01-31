@@ -8,7 +8,7 @@ import getERC20TokenService from '../services/getERC20TokenService';
 import ChartDataPoint from '../interfaces/ChartDataPoint';
 import { TempusPool } from '../interfaces/TempusPool';
 import { div18f, mul18f } from '../utils/weiMath';
-import { BLOCK_DURATION_SECONDS, SECONDS_IN_A_DAY } from '../constants';
+import { SECONDS_IN_A_DAY } from '../constants';
 import { Chain } from '../interfaces/Chain';
 
 type ProfitLossGraphDataAdapterParameters = {
@@ -37,6 +37,7 @@ class ProfitLossGraphDataAdapter {
   public async generateChartData(
     poolData: TempusPool,
     userWalletAddress: string,
+    averageBlockTime: number,
   ): Promise<{ data: ChartDataPoint[]; numberOfPastDays: number }> {
     if (!this.statisticsService) {
       console.error(`Attempted to use ProfitLossGraphDataAdapter before initializing it.`);
@@ -47,7 +48,7 @@ class ProfitLossGraphDataAdapter {
 
     let blocksToQuery: ethers.providers.Block[];
     try {
-      blocksToQuery = await this.fetchDataPointBlocks();
+      blocksToQuery = await this.fetchDataPointBlocks(averageBlockTime);
     } catch (error) {
       console.error('ProfitLossGraphDataAdapter - generateChartData() - Failed to fetch data point blocks.', error);
       return Promise.reject(error);
@@ -135,12 +136,12 @@ class ProfitLossGraphDataAdapter {
     return blockData.timestamp * 1000;
   }
 
-  private async fetchDataPointBlocks(): Promise<ethers.providers.Block[]> {
+  private async fetchDataPointBlocks(averageBlockTime: number): Promise<ethers.providers.Block[]> {
     if (!this.signer) {
       return Promise.reject();
     }
 
-    const blockInterval = Math.floor(SECONDS_IN_A_DAY / BLOCK_DURATION_SECONDS);
+    const blockInterval = Math.floor(SECONDS_IN_A_DAY / averageBlockTime);
 
     let currentBlock: ethers.providers.Block;
     try {

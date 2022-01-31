@@ -10,6 +10,7 @@ export interface ChainConfig {
   networkName: string;
   alchemyKey: string;
   chainId: number;
+  averageBlockTime: number;
 }
 
 export type Config = {

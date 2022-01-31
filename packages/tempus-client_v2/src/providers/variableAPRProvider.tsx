@@ -5,13 +5,15 @@ import getVariableRateService from '../services/getVariableRateService';
 import { getChainConfig } from '../utils/getConfig';
 import { WalletContext } from '../context/walletContext';
 import { dynamicPoolDataState } from '../state/PoolDataState';
-import { selectedChainState } from '../state/ChainState';
+import { selectedChainState, staticChainDataState } from '../state/ChainState';
 
 const VariableAPRProvider = () => {
   const dynamicPoolData = useHookState(dynamicPoolDataState);
   const selectedChain = useHookState(selectedChainState);
+  const staticChainData = useHookState(staticChainDataState);
 
   const selectedChainName = selectedChain.attach(Downgraded).get();
+  const averageBlockTime = staticChainData[selectedChainName].averageBlockTime.attach(Downgraded).get();
 
   const { userWalletConnected, userWalletSigner } = useContext(WalletContext);
 
@@ -50,6 +52,7 @@ const VariableAPRProvider = () => {
             tempusPool.principalsAddress,
             tempusPool.yieldsAddress,
             selectedChainName,
+            averageBlockTime,
           );
 
           // Get variable APR for Tempus Pool

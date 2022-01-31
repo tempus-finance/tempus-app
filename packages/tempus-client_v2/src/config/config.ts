@@ -89,6 +89,7 @@ const config: Config = {
     networkName: 'homestead',
     alchemyKey: ETHEREUM_MAINNET_ALCHEMY_KEY,
     chainId: 1,
+    averageBlockTime: 13.2,
   },
   fantom: {
     tempusPools: [
@@ -126,6 +127,7 @@ const config: Config = {
     networkName: 'fantom-mainnet',
     alchemyKey: '', // We don't need alchemy for Fantom chain
     chainId: 250,
+    averageBlockTime: 0.9,
   },
 };
 

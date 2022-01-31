@@ -12,7 +12,6 @@ import VaultService, { PoolBalanceChangedEvent, SwapEvent } from './VaultService
 import TempusAMMService from './TempusAMMService';
 import {
   aaveLendingPoolAddress,
-  BLOCK_DURATION_SECONDS,
   COMPOUND_BLOCKS_PER_DAY,
   DAYS_IN_A_YEAR,
   ONE_ETH_IN_WEI,
@@ -101,6 +100,8 @@ describe('VariableRateService', () => {
     );
   });
   afterEach(jest.restoreAllMocks);
+
+  const averageBlockTime = 13.15;
 
   describe('getAprFromApy()', () => {
     test('test with no periods given, should return APY', () => {
@@ -417,7 +418,14 @@ describe('VariableRateService', () => {
       variableRateService = new VariableRateService();
 
       await expect(
-        (variableRateService as any).calculateFees(tempusAMM, tempusPool, principalsAddress, yieldsAddress),
+        (variableRateService as any).calculateFees(
+          tempusAMM,
+          tempusPool,
+          principalsAddress,
+          yieldsAddress,
+          'ethereum',
+          averageBlockTime,
+        ),
       ).rejects.toEqual(undefined);
     });
 
@@ -429,7 +437,14 @@ describe('VariableRateService', () => {
       jest.spyOn(getConfig, 'getChainConfig').mockReturnValue({ tempusPools: [] } as unknown as ChainConfig);
 
       await expect(
-        (variableRateService as any).calculateFees(tempusAMM, tempusPool, principalsAddress, yieldsAddress),
+        (variableRateService as any).calculateFees(
+          tempusAMM,
+          tempusPool,
+          principalsAddress,
+          yieldsAddress,
+          'ethereum',
+          averageBlockTime,
+        ),
       ).rejects.toEqual(undefined);
     });
 
@@ -486,7 +501,14 @@ describe('VariableRateService', () => {
       });
 
       await expect(
-        (variableRateService as any).calculateFees(tempusAMM, tempusPool, principalsAddress, yieldsAddress),
+        (variableRateService as any).calculateFees(
+          tempusAMM,
+          tempusPool,
+          principalsAddress,
+          yieldsAddress,
+          'ethereum',
+          averageBlockTime,
+        ),
       ).resolves.toEqual(
         BigNumber.from(
           weiMath.mul18f(BigNumber.from(2), weiMath.div18f(mockPoolTokens.principals, mockPoolTokens.yields)),
@@ -498,7 +520,7 @@ describe('VariableRateService', () => {
       expect(mockProvider.getBlock).toHaveBeenNthCalledWith(1, 'latest');
       expect(mockProvider.getBlock).toHaveBeenNthCalledWith(
         2,
-        mockLatestBlock.number - Math.floor((SECONDS_IN_A_DAY * 7) / BLOCK_DURATION_SECONDS),
+        mockLatestBlock.number - Math.floor((SECONDS_IN_A_DAY * 7) / averageBlockTime),
       );
       expect((variableRateService as any).getSwapAndPoolBalanceChangedEvents).toHaveBeenCalledWith(
         DUMMY_TEMPUS_POOL[0],
@@ -576,7 +598,14 @@ describe('VariableRateService', () => {
       });
 
       await expect(
-        (variableRateService as any).calculateFees(tempusAMM, tempusPool, principalsAddress, yieldsAddress),
+        (variableRateService as any).calculateFees(
+          tempusAMM,
+          tempusPool,
+          principalsAddress,
+          yieldsAddress,
+          'ethereum',
+          averageBlockTime,
+        ),
       ).resolves.toEqual(BigNumber.from(0));
       expect(getConfig.getChainConfig).toHaveBeenCalled();
       expect(getProvider.default).toHaveBeenCalled();
@@ -584,7 +613,7 @@ describe('VariableRateService', () => {
       expect(mockProvider.getBlock).toHaveBeenNthCalledWith(1, 'latest');
       expect(mockProvider.getBlock).toHaveBeenNthCalledWith(
         2,
-        mockLatestBlock.number - Math.floor((SECONDS_IN_A_DAY * 7) / BLOCK_DURATION_SECONDS),
+        mockLatestBlock.number - Math.floor((SECONDS_IN_A_DAY * 7) / averageBlockTime),
       );
       expect((variableRateService as any).getSwapAndPoolBalanceChangedEvents).toHaveBeenCalledWith(
         DUMMY_TEMPUS_POOL[0],
@@ -662,7 +691,14 @@ describe('VariableRateService', () => {
       });
 
       await expect(
-        (variableRateService as any).calculateFees(tempusAMM, tempusPool, principalsAddress, yieldsAddress),
+        (variableRateService as any).calculateFees(
+          tempusAMM,
+          tempusPool,
+          principalsAddress,
+          yieldsAddress,
+          'ethereum',
+          averageBlockTime,
+        ),
       ).resolves.toEqual(BigNumber.from(0));
       expect(getConfig.getChainConfig).toHaveBeenCalled();
       expect(getProvider.default).toHaveBeenCalled();
@@ -670,7 +706,7 @@ describe('VariableRateService', () => {
       expect(mockProvider.getBlock).toHaveBeenNthCalledWith(1, 'latest');
       expect(mockProvider.getBlock).toHaveBeenNthCalledWith(
         2,
-        mockLatestBlock.number - Math.floor((SECONDS_IN_A_DAY * 7) / BLOCK_DURATION_SECONDS),
+        mockLatestBlock.number - Math.floor((SECONDS_IN_A_DAY * 7) / averageBlockTime),
       );
       expect((variableRateService as any).getSwapAndPoolBalanceChangedEvents).toHaveBeenCalledWith(
         DUMMY_TEMPUS_POOL[0],
