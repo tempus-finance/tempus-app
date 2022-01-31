@@ -1,5 +1,4 @@
 @import './constants.scss';
-
 body {
   @include default-font-face;
   background: $background;
@@ -24,7 +23,6 @@ body {
 .tf__flex-row-flex-start-v {
   display: flex;
   align-items: flex-start;
-  padding-top: 20px;
 }
 
 .tf__flex-row-center-v {

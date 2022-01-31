@@ -788,15 +788,20 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
 
   return (
     <div className={`tc__deposit ${narrow ? 'tc__deposit__narrow' : ''}`}>
-      <SectionContainer title="from">
-        {selectedToken && balanceFormatted && (
-          <div className="tc__title-and-balance bottom-padded">
-            <div></div>
-            <Typography variant="body-text">
-              {getText('balance', language)} {balanceFormatted}
-            </Typography>
-          </div>
-        )}
+      <SectionContainer
+        title={
+          selectedToken && balanceFormatted ? (
+            <div className="tc__title-and-balance">
+              <Typography variant="card-title">{getText('from', language)}</Typography>
+              <Typography variant="body-text">
+                {getText('balance', language)} {balanceFormatted}
+              </Typography>
+            </div>
+          ) : (
+            'from'
+          )
+        }
+      >
         <div className="tf__flex-row-flex-start-v">
           <TokenSelector
             value={selectedToken}
