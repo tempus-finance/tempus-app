@@ -10,6 +10,9 @@ export interface ChainConfig {
   networkName: string;
   alchemyKey: string;
   chainId: number;
+  /**
+   * Average block time on chain in seconds.
+   */
   averageBlockTime: number;
 }
 
