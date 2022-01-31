@@ -94,6 +94,6 @@ div.MuiTooltip-popper {
   > div.MuiTooltip-tooltip {
     @include default-font-face;
     @include tooltip;
-    max-width: 150px;
+    max-width: 250px;
   }
 }

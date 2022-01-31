@@ -63,6 +63,8 @@ const it: { [word in Words]: string } = {
   removeLiquidity: 'Rimuovi Liquidità',
   provideLiquidity: 'Immetti Liquidità',
   earlyRedeem: 'Riscatto Anticipato',
+  operationDisabledByConfig:
+    'Certe operazioni relative a questa pool di Tempus sono temporaneamente disabilitate a causa di malfunzionamento intermittente della pool sottostante. Vi chiediamo cortesemente di pazientare mentre cerchiamo di risolvere il problema. Per maggiori informazioni https://discord.com/invite/6gauHECShr ',
   depositDisabledNoLiquidity:
     'Il deposito è momentaneamente disabilitato a causa di liquidità insufficiente nella pool selezionata. Per favore riprova più tardi.',
   depositDisabledPoolMaturity: 'Il deposito non è disponibile perchè questa pool ha raggiunto la scadenza.',
