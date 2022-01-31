@@ -90,6 +90,7 @@ const config: Config = {
     alchemyKey: ETHEREUM_MAINNET_ALCHEMY_KEY,
     chainId: 1,
     averageBlockTime: 13.2,
+    nativeToken: 'ETH',
   },
   fantom: {
     tempusPools: [
@@ -128,6 +129,7 @@ const config: Config = {
     alchemyKey: '', // We don't need alchemy for Fantom chain
     chainId: 250,
     averageBlockTime: 0.9,
+    nativeToken: 'FTM',
   },
 };
 

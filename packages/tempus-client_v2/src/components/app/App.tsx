@@ -3,14 +3,14 @@ import { useEffect, useState } from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import { selectedChainState } from '../../state/ChainState';
 import { LanguageContext, defaultLanguageContextValue } from '../../context/languageContext';
-import { ETHBalanceContext, defaultETHBalanceContextValue } from '../../context/ethBalanceContext';
+import { TokenBalanceContext, defaultTokenBalanceContextValue } from '../../context/tokenBalanceContext';
 import { defaultWalletContextValue, WalletContext } from '../../context/walletContext';
 import {
   defaultPendingTransactionsContextValue,
   PendingTransactionsContext,
 } from '../../context/pendingTransactionsContext';
 import { UserSettingsContext, defaultUserSettingsContextValue } from '../../context/userSettingsContext';
-import ETHBalanceProvider from '../../providers/ethBalanceProvider';
+import TokenBalanceProvider from '../../providers/tokenBalanceProvider';
 import getUserShareTokenBalanceProvider from '../../providers/getUserShareTokenBalanceProvider';
 import getUserLPTokenBalanceProvider from '../../providers/getUserLPTokenBalanceProvider';
 import getUserBalanceProvider from '../../providers/getBalanceProvider';
@@ -28,7 +28,7 @@ const App = () => {
 
   const [userSettings, setUserSettings] = useState(defaultUserSettingsContextValue);
   const [language, setLanguage] = useState(defaultLanguageContextValue);
-  const [ethBalance, setETHBalance] = useState(defaultETHBalanceContextValue);
+  const [tokenBalance, setTokenBalance] = useState(defaultTokenBalanceContextValue);
   const [walletData, setWalletData] = useState(defaultWalletContextValue);
   const [pendingTransactions, setPendingTransactions] = useState(defaultPendingTransactionsContextValue);
 
@@ -89,7 +89,7 @@ const App = () => {
     <>
       <UserSettingsContext.Provider value={{ ...userSettings, setUserSettings }}>
         <LanguageContext.Provider value={{ ...language, setLanguage }}>
-          <ETHBalanceContext.Provider value={{ ...ethBalance, setETHBalance }}>
+          <TokenBalanceContext.Provider value={{ ...tokenBalance, setTokenBalance }}>
             <WalletContext.Provider value={{ ...walletData, setWalletData }}>
               <PendingTransactionsContext.Provider value={{ ...pendingTransactions, setPendingTransactions }}>
                 <BrowserRouter>
@@ -100,9 +100,9 @@ const App = () => {
                   </div>
                 </BrowserRouter>
               </PendingTransactionsContext.Provider>
-              <ETHBalanceProvider />
+              <TokenBalanceProvider />
             </WalletContext.Provider>
-          </ETHBalanceContext.Provider>
+          </TokenBalanceContext.Provider>
         </LanguageContext.Provider>
       </UserSettingsContext.Provider>
     </>

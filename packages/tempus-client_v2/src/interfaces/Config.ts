@@ -14,6 +14,7 @@ export interface ChainConfig {
    * Average block time on chain in seconds.
    */
   averageBlockTime: number;
+  nativeToken: 'ETH' | 'FTM';
 }
 
 export type Config = {
