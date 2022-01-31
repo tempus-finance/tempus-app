@@ -10,6 +10,7 @@ export interface ChainConfig {
   networkName: string;
   alchemyKey: string;
   chainId: number;
+  nativeToken: 'ETH' | 'FTM';
 }
 
 export type Config = {

@@ -1,28 +1,28 @@
 import { useCallback, useContext, useEffect } from 'react';
-import { ETHBalanceContext } from '../context/ethBalanceContext';
+import { TokenBalanceContext } from '../context/tokenBalanceContext';
 import { WalletContext } from '../context/walletContext';
 
-const ETHBalanceProvider = () => {
-  const { eth, setETHBalance } = useContext(ETHBalanceContext);
+const TokenBalanceProvider = () => {
+  const { tokenBalance, setTokenBalance } = useContext(TokenBalanceContext);
   const { userWalletSigner } = useContext(WalletContext);
 
   /**
    * Fetch current ETH balance for user.
    */
   const fetchBalance = useCallback(async () => {
-    if (!setETHBalance || !userWalletSigner || (!document.hasFocus() && eth !== null)) {
+    if (!setTokenBalance || !userWalletSigner || (!document.hasFocus() && tokenBalance !== null)) {
       return;
     }
 
     const balance = await userWalletSigner.getBalance();
 
-    if (!eth || !eth.eq(balance)) {
-      setETHBalance(prevData => ({
+    if (!tokenBalance || !tokenBalance.eq(balance)) {
+      setTokenBalance(prevData => ({
         ...prevData,
-        eth: balance,
+        tokenBalance: balance,
       }));
     }
-  }, [userWalletSigner, eth, setETHBalance]);
+  }, [userWalletSigner, tokenBalance, setTokenBalance]);
 
   /**
    * Update user ETH balance on each mined block.
@@ -45,4 +45,4 @@ const ETHBalanceProvider = () => {
    */
   return null;
 };
-export default ETHBalanceProvider;
+export default TokenBalanceProvider;

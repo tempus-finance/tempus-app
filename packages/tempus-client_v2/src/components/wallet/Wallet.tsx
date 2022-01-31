@@ -1,4 +1,5 @@
 import { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { ethers } from 'ethers';
 import { Web3Provider } from '@ethersproject/providers';
 import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core';
@@ -6,12 +7,14 @@ import { InjectedConnector } from '@web3-react/injected-connector';
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
 import { CircularProgress } from '@material-ui/core';
 import AccountBalanceWalletIcon from '@material-ui/icons/AccountBalanceWallet';
-import { supportedChainIds, NETWORK_URLS, SupportedChainId } from '../../constants';
+import { supportedChainIds, NETWORK_URLS } from '../../constants';
 import { LanguageContext } from '../../context/languageContext';
-import { ETHBalanceContext } from '../../context/ethBalanceContext';
+import { TokenBalanceContext } from '../../context/tokenBalanceContext';
 import { PendingTransactionsContext } from '../../context/pendingTransactionsContext';
 import { UserSettingsContext } from '../../context/userSettingsContext';
 import { WalletContext } from '../../context/walletContext';
+import { getChainConfig } from '../../utils/getConfig';
+import { selectedChainState } from '../../state/ChainState';
 import NumberUtils from '../../services/NumberUtils';
 import UserWallet from '../../interfaces/UserWallet';
 import getText from '../../localisation/getText';
@@ -31,7 +34,7 @@ const Wallet = () => {
   const { account, activate, deactivate, active, library } = useWeb3React<Web3Provider>();
 
   const { language } = useContext(LanguageContext);
-  const { eth } = useContext(ETHBalanceContext);
+  const { tokenBalance } = useContext(TokenBalanceContext);
   const { setWalletData } = useContext(WalletContext);
   const { pendingTransactions } = useContext(PendingTransactionsContext);
   const { setUserSettings } = useContext(UserSettingsContext);
@@ -44,6 +47,8 @@ const Wallet = () => {
     WalletConnect: true,
   });
   const [connecting, setConnecting] = useState<boolean>(false);
+  const selectedChain = useHookState(selectedChainState);
+  const selectedChainName = selectedChain.attach(Downgraded).get();
 
   const onSelectWallet = useCallback(() => {
     if (setUserSettings) {
@@ -91,7 +96,7 @@ const Wallet = () => {
       // Request user to switch to Mainnet
       await provider.request({
         method: 'wallet_switchEthereumChain',
-        params: [{ chainId: SupportedChainId.MAINNET }],
+        params: [{ chainId: getChainConfig(selectedChainName).chainId }],
       });
       // If user confirms request, connect the wallet
       const onError = undefined;
@@ -127,7 +132,7 @@ const Wallet = () => {
           userWalletConnected: false,
         }));
     }
-  }, [isUserSelected, language, activate, setWalletData]);
+  }, [isUserSelected, language, activate, setWalletData, selectedChainName]);
 
   const onMetaMaskSelected = useCallback(
     (lastSelectedWallet?: UserWallet) => {
@@ -331,13 +336,13 @@ const Wallet = () => {
     shortenedAccount = shortenAccount(account);
   }
 
-  const formattedEthBalance = useMemo(() => {
-    if (!eth || !selectedWallet) {
+  const formattedPrimaryTokenBalance = useMemo(() => {
+    if (!tokenBalance || !selectedWallet) {
       return null;
     }
 
-    return NumberUtils.formatToCurrency(ethers.utils.formatEther(eth), 4);
-  }, [eth, selectedWallet]);
+    return NumberUtils.formatToCurrency(ethers.utils.formatEther(tokenBalance), 4);
+  }, [tokenBalance, selectedWallet]);
 
   return (
     <>
@@ -359,10 +364,12 @@ const Wallet = () => {
               <Typography variant="h5">{getText('connectWallet', language)}</Typography>
             </div>
           )}
-          {!connecting && active && formattedEthBalance && (
+          {!connecting && active && formattedPrimaryTokenBalance && (
             <>
               <Spacer size={15} />
-              <Typography variant="h5">ETH {formattedEthBalance}</Typography>
+              <Typography variant="h5">
+                {getChainConfig(selectedChainName).nativeToken} {formattedPrimaryTokenBalance}
+              </Typography>
               <Spacer size={10} />
             </>
           )}
