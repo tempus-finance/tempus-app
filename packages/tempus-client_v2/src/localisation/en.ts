@@ -63,6 +63,8 @@ const en: { [word in Words]: string } = {
   removeLiquidity: 'Remove Liquidity',
   provideLiquidity: 'Provide Liquidity',
   earlyRedeem: 'Early Redeem',
+  operationDisabledByConfig:
+    'Certain actions in relation to this Tempus pool are temporarily disabled due to intermittent unreliability of the underlying pool. Please bear with us while we investigate this issue. More information: https://discord.com/invite/6gauHECShr',
   depositDisabledNoLiquidity:
     'Depositing is currently disabled due to insufficient liquidity in the pool you have selected. Please try again later.',
   depositDisabledPoolMaturity: 'Deposit is not available because this pool has reached maturity.',
@@ -153,6 +155,7 @@ const en: { [word in Words]: string } = {
   mintDescription: 'Split your yield bearing token into Principals and Yields',
   swapDescription: 'Swap between Principals and Yields',
   provideLiquidityDescription: 'Use your LP tokens to provide liquidity to the pool and earn rewards',
-  removeLiquidityDescription: 'Remove your liquidity from the pool with the accrued rewards in the form of your initial LP tokens'
+  removeLiquidityDescription:
+    'Remove your liquidity from the pool with the accrued rewards in the form of your initial LP tokens',
 };
 export default en;

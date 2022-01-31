@@ -50,6 +50,7 @@ type Words =
   | 'removeLiquidity'
   | 'provideLiquidity'
   | 'earlyRedeem'
+  | 'operationDisabledByConfig'
   | 'depositDisabledNoLiquidity'
   | 'depositDisabledPoolMaturity'
   | 'depositDisabledNegative'
