@@ -2,11 +2,11 @@ import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { Downgraded, useHookstate, useState as useHookState } from '@hookstate/core';
 import { CircularProgress } from '@material-ui/core';
 import { ethers, BigNumber } from 'ethers';
-import { BLOCK_DURATION_SECONDS, FIXED_APR_PRECISION, SECONDS_IN_A_DAY } from '../../constants';
+import { FIXED_APR_PRECISION, SECONDS_IN_A_DAY } from '../../constants';
 import { div18f } from '../../utils/weiMath';
 import getTokenPrecision from '../../utils/getTokenPrecision';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
-import { selectedChainState } from '../../state/ChainState';
+import { selectedChainState, staticChainDataState } from '../../state/ChainState';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
 import { LanguageContext } from '../../context/languageContext';
 import { WalletContext } from '../../context/walletContext';
@@ -26,6 +26,7 @@ const Pool = () => {
   const dynamicPoolData = useHookstate(dynamicPoolDataState);
   const staticPoolData = useHookState(staticPoolDataState);
   const selectedChain = useHookState(selectedChainState);
+  const staticChainData = useHookState(staticChainDataState);
 
   const { userWalletSigner } = useContext(WalletContext);
   const { language } = useContext(LanguageContext);
@@ -38,6 +39,7 @@ const Pool = () => {
   const [feesTooltipOpen, setFeesTooltipOpen] = useState<boolean>(false);
 
   const selectedChainName = selectedChain.attach(Downgraded).get();
+  const averageBlockTime = staticChainData[selectedChainName].averageBlockTime.attach(Downgraded).get();
   const selectedPoolAddress = selectedPool.attach(Downgraded).get();
   const poolId = staticPoolData[selectedPool.get()].poolId.attach(Downgraded).get();
   const startDate = staticPoolData[selectedPool.get()].startDate.attach(Downgraded).get();
@@ -62,14 +64,20 @@ const Pool = () => {
 
       try {
         setTVLChangePercentage(
-          await poolDataAdapter.getPoolTVLChangeData(selectedPoolAddress, startDate, backingToken, tvl),
+          await poolDataAdapter.getPoolTVLChangeData(
+            selectedPoolAddress,
+            startDate,
+            backingToken,
+            tvl,
+            averageBlockTime,
+          ),
         );
       } catch (error) {
         console.error('fetchTVLChangeData() - Failed to fetch TVL change percentage!');
       }
     };
     fetchTVLChangeData();
-  }, [backingToken, selectedPoolAddress, tvl, userWalletSigner, startDate, selectedChainName]);
+  }, [backingToken, selectedPoolAddress, tvl, userWalletSigner, startDate, selectedChainName, averageBlockTime]);
 
   /**
    * Fetch Fixed APR from one week ago.
@@ -93,7 +101,7 @@ const Pool = () => {
         }
 
         // Get block number from 7 days ago (approximate - we need to find a better way to fetch exact block number)
-        const sevenDaysOldBlock = latestBlock.number - Math.round(SECONDS_IN_A_DAY / BLOCK_DURATION_SECONDS) * 7;
+        const sevenDaysOldBlock = latestBlock.number - Math.round(SECONDS_IN_A_DAY / averageBlockTime) * 7;
 
         const spotPrice = ethers.utils.parseUnits('1', getTokenPrecision(selectedPoolAddress, 'backingToken'));
 
@@ -120,7 +128,16 @@ const Pool = () => {
       }
     };
     fetchFixedAPRChangeData();
-  }, [ammAddress, fixedAPR, poolId, selectedPoolAddress, userWalletSigner, startDate, selectedChainName]);
+  }, [
+    ammAddress,
+    fixedAPR,
+    poolId,
+    selectedPoolAddress,
+    userWalletSigner,
+    startDate,
+    selectedChainName,
+    averageBlockTime,
+  ]);
 
   /**
    * Fetch Volume for pool in last 7 days, and 7 days before that
@@ -142,8 +159,8 @@ const Pool = () => {
 
       // Get block number from 7 days ago (approximate - we need to find a better way to fetch exact block number)
       // TODO - Use the graph service for this. Much faster and precise.
-      const sevenDaysOldBlock = latestBlock.number - Math.round(SECONDS_IN_A_DAY / BLOCK_DURATION_SECONDS) * 7;
-      const fourteenDaysOldBlock = latestBlock.number - Math.round(SECONDS_IN_A_DAY / BLOCK_DURATION_SECONDS) * 14;
+      const sevenDaysOldBlock = latestBlock.number - Math.round(SECONDS_IN_A_DAY / averageBlockTime) * 7;
+      const fourteenDaysOldBlock = latestBlock.number - Math.round(SECONDS_IN_A_DAY / averageBlockTime) * 14;
 
       try {
         const currentVolume = await poolDataAdapter.getPoolVolumeData(
@@ -187,6 +204,7 @@ const Pool = () => {
     principalsAddress,
     backingTokenPrecision,
     selectedChainName,
+    averageBlockTime,
   ]);
 
   const onToggleAprTooltip = useCallback(() => {

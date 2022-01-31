@@ -12,14 +12,7 @@ import getDefaultProvider from '../services/getDefaultProvider';
 import { getEventBackingTokenValue } from '../services/EventUtils';
 import { div18f, increasePrecision, mul18f } from '../utils/weiMath';
 import { staticPoolDataState } from '../state/PoolDataState';
-import {
-  BLOCK_DURATION_SECONDS,
-  DAYS_IN_A_YEAR,
-  ONE_ETH_IN_WEI,
-  POLLING_INTERVAL,
-  SECONDS_IN_A_DAY,
-  ZERO_ETH_ADDRESS,
-} from '../constants';
+import { DAYS_IN_A_YEAR, ONE_ETH_IN_WEI, POLLING_INTERVAL, SECONDS_IN_A_DAY, ZERO_ETH_ADDRESS } from '../constants';
 import { Chain } from '../interfaces/Chain';
 import { Ticker } from '../interfaces/Token';
 import { TempusPool } from '../interfaces/TempusPool';
@@ -1137,6 +1130,7 @@ export default class PoolDataAdapter {
     poolStartTimestamp: number,
     backingToken: Ticker,
     currentTVL: BigNumber,
+    averageBlockTime: number,
     backingTokenPrecision?: number,
   ): Promise<BigNumber | null> {
     if (!this.statisticService || !this.chain) {
@@ -1155,7 +1149,7 @@ export default class PoolDataAdapter {
 
     // Get block number from 7 days ago (approximate - we need to find a better way to fetch exact block number)
     // TODO - Do not attempt to fetch TVL for blocks that were mined before tempus pool contract was deployed
-    const fetchForBlock = latestBlock.number - Math.round(SECONDS_IN_A_DAY / BLOCK_DURATION_SECONDS) * 7;
+    const fetchForBlock = latestBlock.number - Math.round(SECONDS_IN_A_DAY / averageBlockTime) * 7;
 
     const pastBlock = await provider.getBlock(fetchForBlock);
     // Convert block timestamp from seconds to milliseconds

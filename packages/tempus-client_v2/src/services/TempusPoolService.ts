@@ -1,7 +1,7 @@
 import { BigNumber, ethers } from 'ethers';
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
 import { TempusPool } from '../abi/TempusPool';
-import { BLOCK_DURATION_SECONDS, DAYS_IN_A_YEAR, SECONDS_IN_A_DAY } from '../constants';
+import { DAYS_IN_A_YEAR, SECONDS_IN_A_DAY } from '../constants';
 import { ProtocolName } from '../interfaces/ProtocolName';
 import { Ticker } from '../interfaces/Token';
 import { Chain } from '../interfaces/Chain';
@@ -153,7 +153,7 @@ class TempusPoolService {
     throw new Error(`Address '${address}' is not valid`);
   }
 
-  public async getVariableAPY(address: string): Promise<number> {
+  public async getVariableAPY(address: string, averageBlockTime: number): Promise<number> {
     const tempusPool = this.tempusPoolsMap[address];
 
     if (tempusPool) {
@@ -161,10 +161,10 @@ class TempusPoolService {
         const latestBlock = await tempusPool.provider.getBlock('latest');
 
         const [pastBlock, currentExchangeRate, pastExchangeRate] = await Promise.all([
-          tempusPool.provider.getBlock(latestBlock.number - SECONDS_IN_A_DAY / BLOCK_DURATION_SECONDS),
+          tempusPool.provider.getBlock(latestBlock.number - SECONDS_IN_A_DAY / averageBlockTime),
           tempusPool.currentInterestRate(),
           tempusPool.currentInterestRate({
-            blockTag: latestBlock.number - SECONDS_IN_A_DAY / BLOCK_DURATION_SECONDS,
+            blockTag: latestBlock.number - SECONDS_IN_A_DAY / averageBlockTime,
           }),
         ]);
 

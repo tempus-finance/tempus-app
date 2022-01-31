@@ -12,7 +12,6 @@ import {
   aaveLendingPoolAddress,
   COMPOUND_BLOCKS_PER_DAY,
   SECONDS_IN_A_DAY,
-  BLOCK_DURATION_SECONDS,
 } from '../constants';
 import TempusPoolService from '../services/TempusPoolService';
 import VaultService, { PoolBalanceChangedEvent, SwapEvent } from '../services/VaultService';
@@ -87,6 +86,7 @@ class VariableRateService {
     principalsAddress: string,
     yieldsAddress: string,
     chain: Chain,
+    averageBlockTime: number,
   ) {
     if (!this.tempusAMMService || !this.vaultService || !this.tempusPoolService || !this.signerOrProvider) {
       return Promise.reject();
@@ -104,9 +104,7 @@ class VariableRateService {
       this.tempusAMMService.getSwapFeePercentage(tempusAMM),
     ]);
 
-    const earlierBlock = await provider.getBlock(
-      latestBlock.number - Math.floor(SECONDS_IN_A_WEEK / BLOCK_DURATION_SECONDS),
-    );
+    const earlierBlock = await provider.getBlock(latestBlock.number - Math.floor(SECONDS_IN_A_WEEK / averageBlockTime));
 
     const laterBlock = Math.max(poolConfig.startDate, earlierBlock.timestamp * 1000);
     const hoursBetweenLatestAndLater = ((latestBlock.timestamp * 1000 - laterBlock) / (60 * 60 * 1000)).toFixed(18);

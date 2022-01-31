@@ -3,7 +3,7 @@ import { useContext, useEffect, useMemo, useState } from 'react';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { AreaChart, Tooltip, Area, ResponsiveContainer } from 'recharts';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../../state/PoolDataState';
-import { selectedChainState } from '../../../state/ChainState';
+import { selectedChainState, staticChainDataState } from '../../../state/ChainState';
 import getProfitLossGraphDataAdapter from '../../../adapters/getProfitLossGraphDataAdapter';
 import { WalletContext } from '../../../context/walletContext';
 import ChartDataPoint from '../../../interfaces/ChartDataPoint';
@@ -16,6 +16,7 @@ const ProfitLossChart = () => {
   const staticPoolData = useHookState(staticPoolDataState);
   const dynamicPoolData = useHookState(dynamicPoolDataState);
   const selectedChain = useHookState(selectedChainState);
+  const staticChainData = useHookState(staticChainDataState);
 
   const { userWalletAddress, userWalletSigner } = useContext(WalletContext);
 
@@ -25,6 +26,7 @@ const ProfitLossChart = () => {
   const pastDaysNumber = useMemo(() => (startDate ? getPastDaysNumber(startDate, 3) : []), [startDate]);
 
   const selectedChainName = selectedChain.attach(Downgraded).get();
+  const averageBlockTime = staticChainData[selectedChainName].averageBlockTime.attach(Downgraded).get();
   const selectedPoolStaticData = staticPoolData[selectedPool.get()].attach(Downgraded).get();
   const userBalanceUSD = dynamicPoolData[selectedPool.get()].userBalanceUSD.attach(Downgraded).get();
 
@@ -36,7 +38,11 @@ const ProfitLossChart = () => {
       const profitLossGraphDataAdapter = getProfitLossGraphDataAdapter(selectedChainName, userWalletSigner);
 
       try {
-        const result = await profitLossGraphDataAdapter.generateChartData(selectedPoolStaticData, userWalletAddress);
+        const result = await profitLossGraphDataAdapter.generateChartData(
+          selectedPoolStaticData,
+          userWalletAddress,
+          averageBlockTime,
+        );
 
         setChartData(result.data);
         setStartDate(result.numberOfPastDays);
@@ -45,7 +51,7 @@ const ProfitLossChart = () => {
       }
     };
     fetchChartData();
-  }, [userWalletAddress, userWalletSigner, selectedPoolStaticData, selectedChainName]);
+  }, [userWalletAddress, userWalletSigner, selectedPoolStaticData, selectedChainName, averageBlockTime]);
 
   /**
    * Update chart data every time user USD balance changes for the pool
