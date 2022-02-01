@@ -91,6 +91,7 @@ const config: Config = {
     chainId: 1,
     averageBlockTime: 13.2,
     nativeToken: 'ETH',
+    blockExplorerName: 'Etherscan',
   },
   fantom: {
     tempusPools: [
@@ -130,6 +131,7 @@ const config: Config = {
     chainId: 250,
     averageBlockTime: 0.9,
     nativeToken: 'FTM',
+    blockExplorerName: 'FTMScan',
   },
 };
 

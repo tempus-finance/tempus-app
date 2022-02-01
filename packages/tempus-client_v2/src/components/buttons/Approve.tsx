@@ -3,7 +3,7 @@ import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { BigNumber, ethers } from 'ethers';
 import { Button, CircularProgress } from '@material-ui/core';
 import { selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
-import { selectedChainState } from '../../state/ChainState';
+import { selectedChainState, staticChainDataState } from '../../state/ChainState';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
 import Typography from '../typography/Typography';
 import getNotificationService from '../../services/getNotificationService';
@@ -57,6 +57,7 @@ const Approve: FC<ApproveButtonProps> = props => {
   const selectedPool = useHookState(selectedPoolState);
   const staticPoolData = useHookState(staticPoolDataState);
   const selectedChain = useHookState(selectedChainState);
+  const staticChainData = useHookState(staticChainDataState);
 
   const { setPendingTransactions } = useContext(PendingTransactionsContext);
   const { userWalletAddress, userWalletSigner } = useContext(WalletContext);
@@ -66,11 +67,12 @@ const Approve: FC<ApproveButtonProps> = props => {
   const [allowance, setAllowance] = useState<BigNumber | null>(null);
 
   const selectedChainName = selectedChain.attach(Downgraded).get();
+  const blockExplorerName = staticChainData[selectedChainName].blockExplorerName.attach(Downgraded).get();
   const backingToken = staticPoolData[selectedPool.get()].backingToken.attach(Downgraded).get();
   const protocol = staticPoolData[selectedPool.get()].protocol.attach(Downgraded).get();
   const maturityDate = staticPoolData[selectedPool.get()].maturityDate.attach(Downgraded).get();
 
-  const viewLinkText = getText('viewLinkText', language);
+  const viewLinkText = `${getText('viewOn', language)} ${blockExplorerName}`;
 
   /**
    * Called when user clicks on the approve button.

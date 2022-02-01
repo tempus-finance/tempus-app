@@ -23,7 +23,7 @@ const es: { [word in Words]: string } = {
   walletOverview: 'Vista general de la billetera',
   switchWallet: 'Cambiar cartera',
   connectedWallet: 'Cartera conectada',
-  viewLinkText: 'Ver en Etherscan',
+  viewOn: 'Ver en',
   pendingTransactions: 'Transacciones pendientes',
   transactionHistory: 'Historial de transacciones',
   clear: 'limpiar',

@@ -20,7 +20,7 @@ type Words =
   | 'walletOverview'
   | 'connectedWallet'
   | 'switchWallet'
-  | 'viewLinkText'
+  | 'viewOn'
   | 'pendingTransactions'
   | 'transactionHistory'
   | 'clear'

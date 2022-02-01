@@ -15,6 +15,7 @@ export interface ChainConfig {
    */
   averageBlockTime: number;
   nativeToken: 'ETH' | 'FTM';
+  blockExplorerName: 'Etherscan' | 'FTMScan';
 }
 
 export type Config = {
