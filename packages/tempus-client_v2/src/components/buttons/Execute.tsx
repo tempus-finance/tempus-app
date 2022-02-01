@@ -3,7 +3,7 @@ import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { ethers } from 'ethers';
 import { Button, CircularProgress } from '@material-ui/core';
 import { selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
-import { selectedChainState } from '../../state/ChainState';
+import { selectedChainState, staticChainDataState } from '../../state/ChainState';
 import getNotificationService from '../../services/getNotificationService';
 import {
   generateEtherscanLink,
@@ -33,6 +33,7 @@ const Execute: FC<ExecuteButtonProps> = props => {
   const selectedPool = useHookState(selectedPoolState);
   const staticPoolData = useHookState(staticPoolDataState);
   const selectedChain = useHookState(selectedChainState);
+  const staticChainData = useHookState(staticChainDataState);
 
   const { setPendingTransactions } = useContext(PendingTransactionsContext);
   const { language } = useContext(LanguageContext);
@@ -41,12 +42,13 @@ const Execute: FC<ExecuteButtonProps> = props => {
   const [executeInProgress, setExecuteInProgress] = useState<boolean>(false);
 
   const selectedChainName = selectedChain.attach(Downgraded).get();
+  const blockExplorerName = staticChainData[selectedChainName].blockExplorerName.attach(Downgraded).get();
   const selectedPoolData = staticPoolData[selectedPool.get()].attach(Downgraded).get();
   const backingToken = staticPoolData[selectedPool.get()].backingToken.attach(Downgraded).get();
   const protocol = staticPoolData[selectedPool.get()].protocol.attach(Downgraded).get();
   const maturityDate = staticPoolData[selectedPool.get()].maturityDate.attach(Downgraded).get();
 
-  const viewLinkText = getText('viewLinkText', language);
+  const viewLinkText = `${getText('viewOn', language)} ${blockExplorerName}`;
 
   const execute = () => {
     const runExecute = async () => {

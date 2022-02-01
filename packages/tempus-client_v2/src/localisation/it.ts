@@ -23,7 +23,7 @@ const it: { [word in Words]: string } = {
   walletOverview: 'Panoramica del portafoglio',
   switchWallet: 'Cambia portafoglio',
   connectedWallet: 'Portafoglio collegato',
-  viewLinkText: 'Vedi su Etherscan',
+  viewOn: 'Vedi su',
   pendingTransactions: 'Transazioni in corso',
   transactionHistory: 'Storico Transazioni',
   clear: 'Rimuovi',

@@ -23,7 +23,7 @@ const en: { [word in Words]: string } = {
   walletOverview: 'Wallet overview',
   switchWallet: 'Switch Wallet',
   connectedWallet: 'Connected Wallet',
-  viewLinkText: 'View on Etherscan',
+  viewOn: 'View on',
   pendingTransactions: 'Pending Transactions',
   transactionHistory: 'Transaction History',
   clear: 'clear',
