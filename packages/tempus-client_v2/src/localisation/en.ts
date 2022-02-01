@@ -68,7 +68,7 @@ const en: { [word in Words]: string } = {
   askUsOnDiscord:
     'Have more questions? Ask us on Discord: <a href="https://discord.com/invite/6gauHECShr" target="_blank">https://discord.com/invite/6gauHECShr</a>',
   depositDisabledByConfig: 'Depositing is currently not available.',
-  mintingDisabledByConfig: 'Minting is currently not available.',
+  mintDisabledByConfig: 'Minting is currently not available.',
   depositDisabledNoLiquidity:
     'Depositing is currently disabled due to insufficient liquidity in the pool you have selected. Please try again later.',
   depositDisabledPoolMaturity: 'Deposit is not available because this pool has reached maturity.',

@@ -140,6 +140,6 @@ type Words =
   | 'poolActionDisabledTitle'
   | 'askUsOnDiscord'
   | 'depositDisabledByConfig'
-  | 'mintingDisabledByConfig';
+  | 'mintDisabledByConfig';
 
 export default Words;

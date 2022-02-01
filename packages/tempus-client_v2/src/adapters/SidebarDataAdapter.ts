@@ -69,7 +69,7 @@ export default class SidebarDataAdapter {
     const { mint } = disabledOperations;
 
     if (mint) {
-      return 'mintingDisabledByConfig';
+      return 'mintDisabledByConfig';
     }
 
     if (maturityDate <= Date.now()) {
