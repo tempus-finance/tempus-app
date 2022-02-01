@@ -47,6 +47,7 @@ const PercentageInput: FC<PercentageInputProps> = ({
       } else {
         setValue(`${formatValueToPercentage(defaultValue)}%`);
       }
+      setParsedValue(formatValueToPercentage(defaultValue));
     }
   }, [defaultValue]);
 
