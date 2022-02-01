@@ -8,7 +8,7 @@ export default class SidebarDataAdapter {
     const { deposit } = disabledOperations;
 
     if (deposit) {
-      return 'operationDisabledByConfig';
+      return 'depositDisabledByConfig';
     }
 
     if (maturityDate <= Date.now()) {
@@ -69,7 +69,7 @@ export default class SidebarDataAdapter {
     const { mint } = disabledOperations;
 
     if (mint) {
-      return 'operationDisabledByConfig';
+      return 'mintDisabledByConfig';
     }
 
     if (maturityDate <= Date.now()) {

@@ -136,6 +136,10 @@ type Words =
   | 'mintDescription'
   | 'swapDescription'
   | 'provideLiquidityDescription'
-  | 'removeLiquidityDescription';
+  | 'removeLiquidityDescription'
+  | 'poolActionDisabledTitle'
+  | 'askUsOnDiscord'
+  | 'depositDisabledByConfig'
+  | 'mintDisabledByConfig';
 
 export default Words;
