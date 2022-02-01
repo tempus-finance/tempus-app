@@ -64,7 +64,11 @@ const it: { [word in Words]: string } = {
   provideLiquidity: 'Immetti Liquidità',
   earlyRedeem: 'Riscatto Anticipato',
   operationDisabledByConfig:
-    'Certe operazioni relative a questa pool di Tempus sono temporaneamente disabilitate a causa di malfunzionamento intermittente della pool sottostante. Vi chiediamo cortesemente di pazientare mentre cerchiamo di risolvere il problema. Per maggiori informazioni https://discord.com/invite/6gauHECShr ',
+    'Certain actions in relation to this Tempus pool are temporarily disabled due to intermittent unreliability of the underlying pool. Please bear with us while we investigate this issue.',
+  askUsOnDiscord:
+    'Have more questions? Ask us on Discord: <a href="https://discord.com/invite/6gauHECShr">https://discord.com/invite/6gauHECShr</a>',
+  depositDisabledByConfig: 'Depositing is currently not available.',
+  mintingDisabledByConfig: 'Minting is currently not available.',
   depositDisabledNoLiquidity:
     'Il deposito è momentaneamente disabilitato a causa di liquidità insufficiente nella pool selezionata. Per favore riprova più tardi.',
   depositDisabledPoolMaturity: 'Il deposito non è disponibile perchè questa pool ha raggiunto la scadenza.',
@@ -159,5 +163,6 @@ const it: { [word in Words]: string } = {
   provideLiquidityDescription: 'Usa i tuoi LP token per immettere liquidità nella pool e guadagnare commissioni',
   removeLiquidityDescription:
     'Rimuovi liquidità dalla pool insieme alle commissioni sotto forma degli LP token iniziali',
+  poolActionDisabledTitle: 'Certain actions to this pool are temporarily disabled',
 };
 export default it;
