@@ -121,11 +121,11 @@ const CurrentPosition: FC<CurrentPositionInProps> = ({ language }) => {
 
   const unstakedPrincipalsPercentage = useMemo(() => {
     if (!userPrincipalsBalance || !lpTokenPrincipalReturnBalance) {
-      return 0;
+      return NumberUtils.formatPercentage('0', 0);
     }
 
     if (userPrincipalsBalance.add(lpTokenPrincipalReturnBalance).isZero()) {
-      return 0;
+      return NumberUtils.formatPercentage('0', 0);
     }
 
     return NumberUtils.formatPercentage(
@@ -142,11 +142,11 @@ const CurrentPosition: FC<CurrentPositionInProps> = ({ language }) => {
 
   const stakedPrincipalsPercentage = useMemo(() => {
     if (!userPrincipalsBalance || !lpTokenPrincipalReturnBalance) {
-      return 0;
+      return NumberUtils.formatPercentage('0', 0);
     }
 
     if (lpTokenPrincipalReturnBalance.add(userPrincipalsBalance).isZero()) {
-      return 0;
+      return NumberUtils.formatPercentage('0', 0);
     }
 
     return NumberUtils.formatPercentage(
@@ -163,11 +163,11 @@ const CurrentPosition: FC<CurrentPositionInProps> = ({ language }) => {
 
   const unstakedYieldsPercentage = useMemo(() => {
     if (!userYieldsBalance || !lpTokenYieldReturnBalance) {
-      return 0;
+      return NumberUtils.formatPercentage('0', 0);
     }
 
     if (userYieldsBalance.add(lpTokenYieldReturnBalance).isZero()) {
-      return 0;
+      return NumberUtils.formatPercentage('0', 0);
     }
 
     return NumberUtils.formatPercentage(
@@ -180,11 +180,11 @@ const CurrentPosition: FC<CurrentPositionInProps> = ({ language }) => {
 
   const stakedYieldsPercentage = useMemo(() => {
     if (!userYieldsBalance || !lpTokenYieldReturnBalance) {
-      return 0;
+      return NumberUtils.formatPercentage('0', 0);
     }
 
     if (lpTokenYieldReturnBalance.add(userYieldsBalance).isZero()) {
-      return 0;
+      return NumberUtils.formatPercentage('0', 0);
     }
 
     return NumberUtils.formatPercentage(
