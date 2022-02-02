@@ -51,6 +51,7 @@ type Words =
   | 'removeLiquidity'
   | 'provideLiquidity'
   | 'earlyRedeem'
+  | 'operationDisabledByConfig'
   | 'depositDisabledNoLiquidity'
   | 'depositDisabledPoolMaturity'
   | 'depositDisabledNegative'
@@ -138,6 +139,10 @@ type Words =
   | 'swapDescription'
   | 'provideLiquidityDescription'
   | 'removeLiquidityDescription'
-  | 'combinedApr';
+  | 'combinedApr'
+  | 'poolActionDisabledTitle'
+  | 'askUsOnDiscord'
+  | 'depositDisabledByConfig'
+  | 'mintDisabledByConfig';
 
 export default Words;

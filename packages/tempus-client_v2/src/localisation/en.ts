@@ -65,6 +65,12 @@ const en: { [word in Words]: string } = {
   removeLiquidity: 'Remove Liquidity',
   provideLiquidity: 'Provide Liquidity',
   earlyRedeem: 'Early Redeem',
+  operationDisabledByConfig:
+    'Certain actions in relation to this Tempus pool are temporarily disabled due to intermittent unreliability of the underlying pool. Please bear with us while we investigate this issue.',
+  askUsOnDiscord:
+    'Have more questions? Ask us on Discord: <a href="https://discord.com/invite/6gauHECShr" target="_blank">https://discord.com/invite/6gauHECShr</a>',
+  depositDisabledByConfig: 'Depositing is currently not available.',
+  mintDisabledByConfig: 'Minting is currently not available.',
   depositDisabledNoLiquidity:
     'Depositing is currently disabled due to insufficient liquidity in the pool you have selected. Please try again later.',
   depositDisabledPoolMaturity: 'Deposit is not available because this pool has reached maturity.',
@@ -152,11 +158,12 @@ const en: { [word in Words]: string } = {
   unstaked: 'Unstaked',
   stakedPrincipals: 'Staked Principals',
   stakedYields: 'Staked Yields',
-  mintDescription: 'Split your yield bearing token into Principals and Yields.',
-  swapDescription: 'Swap between Principals and Yields.',
-  provideLiquidityDescription: 'Use your LP tokens to provide liquidity to the pool and earn rewards.',
-  removeLiquidityDescription:
-    'Remove your liquidity from the pool with the accrued rewards in the form of your initial LP tokens.',
   combinedApr: 'Combined APR',
+  mintDescription: 'Split your yield bearing token into Principals and Yields',
+  swapDescription: 'Swap between Principals and Yields',
+  provideLiquidityDescription: 'Use your LP tokens to provide liquidity to the pool and earn rewards',
+  removeLiquidityDescription:
+    'Remove your liquidity from the pool with the accrued rewards in the form of your initial LP tokens',
+  poolActionDisabledTitle: 'Certain actions to this pool are temporarily disabled',
 };
 export default en;
