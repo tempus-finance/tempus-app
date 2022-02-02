@@ -20,7 +20,7 @@ type TokenSelectorOutProps = {
 
 type TokenSelectorProps = TokenSelectorInProps & TokenSelectorOutProps;
 
-const getMenuItems = (value: Ticker | null, tickers: Ticker[], language: Language) => {
+const getMenuItems = (value: Ticker | null, tickers: Ticker[], language: Language, disabled?: boolean) => {
   const menuItems = tickers.map(ticker => {
     return (
       <MenuItem key={ticker} value={ticker}>
@@ -39,7 +39,7 @@ const getMenuItems = (value: Ticker | null, tickers: Ticker[], language: Languag
   if (value === null) {
     menuItems.unshift(
       <MenuItem key="empty" value="empty">
-        <Typography variant="dropdown-text">{getText('selectPlaceholder', language)}</Typography>
+        <Typography variant="dropdown-text">{disabled ? '' : getText('selectPlaceholder', language)}</Typography>
       </MenuItem>,
     );
   }
@@ -70,7 +70,7 @@ const TokenSelector: FC<TokenSelectorProps> = props => {
           onChange={handleChange}
           disableUnderline
         >
-          {getMenuItems(value, tickers, language)}
+          {getMenuItems(value, tickers, language, disabled)}
         </Select>
       </div>
     </FormControl>

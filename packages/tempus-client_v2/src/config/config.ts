@@ -29,6 +29,7 @@ const config: Config = {
           yieldBearingToken: 18,
           yields: 18,
         },
+        disabledOperations: {},
       },
       {
         address: '0x0697B0a2cBb1F947f51a9845b715E9eAb3f89B4F',
@@ -54,6 +55,7 @@ const config: Config = {
           yieldBearingToken: 18,
           yields: 18,
         },
+        disabledOperations: {},
       },
       {
         address: '0xc58b8DD0075f7ae7B1CF54a56F899D8b25a7712E',
@@ -78,6 +80,10 @@ const config: Config = {
           principals: 6,
           yieldBearingToken: 18,
           yields: 6,
+        },
+        disabledOperations: {
+          deposit: true,
+          mint: true,
         },
       },
     ],
@@ -119,6 +125,7 @@ const config: Config = {
           yieldBearingToken: 18,
           yields: 18,
         },
+        disabledOperations: {},
       },
     ],
     statisticsContract: '0x7008d1f94088c8AA012B4F370A4fe672ad592Ee3',

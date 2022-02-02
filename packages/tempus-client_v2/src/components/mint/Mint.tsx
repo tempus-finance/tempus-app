@@ -70,6 +70,7 @@ const Mint: FC<MintInProps> = ({ narrow }) => {
   const decimalsForUI = staticPoolData[selectedPool.get()].decimalsForUI.attach(Downgraded).get();
   const tokenPrecision = staticPoolData[selectedPool.get()].tokenPrecision.attach(Downgraded).get();
   const userBackingTokenBalance = dynamicPoolData[selectedPool.get()].userBackingTokenBalance.attach(Downgraded).get();
+  const disabledOperations = staticPoolData[selectedPool.get()].disabledOperations.attach(Downgraded).get();
   const userYieldBearingTokenBalance = dynamicPoolData[selectedPool.get()].userYieldBearingTokenBalance
     .attach(Downgraded)
     .get();
@@ -179,9 +180,13 @@ const Mint: FC<MintInProps> = ({ narrow }) => {
     return NumberUtils.formatToCurrency(ethers.utils.formatUnits(usdValue, tokenPrecision.backingToken), 2, '$');
   }, [usdRate, amount, tokenPrecision.backingToken]);
 
-  const depositDisabled = useMemo((): boolean => {
-    return isYieldNegative === null ? true : isYieldNegative;
-  }, [isYieldNegative]);
+  const mintDisabled = useMemo((): boolean => {
+    if (isYieldNegative === null) {
+      return true;
+    }
+
+    return isYieldNegative || disabledOperations.mint || false;
+  }, [isYieldNegative, disabledOperations.mint]);
 
   const getSelectedTokenAddress = useCallback((): string | null => {
     if (!selectedToken) {
@@ -341,8 +346,8 @@ const Mint: FC<MintInProps> = ({ narrow }) => {
   const approveDisabled = useMemo((): boolean => {
     const zeroAmount = isZeroString(amount);
 
-    return zeroAmount || depositDisabled;
-  }, [amount, depositDisabled]);
+    return zeroAmount || mintDisabled;
+  }, [amount, mintDisabled]);
 
   const executeDisabled = useMemo((): boolean => {
     const zeroAmount = isZeroString(amount);
@@ -350,8 +355,8 @@ const Mint: FC<MintInProps> = ({ narrow }) => {
       .parseUnits(amount || '0', selectedTokenPrecision)
       .gt(getSelectedTokenBalance() || BigNumber.from('0'));
 
-    return !tokensApproved || zeroAmount || amountExceedsBalance || depositDisabled || estimateInProgress;
-  }, [amount, selectedTokenPrecision, getSelectedTokenBalance, tokensApproved, estimateInProgress, depositDisabled]);
+    return !tokensApproved || zeroAmount || amountExceedsBalance || mintDisabled || estimateInProgress;
+  }, [amount, selectedTokenPrecision, getSelectedTokenBalance, tokensApproved, estimateInProgress, mintDisabled]);
 
   const ethAllowanceForGasExceeded = useMemo(() => {
     const currentBalance = getSelectedTokenBalance();
@@ -370,6 +375,16 @@ const Mint: FC<MintInProps> = ({ narrow }) => {
 
   return (
     <div className="tc__mint">
+      {disabledOperations.mint && (
+        <>
+          <SectionContainer title="poolActionDisabledTitle">
+            <Typography variant="card-body-text">{getText('operationDisabledByConfig', language)}</Typography>
+            <br />
+            <Typography variant="card-body-text" html={getText('askUsOnDiscord', language)} />
+          </SectionContainer>
+          <Spacer size={15} />
+        </>
+      )}
       <Descriptor>{getText('mintDescription', language)}</Descriptor>
       <SectionContainer title="from">
         {selectedToken && balanceFormatted && (
@@ -385,6 +400,7 @@ const Mint: FC<MintInProps> = ({ narrow }) => {
           <TokenSelector
             value={selectedToken}
             tickers={[backingToken, yieldBearingToken]}
+            disabled={disabledOperations.mint}
             onTokenChange={onTokenChange}
           />
           <Spacer size={15} />
@@ -393,9 +409,11 @@ const Mint: FC<MintInProps> = ({ narrow }) => {
               defaultValue={amount}
               onChange={onAmountChange}
               onMaxClick={onClickMax}
-              disabled={!selectedToken || depositDisabled}
+              disabled={!selectedToken || mintDisabled}
               // TODO - Update text in case input is disabled because of negative yield
-              disabledTooltip={getText('selectTokenFirst', language)}
+              disabledTooltip={
+                disabledOperations.mint ? getText('mintDisabledByConfig') : getText('selectTokenFirst', language)
+              }
             />
             {ethAllowanceForGasExceeded && (
               <div className="tf__input__label">
