@@ -42,7 +42,7 @@ const en: { [word in Words]: string } = {
   lifeTimeApr: 'Lifetime APR',
   apr: 'APR',
   aprRange: 'APR range',
-  lpApr: 'LP APR',
+  lpApr: 'Variable APR',
   futureApr: 'Future APR',
   fiat: 'Fiat',
   crypto: 'Crypto',
