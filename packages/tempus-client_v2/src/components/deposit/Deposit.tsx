@@ -91,6 +91,7 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
   const poolId = staticPoolData[selectedPool.get()].poolId.attach(Downgraded).get();
   const maturityDate = staticPoolData[selectedPool.get()].maturityDate.attach(Downgraded).get();
   const tokenPrecision = staticPoolData[selectedPool.get()].tokenPrecision.attach(Downgraded).get();
+  const disabledOperations = staticPoolData[selectedPool.get()].disabledOperations.attach(Downgraded).get();
   const showEstimatesInBackingToken = staticPoolData[selectedPool.get()].showEstimatesInBackingToken
     .attach(Downgraded)
     .get();
@@ -728,8 +729,12 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
   }, [backingTokenRate, variableTotalAvailableAtMaturity, selectedTokenPrecision, tokenPrecision.backingToken]);
 
   const depositDisabled = useMemo((): boolean => {
-    return isYieldNegative === null ? true : isYieldNegative;
-  }, [isYieldNegative]);
+    if (isYieldNegative === null) {
+      return true;
+    }
+
+    return isYieldNegative || disabledOperations.deposit || false;
+  }, [disabledOperations.deposit, isYieldNegative]);
 
   const approveDisabled = useMemo((): boolean => {
     const zeroAmount = isZeroString(amount);
@@ -788,6 +793,16 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
 
   return (
     <div className={`tc__deposit ${narrow ? 'tc__deposit__narrow' : ''}`}>
+      {disabledOperations.deposit && (
+        <>
+          <SectionContainer title="poolActionDisabledTitle">
+            <Typography variant="card-body-text">{getText('operationDisabledByConfig', language)}</Typography>
+            <br />
+            <Typography variant="card-body-text" html={getText('askUsOnDiscord', language)} />
+          </SectionContainer>
+          <Spacer size={15} />
+        </>
+      )}
       <SectionContainer
         title={
           selectedToken && balanceFormatted ? (
@@ -806,6 +821,7 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
           <TokenSelector
             value={selectedToken}
             tickers={[backingToken, yieldBearingToken]}
+            disabled={disabledOperations.deposit}
             onTokenChange={onTokenChange}
           />
           <Spacer size={15} />
@@ -817,7 +833,9 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
               precision={selectedTokenPrecision}
               disabled={!selectedToken || depositDisabled}
               // TODO - Update text in case input is disabled because of negative yield
-              disabledTooltip={getText('selectTokenFirst', language)}
+              disabledTooltip={
+                disabledOperations.deposit ? getText('depositDisabledByConfig') : getText('selectTokenFirst', language)
+              }
             />
             {ethAllowanceForGasExceeded && (
               <div className="tf__input__label">
@@ -838,11 +856,20 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
       <Spacer size={15} />
       <SectionContainer title="to">
         <div className="tc__deposit__to__body">
-          <SectionContainer id="Fixed" selectable selected={selectedYield === 'Fixed'} onSelected={onSelectYield}>
+          <SectionContainer
+            id="Fixed"
+            selectable={!disabledOperations.deposit}
+            selected={selectedYield === 'Fixed' && !disabledOperations.deposit}
+            onSelected={onSelectYield}
+          >
             <div className="tf__flex-row-space-between-v">
               <div className="tf__flex-row-center-v">
-                <SelectIcon selected={selectedYield === 'Fixed'} />
-                <Spacer size={10} />
+                {!disabledOperations.deposit && (
+                  <>
+                    <SelectIcon selected={selectedYield === 'Fixed'} />
+                    <Spacer size={10} />
+                  </>
+                )}
                 <Typography variant="yield-card-header">{getText('fixYourFutureYield', language)}</Typography>
                 <Spacer size={10} />
                 <InfoTooltip content={getText('interestRateProtectionTooltipText', language)} />
@@ -928,11 +955,20 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
             </div>
           </SectionContainer>
           <Spacer size={15} />
-          <SectionContainer id="Variable" selectable selected={selectedYield === 'Variable'} onSelected={onSelectYield}>
+          <SectionContainer
+            id="Variable"
+            selectable={!disabledOperations.deposit}
+            selected={selectedYield === 'Variable' && !disabledOperations.deposit}
+            onSelected={onSelectYield}
+          >
             <div className="tf__flex-row-space-between-v">
               <div className="tf__flex-row-center-v">
-                <SelectIcon selected={selectedYield === 'Variable'} />
-                <Spacer size={10} />
+                {!disabledOperations.deposit && (
+                  <>
+                    <SelectIcon selected={selectedYield === 'Variable'} />
+                    <Spacer size={10} />
+                  </>
+                )}
                 <Typography variant="yield-card-header">{getText('provideLiquidity', language)}</Typography>
                 <Spacer size={10} />
                 <InfoTooltip content={getText('liquidityProvisionTooltipText', language)} />
