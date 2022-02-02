@@ -4,7 +4,12 @@ import { dynamicPoolDataState } from '../state/PoolDataState';
 
 export default class SidebarDataAdapter {
   getDepositDisabledReason(poolAddress: string): Words | null {
-    const { maturityDate } = getConfigForPoolWithAddress(poolAddress);
+    const { disabledOperations, maturityDate } = getConfigForPoolWithAddress(poolAddress);
+    const { deposit } = disabledOperations;
+
+    if (deposit) {
+      return 'depositDisabledByConfig';
+    }
 
     if (maturityDate <= Date.now()) {
       return 'depositDisabledPoolMaturity';
@@ -60,7 +65,12 @@ export default class SidebarDataAdapter {
   }
 
   getMintDisabledReason(poolAddress: string): Words | null {
-    const { maturityDate } = getConfigForPoolWithAddress(poolAddress);
+    const { disabledOperations, maturityDate } = getConfigForPoolWithAddress(poolAddress);
+    const { mint } = disabledOperations;
+
+    if (mint) {
+      return 'mintDisabledByConfig';
+    }
 
     if (maturityDate <= Date.now()) {
       return 'mintDisabledPoolMaturity';
