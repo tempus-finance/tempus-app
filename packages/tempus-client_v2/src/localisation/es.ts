@@ -159,5 +159,12 @@ const es: { [word in Words]: string } = {
   removeLiquidityDescription:
     'Retire su liquidez del grupo con las recompensas acumuladas en forma de sus tokens LP iniciales.',
   combinedApr: 'APR combinado',
+  askUsOnDiscord:
+    'Have more questions? Ask us on Discord: <a href="https://discord.com/invite/6gauHECShr" target="_blank">https://discord.com/invite/6gauHECShr</a>',
+  depositDisabledByConfig: 'Depositing is currently not available.',
+  mintDisabledByConfig: 'Minting is currently not available.',
+  operationDisabledByConfig:
+    'Certain actions in relation to this Tempus pool are temporarily disabled due to intermittent unreliability of the underlying pool. Please bear with us while we investigate this issue.',
+  poolActionDisabledTitle: 'Certain actions to this pool are temporarily disabled',
 };
 export default es;
