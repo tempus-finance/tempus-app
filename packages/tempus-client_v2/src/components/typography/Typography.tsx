@@ -17,7 +17,8 @@ type TypographyVariant =
   | 'tooltip-card-text'
   | 'fractional'
   | 'yield-card-header'
-  | 'yield-card-type';
+  | 'yield-card-type'
+  | 'chain-badge';
 
 type TypographyColor = 'default' | 'primary' | 'accent' | 'inverted' | 'link' | 'title' | 'error' | 'success';
 
@@ -133,6 +134,13 @@ typographyStyleMap.set('yield-card-type', {
   fontSize: '16px',
   fontStyle: 'normal',
   lineHeight: '20px',
+});
+typographyStyleMap.set('chain-badge', {
+  fontFamily: "'Source Sans Pro', sans-serif",
+  fontWeight: 600,
+  fontSize: '12px',
+  fontStyle: 'normal',
+  lineHeight: '16px',
 });
 
 interface TypographyProps {

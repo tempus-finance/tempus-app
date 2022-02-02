@@ -63,12 +63,12 @@ export default class DashboardDataAdapter {
   private getChildRows(chainName: Chain): DashboardRowChild[] {
     const childRows: DashboardRowChild[] = [];
     getChainConfig(chainName).tempusPools.forEach(tempusPool => {
-      childRows.push(this.getChildRowData(tempusPool));
+      childRows.push(this.getChildRowData(tempusPool, chainName));
     });
     return childRows;
   }
 
-  private getChildRowData(tempusPool: TempusPool): DashboardRowChild {
+  private getChildRowData(tempusPool: TempusPool, chainName: Chain): DashboardRowChild {
     return {
       id: tempusPool.address,
       parentId: tempusPool.backingToken,
@@ -77,6 +77,7 @@ export default class DashboardDataAdapter {
       supportedTokens: [tempusPool.backingToken, tempusPool.yieldBearingToken],
       startDate: new Date(tempusPool.startDate),
       maturityDate: new Date(tempusPool.maturityDate),
+      chain: chainName,
     };
   }
 
@@ -99,6 +100,7 @@ export default class DashboardDataAdapter {
           token: child.token,
           maturityRange: getRangeFrom<Date>(childrenMaturityDate),
           protocols: Array.from(new Set(childrenProtocols)), // Converting list of protocols to set removes duplicate items
+          chain: child.chain,
         };
 
         parentRows.push(parentRow);
