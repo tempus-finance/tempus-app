@@ -224,12 +224,28 @@ $padding: 20px;
       justify-content: flex-start;
     }
 
-    .tf__dashboard__parent-token-ticker {
-      width: 65px;
+    .tf__dashboard__parent-asset-data {
       display: flex;
-      flex-direction: row;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: center;
+    }
+
+    .tf__dashboard__parent-asset-ticker {
+      display: flex;
       align-items: center;
-      justify-content: flex-end;
+    }
+
+    .tf__dashboard__parent-asset-chain {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 24px;
+      background-color: #fafbfb;
+      border: 1px solid #e2e2e2;
+      box-sizing: border-box;
+      border-radius: 2px;
+      padding: 4px 8px 4px 8px;
     }
   }
 }

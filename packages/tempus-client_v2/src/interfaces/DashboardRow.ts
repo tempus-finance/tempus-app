@@ -1,11 +1,13 @@
 import { TempusPool } from './TempusPool';
 import { Ticker } from './Token';
 import { ProtocolName } from './ProtocolName';
+import { Chain } from './Chain';
 
 export interface DashboardRow {
   id: string;
   parentId: string | null;
   token: Ticker;
+  chain: Chain;
 }
 export interface DashboardRowParent extends DashboardRow {
   maturityRange: (Date | null)[];
