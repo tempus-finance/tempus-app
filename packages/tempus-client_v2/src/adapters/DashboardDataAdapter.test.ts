@@ -179,12 +179,12 @@ describe('DashboardDataAdapter', () => {
       jest.spyOn(getConfig, 'getChainConfig').mockReturnValue({ tempusPools: MOCK_TEMPUS_POOL } as ChainConfig);
       const mockGetChildRowData = jest.fn().mockImplementation((dashboardDataAdapter as any).getChildRowData);
       jest.spyOn(dashboardDataAdapter as any, 'getChildRowData').mockImplementation(mockGetChildRowData);
-      const expected = MOCK_TEMPUS_POOL.map(mockGetChildRowData);
+      const expected = MOCK_TEMPUS_POOL.map(mockPool => mockGetChildRowData(mockPool, 'fantom'));
 
-      expect((dashboardDataAdapter as any).getChildRows()).toEqual(expected);
+      expect((dashboardDataAdapter as any).getChildRows('fantom')).toEqual(expected);
       expect(getConfig.getChainConfig).toHaveBeenCalled();
       MOCK_TEMPUS_POOL.forEach((tempusPool, i) => {
-        expect(dashboardDataAdapter['getChildRowData']).toHaveBeenNthCalledWith(i + 1, tempusPool);
+        expect(dashboardDataAdapter['getChildRowData']).toHaveBeenNthCalledWith(i + 1, tempusPool, 'fantom');
       });
     });
   });
@@ -192,7 +192,7 @@ describe('DashboardDataAdapter', () => {
   describe('getChildRowData()', () => {
     test('returns an object with selected fields', () => {
       MOCK_TEMPUS_POOL.forEach(tempusPool => {
-        expect(dashboardDataAdapter['getChildRowData'](tempusPool as TempusPool)).toEqual({
+        expect(dashboardDataAdapter['getChildRowData'](tempusPool as TempusPool, 'fantom')).toEqual({
           id: tempusPool.address,
           parentId: tempusPool.backingToken,
           token: tempusPool.backingToken,
@@ -200,6 +200,7 @@ describe('DashboardDataAdapter', () => {
           supportedTokens: [tempusPool.backingToken, tempusPool.yieldBearingToken],
           startDate: new Date(tempusPool.startDate),
           maturityDate: new Date(tempusPool.maturityDate),
+          chain: 'fantom',
         });
       });
     });
