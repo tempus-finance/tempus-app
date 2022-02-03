@@ -141,6 +141,7 @@ interface TypographyProps {
   capitalize?: boolean;
   html?: string;
   align?: 'start' | 'end' | 'left' | 'right' | 'center' | 'justify' | 'match-parent';
+  noWrap?: boolean;
 }
 
 const Typography: FC<TypographyProps & React.HTMLProps<'div'>> = props => {
@@ -184,6 +185,7 @@ const Typography: FC<TypographyProps & React.HTMLProps<'div'>> = props => {
         color: color,
         textTransform: props.capitalize ? 'capitalize' : 'none',
         textAlign: props.align ? props.align : 'unset',
+        whiteSpace: props.noWrap ? 'nowrap' : 'normal',
       }}
     >
       {html ? parse(html) : children}

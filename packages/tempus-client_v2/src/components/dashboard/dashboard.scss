@@ -115,6 +115,8 @@ $padding: 20px;
       .tf__dashboard__header__cell {
         padding: 0px 0px 3px 0px;
         border-bottom: none;
+        white-space: break-spaces;
+
         &.tf__dashboard__header__maturity {
           padding-right: 8px;
         }
