@@ -18,7 +18,9 @@ type TypographyVariant =
   | 'fractional'
   | 'yield-card-header'
   | 'yield-card-type'
-  | 'chain-badge';
+  | 'chain-badge'
+  | 'wallet-info'
+  | 'wallet-info-bold';
 
 type TypographyColor = 'default' | 'primary' | 'accent' | 'inverted' | 'link' | 'title' | 'error' | 'success';
 
@@ -138,6 +140,20 @@ typographyStyleMap.set('yield-card-type', {
 typographyStyleMap.set('chain-badge', {
   fontFamily: "'Source Sans Pro', sans-serif",
   fontWeight: 600,
+  fontSize: '12px',
+  fontStyle: 'normal',
+  lineHeight: '16px',
+});
+typographyStyleMap.set('wallet-info', {
+  fontFamily: "'Source Sans Pro', sans-serif",
+  fontWeight: 400,
+  fontSize: '12px',
+  fontStyle: 'normal',
+  lineHeight: '16px',
+});
+typographyStyleMap.set('wallet-info-bold', {
+  fontFamily: "'Source Sans Pro', sans-serif",
+  fontWeight: 700,
   fontSize: '12px',
   fontStyle: 'normal',
   lineHeight: '16px',
