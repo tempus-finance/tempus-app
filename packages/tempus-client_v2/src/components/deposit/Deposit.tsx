@@ -1075,7 +1075,9 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
                           <Typography variant="button-text">
                             {`${variableStakedPrincipalsAmountFormatted} ${getText('stakedPrincipals', language)}`}
                           </Typography>
+                          <Spacer size={5} />
                           <Typography variant="button-text">&nbsp;&#38;&nbsp;</Typography> {/* -Space- -&- -Space- */}
+                          <Spacer size={5} />
                           <Typography variant="button-text">
                             {`${variableStakedYieldsAmountFormatted} ${getText('stakedYields', language)}`}
                           </Typography>
@@ -1086,7 +1088,7 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
                     {tokenEstimateInProgress && <Spacer size={20} />}
 
                     {!tokenEstimateInProgress && (
-                      <Typography variant="button-text" color="accent">
+                      <Typography variant="button-text" color="accent" align="right" noWrap>
                         {getText('apr', language)} {variableAPRFormatted}
                       </Typography>
                     )}

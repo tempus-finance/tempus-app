@@ -72,7 +72,7 @@ const es: { [word in Words]: string } = {
     'El depósito se ha desactivado temporalmente debido a un rendimiento negativo en el grupo. Por favor, revise luego.',
   withdrawDisabledNoLiquidity:
     'El retiro está deshabilitado actualmente debido a la falta de liquidez en el grupo que ha seleccionado. Por favor, inténtelo de nuevo más tarde.',
-  withdrawDisabledNoDeposit: 'Withdraw will be available once you have deposited into the pool.',
+  withdrawDisabledNoDeposit: 'El retiro estará disponible una vez que haya depositado en el grupo..',
   withdrawDisabledNegative:
     'El retiro se ha desactivado temporalmente debido a un rendimiento negativo en el grupo. Por favor, revise luego.',
   mintDisabledPoolMaturity: 'Acuñar no está disponible porque este grupo ha alcanzado la madurez.',
@@ -111,13 +111,17 @@ const es: { [word in Words]: string } = {
   approve: 'Aprobar',
   approved: 'Aprobado',
   approving: 'Aprobando',
+  approvalFailed: 'Aprobación fallida',
   execute: 'Ejecutar',
   executing: 'Ejecutando',
+  failed: 'Fallido',
   insufficientLiquidity: 'Liquidez insuficiente',
   profitLoss: 'Ganancia y pérdida ',
   currentValue: 'Valor actual ',
   from: 'Origen',
   to: 'Destino',
+  and: 'e',
+  via: 'via',
   balance: 'Balance',
   futureYield: 'Rendimiento Futuro',
   lifeTimeYield: 'Rendimiento de por vida',
@@ -160,11 +164,11 @@ const es: { [word in Words]: string } = {
     'Retire su liquidez del grupo con las recompensas acumuladas en forma de sus tokens LP iniciales.',
   combinedApr: 'APR combinado',
   askUsOnDiscord:
-    'Have more questions? Ask us on Discord: <a href="https://discord.com/invite/6gauHECShr" target="_blank">https://discord.com/invite/6gauHECShr</a>',
-  depositDisabledByConfig: 'Depositing is currently not available.',
-  mintDisabledByConfig: 'Minting is currently not available.',
+    '¿Tienes más preguntas? Pregúntanos en el Discord: <a href="https://discord.com/invite/6gauHECShr" target="_blank">https://discord.com/invite/6gauHECShr</a>',
+  depositDisabledByConfig: 'El depósito no está disponible actualmente.',
+  mintDisabledByConfig: 'Acuñar no está disponible actualmente.',
   operationDisabledByConfig:
-    'Certain actions in relation to this Tempus pool are temporarily disabled due to intermittent unreliability of the underlying pool. Please bear with us while we investigate this issue.',
-  poolActionDisabledTitle: 'Certain actions to this pool are temporarily disabled',
+    'Ciertas acciones en relación con este pool de Tempus se desactivan temporalmente debido a la falta de confiabilidad intermitente del pool subyacente. Tenga paciencia con nosotros mientras investigamos este problema.',
+  poolActionDisabledTitle: 'Ciertas acciones para este grupo están deshabilitadas temporalmente',
 };
 export default es;

@@ -81,7 +81,7 @@ const Community = () => {
               <ListItemIcon className="tc__header__community-menu__icon-container">
                 <TempusIcon />
               </ListItemIcon>
-              <ListItemText primary="About" />
+              <ListItemText primary={getText('about', language)} />
             </ListItem>
             <ListItem button onClick={onTwitterClick}>
               <ListItemIcon className="tc__header__community-menu__icon-container">
