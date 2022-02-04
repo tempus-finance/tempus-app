@@ -7,48 +7,36 @@
   justify-content: center;
 }
 
-.tc__connect-wallet-button__container {
-  @include background-level-2;
-
-  display: flex;
-  border-radius: 5px;
-  height: 45px;
-  background-color: $ui-element-color;
-  align-items: center;
-  padding: 0px;
-  border: none;
-}
-
-.tc__connect-wallet-button__profile {
-  display: flex;
-  margin-left: 10px;
-
-  img {
-    height: 20px;
-    border-radius: 100px;
-    margin-right: 10px;
-  }
-}
-
 .tc__connect-wallet-button {
-  height: 45px;
+  width: 160px;
+  height: 40px;
+  background-color: #ffffff;
+  border: 1px solid #e2e2e2;
+  border-radius: 4px;
   box-sizing: border-box;
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #fcfcfc;
-  border-radius: 5px;
-  padding-left: 15px;
-  padding-right: 15px;
-  box-shadow: -2px 0px 2px rgba(0, 0, 0, 0.25);
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
   cursor: pointer;
+}
 
-  &.tc__connect-wallet-button__connected:hover {
-    background-color: $link-color;
-    color: $inverted-text-color;
+.tc__connect-wallet-button__profile {
+  display: flex;
 
-    > div {
-      color: $inverted-text-color !important;
-    }
+  img {
+    height: 24px;
+    width: 24px;
+    border-radius: 48px;
   }
+}
+
+.tc__connect-wallet-button__info {
+  display: flex;
+  flex-direction: column;
+}
+
+.tc__connect-wallet-button__balance {
+  display: flex;
+  align-items: center;
 }

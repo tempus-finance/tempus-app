@@ -352,50 +352,46 @@ const Wallet = () => {
         onClose={onCloseWalletSelector}
       />
       <div className="tc__navBar__wallet">
-        {connecting && <CircularProgress />}
-        <div
-          className="tc__connect-wallet-button__container"
-          style={{
-            cursor: active ? 'default' : 'pointer',
-          }}
-        >
-          {!connecting && !selectedWallet && (
-            <div className="tc__connect-wallet-button" onClick={onSelectWallet}>
-              <Typography variant="h5">{getText('connectWallet', language)}</Typography>
-            </div>
-          )}
-          {!connecting && active && formattedPrimaryTokenBalance && (
-            <>
-              <Spacer size={15} />
-              <Typography variant="h5">
-                {getChainConfig(selectedChainName).nativeToken} {formattedPrimaryTokenBalance}
-              </Typography>
-              <Spacer size={10} />
-            </>
-          )}
+        {/* Wallet is connecting - show progress circle */}
+        {connecting && <CircularProgress size={18} />}
 
-          {!connecting && selectedWallet && active && (
-            <div
-              className="tc__connect-wallet-button tc__connect-wallet-button__connected"
-              onClick={onOpenWalletPopup}
-              ref={walletPopupAnchor}
-            >
-              <AccountBalanceWalletIcon />
-              <Spacer size={4} />
-              {pendingTransactions.length === 0 && (
-                <div className="tc__connect-wallet-button__profile">
-                  {ensAvatar && <img src={ensAvatar} alt={shortenedAccount} />}
-                  <Typography variant="h5">{ensName || shortenedAccount}</Typography>
-                </div>
-              )}
-              {pendingTransactions.length > 0 && (
-                <Typography variant="h5">
-                  {pendingTransactions.length} {getText('pending', language)}
-                </Typography>
-              )}
+        {/* Wallet not connected - show connect wallet button */}
+        {!connecting && !selectedWallet && (
+          <div className="tc__connect-wallet-button" onClick={onSelectWallet}>
+            <Typography variant="button-text">{getText('connectWallet', language)}</Typography>
+          </div>
+        )}
+
+        {/* Wallet connected - show wallet info */}
+        {!connecting && selectedWallet && active && formattedPrimaryTokenBalance && (
+          <div className="tc__connect-wallet-button" onClick={onOpenWalletPopup} ref={walletPopupAnchor}>
+            {/* In case ENS avatar is available we need to show it instead of generic wallet icon */}
+            <div className="tc__connect-wallet-button__profile">
+              {ensAvatar ? <img src={ensAvatar} alt={shortenedAccount} /> : <AccountBalanceWalletIcon />}
             </div>
-          )}
-        </div>
+
+            <Spacer size={8} />
+
+            {/* In case there are no pending transactions, show wallet address or ENS name if it's available */}
+            {pendingTransactions.length === 0 && (
+              <div className="tc__connect-wallet-button__info">
+                <Typography variant="wallet-info">{ensName || shortenedAccount}</Typography>
+                <div className="tc__connect-wallet-button__balance">
+                  <Typography variant="wallet-info-bold">{formattedPrimaryTokenBalance}</Typography>
+                  <Spacer size={8} />
+                  <Typography variant="wallet-info">{getChainConfig(selectedChainName).nativeToken}</Typography>
+                </div>
+              </div>
+            )}
+
+            {/* In case there are pending transactions, show number of pending transactions */}
+            {pendingTransactions.length > 0 && (
+              <Typography variant="h5">
+                {pendingTransactions.length} {getText('pending', language)}
+              </Typography>
+            )}
+          </div>
+        )}
       </div>
       <WalletPopup
         anchorElement={walletPopupAnchor}
