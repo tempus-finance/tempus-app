@@ -1089,7 +1089,7 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
 
                     {!tokenEstimateInProgress && (
                       <Typography variant="button-text" color="accent" align="right" noWrap>
-                        {getText('apr', language)} {variableAPRFormatted}
+                        APR {variableAPRFormatted}
                       </Typography>
                     )}
                   </div>
