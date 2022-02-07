@@ -6,6 +6,7 @@ import { TempusPool } from '../interfaces/TempusPool';
 import StatisticsService from '../services/StatisticsService';
 import getConfig from '../utils/getConfig';
 import { POLLING_INTERVAL } from '../constants';
+import getRangeFrom from '../utils/getRangeFrom';
 
 type DashboardDataAdapterParameters = {
   statisticsService: StatisticsService;
@@ -19,7 +20,7 @@ export default class DashboardDataAdapter {
   }
 
   getRows(): DashboardRow[] {
-    let childRows = this.getChildRows();
+    const childRows = this.getChildRows();
 
     // Generates parent rows based on children rows
     const parentRows = this.getParentRows(childRows);
@@ -54,10 +55,8 @@ export default class DashboardDataAdapter {
   }
 
   private getChildRows(): DashboardRowChild[] {
-    const childRows: DashboardRowChild[] = [];
-    getConfig().tempusPools.forEach(tempusPool => {
-      childRows.push(this.getChildRowData(tempusPool));
-    });
+    const tempusPools = getConfig().tempusPools;
+    const childRows: DashboardRowChild[] = tempusPools.map(tempusPool => this.getChildRowData(tempusPool));
     return childRows;
   }
 
@@ -90,7 +89,7 @@ export default class DashboardDataAdapter {
           id: child.token, // Using token as parent ID, this way multiple children with same token will fall under same parent.
           parentId: null, // Always null for parent rows
           token: child.token,
-          maturityRange: this.getRangeFrom<Date>(childrenMaturityDate),
+          maturityRange: getRangeFrom<Date>(childrenMaturityDate),
           protocols: Array.from(new Set(childrenProtocols)), // Converting list of protocols to set removes duplicate items
         };
 
@@ -102,32 +101,10 @@ export default class DashboardDataAdapter {
   }
 
   private getChildParent(child: DashboardRowChild, parentRows: DashboardRowParent[]): DashboardRowParent | undefined {
-    return parentRows.find(parent => {
-      return parent.id === child.parentId;
-    });
+    return parentRows.find(parent => parent.id === child.parentId);
   }
 
   private getParentChildren(parentId: string, childRows: DashboardRowChild[]): DashboardRowChild[] {
-    return childRows.filter(child => {
-      return child.parentId === parentId;
-    });
-  }
-
-  private getRangeFrom<ValueType>(values: (ValueType | null)[]): (ValueType | null)[] {
-    let minValue = values[0];
-    let maxValue = values[0];
-    values.forEach(value => {
-      if (!value) {
-        return;
-      }
-      if (minValue && minValue > value) {
-        minValue = value;
-      }
-      if (maxValue && maxValue < value) {
-        maxValue = value;
-      }
-    });
-
-    return [minValue, maxValue];
+    return childRows.filter(child => child.parentId === parentId);
   }
 }

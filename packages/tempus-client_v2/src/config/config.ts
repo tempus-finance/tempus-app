@@ -29,8 +29,8 @@ const config: Config = {
       yieldsAddress: '0x1f436309fBfB405192Acdc80d5C284De45e520EB',
       yieldBearingTokenAddress: '0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84',
       backingTokenAddress: '0x0000000000000000000000000000000000000000',
-      startDate: 1639157275000,
-      maturityDate: 1648742400000,
+      startDate: 1639157275000, // in milliseconds
+      maturityDate: 1648742400000, // in milliseconds
       protocol: 'lido',
       protocolDisplayName: 'Lido',
       backingToken: 'ETH',
@@ -55,8 +55,8 @@ const config: Config = {
       yieldsAddress: '0xfFaCF0b02851e440FA207Ea2f9AfDF7FfE0bE095',
       yieldBearingTokenAddress: '0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84',
       backingTokenAddress: '0x0000000000000000000000000000000000000000',
-      startDate: 1639158404000,
-      maturityDate: 1661875200000,
+      startDate: 1639158404000, // in milliseconds
+      maturityDate: 1661875200000, // in milliseconds
       protocol: 'lido',
       protocolDisplayName: 'Lido',
       backingToken: 'ETH',

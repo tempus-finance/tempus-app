@@ -9,7 +9,7 @@
   background-color: white;
   padding-left: 15px;
   height: 40px;
-  width: 125px;
+  width: 165px;
 
   input {
     padding: 0px;
@@ -19,6 +19,7 @@
     height: 40px;
     border-radius: 0px 5px 5px 0px;
     text-transform: none;
+    min-width: auto;
 
     &.MuiButton-textPrimary {
       background: linear-gradient(97.53deg, #4ea3c8 0%, #285a95 100%);

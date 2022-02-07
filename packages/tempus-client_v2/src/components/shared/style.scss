@@ -23,7 +23,6 @@
   width: 100%;
   padding-top: 10px;
   border-bottom: 1px solid #e4e4e4; // TODO add to constants
-
   &:last-child {
     border-bottom: none;
   }
@@ -33,12 +32,12 @@
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-
+  align-items: baseline;
+  width: 100%;
   &.bottom-padded {
     margin-top: -15px;
     margin-bottom: 10px;
   }
-
   > div + div {
     display: flex;
     flex-direction: row;

@@ -11,6 +11,7 @@ import { TransferEventListener } from '../services/ERC20TokenService';
 import getDefaultProvider from '../services/getDefaultProvider';
 import { getEventBackingTokenValue } from '../services/EventUtils';
 import { div18f, increasePrecision, mul18f } from '../utils/weiMath';
+import { staticPoolDataState } from '../state/PoolDataState';
 import {
   BLOCK_DURATION_SECONDS,
   DAYS_IN_A_YEAR,
@@ -22,6 +23,9 @@ import {
 import { Ticker } from '../interfaces/Token';
 import { TempusPool } from '../interfaces/TempusPool';
 import { SelectedYield } from '../interfaces/SelectedYield';
+import getStatisticsService from '../services/getStatisticsService';
+import getTempusControllerService from '../services/getTempusControllerService';
+import getVaultService from '../services/getVaultService';
 
 export interface UserTransaction {
   event: DepositedEvent | RedeemedEvent;
@@ -30,7 +34,6 @@ export interface UserTransaction {
 }
 
 type PoolDataAdapterParameters = {
-  tempusControllerAddress: string;
   tempusControllerService: TempusControllerService;
   tempusPoolService: TempusPoolService;
   statisticService: StatisticsService;
@@ -41,7 +44,6 @@ type PoolDataAdapterParameters = {
 
 export default class PoolDataAdapter {
   private tempusControllerService: TempusControllerService | undefined = undefined;
-  private tempusControllerAddress: string = '';
   private tempusPoolService: TempusPoolService | null = null;
   private statisticService: StatisticsService | null = null;
   private tempusAMMService: TempusAMMService | null = null;
@@ -50,7 +52,6 @@ export default class PoolDataAdapter {
 
   init({
     tempusControllerService,
-    tempusControllerAddress,
     tempusPoolService,
     statisticService,
     tempusAMMService,
@@ -58,7 +59,6 @@ export default class PoolDataAdapter {
     eRC20TokenServiceGetter,
   }: PoolDataAdapterParameters) {
     this.tempusControllerService = tempusControllerService;
-    this.tempusControllerAddress = tempusControllerAddress;
     this.tempusPoolService = tempusPoolService;
     this.statisticService = statisticService;
     this.tempusAMMService = tempusAMMService;
@@ -303,30 +303,6 @@ export default class PoolDataAdapter {
     return this.statisticService.estimatedRedeem(tempusPool, yieldsAmount, principalsAmount, toBackingToken);
   }
 
-  async approve(
-    tempusPoolAddress: string,
-    isBackingToken: boolean,
-    signer: JsonRpcSigner,
-    approveAmount: BigNumber,
-  ): Promise<ContractTransaction | void> {
-    if (!this.tempusPoolService || !this.eRC20TokenServiceGetter) {
-      console.error('PoolDataAdapter - approve() - Attempted to use PoolDataAdapter before initializing it!');
-      return Promise.reject();
-    }
-
-    try {
-      const tokenAddress = isBackingToken
-        ? await this.tempusPoolService.getBackingTokenAddress(tempusPoolAddress)
-        : await this.tempusPoolService.getYieldBearingTokenAddress(tempusPoolAddress);
-
-      const tokenService = this.eRC20TokenServiceGetter(tokenAddress, signer);
-      return tokenService.approve(this.tempusControllerAddress, approveAmount);
-    } catch (error) {
-      console.error('PoolDataAdapter - approve() - Failed to approve tokens for deposit!', error);
-      Promise.reject();
-    }
-  }
-
   async approveToken(
     tokenAddress: string,
     spenderAddress: string,
@@ -347,41 +323,6 @@ export default class PoolDataAdapter {
     }
   }
 
-  async getApprovedAllowance(
-    userWalletAddress: string,
-    tempusPoolAddress: string,
-    isBackingToken: boolean,
-    signer: JsonRpcSigner,
-  ): Promise<number> {
-    if (!this.tempusPoolService || !this.eRC20TokenServiceGetter) {
-      console.error(
-        'PoolDataAdapter - getApprovedAllowance() - Attempted to use PoolDataAdapter before initializing it!',
-      );
-      return Promise.reject();
-    }
-
-    try {
-      const tokenAddress = isBackingToken
-        ? await this.tempusPoolService.getBackingTokenAddress(tempusPoolAddress)
-        : await this.tempusPoolService.getYieldBearingTokenAddress(tempusPoolAddress);
-
-      // In case of ETH, total user balance is always approved.
-      if (tokenAddress === ZERO_ETH_ADDRESS) {
-        return Number(ethers.utils.formatEther(await signer.getBalance()));
-      }
-
-      const tokenService = this.eRC20TokenServiceGetter(tokenAddress, signer);
-      const allowance = await tokenService.getAllowance(userWalletAddress, this.tempusControllerAddress);
-      if (allowance) {
-        return parseFloat(ethers.utils.formatEther(allowance));
-      }
-      return 0;
-    } catch (error) {
-      console.error('PoolDataAdapter - approve() - Failed to approve tokens for deposit!', error);
-      return Promise.reject();
-    }
-  }
-
   async getTokenAllowance(
     tokenAddress: string,
     spender: string,
@@ -389,9 +330,7 @@ export default class PoolDataAdapter {
     signer: JsonRpcSigner,
   ): Promise<BigNumber> {
     if (!this.tempusPoolService || !this.eRC20TokenServiceGetter) {
-      console.error(
-        'PoolDataAdapter - getApprovedAllowance() - Attempted to use PoolDataAdapter before initializing it!',
-      );
+      console.error('PoolDataAdapter - getTokenAllowance() - Attempted to use PoolDataAdapter before initializing it!');
       return Promise.reject();
     }
 
@@ -760,6 +699,7 @@ export default class PoolDataAdapter {
     tempusPoolAddress: string,
     tempusPoolId: string,
     tempusAMMAddress: string,
+    tempusPoolStartTime?: number,
     blockTag?: number,
   ): Promise<BigNumber | null> {
     if (!this.tempusPoolService || !this.tempusAMMService || !this.statisticService || !this.vaultService) {
@@ -772,6 +712,17 @@ export default class PoolDataAdapter {
     if (!tokenAmount) {
       console.error('PoolDataAdapter - getEstimatedFixedApr() - Invalid backingTokenAmount amount.');
       return Promise.reject();
+    }
+
+    // Skip Fixed APR fetch if target block tag is older then the Tempus Pool
+    if (blockTag && tempusPoolStartTime) {
+      const provider = getDefaultProvider();
+
+      const pastBlock = await provider.getBlock(blockTag);
+      // Convert block timestamp from seconds to milliseconds
+      if (pastBlock.timestamp * 1000 < tempusPoolStartTime) {
+        return null;
+      }
     }
 
     const callOverrideData = blockTag ? { blockTag } : undefined;
@@ -789,13 +740,13 @@ export default class PoolDataAdapter {
     }
 
     try {
-      const [tempusPoolStartTime, tempusPoolMaturityTime] = await Promise.all([
-        this.tempusPoolService.getStartTime(tempusPoolAddress),
-        this.tempusPoolService.getMaturityTime(tempusPoolAddress),
-      ]);
+      const { startDate: tempusPoolStartTime, maturityDate: tempusPoolMaturityTime } =
+        staticPoolDataState[tempusPoolAddress].get();
 
-      const poolDuration = (tempusPoolMaturityTime.getTime() - tempusPoolStartTime.getTime()) / 1000;
-      const scaleFactor = ethers.utils.parseEther(((SECONDS_IN_A_DAY * DAYS_IN_A_YEAR) / poolDuration).toString());
+      const poolDurationInSeconds = (tempusPoolMaturityTime - tempusPoolStartTime) / 1000;
+      const scaleFactor = ethers.utils.parseEther(
+        ((SECONDS_IN_A_DAY * DAYS_IN_A_YEAR) / poolDurationInSeconds).toString(),
+      );
 
       const principals = await this.statisticService.estimatedDepositAndFix(
         tempusAMMAddress,
@@ -1221,6 +1172,17 @@ export default class PoolDataAdapter {
     }
   }
 
+  /**
+   * Calculates tempus pool volume from specified block range in USD currency
+   * @param tempusPool Address of the TempusPool we want to get volume for
+   * @param tempusPoolId ID of the TempusPool we want to get volume for
+   * @param backingToken TempusPool backing token ticker
+   * @param principalsAddress TempusPool principals address
+   * @param fromBlock Block number from which we want to calculate volume
+   * @param toBlock Block number up to which we want to calculate volume
+   * @param backingTokenPrecision Precision of backing token for TempusPool
+   * @returns Volume of the pool in USD currency.
+   */
   async getPoolVolumeData(
     tempusPool: string,
     tempusPoolId: string,
@@ -1230,58 +1192,71 @@ export default class PoolDataAdapter {
     toBlock: number,
     backingTokenPrecision?: number,
   ): Promise<BigNumber> {
-    if (
-      !this.tempusPoolService ||
-      !this.statisticService ||
-      !this.tempusAMMService ||
-      !this.tempusControllerService ||
-      !this.vaultService
-    ) {
-      console.error('Attempted to use VolumeChartDataAdapter before initializing it!');
-      return Promise.reject();
-    }
+    const tempusControllerService = getTempusControllerService();
+    const vaultService = getVaultService();
 
     let depositEvents: DepositedEvent[];
     let redeemEvents: RedeemedEvent[];
     let swapEvents: SwapEvent[];
     try {
+      // Setting user wallet address to undefined means we want to fetch events for all users
       const eventsForUser = undefined;
       [depositEvents, redeemEvents, swapEvents] = await Promise.all([
-        this.tempusControllerService.getDepositedEvents({
+        tempusControllerService.getDepositedEvents({
           forPool: tempusPool,
           forUser: eventsForUser,
           fromBlock,
           toBlock,
         }),
-        this.tempusControllerService.getRedeemedEvents({
+        tempusControllerService.getRedeemedEvents({
           forPool: tempusPool,
           forUser: eventsForUser,
           fromBlock,
           toBlock,
         }),
-        this.vaultService.getSwapEvents({ forPoolId: tempusPoolId, fromBlock, toBlock }),
+        vaultService.getSwapEvents({ forPoolId: tempusPoolId, fromBlock, toBlock }),
       ]);
     } catch (error) {
-      console.error('Failed to fetch deposit and redeem events for volume chart', error);
+      console.error(
+        `PoolDataAdapter - getPoolVolumeData() - Failed to fetch deposit, redeem and swap events for pool ${tempusPool}!`,
+        error,
+      );
       return Promise.reject(error);
     }
-
-    let poolBackingTokenRate: BigNumber;
-    try {
-      // TODO - Use chainlink historical data once we go to mainnet
-      poolBackingTokenRate = await this.statisticService.getCoingeckoRate(backingToken);
-    } catch (error) {
-      console.error('Failed to get tempus pool exchange rate to USD!');
-      return Promise.reject(error);
-    }
-
-    let totalVolume: BigNumber = BigNumber.from('0');
 
     const events = [...depositEvents, ...redeemEvents, ...swapEvents];
-    events.forEach(event => {
-      const eventBackingTokenValue = getEventBackingTokenValue(event, principalsAddress);
 
-      totalVolume = totalVolume.add(mul18f(poolBackingTokenRate, eventBackingTokenValue, backingTokenPrecision));
+    let eventsVolume: BigNumber[] = [];
+    try {
+      eventsVolume = await Promise.all(
+        events.map(async event => {
+          const eventBackingTokenValue = getEventBackingTokenValue(event, principalsAddress);
+
+          let poolBackingTokenRate: BigNumber;
+          try {
+            const statisticService = getStatisticsService();
+            poolBackingTokenRate = await statisticService.getRate(backingToken, {
+              blockTag: event.blockNumber,
+            });
+          } catch (error) {
+            console.error(
+              `PoolDataAdapter - getPoolVolumeData() - Failed to get backing token (${backingToken}) exchange rate to USD for block ${event.blockNumber}!`,
+              error,
+            );
+            return Promise.reject(error);
+          }
+
+          return mul18f(poolBackingTokenRate, eventBackingTokenValue, backingTokenPrecision);
+        }),
+      );
+    } catch (error) {
+      console.error(`PoolDataAdapter - getPoolVolumeData() - Failed to fetch volume for events!`, error);
+      return Promise.reject(error);
+    }
+
+    let totalVolume = BigNumber.from('0');
+    eventsVolume.forEach(eventVolume => {
+      totalVolume = totalVolume.add(eventVolume);
     });
 
     return totalVolume;

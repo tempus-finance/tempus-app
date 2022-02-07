@@ -1,6 +1,7 @@
 import Words from './words';
 
 const en: { [word in Words]: string } = {
+  tempus: 'Tempus',
   max: 'max',
   min: 'min',
   dashboard: 'Dashboard',
@@ -9,7 +10,7 @@ const en: { [word in Words]: string } = {
   settings: 'Settings',
   connectWallet: 'Connect Wallet',
   pending: 'Pending...',
-  selectWallet: ' Select Wallet',
+  selectWallet: 'Select Wallet',
   walletSelectorDisclaimer:
     'By connecting your wallet, you agree to be bound by the <a href="https://tempus.finance/terms-of-service" target="_blank">Tempus Terms of Service</a> and acknowledge that you have read and understand the <a href="https://tempus.finance/disclaimer" target="_blank">Tempus Protocol Disclaimer</a>.',
   metamaskConnected: 'MetaMask connected',
@@ -41,7 +42,7 @@ const en: { [word in Words]: string } = {
   lifeTimeApr: 'Lifetime APR',
   apr: 'APR',
   aprRange: 'APR range',
-  lpApr: 'LP APR',
+  lpApr: 'Variable APR',
   futureApr: 'Future APR',
   fiat: 'Fiat',
   crypto: 'Crypto',
@@ -52,6 +53,7 @@ const en: { [word in Words]: string } = {
   earlyRedemption: 'Early Redemption',
   swap: 'Swap',
   tvl: 'TVL',
+  totalValueLocked: 'Total Value Locked',
   manage: 'Manage',
   basic: 'Basic',
   basicSubTitle: 'Recommended option',
@@ -82,7 +84,7 @@ const en: { [word in Words]: string } = {
   mintDisabledPoolMaturity: 'Mint is not available because this pool has reached maturity.',
   swapDisabledNoLiquidity:
     'Swapping is currently disabled due to insufficient liquidity in the pool you have selected. Please try again later.',
-  swapDisabledNoShares: 'Swap will be available once you have deposited into the pool',
+  swapDisabledNoShares: 'Swap will be available once you have deposited into the pool.',
   swapDisabledPoolMaturity: 'Swap is not available because this pool has reached maturity.',
   provideLiquidityDisabledNoDeposit: 'Manual Liquidity Provision is not available until you have Deposited or Minted.',
   provideLiquidityDisabledNoPrincipals:
@@ -114,13 +116,17 @@ const en: { [word in Words]: string } = {
   approve: 'Approve',
   approved: 'Approved',
   approving: 'Approving',
+  approvalFailed: 'Approval Failed',
   execute: 'Execute',
   executing: 'Executing',
+  failed: 'Failed',
   insufficientLiquidity: 'Insufficient Liquidity',
   profitLoss: 'Profit & Loss',
   currentValue: 'Current Value',
   from: 'From',
   to: 'To',
+  and: 'and',
+  via: 'via',
   balance: 'Balance',
   futureYield: 'Future Yield',
   lifeTimeYield: 'Lifetime Yield',
@@ -156,6 +162,7 @@ const en: { [word in Words]: string } = {
   unstaked: 'Unstaked',
   stakedPrincipals: 'Staked Principals',
   stakedYields: 'Staked Yields',
+  combinedApr: 'Combined APR',
   mintDescription: 'Split your yield bearing token into Principals and Yields',
   swapDescription: 'Swap between Principals and Yields',
   provideLiquidityDescription: 'Use your LP tokens to provide liquidity to the pool and earn rewards',

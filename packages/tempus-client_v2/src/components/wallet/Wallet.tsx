@@ -15,7 +15,7 @@ import { WalletContext } from '../../context/walletContext';
 import NumberUtils from '../../services/NumberUtils';
 import UserWallet from '../../interfaces/UserWallet';
 import getText from '../../localisation/getText';
-import useENS from '../../utils/useENS';
+import useENS from '../../hooks/useENS';
 import shortenAccount from '../../utils/shortenAccount';
 import getStorageService from '../../services/getStorageService';
 import getNotificationService from '../../services/getNotificationService';
@@ -324,6 +324,7 @@ const Wallet = () => {
         userWalletAddress: account || '',
       }));
   }, [account, library, setWalletData]);
+
   const { ensName, ensAvatar } = useENS(account);
 
   let shortenedAccount;

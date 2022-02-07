@@ -1,4 +1,4 @@
-import { BigNumber, Contract, utils, providers, ethers } from 'ethers';
+import { BigNumber, Contract, utils, providers } from 'ethers';
 import { JsonRpcProvider } from '@ethersproject/providers';
 import { Config } from '../interfaces/Config';
 import * as getConfig from '../utils/getConfig';
@@ -36,7 +36,7 @@ jest.mock('ethers', () => ({
 global.fetch = jest.fn(() =>
   Promise.resolve({
     json: () => Promise.resolve([]),
-  }),
+  } as Response),
 );
 
 describe('VariableRateService', () => {

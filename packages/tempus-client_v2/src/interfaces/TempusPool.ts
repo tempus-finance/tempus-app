@@ -8,8 +8,8 @@ export type TempusPool = {
   poolId: string;
   protocol: ProtocolName;
   protocolDisplayName: ProtocolDisplayName;
-  startDate: number;
-  maturityDate: number;
+  startDate: number; // in milliseconds
+  maturityDate: number; // in milliseconds
   ammAddress: string;
   principalsAddress: string;
   yieldsAddress: string;

@@ -1,8 +1,9 @@
 import { CircularProgress } from '@material-ui/core';
-import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { FC, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { ethers, BigNumber } from 'ethers';
 import { catchError, of } from 'rxjs';
+import { v1 as uuid } from 'uuid';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
 import getUserShareTokenBalanceProvider from '../../providers/getUserShareTokenBalanceProvider';
 import getUserBalanceProvider from '../../providers/getBalanceProvider';
@@ -53,6 +54,8 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
   const [amount, setAmount] = useState<string>('');
 
   const [usdRate, setUsdRate] = useState<BigNumber | null>(null);
+
+  const fixedPrincipalsEstimateRequestId = useRef<string>('');
 
   const [fixedPrincipalsAmount, setFixedPrincipalsAmount] = useState<BigNumber | null>(null);
   const [variableUnstakedPrincipalsAmount, setVariableUnstakedPrincipalsAmount] = useState<BigNumber | null>(null);
@@ -302,8 +305,23 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
 
   useEffect(() => {
     const retrieveDepositAmount = async () => {
+      /**
+       * If user types in new value for amount before previous estimate call is done, we need to invalidate previous request before sending new one.
+       * How it's solved here is:
+       * 1. Every time user changes amount of tokens and new estimate request is send we generate unique ID.
+       * 2. When each estimate request is resolved, we check if ID of that request matches latest ID.
+       * 3. If it does not match, it means the request is not latest and we should discard it.
+       * 4. If it matches, request is latest, and we should update the state.
+       *
+       * We probably need to figure out a better way of handling multiple requests, and how to accept only latest request.
+       * User input debounce can definitely help with this, but it's not going to solve the problem completely,
+       * because if estimate call lasts longer then the debounce, we have same problem again.
+       */
+      fixedPrincipalsEstimateRequestId.current = uuid();
+
+      setFixedPrincipalsAmount(null);
+
       if (isZeroString(amount)) {
-        setFixedPrincipalsAmount(null);
         setVariableUnstakedPrincipalsAmount(null);
         setVariableStakedPrincipalsAmount(null);
         setVariableStakedYieldsAmount(null);
@@ -311,16 +329,23 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
         try {
           setTokenEstimateInProgress(true);
 
+          const currentRequestId = fixedPrincipalsEstimateRequestId.current;
+
           const poolDataAdapter = getPoolDataAdapter(userWalletSigner);
 
           const isBackingToken = backingToken === selectedToken;
 
-          const { fixedDeposit, variableDeposit } =
-            (await poolDataAdapter.getEstimatedDepositAmount(
-              ammAddress,
-              ethers.utils.parseUnits(amount, selectedTokenPrecision),
-              isBackingToken,
-            )) || {};
+          const { fixedDeposit, variableDeposit } = await poolDataAdapter.getEstimatedDepositAmount(
+            ammAddress,
+            ethers.utils.parseUnits(amount, selectedTokenPrecision),
+            isBackingToken,
+          );
+
+          if (currentRequestId !== fixedPrincipalsEstimateRequestId.current) {
+            // Skip estimate state update, because request is not latest one.
+            return;
+          }
+
           setFixedPrincipalsAmount(fixedDeposit);
 
           setVariableUnstakedPrincipalsAmount(variableDeposit.unstakedPrincipals);
@@ -803,15 +828,20 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
           <Spacer size={15} />
         </>
       )}
-      <SectionContainer title="from">
-        {selectedToken && balanceFormatted && (
-          <div className="tc__title-and-balance bottom-padded">
-            <div></div>
-            <Typography variant="body-text">
-              {getText('balance', language)} {balanceFormatted}
-            </Typography>
-          </div>
-        )}
+      <SectionContainer
+        title={
+          selectedToken && balanceFormatted ? (
+            <div className="tc__title-and-balance">
+              <Typography variant="card-title">{getText('from', language)}</Typography>
+              <Typography variant="body-text">
+                {getText('balance', language)} {balanceFormatted}
+              </Typography>
+            </div>
+          ) : (
+            'from'
+          )
+        }
+      >
         <div className="tf__flex-row-flex-start-v">
           <TokenSelector
             value={selectedToken}
@@ -865,14 +895,9 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
                     <Spacer size={10} />
                   </>
                 )}
-                <Typography variant="yield-card-header">{getText('fixYourFutureYield', language)}</Typography>
+                <Typography variant="yield-card-header">{getText('fixedYield', language)}</Typography>
                 <Spacer size={10} />
-                <InfoTooltip text={getText('interestRateProtectionTooltipText', language)} />
-              </div>
-              <div className="tc__deposit__yield-name-card">
-                <Typography variant="yield-card-type" color="primary">
-                  {getText('fixedYield', language)}
-                </Typography>
+                <InfoTooltip content={getText('interestRateProtectionTooltipText', language)} />
               </div>
             </div>
             <Spacer size={15} />
@@ -964,14 +989,9 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
                     <Spacer size={10} />
                   </>
                 )}
-                <Typography variant="yield-card-header">{getText('provideLiquidity', language)}</Typography>
+                <Typography variant="yield-card-header">{getText('variableYield', language)}</Typography>
                 <Spacer size={10} />
-                <InfoTooltip text={getText('liquidityProvisionTooltipText', language)} />
-              </div>
-              <div className="tc__deposit__yield-name-card">
-                <Typography variant="yield-card-type" color="accent">
-                  {getText('variableYield', language)}
-                </Typography>
+                <InfoTooltip content={getText('liquidityProvisionTooltipText', language)} />
               </div>
             </div>
             <Spacer size={15} />
@@ -1055,7 +1075,9 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
                           <Typography variant="button-text">
                             {`${variableStakedPrincipalsAmountFormatted} ${getText('stakedPrincipals', language)}`}
                           </Typography>
+                          <Spacer size={5} />
                           <Typography variant="button-text">&nbsp;&#38;&nbsp;</Typography> {/* -Space- -&- -Space- */}
+                          <Spacer size={5} />
                           <Typography variant="button-text">
                             {`${variableStakedYieldsAmountFormatted} ${getText('stakedYields', language)}`}
                           </Typography>
@@ -1066,8 +1088,8 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
                     {tokenEstimateInProgress && <Spacer size={20} />}
 
                     {!tokenEstimateInProgress && (
-                      <Typography variant="button-text" color="accent">
-                        {getText('apr', language)} {variableAPRFormatted}
+                      <Typography variant="button-text" color="accent" align="right" noWrap>
+                        APR {variableAPRFormatted}
                       </Typography>
                     )}
                   </div>
