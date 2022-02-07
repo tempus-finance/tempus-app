@@ -324,6 +324,7 @@ const Wallet = () => {
         userWalletAddress: account || '',
       }));
   }, [account, library, setWalletData]);
+
   const { ensName, ensAvatar } = useENS(account);
 
   let shortenedAccount;
