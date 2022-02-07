@@ -24,7 +24,7 @@ const FixedAPRProvider = () => {
    */
   const fetchAPR = useCallback(
     async (chain: Chain) => {
-      const provider = getProvider(chain, userWalletSigner);
+      const provider = await getProvider(chain, userWalletSigner);
 
       const config = getChainConfig(chain);
       const poolDataAdapter = getPoolDataAdapter(chain, provider);

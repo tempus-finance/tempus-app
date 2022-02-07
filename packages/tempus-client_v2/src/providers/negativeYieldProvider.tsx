@@ -25,7 +25,7 @@ const NegativeYieldProvider = () => {
       if (!document.hasFocus() && dynamicPoolData[tempusPool.address].negativeYield.get() === false) {
         return;
       }
-      const provider = getProvider(chain, userWalletSigner);
+      const provider = await getProvider(chain, userWalletSigner);
       if (!provider) {
         return;
       }
