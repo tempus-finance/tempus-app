@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import { FC, useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { BigNumber } from 'ethers';
 import { Downgraded, useHookstate } from '@hookstate/core';
@@ -6,8 +6,15 @@ import { UserSettingsContext } from '../../context/userSettingsContext';
 import { WalletContext } from '../../context/walletContext';
 import { dynamicPoolDataState, selectedPoolState } from '../../state/PoolDataState';
 import Operations from '../operations/Operations';
+import { Chain } from '../../interfaces/Chain';
 
-const PoolRoute = () => {
+interface PoolRouteProps {
+  chain: Chain;
+}
+
+const PoolRoute: FC<PoolRouteProps> = props => {
+  const { chain } = props;
+
   const { userWalletConnected } = useContext(WalletContext);
   const { setUserSettings } = useContext(UserSettingsContext);
 
@@ -65,6 +72,6 @@ const PoolRoute = () => {
     return null;
   }
 
-  return <Operations />;
+  return <Operations chain={chain} />;
 };
 export default PoolRoute;

@@ -1,3 +1,4 @@
+import { Chain } from './Chain';
 import { TempusPool } from './TempusPool';
 
 export interface ChainConfig {
@@ -19,6 +20,5 @@ export interface ChainConfig {
 }
 
 export type Config = {
-  ethereum: ChainConfig;
-  fantom: ChainConfig;
+  [networkName in Chain]: ChainConfig;
 };

@@ -4,7 +4,7 @@ import getTempusPoolService from '../services/getTempusPoolService';
 import getTempusAMMService from '../services/getTempusAMMService';
 import getVaultService from '../services/getVaultService';
 import { getChainConfig } from '../utils/getConfig';
-import getProvider from '../utils/getProvider';
+import getProviderFromSignerOrProvider from '../utils/getProviderFromSignerOrProvider';
 import { Chain } from '../interfaces/Chain';
 import VariableRateService from './VariableRateService';
 
@@ -32,7 +32,7 @@ const getVariableRateService = (
       getTempusPoolService(chain, signerOrProvider),
       getVaultService(chain, signerOrProvider),
       getTempusAMMService(chain, signerOrProvider),
-      new RariVault(getProvider(signerOrProvider) as any),
+      new RariVault(getProviderFromSignerOrProvider(signerOrProvider) as any),
       getChainConfig(chain),
     );
   }

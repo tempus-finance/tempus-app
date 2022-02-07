@@ -1,9 +1,11 @@
-import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
+import { JsonRpcSigner, JsonRpcProvider } from '@ethersproject/providers';
+import { Chain } from '../interfaces/Chain';
+import getDefaultProvider from '../services/getDefaultProvider';
 
-export default function getProvider(signerOrProvider: JsonRpcSigner | JsonRpcProvider): JsonRpcProvider {
-  if (signerOrProvider instanceof JsonRpcSigner) {
-    return signerOrProvider.provider;
-  } else {
-    return signerOrProvider;
+export default function getProvider(chain: Chain, userWalletSigner: JsonRpcSigner | null): JsonRpcProvider {
+  if (userWalletSigner) {
+    return userWalletSigner.provider;
   }
+
+  return getDefaultProvider(chain);
 }

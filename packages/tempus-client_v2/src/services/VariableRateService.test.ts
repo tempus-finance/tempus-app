@@ -2,7 +2,7 @@ import { BigNumber, Contract, utils, providers } from 'ethers';
 import { JsonRpcProvider } from '@ethersproject/providers';
 import { ChainConfig } from '../interfaces/Config';
 import * as getConfig from '../utils/getConfig';
-import * as getProvider from '../utils/getProvider';
+import * as getProvider from '../utils/getProviderFromSignerOrProvider';
 import * as weiMath from '../utils/weiMath';
 import AaveLendingPoolABI from '../abi/AaveLendingPool.json';
 import lidoOracleABI from '../abi/LidoOracle.json';

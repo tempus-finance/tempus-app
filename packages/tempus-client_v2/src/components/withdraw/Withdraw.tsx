@@ -4,7 +4,6 @@ import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { combineLatest } from 'rxjs';
 import { SLIPPAGE_PRECISION } from '../../constants';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
-import { selectedChainState } from '../../state/ChainState';
 import getUserShareTokenBalanceProvider from '../../providers/getUserShareTokenBalanceProvider';
 import getUserBalanceProvider from '../../providers/getBalanceProvider';
 import getUserLPTokenBalanceProvider from '../../providers/getUserLPTokenBalanceProvider';
@@ -14,6 +13,7 @@ import { LanguageContext } from '../../context/languageContext';
 import { UserSettingsContext } from '../../context/userSettingsContext';
 import getText from '../../localisation/getText';
 import { Ticker } from '../../interfaces/Token';
+import { Chain } from '../../interfaces/Chain';
 import NumberUtils from '../../services/NumberUtils';
 import { getChainConfig } from '../../utils/getConfig';
 import { mul18f } from '../../utils/weiMath';
@@ -30,15 +30,20 @@ import CurrencyInput from '../currencyInput/currencyInput';
 
 import './Withdraw.scss';
 
+type WithdrawInProps = {
+  chain: Chain;
+};
+
 type WithdrawOutProps = {
   onWithdraw: () => void;
 };
 
-const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
+type WithdrawProps = WithdrawInProps & WithdrawOutProps;
+
+const Withdraw: FC<WithdrawProps> = ({ chain, onWithdraw }) => {
   const selectedPool = useHookState(selectedPoolState);
   const dynamicPoolData = useHookState(dynamicPoolDataState);
   const staticPoolData = useHookState(staticPoolDataState);
-  const selectedChain = useHookState(selectedChainState);
 
   const { userWalletSigner, userWalletAddress } = useContext(WalletContext);
   const { language } = useContext(LanguageContext);
@@ -73,7 +78,6 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
   const [lpTokenApproved, setLpTokenApproved] = useState<boolean>(false);
   const [selectedTokenPrecision, setSelectedTokenPrecision] = useState<number | undefined>();
 
-  const selectedChainName = selectedChain.attach(Downgraded).get();
   const selectedPoolAddress = selectedPool.attach(Downgraded).get();
   const userPrincipalsBalance = dynamicPoolData[selectedPool.get()].userPrincipalsBalance.attach(Downgraded).get();
   const userYieldsBalance = dynamicPoolData[selectedPool.get()].userYieldsBalance.attach(Downgraded).get();
@@ -142,7 +146,7 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
     }
     setEstimateInProgress(true);
 
-    const poolDataAdapter = getPoolDataAdapter(selectedChainName, userWalletSigner);
+    const poolDataAdapter = getPoolDataAdapter(chain, userWalletSigner);
 
     const getBackingTokenRate$ = poolDataAdapter.getBackingTokenRate(backingToken);
     const getYieldBearingTokenRate$ = poolDataAdapter.getYieldBearingTokenRate(
@@ -173,12 +177,12 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
     yieldBearingToken,
     tokenPrecision.backingToken,
     tokenPrecision.yieldBearingToken,
-    selectedChainName,
+    chain,
   ]);
 
   const onExecute = useCallback((): Promise<ethers.ContractTransaction | undefined> => {
     if (userWalletSigner && estimatedWithdrawData) {
-      const poolDataAdapter = getPoolDataAdapter(selectedChainName, userWalletSigner);
+      const poolDataAdapter = getPoolDataAdapter(chain, userWalletSigner);
 
       const principalsPrecision = getTokenPrecision(selectedPoolAddress, 'principals');
       const yieldsPrecision = getTokenPrecision(selectedPoolAddress, 'yields');
@@ -234,7 +238,7 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
     backingToken,
     selectedToken,
     ammAddress,
-    selectedChainName,
+    chain,
     tokenPrecision.principals,
     tokenPrecision.lpTokens,
   ]);
@@ -244,7 +248,7 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
     if (userWalletSigner) {
       setEstimateInProgress(true);
 
-      const poolDataAdapter = getPoolDataAdapter(selectedChainName, userWalletSigner);
+      const poolDataAdapter = getPoolDataAdapter(chain, userWalletSigner);
       try {
         const principalsAmountParsed = ethers.utils.parseUnits(
           principalsAmount || '0',
@@ -287,7 +291,7 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
     principalsAmount,
     yieldsAmount,
     lpTokenAmount,
-    selectedChainName,
+    chain,
   ]);
 
   const onExecuted = useCallback(() => {
@@ -299,25 +303,25 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
 
     // Trigger user pool share balance update when execute is finished
     getUserShareTokenBalanceProvider({
-      chain: selectedChainName,
+      chain,
       userWalletAddress,
       userWalletSigner,
     }).fetchForPool(selectedPoolAddress);
 
     // Trigger user balance update when execute is finished
     getUserBalanceProvider({
-      chain: selectedChainName,
+      chain,
       userWalletAddress,
       userWalletSigner,
     }).fetchForPool(selectedPoolAddress);
 
     // Trigger user LP Token balance update when execute is finished
     getUserLPTokenBalanceProvider({
-      chain: selectedChainName,
+      chain,
       userWalletAddress,
       userWalletSigner,
     }).fetchForPool(selectedPoolAddress);
-  }, [onWithdraw, selectedPoolAddress, userWalletAddress, userWalletSigner, selectedChainName]);
+  }, [onWithdraw, selectedPoolAddress, userWalletAddress, userWalletSigner, chain]);
 
   useEffect(() => {
     if (!tokenRate || !estimatedWithdrawData) {
@@ -454,8 +458,9 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
                   onApproveChange={approved => {
                     setPrincipalsApproved(approved);
                   }}
-                  spenderAddress={getChainConfig(selectedChainName).tempusControllerContract}
+                  spenderAddress={getChainConfig(chain).tempusControllerContract}
                   tokenToApproveAddress={principalsAddress}
+                  chain={chain}
                 />
               </div>
             </div>
@@ -495,8 +500,9 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
                     onApproveChange={approved => {
                       setYieldsApproved(approved);
                     }}
-                    spenderAddress={getChainConfig(selectedChainName).tempusControllerContract}
+                    spenderAddress={getChainConfig(chain).tempusControllerContract}
                     tokenToApproveAddress={yieldsAddress}
+                    chain={chain}
                   />
                 </div>
               </div>
@@ -535,8 +541,9 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
                     onApproveChange={approved => {
                       setLpTokenApproved(approved);
                     }}
-                    spenderAddress={getChainConfig(selectedChainName).tempusControllerContract}
+                    spenderAddress={getChainConfig(chain).tempusControllerContract}
                     tokenToApproveAddress={ammAddress}
+                    chain={chain}
                   />
                 </div>
               </div>
@@ -561,7 +568,13 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
         </SectionContainer>
         <Spacer size={20} />
         <div className="tf__flex-row-center-vh">
-          <Execute actionName="Withdraw" disabled={executeDisabled} onExecute={onExecute} onExecuted={onExecuted} />
+          <Execute
+            actionName="Withdraw"
+            disabled={executeDisabled}
+            chain={chain}
+            onExecute={onExecute}
+            onExecuted={onExecuted}
+          />
         </div>
       </SectionContainer>
     </div>

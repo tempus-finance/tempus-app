@@ -1,13 +1,13 @@
 import { Downgraded, useState as useHookState } from '@hookstate/core';
-import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { BigNumber, ethers } from 'ethers';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
-import { selectedChainState } from '../../state/ChainState';
 import getUserShareTokenBalanceProvider from '../../providers/getUserShareTokenBalanceProvider';
 import getUserLPTokenBalanceProvider from '../../providers/getUserLPTokenBalanceProvider';
 import { LanguageContext } from '../../context/languageContext';
 import { WalletContext } from '../../context/walletContext';
 import { UserSettingsContext } from '../../context/userSettingsContext';
+import { Chain } from '../../interfaces/Chain';
 import getText from '../../localisation/getText';
 import Typography from '../typography/Typography';
 import Execute from '../buttons/Execute';
@@ -26,11 +26,16 @@ import Approve from '../buttons/Approve';
 
 import './RemoveLiquidity.scss';
 
-const RemoveLiquidity = () => {
+interface RemoveLiquidityProps {
+  chain: Chain;
+}
+
+const RemoveLiquidity: FC<RemoveLiquidityProps> = props => {
+  const { chain } = props;
+
   const selectedPool = useHookState(selectedPoolState);
   const dynamicPoolData = useHookState(dynamicPoolDataState);
   const staticPoolData = useHookState(staticPoolDataState);
-  const selectedChain = useHookState(selectedChainState);
 
   const { language } = useContext(LanguageContext);
   const { userWalletAddress, userWalletSigner } = useContext(WalletContext);
@@ -42,7 +47,6 @@ const RemoveLiquidity = () => {
   const [tokensApproved, setTokensApproved] = useState<boolean>(false);
   const [estimateInProgress, setEstimateInProgress] = useState<boolean>(false);
 
-  const selectedChainName = selectedChain.attach(Downgraded).get();
   const selectedPoolAddress = selectedPool.attach(Downgraded).get();
   const ammAddress = staticPoolData[selectedPool.get()].ammAddress.attach(Downgraded).get();
   const principalsAddress = staticPoolData[selectedPool.get()].principalsAddress.attach(Downgraded).get();
@@ -80,7 +84,7 @@ const RemoveLiquidity = () => {
       }
 
       try {
-        const poolDataAdapter = getPoolDataAdapter(selectedChainName, userWalletSigner);
+        const poolDataAdapter = getPoolDataAdapter(chain, userWalletSigner);
 
         setEstimateInProgress(true);
         const estimate = await poolDataAdapter.getExpectedReturnForLPTokens(
@@ -96,7 +100,7 @@ const RemoveLiquidity = () => {
       }
     };
     getTokensEstimate();
-  }, [amount, ammAddress, userWalletSigner, selectedChainName]);
+  }, [amount, ammAddress, userWalletSigner, chain]);
 
   const onApproveChange = useCallback(approved => {
     setTokensApproved(approved);
@@ -106,7 +110,7 @@ const RemoveLiquidity = () => {
     if (!userWalletSigner || !estimatedPrincipals || !estimatedYields) {
       return Promise.resolve(undefined);
     }
-    const poolDataAdapter = getPoolDataAdapter(selectedChainName, userWalletSigner);
+    const poolDataAdapter = getPoolDataAdapter(chain, userWalletSigner);
 
     const actualSlippage = (autoSlippage ? 1 : slippage / 100).toString();
     const minPrincipalsReceived = estimatedPrincipals.sub(
@@ -145,7 +149,7 @@ const RemoveLiquidity = () => {
     principalsAddress,
     yieldsAddress,
     amount,
-    selectedChainName,
+    chain,
   ]);
 
   const onExecuted = useCallback(() => {
@@ -159,18 +163,18 @@ const RemoveLiquidity = () => {
 
     // Trigger user pool share balance update when execute is finished
     getUserShareTokenBalanceProvider({
-      chain: selectedChainName,
+      chain,
       userWalletAddress,
       userWalletSigner,
     }).fetchForPool(selectedPoolAddress);
 
     // Trigger user LP Token balance update when execute is finished
     getUserLPTokenBalanceProvider({
-      chain: selectedChainName,
+      chain,
       userWalletAddress,
       userWalletSigner,
     }).fetchForPool(selectedPoolAddress);
-  }, [selectedPoolAddress, userWalletAddress, userWalletSigner, selectedChainName]);
+  }, [selectedPoolAddress, userWalletAddress, userWalletSigner, chain]);
 
   const lpTokenBalanceFormatted = useMemo(() => {
     if (!userLPTokenBalance) {
@@ -238,9 +242,10 @@ const RemoveLiquidity = () => {
                 tokenToApproveTicker="LP Token"
                 amountToApprove={userLPTokenBalance}
                 onApproveChange={onApproveChange}
-                spenderAddress={getChainConfig(selectedChainName).vaultContract}
+                spenderAddress={getChainConfig(chain).vaultContract}
                 tokenToApproveAddress={ammAddress}
                 disabled={approveDisabled}
+                chain={chain}
               />
             </div>
           </div>
@@ -274,6 +279,7 @@ const RemoveLiquidity = () => {
           <Execute
             actionName="Liquidity Withdrawal"
             disabled={executeDisabled}
+            chain={chain}
             onExecute={onExecute}
             onExecuted={onExecuted}
           />

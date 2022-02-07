@@ -24,7 +24,7 @@ import { ChainConfig } from '../interfaces/Config';
 import { wadToDai } from '../utils/rayToDai';
 import { getChainConfig } from '../utils/getConfig';
 import { div18f, mul18f } from '../utils/weiMath';
-import getProvider from '../utils/getProvider';
+import getProviderFromSignerOrProvider from '../utils/getProviderFromSignerOrProvider';
 import { Chain } from '../interfaces/Chain';
 
 const SECONDS_IN_A_WEEK = SECONDS_IN_A_DAY * 7;
@@ -97,7 +97,7 @@ class VariableRateService {
       return Promise.reject();
     }
 
-    let provider = getProvider(this.signerOrProvider);
+    let provider = getProviderFromSignerOrProvider(this.signerOrProvider);
 
     const [latestBlock, swapFeePercentage] = await Promise.all([
       provider.getBlock('latest'),

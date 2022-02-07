@@ -1,13 +1,13 @@
-import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { BigNumber, ethers } from 'ethers';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
-import { selectedChainState } from '../../state/ChainState';
 import getUserShareTokenBalanceProvider from '../../providers/getUserShareTokenBalanceProvider';
 import { LanguageContext } from '../../context/languageContext';
 import { WalletContext } from '../../context/walletContext';
 import { UserSettingsContext } from '../../context/userSettingsContext';
 import { PoolShares, Ticker } from '../../interfaces/Token';
+import { Chain } from '../../interfaces/Chain';
 import getText from '../../localisation/getText';
 import { getChainConfig } from '../../utils/getConfig';
 import { mul18f } from '../../utils/weiMath';
@@ -27,18 +27,22 @@ import Typography from '../typography/Typography';
 
 import './Swap.scss';
 
+interface SwapProps {
+  chain: Chain;
+}
+
 interface TokenDetail {
   tokenName: PoolShares;
   tokenAddress: string;
 }
 
-const Swap = () => {
+const Swap: FC<SwapProps> = props => {
+  const { chain } = props;
+
   const selectedPool = useHookState(selectedPoolState);
   const dynamicPoolData = useHookState(dynamicPoolDataState);
   const staticPoolData = useHookState(staticPoolDataState);
-  const selectedChain = useHookState(selectedChainState);
 
-  const selectedChainName = selectedChain.attach(Downgraded).get();
   const selectedPoolAddress = selectedPool.attach(Downgraded).get();
   const principalsAddress = staticPoolData[selectedPool.get()].principalsAddress.attach(Downgraded).get();
   const yieldsAddress = staticPoolData[selectedPool.get()].yieldsAddress.attach(Downgraded).get();
@@ -147,7 +151,7 @@ const Swap = () => {
     if (!userWalletSigner || !receiveAmount) {
       return Promise.resolve(undefined);
     }
-    const poolDataAdapter = getPoolDataAdapter(selectedChainName, userWalletSigner);
+    const poolDataAdapter = getPoolDataAdapter(chain, userWalletSigner);
 
     let tokenOutPrecision;
     if (tokenTo.tokenAddress === principalsAddress) {
@@ -189,7 +193,7 @@ const Swap = () => {
     tokenTo.tokenAddress,
     userWalletAddress,
     userWalletSigner,
-    selectedChainName,
+    chain,
   ]);
 
   const onExecuted = useCallback(() => {
@@ -201,11 +205,11 @@ const Swap = () => {
 
     // Trigger user pool share balance update when execute is finished
     getUserShareTokenBalanceProvider({
-      chain: selectedChainName,
+      chain,
       userWalletAddress,
       userWalletSigner,
     }).fetchForPool(selectedPoolAddress);
-  }, [selectedPoolAddress, userWalletAddress, userWalletSigner, selectedChainName]);
+  }, [selectedPoolAddress, userWalletAddress, userWalletSigner, chain]);
 
   // Fetch receive amount
   useEffect(() => {
@@ -213,7 +217,7 @@ const Swap = () => {
       if (!userWalletSigner || !amount) {
         return;
       }
-      const poolDataAdapter = getPoolDataAdapter(selectedChainName, userWalletSigner);
+      const poolDataAdapter = getPoolDataAdapter(chain, userWalletSigner);
 
       const amountParsed = ethers.utils.parseUnits(amount, tokenPrecision);
       const yieldShareIn = tokenFrom.tokenName === 'Yields';
@@ -238,7 +242,7 @@ const Swap = () => {
       }
     };
     getReceiveAmount();
-  }, [tokenPrecision, amount, tokenFrom, userWalletSigner, ammAddress, selectedChainName]);
+  }, [tokenPrecision, amount, tokenFrom, userWalletSigner, ammAddress, chain]);
 
   const balanceFormatted = useMemo(() => {
     const currentBalance = getSelectedTokenBalance();
@@ -313,13 +317,20 @@ const Swap = () => {
           <Approve
             amountToApprove={getSelectedTokenBalance()}
             onApproveChange={onApproveChange}
-            spenderAddress={getChainConfig(selectedChainName).vaultContract}
+            spenderAddress={getChainConfig(chain).vaultContract}
             tokenToApproveTicker={tokenFrom.tokenName}
             tokenToApproveAddress={getSelectedTokenAddress()}
             marginRight={20}
             disabled={approveDisabled}
+            chain={chain}
           />
-          <Execute actionName="Swap" disabled={executeDisabled} onExecute={onExecute} onExecuted={onExecuted} />
+          <Execute
+            actionName="Swap"
+            disabled={executeDisabled}
+            chain={chain}
+            onExecute={onExecute}
+            onExecuted={onExecuted}
+          />
         </div>
       </SectionContainer>
     </div>

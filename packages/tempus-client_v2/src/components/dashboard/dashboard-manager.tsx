@@ -20,12 +20,12 @@ const DashboardManager: FC = (): JSX.Element => {
 
   useEffect(() => {
     const fetchRows = async () => {
-      if (userWalletSigner) {
-        const dashboardDataAdapter = getDashboardDataAdapter(selectedChainName, userWalletSigner);
-        setRows(dashboardDataAdapter.getRows(selectedChainName));
-      } else if (userWalletConnected === false) {
+      if (userWalletSigner && selectedChainName) {
         const dashboardDataAdapter = getDashboardDataAdapter(selectedChainName);
         setRows(dashboardDataAdapter.getRows(selectedChainName));
+      } else if (userWalletConnected === false) {
+        const dashboardDataAdapter = getDashboardDataAdapter();
+        setRows(dashboardDataAdapter.getRows());
       }
     };
     fetchRows();

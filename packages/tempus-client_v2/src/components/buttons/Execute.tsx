@@ -3,7 +3,7 @@ import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { ethers } from 'ethers';
 import { Button, CircularProgress } from '@material-ui/core';
 import { selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
-import { selectedChainState, staticChainDataState } from '../../state/ChainState';
+import { staticChainDataState } from '../../state/ChainState';
 import getNotificationService from '../../services/getNotificationService';
 import {
   generateEtherscanLink,
@@ -15,6 +15,7 @@ import getText from '../../localisation/getText';
 import { PendingTransactionsContext } from '../../context/pendingTransactionsContext';
 import { WalletContext } from '../../context/walletContext';
 import { LanguageContext } from '../../context/languageContext';
+import { Chain } from '../../interfaces/Chain';
 
 import './Execute.scss';
 
@@ -22,17 +23,17 @@ interface ExecuteButtonProps {
   disabled: boolean;
   executeDisabledText?: string;
   actionName: string;
+  chain: Chain;
   actionDescription?: string;
   onExecute: () => Promise<ethers.ContractTransaction | undefined>;
   onExecuted: (successful: boolean) => void;
 }
 
 const Execute: FC<ExecuteButtonProps> = props => {
-  const { disabled, executeDisabledText, actionName, actionDescription, onExecute, onExecuted } = props;
+  const { disabled, executeDisabledText, actionName, actionDescription, chain, onExecute, onExecuted } = props;
 
   const selectedPool = useHookState(selectedPoolState);
   const staticPoolData = useHookState(staticPoolDataState);
-  const selectedChain = useHookState(selectedChainState);
   const staticChainData = useHookState(staticChainDataState);
 
   const { setPendingTransactions } = useContext(PendingTransactionsContext);
@@ -41,8 +42,7 @@ const Execute: FC<ExecuteButtonProps> = props => {
 
   const [executeInProgress, setExecuteInProgress] = useState<boolean>(false);
 
-  const selectedChainName = selectedChain.attach(Downgraded).get();
-  const blockExplorerName = staticChainData[selectedChainName].blockExplorerName.attach(Downgraded).get();
+  const blockExplorerName = staticChainData[chain].blockExplorerName.attach(Downgraded).get();
   const selectedPoolData = staticPoolData[selectedPool.get()].attach(Downgraded).get();
   const backingToken = staticPoolData[selectedPool.get()].backingToken.attach(Downgraded).get();
   const protocol = staticPoolData[selectedPool.get()].protocol.attach(Downgraded).get();
@@ -91,7 +91,7 @@ const Execute: FC<ExecuteButtonProps> = props => {
               ...transaction,
               title: `Executing ${actionName}`,
               content,
-              link: generateEtherscanLink(transaction.hash, selectedChainName),
+              link: generateEtherscanLink(transaction.hash, chain),
               linkText: viewLinkText,
             },
           ],
@@ -119,7 +119,7 @@ const Execute: FC<ExecuteButtonProps> = props => {
           'Transaction',
           `${actionName} Failed`,
           content,
-          generateEtherscanLink(transaction.hash, selectedChainName),
+          generateEtherscanLink(transaction.hash, chain),
           viewLinkText,
         );
         setExecuteInProgress(false);
@@ -148,7 +148,7 @@ const Execute: FC<ExecuteButtonProps> = props => {
           userWalletAddress,
           selectedPoolData,
         )}`,
-        generateEtherscanLink(transaction.hash, selectedChainName),
+        generateEtherscanLink(transaction.hash, chain),
         viewLinkText,
       );
       setExecuteInProgress(false);

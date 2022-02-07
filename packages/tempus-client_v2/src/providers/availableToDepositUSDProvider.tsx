@@ -92,6 +92,10 @@ const AvailableToDepositUSDProvider: FC<PresentValueProviderProps> = props => {
   );
 
   const updateAvailableToDepositUSD = useCallback(() => {
+    if (!selectedChainName) {
+      return;
+    }
+
     getChainConfig(selectedChainName).tempusPools.forEach(poolConfig => {
       if (userWalletSigner) {
         updateUserAvailableToDepositUSDForPool(poolConfig);
@@ -110,7 +114,7 @@ const AvailableToDepositUSDProvider: FC<PresentValueProviderProps> = props => {
    * Subscribe to user principals, yields and LP Token transfer events for all pools
    */
   useEffect(() => {
-    if (!userWalletSigner) {
+    if (!userWalletSigner || !selectedChainName) {
       return;
     }
 
