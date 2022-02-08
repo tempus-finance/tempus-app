@@ -2,9 +2,10 @@ import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { FC, useCallback, useEffect, useState } from 'react';
 import { Subscription } from 'rxjs';
 import { BigNumber } from 'ethers';
-import { getChainConfig } from '../utils/getConfig';
+import { getChainConfig, getConfig } from '../utils/getConfig';
 import DashboardDataAdapter from '../adapters/DashboardDataAdapter';
 import { TempusPool } from '../interfaces/TempusPool';
+import { Chain } from '../interfaces/Chain';
 import { dynamicPoolDataState } from '../state/PoolDataState';
 import { selectedChainState } from '../state/ChainState';
 
@@ -41,26 +42,30 @@ const TVLProvider: FC<TVLProviderProps> = props => {
    * Update TVL for all pools every POLLING_INTERVAL.
    */
   useEffect(() => {
-    getChainConfig(selectedChainName).tempusPools.forEach(poolConfig => {
-      try {
-        // If case we want to force TVL fetch (even if app is not in focus)
-        const forceFetch = dynamicPoolData[poolConfig.address].tvl.get() === null;
+    const configData = getConfig();
 
-        const tempusPoolTVLStream$ = dashboardDataAdapter.getTempusPoolTVL(
-          selectedChainName,
-          poolConfig.address,
-          poolConfig.backingToken,
-          forceFetch,
-        );
-        subscriptions$.add(
-          tempusPoolTVLStream$.subscribe(poolTvl => {
-            updatePoolTVL(poolConfig, poolTvl);
-          }),
-        );
-      } catch (error) {
-        console.error('TVLProvider - subscriptions', error);
-      }
-    });
+    for (const chainName in configData) {
+      getChainConfig(chainName as Chain).tempusPools.forEach(poolConfig => {
+        try {
+          // If case we want to force TVL fetch (even if app is not in focus)
+          const forceFetch = dynamicPoolData[poolConfig.address].tvl.get() === null;
+
+          const tempusPoolTVLStream$ = dashboardDataAdapter.getTempusPoolTVL(
+            chainName as Chain,
+            poolConfig.address,
+            poolConfig.backingToken,
+            forceFetch,
+          );
+          subscriptions$.add(
+            tempusPoolTVLStream$.subscribe(poolTvl => {
+              updatePoolTVL(poolConfig, poolTvl);
+            }),
+          );
+        } catch (error) {
+          console.error('TVLProvider - subscriptions', error);
+        }
+      });
+    }
 
     return () => subscriptions$.unsubscribe();
     // eslint-disable-next-line react-hooks/exhaustive-deps

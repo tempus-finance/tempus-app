@@ -3,25 +3,25 @@ import { filter, from, interval, Observable, of, startWith, switchMap, catchErro
 import { DashboardRow, DashboardRowChild, DashboardRowParent } from '../interfaces/DashboardRow';
 import { Ticker } from '../interfaces/Token';
 import { TempusPool } from '../interfaces/TempusPool';
-import StatisticsService from '../services/StatisticsService';
-import { getChainConfig } from '../utils/getConfig';
-import { POLLING_INTERVAL } from '../constants';
+import { getChainConfig, getConfig } from '../utils/getConfig';
 import { Chain } from '../interfaces/Chain';
 import getRangeFrom from '../utils/getRangeFrom';
-
-type DashboardDataAdapterParameters = {
-  statisticsService: StatisticsService;
-};
+import getStatisticsService from '../services/getStatisticsService';
+import { POLLING_INTERVAL } from '../constants';
 
 export default class DashboardDataAdapter {
-  private statisticsService: StatisticsService | null = null;
+  getRows(chain?: Chain): DashboardRow[] {
+    const childRows: DashboardRowChild[] = [];
 
-  init(params: DashboardDataAdapterParameters) {
-    this.statisticsService = params.statisticsService;
-  }
+    const configData = getConfig();
+    for (const chainName in configData) {
+      // If specific chain is selected, we should skip adding pools from other chains
+      if (chain && chain !== chainName) {
+        continue;
+      }
 
-  getRows(chainName: Chain): DashboardRow[] {
-    let childRows = this.getChildRows(chainName);
+      childRows.push(...this.getChildRows(chainName as Chain));
+    }
 
     // Generates parent rows based on children rows
     const parentRows = this.getParentRows(childRows);
@@ -35,9 +35,7 @@ export default class DashboardDataAdapter {
     backingTokenTicker: Ticker,
     forceFetch?: boolean,
   ): Observable<BigNumber | null> {
-    if (!this.statisticsService) {
-      return of(null);
-    }
+    const statisticsService = getStatisticsService(chain);
 
     const interval$ = interval(POLLING_INTERVAL).pipe(startWith(0));
     return interval$.pipe(
@@ -48,10 +46,7 @@ export default class DashboardDataAdapter {
         return document.hasFocus();
       }),
       switchMap(() => {
-        if (this.statisticsService) {
-          return from(this.statisticsService.totalValueLockedUSD(chain, tempusPool, backingTokenTicker));
-        }
-        return of(null);
+        return from(statisticsService.totalValueLockedUSD(chain, tempusPool, backingTokenTicker));
       }),
       catchError(error => {
         console.error('DashboardAdapter - getTempusPoolTVL', error);

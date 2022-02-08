@@ -192,7 +192,7 @@ describe('TempusPoolService', () => {
 
       utils.formatEther.mockImplementation((value: number) => value);
 
-      instance.getVariableAPY(mockAddress).then(result => {
+      instance.getVariableAPY(mockAddress, 13.2).then(result => {
         expect(result).toEqual(31536000);
       });
     });

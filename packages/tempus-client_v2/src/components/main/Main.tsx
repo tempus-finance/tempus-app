@@ -31,18 +31,22 @@ const Main = () => {
 
   useEffect(() => {
     const fetchRows = async () => {
-      if (userWalletSigner) {
-        const dashboardDataAdapter = getDashboardDataAdapter(selectedChainName, userWalletSigner);
+      if (userWalletSigner && selectedChainName) {
+        const dashboardDataAdapter = getDashboardDataAdapter(selectedChainName);
         const userBalanceDataAdapter = getUserBalanceDataAdapter(selectedChainName, userWalletSigner);
 
         setDashboardDataAdapter(dashboardDataAdapter);
         setUserBalanceDataAdapter(userBalanceDataAdapter);
-      } else if (userWalletConnected === false) {
+      } else if (userWalletConnected === false && selectedChainName) {
         const dashboardDataAdapter = getDashboardDataAdapter(selectedChainName);
         const userBalanceDataAdapter = getUserBalanceDataAdapter(selectedChainName);
 
         setDashboardDataAdapter(dashboardDataAdapter);
         setUserBalanceDataAdapter(userBalanceDataAdapter);
+      } else {
+        const dashboardDataAdapter = getDashboardDataAdapter();
+
+        setDashboardDataAdapter(dashboardDataAdapter);
       }
     };
     fetchRows();
@@ -61,7 +65,7 @@ const Main = () => {
 
       <Routes>
         <Route path="/" element={<RootRoute />} />
-        <Route path="/pool/:poolAddress" element={<PoolRoute />} />
+        <Route path="/pool/:poolAddress" element={selectedChainName && <PoolRoute chain={selectedChainName} />} />
       </Routes>
     </div>
   );

@@ -12,12 +12,11 @@ const UserYieldBearingTokenBalanceProvider = () => {
   const selectedChain = useHookState(selectedChainState);
 
   const selectedChainName = selectedChain.attach(Downgraded).get();
-
   const { userWalletAddress, userWalletSigner } = useContext(WalletContext);
 
   const updateBalanceForPool = useCallback(
     async (tempusPool: TempusPool) => {
-      if (userWalletSigner) {
+      if (userWalletSigner && selectedChainName) {
         const yieldBearingTokenAddress = getERC20TokenService(
           tempusPool.yieldBearingTokenAddress,
           selectedChainName,
@@ -38,6 +37,10 @@ const UserYieldBearingTokenBalanceProvider = () => {
   );
 
   const updateBalance = useCallback(async () => {
+    if (!selectedChainName) {
+      return;
+    }
+
     getChainConfig(selectedChainName).tempusPools.forEach(poolConfig => {
       updateBalanceForPool(poolConfig);
     });
@@ -48,7 +51,7 @@ const UserYieldBearingTokenBalanceProvider = () => {
   }, [updateBalance]);
 
   useEffect(() => {
-    if (!userWalletSigner) {
+    if (!userWalletSigner || !selectedChainName) {
       return;
     }
 

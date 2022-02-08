@@ -4,11 +4,17 @@ import { ChainConfig } from '../interfaces/Config';
 import { TempusPool } from '../interfaces/TempusPool';
 import { BigNumber } from 'ethers';
 import * as rxjs from 'rxjs';
+import * as getDefaultProvider from './../services/getDefaultProvider';
+
+jest.mock('ethers');
+const { Contract } = jest.requireMock('ethers');
 
 jest.mock('@ethersproject/providers', () => ({
   ...jest.requireActual('@ethersproject/providers'),
   JsonRpcProvider: jest.fn(),
 }));
+
+const { JsonRpcProvider } = jest.requireMock('@ethersproject/providers');
 
 describe('DashboardDataAdapter', () => {
   let dashboardDataAdapter: DashboardDataAdapter;
@@ -61,8 +67,21 @@ describe('DashboardDataAdapter', () => {
     },
   ];
 
+  const mockTVL = BigNumber.from(Math.round(Math.random() * 1000000));
+
+  const mockTotalValueLockedUSD = jest.fn().mockReturnValue(mockTVL);
+
   beforeEach(() => {
     jest.clearAllMocks();
+
+    jest.spyOn(getDefaultProvider, 'default').mockReturnValue(new JsonRpcProvider());
+
+    Contract.mockImplementation(() => {
+      return {
+        totalValueLockedInBackingTokens: mockTotalValueLockedUSD,
+        totalValueLockedAtGivenRate: mockTotalValueLockedUSD,
+      };
+    });
 
     jest.spyOn(console, 'error').mockImplementation(() => undefined);
     dashboardDataAdapter = new DashboardDataAdapter();
@@ -83,21 +102,7 @@ describe('DashboardDataAdapter', () => {
   });
 
   describe('getTempusPoolTVL()', () => {
-    test('test without init(), should return Observable<null>', async () => {
-      const tempusPoolAddr = MOCK_TEMPUS_POOL[0].address;
-      const backingTokenTicker = 'USDC';
-
-      const observable = dashboardDataAdapter.getTempusPoolTVL('fantom', tempusPoolAddr, backingTokenTicker);
-      const result = await rxjs.firstValueFrom(observable);
-      expect(result).toBe(null);
-    });
-
     test('test with no forceFetch and no focus, should return Observable<null>', async () => {
-      const mockTVL = BigNumber.from(Math.round(Math.random() * 1000000));
-      const mockStatisticsService = jest.fn().mockImplementation(() => ({
-        totalValueLockedUSD: jest.fn().mockReturnValue(mockTVL),
-      }));
-      dashboardDataAdapter.init({ statisticsService: mockStatisticsService() });
       const tempusPoolAddr = MOCK_TEMPUS_POOL[0].address;
       const backingTokenTicker = 'USDC';
       jest.spyOn(rxjs, 'interval').mockReturnValue(rxjs.of(0));
@@ -107,11 +112,6 @@ describe('DashboardDataAdapter', () => {
     });
 
     test('test with forceFetch, should return Observable of TVL', async () => {
-      const mockTVL = BigNumber.from(Math.round(Math.random() * 1000000));
-      const mockStatisticsService = jest.fn().mockImplementation(() => ({
-        totalValueLockedUSD: jest.fn().mockResolvedValue(mockTVL),
-      }));
-      dashboardDataAdapter.init({ statisticsService: mockStatisticsService() });
       const tempusPoolAddr = MOCK_TEMPUS_POOL[0].address;
       const backingTokenTicker = 'USDC';
       jest.spyOn(rxjs, 'interval').mockReturnValue(rxjs.of(0));
@@ -122,11 +122,6 @@ describe('DashboardDataAdapter', () => {
     });
 
     test('test with focus, should return Observable of TVL', async () => {
-      const mockTVL = BigNumber.from(Math.round(Math.random() * 1000000));
-      const mockStatisticsService = jest.fn().mockImplementation(() => ({
-        totalValueLockedUSD: jest.fn().mockResolvedValue(mockTVL),
-      }));
-      dashboardDataAdapter.init({ statisticsService: mockStatisticsService() });
       const tempusPoolAddr = MOCK_TEMPUS_POOL[0].address;
       const backingTokenTicker = 'USDC';
       jest.spyOn(document, 'hasFocus').mockReturnValue(true);
@@ -137,32 +132,11 @@ describe('DashboardDataAdapter', () => {
       expect(result).toBe(mockTVL);
     });
 
-    test('test with disappearing statisticsService, should return Observable<null>', async () => {
-      const mockTVL = BigNumber.from(Math.round(Math.random() * 1000000));
-      const mockStatisticsService = jest.fn().mockImplementation(() => ({
-        totalValueLockedUSD: jest.fn().mockResolvedValue(mockTVL),
-      }));
-      dashboardDataAdapter.init({ statisticsService: mockStatisticsService() });
-      const tempusPoolAddr = MOCK_TEMPUS_POOL[0].address;
-      const backingTokenTicker = 'USDC';
-      jest.spyOn(rxjs, 'interval').mockImplementation(() => {
-        Reflect.set(dashboardDataAdapter, 'statisticsService', null);
-        return rxjs.of(0);
-      });
-
-      const observable = dashboardDataAdapter.getTempusPoolTVL('fantom', tempusPoolAddr, backingTokenTicker, true);
-      const result = await rxjs.firstValueFrom(observable);
-      expect(result).toBe(null);
-    });
-
     test('test with throwing error from statisticsService.totalValueLockedUSD(), should return Observable<null>', async () => {
       const errMessage = 'ERROR_MSG_' + Math.random().toString(36).substring(2);
-      const mockStatisticsService = jest.fn().mockImplementation(() => ({
-        totalValueLockedUSD: jest.fn().mockImplementation(() => {
-          throw new Error(errMessage);
-        }),
-      }));
-      dashboardDataAdapter.init({ statisticsService: mockStatisticsService() });
+      mockTotalValueLockedUSD.mockImplementation(() => {
+        throw new Error(errMessage);
+      });
       const tempusPoolAddr = MOCK_TEMPUS_POOL[0].address;
       const backingTokenTicker = 'USDC';
       jest.spyOn(rxjs, 'interval').mockReturnValue(rxjs.of(0));

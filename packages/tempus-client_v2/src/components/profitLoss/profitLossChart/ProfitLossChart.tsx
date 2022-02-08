@@ -1,21 +1,25 @@
 import { ethers } from 'ethers';
-import { useContext, useEffect, useMemo, useState } from 'react';
+import { FC, useContext, useEffect, useMemo, useState } from 'react';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { AreaChart, Tooltip, Area, ResponsiveContainer } from 'recharts';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../../state/PoolDataState';
-import { selectedChainState, staticChainDataState } from '../../../state/ChainState';
+import { staticChainDataState } from '../../../state/ChainState';
 import getProfitLossGraphDataAdapter from '../../../adapters/getProfitLossGraphDataAdapter';
 import { WalletContext } from '../../../context/walletContext';
 import ChartDataPoint from '../../../interfaces/ChartDataPoint';
+import { Chain } from '../../../interfaces/Chain';
 import getPastDaysNumber from '../../../utils/getPastDaysNumber';
 import Typography from '../../typography/Typography';
 import ProfitLossChartTooltip from './ProfitLossChartTooltip';
 
-const ProfitLossChart = () => {
+interface ProfitLossChartProps {
+  chain: Chain;
+}
+
+const ProfitLossChart: FC<ProfitLossChartProps> = ({ chain }) => {
   const selectedPool = useHookState(selectedPoolState);
   const staticPoolData = useHookState(staticPoolDataState);
   const dynamicPoolData = useHookState(dynamicPoolDataState);
-  const selectedChain = useHookState(selectedChainState);
   const staticChainData = useHookState(staticChainDataState);
 
   const { userWalletAddress, userWalletSigner } = useContext(WalletContext);
@@ -25,8 +29,7 @@ const ProfitLossChart = () => {
 
   const pastDaysNumber = useMemo(() => (startDate ? getPastDaysNumber(startDate, 3) : []), [startDate]);
 
-  const selectedChainName = selectedChain.attach(Downgraded).get();
-  const averageBlockTime = staticChainData[selectedChainName].averageBlockTime.attach(Downgraded).get();
+  const averageBlockTime = staticChainData[chain].averageBlockTime.attach(Downgraded).get();
   const selectedPoolStaticData = staticPoolData[selectedPool.get()].attach(Downgraded).get();
   const userBalanceUSD = dynamicPoolData[selectedPool.get()].userBalanceUSD.attach(Downgraded).get();
 
@@ -35,7 +38,7 @@ const ProfitLossChart = () => {
       if (!userWalletSigner) {
         return;
       }
-      const profitLossGraphDataAdapter = getProfitLossGraphDataAdapter(selectedChainName, userWalletSigner);
+      const profitLossGraphDataAdapter = getProfitLossGraphDataAdapter(chain, userWalletSigner);
 
       try {
         const result = await profitLossGraphDataAdapter.generateChartData(
@@ -51,7 +54,7 @@ const ProfitLossChart = () => {
       }
     };
     fetchChartData();
-  }, [userWalletAddress, userWalletSigner, selectedPoolStaticData, selectedChainName, averageBlockTime]);
+  }, [userWalletAddress, userWalletSigner, selectedPoolStaticData, chain, averageBlockTime]);
 
   /**
    * Update chart data every time user USD balance changes for the pool

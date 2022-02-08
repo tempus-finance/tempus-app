@@ -17,7 +17,7 @@ const UserBackingTokenBalanceProvider = () => {
 
   const updateBalanceForPool = useCallback(
     async (tempusPool: TempusPool) => {
-      if (userWalletSigner) {
+      if (userWalletSigner && selectedChainName) {
         const backingTokenService = getERC20TokenService(
           tempusPool.backingTokenAddress,
           selectedChainName,
@@ -37,6 +37,10 @@ const UserBackingTokenBalanceProvider = () => {
   );
 
   const updateBalance = useCallback(async () => {
+    if (!selectedChainName) {
+      return;
+    }
+
     getChainConfig(selectedChainName).tempusPools.forEach(poolConfig => {
       updateBalanceForPool(poolConfig);
     });
@@ -47,7 +51,7 @@ const UserBackingTokenBalanceProvider = () => {
   }, [updateBalance]);
 
   useEffect(() => {
-    if (!userWalletSigner) {
+    if (!userWalletSigner || !selectedChainName) {
       return;
     }
 
