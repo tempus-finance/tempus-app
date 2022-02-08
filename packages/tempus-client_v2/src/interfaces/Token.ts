@@ -16,6 +16,7 @@ export type Ticker =
   | 'RARI'
   | 'RSPT'
   | 'yvDAI'
-  | 'YEARN';
+  | 'YEARN'
+  | 'FANTOM';
 
 export type PoolShares = 'Principals' | 'Yields';
