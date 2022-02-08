@@ -2,7 +2,7 @@ import { BigNumber, Contract, utils, providers } from 'ethers';
 import { JsonRpcProvider } from '@ethersproject/providers';
 import { ChainConfig } from '../interfaces/Config';
 import * as getConfig from '../utils/getConfig';
-import * as getProvider from '../utils/getProvider';
+import * as getProvider from '../utils/getProviderFromSignerOrProvider';
 import * as weiMath from '../utils/weiMath';
 import AaveLendingPoolABI from '../abi/AaveLendingPool.json';
 import lidoOracleABI from '../abi/LidoOracle.json';
@@ -95,8 +95,8 @@ describe('VariableRateService', () => {
       mockTempusPoolService(),
       mockVaultService(),
       mockTempusAMMService(),
-      mockVaults(),
       mockConfig(),
+      mockVaults(),
     );
   });
   afterEach(jest.restoreAllMocks);
@@ -139,8 +139,8 @@ describe('VariableRateService', () => {
         mockTempusPoolService(),
         mockVaultService(),
         mockTempusAMMService(),
-        mockVaults(),
         mockConfig(),
+        mockVaults(),
       );
       expect((variableRateService as any).aaveLendingPool).toBeNull();
       expect((variableRateService as any).lidoOracle).toBeNull();

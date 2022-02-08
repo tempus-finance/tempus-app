@@ -4,7 +4,8 @@ import { ChainConfig } from '../interfaces/Config';
 import { getConfig } from '../utils/getConfig';
 
 // Currently selected chain (ethereum or fantom for now)
-export const selectedChainState = createState<Chain>('fantom');
+// If it's set to null, pools from all chains will show up on the dashboard
+export const selectedChainState = createState<Chain | null>(null);
 
 export interface StaticChainDataMap {
   [chainName: string]: ChainConfig;

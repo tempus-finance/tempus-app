@@ -1,14 +1,13 @@
-import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { FC, RefObject, useCallback, useContext, useEffect, useState } from 'react';
 import { Button, Divider, Popper } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import { Notification } from '../../interfaces/Notification';
+import { Chain } from '../../interfaces/Chain';
 import { LanguageContext } from '../../context/languageContext';
 import { UserSettingsContext } from '../../context/userSettingsContext';
 import { PendingTransactionsContext } from '../../context/pendingTransactionsContext';
 import getNotificationService from '../../services/getNotificationService';
 import { getChainConfig } from '../../utils/getConfig';
-import { selectedChainState } from '../../state/ChainState';
 import getText from '../../localisation/getText';
 import Typography from '../typography/Typography';
 import Spacer from '../spacer/spacer';
@@ -20,6 +19,7 @@ import './WalletPopup.scss';
 type WalletPopupInProps = {
   anchorElement: RefObject<HTMLDivElement>;
   account?: string | null;
+  chainName: Chain;
 };
 
 type WalletPopupOutProps = {
@@ -29,14 +29,10 @@ type WalletPopupOutProps = {
 
 type WalletPopupProps = WalletPopupInProps & WalletPopupOutProps;
 
-const WalletPopup: FC<WalletPopupProps> = ({ anchorElement, account, onSwitchWallet, onClose }) => {
-  const selectedChain = useHookState(selectedChainState);
-
+const WalletPopup: FC<WalletPopupProps> = ({ anchorElement, account, chainName, onSwitchWallet, onClose }) => {
   const { openWalletPopup } = useContext(UserSettingsContext);
   const { language } = useContext(LanguageContext);
   const { pendingTransactions } = useContext(PendingTransactionsContext);
-
-  const selectedChainName = selectedChain.attach(Downgraded).get();
 
   const [notifications, setNotifications] = useState<Notification[]>([]);
 
@@ -50,7 +46,7 @@ const WalletPopup: FC<WalletPopupProps> = ({ anchorElement, account, onSwitchWal
   }, [onSwitchWallet]);
 
   const onAccountAddressClick = useCallback(() => {
-    const config = getChainConfig(selectedChainName);
+    const config = getChainConfig(chainName);
 
     if (config.networkName === 'homestead') {
       window.open(`https://etherscan.io/address/${account}`, '_blank');
@@ -59,7 +55,7 @@ const WalletPopup: FC<WalletPopupProps> = ({ anchorElement, account, onSwitchWal
     } else {
       window.open(`https://${config.networkName}.etherscan.io/address/${account}`, '_blank');
     }
-  }, [account, selectedChainName]);
+  }, [account, chainName]);
 
   useEffect(() => {
     const notificationStream$ = getNotificationService()

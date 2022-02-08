@@ -3,12 +3,12 @@ import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { ethers, BigNumber } from 'ethers';
 import { catchError, combineLatest } from 'rxjs';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
-import { selectedChainState } from '../../state/ChainState';
 import getUserShareTokenBalanceProvider from '../../providers/getUserShareTokenBalanceProvider';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
 import { LanguageContext } from '../../context/languageContext';
 import { WalletContext } from '../../context/walletContext';
 import { Ticker } from '../../interfaces/Token';
+import { Chain } from '../../interfaces/Chain';
 import getText from '../../localisation/getText';
 import getTokenPrecision from '../../utils/getTokenPrecision';
 import { isZeroString } from '../../utils/isZeroString';
@@ -23,11 +23,14 @@ import Typography from '../typography/Typography';
 
 import './EarlyRedeem.scss';
 
-const EarlyRedeem: FC = () => {
+interface EarlyRedeemProps {
+  chain: Chain;
+}
+
+const EarlyRedeem: FC<EarlyRedeemProps> = ({ chain }) => {
   const selectedPool = useHookState(selectedPoolState);
   const dynamicPoolData = useHookState(dynamicPoolDataState);
   const staticPoolData = useHookState(staticPoolDataState);
-  const selectedChain = useHookState(selectedChainState);
 
   const yieldBearingToken = staticPoolData[selectedPool.get()].yieldBearingToken.attach(Downgraded).get();
 
@@ -45,7 +48,6 @@ const EarlyRedeem: FC = () => {
 
   const [selectedTokenPrecision, setSelectedTokenPrecision] = useState<number>(0);
 
-  const selectedChainName = selectedChain.attach(Downgraded).get();
   const selectedPoolAddress = selectedPool.attach(Downgraded).get();
   const userPrincipalsBalance = dynamicPoolData[selectedPool.get()].userPrincipalsBalance.attach(Downgraded).get();
   const userYieldsBalance = dynamicPoolData[selectedPool.get()].userYieldsBalance.attach(Downgraded).get();
@@ -91,7 +93,7 @@ const EarlyRedeem: FC = () => {
       return;
     }
 
-    const poolDataAdapter = getPoolDataAdapter(selectedChainName, userWalletSigner);
+    const poolDataAdapter = getPoolDataAdapter(chain, userWalletSigner);
 
     const stream$ = poolDataAdapter
       .isCurrentYieldNegativeForPool(selectedPoolAddress)
@@ -106,14 +108,14 @@ const EarlyRedeem: FC = () => {
       });
 
     return () => stream$.unsubscribe();
-  }, [selectedPoolAddress, userWalletSigner, selectedChainName]);
+  }, [selectedPoolAddress, userWalletSigner, chain]);
 
   useEffect(() => {
     if (!userWalletSigner) {
       return;
     }
 
-    const poolDataAdapter = getPoolDataAdapter(selectedChainName, userWalletSigner);
+    const poolDataAdapter = getPoolDataAdapter(chain, userWalletSigner);
 
     setSelectedTokenPrecision(getTokenPrecision(selectedPoolAddress, 'principals'));
 
@@ -146,14 +148,14 @@ const EarlyRedeem: FC = () => {
     yieldBearingToken,
     tokenPrecision.backingToken,
     tokenPrecision.yieldBearingToken,
-    selectedChainName,
+    chain,
   ]);
 
   // Fetch estimated withdraw amount of tokens
   useEffect(() => {
     const retrieveEstimatedWithdrawAmount = async () => {
       if (userWalletSigner && amount) {
-        const poolDataAdapter = getPoolDataAdapter(selectedChainName, userWalletSigner);
+        const poolDataAdapter = getPoolDataAdapter(chain, userWalletSigner);
 
         try {
           const amountFormatted = ethers.utils.parseUnits(amount, selectedTokenPrecision);
@@ -179,15 +181,7 @@ const EarlyRedeem: FC = () => {
       }
     };
     retrieveEstimatedWithdrawAmount();
-  }, [
-    userWalletSigner,
-    selectedPoolAddress,
-    selectedTokenPrecision,
-    selectedToken,
-    amount,
-    backingToken,
-    selectedChainName,
-  ]);
+  }, [userWalletSigner, selectedPoolAddress, selectedTokenPrecision, selectedToken, amount, backingToken, chain]);
 
   const depositDisabled = useMemo((): boolean => {
     return isYieldNegative === null ? true : isYieldNegative;
@@ -243,7 +237,7 @@ const EarlyRedeem: FC = () => {
       return Promise.resolve(undefined);
     }
 
-    const poolDataAdapter = getPoolDataAdapter(selectedChainName, userWalletSigner);
+    const poolDataAdapter = getPoolDataAdapter(chain, userWalletSigner);
     const amountFormatted = ethers.utils.parseUnits(amount, selectedTokenPrecision);
     const toBackingToken = selectedToken === backingToken;
 
@@ -256,7 +250,7 @@ const EarlyRedeem: FC = () => {
     backingToken,
     selectedPoolAddress,
     userWalletAddress,
-    selectedChainName,
+    chain,
   ]);
 
   const onExecuted = useCallback(() => {
@@ -268,11 +262,11 @@ const EarlyRedeem: FC = () => {
 
     // Trigger user pool share balance update when execute is finished
     getUserShareTokenBalanceProvider({
-      chain: selectedChainName,
+      chain,
       userWalletAddress,
       userWalletSigner,
     }).fetchForPool(selectedPoolAddress);
-  }, [selectedPoolAddress, userWalletAddress, userWalletSigner, selectedChainName]);
+  }, [selectedPoolAddress, userWalletAddress, userWalletSigner, chain]);
 
   return (
     <div className="tc__earlyRedeem">
@@ -310,7 +304,13 @@ const EarlyRedeem: FC = () => {
         </SectionContainer>
         <Spacer size={20} />
         <div className="tf__flex-row-center-vh">
-          <Execute actionName="Redeem" disabled={executeDisabled} onExecute={onExecute} onExecuted={onExecuted} />
+          <Execute
+            actionName="Redeem"
+            disabled={executeDisabled}
+            chain={chain}
+            onExecute={onExecute}
+            onExecuted={onExecuted}
+          />
         </div>
       </SectionContainer>
     </div>

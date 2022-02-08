@@ -4,7 +4,7 @@ import getTempusPoolService from '../services/getTempusPoolService';
 import getTempusAMMService from '../services/getTempusAMMService';
 import getVaultService from '../services/getVaultService';
 import { getChainConfig } from '../utils/getConfig';
-import getProvider from '../utils/getProvider';
+import getProviderFromSignerOrProvider from '../utils/getProviderFromSignerOrProvider';
 import { Chain } from '../interfaces/Chain';
 import VariableRateService from './VariableRateService';
 
@@ -27,13 +27,20 @@ const getVariableRateService = (
 
   if (signerOrProvider !== undefined && signerOrProvider !== actualSignerOrProvider) {
     actualSignerOrProviders.set(chain, signerOrProvider);
+
+    let rariVault: RariVault | null = null;
+
+    if (signerOrProvider instanceof JsonRpcSigner) {
+      rariVault = new RariVault(getProviderFromSignerOrProvider(signerOrProvider) as any);
+    }
+
     variableRateService.init(
       signerOrProvider,
       getTempusPoolService(chain, signerOrProvider),
       getVaultService(chain, signerOrProvider),
       getTempusAMMService(chain, signerOrProvider),
-      new RariVault(getProvider(signerOrProvider) as any),
       getChainConfig(chain),
+      rariVault,
     );
   }
 

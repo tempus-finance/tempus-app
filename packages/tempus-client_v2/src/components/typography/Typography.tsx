@@ -140,7 +140,7 @@ typographyStyleMap.set('yield-card-type', {
 typographyStyleMap.set('chain-badge', {
   fontFamily: "'Source Sans Pro', sans-serif",
   fontWeight: 600,
-  fontSize: '12px',
+  fontSize: '11px',
   fontStyle: 'normal',
   lineHeight: '16px',
 });

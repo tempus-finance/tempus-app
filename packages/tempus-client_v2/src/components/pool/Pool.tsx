@@ -1,15 +1,16 @@
-import { useContext, useEffect, useMemo, useState } from 'react';
+import { FC, useContext, useEffect, useMemo, useState } from 'react';
 import { Downgraded, useHookstate, useState as useHookState } from '@hookstate/core';
 import { ethers, BigNumber } from 'ethers';
 import { FIXED_APR_PRECISION, SECONDS_IN_A_DAY } from '../../constants';
 import getTokenPrecision from '../../utils/getTokenPrecision';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
-import { selectedChainState, staticChainDataState } from '../../state/ChainState';
+import { staticChainDataState } from '../../state/ChainState';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
 import { LanguageContext } from '../../context/languageContext';
 import { WalletContext } from '../../context/walletContext';
 import getText from '../../localisation/getText';
 import NumberUtils from '../../services/NumberUtils';
+import { Chain } from '../../interfaces/Chain';
 import Typography from '../typography/Typography';
 import InfoIcon from '../icons/InfoIcon';
 import Spacer from '../spacer/spacer';
@@ -20,11 +21,14 @@ import PercentageLabel from './percentageLabel/PercentageLabel';
 
 import './Pool.scss';
 
-const Pool = () => {
+interface PoolProps {
+  chain: Chain;
+}
+
+const Pool: FC<PoolProps> = ({ chain }) => {
   const selectedPool = useHookState(selectedPoolState);
   const dynamicPoolData = useHookstate(dynamicPoolDataState);
   const staticPoolData = useHookState(staticPoolDataState);
-  const selectedChain = useHookState(selectedChainState);
   const staticChainData = useHookState(staticChainDataState);
 
   const { userWalletSigner } = useContext(WalletContext);
@@ -33,8 +37,7 @@ const Pool = () => {
   const [fixedAPRChangePercentage, setFixedAPRChangePercentage] = useState<number | null>(null);
   const [tvlChangePercentage, setTVLChangePercentage] = useState<BigNumber | null>(null);
 
-  const selectedChainName = selectedChain.attach(Downgraded).get();
-  const averageBlockTime = staticChainData[selectedChainName].averageBlockTime.attach(Downgraded).get();
+  const averageBlockTime = staticChainData[chain].averageBlockTime.attach(Downgraded).get();
   const selectedPoolAddress = selectedPool.attach(Downgraded).get();
   const poolId = staticPoolData[selectedPool.get()].poolId.attach(Downgraded).get();
   const startDate = staticPoolData[selectedPool.get()].startDate.attach(Downgraded).get();
@@ -54,7 +57,7 @@ const Pool = () => {
       if (!userWalletSigner || !tvl) {
         return;
       }
-      const poolDataAdapter = getPoolDataAdapter(selectedChainName, userWalletSigner);
+      const poolDataAdapter = getPoolDataAdapter(chain, userWalletSigner);
 
       try {
         setTVLChangePercentage(
@@ -71,7 +74,7 @@ const Pool = () => {
       }
     };
     fetchTVLChangeData();
-  }, [backingToken, selectedPoolAddress, tvl, userWalletSigner, startDate, selectedChainName, averageBlockTime]);
+  }, [backingToken, selectedPoolAddress, tvl, userWalletSigner, startDate, chain, averageBlockTime]);
 
   /**
    * Fetch Fixed APR from one week ago.
@@ -83,7 +86,7 @@ const Pool = () => {
       if (!userWalletSigner || !fixedAPR) {
         return;
       }
-      const poolDataAdapter = getPoolDataAdapter(selectedChainName, userWalletSigner);
+      const poolDataAdapter = getPoolDataAdapter(chain, userWalletSigner);
 
       try {
         let latestBlock;
@@ -122,16 +125,7 @@ const Pool = () => {
       }
     };
     fetchFixedAPRChangeData();
-  }, [
-    ammAddress,
-    fixedAPR,
-    poolId,
-    selectedPoolAddress,
-    userWalletSigner,
-    startDate,
-    selectedChainName,
-    averageBlockTime,
-  ]);
+  }, [ammAddress, fixedAPR, poolId, selectedPoolAddress, userWalletSigner, startDate, chain, averageBlockTime]);
 
   const tvlFormatted = useMemo(() => {
     if (!tvl) {
@@ -157,7 +151,7 @@ const Pool = () => {
               {getText('marketImpliedYield', language)}
             </Typography>
             <Spacer size={5} />
-            <InfoTooltip content={<AprTooltip />}>
+            <InfoTooltip content={<AprTooltip chain={chain} />}>
               <InfoIcon width={14} height={14} fillColor="#7A7A7A" />
             </InfoTooltip>
           </div>
@@ -185,7 +179,7 @@ const Pool = () => {
               {getText('fees', language)}
             </Typography>
             <Spacer size={5} />
-            <InfoTooltip content={<FeesTooltip />}>
+            <InfoTooltip content={<FeesTooltip chain={chain} />}>
               <InfoIcon width={14} height={14} fillColor="#7A7A7A" />
             </InfoTooltip>
           </div>

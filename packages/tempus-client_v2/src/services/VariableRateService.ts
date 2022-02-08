@@ -24,7 +24,7 @@ import { ChainConfig } from '../interfaces/Config';
 import { wadToDai } from '../utils/rayToDai';
 import { getChainConfig } from '../utils/getConfig';
 import { div18f, mul18f } from '../utils/weiMath';
-import getProvider from '../utils/getProvider';
+import getProviderFromSignerOrProvider from '../utils/getProviderFromSignerOrProvider';
 import { Chain } from '../interfaces/Chain';
 
 const SECONDS_IN_A_WEEK = SECONDS_IN_A_DAY * 7;
@@ -61,8 +61,8 @@ class VariableRateService {
     tempusPoolService: TempusPoolService,
     vaultService: VaultService,
     tempusAMMService: TempusAMMService,
-    rariVault: RariVault,
     config: ChainConfig,
+    rariVault: RariVault | null,
   ) {
     if (signerOrProvider) {
       // Only connect to Lido Oracle contract if address for it is specified in blockchain config
@@ -97,7 +97,7 @@ class VariableRateService {
       return Promise.reject();
     }
 
-    let provider = getProvider(this.signerOrProvider);
+    let provider = getProviderFromSignerOrProvider(this.signerOrProvider);
 
     const [latestBlock, swapFeePercentage] = await Promise.all([
       provider.getBlock('latest'),
@@ -384,7 +384,7 @@ class VariableRateService {
       this.fetchYearnData().subscribe(yearnData => {
         if (yearnData) {
           const data = yearnData.filter(data => data.address === yieldBearingTokenAddress);
-          if (data) {
+          if (data && data.length) {
             return resolve(data[0].apy.net_apy);
           }
         }

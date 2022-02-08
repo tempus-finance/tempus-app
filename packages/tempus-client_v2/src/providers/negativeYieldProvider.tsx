@@ -1,48 +1,37 @@
 import { interval, startWith, Subscription } from 'rxjs';
 import { useCallback, useContext, useEffect } from 'react';
-import { Downgraded, useState as useHookState } from '@hookstate/core';
+import { useState as useHookState } from '@hookstate/core';
 import { POLLING_INTERVAL } from '../constants';
-import { getChainConfig } from '../utils/getConfig';
+import { getChainConfig, getConfig } from '../utils/getConfig';
+import getProvider from '../utils/getProvider';
 import { TempusPool } from '../interfaces/TempusPool';
+import { Chain } from '../interfaces/Chain';
 import { dynamicPoolDataState } from '../state/PoolDataState';
-import { selectedChainState } from '../state/ChainState';
 import { WalletContext } from '../context/walletContext';
-import getDefaultProvider from '../services/getDefaultProvider';
 import getTempusPoolService from '../services/getTempusPoolService';
 
 const subscriptions$ = new Subscription();
 
 const NegativeYieldProvider = () => {
   const dynamicPoolData = useHookState(dynamicPoolDataState);
-  const selectedChain = useHookState(selectedChainState);
 
-  const selectedChainName = selectedChain.attach(Downgraded).get();
-
-  const { userWalletConnected, userWalletSigner } = useContext(WalletContext);
-
-  const getProvider = useCallback(() => {
-    if (userWalletConnected && userWalletSigner) {
-      return userWalletSigner.provider;
-    } else if (userWalletConnected === false) {
-      return getDefaultProvider(selectedChainName);
-    }
-  }, [userWalletConnected, userWalletSigner, selectedChainName]);
+  const { userWalletSigner } = useContext(WalletContext);
 
   /**
    * Fetch APR for all tempus pools on each block event
    */
   const fetchPoolNegativeYieldFlag = useCallback(
-    async (tempusPool: TempusPool) => {
+    async (chain: Chain, tempusPool: TempusPool) => {
       if (!document.hasFocus() && dynamicPoolData[tempusPool.address].negativeYield.get() === false) {
         return;
       }
-      const provider = getProvider();
+      const provider = await getProvider(chain, userWalletSigner);
       if (!provider) {
         return;
       }
 
       try {
-        const tempusPoolService = getTempusPoolService(selectedChainName, provider);
+        const tempusPoolService = getTempusPoolService(chain, provider);
         const [currentInterestRate, initialInterestRate] = await Promise.all([
           tempusPoolService.currentInterestRate(tempusPool.address),
           tempusPoolService.initialInterestRate(tempusPool.address),
@@ -57,28 +46,32 @@ const NegativeYieldProvider = () => {
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [selectedChainName, getProvider],
+    [userWalletSigner],
   );
 
   /**
    * Fetch/Update Negative Yield Flag for all pools every POLLING_INTERVAL.
    */
   useEffect(() => {
-    getChainConfig(selectedChainName).tempusPools.forEach(poolConfig => {
-      try {
-        const fetchInterval$ = interval(POLLING_INTERVAL).pipe(startWith(0));
-        subscriptions$.add(
-          fetchInterval$.subscribe(() => {
-            fetchPoolNegativeYieldFlag(poolConfig);
-          }),
-        );
-      } catch (error) {
-        console.error('NegativeYieldProvider - Subscriptions: ', error);
-      }
-    });
+    const configData = getConfig();
+
+    for (const chainName in configData) {
+      getChainConfig(chainName as Chain).tempusPools.forEach(poolConfig => {
+        try {
+          const fetchInterval$ = interval(POLLING_INTERVAL).pipe(startWith(0));
+          subscriptions$.add(
+            fetchInterval$.subscribe(() => {
+              fetchPoolNegativeYieldFlag(chainName as Chain, poolConfig);
+            }),
+          );
+        } catch (error) {
+          console.error('NegativeYieldProvider - Subscriptions: ', error);
+        }
+      });
+    }
 
     return () => subscriptions$.unsubscribe();
-  }, [selectedChainName, fetchPoolNegativeYieldFlag]);
+  }, [fetchPoolNegativeYieldFlag]);
 
   /**
    * Provider component only updates state value when needed. It does not show anything in the UI.

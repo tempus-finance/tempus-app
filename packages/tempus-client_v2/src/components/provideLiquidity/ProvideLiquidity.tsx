@@ -1,8 +1,7 @@
-import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { ethers, BigNumber } from 'ethers';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
-import { selectedChainState } from '../../state/ChainState';
 import getUserShareTokenBalanceProvider from '../../providers/getUserShareTokenBalanceProvider';
 import getPoolShareBalanceProvider from '../../providers/getPoolShareBalanceProvider';
 import getUserLPTokenBalanceProvider from '../../providers/getUserLPTokenBalanceProvider';
@@ -15,6 +14,7 @@ import getTokenPrecision from '../../utils/getTokenPrecision';
 import { isZeroString } from '../../utils/isZeroString';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
 import NumberUtils from '../../services/NumberUtils';
+import { Chain } from '../../interfaces/Chain';
 import Typography from '../typography/Typography';
 import Descriptor from '../descriptor/Descriptor';
 import CurrencyInput from '../currencyInput/currencyInput';
@@ -26,11 +26,16 @@ import Execute from '../buttons/Execute';
 
 import './ProvideLiquidity.scss';
 
-const ProvideLiquidity = () => {
+interface ProvideLiquidityProps {
+  chain: Chain;
+}
+
+const ProvideLiquidity: FC<ProvideLiquidityProps> = props => {
+  const { chain } = props;
+
   const selectedPool = useHookState(selectedPoolState);
   const dynamicPoolData = useHookState(dynamicPoolDataState);
   const staticPoolData = useHookState(staticPoolDataState);
-  const selectedChain = useHookState(selectedChainState);
 
   const { language } = useContext(LanguageContext);
 
@@ -56,7 +61,6 @@ const ProvideLiquidity = () => {
   const [yieldsPrecision, setYieldsPrecision] = useState<number>(0);
   const [lpTokensPrecision, setLpTokensPrecision] = useState<number>(0);
 
-  const selectedChainName = selectedChain.attach(Downgraded).get();
   const selectedPoolAddress = selectedPool.attach(Downgraded).get();
   const ammAddress = staticPoolData[selectedPool.get()].ammAddress.attach(Downgraded).get();
   const principalsAddress = staticPoolData[selectedPool.get()].principalsAddress.attach(Downgraded).get();
@@ -246,7 +250,7 @@ const ProvideLiquidity = () => {
       if (!userWalletSigner) {
         return;
       }
-      const poolDataAdapter = getPoolDataAdapter(selectedChainName, userWalletSigner);
+      const poolDataAdapter = getPoolDataAdapter(chain, userWalletSigner);
 
       const ratios = await poolDataAdapter.getPoolRatioOfAssets(ammAddress, principalsAddress, yieldsAddress);
 
@@ -254,7 +258,7 @@ const ProvideLiquidity = () => {
       setYieldsPercentage(ratios.yieldsShare);
     };
     getRatioOfAssetsInPool();
-  }, [ammAddress, principalsAddress, userWalletSigner, yieldsAddress, selectedChainName]);
+  }, [ammAddress, principalsAddress, userWalletSigner, yieldsAddress, chain]);
 
   // Fetch estimated LP Token amount
   useEffect(() => {
@@ -264,7 +268,7 @@ const ProvideLiquidity = () => {
       }
 
       try {
-        const poolDataAdapter = getPoolDataAdapter(selectedChainName, userWalletSigner);
+        const poolDataAdapter = getPoolDataAdapter(chain, userWalletSigner);
 
         setTokenEstimateInProgress(true);
         setExpectedLPTokens(
@@ -302,7 +306,7 @@ const ProvideLiquidity = () => {
     ammAddress,
     principalsAddress,
     yieldsAddress,
-    selectedChainName,
+    chain,
   ]);
 
   // Fetch pool share for amount in
@@ -313,7 +317,7 @@ const ProvideLiquidity = () => {
       }
 
       try {
-        const poolDataAdapter = getPoolDataAdapter(selectedChainName, userWalletSigner);
+        const poolDataAdapter = getPoolDataAdapter(chain, userWalletSigner);
 
         setPoolShareEstimateInProgress(true);
         setExpectedPoolShare(await poolDataAdapter.getPoolShareForLPTokensIn(ammAddress, expectedLPTokens));
@@ -327,13 +331,13 @@ const ProvideLiquidity = () => {
       }
     };
     fetchExpectedPoolShare();
-  }, [expectedLPTokens, userWalletSigner, ammAddress, selectedChainName]);
+  }, [expectedLPTokens, userWalletSigner, ammAddress, chain]);
 
   const onExecute = useCallback((): Promise<ethers.ContractTransaction | undefined> => {
     if (!userWalletSigner) {
       return Promise.resolve(undefined);
     }
-    const poolDataAdapter = getPoolDataAdapter(selectedChainName, userWalletSigner);
+    const poolDataAdapter = getPoolDataAdapter(chain, userWalletSigner);
 
     return poolDataAdapter.provideLiquidity(
       ammAddress,
@@ -353,7 +357,7 @@ const ProvideLiquidity = () => {
     principalsPrecision,
     yieldsAmount,
     yieldsPrecision,
-    selectedChainName,
+    chain,
   ]);
 
   const onExecuted = useCallback(() => {
@@ -367,24 +371,24 @@ const ProvideLiquidity = () => {
 
     // Trigger user pool share balance update when execute is finished
     getUserShareTokenBalanceProvider({
-      chain: selectedChainName,
+      chain,
       userWalletAddress,
       userWalletSigner,
     }).fetchForPool(selectedPoolAddress);
 
     // Trigger user LP Token balance update when execute is finished
     getUserLPTokenBalanceProvider({
-      chain: selectedChainName,
+      chain,
       userWalletAddress,
       userWalletSigner,
     }).fetchForPool(selectedPoolAddress);
 
     // Trigger pool share balance update when execute is finished
     getPoolShareBalanceProvider({
-      chain: selectedChainName,
+      chain,
       userWalletSigner,
     }).fetchForPoolWithId(poolId);
-  }, [poolId, selectedPoolAddress, userWalletAddress, userWalletSigner, selectedChainName]);
+  }, [poolId, selectedPoolAddress, userWalletAddress, userWalletSigner, chain]);
 
   const principalsBalanceFormatted = useMemo(() => {
     if (!userPrincipalsBalance) {
@@ -477,8 +481,9 @@ const ProvideLiquidity = () => {
                 onApproveChange={approved => {
                   setPrincipalsApproved(approved);
                 }}
-                spenderAddress={getChainConfig(selectedChainName).vaultContract}
+                spenderAddress={getChainConfig(chain).vaultContract}
                 tokenToApproveAddress={principalsAddress}
+                chain={chain}
               />
             </div>
           </div>
@@ -516,8 +521,9 @@ const ProvideLiquidity = () => {
                 onApproveChange={approved => {
                   setYieldsApproved(approved);
                 }}
-                spenderAddress={getChainConfig(selectedChainName).vaultContract}
+                spenderAddress={getChainConfig(chain).vaultContract}
                 tokenToApproveAddress={yieldsAddress}
+                chain={chain}
               />
             </div>
           </div>
@@ -548,6 +554,7 @@ const ProvideLiquidity = () => {
           <Execute
             actionName="Liquidity Deposit"
             disabled={executeDisabled}
+            chain={chain}
             onExecute={onExecute}
             onExecuted={onExecuted}
           />

@@ -34,11 +34,10 @@ const App = () => {
 
   // Initialize user share token balance provider every time user wallet address changes
   useEffect(() => {
-    if (!walletData.userWalletAddress || !walletData.userWalletSigner) {
+    if (!walletData.userWalletAddress || !walletData.userWalletSigner || !selectedChainName) {
       return;
     }
 
-    // Trigger user pool share balance update when execute is finished
     getUserShareTokenBalanceProvider({
       userWalletAddress: walletData.userWalletAddress,
       userWalletSigner: walletData.userWalletSigner,
@@ -48,11 +47,10 @@ const App = () => {
 
   // Initialize user LP Token balance provider every time user wallet address changes
   useEffect(() => {
-    if (!walletData.userWalletAddress || !walletData.userWalletSigner) {
+    if (!walletData.userWalletAddress || !walletData.userWalletSigner || !selectedChainName) {
       return;
     }
 
-    // Trigger user LP Token balance update when execute is finished
     getUserLPTokenBalanceProvider({
       userWalletAddress: walletData.userWalletAddress,
       userWalletSigner: walletData.userWalletSigner,
@@ -62,7 +60,7 @@ const App = () => {
 
   // Initialize user pool balance provider every time user wallet address changes
   useEffect(() => {
-    if (!walletData.userWalletAddress || !walletData.userWalletSigner) {
+    if (!walletData.userWalletAddress || !walletData.userWalletSigner || !selectedChainName) {
       return;
     }
 
@@ -75,7 +73,7 @@ const App = () => {
 
   // Initialize pool share balance provider every time user wallet address changes
   useEffect(() => {
-    if (!walletData.userWalletSigner) {
+    if (!walletData.userWalletSigner || !selectedChainName) {
       return;
     }
 
