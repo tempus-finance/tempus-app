@@ -165,5 +165,6 @@ const it: { [word in Words]: string } = {
   removeLiquidityDescription:
     'Rimuovi liquidità dalla pool insieme alle commissioni sotto forma degli LP token iniziali.',
   poolActionDisabledTitle: 'Alcune operazioni su questa pool sono temporaneamente disabilitate',
+  selectNetwork: 'Seleziona Network',
 };
 export default it;

@@ -164,5 +164,6 @@ const es: { [word in Words]: string } = {
   operationDisabledByConfig:
     'Certain actions in relation to this Tempus pool are temporarily disabled due to intermittent unreliability of the underlying pool. Please bear with us while we investigate this issue.',
   poolActionDisabledTitle: 'Certain actions to this pool are temporarily disabled',
+  selectNetwork: 'Seleccione el Network',
 };
 export default es;

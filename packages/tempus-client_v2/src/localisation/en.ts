@@ -163,5 +163,6 @@ const en: { [word in Words]: string } = {
   removeLiquidityDescription:
     'Remove your liquidity from the pool with the accrued rewards in the form of your initial LP tokens.',
   poolActionDisabledTitle: 'Certain actions to this pool are temporarily disabled',
+  selectNetwork: 'Select Network',
 };
 export default en;
