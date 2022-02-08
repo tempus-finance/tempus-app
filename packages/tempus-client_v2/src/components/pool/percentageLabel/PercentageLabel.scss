@@ -1,7 +1,9 @@
 .tc__percentage-label__container {
   display: flex;
-  justify-content: flex-end;
+  align-items: center;
+  justify-content: space-between;
   flex-direction: row;
   height: 100%;
-  width: 100px;
+  width: 90px;
+  padding-bottom: 2px;
 }

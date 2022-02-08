@@ -6,7 +6,6 @@ import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core';
 import { InjectedConnector } from '@web3-react/injected-connector';
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
 import { CircularProgress } from '@material-ui/core';
-import AccountBalanceWalletIcon from '@material-ui/icons/AccountBalanceWallet';
 import { supportedChainIds, NETWORK_URLS } from '../../constants';
 import { LanguageContext } from '../../context/languageContext';
 import { TokenBalanceContext } from '../../context/tokenBalanceContext';
@@ -28,6 +27,7 @@ import Spacer from '../spacer/spacer';
 import WalletSelector from './WalletSelector';
 import WalletPopup from './WalletPopup';
 import './Wallet.scss';
+import WalletAvatar from './WalletAvatar';
 
 const WALLET_KEY = 'lastConnectedWallet';
 
@@ -368,6 +368,7 @@ const Wallet = () => {
         userWalletAddress: account || '',
       }));
   }, [account, library, setWalletData]);
+
   const { ensName, ensAvatar } = useENS(account);
 
   let shortenedAccount;
@@ -404,10 +405,7 @@ const Wallet = () => {
         {/* Wallet connected - show wallet info */}
         {!connecting && selectedWallet && active && formattedPrimaryTokenBalance && selectedChainName && (
           <div className="tc__connect-wallet-button" onClick={onOpenWalletPopup} ref={walletPopupAnchor}>
-            {/* In case ENS avatar is available we need to show it instead of generic wallet icon */}
-            <div className="tc__connect-wallet-button__profile">
-              {ensAvatar ? <img src={ensAvatar} alt={shortenedAccount} /> : <AccountBalanceWalletIcon />}
-            </div>
+            <WalletAvatar avatar={ensAvatar} name={ensName || account} />
 
             <Spacer size={8} />
 

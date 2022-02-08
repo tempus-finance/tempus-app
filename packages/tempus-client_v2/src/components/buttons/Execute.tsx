@@ -57,7 +57,7 @@ const Execute: FC<ExecuteButtonProps> = props => {
       }
       setExecuteInProgress(true);
 
-      const content = generatePoolNotificationInfo(backingToken, protocol, new Date(maturityDate));
+      const content = generatePoolNotificationInfo(language, backingToken, protocol, new Date(maturityDate));
 
       let transaction: ethers.ContractTransaction | undefined;
       try {
@@ -66,7 +66,7 @@ const Execute: FC<ExecuteButtonProps> = props => {
       } catch (error) {
         console.error('Failed to execute transaction!', error);
         // Notify user about failed action.
-        getNotificationService().warn('Transaction', `${actionName} Failed`, content);
+        getNotificationService().warn('Transaction', `${actionName} ${getText('failed', language)}`, content);
         setExecuteInProgress(false);
         onExecuted(false);
         return;
@@ -141,6 +141,7 @@ const Execute: FC<ExecuteButtonProps> = props => {
         'Transaction',
         `${actionName} Successful`,
         `${generateNotificationInfo(
+          language,
           actionName,
           actionDescription || '',
           confirmations,

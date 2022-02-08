@@ -42,6 +42,7 @@ export interface DynamicPoolData extends AvailableToDeposit {
   userYieldBearingTokenBalance: BigNumber | null;
   tvl: BigNumber | null;
   variableAPR: number | null;
+  tempusFees: number | null;
   fixedAPR: number | null | 'fetching';
   negativeYield: boolean;
 }
@@ -74,6 +75,7 @@ getChainConfig('ethereum').tempusPools.forEach(tempusPoolConfig => {
     variableAPR: null,
     fixedAPR: 'fetching',
     negativeYield: true,
+    tempusFees: null,
   };
 });
 
@@ -96,6 +98,7 @@ getChainConfig('fantom').tempusPools.forEach(tempusPoolConfig => {
     userYieldBearingTokenBalance: null,
     tvl: null,
     variableAPR: null,
+    tempusFees: null,
     fixedAPR: 'fetching',
     negativeYield: true,
   };

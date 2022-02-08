@@ -1,4 +1,5 @@
 import { useCallback, useContext, useEffect } from 'react';
+import { ethers } from 'ethers';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import getVariableRateService from '../services/getVariableRateService';
 import { getChainConfig, getConfig } from '../utils/getConfig';
@@ -54,6 +55,7 @@ const VariableAPRProvider = () => {
             return {
               address: tempusPool.address,
               variableAPR: variableAPR,
+              tempusFees: Number(ethers.utils.formatEther(fees)),
             };
           }),
         );
@@ -69,11 +71,14 @@ const VariableAPRProvider = () => {
           if (!currentAPR || (fetchedAPRData.variableAPR && currentAPR !== fetchedAPRData.variableAPR)) {
             dynamicPoolData[fetchedAPRData.address].variableAPR.set(fetchedAPRData.variableAPR);
           }
+
+          dynamicPoolData[fetchedAPRData.address].tempusFees.set(fetchedAPRData.tempusFees);
         });
       } catch (error) {
         console.log('VariableAPRProvider - fetchAPR', error);
       }
     },
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [userWalletSigner],
   );

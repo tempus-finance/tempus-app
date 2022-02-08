@@ -15,8 +15,6 @@ import { dynamicPoolDataState } from '../../state/PoolDataState';
 import { LanguageContext } from '../../context/languageContext';
 import { DashboardRow } from '../../interfaces/DashboardRow';
 import { ColumnNames } from '../../interfaces/ColumnNames';
-import getText from '../../localisation/getText';
-import Typography from '../typography/Typography';
 import TokenButton from './bodySection/tokenButton';
 import BodyCellFactory from './bodySection/bodyCellFactory';
 import BodyRow from './bodySection/bodyRow';
@@ -212,9 +210,7 @@ const Dashboard: FC<DashboardProps> = ({ userWalletAddress, rows, onRowActionCli
     <div className="tf__dashboard__section__container">
       <div className="tc__dashboard__container">
         <div className="tc__dashboard__header">
-          <Typography color="default" variant="h4">
-            {getText('availablePools', language)}
-          </Typography>
+          <div></div>
           <div className="tc__dashboard__header__actions">
             <CurrencySwitch />
             {/* <div onClick={onToggleFilterPopup} ref={filterButtonRef}>
