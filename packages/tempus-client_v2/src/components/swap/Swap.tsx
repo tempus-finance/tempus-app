@@ -277,15 +277,20 @@ const Swap: FC<SwapProps> = props => {
   return (
     <div className="tc__swap">
       <Descriptor>{getText('swapDescription', language)}</Descriptor>
-      <SectionContainer title="from" elevation={1}>
-        {selectedToken && balanceFormatted && (
-          <div className="tc__title-and-balance bottom-padded">
-            <div></div>
-            <Typography variant="body-text">
-              {getText('balance', language)} {balanceFormatted}
-            </Typography>
-          </div>
-        )}
+      <SectionContainer
+        title={
+          selectedToken && balanceFormatted ? (
+            <div className="tc__title-and-balance">
+              <Typography variant="card-title">{getText('from', language)}</Typography>
+              <Typography variant="body-text">
+                {getText('balance', language)} {balanceFormatted}
+              </Typography>
+            </div>
+          ) : (
+            'from'
+          )
+        }
+      >
         <div className="tf__flex-row-center-v">
           <TokenSelector
             value={tokenFrom.tokenName}
@@ -302,6 +307,7 @@ const Swap: FC<SwapProps> = props => {
           />
           <Spacer size={15} />
         </div>
+        <Spacer size={20} />
       </SectionContainer>
       <Spacer size={15} />
       <SectionContainer title="to" elevation={1}>

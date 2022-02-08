@@ -1,5 +1,6 @@
 import { useCallback, useContext, useState, useRef } from 'react';
 import { List, ListItem, ListItemIcon, ListItemText, Popper } from '@material-ui/core';
+import KeyboardArrowDown from '@material-ui/icons/KeyboardArrowDown';
 import getText from '../../localisation/getText';
 import { LanguageContext } from '../../context/languageContext';
 import TwitterIcon from '../icons/TwitterIcon';
@@ -67,7 +68,7 @@ const Community = () => {
   return (
     <>
       <li ref={communityMenuAnchor} onClick={toggleCommunityMenu}>
-        {getText('community', language)}
+        {getText('community', language)} <KeyboardArrowDown />
       </li>
       <Popper
         className="tc__header__popper"

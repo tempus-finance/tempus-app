@@ -1,4 +1,4 @@
-import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { FC, useContext, useEffect, useMemo, useState } from 'react';
 import { Downgraded, useHookstate, useState as useHookState } from '@hookstate/core';
 import { ethers, BigNumber } from 'ethers';
 import { FIXED_APR_PRECISION, SECONDS_IN_A_DAY } from '../../constants';
@@ -14,6 +14,7 @@ import { Chain } from '../../interfaces/Chain';
 import Typography from '../typography/Typography';
 import InfoIcon from '../icons/InfoIcon';
 import Spacer from '../spacer/spacer';
+import InfoTooltip from '../infoTooltip/infoTooltip';
 import FeesTooltip from './feesTooltip/feesTooltip';
 import AprTooltip from './aprTooltip/aprTooltip';
 import PercentageLabel from './percentageLabel/PercentageLabel';
@@ -35,8 +36,6 @@ const Pool: FC<PoolProps> = ({ chain }) => {
 
   const [fixedAPRChangePercentage, setFixedAPRChangePercentage] = useState<number | null>(null);
   const [tvlChangePercentage, setTVLChangePercentage] = useState<BigNumber | null>(null);
-  const [aprTooltipOpen, setAprTooltipOpen] = useState<boolean>(false);
-  const [feesTooltipOpen, setFeesTooltipOpen] = useState<boolean>(false);
 
   const averageBlockTime = staticChainData[chain].averageBlockTime.attach(Downgraded).get();
   const selectedPoolAddress = selectedPool.attach(Downgraded).get();
@@ -128,18 +127,6 @@ const Pool: FC<PoolProps> = ({ chain }) => {
     fetchFixedAPRChangeData();
   }, [ammAddress, fixedAPR, poolId, selectedPoolAddress, userWalletSigner, startDate, chain, averageBlockTime]);
 
-  const onToggleAprTooltip = useCallback(() => {
-    setAprTooltipOpen(prevValue => {
-      return !prevValue;
-    });
-  }, []);
-
-  const onToggleFeesTooltip = useCallback(() => {
-    setFeesTooltipOpen(prevValue => {
-      return !prevValue;
-    });
-  }, []);
-
   const tvlFormatted = useMemo(() => {
     if (!tvl) {
       return null;
@@ -164,15 +151,9 @@ const Pool: FC<PoolProps> = ({ chain }) => {
               {getText('marketImpliedYield', language)}
             </Typography>
             <Spacer size={5} />
-            <div className="tc__pool-aprTooltip" onClick={onToggleAprTooltip}>
+            <InfoTooltip content={<AprTooltip chain={chain} />}>
               <InfoIcon width={14} height={14} fillColor="#7A7A7A" />
-              {aprTooltipOpen && (
-                <>
-                  <div className="tc__backdrop" />
-                  <AprTooltip chain={chain} />
-                </>
-              )}
-            </div>
+            </InfoTooltip>
           </div>
           {fixedAPRChangePercentage && <PercentageLabel percentage={fixedAPRChangePercentage} />}
           <div className="tc__pool-item-value">
@@ -198,15 +179,9 @@ const Pool: FC<PoolProps> = ({ chain }) => {
               {getText('fees', language)}
             </Typography>
             <Spacer size={5} />
-            <div className="tc__pool-feesTooltip" onClick={onToggleFeesTooltip}>
+            <InfoTooltip content={<FeesTooltip chain={chain} />}>
               <InfoIcon width={14} height={14} fillColor="#7A7A7A" />
-              {feesTooltipOpen && (
-                <>
-                  <div className="tc__backdrop" />
-                  <FeesTooltip chain={chain} />
-                </>
-              )}
-            </div>
+            </InfoTooltip>
           </div>
         </div>
       </div>

@@ -90,7 +90,13 @@ const Approve: FC<ApproveButtonProps> = props => {
       let link: string = '';
 
       if (tokenToApproveTicker) {
-        content = getTokenApprovalNotification(tokenToApproveTicker, backingToken, protocol, new Date(maturityDate));
+        content = getTokenApprovalNotification(
+          language,
+          tokenToApproveTicker,
+          backingToken,
+          protocol,
+          new Date(maturityDate),
+        );
       }
 
       let transaction: ethers.ContractTransaction | void;
@@ -108,7 +114,7 @@ const Approve: FC<ApproveButtonProps> = props => {
         console.error(`Failed to create approve transaction for ${tokenToApproveTicker} token!`, error);
 
         if (tokenToApproveTicker) {
-          getNotificationService().warn('Transaction', `Approval Failed`, content);
+          getNotificationService().warn('Transaction', getText(`approvalFailed`, language), content);
         }
         setApproveInProgress(false);
         return;
@@ -192,6 +198,7 @@ const Approve: FC<ApproveButtonProps> = props => {
     };
     approve();
   }, [
+    language,
     viewLinkText,
     userWalletSigner,
     amountToApprove,

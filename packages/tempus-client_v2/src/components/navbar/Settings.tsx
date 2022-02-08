@@ -1,5 +1,6 @@
 import { useCallback, useState, useRef, useContext } from 'react';
 import { Divider, Popper } from '@material-ui/core';
+import KeyboardArrowDown from '@material-ui/icons/KeyboardArrowDown';
 import { LanguageContext } from '../../context/languageContext';
 import getText from '../../localisation/getText';
 import Languages from './Languages';
@@ -21,7 +22,7 @@ const Settings = () => {
   return (
     <>
       <li ref={settingsMenuAnchor} onClick={toggleSettingsMenu}>
-        {getText('settings', language)}
+        {getText('settings', language)} <KeyboardArrowDown />
       </li>
       <Popper
         className="tc__header__popper"

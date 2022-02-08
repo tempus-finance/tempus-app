@@ -1,4 +1,4 @@
-import { CSSProperties, FC } from 'react';
+import React, { CSSProperties, FC } from 'react';
 import parse from 'html-react-parser';
 
 type TypographyVariant =
@@ -165,9 +165,10 @@ interface TypographyProps {
   capitalize?: boolean;
   html?: string;
   align?: 'start' | 'end' | 'left' | 'right' | 'center' | 'justify' | 'match-parent';
+  noWrap?: boolean;
 }
 
-const Typography: FC<TypographyProps> = props => {
+const Typography: FC<TypographyProps & React.HTMLProps<'div'>> = props => {
   const { html, children } = props;
 
   let color: string;
@@ -202,11 +203,13 @@ const Typography: FC<TypographyProps> = props => {
 
   return (
     <div
+      className={props.className}
       style={{
         ...typographyStyleMap.get(props.variant),
         color: color,
         textTransform: props.capitalize ? 'capitalize' : 'none',
         textAlign: props.align ? props.align : 'unset',
+        whiteSpace: props.noWrap ? 'nowrap' : 'normal',
       }}
     >
       {html ? parse(html) : children}
