@@ -1,7 +1,7 @@
 import { FC, useCallback } from 'react';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { selectedChainState } from '../../state/ChainState';
-import { Chain } from '../../interfaces/Chain';
+import { Chain, prettifyChainNameLong } from '../../interfaces/Chain';
 import Modal from '../modal/Modal';
 import Spacer from '../spacer/spacer';
 import Typography from '../typography/Typography';
@@ -49,6 +49,12 @@ const ChainSelectorPopup: FC<ChainSelectorPopupProps> = ({ open, onClose }) => {
         >
           <Typography variant="body-text">Fantom Opera</Typography>
           <TokenIcon ticker="FANTOM" width={24} height={24} vectorWidth={24} vectorHeight={24} />
+        </div>
+        <Spacer size={24} />
+        <Typography variant="body-text">Current network:</Typography>
+        <Spacer size={12} />
+        <div className="tc__chainSelectorPopup-network">
+          <Typography variant="h4">{prettifyChainNameLong(selectedChainName || 'ethereum')}</Typography>
         </div>
       </div>
     </Modal>

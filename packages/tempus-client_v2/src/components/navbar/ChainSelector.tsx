@@ -3,10 +3,12 @@ import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { LanguageContext } from '../../context/languageContext';
 import getText from '../../localisation/getText';
 import { selectedChainState } from '../../state/ChainState';
+import { chainToTicker, prettifyChainNameLong } from '../../interfaces/Chain';
 import ChainIcon from '../icons/ChainIcon';
 import Spacer from '../spacer/spacer';
 import Typography from '../typography/Typography';
 import ChainSelectorPopup from './ChainSelectorPopup';
+import TokenIcon from '../tokenIcon';
 
 import './ChainSelector.scss';
 
@@ -35,7 +37,26 @@ const ChainSelector = () => {
             <ChainIcon />
             <Spacer size={4} />
             {/* TODO - Update typography style once new fonts are merged into 2.0 branch */}
-            <Typography variant="body-text">{getText('selectNetwork', language)}</Typography>
+            <Typography variant="h5">{getText('selectNetwork', language)}</Typography>
+          </>
+        )}
+        {selectedChainName && (
+          <>
+            <TokenIcon
+              ticker={chainToTicker(selectedChainName)}
+              width={20}
+              height={20}
+              // TODO - Clean up during TokenIcon refactor
+              // 1. Remove small/large icons - we only need one size
+              // 2. Store original svg size for each icon
+              // 3. Use original size for svg viewport size
+              // 4. Set desired width and height for UI
+              vectorWidth={selectedChainName === 'ethereum' ? 20 : 24}
+              vectorHeight={selectedChainName === 'ethereum' ? 20 : 24}
+            />
+            <Spacer size={4} />
+            {/* TODO - Update typography style once new fonts are merged into 2.0 branch */}
+            <Typography variant="h5">{prettifyChainNameLong(selectedChainName)}</Typography>
           </>
         )}
       </div>
