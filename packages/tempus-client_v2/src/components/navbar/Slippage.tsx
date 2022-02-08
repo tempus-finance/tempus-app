@@ -60,7 +60,7 @@ const Slippage = () => {
         <Spacer size={10} />
         <Typography variant="card-body-text">{getText('slippageTolerance', language)}</Typography>
         <div className="tc__header__settings-menu__section-header-action">
-          <InfoTooltip text={getText('slippageTooltip', language)} />
+          <InfoTooltip content={getText('slippageTooltip', language)} />
         </div>
       </div>
       <div className="tc__header__settings-menu__section-row">

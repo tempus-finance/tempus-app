@@ -70,7 +70,7 @@ const FeesTooltip = () => {
 
   return (
     <div className="tc__feesTooltip">
-      <Typography variant="card-title">Fees</Typography>
+      <Typography variant="card-title">{getText('fees', language)}</Typography>
       <Spacer size={15} />
       <Typography variant="card-body-text">{getText('feesTooltipInfo', language)}</Typography>
       <Spacer size={15} />

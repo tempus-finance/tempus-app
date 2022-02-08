@@ -1,6 +1,7 @@
 import Words from './words';
 
 const it: { [word in Words]: string } = {
+  tempus: 'Tempus',
   max: 'max',
   min: 'min',
   dashboard: 'Pannello',
@@ -41,7 +42,7 @@ const it: { [word in Words]: string } = {
   lifeTimeApr: 'APR a Termine',
   apr: 'APR',
   aprRange: 'Gamma APR',
-  lpApr: 'LP APR',
+  lpApr: 'APR Variabile',
   futureApr: 'APR Futuro',
   fiat: 'Fiat',
   crypto: 'Crypto',
@@ -116,13 +117,17 @@ const it: { [word in Words]: string } = {
   approve: 'Approva',
   approved: 'Approvato',
   approving: 'In Approvazione',
+  approvalFailed: 'Approvazione Fallita',
   execute: 'Esegui',
   executing: 'In Esecuzione',
+  failed: 'Fallito',
   insufficientLiquidity: 'Liquidità insufficiente',
   profitLoss: 'Profitti & Perdite',
   currentValue: 'Valore attuale',
   from: 'Da',
   to: 'A',
+  and: 'e',
+  via: 'via',
   balance: 'Saldo',
   futureYield: 'Rendimento Futuro',
   lifeTimeYield: 'Rendimento a Termine',
@@ -164,6 +169,7 @@ const it: { [word in Words]: string } = {
   provideLiquidityDescription: 'Usa i tuoi LP token per immettere liquidità nella pool e guadagnare commissioni.',
   removeLiquidityDescription:
     'Rimuovi liquidità dalla pool insieme alle commissioni sotto forma degli LP token iniziali.',
+  combinedApr: 'APR combinato',
   poolActionDisabledTitle: 'Alcune operazioni su questa pool sono temporaneamente disabilitate',
 };
 export default it;

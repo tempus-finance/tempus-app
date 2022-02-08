@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 import { Downgraded, useHookstate, useState as useHookState } from '@hookstate/core';
 import { ethers, BigNumber } from 'ethers';
 import { FIXED_APR_PRECISION, SECONDS_IN_A_DAY } from '../../constants';
@@ -13,6 +13,7 @@ import NumberUtils from '../../services/NumberUtils';
 import Typography from '../typography/Typography';
 import InfoIcon from '../icons/InfoIcon';
 import Spacer from '../spacer/spacer';
+import InfoTooltip from '../infoTooltip/infoTooltip';
 import FeesTooltip from './feesTooltip/feesTooltip';
 import AprTooltip from './aprTooltip/aprTooltip';
 import PercentageLabel from './percentageLabel/PercentageLabel';
@@ -31,8 +32,6 @@ const Pool = () => {
 
   const [fixedAPRChangePercentage, setFixedAPRChangePercentage] = useState<number | null>(null);
   const [tvlChangePercentage, setTVLChangePercentage] = useState<BigNumber | null>(null);
-  const [aprTooltipOpen, setAprTooltipOpen] = useState<boolean>(false);
-  const [feesTooltipOpen, setFeesTooltipOpen] = useState<boolean>(false);
 
   const selectedChainName = selectedChain.attach(Downgraded).get();
   const averageBlockTime = staticChainData[selectedChainName].averageBlockTime.attach(Downgraded).get();
@@ -134,18 +133,6 @@ const Pool = () => {
     averageBlockTime,
   ]);
 
-  const onToggleAprTooltip = useCallback(() => {
-    setAprTooltipOpen(prevValue => {
-      return !prevValue;
-    });
-  }, []);
-
-  const onToggleFeesTooltip = useCallback(() => {
-    setFeesTooltipOpen(prevValue => {
-      return !prevValue;
-    });
-  }, []);
-
   const tvlFormatted = useMemo(() => {
     if (!tvl) {
       return null;
@@ -170,15 +157,9 @@ const Pool = () => {
               {getText('marketImpliedYield', language)}
             </Typography>
             <Spacer size={5} />
-            <div className="tc__pool-aprTooltip" onClick={onToggleAprTooltip}>
+            <InfoTooltip content={<AprTooltip />}>
               <InfoIcon width={14} height={14} fillColor="#7A7A7A" />
-              {aprTooltipOpen && (
-                <>
-                  <div className="tc__backdrop" />
-                  <AprTooltip />
-                </>
-              )}
-            </div>
+            </InfoTooltip>
           </div>
           {fixedAPRChangePercentage && <PercentageLabel percentage={fixedAPRChangePercentage} />}
           <div className="tc__pool-item-value">
@@ -204,15 +185,9 @@ const Pool = () => {
               {getText('fees', language)}
             </Typography>
             <Spacer size={5} />
-            <div className="tc__pool-feesTooltip" onClick={onToggleFeesTooltip}>
+            <InfoTooltip content={<FeesTooltip />}>
               <InfoIcon width={14} height={14} fillColor="#7A7A7A" />
-              {feesTooltipOpen && (
-                <>
-                  <div className="tc__backdrop" />
-                  <FeesTooltip />
-                </>
-              )}
-            </div>
+            </InfoTooltip>
           </div>
         </div>
       </div>

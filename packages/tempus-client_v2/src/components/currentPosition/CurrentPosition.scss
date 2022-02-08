@@ -21,7 +21,11 @@
 .tc__currentPosition-data-row-label {
   display: flex;
   align-items: center;
-  width: 30%;
+  width: 43%;
+
+  > div:first-child {
+    min-width: 12px;
+  }
 }
 
 .tc__currentPosition-data-row-percentage {
