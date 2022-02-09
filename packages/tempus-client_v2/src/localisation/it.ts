@@ -17,7 +17,7 @@ const it: { [word in Words]: string } = {
   changeNetworkRejected: 'Richiesta cambiamento network rifiutata dall`utente',
   changeNetworkRejectedExplain: "Per poter usare l'applicazione, per favore connettiti al network Mainnet",
   unsupportedNetwork: 'Network del portafoglio non supportato',
-  unsupportedNetworkExplain: 'Supportiamo solo il network Mainnet',
+  unsupportedNetworkExplain: 'Supportiamo solo i network Ethernet o Fantom',
   walletConnectConnected: 'WalletConnect connesso',
   errorConnectingWallet: 'Error nella connessione del portafoglio',
   viewRecentTransactions: 'Vedi transazioni recenti',

@@ -17,7 +17,7 @@ const es: { [word in Words]: string } = {
   changeNetworkRejected: 'Solicitud para cambiar la red rechazada por el usuario',
   changeNetworkRejectedExplain: 'Para usar la aplicación, porfavor conéctese usando la red Goerli/Mainnet',
   unsupportedNetwork: 'Red de billetera no compatible',
-  unsupportedNetworkExplain: 'Apoyamos la red Mainnet',
+  unsupportedNetworkExplain: 'Apoyamos redes Mainnet o Fantom',
   walletConnectConnected: 'WalletConnect conectado',
   errorConnectingWallet: 'Error conectando la cartera',
   viewRecentTransactions: 'Ver transacciones recientes',
