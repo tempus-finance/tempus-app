@@ -1,11 +1,12 @@
 import { Downgraded, useState as useHookState } from '@hookstate/core';
-import { FC, useCallback, useEffect, useState } from 'react';
+import { FC, useCallback, useEffect, useState, useContext } from 'react';
 import { Subscription } from 'rxjs';
 import { BigNumber } from 'ethers';
 import { getChainConfig, getConfig } from '../utils/getConfig';
 import DashboardDataAdapter from '../adapters/DashboardDataAdapter';
 import { TempusPool } from '../interfaces/TempusPool';
 import { Chain } from '../interfaces/Chain';
+import { WalletContext } from '../context/walletContext';
 import { dynamicPoolDataState } from '../state/PoolDataState';
 import { selectedChainState } from '../state/ChainState';
 
@@ -15,6 +16,8 @@ interface TVLProviderProps {
 
 const TVLProvider: FC<TVLProviderProps> = props => {
   const { dashboardDataAdapter } = props;
+
+  const { userWalletConnected } = useContext(WalletContext);
 
   const dynamicPoolData = useHookState(dynamicPoolDataState);
   const selectedChain = useHookState(selectedChainState);
@@ -42,9 +45,19 @@ const TVLProvider: FC<TVLProviderProps> = props => {
    * Update TVL for all pools every POLLING_INTERVAL.
    */
   useEffect(() => {
+    // Wait for wallet connection status check to go through before fetching anything
+    if (userWalletConnected === null) {
+      return;
+    }
+
     const configData = getConfig();
 
     for (const chainName in configData) {
+      // If user is connected to specific chain, we should fetch TVL data only from that chain and skip all other chains
+      if (selectedChainName && selectedChainName !== chainName) {
+        continue;
+      }
+
       getChainConfig(chainName as Chain).tempusPools.forEach(poolConfig => {
         try {
           // If case we want to force TVL fetch (even if app is not in focus)
@@ -69,7 +82,7 @@ const TVLProvider: FC<TVLProviderProps> = props => {
 
     return () => subscriptions$.unsubscribe();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedChainName, dashboardDataAdapter, updatePoolTVL, subscriptions$]);
+  }, [selectedChainName, dashboardDataAdapter, userWalletConnected, updatePoolTVL, subscriptions$]);
 
   /**
    * Provider component only updates context value when needed. It does not show anything in the UI.
