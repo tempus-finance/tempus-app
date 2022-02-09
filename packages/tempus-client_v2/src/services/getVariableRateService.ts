@@ -10,10 +10,7 @@ import VariableRateService from './VariableRateService';
 
 let variableRateServices = new Map<Chain, VariableRateService>();
 let actualSignerOrProviders = new Map<Chain, JsonRpcSigner | JsonRpcProvider>();
-const getVariableRateService = (
-  chain: Chain,
-  signerOrProvider?: JsonRpcSigner | JsonRpcProvider,
-): VariableRateService => {
+const getVariableRateService = (chain: Chain, signerOrProvider?: JsonRpcSigner): VariableRateService => {
   if (!variableRateServices.get(chain)) {
     variableRateServices.set(chain, new VariableRateService());
   }

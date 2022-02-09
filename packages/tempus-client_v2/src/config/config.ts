@@ -134,7 +134,7 @@ const config: Config = {
     tempusControllerContract: '0xdDcAC414190e0deCCD381d141449E40776d888C4',
     vaultContract: '0x94d380bf540b6084d0c4828893ab27e273fba3d2',
     lidoOracle: '', // We need to set if we want to add Lido pools for Fantom chain
-    networkUrl: `https://rpcapi.fantom.network/`,
+    networkUrl: `https://rpc.ftm.tools/`,
     networkName: 'fantom-mainnet',
     alchemyKey: '', // We don't need alchemy for Fantom chain
     chainId: 250,

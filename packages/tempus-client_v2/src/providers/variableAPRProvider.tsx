@@ -6,7 +6,6 @@ import { getChainConfig, getConfig } from '../utils/getConfig';
 import { WalletContext } from '../context/walletContext';
 import { dynamicPoolDataState } from '../state/PoolDataState';
 import { selectedChainState } from '../state/ChainState';
-import getProvider from '../utils/getProvider';
 import { Chain } from '../interfaces/Chain';
 
 const VariableAPRProvider = () => {
@@ -22,10 +21,8 @@ const VariableAPRProvider = () => {
    */
   const fetchAPR = useCallback(
     async (chain: Chain) => {
-      const provider = await getProvider(chain, userWalletSigner);
-
       const config = getChainConfig(chain);
-      const variableRateService = getVariableRateService(chain, provider);
+      const variableRateService = getVariableRateService(chain, userWalletSigner || undefined);
 
       try {
         // Fetch APR for all Tempus Pools
