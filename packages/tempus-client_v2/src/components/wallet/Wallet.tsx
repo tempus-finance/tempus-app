@@ -122,6 +122,8 @@ const Wallet = () => {
 
         return true;
       } catch (error) {
+        console.error(error);
+
         return false;
       }
     },
