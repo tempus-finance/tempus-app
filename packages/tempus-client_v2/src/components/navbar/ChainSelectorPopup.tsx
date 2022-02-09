@@ -3,6 +3,7 @@ import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { getChainConfig } from '../../utils/getConfig';
 import { selectedChainState } from '../../state/ChainState';
 import { Chain, chainNameToHexChainId, prettifyChainNameLong } from '../../interfaces/Chain';
+import TickIcon from '../icons/TickIcon';
 import Modal from '../modal/Modal';
 import Spacer from '../spacer/spacer';
 import Typography from '../typography/Typography';
@@ -79,6 +80,9 @@ const ChainSelectorPopup: FC<ChainSelectorPopupProps> = ({
     [selectedChain, onClose, requestNetworkChange, requestAddNetwork],
   );
 
+  const ethereumSelected = selectedChainName === 'ethereum';
+  const fantomSelected = selectedChainName === 'fantom';
+
   if (!open) {
     return null;
   }
@@ -86,27 +90,29 @@ const ChainSelectorPopup: FC<ChainSelectorPopupProps> = ({
   return (
     <Modal open={open} title="selectNetwork" onClose={onClose}>
       <div className="tc__chainSelectorPopup-content">
-        <div
-          className={`tc__chainSelectorPopup-button ${selectedChainName === 'ethereum' ? 'selected' : ''}`}
+        <button
+          className={`tc__chainSelectorPopup-button ${ethereumSelected ? 'selected' : ''}`}
           onClick={() => onChainSelect('ethereum')}
         >
-          <Typography variant="body-text">Ethereum Mainnet</Typography>
+          <div className="tc__chainSelectorPopup-button__label">
+            <Typography variant="button-text">Ethereum</Typography>
+            <Spacer size={12} />
+            {ethereumSelected && <TickIcon />}
+          </div>
           <TokenIcon ticker="ETH" width={24} height={24} vectorWidth={20} vectorHeight={20} />
-        </div>
+        </button>
         <Spacer size={12} />
-        <div
-          className={`tc__chainSelectorPopup-button ${selectedChainName === 'fantom' ? 'selected' : ''}`}
+        <button
+          className={`tc__chainSelectorPopup-button ${fantomSelected ? 'selected' : ''}`}
           onClick={() => onChainSelect('fantom')}
         >
-          <Typography variant="body-text">Fantom Opera</Typography>
+          <div className="tc__chainSelectorPopup-button__label">
+            <Typography variant="button-text">Fantom</Typography>
+            <Spacer size={12} />
+            {fantomSelected && <TickIcon />}
+          </div>
           <TokenIcon ticker="FANTOM" width={24} height={24} vectorWidth={24} vectorHeight={24} />
-        </div>
-        <Spacer size={24} />
-        <Typography variant="body-text">Current network:</Typography>
-        <Spacer size={12} />
-        <div className="tc__chainSelectorPopup-network">
-          <Typography variant="h4">{prettifyChainNameLong(selectedChainName || 'ethereum')}</Typography>
-        </div>
+        </button>
       </div>
     </Modal>
   );

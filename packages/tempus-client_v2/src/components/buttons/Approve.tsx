@@ -13,7 +13,7 @@ import { Chain } from '../../interfaces/Chain';
 import { PendingTransactionsContext } from '../../context/pendingTransactionsContext';
 import { LanguageContext } from '../../context/languageContext';
 import { WalletContext } from '../../context/walletContext';
-import TickIcon from '../icons/TickIcon';
+import TickNegativeIcon from '../icons/TickNegativeIcon';
 import getText from '../../localisation/getText';
 import Spacer from '../spacer/spacer';
 
@@ -290,7 +290,7 @@ const Approve: FC<ApproveButtonProps> = props => {
           )}
           {approved && (
             <>
-              {getText('approved', language)} <TickIcon fillColor="white" />
+              {getText('approved', language)} <TickNegativeIcon fillColor="white" />
             </>
           )}
 
