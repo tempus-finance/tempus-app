@@ -16,7 +16,7 @@ import { getChainConfig } from '../../utils/getConfig';
 import { selectedChainState } from '../../state/ChainState';
 import NumberUtils from '../../services/NumberUtils';
 import UserWallet from '../../interfaces/UserWallet';
-import { chainToTicker } from '../../interfaces/Chain';
+import { chainToTicker, chainIdToChainName } from '../../interfaces/Chain';
 import getText from '../../localisation/getText';
 import useENS from '../../hooks/useENS';
 import shortenAccount from '../../utils/shortenAccount';
@@ -89,6 +89,26 @@ const Wallet = () => {
       setUserSettings(prevState => ({ ...prevState, openWalletPopup: false, openWalletSelector: true }));
     }
   }, [setUserSettings]);
+
+  useEffect(() => {
+    if (!active) {
+      return;
+    }
+
+    const subscribeToNetworkChanges = async () => {
+      const injectedConnector = new InjectedConnector({ supportedChainIds });
+      const provider = await injectedConnector.getProvider();
+
+      provider.on('networkChanged', (chainId: string) => {
+        const selected = chainIdToChainName(chainId);
+        if (selected) {
+          selectedChain.set(selected);
+        }
+      });
+    };
+    subscribeToNetworkChanges();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [active]);
 
   const requestAddNetwork = useCallback(
     async (

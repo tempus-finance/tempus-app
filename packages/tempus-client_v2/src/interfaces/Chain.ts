@@ -22,6 +22,10 @@ const chainNameToHexChainIdMap = {
   fantom: '0xfa',
 };
 
+const hexChainIdToChainNameMap = new Map<string, Chain>();
+hexChainIdToChainNameMap.set('1', 'ethereum');
+hexChainIdToChainNameMap.set('250', 'fantom');
+
 export function prettifyChainName(chainName: Chain): string {
   return chainToPrettyNameMap[chainName];
 }
@@ -36,4 +40,8 @@ export function chainToTicker(chainName: Chain): Ticker {
 
 export function chainNameToHexChainId(chainName: Chain): string {
   return chainNameToHexChainIdMap[chainName];
+}
+
+export function chainIdToChainName(hexChainId: string): Chain | undefined {
+  return hexChainIdToChainNameMap.get(hexChainId);
 }
