@@ -1,31 +1,82 @@
 import { FC, useCallback } from 'react';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { selectedChainState } from '../../state/ChainState';
-import { Chain, prettifyChainNameLong } from '../../interfaces/Chain';
+import { Chain, chainNameToHexChainId, prettifyChainNameLong } from '../../interfaces/Chain';
 import Modal from '../modal/Modal';
 import Spacer from '../spacer/spacer';
 import Typography from '../typography/Typography';
 import TokenIcon from '../tokenIcon';
 
 import './ChainSelectorPopup.scss';
+import { getChainConfig } from '../../utils/getConfig';
 
 interface ChainSelectorPopupProps {
   open: boolean;
   onClose: () => void;
+  requestNetworkChange: (
+    chainId: string,
+    triggeredByUserAction: boolean,
+    showRejectedNotification: boolean,
+  ) => Promise<boolean>;
+  requestAddNetwork: (
+    chainId: string,
+    name: string,
+    tokenName: string,
+    tokenTicker: string,
+    tokenDecimals: number,
+    rpc: string,
+    blockExplorer: string,
+  ) => Promise<boolean>;
 }
 
-const ChainSelectorPopup: FC<ChainSelectorPopupProps> = ({ open, onClose }) => {
+const ChainSelectorPopup: FC<ChainSelectorPopupProps> = ({
+  open,
+  onClose,
+  requestNetworkChange,
+  requestAddNetwork,
+}) => {
   const selectedChain = useHookState(selectedChainState);
 
   const selectedChainName = selectedChain.attach(Downgraded).get();
 
   const onChainSelect = useCallback(
-    (chain: Chain) => {
-      selectedChain.set(chain);
+    async (chain: Chain) => {
+      const chainId = chainNameToHexChainId(chain);
+
+      try {
+        const requestAccepted = await requestNetworkChange(chainId, false, false);
+        if (requestAccepted) {
+          selectedChain.set(chain);
+        }
+      } catch (error: any) {
+        // Network we tried to switch to is not yet added to MetaMask
+        // Send request to add network to MetaMask
+        if (error.message === 'Unknown Network') {
+          const chainConfig = getChainConfig(chain);
+
+          const chainIdHex = chainNameToHexChainId(chain);
+          const chainName = prettifyChainNameLong(chain);
+
+          const requestAccepted = await requestAddNetwork(
+            chainIdHex,
+            chainName,
+            chainConfig.nativeToken,
+            chainConfig.nativeToken,
+            chainConfig.nativeTokenPrecision,
+            chainConfig.networkUrl,
+            chainConfig.blockExplorerUrl,
+          );
+          if (requestAccepted) {
+            selectedChain.set(chain);
+          }
+        } else {
+          console.warn('Canceling network change in the app, wallet network change request failed!');
+        }
+      }
 
       onClose();
     },
-    [selectedChain, onClose],
+    [selectedChain, onClose, requestNetworkChange, requestAddNetwork],
   );
 
   if (!open) {
