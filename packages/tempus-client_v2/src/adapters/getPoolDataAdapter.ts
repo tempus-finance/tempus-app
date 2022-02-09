@@ -1,4 +1,4 @@
-import { JsonRpcSigner, JsonRpcProvider } from '@ethersproject/providers';
+import { JsonRpcSigner } from '@ethersproject/providers';
 import getDefaultProvider from '../services/getDefaultProvider';
 import getERC20TokenService from '../services/getERC20TokenService';
 import getStatisticsService from '../services/getStatisticsService';
@@ -10,7 +10,7 @@ import { Chain } from '../interfaces/Chain';
 import PoolDataAdapter from './PoolDataAdapter';
 
 let poolDataAdapters = new Map<Chain, PoolDataAdapter>();
-const getPoolDataAdapter = (chain: Chain, signerOrProvider?: JsonRpcSigner | JsonRpcProvider): PoolDataAdapter => {
+const getPoolDataAdapter = (chain: Chain, signerOrProvider?: JsonRpcSigner): PoolDataAdapter => {
   if (!poolDataAdapters.get(chain)) {
     const poolDataAdapter = new PoolDataAdapter();
     poolDataAdapter.init({
@@ -18,7 +18,7 @@ const getPoolDataAdapter = (chain: Chain, signerOrProvider?: JsonRpcSigner | Jso
       tempusPoolService: getTempusPoolService(chain, getDefaultProvider(chain)),
       statisticService: getStatisticsService(chain, getDefaultProvider(chain)),
       tempusAMMService: getTempusAMMService(chain, getDefaultProvider(chain)),
-      vaultService: getVaultService(chain, getDefaultProvider(chain)),
+      vaultService: getVaultService(chain),
       chain,
       eRC20TokenServiceGetter: getERC20TokenService,
     });

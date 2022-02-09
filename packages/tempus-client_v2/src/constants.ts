@@ -64,5 +64,5 @@ export const NETWORK_URLS: { [key in SupportedChainId]: string } = {
   [SupportedChainId.MAINNET]: `https://eth-mainnet.alchemyapi.io/v2/${ALCHEMY_KEY}`,
   [SupportedChainId.LOCAL]: `https://eth-goerli.alchemyapi.io/v2/${GOERLI_ALCHEMY_KEY}`,
   [SupportedChainId.TEMPUS_AWS]: `https://eth-goerli.alchemyapi.io/v2/${GOERLI_ALCHEMY_KEY}`,
-  [SupportedChainId.FANTOM]: `https://rpcapi.fantom.network/`,
+  [SupportedChainId.FANTOM]: `https://rpc.ftm.tools/`,
 };

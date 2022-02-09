@@ -1,5 +1,5 @@
 import { Contract } from 'ethers';
-import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
+import { JsonRpcSigner } from '@ethersproject/providers';
 import VaultABI from '../abi/Vault.json';
 import VaultService from './VaultService';
 import getDefaultProvider from './getDefaultProvider';
@@ -8,7 +8,7 @@ import getTempusAMMService from '../../../tempus-client_v2/src/services/getTempu
 import { Chain } from '../interfaces/Chain';
 
 let vaultServices = new Map<Chain, VaultService>();
-const getVaultService = (chain: Chain, signerOrProvider?: JsonRpcSigner | JsonRpcProvider): VaultService => {
+const getVaultService = (chain: Chain, signerOrProvider?: JsonRpcSigner): VaultService => {
   if (!vaultServices.get(chain)) {
     const vaultService = new VaultService();
     vaultService.init({

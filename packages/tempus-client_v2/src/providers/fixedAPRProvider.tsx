@@ -24,10 +24,8 @@ const FixedAPRProvider = () => {
    */
   const fetchAPR = useCallback(
     async (chain: Chain) => {
-      const provider = await getProvider(chain, userWalletSigner);
-
       const config = getChainConfig(chain);
-      const poolDataAdapter = getPoolDataAdapter(chain, provider);
+      const poolDataAdapter = getPoolDataAdapter(chain, userWalletSigner || undefined);
 
       // Fetch APR for all Tempus Pools
       const fetchedPoolAPRData = await Promise.all(
