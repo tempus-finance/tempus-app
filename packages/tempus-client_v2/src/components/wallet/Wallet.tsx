@@ -90,8 +90,52 @@ const Wallet = () => {
     }
   }, [setUserSettings]);
 
+  const requestAddNetwork = useCallback(
+    async (
+      chainId: string,
+      name: string,
+      tokenName: string,
+      tokenTicker: string,
+      tokenDecimals: number,
+      rpc: string,
+      blockExplorer: string,
+    ): Promise<boolean> => {
+      const injectedConnector = new InjectedConnector({ supportedChainIds });
+      const provider = await injectedConnector.getProvider();
+      try {
+        await provider.request({
+          method: 'wallet_addEthereumChain',
+          params: [
+            {
+              chainId: chainId,
+              chainName: name,
+              nativeCurrency: {
+                name: tokenName,
+                symbol: tokenTicker,
+                decimals: tokenDecimals,
+              },
+              rpcUrls: [rpc],
+              blockExplorerUrls: [blockExplorer],
+            },
+          ],
+        });
+
+        return true;
+      } catch (error) {
+        console.error(error);
+
+        return false;
+      }
+    },
+    [],
+  );
+
   const requestNetworkChange = useCallback(
-    async (chainId: number, triggeredByUserAction: boolean) => {
+    async (
+      chainId: string,
+      showWalletConnectedNotification: boolean,
+      showRejectedNotification: boolean,
+    ): Promise<boolean> => {
       const injectedConnector = new InjectedConnector({ supportedChainIds });
       const provider = await injectedConnector.getProvider();
       try {
@@ -104,7 +148,7 @@ const Wallet = () => {
         const onError = undefined;
         const shouldThrowErrors = true;
         await activate(injectedConnector, onError, shouldThrowErrors);
-        if (triggeredByUserAction) {
+        if (showWalletConnectedNotification) {
           getNotificationService().notify('Wallet', getText('metamaskConnected', language), '');
         }
 
@@ -117,14 +161,21 @@ const Wallet = () => {
             ...previousData,
             userWalletConnected: true,
           }));
+
+        // User accepted network change request - return true
+        return true;
       } catch (error) {
         // User rejected request
         if ((error as any).code === 4001) {
-          getNotificationService().warn(
-            'Wallet',
-            getText('changeNetworkRejected', language),
-            getText('changeNetworkRejectedExplain', language),
-          );
+          showRejectedNotification &&
+            getNotificationService().warn(
+              'Wallet',
+              getText('changeNetworkRejected', language),
+              getText('changeNetworkRejectedExplain', language),
+            );
+          // Network we tried to switch to is not yet added to MetaMask
+        } else if ((error as any).code === 4902) {
+          throw new Error('Unknown Network');
         } else {
           getNotificationService().warn(
             'Wallet',
@@ -138,13 +189,16 @@ const Wallet = () => {
             ...previousData,
             userWalletConnected: false,
           }));
+
+        // User rejected network change request - return false
+        return false;
       }
     },
     [language, activate, setWalletData],
   );
 
   const onMetaMaskSelected = useCallback(
-    (triggeredByUserAction: boolean, lastSelectedWallet?: UserWallet) => {
+    (showWalletConnectedNotification: boolean, lastSelectedWallet?: UserWallet) => {
       const connect = async (lastSelectedWallet?: UserWallet) => {
         if (active && lastSelectedWallet === 'MetaMask') {
           setConnecting(false);
@@ -159,7 +213,7 @@ const Wallet = () => {
           await activate(injectedConnector, undefined, true);
           getStorageService().set(WALLET_KEY, 'MetaMask');
           setSelectedWallet('MetaMask');
-          if (triggeredByUserAction) {
+          if (showWalletConnectedNotification) {
             getNotificationService().notify('Wallet', getText('metamaskConnected', language), '');
           }
 
@@ -179,7 +233,7 @@ const Wallet = () => {
           if (error instanceof UnsupportedChainIdError) {
             // TODO - We should probably request network change to network that is currently selected in the app network selector
             // Request user to change network to ethereum mainnet
-            requestNetworkChange(1, triggeredByUserAction);
+            requestNetworkChange('0x1', showWalletConnectedNotification, true);
           } else {
             getNotificationService().warn('Wallet', getText('errorConnectingWallet', language), '');
           }
@@ -194,7 +248,7 @@ const Wallet = () => {
   );
 
   const onWalletConnectSelected = useCallback(
-    (triggeredByUserAction: boolean, lastSelectedWallet?: UserWallet) => {
+    (showWalletConnectedNotification: boolean, lastSelectedWallet?: UserWallet) => {
       const connect = async (lastSelectedWallet?: UserWallet) => {
         if (active && lastSelectedWallet === 'WalletConnect') {
           setConnecting(false);
@@ -215,7 +269,7 @@ const Wallet = () => {
           await activate(walletConnector, undefined, true);
           getStorageService().set(WALLET_KEY, 'WalletConnect');
           setSelectedWallet('WalletConnect');
-          if (triggeredByUserAction) {
+          if (showWalletConnectedNotification) {
             getNotificationService().notify('Wallet', getText('walletConnectConnected', language), '');
           }
 
@@ -235,7 +289,7 @@ const Wallet = () => {
           if (error instanceof UnsupportedChainIdError) {
             // TODO - We should probably request network change to network that is currently selected in the app network selector
             // Request user to change network to ethereum mainnet
-            requestNetworkChange(1, triggeredByUserAction);
+            requestNetworkChange('0x1', showWalletConnectedNotification, true);
           } else {
             getNotificationService().warn('Wallet', getText('errorConnectingWallet', language), '');
           }
@@ -295,7 +349,7 @@ const Wallet = () => {
           if (typeof chainId === 'string' && !supportedChainIds.includes(parseInt(chainId))) {
             // TODO - We should probably request network change to network that is currently selected in the app network selector
             // Request user to change network to ethereum mainnet
-            requestNetworkChange(1, false);
+            requestNetworkChange('0x1', false, true);
             return;
           }
           if (authorized) {
@@ -335,7 +389,7 @@ const Wallet = () => {
           if (typeof chainId === 'string' && !supportedChainIds.includes(parseInt(chainId))) {
             // TODO - We should probably request network change to network that is currently selected in the app network selector
             // Request user to change network to ethereum mainnet
-            requestNetworkChange(1, false);
+            requestNetworkChange('0x1', false, true);
             return;
           }
           if (authorized) {
@@ -413,7 +467,12 @@ const Wallet = () => {
         availableWallets={availableWallets}
         onClose={onCloseWalletSelector}
       />
-      <ChainSelectorPopup open={chainSelectorOpen} onClose={onCloseChainSelector} />
+      <ChainSelectorPopup
+        open={chainSelectorOpen}
+        onClose={onCloseChainSelector}
+        requestNetworkChange={requestNetworkChange}
+        requestAddNetwork={requestAddNetwork}
+      />
       <div className="tc__navBar__wallet">
         {/* Wallet is connecting - show progress circle */}
         {connecting && <CircularProgress size={18} />}
