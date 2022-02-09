@@ -43,7 +43,8 @@ export const tokenPrecision: { [ticker: string]: number } = {
   DAI: 18,
 };
 
-const INFURA_KEY = process.env.REACT_APP_INFURA_KEY;
+const ALCHEMY_KEY = process.env.REACT_APP_MAINNET_ALCHEMY_KEY;
+const GOERLI_ALCHEMY_KEY = process.env.REACT_APP_GOERLI_ALCHEMY_KEY;
 
 export enum SupportedChainId {
   MAINNET = 1,
@@ -60,8 +61,8 @@ export const supportedChainIds = [
 ];
 
 export const NETWORK_URLS: { [key in SupportedChainId]: string } = {
-  [SupportedChainId.MAINNET]: `https://mainnet.infura.io/v3/${INFURA_KEY}`,
-  [SupportedChainId.LOCAL]: `https://goerli.infura.io/v3/${INFURA_KEY}`,
-  [SupportedChainId.TEMPUS_AWS]: `https://goerli.infura.io/v3/${INFURA_KEY}`,
+  [SupportedChainId.MAINNET]: `https://eth-mainnet.alchemyapi.io/v2/${ALCHEMY_KEY}`,
+  [SupportedChainId.LOCAL]: `https://eth-goerli.alchemyapi.io/v2/${GOERLI_ALCHEMY_KEY}`,
+  [SupportedChainId.TEMPUS_AWS]: `https://eth-goerli.alchemyapi.io/v2/${GOERLI_ALCHEMY_KEY}`,
   [SupportedChainId.FANTOM]: `https://rpcapi.fantom.network/`,
 };
