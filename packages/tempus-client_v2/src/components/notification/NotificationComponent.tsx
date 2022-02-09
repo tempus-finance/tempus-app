@@ -44,7 +44,7 @@ const NotificationComponent: FC<NotificationComponentProps> = ({
     <div className="tc__notification">
       <div className="tc__notification__header">
         <div className="tc__notification__title">
-          {level === 'info' && <TickIcon fillColor="#4BB543" />}
+          {level === 'info' && <TickIcon />}
           {level === 'warning' && <AlertIcon fillColor="#FF0F0F" />}
           <Typography variant="h5">{title}</Typography>
         </div>

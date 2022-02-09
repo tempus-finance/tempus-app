@@ -37,6 +37,11 @@
   }
 }
 
+.tc__chainSelectorPopup-button__label {
+  display: flex;
+  align-items: center;
+}
+
 .tc__chainSelectorPopup-network {
   padding-left: 18px;
   padding-right: 18px;
