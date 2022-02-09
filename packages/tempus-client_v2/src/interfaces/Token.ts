@@ -16,6 +16,7 @@ export type Ticker =
   | 'RARI'
   | 'RSPT'
   | 'yvDAI'
+  | 'yvUSDC'
   | 'YEARN'
   | 'FANTOM';
 
