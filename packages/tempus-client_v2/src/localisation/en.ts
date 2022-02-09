@@ -17,7 +17,7 @@ const en: { [word in Words]: string } = {
   changeNetworkRejected: 'Request to change network rejected by user',
   changeNetworkRejectedExplain: 'In order to use the app, please connect using Mainnet network',
   unsupportedNetwork: 'Unsupported wallet network',
-  unsupportedNetworkExplain: 'We support Mainnet network',
+  unsupportedNetworkExplain: 'We support Ethereum and Fantom networks only',
   walletConnectConnected: 'WalletConnect connected',
   errorConnectingWallet: 'Error connecting wallet',
   viewRecentTransactions: 'View recent transactions',
