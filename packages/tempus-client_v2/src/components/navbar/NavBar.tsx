@@ -1,7 +1,6 @@
 import { FC, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import TempusLogo from './tempusLogo';
-import ChainSelector from './ChainSelector';
 import Links from './Links';
 import Wallet from '../wallet/Wallet';
 import Spacer from '../spacer/spacer';
@@ -22,7 +21,6 @@ const NavBar: FC = () => {
           <TempusLogo />
         </div>
         <Spacer size={14} />
-        <ChainSelector />
       </div>
 
       <div className="tc__navBar__right">

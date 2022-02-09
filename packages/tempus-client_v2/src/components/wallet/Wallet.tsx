@@ -16,6 +16,7 @@ import { getChainConfig } from '../../utils/getConfig';
 import { selectedChainState } from '../../state/ChainState';
 import NumberUtils from '../../services/NumberUtils';
 import UserWallet from '../../interfaces/UserWallet';
+import { chainToTicker } from '../../interfaces/Chain';
 import getText from '../../localisation/getText';
 import useENS from '../../hooks/useENS';
 import shortenAccount from '../../utils/shortenAccount';
@@ -24,10 +25,13 @@ import getStorageService from '../../services/getStorageService';
 import getNotificationService from '../../services/getNotificationService';
 import Typography from '../typography/Typography';
 import Spacer from '../spacer/spacer';
+import ChainSelectorPopup from '../navbar/ChainSelectorPopup';
 import WalletSelector from './WalletSelector';
 import WalletPopup from './WalletPopup';
-import './Wallet.scss';
 import WalletAvatar from './WalletAvatar';
+import TokenIcon from '../tokenIcon';
+
+import './Wallet.scss';
 
 const WALLET_KEY = 'lastConnectedWallet';
 
@@ -52,6 +56,15 @@ const Wallet = () => {
     WalletConnect: true,
   });
   const [connecting, setConnecting] = useState<boolean>(false);
+  const [chainSelectorOpen, setChainSelectorOpen] = useState<boolean>(false);
+
+  const onOpenChainSelector = useCallback(() => {
+    setChainSelectorOpen(true);
+  }, []);
+
+  const onCloseChainSelector = useCallback(() => {
+    setChainSelectorOpen(false);
+  }, []);
 
   const onSelectWallet = useCallback(() => {
     if (setUserSettings) {
@@ -391,6 +404,7 @@ const Wallet = () => {
         availableWallets={availableWallets}
         onClose={onCloseWalletSelector}
       />
+      <ChainSelectorPopup open={chainSelectorOpen} onClose={onCloseChainSelector} />
       <div className="tc__navBar__wallet">
         {/* Wallet is connecting - show progress circle */}
         {connecting && <CircularProgress size={18} />}
@@ -404,30 +418,46 @@ const Wallet = () => {
 
         {/* Wallet connected - show wallet info */}
         {!connecting && selectedWallet && active && formattedPrimaryTokenBalance && selectedChainName && (
-          <div className="tc__connect-wallet-button" onClick={onOpenWalletPopup} ref={walletPopupAnchor}>
-            <WalletAvatar avatar={ensAvatar} name={ensName || account} />
+          <>
+            <div className="tc__connect-wallet-network-picker" onClick={onOpenChainSelector}>
+              <TokenIcon
+                ticker={chainToTicker(selectedChainName)}
+                width={24}
+                height={24}
+                // TODO - Clean up during TokenIcon refactor
+                // 1. Remove small/large icons - we only need one size
+                // 2. Store original svg size for each icon
+                // 3. Use original size for svg viewport size
+                // 4. Set desired width and height for UI
+                vectorWidth={selectedChainName === 'ethereum' ? 20 : 24}
+                vectorHeight={selectedChainName === 'ethereum' ? 20 : 24}
+              />
+            </div>
+            <div className="tc__connect-wallet-button" onClick={onOpenWalletPopup} ref={walletPopupAnchor}>
+              <WalletAvatar avatar={ensAvatar} name={ensName || account} />
 
-            <Spacer size={8} />
+              <Spacer size={8} />
 
-            {/* In case there are no pending transactions, show wallet address or ENS name if it's available */}
-            {pendingTransactions.length === 0 && (
-              <div className="tc__connect-wallet-button__info">
-                <Typography variant="wallet-info">{ensName || shortenedAccount}</Typography>
-                <div className="tc__connect-wallet-button__balance">
-                  <Typography variant="wallet-info-bold">{formattedPrimaryTokenBalance}</Typography>
-                  <Spacer size={8} />
-                  <Typography variant="wallet-info">{getChainConfig(selectedChainName).nativeToken}</Typography>
+              {/* In case there are no pending transactions, show wallet address or ENS name if it's available */}
+              {pendingTransactions.length === 0 && (
+                <div className="tc__connect-wallet-button__info">
+                  <Typography variant="wallet-info">{ensName || shortenedAccount}</Typography>
+                  <div className="tc__connect-wallet-button__balance">
+                    <Typography variant="wallet-info-bold">{formattedPrimaryTokenBalance}</Typography>
+                    <Spacer size={8} />
+                    <Typography variant="wallet-info">{getChainConfig(selectedChainName).nativeToken}</Typography>
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
 
-            {/* In case there are pending transactions, show number of pending transactions */}
-            {pendingTransactions.length > 0 && (
-              <Typography variant="h5">
-                {pendingTransactions.length} {getText('pending', language)}
-              </Typography>
-            )}
-          </div>
+              {/* In case there are pending transactions, show number of pending transactions */}
+              {pendingTransactions.length > 0 && (
+                <Typography variant="h5">
+                  {pendingTransactions.length} {getText('pending', language)}
+                </Typography>
+              )}
+            </div>
+          </>
         )}
       </div>
       {selectedChainName && (
