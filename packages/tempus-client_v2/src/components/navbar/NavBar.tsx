@@ -4,9 +4,9 @@ import TempusLogo from './tempusLogo';
 import ChainSelector from './ChainSelector';
 import Links from './Links';
 import Wallet from '../wallet/Wallet';
+import Spacer from '../spacer/spacer';
 
 import './NavBar.scss';
-import Spacer from '../spacer/spacer';
 
 const NavBar: FC = () => {
   const navigate = useNavigate();
