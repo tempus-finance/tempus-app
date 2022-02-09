@@ -5,12 +5,19 @@ import { Ticker } from '../interfaces/Token';
 import { TempusPool } from '../interfaces/TempusPool';
 import { getChainConfig, getConfig } from '../utils/getConfig';
 import { Chain } from '../interfaces/Chain';
+import { ProtocolName } from '../interfaces/ProtocolName';
 import getRangeFrom from '../utils/getRangeFrom';
 import getStatisticsService from '../services/getStatisticsService';
 import { POLLING_INTERVAL } from '../constants';
 
+export type RowsExcludedByDefault = {
+  [key in ProtocolName]?: {
+    [poolAddress: string]: true; // whitelist
+  };
+};
+
 export default class DashboardDataAdapter {
-  getRows(chain?: Chain): DashboardRow[] {
+  getRows(chain?: Chain, rowsExcludedByDefault?: RowsExcludedByDefault): DashboardRow[] {
     const childRows: DashboardRowChild[] = [];
 
     const configData = getConfig();
@@ -20,7 +27,7 @@ export default class DashboardDataAdapter {
         continue;
       }
 
-      childRows.push(...this.getChildRows(chainName as Chain));
+      childRows.push(...this.filterRowsByExclusionList(this.getChildRows(chainName as Chain), rowsExcludedByDefault));
     }
 
     // Generates parent rows based on children rows
@@ -112,4 +119,32 @@ export default class DashboardDataAdapter {
   private getParentChildren(parentId: string, childRows: DashboardRowChild[]): DashboardRowChild[] {
     return childRows.filter(child => child.parentId === parentId);
   }
+
+  private filterRowsByExclusionList = (
+    childRows: DashboardRowChild[],
+    rowsExcludedByDefault?: RowsExcludedByDefault,
+  ): DashboardRowChild[] => {
+    if (!rowsExcludedByDefault) {
+      return childRows;
+    }
+
+    return childRows.filter(row => {
+      const {
+        tempusPool: { address, protocol },
+      } = row;
+
+      // if the protocol needs to be excluded
+      if (rowsExcludedByDefault[protocol]) {
+        const whitelistedRows = rowsExcludedByDefault[protocol];
+        // then check if the pool is whitelisted
+        if (whitelistedRows) {
+          return !!whitelistedRows[address];
+        }
+        // otherwise filter it out
+        return false;
+      }
+      // otherwise keep the pool
+      return true;
+    });
+  };
 }

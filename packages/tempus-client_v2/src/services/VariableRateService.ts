@@ -384,7 +384,7 @@ class VariableRateService {
       this.fetchYearnData().subscribe(yearnData => {
         if (yearnData) {
           const data = yearnData.filter(data => data.address === yieldBearingTokenAddress);
-          if (data) {
+          if (data && data.length) {
             return resolve(data[0].apy.net_apy);
           }
         }

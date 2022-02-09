@@ -1,7 +1,5 @@
-import { BigNumber, ethers } from 'ethers';
-import { combineLatest, from, Observable, of, switchMap, throwError, timer, catchError } from 'rxjs';
+import { ethers } from 'ethers';
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
-import { POLLING_INTERVAL, ZERO } from '../constants';
 import { TempusPool } from '../interfaces/TempusPool';
 import { increasePrecision, mul18f } from '../utils/weiMath';
 import StatisticsService from '../services/StatisticsService';
@@ -29,95 +27,6 @@ export default class UserBalanceDataAdapter {
     this.statisticsService = params.statisticsService;
     this.tempusPoolService = params.tempusPoolService;
     this.eRC20TokenServiceGetter = params.eRC20TokenServiceGetter;
-  }
-
-  getUserUSDBalanceForPool(
-    tempusPool: TempusPool,
-    userWalletAddress: string,
-    userWalletSigner: JsonRpcSigner,
-  ): Observable<BigNumber[]> {
-    if (!this.statisticsService) {
-      return throwError(() => new Error('UserBalanceDataAdapter - getUserBalanceForPool() - Adapter not initialized!'));
-    }
-
-    const interval$ = timer(0, POLLING_INTERVAL);
-    return interval$
-      .pipe(
-        // Fetch user balance for (principals, yields and LP tokens)
-        switchMap(() => {
-          if (this.eRC20TokenServiceGetter && this.chain) {
-            try {
-              const principalsService = this.eRC20TokenServiceGetter(
-                tempusPool.principalsAddress,
-                this.chain,
-                userWalletSigner,
-              );
-              const yieldsService = this.eRC20TokenServiceGetter(
-                tempusPool.yieldsAddress,
-                this.chain,
-                userWalletSigner,
-              );
-              const lpTokenService = this.eRC20TokenServiceGetter(tempusPool.ammAddress, this.chain, userWalletSigner);
-
-              const principalsBalance$ = from(principalsService.balanceOf(userWalletAddress));
-              const yieldsBalance$ = from(yieldsService.balanceOf(userWalletAddress));
-              const lpTokenBalance$ = from(lpTokenService.balanceOf(userWalletAddress));
-
-              return combineLatest([principalsBalance$, yieldsBalance$, lpTokenBalance$]);
-            } catch (error: any) {
-              throwError(() => new Error(error));
-            }
-          }
-          return throwError(
-            () => new Error('UserBalanceDataAdapter - getUserBalanceForPool() - Adapter not initialized!'),
-          );
-        }),
-        catchError(error => {
-          console.error('UserBalanceDataAdapter - getUserBalanceForPool() - Adapter not initialized!', error);
-          return of([]);
-        }),
-      )
-      .pipe(
-        // Fetch backing token rate and user balance in backing tokens
-        switchMap(([userPrincipalsBalance, userYieldsBalance, userLPBalance]) => {
-          if (this.statisticsService && userPrincipalsBalance && userYieldsBalance && userLPBalance && this.chain) {
-            const backingTokenRate$ = from(this.statisticsService.getRate(this.chain, tempusPool.backingToken));
-            const presentValueInBackingTokens$ = from(
-              this.statisticsService.estimateExitAndRedeem(
-                tempusPool.address,
-                tempusPool.ammAddress,
-                userLPBalance,
-                userPrincipalsBalance,
-                userYieldsBalance,
-                true,
-              ),
-            );
-            return combineLatest([backingTokenRate$, presentValueInBackingTokens$]);
-          }
-          return throwError(
-            () => new Error('UserBalanceDataAdapter - getUserBalanceForPool() - Adapter not initialized!'),
-          );
-        }),
-        catchError(error => {
-          console.error('UserBalanceDataAdapter - getUserBalanceForPool() - Adapter not initialized!', error);
-          return of([]);
-        }),
-      )
-      .pipe(
-        switchMap(([backingTokenRate, exitEstimate]) => {
-          if (this.statisticsService && backingTokenRate && exitEstimate.tokenAmount) {
-            const userPoolBalanceInFiat = mul18f(exitEstimate.tokenAmount, backingTokenRate);
-            return of([userPoolBalanceInFiat, exitEstimate.tokenAmount]);
-          }
-          return throwError(
-            () => new Error('UserBalanceDataAdapter - getUserBalanceForPool() - Adapter not initialized!'),
-          );
-        }),
-        catchError(error => {
-          console.error('UserBalanceDataAdapter - getUserBalanceForPool() - Adapter not initialized!', error);
-          return of([ZERO, ZERO]);
-        }),
-      );
   }
 
   async getUserAvailableToDepositForPool(
