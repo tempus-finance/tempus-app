@@ -1,5 +1,5 @@
 import { Downgraded, useState as useHookState } from '@hookstate/core';
-import { FC, useCallback, useEffect, useState, useContext } from 'react';
+import { FC, useCallback, useEffect, useContext } from 'react';
 import { Subscription } from 'rxjs';
 import { BigNumber } from 'ethers';
 import { getChainConfig, getConfig } from '../utils/getConfig';
@@ -23,8 +23,6 @@ const TVLProvider: FC<TVLProviderProps> = props => {
   const selectedChain = useHookState(selectedChainState);
 
   const selectedChainName = selectedChain.attach(Downgraded).get();
-
-  const [subscriptions$] = useState<Subscription>(new Subscription());
 
   /**
    * Updates pool TVL data in context.
@@ -50,8 +48,9 @@ const TVLProvider: FC<TVLProviderProps> = props => {
       return;
     }
 
-    const configData = getConfig();
+    const subscriptions$ = new Subscription();
 
+    const configData = getConfig();
     for (const chainName in configData) {
       // If user is connected to specific chain, we should fetch TVL data only from that chain and skip all other chains
       if (selectedChainName && selectedChainName !== chainName) {
@@ -82,7 +81,7 @@ const TVLProvider: FC<TVLProviderProps> = props => {
 
     return () => subscriptions$.unsubscribe();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedChainName, dashboardDataAdapter, userWalletConnected, updatePoolTVL, subscriptions$]);
+  }, [selectedChainName, dashboardDataAdapter, userWalletConnected, updatePoolTVL]);
 
   /**
    * Provider component only updates context value when needed. It does not show anything in the UI.
