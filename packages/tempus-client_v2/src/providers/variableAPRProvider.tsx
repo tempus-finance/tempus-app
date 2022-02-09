@@ -71,7 +71,6 @@ const VariableAPRProvider = () => {
           if (!currentAPR || (fetchedAPRData.variableAPR && currentAPR !== fetchedAPRData.variableAPR)) {
             dynamicPoolData[fetchedAPRData.address].variableAPR.set(fetchedAPRData.variableAPR);
           }
-
           dynamicPoolData[fetchedAPRData.address].tempusFees.set(fetchedAPRData.tempusFees);
         });
       } catch (error) {

@@ -169,6 +169,7 @@ const es: { [word in Words]: string } = {
   mintDisabledByConfig: 'Acuñar no está disponible actualmente.',
   operationDisabledByConfig:
     'Ciertas acciones en relación con este pool de Tempus se desactivan temporalmente debido a la falta de confiabilidad intermitente del pool subyacente. Tenga paciencia con nosotros mientras investigamos este problema.',
+  selectNetwork: 'Seleccione el Network',
   poolActionDisabledTitle: 'Ciertas acciones para este grupo están deshabilitadas temporalmente',
 };
 export default es;

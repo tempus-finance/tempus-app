@@ -171,5 +171,6 @@ const it: { [word in Words]: string } = {
     'Rimuovi liquidità dalla pool insieme alle commissioni sotto forma degli LP token iniziali.',
   combinedApr: 'APR combinato',
   poolActionDisabledTitle: 'Alcune operazioni su questa pool sono temporaneamente disabilitate',
+  selectNetwork: 'Seleziona Network',
 };
 export default it;
