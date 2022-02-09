@@ -1,8 +1,8 @@
 export type Chain = 'ethereum' | 'fantom';
 
 const chainToPrettyNameMap = {
-  ethereum: 'ETH Mainnet',
-  fantom: 'FTM Opera',
+  ethereum: 'Ethereum',
+  fantom: 'Fantom',
 };
 export function prettifyChainName(chainName: Chain): string {
   return chainToPrettyNameMap[chainName];
