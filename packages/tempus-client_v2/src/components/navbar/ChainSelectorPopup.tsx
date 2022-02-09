@@ -1,5 +1,6 @@
 import { FC, useCallback } from 'react';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
+import { getChainConfig } from '../../utils/getConfig';
 import { selectedChainState } from '../../state/ChainState';
 import { Chain, chainNameToHexChainId, prettifyChainNameLong } from '../../interfaces/Chain';
 import Modal from '../modal/Modal';
@@ -8,7 +9,6 @@ import Typography from '../typography/Typography';
 import TokenIcon from '../tokenIcon';
 
 import './ChainSelectorPopup.scss';
-import { getChainConfig } from '../../utils/getConfig';
 
 interface ChainSelectorPopupProps {
   open: boolean;
