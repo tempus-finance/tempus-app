@@ -3,8 +3,8 @@ import { CircularProgress } from '@material-ui/core';
 import { DataTypeProvider } from '@devexpress/dx-react-grid';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { ZERO } from '../../../constants';
-import { Ticker } from '../../../interfaces/Token';
 import { DashboardRow } from '../../../interfaces/DashboardRow';
+import { Chain } from '../../../interfaces/Chain';
 import NumberUtils from '../../../services/NumberUtils';
 import {
   dynamicPoolDataState,
@@ -27,8 +27,8 @@ const TVLFormatter = (props: DataTypeProvider.ValueFormatterProps) => {
     let tokenPrecision;
 
     if (!isChild) {
-      tvl = getParentTVL(row.token, staticPoolData, dynamicPoolData);
-      const firstChildAddress = getParentChildrenAddresses(row.token, staticPoolData, dynamicPoolData)[0];
+      tvl = getParentTVL(row.id, row.chain, staticPoolData, dynamicPoolData);
+      const firstChildAddress = getParentChildrenAddresses(row.id, row.chain, staticPoolData, dynamicPoolData)[0];
       tokenPrecision = firstChildAddress && staticPoolData[firstChildAddress].tokenPrecision.backingToken;
     } else {
       tvl = getChildTVL(row.id, dynamicPoolData);
@@ -57,11 +57,17 @@ const TVLFormatter = (props: DataTypeProvider.ValueFormatterProps) => {
 export default TVLFormatter;
 
 function getParentTVL(
-  parentId: Ticker,
+  parentId: string,
+  chain: Chain,
   staticPoolData: StaticPoolDataMap,
   dynamicPoolData: DynamicPoolStateData,
 ): BigNumber | null {
-  const parentChildrenAddresses: string[] = getParentChildrenAddresses(parentId, staticPoolData, dynamicPoolData);
+  const parentChildrenAddresses: string[] = getParentChildrenAddresses(
+    parentId,
+    chain,
+    staticPoolData,
+    dynamicPoolData,
+  );
 
   // In case TVL is still loading for some of the parent children, return null (show loading circle in dashboard)
   const childrenStillLoading =
@@ -84,14 +90,15 @@ function getChildTVL(childId: string, dynamicPoolData: DynamicPoolStateData): Bi
 }
 
 const getParentChildrenAddresses = (
-  parentId: Ticker,
+  parentId: string,
+  chain: Chain,
   staticPoolData: StaticPoolDataMap,
   dynamicPoolData: DynamicPoolStateData,
 ): string[] => {
   const parentChildrenAddresses: string[] = [];
   for (const key in dynamicPoolData) {
     if (
-      staticPoolData[key].backingToken === parentId &&
+      `${staticPoolData[key].backingToken}-${chain}` === parentId &&
       (!dynamicPoolData[key].negativeYield || dynamicPoolData[key].userBalanceUSD?.gt(ZERO))
     ) {
       parentChildrenAddresses.push(key);

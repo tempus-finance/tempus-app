@@ -73,7 +73,7 @@ export default class DashboardDataAdapter {
   private getChildRowData(tempusPool: TempusPool, chainName: Chain): DashboardRowChild {
     return {
       id: tempusPool.address,
-      parentId: tempusPool.backingToken,
+      parentId: `${tempusPool.backingToken}-${chainName}`,
       token: tempusPool.backingToken,
       tempusPool: tempusPool,
       supportedTokens: [tempusPool.backingToken, tempusPool.yieldBearingToken],
@@ -91,13 +91,13 @@ export default class DashboardDataAdapter {
 
       // Create child parent if it does not already exist.
       if (!childParent) {
-        const parentChildren = this.getParentChildren(child.token, childRows);
+        const parentChildren = this.getParentChildren(child.parentId, childRows);
 
         const childrenMaturityDate = parentChildren.map(child => child.maturityDate);
         const childrenProtocols = parentChildren.map(child => child.tempusPool.protocol);
 
         const parentRow: DashboardRowParent = {
-          id: child.token, // Using token as parent ID, this way multiple children with same token will fall under same parent.
+          id: `${child.token}-${child.chain}`, // Using token+chain as parent ID, this way multiple children with same token and chain will fall under same parent.
           parentId: null, // Always null for parent rows
           token: child.token,
           maturityRange: getRangeFrom<Date>(childrenMaturityDate),

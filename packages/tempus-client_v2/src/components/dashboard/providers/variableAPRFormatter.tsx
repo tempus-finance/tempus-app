@@ -2,7 +2,7 @@ import React from 'react';
 import { CircularProgress } from '@material-ui/core';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { ZERO } from '../../../constants';
-import { Ticker } from '../../../interfaces/Token';
+import { Chain } from '../../../interfaces/Chain';
 import NumberUtils from '../../../services/NumberUtils';
 import Typography from '../../typography/Typography';
 import APYGraph from '../bodySection/apyGraph';
@@ -22,7 +22,9 @@ const VariableAPRFormatter = ({ row }: any) => {
   const isChild = Boolean(row.parentId);
   // if useMemo is used here, anything inside dynamicPoolData state changes
   //  this use memo will not re-run, and APR will stay the same. so skip using useMemo here
-  const apr = isChild ? getChildAPR(row.id, dynamicPoolData) : getParentAPR(row.id, staticPoolData, dynamicPoolData);
+  const apr = isChild
+    ? getChildAPR(row.id, dynamicPoolData)
+    : getParentAPR(row.id, row.chain, staticPoolData, dynamicPoolData);
 
   if (apr === null) {
     return <CircularProgress size={16} />;
@@ -62,14 +64,15 @@ const VariableAPRFormatter = ({ row }: any) => {
 export default VariableAPRFormatter;
 
 function getParentAPR(
-  parentId: Ticker,
+  parentId: string,
+  chain: Chain,
   staticPoolData: StaticPoolDataMap,
   dynamicPoolData: DynamicPoolStateData,
 ): number | null {
   const parentChildrenAddresses: string[] = [];
   for (const key in dynamicPoolData) {
     if (
-      staticPoolData[key].backingToken === parentId &&
+      `${staticPoolData[key].backingToken}-${chain}` === parentId &&
       (!dynamicPoolData[key].negativeYield || dynamicPoolData[key].userBalanceUSD?.gt(ZERO))
     ) {
       parentChildrenAddresses.push(key);
