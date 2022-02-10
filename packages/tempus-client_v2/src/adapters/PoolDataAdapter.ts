@@ -351,7 +351,6 @@ export default class PoolDataAdapter {
     yieldType: SelectedYield,
     slippage: BigNumber,
     principalsPrecision: number,
-    spotPrice: string,
     isEthDeposit?: boolean,
   ): Promise<ContractTransaction | undefined> {
     if (!this.tempusControllerService) {

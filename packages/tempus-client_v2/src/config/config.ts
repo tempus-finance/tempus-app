@@ -119,7 +119,7 @@ const config: Config = {
         protocolDisplayName: 'Yearn',
         backingToken: 'USDC',
         yieldBearingToken: 'yvUSDC',
-        spotPrice: '2500',
+        spotPrice: '1',
         decimalsForUI: 2,
         showEstimatesInBackingToken: true,
         tokenPrecision: {
@@ -145,7 +145,7 @@ const config: Config = {
         protocolDisplayName: 'Yearn',
         backingToken: 'DAI',
         yieldBearingToken: 'yvDAI',
-        spotPrice: '2500',
+        spotPrice: '1',
         decimalsForUI: 2,
         showEstimatesInBackingToken: true,
         tokenPrecision: {
@@ -171,7 +171,7 @@ const config: Config = {
         protocolDisplayName: 'Yearn',
         backingToken: 'USDT',
         yieldBearingToken: 'yvUSDT',
-        spotPrice: '2500',
+        spotPrice: '1',
         decimalsForUI: 2,
         showEstimatesInBackingToken: true,
         tokenPrecision: {
@@ -197,7 +197,7 @@ const config: Config = {
         protocolDisplayName: 'Yearn',
         backingToken: 'WBTC',
         yieldBearingToken: 'yvWBTC',
-        spotPrice: '1',
+        spotPrice: '0.0002',
         decimalsForUI: 4,
         showEstimatesInBackingToken: true,
         tokenPrecision: {
@@ -223,7 +223,7 @@ const config: Config = {
         protocolDisplayName: 'Yearn',
         backingToken: 'WETH',
         yieldBearingToken: 'yvWETH',
-        spotPrice: '1',
+        spotPrice: '0.0002',
         decimalsForUI: 4,
         showEstimatesInBackingToken: true,
         tokenPrecision: {
@@ -249,7 +249,7 @@ const config: Config = {
         protocolDisplayName: 'Yearn',
         backingToken: 'YFI',
         yieldBearingToken: 'yvYFI',
-        spotPrice: '1',
+        spotPrice: '0.00004',
         decimalsForUI: 4,
         showEstimatesInBackingToken: true,
         tokenPrecision: {
