@@ -197,7 +197,7 @@ const config: Config = {
         protocolDisplayName: 'Yearn',
         backingToken: 'WBTC',
         yieldBearingToken: 'yvWBTC',
-        spotPrice: '0.0002',
+        spotPrice: '0.002',
         decimalsForUI: 4,
         showEstimatesInBackingToken: true,
         tokenPrecision: {

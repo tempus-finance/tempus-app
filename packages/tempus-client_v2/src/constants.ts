@@ -41,6 +41,10 @@ export const tokenPrecision: { [ticker: string]: number } = {
   ETH: 18,
   USDC: 6,
   DAI: 18,
+  USDT: 6,
+  WBTC: 8,
+  WETH: 18,
+  YFI: 18,
 };
 
 const ALCHEMY_KEY = process.env.REACT_APP_MAINNET_ALCHEMY_KEY;
