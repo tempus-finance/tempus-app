@@ -18,7 +18,7 @@ const getDefaultProvider = (chain: Chain) => {
     } else if (config.networkName === 'fantom-mainnet') {
       defaultProviders.set(
         chain,
-        new JsonRpcProvider('https://rpc.ftm.tools/', { chainId: 250, name: 'Fantom Opera' }),
+        new JsonRpcProvider(config.privateNetworkUrl, { chainId: 250, name: 'Fantom Opera' }),
       );
     }
   }

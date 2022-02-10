@@ -7,7 +7,8 @@ export interface ChainConfig {
   tempusControllerContract: string;
   lidoOracle: string;
   vaultContract: string;
-  networkUrl: string;
+  publicNetworkUrl: string;
+  privateNetworkUrl: string;
   networkName: string;
   alchemyKey: string;
   chainId: number;
