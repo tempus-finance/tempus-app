@@ -48,7 +48,7 @@ const en: { [word in Words]: string } = {
   crypto: 'Crypto',
   pool: 'Pool',
   ofPool: 'of the Pool',
-  poolRatio: 'Pool Ratio (Principals / Yields)',
+  poolRatio: 'Pool Ratio (Capital / Yields)',
   redemption: 'Redemption',
   earlyRedemption: 'Early Redemption',
   swap: 'Swap',
@@ -88,7 +88,7 @@ const en: { [word in Words]: string } = {
   swapDisabledPoolMaturity: 'Swap is not available because this pool has reached maturity.',
   provideLiquidityDisabledNoDeposit: 'Manual Liquidity Provision is not available until you have Deposited or Minted.',
   provideLiquidityDisabledNoPrincipals:
-    'Manual Liquidity Provision is not available until you have purchased more Principal tokens.',
+    'Manual Liquidity Provision is not available until you have purchased more Capital tokens.',
   provideLiquidityDisabledNoYields:
     'Manual Liquidity Provision is not available until you have purchased more Yield tokens.',
   provideLiquidityDisabledPoolMaturity:
@@ -109,7 +109,7 @@ const en: { [word in Words]: string } = {
   maturity: 'Maturity',
   timeLeft: 'Time Remaining',
   currentPosition: 'Current Position',
-  principals: 'Principals',
+  principals: 'Capital',
   yields: 'Yields',
   lpTokens: 'LP Tokens',
   staked: 'Staked',
@@ -149,9 +149,9 @@ const en: { [word in Words]: string } = {
   tempusAnnouncements: 'Tempus Announcements',
   tempusChat: 'Tempus Chat',
   interestRateProtectionTooltipText:
-    'Fix your future yield with Tempus. This function locks your Yield Bearing Token, mints Principals and Yields in exchange, and swaps all Yields for Principals through TempusAMM.<br/><br/>You will receive Principals which will be redeemable 1:1 to the Underlying asset on Maturity.',
+    'Fix your future yield with Tempus. This function locks your Yield Bearing Token, mints Capital and Yields in exchange, and swaps all Yields for Capital through TempusAMM.<br/><br/>You will receive Capital which will be redeemable 1:1 to the Underlying asset on Maturity.',
   liquidityProvisionTooltipText:
-    'Provide liquidity to Tempus to earn extra yield. This function locks your Yield Bearing Token, mints Principals and Yields in exchange, and uses the maximum available number of Principals and Yields to provide liquidity to TempusAMM.<br/><br/>This means that you will receive the underlying yield, and the Tempus swap fees, aggregated into one yield.',
+    'Provide liquidity to Tempus to earn extra yield. This function locks your Yield Bearing Token, mints Capital and Yields in exchange, and uses the maximum available number of Capital and Yields to provide liquidity to TempusAMM.<br/><br/>This means that you will receive the underlying yield, and the Tempus swap fees, aggregated into one yield.',
   slippageTolerance: 'Slippage tolerance',
   slippageTooltip: 'Your transaction will revert if the price changes unfavorably by more than this percentage.',
   auto: 'Auto',
@@ -160,10 +160,10 @@ const en: { [word in Words]: string } = {
     'Mobile support is not yet available, but will be included at a later time. <br />Thank you for your understanding.',
   mobileLink: 'Read more about Tempus',
   unstaked: 'Unstaked',
-  stakedPrincipals: 'Staked Principals',
+  stakedPrincipals: 'Staked Capital',
   stakedYields: 'Staked Yields',
-  mintDescription: 'Split your yield bearing token into Principals and Yields.',
-  swapDescription: 'Swap between Principals and Yields.',
+  mintDescription: 'Split your yield bearing token into Capital and Yields.',
+  swapDescription: 'Swap between Capital and Yields.',
   provideLiquidityDescription: 'Use your LP tokens to provide liquidity to the pool and earn rewards.',
   removeLiquidityDescription:
     'Remove your liquidity from the pool with the accrued rewards in the form of your initial LP tokens.',
