@@ -14,8 +14,9 @@ import { UserSettingsContext } from '../../../context/userSettingsContext';
 import { WalletContext } from '../../../context/walletContext';
 import { DashboardRow, isChildRow, isParentRow } from '../../../interfaces/DashboardRow';
 import { Ticker } from '../../../interfaces/Token';
-import { Chain } from '../../../interfaces/Chain';
+import { Chain, chainIdToChainName } from '../../../interfaces/Chain';
 import NumberUtils from '../../../services/NumberUtils';
+import { getChainConfigForPool } from '../../../utils/getConfig';
 import Spacer from '../../spacer/spacer';
 import Typography from '../../typography/Typography';
 
@@ -151,8 +152,10 @@ const getParentAvailableToDepositInFiat = (
 ) => {
   const parentChildrenAddresses: string[] = [];
   for (const key in dynamicPoolData) {
+    const chainConfig = getChainConfigForPool(key);
+
     if (
-      `${staticPoolData[key].backingToken}-${chain}` === parentId &&
+      `${staticPoolData[key].backingToken}-${chainIdToChainName(chainConfig.chainId.toString())}` === parentId &&
       (!dynamicPoolData[key].negativeYield || dynamicPoolData[key].userBalanceUSD?.gt(ZERO))
     ) {
       parentChildrenAddresses.push(key);
@@ -196,8 +199,10 @@ const getParentAvailableToDepositInBackingToken = (
 ) => {
   const parentChildrenAddresses: string[] = [];
   for (const key in dynamicPoolData) {
+    const chainConfig = getChainConfigForPool(key);
+
     if (
-      `${staticPoolData[key].backingToken}-${chain}` === parentId &&
+      `${staticPoolData[key].backingToken}-${chainIdToChainName(chainConfig.chainId.toString())}` === parentId &&
       (!dynamicPoolData[key].negativeYield || dynamicPoolData[key].userBalanceUSD?.gt(ZERO))
     ) {
       parentChildrenAddresses.push(key);

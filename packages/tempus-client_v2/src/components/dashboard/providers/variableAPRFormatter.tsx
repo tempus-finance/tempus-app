@@ -2,8 +2,9 @@ import React from 'react';
 import { CircularProgress } from '@material-ui/core';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { ZERO } from '../../../constants';
-import { Chain } from '../../../interfaces/Chain';
+import { Chain, chainIdToChainName } from '../../../interfaces/Chain';
 import NumberUtils from '../../../services/NumberUtils';
+import { getChainConfigForPool } from '../../../utils/getConfig';
 import Typography from '../../typography/Typography';
 import APYGraph from '../bodySection/apyGraph';
 import {
@@ -71,8 +72,10 @@ function getParentAPR(
 ): number | null {
   const parentChildrenAddresses: string[] = [];
   for (const key in dynamicPoolData) {
+    const chainConfig = getChainConfigForPool(key);
+
     if (
-      `${staticPoolData[key].backingToken}-${chain}` === parentId &&
+      `${staticPoolData[key].backingToken}-${chainIdToChainName(chainConfig.chainId.toString())}` === parentId &&
       (!dynamicPoolData[key].negativeYield || dynamicPoolData[key].userBalanceUSD?.gt(ZERO))
     ) {
       parentChildrenAddresses.push(key);

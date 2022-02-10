@@ -6,8 +6,9 @@ import differenceInSeconds from 'date-fns/differenceInSeconds';
 import { dashboardChildMaturityFormat, dashboardParentMaturityFormat, ZERO } from '../../../constants';
 import Typography from '../../typography/Typography';
 import ProgressBar from '../../progressBar';
-import { Chain } from '../../../interfaces/Chain';
+import { Chain, chainIdToChainName } from '../../../interfaces/Chain';
 import getRangeFrom from '../../../utils/getRangeFrom';
+import { getChainConfigForPool } from '../../../utils/getConfig';
 import {
   dynamicPoolDataState,
   DynamicPoolStateData,
@@ -73,8 +74,10 @@ function getParentMaturity(
 ): number[] {
   const parentChildrenAddresses: string[] = [];
   for (const key in dynamicPoolData) {
+    const chainConfig = getChainConfigForPool(key);
+
     if (
-      `${staticPoolData[key].backingToken}-${chain}` === parentId &&
+      `${staticPoolData[key].backingToken}-${chainIdToChainName(chainConfig.chainId.toString())}` === parentId &&
       (!dynamicPoolData[key].negativeYield || dynamicPoolData[key].userBalanceUSD?.gt(ZERO))
     ) {
       parentChildrenAddresses.push(key);

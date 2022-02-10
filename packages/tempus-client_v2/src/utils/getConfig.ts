@@ -60,3 +60,27 @@ export function getConfigForPoolWithAddress(poolAddress: string): TempusPool {
 
   return poolConfig;
 }
+
+const poolToChainConfigMap = new Map<string, ChainConfig>();
+export function getChainConfigForPool(poolAddress: string): ChainConfig {
+  const cachedResult = poolToChainConfigMap.get(poolAddress);
+  if (cachedResult) {
+    return cachedResult;
+  }
+
+  const configData = getConfig();
+
+  for (const chainName in configData) {
+    const chainConfig = configData[chainName as Chain];
+
+    const poolIndex = chainConfig.tempusPools.findIndex(tempusPoolConfig => tempusPoolConfig.address === poolAddress);
+
+    if (poolIndex > -1) {
+      poolToChainConfigMap.set(poolAddress, chainConfig);
+
+      return chainConfig;
+    }
+  }
+
+  throw new Error(`Failed to find chain config for pool with address '${poolAddress}'!`);
+}
