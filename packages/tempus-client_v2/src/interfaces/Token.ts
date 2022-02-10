@@ -18,6 +18,14 @@ export type Ticker =
   | 'yvDAI'
   | 'yvUSDC'
   | 'YEARN'
-  | 'FANTOM';
+  | 'FANTOM'
+  | 'USDT'
+  | 'yvUSDT'
+  | 'WBTC'
+  | 'yvWBTC'
+  | 'WETH'
+  | 'yvWETH'
+  | 'YFI'
+  | 'yvYFI';
 
 export type PoolShares = 'Principals' | 'Yields';
