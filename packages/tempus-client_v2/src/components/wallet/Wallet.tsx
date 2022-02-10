@@ -158,6 +158,8 @@ const Wallet = () => {
     ): Promise<boolean> => {
       const injectedConnector = new InjectedConnector({ supportedChainIds });
       const provider = await injectedConnector.getProvider();
+      const chain = chainIdToChainName(chainId);
+
       try {
         // Request user to switch to Mainnet
         await provider.request({
@@ -169,7 +171,7 @@ const Wallet = () => {
         const shouldThrowErrors = true;
         await activate(injectedConnector, onError, shouldThrowErrors);
         if (showWalletConnectedNotification) {
-          getNotificationService().notify('Wallet', getText('metamaskConnected', language), '');
+          chain && getNotificationService().notify(chain, 'Wallet', getText('metamaskConnected', language), '');
         }
 
         if (typeof chainId === 'string') {
@@ -188,7 +190,9 @@ const Wallet = () => {
         // User rejected request
         if ((error as any).code === 4001) {
           showRejectedNotification &&
+            chain &&
             getNotificationService().warn(
+              chain,
               'Wallet',
               getText('changeNetworkRejected', language),
               getText('changeNetworkRejectedExplain', language),
@@ -197,11 +201,13 @@ const Wallet = () => {
         } else if ((error as any).code === 4902) {
           throw new Error('Unknown Network');
         } else {
-          getNotificationService().warn(
-            'Wallet',
-            getText('unsupportedNetwork', language),
-            getText('unsupportedNetworkExplain', language),
-          );
+          chain &&
+            getNotificationService().warn(
+              chain,
+              'Wallet',
+              getText('unsupportedNetwork', language),
+              getText('unsupportedNetworkExplain', language),
+            );
         }
 
         setWalletData &&
@@ -229,15 +235,16 @@ const Wallet = () => {
           deactivate();
         }
         const injectedConnector = new InjectedConnector({ supportedChainIds });
+        const chainId = await injectedConnector.getChainId();
+        const chain = chainIdToChainName(chainId.toString());
         try {
           await activate(injectedConnector, undefined, true);
           getStorageService().set(WALLET_KEY, 'MetaMask');
           setSelectedWallet('MetaMask');
-          if (showWalletConnectedNotification) {
-            getNotificationService().notify('Wallet', getText('metamaskConnected', language), '');
+          if (showWalletConnectedNotification && chain) {
+            getNotificationService().notify(chain, 'Wallet', getText('metamaskConnected', language), '');
           }
 
-          const chainId = await injectedConnector.getChainId();
           if (typeof chainId === 'string') {
             selectedChainState.set(getChainNameFromId(parseInt(chainId)));
           }
@@ -255,7 +262,7 @@ const Wallet = () => {
             // Request user to change network to ethereum mainnet
             requestNetworkChange('0x1', showWalletConnectedNotification, true);
           } else {
-            getNotificationService().warn('Wallet', getText('errorConnectingWallet', language), '');
+            chain && getNotificationService().warn(chain, 'Wallet', getText('errorConnectingWallet', language), '');
           }
         }
         setConnecting(false);
@@ -285,12 +292,15 @@ const Wallet = () => {
           qrcode: true,
         });
 
+        const chainId = await walletConnector.getChainId();
+        const chain = chainIdToChainName(chainId.toString());
+
         try {
           await activate(walletConnector, undefined, true);
           getStorageService().set(WALLET_KEY, 'WalletConnect');
           setSelectedWallet('WalletConnect');
-          if (showWalletConnectedNotification) {
-            getNotificationService().notify('Wallet', getText('walletConnectConnected', language), '');
+          if (showWalletConnectedNotification && chain) {
+            getNotificationService().notify(chain, 'Wallet', getText('walletConnectConnected', language), '');
           }
 
           const chainId = await walletConnector.getChainId();
@@ -311,7 +321,7 @@ const Wallet = () => {
             // Request user to change network to ethereum mainnet
             requestNetworkChange('0x1', showWalletConnectedNotification, true);
           } else {
-            getNotificationService().warn('Wallet', getText('errorConnectingWallet', language), '');
+            chain && getNotificationService().warn(chain, 'Wallet', getText('errorConnectingWallet', language), '');
           }
         }
         setConnecting(false);

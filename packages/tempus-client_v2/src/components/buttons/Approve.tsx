@@ -7,7 +7,7 @@ import { staticChainDataState } from '../../state/ChainState';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
 import Typography from '../typography/Typography';
 import getNotificationService from '../../services/getNotificationService';
-import { generateEtherscanLink, getTokenApprovalNotification } from '../../services/NotificationService';
+import { generateEtherscanLink, getTokenApprovalNotification } from '../../services/notificationFormatters';
 import { Ticker } from '../../interfaces/Token';
 import { Chain } from '../../interfaces/Chain';
 import { PendingTransactionsContext } from '../../context/pendingTransactionsContext';
@@ -91,6 +91,7 @@ const Approve: FC<ApproveButtonProps> = props => {
 
       if (tokenToApproveTicker) {
         content = getTokenApprovalNotification(
+          chain,
           language,
           tokenToApproveTicker,
           backingToken,
@@ -114,7 +115,7 @@ const Approve: FC<ApproveButtonProps> = props => {
         console.error(`Failed to create approve transaction for ${tokenToApproveTicker} token!`, error);
 
         if (tokenToApproveTicker) {
-          getNotificationService().warn('Transaction', getText(`approvalFailed`, language), content);
+          getNotificationService().warn(chain, 'Transaction', getText(`approvalFailed`, language), content);
         }
         setApproveInProgress(false);
         return;
@@ -163,7 +164,7 @@ const Approve: FC<ApproveButtonProps> = props => {
 
         // Show transaction failed notification.
         if (tokenToApproveTicker) {
-          getNotificationService().warn('Transaction', `Approval Failed`, content, link, viewLinkText);
+          getNotificationService().warn(chain, 'Transaction', `Approval Failed`, content, link, viewLinkText);
         }
 
         setApproveInProgress(false);
@@ -181,7 +182,7 @@ const Approve: FC<ApproveButtonProps> = props => {
 
       // Show approve transaction completed notification
       if (tokenToApproveTicker) {
-        getNotificationService().notify('Transaction', 'Approval Successful', content, link, viewLinkText);
+        getNotificationService().notify(chain, 'Transaction', 'Approval Successful', content, link, viewLinkText);
       }
 
       // After approve completes, we need to set new allowance value
