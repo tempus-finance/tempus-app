@@ -44,8 +44,9 @@ const Pool: FC<PoolProps> = ({ chain }) => {
   const ammAddress = staticPoolData[selectedPool.get()].ammAddress.attach(Downgraded).get();
   const backingToken = staticPoolData[selectedPool.get()].backingToken.attach(Downgraded).get();
   const backingTokenPrecision = staticPoolData[selectedPool.get()].tokenPrecision.backingToken.attach(Downgraded).get();
+  const spotPrice = staticPoolData[selectedPool.get()].spotPrice.attach(Downgraded).get();
   const tvl = dynamicPoolData[selectedPool.get()].tvl.attach(Downgraded).get();
-  const fixedAPR = dynamicPoolData[selectedPool.get()].fixedAPR.get();
+  const fixedAPR = dynamicPoolData[selectedPool.get()].fixedAPR.attach(Downgraded).get();
 
   /**
    * Fetch TVL from one week ago.
@@ -100,10 +101,13 @@ const Pool: FC<PoolProps> = ({ chain }) => {
         // Get block number from 7 days ago (approximate - we need to find a better way to fetch exact block number)
         const sevenDaysOldBlock = latestBlock.number - Math.round(SECONDS_IN_A_DAY / averageBlockTime) * 7;
 
-        const spotPrice = ethers.utils.parseUnits('1', getTokenPrecision(selectedPoolAddress, 'backingToken'));
+        const spotPriceParsed = ethers.utils.parseUnits(
+          spotPrice,
+          getTokenPrecision(selectedPoolAddress, 'backingToken'),
+        );
 
         const oldFixedAPR = await poolDataAdapter.getEstimatedFixedApr(
-          spotPrice,
+          spotPriceParsed,
           true,
           selectedPoolAddress,
           poolId,
@@ -125,7 +129,17 @@ const Pool: FC<PoolProps> = ({ chain }) => {
       }
     };
     fetchFixedAPRChangeData();
-  }, [ammAddress, fixedAPR, poolId, selectedPoolAddress, userWalletSigner, startDate, chain, averageBlockTime]);
+  }, [
+    ammAddress,
+    fixedAPR,
+    poolId,
+    selectedPoolAddress,
+    userWalletSigner,
+    startDate,
+    chain,
+    averageBlockTime,
+    spotPrice,
+  ]);
 
   const tvlFormatted = useMemo(() => {
     if (!tvl) {

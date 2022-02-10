@@ -35,7 +35,10 @@ const FixedAPRProvider = () => {
           }
 
           try {
-            const spotPrice = ethers.utils.parseUnits('1', getTokenPrecision(tempusPool.address, 'backingToken'));
+            const spotPrice = ethers.utils.parseUnits(
+              tempusPool.spotPrice,
+              getTokenPrecision(tempusPool.address, 'backingToken'),
+            );
 
             const estimateDepositAndFixFromBackingToken = true;
             const fixedAPR = await poolDataAdapter.getEstimatedFixedApr(
