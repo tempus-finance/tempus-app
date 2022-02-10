@@ -15,17 +15,18 @@ export type Ticker =
   | 'LP Token'
   | 'RARI'
   | 'RSPT'
-  | 'yvDAI'
-  | 'yvUSDC'
   | 'YEARN'
   | 'FANTOM'
   | 'USDT'
-  | 'yvUSDT'
   | 'WBTC'
-  | 'yvWBTC'
   | 'WETH'
-  | 'yvWETH'
+  | 'wFTM'
   | 'YFI'
-  | 'yvYFI';
+  | 'yvDAI'
+  | 'yvWBTC'
+  | 'yvWETH'
+  | 'yvYFI'
+  | 'yvUSDT'
+  | 'yvUSDC';
 
 export type PoolShares = 'Principals' | 'Yields';
