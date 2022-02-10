@@ -64,7 +64,7 @@ const ChainSelectorPopup: FC<ChainSelectorPopupProps> = ({
             chainConfig.nativeToken,
             chainConfig.nativeToken,
             chainConfig.nativeTokenPrecision,
-            chainConfig.networkUrl,
+            chainConfig.publicNetworkUrl,
             chainConfig.blockExplorerUrl,
           );
           if (requestAccepted) {

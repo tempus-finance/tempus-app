@@ -1,6 +1,7 @@
 import { Config } from '../interfaces/Config';
 
 const ETHEREUM_MAINNET_ALCHEMY_KEY = process.env.REACT_APP_MAINNET_ALCHEMY_KEY || '';
+const FANTOM_MAINNET_RPC_ENDPOINT = process.env.REACT_APP_FANTOM_ENDPOINT || '';
 
 const config: Config = {
   ethereum: {
@@ -91,7 +92,8 @@ const config: Config = {
     tempusControllerContract: '0xdB5fD0678eED82246b599da6BC36B56157E4beD8',
     vaultContract: '0x6f419298Ad53f82BA8dFFa9B34F9C7888b43BB13',
     lidoOracle: '0x442af784a788a5bd6f42a01ebe9f287a871243fb',
-    networkUrl: `https://eth-mainnet.alchemyapi.io/v2/${ETHEREUM_MAINNET_ALCHEMY_KEY}`,
+    publicNetworkUrl: '', // Ethereum mainnet does not have public RPC URL
+    privateNetworkUrl: `https://eth-mainnet.alchemyapi.io/v2/${ETHEREUM_MAINNET_ALCHEMY_KEY}`,
     networkName: 'homestead',
     alchemyKey: ETHEREUM_MAINNET_ALCHEMY_KEY,
     chainId: 1,
@@ -264,7 +266,8 @@ const config: Config = {
     tempusControllerContract: '0x8c47924b35C3667F59Df579F3ec061F8d7603242',
     vaultContract: '0xfCD78cA49368D3E5A93171335d2f31705d00Ca38',
     lidoOracle: '', // We need to set if we want to add Lido pools for Fantom chain
-    networkUrl: `https://rpc.ftm.tools/`,
+    publicNetworkUrl: `https://rpc.ftm.tools/`,
+    privateNetworkUrl: FANTOM_MAINNET_RPC_ENDPOINT,
     networkName: 'fantom-mainnet',
     alchemyKey: '', // We don't need alchemy for Fantom chain
     chainId: 250,
