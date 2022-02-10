@@ -1,3 +1,5 @@
+import { Chain } from './Chain';
+
 export type NotificationCategory = 'Transaction' | 'Wallet' | 'Service';
 
 export enum NotificationLevel {
@@ -7,6 +9,7 @@ export enum NotificationLevel {
 
 export type Notification = {
   category: NotificationCategory;
+  chain: Chain;
   id: string;
   timestamp: number;
   level: NotificationLevel;

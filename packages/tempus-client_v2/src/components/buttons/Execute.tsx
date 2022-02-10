@@ -9,7 +9,7 @@ import {
   generateEtherscanLink,
   generateNotificationInfo,
   generatePoolNotificationInfo,
-} from '../../services/NotificationService';
+} from '../../services/notificationFormatters';
 import Typography from '../typography/Typography';
 import getText from '../../localisation/getText';
 import { PendingTransactionsContext } from '../../context/pendingTransactionsContext';
@@ -57,7 +57,7 @@ const Execute: FC<ExecuteButtonProps> = props => {
       }
       setExecuteInProgress(true);
 
-      const content = generatePoolNotificationInfo(language, backingToken, protocol, new Date(maturityDate));
+      const content = generatePoolNotificationInfo(chain, language, backingToken, protocol, new Date(maturityDate));
 
       let transaction: ethers.ContractTransaction | undefined;
       try {
@@ -66,7 +66,7 @@ const Execute: FC<ExecuteButtonProps> = props => {
       } catch (error) {
         console.error('Failed to execute transaction!', error);
         // Notify user about failed action.
-        getNotificationService().warn('Transaction', `${actionName} ${getText('failed', language)}`, content);
+        getNotificationService().warn(chain, 'Transaction', `${actionName} ${getText('failed', language)}`, content);
         setExecuteInProgress(false);
         onExecuted(false);
         return;
@@ -116,6 +116,7 @@ const Execute: FC<ExecuteButtonProps> = props => {
 
         // Notify user about failed action.
         getNotificationService().warn(
+          chain,
           'Transaction',
           `${actionName} Failed`,
           content,
@@ -138,9 +139,11 @@ const Execute: FC<ExecuteButtonProps> = props => {
 
       // Notify user about successful action.
       getNotificationService().notify(
+        chain,
         'Transaction',
         `${actionName} Successful`,
         `${generateNotificationInfo(
+          chain,
           language,
           actionName,
           actionDescription || '',

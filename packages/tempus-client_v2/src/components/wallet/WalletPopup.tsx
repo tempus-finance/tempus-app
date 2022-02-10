@@ -1,4 +1,5 @@
 import { FC, RefObject, useCallback, useContext, useEffect, useState } from 'react';
+import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { Button, Divider, Popper } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import { Notification } from '../../interfaces/Notification';
@@ -7,6 +8,7 @@ import { LanguageContext } from '../../context/languageContext';
 import { UserSettingsContext } from '../../context/userSettingsContext';
 import { PendingTransactionsContext } from '../../context/pendingTransactionsContext';
 import getNotificationService from '../../services/getNotificationService';
+import { selectedChainState } from '../../state/ChainState';
 import { getChainConfig } from '../../utils/getConfig';
 import getText from '../../localisation/getText';
 import Typography from '../typography/Typography';
@@ -33,6 +35,8 @@ const WalletPopup: FC<WalletPopupProps> = ({ anchorElement, account, chainName, 
   const { openWalletPopup } = useContext(UserSettingsContext);
   const { language } = useContext(LanguageContext);
   const { pendingTransactions } = useContext(PendingTransactionsContext);
+  const selectedChain = useHookState(selectedChainState);
+  const selectedChainName = selectedChain.attach(Downgraded).get();
 
   const [notifications, setNotifications] = useState<Notification[]>([]);
 
@@ -61,13 +65,16 @@ const WalletPopup: FC<WalletPopupProps> = ({ anchorElement, account, chainName, 
     const notificationStream$ = getNotificationService()
       .getLastItems()
       .subscribe(notification => {
-        if (notification) {
+        if (notification && notification.chain === selectedChainName) {
           setNotifications((prev: any) => [notification, ...prev.slice(0, 4)]);
         }
       });
 
-    return () => notificationStream$.unsubscribe();
-  }, [setNotifications]);
+    return () => {
+      notificationStream$.unsubscribe();
+      setNotifications([]);
+    };
+  }, [selectedChainName, setNotifications]);
 
   return (
     <>
