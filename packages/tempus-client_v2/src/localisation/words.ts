@@ -148,6 +148,7 @@ type Words =
   | 'askUsOnDiscord'
   | 'depositDisabledByConfig'
   | 'mintDisabledByConfig'
-  | 'selectNetwork';
+  | 'selectNetwork'
+  | 'governance';
 
 export default Words;

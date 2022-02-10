@@ -170,5 +170,6 @@ const en: { [word in Words]: string } = {
   poolActionDisabledTitle: 'Certain actions to this pool are temporarily disabled',
   selectNetwork: 'Select Network',
   combinedApr: 'Combined APR',
+  governance: 'Governance',
 };
 export default en;

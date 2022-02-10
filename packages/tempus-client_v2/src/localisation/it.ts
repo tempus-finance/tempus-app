@@ -172,5 +172,6 @@ const it: { [word in Words]: string } = {
   combinedApr: 'APR combinato',
   poolActionDisabledTitle: 'Alcune operazioni su questa pool sono temporaneamente disabilitate',
   selectNetwork: 'Seleziona Network',
+  governance: 'Governo',
 };
 export default it;
