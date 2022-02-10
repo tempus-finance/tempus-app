@@ -171,5 +171,6 @@ const es: { [word in Words]: string } = {
     'Ciertas acciones en relación con este pool de Tempus se desactivan temporalmente debido a la falta de confiabilidad intermitente del pool subyacente. Tenga paciencia con nosotros mientras investigamos este problema.',
   selectNetwork: 'Seleccione el Network',
   poolActionDisabledTitle: 'Ciertas acciones para este grupo están deshabilitadas temporalmente',
+  governance: 'Gobernancia',
 };
 export default es;

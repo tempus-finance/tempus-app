@@ -3,12 +3,10 @@ import { List, ListItem, ListItemIcon, ListItemText, Popper } from '@material-ui
 import KeyboardArrowDown from '@material-ui/icons/KeyboardArrowDown';
 import getText from '../../localisation/getText';
 import { LanguageContext } from '../../context/languageContext';
-import TwitterIcon from '../icons/TwitterIcon';
+import GovernanceIcon from '../icons/GovernanceIcon';
 import DiscordIcon from '../icons/DiscordIcon';
-import MediumIcon from '../icons/MediumIcon';
+import TwitterIcon from '../icons/TwitterIcon';
 import GithubIcon from '../icons/GithubIcon';
-import TelegramIcon from '../icons/TelegramIcon';
-import TempusIcon from '../icons/TempusIcon';
 import './Community.scss';
 
 // TODO
@@ -26,44 +24,25 @@ const Community = () => {
 
   const communityMenuAnchor = useRef<HTMLLIElement>(null);
 
-  const onWebSiteClick = () => {
-    window.open('https://tempus.finance', '_blank');
+  const onGovernanceClick = useCallback(() => {
+    window.open('https://forum.tempus.finance/', '_blank');
     toggleCommunityMenu();
-  };
+  }, [toggleCommunityMenu]);
 
-  const onTwitterClick = () => {
-    window.open('https://twitter.com/tempusfinance', '_blank');
-    toggleCommunityMenu();
-  };
-
-  const onDiscordClick = () => {
+  const onDiscordClick = useCallback(() => {
     window.open('https://discord.com/invite/6gauHECShr', '_blank');
     toggleCommunityMenu();
-  };
+  }, [toggleCommunityMenu]);
 
-  const onMediumClick = () => {
-    window.open('https://medium.com/tempusfinance', '_blank');
+  const onTwitterClick = useCallback(() => {
+    window.open('https://twitter.com/tempusfinance', '_blank');
     toggleCommunityMenu();
-  };
+  }, [toggleCommunityMenu]);
 
-  const onGitHubClick = () => {
+  const onGitHubClick = useCallback(() => {
     window.open('https://github.com/tempus-finance', '_blank');
     toggleCommunityMenu();
-  };
-
-  const onAnnouncementsClick = () => {
-    window.open('https://t.me/tempusfinance', '_blank');
-    toggleCommunityMenu();
-  };
-  const onChatClick = () => {
-    window.open('https://t.me/tempuschat', '_blank');
-    toggleCommunityMenu();
-  };
-
-  const onChineseChatClick = () => {
-    window.open('https://t.me/joinchat/SaOp74Uqe2BiMGM1', '_blank');
-    toggleCommunityMenu();
-  };
+  }, [toggleCommunityMenu]);
 
   return (
     <>
@@ -78,17 +57,11 @@ const Community = () => {
       >
         <div className="tc__header__community-menu__container">
           <List>
-            <ListItem button onClick={onWebSiteClick}>
+            <ListItem button onClick={onGovernanceClick}>
               <ListItemIcon className="tc__header__community-menu__icon-container">
-                <TempusIcon />
+                <GovernanceIcon />
               </ListItemIcon>
-              <ListItemText primary={getText('about', language)} />
-            </ListItem>
-            <ListItem button onClick={onTwitterClick}>
-              <ListItemIcon className="tc__header__community-menu__icon-container">
-                <TwitterIcon />
-              </ListItemIcon>
-              <ListItemText primary="Twitter" />
+              <ListItemText primary={getText('governance', language)} />
             </ListItem>
             <ListItem button onClick={onDiscordClick}>
               <ListItemIcon className="tc__header__community-menu__icon-container">
@@ -96,35 +69,17 @@ const Community = () => {
               </ListItemIcon>
               <ListItemText primary="Discord" />
             </ListItem>
-            <ListItem button onClick={onMediumClick}>
+            <ListItem button onClick={onTwitterClick}>
               <ListItemIcon className="tc__header__community-menu__icon-container">
-                <MediumIcon />
+                <TwitterIcon />
               </ListItemIcon>
-              <ListItemText primary="Medium" />
+              <ListItemText primary="Twitter" />
             </ListItem>
             <ListItem button onClick={onGitHubClick}>
               <ListItemIcon className="tc__header__community-menu__icon-container">
                 <GithubIcon />
               </ListItemIcon>
               <ListItemText primary="GitHub" />
-            </ListItem>
-            <ListItem button onClick={onAnnouncementsClick}>
-              <ListItemIcon className="tc__header__community-menu__icon-container">
-                <TelegramIcon />
-              </ListItemIcon>
-              <ListItemText primary={getText('tempusAnnouncements', language)} />
-            </ListItem>
-            <ListItem button onClick={onChatClick}>
-              <ListItemIcon className="tc__header__community-menu__icon-container">
-                <TelegramIcon />
-              </ListItemIcon>
-              <ListItemText primary={getText('tempusChat', language)} />
-            </ListItem>
-            <ListItem button onClick={onChineseChatClick}>
-              <ListItemIcon className="tc__header__community-menu__icon-container">
-                <TelegramIcon />
-              </ListItemIcon>
-              <ListItemText primary="Tempus 中文社區" />
             </ListItem>
           </List>
         </div>
