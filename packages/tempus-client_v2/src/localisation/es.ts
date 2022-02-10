@@ -48,7 +48,7 @@ const es: { [word in Words]: string } = {
   crypto: 'Cripto',
   pool: 'Pool',
   ofPool: 'del Pool',
-  poolRatio: 'Ratio del Pool (Principales/Rendimientos)',
+  poolRatio: 'Ratio del Pool (Capital / Rendimientos)',
   redemption: 'Redención',
   earlyRedemption: 'Redención temprana',
   swap: 'Intercambiar',
@@ -83,7 +83,7 @@ const es: { [word in Words]: string } = {
   provideLiquidityDisabledNoDeposit:
     'La provisión de liquidez manual no está disponible hasta que haya depositado o acuñado.',
   provideLiquidityDisabledNoPrincipals:
-    'La provisión de liquidez manual no está disponible hasta que haya comprado más tokens principales.',
+    'La provisión de liquidez manual no está disponible hasta que haya comprado más tokens Capital.',
   provideLiquidityDisabledNoYields:
     'La provisión de liquidez manual no está disponible hasta que haya comprado más tokens de rendimiento.',
   provideLiquidityDisabledPoolMaturity:
@@ -104,7 +104,7 @@ const es: { [word in Words]: string } = {
   maturity: 'Vencimiento',
   timeLeft: 'Tiempo restante ',
   currentPosition: 'Posición actual',
-  principals: 'Principal',
+  principals: 'Capital',
   yields: 'Rendimientos',
   lpTokens: 'LP Tokens',
   staked: 'Invertido',
@@ -144,9 +144,9 @@ const es: { [word in Words]: string } = {
   tempusAnnouncements: 'Anuncios Tempus ',
   tempusChat: 'Chat de Tempus',
   interestRateProtectionTooltipText:
-    'Fija tu rendimiento futuro con Tempus. Esta función bloquea su token de inversión, emite Principal y Yields como resultado, y cambia todos los Yields por Principals a través de TempusAMM. Recibirá Principales que se canjearán 1: 1 por el activo subyacente al vencimiento.',
+    'Fija tu rendimiento futuro con Tempus. Esta función bloquea su token de inversión, emite Capital y Yields como resultado, y cambia todos los Yields por Capital a través de TempusAMM. Recibirá Capital que se canjearán 1: 1 por el activo subyacente al vencimiento.',
   liquidityProvisionTooltipText:
-    'Proporcione liquidez a Tempus para obtener un rendimiento adicional. Esta función bloquea su token  de inversión, emite Principals y Yields a cambio, y utiliza el número máximo disponible de Principals y Yields  para proporcionar liquidez a TempusAMM.<br/><br/>Esto significa que recibirá el rendimiento subyacente y las comisiones de intercambio de Tempus, acumlados en un solo rendimiento.',
+    'Proporcione liquidez a Tempus para obtener un rendimiento adicional. Esta función bloquea su token  de inversión, emite Capital y Yields a cambio, y utiliza el número máximo disponible de Capital y Yields  para proporcionar liquidez a TempusAMM.<br/><br/>Esto significa que recibirá el rendimiento subyacente y las comisiones de intercambio de Tempus, acumlados en un solo rendimiento.',
   slippageTolerance: 'Tolerancia al deslizamiento ',
   slippageTooltip: 'Tu transacción será revertida si el precio cambia desfavorablemente por más de ese porcentaje',
   auto: 'Automático',
@@ -157,8 +157,8 @@ const es: { [word in Words]: string } = {
   unstaked: 'Desinvertido',
   stakedPrincipals: 'Nominal invertido',
   stakedYields: 'Rendimientos invertidos',
-  mintDescription: 'Divida su token de rendimiento en principales y rendimientos.',
-  swapDescription: 'Intercambio entre principales y rendimientos.',
+  mintDescription: 'Divida su token de rendimiento en capital y rendimientos.',
+  swapDescription: 'Intercambio entre capital y rendimientos.',
   provideLiquidityDescription: 'Use sus tokens LP para proporcionar liquidez al grupo y ganar recompensas.',
   removeLiquidityDescription:
     'Retire su liquidez del grupo con las recompensas acumuladas en forma de sus tokens LP iniciales.',
