@@ -1,8 +1,9 @@
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { CircularProgress } from '@material-ui/core';
 import { ZERO } from '../../../constants';
-import { Ticker } from '../../../interfaces/Token';
+import { Chain, chainIdToChainName } from '../../../interfaces/Chain';
 import NumberUtils from '../../../services/NumberUtils';
+import { getChainConfigForPool } from '../../../utils/getConfig';
 import Typography from '../../typography/Typography';
 import APYGraph from '../bodySection/apyGraph';
 import {
@@ -22,7 +23,7 @@ const FixedAPRFormatter = ({ row }: any) => {
     if (isChild) {
       return getChildAPR(row.id, dynamicPoolData);
     } else {
-      return getParentAPR(row.id, staticPoolData, dynamicPoolData);
+      return getParentAPR(row.id, row.chain, staticPoolData, dynamicPoolData);
     }
   };
   const apr = getApr();
@@ -66,14 +67,17 @@ const FixedAPRFormatter = ({ row }: any) => {
 export default FixedAPRFormatter;
 
 function getParentAPR(
-  parentId: Ticker,
+  parentId: string,
+  chain: Chain,
   staticPoolData: StaticPoolDataMap,
   dynamicPoolData: DynamicPoolStateData,
 ): number | null | 'fetching' {
   const parentChildrenAddresses: string[] = [];
   for (const key in dynamicPoolData) {
+    const chainConfig = getChainConfigForPool(key);
+
     if (
-      staticPoolData[key].backingToken === parentId &&
+      `${staticPoolData[key].backingToken}-${chainIdToChainName(chainConfig.chainId.toString())}` === parentId &&
       (!dynamicPoolData[key].negativeYield || dynamicPoolData[key].userBalanceUSD?.gt(ZERO))
     ) {
       parentChildrenAddresses.push(key);

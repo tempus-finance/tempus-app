@@ -14,7 +14,9 @@ import { UserSettingsContext } from '../../../context/userSettingsContext';
 import { WalletContext } from '../../../context/walletContext';
 import { DashboardRow, isChildRow, isParentRow } from '../../../interfaces/DashboardRow';
 import { Ticker } from '../../../interfaces/Token';
+import { Chain, chainIdToChainName } from '../../../interfaces/Chain';
 import NumberUtils from '../../../services/NumberUtils';
+import { getChainConfigForPool } from '../../../utils/getConfig';
 import Spacer from '../../spacer/spacer';
 import Typography from '../../typography/Typography';
 
@@ -31,10 +33,10 @@ const AvailableToDepositFormatter = (props: DataTypeProvider.ValueFormatterProps
 
   const getParentAvailableToDeposit = () => {
     if (showFiat) {
-      return getParentAvailableToDepositInFiat(row.token, staticPoolData, dynamicPoolData);
+      return getParentAvailableToDepositInFiat(row.id, row.chain, staticPoolData, dynamicPoolData);
     }
 
-    return getParentAvailableToDepositInBackingToken(row.token, staticPoolData, dynamicPoolData);
+    return getParentAvailableToDepositInBackingToken(row.id, row.chain, staticPoolData, dynamicPoolData);
   };
   const parentAvailableToDeposit = getParentAvailableToDeposit();
 
@@ -49,7 +51,7 @@ const AvailableToDepositFormatter = (props: DataTypeProvider.ValueFormatterProps
       const currencySymbol = '$';
       content = `${currencySymbol}${NumberUtils.formatWithMultiplier(
         // TODO - Use backing token precision from child items
-        ethers.utils.formatUnits(parentAvailableToDeposit, tokenPrecision[row.id]),
+        ethers.utils.formatUnits(parentAvailableToDeposit, tokenPrecision[row.token]),
         2,
       )}`;
     } else {
@@ -58,7 +60,7 @@ const AvailableToDepositFormatter = (props: DataTypeProvider.ValueFormatterProps
           {/* TODO - Use decimalsForUI precision from child items (max precision) */}
           {/* TODO - Use backing token precision from child items */}
           {NumberUtils.formatWithMultiplier(
-            ethers.utils.formatUnits(parentAvailableToDeposit, tokenPrecision[row.id]),
+            ethers.utils.formatUnits(parentAvailableToDeposit, tokenPrecision[row.token]),
             4,
           )}
           <Spacer size={5} />
@@ -143,14 +145,17 @@ const AvailableToDepositFormatter = (props: DataTypeProvider.ValueFormatterProps
 };
 
 const getParentAvailableToDepositInFiat = (
-  parentId: Ticker,
+  parentId: string,
+  chain: Chain,
   staticPoolData: StaticPoolDataMap,
   dynamicPoolData: DynamicPoolStateData,
 ) => {
   const parentChildrenAddresses: string[] = [];
   for (const key in dynamicPoolData) {
+    const chainConfig = getChainConfigForPool(key);
+
     if (
-      staticPoolData[key].backingToken === parentId &&
+      `${staticPoolData[key].backingToken}-${chainIdToChainName(chainConfig.chainId.toString())}` === parentId &&
       (!dynamicPoolData[key].negativeYield || dynamicPoolData[key].userBalanceUSD?.gt(ZERO))
     ) {
       parentChildrenAddresses.push(key);
@@ -187,14 +192,17 @@ const getParentAvailableToDepositInFiat = (
 };
 
 const getParentAvailableToDepositInBackingToken = (
-  parentId: Ticker,
+  parentId: string,
+  chain: Chain,
   staticPoolData: StaticPoolDataMap,
   dynamicPoolData: DynamicPoolStateData,
 ) => {
   const parentChildrenAddresses: string[] = [];
   for (const key in dynamicPoolData) {
+    const chainConfig = getChainConfigForPool(key);
+
     if (
-      staticPoolData[key].backingToken === parentId &&
+      `${staticPoolData[key].backingToken}-${chainIdToChainName(chainConfig.chainId.toString())}` === parentId &&
       (!dynamicPoolData[key].negativeYield || dynamicPoolData[key].userBalanceUSD?.gt(ZERO))
     ) {
       parentChildrenAddresses.push(key);

@@ -168,7 +168,7 @@ describe('DashboardDataAdapter', () => {
       MOCK_TEMPUS_POOL.forEach(tempusPool => {
         expect(dashboardDataAdapter['getChildRowData'](tempusPool as TempusPool, 'fantom')).toEqual({
           id: tempusPool.address,
-          parentId: tempusPool.backingToken,
+          parentId: `${tempusPool.backingToken}-fantom`,
           token: tempusPool.backingToken,
           tempusPool: tempusPool,
           supportedTokens: [tempusPool.backingToken, tempusPool.yieldBearingToken],
@@ -184,7 +184,8 @@ describe('DashboardDataAdapter', () => {
     test('returns parent rows from given child rows', () => {
       const childRows = [
         {
-          parentId: 'ETH',
+          parentId: 'ETH-ethereum',
+          chain: 'ethereum',
           token: 'ETH',
           maturityDate: new Date(2022, 0, 1),
           tempusPool: {
@@ -192,7 +193,8 @@ describe('DashboardDataAdapter', () => {
           },
         },
         {
-          parentId: 'ETH',
+          parentId: 'ETH-ethereum',
+          chain: 'ethereum',
           token: 'ETH',
           maturityDate: new Date(2022, 3, 1),
           tempusPool: {
@@ -200,7 +202,8 @@ describe('DashboardDataAdapter', () => {
           },
         },
         {
-          parentId: 'ETH',
+          parentId: 'ETH-ethereum',
+          chain: 'ethereum',
           token: 'ETH',
           maturityDate: new Date(2022, 6, 1),
           tempusPool: {
@@ -208,7 +211,8 @@ describe('DashboardDataAdapter', () => {
           },
         },
         {
-          parentId: 'USDC',
+          parentId: 'USDC-ethereum',
+          chain: 'ethereum',
           token: 'USDC',
           maturityDate: new Date(2022, 0, 1),
           tempusPool: {
@@ -216,7 +220,8 @@ describe('DashboardDataAdapter', () => {
           },
         },
         {
-          parentId: 'USDC',
+          parentId: 'USDC-ethereum',
+          chain: 'ethereum',
           token: 'USDC',
           maturityDate: new Date(2022, 6, 1),
           tempusPool: {
@@ -224,7 +229,8 @@ describe('DashboardDataAdapter', () => {
           },
         },
         {
-          parentId: 'USDC',
+          parentId: 'USDC-ethereum',
+          chain: 'ethereum',
           token: 'USDC',
           maturityDate: new Date(2022, 0, 1),
           tempusPool: {
@@ -232,7 +238,8 @@ describe('DashboardDataAdapter', () => {
           },
         },
         {
-          parentId: 'USDC',
+          parentId: 'USDC-ethereum',
+          chain: 'ethereum',
           token: 'USDC',
           maturityDate: new Date(2022, 3, 1),
           tempusPool: {
@@ -240,7 +247,8 @@ describe('DashboardDataAdapter', () => {
           },
         },
         {
-          parentId: 'USDC',
+          parentId: 'USDC-ethereum',
+          chain: 'ethereum',
           token: 'USDC',
           maturityDate: new Date(2022, 6, 1),
           tempusPool: {
@@ -250,14 +258,16 @@ describe('DashboardDataAdapter', () => {
       ];
       const expected = [
         {
-          id: 'ETH',
+          id: 'ETH-ethereum',
+          chain: 'ethereum',
           maturityRange: [new Date(2022, 0, 1), new Date(2022, 6, 1)],
           parentId: null,
           protocols: ['lido'],
           token: 'ETH',
         },
         {
-          id: 'USDC',
+          id: 'USDC-ethereum',
+          chain: 'ethereum',
           maturityRange: [new Date(2022, 0, 1), new Date(2022, 6, 1)],
           parentId: null,
           protocols: ['rari', 'yearn'],
