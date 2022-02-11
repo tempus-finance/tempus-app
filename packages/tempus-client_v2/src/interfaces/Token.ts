@@ -4,7 +4,7 @@ export type Ticker =
   | 'DAI'
   | 'ETH'
   | 'LIDO'
-  | 'Principals'
+  | 'Principals' // referred to as 'Capital' in the UI
   | 'Yields'
   | 'TLPT'
   | 'TUSD'
@@ -18,6 +18,8 @@ export type Ticker =
   | 'YEARN'
   | 'FANTOM'
   | 'USDT'
+  | 'fUSDT'
+  | 'BTC'
   | 'WBTC'
   | 'WETH'
   | 'wFTM'
