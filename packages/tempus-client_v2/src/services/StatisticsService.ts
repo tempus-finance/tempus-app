@@ -1,20 +1,15 @@
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
 import { BigNumber, CallOverrides, Contract, ethers } from 'ethers';
-import Axios from 'axios';
 import { Stats } from '../abi/Stats';
 import StatsABI from '../abi/Stats.json';
-import { tokenPrecision } from '../constants';
+import { DEFAULT_TOKEN_PRECISION, tokenPrecision } from '../constants';
 import { Chain } from '../interfaces/Chain';
 import { decreasePrecision, div18f, mul18f } from '../utils/weiMath';
+import getTokenPrecision from '../utils/getTokenPrecision';
 import { Ticker } from '../interfaces/Token';
 import TempusAMMService from './TempusAMMService';
 import getChainlinkFeed from './getChainlinkFeed';
-import getTokenPrecision from '../utils/getTokenPrecision';
-
-const backingTokenToCoingeckoIdMap = new Map<string, string>();
-backingTokenToCoingeckoIdMap.set('ETH', 'ethereum');
-backingTokenToCoingeckoIdMap.set('USDC', 'usd-coin');
-backingTokenToCoingeckoIdMap.set('DAI', 'dai');
+import { getCoingeckoRate } from './coinGeckoFeed';
 
 type StatisticsServiceParameters = {
   Contract: typeof Contract;
@@ -28,8 +23,6 @@ class StatisticsService {
   private stats: Stats | null = null;
 
   private tempusAMMService: TempusAMMService | null = null;
-
-  private coinGeckoCache = new Map<string, { promise: Promise<any>; cachedAt: number }>();
 
   init(params: StatisticsServiceParameters) {
     try {
@@ -94,7 +87,8 @@ class StatisticsService {
         error,
       );
 
-      const rate = await this.getCoingeckoRate(poolBackingTokenTicker);
+      const precision = tokenPrecision[poolBackingTokenTicker] || DEFAULT_TOKEN_PRECISION;
+      const rate = await getCoingeckoRate(poolBackingTokenTicker, precision);
 
       let backingTokensLocked: BigNumber;
       try {
@@ -111,42 +105,6 @@ class StatisticsService {
     }
 
     return totalValueLockedUSD;
-  }
-
-  async getCoingeckoRate(token: Ticker) {
-    const coinGeckoTokenId = backingTokenToCoingeckoIdMap.get(token);
-    if (!coinGeckoTokenId) {
-      return Promise.reject();
-    }
-
-    const cachedResponse = this.coinGeckoCache.get(coinGeckoTokenId);
-    if (cachedResponse && cachedResponse.cachedAt > Date.now() - 60000) {
-      return ethers.utils.parseEther((await cachedResponse.promise).data[coinGeckoTokenId].usd.toString());
-    }
-
-    let value: BigNumber;
-    try {
-      const promise = Axios.get<any>(
-        `https://api.coingecko.com/api/v3/simple/price?ids=${coinGeckoTokenId}&vs_currencies=usd`,
-      );
-
-      this.coinGeckoCache.set(coinGeckoTokenId, {
-        promise: promise,
-        cachedAt: Date.now(),
-      });
-
-      const result = await promise;
-
-      value = ethers.utils.parseUnits(result.data[coinGeckoTokenId].usd.toString(), tokenPrecision[token]);
-    } catch (error) {
-      console.error(`Failed to get token '${token}' exchange rate from coin gecko!`, error);
-      if (['USDC', 'DAI'].includes(token)) {
-        return ethers.utils.parseUnits('1.00', tokenPrecision[token]);
-      }
-      return Promise.reject(error);
-    }
-
-    return value;
   }
 
   /**
@@ -176,7 +134,8 @@ class StatisticsService {
         `Failed to get exchange rate for ${tokenTicker} from stats contract, falling back to CoinGecko API!`,
       );
 
-      return this.getCoingeckoRate(tokenTicker);
+      const precision = tokenPrecision[tokenTicker] || DEFAULT_TOKEN_PRECISION;
+      return getCoingeckoRate(tokenTicker, precision);
     }
 
     // TODO - Refactor getRate function to accept token precision as well as a parameter

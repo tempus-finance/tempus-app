@@ -1,4 +1,5 @@
 import { BigNumber } from '@ethersproject/bignumber';
+import { Ticker } from './interfaces/Token';
 
 export const MILLISECONDS_IN_A_YEAR = 31536000000;
 export const DAYS_IN_A_YEAR = 365;
@@ -37,12 +38,14 @@ export const dashboardChildMaturityFormat = 'd MMMM yyyy';
 
 export const POLLING_INTERVAL = 30 * 1000;
 
-export const tokenPrecision: { [ticker: string]: number } = {
+export const tokenPrecision: { [ticker in Ticker]?: number } = {
   ETH: 18,
   USDC: 6,
   DAI: 18,
   USDT: 6,
+  fUSDT: 6,
   WBTC: 8,
+  BTC: 8,
   WETH: 18,
   YFI: 18,
 };
@@ -58,7 +61,7 @@ export enum SupportedChainId {
   TEMPUS_AWS = 31337,
 }
 
-export const supportedChainIds = [
+export const supportedChainIds: SupportedChainId[] = [
   SupportedChainId.MAINNET,
   SupportedChainId.LOCAL,
   SupportedChainId.TEMPUS_AWS,
