@@ -15,7 +15,7 @@ const en: { [word in Words]: string } = {
     'By connecting your wallet, you agree to be bound by the <a href="https://tempus.finance/terms-of-service" target="_blank">Tempus Terms of Service</a> and acknowledge that you have read and understand the <a href="https://tempus.finance/disclaimer" target="_blank">Tempus Protocol Disclaimer</a>.',
   metamaskConnected: 'MetaMask connected',
   changeNetworkRejected: 'Request to change network rejected by user',
-  changeNetworkRejectedExplain: 'In order to use the app, please connect using Mainnet network',
+  changeNetworkRejectedExplain: 'In order to use the app, please connect to a supported network',
   unsupportedNetwork: 'Unsupported wallet network',
   unsupportedNetworkExplain: 'We support Ethereum and Fantom networks only',
   walletConnectConnected: 'WalletConnect connected',
@@ -171,5 +171,10 @@ const en: { [word in Words]: string } = {
   selectNetwork: 'Select Network',
   combinedApr: 'Combined APR',
   governance: 'Governance',
+  unsupported: 'Unsupported',
+  switchNetwork: 'Switch Network',
+  unsupportedNetworkTooltipTitle: 'Unsupported Network',
+  unsupportedNetworkTooltipText1: 'The network your wallet is connected to doesn’t match the network selected here.',
+  unsupportedNetworkTooltipText2: 'Please connect to a supported network in order to proceed.',
 };
 export default en;

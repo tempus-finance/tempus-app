@@ -72,13 +72,7 @@ const DashboardManager: FC = (): JSX.Element => {
     [navigate],
   );
 
-  return (
-    <>
-      {rows.length !== 0 && (
-        <Dashboard rows={rows} userWalletAddress={userWalletAddress} onRowActionClick={onRowActionClick} />
-      )}
-    </>
-  );
+  return <Dashboard rows={rows} userWalletAddress={userWalletAddress} onRowActionClick={onRowActionClick} />;
 };
 
 const excludeNonPositiveRariPools = (

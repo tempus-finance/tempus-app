@@ -15,7 +15,7 @@ const es: { [word in Words]: string } = {
     'Al conectar su billetera, acepta estar sujeto a los <a href="https://tempus.finance/terms-of-service" target="_blank">Términos de servicio de Tempus</a>  y reconoce que ha leído y comprende el Descargo de responsabilidad del <a href="https://tempus.finance/disclaimer" target="_blank">Protocolo de Tempus.</a>',
   metamaskConnected: 'MetaMask conectado',
   changeNetworkRejected: 'Solicitud para cambiar la red rechazada por el usuario',
-  changeNetworkRejectedExplain: 'Para usar la aplicación, porfavor conéctese usando la red Goerli/Mainnet',
+  changeNetworkRejectedExplain: 'Para usar la aplicación, conéctese a una de las redes admitidas',
   unsupportedNetwork: 'Red de billetera no compatible',
   unsupportedNetworkExplain: 'Apoyamos redes Mainnet o Fantom',
   walletConnectConnected: 'WalletConnect conectado',
@@ -172,5 +172,11 @@ const es: { [word in Words]: string } = {
   selectNetwork: 'Seleccione el Network',
   poolActionDisabledTitle: 'Ciertas acciones para este grupo están deshabilitadas temporalmente',
   governance: 'Gobernancia',
+  unsupported: 'No soportado',
+  switchNetwork: 'Cambiar red',
+  unsupportedNetworkTooltipTitle: 'Red no compatible',
+  unsupportedNetworkTooltipText1:
+    'La red a la que está conectada su billetera no coincide con la red seleccionada aquí.',
+  unsupportedNetworkTooltipText2: 'Conéctese a una red compatible para continuar.',
 };
 export default es;

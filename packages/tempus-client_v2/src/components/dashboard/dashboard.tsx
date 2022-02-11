@@ -252,6 +252,7 @@ const Dashboard: FC<DashboardProps> = ({ userWalletAddress, rows, onRowActionCli
                 columnExtensions={tableColumnExtensions}
                 rowComponent={BodyRow}
                 cellComponent={BodyCellFactory}
+                messages={{ noData: '' }}
               />
               <TableHeaderRow
                 rowComponent={HeaderRow}

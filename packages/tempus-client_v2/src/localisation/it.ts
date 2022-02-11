@@ -15,7 +15,7 @@ const it: { [word in Words]: string } = {
     'Connettendo un portafoglio, dichiari di essere soggetto ai <a href="https://tempus.finance/terms-of-service" target="_blank">Termini di Servizio di Tempus</a> e confermi di avere letto e compreso <a href="https://tempus.finance/disclaimer" target="_blank">l\'avvertimento sul Protocollo Tempus</a>.',
   metamaskConnected: 'MetaMask connesso',
   changeNetworkRejected: 'Richiesta cambiamento network rifiutata dall`utente',
-  changeNetworkRejectedExplain: "Per poter usare l'applicazione, per favore connettiti al network Mainnet",
+  changeNetworkRejectedExplain: "Per poter usare l'applicazione, per favore connettiti a uno dei network supportati",
   unsupportedNetwork: 'Network del portafoglio non supportato',
   unsupportedNetworkExplain: 'Supportiamo solo i network Ethernet o Fantom',
   walletConnectConnected: 'WalletConnect connesso',
@@ -173,5 +173,11 @@ const it: { [word in Words]: string } = {
   poolActionDisabledTitle: 'Alcune operazioni su questa pool sono temporaneamente disabilitate',
   selectNetwork: 'Seleziona Network',
   governance: 'Governo',
+  unsupported: 'Non supportato',
+  switchNetwork: 'Cambia Network',
+  unsupportedNetworkTooltipTitle: 'Network non supportato',
+  unsupportedNetworkTooltipText1:
+    'Il network al quale il tuo portafogli è collegato non corrisponde al network selezionato qui.',
+  unsupportedNetworkTooltipText2: 'Per favore connettiti ad un network supportato per continuare.',
 };
 export default it;

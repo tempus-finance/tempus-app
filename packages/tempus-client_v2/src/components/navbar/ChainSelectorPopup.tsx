@@ -1,7 +1,7 @@
 import { FC, useCallback } from 'react';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { getChainConfig } from '../../utils/getConfig';
-import { selectedChainState } from '../../state/ChainState';
+import { selectedChainState, unsupportedNetworkState } from '../../state/ChainState';
 import { Chain, chainNameToHexChainId, prettifyChainNameLong } from '../../interfaces/Chain';
 import TickIcon from '../icons/TickIcon';
 import Modal from '../modal/Modal';
@@ -37,6 +37,7 @@ const ChainSelectorPopup: FC<ChainSelectorPopupProps> = ({
   requestAddNetwork,
 }) => {
   const selectedChain = useHookState(selectedChainState);
+  const unsupportedNetwork = useHookState(unsupportedNetworkState);
 
   const selectedChainName = selectedChain.attach(Downgraded).get();
 
@@ -48,6 +49,7 @@ const ChainSelectorPopup: FC<ChainSelectorPopupProps> = ({
         const requestAccepted = await requestNetworkChange(chainId, false, false);
         if (requestAccepted) {
           selectedChain.set(chain);
+          unsupportedNetwork.set(false);
         }
       } catch (error: any) {
         // Network we tried to switch to is not yet added to MetaMask
@@ -69,6 +71,7 @@ const ChainSelectorPopup: FC<ChainSelectorPopupProps> = ({
           );
           if (requestAccepted) {
             selectedChain.set(chain);
+            unsupportedNetwork.set(false);
           }
         } else {
           console.warn('Canceling network change in the app, wallet network change request failed!');
@@ -77,7 +80,7 @@ const ChainSelectorPopup: FC<ChainSelectorPopupProps> = ({
 
       onClose();
     },
-    [selectedChain, onClose, requestNetworkChange, requestAddNetwork],
+    [selectedChain, unsupportedNetwork, onClose, requestNetworkChange, requestAddNetwork],
   );
 
   const ethereumSelected = selectedChainName === 'ethereum';
