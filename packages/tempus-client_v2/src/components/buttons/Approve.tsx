@@ -13,6 +13,7 @@ import { Chain } from '../../interfaces/Chain';
 import { PendingTransactionsContext } from '../../context/pendingTransactionsContext';
 import { LanguageContext } from '../../context/languageContext';
 import { WalletContext } from '../../context/walletContext';
+import wait from '../../utils/wait';
 import TickNegativeIcon from '../icons/TickNegativeIcon';
 import getText from '../../localisation/getText';
 import Spacer from '../spacer/spacer';
@@ -75,6 +76,21 @@ const Approve: FC<ApproveButtonProps> = props => {
 
   const viewLinkText = `${getText('viewOn', language)} ${blockExplorerName}`;
 
+  const fetchAllowance = useCallback(async () => {
+    if (!userWalletSigner || !tokenToApproveAddress) {
+      return;
+    }
+
+    const poolDataAdapter = getPoolDataAdapter(chain, userWalletSigner);
+    const result = await poolDataAdapter.getTokenAllowance(
+      tokenToApproveAddress,
+      spenderAddress,
+      userWalletAddress,
+      userWalletSigner,
+    );
+    setAllowance(result);
+  }, [chain, spenderAddress, tokenToApproveAddress, userWalletAddress, userWalletSigner]);
+
   /**
    * Called when user clicks on the approve button.
    */
@@ -117,11 +133,24 @@ const Approve: FC<ApproveButtonProps> = props => {
         if (tokenToApproveTicker) {
           getNotificationService().warn(chain, 'Transaction', getText(`approvalFailed`, language), content);
         }
+
+        // Fantom RPC has issues with sync,
+        // waiting a bit before fetching new allowance gives
+        // time to RPC to sync with blockchain
+        await wait(2000);
+        await fetchAllowance();
+
         setApproveInProgress(false);
         return;
       }
 
       if (!transaction) {
+        // Fantom RPC has issues with sync,
+        // waiting a bit before fetching new allowance gives
+        // time to RPC to sync with blockchain
+        await wait(2000);
+        await fetchAllowance();
+
         setApproveInProgress(false);
         return;
       }
@@ -167,6 +196,12 @@ const Approve: FC<ApproveButtonProps> = props => {
           getNotificationService().warn(chain, 'Transaction', `Approval Failed`, content, link, viewLinkText);
         }
 
+        // Fantom RPC has issues with sync,
+        // waiting a bit before fetching new allowance gives
+        // time to RPC to sync with blockchain
+        await wait(2000);
+        await fetchAllowance();
+
         setApproveInProgress(false);
         return;
       }
@@ -186,14 +221,11 @@ const Approve: FC<ApproveButtonProps> = props => {
       }
 
       // After approve completes, we need to set new allowance value
-      setAllowance(
-        await poolDataAdapter.getTokenAllowance(
-          tokenToApproveAddress,
-          spenderAddress,
-          userWalletAddress,
-          userWalletSigner,
-        ),
-      );
+      // Fantom RPC has issues with sync,
+      // waiting a bit before fetching new allowance gives
+      // time to RPC to sync with blockchain
+      await wait(2000);
+      await fetchAllowance();
 
       setApproveInProgress(false);
     };
@@ -204,10 +236,10 @@ const Approve: FC<ApproveButtonProps> = props => {
     userWalletSigner,
     amountToApprove,
     setPendingTransactions,
+    fetchAllowance,
     tokenToApproveAddress,
     tokenToApproveTicker,
     spenderAddress,
-    userWalletAddress,
     backingToken,
     protocol,
     maturityDate,
@@ -216,23 +248,8 @@ const Approve: FC<ApproveButtonProps> = props => {
 
   // Fetch current token allowance from contract
   useEffect(() => {
-    const getAllowance = async () => {
-      if (!userWalletSigner || !tokenToApproveAddress) {
-        return;
-      }
-
-      const poolDataAdapter = getPoolDataAdapter(chain, userWalletSigner);
-      setAllowance(
-        await poolDataAdapter.getTokenAllowance(
-          tokenToApproveAddress,
-          spenderAddress,
-          userWalletAddress,
-          userWalletSigner,
-        ),
-      );
-    };
-    getAllowance();
-  }, [userWalletSigner, spenderAddress, tokenToApproveAddress, userWalletAddress, chain]);
+    fetchAllowance();
+  }, [fetchAllowance]);
 
   /**
    * Checks if tokens are approved.
