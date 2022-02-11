@@ -55,8 +55,6 @@ const VariableAPRProvider = () => {
           return document.hasFocus() && Boolean(userWalletSigner);
         }),
         switchMap(() => {
-          console.log(`Fetching variable APR for pool ${tempusPool.address} on chain ${chain}`);
-
           const variableRateService = getVariableRateService(chain, userWalletSigner || undefined);
 
           // Get fees for Tempus Pool
