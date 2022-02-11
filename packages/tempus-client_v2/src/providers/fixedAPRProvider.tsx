@@ -25,8 +25,6 @@ const FixedAPRProvider = () => {
    */
   const fetchAPR = useCallback(
     (chain: Chain, tempusPool: TempusPool): Observable<{ address: string; fixedAPR: number | null }> => {
-      const poolDataAdapter = getPoolDataAdapter(chain, userWalletSigner || undefined);
-
       const spotPriceParsed = ethers.utils.parseUnits(
         tempusPool.spotPrice,
         getTokenPrecision(tempusPool.address, 'backingToken'),
@@ -44,6 +42,8 @@ const FixedAPRProvider = () => {
           return document.hasFocus() && Boolean(userWalletSigner);
         }),
         switchMap(() => {
+          const poolDataAdapter = getPoolDataAdapter(chain, userWalletSigner || undefined);
+
           const estimateDepositAndFixFromBackingToken = true;
           const fixedAPRPromise = poolDataAdapter.getEstimatedFixedApr(
             spotPriceParsed,
