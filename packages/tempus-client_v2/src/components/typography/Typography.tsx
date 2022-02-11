@@ -225,7 +225,7 @@ const Typography: FC<TypographyProps & React.HTMLProps<'div'>> = props => {
         color: color,
         textTransform: props.capitalize ? 'capitalize' : 'none',
         textAlign: props.align ? props.align : 'unset',
-        whiteSpace: props.noWrap ? 'nowrap' : 'normal',
+        whiteSpace: props.noWrap ? 'nowrap' : 'unset',
       }}
     >
       {html ? parse(html) : children}
