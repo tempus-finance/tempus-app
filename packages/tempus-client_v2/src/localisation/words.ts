@@ -149,6 +149,11 @@ type Words =
   | 'depositDisabledByConfig'
   | 'mintDisabledByConfig'
   | 'selectNetwork'
-  | 'governance';
+  | 'governance'
+  | 'unsupported'
+  | 'switchNetwork'
+  | 'unsupportedNetworkTooltipTitle'
+  | 'unsupportedNetworkTooltipText1'
+  | 'unsupportedNetworkTooltipText2';
 
 export default Words;

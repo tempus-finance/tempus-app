@@ -14,7 +14,9 @@ type TypographyVariant =
   | 'dropdown-text'
   | 'card-title'
   | 'card-body-text'
+  | 'tooltip-card-title'
   | 'tooltip-card-text'
+  | 'tooltip-card-text-bold'
   | 'fractional'
   | 'yield-card-header'
   | 'yield-card-type'
@@ -109,12 +111,26 @@ typographyStyleMap.set('card-body-text', {
   fontStyle: 'normal',
   lineHeight: '20px',
 });
+typographyStyleMap.set('tooltip-card-title', {
+  fontFamily: "'Source Sans Pro', sans-serif",
+  fontWeight: 700,
+  fontSize: '16px',
+  fontStyle: 'normal',
+  lineHeight: '24px',
+});
 typographyStyleMap.set('tooltip-card-text', {
   fontFamily: "'Source Sans Pro', sans-serif",
   fontWeight: 400,
   fontSize: '16px',
   fontStyle: 'normal',
   lineHeight: '22px',
+});
+typographyStyleMap.set('tooltip-card-text-bold', {
+  fontFamily: "'Source Sans Pro', sans-serif",
+  fontWeight: 500,
+  fontSize: '16px',
+  fontStyle: 'normal',
+  lineHeight: '24px',
 });
 typographyStyleMap.set('fractional', {
   fontFamily: "'Source Sans Pro', sans-serif",

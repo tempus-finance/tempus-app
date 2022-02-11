@@ -13,7 +13,7 @@ import { PendingTransactionsContext } from '../../context/pendingTransactionsCon
 import { UserSettingsContext } from '../../context/userSettingsContext';
 import { WalletContext } from '../../context/walletContext';
 import { getChainConfig } from '../../utils/getConfig';
-import { selectedChainState } from '../../state/ChainState';
+import { selectedChainState, unsupportedNetworkState } from '../../state/ChainState';
 import NumberUtils from '../../services/NumberUtils';
 import UserWallet from '../../interfaces/UserWallet';
 import { chainToTicker, chainIdToChainName } from '../../interfaces/Chain';
@@ -30,6 +30,9 @@ import WalletSelector from './WalletSelector';
 import WalletPopup from './WalletPopup';
 import WalletAvatar from './WalletAvatar';
 import TokenIcon from '../tokenIcon';
+import WarnIcon from '../icons/WarnIcon';
+import InfoTooltip from '../infoTooltip/infoTooltip';
+import WalletUnsupportedTooltip from './WalletUnsupportedTooltip';
 
 import './Wallet.scss';
 
@@ -45,8 +48,10 @@ const Wallet = () => {
   const { setUserSettings } = useContext(UserSettingsContext);
 
   const selectedChain = useHookState(selectedChainState);
+  const unsupportedNetwork = useHookState(unsupportedNetworkState);
 
   const selectedChainName = selectedChain.attach(Downgraded).get();
+  const isUnsupportedNetwork = unsupportedNetwork.attach(Downgraded).get();
 
   const walletPopupAnchor = useRef<HTMLDivElement>(null);
 
@@ -56,6 +61,7 @@ const Wallet = () => {
   });
   const [connecting, setConnecting] = useState<boolean>(false);
   const [chainSelectorOpen, setChainSelectorOpen] = useState<boolean>(false);
+  const unsupportedNetworkRef = useRef<HTMLDivElement>(null);
 
   const onOpenChainSelector = useCallback(() => {
     setChainSelectorOpen(true);
@@ -90,6 +96,11 @@ const Wallet = () => {
     }
   }, [setUserSettings]);
 
+  const onClickUnsupportedNetworkButton = useCallback(() => {
+    unsupportedNetworkRef.current && unsupportedNetworkRef.current.click();
+    onOpenChainSelector();
+  }, [unsupportedNetworkRef, onOpenChainSelector]);
+
   useEffect(() => {
     if (!active) {
       return;
@@ -103,6 +114,10 @@ const Wallet = () => {
         const selected = chainIdToChainName(chainId);
         if (selected) {
           selectedChain.set(selected);
+          unsupportedNetwork.set(false);
+        } else {
+          selectedChain.set(null);
+          unsupportedNetwork.set(true);
         }
       });
     };
@@ -251,9 +266,8 @@ const Wallet = () => {
           setSelectedWallet(null);
           console.error('onMetaMaskSelected', error);
           if (error instanceof UnsupportedChainIdError) {
-            // TODO - We should probably request network change to network that is currently selected in the app network selector
-            // Request user to change network to ethereum mainnet
-            requestNetworkChange('0x1', showWalletConnectedNotification, true);
+            selectedChain.set(null);
+            unsupportedNetwork.set(true);
           } else {
             getNotificationService().warn('Wallet', getText('errorConnectingWallet', language), '');
           }
@@ -264,7 +278,7 @@ const Wallet = () => {
       setConnecting(true);
       connect(lastSelectedWallet);
     },
-    [language, active, activate, deactivate, setWalletData, requestNetworkChange],
+    [language, active, activate, deactivate, setWalletData, selectedChain, unsupportedNetwork],
   );
 
   const onWalletConnectSelected = useCallback(
@@ -307,9 +321,8 @@ const Wallet = () => {
           setSelectedWallet(null);
           console.error('onWalletConnectSelected', error);
           if (error instanceof UnsupportedChainIdError) {
-            // TODO - We should probably request network change to network that is currently selected in the app network selector
-            // Request user to change network to ethereum mainnet
-            requestNetworkChange('0x1', showWalletConnectedNotification, true);
+            selectedChain.set(null);
+            unsupportedNetwork.set(true);
           } else {
             getNotificationService().warn('Wallet', getText('errorConnectingWallet', language), '');
           }
@@ -320,7 +333,7 @@ const Wallet = () => {
       setConnecting(true);
       connect(lastSelectedWallet);
     },
-    [language, active, activate, deactivate, setWalletData, requestNetworkChange],
+    [language, active, activate, deactivate, setWalletData, selectedChain, unsupportedNetwork],
   );
 
   const onCloseWalletSelector = useCallback(
@@ -367,9 +380,8 @@ const Wallet = () => {
 
           // User has connected wallet, but currently selected network in user wallet is not supported.
           if (typeof chainId === 'string' && !supportedChainIds.includes(parseInt(chainId))) {
-            // TODO - We should probably request network change to network that is currently selected in the app network selector
-            // Request user to change network to ethereum mainnet
-            requestNetworkChange('0x1', false, true);
+            selectedChain.set(null);
+            unsupportedNetwork.set(true);
             return;
           }
           if (authorized) {
@@ -407,9 +419,8 @@ const Wallet = () => {
 
           // User has connected wallet, but currently selected network in user wallet is not supported.
           if (typeof chainId === 'string' && !supportedChainIds.includes(parseInt(chainId))) {
-            // TODO - We should probably request network change to network that is currently selected in the app network selector
-            // Request user to change network to ethereum mainnet
-            requestNetworkChange('0x1', false, true);
+            selectedChain.set(null);
+            unsupportedNetwork.set(true);
             return;
           }
           if (authorized) {
@@ -441,7 +452,7 @@ const Wallet = () => {
         checkMetaMaskConnection();
       }
     }
-  }, [active, setWalletData, activate, requestNetworkChange, setSelectedWallet]);
+  }, [active, setWalletData, activate, setSelectedWallet, selectedChain, unsupportedNetwork]);
 
   useEffect(() => {
     if (!active) {
@@ -498,54 +509,71 @@ const Wallet = () => {
         {connecting && <CircularProgress size={18} />}
 
         {/* Wallet not connected - show connect wallet button */}
-        {!connecting && !selectedWallet && (
+        {!connecting && !selectedWallet && !isUnsupportedNetwork && (
           <div className="tc__connect-wallet-button" onClick={onSelectWallet}>
             <Typography variant="button-text">{getText('connectWallet', language)}</Typography>
           </div>
         )}
 
         {/* Wallet connected - show wallet info */}
-        {!connecting && selectedWallet && active && formattedPrimaryTokenBalance && selectedChainName && (
-          <>
-            <div className="tc__connect-wallet-network-picker" onClick={onOpenChainSelector}>
-              <TokenIcon
-                ticker={chainToTicker(selectedChainName)}
-                width={24}
-                height={24}
-                // TODO - Clean up during TokenIcon refactor
-                // 1. Remove small/large icons - we only need one size
-                // 2. Store original svg size for each icon
-                // 3. Use original size for svg viewport size
-                // 4. Set desired width and height for UI
-                vectorWidth={selectedChainName === 'ethereum' ? 20 : 24}
-                vectorHeight={selectedChainName === 'ethereum' ? 20 : 24}
-              />
-            </div>
-            <div className="tc__connect-wallet-button" onClick={onOpenWalletPopup} ref={walletPopupAnchor}>
-              <WalletAvatar avatar={ensAvatar} name={ensName || account} />
+        {!connecting &&
+          selectedWallet &&
+          active &&
+          formattedPrimaryTokenBalance &&
+          selectedChainName &&
+          !isUnsupportedNetwork && (
+            <>
+              <div className="tc__connect-wallet-network-picker" onClick={onOpenChainSelector}>
+                <TokenIcon
+                  ticker={chainToTicker(selectedChainName)}
+                  width={24}
+                  height={24}
+                  // TODO - Clean up during TokenIcon refactor
+                  // 1. Remove small/large icons - we only need one size
+                  // 2. Store original svg size for each icon
+                  // 3. Use original size for svg viewport size
+                  // 4. Set desired width and height for UI
+                  vectorWidth={selectedChainName === 'ethereum' ? 20 : 24}
+                  vectorHeight={selectedChainName === 'ethereum' ? 20 : 24}
+                />
+              </div>
+              <div className="tc__connect-wallet-button" onClick={onOpenWalletPopup} ref={walletPopupAnchor}>
+                <WalletAvatar avatar={ensAvatar} name={ensName || account} />
 
-              <Spacer size={8} />
+                <Spacer size={8} />
 
-              {/* In case there are no pending transactions, show wallet address or ENS name if it's available */}
-              {pendingTransactions.length === 0 && (
-                <div className="tc__connect-wallet-button__info">
-                  <Typography variant="wallet-info">{ensName || shortenedAccount}</Typography>
-                  <div className="tc__connect-wallet-button__balance">
-                    <Typography variant="wallet-info-bold">{formattedPrimaryTokenBalance}</Typography>
-                    <Spacer size={8} />
-                    <Typography variant="wallet-info">{getChainConfig(selectedChainName).nativeToken}</Typography>
+                {/* In case there are no pending transactions, show wallet address or ENS name if it's available */}
+                {pendingTransactions.length === 0 && (
+                  <div className="tc__connect-wallet-button__info">
+                    <Typography variant="wallet-info">{ensName || shortenedAccount}</Typography>
+                    <div className="tc__connect-wallet-button__balance">
+                      <Typography variant="wallet-info-bold">{formattedPrimaryTokenBalance}</Typography>
+                      <Spacer size={8} />
+                      <Typography variant="wallet-info">{getChainConfig(selectedChainName).nativeToken}</Typography>
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
 
-              {/* In case there are pending transactions, show number of pending transactions */}
-              {pendingTransactions.length > 0 && (
-                <Typography variant="h5">
-                  {pendingTransactions.length} {getText('pending', language)}
-                </Typography>
-              )}
+                {/* In case there are pending transactions, show number of pending transactions */}
+                {pendingTransactions.length > 0 && (
+                  <Typography variant="h5">
+                    {pendingTransactions.length} {getText('pending', language)}
+                  </Typography>
+                )}
+              </div>
+            </>
+          )}
+
+        {/* Wallet connected - but unsupported network */}
+        {!connecting && isUnsupportedNetwork && (
+          <InfoTooltip content={<WalletUnsupportedTooltip onClickSwitchNetwork={onClickUnsupportedNetworkButton} />}>
+            <div className="tc__connect-wallet-network-picker">
+              <WarnIcon />
             </div>
-          </>
+            <div className="tc__connect-wallet-button" ref={unsupportedNetworkRef}>
+              <Typography variant="button-text">{getText('unsupported', language)}</Typography>
+            </div>
+          </InfoTooltip>
         )}
       </div>
       {selectedChainName && (
