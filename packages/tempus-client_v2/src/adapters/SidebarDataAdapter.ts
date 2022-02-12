@@ -1,6 +1,5 @@
 import Words from '../localisation/words';
 import { getConfigForPoolWithAddress } from '../utils/getConfig';
-import { dynamicPoolDataState } from '../state/PoolDataState';
 import { BigNumber } from 'ethers';
 
 export default class SidebarDataAdapter {
