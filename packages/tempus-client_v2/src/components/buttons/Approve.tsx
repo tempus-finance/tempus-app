@@ -13,7 +13,6 @@ import { Chain } from '../../interfaces/Chain';
 import { PendingTransactionsContext } from '../../context/pendingTransactionsContext';
 import { LanguageContext } from '../../context/languageContext';
 import { WalletContext } from '../../context/walletContext';
-import wait from '../../utils/wait';
 import TickNegativeIcon from '../icons/TickNegativeIcon';
 import getText from '../../localisation/getText';
 import Spacer from '../spacer/spacer';
@@ -134,23 +133,11 @@ const Approve: FC<ApproveButtonProps> = props => {
           getNotificationService().warn(chain, 'Transaction', getText(`approvalFailed`, language), content);
         }
 
-        // Fantom RPC has issues with sync,
-        // waiting a bit before fetching new allowance gives
-        // time to RPC to sync with blockchain
-        await wait(2000);
-        await fetchAllowance();
-
         setApproveInProgress(false);
         return;
       }
 
       if (!transaction) {
-        // Fantom RPC has issues with sync,
-        // waiting a bit before fetching new allowance gives
-        // time to RPC to sync with blockchain
-        await wait(2000);
-        await fetchAllowance();
-
         setApproveInProgress(false);
         return;
       }
@@ -196,12 +183,6 @@ const Approve: FC<ApproveButtonProps> = props => {
           getNotificationService().warn(chain, 'Transaction', `Approval Failed`, content, link, viewLinkText);
         }
 
-        // Fantom RPC has issues with sync,
-        // waiting a bit before fetching new allowance gives
-        // time to RPC to sync with blockchain
-        await wait(2000);
-        await fetchAllowance();
-
         setApproveInProgress(false);
         return;
       }
@@ -220,12 +201,11 @@ const Approve: FC<ApproveButtonProps> = props => {
         getNotificationService().notify(chain, 'Transaction', 'Approval Successful', content, link, viewLinkText);
       }
 
-      // After approve completes, we need to set new allowance value
-      // Fantom RPC has issues with sync,
-      // waiting a bit before fetching new allowance gives
-      // time to RPC to sync with blockchain
-      await wait(2000);
-      await fetchAllowance();
+      /**
+       * ERC20 Approve function does not increase existing allowance, it overrides the current one, so instead of fetching new allowance
+       * we can just set allowance to what we wanted to approve.
+       */
+      setAllowance(amountToApprove);
 
       setApproveInProgress(false);
     };
@@ -236,7 +216,6 @@ const Approve: FC<ApproveButtonProps> = props => {
     userWalletSigner,
     amountToApprove,
     setPendingTransactions,
-    fetchAllowance,
     tokenToApproveAddress,
     tokenToApproveTicker,
     spenderAddress,
