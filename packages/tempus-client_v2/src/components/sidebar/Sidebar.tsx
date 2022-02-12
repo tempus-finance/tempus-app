@@ -144,8 +144,6 @@ const Sidebar: FC<SidebarProps> = ({ initialView, chain, onSelectedView }) => {
   //   return userPrincipalsBalance.isZero() && userYieldsBalance.isZero();
   // }, [userPrincipalsBalance, userYieldsBalance]);
 
-  console.log('Rendering sidebar');
-
   return (
     <div className="tc__sidebar-container">
       <TokenIcon ticker={backingToken} large />
