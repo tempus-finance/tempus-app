@@ -1068,7 +1068,7 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
                   <div className="tf__flex-row-space-between-v">
                     <Typography variant="button-text">
                       {' '}
-                      {variableUnstakedPrincipalsAmountFormatted} {getText('principals', language)}
+                      {variableUnstakedPrincipalsAmountFormatted} {getText('principalTokens', language)}
                     </Typography>
                   </div>
                 )}

@@ -153,7 +153,7 @@ const getDepositNotificationContent = (
 
   if (actionDescription === 'Fixed Yield') {
     return `${tokenSentAmountFormatted} ${tokenSentTicker} ${getText('to', language)}
-    ${principalsReceivedFormatted} Capital
+    ${principalsReceivedFormatted} ${getText('principals', language)}
     ${actionDescription}
   
     ${generatePoolNotificationInfo(
@@ -165,8 +165,8 @@ const getDepositNotificationContent = (
     )}`;
   } else if (actionDescription === 'Variable Yield') {
     return `${tokenSentAmountFormatted} ${tokenSentTicker} ${getText('to', language)}
-    ${principalsReceivedFormatted} Capital ${getText('and', language)}
-    ${lpTokensReceivedFormatted} LP Tokens
+    ${principalsReceivedFormatted} ${getText('principals', language)} ${getText('and', language)}
+    ${lpTokensReceivedFormatted} ${getText('lpTokens', language)}
     ${actionDescription}
 
     ${generatePoolNotificationInfo(
@@ -247,9 +247,9 @@ const getWithdrawNotificationContent = (
     staticPoolData.decimalsForUI,
   );
 
-  return `${principalsSentFormatted} Capital,
-  ${yieldsSentFormatted} Yields,
-  ${lpTokensSentFormatted} LP Tokens ${getText('to', language)}
+  return `${principalsSentFormatted} ${getText('principals', language)},
+  ${yieldsSentFormatted} ${getText('yields', language)},
+  ${lpTokensSentFormatted} ${getText('lpTokens', language)} ${getText('to', language)}
   ${tokensReceivedFormatted} ${tokenReceivedTicker}
 
   ${generatePoolNotificationInfo(
@@ -333,8 +333,8 @@ const getMintNotificationContent = (
   );
 
   return `${tokenSentAmountFormatted} ${tokenSentTicker} ${getText('to', language)}
-  ${principalsMintedFormatted} Capital ${getText('and', language)}
-  ${yieldsMintedFormatted} Yields
+  ${principalsMintedFormatted} ${getText('principals', language)} ${getText('and', language)}
+  ${yieldsMintedFormatted} ${getText('yields', language)}
 
   ${generatePoolNotificationInfo(
     chain,
@@ -467,9 +467,9 @@ const getLiquidityDepositNotificationContent = (
     staticPoolData.decimalsForUI,
   );
 
-  return `${amountOfPrincipalsSentFormatted} Capital ${getText('and', language)}
-  ${amountOfYieldsSentFormatted} Yields ${getText('to', language)}
-  ${amountOfLPTokensReceivedFormatted} LP Tokens
+  return `${amountOfPrincipalsSentFormatted} ${getText('principalTokens', language)} ${getText('and', language)}
+  ${amountOfYieldsSentFormatted} ${getText('yieldTokens', language)} ${getText('to', language)}
+  ${amountOfLPTokensReceivedFormatted} ${getText('lpTokens', language)}
 
   ${generatePoolNotificationInfo(
     chain,
@@ -529,9 +529,9 @@ const getLiquidityWithdrawalNotificationContent = (
     staticPoolData.decimalsForUI,
   );
 
-  return `${amountOfLPTokensSentFormatted} LP Tokens ${getText('to', language)}
-  ${amountOfPrincipalsReceivedFormatted} Capital ${getText('and', language)}
-  ${amountOfYieldsReceivedFormatted} Yields
+  return `${amountOfLPTokensSentFormatted} ${getText('lpTokens', language)} ${getText('to', language)}
+  ${amountOfPrincipalsReceivedFormatted} ${getText('principalTokens', language)} ${getText('and', language)}
+  ${amountOfYieldsReceivedFormatted} ${getText('yieldTokens', language)}
 
   ${generatePoolNotificationInfo(
     chain,
@@ -587,7 +587,10 @@ const getRedeemNotificationContent = (
     staticPoolData.decimalsForUI,
   );
 
-  return `${primitivesSentFormatted} Capital ${getText('to', language)} Yields ${getText('to', language)}
+  return `${primitivesSentFormatted} ${getText('principalTokens', language)} ${getText('to', language)} ${getText(
+    'yieldTokens',
+    language,
+  )} ${getText('to', language)}
   ${tokensReceivedFormatted} ${tokenReceivedTicker}
   
   ${generatePoolNotificationInfo(

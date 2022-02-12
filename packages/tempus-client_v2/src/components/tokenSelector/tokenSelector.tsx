@@ -22,10 +22,21 @@ type TokenSelectorProps = TokenSelectorInProps & TokenSelectorOutProps;
 
 const getMenuItems = (value: Ticker | null, tickers: Ticker[], language: Language, disabled?: boolean) => {
   const menuItems = tickers.map(ticker => {
+    let tickerLabel;
+    switch (ticker) {
+      case 'Principals':
+        tickerLabel = 'Capital';
+        break;
+      case 'Yields':
+        tickerLabel = 'Yield';
+        break;
+      default:
+        tickerLabel = ticker;
+    }
     return (
       <MenuItem key={ticker} value={ticker}>
         <div className="tf__token-selector__menu-item">
-          <Typography variant="dropdown-text">{ticker}</Typography>
+          <Typography variant="dropdown-text">{tickerLabel}</Typography>
           {ticker !== 'Principals' && ticker !== 'Yields' && (
             <div className="tc__token-selector-ticker-container">
               <TokenIcon ticker={ticker} />

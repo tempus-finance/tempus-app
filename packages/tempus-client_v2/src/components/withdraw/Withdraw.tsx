@@ -432,7 +432,9 @@ const Withdraw: FC<WithdrawProps> = ({ chain, onWithdraw }) => {
         {userPrincipalsBalance && !userPrincipalsBalance.isZero() && (
           <SectionContainer elevation={2}>
             <div className="tc__title-and-balance">
-              <Typography variant="h4">{getText('principals', language)}</Typography>
+              <Typography variant="h4">
+                {backingToken} {getText('principalTokens', language)}
+              </Typography>
               {principalsBalanceFormatted && (
                 <div>
                   <Typography variant="card-body-text">{getText('balance', language)}</Typography>
@@ -471,7 +473,9 @@ const Withdraw: FC<WithdrawProps> = ({ chain, onWithdraw }) => {
             <PlusIconContainer orientation="horizontal" />
             <SectionContainer elevation={2}>
               <div className="tc__title-and-balance">
-                <Typography variant="h4">{getText('yields', language)}</Typography>
+                <Typography variant="h4">
+                  {backingToken} {getText('yieldTokens', language)}
+                </Typography>
                 {yieldsBalanceFormatted && (
                   <div>
                     <Typography variant="card-body-text">{getText('balance', language)}</Typography>
@@ -514,7 +518,9 @@ const Withdraw: FC<WithdrawProps> = ({ chain, onWithdraw }) => {
             <PlusIconContainer orientation="horizontal" />
             <SectionContainer elevation={2}>
               <div className="tc__title-and-balance">
-                <Typography variant="h4">{getText('lpTokens', language)}</Typography>
+                <Typography variant="h4">
+                  {backingToken} {getText('lpTokens', language)}
+                </Typography>
                 {lpTokenBalanceFormatted && (
                   <div>
                     <Typography variant="card-body-text">{getText('balance', language)}</Typography>

@@ -33,6 +33,7 @@ const CurrentPosition: FC<CurrentPositionProps> = ({ chain, language }) => {
   const userPrincipalsBalance = dynamicPoolData[selectedPool.get()].userPrincipalsBalance.attach(Downgraded).get();
   const userYieldsBalance = dynamicPoolData[selectedPool.get()].userYieldsBalance.attach(Downgraded).get();
   const userLPBalance = dynamicPoolData[selectedPool.get()].userLPTokenBalance.attach(Downgraded).get();
+  const backingToken = staticPoolData[selectedPool.get()].backingToken.attach(Downgraded).get();
   const ammAddress = staticPoolData[selectedPool.get()].ammAddress.attach(Downgraded).get();
   const decimalsForUI = staticPoolData[selectedPool.get()].decimalsForUI.attach(Downgraded).get();
   const tokenPrecision = staticPoolData[selectedPool.get()].tokenPrecision.attach(Downgraded).get();
@@ -202,7 +203,9 @@ const CurrentPosition: FC<CurrentPositionProps> = ({ chain, language }) => {
       <Typography variant="card-title">{getText('currentPosition', language)}</Typography>
       <Spacer size={12} />
       <div className="tc__currentPosition-header-row">
-        <Typography variant="card-body-text">{getText('principals', language)}</Typography>
+        <Typography variant="card-body-text">
+          {backingToken} {getText('principals', language)}
+        </Typography>
         <Typography variant="card-body-text">{principalsBalanceFormatted}</Typography>
       </div>
 
@@ -243,7 +246,9 @@ const CurrentPosition: FC<CurrentPositionProps> = ({ chain, language }) => {
       <Spacer size={20} />
 
       <div className="tc__currentPosition-header-row">
-        <Typography variant="card-body-text">{getText('yields', language)}</Typography>
+        <Typography variant="card-body-text">
+          {backingToken} {getText('yields', language)}
+        </Typography>
         <Typography variant="card-body-text">{yieldsBalanceFormatted}</Typography>
       </div>
 
