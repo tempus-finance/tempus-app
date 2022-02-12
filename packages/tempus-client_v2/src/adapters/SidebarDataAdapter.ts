@@ -1,9 +1,17 @@
 import Words from '../localisation/words';
 import { getConfigForPoolWithAddress } from '../utils/getConfig';
 import { dynamicPoolDataState } from '../state/PoolDataState';
+import { BigNumber } from 'ethers';
 
 export default class SidebarDataAdapter {
-  getDepositDisabledReason(poolAddress: string): Words | null {
+  getDepositDisabledReason(
+    poolAddress: string,
+    poolShareBalance: {
+      principals: BigNumber | null;
+      yields: BigNumber | null;
+    },
+    negativeYield: boolean,
+  ): Words | null {
     const { disabledOperations, maturityDate } = getConfigForPoolWithAddress(poolAddress);
     const { deposit } = disabledOperations;
 
@@ -15,8 +23,6 @@ export default class SidebarDataAdapter {
       return 'depositDisabledPoolMaturity';
     }
 
-    const poolShareBalance = dynamicPoolDataState[poolAddress].poolShareBalance.get();
-    const negativeYield = dynamicPoolDataState[poolAddress].negativeYield.get();
     if (
       !poolShareBalance.principals ||
       !poolShareBalance.yields ||
@@ -32,10 +38,16 @@ export default class SidebarDataAdapter {
     return null;
   }
 
-  getWithdrawDisabledReason(poolAddress: string): Words | null {
-    const poolShareBalance = dynamicPoolDataState[poolAddress].poolShareBalance.get();
-    const negativeYield = dynamicPoolDataState[poolAddress].negativeYield.get();
-
+  getWithdrawDisabledReason(
+    poolShareBalance: {
+      principals: BigNumber | null;
+      yields: BigNumber | null;
+    },
+    negativeYield: boolean,
+    userPrincipalsBalance: BigNumber | null,
+    userYieldsBalance: BigNumber | null,
+    userLPTokenBalance: BigNumber | null,
+  ): Words | null {
     if (
       !poolShareBalance.principals ||
       !poolShareBalance.yields ||
@@ -47,10 +59,6 @@ export default class SidebarDataAdapter {
     if (negativeYield) {
       return 'withdrawDisabledNegative';
     }
-
-    const userPrincipalsBalance = dynamicPoolDataState[poolAddress].userPrincipalsBalance.get();
-    const userYieldsBalance = dynamicPoolDataState[poolAddress].userYieldsBalance.get();
-    const userLPTokenBalance = dynamicPoolDataState[poolAddress].userLPTokenBalance.get();
 
     if (
       !userPrincipalsBalance ||
@@ -78,14 +86,20 @@ export default class SidebarDataAdapter {
     return null;
   }
 
-  getSwapDisabledReason(poolAddress: string): Words | null {
+  getSwapDisabledReason(
+    poolAddress: string,
+    poolShareBalance: {
+      principals: BigNumber | null;
+      yields: BigNumber | null;
+    },
+    userPrincipalsBalance: BigNumber | null,
+    userYieldsBalance: BigNumber | null,
+  ): Words | null {
     const { maturityDate } = getConfigForPoolWithAddress(poolAddress);
 
     if (maturityDate <= Date.now()) {
       return 'swapDisabledPoolMaturity';
     }
-
-    const poolShareBalance = dynamicPoolDataState[poolAddress].poolShareBalance.get();
 
     if (
       !poolShareBalance.principals ||
@@ -94,9 +108,6 @@ export default class SidebarDataAdapter {
     ) {
       return 'swapDisabledNoLiquidity';
     }
-
-    const userPrincipalsBalance = dynamicPoolDataState[poolAddress].userPrincipalsBalance.get();
-    const userYieldsBalance = dynamicPoolDataState[poolAddress].userYieldsBalance.get();
 
     if (
       !userPrincipalsBalance ||
@@ -109,15 +120,16 @@ export default class SidebarDataAdapter {
     return null;
   }
 
-  getProvideLiquidityDisabledReason(poolAddress: string): Words | null {
+  getProvideLiquidityDisabledReason(
+    poolAddress: string,
+    userPrincipalsBalance: BigNumber | null,
+    userYieldsBalance: BigNumber | null,
+  ): Words | null {
     const { maturityDate } = getConfigForPoolWithAddress(poolAddress);
 
     if (maturityDate <= Date.now()) {
       return 'provideLiquidityDisabledPoolMaturity';
     }
-
-    const userPrincipalsBalance = dynamicPoolDataState[poolAddress].userPrincipalsBalance.get();
-    const userYieldsBalance = dynamicPoolDataState[poolAddress].userYieldsBalance.get();
 
     if (
       !userPrincipalsBalance ||
@@ -138,16 +150,17 @@ export default class SidebarDataAdapter {
     return null;
   }
 
-  getRemoveLiquidityDisabledReason(poolAddress: string): Words | null {
+  getRemoveLiquidityDisabledReason(
+    poolAddress: string,
+    userPrincipalsBalance: BigNumber | null,
+    userYieldsBalance: BigNumber | null,
+    userLPTokenBalance: BigNumber | null,
+  ): Words | null {
     const { maturityDate } = getConfigForPoolWithAddress(poolAddress);
 
     if (maturityDate <= Date.now()) {
       return 'removeLiquidityDisabledPoolMaturity';
     }
-
-    const userPrincipalsBalance = dynamicPoolDataState[poolAddress].userPrincipalsBalance.get();
-    const userYieldsBalance = dynamicPoolDataState[poolAddress].userYieldsBalance.get();
-    const userLPTokenBalance = dynamicPoolDataState[poolAddress].userLPTokenBalance.get();
 
     if (
       !userPrincipalsBalance ||
