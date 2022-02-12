@@ -433,12 +433,14 @@ const Mint: FC<MintInProps> = ({ narrow, chain }) => {
             <SectionContainer elevation={2}>
               <div className="tf__flex-row-space-between">
                 <div className="tf__flex-column-space-between">
-                  <Typography variant="h4">{getText('principals', language)}</Typography>
+                  <Typography variant="h4">
+                    {backingToken} {getText('principals', language)}
+                  </Typography>
                   <Spacer size={10} />
                   <Typography variant="card-body-text">
                     {estimatedTokensFormatted &&
                       `${getText('amountReceived', language)} ${estimatedTokensFormatted} ${getText(
-                        'principals',
+                        'principalTokens',
                         language,
                       )}`}
                   </Typography>
@@ -453,12 +455,14 @@ const Mint: FC<MintInProps> = ({ narrow, chain }) => {
             <SectionContainer elevation={2}>
               <div className="tf__flex-row-space-between">
                 <div className="tf__flex-column-space-between">
-                  <Typography variant="h4">{getText('yields', language)}</Typography>
+                  <Typography variant="h4">
+                    {backingToken} {getText('yields', language)}
+                  </Typography>
                   <Spacer size={10} />
                   <Typography variant="card-body-text">
                     {estimatedTokensFormatted &&
                       `${getText('amountReceived', language)} ${estimatedTokensFormatted} ${getText(
-                        'yields',
+                        'yieldTokens',
                         language,
                       )}`}
                   </Typography>

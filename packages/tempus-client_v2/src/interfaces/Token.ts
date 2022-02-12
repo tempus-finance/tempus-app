@@ -5,7 +5,7 @@ export type Ticker =
   | 'ETH'
   | 'LIDO'
   | 'Principals' // referred to as 'Capital' in the UI
-  | 'Yields'
+  | 'Yields' // referred to as 'Yield' in the UI
   | 'TLPT'
   | 'TUSD'
   | 'stETH'

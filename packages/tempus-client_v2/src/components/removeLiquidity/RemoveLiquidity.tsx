@@ -255,7 +255,7 @@ const RemoveLiquidity: FC<RemoveLiquidityProps> = props => {
       <SectionContainer title="to">
         <div className="tf__flex-row-center-v">
           <SectionContainer>
-            <Typography variant="h4">{getText('principals', language)}</Typography>
+            <Typography variant="h4">{getText('principalTokens', language)}</Typography>
             <Spacer size={10} />
             <div className="tf__flex-row-center-v">
               <Typography variant="card-body-text">{getText('estimated', language)}</Typography>
@@ -265,7 +265,7 @@ const RemoveLiquidity: FC<RemoveLiquidityProps> = props => {
           </SectionContainer>
           <PlusIconContainer orientation="vertical" />
           <SectionContainer>
-            <Typography variant="h4">{getText('yields', language)}</Typography>
+            <Typography variant="h4">{getText('yieldTokens', language)}</Typography>
             <Spacer size={10} />
             <div className="tf__flex-row-center-v">
               <Typography variant="card-body-text">{getText('estimated', language)}</Typography>
