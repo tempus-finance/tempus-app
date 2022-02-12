@@ -75,6 +75,21 @@ const Approve: FC<ApproveButtonProps> = props => {
 
   const viewLinkText = `${getText('viewOn', language)} ${blockExplorerName}`;
 
+  const fetchAllowance = useCallback(async () => {
+    if (!userWalletSigner || !tokenToApproveAddress) {
+      return;
+    }
+
+    const poolDataAdapter = getPoolDataAdapter(chain, userWalletSigner);
+    const result = await poolDataAdapter.getTokenAllowance(
+      tokenToApproveAddress,
+      spenderAddress,
+      userWalletAddress,
+      userWalletSigner,
+    );
+    setAllowance(result);
+  }, [chain, spenderAddress, tokenToApproveAddress, userWalletAddress, userWalletSigner]);
+
   /**
    * Called when user clicks on the approve button.
    */
@@ -117,6 +132,7 @@ const Approve: FC<ApproveButtonProps> = props => {
         if (tokenToApproveTicker) {
           getNotificationService().warn(chain, 'Transaction', getText(`approvalFailed`, language), content);
         }
+
         setApproveInProgress(false);
         return;
       }
@@ -185,15 +201,11 @@ const Approve: FC<ApproveButtonProps> = props => {
         getNotificationService().notify(chain, 'Transaction', 'Approval Successful', content, link, viewLinkText);
       }
 
-      // After approve completes, we need to set new allowance value
-      setAllowance(
-        await poolDataAdapter.getTokenAllowance(
-          tokenToApproveAddress,
-          spenderAddress,
-          userWalletAddress,
-          userWalletSigner,
-        ),
-      );
+      /**
+       * ERC20 Approve function does not increase existing allowance, it overrides the current one, so instead of fetching new allowance
+       * we can just set allowance to what we wanted to approve.
+       */
+      setAllowance(amountToApprove);
 
       setApproveInProgress(false);
     };
@@ -207,7 +219,6 @@ const Approve: FC<ApproveButtonProps> = props => {
     tokenToApproveAddress,
     tokenToApproveTicker,
     spenderAddress,
-    userWalletAddress,
     backingToken,
     protocol,
     maturityDate,
@@ -216,23 +227,8 @@ const Approve: FC<ApproveButtonProps> = props => {
 
   // Fetch current token allowance from contract
   useEffect(() => {
-    const getAllowance = async () => {
-      if (!userWalletSigner || !tokenToApproveAddress) {
-        return;
-      }
-
-      const poolDataAdapter = getPoolDataAdapter(chain, userWalletSigner);
-      setAllowance(
-        await poolDataAdapter.getTokenAllowance(
-          tokenToApproveAddress,
-          spenderAddress,
-          userWalletAddress,
-          userWalletSigner,
-        ),
-      );
-    };
-    getAllowance();
-  }, [userWalletSigner, spenderAddress, tokenToApproveAddress, userWalletAddress, chain]);
+    fetchAllowance();
+  }, [fetchAllowance]);
 
   /**
    * Checks if tokens are approved.
