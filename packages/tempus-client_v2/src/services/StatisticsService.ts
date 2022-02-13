@@ -101,7 +101,7 @@ class StatisticsService {
         return Promise.reject(error);
       }
 
-      return mul18f(rate, backingTokensLocked);
+      return mul18f(rate, backingTokensLocked, precision);
     }
 
     return totalValueLockedUSD;
