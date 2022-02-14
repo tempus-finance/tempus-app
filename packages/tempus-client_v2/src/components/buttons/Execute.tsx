@@ -26,7 +26,7 @@ interface ExecuteButtonProps {
   chain: Chain;
   actionDescription?: string;
   onExecute: () => Promise<ethers.ContractTransaction | undefined>;
-  onExecuted: (successful: boolean) => void;
+  onExecuted: (successful: boolean, txBlockNumber?: number) => void;
 }
 
 const Execute: FC<ExecuteButtonProps> = props => {
@@ -156,7 +156,7 @@ const Execute: FC<ExecuteButtonProps> = props => {
         viewLinkText,
       );
       setExecuteInProgress(false);
-      onExecuted(true);
+      onExecuted(true, confirmations.blockNumber);
     };
     runExecute();
   };

@@ -64,15 +64,15 @@ class PoolShareBalanceProvider {
    * so with this manual trigger we can make sure that fetch is performed immediately after
    * user action and UI is promptly updated.
    */
-  fetchForPoolWithId(poolId: string) {
-    this.fetchPoolBalance(poolId);
+  fetchForPoolWithId(poolId: string, blockTag?: number) {
+    this.fetchPoolBalance(poolId, blockTag);
   }
 
   private onPoolBalanceChanged = async (poolId: string) => {
     this.fetchPoolBalance(poolId);
   };
 
-  private async fetchPoolBalance(poolId: string) {
+  private async fetchPoolBalance(poolId: string, blockTag?: number) {
     if (!this.vaultContract) {
       return;
     }
@@ -85,7 +85,9 @@ class PoolShareBalanceProvider {
       lastChangeBlock: BigNumber;
     };
     try {
-      poolTokens = await this.vaultContract.getPoolTokens(poolId);
+      poolTokens = await this.vaultContract.getPoolTokens(poolId, {
+        blockTag,
+      });
     } catch (error) {
       console.error(
         'PoolShareBalanceProvider - fetchPoolBalance() - Failed to fetch pool balance, skipping state update!',

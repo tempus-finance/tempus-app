@@ -360,35 +360,38 @@ const ProvideLiquidity: FC<ProvideLiquidityProps> = props => {
     chain,
   ]);
 
-  const onExecuted = useCallback(() => {
-    setPrincipalsAmount('');
-    setYieldsAmount('');
-    setMaxDisabled(false);
+  const onExecuted = useCallback(
+    (successful: boolean, txBlockNumber?: number) => {
+      setPrincipalsAmount('');
+      setYieldsAmount('');
+      setMaxDisabled(false);
 
-    if (!userWalletSigner) {
-      return;
-    }
+      if (!userWalletSigner) {
+        return;
+      }
 
-    // Trigger user pool share balance update when execute is finished
-    getUserShareTokenBalanceProvider({
-      chain,
-      userWalletAddress,
-      userWalletSigner,
-    }).fetchForPool(selectedPoolAddress);
+      // Trigger user pool share balance update when execute is finished
+      getUserShareTokenBalanceProvider({
+        chain,
+        userWalletAddress,
+        userWalletSigner,
+      }).fetchForPool(selectedPoolAddress, txBlockNumber);
 
-    // Trigger user LP Token balance update when execute is finished
-    getUserLPTokenBalanceProvider({
-      chain,
-      userWalletAddress,
-      userWalletSigner,
-    }).fetchForPool(selectedPoolAddress);
+      // Trigger user LP Token balance update when execute is finished
+      getUserLPTokenBalanceProvider({
+        chain,
+        userWalletAddress,
+        userWalletSigner,
+      }).fetchForPool(selectedPoolAddress, txBlockNumber);
 
-    // Trigger pool share balance update when execute is finished
-    getPoolShareBalanceProvider({
-      chain,
-      userWalletSigner,
-    }).fetchForPoolWithId(poolId);
-  }, [poolId, selectedPoolAddress, userWalletAddress, userWalletSigner, chain]);
+      // Trigger pool share balance update when execute is finished
+      getPoolShareBalanceProvider({
+        chain,
+        userWalletSigner,
+      }).fetchForPoolWithId(poolId, txBlockNumber);
+    },
+    [poolId, selectedPoolAddress, userWalletAddress, userWalletSigner, chain],
+  );
 
   const principalsBalanceFormatted = useMemo(() => {
     if (!userPrincipalsBalance) {

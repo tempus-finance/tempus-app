@@ -1,5 +1,5 @@
 import { JsonRpcSigner } from '@ethersproject/providers';
-import { Contract } from 'ethers';
+import { BigNumber, Contract } from 'ethers';
 import { ERC20 } from '../abi/ERC20';
 import ERC20ABI from '../abi/ERC20.json';
 import { TempusPool } from '../interfaces/TempusPool';
@@ -61,20 +61,30 @@ class UserShareTokenBalanceProvider {
   /**
    * Manually trigger user balance update. Can be called after user action that affects user balance.
    */
-  fetchForPool(address: string) {
+  fetchForPool(address: string, blockTag?: number) {
     const poolConfig = getConfigForPoolWithAddress(address);
 
-    this.updatePrincipalsBalanceForPool(poolConfig);
-    this.updateYieldsBalanceForPool(poolConfig);
+    this.updatePrincipalsBalanceForPool(poolConfig, blockTag);
+    this.updateYieldsBalanceForPool(poolConfig, blockTag);
   }
 
-  private async updatePrincipalsBalanceForPool(poolConfig: TempusPool) {
+  private async updatePrincipalsBalanceForPool(poolConfig: TempusPool, blockTag?: number) {
     if (!this.userWalletSigner) {
       return;
     }
 
     const tpsContract = new Contract(poolConfig.principalsAddress, ERC20ABI, this.userWalletSigner) as ERC20;
-    const balance = await tpsContract.balanceOf(this.userWalletAddress);
+    let balance: BigNumber;
+    try {
+      balance = await tpsContract.balanceOf(this.userWalletAddress, {
+        blockTag,
+      });
+    } catch (error) {
+      console.error(
+        'UserShareTokenBalanceProvider - updatePrincipalsBalanceForPool() - Failed to fetch new user capital balance!',
+      );
+      return Promise.reject();
+    }
 
     const currentBalance = dynamicPoolDataState[poolConfig.address].userPrincipalsBalance.get();
     // Only update state if fetched user principals balance is different from current user principals balance
@@ -83,13 +93,23 @@ class UserShareTokenBalanceProvider {
     }
   }
 
-  private async updateYieldsBalanceForPool(poolConfig: TempusPool) {
+  private async updateYieldsBalanceForPool(poolConfig: TempusPool, blockTag?: number) {
     if (!this.userWalletSigner) {
       return;
     }
 
     const tysContract = new Contract(poolConfig.yieldsAddress, ERC20ABI, this.userWalletSigner) as ERC20;
-    const balance = await tysContract.balanceOf(this.userWalletAddress);
+    let balance: BigNumber;
+    try {
+      balance = await tysContract.balanceOf(this.userWalletAddress, {
+        blockTag,
+      });
+    } catch (error) {
+      console.error(
+        'UserShareTokenBalanceProvider - updateYieldsBalanceForPool() - Failed to fetch new user yield balance!',
+      );
+      return Promise.reject();
+    }
 
     const currentBalance = dynamicPoolDataState[poolConfig.address].userYieldsBalance.get();
     // Only update state if fetched user yields balance is different from current user yields balance
