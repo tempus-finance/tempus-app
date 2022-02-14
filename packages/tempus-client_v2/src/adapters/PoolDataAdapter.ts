@@ -65,6 +65,7 @@ export default class PoolDataAdapter {
     tempusPoolAddress: string,
     tempusAMMAddress: string,
     backingTokenPrecision: number,
+    yieldBearingTokenPrecision: number,
     userWalletAddress: string,
     signer: JsonRpcSigner,
   ): Observable<{
@@ -89,7 +90,7 @@ export default class PoolDataAdapter {
       return throwError(() => new Error());
     }
 
-    const yieldTokenAmount = ethers.utils.parseEther('1');
+    const yieldTokenAmount = ethers.utils.parseUnits('1', yieldBearingTokenPrecision);
 
     try {
       const ticker$ = timer(0, POLLING_INTERVAL);
@@ -875,7 +876,7 @@ export default class PoolDataAdapter {
       return Promise.reject();
     }
 
-    const yieldTokenAmount = ethers.utils.parseEther('1');
+    const yieldTokenAmount = ethers.utils.parseUnits('1', yieldBearingTokenPrecision);
     try {
       const interestRate = await this.tempusPoolService.currentInterestRate(tempusPool);
       const yieldBearingTokenConversionRate = await this.tempusPoolService.numAssetsPerYieldToken(

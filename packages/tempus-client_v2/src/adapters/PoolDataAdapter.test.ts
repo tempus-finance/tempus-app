@@ -131,11 +131,20 @@ describe('PoolDataAdapter', () => {
       const userWalletAddress = 'xyz';
       const tempusAmmAddress = '123';
       const chain = 'ethereum';
-      const tokenPrecision = 18;
+      const backingTokenPrecision = 18;
+      const yieldBearingTokenPrecision = 18;
       const signer = mockProvider;
 
       instance
-        .retrieveBalances(chain, tempusPoolAddress, tempusAmmAddress, tokenPrecision, userWalletAddress, signer)
+        .retrieveBalances(
+          chain,
+          tempusPoolAddress,
+          tempusAmmAddress,
+          backingTokenPrecision,
+          yieldBearingTokenPrecision,
+          userWalletAddress,
+          signer,
+        )
         .subscribe(balances => {
           expect(balances).toBeDefined();
           if (balances) {

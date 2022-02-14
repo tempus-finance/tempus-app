@@ -254,6 +254,7 @@ const Mint: FC<MintInProps> = ({ narrow, chain }) => {
           selectedPoolAddress,
           ammAddress,
           tokenPrecision.backingToken,
+          tokenPrecision.yieldBearingToken,
           userWalletAddress,
           userWalletSigner,
         )
@@ -274,6 +275,7 @@ const Mint: FC<MintInProps> = ({ narrow, chain }) => {
     }
   }, [
     tokenPrecision.backingToken,
+    tokenPrecision.yieldBearingToken,
     selectedPoolAddress,
     userWalletSigner,
     userWalletAddress,
