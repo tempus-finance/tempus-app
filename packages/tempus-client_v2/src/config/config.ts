@@ -88,7 +88,7 @@ const config: Config = {
         },
       },
     ],
-    statisticsContract: '0xf7247e16d6cD0A64d0C210f150fD356AcF26E89C',
+    statisticsContract: '0xe552369a1b109b1eeebf060fcb6618f70f9131f7',
     tempusControllerContract: '0xdB5fD0678eED82246b599da6BC36B56157E4beD8',
     vaultContract: '0x6f419298Ad53f82BA8dFFa9B34F9C7888b43BB13',
     lidoOracle: '0x442af784a788a5bd6f42a01ebe9f287a871243fb',
