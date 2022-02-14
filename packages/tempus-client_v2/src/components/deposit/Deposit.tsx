@@ -328,6 +328,7 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
       fixedPrincipalsEstimateRequestId.current = uuid();
 
       setFixedPrincipalsAmount(null);
+      setTokenEstimateInProgress(true);
 
       if (isZeroString(amount)) {
         setVariableUnstakedPrincipalsAmount(null);
@@ -335,8 +336,6 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
         setVariableStakedYieldsAmount(null);
       } else if (ammAddress && userWalletSigner) {
         try {
-          setTokenEstimateInProgress(true);
-
           const poolDataAdapter = getPoolDataAdapter(chain, userWalletSigner);
 
           const currentRequestId = fixedPrincipalsEstimateRequestId.current;
@@ -350,6 +349,7 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
 
           if (currentRequestId !== fixedPrincipalsEstimateRequestId.current) {
             // Skip estimate state update, because request is not latest one.
+            setTokenEstimateInProgress(false);
             return;
           }
 
@@ -358,15 +358,13 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
           setVariableUnstakedPrincipalsAmount(variableDeposit.unstakedPrincipals);
           setVariableStakedPrincipalsAmount(variableDeposit.stakedPrincipals);
           setVariableStakedYieldsAmount(variableDeposit.stakedYields);
-
-          setTokenEstimateInProgress(false);
         } catch (err) {
           // TODO handle errors
           console.log('Detail Deposit - retrieveDepositAmount -', err);
-
-          setTokenEstimateInProgress(false);
         }
       }
+
+      setTokenEstimateInProgress(false);
     };
 
     retrieveDepositAmount();
@@ -534,8 +532,8 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
   }, [estimatedFixedApr, language]);
 
   const fixedYieldAtMaturityFormatted = useMemo(() => {
-    if (!fixedPrincipalsAmount || !amount || isZeroString(amount) || !yieldBearingToBackingToken) {
-      return null;
+    if (!fixedPrincipalsAmount || !amount || !yieldBearingToBackingToken) {
+      return '0';
     }
 
     let value: BigNumber;
@@ -565,7 +563,7 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
 
   const fixedYieldAtMaturityUSDFormatted = useMemo(() => {
     if (!fixedPrincipalsAmount || !backingTokenRate || !amount || isZeroString(amount) || !yieldBearingToBackingToken) {
-      return null;
+      return NumberUtils.formatToCurrency('0', 2, '$');
     }
 
     let value: BigNumber;
@@ -600,7 +598,7 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
 
   const fixedTotalAvailableAtMaturityFormatted = useMemo(() => {
     if (!fixedPrincipalsAmount) {
-      return null;
+      return NumberUtils.formatToCurrency('0', 2, '$');
     }
 
     return NumberUtils.formatToCurrency(
@@ -611,7 +609,7 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
 
   const fixedTotalAvailableAtMaturityUSDFormatted = useMemo(() => {
     if (!fixedPrincipalsAmount || !backingTokenRate) {
-      return null;
+      return NumberUtils.formatToCurrency('0', 2, '$');
     }
 
     return NumberUtils.formatToCurrency(
@@ -909,66 +907,61 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
               </div>
             </div>
             <Spacer size={15} />
-            {(tokenEstimateInProgress || (fixedYieldAtMaturityFormatted && fixedYieldAtMaturityUSDFormatted)) && (
-              <div className="tc__deposit__yield-body__row__underline">
-                <div className="tc__deposit__card-row-title">
-                  <Typography variant="body-text" color="title">
-                    {getText('yieldAtMaturity', language)}
-                  </Typography>
-                </div>
-                <div className="tc__deposit__card-row-change">
-                  <Typography variant="body-text" color="success">
-                    {fixedYieldAtMaturityFormatted ? (
-                      `+${fixedYieldAtMaturityFormatted} ${
-                        showEstimatesInBackingToken ? backingToken : yieldBearingToken
-                      }`
-                    ) : (
-                      <CircularProgress size={14} />
-                    )}
-                  </Typography>
-                </div>
-                <div className="tc__deposit__card-row-value">
-                  <Typography variant="body-text" color="success">
-                    {fixedYieldAtMaturityUSDFormatted ? (
-                      `+${fixedYieldAtMaturityUSDFormatted}`
-                    ) : (
-                      <CircularProgress size={14} />
-                    )}
-                  </Typography>
-                </div>
+            <div className="tc__deposit__yield-body__row__underline">
+              <div className="tc__deposit__card-row-title">
+                <Typography variant="body-text" color="title">
+                  {getText('yieldAtMaturity', language)}
+                </Typography>
               </div>
-            )}
-            {(tokenEstimateInProgress ||
-              (fixedTotalAvailableAtMaturityFormatted && fixedTotalAvailableAtMaturityUSDFormatted)) && (
-              <div className="tc__deposit__yield-body__row">
-                <div className="tc__deposit__card-row-title">
-                  <Typography variant="body-text" color="title">
-                    {getText('totalAvailableAtMaturity', language)}
-                  </Typography>
-                </div>
-                <div className="tc__deposit__card-row-change">
-                  <Typography variant="body-text">
-                    {fixedTotalAvailableAtMaturityFormatted ? (
-                      `${fixedTotalAvailableAtMaturityFormatted} ${
-                        showEstimatesInBackingToken ? backingToken : yieldBearingToken
-                      }`
-                    ) : (
-                      <CircularProgress size={14} />
-                    )}
-                  </Typography>
-                </div>
-                <div className="tc__deposit__card-row-value">
-                  <Typography variant="body-text">
-                    {fixedTotalAvailableAtMaturityUSDFormatted || <CircularProgress size={14} />}
-                  </Typography>
-                </div>
+              <div className="tc__deposit__card-row-change">
+                <Typography variant="body-text" color="success">
+                  {fixedYieldAtMaturityFormatted ? (
+                    `+${fixedYieldAtMaturityFormatted} ${
+                      showEstimatesInBackingToken ? backingToken : yieldBearingToken
+                    }`
+                  ) : (
+                    <CircularProgress size={14} />
+                  )}
+                </Typography>
               </div>
-            )}
-            {(tokenEstimateInProgress ||
-              (fixedYieldAtMaturityFormatted && fixedYieldAtMaturityUSDFormatted) ||
-              (fixedTotalAvailableAtMaturityFormatted && fixedTotalAvailableAtMaturityUSDFormatted)) && (
-              <Spacer size={44} />
-            )}
+              <div className="tc__deposit__card-row-value">
+                <Typography variant="body-text" color="success">
+                  {fixedYieldAtMaturityUSDFormatted ? (
+                    `+${fixedYieldAtMaturityUSDFormatted}`
+                  ) : (
+                    <CircularProgress size={14} />
+                  )}
+                </Typography>
+              </div>
+            </div>
+            <div className="tc__deposit__yield-body__row">
+              <div className="tc__deposit__card-row-title">
+                <Typography variant="body-text" color="title">
+                  {getText('totalAvailableAtMaturity', language)}
+                </Typography>
+              </div>
+              <div className="tc__deposit__card-row-change">
+                <Typography variant="body-text">
+                  {fixedTotalAvailableAtMaturityFormatted ? (
+                    `${fixedTotalAvailableAtMaturityFormatted} ${
+                      showEstimatesInBackingToken ? backingToken : yieldBearingToken
+                    }`
+                  ) : (
+                    <CircularProgress size={14} />
+                  )}
+                </Typography>
+              </div>
+              <div className="tc__deposit__card-row-value">
+                <Typography variant="body-text">
+                  {fixedTotalAvailableAtMaturityUSDFormatted ? (
+                    fixedTotalAvailableAtMaturityUSDFormatted
+                  ) : (
+                    <CircularProgress size={14} />
+                  )}
+                </Typography>
+              </div>
+            </div>
+            <Spacer size={44} />
             <div className="tf__flex-row-space-between-v">
               <Typography variant="button-text">
                 {fixedPrincipalsAmountFormatted &&
@@ -1064,7 +1057,6 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
               (variableTotalAvailableAtMaturityFormatted && variableTotalAvailableAtMaturityUSDFormatted)) && (
               <Spacer size={24} />
             )}
-
             {
               <>
                 {variableUnstakedPrincipalsAmountFormatted && (
