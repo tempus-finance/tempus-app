@@ -16,7 +16,7 @@ import { getChainConfig } from '../../utils/getConfig';
 import { selectedChainState, unsupportedNetworkState } from '../../state/ChainState';
 import NumberUtils from '../../services/NumberUtils';
 import UserWallet from '../../interfaces/UserWallet';
-import { chainToTicker, chainIdToChainName } from '../../interfaces/Chain';
+import { chainToTicker, chainIdToChainName, Chain } from '../../interfaces/Chain';
 import getText from '../../localisation/getText';
 import useENS from '../../hooks/useENS';
 import shortenAccount from '../../utils/shortenAccount';
@@ -260,6 +260,10 @@ const Wallet = () => {
             getNotificationService().notify(chain, 'Wallet', getText('metamaskConnected', language), '');
           }
 
+          if (typeof chainId === 'number') {
+            selectedChainState.set(getChainNameFromId(parseInt(chainId.toString())));
+          }
+
           if (typeof chainId === 'string') {
             selectedChainState.set(getChainNameFromId(parseInt(chainId)));
           }
@@ -307,18 +311,24 @@ const Wallet = () => {
           qrcode: true,
         });
 
-        const chainId = await walletConnector.getChainId();
-        const chain = chainIdToChainName(chainId.toString());
-
+        let chainId: string | number;
+        let chain: Chain | undefined;
         try {
           await activate(walletConnector, undefined, true);
           getStorageService().set(WALLET_KEY, 'WalletConnect');
           setSelectedWallet('WalletConnect');
+
+          chainId = await walletConnector.getChainId();
+          chain = chainIdToChainName(chainId.toString());
+
           if (showWalletConnectedNotification && chain) {
             getNotificationService().notify(chain, 'Wallet', getText('walletConnectConnected', language), '');
           }
 
-          const chainId = await walletConnector.getChainId();
+          if (typeof chainId === 'number') {
+            selectedChainState.set(getChainNameFromId(parseInt(chainId.toString())));
+          }
+
           if (typeof chainId === 'string') {
             selectedChainState.set(getChainNameFromId(parseInt(chainId)));
           }
