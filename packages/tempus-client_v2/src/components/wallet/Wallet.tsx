@@ -433,36 +433,58 @@ const Wallet = () => {
         qrcode: true,
       });
 
-      const provider = await walletConnector.getProvider();
-      if (provider) {
-        walletConnector.walletConnectProvider.isAuthorized().then(async (authorized: boolean | null) => {
-          const chainId = await walletConnector.getChainId();
+      // Try to activate existing wallet connect session
+      try {
+        await walletConnector.activate();
+      } catch (error) {
+        selectedChain.set(null);
 
-          // User has connected wallet, but currently selected network in user wallet is not supported.
-          if (typeof chainId === 'string' && !supportedChainIds.includes(parseInt(chainId))) {
-            selectedChain.set(null);
-            unsupportedNetwork.set(true);
-            return;
-          }
-          if (authorized) {
-            await activate(walletConnector, undefined, true);
-            setSelectedWallet('WalletConnect');
+        setWalletData &&
+          setWalletData(previousData => ({
+            ...previousData,
+            userWalletConnected: false,
+          }));
 
-            if (typeof chainId === 'string') {
-              selectedChainState.set(getChainNameFromId(parseInt(chainId)));
-            }
-          } else {
-            setSelectedWallet(null);
-          }
-          setWalletData &&
-            setWalletData(previousData => ({
-              ...previousData,
-              userWalletConnected: authorized,
-            }));
-        });
+        return;
+      }
+
+      // Check if session is authorized
+      const authorized = walletConnector.walletConnectProvider.connected;
+
+      const chainId = await walletConnector.getChainId();
+
+      // User has connected wallet, but currently selected network in user wallet is not supported.
+      if (typeof chainId === 'number' && !supportedChainIds.includes(chainId)) {
+        selectedChain.set(null);
+        unsupportedNetwork.set(true);
+        return;
+      }
+
+      // User has connected wallet, but currently selected network in user wallet is not supported.
+      if (typeof chainId === 'string' && !supportedChainIds.includes(parseInt(chainId))) {
+        selectedChain.set(null);
+        unsupportedNetwork.set(true);
+        return;
+      }
+      if (authorized) {
+        await activate(walletConnector, undefined, true);
+        setSelectedWallet('WalletConnect');
+
+        if (typeof chainId === 'number') {
+          selectedChainState.set(getChainNameFromId(chainId));
+        }
+
+        if (typeof chainId === 'string') {
+          selectedChainState.set(getChainNameFromId(parseInt(chainId)));
+        }
       } else {
         setSelectedWallet(null);
       }
+      setWalletData &&
+        setWalletData(previousData => ({
+          ...previousData,
+          userWalletConnected: authorized,
+        }));
     };
 
     if (!active) {
