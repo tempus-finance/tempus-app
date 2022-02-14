@@ -464,7 +464,7 @@ const Wallet = () => {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [active, setWalletData, activate, setSelectedWallet, unsupportedNetwork]);
+  }, []);
 
   useEffect(() => {
     if (!active) {
