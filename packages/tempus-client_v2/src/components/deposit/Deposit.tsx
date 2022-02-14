@@ -304,6 +304,7 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
     selectedPoolAddress,
     userWalletSigner,
     tokenPrecision.backingToken,
+    tokenPrecision.yieldBearingToken,
     userWalletAddress,
     selectedToken,
     setBackingTokenRate,
