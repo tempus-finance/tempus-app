@@ -434,7 +434,19 @@ const Wallet = () => {
       });
 
       // Try to activate existing wallet connect session
-      await walletConnector.activate();
+      try {
+        await walletConnector.activate();
+      } catch (error) {
+        selectedChain.set(null);
+
+        setWalletData &&
+          setWalletData(previousData => ({
+            ...previousData,
+            userWalletConnected: false,
+          }));
+
+        return;
+      }
 
       // Check if session is authorized
       const authorized = walletConnector.walletConnectProvider.connected;
