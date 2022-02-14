@@ -285,7 +285,8 @@ const Wallet = () => {
       setConnecting(true);
       connect(lastSelectedWallet);
     },
-    [language, active, activate, deactivate, setWalletData, selectedChain, unsupportedNetwork],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [language, active, activate, deactivate, setWalletData, unsupportedNetwork],
   );
 
   const onWalletConnectSelected = useCallback(
@@ -462,7 +463,8 @@ const Wallet = () => {
         checkMetaMaskConnection();
       }
     }
-  }, [active, setWalletData, activate, setSelectedWallet, selectedChain, unsupportedNetwork]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [active, setWalletData, activate, setSelectedWallet, unsupportedNetwork]);
 
   useEffect(() => {
     if (!active) {
