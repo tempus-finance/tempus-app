@@ -1,4 +1,4 @@
-import { Contract } from 'ethers';
+import { BigNumber, Contract } from 'ethers';
 import { JsonRpcSigner } from '@ethersproject/providers';
 import ERC20ABI from '../abi/ERC20.json';
 import { ERC20 } from '../abi/ERC20';
@@ -56,19 +56,30 @@ class UserLPTokenBalanceProvider {
   /**
    * Manually trigger user balance update. Can be called after user action that affects user balance.
    */
-  fetchForPool(address: string) {
+  fetchForPool(address: string, blockTag?: number) {
     const poolConfig = getConfigForPoolWithAddress(address);
 
-    this.updateLPTokenBalanceForPool(poolConfig);
+    this.updateLPTokenBalanceForPool(poolConfig, blockTag);
   }
 
-  private async updateLPTokenBalanceForPool(poolConfig: TempusPool) {
+  private async updateLPTokenBalanceForPool(poolConfig: TempusPool, blockTag?: number) {
     if (!this.userWalletSigner) {
       return;
     }
 
     const lpTokenContract = new Contract(poolConfig.ammAddress, ERC20ABI, this.userWalletSigner) as ERC20;
-    const balance = await lpTokenContract.balanceOf(this.userWalletAddress);
+
+    let balance: BigNumber;
+    try {
+      balance = await lpTokenContract.balanceOf(this.userWalletAddress, {
+        blockTag,
+      });
+    } catch (error) {
+      console.error(
+        'UserLPTokenBalanceProvider - updateLPTokenBalanceForPool() - Failed to fetch new user LP balance!',
+      );
+      return Promise.reject();
+    }
 
     const currentBalance = dynamicPoolDataState[poolConfig.address].userLPTokenBalance.get();
     // Only update state if fetched user principals balance is different from current user principals balance

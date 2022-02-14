@@ -67,13 +67,13 @@ class UserBalanceProvider {
   /**
    * Manually trigger user balance update. Can be called after user action that affects user balance.
    */
-  fetchForPool(address: string) {
+  fetchForPool(address: string, blockTag?: number) {
     const poolConfig = getConfigForPoolWithAddress(address);
 
-    this.updateUserBalanceForPool(poolConfig);
+    this.updateUserBalanceForPool(poolConfig, blockTag);
   }
 
-  private async updateUserBalanceForPool(poolConfig: TempusPool) {
+  private async updateUserBalanceForPool(poolConfig: TempusPool, blockTag?: number) {
     if (!this.userWalletSigner) {
       return;
     }
@@ -85,10 +85,18 @@ class UserBalanceProvider {
     const lpTokenService = getERC20TokenService(poolConfig.ammAddress, this.chain, this.userWalletSigner);
 
     const [principalsBalance, yieldsBalance, lpTokenBalance, backingTokenRate] = await Promise.all([
-      principalsService.balanceOf(this.userWalletAddress),
-      yieldsService.balanceOf(this.userWalletAddress),
-      lpTokenService.balanceOf(this.userWalletAddress),
-      statisticsService.getRate(this.chain, poolConfig.backingToken),
+      principalsService.balanceOf(this.userWalletAddress, {
+        blockTag,
+      }),
+      yieldsService.balanceOf(this.userWalletAddress, {
+        blockTag,
+      }),
+      lpTokenService.balanceOf(this.userWalletAddress, {
+        blockTag,
+      }),
+      statisticsService.getRate(this.chain, poolConfig.backingToken, {
+        blockTag,
+      }),
     ]);
 
     const estimateExitToBackingToken = true;

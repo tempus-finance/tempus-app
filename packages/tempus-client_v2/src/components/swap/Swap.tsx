@@ -196,20 +196,23 @@ const Swap: FC<SwapProps> = props => {
     chain,
   ]);
 
-  const onExecuted = useCallback(() => {
-    setAmount('');
+  const onExecuted = useCallback(
+    (successful: boolean, txBlockNumber?: number) => {
+      setAmount('');
 
-    if (!userWalletSigner) {
-      return;
-    }
+      if (!userWalletSigner) {
+        return;
+      }
 
-    // Trigger user pool share balance update when execute is finished
-    getUserShareTokenBalanceProvider({
-      chain,
-      userWalletAddress,
-      userWalletSigner,
-    }).fetchForPool(selectedPoolAddress);
-  }, [selectedPoolAddress, userWalletAddress, userWalletSigner, chain]);
+      // Trigger user pool share balance update when execute is finished
+      getUserShareTokenBalanceProvider({
+        chain,
+        userWalletAddress,
+        userWalletSigner,
+      }).fetchForPool(selectedPoolAddress, txBlockNumber);
+    },
+    [selectedPoolAddress, userWalletAddress, userWalletSigner, chain],
+  );
 
   // Fetch receive amount
   useEffect(() => {

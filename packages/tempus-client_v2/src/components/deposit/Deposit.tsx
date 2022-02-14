@@ -226,34 +226,37 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
     chain,
   ]);
 
-  const onExecuted = useCallback(() => {
-    setAmount('');
+  const onExecuted = useCallback(
+    (successful: boolean, txBlockNumber?: number) => {
+      setAmount('');
 
-    if (!userWalletSigner) {
-      return;
-    }
+      if (!userWalletSigner) {
+        return;
+      }
 
-    // Trigger user pool share balance update when execute is finished
-    getUserShareTokenBalanceProvider({
-      chain,
-      userWalletAddress,
-      userWalletSigner,
-    }).fetchForPool(selectedPoolAddress);
+      // Trigger user pool share balance update when execute is finished
+      getUserShareTokenBalanceProvider({
+        chain,
+        userWalletAddress,
+        userWalletSigner,
+      }).fetchForPool(selectedPoolAddress, txBlockNumber);
 
-    // Trigger user balance update when execute is finished
-    getUserBalanceProvider({
-      chain,
-      userWalletAddress,
-      userWalletSigner,
-    }).fetchForPool(selectedPoolAddress);
+      // Trigger user balance update when execute is finished
+      getUserBalanceProvider({
+        chain,
+        userWalletAddress,
+        userWalletSigner,
+      }).fetchForPool(selectedPoolAddress, txBlockNumber);
 
-    // Trigger user LP Token balance update when execute is finished
-    getUserLPTokenBalanceProvider({
-      chain,
-      userWalletAddress,
-      userWalletSigner,
-    }).fetchForPool(selectedPoolAddress);
-  }, [selectedPoolAddress, userWalletAddress, userWalletSigner, chain]);
+      // Trigger user LP Token balance update when execute is finished
+      getUserLPTokenBalanceProvider({
+        chain,
+        userWalletAddress,
+        userWalletSigner,
+      }).fetchForPool(selectedPoolAddress, txBlockNumber);
+    },
+    [selectedPoolAddress, userWalletAddress, userWalletSigner, chain],
+  );
 
   const onApproveChange = useCallback(approved => {
     setTokensApproved(approved);
