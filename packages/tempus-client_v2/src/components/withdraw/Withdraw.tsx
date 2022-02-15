@@ -473,7 +473,7 @@ const Withdraw: FC<WithdrawProps> = ({ chain, onWithdraw }) => {
         )}
         {userYieldsBalance && !userYieldsBalance.isZero() && (
           <>
-            <PlusIconContainer orientation="horizontal" />
+            {userPrincipalsBalance && !userPrincipalsBalance.isZero() && <PlusIconContainer orientation="horizontal" />}
             <SectionContainer elevation={2}>
               <div className="tc__title-and-balance">
                 <Typography variant="h4">
@@ -518,7 +518,8 @@ const Withdraw: FC<WithdrawProps> = ({ chain, onWithdraw }) => {
         )}
         {userLPTokenBalance && !userLPTokenBalance.isZero() && (
           <>
-            <PlusIconContainer orientation="horizontal" />
+            {((userPrincipalsBalance && !userPrincipalsBalance.isZero()) ||
+              (userYieldsBalance && !userYieldsBalance.isZero())) && <PlusIconContainer orientation="horizontal" />}
             <SectionContainer elevation={2}>
               <div className="tc__title-and-balance">
                 <Typography variant="h4">
