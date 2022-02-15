@@ -459,6 +459,15 @@ const Wallet = () => {
 
       await signer.provider.ready;
 
+      const rpcUrl = (NETWORK_URLS as any)[signer.provider.network.chainId];
+
+      const walletConnectProvider = (signer?.provider as any)?.provider;
+
+      // Invalid RPC Url
+      if (walletConnectProvider && walletConnectProvider.isWalletConnect && rpcUrl !== walletConnectProvider.rpcUrl) {
+        return;
+      }
+
       const chain = chainIdToChainName(signer.provider.network.chainId.toString());
       if (!chain) {
         unsupportedNetwork.set(true);
