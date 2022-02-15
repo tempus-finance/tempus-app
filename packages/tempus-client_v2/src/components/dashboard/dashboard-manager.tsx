@@ -1,4 +1,4 @@
-import { useState as useHookState } from '@hookstate/core';
+import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { FC, useCallback, useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { isEqual } from 'lodash';
@@ -6,6 +6,7 @@ import { WalletContext } from '../../context/walletContext';
 import { DashboardRow, DashboardRowChild } from '../../interfaces/DashboardRow';
 import getDashboardDataAdapter from '../../adapters/getDashboardDataAdapter';
 import { RowsExcludedByDefault } from '../../adapters/DashboardDataAdapter';
+import { selectedChainState } from '../../state/ChainState';
 import {
   staticPoolDataState,
   dynamicPoolDataState,
@@ -17,10 +18,13 @@ import Dashboard from './dashboard';
 const DashboardManager: FC = (): JSX.Element => {
   let navigate = useNavigate();
 
+  const selectedChain = useHookState(selectedChainState);
   const staticPoolData = useHookState(staticPoolDataState).get();
   const dynamicPoolData = useHookState(dynamicPoolDataState).get();
 
-  const { userWalletAddress, userWalletConnected, userWalletChain, userWalletSigner } = useContext(WalletContext);
+  const selectedChainName = selectedChain.attach(Downgraded).get();
+
+  const { userWalletAddress, userWalletConnected, userWalletSigner } = useContext(WalletContext);
 
   const [rows, setRows] = useState<DashboardRow[]>([]);
 
@@ -35,10 +39,10 @@ const DashboardManager: FC = (): JSX.Element => {
     let rowsData: DashboardRow[] = [];
 
     // If user wallet is connected and specific chain is selected
-    if (userWalletSigner && userWalletChain) {
-      const dashboardDataAdapter = getDashboardDataAdapter(userWalletChain);
+    if (userWalletSigner && selectedChainName) {
+      const dashboardDataAdapter = getDashboardDataAdapter(selectedChainName);
       excludeNonPositiveRariPools(staticPoolData, dynamicPoolData, rowsExcludedByDefault);
-      rowsData = dashboardDataAdapter.getRows(userWalletChain, rowsExcludedByDefault);
+      rowsData = dashboardDataAdapter.getRows(selectedChainName, rowsExcludedByDefault);
 
       // If user wallet is not connected
     } else if (userWalletConnected === false) {
@@ -55,7 +59,7 @@ const DashboardManager: FC = (): JSX.Element => {
     userWalletConnected,
     userWalletAddress,
     userWalletSigner,
-    userWalletChain,
+    selectedChainName,
     staticPoolData,
     dynamicPoolData,
     rows,

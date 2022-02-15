@@ -1,17 +1,18 @@
 import { FC, useCallback, useContext, useEffect, useState } from 'react';
+import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { UserSettingsContext } from '../../context/userSettingsContext';
-import { WalletContext } from '../../context/walletContext';
 import { Notification } from '../../interfaces/Notification';
 import getNotificationService from '../../services/getNotificationService';
+import { selectedChainState } from '../../state/ChainState';
 import NotificationComponent from './NotificationComponent';
 
 import './Notification.scss';
 
 const NotificationContainer: FC = () => {
   const { setUserSettings } = useContext(UserSettingsContext);
-  const { userWalletChain } = useContext(WalletContext);
-
   const [notifications, setNotifications] = useState<Notification[]>([]);
+  const selectedChain = useHookState(selectedChainState);
+  const selectedChainName = selectedChain.attach(Downgraded).get();
 
   const onNotificationDelete = useCallback(
     (id: string) => {
@@ -40,7 +41,7 @@ const NotificationContainer: FC = () => {
     const notificationStream$ = getNotificationService()
       .getNextItem()
       .subscribe(notification => {
-        if (notification && notification.chain === userWalletChain) {
+        if (notification && notification.chain === selectedChainName) {
           // Create auto close timer for new notification if web page tab is visible when notification is created
           if (!document.hidden) {
             autoCloseNotification(notification.id);
@@ -51,7 +52,7 @@ const NotificationContainer: FC = () => {
       });
 
     return () => notificationStream$.unsubscribe();
-  }, [userWalletChain, autoCloseNotification, setNotifications]);
+  }, [selectedChainName, autoCloseNotification, setNotifications]);
 
   return (
     <div className="tc__notification-container">

@@ -1,20 +1,24 @@
 import { ethers } from 'ethers';
 import { useCallback, useContext, useEffect } from 'react';
-import { useState as useHookState } from '@hookstate/core';
+import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { catchError, filter, from, interval, Observable, of, startWith, Subscription, switchMap } from 'rxjs';
 import { FIXED_APR_PRECISION, POLLING_INTERVAL } from '../constants';
 import { getChainConfig, getConfig } from '../utils/getConfig';
 import getTokenPrecision from '../utils/getTokenPrecision';
 import { WalletContext } from '../context/walletContext';
 import { dynamicPoolDataState } from '../state/PoolDataState';
+import { selectedChainState } from '../state/ChainState';
 import getPoolDataAdapter from '../adapters/getPoolDataAdapter';
 import { Chain } from '../interfaces/Chain';
 import { TempusPool } from '../interfaces/TempusPool';
 
 const FixedAPRProvider = () => {
   const dynamicPoolData = useHookState(dynamicPoolDataState);
+  const selectedChain = useHookState(selectedChainState);
 
-  const { userWalletSigner, userWalletConnected, userWalletChain } = useContext(WalletContext);
+  const selectedChainName = selectedChain.attach(Downgraded).get();
+
+  const { userWalletSigner, userWalletConnected } = useContext(WalletContext);
 
   /**
    * Fetch Fixed APR for tempus pool
@@ -101,7 +105,7 @@ const FixedAPRProvider = () => {
     const configData = getConfig();
     for (const chainName in configData) {
       // If user is connected to specific chain, we should fetch Fixed APR data only from that chain and skip all other chains
-      if (userWalletChain && userWalletChain !== chainName) {
+      if (selectedChainName && selectedChainName !== chainName) {
         continue;
       }
 
@@ -120,7 +124,7 @@ const FixedAPRProvider = () => {
     }
 
     return () => subscriptions$.unsubscribe();
-  }, [userWalletChain, userWalletConnected, updatePoolFixedAPR, fetchAPR]);
+  }, [userWalletSigner, selectedChainName, userWalletConnected, updatePoolFixedAPR, fetchAPR]);
 
   /**
    * Provider component only updates context value when needed. It does not show anything in the UI.

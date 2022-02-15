@@ -1,11 +1,12 @@
 import { FC, useCallback, useContext, useEffect } from 'react';
-import { useState as useHookState } from '@hookstate/core';
+import { Downgraded, useState as useHookState } from '@hookstate/core';
 import UserBalanceDataAdapter from '../adapters/UserBalanceDataAdapter';
 import { WalletContext } from '../context/walletContext';
 import { TempusPool } from '../interfaces/TempusPool';
 import getERC20TokenService from '../services/getERC20TokenService';
 import { getChainConfig } from '../utils/getConfig';
 import { dynamicPoolDataState } from '../state/PoolDataState';
+import { selectedChainState } from '../state/ChainState';
 
 interface PresentValueProviderProps {
   userBalanceDataAdapter: UserBalanceDataAdapter;
@@ -15,8 +16,11 @@ const AvailableToDepositUSDProvider: FC<PresentValueProviderProps> = props => {
   const { userBalanceDataAdapter } = props;
 
   const dynamicPoolData = useHookState(dynamicPoolDataState);
+  const selectedChain = useHookState(selectedChainState);
 
-  const { userWalletAddress, userWalletSigner, userWalletChain } = useContext(WalletContext);
+  const selectedChainName = selectedChain.attach(Downgraded).get();
+
+  const { userWalletAddress, userWalletSigner } = useContext(WalletContext);
 
   const updateUserAvailableToDepositUSDForPool = useCallback(
     async (tempusPool: TempusPool) => {
@@ -88,16 +92,16 @@ const AvailableToDepositUSDProvider: FC<PresentValueProviderProps> = props => {
   );
 
   const updateAvailableToDepositUSD = useCallback(() => {
-    if (!userWalletChain) {
+    if (!selectedChainName) {
       return;
     }
 
-    getChainConfig(userWalletChain).tempusPools.forEach(poolConfig => {
+    getChainConfig(selectedChainName).tempusPools.forEach(poolConfig => {
       if (userWalletSigner) {
         updateUserAvailableToDepositUSDForPool(poolConfig);
       }
     });
-  }, [userWalletSigner, userWalletChain, updateUserAvailableToDepositUSDForPool]);
+  }, [userWalletSigner, selectedChainName, updateUserAvailableToDepositUSDForPool]);
 
   /**
    * Fetch available to deposit USD when component mounts
@@ -110,20 +114,20 @@ const AvailableToDepositUSDProvider: FC<PresentValueProviderProps> = props => {
    * Subscribe to user principals, yields and LP Token transfer events for all pools
    */
   useEffect(() => {
-    if (!userWalletSigner || !userWalletChain) {
+    if (!userWalletSigner || !selectedChainName) {
       return;
     }
 
     try {
-      getChainConfig(userWalletChain).tempusPools.forEach(poolConfig => {
+      getChainConfig(selectedChainName).tempusPools.forEach(poolConfig => {
         const backingTokenService = getERC20TokenService(
           poolConfig.backingTokenAddress,
-          userWalletChain,
+          selectedChainName,
           userWalletSigner,
         );
         const yieldBearingTokenService = getERC20TokenService(
           poolConfig.yieldBearingTokenAddress,
-          userWalletChain,
+          selectedChainName,
           userWalletSigner,
         );
         backingTokenService.onTransfer(userWalletAddress, null, updateAvailableToDepositUSD);
@@ -133,15 +137,15 @@ const AvailableToDepositUSDProvider: FC<PresentValueProviderProps> = props => {
       });
 
       return () => {
-        getChainConfig(userWalletChain).tempusPools.forEach(poolConfig => {
+        getChainConfig(selectedChainName).tempusPools.forEach(poolConfig => {
           const backingTokenService = getERC20TokenService(
             poolConfig.backingTokenAddress,
-            userWalletChain,
+            selectedChainName,
             userWalletSigner,
           );
           const yieldBearingTokenService = getERC20TokenService(
             poolConfig.yieldBearingTokenAddress,
-            userWalletChain,
+            selectedChainName,
             userWalletSigner,
           );
           backingTokenService.offTransfer(userWalletAddress, null, updateAvailableToDepositUSD);
@@ -153,7 +157,7 @@ const AvailableToDepositUSDProvider: FC<PresentValueProviderProps> = props => {
     } catch (error) {
       console.error('AvailableToDepositUSDProvider - subscriber', error);
     }
-  }, [userWalletSigner, userWalletAddress, userWalletChain, updateAvailableToDepositUSD]);
+  }, [userWalletSigner, userWalletAddress, selectedChainName, updateAvailableToDepositUSD]);
 
   /**
    * Provider component only updates context value when needed. It does not show anything in the UI.
