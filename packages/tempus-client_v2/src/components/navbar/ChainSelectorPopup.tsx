@@ -1,7 +1,8 @@
-import { FC, useCallback } from 'react';
-import { Downgraded, useState as useHookState } from '@hookstate/core';
+import { FC, useCallback, useContext } from 'react';
+import { useState as useHookState } from '@hookstate/core';
+import { WalletContext } from '../../context/walletContext';
 import { getChainConfig } from '../../utils/getConfig';
-import { selectedChainState, unsupportedNetworkState } from '../../state/ChainState';
+import { unsupportedNetworkState } from '../../state/ChainState';
 import { Chain, chainNameToHexChainId, prettifyChainNameLong } from '../../interfaces/Chain';
 import TickIcon from '../icons/TickIcon';
 import Modal from '../modal/Modal';
@@ -36,10 +37,9 @@ const ChainSelectorPopup: FC<ChainSelectorPopupProps> = ({
   requestNetworkChange,
   requestAddNetwork,
 }) => {
-  const selectedChain = useHookState(selectedChainState);
-  const unsupportedNetwork = useHookState(unsupportedNetworkState);
+  const { userWalletChain } = useContext(WalletContext);
 
-  const selectedChainName = selectedChain.attach(Downgraded).get();
+  const unsupportedNetwork = useHookState(unsupportedNetworkState);
 
   const onChainSelect = useCallback(
     async (chain: Chain) => {
@@ -48,7 +48,6 @@ const ChainSelectorPopup: FC<ChainSelectorPopupProps> = ({
       try {
         const requestAccepted = await requestNetworkChange(chainId, false, false);
         if (requestAccepted) {
-          selectedChain.set(chain);
           unsupportedNetwork.set(false);
         }
       } catch (error: any) {
@@ -70,7 +69,6 @@ const ChainSelectorPopup: FC<ChainSelectorPopupProps> = ({
             chainConfig.blockExplorerUrl,
           );
           if (requestAccepted) {
-            selectedChain.set(chain);
             unsupportedNetwork.set(false);
           }
         } else {
@@ -80,11 +78,11 @@ const ChainSelectorPopup: FC<ChainSelectorPopupProps> = ({
 
       onClose();
     },
-    [selectedChain, unsupportedNetwork, onClose, requestNetworkChange, requestAddNetwork],
+    [unsupportedNetwork, onClose, requestNetworkChange, requestAddNetwork],
   );
 
-  const ethereumSelected = selectedChainName === 'ethereum';
-  const fantomSelected = selectedChainName === 'fantom';
+  const ethereumSelected = userWalletChain === 'ethereum';
+  const fantomSelected = userWalletChain === 'fantom';
 
   if (!open) {
     return null;
