@@ -1,5 +1,6 @@
 import { FC, useCallback, useContext } from 'react';
 import { useState as useHookState } from '@hookstate/core';
+import { WalletContext } from '../../context/walletContext';
 import { getChainConfig } from '../../utils/getConfig';
 import { unsupportedNetworkState } from '../../state/ChainState';
 import { Chain, chainNameToHexChainId, prettifyChainNameLong } from '../../interfaces/Chain';
@@ -10,7 +11,6 @@ import Typography from '../typography/Typography';
 import TokenIcon from '../tokenIcon';
 
 import './ChainSelectorPopup.scss';
-import { WalletContext } from '../../context/walletContext';
 
 interface ChainSelectorPopupProps {
   open: boolean;

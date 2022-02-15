@@ -6,6 +6,7 @@ import { Chain } from '../../interfaces/Chain';
 import { LanguageContext } from '../../context/languageContext';
 import { UserSettingsContext } from '../../context/userSettingsContext';
 import { PendingTransactionsContext } from '../../context/pendingTransactionsContext';
+import { WalletContext } from '../../context/walletContext';
 import getNotificationService from '../../services/getNotificationService';
 import { getChainConfig } from '../../utils/getConfig';
 import getText from '../../localisation/getText';
@@ -15,7 +16,6 @@ import WalletNotification from './WalletNotification';
 import WalletPending from './WalletPending';
 
 import './WalletPopup.scss';
-import { WalletContext } from '../../context/walletContext';
 
 type WalletPopupInProps = {
   anchorElement: RefObject<HTMLDivElement>;
