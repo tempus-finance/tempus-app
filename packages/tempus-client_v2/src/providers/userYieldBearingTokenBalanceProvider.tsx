@@ -1,25 +1,22 @@
 import { useCallback, useContext, useEffect } from 'react';
-import { Downgraded, useState as useHookState } from '@hookstate/core';
+import { useState as useHookState } from '@hookstate/core';
 import { WalletContext } from '../context/walletContext';
 import { TempusPool } from '../interfaces/TempusPool';
 import getERC20TokenService from '../services/getERC20TokenService';
 import { getChainConfig } from '../utils/getConfig';
 import { dynamicPoolDataState } from '../state/PoolDataState';
-import { selectedChainState } from '../state/ChainState';
 
 const UserYieldBearingTokenBalanceProvider = () => {
   const dynamicPoolData = useHookState(dynamicPoolDataState);
-  const selectedChain = useHookState(selectedChainState);
 
-  const selectedChainName = selectedChain.attach(Downgraded).get();
-  const { userWalletAddress, userWalletSigner } = useContext(WalletContext);
+  const { userWalletAddress, userWalletSigner, userWalletChain } = useContext(WalletContext);
 
   const updateBalanceForPool = useCallback(
     async (tempusPool: TempusPool) => {
-      if (userWalletSigner && selectedChainName) {
+      if (userWalletSigner && userWalletChain) {
         const yieldBearingTokenAddress = getERC20TokenService(
           tempusPool.yieldBearingTokenAddress,
-          selectedChainName,
+          userWalletChain,
           userWalletSigner,
         );
         const yieldBearingTokenBalance = await yieldBearingTokenAddress.balanceOf(userWalletAddress);
@@ -33,32 +30,32 @@ const UserYieldBearingTokenBalanceProvider = () => {
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [userWalletAddress, userWalletSigner, selectedChainName],
+    [userWalletAddress, userWalletSigner, userWalletChain],
   );
 
   const updateBalance = useCallback(async () => {
-    if (!selectedChainName) {
+    if (!userWalletChain) {
       return;
     }
 
-    getChainConfig(selectedChainName).tempusPools.forEach(poolConfig => {
+    getChainConfig(userWalletChain).tempusPools.forEach(poolConfig => {
       updateBalanceForPool(poolConfig);
     });
-  }, [selectedChainName, updateBalanceForPool]);
+  }, [userWalletChain, updateBalanceForPool]);
 
   useEffect(() => {
     updateBalance();
   }, [updateBalance]);
 
   useEffect(() => {
-    if (!userWalletSigner || !selectedChainName) {
+    if (!userWalletSigner || !userWalletChain) {
       return;
     }
 
-    getChainConfig(selectedChainName).tempusPools.forEach(poolConfig => {
+    getChainConfig(userWalletChain).tempusPools.forEach(poolConfig => {
       const yieldBearingTokenService = getERC20TokenService(
         poolConfig.yieldBearingTokenAddress,
-        selectedChainName,
+        userWalletChain,
         userWalletSigner,
       );
 
@@ -67,10 +64,10 @@ const UserYieldBearingTokenBalanceProvider = () => {
     });
 
     return () => {
-      getChainConfig(selectedChainName).tempusPools.forEach(poolConfig => {
+      getChainConfig(userWalletChain).tempusPools.forEach(poolConfig => {
         const yieldBearingTokenService = getERC20TokenService(
           poolConfig.yieldBearingTokenAddress,
-          selectedChainName,
+          userWalletChain,
           userWalletSigner,
         );
 
@@ -78,7 +75,7 @@ const UserYieldBearingTokenBalanceProvider = () => {
         yieldBearingTokenService.offTransfer(null, userWalletAddress, updateBalance);
       });
     };
-  }, [userWalletSigner, userWalletAddress, selectedChainName, updateBalance]);
+  }, [userWalletSigner, userWalletAddress, userWalletChain, updateBalance]);
 
   /**
    * Provider component only updates context value when needed. It does not show anything in the UI.

@@ -1,4 +1,4 @@
-import { Downgraded, useState as useHookState } from '@hookstate/core';
+import { useState as useHookState } from '@hookstate/core';
 import { FC, useCallback, useEffect, useContext } from 'react';
 import { Subscription } from 'rxjs';
 import { BigNumber } from 'ethers';
@@ -8,7 +8,6 @@ import { TempusPool } from '../interfaces/TempusPool';
 import { Chain } from '../interfaces/Chain';
 import { WalletContext } from '../context/walletContext';
 import { dynamicPoolDataState } from '../state/PoolDataState';
-import { selectedChainState } from '../state/ChainState';
 
 interface TVLProviderProps {
   dashboardDataAdapter: DashboardDataAdapter;
@@ -17,12 +16,9 @@ interface TVLProviderProps {
 const TVLProvider: FC<TVLProviderProps> = props => {
   const { dashboardDataAdapter } = props;
 
-  const { userWalletConnected } = useContext(WalletContext);
+  const { userWalletConnected, userWalletChain } = useContext(WalletContext);
 
   const dynamicPoolData = useHookState(dynamicPoolDataState);
-  const selectedChain = useHookState(selectedChainState);
-
-  const selectedChainName = selectedChain.attach(Downgraded).get();
 
   /**
    * Updates pool TVL data in context.
@@ -53,7 +49,7 @@ const TVLProvider: FC<TVLProviderProps> = props => {
     const configData = getConfig();
     for (const chainName in configData) {
       // If user is connected to specific chain, we should fetch TVL data only from that chain and skip all other chains
-      if (selectedChainName && selectedChainName !== chainName) {
+      if (userWalletChain && userWalletChain !== chainName) {
         continue;
       }
 
@@ -81,7 +77,7 @@ const TVLProvider: FC<TVLProviderProps> = props => {
 
     return () => subscriptions$.unsubscribe();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedChainName, dashboardDataAdapter, userWalletConnected, updatePoolTVL]);
+  }, [userWalletChain, dashboardDataAdapter, userWalletConnected, updatePoolTVL]);
 
   /**
    * Provider component only updates context value when needed. It does not show anything in the UI.
