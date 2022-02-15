@@ -776,12 +776,40 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
   }, [amount, depositDisabled]);
 
   const amountToApprove = useMemo(() => {
+    let amountBigNumber;
     if (amount) {
-      return ethers.utils.parseUnits(amount, selectedTokenPrecision);
+      amountBigNumber = ethers.utils.parseUnits(amount, selectedTokenPrecision);
+    }
+
+    if (selectedToken === backingToken) {
+      if (
+        userBackingTokenBalance &&
+        !userBackingTokenBalance.isZero() &&
+        amountBigNumber &&
+        amountBigNumber.lte(userBackingTokenBalance)
+      ) {
+        return amountBigNumber;
+      }
+    } else {
+      if (
+        userYieldBearingTokenBalance &&
+        !userYieldBearingTokenBalance.isZero() &&
+        amountBigNumber &&
+        amountBigNumber.lte(userYieldBearingTokenBalance)
+      ) {
+        return amountBigNumber;
+      }
     }
 
     return ZERO;
-  }, [amount, selectedTokenPrecision]);
+  }, [
+    amount,
+    selectedTokenPrecision,
+    backingToken,
+    selectedToken,
+    userBackingTokenBalance,
+    userYieldBearingTokenBalance,
+  ]);
 
   const executeDisabled = useMemo((): boolean => {
     const zeroAmount = isZeroString(amount);
