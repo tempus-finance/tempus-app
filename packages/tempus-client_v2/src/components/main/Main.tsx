@@ -1,7 +1,5 @@
-import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { useContext, useEffect, useState } from 'react';
 import { Routes, Route } from 'react-router-dom';
-import { selectedChainState } from '../../state/ChainState';
 import { WalletContext } from '../../context/walletContext';
 import DashboardDataAdapter from '../../adapters/DashboardDataAdapter';
 import getDashboardDataAdapter from '../../adapters/getDashboardDataAdapter';
@@ -20,26 +18,22 @@ import PoolRoute from '../routes/PoolRoute';
 import './Main.scss';
 
 const Main = () => {
-  const selectedChain = useHookState(selectedChainState);
-
-  const selectedChainName = selectedChain.attach(Downgraded).get();
-
-  const { userWalletConnected, userWalletSigner } = useContext(WalletContext);
+  const { userWalletConnected, userWalletSigner, userWalletChain } = useContext(WalletContext);
 
   const [dashboardDataAdapter, setDashboardDataAdapter] = useState<DashboardDataAdapter | null>(null);
   const [userBalanceDataAdapter, setUserBalanceDataAdapter] = useState<UserBalanceDataAdapter | null>(null);
 
   useEffect(() => {
     const fetchRows = async () => {
-      if (userWalletSigner && selectedChainName) {
-        const dashboardDataAdapter = getDashboardDataAdapter(selectedChainName);
-        const userBalanceDataAdapter = getUserBalanceDataAdapter(selectedChainName, userWalletSigner);
+      if (userWalletSigner && userWalletChain) {
+        const dashboardDataAdapter = getDashboardDataAdapter(userWalletChain);
+        const userBalanceDataAdapter = getUserBalanceDataAdapter(userWalletChain, userWalletSigner);
 
         setDashboardDataAdapter(dashboardDataAdapter);
         setUserBalanceDataAdapter(userBalanceDataAdapter);
-      } else if (userWalletConnected === false && selectedChainName) {
-        const dashboardDataAdapter = getDashboardDataAdapter(selectedChainName);
-        const userBalanceDataAdapter = getUserBalanceDataAdapter(selectedChainName);
+      } else if (userWalletConnected === false && userWalletChain) {
+        const dashboardDataAdapter = getDashboardDataAdapter(userWalletChain);
+        const userBalanceDataAdapter = getUserBalanceDataAdapter(userWalletChain);
 
         setDashboardDataAdapter(dashboardDataAdapter);
         setUserBalanceDataAdapter(userBalanceDataAdapter);
@@ -50,7 +44,7 @@ const Main = () => {
       }
     };
     fetchRows();
-  }, [userWalletConnected, userWalletSigner, userBalanceDataAdapter, selectedChainName]);
+  }, [userWalletConnected, userWalletSigner, userBalanceDataAdapter, userWalletChain]);
 
   return (
     <div className="tc__main">
@@ -65,7 +59,7 @@ const Main = () => {
 
       <Routes>
         <Route path="/" element={<RootRoute />} />
-        <Route path="/pool/:poolAddress" element={selectedChainName && <PoolRoute chain={selectedChainName} />} />
+        <Route path="/pool/:poolAddress" element={userWalletChain && <PoolRoute chain={userWalletChain} />} />
       </Routes>
     </div>
   );

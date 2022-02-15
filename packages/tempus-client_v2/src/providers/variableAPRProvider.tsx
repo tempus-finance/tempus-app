@@ -1,6 +1,6 @@
 import { ethers } from 'ethers';
 import { useCallback, useContext, useEffect } from 'react';
-import { Downgraded, useState as useHookState } from '@hookstate/core';
+import { useState as useHookState } from '@hookstate/core';
 import {
   catchError,
   combineLatest,
@@ -16,7 +16,6 @@ import {
 import { getChainConfig, getConfig } from '../utils/getConfig';
 import { WalletContext } from '../context/walletContext';
 import { dynamicPoolDataState } from '../state/PoolDataState';
-import { selectedChainState } from '../state/ChainState';
 import { Chain } from '../interfaces/Chain';
 import { TempusPool } from '../interfaces/TempusPool';
 import getVariableRateService from '../services/getVariableRateService';
@@ -24,11 +23,8 @@ import { POLLING_INTERVAL } from '../constants';
 
 const VariableAPRProvider = () => {
   const dynamicPoolData = useHookState(dynamicPoolDataState);
-  const selectedChain = useHookState(selectedChainState);
 
-  const selectedChainName = selectedChain.attach(Downgraded).get();
-
-  const { userWalletSigner, userWalletConnected } = useContext(WalletContext);
+  const { userWalletSigner, userWalletConnected, userWalletChain } = useContext(WalletContext);
 
   /**
    * Fetch Variable APR for tempus pool
@@ -140,7 +136,7 @@ const VariableAPRProvider = () => {
     const configData = getConfig();
     for (const chainName in configData) {
       // If user is connected to specific chain, we should fetch Variable APR data only from that chain and skip all other chains
-      if (selectedChainName && selectedChainName !== chainName) {
+      if (userWalletChain && userWalletChain !== chainName) {
         continue;
       }
 
@@ -159,7 +155,7 @@ const VariableAPRProvider = () => {
     }
 
     return () => subscriptions$.unsubscribe();
-  }, [userWalletSigner, selectedChainName, userWalletConnected, updatePoolVariableAPR, fetchAPR]);
+  }, [userWalletSigner, userWalletChain, userWalletConnected, updatePoolVariableAPR, fetchAPR]);
 
   /**
    * Provider component only updates state value when needed. It does not show anything in the UI.

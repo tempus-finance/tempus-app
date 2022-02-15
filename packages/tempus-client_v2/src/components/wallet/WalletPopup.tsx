@@ -1,5 +1,4 @@
 import { FC, RefObject, useCallback, useContext, useEffect, useState } from 'react';
-import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { Button, Divider, Popper } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import { Notification } from '../../interfaces/Notification';
@@ -8,7 +7,6 @@ import { LanguageContext } from '../../context/languageContext';
 import { UserSettingsContext } from '../../context/userSettingsContext';
 import { PendingTransactionsContext } from '../../context/pendingTransactionsContext';
 import getNotificationService from '../../services/getNotificationService';
-import { selectedChainState } from '../../state/ChainState';
 import { getChainConfig } from '../../utils/getConfig';
 import getText from '../../localisation/getText';
 import Typography from '../typography/Typography';
@@ -17,6 +15,7 @@ import WalletNotification from './WalletNotification';
 import WalletPending from './WalletPending';
 
 import './WalletPopup.scss';
+import { WalletContext } from '../../context/walletContext';
 
 type WalletPopupInProps = {
   anchorElement: RefObject<HTMLDivElement>;
@@ -35,8 +34,7 @@ const WalletPopup: FC<WalletPopupProps> = ({ anchorElement, account, chainName, 
   const { openWalletPopup } = useContext(UserSettingsContext);
   const { language } = useContext(LanguageContext);
   const { pendingTransactions } = useContext(PendingTransactionsContext);
-  const selectedChain = useHookState(selectedChainState);
-  const selectedChainName = selectedChain.attach(Downgraded).get();
+  const { userWalletChain } = useContext(WalletContext);
 
   const [notifications, setNotifications] = useState<Notification[]>([]);
 
@@ -65,7 +63,7 @@ const WalletPopup: FC<WalletPopupProps> = ({ anchorElement, account, chainName, 
     const notificationStream$ = getNotificationService()
       .getLastItems()
       .subscribe(notification => {
-        if (notification && notification.chain === selectedChainName) {
+        if (notification && notification.chain === userWalletChain) {
           setNotifications((prev: any) => [notification, ...prev.slice(0, 4)]);
         }
       });
@@ -74,7 +72,7 @@ const WalletPopup: FC<WalletPopupProps> = ({ anchorElement, account, chainName, 
       notificationStream$.unsubscribe();
       setNotifications([]);
     };
-  }, [selectedChainName, setNotifications]);
+  }, [userWalletChain, setNotifications]);
 
   return (
     <>
