@@ -3,9 +3,8 @@ import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { ethers, BigNumber } from 'ethers';
 import { catchError, of } from 'rxjs';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
-import getUserShareTokenBalanceProvider from '../../providers/getUserShareTokenBalanceProvider';
-import getUserBalanceProvider from '../../providers/getBalanceProvider';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
+import { refreshBalances } from '../../providers/balanceProviderHelper';
 import { LanguageContext } from '../../context/languageContext';
 import { WalletContext } from '../../context/walletContext';
 import { Ticker } from '../../interfaces/Token';
@@ -224,19 +223,15 @@ const Mint: FC<MintInProps> = ({ narrow, chain }) => {
         return;
       }
 
-      // Trigger user pool share balance update when execute is finished
-      getUserShareTokenBalanceProvider({
-        chain,
-        userWalletAddress,
-        userWalletSigner,
-      }).fetchForPool(selectedPoolAddress, txBlockNumber);
-
-      // Trigger user balance update when execute is finished
-      getUserBalanceProvider({
-        chain,
-        userWalletAddress,
-        userWalletSigner,
-      }).fetchForPool(selectedPoolAddress, txBlockNumber);
+      refreshBalances(
+        {
+          chain,
+          userWalletAddress,
+          userWalletSigner,
+        },
+        selectedPoolAddress,
+        txBlockNumber,
+      );
     },
     [selectedPoolAddress, userWalletAddress, userWalletSigner, chain],
   );
