@@ -48,7 +48,7 @@ const it: { [word in Words]: string } = {
   crypto: 'Crypto',
   pool: 'Pool',
   ofPool: 'della Pool',
-  poolRatio: 'Frazionamento Pool (Capital / Yield)',
+  poolRatio: 'Frazionamento Pool (Capitals / Yields)',
   redemption: 'Rimborso',
   earlyRedemption: 'Rimborso Anticipato',
   swap: 'Scambio',
@@ -89,7 +89,7 @@ const it: { [word in Words]: string } = {
   provideLiquidityDisabledNoDeposit:
     "L'immissione di liquidità non è disponibile fino a quando non hai effettuato un deposito o un emissione.",
   provideLiquidityDisabledNoPrincipals:
-    "L'immissione di liquidità non è disponibile fino a quando non hai acquisito ulteriori Capital token.",
+    "L'immissione di liquidità non è disponibile fino a quando non hai acquisito ulteriori Capitals.",
   provideLiquidityDisabledNoYields:
     "L'immissione di liquidità non è disponibile fino a quando non hai acquisito ulteriori Yields token.",
   provideLiquidityDisabledPoolMaturity:
@@ -110,10 +110,10 @@ const it: { [word in Words]: string } = {
   maturity: 'Scadenza',
   timeLeft: 'Tempo Rimasto',
   currentPosition: 'Posizione Attuale',
-  principals: 'Capital',
-  principalTokens: 'Capital tokens',
+  principals: 'Capitals',
+  principalTokens: 'Capitals',
   yields: 'Yields',
-  yieldTokens: 'Yield tokens',
+  yieldTokens: 'Yields',
   lpTokens: 'LP Tokens',
   staked: 'Accumulati',
   approve: 'Approva',
@@ -152,9 +152,9 @@ const it: { [word in Words]: string } = {
   tempusAnnouncements: 'Tempus Annunci',
   tempusChat: 'Tempus Chat',
   interestRateProtectionTooltipText:
-    "Fissa il rendimento futuro con Tempus. Questa funzione blocca il tuo Yield Bearing Token, emetti i Capital e gli Yield tokens in cambio e scambia tutti gli Yield tokens per Capital attraverso il TempusAMM.<br/><br/>Riceverai Capital i quali sono riscattabili 1:1 con l'attività sottostante a scadenza.",
+    "Fissa il rendimento futuro con Tempus. Questa funzione blocca il tuo Yield Bearing Token, emetti i Capitals e gli Yields in cambio e scambia tutti gli Yields per Capitals attraverso il TempusAMM.<br/><br/>Riceverai Capitals i quali sono riscattabili 1:1 con l'attività sottostante a scadenza.",
   liquidityProvisionTooltipText:
-    'Fornisci liquidità a Tempus per ottenere un rendimento aggiuntivo. Questa funzione blocca il tuo  Yield Bearing Token, emetti i Capital e gli Yield tokens in cambio e usa il maggior numero di Capital e Yield tokens per immettere liquidità al TempusAMM.<br/><br/>Questo significa che riceverai il rendimento sottostante e le commissioni di scambio Tempus aggregate in un unico rendimento.',
+    'Fornisci liquidità a Tempus per ottenere un rendimento aggiuntivo. Questa funzione blocca il tuo  Yield Bearing Token, emetti i Capitals e gli Yields in cambio e usa il maggior numero di Capitals e Yields per immettere liquidità al TempusAMM.<br/><br/>Questo significa che riceverai il rendimento sottostante e le commissioni di scambio Tempus aggregate in un unico rendimento.',
   slippageTolerance: 'Tolleranza di slittamento',
   slippageTooltip:
     'La tua transazione non verrà completata se il prezzo cambia sfavorevolmente in misura maggiore di questa percentuale.',
@@ -164,10 +164,10 @@ const it: { [word in Words]: string } = {
     'Il supporto per smathphone e tablet non è ancora disponibile, ma lo sarà successivamente.<br />Grazie per la comprensione.',
   mobileLink: 'Leggi di più su Tempus',
   unstaked: 'Non accumulati',
-  stakedPrincipals: 'Capital accumulati',
-  stakedYields: 'Yield tokens accumulati',
-  mintDescription: 'Dividi i tuoi yield bearing token in Capital e Yields.',
-  swapDescription: 'Scambia tra Capital e Yield tokens.',
+  stakedPrincipals: 'Capitals accumulati',
+  stakedYields: 'Yields accumulati',
+  mintDescription: 'Dividi i tuoi yield bearing token in Capitals e Yields.',
+  swapDescription: 'Scambia tra Capitals e Yields.',
   provideLiquidityDescription: 'Usa i tuoi LP token per immettere liquidità nella pool e guadagnare commissioni.',
   removeLiquidityDescription:
     'Rimuovi liquidità dalla pool insieme alle commissioni sotto forma degli LP token iniziali.',

@@ -25,10 +25,10 @@ const getMenuItems = (value: Ticker | null, tickers: Ticker[], language: Languag
     let tickerLabel;
     switch (ticker) {
       case 'Principals':
-        tickerLabel = 'Capital';
+        tickerLabel = 'Capitals';
         break;
       case 'Yields':
-        tickerLabel = 'Yield';
+        tickerLabel = 'Yields';
         break;
       default:
         tickerLabel = ticker;

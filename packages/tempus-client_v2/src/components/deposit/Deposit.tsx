@@ -991,7 +991,7 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
             <div className="tf__flex-row-space-between-v">
               <Typography variant="button-text">
                 {fixedPrincipalsAmountFormatted &&
-                  `${fixedPrincipalsAmountFormatted} ${getText('principals', language)}`}
+                  `${fixedPrincipalsAmountFormatted} ${getText('principalTokens', language)}`}
                 {tokenEstimateInProgress && <CircularProgress size={14} />}
               </Typography>
               <Typography variant="button-text" color="accent">
