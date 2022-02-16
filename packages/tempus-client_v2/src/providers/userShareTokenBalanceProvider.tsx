@@ -6,12 +6,7 @@ import { TempusPool } from '../interfaces/TempusPool';
 import { Chain } from '../interfaces/Chain';
 import { dynamicPoolDataState } from '../state/PoolDataState';
 import { getChainConfig, getConfigForPoolWithAddress } from '../utils/getConfig';
-
-export interface UserShareTokenBalanceProviderParams {
-  userWalletAddress: string;
-  userWalletSigner: JsonRpcSigner;
-  chain: Chain;
-}
+import { BalanceProviderParams } from './interfaces';
 
 class UserShareTokenBalanceProvider {
   private userWalletAddress: string;
@@ -20,7 +15,7 @@ class UserShareTokenBalanceProvider {
 
   private tokenContracts: ERC20[] = [];
 
-  constructor(params: UserShareTokenBalanceProviderParams) {
+  constructor(params: BalanceProviderParams) {
     this.userWalletAddress = params.userWalletAddress;
     this.userWalletSigner = params.userWalletSigner;
     this.chain = params.chain;

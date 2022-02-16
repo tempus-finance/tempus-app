@@ -1,6 +1,7 @@
-import UserBalanceProvider, { UserBalanceProviderParams } from './balanceProvider';
+import UserBalanceProvider from './balanceProvider';
+import { BalanceProviderParams } from './interfaces';
 
-const getUserBalanceProvider = (params: UserBalanceProviderParams): UserBalanceProvider => {
+const getUserBalanceProvider = (params: BalanceProviderParams): UserBalanceProvider => {
   return new UserBalanceProvider(params);
 };
 

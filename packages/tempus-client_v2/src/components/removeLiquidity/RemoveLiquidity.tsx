@@ -2,8 +2,7 @@ import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { BigNumber, ethers } from 'ethers';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
-import getUserShareTokenBalanceProvider from '../../providers/getUserShareTokenBalanceProvider';
-import getUserLPTokenBalanceProvider from '../../providers/getUserLPTokenBalanceProvider';
+import { refreshBalances } from '../../providers/balanceProviderHelper';
 import { LanguageContext } from '../../context/languageContext';
 import { WalletContext } from '../../context/walletContext';
 import { UserSettingsContext } from '../../context/userSettingsContext';
@@ -162,19 +161,15 @@ const RemoveLiquidity: FC<RemoveLiquidityProps> = props => {
         return;
       }
 
-      // Trigger user pool share balance update when execute is finished
-      getUserShareTokenBalanceProvider({
-        chain,
-        userWalletAddress,
-        userWalletSigner,
-      }).fetchForPool(selectedPoolAddress, txBlockNumber);
-
-      // Trigger user LP Token balance update when execute is finished
-      getUserLPTokenBalanceProvider({
-        chain,
-        userWalletAddress,
-        userWalletSigner,
-      }).fetchForPool(selectedPoolAddress, txBlockNumber);
+      refreshBalances(
+        {
+          chain,
+          userWalletAddress,
+          userWalletSigner,
+        },
+        selectedPoolAddress,
+        txBlockNumber,
+      );
     },
     [selectedPoolAddress, userWalletAddress, userWalletSigner, chain],
   );

@@ -13,6 +13,7 @@ import getUserShareTokenBalanceProvider from '../../providers/getUserShareTokenB
 import getUserLPTokenBalanceProvider from '../../providers/getUserLPTokenBalanceProvider';
 import getUserBalanceProvider from '../../providers/getBalanceProvider';
 import getPoolShareBalanceProvider from '../../providers/getPoolShareBalanceProvider';
+import getUserYieldBearingTokenBalanceProvider from '../../providers/getUserYieldBearingTokenBalanceProvider';
 import NotificationContainer from '../notification/NotificationContainer';
 import NavBar from '../navbar/NavBar';
 import Main from '../main/Main';
@@ -76,6 +77,19 @@ const App = () => {
       chain: walletData.userWalletChain,
     }).init();
   }, [walletData.userWalletSigner, walletData.userWalletChain]);
+
+  // Initialize pool share balance provider every time user wallet address changes
+  useEffect(() => {
+    if (!walletData.userWalletSigner || !walletData.userWalletChain) {
+      return;
+    }
+
+    getUserYieldBearingTokenBalanceProvider({
+      userWalletSigner: walletData.userWalletSigner,
+      userWalletAddress: walletData.userWalletAddress,
+      chain: walletData.userWalletChain,
+    }).init();
+  }, [walletData.userWalletAddress, walletData.userWalletSigner, walletData.userWalletChain]);
 
   return (
     <>
