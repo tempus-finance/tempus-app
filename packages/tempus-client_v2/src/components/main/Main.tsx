@@ -8,7 +8,6 @@ import getUserBalanceDataAdapter from '../../adapters/getUserBalanceDataAdapter'
 import AvailableToDepositUSDProvider from '../../providers/availableToDepositUSDProvider';
 import NegativeYieldProvider from '../../providers/negativeYieldProvider';
 import TVLProvider from '../../providers/tvlProvider';
-import UserBackingTokenBalanceProvider from '../../providers/userBackingTokenBalanceProvider';
 import FixedAPRProvider from '../../providers/fixedAPRProvider';
 import VariableAPRProvider from '../../providers/variableAPRProvider';
 import RootRoute from '../routes/RootRoute';
@@ -53,7 +52,6 @@ const Main = () => {
       <NegativeYieldProvider />
       {dashboardDataAdapter && <TVLProvider dashboardDataAdapter={dashboardDataAdapter} />}
       {userBalanceDataAdapter && <AvailableToDepositUSDProvider userBalanceDataAdapter={userBalanceDataAdapter} />}
-      {userBalanceDataAdapter && <UserBackingTokenBalanceProvider />}
 
       <Routes>
         <Route path="/" element={<RootRoute />} />
