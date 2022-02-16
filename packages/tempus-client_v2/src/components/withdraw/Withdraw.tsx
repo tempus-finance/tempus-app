@@ -76,12 +76,15 @@ const Withdraw: FC<WithdrawProps> = ({ chain, onWithdraw }) => {
   const [principalsApproved, setPrincipalsApproved] = useState<boolean>(false);
   const [yieldsApproved, setYieldsApproved] = useState<boolean>(false);
   const [lpTokenApproved, setLpTokenApproved] = useState<boolean>(false);
-  const [selectedTokenPrecision, setSelectedTokenPrecision] = useState<number | undefined>();
 
   const selectedPoolAddress = selectedPool.attach(Downgraded).get();
   const userPrincipalsBalance = dynamicPoolData[selectedPool.get()].userPrincipalsBalance.attach(Downgraded).get();
   const userYieldsBalance = dynamicPoolData[selectedPool.get()].userYieldsBalance.attach(Downgraded).get();
   const userLPTokenBalance = dynamicPoolData[selectedPool.get()].userLPTokenBalance.attach(Downgraded).get();
+
+  const [selectedTokenPrecision, setSelectedTokenPrecision] = useState<number | undefined>(
+    getTokenPrecision(selectedPoolAddress, 'yieldBearingToken'),
+  );
 
   const onPrincipalsAmountChange = useCallback((amount: string) => {
     if (amount) {
