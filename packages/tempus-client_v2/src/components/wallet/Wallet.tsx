@@ -218,9 +218,9 @@ const Wallet = () => {
   );
 
   const onMetaMaskSelected = useCallback(
-    (showWalletConnectedNotification: boolean, lastSelectedWallet?: UserWallet) => {
+    (showWalletConnectedNotification: boolean, lastSelectedWallet?: UserWallet, forceActivate?: boolean) => {
       const connect = async (lastSelectedWallet?: UserWallet) => {
-        if (active && lastSelectedWallet === 'MetaMask') {
+        if (!forceActivate && active && lastSelectedWallet === 'MetaMask') {
           setConnecting(false);
           return;
         }
@@ -253,7 +253,6 @@ const Wallet = () => {
       setConnecting(true);
       connect(lastSelectedWallet);
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [language, active, activate, deactivate, unsupportedNetwork],
   );
 
@@ -305,7 +304,11 @@ const Wallet = () => {
             getNotificationService().notify(chain, 'Wallet', getText('walletConnectConnected', language), '');
           }
         } catch (error) {
-          setSelectedWallet(null);
+          if (lastSelectedWallet === 'MetaMask') {
+            setSelectedWallet('MetaMask');
+            const forceActivate = true;
+            onMetaMaskSelected(false, lastSelectedWallet, forceActivate);
+          }
           console.error('onWalletConnectSelected', error);
           if (error instanceof UnsupportedChainIdError) {
             unsupportedNetwork.set(true);
@@ -319,7 +322,7 @@ const Wallet = () => {
       setConnecting(true);
       connect(lastSelectedWallet);
     },
-    [language, active, activate, deactivate, unsupportedNetwork],
+    [language, active, activate, deactivate, unsupportedNetwork, onMetaMaskSelected],
   );
 
   const onCloseWalletSelector = useCallback(
