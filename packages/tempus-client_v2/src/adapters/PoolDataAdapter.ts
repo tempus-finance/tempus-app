@@ -392,30 +392,43 @@ export default class PoolDataAdapter {
   }
 
   async executeWithdraw(
-    tempusPoolAddress: string,
     tempusAMM: string,
     userPrincipalsBalance: BigNumber,
     userYieldsBalance: BigNumber,
     userLPBalance: BigNumber,
     minPrincipalsStaked: BigNumber,
     minYieldsStaked: BigNumber,
+    totalPrincipals: BigNumber,
+    totalYields: BigNumber,
     maxSlippage: BigNumber,
     isBackingToken: boolean,
     principalsPrecision: number,
     lpTokenPrecision: number,
   ): Promise<ContractTransaction | undefined> {
-    if (!this.tempusControllerService || !this.tempusPoolService) {
+    if (!this.tempusControllerService) {
       console.error('PoolDataAdapter - executeWithdraw() - Attempted to use PoolDataAdapter before initializing it!');
       return Promise.reject();
     }
 
     try {
-      const [pricePerPrincipalsShare, pricePerYieldShare] = await Promise.all([
-        this.tempusPoolService.pricePerPrincipalShareStored(tempusPoolAddress),
-        this.tempusPoolService.pricePerYieldShareStored(tempusPoolAddress),
-      ]);
+      let yieldsRate;
+      if (totalYields.gt(totalPrincipals)) {
+        const tokenSwapAmount = totalYields.sub(totalPrincipals);
 
-      const yieldsRate = div18f(pricePerYieldShare, pricePerPrincipalsShare, principalsPrecision);
+        const estimatedPrincipals = await this.getExpectedReturnForShareToken(tempusAMM, tokenSwapAmount, true);
+        yieldsRate = div18f(estimatedPrincipals, tokenSwapAmount, principalsPrecision);
+      } else if (totalPrincipals.gt(totalYields)) {
+        const tokenSwapAmount = totalPrincipals.sub(totalYields);
+
+        const estimatedYields = await this.getExpectedReturnForShareToken(tempusAMM, tokenSwapAmount, false);
+        yieldsRate = div18f(tokenSwapAmount, estimatedYields, principalsPrecision);
+      } else {
+        // In case we have equal amounts, use 1 as swapAmount just in case estimate was wrong, and swap is going to happen anyways
+        const tokenSwapAmount = ethers.utils.parseUnits('1', principalsPrecision);
+
+        const estimatedPrincipals = await this.getExpectedReturnForShareToken(tempusAMM, tokenSwapAmount, true);
+        yieldsRate = div18f(estimatedPrincipals, tokenSwapAmount, principalsPrecision);
+      }
 
       return await this.tempusControllerService.exitTempusAmmAndRedeem(
         tempusAMM,

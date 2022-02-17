@@ -210,15 +210,19 @@ const Withdraw: FC<WithdrawProps> = ({ chain, onWithdraw }) => {
         ),
       );
 
+      const totalPrincipals = principalsAmountParsed.add(estimatedWithdrawData.principalsStaked);
+      const totalYields = yieldsAmountParsed.add(estimatedWithdrawData.yieldsStaked);
+
       const isBackingToken = backingToken === selectedToken;
       return poolDataAdapter.executeWithdraw(
-        selectedPoolAddress,
         ammAddress,
         principalsAmountParsed,
         yieldsAmountParsed,
         lpTokenAmountParsed,
         minPrincipalsStaked,
         minYieldsStaked,
+        totalPrincipals,
+        totalYields,
         ethers.utils.parseUnits(actualSlippage, SLIPPAGE_PRECISION),
         isBackingToken,
         tokenPrecision.principals,
