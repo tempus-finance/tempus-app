@@ -104,12 +104,17 @@ class VariableRateService {
       this.tempusAMMService.getSwapFeePercentage(tempusAMM),
     ]);
 
+    // 7 days old block number (approximate)
     const earlierBlock = await provider.getBlock(latestBlock.number - Math.floor(SECONDS_IN_A_WEEK / averageBlockTime));
 
+    // Timestamp of 7 days old block or pool start time (whichever of the two is closer to current date)
     const laterBlock = Math.max(poolConfig.startDate, earlierBlock.timestamp * 1000);
+
+    // Number of hours from 7 days old block to now (or pool start time to now, whichever of the two is closer to current date)
     const hoursBetweenLatestAndLater = ((latestBlock.timestamp * 1000 - laterBlock) / (60 * 60 * 1000)).toFixed(18);
 
-    const fetchEventsFromBlock = latestBlock.number - earlierBlock.number;
+    // We want to fetch events for last 7 days
+    const fetchEventsFromBlock = earlierBlock.number;
 
     const sortedEvents = await this.getSwapAndPoolBalanceChangedEvents(poolConfig, fetchEventsFromBlock);
 
