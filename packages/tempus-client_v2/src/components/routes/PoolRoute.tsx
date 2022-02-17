@@ -1,5 +1,5 @@
 import { FC, useContext, useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { Navigate, useParams } from 'react-router-dom';
 import { BigNumber } from 'ethers';
 import { Downgraded, useHookstate } from '@hookstate/core';
 import { UserSettingsContext } from '../../context/userSettingsContext';
@@ -7,6 +7,7 @@ import { WalletContext } from '../../context/walletContext';
 import { dynamicPoolDataState, selectedPoolState } from '../../state/PoolDataState';
 import Operations from '../operations/Operations';
 import { Chain } from '../../interfaces/Chain';
+import usePoolNetworkValidCheck from '../../hooks/usePoolNetworkValidCheck';
 
 interface PoolRouteProps {
   chain: Chain;
@@ -22,6 +23,8 @@ const PoolRoute: FC<PoolRouteProps> = props => {
   const dynamicPoolData = useHookstate(dynamicPoolDataState);
 
   const [poolShareBalanceLoaded, setPoolShareBalanceLoaded] = useState<boolean>(false);
+
+  const isPoolNetworkValid = usePoolNetworkValidCheck();
 
   const params = useParams();
 
@@ -64,6 +67,11 @@ const PoolRoute: FC<PoolRouteProps> = props => {
 
   if (!selectedPool.get()) {
     return null;
+  }
+
+  // if pool is selected but with wrong network, redirect to dashboard
+  if (!isPoolNetworkValid) {
+    return <Navigate to="/" replace={true} />;
   }
 
   // Do not show pool UI before all required data is loaded
