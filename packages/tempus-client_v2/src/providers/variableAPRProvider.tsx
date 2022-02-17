@@ -72,6 +72,7 @@ const VariableAPRProvider = () => {
             tempusPool.protocol,
             tempusPool.yieldBearingTokenAddress,
             fees,
+            tempusPool.tokenPrecision.principals,
           );
           return combineLatest([from(variableAPRPromise), of(fees)]);
         }),
@@ -82,7 +83,7 @@ const VariableAPRProvider = () => {
           return of({
             address: tempusPool.address,
             variableAPR: variableAPR,
-            tempusFees: Number(ethers.utils.formatEther(fees)),
+            tempusFees: Number(ethers.utils.formatUnits(fees, tempusPool.tokenPrecision.principals)),
           });
         }),
         catchError(error => {

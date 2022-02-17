@@ -12,6 +12,7 @@ import {
   aaveLendingPoolAddress,
   COMPOUND_BLOCKS_PER_DAY,
   SECONDS_IN_A_DAY,
+  AMM_SWAP_FEES_PRECISION,
 } from '../constants';
 import TempusPoolService from '../services/TempusPoolService';
 import VaultService, { PoolBalanceChangedEvent, SwapEvent } from '../services/VaultService';
@@ -23,7 +24,7 @@ import { YearnData } from '../interfaces/YearnData';
 import { ChainConfig } from '../interfaces/Config';
 import { wadToDai } from '../utils/rayToDai';
 import { getChainConfig } from '../utils/getConfig';
-import { div18f, mul18f } from '../utils/weiMath';
+import { decreasePrecision, div18f, increasePrecision, mul18f } from '../utils/weiMath';
 import getProviderFromSignerOrProvider from '../utils/getProviderFromSignerOrProvider';
 import { Chain } from '../interfaces/Chain';
 
@@ -111,7 +112,9 @@ class VariableRateService {
     const laterBlock = Math.max(poolConfig.startDate, earlierBlock.timestamp * 1000);
 
     // Number of hours from 7 days old block to now (or pool start time to now, whichever of the two is closer to current date)
-    const hoursBetweenLatestAndLater = ((latestBlock.timestamp * 1000 - laterBlock) / (60 * 60 * 1000)).toFixed(18);
+    const hoursBetweenLatestAndLater = ((latestBlock.timestamp * 1000 - laterBlock) / (60 * 60 * 1000)).toFixed(
+      poolConfig.tokenPrecision.principals,
+    );
 
     // We want to fetch events for last 7 days
     const fetchEventsFromBlock = earlierBlock.number;
@@ -122,9 +125,9 @@ class VariableRateService {
     let { principals, yields } = await this.getPoolTokens(poolConfig.poolId, principalsAddress, yieldsAddress);
 
     // Calculate current principals to yields ratio
-    let currentPrincipalsToYieldsRatio = ethers.utils.parseEther('1');
+    let currentPrincipalsToYieldsRatio = ethers.utils.parseUnits('1', poolConfig.tokenPrecision.principals);
     if (!principals.isZero() && !yields.isZero()) {
-      currentPrincipalsToYieldsRatio = div18f(principals, yields);
+      currentPrincipalsToYieldsRatio = div18f(principals, yields, poolConfig.tokenPrecision.principals);
     }
 
     // Total fees accumulated
@@ -139,6 +142,7 @@ class VariableRateService {
           principals,
           totalFees,
           swapFeePercentage,
+          poolConfig.tokenPrecision.principals,
         );
         principals = adjust.principals;
         totalFees = adjust.totalFees;
@@ -150,13 +154,17 @@ class VariableRateService {
     });
 
     // Scale accumulated fees to 1 year duration
-
     const scaledFees = mul18f(
-      div18f(totalFees, ethers.utils.parseEther(hoursBetweenLatestAndLater)),
-      ethers.utils.parseEther(HOURS_IN_A_YEAR.toString()),
+      div18f(
+        totalFees,
+        ethers.utils.parseUnits(hoursBetweenLatestAndLater, poolConfig.tokenPrecision.principals),
+        poolConfig.tokenPrecision.principals,
+      ),
+      ethers.utils.parseUnits(HOURS_IN_A_YEAR.toString(), poolConfig.tokenPrecision.principals),
+      poolConfig.tokenPrecision.principals,
     );
 
-    return mul18f(scaledFees, currentPrincipalsToYieldsRatio);
+    return mul18f(scaledFees, currentPrincipalsToYieldsRatio, poolConfig.tokenPrecision.principals);
   }
 
   private async getSwapAndPoolBalanceChangedEvents(
@@ -187,22 +195,35 @@ class VariableRateService {
     principals: BigNumber,
     totalFees: BigNumber,
     swapFeePercentage: BigNumber,
+    principalsPrecision: number,
   ): { principals: BigNumber; totalFees: BigNumber } {
+    let adjustedSwapFeePrecision = swapFeePercentage;
+    if (principalsPrecision > AMM_SWAP_FEES_PRECISION) {
+      adjustedSwapFeePrecision = increasePrecision(swapFeePercentage, principalsPrecision - AMM_SWAP_FEES_PRECISION);
+    } else if (principalsPrecision < AMM_SWAP_FEES_PRECISION) {
+      adjustedSwapFeePrecision = decreasePrecision(swapFeePercentage, AMM_SWAP_FEES_PRECISION - principalsPrecision);
+    }
+
     // Get swap event volume
     let eventVolume: BigNumber = BigNumber.from('0');
     if (event.args.tokenIn === principalsAddress) {
       eventVolume = event.args.amountIn;
     } else if (event.args.tokenOut === principalsAddress) {
       eventVolume = mul18f(
-        div18f(swapFeePercentage, ethers.utils.parseEther('1').sub(swapFeePercentage)),
+        div18f(
+          adjustedSwapFeePrecision,
+          ethers.utils.parseUnits('1', principalsPrecision).sub(adjustedSwapFeePrecision),
+          principalsPrecision,
+        ),
         event.args.amountOut,
+        principalsPrecision,
       );
     }
 
     // Calculate swap fees for current swap event
-    const swapFeesVolume = mul18f(eventVolume, swapFeePercentage);
+    const swapFeesVolume = mul18f(eventVolume, adjustedSwapFeePrecision, principalsPrecision);
     const liquidityProvided = principals.sub(swapFeesVolume);
-    const feePerPrincipalShare = div18f(swapFeesVolume, liquidityProvided);
+    const feePerPrincipalShare = div18f(swapFeesVolume, liquidityProvided, principalsPrecision);
     totalFees = totalFees.add(feePerPrincipalShare);
 
     // Adjust pool balance based on swapped amounts
@@ -232,12 +253,17 @@ class VariableRateService {
     return principals;
   }
 
-  async getAprRate(protocol: ProtocolName, yieldBearingTokenAddress: string, fees: BigNumber): Promise<number> {
+  async getAprRate(
+    protocol: ProtocolName,
+    yieldBearingTokenAddress: string,
+    fees: BigNumber,
+    feesPrecision: number,
+  ): Promise<number> {
     if (!this.tempusPoolService) {
       return Promise.reject();
     }
 
-    const feesFormatted = Number(ethers.utils.formatEther(fees));
+    const feesFormatted = Number(ethers.utils.formatUnits(fees, feesPrecision));
 
     switch (protocol) {
       case 'aave': {

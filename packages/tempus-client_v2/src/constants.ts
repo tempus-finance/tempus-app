@@ -17,6 +17,7 @@ export const ETH_ALLOWANCE_FOR_GAS = BigNumber.from('50000000000000000'); // 0.0
 export const DEFAULT_TOKEN_PRECISION = 18;
 export const SLIPPAGE_PRECISION = 18;
 export const FIXED_APR_PRECISION = 18;
+export const AMM_SWAP_FEES_PRECISION = 18;
 
 export const aaveLendingPoolAddress = '0x7d2768dE32b0b80b7a3454c06BdAc94A69DDc7A9';
 export const daiAddress = '0x6b175474e89094c44da98b954eedeac495271d0f';
