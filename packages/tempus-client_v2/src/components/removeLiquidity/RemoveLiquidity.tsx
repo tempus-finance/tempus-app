@@ -209,10 +209,12 @@ const RemoveLiquidity: FC<RemoveLiquidityProps> = props => {
 
   const executeDisabled = useMemo(() => {
     const zeroAmount = isZeroString(amount);
-    const amountExceedsBalance = ethers.utils.parseEther(amount || '0').gt(userLPTokenBalance || BigNumber.from('0'));
+    const amountExceedsBalance = ethers.utils
+      .parseUnits(amount || '0', tokenPrecision.lpTokens)
+      .gt(userLPTokenBalance || BigNumber.from('0'));
 
     return !tokensApproved || zeroAmount || amountExceedsBalance || estimateInProgress;
-  }, [amount, userLPTokenBalance, tokensApproved, estimateInProgress]);
+  }, [amount, userLPTokenBalance, tokensApproved, estimateInProgress, tokenPrecision.lpTokens]);
 
   return (
     <div className="tc__removeLiquidity">
