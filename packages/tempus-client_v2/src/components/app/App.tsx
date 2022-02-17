@@ -14,6 +14,7 @@ import getUserLPTokenBalanceProvider from '../../providers/getUserLPTokenBalance
 import getUserBalanceProvider from '../../providers/getBalanceProvider';
 import getPoolShareBalanceProvider from '../../providers/getPoolShareBalanceProvider';
 import getUserYieldBearingTokenBalanceProvider from '../../providers/getUserYieldBearingTokenBalanceProvider';
+import getUserBackingTokenBalanceProvider from '../../providers/getUserBackingTokenBalanceProvider';
 import NotificationContainer from '../notification/NotificationContainer';
 import NavBar from '../navbar/NavBar';
 import Main from '../main/Main';
@@ -38,53 +39,31 @@ const App = () => {
       userWalletSigner: walletData.userWalletSigner,
       chain: walletData.userWalletChain,
     }).init();
-  }, [walletData.userWalletAddress, walletData.userWalletSigner, walletData.userWalletChain]);
-
-  // Initialize user LP Token balance provider every time user wallet address changes
-  useEffect(() => {
-    if (!walletData.userWalletAddress || !walletData.userWalletSigner || !walletData.userWalletChain) {
-      return;
-    }
 
     getUserLPTokenBalanceProvider({
       userWalletAddress: walletData.userWalletAddress,
       userWalletSigner: walletData.userWalletSigner,
       chain: walletData.userWalletChain,
     }).init();
-  }, [walletData.userWalletAddress, walletData.userWalletSigner, walletData.userWalletChain]);
-
-  // Initialize user pool balance provider every time user wallet address changes
-  useEffect(() => {
-    if (!walletData.userWalletAddress || !walletData.userWalletSigner || !walletData.userWalletChain) {
-      return;
-    }
 
     getUserBalanceProvider({
       userWalletSigner: walletData.userWalletSigner,
       userWalletAddress: walletData.userWalletAddress,
       chain: walletData.userWalletChain,
     }).init();
-  }, [walletData.userWalletAddress, walletData.userWalletSigner, walletData.userWalletChain]);
-
-  // Initialize pool share balance provider every time user wallet address changes
-  useEffect(() => {
-    if (!walletData.userWalletSigner || !walletData.userWalletChain) {
-      return;
-    }
 
     getPoolShareBalanceProvider({
       userWalletSigner: walletData.userWalletSigner,
       chain: walletData.userWalletChain,
     }).init();
-  }, [walletData.userWalletSigner, walletData.userWalletChain]);
-
-  // Initialize pool share balance provider every time user wallet address changes
-  useEffect(() => {
-    if (!walletData.userWalletSigner || !walletData.userWalletChain) {
-      return;
-    }
 
     getUserYieldBearingTokenBalanceProvider({
+      userWalletSigner: walletData.userWalletSigner,
+      userWalletAddress: walletData.userWalletAddress,
+      chain: walletData.userWalletChain,
+    }).init();
+
+    getUserBackingTokenBalanceProvider({
       userWalletSigner: walletData.userWalletSigner,
       userWalletAddress: walletData.userWalletAddress,
       chain: walletData.userWalletChain,
