@@ -2,13 +2,10 @@ import { BigNumber, Contract, ethers } from 'ethers';
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
 import { TempusAMM } from '../abi/TempusAMM';
 import TempusAMMABI from '../abi/TempusAMM.json';
-import { DAYS_IN_A_YEAR, SECONDS_IN_A_DAY } from '../constants';
-import { mul18f, div18f } from '../utils/weiMath';
 import { getChainConfig } from '../utils/getConfig';
 import { ChainConfig } from '../interfaces/Config';
 import { Chain } from '../interfaces/Chain';
 import TempusPoolService from './TempusPoolService';
-import getVaultService from './getVaultService';
 import getERC20TokenService from './getERC20TokenService';
 
 interface TempusPoolAddressData {
@@ -98,62 +95,6 @@ class TempusAMMService {
       }
     }
     throw new Error(`TempusAMMService - getTempusPoolAddress() - TempusAMM with address '${address}' does not exist`);
-  }
-
-  public async getFixedAPR(tempusAMM: string, principalsAddress: string): Promise<number | null> {
-    if (!this.tempusPoolService || !this.config || !this.chain) {
-      console.error('TempusAMMService - getFixedAPR() - Attempted to se TempusAMMService before initializing it!');
-      return Promise.reject();
-    }
-
-    // If we try to inject vault service in AMM it create infinite dependency loop - this is a quick workaround.
-    const vaultService = getVaultService(this.chain);
-
-    const service = this.tempusAMMMap.get(tempusAMM);
-    if (service) {
-      const YIELD_TO_PRINCIPAL = true;
-
-      const tempusPool = this.config.tempusPools.find(pool => pool.ammAddress === tempusAMM);
-      if (!tempusPool) {
-        console.error('TempusAMMService - getFixedAPR() - Failed to get tempus pool data from AMM!');
-        return Promise.reject();
-      }
-
-      let poolPrincipalsBalance: BigNumber;
-      try {
-        const poolTokens = await vaultService.getPoolTokens(tempusPool.poolId);
-
-        const principalsIndex = poolTokens.tokens.findIndex(poolTokenAddress => principalsAddress === poolTokenAddress);
-        poolPrincipalsBalance = poolTokens.balances[principalsIndex];
-
-        if (poolTokens.balances[0].isZero() || poolTokens.balances[1].isZero()) {
-          return null;
-        }
-      } catch (error) {
-        console.error('TempusAMMService - getFixedAPR() - Failed to fetch pool balances!', error);
-        return Promise.reject(error);
-      }
-
-      const spotPrice = poolPrincipalsBalance.div(BigNumber.from('100'));
-
-      let expectedReturn: BigNumber;
-      try {
-        expectedReturn = await service.getExpectedReturnGivenIn(spotPrice, YIELD_TO_PRINCIPAL);
-      } catch (error) {
-        console.error('TempusAMMService - getFixedAPR() - Failed to get expected return for yield share tokens!');
-        console.log(`Spot price: ${spotPrice}`);
-        console.log(`YieldsToPrincipals" ${YIELD_TO_PRINCIPAL}`);
-        return null;
-      }
-
-      // Convert poolDuration from milliseconds to seconds.
-      const poolDuration = (tempusPool.maturityDate - tempusPool.startDate) / 1000;
-
-      const scaleFactor = ethers.utils.parseEther(((SECONDS_IN_A_DAY * DAYS_IN_A_YEAR) / poolDuration).toString());
-
-      return Number(ethers.utils.formatEther(mul18f(div18f(expectedReturn, spotPrice), scaleFactor)));
-    }
-    throw new Error(`TempusAMMService - getFixedAPR() - TempusAMM with address '${tempusAMM}' does not exist`);
   }
 
   public async getExpectedTokensOutGivenBPTIn(
