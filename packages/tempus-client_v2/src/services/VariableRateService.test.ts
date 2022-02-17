@@ -1,4 +1,4 @@
-import { BigNumber, Contract, utils, providers } from 'ethers';
+import { BigNumber, Contract, utils, providers, ethers } from 'ethers';
 import { JsonRpcProvider } from '@ethersproject/providers';
 import { ChainConfig } from '../interfaces/Config';
 import * as getConfig from '../utils/getConfig';
@@ -160,67 +160,83 @@ describe('VariableRateService', () => {
     test('test with no init() invoked, should reject with an error', async () => {
       const protocol = 'aave';
       const yieldBearingTokenAddress = '0x0000000000000000000000000000000000000001';
+      const feesPrecision = 18;
       const fees = BigNumber.from(1);
       variableRateService = new VariableRateService();
 
-      await expect(variableRateService.getAprRate(protocol, yieldBearingTokenAddress, fees)).rejects.toEqual(undefined);
+      await expect(
+        variableRateService.getAprRate(protocol, yieldBearingTokenAddress, fees, feesPrecision),
+      ).rejects.toEqual(undefined);
     });
 
     test('test with aave, should return with an APR', async () => {
       const protocol = 'aave';
       const yieldBearingTokenAddress = '0x0000000000000000000000000000000000000001';
+      const feesPrecision = 18;
       const fees = BigNumber.from(1);
       const feesFormatted = Number(utils.formatEther(fees));
       const mockAPR = Math.random() * 5;
       jest.spyOn(variableRateService as any, 'getAaveAPR').mockResolvedValue(mockAPR);
 
-      await expect(variableRateService.getAprRate(protocol, yieldBearingTokenAddress, fees)).resolves.toEqual(mockAPR);
+      await expect(
+        variableRateService.getAprRate(protocol, yieldBearingTokenAddress, fees, feesPrecision),
+      ).resolves.toEqual(mockAPR);
       expect(variableRateService['getAaveAPR']).toHaveBeenCalledWith(yieldBearingTokenAddress, feesFormatted);
     });
 
     test('test with compound, should return with an APR', async () => {
       const protocol = 'compound';
       const yieldBearingTokenAddress = '0x0000000000000000000000000000000000000001';
+      const feesPrecision = 18;
       const fees = BigNumber.from(1);
       const feesFormatted = Number(utils.formatEther(fees));
       const mockAPR = Math.random() * 5;
       jest.spyOn(variableRateService as any, 'getCompoundAPR').mockResolvedValue(mockAPR);
 
-      await expect(variableRateService.getAprRate(protocol, yieldBearingTokenAddress, fees)).resolves.toEqual(mockAPR);
+      await expect(
+        variableRateService.getAprRate(protocol, yieldBearingTokenAddress, fees, feesPrecision),
+      ).resolves.toEqual(mockAPR);
       expect(variableRateService['getCompoundAPR']).toHaveBeenCalledWith(yieldBearingTokenAddress, feesFormatted);
     });
 
     test('test with lido, should return with an APR', async () => {
       const protocol = 'lido';
       const yieldBearingTokenAddress = '0x0000000000000000000000000000000000000001';
+      const feesPrecision = 18;
       const fees = BigNumber.from(1);
       const feesFormatted = Number(utils.formatEther(fees));
       const mockAPR = Math.random() * 5;
       jest.spyOn(variableRateService as any, 'getLidoAPR').mockResolvedValue(mockAPR);
 
-      await expect(variableRateService.getAprRate(protocol, yieldBearingTokenAddress, fees)).resolves.toEqual(mockAPR);
+      await expect(
+        variableRateService.getAprRate(protocol, yieldBearingTokenAddress, fees, feesPrecision),
+      ).resolves.toEqual(mockAPR);
       expect(variableRateService['getLidoAPR']).toHaveBeenCalledWith(feesFormatted);
     });
 
     test('test with rari, should return with an APR', async () => {
       const protocol = 'rari';
       const yieldBearingTokenAddress = '0x0000000000000000000000000000000000000001';
+      const feesPrecision = 18;
       const fees = BigNumber.from(1);
       const feesFormatted = Number(utils.formatEther(fees));
       const mockAPR = Math.random() * 5;
       jest.spyOn(variableRateService as any, 'getRariAPR').mockResolvedValue(mockAPR);
 
-      await expect(variableRateService.getAprRate(protocol, yieldBearingTokenAddress, fees)).resolves.toEqual(mockAPR);
+      await expect(
+        variableRateService.getAprRate(protocol, yieldBearingTokenAddress, fees, feesPrecision),
+      ).resolves.toEqual(mockAPR);
       expect(variableRateService['getRariAPR']).toHaveBeenCalledWith(feesFormatted);
     });
 
     test('test with protocol other than aave/compound/lido, should return with 0', async () => {
       const protocol = 'abcd';
       const yieldBearingTokenAddress = '0x0000000000000000000000000000000000000001';
+      const feesPrecision = 18;
       const fees = BigNumber.from(1);
 
       await expect(
-        variableRateService.getAprRate(protocol as ProtocolName, yieldBearingTokenAddress, fees),
+        variableRateService.getAprRate(protocol as ProtocolName, yieldBearingTokenAddress, fees, feesPrecision),
       ).resolves.toEqual(0);
     });
   });
@@ -449,16 +465,20 @@ describe('VariableRateService', () => {
     });
 
     test('test with swap event with tokenIn == principalsAddress, should return calculated fees', async () => {
+      const HOURS_IN_A_YEAR = DAYS_IN_A_YEAR * 24;
+
       const tempusPool = '0x0000000000000000000000000000000000000000';
       const tempusAMM = '0x0000000000000000000000000000000000000001';
       const principalsAddress = '0x0000000000000000000000000000000000000002';
       const yieldsAddress = '0x0000000000000000000000000000000000000003';
+      const principalsPrecision = 18;
       const mockSwapFeePercentage = BigNumber.from(Math.round(Math.random() * 5));
       const mockLatestBlock = { timestamp: Date.now() / 1000, number: 1000 } as providers.Block;
-      const mockEarlierBlock = { timestamp: Date.now() / 1000 - 60 * 60, number: 999 } as providers.Block;
+      const mockEarlierBlock = { timestamp: Date.now() / 1000 - 60 * 60, number: 997 } as providers.Block;
+      const totalFees = ethers.utils.parseEther('2');
       const mockEvents = [
         {
-          blockNumber: 2,
+          blockNumber: 999,
           args: {
             liquidityProvider: '0x0000000000000000000000000000000000000003',
             tokens: [principalsAddress],
@@ -466,7 +486,7 @@ describe('VariableRateService', () => {
           },
         },
         {
-          blockNumber: 1,
+          blockNumber: 998,
           args: { tokenIn: principalsAddress, tokenOut: yieldsAddress, amountIn: BigNumber.from(100) },
         },
       ] as (SwapEvent | PoolBalanceChangedEvent)[];
@@ -488,7 +508,7 @@ describe('VariableRateService', () => {
       jest.spyOn(variableRateService as any, 'getPoolTokens').mockResolvedValue(mockPoolTokens);
       jest.spyOn(variableRateService as any, 'adjustPrincipalForSwapEvent').mockReturnValue({
         principals: mockPoolTokens.principals.add(10),
-        totalFees: BigNumber.from(2),
+        totalFees: totalFees,
       });
       jest
         .spyOn(variableRateService as any, 'adjustPrincipalForPoolBalanceChangedEvent')
@@ -500,8 +520,18 @@ describe('VariableRateService', () => {
         getSwapFeePercentage: jest.fn().mockResolvedValue(mockSwapFeePercentage),
       });
 
+      const hoursForScale = ((mockLatestBlock.timestamp - mockEarlierBlock.timestamp) / (60 * 60)).toFixed(
+        principalsPrecision,
+      );
+
+      const scaledFees = weiMath.mul18f(
+        weiMath.div18f(totalFees, ethers.utils.parseUnits(hoursForScale, principalsPrecision)),
+        ethers.utils.parseUnits(HOURS_IN_A_YEAR.toString(), principalsPrecision),
+        principalsPrecision,
+      );
+
       await expect(
-        (variableRateService as any).calculateFees(
+        variableRateService.calculateFees(
           tempusAMM,
           tempusPool,
           principalsAddress,
@@ -509,11 +539,7 @@ describe('VariableRateService', () => {
           'ethereum',
           averageBlockTime,
         ),
-      ).resolves.toEqual(
-        BigNumber.from(
-          weiMath.mul18f(BigNumber.from(2), weiMath.div18f(mockPoolTokens.principals, mockPoolTokens.yields)),
-        ),
-      );
+      ).resolves.toEqual(weiMath.mul18f(scaledFees, weiMath.div18f(mockPoolTokens.principals, mockPoolTokens.yields)));
       expect(getConfig.getChainConfig).toHaveBeenCalled();
       expect(getProvider.default).toHaveBeenCalled();
       expect(mockProvider.getBlock).toHaveBeenCalledTimes(2);
@@ -524,7 +550,7 @@ describe('VariableRateService', () => {
       );
       expect((variableRateService as any).getSwapAndPoolBalanceChangedEvents).toHaveBeenCalledWith(
         DUMMY_TEMPUS_POOL[0],
-        mockLatestBlock.number - mockEarlierBlock.number,
+        mockEarlierBlock.number,
       );
       expect((variableRateService as any).getPoolTokens).toHaveBeenCalledWith(
         DUMMY_TEMPUS_POOL[0].poolId,
@@ -537,6 +563,7 @@ describe('VariableRateService', () => {
         mockPoolTokens.principals.sub((mockEvents[0].args as any).deltas[0]),
         BigNumber.from(0),
         mockSwapFeePercentage,
+        principalsPrecision,
       );
       expect((variableRateService as any).adjustPrincipalForPoolBalanceChangedEvent).toHaveBeenCalledWith(
         mockEvents[0],
@@ -550,12 +577,13 @@ describe('VariableRateService', () => {
       const tempusAMM = '0x0000000000000000000000000000000000000001';
       const principalsAddress = '0x0000000000000000000000000000000000000002';
       const yieldsAddress = '0x0000000000000000000000000000000000000003';
+      const principalsPrecision = 18;
       const mockSwapFeePercentage = BigNumber.from(Math.round(Math.random() * 5));
       const mockLatestBlock = { timestamp: Date.now() / 1000, number: 1000 } as providers.Block;
-      const mockEarlierBlock = { timestamp: Date.now() / 1000 - 60 * 60, number: 999 } as providers.Block;
+      const mockEarlierBlock = { timestamp: Date.now() / 1000 - 60 * 60, number: 997 } as providers.Block;
       const mockEvents = [
         {
-          blockNumber: 2,
+          blockNumber: 998,
           args: {
             liquidityProvider: '0x0000000000000000000000000000000000000003',
             tokens: [principalsAddress],
@@ -563,7 +591,7 @@ describe('VariableRateService', () => {
           },
         },
         {
-          blockNumber: 1,
+          blockNumber: 997,
           args: { tokenIn: principalsAddress, tokenOut: yieldsAddress, amountIn: BigNumber.from(100) },
         },
       ] as (SwapEvent | PoolBalanceChangedEvent)[];
@@ -617,7 +645,7 @@ describe('VariableRateService', () => {
       );
       expect((variableRateService as any).getSwapAndPoolBalanceChangedEvents).toHaveBeenCalledWith(
         DUMMY_TEMPUS_POOL[0],
-        mockLatestBlock.number - mockEarlierBlock.number,
+        mockEarlierBlock.number,
       );
       expect((variableRateService as any).getPoolTokens).toHaveBeenCalledWith(
         DUMMY_TEMPUS_POOL[0].poolId,
@@ -630,6 +658,7 @@ describe('VariableRateService', () => {
         mockPoolTokens.principals.sub((mockEvents[0].args as any).deltas[0]),
         BigNumber.from(0),
         mockSwapFeePercentage,
+        principalsPrecision,
       );
       expect((variableRateService as any).adjustPrincipalForPoolBalanceChangedEvent).toHaveBeenCalledWith(
         mockEvents[0],
@@ -645,10 +674,10 @@ describe('VariableRateService', () => {
       const yieldsAddress = '0x0000000000000000000000000000000000000003';
       const mockSwapFeePercentage = BigNumber.from(Math.round(Math.random() * 5));
       const mockLatestBlock = { timestamp: Date.now() / 1000, number: 1000 } as providers.Block;
-      const mockEarlierBlock = { timestamp: Date.now() / 1000 - 60 * 60, number: 999 } as providers.Block;
+      const mockEarlierBlock = { timestamp: Date.now() / 1000 - 60 * 60, number: 997 } as providers.Block;
       const mockEvents = [
         {
-          blockNumber: 2,
+          blockNumber: 999,
           args: {
             liquidityProvider: '0x0000000000000000000000000000000000000003',
             tokens: [principalsAddress],
@@ -656,7 +685,7 @@ describe('VariableRateService', () => {
           },
         },
         {
-          blockNumber: 1,
+          blockNumber: 998,
           args: {
             liquidityProvider: '0x0000000000000000000000000000000000000003',
             tokens: [principalsAddress],
@@ -710,7 +739,7 @@ describe('VariableRateService', () => {
       );
       expect((variableRateService as any).getSwapAndPoolBalanceChangedEvents).toHaveBeenCalledWith(
         DUMMY_TEMPUS_POOL[0],
-        mockLatestBlock.number - mockEarlierBlock.number,
+        mockEarlierBlock.number,
       );
       expect((variableRateService as any).getPoolTokens).toHaveBeenCalledWith(
         DUMMY_TEMPUS_POOL[0].poolId,
