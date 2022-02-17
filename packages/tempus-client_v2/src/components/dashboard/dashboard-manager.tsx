@@ -3,6 +3,7 @@ import { FC, useCallback, useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { isEqual } from 'lodash';
 import { WalletContext } from '../../context/walletContext';
+import { unsupportedNetworkState } from '../../state/ChainState';
 import { DashboardRow, DashboardRowChild } from '../../interfaces/DashboardRow';
 import getDashboardDataAdapter from '../../adapters/getDashboardDataAdapter';
 import { RowsExcludedByDefault } from '../../adapters/DashboardDataAdapter';
@@ -19,6 +20,7 @@ const DashboardManager: FC = (): JSX.Element => {
 
   const staticPoolData = useHookState(staticPoolDataState).get();
   const dynamicPoolData = useHookState(dynamicPoolDataState).get();
+  const isUnsupportedNetwork = useHookState(unsupportedNetworkState).get();
 
   const { userWalletAddress, userWalletConnected, userWalletChain, userWalletSigner } = useContext(WalletContext);
 
@@ -34,17 +36,19 @@ const DashboardManager: FC = (): JSX.Element => {
 
     let rowsData: DashboardRow[] = [];
 
-    // If user wallet is connected and specific chain is selected
-    if (userWalletSigner && userWalletChain) {
-      const dashboardDataAdapter = getDashboardDataAdapter(userWalletChain);
-      excludeNonPositiveRariPools(staticPoolData, dynamicPoolData, rowsExcludedByDefault);
-      rowsData = dashboardDataAdapter.getRows(userWalletChain, rowsExcludedByDefault);
+    if (!isUnsupportedNetwork) {
+      // If user wallet is connected and specific chain is selected
+      if (userWalletSigner && userWalletChain) {
+        const dashboardDataAdapter = getDashboardDataAdapter(userWalletChain);
+        excludeNonPositiveRariPools(staticPoolData, dynamicPoolData, rowsExcludedByDefault);
+        rowsData = dashboardDataAdapter.getRows(userWalletChain, rowsExcludedByDefault);
 
-      // If user wallet is not connected
-    } else if (userWalletConnected === false) {
-      const unselectedChain = undefined;
-      const dashboardDataAdapter = getDashboardDataAdapter();
-      rowsData = dashboardDataAdapter.getRows(unselectedChain, rowsExcludedByDefault);
+        // If user wallet is not connected
+      } else if (userWalletConnected === false) {
+        const unselectedChain = undefined;
+        const dashboardDataAdapter = getDashboardDataAdapter();
+        rowsData = dashboardDataAdapter.getRows(unselectedChain, rowsExcludedByDefault);
+      }
     }
 
     // Only update rows state if currently shown rows in dashboard are different from newly fetches rows
@@ -59,6 +63,7 @@ const DashboardManager: FC = (): JSX.Element => {
     staticPoolData,
     dynamicPoolData,
     rows,
+    isUnsupportedNetwork,
   ]);
 
   const onRowActionClick = useCallback(

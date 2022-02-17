@@ -1,4 +1,5 @@
 import { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { ethers } from 'ethers';
 import { Web3Provider } from '@ethersproject/providers';
@@ -45,6 +46,7 @@ const Wallet = () => {
   const { userWalletChain, setWalletData } = useContext(WalletContext);
   const { pendingTransactions } = useContext(PendingTransactionsContext);
   const { setUserSettings } = useContext(UserSettingsContext);
+  const navigate = useNavigate();
 
   const unsupportedNetwork = useHookState(unsupportedNetworkState);
 
@@ -113,12 +115,19 @@ const Wallet = () => {
           unsupportedNetwork.set(false);
         } else {
           unsupportedNetwork.set(true);
+          // TODO: a temp soln to redirect to dshboard when user switch to a unsupported network+            setWalletData &&
+          setWalletData &&
+            setWalletData(previousData => ({
+              ...previousData,
+              userWalletChain: null,
+            }));
+          navigate('/', { replace: true });
         }
       });
     };
     subscribeToNetworkChanges();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [active]);
+  }, [active, setWalletData]);
 
   const requestAddNetwork = useCallback(
     async (
