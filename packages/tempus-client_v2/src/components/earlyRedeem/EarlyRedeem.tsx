@@ -282,6 +282,7 @@ const EarlyRedeem: FC<EarlyRedeemProps> = ({ chain }) => {
             <Spacer size={12} />
             <CurrencyInput
               defaultValue={amount}
+              precision={selectedTokenPrecision}
               onChange={onAmountChange}
               onMaxClick={onClickMax}
               disabled={!selectedToken || depositDisabled}

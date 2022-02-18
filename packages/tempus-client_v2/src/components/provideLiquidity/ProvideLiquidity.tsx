@@ -464,6 +464,7 @@ const ProvideLiquidity: FC<ProvideLiquidityProps> = props => {
             <div className="tf__flex-row-center-v">
               <CurrencyInput
                 defaultValue={principalsAmount}
+                precision={principalsPrecision}
                 onChange={onPrincipalsAmountChange}
                 maxDisabled={maxDisabled}
                 onMaxClick={onPrincipalsPercentageChange}
@@ -504,6 +505,7 @@ const ProvideLiquidity: FC<ProvideLiquidityProps> = props => {
             <div className="tf__flex-row-center-v">
               <CurrencyInput
                 defaultValue={yieldsAmount}
+                precision={yieldsPrecision}
                 onChange={onYieldsAmountChange}
                 maxDisabled={maxDisabled}
                 onMaxClick={onYieldsPercentageChange}

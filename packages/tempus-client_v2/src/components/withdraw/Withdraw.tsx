@@ -445,6 +445,7 @@ const Withdraw: FC<WithdrawProps> = ({ chain, onWithdraw }) => {
               <div className="tf__flex-row-center-v">
                 <CurrencyInput
                   defaultValue={principalsAmount}
+                  precision={tokenPrecision.principals}
                   onChange={onPrincipalsAmountChange}
                   onMaxClick={onPrincipalsMaxClick}
                 />
@@ -487,6 +488,7 @@ const Withdraw: FC<WithdrawProps> = ({ chain, onWithdraw }) => {
                 <div className="tf__flex-row-center-v">
                   <CurrencyInput
                     defaultValue={yieldsAmount}
+                    precision={tokenPrecision.yields}
                     onChange={onYieldsAmountChange}
                     onMaxClick={onYieldsMaxClick}
                   />
@@ -532,6 +534,7 @@ const Withdraw: FC<WithdrawProps> = ({ chain, onWithdraw }) => {
                 <div className="tf__flex-row-center-v">
                   <CurrencyInput
                     defaultValue={lpTokenAmount}
+                    precision={tokenPrecision.lpTokens}
                     onChange={onLpTokenAmountChange}
                     onMaxClick={onLpTokensMaxClick}
                   />

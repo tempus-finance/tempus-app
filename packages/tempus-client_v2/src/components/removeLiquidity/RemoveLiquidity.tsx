@@ -234,7 +234,12 @@ const RemoveLiquidity: FC<RemoveLiquidityProps> = props => {
           <Spacer size={15} />
           <div className="tf__flex-row-space-between">
             <div className="tf__flex-row-center-v">
-              <CurrencyInput defaultValue={amount} onChange={onAmountChange} onMaxClick={onPercentageChange} />
+              <CurrencyInput
+                defaultValue={amount}
+                precision={tokenPrecision.lpTokens}
+                onChange={onAmountChange}
+                onMaxClick={onPercentageChange}
+              />
               <Spacer size={15} />
             </div>
             <div className="tf__flex-row-center-v-end">
