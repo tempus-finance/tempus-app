@@ -7,12 +7,10 @@ import { formatValueToCurrency } from './currencyParser';
 
 import './currencyInput.scss';
 
-const defaultPrecision = 18;
-
 type CurrencyInputInProps = {
   defaultValue: string;
+  precision: number;
   placeholder?: string;
-  precision?: number;
   disabled?: boolean;
   maxDisabled?: boolean;
   disabledTooltip?: string;
@@ -28,7 +26,7 @@ type CurrencyInputProps = CurrencyInputInProps & CurrencyInputOutProps;
 const CurrencyInput: FC<CurrencyInputProps> = ({
   defaultValue,
   placeholder,
-  precision = defaultPrecision,
+  precision,
   disabled,
   maxDisabled,
   disabledTooltip,

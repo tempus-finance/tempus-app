@@ -307,6 +307,7 @@ const Swap: FC<SwapProps> = props => {
           <Spacer size={15} />
           <CurrencyInput
             defaultValue={amount}
+            precision={tokenPrecision}
             onChange={onAmountChange}
             disabled={!selectedToken}
             onMaxClick={onMaxClick}

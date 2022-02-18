@@ -402,6 +402,7 @@ const Mint: FC<MintInProps> = ({ narrow, chain }) => {
           <div>
             <CurrencyInput
               defaultValue={amount}
+              precision={selectedTokenPrecision}
               onChange={onAmountChange}
               onMaxClick={onClickMax}
               disabled={!selectedToken || mintDisabled}
