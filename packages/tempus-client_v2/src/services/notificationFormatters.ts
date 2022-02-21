@@ -77,7 +77,9 @@ export const getTokenApprovalNotification = (
   protocol: ProtocolName,
   maturityDate: Date,
 ) => {
-  return `${prettifyChainName(chain)} - ${tokenApproved}
+  // Quick fix to show Capitals instead of Principals in the notification
+  // TODO - Properly change Principals to Capitals in the Token interface.
+  return `${prettifyChainName(chain)} - ${tokenApproved === 'Principals' ? 'Capitals' : tokenApproved}
     ${backingToken} ${getText('via', language)} ${capitalize(protocol)}
     ${format(maturityDate, 'dd MMMM yyyy')}`;
 };
