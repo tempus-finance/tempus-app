@@ -110,7 +110,21 @@ const Dashboard: FC<DashboardProps> = ({ userWalletAddress, rows, onRowActionCli
     setFilterPopupOpen(!filterPopupOpen);
   }; */
 
-  const getRowsToDisplay = () => {
+  // https://www.urbandictionary.com/define.php?term=vilomah
+  const filterOutVilomahRows = useCallback((rows: DashboardRow[]): DashboardRow[] => {
+    const parentsMap: { [id: string]: boolean } = {};
+    rows.forEach(row => {
+      if (!!row.parentId) {
+        if (parentsMap[row.parentId] === undefined) {
+          parentsMap[row.parentId] = true;
+        }
+      }
+    });
+
+    return rows.filter(row => (!row.parentId ? parentsMap[row.id] : true));
+  }, []);
+
+  const getRowsToDisplay = useCallback(rows => {
     if (rows?.length) {
       let rowsToDisplay = rows.filter((row: DashboardRow) => {
         const pool = dynamicPoolData[row.id];
@@ -127,8 +141,10 @@ const Dashboard: FC<DashboardProps> = ({ userWalletAddress, rows, onRowActionCli
       return rowsToDisplay;
     }
     return [];
-  };
-  const rowsToDisplay = getRowsToDisplay();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const rowsToDisplay = () => (rows ? filterOutVilomahRows(getRowsToDisplay(rows)) : []);
 
   /**
    * If `null` is passed as `filterData`, all filters will be cleared.
@@ -230,7 +246,7 @@ const Dashboard: FC<DashboardProps> = ({ userWalletAddress, rows, onRowActionCli
         <hr />
         <div className="tf__dashboard">
           <div className="tf__dashboard__grid">
-            <Grid rows={/*filteredRows || */ rowsToDisplay} columns={dashboardColumnsDefinitions(language)}>
+            <Grid rows={/*filteredRows || */ rowsToDisplay()} columns={dashboardColumnsDefinitions(language)}>
               <SortingState
                 sorting={currentSorting}
                 onSortingChange={onSortingChange}
