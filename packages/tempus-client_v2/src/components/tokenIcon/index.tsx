@@ -11,9 +11,14 @@ type IconInProps = {
   large?: boolean;
   width?: number;
   height?: number;
+  // Viewbox should always be original svg size, width and height attributes then scale the svg.
+  // This is a quick fix that allows us to specify original svg size in addition to width and height of final svg in the UI.
+  // TODO - Remove small and large svg versions, we only need one, and proper with, height and view box params.
+  vectorWidth?: number;
+  vectorHeight?: number;
 };
 
-const TokenIcon: FC<IconInProps> = ({ ticker, large, width, height }): JSX.Element => {
+const TokenIcon: FC<IconInProps> = ({ ticker, large, width, height, vectorWidth, vectorHeight }): JSX.Element => {
   const icon = useMemo(() => (large ? tokenIconsLarge[ticker] : tokenIconsSmall[ticker]), [ticker, large]);
 
   const iconWidth = useMemo(() => {
@@ -32,12 +37,16 @@ const TokenIcon: FC<IconInProps> = ({ ticker, large, width, height }): JSX.Eleme
   }, [height, large]);
 
   const viewBox = useMemo(() => {
+    if (vectorWidth && vectorHeight) {
+      return `0 0 ${vectorWidth} ${vectorHeight}`;
+    }
+
     if (height && width) {
       return `0 0 ${height} ${width}`;
     }
 
     return large ? '0 0 40 40' : '0 0 20 20';
-  }, [height, width, large]);
+  }, [vectorWidth, vectorHeight, height, width, large]);
 
   const __html = useMemo(() => `<title>${ticker}</title>${icon}`, [ticker, icon]);
 
@@ -45,8 +54,8 @@ const TokenIcon: FC<IconInProps> = ({ ticker, large, width, height }): JSX.Eleme
     <svg
       aria-hidden="true"
       className={`tc__token__icon ${large ? 'tc__token__icon-large' : ''}`}
-      width={iconWidth}
-      height={iconHeight}
+      width={`${iconWidth}px`}
+      height={`${iconHeight}px`}
       viewBox={viewBox}
       role="img"
       dangerouslySetInnerHTML={{ __html }}

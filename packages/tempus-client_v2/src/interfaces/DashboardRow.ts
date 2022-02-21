@@ -1,15 +1,18 @@
 import { TempusPool } from './TempusPool';
 import { Ticker } from './Token';
 import { ProtocolName } from './ProtocolName';
+import { Chain } from './Chain';
 
 export interface DashboardRow {
   id: string;
-  parentId: string | null;
   token: Ticker;
+  chain: Chain;
+  parentId: string | null;
 }
 export interface DashboardRowParent extends DashboardRow {
   maturityRange: (Date | null)[];
   protocols: ProtocolName[];
+  parentId: null;
 }
 
 export interface DashboardRowChild extends DashboardRow {
@@ -17,6 +20,7 @@ export interface DashboardRowChild extends DashboardRow {
   supportedTokens: Ticker[];
   startDate: Date;
   maturityDate: Date;
+  parentId: string;
 }
 
 /**

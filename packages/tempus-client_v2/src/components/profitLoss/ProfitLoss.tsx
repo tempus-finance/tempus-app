@@ -1,10 +1,11 @@
 import { ethers, BigNumber } from 'ethers';
-import { useContext, useEffect, useMemo, useState } from 'react';
+import { FC, useContext, useEffect, useMemo, useState } from 'react';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
 import { LanguageContext } from '../../context/languageContext';
 import { WalletContext } from '../../context/walletContext';
+import { Chain } from '../../interfaces/Chain';
 import getText from '../../localisation/getText';
 import NumberUtils from '../../services/NumberUtils';
 import Spacer from '../spacer/spacer';
@@ -13,7 +14,11 @@ import ProfitLossChart from './profitLossChart/ProfitLossChart';
 
 import './ProfitLoss.scss';
 
-const ProfitLoss = () => {
+interface ProfitLossProps {
+  chain: Chain;
+}
+
+const ProfitLoss: FC<ProfitLossProps> = ({ chain }) => {
   const selectedPool = useHookState(selectedPoolState);
   const dynamicPoolData = useHookState(dynamicPoolDataState);
   const staticPoolData = useHookState(staticPoolDataState);
@@ -38,7 +43,7 @@ const ProfitLoss = () => {
       return;
     }
 
-    const poolDataAdapter = getPoolDataAdapter(userWalletSigner);
+    const poolDataAdapter = getPoolDataAdapter(chain, userWalletSigner);
     const withdrawStream$ = poolDataAdapter
       .getEstimatedWithdrawAmount(
         selectedPoolAddress,
@@ -57,7 +62,15 @@ const ProfitLoss = () => {
     return () => {
       withdrawStream$.unsubscribe();
     };
-  }, [userWalletSigner, userPrincipalsBalance, userYieldsBalance, userLPTokenBalance, ammAddress, selectedPoolAddress]);
+  }, [
+    userWalletSigner,
+    userPrincipalsBalance,
+    userYieldsBalance,
+    userLPTokenBalance,
+    ammAddress,
+    selectedPoolAddress,
+    chain,
+  ]);
 
   const estimatedWithdrawAmountFormatted = useMemo(() => {
     if (!estimatedWithdrawAmount) {
@@ -95,7 +108,7 @@ const ProfitLoss = () => {
             </Typography>
           </div>
         </div>
-        <ProfitLossChart />
+        <ProfitLossChart chain={chain} />
       </div>
     </div>
   );

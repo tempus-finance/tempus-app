@@ -21,7 +21,7 @@ type Words =
   | 'walletOverview'
   | 'connectedWallet'
   | 'switchWallet'
-  | 'viewLinkText'
+  | 'viewOn'
   | 'pendingTransactions'
   | 'transactionHistory'
   | 'clear'
@@ -91,7 +91,9 @@ type Words =
   | 'timeLeft'
   | 'currentPosition'
   | 'principals'
+  | 'principalTokens'
   | 'yields'
+  | 'yieldTokens'
   | 'lpTokens'
   | 'staked'
   | 'unstaked'
@@ -147,6 +149,13 @@ type Words =
   | 'poolActionDisabledTitle'
   | 'askUsOnDiscord'
   | 'depositDisabledByConfig'
-  | 'mintDisabledByConfig';
+  | 'mintDisabledByConfig'
+  | 'selectNetwork'
+  | 'governance'
+  | 'unsupported'
+  | 'switchNetwork'
+  | 'unsupportedNetworkTooltipTitle'
+  | 'unsupportedNetworkTooltipText1'
+  | 'unsupportedNetworkTooltipText2';
 
 export default Words;

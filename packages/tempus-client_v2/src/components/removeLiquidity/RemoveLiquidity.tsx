@@ -1,12 +1,12 @@
 import { Downgraded, useState as useHookState } from '@hookstate/core';
-import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { BigNumber, ethers } from 'ethers';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
-import getUserShareTokenBalanceProvider from '../../providers/getUserShareTokenBalanceProvider';
-import getUserLPTokenBalanceProvider from '../../providers/getUserLPTokenBalanceProvider';
+import { refreshBalances } from '../../providers/balanceProviderHelper';
 import { LanguageContext } from '../../context/languageContext';
 import { WalletContext } from '../../context/walletContext';
 import { UserSettingsContext } from '../../context/userSettingsContext';
+import { Chain } from '../../interfaces/Chain';
 import getText from '../../localisation/getText';
 import Typography from '../typography/Typography';
 import Execute from '../buttons/Execute';
@@ -18,14 +18,20 @@ import Spacer from '../spacer/spacer';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
 import NumberUtils from '../../services/NumberUtils';
 import { isZeroString } from '../../utils/isZeroString';
-import getConfig from '../../utils/getConfig';
+import { getChainConfig } from '../../utils/getConfig';
 import { mul18f } from '../../utils/weiMath';
 import getTokenPrecision from '../../utils/getTokenPrecision';
 import Approve from '../buttons/Approve';
 
 import './RemoveLiquidity.scss';
 
-const RemoveLiquidity = () => {
+interface RemoveLiquidityProps {
+  chain: Chain;
+}
+
+const RemoveLiquidity: FC<RemoveLiquidityProps> = props => {
+  const { chain } = props;
+
   const selectedPool = useHookState(selectedPoolState);
   const dynamicPoolData = useHookState(dynamicPoolDataState);
   const staticPoolData = useHookState(staticPoolDataState);
@@ -77,7 +83,7 @@ const RemoveLiquidity = () => {
       }
 
       try {
-        const poolDataAdapter = getPoolDataAdapter(userWalletSigner);
+        const poolDataAdapter = getPoolDataAdapter(chain, userWalletSigner);
 
         setEstimateInProgress(true);
         const estimate = await poolDataAdapter.getExpectedReturnForLPTokens(
@@ -93,7 +99,7 @@ const RemoveLiquidity = () => {
       }
     };
     getTokensEstimate();
-  }, [amount, ammAddress, userWalletSigner]);
+  }, [amount, ammAddress, userWalletSigner, chain]);
 
   const onApproveChange = useCallback(approved => {
     setTokensApproved(approved);
@@ -103,7 +109,7 @@ const RemoveLiquidity = () => {
     if (!userWalletSigner || !estimatedPrincipals || !estimatedYields) {
       return Promise.resolve(undefined);
     }
-    const poolDataAdapter = getPoolDataAdapter(userWalletSigner);
+    const poolDataAdapter = getPoolDataAdapter(chain, userWalletSigner);
 
     const actualSlippage = (autoSlippage ? 1 : slippage / 100).toString();
     const minPrincipalsReceived = estimatedPrincipals.sub(
@@ -142,29 +148,31 @@ const RemoveLiquidity = () => {
     principalsAddress,
     yieldsAddress,
     amount,
+    chain,
   ]);
 
-  const onExecuted = useCallback(() => {
-    setAmount('');
-    setEstimatedPrincipals(null);
-    setEstimatedYields(null);
+  const onExecuted = useCallback(
+    (successful: boolean, txBlockNumber?: number) => {
+      setAmount('');
+      setEstimatedPrincipals(null);
+      setEstimatedYields(null);
 
-    if (!userWalletSigner) {
-      return;
-    }
+      if (!userWalletSigner) {
+        return;
+      }
 
-    // Trigger user pool share balance update when execute is finished
-    getUserShareTokenBalanceProvider({
-      userWalletAddress,
-      userWalletSigner,
-    }).fetchForPool(selectedPoolAddress);
-
-    // Trigger user LP Token balance update when execute is finished
-    getUserLPTokenBalanceProvider({
-      userWalletAddress,
-      userWalletSigner,
-    }).fetchForPool(selectedPoolAddress);
-  }, [selectedPoolAddress, userWalletAddress, userWalletSigner]);
+      refreshBalances(
+        {
+          chain,
+          userWalletAddress,
+          userWalletSigner,
+        },
+        selectedPoolAddress,
+        txBlockNumber,
+      );
+    },
+    [selectedPoolAddress, userWalletAddress, userWalletSigner, chain],
+  );
 
   const lpTokenBalanceFormatted = useMemo(() => {
     if (!userLPTokenBalance) {
@@ -201,10 +209,12 @@ const RemoveLiquidity = () => {
 
   const executeDisabled = useMemo(() => {
     const zeroAmount = isZeroString(amount);
-    const amountExceedsBalance = ethers.utils.parseEther(amount || '0').gt(userLPTokenBalance || BigNumber.from('0'));
+    const amountExceedsBalance = ethers.utils
+      .parseUnits(amount || '0', tokenPrecision.lpTokens)
+      .gt(userLPTokenBalance || BigNumber.from('0'));
 
     return !tokensApproved || zeroAmount || amountExceedsBalance || estimateInProgress;
-  }, [amount, userLPTokenBalance, tokensApproved, estimateInProgress]);
+  }, [amount, userLPTokenBalance, tokensApproved, estimateInProgress, tokenPrecision.lpTokens]);
 
   return (
     <div className="tc__removeLiquidity">
@@ -224,7 +234,12 @@ const RemoveLiquidity = () => {
           <Spacer size={15} />
           <div className="tf__flex-row-space-between">
             <div className="tf__flex-row-center-v">
-              <CurrencyInput defaultValue={amount} onChange={onAmountChange} onMaxClick={onPercentageChange} />
+              <CurrencyInput
+                defaultValue={amount}
+                precision={tokenPrecision.lpTokens}
+                onChange={onAmountChange}
+                onMaxClick={onPercentageChange}
+              />
               <Spacer size={15} />
             </div>
             <div className="tf__flex-row-center-v-end">
@@ -232,9 +247,10 @@ const RemoveLiquidity = () => {
                 tokenToApproveTicker="LP Token"
                 amountToApprove={userLPTokenBalance}
                 onApproveChange={onApproveChange}
-                spenderAddress={getConfig().vaultContract}
+                spenderAddress={getChainConfig(chain).vaultContract}
                 tokenToApproveAddress={ammAddress}
                 disabled={approveDisabled}
+                chain={chain}
               />
             </div>
           </div>
@@ -244,7 +260,7 @@ const RemoveLiquidity = () => {
       <SectionContainer title="to">
         <div className="tf__flex-row-center-v">
           <SectionContainer>
-            <Typography variant="h4">{getText('principals', language)}</Typography>
+            <Typography variant="h4">{getText('principalTokens', language)}</Typography>
             <Spacer size={10} />
             <div className="tf__flex-row-center-v">
               <Typography variant="card-body-text">{getText('estimated', language)}</Typography>
@@ -254,7 +270,7 @@ const RemoveLiquidity = () => {
           </SectionContainer>
           <PlusIconContainer orientation="vertical" />
           <SectionContainer>
-            <Typography variant="h4">{getText('yields', language)}</Typography>
+            <Typography variant="h4">{getText('yieldTokens', language)}</Typography>
             <Spacer size={10} />
             <div className="tf__flex-row-center-v">
               <Typography variant="card-body-text">{getText('estimated', language)}</Typography>
@@ -268,6 +284,7 @@ const RemoveLiquidity = () => {
           <Execute
             actionName="Liquidity Withdrawal"
             disabled={executeDisabled}
+            chain={chain}
             onExecute={onExecute}
             onExecuted={onExecuted}
           />

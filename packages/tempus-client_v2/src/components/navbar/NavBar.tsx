@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import TempusLogo from './tempusLogo';
 import Links from './Links';
 import Wallet from '../wallet/Wallet';
+import Spacer from '../spacer/spacer';
 
 import './NavBar.scss';
 
@@ -19,6 +20,7 @@ const NavBar: FC = () => {
         <div className="tc__navBar__logo" onClick={onLogoClick}>
           <TempusLogo />
         </div>
+        <Spacer size={14} />
       </div>
 
       <div className="tc__navBar__right">

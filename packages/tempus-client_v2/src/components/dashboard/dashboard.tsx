@@ -15,8 +15,6 @@ import { dynamicPoolDataState } from '../../state/PoolDataState';
 import { LanguageContext } from '../../context/languageContext';
 import { DashboardRow } from '../../interfaces/DashboardRow';
 import { ColumnNames } from '../../interfaces/ColumnNames';
-import getText from '../../localisation/getText';
-import Typography from '../typography/Typography';
 import TokenButton from './bodySection/tokenButton';
 import BodyCellFactory from './bodySection/bodyCellFactory';
 import BodyRow from './bodySection/bodyRow';
@@ -112,7 +110,21 @@ const Dashboard: FC<DashboardProps> = ({ userWalletAddress, rows, onRowActionCli
     setFilterPopupOpen(!filterPopupOpen);
   }; */
 
-  const getRowsToDisplay = () => {
+  // https://www.urbandictionary.com/define.php?term=vilomah
+  const filterOutVilomahRows = useCallback((rows: DashboardRow[]): DashboardRow[] => {
+    const parentsMap: { [id: string]: boolean } = {};
+    rows.forEach(row => {
+      if (!!row.parentId) {
+        if (parentsMap[row.parentId] === undefined) {
+          parentsMap[row.parentId] = true;
+        }
+      }
+    });
+
+    return rows.filter(row => (!row.parentId ? parentsMap[row.id] : true));
+  }, []);
+
+  const getRowsToDisplay = useCallback(rows => {
     if (rows?.length) {
       let rowsToDisplay = rows.filter((row: DashboardRow) => {
         const pool = dynamicPoolData[row.id];
@@ -129,8 +141,10 @@ const Dashboard: FC<DashboardProps> = ({ userWalletAddress, rows, onRowActionCli
       return rowsToDisplay;
     }
     return [];
-  };
-  const rowsToDisplay = getRowsToDisplay();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const rowsToDisplay = () => (rows ? filterOutVilomahRows(getRowsToDisplay(rows)) : []);
 
   /**
    * If `null` is passed as `filterData`, all filters will be cleared.
@@ -212,9 +226,7 @@ const Dashboard: FC<DashboardProps> = ({ userWalletAddress, rows, onRowActionCli
     <div className="tf__dashboard__section__container">
       <div className="tc__dashboard__container">
         <div className="tc__dashboard__header">
-          <Typography color="default" variant="h4">
-            {getText('availablePools', language)}
-          </Typography>
+          <div></div>
           <div className="tc__dashboard__header__actions">
             <CurrencySwitch />
             {/* <div onClick={onToggleFilterPopup} ref={filterButtonRef}>
@@ -234,7 +246,7 @@ const Dashboard: FC<DashboardProps> = ({ userWalletAddress, rows, onRowActionCli
         <hr />
         <div className="tf__dashboard">
           <div className="tf__dashboard__grid">
-            <Grid rows={/*filteredRows || */ rowsToDisplay} columns={dashboardColumnsDefinitions(language)}>
+            <Grid rows={/*filteredRows || */ rowsToDisplay()} columns={dashboardColumnsDefinitions(language)}>
               <SortingState
                 sorting={currentSorting}
                 onSortingChange={onSortingChange}
@@ -256,6 +268,7 @@ const Dashboard: FC<DashboardProps> = ({ userWalletAddress, rows, onRowActionCli
                 columnExtensions={tableColumnExtensions}
                 rowComponent={BodyRow}
                 cellComponent={BodyCellFactory}
+                messages={{ noData: '' }}
               />
               <TableHeaderRow
                 rowComponent={HeaderRow}

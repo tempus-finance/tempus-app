@@ -5,9 +5,10 @@ import { CircularProgress } from '@material-ui/core';
 import { DataTypeProvider } from '@devexpress/dx-react-grid';
 import { UserSettingsContext } from '../../../context/userSettingsContext';
 import { WalletContext } from '../../../context/walletContext';
-import { Ticker } from '../../../interfaces/Token';
 import { DashboardRow } from '../../../interfaces/DashboardRow';
+import { Chain, chainIdToChainName } from '../../../interfaces/Chain';
 import NumberUtils from '../../../services/NumberUtils';
+import { getChainConfigForPool } from '../../../utils/getConfig';
 import Typography from '../../typography/Typography';
 import { tokenPrecision, ZERO } from '../../../constants';
 import Spacer from '../../spacer/spacer';
@@ -34,9 +35,9 @@ const BalanceFormatter = (props: DataTypeProvider.ValueFormatterProps) => {
   const getBalance = () => {
     if (!isChild) {
       if (showFiat) {
-        return getParentBalanceInFiat(row.token, staticPoolData, dynamicPoolData);
+        return getParentBalanceInFiat(row.id, row.chain, staticPoolData, dynamicPoolData);
       } else {
-        return getParentBalanceInBackingToken(row.token, staticPoolData, dynamicPoolData);
+        return getParentBalanceInBackingToken(row.id, row.chain, staticPoolData, dynamicPoolData);
       }
     } else {
       if (showFiat) {
@@ -95,14 +96,17 @@ const BalanceFormatter = (props: DataTypeProvider.ValueFormatterProps) => {
 export default BalanceFormatter;
 
 const getParentBalanceInFiat = (
-  parentId: Ticker,
+  parentId: string,
+  chain: Chain,
   staticPoolData: StaticPoolDataMap,
   dynamicPoolData: DynamicPoolStateData,
 ): BigNumber | null => {
   const parentChildrenAddresses: string[] = [];
   for (const key in dynamicPoolData) {
+    const chainConfig = getChainConfigForPool(key);
+
     if (
-      staticPoolData[key].backingToken === parentId &&
+      `${staticPoolData[key].backingToken}-${chainIdToChainName(chainConfig.chainId.toString())}` === parentId &&
       (!dynamicPoolData[key].negativeYield || dynamicPoolData[key].userBalanceUSD?.gt(ZERO))
     ) {
       parentChildrenAddresses.push(key);
@@ -125,14 +129,17 @@ const getParentBalanceInFiat = (
 };
 
 const getParentBalanceInBackingToken = (
-  parentId: Ticker,
+  parentId: string,
+  chain: Chain,
   staticPoolData: StaticPoolDataMap,
   dynamicPoolData: DynamicPoolStateData,
 ): BigNumber | null => {
   const parentChildrenAddresses: string[] = [];
   for (const key in dynamicPoolData) {
+    const chainConfig = getChainConfigForPool(key);
+
     if (
-      staticPoolData[key].backingToken === parentId &&
+      `${staticPoolData[key].backingToken}-${chainIdToChainName(chainConfig.chainId.toString())}` === parentId &&
       (!dynamicPoolData[key].negativeYield || dynamicPoolData[key].userBalanceUSD?.gt(ZERO))
     ) {
       parentChildrenAddresses.push(key);

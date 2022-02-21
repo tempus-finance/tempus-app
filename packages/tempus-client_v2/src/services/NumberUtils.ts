@@ -33,7 +33,7 @@ class NumberUtils {
       : '0';
   }
 
-  static formatToCurrency(value: string, numberOfDecimals?: number, symbol?: string): string {
+  static formatToCurrency(value: string, numberOfDecimals: number = 2, symbol?: string): string {
     if (!value || isZeroString(value)) {
       return `${symbol || ''}0`;
     }
@@ -51,25 +51,10 @@ class NumberUtils {
       integerPartSeparatorsAdded = '';
     }
 
-    let leadingZeroCounter = 0;
-    if (fractionalPart) {
-      const fractionalPartSplitted = fractionalPart.split('');
-      for (var i = 0; i < fractionalPartSplitted.length; i++) {
-        const value = fractionalPartSplitted[i];
-        if (value === '0') {
-          leadingZeroCounter++;
-        } else {
-          break;
-        }
-      }
+    let fractionPartFormatted = fractionalPart ? fractionalPart.slice(0, numberOfDecimals) : '';
+    if (isZeroString(fractionPartFormatted)) {
+      fractionPartFormatted = '';
     }
-
-    let decimalCount = leadingZeroCounter + 2;
-    if (numberOfDecimals === 0 || numberOfDecimals) {
-      decimalCount = leadingZeroCounter + numberOfDecimals;
-    }
-
-    const fractionPartFormatted = fractionalPart ? fractionalPart.slice(0, decimalCount) : '';
 
     return `${symbol || ''}${integerPartSeparatorsAdded}${fractionPartFormatted ? `.${fractionPartFormatted}` : ''}`;
   }

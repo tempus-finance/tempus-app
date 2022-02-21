@@ -1,109 +1,165 @@
-import { useCallback, useContext, useEffect } from 'react';
 import { ethers } from 'ethers';
+import { useCallback, useContext, useEffect } from 'react';
 import { useState as useHookState } from '@hookstate/core';
-import getDefaultProvider from '../services/getDefaultProvider';
-import getVariableRateService from '../services/getVariableRateService';
-import getConfig from '../utils/getConfig';
+import {
+  catchError,
+  combineLatest,
+  filter,
+  from,
+  interval,
+  Observable,
+  of,
+  startWith,
+  Subscription,
+  switchMap,
+} from 'rxjs';
+import { getChainConfig, getConfig } from '../utils/getConfig';
 import { WalletContext } from '../context/walletContext';
 import { dynamicPoolDataState } from '../state/PoolDataState';
+import { Chain } from '../interfaces/Chain';
+import { TempusPool } from '../interfaces/TempusPool';
+import getVariableRateService from '../services/getVariableRateService';
+import { POLLING_INTERVAL } from '../constants';
 
 const VariableAPRProvider = () => {
   const dynamicPoolData = useHookState(dynamicPoolDataState);
 
-  const { userWalletConnected, userWalletSigner } = useContext(WalletContext);
-
-  const getProvider = useCallback(() => {
-    if (userWalletConnected && userWalletSigner) {
-      return userWalletSigner.provider;
-    } else if (userWalletConnected === false) {
-      return getDefaultProvider();
-    }
-  }, [userWalletConnected, userWalletSigner]);
+  const { userWalletSigner, userWalletConnected, userWalletChain } = useContext(WalletContext);
 
   /**
-   * Fetch APR for all tempus pools on each block event
+   * Fetch Variable APR for tempus pool
    */
-  const fetchAPR = useCallback(async () => {
-    const provider = getProvider();
-    if (!provider) {
-      return;
-    }
+  const fetchAPR = useCallback(
+    (
+      chain: Chain,
+      tempusPool: TempusPool,
+    ): Observable<{ address: string; variableAPR: number | null; tempusFees: number | null }> => {
+      const config = getChainConfig(chain);
 
-    const config = getConfig();
-    const variableRateService = getVariableRateService(provider);
+      const interval$ = interval(POLLING_INTERVAL).pipe(startWith(0));
+      return interval$.pipe(
+        filter(() => {
+          // If VariableAPR or TempusFees have not been fetched yet, we want to force fetch them
+          // (even if wallet is not connected or app is not in focus)
+          const forceFetch =
+            dynamicPoolData[tempusPool.address].variableAPR.get() === null ||
+            dynamicPoolData[tempusPool.address].tempusFees.get() === null;
 
-    try {
-      // Fetch APR for all Tempus Pools
-      const fetchedPoolAPRData = await Promise.all(
-        config.tempusPools.map(async tempusPool => {
-          if (!document.hasFocus() && dynamicPoolData[tempusPool.address].variableAPR.get() !== null) {
-            return null;
+          if (forceFetch) {
+            return true;
           }
+          return document.hasFocus() && Boolean(userWalletSigner);
+        }),
+        switchMap(() => {
+          const variableRateService = getVariableRateService(chain, userWalletSigner || undefined);
 
           // Get fees for Tempus Pool
-          const fees = await variableRateService.calculateFees(
+          const feesPromise = variableRateService.calculateFees(
             tempusPool.ammAddress,
             tempusPool.address,
             tempusPool.principalsAddress,
             tempusPool.yieldsAddress,
+            chain,
+            config.averageBlockTime,
           );
+          return from(feesPromise);
+        }),
+        switchMap(fees => {
+          const variableRateService = getVariableRateService(chain, userWalletSigner || undefined);
 
           // Get variable APR for Tempus Pool
-          const variableAPR = await variableRateService.getAprRate(
+          const variableAPRPromise = variableRateService.getAprRate(
             tempusPool.protocol,
             tempusPool.yieldBearingTokenAddress,
             fees,
+            tempusPool.tokenPrecision.principals,
           );
+          return combineLatest([from(variableAPRPromise), of(fees)]);
+        }),
+        switchMap(result => {
+          const variableAPR = result[0];
+          const fees = result[1];
 
-          return {
+          return of({
             address: tempusPool.address,
             variableAPR: variableAPR,
-            tempusFees: Number(ethers.utils.formatEther(fees)),
-          };
+            tempusFees: Number(ethers.utils.formatUnits(fees, tempusPool.tokenPrecision.principals)),
+          });
+        }),
+        catchError(error => {
+          console.error('VariableAPRProvider - fetchAPR', error);
+          return of({
+            address: tempusPool.address,
+            variableAPR: null,
+            tempusFees: null,
+          });
         }),
       );
-
-      fetchedPoolAPRData.forEach(fetchedAPRData => {
-        if (fetchedAPRData === null) {
-          return;
-        }
-
-        const currentAPR = dynamicPoolData[fetchedAPRData.address].variableAPR.get();
-        // Only update state if fetched APR is different from current APR
-        // (if APR fetch failed, ie: "fetchedAPRData.variableAPR === null" -> keep current APR value)
-        if (!currentAPR || (fetchedAPRData.variableAPR && currentAPR !== fetchedAPRData.variableAPR)) {
-          dynamicPoolData[fetchedAPRData.address].variableAPR.set(fetchedAPRData.variableAPR);
-        }
-
-        dynamicPoolData[fetchedAPRData.address].tempusFees.set(fetchedAPRData.tempusFees);
-      });
-    } catch (error) {
-      console.log('VariableAPRProvider - fetchAPR', error);
-    }
+    },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [getProvider]);
+    [userWalletSigner],
+  );
 
-  useEffect(() => {
-    fetchAPR();
-  }, [fetchAPR]);
+  const updatePoolVariableAPR = useCallback(
+    (address: string, variableAPR: number | null, tempusFees: number | null) => {
+      if (variableAPR === null) {
+        return;
+      }
+
+      const currentAPR = dynamicPoolData[address].variableAPR.get();
+      // Only update state if fetched APR is different from current APR
+      // (if APR fetch failed, ie: "fetchedAPRData.variableAPR === null" -> keep current APR value)
+      if (!currentAPR || (variableAPR && currentAPR !== variableAPR)) {
+        dynamicPoolData[address].variableAPR.set(variableAPR);
+      }
+
+      const currentTempusFees = dynamicPoolData[address].tempusFees.get();
+      // Only update state if fetched tempusFees are different from current tempusFees
+      if (!currentTempusFees || (tempusFees && currentTempusFees !== tempusFees)) {
+        dynamicPoolData[address].tempusFees.set(tempusFees);
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
+  );
 
   /**
-   * Update APR for all pools on each block.
+   * Update Variable APR for all pools on every POLLING_INTERVAL.
    */
   useEffect(() => {
-    if (!userWalletSigner) {
+    // Wait for wallet connection status check to go through before fetching anything
+    if (userWalletConnected === null) {
       return;
     }
-    const provider = userWalletSigner.provider;
 
-    provider.on('block', fetchAPR);
-    return () => {
-      provider.off('block', fetchAPR);
-    };
-  }, [fetchAPR, userWalletSigner]);
+    const subscriptions$ = new Subscription();
+
+    const configData = getConfig();
+    for (const chainName in configData) {
+      // If user is connected to specific chain, we should fetch Variable APR data only from that chain and skip all other chains
+      if (userWalletChain && userWalletChain !== chainName) {
+        continue;
+      }
+
+      getChainConfig(chainName as Chain).tempusPools.forEach(poolConfig => {
+        try {
+          const tempusPoolVariableAprStream$ = fetchAPR(chainName as Chain, poolConfig);
+          subscriptions$.add(
+            tempusPoolVariableAprStream$.subscribe(result => {
+              updatePoolVariableAPR(result.address, result.variableAPR, result.tempusFees);
+            }),
+          );
+        } catch (error) {
+          console.error('VariableAPRProvider - Subscribe to Variable APR fetch', error);
+        }
+      });
+    }
+
+    return () => subscriptions$.unsubscribe();
+  }, [userWalletSigner, userWalletChain, userWalletConnected, updatePoolVariableAPR, fetchAPR]);
 
   /**
-   * Provider component only updates context value when needed. It does not show anything in the UI.
+   * Provider component only updates state value when needed. It does not show anything in the UI.
    */
   return null;
 };

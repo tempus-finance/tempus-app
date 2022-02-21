@@ -8,8 +8,6 @@ import getUserBalanceDataAdapter from '../../adapters/getUserBalanceDataAdapter'
 import AvailableToDepositUSDProvider from '../../providers/availableToDepositUSDProvider';
 import NegativeYieldProvider from '../../providers/negativeYieldProvider';
 import TVLProvider from '../../providers/tvlProvider';
-import UserBackingTokenBalanceProvider from '../../providers/userBackingTokenBalanceProvider';
-import UserYieldBearingTokenBalanceProvider from '../../providers/userYieldBearingTokenBalanceProvider';
 import FixedAPRProvider from '../../providers/fixedAPRProvider';
 import VariableAPRProvider from '../../providers/variableAPRProvider';
 import RootRoute from '../routes/RootRoute';
@@ -18,29 +16,33 @@ import PoolRoute from '../routes/PoolRoute';
 import './Main.scss';
 
 const Main = () => {
-  const { userWalletConnected, userWalletSigner } = useContext(WalletContext);
+  const { userWalletConnected, userWalletSigner, userWalletChain } = useContext(WalletContext);
 
   const [dashboardDataAdapter, setDashboardDataAdapter] = useState<DashboardDataAdapter | null>(null);
   const [userBalanceDataAdapter, setUserBalanceDataAdapter] = useState<UserBalanceDataAdapter | null>(null);
 
   useEffect(() => {
     const fetchRows = async () => {
-      if (userWalletSigner) {
-        const dashboardDataAdapter = getDashboardDataAdapter(userWalletSigner);
-        const userBalanceDataAdapter = getUserBalanceDataAdapter(userWalletSigner);
+      if (userWalletSigner && userWalletChain) {
+        const dashboardDataAdapter = getDashboardDataAdapter(userWalletChain);
+        const userBalanceDataAdapter = getUserBalanceDataAdapter(userWalletChain, userWalletSigner);
 
         setDashboardDataAdapter(dashboardDataAdapter);
         setUserBalanceDataAdapter(userBalanceDataAdapter);
-      } else if (userWalletConnected === false) {
+      } else if (userWalletConnected === false && userWalletChain) {
+        const dashboardDataAdapter = getDashboardDataAdapter(userWalletChain);
+        const userBalanceDataAdapter = getUserBalanceDataAdapter(userWalletChain);
+
+        setDashboardDataAdapter(dashboardDataAdapter);
+        setUserBalanceDataAdapter(userBalanceDataAdapter);
+      } else {
         const dashboardDataAdapter = getDashboardDataAdapter();
-        const userBalanceDataAdapter = getUserBalanceDataAdapter();
 
         setDashboardDataAdapter(dashboardDataAdapter);
-        setUserBalanceDataAdapter(userBalanceDataAdapter);
       }
     };
     fetchRows();
-  }, [userWalletConnected, userWalletSigner, userBalanceDataAdapter]);
+  }, [userWalletConnected, userWalletSigner, userBalanceDataAdapter, userWalletChain]);
 
   return (
     <div className="tc__main">
@@ -50,12 +52,10 @@ const Main = () => {
       <NegativeYieldProvider />
       {dashboardDataAdapter && <TVLProvider dashboardDataAdapter={dashboardDataAdapter} />}
       {userBalanceDataAdapter && <AvailableToDepositUSDProvider userBalanceDataAdapter={userBalanceDataAdapter} />}
-      {userBalanceDataAdapter && <UserBackingTokenBalanceProvider />}
-      {userBalanceDataAdapter && <UserYieldBearingTokenBalanceProvider />}
 
       <Routes>
         <Route path="/" element={<RootRoute />} />
-        <Route path="/pool/:poolAddress" element={<PoolRoute />} />
+        <Route path="/pool/:poolAddress" element={userWalletChain && <PoolRoute chain={userWalletChain} />} />
       </Routes>
     </div>
   );

@@ -1,112 +1,126 @@
 import { ethers } from 'ethers';
 import { useCallback, useContext, useEffect } from 'react';
 import { useState as useHookState } from '@hookstate/core';
-import getConfig from '../utils/getConfig';
+import { catchError, filter, from, interval, Observable, of, startWith, Subscription, switchMap } from 'rxjs';
+import { FIXED_APR_PRECISION, POLLING_INTERVAL } from '../constants';
+import { getChainConfig, getConfig } from '../utils/getConfig';
 import getTokenPrecision from '../utils/getTokenPrecision';
-import getDefaultProvider from '../services/getDefaultProvider';
 import { WalletContext } from '../context/walletContext';
 import { dynamicPoolDataState } from '../state/PoolDataState';
 import getPoolDataAdapter from '../adapters/getPoolDataAdapter';
-import { FIXED_APR_PRECISION } from '../constants';
+import { Chain } from '../interfaces/Chain';
+import { TempusPool } from '../interfaces/TempusPool';
 
 const FixedAPRProvider = () => {
   const dynamicPoolData = useHookState(dynamicPoolDataState);
 
-  const { userWalletConnected, userWalletSigner } = useContext(WalletContext);
+  const { userWalletSigner, userWalletConnected, userWalletChain } = useContext(WalletContext);
 
   /**
-   * If user connected wallet, use wallet as a provider, otherwise use Alchemy as a provider.
+   * Fetch Fixed APR for tempus pool
    */
-  const getProvider = useCallback(() => {
-    if (userWalletConnected && userWalletSigner) {
-      return userWalletSigner.provider;
-    } else if (userWalletConnected === false) {
-      return getDefaultProvider();
-    }
-  }, [userWalletConnected, userWalletSigner]);
+  const fetchAPR = useCallback(
+    (chain: Chain, tempusPool: TempusPool): Observable<{ address: string; fixedAPR: number | null }> => {
+      const spotPriceParsed = ethers.utils.parseUnits(
+        tempusPool.spotPrice,
+        getTokenPrecision(tempusPool.address, 'backingToken'),
+      );
 
-  /**
-   * Fetch Fixed APR for all tempus pools on each block event
-   */
-  const fetchAPR = useCallback(async () => {
-    const provider = getProvider();
-    if (!provider) {
-      return;
-    }
+      const interval$ = interval(POLLING_INTERVAL).pipe(startWith(0));
+      return interval$.pipe(
+        filter(() => {
+          // If FixedAPR has not been fetched yet, we want to force fetch it (even if wallet is not connected or app is not in focus)
+          const forceFetch = dynamicPoolData[tempusPool.address].fixedAPR.get() === 'fetching';
 
-    const config = getConfig();
-    const poolDataAdapter = getPoolDataAdapter(provider);
-
-    // Fetch APR for all Tempus Pools
-    const fetchedPoolAPRData = await Promise.all(
-      config.tempusPools.map(async tempusPool => {
-        if (!document.hasFocus() && dynamicPoolData[tempusPool.address].fixedAPR.get() !== 'fetching') {
-          return null;
-        }
-
-        try {
-          const spotPrice = ethers.utils.parseUnits('1', getTokenPrecision(tempusPool.address, 'backingToken'));
+          if (forceFetch) {
+            return true;
+          }
+          return document.hasFocus() && Boolean(userWalletSigner);
+        }),
+        switchMap(() => {
+          const poolDataAdapter = getPoolDataAdapter(chain, userWalletSigner || undefined);
 
           const estimateDepositAndFixFromBackingToken = true;
-          const fixedAPR = await poolDataAdapter.getEstimatedFixedApr(
-            spotPrice,
+          const fixedAPRPromise = poolDataAdapter.getEstimatedFixedApr(
+            spotPriceParsed,
             estimateDepositAndFixFromBackingToken,
             tempusPool.address,
             tempusPool.poolId,
             tempusPool.ammAddress,
           );
-          return {
+
+          return from(fixedAPRPromise);
+        }),
+        switchMap(fixedAPR => {
+          return of({
             address: tempusPool.address,
             fixedAPR: fixedAPR ? Number(ethers.utils.formatUnits(fixedAPR, FIXED_APR_PRECISION)) : null,
-          };
-        } catch (error) {
-          console.error('fetchedPoolAPRData error', error);
-          return {
+          });
+        }),
+        catchError(error => {
+          console.error('FixedAPRProvider - fetchAPR', error);
+          return of({
             address: tempusPool.address,
             fixedAPR: null,
-          };
-        }
-      }),
-    );
+          });
+        }),
+      );
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [userWalletSigner],
+  );
 
-    fetchedPoolAPRData.forEach(fetchedAPRData => {
-      if (fetchedAPRData === null) {
+  const updatePoolFixedAPR = useCallback(
+    (address: string, fixedAPR: number | null) => {
+      if (fixedAPR === null) {
         return;
       }
 
-      const currentFixedAPR = dynamicPoolData[fetchedAPRData.address].fixedAPR.get();
+      const currentFixedAPR = dynamicPoolData[address].fixedAPR.get();
       // Only update state if fetched APR is different from current APR
-      // (if APR fetch failed, ie: "fetchedAPRData.fixedAPR === null" -> keep current APR value)
-      if (
-        !currentFixedAPR ||
-        currentFixedAPR === 'fetching' ||
-        (fetchedAPRData.fixedAPR && currentFixedAPR !== fetchedAPRData.fixedAPR)
-      ) {
-        dynamicPoolData[fetchedAPRData.address].fixedAPR.set(fetchedAPRData.fixedAPR);
+      // (if APR fetch failed, ie: "fixedAPR === null" -> keep current APR value)
+      if (!currentFixedAPR || currentFixedAPR === 'fetching' || (fixedAPR && currentFixedAPR !== fixedAPR)) {
+        dynamicPoolData[address].fixedAPR.set(fixedAPR);
       }
-    });
-
+    },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [getProvider]);
-
-  useEffect(() => {
-    fetchAPR();
-  }, [fetchAPR]);
+    [],
+  );
 
   /**
-   * Update Fixed APR for all pools on each block.
+   * Update Fixed APR for all pools on every POLLING_INTERVAL.
    */
   useEffect(() => {
-    if (!userWalletSigner) {
+    // Wait for wallet connection status check to go through before fetching anything
+    if (userWalletConnected === null) {
       return;
     }
-    const provider = userWalletSigner.provider;
 
-    provider.on('block', fetchAPR);
-    return () => {
-      provider.off('block', fetchAPR);
-    };
-  }, [fetchAPR, userWalletSigner]);
+    const subscriptions$ = new Subscription();
+
+    const configData = getConfig();
+    for (const chainName in configData) {
+      // If user is connected to specific chain, we should fetch Fixed APR data only from that chain and skip all other chains
+      if (userWalletChain && userWalletChain !== chainName) {
+        continue;
+      }
+
+      getChainConfig(chainName as Chain).tempusPools.forEach(poolConfig => {
+        try {
+          const tempusPoolFixedAprStream$ = fetchAPR(chainName as Chain, poolConfig);
+          subscriptions$.add(
+            tempusPoolFixedAprStream$.subscribe(result => {
+              updatePoolFixedAPR(result.address, result.fixedAPR);
+            }),
+          );
+        } catch (error) {
+          console.error('FixedAPRProvider - Subscribe to Fixed APR fetch', error);
+        }
+      });
+    }
+
+    return () => subscriptions$.unsubscribe();
+  }, [userWalletChain, userWalletConnected, updatePoolFixedAPR, fetchAPR]);
 
   /**
    * Provider component only updates context value when needed. It does not show anything in the UI.

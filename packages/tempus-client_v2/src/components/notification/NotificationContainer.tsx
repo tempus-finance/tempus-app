@@ -1,5 +1,6 @@
 import { FC, useCallback, useContext, useEffect, useState } from 'react';
 import { UserSettingsContext } from '../../context/userSettingsContext';
+import { WalletContext } from '../../context/walletContext';
 import { Notification } from '../../interfaces/Notification';
 import getNotificationService from '../../services/getNotificationService';
 import NotificationComponent from './NotificationComponent';
@@ -8,6 +9,8 @@ import './Notification.scss';
 
 const NotificationContainer: FC = () => {
   const { setUserSettings } = useContext(UserSettingsContext);
+  const { userWalletChain } = useContext(WalletContext);
+
   const [notifications, setNotifications] = useState<Notification[]>([]);
 
   const onNotificationDelete = useCallback(
@@ -37,7 +40,7 @@ const NotificationContainer: FC = () => {
     const notificationStream$ = getNotificationService()
       .getNextItem()
       .subscribe(notification => {
-        if (notification) {
+        if (notification && notification.chain === userWalletChain) {
           // Create auto close timer for new notification if web page tab is visible when notification is created
           if (!document.hidden) {
             autoCloseNotification(notification.id);
@@ -48,7 +51,7 @@ const NotificationContainer: FC = () => {
       });
 
     return () => notificationStream$.unsubscribe();
-  }, [autoCloseNotification, setNotifications]);
+  }, [userWalletChain, autoCloseNotification, setNotifications]);
 
   return (
     <div className="tc__notification-container">

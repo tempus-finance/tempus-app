@@ -3,14 +3,14 @@ import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { ethers, BigNumber } from 'ethers';
 import { catchError, of } from 'rxjs';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
-import getUserShareTokenBalanceProvider from '../../providers/getUserShareTokenBalanceProvider';
-import getUserBalanceProvider from '../../providers/getBalanceProvider';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
+import { refreshBalances } from '../../providers/balanceProviderHelper';
 import { LanguageContext } from '../../context/languageContext';
 import { WalletContext } from '../../context/walletContext';
 import { Ticker } from '../../interfaces/Token';
+import { Chain } from '../../interfaces/Chain';
 import getText from '../../localisation/getText';
-import getConfig from '../../utils/getConfig';
+import { getChainConfig } from '../../utils/getConfig';
 import getTokenPrecision from '../../utils/getTokenPrecision';
 import { isZeroString } from '../../utils/isZeroString';
 import { mul18f } from '../../utils/weiMath';
@@ -30,9 +30,10 @@ import './Mint.scss';
 
 type MintInProps = {
   narrow: boolean;
+  chain: Chain;
 };
 
-const Mint: FC<MintInProps> = ({ narrow }) => {
+const Mint: FC<MintInProps> = ({ narrow, chain }) => {
   const selectedPool = useHookState(selectedPoolState);
   const staticPoolData = useHookState(staticPoolDataState);
   const dynamicPoolData = useHookState(dynamicPoolDataState);
@@ -194,7 +195,7 @@ const Mint: FC<MintInProps> = ({ narrow }) => {
 
   const onExecute = useCallback((): Promise<ethers.ContractTransaction | undefined> => {
     if (userWalletSigner && amount) {
-      const poolDataAdapter = getPoolDataAdapter(userWalletSigner);
+      const poolDataAdapter = getPoolDataAdapter(chain, userWalletSigner);
       const tokenAmount = ethers.utils.parseUnits(amount, selectedTokenPrecision);
       const isBackingToken = backingToken === selectedToken;
       const isEthDeposit = selectedToken === 'ETH';
@@ -211,27 +212,29 @@ const Mint: FC<MintInProps> = ({ narrow }) => {
     selectedToken,
     selectedPoolAddress,
     userWalletAddress,
+    chain,
   ]);
 
-  const onExecuted = useCallback(() => {
-    setAmount('');
+  const onExecuted = useCallback(
+    (successful: boolean, txBlockNumber?: number) => {
+      setAmount('');
 
-    if (!userWalletSigner) {
-      return;
-    }
+      if (!userWalletSigner) {
+        return;
+      }
 
-    // Trigger user pool share balance update when execute is finished
-    getUserShareTokenBalanceProvider({
-      userWalletAddress,
-      userWalletSigner,
-    }).fetchForPool(selectedPoolAddress);
-
-    // Trigger user balance update when execute is finished
-    getUserBalanceProvider({
-      userWalletAddress,
-      userWalletSigner,
-    }).fetchForPool(selectedPoolAddress);
-  }, [selectedPoolAddress, userWalletAddress, userWalletSigner]);
+      refreshBalances(
+        {
+          chain,
+          userWalletAddress,
+          userWalletSigner,
+        },
+        selectedPoolAddress,
+        txBlockNumber,
+      );
+    },
+    [selectedPoolAddress, userWalletAddress, userWalletSigner, chain],
+  );
 
   const onApproveChange = useCallback(approved => {
     setTokensApproved(approved);
@@ -239,12 +242,14 @@ const Mint: FC<MintInProps> = ({ narrow }) => {
 
   useEffect(() => {
     if (userWalletSigner && selectedPoolAddress && ammAddress) {
-      const poolDataAdapter = getPoolDataAdapter(userWalletSigner);
+      const poolDataAdapter = getPoolDataAdapter(chain, userWalletSigner);
       const stream$ = poolDataAdapter
         .retrieveBalances(
+          chain,
           selectedPoolAddress,
           ammAddress,
           tokenPrecision.backingToken,
+          tokenPrecision.yieldBearingToken,
           userWalletAddress,
           userWalletSigner,
         )
@@ -265,6 +270,7 @@ const Mint: FC<MintInProps> = ({ narrow }) => {
     }
   }, [
     tokenPrecision.backingToken,
+    tokenPrecision.yieldBearingToken,
     selectedPoolAddress,
     userWalletSigner,
     userWalletAddress,
@@ -272,6 +278,7 @@ const Mint: FC<MintInProps> = ({ narrow }) => {
     setBackingTokenRate,
     setYieldBearingTokenRate,
     ammAddress,
+    chain,
   ]);
 
   useEffect(() => {
@@ -279,7 +286,7 @@ const Mint: FC<MintInProps> = ({ narrow }) => {
       return;
     }
 
-    const poolDataAdapter = getPoolDataAdapter(userWalletSigner);
+    const poolDataAdapter = getPoolDataAdapter(chain, userWalletSigner);
     const isBackingToken = selectedToken === backingToken;
     const amountParsed = ethers.utils.parseUnits(amount, selectedTokenPrecision);
 
@@ -303,14 +310,14 @@ const Mint: FC<MintInProps> = ({ narrow }) => {
       console.error('Mint - getEstimates() - Failed to get estimates for selected token!', error);
       setEstimateInProgress(false);
     }
-  }, [selectedTokenPrecision, amount, userWalletSigner, selectedToken, backingToken, selectedPoolAddress]);
+  }, [selectedTokenPrecision, amount, userWalletSigner, selectedToken, backingToken, selectedPoolAddress, chain]);
 
   useEffect(() => {
     if (!userWalletSigner) {
       return;
     }
 
-    const poolDataAdapter = getPoolDataAdapter(userWalletSigner);
+    const poolDataAdapter = getPoolDataAdapter(chain, userWalletSigner);
 
     const stream$ = poolDataAdapter
       .isCurrentYieldNegativeForPool(selectedPoolAddress)
@@ -325,7 +332,7 @@ const Mint: FC<MintInProps> = ({ narrow }) => {
       });
 
     return () => stream$.unsubscribe();
-  }, [selectedPoolAddress, userWalletSigner]);
+  }, [selectedPoolAddress, userWalletSigner, chain]);
 
   const approveDisabled = useMemo((): boolean => {
     const zeroAmount = isZeroString(amount);
@@ -395,6 +402,7 @@ const Mint: FC<MintInProps> = ({ narrow }) => {
           <div>
             <CurrencyInput
               defaultValue={amount}
+              precision={selectedTokenPrecision}
               onChange={onAmountChange}
               onMaxClick={onClickMax}
               disabled={!selectedToken || mintDisabled}
@@ -426,12 +434,14 @@ const Mint: FC<MintInProps> = ({ narrow }) => {
             <SectionContainer elevation={2}>
               <div className="tf__flex-row-space-between">
                 <div className="tf__flex-column-space-between">
-                  <Typography variant="h4">{getText('principals', language)}</Typography>
+                  <Typography variant="h4">
+                    {backingToken} {getText('principals', language)}
+                  </Typography>
                   <Spacer size={10} />
                   <Typography variant="card-body-text">
                     {estimatedTokensFormatted &&
                       `${getText('amountReceived', language)} ${estimatedTokensFormatted} ${getText(
-                        'principals',
+                        'principalTokens',
                         language,
                       )}`}
                   </Typography>
@@ -446,12 +456,14 @@ const Mint: FC<MintInProps> = ({ narrow }) => {
             <SectionContainer elevation={2}>
               <div className="tf__flex-row-space-between">
                 <div className="tf__flex-column-space-between">
-                  <Typography variant="h4">{getText('yields', language)}</Typography>
+                  <Typography variant="h4">
+                    {backingToken} {getText('yields', language)}
+                  </Typography>
                   <Spacer size={10} />
                   <Typography variant="card-body-text">
                     {estimatedTokensFormatted &&
                       `${getText('amountReceived', language)} ${estimatedTokensFormatted} ${getText(
-                        'yields',
+                        'yieldTokens',
                         language,
                       )}`}
                   </Typography>
@@ -465,14 +477,21 @@ const Mint: FC<MintInProps> = ({ narrow }) => {
         <div className="tf__flex-row-center-vh">
           <Approve
             tokenToApproveAddress={getSelectedTokenAddress()}
-            spenderAddress={getConfig().tempusControllerContract}
+            spenderAddress={getChainConfig(chain).tempusControllerContract}
             amountToApprove={getSelectedTokenBalance()}
             tokenToApproveTicker={selectedToken}
             disabled={approveDisabled}
             marginRight={20}
+            chain={chain}
             onApproveChange={onApproveChange}
           />
-          <Execute actionName="Mint" disabled={executeDisabled} onExecute={onExecute} onExecuted={onExecuted} />
+          <Execute
+            actionName="Mint"
+            disabled={executeDisabled}
+            chain={chain}
+            onExecute={onExecute}
+            onExecuted={onExecuted}
+          />
         </div>
       </SectionContainer>
     </div>

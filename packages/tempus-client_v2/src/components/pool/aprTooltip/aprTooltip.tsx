@@ -1,5 +1,5 @@
 import { differenceInDays } from 'date-fns';
-import { useContext, useEffect, useMemo, useState } from 'react';
+import { FC, useContext, useEffect, useMemo, useState } from 'react';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../../state/PoolDataState';
 import getPoolDataAdapter from '../../../adapters/getPoolDataAdapter';
@@ -7,11 +7,16 @@ import { LanguageContext } from '../../../context/languageContext';
 import { WalletContext } from '../../../context/walletContext';
 import getText from '../../../localisation/getText';
 import NumberUtils from '../../../services/NumberUtils';
+import { Chain } from '../../../interfaces/Chain';
 import Typography from '../../typography/Typography';
 
 import './aprTooltip.scss';
 
-const AprTooltip = () => {
+interface AprTooltipProps {
+  chain: Chain;
+}
+
+const AprTooltip: FC<AprTooltipProps> = ({ chain }) => {
   const selectedPool = useHookState(selectedPoolState);
   const staticPoolData = useHookState(staticPoolDataState);
   const dynamicPoolData = useHookState(dynamicPoolDataState);
@@ -33,7 +38,7 @@ const AprTooltip = () => {
       if (!userWalletSigner) {
         return;
       }
-      const poolDataAdapter = getPoolDataAdapter(userWalletSigner);
+      const poolDataAdapter = getPoolDataAdapter(chain, userWalletSigner);
 
       const { principalsShare, yieldsShare } = await poolDataAdapter.getPoolRatioOfAssets(
         ammAddress,
@@ -45,7 +50,7 @@ const AprTooltip = () => {
     };
 
     fetchPoolRation();
-  }, [ammAddress, principalsAddress, userWalletSigner, yieldsAddress]);
+  }, [ammAddress, principalsAddress, userWalletSigner, yieldsAddress, chain]);
 
   const futureAprFormatted = useMemo(() => {
     return NumberUtils.formatPercentage(fixedAPR, 2);

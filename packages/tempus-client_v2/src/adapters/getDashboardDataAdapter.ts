@@ -1,20 +1,16 @@
-import { JsonRpcSigner, JsonRpcProvider } from '@ethersproject/providers';
-import getStatisticsService from '../services/getStatisticsService';
+import { Chain } from '../interfaces/Chain';
 import DashboardDataAdapter from './DashboardDataAdapter';
 
-let dashboardDataAdapter: DashboardDataAdapter;
-const getDashboardDataAdapter = (signerOrProvider?: JsonRpcSigner | JsonRpcProvider): DashboardDataAdapter => {
-  if (!dashboardDataAdapter) {
-    dashboardDataAdapter = new DashboardDataAdapter();
-    dashboardDataAdapter.init({
-      statisticsService: getStatisticsService(),
-    });
+let dashboardDataAdapters = new Map<Chain | undefined, DashboardDataAdapter>();
+const getDashboardDataAdapter = (chain?: Chain): DashboardDataAdapter => {
+  if (!dashboardDataAdapters.get(chain)) {
+    const dashboardDataAdapter = new DashboardDataAdapter();
+    dashboardDataAdapters.set(chain, dashboardDataAdapter);
   }
 
-  if (signerOrProvider) {
-    dashboardDataAdapter.init({
-      statisticsService: getStatisticsService(signerOrProvider),
-    });
+  const dashboardDataAdapter = dashboardDataAdapters.get(chain);
+  if (!dashboardDataAdapter) {
+    throw new Error(`Failed to get DashboardDataAdapter for ${chain} chain!`);
   }
 
   return dashboardDataAdapter;

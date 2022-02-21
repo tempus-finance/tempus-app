@@ -8,6 +8,7 @@ import Spacer from '../../spacer/spacer';
 import TokenIcon from '../../tokenIcon';
 import ArrowRight from '../../icons/ArrowRightIcon';
 import ArrowDown from '../../icons/ArrowDownIcon';
+import { prettifyChainName } from '../../../interfaces/Chain';
 
 type TokenButtonInProps = {
   children: any[];
@@ -64,12 +65,18 @@ const TokenButton: FC<TokenButtonProps> = (props: TokenButtonProps) => {
         <Button className="tf__dashboard__body__token-button" onClick={expandButton.props.onToggle}>
           <div className="tf__dashboard__asset-ticker">
             <div className="tf__dashboard__parent-toggle-icon">{isExpanded ? <ArrowDown /> : <ArrowRight />}</div>
-            <div className="tf__dashboard__parent-token-ticker">
-              <Typography color="default" variant="body-text">
-                {contentComponent.props.children}
-              </Typography>
-              <Spacer size={5} />
-              <TokenIcon ticker={contentComponent.props.children} />
+            <div className="tf__dashboard__parent-asset-data">
+              <div className="tf__dashboard__parent-asset-ticker">
+                <TokenIcon ticker={contentComponent.props.children} />
+                <Spacer size={5} />
+                <Typography color="default" variant="body-text">
+                  {contentComponent.props.children}
+                </Typography>
+              </div>
+              <Spacer size={6} />
+              <div className="tf__dashboard__parent-asset-chain">
+                <Typography variant="chain-badge">{prettifyChainName(row.chain)}</Typography>
+              </div>
             </div>
           </div>
         </Button>

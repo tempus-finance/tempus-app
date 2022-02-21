@@ -14,10 +14,15 @@ type TypographyVariant =
   | 'dropdown-text'
   | 'card-title'
   | 'card-body-text'
+  | 'tooltip-card-title'
   | 'tooltip-card-text'
+  | 'tooltip-card-text-bold'
   | 'fractional'
   | 'yield-card-header'
-  | 'yield-card-type';
+  | 'yield-card-type'
+  | 'chain-badge'
+  | 'wallet-info'
+  | 'wallet-info-bold';
 
 type TypographyColor = 'default' | 'primary' | 'accent' | 'inverted' | 'link' | 'title' | 'error' | 'success';
 
@@ -106,12 +111,26 @@ typographyStyleMap.set('card-body-text', {
   fontStyle: 'normal',
   lineHeight: '20px',
 });
+typographyStyleMap.set('tooltip-card-title', {
+  fontFamily: "'Source Sans Pro', sans-serif",
+  fontWeight: 700,
+  fontSize: '16px',
+  fontStyle: 'normal',
+  lineHeight: '24px',
+});
 typographyStyleMap.set('tooltip-card-text', {
   fontFamily: "'Source Sans Pro', sans-serif",
   fontWeight: 400,
   fontSize: '16px',
   fontStyle: 'normal',
   lineHeight: '22px',
+});
+typographyStyleMap.set('tooltip-card-text-bold', {
+  fontFamily: "'Source Sans Pro', sans-serif",
+  fontWeight: 500,
+  fontSize: '16px',
+  fontStyle: 'normal',
+  lineHeight: '24px',
 });
 typographyStyleMap.set('fractional', {
   fontFamily: "'Source Sans Pro', sans-serif",
@@ -133,6 +152,27 @@ typographyStyleMap.set('yield-card-type', {
   fontSize: '16px',
   fontStyle: 'normal',
   lineHeight: '20px',
+});
+typographyStyleMap.set('chain-badge', {
+  fontFamily: "'Source Sans Pro', sans-serif",
+  fontWeight: 600,
+  fontSize: '12px',
+  fontStyle: 'normal',
+  lineHeight: '16px',
+});
+typographyStyleMap.set('wallet-info', {
+  fontFamily: "'Source Sans Pro', sans-serif",
+  fontWeight: 400,
+  fontSize: '12px',
+  fontStyle: 'normal',
+  lineHeight: '16px',
+});
+typographyStyleMap.set('wallet-info-bold', {
+  fontFamily: "'Source Sans Pro', sans-serif",
+  fontWeight: 700,
+  fontSize: '12px',
+  fontStyle: 'normal',
+  lineHeight: '16px',
 });
 
 interface TypographyProps {
@@ -185,7 +225,7 @@ const Typography: FC<TypographyProps & React.HTMLProps<'div'>> = props => {
         color: color,
         textTransform: props.capitalize ? 'capitalize' : 'none',
         textAlign: props.align ? props.align : 'unset',
-        whiteSpace: props.noWrap ? 'nowrap' : 'normal',
+        whiteSpace: props.noWrap ? 'nowrap' : 'unset',
       }}
     >
       {html ? parse(html) : children}

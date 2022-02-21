@@ -84,7 +84,7 @@ describe('StatisticsService', () => {
         Promise.resolve(ejs.BigNumber.from('0x36461af5a4ad877d37')),
       );
 
-      const result = await instance.totalValueLockedUSD('tempus-tool-address', 'DAI');
+      const result = await instance.totalValueLockedUSD('ethereum', 'tempus-tool-address', 'DAI');
 
       expect(result.toString()).toBe('1001175799999999999287');
     });
@@ -110,7 +110,7 @@ describe('StatisticsService', () => {
         return Promise.resolve([ejs.BigNumber.from('100'), ejs.BigNumber.from('2')]);
       });
 
-      const result = await instance.getRate('DAI');
+      const result = await instance.getRate('ethereum', 'DAI');
 
       expect(ejs.utils.formatEther(result)).toBe('50.0');
     });

@@ -1,4 +1,4 @@
-import { useContext, useEffect, useMemo, useState } from 'react';
+import { FC, useContext, useEffect, useMemo, useState } from 'react';
 import { BigNumber } from '@ethersproject/bignumber';
 import { ethers } from 'ethers';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
@@ -8,12 +8,17 @@ import { LanguageContext } from '../../../context/languageContext';
 import { WalletContext } from '../../../context/walletContext';
 import getText from '../../../localisation/getText';
 import NumberUtils from '../../../services/NumberUtils';
+import { Chain } from '../../../interfaces/Chain';
 import Spacer from '../../spacer/spacer';
 import Typography from '../../typography/Typography';
 
 import './feesTooltip.scss';
 
-const FeesTooltip = () => {
+interface FeesTooltipProps {
+  chain: Chain;
+}
+
+const FeesTooltip: FC<FeesTooltipProps> = ({ chain }) => {
   const selectedPool = useHookState(selectedPoolState);
   const staticPoolData = useHookState(staticPoolDataState);
 
@@ -30,12 +35,12 @@ const FeesTooltip = () => {
       if (!userWalletSigner) {
         return;
       }
-      const poolDataAdapter = getPoolDataAdapter(userWalletSigner);
+      const poolDataAdapter = getPoolDataAdapter(chain, userWalletSigner);
 
       setPoolFees(await poolDataAdapter.getPoolFees(selectedPoolAddress, ammAddress));
     };
     fetchPoolFees();
-  }, [selectedPoolAddress, ammAddress, userWalletSigner]);
+  }, [selectedPoolAddress, ammAddress, userWalletSigner, chain]);
 
   const depositFeesFormatted = useMemo(() => {
     if (!poolFees || !poolFees[0]) {

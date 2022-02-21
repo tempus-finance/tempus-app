@@ -4,17 +4,16 @@ import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { combineLatest } from 'rxjs';
 import { SLIPPAGE_PRECISION } from '../../constants';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
-import getUserShareTokenBalanceProvider from '../../providers/getUserShareTokenBalanceProvider';
-import getUserBalanceProvider from '../../providers/getBalanceProvider';
-import getUserLPTokenBalanceProvider from '../../providers/getUserLPTokenBalanceProvider';
+import { refreshBalances } from '../../providers/balanceProviderHelper';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
 import { WalletContext } from '../../context/walletContext';
 import { LanguageContext } from '../../context/languageContext';
 import { UserSettingsContext } from '../../context/userSettingsContext';
 import getText from '../../localisation/getText';
 import { Ticker } from '../../interfaces/Token';
+import { Chain } from '../../interfaces/Chain';
 import NumberUtils from '../../services/NumberUtils';
-import getConfig from '../../utils/getConfig';
+import { getChainConfig } from '../../utils/getConfig';
 import { mul18f } from '../../utils/weiMath';
 import { isZeroString } from '../../utils/isZeroString';
 import getTokenPrecision from '../../utils/getTokenPrecision';
@@ -29,11 +28,17 @@ import CurrencyInput from '../currencyInput/currencyInput';
 
 import './Withdraw.scss';
 
+type WithdrawInProps = {
+  chain: Chain;
+};
+
 type WithdrawOutProps = {
   onWithdraw: () => void;
 };
 
-const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
+type WithdrawProps = WithdrawInProps & WithdrawOutProps;
+
+const Withdraw: FC<WithdrawProps> = ({ chain, onWithdraw }) => {
   const selectedPool = useHookState(selectedPoolState);
   const dynamicPoolData = useHookState(dynamicPoolDataState);
   const staticPoolData = useHookState(staticPoolDataState);
@@ -69,12 +74,15 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
   const [principalsApproved, setPrincipalsApproved] = useState<boolean>(false);
   const [yieldsApproved, setYieldsApproved] = useState<boolean>(false);
   const [lpTokenApproved, setLpTokenApproved] = useState<boolean>(false);
-  const [selectedTokenPrecision, setSelectedTokenPrecision] = useState<number | undefined>();
 
   const selectedPoolAddress = selectedPool.attach(Downgraded).get();
   const userPrincipalsBalance = dynamicPoolData[selectedPool.get()].userPrincipalsBalance.attach(Downgraded).get();
   const userYieldsBalance = dynamicPoolData[selectedPool.get()].userYieldsBalance.attach(Downgraded).get();
   const userLPTokenBalance = dynamicPoolData[selectedPool.get()].userLPTokenBalance.attach(Downgraded).get();
+
+  const [selectedTokenPrecision, setSelectedTokenPrecision] = useState<number | undefined>(
+    getTokenPrecision(selectedPoolAddress, 'yieldBearingToken'),
+  );
 
   const onPrincipalsAmountChange = useCallback((amount: string) => {
     if (amount) {
@@ -139,7 +147,7 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
     }
     setEstimateInProgress(true);
 
-    const poolDataAdapter = getPoolDataAdapter(userWalletSigner);
+    const poolDataAdapter = getPoolDataAdapter(chain, userWalletSigner);
 
     const getBackingTokenRate$ = poolDataAdapter.getBackingTokenRate(backingToken);
     const getYieldBearingTokenRate$ = poolDataAdapter.getYieldBearingTokenRate(
@@ -170,11 +178,12 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
     yieldBearingToken,
     tokenPrecision.backingToken,
     tokenPrecision.yieldBearingToken,
+    chain,
   ]);
 
   const onExecute = useCallback((): Promise<ethers.ContractTransaction | undefined> => {
     if (userWalletSigner && estimatedWithdrawData) {
-      const poolDataAdapter = getPoolDataAdapter(userWalletSigner);
+      const poolDataAdapter = getPoolDataAdapter(chain, userWalletSigner);
 
       const principalsPrecision = getTokenPrecision(selectedPoolAddress, 'principals');
       const yieldsPrecision = getTokenPrecision(selectedPoolAddress, 'yields');
@@ -201,15 +210,19 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
         ),
       );
 
+      const totalPrincipals = principalsAmountParsed.add(estimatedWithdrawData.principalsStaked);
+      const totalYields = yieldsAmountParsed.add(estimatedWithdrawData.yieldsStaked);
+
       const isBackingToken = backingToken === selectedToken;
       return poolDataAdapter.executeWithdraw(
-        selectedPoolAddress,
         ammAddress,
         principalsAmountParsed,
         yieldsAmountParsed,
         lpTokenAmountParsed,
         minPrincipalsStaked,
         minYieldsStaked,
+        totalPrincipals,
+        totalYields,
         ethers.utils.parseUnits(actualSlippage, SLIPPAGE_PRECISION),
         isBackingToken,
         tokenPrecision.principals,
@@ -230,6 +243,7 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
     backingToken,
     selectedToken,
     ammAddress,
+    chain,
     tokenPrecision.principals,
     tokenPrecision.lpTokens,
   ]);
@@ -239,7 +253,7 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
     if (userWalletSigner) {
       setEstimateInProgress(true);
 
-      const poolDataAdapter = getPoolDataAdapter(userWalletSigner);
+      const poolDataAdapter = getPoolDataAdapter(chain, userWalletSigner);
       try {
         const principalsAmountParsed = ethers.utils.parseUnits(
           principalsAmount || '0',
@@ -282,33 +296,29 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
     principalsAmount,
     yieldsAmount,
     lpTokenAmount,
+    chain,
   ]);
 
-  const onExecuted = useCallback(() => {
-    onWithdraw();
+  const onExecuted = useCallback(
+    (successful: boolean, txBlockNumber?: number) => {
+      onWithdraw();
 
-    if (!userWalletSigner) {
-      return;
-    }
+      if (!userWalletSigner) {
+        return;
+      }
 
-    // Trigger user pool share balance update when execute is finished
-    getUserShareTokenBalanceProvider({
-      userWalletAddress,
-      userWalletSigner,
-    }).fetchForPool(selectedPoolAddress);
-
-    // Trigger user balance update when execute is finished
-    getUserBalanceProvider({
-      userWalletAddress,
-      userWalletSigner,
-    }).fetchForPool(selectedPoolAddress);
-
-    // Trigger user LP Token balance update when execute is finished
-    getUserLPTokenBalanceProvider({
-      userWalletAddress,
-      userWalletSigner,
-    }).fetchForPool(selectedPoolAddress);
-  }, [onWithdraw, selectedPoolAddress, userWalletAddress, userWalletSigner]);
+      refreshBalances(
+        {
+          chain,
+          userWalletAddress,
+          userWalletSigner,
+        },
+        selectedPoolAddress,
+        txBlockNumber,
+      );
+    },
+    [onWithdraw, selectedPoolAddress, userWalletAddress, userWalletSigner, chain],
+  );
 
   useEffect(() => {
     if (!tokenRate || !estimatedWithdrawData) {
@@ -419,7 +429,9 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
         {userPrincipalsBalance && !userPrincipalsBalance.isZero() && (
           <SectionContainer elevation={2}>
             <div className="tc__title-and-balance">
-              <Typography variant="h4">{getText('principals', language)}</Typography>
+              <Typography variant="h4">
+                {backingToken} {getText('principalTokens', language)}
+              </Typography>
               {principalsBalanceFormatted && (
                 <div>
                   <Typography variant="card-body-text">{getText('balance', language)}</Typography>
@@ -433,6 +445,7 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
               <div className="tf__flex-row-center-v">
                 <CurrencyInput
                   defaultValue={principalsAmount}
+                  precision={tokenPrecision.principals}
                   onChange={onPrincipalsAmountChange}
                   onMaxClick={onPrincipalsMaxClick}
                 />
@@ -445,8 +458,9 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
                   onApproveChange={approved => {
                     setPrincipalsApproved(approved);
                   }}
-                  spenderAddress={getConfig().tempusControllerContract}
+                  spenderAddress={getChainConfig(chain).tempusControllerContract}
                   tokenToApproveAddress={principalsAddress}
+                  chain={chain}
                 />
               </div>
             </div>
@@ -454,10 +468,12 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
         )}
         {userYieldsBalance && !userYieldsBalance.isZero() && (
           <>
-            <PlusIconContainer orientation="horizontal" />
+            {userPrincipalsBalance && !userPrincipalsBalance.isZero() && <PlusIconContainer orientation="horizontal" />}
             <SectionContainer elevation={2}>
               <div className="tc__title-and-balance">
-                <Typography variant="h4">{getText('yields', language)}</Typography>
+                <Typography variant="h4">
+                  {backingToken} {getText('yieldTokens', language)}
+                </Typography>
                 {yieldsBalanceFormatted && (
                   <div>
                     <Typography variant="card-body-text">{getText('balance', language)}</Typography>
@@ -472,6 +488,7 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
                 <div className="tf__flex-row-center-v">
                   <CurrencyInput
                     defaultValue={yieldsAmount}
+                    precision={tokenPrecision.yields}
                     onChange={onYieldsAmountChange}
                     onMaxClick={onYieldsMaxClick}
                   />
@@ -486,8 +503,9 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
                     onApproveChange={approved => {
                       setYieldsApproved(approved);
                     }}
-                    spenderAddress={getConfig().tempusControllerContract}
+                    spenderAddress={getChainConfig(chain).tempusControllerContract}
                     tokenToApproveAddress={yieldsAddress}
+                    chain={chain}
                   />
                 </div>
               </div>
@@ -496,10 +514,13 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
         )}
         {userLPTokenBalance && !userLPTokenBalance.isZero() && (
           <>
-            <PlusIconContainer orientation="horizontal" />
+            {((userPrincipalsBalance && !userPrincipalsBalance.isZero()) ||
+              (userYieldsBalance && !userYieldsBalance.isZero())) && <PlusIconContainer orientation="horizontal" />}
             <SectionContainer elevation={2}>
               <div className="tc__title-and-balance">
-                <Typography variant="h4">{getText('lpTokens', language)}</Typography>
+                <Typography variant="h4">
+                  {backingToken} {getText('lpTokens', language)}
+                </Typography>
                 {lpTokenBalanceFormatted && (
                   <div>
                     <Typography variant="card-body-text">{getText('balance', language)}</Typography>
@@ -513,6 +534,7 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
                 <div className="tf__flex-row-center-v">
                   <CurrencyInput
                     defaultValue={lpTokenAmount}
+                    precision={tokenPrecision.lpTokens}
                     onChange={onLpTokenAmountChange}
                     onMaxClick={onLpTokensMaxClick}
                   />
@@ -526,8 +548,9 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
                     onApproveChange={approved => {
                       setLpTokenApproved(approved);
                     }}
-                    spenderAddress={getConfig().tempusControllerContract}
+                    spenderAddress={getChainConfig(chain).tempusControllerContract}
                     tokenToApproveAddress={ammAddress}
+                    chain={chain}
                   />
                 </div>
               </div>
@@ -552,7 +575,13 @@ const Withdraw: FC<WithdrawOutProps> = ({ onWithdraw }) => {
         </SectionContainer>
         <Spacer size={20} />
         <div className="tf__flex-row-center-vh">
-          <Execute actionName="Withdraw" disabled={executeDisabled} onExecute={onExecute} onExecuted={onExecuted} />
+          <Execute
+            actionName="Withdraw"
+            disabled={executeDisabled}
+            chain={chain}
+            onExecute={onExecute}
+            onExecuted={onExecuted}
+          />
         </div>
       </SectionContainer>
     </div>

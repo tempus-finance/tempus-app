@@ -1,8 +1,8 @@
-import { BigNumber, Contract, utils, providers } from 'ethers';
+import { BigNumber, Contract, utils, providers, ethers } from 'ethers';
 import { JsonRpcProvider } from '@ethersproject/providers';
-import { Config } from '../interfaces/Config';
+import { ChainConfig } from '../interfaces/Config';
 import * as getConfig from '../utils/getConfig';
-import * as getProvider from '../utils/getProvider';
+import * as getProvider from '../utils/getProviderFromSignerOrProvider';
 import * as weiMath from '../utils/weiMath';
 import AaveLendingPoolABI from '../abi/AaveLendingPool.json';
 import lidoOracleABI from '../abi/LidoOracle.json';
@@ -12,7 +12,6 @@ import VaultService, { PoolBalanceChangedEvent, SwapEvent } from './VaultService
 import TempusAMMService from './TempusAMMService';
 import {
   aaveLendingPoolAddress,
-  BLOCK_DURATION_SECONDS,
   COMPOUND_BLOCKS_PER_DAY,
   DAYS_IN_A_YEAR,
   ONE_ETH_IN_WEI,
@@ -71,7 +70,7 @@ describe('VariableRateService', () => {
   let mockVaultService: jest.Mock<VaultService, []>;
   let mockTempusAMMService: jest.Mock<TempusAMMService, []>;
   let mockVaults: jest.Mock<Vaults, []>;
-  let mockConfig: jest.Mock<Config, []>;
+  let mockConfig: jest.Mock<ChainConfig, []>;
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -88,7 +87,7 @@ describe('VariableRateService', () => {
         },
       },
     });
-    mockConfig = jest.fn().mockReturnValue({ lidoOracle: '0x0000000000000000000000000000000000000000' });
+    mockConfig = jest.fn().mockReturnValue({ chainId: 250, lidoOracle: '0x0000000000000000000000000000000000000000' });
 
     variableRateService = new VariableRateService();
     variableRateService.init(
@@ -101,6 +100,8 @@ describe('VariableRateService', () => {
     );
   });
   afterEach(jest.restoreAllMocks);
+
+  const averageBlockTime = 13.15;
 
   describe('getAprFromApy()', () => {
     test('test with no periods given, should return APY', () => {
@@ -150,8 +151,8 @@ describe('VariableRateService', () => {
     });
 
     test('should create Contractor instance twice', () => {
-      expect(Contract).toHaveBeenNthCalledWith(1, aaveLendingPoolAddress, AaveLendingPoolABI, mockProvider);
-      expect(Contract).toHaveBeenNthCalledWith(2, mockConfig().lidoOracle, lidoOracleABI.abi, mockProvider);
+      expect(Contract).toHaveBeenNthCalledWith(1, mockConfig().lidoOracle, lidoOracleABI.abi, mockProvider);
+      expect(Contract).toHaveBeenNthCalledWith(2, aaveLendingPoolAddress, AaveLendingPoolABI, mockProvider);
     });
   });
 
@@ -159,67 +160,83 @@ describe('VariableRateService', () => {
     test('test with no init() invoked, should reject with an error', async () => {
       const protocol = 'aave';
       const yieldBearingTokenAddress = '0x0000000000000000000000000000000000000001';
+      const feesPrecision = 18;
       const fees = BigNumber.from(1);
       variableRateService = new VariableRateService();
 
-      await expect(variableRateService.getAprRate(protocol, yieldBearingTokenAddress, fees)).rejects.toEqual(undefined);
+      await expect(
+        variableRateService.getAprRate(protocol, yieldBearingTokenAddress, fees, feesPrecision),
+      ).rejects.toEqual(undefined);
     });
 
     test('test with aave, should return with an APR', async () => {
       const protocol = 'aave';
       const yieldBearingTokenAddress = '0x0000000000000000000000000000000000000001';
+      const feesPrecision = 18;
       const fees = BigNumber.from(1);
       const feesFormatted = Number(utils.formatEther(fees));
       const mockAPR = Math.random() * 5;
       jest.spyOn(variableRateService as any, 'getAaveAPR').mockResolvedValue(mockAPR);
 
-      await expect(variableRateService.getAprRate(protocol, yieldBearingTokenAddress, fees)).resolves.toEqual(mockAPR);
+      await expect(
+        variableRateService.getAprRate(protocol, yieldBearingTokenAddress, fees, feesPrecision),
+      ).resolves.toEqual(mockAPR);
       expect(variableRateService['getAaveAPR']).toHaveBeenCalledWith(yieldBearingTokenAddress, feesFormatted);
     });
 
     test('test with compound, should return with an APR', async () => {
       const protocol = 'compound';
       const yieldBearingTokenAddress = '0x0000000000000000000000000000000000000001';
+      const feesPrecision = 18;
       const fees = BigNumber.from(1);
       const feesFormatted = Number(utils.formatEther(fees));
       const mockAPR = Math.random() * 5;
       jest.spyOn(variableRateService as any, 'getCompoundAPR').mockResolvedValue(mockAPR);
 
-      await expect(variableRateService.getAprRate(protocol, yieldBearingTokenAddress, fees)).resolves.toEqual(mockAPR);
+      await expect(
+        variableRateService.getAprRate(protocol, yieldBearingTokenAddress, fees, feesPrecision),
+      ).resolves.toEqual(mockAPR);
       expect(variableRateService['getCompoundAPR']).toHaveBeenCalledWith(yieldBearingTokenAddress, feesFormatted);
     });
 
     test('test with lido, should return with an APR', async () => {
       const protocol = 'lido';
       const yieldBearingTokenAddress = '0x0000000000000000000000000000000000000001';
+      const feesPrecision = 18;
       const fees = BigNumber.from(1);
       const feesFormatted = Number(utils.formatEther(fees));
       const mockAPR = Math.random() * 5;
       jest.spyOn(variableRateService as any, 'getLidoAPR').mockResolvedValue(mockAPR);
 
-      await expect(variableRateService.getAprRate(protocol, yieldBearingTokenAddress, fees)).resolves.toEqual(mockAPR);
+      await expect(
+        variableRateService.getAprRate(protocol, yieldBearingTokenAddress, fees, feesPrecision),
+      ).resolves.toEqual(mockAPR);
       expect(variableRateService['getLidoAPR']).toHaveBeenCalledWith(feesFormatted);
     });
 
     test('test with rari, should return with an APR', async () => {
       const protocol = 'rari';
       const yieldBearingTokenAddress = '0x0000000000000000000000000000000000000001';
+      const feesPrecision = 18;
       const fees = BigNumber.from(1);
       const feesFormatted = Number(utils.formatEther(fees));
       const mockAPR = Math.random() * 5;
       jest.spyOn(variableRateService as any, 'getRariAPR').mockResolvedValue(mockAPR);
 
-      await expect(variableRateService.getAprRate(protocol, yieldBearingTokenAddress, fees)).resolves.toEqual(mockAPR);
+      await expect(
+        variableRateService.getAprRate(protocol, yieldBearingTokenAddress, fees, feesPrecision),
+      ).resolves.toEqual(mockAPR);
       expect(variableRateService['getRariAPR']).toHaveBeenCalledWith(feesFormatted);
     });
 
     test('test with protocol other than aave/compound/lido, should return with 0', async () => {
       const protocol = 'abcd';
       const yieldBearingTokenAddress = '0x0000000000000000000000000000000000000001';
+      const feesPrecision = 18;
       const fees = BigNumber.from(1);
 
       await expect(
-        variableRateService.getAprRate(protocol as ProtocolName, yieldBearingTokenAddress, fees),
+        variableRateService.getAprRate(protocol as ProtocolName, yieldBearingTokenAddress, fees, feesPrecision),
       ).resolves.toEqual(0);
     });
   });
@@ -417,7 +434,14 @@ describe('VariableRateService', () => {
       variableRateService = new VariableRateService();
 
       await expect(
-        (variableRateService as any).calculateFees(tempusAMM, tempusPool, principalsAddress, yieldsAddress),
+        (variableRateService as any).calculateFees(
+          tempusAMM,
+          tempusPool,
+          principalsAddress,
+          yieldsAddress,
+          'ethereum',
+          averageBlockTime,
+        ),
       ).rejects.toEqual(undefined);
     });
 
@@ -426,24 +450,35 @@ describe('VariableRateService', () => {
       const tempusAMM = '0x0000000000000000000000000000000000000001';
       const principalsAddress = '0x0000000000000000000000000000000000000002';
       const yieldsAddress = '0x0000000000000000000000000000000000000003';
-      jest.spyOn(getConfig, 'default').mockReturnValue({ tempusPools: [] } as unknown as Config);
+      jest.spyOn(getConfig, 'getChainConfig').mockReturnValue({ tempusPools: [] } as unknown as ChainConfig);
 
       await expect(
-        (variableRateService as any).calculateFees(tempusAMM, tempusPool, principalsAddress, yieldsAddress),
+        (variableRateService as any).calculateFees(
+          tempusAMM,
+          tempusPool,
+          principalsAddress,
+          yieldsAddress,
+          'ethereum',
+          averageBlockTime,
+        ),
       ).rejects.toEqual(undefined);
     });
 
     test('test with swap event with tokenIn == principalsAddress, should return calculated fees', async () => {
+      const HOURS_IN_A_YEAR = DAYS_IN_A_YEAR * 24;
+
       const tempusPool = '0x0000000000000000000000000000000000000000';
       const tempusAMM = '0x0000000000000000000000000000000000000001';
       const principalsAddress = '0x0000000000000000000000000000000000000002';
       const yieldsAddress = '0x0000000000000000000000000000000000000003';
+      const principalsPrecision = 18;
       const mockSwapFeePercentage = BigNumber.from(Math.round(Math.random() * 5));
       const mockLatestBlock = { timestamp: Date.now() / 1000, number: 1000 } as providers.Block;
-      const mockEarlierBlock = { timestamp: Date.now() / 1000 - 60 * 60, number: 999 } as providers.Block;
+      const mockEarlierBlock = { timestamp: Date.now() / 1000 - 60 * 60, number: 997 } as providers.Block;
+      const totalFees = ethers.utils.parseEther('2');
       const mockEvents = [
         {
-          blockNumber: 2,
+          blockNumber: 999,
           args: {
             liquidityProvider: '0x0000000000000000000000000000000000000003',
             tokens: [principalsAddress],
@@ -451,7 +486,7 @@ describe('VariableRateService', () => {
           },
         },
         {
-          blockNumber: 1,
+          blockNumber: 998,
           args: { tokenIn: principalsAddress, tokenOut: yieldsAddress, amountIn: BigNumber.from(100) },
         },
       ] as (SwapEvent | PoolBalanceChangedEvent)[];
@@ -467,13 +502,13 @@ describe('VariableRateService', () => {
           }),
       }));
       const mockProvider = new JsonRpcProvider();
-      jest.spyOn(getConfig, 'default').mockReturnValue({ tempusPools: DUMMY_TEMPUS_POOL } as Config);
+      jest.spyOn(getConfig, 'getChainConfig').mockReturnValue({ tempusPools: DUMMY_TEMPUS_POOL } as ChainConfig);
       jest.spyOn(getProvider, 'default').mockReturnValue(mockProvider);
       jest.spyOn(variableRateService as any, 'getSwapAndPoolBalanceChangedEvents').mockResolvedValue(mockEvents);
       jest.spyOn(variableRateService as any, 'getPoolTokens').mockResolvedValue(mockPoolTokens);
       jest.spyOn(variableRateService as any, 'adjustPrincipalForSwapEvent').mockReturnValue({
         principals: mockPoolTokens.principals.add(10),
-        totalFees: BigNumber.from(2),
+        totalFees: totalFees,
       });
       jest
         .spyOn(variableRateService as any, 'adjustPrincipalForPoolBalanceChangedEvent')
@@ -485,24 +520,37 @@ describe('VariableRateService', () => {
         getSwapFeePercentage: jest.fn().mockResolvedValue(mockSwapFeePercentage),
       });
 
-      await expect(
-        (variableRateService as any).calculateFees(tempusAMM, tempusPool, principalsAddress, yieldsAddress),
-      ).resolves.toEqual(
-        BigNumber.from(
-          weiMath.mul18f(BigNumber.from(2), weiMath.div18f(mockPoolTokens.principals, mockPoolTokens.yields)),
-        ),
+      const hoursForScale = ((mockLatestBlock.timestamp - mockEarlierBlock.timestamp) / (60 * 60)).toFixed(
+        principalsPrecision,
       );
-      expect(getConfig.default).toHaveBeenCalled();
+
+      const scaledFees = weiMath.mul18f(
+        weiMath.div18f(totalFees, ethers.utils.parseUnits(hoursForScale, principalsPrecision)),
+        ethers.utils.parseUnits(HOURS_IN_A_YEAR.toString(), principalsPrecision),
+        principalsPrecision,
+      );
+
+      await expect(
+        variableRateService.calculateFees(
+          tempusAMM,
+          tempusPool,
+          principalsAddress,
+          yieldsAddress,
+          'ethereum',
+          averageBlockTime,
+        ),
+      ).resolves.toEqual(weiMath.mul18f(scaledFees, weiMath.div18f(mockPoolTokens.principals, mockPoolTokens.yields)));
+      expect(getConfig.getChainConfig).toHaveBeenCalled();
       expect(getProvider.default).toHaveBeenCalled();
       expect(mockProvider.getBlock).toHaveBeenCalledTimes(2);
       expect(mockProvider.getBlock).toHaveBeenNthCalledWith(1, 'latest');
       expect(mockProvider.getBlock).toHaveBeenNthCalledWith(
         2,
-        mockLatestBlock.number - Math.floor((SECONDS_IN_A_DAY * 7) / BLOCK_DURATION_SECONDS),
+        mockLatestBlock.number - Math.floor((SECONDS_IN_A_DAY * 7) / averageBlockTime),
       );
       expect((variableRateService as any).getSwapAndPoolBalanceChangedEvents).toHaveBeenCalledWith(
         DUMMY_TEMPUS_POOL[0],
-        mockLatestBlock.number - mockEarlierBlock.number,
+        mockEarlierBlock.number,
       );
       expect((variableRateService as any).getPoolTokens).toHaveBeenCalledWith(
         DUMMY_TEMPUS_POOL[0].poolId,
@@ -515,6 +563,7 @@ describe('VariableRateService', () => {
         mockPoolTokens.principals.sub((mockEvents[0].args as any).deltas[0]),
         BigNumber.from(0),
         mockSwapFeePercentage,
+        principalsPrecision,
       );
       expect((variableRateService as any).adjustPrincipalForPoolBalanceChangedEvent).toHaveBeenCalledWith(
         mockEvents[0],
@@ -528,12 +577,13 @@ describe('VariableRateService', () => {
       const tempusAMM = '0x0000000000000000000000000000000000000001';
       const principalsAddress = '0x0000000000000000000000000000000000000002';
       const yieldsAddress = '0x0000000000000000000000000000000000000003';
+      const principalsPrecision = 18;
       const mockSwapFeePercentage = BigNumber.from(Math.round(Math.random() * 5));
       const mockLatestBlock = { timestamp: Date.now() / 1000, number: 1000 } as providers.Block;
-      const mockEarlierBlock = { timestamp: Date.now() / 1000 - 60 * 60, number: 999 } as providers.Block;
+      const mockEarlierBlock = { timestamp: Date.now() / 1000 - 60 * 60, number: 997 } as providers.Block;
       const mockEvents = [
         {
-          blockNumber: 2,
+          blockNumber: 998,
           args: {
             liquidityProvider: '0x0000000000000000000000000000000000000003',
             tokens: [principalsAddress],
@@ -541,7 +591,7 @@ describe('VariableRateService', () => {
           },
         },
         {
-          blockNumber: 1,
+          blockNumber: 997,
           args: { tokenIn: principalsAddress, tokenOut: yieldsAddress, amountIn: BigNumber.from(100) },
         },
       ] as (SwapEvent | PoolBalanceChangedEvent)[];
@@ -557,7 +607,7 @@ describe('VariableRateService', () => {
           }),
       }));
       const mockProvider = new JsonRpcProvider();
-      jest.spyOn(getConfig, 'default').mockReturnValue({ tempusPools: DUMMY_TEMPUS_POOL } as Config);
+      jest.spyOn(getConfig, 'getChainConfig').mockReturnValue({ tempusPools: DUMMY_TEMPUS_POOL } as ChainConfig);
       jest.spyOn(getProvider, 'default').mockReturnValue(mockProvider);
       jest.spyOn(variableRateService as any, 'getSwapAndPoolBalanceChangedEvents').mockResolvedValue(mockEvents);
       jest.spyOn(variableRateService as any, 'getPoolTokens').mockResolvedValue(mockPoolTokens);
@@ -576,19 +626,26 @@ describe('VariableRateService', () => {
       });
 
       await expect(
-        (variableRateService as any).calculateFees(tempusAMM, tempusPool, principalsAddress, yieldsAddress),
+        (variableRateService as any).calculateFees(
+          tempusAMM,
+          tempusPool,
+          principalsAddress,
+          yieldsAddress,
+          'ethereum',
+          averageBlockTime,
+        ),
       ).resolves.toEqual(BigNumber.from(0));
-      expect(getConfig.default).toHaveBeenCalled();
+      expect(getConfig.getChainConfig).toHaveBeenCalled();
       expect(getProvider.default).toHaveBeenCalled();
       expect(mockProvider.getBlock).toHaveBeenCalledTimes(2);
       expect(mockProvider.getBlock).toHaveBeenNthCalledWith(1, 'latest');
       expect(mockProvider.getBlock).toHaveBeenNthCalledWith(
         2,
-        mockLatestBlock.number - Math.floor((SECONDS_IN_A_DAY * 7) / BLOCK_DURATION_SECONDS),
+        mockLatestBlock.number - Math.floor((SECONDS_IN_A_DAY * 7) / averageBlockTime),
       );
       expect((variableRateService as any).getSwapAndPoolBalanceChangedEvents).toHaveBeenCalledWith(
         DUMMY_TEMPUS_POOL[0],
-        mockLatestBlock.number - mockEarlierBlock.number,
+        mockEarlierBlock.number,
       );
       expect((variableRateService as any).getPoolTokens).toHaveBeenCalledWith(
         DUMMY_TEMPUS_POOL[0].poolId,
@@ -601,6 +658,7 @@ describe('VariableRateService', () => {
         mockPoolTokens.principals.sub((mockEvents[0].args as any).deltas[0]),
         BigNumber.from(0),
         mockSwapFeePercentage,
+        principalsPrecision,
       );
       expect((variableRateService as any).adjustPrincipalForPoolBalanceChangedEvent).toHaveBeenCalledWith(
         mockEvents[0],
@@ -616,10 +674,10 @@ describe('VariableRateService', () => {
       const yieldsAddress = '0x0000000000000000000000000000000000000003';
       const mockSwapFeePercentage = BigNumber.from(Math.round(Math.random() * 5));
       const mockLatestBlock = { timestamp: Date.now() / 1000, number: 1000 } as providers.Block;
-      const mockEarlierBlock = { timestamp: Date.now() / 1000 - 60 * 60, number: 999 } as providers.Block;
+      const mockEarlierBlock = { timestamp: Date.now() / 1000 - 60 * 60, number: 997 } as providers.Block;
       const mockEvents = [
         {
-          blockNumber: 2,
+          blockNumber: 999,
           args: {
             liquidityProvider: '0x0000000000000000000000000000000000000003',
             tokens: [principalsAddress],
@@ -627,7 +685,7 @@ describe('VariableRateService', () => {
           },
         },
         {
-          blockNumber: 1,
+          blockNumber: 998,
           args: {
             liquidityProvider: '0x0000000000000000000000000000000000000003',
             tokens: [principalsAddress],
@@ -647,7 +705,7 @@ describe('VariableRateService', () => {
           }),
       }));
       const mockProvider = new JsonRpcProvider();
-      jest.spyOn(getConfig, 'default').mockReturnValue({ tempusPools: DUMMY_TEMPUS_POOL } as Config);
+      jest.spyOn(getConfig, 'getChainConfig').mockReturnValue({ tempusPools: DUMMY_TEMPUS_POOL } as ChainConfig);
       jest.spyOn(getProvider, 'default').mockReturnValue(mockProvider);
       jest.spyOn(variableRateService as any, 'getSwapAndPoolBalanceChangedEvents').mockResolvedValue(mockEvents);
       jest.spyOn(variableRateService as any, 'getPoolTokens').mockResolvedValue(mockPoolTokens);
@@ -662,19 +720,26 @@ describe('VariableRateService', () => {
       });
 
       await expect(
-        (variableRateService as any).calculateFees(tempusAMM, tempusPool, principalsAddress, yieldsAddress),
+        (variableRateService as any).calculateFees(
+          tempusAMM,
+          tempusPool,
+          principalsAddress,
+          yieldsAddress,
+          'ethereum',
+          averageBlockTime,
+        ),
       ).resolves.toEqual(BigNumber.from(0));
-      expect(getConfig.default).toHaveBeenCalled();
+      expect(getConfig.getChainConfig).toHaveBeenCalled();
       expect(getProvider.default).toHaveBeenCalled();
       expect(mockProvider.getBlock).toHaveBeenCalledTimes(2);
       expect(mockProvider.getBlock).toHaveBeenNthCalledWith(1, 'latest');
       expect(mockProvider.getBlock).toHaveBeenNthCalledWith(
         2,
-        mockLatestBlock.number - Math.floor((SECONDS_IN_A_DAY * 7) / BLOCK_DURATION_SECONDS),
+        mockLatestBlock.number - Math.floor((SECONDS_IN_A_DAY * 7) / averageBlockTime),
       );
       expect((variableRateService as any).getSwapAndPoolBalanceChangedEvents).toHaveBeenCalledWith(
         DUMMY_TEMPUS_POOL[0],
-        mockLatestBlock.number - mockEarlierBlock.number,
+        mockEarlierBlock.number,
       );
       expect((variableRateService as any).getPoolTokens).toHaveBeenCalledWith(
         DUMMY_TEMPUS_POOL[0].poolId,
@@ -1003,16 +1068,19 @@ describe('VariableRateService', () => {
   });
 
   describe('getYearnAPR()', () => {
-    test('test with no init() invoked (i.e. this.lidoOracle is undefined), should log an error and return 0', async () => {
+    test('test with no init() invoked (i.e. this.chainId is undefined), should throw an error', async () => {
       const fees = Math.random() * 0.05;
       const yieldBearingTokenAddress = '0x0000000000000000000000000000000000000001';
 
       variableRateService = new VariableRateService();
 
-      await expect((variableRateService as any).getYearnAPR(yieldBearingTokenAddress, fees)).resolves.toEqual(0);
-      expect(console.error).toHaveBeenCalled();
-      expect((console.error as jest.Mock<void, any>).mock.calls[0][0]).toEqual('VariableRateService - getYearnData');
-      expect((console.error as jest.Mock<void, any>).mock.calls[0][1]).toBeInstanceOf(Error);
+      try {
+        await variableRateService['getYearnAPR'](yieldBearingTokenAddress, fees);
+      } catch (error) {
+        expect((error as any).message).toBe(
+          'VariableRateService - fetchYearnData() - Attempted to use VariableRateService before initializing it!',
+        );
+      }
     });
 
     test('should call fetchYearnData(), getYearnAPY() and getAprFromApy() and return APR + fee', async () => {

@@ -2,6 +2,7 @@ import { ethers, BigNumber } from 'ethers';
 import { FC, useContext, useEffect, useMemo, useState } from 'react';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
+import { Chain } from '../../interfaces/Chain';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
 import { WalletContext } from '../../context/walletContext';
 import getText from '../../localisation/getText';
@@ -13,9 +14,13 @@ import Spacer from '../spacer/spacer';
 
 import './CurrentPosition.scss';
 
-type CurrentPositionInProps = SharedProps;
+type CurrentPositionInProps = {
+  chain: Chain;
+};
 
-const CurrentPosition: FC<CurrentPositionInProps> = ({ language }) => {
+type CurrentPositionProps = SharedProps & CurrentPositionInProps;
+
+const CurrentPosition: FC<CurrentPositionProps> = ({ chain, language }) => {
   const selectedPool = useHookState(selectedPoolState);
   const dynamicPoolData = useHookState(dynamicPoolDataState);
   const staticPoolData = useHookState(staticPoolDataState);
@@ -28,6 +33,7 @@ const CurrentPosition: FC<CurrentPositionInProps> = ({ language }) => {
   const userPrincipalsBalance = dynamicPoolData[selectedPool.get()].userPrincipalsBalance.attach(Downgraded).get();
   const userYieldsBalance = dynamicPoolData[selectedPool.get()].userYieldsBalance.attach(Downgraded).get();
   const userLPBalance = dynamicPoolData[selectedPool.get()].userLPTokenBalance.attach(Downgraded).get();
+  const backingToken = staticPoolData[selectedPool.get()].backingToken.attach(Downgraded).get();
   const ammAddress = staticPoolData[selectedPool.get()].ammAddress.attach(Downgraded).get();
   const decimalsForUI = staticPoolData[selectedPool.get()].decimalsForUI.attach(Downgraded).get();
   const tokenPrecision = staticPoolData[selectedPool.get()].tokenPrecision.attach(Downgraded).get();
@@ -38,7 +44,7 @@ const CurrentPosition: FC<CurrentPositionInProps> = ({ language }) => {
         return;
       }
 
-      const poolDataAdapter = getPoolDataAdapter(userWalletSigner);
+      const poolDataAdapter = getPoolDataAdapter(chain, userWalletSigner);
       if (userLPBalance) {
         try {
           const expectedLPTokenReturn = await poolDataAdapter.getExpectedReturnForLPTokens(ammAddress, userLPBalance);
@@ -54,7 +60,7 @@ const CurrentPosition: FC<CurrentPositionInProps> = ({ language }) => {
       }
     };
     retrieveExpectedReturn();
-  }, [userWalletSigner, ammAddress, userLPBalance]);
+  }, [userWalletSigner, ammAddress, userLPBalance, chain]);
 
   const principalsBalanceFormatted = useMemo(() => {
     if (!userPrincipalsBalance || !lpTokenPrincipalReturnBalance) {
@@ -118,11 +124,11 @@ const CurrentPosition: FC<CurrentPositionInProps> = ({ language }) => {
 
   const unstakedPrincipalsPercentage = useMemo(() => {
     if (!userPrincipalsBalance || !lpTokenPrincipalReturnBalance) {
-      return 0;
+      return NumberUtils.formatPercentage('0', 0);
     }
 
     if (userPrincipalsBalance.add(lpTokenPrincipalReturnBalance).isZero()) {
-      return 0;
+      return NumberUtils.formatPercentage('0', 0);
     }
 
     return NumberUtils.formatPercentage(
@@ -139,11 +145,11 @@ const CurrentPosition: FC<CurrentPositionInProps> = ({ language }) => {
 
   const stakedPrincipalsPercentage = useMemo(() => {
     if (!userPrincipalsBalance || !lpTokenPrincipalReturnBalance) {
-      return 0;
+      return NumberUtils.formatPercentage('0', 0);
     }
 
     if (lpTokenPrincipalReturnBalance.add(userPrincipalsBalance).isZero()) {
-      return 0;
+      return NumberUtils.formatPercentage('0', 0);
     }
 
     return NumberUtils.formatPercentage(
@@ -160,11 +166,11 @@ const CurrentPosition: FC<CurrentPositionInProps> = ({ language }) => {
 
   const unstakedYieldsPercentage = useMemo(() => {
     if (!userYieldsBalance || !lpTokenYieldReturnBalance) {
-      return 0;
+      return NumberUtils.formatPercentage('0', 0);
     }
 
     if (userYieldsBalance.add(lpTokenYieldReturnBalance).isZero()) {
-      return 0;
+      return NumberUtils.formatPercentage('0', 0);
     }
 
     return NumberUtils.formatPercentage(
@@ -177,11 +183,11 @@ const CurrentPosition: FC<CurrentPositionInProps> = ({ language }) => {
 
   const stakedYieldsPercentage = useMemo(() => {
     if (!userYieldsBalance || !lpTokenYieldReturnBalance) {
-      return 0;
+      return NumberUtils.formatPercentage('0', 0);
     }
 
     if (lpTokenYieldReturnBalance.add(userYieldsBalance).isZero()) {
-      return 0;
+      return NumberUtils.formatPercentage('0', 0);
     }
 
     return NumberUtils.formatPercentage(
@@ -197,7 +203,9 @@ const CurrentPosition: FC<CurrentPositionInProps> = ({ language }) => {
       <Typography variant="card-title">{getText('currentPosition', language)}</Typography>
       <Spacer size={12} />
       <div className="tc__currentPosition-header-row">
-        <Typography variant="card-body-text">{getText('principals', language)}</Typography>
+        <Typography variant="card-body-text">
+          {backingToken} {getText('principals', language)}
+        </Typography>
         <Typography variant="card-body-text">{principalsBalanceFormatted}</Typography>
       </div>
 
@@ -238,7 +246,9 @@ const CurrentPosition: FC<CurrentPositionInProps> = ({ language }) => {
       <Spacer size={20} />
 
       <div className="tc__currentPosition-header-row">
-        <Typography variant="card-body-text">{getText('yields', language)}</Typography>
+        <Typography variant="card-body-text">
+          {backingToken} {getText('yields', language)}
+        </Typography>
         <Typography variant="card-body-text">{yieldsBalanceFormatted}</Typography>
       </div>
 

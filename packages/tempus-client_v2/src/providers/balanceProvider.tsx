@@ -4,32 +4,36 @@ import { ERC20 } from '../abi/ERC20';
 import ERC20ABI from '../abi/ERC20.json';
 import { TempusPool } from '../interfaces/TempusPool';
 import { dynamicPoolDataState } from '../state/PoolDataState';
+import { Chain } from '../interfaces/Chain';
 import getStatisticsService from '../services/getStatisticsService';
 import getERC20TokenService from '../services/getERC20TokenService';
-import getConfig, { getConfigForPoolWithAddress } from '../utils/getConfig';
+import { getConfigForPoolWithAddress, getChainConfig } from '../utils/getConfig';
 import { mul18f } from '../utils/weiMath';
 
 export interface UserBalanceProviderParams {
   userWalletAddress: string;
   userWalletSigner: JsonRpcSigner;
+  chain: Chain;
 }
 
 class UserBalanceProvider {
   private userWalletAddress: string = '';
-  private userWalletSigner: JsonRpcSigner | null = null;
+  private userWalletSigner: JsonRpcSigner;
+  private chain: Chain;
 
   private tokenContracts: ERC20[] = [];
 
   constructor(params: UserBalanceProviderParams) {
     this.userWalletAddress = params.userWalletAddress;
     this.userWalletSigner = params.userWalletSigner;
+    this.chain = params.chain;
   }
 
   init() {
     // Make sure to clean previous data before crating new subscriptions
     this.destroy();
 
-    getConfig().tempusPools.forEach(poolConfig => {
+    getChainConfig(this.chain).tempusPools.forEach(poolConfig => {
       if (!this.userWalletSigner) {
         return;
       }
@@ -63,28 +67,36 @@ class UserBalanceProvider {
   /**
    * Manually trigger user balance update. Can be called after user action that affects user balance.
    */
-  fetchForPool(address: string) {
+  fetchForPool(address: string, blockTag?: number) {
     const poolConfig = getConfigForPoolWithAddress(address);
 
-    this.updateUserBalanceForPool(poolConfig);
+    this.updateUserBalanceForPool(poolConfig, blockTag);
   }
 
-  private async updateUserBalanceForPool(poolConfig: TempusPool) {
+  private async updateUserBalanceForPool(poolConfig: TempusPool, blockTag?: number) {
     if (!this.userWalletSigner) {
       return;
     }
 
-    const statisticsService = getStatisticsService(this.userWalletSigner);
+    const statisticsService = getStatisticsService(this.chain, this.userWalletSigner);
 
-    const principalsService = getERC20TokenService(poolConfig.principalsAddress, this.userWalletSigner);
-    const yieldsService = getERC20TokenService(poolConfig.yieldsAddress, this.userWalletSigner);
-    const lpTokenService = getERC20TokenService(poolConfig.ammAddress, this.userWalletSigner);
+    const principalsService = getERC20TokenService(poolConfig.principalsAddress, this.chain, this.userWalletSigner);
+    const yieldsService = getERC20TokenService(poolConfig.yieldsAddress, this.chain, this.userWalletSigner);
+    const lpTokenService = getERC20TokenService(poolConfig.ammAddress, this.chain, this.userWalletSigner);
 
     const [principalsBalance, yieldsBalance, lpTokenBalance, backingTokenRate] = await Promise.all([
-      principalsService.balanceOf(this.userWalletAddress),
-      yieldsService.balanceOf(this.userWalletAddress),
-      lpTokenService.balanceOf(this.userWalletAddress),
-      statisticsService.getRate(poolConfig.backingToken),
+      principalsService.balanceOf(this.userWalletAddress, {
+        blockTag,
+      }),
+      yieldsService.balanceOf(this.userWalletAddress, {
+        blockTag,
+      }),
+      lpTokenService.balanceOf(this.userWalletAddress, {
+        blockTag,
+      }),
+      statisticsService.getRate(this.chain, poolConfig.backingToken, {
+        blockTag,
+      }),
     ]);
 
     const estimateExitToBackingToken = true;
@@ -116,7 +128,7 @@ class UserBalanceProvider {
   }
 
   private updateUserBalance = () => {
-    getConfig().tempusPools.forEach(poolConfig => {
+    getChainConfig(this.chain).tempusPools.forEach(poolConfig => {
       this.updateUserBalanceForPool(poolConfig);
     });
   };

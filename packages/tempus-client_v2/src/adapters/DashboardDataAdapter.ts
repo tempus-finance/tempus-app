@@ -3,24 +3,32 @@ import { filter, from, interval, Observable, of, startWith, switchMap, catchErro
 import { DashboardRow, DashboardRowChild, DashboardRowParent } from '../interfaces/DashboardRow';
 import { Ticker } from '../interfaces/Token';
 import { TempusPool } from '../interfaces/TempusPool';
-import StatisticsService from '../services/StatisticsService';
-import getConfig from '../utils/getConfig';
-import { POLLING_INTERVAL } from '../constants';
+import { getChainConfig, getConfig } from '../utils/getConfig';
+import { Chain } from '../interfaces/Chain';
+import { ProtocolName } from '../interfaces/ProtocolName';
 import getRangeFrom from '../utils/getRangeFrom';
+import getStatisticsService from '../services/getStatisticsService';
+import { POLLING_INTERVAL } from '../constants';
 
-type DashboardDataAdapterParameters = {
-  statisticsService: StatisticsService;
+export type RowsExcludedByDefault = {
+  [key in ProtocolName]?: {
+    [poolAddress: string]: true; // whitelist
+  };
 };
 
 export default class DashboardDataAdapter {
-  private statisticsService: StatisticsService | null = null;
+  getRows(chain?: Chain, rowsExcludedByDefault?: RowsExcludedByDefault): DashboardRow[] {
+    const childRows: DashboardRowChild[] = [];
 
-  init(params: DashboardDataAdapterParameters) {
-    this.statisticsService = params.statisticsService;
-  }
+    const configData = getConfig();
+    for (const chainName in configData) {
+      // If specific chain is selected, we should skip adding pools from other chains
+      if (chain && chain !== chainName) {
+        continue;
+      }
 
-  getRows(): DashboardRow[] {
-    const childRows = this.getChildRows();
+      childRows.push(...this.filterRowsByExclusionList(this.getChildRows(chainName as Chain), rowsExcludedByDefault));
+    }
 
     // Generates parent rows based on children rows
     const parentRows = this.getParentRows(childRows);
@@ -28,10 +36,13 @@ export default class DashboardDataAdapter {
     return [...parentRows, ...childRows];
   }
 
-  getTempusPoolTVL(tempusPool: string, backingTokenTicker: Ticker, forceFetch?: boolean): Observable<BigNumber | null> {
-    if (!this.statisticsService) {
-      return of(null);
-    }
+  getTempusPoolTVL(
+    chain: Chain,
+    tempusPool: string,
+    backingTokenTicker: Ticker,
+    forceFetch?: boolean,
+  ): Observable<BigNumber | null> {
+    const statisticsService = getStatisticsService(chain);
 
     const interval$ = interval(POLLING_INTERVAL).pipe(startWith(0));
     return interval$.pipe(
@@ -42,10 +53,7 @@ export default class DashboardDataAdapter {
         return document.hasFocus();
       }),
       switchMap(() => {
-        if (this.statisticsService) {
-          return from(this.statisticsService.totalValueLockedUSD(tempusPool, backingTokenTicker));
-        }
-        return of(null);
+        return from(statisticsService.totalValueLockedUSD(chain, tempusPool, backingTokenTicker));
       }),
       catchError(error => {
         console.error('DashboardAdapter - getTempusPoolTVL', error);
@@ -54,21 +62,24 @@ export default class DashboardDataAdapter {
     );
   }
 
-  private getChildRows(): DashboardRowChild[] {
-    const tempusPools = getConfig().tempusPools;
-    const childRows: DashboardRowChild[] = tempusPools.map(tempusPool => this.getChildRowData(tempusPool));
+  private getChildRows(chainName: Chain): DashboardRowChild[] {
+    const childRows: DashboardRowChild[] = [];
+    getChainConfig(chainName).tempusPools.forEach(tempusPool => {
+      childRows.push(this.getChildRowData(tempusPool, chainName));
+    });
     return childRows;
   }
 
-  private getChildRowData(tempusPool: TempusPool): DashboardRowChild {
+  private getChildRowData(tempusPool: TempusPool, chainName: Chain): DashboardRowChild {
     return {
       id: tempusPool.address,
-      parentId: tempusPool.backingToken,
+      parentId: `${tempusPool.backingToken}-${chainName}`,
       token: tempusPool.backingToken,
       tempusPool: tempusPool,
       supportedTokens: [tempusPool.backingToken, tempusPool.yieldBearingToken],
       startDate: new Date(tempusPool.startDate),
       maturityDate: new Date(tempusPool.maturityDate),
+      chain: chainName,
     };
   }
 
@@ -80,17 +91,18 @@ export default class DashboardDataAdapter {
 
       // Create child parent if it does not already exist.
       if (!childParent) {
-        const parentChildren = this.getParentChildren(child.token, childRows);
+        const parentChildren = this.getParentChildren(child.parentId, childRows);
 
         const childrenMaturityDate = parentChildren.map(child => child.maturityDate);
         const childrenProtocols = parentChildren.map(child => child.tempusPool.protocol);
 
         const parentRow: DashboardRowParent = {
-          id: child.token, // Using token as parent ID, this way multiple children with same token will fall under same parent.
+          id: `${child.token}-${child.chain}`, // Using token+chain as parent ID, this way multiple children with same token and chain will fall under same parent.
           parentId: null, // Always null for parent rows
           token: child.token,
           maturityRange: getRangeFrom<Date>(childrenMaturityDate),
           protocols: Array.from(new Set(childrenProtocols)), // Converting list of protocols to set removes duplicate items
+          chain: child.chain,
         };
 
         parentRows.push(parentRow);
@@ -107,4 +119,32 @@ export default class DashboardDataAdapter {
   private getParentChildren(parentId: string, childRows: DashboardRowChild[]): DashboardRowChild[] {
     return childRows.filter(child => child.parentId === parentId);
   }
+
+  private filterRowsByExclusionList = (
+    childRows: DashboardRowChild[],
+    rowsExcludedByDefault?: RowsExcludedByDefault,
+  ): DashboardRowChild[] => {
+    if (!rowsExcludedByDefault) {
+      return childRows;
+    }
+
+    return childRows.filter(row => {
+      const {
+        tempusPool: { address, protocol },
+      } = row;
+
+      // if the protocol needs to be excluded
+      if (rowsExcludedByDefault[protocol]) {
+        const whitelistedRows = rowsExcludedByDefault[protocol];
+        // then check if the pool is whitelisted
+        if (whitelistedRows) {
+          return !!whitelistedRows[address];
+        }
+        // otherwise filter it out
+        return false;
+      }
+      // otherwise keep the pool
+      return true;
+    });
+  };
 }
