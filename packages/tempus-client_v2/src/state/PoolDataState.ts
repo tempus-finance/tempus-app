@@ -12,10 +12,7 @@ export interface StaticPoolDataMap {
 
 // Static pool data state object
 const staticPoolDataStateInitialValue: StaticPoolDataMap = {};
-getChainConfig('ethereum').tempusPools.forEach(tempusPoolConfig => {
-  staticPoolDataStateInitialValue[tempusPoolConfig.address] = { ...tempusPoolConfig };
-});
-getChainConfig('fantom').tempusPools.forEach(tempusPoolConfig => {
+getChainConfig('ethereum-fork').tempusPools.forEach(tempusPoolConfig => {
   staticPoolDataStateInitialValue[tempusPoolConfig.address] = { ...tempusPoolConfig };
 });
 export const staticPoolDataState = createState(staticPoolDataStateInitialValue);
@@ -54,7 +51,7 @@ export interface DynamicPoolStateData {
 // Dynamic pool data state object
 const dynamicPoolDataStateInitialValue: DynamicPoolStateData = {};
 
-getChainConfig('ethereum').tempusPools.forEach(tempusPoolConfig => {
+getChainConfig('ethereum-fork').tempusPools.forEach(tempusPoolConfig => {
   dynamicPoolDataStateInitialValue[tempusPoolConfig.address] = {
     poolShareBalance: {
       principals: null,
@@ -76,31 +73,6 @@ getChainConfig('ethereum').tempusPools.forEach(tempusPoolConfig => {
     fixedAPR: 'fetching',
     negativeYield: true,
     tempusFees: null,
-  };
-});
-
-getChainConfig('fantom').tempusPools.forEach(tempusPoolConfig => {
-  dynamicPoolDataStateInitialValue[tempusPoolConfig.address] = {
-    poolShareBalance: {
-      principals: null,
-      yields: null,
-    },
-    userBalanceUSD: null,
-    userPrincipalsBalance: null,
-    userYieldsBalance: null,
-    userLPTokenBalance: null,
-    backingTokenValueInFiat: null,
-    yieldBearingTokenValueInFiat: null,
-    userBalanceInBackingToken: null,
-    userBackingTokenBalance: null,
-    backingTokensAvailable: null,
-    yieldBearingTokenValueInBackingToken: null,
-    userYieldBearingTokenBalance: null,
-    tvl: null,
-    variableAPR: null,
-    tempusFees: null,
-    fixedAPR: 'fetching',
-    negativeYield: true,
   };
 });
 export const dynamicPoolDataState = createState(dynamicPoolDataStateInitialValue);
