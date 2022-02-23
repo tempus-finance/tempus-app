@@ -46,12 +46,14 @@ const CurrencyInput: FC<CurrencyInputProps> = ({
 
   const onValueChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
-      const currentValue = event.currentTarget.value;
-      const parsedCurrency = formatValueToCurrency(currentValue, precision);
-      if (parsedCurrency || parsedCurrency === '') {
-        setValue(parsedCurrency);
+      if (!event.target.validity.patternMismatch) {
+        const currentValue = event.currentTarget.value;
+        const parsedCurrency = formatValueToCurrency(currentValue, precision);
+        if (parsedCurrency || parsedCurrency === '') {
+          setValue(parsedCurrency);
+        }
+        onChange && onChange(parsedCurrency.replace(/[^0-9$.]/g, ''));
       }
-      onChange && onChange(parsedCurrency.replace(/[^0-9$.]/g, ''));
     },
     [precision, onChange],
   );
@@ -84,6 +86,9 @@ const CurrencyInput: FC<CurrencyInputProps> = ({
           disabled={disabled}
           variant="standard"
           autoComplete="off"
+          inputProps={{
+            pattern: '[0-9]*[.]?[0-9]*',
+          }}
           InputProps={{
             disableUnderline: true,
           }}
