@@ -756,12 +756,6 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
     return isYieldNegative || disabledOperations.deposit || false;
   }, [disabledOperations.deposit, isYieldNegative]);
 
-  const approveDisabled = useMemo((): boolean => {
-    const zeroAmount = isZeroString(amount);
-
-    return zeroAmount || depositDisabled;
-  }, [amount, depositDisabled]);
-
   const amountToApprove = useMemo(() => {
     let amountBigNumber;
     if (amount) {
@@ -1132,7 +1126,7 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
             spenderAddress={getChainConfig(chain).tempusControllerContract}
             amountToApprove={amountToApprove}
             tokenToApproveTicker={selectedToken}
-            disabled={approveDisabled}
+            disabled={depositDisabled}
             marginRight={20}
             chain={chain}
             onApproveChange={onApproveChange}

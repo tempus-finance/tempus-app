@@ -334,12 +334,6 @@ const Mint: FC<MintInProps> = ({ narrow, chain }) => {
     return () => stream$.unsubscribe();
   }, [selectedPoolAddress, userWalletSigner, chain]);
 
-  const approveDisabled = useMemo((): boolean => {
-    const zeroAmount = isZeroString(amount);
-
-    return zeroAmount || mintDisabled;
-  }, [amount, mintDisabled]);
-
   const executeDisabled = useMemo((): boolean => {
     const zeroAmount = isZeroString(amount);
     const amountExceedsBalance = ethers.utils
@@ -480,7 +474,7 @@ const Mint: FC<MintInProps> = ({ narrow, chain }) => {
             spenderAddress={getChainConfig(chain).tempusControllerContract}
             amountToApprove={getSelectedTokenBalance()}
             tokenToApproveTicker={selectedToken}
-            disabled={approveDisabled}
+            disabled={mintDisabled}
             marginRight={20}
             chain={chain}
             onApproveChange={onApproveChange}

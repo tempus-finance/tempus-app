@@ -13,6 +13,7 @@ import { Chain } from '../../interfaces/Chain';
 import { PendingTransactionsContext } from '../../context/pendingTransactionsContext';
 import { LanguageContext } from '../../context/languageContext';
 import { WalletContext } from '../../context/walletContext';
+import { ZERO } from '../../constants';
 import TickNegativeIcon from '../icons/TickNegativeIcon';
 import getText from '../../localisation/getText';
 import Spacer from '../spacer/spacer';
@@ -257,6 +258,18 @@ const Approve: FC<ApproveButtonProps> = props => {
     }
   }, [approved, onApproveChange]);
 
+  const buttonDisabled = useMemo(
+    (): boolean =>
+      disabled ||
+      amountToApprove === null ||
+      amountToApprove.lte(ZERO) ||
+      approveInProgress ||
+      !tokenToApproveAddress ||
+      Boolean(approved),
+
+    [amountToApprove, disabled, approved, approveInProgress, tokenToApproveAddress],
+  );
+
   // In case of ETH we don't want to show Approve button at all
   if (tokenToApproveTicker === 'ETH') {
     return null;
@@ -276,7 +289,7 @@ const Approve: FC<ApproveButtonProps> = props => {
         color="primary"
         variant="contained"
         onClick={onApprove}
-        disabled={disabled || approveInProgress || !tokenToApproveAddress || Boolean(approved)}
+        disabled={buttonDisabled}
         className={`tc__approve-button ${approveInProgress && 'tc__approve-button__pending'}`}
       >
         <Typography variant="button-text" color="inverted">
