@@ -201,12 +201,6 @@ const RemoveLiquidity: FC<RemoveLiquidityProps> = props => {
     );
   }, [estimatedYields, decimalsForUI, tokenPrecision.yields]);
 
-  const approveDisabled = useMemo((): boolean => {
-    const zeroAmount = isZeroString(amount);
-
-    return zeroAmount;
-  }, [amount]);
-
   const executeDisabled = useMemo(() => {
     const zeroAmount = isZeroString(amount);
     const amountExceedsBalance = ethers.utils
@@ -249,7 +243,6 @@ const RemoveLiquidity: FC<RemoveLiquidityProps> = props => {
                 onApproveChange={onApproveChange}
                 spenderAddress={getChainConfig(chain).vaultContract}
                 tokenToApproveAddress={ammAddress}
-                disabled={approveDisabled}
                 chain={chain}
               />
             </div>

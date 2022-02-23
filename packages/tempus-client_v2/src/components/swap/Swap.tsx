@@ -266,12 +266,6 @@ const Swap: FC<SwapProps> = props => {
     return NumberUtils.formatToCurrency(ethers.utils.formatUnits(receiveAmount, tokenPrecision), decimalsForUI);
   }, [receiveAmount, tokenPrecision, decimalsForUI]);
 
-  const approveDisabled = useMemo((): boolean => {
-    const zeroAmount = isZeroString(amount);
-
-    return zeroAmount;
-  }, [amount]);
-
   const executeDisabled = useMemo((): boolean => {
     const zeroAmount = isZeroString(amount);
     const amountExceedsBalance = ethers.utils
@@ -335,7 +329,6 @@ const Swap: FC<SwapProps> = props => {
             tokenToApproveTicker={tokenFrom.tokenName}
             tokenToApproveAddress={getSelectedTokenAddress()}
             marginRight={20}
-            disabled={approveDisabled}
             chain={chain}
           />
           <Execute
