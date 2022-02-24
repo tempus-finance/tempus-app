@@ -5,7 +5,7 @@ import { ethers } from 'ethers';
 import { Web3Provider } from '@ethersproject/providers';
 import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core';
 import { InjectedConnector } from '@web3-react/injected-connector';
-import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
+import { UserRejectedRequestError, WalletConnectConnector } from '@web3-react/walletconnect-connector';
 import { CircularProgress } from '@material-ui/core';
 import { supportedChainIds, NETWORK_URLS } from '../../constants';
 import { LanguageContext } from '../../context/languageContext';
@@ -313,6 +313,12 @@ const Wallet = () => {
             getNotificationService().notify(chain, 'Wallet', getText('walletConnectConnected', language), '');
           }
         } catch (error) {
+          if (error instanceof UserRejectedRequestError) {
+            setConnecting(false);
+            setSelectedWallet(null);
+            return;
+          }
+
           if (lastSelectedWallet === 'MetaMask') {
             setSelectedWallet('MetaMask');
             const forceActivate = true;
