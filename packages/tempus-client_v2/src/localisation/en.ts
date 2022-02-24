@@ -43,7 +43,6 @@ const en: { [word in Words]: string } = {
   apr: 'APR',
   aprRange: 'APR range',
   lpApr: 'Variable APR',
-  futureApr: 'Future APR',
   fiat: 'Fiat',
   crypto: 'Crypto',
   pool: 'Pool',
@@ -100,7 +99,6 @@ const en: { [word in Words]: string } = {
   earlyRedemptionDisabledNoLiquidity:
     'Early redemption is currently disabled due to insufficient liquidity in the pool you have selected. Please try again later.',
   availableToDeposit: 'Available to Deposit',
-  marketImpliedYield: 'Future APR ',
   volume: 'Volume',
   fees: 'Fees',
   term: 'Term',
