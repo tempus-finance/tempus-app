@@ -37,7 +37,6 @@ type Words =
   | 'apply'
   | 'token'
   | 'apr'
-  | 'futureApr'
   | 'lifeTimeApr'
   | 'fixedApr'
   | 'lpApr'

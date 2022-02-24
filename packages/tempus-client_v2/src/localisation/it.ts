@@ -43,7 +43,6 @@ const it: { [word in Words]: string } = {
   apr: 'APR',
   aprRange: 'Gamma APR',
   lpApr: 'APR Variabile',
-  futureApr: 'APR Futuro',
   fiat: 'Fiat',
   crypto: 'Crypto',
   pool: 'Pool',

@@ -43,7 +43,6 @@ const es: { [word in Words]: string } = {
   apr: 'Interés Anual',
   aprRange: 'Rango APR',
   lpApr: 'APR Variable',
-  futureApr: 'Futuro TAE',
   fiat: 'Fiat',
   crypto: 'Cripto',
   pool: 'Pool',
