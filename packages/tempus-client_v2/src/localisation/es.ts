@@ -96,7 +96,6 @@ const es: { [word in Words]: string } = {
   earlyRedemptionDisabledNoLiquidity:
     'El canje anticipado está deshabilitado actualmente debido a la falta de liquidez en el grupo que ha seleccionado. Por favor, inténtelo de nuevo más tarde.',
   availableToDeposit: 'Disponible para depositar',
-  marketImpliedYield: 'Futuro TAE',
   volume: 'Volumen',
   fees: 'Tarifas',
   term: 'Plazo',

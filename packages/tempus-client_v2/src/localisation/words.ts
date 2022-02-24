@@ -82,7 +82,6 @@ type Words =
   | 'redemption'
   | 'earlyRedemption'
   | 'swap'
-  | 'marketImpliedYield'
   | 'volume'
   | 'fees'
   | 'term'

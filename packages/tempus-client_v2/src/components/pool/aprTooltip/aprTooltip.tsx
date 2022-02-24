@@ -102,7 +102,7 @@ const AprTooltip: FC<AprTooltipProps> = ({ chain }) => {
     <div className="tc__aprTooltip">
       <div className="tc__aprTooltip-row">
         <Typography variant="card-body-text" color="title">
-          {getText('futureApr', language)}
+          {getText('fixedApr', language)}
         </Typography>
         <Typography variant="card-body-text">{futureAprFormatted}</Typography>
       </div>

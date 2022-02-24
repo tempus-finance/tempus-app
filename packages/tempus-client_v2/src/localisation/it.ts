@@ -102,7 +102,6 @@ const it: { [word in Words]: string } = {
   earlyRedemptionDisabledNoLiquidity:
     'Il rimborso anticipato è stato momentaneamente disabilitato a causa di liquidità insufficiente nella pool selezionata. Per favore riprova più tardi.',
   availableToDeposit: 'Disponibilità Deposito',
-  marketImpliedYield: 'APR Futuro',
   volume: 'Volume',
   fees: 'Commissioni',
   term: 'Periodo',
