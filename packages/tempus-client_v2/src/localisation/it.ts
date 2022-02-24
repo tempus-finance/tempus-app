@@ -131,7 +131,6 @@ const it: { [word in Words]: string } = {
   and: 'e',
   via: 'via',
   balance: 'Saldo',
-  futureYield: 'Rendimento Futuro',
   lifeTimeYield: 'Rendimento a Termine',
   fixYourFutureYield: 'Fissa il Rendimento Futuro',
   fixedYield: 'Rendimento Fisso',
