@@ -53,16 +53,17 @@ const PercentageInput: FC<PercentageInputProps> = ({
 
   const onValueChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
-      const currentValue = event.currentTarget.value;
-      let formattedValue = '';
-      if (currentValue !== '' && value.length > 0 && value[value.length - 1] === '%') {
-        formattedValue = formatValueToPercentage(currentValue.slice(0, -1));
+      if (!event.target.validity.patternMismatch) {
+        const currentValue = event.currentTarget.value;
+        let formattedValue = '';
+        if (currentValue !== '' && value.length > 0 && value[value.length - 1] === '%') {
+          formattedValue = formatValueToPercentage(currentValue.slice(0, -1));
+        } else {
+          formattedValue = currentValue;
+        }
         setParsedValue(formattedValue);
-      } else {
-        formattedValue = currentValue;
-        setParsedValue(currentValue);
+        setValue(formattedValue);
       }
-      setValue(formattedValue);
     },
     [value],
   );
@@ -126,6 +127,9 @@ const PercentageInput: FC<PercentageInputProps> = ({
           placeholder={placeholder}
           variant="standard"
           autoComplete="off"
+          inputProps={{
+            pattern: '[0-9]*[.]?[0-9]*',
+          }}
           InputProps={{
             disableUnderline: true,
           }}
