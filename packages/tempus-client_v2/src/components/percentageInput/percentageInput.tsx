@@ -58,11 +58,10 @@ const PercentageInput: FC<PercentageInputProps> = ({
         let formattedValue = '';
         if (currentValue !== '' && value.length > 0 && value[value.length - 1] === '%') {
           formattedValue = formatValueToPercentage(currentValue.slice(0, -1));
-          setParsedValue(formattedValue);
         } else {
           formattedValue = currentValue;
-          setParsedValue(currentValue);
         }
+        setParsedValue(formattedValue);
         setValue(formattedValue);
       }
     },
