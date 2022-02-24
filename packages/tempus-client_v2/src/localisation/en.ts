@@ -129,7 +129,6 @@ const en: { [word in Words]: string } = {
   and: 'and',
   via: 'via',
   balance: 'Balance',
-  futureYield: 'Future Yield',
   lifeTimeYield: 'Lifetime Yield',
   fixYourFutureYield: 'Fix Your Future Yield',
   fixedYield: 'Fixed Yield',

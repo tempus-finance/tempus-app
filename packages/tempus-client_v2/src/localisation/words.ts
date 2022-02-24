@@ -113,7 +113,6 @@ type Words =
   | 'via'
   | 'balance'
   | 'fixYourFutureYield'
-  | 'futureYield'
   | 'lifeTimeYield'
   | 'fixedYield'
   | 'estimatedYieldAtMaturity'

@@ -1,4 +1,3 @@
-import { differenceInDays } from 'date-fns';
 import { FC, useContext, useEffect, useMemo, useState } from 'react';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../../state/PoolDataState';
@@ -30,8 +29,6 @@ const AprTooltip: FC<AprTooltipProps> = ({ chain }) => {
   const ammAddress = staticPoolData[selectedPool.get()].ammAddress.attach(Downgraded).get();
   const principalsAddress = staticPoolData[selectedPool.get()].principalsAddress.attach(Downgraded).get();
   const yieldsAddress = staticPoolData[selectedPool.get()].yieldsAddress.attach(Downgraded).get();
-  const startDate = staticPoolData[selectedPool.get()].startDate.attach(Downgraded).get();
-  const maturityDate = staticPoolData[selectedPool.get()].maturityDate.attach(Downgraded).get();
 
   useEffect(() => {
     const fetchPoolRation = async () => {
@@ -55,16 +52,6 @@ const AprTooltip: FC<AprTooltipProps> = ({ chain }) => {
   const futureAprFormatted = useMemo(() => {
     return NumberUtils.formatPercentage(fixedAPR, 2);
   }, [fixedAPR]);
-
-  const futureYieldFormatted = useMemo(() => {
-    if (fixedAPR && fixedAPR !== 'fetching') {
-      const daysToMaturity = differenceInDays(maturityDate, startDate);
-      const dailyInterest = (fixedAPR || 1) / 365;
-      return NumberUtils.formatPercentage(dailyInterest * daysToMaturity, 2);
-    }
-
-    return null;
-  }, [fixedAPR, maturityDate, startDate]);
 
   // const lifetimeAprFormatted = useMemo(() => {
   //   if (poolRatio !== null && poolRatio[0] && poolRatio[1]) {
@@ -105,12 +92,6 @@ const AprTooltip: FC<AprTooltipProps> = ({ chain }) => {
           {getText('futureApr', language)}
         </Typography>
         <Typography variant="card-body-text">{futureAprFormatted}</Typography>
-      </div>
-      <div className="tc__aprTooltip-row">
-        <Typography variant="card-body-text" color="title">
-          {getText('futureYield', language)}
-        </Typography>
-        <Typography variant="card-body-text">{futureYieldFormatted}</Typography>
       </div>
       <hr />
       {/* <div className="tc__aprTooltip-row">

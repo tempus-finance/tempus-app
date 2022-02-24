@@ -125,7 +125,6 @@ const es: { [word in Words]: string } = {
   and: 'e',
   via: 'via',
   balance: 'Balance',
-  futureYield: 'Rendimiento Futuro',
   lifeTimeYield: 'Rendimiento de por vida',
   fixYourFutureYield: 'Fija tu rendimiento futuro',
   fixedYield: 'Rendimiento Fijo',
