@@ -1,4 +1,4 @@
-import { CircularProgress } from '@material-ui/core';
+import { Button, CircularProgress } from '@material-ui/core';
 import { FC, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { ethers, BigNumber } from 'ethers';
@@ -17,7 +17,7 @@ import getText from '../../localisation/getText';
 import { getChainConfig } from '../../utils/getConfig';
 import getTokenPrecision from '../../utils/getTokenPrecision';
 import { isZeroString } from '../../utils/isZeroString';
-import { increasePrecision, mul18f } from '../../utils/weiMath';
+import { increasePrecision, mul18f, div18f } from '../../utils/weiMath';
 import NumberUtils from '../../services/NumberUtils';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
 import Approve from '../buttons/Approve';
@@ -29,6 +29,7 @@ import SectionContainer from '../sectionContainer/SectionContainer';
 import Spacer from '../spacer/spacer';
 import InfoTooltip from '../infoTooltip/infoTooltip';
 import SelectIcon from '../icons/SelectIcon';
+import WarnIcon from '../icons/WarnIcon';
 
 import './Deposit.scss';
 
@@ -519,6 +520,23 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
     }
     return null;
   }, [estimatedFixedApr, language]);
+
+  const estimatedFixedAprBelowThreshold = useMemo(() => {
+    if (estimatedFixedApr) {
+      const oneHundred = ethers.utils.parseUnits('100', selectedTokenPrecision);
+      // this is 100%
+      const thresholdBN = ethers.utils.parseUnits('1', selectedTokenPrecision);
+
+      // this is 0.01%
+      const threshold = div18f(
+        div18f(thresholdBN, oneHundred, selectedTokenPrecision),
+        oneHundred,
+        selectedTokenPrecision,
+      );
+      return estimatedFixedApr.lt(threshold);
+    }
+    return false;
+  }, [estimatedFixedApr, selectedTokenPrecision]);
 
   const fixedYieldAtMaturityFormatted = useMemo(() => {
     if (!fixedPrincipalsAmount || !amount || !yieldBearingToBackingToken) {
@@ -1118,6 +1136,27 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
             }
             {tokenEstimateInProgress && <CircularProgress size={14} />}
           </SectionContainer>
+          {estimatedFixedAprBelowThreshold && (
+            <div className="tf__flex-column-center-vh">
+              <Spacer size={20} />
+              <Button color="primary" variant="contained" onClick={() => null} disabled={true}>
+                <Typography variant="button-text" color="inverted">
+                  {getText('insufficientLiquidity', language)}
+                </Typography>{' '}
+              </Button>
+              <Spacer size={15} />
+              <div className="tc__deposit_insufficient-liquidity-message">
+                <div>
+                  <WarnIcon />
+                </div>
+                <Spacer size={15} />
+                <Typography variant="dropdown-text">
+                  <span dangerouslySetInnerHTML={{ __html: getText('insufficientLiquidityMessage', language) }}></span>
+                </Typography>{' '}
+              </div>
+              <Spacer size={20} />
+            </div>
+          )}
         </div>
         <Spacer size={15} />
         <div className="tf__flex-row-center-vh">

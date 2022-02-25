@@ -103,6 +103,7 @@ type Words =
   | 'executing'
   | 'failed'
   | 'insufficientLiquidity'
+  | 'insufficientLiquidityMessage'
   | 'profitLoss'
   | 'currentValue'
   | 'from'
