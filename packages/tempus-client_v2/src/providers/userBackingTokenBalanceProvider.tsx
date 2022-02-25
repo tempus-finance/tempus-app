@@ -6,6 +6,7 @@ import { TempusPool } from '../interfaces/TempusPool';
 import { Chain } from '../interfaces/Chain';
 import { dynamicPoolDataState } from '../state/PoolDataState';
 import { getChainConfig, getConfigForPoolWithAddress } from '../utils/getConfig';
+import { ZERO_ETH_ADDRESS } from '../constants';
 import { BalanceProviderParams } from './interfaces';
 
 class UserBackingTokenBalanceProvider {
@@ -65,9 +66,13 @@ class UserBackingTokenBalanceProvider {
     const btContract = new Contract(poolConfig.backingTokenAddress, ERC20ABI, this.userWalletSigner) as ERC20;
     let balance: BigNumber;
     try {
-      balance = await btContract.balanceOf(this.userWalletAddress, {
-        blockTag,
-      });
+      if (btContract.address === ZERO_ETH_ADDRESS) {
+        balance = await btContract.provider.getBalance(this.userWalletAddress, blockTag);
+      } else {
+        balance = await btContract.balanceOf(this.userWalletAddress, {
+          blockTag,
+        });
+      }
     } catch (error) {
       console.error(
         'UserBackingTokenBalanceProvider - updateBackingTokenBalanceForPool() - Failed to fetch new user bt balance!',
