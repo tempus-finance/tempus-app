@@ -122,6 +122,8 @@ const it: { [word in Words]: string } = {
   executing: 'In Esecuzione',
   failed: 'Fallito',
   insufficientLiquidity: 'Liquidità insufficiente',
+  insufficientLiquidityMessage:
+    'Please reduce the amount you\'re trying to deposit. You can read more <a href="https://docs.tempus.finance/community/faq" target="_blank"> here</a>.',
   profitLoss: 'Profitti & Perdite',
   currentValue: 'Valore attuale',
   from: 'Da',

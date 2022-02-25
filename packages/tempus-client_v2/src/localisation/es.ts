@@ -116,6 +116,8 @@ const es: { [word in Words]: string } = {
   executing: 'Ejecutando',
   failed: 'Fallido',
   insufficientLiquidity: 'Liquidez insuficiente',
+  insufficientLiquidityMessage:
+    'Por favor, reduzca la cantidad que desea depositar. Puede obtener más información haciendo clic <a href="https://docs.tempus.finance/community/faq" target="_blank">aquí</a>.',
   profitLoss: 'Ganancia y pérdida ',
   currentValue: 'Valor actual ',
   from: 'Origen',
