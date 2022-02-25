@@ -64,6 +64,7 @@ const Wallet = () => {
 
   const onOpenChainSelector = useCallback(() => {
     setChainSelectorOpen(true);
+    setUnsupportedNetworkOpen(false);
   }, []);
 
   const onCloseChainSelector = useCallback(() => {
