@@ -60,7 +60,7 @@ const Wallet = () => {
   });
   const [connecting, setConnecting] = useState<boolean>(false);
   const [chainSelectorOpen, setChainSelectorOpen] = useState<boolean>(false);
-  const unsupportedNetworkRef = useRef<HTMLDivElement>(null);
+  const [unsupportedNetworkOpen, setUnsupportedNetworkOpen] = useState<boolean>(false);
 
   const onOpenChainSelector = useCallback(() => {
     setChainSelectorOpen(true);
@@ -95,10 +95,10 @@ const Wallet = () => {
     }
   }, [setUserSettings]);
 
-  const onClickUnsupportedNetworkButton = useCallback(() => {
-    unsupportedNetworkRef.current && unsupportedNetworkRef.current.click();
-    onOpenChainSelector();
-  }, [unsupportedNetworkRef, onOpenChainSelector]);
+  const onUnsupportedNetworkToggle = useCallback(
+    () => setUnsupportedNetworkOpen(prevState => !prevState),
+    [setUnsupportedNetworkOpen],
+  );
 
   useEffect(() => {
     if (!active) {
@@ -593,11 +593,16 @@ const Wallet = () => {
 
         {/* Wallet connected - but unsupported network */}
         {!connecting && isUnsupportedNetwork && (
-          <InfoTooltip content={<WalletUnsupportedTooltip onClickSwitchNetwork={onClickUnsupportedNetworkButton} />}>
+          <InfoTooltip
+            content={<WalletUnsupportedTooltip onClickSwitchNetwork={onOpenChainSelector} />}
+            useExternalOpenState
+            externalOpen={unsupportedNetworkOpen}
+            onExternalToggle={onUnsupportedNetworkToggle}
+          >
             <div className="tc__connect-wallet-network-picker">
               <WarnIcon />
             </div>
-            <div className="tc__connect-wallet-button" ref={unsupportedNetworkRef}>
+            <div className="tc__connect-wallet-button">
               <Typography variant="button-text">{getText('unsupported', language)}</Typography>
             </div>
           </InfoTooltip>

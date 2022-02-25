@@ -1,5 +1,5 @@
-import { Popper } from '@material-ui/core';
 import React, { FC, ReactNode, useCallback, useMemo, useRef, useState } from 'react';
+import { Popper } from '@material-ui/core';
 import InfoIcon from '../icons/InfoIcon';
 import Typography from '../typography/Typography';
 
@@ -7,20 +7,36 @@ import './infoTooltip.scss';
 
 interface InfoToolTipProps {
   content: string | ReactNode;
+  useExternalOpenState?: boolean;
+  externalOpen?: boolean;
+  onExternalToggle?: () => void;
 }
 
 const InfoTooltip: FC<InfoToolTipProps> = props => {
-  const { content, children = <InfoIcon /> } = props;
+  const {
+    content,
+    useExternalOpenState = false,
+    externalOpen = false,
+    onExternalToggle = () => false,
+    children = <InfoIcon />,
+  } = props;
 
-  const [open, setOpen] = useState<boolean>(false);
+  const [internalOpen, setInternalOpen] = useState<boolean>(false);
   const anchorRef = useRef<HTMLButtonElement>(null);
   const arrowRef = useRef<HTMLDivElement>(null);
 
-  const toggle = useCallback((event: React.MouseEvent<HTMLButtonElement | HTMLDivElement>) => {
+  const internalToggle = useCallback((event: React.MouseEvent<HTMLButtonElement | HTMLDivElement>) => {
     event.stopPropagation();
-
-    setOpen(prevState => !prevState);
+    setInternalOpen(prevState => !prevState);
   }, []);
+  const toggle = useMemo(
+    () => (useExternalOpenState ? onExternalToggle : internalToggle),
+    [useExternalOpenState, onExternalToggle, internalToggle],
+  );
+  const open = useMemo(
+    () => (useExternalOpenState ? externalOpen : internalOpen),
+    [useExternalOpenState, externalOpen, internalOpen],
+  );
   const popupAnchor = useMemo(() => {
     if (children) {
       return (
@@ -41,6 +57,7 @@ const InfoTooltip: FC<InfoToolTipProps> = props => {
     }
     return content;
   }, [content]);
+
 
   return (
     <div className="tc__infoTooltip">
