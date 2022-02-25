@@ -115,7 +115,7 @@ const Wallet = () => {
           unsupportedNetwork.set(false);
         } else {
           unsupportedNetwork.set(true);
-          // TODO: a temp soln to redirect to dshboard when user switch to a unsupported network+            setWalletData &&
+          // TODO: a temp soln to redirect to dashboard when user switch to a unsupported network+            setWalletData &&
           setWalletData &&
             setWalletData(previousData => ({
               ...previousData,
@@ -126,6 +126,42 @@ const Wallet = () => {
       });
     };
     subscribeToNetworkChanges();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [active, setWalletData]);
+
+  /**
+   * Subscribe to account change events.
+   */
+  useEffect(() => {
+    if (!active) {
+      return;
+    }
+
+    const subscribeToAccountChanges = async () => {
+      const injectedConnector = new InjectedConnector({ supportedChainIds });
+      const provider = await injectedConnector.getProvider();
+
+      provider.on('accountsChanged', (accountsList: string[]) => {
+        // In case list of accounts is zero that means user disconnected all of his wallets,
+        // and we should revert wallet connect button to initial state
+        if (accountsList.length === 0) {
+          setConnecting(false);
+          setSelectedWallet(null);
+          getStorageService().delete(WALLET_KEY);
+
+          setWalletData &&
+            setWalletData(() => ({
+              userWalletConnected: false,
+              userWalletSigner: null,
+              userWalletAddress: '',
+              userWalletChain: null,
+            }));
+
+          unsupportedNetwork.set(null);
+        }
+      });
+    };
+    subscribeToAccountChanges();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [active, setWalletData]);
 
