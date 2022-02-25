@@ -55,13 +55,16 @@ const AvailableToDepositFormatter = (props: DataTypeProvider.ValueFormatterProps
         2,
       )}`;
     } else {
+      // assuming same token on different chain share the same decimal display on UI
+      const poolData = Object.keys(staticPoolData).filter(key => staticPoolData[key].backingToken === row.token);
+      const decimalsForUI = poolData.length ? staticPoolData[poolData[0]].decimalsForUI : 4;
       content = (
         <>
           {/* TODO - Use decimalsForUI precision from child items (max precision) */}
           {/* TODO - Use backing token precision from child items */}
           {NumberUtils.formatWithMultiplier(
             ethers.utils.formatUnits(parentAvailableToDeposit, tokenPrecision[row.token]),
-            4,
+            decimalsForUI,
           )}
           <Spacer size={5} />
           {row.token}
