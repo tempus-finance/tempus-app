@@ -179,5 +179,7 @@ const es: { [word in Words]: string } = {
   unsupportedNetworkTooltipText1:
     'La red a la que está conectada su billetera no coincide con la red seleccionada aquí.',
   unsupportedNetworkTooltipText2: 'Conéctese a una red compatible para continuar.',
+  allPools: 'All Pools',
+  backToDashboard: 'Back to All Pools',
 };
 export default es;

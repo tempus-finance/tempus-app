@@ -1,6 +1,7 @@
 import { FC, useCallback, useContext, useEffect, useState } from 'react';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { Tooltip } from '@material-ui/core';
+import { Link } from 'react-router-dom';
 import getSidebarDataAdapter from '../../adapters/getSidebarDataAdapter';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
 import { LanguageContext } from '../../context/languageContext';
@@ -146,6 +147,11 @@ const Sidebar: FC<SidebarProps> = ({ initialView, chain, onSelectedView }) => {
 
   return (
     <div className="tc__sidebar-container">
+      <Link to="/" title={getText('backToDashboard', language)} className="tc__sidebar-section-breadcrumbs">
+        <Typography variant="breadcrumbs" color="title">
+          {getText('allPools', language)}
+        </Typography>
+      </Link>
       <TokenIcon ticker={backingToken} large />
       <Spacer size={5} />
       <Typography variant="h4">{protocolDisplayName}</Typography>

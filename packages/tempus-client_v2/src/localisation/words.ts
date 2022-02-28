@@ -154,6 +154,8 @@ type Words =
   | 'switchNetwork'
   | 'unsupportedNetworkTooltipTitle'
   | 'unsupportedNetworkTooltipText1'
-  | 'unsupportedNetworkTooltipText2';
+  | 'unsupportedNetworkTooltipText2'
+  | 'allPools'
+  | 'backToDashboard';
 
 export default Words;
