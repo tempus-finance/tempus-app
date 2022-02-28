@@ -176,5 +176,7 @@ const en: { [word in Words]: string } = {
   unsupportedNetworkTooltipTitle: 'Unsupported Network',
   unsupportedNetworkTooltipText1: 'The network your wallet is connected to doesn’t match the network selected here.',
   unsupportedNetworkTooltipText2: 'Please connect to a supported network in order to proceed.',
+  allPools: 'All Pools',
+  backToDashboard: 'Back to All Pools',
 };
 export default en;

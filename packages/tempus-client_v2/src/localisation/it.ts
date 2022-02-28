@@ -180,5 +180,7 @@ const it: { [word in Words]: string } = {
   unsupportedNetworkTooltipText1:
     'Il network al quale il tuo portafogli è collegato non corrisponde al network selezionato qui.',
   unsupportedNetworkTooltipText2: 'Per favore connettiti ad un network supportato per continuare.',
+  allPools: 'Tutte le pool',
+  backToDashboard: 'Torna a tutte le Pool',
 };
 export default it;

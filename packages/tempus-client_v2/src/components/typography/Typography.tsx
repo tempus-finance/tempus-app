@@ -9,6 +9,7 @@ type TypographyVariant =
   | 'h5'
   | 'sub-title'
   | 'body-text'
+  | 'breadcrumbs'
   | 'disclaimer-text'
   | 'button-text'
   | 'dropdown-text'
@@ -75,6 +76,13 @@ typographyStyleMap.set('body-text', {
   fontSize: '16px',
   fontStyle: 'normal',
   lineHeight: '19px',
+});
+typographyStyleMap.set('breadcrumbs', {
+  fontFamily: 'DM Sans, sans-serif',
+  fontWeight: 500,
+  fontSize: '10px',
+  fontStyle: 'normal',
+  lineHeight: '16px',
 });
 typographyStyleMap.set('disclaimer-text', {
   fontFamily: "'Source Sans Pro', sans-serif",

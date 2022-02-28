@@ -5,7 +5,7 @@
   flex-direction: column;
   align-items: center;
   height: 100%;
-  padding-top: 25px;
+  padding-top: 12px;
   border-radius: 5px 0px 0px 5px;
   box-shadow: 2px 0px 4px rgba(0, 0, 0, 0.25);
   background: $card-background;
@@ -13,13 +13,29 @@
   width: 170px;
 }
 
+.tc__sidebar-section-breadcrumbs {
+  display: flex;
+  padding-left: 10px;
+  align-self: flex-start;
+  text-decoration: none;
+  cursor: pointer;
+
+  &::before {
+    content: ' ';
+    position: relative;
+    display: block;
+    width: 12px;
+    height: 16px;
+    background-image: $left-pointing-angle;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+}
+
 .tc__sidebar-section-title {
   padding-left: 10px;
   padding-bottom: 20px;
   padding-top: 20px;
-}
-
-.tc__sidebar-section-title {
   align-self: flex-start;
 }
 
