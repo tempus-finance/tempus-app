@@ -23,7 +23,6 @@ import HeaderRow from './headerSection/headerRow';
 import HeaderContent from './headerSection/headerContent';
 import MaturityProvider from './providers/maturityProvider';
 import TVLProvider from './providers/tvlProvider';
-import GridVariableAPRProvider from './providers/gridVariableAPRProvider';
 import FixedAPRProvider from './providers/fixedAPRProvider';
 import GridBalanceProvider from './providers/gridBalanceProvider';
 import AvailableToDepositProvider from './providers/availableToDepositProvider';
@@ -51,9 +50,9 @@ const Dashboard: FC<DashboardProps> = ({ userWalletAddress, rows, onRowActionCli
   const [tableColumnExtensions] = useState([
     { columnName: ColumnNames.TOKEN, align: 'left' as 'left', width: 160 },
     { columnName: ColumnNames.PROTOCOL, align: 'left' as 'left', width: 150 },
-    { columnName: ColumnNames.MATURITY, align: 'left' as 'left' },
+    { columnName: ColumnNames.MATURITY, align: 'left' as 'left', width: 120 },
     { columnName: ColumnNames.FIXED_APR, align: 'right' as 'right', width: 140 },
-    { columnName: ColumnNames.VARIABLE_APY, align: 'right' as 'right', width: 160 },
+    // { columnName: ColumnNames.VARIABLE_APY, align: 'right' as 'right', width: 160 },
     { columnName: ColumnNames.TVL, align: 'right' as 'right', width: 95 },
     { columnName: ColumnNames.PRESENT_VALUE, align: 'right' as 'right', width: 120 },
     { columnName: ColumnNames.AVAILABLE_TO_DEPOSIT, align: 'right' as 'right', width: 180 },
@@ -68,7 +67,7 @@ const Dashboard: FC<DashboardProps> = ({ userWalletAddress, rows, onRowActionCli
   const [integratedSortingColumnExtensions] = useState([
     { columnName: ColumnNames.MATURITY, compare: compareMaturity },
     { columnName: ColumnNames.FIXED_APR, compare: compareAPY },
-    { columnName: ColumnNames.VARIABLE_APY, compare: compareAPY },
+    // { columnName: ColumnNames.VARIABLE_APY, compare: compareAPY },
     { columnName: ColumnNames.PROTOCOL, compare: compareProtocol },
   ]);
 
@@ -257,7 +256,7 @@ const Dashboard: FC<DashboardProps> = ({ userWalletAddress, rows, onRowActionCli
               <MaturityProvider for={[ColumnNames.MATURITY]} />
               <AvailableToDepositProvider for={[ColumnNames.AVAILABLE_TO_DEPOSIT]} />
               <TVLProvider for={[ColumnNames.TVL]} />
-              <GridVariableAPRProvider for={[ColumnNames.VARIABLE_APY]} />
+              {/* <GridVariableAPRProvider for={[ColumnNames.VARIABLE_APY]} /> */}
               <FixedAPRProvider for={[ColumnNames.FIXED_APR]} />
               <GridBalanceProvider for={[ColumnNames.PRESENT_VALUE]} />
               <CustomTreeData getChildRows={getChildRows} />
