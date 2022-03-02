@@ -31,10 +31,10 @@ export const dashboardColumnsDefinitions = (language: Language): ExtraDataColumn
     name: 'fixedAPR',
     title: getText('fixedApr', language),
   },
-  {
-    name: 'variableAPY',
-    title: getText('lpApr', language),
-  },
+  // {
+  //   name: 'variableAPY',
+  //   title: getText('lpApr', language),
+  // },
   {
     name: 'TVL',
     title: getText('tvl', language),
