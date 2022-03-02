@@ -11,11 +11,14 @@
   background: $card-background;
   box-sizing: border-box;
   width: 170px;
+
+  > * {
+    padding-left: 10px;
+  }
 }
 
 .tc__sidebar-section-breadcrumbs {
   display: flex;
-  padding-left: 10px;
   align-self: flex-start;
   text-decoration: none;
   cursor: pointer;
@@ -32,11 +35,49 @@
   }
 }
 
-.tc__sidebar-section-title {
-  padding-left: 10px;
-  padding-bottom: 20px;
-  padding-top: 20px;
+.tc__sidebar-pool {
+  display: flex;
+  width: calc(100% - 22px);
+  padding-right: 12px;
   align-self: flex-start;
+  justify-content: space-between;
+
+  .tc__sidebar-pool-title {
+    .tc__sidebar-pool-title1 {
+      font-weight: 700 !important;
+      line-height: 24px !important;
+    }
+    .tc__sidebar-pool-title2 {
+      font-weight: 700 !important;
+      line-height: 16px !important;
+      color: $dark-title-color !important;
+    }
+  }
+
+  .tc__sidebar-pool-icon {
+    position: relative;
+    width: 52px;
+    height: 40px;
+
+    svg {
+      position: absolute;
+
+      &:nth-child(2) {
+        top: 16px;
+        left: 28px;
+        border-radius: 50%;
+        border: 2px solid white;
+      }
+    }
+  }
+}
+
+.tc__sidebar-section-title {
+  height: 56px;
+  align-self: flex-start;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 
   .tc__sidebar-section-title1 {
     font-weight: 700 !important;
@@ -56,7 +97,7 @@
   align-items: center;
   align-self: flex-start;
   width: 100%;
-  height: 40px;
+  height: 48px;
   padding-left: 20px;
   cursor: pointer;
 
@@ -74,7 +115,7 @@
 
   &.selected {
     background: linear-gradient(97.53deg, #4ea3c8 0%, #285a95 100%);
-    border-radius: 0 20px 20px 0;
+    border-radius: 0 24px 24px 0;
     z-index: 1;
   }
 
@@ -85,8 +126,4 @@
       opacity: 0.6;
     }
   }
-}
-
-.tc__sidebar-pool-link {
-  cursor: pointer;
 }

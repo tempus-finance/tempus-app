@@ -9,9 +9,7 @@ import getText from '../../localisation/getText';
 import Words from '../../localisation/words';
 import { TransactionView } from '../../interfaces/TransactionView';
 import { Chain } from '../../interfaces/Chain';
-import { getChainConfig } from '../../utils/getConfig';
-import shortenAccount from '../../utils/shortenAccount';
-import TokenIcon from '../tokenIcon';
+import TokenIcon, { getTickerFromProtocol } from '../tokenIcon';
 import Typography from '../typography/Typography';
 import Spacer from '../spacer/spacer';
 
@@ -50,6 +48,7 @@ const Sidebar: FC<SidebarProps> = ({ initialView, chain, onSelectedView }) => {
 
   const selectedPoolAddress = selectedPool.attach(Downgraded).get();
   const backingToken = staticPoolData[selectedPool.get()].backingToken.attach(Downgraded).get();
+  const protocol = staticPoolData[selectedPool.get()].protocol.attach(Downgraded).get();
   const protocolDisplayName = staticPoolData[selectedPool.get()].protocolDisplayName.attach(Downgraded).get();
   const poolShareBalance = dynamicPoolData[selectedPoolAddress].poolShareBalance.attach(Downgraded).get();
   const negativeYield = dynamicPoolData[selectedPoolAddress].negativeYield.attach(Downgraded).get();
@@ -70,18 +69,6 @@ const Sidebar: FC<SidebarProps> = ({ initialView, chain, onSelectedView }) => {
       setSelectedView(initialView);
     }
   }, [initialView, selectedView]);
-
-  const onPoolAddressClick = useCallback(() => {
-    const config = getChainConfig(chain);
-
-    if (config.networkName === 'homestead') {
-      window.open(`https://etherscan.io/address/${selectedPoolAddress}`, '_blank');
-    } else if (config.networkName === 'fantom-mainnet') {
-      window.open(`https://ftmscan.com/address/${selectedPoolAddress}`, '_blank');
-    } else {
-      window.open(`https://${config.networkName}.etherscan.io/address/${selectedPoolAddress}`, '_blank');
-    }
-  }, [selectedPoolAddress, chain]);
 
   useEffect(() => {
     setDepositDisabledReason(
@@ -152,17 +139,22 @@ const Sidebar: FC<SidebarProps> = ({ initialView, chain, onSelectedView }) => {
           {getText('allPools', language)}
         </Typography>
       </Link>
-      <TokenIcon ticker={backingToken} large />
-      <Spacer size={5} />
-      <Typography variant="h4">{protocolDisplayName}</Typography>
-      <Spacer size={5} />
-      <Typography variant="h4">{backingToken} Pool</Typography>
-      <Spacer size={10} />
-      <div onClick={onPoolAddressClick} className="tc__sidebar-pool-link">
-        <Typography variant="body-text" color="link">
-          {shortenAccount(selectedPoolAddress)}
-        </Typography>
+      <Spacer size={12} />
+      <div className="tc__sidebar-pool">
+        <div className="tc__sidebar-pool-title">
+          <Typography className="tc__sidebar-pool-title1" variant="h5">
+            {backingToken} Pool
+          </Typography>
+          <Typography className="tc__sidebar-pool-title2" variant="sub-title">
+            {protocolDisplayName}
+          </Typography>
+        </div>
+        <div className="tc__sidebar-pool-icon">
+          <TokenIcon ticker={backingToken} large />
+          <TokenIcon ticker={getTickerFromProtocol(protocol)} />
+        </div>
       </div>
+      <Spacer size={25} />
 
       {/* Basic Section */}
       <div className="tc__sidebar-section-title">
