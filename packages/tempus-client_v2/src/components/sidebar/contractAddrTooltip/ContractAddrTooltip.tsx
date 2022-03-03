@@ -8,8 +8,10 @@ import Button from '../../common/Button';
 
 import './contractAddrTooltip.scss';
 import TickIcon from '../../icons/TickIcon';
+import ExternalLink from '../../common/ExternalLink';
 
 interface ContractAddrTooltipProps {
+  blockExplorerUrl: string;
   tempusPoolAddress: string;
   tempusAMMAddress: string;
   tempusControllerAddress: string;
@@ -21,6 +23,7 @@ interface ContractAddrTooltipProps {
 
 const ContractAddrTooltip: FC<ContractAddrTooltipProps> = props => {
   const {
+    blockExplorerUrl,
     tempusPoolAddress,
     tempusAMMAddress,
     tempusControllerAddress,
@@ -94,9 +97,11 @@ const ContractAddrTooltip: FC<ContractAddrTooltipProps> = props => {
           </>
         ) : (
           <>
-            <Typography variant="contract-addr" title={copyToClipboardText} onClick={onCopyTempusAMMAddress}>
-              {formattedTempusAMMAddress}
-            </Typography>
+            <ExternalLink href={`${blockExplorerUrl}/address/${tempusAMMAddress}`}>
+              <Typography variant="contract-addr" title={tempusAMMAddress}>
+                {formattedTempusAMMAddress}
+              </Typography>
+            </ExternalLink>
             <Button title={copyToClipboardText} onClick={onCopyTempusAMMAddress}>
               <CopyIcon fillColor="#062330" />
             </Button>
@@ -112,9 +117,11 @@ const ContractAddrTooltip: FC<ContractAddrTooltipProps> = props => {
           </>
         ) : (
           <>
-            <Typography variant="contract-addr" title={copyToClipboardText} onClick={onCopyTempusPoolAddress}>
-              {formattedTempusPoolAddress}
-            </Typography>
+            <ExternalLink href={`${blockExplorerUrl}/address/${tempusPoolAddress}`}>
+              <Typography variant="contract-addr" title={tempusPoolAddress}>
+                {formattedTempusPoolAddress}
+              </Typography>
+            </ExternalLink>
             <Button title={copyToClipboardText} onClick={onCopyTempusPoolAddress}>
               <CopyIcon fillColor="#062330" />
             </Button>
@@ -130,9 +137,11 @@ const ContractAddrTooltip: FC<ContractAddrTooltipProps> = props => {
           </>
         ) : (
           <>
-            <Typography variant="contract-addr" title={copyToClipboardText} onClick={onCopyTempusControllerAddress}>
-              {formattedTempusControllerAddress}
-            </Typography>
+            <ExternalLink href={`${blockExplorerUrl}/address/${tempusControllerAddress}`}>
+              <Typography variant="contract-addr" title={tempusControllerAddress}>
+                {formattedTempusControllerAddress}
+              </Typography>
+            </ExternalLink>
             <Button title={copyToClipboardText} onClick={onCopyTempusControllerAddress}>
               <CopyIcon fillColor="#062330" />
             </Button>
@@ -148,9 +157,11 @@ const ContractAddrTooltip: FC<ContractAddrTooltipProps> = props => {
           </>
         ) : (
           <>
-            <Typography variant="contract-addr" title={copyToClipboardText} onClick={onCopyPrincipalsAddress}>
-              {formattedPrincipalsAddress}
-            </Typography>
+            <ExternalLink href={`${blockExplorerUrl}/address/${principalsAddress}`}>
+              <Typography variant="contract-addr" title={principalsAddress}>
+                {formattedPrincipalsAddress}
+              </Typography>
+            </ExternalLink>
             <Button title={copyToClipboardText} onClick={onCopyPrincipalsAddress}>
               <CopyIcon fillColor="#062330" />
             </Button>
@@ -166,9 +177,11 @@ const ContractAddrTooltip: FC<ContractAddrTooltipProps> = props => {
           </>
         ) : (
           <>
-            <Typography variant="contract-addr" title={copyToClipboardText} onClick={onCopyYieldsAddress}>
-              {formattedYieldsAddress}
-            </Typography>
+            <ExternalLink href={`${blockExplorerUrl}/address/${yieldsAddress}`}>
+              <Typography variant="contract-addr" title={yieldsAddress}>
+                {formattedYieldsAddress}
+              </Typography>
+            </ExternalLink>
             <Button title={copyToClipboardText} onClick={onCopyYieldsAddress}>
               <CopyIcon fillColor="#062330" />
             </Button>
@@ -184,9 +197,11 @@ const ContractAddrTooltip: FC<ContractAddrTooltipProps> = props => {
           </>
         ) : (
           <>
-            <Typography variant="contract-addr" title={copyToClipboardText} onClick={onCopyYieldBearingTokenAddress}>
-              {formattedYieldBearingTokenAddress}
-            </Typography>
+            <ExternalLink href={`${blockExplorerUrl}/address/${yieldBearingTokenAddress}`}>
+              <Typography variant="contract-addr" title={yieldBearingTokenAddress}>
+                {formattedYieldBearingTokenAddress}
+              </Typography>
+            </ExternalLink>
             <Button title={copyToClipboardText} onClick={onCopyYieldBearingTokenAddress}>
               <CopyIcon fillColor="#062330" />
             </Button>
@@ -202,9 +217,11 @@ const ContractAddrTooltip: FC<ContractAddrTooltipProps> = props => {
           </>
         ) : (
           <>
-            <Typography variant="contract-addr" title={copyToClipboardText} onClick={onCopyStatsAddress}>
-              {formattedStatsAddress}
-            </Typography>
+            <ExternalLink href={`${blockExplorerUrl}/address/${statsAddress}`}>
+              <Typography variant="contract-addr" title={statsAddress}>
+                {formattedStatsAddress}
+              </Typography>
+            </ExternalLink>
             <Button title={copyToClipboardText} onClick={onCopyStatsAddress}>
               <CopyIcon fillColor="#062330" />
             </Button>

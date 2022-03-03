@@ -259,7 +259,12 @@ const Sidebar: FC<SidebarProps> = ({ initialView, chain, onSelectedView }) => {
       <div className="tc__sidebar-section-footer">
         <Typography variant="breadcrumbs" color="title" className="tc__sidebar-section-contract-addr">
           {getText('contractAddresses', language)}
-          <InfoTooltip placement="top-start" content={<ContractAddrTooltip {...contractAddresses} />}>
+          <InfoTooltip
+            placement="top-start"
+            content={
+              <ContractAddrTooltip blockExplorerUrl={getChainConfig(chain).blockExplorerUrl} {...contractAddresses} />
+            }
+          >
             <InfoIcon width={14} height={14} fillColor="#7A7A7A" />
           </InfoTooltip>
         </Typography>
