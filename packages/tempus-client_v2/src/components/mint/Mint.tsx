@@ -141,6 +141,18 @@ const Mint: FC<MintInProps> = ({ narrow, chain }) => {
     return selectedToken === backingToken ? userBackingTokenBalance : userYieldBearingTokenBalance;
   }, [backingToken, selectedToken, userBackingTokenBalance, userYieldBearingTokenBalance]);
 
+  const amountToApprove = useMemo(() => {
+    if (!amount) {
+      return null;
+    }
+
+    if (selectedToken === backingToken) {
+      return ethers.utils.parseUnits(amount, getTokenPrecision(selectedPoolAddress, 'backingToken'));
+    } else {
+      return ethers.utils.parseUnits(amount, getTokenPrecision(selectedPoolAddress, 'yieldBearingToken'));
+    }
+  }, [selectedPoolAddress, selectedToken, backingToken, amount]);
+
   const balanceFormatted = useMemo(() => {
     let currentBalance = getSelectedTokenBalance();
     if (!currentBalance) {
@@ -472,7 +484,8 @@ const Mint: FC<MintInProps> = ({ narrow, chain }) => {
           <Approve
             tokenToApproveAddress={getSelectedTokenAddress()}
             spenderAddress={getChainConfig(chain).tempusControllerContract}
-            amountToApprove={getSelectedTokenBalance()}
+            amountToApprove={amountToApprove}
+            userBalance={getSelectedTokenBalance()}
             tokenToApproveTicker={selectedToken}
             disabled={mintDisabled}
             marginRight={20}

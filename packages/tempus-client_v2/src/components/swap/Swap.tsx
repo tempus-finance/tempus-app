@@ -143,6 +143,18 @@ const Swap: FC<SwapProps> = props => {
     [switchTokens, tokenTo.tokenName],
   );
 
+  const amountToApprove = useMemo(() => {
+    if (!amount) {
+      return null;
+    }
+
+    if (selectedToken === 'Principals') {
+      return ethers.utils.parseUnits(amount, getTokenPrecision(selectedPoolAddress, 'principals'));
+    } else {
+      return ethers.utils.parseUnits(amount, getTokenPrecision(selectedPoolAddress, 'yields'));
+    }
+  }, [selectedPoolAddress, selectedToken, amount]);
+
   const onApproveChange = useCallback(approved => {
     setTokensApproved(approved);
   }, []);
@@ -323,7 +335,8 @@ const Swap: FC<SwapProps> = props => {
         <Spacer size={15} />
         <div className="tf__flex-row-center-vh">
           <Approve
-            amountToApprove={getSelectedTokenBalance()}
+            amountToApprove={amountToApprove}
+            userBalance={getSelectedTokenBalance()}
             onApproveChange={onApproveChange}
             spenderAddress={getChainConfig(chain).vaultContract}
             tokenToApproveTicker={tokenFrom.tokenName}
