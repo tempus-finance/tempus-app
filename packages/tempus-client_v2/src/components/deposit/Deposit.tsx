@@ -1164,6 +1164,7 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
             tokenToApproveAddress={getSelectedTokenAddress()}
             spenderAddress={getChainConfig(chain).tempusControllerContract}
             amountToApprove={amountToApprove}
+            userBalance={getSelectedTokenBalance()}
             tokenToApproveTicker={selectedToken}
             disabled={depositDisabled}
             marginRight={20}

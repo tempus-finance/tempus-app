@@ -359,6 +359,22 @@ const ProvideLiquidity: FC<ProvideLiquidityProps> = props => {
     chain,
   ]);
 
+  const principalsAmountToApprove = useMemo(() => {
+    if (!principalsAmount) {
+      return null;
+    }
+
+    return ethers.utils.parseUnits(principalsAmount, getTokenPrecision(selectedPoolAddress, 'principals'));
+  }, [selectedPoolAddress, principalsAmount]);
+
+  const yieldsAmountToApprove = useMemo(() => {
+    if (!yieldsAmount) {
+      return null;
+    }
+
+    return ethers.utils.parseUnits(yieldsAmount, getTokenPrecision(selectedPoolAddress, 'yields'));
+  }, [selectedPoolAddress, yieldsAmount]);
+
   const onExecuted = useCallback(
     (successful: boolean, txBlockNumber?: number) => {
       setPrincipalsAmount('');
@@ -475,7 +491,8 @@ const ProvideLiquidity: FC<ProvideLiquidityProps> = props => {
             <div className="tf__flex-row-center-v-end">
               <Approve
                 tokenToApproveTicker="Principals"
-                amountToApprove={userPrincipalsBalance}
+                amountToApprove={principalsAmountToApprove}
+                userBalance={userPrincipalsBalance}
                 onApproveChange={approved => {
                   setPrincipalsApproved(approved);
                 }}
@@ -516,7 +533,8 @@ const ProvideLiquidity: FC<ProvideLiquidityProps> = props => {
             <div className="tf__flex-row-center-v-end">
               <Approve
                 tokenToApproveTicker="Yields"
-                amountToApprove={userYieldsBalance}
+                amountToApprove={yieldsAmountToApprove}
+                userBalance={userYieldsBalance}
                 onApproveChange={approved => {
                   setYieldsApproved(approved);
                 }}
