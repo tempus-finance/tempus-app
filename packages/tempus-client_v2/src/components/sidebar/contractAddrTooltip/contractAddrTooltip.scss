@@ -23,14 +23,11 @@
       color: $dark-title-color !important;
     }
 
-    div[data-variant='contract-addr'] {
-      width: 72px;
-      margin: 0 8px;
-      color: $contract-addr-color !important;
-      cursor: pointer;
-
-      &:hover {
-        text-decoration: underline;
+    a {
+      div[data-variant='contract-addr'] {
+        width: 72px;
+        margin: 0 8px;
+        color: $contract-addr-color !important;
       }
     }
 
