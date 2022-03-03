@@ -1,0 +1,48 @@
+@import '../../../constants.scss';
+
+.tc__contract-addr-tooltip {
+  width: 250px;
+  height: 200px;
+  margin: 6px;
+
+  div[data-variant='tooltip-card-title'] {
+    font-size: 24px !important;
+    line-height: 32px !important;
+    margin-bottom: 10px;
+  }
+
+  .tc__contract-addr-tooltip-item {
+    display: flex;
+    align-items: center;
+    margin: 6px 0;
+
+    div[data-variant='sub-title'] {
+      flex: 1;
+      font-weight: 400 !important;
+      line-height: 16px !important;
+      color: $dark-title-color !important;
+    }
+
+    div[data-variant='contract-addr'] {
+      width: 72px;
+      margin: 0 8px;
+      color: $contract-addr-color !important;
+      cursor: pointer;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+
+    .tc__btn {
+      height: 16px;
+    }
+
+    div[data-variant='body-text'] {
+      margin: 0 8px;
+      font-weight: 400 !important;
+      line-height: 16px !important;
+      color: $dark-title-color !important;
+    }
+  }
+}

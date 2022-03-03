@@ -1,5 +1,5 @@
 import React, { FC, ReactNode, useCallback, useMemo, useRef, useState } from 'react';
-import { Popper } from '@material-ui/core';
+import { Popper, PopperPlacementType } from '@material-ui/core';
 import InfoIcon from '../icons/InfoIcon';
 import Typography from '../typography/Typography';
 
@@ -7,6 +7,7 @@ import './infoTooltip.scss';
 
 interface InfoToolTipProps {
   content: string | ReactNode;
+  placement?: PopperPlacementType;
   useExternalOpenState?: boolean;
   externalOpen?: boolean;
   onExternalToggle?: () => void;
@@ -15,6 +16,7 @@ interface InfoToolTipProps {
 const InfoTooltip: FC<InfoToolTipProps> = props => {
   const {
     content,
+    placement = 'bottom-start',
     useExternalOpenState = false,
     externalOpen = false,
     onExternalToggle = () => false,
@@ -58,7 +60,6 @@ const InfoTooltip: FC<InfoToolTipProps> = props => {
     return content;
   }, [content]);
 
-
   return (
     <div className="tc__infoTooltip">
       <div className={`tc__infoTooltip-anchor ${open ? 'tc__infoTooltip-active' : ''}`}>{popupAnchor}</div>
@@ -66,7 +67,7 @@ const InfoTooltip: FC<InfoToolTipProps> = props => {
         className="tc__infoTooltip__popper"
         open={open}
         anchorEl={anchorRef.current}
-        placement="bottom-start"
+        placement={placement}
         disablePortal
         modifiers={{
           arrow: {

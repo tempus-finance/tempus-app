@@ -178,5 +178,9 @@ const en: { [word in Words]: string } = {
   unsupportedNetworkTooltipText2: 'Please connect to a supported network in order to proceed.',
   allPools: 'All Pools',
   backToDashboard: 'Back to All Pools',
+  contractAddresses: 'Contract Addresses',
+  termsAndConditions: 'Terms and Conditions',
+  copyToclipboard: 'Copy to Clipboard',
+  copied: 'Copied!',
 };
 export default en;

@@ -11,7 +11,12 @@ import { TransactionView } from '../../interfaces/TransactionView';
 import { Chain } from '../../interfaces/Chain';
 import TokenIcon, { getTickerFromProtocol } from '../tokenIcon';
 import Typography from '../typography/Typography';
+import ExternalLink from '../common/ExternalLink';
 import Spacer from '../spacer/spacer';
+import InfoTooltip from '../infoTooltip/infoTooltip';
+import InfoIcon from '../icons/InfoIcon';
+import { getChainConfig } from '../../utils/getConfig';
+import ContractAddrTooltip from './contractAddrTooltip/ContractAddrTooltip';
 
 import './Sidebar.scss';
 
@@ -55,6 +60,16 @@ const Sidebar: FC<SidebarProps> = ({ initialView, chain, onSelectedView }) => {
   const userPrincipalsBalance = dynamicPoolData[selectedPoolAddress].userPrincipalsBalance.attach(Downgraded).get();
   const userYieldsBalance = dynamicPoolData[selectedPoolAddress].userYieldsBalance.attach(Downgraded).get();
   const userLPTokenBalance = dynamicPoolData[selectedPoolAddress].userLPTokenBalance.attach(Downgraded).get();
+
+  const contractAddresses = {
+    tempusPoolAddress: selectedPoolAddress,
+    tempusAMMAddress: staticPoolData[selectedPool.get()].ammAddress.attach(Downgraded).get(),
+    tempusControllerAddress: getChainConfig(chain).tempusControllerContract,
+    principalsAddress: staticPoolData[selectedPool.get()].principalsAddress.attach(Downgraded).get(),
+    yieldsAddress: staticPoolData[selectedPool.get()].yieldsAddress.attach(Downgraded).get(),
+    yieldBearingTokenAddress: staticPoolData[selectedPool.get()].yieldBearingTokenAddress.attach(Downgraded).get(),
+    statsAddress: getChainConfig(chain).statisticsContract,
+  };
 
   const onItemClick = useCallback(
     (itemName: TransactionView) => {
@@ -142,12 +157,8 @@ const Sidebar: FC<SidebarProps> = ({ initialView, chain, onSelectedView }) => {
       <Spacer size={12} />
       <div className="tc__sidebar-pool">
         <div className="tc__sidebar-pool-title">
-          <Typography className="tc__sidebar-pool-title1" variant="h5">
-            {backingToken} Pool
-          </Typography>
-          <Typography className="tc__sidebar-pool-title2" variant="sub-title">
-            {protocolDisplayName}
-          </Typography>
+          <Typography variant="h5">{backingToken} Pool</Typography>
+          <Typography variant="sub-title">{protocolDisplayName}</Typography>
         </div>
         <div className="tc__sidebar-pool-icon">
           <TokenIcon ticker={backingToken} large />
@@ -158,10 +169,10 @@ const Sidebar: FC<SidebarProps> = ({ initialView, chain, onSelectedView }) => {
 
       {/* Basic Section */}
       <div className="tc__sidebar-section-title">
-        <Typography className="tc__sidebar-section-title1" variant="h5" color="title">
+        <Typography variant="h5" color="title">
           {getText('basic', language)}
         </Typography>
-        <Typography className="tc__sidebar-section-title2" variant="sub-title" color="title">
+        <Typography variant="sub-title" color="title">
           {getText('basicSubTitle', language)}
         </Typography>
       </div>
@@ -179,7 +190,7 @@ const Sidebar: FC<SidebarProps> = ({ initialView, chain, onSelectedView }) => {
         return disabledReason ? (
           <Tooltip key={basicViewName} title={getText(disabledReason, language)}>
             <div className="tc__sidebar-view-item disabled">
-              <Typography className="tc__sidebar-view-item-text" variant="h5" color="title">
+              <Typography variant="h5" color="title">
                 {getText(basicViewName, language)}
               </Typography>
             </div>
@@ -190,7 +201,7 @@ const Sidebar: FC<SidebarProps> = ({ initialView, chain, onSelectedView }) => {
               className={`tc__sidebar-view-item ${selected ? 'selected' : ''}`}
               onClick={() => onItemClick(basicViewName)}
             >
-              <Typography className="tc__sidebar-view-item-text" variant="h5" color={selected ? 'inverted' : 'default'}>
+              <Typography variant="h5" color={selected ? 'inverted' : 'default'}>
                 {getText(basicViewName, language)}
               </Typography>
             </div>
@@ -200,10 +211,10 @@ const Sidebar: FC<SidebarProps> = ({ initialView, chain, onSelectedView }) => {
 
       {/* Advanced Section */}
       <div className="tc__sidebar-section-title">
-        <Typography className="tc__sidebar-section-title1" variant="h5" color="title">
+        <Typography variant="h5" color="title">
           {getText('advanced', language)}
         </Typography>
-        <Typography className="tc__sidebar-section-title2" variant="sub-title" color="title">
+        <Typography variant="sub-title" color="title">
           {getText('advancedSubTitle', language)}
         </Typography>
       </div>
@@ -227,7 +238,7 @@ const Sidebar: FC<SidebarProps> = ({ initialView, chain, onSelectedView }) => {
         return disabledReason ? (
           <Tooltip key={advancedViewName} title={getText(disabledReason, language)}>
             <div className="tc__sidebar-view-item disabled">
-              <Typography className="tc__sidebar-view-item-text" variant="h5" color="title">
+              <Typography variant="h5" color="title">
                 {getText(advancedViewName, language)}
               </Typography>
             </div>
@@ -238,13 +249,31 @@ const Sidebar: FC<SidebarProps> = ({ initialView, chain, onSelectedView }) => {
               className={`tc__sidebar-view-item ${selected ? 'selected' : ''}`}
               onClick={() => onItemClick(advancedViewName)}
             >
-              <Typography className="tc__sidebar-view-item-text" variant="h5" color={selected ? 'inverted' : 'default'}>
+              <Typography variant="h5" color={selected ? 'inverted' : 'default'}>
                 {getText(advancedViewName, language)}
               </Typography>
             </div>
           </Fragment>
         );
       })}
+      <div className="tc__sidebar-section-footer">
+        <Typography variant="breadcrumbs" color="title" className="tc__sidebar-section-contract-addr">
+          {getText('contractAddresses', language)}
+          <InfoTooltip placement="top-start" content={<ContractAddrTooltip {...contractAddresses} />}>
+            <InfoIcon width={14} height={14} fillColor="#7A7A7A" />
+          </InfoTooltip>
+        </Typography>
+        <ExternalLink href="https://docs.tempus.finance/" title="Gitbook">
+          <Typography variant="breadcrumbs" color="title">
+            Gitbook
+          </Typography>
+        </ExternalLink>
+        <ExternalLink href="https://tempus.finance/terms-of-service" title={getText('termsAndConditions', language)}>
+          <Typography variant="breadcrumbs" color="title">
+            {getText('termsAndConditions', language)}
+          </Typography>
+        </ExternalLink>
+      </div>
     </div>
   );
 };

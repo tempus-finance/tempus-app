@@ -1,0 +1,218 @@
+import { FC, useCallback, useContext, useMemo, useState } from 'react';
+import { LanguageContext } from '../../../context/languageContext';
+import getText from '../../../localisation/getText';
+import shortenAccount from '../../../utils/shortenAccount';
+import Typography from '../../typography/Typography';
+import CopyIcon from '../../icons/CopyIcon';
+import Button from '../../common/Button';
+
+import './contractAddrTooltip.scss';
+import TickIcon from '../../icons/TickIcon';
+
+interface ContractAddrTooltipProps {
+  tempusPoolAddress: string;
+  tempusAMMAddress: string;
+  tempusControllerAddress: string;
+  principalsAddress: string;
+  yieldsAddress: string;
+  yieldBearingTokenAddress: string;
+  statsAddress: string;
+}
+
+const ContractAddrTooltip: FC<ContractAddrTooltipProps> = props => {
+  const {
+    tempusPoolAddress,
+    tempusAMMAddress,
+    tempusControllerAddress,
+    principalsAddress,
+    yieldsAddress,
+    yieldBearingTokenAddress,
+    statsAddress,
+  } = props;
+  const { language } = useContext(LanguageContext);
+
+  const [showCopied, setShowCopied] = useState<string>('');
+  const [timeoutFunc, setTimeoutFunc] = useState<NodeJS.Timeout>();
+
+  const onCopy = useCallback((address: string, timeout?: NodeJS.Timeout) => {
+    navigator.clipboard.writeText(address);
+    setShowCopied(address);
+    timeout && clearTimeout(timeout);
+    setTimeoutFunc(setTimeout(() => setShowCopied(''), 1000));
+  }, []);
+  const onCopyTempusAMMAddress = useCallback(
+    () => onCopy(tempusAMMAddress, timeoutFunc),
+    [tempusAMMAddress, timeoutFunc, onCopy],
+  );
+  const onCopyTempusPoolAddress = useCallback(
+    () => onCopy(tempusPoolAddress, timeoutFunc),
+    [tempusPoolAddress, timeoutFunc, onCopy],
+  );
+  const onCopyTempusControllerAddress = useCallback(
+    () => onCopy(tempusControllerAddress, timeoutFunc),
+    [tempusControllerAddress, timeoutFunc, onCopy],
+  );
+  const onCopyPrincipalsAddress = useCallback(
+    () => onCopy(principalsAddress, timeoutFunc),
+    [principalsAddress, timeoutFunc, onCopy],
+  );
+  const onCopyYieldsAddress = useCallback(
+    () => onCopy(yieldsAddress, timeoutFunc),
+    [yieldsAddress, timeoutFunc, onCopy],
+  );
+  const onCopyYieldBearingTokenAddress = useCallback(
+    () => onCopy(yieldBearingTokenAddress, timeoutFunc),
+    [yieldBearingTokenAddress, timeoutFunc, onCopy],
+  );
+  const onCopyStatsAddress = useCallback(() => onCopy(statsAddress, timeoutFunc), [statsAddress, timeoutFunc, onCopy]);
+
+  const formattedTempusAMMAddress = useMemo(() => shortenAccount(tempusAMMAddress, 3, 3), [tempusAMMAddress]);
+  const formattedTempusPoolAddress = useMemo(() => shortenAccount(tempusPoolAddress, 3, 3), [tempusPoolAddress]);
+  const formattedTempusControllerAddress = useMemo(
+    () => shortenAccount(tempusControllerAddress, 3, 3),
+    [tempusControllerAddress],
+  );
+  const formattedPrincipalsAddress = useMemo(() => shortenAccount(principalsAddress, 3, 3), [principalsAddress]);
+  const formattedYieldsAddress = useMemo(() => shortenAccount(yieldsAddress, 3, 3), [yieldsAddress]);
+  const formattedYieldBearingTokenAddress = useMemo(
+    () => shortenAccount(yieldBearingTokenAddress, 3, 3),
+    [yieldBearingTokenAddress],
+  );
+  const formattedStatsAddress = useMemo(() => shortenAccount(statsAddress, 3, 3), [statsAddress]);
+  const copyToClipboardText = useMemo(() => getText('copyToclipboard', language), [language]);
+  const copiedText = useMemo(() => getText('copied', language), [language]);
+
+  return (
+    <div className="tc__contract-addr-tooltip">
+      <Typography variant="tooltip-card-title">{getText('contractAddresses', language)}</Typography>
+      <div className="tc__contract-addr-tooltip-item">
+        <Typography variant="sub-title">TempusAMM</Typography>
+        {showCopied === tempusAMMAddress ? (
+          <>
+            <TickIcon />
+            <Typography variant="body-text">{copiedText}</Typography>
+          </>
+        ) : (
+          <>
+            <Typography variant="contract-addr" title={copyToClipboardText} onClick={onCopyTempusAMMAddress}>
+              {formattedTempusAMMAddress}
+            </Typography>
+            <Button title={copyToClipboardText} onClick={onCopyTempusAMMAddress}>
+              <CopyIcon fillColor="#062330" />
+            </Button>
+          </>
+        )}
+      </div>
+      <div className="tc__contract-addr-tooltip-item">
+        <Typography variant="sub-title">TempusPool</Typography>
+        {showCopied === tempusPoolAddress ? (
+          <>
+            <TickIcon />
+            <Typography variant="body-text">{copiedText}</Typography>
+          </>
+        ) : (
+          <>
+            <Typography variant="contract-addr" title={copyToClipboardText} onClick={onCopyTempusPoolAddress}>
+              {formattedTempusPoolAddress}
+            </Typography>
+            <Button title={copyToClipboardText} onClick={onCopyTempusPoolAddress}>
+              <CopyIcon fillColor="#062330" />
+            </Button>
+          </>
+        )}
+      </div>
+      <div className="tc__contract-addr-tooltip-item">
+        <Typography variant="sub-title">TempusController</Typography>
+        {showCopied === tempusControllerAddress ? (
+          <>
+            <TickIcon />
+            <Typography variant="body-text">{copiedText}</Typography>
+          </>
+        ) : (
+          <>
+            <Typography variant="contract-addr" title={copyToClipboardText} onClick={onCopyTempusControllerAddress}>
+              {formattedTempusControllerAddress}
+            </Typography>
+            <Button title={copyToClipboardText} onClick={onCopyTempusControllerAddress}>
+              <CopyIcon fillColor="#062330" />
+            </Button>
+          </>
+        )}
+      </div>
+      <div className="tc__contract-addr-tooltip-item">
+        <Typography variant="sub-title">Principals</Typography>
+        {showCopied === principalsAddress ? (
+          <>
+            <TickIcon />
+            <Typography variant="body-text">{copiedText}</Typography>
+          </>
+        ) : (
+          <>
+            <Typography variant="contract-addr" title={copyToClipboardText} onClick={onCopyPrincipalsAddress}>
+              {formattedPrincipalsAddress}
+            </Typography>
+            <Button title={copyToClipboardText} onClick={onCopyPrincipalsAddress}>
+              <CopyIcon fillColor="#062330" />
+            </Button>
+          </>
+        )}
+      </div>
+      <div className="tc__contract-addr-tooltip-item">
+        <Typography variant="sub-title">Yields</Typography>
+        {showCopied === yieldsAddress ? (
+          <>
+            <TickIcon />
+            <Typography variant="body-text">{copiedText}</Typography>
+          </>
+        ) : (
+          <>
+            <Typography variant="contract-addr" title={copyToClipboardText} onClick={onCopyYieldsAddress}>
+              {formattedYieldsAddress}
+            </Typography>
+            <Button title={copyToClipboardText} onClick={onCopyYieldsAddress}>
+              <CopyIcon fillColor="#062330" />
+            </Button>
+          </>
+        )}
+      </div>
+      <div className="tc__contract-addr-tooltip-item">
+        <Typography variant="sub-title">YieldBearing Token</Typography>
+        {showCopied === yieldBearingTokenAddress ? (
+          <>
+            <TickIcon />
+            <Typography variant="body-text">{copiedText}</Typography>
+          </>
+        ) : (
+          <>
+            <Typography variant="contract-addr" title={copyToClipboardText} onClick={onCopyYieldBearingTokenAddress}>
+              {formattedYieldBearingTokenAddress}
+            </Typography>
+            <Button title={copyToClipboardText} onClick={onCopyYieldBearingTokenAddress}>
+              <CopyIcon fillColor="#062330" />
+            </Button>
+          </>
+        )}
+      </div>
+      <div className="tc__contract-addr-tooltip-item">
+        <Typography variant="sub-title">Stats</Typography>
+        {showCopied === statsAddress ? (
+          <>
+            <TickIcon />
+            <Typography variant="body-text">{copiedText}</Typography>
+          </>
+        ) : (
+          <>
+            <Typography variant="contract-addr" title={copyToClipboardText} onClick={onCopyStatsAddress}>
+              {formattedStatsAddress}
+            </Typography>
+            <Button title={copyToClipboardText} onClick={onCopyStatsAddress}>
+              <CopyIcon fillColor="#062330" />
+            </Button>
+          </>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default ContractAddrTooltip;
