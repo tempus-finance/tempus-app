@@ -156,6 +156,10 @@ type Words =
   | 'unsupportedNetworkTooltipText1'
   | 'unsupportedNetworkTooltipText2'
   | 'allPools'
-  | 'backToDashboard';
+  | 'backToDashboard'
+  | 'contractAddresses'
+  | 'termsAndConditions'
+  | 'copyToclipboard'
+  | 'copied';
 
 export default Words;

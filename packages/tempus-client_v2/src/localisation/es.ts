@@ -181,5 +181,9 @@ const es: { [word in Words]: string } = {
   unsupportedNetworkTooltipText2: 'Conéctese a una red compatible para continuar.',
   allPools: 'Todas las Pool',
   backToDashboard: 'Volver a todas las Pools',
+  contractAddresses: 'Direcciones de contrato',
+  termsAndConditions: 'Términos y Condiciones',
+  copyToclipboard: 'Copiar al portapapeles',
+  copied: '¡Copiado!',
 };
 export default es;

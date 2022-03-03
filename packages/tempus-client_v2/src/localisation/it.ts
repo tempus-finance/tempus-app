@@ -182,5 +182,9 @@ const it: { [word in Words]: string } = {
   unsupportedNetworkTooltipText2: 'Per favore connettiti ad un network supportato per continuare.',
   allPools: 'Tutte le pool',
   backToDashboard: 'Torna a tutte le Pool',
+  contractAddresses: 'Indirizzi dei Contratti',
+  termsAndConditions: 'Termini e Condizioni',
+  copyToclipboard: 'Copia negli appunti',
+  copied: 'Copiato!',
 };
 export default it;
