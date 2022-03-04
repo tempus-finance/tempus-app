@@ -112,7 +112,9 @@ export const generatePoolNotificationInfo = (
   protocol: ProtocolName,
   maturityDate: Date,
 ) => {
-  return `${prettifyChainName(chain)} - ${ticker} ${getText('via', language)} ${capitalize(protocol)}
+  const notificationDateTime = format(new Date(), 'kk:mm:ss dd-MMMM-yyyy');
+  return `${notificationDateTime}
+  ${prettifyChainName(chain)} - ${ticker} ${getText('via', language)} ${capitalize(protocol)}
   ${getText('maturity', language)} ${format(maturityDate, 'dd MMMM yyyy')}`;
 };
 
@@ -126,9 +128,12 @@ export const getTokenApprovalNotification = (
 ) => {
   // Quick fix to show Capitals instead of Principals in the notification
   // TODO - Properly change Principals to Capitals in the Token interface.
-  return `${prettifyChainName(chain)} - ${tokenApproved === 'Principals' ? 'Capitals' : tokenApproved}
+  const notificationDateTime = format(new Date(), 'kk:mm:ss dd-MMMM-yyyy');
+
+  return `${notificationDateTime}
+  ${prettifyChainName(chain)} - ${tokenApproved === 'Principals' ? 'Capitals' : tokenApproved}
     ${backingToken} ${getText('via', language)} ${capitalize(protocol)}
-    ${format(maturityDate, 'dd MMMM yyyy')}`;
+    ${getText('maturity', language)} ${format(maturityDate, 'dd MMMM yyyy')}`;
 };
 
 const getDepositNotificationContent = ({
