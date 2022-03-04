@@ -7,6 +7,9 @@ import GovernanceIcon from '../icons/GovernanceIcon';
 import DiscordIcon from '../icons/DiscordIcon';
 import TwitterIcon from '../icons/TwitterIcon';
 import GithubIcon from '../icons/GithubIcon';
+import Button from '../common/Button';
+import Typography from '../typography/Typography';
+
 import './Community.scss';
 
 // TODO
@@ -45,10 +48,11 @@ const Community = () => {
   }, [toggleCommunityMenu]);
 
   return (
-    <>
-      <li ref={communityMenuAnchor} onClick={toggleCommunityMenu}>
-        {getText('community', language)} <KeyboardArrowDown />
-      </li>
+    <li ref={communityMenuAnchor}>
+      <Button onClick={toggleCommunityMenu}>
+        <Typography variant="dropdown-text">{getText('community', language)}</Typography>
+        <KeyboardArrowDown />
+      </Button>
       <Popper
         className="tc__header__popper"
         open={communityMenuOpen}
@@ -85,7 +89,7 @@ const Community = () => {
         </div>
       </Popper>
       {communityMenuOpen && <div className="tc__backdrop" onClick={toggleCommunityMenu} />}
-    </>
+    </li>
   );
 };
 
