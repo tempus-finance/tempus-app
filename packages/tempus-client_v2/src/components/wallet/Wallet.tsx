@@ -575,9 +575,9 @@ const Wallet = () => {
 
         {/* Wallet not connected - show connect wallet button */}
         {!connecting && !selectedWallet && !isUnsupportedNetwork && (
-          <div className="tc__connect-wallet-button" onClick={onSelectWallet}>
+          <Button className="tc__connect-wallet-button" onClick={onSelectWallet}>
             <Typography variant="button-text">{getText('connectWallet', language)}</Typography>
-          </div>
+          </Button>
         )}
 
         {/* Wallet connected - show wallet info */}
