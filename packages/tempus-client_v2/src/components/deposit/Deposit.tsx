@@ -869,7 +869,7 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
             <div className="tc__title-and-balance">
               <Typography variant="card-title">{getText('from', language)}</Typography>
               <Typography variant="body-text">
-                {getText('balance', language)} {balanceFormatted}
+                {getText('availableToDeposit', language)} {balanceFormatted}
               </Typography>
             </div>
           ) : (
