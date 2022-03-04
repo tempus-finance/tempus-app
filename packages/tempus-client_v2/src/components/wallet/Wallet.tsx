@@ -33,6 +33,7 @@ import TokenIcon from '../tokenIcon';
 import WarnIcon from '../icons/WarnIcon';
 import InfoTooltip from '../infoTooltip/infoTooltip';
 import WalletUnsupportedTooltip from './WalletUnsupportedTooltip';
+import Button from '../common/Button';
 
 import './Wallet.scss';
 
@@ -587,7 +588,7 @@ const Wallet = () => {
           userWalletChain &&
           !isUnsupportedNetwork && (
             <>
-              <div className="tc__connect-wallet-network-picker" onClick={onOpenChainSelector}>
+              <Button className="tc__connect-wallet-network-picker" onClick={onOpenChainSelector}>
                 <TokenIcon
                   ticker={chainToTicker(userWalletChain)}
                   width={24}
@@ -600,8 +601,8 @@ const Wallet = () => {
                   vectorWidth={userWalletChain === 'ethereum' ? 20 : 24}
                   vectorHeight={userWalletChain === 'ethereum' ? 20 : 24}
                 />
-              </div>
-              <div className="tc__connect-wallet-button" onClick={onOpenWalletPopup} ref={walletPopupAnchor}>
+              </Button>
+              <Button className="tc__connect-wallet-button" onClick={onOpenWalletPopup} ref={walletPopupAnchor}>
                 <WalletAvatar avatar={ensAvatar} name={ensName || account} />
 
                 <Spacer size={8} />
@@ -624,7 +625,7 @@ const Wallet = () => {
                     {pendingTransactions.length} {getText('pending', language)}
                   </Typography>
                 )}
-              </div>
+              </Button>
             </>
           )}
 

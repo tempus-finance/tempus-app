@@ -1,4 +1,4 @@
-import React, { FC, Fragment, useCallback, useContext, useEffect, useState } from 'react';
+import React, { FC, useCallback, useContext, useEffect, useState } from 'react';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { Tooltip } from '@material-ui/core';
 import { Link } from 'react-router-dom';
@@ -17,6 +17,7 @@ import InfoTooltip from '../infoTooltip/infoTooltip';
 import InfoIcon from '../icons/InfoIcon';
 import { getChainConfig } from '../../utils/getConfig';
 import ContractAddrTooltip from './contractAddrTooltip/ContractAddrTooltip';
+import Button from '../common/Button';
 
 import './Sidebar.scss';
 
@@ -196,16 +197,15 @@ const Sidebar: FC<SidebarProps> = ({ initialView, chain, onSelectedView }) => {
             </div>
           </Tooltip>
         ) : (
-          <Fragment key={basicViewName}>
-            <div
-              className={`tc__sidebar-view-item ${selected ? 'selected' : ''}`}
-              onClick={() => onItemClick(basicViewName)}
-            >
-              <Typography variant="h5" color={selected ? 'inverted' : 'default'}>
-                {getText(basicViewName, language)}
-              </Typography>
-            </div>
-          </Fragment>
+          <Button
+            key={basicViewName}
+            className={`tc__sidebar-view-item ${selected ? 'selected' : ''}`}
+            onClick={() => onItemClick(basicViewName)}
+          >
+            <Typography variant="h5" color={selected ? 'inverted' : 'default'}>
+              {getText(basicViewName, language)}
+            </Typography>
+          </Button>
         );
       })}
 
@@ -244,16 +244,15 @@ const Sidebar: FC<SidebarProps> = ({ initialView, chain, onSelectedView }) => {
             </div>
           </Tooltip>
         ) : (
-          <Fragment key={advancedViewName}>
-            <div
-              className={`tc__sidebar-view-item ${selected ? 'selected' : ''}`}
-              onClick={() => onItemClick(advancedViewName)}
-            >
-              <Typography variant="h5" color={selected ? 'inverted' : 'default'}>
-                {getText(advancedViewName, language)}
-              </Typography>
-            </div>
-          </Fragment>
+          <Button
+            key={advancedViewName}
+            className={`tc__sidebar-view-item ${selected ? 'selected' : ''}`}
+            onClick={() => onItemClick(advancedViewName)}
+          >
+            <Typography variant="h5" color={selected ? 'inverted' : 'default'}>
+              {getText(advancedViewName, language)}
+            </Typography>
+          </Button>
         );
       })}
       <div className="tc__sidebar-section-footer">
