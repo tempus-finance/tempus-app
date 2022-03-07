@@ -18,7 +18,7 @@ import WalletPending from './WalletPending';
 import './WalletPopup.scss';
 
 type WalletPopupInProps = {
-  anchorElement: RefObject<HTMLDivElement>;
+  anchorElement: RefObject<HTMLButtonElement>;
   account?: string | null;
   chainName: Chain;
 };

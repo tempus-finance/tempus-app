@@ -15,7 +15,6 @@ const CurrencySwitch = () => {
   const onSwitchClick = useCallback(
     (event: MouseEvent<HTMLButtonElement>) => {
       const label = (event.target as HTMLDivElement).parentElement?.getAttribute('data-id') as CurrencySwitchOptions;
-      console.log(label, 'label', event.target);
       if (setUserSettings && label) {
         setUserSettings(prevState => {
           if ((label === 'fiat' && !prevState.showFiat) || (label === 'crypto' && prevState.showFiat)) {
