@@ -48,13 +48,13 @@ const Dashboard: FC<DashboardProps> = ({ userWalletAddress, rows, onRowActionCli
   const { language } = useContext(LanguageContext);
 
   const [tableColumnExtensions] = useState([
-    { columnName: ColumnNames.TOKEN, align: 'left' as 'left', width: 160 },
+    { columnName: ColumnNames.TOKEN, align: 'left' as 'left', width: 200 },
     { columnName: ColumnNames.PROTOCOL, align: 'left' as 'left', width: 150 },
-    { columnName: ColumnNames.MATURITY, align: 'left' as 'left', width: 120 },
-    { columnName: ColumnNames.FIXED_APR, align: 'right' as 'right', width: 140 },
+    { columnName: ColumnNames.MATURITY, align: 'left' as 'left' },
+    { columnName: ColumnNames.FIXED_APR, align: 'right' as 'right', width: 150 },
     // { columnName: ColumnNames.VARIABLE_APY, align: 'right' as 'right', width: 160 },
-    { columnName: ColumnNames.TVL, align: 'right' as 'right', width: 95 },
-    { columnName: ColumnNames.PRESENT_VALUE, align: 'right' as 'right', width: 120 },
+    { columnName: ColumnNames.TVL, align: 'right' as 'right', width: 150 },
+    { columnName: ColumnNames.PRESENT_VALUE, align: 'right' as 'right', width: 150 },
     { columnName: ColumnNames.AVAILABLE_TO_DEPOSIT, align: 'right' as 'right', width: 180 },
   ]);
 
