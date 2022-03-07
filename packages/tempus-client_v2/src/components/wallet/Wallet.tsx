@@ -53,7 +53,7 @@ const Wallet = () => {
 
   const isUnsupportedNetwork = unsupportedNetwork.attach(Downgraded).get();
 
-  const walletPopupAnchor = useRef<HTMLDivElement>(null);
+  const walletPopupAnchor = useRef<HTMLButtonElement>(null);
 
   const [selectedWallet, setSelectedWallet] = useState<UserWallet | null>(null);
   const [availableWallets, setAvailableWallets] = useState<{ [w in UserWallet]?: boolean }>({
