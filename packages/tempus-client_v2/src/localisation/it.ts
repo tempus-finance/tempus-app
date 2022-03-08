@@ -186,6 +186,9 @@ const it: { [word in Words]: string } = {
   termsAndConditions: 'Termini e Condizioni',
   copyToclipboard: 'Copia negli appunti',
   copied: 'Copiato!',
+  earliestMaturity: 'Scadenza più vicina',
+  latestMaturity: 'Scadenza più lontana',
+  timeToMaturity: 'Tempo alla scadenza',
   slippageError:
     'Lo slittamento per questa transazione è troppo basso. Per favore cambia lo slittamento nelle preferenze.',
   disableInputByNegativeYield:

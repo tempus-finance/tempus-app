@@ -161,6 +161,9 @@ type Words =
   | 'termsAndConditions'
   | 'copyToclipboard'
   | 'copied'
+  | 'earliestMaturity'
+  | 'latestMaturity'
+  | 'timeToMaturity'
   | 'slippageError'
   | 'disableInputByNegativeYield';
 
