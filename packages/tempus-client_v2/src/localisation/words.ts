@@ -163,7 +163,8 @@ type Words =
   | 'copied'
   | 'earliestMaturity'
   | 'latestMaturity'
-  | 'timeToMaturity';
-  | 'slippageError';
+  | 'timeToMaturity'
+  | 'slippageError'
+  | 'disableInputByNegativeYield'
 
 export default Words;

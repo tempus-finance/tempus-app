@@ -412,9 +412,12 @@ const Mint: FC<MintInProps> = ({ narrow, chain }) => {
               onChange={onAmountChange}
               onMaxClick={onClickMax}
               disabled={!selectedToken || mintDisabled}
-              // TODO - Update text in case input is disabled because of negative yield
               disabledTooltip={
-                disabledOperations.mint ? getText('mintDisabledByConfig') : getText('selectTokenFirst', language)
+                isYieldNegative
+                  ? getText('disableInputByNegativeYield', language)
+                  : disabledOperations.mint
+                  ? getText('mintDisabledByConfig')
+                  : getText('selectTokenFirst', language)
               }
             />
             {ethAllowanceForGasExceeded && (
