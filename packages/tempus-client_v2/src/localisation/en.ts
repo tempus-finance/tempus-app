@@ -182,5 +182,6 @@ const en: { [word in Words]: string } = {
   termsAndConditions: 'Terms and Conditions',
   copyToclipboard: 'Copy to Clipboard',
   copied: 'Copied!',
+  slippageError: 'Slippage for this transaction is too low. Please adjust the slippage in the settings menu.',
 };
 export default en;

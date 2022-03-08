@@ -186,5 +186,7 @@ const it: { [word in Words]: string } = {
   termsAndConditions: 'Termini e Condizioni',
   copyToclipboard: 'Copia negli appunti',
   copied: 'Copiato!',
+  slippageError:
+    'Lo slittamento per questa transazione è troppo basso. Per favore cambia lo slittamento nelle preferenze.',
 };
 export default it;
