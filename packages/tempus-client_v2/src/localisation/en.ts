@@ -182,5 +182,8 @@ const en: { [word in Words]: string } = {
   termsAndConditions: 'Terms and Conditions',
   copyToclipboard: 'Copy to Clipboard',
   copied: 'Copied!',
+  earliestMaturity: 'Earliest maturity',
+  latestMaturity: 'Latest maturity',
+  timeToMaturity: 'Time to maturity',
 };
 export default en;

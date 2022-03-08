@@ -185,5 +185,8 @@ const es: { [word in Words]: string } = {
   termsAndConditions: 'Términos y Condiciones',
   copyToclipboard: 'Copiar al portapapeles',
   copied: '¡Copiado!',
+  earliestMaturity: 'Vencimiento más cercano',
+  latestMaturity: 'Vencimiento más distante',
+  timeToMaturity: 'Tiempo que queda para el vencimiento',
 };
 export default es;

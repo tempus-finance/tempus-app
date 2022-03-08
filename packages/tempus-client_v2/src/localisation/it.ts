@@ -186,5 +186,8 @@ const it: { [word in Words]: string } = {
   termsAndConditions: 'Termini e Condizioni',
   copyToclipboard: 'Copia negli appunti',
   copied: 'Copiato!',
+  earliestMaturity: 'Scadenza più vicina',
+  latestMaturity: 'Scadenza più lontana',
+  timeToMaturity: 'Tempo alla scadenza',
 };
 export default it;

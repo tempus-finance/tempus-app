@@ -160,6 +160,9 @@ type Words =
   | 'contractAddresses'
   | 'termsAndConditions'
   | 'copyToclipboard'
-  | 'copied';
+  | 'copied'
+  | 'earliestMaturity'
+  | 'latestMaturity'
+  | 'timeToMaturity';
 
 export default Words;

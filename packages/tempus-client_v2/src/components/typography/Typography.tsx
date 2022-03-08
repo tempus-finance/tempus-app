@@ -24,9 +24,21 @@ type TypographyVariant =
   | 'chain-badge'
   | 'wallet-info'
   | 'wallet-info-bold'
-  | 'contract-addr';
+  | 'contract-addr'
+  | 'dash-maturity-label'
+  | 'dash-maturity-date'
+  | 'dash-maturity-date-bold';
 
-type TypographyColor = 'default' | 'primary' | 'accent' | 'inverted' | 'link' | 'title' | 'error' | 'success';
+type TypographyColor =
+  | 'default'
+  | 'primary'
+  | 'accent'
+  | 'inverted'
+  | 'link'
+  | 'title'
+  | 'error'
+  | 'success'
+  | 'label-gray';
 
 const typographyStyleMap = new Map<TypographyVariant, CSSProperties>();
 typographyStyleMap.set('h1', {
@@ -184,11 +196,32 @@ typographyStyleMap.set('wallet-info-bold', {
   lineHeight: '16px',
 });
 typographyStyleMap.set('contract-addr', {
-  fontFamily: "'Azeret Mono', Mono, sans-serif",
+  fontFamily: "'Source Sans Pro', Mono, sans-serif",
   fontWeight: 400,
   fontSize: '12px',
   fontStyle: 'normal',
   lineHeight: '16px',
+});
+typographyStyleMap.set('dash-maturity-label', {
+  fontFamily: "'Source Sans Pro', Mono, sans-serif",
+  fontWeight: 600,
+  fontSize: '12px',
+  fontStyle: 'normal',
+  lineHeight: '16px',
+});
+typographyStyleMap.set('dash-maturity-date', {
+  fontFamily: "'Source Sans Pro', Mono, sans-serif",
+  fontWeight: 400,
+  fontSize: '16px',
+  fontStyle: 'normal',
+  lineHeight: '24px',
+});
+typographyStyleMap.set('dash-maturity-date-bold', {
+  fontFamily: "'Source Sans Pro', Mono, sans-serif",
+  fontWeight: 600,
+  fontSize: '16px',
+  fontStyle: 'normal',
+  lineHeight: '24px',
 });
 
 interface TypographyProps {
@@ -228,6 +261,9 @@ const Typography: FC<TypographyProps & React.HTMLProps<HTMLDivElement>> = props 
       break;
     case 'success':
       colorStyle = '#4BB543';
+      break;
+    case 'label-gray':
+      colorStyle = '#474350';
       break;
     default:
       colorStyle = '#222222';
