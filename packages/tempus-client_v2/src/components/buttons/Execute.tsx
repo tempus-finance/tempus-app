@@ -7,6 +7,7 @@ import { staticChainDataState } from '../../state/ChainState';
 import getNotificationService from '../../services/getNotificationService';
 import {
   generateEtherscanLink,
+  generateFailedTransactionInfo,
   generateNotificationInfo,
   generatePoolNotificationInfo,
 } from '../../services/notificationFormatters';
@@ -66,7 +67,12 @@ const Execute: FC<ExecuteButtonProps> = props => {
       } catch (error) {
         console.error('Failed to execute transaction!', error);
         // Notify user about failed action.
-        getNotificationService().warn(chain, 'Transaction', `${actionName} ${getText('failed', language)}`, content);
+        getNotificationService().warn(
+          chain,
+          'Transaction',
+          `${actionName} ${getText('failed', language)}`,
+          generateFailedTransactionInfo(chain, language, selectedPoolData, error),
+        );
         setExecuteInProgress(false);
         onExecuted(false);
         return;
@@ -119,7 +125,7 @@ const Execute: FC<ExecuteButtonProps> = props => {
           chain,
           'Transaction',
           `${actionName} Failed`,
-          content,
+          generateFailedTransactionInfo(chain, language, selectedPoolData, error),
           generateEtherscanLink(transaction.hash, chain),
           viewLinkText,
         );

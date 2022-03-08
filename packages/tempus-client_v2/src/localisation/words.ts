@@ -160,6 +160,7 @@ type Words =
   | 'contractAddresses'
   | 'termsAndConditions'
   | 'copyToclipboard'
-  | 'copied';
+  | 'copied'
+  | 'slippageError';
 
 export default Words;

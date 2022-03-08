@@ -185,5 +185,7 @@ const es: { [word in Words]: string } = {
   termsAndConditions: 'Términos y Condiciones',
   copyToclipboard: 'Copiar al portapapeles',
   copied: '¡Copiado!',
+  slippageError:
+    'El deslizamiento de esta transacción es demasiado bajo. Por favor cambie la ficha en las preferencias.',
 };
 export default es;
