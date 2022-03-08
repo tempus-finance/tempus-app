@@ -185,5 +185,7 @@ const es: { [word in Words]: string } = {
   termsAndConditions: 'Términos y Condiciones',
   copyToclipboard: 'Copiar al portapapeles',
   copied: '¡Copiado!',
+  disableInputByNegativeYield:
+    'Los depósitos están deshabilitados actualmente ya que este grupo está experimentando rendimientos negativos. Consulte nuestros <a href="https://docs.tempus.finance/community/faq#why-would-a-pool-have-a-negative-yield" target="_blank">documentos</a> para obtener más información.',
 };
 export default es;

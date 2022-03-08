@@ -160,6 +160,7 @@ type Words =
   | 'contractAddresses'
   | 'termsAndConditions'
   | 'copyToclipboard'
-  | 'copied';
+  | 'copied'
+  | 'disableInputByNegativeYield';
 
 export default Words;

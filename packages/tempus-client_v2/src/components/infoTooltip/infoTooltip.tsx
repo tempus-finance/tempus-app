@@ -8,6 +8,7 @@ import './infoTooltip.scss';
 interface InfoToolTipProps {
   content: string | ReactNode;
   placement?: PopperPlacementType;
+  arrowEnabled?: boolean;
   useExternalOpenState?: boolean;
   externalOpen?: boolean;
   onExternalToggle?: () => void;
@@ -17,6 +18,7 @@ const InfoTooltip: FC<InfoToolTipProps> = props => {
   const {
     content,
     placement = 'bottom-start',
+    arrowEnabled = true,
     useExternalOpenState = false,
     externalOpen = false,
     onExternalToggle = () => false,
@@ -71,12 +73,12 @@ const InfoTooltip: FC<InfoToolTipProps> = props => {
         disablePortal
         modifiers={{
           arrow: {
-            enabled: true,
+            enabled: arrowEnabled,
             element: arrowRef.current,
           },
         }}
       >
-        <div className="tc__infoTooltip-arrow" ref={arrowRef}></div>
+        {arrowEnabled && <div className="tc__infoTooltip-arrow" ref={arrowRef}></div>}
         <div className="tc__infoTooltip-popup">{popupContent}</div>
       </Popper>
       {open && <div className="tc__backdrop" onClick={toggle} />}
