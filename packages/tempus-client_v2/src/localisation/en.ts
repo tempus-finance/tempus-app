@@ -174,7 +174,7 @@ const en: { [word in Words]: string } = {
   unsupported: 'Unsupported',
   switchNetwork: 'Switch Network',
   unsupportedNetworkTooltipTitle: 'Unsupported Network',
-  unsupportedNetworkTooltipText1: 'The network your wallet is connected to doesn’t match the network selected here.',
+  unsupportedNetworkTooltipText1: 'The network your wallet is connected to is not currently supported by Tempus.',
   unsupportedNetworkTooltipText2: 'Please connect to a supported network in order to proceed.',
   allPools: 'All Pools',
   backToDashboard: 'Back to All Pools',
@@ -185,5 +185,6 @@ const en: { [word in Words]: string } = {
   earliestMaturity: 'Earliest maturity',
   latestMaturity: 'Latest maturity',
   timeToMaturity: 'Time to maturity',
+  slippageError: 'Slippage for this transaction is too low. Please adjust the slippage in the settings menu.',
 };
 export default en;

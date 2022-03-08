@@ -164,5 +164,6 @@ type Words =
   | 'earliestMaturity'
   | 'latestMaturity'
   | 'timeToMaturity';
+  | 'slippageError';
 
 export default Words;

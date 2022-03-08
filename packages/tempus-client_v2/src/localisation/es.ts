@@ -177,7 +177,7 @@ const es: { [word in Words]: string } = {
   switchNetwork: 'Cambiar red',
   unsupportedNetworkTooltipTitle: 'Red no compatible',
   unsupportedNetworkTooltipText1:
-    'La red a la que está conectada su billetera no coincide con la red seleccionada aquí.',
+    'La red a la que está conectada su billetera no es compatible con Tempus en este momento.',
   unsupportedNetworkTooltipText2: 'Conéctese a una red compatible para continuar.',
   allPools: 'Todas las Pool',
   backToDashboard: 'Volver a todas las Pools',
@@ -188,5 +188,7 @@ const es: { [word in Words]: string } = {
   earliestMaturity: 'Vencimiento más cercano',
   latestMaturity: 'Vencimiento más distante',
   timeToMaturity: 'Tiempo que queda para el vencimiento',
+  slippageError:
+    'El deslizamiento de esta transacción es demasiado bajo. Por favor cambie la ficha en las preferencias.',
 };
 export default es;

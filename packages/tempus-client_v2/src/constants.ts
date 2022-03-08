@@ -40,6 +40,8 @@ export const dashboardChildMaturityFormat = 'd MMMM yyyy';
 
 export const POLLING_INTERVAL = 30 * 1000;
 
+export const BAL_SLIPPAGE_ERROR_CODE = '#507';
+
 export const tokenPrecision: { [ticker in Ticker]?: number } = {
   ETH: 18,
   USDC: 6,
