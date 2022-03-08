@@ -892,9 +892,12 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
               onMaxClick={onClickMax}
               precision={selectedTokenPrecision}
               disabled={!selectedToken || depositDisabled}
-              // TODO - Update text in case input is disabled because of negative yield
               disabledTooltip={
-                disabledOperations.deposit ? getText('depositDisabledByConfig') : getText('selectTokenFirst', language)
+                isYieldNegative
+                  ? getText('disableInputByNegativeYield', language)
+                  : disabledOperations.deposit
+                  ? getText('depositDisabledByConfig', language)
+                  : getText('selectTokenFirst', language)
               }
             />
             {ethAllowanceForGasExceeded && (

@@ -33,6 +33,10 @@ div.tc__currencyInput-container {
 
 .tc__currencyInput-disabled {
   background-color: #e8e8e8;
+
+  .MuiInputBase-root.Mui-disabled {
+    z-index: -1;
+  }
 }
 
 .tc__currencyInput-tooltip {
