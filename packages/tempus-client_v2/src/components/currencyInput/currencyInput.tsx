@@ -68,58 +68,31 @@ const CurrencyInput: FC<CurrencyInputProps> = ({
     containerClasses += ' tc__currencyInput-disabled';
   }
 
-  if (disabled) {
-    return (
-      <FormControl>
-        <InfoTooltip content={disabledTooltip} arrowEnabled={false}>
-          <div className={containerClasses}>
-            <TextField
-              type="text"
-              value={value}
-              onChange={onValueChange}
-              placeholder={placeholder}
-              disabled
-              variant="standard"
-              autoComplete="off"
-              inputProps={{
-                pattern: '[0-9]*[.]?[0-9]*',
-              }}
-              InputProps={{
-                disableUnderline: true,
-              }}
-            />
-            <Divider orientation="vertical" />
-            <Button disabled onClick={handleMaxClick}>
-              {getText('max', language)}
-            </Button>
-          </div>
-        </InfoTooltip>
-      </FormControl>
-    );
-  }
-
   return (
     <FormControl>
-      <div className={containerClasses}>
-        <TextField
-          type="text"
-          value={value}
-          onChange={onValueChange}
-          placeholder={placeholder}
-          variant="standard"
-          autoComplete="off"
-          inputProps={{
-            pattern: '[0-9]*[.]?[0-9]*',
-          }}
-          InputProps={{
-            disableUnderline: true,
-          }}
-        />
-        <Divider orientation="vertical" />
-        <Button disabled={disabled || maxDisabled} onClick={handleMaxClick}>
-          {getText('max', language)}
-        </Button>
-      </div>
+      <InfoTooltip content={disabledTooltip} arrowEnabled={false} disabled={!disabled}>
+        <div className={containerClasses}>
+          <TextField
+            type="text"
+            value={value}
+            onChange={onValueChange}
+            placeholder={placeholder}
+            disabled={disabled}
+            variant="standard"
+            autoComplete="off"
+            inputProps={{
+              pattern: '[0-9]*[.]?[0-9]*',
+            }}
+            InputProps={{
+              disableUnderline: true,
+            }}
+          />
+          <Divider orientation="vertical" />
+          <Button disabled={disabled || maxDisabled} onClick={handleMaxClick}>
+            {getText('max', language)}
+          </Button>
+        </div>
+      </InfoTooltip>
     </FormControl>
   );
 };

@@ -11,6 +11,7 @@ interface InfoToolTipProps {
   arrowEnabled?: boolean;
   useExternalOpenState?: boolean;
   externalOpen?: boolean;
+  disabled?: boolean;
   onExternalToggle?: () => void;
 }
 
@@ -21,6 +22,7 @@ const InfoTooltip: FC<InfoToolTipProps> = props => {
     arrowEnabled = true,
     useExternalOpenState = false,
     externalOpen = false,
+    disabled = false,
     onExternalToggle = () => false,
     children = <InfoIcon />,
   } = props;
@@ -61,6 +63,10 @@ const InfoTooltip: FC<InfoToolTipProps> = props => {
     }
     return content;
   }, [content]);
+
+  if (disabled) {
+    return <>{children}</>;
+  }
 
   return (
     <div className="tc__infoTooltip">
