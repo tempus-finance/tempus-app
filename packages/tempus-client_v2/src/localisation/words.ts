@@ -161,6 +161,7 @@ type Words =
   | 'termsAndConditions'
   | 'copyToclipboard'
   | 'copied'
+  | 'slippageError'
   | 'disableInputByNegativeYield';
 
 export default Words;

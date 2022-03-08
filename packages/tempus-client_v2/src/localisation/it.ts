@@ -178,7 +178,7 @@ const it: { [word in Words]: string } = {
   switchNetwork: 'Cambia Network',
   unsupportedNetworkTooltipTitle: 'Network non supportato',
   unsupportedNetworkTooltipText1:
-    'Il network al quale il tuo portafogli è collegato non corrisponde al network selezionato qui.',
+    'Il network al quale il tuo wallet è collegato non è supportato da Tempus al momento.',
   unsupportedNetworkTooltipText2: 'Per favore connettiti ad un network supportato per continuare.',
   allPools: 'Tutte le pool',
   backToDashboard: 'Torna a tutte le Pool',
@@ -186,6 +186,8 @@ const it: { [word in Words]: string } = {
   termsAndConditions: 'Termini e Condizioni',
   copyToclipboard: 'Copia negli appunti',
   copied: 'Copiato!',
+  slippageError:
+    'Lo slittamento per questa transazione è troppo basso. Per favore cambia lo slittamento nelle preferenze.',
   disableInputByNegativeYield:
     'I depositi sono attualmente disabilitati poiché questo pool sta attualmente registrando rendimenti negativi. Si prega di controllare i nostri <a href="https://docs.tempus.finance/community/faq#why-would-a-pool-have-a-negative-yield" target="_blank">documenti</a> per ulteriori informazioni.',
 };

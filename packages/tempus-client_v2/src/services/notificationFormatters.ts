@@ -8,6 +8,7 @@ import { Chain, prettifyChainName } from '../interfaces/Chain';
 import getText, { Language } from '../localisation/getText';
 import { capitalize } from '../utils/capitalizeString';
 import { getChainConfig } from '../utils/getConfig';
+import { BAL_SLIPPAGE_ERROR_CODE } from '../constants';
 import NumberUtils from './NumberUtils';
 
 interface NotificationContent {
@@ -91,6 +92,21 @@ export const generateNotificationInfo = (
         notificationDateTime,
       });
   }
+};
+
+export const generateFailedTransactionInfo = (chain: Chain, language: Language, poolData: TempusPool, error: any) => {
+  let failReason = '';
+  if (error?.data?.message?.includes(BAL_SLIPPAGE_ERROR_CODE)) {
+    failReason = `${getText('slippageError', language)}\n\n`;
+  }
+
+  return `${failReason}${generatePoolNotificationInfo(
+    chain,
+    language,
+    poolData.backingToken,
+    poolData.protocol,
+    new Date(poolData.maturityDate),
+  )}`;
 };
 
 export const generateEtherscanLink = (tx: string, chainName: Chain) => {

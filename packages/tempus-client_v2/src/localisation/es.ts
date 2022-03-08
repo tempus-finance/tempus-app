@@ -177,7 +177,7 @@ const es: { [word in Words]: string } = {
   switchNetwork: 'Cambiar red',
   unsupportedNetworkTooltipTitle: 'Red no compatible',
   unsupportedNetworkTooltipText1:
-    'La red a la que está conectada su billetera no coincide con la red seleccionada aquí.',
+    'La red a la que está conectada su billetera no es compatible con Tempus en este momento.',
   unsupportedNetworkTooltipText2: 'Conéctese a una red compatible para continuar.',
   allPools: 'Todas las Pool',
   backToDashboard: 'Volver a todas las Pools',
@@ -185,6 +185,8 @@ const es: { [word in Words]: string } = {
   termsAndConditions: 'Términos y Condiciones',
   copyToclipboard: 'Copiar al portapapeles',
   copied: '¡Copiado!',
+  slippageError:
+    'El deslizamiento de esta transacción es demasiado bajo. Por favor cambie la ficha en las preferencias.',
   disableInputByNegativeYield:
     'Los depósitos están deshabilitados actualmente ya que este grupo está experimentando rendimientos negativos. Consulte nuestros <a href="https://docs.tempus.finance/community/faq#why-would-a-pool-have-a-negative-yield" target="_blank">documentos</a> para obtener más información.',
 };

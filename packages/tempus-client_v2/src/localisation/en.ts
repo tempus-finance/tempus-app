@@ -174,7 +174,7 @@ const en: { [word in Words]: string } = {
   unsupported: 'Unsupported',
   switchNetwork: 'Switch Network',
   unsupportedNetworkTooltipTitle: 'Unsupported Network',
-  unsupportedNetworkTooltipText1: 'The network your wallet is connected to doesn’t match the network selected here.',
+  unsupportedNetworkTooltipText1: 'The network your wallet is connected to is not currently supported by Tempus.',
   unsupportedNetworkTooltipText2: 'Please connect to a supported network in order to proceed.',
   allPools: 'All Pools',
   backToDashboard: 'Back to All Pools',
@@ -182,6 +182,7 @@ const en: { [word in Words]: string } = {
   termsAndConditions: 'Terms and Conditions',
   copyToclipboard: 'Copy to Clipboard',
   copied: 'Copied!',
+  slippageError: 'Slippage for this transaction is too low. Please adjust the slippage in the settings menu.',
   disableInputByNegativeYield:
     'Deposits are currently disabled as this pool is currently experiencing negative yields. Please check our <a href="https://docs.tempus.finance/community/faq#why-would-a-pool-have-a-negative-yield" target="_blank">docs</a> for more information.',
 };
