@@ -174,7 +174,7 @@ const en: { [word in Words]: string } = {
   unsupported: 'Unsupported',
   switchNetwork: 'Switch Network',
   unsupportedNetworkTooltipTitle: 'Unsupported Network',
-  unsupportedNetworkTooltipText1: 'The network your wallet is connected to doesn’t match the network selected here.',
+  unsupportedNetworkTooltipText1: 'The network your wallet is connected to is not currently supported by Tempus.',
   unsupportedNetworkTooltipText2: 'Please connect to a supported network in order to proceed.',
   allPools: 'All Pools',
   backToDashboard: 'Back to All Pools',
