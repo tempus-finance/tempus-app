@@ -28,6 +28,12 @@ const InfoTooltip: FC<InfoToolTipProps> = props => {
   } = props;
 
   const [internalOpen, setInternalOpen] = useState<boolean>(false);
+  // TODO: there is a weird behavior for the tooltip arrow and position from the Popper v1
+  //   when the tooltip opens, the arrow and position is wrong with anchor until it rerenders
+  //   (keep it opened and wait for rerender)
+  //   thus this "rerender" boolean is a hack to force rerender whenever tooltip opens
+  //   i.e. when tooltip opens, render once, and then force rerender immediately to correct position
+  const [rerender, setRerender] = useState<boolean>(false);
   const anchorRef = useRef<HTMLButtonElement>(null);
   const arrowRef = useRef<HTMLDivElement>(null);
 
@@ -35,13 +41,17 @@ const InfoTooltip: FC<InfoToolTipProps> = props => {
     event.stopPropagation();
     setInternalOpen(prevState => !prevState);
   }, []);
-  const toggle = useMemo(
-    () => (useExternalOpenState ? onExternalToggle : internalToggle),
-    [useExternalOpenState, onExternalToggle, internalToggle],
-  );
   const open = useMemo(
     () => (useExternalOpenState ? externalOpen : internalOpen),
     [useExternalOpenState, externalOpen, internalOpen],
+  );
+  const toggle = useCallback(
+    event => {
+      // TODO: a hack to force the tooltip component rerender whenever the tooltip open/close
+      setTimeout(() => setRerender(!open), 0);
+      return (useExternalOpenState ? onExternalToggle : internalToggle)(event);
+    },
+    [useExternalOpenState, onExternalToggle, internalToggle, open],
   );
   const popupAnchor = useMemo(() => {
     if (children) {
@@ -69,7 +79,7 @@ const InfoTooltip: FC<InfoToolTipProps> = props => {
   }
 
   return (
-    <div className="tc__infoTooltip">
+    <div className="tc__infoTooltip" data-render={rerender}>
       <div className={`tc__infoTooltip-anchor ${open ? 'tc__infoTooltip-active' : ''}`}>{popupAnchor}</div>
       <Popper
         className="tc__infoTooltip__popper"
