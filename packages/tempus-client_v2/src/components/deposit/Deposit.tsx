@@ -6,7 +6,7 @@ import { catchError, of } from 'rxjs';
 import { v1 as uuid } from 'uuid';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
 import { refreshBalances } from '../../providers/balanceProviderHelper';
-import { ETH_ALLOWANCE_FOR_GAS, MILLISECONDS_IN_A_YEAR, ZERO } from '../../constants';
+import { ETH_ALLOWANCE_FOR_GAS, FIXED_APR_PRECISION, MILLISECONDS_IN_A_YEAR, ZERO } from '../../constants';
 import { LanguageContext } from '../../context/languageContext';
 import { WalletContext } from '../../context/walletContext';
 import { UserSettingsContext } from '../../context/userSettingsContext';
@@ -523,20 +523,16 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
 
   const estimatedFixedAprBelowThreshold = useMemo(() => {
     if (estimatedFixedApr) {
-      const oneHundred = ethers.utils.parseUnits('100', selectedTokenPrecision);
+      const oneHundred = ethers.utils.parseUnits('100', FIXED_APR_PRECISION);
       // this is 100%
-      const thresholdBN = ethers.utils.parseUnits('1', selectedTokenPrecision);
+      const thresholdBN = ethers.utils.parseUnits('1', FIXED_APR_PRECISION);
 
       // this is 0.01%
-      const threshold = div18f(
-        div18f(thresholdBN, oneHundred, selectedTokenPrecision),
-        oneHundred,
-        selectedTokenPrecision,
-      );
+      const threshold = div18f(div18f(thresholdBN, oneHundred, FIXED_APR_PRECISION), oneHundred, FIXED_APR_PRECISION);
       return estimatedFixedApr.lt(threshold);
     }
     return false;
-  }, [estimatedFixedApr, selectedTokenPrecision]);
+  }, [estimatedFixedApr]);
 
   const fixedYieldAtMaturityFormatted = useMemo(() => {
     if (!fixedPrincipalsAmount || !amount || !yieldBearingToBackingToken) {
