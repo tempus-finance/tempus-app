@@ -81,7 +81,7 @@ const CurrencyInput: FC<CurrencyInputProps> = ({
             variant="standard"
             autoComplete="off"
             inputProps={{
-              pattern: '[0-9]*[.]?[0-9]*',
+              pattern: '[0-9,]*[.]?[0-9]*',
             }}
             InputProps={{
               disableUnderline: true,
