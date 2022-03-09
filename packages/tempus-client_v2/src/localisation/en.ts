@@ -121,7 +121,7 @@ const en: { [word in Words]: string } = {
   failed: 'Failed',
   insufficientLiquidity: 'Insufficient Liquidity',
   insufficientLiquidityMessage:
-    'Please reduce the amount you\'re trying to deposit. You can read more <a href="https://docs.tempus.finance/community/faq" target="_blank"> here</a>.',
+    'Please reduce the amount you\'re trying to deposit. You can read more <a href="https://docs.tempus.finance/community/faq#why-would-a-pool-have-insufficient-liquidity" target="_blank"> here</a>.',
   profitLoss: 'Profit & Loss',
   currentValue: 'Current Value',
   from: 'From',
