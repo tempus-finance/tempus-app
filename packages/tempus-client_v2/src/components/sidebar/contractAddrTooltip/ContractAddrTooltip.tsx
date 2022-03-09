@@ -69,19 +69,19 @@ const ContractAddrTooltip: FC<ContractAddrTooltipProps> = props => {
   );
   const onCopyStatsAddress = useCallback(() => onCopy(statsAddress, timeoutFunc), [statsAddress, timeoutFunc, onCopy]);
 
-  const formattedTempusAMMAddress = useMemo(() => shortenAccount(tempusAMMAddress, 3, 3), [tempusAMMAddress]);
-  const formattedTempusPoolAddress = useMemo(() => shortenAccount(tempusPoolAddress, 3, 3), [tempusPoolAddress]);
+  const formattedTempusAMMAddress = useMemo(() => shortenAccount(tempusAMMAddress), [tempusAMMAddress]);
+  const formattedTempusPoolAddress = useMemo(() => shortenAccount(tempusPoolAddress), [tempusPoolAddress]);
   const formattedTempusControllerAddress = useMemo(
-    () => shortenAccount(tempusControllerAddress, 3, 3),
+    () => shortenAccount(tempusControllerAddress),
     [tempusControllerAddress],
   );
-  const formattedPrincipalsAddress = useMemo(() => shortenAccount(principalsAddress, 3, 3), [principalsAddress]);
-  const formattedYieldsAddress = useMemo(() => shortenAccount(yieldsAddress, 3, 3), [yieldsAddress]);
+  const formattedPrincipalsAddress = useMemo(() => shortenAccount(principalsAddress), [principalsAddress]);
+  const formattedYieldsAddress = useMemo(() => shortenAccount(yieldsAddress), [yieldsAddress]);
   const formattedYieldBearingTokenAddress = useMemo(
-    () => shortenAccount(yieldBearingTokenAddress, 3, 3),
+    () => shortenAccount(yieldBearingTokenAddress),
     [yieldBearingTokenAddress],
   );
-  const formattedStatsAddress = useMemo(() => shortenAccount(statsAddress, 3, 3), [statsAddress]);
+  const formattedStatsAddress = useMemo(() => shortenAccount(statsAddress), [statsAddress]);
   const copyToClipboardText = useMemo(() => getText('copyToclipboard', language), [language]);
   const copiedText = useMemo(() => getText('copied', language), [language]);
 
