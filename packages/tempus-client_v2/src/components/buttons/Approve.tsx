@@ -242,7 +242,7 @@ const Approve: FC<ApproveButtonProps> = props => {
       return false;
     }
 
-    const alreadyApproved = allowance && allowance.gt(ZERO) && allowance.lte(amountToApprove);
+    const alreadyApproved = allowance && allowance.gt(ZERO) && allowance.gte(amountToApprove);
 
     return alreadyApproved;
   }, [allowance, amountToApprove, userBalance]);
