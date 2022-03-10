@@ -2,8 +2,10 @@ import Words from './words';
 import en from './en';
 import es from './es';
 import it from './it';
+import zz from './zz';
 
-export type Language = 'en' | 'es' | 'it';
+// zz: pseudo translation
+export type Language = 'en' | 'es' | 'it' | 'zz';
 
 const getText = (word: Words, language?: Language): string => {
   switch (language) {
@@ -11,6 +13,8 @@ const getText = (word: Words, language?: Language): string => {
       return es[word];
     case 'it':
       return it[word];
+    case 'zz':
+      return zz[word];
     default:
       return en[word];
   }

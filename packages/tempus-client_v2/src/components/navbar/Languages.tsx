@@ -51,6 +51,11 @@ const Languages = () => {
               <MenuItem value="it">
                 <Typography variant="dropdown-text">Italiano</Typography>
               </MenuItem>
+              {process.env.NODE_ENV === 'development' && (
+                <MenuItem value="zz">
+                  <Typography variant="dropdown-text">Pseudo Locale</Typography>
+                </MenuItem>
+              )}
             </Select>
           </div>
         </FormControl>
