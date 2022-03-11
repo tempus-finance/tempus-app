@@ -1,4 +1,4 @@
-import { FC, RefObject, useCallback, useContext, useEffect, useState } from 'react';
+import { FC, RefObject, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { Button, Divider, Popper } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import { Notification } from '../../interfaces/Notification';
@@ -12,6 +12,7 @@ import { getChainConfig } from '../../utils/getConfig';
 import getText from '../../localisation/getText';
 import Typography from '../typography/Typography';
 import Spacer from '../spacer/spacer';
+import ExternalLink from '../common/ExternalLink';
 import WalletNotification from './WalletNotification';
 import WalletPending from './WalletPending';
 
@@ -47,15 +48,16 @@ const WalletPopup: FC<WalletPopupProps> = ({ anchorElement, account, chainName, 
     onSwitchWallet && onSwitchWallet();
   }, [onSwitchWallet]);
 
-  const onAccountAddressClick = useCallback(() => {
+  const accountAddressURL = useMemo(() => {
     const config = getChainConfig(chainName);
 
-    if (config.networkName === 'homestead') {
-      window.open(`https://etherscan.io/address/${account}`, '_blank');
-    } else if (config.networkName === 'fantom-mainnet') {
-      window.open(`https://ftmscan.com/address/${account}`, '_blank');
-    } else {
-      window.open(`https://${config.networkName}.etherscan.io/address/${account}`, '_blank');
+    switch (config.networkName) {
+      case 'homestead':
+        return `https://etherscan.io/address/${account}`;
+      case 'fantom-mainnet':
+        return `https://ftmscan.com/address/${account}`;
+      default:
+        return `https://${config.networkName}.etherscan.io/address/${account}`;
     }
   }, [account, chainName]);
 
@@ -101,11 +103,11 @@ const WalletPopup: FC<WalletPopupProps> = ({ anchorElement, account, chainName, 
                 </Typography>
               </Button>
             </div>
-            <div onClick={onAccountAddressClick} className="tc__sidebar-pool-link">
+            <ExternalLink className="tc__wallet__popper__section-link" href={accountAddressURL}>
               <Typography variant="dropdown-text" color="link">
                 {account}
               </Typography>
-            </div>
+            </ExternalLink>
           </div>
           {pendingTransactions && pendingTransactions.length > 0 && (
             <>
