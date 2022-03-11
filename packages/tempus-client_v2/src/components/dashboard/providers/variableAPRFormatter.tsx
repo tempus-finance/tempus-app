@@ -1,4 +1,4 @@
-import React from 'react';
+import { useContext } from 'react';
 import { CircularProgress } from '@material-ui/core';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { ZERO } from '../../../constants';
@@ -14,8 +14,12 @@ import {
 } from '../../../state/PoolDataState';
 import InfoTooltip from '../../infoTooltip/infoTooltip';
 import VariableAPRBreakDownTooltip from '../popups/variableAPRBreakDownTooltip';
+import getText from '../../../localisation/getText';
+import { LanguageContext } from '../../../context/languageContext';
 
 const VariableAPRFormatter = ({ row }: any) => {
+  const { language } = useContext(LanguageContext);
+
   const dynamicPoolData = useHookState(dynamicPoolDataState).attach(Downgraded).get();
   const staticPoolData = useHookState(staticPoolDataState).attach(Downgraded).get();
 
@@ -34,7 +38,7 @@ const VariableAPRFormatter = ({ row }: any) => {
     return (
       <div className="tf__dashboard__body__apy">
         <Typography color="default" variant="body-text">
-          Up to&nbsp;
+          {getText('upTo', language)}&nbsp;
         </Typography>
         <Typography variant="body-text">{NumberUtils.formatPercentage(apr, 2)}</Typography>
       </div>
