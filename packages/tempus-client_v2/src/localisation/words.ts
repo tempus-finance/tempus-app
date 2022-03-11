@@ -165,6 +165,7 @@ type Words =
   | 'latestMaturity'
   | 'timeToMaturity'
   | 'slippageError'
-  | 'disableInputByNegativeYield';
+  | 'disableInputByNegativeYield'
+  | 'upTo';
 
 export default Words;
