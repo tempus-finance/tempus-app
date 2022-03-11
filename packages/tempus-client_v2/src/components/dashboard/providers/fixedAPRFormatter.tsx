@@ -5,7 +5,6 @@ import { Chain, chainIdToChainName } from '../../../interfaces/Chain';
 import NumberUtils from '../../../services/NumberUtils';
 import { getChainConfigForPool } from '../../../utils/getConfig';
 import Typography from '../../typography/Typography';
-import APYGraph from '../bodySection/apyGraph';
 import {
   dynamicPoolDataState,
   DynamicPoolStateData,
@@ -55,12 +54,9 @@ const FixedAPRFormatter = ({ row }: any) => {
   // If it's a child row
   return (
     <div className="tf__dashboard__body__apy">
-      <APYGraph apy={apr} />
-      <div className="tf__dashboard__body__apy-value">
-        <Typography color="default" variant="body-text">
-          {NumberUtils.formatPercentage(apr, 2)}
-        </Typography>
-      </div>
+      <Typography color="default" variant="body-text">
+        {NumberUtils.formatPercentage(apr, 2)}
+      </Typography>
     </div>
   );
 };
