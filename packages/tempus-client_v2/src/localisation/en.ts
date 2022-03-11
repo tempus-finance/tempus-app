@@ -43,7 +43,6 @@ const en: { [word in Words]: string } = {
   apr: 'APR',
   aprRange: 'APR range',
   lpApr: 'Variable APR',
-  futureApr: 'Future APR',
   fiat: 'Fiat',
   crypto: 'Crypto',
   pool: 'Pool',
@@ -100,7 +99,6 @@ const en: { [word in Words]: string } = {
   earlyRedemptionDisabledNoLiquidity:
     'Early redemption is currently disabled due to insufficient liquidity in the pool you have selected. Please try again later.',
   availableToDeposit: 'Available to Deposit',
-  marketImpliedYield: 'Future APR ',
   volume: 'Volume',
   fees: 'Fees',
   term: 'Term',
@@ -122,6 +120,8 @@ const en: { [word in Words]: string } = {
   executing: 'Executing',
   failed: 'Failed',
   insufficientLiquidity: 'Insufficient Liquidity',
+  insufficientLiquidityMessage:
+    'Please reduce the amount you\'re trying to deposit. You can read more <a href="https://docs.tempus.finance/community/faq#why-would-a-pool-have-insufficient-liquidity" target="_blank"> here</a>.',
   profitLoss: 'Profit & Loss',
   currentValue: 'Current Value',
   from: 'From',
@@ -129,7 +129,6 @@ const en: { [word in Words]: string } = {
   and: 'and',
   via: 'via',
   balance: 'Balance',
-  futureYield: 'Future Yield',
   lifeTimeYield: 'Lifetime Yield',
   fixYourFutureYield: 'Fix Your Future Yield',
   fixedYield: 'Fixed Yield',
@@ -175,7 +174,19 @@ const en: { [word in Words]: string } = {
   unsupported: 'Unsupported',
   switchNetwork: 'Switch Network',
   unsupportedNetworkTooltipTitle: 'Unsupported Network',
-  unsupportedNetworkTooltipText1: 'The network your wallet is connected to doesn’t match the network selected here.',
+  unsupportedNetworkTooltipText1: 'The network your wallet is connected to is not currently supported by Tempus.',
   unsupportedNetworkTooltipText2: 'Please connect to a supported network in order to proceed.',
+  allPools: 'All Pools',
+  backToDashboard: 'Back to All Pools',
+  contractAddresses: 'Contract Addresses',
+  termsAndConditions: 'Terms and Conditions',
+  copyToclipboard: 'Copy to Clipboard',
+  copied: 'Copied!',
+  earliestMaturity: 'Earliest maturity',
+  latestMaturity: 'Latest maturity',
+  timeToMaturity: 'Time to maturity',
+  slippageError: 'Slippage for this transaction is too low. Please adjust the slippage in the settings menu.',
+  disableInputByNegativeYield:
+    'Deposits are currently disabled as this pool is currently experiencing negative yields. Please check our <a href="https://docs.tempus.finance/community/faq#why-would-a-pool-have-a-negative-yield" target="_blank">docs</a> for more information.',
 };
 export default en;

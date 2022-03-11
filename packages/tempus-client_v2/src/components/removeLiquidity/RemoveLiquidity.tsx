@@ -151,6 +151,14 @@ const RemoveLiquidity: FC<RemoveLiquidityProps> = props => {
     chain,
   ]);
 
+  const lpTokensAmountToApprove = useMemo(() => {
+    if (!amount) {
+      return null;
+    }
+
+    return ethers.utils.parseUnits(amount, getTokenPrecision(selectedPoolAddress, 'lpTokens'));
+  }, [selectedPoolAddress, amount]);
+
   const onExecuted = useCallback(
     (successful: boolean, txBlockNumber?: number) => {
       setAmount('');
@@ -201,12 +209,6 @@ const RemoveLiquidity: FC<RemoveLiquidityProps> = props => {
     );
   }, [estimatedYields, decimalsForUI, tokenPrecision.yields]);
 
-  const approveDisabled = useMemo((): boolean => {
-    const zeroAmount = isZeroString(amount);
-
-    return zeroAmount;
-  }, [amount]);
-
   const executeDisabled = useMemo(() => {
     const zeroAmount = isZeroString(amount);
     const amountExceedsBalance = ethers.utils
@@ -245,11 +247,11 @@ const RemoveLiquidity: FC<RemoveLiquidityProps> = props => {
             <div className="tf__flex-row-center-v-end">
               <Approve
                 tokenToApproveTicker="LP Token"
-                amountToApprove={userLPTokenBalance}
+                amountToApprove={lpTokensAmountToApprove}
+                userBalance={userLPTokenBalance}
                 onApproveChange={onApproveChange}
                 spenderAddress={getChainConfig(chain).vaultContract}
                 tokenToApproveAddress={ammAddress}
-                disabled={approveDisabled}
                 chain={chain}
               />
             </div>

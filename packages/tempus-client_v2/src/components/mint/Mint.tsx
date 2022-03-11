@@ -141,6 +141,18 @@ const Mint: FC<MintInProps> = ({ narrow, chain }) => {
     return selectedToken === backingToken ? userBackingTokenBalance : userYieldBearingTokenBalance;
   }, [backingToken, selectedToken, userBackingTokenBalance, userYieldBearingTokenBalance]);
 
+  const amountToApprove = useMemo(() => {
+    if (!amount) {
+      return null;
+    }
+
+    if (selectedToken === backingToken) {
+      return ethers.utils.parseUnits(amount, getTokenPrecision(selectedPoolAddress, 'backingToken'));
+    } else {
+      return ethers.utils.parseUnits(amount, getTokenPrecision(selectedPoolAddress, 'yieldBearingToken'));
+    }
+  }, [selectedPoolAddress, selectedToken, backingToken, amount]);
+
   const balanceFormatted = useMemo(() => {
     let currentBalance = getSelectedTokenBalance();
     if (!currentBalance) {
@@ -334,12 +346,6 @@ const Mint: FC<MintInProps> = ({ narrow, chain }) => {
     return () => stream$.unsubscribe();
   }, [selectedPoolAddress, userWalletSigner, chain]);
 
-  const approveDisabled = useMemo((): boolean => {
-    const zeroAmount = isZeroString(amount);
-
-    return zeroAmount || mintDisabled;
-  }, [amount, mintDisabled]);
-
   const executeDisabled = useMemo((): boolean => {
     const zeroAmount = isZeroString(amount);
     const amountExceedsBalance = ethers.utils
@@ -383,7 +389,7 @@ const Mint: FC<MintInProps> = ({ narrow, chain }) => {
             <div className="tc__title-and-balance">
               <Typography variant="card-title">{getText('from', language)}</Typography>
               <Typography variant="body-text">
-                {getText('balance', language)} {balanceFormatted}
+                {getText('availableToDeposit', language)} {balanceFormatted}
               </Typography>
             </div>
           ) : (
@@ -406,9 +412,12 @@ const Mint: FC<MintInProps> = ({ narrow, chain }) => {
               onChange={onAmountChange}
               onMaxClick={onClickMax}
               disabled={!selectedToken || mintDisabled}
-              // TODO - Update text in case input is disabled because of negative yield
               disabledTooltip={
-                disabledOperations.mint ? getText('mintDisabledByConfig') : getText('selectTokenFirst', language)
+                isYieldNegative
+                  ? getText('disableInputByNegativeYield', language)
+                  : disabledOperations.mint
+                  ? getText('mintDisabledByConfig')
+                  : getText('selectTokenFirst', language)
               }
             />
             {ethAllowanceForGasExceeded && (
@@ -478,9 +487,10 @@ const Mint: FC<MintInProps> = ({ narrow, chain }) => {
           <Approve
             tokenToApproveAddress={getSelectedTokenAddress()}
             spenderAddress={getChainConfig(chain).tempusControllerContract}
-            amountToApprove={getSelectedTokenBalance()}
+            amountToApprove={amountToApprove}
+            userBalance={getSelectedTokenBalance()}
             tokenToApproveTicker={selectedToken}
-            disabled={approveDisabled}
+            disabled={mintDisabled}
             marginRight={20}
             chain={chain}
             onApproveChange={onApproveChange}

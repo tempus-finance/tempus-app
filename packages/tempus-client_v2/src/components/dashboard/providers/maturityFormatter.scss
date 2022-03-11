@@ -1,26 +1,12 @@
 @import '../../../constants.scss';
 
-.tf__dashboard__grid__maturity {
+.tf__dashboard__grid__maturity-row {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: space-between;
 }
 
-.tf__dashboard__grid__maturity-range {
-  text-align: center;
-  margin: auto 5px;
-}
-
-.tf__dashboard__body__row-child {
-  .tf__dashboard__grid__maturity {
-    flex-direction: column;
-    justify-content: flex-start;
-    max-width: 150px;
-
-    .tf__dashboard__grid__maturity-timeLeft {
-      display: flex;
-      width: 100%;
-      justify-content: flex-end;
-    }
-  }
+.tf__dashboard__grid__maturity-date {
+  display: flex;
+  align-items: center;
 }

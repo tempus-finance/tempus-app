@@ -162,7 +162,7 @@ const Pool: FC<PoolProps> = ({ chain }) => {
         <div className="tc__pool__body__item">
           <div className="tc__pool__body__item-title">
             <Typography variant="card-body-text" color="title">
-              {getText('marketImpliedYield', language)}
+              {getText('fixedApr', language)}
             </Typography>
             <Spacer size={5} />
             <InfoTooltip content={<AprTooltip chain={chain} />}>

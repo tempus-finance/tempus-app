@@ -5,7 +5,7 @@ import { ethers } from 'ethers';
 import { Web3Provider } from '@ethersproject/providers';
 import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core';
 import { InjectedConnector } from '@web3-react/injected-connector';
-import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
+import { UserRejectedRequestError, WalletConnectConnector } from '@web3-react/walletconnect-connector';
 import { CircularProgress } from '@material-ui/core';
 import { supportedChainIds, NETWORK_URLS } from '../../constants';
 import { LanguageContext } from '../../context/languageContext';
@@ -33,6 +33,7 @@ import TokenIcon from '../tokenIcon';
 import WarnIcon from '../icons/WarnIcon';
 import InfoTooltip from '../infoTooltip/infoTooltip';
 import WalletUnsupportedTooltip from './WalletUnsupportedTooltip';
+import Button from '../common/Button';
 
 import './Wallet.scss';
 
@@ -52,7 +53,7 @@ const Wallet = () => {
 
   const isUnsupportedNetwork = unsupportedNetwork.attach(Downgraded).get();
 
-  const walletPopupAnchor = useRef<HTMLDivElement>(null);
+  const walletPopupAnchor = useRef<HTMLButtonElement>(null);
 
   const [selectedWallet, setSelectedWallet] = useState<UserWallet | null>(null);
   const [availableWallets, setAvailableWallets] = useState<{ [w in UserWallet]?: boolean }>({
@@ -60,10 +61,11 @@ const Wallet = () => {
   });
   const [connecting, setConnecting] = useState<boolean>(false);
   const [chainSelectorOpen, setChainSelectorOpen] = useState<boolean>(false);
-  const unsupportedNetworkRef = useRef<HTMLDivElement>(null);
+  const [unsupportedNetworkOpen, setUnsupportedNetworkOpen] = useState<boolean>(false);
 
   const onOpenChainSelector = useCallback(() => {
     setChainSelectorOpen(true);
+    setUnsupportedNetworkOpen(false);
   }, []);
 
   const onCloseChainSelector = useCallback(() => {
@@ -95,10 +97,10 @@ const Wallet = () => {
     }
   }, [setUserSettings]);
 
-  const onClickUnsupportedNetworkButton = useCallback(() => {
-    unsupportedNetworkRef.current && unsupportedNetworkRef.current.click();
-    onOpenChainSelector();
-  }, [unsupportedNetworkRef, onOpenChainSelector]);
+  const onUnsupportedNetworkToggle = useCallback(
+    () => setUnsupportedNetworkOpen(prevState => !prevState),
+    [setUnsupportedNetworkOpen],
+  );
 
   useEffect(() => {
     if (!active) {
@@ -115,7 +117,7 @@ const Wallet = () => {
           unsupportedNetwork.set(false);
         } else {
           unsupportedNetwork.set(true);
-          // TODO: a temp soln to redirect to dshboard when user switch to a unsupported network+            setWalletData &&
+          // TODO: a temp soln to redirect to dashboard when user switch to a unsupported network+            setWalletData &&
           setWalletData &&
             setWalletData(previousData => ({
               ...previousData,
@@ -126,6 +128,42 @@ const Wallet = () => {
       });
     };
     subscribeToNetworkChanges();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [active, setWalletData]);
+
+  /**
+   * Subscribe to account change events.
+   */
+  useEffect(() => {
+    if (!active) {
+      return;
+    }
+
+    const subscribeToAccountChanges = async () => {
+      const injectedConnector = new InjectedConnector({ supportedChainIds });
+      const provider = await injectedConnector.getProvider();
+
+      provider.on('accountsChanged', (accountsList: string[]) => {
+        // In case list of accounts is zero that means user disconnected all of his wallets,
+        // and we should revert wallet connect button to initial state
+        if (accountsList.length === 0) {
+          setConnecting(false);
+          setSelectedWallet(null);
+          getStorageService().delete(WALLET_KEY);
+
+          setWalletData &&
+            setWalletData(() => ({
+              userWalletConnected: false,
+              userWalletSigner: null,
+              userWalletAddress: '',
+              userWalletChain: null,
+            }));
+
+          unsupportedNetwork.set(null);
+        }
+      });
+    };
+    subscribeToAccountChanges();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [active, setWalletData]);
 
@@ -313,6 +351,12 @@ const Wallet = () => {
             getNotificationService().notify(chain, 'Wallet', getText('walletConnectConnected', language), '');
           }
         } catch (error) {
+          if (error instanceof UserRejectedRequestError) {
+            setConnecting(false);
+            setSelectedWallet(null);
+            return;
+          }
+
           if (lastSelectedWallet === 'MetaMask') {
             setSelectedWallet('MetaMask');
             const forceActivate = true;
@@ -531,9 +575,9 @@ const Wallet = () => {
 
         {/* Wallet not connected - show connect wallet button */}
         {!connecting && !selectedWallet && !isUnsupportedNetwork && (
-          <div className="tc__connect-wallet-button" onClick={onSelectWallet}>
+          <Button className="tc__connect-wallet-button" onClick={onSelectWallet}>
             <Typography variant="button-text">{getText('connectWallet', language)}</Typography>
-          </div>
+          </Button>
         )}
 
         {/* Wallet connected - show wallet info */}
@@ -544,7 +588,7 @@ const Wallet = () => {
           userWalletChain &&
           !isUnsupportedNetwork && (
             <>
-              <div className="tc__connect-wallet-network-picker" onClick={onOpenChainSelector}>
+              <Button className="tc__connect-wallet-network-picker" onClick={onOpenChainSelector}>
                 <TokenIcon
                   ticker={chainToTicker(userWalletChain)}
                   width={24}
@@ -557,8 +601,8 @@ const Wallet = () => {
                   vectorWidth={userWalletChain === 'ethereum' ? 20 : 24}
                   vectorHeight={userWalletChain === 'ethereum' ? 20 : 24}
                 />
-              </div>
-              <div className="tc__connect-wallet-button" onClick={onOpenWalletPopup} ref={walletPopupAnchor}>
+              </Button>
+              <Button className="tc__connect-wallet-button" onClick={onOpenWalletPopup} ref={walletPopupAnchor}>
                 <WalletAvatar avatar={ensAvatar} name={ensName || account} />
 
                 <Spacer size={8} />
@@ -581,17 +625,22 @@ const Wallet = () => {
                     {pendingTransactions.length} {getText('pending', language)}
                   </Typography>
                 )}
-              </div>
+              </Button>
             </>
           )}
 
         {/* Wallet connected - but unsupported network */}
         {!connecting && isUnsupportedNetwork && (
-          <InfoTooltip content={<WalletUnsupportedTooltip onClickSwitchNetwork={onClickUnsupportedNetworkButton} />}>
+          <InfoTooltip
+            content={<WalletUnsupportedTooltip onClickSwitchNetwork={onOpenChainSelector} />}
+            useExternalOpenState
+            externalOpen={unsupportedNetworkOpen}
+            onExternalToggle={onUnsupportedNetworkToggle}
+          >
             <div className="tc__connect-wallet-network-picker">
               <WarnIcon />
             </div>
-            <div className="tc__connect-wallet-button" ref={unsupportedNetworkRef}>
+            <div className="tc__connect-wallet-button">
               <Typography variant="button-text">{getText('unsupported', language)}</Typography>
             </div>
           </InfoTooltip>

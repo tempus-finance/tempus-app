@@ -13,6 +13,7 @@ import { Chain } from '../../interfaces/Chain';
 import { PendingTransactionsContext } from '../../context/pendingTransactionsContext';
 import { LanguageContext } from '../../context/languageContext';
 import { WalletContext } from '../../context/walletContext';
+import { ZERO } from '../../constants';
 import TickNegativeIcon from '../icons/TickNegativeIcon';
 import getText from '../../localisation/getText';
 import Spacer from '../spacer/spacer';
@@ -23,6 +24,7 @@ interface ApproveButtonProps {
   tokenToApproveAddress: string | null;
   tokenToApproveTicker: Ticker | null;
   amountToApprove: BigNumber | null;
+  userBalance: BigNumber | null;
   spenderAddress: string;
   chain: Chain;
   marginRight?: number;
@@ -50,6 +52,7 @@ const Approve: FC<ApproveButtonProps> = props => {
     tokenToApproveAddress,
     tokenToApproveTicker,
     amountToApprove,
+    userBalance,
     spenderAddress,
     chain,
     marginRight,
@@ -235,19 +238,25 @@ const Approve: FC<ApproveButtonProps> = props => {
    * If current allowance exceeds amount to approve, user does not have to approve tokens again.
    */
   const approved = useMemo(() => {
-    // return true;
-    if (!amountToApprove) {
+    if (!userBalance || userBalance.lte(ZERO) || !amountToApprove || amountToApprove.lte(ZERO)) {
       return false;
     }
 
-    if (amountToApprove.isZero()) {
-      return true;
-    }
-
-    const alreadyApproved = allowance && allowance.gte(amountToApprove);
+    const alreadyApproved = allowance && allowance.gt(ZERO) && allowance.gte(amountToApprove);
 
     return alreadyApproved;
-  }, [allowance, amountToApprove]);
+  }, [allowance, amountToApprove, userBalance]);
+
+  const buttonDisabled = useMemo((): boolean => {
+    return (
+      approved ||
+      disabled ||
+      amountToApprove === null ||
+      amountToApprove.lte(ZERO) ||
+      approveInProgress ||
+      !tokenToApproveAddress
+    );
+  }, [approved, amountToApprove, disabled, approveInProgress, tokenToApproveAddress]);
 
   useEffect(() => {
     if (approved) {
@@ -262,11 +271,6 @@ const Approve: FC<ApproveButtonProps> = props => {
     return null;
   }
 
-  // Do not show approve button if amount to approve is zero
-  if (amountToApprove && amountToApprove.isZero()) {
-    return null;
-  }
-
   const approve = !approveInProgress && !approved;
 
   return (
@@ -276,7 +280,7 @@ const Approve: FC<ApproveButtonProps> = props => {
         color="primary"
         variant="contained"
         onClick={onApprove}
-        disabled={disabled || approveInProgress || !tokenToApproveAddress || Boolean(approved)}
+        disabled={buttonDisabled}
         className={`tc__approve-button ${approveInProgress && 'tc__approve-button__pending'}`}
       >
         <Typography variant="button-text" color="inverted">

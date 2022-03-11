@@ -3,6 +3,7 @@ import { Ticker } from './interfaces/Token';
 
 export const MILLISECONDS_IN_A_YEAR = 31536000000;
 export const DAYS_IN_A_YEAR = 365;
+export const MILLISECONDS_IN_A_DAY = 86400000;
 export const SECONDS_IN_AN_HOUR = 3600;
 export const SECONDS_IN_A_DAY = SECONDS_IN_AN_HOUR * 24;
 export const SECONDS_IN_YEAR = SECONDS_IN_A_DAY * 365;
@@ -38,6 +39,8 @@ export const dashboardParentMaturityFormat = 'MMM yyyy';
 export const dashboardChildMaturityFormat = 'd MMMM yyyy';
 
 export const POLLING_INTERVAL = 30 * 1000;
+
+export const BAL_SLIPPAGE_ERROR_CODE = '#507';
 
 export const tokenPrecision: { [ticker in Ticker]?: number } = {
   ETH: 18,
