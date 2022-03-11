@@ -44,9 +44,7 @@ const FixedAPRFormatter = ({ row }: any) => {
         <Typography color="default" variant="body-text">
           Up to&nbsp;
         </Typography>
-        <Typography color={apr > 0.2 ? 'accent' : 'default'} variant="body-text">
-          {NumberUtils.formatPercentage(apr, 2)}
-        </Typography>
+        <Typography variant="body-text">{NumberUtils.formatPercentage(apr, 2)}</Typography>
       </div>
     );
   }
