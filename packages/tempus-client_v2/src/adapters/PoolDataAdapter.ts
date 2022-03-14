@@ -285,20 +285,6 @@ export default class PoolDataAdapter {
     }
   }
 
-  async estimatedRedeem(
-    tempusPool: string,
-    yieldsAmount: BigNumber,
-    principalsAmount: BigNumber,
-    toBackingToken: boolean,
-  ) {
-    if (!this.statisticService) {
-      console.error('PoolDataAdapter - estimateRedeem() - Attempted to use PoolDataAdapter before initializing it!');
-      return Promise.reject();
-    }
-
-    return this.statisticService.estimatedRedeem(tempusPool, yieldsAmount, principalsAmount, toBackingToken);
-  }
-
   async approveToken(
     tokenAddress: string,
     spenderAddress: string,
@@ -985,24 +971,6 @@ export default class PoolDataAdapter {
       console.error('PoolDataAdapter - getPoolFees() - Failed to retrieve fees.', error);
       return Promise.reject(error);
     }
-  }
-
-  async executeRedeem(
-    tempusPool: string,
-    userWalletAddress: string,
-    amountOfShares: BigNumber,
-    toBacking: boolean,
-  ): Promise<ContractTransaction> {
-    if (!this.tempusControllerService) {
-      console.error('PoolDataAdapter - executeRedeem() - Attempted to use PoolDataAdapter before initializing it!');
-      return Promise.reject();
-    }
-
-    if (toBacking) {
-      return this.tempusControllerService.redeemToBacking(tempusPool, userWalletAddress, amountOfShares);
-    }
-
-    return this.tempusControllerService.redeemToYieldBearing(tempusPool, userWalletAddress, amountOfShares);
   }
 
   async getPresentValueInBackingTokensForPool(
