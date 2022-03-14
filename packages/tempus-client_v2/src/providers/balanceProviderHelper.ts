@@ -3,6 +3,7 @@ import getUserBalanceProvider from './getBalanceProvider';
 import getUserLPTokenBalanceProvider from './getUserLPTokenBalanceProvider';
 import getUserYieldBearingTokenBalanceProvider from './getUserYieldBearingTokenBalanceProvider';
 import getUserBackingTokenBalanceProvider from './getUserBackingTokenBalanceProvider';
+import getAvailableToDepositProvider from './getAvailableToDepositProvider';
 
 import { BalanceProviderParams } from './interfaces';
 
@@ -36,6 +37,12 @@ export const refreshBalances = (
   }).fetchForPool(selectedPoolAddress, txBlockNumber);
 
   getUserBackingTokenBalanceProvider({
+    chain,
+    userWalletAddress,
+    userWalletSigner,
+  }).fetchForPool(selectedPoolAddress, txBlockNumber);
+
+  getAvailableToDepositProvider({
     chain,
     userWalletAddress,
     userWalletSigner,
