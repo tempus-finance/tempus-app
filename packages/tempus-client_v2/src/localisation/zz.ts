@@ -169,6 +169,7 @@ const zz: { [word in Words]: string } = {
   slippageError: '~~~~~====={{{{{(((((slippageError)))))}}}}}=====~~~~~',
   disableInputByNegativeYield: '~~~~~====={{{{{(((((disableInputByNegativeYield)))))}}}}}=====~~~~~',
   upTo: '~~~~~====={{{{{(((((upTo)))))}}}}}=====~~~~~',
+  since: '~~~~~====={{{{{(((((since)))))}}}}}=====~~~~~',
   // key: '~~~~~====={{{{{(((((key)))))}}}}}=====~~~~~',
 };
 export default zz;

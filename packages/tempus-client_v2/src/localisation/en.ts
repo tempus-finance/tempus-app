@@ -189,5 +189,6 @@ const en: { [word in Words]: string } = {
   disableInputByNegativeYield:
     'Deposits are currently disabled as this pool is currently experiencing negative yields. Please check our <a href="https://docs.tempus.finance/community/faq#why-would-a-pool-have-a-negative-yield" target="_blank">docs</a> for more information.',
   upTo: 'Up to',
+  since: 'since',
 };
 export default en;
