@@ -1,7 +1,9 @@
 import { format } from 'date-fns';
-import { useMemo } from 'react';
+import { useContext, useMemo } from 'react';
 import { TooltipProps } from 'recharts';
 import { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent';
+import { LanguageContext } from '../../../context/languageContext';
+import getText from '../../../localisation/getText';
 import NumberUtils from '../../../services/NumberUtils';
 import Typography from '../../typography/Typography';
 import PercentageLabel from '../../pool/percentageLabel/PercentageLabel';
@@ -9,6 +11,8 @@ import Spacer from '../../spacer/spacer';
 
 const ProfitLossChartTooltip = (props: TooltipProps<ValueType, NameType>) => {
   const { active, payload } = props;
+
+  const { language } = useContext(LanguageContext);
 
   const valueFormatted = useMemo(() => {
     if (active && payload && payload[0]) {
@@ -34,9 +38,13 @@ const ProfitLossChartTooltip = (props: TooltipProps<ValueType, NameType>) => {
       <Spacer size={6} />
       <PercentageLabel percentage={valueIncreaseFormatted} />
       <Spacer size={6} />
-      <Typography variant="body-text" color="title">
-        {dateFormatted}
-      </Typography>
+      <div className="tf__flex-row-center-vh">
+        <Typography variant="body-text" color="title">
+          {getText('since', language)}
+        </Typography>
+        &nbsp;
+        <Typography variant="body-text">{dateFormatted}</Typography>
+      </div>
     </div>
   );
 };

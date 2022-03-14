@@ -166,6 +166,7 @@ type Words =
   | 'timeToMaturity'
   | 'slippageError'
   | 'disableInputByNegativeYield'
-  | 'upTo';
+  | 'upTo'
+  | 'since';
 
 export default Words;

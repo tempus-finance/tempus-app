@@ -193,5 +193,6 @@ const es: { [word in Words]: string } = {
   disableInputByNegativeYield:
     'Los depósitos están deshabilitados actualmente ya que este grupo está experimentando rendimientos negativos. Consulte nuestros <a href="https://docs.tempus.finance/community/faq#why-would-a-pool-have-a-negative-yield" target="_blank">documentos</a> para obtener más información.',
   upTo: 'Hasta',
+  since: 'desde',
 };
 export default es;
