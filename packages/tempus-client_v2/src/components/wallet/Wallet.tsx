@@ -112,7 +112,7 @@ const Wallet = () => {
       const provider = await injectedConnector.getProvider();
 
       provider.on('networkChanged', (chainId: string) => {
-        const selected = chainIdToChainName(chainId);
+        const selected = chainIdToChainName(parseInt(chainId, 10));
         if (selected) {
           unsupportedNetwork.set(false);
         } else {
@@ -215,7 +215,7 @@ const Wallet = () => {
     ): Promise<boolean> => {
       const injectedConnector = new InjectedConnector({ supportedChainIds });
       const provider = await injectedConnector.getProvider();
-      const chain = chainIdToChainName(chainId);
+      const chain = chainIdToChainName(parseInt(chainId, 10));
 
       try {
         // Request user to switch to Mainnet
@@ -277,7 +277,8 @@ const Wallet = () => {
         }
         const injectedConnector = new InjectedConnector({ supportedChainIds });
         const chainId = await injectedConnector.getChainId();
-        const chain = chainIdToChainName(chainId.toString());
+        const parsedChainId = typeof chainId === 'number' ? chainId : parseInt(chainId, 10);
+        const chain = chainIdToChainName(parsedChainId);
         try {
           await activate(injectedConnector, undefined, true);
           getStorageService().set(WALLET_KEY, 'MetaMask');
@@ -345,7 +346,8 @@ const Wallet = () => {
           setSelectedWallet('WalletConnect');
 
           chainId = await walletConnectorValid.getChainId();
-          chain = chainIdToChainName(chainId.toString());
+          const parsedChainId = typeof chainId === 'number' ? chainId : parseInt(chainId, 10);
+          chain = chainIdToChainName(parsedChainId);
 
           if (showWalletConnectedNotification && chain) {
             getNotificationService().notify(chain, 'Wallet', getText('walletConnectConnected', language), '');
@@ -524,7 +526,7 @@ const Wallet = () => {
         return;
       }
 
-      const chain = chainIdToChainName(signer.provider.network.chainId.toString());
+      const chain = chainIdToChainName(signer.provider.network.chainId);
       if (!chain) {
         unsupportedNetwork.set(true);
       }
