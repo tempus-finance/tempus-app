@@ -26,7 +26,7 @@ const VariableAPRBreakDownTooltip: FC<VariableAPRBreakDownTooltipProps> = props 
     <div className="tc__apr-breakdown-tooptip__container">
       <div className="tc__apr-breakdown-tooptip__section">
         <Typography color="default" variant="tooltip-card-text">
-          {protocolName} {getText('apr', language)}
+          {getText('xxxApr', language, { protocol: protocolName })}
         </Typography>
         <Typography color="default" variant="tooltip-card-text">
           {protocolAPR}
@@ -34,7 +34,7 @@ const VariableAPRBreakDownTooltip: FC<VariableAPRBreakDownTooltipProps> = props 
       </div>
       <div className="tc__apr-breakdown-tooptip__section">
         <Typography color="default" variant="tooltip-card-text">
-          {getText('tempus', language)} {getText('apr', language)}
+          {getText('xxxApr', language, { protocol: getText('tempus', language) })}
         </Typography>
         <Typography color="default" variant="tooltip-card-text">
           {tempusAPR}

@@ -131,7 +131,7 @@ export const generatePoolNotificationInfo = (
   const notificationDateTime = format(new Date(), 'kk:mm:ss dd-MMMM-yyyy');
   return `${notificationDateTime}
   ${prettifyChainName(chain)} - ${ticker} ${getText('via', language)} ${capitalize(protocol)}
-  ${getText('maturity', language)} ${format(maturityDate, 'dd MMMM yyyy')}`;
+  ${getText('maturityXxx', language, { date: format(maturityDate, 'dd MMMM yyyy') })}`;
 };
 
 export const getTokenApprovalNotification = (
@@ -225,7 +225,7 @@ const getDepositNotificationContent = ({
   if (actionDescription === 'Fixed Yield') {
     return `${notificationDateTime}
     ${tokenSentAmountFormatted} ${tokenSentTicker} ${getText('to', language)}
-    ${principalsReceivedFormatted} ${getText('principals', language)}
+    ${getText('xxxPrincipals', language, { token: principalsReceivedFormatted })}
     ${actionDescription}
   
     ${generatePoolNotificationInfo(
@@ -238,8 +238,8 @@ const getDepositNotificationContent = ({
   } else if (actionDescription === 'Variable Yield') {
     return `${notificationDateTime}
     ${tokenSentAmountFormatted} ${tokenSentTicker} ${getText('to', language)}
-    ${principalsReceivedFormatted} ${getText('principals', language)} ${getText('and', language)}
-    ${lpTokensReceivedFormatted} ${getText('lpTokens', language)}
+    ${getText('xxxPrincipals', language, { token: principalsReceivedFormatted })} ${getText('and', language)}
+    ${getText('xxxLpTokens', language, { token: lpTokensReceivedFormatted })}
     ${actionDescription}
 
     ${generatePoolNotificationInfo(
@@ -322,9 +322,9 @@ const getWithdrawNotificationContent = ({
   );
 
   return `${notificationDateTime}
-  ${principalsSentFormatted} ${getText('principals', language)},
-  ${yieldsSentFormatted} ${getText('yields', language)},
-  ${lpTokensSentFormatted} ${getText('lpTokens', language)} ${getText('to', language)}
+  ${getText('xxxPrincipals', language, { token: principalsSentFormatted })},
+  ${getText('xxxYields', language, { token: yieldsSentFormatted })},
+  ${getText('xxxLpTokens', language, { token: lpTokensSentFormatted })} ${getText('to', language)}
   ${tokensReceivedFormatted} ${tokenReceivedTicker}
 
   ${generatePoolNotificationInfo(
@@ -410,8 +410,8 @@ const getMintNotificationContent = ({
 
   return `${notificationDateTime}
   ${tokenSentAmountFormatted} ${tokenSentTicker} ${getText('to', language)}
-  ${principalsMintedFormatted} ${getText('principals', language)} ${getText('and', language)}
-  ${yieldsMintedFormatted} ${getText('yields', language)}
+  ${getText('xxxPrincipals', language, { token: principalsMintedFormatted })} ${getText('and', language)}
+  ${getText('xxxYields', language, { token: yieldsMintedFormatted })}
 
   ${generatePoolNotificationInfo(
     chain,
@@ -548,9 +548,9 @@ const getLiquidityDepositNotificationContent = ({
   );
 
   return `${notificationDateTime}
-  ${amountOfPrincipalsSentFormatted} ${getText('principalTokens', language)} ${getText('and', language)}
-  ${amountOfYieldsSentFormatted} ${getText('yieldTokens', language)} ${getText('to', language)}
-  ${amountOfLPTokensReceivedFormatted} ${getText('lpTokens', language)}
+  ${getText('xxxPrincipals', language, { token: amountOfPrincipalsSentFormatted })} ${getText('and', language)}
+  ${getText('xxxYields', language, { token: amountOfYieldsSentFormatted })} ${getText('to', language)}
+  ${getText('xxxLpTokens', language, { token: amountOfLPTokensReceivedFormatted })}
 
   ${generatePoolNotificationInfo(
     chain,
@@ -612,9 +612,9 @@ const getLiquidityWithdrawalNotificationContent = ({
   );
 
   return `${notificationDateTime}
-  ${amountOfLPTokensSentFormatted} ${getText('lpTokens', language)} ${getText('to', language)}
-  ${amountOfPrincipalsReceivedFormatted} ${getText('principalTokens', language)} ${getText('and', language)}
-  ${amountOfYieldsReceivedFormatted} ${getText('yieldTokens', language)}
+  ${getText('xxxLpTokens', language, { token: amountOfLPTokensSentFormatted })} ${getText('to', language)}
+  ${getText('xxxPrincipals', language, { token: amountOfPrincipalsReceivedFormatted })} ${getText('and', language)}
+  ${getText('xxxYields', language, { token: amountOfYieldsReceivedFormatted })}
 
   ${generatePoolNotificationInfo(
     chain,
@@ -672,8 +672,8 @@ const getRedeemNotificationContent = ({
   );
 
   return `${notificationDateTime}
-  ${primitivesSentFormatted} ${getText('principalTokens', language)} ${getText('to', language)} ${getText(
-    'yieldTokens',
+  ${getText('xxxPrincipals', language, { token: primitivesSentFormatted })} ${getText('to', language)} ${getText(
+    'yields',
     language,
   )} ${getText('to', language)}
   ${tokensReceivedFormatted} ${tokenReceivedTicker}

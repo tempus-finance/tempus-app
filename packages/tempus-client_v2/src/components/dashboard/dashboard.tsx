@@ -228,18 +228,6 @@ const Dashboard: FC<DashboardProps> = ({ userWalletAddress, rows, onRowActionCli
           <div></div>
           <div className="tc__dashboard__header__actions">
             <CurrencySwitch />
-            {/* <div onClick={onToggleFilterPopup} ref={filterButtonRef}>
-              <Typography color="default" variant="h4">
-                {getText('filter', language)}
-              </Typography>
-              <FilterIcon />
-            </div>
-            <FilterPopup
-              open={filterPopupOpen}
-              anchor={filterButtonRef.current}
-              onClose={onToggleFilterPopup}
-              onFilter={onApplyFilter}
-            /> */}
           </div>
         </div>
         <hr />

@@ -556,12 +556,12 @@ const ProvideLiquidity: FC<ProvideLiquidityProps> = props => {
               <Typography variant="card-body-text">{getText('estimatedAmountReceived', language)}</Typography>
               <Spacer size={15} />
               <Typography variant="card-body-text">
-                {expectedLPTokensFormatted} {getText('lpTokens', language)}
+                {getText('xxxLpTokens', language, { token: expectedLPTokensFormatted })}
               </Typography>
             </div>
             <div className="tf__flex-row-center-v-end">
               <Typography variant="card-body-text">
-                {NumberUtils.formatPercentage(expectedPoolShare)} {getText('ofPool', language)}
+                {getText('xxxOfPool', language, { share: NumberUtils.formatPercentage(expectedPoolShare) })}
               </Typography>
             </div>
           </div>

@@ -453,9 +453,7 @@ const Withdraw: FC<WithdrawProps> = ({ chain, onWithdraw }) => {
         {userPrincipalsBalance && !userPrincipalsBalance.isZero() && (
           <SectionContainer elevation={2}>
             <div className="tc__title-and-balance">
-              <Typography variant="h4">
-                {backingToken} {getText('principalTokens', language)}
-              </Typography>
+              <Typography variant="h4">{getText('xxxPrincipals', language, { token: backingToken })}</Typography>
               {principalsBalanceFormatted && (
                 <div>
                   <Typography variant="card-body-text">{getText('balance', language)}</Typography>
@@ -496,9 +494,7 @@ const Withdraw: FC<WithdrawProps> = ({ chain, onWithdraw }) => {
             {userPrincipalsBalance && !userPrincipalsBalance.isZero() && <PlusIconContainer orientation="horizontal" />}
             <SectionContainer elevation={2}>
               <div className="tc__title-and-balance">
-                <Typography variant="h4">
-                  {backingToken} {getText('yieldTokens', language)}
-                </Typography>
+                <Typography variant="h4">{getText('xxxYields', language, { token: backingToken })}</Typography>
                 {yieldsBalanceFormatted && (
                   <div>
                     <Typography variant="card-body-text">{getText('balance', language)}</Typography>
@@ -544,9 +540,7 @@ const Withdraw: FC<WithdrawProps> = ({ chain, onWithdraw }) => {
               (userYieldsBalance && !userYieldsBalance.isZero())) && <PlusIconContainer orientation="horizontal" />}
             <SectionContainer elevation={2}>
               <div className="tc__title-and-balance">
-                <Typography variant="h4">
-                  {backingToken} {getText('lpTokens', language)}
-                </Typography>
+                <Typography variant="h4">{getText('xxxLpTokens', language, { token: backingToken })}</Typography>
                 {lpTokenBalanceFormatted && (
                   <div>
                     <Typography variant="card-body-text">{getText('balance', language)}</Typography>

@@ -389,7 +389,7 @@ const Mint: FC<MintInProps> = ({ narrow, chain }) => {
             <div className="tc__title-and-balance">
               <Typography variant="card-title">{getText('from', language)}</Typography>
               <Typography variant="body-text">
-                {getText('availableToDeposit', language)} {balanceFormatted}
+                {getText('availableToDepositXxx', language, { amount: balanceFormatted })}
               </Typography>
             </div>
           ) : (
@@ -443,16 +443,15 @@ const Mint: FC<MintInProps> = ({ narrow, chain }) => {
             <SectionContainer elevation={2}>
               <div className="tf__flex-row-space-between">
                 <div className="tf__flex-column-space-between">
-                  <Typography variant="h4">
-                    {backingToken} {getText('principals', language)}
-                  </Typography>
+                  <Typography variant="h4">{getText('xxxPrincipals', language, { token: backingToken })}</Typography>
                   <Spacer size={10} />
                   <Typography variant="card-body-text">
                     {estimatedTokensFormatted &&
-                      `${getText('amountReceived', language)} ${estimatedTokensFormatted} ${getText(
-                        'principalTokens',
-                        language,
-                      )}`}
+                      getText('amountReceivedXxx', language, {
+                        amount: getText('xxxPrincipals', language, {
+                          token: estimatedTokensFormatted,
+                        }),
+                      })}
                   </Typography>
                 </div>
                 <div className="tf__flex-column-center-end"></div>
@@ -465,16 +464,15 @@ const Mint: FC<MintInProps> = ({ narrow, chain }) => {
             <SectionContainer elevation={2}>
               <div className="tf__flex-row-space-between">
                 <div className="tf__flex-column-space-between">
-                  <Typography variant="h4">
-                    {backingToken} {getText('yields', language)}
-                  </Typography>
+                  <Typography variant="h4">{getText('xxxYields', language, { token: backingToken })}</Typography>
                   <Spacer size={10} />
                   <Typography variant="card-body-text">
                     {estimatedTokensFormatted &&
-                      `${getText('amountReceived', language)} ${estimatedTokensFormatted} ${getText(
-                        'yieldTokens',
-                        language,
-                      )}`}
+                      getText('amountReceivedXxx', language, {
+                        amount: getText('xxxYields', language, {
+                          token: estimatedTokensFormatted,
+                        }),
+                      })}
                   </Typography>
                 </div>
                 <div className="tf__flex-column-center-end"></div>

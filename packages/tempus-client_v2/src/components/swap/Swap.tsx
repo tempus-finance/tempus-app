@@ -296,7 +296,7 @@ const Swap: FC<SwapProps> = props => {
             <div className="tc__title-and-balance">
               <Typography variant="card-title">{getText('from', language)}</Typography>
               <Typography variant="body-text">
-                {getText('balance', language)} {balanceFormatted}
+                {getText('balanceXxx', language, { amount: balanceFormatted })}
               </Typography>
             </div>
           ) : (

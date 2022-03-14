@@ -865,7 +865,7 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
             <div className="tc__title-and-balance">
               <Typography variant="card-title">{getText('from', language)}</Typography>
               <Typography variant="body-text">
-                {getText('availableToDeposit', language)} {balanceFormatted}
+                {getText('availableToDepositXxx', language, { amount: balanceFormatted })}
               </Typography>
             </div>
           ) : (
@@ -1002,7 +1002,7 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
             <div className="tf__flex-row-space-between-v">
               <Typography variant="button-text">
                 {fixedPrincipalsAmountFormatted &&
-                  `${fixedPrincipalsAmountFormatted} ${getText('principalTokens', language)}`}
+                  getText('xxxPrincipals', language, { token: fixedPrincipalsAmountFormatted })}
                 {tokenEstimateInProgress && <CircularProgress size={14} />}
               </Typography>
               <Typography variant="button-text" color="accent">
@@ -1100,7 +1100,7 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
                   <div className="tf__flex-row-space-between-v">
                     <Typography variant="button-text">
                       {' '}
-                      {variableUnstakedPrincipalsAmountFormatted} {getText('principalTokens', language)}
+                      {getText('xxxPrincipals', language, { token: variableUnstakedPrincipalsAmountFormatted })}
                     </Typography>
                   </div>
                 )}
@@ -1110,13 +1110,15 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
                       {variableStakedPrincipalsAmountFormatted && variableStakedYieldsAmountFormatted && (
                         <div className="tf__flex-row-center-v">
                           <Typography variant="button-text">
-                            {`${variableStakedPrincipalsAmountFormatted} ${getText('stakedPrincipals', language)}`}
+                            {getText('xxxStakedPrincipals', language, {
+                              amount: variableStakedPrincipalsAmountFormatted,
+                            })}
                           </Typography>
                           <Spacer size={5} />
                           <Typography variant="button-text">&nbsp;&#38;&nbsp;</Typography> {/* -Space- -&- -Space- */}
                           <Spacer size={5} />
                           <Typography variant="button-text">
-                            {`${variableStakedYieldsAmountFormatted} ${getText('stakedYields', language)}`}
+                            {getText('xxxStakedYields', language, { amount: variableStakedYieldsAmountFormatted })}
                           </Typography>
                         </div>
                       )}

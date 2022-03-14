@@ -203,9 +203,7 @@ const CurrentPosition: FC<CurrentPositionProps> = ({ chain, language }) => {
       <Typography variant="card-title">{getText('currentPosition', language)}</Typography>
       <Spacer size={12} />
       <div className="tc__currentPosition-header-row">
-        <Typography variant="card-body-text">
-          {backingToken} {getText('principals', language)}
-        </Typography>
+        <Typography variant="card-body-text">{getText('xxxPrincipals', language, { token: backingToken })}</Typography>
         <Typography variant="card-body-text">{principalsBalanceFormatted}</Typography>
       </div>
 
@@ -246,9 +244,7 @@ const CurrentPosition: FC<CurrentPositionProps> = ({ chain, language }) => {
       <Spacer size={20} />
 
       <div className="tc__currentPosition-header-row">
-        <Typography variant="card-body-text">
-          {backingToken} {getText('yields', language)}
-        </Typography>
+        <Typography variant="card-body-text">{getText('xxxYields', language, { token: backingToken })}</Typography>
         <Typography variant="card-body-text">{yieldsBalanceFormatted}</Typography>
       </div>
 

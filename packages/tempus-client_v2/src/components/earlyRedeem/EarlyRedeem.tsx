@@ -276,9 +276,7 @@ const EarlyRedeem: FC<EarlyRedeemProps> = ({ chain }) => {
       <SectionContainer title="from" elevation={1}>
         <SectionContainer elevation={2}>
           <div className="tf__flex-column-center-v">
-            <Typography variant="h4">
-              {getText('principals', language)} &#38; {getText('yields', language)}
-            </Typography>
+            <Typography variant="h4">{getText('principalsAndYields', language)}</Typography>
             <Spacer size={12} />
             <CurrencyInput
               defaultValue={amount}
