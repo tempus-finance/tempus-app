@@ -182,5 +182,7 @@ const en: { [word in Words]: string } = {
   slippageError: 'Slippage for this transaction is too low. Please adjust the slippage in the settings menu.',
   disableInputByNegativeYield:
     'Deposits are currently disabled as this pool is currently experiencing negative yields. Please check our <a href="https://docs.tempus.finance/community/faq#why-would-a-pool-have-a-negative-yield" target="_blank">docs</a> for more information.',
+  upTo: 'Up to',
+  since: 'since',
 };
 export default en;

@@ -162,6 +162,8 @@ const zz: { [word in Words]: string } = {
   timeToMaturity: '~~~~~====={{{{{(((((timeToMaturity)))))}}}}}=====~~~~~',
   slippageError: '~~~~~====={{{{{(((((slippageError)))))}}}}}=====~~~~~',
   disableInputByNegativeYield: '~~~~~====={{{{{(((((disableInputByNegativeYield)))))}}}}}=====~~~~~',
+  upTo: '~~~~~====={{{{{(((((upTo)))))}}}}}=====~~~~~',
+  since: '~~~~~====={{{{{(((((since)))))}}}}}=====~~~~~',
   // key: '~~~~~====={{{{{(((((key)))))}}}}}=====~~~~~',
 };
 export default zz;

@@ -7,7 +7,6 @@ import { TransactionView } from '../../interfaces/TransactionView';
 import { Chain } from '../../interfaces/Chain';
 import CurrentPosition from '../currentPosition/CurrentPosition';
 import Deposit from '../deposit/Deposit';
-// import EarlyRedeem from '../earlyRedeem/EarlyRedeem';
 import Mint from '../mint/Mint';
 import Pool from '../pool/Pool';
 import ProfitLoss from '../profitLoss/ProfitLoss';
@@ -88,7 +87,6 @@ const Operations: FC<OperationsProps> = props => {
             {selectedView === 'swap' && <Swap chain={chain} />}
             {selectedView === 'provideLiquidity' && <ProvideLiquidity chain={chain} />}
             {selectedView === 'removeLiquidity' && <RemoveLiquidity chain={chain} />}
-            {/* {selectedView === 'earlyRedeem' && <EarlyRedeem />} */}
           </div>
         </div>
         {/* Right side (Current Position, Profit/Loss) - Only visible if user has balance in the pool */}

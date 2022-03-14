@@ -60,7 +60,7 @@ const Community = () => {
         placement="bottom-end"
       >
         <div className="tc__header__community-menu__container">
-          <List>
+          <List disablePadding>
             <ListItem button onClick={onGovernanceClick}>
               <ListItemIcon className="tc__header__community-menu__icon-container">
                 <GovernanceIcon />

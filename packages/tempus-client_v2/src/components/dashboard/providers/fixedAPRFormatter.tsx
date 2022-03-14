@@ -1,3 +1,4 @@
+import { useContext } from 'react';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { CircularProgress } from '@material-ui/core';
 import { ZERO } from '../../../constants';
@@ -11,8 +12,12 @@ import {
   staticPoolDataState,
   StaticPoolDataMap,
 } from '../../../state/PoolDataState';
+import getText from '../../../localisation/getText';
+import { LanguageContext } from '../../../context/languageContext';
 
 const FixedAPRFormatter = ({ row }: any) => {
+  const { language } = useContext(LanguageContext);
+
   const dynamicPoolData = useHookState(dynamicPoolDataState).attach(Downgraded).get();
   const staticPoolData = useHookState(staticPoolDataState).attach(Downgraded).get();
 
@@ -42,7 +47,7 @@ const FixedAPRFormatter = ({ row }: any) => {
     return (
       <div className="tf__dashboard__body__apy">
         <Typography color="default" variant="body-text">
-          Up to&nbsp;
+          {getText('upTo', language)}&nbsp;
         </Typography>
         <Typography variant="body-text">{NumberUtils.formatPercentage(apr, 2)}</Typography>
       </div>
@@ -71,7 +76,7 @@ function getParentAPR(
     const chainConfig = getChainConfigForPool(key);
 
     if (
-      `${staticPoolData[key].backingToken}-${chainIdToChainName(chainConfig.chainId.toString())}` === parentId &&
+      `${staticPoolData[key].backingToken}-${chainIdToChainName(chainConfig.chainId)}` === parentId &&
       (!dynamicPoolData[key].negativeYield || dynamicPoolData[key].userBalanceUSD?.gt(ZERO))
     ) {
       parentChildrenAddresses.push(key);
