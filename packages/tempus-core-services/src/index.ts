@@ -13,4 +13,31 @@ export type {
   YearnDataToken,
 } from './interfaces';
 
+export {
+  NumberUtils,
+  capitalize,
+  chainIdToChainName,
+  chainNameToHexChainId,
+  chainToTicker,
+  decreasePrecision,
+  div18f,
+  getCookie,
+  getLibrary,
+  getPastDaysNumber,
+  getProvider,
+  getProviderFromSignerOrProvider,
+  getRangeFrom,
+  getTokenPrecision,
+  increasePrecision,
+  isZeroString,
+  mul18f,
+  prettifyChainName,
+  prettifyChainNameLong,
+  rayToDai,
+  reverseString,
+  shortenAccount,
+  wadToDai,
+  wait,
+} from './utils';
+
 export * as CONSTANTS from './constants';
