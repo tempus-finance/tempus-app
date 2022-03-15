@@ -8,6 +8,14 @@ orbs:
   # See the orb documentation here: https://circleci.com/developer/orbs/orb/circleci/node
   node: circleci/node@4.1
 
+executors:
+  e2e:
+    docker:
+      - image: mcr.microsoft.com/playwright:focal
+        environment:
+          NODE_ENV: development 
+    working_directory: ~/workspace
+
 jobs:
   # Below is the definition of your job to build and test your app, you can rename and customize it as you want.
   build:
@@ -39,21 +47,11 @@ jobs:
             - ./
 
   test:
-    docker:
-      - image: cimg/node:15.1
-      - image: mcr.microsoft.com/playwright:focal
-    environment:
-      NODE_ENV: development # Needed if playwright is in `devDependencies`
+    executor: e2e
     steps:
-      - attach_workspace:
-          at: ./
       - run:
           name: Test
           command: npm test
-      - persist_to_workspace:
-          root: ./
-          paths:
-            - ./
 
   deploy-to-stage:
     docker:
