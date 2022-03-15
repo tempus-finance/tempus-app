@@ -1,0 +1,46 @@
+{
+  "name": "tempus-core-service",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Tempus core Services",
+  "keywords": [
+    "typescript",
+    "boilerplate",
+    "esbuild"
+  ],
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "lint": "eslint src/ --ext .js,.jsx,.ts,.tsx",
+    "test": "jest",
+    "clean": "rm -rf dist build package",
+    "ts-node": "ts-node",
+    "docs": "typedoc --entryPoints src/index.ts",
+    "build": "npm run clean && tsc -p tsconfig.json",
+    "build-all": "npm run clean && npm run build && npm run esbuild-node && npm run esbuild-node",
+    "esbuild-node": "esbuild src/index.ts --bundle --platform=node --minify --sourcemap=external --outfile=dist/esbuild/index.js",
+    "esbuild-node:dev": "esbuild src/index.ts --bundle --platform=node --sourcemap=external --outfile=dist/esbuild/index.js",
+    "esbuild-node:watch": "esbuild src/index.ts --bundle --platform=node --watch --sourcemap=external --outfile=dist/esbuild/index.js"
+  },
+  "dependencies": {
+    "@ethersproject/providers": "^5.5.2",
+    "@types/jest": "^24.9.1",
+    "@types/node": "^12.20.15",
+    "axios": "^0.22.0",
+    "date-fns": "^2.28.0",
+    "ethers": "^5.4.6"
+  },
+  "devDependencies": {
+    "esbuild": "^0.11.11",
+    "eslint": "^7.22.0",
+    "jest": "^26.6.3",
+    "ts-jest": "^26.5.4",
+    "ts-node": "^9.1.1",
+    "typedoc": "^0.20.35"
+  },
+  "peerDependencies": {
+    "@typescript-eslint/eslint-plugin": "^4.28.1",
+    "@typescript-eslint/parser": "^4.28.1",
+    "eslint-config-airbnb-typescript": "^12.3.1"
+  }
+}
