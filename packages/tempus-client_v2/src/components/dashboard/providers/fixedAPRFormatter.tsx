@@ -1,7 +1,7 @@
 import { useContext } from 'react';
+import { CONSTANTS } from 'tempus-core-services';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { CircularProgress } from '@material-ui/core';
-import { ZERO } from '../../../constants';
 import { Chain, chainIdToChainName } from '../../../interfaces/Chain';
 import NumberUtils from '../../../services/NumberUtils';
 import { getChainConfigForPool } from '../../../utils/getConfig';
@@ -14,6 +14,8 @@ import {
 } from '../../../state/PoolDataState';
 import getText from '../../../localisation/getText';
 import { LanguageContext } from '../../../context/languageContext';
+
+const { ZERO } = CONSTANTS;
 
 const FixedAPRFormatter = ({ row }: any) => {
   const { language } = useContext(LanguageContext);

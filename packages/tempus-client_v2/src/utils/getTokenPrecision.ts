@@ -1,8 +1,10 @@
-import { DEFAULT_TOKEN_PRECISION } from '../constants';
+import { CONSTANTS } from 'tempus-core-services';
 import { TempusPool } from '../interfaces/TempusPool';
 import { TokenTypePrecision } from '../interfaces/TokenPrecision';
 import { Chain } from '../interfaces/Chain';
 import { getConfig } from './getConfig';
+
+const { DEFAULT_TOKEN_PRECISION } = CONSTANTS;
 
 const tokenPrecisionCache: { [address: string]: { [key in TokenTypePrecision]?: number } } = {};
 

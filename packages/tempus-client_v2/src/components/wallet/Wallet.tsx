@@ -2,12 +2,12 @@ import { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'r
 import { useNavigate } from 'react-router-dom';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { ethers } from 'ethers';
+import { CONSTANTS } from 'tempus-core-services';
 import { Web3Provider } from '@ethersproject/providers';
 import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core';
 import { InjectedConnector } from '@web3-react/injected-connector';
 import { UserRejectedRequestError, WalletConnectConnector } from '@web3-react/walletconnect-connector';
 import { CircularProgress } from '@material-ui/core';
-import { supportedChainIds, NETWORK_URLS } from '../../constants';
 import { LanguageContext } from '../../context/languageContext';
 import { TokenBalanceContext } from '../../context/tokenBalanceContext';
 import { PendingTransactionsContext } from '../../context/pendingTransactionsContext';
@@ -37,6 +37,7 @@ import Button from '../common/Button';
 
 import './Wallet.scss';
 
+const { supportedChainIds, NETWORK_URLS } = CONSTANTS;
 const WALLET_KEY = 'lastConnectedWallet';
 
 const Wallet = () => {

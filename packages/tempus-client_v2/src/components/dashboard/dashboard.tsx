@@ -8,9 +8,9 @@ import {
   SortingState,
   Sorting,
 } from '@devexpress/dx-react-grid';
+import { CONSTANTS } from 'tempus-core-services';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { Grid, TableHeaderRow, VirtualTable, TableTreeColumn } from '@devexpress/dx-react-grid-material-ui';
-import { ZERO } from '../../constants';
 import { dynamicPoolDataState } from '../../state/PoolDataState';
 import { LanguageContext } from '../../context/languageContext';
 import { DashboardRow } from '../../interfaces/DashboardRow';
@@ -30,6 +30,8 @@ import CurrencySwitch from './currencySwitch/CurrencySwitch';
 import { dashboardColumnsDefinitions } from './dashboardColumnsDefinitions';
 
 import './dashboard.scss';
+
+const { ZERO } = CONSTANTS;
 
 type DashboardInProps = {
   userWalletAddress?: string;

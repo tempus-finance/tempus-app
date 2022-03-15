@@ -1,5 +1,6 @@
 import { BigNumber } from 'ethers';
 import { filter, from, interval, Observable, of, startWith, switchMap, catchError } from 'rxjs';
+import { CONSTANTS } from 'tempus-core-services';
 import { DashboardRow, DashboardRowChild, DashboardRowParent } from '../interfaces/DashboardRow';
 import { Ticker } from '../interfaces/Token';
 import { TempusPool } from '../interfaces/TempusPool';
@@ -8,7 +9,8 @@ import { Chain } from '../interfaces/Chain';
 import { ProtocolName } from '../interfaces/ProtocolName';
 import getRangeFrom from '../utils/getRangeFrom';
 import getStatisticsService from '../services/getStatisticsService';
-import { POLLING_INTERVAL } from '../constants';
+
+const { POLLING_INTERVAL } = CONSTANTS;
 
 export type RowsExcludedByDefault = {
   [key in ProtocolName]?: {

@@ -40,7 +40,7 @@
     "recharts": "^2.1.6",
     "rxjs": "^7.3.0",
     "sass": "^1.35.1",
-    "tempus-core-service": "0.0.1",
+    "tempus-core-services": "0.0.1",
     "uuid": "^8.3.2"
   },
   "devDependencies": {

@@ -1,5 +1,6 @@
 import { ethers, BigNumber } from 'ethers';
 import { format } from 'date-fns';
+import { CONSTANTS } from 'tempus-core-services';
 import ERC20ABI from '../abi/ERC20.json';
 import { Ticker } from '../interfaces/Token';
 import { ProtocolName } from '../interfaces/ProtocolName';
@@ -8,8 +9,9 @@ import { Chain, prettifyChainName } from '../interfaces/Chain';
 import getText, { Language } from '../localisation/getText';
 import { capitalize } from '../utils/capitalizeString';
 import { getChainConfig } from '../utils/getConfig';
-import { BAL_SLIPPAGE_ERROR_CODE } from '../constants';
 import NumberUtils from './NumberUtils';
+
+const { BAL_SLIPPAGE_ERROR_CODE } = CONSTANTS;
 
 interface NotificationContent {
   chain: Chain;

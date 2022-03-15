@@ -1,20 +1,22 @@
 import { BigNumber, Contract, ContractTransaction } from 'ethers';
+import { CONSTANTS } from 'tempus-core-services';
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
 import { TempusController } from '../abi/TempusController';
 import TempusControllerABI from '../abi/TempusController.json';
 import { TypedEvent } from '../abi/commons';
 import { getChainConfig } from '../utils/getConfig';
 import { decreasePrecision } from '../utils/weiMath';
-import {
+import { Chain } from '../interfaces/Chain';
+import TempusAMMService from './TempusAMMService';
+
+const {
   completeExitAndRedeemGasIncrease,
   depositAndFixGasIncrease,
   depositAndProvideLiquidityGasIncrease,
   depositBackingGasIncrease,
   depositYieldBearingGasIncrease,
   INFINITE_DEADLINE,
-} from '../constants';
-import { Chain } from '../interfaces/Chain';
-import TempusAMMService from './TempusAMMService';
+} = CONSTANTS;
 
 type TempusControllerServiceParameters = {
   Contract: typeof Contract;

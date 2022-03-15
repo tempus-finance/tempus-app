@@ -2,6 +2,7 @@ import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { ethers, BigNumber } from 'ethers';
 import { catchError, of } from 'rxjs';
+import { CONSTANTS } from 'tempus-core-services';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
 import { refreshBalances } from '../../providers/balanceProviderHelper';
@@ -17,7 +18,6 @@ import { mul18f } from '../../utils/weiMath';
 import NumberUtils from '../../services/NumberUtils';
 import Approve from '../buttons/Approve';
 import Execute from '../buttons/Execute';
-import { ETH_ALLOWANCE_FOR_GAS, ZERO } from '../../constants';
 import Descriptor from '../descriptor/Descriptor';
 import CurrencyInput from '../currencyInput/currencyInput';
 import PlusIconContainer from '../plusIconContainer/PlusIconContainer';
@@ -27,6 +27,8 @@ import TokenSelector from '../tokenSelector/tokenSelector';
 import Typography from '../typography/Typography';
 
 import './Mint.scss';
+
+const { ETH_ALLOWANCE_FOR_GAS, ZERO } = CONSTANTS;
 
 type MintInProps = {
   narrow: boolean;

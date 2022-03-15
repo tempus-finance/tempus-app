@@ -2,7 +2,7 @@ import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react
 import { ethers, BigNumber } from 'ethers';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { combineLatest } from 'rxjs';
-import { SLIPPAGE_PRECISION } from '../../constants';
+import { CONSTANTS } from 'tempus-core-services';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
 import { refreshBalances } from '../../providers/balanceProviderHelper';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
@@ -27,6 +27,8 @@ import Typography from '../typography/Typography';
 import CurrencyInput from '../currencyInput/currencyInput';
 
 import './Withdraw.scss';
+
+const { SLIPPAGE_PRECISION } = CONSTANTS;
 
 type WithdrawInProps = {
   chain: Chain;

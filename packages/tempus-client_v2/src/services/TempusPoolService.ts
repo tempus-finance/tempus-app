@@ -1,11 +1,13 @@
 import { BigNumber, ethers } from 'ethers';
+import { CONSTANTS } from 'tempus-core-services';
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
 import { TempusPool } from '../abi/TempusPool';
-import { DAYS_IN_A_YEAR, SECONDS_IN_A_DAY } from '../constants';
 import { ProtocolName } from '../interfaces/ProtocolName';
 import { Ticker } from '../interfaces/Token';
 import { Chain } from '../interfaces/Chain';
 import getERC20TokenService from './getERC20TokenService';
+
+const { DAYS_IN_A_YEAR, SECONDS_IN_A_DAY } = CONSTANTS;
 
 type TempusPoolsMap = { [key: string]: TempusPool };
 

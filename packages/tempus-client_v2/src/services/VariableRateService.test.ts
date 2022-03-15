@@ -1,4 +1,5 @@
 import { BigNumber, Contract, utils, providers, ethers } from 'ethers';
+import { CONSTANTS } from 'tempus-core-services';
 import { JsonRpcProvider } from '@ethersproject/providers';
 import { ChainConfig } from '../interfaces/Config';
 import * as getConfig from '../utils/getConfig';
@@ -10,18 +11,19 @@ import VariableRateService from './VariableRateService';
 import TempusPoolService from './TempusPoolService';
 import VaultService, { PoolBalanceChangedEvent, SwapEvent } from './VaultService';
 import TempusAMMService from './TempusAMMService';
-import {
+import { ProtocolName } from '../interfaces/ProtocolName';
+import { wadToDai } from '../utils/rayToDai';
+import cERC20Token from '../abi/cERC20Token.json';
+import { Vaults } from 'rari-sdk';
+
+const {
   aaveLendingPoolAddress,
   COMPOUND_BLOCKS_PER_DAY,
   DAYS_IN_A_YEAR,
   ONE_ETH_IN_WEI,
   SECONDS_IN_A_DAY,
   SECONDS_IN_YEAR,
-} from '../constants';
-import { ProtocolName } from '../interfaces/ProtocolName';
-import { wadToDai } from '../utils/rayToDai';
-import cERC20Token from '../abi/cERC20Token.json';
-import { Vaults } from 'rari-sdk';
+} = CONSTANTS;
 
 jest.mock('@ethersproject/providers', () => ({
   ...jest.requireActual('@ethersproject/providers'),

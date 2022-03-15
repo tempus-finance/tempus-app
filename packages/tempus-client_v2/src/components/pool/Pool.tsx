@@ -1,7 +1,7 @@
 import { FC, useContext, useEffect, useMemo, useState } from 'react';
 import { Downgraded, useHookstate, useState as useHookState } from '@hookstate/core';
 import { ethers, BigNumber } from 'ethers';
-import { FIXED_APR_PRECISION, SECONDS_IN_A_DAY } from '../../constants';
+import { CONSTANTS } from 'tempus-core-services';
 import getTokenPrecision from '../../utils/getTokenPrecision';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
 import { staticChainDataState } from '../../state/ChainState';
@@ -20,6 +20,8 @@ import AprTooltip from './aprTooltip/aprTooltip';
 import PercentageLabel from './percentageLabel/PercentageLabel';
 
 import './Pool.scss';
+
+const { FIXED_APR_PRECISION, SECONDS_IN_A_DAY } = CONSTANTS;
 
 interface PoolProps {
   chain: Chain;

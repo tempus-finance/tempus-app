@@ -1,4 +1,5 @@
 import { BigNumber, ethers } from 'ethers';
+import { CONSTANTS } from 'tempus-core-services';
 import { JsonRpcSigner } from '@ethersproject/providers';
 import getStatisticsService from '../services/getStatisticsService';
 import StatisticsService from '../services/StatisticsService';
@@ -8,8 +9,9 @@ import getERC20TokenService from '../services/getERC20TokenService';
 import ChartDataPoint from '../interfaces/ChartDataPoint';
 import { TempusPool } from '../interfaces/TempusPool';
 import { div18f, mul18f } from '../utils/weiMath';
-import { SECONDS_IN_A_DAY } from '../constants';
 import { Chain } from '../interfaces/Chain';
+
+const { SECONDS_IN_A_DAY } = CONSTANTS;
 
 type ProfitLossGraphDataAdapterParameters = {
   signer: JsonRpcSigner;

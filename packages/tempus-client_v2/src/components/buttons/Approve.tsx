@@ -1,6 +1,7 @@
 import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { BigNumber, ethers } from 'ethers';
+import { CONSTANTS } from 'tempus-core-services';
 import { Button, CircularProgress } from '@material-ui/core';
 import { selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
 import { staticChainDataState } from '../../state/ChainState';
@@ -13,12 +14,13 @@ import { Chain } from '../../interfaces/Chain';
 import { PendingTransactionsContext } from '../../context/pendingTransactionsContext';
 import { LanguageContext } from '../../context/languageContext';
 import { WalletContext } from '../../context/walletContext';
-import { ZERO } from '../../constants';
 import TickNegativeIcon from '../icons/TickNegativeIcon';
 import getText from '../../localisation/getText';
 import Spacer from '../spacer/spacer';
 
 import './Approve.scss';
+
+const { ZERO } = CONSTANTS;
 
 interface ApproveButtonProps {
   tokenToApproveAddress: string | null;
