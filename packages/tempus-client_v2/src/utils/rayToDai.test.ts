@@ -1,6 +1,8 @@
 import { ethers } from 'ethers';
-import { ONE_DAI_IN_RAY, ONE_DAI_IN_WAD } from '../constants';
+import { CONSTANTS } from 'tempus-core-services';
 import { wadToDai, rayToDai } from './rayToDai';
+
+const { ONE_DAI_IN_RAY, ONE_DAI_IN_WAD } = CONSTANTS;
 
 describe('wadToDai()', () => {
   test('return a converted value with less precision', () => {

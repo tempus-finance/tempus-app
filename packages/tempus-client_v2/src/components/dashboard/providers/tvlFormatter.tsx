@@ -1,8 +1,8 @@
 import { ethers, BigNumber } from 'ethers';
+import { CONSTANTS } from 'tempus-core-services';
 import { CircularProgress } from '@material-ui/core';
 import { DataTypeProvider } from '@devexpress/dx-react-grid';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
-import { ZERO } from '../../../constants';
 import { DashboardRow } from '../../../interfaces/DashboardRow';
 import { Chain, chainIdToChainName } from '../../../interfaces/Chain';
 import NumberUtils from '../../../services/NumberUtils';
@@ -14,6 +14,8 @@ import {
   StaticPoolDataMap,
 } from '../../../state/PoolDataState';
 import Typography from '../../typography/Typography';
+
+const { ZERO } = CONSTANTS;
 
 const TVLFormatter = (props: DataTypeProvider.ValueFormatterProps) => {
   const row = props.row as DashboardRow;

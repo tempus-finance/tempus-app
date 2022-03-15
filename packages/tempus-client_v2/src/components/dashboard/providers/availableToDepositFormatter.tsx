@@ -1,9 +1,9 @@
 import { useContext } from 'react';
 import { ethers, BigNumber } from 'ethers';
+import { CONSTANTS } from 'tempus-core-services';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { DataTypeProvider } from '@devexpress/dx-react-grid';
 import { CircularProgress } from '@material-ui/core';
-import { tokenPrecision, ZERO } from '../../../constants';
 import {
   dynamicPoolDataState,
   DynamicPoolStateData,
@@ -21,6 +21,8 @@ import Spacer from '../../spacer/spacer';
 import Typography from '../../typography/Typography';
 
 import './availableToDepositFormatter.scss';
+
+const { tokenPrecision, ZERO } = CONSTANTS;
 
 const AvailableToDepositFormatter = (props: DataTypeProvider.ValueFormatterProps) => {
   const row = props.row as DashboardRow;

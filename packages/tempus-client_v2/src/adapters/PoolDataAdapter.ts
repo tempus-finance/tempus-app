@@ -1,6 +1,7 @@
 import { BigNumber, ContractTransaction, ethers } from 'ethers';
 import { JsonRpcSigner } from '@ethersproject/providers';
 import { Observable, from, of, switchMap, combineLatest, map, throwError, timer, catchError } from 'rxjs';
+import { CONSTANTS } from 'tempus-core-services';
 import TempusAMMService from '../services/TempusAMMService';
 import StatisticsService from '../services/StatisticsService';
 import TempusControllerService, { DepositedEvent, RedeemedEvent } from '../services/TempusControllerService';
@@ -11,11 +12,18 @@ import { TransferEventListener } from '../services/ERC20TokenService';
 import getDefaultProvider from '../services/getDefaultProvider';
 import { div18f, increasePrecision, mul18f } from '../utils/weiMath';
 import { staticPoolDataState } from '../state/PoolDataState';
-import { DAYS_IN_A_YEAR, ONE_ETH_IN_WEI, POLLING_INTERVAL, SECONDS_IN_A_DAY, ZERO_ETH_ADDRESS } from '../constants';
 import { Chain } from '../interfaces/Chain';
 import { Ticker } from '../interfaces/Token';
 import { TempusPool } from '../interfaces/TempusPool';
 import { SelectedYield } from '../interfaces/SelectedYield';
+
+const {
+  DAYS_IN_A_YEAR,
+  ONE_ETH_IN_WEI,
+  POLLING_INTERVAL,
+  SECONDS_IN_A_DAY,
+  ZERO_ETH_ADDRESS,
+} = CONSTANTS;
 
 export interface UserTransaction {
   event: DepositedEvent | RedeemedEvent;

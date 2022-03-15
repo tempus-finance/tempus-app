@@ -1,5 +1,6 @@
 import { ethers, BigNumber } from 'ethers';
 import { useContext, useMemo } from 'react';
+import { CONSTANTS } from 'tempus-core-services';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { CircularProgress } from '@material-ui/core';
 import { DataTypeProvider } from '@devexpress/dx-react-grid';
@@ -10,7 +11,6 @@ import { Chain, chainIdToChainName } from '../../../interfaces/Chain';
 import NumberUtils from '../../../services/NumberUtils';
 import { getChainConfigForPool } from '../../../utils/getConfig';
 import Typography from '../../typography/Typography';
-import { tokenPrecision, ZERO } from '../../../constants';
 import Spacer from '../../spacer/spacer';
 
 import './balanceFormatter.scss';
@@ -20,6 +20,8 @@ import {
   staticPoolDataState,
   StaticPoolDataMap,
 } from '../../../state/PoolDataState';
+
+const { tokenPrecision, ZERO } = CONSTANTS;
 
 const BalanceFormatter = (props: DataTypeProvider.ValueFormatterProps) => {
   const row = props.row as DashboardRow;

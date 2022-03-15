@@ -2,18 +2,10 @@ import { ethers, BigNumber, Contract } from 'ethers';
 import { JsonRpcSigner, JsonRpcProvider } from '@ethersproject/providers';
 import { debounceTime, from, Observable, of, switchMap } from 'rxjs';
 import { Vaults as RariVault } from 'rari-sdk';
+import { CONSTANTS } from 'tempus-core-services';
 import lidoOracleABI from '../abi/LidoOracle.json';
 import AaveLendingPoolABI from '../abi/AaveLendingPool.json';
 import cERC20Token from '../abi/cERC20Token.json';
-import {
-  DAYS_IN_A_YEAR,
-  SECONDS_IN_YEAR,
-  ONE_ETH_IN_WEI,
-  aaveLendingPoolAddress,
-  COMPOUND_BLOCKS_PER_DAY,
-  SECONDS_IN_A_DAY,
-  AMM_SWAP_FEES_PRECISION,
-} from '../constants';
 import TempusPoolService from '../services/TempusPoolService';
 import VaultService, { PoolBalanceChangedEvent, SwapEvent } from '../services/VaultService';
 import TempusAMMService from '../services/TempusAMMService';
@@ -28,6 +20,15 @@ import { decreasePrecision, div18f, increasePrecision, mul18f } from '../utils/w
 import getProviderFromSignerOrProvider from '../utils/getProviderFromSignerOrProvider';
 import { Chain } from '../interfaces/Chain';
 
+const {
+  DAYS_IN_A_YEAR,
+  SECONDS_IN_YEAR,
+  ONE_ETH_IN_WEI,
+  aaveLendingPoolAddress,
+  COMPOUND_BLOCKS_PER_DAY,
+  SECONDS_IN_A_DAY,
+  AMM_SWAP_FEES_PRECISION,
+} = CONSTANTS;
 const SECONDS_IN_A_WEEK = SECONDS_IN_A_DAY * 7;
 const HOURS_IN_A_YEAR = DAYS_IN_A_YEAR * 24;
 const BN_SECONDS_IN_YEAR = BigNumber.from(SECONDS_IN_YEAR);

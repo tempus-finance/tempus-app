@@ -1,6 +1,7 @@
 import { BigNumber } from 'ethers';
-import { ONE_ETH_IN_WEI } from '../constants';
+import { CONSTANTS } from 'tempus-core-services';
 
+const { ONE_ETH_IN_WEI } = CONSTANTS;
 const weiInEth = BigNumber.from(ONE_ETH_IN_WEI);
 
 export function mul18f(multiplier: BigNumber, multiplicand: BigNumber, precision?: number): BigNumber {

@@ -1,6 +1,8 @@
 import { JsonRpcProvider } from '@ethersproject/providers';
 import { useEffect, useState } from 'react';
-import { NETWORK_URLS } from '../constants';
+import { CONSTANTS } from 'tempus-core-services';
+
+const { NETWORK_URLS } = CONSTANTS;
 
 const useENS = (address: string | null | undefined) => {
   const [ensName, setENSName] = useState<string | null | undefined>(null);

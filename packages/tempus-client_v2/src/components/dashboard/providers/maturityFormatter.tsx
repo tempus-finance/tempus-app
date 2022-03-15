@@ -2,7 +2,7 @@ import { useContext } from 'react';
 import { CircularProgress } from '@material-ui/core';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { format, formatDistanceStrict } from 'date-fns';
-import { MILLISECONDS_IN_A_DAY, ZERO } from '../../../constants';
+import { CONSTANTS } from 'tempus-core-services';
 import { LanguageContext } from '../../../context/languageContext';
 import getText from '../../../localisation/getText';
 import Typography from '../../typography/Typography';
@@ -18,6 +18,8 @@ import {
 } from '../../../state/PoolDataState';
 
 import './maturityFormatter.scss';
+
+const { MILLISECONDS_IN_A_DAY, ZERO } = CONSTANTS;
 
 const MaturityFormatter = ({ value, row }: any) => {
   const { language } = useContext(LanguageContext);

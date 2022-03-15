@@ -1,12 +1,12 @@
 import { Button, CircularProgress } from '@material-ui/core';
 import { FC, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { CONSTANTS } from 'tempus-core-services';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { ethers, BigNumber } from 'ethers';
 import { catchError, of } from 'rxjs';
 import { v1 as uuid } from 'uuid';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
 import { refreshBalances } from '../../providers/balanceProviderHelper';
-import { ETH_ALLOWANCE_FOR_GAS, FIXED_APR_PRECISION, MILLISECONDS_IN_A_YEAR, ZERO } from '../../constants';
 import { LanguageContext } from '../../context/languageContext';
 import { WalletContext } from '../../context/walletContext';
 import { UserSettingsContext } from '../../context/userSettingsContext';
@@ -32,6 +32,13 @@ import SelectIcon from '../icons/SelectIcon';
 import WarnIcon from '../icons/WarnIcon';
 
 import './Deposit.scss';
+
+const {
+  ETH_ALLOWANCE_FOR_GAS,
+  FIXED_APR_PRECISION,
+  MILLISECONDS_IN_A_YEAR,
+  ZERO,
+} = CONSTANTS;
 
 type DepositInProps = {
   narrow: boolean;

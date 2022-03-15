@@ -1,5 +1,6 @@
 import { ethers } from 'ethers';
 import { useCallback, useContext, useEffect } from 'react';
+import { CONSTANTS } from 'tempus-core-services';
 import { useState as useHookState } from '@hookstate/core';
 import {
   catchError,
@@ -19,7 +20,8 @@ import { dynamicPoolDataState } from '../state/PoolDataState';
 import { Chain } from '../interfaces/Chain';
 import { TempusPool } from '../interfaces/TempusPool';
 import getVariableRateService from '../services/getVariableRateService';
-import { POLLING_INTERVAL } from '../constants';
+
+const { POLLING_INTERVAL } = CONSTANTS;
 
 const VariableAPRProvider = () => {
   const dynamicPoolData = useHookState(dynamicPoolDataState);

@@ -1,4 +1,5 @@
 import { Contract, BigNumber, utils } from 'ethers';
+import { CONSTANTS } from 'tempus-core-services';
 import { JsonRpcProvider } from '@ethersproject/providers';
 import VaultABI from '../abi/Vault.json';
 import VaultService, {
@@ -10,7 +11,8 @@ import VaultService, {
 import * as getConfig from '../utils/getConfig';
 import * as getDefaultProvider from './getDefaultProvider';
 import { ChainConfig } from '../interfaces/Config';
-import { provideLiquidityGasIncrease, removeLiquidityGasIncrease, SECONDS_IN_AN_HOUR } from '../constants';
+
+const { provideLiquidityGasIncrease, removeLiquidityGasIncrease, SECONDS_IN_AN_HOUR } = CONSTANTS;
 
 jest.mock('@ethersproject/providers', () => ({
   ...jest.requireActual('@ethersproject/providers'),
