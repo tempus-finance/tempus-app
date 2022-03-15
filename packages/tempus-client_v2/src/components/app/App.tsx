@@ -13,6 +13,7 @@ import getUserShareTokenBalanceProvider from '../../providers/getUserShareTokenB
 import getUserLPTokenBalanceProvider from '../../providers/getUserLPTokenBalanceProvider';
 import getUserBalanceProvider from '../../providers/getBalanceProvider';
 import getPoolShareBalanceProvider from '../../providers/getPoolShareBalanceProvider';
+import getAvailableToDepositProvider from '../../providers/getAvailableToDepositProvider';
 import getUserYieldBearingTokenBalanceProvider from '../../providers/getUserYieldBearingTokenBalanceProvider';
 import getUserBackingTokenBalanceProvider from '../../providers/getUserBackingTokenBalanceProvider';
 import NotificationContainer from '../notification/NotificationContainer';
@@ -28,7 +29,7 @@ const App = () => {
   const [walletData, setWalletData] = useState(defaultWalletContextValue);
   const [pendingTransactions, setPendingTransactions] = useState(defaultPendingTransactionsContextValue);
 
-  // Initialize user share token balance provider every time user wallet address changes
+  // Initialize providers
   useEffect(() => {
     if (!walletData.userWalletAddress || !walletData.userWalletSigner || !walletData.userWalletChain) {
       return;
@@ -64,6 +65,12 @@ const App = () => {
     }).init();
 
     getUserBackingTokenBalanceProvider({
+      userWalletSigner: walletData.userWalletSigner,
+      userWalletAddress: walletData.userWalletAddress,
+      chain: walletData.userWalletChain,
+    }).init();
+
+    getAvailableToDepositProvider({
       userWalletSigner: walletData.userWalletSigner,
       userWalletAddress: walletData.userWalletAddress,
       chain: walletData.userWalletChain,
