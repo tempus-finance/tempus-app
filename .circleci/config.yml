@@ -46,8 +46,9 @@ jobs:
           at: ./
       - run:
           name: Test
-          command: npx playwright install 
-          command: npm test
+          command: |
+            npx playwright install 
+            npm test
       - persist_to_workspace:
           root: ./
           paths:
