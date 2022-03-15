@@ -1,4 +1,5 @@
 import { Contract } from 'ethers';
+import { CONSTANTS } from 'tempus-core-services';
 import { JsonRpcSigner } from '@ethersproject/providers';
 import { ERC20 } from '../abi/ERC20';
 import ERC20ABI from '../abi/ERC20.json';
@@ -8,7 +9,8 @@ import { BalanceProviderParams } from './interfaces';
 import { dynamicPoolDataState } from '../state/PoolDataState';
 import { getConfigForPoolWithAddress, getChainConfig } from '../utils/getConfig';
 import getUserBalanceDataAdapter from '../adapters/getUserBalanceDataAdapter';
-import { ZERO_ETH_ADDRESS } from '../constants';
+
+const { ZERO_ETH_ADDRESS } = CONSTANTS;
 
 class AvailableToDepositProvider {
   private userWalletAddress: string = '';
