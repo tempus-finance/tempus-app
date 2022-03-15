@@ -10,7 +10,7 @@ orbs:
 
 jobs:
   # Below is the definition of your job to build and test your app, you can rename and customize it as you want.
-  test:
+  build:
     # These next lines define a Docker executor: https://circleci.com/docs/2.0/executor-types/
     # You can specify an image from Dockerhub or use one of our Convenience Images from CircleCI's Developer Hub.
     # A list of available CircleCI Docker Convenience Images are available here: https://circleci.com/developer/images/image/cimg/node
@@ -31,22 +31,23 @@ jobs:
           name: Lerna Bootstrap
           command: ./node_modules/.bin/lerna bootstrap
       - run:
-          name: Run tests
-          command: npm test
+          name: Build
+          command: npm run build
       - persist_to_workspace:
           root: ./
           paths:
             - ./
 
-  build:
+  test:
     docker:
       - image: cimg/node:15.1
+      - image: mcr.microsoft.com/playwright:focal
     steps:
       - attach_workspace:
           at: ./
       - run:
-          name: Build
-          command: npm run build
+          name: Test
+          command: npm test
       - persist_to_workspace:
           root: ./
           paths:
@@ -69,13 +70,13 @@ workflows:
   # For more details on extending your workflow, see the configuration docs: https://circleci.com/docs/2.0/configuration-reference/#workflows
   sample:
     jobs:
-      - test
-      - build:
-          requires:
-            - test
-      - deploy-to-stage:
+      - build
+      - test:
           requires:
             - build
+      - deploy-to-stage:
+          requires:
+            - test
           filters:
             branches:
               only: master
