@@ -47,7 +47,8 @@ jobs:
       - run:
           name: Test
           command: |
-            npx playwright install 
+            npx playwright install
+            sudo npx playwright install-deps
             npm test
       - persist_to_workspace:
           root: ./
