@@ -49,7 +49,7 @@ const Execute: FC<ExecuteButtonProps> = props => {
   const protocol = staticPoolData[selectedPool.get()].protocol.attach(Downgraded).get();
   const maturityDate = staticPoolData[selectedPool.get()].maturityDate.attach(Downgraded).get();
 
-  const viewLinkText = `${getText('viewOn', language)} ${blockExplorerName}`;
+  const viewLinkText = `${getText('viewOnXxx', language, { name: blockExplorerName })}`;
 
   const execute = () => {
     const runExecute = async () => {
@@ -70,7 +70,7 @@ const Execute: FC<ExecuteButtonProps> = props => {
         getNotificationService().warn(
           chain,
           'Transaction',
-          `${actionName} ${getText('failed', language)}`,
+          getText('xxxFailed', language, { action: actionName }),
           generateFailedTransactionInfo(chain, language, selectedPoolData, error),
         );
         setExecuteInProgress(false);

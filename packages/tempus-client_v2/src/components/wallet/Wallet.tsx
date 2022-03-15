@@ -624,7 +624,7 @@ const Wallet = () => {
                 {/* In case there are pending transactions, show number of pending transactions */}
                 {pendingTransactions.length > 0 && (
                   <Typography variant="h5">
-                    {pendingTransactions.length} {getText('pending', language)}
+                    {getText('xxxPending', language, { count: pendingTransactions.length })}
                   </Typography>
                 )}
               </Button>

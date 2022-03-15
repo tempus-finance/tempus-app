@@ -7,17 +7,32 @@ import zz from './zz';
 // zz: pseudo translation
 export type Language = 'en' | 'es' | 'it' | 'zz';
 
-const getText = (word: Words, language?: Language): string => {
+const getText = (
+  word: Words,
+  language?: Language,
+  replacement: { [key in string]?: string | number | null } = {},
+): string => {
+  let string: string;
   switch (language) {
     case 'es':
-      return es[word];
+      string = es[word];
+      break;
     case 'it':
-      return it[word];
+      string = it[word];
+      break;
     case 'zz':
-      return zz[word];
+      string = zz[word];
+      break;
     default:
-      return en[word];
+      string = en[word];
+      break;
   }
+
+  Object.keys(replacement).forEach(key => {
+    string = string.replaceAll(`{{${key}}}`, `${replacement[key]}` || '');
+  });
+
+  return string;
 };
 
 export default getText;
