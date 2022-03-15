@@ -47,7 +47,8 @@ jobs:
             - ./
 
   test:
-    #executor: e2e
+    docker:
+      - image: cimg/node:15.1
     steps:
       - run:
           name: Test
