@@ -166,6 +166,7 @@ type Words =
   | 'timeToMaturity'
   | 'slippageError'
   | 'disableInputByNegativeYield'
-  | 'poolMatured';
+  | 'poolMatured'
+  | 'matured';
 
 export default Words;
