@@ -28,7 +28,7 @@
     "@web3-react/injected-connector": "6.0.7",
     "@web3-react/walletconnect-connector": "6.2.8",
     "axios": "^0.22.0",
-    "date-fns": "^2.22.1",
+    "date-fns": "^2.28.0",
     "ethers": "5.4.6",
     "html-react-parser": "^1.4.0",
     "is-mobile": "^3.0.0",
@@ -40,6 +40,7 @@
     "recharts": "^2.1.6",
     "rxjs": "^7.3.0",
     "sass": "^1.35.1",
+    "tempus-core-service": "0.0.1",
     "uuid": "^8.3.2"
   },
   "devDependencies": {
