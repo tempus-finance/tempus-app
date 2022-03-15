@@ -1,68 +1,96 @@
-import { useState as useHookState } from '@hookstate/core';
-import { useCallback, useContext, useEffect } from 'react';
-import { WalletContext } from '../context/walletContext';
+import { JsonRpcSigner } from '@ethersproject/providers';
+import { BigNumber, Contract } from 'ethers';
+import { ERC20 } from '../abi/ERC20';
+import ERC20ABI from '../abi/ERC20.json';
 import { TempusPool } from '../interfaces/TempusPool';
-import getERC20TokenService from '../services/getERC20TokenService';
+import { Chain } from '../interfaces/Chain';
 import { dynamicPoolDataState } from '../state/PoolDataState';
-import getConfig from '../utils/getConfig';
+import { getChainConfig, getConfigForPoolWithAddress } from '../utils/getConfig';
+import { ZERO_ETH_ADDRESS } from '../constants';
+import { BalanceProviderParams } from './interfaces';
 
-const UserBackingTokenBalanceProvider = () => {
-  const dynamicPoolData = useHookState(dynamicPoolDataState);
+class UserBackingTokenBalanceProvider {
+  private userWalletAddress: string;
+  private userWalletSigner: JsonRpcSigner;
+  private chain: Chain;
 
-  const { userWalletAddress, userWalletSigner } = useContext(WalletContext);
+  private tokenContracts: ERC20[] = [];
 
-  const updateBalanceForPool = useCallback(
-    async (tempusPool: TempusPool) => {
-      if (userWalletSigner) {
-        const backingTokenService = getERC20TokenService(tempusPool.backingTokenAddress, userWalletSigner);
-        const backingTokenBalance = await backingTokenService.balanceOf(userWalletAddress);
+  constructor(params: BalanceProviderParams) {
+    this.userWalletAddress = params.userWalletAddress;
+    this.userWalletSigner = params.userWalletSigner;
+    this.chain = params.chain;
+  }
 
-        const currentBalance = dynamicPoolData[tempusPool.address].userBackingTokenBalance.get();
-        // Only update state if fetched user backing token balance is different from current user backing token balance
-        if (!currentBalance || !currentBalance.eq(backingTokenBalance)) {
-          dynamicPoolData[tempusPool.address].userBackingTokenBalance.set(backingTokenBalance);
-        }
+  init() {
+    // Make sure to clean previous data before crating new subscriptions
+    this.destroy();
+
+    getChainConfig(this.chain).tempusPools.forEach(poolConfig => {
+      if (!this.userWalletSigner) {
+        return;
       }
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [userWalletAddress, userWalletSigner],
-  );
 
-  const updateBalance = useCallback(async () => {
-    getConfig().tempusPools.forEach(poolConfig => {
-      updateBalanceForPool(poolConfig);
+      const btContract = new Contract(poolConfig.backingTokenAddress, ERC20ABI, this.userWalletSigner) as ERC20;
+      btContract.on(btContract.filters.Transfer(this.userWalletAddress, null), this.updateBackingTokensBalance);
+      btContract.on(btContract.filters.Transfer(null, this.userWalletAddress), this.updateBackingTokensBalance);
+
+      this.tokenContracts.push(btContract);
     });
-  }, [updateBalanceForPool]);
 
-  useEffect(() => {
-    updateBalance();
-  }, [updateBalance]);
+    // Fetch initial balances on app load
+    this.updateBackingTokensBalance();
+  }
 
-  useEffect(() => {
-    if (!userWalletSigner) {
+  destroy() {
+    this.tokenContracts.forEach(tokenContract => {
+      tokenContract.removeAllListeners();
+    });
+    this.tokenContracts = [];
+  }
+
+  /**
+   * Manually trigger user balance update. Can be called after user action that affects user balance.
+   */
+  fetchForPool(address: string, blockTag?: number) {
+    const poolConfig = getConfigForPoolWithAddress(address);
+
+    this.updateBackingTokenBalanceForPool(poolConfig, blockTag);
+  }
+
+  private async updateBackingTokenBalanceForPool(poolConfig: TempusPool, blockTag?: number) {
+    if (!this.userWalletSigner) {
       return;
     }
 
-    getConfig().tempusPools.forEach(poolConfig => {
-      const backingTokenService = getERC20TokenService(poolConfig.backingTokenAddress, userWalletSigner);
+    const btContract = new Contract(poolConfig.backingTokenAddress, ERC20ABI, this.userWalletSigner) as ERC20;
+    let balance: BigNumber;
+    try {
+      if (btContract.address === ZERO_ETH_ADDRESS) {
+        balance = await btContract.provider.getBalance(this.userWalletAddress, blockTag);
+      } else {
+        balance = await btContract.balanceOf(this.userWalletAddress, {
+          blockTag,
+        });
+      }
+    } catch (error) {
+      console.error(
+        'UserBackingTokenBalanceProvider - updateBackingTokenBalanceForPool() - Failed to fetch new user bt balance!',
+      );
+      return Promise.reject();
+    }
 
-      backingTokenService.onTransfer(userWalletAddress, null, updateBalance);
-      backingTokenService.onTransfer(null, userWalletAddress, updateBalance);
+    const currentBalance = dynamicPoolDataState[poolConfig.address].userBackingTokenBalance.get();
+    // Only update state if fetched user principals balance is different from current user principals balance
+    if (!currentBalance || !currentBalance.eq(balance)) {
+      dynamicPoolDataState[poolConfig.address].userBackingTokenBalance.set(balance);
+    }
+  }
+
+  private updateBackingTokensBalance = () => {
+    getChainConfig(this.chain).tempusPools.forEach(poolConfig => {
+      this.updateBackingTokenBalanceForPool(poolConfig);
     });
-
-    return () => {
-      getConfig().tempusPools.forEach(poolConfig => {
-        const backingTokenService = getERC20TokenService(poolConfig.backingTokenAddress, userWalletSigner);
-
-        backingTokenService.offTransfer(userWalletAddress, null, updateBalance);
-        backingTokenService.offTransfer(null, userWalletAddress, updateBalance);
-      });
-    };
-  }, [userWalletSigner, userWalletAddress, updateBalance]);
-
-  /**
-   * Provider component only updates context value when needed. It does not show anything in the UI.
-   */
-  return null;
-};
+  };
+}
 export default UserBackingTokenBalanceProvider;

@@ -94,6 +94,7 @@ describe('TempusPoolService', () => {
         TempusPoolABI: mockABI,
         signerOrProvider: mockProvider,
         eRC20TokenServiceGetter: getERC20TokenService,
+        chain: 'fantom',
       });
 
       expect(instance).toBeInstanceOf(TempusPoolService);
@@ -121,6 +122,7 @@ describe('TempusPoolService', () => {
         TempusPoolABI: mockABI,
         signerOrProvider: mockProvider,
         eRC20TokenServiceGetter: getERC20TokenService,
+        chain: 'fantom',
       });
     });
 
@@ -190,7 +192,7 @@ describe('TempusPoolService', () => {
 
       utils.formatEther.mockImplementation((value: number) => value);
 
-      instance.getVariableAPY(mockAddress).then(result => {
+      instance.getVariableAPY(mockAddress, 13.2).then(result => {
         expect(result).toEqual(31536000);
       });
     });

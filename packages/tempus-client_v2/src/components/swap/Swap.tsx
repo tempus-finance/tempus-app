@@ -1,14 +1,15 @@
-import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { BigNumber, ethers } from 'ethers';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
-import getUserShareTokenBalanceProvider from '../../providers/getUserShareTokenBalanceProvider';
+import { refreshBalances } from '../../providers/balanceProviderHelper';
 import { LanguageContext } from '../../context/languageContext';
 import { WalletContext } from '../../context/walletContext';
 import { UserSettingsContext } from '../../context/userSettingsContext';
 import { PoolShares, Ticker } from '../../interfaces/Token';
+import { Chain } from '../../interfaces/Chain';
 import getText from '../../localisation/getText';
-import getConfig from '../../utils/getConfig';
+import { getChainConfig } from '../../utils/getConfig';
 import { mul18f } from '../../utils/weiMath';
 import getTokenPrecision from '../../utils/getTokenPrecision';
 import { isZeroString } from '../../utils/isZeroString';
@@ -26,12 +27,18 @@ import Typography from '../typography/Typography';
 
 import './Swap.scss';
 
+interface SwapProps {
+  chain: Chain;
+}
+
 interface TokenDetail {
   tokenName: PoolShares;
   tokenAddress: string;
 }
 
-const Swap = () => {
+const Swap: FC<SwapProps> = props => {
+  const { chain } = props;
+
   const selectedPool = useHookState(selectedPoolState);
   const dynamicPoolData = useHookState(dynamicPoolDataState);
   const staticPoolData = useHookState(staticPoolDataState);
@@ -136,6 +143,18 @@ const Swap = () => {
     [switchTokens, tokenTo.tokenName],
   );
 
+  const amountToApprove = useMemo(() => {
+    if (!amount) {
+      return null;
+    }
+
+    if (selectedToken === 'Principals') {
+      return ethers.utils.parseUnits(amount, getTokenPrecision(selectedPoolAddress, 'principals'));
+    } else {
+      return ethers.utils.parseUnits(amount, getTokenPrecision(selectedPoolAddress, 'yields'));
+    }
+  }, [selectedPoolAddress, selectedToken, amount]);
+
   const onApproveChange = useCallback(approved => {
     setTokensApproved(approved);
   }, []);
@@ -144,7 +163,7 @@ const Swap = () => {
     if (!userWalletSigner || !receiveAmount) {
       return Promise.resolve(undefined);
     }
-    const poolDataAdapter = getPoolDataAdapter(userWalletSigner);
+    const poolDataAdapter = getPoolDataAdapter(chain, userWalletSigner);
 
     let tokenOutPrecision;
     if (tokenTo.tokenAddress === principalsAddress) {
@@ -186,21 +205,30 @@ const Swap = () => {
     tokenTo.tokenAddress,
     userWalletAddress,
     userWalletSigner,
+    chain,
   ]);
 
-  const onExecuted = useCallback(() => {
-    setAmount('');
+  const onExecuted = useCallback(
+    (successful: boolean, txBlockNumber?: number) => {
+      setAmount('');
 
-    if (!userWalletSigner) {
-      return;
-    }
+      if (!userWalletSigner) {
+        return;
+      }
 
-    // Trigger user pool share balance update when execute is finished
-    getUserShareTokenBalanceProvider({
-      userWalletAddress,
-      userWalletSigner,
-    }).fetchForPool(selectedPoolAddress);
-  }, [selectedPoolAddress, userWalletAddress, userWalletSigner]);
+      // Trigger user pool share balance update when execute is finished
+      refreshBalances(
+        {
+          chain,
+          userWalletAddress,
+          userWalletSigner,
+        },
+        selectedPoolAddress,
+        txBlockNumber,
+      );
+    },
+    [selectedPoolAddress, userWalletAddress, userWalletSigner, chain],
+  );
 
   // Fetch receive amount
   useEffect(() => {
@@ -208,7 +236,7 @@ const Swap = () => {
       if (!userWalletSigner || !amount) {
         return;
       }
-      const poolDataAdapter = getPoolDataAdapter(userWalletSigner);
+      const poolDataAdapter = getPoolDataAdapter(chain, userWalletSigner);
 
       const amountParsed = ethers.utils.parseUnits(amount, tokenPrecision);
       const yieldShareIn = tokenFrom.tokenName === 'Yields';
@@ -233,7 +261,7 @@ const Swap = () => {
       }
     };
     getReceiveAmount();
-  }, [tokenPrecision, amount, tokenFrom, userWalletSigner, ammAddress]);
+  }, [tokenPrecision, amount, tokenFrom, userWalletSigner, ammAddress, chain]);
 
   const balanceFormatted = useMemo(() => {
     const currentBalance = getSelectedTokenBalance();
@@ -249,12 +277,6 @@ const Swap = () => {
     }
     return NumberUtils.formatToCurrency(ethers.utils.formatUnits(receiveAmount, tokenPrecision), decimalsForUI);
   }, [receiveAmount, tokenPrecision, decimalsForUI]);
-
-  const approveDisabled = useMemo((): boolean => {
-    const zeroAmount = isZeroString(amount);
-
-    return zeroAmount;
-  }, [amount]);
 
   const executeDisabled = useMemo((): boolean => {
     const zeroAmount = isZeroString(amount);
@@ -291,6 +313,7 @@ const Swap = () => {
           <Spacer size={15} />
           <CurrencyInput
             defaultValue={amount}
+            precision={tokenPrecision}
             onChange={onAmountChange}
             disabled={!selectedToken}
             onMaxClick={onMaxClick}
@@ -312,15 +335,22 @@ const Swap = () => {
         <Spacer size={15} />
         <div className="tf__flex-row-center-vh">
           <Approve
-            amountToApprove={getSelectedTokenBalance()}
+            amountToApprove={amountToApprove}
+            userBalance={getSelectedTokenBalance()}
             onApproveChange={onApproveChange}
-            spenderAddress={getConfig().vaultContract}
+            spenderAddress={getChainConfig(chain).vaultContract}
             tokenToApproveTicker={tokenFrom.tokenName}
             tokenToApproveAddress={getSelectedTokenAddress()}
             marginRight={20}
-            disabled={approveDisabled}
+            chain={chain}
           />
-          <Execute actionName="Swap" disabled={executeDisabled} onExecute={onExecute} onExecuted={onExecuted} />
+          <Execute
+            actionName="Swap"
+            disabled={executeDisabled}
+            chain={chain}
+            onExecute={onExecute}
+            onExecuted={onExecuted}
+          />
         </div>
       </SectionContainer>
     </div>

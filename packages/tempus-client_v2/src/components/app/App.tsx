@@ -1,18 +1,20 @@
 import { useEffect, useState } from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import { LanguageContext, defaultLanguageContextValue } from '../../context/languageContext';
-import { ETHBalanceContext, defaultETHBalanceContextValue } from '../../context/ethBalanceContext';
+import { TokenBalanceContext, defaultTokenBalanceContextValue } from '../../context/tokenBalanceContext';
 import { defaultWalletContextValue, WalletContext } from '../../context/walletContext';
 import {
   defaultPendingTransactionsContextValue,
   PendingTransactionsContext,
 } from '../../context/pendingTransactionsContext';
 import { UserSettingsContext, defaultUserSettingsContextValue } from '../../context/userSettingsContext';
-import ETHBalanceProvider from '../../providers/ethBalanceProvider';
+import TokenBalanceProvider from '../../providers/tokenBalanceProvider';
 import getUserShareTokenBalanceProvider from '../../providers/getUserShareTokenBalanceProvider';
 import getUserLPTokenBalanceProvider from '../../providers/getUserLPTokenBalanceProvider';
 import getUserBalanceProvider from '../../providers/getBalanceProvider';
 import getPoolShareBalanceProvider from '../../providers/getPoolShareBalanceProvider';
+import getUserYieldBearingTokenBalanceProvider from '../../providers/getUserYieldBearingTokenBalanceProvider';
+import getUserBackingTokenBalanceProvider from '../../providers/getUserBackingTokenBalanceProvider';
 import NotificationContainer from '../notification/NotificationContainer';
 import NavBar from '../navbar/NavBar';
 import Main from '../main/Main';
@@ -22,64 +24,57 @@ import './App.scss';
 const App = () => {
   const [userSettings, setUserSettings] = useState(defaultUserSettingsContextValue);
   const [language, setLanguage] = useState(defaultLanguageContextValue);
-  const [ethBalance, setETHBalance] = useState(defaultETHBalanceContextValue);
+  const [tokenBalance, setTokenBalance] = useState(defaultTokenBalanceContextValue);
   const [walletData, setWalletData] = useState(defaultWalletContextValue);
   const [pendingTransactions, setPendingTransactions] = useState(defaultPendingTransactionsContextValue);
 
   // Initialize user share token balance provider every time user wallet address changes
   useEffect(() => {
-    if (!walletData.userWalletAddress || !walletData.userWalletSigner) {
+    if (!walletData.userWalletAddress || !walletData.userWalletSigner || !walletData.userWalletChain) {
       return;
     }
 
-    // Trigger user pool share balance update when execute is finished
     getUserShareTokenBalanceProvider({
       userWalletAddress: walletData.userWalletAddress,
       userWalletSigner: walletData.userWalletSigner,
+      chain: walletData.userWalletChain,
     }).init();
-  }, [walletData.userWalletAddress, walletData.userWalletSigner]);
 
-  // Initialize user LP Token balance provider every time user wallet address changes
-  useEffect(() => {
-    if (!walletData.userWalletAddress || !walletData.userWalletSigner) {
-      return;
-    }
-
-    // Trigger user LP Token balance update when execute is finished
     getUserLPTokenBalanceProvider({
       userWalletAddress: walletData.userWalletAddress,
       userWalletSigner: walletData.userWalletSigner,
+      chain: walletData.userWalletChain,
     }).init();
-  }, [walletData.userWalletAddress, walletData.userWalletSigner]);
-
-  // Initialize user pool balance provider every time user wallet address changes
-  useEffect(() => {
-    if (!walletData.userWalletAddress || !walletData.userWalletSigner) {
-      return;
-    }
 
     getUserBalanceProvider({
       userWalletSigner: walletData.userWalletSigner,
       userWalletAddress: walletData.userWalletAddress,
+      chain: walletData.userWalletChain,
     }).init();
-  }, [walletData.userWalletAddress, walletData.userWalletSigner]);
-
-  // Initialize pool share balance provider every time user wallet address changes
-  useEffect(() => {
-    if (!walletData.userWalletSigner) {
-      return;
-    }
 
     getPoolShareBalanceProvider({
       userWalletSigner: walletData.userWalletSigner,
+      chain: walletData.userWalletChain,
     }).init();
-  }, [walletData.userWalletSigner]);
+
+    getUserYieldBearingTokenBalanceProvider({
+      userWalletSigner: walletData.userWalletSigner,
+      userWalletAddress: walletData.userWalletAddress,
+      chain: walletData.userWalletChain,
+    }).init();
+
+    getUserBackingTokenBalanceProvider({
+      userWalletSigner: walletData.userWalletSigner,
+      userWalletAddress: walletData.userWalletAddress,
+      chain: walletData.userWalletChain,
+    }).init();
+  }, [walletData.userWalletAddress, walletData.userWalletSigner, walletData.userWalletChain]);
 
   return (
     <>
       <UserSettingsContext.Provider value={{ ...userSettings, setUserSettings }}>
         <LanguageContext.Provider value={{ ...language, setLanguage }}>
-          <ETHBalanceContext.Provider value={{ ...ethBalance, setETHBalance }}>
+          <TokenBalanceContext.Provider value={{ ...tokenBalance, setTokenBalance }}>
             <WalletContext.Provider value={{ ...walletData, setWalletData }}>
               <PendingTransactionsContext.Provider value={{ ...pendingTransactions, setPendingTransactions }}>
                 <BrowserRouter>
@@ -90,9 +85,9 @@ const App = () => {
                   </div>
                 </BrowserRouter>
               </PendingTransactionsContext.Provider>
-              <ETHBalanceProvider />
+              <TokenBalanceProvider />
             </WalletContext.Provider>
-          </ETHBalanceContext.Provider>
+          </TokenBalanceContext.Provider>
         </LanguageContext.Provider>
       </UserSettingsContext.Provider>
     </>

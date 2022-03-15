@@ -1,24 +1,23 @@
-import { CircularProgress } from '@material-ui/core';
+import { Button, CircularProgress } from '@material-ui/core';
 import { FC, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { ethers, BigNumber } from 'ethers';
 import { catchError, of } from 'rxjs';
 import { v1 as uuid } from 'uuid';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
-import getUserShareTokenBalanceProvider from '../../providers/getUserShareTokenBalanceProvider';
-import getUserBalanceProvider from '../../providers/getBalanceProvider';
-import getUserLPTokenBalanceProvider from '../../providers/getUserLPTokenBalanceProvider';
-import { ETH_ALLOWANCE_FOR_GAS, MILLISECONDS_IN_A_YEAR, ZERO } from '../../constants';
+import { refreshBalances } from '../../providers/balanceProviderHelper';
+import { ETH_ALLOWANCE_FOR_GAS, FIXED_APR_PRECISION, MILLISECONDS_IN_A_YEAR, ZERO } from '../../constants';
 import { LanguageContext } from '../../context/languageContext';
 import { WalletContext } from '../../context/walletContext';
 import { UserSettingsContext } from '../../context/userSettingsContext';
 import { Ticker } from '../../interfaces/Token';
+import { Chain } from '../../interfaces/Chain';
 import { SelectedYield } from '../../interfaces/SelectedYield';
 import getText from '../../localisation/getText';
-import getConfig from '../../utils/getConfig';
+import { getChainConfig } from '../../utils/getConfig';
 import getTokenPrecision from '../../utils/getTokenPrecision';
 import { isZeroString } from '../../utils/isZeroString';
-import { increasePrecision, mul18f } from '../../utils/weiMath';
+import { increasePrecision, mul18f, div18f } from '../../utils/weiMath';
 import NumberUtils from '../../services/NumberUtils';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
 import Approve from '../buttons/Approve';
@@ -30,16 +29,18 @@ import SectionContainer from '../sectionContainer/SectionContainer';
 import Spacer from '../spacer/spacer';
 import InfoTooltip from '../infoTooltip/infoTooltip';
 import SelectIcon from '../icons/SelectIcon';
+import WarnIcon from '../icons/WarnIcon';
 
 import './Deposit.scss';
 
 type DepositInProps = {
   narrow: boolean;
+  chain: Chain;
 };
 
 type DepositProps = DepositInProps;
 
-const Deposit: FC<DepositProps> = ({ narrow }) => {
+const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
   const selectedPool = useHookState(selectedPoolState);
   const staticPoolData = useHookState(staticPoolDataState);
   const dynamicPoolData = useHookState(dynamicPoolDataState);
@@ -84,7 +85,6 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
   const userYieldBearingTokenBalance = dynamicPoolData[selectedPool.get()].userYieldBearingTokenBalance
     .attach(Downgraded)
     .get();
-  const spotPrice = staticPoolData[selectedPool.get()].spotPrice.attach(Downgraded).get();
   const backingToken = staticPoolData[selectedPool.get()].backingToken.attach(Downgraded).get();
   const yieldBearingToken = staticPoolData[selectedPool.get()].yieldBearingToken.attach(Downgraded).get();
   const ammAddress = staticPoolData[selectedPool.get()].ammAddress.attach(Downgraded).get();
@@ -190,7 +190,7 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
 
   const onExecute = useCallback((): Promise<ethers.ContractTransaction | undefined> => {
     if (userWalletSigner && amount) {
-      const poolDataAdapter = getPoolDataAdapter(userWalletSigner);
+      const poolDataAdapter = getPoolDataAdapter(chain, userWalletSigner);
 
       const tokenAmount = ethers.utils.parseUnits(amount, selectedTokenPrecision);
       const isBackingToken = backingToken === selectedToken;
@@ -206,7 +206,6 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
         selectedYield,
         slippageFormatted,
         principalsPrecision,
-        spotPrice,
         isEthDeposit,
       );
     } else {
@@ -223,34 +222,29 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
     selectedPoolAddress,
     ammAddress,
     selectedYield,
-    spotPrice,
+    chain,
   ]);
 
-  const onExecuted = useCallback(() => {
-    setAmount('');
+  const onExecuted = useCallback(
+    (successful: boolean, txBlockNumber?: number) => {
+      setAmount('');
 
-    if (!userWalletSigner) {
-      return;
-    }
+      if (!userWalletSigner) {
+        return;
+      }
 
-    // Trigger user pool share balance update when execute is finished
-    getUserShareTokenBalanceProvider({
-      userWalletAddress,
-      userWalletSigner,
-    }).fetchForPool(selectedPoolAddress);
-
-    // Trigger user balance update when execute is finished
-    getUserBalanceProvider({
-      userWalletAddress,
-      userWalletSigner,
-    }).fetchForPool(selectedPoolAddress);
-
-    // Trigger user LP Token balance update when execute is finished
-    getUserLPTokenBalanceProvider({
-      userWalletAddress,
-      userWalletSigner,
-    }).fetchForPool(selectedPoolAddress);
-  }, [selectedPoolAddress, userWalletAddress, userWalletSigner]);
+      refreshBalances(
+        {
+          chain,
+          userWalletAddress,
+          userWalletSigner,
+        },
+        selectedPoolAddress,
+        txBlockNumber,
+      );
+    },
+    [selectedPoolAddress, userWalletAddress, userWalletSigner, chain],
+  );
 
   const onApproveChange = useCallback(approved => {
     setTokensApproved(approved);
@@ -258,13 +252,15 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
 
   useEffect(() => {
     if (userWalletSigner && selectedPoolAddress && ammAddress) {
-      const poolDataAdapter = getPoolDataAdapter(userWalletSigner);
+      const poolDataAdapter = getPoolDataAdapter(chain, userWalletSigner);
 
       const stream$ = poolDataAdapter
         .retrieveBalances(
+          chain,
           selectedPoolAddress,
           ammAddress,
           tokenPrecision.backingToken,
+          tokenPrecision.yieldBearingToken,
           userWalletAddress,
           userWalletSigner,
         )
@@ -296,11 +292,13 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
     selectedPoolAddress,
     userWalletSigner,
     tokenPrecision.backingToken,
+    tokenPrecision.yieldBearingToken,
     userWalletAddress,
     selectedToken,
     setBackingTokenRate,
     setYieldBearingTokenRate,
     ammAddress,
+    chain,
   ]);
 
   useEffect(() => {
@@ -320,6 +318,7 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
       fixedPrincipalsEstimateRequestId.current = uuid();
 
       setFixedPrincipalsAmount(null);
+      setTokenEstimateInProgress(true);
 
       if (isZeroString(amount)) {
         setVariableUnstakedPrincipalsAmount(null);
@@ -327,12 +326,9 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
         setVariableStakedYieldsAmount(null);
       } else if (ammAddress && userWalletSigner) {
         try {
-          setTokenEstimateInProgress(true);
+          const poolDataAdapter = getPoolDataAdapter(chain, userWalletSigner);
 
           const currentRequestId = fixedPrincipalsEstimateRequestId.current;
-
-          const poolDataAdapter = getPoolDataAdapter(userWalletSigner);
-
           const isBackingToken = backingToken === selectedToken;
 
           const { fixedDeposit, variableDeposit } = await poolDataAdapter.getEstimatedDepositAmount(
@@ -343,6 +339,7 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
 
           if (currentRequestId !== fixedPrincipalsEstimateRequestId.current) {
             // Skip estimate state update, because request is not latest one.
+            setTokenEstimateInProgress(false);
             return;
           }
 
@@ -351,26 +348,24 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
           setVariableUnstakedPrincipalsAmount(variableDeposit.unstakedPrincipals);
           setVariableStakedPrincipalsAmount(variableDeposit.stakedPrincipals);
           setVariableStakedYieldsAmount(variableDeposit.stakedYields);
-
-          setTokenEstimateInProgress(false);
         } catch (err) {
           // TODO handle errors
           console.log('Detail Deposit - retrieveDepositAmount -', err);
-
-          setTokenEstimateInProgress(false);
         }
       }
+
+      setTokenEstimateInProgress(false);
     };
 
     retrieveDepositAmount();
-  }, [amount, selectedTokenPrecision, selectedToken, ammAddress, backingToken, userWalletSigner]);
+  }, [amount, selectedTokenPrecision, selectedToken, ammAddress, backingToken, userWalletSigner, chain]);
 
   useEffect(() => {
     const getEstimatedFixedApr = async () => {
       if (!isZeroString(amount) && selectedToken && userWalletSigner) {
         setRateEstimateInProgress(true);
 
-        const poolDataAdapter = getPoolDataAdapter(userWalletSigner);
+        const poolDataAdapter = getPoolDataAdapter(chain, userWalletSigner);
 
         const isBackingToken = selectedToken === backingToken;
         try {
@@ -404,6 +399,7 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
     setEstimatedFixedApr,
     backingToken,
     ammAddress,
+    chain,
   ]);
 
   useEffect(() => {
@@ -411,7 +407,7 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
       return;
     }
 
-    const poolDataAdapter = getPoolDataAdapter(userWalletSigner);
+    const poolDataAdapter = getPoolDataAdapter(chain, userWalletSigner);
 
     const stream$ = poolDataAdapter
       .isCurrentYieldNegativeForPool(selectedPoolAddress)
@@ -426,7 +422,7 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
       });
 
     return () => stream$.unsubscribe();
-  }, [selectedPoolAddress, userWalletSigner]);
+  }, [selectedPoolAddress, userWalletSigner, chain]);
 
   const fixedPrincipalsAmountFormatted = useMemo(() => {
     if (!fixedPrincipalsAmount) {
@@ -525,8 +521,21 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
     return null;
   }, [estimatedFixedApr, language]);
 
+  const estimatedFixedAprBelowThreshold = useMemo(() => {
+    if (estimatedFixedApr) {
+      const oneHundred = ethers.utils.parseUnits('100', FIXED_APR_PRECISION);
+      // this is 100%
+      const thresholdBN = ethers.utils.parseUnits('1', FIXED_APR_PRECISION);
+
+      // this is 0.01%
+      const threshold = div18f(div18f(thresholdBN, oneHundred, FIXED_APR_PRECISION), oneHundred, FIXED_APR_PRECISION);
+      return estimatedFixedApr.lt(threshold);
+    }
+    return false;
+  }, [estimatedFixedApr]);
+
   const fixedYieldAtMaturityFormatted = useMemo(() => {
-    if (!fixedPrincipalsAmount || !amount || isZeroString(amount) || !yieldBearingToBackingToken) {
+    if (!fixedPrincipalsAmount || !amount || !yieldBearingToBackingToken) {
       return null;
     }
 
@@ -664,7 +673,7 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
   ]);
 
   const estimatedYieldAtMaturityFormatted = useMemo(() => {
-    if (!estimatedYieldAtMaturity) {
+    if (!estimatedYieldAtMaturity || !amount || isZeroString(amount)) {
       return null;
     }
 
@@ -672,10 +681,10 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
       ethers.utils.formatUnits(estimatedYieldAtMaturity, selectedTokenPrecision),
       decimalsForUI,
     );
-  }, [decimalsForUI, estimatedYieldAtMaturity, selectedTokenPrecision]);
+  }, [amount, decimalsForUI, estimatedYieldAtMaturity, selectedTokenPrecision]);
 
   const variableTotalAvailableAtMaturity = useMemo(() => {
-    if (!estimatedYieldAtMaturity || !yieldBearingToBackingToken) {
+    if (!estimatedYieldAtMaturity || !yieldBearingToBackingToken || !amount || isZeroString(amount)) {
       return null;
     }
 
@@ -761,19 +770,41 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
     return isYieldNegative || disabledOperations.deposit || false;
   }, [disabledOperations.deposit, isYieldNegative]);
 
-  const approveDisabled = useMemo((): boolean => {
-    const zeroAmount = isZeroString(amount);
-
-    return zeroAmount || depositDisabled;
-  }, [amount, depositDisabled]);
-
   const amountToApprove = useMemo(() => {
+    let amountBigNumber;
     if (amount) {
-      return ethers.utils.parseUnits(amount, selectedTokenPrecision);
+      amountBigNumber = ethers.utils.parseUnits(amount, selectedTokenPrecision);
+    }
+
+    if (selectedToken === backingToken) {
+      if (
+        userBackingTokenBalance &&
+        !userBackingTokenBalance.isZero() &&
+        amountBigNumber &&
+        amountBigNumber.lte(userBackingTokenBalance)
+      ) {
+        return amountBigNumber;
+      }
+    } else {
+      if (
+        userYieldBearingTokenBalance &&
+        !userYieldBearingTokenBalance.isZero() &&
+        amountBigNumber &&
+        amountBigNumber.lte(userYieldBearingTokenBalance)
+      ) {
+        return amountBigNumber;
+      }
     }
 
     return ZERO;
-  }, [amount, selectedTokenPrecision]);
+  }, [
+    amount,
+    selectedTokenPrecision,
+    backingToken,
+    selectedToken,
+    userBackingTokenBalance,
+    userYieldBearingTokenBalance,
+  ]);
 
   const executeDisabled = useMemo((): boolean => {
     const zeroAmount = isZeroString(amount);
@@ -834,7 +865,7 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
             <div className="tc__title-and-balance">
               <Typography variant="card-title">{getText('from', language)}</Typography>
               <Typography variant="body-text">
-                {getText('balance', language)} {balanceFormatted}
+                {getText('availableToDeposit', language)} {balanceFormatted}
               </Typography>
             </div>
           ) : (
@@ -857,9 +888,12 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
               onMaxClick={onClickMax}
               precision={selectedTokenPrecision}
               disabled={!selectedToken || depositDisabled}
-              // TODO - Update text in case input is disabled because of negative yield
               disabledTooltip={
-                disabledOperations.deposit ? getText('depositDisabledByConfig') : getText('selectTokenFirst', language)
+                isYieldNegative
+                  ? getText('disableInputByNegativeYield', language)
+                  : disabledOperations.deposit
+                  ? getText('depositDisabledByConfig', language)
+                  : getText('selectTokenFirst', language)
               }
             />
             {ethAllowanceForGasExceeded && (
@@ -951,7 +985,11 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
                 </div>
                 <div className="tc__deposit__card-row-value">
                   <Typography variant="body-text">
-                    {fixedTotalAvailableAtMaturityUSDFormatted || <CircularProgress size={14} />}
+                    {fixedTotalAvailableAtMaturityUSDFormatted ? (
+                      fixedTotalAvailableAtMaturityUSDFormatted
+                    ) : (
+                      <CircularProgress size={14} />
+                    )}
                   </Typography>
                 </div>
               </div>
@@ -964,7 +1002,7 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
             <div className="tf__flex-row-space-between-v">
               <Typography variant="button-text">
                 {fixedPrincipalsAmountFormatted &&
-                  `${fixedPrincipalsAmountFormatted} ${getText('principals', language)}`}
+                  `${fixedPrincipalsAmountFormatted} ${getText('principalTokens', language)}`}
                 {tokenEstimateInProgress && <CircularProgress size={14} />}
               </Typography>
               <Typography variant="button-text" color="accent">
@@ -1056,14 +1094,13 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
               (variableTotalAvailableAtMaturityFormatted && variableTotalAvailableAtMaturityUSDFormatted)) && (
               <Spacer size={24} />
             )}
-
             {
               <>
                 {variableUnstakedPrincipalsAmountFormatted && (
                   <div className="tf__flex-row-space-between-v">
                     <Typography variant="button-text">
                       {' '}
-                      {variableUnstakedPrincipalsAmountFormatted} {getText('principals', language)}
+                      {variableUnstakedPrincipalsAmountFormatted} {getText('principalTokens', language)}
                     </Typography>
                   </div>
                 )}
@@ -1098,16 +1135,39 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
             }
             {tokenEstimateInProgress && <CircularProgress size={14} />}
           </SectionContainer>
+          {estimatedFixedAprBelowThreshold && (
+            <div className="tf__flex-column-center-vh">
+              <Spacer size={20} />
+              <Button color="primary" variant="contained" onClick={() => null} disabled={true}>
+                <Typography variant="button-text" color="inverted">
+                  {getText('insufficientLiquidity', language)}
+                </Typography>{' '}
+              </Button>
+              <Spacer size={15} />
+              <div className="tc__deposit_insufficient-liquidity-message">
+                <div>
+                  <WarnIcon />
+                </div>
+                <Spacer size={15} />
+                <Typography variant="dropdown-text">
+                  <span dangerouslySetInnerHTML={{ __html: getText('insufficientLiquidityMessage', language) }}></span>
+                </Typography>{' '}
+              </div>
+              <Spacer size={20} />
+            </div>
+          )}
         </div>
         <Spacer size={15} />
         <div className="tf__flex-row-center-vh">
           <Approve
             tokenToApproveAddress={getSelectedTokenAddress()}
-            spenderAddress={getConfig().tempusControllerContract}
+            spenderAddress={getChainConfig(chain).tempusControllerContract}
             amountToApprove={amountToApprove}
+            userBalance={getSelectedTokenBalance()}
             tokenToApproveTicker={selectedToken}
-            disabled={approveDisabled}
+            disabled={depositDisabled}
             marginRight={20}
+            chain={chain}
             onApproveChange={onApproveChange}
           />
           <Execute
@@ -1115,6 +1175,7 @@ const Deposit: FC<DepositProps> = ({ narrow }) => {
             actionDescription={selectedYield === 'Fixed' ? 'Fixed Yield' : 'Variable Yield'}
             disabled={executeDisabled}
             executeDisabledText={executeDisabledText}
+            chain={chain}
             onExecute={onExecute}
             onExecuted={onExecuted}
           />

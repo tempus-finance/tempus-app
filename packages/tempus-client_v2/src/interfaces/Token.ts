@@ -4,8 +4,8 @@ export type Ticker =
   | 'DAI'
   | 'ETH'
   | 'LIDO'
-  | 'Principals'
-  | 'Yields'
+  | 'Principals' // referred to as 'Capital' in the UI
+  | 'Yields' // referred to as 'Yield' in the UI
   | 'TLPT'
   | 'TUSD'
   | 'stETH'
@@ -15,7 +15,20 @@ export type Ticker =
   | 'LP Token'
   | 'RARI'
   | 'RSPT'
+  | 'YEARN'
+  | 'FANTOM'
+  | 'USDT'
+  | 'fUSDT'
+  | 'BTC'
+  | 'WBTC'
+  | 'WETH'
+  | 'wFTM'
+  | 'YFI'
   | 'yvDAI'
-  | 'YEARN';
+  | 'yvWBTC'
+  | 'yvWETH'
+  | 'yvYFI'
+  | 'yvUSDT'
+  | 'yvUSDC';
 
 export type PoolShares = 'Principals' | 'Yields';

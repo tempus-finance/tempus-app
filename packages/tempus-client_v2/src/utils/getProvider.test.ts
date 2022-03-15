@@ -1,15 +1,15 @@
 import { JsonRpcProvider } from '@ethersproject/providers';
-import getProvider from './getProvider';
+import getProviderFromSignerOrProvider from './getProviderFromSignerOrProvider';
 
 describe('getProvider', () => {
   const mockProvider = new JsonRpcProvider();
   const mockSigner = mockProvider.getSigner();
 
   test('pass in JsonRpcSigner should return JsonRpcSigner.provider', () => {
-    expect(getProvider(mockSigner)).toBe(mockSigner.provider);
+    expect(getProviderFromSignerOrProvider(mockSigner)).toBe(mockSigner.provider);
   });
 
   test('pass in JsonRpcProvider should return JsonRpcProvider itself', () => {
-    expect(getProvider(mockProvider)).toBe(mockProvider);
+    expect(getProviderFromSignerOrProvider(mockProvider)).toBe(mockProvider);
   });
 });

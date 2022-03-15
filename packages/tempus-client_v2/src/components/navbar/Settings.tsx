@@ -1,9 +1,12 @@
 import { useCallback, useState, useRef, useContext } from 'react';
 import { Divider, Popper } from '@material-ui/core';
+import KeyboardArrowDown from '@material-ui/icons/KeyboardArrowDown';
 import { LanguageContext } from '../../context/languageContext';
 import getText from '../../localisation/getText';
 import Languages from './Languages';
 import Slippage from './Slippage';
+import Button from '../common/Button';
+import Typography from '../typography/Typography';
 
 import './Settings.scss';
 
@@ -19,10 +22,11 @@ const Settings = () => {
   }, [setSettingsMenuOpen]);
 
   return (
-    <>
-      <li ref={settingsMenuAnchor} onClick={toggleSettingsMenu}>
-        {getText('settings', language)}
-      </li>
+    <li ref={settingsMenuAnchor}>
+      <Button onClick={toggleSettingsMenu}>
+        <Typography variant="dropdown-text">{getText('settings', language)}</Typography>
+        <KeyboardArrowDown />
+      </Button>
       <Popper
         className="tc__header__popper"
         open={settingsMenuOpen}
@@ -36,7 +40,7 @@ const Settings = () => {
         </div>
       </Popper>
       {settingsMenuOpen && <div className="tc__backdrop" onClick={toggleSettingsMenu} />}
-    </>
+    </li>
   );
 };
 

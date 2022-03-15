@@ -5,25 +5,27 @@ import getTokenPrecision from './getTokenPrecision';
 
 describe('getTokenPrecision()', () => {
   beforeEach(() => {
-    jest.spyOn(getConfig, 'default').mockReturnValue({
-      tempusPools: [
-        {
-          address: 'abc',
-          tokenPrecision: {
-            backingToken: 4,
-            yieldBearingToken: 12,
-            principals: 7,
-            yields: 0,
-            lpTokens: 9,
+    jest.spyOn(getConfig, 'getConfig').mockReturnValue({
+      fantom: {
+        tempusPools: [
+          {
+            address: 'abc',
+            tokenPrecision: {
+              backingToken: 4,
+              yieldBearingToken: 12,
+              principals: 7,
+              yields: 0,
+              lpTokens: 9,
+            },
           },
-        },
-        {
-          address: 'xyz',
-          tokenPrecision: {
-            backingToken: 4,
+          {
+            address: 'xyz',
+            tokenPrecision: {
+              backingToken: 4,
+            },
           },
-        },
-      ],
+        ],
+      },
     } as unknown as Config);
   });
 
@@ -83,7 +85,7 @@ describe('getTokenPrecision()', () => {
 
     // the cache is created once the previous test has run.
     // o getConfig() will get invoked 0 times if test has been run before, or invoked once if no tests are run before
-    expect((getConfig.default as jest.Mock<Config, []>).mock.calls.length).toBeLessThan(2);
+    expect((getConfig.getConfig as jest.Mock<Config, []>).mock.calls.length).toBeLessThan(2);
   });
 
   test('it returns zero cache without calling getConfig() when it call twice', () => {
@@ -94,7 +96,7 @@ describe('getTokenPrecision()', () => {
 
     // the cache is created once the previous test has run.
     // o getConfig() will get invoked 0 times if test has been run before, or invoked once if no tests are run before
-    expect((getConfig.default as jest.Mock<Config, []>).mock.calls.length).toBeLessThan(2);
+    expect((getConfig.getConfig as jest.Mock<Config, []>).mock.calls.length).toBeLessThan(2);
   });
 
   test('it returns 0 if pool address not exists', () => {

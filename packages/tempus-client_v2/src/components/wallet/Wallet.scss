@@ -7,48 +7,82 @@
   justify-content: center;
 }
 
-.tc__connect-wallet-button__container {
-  @include background-level-2;
-
-  display: flex;
-  border-radius: 5px;
-  height: 45px;
-  background-color: $ui-element-color;
-  align-items: center;
-  padding: 0px;
-  border: none;
-}
-
-.tc__connect-wallet-button__profile {
-  display: flex;
-  margin-left: 10px;
-
-  img {
-    height: 20px;
-    border-radius: 100px;
-    margin-right: 10px;
-  }
-}
-
 .tc__connect-wallet-button {
-  height: 45px;
+  width: 160px;
+  height: 40px;
+  background-color: #ffffff;
+  border: 1px solid #bfc0c0;
+  border-radius: 0px 4px 4px 0px;
   box-sizing: border-box;
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #fcfcfc;
-  border-radius: 5px;
-  padding-left: 15px;
-  padding-right: 15px;
-  box-shadow: -2px 0px 2px rgba(0, 0, 0, 0.25);
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.08);
   cursor: pointer;
+}
 
-  &.tc__connect-wallet-button__connected:hover {
-    background-color: $link-color;
-    color: $inverted-text-color;
+.tc__connect-wallet-network-picker {
+  width: 55px;
+  height: 40px;
+  background-color: #ffffff;
+  border: 1px solid #bfc0c0;
+  border-right: none;
+  box-sizing: border-box;
+  border-radius: 4px 0px 0px 4px;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
-    > div {
-      color: $inverted-text-color !important;
+.tc__connect-wallet-button__profile {
+  display: flex;
+
+  img,
+  canvas {
+    height: 24px;
+    width: 24px;
+    border-radius: 48px;
+  }
+}
+
+.tc__connect-wallet-button__info {
+  display: flex;
+  flex-direction: column;
+}
+
+.tc__connect-wallet-button__balance {
+  display: flex;
+  align-items: center;
+}
+
+.tc__connect-wallet-unsupported-tooltip__container {
+  max-width: 240px;
+
+  .tc__connect-wallet-unsupported-tooltip__header {
+    display: flex;
+    align-items: center;
+    margin: 2px 0 6px 0;
+
+    svg {
+      margin-right: 8px;
+    }
+  }
+
+  .tc__connect-wallet-unsupported-tooltip__button-container {
+    width: 100%;
+    margin-top: 12px;
+
+    .tc__connect-wallet-unsupported-tooltip__button {
+      cursor: pointer;
+      height: 40px;
+      border: 0;
+      background-color: #2b6e84;
+      mix-blend-mode: normal;
+      box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.08);
+      border-radius: 4px;
+      width: 100%;
     }
   }
 }

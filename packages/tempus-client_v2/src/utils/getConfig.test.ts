@@ -1,4 +1,4 @@
-import getConfig, { getConfigForPoolWithId, getConfigForPoolWithAddress } from './getConfig';
+import { getConfig, getConfigForPoolWithId, getConfigForPoolWithAddress } from './getConfig';
 import * as getCookie from './getCookie';
 import config from '../config/config';
 import { Config } from '../interfaces/Config';
@@ -52,7 +52,7 @@ describe('getConfig', () => {
       },
     },
   ];
-  const MOCK_CONFIG = { tempusPools: MOCK_TEMPUS_POOL } as Config;
+  const MOCK_CONFIG = { ethereum: { tempusPools: MOCK_TEMPUS_POOL } } as Config;
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -97,9 +97,9 @@ describe('getConfig', () => {
     });
 
     test('return config with corresponding pool ID', () => {
-      const poolId = config.tempusPools[1].poolId;
+      const poolId = config.ethereum.tempusPools[1].poolId;
 
-      expect(getConfigForPoolWithId(poolId)).toEqual(config.tempusPools[1]);
+      expect(getConfigForPoolWithId(poolId)).toEqual(config.ethereum.tempusPools[1]);
     });
   });
 
@@ -115,9 +115,9 @@ describe('getConfig', () => {
     });
 
     test('return config with corresponding pool address', () => {
-      const poolAddress = config.tempusPools[1].address;
+      const poolAddress = config.ethereum.tempusPools[1].address;
 
-      expect(getConfigForPoolWithAddress(poolAddress)).toEqual(config.tempusPools[1]);
+      expect(getConfigForPoolWithAddress(poolAddress)).toEqual(config.ethereum.tempusPools[1]);
     });
   });
 });

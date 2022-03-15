@@ -1,22 +1,26 @@
 import { FC, RefObject, useCallback, useContext, useEffect, useState } from 'react';
 import { Button, Divider, Popper } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
-import { LanguageContext } from '../../context/languageContext';
 import { Notification } from '../../interfaces/Notification';
+import { Chain } from '../../interfaces/Chain';
+import { LanguageContext } from '../../context/languageContext';
 import { UserSettingsContext } from '../../context/userSettingsContext';
 import { PendingTransactionsContext } from '../../context/pendingTransactionsContext';
+import { WalletContext } from '../../context/walletContext';
 import getNotificationService from '../../services/getNotificationService';
-import getConfig from '../../utils/getConfig';
+import { getChainConfig } from '../../utils/getConfig';
 import getText from '../../localisation/getText';
 import Typography from '../typography/Typography';
 import Spacer from '../spacer/spacer';
 import WalletNotification from './WalletNotification';
 import WalletPending from './WalletPending';
+
 import './WalletPopup.scss';
 
 type WalletPopupInProps = {
-  anchorElement: RefObject<HTMLDivElement>;
+  anchorElement: RefObject<HTMLButtonElement>;
   account?: string | null;
+  chainName: Chain;
 };
 
 type WalletPopupOutProps = {
@@ -26,10 +30,11 @@ type WalletPopupOutProps = {
 
 type WalletPopupProps = WalletPopupInProps & WalletPopupOutProps;
 
-const WalletPopup: FC<WalletPopupProps> = ({ anchorElement, account, onSwitchWallet, onClose }) => {
+const WalletPopup: FC<WalletPopupProps> = ({ anchorElement, account, chainName, onSwitchWallet, onClose }) => {
   const { openWalletPopup } = useContext(UserSettingsContext);
   const { language } = useContext(LanguageContext);
   const { pendingTransactions } = useContext(PendingTransactionsContext);
+  const { userWalletChain } = useContext(WalletContext);
 
   const [notifications, setNotifications] = useState<Notification[]>([]);
 
@@ -43,26 +48,31 @@ const WalletPopup: FC<WalletPopupProps> = ({ anchorElement, account, onSwitchWal
   }, [onSwitchWallet]);
 
   const onAccountAddressClick = useCallback(() => {
-    const config = getConfig();
+    const config = getChainConfig(chainName);
 
     if (config.networkName === 'homestead') {
       window.open(`https://etherscan.io/address/${account}`, '_blank');
+    } else if (config.networkName === 'fantom-mainnet') {
+      window.open(`https://ftmscan.com/address/${account}`, '_blank');
     } else {
       window.open(`https://${config.networkName}.etherscan.io/address/${account}`, '_blank');
     }
-  }, [account]);
+  }, [account, chainName]);
 
   useEffect(() => {
     const notificationStream$ = getNotificationService()
       .getLastItems()
       .subscribe(notification => {
-        if (notification) {
+        if (notification && notification.chain === userWalletChain) {
           setNotifications((prev: any) => [notification, ...prev.slice(0, 4)]);
         }
       });
 
-    return () => notificationStream$.unsubscribe();
-  }, [setNotifications]);
+    return () => {
+      notificationStream$.unsubscribe();
+      setNotifications([]);
+    };
+  }, [userWalletChain, setNotifications]);
 
   return (
     <>

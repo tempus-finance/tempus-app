@@ -1,32 +1,31 @@
 import { JsonRpcSigner } from '@ethersproject/providers';
-import { Contract } from 'ethers';
+import { BigNumber, Contract } from 'ethers';
 import { ERC20 } from '../abi/ERC20';
 import ERC20ABI from '../abi/ERC20.json';
 import { TempusPool } from '../interfaces/TempusPool';
+import { Chain } from '../interfaces/Chain';
 import { dynamicPoolDataState } from '../state/PoolDataState';
-import getConfig, { getConfigForPoolWithAddress } from '../utils/getConfig';
-
-export interface UserShareTokenBalanceProviderParams {
-  userWalletAddress: string;
-  userWalletSigner: JsonRpcSigner;
-}
+import { getChainConfig, getConfigForPoolWithAddress } from '../utils/getConfig';
+import { BalanceProviderParams } from './interfaces';
 
 class UserShareTokenBalanceProvider {
-  private userWalletAddress: string = '';
-  private userWalletSigner: JsonRpcSigner | null = null;
+  private userWalletAddress: string;
+  private userWalletSigner: JsonRpcSigner;
+  private chain: Chain;
 
   private tokenContracts: ERC20[] = [];
 
-  constructor(params: UserShareTokenBalanceProviderParams) {
+  constructor(params: BalanceProviderParams) {
     this.userWalletAddress = params.userWalletAddress;
     this.userWalletSigner = params.userWalletSigner;
+    this.chain = params.chain;
   }
 
   init() {
     // Make sure to clean previous data before crating new subscriptions
     this.destroy();
 
-    getConfig().tempusPools.forEach(poolConfig => {
+    getChainConfig(this.chain).tempusPools.forEach(poolConfig => {
       if (!this.userWalletSigner) {
         return;
       }
@@ -57,20 +56,30 @@ class UserShareTokenBalanceProvider {
   /**
    * Manually trigger user balance update. Can be called after user action that affects user balance.
    */
-  fetchForPool(address: string) {
+  fetchForPool(address: string, blockTag?: number) {
     const poolConfig = getConfigForPoolWithAddress(address);
 
-    this.updatePrincipalsBalanceForPool(poolConfig);
-    this.updateYieldsBalanceForPool(poolConfig);
+    this.updatePrincipalsBalanceForPool(poolConfig, blockTag);
+    this.updateYieldsBalanceForPool(poolConfig, blockTag);
   }
 
-  private async updatePrincipalsBalanceForPool(poolConfig: TempusPool) {
+  private async updatePrincipalsBalanceForPool(poolConfig: TempusPool, blockTag?: number) {
     if (!this.userWalletSigner) {
       return;
     }
 
     const tpsContract = new Contract(poolConfig.principalsAddress, ERC20ABI, this.userWalletSigner) as ERC20;
-    const balance = await tpsContract.balanceOf(this.userWalletAddress);
+    let balance: BigNumber;
+    try {
+      balance = await tpsContract.balanceOf(this.userWalletAddress, {
+        blockTag,
+      });
+    } catch (error) {
+      console.error(
+        'UserShareTokenBalanceProvider - updatePrincipalsBalanceForPool() - Failed to fetch new user capital balance!',
+      );
+      return Promise.reject();
+    }
 
     const currentBalance = dynamicPoolDataState[poolConfig.address].userPrincipalsBalance.get();
     // Only update state if fetched user principals balance is different from current user principals balance
@@ -79,13 +88,23 @@ class UserShareTokenBalanceProvider {
     }
   }
 
-  private async updateYieldsBalanceForPool(poolConfig: TempusPool) {
+  private async updateYieldsBalanceForPool(poolConfig: TempusPool, blockTag?: number) {
     if (!this.userWalletSigner) {
       return;
     }
 
     const tysContract = new Contract(poolConfig.yieldsAddress, ERC20ABI, this.userWalletSigner) as ERC20;
-    const balance = await tysContract.balanceOf(this.userWalletAddress);
+    let balance: BigNumber;
+    try {
+      balance = await tysContract.balanceOf(this.userWalletAddress, {
+        blockTag,
+      });
+    } catch (error) {
+      console.error(
+        'UserShareTokenBalanceProvider - updateYieldsBalanceForPool() - Failed to fetch new user yield balance!',
+      );
+      return Promise.reject();
+    }
 
     const currentBalance = dynamicPoolDataState[poolConfig.address].userYieldsBalance.get();
     // Only update state if fetched user yields balance is different from current user yields balance
@@ -95,13 +114,13 @@ class UserShareTokenBalanceProvider {
   }
 
   private updatePrincipalsBalance = () => {
-    getConfig().tempusPools.forEach(poolConfig => {
+    getChainConfig(this.chain).tempusPools.forEach(poolConfig => {
       this.updatePrincipalsBalanceForPool(poolConfig);
     });
   };
 
   private updateYieldsBalance = () => {
-    getConfig().tempusPools.forEach(poolConfig => {
+    getChainConfig(this.chain).tempusPools.forEach(poolConfig => {
       this.updateYieldsBalanceForPool(poolConfig);
     });
   };

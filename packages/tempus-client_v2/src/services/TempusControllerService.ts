@@ -3,7 +3,7 @@ import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
 import { TempusController } from '../abi/TempusController';
 import TempusControllerABI from '../abi/TempusController.json';
 import { TypedEvent } from '../abi/commons';
-import getConfig from '../utils/getConfig';
+import { getChainConfig } from '../utils/getConfig';
 import { decreasePrecision } from '../utils/weiMath';
 import {
   completeExitAndRedeemGasIncrease,
@@ -13,6 +13,7 @@ import {
   depositYieldBearingGasIncrease,
   INFINITE_DEADLINE,
 } from '../constants';
+import { Chain } from '../interfaces/Chain';
 import TempusAMMService from './TempusAMMService';
 
 type TempusControllerServiceParameters = {
@@ -21,6 +22,7 @@ type TempusControllerServiceParameters = {
   abi: typeof TempusControllerABI;
   signerOrProvider: JsonRpcProvider | JsonRpcSigner;
   tempusAMMService: TempusAMMService;
+  chain: Chain;
 };
 
 // I need to define event types like this, because TypeChain plugin for Hardhat does not generate them.
@@ -54,6 +56,7 @@ export type RedeemedEvent = TypedEvent<
 >;
 
 class TempusControllerService {
+  private chain: Chain | null = null;
   private contract: TempusController | null = null;
 
   private tempusAMMService: TempusAMMService | null = null;
@@ -65,6 +68,7 @@ class TempusControllerService {
       console.error('TempusControllerService - init', error);
     }
 
+    this.chain = params.chain;
     this.tempusAMMService = params.tempusAMMService;
   }
 
@@ -240,14 +244,14 @@ class TempusControllerService {
     principalsPrecision: number,
     lpTokenPrecision: number,
   ): Promise<ContractTransaction> {
-    if (!this.contract || !this.tempusAMMService) {
+    if (!this.contract || !this.tempusAMMService || !this.chain) {
       console.error(
         'TempusControllerService - exitTempusAmmAndRedeem() - Attempted to use TempusControllerService before initializing it!',
       );
       return Promise.reject();
     }
 
-    const tempusPoolConfig = getConfig().tempusPools.find(
+    const tempusPoolConfig = getChainConfig(this.chain).tempusPools.find(
       tempusPoolConfig => tempusPoolConfig.ammAddress === tempusAMM,
     );
     if (!tempusPoolConfig) {

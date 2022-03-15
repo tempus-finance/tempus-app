@@ -1,15 +1,18 @@
 import { JsonRpcSigner } from '@ethersproject/providers';
 import { BigNumber, Contract } from 'ethers';
 import VaultABI from '../abi/Vault.json';
+import { Chain } from '../interfaces/Chain';
 import { dynamicPoolDataState } from '../state/PoolDataState';
-import getConfig, { getConfigForPoolWithId } from '../utils/getConfig';
+import { getChainConfig, getConfigForPoolWithId } from '../utils/getConfig';
 
 export interface PoolShareBalanceProviderParams {
   userWalletSigner: JsonRpcSigner;
+  chain: Chain;
 }
 
 class PoolShareBalanceProvider {
-  private userWalletSigner: JsonRpcSigner | null = null;
+  private userWalletSigner: JsonRpcSigner;
+  private chain: Chain;
 
   private vaultContract: Contract | null = null;
 
@@ -18,17 +21,14 @@ class PoolShareBalanceProvider {
    */
   constructor(params: PoolShareBalanceProviderParams) {
     this.userWalletSigner = params.userWalletSigner;
+    this.chain = params.chain;
   }
 
   init() {
-    if (!this.userWalletSigner) {
-      return;
-    }
-
     // Clean up previous subscriptions
     this.destroy();
 
-    const config = getConfig();
+    const config = getChainConfig(this.chain);
 
     this.vaultContract = new Contract(config.vaultContract, VaultABI, this.userWalletSigner);
     config.tempusPools.forEach(poolConfig => {
@@ -64,15 +64,15 @@ class PoolShareBalanceProvider {
    * so with this manual trigger we can make sure that fetch is performed immediately after
    * user action and UI is promptly updated.
    */
-  fetchForPoolWithId(poolId: string) {
-    this.fetchPoolBalance(poolId);
+  fetchForPoolWithId(poolId: string, blockTag?: number) {
+    this.fetchPoolBalance(poolId, blockTag);
   }
 
   private onPoolBalanceChanged = async (poolId: string) => {
     this.fetchPoolBalance(poolId);
   };
 
-  private async fetchPoolBalance(poolId: string) {
+  private async fetchPoolBalance(poolId: string, blockTag?: number) {
     if (!this.vaultContract) {
       return;
     }
@@ -85,7 +85,9 @@ class PoolShareBalanceProvider {
       lastChangeBlock: BigNumber;
     };
     try {
-      poolTokens = await this.vaultContract.getPoolTokens(poolId);
+      poolTokens = await this.vaultContract.getPoolTokens(poolId, {
+        blockTag,
+      });
     } catch (error) {
       console.error(
         'PoolShareBalanceProvider - fetchPoolBalance() - Failed to fetch pool balance, skipping state update!',

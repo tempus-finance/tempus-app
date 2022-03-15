@@ -1,11 +1,12 @@
 import { BigNumber } from '@ethersproject/bignumber';
+import { Ticker } from './interfaces/Token';
 
 export const MILLISECONDS_IN_A_YEAR = 31536000000;
 export const DAYS_IN_A_YEAR = 365;
+export const MILLISECONDS_IN_A_DAY = 86400000;
 export const SECONDS_IN_AN_HOUR = 3600;
 export const SECONDS_IN_A_DAY = SECONDS_IN_AN_HOUR * 24;
 export const SECONDS_IN_YEAR = SECONDS_IN_A_DAY * 365;
-export const BLOCK_DURATION_SECONDS = 13.15;
 export const ZERO = BigNumber.from('0');
 export const ZERO_ETH_ADDRESS = '0x0000000000000000000000000000000000000000';
 export const ONE_ETH_IN_WEI = '1000000000000000000'; // 10^18
@@ -17,6 +18,7 @@ export const ETH_ALLOWANCE_FOR_GAS = BigNumber.from('50000000000000000'); // 0.0
 export const DEFAULT_TOKEN_PRECISION = 18;
 export const SLIPPAGE_PRECISION = 18;
 export const FIXED_APR_PRECISION = 18;
+export const AMM_SWAP_FEES_PRECISION = 18;
 
 export const aaveLendingPoolAddress = '0x7d2768dE32b0b80b7a3454c06BdAc94A69DDc7A9';
 export const daiAddress = '0x6b175474e89094c44da98b954eedeac495271d0f';
@@ -38,46 +40,41 @@ export const dashboardChildMaturityFormat = 'd MMMM yyyy';
 
 export const POLLING_INTERVAL = 30 * 1000;
 
-export const tokenPrecision: { [ticker: string]: number } = {
+export const BAL_SLIPPAGE_ERROR_CODE = '#507';
+
+export const tokenPrecision: { [ticker in Ticker]?: number } = {
   ETH: 18,
   USDC: 6,
   DAI: 18,
+  USDT: 6,
+  fUSDT: 6,
+  WBTC: 8,
+  BTC: 8,
+  WETH: 18,
+  YFI: 18,
 };
 
-const INFURA_KEY = process.env.REACT_APP_INFURA_KEY;
+const ALCHEMY_KEY = process.env.REACT_APP_MAINNET_ALCHEMY_KEY;
+const GOERLI_ALCHEMY_KEY = process.env.REACT_APP_GOERLI_ALCHEMY_KEY;
+const FANTOM_ENDPOINT = process.env.REACT_APP_FANTOM_ENDPOINT;
 
 export enum SupportedChainId {
   MAINNET = 1,
-  // ROPSTEN = 3,
-  // RINKEBY = 4,
-  GOERLI = 5,
-  // KOVAN = 42,
-
-  // ARBITRUM_ONE = 42161,
-  // ARBITRUM_RINKEBY = 421611,
-  // OPTIMISM = 10,
-  // OPTIMISTIC_KOVAN = 69,
+  FANTOM = 250,
   LOCAL = 1337,
   TEMPUS_AWS = 31337,
 }
 
-export const supportedChainIds = [
+export const supportedChainIds: SupportedChainId[] = [
   SupportedChainId.MAINNET,
-  SupportedChainId.GOERLI,
   SupportedChainId.LOCAL,
   SupportedChainId.TEMPUS_AWS,
+  SupportedChainId.FANTOM,
 ];
 
 export const NETWORK_URLS: { [key in SupportedChainId]: string } = {
-  [SupportedChainId.MAINNET]: `https://mainnet.infura.io/v3/${INFURA_KEY}`,
-  // [SupportedChainId.RINKEBY]: `https://rinkeby.infura.io/v3/${INFURA_KEY}`,
-  // [SupportedChainId.ROPSTEN]: `https://ropsten.infura.io/v3/${INFURA_KEY}`,
-  [SupportedChainId.GOERLI]: `https://goerli.infura.io/v3/${INFURA_KEY}`,
-  // [SupportedChainId.KOVAN]: `https://kovan.infura.io/v3/${INFURA_KEY}`,
-  // [SupportedChainId.OPTIMISM]: `https://optimism-mainnet.infura.io/v3/${INFURA_KEY}`,
-  // [SupportedChainId.OPTIMISTIC_KOVAN]: `https://optimism-kovan.infura.io/v3/${INFURA_KEY}`,
-  // [SupportedChainId.ARBITRUM_ONE]: `https://arbitrum-mainnet.infura.io/v3/${INFURA_KEY}`,
-  // [SupportedChainId.ARBITRUM_RINKEBY]: `https://arbitrum-rinkeby.infura.io/v3/${INFURA_KEY}`,
-  [SupportedChainId.LOCAL]: `https://goerli.infura.io/v3/${INFURA_KEY}`,
-  [SupportedChainId.TEMPUS_AWS]: `https://goerli.infura.io/v3/${INFURA_KEY}`,
+  [SupportedChainId.MAINNET]: `https://eth-mainnet.alchemyapi.io/v2/${ALCHEMY_KEY}`,
+  [SupportedChainId.LOCAL]: `https://eth-goerli.alchemyapi.io/v2/${GOERLI_ALCHEMY_KEY}`,
+  [SupportedChainId.TEMPUS_AWS]: `https://eth-goerli.alchemyapi.io/v2/${GOERLI_ALCHEMY_KEY}`,
+  [SupportedChainId.FANTOM]: FANTOM_ENDPOINT || '',
 };

@@ -1,48 +1,52 @@
-import { useContext, useEffect, useMemo, useState } from 'react';
+import { FC, useContext, useEffect, useMemo, useState } from 'react';
 import { Downgraded, useHookstate, useState as useHookState } from '@hookstate/core';
-import { CircularProgress } from '@material-ui/core';
 import { ethers, BigNumber } from 'ethers';
-import { BLOCK_DURATION_SECONDS, FIXED_APR_PRECISION, SECONDS_IN_A_DAY } from '../../constants';
-import { div18f } from '../../utils/weiMath';
+import { FIXED_APR_PRECISION, SECONDS_IN_A_DAY } from '../../constants';
+import getTokenPrecision from '../../utils/getTokenPrecision';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
+import { staticChainDataState } from '../../state/ChainState';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
 import { LanguageContext } from '../../context/languageContext';
 import { WalletContext } from '../../context/walletContext';
 import getText from '../../localisation/getText';
 import NumberUtils from '../../services/NumberUtils';
+import { Chain } from '../../interfaces/Chain';
 import Typography from '../typography/Typography';
 import InfoIcon from '../icons/InfoIcon';
 import Spacer from '../spacer/spacer';
+import InfoTooltip from '../infoTooltip/infoTooltip';
 import FeesTooltip from './feesTooltip/feesTooltip';
 import AprTooltip from './aprTooltip/aprTooltip';
 import PercentageLabel from './percentageLabel/PercentageLabel';
 
 import './Pool.scss';
-import getTokenPrecision from '../../utils/getTokenPrecision';
-import InfoTooltip from '../infoTooltip/infoTooltip';
 
-const Pool = () => {
+interface PoolProps {
+  chain: Chain;
+}
+
+const Pool: FC<PoolProps> = ({ chain }) => {
   const selectedPool = useHookState(selectedPoolState);
   const dynamicPoolData = useHookstate(dynamicPoolDataState);
   const staticPoolData = useHookState(staticPoolDataState);
+  const staticChainData = useHookState(staticChainDataState);
 
   const { userWalletSigner } = useContext(WalletContext);
   const { language } = useContext(LanguageContext);
 
   const [fixedAPRChangePercentage, setFixedAPRChangePercentage] = useState<number | null>(null);
   const [tvlChangePercentage, setTVLChangePercentage] = useState<BigNumber | null>(null);
-  const [volumeChangePercentage, setVolumeChangePercentage] = useState<BigNumber | null>(null);
-  const [volume, setVolume] = useState<BigNumber | null>(null);
 
+  const averageBlockTime = staticChainData[chain].averageBlockTime.attach(Downgraded).get();
   const selectedPoolAddress = selectedPool.attach(Downgraded).get();
   const poolId = staticPoolData[selectedPool.get()].poolId.attach(Downgraded).get();
   const startDate = staticPoolData[selectedPool.get()].startDate.attach(Downgraded).get();
   const ammAddress = staticPoolData[selectedPool.get()].ammAddress.attach(Downgraded).get();
   const backingToken = staticPoolData[selectedPool.get()].backingToken.attach(Downgraded).get();
-  const principalsAddress = staticPoolData[selectedPool.get()].principalsAddress.attach(Downgraded).get();
   const backingTokenPrecision = staticPoolData[selectedPool.get()].tokenPrecision.backingToken.attach(Downgraded).get();
+  const spotPrice = staticPoolData[selectedPool.get()].spotPrice.attach(Downgraded).get();
   const tvl = dynamicPoolData[selectedPool.get()].tvl.attach(Downgraded).get();
-  const fixedAPR = dynamicPoolData[selectedPool.get()].fixedAPR.get();
+  const fixedAPR = dynamicPoolData[selectedPool.get()].fixedAPR.attach(Downgraded).get();
 
   /**
    * Fetch TVL from one week ago.
@@ -54,18 +58,24 @@ const Pool = () => {
       if (!userWalletSigner || !tvl) {
         return;
       }
-      const poolDataAdapter = getPoolDataAdapter(userWalletSigner);
+      const poolDataAdapter = getPoolDataAdapter(chain, userWalletSigner);
 
       try {
         setTVLChangePercentage(
-          await poolDataAdapter.getPoolTVLChangeData(selectedPoolAddress, startDate, backingToken, tvl),
+          await poolDataAdapter.getPoolTVLChangeData(
+            selectedPoolAddress,
+            startDate,
+            backingToken,
+            tvl,
+            averageBlockTime,
+          ),
         );
       } catch (error) {
         console.error('fetchTVLChangeData() - Failed to fetch TVL change percentage!');
       }
     };
     fetchTVLChangeData();
-  }, [backingToken, selectedPoolAddress, tvl, userWalletSigner, startDate]);
+  }, [backingToken, selectedPoolAddress, tvl, userWalletSigner, startDate, chain, averageBlockTime]);
 
   /**
    * Fetch Fixed APR from one week ago.
@@ -77,7 +87,7 @@ const Pool = () => {
       if (!userWalletSigner || !fixedAPR) {
         return;
       }
-      const poolDataAdapter = getPoolDataAdapter(userWalletSigner);
+      const poolDataAdapter = getPoolDataAdapter(chain, userWalletSigner);
 
       try {
         let latestBlock;
@@ -89,12 +99,15 @@ const Pool = () => {
         }
 
         // Get block number from 7 days ago (approximate - we need to find a better way to fetch exact block number)
-        const sevenDaysOldBlock = latestBlock.number - Math.round(SECONDS_IN_A_DAY / BLOCK_DURATION_SECONDS) * 7;
+        const sevenDaysOldBlock = latestBlock.number - Math.round(SECONDS_IN_A_DAY / averageBlockTime) * 7;
 
-        const spotPrice = ethers.utils.parseUnits('1', getTokenPrecision(selectedPoolAddress, 'backingToken'));
+        const spotPriceParsed = ethers.utils.parseUnits(
+          spotPrice,
+          getTokenPrecision(selectedPoolAddress, 'backingToken'),
+        );
 
         const oldFixedAPR = await poolDataAdapter.getEstimatedFixedApr(
-          spotPrice,
+          spotPriceParsed,
           true,
           selectedPoolAddress,
           poolId,
@@ -116,66 +129,17 @@ const Pool = () => {
       }
     };
     fetchFixedAPRChangeData();
-  }, [ammAddress, fixedAPR, poolId, selectedPoolAddress, userWalletSigner, startDate]);
-
-  /**
-   * Fetch Volume for pool in last 7 days, and 7 days before that
-   */
-  useEffect(() => {
-    const fetchVolume = async () => {
-      if (!userWalletSigner) {
-        return;
-      }
-      const poolDataAdapter = getPoolDataAdapter(userWalletSigner);
-
-      let latestBlock;
-      try {
-        latestBlock = await userWalletSigner.provider.getBlock('latest');
-      } catch (error) {
-        console.error('Pool - fetchVolume() - Failed to get latest block data!');
-        return Promise.reject();
-      }
-
-      // Get block number from 7 days ago (approximate - we need to find a better way to fetch exact block number)
-      // TODO - Use the graph service for this. Much faster and precise.
-      const sevenDaysOldBlock = latestBlock.number - Math.round(SECONDS_IN_A_DAY / BLOCK_DURATION_SECONDS) * 7;
-      const fourteenDaysOldBlock = latestBlock.number - Math.round(SECONDS_IN_A_DAY / BLOCK_DURATION_SECONDS) * 14;
-
-      try {
-        const currentVolume = await poolDataAdapter.getPoolVolumeData(
-          selectedPoolAddress,
-          poolId,
-          backingToken,
-          principalsAddress,
-          sevenDaysOldBlock,
-          latestBlock.number,
-          backingTokenPrecision,
-        );
-
-        const pastVolume = await poolDataAdapter.getPoolVolumeData(
-          selectedPoolAddress,
-          poolId,
-          backingToken,
-          principalsAddress,
-          fourteenDaysOldBlock,
-          sevenDaysOldBlock,
-          backingTokenPrecision,
-        );
-
-        if (!pastVolume.isZero()) {
-          const volumeDiff = currentVolume.sub(pastVolume);
-          const volumeRatio = div18f(volumeDiff, pastVolume, backingTokenPrecision);
-
-          setVolumeChangePercentage(volumeRatio);
-        }
-
-        setVolume(currentVolume);
-      } catch (error) {
-        console.error('fetchVolume() - Failed to fetch 7D volume for pool!');
-      }
-    };
-    fetchVolume();
-  }, [selectedPoolAddress, userWalletSigner, poolId, backingToken, principalsAddress, backingTokenPrecision]);
+  }, [
+    ammAddress,
+    fixedAPR,
+    poolId,
+    selectedPoolAddress,
+    userWalletSigner,
+    startDate,
+    chain,
+    averageBlockTime,
+    spotPrice,
+  ]);
 
   const tvlFormatted = useMemo(() => {
     if (!tvl) {
@@ -191,20 +155,6 @@ const Pool = () => {
     return Number(ethers.utils.formatUnits(tvlChangePercentage, backingTokenPrecision));
   }, [backingTokenPrecision, tvlChangePercentage]);
 
-  const volumeFormatted = useMemo(() => {
-    if (!volume) {
-      return null;
-    }
-    return NumberUtils.formatWithMultiplier(ethers.utils.formatUnits(volume, backingTokenPrecision), 2);
-  }, [backingTokenPrecision, volume]);
-
-  const volumeChangePercentageFormatted = useMemo(() => {
-    if (!volumeChangePercentage) {
-      return null;
-    }
-    return Number(ethers.utils.formatUnits(volumeChangePercentage, backingTokenPrecision));
-  }, [backingTokenPrecision, volumeChangePercentage]);
-
   return (
     <div className="tc__pool">
       <Typography variant="card-title">{getText('pool', language)}</Typography>
@@ -212,10 +162,10 @@ const Pool = () => {
         <div className="tc__pool__body__item">
           <div className="tc__pool__body__item-title">
             <Typography variant="card-body-text" color="title">
-              {getText('marketImpliedYield', language)}
+              {getText('fixedApr', language)}
             </Typography>
             <Spacer size={5} />
-            <InfoTooltip content={<AprTooltip />}>
+            <InfoTooltip content={<AprTooltip chain={chain} />}>
               <InfoIcon width={14} height={14} fillColor="#7A7A7A" />
             </InfoTooltip>
           </div>
@@ -240,25 +190,10 @@ const Pool = () => {
         <div className="tc__pool__body__item">
           <div className="tc__pool__body__item-title">
             <Typography variant="card-body-text" color="title">
-              {getText('volume', language)} (7d)
-            </Typography>
-          </div>
-          {volumeChangePercentageFormatted && <PercentageLabel percentage={volumeChangePercentageFormatted} />}
-          <div className="tc__pool-item-value">
-            {volumeFormatted ? (
-              <Typography variant="card-body-text">${volumeFormatted}</Typography>
-            ) : (
-              <CircularProgress size={14} />
-            )}
-          </div>
-        </div>
-        <div className="tc__pool__body__item">
-          <div className="tc__pool__body__item-title">
-            <Typography variant="card-body-text" color="title">
               {getText('fees', language)}
             </Typography>
             <Spacer size={5} />
-            <InfoTooltip content={<FeesTooltip />}>
+            <InfoTooltip content={<FeesTooltip chain={chain} />}>
               <InfoIcon width={14} height={14} fillColor="#7A7A7A" />
             </InfoTooltip>
           </div>

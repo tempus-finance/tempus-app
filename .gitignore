@@ -31,6 +31,8 @@ yarn-error.log*
 
 packages/tempus-client/cookie-config.json
 packages/**/*.env
+packages/**/*.env.production
+packages/**/*.env.development
 
 # release info
 packages/**/src/release.json

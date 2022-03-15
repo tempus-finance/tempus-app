@@ -17,7 +17,7 @@ const WalletNotification: FC<WalletNotificationInProps> = ({ level, title, conte
       <AccordionSummary expandIcon={<ArrowDown />} aria-controls="panel1a-content" id="panel1a-header">
         <div className="tc__notification__header">
           <div className="tc__notification__title">
-            {level === 'info' && <TickIcon fillColor="#4BB543" />}
+            {level === 'info' && <TickIcon />}
             {level === 'warning' && <AlertIcon fillColor="#FF0F0F" />}
             <Typography variant="h5">{title}</Typography>
           </div>

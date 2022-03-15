@@ -1,9 +1,10 @@
-import { useCallback, useContext, useEffect, useState } from 'react';
+import { FC, useCallback, useContext, useEffect, useState } from 'react';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { dynamicPoolDataState, selectedPoolState } from '../../state/PoolDataState';
 import { LanguageContext } from '../../context/languageContext';
 import { WalletContext } from '../../context/walletContext';
 import { TransactionView } from '../../interfaces/TransactionView';
+import { Chain } from '../../interfaces/Chain';
 import CurrentPosition from '../currentPosition/CurrentPosition';
 import Deposit from '../deposit/Deposit';
 // import EarlyRedeem from '../earlyRedeem/EarlyRedeem';
@@ -19,7 +20,13 @@ import Withdraw from '../withdraw/Withdraw';
 
 import './Operations.scss';
 
-const Operations = () => {
+interface OperationsProps {
+  chain: Chain;
+}
+
+const Operations: FC<OperationsProps> = props => {
+  const { chain } = props;
+
   const selectedPool = useHookState(selectedPoolState);
   const dynamicPoolData = useHookState(dynamicPoolDataState);
 
@@ -62,7 +69,7 @@ const Operations = () => {
     <div className="tc__operations">
       {/* Sidebar */}
       <div className="tc__operations-sidebar">
-        <Sidebar initialView={selectedView} onSelectedView={setSelectedView} />
+        <Sidebar initialView={selectedView} chain={chain} onSelectedView={setSelectedView} />
       </div>
       {/* Right side of sidebar (All cards) */}
       <div className="tc__operations-cards-container">
@@ -70,25 +77,25 @@ const Operations = () => {
         <div className="tc__operations-poolData">
           {/* Middle Top part (Pool, Term) */}
           <div className="tc__operations-poolStats">
-            <Pool />
+            <Pool chain={chain} />
             <Term />
           </div>
           {/* Middle bottom part (Selected tab options) */}
           <div className="tc__operations-poolManage">
-            {selectedView === 'deposit' && <Deposit narrow={!hideUserData} />}
-            {selectedView === 'withdraw' && <Withdraw onWithdraw={handleWithdraw} />}
-            {selectedView === 'mint' && <Mint narrow={!hideUserData} />}
-            {selectedView === 'swap' && <Swap />}
-            {selectedView === 'provideLiquidity' && <ProvideLiquidity />}
-            {selectedView === 'removeLiquidity' && <RemoveLiquidity />}
+            {selectedView === 'deposit' && <Deposit narrow={!hideUserData} chain={chain} />}
+            {selectedView === 'withdraw' && <Withdraw onWithdraw={handleWithdraw} chain={chain} />}
+            {selectedView === 'mint' && <Mint narrow={!hideUserData} chain={chain} />}
+            {selectedView === 'swap' && <Swap chain={chain} />}
+            {selectedView === 'provideLiquidity' && <ProvideLiquidity chain={chain} />}
+            {selectedView === 'removeLiquidity' && <RemoveLiquidity chain={chain} />}
             {/* {selectedView === 'earlyRedeem' && <EarlyRedeem />} */}
           </div>
         </div>
         {/* Right side (Current Position, Profit/Loss) - Only visible if user has balance in the pool */}
         {!hideUserData && (
           <div className="tc__operations-poolUserStats">
-            <CurrentPosition language={language} />
-            <ProfitLoss />
+            <CurrentPosition language={language} chain={chain} />
+            <ProfitLoss chain={chain} />
           </div>
         )}
       </div>

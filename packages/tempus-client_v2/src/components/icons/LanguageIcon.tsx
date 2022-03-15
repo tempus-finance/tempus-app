@@ -4,38 +4,26 @@ const LanguageIcon = () => {
       <path
         d="M1 11C1 16.523 5.477 21 11 21C16.523 21 21 16.523 21 11C21 5.477 16.523 1 11 1C5.477 1 1 5.477 1 11Z"
         stroke="#222222"
-        stroke-width="1.5"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M12 1.05005C12 1.05005 15 5.00005 15 11C15 17 12 20.9501 12 20.9501"
         stroke="#222222"
-        stroke-width="1.5"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M10 20.9501C10 20.9501 7 17 7 11C7 5.00005 10 1.05005 10 1.05005"
         stroke="#222222"
-        stroke-width="1.5"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
-      <path
-        d="M1.62988 14.5H20.3699"
-        stroke="#222222"
-        stroke-width="1.5"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-      />
-      <path
-        d="M1.62988 7.5H20.3699"
-        stroke="#222222"
-        stroke-width="1.5"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-      />
+      <path d="M1.62988 14.5H20.3699" stroke="#222222" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M1.62988 7.5H20.3699" stroke="#222222" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 };

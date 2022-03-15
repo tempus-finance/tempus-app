@@ -1,9 +1,10 @@
 import { BigNumber, ethers } from 'ethers';
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
 import { TempusPool } from '../abi/TempusPool';
-import { BLOCK_DURATION_SECONDS, DAYS_IN_A_YEAR, SECONDS_IN_A_DAY } from '../constants';
+import { DAYS_IN_A_YEAR, SECONDS_IN_A_DAY } from '../constants';
 import { ProtocolName } from '../interfaces/ProtocolName';
 import { Ticker } from '../interfaces/Token';
+import { Chain } from '../interfaces/Chain';
 import getERC20TokenService from './getERC20TokenService';
 
 type TempusPoolsMap = { [key: string]: TempusPool };
@@ -14,9 +15,11 @@ type TempusPoolServiceParameters = {
   TempusPoolABI: any;
   eRC20TokenServiceGetter: typeof getERC20TokenService;
   signerOrProvider: JsonRpcSigner | JsonRpcProvider;
+  chain: Chain;
 };
 
 class TempusPoolService {
+  private chain: Chain | null = null;
   private poolAddresses: string[] = [];
   private tempusPoolsMap: TempusPoolsMap = {};
   private eRC20TokenServiceGetter: typeof getERC20TokenService | null = null;
@@ -26,6 +29,7 @@ class TempusPoolService {
     tempusPoolAddresses = [],
     TempusPoolABI = {},
     signerOrProvider,
+    chain,
     eRC20TokenServiceGetter,
   }: TempusPoolServiceParameters) {
     this.poolAddresses = [...tempusPoolAddresses];
@@ -39,6 +43,7 @@ class TempusPoolService {
       }
     });
 
+    this.chain = chain;
     this.eRC20TokenServiceGetter = eRC20TokenServiceGetter;
   }
 
@@ -46,8 +51,9 @@ class TempusPoolService {
     return this.poolAddresses;
   }
 
+  // TODO - Delete this function and use ticker from static pool state
   public async getBackingTokenTicker(address: string): Promise<Ticker> {
-    if (!this.eRC20TokenServiceGetter) {
+    if (!this.eRC20TokenServiceGetter || !this.chain) {
       console.error('TempusPoolService - getBackingTokenTicker() - Attempted to use service before initializing it!');
       return Promise.reject();
     }
@@ -62,12 +68,20 @@ class TempusPoolService {
         return Promise.reject(error);
       }
 
-      return this.eRC20TokenServiceGetter(backingTokenAddress).symbol();
+      return this.eRC20TokenServiceGetter(backingTokenAddress, this.chain).symbol();
     }
     throw new Error(`Address '${address}' is not valid`);
   }
 
+  // TODO - Delete this function and use ticker from static pool state
   public async getYieldBearingTokenTicker(address: string): Promise<Ticker> {
+    if (!this.eRC20TokenServiceGetter || !this.chain) {
+      console.error(
+        'TempusPoolService - getYieldBearingTokenTicker() - Attempted to use service before initializing it!',
+      );
+      return Promise.reject();
+    }
+
     const tempusPool = this.tempusPoolsMap[address];
     if (tempusPool) {
       let yieldBearingTokenAddress: string;
@@ -78,11 +92,12 @@ class TempusPoolService {
         return Promise.reject(error);
       }
 
-      return getERC20TokenService(yieldBearingTokenAddress).symbol();
+      return this.eRC20TokenServiceGetter(yieldBearingTokenAddress, this.chain).symbol();
     }
     throw new Error(`Address '${address}' is not valid`);
   }
 
+  // TODO - Delete this function and use protocol name from static pool state
   public async getProtocolName(address: string): Promise<ProtocolName> {
     const tempusPool = this.tempusPoolsMap[address];
     if (tempusPool) {
@@ -138,7 +153,7 @@ class TempusPoolService {
     throw new Error(`Address '${address}' is not valid`);
   }
 
-  public async getVariableAPY(address: string): Promise<number> {
+  public async getVariableAPY(address: string, averageBlockTime: number): Promise<number> {
     const tempusPool = this.tempusPoolsMap[address];
 
     if (tempusPool) {
@@ -146,10 +161,10 @@ class TempusPoolService {
         const latestBlock = await tempusPool.provider.getBlock('latest');
 
         const [pastBlock, currentExchangeRate, pastExchangeRate] = await Promise.all([
-          tempusPool.provider.getBlock(latestBlock.number - SECONDS_IN_A_DAY / BLOCK_DURATION_SECONDS),
+          tempusPool.provider.getBlock(latestBlock.number - SECONDS_IN_A_DAY / averageBlockTime),
           tempusPool.currentInterestRate(),
           tempusPool.currentInterestRate({
-            blockTag: latestBlock.number - SECONDS_IN_A_DAY / BLOCK_DURATION_SECONDS,
+            blockTag: latestBlock.number - SECONDS_IN_A_DAY / averageBlockTime,
           }),
         ]);
 

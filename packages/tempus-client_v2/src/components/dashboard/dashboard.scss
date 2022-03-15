@@ -212,12 +212,30 @@ $padding: 20px;
       align-items: center;
       justify-content: flex-start;
     }
-    .tf__dashboard__parent-token-ticker {
+
+    .tf__dashboard__parent-asset-data {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: center;
+    }
+
+    .tf__dashboard__parent-asset-ticker {
       width: 65px;
       display: flex;
-      flex-direction: row;
       align-items: center;
-      justify-content: flex-end;
+    }
+
+    .tf__dashboard__parent-asset-chain {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 24px;
+      background-color: #f3f7f9;
+      border: 1px solid #bfc0c0;
+      box-sizing: border-box;
+      border-radius: 2px;
+      padding: 4px 8px 4px 8px;
     }
   }
 }

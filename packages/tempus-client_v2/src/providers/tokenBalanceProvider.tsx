@@ -1,11 +1,11 @@
 import { useCallback, useContext, useEffect } from 'react';
-import { ETHBalanceContext } from '../context/ethBalanceContext';
+import { TokenBalanceContext } from '../context/tokenBalanceContext';
 import { WalletContext } from '../context/walletContext';
 
 const forceFetch = true;
 
-const ETHBalanceProvider = () => {
-  const { eth, setETHBalance } = useContext(ETHBalanceContext);
+const TokenBalanceProvider = () => {
+  const { tokenBalance, setTokenBalance } = useContext(TokenBalanceContext);
   const { userWalletSigner, userWalletAddress } = useContext(WalletContext);
 
   /**
@@ -13,20 +13,20 @@ const ETHBalanceProvider = () => {
    */
   const fetchBalance = useCallback(
     async (forced?: boolean) => {
-      if (!setETHBalance || !userWalletSigner || (!document.hasFocus() && eth !== null && !forced)) {
+      if (!setTokenBalance || !userWalletSigner || (!document.hasFocus() && tokenBalance !== null && !forced)) {
         return;
       }
 
       const balance = await userWalletSigner.getBalance();
 
-      if (!eth || !eth.eq(balance)) {
-        setETHBalance(prevData => ({
+      if (!tokenBalance || !tokenBalance.eq(balance)) {
+        setTokenBalance(prevData => ({
           ...prevData,
-          eth: balance,
+          tokenBalance: balance,
         }));
       }
     },
-    [userWalletSigner, eth, setETHBalance],
+    [userWalletSigner, tokenBalance, setTokenBalance],
   );
 
   /**
@@ -56,4 +56,4 @@ const ETHBalanceProvider = () => {
    */
   return null;
 };
-export default ETHBalanceProvider;
+export default TokenBalanceProvider;

@@ -10,7 +10,13 @@
 
     > li {
       margin-right: 40px;
-      display: inline-block;
+      display: flex;
+      align-items: center;
+
+      .tc__btn {
+        display: flex;
+        align-items: center;
+      }
 
       &:hover {
         cursor: pointer;

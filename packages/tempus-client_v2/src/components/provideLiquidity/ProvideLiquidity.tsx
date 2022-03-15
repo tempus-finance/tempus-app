@@ -1,19 +1,19 @@
-import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { ethers, BigNumber } from 'ethers';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
-import getUserShareTokenBalanceProvider from '../../providers/getUserShareTokenBalanceProvider';
 import getPoolShareBalanceProvider from '../../providers/getPoolShareBalanceProvider';
-import getUserLPTokenBalanceProvider from '../../providers/getUserLPTokenBalanceProvider';
+import { refreshBalances } from '../../providers/balanceProviderHelper';
 import { LanguageContext } from '../../context/languageContext';
 import { WalletContext } from '../../context/walletContext';
 import getText from '../../localisation/getText';
-import getConfig from '../../utils/getConfig';
+import { getChainConfig } from '../../utils/getConfig';
 import { mul18f } from '../../utils/weiMath';
 import getTokenPrecision from '../../utils/getTokenPrecision';
 import { isZeroString } from '../../utils/isZeroString';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
 import NumberUtils from '../../services/NumberUtils';
+import { Chain } from '../../interfaces/Chain';
 import Typography from '../typography/Typography';
 import Descriptor from '../descriptor/Descriptor';
 import CurrencyInput from '../currencyInput/currencyInput';
@@ -25,7 +25,13 @@ import Execute from '../buttons/Execute';
 
 import './ProvideLiquidity.scss';
 
-const ProvideLiquidity = () => {
+interface ProvideLiquidityProps {
+  chain: Chain;
+}
+
+const ProvideLiquidity: FC<ProvideLiquidityProps> = props => {
+  const { chain } = props;
+
   const selectedPool = useHookState(selectedPoolState);
   const dynamicPoolData = useHookState(dynamicPoolDataState);
   const staticPoolData = useHookState(staticPoolDataState);
@@ -243,7 +249,7 @@ const ProvideLiquidity = () => {
       if (!userWalletSigner) {
         return;
       }
-      const poolDataAdapter = getPoolDataAdapter(userWalletSigner);
+      const poolDataAdapter = getPoolDataAdapter(chain, userWalletSigner);
 
       const ratios = await poolDataAdapter.getPoolRatioOfAssets(ammAddress, principalsAddress, yieldsAddress);
 
@@ -251,7 +257,7 @@ const ProvideLiquidity = () => {
       setYieldsPercentage(ratios.yieldsShare);
     };
     getRatioOfAssetsInPool();
-  }, [ammAddress, principalsAddress, userWalletSigner, yieldsAddress]);
+  }, [ammAddress, principalsAddress, userWalletSigner, yieldsAddress, chain]);
 
   // Fetch estimated LP Token amount
   useEffect(() => {
@@ -261,7 +267,7 @@ const ProvideLiquidity = () => {
       }
 
       try {
-        const poolDataAdapter = getPoolDataAdapter(userWalletSigner);
+        const poolDataAdapter = getPoolDataAdapter(chain, userWalletSigner);
 
         setTokenEstimateInProgress(true);
         setExpectedLPTokens(
@@ -299,6 +305,7 @@ const ProvideLiquidity = () => {
     ammAddress,
     principalsAddress,
     yieldsAddress,
+    chain,
   ]);
 
   // Fetch pool share for amount in
@@ -309,7 +316,7 @@ const ProvideLiquidity = () => {
       }
 
       try {
-        const poolDataAdapter = getPoolDataAdapter(userWalletSigner);
+        const poolDataAdapter = getPoolDataAdapter(chain, userWalletSigner);
 
         setPoolShareEstimateInProgress(true);
         setExpectedPoolShare(await poolDataAdapter.getPoolShareForLPTokensIn(ammAddress, expectedLPTokens));
@@ -323,13 +330,13 @@ const ProvideLiquidity = () => {
       }
     };
     fetchExpectedPoolShare();
-  }, [expectedLPTokens, userWalletSigner, ammAddress]);
+  }, [expectedLPTokens, userWalletSigner, ammAddress, chain]);
 
   const onExecute = useCallback((): Promise<ethers.ContractTransaction | undefined> => {
     if (!userWalletSigner) {
       return Promise.resolve(undefined);
     }
-    const poolDataAdapter = getPoolDataAdapter(userWalletSigner);
+    const poolDataAdapter = getPoolDataAdapter(chain, userWalletSigner);
 
     return poolDataAdapter.provideLiquidity(
       ammAddress,
@@ -349,34 +356,52 @@ const ProvideLiquidity = () => {
     principalsPrecision,
     yieldsAmount,
     yieldsPrecision,
+    chain,
   ]);
 
-  const onExecuted = useCallback(() => {
-    setPrincipalsAmount('');
-    setYieldsAmount('');
-    setMaxDisabled(false);
-
-    if (!userWalletSigner) {
-      return;
+  const principalsAmountToApprove = useMemo(() => {
+    if (!principalsAmount) {
+      return null;
     }
 
-    // Trigger user pool share balance update when execute is finished
-    getUserShareTokenBalanceProvider({
-      userWalletAddress,
-      userWalletSigner,
-    }).fetchForPool(selectedPoolAddress);
+    return ethers.utils.parseUnits(principalsAmount, getTokenPrecision(selectedPoolAddress, 'principals'));
+  }, [selectedPoolAddress, principalsAmount]);
 
-    // Trigger user LP Token balance update when execute is finished
-    getUserLPTokenBalanceProvider({
-      userWalletAddress,
-      userWalletSigner,
-    }).fetchForPool(selectedPoolAddress);
+  const yieldsAmountToApprove = useMemo(() => {
+    if (!yieldsAmount) {
+      return null;
+    }
 
-    // Trigger pool share balance update when execute is finished
-    getPoolShareBalanceProvider({
-      userWalletSigner,
-    }).fetchForPoolWithId(poolId);
-  }, [poolId, selectedPoolAddress, userWalletAddress, userWalletSigner]);
+    return ethers.utils.parseUnits(yieldsAmount, getTokenPrecision(selectedPoolAddress, 'yields'));
+  }, [selectedPoolAddress, yieldsAmount]);
+
+  const onExecuted = useCallback(
+    (successful: boolean, txBlockNumber?: number) => {
+      setPrincipalsAmount('');
+      setYieldsAmount('');
+      setMaxDisabled(false);
+
+      if (!userWalletSigner) {
+        return;
+      }
+      refreshBalances(
+        {
+          chain,
+          userWalletAddress,
+          userWalletSigner,
+        },
+        selectedPoolAddress,
+        txBlockNumber,
+      );
+
+      // Trigger pool share balance update when execute is finished
+      getPoolShareBalanceProvider({
+        chain,
+        userWalletSigner,
+      }).fetchForPoolWithId(poolId, txBlockNumber);
+    },
+    [poolId, selectedPoolAddress, userWalletAddress, userWalletSigner, chain],
+  );
 
   const principalsBalanceFormatted = useMemo(() => {
     if (!userPrincipalsBalance) {
@@ -455,6 +480,7 @@ const ProvideLiquidity = () => {
             <div className="tf__flex-row-center-v">
               <CurrencyInput
                 defaultValue={principalsAmount}
+                precision={principalsPrecision}
                 onChange={onPrincipalsAmountChange}
                 maxDisabled={maxDisabled}
                 onMaxClick={onPrincipalsPercentageChange}
@@ -465,12 +491,14 @@ const ProvideLiquidity = () => {
             <div className="tf__flex-row-center-v-end">
               <Approve
                 tokenToApproveTicker="Principals"
-                amountToApprove={userPrincipalsBalance}
+                amountToApprove={principalsAmountToApprove}
+                userBalance={userPrincipalsBalance}
                 onApproveChange={approved => {
                   setPrincipalsApproved(approved);
                 }}
-                spenderAddress={getConfig().vaultContract}
+                spenderAddress={getChainConfig(chain).vaultContract}
                 tokenToApproveAddress={principalsAddress}
+                chain={chain}
               />
             </div>
           </div>
@@ -494,6 +522,7 @@ const ProvideLiquidity = () => {
             <div className="tf__flex-row-center-v">
               <CurrencyInput
                 defaultValue={yieldsAmount}
+                precision={yieldsPrecision}
                 onChange={onYieldsAmountChange}
                 maxDisabled={maxDisabled}
                 onMaxClick={onYieldsPercentageChange}
@@ -504,12 +533,14 @@ const ProvideLiquidity = () => {
             <div className="tf__flex-row-center-v-end">
               <Approve
                 tokenToApproveTicker="Yields"
-                amountToApprove={userYieldsBalance}
+                amountToApprove={yieldsAmountToApprove}
+                userBalance={userYieldsBalance}
                 onApproveChange={approved => {
                   setYieldsApproved(approved);
                 }}
-                spenderAddress={getConfig().vaultContract}
+                spenderAddress={getChainConfig(chain).vaultContract}
                 tokenToApproveAddress={yieldsAddress}
+                chain={chain}
               />
             </div>
           </div>
@@ -540,6 +571,7 @@ const ProvideLiquidity = () => {
           <Execute
             actionName="Liquidity Deposit"
             disabled={executeDisabled}
+            chain={chain}
             onExecute={onExecute}
             onExecuted={onExecuted}
           />

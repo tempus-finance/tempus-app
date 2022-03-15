@@ -15,8 +15,6 @@ import { dynamicPoolDataState } from '../../state/PoolDataState';
 import { LanguageContext } from '../../context/languageContext';
 import { DashboardRow } from '../../interfaces/DashboardRow';
 import { ColumnNames } from '../../interfaces/ColumnNames';
-import getText from '../../localisation/getText';
-import Typography from '../typography/Typography';
 import TokenButton from './bodySection/tokenButton';
 import BodyCellFactory from './bodySection/bodyCellFactory';
 import BodyRow from './bodySection/bodyRow';
@@ -25,7 +23,6 @@ import HeaderRow from './headerSection/headerRow';
 import HeaderContent from './headerSection/headerContent';
 import MaturityProvider from './providers/maturityProvider';
 import TVLProvider from './providers/tvlProvider';
-import GridVariableAPRProvider from './providers/gridVariableAPRProvider';
 import FixedAPRProvider from './providers/fixedAPRProvider';
 import GridBalanceProvider from './providers/gridBalanceProvider';
 import AvailableToDepositProvider from './providers/availableToDepositProvider';
@@ -51,13 +48,13 @@ const Dashboard: FC<DashboardProps> = ({ userWalletAddress, rows, onRowActionCli
   const { language } = useContext(LanguageContext);
 
   const [tableColumnExtensions] = useState([
-    { columnName: ColumnNames.TOKEN, align: 'left' as 'left', width: 160 },
-    { columnName: ColumnNames.PROTOCOL, align: 'left' as 'left', width: 150 },
+    { columnName: ColumnNames.TOKEN, align: 'left' as 'left', width: 180 },
+    { columnName: ColumnNames.PROTOCOL, align: 'left' as 'left', width: 130 },
     { columnName: ColumnNames.MATURITY, align: 'left' as 'left' },
-    { columnName: ColumnNames.FIXED_APR, align: 'right' as 'right', width: 140 },
-    { columnName: ColumnNames.VARIABLE_APY, align: 'right' as 'right', width: 160 },
-    { columnName: ColumnNames.TVL, align: 'right' as 'right', width: 95 },
-    { columnName: ColumnNames.PRESENT_VALUE, align: 'right' as 'right', width: 120 },
+    { columnName: ColumnNames.FIXED_APR, align: 'right' as 'right', width: 150 },
+    // { columnName: ColumnNames.VARIABLE_APY, align: 'right' as 'right', width: 160 },
+    { columnName: ColumnNames.TVL, align: 'right' as 'right', width: 150 },
+    { columnName: ColumnNames.PRESENT_VALUE, align: 'right' as 'right', width: 140 },
     { columnName: ColumnNames.AVAILABLE_TO_DEPOSIT, align: 'right' as 'right', width: 180 },
   ]);
 
@@ -70,7 +67,7 @@ const Dashboard: FC<DashboardProps> = ({ userWalletAddress, rows, onRowActionCli
   const [integratedSortingColumnExtensions] = useState([
     { columnName: ColumnNames.MATURITY, compare: compareMaturity },
     { columnName: ColumnNames.FIXED_APR, compare: compareAPY },
-    { columnName: ColumnNames.VARIABLE_APY, compare: compareAPY },
+    // { columnName: ColumnNames.VARIABLE_APY, compare: compareAPY },
     { columnName: ColumnNames.PROTOCOL, compare: compareProtocol },
   ]);
 
@@ -112,7 +109,21 @@ const Dashboard: FC<DashboardProps> = ({ userWalletAddress, rows, onRowActionCli
     setFilterPopupOpen(!filterPopupOpen);
   }; */
 
-  const getRowsToDisplay = () => {
+  // https://www.urbandictionary.com/define.php?term=vilomah
+  const filterOutVilomahRows = useCallback((rows: DashboardRow[]): DashboardRow[] => {
+    const parentsMap: { [id: string]: boolean } = {};
+    rows.forEach(row => {
+      if (!!row.parentId) {
+        if (parentsMap[row.parentId] === undefined) {
+          parentsMap[row.parentId] = true;
+        }
+      }
+    });
+
+    return rows.filter(row => (!row.parentId ? parentsMap[row.id] : true));
+  }, []);
+
+  const getRowsToDisplay = useCallback(rows => {
     if (rows?.length) {
       let rowsToDisplay = rows.filter((row: DashboardRow) => {
         const pool = dynamicPoolData[row.id];
@@ -129,8 +140,10 @@ const Dashboard: FC<DashboardProps> = ({ userWalletAddress, rows, onRowActionCli
       return rowsToDisplay;
     }
     return [];
-  };
-  const rowsToDisplay = getRowsToDisplay();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const rowsToDisplay = () => (rows ? filterOutVilomahRows(getRowsToDisplay(rows)) : []);
 
   /**
    * If `null` is passed as `filterData`, all filters will be cleared.
@@ -212,9 +225,7 @@ const Dashboard: FC<DashboardProps> = ({ userWalletAddress, rows, onRowActionCli
     <div className="tf__dashboard__section__container">
       <div className="tc__dashboard__container">
         <div className="tc__dashboard__header">
-          <Typography color="default" variant="h4">
-            {getText('availablePools', language)}
-          </Typography>
+          <div></div>
           <div className="tc__dashboard__header__actions">
             <CurrencySwitch />
             {/* <div onClick={onToggleFilterPopup} ref={filterButtonRef}>
@@ -234,7 +245,7 @@ const Dashboard: FC<DashboardProps> = ({ userWalletAddress, rows, onRowActionCli
         <hr />
         <div className="tf__dashboard">
           <div className="tf__dashboard__grid">
-            <Grid rows={/*filteredRows || */ rowsToDisplay} columns={dashboardColumnsDefinitions(language)}>
+            <Grid rows={/*filteredRows || */ rowsToDisplay()} columns={dashboardColumnsDefinitions(language)}>
               <SortingState
                 sorting={currentSorting}
                 onSortingChange={onSortingChange}
@@ -245,7 +256,7 @@ const Dashboard: FC<DashboardProps> = ({ userWalletAddress, rows, onRowActionCli
               <MaturityProvider for={[ColumnNames.MATURITY]} />
               <AvailableToDepositProvider for={[ColumnNames.AVAILABLE_TO_DEPOSIT]} />
               <TVLProvider for={[ColumnNames.TVL]} />
-              <GridVariableAPRProvider for={[ColumnNames.VARIABLE_APY]} />
+              {/* <GridVariableAPRProvider for={[ColumnNames.VARIABLE_APY]} /> */}
               <FixedAPRProvider for={[ColumnNames.FIXED_APR]} />
               <GridBalanceProvider for={[ColumnNames.PRESENT_VALUE]} />
               <CustomTreeData getChildRows={getChildRows} />
@@ -256,6 +267,7 @@ const Dashboard: FC<DashboardProps> = ({ userWalletAddress, rows, onRowActionCli
                 columnExtensions={tableColumnExtensions}
                 rowComponent={BodyRow}
                 cellComponent={BodyCellFactory}
+                messages={{ noData: '' }}
               />
               <TableHeaderRow
                 rowComponent={HeaderRow}
