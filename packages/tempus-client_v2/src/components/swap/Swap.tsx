@@ -3,7 +3,7 @@ import { BigNumber, ethers } from 'ethers';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
 import { refreshBalances } from '../../providers/balanceProviderHelper';
-import { LanguageContext } from '../../context/languageContext';
+import { LocaleContext } from '../../context/localeContext';
 import { WalletContext } from '../../context/walletContext';
 import { UserSettingsContext } from '../../context/userSettingsContext';
 import { PoolShares, Ticker } from '../../interfaces/Token';
@@ -51,7 +51,7 @@ const Swap: FC<SwapProps> = props => {
 
   const { userWalletSigner, userWalletAddress } = useContext(WalletContext);
   const { slippage, autoSlippage } = useContext(UserSettingsContext);
-  const { language } = useContext(LanguageContext);
+  const { locale } = useContext(LocaleContext);
 
   const [tokenFrom, setTokenFrom] = useState<TokenDetail>({
     tokenName: 'Principals',
@@ -289,15 +289,13 @@ const Swap: FC<SwapProps> = props => {
 
   return (
     <div className="tc__swap">
-      <Descriptor>{getText('swapDescription', language)}</Descriptor>
+      <Descriptor>{getText('swapDescription', locale)}</Descriptor>
       <SectionContainer
         title={
           selectedToken && balanceFormatted ? (
             <div className="tc__title-and-balance">
-              <Typography variant="card-title">{getText('from', language)}</Typography>
-              <Typography variant="body-text">
-                {getText('balanceXxx', language, { amount: balanceFormatted })}
-              </Typography>
+              <Typography variant="card-title">{getText('from', locale)}</Typography>
+              <Typography variant="body-text">{getText('balanceXxx', locale, { amount: balanceFormatted })}</Typography>
             </div>
           ) : (
             'from'
@@ -317,7 +315,7 @@ const Swap: FC<SwapProps> = props => {
             onChange={onAmountChange}
             disabled={!selectedToken}
             onMaxClick={onMaxClick}
-            disabledTooltip={getText('selectTokenFirst', language)}
+            disabledTooltip={getText('selectTokenFirst', locale)}
           />
           <Spacer size={15} />
         </div>
@@ -328,7 +326,7 @@ const Swap: FC<SwapProps> = props => {
         <div className="tf__flex-row-center-v">
           <TokenSelector value={tokenTo.tokenName} tickers={['Principals', 'Yields']} onTokenChange={onTokenToChange} />
           <Spacer size={15} />
-          <Typography variant="card-body-text">{getText('estimatedAmountReceived', language)}</Typography>
+          <Typography variant="card-body-text">{getText('estimatedAmountReceived', locale)}</Typography>
           <Spacer size={15} />
           <Typography variant="card-body-text">{receiveAmountFormatted}</Typography>
         </div>

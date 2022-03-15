@@ -4,7 +4,7 @@ import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
 import getPoolShareBalanceProvider from '../../providers/getPoolShareBalanceProvider';
 import { refreshBalances } from '../../providers/balanceProviderHelper';
-import { LanguageContext } from '../../context/languageContext';
+import { LocaleContext } from '../../context/localeContext';
 import { WalletContext } from '../../context/walletContext';
 import getText from '../../localisation/getText';
 import { getChainConfig } from '../../utils/getConfig';
@@ -36,7 +36,7 @@ const ProvideLiquidity: FC<ProvideLiquidityProps> = props => {
   const dynamicPoolData = useHookState(dynamicPoolDataState);
   const staticPoolData = useHookState(staticPoolDataState);
 
-  const { language } = useContext(LanguageContext);
+  const { locale } = useContext(LocaleContext);
 
   const { userWalletAddress, userWalletSigner } = useContext(WalletContext);
 
@@ -462,14 +462,14 @@ const ProvideLiquidity: FC<ProvideLiquidityProps> = props => {
 
   return (
     <div className="tc__provideLiquidity">
-      <Descriptor>{getText('provideLiquidityDescription', language)}</Descriptor>
+      <Descriptor>{getText('provideLiquidityDescription', locale)}</Descriptor>
       <SectionContainer title="from">
         <SectionContainer elevation={2}>
           <div className="tc__title-and-balance">
-            <Typography variant="h4">{getText('principals', language)}</Typography>
+            <Typography variant="h4">{getText('principals', locale)}</Typography>
             {principalsBalanceFormatted && (
               <div>
-                <Typography variant="card-body-text">{getText('balance', language)}</Typography>
+                <Typography variant="card-body-text">{getText('balance', locale)}</Typography>
                 <Spacer size={15} />
                 <Typography variant="card-body-text">{principalsBalanceFormatted}</Typography>
               </div>
@@ -510,7 +510,7 @@ const ProvideLiquidity: FC<ProvideLiquidityProps> = props => {
             <div>
               {yieldsBalanceFormatted && (
                 <>
-                  <Typography variant="card-body-text">{getText('balance', language)}</Typography>
+                  <Typography variant="card-body-text">{getText('balance', locale)}</Typography>
                   <Spacer size={15} />
                   <Typography variant="card-body-text">{yieldsBalanceFormatted}</Typography>
                 </>
@@ -549,19 +549,19 @@ const ProvideLiquidity: FC<ProvideLiquidityProps> = props => {
       <Spacer size={15} />
       <SectionContainer title="to">
         <SectionContainer elevation={2}>
-          <Typography variant="h4">{getText('lpTokens', language)}</Typography>
+          <Typography variant="h4">{getText('lpTokens', locale)}</Typography>
           <Spacer size={10} />
           <div className="tf__flex-row-space-between">
             <div className="tf__flex-row-center-v">
-              <Typography variant="card-body-text">{getText('estimatedAmountReceived', language)}</Typography>
+              <Typography variant="card-body-text">{getText('estimatedAmountReceived', locale)}</Typography>
               <Spacer size={15} />
               <Typography variant="card-body-text">
-                {getText('xxxLpTokens', language, { token: expectedLPTokensFormatted })}
+                {getText('xxxLpTokens', locale, { token: expectedLPTokensFormatted })}
               </Typography>
             </div>
             <div className="tf__flex-row-center-v-end">
               <Typography variant="card-body-text">
-                {getText('xxxOfPool', language, { share: NumberUtils.formatPercentage(expectedPoolShare) })}
+                {getText('xxxOfPool', locale, { share: NumberUtils.formatPercentage(expectedPoolShare) })}
               </Typography>
             </div>
           </div>

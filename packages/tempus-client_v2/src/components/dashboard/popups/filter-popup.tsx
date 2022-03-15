@@ -1,7 +1,7 @@
 import { FC, useContext, useState } from 'react';
 import 'date-fns';
 import { Box, Button, InputAdornment, Paper, Popper, TextField } from '@material-ui/core';
-import { LanguageContext } from '../../../context/languageContext';
+import { LocaleContext } from '../../../context/localeContext';
 import getText from '../../../localisation/getText';
 
 import './filter-popup.scss';
@@ -29,7 +29,7 @@ interface FilterPopupProps {
 const FilterPopup: FC<FilterPopupProps> = (props: FilterPopupProps) => {
   const { open, anchor, onFilter, onClose } = props;
 
-  const { language } = useContext(LanguageContext);
+  const { locale } = useContext(LocaleContext);
 
   const [assetName, setAssetName] = useState<string>('');
   const [protocolName, setProtocolName] = useState<string>('');
@@ -98,10 +98,10 @@ const FilterPopup: FC<FilterPopupProps> = (props: FilterPopupProps) => {
       <Popper className="tf__filter__popup-popper" open={open} anchorEl={anchor} placement="bottom">
         <Paper className="tf__filter__popup-container">
           <div className="tf__filter__popup-row-container">
-            <div className="tf__filter__popup-row-label-container">{getText('asset', language)}</div>
+            <div className="tf__filter__popup-row-label-container">{getText('asset', locale)}</div>
             <div className="tf__filter__popup-row-input-container">
               <TextField
-                placeholder={getText('assetName', language)}
+                placeholder={getText('assetName', locale)}
                 fullWidth={true}
                 size="small"
                 value={assetName}
@@ -110,10 +110,10 @@ const FilterPopup: FC<FilterPopupProps> = (props: FilterPopupProps) => {
             </div>
           </div>
           <div className="tf__filter__popup-row-container">
-            <div className="tf__filter__popup-row-label-container">{getText('protocol', language)}</div>
+            <div className="tf__filter__popup-row-label-container">{getText('protocol', locale)}</div>
             <div className="tf__filter__popup-row-input-container">
               <TextField
-                placeholder={getText('protocolName', language)}
+                placeholder={getText('protocolName', locale)}
                 fullWidth={true}
                 size="small"
                 value={protocolName}
@@ -122,12 +122,12 @@ const FilterPopup: FC<FilterPopupProps> = (props: FilterPopupProps) => {
             </div>
           </div>
           <div className="tf__filter__popup-row-container">
-            <div className="tf__filter__popup-row-label-container">{getText('aprRange', language)}</div>
+            <div className="tf__filter__popup-row-label-container">{getText('aprRange', locale)}</div>
             <div className="tf__filter__popup-row-input-container">
               <TextField
                 fullWidth={true}
                 size="small"
-                placeholder={getText('min', language)}
+                placeholder={getText('min', locale)}
                 value={aPRRangeMin}
                 onChange={onAPRRangeMinChange}
                 InputProps={{
@@ -138,7 +138,7 @@ const FilterPopup: FC<FilterPopupProps> = (props: FilterPopupProps) => {
               <TextField
                 fullWidth={true}
                 size="small"
-                placeholder={getText('max', language)}
+                placeholder={getText('max', locale)}
                 value={aPRRangeMax}
                 onChange={onAPRRangeMaxChange}
                 InputProps={{
@@ -148,12 +148,12 @@ const FilterPopup: FC<FilterPopupProps> = (props: FilterPopupProps) => {
             </div>
           </div>
           <div className="tf__filter__popup-row-container">
-            <div className="tf__filter__popup-row-label-container">{getText('maturity', language)}</div>
+            <div className="tf__filter__popup-row-label-container">{getText('maturity', locale)}</div>
             <div className="tf__filter__popup-row-input-container">
               <TextField
                 fullWidth={true}
                 size="small"
-                placeholder={getText('min', language)}
+                placeholder={getText('min', locale)}
                 value={maturityRangeMin}
                 onChange={onMaturityRangeMinChange}
               />
@@ -161,17 +161,17 @@ const FilterPopup: FC<FilterPopupProps> = (props: FilterPopupProps) => {
               <TextField
                 fullWidth={true}
                 size="small"
-                placeholder={getText('max', language)}
+                placeholder={getText('max', locale)}
                 value={maturityRangeMax}
                 onChange={onMaturityRangeMaxChange}
               />
             </div>
           </div>
           <div className="tf__filter__popup-actions-container">
-            <Button onClick={onClearFilters}>{getText('clearFilter', language)}</Button>
+            <Button onClick={onClearFilters}>{getText('clearFilter', locale)}</Button>
             <Box m={1} />
             <Button onClick={applyFilters} variant="contained" color="primary">
-              {getText('apply', language)}
+              {getText('apply', locale)}
             </Button>
           </div>
         </Paper>

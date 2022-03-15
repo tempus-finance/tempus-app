@@ -2,7 +2,7 @@ import { format } from 'date-fns';
 import { useContext, useMemo } from 'react';
 import { TooltipProps } from 'recharts';
 import { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent';
-import { LanguageContext } from '../../../context/languageContext';
+import { LocaleContext } from '../../../context/localeContext';
 import getText from '../../../localisation/getText';
 import NumberUtils from '../../../services/NumberUtils';
 import Typography from '../../typography/Typography';
@@ -12,7 +12,7 @@ import Spacer from '../../spacer/spacer';
 const ProfitLossChartTooltip = (props: TooltipProps<ValueType, NameType>) => {
   const { active, payload } = props;
 
-  const { language } = useContext(LanguageContext);
+  const { locale } = useContext(LocaleContext);
 
   const valueFormatted = useMemo(() => {
     if (active && payload && payload[0]) {
@@ -28,9 +28,9 @@ const ProfitLossChartTooltip = (props: TooltipProps<ValueType, NameType>) => {
 
   const dateFormatted = useMemo(() => {
     if (active && payload && payload[0]) {
-      return format(payload[0].payload.date, 'd MMM yyyy');
+      return format(payload[0].payload.date, 'd MMM yyyy', { locale: locale.dateLocale });
     }
-  }, [active, payload]);
+  }, [active, payload, locale.dateLocale]);
 
   return (
     <div className="tc__profitLossChartTooltip">
@@ -40,7 +40,7 @@ const ProfitLossChartTooltip = (props: TooltipProps<ValueType, NameType>) => {
       <Spacer size={6} />
       <div className="tf__flex-row-center-vh">
         <Typography variant="body-text" color="title">
-          {getText('since', language)}
+          {getText('since', locale)}
         </Typography>
         &nbsp;
         <Typography variant="body-text">{dateFormatted}</Typography>

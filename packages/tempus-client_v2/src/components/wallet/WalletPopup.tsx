@@ -3,7 +3,7 @@ import { Button, Divider, Popper } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import { Notification } from '../../interfaces/Notification';
 import { Chain } from '../../interfaces/Chain';
-import { LanguageContext } from '../../context/languageContext';
+import { LocaleContext } from '../../context/localeContext';
 import { UserSettingsContext } from '../../context/userSettingsContext';
 import { PendingTransactionsContext } from '../../context/pendingTransactionsContext';
 import { WalletContext } from '../../context/walletContext';
@@ -33,7 +33,7 @@ type WalletPopupProps = WalletPopupInProps & WalletPopupOutProps;
 
 const WalletPopup: FC<WalletPopupProps> = ({ anchorElement, account, chainName, onSwitchWallet, onClose }) => {
   const { openWalletPopup } = useContext(UserSettingsContext);
-  const { language } = useContext(LanguageContext);
+  const { locale } = useContext(LocaleContext);
   const { pendingTransactions } = useContext(PendingTransactionsContext);
   const { userWalletChain } = useContext(WalletContext);
 
@@ -86,7 +86,7 @@ const WalletPopup: FC<WalletPopupProps> = ({ anchorElement, account, chainName, 
       >
         <div className="tc__wallet__popper__container">
           <div className="tc__wallet__popper__section tc__wallet__popper__section-header">
-            <Typography variant="dropdown-text">{getText('walletOverview', language)}</Typography>
+            <Typography variant="dropdown-text">{getText('walletOverview', locale)}</Typography>
             <Button onClick={onClose}>
               <CloseIcon />
             </Button>
@@ -95,11 +95,11 @@ const WalletPopup: FC<WalletPopupProps> = ({ anchorElement, account, chainName, 
           <div className="tc__wallet__popper__section tc__wallet__popper__section-account">
             <div className="tc__wallet__popper__section__title">
               <Typography variant="dropdown-text" color="title">
-                {getText('connectedWallet', language)}
+                {getText('connectedWallet', locale)}
               </Typography>
               <Button onClick={switchWallet}>
                 <Typography variant="disclaimer-text" color="title">
-                  {getText('switchWallet', language)}
+                  {getText('switchWallet', locale)}
                 </Typography>
               </Button>
             </div>
@@ -115,7 +115,7 @@ const WalletPopup: FC<WalletPopupProps> = ({ anchorElement, account, chainName, 
               <div className="tc__wallet__popper__section tc__wallet__popper__section-transactions">
                 <div className="tc__wallet__popper__section__title">
                   <Typography variant="dropdown-text" color="title">
-                    {getText('pendingTransactions', language)}
+                    {getText('pendingTransactions', locale)}
                   </Typography>
                 </div>
                 <Spacer size={15} />
@@ -131,11 +131,11 @@ const WalletPopup: FC<WalletPopupProps> = ({ anchorElement, account, chainName, 
               <div className="tc__wallet__popper__section tc__wallet__popper__section-transactions">
                 <div className="tc__wallet__popper__section__title">
                   <Typography variant="dropdown-text" color="title">
-                    {getText('transactionHistory', language)}
+                    {getText('transactionHistory', locale)}
                   </Typography>
                   <Button onClick={clearNotifications}>
                     <Typography variant="disclaimer-text" color="title">
-                      {getText('clear', language)}
+                      {getText('clear', locale)}
                     </Typography>
                   </Button>
                 </div>

@@ -1,7 +1,7 @@
 import { FC, MouseEvent, useCallback, useContext } from 'react';
 import { Dialog, DialogContent, DialogTitle, IconButton, List, ListItem, ListItemText } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
-import { LanguageContext } from '../../context/languageContext';
+import { LocaleContext } from '../../context/localeContext';
 import { UserSettingsContext } from '../../context/userSettingsContext';
 import getText from '../../localisation/getText';
 import Typography from '../typography/Typography';
@@ -21,7 +21,7 @@ type WalletSelectorOutProps = {
 type WalletSelectorProps = WalletSelectorInProps & WalletSelectorOutProps;
 
 const WalletSelector: FC<WalletSelectorProps> = ({ availableWallets, currentWallet, onClose }) => {
-  const { language } = useContext(LanguageContext);
+  const { locale } = useContext(LocaleContext);
   const { openWalletSelector, isWalletSelectorIrremovable } = useContext(UserSettingsContext);
 
   const handleClose = useCallback(() => {
@@ -49,7 +49,7 @@ const WalletSelector: FC<WalletSelectorProps> = ({ availableWallets, currentWall
   return (
     <Dialog onClose={handleClose} open={openWalletSelector} className="tc__walletSelector">
       <DialogTitle>
-        <Typography variant="h4">{getText('selectWallet', language)}</Typography>
+        <Typography variant="h4">{getText('selectWallet', locale)}</Typography>
         {!isWalletSelectorIrremovable && (
           <IconButton aria-label="close" onClick={handleClose}>
             <CloseIcon />
@@ -62,7 +62,7 @@ const WalletSelector: FC<WalletSelectorProps> = ({ availableWallets, currentWall
             <div className="MuiListItemText-root">
               <span
                 className="MuiTypography-root MuiListItemText-primary MuiTypography-body1 MuiTypography-displayBlock"
-                dangerouslySetInnerHTML={{ __html: getText('walletSelectorDisclaimer', language) }}
+                dangerouslySetInnerHTML={{ __html: getText('walletSelectorDisclaimer', locale) }}
               ></span>
             </div>
           </li>

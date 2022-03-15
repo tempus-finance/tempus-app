@@ -12,7 +12,7 @@ import { CONSTANTS } from 'tempus-core-services';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { Grid, TableHeaderRow, VirtualTable, TableTreeColumn } from '@devexpress/dx-react-grid-material-ui';
 import { dynamicPoolDataState } from '../../state/PoolDataState';
-import { LanguageContext } from '../../context/languageContext';
+import { LocaleContext } from '../../context/localeContext';
 import { DashboardRow } from '../../interfaces/DashboardRow';
 import { ColumnNames } from '../../interfaces/ColumnNames';
 import TokenButton from './bodySection/tokenButton';
@@ -47,7 +47,7 @@ type DashboardProps = DashboardInProps & DashboardOutProps;
 const Dashboard: FC<DashboardProps> = ({ userWalletAddress, rows, onRowActionClick }): JSX.Element => {
   const dynamicPoolData = useHookState(dynamicPoolDataState).attach(Downgraded).get();
 
-  const { language } = useContext(LanguageContext);
+  const { locale } = useContext(LocaleContext);
 
   const [tableColumnExtensions] = useState([
     { columnName: ColumnNames.TOKEN, align: 'left' as 'left', width: 180 },
@@ -235,7 +235,7 @@ const Dashboard: FC<DashboardProps> = ({ userWalletAddress, rows, onRowActionCli
         <hr />
         <div className="tf__dashboard">
           <div className="tf__dashboard__grid">
-            <Grid rows={/*filteredRows || */ rowsToDisplay()} columns={dashboardColumnsDefinitions(language)}>
+            <Grid rows={/*filteredRows || */ rowsToDisplay()} columns={dashboardColumnsDefinitions(locale)}>
               <SortingState
                 sorting={currentSorting}
                 onSortingChange={onSortingChange}

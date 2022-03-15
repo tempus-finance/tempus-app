@@ -1,6 +1,6 @@
 import { FC, MouseEvent, useCallback, useContext, useEffect, useState } from 'react';
 import { FormControl, TextField, Button, Divider } from '@material-ui/core';
-import { LanguageContext } from '../../context/languageContext';
+import { LocaleContext } from '../../context/localeContext';
 import getText from '../../localisation/getText';
 import Typography from '../typography/Typography';
 import { formatValueToPercentage } from './percentageParser';
@@ -34,7 +34,7 @@ const PercentageInput: FC<PercentageInputProps> = ({
   onInputClick,
   onAutoClick,
 }: PercentageInputProps) => {
-  const { language } = useContext(LanguageContext);
+  const { locale } = useContext(LocaleContext);
 
   const [parsedValue, setParsedValue] = useState<string>('');
   const [value, setValue] = useState<string>('');
@@ -137,7 +137,7 @@ const PercentageInput: FC<PercentageInputProps> = ({
         <Divider orientation="vertical" />
         <Button color={autoOn ? 'primary' : 'secondary'} onClick={handleOnAutoClick}>
           <Typography variant="card-body-text" color={autoOn ? 'inverted' : 'default'}>
-            {getText('auto', language)}
+            {getText('auto', locale)}
           </Typography>
         </Button>
         {disabledTooltipOpen && (

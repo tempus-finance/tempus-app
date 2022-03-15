@@ -15,7 +15,7 @@ import Typography from '../typography/Typography';
 import getText from '../../localisation/getText';
 import { PendingTransactionsContext } from '../../context/pendingTransactionsContext';
 import { WalletContext } from '../../context/walletContext';
-import { LanguageContext } from '../../context/languageContext';
+import { LocaleContext } from '../../context/localeContext';
 import { Chain } from '../../interfaces/Chain';
 
 import './Execute.scss';
@@ -38,7 +38,7 @@ const Execute: FC<ExecuteButtonProps> = props => {
   const staticChainData = useHookState(staticChainDataState);
 
   const { setPendingTransactions } = useContext(PendingTransactionsContext);
-  const { language } = useContext(LanguageContext);
+  const { locale } = useContext(LocaleContext);
   const { userWalletAddress } = useContext(WalletContext);
 
   const [executeInProgress, setExecuteInProgress] = useState<boolean>(false);
@@ -49,7 +49,7 @@ const Execute: FC<ExecuteButtonProps> = props => {
   const protocol = staticPoolData[selectedPool.get()].protocol.attach(Downgraded).get();
   const maturityDate = staticPoolData[selectedPool.get()].maturityDate.attach(Downgraded).get();
 
-  const viewLinkText = `${getText('viewOnXxx', language, { name: blockExplorerName })}`;
+  const viewLinkText = `${getText('viewOnXxx', locale, { name: blockExplorerName })}`;
 
   const execute = () => {
     const runExecute = async () => {
@@ -58,7 +58,7 @@ const Execute: FC<ExecuteButtonProps> = props => {
       }
       setExecuteInProgress(true);
 
-      const content = generatePoolNotificationInfo(chain, language, backingToken, protocol, new Date(maturityDate));
+      const content = generatePoolNotificationInfo(chain, locale, backingToken, protocol, new Date(maturityDate));
 
       let transaction: ethers.ContractTransaction | undefined;
       try {
@@ -70,8 +70,8 @@ const Execute: FC<ExecuteButtonProps> = props => {
         getNotificationService().warn(
           chain,
           'Transaction',
-          getText('xxxFailed', language, { action: actionName }),
-          generateFailedTransactionInfo(chain, language, selectedPoolData, error),
+          getText('xxxFailed', locale, { action: actionName }),
+          generateFailedTransactionInfo(chain, locale, selectedPoolData, error),
         );
         setExecuteInProgress(false);
         onExecuted(false);
@@ -125,7 +125,7 @@ const Execute: FC<ExecuteButtonProps> = props => {
           chain,
           'Transaction',
           `${actionName} Failed`,
-          generateFailedTransactionInfo(chain, language, selectedPoolData, error),
+          generateFailedTransactionInfo(chain, locale, selectedPoolData, error),
           generateEtherscanLink(transaction.hash, chain),
           viewLinkText,
         );
@@ -150,7 +150,7 @@ const Execute: FC<ExecuteButtonProps> = props => {
         `${actionName} Successful`,
         `${generateNotificationInfo(
           chain,
-          language,
+          locale,
           actionName,
           actionDescription || '',
           confirmations,
@@ -178,13 +178,13 @@ const Execute: FC<ExecuteButtonProps> = props => {
       <Typography variant="button-text" color="inverted">
         {executeInProgress && (
           <>
-            <CircularProgress size={16} color="inherit" /> {getText('executing', language)}
+            <CircularProgress size={16} color="inherit" /> {getText('executing', locale)}
           </>
         )}
 
-        {!executeInProgress && !disabled && getText('execute', language)}
+        {!executeInProgress && !disabled && getText('execute', locale)}
 
-        {!executeInProgress && disabled && (executeDisabledText || getText('execute', language))}
+        {!executeInProgress && disabled && (executeDisabledText || getText('execute', locale))}
       </Typography>
     </Button>
   );

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { BrowserRouter } from 'react-router-dom';
-import { LanguageContext, defaultLanguageContextValue } from '../../context/languageContext';
+import { LocaleContext, defaultLocaleContextValue } from '../../context/localeContext';
 import { TokenBalanceContext, defaultTokenBalanceContextValue } from '../../context/tokenBalanceContext';
 import { defaultWalletContextValue, WalletContext } from '../../context/walletContext';
 import {
@@ -24,7 +24,7 @@ import './App.scss';
 
 const App = () => {
   const [userSettings, setUserSettings] = useState(defaultUserSettingsContextValue);
-  const [language, setLanguage] = useState(defaultLanguageContextValue);
+  const [locale, setLocale] = useState(defaultLocaleContextValue);
   const [tokenBalance, setTokenBalance] = useState(defaultTokenBalanceContextValue);
   const [walletData, setWalletData] = useState(defaultWalletContextValue);
   const [pendingTransactions, setPendingTransactions] = useState(defaultPendingTransactionsContextValue);
@@ -80,7 +80,7 @@ const App = () => {
   return (
     <>
       <UserSettingsContext.Provider value={{ ...userSettings, setUserSettings }}>
-        <LanguageContext.Provider value={{ ...language, setLanguage }}>
+        <LocaleContext.Provider value={{ ...locale, setLocale }}>
           <TokenBalanceContext.Provider value={{ ...tokenBalance, setTokenBalance }}>
             <WalletContext.Provider value={{ ...walletData, setWalletData }}>
               <PendingTransactionsContext.Provider value={{ ...pendingTransactions, setPendingTransactions }}>
@@ -95,7 +95,7 @@ const App = () => {
               <TokenBalanceProvider />
             </WalletContext.Provider>
           </TokenBalanceContext.Provider>
-        </LanguageContext.Provider>
+        </LocaleContext.Provider>
       </UserSettingsContext.Provider>
     </>
   );

@@ -3,7 +3,7 @@ import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react
 import { BigNumber, ethers } from 'ethers';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
 import { refreshBalances } from '../../providers/balanceProviderHelper';
-import { LanguageContext } from '../../context/languageContext';
+import { LocaleContext } from '../../context/localeContext';
 import { WalletContext } from '../../context/walletContext';
 import { UserSettingsContext } from '../../context/userSettingsContext';
 import { Chain } from '../../interfaces/Chain';
@@ -36,7 +36,7 @@ const RemoveLiquidity: FC<RemoveLiquidityProps> = props => {
   const dynamicPoolData = useHookState(dynamicPoolDataState);
   const staticPoolData = useHookState(staticPoolDataState);
 
-  const { language } = useContext(LanguageContext);
+  const { locale } = useContext(LocaleContext);
   const { userWalletAddress, userWalletSigner } = useContext(WalletContext);
   const { slippage, autoSlippage } = useContext(UserSettingsContext);
 
@@ -220,14 +220,14 @@ const RemoveLiquidity: FC<RemoveLiquidityProps> = props => {
 
   return (
     <div className="tc__removeLiquidity">
-      <Descriptor>{getText('removeLiquidityDescription', language)}</Descriptor>
+      <Descriptor>{getText('removeLiquidityDescription', locale)}</Descriptor>
       <SectionContainer title="from">
         <SectionContainer elevation={2}>
           <div className="tc__title-and-balance">
-            <Typography variant="h4">{getText('lpTokens', language)}</Typography>
+            <Typography variant="h4">{getText('lpTokens', locale)}</Typography>
             {lpTokenBalanceFormatted && (
               <div>
-                <Typography variant="card-body-text">{getText('balance', language)}</Typography>
+                <Typography variant="card-body-text">{getText('balance', locale)}</Typography>
                 <Spacer size={15} />
                 <Typography variant="card-body-text">{lpTokenBalanceFormatted}</Typography>
               </div>
@@ -262,20 +262,20 @@ const RemoveLiquidity: FC<RemoveLiquidityProps> = props => {
       <SectionContainer title="to">
         <div className="tf__flex-row-center-v">
           <SectionContainer>
-            <Typography variant="h4">{getText('principals', language)}</Typography>
+            <Typography variant="h4">{getText('principals', locale)}</Typography>
             <Spacer size={10} />
             <div className="tf__flex-row-center-v">
-              <Typography variant="card-body-text">{getText('estimated', language)}</Typography>
+              <Typography variant="card-body-text">{getText('estimated', locale)}</Typography>
               <Spacer size={15} />
               <Typography variant="card-body-text">{estimatedPrincipalsFormatted}</Typography>
             </div>
           </SectionContainer>
           <PlusIconContainer orientation="vertical" />
           <SectionContainer>
-            <Typography variant="h4">{getText('yields', language)}</Typography>
+            <Typography variant="h4">{getText('yields', locale)}</Typography>
             <Spacer size={10} />
             <div className="tf__flex-row-center-v">
-              <Typography variant="card-body-text">{getText('estimated', language)}</Typography>
+              <Typography variant="card-body-text">{getText('estimated', locale)}</Typography>
               <Spacer size={15} />
               <Typography variant="card-body-text">{estimatedYieldsFormatted}</Typography>
             </div>

@@ -12,7 +12,7 @@ import { generateEtherscanLink, getTokenApprovalNotification } from '../../servi
 import { Ticker } from '../../interfaces/Token';
 import { Chain } from '../../interfaces/Chain';
 import { PendingTransactionsContext } from '../../context/pendingTransactionsContext';
-import { LanguageContext } from '../../context/languageContext';
+import { LocaleContext } from '../../context/localeContext';
 import { WalletContext } from '../../context/walletContext';
 import TickNegativeIcon from '../icons/TickNegativeIcon';
 import getText from '../../localisation/getText';
@@ -68,7 +68,7 @@ const Approve: FC<ApproveButtonProps> = props => {
 
   const { setPendingTransactions } = useContext(PendingTransactionsContext);
   const { userWalletAddress, userWalletSigner } = useContext(WalletContext);
-  const { language } = useContext(LanguageContext);
+  const { locale } = useContext(LocaleContext);
 
   const [approveInProgress, setApproveInProgress] = useState<boolean>(false);
   const [allowance, setAllowance] = useState<BigNumber | null>(null);
@@ -78,7 +78,7 @@ const Approve: FC<ApproveButtonProps> = props => {
   const protocol = staticPoolData[selectedPool.get()].protocol.attach(Downgraded).get();
   const maturityDate = staticPoolData[selectedPool.get()].maturityDate.attach(Downgraded).get();
 
-  const viewLinkText = `${getText('viewOnXxx', language, { name: blockExplorerName })}`;
+  const viewLinkText = `${getText('viewOnXxx', locale, { name: blockExplorerName })}`;
 
   const fetchAllowance = useCallback(async () => {
     if (!userWalletSigner || !tokenToApproveAddress) {
@@ -112,7 +112,7 @@ const Approve: FC<ApproveButtonProps> = props => {
       if (tokenToApproveTicker) {
         content = getTokenApprovalNotification(
           chain,
-          language,
+          locale,
           tokenToApproveTicker,
           backingToken,
           protocol,
@@ -135,7 +135,7 @@ const Approve: FC<ApproveButtonProps> = props => {
         console.error(`Failed to create approve transaction for ${tokenToApproveTicker} token!`, error);
 
         if (tokenToApproveTicker) {
-          getNotificationService().warn(chain, 'Transaction', getText(`approvalFailed`, language), content);
+          getNotificationService().warn(chain, 'Transaction', getText(`approvalFailed`, locale), content);
         }
 
         setApproveInProgress(false);
@@ -216,7 +216,7 @@ const Approve: FC<ApproveButtonProps> = props => {
     };
     approve();
   }, [
-    language,
+    locale,
     viewLinkText,
     userWalletSigner,
     amountToApprove,
@@ -288,16 +288,16 @@ const Approve: FC<ApproveButtonProps> = props => {
         <Typography variant="button-text" color="inverted">
           {approveInProgress && (
             <>
-              <CircularProgress size={16} color="inherit" /> {getText('approving', language)}
+              <CircularProgress size={16} color="inherit" /> {getText('approving', locale)}
             </>
           )}
           {approved && (
             <>
-              {getText('approved', language)} <TickNegativeIcon fillColor="white" />
+              {getText('approved', locale)} <TickNegativeIcon fillColor="white" />
             </>
           )}
 
-          {approve && getText('approve', language)}
+          {approve && getText('approve', locale)}
         </Typography>
       </Button>
       {/* Set margin right if specified */}

@@ -7,7 +7,7 @@ import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '..
 import { refreshBalances } from '../../providers/balanceProviderHelper';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
 import { WalletContext } from '../../context/walletContext';
-import { LanguageContext } from '../../context/languageContext';
+import { LocaleContext } from '../../context/localeContext';
 import { UserSettingsContext } from '../../context/userSettingsContext';
 import getText from '../../localisation/getText';
 import { Ticker } from '../../interfaces/Token';
@@ -46,7 +46,7 @@ const Withdraw: FC<WithdrawProps> = ({ chain, onWithdraw }) => {
   const staticPoolData = useHookState(staticPoolDataState);
 
   const { userWalletSigner, userWalletAddress } = useContext(WalletContext);
-  const { language } = useContext(LanguageContext);
+  const { locale } = useContext(LocaleContext);
   const { slippage, autoSlippage } = useContext(UserSettingsContext);
 
   const backingToken = staticPoolData[selectedPool.get()].backingToken.attach(Downgraded).get();
@@ -455,10 +455,10 @@ const Withdraw: FC<WithdrawProps> = ({ chain, onWithdraw }) => {
         {userPrincipalsBalance && !userPrincipalsBalance.isZero() && (
           <SectionContainer elevation={2}>
             <div className="tc__title-and-balance">
-              <Typography variant="h4">{getText('xxxPrincipals', language, { token: backingToken })}</Typography>
+              <Typography variant="h4">{getText('xxxPrincipals', locale, { token: backingToken })}</Typography>
               {principalsBalanceFormatted && (
                 <div>
-                  <Typography variant="card-body-text">{getText('balance', language)}</Typography>
+                  <Typography variant="card-body-text">{getText('balance', locale)}</Typography>
                   <Spacer size={15} />
                   <Typography variant="card-body-text">{principalsBalanceFormatted}</Typography>
                 </div>
@@ -496,10 +496,10 @@ const Withdraw: FC<WithdrawProps> = ({ chain, onWithdraw }) => {
             {userPrincipalsBalance && !userPrincipalsBalance.isZero() && <PlusIconContainer orientation="horizontal" />}
             <SectionContainer elevation={2}>
               <div className="tc__title-and-balance">
-                <Typography variant="h4">{getText('xxxYields', language, { token: backingToken })}</Typography>
+                <Typography variant="h4">{getText('xxxYields', locale, { token: backingToken })}</Typography>
                 {yieldsBalanceFormatted && (
                   <div>
-                    <Typography variant="card-body-text">{getText('balance', language)}</Typography>
+                    <Typography variant="card-body-text">{getText('balance', locale)}</Typography>
                     <Spacer size={15} />
 
                     <Typography variant="card-body-text">{yieldsBalanceFormatted}</Typography>
@@ -542,10 +542,10 @@ const Withdraw: FC<WithdrawProps> = ({ chain, onWithdraw }) => {
               (userYieldsBalance && !userYieldsBalance.isZero())) && <PlusIconContainer orientation="horizontal" />}
             <SectionContainer elevation={2}>
               <div className="tc__title-and-balance">
-                <Typography variant="h4">{getText('xxxLpTokens', language, { token: backingToken })}</Typography>
+                <Typography variant="h4">{getText('xxxLpTokens', locale, { token: backingToken })}</Typography>
                 {lpTokenBalanceFormatted && (
                   <div>
-                    <Typography variant="card-body-text">{getText('balance', language)}</Typography>
+                    <Typography variant="card-body-text">{getText('balance', locale)}</Typography>
                     <Spacer size={10} />
                     <Typography variant="card-body-text">{lpTokenBalanceFormatted}</Typography>
                   </div>
@@ -587,7 +587,7 @@ const Withdraw: FC<WithdrawProps> = ({ chain, onWithdraw }) => {
           <div className="tf__flex-row-center-v">
             <TokenSelector tickers={supportedTokens} value={selectedToken} onTokenChange={onTokenChange} />
             <Spacer size={15} />
-            <Typography variant="card-body-text">{getText('estimatedAmountReceived', language)}</Typography>
+            <Typography variant="card-body-text">{getText('estimatedAmountReceived', locale)}</Typography>
             <Spacer size={15} />
             <Typography variant="card-body-text">
               {estimatedWithdrawAmountFormatted} {selectedToken}

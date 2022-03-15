@@ -3,7 +3,7 @@ import { CircularProgress } from '@material-ui/core';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { format, formatDistanceStrict } from 'date-fns';
 import { CONSTANTS } from 'tempus-core-services';
-import { LanguageContext } from '../../../context/languageContext';
+import { LocaleContext } from '../../../context/localeContext';
 import getText from '../../../localisation/getText';
 import Typography from '../../typography/Typography';
 import Spacer from '../../spacer/spacer';
@@ -22,7 +22,7 @@ import './maturityFormatter.scss';
 const { MILLISECONDS_IN_A_DAY, ZERO } = CONSTANTS;
 
 const MaturityFormatter = ({ value, row }: any) => {
-  const { language } = useContext(LanguageContext);
+  const { locale } = useContext(LocaleContext);
 
   const dynamicPoolData = useHookState(dynamicPoolDataState).attach(Downgraded).get();
   const staticPoolData = useHookState(staticPoolDataState).attach(Downgraded).get();
@@ -34,8 +34,8 @@ const MaturityFormatter = ({ value, row }: any) => {
 
     // In case parent row has a single child, we want to show time left to maturity for this child item in parent row
     const timeLeft = min - Date.now();
-    const daysRemaining = formatDistanceStrict(Date.now(), min, { unit: 'day' });
-    const hoursRemaining = formatDistanceStrict(Date.now(), min, { unit: 'hour' });
+    const daysRemaining = formatDistanceStrict(Date.now(), min, { unit: 'day', locale: locale.dateLocale });
+    const hoursRemaining = formatDistanceStrict(Date.now(), min, { unit: 'hour', locale: locale.dateLocale });
 
     return (
       <>
@@ -44,42 +44,54 @@ const MaturityFormatter = ({ value, row }: any) => {
           <div>
             <div className="tf__dashboard__grid__maturity-row">
               <Typography variant="dash-maturity-label" color="label-gray">
-                {getText('earliestMaturity', language)}
+                {getText('earliestMaturity', locale)}
               </Typography>
               <div className="tf__dashboard__grid__maturity-date">
-                <Typography variant="dash-maturity-date-bold">{format(min, 'd')}</Typography>
+                <Typography variant="dash-maturity-date-bold">
+                  {format(min, 'd', { locale: locale.dateLocale })}
+                </Typography>
                 <Spacer size={2} />
                 <Typography variant="dash-maturity-date-bold" color="title">
                   &#8226;
                 </Typography>
                 <Spacer size={2} />
-                <Typography variant="dash-maturity-date-bold">{format(min, 'MMM')}</Typography>
+                <Typography variant="dash-maturity-date-bold">
+                  {format(min, 'MMM', { locale: locale.dateLocale })}
+                </Typography>
                 <Spacer size={2} />
                 <Typography variant="dash-maturity-date-bold" color="title">
                   &#8226;
                 </Typography>
                 <Spacer size={2} />
-                <Typography variant="dash-maturity-date-bold">{format(min, 'yy')}</Typography>
+                <Typography variant="dash-maturity-date-bold">
+                  {format(min, 'yy', { locale: locale.dateLocale })}
+                </Typography>
               </div>
             </div>
             <div className="tf__dashboard__grid__maturity-row">
               <Typography variant="dash-maturity-label" color="label-gray">
-                {getText('latestMaturity', language)}
+                {getText('latestMaturity', locale)}
               </Typography>
               <div className="tf__dashboard__grid__maturity-date">
-                <Typography variant="dash-maturity-date-bold">{format(max, 'd')}</Typography>
+                <Typography variant="dash-maturity-date-bold">
+                  {format(max, 'd', { locale: locale.dateLocale })}
+                </Typography>
                 <Spacer size={2} />
                 <Typography variant="dash-maturity-date-bold" color="title">
                   &#8226;
                 </Typography>
                 <Spacer size={2} />
-                <Typography variant="dash-maturity-date-bold">{format(max, 'MMM')}</Typography>
+                <Typography variant="dash-maturity-date-bold">
+                  {format(max, 'MMM', { locale: locale.dateLocale })}
+                </Typography>
                 <Spacer size={2} />
                 <Typography variant="dash-maturity-date-bold" color="title">
                   &#8226;
                 </Typography>
                 <Spacer size={2} />
-                <Typography variant="dash-maturity-date-bold">{format(max, 'yy')}</Typography>
+                <Typography variant="dash-maturity-date-bold">
+                  {format(max, 'yy', { locale: locale.dateLocale })}
+                </Typography>
               </div>
             </div>
           </div>
@@ -89,7 +101,7 @@ const MaturityFormatter = ({ value, row }: any) => {
         {min && !max && (
           <div>
             <Typography variant="dash-maturity-label" color="label-gray">
-              {getText('timeToMaturity', language)}
+              {getText('timeToMaturity', locale)}
             </Typography>
             <div className="tf__dashboard__grid__maturity-date">
               {timeLeft > MILLISECONDS_IN_A_DAY ? (
@@ -119,13 +131,13 @@ const MaturityFormatter = ({ value, row }: any) => {
     const childMaturity = getChildMaturity(row.id, staticPoolData);
 
     const timeLeft = childMaturity - Date.now();
-    const daysRemaining = formatDistanceStrict(Date.now(), childMaturity, { unit: 'day' });
-    const hoursRemaining = formatDistanceStrict(Date.now(), childMaturity, { unit: 'hour' });
+    const daysRemaining = formatDistanceStrict(Date.now(), childMaturity, { unit: 'day', locale: locale.dateLocale });
+    const hoursRemaining = formatDistanceStrict(Date.now(), childMaturity, { unit: 'hour', locale: locale.dateLocale });
 
     return (
       <div>
         <Typography variant="dash-maturity-label" color="label-gray">
-          {getText('timeToMaturity', language)}
+          {getText('timeToMaturity', locale)}
         </Typography>
 
         {timeLeft > MILLISECONDS_IN_A_DAY ? (

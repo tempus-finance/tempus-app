@@ -7,7 +7,7 @@ import { catchError, of } from 'rxjs';
 import { v1 as uuid } from 'uuid';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
 import { refreshBalances } from '../../providers/balanceProviderHelper';
-import { LanguageContext } from '../../context/languageContext';
+import { LocaleContext } from '../../context/localeContext';
 import { WalletContext } from '../../context/walletContext';
 import { UserSettingsContext } from '../../context/userSettingsContext';
 import { Ticker } from '../../interfaces/Token';
@@ -33,12 +33,7 @@ import WarnIcon from '../icons/WarnIcon';
 
 import './Deposit.scss';
 
-const {
-  ETH_ALLOWANCE_FOR_GAS,
-  FIXED_APR_PRECISION,
-  MILLISECONDS_IN_A_YEAR,
-  ZERO,
-} = CONSTANTS;
+const { ETH_ALLOWANCE_FOR_GAS, FIXED_APR_PRECISION, MILLISECONDS_IN_A_YEAR, ZERO } = CONSTANTS;
 
 type DepositInProps = {
   narrow: boolean;
@@ -52,7 +47,7 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
   const staticPoolData = useHookState(staticPoolDataState);
   const dynamicPoolData = useHookState(dynamicPoolDataState);
 
-  const { language } = useContext(LanguageContext);
+  const { locale } = useContext(LocaleContext);
   const { userWalletSigner } = useContext(WalletContext);
   const { userWalletAddress } = useContext(WalletContext);
   const { slippage, autoSlippage } = useContext(UserSettingsContext);
@@ -521,12 +516,12 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
         setExecuteDisabledText(undefined);
         return NumberUtils.formatPercentage(ethers.utils.formatEther(estimatedFixedApr));
       } else {
-        setExecuteDisabledText(getText('insufficientLiquidity', language));
+        setExecuteDisabledText(getText('insufficientLiquidity', locale));
         return ZERO;
       }
     }
     return null;
-  }, [estimatedFixedApr, language]);
+  }, [estimatedFixedApr, locale]);
 
   const estimatedFixedAprBelowThreshold = useMemo(() => {
     if (estimatedFixedApr) {
@@ -859,9 +854,9 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
       {disabledOperations.deposit && (
         <>
           <SectionContainer title="poolActionDisabledTitle">
-            <Typography variant="card-body-text">{getText('operationDisabledByConfig', language)}</Typography>
+            <Typography variant="card-body-text">{getText('operationDisabledByConfig', locale)}</Typography>
             <br />
-            <Typography variant="card-body-text" html={getText('askUsOnDiscord', language)} />
+            <Typography variant="card-body-text" html={getText('askUsOnDiscord', locale)} />
           </SectionContainer>
           <Spacer size={15} />
         </>
@@ -870,9 +865,9 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
         title={
           selectedToken && balanceFormatted ? (
             <div className="tc__title-and-balance">
-              <Typography variant="card-title">{getText('from', language)}</Typography>
+              <Typography variant="card-title">{getText('from', locale)}</Typography>
               <Typography variant="body-text">
-                {getText('availableToDepositXxx', language, { amount: balanceFormatted })}
+                {getText('availableToDepositXxx', locale, { amount: balanceFormatted })}
               </Typography>
             </div>
           ) : (
@@ -897,16 +892,16 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
               disabled={!selectedToken || depositDisabled}
               disabledTooltip={
                 isYieldNegative
-                  ? getText('disableInputByNegativeYield', language)
+                  ? getText('disableInputByNegativeYield', locale)
                   : disabledOperations.deposit
-                  ? getText('depositDisabledByConfig', language)
-                  : getText('selectTokenFirst', language)
+                  ? getText('depositDisabledByConfig', locale)
+                  : getText('selectTokenFirst', locale)
               }
             />
             {ethAllowanceForGasExceeded && (
               <div className="tf__input__label">
                 <Typography variant="disclaimer-text" color="error">
-                  {getText('warningEthGasFees', language)}
+                  {getText('warningEthGasFees', locale)}
                 </Typography>
               </div>
             )}
@@ -936,9 +931,9 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
                     <Spacer size={10} />
                   </>
                 )}
-                <Typography variant="yield-card-header">{getText('fixedYield', language)}</Typography>
+                <Typography variant="yield-card-header">{getText('fixedYield', locale)}</Typography>
                 <Spacer size={10} />
-                <InfoTooltip content={getText('interestRateProtectionTooltipText', language)} />
+                <InfoTooltip content={getText('interestRateProtectionTooltipText', locale)} />
               </div>
             </div>
             <Spacer size={15} />
@@ -946,7 +941,7 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
               <div className="tc__deposit__yield-body__row__underline">
                 <div className="tc__deposit__card-row-title">
                   <Typography variant="body-text" color="title">
-                    {getText('yieldAtMaturity', language)}
+                    {getText('yieldAtMaturity', locale)}
                   </Typography>
                 </div>
                 <div className="tc__deposit__card-row-change">
@@ -976,7 +971,7 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
               <div className="tc__deposit__yield-body__row">
                 <div className="tc__deposit__card-row-title">
                   <Typography variant="body-text" color="title">
-                    {getText('totalAvailableAtMaturity', language)}
+                    {getText('totalAvailableAtMaturity', locale)}
                   </Typography>
                 </div>
                 <div className="tc__deposit__card-row-change">
@@ -1009,7 +1004,7 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
             <div className="tf__flex-row-space-between-v">
               <Typography variant="button-text">
                 {fixedPrincipalsAmountFormatted &&
-                  getText('xxxPrincipals', language, { token: fixedPrincipalsAmountFormatted })}
+                  getText('xxxPrincipals', locale, { token: fixedPrincipalsAmountFormatted })}
                 {tokenEstimateInProgress && <CircularProgress size={14} />}
               </Typography>
               <Typography variant="button-text" color="accent">
@@ -1034,9 +1029,9 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
                     <Spacer size={10} />
                   </>
                 )}
-                <Typography variant="yield-card-header">{getText('variableYield', language)}</Typography>
+                <Typography variant="yield-card-header">{getText('variableYield', locale)}</Typography>
                 <Spacer size={10} />
-                <InfoTooltip content={getText('liquidityProvisionTooltipText', language)} />
+                <InfoTooltip content={getText('liquidityProvisionTooltipText', locale)} />
               </div>
             </div>
             <Spacer size={15} />
@@ -1045,7 +1040,7 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
               <div className="tc__deposit__yield-body__row__underline">
                 <div className="tc__deposit__card-row-title">
                   <Typography variant="body-text" color="title">
-                    {getText('estimatedYieldAtMaturity', language)}
+                    {getText('estimatedYieldAtMaturity', locale)}
                   </Typography>
                 </div>
                 <div className="tc__deposit__card-row-change">
@@ -1075,7 +1070,7 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
               <div className="tc__deposit__yield-body__row">
                 <div className="tc__deposit__card-row-title">
                   <Typography variant="body-text" color="title">
-                    {getText('totalAvailableAtMaturity', language)}
+                    {getText('totalAvailableAtMaturity', locale)}
                   </Typography>
                 </div>
                 <div className="tc__deposit__card-row-change">
@@ -1107,7 +1102,7 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
                   <div className="tf__flex-row-space-between-v">
                     <Typography variant="button-text">
                       {' '}
-                      {getText('xxxPrincipals', language, { token: variableUnstakedPrincipalsAmountFormatted })}
+                      {getText('xxxPrincipals', locale, { token: variableUnstakedPrincipalsAmountFormatted })}
                     </Typography>
                   </div>
                 )}
@@ -1117,7 +1112,7 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
                       {variableStakedPrincipalsAmountFormatted && variableStakedYieldsAmountFormatted && (
                         <div className="tf__flex-row-center-v">
                           <Typography variant="button-text">
-                            {getText('xxxStakedPrincipals', language, {
+                            {getText('xxxStakedPrincipals', locale, {
                               amount: variableStakedPrincipalsAmountFormatted,
                             })}
                           </Typography>
@@ -1125,7 +1120,7 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
                           <Typography variant="button-text">&nbsp;&#38;&nbsp;</Typography> {/* -Space- -&- -Space- */}
                           <Spacer size={5} />
                           <Typography variant="button-text">
-                            {getText('xxxStakedYields', language, { amount: variableStakedYieldsAmountFormatted })}
+                            {getText('xxxStakedYields', locale, { amount: variableStakedYieldsAmountFormatted })}
                           </Typography>
                         </div>
                       )}
@@ -1149,7 +1144,7 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
               <Spacer size={20} />
               <Button color="primary" variant="contained" onClick={() => null} disabled={true}>
                 <Typography variant="button-text" color="inverted">
-                  {getText('insufficientLiquidity', language)}
+                  {getText('insufficientLiquidity', locale)}
                 </Typography>{' '}
               </Button>
               <Spacer size={15} />
@@ -1159,7 +1154,7 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
                 </div>
                 <Spacer size={15} />
                 <Typography variant="dropdown-text">
-                  <span dangerouslySetInnerHTML={{ __html: getText('insufficientLiquidityMessage', language) }}></span>
+                  <span dangerouslySetInnerHTML={{ __html: getText('insufficientLiquidityMessage', locale) }}></span>
                 </Typography>{' '}
               </div>
               <Spacer size={20} />
