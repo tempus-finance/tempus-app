@@ -32,8 +32,14 @@ const MaturityFormatter = ({ value, row }: any) => {
 
     // In case parent row has a single child, we want to show time left to maturity for this child item in parent row
     const timeLeft = min - Date.now();
-    const daysRemaining = formatDistanceStrict(Date.now(), min, { unit: 'day' });
-    const hoursRemaining = formatDistanceStrict(Date.now(), min, { unit: 'hour' });
+    let daysRemaining = formatDistanceStrict(Date.now(), min, { unit: 'day' });
+    let hoursRemaining = formatDistanceStrict(Date.now(), min, { unit: 'hour' });
+
+    // Pool matured
+    if (timeLeft < 0) {
+      daysRemaining = '0 days';
+      hoursRemaining = '0 hours';
+    }
 
     return (
       <>
@@ -153,7 +159,7 @@ const MaturityFormatter = ({ value, row }: any) => {
         {poolIsMature && (
           <div className="tf__dashboard__grid__maturity-matured-label">
             <Typography variant="matured-dash-label" color="success">
-              POOL MATURED
+              {getText('poolMatured', language)}
             </Typography>
           </div>
         )}
