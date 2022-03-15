@@ -47,7 +47,7 @@ jobs:
             - ./
 
   test:
-    executor: e2e
+    #executor: e2e
     steps:
       - run:
           name: Test
