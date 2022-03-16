@@ -2,7 +2,7 @@ import { ethers, BigNumber, Contract } from 'ethers';
 import { JsonRpcSigner, JsonRpcProvider } from '@ethersproject/providers';
 import { debounceTime, from, Observable, of, switchMap } from 'rxjs';
 import { Vaults as RariVault } from 'rari-sdk';
-import { CONSTANTS } from 'tempus-core-services';
+import { CONSTANTS, getProviderFromSignerOrProvider } from 'tempus-core-services';
 import lidoOracleABI from '../abi/LidoOracle.json';
 import AaveLendingPoolABI from '../abi/AaveLendingPool.json';
 import cERC20Token from '../abi/cERC20Token.json';
@@ -17,7 +17,6 @@ import { ChainConfig } from '../interfaces/Config';
 import { wadToDai } from '../utils/rayToDai';
 import { getChainConfig } from '../utils/getConfig';
 import { decreasePrecision, div18f, increasePrecision, mul18f } from '../utils/weiMath';
-import getProviderFromSignerOrProvider from '../utils/getProviderFromSignerOrProvider';
 import { Chain } from '../interfaces/Chain';
 
 const {
