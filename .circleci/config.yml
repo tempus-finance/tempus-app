@@ -41,12 +41,15 @@ jobs:
   test:
     docker:
       - image: cimg/node:15.1
+        enviroment:
+          WALLET_RECOVERY_PHRASE: $WALLET_RECOVERY_PHRASE
     steps:
       - attach_workspace:
           at: ./
       - run:
           name: Test
           command: |
+            printenv WALLET_RECOVERY_PHRASE
             npx playwright install
             sudo npx playwright install-deps
             xvfb-run npm test
