@@ -40,7 +40,8 @@ jobs:
 
   test:
     docker:
-      - image: cimg/node:15.1
+      # - image: cimg/node:15.1
+      - image: mcr.microsoft.com/playwright:focal
         environment:
           WALLET_RECOVERY_PHRASE: $WALLET_RECOVERY_PHRASE
     steps:
@@ -49,8 +50,6 @@ jobs:
       - run:
           name: Test
           command: |
-            npx playwright install
-            sudo npx playwright install-deps
             xvfb-run npm test
       - persist_to_workspace:
           root: ./
