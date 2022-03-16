@@ -36,3 +36,4 @@ packages/**/*.env.development
 
 # release info
 packages/**/src/release.json
+tests/.env
