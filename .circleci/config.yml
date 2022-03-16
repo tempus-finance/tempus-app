@@ -41,7 +41,7 @@ jobs:
   test:
     docker:
       - image: cimg/node:15.1
-        enviroment:
+        environment:
           WALLET_RECOVERY_PHRASE: $WALLET_RECOVERY_PHRASE
     steps:
       - attach_workspace:
