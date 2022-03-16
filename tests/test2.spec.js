@@ -9,7 +9,8 @@ test.describe("POC tests", () => {
     var browser;
     test.beforeAll(async () => {
         test.setTimeout(120000);
-        console.log(process.env.WALLET_RECOVERY_PHRASE)
+        const nMetamaskId = extensionUrl.match(pattern)[0]
+        console.log(nMetamaskId)
         browser = await chromium.launchPersistentContext(userDataDir, {
             slowMo: 1500,
             headless: false,
