@@ -3,7 +3,7 @@ import { FC, useContext, useEffect, useMemo, useState } from 'react';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
-import { LanguageContext } from '../../context/languageContext';
+import { LocaleContext } from '../../context/localeContext';
 import { WalletContext } from '../../context/walletContext';
 import { Chain } from '../../interfaces/Chain';
 import getText from '../../localisation/getText';
@@ -24,7 +24,7 @@ const ProfitLoss: FC<ProfitLossProps> = ({ chain }) => {
   const staticPoolData = useHookState(staticPoolDataState);
 
   const { userWalletSigner } = useContext(WalletContext);
-  const { language } = useContext(LanguageContext);
+  const { locale } = useContext(LocaleContext);
 
   const [estimatedWithdrawAmount, setEstimatedWithdrawAmount] = useState<BigNumber | null>(null);
 
@@ -91,12 +91,12 @@ const ProfitLoss: FC<ProfitLossProps> = ({ chain }) => {
 
   return (
     <div className="tc__profitLoss">
-      <Typography variant="card-title">{getText('profitLoss', language)}</Typography>
+      <Typography variant="card-title">{getText('profitLoss', locale)}</Typography>
       <Spacer size={12} />
       <div className="tc__profitLoss__body">
         <div className="tf__flex-row-space-between tc__underline">
           <Typography variant="card-body-text" color="title">
-            {getText('currentValue', language)}
+            {getText('currentValue', locale)}
           </Typography>
           <div className="tf__flex-row-center-v">
             <Typography variant="card-body-text">{estimatedWithdrawAmountFormatted}</Typography>

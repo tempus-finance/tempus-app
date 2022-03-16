@@ -1,7 +1,7 @@
 import { FC, useCallback, useContext, useEffect, useState } from 'react';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { dynamicPoolDataState, selectedPoolState } from '../../state/PoolDataState';
-import { LanguageContext } from '../../context/languageContext';
+import { LocaleContext } from '../../context/localeContext';
 import { WalletContext } from '../../context/walletContext';
 import { TransactionView } from '../../interfaces/TransactionView';
 import { Chain } from '../../interfaces/Chain';
@@ -29,7 +29,7 @@ const Operations: FC<OperationsProps> = props => {
   const selectedPool = useHookState(selectedPoolState);
   const dynamicPoolData = useHookState(dynamicPoolDataState);
 
-  const { language } = useContext(LanguageContext);
+  const { locale } = useContext(LocaleContext);
   const { userWalletSigner } = useContext(WalletContext);
 
   const [selectedView, setSelectedView] = useState<TransactionView>('deposit');
@@ -92,7 +92,7 @@ const Operations: FC<OperationsProps> = props => {
         {/* Right side (Current Position, Profit/Loss) - Only visible if user has balance in the pool */}
         {!hideUserData && (
           <div className="tc__operations-poolUserStats">
-            <CurrentPosition language={language} chain={chain} />
+            <CurrentPosition locale={locale} chain={chain} />
             <ProfitLoss chain={chain} />
           </div>
         )}

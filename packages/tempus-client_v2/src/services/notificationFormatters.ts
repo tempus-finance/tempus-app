@@ -6,7 +6,8 @@ import { Ticker } from '../interfaces/Token';
 import { ProtocolName } from '../interfaces/ProtocolName';
 import { TempusPool } from '../interfaces/TempusPool';
 import { Chain, prettifyChainName } from '../interfaces/Chain';
-import getText, { Language } from '../localisation/getText';
+import { Locale } from '../interfaces/Locale';
+import getText from '../localisation/getText';
 import { capitalize } from '../utils/capitalizeString';
 import { getChainConfig } from '../utils/getConfig';
 import NumberUtils from './NumberUtils';
@@ -15,7 +16,7 @@ const { BAL_SLIPPAGE_ERROR_CODE } = CONSTANTS;
 
 interface NotificationContent {
   chain: Chain;
-  language: Language;
+  locale: Locale;
   receipt: ethers.ContractReceipt;
   userWallet: string;
   staticPoolData: TempusPool;
@@ -24,7 +25,7 @@ interface NotificationContent {
 
 export const generateNotificationInfo = (
   chain: Chain,
-  language: Language,
+  locale: Locale,
   action: string,
   actionDescription: string,
   receipt: ethers.ContractReceipt,
@@ -32,12 +33,12 @@ export const generateNotificationInfo = (
   userWallet: string,
   staticPoolData: TempusPool,
 ) => {
-  const notificationDateTime = format(new Date(), 'kk:mm:ss dd-MMMM-yyyy');
+  const notificationDateTime = format(new Date(), 'kk:mm:ss dd-MMMM-yyyy', { locale: locale.dateLocale });
   switch (action) {
     case 'Deposit':
       return getDepositNotificationContent({
         chain,
-        language,
+        locale,
         receipt,
         transaction,
         userWallet,
@@ -48,7 +49,7 @@ export const generateNotificationInfo = (
     case 'Withdraw':
       return getWithdrawNotificationContent({
         chain,
-        language,
+        locale,
         receipt,
         userWallet,
         staticPoolData,
@@ -57,7 +58,7 @@ export const generateNotificationInfo = (
     case 'Mint':
       return getMintNotificationContent({
         chain,
-        language,
+        locale,
         receipt,
         transaction,
         userWallet,
@@ -65,11 +66,11 @@ export const generateNotificationInfo = (
         notificationDateTime,
       });
     case 'Swap':
-      return getSwapNotificationContent({ chain, language, receipt, userWallet, staticPoolData, notificationDateTime });
+      return getSwapNotificationContent({ chain, locale, receipt, userWallet, staticPoolData, notificationDateTime });
     case 'Liquidity Deposit':
       return getLiquidityDepositNotificationContent({
         chain,
-        language,
+        locale,
         receipt,
         userWallet,
         staticPoolData,
@@ -78,7 +79,7 @@ export const generateNotificationInfo = (
     case 'Liquidity Withdrawal':
       return getLiquidityWithdrawalNotificationContent({
         chain,
-        language,
+        locale,
         receipt,
         userWallet,
         staticPoolData,
@@ -87,7 +88,7 @@ export const generateNotificationInfo = (
     case 'Redeem':
       return getRedeemNotificationContent({
         chain,
-        language,
+        locale,
         receipt,
         userWallet,
         staticPoolData,
@@ -96,15 +97,15 @@ export const generateNotificationInfo = (
   }
 };
 
-export const generateFailedTransactionInfo = (chain: Chain, language: Language, poolData: TempusPool, error: any) => {
+export const generateFailedTransactionInfo = (chain: Chain, locale: Locale, poolData: TempusPool, error: any) => {
   let failReason = '';
   if (error?.data?.message?.includes(BAL_SLIPPAGE_ERROR_CODE)) {
-    failReason = `${getText('slippageError', language)}\n\n`;
+    failReason = `${getText('slippageError', locale)}\n\n`;
   }
 
   return `${failReason}${generatePoolNotificationInfo(
     chain,
-    language,
+    locale,
     poolData.backingToken,
     poolData.protocol,
     new Date(poolData.maturityDate),
@@ -125,20 +126,20 @@ export const generateEtherscanLink = (tx: string, chainName: Chain) => {
 
 export const generatePoolNotificationInfo = (
   chain: Chain,
-  language: Language,
+  locale: Locale,
   ticker: Ticker,
   protocol: ProtocolName,
   maturityDate: Date,
 ) => {
-  const notificationDateTime = format(new Date(), 'kk:mm:ss dd-MMMM-yyyy');
+  const notificationDateTime = format(new Date(), 'kk:mm:ss dd-MMMM-yyyy', { locale: locale.dateLocale });
   return `${notificationDateTime}
-  ${prettifyChainName(chain)} - ${ticker} ${getText('via', language)} ${capitalize(protocol)}
-  ${getText('maturityXxx', language, { date: format(maturityDate, 'dd MMMM yyyy') })}`;
+  ${prettifyChainName(chain)} - ${ticker} ${getText('via', locale)} ${capitalize(protocol)}
+  ${getText('maturityXxx', locale, { date: format(maturityDate, 'dd MMMM yyyy', { locale: locale.dateLocale }) })}`;
 };
 
 export const getTokenApprovalNotification = (
   chain: Chain,
-  language: Language,
+  locale: Locale,
   tokenApproved: Ticker,
   backingToken: Ticker,
   protocol: ProtocolName,
@@ -146,17 +147,17 @@ export const getTokenApprovalNotification = (
 ) => {
   // Quick fix to show Capitals instead of Principals in the notification
   // TODO - Properly change Principals to Capitals in the Token interface.
-  const notificationDateTime = format(new Date(), 'kk:mm:ss dd-MMMM-yyyy');
+  const notificationDateTime = format(new Date(), 'kk:mm:ss dd-MMMM-yyyy', { locale: locale.dateLocale });
 
   return `${notificationDateTime}
   ${prettifyChainName(chain)} - ${tokenApproved === 'Principals' ? 'Capitals' : tokenApproved}
-    ${backingToken} ${getText('via', language)} ${capitalize(protocol)}
-    ${getText('maturity', language)} ${format(maturityDate, 'dd MMMM yyyy')}`;
+    ${backingToken} ${getText('via', locale)} ${capitalize(protocol)}
+    ${getText('maturity', locale)} ${format(maturityDate, 'dd MMMM yyyy', { locale: locale.dateLocale })}`;
 };
 
 const getDepositNotificationContent = ({
   chain,
-  language,
+  locale,
   receipt,
   transaction,
   userWallet,
@@ -226,27 +227,27 @@ const getDepositNotificationContent = ({
 
   if (actionDescription === 'Fixed Yield') {
     return `${notificationDateTime}
-    ${tokenSentAmountFormatted} ${tokenSentTicker} ${getText('to', language)}
-    ${getText('xxxPrincipals', language, { token: principalsReceivedFormatted })}
+    ${tokenSentAmountFormatted} ${tokenSentTicker} ${getText('to', locale)}
+    ${getText('xxxPrincipals', locale, { token: principalsReceivedFormatted })}
     ${actionDescription}
   
     ${generatePoolNotificationInfo(
       chain,
-      language,
+      locale,
       staticPoolData.backingToken,
       staticPoolData.protocol,
       new Date(staticPoolData.maturityDate),
     )}`;
   } else if (actionDescription === 'Variable Yield') {
     return `${notificationDateTime}
-    ${tokenSentAmountFormatted} ${tokenSentTicker} ${getText('to', language)}
-    ${getText('xxxPrincipals', language, { token: principalsReceivedFormatted })} ${getText('and', language)}
-    ${getText('xxxLpTokens', language, { token: lpTokensReceivedFormatted })}
+    ${tokenSentAmountFormatted} ${tokenSentTicker} ${getText('to', locale)}
+    ${getText('xxxPrincipals', locale, { token: principalsReceivedFormatted })} ${getText('and', locale)}
+    ${getText('xxxLpTokens', locale, { token: lpTokensReceivedFormatted })}
     ${actionDescription}
 
     ${generatePoolNotificationInfo(
       chain,
-      language,
+      locale,
       staticPoolData.backingToken,
       staticPoolData.protocol,
       new Date(staticPoolData.maturityDate),
@@ -256,7 +257,7 @@ const getDepositNotificationContent = ({
 
 const getWithdrawNotificationContent = ({
   chain,
-  language,
+  locale,
   receipt,
   userWallet,
   staticPoolData,
@@ -324,14 +325,14 @@ const getWithdrawNotificationContent = ({
   );
 
   return `${notificationDateTime}
-  ${getText('xxxPrincipals', language, { token: principalsSentFormatted })},
-  ${getText('xxxYields', language, { token: yieldsSentFormatted })},
-  ${getText('xxxLpTokens', language, { token: lpTokensSentFormatted })} ${getText('to', language)}
+  ${getText('xxxPrincipals', locale, { token: principalsSentFormatted })},
+  ${getText('xxxYields', locale, { token: yieldsSentFormatted })},
+  ${getText('xxxLpTokens', locale, { token: lpTokensSentFormatted })} ${getText('to', locale)}
   ${tokensReceivedFormatted} ${tokenReceivedTicker}
 
   ${generatePoolNotificationInfo(
     chain,
-    language,
+    locale,
     staticPoolData.backingToken,
     staticPoolData.protocol,
     new Date(staticPoolData.maturityDate),
@@ -343,7 +344,7 @@ const getWithdrawNotificationContent = ({
  */
 const getMintNotificationContent = ({
   chain,
-  language,
+  locale,
   receipt,
   transaction,
   userWallet,
@@ -411,13 +412,13 @@ const getMintNotificationContent = ({
   );
 
   return `${notificationDateTime}
-  ${tokenSentAmountFormatted} ${tokenSentTicker} ${getText('to', language)}
-  ${getText('xxxPrincipals', language, { token: principalsMintedFormatted })} ${getText('and', language)}
-  ${getText('xxxYields', language, { token: yieldsMintedFormatted })}
+  ${tokenSentAmountFormatted} ${tokenSentTicker} ${getText('to', locale)}
+  ${getText('xxxPrincipals', locale, { token: principalsMintedFormatted })} ${getText('and', locale)}
+  ${getText('xxxYields', locale, { token: yieldsMintedFormatted })}
 
   ${generatePoolNotificationInfo(
     chain,
-    language,
+    locale,
     staticPoolData.backingToken,
     staticPoolData.protocol,
     new Date(staticPoolData.maturityDate),
@@ -429,7 +430,7 @@ const getMintNotificationContent = ({
  */
 const getSwapNotificationContent = ({
   chain,
-  language,
+  locale,
   receipt,
   userWallet,
   staticPoolData,
@@ -489,12 +490,12 @@ const getSwapNotificationContent = ({
   );
 
   return `${notificationDateTime}
-  ${tokenSentValueFormatted} ${tokenSentTicker} ${getText('to', language)}
+  ${tokenSentValueFormatted} ${tokenSentTicker} ${getText('to', locale)}
   ${tokenReceivedValueFormatted} ${tokenReceivedTicker}
 
   ${generatePoolNotificationInfo(
     chain,
-    language,
+    locale,
     staticPoolData.backingToken,
     staticPoolData.protocol,
     new Date(staticPoolData.maturityDate),
@@ -503,7 +504,7 @@ const getSwapNotificationContent = ({
 
 const getLiquidityDepositNotificationContent = ({
   chain,
-  language,
+  locale,
   receipt,
   userWallet,
   staticPoolData,
@@ -550,13 +551,13 @@ const getLiquidityDepositNotificationContent = ({
   );
 
   return `${notificationDateTime}
-  ${getText('xxxPrincipals', language, { token: amountOfPrincipalsSentFormatted })} ${getText('and', language)}
-  ${getText('xxxYields', language, { token: amountOfYieldsSentFormatted })} ${getText('to', language)}
-  ${getText('xxxLpTokens', language, { token: amountOfLPTokensReceivedFormatted })}
+  ${getText('xxxPrincipals', locale, { token: amountOfPrincipalsSentFormatted })} ${getText('and', locale)}
+  ${getText('xxxYields', locale, { token: amountOfYieldsSentFormatted })} ${getText('to', locale)}
+  ${getText('xxxLpTokens', locale, { token: amountOfLPTokensReceivedFormatted })}
 
   ${generatePoolNotificationInfo(
     chain,
-    language,
+    locale,
     staticPoolData.backingToken,
     staticPoolData.protocol,
     new Date(staticPoolData.maturityDate),
@@ -565,7 +566,7 @@ const getLiquidityDepositNotificationContent = ({
 
 const getLiquidityWithdrawalNotificationContent = ({
   chain,
-  language,
+  locale,
   receipt,
   userWallet,
   staticPoolData,
@@ -614,13 +615,13 @@ const getLiquidityWithdrawalNotificationContent = ({
   );
 
   return `${notificationDateTime}
-  ${getText('xxxLpTokens', language, { token: amountOfLPTokensSentFormatted })} ${getText('to', language)}
-  ${getText('xxxPrincipals', language, { token: amountOfPrincipalsReceivedFormatted })} ${getText('and', language)}
-  ${getText('xxxYields', language, { token: amountOfYieldsReceivedFormatted })}
+  ${getText('xxxLpTokens', locale, { token: amountOfLPTokensSentFormatted })} ${getText('to', locale)}
+  ${getText('xxxPrincipals', locale, { token: amountOfPrincipalsReceivedFormatted })} ${getText('and', locale)}
+  ${getText('xxxYields', locale, { token: amountOfYieldsReceivedFormatted })}
 
   ${generatePoolNotificationInfo(
     chain,
-    language,
+    locale,
     staticPoolData.backingToken,
     staticPoolData.protocol,
     new Date(staticPoolData.maturityDate),
@@ -629,7 +630,7 @@ const getLiquidityWithdrawalNotificationContent = ({
 
 const getRedeemNotificationContent = ({
   chain,
-  language,
+  locale,
   receipt,
   userWallet,
   staticPoolData,
@@ -674,15 +675,15 @@ const getRedeemNotificationContent = ({
   );
 
   return `${notificationDateTime}
-  ${getText('xxxPrincipals', language, { token: primitivesSentFormatted })} ${getText('to', language)} ${getText(
+  ${getText('xxxPrincipals', locale, { token: primitivesSentFormatted })} ${getText('to', locale)} ${getText(
     'yields',
-    language,
-  )} ${getText('to', language)}
+    locale,
+  )} ${getText('to', locale)}
   ${tokensReceivedFormatted} ${tokenReceivedTicker}
   
   ${generatePoolNotificationInfo(
     chain,
-    language,
+    locale,
     staticPoolData.backingToken,
     staticPoolData.protocol,
     new Date(staticPoolData.maturityDate),

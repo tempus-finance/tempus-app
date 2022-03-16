@@ -1,7 +1,7 @@
 import { useCallback, useState, useRef, useContext } from 'react';
 import { Divider, Popper } from '@material-ui/core';
 import KeyboardArrowDown from '@material-ui/icons/KeyboardArrowDown';
-import { LanguageContext } from '../../context/languageContext';
+import { LocaleContext } from '../../context/localeContext';
 import getText from '../../localisation/getText';
 import Languages from './Languages';
 import Slippage from './Slippage';
@@ -11,7 +11,7 @@ import Typography from '../typography/Typography';
 import './Settings.scss';
 
 const Settings = () => {
-  const { language } = useContext(LanguageContext);
+  const { locale } = useContext(LocaleContext);
 
   const settingsMenuAnchor = useRef<HTMLLIElement>(null);
 
@@ -24,7 +24,7 @@ const Settings = () => {
   return (
     <li ref={settingsMenuAnchor}>
       <Button onClick={toggleSettingsMenu}>
-        <Typography variant="dropdown-text">{getText('settings', language)}</Typography>
+        <Typography variant="dropdown-text">{getText('settings', locale)}</Typography>
         <KeyboardArrowDown />
       </Button>
       <Popper

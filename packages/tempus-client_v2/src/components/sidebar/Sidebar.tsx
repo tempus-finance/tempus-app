@@ -4,7 +4,7 @@ import { Tooltip } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import getSidebarDataAdapter from '../../adapters/getSidebarDataAdapter';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
-import { LanguageContext } from '../../context/languageContext';
+import { LocaleContext } from '../../context/localeContext';
 import getText from '../../localisation/getText';
 import Words from '../../localisation/words';
 import { TransactionView } from '../../interfaces/TransactionView';
@@ -40,7 +40,7 @@ const Sidebar: FC<SidebarProps> = ({ initialView, chain, onSelectedView }) => {
   const staticPoolData = useHookState(staticPoolDataState);
   const dynamicPoolData = useHookState(dynamicPoolDataState);
 
-  const { language } = useContext(LanguageContext);
+  const { locale } = useContext(LocaleContext);
 
   const [selectedView, setSelectedView] = useState<TransactionView | null>(null);
 
@@ -150,9 +150,9 @@ const Sidebar: FC<SidebarProps> = ({ initialView, chain, onSelectedView }) => {
 
   return (
     <div className="tc__sidebar-container">
-      <Link to="/" title={getText('backToDashboard', language)} className="tc__sidebar-section-breadcrumbs">
+      <Link to="/" title={getText('backToDashboard', locale)} className="tc__sidebar-section-breadcrumbs">
         <Typography variant="breadcrumbs" color="title">
-          {getText('allPools', language)}
+          {getText('allPools', locale)}
         </Typography>
       </Link>
       <Spacer size={12} />
@@ -171,10 +171,10 @@ const Sidebar: FC<SidebarProps> = ({ initialView, chain, onSelectedView }) => {
       {/* Basic Section */}
       <div className="tc__sidebar-section-title">
         <Typography variant="h5" color="title">
-          {getText('basic', language)}
+          {getText('basic', locale)}
         </Typography>
         <Typography variant="sub-title" color="title">
-          {getText('basicSubTitle', language)}
+          {getText('basicSubTitle', locale)}
         </Typography>
       </div>
       {basicViews.map((basicViewName: TransactionView) => {
@@ -189,10 +189,10 @@ const Sidebar: FC<SidebarProps> = ({ initialView, chain, onSelectedView }) => {
         const selected = selectedView === basicViewName;
 
         return disabledReason ? (
-          <Tooltip key={basicViewName} title={getText(disabledReason, language)}>
+          <Tooltip key={basicViewName} title={getText(disabledReason, locale)}>
             <div className="tc__sidebar-view-item disabled">
               <Typography variant="h5" color="title">
-                {getText(basicViewName, language)}
+                {getText(basicViewName, locale)}
               </Typography>
             </div>
           </Tooltip>
@@ -203,7 +203,7 @@ const Sidebar: FC<SidebarProps> = ({ initialView, chain, onSelectedView }) => {
             onClick={() => onItemClick(basicViewName)}
           >
             <Typography variant="h5" color={selected ? 'inverted' : 'default'}>
-              {getText(basicViewName, language)}
+              {getText(basicViewName, locale)}
             </Typography>
           </Button>
         );
@@ -212,10 +212,10 @@ const Sidebar: FC<SidebarProps> = ({ initialView, chain, onSelectedView }) => {
       {/* Advanced Section */}
       <div className="tc__sidebar-section-title">
         <Typography variant="h5" color="title">
-          {getText('advanced', language)}
+          {getText('advanced', locale)}
         </Typography>
         <Typography variant="sub-title" color="title">
-          {getText('advancedSubTitle', language)}
+          {getText('advancedSubTitle', locale)}
         </Typography>
       </div>
       {advancedViews.map(advancedViewName => {
@@ -236,10 +236,10 @@ const Sidebar: FC<SidebarProps> = ({ initialView, chain, onSelectedView }) => {
         const selected = selectedView === advancedViewName;
 
         return disabledReason ? (
-          <Tooltip key={advancedViewName} title={getText(disabledReason, language)}>
+          <Tooltip key={advancedViewName} title={getText(disabledReason, locale)}>
             <div className="tc__sidebar-view-item disabled">
               <Typography variant="h5" color="title">
-                {getText(advancedViewName, language)}
+                {getText(advancedViewName, locale)}
               </Typography>
             </div>
           </Tooltip>
@@ -250,14 +250,14 @@ const Sidebar: FC<SidebarProps> = ({ initialView, chain, onSelectedView }) => {
             onClick={() => onItemClick(advancedViewName)}
           >
             <Typography variant="h5" color={selected ? 'inverted' : 'default'}>
-              {getText(advancedViewName, language)}
+              {getText(advancedViewName, locale)}
             </Typography>
           </Button>
         );
       })}
       <div className="tc__sidebar-section-footer">
         <Typography variant="breadcrumbs" color="title" className="tc__sidebar-section-contract-addr">
-          {getText('contractAddresses', language)}
+          {getText('contractAddresses', locale)}
           <InfoTooltip
             placement="top-start"
             content={
@@ -272,9 +272,9 @@ const Sidebar: FC<SidebarProps> = ({ initialView, chain, onSelectedView }) => {
             Gitbook
           </Typography>
         </ExternalLink>
-        <ExternalLink href="https://tempus.finance/terms-of-service" title={getText('termsAndConditions', language)}>
+        <ExternalLink href="https://tempus.finance/terms-of-service" title={getText('termsAndConditions', locale)}>
           <Typography variant="breadcrumbs" color="title">
-            {getText('termsAndConditions', language)}
+            {getText('termsAndConditions', locale)}
           </Typography>
         </ExternalLink>
       </div>

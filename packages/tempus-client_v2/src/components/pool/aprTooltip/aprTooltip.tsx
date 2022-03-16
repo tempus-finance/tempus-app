@@ -2,7 +2,7 @@ import { FC, useContext, useEffect, useMemo, useState } from 'react';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../../state/PoolDataState';
 import getPoolDataAdapter from '../../../adapters/getPoolDataAdapter';
-import { LanguageContext } from '../../../context/languageContext';
+import { LocaleContext } from '../../../context/localeContext';
 import { WalletContext } from '../../../context/walletContext';
 import getText from '../../../localisation/getText';
 import NumberUtils from '../../../services/NumberUtils';
@@ -21,7 +21,7 @@ const AprTooltip: FC<AprTooltipProps> = ({ chain }) => {
   const dynamicPoolData = useHookState(dynamicPoolDataState);
 
   const { userWalletSigner } = useContext(WalletContext);
-  const { language } = useContext(LanguageContext);
+  const { locale } = useContext(LocaleContext);
 
   const [poolRatio, setPoolRatio] = useState<number[] | null>(null);
 
@@ -89,26 +89,26 @@ const AprTooltip: FC<AprTooltipProps> = ({ chain }) => {
     <div className="tc__aprTooltip">
       <div className="tc__aprTooltip-row">
         <Typography variant="card-body-text" color="title">
-          {getText('fixedApr', language)}
+          {getText('fixedApr', locale)}
         </Typography>
         <Typography variant="card-body-text">{futureAprFormatted}</Typography>
       </div>
       <hr />
       {/* <div className="tc__aprTooltip-row">
         <Typography variant="card-body-text" color="title">
-          {getText('lifeTimeApr', language)}
+          {getText('lifeTimeApr', locale)}
         </Typography>
         <Typography variant="card-body-text">{lifetimeAprFormatted}</Typography>
       </div> */}
       {/* <div className="tc__aprTooltip-row">
         <Typography variant="card-body-text" color="title">
-          {getText('lifeTimeYield', language)}
+          {getText('lifeTimeYield', locale)}
         </Typography>
         <Typography variant="card-body-text">{lifetimeYieldFormatted}</Typography>
       </div> */}
       <div className="tc__aprTooltip-row">
         <Typography variant="card-body-text" color="title">
-          {getText('poolRatio', language)}
+          {getText('poolRatio', locale)}
         </Typography>
         <div className="tc__aprPoolRation">
           <Typography variant="fractional">{principalsPoolRatio}</Typography>

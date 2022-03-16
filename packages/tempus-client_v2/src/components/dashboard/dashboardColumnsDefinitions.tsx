@@ -1,19 +1,20 @@
 import { Column } from '@devexpress/dx-react-grid';
 import { DashboardRowChild, DashboardRowParent, isParentRow } from '../../interfaces/DashboardRow';
-import getText, { Language } from '../../localisation/getText';
+import { Locale } from '../../interfaces/Locale';
+import getText from '../../localisation/getText';
 
 export interface ExtraDataColumn extends Column {
   tooltip?: string;
 }
 
-export const dashboardColumnsDefinitions = (language: Language): ExtraDataColumn[] => [
+export const dashboardColumnsDefinitions = (locale: Locale): ExtraDataColumn[] => [
   {
     name: 'token',
-    title: getText('asset', language),
+    title: getText('asset', locale),
   },
   {
     name: 'protocol',
-    title: getText('protocol', language),
+    title: getText('protocol', locale),
     // TODO - Hide protocol icons from children that are hidden
     getCellValue: (row: DashboardRowChild | DashboardRowParent) => {
       if (isParentRow(row)) {
@@ -25,26 +26,26 @@ export const dashboardColumnsDefinitions = (language: Language): ExtraDataColumn
   },
   {
     name: 'maturity',
-    title: getText('maturity', language),
+    title: getText('maturity', locale),
   },
   {
     name: 'fixedAPR',
-    title: getText('fixedApr', language),
+    title: getText('fixedApr', locale),
   },
   // {
   //   name: 'variableAPY',
-  //   title: getText('lpApr', language),
+  //   title: getText('lpApr', locale),
   // },
   {
     name: 'TVL',
-    title: getText('tvl', language),
+    title: getText('tvl', locale),
   },
   {
     name: 'presentValue',
-    title: getText('balance', language),
+    title: getText('balance', locale),
   },
   {
     name: 'availableToDeposit',
-    title: getText('availableToDeposit', language),
+    title: getText('availableToDeposit', locale),
   },
 ];

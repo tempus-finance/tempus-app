@@ -8,7 +8,7 @@ import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core';
 import { InjectedConnector } from '@web3-react/injected-connector';
 import { UserRejectedRequestError, WalletConnectConnector } from '@web3-react/walletconnect-connector';
 import { CircularProgress } from '@material-ui/core';
-import { LanguageContext } from '../../context/languageContext';
+import { LocaleContext } from '../../context/localeContext';
 import { TokenBalanceContext } from '../../context/tokenBalanceContext';
 import { PendingTransactionsContext } from '../../context/pendingTransactionsContext';
 import { UserSettingsContext } from '../../context/userSettingsContext';
@@ -43,7 +43,7 @@ const WALLET_KEY = 'lastConnectedWallet';
 const Wallet = () => {
   const { account, activate, deactivate, active, library } = useWeb3React<Web3Provider>();
 
-  const { language } = useContext(LanguageContext);
+  const { locale } = useContext(LocaleContext);
   const { tokenBalance } = useContext(TokenBalanceContext);
   const { userWalletChain, setWalletData } = useContext(WalletContext);
   const { pendingTransactions } = useContext(PendingTransactionsContext);
@@ -229,7 +229,7 @@ const Wallet = () => {
         const shouldThrowErrors = true;
         await activate(injectedConnector, onError, shouldThrowErrors);
         if (showWalletConnectedNotification) {
-          chain && getNotificationService().notify(chain, 'Wallet', getText('metamaskConnected', language), '');
+          chain && getNotificationService().notify(chain, 'Wallet', getText('metamaskConnected', locale), '');
         }
 
         // User accepted network change request - return true
@@ -242,8 +242,8 @@ const Wallet = () => {
             getNotificationService().warn(
               chain,
               'Wallet',
-              getText('changeNetworkRejected', language),
-              getText('changeNetworkRejectedExplain', language),
+              getText('changeNetworkRejected', locale),
+              getText('changeNetworkRejectedExplain', locale),
             );
           // Network we tried to switch to is not yet added to MetaMask
         } else if ((error as any).code === 4902) {
@@ -253,8 +253,8 @@ const Wallet = () => {
             getNotificationService().warn(
               chain,
               'Wallet',
-              getText('unsupportedNetwork', language),
-              getText('unsupportedNetworkExplain', language),
+              getText('unsupportedNetwork', locale),
+              getText('unsupportedNetworkExplain', locale),
             );
         }
 
@@ -262,7 +262,7 @@ const Wallet = () => {
         return false;
       }
     },
-    [language, activate],
+    [locale, activate],
   );
 
   const onMetaMaskSelected = useCallback(
@@ -285,7 +285,7 @@ const Wallet = () => {
           getStorageService().set(WALLET_KEY, 'MetaMask');
           setSelectedWallet('MetaMask');
           if (showWalletConnectedNotification && chain) {
-            getNotificationService().notify(chain, 'Wallet', getText('metamaskConnected', language), '');
+            getNotificationService().notify(chain, 'Wallet', getText('metamaskConnected', locale), '');
           }
         } catch (error) {
           setSelectedWallet(null);
@@ -293,7 +293,7 @@ const Wallet = () => {
           if (error instanceof UnsupportedChainIdError) {
             unsupportedNetwork.set(true);
           } else {
-            chain && getNotificationService().warn(chain, 'Wallet', getText('errorConnectingWallet', language), '');
+            chain && getNotificationService().warn(chain, 'Wallet', getText('errorConnectingWallet', locale), '');
           }
         }
         setConnecting(false);
@@ -302,7 +302,7 @@ const Wallet = () => {
       setConnecting(true);
       connect(lastSelectedWallet);
     },
-    [language, active, activate, deactivate, unsupportedNetwork],
+    [locale, active, activate, deactivate, unsupportedNetwork],
   );
 
   const onWalletConnectSelected = useCallback(
@@ -351,7 +351,7 @@ const Wallet = () => {
           chain = chainIdToChainName(parsedChainId);
 
           if (showWalletConnectedNotification && chain) {
-            getNotificationService().notify(chain, 'Wallet', getText('walletConnectConnected', language), '');
+            getNotificationService().notify(chain, 'Wallet', getText('walletConnectConnected', locale), '');
           }
         } catch (error) {
           if (error instanceof UserRejectedRequestError) {
@@ -369,7 +369,7 @@ const Wallet = () => {
           if (error instanceof UnsupportedChainIdError) {
             unsupportedNetwork.set(true);
           } else {
-            chain && getNotificationService().warn(chain, 'Wallet', getText('errorConnectingWallet', language), '');
+            chain && getNotificationService().warn(chain, 'Wallet', getText('errorConnectingWallet', locale), '');
           }
         }
         setConnecting(false);
@@ -378,7 +378,7 @@ const Wallet = () => {
       setConnecting(true);
       connect(lastSelectedWallet);
     },
-    [language, active, activate, deactivate, unsupportedNetwork, onMetaMaskSelected],
+    [locale, active, activate, deactivate, unsupportedNetwork, onMetaMaskSelected],
   );
 
   const onCloseWalletSelector = useCallback(
@@ -579,7 +579,7 @@ const Wallet = () => {
         {/* Wallet not connected - show connect wallet button */}
         {!connecting && !selectedWallet && !isUnsupportedNetwork && (
           <Button className="tc__connect-wallet-button" onClick={onSelectWallet}>
-            <Typography variant="button-text">{getText('connectWallet', language)}</Typography>
+            <Typography variant="button-text">{getText('connectWallet', locale)}</Typography>
           </Button>
         )}
 
@@ -625,7 +625,7 @@ const Wallet = () => {
                 {/* In case there are pending transactions, show number of pending transactions */}
                 {pendingTransactions.length > 0 && (
                   <Typography variant="h5">
-                    {getText('xxxPending', language, { count: pendingTransactions.length })}
+                    {getText('xxxPending', locale, { count: pendingTransactions.length })}
                   </Typography>
                 )}
               </Button>
@@ -644,7 +644,7 @@ const Wallet = () => {
               <WarnIcon />
             </div>
             <div className="tc__connect-wallet-button">
-              <Typography variant="button-text">{getText('unsupported', language)}</Typography>
+              <Typography variant="button-text">{getText('unsupported', locale)}</Typography>
             </div>
           </InfoTooltip>
         )}

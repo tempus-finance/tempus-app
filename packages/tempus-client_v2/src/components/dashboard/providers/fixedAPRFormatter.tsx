@@ -13,12 +13,12 @@ import {
   StaticPoolDataMap,
 } from '../../../state/PoolDataState';
 import getText from '../../../localisation/getText';
-import { LanguageContext } from '../../../context/languageContext';
+import { LocaleContext } from '../../../context/localeContext';
 
 const { ZERO } = CONSTANTS;
 
 const FixedAPRFormatter = ({ row }: any) => {
-  const { language } = useContext(LanguageContext);
+  const { locale } = useContext(LocaleContext);
 
   const dynamicPoolData = useHookState(dynamicPoolDataState).attach(Downgraded).get();
   const staticPoolData = useHookState(staticPoolDataState).attach(Downgraded).get();
@@ -49,7 +49,7 @@ const FixedAPRFormatter = ({ row }: any) => {
     return (
       <div className="tf__dashboard__body__apy">
         <Typography color="default" variant="body-text">
-          {getText('upTo', language)}&nbsp;
+          {getText('upTo', locale)}&nbsp;
         </Typography>
         <Typography variant="body-text">{NumberUtils.formatPercentage(apr, 2)}</Typography>
       </div>

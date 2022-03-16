@@ -1,7 +1,7 @@
 import { FC, useCallback, useContext, useEffect, useState } from 'react';
 import { TableTreeColumn } from '@devexpress/dx-react-grid-material-ui';
 import Button from '@material-ui/core/Button';
-import { LanguageContext } from '../../../context/languageContext';
+import { LocaleContext } from '../../../context/localeContext';
 import getText from '../../../localisation/getText';
 import Typography from '../../typography/Typography';
 import Spacer from '../../spacer/spacer';
@@ -28,7 +28,7 @@ type TokenButtonOutProps = {
 type TokenButtonProps = TokenButtonInProps & TokenButtonOutProps;
 
 const TokenButton: FC<TokenButtonProps> = (props: TokenButtonProps) => {
-  const { language } = useContext(LanguageContext);
+  const { locale } = useContext(LocaleContext);
 
   const { children, expandedRows, tableRow, row, isWalletConnected, actionHandler } = props;
   const { rowId } = tableRow;
@@ -86,7 +86,7 @@ const TokenButton: FC<TokenButtonProps> = (props: TokenButtonProps) => {
           {isWalletConnected && (
             <Button title="Manage" size="small" onClick={onClick}>
               <Typography color="inverted" variant="h5">
-                {getText('manage', language)}
+                {getText('manage', locale)}
               </Typography>
             </Button>
           )}

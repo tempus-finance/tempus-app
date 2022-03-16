@@ -6,7 +6,7 @@ import getTokenPrecision from '../../utils/getTokenPrecision';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
 import { staticChainDataState } from '../../state/ChainState';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
-import { LanguageContext } from '../../context/languageContext';
+import { LocaleContext } from '../../context/localeContext';
 import { WalletContext } from '../../context/walletContext';
 import getText from '../../localisation/getText';
 import NumberUtils from '../../services/NumberUtils';
@@ -34,7 +34,7 @@ const Pool: FC<PoolProps> = ({ chain }) => {
   const staticChainData = useHookState(staticChainDataState);
 
   const { userWalletSigner } = useContext(WalletContext);
-  const { language } = useContext(LanguageContext);
+  const { locale } = useContext(LocaleContext);
 
   const [fixedAPRChangePercentage, setFixedAPRChangePercentage] = useState<number | null>(null);
   const [tvlChangePercentage, setTVLChangePercentage] = useState<BigNumber | null>(null);
@@ -159,12 +159,12 @@ const Pool: FC<PoolProps> = ({ chain }) => {
 
   return (
     <div className="tc__pool">
-      <Typography variant="card-title">{getText('pool', language)}</Typography>
+      <Typography variant="card-title">{getText('pool', locale)}</Typography>
       <div className="tc__pool__body">
         <div className="tc__pool__body__item">
           <div className="tc__pool__body__item-title">
             <Typography variant="card-body-text" color="title">
-              {getText('fixedApr', language)}
+              {getText('fixedApr', locale)}
             </Typography>
             <Spacer size={5} />
             <InfoTooltip content={<AprTooltip chain={chain} />}>
@@ -181,7 +181,7 @@ const Pool: FC<PoolProps> = ({ chain }) => {
         <div className="tc__pool__body__item">
           <div className="tc__pool__body__item-title">
             <Typography variant="card-body-text" color="title">
-              {getText('totalValueLocked', language)}
+              {getText('totalValueLocked', locale)}
             </Typography>
           </div>
           {tvlChangePercentageFormatted && <PercentageLabel percentage={tvlChangePercentageFormatted} />}
@@ -192,7 +192,7 @@ const Pool: FC<PoolProps> = ({ chain }) => {
         <div className="tc__pool__body__item">
           <div className="tc__pool__body__item-title">
             <Typography variant="card-body-text" color="title">
-              {getText('fees', language)}
+              {getText('fees', locale)}
             </Typography>
             <Spacer size={5} />
             <InfoTooltip content={<FeesTooltip chain={chain} />}>
