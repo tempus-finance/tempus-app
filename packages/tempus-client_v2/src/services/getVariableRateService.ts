@@ -1,10 +1,10 @@
 import { JsonRpcSigner } from '@ethersproject/providers';
 import { Vaults as RariVault } from 'rari-sdk';
+import { getProviderFromSignerOrProvider } from 'tempus-core-services';
 import getTempusPoolService from '../services/getTempusPoolService';
 import getTempusAMMService from '../services/getTempusAMMService';
 import getVaultService from '../services/getVaultService';
 import { getChainConfig } from '../utils/getConfig';
-import getProviderFromSignerOrProvider from '../utils/getProviderFromSignerOrProvider';
 import { Chain } from '../interfaces/Chain';
 import VariableRateService from './VariableRateService';
 import getDefaultProvider from './getDefaultProvider';
