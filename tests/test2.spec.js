@@ -12,6 +12,10 @@ test.describe("POC tests", () => {
         browser = await chromium.launchPersistentContext(userDataDir, {
             slowMo: 1500,
             headless: false,
+            viewport: {
+                width: 1500,
+                height: 1000
+            },
             args: [
                 `--disable-extensions-except=${pathToExtension}`,
                 `--load-extension=${pathToExtension}`
@@ -64,7 +68,7 @@ test.describe("POC tests", () => {
         await metamaskTab.locator('text=I Agree').click();
         await metamaskTab.fill('id=password', metamaskPassword)
         await metamaskTab.fill('id=confirm-password', metamaskPassword)
-        await metamaskTab.fill('[placeholder="Enter your Secret Recovery Phrase"]', recoveryPhrase)
+        await metamaskTab.fill('[placeholder="Enter your Secret Recovery Phrase"]', process.env.WALLET_RECOVERY_PHRASE)
         await metamaskTab.locator('[class*="first-time-flow__terms"]').check()
         await metamaskTab.locator('button:has-text("Import")').click();
         await metamaskTab.locator('button:has-text("All Done")').click();
