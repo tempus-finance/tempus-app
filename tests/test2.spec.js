@@ -9,7 +9,6 @@ test.describe("POC tests", () => {
     var browser;
     test.beforeAll(async () => {
         test.setTimeout(120000);
-        console.log(nMetamaskId)
         browser = await chromium.launchPersistentContext(userDataDir, {
             slowMo: 1500,
             headless: false,
@@ -67,10 +66,10 @@ test.describe("POC tests", () => {
         await metamaskTab.click('text=Details')
         const extensionUrl = await metamaskTab.url()
 
-        //console.log(extensionUrl)
+        console.log(extensionUrl)
         const pattern = /(?<==).*/
         const nMetamaskId = extensionUrl.match(pattern)[0]
-
+        console.log(nMetamaskId)
         await metamaskTab.waitForTimeout(10000)
         await metamaskTab.goto(`chrome-extension://${nMetamaskId}/home.html#unlock`)
         await metamaskTab.locator('text=Get Started').click();
