@@ -50,7 +50,7 @@ test.describe("POC tests", () => {
         await changeNetwork("Fantom")
     })
 
-    test('Change to ETH network', async () => {
+    test.skip('Change to ETH network', async () => {
         await changeNetwork("Ethereum")
     })
 
