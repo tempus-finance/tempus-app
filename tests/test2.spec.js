@@ -9,7 +9,6 @@ test.describe("POC tests", () => {
     var browser;
     test.beforeAll(async () => {
         test.setTimeout(120000);
-        const nMetamaskId = extensionUrl.match(pattern)[0]
         console.log(nMetamaskId)
         browser = await chromium.launchPersistentContext(userDataDir, {
             slowMo: 1500,
@@ -62,8 +61,18 @@ test.describe("POC tests", () => {
 
     async function loginToMetamask(browser) {
         const metamaskTab = await browser.newPage()
+
+        await metamaskTab.goto('chrome://extensions')
+        await metamaskTab.fill('input[id="searchInput"]', 'MetaMask')
+        await metamaskTab.click('text=Details')
+        const extensionUrl = await metamaskTab.url()
+
+        //console.log(extensionUrl)
+        const pattern = /(?<==).*/
+        const nMetamaskId = extensionUrl.match(pattern)[0]
+
         await metamaskTab.waitForTimeout(10000)
-        await metamaskTab.goto(`chrome-extension://${metamaskId}/home.html#unlock`)
+        await metamaskTab.goto(`chrome-extension://${nMetamaskId}/home.html#unlock`)
         await metamaskTab.locator('text=Get Started').click();
         await metamaskTab.bringToFront()
         await metamaskTab.locator('text=Import wallet').click();
