@@ -52,6 +52,14 @@ const FixedAPRFormatter = ({ row }: any) => {
     );
   }
 
+  const maturityDate = staticPoolData[row.id].maturityDate;
+
+  // If pool is mature we want to hide APR by showing placeholder dash '-'
+  const poolIsMature = maturityDate < Date.now();
+  if (poolIsMature) {
+    return <Typography variant="body-text">-</Typography>;
+  }
+
   // If it's a child row
   return (
     <div className="tf__dashboard__body__apy">
