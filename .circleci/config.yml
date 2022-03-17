@@ -38,9 +38,22 @@ jobs:
           paths:
             - ./
 
-  test:
+unit-test:
     docker:
-      # - image: cimg/node:15.1
+      - image: cimg/node:15.1
+    steps:
+      - attach_workspace:
+          at: ./
+      - run:
+          name: Test
+          command: npm test
+      - persist_to_workspace:
+          root: ./
+          paths:
+            - ./
+
+  e2e-test:
+    docker:
       - image: mcr.microsoft.com/playwright:focal
         environment:
           WALLET_RECOVERY_PHRASE: $WALLET_RECOVERY_PHRASE
@@ -50,7 +63,7 @@ jobs:
       - run:
           name: Test
           command: |
-            xvfb-run npm test
+            xvfb-run npm e2e
       - persist_to_workspace:
           root: ./
           paths:
@@ -76,12 +89,16 @@ workflows:
   build&test:
     jobs:
       - build
-      - test:
+      - unit-test:
+          requires:
+            - build
+      - e2e-test:
           requires:
             - build
       - deploy-to-stage:
           requires:
-            - test
+            - unit-test
+            - e2e-test
           filters:
             branches:
               only: master

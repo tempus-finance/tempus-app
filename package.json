@@ -9,7 +9,8 @@
   "scripts": {
     "start": "lerna run start",
     "build": "lerna run build",
-    "test": "playwright test tests --headed"
+    "test": "lerna run ci:test",
+    "e2e": "playwright test tests --headed"
   },
   "devDependencies": {
     "@playwright/test": "^1.20.0",
