@@ -57,6 +57,7 @@ jobs:
       - image: mcr.microsoft.com/playwright:focal
         environment:
           WALLET_RECOVERY_PHRASE: $WALLET_RECOVERY_PHRASE
+          NODE_ENV: development
     steps:
       - attach_workspace:
           at: ./
@@ -75,15 +76,15 @@ jobs:
       - run:
           name: E2E Tests
           command: |
-            xvfb-run npm run e2e || true 2>&1
-            ls /root/project/test-results
-            ls
+            xvfb-run npm run e2e 2>&1
       - persist_to_workspace:
           root: ./
           paths:
             - ./
       - store_test_results:
           path: /root/project/test-results
+      - store_artifacts:
+          path: /root/project/test-results/results.xml
 
   deploy-to-stage:
     docker:

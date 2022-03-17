@@ -8,7 +8,7 @@ const fs = require('fs');
 test.describe("POC tests", () => {
     var browser;
     test.beforeAll(async () => {
-        test.setTimeout(120000);
+        test.setTimeout(90000);
         browser = await chromium.launchPersistentContext(userDataDir, {
             slowMo: 1500,
             headless: false,
@@ -18,7 +18,9 @@ test.describe("POC tests", () => {
             },
             args: [
                 `--disable-extensions-except=${pathToExtension}`,
-                `--load-extension=${pathToExtension}`
+                `--load-extension=${pathToExtension}`,
+                '--disable-dev-shm-usage',
+                '--ipc=host'
             ]
         })
         fs.rmSync('user-data', { recursive: true, force: true });
