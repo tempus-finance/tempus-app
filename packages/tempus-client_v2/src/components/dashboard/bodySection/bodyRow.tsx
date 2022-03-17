@@ -1,11 +1,11 @@
-import { FC, useCallback } from 'react';
+import { FC, KeyboardEvent, useCallback } from 'react';
 import { Table } from '@devexpress/dx-react-grid-material-ui';
 
 const BodyRow: FC = (props: any) => {
   const isChild = !!props.row.parentId;
 
   const onKeyDown = useCallback(
-    (ev: React.KeyboardEvent) => {
+    (ev: KeyboardEvent) => {
       switch (ev.key) {
         case 'Space':
         case 'Enter':
