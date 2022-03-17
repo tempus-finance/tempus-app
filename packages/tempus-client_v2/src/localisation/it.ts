@@ -7,7 +7,7 @@ const it: { [word in Words]: string } = {
   community: 'Comunità',
   settings: 'Impostazioni',
   connectWallet: 'Connetti Portafoglio',
-  xxxPending: '{{count}} In corso...',
+  xxxPending: '{{count}} In corso',
   selectWallet: 'Seleziona Portafoglio',
   walletSelectorDisclaimer:
     'Connettendo un portafoglio, dichiari di essere soggetto ai <a href="https://tempus.finance/terms-of-service" target="_blank">Termini di Servizio di Tempus</a> e confermi di avere letto e compreso <a href="https://tempus.finance/disclaimer" target="_blank">l\'avvertimento sul Protocollo Tempus</a>.',
