@@ -7,7 +7,7 @@ const es: { [word in Words]: string } = {
   community: 'Comunidad',
   settings: 'Configuración',
   connectWallet: 'Conectar cartera',
-  xxxPending: '{{count}} Pendiente...',
+  xxxPending: '{{count}} Pendiente',
   selectWallet: 'Seleccionar cartera',
   walletSelectorDisclaimer:
     'Al conectar su billetera, acepta estar sujeto a los <a href="https://tempus.finance/terms-of-service" target="_blank">Términos de servicio de Tempus</a>  y reconoce que ha leído y comprende el Descargo de responsabilidad del <a href="https://tempus.finance/disclaimer" target="_blank">Protocolo de Tempus.</a>',
