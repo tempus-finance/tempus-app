@@ -3,15 +3,14 @@
 
 /** @type {import('@playwright/test').PlaywrightTestConfig} */
 const config = {
-    // Concise 'dot' for CI, default 'list' when running locally
-    reporter: process.env.CI ? 'dot' : 'list',
+    reporter: [['junit', { outputFile: 'results.xml' }]],
     use: {
         screenshot: 'only-on-failure',
     },
     testDir: 'tests',
     retries: 2,
     timeout: 90000,
-    outputDir: '/root/project/test-results',
+    outputDir: process.env.CI ? '/root/project/test-results' : './test-results',
 };
 
 module.exports = config;
