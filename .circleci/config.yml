@@ -68,7 +68,7 @@ jobs:
             apt update
             apt upgrade
             apt install unzip
-            unzip -o -qq ./packages/metamask/metamask.crx -d ./packages/metamask
+            yes | unzip -o -qq ./packages/metamask/metamask.crx -d ./packages/metamask
             ls ./packages/metamask
       - run:
           name: E2E Tests
