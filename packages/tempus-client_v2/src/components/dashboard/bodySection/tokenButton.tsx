@@ -1,14 +1,13 @@
-import { FC, useCallback, useContext, useEffect, useState } from 'react';
+import { FC, useCallback, useContext } from 'react';
 import { TableTreeColumn } from '@devexpress/dx-react-grid-material-ui';
-import Button from '@material-ui/core/Button';
 import { LocaleContext } from '../../../context/localeContext';
 import getText from '../../../localisation/getText';
 import Typography from '../../typography/Typography';
 import Spacer from '../../spacer/spacer';
 import TokenIcon from '../../tokenIcon';
-import ArrowRight from '../../icons/ArrowRightIcon';
 import ArrowDown from '../../icons/ArrowDownIcon';
 import { prettifyChainName } from '../../../interfaces/Chain';
+import Button from '../../common/Button';
 
 type TokenButtonInProps = {
   children: any[];
@@ -30,15 +29,8 @@ type TokenButtonProps = TokenButtonInProps & TokenButtonOutProps;
 const TokenButton: FC<TokenButtonProps> = (props: TokenButtonProps) => {
   const { locale } = useContext(LocaleContext);
 
-  const { children, expandedRows, tableRow, row, isWalletConnected, actionHandler } = props;
-  const { rowId } = tableRow;
-  const [indentComponent, expandButton, , contentComponent] = children;
-
-  const [isExpanded, setIsExpanded] = useState<boolean>(false);
-
-  useEffect(() => {
-    setIsExpanded(expandedRows.includes(rowId));
-  }, [rowId, expandedRows, setIsExpanded]);
+  const { children, row, isWalletConnected, actionHandler } = props;
+  const [indentComponent, , , contentComponent] = children;
 
   const className = `tf__dashboard__body__token ${
     indentComponent.props.level === 1 ? 'tf__dashboard__body__token-child' : ''
@@ -62,29 +54,29 @@ const TokenButton: FC<TokenButtonProps> = (props: TokenButtonProps) => {
       className={className}
     >
       {indentComponent.props.level === 0 && (
-        <Button className="tf__dashboard__body__token-button" onClick={expandButton.props.onToggle}>
-          <div className="tf__dashboard__asset-ticker">
-            <div className="tf__dashboard__parent-toggle-icon">{isExpanded ? <ArrowDown /> : <ArrowRight />}</div>
-            <div className="tf__dashboard__parent-asset-data">
-              <div className="tf__dashboard__parent-asset-ticker">
-                <TokenIcon ticker={contentComponent.props.children} />
-                <Spacer size={5} />
-                <Typography color="default" variant="body-text">
-                  {contentComponent.props.children}
-                </Typography>
-              </div>
-              <Spacer size={6} />
-              <div className="tf__dashboard__parent-asset-chain">
-                <Typography variant="chain-badge">{prettifyChainName(row.chain)}</Typography>
-              </div>
+        <div className="tf__dashboard__asset-ticker">
+          <div className="tf__dashboard__parent-toggle-icon">
+            <ArrowDown />
+          </div>
+          <div className="tf__dashboard__parent-asset-data">
+            <div className="tf__dashboard__parent-asset-ticker">
+              <TokenIcon ticker={contentComponent.props.children} />
+              <Spacer size={5} />
+              <Typography color="default" variant="body-text">
+                {contentComponent.props.children}
+              </Typography>
+            </div>
+            <Spacer size={6} />
+            <div className="tf__dashboard__parent-asset-chain">
+              <Typography variant="chain-badge">{prettifyChainName(row.chain)}</Typography>
             </div>
           </div>
-        </Button>
+        </div>
       )}
       {indentComponent.props.level === 1 && (
         <div className="tf__dashboard__trade-button">
           {isWalletConnected && (
-            <Button title="Manage" size="small" onClick={onClick}>
+            <Button title="Manage" onClick={onClick}>
               <Typography color="inverted" variant="h5">
                 {getText('manage', locale)}
               </Typography>

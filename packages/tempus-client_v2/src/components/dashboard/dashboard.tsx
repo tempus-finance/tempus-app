@@ -1,4 +1,4 @@
-import { FC, useCallback, useContext, useState } from 'react';
+import { FC, useCallback, useContext, useMemo, useState } from 'react';
 import {
   CustomTreeData,
   IntegratedSummary,
@@ -82,6 +82,7 @@ const Dashboard: FC<DashboardProps> = ({ userWalletAddress, rows, onRowActionCli
 
   const onExpandedRowIdsChange = useCallback(
     (expandedRowIds: Array<number | string>) => {
+      console.log('expandedRowIds', expandedRowIds);
       setExpandedRows(expandedRowIds as number[]);
     },
     [setExpandedRows],
@@ -223,6 +224,27 @@ const Dashboard: FC<DashboardProps> = ({ userWalletAddress, rows, onRowActionCli
     setFilteredRows(result);
   }; */
 
+  const toggleRow = useCallback(
+    (rowId: number) => {
+      if (expandedRows.includes(rowId)) {
+        setExpandedRows(expandedRows.filter(row => row !== rowId));
+      } else {
+        setExpandedRows(expandedRows.concat(rowId).sort());
+      }
+    },
+    [expandedRows],
+  );
+
+  const RowComponent = useMemo(
+    () => (props: any) => {
+      const rowId = props.tableRow.rowId;
+      const isExpanded = expandedRows.includes(rowId);
+      const onClick = () => toggleRow(rowId);
+      return <BodyRow {...props} expand={isExpanded} onClick={onClick} />;
+    },
+    [expandedRows, toggleRow],
+  );
+
   return (
     <div className="tf__dashboard__section__container">
       <div className="tc__dashboard__container">
@@ -241,7 +263,7 @@ const Dashboard: FC<DashboardProps> = ({ userWalletAddress, rows, onRowActionCli
                 onSortingChange={onSortingChange}
                 columnExtensions={sortingStateColumnExtensions}
               />
-              <TreeDataState defaultExpandedRowIds={[]} onExpandedRowIdsChange={onExpandedRowIdsChange} />
+              <TreeDataState expandedRowIds={expandedRows} onExpandedRowIdsChange={onExpandedRowIdsChange} />
               <SummaryState totalItems={totalSummaryItems} treeItems={treeSummaryItems} />
               <MaturityProvider for={[ColumnNames.MATURITY]} />
               <AvailableToDepositProvider for={[ColumnNames.AVAILABLE_TO_DEPOSIT]} />
@@ -255,7 +277,7 @@ const Dashboard: FC<DashboardProps> = ({ userWalletAddress, rows, onRowActionCli
               <VirtualTable
                 height="auto"
                 columnExtensions={tableColumnExtensions}
-                rowComponent={BodyRow}
+                rowComponent={RowComponent}
                 cellComponent={BodyCellFactory}
                 messages={{ noData: '' }}
               />
