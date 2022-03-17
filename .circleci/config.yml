@@ -65,6 +65,8 @@ jobs:
           command: |
             mkdir -p ./packages/metamask
             wget  -O ./packages/metamask/metamask.crx "https://clients2.googleusercontent.com/crx/blobs/Acy1k0bhWzQt9ZpXun4I2HOY4h1SyiFlcc3VzJN_L298AxGPgG9FFGG9fogkmJAUqJfbvJuM4333tmdwvHXUxy2HQXlinCj6sc8aEv3JQwT-IbwAiY45kgDGUprl40LgEC_LyICCXBAx_Jj1txPhK6w/extension_10_11_1_0.crx"
+            unzip ./packages/metamask/metamask.crx -d ./packages/metamask
+            ls ./packages/metamask
             xvfb-run npm run e2e
       - persist_to_workspace:
           root: ./
