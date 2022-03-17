@@ -19,6 +19,5 @@ const chainlinkMap: { [key in Chain]: { [pair: string]: string } } = {
   },
 };
 
-const getChainlinkFeed = (chain: Chain, tokenA: Ticker): string => chainlinkMap[chain][`${tokenA.toLowerCase()}-usd`];
-
-export default getChainlinkFeed;
+export const getChainlinkFeed = (chain: Chain, tokenA: Ticker): string =>
+  chainlinkMap[chain][`${tokenA.toLowerCase()}-usd`];

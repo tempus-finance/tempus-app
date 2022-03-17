@@ -1,6 +1,6 @@
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
 import { BigNumber, CallOverrides, Contract, ethers } from 'ethers';
-import { CONSTANTS } from 'tempus-core-services';
+import { CONSTANTS, getCoingeckoRate, getChainlinkFeed } from 'tempus-core-services';
 import { Stats } from '../abi/Stats';
 import StatsABI from '../abi/Stats.json';
 import { Chain } from '../interfaces/Chain';
@@ -8,8 +8,6 @@ import { decreasePrecision, div18f, mul18f } from '../utils/weiMath';
 import getTokenPrecision from '../utils/getTokenPrecision';
 import { Ticker } from '../interfaces/Token';
 import TempusAMMService from './TempusAMMService';
-import getChainlinkFeed from './getChainlinkFeed';
-import { getCoingeckoRate } from './coinGeckoFeed';
 
 const { DEFAULT_TOKEN_PRECISION, tokenPrecision } = CONSTANTS;
 

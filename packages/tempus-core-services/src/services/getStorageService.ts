@@ -1,12 +1,10 @@
-import StorageService from './StorageService';
+import { StorageService } from './StorageService';
 
 let storageService: StorageService;
-const getStorageService = (): StorageService => {
+export const getStorageService = (): StorageService => {
   if (!storageService) {
     storageService = new StorageService();
   }
 
   return storageService;
 };
-
-export default getStorageService;

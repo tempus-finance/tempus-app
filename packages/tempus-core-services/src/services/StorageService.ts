@@ -1,6 +1,6 @@
 const prefix = 'TC_';
 
-class StorageService {
+export class StorageService {
   set(key: string, value: string | number | object) {
     if (!key || !value) {
       return;
@@ -40,5 +40,3 @@ class StorageService {
     localStorage.clear();
   }
 }
-
-export default StorageService;

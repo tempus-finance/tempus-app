@@ -1,5 +1,5 @@
+import { getStorageService } from 'tempus-core-services';
 import NotificationService from './NotificationService';
-import getStorageService from './getStorageService';
 
 let notificationService: NotificationService;
 
