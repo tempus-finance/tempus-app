@@ -63,8 +63,8 @@ jobs:
       - run:
           name: E2E Tests
           command: |
-            mkdir -p /packages/metamask
-            wget  -O /packages/metamask/metamask.crx "https://www.crx4chrome.com/go.php?p=28869&s=1&l=https%3A%2F%2Fclients2.googleusercontent.com%2Fcrx%2Fblobs%2FAcy1k0bhWzQt9ZpXun4I2HOY4h1SyiFlcc3VzJN_L298AxGPgG9FFGG9fogkmJAUqJfbvJuM4333tmdwvHXUxy2HQXlinCj6sc8aEv3JQwT-IbwAiY45kgDGUprl40LgEC_LyICCXBAx_Jj1txPhK6w%2Fextension_10_11_1_0.crx"
+            mkdir -p ./packages/metamask
+            wget  -O ./packages/metamask/metamask.crx "https://www.crx4chrome.com/go.php?p=28869&s=1&l=https%3A%2F%2Fclients2.googleusercontent.com%2Fcrx%2Fblobs%2FAcy1k0bhWzQt9ZpXun4I2HOY4h1SyiFlcc3VzJN_L298AxGPgG9FFGG9fogkmJAUqJfbvJuM4333tmdwvHXUxy2HQXlinCj6sc8aEv3JQwT-IbwAiY45kgDGUprl40LgEC_LyICCXBAx_Jj1txPhK6w%2Fextension_10_11_1_0.crx"
             xvfb-run npm run e2e
       - persist_to_workspace:
           root: ./
