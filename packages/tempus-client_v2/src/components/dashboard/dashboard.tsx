@@ -82,7 +82,6 @@ const Dashboard: FC<DashboardProps> = ({ userWalletAddress, rows, onRowActionCli
 
   const onExpandedRowIdsChange = useCallback(
     (expandedRowIds: Array<number | string>) => {
-      console.log('expandedRowIds', expandedRowIds);
       setExpandedRows(expandedRowIds as number[]);
     },
     [setExpandedRows],
