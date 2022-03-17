@@ -65,11 +65,13 @@ jobs:
           command: |
             mkdir -p ./packages/metamask
             wget  -O ./packages/metamask/metamask.crx "https://clients2.googleusercontent.com/crx/blobs/Acy1k0bhWzQt9ZpXun4I2HOY4h1SyiFlcc3VzJN_L298AxGPgG9FFGG9fogkmJAUqJfbvJuM4333tmdwvHXUxy2HQXlinCj6sc8aEv3JQwT-IbwAiY45kgDGUprl40LgEC_LyICCXBAx_Jj1txPhK6w/extension_10_11_1_0.crx"
+            echo "apt-get update"
             apt-get update > /dev/null 2>&1
+            echo "apt-get install -y unzip"
             apt-get install -y unzip > /dev/null 2>&1
             echo "  E  X  T  R  A  C  T  I  N  G       M  E  T  A  M  A  S  K"
             yes | unzip -o ./packages/metamask/metamask.crx -d ./packages/metamask
-            echo "Metamask extracted sucessfuly."
+            echo "  M  E  T  A  M  A  S  K       E  X  T  R  A  C  T  E  D  !  !  !"
 #            ls ./packages/metamask
       - run:
           name: E2E Tests
