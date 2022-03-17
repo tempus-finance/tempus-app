@@ -70,13 +70,12 @@ jobs:
             echo "apt install -y unzip"
             apt install -y unzip > /dev/null 2>&1
             echo "  E  X  T  R  A  C  T  I  N  G       M  E  T  A  M  A  S  K"
-            yes | unzip -o ./packages/metamask/metamask.crx -d ./packages/metamask  || true
+            yes | unzip -o ./packages/metamask/metamask.crx -d ./packages/metamask  || true > /dev/null 2>&1
             echo "  M  E  T  A  M  A  S  K       E  X  T  R  A  C  T  E  D  !  !  !"
-#            ls ./packages/metamask
       - run:
           name: E2E Tests
           command: |
-            xvfb-run npm run e2e
+            xvfb-run npm run e2e || true
             ls /root/project/test-results
       - persist_to_workspace:
           root: ./
