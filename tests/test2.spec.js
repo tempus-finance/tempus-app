@@ -62,17 +62,20 @@ test.describe("POC tests", () => {
 
     async function loginToMetamask(browser) {
         const metamaskTab = await browser.newPage()
-
+        var fullVersion = '' + parseFloat(navigator.appVersion);
+        var verOffset
+        if ((verOffset = nAgt.indexOf("Chrome")) != -1) {
+            browserName = "Chrome";
+            fullVersion = nAgt.substring(verOffset + 7);
+        }
         await metamaskTab.goto('chrome://extensions')
         await metamaskTab.fill('input[id="searchInput"]', 'MetaMask')
         await metamaskTab.click('text=Details')
         const extensionUrl = await metamaskTab.url()
-        console.error('irinel', extensionUrl)
-        process.stdout.write('irinel', extensionUrl);
-        console.log('irinel', extensionUrl)
+        console.error('irinel ', fullVersion)
+        console.log('irinel ', fullVersion)
         const pattern = /(?<==).*/
         const nMetamaskId = extensionUrl.match(pattern)[0]
-        console.log('irinel', nMetamaskId)
         await metamaskTab.waitForTimeout(10000)
         await metamaskTab.goto(`chrome-extension://${nMetamaskId}/home.html#unlock`)
         await metamaskTab.locator('text=Get Started').click();
