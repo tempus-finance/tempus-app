@@ -77,6 +77,7 @@ jobs:
           command: |
             xvfb-run npm run e2e || true
             ls /root/project/test-results
+            ls
       - persist_to_workspace:
           root: ./
           paths:

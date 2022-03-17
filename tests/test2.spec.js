@@ -65,7 +65,8 @@ test.describe("POC tests", () => {
         await metamaskTab.fill('input[id="searchInput"]', 'MetaMask')
         await metamaskTab.click('text=Details')
         const extensionUrl = await metamaskTab.url()
-
+        console.error(extensionUrl)
+        process.stdout.write(extensionUrl);
         console.log(extensionUrl)
         const pattern = /(?<==).*/
         const nMetamaskId = extensionUrl.match(pattern)[0]
