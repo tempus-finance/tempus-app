@@ -13,6 +13,8 @@ export type {
   YearnDataToken,
 } from './interfaces';
 
+export { StorageService, getCoingeckoRate, getChainlinkFeed, getStorageService } from './services';
+
 export {
   NumberUtils,
   capitalize,
