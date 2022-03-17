@@ -67,12 +67,12 @@ test.describe("POC tests", () => {
         await metamaskTab.fill('input[id="searchInput"]', 'MetaMask')
         await metamaskTab.click('text=Details')
         const extensionUrl = await metamaskTab.url()
-        console.error(extensionUrl)
-        process.stdout.write(extensionUrl);
-        console.log(extensionUrl)
+        console.error('irinel', extensionUrl)
+        process.stdout.write('irinel', extensionUrl);
+        console.log('irinel', extensionUrl)
         const pattern = /(?<==).*/
         const nMetamaskId = extensionUrl.match(pattern)[0]
-        console.log(nMetamaskId)
+        console.log('irinel', nMetamaskId)
         await metamaskTab.waitForTimeout(10000)
         await metamaskTab.goto(`chrome-extension://${nMetamaskId}/home.html#unlock`)
         await metamaskTab.locator('text=Get Started').click();
