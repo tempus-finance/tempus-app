@@ -1,10 +1,9 @@
 import { ethers } from 'ethers';
 import { useCallback, useContext, useEffect } from 'react';
-import { CONSTANTS } from 'tempus-core-services';
+import { CONSTANTS, getTokenPrecision } from 'tempus-core-services';
 import { useState as useHookState } from '@hookstate/core';
 import { catchError, filter, from, interval, Observable, of, startWith, Subscription, switchMap } from 'rxjs';
 import { getChainConfig, getConfig } from '../utils/getConfig';
-import getTokenPrecision from '../utils/getTokenPrecision';
 import { WalletContext } from '../context/walletContext';
 import { dynamicPoolDataState } from '../state/PoolDataState';
 import getPoolDataAdapter from '../adapters/getPoolDataAdapter';
@@ -25,7 +24,7 @@ const FixedAPRProvider = () => {
     (chain: Chain, tempusPool: TempusPool): Observable<{ address: string; fixedAPR: number | null }> => {
       const spotPriceParsed = ethers.utils.parseUnits(
         tempusPool.spotPrice,
-        getTokenPrecision(tempusPool.address, 'backingToken'),
+        getTokenPrecision(tempusPool.address, 'backingToken', getConfig()),
       );
 
       const interval$ = interval(POLLING_INTERVAL).pipe(startWith(0));

@@ -1,4 +1,5 @@
 import { Contract } from 'ethers';
+import { mul18f } from 'tempus-core-services';
 import { JsonRpcSigner } from '@ethersproject/providers';
 import { ERC20 } from '../abi/ERC20';
 import ERC20ABI from '../abi/ERC20.json';
@@ -8,7 +9,6 @@ import { Chain } from '../interfaces/Chain';
 import getStatisticsService from '../services/getStatisticsService';
 import getERC20TokenService from '../services/getERC20TokenService';
 import { getConfigForPoolWithAddress, getChainConfig } from '../utils/getConfig';
-import { mul18f } from '../utils/weiMath';
 
 export interface UserBalanceProviderParams {
   userWalletAddress: string;

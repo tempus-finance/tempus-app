@@ -1,6 +1,6 @@
 import { ethers, BigNumber } from 'ethers';
 import { useContext, useMemo } from 'react';
-import { CONSTANTS } from 'tempus-core-services';
+import { CONSTANTS, NumberUtils } from 'tempus-core-services';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { CircularProgress } from '@material-ui/core';
 import { DataTypeProvider } from '@devexpress/dx-react-grid';
@@ -8,7 +8,6 @@ import { UserSettingsContext } from '../../../context/userSettingsContext';
 import { WalletContext } from '../../../context/walletContext';
 import { DashboardRow } from '../../../interfaces/DashboardRow';
 import { Chain, chainIdToChainName } from '../../../interfaces/Chain';
-import NumberUtils from '../../../services/NumberUtils';
 import { getChainConfigForPool } from '../../../utils/getConfig';
 import Typography from '../../typography/Typography';
 import Spacer from '../../spacer/spacer';

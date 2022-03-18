@@ -1,5 +1,6 @@
 import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { BigNumber, ethers } from 'ethers';
+import { getTokenPrecision, isZeroString, mul18f, NumberUtils } from 'tempus-core-services';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
 import { refreshBalances } from '../../providers/balanceProviderHelper';
@@ -9,12 +10,8 @@ import { UserSettingsContext } from '../../context/userSettingsContext';
 import { PoolShares, Ticker } from '../../interfaces/Token';
 import { Chain } from '../../interfaces/Chain';
 import getText from '../../localisation/getText';
-import { getChainConfig } from '../../utils/getConfig';
-import { mul18f } from '../../utils/weiMath';
-import getTokenPrecision from '../../utils/getTokenPrecision';
-import { isZeroString } from '../../utils/isZeroString';
+import { getChainConfig, getConfig } from '../../utils/getConfig';
 import { SwapKind } from '../../services/VaultService';
-import NumberUtils from '../../services/NumberUtils';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
 import Approve from '../buttons/Approve';
 import Execute from '../buttons/Execute';
@@ -66,7 +63,7 @@ const Swap: FC<SwapProps> = props => {
   const [receiveAmount, setReceiveAmount] = useState<BigNumber | null>(null);
   const [tokensApproved, setTokensApproved] = useState<boolean>(false);
   const [estimateInProgress, setEstimateInProgress] = useState<boolean>(false);
-  const [tokenPrecision, setTokenPrecision] = useState<number>(getTokenPrecision(selectedPoolAddress, 'principals'));
+  const [tokenPrecision, setTokenPrecision] = useState<number>(getTokenPrecision(selectedPoolAddress, 'principals', getConfig()));
 
   const userPrincipalsBalance = dynamicPoolData[selectedPool.get()].userPrincipalsBalance.attach(Downgraded).get();
   const userYieldsBalance = dynamicPoolData[selectedPool.get()].userYieldsBalance.attach(Downgraded).get();
@@ -118,10 +115,12 @@ const Swap: FC<SwapProps> = props => {
 
     setSelectedToken(tokenToOld.tokenName);
 
+    const config = getConfig();
+
     if (tokenToOld.tokenName === 'Principals') {
-      setTokenPrecision(getTokenPrecision(selectedPoolAddress, 'principals'));
+      setTokenPrecision(getTokenPrecision(selectedPoolAddress, 'principals', config));
     } else {
-      setTokenPrecision(getTokenPrecision(selectedPoolAddress, 'yields'));
+      setTokenPrecision(getTokenPrecision(selectedPoolAddress, 'yields', config));
     }
   }, [selectedPoolAddress, tokenFrom, tokenTo]);
 
@@ -148,10 +147,12 @@ const Swap: FC<SwapProps> = props => {
       return null;
     }
 
+    const config = getConfig();
+
     if (selectedToken === 'Principals') {
-      return ethers.utils.parseUnits(amount, getTokenPrecision(selectedPoolAddress, 'principals'));
+      return ethers.utils.parseUnits(amount, getTokenPrecision(selectedPoolAddress, 'principals', config));
     } else {
-      return ethers.utils.parseUnits(amount, getTokenPrecision(selectedPoolAddress, 'yields'));
+      return ethers.utils.parseUnits(amount, getTokenPrecision(selectedPoolAddress, 'yields', config));
     }
   }, [selectedPoolAddress, selectedToken, amount]);
 
@@ -165,11 +166,13 @@ const Swap: FC<SwapProps> = props => {
     }
     const poolDataAdapter = getPoolDataAdapter(chain, userWalletSigner);
 
+    const config = getConfig();
+
     let tokenOutPrecision;
     if (tokenTo.tokenAddress === principalsAddress) {
-      tokenOutPrecision = getTokenPrecision(selectedPoolAddress, 'principals');
+      tokenOutPrecision = getTokenPrecision(selectedPoolAddress, 'principals', config);
     } else if (tokenTo.tokenAddress === yieldsAddress) {
-      tokenOutPrecision = getTokenPrecision(selectedPoolAddress, 'yields');
+      tokenOutPrecision = getTokenPrecision(selectedPoolAddress, 'yields', config);
     }
 
     if (!tokenOutPrecision) {

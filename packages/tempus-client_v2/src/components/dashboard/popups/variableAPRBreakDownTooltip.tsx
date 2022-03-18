@@ -1,7 +1,7 @@
 import React, { FC, useContext, useMemo } from 'react';
+import { NumberUtils } from 'tempus-core-services';
 import { LocaleContext } from '../../../context/localeContext';
 import getText from '../../../localisation/getText';
-import NumberUtils from '../../../services/NumberUtils';
 import Typography from '../../typography/Typography';
 
 import './variableAPRBreakDownTooltip.scss';

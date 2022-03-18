@@ -1,6 +1,7 @@
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { BigNumber, ethers } from 'ethers';
+import { getTokenPrecision, isZeroString, mul18f, NumberUtils } from 'tempus-core-services';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
 import { refreshBalances } from '../../providers/balanceProviderHelper';
 import { LocaleContext } from '../../context/localeContext';
@@ -16,11 +17,7 @@ import PlusIconContainer from '../plusIconContainer/PlusIconContainer';
 import SectionContainer from '../sectionContainer/SectionContainer';
 import Spacer from '../spacer/spacer';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
-import NumberUtils from '../../services/NumberUtils';
-import { isZeroString } from '../../utils/isZeroString';
-import { getChainConfig } from '../../utils/getConfig';
-import { mul18f } from '../../utils/weiMath';
-import getTokenPrecision from '../../utils/getTokenPrecision';
+import { getChainConfig, getConfig } from '../../utils/getConfig';
 import Approve from '../buttons/Approve';
 
 import './RemoveLiquidity.scss';
@@ -110,20 +107,21 @@ const RemoveLiquidity: FC<RemoveLiquidityProps> = props => {
       return Promise.resolve(undefined);
     }
     const poolDataAdapter = getPoolDataAdapter(chain, userWalletSigner);
+    const config = getConfig();
 
     const actualSlippage = (autoSlippage ? 1 : slippage / 100).toString();
     const minPrincipalsReceived = estimatedPrincipals.sub(
       mul18f(
         estimatedPrincipals,
-        ethers.utils.parseUnits(actualSlippage, getTokenPrecision(selectedPoolAddress, 'principals')),
-        getTokenPrecision(selectedPoolAddress, 'principals'),
+        ethers.utils.parseUnits(actualSlippage, getTokenPrecision(selectedPoolAddress, 'principals', config)),
+        getTokenPrecision(selectedPoolAddress, 'principals', config),
       ),
     );
     const minYieldsReceived = estimatedYields.sub(
       mul18f(
         estimatedYields,
-        ethers.utils.parseUnits(actualSlippage, getTokenPrecision(selectedPoolAddress, 'yields')),
-        getTokenPrecision(selectedPoolAddress, 'yields'),
+        ethers.utils.parseUnits(actualSlippage, getTokenPrecision(selectedPoolAddress, 'yields', config)),
+        getTokenPrecision(selectedPoolAddress, 'yields', config),
       ),
     );
 
@@ -156,7 +154,7 @@ const RemoveLiquidity: FC<RemoveLiquidityProps> = props => {
       return null;
     }
 
-    return ethers.utils.parseUnits(amount, getTokenPrecision(selectedPoolAddress, 'lpTokens'));
+    return ethers.utils.parseUnits(amount, getTokenPrecision(selectedPoolAddress, 'lpTokens', getConfig()));
   }, [selectedPoolAddress, amount]);
 
   const onExecuted = useCallback(

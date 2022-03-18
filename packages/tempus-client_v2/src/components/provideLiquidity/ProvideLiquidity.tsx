@@ -1,5 +1,6 @@
 import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { ethers, BigNumber } from 'ethers';
+import { getTokenPrecision, isZeroString, mul18f, NumberUtils } from 'tempus-core-services';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
 import getPoolShareBalanceProvider from '../../providers/getPoolShareBalanceProvider';
@@ -7,12 +8,8 @@ import { refreshBalances } from '../../providers/balanceProviderHelper';
 import { LocaleContext } from '../../context/localeContext';
 import { WalletContext } from '../../context/walletContext';
 import getText from '../../localisation/getText';
-import { getChainConfig } from '../../utils/getConfig';
-import { mul18f } from '../../utils/weiMath';
-import getTokenPrecision from '../../utils/getTokenPrecision';
-import { isZeroString } from '../../utils/isZeroString';
+import { getChainConfig, getConfig } from '../../utils/getConfig';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
-import NumberUtils from '../../services/NumberUtils';
 import { Chain } from '../../interfaces/Chain';
 import Typography from '../typography/Typography';
 import Descriptor from '../descriptor/Descriptor';
@@ -288,9 +285,11 @@ const ProvideLiquidity: FC<ProvideLiquidityProps> = props => {
         setTokenEstimateInProgress(false);
       }
     };
-    setPrincipalsPrecision(getTokenPrecision(selectedPoolAddress, 'principals'));
-    setYieldsPrecision(getTokenPrecision(selectedPoolAddress, 'yields'));
-    setLpTokensPrecision(getTokenPrecision(selectedPoolAddress, 'lpTokens'));
+    const config = getConfig();
+
+    setPrincipalsPrecision(getTokenPrecision(selectedPoolAddress, 'principals', config));
+    setYieldsPrecision(getTokenPrecision(selectedPoolAddress, 'yields', config));
+    setLpTokensPrecision(getTokenPrecision(selectedPoolAddress, 'lpTokens', config));
     fetchEstimatedLPTokens();
   }, [
     userWalletSigner,
@@ -364,7 +363,7 @@ const ProvideLiquidity: FC<ProvideLiquidityProps> = props => {
       return null;
     }
 
-    return ethers.utils.parseUnits(principalsAmount, getTokenPrecision(selectedPoolAddress, 'principals'));
+    return ethers.utils.parseUnits(principalsAmount, getTokenPrecision(selectedPoolAddress, 'principals', getConfig()));
   }, [selectedPoolAddress, principalsAmount]);
 
   const yieldsAmountToApprove = useMemo(() => {
@@ -372,7 +371,7 @@ const ProvideLiquidity: FC<ProvideLiquidityProps> = props => {
       return null;
     }
 
-    return ethers.utils.parseUnits(yieldsAmount, getTokenPrecision(selectedPoolAddress, 'yields'));
+    return ethers.utils.parseUnits(yieldsAmount, getTokenPrecision(selectedPoolAddress, 'yields', getConfig()));
   }, [selectedPoolAddress, yieldsAmount]);
 
   const onExecuted = useCallback(

@@ -1,10 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { getLibrary } from 'tempus-core-services';
 import { Web3ReactProvider } from '@web3-react/core';
 import isMobile from 'is-mobile';
 import MobileBanner from './components/mobileBanner/MobileBanner';
 import App from './components/app/App';
-import getLibrary from './utils/getLibrary';
 
 import './index.scss';
 

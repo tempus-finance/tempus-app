@@ -1,6 +1,14 @@
 import { Button, CircularProgress } from '@material-ui/core';
 import { FC, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
-import { CONSTANTS } from 'tempus-core-services';
+import {
+  CONSTANTS,
+  div18f,
+  getTokenPrecision,
+  increasePrecision,
+  isZeroString,
+  mul18f,
+  NumberUtils
+} from 'tempus-core-services';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { ethers, BigNumber } from 'ethers';
 import { catchError, of } from 'rxjs';
@@ -14,11 +22,7 @@ import { Ticker } from '../../interfaces/Token';
 import { Chain } from '../../interfaces/Chain';
 import { SelectedYield } from '../../interfaces/SelectedYield';
 import getText from '../../localisation/getText';
-import { getChainConfig } from '../../utils/getConfig';
-import getTokenPrecision from '../../utils/getTokenPrecision';
-import { isZeroString } from '../../utils/isZeroString';
-import { increasePrecision, mul18f, div18f } from '../../utils/weiMath';
-import NumberUtils from '../../services/NumberUtils';
+import { getChainConfig, getConfig } from '../../utils/getConfig';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
 import Approve from '../buttons/Approve';
 import Execute from '../buttons/Execute';
@@ -107,15 +111,17 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
         setSelectedToken(token);
         setAmount('');
 
+        const config = getConfig();
+
         if (backingToken === token) {
-          setSelectedTokenPrecision(getTokenPrecision(selectedPoolAddress, 'backingToken'));
+          setSelectedTokenPrecision(getTokenPrecision(selectedPoolAddress, 'backingToken', config));
           if (backingTokenRate !== null) {
             setUsdRate(backingTokenRate);
           }
         }
 
         if (backingToken !== token) {
-          setSelectedTokenPrecision(getTokenPrecision(selectedPoolAddress, 'yieldBearingToken'));
+          setSelectedTokenPrecision(getTokenPrecision(selectedPoolAddress, 'yieldBearingToken', config));
           if (yieldBearingTokenRate !== null) {
             setUsdRate(yieldBearingTokenRate);
           }
@@ -198,7 +204,7 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
       const isBackingToken = backingToken === selectedToken;
       const isEthDeposit = selectedToken === 'ETH';
       const actualSlippage = (autoSlippage ? 1 : slippage / 100).toString();
-      const principalsPrecision = getTokenPrecision(selectedPoolAddress, 'principals');
+      const principalsPrecision = getTokenPrecision(selectedPoolAddress, 'principals', getConfig());
       const slippageFormatted = ethers.utils.parseUnits(actualSlippage, principalsPrecision);
 
       return poolDataAdapter.executeDeposit(

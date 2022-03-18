@@ -2,7 +2,7 @@ import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { ethers, BigNumber } from 'ethers';
 import { catchError, of } from 'rxjs';
-import { CONSTANTS } from 'tempus-core-services';
+import { CONSTANTS, getTokenPrecision, isZeroString, mul18f, NumberUtils } from 'tempus-core-services';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
 import { refreshBalances } from '../../providers/balanceProviderHelper';
@@ -11,11 +11,7 @@ import { WalletContext } from '../../context/walletContext';
 import { Ticker } from '../../interfaces/Token';
 import { Chain } from '../../interfaces/Chain';
 import getText from '../../localisation/getText';
-import { getChainConfig } from '../../utils/getConfig';
-import getTokenPrecision from '../../utils/getTokenPrecision';
-import { isZeroString } from '../../utils/isZeroString';
-import { mul18f } from '../../utils/weiMath';
-import NumberUtils from '../../services/NumberUtils';
+import { getChainConfig, getConfig } from '../../utils/getConfig';
 import Approve from '../buttons/Approve';
 import Execute from '../buttons/Execute';
 import Descriptor from '../descriptor/Descriptor';
@@ -81,15 +77,17 @@ const Mint: FC<MintInProps> = ({ narrow, chain }) => {
         setSelectedToken(token);
         setAmount('');
 
+        const config = getConfig();
+
         if (backingToken === token) {
-          setSelectedTokenPrecision(getTokenPrecision(selectedPoolAddress, 'backingToken'));
+          setSelectedTokenPrecision(getTokenPrecision(selectedPoolAddress, 'backingToken', config));
           if (backingTokenRate !== null) {
             setUsdRate(backingTokenRate);
           }
         }
 
         if (backingToken !== token) {
-          setSelectedTokenPrecision(getTokenPrecision(selectedPoolAddress, 'yieldBearingToken'));
+          setSelectedTokenPrecision(getTokenPrecision(selectedPoolAddress, 'yieldBearingToken', config));
           if (yieldBearingTokenRate !== null) {
             setUsdRate(yieldBearingTokenRate);
           }
@@ -148,10 +146,12 @@ const Mint: FC<MintInProps> = ({ narrow, chain }) => {
       return null;
     }
 
+    const config = getConfig();
+
     if (selectedToken === backingToken) {
-      return ethers.utils.parseUnits(amount, getTokenPrecision(selectedPoolAddress, 'backingToken'));
+      return ethers.utils.parseUnits(amount, getTokenPrecision(selectedPoolAddress, 'backingToken', config));
     } else {
-      return ethers.utils.parseUnits(amount, getTokenPrecision(selectedPoolAddress, 'yieldBearingToken'));
+      return ethers.utils.parseUnits(amount, getTokenPrecision(selectedPoolAddress, 'yieldBearingToken', config));
     }
   }, [selectedPoolAddress, selectedToken, backingToken, amount]);
 

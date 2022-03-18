@@ -1,7 +1,7 @@
 import { ethers } from 'ethers';
+import { increasePrecision, mul18f } from 'tempus-core-services';
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
 import { TempusPool } from '../interfaces/TempusPool';
-import { increasePrecision, mul18f } from '../utils/weiMath';
 import StatisticsService from '../services/StatisticsService';
 import getERC20TokenService from '../services/getERC20TokenService';
 import TempusPoolService from '../services/TempusPoolService';
