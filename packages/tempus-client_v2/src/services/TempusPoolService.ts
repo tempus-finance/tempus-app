@@ -1,11 +1,8 @@
 import { BigNumber, ethers } from 'ethers';
-import { CONSTANTS } from 'tempus-core-services';
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
+import { CONSTANTS, Chain, Ticker, ProtocolName, getERC20TokenService } from 'tempus-core-services';
 import { TempusPool } from '../abi/TempusPool';
-import { ProtocolName } from '../interfaces/ProtocolName';
-import { Ticker } from '../interfaces/Token';
-import { Chain } from '../interfaces/Chain';
-import getERC20TokenService from './getERC20TokenService';
+import { getChainConfig } from '../utils/getConfig';
 
 const { DAYS_IN_A_YEAR, SECONDS_IN_A_DAY } = CONSTANTS;
 
@@ -70,7 +67,7 @@ class TempusPoolService {
         return Promise.reject(error);
       }
 
-      return this.eRC20TokenServiceGetter(backingTokenAddress, this.chain).symbol();
+      return this.eRC20TokenServiceGetter(backingTokenAddress, this.chain, getChainConfig).symbol();
     }
     throw new Error(`Address '${address}' is not valid`);
   }
@@ -94,7 +91,7 @@ class TempusPoolService {
         return Promise.reject(error);
       }
 
-      return this.eRC20TokenServiceGetter(yieldBearingTokenAddress, this.chain).symbol();
+      return this.eRC20TokenServiceGetter(yieldBearingTokenAddress, this.chain, getChainConfig).symbol();
     }
     throw new Error(`Address '${address}' is not valid`);
   }

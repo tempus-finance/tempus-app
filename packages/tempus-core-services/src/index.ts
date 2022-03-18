@@ -13,7 +13,17 @@ export type {
   YearnDataToken,
 } from './interfaces';
 
-export { StorageService, getCoingeckoRate, getChainlinkFeed, getStorageService } from './services';
+// potentially no need to export
+// - ERC20TokenService
+export type { ERC20TokenService, StorageService, TransferEventListener } from './services';
+
+export {
+  getChainlinkFeed,
+  getCoingeckoRate,
+  getDefaultProvider,
+  getERC20TokenService,
+  getStorageService,
+} from './services';
 
 export {
   NumberUtils,

@@ -1,10 +1,10 @@
 import DashboardDataAdapter from './DashboardDataAdapter';
+import * as TempusCoreServices from 'tempus-core-services';
 import * as getConfig from '../utils/getConfig';
 import { ChainConfig } from '../interfaces/Config';
 import { TempusPool } from '../interfaces/TempusPool';
 import { BigNumber } from 'ethers';
 import * as rxjs from 'rxjs';
-import * as getDefaultProvider from './../services/getDefaultProvider';
 
 jest.mock('ethers');
 const { Contract } = jest.requireMock('ethers');
@@ -12,6 +12,10 @@ const { Contract } = jest.requireMock('ethers');
 jest.mock('@ethersproject/providers', () => ({
   ...jest.requireActual('@ethersproject/providers'),
   JsonRpcProvider: jest.fn(),
+}));
+jest.mock('tempus-core-services', () => ({
+  ...jest.requireActual('tempus-core-services'),
+  getDefaultProvider: jest.fn(),
 }));
 
 const { JsonRpcProvider } = jest.requireMock('@ethersproject/providers');
@@ -74,7 +78,7 @@ describe('DashboardDataAdapter', () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
-    jest.spyOn(getDefaultProvider, 'default').mockReturnValue(new JsonRpcProvider());
+    jest.spyOn(TempusCoreServices, 'getDefaultProvider').mockReturnValue(new JsonRpcProvider());
 
     Contract.mockImplementation(() => {
       return {

@@ -1,14 +1,12 @@
 import { interval, startWith, Subscription } from 'rxjs';
 import { useCallback, useContext, useEffect } from 'react';
-import { CONSTANTS, getProvider } from 'tempus-core-services';
+import { CONSTANTS, Chain, getProvider, getDefaultProvider } from 'tempus-core-services';
 import { useState as useHookState } from '@hookstate/core';
 import { getChainConfig, getConfig } from '../utils/getConfig';
 import { TempusPool } from '../interfaces/TempusPool';
-import { Chain } from '../interfaces/Chain';
 import { dynamicPoolDataState } from '../state/PoolDataState';
 import { WalletContext } from '../context/walletContext';
 import getTempusPoolService from '../services/getTempusPoolService';
-import getDefaultProvider from '../services/getDefaultProvider';
 
 const { POLLING_INTERVAL } = CONSTANTS;
 const subscriptions$ = new Subscription();
@@ -26,7 +24,7 @@ const NegativeYieldProvider = () => {
       if (!document.hasFocus() && dynamicPoolData[tempusPool.address].negativeYield.get() === false) {
         return;
       }
-      const provider = await getProvider(chain, userWalletSigner, getDefaultProvider);
+      const provider = await getProvider(chain, userWalletSigner, getDefaultProvider, getChainConfig);
       if (!provider) {
         return;
       }

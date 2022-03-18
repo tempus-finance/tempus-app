@@ -1,9 +1,8 @@
 import { JsonRpcSigner, JsonRpcProvider } from '@ethersproject/providers';
-import getDefaultProvider from '../services/getDefaultProvider';
-import getERC20TokenService from '../services/getERC20TokenService';
+import { Chain, getDefaultProvider, getERC20TokenService } from 'tempus-core-services';
 import getStatisticsService from '../services/getStatisticsService';
 import getTempusPoolService from '../services/getTempusPoolService';
-import { Chain } from '../interfaces/Chain';
+import { getChainConfig } from '../utils/getConfig';
 import UserBalanceDataAdapter from './UserBalanceDataAdapter';
 
 let userBalanceDataAdapters = new Map<Chain, UserBalanceDataAdapter>();
@@ -15,7 +14,7 @@ const getUserBalanceDataAdapter = (
     const userBalanceDataAdapter = new UserBalanceDataAdapter();
     userBalanceDataAdapter.init({
       chain,
-      signerOrProvider: getDefaultProvider(chain),
+      signerOrProvider: getDefaultProvider(chain, getChainConfig),
       statisticsService: getStatisticsService(chain),
       tempusPoolService: getTempusPoolService(chain),
       eRC20TokenServiceGetter: getERC20TokenService,

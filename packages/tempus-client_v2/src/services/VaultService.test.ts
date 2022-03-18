@@ -1,6 +1,6 @@
 import { Contract, BigNumber, utils } from 'ethers';
-import { CONSTANTS } from 'tempus-core-services';
 import { JsonRpcProvider } from '@ethersproject/providers';
+import * as TempusCoreServices from 'tempus-core-services';
 import VaultABI from '../abi/Vault.json';
 import VaultService, {
   PoolBalanceChangedEventListener,
@@ -9,9 +9,9 @@ import VaultService, {
   TempusAMMJoinKind,
 } from './VaultService';
 import * as getConfig from '../utils/getConfig';
-import * as getDefaultProvider from './getDefaultProvider';
 import { ChainConfig } from '../interfaces/Config';
 
+const { CONSTANTS } = TempusCoreServices;
 const { provideLiquidityGasIncrease, removeLiquidityGasIncrease, SECONDS_IN_AN_HOUR } = CONSTANTS;
 
 jest.mock('@ethersproject/providers', () => ({
@@ -21,6 +21,10 @@ jest.mock('@ethersproject/providers', () => ({
 jest.mock('ethers', () => ({
   ...jest.requireActual('ethers'),
   Contract: jest.fn(),
+}));
+jest.mock('tempus-core-services', () => ({
+  ...jest.requireActual('tempus-core-services'),
+  getDefaultProvider: jest.fn(),
 }));
 
 describe('VaultService', () => {
@@ -461,7 +465,7 @@ describe('VaultService', () => {
       const mockEstimateSwap = jest.fn().mockResolvedValue(mockEstimate);
       const mockSwap = jest.fn().mockReturnValue(mockContractTransaction);
       jest
-        .spyOn(getDefaultProvider, 'default')
+        .spyOn(TempusCoreServices, 'getDefaultProvider')
         .mockReturnValue({ getBlock: mockGetBlock } as unknown as JsonRpcProvider);
       Reflect.set(vaultService, 'contract', {
         estimateGas: {
@@ -473,7 +477,7 @@ describe('VaultService', () => {
       await expect(vaultService.swap(poolId, kind, fromAddress, assetIn, assetOut, amount, minReturn)).resolves.toEqual(
         mockContractTransaction,
       );
-      expect(getDefaultProvider.default).toHaveBeenCalled();
+      expect(TempusCoreServices.getDefaultProvider).toHaveBeenCalled();
       expect(mockGetBlock).toHaveBeenCalledWith('latest');
       expect(mockEstimateSwap).toHaveBeenCalledWith(singleSwap, fundManagement, minReturn, ts + SECONDS_IN_AN_HOUR);
       expect(mockSwap).toHaveBeenCalledWith(singleSwap, fundManagement, minReturn, ts + SECONDS_IN_AN_HOUR, {

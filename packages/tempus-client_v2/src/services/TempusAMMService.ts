@@ -1,12 +1,11 @@
 import { BigNumber, Contract, ethers } from 'ethers';
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
+import { Chain, getERC20TokenService } from 'tempus-core-services';
 import { TempusAMM } from '../abi/TempusAMM';
 import TempusAMMABI from '../abi/TempusAMM.json';
 import { getChainConfig } from '../utils/getConfig';
 import { ChainConfig } from '../interfaces/Config';
-import { Chain } from '../interfaces/Chain';
 import TempusPoolService from './TempusPoolService';
-import getERC20TokenService from './getERC20TokenService';
 
 interface TempusPoolAddressData {
   poolAddress: string;

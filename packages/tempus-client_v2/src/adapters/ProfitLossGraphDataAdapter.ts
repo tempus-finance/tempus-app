@@ -1,14 +1,13 @@
 import { BigNumber, ethers } from 'ethers';
-import { CONSTANTS, div18f, mul18f } from 'tempus-core-services';
 import { JsonRpcSigner } from '@ethersproject/providers';
+import { CONSTANTS, Chain, div18f, getERC20TokenService, mul18f } from 'tempus-core-services';
 import getStatisticsService from '../services/getStatisticsService';
 import StatisticsService from '../services/StatisticsService';
 import TempusControllerService from '../services/TempusControllerService';
 import getTempusControllerService from '../services/getTempusControllerService';
-import getERC20TokenService from '../services/getERC20TokenService';
 import ChartDataPoint from '../interfaces/ChartDataPoint';
 import { TempusPool } from '../interfaces/TempusPool';
-import { Chain } from '../interfaces/Chain';
+import { getChainConfig } from '../utils/getConfig';
 
 const { SECONDS_IN_A_DAY } = CONSTANTS;
 
@@ -187,9 +186,9 @@ class ProfitLossGraphDataAdapter {
       return BigNumber.from('0');
     }
 
-    const lpTokenService = this.eRC20TokenServiceGetter(poolData.ammAddress, this.chain);
-    const principalsService = this.eRC20TokenServiceGetter(poolData.principalsAddress, this.chain);
-    const yieldsService = this.eRC20TokenServiceGetter(poolData.yieldsAddress, this.chain);
+    const lpTokenService = this.eRC20TokenServiceGetter(poolData.ammAddress, this.chain, getChainConfig);
+    const principalsService = this.eRC20TokenServiceGetter(poolData.principalsAddress, this.chain, getChainConfig);
+    const yieldsService = this.eRC20TokenServiceGetter(poolData.yieldsAddress, this.chain, getChainConfig);
 
     try {
       const [lpBalance, principalsBalance, yieldsBalance] = await Promise.all([
