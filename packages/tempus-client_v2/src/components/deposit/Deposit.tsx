@@ -1129,7 +1129,7 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
                     {tokenEstimateInProgress && <Spacer size={20} />}
 
                     {!tokenEstimateInProgress && (
-                      <Typography variant="button-text" color="accent" align="right" noWrap>
+                      <Typography variant="button-text" color="accent" align="right" whiteSpace="nowrap">
                         APR {variableAPRFormatted}
                       </Typography>
                     )}

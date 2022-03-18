@@ -230,11 +230,11 @@ interface TypographyProps {
   capitalize?: boolean;
   html?: string;
   align?: 'start' | 'end' | 'left' | 'right' | 'center' | 'justify' | 'match-parent';
-  noWrap?: boolean;
+  whiteSpace?: 'normal' | 'nowrap' | 'pre' | 'pre-wrap' | 'pre-line' | 'break-spaces' | 'inherit' | 'initial' | 'revert';
 }
 
 const Typography: FC<TypographyProps & React.HTMLProps<HTMLDivElement>> = props => {
-  const { variant, color, capitalize, html, align, noWrap, children, ...divProps } = props;
+  const { variant, color, capitalize, html, align, whiteSpace, children, ...divProps } = props;
 
   let colorStyle: string;
   switch (color) {
@@ -277,7 +277,7 @@ const Typography: FC<TypographyProps & React.HTMLProps<HTMLDivElement>> = props 
         color: colorStyle,
         textTransform: capitalize ? 'capitalize' : 'none',
         textAlign: align ? align : 'unset',
-        whiteSpace: noWrap ? 'nowrap' : 'unset',
+        whiteSpace: whiteSpace ? whiteSpace : 'unset',
       }}
       {...divProps}
     >

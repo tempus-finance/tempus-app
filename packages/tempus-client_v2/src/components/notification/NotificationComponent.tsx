@@ -54,7 +54,7 @@ const NotificationComponent: FC<NotificationComponentProps> = ({
       </div>
 
       <div className="tc__notification__content">
-        <Typography variant="body-text">{content}</Typography>
+        <Typography variant="body-text" whiteSpace="pre-line">{content}</Typography>
         {link && (
           <div className="tc__notification__link">
             <a href={link} onClick={onClick}>
