@@ -23,5 +23,5 @@ export interface ChainConfig {
 }
 
 export type Config = {
-  [networkName in Chain]: ChainConfig;
+  [chainName: string]: ChainConfig;
 };

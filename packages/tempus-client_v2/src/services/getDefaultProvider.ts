@@ -20,6 +20,11 @@ const getDefaultProvider = (chain: Chain) => {
         chain,
         new JsonRpcProvider(config.privateNetworkUrl, { chainId: 250, name: 'Fantom Opera' }),
       );
+    } else if (config.networkName === 'tempus-ethereum-fork') {
+      defaultProviders.set(
+        chain,
+        new JsonRpcProvider(config.privateNetworkUrl, { chainId: config.chainId, name: config.networkName }),
+      );
     }
   }
 
