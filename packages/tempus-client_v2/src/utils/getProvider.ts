@@ -10,9 +10,12 @@ export default async function getProvider(
   if (userWalletSigner) {
     const chainId = await userWalletSigner.getChainId();
 
-    if (getChainNameFromId(chainId) === chain) {
+    // In case we do not support currently selected chain in user wallet this will be null
+    const userWalletChain = getChainNameFromId(chainId);
+    if (userWalletChain === chain) {
       return userWalletSigner.provider;
     }
+    return getDefaultProvider(chain);
   }
 
   return getDefaultProvider(chain);

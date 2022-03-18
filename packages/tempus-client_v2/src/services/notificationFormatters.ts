@@ -1,5 +1,5 @@
 import { ethers, BigNumber } from 'ethers';
-import format from 'date-fns/format';
+import { format } from 'date-fns';
 import ERC20ABI from '../abi/ERC20.json';
 import { Ticker } from '../interfaces/Token';
 import { ProtocolName } from '../interfaces/ProtocolName';
@@ -8,7 +8,17 @@ import { Chain, prettifyChainName } from '../interfaces/Chain';
 import getText, { Language } from '../localisation/getText';
 import { capitalize } from '../utils/capitalizeString';
 import { getChainConfig } from '../utils/getConfig';
+import { BAL_SLIPPAGE_ERROR_CODE } from '../constants';
 import NumberUtils from './NumberUtils';
+
+interface NotificationContent {
+  chain: Chain;
+  language: Language;
+  receipt: ethers.ContractReceipt;
+  userWallet: string;
+  staticPoolData: TempusPool;
+  notificationDateTime: string;
+}
 
 export const generateNotificationInfo = (
   chain: Chain,
@@ -20,9 +30,10 @@ export const generateNotificationInfo = (
   userWallet: string,
   staticPoolData: TempusPool,
 ) => {
+  const notificationDateTime = format(new Date(), 'kk:mm:ss dd-MMMM-yyyy');
   switch (action) {
     case 'Deposit':
-      return getDepositNotificationContent(
+      return getDepositNotificationContent({
         chain,
         language,
         receipt,
@@ -30,20 +41,72 @@ export const generateNotificationInfo = (
         userWallet,
         actionDescription,
         staticPoolData,
-      );
+        notificationDateTime,
+      });
     case 'Withdraw':
-      return getWithdrawNotificationContent(chain, language, receipt, userWallet, staticPoolData);
+      return getWithdrawNotificationContent({
+        chain,
+        language,
+        receipt,
+        userWallet,
+        staticPoolData,
+        notificationDateTime,
+      });
     case 'Mint':
-      return getMintNotificationContent(chain, language, receipt, transaction, userWallet, staticPoolData);
+      return getMintNotificationContent({
+        chain,
+        language,
+        receipt,
+        transaction,
+        userWallet,
+        staticPoolData,
+        notificationDateTime,
+      });
     case 'Swap':
-      return getSwapNotificationContent(chain, language, receipt, userWallet, staticPoolData);
+      return getSwapNotificationContent({ chain, language, receipt, userWallet, staticPoolData, notificationDateTime });
     case 'Liquidity Deposit':
-      return getLiquidityDepositNotificationContent(chain, language, receipt, userWallet, staticPoolData);
+      return getLiquidityDepositNotificationContent({
+        chain,
+        language,
+        receipt,
+        userWallet,
+        staticPoolData,
+        notificationDateTime,
+      });
     case 'Liquidity Withdrawal':
-      return getLiquidityWithdrawalNotificationContent(chain, language, receipt, userWallet, staticPoolData);
+      return getLiquidityWithdrawalNotificationContent({
+        chain,
+        language,
+        receipt,
+        userWallet,
+        staticPoolData,
+        notificationDateTime,
+      });
     case 'Redeem':
-      return getRedeemNotificationContent(chain, language, receipt, userWallet, staticPoolData);
+      return getRedeemNotificationContent({
+        chain,
+        language,
+        receipt,
+        userWallet,
+        staticPoolData,
+        notificationDateTime,
+      });
   }
+};
+
+export const generateFailedTransactionInfo = (chain: Chain, language: Language, poolData: TempusPool, error: any) => {
+  let failReason = '';
+  if (error?.data?.message?.includes(BAL_SLIPPAGE_ERROR_CODE)) {
+    failReason = `${getText('slippageError', language)}\n\n`;
+  }
+
+  return `${failReason}${generatePoolNotificationInfo(
+    chain,
+    language,
+    poolData.backingToken,
+    poolData.protocol,
+    new Date(poolData.maturityDate),
+  )}`;
 };
 
 export const generateEtherscanLink = (tx: string, chainName: Chain) => {
@@ -65,8 +128,10 @@ export const generatePoolNotificationInfo = (
   protocol: ProtocolName,
   maturityDate: Date,
 ) => {
-  return `${prettifyChainName(chain)} - ${ticker} ${getText('via', language)} ${capitalize(protocol)}
-  ${format(maturityDate, 'dd MMMM yyyy')}`;
+  const notificationDateTime = format(new Date(), 'kk:mm:ss dd-MMMM-yyyy');
+  return `${notificationDateTime}
+  ${prettifyChainName(chain)} - ${ticker} ${getText('via', language)} ${capitalize(protocol)}
+  ${getText('maturity', language)} ${format(maturityDate, 'dd MMMM yyyy')}`;
 };
 
 export const getTokenApprovalNotification = (
@@ -79,20 +144,24 @@ export const getTokenApprovalNotification = (
 ) => {
   // Quick fix to show Capitals instead of Principals in the notification
   // TODO - Properly change Principals to Capitals in the Token interface.
-  return `${prettifyChainName(chain)} - ${tokenApproved === 'Principals' ? 'Capitals' : tokenApproved}
+  const notificationDateTime = format(new Date(), 'kk:mm:ss dd-MMMM-yyyy');
+
+  return `${notificationDateTime}
+  ${prettifyChainName(chain)} - ${tokenApproved === 'Principals' ? 'Capitals' : tokenApproved}
     ${backingToken} ${getText('via', language)} ${capitalize(protocol)}
-    ${format(maturityDate, 'dd MMMM yyyy')}`;
+    ${getText('maturity', language)} ${format(maturityDate, 'dd MMMM yyyy')}`;
 };
 
-const getDepositNotificationContent = (
-  chain: Chain,
-  language: Language,
-  receipt: ethers.ContractReceipt,
-  transaction: ethers.ContractTransaction,
-  userWallet: string,
-  actionDescription: string,
-  staticPoolData: TempusPool,
-) => {
+const getDepositNotificationContent = ({
+  chain,
+  language,
+  receipt,
+  transaction,
+  userWallet,
+  actionDescription,
+  staticPoolData,
+  notificationDateTime,
+}: NotificationContent & { actionDescription: string; transaction: ethers.ContractTransaction }) => {
   let tokenSentPrecision: number | null = null;
   let tokenSentTicker: Ticker | null = null;
   let tokenSentAmount = BigNumber.from('0');
@@ -154,7 +223,8 @@ const getDepositNotificationContent = (
   );
 
   if (actionDescription === 'Fixed Yield') {
-    return `${tokenSentAmountFormatted} ${tokenSentTicker} ${getText('to', language)}
+    return `${notificationDateTime}
+    ${tokenSentAmountFormatted} ${tokenSentTicker} ${getText('to', language)}
     ${principalsReceivedFormatted} ${getText('principals', language)}
     ${actionDescription}
   
@@ -166,7 +236,8 @@ const getDepositNotificationContent = (
       new Date(staticPoolData.maturityDate),
     )}`;
   } else if (actionDescription === 'Variable Yield') {
-    return `${tokenSentAmountFormatted} ${tokenSentTicker} ${getText('to', language)}
+    return `${notificationDateTime}
+    ${tokenSentAmountFormatted} ${tokenSentTicker} ${getText('to', language)}
     ${principalsReceivedFormatted} ${getText('principals', language)} ${getText('and', language)}
     ${lpTokensReceivedFormatted} ${getText('lpTokens', language)}
     ${actionDescription}
@@ -181,13 +252,14 @@ const getDepositNotificationContent = (
   }
 };
 
-const getWithdrawNotificationContent = (
-  chain: Chain,
-  language: Language,
-  receipt: ethers.ContractReceipt,
-  userWallet: string,
-  staticPoolData: TempusPool,
-) => {
+const getWithdrawNotificationContent = ({
+  chain,
+  language,
+  receipt,
+  userWallet,
+  staticPoolData,
+  notificationDateTime,
+}: NotificationContent) => {
   let principalsSent = BigNumber.from('0');
   let yieldsSent = BigNumber.from('0');
   let lpTokensSent = BigNumber.from('0');
@@ -249,7 +321,8 @@ const getWithdrawNotificationContent = (
     staticPoolData.decimalsForUI,
   );
 
-  return `${principalsSentFormatted} ${getText('principals', language)},
+  return `${notificationDateTime}
+  ${principalsSentFormatted} ${getText('principals', language)},
   ${yieldsSentFormatted} ${getText('yields', language)},
   ${lpTokensSentFormatted} ${getText('lpTokens', language)} ${getText('to', language)}
   ${tokensReceivedFormatted} ${tokenReceivedTicker}
@@ -266,14 +339,15 @@ const getWithdrawNotificationContent = (
 /**
  * Generates notification message for Mint action that includes number of Principals and Yields minted.
  */
-const getMintNotificationContent = (
-  chain: Chain,
-  language: Language,
-  receipt: ethers.ContractReceipt,
-  transaction: ethers.ContractTransaction,
-  userWallet: string,
-  staticPoolData: TempusPool,
-) => {
+const getMintNotificationContent = ({
+  chain,
+  language,
+  receipt,
+  transaction,
+  userWallet,
+  staticPoolData,
+  notificationDateTime,
+}: NotificationContent & { transaction: ethers.ContractTransaction }) => {
   let tokenSentPrecision: number | null = null;
   let tokenSentTicker: Ticker | null = null;
   let tokenSentAmount = BigNumber.from('0');
@@ -281,7 +355,7 @@ const getMintNotificationContent = (
   let yieldsMinted = BigNumber.from('0');
 
   // ETH was transferred
-  if (!transaction.value.isZero()) {
+  if (transaction && !transaction.value.isZero()) {
     tokenSentAmount = transaction.value;
     tokenSentTicker = staticPoolData.backingToken;
     tokenSentPrecision = staticPoolData.tokenPrecision.backingToken;
@@ -334,7 +408,8 @@ const getMintNotificationContent = (
     staticPoolData.decimalsForUI,
   );
 
-  return `${tokenSentAmountFormatted} ${tokenSentTicker} ${getText('to', language)}
+  return `${notificationDateTime}
+  ${tokenSentAmountFormatted} ${tokenSentTicker} ${getText('to', language)}
   ${principalsMintedFormatted} ${getText('principals', language)} ${getText('and', language)}
   ${yieldsMintedFormatted} ${getText('yields', language)}
 
@@ -350,13 +425,14 @@ const getMintNotificationContent = (
 /**
  * Generates notification message for Swap action that includes number of Principals and Yields swapped.
  */
-const getSwapNotificationContent = (
-  chain: Chain,
-  language: Language,
-  receipt: ethers.ContractReceipt,
-  userWallet: string,
-  staticPoolData: TempusPool,
-) => {
+const getSwapNotificationContent = ({
+  chain,
+  language,
+  receipt,
+  userWallet,
+  staticPoolData,
+  notificationDateTime,
+}: NotificationContent) => {
   let tokenSentPrecision: number | null = null;
   let tokenSentTicker: Ticker | null = null;
   let tokenSentValue: BigNumber = BigNumber.from('0');
@@ -410,7 +486,8 @@ const getSwapNotificationContent = (
     staticPoolData.decimalsForUI,
   );
 
-  return `${tokenSentValueFormatted} ${tokenSentTicker} ${getText('to', language)}
+  return `${notificationDateTime}
+  ${tokenSentValueFormatted} ${tokenSentTicker} ${getText('to', language)}
   ${tokenReceivedValueFormatted} ${tokenReceivedTicker}
 
   ${generatePoolNotificationInfo(
@@ -422,13 +499,14 @@ const getSwapNotificationContent = (
   )}`;
 };
 
-const getLiquidityDepositNotificationContent = (
-  chain: Chain,
-  language: Language,
-  receipt: ethers.ContractReceipt,
-  userWallet: string,
-  staticPoolData: TempusPool,
-) => {
+const getLiquidityDepositNotificationContent = ({
+  chain,
+  language,
+  receipt,
+  userWallet,
+  staticPoolData,
+  notificationDateTime,
+}: NotificationContent) => {
   let amountOfPrincipalsSent = BigNumber.from('0');
   let amountOfYieldsSent = BigNumber.from('0');
   let amountOfLPTokensReceived = BigNumber.from('0');
@@ -469,7 +547,8 @@ const getLiquidityDepositNotificationContent = (
     staticPoolData.decimalsForUI,
   );
 
-  return `${amountOfPrincipalsSentFormatted} ${getText('principalTokens', language)} ${getText('and', language)}
+  return `${notificationDateTime}
+  ${amountOfPrincipalsSentFormatted} ${getText('principalTokens', language)} ${getText('and', language)}
   ${amountOfYieldsSentFormatted} ${getText('yieldTokens', language)} ${getText('to', language)}
   ${amountOfLPTokensReceivedFormatted} ${getText('lpTokens', language)}
 
@@ -482,13 +561,14 @@ const getLiquidityDepositNotificationContent = (
   )}`;
 };
 
-const getLiquidityWithdrawalNotificationContent = (
-  chain: Chain,
-  language: Language,
-  receipt: ethers.ContractReceipt,
-  userWallet: string,
-  staticPoolData: TempusPool,
-) => {
+const getLiquidityWithdrawalNotificationContent = ({
+  chain,
+  language,
+  receipt,
+  userWallet,
+  staticPoolData,
+  notificationDateTime,
+}: NotificationContent) => {
   let amountOfLPTokensSent = BigNumber.from('0');
   let amountOfPrincipalsReceived = BigNumber.from('0');
   let amountOfYieldsReceived = BigNumber.from('0');
@@ -531,7 +611,8 @@ const getLiquidityWithdrawalNotificationContent = (
     staticPoolData.decimalsForUI,
   );
 
-  return `${amountOfLPTokensSentFormatted} ${getText('lpTokens', language)} ${getText('to', language)}
+  return `${notificationDateTime}
+  ${amountOfLPTokensSentFormatted} ${getText('lpTokens', language)} ${getText('to', language)}
   ${amountOfPrincipalsReceivedFormatted} ${getText('principalTokens', language)} ${getText('and', language)}
   ${amountOfYieldsReceivedFormatted} ${getText('yieldTokens', language)}
 
@@ -544,13 +625,14 @@ const getLiquidityWithdrawalNotificationContent = (
   )}`;
 };
 
-const getRedeemNotificationContent = (
-  chain: Chain,
-  language: Language,
-  receipt: ethers.ContractReceipt,
-  userWallet: string,
-  staticPoolData: TempusPool,
-) => {
+const getRedeemNotificationContent = ({
+  chain,
+  language,
+  receipt,
+  userWallet,
+  staticPoolData,
+  notificationDateTime,
+}: NotificationContent) => {
   let primitivesSent = BigNumber.from('0');
   let tokensReceived = BigNumber.from('0');
   let tokenReceivedTicker: Ticker | null = null;
@@ -589,7 +671,8 @@ const getRedeemNotificationContent = (
     staticPoolData.decimalsForUI,
   );
 
-  return `${primitivesSentFormatted} ${getText('principalTokens', language)} ${getText('to', language)} ${getText(
+  return `${notificationDateTime}
+  ${primitivesSentFormatted} ${getText('principalTokens', language)} ${getText('to', language)} ${getText(
     'yieldTokens',
     language,
   )} ${getText('to', language)}

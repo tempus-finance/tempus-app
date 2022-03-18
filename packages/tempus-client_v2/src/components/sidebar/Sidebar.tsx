@@ -1,6 +1,7 @@
-import { FC, useCallback, useContext, useEffect, useState } from 'react';
+import React, { FC, useCallback, useContext, useEffect, useState } from 'react';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { Tooltip } from '@material-ui/core';
+import { Link } from 'react-router-dom';
 import getSidebarDataAdapter from '../../adapters/getSidebarDataAdapter';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
 import { LanguageContext } from '../../context/languageContext';
@@ -8,11 +9,15 @@ import getText from '../../localisation/getText';
 import Words from '../../localisation/words';
 import { TransactionView } from '../../interfaces/TransactionView';
 import { Chain } from '../../interfaces/Chain';
-import { getChainConfig } from '../../utils/getConfig';
-import shortenAccount from '../../utils/shortenAccount';
-import TokenIcon from '../tokenIcon';
+import TokenIcon, { getTickerFromProtocol } from '../tokenIcon';
 import Typography from '../typography/Typography';
+import ExternalLink from '../common/ExternalLink';
 import Spacer from '../spacer/spacer';
+import InfoTooltip from '../infoTooltip/infoTooltip';
+import InfoIcon from '../icons/InfoIcon';
+import { getChainConfig } from '../../utils/getConfig';
+import ContractAddrTooltip from './contractAddrTooltip/ContractAddrTooltip';
+import Button from '../common/Button';
 
 import './Sidebar.scss';
 
@@ -49,12 +54,23 @@ const Sidebar: FC<SidebarProps> = ({ initialView, chain, onSelectedView }) => {
 
   const selectedPoolAddress = selectedPool.attach(Downgraded).get();
   const backingToken = staticPoolData[selectedPool.get()].backingToken.attach(Downgraded).get();
+  const protocol = staticPoolData[selectedPool.get()].protocol.attach(Downgraded).get();
   const protocolDisplayName = staticPoolData[selectedPool.get()].protocolDisplayName.attach(Downgraded).get();
   const poolShareBalance = dynamicPoolData[selectedPoolAddress].poolShareBalance.attach(Downgraded).get();
   const negativeYield = dynamicPoolData[selectedPoolAddress].negativeYield.attach(Downgraded).get();
   const userPrincipalsBalance = dynamicPoolData[selectedPoolAddress].userPrincipalsBalance.attach(Downgraded).get();
   const userYieldsBalance = dynamicPoolData[selectedPoolAddress].userYieldsBalance.attach(Downgraded).get();
   const userLPTokenBalance = dynamicPoolData[selectedPoolAddress].userLPTokenBalance.attach(Downgraded).get();
+
+  const contractAddresses = {
+    tempusPoolAddress: selectedPoolAddress,
+    tempusAMMAddress: staticPoolData[selectedPool.get()].ammAddress.attach(Downgraded).get(),
+    tempusControllerAddress: getChainConfig(chain).tempusControllerContract,
+    principalsAddress: staticPoolData[selectedPool.get()].principalsAddress.attach(Downgraded).get(),
+    yieldsAddress: staticPoolData[selectedPool.get()].yieldsAddress.attach(Downgraded).get(),
+    yieldBearingTokenAddress: staticPoolData[selectedPool.get()].yieldBearingTokenAddress.attach(Downgraded).get(),
+    statsAddress: getChainConfig(chain).statisticsContract,
+  };
 
   const onItemClick = useCallback(
     (itemName: TransactionView) => {
@@ -69,18 +85,6 @@ const Sidebar: FC<SidebarProps> = ({ initialView, chain, onSelectedView }) => {
       setSelectedView(initialView);
     }
   }, [initialView, selectedView]);
-
-  const onPoolAddressClick = useCallback(() => {
-    const config = getChainConfig(chain);
-
-    if (config.networkName === 'homestead') {
-      window.open(`https://etherscan.io/address/${selectedPoolAddress}`, '_blank');
-    } else if (config.networkName === 'fantom-mainnet') {
-      window.open(`https://ftmscan.com/address/${selectedPoolAddress}`, '_blank');
-    } else {
-      window.open(`https://${config.networkName}.etherscan.io/address/${selectedPoolAddress}`, '_blank');
-    }
-  }, [selectedPoolAddress, chain]);
 
   useEffect(() => {
     setDepositDisabledReason(
@@ -146,112 +150,133 @@ const Sidebar: FC<SidebarProps> = ({ initialView, chain, onSelectedView }) => {
 
   return (
     <div className="tc__sidebar-container">
-      <TokenIcon ticker={backingToken} large />
-      <Spacer size={5} />
-      <Typography variant="h4">{protocolDisplayName}</Typography>
-      <Spacer size={5} />
-      <Typography variant="h4">{backingToken} Pool</Typography>
-      <Spacer size={10} />
-      <div onClick={onPoolAddressClick} className="tc__sidebar-pool-link">
-        <Typography variant="body-text" color="link">
-          {shortenAccount(selectedPoolAddress)}
+      <Link to="/" title={getText('backToDashboard', language)} className="tc__sidebar-section-breadcrumbs">
+        <Typography variant="breadcrumbs" color="title">
+          {getText('allPools', language)}
+        </Typography>
+      </Link>
+      <Spacer size={12} />
+      <div className="tc__sidebar-pool">
+        <div className="tc__sidebar-pool-title">
+          <Typography variant="h5">{backingToken} Pool</Typography>
+          <Typography variant="sub-title">{protocolDisplayName}</Typography>
+        </div>
+        <div className="tc__sidebar-pool-icon">
+          <TokenIcon ticker={backingToken} large />
+          <TokenIcon ticker={getTickerFromProtocol(protocol)} />
+        </div>
+      </div>
+      <Spacer size={25} />
+
+      {/* Basic Section */}
+      <div className="tc__sidebar-section-title">
+        <Typography variant="h5" color="title">
+          {getText('basic', language)}
+        </Typography>
+        <Typography variant="sub-title" color="title">
+          {getText('basicSubTitle', language)}
         </Typography>
       </div>
+      {basicViews.map((basicViewName: TransactionView) => {
+        let disabledReason: Words | null = null;
 
-      <div className="tc__sidebar-list-items-wrapper">
-        {/* Basic Section */}
-        <div className="tc__sidebar-section-title">
-          <Typography variant="h5" color="title">
-            {getText('basic', language)}
-          </Typography>
-          <Typography variant="sub-title" color="title">
-            {getText('basicSubTitle', language)}
-          </Typography>
-        </div>
-        {basicViews.map((basicViewName: TransactionView) => {
-          let disabledReason: Words | null = null;
+        if (basicViewName === 'deposit' && depositDisabledReason) {
+          disabledReason = depositDisabledReason;
+        } else if (basicViewName === 'withdraw' && withdrawDisabledReason) {
+          disabledReason = withdrawDisabledReason;
+        }
 
-          if (basicViewName === 'deposit' && depositDisabledReason) {
-            disabledReason = depositDisabledReason;
-          } else if (basicViewName === 'withdraw' && withdrawDisabledReason) {
-            disabledReason = withdrawDisabledReason;
-          }
+        const selected = selectedView === basicViewName;
 
-          const selected = selectedView === basicViewName;
-          return (
-            <div key={basicViewName}>
-              {disabledReason && (
-                <Tooltip title={disabledReason ? getText(disabledReason, language) : ''}>
-                  <div className="tc__sidebar-view-item disabled">
-                    <Typography variant="h5" color="title">
-                      {getText(basicViewName, language)}
-                    </Typography>
-                  </div>
-                </Tooltip>
-              )}
-
-              {!disabledReason && (
-                <div
-                  className={`tc__sidebar-view-item ${selected ? 'selected' : ''}`}
-                  onClick={() => onItemClick(basicViewName)}
-                >
-                  <Typography variant="h5" color={selected ? 'inverted' : 'default'}>
-                    {getText(basicViewName, language)}
-                  </Typography>
-                </div>
-              )}
+        return disabledReason ? (
+          <Tooltip key={basicViewName} title={getText(disabledReason, language)}>
+            <div className="tc__sidebar-view-item disabled">
+              <Typography variant="h5" color="title">
+                {getText(basicViewName, language)}
+              </Typography>
             </div>
-          );
-        })}
-        {/* Advanced Section */}
-        <div className="tc__sidebar-section-title">
-          <Typography variant="h5" color="title">
-            {getText('advanced', language)}
-          </Typography>
-          <Typography variant="sub-title" color="title">
-            {getText('advancedSubTitle', language)}
-          </Typography>
-        </div>
-        {advancedViews.map(advancedViewName => {
-          let disabledReason: Words | null = null;
+          </Tooltip>
+        ) : (
+          <Button
+            key={basicViewName}
+            className={`tc__sidebar-view-item ${selected ? 'selected' : ''}`}
+            onClick={() => onItemClick(basicViewName)}
+          >
+            <Typography variant="h5" color={selected ? 'inverted' : 'default'}>
+              {getText(basicViewName, language)}
+            </Typography>
+          </Button>
+        );
+      })}
 
-          if (advancedViewName === 'mint' && mintDisabledReason) {
-            disabledReason = mintDisabledReason;
-          } else if (advancedViewName === 'swap' && swapDisabledReason) {
-            disabledReason = swapDisabledReason;
-          } else if (advancedViewName === 'provideLiquidity' && provideLiquidityDisabledReason) {
-            disabledReason = provideLiquidityDisabledReason;
-          } else if (advancedViewName === 'removeLiquidity' && removeLiquidityDisabledReason) {
-            disabledReason = removeLiquidityDisabledReason;
-          } else if (advancedViewName === 'earlyRedeem') {
-            return null;
-          }
+      {/* Advanced Section */}
+      <div className="tc__sidebar-section-title">
+        <Typography variant="h5" color="title">
+          {getText('advanced', language)}
+        </Typography>
+        <Typography variant="sub-title" color="title">
+          {getText('advancedSubTitle', language)}
+        </Typography>
+      </div>
+      {advancedViews.map(advancedViewName => {
+        let disabledReason: Words | null = null;
 
-          const selected = selectedView === advancedViewName;
-          return (
-            <div key={advancedViewName}>
-              {disabledReason && (
-                <Tooltip title={disabledReason ? getText(disabledReason, language) : ''}>
-                  <div className="tc__sidebar-view-item disabled">
-                    <Typography variant="h5" color="title">
-                      {getText(advancedViewName, language)}
-                    </Typography>
-                  </div>
-                </Tooltip>
-              )}
-              {!disabledReason && (
-                <div
-                  className={`tc__sidebar-view-item ${selected ? 'selected' : ''}`}
-                  onClick={() => onItemClick(advancedViewName)}
-                >
-                  <Typography variant="h5" color={selected ? 'inverted' : 'default'}>
-                    {getText(advancedViewName, language)}
-                  </Typography>
-                </div>
-              )}
+        if (advancedViewName === 'mint' && mintDisabledReason) {
+          disabledReason = mintDisabledReason;
+        } else if (advancedViewName === 'swap' && swapDisabledReason) {
+          disabledReason = swapDisabledReason;
+        } else if (advancedViewName === 'provideLiquidity' && provideLiquidityDisabledReason) {
+          disabledReason = provideLiquidityDisabledReason;
+        } else if (advancedViewName === 'removeLiquidity' && removeLiquidityDisabledReason) {
+          disabledReason = removeLiquidityDisabledReason;
+        } else if (advancedViewName === 'earlyRedeem') {
+          return null;
+        }
+
+        const selected = selectedView === advancedViewName;
+
+        return disabledReason ? (
+          <Tooltip key={advancedViewName} title={getText(disabledReason, language)}>
+            <div className="tc__sidebar-view-item disabled">
+              <Typography variant="h5" color="title">
+                {getText(advancedViewName, language)}
+              </Typography>
             </div>
-          );
-        })}
+          </Tooltip>
+        ) : (
+          <Button
+            key={advancedViewName}
+            className={`tc__sidebar-view-item ${selected ? 'selected' : ''}`}
+            onClick={() => onItemClick(advancedViewName)}
+          >
+            <Typography variant="h5" color={selected ? 'inverted' : 'default'}>
+              {getText(advancedViewName, language)}
+            </Typography>
+          </Button>
+        );
+      })}
+      <div className="tc__sidebar-section-footer">
+        <Typography variant="breadcrumbs" color="title" className="tc__sidebar-section-contract-addr">
+          {getText('contractAddresses', language)}
+          <InfoTooltip
+            placement="top-start"
+            content={
+              <ContractAddrTooltip blockExplorerUrl={getChainConfig(chain).blockExplorerUrl} {...contractAddresses} />
+            }
+          >
+            <InfoIcon width={14} height={14} fillColor="#7A7A7A" />
+          </InfoTooltip>
+        </Typography>
+        <ExternalLink href="https://docs.tempus.finance/" title="Gitbook">
+          <Typography variant="breadcrumbs" color="title">
+            Gitbook
+          </Typography>
+        </ExternalLink>
+        <ExternalLink href="https://tempus.finance/terms-of-service" title={getText('termsAndConditions', language)}>
+          <Typography variant="breadcrumbs" color="title">
+            {getText('termsAndConditions', language)}
+          </Typography>
+        </ExternalLink>
       </div>
     </div>
   );

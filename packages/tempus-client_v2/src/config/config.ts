@@ -74,7 +74,7 @@ const config: Config = {
         backingToken: 'USDC',
         yieldBearingToken: 'RSPT',
         spotPrice: '1',
-        decimalsForUI: 4,
+        decimalsForUI: 2,
         showEstimatesInBackingToken: true,
         tokenPrecision: {
           backingToken: 6,

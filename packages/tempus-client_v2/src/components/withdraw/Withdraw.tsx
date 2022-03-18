@@ -338,6 +338,14 @@ const Withdraw: FC<WithdrawProps> = ({ chain, onWithdraw }) => {
     );
   }, [selectedPoolAddress, decimalsForUI, userPrincipalsBalance]);
 
+  const principalsAmountToApprove = useMemo(() => {
+    if (!principalsAmount) {
+      return null;
+    }
+
+    return ethers.utils.parseUnits(principalsAmount, getTokenPrecision(selectedPoolAddress, 'principals'));
+  }, [selectedPoolAddress, principalsAmount]);
+
   const yieldsBalanceFormatted = useMemo(() => {
     if (!userYieldsBalance) {
       return null;
@@ -348,6 +356,14 @@ const Withdraw: FC<WithdrawProps> = ({ chain, onWithdraw }) => {
     );
   }, [selectedPoolAddress, decimalsForUI, userYieldsBalance]);
 
+  const yieldsAmountToApprove = useMemo(() => {
+    if (!yieldsAmount) {
+      return null;
+    }
+
+    return ethers.utils.parseUnits(yieldsAmount, getTokenPrecision(selectedPoolAddress, 'yields'));
+  }, [selectedPoolAddress, yieldsAmount]);
+
   const lpTokenBalanceFormatted = useMemo(() => {
     if (!userLPTokenBalance) {
       return null;
@@ -357,6 +373,14 @@ const Withdraw: FC<WithdrawProps> = ({ chain, onWithdraw }) => {
       decimalsForUI,
     );
   }, [selectedPoolAddress, decimalsForUI, userLPTokenBalance]);
+
+  const lpTokensAmountToApprove = useMemo(() => {
+    if (!lpTokenAmount) {
+      return null;
+    }
+
+    return ethers.utils.parseUnits(lpTokenAmount, getTokenPrecision(selectedPoolAddress, 'lpTokens'));
+  }, [selectedPoolAddress, lpTokenAmount]);
 
   const estimatedWithdrawAmountFormatted = useMemo(() => {
     if (!estimatedWithdrawData) {
@@ -454,7 +478,8 @@ const Withdraw: FC<WithdrawProps> = ({ chain, onWithdraw }) => {
               <div className="tf__flex-row-center-v-end">
                 <Approve
                   tokenToApproveTicker="Principals"
-                  amountToApprove={userPrincipalsBalance}
+                  amountToApprove={principalsAmountToApprove}
+                  userBalance={userPrincipalsBalance}
                   onApproveChange={approved => {
                     setPrincipalsApproved(approved);
                   }}
@@ -499,7 +524,8 @@ const Withdraw: FC<WithdrawProps> = ({ chain, onWithdraw }) => {
                 <div className="tf__flex-row-center-v-end">
                   <Approve
                     tokenToApproveTicker="Yields"
-                    amountToApprove={userYieldsBalance}
+                    amountToApprove={yieldsAmountToApprove}
+                    userBalance={userYieldsBalance}
                     onApproveChange={approved => {
                       setYieldsApproved(approved);
                     }}
@@ -544,7 +570,8 @@ const Withdraw: FC<WithdrawProps> = ({ chain, onWithdraw }) => {
                 <div className="tf__flex-row-center-v-end">
                   <Approve
                     tokenToApproveTicker="LP Token"
-                    amountToApprove={userLPTokenBalance}
+                    amountToApprove={lpTokensAmountToApprove}
+                    userBalance={userLPTokenBalance}
                     onApproveChange={approved => {
                       setLpTokenApproved(approved);
                     }}

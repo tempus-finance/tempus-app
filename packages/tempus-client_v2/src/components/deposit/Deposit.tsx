@@ -1,4 +1,4 @@
-import { CircularProgress } from '@material-ui/core';
+import { Button, CircularProgress } from '@material-ui/core';
 import { FC, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { ethers, BigNumber } from 'ethers';
@@ -6,7 +6,7 @@ import { catchError, of } from 'rxjs';
 import { v1 as uuid } from 'uuid';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
 import { refreshBalances } from '../../providers/balanceProviderHelper';
-import { ETH_ALLOWANCE_FOR_GAS, MILLISECONDS_IN_A_YEAR, ZERO } from '../../constants';
+import { ETH_ALLOWANCE_FOR_GAS, FIXED_APR_PRECISION, MILLISECONDS_IN_A_YEAR, ZERO } from '../../constants';
 import { LanguageContext } from '../../context/languageContext';
 import { WalletContext } from '../../context/walletContext';
 import { UserSettingsContext } from '../../context/userSettingsContext';
@@ -17,7 +17,7 @@ import getText from '../../localisation/getText';
 import { getChainConfig } from '../../utils/getConfig';
 import getTokenPrecision from '../../utils/getTokenPrecision';
 import { isZeroString } from '../../utils/isZeroString';
-import { increasePrecision, mul18f } from '../../utils/weiMath';
+import { increasePrecision, mul18f, div18f } from '../../utils/weiMath';
 import NumberUtils from '../../services/NumberUtils';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
 import Approve from '../buttons/Approve';
@@ -29,6 +29,7 @@ import SectionContainer from '../sectionContainer/SectionContainer';
 import Spacer from '../spacer/spacer';
 import InfoTooltip from '../infoTooltip/infoTooltip';
 import SelectIcon from '../icons/SelectIcon';
+import WarnIcon from '../icons/WarnIcon';
 
 import './Deposit.scss';
 
@@ -520,6 +521,19 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
     return null;
   }, [estimatedFixedApr, language]);
 
+  const estimatedFixedAprBelowThreshold = useMemo(() => {
+    if (estimatedFixedApr) {
+      const oneHundred = ethers.utils.parseUnits('100', FIXED_APR_PRECISION);
+      // this is 100%
+      const thresholdBN = ethers.utils.parseUnits('1', FIXED_APR_PRECISION);
+
+      // this is 0.01%
+      const threshold = div18f(div18f(thresholdBN, oneHundred, FIXED_APR_PRECISION), oneHundred, FIXED_APR_PRECISION);
+      return estimatedFixedApr.lt(threshold);
+    }
+    return false;
+  }, [estimatedFixedApr]);
+
   const fixedYieldAtMaturityFormatted = useMemo(() => {
     if (!fixedPrincipalsAmount || !amount || !yieldBearingToBackingToken) {
       return null;
@@ -756,12 +770,6 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
     return isYieldNegative || disabledOperations.deposit || false;
   }, [disabledOperations.deposit, isYieldNegative]);
 
-  const approveDisabled = useMemo((): boolean => {
-    const zeroAmount = isZeroString(amount);
-
-    return zeroAmount || depositDisabled;
-  }, [amount, depositDisabled]);
-
   const amountToApprove = useMemo(() => {
     let amountBigNumber;
     if (amount) {
@@ -857,7 +865,7 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
             <div className="tc__title-and-balance">
               <Typography variant="card-title">{getText('from', language)}</Typography>
               <Typography variant="body-text">
-                {getText('balance', language)} {balanceFormatted}
+                {getText('availableToDeposit', language)} {balanceFormatted}
               </Typography>
             </div>
           ) : (
@@ -880,9 +888,12 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
               onMaxClick={onClickMax}
               precision={selectedTokenPrecision}
               disabled={!selectedToken || depositDisabled}
-              // TODO - Update text in case input is disabled because of negative yield
               disabledTooltip={
-                disabledOperations.deposit ? getText('depositDisabledByConfig') : getText('selectTokenFirst', language)
+                isYieldNegative
+                  ? getText('disableInputByNegativeYield', language)
+                  : disabledOperations.deposit
+                  ? getText('depositDisabledByConfig', language)
+                  : getText('selectTokenFirst', language)
               }
             />
             {ethAllowanceForGasExceeded && (
@@ -1124,6 +1135,27 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
             }
             {tokenEstimateInProgress && <CircularProgress size={14} />}
           </SectionContainer>
+          {estimatedFixedAprBelowThreshold && (
+            <div className="tf__flex-column-center-vh">
+              <Spacer size={20} />
+              <Button color="primary" variant="contained" onClick={() => null} disabled={true}>
+                <Typography variant="button-text" color="inverted">
+                  {getText('insufficientLiquidity', language)}
+                </Typography>{' '}
+              </Button>
+              <Spacer size={15} />
+              <div className="tc__deposit_insufficient-liquidity-message">
+                <div>
+                  <WarnIcon />
+                </div>
+                <Spacer size={15} />
+                <Typography variant="dropdown-text">
+                  <span dangerouslySetInnerHTML={{ __html: getText('insufficientLiquidityMessage', language) }}></span>
+                </Typography>{' '}
+              </div>
+              <Spacer size={20} />
+            </div>
+          )}
         </div>
         <Spacer size={15} />
         <div className="tf__flex-row-center-vh">
@@ -1131,8 +1163,9 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
             tokenToApproveAddress={getSelectedTokenAddress()}
             spenderAddress={getChainConfig(chain).tempusControllerContract}
             amountToApprove={amountToApprove}
+            userBalance={getSelectedTokenBalance()}
             tokenToApproveTicker={selectedToken}
-            disabled={approveDisabled}
+            disabled={depositDisabled}
             marginRight={20}
             chain={chain}
             onApproveChange={onApproveChange}

@@ -9,6 +9,7 @@ type TypographyVariant =
   | 'h5'
   | 'sub-title'
   | 'body-text'
+  | 'breadcrumbs'
   | 'disclaimer-text'
   | 'button-text'
   | 'dropdown-text'
@@ -22,9 +23,23 @@ type TypographyVariant =
   | 'yield-card-type'
   | 'chain-badge'
   | 'wallet-info'
-  | 'wallet-info-bold';
+  | 'wallet-info-bold'
+  | 'contract-addr'
+  | 'dash-maturity-label'
+  | 'dash-maturity-date'
+  | 'dash-maturity-date-bold'
+  | 'matured-dash-label';
 
-type TypographyColor = 'default' | 'primary' | 'accent' | 'inverted' | 'link' | 'title' | 'error' | 'success';
+type TypographyColor =
+  | 'default'
+  | 'primary'
+  | 'accent'
+  | 'inverted'
+  | 'link'
+  | 'title'
+  | 'error'
+  | 'success'
+  | 'label-gray';
 
 const typographyStyleMap = new Map<TypographyVariant, CSSProperties>();
 typographyStyleMap.set('h1', {
@@ -75,6 +90,13 @@ typographyStyleMap.set('body-text', {
   fontSize: '16px',
   fontStyle: 'normal',
   lineHeight: '19px',
+});
+typographyStyleMap.set('breadcrumbs', {
+  fontFamily: 'DM Sans, sans-serif',
+  fontWeight: 500,
+  fontSize: '10px',
+  fontStyle: 'normal',
+  lineHeight: '16px',
 });
 typographyStyleMap.set('disclaimer-text', {
   fontFamily: "'Source Sans Pro', sans-serif",
@@ -174,6 +196,41 @@ typographyStyleMap.set('wallet-info-bold', {
   fontStyle: 'normal',
   lineHeight: '16px',
 });
+typographyStyleMap.set('contract-addr', {
+  fontFamily: "'Source Sans Pro', Mono, sans-serif",
+  fontWeight: 400,
+  fontSize: '12px',
+  fontStyle: 'normal',
+  lineHeight: '16px',
+});
+typographyStyleMap.set('dash-maturity-label', {
+  fontFamily: "'Source Sans Pro', Mono, sans-serif",
+  fontWeight: 600,
+  fontSize: '12px',
+  fontStyle: 'normal',
+  lineHeight: '16px',
+});
+typographyStyleMap.set('dash-maturity-date', {
+  fontFamily: "'Source Sans Pro', Mono, sans-serif",
+  fontWeight: 400,
+  fontSize: '16px',
+  fontStyle: 'normal',
+  lineHeight: '24px',
+});
+typographyStyleMap.set('dash-maturity-date-bold', {
+  fontFamily: "'Source Sans Pro', Mono, sans-serif",
+  fontWeight: 600,
+  fontSize: '16px',
+  fontStyle: 'normal',
+  lineHeight: '24px',
+});
+typographyStyleMap.set('matured-dash-label', {
+  fontFamily: "'Source Sans Pro', Mono, sans-serif",
+  fontWeight: 600,
+  fontSize: '10px',
+  fontStyle: 'normal',
+  lineHeight: '16px',
+});
 
 interface TypographyProps {
   variant: TypographyVariant;
@@ -184,49 +241,53 @@ interface TypographyProps {
   noWrap?: boolean;
 }
 
-const Typography: FC<TypographyProps & React.HTMLProps<'div'>> = props => {
-  const { html, children } = props;
+const Typography: FC<TypographyProps & React.HTMLProps<HTMLDivElement>> = props => {
+  const { variant, color, capitalize, html, align, noWrap, children, ...divProps } = props;
 
-  let color: string;
-  switch (props.color) {
+  let colorStyle: string;
+  switch (color) {
     case 'default':
-      color = '#222222';
+      colorStyle = '#222222';
       break;
     case 'primary':
-      color = '#288195';
+      colorStyle = '#288195';
       break;
     case 'accent':
-      color = '#FF6B00';
+      colorStyle = '#FF6B00';
       break;
     case 'inverted':
-      color = '#FFFFFF';
+      colorStyle = '#FFFFFF';
       break;
     case 'link':
-      color = '#288195';
+      colorStyle = '#288195';
       break;
     case 'title':
-      color = '#7A7A7A';
+      colorStyle = '#7A7A7A';
       break;
     case 'error':
-      color = '#FF0F0F';
+      colorStyle = '#FF0F0F';
       break;
     case 'success':
-      color = '#4BB543';
+      colorStyle = '#4BB543';
+      break;
+    case 'label-gray':
+      colorStyle = '#474350';
       break;
     default:
-      color = '#222222';
+      colorStyle = '#222222';
   }
 
   return (
     <div
-      className={props.className}
+      data-variant={variant}
       style={{
-        ...typographyStyleMap.get(props.variant),
-        color: color,
-        textTransform: props.capitalize ? 'capitalize' : 'none',
-        textAlign: props.align ? props.align : 'unset',
-        whiteSpace: props.noWrap ? 'nowrap' : 'unset',
+        ...typographyStyleMap.get(variant),
+        color: colorStyle,
+        textTransform: capitalize ? 'capitalize' : 'none',
+        textAlign: align ? align : 'unset',
+        whiteSpace: noWrap ? 'nowrap' : 'unset',
       }}
+      {...divProps}
     >
       {html ? parse(html) : children}
     </div>

@@ -1,6 +1,6 @@
 import { FC, useCallback, useContext, useEffect, useState } from 'react';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
-import { dynamicPoolDataState, selectedPoolState } from '../../state/PoolDataState';
+import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
 import { LanguageContext } from '../../context/languageContext';
 import { WalletContext } from '../../context/walletContext';
 import { TransactionView } from '../../interfaces/TransactionView';
@@ -29,16 +29,21 @@ const Operations: FC<OperationsProps> = props => {
 
   const selectedPool = useHookState(selectedPoolState);
   const dynamicPoolData = useHookState(dynamicPoolDataState);
-
-  const { language } = useContext(LanguageContext);
-  const { userWalletSigner } = useContext(WalletContext);
-
-  const [selectedView, setSelectedView] = useState<TransactionView>('deposit');
+  const staticPoolData = useHookState(staticPoolDataState);
 
   const poolShareBalance = dynamicPoolData[selectedPool.get()].poolShareBalance.attach(Downgraded).get();
   const userPrincipalsBalance = dynamicPoolData[selectedPool.get()].userPrincipalsBalance.get();
   const userYieldsBalance = dynamicPoolData[selectedPool.get()].userYieldsBalance.get();
   const userLPBalance = dynamicPoolData[selectedPool.get()].userLPTokenBalance.get();
+  const maturityDate = staticPoolData[selectedPool.get()].maturityDate.attach(Downgraded).get();
+
+  const { language } = useContext(LanguageContext);
+  const { userWalletSigner } = useContext(WalletContext);
+
+  const poolIsMature = maturityDate < Date.now();
+
+  // In case pool is mature we want to have 'Withdraw' selected by default.
+  const [selectedView, setSelectedView] = useState<TransactionView>(poolIsMature ? 'withdraw' : 'deposit');
 
   const handleWithdraw = useCallback(() => {
     setSelectedView('deposit');

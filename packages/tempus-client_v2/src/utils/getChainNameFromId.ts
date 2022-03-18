@@ -5,10 +5,10 @@ chainIdToChainNameMap.set(1, 'ethereum');
 chainIdToChainNameMap.set(250, 'fantom');
 chainIdToChainNameMap.set(31337, 'ethereum-fork');
 
-export default function getChainNameFromId(id: number): Chain {
+export default function getChainNameFromId(id: number): Chain | null {
   const chainName = chainIdToChainNameMap.get(id);
   if (!chainName) {
-    throw new Error(`Failed to get chain name from chain id '${id}'`);
+    return null;
   }
 
   return chainName;

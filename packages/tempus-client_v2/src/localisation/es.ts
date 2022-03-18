@@ -43,7 +43,6 @@ const es: { [word in Words]: string } = {
   apr: 'Interés Anual',
   aprRange: 'Rango APR',
   lpApr: 'APR Variable',
-  futureApr: 'Futuro TAE',
   fiat: 'Fiat',
   crypto: 'Cripto',
   pool: 'Pool',
@@ -96,7 +95,6 @@ const es: { [word in Words]: string } = {
   earlyRedemptionDisabledNoLiquidity:
     'El canje anticipado está deshabilitado actualmente debido a la falta de liquidez en el grupo que ha seleccionado. Por favor, inténtelo de nuevo más tarde.',
   availableToDeposit: 'Disponible para depositar',
-  marketImpliedYield: 'Futuro TAE',
   volume: 'Volumen',
   fees: 'Tarifas',
   term: 'Plazo',
@@ -118,6 +116,8 @@ const es: { [word in Words]: string } = {
   executing: 'Ejecutando',
   failed: 'Fallido',
   insufficientLiquidity: 'Liquidez insuficiente',
+  insufficientLiquidityMessage:
+    'Por favor, reduzca la cantidad que desea depositar. Puede obtener más información haciendo clic <a href="https://docs.tempus.finance/community/faq#why-would-a-pool-have-insufficient-liquidity" target="_blank">aquí</a>.',
   profitLoss: 'Ganancia y pérdida ',
   currentValue: 'Valor actual ',
   from: 'Origen',
@@ -125,7 +125,6 @@ const es: { [word in Words]: string } = {
   and: 'e',
   via: 'via',
   balance: 'Balance',
-  futureYield: 'Rendimiento Futuro',
   lifeTimeYield: 'Rendimiento de por vida',
   fixYourFutureYield: 'Fija tu rendimiento futuro',
   fixedYield: 'Rendimiento Fijo',
@@ -178,7 +177,22 @@ const es: { [word in Words]: string } = {
   switchNetwork: 'Cambiar red',
   unsupportedNetworkTooltipTitle: 'Red no compatible',
   unsupportedNetworkTooltipText1:
-    'La red a la que está conectada su billetera no coincide con la red seleccionada aquí.',
+    'La red a la que está conectada su billetera no es compatible con Tempus en este momento.',
   unsupportedNetworkTooltipText2: 'Conéctese a una red compatible para continuar.',
+  allPools: 'Todas las Pool',
+  backToDashboard: 'Volver a todas las Pools',
+  contractAddresses: 'Direcciones de contrato',
+  termsAndConditions: 'Términos y Condiciones',
+  copyToclipboard: 'Copiar al portapapeles',
+  copied: '¡Copiado!',
+  earliestMaturity: 'Vencimiento más cercano',
+  latestMaturity: 'Vencimiento más distante',
+  timeToMaturity: 'Tiempo que queda para el vencimiento',
+  slippageError:
+    'El deslizamiento de esta transacción es demasiado bajo. Por favor cambie la ficha en las preferencias.',
+  disableInputByNegativeYield:
+    'Los depósitos están deshabilitados actualmente ya que este grupo está experimentando rendimientos negativos. Consulte nuestros <a href="https://docs.tempus.finance/community/faq#why-would-a-pool-have-a-negative-yield" target="_blank">documentos</a> para obtener más información.',
+  poolMatured: 'POOL MADURADO',
+  matured: 'Madurado',
 };
 export default es;

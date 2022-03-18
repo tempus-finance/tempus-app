@@ -143,6 +143,18 @@ const Swap: FC<SwapProps> = props => {
     [switchTokens, tokenTo.tokenName],
   );
 
+  const amountToApprove = useMemo(() => {
+    if (!amount) {
+      return null;
+    }
+
+    if (selectedToken === 'Principals') {
+      return ethers.utils.parseUnits(amount, getTokenPrecision(selectedPoolAddress, 'principals'));
+    } else {
+      return ethers.utils.parseUnits(amount, getTokenPrecision(selectedPoolAddress, 'yields'));
+    }
+  }, [selectedPoolAddress, selectedToken, amount]);
+
   const onApproveChange = useCallback(approved => {
     setTokensApproved(approved);
   }, []);
@@ -266,12 +278,6 @@ const Swap: FC<SwapProps> = props => {
     return NumberUtils.formatToCurrency(ethers.utils.formatUnits(receiveAmount, tokenPrecision), decimalsForUI);
   }, [receiveAmount, tokenPrecision, decimalsForUI]);
 
-  const approveDisabled = useMemo((): boolean => {
-    const zeroAmount = isZeroString(amount);
-
-    return zeroAmount;
-  }, [amount]);
-
   const executeDisabled = useMemo((): boolean => {
     const zeroAmount = isZeroString(amount);
     const amountExceedsBalance = ethers.utils
@@ -329,13 +335,13 @@ const Swap: FC<SwapProps> = props => {
         <Spacer size={15} />
         <div className="tf__flex-row-center-vh">
           <Approve
-            amountToApprove={getSelectedTokenBalance()}
+            amountToApprove={amountToApprove}
+            userBalance={getSelectedTokenBalance()}
             onApproveChange={onApproveChange}
             spenderAddress={getChainConfig(chain).vaultContract}
             tokenToApproveTicker={tokenFrom.tokenName}
             tokenToApproveAddress={getSelectedTokenAddress()}
             marginRight={20}
-            disabled={approveDisabled}
             chain={chain}
           />
           <Execute
