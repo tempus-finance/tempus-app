@@ -70,7 +70,7 @@ jobs:
             apt install -y unzip > /dev/null 2>&1
             yes | unzip -o ./packages/metamask/metamask.crx -d ./packages/metamask  || true
             echo "  M  E  T  A  M  A  S  K       E  X  T  R  A  C  T  E  D  !  !  !"
-            google-chrome --version
+            chromium-browser --product-version
       - run:
           name: E2E Tests
           command: |
