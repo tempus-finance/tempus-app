@@ -1,12 +1,10 @@
 import { BigNumber, Contract, ContractTransaction, CallOverrides } from 'ethers';
-import { CONSTANTS } from 'tempus-core-services';
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
 import { ERC20 } from '../abi/ERC20';
 import ERC20ABI from '../abi/ERC20.json';
 import { TypedListener } from '../abi/commons';
-import { Ticker } from '../interfaces/Token';
-
-const { approveGasIncrease, ZERO_ETH_ADDRESS } = CONSTANTS;
+import { approveGasIncrease, ZERO_ETH_ADDRESS } from '../constants';
+import { Ticker } from '../interfaces';
 
 export type TransferEventListener = TypedListener<
   [string, string, BigNumber],
@@ -24,7 +22,7 @@ type ERC20TokenServiceParameters = {
   signerOrProvider: JsonRpcSigner | JsonRpcProvider;
 };
 
-class ERC20TokenService {
+export class ERC20TokenService {
   public contract: ERC20 | null = null;
 
   init(params: ERC20TokenServiceParameters) {
@@ -162,4 +160,3 @@ class ERC20TokenService {
     }
   }
 }
-export default ERC20TokenService;

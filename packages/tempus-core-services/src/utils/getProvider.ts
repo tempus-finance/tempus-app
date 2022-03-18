@@ -1,11 +1,13 @@
 import { JsonRpcSigner, JsonRpcProvider } from '@ethersproject/providers';
+import { ChainConfig } from '../interfaces';
 import { Chain } from '../interfaces/Chain';
 import { chainIdToChainName } from './chainUtils';
 
 export async function getProvider(
   chain: Chain,
   userWalletSigner: JsonRpcSigner | null,
-  getDefaultProvider: (chain: Chain) => JsonRpcProvider,
+  getDefaultProvider: (chain: Chain, getChainConfig: (chain: Chain) => ChainConfig) => JsonRpcProvider,
+  getChainConfig: (chain: Chain) => ChainConfig,
 ): Promise<JsonRpcProvider> {
   if (userWalletSigner) {
     const chainId = await userWalletSigner.getChainId();
@@ -15,8 +17,8 @@ export async function getProvider(
     if (userWalletChain === chain) {
       return userWalletSigner.provider;
     }
-    return getDefaultProvider(chain);
+    return getDefaultProvider(chain, getChainConfig);
   }
 
-  return getDefaultProvider(chain);
+  return getDefaultProvider(chain, getChainConfig);
 }

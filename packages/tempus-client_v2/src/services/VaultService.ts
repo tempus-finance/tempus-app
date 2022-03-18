@@ -1,19 +1,13 @@
 import { BigNumber, Contract, ethers, ContractTransaction, CallOverrides } from 'ethers';
-import { CONSTANTS } from 'tempus-core-services';
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
+import { CONSTANTS, Chain, getDefaultProvider } from 'tempus-core-services';
 import { Vault } from '../abi/Vault';
 import VaultABI from '../abi/Vault.json';
 import { TypedEvent, TypedListener } from '../abi/commons';
-import { Chain } from '../interfaces/Chain';
 import { getChainConfig } from '../utils/getConfig';
-import getDefaultProvider from './getDefaultProvider';
 import TempusAMMService from './TempusAMMService';
 
-const {
-  provideLiquidityGasIncrease,
-  removeLiquidityGasIncrease,
-  SECONDS_IN_AN_HOUR
-} = CONSTANTS;
+const { provideLiquidityGasIncrease, removeLiquidityGasIncrease, SECONDS_IN_AN_HOUR } = CONSTANTS;
 
 type VaultServiceParameters = {
   Contract: typeof Contract;
@@ -190,7 +184,7 @@ class VaultService {
       return Promise.reject();
     }
 
-    const provider = getDefaultProvider(this.chain);
+    const provider = getDefaultProvider(this.chain, getChainConfig);
     const latestBlock = await provider.getBlock('latest');
 
     const singleSwap = {

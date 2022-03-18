@@ -1,14 +1,15 @@
 import { Contract } from 'ethers';
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
 import ERC20TokenABI from '../abi/ERC20.json';
-import { Chain } from '../interfaces/Chain';
-import getDefaultProvider from './getDefaultProvider';
-import ERC20TokenService from './ERC20TokenService';
+import { ChainConfig, Chain } from '../interfaces';
+import { getDefaultProvider } from './getDefaultProvider';
+import { ERC20TokenService } from './ERC20TokenService';
 
 const ERC20TokenServiceMap: Map<string, ERC20TokenService> = new Map();
-const getERC20TokenService = (
+export const getERC20TokenService = (
   address: string,
   chain: Chain,
+  getChainConfig: (chain: Chain) => ChainConfig,
   signerOrProvider?: JsonRpcSigner | JsonRpcProvider,
 ): ERC20TokenService => {
   if (!ERC20TokenServiceMap.get(address)) {
@@ -17,7 +18,7 @@ const getERC20TokenService = (
       Contract: Contract,
       address: address,
       abi: ERC20TokenABI,
-      signerOrProvider: getDefaultProvider(chain),
+      signerOrProvider: getDefaultProvider(chain, getChainConfig),
     });
 
     ERC20TokenServiceMap.set(address, tokenService);
@@ -42,5 +43,3 @@ const getERC20TokenService = (
   }
   return service;
 };
-
-export default getERC20TokenService;

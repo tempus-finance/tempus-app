@@ -1,12 +1,11 @@
 import { ethers } from 'ethers';
-import { increasePrecision, mul18f } from 'tempus-core-services';
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
+import { Chain, getERC20TokenService, increasePrecision, mul18f } from 'tempus-core-services';
 import { TempusPool } from '../interfaces/TempusPool';
 import StatisticsService from '../services/StatisticsService';
-import getERC20TokenService from '../services/getERC20TokenService';
 import TempusPoolService from '../services/TempusPoolService';
 import { AvailableToDeposit } from '../state/PoolDataState';
-import { Chain } from '../interfaces/Chain';
+import { getChainConfig } from '../utils/getConfig';
 
 type UserBalanceDataAdapterParameters = {
   signerOrProvider: JsonRpcProvider | JsonRpcSigner;
@@ -41,10 +40,16 @@ export default class UserBalanceDataAdapter {
     }
 
     try {
-      const backingToken = this.eRC20TokenServiceGetter(tempusPool.backingTokenAddress, this.chain, userWalletSigner);
+      const backingToken = this.eRC20TokenServiceGetter(
+        tempusPool.backingTokenAddress,
+        this.chain,
+        getChainConfig,
+        userWalletSigner,
+      );
       const yieldBearingToken = this.eRC20TokenServiceGetter(
         tempusPool.yieldBearingTokenAddress,
         this.chain,
+        getChainConfig,
         userWalletSigner,
       );
       const [backingTokensAvailable, yieldTokensAvailable, backingTokenToUSD, interestRate] = await Promise.all([

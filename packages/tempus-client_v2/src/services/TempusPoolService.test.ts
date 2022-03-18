@@ -10,8 +10,8 @@ const { BigNumber } = jest.requireActual('ethers');
 jest.mock('@ethersproject/providers');
 const { JsonRpcProvider } = jest.requireMock('@ethersproject/providers');
 
-jest.mock('./getERC20TokenService');
-const getERC20TokenService = jest.requireMock('./getERC20TokenService').default;
+jest.mock('tempus-core-services');
+const { getERC20TokenService } = jest.requireMock('tempus-core-services');
 
 describe('TempusPoolService', () => {
   const mockBackingTokenAddress = 'dummy-backing-token-address';

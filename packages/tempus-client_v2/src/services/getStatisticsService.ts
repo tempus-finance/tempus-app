@@ -1,10 +1,9 @@
 import { Contract } from 'ethers';
 import { JsonRpcSigner, JsonRpcProvider } from '@ethersproject/providers';
+import { Chain, getDefaultProvider } from 'tempus-core-services';
 import StatisticsABI from '../abi/Stats.json';
 import { getChainConfig } from '../utils/getConfig';
-import { Chain } from '../interfaces/Chain';
 import StatisticsService from './StatisticsService';
-import getDefaultProvider from './getDefaultProvider';
 import getTempusAMMService from './getTempusAMMService';
 
 let statisticsServices = new Map<Chain, StatisticsService>();
@@ -14,7 +13,7 @@ const getStatisticsService = (chain: Chain, signerOrProvider?: JsonRpcSigner | J
     statisticsService.init({
       Contract: Contract,
       abi: StatisticsABI,
-      signerOrProvider: getDefaultProvider(chain),
+      signerOrProvider: getDefaultProvider(chain, getChainConfig),
       tempusAMMService: getTempusAMMService(chain),
       address: getChainConfig(chain).statisticsContract,
     });

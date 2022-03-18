@@ -1,28 +1,28 @@
 import { BigNumber, ContractTransaction, ethers } from 'ethers';
 import { JsonRpcSigner } from '@ethersproject/providers';
 import { Observable, from, of, switchMap, combineLatest, map, throwError, timer, catchError } from 'rxjs';
-import { CONSTANTS, div18f, increasePrecision, mul18f } from 'tempus-core-services';
+import {
+  CONSTANTS,
+  Chain,
+  Ticker,
+  TransferEventListener,
+  div18f,
+  getDefaultProvider,
+  getERC20TokenService,
+  increasePrecision,
+  mul18f,
+} from 'tempus-core-services';
 import TempusAMMService from '../services/TempusAMMService';
 import StatisticsService from '../services/StatisticsService';
 import TempusControllerService, { DepositedEvent, RedeemedEvent } from '../services/TempusControllerService';
 import TempusPoolService from '../services/TempusPoolService';
-import getERC20TokenService from '../services/getERC20TokenService';
 import VaultService, { SwapKind } from '../services/VaultService';
-import { TransferEventListener } from '../services/ERC20TokenService';
-import getDefaultProvider from '../services/getDefaultProvider';
 import { staticPoolDataState } from '../state/PoolDataState';
-import { Chain } from '../interfaces/Chain';
-import { Ticker } from '../interfaces/Token';
+import { getChainConfig } from '../utils/getConfig';
 import { TempusPool } from '../interfaces/TempusPool';
 import { SelectedYield } from '../interfaces/SelectedYield';
 
-const {
-  DAYS_IN_A_YEAR,
-  ONE_ETH_IN_WEI,
-  POLLING_INTERVAL,
-  SECONDS_IN_A_DAY,
-  ZERO_ETH_ADDRESS,
-} = CONSTANTS;
+const { DAYS_IN_A_YEAR, ONE_ETH_IN_WEI, POLLING_INTERVAL, SECONDS_IN_A_DAY, ZERO_ETH_ADDRESS } = CONSTANTS;
 
 export interface UserTransaction {
   event: DepositedEvent | RedeemedEvent;
@@ -189,7 +189,7 @@ export default class PoolDataAdapter {
       return Promise.reject();
     }
 
-    const tokenService = this.eRC20TokenServiceGetter(address, this.chain, signer);
+    const tokenService = this.eRC20TokenServiceGetter(address, this.chain, getChainConfig, signer);
     try {
       return await tokenService.balanceOf(userAddress);
     } catch (error) {
@@ -303,7 +303,7 @@ export default class PoolDataAdapter {
       return Promise.reject();
     }
 
-    const tokenService = this.eRC20TokenServiceGetter(tokenAddress, this.chain, signer);
+    const tokenService = this.eRC20TokenServiceGetter(tokenAddress, this.chain, getChainConfig, signer);
     try {
       return await tokenService.approve(spenderAddress, amount);
     } catch (error) {
@@ -329,7 +329,7 @@ export default class PoolDataAdapter {
         return await signer.getBalance();
       }
 
-      const tokenService = this.eRC20TokenServiceGetter(tokenAddress, this.chain, signer);
+      const tokenService = this.eRC20TokenServiceGetter(tokenAddress, this.chain, getChainConfig, signer);
 
       return await tokenService.getAllowance(userWalletAddress, spender);
     } catch (error) {
@@ -558,7 +558,7 @@ export default class PoolDataAdapter {
 
     let lpTotalSupply: BigNumber;
     try {
-      lpTotalSupply = await this.eRC20TokenServiceGetter(tempusAmm, this.chain).totalSupply();
+      lpTotalSupply = await this.eRC20TokenServiceGetter(tempusAmm, this.chain, getChainConfig).totalSupply();
       if (lpTotalSupply.isZero()) {
         return 1;
       }
@@ -723,7 +723,7 @@ export default class PoolDataAdapter {
 
     // Skip Fixed APR fetch if target block tag is older then the Tempus Pool
     if (blockTag && tempusPoolStartTime) {
-      const provider = getDefaultProvider(this.chain);
+      const provider = getDefaultProvider(this.chain, getChainConfig);
 
       const pastBlock = await provider.getBlock(blockTag);
       // Convert block timestamp from seconds to milliseconds
@@ -943,7 +943,7 @@ export default class PoolDataAdapter {
       return;
     }
 
-    const tokenContract = this.eRC20TokenServiceGetter(tokenAddress, this.chain, signer);
+    const tokenContract = this.eRC20TokenServiceGetter(tokenAddress, this.chain, getChainConfig, signer);
 
     tokenContract.onTransfer(null, userWalletAddress, listener);
   }
@@ -955,7 +955,7 @@ export default class PoolDataAdapter {
     listener: TransferEventListener,
   ) {
     if (this.eRC20TokenServiceGetter && this.chain) {
-      const tokenContract = this.eRC20TokenServiceGetter(tokenAddress, this.chain, signer);
+      const tokenContract = this.eRC20TokenServiceGetter(tokenAddress, this.chain, getChainConfig, signer);
 
       tokenContract.onTransfer(userWalletAddress, null, listener);
     }
@@ -1003,9 +1003,9 @@ export default class PoolDataAdapter {
         this.tempusPoolService.getPrincipalsTokenAddress(pool.address),
       ]);
 
-      const yieldToken = this.eRC20TokenServiceGetter(yieldTokenAddress, this.chain);
-      const principalToken = this.eRC20TokenServiceGetter(principalTokenAddress, this.chain);
-      const lpToken = this.eRC20TokenServiceGetter(pool.ammAddress, this.chain);
+      const yieldToken = this.eRC20TokenServiceGetter(yieldTokenAddress, this.chain, getChainConfig);
+      const principalToken = this.eRC20TokenServiceGetter(principalTokenAddress, this.chain, getChainConfig);
+      const lpToken = this.eRC20TokenServiceGetter(pool.ammAddress, this.chain, getChainConfig);
 
       const [userYieldSupply, userPrincipalSupply, userLpSupply] = await Promise.all([
         yieldToken.balanceOf(userWalletAddress),
@@ -1090,11 +1090,21 @@ export default class PoolDataAdapter {
           this.tempusPoolService.getYieldTokenAddress(tempusPoolAddress),
         ]);
 
-      const backingTokenService = this.eRC20TokenServiceGetter(backingTokenAddress, this.chain, signer);
-      const yieldBearingTokenService = this.eRC20TokenServiceGetter(yieldBearingTokenAddress, this.chain, signer);
-      const principalsTokenService = this.eRC20TokenServiceGetter(principalsTokenAddress, this.chain, signer);
-      const yieldsTokenService = this.eRC20TokenServiceGetter(yieldsTokenAddress, this.chain, signer);
-      const lpTokenService = this.eRC20TokenServiceGetter(tempusAMMAddress, this.chain, signer);
+      const backingTokenService = this.eRC20TokenServiceGetter(backingTokenAddress, this.chain, getChainConfig, signer);
+      const yieldBearingTokenService = this.eRC20TokenServiceGetter(
+        yieldBearingTokenAddress,
+        this.chain,
+        getChainConfig,
+        signer,
+      );
+      const principalsTokenService = this.eRC20TokenServiceGetter(
+        principalsTokenAddress,
+        this.chain,
+        getChainConfig,
+        signer,
+      );
+      const yieldsTokenService = this.eRC20TokenServiceGetter(yieldsTokenAddress, this.chain, getChainConfig, signer);
+      const lpTokenService = this.eRC20TokenServiceGetter(tempusAMMAddress, this.chain, getChainConfig, signer);
 
       return {
         backingTokenService,
@@ -1122,7 +1132,7 @@ export default class PoolDataAdapter {
       return Promise.reject();
     }
 
-    const provider = getDefaultProvider(this.chain);
+    const provider = getDefaultProvider(this.chain, getChainConfig);
     let latestBlock;
     try {
       latestBlock = await provider.getBlock('latest');

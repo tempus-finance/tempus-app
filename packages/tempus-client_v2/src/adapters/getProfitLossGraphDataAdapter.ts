@@ -1,6 +1,5 @@
 import { JsonRpcSigner } from '@ethersproject/providers';
-import getERC20TokenService from '../services/getERC20TokenService';
-import { Chain } from '../interfaces/Chain';
+import { Chain, getERC20TokenService } from 'tempus-core-services';
 import ProfitLossGraphDataAdapter from './ProfitLossGraphDataAdapter';
 
 let profitLossGraphDataAdapters = new Map<Chain, ProfitLossGraphDataAdapter>();

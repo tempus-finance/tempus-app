@@ -1,17 +1,14 @@
 import { Contract } from 'ethers';
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
-
+import { Chain, getDefaultProvider, getERC20TokenService } from 'tempus-core-services';
 import TempusPoolABI from '../abi/TempusPool.json';
 import { getChainConfig } from '../utils/getConfig';
-import { Chain } from '../interfaces/Chain';
 import TempusPoolService from './TempusPoolService';
-import getDefaultProvider from './getDefaultProvider';
-import getERC20TokenService from './getERC20TokenService';
 
 let tempusPoolServices = new Map<Chain, TempusPoolService>();
 const getTempusPoolService = (chain: Chain, signerOrProvider?: JsonRpcSigner | JsonRpcProvider) => {
   if (!tempusPoolServices.get(chain)) {
-    const defaultProvider = getDefaultProvider(chain);
+    const defaultProvider = getDefaultProvider(chain, getChainConfig);
 
     const tempusPoolService = new TempusPoolService();
     tempusPoolService.init({

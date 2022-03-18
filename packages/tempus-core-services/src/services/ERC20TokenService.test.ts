@@ -1,5 +1,5 @@
 import ERC20ABI from '../abi/ERC20.json';
-import ERC20TokenService from './ERC20TokenService';
+import { ERC20TokenService } from './ERC20TokenService';
 
 jest.mock('ethers');
 const { Contract } = jest.requireMock('ethers');
