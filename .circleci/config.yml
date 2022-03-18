@@ -54,8 +54,7 @@ jobs:
 
   e2e-test:
     docker:
-#      - image: mcr.microsoft.com/playwright:focal
-      - image: cimg/node:15.1
+      - image: mcr.microsoft.com/playwright:focal
         environment:
           WALLET_RECOVERY_PHRASE: $WALLET_RECOVERY_PHRASE
           NODE_ENV: development
@@ -65,8 +64,6 @@ jobs:
       - run:
           name: Get MetamMask
           command: |
-            chromium-browser --product-version
-            google-chrome --product-version
             mkdir -p ./packages/metamask
             wget  -O ./packages/metamask/metamask.crx "https://clients2.googleusercontent.com/crx/blobs/Acy1k0bhWzQt9ZpXun4I2HOY4h1SyiFlcc3VzJN_L298AxGPgG9FFGG9fogkmJAUqJfbvJuM4333tmdwvHXUxy2HQXlinCj6sc8aEv3JQwT-IbwAiY45kgDGUprl40LgEC_LyICCXBAx_Jj1txPhK6w/extension_10_11_1_0.crx"
             apt update > /dev/null 2>&1
@@ -76,7 +73,7 @@ jobs:
           name: E2E Tests
           command: |
             xvfb-run npm run e2e 2>&1
-            chromium-browser --product-version
+#            chromium-browser --product-version
       - persist_to_workspace:
           root: ./
           paths:

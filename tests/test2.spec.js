@@ -62,7 +62,7 @@ test.describe("POC tests", () => {
 
     async function loginToMetamask(browser) {
         const metamaskTab = await browser.newPage()
-        var fullVersion = '' + parseFloat(navigator.appVersion);
+        var fullVersion = '' + parseFloat(window.navigator.appVersion);
         var verOffset
         if ((verOffset = nAgt.indexOf("Chrome")) != -1) {
             browserName = "Chrome";
