@@ -1,5 +1,6 @@
 import { ethers } from 'ethers';
 import { FC, useContext, useEffect, useMemo, useState } from 'react';
+import { getPastDaysNumber } from 'tempus-core-services';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { AreaChart, Tooltip, Area, ResponsiveContainer } from 'recharts';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../../state/PoolDataState';
@@ -8,7 +9,6 @@ import getProfitLossGraphDataAdapter from '../../../adapters/getProfitLossGraphD
 import { WalletContext } from '../../../context/walletContext';
 import ChartDataPoint from '../../../interfaces/ChartDataPoint';
 import { Chain } from '../../../interfaces/Chain';
-import getPastDaysNumber from '../../../utils/getPastDaysNumber';
 import Typography from '../../typography/Typography';
 import ProfitLossChartTooltip from './ProfitLossChartTooltip';
 

@@ -1,5 +1,4 @@
-import { isZeroString } from '../utils/isZeroString';
-import { reverseString } from '../utils/reverseString';
+import { isZeroString, reverseString } from 'tempus-core-services';
 
 const multiplierLookup = [
   { value: 1e18, symbol: 'Q' },

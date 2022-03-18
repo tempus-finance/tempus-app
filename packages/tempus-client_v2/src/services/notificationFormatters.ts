@@ -1,6 +1,6 @@
 import { ethers, BigNumber } from 'ethers';
 import { format } from 'date-fns';
-import { CONSTANTS } from 'tempus-core-services';
+import { capitalize, CONSTANTS } from 'tempus-core-services';
 import ERC20ABI from '../abi/ERC20.json';
 import { Ticker } from '../interfaces/Token';
 import { ProtocolName } from '../interfaces/ProtocolName';
@@ -8,7 +8,6 @@ import { TempusPool } from '../interfaces/TempusPool';
 import { Chain, prettifyChainName } from '../interfaces/Chain';
 import { Locale } from '../interfaces/Locale';
 import getText from '../localisation/getText';
-import { capitalize } from '../utils/capitalizeString';
 import { getChainConfig } from '../utils/getConfig';
 import NumberUtils from './NumberUtils';
 

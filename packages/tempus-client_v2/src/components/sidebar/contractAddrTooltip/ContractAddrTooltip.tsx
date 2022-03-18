@@ -1,7 +1,7 @@
 import { FC, useCallback, useContext, useMemo, useState } from 'react';
+import { shortenAccount } from 'tempus-core-services';
 import { LocaleContext } from '../../../context/localeContext';
 import getText from '../../../localisation/getText';
-import shortenAccount from '../../../utils/shortenAccount';
 import Typography from '../../typography/Typography';
 import CopyIcon from '../../icons/CopyIcon';
 import Button from '../../common/Button';

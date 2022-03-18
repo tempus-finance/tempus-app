@@ -1,8 +1,7 @@
 import { FC, useContext, useEffect, useMemo, useState } from 'react';
 import { Downgraded, useHookstate, useState as useHookState } from '@hookstate/core';
 import { ethers, BigNumber } from 'ethers';
-import { CONSTANTS } from 'tempus-core-services';
-import getTokenPrecision from '../../utils/getTokenPrecision';
+import { CONSTANTS, getTokenPrecision } from 'tempus-core-services';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
 import { staticChainDataState } from '../../state/ChainState';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
@@ -18,6 +17,7 @@ import InfoTooltip from '../infoTooltip/infoTooltip';
 import FeesTooltip from './feesTooltip/feesTooltip';
 import AprTooltip from './aprTooltip/aprTooltip';
 import PercentageLabel from './percentageLabel/PercentageLabel';
+import { getConfig } from '../../utils/getConfig';
 
 import './Pool.scss';
 
@@ -105,7 +105,7 @@ const Pool: FC<PoolProps> = ({ chain }) => {
 
         const spotPriceParsed = ethers.utils.parseUnits(
           spotPrice,
-          getTokenPrecision(selectedPoolAddress, 'backingToken'),
+          getTokenPrecision(selectedPoolAddress, 'backingToken', getConfig()),
         );
 
         const oldFixedAPR = await poolDataAdapter.getEstimatedFixedApr(

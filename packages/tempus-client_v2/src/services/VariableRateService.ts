@@ -2,7 +2,14 @@ import { ethers, BigNumber, Contract } from 'ethers';
 import { JsonRpcSigner, JsonRpcProvider } from '@ethersproject/providers';
 import { debounceTime, from, Observable, of, switchMap } from 'rxjs';
 import { Vaults as RariVault } from 'rari-sdk';
-import { CONSTANTS, getProviderFromSignerOrProvider } from 'tempus-core-services';
+import {
+  CONSTANTS,
+  decreasePrecision,
+  getProviderFromSignerOrProvider,
+  increasePrecision,
+  wadToDai
+} from 'tempus-core-services';
+import * as coreServices from 'tempus-core-services';
 import lidoOracleABI from '../abi/LidoOracle.json';
 import AaveLendingPoolABI from '../abi/AaveLendingPool.json';
 import cERC20Token from '../abi/cERC20Token.json';
@@ -14,9 +21,7 @@ import { ProtocolName } from '../interfaces/ProtocolName';
 import { TempusPool } from '../interfaces/TempusPool';
 import { YearnData } from '../interfaces/YearnData';
 import { ChainConfig } from '../interfaces/Config';
-import { wadToDai } from '../utils/rayToDai';
 import { getChainConfig } from '../utils/getConfig';
-import { decreasePrecision, div18f, increasePrecision, mul18f } from '../utils/weiMath';
 import { Chain } from '../interfaces/Chain';
 
 const {
@@ -127,7 +132,7 @@ class VariableRateService {
     // Calculate current principals to yields ratio
     let currentPrincipalsToYieldsRatio = ethers.utils.parseUnits('1', poolConfig.tokenPrecision.principals);
     if (!principals.isZero() && !yields.isZero()) {
-      currentPrincipalsToYieldsRatio = div18f(principals, yields, poolConfig.tokenPrecision.principals);
+      currentPrincipalsToYieldsRatio = coreServices.div18f(principals, yields, poolConfig.tokenPrecision.principals);
     }
 
     // Total fees accumulated
@@ -154,8 +159,8 @@ class VariableRateService {
     });
 
     // Scale accumulated fees to 1 year duration
-    const scaledFees = mul18f(
-      div18f(
+    const scaledFees = coreServices.mul18f(
+      coreServices.div18f(
         totalFees,
         ethers.utils.parseUnits(hoursBetweenLatestAndLater, poolConfig.tokenPrecision.principals),
         poolConfig.tokenPrecision.principals,
@@ -164,7 +169,7 @@ class VariableRateService {
       poolConfig.tokenPrecision.principals,
     );
 
-    return mul18f(scaledFees, currentPrincipalsToYieldsRatio, poolConfig.tokenPrecision.principals);
+    return coreServices.mul18f(scaledFees, currentPrincipalsToYieldsRatio, poolConfig.tokenPrecision.principals);
   }
 
   private async getSwapAndPoolBalanceChangedEvents(
@@ -209,8 +214,8 @@ class VariableRateService {
     if (event.args.tokenIn === principalsAddress) {
       eventVolume = event.args.amountIn;
     } else if (event.args.tokenOut === principalsAddress) {
-      eventVolume = mul18f(
-        div18f(
+      eventVolume = coreServices.mul18f(
+        coreServices.div18f(
           adjustedSwapFeePrecision,
           ethers.utils.parseUnits('1', principalsPrecision).sub(adjustedSwapFeePrecision),
           principalsPrecision,
@@ -221,9 +226,9 @@ class VariableRateService {
     }
 
     // Calculate swap fees for current swap event
-    const swapFeesVolume = mul18f(eventVolume, adjustedSwapFeePrecision, principalsPrecision);
+    const swapFeesVolume = coreServices.mul18f(eventVolume, adjustedSwapFeePrecision, principalsPrecision);
     const liquidityProvided = principals.sub(swapFeesVolume);
-    const feePerPrincipalShare = div18f(swapFeesVolume, liquidityProvided, principalsPrecision);
+    const feePerPrincipalShare = coreServices.div18f(swapFeesVolume, liquidityProvided, principalsPrecision);
     totalFees = totalFees.add(feePerPrincipalShare);
 
     // Adjust pool balance based on swapped amounts

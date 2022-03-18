@@ -2,13 +2,12 @@ import { useContext } from 'react';
 import { CircularProgress } from '@material-ui/core';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { format, formatDistanceStrict } from 'date-fns';
-import { CONSTANTS } from 'tempus-core-services';
+import { CONSTANTS, getRangeFrom } from 'tempus-core-services';
 import { LocaleContext } from '../../../context/localeContext';
 import getText from '../../../localisation/getText';
 import Typography from '../../typography/Typography';
 import Spacer from '../../spacer/spacer';
 import { Chain, chainIdToChainName } from '../../../interfaces/Chain';
-import getRangeFrom from '../../../utils/getRangeFrom';
 import { getChainConfigForPool } from '../../../utils/getConfig';
 import {
   dynamicPoolDataState,
