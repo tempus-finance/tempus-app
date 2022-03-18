@@ -1,13 +1,12 @@
 import { ethers, BigNumber } from 'ethers';
 import { FC, useContext, useEffect, useMemo, useState } from 'react';
-import { div18f } from 'tempus-core-services';
+import { div18f, NumberUtils } from 'tempus-core-services';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
 import { Chain } from '../../interfaces/Chain';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
 import { WalletContext } from '../../context/walletContext';
 import getText from '../../localisation/getText';
-import NumberUtils from '../../services/NumberUtils';
 import SharedProps from '../../sharedProps';
 import Typography from '../typography/Typography';
 import Spacer from '../spacer/spacer';

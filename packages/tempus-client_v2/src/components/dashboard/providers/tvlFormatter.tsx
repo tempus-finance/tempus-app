@@ -1,11 +1,10 @@
 import { ethers, BigNumber } from 'ethers';
-import { CONSTANTS } from 'tempus-core-services';
+import { CONSTANTS, NumberUtils } from 'tempus-core-services';
 import { CircularProgress } from '@material-ui/core';
 import { DataTypeProvider } from '@devexpress/dx-react-grid';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { DashboardRow } from '../../../interfaces/DashboardRow';
 import { Chain, chainIdToChainName } from '../../../interfaces/Chain';
-import NumberUtils from '../../../services/NumberUtils';
 import { getChainConfigForPool } from '../../../utils/getConfig';
 import {
   dynamicPoolDataState,

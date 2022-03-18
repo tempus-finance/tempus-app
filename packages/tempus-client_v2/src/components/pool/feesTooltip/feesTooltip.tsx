@@ -1,4 +1,5 @@
 import { FC, useContext, useEffect, useMemo, useState } from 'react';
+import { NumberUtils } from 'tempus-core-services';
 import { BigNumber } from '@ethersproject/bignumber';
 import { ethers } from 'ethers';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
@@ -7,7 +8,6 @@ import getPoolDataAdapter from '../../../adapters/getPoolDataAdapter';
 import { LocaleContext } from '../../../context/localeContext';
 import { WalletContext } from '../../../context/walletContext';
 import getText from '../../../localisation/getText';
-import NumberUtils from '../../../services/NumberUtils';
 import { Chain } from '../../../interfaces/Chain';
 import Spacer from '../../spacer/spacer';
 import Typography from '../../typography/Typography';

@@ -2,7 +2,7 @@ import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { ethers, BigNumber } from 'ethers';
 import { catchError, of } from 'rxjs';
-import { CONSTANTS, getTokenPrecision, isZeroString, mul18f } from 'tempus-core-services';
+import { CONSTANTS, getTokenPrecision, isZeroString, mul18f, NumberUtils } from 'tempus-core-services';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
 import { refreshBalances } from '../../providers/balanceProviderHelper';
@@ -12,7 +12,6 @@ import { Ticker } from '../../interfaces/Token';
 import { Chain } from '../../interfaces/Chain';
 import getText from '../../localisation/getText';
 import { getChainConfig, getConfig } from '../../utils/getConfig';
-import NumberUtils from '../../services/NumberUtils';
 import Approve from '../buttons/Approve';
 import Execute from '../buttons/Execute';
 import Descriptor from '../descriptor/Descriptor';

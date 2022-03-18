@@ -1,6 +1,6 @@
 import { ethers, BigNumber } from 'ethers';
 import { format } from 'date-fns';
-import { capitalize, CONSTANTS } from 'tempus-core-services';
+import { capitalize, CONSTANTS, NumberUtils } from 'tempus-core-services';
 import ERC20ABI from '../abi/ERC20.json';
 import { Ticker } from '../interfaces/Token';
 import { ProtocolName } from '../interfaces/ProtocolName';
@@ -9,7 +9,6 @@ import { Chain, prettifyChainName } from '../interfaces/Chain';
 import { Locale } from '../interfaces/Locale';
 import getText from '../localisation/getText';
 import { getChainConfig } from '../utils/getConfig';
-import NumberUtils from './NumberUtils';
 
 const { BAL_SLIPPAGE_ERROR_CODE } = CONSTANTS;
 

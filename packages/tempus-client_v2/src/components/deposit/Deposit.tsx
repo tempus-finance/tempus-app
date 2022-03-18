@@ -1,6 +1,14 @@
 import { Button, CircularProgress } from '@material-ui/core';
 import { FC, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
-import { CONSTANTS, div18f, getTokenPrecision, increasePrecision, isZeroString, mul18f } from 'tempus-core-services';
+import {
+  CONSTANTS,
+  div18f,
+  getTokenPrecision,
+  increasePrecision,
+  isZeroString,
+  mul18f,
+  NumberUtils
+} from 'tempus-core-services';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { ethers, BigNumber } from 'ethers';
 import { catchError, of } from 'rxjs';
@@ -15,7 +23,6 @@ import { Chain } from '../../interfaces/Chain';
 import { SelectedYield } from '../../interfaces/SelectedYield';
 import getText from '../../localisation/getText';
 import { getChainConfig, getConfig } from '../../utils/getConfig';
-import NumberUtils from '../../services/NumberUtils';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
 import Approve from '../buttons/Approve';
 import Execute from '../buttons/Execute';
