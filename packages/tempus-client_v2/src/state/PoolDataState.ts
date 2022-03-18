@@ -81,6 +81,7 @@ getChainConfig('ethereum').tempusPools.forEach(tempusPoolConfig => {
     tempusFees: null,
   };
 });
+
 getChainConfig('fantom').tempusPools.forEach(tempusPoolConfig => {
   dynamicPoolDataStateInitialValue[tempusPoolConfig.address] = {
     poolShareBalance: {
