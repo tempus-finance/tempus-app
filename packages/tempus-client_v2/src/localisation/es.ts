@@ -113,6 +113,7 @@ const es: { [word in Words]: string } = {
   execute: 'Ejecutar',
   executing: 'Ejecutando',
   xxxFailed: '{{action}} Fallido',
+  xxxDeclinedMessage: '{{action}} rechazada. Inténtalo de nuevo.',
   insufficientLiquidity: 'Liquidez insuficiente',
   insufficientLiquidityMessage:
     'Por favor, reduzca la cantidad que desea depositar. Puede obtener más información haciendo clic <a href="https://docs.tempus.finance/community/faq#why-would-a-pool-have-insufficient-liquidity" target="_blank">aquí</a>.',
