@@ -1,10 +1,9 @@
 import { Contract } from 'ethers';
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
-import { Chain, getDefaultProvider } from 'tempus-core-services';
+import { Chain, getDefaultProvider, getTempusAMMService } from 'tempus-core-services';
 import TempusControllerABI from '../abi/TempusController.json';
 import { getChainConfig } from '../utils/getConfig';
 import TempusControllerService from './TempusControllerService';
-import getTempusAMMService from './getTempusAMMService';
 
 let tempusControllerServices = new Map<Chain, TempusControllerService>();
 const getTempusControllerService = (
@@ -18,7 +17,7 @@ const getTempusControllerService = (
       address: getChainConfig(chain).tempusControllerContract,
       abi: TempusControllerABI,
       signerOrProvider: getDefaultProvider(chain, getChainConfig),
-      tempusAMMService: getTempusAMMService(chain),
+      tempusAMMService: getTempusAMMService(chain, getChainConfig),
       chain,
     });
     tempusControllerServices.set(chain, tempusControllerService);
@@ -35,7 +34,7 @@ const getTempusControllerService = (
       address: getChainConfig(chain).tempusControllerContract,
       abi: TempusControllerABI,
       signerOrProvider: signerOrProvider,
-      tempusAMMService: getTempusAMMService(chain, signerOrProvider),
+      tempusAMMService: getTempusAMMService(chain, getChainConfig, signerOrProvider),
       chain,
     });
   }

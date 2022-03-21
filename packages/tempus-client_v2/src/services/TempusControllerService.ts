@@ -1,12 +1,11 @@
 import { BigNumber, Contract, ContractTransaction } from 'ethers';
-import { CONSTANTS, decreasePrecision } from 'tempus-core-services';
+import { CONSTANTS, TempusAMMService, decreasePrecision } from 'tempus-core-services';
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
 import { TempusController } from '../abi/TempusController';
 import TempusControllerABI from '../abi/TempusController.json';
 import { TypedEvent } from '../abi/commons';
 import { getChainConfig } from '../utils/getConfig';
 import { Chain } from '../interfaces/Chain';
-import TempusAMMService from './TempusAMMService';
 
 const {
   completeExitAndRedeemGasIncrease,

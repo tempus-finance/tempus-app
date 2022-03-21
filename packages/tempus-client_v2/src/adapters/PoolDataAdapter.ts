@@ -6,16 +6,16 @@ import {
   Chain,
   Ticker,
   TransferEventListener,
+  TempusAMMService,
+  TempusPoolService,
   div18f,
   getDefaultProvider,
   getERC20TokenService,
   increasePrecision,
   mul18f,
 } from 'tempus-core-services';
-import TempusAMMService from '../services/TempusAMMService';
 import StatisticsService from '../services/StatisticsService';
 import TempusControllerService, { DepositedEvent, RedeemedEvent } from '../services/TempusControllerService';
-import TempusPoolService from '../services/TempusPoolService';
 import VaultService, { SwapKind } from '../services/VaultService';
 import { staticPoolDataState } from '../state/PoolDataState';
 import { getChainConfig } from '../utils/getConfig';

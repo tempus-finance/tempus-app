@@ -1,9 +1,13 @@
 import { JsonRpcSigner } from '@ethersproject/providers';
-import { Chain, getDefaultProvider, getERC20TokenService } from 'tempus-core-services';
+import {
+  Chain,
+  getDefaultProvider,
+  getERC20TokenService,
+  getTempusAMMService,
+  getTempusPoolService,
+} from 'tempus-core-services';
 import getStatisticsService from '../services/getStatisticsService';
-import getTempusAMMService from '../services/getTempusAMMService';
 import getTempusControllerService from '../services/getTempusControllerService';
-import getTempusPoolService from '../services/getTempusPoolService';
 import getVaultService from '../services/getVaultService';
 import { getChainConfig } from '../utils/getConfig';
 import PoolDataAdapter from './PoolDataAdapter';
@@ -14,9 +18,9 @@ const getPoolDataAdapter = (chain: Chain, signerOrProvider?: JsonRpcSigner): Poo
     const poolDataAdapter = new PoolDataAdapter();
     poolDataAdapter.init({
       tempusControllerService: getTempusControllerService(chain, getDefaultProvider(chain, getChainConfig)),
-      tempusPoolService: getTempusPoolService(chain, getDefaultProvider(chain, getChainConfig)),
+      tempusPoolService: getTempusPoolService(chain, getChainConfig, getDefaultProvider(chain, getChainConfig)),
       statisticService: getStatisticsService(chain, getDefaultProvider(chain, getChainConfig)),
-      tempusAMMService: getTempusAMMService(chain, getDefaultProvider(chain, getChainConfig)),
+      tempusAMMService: getTempusAMMService(chain, getChainConfig, getDefaultProvider(chain, getChainConfig)),
       vaultService: getVaultService(chain),
       chain,
       eRC20TokenServiceGetter: getERC20TokenService,
@@ -32,9 +36,9 @@ const getPoolDataAdapter = (chain: Chain, signerOrProvider?: JsonRpcSigner): Poo
   if (signerOrProvider) {
     poolDataAdapter.init({
       tempusControllerService: getTempusControllerService(chain, signerOrProvider),
-      tempusPoolService: getTempusPoolService(chain, signerOrProvider),
+      tempusPoolService: getTempusPoolService(chain, getChainConfig, signerOrProvider),
       statisticService: getStatisticsService(chain, signerOrProvider),
-      tempusAMMService: getTempusAMMService(chain, signerOrProvider),
+      tempusAMMService: getTempusAMMService(chain, getChainConfig, signerOrProvider),
       vaultService: getVaultService(chain, signerOrProvider),
       chain,
       eRC20TokenServiceGetter: getERC20TokenService,

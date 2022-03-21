@@ -1,15 +1,12 @@
 import * as ejs from 'ethers';
 import TempusAMMABI from '../abi/TempusAMM.json';
-import * as getConfig from '../utils/getConfig';
-import TempusAMMService from './TempusAMMService';
-import TempusPoolService from './TempusPoolService';
+import { TempusAMMService } from './TempusAMMService';
 
 jest.mock('@ethersproject/providers');
 const { JsonRpcProvider } = jest.requireMock('@ethersproject/providers');
 
 describe('TempusAMMService', () => {
   let tempusAMMService: TempusAMMService;
-  let tempusPoolService: TempusPoolService;
 
   const tempusAMMAddresses = ['address-a', 'address-b', 'address-c'];
   const tempusPoolIds = ['test-pool-id-a', 'test-pool-id-b', 'test-pool-id-c'];
@@ -18,9 +15,10 @@ describe('TempusAMMService', () => {
   const mockGetPoolId = jest.fn();
   const mockTempusPool = jest.fn();
   const mockGetSwapFeePercentage = jest.fn();
-  const mockERC20TokenServiceGetter = jest.fn();
-
   const mockProvider = new JsonRpcProvider();
+  const mockGetChainConfig = jest.fn().mockReturnValue({
+    tempusPools: tempusPoolIds.map((poolId, i) => ({ poolId, address: tempusPoolAddresses[i] })),
+  } as any);
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -32,13 +30,9 @@ describe('TempusAMMService', () => {
         getSwapFeePercentage: mockGetSwapFeePercentage,
       };
     });
-    jest.spyOn(getConfig, 'getChainConfig').mockReturnValue({
-      tempusPools: tempusPoolIds.map((poolId, i) => ({ poolId, address: tempusPoolAddresses[i] })),
-    } as any);
 
     mockGetPoolId.mockImplementation(() => Promise.resolve(tempusPoolIds[0]));
     mockTempusPool.mockImplementation(() => Promise.resolve(tempusPoolAddresses[0]));
-    tempusPoolService = new TempusPoolService();
     tempusAMMService = new TempusAMMService();
 
     tempusAMMService.init({
@@ -46,9 +40,8 @@ describe('TempusAMMService', () => {
       tempusAMMAddresses,
       TempusAMMABI,
       signerOrProvider: mockProvider,
-      tempusPoolService,
       chain: 'fantom',
-      eRC20TokenServiceGetter: mockERC20TokenServiceGetter(),
+      getChainConfig: mockGetChainConfig,
     });
   });
 
@@ -67,9 +60,8 @@ describe('TempusAMMService', () => {
         tempusAMMAddresses: tempusAMMAddresses.slice(0, -1),
         TempusAMMABI,
         signerOrProvider: mockProvider,
-        tempusPoolService,
         chain: 'fantom',
-        eRC20TokenServiceGetter: mockERC20TokenServiceGetter(),
+        getChainConfig: mockGetChainConfig,
       });
 
       expect(tempusAMMService['tempusAMMMap'].size).toBe(tempusAMMAddresses.length - 1);

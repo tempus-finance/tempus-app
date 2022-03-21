@@ -2,19 +2,19 @@ import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
 import { BigNumber, CallOverrides, Contract, ethers } from 'ethers';
 import {
   CONSTANTS,
+  TempusAMMService,
   decreasePrecision,
   div18f,
   getCoingeckoRate,
   getChainlinkFeed,
   getTokenPrecision,
-  mul18f
+  mul18f,
 } from 'tempus-core-services';
 import { Stats } from '../abi/Stats';
 import StatsABI from '../abi/Stats.json';
 import { Chain } from '../interfaces/Chain';
 import { Ticker } from '../interfaces/Token';
 import { getConfig } from '../utils/getConfig';
-import TempusAMMService from './TempusAMMService';
 
 const { DEFAULT_TOKEN_PRECISION, tokenPrecision } = CONSTANTS;
 

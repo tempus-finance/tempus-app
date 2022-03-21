@@ -1,8 +1,12 @@
 import { JsonRpcSigner } from '@ethersproject/providers';
 import { Vaults as RariVault } from 'rari-sdk';
-import { Chain, getDefaultProvider, getProviderFromSignerOrProvider } from 'tempus-core-services';
-import getTempusPoolService from '../services/getTempusPoolService';
-import getTempusAMMService from '../services/getTempusAMMService';
+import {
+  Chain,
+  getDefaultProvider,
+  getProviderFromSignerOrProvider,
+  getTempusAMMService,
+  getTempusPoolService,
+} from 'tempus-core-services';
 import getVaultService from '../services/getVaultService';
 import { getChainConfig } from '../utils/getConfig';
 import VariableRateService from './VariableRateService';
@@ -13,9 +17,9 @@ const getVariableRateService = (chain: Chain, signer?: JsonRpcSigner): VariableR
     const variableRateService = new VariableRateService();
     variableRateService.init(
       getDefaultProvider(chain, getChainConfig),
-      getTempusPoolService(chain),
+      getTempusPoolService(chain, getChainConfig),
       getVaultService(chain),
-      getTempusAMMService(chain),
+      getTempusAMMService(chain, getChainConfig),
       new RariVault(getDefaultProvider(chain, getChainConfig)),
       getChainConfig(chain),
     );
@@ -30,9 +34,9 @@ const getVariableRateService = (chain: Chain, signer?: JsonRpcSigner): VariableR
   if (signer) {
     variableRateService.init(
       signer,
-      getTempusPoolService(chain, signer),
+      getTempusPoolService(chain, getChainConfig, signer),
       getVaultService(chain, signer),
-      getTempusAMMService(chain, signer),
+      getTempusAMMService(chain, getChainConfig, signer),
       new RariVault(getProviderFromSignerOrProvider(signer)),
       getChainConfig(chain),
     );

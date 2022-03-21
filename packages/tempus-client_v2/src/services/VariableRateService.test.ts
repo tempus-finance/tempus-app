@@ -1,5 +1,11 @@
 import { BigNumber, Contract, utils, providers, ethers } from 'ethers';
-import { CONSTANTS, getProviderFromSignerOrProvider, wadToDai } from 'tempus-core-services';
+import {
+  CONSTANTS,
+  TempusAMMService,
+  TempusPoolService,
+  getProviderFromSignerOrProvider,
+  wadToDai,
+} from 'tempus-core-services';
 import * as coreServices from 'tempus-core-services';
 import { JsonRpcProvider } from '@ethersproject/providers';
 import { ChainConfig } from '../interfaces/Config';
@@ -7,9 +13,7 @@ import * as getConfig from '../utils/getConfig';
 import AaveLendingPoolABI from '../abi/AaveLendingPool.json';
 import lidoOracleABI from '../abi/LidoOracle.json';
 import VariableRateService from './VariableRateService';
-import TempusPoolService from './TempusPoolService';
 import VaultService, { PoolBalanceChangedEvent, SwapEvent } from './VaultService';
-import TempusAMMService from './TempusAMMService';
 import { ProtocolName } from '../interfaces/ProtocolName';
 import cERC20Token from '../abi/cERC20Token.json';
 import { Vaults } from 'rari-sdk';
@@ -410,8 +414,8 @@ describe('VariableRateService', () => {
 
     test(
       'should return ' +
-      '((postTotalPooledEther - preTotalPooledEther) * SECONDS_IN_YEAR * ONE_ETH_IN_WEI ' +
-      '/ (preTotalPooledEther * timeElapsed))',
+        '((postTotalPooledEther - preTotalPooledEther) * SECONDS_IN_YEAR * ONE_ETH_IN_WEI ' +
+        '/ (preTotalPooledEther * timeElapsed))',
       () => {
         const preTotalPooledEther = BigNumber.from(Math.round(Math.random() * 1000) + 1);
         const postTotalPooledEther = preTotalPooledEther.add(Math.round(Math.random() * 1000) + 1);
@@ -544,7 +548,9 @@ describe('VariableRateService', () => {
           'ethereum',
           averageBlockTime,
         ),
-      ).resolves.toEqual(coreServices.mul18f(scaledFees, coreServices.div18f(mockPoolTokens.principals, mockPoolTokens.yields)));
+      ).resolves.toEqual(
+        coreServices.mul18f(scaledFees, coreServices.div18f(mockPoolTokens.principals, mockPoolTokens.yields)),
+      );
       expect(getConfig.getChainConfig).toHaveBeenCalled();
       expect(mockProvider.getBlock).toHaveBeenCalledTimes(2);
       expect(mockProvider.getBlock).toHaveBeenNthCalledWith(1, 'latest');
