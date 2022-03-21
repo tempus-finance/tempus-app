@@ -1,6 +1,6 @@
 // Services
 import { CallOverrides } from 'ethers';
-import TempusPoolService from './TempusPoolService';
+import { TempusPoolService } from './TempusPoolService';
 
 jest.mock('ethers');
 const { Contract } = jest.requireMock('ethers');
@@ -10,8 +10,8 @@ const { BigNumber } = jest.requireActual('ethers');
 jest.mock('@ethersproject/providers');
 const { JsonRpcProvider } = jest.requireMock('@ethersproject/providers');
 
-jest.mock('tempus-core-services');
-const { getERC20TokenService } = jest.requireMock('tempus-core-services');
+jest.mock('../services/getERC20TokenService');
+const { getERC20TokenService } = jest.requireMock('../services/getERC20TokenService');
 
 describe('TempusPoolService', () => {
   const mockBackingTokenAddress = 'dummy-backing-token-address';
@@ -33,6 +33,7 @@ describe('TempusPoolService', () => {
   const mockPrincipalShare = jest.fn();
   const mockNumAssetsPerYieldToken = jest.fn();
   const mockGetFeesConfig = jest.fn();
+  const getChainConfig = jest.fn();
 
   const mockSymbol = jest.fn();
 
@@ -95,6 +96,7 @@ describe('TempusPoolService', () => {
         signerOrProvider: mockProvider,
         eRC20TokenServiceGetter: getERC20TokenService,
         chain: 'fantom',
+        getChainConfig,
       });
 
       expect(instance).toBeInstanceOf(TempusPoolService);
@@ -107,7 +109,7 @@ describe('TempusPoolService', () => {
     beforeEach(() => {
       jest.clearAllMocks();
 
-      mockCurrentRate.mockImplementation((address: string, tokenAddress: string, overrides: {}) => {
+      mockCurrentRate.mockImplementation((overrides: {}) => {
         if (!overrides) {
           return Promise.resolve(BigNumber.from('10'));
         } else {
@@ -123,6 +125,7 @@ describe('TempusPoolService', () => {
         signerOrProvider: mockProvider,
         eRC20TokenServiceGetter: getERC20TokenService,
         chain: 'fantom',
+        getChainConfig,
       });
     });
 

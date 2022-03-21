@@ -1,11 +1,10 @@
 import { BigNumber, Contract, ethers, ContractTransaction, CallOverrides } from 'ethers';
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
-import { CONSTANTS, Chain, getDefaultProvider } from 'tempus-core-services';
+import { CONSTANTS, Chain, TempusAMMService, getDefaultProvider } from 'tempus-core-services';
 import { Vault } from '../abi/Vault';
 import VaultABI from '../abi/Vault.json';
 import { TypedEvent, TypedListener } from '../abi/commons';
 import { getChainConfig } from '../utils/getConfig';
-import TempusAMMService from './TempusAMMService';
 
 const { provideLiquidityGasIncrease, removeLiquidityGasIncrease, SECONDS_IN_AN_HOUR } = CONSTANTS;
 

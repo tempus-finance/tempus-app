@@ -1,10 +1,9 @@
 import { BigNumber, ethers } from 'ethers';
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
-import { CONSTANTS, Chain, Ticker, ProtocolName, getERC20TokenService } from 'tempus-core-services';
 import { TempusPool } from '../abi/TempusPool';
-import { getChainConfig } from '../utils/getConfig';
-
-const { DAYS_IN_A_YEAR, SECONDS_IN_A_DAY } = CONSTANTS;
+import { Chain, Ticker, ProtocolName, ChainConfig } from '../interfaces';
+import { DAYS_IN_A_YEAR, SECONDS_IN_A_DAY } from '../constants';
+import { getERC20TokenService } from '../services';
 
 type TempusPoolsMap = { [key: string]: TempusPool };
 
@@ -15,13 +14,15 @@ type TempusPoolServiceParameters = {
   eRC20TokenServiceGetter: typeof getERC20TokenService;
   signerOrProvider: JsonRpcSigner | JsonRpcProvider;
   chain: Chain;
+  getChainConfig: (chain: Chain) => ChainConfig;
 };
 
-class TempusPoolService {
+export class TempusPoolService {
   private chain: Chain | null = null;
   private poolAddresses: string[] = [];
   private tempusPoolsMap: TempusPoolsMap = {};
   private eRC20TokenServiceGetter: typeof getERC20TokenService | null = null;
+  private getChainConfig: ((chain: Chain) => ChainConfig) | null = null;
 
   init({
     Contract,
@@ -30,9 +31,11 @@ class TempusPoolService {
     signerOrProvider,
     chain,
     eRC20TokenServiceGetter,
+    getChainConfig,
   }: TempusPoolServiceParameters) {
     this.poolAddresses = [...tempusPoolAddresses];
     this.tempusPoolsMap = {};
+    this.getChainConfig = getChainConfig;
 
     this.poolAddresses.forEach((address: string) => {
       try {
@@ -52,7 +55,7 @@ class TempusPoolService {
 
   // TODO - Delete this function and use ticker from static pool state
   public async getBackingTokenTicker(address: string): Promise<Ticker> {
-    if (!this.eRC20TokenServiceGetter || !this.chain) {
+    if (!this.eRC20TokenServiceGetter || !this.chain || !this.getChainConfig) {
       console.error('TempusPoolService - getBackingTokenTicker() - Attempted to use service before initializing it!');
       return Promise.reject();
     }
@@ -67,14 +70,14 @@ class TempusPoolService {
         return Promise.reject(error);
       }
 
-      return this.eRC20TokenServiceGetter(backingTokenAddress, this.chain, getChainConfig).symbol();
+      return this.eRC20TokenServiceGetter(backingTokenAddress, this.chain, this.getChainConfig).symbol();
     }
     throw new Error(`Address '${address}' is not valid`);
   }
 
   // TODO - Delete this function and use ticker from static pool state
   public async getYieldBearingTokenTicker(address: string): Promise<Ticker> {
-    if (!this.eRC20TokenServiceGetter || !this.chain) {
+    if (!this.eRC20TokenServiceGetter || !this.chain || !this.getChainConfig) {
       console.error(
         'TempusPoolService - getYieldBearingTokenTicker() - Attempted to use service before initializing it!',
       );
@@ -91,7 +94,7 @@ class TempusPoolService {
         return Promise.reject(error);
       }
 
-      return this.eRC20TokenServiceGetter(yieldBearingTokenAddress, this.chain, getChainConfig).symbol();
+      return this.eRC20TokenServiceGetter(yieldBearingTokenAddress, this.chain, this.getChainConfig).symbol();
     }
     throw new Error(`Address '${address}' is not valid`);
   }
@@ -302,5 +305,3 @@ class TempusPoolService {
     throw new Error(`TempusPoolService - getFeesConfig() - Address '${address}' is not valid`);
   }
 }
-
-export default TempusPoolService;

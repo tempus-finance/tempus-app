@@ -1,13 +1,16 @@
 import { Contract } from 'ethers';
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
-import { Chain, getDefaultProvider, getERC20TokenService } from 'tempus-core-services';
+import { getDefaultProvider } from './getDefaultProvider';
+import { Chain, ChainConfig } from '../interfaces';
 import TempusAMMABI from '../abi/TempusAMM.json';
-import { getChainConfig } from '../utils/getConfig';
-import TempusAMMService from './TempusAMMService';
-import getTempusPoolService from './getTempusPoolService';
+import { TempusAMMService } from './TempusAMMService';
 
 let tempusAMMServices = new Map<Chain, TempusAMMService>();
-const getTempusAMMService = (chain: Chain, signerOrProvider?: JsonRpcSigner | JsonRpcProvider): TempusAMMService => {
+export const getTempusAMMService = (
+  chain: Chain,
+  getChainConfig: (chain: Chain) => ChainConfig,
+  signerOrProvider?: JsonRpcSigner | JsonRpcProvider,
+): TempusAMMService => {
   if (!tempusAMMServices.get(chain)) {
     const tempusAMMService = new TempusAMMService();
     tempusAMMService.init({
@@ -15,9 +18,8 @@ const getTempusAMMService = (chain: Chain, signerOrProvider?: JsonRpcSigner | Js
       tempusAMMAddresses: getChainConfig(chain).tempusPools.map(tempusPoolConfig => tempusPoolConfig.ammAddress),
       TempusAMMABI: TempusAMMABI,
       signerOrProvider: getDefaultProvider(chain, getChainConfig),
-      tempusPoolService: getTempusPoolService(chain),
-      eRC20TokenServiceGetter: getERC20TokenService,
       chain,
+      getChainConfig,
     });
     tempusAMMServices.set(chain, tempusAMMService);
   }
@@ -33,13 +35,10 @@ const getTempusAMMService = (chain: Chain, signerOrProvider?: JsonRpcSigner | Js
       tempusAMMAddresses: getChainConfig(chain).tempusPools.map(tempusPoolConfig => tempusPoolConfig.ammAddress),
       TempusAMMABI: TempusAMMABI,
       signerOrProvider: signerOrProvider,
-      tempusPoolService: getTempusPoolService(chain, signerOrProvider),
-      eRC20TokenServiceGetter: getERC20TokenService,
       chain,
+      getChainConfig,
     });
   }
 
   return tempusAMMService;
 };
-
-export default getTempusAMMService;

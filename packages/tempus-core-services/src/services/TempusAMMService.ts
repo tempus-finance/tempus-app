@@ -1,42 +1,25 @@
 import { BigNumber, Contract, ethers } from 'ethers';
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
-import { Chain, getERC20TokenService } from 'tempus-core-services';
 import { TempusAMM } from '../abi/TempusAMM';
 import TempusAMMABI from '../abi/TempusAMM.json';
-import { getChainConfig } from '../utils/getConfig';
-import { ChainConfig } from '../interfaces/Config';
-import TempusPoolService from './TempusPoolService';
-
-interface TempusPoolAddressData {
-  poolAddress: string;
-  tempusPoolId: string;
-}
+import { Chain, ChainConfig } from '../interfaces';
 
 type TempusAMMServiceParameters = {
   Contract: typeof Contract;
   tempusAMMAddresses: string[];
   TempusAMMABI: typeof TempusAMMABI;
   signerOrProvider: JsonRpcSigner | JsonRpcProvider;
-  tempusPoolService: TempusPoolService;
-  eRC20TokenServiceGetter: typeof getERC20TokenService;
   chain: Chain;
+  getChainConfig: (chain: Chain) => ChainConfig;
 };
 
-class TempusAMMService {
+export class TempusAMMService {
   private tempusAMMMap: Map<string, TempusAMM> = new Map<string, TempusAMM>();
-  private tempusPoolService: TempusPoolService | null = null;
-  private eRC20TokenServiceGetter: typeof getERC20TokenService | null = null;
 
   private chain: Chain | null = null;
   private config: ChainConfig | null = null;
 
-  public init({
-    tempusAMMAddresses,
-    signerOrProvider,
-    tempusPoolService,
-    chain,
-    eRC20TokenServiceGetter,
-  }: TempusAMMServiceParameters) {
+  public init({ tempusAMMAddresses, signerOrProvider, chain, getChainConfig }: TempusAMMServiceParameters) {
     this.tempusAMMMap.clear();
 
     tempusAMMAddresses.forEach((address: string) => {
@@ -46,9 +29,6 @@ class TempusAMMService {
         console.error('TempusAMMService - init - error setting contract', error);
       }
     });
-
-    this.tempusPoolService = tempusPoolService;
-    this.eRC20TokenServiceGetter = eRC20TokenServiceGetter;
 
     this.chain = chain;
     this.config = getChainConfig(this.chain);
@@ -151,15 +131,6 @@ class TempusAMMService {
     );
   }
 
-  private async fetchTempusPoolAddressData(tempusAMM: TempusAMM): Promise<TempusPoolAddressData> {
-    const [poolAddress, tempusPoolId] = await Promise.all([tempusAMM.tempusPool(), tempusAMM.getPoolId()]);
-
-    return {
-      poolAddress,
-      tempusPoolId,
-    };
-  }
-
   async getExpectedReturnGivenIn(address: string, amount: BigNumber, yieldShareIn: boolean) {
     const contract = this.tempusAMMMap.get(address);
     if (contract) {
@@ -199,5 +170,3 @@ class TempusAMMService {
     return principalsToWithdraw.add(yieldsToWithdraw).add(lpTokensToWithdraw).div(BigNumber.from('1000'));
   }
 }
-
-export default TempusAMMService;

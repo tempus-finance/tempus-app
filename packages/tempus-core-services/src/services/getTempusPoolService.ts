@@ -1,23 +1,29 @@
 import { Contract } from 'ethers';
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
-import { Chain, getDefaultProvider, getERC20TokenService } from 'tempus-core-services';
 import TempusPoolABI from '../abi/TempusPool.json';
-import { getChainConfig } from '../utils/getConfig';
-import TempusPoolService from './TempusPoolService';
+import { Chain, ChainConfig, TempusPool } from '../interfaces';
+import { TempusPoolService } from './TempusPoolService';
+import { getDefaultProvider } from './getDefaultProvider';
+import { getERC20TokenService } from './getERC20TokenService';
 
 let tempusPoolServices = new Map<Chain, TempusPoolService>();
-const getTempusPoolService = (chain: Chain, signerOrProvider?: JsonRpcSigner | JsonRpcProvider) => {
+export const getTempusPoolService = (
+  chain: Chain,
+  getChainConfig: (chain: Chain) => ChainConfig,
+  signerOrProvider?: JsonRpcSigner | JsonRpcProvider,
+) => {
   if (!tempusPoolServices.get(chain)) {
     const defaultProvider = getDefaultProvider(chain, getChainConfig);
 
     const tempusPoolService = new TempusPoolService();
     tempusPoolService.init({
       Contract,
-      tempusPoolAddresses: getChainConfig(chain).tempusPools.map(tempusPoolConfig => tempusPoolConfig.address),
+      tempusPoolAddresses: getChainConfig(chain).tempusPools.map((tempusPool: TempusPool) => tempusPool.address),
       TempusPoolABI: TempusPoolABI,
       signerOrProvider: defaultProvider,
       eRC20TokenServiceGetter: getERC20TokenService,
       chain,
+      getChainConfig,
     });
     tempusPoolServices.set(chain, tempusPoolService);
   }
@@ -30,15 +36,14 @@ const getTempusPoolService = (chain: Chain, signerOrProvider?: JsonRpcSigner | J
   if (signerOrProvider) {
     tempusPoolService.init({
       Contract: Contract,
-      tempusPoolAddresses: getChainConfig(chain).tempusPools.map(tempusPoolConfig => tempusPoolConfig.address),
+      tempusPoolAddresses: getChainConfig(chain).tempusPools.map((tempusPool: TempusPool) => tempusPool.address),
       TempusPoolABI: TempusPoolABI,
       signerOrProvider: signerOrProvider,
       eRC20TokenServiceGetter: getERC20TokenService,
       chain,
+      getChainConfig,
     });
   }
 
   return tempusPoolService;
 };
-
-export default getTempusPoolService;

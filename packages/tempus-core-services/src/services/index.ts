@@ -4,4 +4,8 @@ export { getChainlinkFeed } from './getChainlinkFeed';
 export { getDefaultProvider } from './getDefaultProvider';
 export { getERC20TokenService } from './getERC20TokenService';
 export { getStorageService } from './getStorageService';
+export { getTempusAMMService } from './getTempusAMMService';
+export { getTempusPoolService } from './getTempusPoolService';
 export { StorageService } from './StorageService';
+export { TempusPoolService } from './TempusPoolService';
+export { TempusAMMService } from './TempusAMMService';
