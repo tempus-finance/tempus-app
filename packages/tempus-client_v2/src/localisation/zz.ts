@@ -104,6 +104,7 @@ const zz: { [word in Words]: string } = {
   execute: '~~~~~====={{{{{(((((execute)))))}}}}}=====~~~~~',
   executing: '~~~~~====={{{{{(((((executing)))))}}}}}=====~~~~~',
   xxxFailed: '~~~~~====={{{{{(((((xxxFailed)))))}}}}}=====~~~~~',
+  xxxDeclinedMessage: '~~~~~====={{{{{(((((xxxDeclinedMessage)))))}}}}}=====~~~~~',
   insufficientLiquidity: '~~~~~====={{{{{(((((insufficientLiquidity)))))}}}}}=====~~~~~',
   insufficientLiquidityMessage: '~~~~~====={{{{{(((((insufficientLiquidityMessage)))))}}}}}=====~~~~~',
   profitLoss: '~~~~~====={{{{{(((((profitLoss)))))}}}}}=====~~~~~',

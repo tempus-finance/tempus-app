@@ -66,12 +66,19 @@ const Execute: FC<ExecuteButtonProps> = props => {
         transaction = await onExecute();
       } catch (error) {
         console.error('Failed to execute transaction!', error);
+
+        let content;
+        if ((error as any).code === 4001) {
+          content = getText('xxxDeclinedMessage', locale, { action: actionName });
+        } else {
+          content = generateFailedTransactionInfo(chain, locale, selectedPoolData, error);
+        }
         // Notify user about failed action.
         getNotificationService().warn(
           chain,
           'Transaction',
           getText('xxxFailed', locale, { action: actionName }),
-          generateFailedTransactionInfo(chain, locale, selectedPoolData, error),
+          content,
         );
         setExecuteInProgress(false);
         onExecuted(false);
