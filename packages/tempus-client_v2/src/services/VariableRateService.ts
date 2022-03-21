@@ -4,8 +4,11 @@ import { debounceTime, from, Observable, of, switchMap } from 'rxjs';
 import { Vaults as RariVault } from 'rari-sdk';
 import {
   CONSTANTS,
+  PoolBalanceChangedEvent,
   TempusAMMService,
   TempusPoolService,
+  VaultService,
+  SwapEvent,
   decreasePrecision,
   getProviderFromSignerOrProvider,
   increasePrecision,
@@ -15,7 +18,6 @@ import * as coreServices from 'tempus-core-services';
 import lidoOracleABI from '../abi/LidoOracle.json';
 import AaveLendingPoolABI from '../abi/AaveLendingPool.json';
 import cERC20Token from '../abi/cERC20Token.json';
-import VaultService, { PoolBalanceChangedEvent, SwapEvent } from '../services/VaultService';
 import { isPoolBalanceChangedEvent, isSwapEvent } from '../services/EventUtils';
 import { ProtocolName } from '../interfaces/ProtocolName';
 import { TempusPool } from '../interfaces/TempusPool';

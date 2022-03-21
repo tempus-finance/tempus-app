@@ -1,12 +1,12 @@
 import { BigNumber, Contract, ethers, ContractTransaction, CallOverrides } from 'ethers';
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
-import { CONSTANTS, Chain, TempusAMMService, getDefaultProvider } from 'tempus-core-services';
 import { Vault } from '../abi/Vault';
 import VaultABI from '../abi/Vault.json';
 import { TypedEvent, TypedListener } from '../abi/commons';
-import { getChainConfig } from '../utils/getConfig';
-
-const { provideLiquidityGasIncrease, removeLiquidityGasIncrease, SECONDS_IN_AN_HOUR } = CONSTANTS;
+import { provideLiquidityGasIncrease, removeLiquidityGasIncrease, SECONDS_IN_AN_HOUR } from '../constants';
+import { ChainConfig, Chain } from '../interfaces';
+import { TempusAMMService } from './TempusAMMService';
+import { getDefaultProvider } from './getDefaultProvider';
 
 type VaultServiceParameters = {
   Contract: typeof Contract;
@@ -15,6 +15,7 @@ type VaultServiceParameters = {
   signerOrProvider: JsonRpcProvider | JsonRpcSigner;
   tempusAMMService: TempusAMMService;
   chain: Chain;
+  getChainConfig: (chain: Chain) => ChainConfig;
 };
 
 // I need to define event types like this, because TypeChain plugin for Hardhat does not generate them.
@@ -69,17 +70,18 @@ export enum TempusAMMExitKind {
   BPT_IN_FOR_EXACT_TOKENS_OUT = 1,
 }
 
-class VaultService {
+export class VaultService {
   private chain: Chain | null = null;
   private contract: Vault | null = null;
-
+  private getChainConfig: ((chain: Chain) => ChainConfig) | null = null;
   private tempusAMMService: TempusAMMService | null = null;
 
-  public init(params: VaultServiceParameters) {
-    this.contract = new Contract(params.address, params.abi, params.signerOrProvider) as Vault;
+  public init({ address, abi, chain, tempusAMMService, getChainConfig, signerOrProvider }: VaultServiceParameters) {
+    this.contract = new Contract(address, abi, signerOrProvider) as Vault;
 
-    this.tempusAMMService = params.tempusAMMService;
-    this.chain = params.chain;
+    this.tempusAMMService = tempusAMMService;
+    this.getChainConfig = getChainConfig;
+    this.chain = chain;
   }
 
   public async getSwapEvents(filters: {
@@ -95,19 +97,20 @@ class VaultService {
     const fetchSwapEventPromises: Promise<SwapEvent[]>[] = [];
     if (!filters.forPoolId) {
       try {
-        getChainConfig(this.chain).tempusPools.forEach(tempusPool => {
-          if (!this.contract) {
-            throw new Error('VaultService - getSwapEvents() - Attempted to use VaultService before initializing it!');
-          }
+        this.getChainConfig &&
+          this.getChainConfig(this.chain).tempusPools.forEach(tempusPool => {
+            if (!this.contract) {
+              throw new Error('VaultService - getSwapEvents() - Attempted to use VaultService before initializing it!');
+            }
 
-          fetchSwapEventPromises.push(
-            this.contract.queryFilter(
-              this.contract.filters.Swap(tempusPool.poolId),
-              filters.fromBlock,
-              filters.toBlock,
-            ),
-          );
-        });
+            fetchSwapEventPromises.push(
+              this.contract.queryFilter(
+                this.contract.filters.Swap(tempusPool.poolId),
+                filters.fromBlock,
+                filters.toBlock,
+              ),
+            );
+          });
       } catch (error) {
         console.error(`VaultService - getSwapEvents() - Failed to get swap events!`, error);
         return Promise.reject(error);
@@ -137,17 +140,18 @@ class VaultService {
     const fetchEventsPromises: Promise<PoolBalanceChangedEvent[]>[] = [];
     if (!forPoolId) {
       try {
-        getChainConfig(this.chain).tempusPools.forEach(pool => {
-          if (!this.contract) {
-            throw new Error(
-              'VaultService - getPoolBalanceChangedEvents() - Attempted to use VaultService before initializing it!',
-            );
-          }
+        this.getChainConfig &&
+          this.getChainConfig(this.chain).tempusPools.forEach(pool => {
+            if (!this.contract) {
+              throw new Error(
+                'VaultService - getPoolBalanceChangedEvents() - Attempted to use VaultService before initializing it!',
+              );
+            }
 
-          fetchEventsPromises.push(
-            this.contract.queryFilter(this.contract.filters.PoolBalanceChanged(pool.poolId), fromBlock),
-          );
-        });
+            fetchEventsPromises.push(
+              this.contract.queryFilter(this.contract.filters.PoolBalanceChanged(pool.poolId), fromBlock),
+            );
+          });
       } catch (error) {
         console.error(`VaultService - getPoolBalanceChangedEvents() - Failed to get PoolBalanceChanged events!`, error);
         return Promise.reject(error);
@@ -178,12 +182,12 @@ class VaultService {
     amount: BigNumber,
     minReturn: BigNumber,
   ): Promise<ethers.ContractTransaction> {
-    if (!this.contract || !this.chain) {
+    if (!this.contract || !this.chain || !this.getChainConfig) {
       console.error('VaultService - swap() - Attempted to use VaultService before initializing it!');
       return Promise.reject();
     }
 
-    const provider = getDefaultProvider(this.chain, getChainConfig);
+    const provider = getDefaultProvider(this.chain, this.getChainConfig);
     const latestBlock = await provider.getBlock('latest');
 
     const singleSwap = {
@@ -357,5 +361,3 @@ class VaultService {
     }
   }
 }
-
-export default VaultService;

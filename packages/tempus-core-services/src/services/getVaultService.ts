@@ -1,12 +1,17 @@
 import { Contract } from 'ethers';
 import { JsonRpcSigner } from '@ethersproject/providers';
-import { Chain, getDefaultProvider, getTempusAMMService } from 'tempus-core-services';
 import VaultABI from '../abi/Vault.json';
-import VaultService from './VaultService';
-import { getChainConfig } from '../utils/getConfig';
+import { ChainConfig, Chain } from '../interfaces';
+import { getDefaultProvider } from './getDefaultProvider';
+import { getTempusAMMService } from './getTempusAMMService';
+import { VaultService } from './VaultService';
 
 let vaultServices = new Map<Chain, VaultService>();
-const getVaultService = (chain: Chain, signerOrProvider?: JsonRpcSigner): VaultService => {
+export const getVaultService = (
+  chain: Chain,
+  getChainConfig: (chain: Chain) => ChainConfig,
+  signerOrProvider?: JsonRpcSigner,
+): VaultService => {
   if (!vaultServices.get(chain)) {
     const vaultService = new VaultService();
     vaultService.init({
@@ -16,6 +21,7 @@ const getVaultService = (chain: Chain, signerOrProvider?: JsonRpcSigner): VaultS
       signerOrProvider: getDefaultProvider(chain, getChainConfig),
       tempusAMMService: getTempusAMMService(chain, getChainConfig),
       chain,
+      getChainConfig,
     });
     vaultServices.set(chain, vaultService);
   }
@@ -33,10 +39,9 @@ const getVaultService = (chain: Chain, signerOrProvider?: JsonRpcSigner): VaultS
       signerOrProvider,
       tempusAMMService: getTempusAMMService(chain, getChainConfig, signerOrProvider),
       chain,
+      getChainConfig,
     });
   }
 
   return vaultService;
 };
-
-export default getVaultService;

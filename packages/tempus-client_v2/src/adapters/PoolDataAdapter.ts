@@ -8,6 +8,8 @@ import {
   TransferEventListener,
   TempusAMMService,
   TempusPoolService,
+  VaultService,
+  SwapKind,
   div18f,
   getDefaultProvider,
   getERC20TokenService,
@@ -16,7 +18,6 @@ import {
 } from 'tempus-core-services';
 import StatisticsService from '../services/StatisticsService';
 import TempusControllerService, { DepositedEvent, RedeemedEvent } from '../services/TempusControllerService';
-import VaultService, { SwapKind } from '../services/VaultService';
 import { staticPoolDataState } from '../state/PoolDataState';
 import { getChainConfig } from '../utils/getConfig';
 import { TempusPool } from '../interfaces/TempusPool';

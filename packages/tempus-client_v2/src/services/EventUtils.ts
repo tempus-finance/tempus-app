@@ -1,7 +1,6 @@
 import { BigNumber } from 'ethers';
-import { TempusAMMService } from 'tempus-core-services';
+import { TempusAMMService, PoolBalanceChangedEvent, SwapEvent } from 'tempus-core-services';
 import { DepositedEvent, RedeemedEvent } from './TempusControllerService';
-import { PoolBalanceChangedEvent, SwapEvent } from './VaultService';
 
 /**
  * Type guard - Checks if provided event is of type DepositedEvent

@@ -1,18 +1,15 @@
 import { Contract, BigNumber, utils } from 'ethers';
 import { JsonRpcProvider } from '@ethersproject/providers';
-import * as TempusCoreServices from 'tempus-core-services';
 import VaultABI from '../abi/Vault.json';
-import VaultService, {
+import { provideLiquidityGasIncrease, removeLiquidityGasIncrease, SECONDS_IN_AN_HOUR } from '../constants';
+import { ChainConfig } from '../interfaces';
+import {
+  VaultService,
   PoolBalanceChangedEventListener,
   SwapKind,
   TempusAMMExitKind,
   TempusAMMJoinKind,
 } from './VaultService';
-import * as getConfig from '../utils/getConfig';
-import { ChainConfig } from '../interfaces/Config';
-
-const { CONSTANTS } = TempusCoreServices;
-const { provideLiquidityGasIncrease, removeLiquidityGasIncrease, SECONDS_IN_AN_HOUR } = CONSTANTS;
 
 jest.mock('@ethersproject/providers', () => ({
   ...jest.requireActual('@ethersproject/providers'),
@@ -22,10 +19,8 @@ jest.mock('ethers', () => ({
   ...jest.requireActual('ethers'),
   Contract: jest.fn(),
 }));
-jest.mock('tempus-core-services', () => ({
-  ...jest.requireActual('tempus-core-services'),
-  getDefaultProvider: jest.fn(),
-}));
+jest.mock('./getDefaultProvider');
+const { getDefaultProvider } = jest.requireMock('./getDefaultProvider');
 
 describe('VaultService', () => {
   let vaultService: VaultService;
@@ -56,12 +51,13 @@ describe('VaultService', () => {
     },
   ];
   const mockProvider = new JsonRpcProvider();
+  const mockTempusAMMService = jest.fn().mockReturnValue({});
+  const mockGetChainConfig = jest.fn();
 
   beforeEach(() => {
     jest.resetModules();
     jest.clearAllMocks();
     jest.spyOn(console, 'error').mockImplementation(() => undefined);
-    const mockTempusAMMService = jest.fn().mockReturnValue({});
 
     vaultService = new VaultService();
     vaultService.init({
@@ -71,6 +67,7 @@ describe('VaultService', () => {
       signerOrProvider: mockProvider,
       tempusAMMService: mockTempusAMMService(),
       chain: 'fantom',
+      getChainConfig: mockGetChainConfig,
     });
   });
   afterEach(jest.restoreAllMocks);
@@ -101,6 +98,7 @@ describe('VaultService', () => {
         signerOrProvider: mockProvider,
         tempusAMMService: mockTempusAMMService(),
         chain: 'fantom',
+        getChainConfig: mockGetChainConfig,
       });
 
       await expect(vaultService.getSwapEvents({})).rejects.toEqual(undefined);
@@ -111,7 +109,7 @@ describe('VaultService', () => {
 
     test('test with no forPoolId filter provided, should throw error when getting config', async () => {
       const errMessage = 'ERROR_MSG_' + Math.random().toString(36).substring(2);
-      jest.spyOn(getConfig, 'getChainConfig').mockImplementation(() => {
+      mockGetChainConfig.mockImplementationOnce(() => {
         throw new Error(errMessage);
       });
 
@@ -124,6 +122,10 @@ describe('VaultService', () => {
 
     test('test with no forPoolId filter provided, should throw error when query events', async () => {
       const errMessage = 'ERROR_MSG_' + Math.random().toString(36).substring(2);
+      mockGetChainConfig.mockImplementationOnce(() => {
+        return { tempusPools: DUMMY_TEMPUS_POOL } as ChainConfig;
+      });
+
       Reflect.set(vaultService, 'contract', {
         queryFilter: jest.fn().mockImplementation(() => {
           throw new Error(errMessage);
@@ -142,6 +144,11 @@ describe('VaultService', () => {
 
     test('test with no forPoolId filter provided, should throw error when call Swap()', async () => {
       const errMessage = 'ERROR_MSG_' + Math.random().toString(36).substring(2);
+
+      mockGetChainConfig.mockImplementationOnce(() => {
+        return { tempusPools: DUMMY_TEMPUS_POOL } as ChainConfig;
+      });
+
       Reflect.set(vaultService, 'contract', {
         queryFilter: jest.fn(),
         filters: {
@@ -159,8 +166,7 @@ describe('VaultService', () => {
     });
 
     test('test with no forPoolId filter provided, and vaultService.contract somehow goes null, should throw error', async () => {
-      const errMessage = 'ERROR_MSG_' + Math.random().toString(36).substring(2);
-      jest.spyOn(getConfig, 'getChainConfig').mockImplementation(() => {
+      mockGetChainConfig.mockImplementation(() => {
         Reflect.set(vaultService, 'contract', null);
         return { tempusPools: DUMMY_TEMPUS_POOL } as ChainConfig;
       });
@@ -175,7 +181,7 @@ describe('VaultService', () => {
       const toBlock = fromBlock + Math.round(Math.random() * 1000) + 1;
       const mockSwappedEvents = [{ aaa: Math.random().toString(36).substring(2) }];
       const mockEvent = { bbb: Math.random().toString(36).substring(2) };
-      jest.spyOn(getConfig, 'getChainConfig').mockReturnValue({ tempusPools: DUMMY_TEMPUS_POOL } as ChainConfig);
+      mockGetChainConfig.mockReturnValue({ tempusPools: DUMMY_TEMPUS_POOL } as ChainConfig);
       const mockQueryFilter = jest.fn().mockReturnValue(mockSwappedEvents);
       const mockSwap = jest.fn().mockReturnValue(mockEvent);
       Reflect.set(vaultService, 'contract', {
@@ -186,7 +192,7 @@ describe('VaultService', () => {
       });
 
       await expect(vaultService.getSwapEvents({ fromBlock, toBlock })).resolves.toEqual(mockSwappedEvents);
-      expect(getConfig.getChainConfig).toHaveBeenCalled();
+      expect(mockGetChainConfig).toHaveBeenCalled();
       expect(mockQueryFilter).toHaveBeenCalledWith(mockEvent, fromBlock, toBlock);
       expect(mockSwap).toHaveBeenCalledWith(DUMMY_TEMPUS_POOL[0].poolId);
     });
@@ -235,7 +241,7 @@ describe('VaultService', () => {
       const toBlock = fromBlock + Math.round(Math.random() * 1000) + 1;
       const mockSwappedEvents = [{ aaa: Math.random().toString(36).substring(2) }];
       const mockEvent = { bbb: Math.random().toString(36).substring(2) };
-      jest.spyOn(getConfig, 'getChainConfig').mockReturnValue({ tempusPools: DUMMY_TEMPUS_POOL } as ChainConfig);
+      mockGetChainConfig.mockReturnValue({ tempusPools: DUMMY_TEMPUS_POOL } as ChainConfig);
       const mockQueryFilter = jest.fn().mockReturnValue(mockSwappedEvents);
       const mockSwap = jest.fn().mockReturnValue(mockEvent);
       Reflect.set(vaultService, 'contract', {
@@ -261,26 +267,9 @@ describe('VaultService', () => {
       );
     });
 
-    test('test with no tempusAMMService provided when init(), should reject with an error', async () => {
-      const mockTempusAMMService = jest.fn().mockReturnValue(null);
-      vaultService = new VaultService();
-      vaultService.init({
-        Contract: Contract,
-        address: DUMMY_ADDR,
-        abi: VaultABI,
-        signerOrProvider: mockProvider,
-        tempusAMMService: mockTempusAMMService(),
-      });
-
-      await expect(vaultService.getPoolBalanceChangedEvents()).rejects.toEqual(undefined);
-      expect(console.error).toHaveBeenCalledWith(
-        'VaultService - getPoolBalanceChangedEvents() - Attempted to use VaultService before initializing it!',
-      );
-    });
-
     test('test with no forPoolId filter provided, should throw error when getting config', async () => {
       const errMessage = 'ERROR_MSG_' + Math.random().toString(36).substring(2);
-      jest.spyOn(getConfig, 'getChainConfig').mockImplementation(() => {
+      mockGetChainConfig.mockImplementation(() => {
         throw new Error(errMessage);
       });
 
@@ -293,6 +282,11 @@ describe('VaultService', () => {
 
     test('test with no forPoolId filter provided, should throw error when query events', async () => {
       const errMessage = 'ERROR_MSG_' + Math.random().toString(36).substring(2);
+
+      mockGetChainConfig.mockImplementationOnce(() => {
+        return { tempusPools: DUMMY_TEMPUS_POOL } as ChainConfig;
+      });
+
       Reflect.set(vaultService, 'contract', {
         queryFilter: jest.fn().mockImplementation(() => {
           throw new Error(errMessage);
@@ -311,6 +305,11 @@ describe('VaultService', () => {
 
     test('test with no forPoolId filter provided, should throw error when call Swap()', async () => {
       const errMessage = 'ERROR_MSG_' + Math.random().toString(36).substring(2);
+
+      mockGetChainConfig.mockImplementationOnce(() => {
+        return { tempusPools: DUMMY_TEMPUS_POOL } as ChainConfig;
+      });
+
       Reflect.set(vaultService, 'contract', {
         queryFilter: jest.fn(),
         filters: {
@@ -328,7 +327,7 @@ describe('VaultService', () => {
     });
 
     test('test with no forPoolId filter provided, and vaultService.contract somehow goes null, should throw error', async () => {
-      jest.spyOn(getConfig, 'getChainConfig').mockImplementation(() => {
+      mockGetChainConfig.mockImplementation(() => {
         Reflect.set(vaultService, 'contract', null);
         return { tempusPools: DUMMY_TEMPUS_POOL } as ChainConfig;
       });
@@ -342,7 +341,7 @@ describe('VaultService', () => {
       const fromBlock = Math.round(Math.random() * 1000);
       const mockSwappedEvents = [{ aaa: Math.random().toString(36).substring(2) }];
       const mockEvent = { bbb: Math.random().toString(36).substring(2) };
-      jest.spyOn(getConfig, 'getChainConfig').mockReturnValue({ tempusPools: DUMMY_TEMPUS_POOL } as ChainConfig);
+      mockGetChainConfig.mockReturnValue({ tempusPools: DUMMY_TEMPUS_POOL } as ChainConfig);
       const mockQueryFilter = jest.fn().mockReturnValue(mockSwappedEvents);
       const mockPoolBalanceChanged = jest.fn().mockReturnValue(mockEvent);
       Reflect.set(vaultService, 'contract', {
@@ -353,7 +352,7 @@ describe('VaultService', () => {
       });
 
       await expect(vaultService.getPoolBalanceChangedEvents('', fromBlock)).resolves.toEqual(mockSwappedEvents);
-      expect(getConfig.getChainConfig).toHaveBeenCalled();
+      expect(mockGetChainConfig).toHaveBeenCalled();
       expect(mockQueryFilter).toHaveBeenCalledWith(mockEvent, fromBlock);
       expect(mockPoolBalanceChanged).toHaveBeenCalledWith(DUMMY_TEMPUS_POOL[0].poolId);
     });
@@ -401,7 +400,7 @@ describe('VaultService', () => {
       const fromBlock = Math.round(Math.random() * 1000);
       const mockSwappedEvents = [{ aaa: Math.random().toString(36).substring(2) }];
       const mockEvent = { bbb: Math.random().toString(36).substring(2) };
-      jest.spyOn(getConfig, 'getChainConfig').mockReturnValue({ tempusPools: DUMMY_TEMPUS_POOL } as ChainConfig);
+      mockGetChainConfig.mockReturnValue({ tempusPools: DUMMY_TEMPUS_POOL } as ChainConfig);
       const mockQueryFilter = jest.fn().mockReturnValue(mockSwappedEvents);
       const mockPoolBalanceChanged = jest.fn().mockReturnValue(mockEvent);
       Reflect.set(vaultService, 'contract', {
@@ -464,9 +463,7 @@ describe('VaultService', () => {
       const mockEstimate = BigNumber.from(5);
       const mockEstimateSwap = jest.fn().mockResolvedValue(mockEstimate);
       const mockSwap = jest.fn().mockReturnValue(mockContractTransaction);
-      jest
-        .spyOn(TempusCoreServices, 'getDefaultProvider')
-        .mockReturnValue({ getBlock: mockGetBlock } as unknown as JsonRpcProvider);
+      getDefaultProvider.mockReturnValue({ getBlock: mockGetBlock } as unknown as JsonRpcProvider);
       Reflect.set(vaultService, 'contract', {
         estimateGas: {
           swap: mockEstimateSwap,
@@ -477,7 +474,7 @@ describe('VaultService', () => {
       await expect(vaultService.swap(poolId, kind, fromAddress, assetIn, assetOut, amount, minReturn)).resolves.toEqual(
         mockContractTransaction,
       );
-      expect(TempusCoreServices.getDefaultProvider).toHaveBeenCalled();
+      expect(getDefaultProvider).toHaveBeenCalled();
       expect(mockGetBlock).toHaveBeenCalledWith('latest');
       expect(mockEstimateSwap).toHaveBeenCalledWith(singleSwap, fundManagement, minReturn, ts + SECONDS_IN_AN_HOUR);
       expect(mockSwap).toHaveBeenCalledWith(singleSwap, fundManagement, minReturn, ts + SECONDS_IN_AN_HOUR, {
