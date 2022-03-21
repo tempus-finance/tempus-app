@@ -37,6 +37,10 @@ export const dashboardColumnsDefinitions = (isConnected: boolean, locale: Locale
     //   name: 'variableAPY',
     //   title: getText('lpApr', locale),
     // },
+    {
+      name: 'TVL',
+      title: getText('tvl', locale),
+    },
   ];
   const connectedColumnsDefinitions = [
     {
