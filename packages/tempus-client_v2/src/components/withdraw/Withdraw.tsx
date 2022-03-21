@@ -228,6 +228,7 @@ const Withdraw: FC<WithdrawProps> = ({ chain, onWithdraw }) => {
         isBackingToken,
         tokenPrecision.principals,
         tokenPrecision.lpTokens,
+        maturityDate,
       );
     } else {
       return Promise.resolve(undefined);
@@ -247,6 +248,7 @@ const Withdraw: FC<WithdrawProps> = ({ chain, onWithdraw }) => {
     chain,
     tokenPrecision.principals,
     tokenPrecision.lpTokens,
+    maturityDate,
   ]);
 
   // Fetch estimated withdraw amount of tokens
