@@ -302,7 +302,10 @@ const Withdraw: FC<WithdrawProps> = ({ chain, onWithdraw }) => {
 
   const onExecuted = useCallback(
     (successful: boolean, txBlockNumber?: number) => {
-      onWithdraw();
+      // Only redirect user to deposit screen if withdraw was successful.
+      if (successful) {
+        onWithdraw();
+      }
 
       if (!userWalletSigner) {
         return;
