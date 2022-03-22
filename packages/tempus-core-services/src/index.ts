@@ -12,6 +12,7 @@ export type {
   ProtocolDisplayName,
   ProtocolName,
   Ticker,
+  TempusPool,
   TokenPrecision,
   TokenTypePrecision,
   YearnData,

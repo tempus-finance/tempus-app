@@ -3,12 +3,11 @@ import { useCallback, useContext, useEffect } from 'react';
 import { CONSTANTS, getTokenPrecision } from 'tempus-core-services';
 import { useState as useHookState } from '@hookstate/core';
 import { catchError, filter, from, interval, Observable, of, startWith, Subscription, switchMap } from 'rxjs';
+import { Chain, TempusPool } from 'tempus-core-services';
 import { getChainConfig, getConfig } from '../utils/getConfig';
 import { WalletContext } from '../context/walletContext';
 import { dynamicPoolDataState } from '../state/PoolDataState';
 import getPoolDataAdapter from '../adapters/getPoolDataAdapter';
-import { Chain } from '../interfaces/Chain';
-import { TempusPool } from '../interfaces/TempusPool';
 
 const { FIXED_APR_PRECISION, POLLING_INTERVAL } = CONSTANTS;
 

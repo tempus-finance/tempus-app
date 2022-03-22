@@ -1,7 +1,7 @@
 import { BigNumber } from 'ethers';
 import { createState } from '@hookstate/core';
+import { TempusPool } from 'tempus-core-services';
 import { getChainConfig } from '../utils/getConfig';
-import { TempusPool } from '../interfaces/TempusPool';
 
 // Currently selected pool (Pool Address)
 export const selectedPoolState = createState('');

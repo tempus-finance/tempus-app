@@ -1,6 +1,5 @@
 import { FC, useMemo } from 'react';
-import { Ticker } from '../../interfaces/Token';
-import { ProtocolName } from '../../interfaces/ProtocolName';
+import { ProtocolName, Ticker } from 'tempus-core-services';
 import tokenIconsSmall from './TokenIconsSmall';
 import tokenIconsLarge from './TokenIconsLarge';
 

@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import { Table } from '@devexpress/dx-react-grid';
 import { VirtualTable } from '@devexpress/dx-react-grid-material-ui';
-import { ProtocolName } from '../../../interfaces/ProtocolName';
+import { ProtocolName } from 'tempus-core-services';
 import Typography from '../../typography/Typography';
 import TokenIcon, { getTickerFromProtocol } from '../../tokenIcon';
 

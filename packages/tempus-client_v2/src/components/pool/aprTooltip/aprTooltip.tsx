@@ -1,12 +1,12 @@
 import { FC, useContext, useEffect, useMemo, useState } from 'react';
 import { NumberUtils } from 'tempus-core-services';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
+import { Chain } from 'tempus-core-services';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../../state/PoolDataState';
 import getPoolDataAdapter from '../../../adapters/getPoolDataAdapter';
 import { LocaleContext } from '../../../context/localeContext';
 import { WalletContext } from '../../../context/walletContext';
 import getText from '../../../localisation/getText';
-import { Chain } from '../../../interfaces/Chain';
 import Typography from '../../typography/Typography';
 
 import './aprTooltip.scss';

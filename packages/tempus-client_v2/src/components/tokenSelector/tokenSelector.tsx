@@ -1,8 +1,8 @@
 import { FC, useCallback, useContext } from 'react';
 import { MenuItem, FormControl, Select } from '@material-ui/core';
+import { Ticker } from 'tempus-core-services';
 import { LocaleContext } from '../../context/localeContext';
 import getText from '../../localisation/getText';
-import { Ticker } from '../../interfaces/Token';
 import { Locale } from '../../interfaces/Locale';
 import Typography from '../typography/Typography';
 import TokenIcon from '../tokenIcon';

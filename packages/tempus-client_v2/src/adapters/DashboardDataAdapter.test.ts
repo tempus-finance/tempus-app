@@ -1,8 +1,7 @@
 import DashboardDataAdapter from './DashboardDataAdapter';
+import { ChainConfig, TempusPool } from 'tempus-core-services';
 import * as TempusCoreServices from 'tempus-core-services';
 import * as getConfig from '../utils/getConfig';
-import { ChainConfig } from '../interfaces/Config';
-import { TempusPool } from '../interfaces/TempusPool';
 import { BigNumber } from 'ethers';
 import * as rxjs from 'rxjs';
 

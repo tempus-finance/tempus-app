@@ -4,6 +4,7 @@ import {
   CONSTANTS,
   Chain,
   TempusControllerService,
+  TempusPool,
   StatisticsService,
   div18f,
   getERC20TokenService,
@@ -12,7 +13,6 @@ import {
   mul18f,
 } from 'tempus-core-services';
 import ChartDataPoint from '../interfaces/ChartDataPoint';
-import { TempusPool } from '../interfaces/TempusPool';
 import { getChainConfig, getConfig } from '../utils/getConfig';
 
 const { SECONDS_IN_A_DAY } = CONSTANTS;

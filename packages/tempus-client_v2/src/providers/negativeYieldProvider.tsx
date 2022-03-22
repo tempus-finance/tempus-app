@@ -1,9 +1,15 @@
 import { interval, startWith, Subscription } from 'rxjs';
 import { useCallback, useContext, useEffect } from 'react';
-import { CONSTANTS, Chain, getProvider, getDefaultProvider, getTempusPoolService } from 'tempus-core-services';
+import {
+  CONSTANTS,
+  Chain,
+  TempusPool,
+  getProvider,
+  getDefaultProvider,
+  getTempusPoolService,
+} from 'tempus-core-services';
 import { useState as useHookState } from '@hookstate/core';
 import { getChainConfig, getConfig } from '../utils/getConfig';
-import { TempusPool } from '../interfaces/TempusPool';
 import { dynamicPoolDataState } from '../state/PoolDataState';
 import { WalletContext } from '../context/walletContext';
 

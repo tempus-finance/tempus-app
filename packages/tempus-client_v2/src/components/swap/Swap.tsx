@@ -1,14 +1,21 @@
 import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { BigNumber, ethers } from 'ethers';
-import { getTokenPrecision, isZeroString, mul18f, NumberUtils, SwapKind } from 'tempus-core-services';
+import {
+  Chain,
+  NumberUtils,
+  PoolShares,
+  Ticker,
+  SwapKind,
+  getTokenPrecision,
+  isZeroString,
+  mul18f,
+} from 'tempus-core-services';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
 import { refreshBalances } from '../../providers/balanceProviderHelper';
 import { LocaleContext } from '../../context/localeContext';
 import { WalletContext } from '../../context/walletContext';
 import { UserSettingsContext } from '../../context/userSettingsContext';
-import { PoolShares, Ticker } from '../../interfaces/Token';
-import { Chain } from '../../interfaces/Chain';
 import getText from '../../localisation/getText';
 import { getChainConfig, getConfig } from '../../utils/getConfig';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';

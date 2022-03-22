@@ -2,7 +2,7 @@ import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react
 import { ethers, BigNumber } from 'ethers';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { combineLatest } from 'rxjs';
-import { CONSTANTS, getTokenPrecision, isZeroString, mul18f, NumberUtils } from 'tempus-core-services';
+import { CONSTANTS, Chain, Ticker, getTokenPrecision, isZeroString, mul18f, NumberUtils } from 'tempus-core-services';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
 import { refreshBalances } from '../../providers/balanceProviderHelper';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
@@ -10,8 +10,6 @@ import { WalletContext } from '../../context/walletContext';
 import { LocaleContext } from '../../context/localeContext';
 import { UserSettingsContext } from '../../context/userSettingsContext';
 import getText from '../../localisation/getText';
-import { Ticker } from '../../interfaces/Token';
-import { Chain } from '../../interfaces/Chain';
 import { getChainConfig, getConfig } from '../../utils/getConfig';
 import Approve from '../buttons/Approve';
 import Execute from '../buttons/Execute';
@@ -337,7 +335,10 @@ const Withdraw: FC<WithdrawProps> = ({ chain, onWithdraw }) => {
       return null;
     }
     return NumberUtils.formatToCurrency(
-      ethers.utils.formatUnits(userPrincipalsBalance, getTokenPrecision(selectedPoolAddress, 'principals', getConfig())),
+      ethers.utils.formatUnits(
+        userPrincipalsBalance,
+        getTokenPrecision(selectedPoolAddress, 'principals', getConfig()),
+      ),
       decimalsForUI,
     );
   }, [selectedPoolAddress, decimalsForUI, userPrincipalsBalance]);

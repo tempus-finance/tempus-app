@@ -1,7 +1,7 @@
 import * as getCookie from 'tempus-core-services/dist/utils/getCookie';
+import { Config } from 'tempus-core-services';
 import { getConfig, getConfigForPoolWithId, getConfigForPoolWithAddress } from './getConfig';
 import config from '../config/config';
-import { Config } from '../interfaces/Config';
 
 describe('getConfig', () => {
   const MOCK_TEMPUS_POOL = [

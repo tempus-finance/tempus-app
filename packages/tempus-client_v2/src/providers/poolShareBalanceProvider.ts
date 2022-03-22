@@ -1,7 +1,6 @@
 import { JsonRpcSigner } from '@ethersproject/providers';
 import { BigNumber, Contract } from 'ethers';
-import { VaultABI } from 'tempus-core-services';
-import { Chain } from '../interfaces/Chain';
+import { Chain, VaultABI } from 'tempus-core-services';
 import { dynamicPoolDataState } from '../state/PoolDataState';
 import { getChainConfig, getConfigForPoolWithId } from '../utils/getConfig';
 
