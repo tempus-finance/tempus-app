@@ -1,20 +1,19 @@
 import { BigNumber, Contract, ContractTransaction } from 'ethers';
-import { CONSTANTS, TempusAMMService, decreasePrecision } from 'tempus-core-services';
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
+import { TypedEvent } from '../abi/commons';
 import { TempusController } from '../abi/TempusController';
 import TempusControllerABI from '../abi/TempusController.json';
-import { TypedEvent } from '../abi/commons';
-import { getChainConfig } from '../utils/getConfig';
-import { Chain } from '../interfaces/Chain';
-
-const {
+import {
   completeExitAndRedeemGasIncrease,
   depositAndFixGasIncrease,
   depositAndProvideLiquidityGasIncrease,
   depositBackingGasIncrease,
   depositYieldBearingGasIncrease,
   INFINITE_DEADLINE,
-} = CONSTANTS;
+} from '../constants';
+import { Chain, ChainConfig } from '../interfaces';
+import { decreasePrecision } from '../utils';
+import { TempusAMMService } from './TempusAMMService';
 
 type TempusControllerServiceParameters = {
   Contract: typeof Contract;
@@ -23,6 +22,7 @@ type TempusControllerServiceParameters = {
   signerOrProvider: JsonRpcProvider | JsonRpcSigner;
   tempusAMMService: TempusAMMService;
   chain: Chain;
+  getChainConfig: (chain: Chain) => ChainConfig;
 };
 
 // I need to define event types like this, because TypeChain plugin for Hardhat does not generate them.
@@ -55,21 +55,22 @@ export type RedeemedEvent = TypedEvent<
   }
 >;
 
-class TempusControllerService {
+export class TempusControllerService {
   private chain: Chain | null = null;
   private contract: TempusController | null = null;
+  private getChainConfig: ((chain: Chain) => ChainConfig) | null = null;
 
   private tempusAMMService: TempusAMMService | null = null;
 
-  init(params: TempusControllerServiceParameters) {
+  init({ address, abi, signerOrProvider, chain, getChainConfig, tempusAMMService }: TempusControllerServiceParameters) {
     try {
-      this.contract = new Contract(params.address, params.abi, params.signerOrProvider) as TempusController;
+      this.contract = new Contract(address, abi, signerOrProvider) as TempusController;
     } catch (error) {
       console.error('TempusControllerService - init', error);
     }
-
-    this.chain = params.chain;
-    this.tempusAMMService = params.tempusAMMService;
+    this.getChainConfig = getChainConfig;
+    this.chain = chain;
+    this.tempusAMMService = tempusAMMService;
   }
 
   public async getDepositedEvents(filters: {
@@ -244,14 +245,14 @@ class TempusControllerService {
     principalsPrecision: number,
     lpTokenPrecision: number,
   ): Promise<ContractTransaction> {
-    if (!this.contract || !this.tempusAMMService || !this.chain) {
+    if (!this.contract || !this.tempusAMMService || !this.chain || !this.getChainConfig) {
       console.error(
         'TempusControllerService - exitTempusAmmAndRedeem() - Attempted to use TempusControllerService before initializing it!',
       );
       return Promise.reject();
     }
 
-    const tempusPoolConfig = getChainConfig(this.chain).tempusPools.find(
+    const tempusPoolConfig = this.getChainConfig(this.chain).tempusPools.find(
       tempusPoolConfig => tempusPoolConfig.ammAddress === tempusAMM,
     );
     if (!tempusPoolConfig) {
@@ -381,5 +382,3 @@ class TempusControllerService {
     return this.contract.redeemToYieldBearing(tempusPool, amountOfShares, amountOfShares, userWalletAddress);
   }
 }
-
-export default TempusControllerService;

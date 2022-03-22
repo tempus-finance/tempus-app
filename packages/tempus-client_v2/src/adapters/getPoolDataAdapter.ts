@@ -4,11 +4,11 @@ import {
   getDefaultProvider,
   getERC20TokenService,
   getTempusAMMService,
+  getTempusControllerService,
   getTempusPoolService,
   getStatisticsService,
   getVaultService,
 } from 'tempus-core-services';
-import getTempusControllerService from '../services/getTempusControllerService';
 import { getConfig, getChainConfig } from '../utils/getConfig';
 import PoolDataAdapter from './PoolDataAdapter';
 
@@ -17,7 +17,11 @@ const getPoolDataAdapter = (chain: Chain, signerOrProvider?: JsonRpcSigner): Poo
   if (!poolDataAdapters.get(chain)) {
     const poolDataAdapter = new PoolDataAdapter();
     poolDataAdapter.init({
-      tempusControllerService: getTempusControllerService(chain, getDefaultProvider(chain, getChainConfig)),
+      tempusControllerService: getTempusControllerService(
+        chain,
+        getChainConfig,
+        getDefaultProvider(chain, getChainConfig),
+      ),
       tempusPoolService: getTempusPoolService(chain, getChainConfig, getDefaultProvider(chain, getChainConfig)),
       statisticService: getStatisticsService(
         chain,
@@ -40,7 +44,7 @@ const getPoolDataAdapter = (chain: Chain, signerOrProvider?: JsonRpcSigner): Poo
 
   if (signerOrProvider) {
     poolDataAdapter.init({
-      tempusControllerService: getTempusControllerService(chain, signerOrProvider),
+      tempusControllerService: getTempusControllerService(chain, getChainConfig, signerOrProvider),
       tempusPoolService: getTempusPoolService(chain, getChainConfig, signerOrProvider),
       statisticService: getStatisticsService(chain, getConfig, getChainConfig, signerOrProvider),
       tempusAMMService: getTempusAMMService(chain, getChainConfig, signerOrProvider),

@@ -4,10 +4,13 @@ import { Observable, from, of, switchMap, combineLatest, map, throwError, timer,
 import {
   CONSTANTS,
   Chain,
+  DepositedEvent,
   Ticker,
+  TempusControllerService,
   TransferEventListener,
   TempusAMMService,
   TempusPoolService,
+  RedeemedEvent,
   StatisticsService,
   VaultService,
   SwapKind,
@@ -17,7 +20,6 @@ import {
   increasePrecision,
   mul18f,
 } from 'tempus-core-services';
-import TempusControllerService, { DepositedEvent, RedeemedEvent } from '../services/TempusControllerService';
 import { staticPoolDataState } from '../state/PoolDataState';
 import { getChainConfig } from '../utils/getConfig';
 import { TempusPool } from '../interfaces/TempusPool';

@@ -1,5 +1,6 @@
 import { BigNumber } from 'ethers';
-import { TempusAMMService, PoolBalanceChangedEvent, SwapEvent } from 'tempus-core-services';
+import { TempusAMMService } from './TempusAMMService';
+import { PoolBalanceChangedEvent, SwapEvent } from './VaultService';
 import { DepositedEvent, RedeemedEvent } from './TempusControllerService';
 
 /**
