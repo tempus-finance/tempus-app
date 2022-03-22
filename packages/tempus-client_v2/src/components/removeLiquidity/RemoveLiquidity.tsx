@@ -184,7 +184,7 @@ const RemoveLiquidity: FC<RemoveLiquidityProps> = props => {
     if (!userLPTokenBalance) {
       return null;
     }
-    return NumberUtils.formatToCurrency(ethers.utils.formatEther(userLPTokenBalance), decimalsForUI);
+    return NumberUtils.formatToCurrency(ethers.utils.formatEther(userLPTokenBalance), decimalsForUI, true);
   }, [decimalsForUI, userLPTokenBalance]);
 
   const estimatedPrincipalsFormatted = useMemo(() => {
@@ -194,6 +194,7 @@ const RemoveLiquidity: FC<RemoveLiquidityProps> = props => {
     return NumberUtils.formatToCurrency(
       ethers.utils.formatUnits(estimatedPrincipals, tokenPrecision.principals),
       decimalsForUI,
+      true,
     );
   }, [estimatedPrincipals, decimalsForUI, tokenPrecision.principals]);
 
@@ -204,6 +205,7 @@ const RemoveLiquidity: FC<RemoveLiquidityProps> = props => {
     return NumberUtils.formatToCurrency(
       ethers.utils.formatUnits(estimatedYields, tokenPrecision.yields),
       decimalsForUI,
+      true,
     );
   }, [estimatedYields, decimalsForUI, tokenPrecision.yields]);
 

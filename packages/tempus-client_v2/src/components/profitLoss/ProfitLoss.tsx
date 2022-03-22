@@ -86,7 +86,12 @@ const ProfitLoss: FC<ProfitLossProps> = ({ chain }) => {
     if (!userBalanceUSD) {
       return null;
     }
-    return NumberUtils.formatToCurrency(ethers.utils.formatUnits(userBalanceUSD, tokenPrecision.backingToken), 2, '$');
+    return NumberUtils.formatToCurrency(
+      ethers.utils.formatUnits(userBalanceUSD, tokenPrecision.backingToken),
+      2,
+      true,
+      '$',
+    );
   }, [userBalanceUSD, tokenPrecision.backingToken]);
 
   return (

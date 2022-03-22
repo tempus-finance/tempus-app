@@ -409,6 +409,7 @@ const ProvideLiquidity: FC<ProvideLiquidityProps> = props => {
     return NumberUtils.formatToCurrency(
       ethers.utils.formatUnits(userPrincipalsBalance, principalsPrecision),
       decimalsForUI,
+      true,
     );
   }, [decimalsForUI, principalsPrecision, userPrincipalsBalance]);
 
@@ -416,14 +417,22 @@ const ProvideLiquidity: FC<ProvideLiquidityProps> = props => {
     if (!userYieldsBalance) {
       return null;
     }
-    return NumberUtils.formatToCurrency(ethers.utils.formatUnits(userYieldsBalance, yieldsPrecision), decimalsForUI);
+    return NumberUtils.formatToCurrency(
+      ethers.utils.formatUnits(userYieldsBalance, yieldsPrecision),
+      decimalsForUI,
+      true,
+    );
   }, [userYieldsBalance, yieldsPrecision, decimalsForUI]);
 
   const expectedLPTokensFormatted = useMemo(() => {
     if (!expectedLPTokens) {
       return null;
     }
-    return NumberUtils.formatToCurrency(ethers.utils.formatUnits(expectedLPTokens, lpTokensPrecision), decimalsForUI);
+    return NumberUtils.formatToCurrency(
+      ethers.utils.formatUnits(expectedLPTokens, lpTokensPrecision),
+      decimalsForUI,
+      true,
+    );
   }, [expectedLPTokens, lpTokensPrecision, decimalsForUI]);
 
   const executeDisabled = useMemo(() => {

@@ -164,6 +164,7 @@ const Mint: FC<MintInProps> = ({ narrow, chain }) => {
     return NumberUtils.formatToCurrency(
       ethers.utils.formatUnits(currentBalance, selectedTokenPrecision),
       decimalsForUI,
+      true,
     );
   }, [decimalsForUI, getSelectedTokenBalance, selectedTokenPrecision]);
 
@@ -175,6 +176,7 @@ const Mint: FC<MintInProps> = ({ narrow, chain }) => {
       // TODO - In case principalsPrecision !== yieldsPrecision this is not going to work.
       ethers.utils.formatUnits(estimatedTokens, tokenPrecision.principals),
       decimalsForUI,
+      true,
     );
   }, [decimalsForUI, estimatedTokens, tokenPrecision.principals]);
 
@@ -189,7 +191,7 @@ const Mint: FC<MintInProps> = ({ narrow, chain }) => {
       tokenPrecision.backingToken,
     );
 
-    return NumberUtils.formatToCurrency(ethers.utils.formatUnits(usdValue, tokenPrecision.backingToken), 2, '$');
+    return NumberUtils.formatToCurrency(ethers.utils.formatUnits(usdValue, tokenPrecision.backingToken), 2, true, '$');
   }, [usdRate, amount, tokenPrecision.backingToken]);
 
   const mintDisabled = useMemo((): boolean => {

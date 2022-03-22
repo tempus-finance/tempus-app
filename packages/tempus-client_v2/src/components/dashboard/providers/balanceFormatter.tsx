@@ -63,6 +63,7 @@ const BalanceFormatter = (props: DataTypeProvider.ValueFormatterProps) => {
         // TODO - Use backing token precision from child items
         ethers.utils.formatUnits(balance, tokenPrecision[row.token]),
         2,
+        true,
       )}`;
     } else {
       // assuming same token on different chain share the same decimal display on UI
@@ -75,6 +76,7 @@ const BalanceFormatter = (props: DataTypeProvider.ValueFormatterProps) => {
           {NumberUtils.formatWithMultiplier(
             ethers.utils.formatUnits(balance, tokenPrecision[row.token]),
             decimalsForUI,
+            true,
           )}
           <Spacer size={5} />
           {row.token}
