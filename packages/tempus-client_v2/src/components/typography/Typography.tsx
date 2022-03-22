@@ -1,4 +1,4 @@
-import React, { CSSProperties, FC } from 'react';
+import React, { CSSProperties, FC, memo } from 'react';
 import parse from 'html-react-parser';
 
 type TypographyVariant =
@@ -285,4 +285,4 @@ const Typography: FC<TypographyProps & React.HTMLProps<HTMLDivElement>> = props 
     </div>
   );
 };
-export default Typography;
+export default memo(Typography);

@@ -1,4 +1,4 @@
-import { FC, useContext } from 'react';
+import { FC, memo, ReactNode, useContext } from 'react';
 import { LocaleContext } from '../../context/localeContext';
 import getText from '../../localisation/getText';
 import Words from '../../localisation/words';
@@ -11,6 +11,7 @@ interface ModalProps {
   open: boolean;
   title: Words;
   onClose: () => void;
+  children?: ReactNode
 }
 
 const Modal: FC<ModalProps> = ({ onClose, open, title, children }) => {
@@ -35,4 +36,4 @@ const Modal: FC<ModalProps> = ({ onClose, open, title, children }) => {
     </div>
   );
 };
-export default Modal;
+export default memo(Modal);

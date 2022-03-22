@@ -1,4 +1,4 @@
-import React, { FC, ReactNode, useCallback, useMemo, useRef, useState } from 'react';
+import React, { FC, memo, ReactNode, useCallback, useMemo, useRef, useState } from 'react';
 import { Popper, PopperPlacementType } from '@material-ui/core';
 import InfoIcon from '../icons/InfoIcon';
 import Typography from '../typography/Typography';
@@ -13,6 +13,7 @@ interface InfoToolTipProps {
   externalOpen?: boolean;
   disabled?: boolean;
   onExternalToggle?: () => void;
+  children?: ReactNode;
 }
 
 const InfoTooltip: FC<InfoToolTipProps> = props => {
@@ -101,4 +102,4 @@ const InfoTooltip: FC<InfoToolTipProps> = props => {
     </div>
   );
 };
-export default InfoTooltip;
+export default memo(InfoTooltip);

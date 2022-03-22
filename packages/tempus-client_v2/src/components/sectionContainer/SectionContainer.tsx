@@ -1,4 +1,4 @@
-import { FC, useCallback, useContext } from 'react';
+import { FC, memo, useCallback, useContext } from 'react';
 import { LocaleContext } from '../../context/localeContext';
 import getText from '../../localisation/getText';
 import Words from '../../localisation/words';
@@ -17,6 +17,7 @@ interface SectionContainerProps {
   disabled?: boolean;
   elevation?: number;
   onSelected?: (id: string) => void;
+  children?: React.ReactNode;
 }
 
 const SectionContainer: FC<SectionContainerProps> = props => {
@@ -61,4 +62,4 @@ const SectionContainer: FC<SectionContainerProps> = props => {
     </div>
   );
 };
-export default SectionContainer;
+export default memo(SectionContainer);

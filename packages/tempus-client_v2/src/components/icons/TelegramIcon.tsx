@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, memo } from 'react';
 import IconProps from './IconProps';
 
 const TelegramIcon: FC<IconProps> = props => {
@@ -13,4 +13,4 @@ const TelegramIcon: FC<IconProps> = props => {
     </svg>
   );
 };
-export default TelegramIcon;
+export default memo(TelegramIcon);
