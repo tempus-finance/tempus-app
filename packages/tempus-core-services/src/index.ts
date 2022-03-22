@@ -1,3 +1,9 @@
+import ERC20ABI from './abi/ERC20.json';
+import VaultABI from './abi/Vault.json';
+export { ERC20ABI, VaultABI };
+
+export type { ERC20 } from './abi';
+
 export type {
   Chain,
   ChainConfig,
