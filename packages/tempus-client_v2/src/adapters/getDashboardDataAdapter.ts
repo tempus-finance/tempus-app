@@ -1,4 +1,4 @@
-import { Chain } from '../interfaces/Chain';
+import { Chain } from 'tempus-core-services';
 import DashboardDataAdapter from './DashboardDataAdapter';
 
 let dashboardDataAdapters = new Map<Chain | undefined, DashboardDataAdapter>();

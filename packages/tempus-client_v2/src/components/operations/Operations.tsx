@@ -1,10 +1,10 @@
 import { FC, useCallback, useContext, useEffect, useState } from 'react';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
+import { Chain } from 'tempus-core-services';
 import { dynamicPoolDataState, selectedPoolState } from '../../state/PoolDataState';
 import { LocaleContext } from '../../context/localeContext';
 import { WalletContext } from '../../context/walletContext';
 import { TransactionView } from '../../interfaces/TransactionView';
-import { Chain } from '../../interfaces/Chain';
 import CurrentPosition from '../currentPosition/CurrentPosition';
 import Deposit from '../deposit/Deposit';
 import Mint from '../mint/Mint';

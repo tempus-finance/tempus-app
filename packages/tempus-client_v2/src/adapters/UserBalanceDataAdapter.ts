@@ -3,12 +3,12 @@ import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
 import {
   Chain,
   TempusPoolService,
+  TempusPool,
   StatisticsService,
   getERC20TokenService,
   increasePrecision,
   mul18f,
 } from 'tempus-core-services';
-import { TempusPool } from '../interfaces/TempusPool';
 import { AvailableToDeposit } from '../state/PoolDataState';
 import { getChainConfig } from '../utils/getConfig';
 

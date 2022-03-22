@@ -1,8 +1,6 @@
 import { getCookie } from 'tempus-core-services';
-import { Config, ChainConfig } from '../interfaces/Config';
-import { TempusPool } from '../interfaces/TempusPool';
+import { Chain, Config, ChainConfig, TempusPool } from 'tempus-core-services';
 import config from '../config/config';
-import { Chain } from '../interfaces/Chain';
 
 export function getConfig(): Config {
   const overridingConfig = getCookie('TEMPUS_OVERRIDING_CONFIG');

@@ -1,7 +1,6 @@
-import { ethers } from 'ethers';
 import { useCallback, useContext, useEffect } from 'react';
-import { CONSTANTS, getVariableRateService } from 'tempus-core-services';
 import { useState as useHookState } from '@hookstate/core';
+import { ethers } from 'ethers';
 import {
   catchError,
   combineLatest,
@@ -14,11 +13,10 @@ import {
   Subscription,
   switchMap,
 } from 'rxjs';
+import { CONSTANTS, Chain, TempusPool, getVariableRateService } from 'tempus-core-services';
 import { getChainConfig, getConfig } from '../utils/getConfig';
 import { WalletContext } from '../context/walletContext';
 import { dynamicPoolDataState } from '../state/PoolDataState';
-import { Chain } from '../interfaces/Chain';
-import { TempusPool } from '../interfaces/TempusPool';
 
 const { POLLING_INTERVAL } = CONSTANTS;
 

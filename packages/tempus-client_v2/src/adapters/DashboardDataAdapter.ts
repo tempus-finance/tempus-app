@@ -1,12 +1,16 @@
 import { BigNumber } from 'ethers';
 import { filter, from, interval, Observable, of, startWith, switchMap, catchError } from 'rxjs';
-import { CONSTANTS, getRangeFrom, getStatisticsService } from 'tempus-core-services';
+import {
+  CONSTANTS,
+  Chain,
+  Ticker,
+  TempusPool,
+  ProtocolName,
+  getRangeFrom,
+  getStatisticsService,
+} from 'tempus-core-services';
 import { DashboardRow, DashboardRowChild, DashboardRowParent } from '../interfaces/DashboardRow';
-import { Ticker } from '../interfaces/Token';
-import { TempusPool } from '../interfaces/TempusPool';
 import { getChainConfig, getConfig } from '../utils/getConfig';
-import { Chain } from '../interfaces/Chain';
-import { ProtocolName } from '../interfaces/ProtocolName';
 
 const { POLLING_INTERVAL } = CONSTANTS;
 
@@ -129,9 +133,8 @@ export default class DashboardDataAdapter {
     }
 
     return childRows.filter(row => {
-      const {
-        tempusPool: { address, protocol },
-      } = row;
+      const { tempusPool } = row;
+      const { address, protocol } = tempusPool as TempusPool;
 
       // if the protocol needs to be excluded
       if (rowsExcludedByDefault[protocol]) {

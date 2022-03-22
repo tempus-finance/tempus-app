@@ -1,4 +1,4 @@
-import { Config } from '../interfaces/Config';
+import { Config } from 'tempus-core-services';
 
 const ETHEREUM_MAINNET_ALCHEMY_KEY = process.env.REACT_APP_MAINNET_ALCHEMY_KEY || '';
 const FANTOM_MAINNET_RPC_ENDPOINT = process.env.REACT_APP_FANTOM_ENDPOINT || '';

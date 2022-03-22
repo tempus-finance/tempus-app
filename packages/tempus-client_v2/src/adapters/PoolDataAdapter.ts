@@ -9,6 +9,7 @@ import {
   TempusControllerService,
   TransferEventListener,
   TempusAMMService,
+  TempusPool,
   TempusPoolService,
   RedeemedEvent,
   StatisticsService,
@@ -20,10 +21,9 @@ import {
   increasePrecision,
   mul18f,
 } from 'tempus-core-services';
+import { SelectedYield } from '../interfaces/SelectedYield';
 import { staticPoolDataState } from '../state/PoolDataState';
 import { getChainConfig } from '../utils/getConfig';
-import { TempusPool } from '../interfaces/TempusPool';
-import { SelectedYield } from '../interfaces/SelectedYield';
 
 const { DAYS_IN_A_YEAR, ONE_ETH_IN_WEI, POLLING_INTERVAL, SECONDS_IN_A_DAY, ZERO_ETH_ADDRESS } = CONSTANTS;
 

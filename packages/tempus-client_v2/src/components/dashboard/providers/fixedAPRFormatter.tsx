@@ -2,7 +2,7 @@ import { useContext } from 'react';
 import { CONSTANTS, NumberUtils } from 'tempus-core-services';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { CircularProgress } from '@material-ui/core';
-import { Chain, chainIdToChainName } from '../../../interfaces/Chain';
+import { Chain, chainIdToChainName } from 'tempus-core-services';
 import { getChainConfigForPool } from '../../../utils/getConfig';
 import Typography from '../../typography/Typography';
 import {

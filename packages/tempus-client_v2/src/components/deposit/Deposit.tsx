@@ -2,12 +2,14 @@ import { Button, CircularProgress } from '@material-ui/core';
 import { FC, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import {
   CONSTANTS,
+  Chain,
+  Ticker,
   div18f,
   getTokenPrecision,
   increasePrecision,
   isZeroString,
   mul18f,
-  NumberUtils
+  NumberUtils,
 } from 'tempus-core-services';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { ethers, BigNumber } from 'ethers';
@@ -18,8 +20,6 @@ import { refreshBalances } from '../../providers/balanceProviderHelper';
 import { LocaleContext } from '../../context/localeContext';
 import { WalletContext } from '../../context/walletContext';
 import { UserSettingsContext } from '../../context/userSettingsContext';
-import { Ticker } from '../../interfaces/Token';
-import { Chain } from '../../interfaces/Chain';
 import { SelectedYield } from '../../interfaces/SelectedYield';
 import getText from '../../localisation/getText';
 import { getChainConfig, getConfig } from '../../utils/getConfig';

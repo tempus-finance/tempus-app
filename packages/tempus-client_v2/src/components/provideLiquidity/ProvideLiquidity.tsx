@@ -1,6 +1,6 @@
 import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { ethers, BigNumber } from 'ethers';
-import { getTokenPrecision, isZeroString, mul18f, NumberUtils } from 'tempus-core-services';
+import { Chain, getTokenPrecision, isZeroString, mul18f, NumberUtils } from 'tempus-core-services';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
 import getPoolShareBalanceProvider from '../../providers/getPoolShareBalanceProvider';
@@ -10,7 +10,6 @@ import { WalletContext } from '../../context/walletContext';
 import getText from '../../localisation/getText';
 import { getChainConfig, getConfig } from '../../utils/getConfig';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
-import { Chain } from '../../interfaces/Chain';
 import Typography from '../typography/Typography';
 import Descriptor from '../descriptor/Descriptor';
 import CurrencyInput from '../currencyInput/currencyInput';

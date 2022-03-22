@@ -1,8 +1,8 @@
 import { FC, RefObject, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { Button, Divider, Popper } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
+import { Chain } from 'tempus-core-services';
 import { Notification } from '../../interfaces/Notification';
-import { Chain } from '../../interfaces/Chain';
 import { LocaleContext } from '../../context/localeContext';
 import { UserSettingsContext } from '../../context/userSettingsContext';
 import { PendingTransactionsContext } from '../../context/pendingTransactionsContext';

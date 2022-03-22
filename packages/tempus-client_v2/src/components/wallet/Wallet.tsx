@@ -2,7 +2,15 @@ import { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'r
 import { useNavigate } from 'react-router-dom';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { ethers } from 'ethers';
-import { CONSTANTS, shortenAccount, getStorageService, NumberUtils } from 'tempus-core-services';
+import {
+  CONSTANTS,
+  Chain,
+  NumberUtils,
+  chainIdToChainName,
+  chainToTicker,
+  getStorageService,
+  shortenAccount,
+} from 'tempus-core-services';
 import { Web3Provider } from '@ethersproject/providers';
 import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core';
 import { InjectedConnector } from '@web3-react/injected-connector';
@@ -16,7 +24,6 @@ import { WalletContext } from '../../context/walletContext';
 import { getChainConfig } from '../../utils/getConfig';
 import { unsupportedNetworkState } from '../../state/ChainState';
 import UserWallet from '../../interfaces/UserWallet';
-import { chainToTicker, chainIdToChainName, Chain } from '../../interfaces/Chain';
 import getText from '../../localisation/getText';
 import useENS from '../../hooks/useENS';
 import getNotificationService from '../../services/getNotificationService';

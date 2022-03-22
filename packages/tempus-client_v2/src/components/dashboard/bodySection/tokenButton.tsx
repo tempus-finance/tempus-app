@@ -1,12 +1,12 @@
 import { FC, useCallback, useContext } from 'react';
 import { TableTreeColumn } from '@devexpress/dx-react-grid-material-ui';
+import { prettifyChainName } from 'tempus-core-services';
 import { LocaleContext } from '../../../context/localeContext';
 import getText from '../../../localisation/getText';
 import Typography from '../../typography/Typography';
 import Spacer from '../../spacer/spacer';
 import TokenIcon from '../../tokenIcon';
 import ArrowDown from '../../icons/ArrowDownIcon';
-import { prettifyChainName } from '../../../interfaces/Chain';
 import Button from '../../common/Button';
 
 type TokenButtonInProps = {

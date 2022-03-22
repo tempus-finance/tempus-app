@@ -2,6 +2,7 @@ import { FC, useContext, useState } from 'react';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { ethers } from 'ethers';
 import { Button, CircularProgress } from '@material-ui/core';
+import { Chain } from 'tempus-core-services';
 import { selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
 import { staticChainDataState } from '../../state/ChainState';
 import getNotificationService from '../../services/getNotificationService';
@@ -16,7 +17,6 @@ import getText from '../../localisation/getText';
 import { PendingTransactionsContext } from '../../context/pendingTransactionsContext';
 import { WalletContext } from '../../context/walletContext';
 import { LocaleContext } from '../../context/localeContext';
-import { Chain } from '../../interfaces/Chain';
 
 import './Execute.scss';
 
