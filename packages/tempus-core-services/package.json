@@ -29,7 +29,9 @@
     "@types/node": "^12.20.15",
     "axios": "^0.22.0",
     "date-fns": "^2.28.0",
-    "ethers": "^5.4.6"
+    "ethers": "^5.4.6",
+    "rari-sdk": "https://github.com/tempus-finance/RariSDK#2838cbd",
+    "rxjs": "^7.3.0"
   },
   "devDependencies": {
     "esbuild": "^0.11.11",

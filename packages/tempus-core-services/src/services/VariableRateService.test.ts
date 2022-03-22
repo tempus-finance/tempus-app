@@ -1,46 +1,42 @@
 import { BigNumber, Contract, utils, providers, ethers } from 'ethers';
-import {
-  CONSTANTS,
-  PoolBalanceChangedEvent,
-  TempusAMMService,
-  TempusPoolService,
-  VaultService,
-  SwapEvent,
-  getProviderFromSignerOrProvider,
-  wadToDai,
-} from 'tempus-core-services';
-import * as coreServices from 'tempus-core-services';
 import { JsonRpcProvider } from '@ethersproject/providers';
-import { ChainConfig } from '../interfaces/Config';
-import * as getConfig from '../utils/getConfig';
+import { Vaults } from 'rari-sdk';
 import AaveLendingPoolABI from '../abi/AaveLendingPool.json';
 import lidoOracleABI from '../abi/LidoOracle.json';
-import VariableRateService from './VariableRateService';
-import { ProtocolName } from '../interfaces/ProtocolName';
 import cERC20Token from '../abi/cERC20Token.json';
-import { Vaults } from 'rari-sdk';
-
-const {
+import {
+  DAYS_IN_A_YEAR,
+  SECONDS_IN_YEAR,
+  ONE_ETH_IN_WEI,
   aaveLendingPoolAddress,
   COMPOUND_BLOCKS_PER_DAY,
-  DAYS_IN_A_YEAR,
-  ONE_ETH_IN_WEI,
   SECONDS_IN_A_DAY,
-  SECONDS_IN_YEAR,
-} = CONSTANTS;
+} from '../constants';
+import { ChainConfig, ProtocolName } from '../interfaces';
+import { getProviderFromSignerOrProvider, wadToDai } from '../utils';
+import { TempusAMMService } from './TempusAMMService';
+import { TempusPoolService } from './TempusPoolService';
+import { PoolBalanceChangedEvent, VaultService, SwapEvent } from './VaultService';
+import { VariableRateService } from './VariableRateService';
 
 jest.mock('@ethersproject/providers', () => ({
   ...jest.requireActual('@ethersproject/providers'),
   JsonRpcProvider: jest.fn(),
 }));
+
 jest.mock('ethers', () => ({
   ...jest.requireActual('ethers'),
   Contract: jest.fn(),
 }));
-jest.mock('tempus-core-services', () => ({
-  ...jest.requireActual('tempus-core-services'),
+
+jest.mock('../utils/getProviderFromSignerOrProvider', () => ({
+  ...jest.requireActual('../utils/getProviderFromSignerOrProvider'),
   getProviderFromSignerOrProvider: jest.fn(),
 }));
+
+jest.mock('../utils/weiMath');
+const { mul18f } = jest.requireMock('../utils/weiMath');
+const { div18f } = jest.requireMock('../utils/weiMath');
 
 global.fetch = jest.fn(() =>
   Promise.resolve({
@@ -81,6 +77,7 @@ describe('VariableRateService', () => {
   let mockTempusAMMService: jest.Mock<TempusAMMService, []>;
   let mockVaults: jest.Mock<Vaults, []>;
   let mockConfig: jest.Mock<ChainConfig, []>;
+  const mockGetChainConfig = jest.fn().mockImplementation(() => ({ tempusPools: DUMMY_TEMPUS_POOL } as ChainConfig));
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -100,14 +97,15 @@ describe('VariableRateService', () => {
     mockConfig = jest.fn().mockReturnValue({ chainId: 250, lidoOracle: '0x0000000000000000000000000000000000000000' });
 
     variableRateService = new VariableRateService();
-    variableRateService.init(
-      mockProvider,
-      mockTempusPoolService(),
-      mockVaultService(),
-      mockTempusAMMService(),
-      mockVaults(),
-      mockConfig(),
-    );
+    variableRateService.init({
+      signerOrProvider: mockProvider,
+      tempusPoolService: mockTempusPoolService(),
+      vaultService: mockVaultService(),
+      tempusAMMService: mockTempusAMMService(),
+      rariVault: mockVaults(),
+      config: mockConfig(),
+      getChainConfig: mockGetChainConfig,
+    });
   });
   afterEach(jest.restoreAllMocks);
 
@@ -144,14 +142,15 @@ describe('VariableRateService', () => {
   describe('init()', () => {
     test('test with no signerOrProvider given, should do nth', () => {
       variableRateService = new VariableRateService();
-      variableRateService.init(
-        null as any,
-        mockTempusPoolService(),
-        mockVaultService(),
-        mockTempusAMMService(),
-        mockVaults(),
-        mockConfig(),
-      );
+      variableRateService.init({
+        signerOrProvider: null as any,
+        tempusPoolService: mockTempusPoolService(),
+        vaultService: mockVaultService(),
+        tempusAMMService: mockTempusAMMService(),
+        rariVault: mockVaults(),
+        config: mockConfig(),
+        getChainConfig: mockGetChainConfig(),
+      });
       expect((variableRateService as any).aaveLendingPool).toBeNull();
       expect((variableRateService as any).lidoOracle).toBeNull();
       expect((variableRateService as any).signerOrProvider).toBeNull();
@@ -460,7 +459,8 @@ describe('VariableRateService', () => {
       const tempusAMM = '0x0000000000000000000000000000000000000001';
       const principalsAddress = '0x0000000000000000000000000000000000000002';
       const yieldsAddress = '0x0000000000000000000000000000000000000003';
-      jest.spyOn(getConfig, 'getChainConfig').mockReturnValue({ tempusPools: [] } as unknown as ChainConfig);
+
+      mockGetChainConfig.mockReturnValue({ tempusPools: [] } as unknown as ChainConfig);
 
       await expect(
         (variableRateService as any).calculateFees(
@@ -514,7 +514,7 @@ describe('VariableRateService', () => {
       (getProviderFromSignerOrProvider as unknown as jest.Mock).mockImplementation(() => mockProvider);
 
       const mockProvider = new JsonRpcProvider();
-      jest.spyOn(getConfig, 'getChainConfig').mockReturnValue({ tempusPools: DUMMY_TEMPUS_POOL } as ChainConfig);
+      mockGetChainConfig.mockReturnValue({ tempusPools: DUMMY_TEMPUS_POOL } as ChainConfig);
       jest.spyOn(variableRateService as any, 'getSwapAndPoolBalanceChangedEvents').mockResolvedValue(mockEvents);
       jest.spyOn(variableRateService as any, 'getPoolTokens').mockResolvedValue(mockPoolTokens);
       jest.spyOn(variableRateService as any, 'adjustPrincipalForSwapEvent').mockReturnValue({
@@ -525,8 +525,8 @@ describe('VariableRateService', () => {
         .spyOn(variableRateService as any, 'adjustPrincipalForPoolBalanceChangedEvent')
         .mockReturnValue(mockPoolTokens.principals.sub((mockEvents[0].args as any).deltas[0]));
       jest.spyOn(utils, 'parseEther').mockReturnValue(BigNumber.from(1));
-      jest.spyOn(coreServices, 'mul18f').mockImplementation((a, b) => a.mul(b).div(10));
-      jest.spyOn(coreServices, 'div18f').mockImplementation((a, b) => a.mul(10).div(b));
+      mul18f.mockImplementation((a: BigNumber, b: BigNumber) => a.mul(b).div(10));
+      div18f.mockImplementation((a: BigNumber, b: BigNumber) => a.mul(10).div(b));
       Reflect.set(variableRateService, 'tempusAMMService', {
         getSwapFeePercentage: jest.fn().mockResolvedValue(mockSwapFeePercentage),
       });
@@ -535,8 +535,8 @@ describe('VariableRateService', () => {
         principalsPrecision,
       );
 
-      const scaledFees = coreServices.mul18f(
-        coreServices.div18f(totalFees, ethers.utils.parseUnits(hoursForScale, principalsPrecision)),
+      const scaledFees = mul18f(
+        div18f(totalFees, ethers.utils.parseUnits(hoursForScale, principalsPrecision)),
         ethers.utils.parseUnits(HOURS_IN_A_YEAR.toString(), principalsPrecision),
         principalsPrecision,
       );
@@ -550,10 +550,7 @@ describe('VariableRateService', () => {
           'ethereum',
           averageBlockTime,
         ),
-      ).resolves.toEqual(
-        coreServices.mul18f(scaledFees, coreServices.div18f(mockPoolTokens.principals, mockPoolTokens.yields)),
-      );
-      expect(getConfig.getChainConfig).toHaveBeenCalled();
+      ).resolves.toEqual(mul18f(scaledFees, div18f(mockPoolTokens.principals, mockPoolTokens.yields)));
       expect(mockProvider.getBlock).toHaveBeenCalledTimes(2);
       expect(mockProvider.getBlock).toHaveBeenNthCalledWith(1, 'latest');
       expect(mockProvider.getBlock).toHaveBeenNthCalledWith(
@@ -620,7 +617,7 @@ describe('VariableRateService', () => {
       }));
       (getProviderFromSignerOrProvider as unknown as jest.Mock).mockImplementation(() => mockProvider);
       const mockProvider = new JsonRpcProvider();
-      jest.spyOn(getConfig, 'getChainConfig').mockReturnValue({ tempusPools: DUMMY_TEMPUS_POOL } as ChainConfig);
+      mockGetChainConfig.mockReturnValue({ tempusPools: DUMMY_TEMPUS_POOL } as ChainConfig);
       jest.spyOn(variableRateService as any, 'getSwapAndPoolBalanceChangedEvents').mockResolvedValue(mockEvents);
       jest.spyOn(variableRateService as any, 'getPoolTokens').mockResolvedValue(mockPoolTokens);
       jest.spyOn(variableRateService as any, 'adjustPrincipalForSwapEvent').mockReturnValue({
@@ -631,8 +628,8 @@ describe('VariableRateService', () => {
         .spyOn(variableRateService as any, 'adjustPrincipalForPoolBalanceChangedEvent')
         .mockReturnValue(mockPoolTokens.principals.sub((mockEvents[0].args as any).deltas[0]));
       jest.spyOn(utils, 'parseEther').mockReturnValue(BigNumber.from(1));
-      jest.spyOn(coreServices, 'mul18f').mockImplementation((a, b) => a.mul(b).div(10));
-      jest.spyOn(coreServices, 'div18f').mockImplementation((a, b) => a.mul(10).div(b));
+      mul18f.mockImplementation((a: BigNumber, b: BigNumber) => a.mul(b).div(10));
+      div18f.mockImplementation((a: BigNumber, b: BigNumber) => a.mul(10).div(b));
       Reflect.set(variableRateService, 'tempusAMMService', {
         getSwapFeePercentage: jest.fn().mockResolvedValue(mockSwapFeePercentage),
       });
@@ -647,7 +644,7 @@ describe('VariableRateService', () => {
           averageBlockTime,
         ),
       ).resolves.toEqual(BigNumber.from(0));
-      expect(getConfig.getChainConfig).toHaveBeenCalled();
+      expect(mockGetChainConfig).toHaveBeenCalled();
       expect(mockProvider.getBlock).toHaveBeenCalledTimes(2);
       expect(mockProvider.getBlock).toHaveBeenNthCalledWith(1, 'latest');
       expect(mockProvider.getBlock).toHaveBeenNthCalledWith(
@@ -717,15 +714,15 @@ describe('VariableRateService', () => {
       }));
       (getProviderFromSignerOrProvider as unknown as jest.Mock).mockImplementation(() => mockProvider);
       const mockProvider = new JsonRpcProvider();
-      jest.spyOn(getConfig, 'getChainConfig').mockReturnValue({ tempusPools: DUMMY_TEMPUS_POOL } as ChainConfig);
+      mockGetChainConfig.mockReturnValue({ tempusPools: DUMMY_TEMPUS_POOL } as ChainConfig);
       jest.spyOn(variableRateService as any, 'getSwapAndPoolBalanceChangedEvents').mockResolvedValue(mockEvents);
       jest.spyOn(variableRateService as any, 'getPoolTokens').mockResolvedValue(mockPoolTokens);
       jest
         .spyOn(variableRateService as any, 'adjustPrincipalForPoolBalanceChangedEvent')
         .mockReturnValue(mockPoolTokens.principals.sub((mockEvents[0].args as any).deltas[0]));
       jest.spyOn(utils, 'parseEther').mockReturnValue(BigNumber.from(1));
-      jest.spyOn(coreServices, 'mul18f').mockImplementation((a, b) => a.mul(b).div(10));
-      jest.spyOn(coreServices, 'div18f').mockImplementation((a, b) => a.mul(10).div(b));
+      mul18f.mockImplementation((a: BigNumber, b: BigNumber) => a.mul(b).div(10));
+      div18f.mockImplementation((a: BigNumber, b: BigNumber) => a.mul(10).div(b));
       Reflect.set(variableRateService, 'tempusAMMService', {
         getSwapFeePercentage: jest.fn().mockResolvedValue(mockSwapFeePercentage),
       });
@@ -740,7 +737,7 @@ describe('VariableRateService', () => {
           averageBlockTime,
         ),
       ).resolves.toEqual(BigNumber.from(0));
-      expect(getConfig.getChainConfig).toHaveBeenCalled();
+      expect(mockGetChainConfig).toHaveBeenCalled();
       expect(mockProvider.getBlock).toHaveBeenCalledTimes(2);
       expect(mockProvider.getBlock).toHaveBeenNthCalledWith(1, 'latest');
       expect(mockProvider.getBlock).toHaveBeenNthCalledWith(
@@ -811,8 +808,8 @@ describe('VariableRateService', () => {
       const principals = Math.round(Math.random() * 10000);
       const totalFees = Math.round(Math.random() * 5);
       const swapFeePercentage = Math.round(Math.random() * 10);
-      jest.spyOn(coreServices, 'mul18f').mockImplementation((a, b) => a.mul(b).div(10));
-      jest.spyOn(coreServices, 'div18f').mockImplementation((a, b) => a.mul(10).div(b));
+      mul18f.mockImplementation((a: BigNumber, b: BigNumber) => a.mul(b).div(10));
+      div18f.mockImplementation((a: BigNumber, b: BigNumber) => a.mul(10).div(b));
 
       expect(
         (variableRateService as any).adjustPrincipalForSwapEvent(
@@ -840,8 +837,8 @@ describe('VariableRateService', () => {
       const swapFeePercentage = Math.round(Math.random() * 10);
       const swapFeesVolume = Math.floor((event.args.amountIn.toNumber() * swapFeePercentage) / 10);
       const feePerPrincipalShare = Math.floor((swapFeesVolume * 10) / (principals - swapFeesVolume));
-      jest.spyOn(coreServices, 'mul18f').mockImplementation((a, b) => a.mul(b).div(10));
-      jest.spyOn(coreServices, 'div18f').mockImplementation((a, b) => a.mul(10).div(b));
+      mul18f.mockImplementation((a: BigNumber, b: BigNumber) => a.mul(b).div(10));
+      div18f.mockImplementation((a: BigNumber, b: BigNumber) => a.mul(10).div(b));
 
       expect(
         (variableRateService as any).adjustPrincipalForSwapEvent(
@@ -867,8 +864,8 @@ describe('VariableRateService', () => {
       const principals = Math.round(Math.random() * 10000) + event.args.amountOut.toNumber();
       const totalFees = Math.round(Math.random() * 5);
       const swapFeePercentage = Math.round(Math.random() * 10);
-      jest.spyOn(coreServices, 'mul18f').mockImplementation((a, b) => a.mul(b).div(10));
-      jest.spyOn(coreServices, 'div18f').mockImplementation((a, b) => a.mul(10).div(b));
+      mul18f.mockImplementation((a: BigNumber, b: BigNumber) => a.mul(b).div(10));
+      div18f.mockImplementation((a: BigNumber, b: BigNumber) => a.mul(10).div(b));
 
       expect(
         (variableRateService as any).adjustPrincipalForSwapEvent(

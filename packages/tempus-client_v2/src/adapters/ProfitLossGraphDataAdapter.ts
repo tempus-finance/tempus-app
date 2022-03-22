@@ -3,14 +3,14 @@ import { JsonRpcSigner } from '@ethersproject/providers';
 import {
   CONSTANTS,
   Chain,
+  TempusControllerService,
   StatisticsService,
   div18f,
   getERC20TokenService,
+  getTempusControllerService,
   getStatisticsService,
   mul18f,
 } from 'tempus-core-services';
-import TempusControllerService from '../services/TempusControllerService';
-import getTempusControllerService from '../services/getTempusControllerService';
 import ChartDataPoint from '../interfaces/ChartDataPoint';
 import { TempusPool } from '../interfaces/TempusPool';
 import { getChainConfig, getConfig } from '../utils/getConfig';
@@ -34,7 +34,7 @@ class ProfitLossGraphDataAdapter {
   public init(params: ProfitLossGraphDataAdapterParameters): void {
     this.chain = params.chain;
     this.statisticsService = getStatisticsService(this.chain, getConfig, getChainConfig, params.signer);
-    this.tempusControllerService = getTempusControllerService(this.chain, params.signer);
+    this.tempusControllerService = getTempusControllerService(this.chain, getChainConfig, params.signer);
     this.eRC20TokenServiceGetter = params.eRC20TokenServiceGetter;
 
     this.signer = params.signer;

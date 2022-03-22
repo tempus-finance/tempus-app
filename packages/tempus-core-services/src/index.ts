@@ -14,12 +14,15 @@ export type {
 } from './interfaces';
 
 export type {
+  DepositedEvent,
   ERC20TokenService,
   PoolBalanceChangedEvent,
   PoolBalanceChangedEventListener,
+  RedeemedEvent,
   TempusAMMJoinKind,
   TempusAMMExitKind,
   TempusAMMService,
+  TempusControllerService,
   TempusPoolService,
   TransferEventListener,
   VaultService,
@@ -36,7 +39,9 @@ export {
   getDefaultProvider,
   getERC20TokenService,
   getTempusAMMService,
+  getTempusControllerService,
   getTempusPoolService,
+  getVariableRateService,
   getStatisticsService,
   getStorageService,
   getVaultService,
