@@ -5,10 +5,10 @@ import {
   getERC20TokenService,
   getTempusAMMService,
   getTempusPoolService,
+  getVaultService,
 } from 'tempus-core-services';
 import getStatisticsService from '../services/getStatisticsService';
 import getTempusControllerService from '../services/getTempusControllerService';
-import getVaultService from '../services/getVaultService';
 import { getChainConfig } from '../utils/getConfig';
 import PoolDataAdapter from './PoolDataAdapter';
 
@@ -21,7 +21,7 @@ const getPoolDataAdapter = (chain: Chain, signerOrProvider?: JsonRpcSigner): Poo
       tempusPoolService: getTempusPoolService(chain, getChainConfig, getDefaultProvider(chain, getChainConfig)),
       statisticService: getStatisticsService(chain, getDefaultProvider(chain, getChainConfig)),
       tempusAMMService: getTempusAMMService(chain, getChainConfig, getDefaultProvider(chain, getChainConfig)),
-      vaultService: getVaultService(chain),
+      vaultService: getVaultService(chain, getChainConfig),
       chain,
       eRC20TokenServiceGetter: getERC20TokenService,
     });
@@ -39,7 +39,7 @@ const getPoolDataAdapter = (chain: Chain, signerOrProvider?: JsonRpcSigner): Poo
       tempusPoolService: getTempusPoolService(chain, getChainConfig, signerOrProvider),
       statisticService: getStatisticsService(chain, signerOrProvider),
       tempusAMMService: getTempusAMMService(chain, getChainConfig, signerOrProvider),
-      vaultService: getVaultService(chain, signerOrProvider),
+      vaultService: getVaultService(chain, getChainConfig, signerOrProvider),
       chain,
       eRC20TokenServiceGetter: getERC20TokenService,
     });

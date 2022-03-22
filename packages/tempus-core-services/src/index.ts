@@ -16,10 +16,18 @@ export type {
 export type {
   ERC20TokenService,
   StorageService,
+  PoolBalanceChangedEvent,
+  PoolBalanceChangedEventListener,
+  TempusAMMJoinKind,
+  TempusAMMExitKind,
   TempusAMMService,
   TempusPoolService,
   TransferEventListener,
+  VaultService,
+  SwapEvent,
 } from './services';
+
+export { SwapKind } from './services';
 
 export {
   getChainlinkFeed,
@@ -29,6 +37,7 @@ export {
   getTempusAMMService,
   getTempusPoolService,
   getStorageService,
+  getVaultService,
 } from './services';
 
 export {

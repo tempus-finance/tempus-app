@@ -1,6 +1,6 @@
 import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { BigNumber, ethers } from 'ethers';
-import { getTokenPrecision, isZeroString, mul18f, NumberUtils } from 'tempus-core-services';
+import { getTokenPrecision, isZeroString, mul18f, NumberUtils, SwapKind } from 'tempus-core-services';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
 import { refreshBalances } from '../../providers/balanceProviderHelper';
@@ -11,7 +11,6 @@ import { PoolShares, Ticker } from '../../interfaces/Token';
 import { Chain } from '../../interfaces/Chain';
 import getText from '../../localisation/getText';
 import { getChainConfig, getConfig } from '../../utils/getConfig';
-import { SwapKind } from '../../services/VaultService';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
 import Approve from '../buttons/Approve';
 import Execute from '../buttons/Execute';
@@ -63,7 +62,9 @@ const Swap: FC<SwapProps> = props => {
   const [receiveAmount, setReceiveAmount] = useState<BigNumber | null>(null);
   const [tokensApproved, setTokensApproved] = useState<boolean>(false);
   const [estimateInProgress, setEstimateInProgress] = useState<boolean>(false);
-  const [tokenPrecision, setTokenPrecision] = useState<number>(getTokenPrecision(selectedPoolAddress, 'principals', getConfig()));
+  const [tokenPrecision, setTokenPrecision] = useState<number>(
+    getTokenPrecision(selectedPoolAddress, 'principals', getConfig()),
+  );
 
   const userPrincipalsBalance = dynamicPoolData[selectedPool.get()].userPrincipalsBalance.attach(Downgraded).get();
   const userYieldsBalance = dynamicPoolData[selectedPool.get()].userYieldsBalance.attach(Downgraded).get();

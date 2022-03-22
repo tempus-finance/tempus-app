@@ -6,8 +6,8 @@ import {
   getProviderFromSignerOrProvider,
   getTempusAMMService,
   getTempusPoolService,
+  getVaultService,
 } from 'tempus-core-services';
-import getVaultService from '../services/getVaultService';
 import { getChainConfig } from '../utils/getConfig';
 import VariableRateService from './VariableRateService';
 
@@ -18,7 +18,7 @@ const getVariableRateService = (chain: Chain, signer?: JsonRpcSigner): VariableR
     variableRateService.init(
       getDefaultProvider(chain, getChainConfig),
       getTempusPoolService(chain, getChainConfig),
-      getVaultService(chain),
+      getVaultService(chain, getChainConfig),
       getTempusAMMService(chain, getChainConfig),
       new RariVault(getDefaultProvider(chain, getChainConfig)),
       getChainConfig(chain),
@@ -35,7 +35,7 @@ const getVariableRateService = (chain: Chain, signer?: JsonRpcSigner): VariableR
     variableRateService.init(
       signer,
       getTempusPoolService(chain, getChainConfig, signer),
-      getVaultService(chain, signer),
+      getVaultService(chain, getChainConfig, signer),
       getTempusAMMService(chain, getChainConfig, signer),
       new RariVault(getProviderFromSignerOrProvider(signer)),
       getChainConfig(chain),

@@ -1,8 +1,11 @@
 import { BigNumber, Contract, utils, providers, ethers } from 'ethers';
 import {
   CONSTANTS,
+  PoolBalanceChangedEvent,
   TempusAMMService,
   TempusPoolService,
+  VaultService,
+  SwapEvent,
   getProviderFromSignerOrProvider,
   wadToDai,
 } from 'tempus-core-services';
@@ -13,7 +16,6 @@ import * as getConfig from '../utils/getConfig';
 import AaveLendingPoolABI from '../abi/AaveLendingPool.json';
 import lidoOracleABI from '../abi/LidoOracle.json';
 import VariableRateService from './VariableRateService';
-import VaultService, { PoolBalanceChangedEvent, SwapEvent } from './VaultService';
 import { ProtocolName } from '../interfaces/ProtocolName';
 import cERC20Token from '../abi/cERC20Token.json';
 import { Vaults } from 'rari-sdk';
