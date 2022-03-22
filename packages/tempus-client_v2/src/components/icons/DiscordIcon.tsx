@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, memo } from 'react';
 import IconProps from './IconProps';
 
 const DiscordIcon: FC<IconProps> = props => {
@@ -11,4 +11,4 @@ const DiscordIcon: FC<IconProps> = props => {
     </svg>
   );
 };
-export default DiscordIcon;
+export default memo(DiscordIcon);

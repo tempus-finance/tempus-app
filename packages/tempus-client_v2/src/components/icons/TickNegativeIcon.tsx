@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, memo } from 'react';
 import IconProps from './IconProps';
 
 const TickNegativeIcon: FC<IconProps> = props => {
@@ -13,4 +13,4 @@ const TickNegativeIcon: FC<IconProps> = props => {
     </svg>
   );
 };
-export default TickNegativeIcon;
+export default memo(TickNegativeIcon);

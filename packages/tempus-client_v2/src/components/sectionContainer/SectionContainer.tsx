@@ -1,4 +1,4 @@
-import { FC, useCallback, useContext } from 'react';
+import { FC, memo, ReactNode, useCallback, useContext } from 'react';
 import { LocaleContext } from '../../context/localeContext';
 import getText from '../../localisation/getText';
 import Words from '../../localisation/words';
@@ -10,13 +10,14 @@ import './SectionContainer.scss';
 
 interface SectionContainerProps {
   id?: string;
-  title?: Words | React.ReactNode;
+  title?: Words | ReactNode;
   tooltip?: string;
   selectable?: boolean;
   selected?: boolean;
   disabled?: boolean;
   elevation?: number;
   onSelected?: (id: string) => void;
+  children?: ReactNode;
 }
 
 const SectionContainer: FC<SectionContainerProps> = props => {
@@ -61,4 +62,4 @@ const SectionContainer: FC<SectionContainerProps> = props => {
     </div>
   );
 };
-export default SectionContainer;
+export default memo(SectionContainer);

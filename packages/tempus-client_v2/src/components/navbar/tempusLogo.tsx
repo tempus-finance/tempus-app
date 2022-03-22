@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, memo } from 'react';
 
 type TempusLogoProps = {
   onClick?: () => void;
@@ -43,4 +43,4 @@ const TempusLogo: FC<TempusLogoProps> = ({ onClick }): JSX.Element => {
   );
 };
 
-export default TempusLogo;
+export default memo(TempusLogo);

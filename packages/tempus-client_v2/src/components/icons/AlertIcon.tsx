@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, memo } from 'react';
 import IconProps from './IconProps';
 
 const AlertIcon: FC<IconProps> = props => {
@@ -11,4 +11,4 @@ const AlertIcon: FC<IconProps> = props => {
     </svg>
   );
 };
-export default AlertIcon;
+export default memo(AlertIcon);

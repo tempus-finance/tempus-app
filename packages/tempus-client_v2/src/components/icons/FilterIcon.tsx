@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, memo } from 'react';
 import IconProps from './IconProps';
 
 const FilterIcon: FC<IconProps> = props => {
@@ -11,4 +11,4 @@ const FilterIcon: FC<IconProps> = props => {
     </svg>
   );
 };
-export default FilterIcon;
+export default memo(FilterIcon);

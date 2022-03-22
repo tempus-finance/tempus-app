@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 
 const GovernanceIcon = () => (
   <svg width="20" height="18" viewBox="0 0 20 18" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -8,4 +8,4 @@ const GovernanceIcon = () => (
     />
   </svg>
 );
-export default GovernanceIcon;
+export default memo(GovernanceIcon);
