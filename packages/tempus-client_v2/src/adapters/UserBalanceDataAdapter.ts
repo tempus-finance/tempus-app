@@ -1,8 +1,14 @@
 import { ethers } from 'ethers';
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
-import { Chain, TempusPoolService, getERC20TokenService, increasePrecision, mul18f } from 'tempus-core-services';
+import {
+  Chain,
+  TempusPoolService,
+  StatisticsService,
+  getERC20TokenService,
+  increasePrecision,
+  mul18f,
+} from 'tempus-core-services';
 import { TempusPool } from '../interfaces/TempusPool';
-import StatisticsService from '../services/StatisticsService';
 import { AvailableToDeposit } from '../state/PoolDataState';
 import { getChainConfig } from '../utils/getConfig';
 

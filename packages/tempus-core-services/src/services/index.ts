@@ -3,10 +3,12 @@ export type { ERC20TokenService, TransferEventListener } from './ERC20TokenServi
 export { getChainlinkFeed } from './getChainlinkFeed';
 export { getDefaultProvider } from './getDefaultProvider';
 export { getERC20TokenService } from './getERC20TokenService';
+export { getStatisticsService } from './getStatisticsService';
 export { getStorageService } from './getStorageService';
 export { getTempusAMMService } from './getTempusAMMService';
 export { getTempusPoolService } from './getTempusPoolService';
 export { getVaultService } from './getVaultService';
+export { StatisticsService } from './StatisticsService';
 export { StorageService } from './StorageService';
 export { TempusAMMService } from './TempusAMMService';
 export { TempusPoolService } from './TempusPoolService';

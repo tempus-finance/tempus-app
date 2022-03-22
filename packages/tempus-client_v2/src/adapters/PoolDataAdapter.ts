@@ -8,6 +8,7 @@ import {
   TransferEventListener,
   TempusAMMService,
   TempusPoolService,
+  StatisticsService,
   VaultService,
   SwapKind,
   div18f,
@@ -16,7 +17,6 @@ import {
   increasePrecision,
   mul18f,
 } from 'tempus-core-services';
-import StatisticsService from '../services/StatisticsService';
 import TempusControllerService, { DepositedEvent, RedeemedEvent } from '../services/TempusControllerService';
 import { staticPoolDataState } from '../state/PoolDataState';
 import { getChainConfig } from '../utils/getConfig';

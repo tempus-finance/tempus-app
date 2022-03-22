@@ -1,22 +1,13 @@
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
 import { BigNumber, CallOverrides, Contract, ethers } from 'ethers';
-import {
-  CONSTANTS,
-  TempusAMMService,
-  decreasePrecision,
-  div18f,
-  getCoingeckoRate,
-  getChainlinkFeed,
-  getTokenPrecision,
-  mul18f,
-} from 'tempus-core-services';
 import { Stats } from '../abi/Stats';
 import StatsABI from '../abi/Stats.json';
-import { Chain } from '../interfaces/Chain';
-import { Ticker } from '../interfaces/Token';
-import { getConfig } from '../utils/getConfig';
-
-const { DEFAULT_TOKEN_PRECISION, tokenPrecision } = CONSTANTS;
+import { DEFAULT_TOKEN_PRECISION, tokenPrecision } from '../constants';
+import { Chain, Config, Ticker } from '../interfaces';
+import { decreasePrecision, div18f, getTokenPrecision, mul18f } from '../utils';
+import { getChainlinkFeed } from './getChainlinkFeed';
+import { getCoingeckoRate } from './coinGeckoFeed';
+import { TempusAMMService } from './TempusAMMService';
 
 type StatisticsServiceParameters = {
   Contract: typeof Contract;
@@ -24,21 +15,22 @@ type StatisticsServiceParameters = {
   abi: typeof StatsABI;
   signerOrProvider: JsonRpcProvider | JsonRpcSigner;
   tempusAMMService: TempusAMMService;
+  getConfig: () => Config;
 };
 
-class StatisticsService {
+export class StatisticsService {
   private stats: Stats | null = null;
-
   private tempusAMMService: TempusAMMService | null = null;
+  private getConfig: (() => Config) | null = null;
 
-  init(params: StatisticsServiceParameters) {
+  init({ address, abi, signerOrProvider, Contract, tempusAMMService, getConfig }: StatisticsServiceParameters) {
     try {
-      this.stats = new Contract(params.address, params.abi, params.signerOrProvider) as Stats;
+      this.stats = new Contract(address, abi, signerOrProvider) as Stats;
     } catch (error) {
       console.error('StatisticsService - init', error);
     }
-
-    this.tempusAMMService = params.tempusAMMService;
+    this.getConfig = getConfig;
+    this.tempusAMMService = tempusAMMService;
   }
 
   public async totalValueLockedInBackingTokens(tempusPool: string, overrides?: CallOverrides) {
@@ -220,7 +212,7 @@ class StatisticsService {
     principalsRate: BigNumber;
     yieldsRate: BigNumber;
   }> {
-    if (!this.stats || !this.tempusAMMService) {
+    if (!this.stats || !this.tempusAMMService || !this.getConfig) {
       console.error(
         'StatisticsService estimateExitAndRedeem Attempted to use statistics contract before initializing it...',
       );
@@ -237,7 +229,7 @@ class StatisticsService {
       };
     }
 
-    const config = getConfig();
+    const config = this.getConfig();
 
     const principalsPrecision = getTokenPrecision(tempusPoolAddress, 'principals', config);
     const lpTokenPrecision = getTokenPrecision(tempusPoolAddress, 'lpTokens', config);
@@ -335,5 +327,3 @@ class StatisticsService {
     }
   }
 }
-
-export default StatisticsService;
