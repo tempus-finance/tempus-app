@@ -15,6 +15,7 @@ jest.mock('@ethersproject/providers', () => ({
 }));
 jest.mock('tempus-core-services', () => ({
   ...jest.requireActual('tempus-core-services'),
+  getStatisticsService: jest.fn(),
   getDefaultProvider: jest.fn(),
 }));
 
@@ -106,6 +107,10 @@ describe('DashboardDataAdapter', () => {
   });
 
   describe('getTempusPoolTVL()', () => {
+    beforeEach(() => {
+      jest.resetAllMocks();
+    });
+
     test('test with no forceFetch and no focus, should return Observable<null>', async () => {
       const tempusPoolAddr = MOCK_TEMPUS_POOL[0].address;
       const backingTokenTicker = 'USDC';
@@ -116,6 +121,12 @@ describe('DashboardDataAdapter', () => {
     });
 
     test('test with forceFetch, should return Observable of TVL', async () => {
+      jest.spyOn(TempusCoreServices, 'getStatisticsService').mockImplementationOnce(() => {
+        return {
+          totalValueLockedUSD: jest.fn().mockResolvedValue(mockTVL),
+        } as any;
+      });
+      jest.spyOn(getConfig, 'getChainConfig').mockReturnValue({ tempusPools: MOCK_TEMPUS_POOL } as ChainConfig);
       const tempusPoolAddr = MOCK_TEMPUS_POOL[0].address;
       const backingTokenTicker = 'USDC';
       jest.spyOn(rxjs, 'interval').mockReturnValue(rxjs.of(0));
@@ -126,6 +137,11 @@ describe('DashboardDataAdapter', () => {
     });
 
     test('test with focus, should return Observable of TVL', async () => {
+      jest.spyOn(TempusCoreServices, 'getStatisticsService').mockImplementationOnce(() => {
+        return {
+          totalValueLockedUSD: jest.fn().mockResolvedValue(mockTVL),
+        } as any;
+      });
       const tempusPoolAddr = MOCK_TEMPUS_POOL[0].address;
       const backingTokenTicker = 'USDC';
       jest.spyOn(document, 'hasFocus').mockReturnValue(true);
@@ -138,8 +154,12 @@ describe('DashboardDataAdapter', () => {
 
     test('test with throwing error from statisticsService.totalValueLockedUSD(), should return Observable<null>', async () => {
       const errMessage = 'ERROR_MSG_' + Math.random().toString(36).substring(2);
-      mockTotalValueLockedUSD.mockImplementation(() => {
-        throw new Error(errMessage);
+      jest.spyOn(TempusCoreServices, 'getStatisticsService').mockImplementationOnce(() => {
+        return {
+          totalValueLockedUSD: jest.fn().mockImplementation(() => {
+            throw new Error(errMessage);
+          }),
+        } as any;
       });
       const tempusPoolAddr = MOCK_TEMPUS_POOL[0].address;
       const backingTokenTicker = 'USDC';

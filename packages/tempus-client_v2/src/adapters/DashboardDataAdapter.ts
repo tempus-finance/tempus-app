@@ -1,13 +1,12 @@
 import { BigNumber } from 'ethers';
 import { filter, from, interval, Observable, of, startWith, switchMap, catchError } from 'rxjs';
-import { CONSTANTS, getRangeFrom } from 'tempus-core-services';
+import { CONSTANTS, getRangeFrom, getStatisticsService } from 'tempus-core-services';
 import { DashboardRow, DashboardRowChild, DashboardRowParent } from '../interfaces/DashboardRow';
 import { Ticker } from '../interfaces/Token';
 import { TempusPool } from '../interfaces/TempusPool';
 import { getChainConfig, getConfig } from '../utils/getConfig';
 import { Chain } from '../interfaces/Chain';
 import { ProtocolName } from '../interfaces/ProtocolName';
-import getStatisticsService from '../services/getStatisticsService';
 
 const { POLLING_INTERVAL } = CONSTANTS;
 
@@ -43,7 +42,7 @@ export default class DashboardDataAdapter {
     backingTokenTicker: Ticker,
     forceFetch?: boolean,
   ): Observable<BigNumber | null> {
-    const statisticsService = getStatisticsService(chain);
+    const statisticsService = getStatisticsService(chain, getConfig, getChainConfig);
 
     const interval$ = interval(POLLING_INTERVAL).pipe(startWith(0));
     return interval$.pipe(
