@@ -87,6 +87,9 @@ workflows:
       - test:
           requires:
             - build
+      - bundlewatch:
+          requires:
+            - build
       - deploy-to-stage:
           requires:
             - test
