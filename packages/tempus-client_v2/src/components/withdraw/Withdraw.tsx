@@ -337,12 +337,8 @@ const Withdraw: FC<WithdrawProps> = ({ chain, onWithdraw }) => {
       return null;
     }
     return NumberUtils.formatToCurrency(
-      ethers.utils.formatUnits(
-        userPrincipalsBalance,
-        getTokenPrecision(selectedPoolAddress, 'principals', getConfig()),
-      ),
+      ethers.utils.formatUnits(userPrincipalsBalance, getTokenPrecision(selectedPoolAddress, 'principals', getConfig())),
       decimalsForUI,
-      true,
     );
   }, [selectedPoolAddress, decimalsForUI, userPrincipalsBalance]);
 
@@ -361,7 +357,6 @@ const Withdraw: FC<WithdrawProps> = ({ chain, onWithdraw }) => {
     return NumberUtils.formatToCurrency(
       ethers.utils.formatUnits(userYieldsBalance, getTokenPrecision(selectedPoolAddress, 'yields', getConfig())),
       decimalsForUI,
-      true,
     );
   }, [selectedPoolAddress, decimalsForUI, userYieldsBalance]);
 
@@ -380,7 +375,6 @@ const Withdraw: FC<WithdrawProps> = ({ chain, onWithdraw }) => {
     return NumberUtils.formatToCurrency(
       ethers.utils.formatUnits(userLPTokenBalance, getTokenPrecision(selectedPoolAddress, 'lpTokens', getConfig())),
       decimalsForUI,
-      true,
     );
   }, [selectedPoolAddress, decimalsForUI, userLPTokenBalance]);
 
@@ -399,7 +393,6 @@ const Withdraw: FC<WithdrawProps> = ({ chain, onWithdraw }) => {
     return NumberUtils.formatToCurrency(
       ethers.utils.formatUnits(estimatedWithdrawData.tokenAmount, selectedTokenPrecision),
       decimalsForUI,
-      true,
     );
   }, [estimatedWithdrawData, selectedTokenPrecision, decimalsForUI]);
 
@@ -413,7 +406,6 @@ const Withdraw: FC<WithdrawProps> = ({ chain, onWithdraw }) => {
         selectedTokenPrecision,
       ),
       2,
-      true,
       '$',
     );
   }, [estimatedWithdrawData, selectedTokenPrecision, tokenRate]);

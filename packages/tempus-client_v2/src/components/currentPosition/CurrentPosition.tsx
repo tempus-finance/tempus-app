@@ -68,7 +68,6 @@ const CurrentPosition: FC<CurrentPositionProps> = ({ chain, locale }) => {
     return NumberUtils.formatWithMultiplier(
       ethers.utils.formatUnits(userPrincipalsBalance.add(lpTokenPrincipalReturnBalance), tokenPrecision.principals),
       decimalsForUI,
-      true,
     );
   }, [decimalsForUI, userPrincipalsBalance, lpTokenPrincipalReturnBalance, tokenPrecision.principals]);
 
@@ -79,7 +78,6 @@ const CurrentPosition: FC<CurrentPositionProps> = ({ chain, locale }) => {
     return NumberUtils.formatWithMultiplier(
       ethers.utils.formatUnits(userYieldsBalance.add(lpTokenYieldReturnBalance), tokenPrecision.yields),
       decimalsForUI,
-      true,
     );
   }, [decimalsForUI, userYieldsBalance, lpTokenYieldReturnBalance, tokenPrecision.yields]);
 
@@ -90,7 +88,6 @@ const CurrentPosition: FC<CurrentPositionProps> = ({ chain, locale }) => {
     return NumberUtils.formatWithMultiplier(
       ethers.utils.formatUnits(userPrincipalsBalance, tokenPrecision.principals),
       decimalsForUI,
-      true,
     );
   }, [decimalsForUI, userPrincipalsBalance, tokenPrecision.principals]);
 
@@ -101,7 +98,6 @@ const CurrentPosition: FC<CurrentPositionProps> = ({ chain, locale }) => {
     return NumberUtils.formatWithMultiplier(
       ethers.utils.formatUnits(lpTokenPrincipalReturnBalance, tokenPrecision.principals),
       decimalsForUI,
-      true,
     );
   }, [decimalsForUI, lpTokenPrincipalReturnBalance, tokenPrecision.principals]);
 
@@ -112,7 +108,6 @@ const CurrentPosition: FC<CurrentPositionProps> = ({ chain, locale }) => {
     return NumberUtils.formatWithMultiplier(
       ethers.utils.formatUnits(userYieldsBalance, tokenPrecision.yields),
       decimalsForUI,
-      true,
     );
   }, [decimalsForUI, userYieldsBalance, tokenPrecision.yields]);
 
@@ -123,7 +118,6 @@ const CurrentPosition: FC<CurrentPositionProps> = ({ chain, locale }) => {
     return NumberUtils.formatWithMultiplier(
       ethers.utils.formatUnits(lpTokenYieldReturnBalance, tokenPrecision.yields),
       decimalsForUI,
-      true,
     );
   }, [decimalsForUI, lpTokenYieldReturnBalance, tokenPrecision.yields]);
 

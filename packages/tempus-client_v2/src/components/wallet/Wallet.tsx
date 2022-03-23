@@ -553,7 +553,7 @@ const Wallet = () => {
       return null;
     }
 
-    return NumberUtils.formatToCurrency(ethers.utils.formatEther(tokenBalance), 4, true);
+    return NumberUtils.formatToCurrency(ethers.utils.formatEther(tokenBalance), 4);
   }, [tokenBalance, selectedWallet]);
 
   return (

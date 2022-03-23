@@ -213,17 +213,14 @@ const getDepositNotificationContent = ({
   const tokenSentAmountFormatted = NumberUtils.formatToCurrency(
     ethers.utils.formatUnits(tokenSentAmount, tokenSentPrecision || 18),
     staticPoolData.decimalsForUI,
-    true,
   );
   const principalsReceivedFormatted = NumberUtils.formatToCurrency(
     ethers.utils.formatUnits(principalsReceived, staticPoolData.tokenPrecision.principals),
     staticPoolData.decimalsForUI,
-    true,
   );
   const lpTokensReceivedFormatted = NumberUtils.formatToCurrency(
     ethers.utils.formatUnits(lpTokensReceived, staticPoolData.tokenPrecision.lpTokens),
     staticPoolData.decimalsForUI,
-    true,
   );
 
   if (actionDescription === 'Fixed Yield') {
@@ -311,22 +308,18 @@ const getWithdrawNotificationContent = ({
   const principalsSentFormatted = NumberUtils.formatToCurrency(
     ethers.utils.formatUnits(principalsSent, staticPoolData.tokenPrecision.principals),
     staticPoolData.decimalsForUI,
-    true,
   );
   const yieldsSentFormatted = NumberUtils.formatToCurrency(
     ethers.utils.formatUnits(yieldsSent, staticPoolData.tokenPrecision.yields),
     staticPoolData.decimalsForUI,
-    true,
   );
   const lpTokensSentFormatted = NumberUtils.formatToCurrency(
     ethers.utils.formatUnits(lpTokensSent, staticPoolData.tokenPrecision.lpTokens),
     staticPoolData.decimalsForUI,
-    true,
   );
   const tokensReceivedFormatted = NumberUtils.formatToCurrency(
     ethers.utils.formatUnits(tokensReceived, tokenReceivedPrecision || 18),
     staticPoolData.decimalsForUI,
-    true,
   );
 
   return `${notificationDateTime}
@@ -406,17 +399,14 @@ const getMintNotificationContent = ({
   const tokenSentAmountFormatted = NumberUtils.formatToCurrency(
     ethers.utils.formatUnits(tokenSentAmount, tokenSentPrecision || 18),
     staticPoolData.decimalsForUI,
-    true,
   );
   const principalsMintedFormatted = NumberUtils.formatToCurrency(
     ethers.utils.formatUnits(principalsMinted, staticPoolData.tokenPrecision.principals),
     staticPoolData.decimalsForUI,
-    true,
   );
   const yieldsMintedFormatted = NumberUtils.formatToCurrency(
     ethers.utils.formatUnits(yieldsMinted, staticPoolData.tokenPrecision.yields),
     staticPoolData.decimalsForUI,
-    true,
   );
 
   return `${notificationDateTime}
@@ -491,12 +481,10 @@ const getSwapNotificationContent = ({
   const tokenSentValueFormatted = NumberUtils.formatToCurrency(
     ethers.utils.formatUnits(tokenSentValue, tokenSentPrecision || 18),
     staticPoolData.decimalsForUI,
-    true,
   );
   const tokenReceivedValueFormatted = NumberUtils.formatToCurrency(
     ethers.utils.formatUnits(tokenReceivedValue, tokenReceivedPrecision || 18),
     staticPoolData.decimalsForUI,
-    true,
   );
 
   return `${notificationDateTime}
@@ -550,17 +538,14 @@ const getLiquidityDepositNotificationContent = ({
   const amountOfPrincipalsSentFormatted = NumberUtils.formatToCurrency(
     ethers.utils.formatUnits(amountOfPrincipalsSent, staticPoolData.tokenPrecision.principals),
     staticPoolData.decimalsForUI,
-    true,
   );
   const amountOfYieldsSentFormatted = NumberUtils.formatToCurrency(
     ethers.utils.formatUnits(amountOfYieldsSent, staticPoolData.tokenPrecision.yields),
     staticPoolData.decimalsForUI,
-    true,
   );
   const amountOfLPTokensReceivedFormatted = NumberUtils.formatToCurrency(
     ethers.utils.formatUnits(amountOfLPTokensReceived, staticPoolData.tokenPrecision.lpTokens || 18),
     staticPoolData.decimalsForUI,
-    true,
   );
 
   return `${notificationDateTime}
@@ -617,17 +602,14 @@ const getLiquidityWithdrawalNotificationContent = ({
   const amountOfLPTokensSentFormatted = NumberUtils.formatToCurrency(
     ethers.utils.formatUnits(amountOfLPTokensSent, staticPoolData.tokenPrecision.lpTokens),
     staticPoolData.decimalsForUI,
-    true,
   );
   const amountOfPrincipalsReceivedFormatted = NumberUtils.formatToCurrency(
     ethers.utils.formatUnits(amountOfPrincipalsReceived, staticPoolData.tokenPrecision.principals),
     staticPoolData.decimalsForUI,
-    true,
   );
   const amountOfYieldsReceivedFormatted = NumberUtils.formatToCurrency(
     ethers.utils.formatUnits(amountOfYieldsReceived, staticPoolData.tokenPrecision.yields),
     staticPoolData.decimalsForUI,
-    true,
   );
 
   return `${notificationDateTime}
@@ -684,12 +666,10 @@ const getRedeemNotificationContent = ({
   const primitivesSentFormatted = NumberUtils.formatToCurrency(
     ethers.utils.formatEther(primitivesSent),
     staticPoolData.decimalsForUI,
-    true,
   );
   const tokensReceivedFormatted = NumberUtils.formatToCurrency(
     ethers.utils.formatEther(tokensReceived),
     staticPoolData.decimalsForUI,
-    true,
   );
 
   return `${notificationDateTime}

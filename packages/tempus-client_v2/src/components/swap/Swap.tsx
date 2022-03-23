@@ -272,14 +272,14 @@ const Swap: FC<SwapProps> = props => {
     if (!currentBalance) {
       return null;
     }
-    return NumberUtils.formatToCurrency(ethers.utils.formatUnits(currentBalance, tokenPrecision), decimalsForUI, true);
+    return NumberUtils.formatToCurrency(ethers.utils.formatUnits(currentBalance, tokenPrecision), decimalsForUI);
   }, [getSelectedTokenBalance, tokenPrecision, decimalsForUI]);
 
   const receiveAmountFormatted = useMemo(() => {
     if (!receiveAmount) {
       return null;
     }
-    return NumberUtils.formatToCurrency(ethers.utils.formatUnits(receiveAmount, tokenPrecision), decimalsForUI, true);
+    return NumberUtils.formatToCurrency(ethers.utils.formatUnits(receiveAmount, tokenPrecision), decimalsForUI);
   }, [receiveAmount, tokenPrecision, decimalsForUI]);
 
   const executeDisabled = useMemo((): boolean => {

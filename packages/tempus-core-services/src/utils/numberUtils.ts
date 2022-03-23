@@ -14,18 +14,9 @@ const multiplierLookup = [
 const regex = /\.0+$|(\.[0-9]*[1-9])0+$/;
 
 export class NumberUtils {
-  /**
-   * @description Returns the formatted value with the given precision.
-   * @param value Value to format.
-   * @param precision Maximum number of decimals.
-   * @param fixedNumberOfDecimals If true and the number of the fraction digits is smaller than numberOfDecimals, appends trailing zeros to match numberOfDecimals.
-   */
-  static formatWithMultiplier(value: any, precision: number = 0, fixedNumberOfDecimals: boolean = false): string {
+  static formatWithMultiplier(value: any, precision: number = 0): string {
     const sanitizedValue = Number(value);
-    const multiplier = multiplierLookup.find(item => Math.abs(sanitizedValue) >= item.value) ?? {
-      value: 1,
-      symbol: '',
-    };
+    const multiplier = multiplierLookup.find(item => Math.abs(sanitizedValue) >= item.value);
 
     if (sanitizedValue > 0 && sanitizedValue < 1) {
       const sanitizedValueString = sanitizedValue.toString();
@@ -34,30 +25,17 @@ export class NumberUtils {
       }
 
       // Adding 2 to precision so that '0.' part of the number is ignored when slicing it
-      const slicedSanitizedValue = sanitizedValue.toFixed(precision).slice(0, precision + 2);
-      return !fixedNumberOfDecimals ? slicedSanitizedValue.replace(regex, '$1') : slicedSanitizedValue;
+      return sanitizedValueString.slice(0, precision + 2);
     }
 
-    return multiplier.symbol !== '' || !fixedNumberOfDecimals
+    return multiplier
       ? `${(sanitizedValue / multiplier.value).toFixed(precision).replace(regex, '$1')}${multiplier.symbol}`
-      : sanitizedValue.toFixed(precision);
+      : '0';
   }
 
-  /**
-   * @description Returns the currency formatted value with the optionally prepended currency symbol.
-   * @param value Value to format.
-   * @param numberOfDecimals Maximum number of decimals.
-   * @param fixedNumberOfDecimals If true and the number of the fraction digits is smaller than numberOfDecimals, appends trailing zeros to match numberOfDecimals.
-   * @param symbol Currency symbol.
-   */
-  static formatToCurrency(
-    value: string,
-    numberOfDecimals: number = 2,
-    fixedNumberOfDecimals: boolean = false,
-    symbol?: string,
-  ): string {
+  static formatToCurrency(value: string, numberOfDecimals: number = 2, symbol?: string): string {
     if (!value || isZeroString(value)) {
-      return `${symbol || ''}0${fixedNumberOfDecimals ? `.${'0'.repeat(numberOfDecimals)}` : ''}`;
+      return `${symbol || ''}0`;
     }
 
     const [integerPart, fractionalPart] = value.split('.');
@@ -75,9 +53,7 @@ export class NumberUtils {
 
     let fractionPartFormatted = fractionalPart ? fractionalPart.slice(0, numberOfDecimals) : '';
     if (isZeroString(fractionPartFormatted)) {
-      fractionPartFormatted = fixedNumberOfDecimals ? '0'.repeat(numberOfDecimals) : '';
-    } else if (fixedNumberOfDecimals) {
-      fractionPartFormatted = `${fractionPartFormatted}${'0'.repeat(numberOfDecimals - fractionPartFormatted.length)}`;
+      fractionPartFormatted = '';
     }
 
     return `${symbol || ''}${integerPartSeparatorsAdded}${fractionPartFormatted ? `.${fractionPartFormatted}` : ''}`;

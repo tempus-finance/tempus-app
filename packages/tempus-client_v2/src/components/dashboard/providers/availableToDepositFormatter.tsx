@@ -54,7 +54,6 @@ const AvailableToDepositFormatter = (props: DataTypeProvider.ValueFormatterProps
         // TODO - Use backing token precision from child items
         ethers.utils.formatUnits(parentAvailableToDeposit, tokenPrecision[row.token]),
         2,
-        true,
       )}`;
     } else {
       // assuming same token on different chain share the same decimal display on UI
@@ -67,7 +66,6 @@ const AvailableToDepositFormatter = (props: DataTypeProvider.ValueFormatterProps
           {NumberUtils.formatWithMultiplier(
             ethers.utils.formatUnits(parentAvailableToDeposit, tokenPrecision[row.token]),
             decimalsForUI,
-            true,
           )}
           <Spacer size={5} />
           {row.token}
@@ -103,7 +101,6 @@ const AvailableToDepositFormatter = (props: DataTypeProvider.ValueFormatterProps
       content = `${currencySymbol}${NumberUtils.formatWithMultiplier(
         ethers.utils.formatUnits(childAvailableToDeposit, staticPoolData[row.id].tokenPrecision.backingToken),
         2,
-        true,
       )}`;
     } else {
       content = (
@@ -111,7 +108,6 @@ const AvailableToDepositFormatter = (props: DataTypeProvider.ValueFormatterProps
           {NumberUtils.formatWithMultiplier(
             ethers.utils.formatUnits(childAvailableToDeposit, staticPoolData[row.id].tokenPrecision.backingToken),
             staticPoolData[row.id].decimalsForUI,
-            true,
           )}
           <Spacer size={5} />
           {row.token}

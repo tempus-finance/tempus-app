@@ -16,7 +16,7 @@ const ProfitLossChartTooltip = (props: TooltipProps<ValueType, NameType>) => {
 
   const valueFormatted = useMemo(() => {
     if (active && payload && payload[0]) {
-      return NumberUtils.formatToCurrency(payload[0].payload.value.toString(), 2, true, '$');
+      return NumberUtils.formatToCurrency(payload[0].payload.value.toString(), 2, '$');
     }
   }, [active, payload]);
 
