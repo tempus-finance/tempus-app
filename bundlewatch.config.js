@@ -1,7 +1,7 @@
 const bundlewatchConfig = {
   files: [
     {
-      path: './packages/tempus-client_v2/build/static/js/*.chunk.js',
+      path: 'packages/tempus-client_v2/build/static/js/*.js',
     },
   ],
   normalizeFilenames: /^.+?(\..+?)\.\w+$/,
