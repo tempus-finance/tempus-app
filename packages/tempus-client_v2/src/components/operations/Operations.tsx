@@ -46,8 +46,11 @@ const Operations: FC<OperationsProps> = props => {
   const [selectedView, setSelectedView] = useState<TransactionView>(poolIsMature ? 'withdraw' : 'deposit');
 
   const handleWithdraw = useCallback(() => {
-    setSelectedView('deposit');
-  }, []);
+    // Redirect user to deposit section after withdrawal only if pool is not mature yet
+    if (!poolIsMature) {
+      setSelectedView('deposit');
+    }
+  }, [poolIsMature]);
 
   /**
    * If pool does not have any liquidity, set Mint view as a default one

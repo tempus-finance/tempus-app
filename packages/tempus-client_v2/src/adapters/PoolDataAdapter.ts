@@ -716,6 +716,7 @@ export default class PoolDataAdapter {
     tempusPoolAddress: string,
     tempusPoolId: string,
     tempusAMMAddress: string,
+    tempusPoolMaturityTime: number,
     tempusPoolStartTime?: number,
     blockTag?: number,
   ): Promise<BigNumber | null> {
@@ -730,6 +731,11 @@ export default class PoolDataAdapter {
         'PoolDataAdapter - getEstimatedFixedApr() - Attempted to use PoolDataAdapter before initializing it.',
       );
       return Promise.reject();
+    }
+
+    // Fixed APR cannot be calculated for matured pools so we return null
+    if (tempusPoolMaturityTime < Date.now()) {
+      return null;
     }
 
     if (!tokenAmount) {

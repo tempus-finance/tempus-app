@@ -375,6 +375,7 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
             selectedPoolAddress,
             poolId,
             ammAddress,
+            maturityDate,
           );
 
           setEstimatedFixedApr(fixedAPREstimate);
@@ -400,6 +401,7 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
     backingToken,
     ammAddress,
     chain,
+    maturityDate,
   ]);
 
   useEffect(() => {
