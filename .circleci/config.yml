@@ -38,6 +38,20 @@ jobs:
           paths:
             - ./
 
+  bundlewatch:
+    docker:
+      - image: cimg/node:15.1
+    steps:
+      - checkout
+      - node/install-packages
+      - run:
+          name: Bundlewatch
+          command: ./node_modules/.bin/bundlewatch
+      - persist_to_workspace:
+          root: ./
+          paths:
+            - ./
+
   test:
     docker:
       - image: cimg/node:15.1
