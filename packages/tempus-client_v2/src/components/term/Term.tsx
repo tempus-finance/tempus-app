@@ -11,6 +11,12 @@ import './Term.scss';
 
 const TimeLeftFormatter: FC<{ maturityDate: number; locale: Locale }> = ({ maturityDate, locale }) => {
   const timeLeft = maturityDate - Date.now();
+
+  // In case pool is mature, we want to show 'Pool Matured' label instead of number of days left to maturity
+  if (timeLeft < 0) {
+    return <Typography variant="card-body-text">{getText('matured', locale)}</Typography>;
+  }
+
   let formattedValue;
   if (timeLeft > 86400000) {
     formattedValue = formatDistanceStrict(Date.now(), maturityDate, { unit: 'day', locale: locale.dateLocale });
