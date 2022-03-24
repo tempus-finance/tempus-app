@@ -463,6 +463,10 @@ const Wallet = () => {
         return;
       }
 
+      if (!walletConnector || !walletConnector.walletConnectProvider) {
+        return;
+      }
+
       // Check if session is authorized
       const authorized = walletConnector.walletConnectProvider.connected;
       if (authorized) {
