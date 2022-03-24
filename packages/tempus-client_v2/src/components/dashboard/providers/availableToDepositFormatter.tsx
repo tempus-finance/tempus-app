@@ -49,7 +49,7 @@ const AvailableToDepositFormatter = (props: DataTypeProvider.ValueFormatterProps
 
     if (showFiat) {
       const currencySymbol = '$';
-      content = `${currencySymbol}${NumberUtils.formatWithMultiplier(
+      content = `${currencySymbol}${NumberUtils.formatToFixedFractionDigitsOrMultiplier(
         // TODO - Use backing token precision from child items
         ethers.utils.formatUnits(parentAvailableToDeposit, tokenPrecision[row.token as Ticker]),
         2,
@@ -62,7 +62,7 @@ const AvailableToDepositFormatter = (props: DataTypeProvider.ValueFormatterProps
         <>
           {/* TODO - Use decimalsForUI precision from child items (max precision) */}
           {/* TODO - Use backing token precision from child items */}
-          {NumberUtils.formatWithMultiplier(
+          {NumberUtils.formatToFixedFractionDigitsOrMultiplier(
             ethers.utils.formatUnits(parentAvailableToDeposit, tokenPrecision[row.token as Ticker]),
             decimalsForUI,
           )}
@@ -97,14 +97,14 @@ const AvailableToDepositFormatter = (props: DataTypeProvider.ValueFormatterProps
 
     if (showFiat) {
       const currencySymbol = '$';
-      content = `${currencySymbol}${NumberUtils.formatWithMultiplier(
+      content = `${currencySymbol}${NumberUtils.formatToFixedFractionDigitsOrMultiplier(
         ethers.utils.formatUnits(childAvailableToDeposit, staticPoolData[row.id].tokenPrecision.backingToken),
         2,
       )}`;
     } else {
       content = (
         <>
-          {NumberUtils.formatWithMultiplier(
+          {NumberUtils.formatToFixedFractionDigitsOrMultiplier(
             ethers.utils.formatUnits(childAvailableToDeposit, staticPoolData[row.id].tokenPrecision.backingToken),
             staticPoolData[row.id].decimalsForUI,
           )}
