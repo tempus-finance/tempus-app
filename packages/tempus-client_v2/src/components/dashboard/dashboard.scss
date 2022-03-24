@@ -214,19 +214,12 @@ $padding: 20px;
         border-radius: 5px;
         width: 120px;
         height: 32px;
-      }
-      .MuiButton-containedSizeSmall {
-        padding: 2px 8px;
-      }
-      .MuiButton-root {
-        color: #ffffff;
-        padding: 10px 15px 10px 15px;
-        text-transform: none;
-        background-color: $accent-color-3;
-      }
-      .Mui-disabled {
-        color: rgba(255, 255, 255, 0.5);
-        background-color: #7a7a7a;
+
+        &:disabled {
+          color: rgba(255, 255, 255, 0.5);
+          background-color: #7a7a7a;
+          cursor: default;
+        }
       }
     }
     .tf__dashboard__asset-ticker {
