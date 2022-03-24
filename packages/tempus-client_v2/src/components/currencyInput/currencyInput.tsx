@@ -1,4 +1,4 @@
-import { FC, useCallback, useContext, useEffect, useState } from 'react';
+import { FC, useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { FormControl, TextField, Button, Divider } from '@material-ui/core';
 import { LocaleContext } from '../../context/localeContext';
 import getText from '../../localisation/getText';
@@ -36,7 +36,7 @@ const CurrencyInput: FC<CurrencyInputProps> = ({
   const { locale } = useContext(LocaleContext);
 
   const [value, setValue] = useState<string>('');
-  const [time, setTime] = useState<NodeJS.Timeout>();
+  const time = useRef<NodeJS.Timeout>();
 
   useEffect(() => {
     if (defaultValue || defaultValue === '') {
@@ -53,18 +53,16 @@ const CurrencyInput: FC<CurrencyInputProps> = ({
         if (parsedCurrency || parsedCurrency === '') {
           setValue(parsedCurrency);
         }
-        if (time) {
-          clearTimeout(time);
+        if (time.current) {
+          clearTimeout(time.current);
         }
-        setTime(
-          setTimeout(() => {
-            delayedChange(parsedCurrency);
-            setTime(undefined);
-          }, 300),
-        );
+        time.current = setTimeout(() => {
+          delayedChange(parsedCurrency);
+          time.current = undefined;
+        }, 300);
       }
     },
-    [precision, delayedChange, time],
+    [precision, delayedChange],
   );
 
   const handleMaxClick = useCallback(() => {
