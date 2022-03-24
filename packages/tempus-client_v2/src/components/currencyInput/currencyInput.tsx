@@ -44,10 +44,7 @@ const CurrencyInput: FC<CurrencyInputProps> = ({
     }
   }, [defaultValue, precision]);
 
-  const delayedChange = useCallback(
-    value => onChange && onChange(value.replace(/[^0-9$.]/g, '')),
-    [precision, onChange],
-  );
+  const delayedChange = useCallback(value => onChange && onChange(value.replace(/[^0-9$.]/g, '')), [onChange]);
 
   const onValueChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -67,7 +64,7 @@ const CurrencyInput: FC<CurrencyInputProps> = ({
         );
       }
     },
-    [delayedChange, time],
+    [precision, delayedChange, time],
   );
 
   const handleMaxClick = useCallback(() => {
