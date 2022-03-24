@@ -434,7 +434,7 @@ export default class PoolDataAdapter {
           yieldsRate = div18f(estimatedPrincipals, tokenSwapAmount, principalsPrecision);
         }
       }
-      // In case pool is mature, withdraw will not execute any swaps under the hood, so we can set yieldsRate to 0
+      // In case pool is mature, withdraw will not execute any swaps under the hood, so we can set yieldsRate to any value other then zero
       else {
         yieldsRate = BigNumber.from('0x1');
       }
