@@ -436,7 +436,7 @@ export default class PoolDataAdapter {
       }
       // In case pool is mature, withdraw will not execute any swaps under the hood, so we can set yieldsRate to 0
       else {
-        yieldsRate = BigNumber.from('0');
+        yieldsRate = BigNumber.from('0x1');
       }
 
       return await this.tempusControllerService.exitTempusAmmAndRedeem(
