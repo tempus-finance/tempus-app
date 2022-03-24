@@ -17,6 +17,11 @@ const chainlinkMap: { [key in Chain]: { [pair: string]: string } } = {
     'weth-usd': '0x11DdD3d147E5b83D01cee7070027092397d63658',
     'wbtc-usd': '0x8e94C22142F4A64b99022ccDd994f4e9EC86E4B4',
   },
+  'ethereum-fork': {
+    'eth-usd': '0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419',
+    'usdc-usd': '0x8fFfFfd4AfB6115b954Bd326cbe7B4BA576818f6',
+    'dai-usd': '0xAed0c38402a5d19df6E4c03F4E2DceD6e29c1ee9',
+  },
 };
 
 const getChainlinkFeed = (chain: Chain, tokenA: Ticker): string => chainlinkMap[chain][`${tokenA.toLowerCase()}-usd`];

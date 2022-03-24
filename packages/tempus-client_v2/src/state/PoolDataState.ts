@@ -18,6 +18,9 @@ getChainConfig('ethereum').tempusPools.forEach(tempusPoolConfig => {
 getChainConfig('fantom').tempusPools.forEach(tempusPoolConfig => {
   staticPoolDataStateInitialValue[tempusPoolConfig.address] = { ...tempusPoolConfig };
 });
+getChainConfig('ethereum-fork').tempusPools.forEach(tempusPoolConfig => {
+  staticPoolDataStateInitialValue[tempusPoolConfig.address] = { ...tempusPoolConfig };
+});
 export const staticPoolDataState = createState(staticPoolDataStateInitialValue);
 
 // Dynamic pool data
@@ -101,6 +104,30 @@ getChainConfig('fantom').tempusPools.forEach(tempusPoolConfig => {
     tempusFees: null,
     fixedAPR: 'fetching',
     negativeYield: true,
+  };
+});
+getChainConfig('ethereum-fork').tempusPools.forEach(tempusPoolConfig => {
+  dynamicPoolDataStateInitialValue[tempusPoolConfig.address] = {
+    poolShareBalance: {
+      principals: null,
+      yields: null,
+    },
+    userBalanceUSD: null,
+    userPrincipalsBalance: null,
+    userYieldsBalance: null,
+    userLPTokenBalance: null,
+    backingTokenValueInFiat: null,
+    yieldBearingTokenValueInFiat: null,
+    userBalanceInBackingToken: null,
+    userBackingTokenBalance: null,
+    backingTokensAvailable: null,
+    yieldBearingTokenValueInBackingToken: null,
+    userYieldBearingTokenBalance: null,
+    tvl: null,
+    variableAPR: null,
+    fixedAPR: 'fetching',
+    negativeYield: true,
+    tempusFees: null,
   };
 });
 export const dynamicPoolDataState = createState(dynamicPoolDataStateInitialValue);

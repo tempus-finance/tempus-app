@@ -32,8 +32,14 @@ const MaturityFormatter = ({ value, row }: any) => {
 
     // In case parent row has a single child, we want to show time left to maturity for this child item in parent row
     const timeLeft = min - Date.now();
-    const daysRemaining = formatDistanceStrict(Date.now(), min, { unit: 'day' });
-    const hoursRemaining = formatDistanceStrict(Date.now(), min, { unit: 'hour' });
+    let daysRemaining = formatDistanceStrict(Date.now(), min, { unit: 'day' });
+    let hoursRemaining = formatDistanceStrict(Date.now(), min, { unit: 'hour' });
+
+    // Pool matured
+    if (timeLeft < 0) {
+      daysRemaining = '0 days';
+      hoursRemaining = '0 hours';
+    }
 
     return (
       <>
@@ -120,26 +126,44 @@ const MaturityFormatter = ({ value, row }: any) => {
     const daysRemaining = formatDistanceStrict(Date.now(), childMaturity, { unit: 'day' });
     const hoursRemaining = formatDistanceStrict(Date.now(), childMaturity, { unit: 'hour' });
 
+    const poolIsMature = childMaturity < Date.now();
+
     return (
-      <div>
+      <>
         <Typography variant="dash-maturity-label" color="label-gray">
           {getText('timeToMaturity', language)}
         </Typography>
 
-        {timeLeft > MILLISECONDS_IN_A_DAY ? (
-          <div className="tf__dashboard__grid__maturity-date">
-            <Typography variant="dash-maturity-date-bold">{daysRemaining.split(' ')[0]} </Typography>
-            <Spacer size={3} />
-            <Typography variant="dash-maturity-date">{daysRemaining.split(' ')[1]}</Typography>
-          </div>
-        ) : (
-          <div className="tf__dashboard__grid__maturity-date">
-            <Typography variant="dash-maturity-date-bold">{hoursRemaining.split(' ')[0]} </Typography>
-            <Spacer size={3} />
-            <Typography variant="dash-maturity-date">{hoursRemaining.split(' ')[1]}</Typography>
+        {/* If pool is not mature show number of days/hours to maturity */}
+        {!poolIsMature && (
+          <>
+            {timeLeft > MILLISECONDS_IN_A_DAY ? (
+              <div className="tf__dashboard__grid__maturity-date">
+                <Typography variant="dash-maturity-date-bold">{daysRemaining.split(' ')[0]} </Typography>
+                <Spacer size={3} />
+                <Typography variant="dash-maturity-date">{daysRemaining.split(' ')[1]}</Typography>
+              </div>
+            ) : (
+              <div className="tf__dashboard__grid__maturity-date">
+                <Typography variant="dash-maturity-date-bold">{hoursRemaining.split(' ')[0]} </Typography>
+                <Spacer size={3} />
+                <Typography variant="dash-maturity-date">{hoursRemaining.split(' ')[1]}</Typography>
+              </div>
+            )}
+          </>
+        )}
+
+        <Spacer size={4} />
+
+        {/* If pool is mature show 'Matured' label instead of number of days to maturity */}
+        {poolIsMature && (
+          <div className="tf__dashboard__grid__maturity-matured-label">
+            <Typography variant="matured-dash-label" color="success">
+              {getText('poolMatured', language)}
+            </Typography>
           </div>
         )}
-      </div>
+      </>
     );
   }
 };

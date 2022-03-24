@@ -192,5 +192,7 @@ const es: { [word in Words]: string } = {
     'El deslizamiento de esta transacción es demasiado bajo. Por favor cambie la ficha en las preferencias.',
   disableInputByNegativeYield:
     'Los depósitos están deshabilitados actualmente ya que este grupo está experimentando rendimientos negativos. Consulte nuestros <a href="https://docs.tempus.finance/community/faq#why-would-a-pool-have-a-negative-yield" target="_blank">documentos</a> para obtener más información.',
+  poolMatured: 'POOL MADURADO',
+  matured: 'Madurado',
 };
 export default es;

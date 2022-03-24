@@ -375,6 +375,7 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
             selectedPoolAddress,
             poolId,
             ammAddress,
+            maturityDate,
           );
 
           setEstimatedFixedApr(fixedAPREstimate);
@@ -400,6 +401,7 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
     backingToken,
     ammAddress,
     chain,
+    maturityDate,
   ]);
 
   useEffect(() => {
@@ -632,7 +634,7 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
 
     const timeUntilMaturity = maturityDate - Date.now();
 
-    const scaleFactor = ethers.utils.parseEther((timeUntilMaturity / MILLISECONDS_IN_A_YEAR).toString());
+    const scaleFactor = ethers.utils.parseEther((timeUntilMaturity / MILLISECONDS_IN_A_YEAR).toFixed(18));
 
     let amountParsed: BigNumber;
     if (selectedToken === yieldBearingToken) {
