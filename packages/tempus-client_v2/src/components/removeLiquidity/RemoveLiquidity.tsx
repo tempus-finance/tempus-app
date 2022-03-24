@@ -1,13 +1,12 @@
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { BigNumber, ethers } from 'ethers';
-import { getTokenPrecision, isZeroString, mul18f, NumberUtils } from 'tempus-core-services';
+import { Chain, getTokenPrecision, isZeroString, mul18f, NumberUtils } from 'tempus-core-services';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
 import { refreshBalances } from '../../providers/balanceProviderHelper';
 import { LocaleContext } from '../../context/localeContext';
 import { WalletContext } from '../../context/walletContext';
 import { UserSettingsContext } from '../../context/userSettingsContext';
-import { Chain } from '../../interfaces/Chain';
 import getText from '../../localisation/getText';
 import Typography from '../typography/Typography';
 import Execute from '../buttons/Execute';

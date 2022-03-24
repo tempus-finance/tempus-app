@@ -1,13 +1,19 @@
 import { BigNumber, ethers } from 'ethers';
 import { JsonRpcSigner } from '@ethersproject/providers';
-import { CONSTANTS, Chain, div18f, getERC20TokenService, mul18f } from 'tempus-core-services';
-import getStatisticsService from '../services/getStatisticsService';
-import StatisticsService from '../services/StatisticsService';
-import TempusControllerService from '../services/TempusControllerService';
-import getTempusControllerService from '../services/getTempusControllerService';
+import {
+  CONSTANTS,
+  Chain,
+  TempusControllerService,
+  TempusPool,
+  StatisticsService,
+  div18f,
+  getERC20TokenService,
+  getTempusControllerService,
+  getStatisticsService,
+  mul18f,
+} from 'tempus-core-services';
 import ChartDataPoint from '../interfaces/ChartDataPoint';
-import { TempusPool } from '../interfaces/TempusPool';
-import { getChainConfig } from '../utils/getConfig';
+import { getChainConfig, getConfig } from '../utils/getConfig';
 
 const { SECONDS_IN_A_DAY } = CONSTANTS;
 
@@ -27,8 +33,8 @@ class ProfitLossGraphDataAdapter {
 
   public init(params: ProfitLossGraphDataAdapterParameters): void {
     this.chain = params.chain;
-    this.statisticsService = getStatisticsService(this.chain, params.signer);
-    this.tempusControllerService = getTempusControllerService(this.chain, params.signer);
+    this.statisticsService = getStatisticsService(this.chain, getConfig, getChainConfig, params.signer);
+    this.tempusControllerService = getTempusControllerService(this.chain, getChainConfig, params.signer);
     this.eRC20TokenServiceGetter = params.eRC20TokenServiceGetter;
 
     this.signer = params.signer;

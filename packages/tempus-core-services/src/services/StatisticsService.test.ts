@@ -1,6 +1,6 @@
 import * as ejs from 'ethers';
 import StatisticsABI from '../abi/Stats.json';
-import StatisticsService from './StatisticsService';
+import { StatisticsService } from './StatisticsService';
 
 jest.mock('@ethersproject/providers');
 const { JsonRpcProvider } = jest.requireMock('@ethersproject/providers');
@@ -8,6 +8,7 @@ const { JsonRpcProvider } = jest.requireMock('@ethersproject/providers');
 describe('StatisticsService', () => {
   const mockAddress = 'statistics-contract-address';
   const mockProvider = new JsonRpcProvider();
+  const mockGetConfig = jest.fn();
 
   let instance: StatisticsService;
 
@@ -58,6 +59,7 @@ describe('StatisticsService', () => {
         abi: StatisticsABI,
         signerOrProvider: mockProvider,
         tempusAMMService: mockGetTempusAMMService(),
+        getConfig: mockGetConfig,
       });
 
       expect(instance).toBeInstanceOf(StatisticsService);
@@ -76,6 +78,7 @@ describe('StatisticsService', () => {
         abi: StatisticsABI,
         signerOrProvider: mockProvider,
         tempusAMMService: mockGetTempusAMMService(),
+        getConfig: mockGetConfig,
       });
     });
 
@@ -102,11 +105,12 @@ describe('StatisticsService', () => {
         abi: StatisticsABI,
         signerOrProvider: mockProvider,
         tempusAMMService: mockGetTempusAMMService(),
+        getConfig: mockGetConfig,
       });
     });
 
     test('it returns a Promise that resolves with the value current exchange rate', async () => {
-      mockGetRate.mockImplementation((ens, overrides) => {
+      mockGetRate.mockImplementation(() => {
         return Promise.resolve([ejs.BigNumber.from('100'), ejs.BigNumber.from('2')]);
       });
 
@@ -128,6 +132,7 @@ describe('StatisticsService', () => {
         abi: StatisticsABI,
         signerOrProvider: mockProvider,
         tempusAMMService: mockGetTempusAMMService(),
+        getConfig: mockGetConfig,
       });
     });
 
@@ -180,17 +185,20 @@ describe('StatisticsService', () => {
         abi: StatisticsABI,
         signerOrProvider: mockProvider,
         tempusAMMService: mockGetTempusAMMService(),
+        getConfig: mockGetConfig,
       });
     });
 
+    // TODO update this test
     test('it returns the amount of Backing or Yield Bearing tokens on withdraw', async () => {
       const value = ejs.BigNumber.from('45670000000000');
 
       mockEstimateExitAndRedeem.mockImplementation(() => {
-        return Promise.resolve(value);
+        return Promise.resolve({ principalsRate: value });
       });
       mockGetMaxLeftoverShares.mockResolvedValue(ejs.utils.parseEther('0.00001'));
 
+      const tempusPoolAddress = '123';
       const tempusAmmAddress = 'abc';
       const principalsAmount = ejs.utils.parseEther('100');
       const yieldsAmount = ejs.utils.parseEther('200');
@@ -198,6 +206,7 @@ describe('StatisticsService', () => {
       const isBackingToken = true;
 
       const result = await instance.estimateExitAndRedeem(
+        tempusPoolAddress,
         tempusAmmAddress,
         lpTokensAmount,
         principalsAmount,
@@ -205,7 +214,7 @@ describe('StatisticsService', () => {
         isBackingToken,
       );
 
-      expect(ejs.utils.formatEther(result)).toBe(ejs.utils.formatEther(value));
+      expect(ejs.utils.formatEther(result.principalsRate)).toBe(ejs.utils.formatEther(value));
     });
   });
 });

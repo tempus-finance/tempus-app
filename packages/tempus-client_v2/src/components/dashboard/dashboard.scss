@@ -224,6 +224,10 @@ $padding: 20px;
         text-transform: none;
         background-color: $accent-color-3;
       }
+      .Mui-disabled {
+        color: rgba(255, 255, 255, 0.5);
+        background-color: #7a7a7a;
+      }
     }
     .tf__dashboard__asset-ticker {
       display: flex;

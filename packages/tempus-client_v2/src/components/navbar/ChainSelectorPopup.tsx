@@ -1,9 +1,9 @@
 import { FC, useCallback, useContext } from 'react';
 import { useState as useHookState } from '@hookstate/core';
+import { Chain, chainNameToHexChainId, prettifyChainNameLong } from 'tempus-core-services';
 import { WalletContext } from '../../context/walletContext';
 import { getChainConfig } from '../../utils/getConfig';
 import { unsupportedNetworkState } from '../../state/ChainState';
-import { Chain, chainNameToHexChainId, prettifyChainNameLong } from '../../interfaces/Chain';
 import TickIcon from '../icons/TickIcon';
 import Modal from '../modal/Modal';
 import Spacer from '../spacer/spacer';
@@ -83,6 +83,7 @@ const ChainSelectorPopup: FC<ChainSelectorPopupProps> = ({
 
   const ethereumSelected = userWalletChain === 'ethereum';
   const fantomSelected = userWalletChain === 'fantom';
+  const ethereumForkSelected = userWalletChain === 'ethereum-fork';
 
   if (!open) {
     return null;
@@ -114,6 +115,22 @@ const ChainSelectorPopup: FC<ChainSelectorPopupProps> = ({
           </div>
           <TokenIcon ticker="FANTOM" width={24} height={24} vectorWidth={24} vectorHeight={24} />
         </button>
+        {process.env.REACT_APP_SHOW_DEV_NETWORKS === 'true' && (
+          <>
+            <Spacer size={12} />
+            <button
+              className={`tc__chainSelectorPopup-button ${ethereumForkSelected ? 'selected' : ''}`}
+              onClick={() => onChainSelect('ethereum-fork')}
+            >
+              <div className="tc__chainSelectorPopup-button__label">
+                <Typography variant="button-text">Ethereum Fork</Typography>
+                <Spacer size={12} />
+                {ethereumForkSelected && <TickIcon />}
+              </div>
+              <TokenIcon ticker="ETH" width={24} height={24} vectorWidth={24} vectorHeight={24} />
+            </button>
+          </>
+        )}
       </div>
     </Modal>
   );

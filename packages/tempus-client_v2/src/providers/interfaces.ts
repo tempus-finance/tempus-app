@@ -1,5 +1,5 @@
 import { JsonRpcSigner } from '@ethersproject/providers';
-import { Chain } from '../interfaces/Chain';
+import { Chain } from 'tempus-core-services';
 
 export interface BalanceProviderParams {
   userWalletAddress: string;

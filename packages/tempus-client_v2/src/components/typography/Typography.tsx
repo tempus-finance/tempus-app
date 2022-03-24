@@ -27,7 +27,8 @@ type TypographyVariant =
   | 'contract-addr'
   | 'dash-maturity-label'
   | 'dash-maturity-date'
-  | 'dash-maturity-date-bold';
+  | 'dash-maturity-date-bold'
+  | 'matured-dash-label';
 
 type TypographyColor =
   | 'default'
@@ -222,6 +223,13 @@ typographyStyleMap.set('dash-maturity-date-bold', {
   fontSize: '16px',
   fontStyle: 'normal',
   lineHeight: '24px',
+});
+typographyStyleMap.set('matured-dash-label', {
+  fontFamily: "'Source Sans Pro', Mono, sans-serif",
+  fontWeight: 600,
+  fontSize: '10px',
+  fontStyle: 'normal',
+  lineHeight: '16px',
 });
 
 interface TypographyProps {

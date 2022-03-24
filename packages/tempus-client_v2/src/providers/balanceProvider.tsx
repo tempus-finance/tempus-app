@@ -1,12 +1,16 @@
 import { Contract } from 'ethers';
 import { JsonRpcSigner } from '@ethersproject/providers';
-import { Chain, getERC20TokenService, mul18f } from 'tempus-core-services';
-import { ERC20 } from '../abi/ERC20';
-import ERC20ABI from '../abi/ERC20.json';
-import { TempusPool } from '../interfaces/TempusPool';
+import {
+  Chain,
+  ERC20,
+  ERC20ABI,
+  TempusPool,
+  getERC20TokenService,
+  getStatisticsService,
+  mul18f,
+} from 'tempus-core-services';
 import { dynamicPoolDataState } from '../state/PoolDataState';
-import getStatisticsService from '../services/getStatisticsService';
-import { getConfigForPoolWithAddress, getChainConfig } from '../utils/getConfig';
+import { getConfigForPoolWithAddress, getConfig, getChainConfig } from '../utils/getConfig';
 
 export interface UserBalanceProviderParams {
   userWalletAddress: string;
@@ -76,7 +80,7 @@ class UserBalanceProvider {
       return;
     }
 
-    const statisticsService = getStatisticsService(this.chain, this.userWalletSigner);
+    const statisticsService = getStatisticsService(this.chain, getConfig, getChainConfig, this.userWalletSigner);
 
     const principalsService = getERC20TokenService(
       poolConfig.principalsAddress,

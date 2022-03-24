@@ -2,31 +2,10 @@ import { ethers, BigNumber, Contract } from 'ethers';
 import { JsonRpcSigner, JsonRpcProvider } from '@ethersproject/providers';
 import { debounceTime, from, Observable, of, switchMap } from 'rxjs';
 import { Vaults as RariVault } from 'rari-sdk';
-import {
-  CONSTANTS,
-  PoolBalanceChangedEvent,
-  TempusAMMService,
-  TempusPoolService,
-  VaultService,
-  SwapEvent,
-  decreasePrecision,
-  getProviderFromSignerOrProvider,
-  increasePrecision,
-  wadToDai,
-} from 'tempus-core-services';
-import * as coreServices from 'tempus-core-services';
-import lidoOracleABI from '../abi/LidoOracle.json';
 import AaveLendingPoolABI from '../abi/AaveLendingPool.json';
+import lidoOracleABI from '../abi/LidoOracle.json';
 import cERC20Token from '../abi/cERC20Token.json';
-import { isPoolBalanceChangedEvent, isSwapEvent } from '../services/EventUtils';
-import { ProtocolName } from '../interfaces/ProtocolName';
-import { TempusPool } from '../interfaces/TempusPool';
-import { YearnData } from '../interfaces/YearnData';
-import { ChainConfig } from '../interfaces/Config';
-import { getChainConfig } from '../utils/getConfig';
-import { Chain } from '../interfaces/Chain';
-
-const {
+import {
   DAYS_IN_A_YEAR,
   SECONDS_IN_YEAR,
   ONE_ETH_IN_WEI,
@@ -34,7 +13,21 @@ const {
   COMPOUND_BLOCKS_PER_DAY,
   SECONDS_IN_A_DAY,
   AMM_SWAP_FEES_PRECISION,
-} = CONSTANTS;
+} from '../constants';
+import { ChainConfig, Chain, ProtocolName, TempusPool, YearnData } from '../interfaces';
+import {
+  decreasePrecision,
+  div18f,
+  getProviderFromSignerOrProvider,
+  increasePrecision,
+  mul18f,
+  wadToDai,
+} from '../utils';
+import { isPoolBalanceChangedEvent, isSwapEvent } from './EventUtils';
+import { TempusAMMService } from './TempusAMMService';
+import { TempusPoolService } from './TempusPoolService';
+import { PoolBalanceChangedEvent, VaultService, SwapEvent } from './VaultService';
+
 const SECONDS_IN_A_WEEK = SECONDS_IN_A_DAY * 7;
 const HOURS_IN_A_YEAR = DAYS_IN_A_YEAR * 24;
 const BN_SECONDS_IN_YEAR = BigNumber.from(SECONDS_IN_YEAR);
@@ -43,7 +36,17 @@ const ethMantissa = 1e18;
 
 const intervalBetweenHttpRequestsInMilliseconds = 1000;
 
-class VariableRateService {
+type VariableRateServiceParameters = {
+  signerOrProvider: JsonRpcSigner | JsonRpcProvider;
+  tempusPoolService: TempusPoolService;
+  vaultService: VaultService;
+  tempusAMMService: TempusAMMService;
+  rariVault: RariVault;
+  config: ChainConfig;
+  getChainConfig: (chain: Chain) => ChainConfig;
+};
+
+export class VariableRateService {
   static getAprFromApy(apy: number, periods: number = 1): number {
     if (periods === 1) {
       return apy;
@@ -63,15 +66,17 @@ class VariableRateService {
   private tokenAddressToContractMap: { [tokenAddress: string]: ethers.Contract } = {};
   private signerOrProvider: JsonRpcSigner | JsonRpcProvider | null = null;
   private chainConfig: ChainConfig | null = null;
+  private getChainConfig: ((chain: Chain) => ChainConfig) | null = null;
 
-  init(
-    signerOrProvider: JsonRpcSigner | JsonRpcProvider,
-    tempusPoolService: TempusPoolService,
-    vaultService: VaultService,
-    tempusAMMService: TempusAMMService,
-    rariVault: RariVault,
-    config: ChainConfig,
-  ) {
+  init({
+    signerOrProvider,
+    tempusPoolService,
+    vaultService,
+    tempusAMMService,
+    rariVault,
+    config,
+    getChainConfig,
+  }: VariableRateServiceParameters) {
     if (signerOrProvider) {
       // Only connect to Lido Oracle contract if address for it is specified in blockchain config
       if (config.lidoOracle) {
@@ -85,6 +90,7 @@ class VariableRateService {
       this.vaultService = vaultService;
       this.tempusAMMService = tempusAMMService;
       this.chainConfig = config;
+      this.getChainConfig = getChainConfig;
     }
   }
 
@@ -96,15 +102,20 @@ class VariableRateService {
     chain: Chain,
     averageBlockTime: number,
   ) {
-    if (!this.tempusAMMService || !this.vaultService || !this.tempusPoolService || !this.signerOrProvider) {
+    if (
+      !this.tempusAMMService ||
+      !this.vaultService ||
+      !this.tempusPoolService ||
+      !this.signerOrProvider ||
+      !this.getChainConfig
+    ) {
       return Promise.reject();
     }
 
-    const poolConfig = getChainConfig(chain).tempusPools.find(pool => pool.address === tempusPool);
+    const poolConfig = this.getChainConfig(chain).tempusPools.find(pool => pool.address === tempusPool);
     if (!poolConfig) {
       return Promise.reject();
     }
-
     let provider = getProviderFromSignerOrProvider(this.signerOrProvider);
 
     const [latestBlock, swapFeePercentage] = await Promise.all([
@@ -134,7 +145,7 @@ class VariableRateService {
     // Calculate current principals to yields ratio
     let currentPrincipalsToYieldsRatio = ethers.utils.parseUnits('1', poolConfig.tokenPrecision.principals);
     if (!principals.isZero() && !yields.isZero()) {
-      currentPrincipalsToYieldsRatio = coreServices.div18f(principals, yields, poolConfig.tokenPrecision.principals);
+      currentPrincipalsToYieldsRatio = div18f(principals, yields, poolConfig.tokenPrecision.principals);
     }
 
     // Total fees accumulated
@@ -161,8 +172,8 @@ class VariableRateService {
     });
 
     // Scale accumulated fees to 1 year duration
-    const scaledFees = coreServices.mul18f(
-      coreServices.div18f(
+    const scaledFees = mul18f(
+      div18f(
         totalFees,
         ethers.utils.parseUnits(hoursBetweenLatestAndLater, poolConfig.tokenPrecision.principals),
         poolConfig.tokenPrecision.principals,
@@ -171,7 +182,7 @@ class VariableRateService {
       poolConfig.tokenPrecision.principals,
     );
 
-    return coreServices.mul18f(scaledFees, currentPrincipalsToYieldsRatio, poolConfig.tokenPrecision.principals);
+    return mul18f(scaledFees, currentPrincipalsToYieldsRatio, poolConfig.tokenPrecision.principals);
   }
 
   private async getSwapAndPoolBalanceChangedEvents(
@@ -216,8 +227,8 @@ class VariableRateService {
     if (event.args.tokenIn === principalsAddress) {
       eventVolume = event.args.amountIn;
     } else if (event.args.tokenOut === principalsAddress) {
-      eventVolume = coreServices.mul18f(
-        coreServices.div18f(
+      eventVolume = mul18f(
+        div18f(
           adjustedSwapFeePrecision,
           ethers.utils.parseUnits('1', principalsPrecision).sub(adjustedSwapFeePrecision),
           principalsPrecision,
@@ -228,9 +239,9 @@ class VariableRateService {
     }
 
     // Calculate swap fees for current swap event
-    const swapFeesVolume = coreServices.mul18f(eventVolume, adjustedSwapFeePrecision, principalsPrecision);
+    const swapFeesVolume = mul18f(eventVolume, adjustedSwapFeePrecision, principalsPrecision);
     const liquidityProvided = principals.sub(swapFeesVolume);
-    const feePerPrincipalShare = coreServices.div18f(swapFeesVolume, liquidityProvided, principalsPrecision);
+    const feePerPrincipalShare = div18f(swapFeesVolume, liquidityProvided, principalsPrecision);
     totalFees = totalFees.add(feePerPrincipalShare);
 
     // Adjust pool balance based on swapped amounts
@@ -452,5 +463,3 @@ class VariableRateService {
     }
   }
 }
-
-export default VariableRateService;

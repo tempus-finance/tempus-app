@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { Ticker } from '../../../interfaces/Token';
+import { Ticker } from 'tempus-core-services';
 import TokenIcon from '../../tokenIcon';
 
 import './TokenPairIcon.scss';

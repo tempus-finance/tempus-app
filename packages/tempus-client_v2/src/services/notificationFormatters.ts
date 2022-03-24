@@ -1,11 +1,16 @@
 import { ethers, BigNumber } from 'ethers';
 import { format } from 'date-fns';
-import { capitalize, CONSTANTS, NumberUtils } from 'tempus-core-services';
-import ERC20ABI from '../abi/ERC20.json';
-import { Ticker } from '../interfaces/Token';
-import { ProtocolName } from '../interfaces/ProtocolName';
-import { TempusPool } from '../interfaces/TempusPool';
-import { Chain, prettifyChainName } from '../interfaces/Chain';
+import {
+  CONSTANTS,
+  ERC20ABI,
+  Chain,
+  NumberUtils,
+  TempusPool,
+  Ticker,
+  ProtocolName,
+  capitalize,
+  prettifyChainName,
+} from 'tempus-core-services';
 import { Locale } from '../interfaces/Locale';
 import getText from '../localisation/getText';
 import { getChainConfig } from '../utils/getConfig';

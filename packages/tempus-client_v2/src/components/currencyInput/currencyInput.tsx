@@ -70,7 +70,7 @@ const CurrencyInput: FC<CurrencyInputProps> = ({
 
   return (
     <FormControl>
-      <InfoTooltip content={disabledTooltip} arrowEnabled={false} disabled={!disabled}>
+      <InfoTooltip content={disabledTooltip} arrowEnabled={false} disabled={!disabled || !disabledTooltip}>
         <div className={containerClasses}>
           <TextField
             type="text"

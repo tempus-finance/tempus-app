@@ -1,4 +1,4 @@
-import { Ticker } from '../../interfaces/Token';
+import { Ticker } from 'tempus-core-services';
 
 const tokenIconsLarge: { [key in Ticker]?: string } = {
   DAI: `<path d="M20 0C31.0467 0 40 8.95509 40 20C40 31.0467 31.0467 40 20 40C8.95509 40 0 31.0458 0 20C0 8.95509 8.95509 0 20 0Z" fill="#F5AC37"/>

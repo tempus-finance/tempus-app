@@ -2,11 +2,11 @@ import { FC, useContext, useEffect, useState } from 'react';
 import { Navigate, useParams } from 'react-router-dom';
 import { BigNumber } from 'ethers';
 import { Downgraded, useHookstate } from '@hookstate/core';
+import { Chain } from 'tempus-core-services';
 import { UserSettingsContext } from '../../context/userSettingsContext';
 import { WalletContext } from '../../context/walletContext';
 import { dynamicPoolDataState, selectedPoolState } from '../../state/PoolDataState';
 import Operations from '../operations/Operations';
-import { Chain } from '../../interfaces/Chain';
 import usePoolNetworkValidCheck from '../../hooks/usePoolNetworkValidCheck';
 
 interface PoolRouteProps {

@@ -1,3 +1,9 @@
+import ERC20ABI from './abi/ERC20.json';
+import VaultABI from './abi/Vault.json';
+export { ERC20ABI, VaultABI };
+
+export type { ERC20 } from './abi';
+
 export type {
   Chain,
   ChainConfig,
@@ -6,6 +12,7 @@ export type {
   ProtocolDisplayName,
   ProtocolName,
   Ticker,
+  TempusPool,
   TokenPrecision,
   TokenTypePrecision,
   YearnData,
@@ -14,16 +21,20 @@ export type {
 } from './interfaces';
 
 export type {
+  DepositedEvent,
   ERC20TokenService,
-  StorageService,
   PoolBalanceChangedEvent,
   PoolBalanceChangedEventListener,
+  RedeemedEvent,
   TempusAMMJoinKind,
   TempusAMMExitKind,
   TempusAMMService,
+  TempusControllerService,
   TempusPoolService,
   TransferEventListener,
   VaultService,
+  StatisticsService,
+  StorageService,
   SwapEvent,
 } from './services';
 
@@ -35,7 +46,10 @@ export {
   getDefaultProvider,
   getERC20TokenService,
   getTempusAMMService,
+  getTempusControllerService,
   getTempusPoolService,
+  getVariableRateService,
+  getStatisticsService,
   getStorageService,
   getVaultService,
 } from './services';

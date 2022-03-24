@@ -4,10 +4,15 @@ import { Observable, from, of, switchMap, combineLatest, map, throwError, timer,
 import {
   CONSTANTS,
   Chain,
+  DepositedEvent,
   Ticker,
+  TempusControllerService,
   TransferEventListener,
   TempusAMMService,
+  TempusPool,
   TempusPoolService,
+  RedeemedEvent,
+  StatisticsService,
   VaultService,
   SwapKind,
   div18f,
@@ -16,12 +21,9 @@ import {
   increasePrecision,
   mul18f,
 } from 'tempus-core-services';
-import StatisticsService from '../services/StatisticsService';
-import TempusControllerService, { DepositedEvent, RedeemedEvent } from '../services/TempusControllerService';
+import { SelectedYield } from '../interfaces/SelectedYield';
 import { staticPoolDataState } from '../state/PoolDataState';
 import { getChainConfig } from '../utils/getConfig';
-import { TempusPool } from '../interfaces/TempusPool';
-import { SelectedYield } from '../interfaces/SelectedYield';
 
 const { DAYS_IN_A_YEAR, ONE_ETH_IN_WEI, POLLING_INTERVAL, SECONDS_IN_A_DAY, ZERO_ETH_ADDRESS } = CONSTANTS;
 
@@ -398,6 +400,7 @@ export default class PoolDataAdapter {
     isBackingToken: boolean,
     principalsPrecision: number,
     lpTokenPrecision: number,
+    maturityDate: number,
   ): Promise<ContractTransaction | undefined> {
     if (!this.tempusControllerService) {
       console.error('PoolDataAdapter - executeWithdraw() - Attempted to use PoolDataAdapter before initializing it!');
@@ -406,22 +409,30 @@ export default class PoolDataAdapter {
 
     try {
       let yieldsRate;
-      if (totalYields.gt(totalPrincipals)) {
-        const tokenSwapAmount = totalYields.sub(totalPrincipals);
 
-        const estimatedPrincipals = await this.getExpectedReturnForShareToken(tempusAMM, tokenSwapAmount, true);
-        yieldsRate = div18f(estimatedPrincipals, tokenSwapAmount, principalsPrecision);
-      } else if (totalPrincipals.gt(totalYields)) {
-        const tokenSwapAmount = totalPrincipals.sub(totalYields);
+      // Calculate yieldsRate if pool is not mature yet
+      if (maturityDate > Date.now()) {
+        if (totalYields.gt(totalPrincipals)) {
+          const tokenSwapAmount = totalYields.sub(totalPrincipals);
 
-        const estimatedYields = await this.getExpectedReturnForShareToken(tempusAMM, tokenSwapAmount, false);
-        yieldsRate = div18f(tokenSwapAmount, estimatedYields, principalsPrecision);
-      } else {
-        // In case we have equal amounts, use 1 as swapAmount just in case estimate was wrong, and swap is going to happen anyways
-        const tokenSwapAmount = ethers.utils.parseUnits('1', principalsPrecision);
+          const estimatedPrincipals = await this.getExpectedReturnForShareToken(tempusAMM, tokenSwapAmount, true);
+          yieldsRate = div18f(estimatedPrincipals, tokenSwapAmount, principalsPrecision);
+        } else if (totalPrincipals.gt(totalYields)) {
+          const tokenSwapAmount = totalPrincipals.sub(totalYields);
 
-        const estimatedPrincipals = await this.getExpectedReturnForShareToken(tempusAMM, tokenSwapAmount, true);
-        yieldsRate = div18f(estimatedPrincipals, tokenSwapAmount, principalsPrecision);
+          const estimatedYields = await this.getExpectedReturnForShareToken(tempusAMM, tokenSwapAmount, false);
+          yieldsRate = div18f(tokenSwapAmount, estimatedYields, principalsPrecision);
+        } else {
+          // In case we have equal amounts, use 1 as swapAmount just in case estimate was wrong, and swap is going to happen anyways
+          const tokenSwapAmount = ethers.utils.parseUnits('1', principalsPrecision);
+
+          const estimatedPrincipals = await this.getExpectedReturnForShareToken(tempusAMM, tokenSwapAmount, true);
+          yieldsRate = div18f(estimatedPrincipals, tokenSwapAmount, principalsPrecision);
+        }
+      }
+      // In case pool is mature, withdraw will not execute any swaps under the hood, so we can set yieldsRate to any value other then zero
+      else {
+        yieldsRate = BigNumber.from('0x1');
       }
 
       return await this.tempusControllerService.exitTempusAmmAndRedeem(
@@ -701,6 +712,7 @@ export default class PoolDataAdapter {
     tempusPoolAddress: string,
     tempusPoolId: string,
     tempusAMMAddress: string,
+    tempusPoolMaturityTime: number,
     tempusPoolStartTime?: number,
     blockTag?: number,
   ): Promise<BigNumber | null> {
@@ -715,6 +727,11 @@ export default class PoolDataAdapter {
         'PoolDataAdapter - getEstimatedFixedApr() - Attempted to use PoolDataAdapter before initializing it.',
       );
       return Promise.reject();
+    }
+
+    // Fixed APR cannot be calculated for matured pools so we return null
+    if (tempusPoolMaturityTime < Date.now()) {
+      return null;
     }
 
     if (!tokenAmount) {
