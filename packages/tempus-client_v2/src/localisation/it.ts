@@ -190,5 +190,7 @@ const it: { [word in Words]: string } = {
     'I depositi sono attualmente disabilitati poiché questo pool sta attualmente registrando rendimenti negativi. Si prega di controllare i nostri <a href="https://docs.tempus.finance/community/faq#why-would-a-pool-have-a-negative-yield" target="_blank">documenti</a> per ulteriori informazioni.',
   upTo: 'Fino a',
   since: 'dal',
+  poolMatured: 'POOL MATURATA',
+  matured: 'Maturato',
 };
 export default it;

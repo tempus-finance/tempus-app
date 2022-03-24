@@ -2,6 +2,7 @@ import { Config } from 'tempus-core-services';
 
 const ETHEREUM_MAINNET_ALCHEMY_KEY = process.env.REACT_APP_MAINNET_ALCHEMY_KEY || '';
 const FANTOM_MAINNET_RPC_ENDPOINT = process.env.REACT_APP_FANTOM_ENDPOINT || '';
+const REACT_APP_ETHEREUM_FORK_RPC = process.env.REACT_APP_ETHEREUM_FORK_RPC || '';
 
 const config: Config = {
   ethereum: {
@@ -277,6 +278,50 @@ const config: Config = {
     nativeTokenPrecision: 18,
     blockExplorerName: 'FTMScan',
     blockExplorerUrl: 'https://ftmscan.com/',
+  },
+  'ethereum-fork': {
+    tempusPools: [
+      {
+        address: '0x2B2a0994Faca1d245f51720c4E2517869FbF002A',
+        poolId: '0x1a367457ffd7046cb03e5e8409b65a6a754b2fc1000200000000000000000005',
+        ammAddress: '0x1a367457FfD7046Cb03e5E8409b65A6A754B2Fc1',
+        principalsAddress: '0xdA437583dd0D22FA713d86291461858d2b3161C8',
+        yieldsAddress: '0xd735aed2FfaE008D36eD8fe9c680EaA9A4861dCc',
+        yieldBearingTokenAddress: '0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84',
+        backingTokenAddress: '0x0000000000000000000000000000000000000000',
+        startDate: 1648112421000,
+        maturityDate: 1648116087000,
+        protocol: 'lido',
+        protocolDisplayName: 'Lido',
+        backingToken: 'ETH',
+        yieldBearingToken: 'stETH',
+        spotPrice: '1',
+        decimalsForUI: 4,
+        showEstimatesInBackingToken: false,
+        tokenPrecision: {
+          backingToken: 18,
+          lpTokens: 18,
+          principals: 18,
+          yieldBearingToken: 18,
+          yields: 18,
+        },
+        disabledOperations: {},
+      },
+    ],
+    statisticsContract: '0xe552369a1b109b1eeebf060fcb6618f70f9131f7',
+    tempusControllerContract: '0x039557b8f8f53d863f534C4dFF01d8A3467d26A0',
+    vaultContract: '0x6f419298Ad53f82BA8dFFa9B34F9C7888b43BB13',
+    lidoOracle: '0x442af784a788a5bd6f42a01ebe9f287a871243fb',
+    publicNetworkUrl: '', // Ethereum mainnet does not have public RPC URL
+    privateNetworkUrl: REACT_APP_ETHEREUM_FORK_RPC,
+    networkName: 'tempus-ethereum-fork',
+    alchemyKey: ETHEREUM_MAINNET_ALCHEMY_KEY,
+    chainId: 31337,
+    averageBlockTime: 13.2,
+    nativeToken: 'ETH',
+    nativeTokenPrecision: 18,
+    blockExplorerName: 'Etherscan',
+    blockExplorerUrl: 'https://etherscan.io/',
   },
 };
 

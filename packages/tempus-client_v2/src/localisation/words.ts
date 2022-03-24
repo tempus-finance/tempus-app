@@ -162,6 +162,8 @@ type Words =
   | 'slippageError'
   | 'disableInputByNegativeYield'
   | 'upTo'
-  | 'since';
+  | 'since'
+  | 'poolMatured'
+  | 'matured';
 
 export default Words;

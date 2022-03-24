@@ -165,6 +165,8 @@ const zz: { [word in Words]: string } = {
   disableInputByNegativeYield: '~~~~~====={{{{{(((((disableInputByNegativeYield)))))}}}}}=====~~~~~',
   upTo: '~~~~~====={{{{{(((((upTo)))))}}}}}=====~~~~~',
   since: '~~~~~====={{{{{(((((since)))))}}}}}=====~~~~~',
+  poolMatured: '~~~~~====={{{{{(((((poolMatured)))))}}}}}=====~~~~~',
+  matured: '~~~~~====={{{{{(((((matured)))))}}}}}=====~~~~~',
   // key: '~~~~~====={{{{{(((((key)))))}}}}}=====~~~~~',
 };
 export default zz;

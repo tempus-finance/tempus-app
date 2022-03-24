@@ -185,5 +185,7 @@ const en: { [word in Words]: string } = {
     'Deposits are currently disabled as this pool is currently experiencing negative yields. Please check our <a href="https://docs.tempus.finance/community/faq#why-would-a-pool-have-a-negative-yield" target="_blank">docs</a> for more information.',
   upTo: 'Up to',
   since: 'since',
+  poolMatured: 'POOL MATURED',
+  matured: 'Matured',
 };
 export default en;
