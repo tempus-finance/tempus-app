@@ -36,6 +36,7 @@ const CurrencyInput: FC<CurrencyInputProps> = ({
   const { locale } = useContext(LocaleContext);
 
   const [value, setValue] = useState<string>('');
+  const [time, setTime] = useState<NodeJS.Timeout>();
 
   useEffect(() => {
     if (defaultValue || defaultValue === '') {
@@ -43,18 +44,30 @@ const CurrencyInput: FC<CurrencyInputProps> = ({
     }
   }, [defaultValue, precision]);
 
+  const delayedChange = useCallback(
+    value => onChange && onChange(value.replace(/[^0-9$.]/g, '')),
+    [precision, onChange],
+  );
+
   const onValueChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       if (!event.target.validity.patternMismatch) {
-        const currentValue = event.currentTarget.value;
-        const parsedCurrency = formatValueToCurrency(currentValue, precision);
+        const parsedCurrency = formatValueToCurrency(event.currentTarget.value, precision);
         if (parsedCurrency || parsedCurrency === '') {
           setValue(parsedCurrency);
         }
-        onChange && onChange(parsedCurrency.replace(/[^0-9$.]/g, ''));
+        if (time) {
+          clearTimeout(time);
+        }
+        setTime(
+          setTimeout(() => {
+            delayedChange(parsedCurrency);
+            setTime(undefined);
+          }, 300),
+        );
       }
     },
-    [precision, onChange],
+    [delayedChange, time],
   );
 
   const handleMaxClick = useCallback(() => {
