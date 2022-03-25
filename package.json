@@ -8,7 +8,8 @@
   "scripts": {
     "start": "lerna run start",
     "build": "lerna run build",
-    "test": "lerna run ci:test"
+    "test": "lerna run ci:test",
+    "bundlewatch": "bundlewatch"
   },
   "devDependencies": {
     "bundlewatch": "^0.3.3",

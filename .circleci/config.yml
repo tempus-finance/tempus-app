@@ -48,8 +48,17 @@ jobs:
           name: Bundlewatch
           command: ls
       - run:
+        name: Bundlewatch
+        command: cd ./packages && ls
+      - run:
+        name: Bundlewatch
+        command: cd ./tempus-client_v2 && ls
+      - run:
+        name: Bundlewatch
+        command: cd ./build && ls
+      - run:
           name: Bundlewatch
-          command: ./node_modules/.bin/bundlewatch
+          command: npm run bundlewatch
       - persist_to_workspace:
           root: ./
           paths:
