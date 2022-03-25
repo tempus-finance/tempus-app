@@ -463,6 +463,10 @@ const Wallet = () => {
         return;
       }
 
+      if (!walletConnector || !walletConnector.walletConnectProvider) {
+        return;
+      }
+
       // Check if session is authorized
       const authorized = walletConnector.walletConnectProvider.connected;
       if (authorized) {
@@ -605,8 +609,8 @@ const Wallet = () => {
                   // 2. Store original svg size for each icon
                   // 3. Use original size for svg viewport size
                   // 4. Set desired width and height for UI
-                  vectorWidth={userWalletChain === 'ethereum' ? 20 : 24}
-                  vectorHeight={userWalletChain === 'ethereum' ? 20 : 24}
+                  vectorWidth={userWalletChain === 'ethereum' || userWalletChain === 'ethereum-fork' ? 20 : 24}
+                  vectorHeight={userWalletChain === 'ethereum' || userWalletChain === 'ethereum-fork' ? 20 : 24}
                 />
               </Button>
               <Button className="tc__connect-wallet-button" onClick={onOpenWalletPopup} ref={walletPopupAnchor}>

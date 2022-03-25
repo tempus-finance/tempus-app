@@ -26,6 +26,30 @@ describe('NumberUtils', () => {
     });
   });
 
+  describe('formatToFixedFractionDigitsOrMultiplier()', () => {
+    [
+      { num: '0', digits: 0, expected: '0' },
+      { num: '0.0', digits: 2, expected: '0.00' },
+      { num: '0.000000007631', digits: 2, expected: '0.00' },
+      { num: '3.4', digits: 2, expected: '3.40' },
+      { num: '123', digits: 3, expected: '123.000' },
+      { num: '123.45678', digits: 0, expected: '123' },
+      { num: '123.45678', digits: 2, expected: '123.45' },
+      { num: '-123', digits: 3, expected: '-123.000' },
+      { num: '-123.45678', digits: 0, expected: '-123' },
+      { num: '-123.45678', digits: 2, expected: '-123.45' },
+      { num: '7389', digits: 1, expected: '7.4k' },
+      { num: '-7389', digits: 1, expected: '-7.4k' },
+      { num: '63427184', digits: 0, expected: '63M' },
+      { num: '63427184', digits: 2, expected: '63.43M' },
+    ].forEach(item => {
+      test('it formats a number to a fixed number of fraction digits or to nearest mnemonic multiplier if bigger', () => {
+        const result = NumberUtils.formatToFixedFractionDigitsOrMultiplier(item.num, item.digits);
+        expect(result).toEqual(item.expected);
+      });
+    });
+  });
+
   describe('formatToCurrency()', () => {
     [
       { value: '0', numberOfDecimals: 1, symbol: undefined, expected: '0' },

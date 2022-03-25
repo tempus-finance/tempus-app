@@ -50,6 +50,7 @@ const Withdraw: FC<WithdrawProps> = ({ chain, onWithdraw }) => {
   const yieldsAddress = staticPoolData[selectedPool.get()].yieldsAddress.attach(Downgraded).get();
   const decimalsForUI = staticPoolData[selectedPool.get()].decimalsForUI.attach(Downgraded).get();
   const tokenPrecision = staticPoolData[selectedPool.get()].tokenPrecision.attach(Downgraded).get();
+  const maturityDate = staticPoolData[selectedPool.get()].maturityDate.attach(Downgraded).get();
 
   const supportedTokens = [backingToken, yieldBearingToken].filter(token => token !== 'ETH');
 
@@ -227,6 +228,7 @@ const Withdraw: FC<WithdrawProps> = ({ chain, onWithdraw }) => {
         isBackingToken,
         tokenPrecision.principals,
         tokenPrecision.lpTokens,
+        maturityDate,
       );
     } else {
       return Promise.resolve(undefined);
@@ -246,6 +248,7 @@ const Withdraw: FC<WithdrawProps> = ({ chain, onWithdraw }) => {
     chain,
     tokenPrecision.principals,
     tokenPrecision.lpTokens,
+    maturityDate,
   ]);
 
   // Fetch estimated withdraw amount of tokens
@@ -303,7 +306,10 @@ const Withdraw: FC<WithdrawProps> = ({ chain, onWithdraw }) => {
 
   const onExecuted = useCallback(
     (successful: boolean, txBlockNumber?: number) => {
-      onWithdraw();
+      // Only redirect user to deposit screen if withdraw was successful.
+      if (successful) {
+        onWithdraw();
+      }
 
       if (!userWalletSigner) {
         return;
@@ -329,6 +335,30 @@ const Withdraw: FC<WithdrawProps> = ({ chain, onWithdraw }) => {
       setEstimateInProgress(false);
     }
   }, [tokenRate, estimatedWithdrawData]);
+
+  /**
+   * If pool is mature we want to pre-fill all token input fields with maximum amount of tokens.
+   */
+  useEffect(() => {
+    if (!userPrincipalsBalance || !userYieldsBalance || !userLPTokenBalance) {
+      return;
+    }
+
+    const poolIsMature = maturityDate < Date.now();
+    if (poolIsMature) {
+      setPrincipalsAmount(ethers.utils.formatUnits(userPrincipalsBalance, tokenPrecision.principals));
+      setYieldsAmount(ethers.utils.formatUnits(userYieldsBalance, tokenPrecision.yields));
+      setLpTokenAmount(ethers.utils.formatUnits(userLPTokenBalance, tokenPrecision.lpTokens));
+    }
+  }, [
+    maturityDate,
+    tokenPrecision.lpTokens,
+    tokenPrecision.principals,
+    tokenPrecision.yields,
+    userLPTokenBalance,
+    userPrincipalsBalance,
+    userYieldsBalance,
+  ]);
 
   const principalsBalanceFormatted = useMemo(() => {
     if (!userPrincipalsBalance) {
@@ -452,6 +482,10 @@ const Withdraw: FC<WithdrawProps> = ({ chain, onWithdraw }) => {
     estimateInProgress,
   ]);
 
+  const poolIsMature = maturityDate < Date.now();
+
+  const tokenInputsDisabled = poolIsMature;
+
   return (
     <div className="tc__withdraw">
       <SectionContainer title="from" elevation={1}>
@@ -473,6 +507,7 @@ const Withdraw: FC<WithdrawProps> = ({ chain, onWithdraw }) => {
                 <CurrencyInput
                   defaultValue={principalsAmount}
                   precision={tokenPrecision.principals}
+                  disabled={tokenInputsDisabled}
                   onChange={onPrincipalsAmountChange}
                   onMaxClick={onPrincipalsMaxClick}
                 />
@@ -515,6 +550,7 @@ const Withdraw: FC<WithdrawProps> = ({ chain, onWithdraw }) => {
                   <CurrencyInput
                     defaultValue={yieldsAmount}
                     precision={tokenPrecision.yields}
+                    disabled={tokenInputsDisabled}
                     onChange={onYieldsAmountChange}
                     onMaxClick={onYieldsMaxClick}
                   />
@@ -560,6 +596,7 @@ const Withdraw: FC<WithdrawProps> = ({ chain, onWithdraw }) => {
                   <CurrencyInput
                     defaultValue={lpTokenAmount}
                     precision={tokenPrecision.lpTokens}
+                    disabled={tokenInputsDisabled}
                     onChange={onLpTokenAmountChange}
                     onMaxClick={onLpTokensMaxClick}
                   />

@@ -174,6 +174,8 @@ describe('PoolDataAdapter', () => {
         tempusPoolAddress,
         tempusPoolId,
         tempusAMMAddress,
+        1648742400000,
+        1639157275000,
       );
 
       expect(apr).toBeDefined();

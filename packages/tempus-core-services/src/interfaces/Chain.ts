@@ -1,1 +1,1 @@
-export type Chain = 'ethereum' | 'fantom';
+export type Chain = 'ethereum' | 'fantom' | 'ethereum-fork';

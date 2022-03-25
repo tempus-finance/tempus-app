@@ -59,7 +59,7 @@ const BalanceFormatter = (props: DataTypeProvider.ValueFormatterProps) => {
 
     if (showFiat) {
       const currencySymbol = '$';
-      content = `${currencySymbol}${NumberUtils.formatWithMultiplier(
+      content = `${currencySymbol}${NumberUtils.formatToFixedFractionDigitsOrMultiplier(
         // TODO - Use backing token precision from child items
         ethers.utils.formatUnits(balance, tokenPrecision[row.token]),
         2,
@@ -72,7 +72,7 @@ const BalanceFormatter = (props: DataTypeProvider.ValueFormatterProps) => {
         <>
           {/* TODO - Use decimalsForUI precision from child items (max precision) */}
           {/* TODO - Use backing token precision from child items */}
-          {NumberUtils.formatWithMultiplier(
+          {NumberUtils.formatToFixedFractionDigitsOrMultiplier(
             ethers.utils.formatUnits(balance, tokenPrecision[row.token]),
             decimalsForUI,
           )}

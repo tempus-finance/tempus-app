@@ -33,6 +33,34 @@ export class NumberUtils {
       : '0';
   }
 
+  static formatToFixedFractionDigitsOrMultiplier(value: any, precision: number = 0): string {
+    const sanitizedValue = Number(value);
+    const sanitizedValueString = sanitizedValue.toString();
+
+    if (Math.abs(sanitizedValue) >= 1000) {
+      return this.formatWithMultiplier(value, precision);
+    }
+
+    if (sanitizedValue > 0 && sanitizedValue < 1 && sanitizedValueString.indexOf('e') > -1) {
+      return sanitizedValue.toFixed(precision);
+    }
+
+    const pointIndex = sanitizedValueString.indexOf('.');
+
+    if (pointIndex === -1) {
+      return `${sanitizedValueString}${precision == 0 ? '' : `.${'0'.repeat(precision)}`}`;
+    }
+
+    if (precision === 0) {
+      return sanitizedValueString.slice(0, pointIndex);
+    }
+
+    const numberOfFractionDigits = sanitizedValueString.length - pointIndex - 1;
+    return numberOfFractionDigits > precision
+      ? sanitizedValueString.slice(0, pointIndex + precision + 1)
+      : `${sanitizedValueString}${'0'.repeat(precision - numberOfFractionDigits)}`;
+  }
+
   static formatToCurrency(value: string, numberOfDecimals: number = 2, symbol?: string): string {
     if (!value || isZeroString(value)) {
       return `${symbol || ''}0`;

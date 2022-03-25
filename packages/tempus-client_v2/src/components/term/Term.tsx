@@ -1,4 +1,4 @@
-import { FC, useContext } from 'react';
+import { FC, useContext, useEffect, useState } from 'react';
 import { format, formatDistanceStrict } from 'date-fns';
 import { useState as useHookState } from '@hookstate/core';
 import { selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
@@ -10,7 +10,38 @@ import Typography from '../typography/Typography';
 import './Term.scss';
 
 const TimeLeftFormatter: FC<{ maturityDate: number; locale: Locale }> = ({ maturityDate, locale }) => {
-  const timeLeft = maturityDate - Date.now();
+  const [timeLeft, setTimeLeft] = useState(maturityDate - Date.now());
+
+  useEffect(() => {
+    if (timeLeft < 0) {
+      return;
+    }
+
+    let updateInterval;
+
+    // For last 2 time units (hours and minutes), the timer will tick faster (for example, for last 2 minutes the timer
+    // will tick every second instead of every minute). This is to prevent the situation where time to mature is between
+    // 1 and 2 minutes and the next timer's tick would happen in the middle of the last minute instead of before.
+    if (timeLeft >= 7200000) {
+      updateInterval = 3600000;
+    } else if (timeLeft >= 120000) {
+      updateInterval = 60000;
+    } else {
+      updateInterval = 1000;
+    }
+
+    const timer = setTimeout(() => setTimeLeft(maturityDate - Date.now()), updateInterval);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [timeLeft, maturityDate]);
+
+  // In case pool is mature, we want to show 'Pool Matured' label instead of number of days left to maturity
+  if (timeLeft < 0) {
+    return <Typography variant="card-body-text">{getText('matured', locale)}</Typography>;
+  }
+
   let formattedValue;
   if (timeLeft > 86400000) {
     formattedValue = formatDistanceStrict(Date.now(), maturityDate, { unit: 'day', locale: locale.dateLocale });

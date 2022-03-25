@@ -1,4 +1,4 @@
-import { FC, useCallback, useContext, useEffect, useState } from 'react';
+import { FC, useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { FormControl, TextField, Button, Divider } from '@material-ui/core';
 import { LocaleContext } from '../../context/localeContext';
 import getText from '../../localisation/getText';
@@ -36,6 +36,7 @@ const CurrencyInput: FC<CurrencyInputProps> = ({
   const { locale } = useContext(LocaleContext);
 
   const [value, setValue] = useState<string>('');
+  const time = useRef<NodeJS.Timeout>();
 
   useEffect(() => {
     if (defaultValue || defaultValue === '') {
@@ -43,18 +44,25 @@ const CurrencyInput: FC<CurrencyInputProps> = ({
     }
   }, [defaultValue, precision]);
 
+  const delayedChange = useCallback(value => onChange && onChange(value.replace(/[^0-9$.]/g, '')), [onChange]);
+
   const onValueChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       if (!event.target.validity.patternMismatch) {
-        const currentValue = event.currentTarget.value;
-        const parsedCurrency = formatValueToCurrency(currentValue, precision);
+        const parsedCurrency = formatValueToCurrency(event.currentTarget.value, precision);
         if (parsedCurrency || parsedCurrency === '') {
           setValue(parsedCurrency);
         }
-        onChange && onChange(parsedCurrency.replace(/[^0-9$.]/g, ''));
+        if (time.current) {
+          clearTimeout(time.current);
+        }
+        time.current = setTimeout(() => {
+          delayedChange(parsedCurrency);
+          time.current = undefined;
+        }, 300);
       }
     },
-    [precision, onChange],
+    [precision, delayedChange],
   );
 
   const handleMaxClick = useCallback(() => {
@@ -70,7 +78,7 @@ const CurrencyInput: FC<CurrencyInputProps> = ({
 
   return (
     <FormControl>
-      <InfoTooltip content={disabledTooltip} arrowEnabled={false} disabled={!disabled}>
+      <InfoTooltip content={disabledTooltip} arrowEnabled={false} disabled={!disabled || !disabledTooltip}>
         <div className={containerClasses}>
           <TextField
             type="text"
