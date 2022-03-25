@@ -17,7 +17,7 @@
   "bundlewatch": {
     "files": [
       {
-        "path": "packages/tempus-client_v2/build/static/js/*.js"
+        "path": "build/static/js/*.js"
       }
     ],
     "ci": {

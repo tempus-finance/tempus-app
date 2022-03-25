@@ -46,6 +46,9 @@ jobs:
       - node/install-packages
       - run:
           name: Bundlewatch
+          command: ls
+      - run:
+          name: Bundlewatch
           command: ./node_modules/.bin/bundlewatch
       - persist_to_workspace:
           root: ./
