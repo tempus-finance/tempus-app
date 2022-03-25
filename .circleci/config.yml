@@ -52,10 +52,10 @@ jobs:
           command: cd ./packages && ls
       - run:
           name: Bundlewatch
-          command: cd ./tempus-client_v2 && ls
+          command: cd ./packages/tempus-client_v2 && ls
       - run:
           name: Bundlewatch
-          command: cd ./build && ls
+          command: cd ./packages/tempus-client_v2/build && ls
       - run:
           name: Bundlewatch
           command: npm run bundlewatch
