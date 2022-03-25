@@ -59,10 +59,6 @@ jobs:
       - run:
           name: Bundlewatch
           command: npm run bundlewatch
-      - persist_to_workspace:
-          root: ./
-          paths:
-            - ./
 
   test:
     docker:
