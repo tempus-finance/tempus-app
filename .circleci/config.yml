@@ -42,8 +42,8 @@ jobs:
     docker:
       - image: cimg/node:15.1
     steps:
-      - checkout
-      - node/install-packages
+      - attach_workspace:
+          at: ./
       - run:
           name: Bundlewatch
           command: ls
