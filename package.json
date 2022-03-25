@@ -24,7 +24,7 @@
     "ci": {
       "trackBranches": [
         "master",
-        "release-*"
+        "release-2.2"
       ]
     },
     "normalizeFilenames": "^.+?(\\..+?)\\.\\w+$"
