@@ -1,6 +1,6 @@
 import React, { CSSProperties, FC } from 'react';
 import parse from 'html-react-parser';
-import { colors } from '../../colors';
+import { colors } from '../../../colors';
 
 type TypographyVariant =
   | 'header'
