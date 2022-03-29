@@ -1,6 +1,7 @@
 import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { BigNumber, ethers } from 'ethers';
+import { CONSTANTS, Chain, Ticker } from 'tempus-core-services';
 import { Button, CircularProgress } from '@material-ui/core';
 import { selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
 import { staticChainDataState } from '../../state/ChainState';
@@ -8,17 +9,16 @@ import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
 import Typography from '../typography/Typography';
 import getNotificationService from '../../services/getNotificationService';
 import { generateEtherscanLink, getTokenApprovalNotification } from '../../services/notificationFormatters';
-import { Ticker } from '../../interfaces/Token';
-import { Chain } from '../../interfaces/Chain';
 import { PendingTransactionsContext } from '../../context/pendingTransactionsContext';
-import { LanguageContext } from '../../context/languageContext';
+import { LocaleContext } from '../../context/localeContext';
 import { WalletContext } from '../../context/walletContext';
-import { ZERO } from '../../constants';
 import TickNegativeIcon from '../icons/TickNegativeIcon';
 import getText from '../../localisation/getText';
 import Spacer from '../spacer/spacer';
 
 import './Approve.scss';
+
+const { ZERO } = CONSTANTS;
 
 interface ApproveButtonProps {
   tokenToApproveAddress: string | null;
@@ -66,7 +66,7 @@ const Approve: FC<ApproveButtonProps> = props => {
 
   const { setPendingTransactions } = useContext(PendingTransactionsContext);
   const { userWalletAddress, userWalletSigner } = useContext(WalletContext);
-  const { language } = useContext(LanguageContext);
+  const { locale } = useContext(LocaleContext);
 
   const [approveInProgress, setApproveInProgress] = useState<boolean>(false);
   const [allowance, setAllowance] = useState<BigNumber | null>(null);
@@ -76,7 +76,7 @@ const Approve: FC<ApproveButtonProps> = props => {
   const protocol = staticPoolData[selectedPool.get()].protocol.attach(Downgraded).get();
   const maturityDate = staticPoolData[selectedPool.get()].maturityDate.attach(Downgraded).get();
 
-  const viewLinkText = `${getText('viewOn', language)} ${blockExplorerName}`;
+  const viewLinkText = `${getText('viewOnXxx', locale, { name: blockExplorerName })}`;
 
   const fetchAllowance = useCallback(async () => {
     if (!userWalletSigner || !tokenToApproveAddress) {
@@ -110,7 +110,7 @@ const Approve: FC<ApproveButtonProps> = props => {
       if (tokenToApproveTicker) {
         content = getTokenApprovalNotification(
           chain,
-          language,
+          locale,
           tokenToApproveTicker,
           backingToken,
           protocol,
@@ -133,7 +133,7 @@ const Approve: FC<ApproveButtonProps> = props => {
         console.error(`Failed to create approve transaction for ${tokenToApproveTicker} token!`, error);
 
         if (tokenToApproveTicker) {
-          getNotificationService().warn(chain, 'Transaction', getText(`approvalFailed`, language), content);
+          getNotificationService().warn(chain, 'Transaction', getText(`approvalFailed`, locale), content);
         }
 
         setApproveInProgress(false);
@@ -214,7 +214,7 @@ const Approve: FC<ApproveButtonProps> = props => {
     };
     approve();
   }, [
-    language,
+    locale,
     viewLinkText,
     userWalletSigner,
     amountToApprove,
@@ -286,16 +286,16 @@ const Approve: FC<ApproveButtonProps> = props => {
         <Typography variant="button-text" color="inverted">
           {approveInProgress && (
             <>
-              <CircularProgress size={16} color="inherit" /> {getText('approving', language)}
+              <CircularProgress size={16} color="inherit" /> {getText('approving', locale)}
             </>
           )}
           {approved && (
             <>
-              {getText('approved', language)} <TickNegativeIcon fillColor="white" />
+              {getText('approved', locale)} <TickNegativeIcon fillColor="white" />
             </>
           )}
 
-          {approve && getText('approve', language)}
+          {approve && getText('approve', locale)}
         </Typography>
       </Button>
       {/* Set margin right if specified */}

@@ -1,7 +1,7 @@
 import React, { FC, useContext, useMemo } from 'react';
-import { LanguageContext } from '../../../context/languageContext';
+import { NumberUtils } from 'tempus-core-services';
+import { LocaleContext } from '../../../context/localeContext';
 import getText from '../../../localisation/getText';
-import NumberUtils from '../../../services/NumberUtils';
 import Typography from '../../typography/Typography';
 
 import './variableAPRBreakDownTooltip.scss';
@@ -15,7 +15,7 @@ interface VariableAPRBreakDownTooltipProps {
 const VariableAPRBreakDownTooltip: FC<VariableAPRBreakDownTooltipProps> = props => {
   const { protocolName, apr, tempusFees } = props;
 
-  const { language } = useContext(LanguageContext);
+  const { locale } = useContext(LocaleContext);
 
   const protocolAPR = useMemo(() => NumberUtils.formatPercentage(apr - tempusFees, 2), [apr, tempusFees]);
   const tempusAPR = useMemo(() => NumberUtils.formatPercentage(tempusFees, 2), [tempusFees]);
@@ -26,7 +26,7 @@ const VariableAPRBreakDownTooltip: FC<VariableAPRBreakDownTooltipProps> = props 
     <div className="tc__apr-breakdown-tooptip__container">
       <div className="tc__apr-breakdown-tooptip__section">
         <Typography color="default" variant="tooltip-card-text">
-          {protocolName} {getText('apr', language)}
+          {getText('xxxApr', locale, { protocol: protocolName })}
         </Typography>
         <Typography color="default" variant="tooltip-card-text">
           {protocolAPR}
@@ -34,7 +34,7 @@ const VariableAPRBreakDownTooltip: FC<VariableAPRBreakDownTooltipProps> = props 
       </div>
       <div className="tc__apr-breakdown-tooptip__section">
         <Typography color="default" variant="tooltip-card-text">
-          {getText('tempus', language)} {getText('apr', language)}
+          {getText('xxxApr', locale, { protocol: getText('tempus', locale) })}
         </Typography>
         <Typography color="default" variant="tooltip-card-text">
           {tempusAPR}
@@ -43,7 +43,7 @@ const VariableAPRBreakDownTooltip: FC<VariableAPRBreakDownTooltipProps> = props 
       <div className="tc__apr-breakdown-tooptip__separator"></div>
       <div className="tc__apr-breakdown-tooptip__section">
         <Typography color="default" variant="tooltip-card-text">
-          {getText('combinedApr', language)}
+          {getText('combinedApr', locale)}
         </Typography>
         <Typography color="default" variant="tooltip-card-text">
           {combinedAPR}

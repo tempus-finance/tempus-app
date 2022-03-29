@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import NumberUtils from '../../../services/NumberUtils';
+import { NumberUtils } from 'tempus-core-services';
 import GreenArrowUp from '../../icons/GreenArrowUp';
 import RedArrowDown from '../../icons/RedArrowDown';
 import Spacer from '../../spacer/spacer';

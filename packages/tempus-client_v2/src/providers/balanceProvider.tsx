@@ -1,14 +1,16 @@
 import { Contract } from 'ethers';
 import { JsonRpcSigner } from '@ethersproject/providers';
-import { ERC20 } from '../abi/ERC20';
-import ERC20ABI from '../abi/ERC20.json';
-import { TempusPool } from '../interfaces/TempusPool';
+import {
+  Chain,
+  ERC20,
+  ERC20ABI,
+  TempusPool,
+  getERC20TokenService,
+  getStatisticsService,
+  mul18f,
+} from 'tempus-core-services';
 import { dynamicPoolDataState } from '../state/PoolDataState';
-import { Chain } from '../interfaces/Chain';
-import getStatisticsService from '../services/getStatisticsService';
-import getERC20TokenService from '../services/getERC20TokenService';
-import { getConfigForPoolWithAddress, getChainConfig } from '../utils/getConfig';
-import { mul18f } from '../utils/weiMath';
+import { getConfigForPoolWithAddress, getConfig, getChainConfig } from '../utils/getConfig';
 
 export interface UserBalanceProviderParams {
   userWalletAddress: string;
@@ -78,11 +80,26 @@ class UserBalanceProvider {
       return;
     }
 
-    const statisticsService = getStatisticsService(this.chain, this.userWalletSigner);
+    const statisticsService = getStatisticsService(this.chain, getConfig, getChainConfig, this.userWalletSigner);
 
-    const principalsService = getERC20TokenService(poolConfig.principalsAddress, this.chain, this.userWalletSigner);
-    const yieldsService = getERC20TokenService(poolConfig.yieldsAddress, this.chain, this.userWalletSigner);
-    const lpTokenService = getERC20TokenService(poolConfig.ammAddress, this.chain, this.userWalletSigner);
+    const principalsService = getERC20TokenService(
+      poolConfig.principalsAddress,
+      this.chain,
+      getChainConfig,
+      this.userWalletSigner,
+    );
+    const yieldsService = getERC20TokenService(
+      poolConfig.yieldsAddress,
+      this.chain,
+      getChainConfig,
+      this.userWalletSigner,
+    );
+    const lpTokenService = getERC20TokenService(
+      poolConfig.ammAddress,
+      this.chain,
+      getChainConfig,
+      this.userWalletSigner,
+    );
 
     const [principalsBalance, yieldsBalance, lpTokenBalance, backingTokenRate] = await Promise.all([
       principalsService.balanceOf(this.userWalletAddress, {

@@ -1,6 +1,5 @@
 import { TableFilterRow } from '@devexpress/dx-react-grid-material-ui';
-import { ProtocolName } from '../../../interfaces/ProtocolName';
-import { Ticker } from '../../../interfaces/Token';
+import { ProtocolName, Ticker } from 'tempus-core-services';
 import ChipFilter from './ChipFilter';
 
 const DashboardFilterFactory = (props: any) => {

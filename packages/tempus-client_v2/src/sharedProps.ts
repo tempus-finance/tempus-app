@@ -1,7 +1,7 @@
-import { Language } from './localisation/getText';
+import { Locale } from './interfaces/Locale';
 
 type SharedProps = {
-  language: Language;
+  locale: Locale;
 };
 
 export default SharedProps;

@@ -1,10 +1,9 @@
 import DashboardDataAdapter from './DashboardDataAdapter';
+import { ChainConfig, TempusPool } from 'tempus-core-services';
+import * as TempusCoreServices from 'tempus-core-services';
 import * as getConfig from '../utils/getConfig';
-import { ChainConfig } from '../interfaces/Config';
-import { TempusPool } from '../interfaces/TempusPool';
 import { BigNumber } from 'ethers';
 import * as rxjs from 'rxjs';
-import * as getDefaultProvider from './../services/getDefaultProvider';
 
 jest.mock('ethers');
 const { Contract } = jest.requireMock('ethers');
@@ -12,6 +11,11 @@ const { Contract } = jest.requireMock('ethers');
 jest.mock('@ethersproject/providers', () => ({
   ...jest.requireActual('@ethersproject/providers'),
   JsonRpcProvider: jest.fn(),
+}));
+jest.mock('tempus-core-services', () => ({
+  ...jest.requireActual('tempus-core-services'),
+  getStatisticsService: jest.fn(),
+  getDefaultProvider: jest.fn(),
 }));
 
 const { JsonRpcProvider } = jest.requireMock('@ethersproject/providers');
@@ -74,7 +78,7 @@ describe('DashboardDataAdapter', () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
-    jest.spyOn(getDefaultProvider, 'default').mockReturnValue(new JsonRpcProvider());
+    jest.spyOn(TempusCoreServices, 'getDefaultProvider').mockReturnValue(new JsonRpcProvider());
 
     Contract.mockImplementation(() => {
       return {
@@ -102,6 +106,10 @@ describe('DashboardDataAdapter', () => {
   });
 
   describe('getTempusPoolTVL()', () => {
+    beforeEach(() => {
+      jest.resetAllMocks();
+    });
+
     test('test with no forceFetch and no focus, should return Observable<null>', async () => {
       const tempusPoolAddr = MOCK_TEMPUS_POOL[0].address;
       const backingTokenTicker = 'USDC';
@@ -112,6 +120,12 @@ describe('DashboardDataAdapter', () => {
     });
 
     test('test with forceFetch, should return Observable of TVL', async () => {
+      jest.spyOn(TempusCoreServices, 'getStatisticsService').mockImplementationOnce(() => {
+        return {
+          totalValueLockedUSD: jest.fn().mockResolvedValue(mockTVL),
+        } as any;
+      });
+      jest.spyOn(getConfig, 'getChainConfig').mockReturnValue({ tempusPools: MOCK_TEMPUS_POOL } as ChainConfig);
       const tempusPoolAddr = MOCK_TEMPUS_POOL[0].address;
       const backingTokenTicker = 'USDC';
       jest.spyOn(rxjs, 'interval').mockReturnValue(rxjs.of(0));
@@ -122,6 +136,11 @@ describe('DashboardDataAdapter', () => {
     });
 
     test('test with focus, should return Observable of TVL', async () => {
+      jest.spyOn(TempusCoreServices, 'getStatisticsService').mockImplementationOnce(() => {
+        return {
+          totalValueLockedUSD: jest.fn().mockResolvedValue(mockTVL),
+        } as any;
+      });
       const tempusPoolAddr = MOCK_TEMPUS_POOL[0].address;
       const backingTokenTicker = 'USDC';
       jest.spyOn(document, 'hasFocus').mockReturnValue(true);
@@ -134,8 +153,12 @@ describe('DashboardDataAdapter', () => {
 
     test('test with throwing error from statisticsService.totalValueLockedUSD(), should return Observable<null>', async () => {
       const errMessage = 'ERROR_MSG_' + Math.random().toString(36).substring(2);
-      mockTotalValueLockedUSD.mockImplementation(() => {
-        throw new Error(errMessage);
+      jest.spyOn(TempusCoreServices, 'getStatisticsService').mockImplementationOnce(() => {
+        return {
+          totalValueLockedUSD: jest.fn().mockImplementation(() => {
+            throw new Error(errMessage);
+          }),
+        } as any;
       });
       const tempusPoolAddr = MOCK_TEMPUS_POOL[0].address;
       const backingTokenTicker = 'USDC';

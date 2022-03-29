@@ -1,20 +1,25 @@
+import { useContext } from 'react';
+import { CONSTANTS, NumberUtils } from 'tempus-core-services';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { CircularProgress } from '@material-ui/core';
-import { ZERO } from '../../../constants';
-import { Chain, chainIdToChainName } from '../../../interfaces/Chain';
-import NumberUtils from '../../../services/NumberUtils';
+import { Chain, chainIdToChainName } from 'tempus-core-services';
 import { getChainConfigForPool } from '../../../utils/getConfig';
 import { isRariVisible } from '../../../utils/isRariVisible';
 import Typography from '../../typography/Typography';
-import APYGraph from '../bodySection/apyGraph';
 import {
   dynamicPoolDataState,
   DynamicPoolStateData,
   staticPoolDataState,
   StaticPoolDataMap,
 } from '../../../state/PoolDataState';
+import getText from '../../../localisation/getText';
+import { LocaleContext } from '../../../context/localeContext';
+
+const { ZERO } = CONSTANTS;
 
 const FixedAPRFormatter = ({ row }: any) => {
+  const { locale } = useContext(LocaleContext);
+
   const dynamicPoolData = useHookState(dynamicPoolDataState).attach(Downgraded).get();
   const staticPoolData = useHookState(staticPoolDataState).attach(Downgraded).get();
 
@@ -44,11 +49,9 @@ const FixedAPRFormatter = ({ row }: any) => {
     return (
       <div className="tf__dashboard__body__apy">
         <Typography color="default" variant="body-text">
-          Up to&nbsp;
+          {getText('upTo', locale)}&nbsp;
         </Typography>
-        <Typography color={apr > 0.2 ? 'accent' : 'default'} variant="body-text">
-          {NumberUtils.formatPercentage(apr, 2)}
-        </Typography>
+        <Typography variant="body-text">{NumberUtils.formatPercentage(apr, 2)}</Typography>
       </div>
     );
   }
@@ -64,12 +67,9 @@ const FixedAPRFormatter = ({ row }: any) => {
   // If it's a child row
   return (
     <div className="tf__dashboard__body__apy">
-      <APYGraph apy={apr} />
-      <div className="tf__dashboard__body__apy-value">
-        <Typography color="default" variant="body-text">
-          {NumberUtils.formatPercentage(apr, 2)}
-        </Typography>
-      </div>
+      <Typography color="default" variant="body-text">
+        {NumberUtils.formatPercentage(apr, 2)}
+      </Typography>
     </div>
   );
 };
@@ -86,7 +86,7 @@ function getParentAPR(
     const chainConfig = getChainConfigForPool(key);
 
     if (
-      `${staticPoolData[key].backingToken}-${chainIdToChainName(chainConfig.chainId.toString())}` === parentId &&
+      `${staticPoolData[key].backingToken}-${chainIdToChainName(chainConfig.chainId)}` === parentId &&
       (!dynamicPoolData[key].negativeYield || dynamicPoolData[key].userBalanceUSD?.gt(ZERO))
     ) {
       // If rari child row is hidden, do not include it in parent row stats

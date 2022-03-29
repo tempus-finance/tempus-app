@@ -1,17 +1,16 @@
 import { ethers, BigNumber } from 'ethers';
 import { useContext, useMemo } from 'react';
+import { CONSTANTS, NumberUtils } from 'tempus-core-services';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { CircularProgress } from '@material-ui/core';
 import { DataTypeProvider } from '@devexpress/dx-react-grid';
+import { Chain, chainIdToChainName } from 'tempus-core-services';
 import { UserSettingsContext } from '../../../context/userSettingsContext';
 import { WalletContext } from '../../../context/walletContext';
 import { DashboardRow } from '../../../interfaces/DashboardRow';
-import { Chain, chainIdToChainName } from '../../../interfaces/Chain';
-import NumberUtils from '../../../services/NumberUtils';
 import { getChainConfigForPool } from '../../../utils/getConfig';
 import { isRariVisible } from '../../../utils/isRariVisible';
 import Typography from '../../typography/Typography';
-import { tokenPrecision, ZERO } from '../../../constants';
 import Spacer from '../../spacer/spacer';
 
 import './balanceFormatter.scss';
@@ -21,6 +20,8 @@ import {
   staticPoolDataState,
   StaticPoolDataMap,
 } from '../../../state/PoolDataState';
+
+const { tokenPrecision, ZERO } = CONSTANTS;
 
 const BalanceFormatter = (props: DataTypeProvider.ValueFormatterProps) => {
   const row = props.row as DashboardRow;
@@ -59,7 +60,7 @@ const BalanceFormatter = (props: DataTypeProvider.ValueFormatterProps) => {
 
     if (showFiat) {
       const currencySymbol = '$';
-      content = `${currencySymbol}${NumberUtils.formatWithMultiplier(
+      content = `${currencySymbol}${NumberUtils.formatToFixedFractionDigitsOrMultiplier(
         // TODO - Use backing token precision from child items
         ethers.utils.formatUnits(balance, tokenPrecision[row.token]),
         2,
@@ -72,7 +73,7 @@ const BalanceFormatter = (props: DataTypeProvider.ValueFormatterProps) => {
         <>
           {/* TODO - Use decimalsForUI precision from child items (max precision) */}
           {/* TODO - Use backing token precision from child items */}
-          {NumberUtils.formatWithMultiplier(
+          {NumberUtils.formatToFixedFractionDigitsOrMultiplier(
             ethers.utils.formatUnits(balance, tokenPrecision[row.token]),
             decimalsForUI,
           )}
@@ -114,7 +115,7 @@ const getParentBalanceInFiat = (
     const chainConfig = getChainConfigForPool(key);
 
     if (
-      `${staticPoolData[key].backingToken}-${chainIdToChainName(chainConfig.chainId.toString())}` === parentId &&
+      `${staticPoolData[key].backingToken}-${chainIdToChainName(chainConfig.chainId)}` === parentId &&
       (!dynamicPoolData[key].negativeYield || dynamicPoolData[key].userBalanceUSD?.gt(ZERO))
     ) {
       // If rari child row is hidden, do not include it in parent row stats
@@ -153,7 +154,7 @@ const getParentBalanceInBackingToken = (
     const chainConfig = getChainConfigForPool(key);
 
     if (
-      `${staticPoolData[key].backingToken}-${chainIdToChainName(chainConfig.chainId.toString())}` === parentId &&
+      `${staticPoolData[key].backingToken}-${chainIdToChainName(chainConfig.chainId)}` === parentId &&
       (!dynamicPoolData[key].negativeYield || dynamicPoolData[key].userBalanceUSD?.gt(ZERO))
     ) {
       // If rari child row is hidden, do not include it in parent row stats

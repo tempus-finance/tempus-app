@@ -2,13 +2,11 @@ import { useContext } from 'react';
 import { CircularProgress } from '@material-ui/core';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { format, formatDistanceStrict } from 'date-fns';
-import { MILLISECONDS_IN_A_DAY, ZERO } from '../../../constants';
-import { LanguageContext } from '../../../context/languageContext';
+import { CONSTANTS, Chain, chainIdToChainName, getRangeFrom } from 'tempus-core-services';
+import { LocaleContext } from '../../../context/localeContext';
 import getText from '../../../localisation/getText';
 import Typography from '../../typography/Typography';
 import Spacer from '../../spacer/spacer';
-import { Chain, chainIdToChainName } from '../../../interfaces/Chain';
-import getRangeFrom from '../../../utils/getRangeFrom';
 import { isRariVisible } from '../../../utils/isRariVisible';
 import { getChainConfigForPool } from '../../../utils/getConfig';
 import {
@@ -20,8 +18,10 @@ import {
 
 import './maturityFormatter.scss';
 
+const { MILLISECONDS_IN_A_DAY, ZERO } = CONSTANTS;
+
 const MaturityFormatter = ({ value, row }: any) => {
-  const { language } = useContext(LanguageContext);
+  const { locale } = useContext(LocaleContext);
 
   const dynamicPoolData = useHookState(dynamicPoolDataState).attach(Downgraded).get();
   const staticPoolData = useHookState(staticPoolDataState).attach(Downgraded).get();
@@ -33,8 +33,8 @@ const MaturityFormatter = ({ value, row }: any) => {
 
     // In case parent row has a single child, we want to show time left to maturity for this child item in parent row
     const timeLeft = min - Date.now();
-    let daysRemaining = formatDistanceStrict(Date.now(), min, { unit: 'day' });
-    let hoursRemaining = formatDistanceStrict(Date.now(), min, { unit: 'hour' });
+    let daysRemaining = formatDistanceStrict(Date.now(), min, { unit: 'day', locale: locale.dateLocale });
+    let hoursRemaining = formatDistanceStrict(Date.now(), min, { unit: 'hour', locale: locale.dateLocale });
 
     // Pool matured
     if (timeLeft < 0) {
@@ -49,42 +49,54 @@ const MaturityFormatter = ({ value, row }: any) => {
           <div>
             <div className="tf__dashboard__grid__maturity-row">
               <Typography variant="dash-maturity-label" color="label-gray">
-                {getText('earliestMaturity', language)}
+                {getText('earliestMaturity', locale)}
               </Typography>
               <div className="tf__dashboard__grid__maturity-date">
-                <Typography variant="dash-maturity-date-bold">{format(min, 'd')}</Typography>
+                <Typography variant="dash-maturity-date-bold">
+                  {format(min, 'd', { locale: locale.dateLocale })}
+                </Typography>
                 <Spacer size={2} />
                 <Typography variant="dash-maturity-date-bold" color="title">
                   &#8226;
                 </Typography>
                 <Spacer size={2} />
-                <Typography variant="dash-maturity-date-bold">{format(min, 'MMM')}</Typography>
+                <Typography variant="dash-maturity-date-bold">
+                  {format(min, 'MMM', { locale: locale.dateLocale })}
+                </Typography>
                 <Spacer size={2} />
                 <Typography variant="dash-maturity-date-bold" color="title">
                   &#8226;
                 </Typography>
                 <Spacer size={2} />
-                <Typography variant="dash-maturity-date-bold">{format(min, 'yy')}</Typography>
+                <Typography variant="dash-maturity-date-bold">
+                  {format(min, 'yy', { locale: locale.dateLocale })}
+                </Typography>
               </div>
             </div>
             <div className="tf__dashboard__grid__maturity-row">
               <Typography variant="dash-maturity-label" color="label-gray">
-                {getText('latestMaturity', language)}
+                {getText('latestMaturity', locale)}
               </Typography>
               <div className="tf__dashboard__grid__maturity-date">
-                <Typography variant="dash-maturity-date-bold">{format(max, 'd')}</Typography>
+                <Typography variant="dash-maturity-date-bold">
+                  {format(max, 'd', { locale: locale.dateLocale })}
+                </Typography>
                 <Spacer size={2} />
                 <Typography variant="dash-maturity-date-bold" color="title">
                   &#8226;
                 </Typography>
                 <Spacer size={2} />
-                <Typography variant="dash-maturity-date-bold">{format(max, 'MMM')}</Typography>
+                <Typography variant="dash-maturity-date-bold">
+                  {format(max, 'MMM', { locale: locale.dateLocale })}
+                </Typography>
                 <Spacer size={2} />
                 <Typography variant="dash-maturity-date-bold" color="title">
                   &#8226;
                 </Typography>
                 <Spacer size={2} />
-                <Typography variant="dash-maturity-date-bold">{format(max, 'yy')}</Typography>
+                <Typography variant="dash-maturity-date-bold">
+                  {format(max, 'yy', { locale: locale.dateLocale })}
+                </Typography>
               </div>
             </div>
           </div>
@@ -94,7 +106,7 @@ const MaturityFormatter = ({ value, row }: any) => {
         {min && !max && (
           <div>
             <Typography variant="dash-maturity-label" color="label-gray">
-              {getText('timeToMaturity', language)}
+              {getText('timeToMaturity', locale)}
             </Typography>
             <div className="tf__dashboard__grid__maturity-date">
               {timeLeft > MILLISECONDS_IN_A_DAY ? (
@@ -124,15 +136,15 @@ const MaturityFormatter = ({ value, row }: any) => {
     const childMaturity = getChildMaturity(row.id, staticPoolData);
 
     const timeLeft = childMaturity - Date.now();
-    const daysRemaining = formatDistanceStrict(Date.now(), childMaturity, { unit: 'day' });
-    const hoursRemaining = formatDistanceStrict(Date.now(), childMaturity, { unit: 'hour' });
+    const daysRemaining = formatDistanceStrict(Date.now(), childMaturity, { unit: 'day', locale: locale.dateLocale });
+    const hoursRemaining = formatDistanceStrict(Date.now(), childMaturity, { unit: 'hour', locale: locale.dateLocale });
 
     const poolIsMature = childMaturity < Date.now();
 
     return (
       <>
         <Typography variant="dash-maturity-label" color="label-gray">
-          {getText('timeToMaturity', language)}
+          {getText('timeToMaturity', locale)}
         </Typography>
 
         {/* If pool is not mature show number of days/hours to maturity */}
@@ -160,7 +172,7 @@ const MaturityFormatter = ({ value, row }: any) => {
         {poolIsMature && (
           <div className="tf__dashboard__grid__maturity-matured-label">
             <Typography variant="matured-dash-label" color="success">
-              {getText('poolMatured', language)}
+              {getText('poolMatured', locale)}
             </Typography>
           </div>
         )}
@@ -182,7 +194,7 @@ function getParentMaturity(
     const chainConfig = getChainConfigForPool(key);
 
     if (
-      `${staticPoolData[key].backingToken}-${chainIdToChainName(chainConfig.chainId.toString())}` === parentId &&
+      `${staticPoolData[key].backingToken}-${chainIdToChainName(chainConfig.chainId)}` === parentId &&
       (!dynamicPoolData[key].negativeYield || dynamicPoolData[key].userBalanceUSD?.gt(ZERO))
     ) {
       // If rari child row is hidden, do not include it in parent row stats

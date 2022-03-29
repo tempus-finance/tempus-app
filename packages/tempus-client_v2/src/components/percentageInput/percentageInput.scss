@@ -4,12 +4,13 @@
   position: relative;
   display: flex;
   align-items: center;
-  box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.25);
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.08);
   border-radius: 5px;
   background-color: white;
   padding-left: 15px;
   height: 40px;
   width: 165px;
+  border: 1px solid #bfc0c0;
 
   input {
     padding: 0px;
@@ -22,8 +23,12 @@
     min-width: auto;
 
     &.MuiButton-textPrimary {
-      background: linear-gradient(97.53deg, #4ea3c8 0%, #285a95 100%);
+      background: #2b6e84;
     }
+  }
+
+  .MuiDivider-root {
+    background-color: #bfc0c0;
   }
 }
 

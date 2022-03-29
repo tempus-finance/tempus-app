@@ -1,12 +1,12 @@
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { BigNumber, ethers } from 'ethers';
+import { Chain, getTokenPrecision, isZeroString, mul18f, NumberUtils } from 'tempus-core-services';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
 import { refreshBalances } from '../../providers/balanceProviderHelper';
-import { LanguageContext } from '../../context/languageContext';
+import { LocaleContext } from '../../context/localeContext';
 import { WalletContext } from '../../context/walletContext';
 import { UserSettingsContext } from '../../context/userSettingsContext';
-import { Chain } from '../../interfaces/Chain';
 import getText from '../../localisation/getText';
 import Typography from '../typography/Typography';
 import Execute from '../buttons/Execute';
@@ -16,11 +16,7 @@ import PlusIconContainer from '../plusIconContainer/PlusIconContainer';
 import SectionContainer from '../sectionContainer/SectionContainer';
 import Spacer from '../spacer/spacer';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
-import NumberUtils from '../../services/NumberUtils';
-import { isZeroString } from '../../utils/isZeroString';
-import { getChainConfig } from '../../utils/getConfig';
-import { mul18f } from '../../utils/weiMath';
-import getTokenPrecision from '../../utils/getTokenPrecision';
+import { getChainConfig, getConfig } from '../../utils/getConfig';
 import Approve from '../buttons/Approve';
 
 import './RemoveLiquidity.scss';
@@ -36,7 +32,7 @@ const RemoveLiquidity: FC<RemoveLiquidityProps> = props => {
   const dynamicPoolData = useHookState(dynamicPoolDataState);
   const staticPoolData = useHookState(staticPoolDataState);
 
-  const { language } = useContext(LanguageContext);
+  const { locale } = useContext(LocaleContext);
   const { userWalletAddress, userWalletSigner } = useContext(WalletContext);
   const { slippage, autoSlippage } = useContext(UserSettingsContext);
 
@@ -110,20 +106,21 @@ const RemoveLiquidity: FC<RemoveLiquidityProps> = props => {
       return Promise.resolve(undefined);
     }
     const poolDataAdapter = getPoolDataAdapter(chain, userWalletSigner);
+    const config = getConfig();
 
     const actualSlippage = (autoSlippage ? 1 : slippage / 100).toString();
     const minPrincipalsReceived = estimatedPrincipals.sub(
       mul18f(
         estimatedPrincipals,
-        ethers.utils.parseUnits(actualSlippage, getTokenPrecision(selectedPoolAddress, 'principals')),
-        getTokenPrecision(selectedPoolAddress, 'principals'),
+        ethers.utils.parseUnits(actualSlippage, getTokenPrecision(selectedPoolAddress, 'principals', config)),
+        getTokenPrecision(selectedPoolAddress, 'principals', config),
       ),
     );
     const minYieldsReceived = estimatedYields.sub(
       mul18f(
         estimatedYields,
-        ethers.utils.parseUnits(actualSlippage, getTokenPrecision(selectedPoolAddress, 'yields')),
-        getTokenPrecision(selectedPoolAddress, 'yields'),
+        ethers.utils.parseUnits(actualSlippage, getTokenPrecision(selectedPoolAddress, 'yields', config)),
+        getTokenPrecision(selectedPoolAddress, 'yields', config),
       ),
     );
 
@@ -156,7 +153,7 @@ const RemoveLiquidity: FC<RemoveLiquidityProps> = props => {
       return null;
     }
 
-    return ethers.utils.parseUnits(amount, getTokenPrecision(selectedPoolAddress, 'lpTokens'));
+    return ethers.utils.parseUnits(amount, getTokenPrecision(selectedPoolAddress, 'lpTokens', getConfig()));
   }, [selectedPoolAddress, amount]);
 
   const onExecuted = useCallback(
@@ -220,14 +217,14 @@ const RemoveLiquidity: FC<RemoveLiquidityProps> = props => {
 
   return (
     <div className="tc__removeLiquidity">
-      <Descriptor>{getText('removeLiquidityDescription', language)}</Descriptor>
+      <Descriptor>{getText('removeLiquidityDescription', locale)}</Descriptor>
       <SectionContainer title="from">
         <SectionContainer elevation={2}>
           <div className="tc__title-and-balance">
-            <Typography variant="h4">{getText('lpTokens', language)}</Typography>
+            <Typography variant="h4">{getText('lpTokens', locale)}</Typography>
             {lpTokenBalanceFormatted && (
               <div>
-                <Typography variant="card-body-text">{getText('balance', language)}</Typography>
+                <Typography variant="card-body-text">{getText('balance', locale)}</Typography>
                 <Spacer size={15} />
                 <Typography variant="card-body-text">{lpTokenBalanceFormatted}</Typography>
               </div>
@@ -262,20 +259,20 @@ const RemoveLiquidity: FC<RemoveLiquidityProps> = props => {
       <SectionContainer title="to">
         <div className="tf__flex-row-center-v">
           <SectionContainer>
-            <Typography variant="h4">{getText('principalTokens', language)}</Typography>
+            <Typography variant="h4">{getText('principals', locale)}</Typography>
             <Spacer size={10} />
             <div className="tf__flex-row-center-v">
-              <Typography variant="card-body-text">{getText('estimated', language)}</Typography>
+              <Typography variant="card-body-text">{getText('estimated', locale)}</Typography>
               <Spacer size={15} />
               <Typography variant="card-body-text">{estimatedPrincipalsFormatted}</Typography>
             </div>
           </SectionContainer>
           <PlusIconContainer orientation="vertical" />
           <SectionContainer>
-            <Typography variant="h4">{getText('yieldTokens', language)}</Typography>
+            <Typography variant="h4">{getText('yields', locale)}</Typography>
             <Spacer size={10} />
             <div className="tf__flex-row-center-v">
-              <Typography variant="card-body-text">{getText('estimated', language)}</Typography>
+              <Typography variant="card-body-text">{getText('estimated', locale)}</Typography>
               <Spacer size={15} />
               <Typography variant="card-body-text">{estimatedYieldsFormatted}</Typography>
             </div>

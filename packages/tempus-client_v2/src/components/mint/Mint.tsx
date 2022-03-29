@@ -2,22 +2,16 @@ import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { ethers, BigNumber } from 'ethers';
 import { catchError, of } from 'rxjs';
+import { CONSTANTS, Chain, Ticker, getTokenPrecision, isZeroString, mul18f, NumberUtils } from 'tempus-core-services';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
 import { refreshBalances } from '../../providers/balanceProviderHelper';
-import { LanguageContext } from '../../context/languageContext';
+import { LocaleContext } from '../../context/localeContext';
 import { WalletContext } from '../../context/walletContext';
-import { Ticker } from '../../interfaces/Token';
-import { Chain } from '../../interfaces/Chain';
 import getText from '../../localisation/getText';
-import { getChainConfig } from '../../utils/getConfig';
-import getTokenPrecision from '../../utils/getTokenPrecision';
-import { isZeroString } from '../../utils/isZeroString';
-import { mul18f } from '../../utils/weiMath';
-import NumberUtils from '../../services/NumberUtils';
+import { getChainConfig, getConfig } from '../../utils/getConfig';
 import Approve from '../buttons/Approve';
 import Execute from '../buttons/Execute';
-import { ETH_ALLOWANCE_FOR_GAS, ZERO } from '../../constants';
 import Descriptor from '../descriptor/Descriptor';
 import CurrencyInput from '../currencyInput/currencyInput';
 import PlusIconContainer from '../plusIconContainer/PlusIconContainer';
@@ -27,6 +21,8 @@ import TokenSelector from '../tokenSelector/tokenSelector';
 import Typography from '../typography/Typography';
 
 import './Mint.scss';
+
+const { ETH_ALLOWANCE_FOR_GAS, ZERO } = CONSTANTS;
 
 type MintInProps = {
   narrow: boolean;
@@ -38,7 +34,7 @@ const Mint: FC<MintInProps> = ({ narrow, chain }) => {
   const staticPoolData = useHookState(staticPoolDataState);
   const dynamicPoolData = useHookState(dynamicPoolDataState);
 
-  const { language } = useContext(LanguageContext);
+  const { locale } = useContext(LocaleContext);
   const { userWalletSigner } = useContext(WalletContext);
   const { userWalletAddress } = useContext(WalletContext);
 
@@ -79,15 +75,17 @@ const Mint: FC<MintInProps> = ({ narrow, chain }) => {
         setSelectedToken(token);
         setAmount('');
 
+        const config = getConfig();
+
         if (backingToken === token) {
-          setSelectedTokenPrecision(getTokenPrecision(selectedPoolAddress, 'backingToken'));
+          setSelectedTokenPrecision(getTokenPrecision(selectedPoolAddress, 'backingToken', config));
           if (backingTokenRate !== null) {
             setUsdRate(backingTokenRate);
           }
         }
 
         if (backingToken !== token) {
-          setSelectedTokenPrecision(getTokenPrecision(selectedPoolAddress, 'yieldBearingToken'));
+          setSelectedTokenPrecision(getTokenPrecision(selectedPoolAddress, 'yieldBearingToken', config));
           if (yieldBearingTokenRate !== null) {
             setUsdRate(yieldBearingTokenRate);
           }
@@ -146,10 +144,12 @@ const Mint: FC<MintInProps> = ({ narrow, chain }) => {
       return null;
     }
 
+    const config = getConfig();
+
     if (selectedToken === backingToken) {
-      return ethers.utils.parseUnits(amount, getTokenPrecision(selectedPoolAddress, 'backingToken'));
+      return ethers.utils.parseUnits(amount, getTokenPrecision(selectedPoolAddress, 'backingToken', config));
     } else {
-      return ethers.utils.parseUnits(amount, getTokenPrecision(selectedPoolAddress, 'yieldBearingToken'));
+      return ethers.utils.parseUnits(amount, getTokenPrecision(selectedPoolAddress, 'yieldBearingToken', config));
     }
   }, [selectedPoolAddress, selectedToken, backingToken, amount]);
 
@@ -375,21 +375,21 @@ const Mint: FC<MintInProps> = ({ narrow, chain }) => {
       {disabledOperations.mint && (
         <>
           <SectionContainer title="poolActionDisabledTitle">
-            <Typography variant="card-body-text">{getText('operationDisabledByConfig', language)}</Typography>
+            <Typography variant="card-body-text">{getText('operationDisabledByConfig', locale)}</Typography>
             <br />
-            <Typography variant="card-body-text" html={getText('askUsOnDiscord', language)} />
+            <Typography variant="card-body-text" html={getText('askUsOnDiscord', locale)} />
           </SectionContainer>
           <Spacer size={15} />
         </>
       )}
-      <Descriptor>{getText('mintDescription', language)}</Descriptor>
+      <Descriptor>{getText('mintDescription', locale)}</Descriptor>
       <SectionContainer
         title={
           selectedToken && balanceFormatted ? (
             <div className="tc__title-and-balance">
-              <Typography variant="card-title">{getText('from', language)}</Typography>
+              <Typography variant="card-title">{getText('from', locale)}</Typography>
               <Typography variant="body-text">
-                {getText('availableToDeposit', language)} {balanceFormatted}
+                {getText('availableToDepositXxx', locale, { amount: balanceFormatted })}
               </Typography>
             </div>
           ) : (
@@ -414,16 +414,16 @@ const Mint: FC<MintInProps> = ({ narrow, chain }) => {
               disabled={!selectedToken || mintDisabled}
               disabledTooltip={
                 isYieldNegative
-                  ? getText('disableInputByNegativeYield', language)
+                  ? getText('disableInputByNegativeYield', locale)
                   : disabledOperations.mint
                   ? getText('mintDisabledByConfig')
-                  : getText('selectTokenFirst', language)
+                  : getText('selectTokenFirst', locale)
               }
             />
             {ethAllowanceForGasExceeded && (
               <div className="tf__input__label">
                 <Typography variant="disclaimer-text" color="error">
-                  {getText('warningEthGasFees', language)}
+                  {getText('warningEthGasFees', locale)}
                 </Typography>
               </div>
             )}
@@ -443,16 +443,15 @@ const Mint: FC<MintInProps> = ({ narrow, chain }) => {
             <SectionContainer elevation={2}>
               <div className="tf__flex-row-space-between">
                 <div className="tf__flex-column-space-between">
-                  <Typography variant="h4">
-                    {backingToken} {getText('principals', language)}
-                  </Typography>
+                  <Typography variant="h4">{getText('xxxPrincipals', locale, { token: backingToken })}</Typography>
                   <Spacer size={10} />
                   <Typography variant="card-body-text">
                     {estimatedTokensFormatted &&
-                      `${getText('amountReceived', language)} ${estimatedTokensFormatted} ${getText(
-                        'principalTokens',
-                        language,
-                      )}`}
+                      getText('amountReceivedXxx', locale, {
+                        amount: getText('xxxPrincipals', locale, {
+                          token: estimatedTokensFormatted,
+                        }),
+                      })}
                   </Typography>
                 </div>
                 <div className="tf__flex-column-center-end"></div>
@@ -465,16 +464,15 @@ const Mint: FC<MintInProps> = ({ narrow, chain }) => {
             <SectionContainer elevation={2}>
               <div className="tf__flex-row-space-between">
                 <div className="tf__flex-column-space-between">
-                  <Typography variant="h4">
-                    {backingToken} {getText('yields', language)}
-                  </Typography>
+                  <Typography variant="h4">{getText('xxxYields', locale, { token: backingToken })}</Typography>
                   <Spacer size={10} />
                   <Typography variant="card-body-text">
                     {estimatedTokensFormatted &&
-                      `${getText('amountReceived', language)} ${estimatedTokensFormatted} ${getText(
-                        'yieldTokens',
-                        language,
-                      )}`}
+                      getText('amountReceivedXxx', locale, {
+                        amount: getText('xxxYields', locale, {
+                          token: estimatedTokensFormatted,
+                        }),
+                      })}
                   </Typography>
                 </div>
                 <div className="tf__flex-column-center-end"></div>

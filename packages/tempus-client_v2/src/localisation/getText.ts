@@ -1,19 +1,36 @@
+import { Locale } from '../interfaces/Locale';
 import Words from './words';
 import en from './en';
 import es from './es';
 import it from './it';
+import zz from './zz';
 
-export type Language = 'en' | 'es' | 'it';
-
-const getText = (word: Words, language?: Language): string => {
-  switch (language) {
+const getText = (
+  word: Words,
+  locale?: Locale,
+  replacement: { [key in string]?: string | number | null } = {},
+): string => {
+  let string: string;
+  switch (locale?.code) {
     case 'es':
-      return es[word];
+      string = es[word];
+      break;
     case 'it':
-      return it[word];
+      string = it[word];
+      break;
+    case 'zz':
+      string = zz[word];
+      break;
     default:
-      return en[word];
+      string = en[word];
+      break;
   }
+
+  Object.keys(replacement).forEach(key => {
+    string = string.replaceAll(`{{${key}}}`, `${replacement[key]}` || '');
+  });
+
+  return string;
 };
 
 export default getText;

@@ -2,26 +2,30 @@ import { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'r
 import { useNavigate } from 'react-router-dom';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { ethers } from 'ethers';
+import {
+  CONSTANTS,
+  Chain,
+  NumberUtils,
+  chainIdToChainName,
+  chainToTicker,
+  getStorageService,
+  shortenAccount,
+} from 'tempus-core-services';
 import { Web3Provider } from '@ethersproject/providers';
 import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core';
 import { InjectedConnector } from '@web3-react/injected-connector';
 import { UserRejectedRequestError, WalletConnectConnector } from '@web3-react/walletconnect-connector';
 import { CircularProgress } from '@material-ui/core';
-import { supportedChainIds, NETWORK_URLS } from '../../constants';
-import { LanguageContext } from '../../context/languageContext';
+import { LocaleContext } from '../../context/localeContext';
 import { TokenBalanceContext } from '../../context/tokenBalanceContext';
 import { PendingTransactionsContext } from '../../context/pendingTransactionsContext';
 import { UserSettingsContext } from '../../context/userSettingsContext';
 import { WalletContext } from '../../context/walletContext';
 import { getChainConfig } from '../../utils/getConfig';
 import { unsupportedNetworkState } from '../../state/ChainState';
-import NumberUtils from '../../services/NumberUtils';
 import UserWallet from '../../interfaces/UserWallet';
-import { chainToTicker, chainIdToChainName, Chain } from '../../interfaces/Chain';
 import getText from '../../localisation/getText';
 import useENS from '../../hooks/useENS';
-import shortenAccount from '../../utils/shortenAccount';
-import getStorageService from '../../services/getStorageService';
 import getNotificationService from '../../services/getNotificationService';
 import Typography from '../typography/Typography';
 import Spacer from '../spacer/spacer';
@@ -37,12 +41,13 @@ import Button from '../common/Button';
 
 import './Wallet.scss';
 
+const { supportedChainIds, NETWORK_URLS } = CONSTANTS;
 const WALLET_KEY = 'lastConnectedWallet';
 
 const Wallet = () => {
   const { account, activate, deactivate, active, library } = useWeb3React<Web3Provider>();
 
-  const { language } = useContext(LanguageContext);
+  const { locale } = useContext(LocaleContext);
   const { tokenBalance } = useContext(TokenBalanceContext);
   const { userWalletChain, setWalletData } = useContext(WalletContext);
   const { pendingTransactions } = useContext(PendingTransactionsContext);
@@ -112,7 +117,7 @@ const Wallet = () => {
       const provider = await injectedConnector.getProvider();
 
       provider.on('networkChanged', (chainId: string) => {
-        const selected = chainIdToChainName(chainId);
+        const selected = chainIdToChainName(parseInt(chainId, 10));
         if (selected) {
           unsupportedNetwork.set(false);
         } else {
@@ -215,7 +220,7 @@ const Wallet = () => {
     ): Promise<boolean> => {
       const injectedConnector = new InjectedConnector({ supportedChainIds });
       const provider = await injectedConnector.getProvider();
-      const chain = chainIdToChainName(chainId);
+      const chain = chainIdToChainName(parseInt(chainId, 10));
 
       try {
         // Request user to switch to Mainnet
@@ -228,7 +233,7 @@ const Wallet = () => {
         const shouldThrowErrors = true;
         await activate(injectedConnector, onError, shouldThrowErrors);
         if (showWalletConnectedNotification) {
-          chain && getNotificationService().notify(chain, 'Wallet', getText('metamaskConnected', language), '');
+          chain && getNotificationService().notify(chain, 'Wallet', getText('metamaskConnected', locale), '');
         }
 
         // User accepted network change request - return true
@@ -241,8 +246,8 @@ const Wallet = () => {
             getNotificationService().warn(
               chain,
               'Wallet',
-              getText('changeNetworkRejected', language),
-              getText('changeNetworkRejectedExplain', language),
+              getText('changeNetworkRejected', locale),
+              getText('changeNetworkRejectedExplain', locale),
             );
           // Network we tried to switch to is not yet added to MetaMask
         } else if ((error as any).code === 4902) {
@@ -252,8 +257,8 @@ const Wallet = () => {
             getNotificationService().warn(
               chain,
               'Wallet',
-              getText('unsupportedNetwork', language),
-              getText('unsupportedNetworkExplain', language),
+              getText('unsupportedNetwork', locale),
+              getText('unsupportedNetworkExplain', locale),
             );
         }
 
@@ -261,7 +266,7 @@ const Wallet = () => {
         return false;
       }
     },
-    [language, activate],
+    [locale, activate],
   );
 
   const onMetaMaskSelected = useCallback(
@@ -277,13 +282,14 @@ const Wallet = () => {
         }
         const injectedConnector = new InjectedConnector({ supportedChainIds });
         const chainId = await injectedConnector.getChainId();
-        const chain = chainIdToChainName(chainId.toString());
+        const parsedChainId = typeof chainId === 'number' ? chainId : parseInt(chainId, 10);
+        const chain = chainIdToChainName(parsedChainId);
         try {
           await activate(injectedConnector, undefined, true);
           getStorageService().set(WALLET_KEY, 'MetaMask');
           setSelectedWallet('MetaMask');
           if (showWalletConnectedNotification && chain) {
-            getNotificationService().notify(chain, 'Wallet', getText('metamaskConnected', language), '');
+            getNotificationService().notify(chain, 'Wallet', getText('metamaskConnected', locale), '');
           }
         } catch (error) {
           setSelectedWallet(null);
@@ -291,7 +297,7 @@ const Wallet = () => {
           if (error instanceof UnsupportedChainIdError) {
             unsupportedNetwork.set(true);
           } else {
-            chain && getNotificationService().warn(chain, 'Wallet', getText('errorConnectingWallet', language), '');
+            chain && getNotificationService().warn(chain, 'Wallet', getText('errorConnectingWallet', locale), '');
           }
         }
         setConnecting(false);
@@ -300,7 +306,7 @@ const Wallet = () => {
       setConnecting(true);
       connect(lastSelectedWallet);
     },
-    [language, active, activate, deactivate, unsupportedNetwork],
+    [locale, active, activate, deactivate, unsupportedNetwork],
   );
 
   const onWalletConnectSelected = useCallback(
@@ -345,10 +351,11 @@ const Wallet = () => {
           setSelectedWallet('WalletConnect');
 
           chainId = await walletConnectorValid.getChainId();
-          chain = chainIdToChainName(chainId.toString());
+          const parsedChainId = typeof chainId === 'number' ? chainId : parseInt(chainId, 10);
+          chain = chainIdToChainName(parsedChainId);
 
           if (showWalletConnectedNotification && chain) {
-            getNotificationService().notify(chain, 'Wallet', getText('walletConnectConnected', language), '');
+            getNotificationService().notify(chain, 'Wallet', getText('walletConnectConnected', locale), '');
           }
         } catch (error) {
           if (error instanceof UserRejectedRequestError) {
@@ -366,7 +373,7 @@ const Wallet = () => {
           if (error instanceof UnsupportedChainIdError) {
             unsupportedNetwork.set(true);
           } else {
-            chain && getNotificationService().warn(chain, 'Wallet', getText('errorConnectingWallet', language), '');
+            chain && getNotificationService().warn(chain, 'Wallet', getText('errorConnectingWallet', locale), '');
           }
         }
         setConnecting(false);
@@ -375,7 +382,7 @@ const Wallet = () => {
       setConnecting(true);
       connect(lastSelectedWallet);
     },
-    [language, active, activate, deactivate, unsupportedNetwork, onMetaMaskSelected],
+    [locale, active, activate, deactivate, unsupportedNetwork, onMetaMaskSelected],
   );
 
   const onCloseWalletSelector = useCallback(
@@ -456,6 +463,10 @@ const Wallet = () => {
         return;
       }
 
+      if (!walletConnector || !walletConnector.walletConnectProvider) {
+        return;
+      }
+
       // Check if session is authorized
       const authorized = walletConnector.walletConnectProvider.connected;
       if (authorized) {
@@ -524,7 +535,7 @@ const Wallet = () => {
         return;
       }
 
-      const chain = chainIdToChainName(signer.provider.network.chainId.toString());
+      const chain = chainIdToChainName(signer.provider.network.chainId);
       if (!chain) {
         unsupportedNetwork.set(true);
       }
@@ -576,7 +587,7 @@ const Wallet = () => {
         {/* Wallet not connected - show connect wallet button */}
         {!connecting && !selectedWallet && !isUnsupportedNetwork && (
           <Button className="tc__connect-wallet-button" onClick={onSelectWallet}>
-            <Typography variant="button-text">{getText('connectWallet', language)}</Typography>
+            <Typography variant="button-text">{getText('connectWallet', locale)}</Typography>
           </Button>
         )}
 
@@ -621,9 +632,13 @@ const Wallet = () => {
 
                 {/* In case there are pending transactions, show number of pending transactions */}
                 {pendingTransactions.length > 0 && (
-                  <Typography variant="h5">
-                    {pendingTransactions.length} {getText('pending', language)}
-                  </Typography>
+                  <>
+                    <Typography variant="h5">
+                      {getText('xxxPending', locale, { count: pendingTransactions.length })}
+                    </Typography>
+                    <Spacer size={8} />
+                    <CircularProgress size={16} color="inherit" />
+                  </>
                 )}
               </Button>
             </>
@@ -641,7 +656,7 @@ const Wallet = () => {
               <WarnIcon />
             </div>
             <div className="tc__connect-wallet-button">
-              <Typography variant="button-text">{getText('unsupported', language)}</Typography>
+              <Typography variant="button-text">{getText('unsupported', locale)}</Typography>
             </div>
           </InfoTooltip>
         )}

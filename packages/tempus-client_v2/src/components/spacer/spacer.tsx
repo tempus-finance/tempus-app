@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, memo } from 'react';
 
 interface SpacerProps {
   size: number;
@@ -7,4 +7,4 @@ interface SpacerProps {
 const Spacer: FC<SpacerProps> = props => {
   return <div style={{ width: `${props.size}px`, height: `${props.size}px` }} />;
 };
-export default Spacer;
+export default memo(Spacer);

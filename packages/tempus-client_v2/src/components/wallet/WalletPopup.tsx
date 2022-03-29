@@ -1,9 +1,9 @@
-import { FC, RefObject, useCallback, useContext, useEffect, useState } from 'react';
+import { FC, RefObject, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { Button, Divider, Popper } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
+import { Chain } from 'tempus-core-services';
 import { Notification } from '../../interfaces/Notification';
-import { Chain } from '../../interfaces/Chain';
-import { LanguageContext } from '../../context/languageContext';
+import { LocaleContext } from '../../context/localeContext';
 import { UserSettingsContext } from '../../context/userSettingsContext';
 import { PendingTransactionsContext } from '../../context/pendingTransactionsContext';
 import { WalletContext } from '../../context/walletContext';
@@ -12,6 +12,7 @@ import { getChainConfig } from '../../utils/getConfig';
 import getText from '../../localisation/getText';
 import Typography from '../typography/Typography';
 import Spacer from '../spacer/spacer';
+import ExternalLink from '../common/ExternalLink';
 import WalletNotification from './WalletNotification';
 import WalletPending from './WalletPending';
 
@@ -32,7 +33,7 @@ type WalletPopupProps = WalletPopupInProps & WalletPopupOutProps;
 
 const WalletPopup: FC<WalletPopupProps> = ({ anchorElement, account, chainName, onSwitchWallet, onClose }) => {
   const { openWalletPopup } = useContext(UserSettingsContext);
-  const { language } = useContext(LanguageContext);
+  const { locale } = useContext(LocaleContext);
   const { pendingTransactions } = useContext(PendingTransactionsContext);
   const { userWalletChain } = useContext(WalletContext);
 
@@ -47,15 +48,16 @@ const WalletPopup: FC<WalletPopupProps> = ({ anchorElement, account, chainName, 
     onSwitchWallet && onSwitchWallet();
   }, [onSwitchWallet]);
 
-  const onAccountAddressClick = useCallback(() => {
+  const accountAddressURL = useMemo(() => {
     const config = getChainConfig(chainName);
 
-    if (config.networkName === 'homestead') {
-      window.open(`https://etherscan.io/address/${account}`, '_blank');
-    } else if (config.networkName === 'fantom-mainnet') {
-      window.open(`https://ftmscan.com/address/${account}`, '_blank');
-    } else {
-      window.open(`https://${config.networkName}.etherscan.io/address/${account}`, '_blank');
+    switch (config.networkName) {
+      case 'homestead':
+        return `https://etherscan.io/address/${account}`;
+      case 'fantom-mainnet':
+        return `https://ftmscan.com/address/${account}`;
+      default:
+        return `https://${config.networkName}.etherscan.io/address/${account}`;
     }
   }, [account, chainName]);
 
@@ -84,7 +86,7 @@ const WalletPopup: FC<WalletPopupProps> = ({ anchorElement, account, chainName, 
       >
         <div className="tc__wallet__popper__container">
           <div className="tc__wallet__popper__section tc__wallet__popper__section-header">
-            <Typography variant="dropdown-text">{getText('walletOverview', language)}</Typography>
+            <Typography variant="dropdown-text">{getText('walletOverview', locale)}</Typography>
             <Button onClick={onClose}>
               <CloseIcon />
             </Button>
@@ -93,19 +95,19 @@ const WalletPopup: FC<WalletPopupProps> = ({ anchorElement, account, chainName, 
           <div className="tc__wallet__popper__section tc__wallet__popper__section-account">
             <div className="tc__wallet__popper__section__title">
               <Typography variant="dropdown-text" color="title">
-                {getText('connectedWallet', language)}
+                {getText('connectedWallet', locale)}
               </Typography>
               <Button onClick={switchWallet}>
                 <Typography variant="disclaimer-text" color="title">
-                  {getText('switchWallet', language)}
+                  {getText('switchWallet', locale)}
                 </Typography>
               </Button>
             </div>
-            <div onClick={onAccountAddressClick} className="tc__sidebar-pool-link">
+            <ExternalLink className="tc__wallet__popper__section-link" href={accountAddressURL}>
               <Typography variant="dropdown-text" color="link">
                 {account}
               </Typography>
-            </div>
+            </ExternalLink>
           </div>
           {pendingTransactions && pendingTransactions.length > 0 && (
             <>
@@ -113,7 +115,7 @@ const WalletPopup: FC<WalletPopupProps> = ({ anchorElement, account, chainName, 
               <div className="tc__wallet__popper__section tc__wallet__popper__section-transactions">
                 <div className="tc__wallet__popper__section__title">
                   <Typography variant="dropdown-text" color="title">
-                    {getText('pendingTransactions', language)}
+                    {getText('pendingTransactions', locale)}
                   </Typography>
                 </div>
                 <Spacer size={15} />
@@ -129,11 +131,11 @@ const WalletPopup: FC<WalletPopupProps> = ({ anchorElement, account, chainName, 
               <div className="tc__wallet__popper__section tc__wallet__popper__section-transactions">
                 <div className="tc__wallet__popper__section__title">
                   <Typography variant="dropdown-text" color="title">
-                    {getText('transactionHistory', language)}
+                    {getText('transactionHistory', locale)}
                   </Typography>
                   <Button onClick={clearNotifications}>
                     <Typography variant="disclaimer-text" color="title">
-                      {getText('clear', language)}
+                      {getText('clear', locale)}
                     </Typography>
                   </Button>
                 </div>

@@ -1,50 +1,70 @@
 import { Column } from '@devexpress/dx-react-grid';
 import { DashboardRowChild, DashboardRowParent, isParentRow } from '../../interfaces/DashboardRow';
-import getText, { Language } from '../../localisation/getText';
+import { Locale } from '../../interfaces/Locale';
+import getText from '../../localisation/getText';
 
 export interface ExtraDataColumn extends Column {
   tooltip?: string;
 }
 
-export const dashboardColumnsDefinitions = (language: Language): ExtraDataColumn[] => [
-  {
-    name: 'token',
-    title: getText('asset', language),
-  },
-  {
-    name: 'protocol',
-    title: getText('protocol', language),
-    // TODO - Hide protocol icons from children that are hidden
-    getCellValue: (row: DashboardRowChild | DashboardRowParent) => {
-      if (isParentRow(row)) {
-        return row.protocols;
-      } else {
-        return row.tempusPool.protocol;
-      }
+export const dashboardColumnsDefinitions = (isConnected: boolean, locale: Locale): ExtraDataColumn[] => {
+  const defaultColumnsDefinitions = [
+    {
+      name: 'token',
+      title: getText('asset', locale),
     },
-  },
-  {
-    name: 'maturity',
-    title: getText('maturity', language),
-  },
-  {
-    name: 'fixedAPR',
-    title: getText('fixedApr', language),
-  },
-  // {
-  //   name: 'variableAPY',
-  //   title: getText('lpApr', language),
-  // },
-  {
-    name: 'TVL',
-    title: getText('tvl', language),
-  },
-  {
-    name: 'presentValue',
-    title: getText('balance', language),
-  },
-  {
-    name: 'availableToDeposit',
-    title: getText('availableToDeposit', language),
-  },
-];
+    {
+      name: 'protocol',
+      title: getText('protocol', locale),
+      // TODO - Hide protocol icons from children that are hidden
+      getCellValue: (row: DashboardRowChild | DashboardRowParent) => {
+        if (isParentRow(row)) {
+          return row.protocols;
+        } else {
+          return row.tempusPool.protocol;
+        }
+      },
+    },
+    {
+      name: 'maturity',
+      title: getText('maturity', locale),
+    },
+    {
+      name: 'fixedAPR',
+      title: getText('fixedApr', locale),
+    },
+    // {
+    //   name: 'variableAPY',
+    //   title: getText('lpApr', locale),
+    // },
+    {
+      name: 'TVL',
+      title: getText('tvl', locale),
+    },
+  ];
+  const connectedColumnsDefinitions = [
+    {
+      name: 'presentValue',
+      title: getText('balance', locale),
+    },
+    {
+      name: 'availableToDeposit',
+      title: getText('availableToDeposit', locale),
+    },
+  ];
+  // if unconnected, show empty column header
+  const unconnectedColumnsDefinitions = [
+    {
+      name: 'presentValue',
+      title: ' ',
+    },
+    {
+      name: 'availableToDeposit',
+      title: ' ',
+    },
+  ];
+
+  return isConnected
+    ? defaultColumnsDefinitions.concat(connectedColumnsDefinitions)
+    : defaultColumnsDefinitions.concat(unconnectedColumnsDefinitions);
+};

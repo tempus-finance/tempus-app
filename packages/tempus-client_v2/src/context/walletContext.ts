@@ -1,6 +1,6 @@
 import React, { Dispatch, SetStateAction } from 'react';
 import { JsonRpcSigner } from '@ethersproject/providers';
-import { Chain } from '../interfaces/Chain';
+import { Chain } from 'tempus-core-services';
 
 interface WalletContextData {
   userWalletConnected: boolean | null;

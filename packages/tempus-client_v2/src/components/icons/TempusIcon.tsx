@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, memo } from 'react';
 import IconProps from './IconProps';
 
 const TempusIcon: FC<IconProps> = props => {
@@ -20,4 +20,4 @@ const TempusIcon: FC<IconProps> = props => {
     </svg>
   );
 };
-export default TempusIcon;
+export default memo(TempusIcon);

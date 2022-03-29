@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, memo } from 'react';
 import IconProps from './IconProps';
 
 const ArrowDown: FC<IconProps> = props => {
@@ -13,4 +13,4 @@ const ArrowDown: FC<IconProps> = props => {
     </svg>
   );
 };
-export default ArrowDown;
+export default memo(ArrowDown);

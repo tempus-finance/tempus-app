@@ -1,7 +1,7 @@
 import { FC, useCallback, useContext, useMemo, useState } from 'react';
-import { LanguageContext } from '../../../context/languageContext';
+import { shortenAccount } from 'tempus-core-services';
+import { LocaleContext } from '../../../context/localeContext';
 import getText from '../../../localisation/getText';
-import shortenAccount from '../../../utils/shortenAccount';
 import Typography from '../../typography/Typography';
 import CopyIcon from '../../icons/CopyIcon';
 import Button from '../../common/Button';
@@ -32,7 +32,7 @@ const ContractAddrTooltip: FC<ContractAddrTooltipProps> = props => {
     yieldBearingTokenAddress,
     statsAddress,
   } = props;
-  const { language } = useContext(LanguageContext);
+  const { locale } = useContext(LocaleContext);
 
   const [showCopied, setShowCopied] = useState<string>('');
   const [timeoutFunc, setTimeoutFunc] = useState<NodeJS.Timeout>();
@@ -82,12 +82,12 @@ const ContractAddrTooltip: FC<ContractAddrTooltipProps> = props => {
     [yieldBearingTokenAddress],
   );
   const formattedStatsAddress = useMemo(() => shortenAccount(statsAddress), [statsAddress]);
-  const copyToClipboardText = useMemo(() => getText('copyToclipboard', language), [language]);
-  const copiedText = useMemo(() => getText('copied', language), [language]);
+  const copyToClipboardText = useMemo(() => getText('copyToclipboard', locale), [locale]);
+  const copiedText = useMemo(() => getText('copied', locale), [locale]);
 
   return (
     <div className="tc__contract-addr-tooltip">
-      <Typography variant="tooltip-card-title">{getText('contractAddresses', language)}</Typography>
+      <Typography variant="tooltip-card-title">{getText('contractAddresses', locale)}</Typography>
       <div className="tc__contract-addr-tooltip-item">
         <Typography variant="sub-title">TempusAMM</Typography>
         {showCopied === tempusAMMAddress ? (

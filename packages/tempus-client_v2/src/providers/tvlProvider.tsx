@@ -2,10 +2,9 @@ import { useState as useHookState } from '@hookstate/core';
 import { FC, useCallback, useEffect, useContext } from 'react';
 import { Subscription } from 'rxjs';
 import { BigNumber } from 'ethers';
+import { Chain, TempusPool } from 'tempus-core-services';
 import { getChainConfig, getConfig } from '../utils/getConfig';
 import DashboardDataAdapter from '../adapters/DashboardDataAdapter';
-import { TempusPool } from '../interfaces/TempusPool';
-import { Chain } from '../interfaces/Chain';
 import { WalletContext } from '../context/walletContext';
 import { dynamicPoolDataState } from '../state/PoolDataState';
 

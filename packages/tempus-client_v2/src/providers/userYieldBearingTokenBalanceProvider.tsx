@@ -1,9 +1,6 @@
 import { JsonRpcSigner } from '@ethersproject/providers';
 import { BigNumber, Contract } from 'ethers';
-import { ERC20 } from '../abi/ERC20';
-import ERC20ABI from '../abi/ERC20.json';
-import { TempusPool } from '../interfaces/TempusPool';
-import { Chain } from '../interfaces/Chain';
+import { Chain, ERC20, ERC20ABI, TempusPool } from 'tempus-core-services';
 import { dynamicPoolDataState } from '../state/PoolDataState';
 import { getChainConfig, getConfigForPoolWithAddress } from '../utils/getConfig';
 import { BalanceProviderParams } from './interfaces';

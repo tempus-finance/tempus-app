@@ -1,4 +1,4 @@
-import { Chain } from './Chain';
+import { Chain } from 'tempus-core-services';
 
 export type NotificationCategory = 'Transaction' | 'Wallet' | 'Service';
 

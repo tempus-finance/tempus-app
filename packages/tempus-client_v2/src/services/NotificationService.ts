@@ -1,8 +1,7 @@
 import { Observable, ReplaySubject, Subject, interval, tap, filter } from 'rxjs';
 import { v1 as uuid } from 'uuid';
+import { Chain, StorageService } from 'tempus-core-services';
 import { Notification, NotificationCategory, NotificationLevel } from '../interfaces/Notification';
-import { Chain } from '../interfaces/Chain';
-import StorageService from './StorageService';
 
 const NOTIFICATIONS_KEY = 'notifications';
 

@@ -1,14 +1,14 @@
 import { FC, useContext, useEffect, useMemo, useState } from 'react';
+import { NumberUtils } from 'tempus-core-services';
 import { BigNumber } from '@ethersproject/bignumber';
 import { ethers } from 'ethers';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
+import { Chain } from 'tempus-core-services';
 import { selectedPoolState, staticPoolDataState } from '../../../state/PoolDataState';
 import getPoolDataAdapter from '../../../adapters/getPoolDataAdapter';
-import { LanguageContext } from '../../../context/languageContext';
+import { LocaleContext } from '../../../context/localeContext';
 import { WalletContext } from '../../../context/walletContext';
 import getText from '../../../localisation/getText';
-import NumberUtils from '../../../services/NumberUtils';
-import { Chain } from '../../../interfaces/Chain';
 import Spacer from '../../spacer/spacer';
 import Typography from '../../typography/Typography';
 
@@ -23,7 +23,7 @@ const FeesTooltip: FC<FeesTooltipProps> = ({ chain }) => {
   const staticPoolData = useHookState(staticPoolDataState);
 
   const { userWalletSigner } = useContext(WalletContext);
-  const { language } = useContext(LanguageContext);
+  const { locale } = useContext(LocaleContext);
 
   const [poolFees, setPoolFees] = useState<BigNumber[] | null>(null);
 
@@ -72,31 +72,31 @@ const FeesTooltip: FC<FeesTooltipProps> = ({ chain }) => {
 
   return (
     <div className="tc__feesTooltip">
-      <Typography variant="card-title">{getText('fees', language)}</Typography>
+      <Typography variant="card-title">{getText('fees', locale)}</Typography>
       <Spacer size={15} />
-      <Typography variant="card-body-text">{getText('feesTooltipInfo', language)}</Typography>
+      <Typography variant="card-body-text">{getText('feesTooltipInfo', locale)}</Typography>
       <Spacer size={15} />
       <div className="tc__feesTooltip-row">
         <Typography variant="card-body-text" color="title">
-          {getText('deposit', language)}
+          {getText('deposit', locale)}
         </Typography>
         <Typography variant="card-body-text">{depositFeesFormatted}</Typography>
       </div>
       <div className="tc__feesTooltip-row">
         <Typography variant="card-body-text" color="title">
-          {getText('redemption', language)}
+          {getText('redemption', locale)}
         </Typography>
         <Typography variant="card-body-text">{redemptionFeesFormatted}</Typography>
       </div>
       <div className="tc__feesTooltip-row">
         <Typography variant="card-body-text" color="title">
-          {getText('earlyRedemption', language)}
+          {getText('earlyRedemption', locale)}
         </Typography>
         <Typography variant="card-body-text">{earlyRedemptionFeesFormatted}</Typography>
       </div>
       <div className="tc__feesTooltip-row">
         <Typography variant="card-body-text" color="title">
-          {getText('swap', language)}
+          {getText('swap', locale)}
         </Typography>
         <Typography variant="card-body-text">{swapFeesFormatted}</Typography>
       </div>

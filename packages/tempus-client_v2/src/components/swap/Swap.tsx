@@ -1,20 +1,23 @@
 import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { BigNumber, ethers } from 'ethers';
+import {
+  Chain,
+  NumberUtils,
+  PoolShares,
+  Ticker,
+  SwapKind,
+  getTokenPrecision,
+  isZeroString,
+  mul18f,
+} from 'tempus-core-services';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
 import { refreshBalances } from '../../providers/balanceProviderHelper';
-import { LanguageContext } from '../../context/languageContext';
+import { LocaleContext } from '../../context/localeContext';
 import { WalletContext } from '../../context/walletContext';
 import { UserSettingsContext } from '../../context/userSettingsContext';
-import { PoolShares, Ticker } from '../../interfaces/Token';
-import { Chain } from '../../interfaces/Chain';
 import getText from '../../localisation/getText';
-import { getChainConfig } from '../../utils/getConfig';
-import { mul18f } from '../../utils/weiMath';
-import getTokenPrecision from '../../utils/getTokenPrecision';
-import { isZeroString } from '../../utils/isZeroString';
-import { SwapKind } from '../../services/VaultService';
-import NumberUtils from '../../services/NumberUtils';
+import { getChainConfig, getConfig } from '../../utils/getConfig';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
 import Approve from '../buttons/Approve';
 import Execute from '../buttons/Execute';
@@ -51,7 +54,7 @@ const Swap: FC<SwapProps> = props => {
 
   const { userWalletSigner, userWalletAddress } = useContext(WalletContext);
   const { slippage, autoSlippage } = useContext(UserSettingsContext);
-  const { language } = useContext(LanguageContext);
+  const { locale } = useContext(LocaleContext);
 
   const [tokenFrom, setTokenFrom] = useState<TokenDetail>({
     tokenName: 'Principals',
@@ -66,7 +69,9 @@ const Swap: FC<SwapProps> = props => {
   const [receiveAmount, setReceiveAmount] = useState<BigNumber | null>(null);
   const [tokensApproved, setTokensApproved] = useState<boolean>(false);
   const [estimateInProgress, setEstimateInProgress] = useState<boolean>(false);
-  const [tokenPrecision, setTokenPrecision] = useState<number>(getTokenPrecision(selectedPoolAddress, 'principals'));
+  const [tokenPrecision, setTokenPrecision] = useState<number>(
+    getTokenPrecision(selectedPoolAddress, 'principals', getConfig()),
+  );
 
   const userPrincipalsBalance = dynamicPoolData[selectedPool.get()].userPrincipalsBalance.attach(Downgraded).get();
   const userYieldsBalance = dynamicPoolData[selectedPool.get()].userYieldsBalance.attach(Downgraded).get();
@@ -118,10 +123,12 @@ const Swap: FC<SwapProps> = props => {
 
     setSelectedToken(tokenToOld.tokenName);
 
+    const config = getConfig();
+
     if (tokenToOld.tokenName === 'Principals') {
-      setTokenPrecision(getTokenPrecision(selectedPoolAddress, 'principals'));
+      setTokenPrecision(getTokenPrecision(selectedPoolAddress, 'principals', config));
     } else {
-      setTokenPrecision(getTokenPrecision(selectedPoolAddress, 'yields'));
+      setTokenPrecision(getTokenPrecision(selectedPoolAddress, 'yields', config));
     }
   }, [selectedPoolAddress, tokenFrom, tokenTo]);
 
@@ -148,10 +155,12 @@ const Swap: FC<SwapProps> = props => {
       return null;
     }
 
+    const config = getConfig();
+
     if (selectedToken === 'Principals') {
-      return ethers.utils.parseUnits(amount, getTokenPrecision(selectedPoolAddress, 'principals'));
+      return ethers.utils.parseUnits(amount, getTokenPrecision(selectedPoolAddress, 'principals', config));
     } else {
-      return ethers.utils.parseUnits(amount, getTokenPrecision(selectedPoolAddress, 'yields'));
+      return ethers.utils.parseUnits(amount, getTokenPrecision(selectedPoolAddress, 'yields', config));
     }
   }, [selectedPoolAddress, selectedToken, amount]);
 
@@ -165,11 +174,13 @@ const Swap: FC<SwapProps> = props => {
     }
     const poolDataAdapter = getPoolDataAdapter(chain, userWalletSigner);
 
+    const config = getConfig();
+
     let tokenOutPrecision;
     if (tokenTo.tokenAddress === principalsAddress) {
-      tokenOutPrecision = getTokenPrecision(selectedPoolAddress, 'principals');
+      tokenOutPrecision = getTokenPrecision(selectedPoolAddress, 'principals', config);
     } else if (tokenTo.tokenAddress === yieldsAddress) {
-      tokenOutPrecision = getTokenPrecision(selectedPoolAddress, 'yields');
+      tokenOutPrecision = getTokenPrecision(selectedPoolAddress, 'yields', config);
     }
 
     if (!tokenOutPrecision) {
@@ -289,15 +300,13 @@ const Swap: FC<SwapProps> = props => {
 
   return (
     <div className="tc__swap">
-      <Descriptor>{getText('swapDescription', language)}</Descriptor>
+      <Descriptor>{getText('swapDescription', locale)}</Descriptor>
       <SectionContainer
         title={
           selectedToken && balanceFormatted ? (
             <div className="tc__title-and-balance">
-              <Typography variant="card-title">{getText('from', language)}</Typography>
-              <Typography variant="body-text">
-                {getText('balance', language)} {balanceFormatted}
-              </Typography>
+              <Typography variant="card-title">{getText('from', locale)}</Typography>
+              <Typography variant="body-text">{getText('balanceXxx', locale, { amount: balanceFormatted })}</Typography>
             </div>
           ) : (
             'from'
@@ -317,7 +326,7 @@ const Swap: FC<SwapProps> = props => {
             onChange={onAmountChange}
             disabled={!selectedToken}
             onMaxClick={onMaxClick}
-            disabledTooltip={getText('selectTokenFirst', language)}
+            disabledTooltip={getText('selectTokenFirst', locale)}
           />
           <Spacer size={15} />
         </div>
@@ -328,7 +337,7 @@ const Swap: FC<SwapProps> = props => {
         <div className="tf__flex-row-center-v">
           <TokenSelector value={tokenTo.tokenName} tickers={['Principals', 'Yields']} onTokenChange={onTokenToChange} />
           <Spacer size={15} />
-          <Typography variant="card-body-text">{getText('estimatedAmountReceived', language)}</Typography>
+          <Typography variant="card-body-text">{getText('estimatedAmountReceived', locale)}</Typography>
           <Spacer size={15} />
           <Typography variant="card-body-text">{receiveAmountFormatted}</Typography>
         </div>

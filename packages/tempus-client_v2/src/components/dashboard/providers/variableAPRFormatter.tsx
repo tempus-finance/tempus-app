@@ -1,12 +1,10 @@
-import React from 'react';
+import { useContext } from 'react';
+import { CONSTANTS, NumberUtils } from 'tempus-core-services';
 import { CircularProgress } from '@material-ui/core';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
-import { ZERO } from '../../../constants';
-import { Chain, chainIdToChainName } from '../../../interfaces/Chain';
-import NumberUtils from '../../../services/NumberUtils';
+import { Chain, chainIdToChainName } from 'tempus-core-services';
 import { getChainConfigForPool } from '../../../utils/getConfig';
 import Typography from '../../typography/Typography';
-import APYGraph from '../bodySection/apyGraph';
 import {
   dynamicPoolDataState,
   DynamicPoolStateData,
@@ -15,8 +13,14 @@ import {
 } from '../../../state/PoolDataState';
 import InfoTooltip from '../../infoTooltip/infoTooltip';
 import VariableAPRBreakDownTooltip from '../popups/variableAPRBreakDownTooltip';
+import getText from '../../../localisation/getText';
+import { LocaleContext } from '../../../context/localeContext';
+
+const { ZERO } = CONSTANTS;
 
 const VariableAPRFormatter = ({ row }: any) => {
+  const { locale } = useContext(LocaleContext);
+
   const dynamicPoolData = useHookState(dynamicPoolDataState).attach(Downgraded).get();
   const staticPoolData = useHookState(staticPoolDataState).attach(Downgraded).get();
 
@@ -35,11 +39,9 @@ const VariableAPRFormatter = ({ row }: any) => {
     return (
       <div className="tf__dashboard__body__apy">
         <Typography color="default" variant="body-text">
-          Up to&nbsp;
+          {getText('upTo', locale)}&nbsp;
         </Typography>
-        <Typography color={apr > 0.2 ? 'accent' : 'default'} variant="body-text">
-          {NumberUtils.formatPercentage(apr, 2)}
-        </Typography>
+        <Typography variant="body-text">{NumberUtils.formatPercentage(apr, 2)}</Typography>
       </div>
     );
   }
@@ -51,14 +53,11 @@ const VariableAPRFormatter = ({ row }: any) => {
 
   return (
     <div className="tf__dashboard__body__apy">
-      <APYGraph apy={apr} />
-      <div className="tf__dashboard__body__apy-value">
-        <InfoTooltip content={tooltipContent}>
-          <Typography color="default" variant="body-text" className="tf__dashboard__body__apy-anchor">
-            {NumberUtils.formatPercentage(apr, 2)}
-          </Typography>
-        </InfoTooltip>
-      </div>
+      <InfoTooltip content={tooltipContent}>
+        <Typography color="default" variant="body-text" className="tf__dashboard__body__apy-anchor">
+          {NumberUtils.formatPercentage(apr, 2)}
+        </Typography>
+      </InfoTooltip>
     </div>
   );
 };
@@ -75,7 +74,7 @@ function getParentAPR(
     const chainConfig = getChainConfigForPool(key);
 
     if (
-      `${staticPoolData[key].backingToken}-${chainIdToChainName(chainConfig.chainId.toString())}` === parentId &&
+      `${staticPoolData[key].backingToken}-${chainIdToChainName(chainConfig.chainId)}` === parentId &&
       (!dynamicPoolData[key].negativeYield || dynamicPoolData[key].userBalanceUSD?.gt(ZERO))
     ) {
       parentChildrenAddresses.push(key);
