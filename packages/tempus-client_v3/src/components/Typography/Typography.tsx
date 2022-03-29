@@ -8,13 +8,13 @@ type TypographyVariant =
   | 'subtitle'
   | 'body-primary'
   | 'body-secondary'
-  | 'boyd-tertiary';
+  | 'body-tertiary';
 
 type TypographyColor = 'text-primary';
 
 type TypographyWeight = 'regular' | 'medium' | 'bold';
 
-type TypographySpacing = 'regular' | 'mono';
+type TypographyType = 'regular' | 'mono';
 
 const typographyVariantMap = new Map<TypographyVariant, CSSProperties>();
 typographyVariantMap.set('header', {
@@ -47,7 +47,7 @@ typographyVariantMap.set('body-secondary', {
   fontSize: '12px',
   lineHeight: '16px',
 });
-typographyVariantMap.set('boyd-tertiary', {
+typographyVariantMap.set('body-tertiary', {
   fontStyle: 'normal',
   fontSize: '10px',
   lineHeight: '16px',
@@ -61,20 +61,20 @@ typographyWeightMap.set('regular', 400);
 typographyWeightMap.set('medium', 500);
 typographyWeightMap.set('bold', 700);
 
-const typographySpacingMap = new Map<TypographySpacing, string>();
-typographySpacingMap.set('regular', "'DM Sans', sans-serif");
-typographySpacingMap.set('mono', "'Azeret Mono', monospace");
+const typographyTypeMap = new Map<TypographyType, string>();
+typographyTypeMap.set('regular', "'DM Sans', sans-serif");
+typographyTypeMap.set('mono', "'Azeret Mono', monospace");
 
 interface TypographyProps {
   variant: TypographyVariant;
   color?: TypographyColor;
   weight?: TypographyWeight;
-  spacing?: TypographySpacing;
+  type?: TypographyType;
   html?: string;
 }
 
 const Typography: FC<TypographyProps & React.HTMLProps<HTMLDivElement>> = props => {
-  const { variant, color, weight, spacing, html, children } = props;
+  const { variant, color, weight, type, html, children } = props;
 
   let fontColor: string | undefined;
   if (color) {
@@ -91,10 +91,10 @@ const Typography: FC<TypographyProps & React.HTMLProps<HTMLDivElement>> = props 
   }
 
   let fontFamily: string | undefined;
-  if (spacing) {
-    fontFamily = typographySpacingMap.get(spacing);
+  if (type) {
+    fontFamily = typographyTypeMap.get(type);
   } else {
-    fontFamily = typographySpacingMap.get('regular');
+    fontFamily = typographyTypeMap.get('regular');
   }
 
   return (
