@@ -4,6 +4,11 @@ import isMobile from 'is-mobile';
 import reportWebVitals from './reportWebVitals';
 import Typography from './components/Typography/Typography';
 
+// Creates CSS variables for all color constants
+import './colors';
+
+import './index.scss';
+
 const mobile = isMobile();
 
 try {
