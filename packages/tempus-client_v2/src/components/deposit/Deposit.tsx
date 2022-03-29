@@ -537,7 +537,7 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
   }, [estimatedFixedApr]);
 
   const fixedYieldAtMaturityFormatted = useMemo(() => {
-    if (!fixedPrincipalsAmount || !amount || !yieldBearingToBackingToken) {
+    if (estimatedFixedAprBelowThreshold || !fixedPrincipalsAmount || !amount || !yieldBearingToBackingToken) {
       return null;
     }
 
@@ -557,6 +557,7 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
 
     return NumberUtils.formatToCurrency(ethers.utils.formatUnits(value, tokenPrecision.backingToken), decimalsForUI);
   }, [
+    estimatedFixedAprBelowThreshold,
     fixedPrincipalsAmount,
     amount,
     yieldBearingToBackingToken,
