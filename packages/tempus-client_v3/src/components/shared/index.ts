@@ -1,6 +1,7 @@
-export * from './Color';
+import Typography from './Typography';
+import Icon from './Icon';
 
-export { default as Icon } from './Icon';
+export * from './Color';
 export * from './Icon';
 
-export { default as Typography } from './Typography';
+export { Icon, Typography };
