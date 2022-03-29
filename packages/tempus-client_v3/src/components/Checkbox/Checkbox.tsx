@@ -1,4 +1,4 @@
-import Typography from '../shared/Typography';
+import { Typography } from '../shared';
 import './checkbox.scss';
 
 interface CheckboxProps {

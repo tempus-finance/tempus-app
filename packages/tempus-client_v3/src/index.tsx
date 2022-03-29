@@ -3,10 +3,10 @@ import ReactDOM from 'react-dom';
 import isMobile from 'is-mobile';
 import reportWebVitals from './reportWebVitals';
 import Checkbox from './components/Checkbox';
-import Typography from './components/shared/Typography';
+import { Typography } from './components/shared';
 
 // Creates CSS variables for all color constants
-import './colors';
+import './components/shared/Color';
 
 import './index.scss';
 
