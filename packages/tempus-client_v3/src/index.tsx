@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import isMobile from 'is-mobile';
 import reportWebVitals from './reportWebVitals';
+import Typography from './components/Typography/Typography';
 
 // Creates CSS variables for all color constants
 import './colors';
@@ -25,7 +26,7 @@ if (mobile) {
 } else {
   ReactDOM.render(
     <React.StrictMode>
-      <div>Here the app</div>
+      <Typography variant="body-primary">Here the app</Typography>
     </React.StrictMode>,
     document.getElementById('root'),
   );
