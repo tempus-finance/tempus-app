@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 import ReactDOM from 'react-dom';
 import isMobile from 'is-mobile';
 import reportWebVitals from './reportWebVitals';
+import Checkbox from './components/Checkbox';
 import Typography from './components/Typography/Typography';
 
 // Creates CSS variables for all color constants
@@ -16,6 +17,24 @@ try {
   console.log(`Current version: ${release.releaseVersion}`);
 } catch (e) {}
 
+const CheckboxDemo = () => {
+  const [selected1, setSelected1] = useState(false);
+  const [selected2, setSelected2] = useState(false);
+  const handleChange1 = useCallback(() => {
+    setSelected1(!selected1);
+  }, [selected1]);
+  const handleChange2 = useCallback(() => {
+    setSelected2(!selected2);
+  }, [selected2]);
+
+  return (
+    <>
+      <Checkbox id="checkbox1" checked={selected1} onChange={handleChange1} />
+      <Checkbox id="checkbox2" checked={selected2} label="Label" onChange={handleChange2} />
+    </>
+  );
+};
+
 if (mobile) {
   ReactDOM.render(
     <React.StrictMode>
@@ -27,6 +46,7 @@ if (mobile) {
   ReactDOM.render(
     <React.StrictMode>
       <Typography variant="body-primary">Here the app</Typography>
+      <CheckboxDemo />
     </React.StrictMode>,
     document.getElementById('root'),
   );
