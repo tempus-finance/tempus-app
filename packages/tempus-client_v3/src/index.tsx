@@ -18,15 +18,19 @@ try {
 } catch (e) {}
 
 const CheckboxDemo = () => {
-  const [selected, setSelected] = useState(false);
-  const handleChange = useCallback(() => {
-    setSelected(!selected);
-  }, [selected]);
+  const [selected1, setSelected1] = useState(false);
+  const [selected2, setSelected2] = useState(false);
+  const handleChange1 = useCallback(() => {
+    setSelected1(!selected1);
+  }, [selected1]);
+  const handleChange2 = useCallback(() => {
+    setSelected2(!selected2);
+  }, [selected2]);
 
   return (
     <>
-      <Checkbox checked={selected} onChange={handleChange} />
-      <Checkbox checked={selected} label="Label" onChange={handleChange} />
+      <Checkbox id="checkbox1" checked={selected1} onChange={handleChange1} />
+      <Checkbox id="checkbox2" checked={selected2} label="Label" onChange={handleChange2} />
     </>
   );
 };
