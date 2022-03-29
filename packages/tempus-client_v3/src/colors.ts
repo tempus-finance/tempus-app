@@ -1,4 +1,6 @@
-export const colors = { textPrimary: '#222222', primaryMain: '#2B6E84' };
+import colorScheme from './colors.json';
+
+export const colors = colorScheme;
 
 const root = document.querySelector(':root') as HTMLElement;
 if (root) {
