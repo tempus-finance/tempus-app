@@ -659,7 +659,7 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
       amountParsed = ethers.utils.parseUnits(amount, tokenPrecision.backingToken);
     }
 
-    const variableAPRParsed = ethers.utils.parseEther(variableAPR.toString() || '1');
+    const variableAPRParsed = ethers.utils.parseEther(variableAPR.toFixed(18) || '1');
 
     const estimatedYieldForPool = mul18f(amountParsed, variableAPRParsed);
 
