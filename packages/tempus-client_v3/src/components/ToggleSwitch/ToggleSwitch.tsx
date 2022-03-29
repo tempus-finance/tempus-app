@@ -26,7 +26,8 @@ const ToggleSwitch = (props: ToggleSwitchProps & React.HTMLProps<HTMLInputElemen
         <label htmlFor={id}>
           <Typography
             variant="body-secondary"
-            className={`tc__toggle-switch__label ${checked ? 'tc__toggle-switch__label-selected' : ''}`}
+            weight={checked ? 'bold' : 'regular'}
+            className="tc__toggle-switch__label"
           >
             {label}
           </Typography>
