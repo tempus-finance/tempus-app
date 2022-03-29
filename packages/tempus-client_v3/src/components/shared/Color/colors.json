@@ -1,4 +1,9 @@
 {
   "textPrimary": "#222222",
-  "primaryMain": "#2B6E84"
+
+  "primaryMain": "#2B6E84",
+  "primaryLight": "#129CA4",
+  "primaryDark": "#3E4E6E",
+
+  "greyLight": "#BFC0C0"
 }

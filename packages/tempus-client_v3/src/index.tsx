@@ -4,9 +4,13 @@ import isMobile from 'is-mobile';
 import reportWebVitals from './reportWebVitals';
 import Checkbox from './components/Checkbox';
 import { Typography } from './components/shared';
+import ToggleSwitch from './components/ToggleSwitch';
 
 // Creates CSS variables for all color constants
 import './components/shared/Color';
+
+// Creates CSS variables for all shadow constants
+import './components/shared/Shadow';
 
 import './index.scss';
 
@@ -35,6 +39,15 @@ const CheckboxDemo = () => {
   );
 };
 
+const ToggleSwitchDemo = () => {
+  const [selected, setSelected] = useState(false);
+  const handleChange = useCallback(() => {
+    setSelected(!selected);
+  }, [selected]);
+
+  return <ToggleSwitch checked={selected} label="Label" onChange={handleChange} />;
+};
+
 if (mobile) {
   ReactDOM.render(
     <React.StrictMode>
@@ -47,6 +60,7 @@ if (mobile) {
     <React.StrictMode>
       <Typography variant="body-primary">Here the app</Typography>
       <CheckboxDemo />
+      <ToggleSwitchDemo />
     </React.StrictMode>,
     document.getElementById('root'),
   );
