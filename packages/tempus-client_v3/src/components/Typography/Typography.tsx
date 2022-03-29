@@ -1,5 +1,6 @@
 import React, { CSSProperties, FC } from 'react';
 import parse from 'html-react-parser';
+import { colors } from '../../colors';
 
 type TypographyVariant =
   | 'header'
@@ -54,7 +55,7 @@ typographyVariantMap.set('body-tertiary', {
 });
 
 const typographyColorMap = new Map<TypographyColor, string>();
-typographyColorMap.set('text-primary', '#222222');
+typographyColorMap.set('text-primary', colors.textPrimary);
 
 const typographyWeightMap = new Map<TypographyWeight, number>();
 typographyWeightMap.set('regular', 400);
