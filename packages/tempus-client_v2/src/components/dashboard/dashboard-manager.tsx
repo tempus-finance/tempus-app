@@ -85,7 +85,9 @@ const excludeNonPositiveRariPools = (
     const { protocol } = staticPoolData[poolAddress];
     if (protocol === 'rari') {
       if (rowsExcludedByDefault.rari) {
-        const { principals, yields } = dynamicPoolData[poolAddress].poolShareBalance;
+        const principals = dynamicPoolData[poolAddress].userPrincipalsBalance;
+        const yields = dynamicPoolData[poolAddress].userYieldsBalance;
+
         if ((principals && !principals.isZero()) || (yields && !yields.isZero())) {
           rowsExcludedByDefault.rari[poolAddress] = true;
         } else {
