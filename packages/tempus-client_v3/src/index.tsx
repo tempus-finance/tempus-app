@@ -3,6 +3,11 @@ import ReactDOM from 'react-dom';
 import isMobile from 'is-mobile';
 import reportWebVitals from './reportWebVitals';
 
+// Creates CSS variables for all color constants
+import './colors';
+
+import './index.scss';
+
 const mobile = isMobile();
 
 try {
