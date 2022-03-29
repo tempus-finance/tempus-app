@@ -1137,7 +1137,7 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
             }
             {tokenEstimateInProgress && <CircularProgress size={14} />}
           </SectionContainer>
-          {estimatedFixedAprBelowThreshold && (
+          {selectedYield === 'Fixed' && estimatedFixedAprBelowThreshold && (
             <div className="tf__flex-column-center-vh">
               <Spacer size={20} />
               <Button color="primary" variant="contained" onClick={() => null} disabled={true}>
