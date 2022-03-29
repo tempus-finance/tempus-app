@@ -1,14 +1,17 @@
+import { useMemo } from 'react';
 import { Typography } from '../shared';
 import './checkbox.scss';
 
 interface CheckboxProps {
-  id: string;
   checked: boolean;
   label?: string;
 }
 
+let idCounter = 0;
+
 const Checkbox = (props: CheckboxProps & React.HTMLProps<HTMLInputElement>) => {
-  const { id, checked, label, ...checkboxProps } = props;
+  const { checked, label, ...checkboxProps } = props;
+  const id = useMemo(() => checkboxProps.id ?? `checkbox-${idCounter++}`, [checkboxProps.id]);
 
   return (
     <span className="tc__checkbox">
