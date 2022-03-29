@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { IconProps } from './index';
 import withIcon from './withIcon';
 
-const CheckmarkRoundIcon: FC<IconProps> = ({ size = 16 }) => (
+const CheckmarkRound: FC<IconProps> = ({ size = 16 }) => (
   <svg width={size} height={size} viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
     <g clipPath="url(#clip0_909_5429)">
       <path
@@ -18,4 +18,4 @@ const CheckmarkRoundIcon: FC<IconProps> = ({ size = 16 }) => (
   </svg>
 );
 
-export default withIcon(CheckmarkRoundIcon);
+export default withIcon(CheckmarkRound);

@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { IconProps } from './index';
 import withIcon from './withIcon';
 
-const UpChevronIcon: FC<IconProps> = ({ size = 16 }) => (
+const UpChevron: FC<IconProps> = ({ size = 16 }) => (
   <svg width={size} height={size} viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
     <g clipPath="url(#clip0_909_5449)">
       <path
@@ -18,4 +18,4 @@ const UpChevronIcon: FC<IconProps> = ({ size = 16 }) => (
   </svg>
 );
 
-export default withIcon(UpChevronIcon);
+export default withIcon(UpChevron);

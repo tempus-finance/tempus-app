@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import isMobile from 'is-mobile';
 import reportWebVitals from './reportWebVitals';
 import Checkbox from './components/Checkbox';
-import { Typography } from './components/shared';
+import { Typography, Icon, IconType } from './components/shared';
 
 // Creates CSS variables for all color constants
 import './components/shared/Color';
@@ -35,6 +35,83 @@ const CheckboxDemo = () => {
   );
 };
 
+const IconDemo = () => {
+  const iconTypes: IconType[] = [
+    'plus-round',
+    'checkmark-round',
+    'minus-round',
+    'cross-round',
+    'up-chevron',
+    'right-chevron',
+    'left-chevron',
+    'down-chevron',
+    'up-arrow',
+    'right-arrow',
+    'left-arrow',
+    'down-arrow',
+    'up-arrow2',
+    'right-arrow2',
+    'left-arrow2',
+    'down-arrow2',
+    'list-view',
+    'grid-view',
+    'plus',
+    'minus',
+    'menu',
+    'close',
+    'info',
+    'info-bordered',
+    'info-solid',
+    'exclamation',
+    'exclamation-bordered',
+    'exclamation-neutral',
+    'exclamation-error',
+    'checkmark',
+    'checkmark-bordered',
+    'checkmark-solid',
+    'loading',
+    'external',
+    'twitter',
+    'discord',
+    'medium',
+    'github',
+    'telegram',
+    'scroll',
+    'slippage',
+    'globe',
+    'dark',
+  ];
+  return (
+    <>
+      <div style={{ background: 'rgba(0, 0, 0, 0.1)' }}>
+        {iconTypes.map(type => (
+          <Icon type={type} />
+        ))}
+      </div>
+      <div style={{ background: 'rgba(0, 0, 0, 0.1)' }}>
+        {iconTypes.map(type => (
+          <Icon type={type} size="small" />
+        ))}
+      </div>
+      <div style={{ background: 'rgba(0, 0, 0, 0.1)' }}>
+        {iconTypes.map(type => (
+          <Icon type={type} size="medium" />
+        ))}
+      </div>
+      <div style={{ background: 'rgba(0, 0, 0, 0.1)' }}>
+        {iconTypes.map(type => (
+          <Icon type={type} size="large" />
+        ))}
+      </div>
+      <div style={{ background: 'rgba(0, 0, 0, 0.1)' }}>
+        {iconTypes.map(type => (
+          <Icon type={type} size={48} />
+        ))}
+      </div>
+    </>
+  );
+};
+
 if (mobile) {
   ReactDOM.render(
     <React.StrictMode>
@@ -47,6 +124,7 @@ if (mobile) {
     <React.StrictMode>
       <Typography variant="body-primary">Here the app</Typography>
       <CheckboxDemo />
+      <IconDemo />
     </React.StrictMode>,
     document.getElementById('root'),
   );

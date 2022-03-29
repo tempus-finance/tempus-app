@@ -9,7 +9,7 @@ return <Icon type="up-chevron" />;
 ```
 or
 ```
-import UpChevronIcon from '../Icon/UpChevronIcon';
+import UpChevronIcon from '../Icon/UpChevron';
 ...
 return <UpChevronIcon />;
 ```
