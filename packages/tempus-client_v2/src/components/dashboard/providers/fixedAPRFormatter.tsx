@@ -4,6 +4,7 @@ import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { CircularProgress } from '@material-ui/core';
 import { Chain, chainIdToChainName } from 'tempus-core-services';
 import { getChainConfigForPool } from '../../../utils/getConfig';
+import { isRariVisible } from '../../../utils/isRariVisible';
 import Typography from '../../typography/Typography';
 import {
   dynamicPoolDataState,
@@ -88,6 +89,12 @@ function getParentAPR(
       `${staticPoolData[key].backingToken}-${chainIdToChainName(chainConfig.chainId)}` === parentId &&
       (!dynamicPoolData[key].negativeYield || dynamicPoolData[key].userBalanceUSD?.gt(ZERO))
     ) {
+      // If rari child row is hidden, do not include it in parent row stats
+      const { protocol } = staticPoolData[key];
+      if (protocol === 'rari' && !isRariVisible(key, dynamicPoolData)) {
+        continue;
+      }
+
       parentChildrenAddresses.push(key);
     }
   }

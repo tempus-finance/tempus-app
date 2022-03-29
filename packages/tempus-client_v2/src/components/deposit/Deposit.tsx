@@ -563,7 +563,11 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
       value = fixedPrincipalsAmount.sub(ethers.utils.parseUnits(amount, tokenPrecision.backingToken));
     }
 
-    return NumberUtils.formatToCurrency(ethers.utils.formatUnits(value, tokenPrecision.backingToken), decimalsForUI);
+    if (value.gt(ZERO)) {
+      return NumberUtils.formatToCurrency(ethers.utils.formatUnits(value, tokenPrecision.backingToken), decimalsForUI);
+    }
+
+    return null;
   }, [
     fixedPrincipalsAmount,
     amount,
@@ -666,7 +670,7 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
       amountParsed = ethers.utils.parseUnits(amount, tokenPrecision.backingToken);
     }
 
-    const variableAPRParsed = ethers.utils.parseEther(variableAPR.toString() || '1');
+    const variableAPRParsed = ethers.utils.parseEther(variableAPR.toFixed(18) || '1');
 
     const estimatedYieldForPool = mul18f(amountParsed, variableAPRParsed);
 
@@ -1147,7 +1151,7 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
             }
             {tokenEstimateInProgress && <CircularProgress size={14} />}
           </SectionContainer>
-          {estimatedFixedAprBelowThreshold && (
+          {selectedYield === 'Fixed' && estimatedFixedAprBelowThreshold && (
             <div className="tf__flex-column-center-vh">
               <Spacer size={20} />
               <Button color="primary" variant="contained" onClick={() => null} disabled={true}>

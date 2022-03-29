@@ -7,6 +7,7 @@ import { LocaleContext } from '../../../context/localeContext';
 import getText from '../../../localisation/getText';
 import Typography from '../../typography/Typography';
 import Spacer from '../../spacer/spacer';
+import { isRariVisible } from '../../../utils/isRariVisible';
 import { getChainConfigForPool } from '../../../utils/getConfig';
 import {
   dynamicPoolDataState,
@@ -196,6 +197,12 @@ function getParentMaturity(
       `${staticPoolData[key].backingToken}-${chainIdToChainName(chainConfig.chainId)}` === parentId &&
       (!dynamicPoolData[key].negativeYield || dynamicPoolData[key].userBalanceUSD?.gt(ZERO))
     ) {
+      // If rari child row is hidden, do not include it in parent row stats
+      const { protocol } = staticPoolData[key];
+      if (protocol === 'rari' && !isRariVisible(key, dynamicPoolData)) {
+        continue;
+      }
+
       parentChildrenAddresses.push(key);
     }
   }

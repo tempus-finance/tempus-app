@@ -15,6 +15,7 @@ import { UserSettingsContext } from '../../../context/userSettingsContext';
 import { WalletContext } from '../../../context/walletContext';
 import { DashboardRow, isChildRow, isParentRow } from '../../../interfaces/DashboardRow';
 import { getChainConfigForPool } from '../../../utils/getConfig';
+import { isRariVisible } from '../../../utils/isRariVisible';
 import Spacer from '../../spacer/spacer';
 import Typography from '../../typography/Typography';
 
@@ -161,6 +162,12 @@ const getParentAvailableToDepositInFiat = (
       `${staticPoolData[key].backingToken}-${chainIdToChainName(chainConfig.chainId)}` === parentId &&
       (!dynamicPoolData[key].negativeYield || dynamicPoolData[key].userBalanceUSD?.gt(ZERO))
     ) {
+      // If rari child row is hidden, do not include it in parent row stats
+      const { protocol } = staticPoolData[key];
+      if (protocol === 'rari' && !isRariVisible(key, dynamicPoolData)) {
+        continue;
+      }
+
       parentChildrenAddresses.push(key);
     }
   }
@@ -208,6 +215,12 @@ const getParentAvailableToDepositInBackingToken = (
       `${staticPoolData[key].backingToken}-${chainIdToChainName(chainConfig.chainId)}` === parentId &&
       (!dynamicPoolData[key].negativeYield || dynamicPoolData[key].userBalanceUSD?.gt(ZERO))
     ) {
+      // If rari child row is hidden, do not include it in parent row stats
+      const { protocol } = staticPoolData[key];
+      if (protocol === 'rari' && !isRariVisible(key, dynamicPoolData)) {
+        continue;
+      }
+
       parentChildrenAddresses.push(key);
     }
   }
