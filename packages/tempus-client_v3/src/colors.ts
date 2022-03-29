@@ -1,4 +1,4 @@
-export const colors = { textPrimary: '#222222' };
+export const colors = { textPrimary: '#222222', primaryMain: '#2B6E84' };
 
 const root = document.querySelector(':root') as HTMLElement;
 if (root) {
