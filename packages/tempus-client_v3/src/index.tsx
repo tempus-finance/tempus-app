@@ -2,7 +2,7 @@ import React, { useCallback, useState } from 'react';
 import ReactDOM from 'react-dom';
 import isMobile from 'is-mobile';
 import reportWebVitals from './reportWebVitals';
-import Checkbox from './components/Checkbox/Checkbox';
+import Checkbox from './components/Checkbox';
 import Typography from './components/Typography/Typography';
 
 // Creates CSS variables for all color constants
