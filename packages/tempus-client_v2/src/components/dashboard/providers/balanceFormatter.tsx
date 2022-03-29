@@ -9,6 +9,7 @@ import { DashboardRow } from '../../../interfaces/DashboardRow';
 import { Chain, chainIdToChainName } from '../../../interfaces/Chain';
 import NumberUtils from '../../../services/NumberUtils';
 import { getChainConfigForPool } from '../../../utils/getConfig';
+import { isRariVisible } from '../../../utils/isRariVisible';
 import Typography from '../../typography/Typography';
 import { tokenPrecision, ZERO } from '../../../constants';
 import Spacer from '../../spacer/spacer';
@@ -116,6 +117,12 @@ const getParentBalanceInFiat = (
       `${staticPoolData[key].backingToken}-${chainIdToChainName(chainConfig.chainId.toString())}` === parentId &&
       (!dynamicPoolData[key].negativeYield || dynamicPoolData[key].userBalanceUSD?.gt(ZERO))
     ) {
+      // If rari child row is hidden, do not include it in parent row stats
+      const { protocol } = staticPoolData[key];
+      if (protocol === 'rari' && !isRariVisible(key, dynamicPoolData)) {
+        continue;
+      }
+
       parentChildrenAddresses.push(key);
     }
   }
@@ -149,6 +156,12 @@ const getParentBalanceInBackingToken = (
       `${staticPoolData[key].backingToken}-${chainIdToChainName(chainConfig.chainId.toString())}` === parentId &&
       (!dynamicPoolData[key].negativeYield || dynamicPoolData[key].userBalanceUSD?.gt(ZERO))
     ) {
+      // If rari child row is hidden, do not include it in parent row stats
+      const { protocol } = staticPoolData[key];
+      if (protocol === 'rari' && !isRariVisible(key, dynamicPoolData)) {
+        continue;
+      }
+
       parentChildrenAddresses.push(key);
     }
   }

@@ -7,6 +7,7 @@ import { DashboardRow } from '../../../interfaces/DashboardRow';
 import { Chain, chainIdToChainName } from '../../../interfaces/Chain';
 import NumberUtils from '../../../services/NumberUtils';
 import { getChainConfigForPool } from '../../../utils/getConfig';
+import { isRariVisible } from '../../../utils/isRariVisible';
 import {
   dynamicPoolDataState,
   DynamicPoolStateData,
@@ -104,6 +105,12 @@ const getParentChildrenAddresses = (
       `${staticPoolData[key].backingToken}-${chainIdToChainName(chainConfig.chainId.toString())}` === parentId &&
       (!dynamicPoolData[key].negativeYield || dynamicPoolData[key].userBalanceUSD?.gt(ZERO))
     ) {
+      // If rari child row is hidden, do not include it in parent row stats
+      const { protocol } = staticPoolData[key];
+      if (protocol === 'rari' && !isRariVisible(key, dynamicPoolData)) {
+        continue;
+      }
+
       parentChildrenAddresses.push(key);
     }
   }
