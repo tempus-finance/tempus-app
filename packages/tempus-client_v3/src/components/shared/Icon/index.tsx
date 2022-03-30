@@ -31,7 +31,6 @@ import ExclamationError from './ExclamationError';
 import Checkmark from './Checkmark';
 import CheckmarkBordered from './CheckmarkBordered';
 import CheckmarkSolid from './CheckmarkSolid';
-import Loading from './Loading';
 import External from './External';
 import Twitter from './Twitter';
 import Discord from './Discord';
@@ -81,7 +80,6 @@ export type IconType =
   | 'checkmark'
   | 'checkmark-bordered'
   | 'checkmark-solid'
-  | 'loading'
   | 'external'
   | 'twitter'
   | 'discord'
@@ -163,8 +161,6 @@ const Icon: FC<IconProps & { type: IconType }> = props => {
       return <CheckmarkBordered {...props} />;
     case 'checkmark-solid':
       return <CheckmarkSolid {...props} />;
-    case 'loading':
-      return <Loading {...props} />;
     case 'external':
       return <External {...props} />;
     case 'twitter':
@@ -225,7 +221,6 @@ export {
   Checkmark,
   CheckmarkBordered,
   CheckmarkSolid,
-  Loading,
   External,
   Twitter,
   Discord,

@@ -69,7 +69,6 @@ const IconDemo = () => {
     'checkmark',
     'checkmark-bordered',
     'checkmark-solid',
-    'loading',
     'external',
     'twitter',
     'discord',
