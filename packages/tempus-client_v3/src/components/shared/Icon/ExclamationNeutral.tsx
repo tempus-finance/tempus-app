@@ -1,8 +1,8 @@
 import React, { FC } from 'react';
-import { IconProps } from './index';
+import { IconProps, ICON_SIZE_DEFAULT } from './index';
 import withIcon from './withIcon';
 
-const ExclamationNeutral: FC<IconProps> = ({ size = 16 }) => (
+const ExclamationNeutral: FC<IconProps> = ({ size = ICON_SIZE_DEFAULT }) => (
   <svg width={size} height={size} viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
     <circle cx="8" cy="8" r="8" fill="#F5AC37" />
     <path

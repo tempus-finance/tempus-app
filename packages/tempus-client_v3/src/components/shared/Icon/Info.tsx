@@ -1,8 +1,8 @@
 import React, { FC } from 'react';
-import { IconProps } from './index';
+import { IconProps, ICON_SIZE_DEFAULT } from './index';
 import withIcon from './withIcon';
 
-const Info: FC<IconProps> = ({ size = 16 }) => (
+const Info: FC<IconProps> = ({ size = ICON_SIZE_DEFAULT }) => (
   <svg width={size} height={size} viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path
       d="M9.9996 13.9937L9.9996 8.02806C9.9996 6.9197 9.10426 6.02119 7.9998 6.02119C6.89518 6.02119 5.99978 6.91994 6 8.02846L6.0012 13.9941C6.00142 15.0803 6.86294 15.969 7.94486 15.9992C9.07031 16.0306 9.9996 15.1236 9.9996 13.9937Z"

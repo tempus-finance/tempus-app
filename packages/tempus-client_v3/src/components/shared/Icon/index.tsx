@@ -43,6 +43,11 @@ import Slippage from './Slippage';
 import Globe from './Globe';
 import Dark from './Dark';
 
+export const ICON_SIZE_SMALL = 16;
+export const ICON_SIZE_MEDIUM = 24;
+export const ICON_SIZE_LARGE = 32;
+export const ICON_SIZE_DEFAULT = ICON_SIZE_MEDIUM;
+
 export type IconType =
   | 'plus-round'
   | 'checkmark-round'

@@ -1,19 +1,21 @@
 import React, { FC, memo } from 'react';
-import { IconProps } from './index';
+import { IconProps, ICON_SIZE_DEFAULT, ICON_SIZE_LARGE, ICON_SIZE_MEDIUM, ICON_SIZE_SMALL } from './index';
 
 const withIcon = (Component: React.ComponentType<IconProps>): FC<IconProps> =>
   memo(({ size }) => {
     let actualSize = size;
     switch (size) {
       case 'large':
-        actualSize = 32;
+        actualSize = ICON_SIZE_LARGE;
         break;
       case 'medium':
-      case undefined:
-        actualSize = 24;
+        actualSize = ICON_SIZE_MEDIUM;
         break;
       case 'small':
-        actualSize = 16;
+        actualSize = ICON_SIZE_SMALL;
+        break;
+      case undefined:
+        actualSize = ICON_SIZE_DEFAULT;
         break;
     }
     return <Component size={actualSize} />;
