@@ -1,22 +1,23 @@
-import { useMemo } from 'react';
+import { ChangeEventHandler, FC, useMemo } from 'react';
 import { Typography } from '../shared';
 import './checkbox.scss';
 
 interface CheckboxProps {
   checked: boolean;
   label?: string;
+  onChange?: ChangeEventHandler<HTMLInputElement>;
 }
 
 let idCounter = 0;
 
-const Checkbox = (props: CheckboxProps & React.HTMLProps<HTMLInputElement>) => {
-  const { checked, label, ...checkboxProps } = props;
-  const id = useMemo(() => checkboxProps.id ?? `checkbox-${idCounter++}`, [checkboxProps.id]);
+const Checkbox: FC<CheckboxProps> = props => {
+  const { checked, label, onChange } = props;
+  const id = useMemo(() => `checkbox-${idCounter++}`, []);
 
   return (
     <span className="tc__checkbox">
       <span className="tc__checkbox__box-container">
-        <input {...checkboxProps} id={id} checked={checked} type="checkbox" />
+        <input id={id} checked={checked} type="checkbox" onChange={onChange} />
         <span className={`${checked ? 'tc__checkbox__checked-box' : ''}`} aria-hidden="true"></span>
       </span>
       {label && (

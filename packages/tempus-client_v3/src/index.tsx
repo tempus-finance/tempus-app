@@ -33,7 +33,7 @@ const CheckboxDemo = () => {
 
   return (
     <>
-      <Checkbox id="checkbox1" checked={selected1} onChange={handleChange1} />
+      <Checkbox checked={selected1} onChange={handleChange1} />
       <Checkbox checked={selected2} label="Label" onChange={handleChange2} />
     </>
   );
