@@ -1,5 +1,5 @@
 import { ChangeEventHandler, FC, useMemo } from 'react';
-import { Typography } from '../shared';
+import { Typography } from '..';
 import './checkbox.scss';
 
 interface CheckboxProps {

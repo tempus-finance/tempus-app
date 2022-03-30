@@ -3,8 +3,7 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter } from 'react-router-dom';
 import isMobile from 'is-mobile';
 import reportWebVitals from './reportWebVitals';
-import Checkbox from './components/Checkbox';
-import { Button, Icon, IconType, Link, ToggleSwitch, Typography } from './components/shared';
+import { Button, Checkbox, Icon, IconType, Link, ToggleSwitch, Typography } from './components/shared';
 
 // Creates CSS variables for all color constants
 import './components/shared/Color';
