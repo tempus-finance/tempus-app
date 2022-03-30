@@ -16,6 +16,7 @@
   input[type='checkbox'] {
     width: 100%;
     height: 100%;
+    margin: 0;
     top: 0;
     left: 0;
     opacity: 0;
@@ -31,9 +32,5 @@
 }
 
 .tc__checkbox__label {
-  margin-left: 6px;
-}
-
-.tc__checkbox__label-selected {
-  font-weight: bold !important;
+  padding-left: 6px;
 }
