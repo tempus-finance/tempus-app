@@ -1,4 +1,11 @@
 {
   "textPrimary": "#222222",
-  "primaryMain": "#2B6E84"
+
+  "primaryMain": "#2B6E84",
+  "primaryLight": "#129CA4",
+  "primaryDark": "#3E4E6E",
+
+  "toggleSwitchInactiveBackground": "#BFC0C0",
+  "toggleSwitchThumbInactiveBackground": "#FFFFFF",
+  "toggleSwitchThumbInactiveBorder": "#BFC0C0"
 }
