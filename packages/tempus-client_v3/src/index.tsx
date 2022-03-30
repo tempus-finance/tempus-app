@@ -4,10 +4,13 @@ import { BrowserRouter } from 'react-router-dom';
 import isMobile from 'is-mobile';
 import reportWebVitals from './reportWebVitals';
 import Checkbox from './components/Checkbox';
-import { Typography, Icon, IconType, Link, Button } from './components/shared';
+import { Button, Icon, IconType, Link, ToggleSwitch, Typography } from './components/shared';
 
 // Creates CSS variables for all color constants
 import './components/shared/Color';
+
+// Creates CSS variables for all shadow constants
+import './components/shared/Shadow';
 
 import './index.scss';
 
@@ -34,6 +37,15 @@ const CheckboxDemo = () => {
       <Checkbox checked={selected2} label="Label" onChange={handleChange2} />
     </>
   );
+};
+
+const ToggleSwitchDemo = () => {
+  const [selected, setSelected] = useState(false);
+  const handleChange = useCallback(() => {
+    setSelected(!selected);
+  }, [selected]);
+
+  return <ToggleSwitch checked={selected} label="Label" onChange={handleChange} />;
 };
 
 const IconDemo = () => {
@@ -129,6 +141,7 @@ if (mobile) {
       <BrowserRouter>
         <Typography variant="body-primary">Here the app</Typography>
         <CheckboxDemo />
+        <ToggleSwitchDemo />
         <IconDemo />
       </BrowserRouter>
     </React.StrictMode>,
