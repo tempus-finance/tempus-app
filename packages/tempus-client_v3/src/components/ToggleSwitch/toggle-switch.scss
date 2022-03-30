@@ -41,6 +41,7 @@ $background-border-radius: $toggle-switch-height / 2;
   border-radius: 50%;
   box-sizing: border-box;
   box-shadow: var(--downStrongShadow);
+  transition: transform 300ms ease-out;
 }
 
 .tc__toggle-switch__thumb-active {
