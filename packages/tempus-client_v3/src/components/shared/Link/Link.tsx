@@ -1,17 +1,16 @@
-import React, { ForwardedRef, forwardRef, memo, ReactNode, useMemo } from 'react';
+import React, { FC, forwardRef, memo, HTMLProps, useMemo } from 'react';
 import { Link as InternalLink } from 'react-router-dom';
 
 import './link.scss';
 
-export interface LinkProps {
-  children: ReactNode;
+interface LinkProps {
   className?: string;
   title?: string;
   href?: string;
   onClick?: () => void;
 }
 
-const Link = forwardRef((props: LinkProps, ref: ForwardedRef<HTMLAnchorElement>) => {
+const Link = forwardRef<HTMLAnchorElement, LinkProps>((props, ref) => {
   const { children, className = '', title, href = '', onClick } = props;
 
   const isExternal = useMemo(() => href.includes('://') && new URL(href).origin !== window.location.origin, [href]);
@@ -35,4 +34,4 @@ const Link = forwardRef((props: LinkProps, ref: ForwardedRef<HTMLAnchorElement>)
   );
 });
 
-export default memo(Link);
+export default memo(Link as FC<LinkProps & HTMLProps<HTMLAnchorElement>>);

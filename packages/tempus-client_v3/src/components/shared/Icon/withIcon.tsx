@@ -1,5 +1,5 @@
 import React, { FC, memo } from 'react';
-import { IconProps, ICON_SIZE_DEFAULT, ICON_SIZE_LARGE, ICON_SIZE_MEDIUM, ICON_SIZE_SMALL } from './index';
+import { IconProps, ICON_SIZE_DEFAULT, ICON_SIZE_LARGE, ICON_SIZE_MEDIUM, ICON_SIZE_SMALL } from './Icon';
 
 const withIcon = (Component: React.ComponentType<IconProps>): FC<IconProps> =>
   memo(({ size }) => {
