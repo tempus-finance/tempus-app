@@ -1,5 +1,6 @@
 {
   "textPrimary": "#222222",
+  "textInverted": "#FFFFFF",
 
   "primaryMain": "#2B6E84",
   "primaryLight": "#129CA4",
@@ -11,5 +12,6 @@
   "toggleSwitchThumbInactiveBackground": "#FFFFFF",
   "toggleSwitchThumbInactiveBorder": "#BFC0C0",
 
-  "buttonDefault": "#FFFFFF"
+  "buttonDefault": "#FFFFFF",
+  "buttonBorder": "#BFC0C0"
 }

@@ -11,7 +11,7 @@ type TypographyVariant =
   | 'body-secondary'
   | 'body-tertiary';
 
-type TypographyColor = 'text-primary';
+type TypographyColor = 'text-primary' | 'text-inverted';
 
 type TypographyWeight = 'regular' | 'medium' | 'bold';
 
@@ -56,6 +56,7 @@ typographyVariantMap.set('body-tertiary', {
 
 const typographyColorMap = new Map<TypographyColor, string>();
 typographyColorMap.set('text-primary', colors.textPrimary);
+typographyColorMap.set('text-inverted', colors.textInverted);
 
 const typographyWeightMap = new Map<TypographyWeight, number>();
 typographyWeightMap.set('regular', 400);

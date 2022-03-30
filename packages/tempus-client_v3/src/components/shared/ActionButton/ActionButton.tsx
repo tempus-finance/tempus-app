@@ -1,7 +1,7 @@
 import { FC, memo } from 'react';
 import { colors } from '../Color';
 
-import './Button.scss';
+import './ActionButton.scss';
 
 type ButtonSize = 'small' | 'large';
 type ButtonColor = 'default' | 'primary' | 'secondary';

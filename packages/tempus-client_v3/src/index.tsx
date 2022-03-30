@@ -4,7 +4,7 @@ import { BrowserRouter } from 'react-router-dom';
 import isMobile from 'is-mobile';
 import reportWebVitals from './reportWebVitals';
 import Checkbox from './components/Checkbox';
-import { Button, Icon, IconType, Link, ToggleSwitch, Typography } from './components/shared';
+import { Button, Icon, IconType, Link, ToggleSwitch, Typography, ActionButton } from './components/shared';
 
 // Creates CSS variables for all color constants
 import './components/shared/Color';
@@ -111,7 +111,9 @@ const IconDemo = () => {
       </div>
       <div style={{ background: 'rgba(0, 0, 0, 0.1)' }}>
         {iconTypes.map(type => (
-          <Button>Test</Button>
+          <Button size="large" color="primary">
+            Test
+          </Button>
         ))}
       </div>
       <div style={{ background: 'rgba(0, 0, 0, 0.1)' }}>
@@ -125,6 +127,16 @@ const IconDemo = () => {
         ))}
       </div>
     </>
+  );
+};
+
+const ActionButtonDemo = () => {
+  return (
+    <ActionButton color="secondary">
+      <Typography variant="body-primary" weight="bold" color="text-inverted">
+        Execute
+      </Typography>
+    </ActionButton>
   );
 };
 
@@ -143,6 +155,7 @@ if (mobile) {
         <CheckboxDemo />
         <ToggleSwitchDemo />
         <IconDemo />
+        <ActionButtonDemo />
       </BrowserRouter>
     </React.StrictMode>,
     document.getElementById('root'),

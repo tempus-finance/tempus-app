@@ -4,9 +4,9 @@ import ToggleSwitch from './ToggleSwitch';
 import Loading from './Loading';
 import Button from './Button';
 import Link from './Link';
+import ActionButton from './ActionButton';
 
 export * from './Color';
 export * from './Icon';
-export * from './Loading';
 
-export { Button, Icon, Link, Loading, ToggleSwitch, Typography };
+export { Button, Icon, Link, Loading, ToggleSwitch, Typography, ActionButton };
