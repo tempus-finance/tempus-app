@@ -1,0 +1,31 @@
+.tc__loading {
+  fill: none;
+  stroke-width: 10px;
+  stroke-linecap: square;
+}
+
+.tc__loading__bg {
+  stroke: rgba(255, 255, 255, 0.5);
+}
+
+.tc__loading__animate {
+  transform-origin: 50px 50px 0;
+  stroke: rgba(255, 255, 255, 1);
+  stroke-dasharray: 250;
+  animation: circle-animation 4s linear infinite;
+}
+
+@keyframes circle-animation {
+  0% {
+    stroke-dashoffset: 40;
+    transform: rotate(0deg);
+  }
+  50% {
+    stroke-dashoffset: 150;
+    transform: rotate(540deg);
+  }
+  100% {
+    stroke-dashoffset: 40;
+    transform: rotate(1080deg);
+  }
+}
