@@ -11,10 +11,10 @@ import UpArrow from './UpArrow';
 import RightArrow from './RightArrow';
 import LeftArrow from './LeftArrow';
 import DownArrow from './DownArrow';
-import UpArrow2 from './UpArrow2';
-import RightArrow2 from './RightArrow2';
-import LeftArrow2 from './LeftArrow2';
-import DownArrow2 from './DownArrow2';
+import UpArrowThin from './UpArrowThin';
+import RightArrowThin from './RightArrowThin';
+import LeftArrowThin from './LeftArrowThin';
+import DownArrowThin from './DownArrowThin';
 import GridView from './GridView';
 import ListView from './ListView';
 import Plus from './Plus';
@@ -60,10 +60,10 @@ export type IconType =
   | 'right-arrow'
   | 'left-arrow'
   | 'down-arrow'
-  | 'up-arrow2'
-  | 'right-arrow2'
-  | 'left-arrow2'
-  | 'down-arrow2'
+  | 'up-arrow-thin'
+  | 'right-arrow-thin'
+  | 'left-arrow-thin'
+  | 'down-arrow-thin'
   | 'list-view'
   | 'grid-view'
   | 'plus'
@@ -121,14 +121,14 @@ const Icon: FC<IconProps & { type: IconType }> = props => {
       return <LeftArrow {...props} />;
     case 'down-arrow':
       return <DownArrow {...props} />;
-    case 'up-arrow2':
-      return <UpArrow2 {...props} />;
-    case 'right-arrow2':
-      return <RightArrow2 {...props} />;
-    case 'left-arrow2':
-      return <LeftArrow2 {...props} />;
-    case 'down-arrow2':
-      return <DownArrow2 {...props} />;
+    case 'up-arrow-thin':
+      return <UpArrowThin {...props} />;
+    case 'right-arrow-thin':
+      return <RightArrowThin {...props} />;
+    case 'left-arrow-thin':
+      return <LeftArrowThin {...props} />;
+    case 'down-arrow-thin':
+      return <DownArrowThin {...props} />;
     case 'grid-view':
       return <GridView {...props} />;
     case 'list-view':
@@ -187,48 +187,3 @@ const Icon: FC<IconProps & { type: IconType }> = props => {
 };
 
 export default memo(Icon);
-
-export {
-  PlusRound,
-  CheckmarkRound,
-  MinusRound,
-  CrossRound,
-  UpChevron,
-  RightChevron,
-  LeftChevron,
-  DownChevron,
-  UpArrow,
-  RightArrow,
-  LeftArrow,
-  DownArrow,
-  UpArrow2,
-  RightArrow2,
-  LeftArrow2,
-  DownArrow2,
-  GridView,
-  ListView,
-  Plus,
-  Minus,
-  Menu,
-  Close,
-  Info,
-  InfoBordered,
-  InfoSolid,
-  Exclamation,
-  ExclamationBordered,
-  ExclamationNeutral,
-  ExclamationError,
-  Checkmark,
-  CheckmarkBordered,
-  CheckmarkSolid,
-  External,
-  Twitter,
-  Discord,
-  Medium,
-  Github,
-  Telegram,
-  Scroll,
-  Slippage,
-  Globe,
-  Dark,
-};

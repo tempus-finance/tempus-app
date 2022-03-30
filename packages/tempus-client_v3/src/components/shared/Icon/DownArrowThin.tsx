@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { IconProps, ICON_SIZE_DEFAULT } from './index';
 import withIcon from './withIcon';
 
-const DownArrow2: FC<IconProps> = ({ size = ICON_SIZE_DEFAULT }) => (
+const DownArrowThin: FC<IconProps> = ({ size = ICON_SIZE_DEFAULT }) => (
   <svg width={size} height={size} viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path
       fillRule="evenodd"
@@ -13,4 +13,4 @@ const DownArrow2: FC<IconProps> = ({ size = ICON_SIZE_DEFAULT }) => (
   </svg>
 );
 
-export default withIcon(DownArrow2);
+export default withIcon(DownArrowThin);
