@@ -6,7 +6,7 @@ import Loading from './Loading';
 import Button from './Button';
 import Link from './Link';
 
-export * from './Color';
+export * from './Colors';
 export * from './Icon';
 export * from './Loading';
 
