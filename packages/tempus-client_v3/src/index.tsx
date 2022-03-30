@@ -99,9 +99,7 @@ const IconDemo = () => {
       </div>
       <div style={{ background: 'rgba(0, 0, 0, 0.1)' }}>
         {iconTypes.map(type => (
-          <Button title="console.log()" onClick={() => console.log('this is an icon button')}>
-            <Icon type={type} size="medium" />
-          </Button>
+          <Button>Test</Button>
         ))}
       </div>
       <div style={{ background: 'rgba(0, 0, 0, 0.1)' }}>

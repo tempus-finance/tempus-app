@@ -1,4 +1,6 @@
 {
   "textPrimary": "#222222",
-  "primaryMain": "#2B6E84"
+  "primaryMain": "#2B6E84",
+  "secondaryRegular": "#FF6B00",
+  "buttonDefault": "#FFFFFF"
 }
