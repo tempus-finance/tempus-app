@@ -5,5 +5,7 @@
   "primaryLight": "#129CA4",
   "primaryDark": "#3E4E6E",
 
-  "greyLight": "#BFC0C0"
+  "toggleSwitchInactiveBackground": "#BFC0C0",
+  "toggleSwitchThumbInactiveBackground": "#FFFFFF",
+  "toggleSwitchThumbInactiveBorder": "#BFC0C0"
 }
