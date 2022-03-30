@@ -1,9 +1,10 @@
 import React, { useCallback, useState } from 'react';
 import ReactDOM from 'react-dom';
+import { BrowserRouter } from 'react-router-dom';
 import isMobile from 'is-mobile';
 import reportWebVitals from './reportWebVitals';
 import Checkbox from './components/Checkbox';
-import { ToggleSwitch, Typography } from './components/shared';
+import { Button, Icon, IconType, Link, ToggleSwitch, Typography } from './components/shared';
 
 // Creates CSS variables for all color constants
 import './components/shared/Color';
@@ -47,6 +48,88 @@ const ToggleSwitchDemo = () => {
   return <ToggleSwitch checked={selected} label="Label" onChange={handleChange} />;
 };
 
+const IconDemo = () => {
+  const iconTypes: IconType[] = [
+    'plus-round',
+    'checkmark-round',
+    'minus-round',
+    'cross-round',
+    'up-chevron',
+    'right-chevron',
+    'left-chevron',
+    'down-chevron',
+    'up-arrow',
+    'right-arrow',
+    'left-arrow',
+    'down-arrow',
+    'up-arrow-thin',
+    'right-arrow-thin',
+    'left-arrow-thin',
+    'down-arrow-thin',
+    'list-view',
+    'grid-view',
+    'plus',
+    'minus',
+    'menu',
+    'close',
+    'info',
+    'info-bordered',
+    'info-solid',
+    'exclamation',
+    'exclamation-bordered',
+    'exclamation-neutral',
+    'exclamation-error',
+    'checkmark',
+    'checkmark-bordered',
+    'checkmark-solid',
+    'external',
+    'twitter',
+    'discord',
+    'medium',
+    'github',
+    'telegram',
+    'scroll',
+    'slippage',
+    'globe',
+    'dark',
+  ];
+  return (
+    <>
+      <div style={{ background: 'rgba(0, 0, 0, 0.1)' }}>
+        {iconTypes.map(type => (
+          <Link href="https://app.tempus.finance/" title="go to app">
+            <Icon type={type} />
+          </Link>
+        ))}
+      </div>
+      <div style={{ background: 'rgba(0, 0, 0, 0.1)' }}>
+        {iconTypes.map(type => (
+          <Link href="abcd" title="stay">
+            <Icon type={type} size="small" />
+          </Link>
+        ))}
+      </div>
+      <div style={{ background: 'rgba(0, 0, 0, 0.1)' }}>
+        {iconTypes.map(type => (
+          <Button title="console.log()" onClick={() => console.log('this is an icon button')}>
+            <Icon type={type} size="medium" />
+          </Button>
+        ))}
+      </div>
+      <div style={{ background: 'rgba(0, 0, 0, 0.1)' }}>
+        {iconTypes.map(type => (
+          <Icon type={type} size="large" />
+        ))}
+      </div>
+      <div style={{ background: 'rgba(0, 0, 0, 0.1)' }}>
+        {iconTypes.map(type => (
+          <Icon type={type} size={48} />
+        ))}
+      </div>
+    </>
+  );
+};
+
 if (mobile) {
   ReactDOM.render(
     <React.StrictMode>
@@ -57,9 +140,12 @@ if (mobile) {
 } else {
   ReactDOM.render(
     <React.StrictMode>
-      <Typography variant="body-primary">Here the app</Typography>
-      <CheckboxDemo />
-      <ToggleSwitchDemo />
+      <BrowserRouter>
+        <Typography variant="body-primary">Here the app</Typography>
+        <CheckboxDemo />
+        <ToggleSwitchDemo />
+        <IconDemo />
+      </BrowserRouter>
     </React.StrictMode>,
     document.getElementById('root'),
   );
