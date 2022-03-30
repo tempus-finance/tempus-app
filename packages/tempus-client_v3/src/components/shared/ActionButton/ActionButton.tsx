@@ -29,7 +29,7 @@ const Button: FC<ButtonProps> = props => {
 
   return (
     <button
-      className="tc__button"
+      className="tc__actionButton"
       disabled={disabled}
       onClick={onClick}
       style={{

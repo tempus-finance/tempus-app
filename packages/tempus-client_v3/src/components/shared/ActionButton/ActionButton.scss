@@ -1,4 +1,6 @@
-.tc__button {
+.tc__actionButton {
+  display: flex;
+  align-items: center;
   padding: 8px;
   border-radius: 4px;
   box-shadow: var(--downWeakShadow);
