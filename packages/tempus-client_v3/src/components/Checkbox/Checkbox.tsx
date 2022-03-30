@@ -21,11 +21,8 @@ const Checkbox: FC<CheckboxProps> = props => {
         <span className={`${checked ? 'tc__checkbox__checked-box' : ''}`} aria-hidden="true"></span>
       </span>
       {label && (
-        <label htmlFor={id}>
-          <Typography
-            variant="body-secondary"
-            className={`tc__checkbox__label ${checked ? 'tc__checkbox__label-selected' : ''}`}
-          >
+        <label htmlFor={id} className="tc__checkbox__label">
+          <Typography variant="body-secondary" weight={checked ? 'bold' : 'regular'}>
             {label}
           </Typography>
         </label>
