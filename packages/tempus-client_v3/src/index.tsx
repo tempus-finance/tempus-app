@@ -1,9 +1,10 @@
 import React, { useCallback, useState } from 'react';
 import ReactDOM from 'react-dom';
+import { BrowserRouter } from 'react-router-dom';
 import isMobile from 'is-mobile';
 import reportWebVitals from './reportWebVitals';
 import Checkbox from './components/Checkbox';
-import { Typography, Icon, IconType } from './components/shared';
+import { Typography, Icon, IconType, Link, Button } from './components/shared';
 
 // Creates CSS variables for all color constants
 import './components/shared/Color';
@@ -84,17 +85,23 @@ const IconDemo = () => {
     <>
       <div style={{ background: 'rgba(0, 0, 0, 0.1)' }}>
         {iconTypes.map(type => (
-          <Icon type={type} />
+          <Link href="https://app.tempus.finance/" title="go to app">
+            <Icon type={type} />
+          </Link>
         ))}
       </div>
       <div style={{ background: 'rgba(0, 0, 0, 0.1)' }}>
         {iconTypes.map(type => (
-          <Icon type={type} size="small" />
+          <Link href="abcd" title="stay">
+            <Icon type={type} size="small" />
+          </Link>
         ))}
       </div>
       <div style={{ background: 'rgba(0, 0, 0, 0.1)' }}>
         {iconTypes.map(type => (
-          <Icon type={type} size="medium" />
+          <Button title="console.log()" onClick={() => console.log('this is an icon button')}>
+            <Icon type={type} size="medium" />
+          </Button>
         ))}
       </div>
       <div style={{ background: 'rgba(0, 0, 0, 0.1)' }}>
@@ -121,9 +128,11 @@ if (mobile) {
 } else {
   ReactDOM.render(
     <React.StrictMode>
-      <Typography variant="body-primary">Here the app</Typography>
-      <CheckboxDemo />
-      <IconDemo />
+      <BrowserRouter>
+        <Typography variant="body-primary">Here the app</Typography>
+        <CheckboxDemo />
+        <IconDemo />
+      </BrowserRouter>
     </React.StrictMode>,
     document.getElementById('root'),
   );
