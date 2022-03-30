@@ -24,12 +24,8 @@ const ToggleSwitch: FC<ToggleSwitchProps> = props => {
         ></span>
       </span>
       {label && (
-        <label htmlFor={id}>
-          <Typography
-            variant="body-secondary"
-            weight={checked ? 'bold' : 'regular'}
-            className="tc__toggle-switch__label"
-          >
+        <label htmlFor={id} className="tc__toggle-switch__label">
+          <Typography variant="body-secondary" weight={checked ? 'bold' : 'regular'}>
             {label}
           </Typography>
         </label>
