@@ -3,8 +3,7 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter } from 'react-router-dom';
 import isMobile from 'is-mobile';
 import reportWebVitals from './reportWebVitals';
-import Checkbox from './components/Checkbox';
-import { Button, Icon, IconType, Link, ToggleSwitch, Typography, ActionButton } from './components/shared';
+import { Button, Checkbox, Icon, IconType, Link, ToggleSwitch, Typography, ActionButton } from './components/shared';
 
 // Creates CSS variables for all color constants
 import './components/shared/Color';
@@ -33,7 +32,7 @@ const CheckboxDemo = () => {
 
   return (
     <>
-      <Checkbox id="checkbox1" checked={selected1} onChange={handleChange1} />
+      <Checkbox checked={selected1} onChange={handleChange1} />
       <Checkbox checked={selected2} label="Label" onChange={handleChange2} />
     </>
   );
