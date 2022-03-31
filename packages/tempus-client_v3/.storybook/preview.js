@@ -1,5 +1,5 @@
 // Creates CSS variables for Storybook environment
-import './../src/components/shared/Color';
+import './../src/components/shared/Colors';
 import './../src/components/shared/Shadow';
 
 export const parameters = {
