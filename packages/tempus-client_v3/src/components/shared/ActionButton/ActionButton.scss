@@ -1,21 +1,21 @@
-// Base
+// == Base style ==
+
 .tc__actionButton {
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 8px;
   border-radius: 4px;
-  box-shadow: var(--downWeakShadow);
   box-sizing: border-box;
   mix-blend-mode: normal;
 }
 
-.tc__actionButton-status-content-large {
+.tc__actionButton-status-large-content {
   min-width: 20px;
   margin-right: 8px;
 }
 
-.tc__actionButton-status-content-small {
+.tc__actionButton-status-small-content {
   min-width: 12px;
   margin-right: 8px;
 }
@@ -27,93 +27,164 @@
   width: 100%;
 }
 
-// Border
-.tc__actionButton-border-primary-small,
+// == Border ==
+
+// -- Primary Large
 .tc__actionButton-border-primary-large,
-.tc__actionButton-border-tertiary-small,
-.tc__actionButton-border-tertiary-large,
-.tc__actionButton-border-primary-small-disabled,
 .tc__actionButton-border-primary-large-disabled,
-.tc__actionButton-border-tertiary-small-disabled,
-.tc__actionButton-border-tertiary-large-disabled {
+.tc__actionButton-border-primary-large-loading {
   border: none;
 }
-
-.tc__actionButton-border-secondary-large,
-.tc__actionButton-border-secondary-small,
-.tc__actionButton-border-secondary-large-loading,
-.tc__actionButton-border-secondary-small-loading {
-  border: 1px solid var(--buttonBorder);
+.tc__actionButton-border-primary-large-success {
+  border: 1px solid rgba(var(--buttonBorderSuccessRGB), 0.6);
 }
 
-.tc__actionButton-border-primary-small-success,
-.tc__actionButton-border-secondary-small-success,
-.tc__actionButton-border-tertiary-small-success {
+// -- Primary Small
+.tc__actionButton-border-primary-small,
+.tc__actionButton-border-primary-small-disabled,
+.tc__actionButton-border-primary-small-loading {
+  border: none;
+}
+.tc__actionButton-border-primary-small-success {
   border: 1px solid var(--buttonBorderSuccess);
 }
 
-.tc__actionButton-border-primary-large-success,
-.tc__actionButton-border-secondary-large-success,
+// -- Secondary Large
+.tc__actionButton-border-secondary-large,
+.tc__actionButton-border-secondary-large-loading {
+  border: 1px solid var(--buttonBorder);
+}
+.tc__actionButton-border-secondary-large-disabled {
+  border: 1px solid var(--buttonDisabled);
+}
+.tc__actionButton-border-secondary-large-success {
+  border: 1px solid rgba(var(--buttonBorderSuccessRGB), 0.6);
+}
+
+// -- Secondary Small
+.tc__actionButton-border-secondary-small,
+.tc__actionButton-border-secondary-small-loading {
+  border: 1px solid var(--buttonBorder);
+}
+.tc__actionButton-border-secondary-small-disabled {
+  border: 1px solid var(--buttonDisabled);
+}
+.tc__actionButton-border-secondary-small-success {
+  border: 1px solid var(--buttonBorderSuccess);
+}
+
+// -- Tertiary Large
+.tc__actionButton-border-tertiary-large,
+.tc__actionButton-border-tertiary-large-disabled,
+.tc__actionButton-border-tertiary-large-loading {
+  border: none;
+}
 .tc__actionButton-border-tertiary-large-success {
   border: 1px solid rgba(var(--buttonBorderSuccessRGB), 0.6);
 }
 
-.tc__actionButton-border-secondary-small-disabled,
-.tc__actionButton-border-secondary-large-disabled {
-  border: 1px solid var(--buttonDisabled);
+// -- Tertiary Small
+.tc__actionButton-border-tertiary-small,
+.tc__actionButton-border-tertiary-small-disabled,
+.tc__actionButton-border-tertiary-small-loading {
+  border: none;
+}
+.tc__actionButton-border-tertiary-small-success {
+  border: 1px solid var(--buttonBorderSuccess);
 }
 
-.tc__actionButton-border-secondary-loading {
-  border: 1px solid var(--buttonSecondaryLoading);
-}
+// == Background Color ==
 
-// Background color
+// -- Primary Large
 .tc__actionButton-background-primary-large {
   background: var(--secondaryRegular);
 }
-
-.tc__actionButton-background-secondary-large,
-.tc__actionButton-background-secondary-small {
-  background: var(--buttonDefault);
+.tc__actionButton-background-primary-large-disabled {
+  background: var(--buttonDisabled);
+}
+.tc__actionButton-background-primary-large-loading {
+  background: rgba(var(--secondaryRegularRGB), 0.6);
+}
+.tc__actionButton-background-primary-large-success {
+  background: rgba(var(--buttonSuccessRGB), 0.6);
 }
 
-.tc__actionButton-background-secondary-large-disabled,
-.tc__actionButton-background-secondary-small-disabled {
-  background: var(--buttonSecondaryDisabled);
-}
-
-.tc__actionButton-background-tertiary-small {
-  background: var(--buttonTertiaryDefault);
-}
-
+// -- Primary Small
 .tc__actionButton-background-primary-small {
   background: var(--primaryMain);
 }
-
-.tc__actionButton-background-primary-large-disabled,
 .tc__actionButton-background-primary-small-disabled {
   background: var(--buttonDisabled);
 }
-
-.tc__actionButton-background-tertiary-large-success,
+.tc__actionButton-background-primary-small-loading {
+  background: var(--primaryLight);
+}
 .tc__actionButton-background-primary-small-success {
   background: var(--buttonSuccess);
 }
 
-.tc__actionButton-background-primary-large-success,
+// -- Secondary Large
+.tc__actionButton-background-secondary-large {
+  background: var(--buttonDefault);
+}
+.tc__actionButton-background-secondary-large-disabled {
+  background: var(--buttonSecondaryDisabled);
+}
+.tc__actionButton-background-secondary-large-loading {
+  background: var(--buttonSecondaryLoading);
+}
 .tc__actionButton-background-secondary-large-success {
   background: rgba(var(--buttonSuccessRGB), 0.6);
 }
 
-.tc__actionButton-background-primary-large-loading {
-  background: rgba(var(--secondaryRegularRGB), 0.6);
+// -- Secondary Small
+.tc__actionButton-background-secondary-small {
+  background: var(--buttonDefault);
+}
+.tc__actionButton-background-secondary-small-disabled {
+  background: var(--buttonSecondaryDisabled);
+}
+.tc__actionButton-background-secondary-small-loading {
+  background: var(--buttonSecondaryLoading);
+}
+.tc__actionButton-background-secondary-small-success {
+  background: var(--buttonSuccess);
 }
 
-.tc__actionButton-background-primary-small-loading {
-  background: var(--primaryLight);
+// -- Tertiary Large
+.tc__actionButton-background-tertiary-large,
+.tc__actionButton-background-tertiary-large-disabled,
+.tc__actionButton-background-tertiary-large-loading {
+  background: var(--buttonTertiaryDefault);
+}
+.tc__actionButton-background-tertiary-large-success {
+  background: var(--buttonSuccess);
 }
 
-// Hover shadow+color+pointer
+// -- Tertiary Small
+.tc__actionButton-background-tertiary-small,
+.tc__actionButton-background-tertiary-small-disabled,
+.tc__actionButton-background-tertiary-small-loading {
+  background: var(--buttonTertiaryDefault);
+}
+.tc__actionButton-background-tertiary-small-success {
+  background: var(--buttonSuccess);
+}
+
+// == Shadow ==
+.tc__actionButton-shadow-default {
+  box-shadow: var(--downWeakShadow);
+}
+
+.tc__actionButton-shadow-disabled,
+.tc__actionButton-shadow-loading,
+.tc__actionButton-shadow-success {
+  box-shadow: none;
+}
+
+// == Hover ==
+
+// -- Primary Large
 .tc__actionButton-hover-primary-large {
   &:hover {
     background: var(--secondaryLight);
@@ -122,6 +193,7 @@
   }
 }
 
+// -- Primary Small
 .tc__actionButton-hover-primary-small {
   &:hover {
     background: var(--primaryLight);
@@ -130,6 +202,7 @@
   }
 }
 
+// -- Secondary Large/Small
 .tc__actionButton-hover-secondary-large,
 .tc__actionButton-hover-secondary-small {
   &:hover {
@@ -139,6 +212,7 @@
   }
 }
 
+// Tertiary Large/Small
 .tc__actionButton-hover-tertiary-large,
 .tc__actionButton-hover-tertiary-small {
   &:hover {

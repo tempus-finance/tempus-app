@@ -29,52 +29,39 @@ buttonSizeMap.set('large', '40px');
 
 interface ButtonProps {
   labels: ButtonLabels;
+  onClick: () => void;
   variant?: ButtonVariant;
   state?: ButtonState;
   size?: ButtonSize;
   fullWidth?: boolean;
-  onClick?: () => void;
 }
 
 const Button: FC<ButtonProps> = props => {
   const { labels, variant = 'primary', size = 'small', state = 'default', fullWidth = false, onClick } = props;
 
-  // Border CSS class
+  // Compute CSS class names
   let borderClass = `tc__actionButton-border-${variant}-${size}`;
-  switch (state) {
-    case 'disabled':
-      borderClass += '-disabled';
-      break;
-    case 'success':
-      borderClass += '-success';
-      break;
-  }
-
-  // Background CSS class
   let backgroundClass = `tc__actionButton-background-${variant}-${size}`;
-  switch (state) {
-    case 'disabled':
-      backgroundClass += '-disabled';
-      break;
-    case 'loading':
-      backgroundClass += '-loading';
-      break;
-    case 'success':
-      backgroundClass += '-success';
-      break;
-  }
-
-  // Hover CSS class
+  let shadowClass = `tc__actionButton-shadow-${state}`;
   let hoverClass = `tc__actionButton-hover-${variant}-${size}`;
   switch (state) {
     case 'disabled':
+      borderClass += '-disabled';
+      backgroundClass += '-disabled';
       hoverClass += '-disabled';
+      shadowClass += '-disabled';
       break;
     case 'loading':
+      borderClass += '-loading';
+      backgroundClass += '-loading';
       hoverClass += '-loading';
+      shadowClass += '-loading';
       break;
     case 'success':
+      borderClass += '-success';
+      backgroundClass += '-success';
       hoverClass += '-success';
+      shadowClass += '-success';
       break;
   }
 
@@ -124,7 +111,7 @@ const Button: FC<ButtonProps> = props => {
 
   return (
     <button
-      className={`tc__actionButton ${borderClass} ${backgroundClass} ${hoverClass}`}
+      className={`tc__actionButton ${borderClass} ${backgroundClass} ${hoverClass} ${shadowClass}`}
       disabled={state === 'disabled'}
       onClick={onClick}
       style={{
@@ -133,12 +120,12 @@ const Button: FC<ButtonProps> = props => {
       }}
     >
       {state === 'loading' && (
-        <div className={`tc__actionButton-status-content-${size}`}>
+        <div className={`tc__actionButton-status-${size}-content`}>
           <Loading size={size === 'small' ? 12 : 20} color={loaderColor} />
         </div>
       )}
       {state === 'success' && (
-        <div className={`tc__actionButton-status-content-${size}`}>
+        <div className={`tc__actionButton-status-${size}-content`}>
           <CheckmarkSolid size={size === 'small' ? 12 : 20} />
         </div>
       )}
