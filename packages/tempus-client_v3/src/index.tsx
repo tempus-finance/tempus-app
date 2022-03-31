@@ -3,8 +3,7 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter } from 'react-router-dom';
 import isMobile from 'is-mobile';
 import reportWebVitals from './reportWebVitals';
-import Checkbox from './components/Checkbox';
-import { Button, Icon, IconType, Link, ToggleSwitch, Typography, ActionButton } from './components/shared';
+import { Checkbox, Button, Icon, IconType, Link, ToggleSwitch, Typography, ActionButton } from './components/shared';
 
 // Creates CSS variables for all color constants
 import './components/shared/Color';
@@ -33,7 +32,7 @@ const CheckboxDemo = () => {
 
   return (
     <>
-      <Checkbox id="checkbox1" checked={selected1} onChange={handleChange1} />
+      <Checkbox checked={selected1} onChange={handleChange1} />
       <Checkbox checked={selected2} label="Label" onChange={handleChange2} />
     </>
   );
@@ -48,6 +47,7 @@ const ToggleSwitchDemo = () => {
   return <ToggleSwitch checked={selected} label="Label" onChange={handleChange} />;
 };
 
+<<<<<<< HEAD
 const IconDemo = () => {
   const iconTypes: IconType[] = [
     'plus-round',
@@ -140,6 +140,8 @@ const ActionButtonDemo = () => {
   );
 };
 
+=======
+>>>>>>> release-3.0
 if (mobile) {
   ReactDOM.render(
     <React.StrictMode>
@@ -154,8 +156,11 @@ if (mobile) {
         <Typography variant="body-primary">Here the app</Typography>
         <CheckboxDemo />
         <ToggleSwitchDemo />
+<<<<<<< HEAD
         <IconDemo />
         <ActionButtonDemo />
+=======
+>>>>>>> release-3.0
       </BrowserRouter>
     </React.StrictMode>,
     document.getElementById('root'),

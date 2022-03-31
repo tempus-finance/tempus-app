@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { IconProps, ICON_SIZE_DEFAULT } from './index';
+import { IconProps, ICON_SIZE_DEFAULT } from './Icon';
 import withIcon from './withIcon';
 
 const CheckmarkRound: FC<IconProps> = ({ size = ICON_SIZE_DEFAULT }) => (

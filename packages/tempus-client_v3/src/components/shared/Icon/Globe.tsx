@@ -1,8 +1,8 @@
 import React, { FC } from 'react';
-import { IconProps } from './index';
+import { IconProps, ICON_SIZE_DEFAULT } from './Icon';
 import withIcon from './withIcon';
 
-const Globe: FC<IconProps> = ({ size = 16 }) => (
+const Globe: FC<IconProps> = ({ size = ICON_SIZE_DEFAULT }) => (
   <svg width={size} height={size} viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path
       fillRule="evenodd"

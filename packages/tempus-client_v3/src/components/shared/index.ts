@@ -1,3 +1,4 @@
+import Checkbox from './Checkbox';
 import Typography from './Typography';
 import Icon from './Icon';
 import ToggleSwitch from './ToggleSwitch';
@@ -9,4 +10,4 @@ import ActionButton from './ActionButton';
 export * from './Color';
 export * from './Icon';
 
-export { Button, Icon, Link, Loading, ToggleSwitch, Typography, ActionButton };
+export { Checkbox, Button, Icon, Link, Loading, ToggleSwitch, Typography, ActionButton };
