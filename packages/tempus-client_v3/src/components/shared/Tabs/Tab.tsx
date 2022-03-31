@@ -1,4 +1,4 @@
-import { FC, memo, useContext, useMemo } from 'react';
+import { FC, memo, useCallback, useContext, useMemo } from 'react';
 import Button from '../Button';
 import Link from '../Link';
 import Typography, { TypographyColor, TypographyVariant, TypographyWeight } from '../Typography';
@@ -40,6 +40,8 @@ const Tab: FC<TabProps> = props => {
   const { size, selectedValue, onChange } = useContext(TabsContext);
   const isSelected = selectedValue === href || selectedValue === value;
   const tabStyle = tabStyleMap.get(size);
+
+  const handleClick = useCallback(() => onChange?.(value), [onChange, value]);
   const labelComponent = useMemo(
     () =>
       tabStyle && (
@@ -63,7 +65,7 @@ const Tab: FC<TabProps> = props => {
       {labelComponent}
     </Link>
   ) : (
-    <Button className="tc__tabs__tab" onClick={() => onChange && onChange(value)}>
+    <Button className="tc__tabs__tab" onClick={handleClick}>
       {labelComponent}
     </Button>
   );
