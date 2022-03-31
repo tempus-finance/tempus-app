@@ -1,4 +1,4 @@
-import { Meta, Story } from '@storybook/react';
+import { Story } from '@storybook/react';
 import { PropsWithChildren, useCallback, useEffect, useState } from 'react';
 import { BrowserRouter, Route, Routes, useNavigate } from 'react-router-dom';
 import Tab from './Tab';
