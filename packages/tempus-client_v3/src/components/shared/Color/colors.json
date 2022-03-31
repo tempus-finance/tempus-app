@@ -1,17 +1,31 @@
 {
   "textPrimary": "#222222",
   "textInverted": "#FFFFFF",
+  "textSuccess": "#4BB543",
+  "textDisabled": "#7A7A7A",
+  "textDisabledSecondary": "#BFC0C0",
 
   "primaryMain": "#2B6E84",
   "primaryLight": "#129CA4",
   "primaryDark": "#3E4E6E",
 
   "secondaryRegular": "#FF6B00",
+  "secondaryRegularRGB": "255, 107, 0",
+  "secondaryLight": "#FF842C",
 
   "toggleSwitchInactiveBackground": "#BFC0C0",
   "toggleSwitchThumbInactiveBackground": "#FFFFFF",
   "toggleSwitchThumbInactiveBorder": "#BFC0C0",
 
   "buttonDefault": "#FFFFFF",
-  "buttonBorder": "#BFC0C0"
+  "buttonBorder": "#BFC0C0",
+  "buttonSuccess": "#CEF2DA",
+  "buttonSuccessRGB": "206, 242, 218",
+  "buttonBorderSuccess": "#4BB543",
+  "buttonBorderSuccessRGB": "75, 181, 67",
+  "buttonDisabled": "#7A7A7A",
+  "buttonSecondaryHighlight": "#F3F7F9",
+  "buttonSecondaryLoading": "#F3F7F9",
+  "buttonSecondaryDisabled": "#BFC0C0",
+  "buttonTertiaryDefault": "#F3F7F9"
 }
