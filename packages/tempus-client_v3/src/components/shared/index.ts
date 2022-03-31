@@ -9,5 +9,6 @@ import Link from './Link';
 export * from './Colors';
 export * from './Icon';
 export * from './Loading';
+export * from './Tabs';
 
 export { Button, Checkbox, Icon, Link, Loading, ToggleSwitch, Typography };
