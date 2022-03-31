@@ -1,4 +1,4 @@
-import { FC, memo, useContext } from 'react';
+import { FC, memo, useContext, useMemo } from 'react';
 import Button from '../Button';
 import Link from '../Link';
 import Typography, { TypographyColor, TypographyVariant, TypographyWeight } from '../Typography';
@@ -40,20 +40,31 @@ const Tab: FC<TabProps> = props => {
   const { size, selectedValue, onChange } = useContext(TabsContext);
   const isSelected = selectedValue === href || selectedValue === value;
   const tabStyle = tabStyleMap.get(size);
+  const labelComponent = useMemo(
+    () =>
+      tabStyle && (
+        <Typography
+          variant={tabStyle.variant}
+          color={isSelected ? tabStyle.textColorSelected : tabStyle.textColor}
+          weight={isSelected ? tabStyle.fontWeightSelected : tabStyle.fontWeight}
+        >
+          {label}
+        </Typography>
+      ),
+    [isSelected, label, tabStyle],
+  );
 
   if (!tabStyle || (!value && !href)) {
     return null;
   }
 
-  return (
+  return props.href ? (
+    <Link className="tc__tabs__tab" href={props.href}>
+      {labelComponent}
+    </Link>
+  ) : (
     <Button className="tc__tabs__tab" onClick={() => onChange && onChange(value)}>
-      <Typography
-        variant={tabStyle.variant}
-        color={isSelected ? tabStyle.textColorSelected : tabStyle.textColor}
-        weight={isSelected ? tabStyle.fontWeightSelected : tabStyle.fontWeight}
-      >
-        {href ? <Link href={href}>{label}</Link> : label}
-      </Typography>
+      {labelComponent}
     </Button>
   );
 };
