@@ -13,8 +13,7 @@ const style = {
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  padding: '3px',
-  width: '50%',
+  padding: '10px',
 };
 
 const Template = args => (
