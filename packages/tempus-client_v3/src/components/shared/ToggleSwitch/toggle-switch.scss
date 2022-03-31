@@ -5,7 +5,7 @@ $toggle-switch-padding: 2px;
 $thumb-size: $toggle-switch-height + 2 * $toggle-switch-padding;
 $thumb-active-state-x-translation: $toggle-switch-width - $thumb-size;
 
-$background-border-radius: $toggle-switch-height / 2;
+$background-border-radius: calc($toggle-switch-height / 2);
 
 .tc__toggle-switch {
   display: flex;

@@ -12,8 +12,7 @@ const style = {
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'space-evenly',
-  padding: '3px',
-  width: '50%',
+  padding: '10px',
 };
 
 const Template = args => (

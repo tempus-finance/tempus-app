@@ -7,7 +7,7 @@ import Button from './Button';
 import Link from './Link';
 import ActionButton from './ActionButton';
 
-export * from './Color';
+export * from './Colors';
 export * from './Icon';
 
 export { Checkbox, Button, Icon, Link, Loading, ToggleSwitch, Typography, ActionButton };

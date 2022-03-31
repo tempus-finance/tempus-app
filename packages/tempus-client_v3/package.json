@@ -103,6 +103,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
+    "test:update": "react-scripts test -u",
     "ci:test": "CI=true react-scripts test",
     "eject": "react-scripts eject",
     "deploy-stage": "firebase deploy --only hosting:tempus-app-stage --token $FIREBASE_TOKEN",
