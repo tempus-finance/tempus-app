@@ -6,7 +6,7 @@ import reportWebVitals from './reportWebVitals';
 import { Checkbox, ToggleSwitch, Typography } from './components/shared';
 
 // Creates CSS variables for all color constants
-import './components/shared/Color';
+import './components/shared/Colors';
 
 // Creates CSS variables for all shadow constants
 import './components/shared/Shadow';
