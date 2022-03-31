@@ -20,6 +20,7 @@ const Template = args => (
     <Icon {...args} size="small" />
     <Icon {...args} size="medium" />
     <Icon {...args} size="large" />
+    <Icon {...args} size={48} />
   </div>
 );
 
