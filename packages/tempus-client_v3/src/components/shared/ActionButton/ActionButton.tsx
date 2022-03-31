@@ -1,10 +1,9 @@
 import { FC, memo } from 'react';
+import Button from '../Button';
+import Icon from '../Icon';
 import { colors } from '../Color';
-import CheckmarkSolid from '../Icon/CheckmarkSolid';
-import Loading from '../Loading';
-import { LoadingColor } from '../Loading/Loading';
-import Typography from '../Typography';
-import { TypographyColor, TypographyWeight } from '../Typography/Typography';
+import Loading, { LoadingColor } from '../Loading';
+import Typography, { TypographyColor, TypographyWeight } from '../Typography';
 
 import './ActionButton.scss';
 
@@ -36,7 +35,7 @@ interface ButtonProps {
   fullWidth?: boolean;
 }
 
-const Button: FC<ButtonProps> = props => {
+const ActionButton: FC<ButtonProps> = props => {
   const { labels, variant = 'primary', size = 'small', state = 'default', fullWidth = false, onClick } = props;
 
   // Compute CSS class names
@@ -110,7 +109,7 @@ const Button: FC<ButtonProps> = props => {
   }
 
   return (
-    <button
+    <Button
       className={`tc__actionButton ${borderClass} ${backgroundClass} ${hoverClass} ${shadowClass}`}
       disabled={state === 'disabled'}
       onClick={onClick}
@@ -126,7 +125,7 @@ const Button: FC<ButtonProps> = props => {
       )}
       {state === 'success' && (
         <div className={`tc__actionButton-status-${size}-content`}>
-          <CheckmarkSolid size={size === 'small' ? 12 : 20} />
+          <Icon type="checkmark-solid" size={size === 'small' ? 12 : 20} />
         </div>
       )}
       <div className="tc__actionButton-status-label">
@@ -141,8 +140,8 @@ const Button: FC<ButtonProps> = props => {
           {state === 'success' && labels.success}
         </Typography>
       </div>
-    </button>
+    </Button>
   );
 };
 
-export default memo(Button);
+export default memo(ActionButton);
