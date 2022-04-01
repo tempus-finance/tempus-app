@@ -5,7 +5,7 @@ import Typography, { TypographyColor, TypographyVariant, TypographyWeight } from
 import { TabsSize } from './Tabs';
 import { TabsContext } from './tabsContext';
 
-interface TabProps {
+export interface TabProps {
   label: string;
   value?: any;
   href?: string;

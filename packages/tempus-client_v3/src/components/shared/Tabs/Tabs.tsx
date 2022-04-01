@@ -1,7 +1,8 @@
-import { Children, FC, isValidElement, memo, PropsWithChildren } from 'react';
+import { Children, memo, ReactElement } from 'react';
+import { useLocation } from 'react-router-dom';
+import { TabProps } from './Tab';
 import { TabsContext } from './tabsContext';
 import './tabs.scss';
-import { useLocation } from 'react-router-dom';
 
 export type TabsSize = 'small' | 'large';
 
@@ -9,24 +10,18 @@ interface TabsProps {
   size: TabsSize;
   value?: any;
   onChange?: (value: any) => void;
+  children?: ReactElement<TabProps> | ReactElement<TabProps>[];
 }
 
-const Tabs: FC<PropsWithChildren<TabsProps>> = props => {
+const Tabs = (props: TabsProps) => {
   const location = useLocation();
   const { size, value = location.pathname, onChange, children } = props;
-  const validChildren = Children.map(children, child => {
-    if (!isValidElement(child) || (!child.props.href && !child.props.value)) {
-      return null;
-    }
+  const values = Children.map(children, child => child?.props.href ?? child?.props.value);
 
-    return child;
-  })?.filter(child => child != null);
-
-  if (!validChildren) {
+  if (!values) {
     return null;
   }
 
-  const values = validChildren.map(child => child.props.href ?? child.props.value);
   const selectedTabIndex = values.findIndex(tabValue => tabValue === value);
   const tabWidth = 100 / values.length;
 
