@@ -7,5 +7,13 @@
 
   "toggleSwitchInactiveBackground": "#BFC0C0",
   "toggleSwitchThumbInactiveBackground": "#FFFFFF",
-  "toggleSwitchThumbInactiveBorder": "#BFC0C0"
+  "toggleSwitchThumbInactiveBorder": "#BFC0C0",
+
+  "iconDefaultColor": "#222222",
+
+  "iconButtonBackground": "#FFFFFF",
+  "iconButtonBorder": "#BFC0C0",
+  "iconButtonIcon": "#BFC0C0",
+  "iconButtonSelectedBackground": "#222222",
+  "iconButtonSelectedIcon": "#FFFFFF"
 }
