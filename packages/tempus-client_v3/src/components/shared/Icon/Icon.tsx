@@ -1,4 +1,5 @@
-import React, { FC, memo } from 'react';
+import { FC, memo } from 'react';
+import { colors } from '../Colors';
 import PlusRound from './PlusRound';
 import CheckmarkRound from './CheckmarkRound';
 import MinusRound from './MinusRound';
@@ -46,6 +47,7 @@ export const ICON_SIZE_SMALL = 16;
 export const ICON_SIZE_MEDIUM = 24;
 export const ICON_SIZE_LARGE = 32;
 export const ICON_SIZE_DEFAULT = ICON_SIZE_MEDIUM;
+export const ICON_COLOR_DEFAULT = colors.iconDefaultColor;
 
 export type IconType =
   | 'plus-round'
@@ -93,6 +95,7 @@ export type IconType =
 
 export interface IconProps {
   size?: 'large' | 'medium' | 'small' | number;
+  color?: string;
 }
 
 const Icon: FC<IconProps & { type: IconType }> = props => {

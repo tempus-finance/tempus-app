@@ -2,7 +2,7 @@ import React, { FC, memo } from 'react';
 import { IconProps, ICON_SIZE_DEFAULT, ICON_SIZE_LARGE, ICON_SIZE_MEDIUM, ICON_SIZE_SMALL } from './Icon';
 
 const withIcon = (Component: React.ComponentType<IconProps>): FC<IconProps> =>
-  memo(({ size }) => {
+  memo(({ size, color }) => {
     let actualSize = size;
     switch (size) {
       case 'large':
@@ -18,7 +18,7 @@ const withIcon = (Component: React.ComponentType<IconProps>): FC<IconProps> =>
         actualSize = ICON_SIZE_DEFAULT;
         break;
     }
-    return <Component size={actualSize} />;
+    return <Component size={actualSize} color={color} />;
   });
 
 export default withIcon;
