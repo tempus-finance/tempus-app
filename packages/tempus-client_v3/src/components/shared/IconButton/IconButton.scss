@@ -1,0 +1,25 @@
+@mixin iconButtonBase {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.tc__iconButton__deselected {
+  @include iconButtonBase;
+
+  background-color: var(--iconButtonBackground);
+  box-shadow: var(--downWeakShadow);
+  border: 1px solid var(--iconButtonBorder);
+}
+
+.tc__iconButton__selected {
+  @include iconButtonBase;
+
+  background-color: var(--iconButtonSelectedBackground);
+  box-shadow: none;
+  border: none;
+}
