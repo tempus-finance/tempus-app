@@ -2,7 +2,7 @@ import React, { CSSProperties, FC } from 'react';
 import parse from 'html-react-parser';
 import { colors } from '../Colors';
 
-type TypographyVariant =
+export type TypographyVariant =
   | 'header'
   | 'subheader'
   | 'title'
@@ -13,7 +13,8 @@ type TypographyVariant =
 
 export type TypographyColor =
   | 'text-primary'
-  | 'text-inverted'
+  | 'primary-dark'
+  | 'text-primary-inverted'
   | 'text-success'
   | 'text-disabled'
   | 'text-disabled-secondary';
@@ -61,7 +62,8 @@ typographyVariantMap.set('body-tertiary', {
 
 const typographyColorMap = new Map<TypographyColor, string>();
 typographyColorMap.set('text-primary', colors.textPrimary);
-typographyColorMap.set('text-inverted', colors.textInverted);
+typographyColorMap.set('primary-dark', colors.primaryDark);
+typographyColorMap.set('text-primary-inverted', colors.textPrimaryInverted);
 typographyColorMap.set('text-success', colors.textSuccess);
 typographyColorMap.set('text-disabled', colors.textDisabled);
 typographyColorMap.set('text-disabled-secondary', colors.textDisabledSecondary);

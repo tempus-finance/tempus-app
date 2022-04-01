@@ -41,26 +41,26 @@ const ActionButton: FC<ButtonProps> = props => {
   // Compute CSS class names
   let borderClass = `tc__actionButton-border-${variant}-${size}`;
   let backgroundClass = `tc__actionButton-background-${variant}-${size}`;
-  let shadowClass = `tc__actionButton-shadow-${state}`;
   let hoverClass = `tc__actionButton-hover-${variant}-${size}`;
+  let shadowClass = `tc__actionButton-shadow-${state}`;
+  let cursorClass = `tc__actionButton-cursor-${state}`;
+  let heightClass = `tc__actionButton-size-${size}`;
+  let widthClass = fullWidth ? 'tc__actionButton-width-full' : '';
   switch (state) {
     case 'disabled':
       borderClass += '-disabled';
       backgroundClass += '-disabled';
       hoverClass += '-disabled';
-      shadowClass += '-disabled';
       break;
     case 'loading':
       borderClass += '-loading';
       backgroundClass += '-loading';
       hoverClass += '-loading';
-      shadowClass += '-loading';
       break;
     case 'success':
       borderClass += '-success';
       backgroundClass += '-success';
       hoverClass += '-success';
-      shadowClass += '-success';
       break;
   }
 
@@ -68,7 +68,7 @@ const ActionButton: FC<ButtonProps> = props => {
   let textColor: TypographyColor = 'text-primary';
   switch (variant) {
     case 'primary':
-      textColor = 'text-inverted';
+      textColor = 'text-primary-inverted';
       break;
   }
   switch (state) {
@@ -110,12 +110,11 @@ const ActionButton: FC<ButtonProps> = props => {
 
   return (
     <Button
-      className={`tc__actionButton ${borderClass} ${backgroundClass} ${hoverClass} ${shadowClass}`}
+      className={`tc__actionButton ${borderClass} ${backgroundClass} ${hoverClass} ${shadowClass} ${cursorClass} ${heightClass} ${widthClass}`}
       disabled={state === 'disabled'}
       onClick={onClick}
       style={{
-        height: buttonSizeMap.get(size),
-        width: fullWidth ? '100%' : '',
+        width: '20000px', // fullWidth ? '100%' : '',
       }}
     >
       {state === 'loading' && (

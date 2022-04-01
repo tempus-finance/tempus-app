@@ -1,0 +1,12 @@
+.tc__iconButtonGroup {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+
+  button {
+    &:not(:last-child) {
+      margin-right: 10px;
+    }
+  }
+}

@@ -182,6 +182,30 @@
   box-shadow: none;
 }
 
+// == Cursor ==
+.tc__actionButton-cursor-default {
+  cursor: pointer;
+}
+
+.tc__actionButton-cursor-disabled,
+.tc__actionButton-cursor-loading,
+.tc__actionButton-cursor-success {
+  cursor: default;
+}
+
+// == Size ==
+.tc__actionButton-size-small {
+  height: 32px;
+}
+.tc__actionButton-size-large {
+  height: 40px;
+}
+
+// == Width ==
+.tc__actionButton-width-full {
+  width: 100%;
+}
+
 // == Hover ==
 
 // -- Primary Large

@@ -1,6 +1,6 @@
 {
   "textPrimary": "#222222",
-  "textInverted": "#FFFFFF",
+  "textPrimaryInverted": "#FFFFFF",
   "textSuccess": "#4BB543",
   "textDisabled": "#7A7A7A",
   "textDisabledSecondary": "#BFC0C0",
@@ -16,6 +16,17 @@
   "toggleSwitchInactiveBackground": "#BFC0C0",
   "toggleSwitchThumbInactiveBackground": "#FFFFFF",
   "toggleSwitchThumbInactiveBorder": "#BFC0C0",
+
+  "tabsBackground": "#FFFFFF",
+  "tabsBorder": "#BFC0C0",
+
+  "iconDefaultColor": "#222222",
+
+  "iconButtonBackground": "#FFFFFF",
+  "iconButtonBorder": "#BFC0C0",
+  "iconButtonIcon": "#BFC0C0",
+  "iconButtonSelectedBackground": "#222222",
+  "iconButtonSelectedIcon": "#FFFFFF",
 
   "buttonDefault": "#FFFFFF",
   "buttonBorder": "#BFC0C0",

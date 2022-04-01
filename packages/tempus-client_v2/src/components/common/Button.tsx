@@ -9,7 +9,7 @@ const Button = React.forwardRef(
     const attr = btnProps as ButtonHTMLAttributes<HTMLButtonElement>;
 
     return (
-      <button className={`tc__btn ${className}`} {...attr} ref={ref}>
+      <button className={`tc__btn ${className}`} {...attr} style={{ ...props.style }} ref={ref}>
         {children}
       </button>
     );
