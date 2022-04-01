@@ -1,14 +1,16 @@
-import { FC, memo, useCallback, useContext, useMemo } from 'react';
+import { FC, memo, useCallback, useMemo } from 'react';
 import Button from '../Button';
 import Link from '../Link';
 import Typography, { TypographyColor, TypographyVariant, TypographyWeight } from '../Typography';
 import { TabsSize } from './Tabs';
-import { TabsContext } from './tabsContext';
 
 export interface TabProps {
   label: string;
   value?: any;
   href?: string;
+  size?: TabsSize;
+  selectedValue?: any;
+  onChange?: (value: any) => void;
 }
 
 interface TabStyleConfig {
@@ -36,8 +38,7 @@ tabStyleMap.set('large', {
 });
 
 const Tab: FC<TabProps> = props => {
-  const { label, value, href } = props;
-  const { size, selectedValue, onChange } = useContext(TabsContext);
+  const { label, value, href, size = 'small', selectedValue, onChange } = props;
   const isSelected = selectedValue === href || selectedValue === value;
   const tabStyle = tabStyleMap.get(size);
 

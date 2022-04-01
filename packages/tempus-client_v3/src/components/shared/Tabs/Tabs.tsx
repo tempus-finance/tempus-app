@@ -1,7 +1,6 @@
-import { Children, memo, ReactElement } from 'react';
+import { Children, cloneElement, isValidElement, memo, ReactElement } from 'react';
 import { useLocation } from 'react-router-dom';
 import { TabProps } from './Tab';
-import { TabsContext } from './tabsContext';
 import './tabs.scss';
 
 export type TabsSize = 'small' | 'large';
@@ -27,17 +26,19 @@ const Tabs = (props: TabsProps) => {
 
   return (
     <div className={`tc__tabs tc__tabs__tabs-${size}`}>
-      <TabsContext.Provider value={{ size: size, selectedValue: value, onChange: onChange }}>
-        {children}
-        <div className="tc__tabs__indicator-container">
-          {selectedTabIndex > -1 && (
-            <div
-              className="tc__tabs__indicator"
-              style={{ width: `${tabWidth}%`, left: `${selectedTabIndex * tabWidth}%` }}
-            ></div>
-          )}
-        </div>
-      </TabsContext.Provider>
+      {Children.map(children, child => {
+        return isValidElement(child)
+          ? cloneElement(child, { size: size, selectedValue: value, onChange: onChange })
+          : null;
+      })}
+      <div className="tc__tabs__indicator-container">
+        {selectedTabIndex > -1 && (
+          <div
+            className="tc__tabs__indicator"
+            style={{ width: `${tabWidth}%`, left: `${selectedTabIndex * tabWidth}%` }}
+          ></div>
+        )}
+      </div>
     </div>
   );
 };
