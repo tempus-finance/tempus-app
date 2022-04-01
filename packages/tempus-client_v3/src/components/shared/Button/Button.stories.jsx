@@ -18,11 +18,36 @@ const style = {
 
 const Template = args => (
   <div style={style}>
-    <Button {...args}>My Button</Button>
+    <Button {...args.small}>My Button</Button>
+    <div style={{ width: '20px' }} />
+    <Button {...args.large}>My Button</Button>
   </div>
 );
 
 export const Primary = Template.bind({});
 Primary.args = {
-  title: 'primary',
+  small: {
+    title: 'primary',
+    size: 'small',
+    variant: 'primary',
+  },
+  large: {
+    title: 'primary',
+    size: 'large',
+    variant: 'primary',
+  },
+};
+
+export const Secondary = Template.bind({});
+Secondary.args = {
+  small: {
+    title: 'secondary',
+    size: 'small',
+    variant: 'secondary',
+  },
+  large: {
+    title: 'secondary',
+    size: 'large',
+    variant: 'secondary',
+  },
 };

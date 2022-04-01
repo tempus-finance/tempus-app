@@ -86,10 +86,28 @@ PrimaryDark.args = {
   colorName: 'PrimaryDark',
 };
 
+export const SecondaryMain = Template.bind({});
+SecondaryMain.args = {
+  backgroundColor: Colors.secondaryMain,
+  colorName: 'SecondaryMain',
+};
+
+export const SecondaryLight = Template.bind({});
+SecondaryLight.args = {
+  backgroundColor: Colors.secondaryLight,
+  colorName: 'SecondaryLight',
+};
+
 export const TextPrimary = Template.bind({});
 TextPrimary.args = {
   backgroundColor: Colors.textPrimary,
   colorName: 'TextPrimary',
+};
+
+export const TextInverted = Template.bind({});
+TextInverted.args = {
+  backgroundColor: Colors.textInverted,
+  colorName: 'TextInverted',
 };
 
 export const ToggleSwitchInactiveBackground = Template.bind({});

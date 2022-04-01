@@ -1,9 +1,13 @@
 {
   "textPrimary": "#222222",
+  "textInverted": "#FFFFFF",
 
   "primaryMain": "#2B6E84",
   "primaryLight": "#129CA4",
   "primaryDark": "#3E4E6E",
+
+  "secondaryMain": "#FF6B00",
+  "secondaryLight": "#FF842C",
 
   "toggleSwitchInactiveBackground": "#BFC0C0",
   "toggleSwitchThumbInactiveBackground": "#FFFFFF",

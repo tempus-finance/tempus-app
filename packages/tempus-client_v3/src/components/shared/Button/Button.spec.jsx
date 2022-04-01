@@ -5,6 +5,8 @@ const mockOnClick = jest.fn();
 
 const defaultProps = {
   title: 'my title',
+  size: 'large',
+  variant: 'primary',
   onClick: mockOnClick,
 };
 

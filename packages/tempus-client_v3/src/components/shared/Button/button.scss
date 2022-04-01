@@ -3,4 +3,38 @@
   border: none;
   background-color: transparent;
   cursor: pointer;
+
+  &.tc__btn__primary {
+    background-color: var(--primaryMain);
+    color: var(--textInverted);
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.08);
+
+    &:hover {
+      background-color: var(--primaryLight);
+      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.24);
+    }
+  }
+
+  &.tc__btn__secondary {
+    background-color: var(--secondaryMain);
+    color: var(--textInverted);
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.08);
+
+    &:hover {
+      background-color: var(--secondaryLight);
+      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.24);
+    }
+  }
+
+  &.tc__btn__small {
+    width: 96px;
+    height: 32px;
+    border-radius: 5px;
+  }
+
+  &.tc__btn__large {
+    width: 144px;
+    height: 40px;
+    border-radius: 4px;
+  }
 }
