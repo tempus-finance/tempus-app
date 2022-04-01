@@ -9,11 +9,6 @@ export default {
         type: 'array',
       },
     },
-    selected: {
-      control: {
-        type: 'boolean',
-      },
-    },
   },
 };
 
@@ -33,4 +28,5 @@ const Template = args => (
 export const Primary = Template.bind({});
 Primary.args = {
   types: ['grid-view', 'list-view'],
+  onChange: () => {},
 };
