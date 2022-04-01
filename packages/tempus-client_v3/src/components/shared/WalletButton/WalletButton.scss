@@ -1,0 +1,12 @@
+.tc__walletButton__disconnected {
+  width: 160px;
+  height: 40px;
+  border: 1px solid var(--walletButtonBorder);
+  border-radius: 4px;
+  box-sizing: border-box;
+  background: var(--walletButtonBackground);
+
+  &:hover {
+    background: var(--walletButtonHover);
+  }
+}

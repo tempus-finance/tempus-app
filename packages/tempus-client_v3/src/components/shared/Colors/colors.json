@@ -15,5 +15,9 @@
   "iconButtonBorder": "#BFC0C0",
   "iconButtonIcon": "#BFC0C0",
   "iconButtonSelectedBackground": "#222222",
-  "iconButtonSelectedIcon": "#FFFFFF"
+  "iconButtonSelectedIcon": "#FFFFFF",
+
+  "walletButtonBorder": "#BFC0C0",
+  "walletButtonBackground": "#FFFFFF",
+  "walletButtonHover": "#F3F7F9"
 }
