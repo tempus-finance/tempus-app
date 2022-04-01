@@ -2,7 +2,7 @@ import React, { CSSProperties, FC } from 'react';
 import parse from 'html-react-parser';
 import { colors } from '../Colors';
 
-type TypographyVariant =
+export type TypographyVariant =
   | 'header'
   | 'subheader'
   | 'title'
@@ -11,9 +11,9 @@ type TypographyVariant =
   | 'body-secondary'
   | 'body-tertiary';
 
-type TypographyColor = 'text-primary';
+export type TypographyColor = 'text-primary' | 'text-primary-inverted' | 'primary-dark';
 
-type TypographyWeight = 'regular' | 'medium' | 'bold';
+export type TypographyWeight = 'regular' | 'medium' | 'bold';
 
 type TypographyType = 'regular' | 'mono';
 
@@ -56,6 +56,8 @@ typographyVariantMap.set('body-tertiary', {
 
 const typographyColorMap = new Map<TypographyColor, string>();
 typographyColorMap.set('text-primary', colors.textPrimary);
+typographyColorMap.set('text-primary-inverted', colors.textPrimaryInverted);
+typographyColorMap.set('primary-dark', colors.primaryDark);
 
 const typographyWeightMap = new Map<TypographyWeight, number>();
 typographyWeightMap.set('regular', 400);

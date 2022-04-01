@@ -11,5 +11,6 @@ export * from './Colors';
 export * from './Icon';
 export * from './Logo';
 export * from './Loading';
+export * from './Tabs';
 
 export { Button, Checkbox, Icon, Logo, Link, Loading, ToggleSwitch, Typography };
