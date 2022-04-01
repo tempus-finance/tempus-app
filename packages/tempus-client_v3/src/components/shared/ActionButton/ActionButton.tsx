@@ -1,14 +1,12 @@
 import { FC, memo } from 'react';
 import Button from '../Button';
 import Icon from '../Icon';
-import { colors } from '../Colors';
 import Loading, { LoadingColor } from '../Loading';
 import Typography, { TypographyColor, TypographyWeight } from '../Typography';
 
 import './ActionButton.scss';
 
 type ButtonSize = 'small' | 'large';
-type ButtonColor = 'default' | 'primary' | 'secondary';
 type ButtonVariant = 'primary' | 'secondary' | 'tertiary';
 type ButtonState = 'default' | 'disabled' | 'loading' | 'success';
 type ButtonLabels = {
@@ -16,15 +14,6 @@ type ButtonLabels = {
   loading: string;
   success: string;
 };
-
-const buttonColorsMap = new Map<ButtonColor, string>();
-buttonColorsMap.set('default', colors.buttonDefault);
-buttonColorsMap.set('primary', colors.primaryMain);
-buttonColorsMap.set('secondary', colors.secondaryRegular);
-
-const buttonSizeMap = new Map<ButtonSize, string>();
-buttonSizeMap.set('small', '32px');
-buttonSizeMap.set('large', '40px');
 
 interface ButtonProps {
   labels: ButtonLabels;

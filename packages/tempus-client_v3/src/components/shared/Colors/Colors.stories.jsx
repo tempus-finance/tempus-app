@@ -104,10 +104,10 @@ SecondaryLight.args = {
   colorName: 'SecondaryLight',
 };
 
-export const TextInverted = Template.bind({});
-TextInverted.args = {
-  backgroundColor: Colors.textInverted,
-  colorName: 'TextInverted',
+export const TextPrimaryInverted = Template.bind({});
+TextPrimaryInverted.args = {
+  backgroundColor: Colors.textPrimaryInverted,
+  colorName: 'TextPrimaryInverted',
 };
 
 export const TextSuccess = Template.bind({});
