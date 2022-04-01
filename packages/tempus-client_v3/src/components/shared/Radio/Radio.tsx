@@ -1,5 +1,5 @@
 import { FC, useCallback, useMemo } from 'react';
-import { Typography } from '..';
+import Typography from '../Typography';
 import './radio.scss';
 
 export interface RadioProps {

@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { Radio, RadioGroup } from '.';
+import Radio, { RadioGroup } from './Radio';
 
 export default {
   title: 'RadioGroup',
