@@ -47,11 +47,7 @@ const style = {
 
 const Template = args => (
   <div style={style}>
-    <ActionButton {...args}>
-      <Typography variant="body-primary" weight="bold">
-        Action Button
-      </Typography>
-    </ActionButton>
+    <ActionButton {...args} />
   </div>
 );
 

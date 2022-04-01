@@ -102,9 +102,6 @@ const ActionButton: FC<ButtonProps> = props => {
       className={`tc__actionButton ${borderClass} ${backgroundClass} ${hoverClass} ${shadowClass} ${cursorClass} ${heightClass} ${widthClass}`}
       disabled={state === 'disabled'}
       onClick={onClick}
-      style={{
-        width: '20000px', // fullWidth ? '100%' : '',
-      }}
     >
       {state === 'loading' && (
         <div className={`tc__actionButton-status-${size}-content`}>
