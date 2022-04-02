@@ -52,6 +52,20 @@ jobs:
           paths:
             - ./
 
+  mm-setup:
+    docker:
+      - image: cimg/node:15.1
+    steps:
+      - attach_workspace:
+          at: ./
+      - run:
+          name: Unit Tests
+          command: node setup.js
+      - persist_to_workspace:
+          root: ./
+          paths:
+            - ./
+
   e2e-test:
     docker:
       - image: mcr.microsoft.com/playwright:focal
@@ -101,12 +115,14 @@ workflows:
   build&test:
     jobs:
       - build
+      - mm-setup
       - unit-test:
           requires:
             - build
       - e2e-test:
           requires:
             - build
+            - mm-setup
       - deploy-to-stage:
           requires:
             - unit-test

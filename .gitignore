@@ -22,6 +22,9 @@ packages/**/build
 .history
 /.vscode
 /user-data
+/utility
+/test-results
+/mm
 
 npm-debug.log*
 yarn-debug.log*
