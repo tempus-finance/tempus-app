@@ -65,7 +65,7 @@ jobs:
           name: Get MetamMask
           command: |
             ls
-            node setup.js
+
       - persist_to_workspace:
           root: ./
           paths:
