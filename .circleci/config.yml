@@ -69,8 +69,8 @@ jobs:
           command: |
             apt update
             apt install -y p7zip-full || true
-            xvfb-run node setup.js
-            xvfb-run npm run e2e
+            xvfb-run --auto-servernum --server-num=1 node setup.js
+            xvfb-run --auto-servernum --server-num=2 npm run e2e
       - persist_to_workspace:
           root: ./
           paths:
