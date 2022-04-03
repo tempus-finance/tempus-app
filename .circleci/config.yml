@@ -84,6 +84,8 @@ jobs:
       - run:
           name: E2E Tests
           command: |
+            apt update
+            apt install -y p7zip-full || true
             xvfb-run node setup.js
             xvfb-run npm run e2e
       - persist_to_workspace:
@@ -113,15 +115,12 @@ workflows:
   build&test:
     jobs:
       - build
-      - e2e-setup:
-          requires:
-            - build
       - unit-test:
           requires:
             - build
       - e2e-test:
           requires:
-            - e2e-setup
+            - build
       - deploy-to-stage:
           requires:
             - unit-test
