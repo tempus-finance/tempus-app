@@ -56,14 +56,10 @@ async function metamaskLogin(browser) {
     await tabMetamask.goto(`chrome-extension://${METAMASK_ID}/home.html#initialize/seed-phrase-intro`)
     await tabMetamask.waitForTimeout(LOAD_LONG_TIMEOUT)
     const SELECTOR_NEXT = 'text="Next"'
-    const SELECTOR_ALL_DONE = 'text="All Done"'
     const SELECTOR_RML = 'text="Remind me later"'
     if (await tabMetamask.locator(SELECTOR_NEXT).count()) {
         await tabMetamask.click(SELECTOR_NEXT)
         await tabMetamask.click(SELECTOR_RML)
-    }
-    else {
-        await tabMetamask.click(SELECTOR_ALL_DONE)
     }
 
     //await tabMetamask.pause()
