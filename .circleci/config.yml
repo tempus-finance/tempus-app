@@ -52,31 +52,10 @@ jobs:
           paths:
             - ./
 
-  e2e-setup:
-    docker:
-      - image: mcr.microsoft.com/playwright:focal
-        environment:
-          WALLET_RECOVERY_PHRASE: $WALLET_RECOVERY_PHRASE
-          NODE_ENV: development
-    steps:
-      - attach_workspace:
-          at: ./
-      - run:
-          name: Get MetamMask
-          command: |
-            apt update
-            apt install -y p7zip-full || true
-            xvfb-run node setup.js
-      - persist_to_workspace:
-          root: ./
-          paths:
-            - ./
-
   e2e-test:
     docker:
       - image: mcr.microsoft.com/playwright:focal
         environment:
-          WALLET_RECOVERY_PHRASE: $WALLET_RECOVERY_PHRASE
           METAMASK_RECOVERY_PHRASE: $METAMASK_RECOVERY_PHRASE
           METAMASK_PASSWORD: $METAMASK_PASSWORD
           METAMASK_ACCOUNT_ETH_FORK: $METAMASK_ACCOUNT_ETH_FORK
