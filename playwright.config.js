@@ -3,7 +3,10 @@
 
 /** @type {import('@playwright/test').PlaywrightTestConfig} */
 const config = {
-    //reporter: [['list', { outputFile: process.env.CI ? '/root/project/test-results/results.xml' : './test-results/results.xml' }], ['github', { outputFile: process.env.CI ? '/root/project/test-results/results.xml' : './test-results/results.xml' }]],
+    reporter: [
+        ['list', { outputFolder: process.env.CI ? '/root/project/test-results' : 'test-results' }],
+        ['mocha', { outputFolder: process.env.CI ? '/root/project/test-results' : 'test-results' }]
+    ],
     use: {
         screenshot: 'on',
         video: 'on',
