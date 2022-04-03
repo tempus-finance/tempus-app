@@ -84,7 +84,8 @@ jobs:
       - run:
           name: E2E Tests
           command: |
-            xvfb-run npm run e2e 2>&1
+            xvfb-run node setup.js
+            xvfb-run npm run e2e
       - persist_to_workspace:
           root: ./
           paths:
@@ -120,7 +121,6 @@ workflows:
             - build
       - e2e-test:
           requires:
-            - build
             - e2e-setup
       - deploy-to-stage:
           requires:
