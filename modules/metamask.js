@@ -51,6 +51,10 @@ async function metamaskLogin(browser) {
         throw 'Problem in metamaskLogin'
     }
 
+    // this part can and should be done by checking urls
+    // TODO ^
+    await tabMetamask.goto(`chrome-extension://${METAMASK_ID}/home.html#initialize/seed-phrase-intro`)
+    await tabMetamask.waitForTimeout(LOAD_LONG_TIMEOUT)
     const SELECTOR_NEXT = 'text="Next"'
     const SELECTOR_RML = 'text="Remind me later"'
     if (await tabMetamask.locator(SELECTOR_NEXT).count()) {

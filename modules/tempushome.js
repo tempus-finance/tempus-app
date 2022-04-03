@@ -2,16 +2,18 @@
 
 const { expect } = require("@playwright/test")
 
-module.exports = {tempusManageCurrency, tempusMetamaskConnect, tempusNetworkChange,
-    tempusTextHeaders}
+module.exports = {
+    tempusManageCurrency, tempusMetamaskConnect, tempusNetworkChange,
+    tempusTextHeaders
+}
 const ROOT_PATH = '../'
 const { TEMPUS_URL, LOAD_TIMEOUT, LOAD_SHORT_TIMEOUT, LOAD_LONG_TIMEOUT } = require(`${ROOT_PATH}utility/config.json`)
 
-async function tempusMetamaskConnect(browser){
+async function tempusMetamaskConnect(browser) {
     const tabTempus = await browser.newPage()
     await tabTempus.goto(TEMPUS_URL)
     await tabTempus.waitForTimeout(LOAD_TIMEOUT)
-    if(await tabTempus.locator('text=Connect Wallet').count()==0){
+    if (await tabTempus.locator('text=Connect Wallet').count() == 0) {
         await tabTempus.close()
         return null
     }
@@ -21,17 +23,23 @@ async function tempusMetamaskConnect(browser){
     await tabTempus.click('text=MetaMask')
     await tabTempus.waitForTimeout(LOAD_LONG_TIMEOUT)
     const tabCountAfter = await browser.pages().length
-    // click Next, 
-    if(tabCountAfter > tabCountBefore){
+
+    if (tabCountAfter > tabCountBefore) {
         const mm = await browser.pages().slice(-1)[0]
-        await mm.click('text="Next"')
+
+        // untested block, need to restart
+        await mm.bringToFront()
+        await mm.waitForTimeout(LOAD_LONG_TIMEOUT)
+        const SELECTOR_NEXT = 'text="Next"'
+        await mm.click(SELECTOR_NEXT)
+
         await mm.click('text="Connect"')
         // mm autocloses
     }
     await tabTempus.close()
 }
 
-async function tempusNetworkChange(browser, network){
+async function tempusNetworkChange(browser, network) {
     const tabTempus = await browser.newPage()
     await tabTempus.goto(TEMPUS_URL)
 
@@ -46,9 +54,11 @@ async function tempusNetworkChange(browser, network){
 
     await tabTempus.waitForTimeout(LOAD_TIMEOUT);
 
-    if(await browser.pages().length > tabCount ){
+    if (await browser.pages().length > tabCount) {
         const mm = await browser.pages().slice(-1)[0]
-        if(await mm.locator('text=Approve').count()){
+        await mm.bringToFront()
+        await mm.waitForTimeout(LOAD_TIMEOUT)
+        if (await mm.locator('text=Approve').count()) {
             //await mm.locator('button:has-text("Approve")').click()
             await mm.click('text=Approve')
             await mm.waitForTimeout(LOAD_TIMEOUT)
@@ -62,13 +72,13 @@ async function tempusNetworkChange(browser, network){
     await tabTempus.close()
 }
 
-async function tempusManageCurrency(browser, asset='USDC'){
+async function tempusManageCurrency(browser, asset = 'USDC') {
     // returns manage tab
     const tabTempus = await browser.newPage()
     await tabTempus.goto(TEMPUS_URL)
     await tabTempus.click(`svg:has-text("${asset}")`)
     await tabTempus.click('text=Manage >> nth=0')
-    return tabTempus 
+    return tabTempus
 }
 
 // th :text-is('Asset')
@@ -79,7 +89,7 @@ async function tempusManageCurrency(browser, asset='USDC'){
 // th :text-is('Balance')
 // th :text-is('Available to Deposit')
 
-async function tempusTextHeaders(browser, walletConnected=false){
+async function tempusTextHeaders(browser, walletConnected = false) {
     const tabTempus = await browser.newPage()
     await tabTempus.goto(TEMPUS_URL)
     await tabTempus.waitForTimeout(LOAD_LONG_TIMEOUT);
@@ -89,7 +99,7 @@ async function tempusTextHeaders(browser, walletConnected=false){
     await expect(tabTempus.locator('th >> nth=2')).toHaveText('Maturity')
     await expect(tabTempus.locator('th >> nth=3')).toHaveText('Fixed APR')
     await expect(tabTempus.locator('th >> nth=4')).toHaveText('TVL')
-    if(walletConnected){
+    if (walletConnected) {
         await expect(tabTempus.locator('th >> nth=5')).toHaveText('Balance')
         await expect(tabTempus.locator('th >> nth=6')).toHaveText('Available to Deposit')
     }

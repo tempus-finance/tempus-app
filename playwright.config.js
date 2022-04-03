@@ -7,10 +7,10 @@ const config = {
     use: {
         screenshot: 'on',
         video: 'on',
-        trace: 'retain-on-failure',
+        trace: 'on',
     },
     testDir: 'tests',
-    retries: 1,
+    retries: 0,
     timeout: 50000,
     outputDir: process.env.CI ? '/root/project/test-results' : './test-results',
 };
