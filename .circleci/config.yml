@@ -65,7 +65,7 @@ jobs:
           name: Get MetamMask
           command: |
             ls
-
+            node setup.js
       - persist_to_workspace:
           root: ./
           paths:
@@ -111,7 +111,9 @@ workflows:
   build&test:
     jobs:
       - build
-      - e2e-setup
+      - e2e-setup:
+          requires:
+            - build
       - unit-test:
           requires:
             - build
