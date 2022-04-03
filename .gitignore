@@ -34,3 +34,7 @@ packages/**/*.env.development
 
 # release info
 packages/**/src/release.json
+
+# MetaMask
+/mm
+/utility/user_data

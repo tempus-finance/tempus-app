@@ -13,7 +13,6 @@ test.describe('Logins and connections', ()=>{
     let browser;
     test.beforeAll(async ()=>{
         browser = await chromiumPersistant()
-        await metamaskLogin(browser)
     })
 
     test('First metamask login', async ()=>{

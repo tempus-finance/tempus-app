@@ -51,6 +51,13 @@ async function metamaskLogin(browser) {
         throw 'Problem in metamaskLogin'
     }
 
+    const SELECTOR_NEXT = 'text="Next"'
+    const SELECTOR_RML = 'text="Remind me later"'
+    if (await tabMetamask.locator(SELECTOR_NEXT).count()) {
+        await tabMetamask.click(SELECTOR_NEXT)
+        await tabMetamask.click(SELECTOR_RML)
+    }
+
     //await tabMetamask.pause()
     await tabMetamask.close()
 }
