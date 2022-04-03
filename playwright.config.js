@@ -4,7 +4,7 @@
 /** @type {import('@playwright/test').PlaywrightTestConfig} */
 const config = {
     reporter: [
-        ['list', { outputFolder: process.env.CI ? '/root/project/test-results' : 'test-results' }]
+        ['list']
     ],
     use: {
         screenshot: 'on',
