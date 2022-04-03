@@ -77,6 +77,10 @@ jobs:
       - image: mcr.microsoft.com/playwright:focal
         environment:
           WALLET_RECOVERY_PHRASE: $WALLET_RECOVERY_PHRASE
+          METAMASK_RECOVERY_PHRASE: $METAMASK_RECOVERY_PHRASE
+          METAMASK_PASSWORD: $METAMASK_PASSWORD
+          METAMASK_ACCOUNT_ETH_FORK: $METAMASK_ACCOUNT_ETH_FORK
+          METAMASK_ACCOUNT_FANTOM: $METAMASK_ACCOUNT_FANTOM
           NODE_ENV: development
     steps:
       - attach_workspace:

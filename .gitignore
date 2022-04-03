@@ -39,3 +39,4 @@ packages/**/src/release.json
 /mm
 /utility/user_data
 /test-results
+.env
