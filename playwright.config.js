@@ -6,6 +6,8 @@ const config = {
     reporter: [['junit', { outputFile: process.env.CI ? '/root/project/test-results/results.xml' : './test-results/results.xml' }]],
     use: {
         screenshot: 'only-on-failure',
+        video: 'on',
+        trace: 'retain-on-failure',
     },
     testDir: 'tests',
     retries: 1,
