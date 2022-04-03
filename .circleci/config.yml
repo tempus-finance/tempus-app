@@ -61,6 +61,7 @@ jobs:
           METAMASK_ACCOUNT_ETH_FORK: $METAMASK_ACCOUNT_ETH_FORK
           METAMASK_ACCOUNT_FANTOM: $METAMASK_ACCOUNT_FANTOM
           NODE_ENV: development
+    parallelism: 4
     steps:
       - attach_workspace:
           at: ./
