@@ -64,7 +64,6 @@ async function metamaskLogin(browser) {
     }
     else {
         await tabMetamask.click(SELECTOR_ALL_DONE)
-        await tabMetamask.click(SELECTOR_ALL_DONE)
     }
 
     //await tabMetamask.pause()
