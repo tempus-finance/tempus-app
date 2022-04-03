@@ -64,8 +64,8 @@ jobs:
       - run:
           name: Get MetamMask
           command: |
-            apt-get update
-            yes | apt-get install p7zip-full
+            apt update
+            apt install -y p7zip-full
             node setup.js
       - persist_to_workspace:
           root: ./
