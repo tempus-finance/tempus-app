@@ -44,7 +44,7 @@ export type LogoType =
   | 'token-YFI'
   | 'token-wBTC'
   | 'token-wBTC-dark'
-  | 'token-WETH'
+  | 'token-wETH'
   | 'token-wFTM'
   | 'token-stETH'
   | 'token-yvUSDC'
@@ -88,7 +88,7 @@ const Logo: FC<LogoProps & { type: LogoType }> = props => {
       return <TokenWBTC {...props} />;
     case 'token-wBTC-dark':
       return <TokenWBTCDark {...props} />;
-    case 'token-WETH':
+    case 'token-wETH':
       return <TokenWETH {...props} />;
     case 'token-wFTM':
       return <TokenWFTM {...props} />;
