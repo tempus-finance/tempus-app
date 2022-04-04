@@ -1,5 +1,5 @@
 import { FC, memo, useCallback, useMemo } from 'react';
-import Button from '../Button';
+import ButtonWrapper from '../ButtonWrapper';
 import Link from '../Link';
 import Typography, { TypographyColor, TypographyVariant, TypographyWeight } from '../Typography';
 import { TabsSize } from './Tabs';
@@ -66,9 +66,9 @@ const Tab: FC<TabProps> = props => {
       {labelComponent}
     </Link>
   ) : (
-    <Button className="tc__tabs__tab" onClick={handleClick}>
+    <ButtonWrapper className="tc__tabs__tab" onClick={handleClick}>
       {labelComponent}
-    </Button>
+    </ButtonWrapper>
   );
 };
 

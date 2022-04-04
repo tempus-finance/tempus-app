@@ -1,7 +1,7 @@
 import { FC, memo, useCallback } from 'react';
 import { colors } from '../Colors';
 import Icon, { IconType } from '../Icon';
-import Button from '../Button';
+import ButtonWrapper from '../ButtonWrapper';
 import './IconButton.scss';
 
 interface IconButtonProps {
@@ -18,9 +18,12 @@ const IconButton: FC<IconButtonProps> = props => {
   }, [onClick, type]);
 
   return (
-    <Button className={selected ? 'tc__iconButton__selected' : 'tc__iconButton__deselected'} onClick={onButtonClick}>
+    <ButtonWrapper
+      className={selected ? 'tc__iconButton__selected' : 'tc__iconButton__deselected'}
+      onClick={onButtonClick}
+    >
       <Icon type={type} color={selected ? colors.iconButtonSelectedIcon : colors.iconButtonIcon} />
-    </Button>
+    </ButtonWrapper>
   );
 };
 export default memo(IconButton);

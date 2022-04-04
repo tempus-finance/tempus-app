@@ -5,7 +5,7 @@ import Icon from './Icon';
 import Logo from './Logo';
 import ToggleSwitch from './ToggleSwitch';
 import Loading from './Loading';
-import Button from './Button';
+import ButtonWrapper from './ButtonWrapper';
 import Link from './Link';
 import ActionButton from './ActionButton';
 import SwitcherButton from './SwitcherButton';
@@ -19,7 +19,7 @@ export * from './Tabs';
 
 export {
   ActionButton,
-  Button,
+  ButtonWrapper,
   Checkbox,
   FormattedDate,
   Icon,

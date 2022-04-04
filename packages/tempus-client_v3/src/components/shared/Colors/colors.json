@@ -40,6 +40,10 @@
   "buttonSecondaryDisabled": "#BFC0C0",
   "buttonTertiaryDefault": "#F3F7F9",
 
+  "walletButtonBorder": "#BFC0C0",
+  "walletButtonBackground": "#FFFFFF",
+  "walletButtonHover": "#F3F7F9",
+
   "switcherButtonBorder": "#222222",
   "switcherButtonBackground": "#FFFFFF",
   "switcherButtonBackgroundHighlight": "#F3F7F9",

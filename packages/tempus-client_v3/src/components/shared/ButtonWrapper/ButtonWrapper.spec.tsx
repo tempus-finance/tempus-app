@@ -1,14 +1,14 @@
 import { fireEvent, render } from '@testing-library/react';
-import Button from './Button';
+import ButtonWrapper, { ButtonWrapperProps } from './ButtonWrapper';
 
 const mockOnClick = jest.fn();
 
-const defaultProps = {
+const defaultProps: ButtonWrapperProps = {
   title: 'my title',
   onClick: mockOnClick,
 };
 
-const subject = props => render(<Button {...props}>My Button</Button>);
+const subject = (props: ButtonWrapperProps) => render(<ButtonWrapper {...props}>My Button</ButtonWrapper>);
 
 describe('Button', () => {
   it('renders a button with a title attribute', () => {

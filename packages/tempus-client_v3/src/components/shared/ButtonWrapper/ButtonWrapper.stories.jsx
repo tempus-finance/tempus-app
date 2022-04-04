@@ -1,10 +1,10 @@
 import React from 'react';
 
-import Button from './Button';
+import ButtonWrapper from './ButtonWrapper';
 
 export default {
-  title: 'Button',
-  component: Button,
+  title: 'ButtonWrapper',
+  component: ButtonWrapper,
   argTypes: {},
 };
 
@@ -18,7 +18,7 @@ const style = {
 
 const Template = args => (
   <div style={style}>
-    <Button {...args}>My Button</Button>
+    <ButtonWrapper {...args}>My Button Wrapper</ButtonWrapper>
   </div>
 );
 
