@@ -3,7 +3,14 @@ import { LogoProps, LOGO_SIZE_DEFAULT } from './Logo';
 import withLogo from './withLogo';
 
 const TokenYvYFI: FC<LogoProps> = ({ size = LOGO_SIZE_DEFAULT }) => (
-  <svg width={size} height={size} viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <svg
+    className="tc__logo tc__logo-token-yvYFI"
+    width={size}
+    height={size}
+    viewBox="0 0 40 40"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
     <circle cx="20" cy="20" r="20" fill="white" />
     <path
       fillRule="evenodd"

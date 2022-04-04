@@ -3,7 +3,14 @@ import { IconProps, ICON_COLOR_DEFAULT, ICON_SIZE_DEFAULT } from './Icon';
 import withIcon from './withIcon';
 
 const GridView: FC<IconProps> = ({ size = ICON_SIZE_DEFAULT, color = ICON_COLOR_DEFAULT }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <svg
+    className="tc__icon tc__icon-grid-view"
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
     <path
       fillRule="evenodd"
       clipRule="evenodd"

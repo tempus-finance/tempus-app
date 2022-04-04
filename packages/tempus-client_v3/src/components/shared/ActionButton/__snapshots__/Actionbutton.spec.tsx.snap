@@ -79,6 +79,7 @@ exports[`ActionButton renders a button with a \`success\` label 1`] = `
     class="tc__actionButton-status-small-content"
   >
     <svg
+      class="tc__icon tc__icon-checkmark-solid"
       fill="none"
       height="12"
       viewBox="0 0 16 16"

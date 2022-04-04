@@ -3,7 +3,14 @@ import { LogoProps, LOGO_SIZE_DEFAULT } from './Logo';
 import withLogo from './withLogo';
 
 const TokenWETH: FC<LogoProps> = ({ size = LOGO_SIZE_DEFAULT }) => (
-  <svg width={size} height={size} viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <svg
+    className="tc__logo tc__logo-token-wETH"
+    width={size}
+    height={size}
+    viewBox="0 0 40 40"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
     <circle cx="20" cy="20" r="20" fill="white" />
     <ellipse cx="16.9956" cy="29.9097" rx="10.2338" ry="2.69311" fill="black" />
     <circle cx="18.7017" cy="19.2282" r="11.5748" fill="#E82574" stroke="black" strokeWidth="0.729311" />

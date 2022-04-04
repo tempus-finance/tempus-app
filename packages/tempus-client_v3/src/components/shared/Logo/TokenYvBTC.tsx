@@ -3,7 +3,14 @@ import { LogoProps, LOGO_SIZE_DEFAULT } from './Logo';
 import withLogo from './withLogo';
 
 const TokenYvBTC: FC<LogoProps> = ({ size = LOGO_SIZE_DEFAULT }) => (
-  <svg width={size} height={size} viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <svg
+    className="tc__logo tc__logo-token-yvBTC"
+    width={size}
+    height={size}
+    viewBox="0 0 40 40"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
     <circle cx="20" cy="20" r="20" fill="white" />
     <path
       d="M26.3656 14.4444L25.825 14.9849C27.1149 16.3955 27.8302 18.2377 27.8302 20.1492C27.8302 22.0606 27.1149 23.9028 25.825 25.3134L26.3656 25.854C27.8001 24.298 28.5965 22.2592 28.5965 20.1429C28.5965 18.0265 27.8001 15.9877 26.3656 14.4318V14.4444Z"
