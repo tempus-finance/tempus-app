@@ -109,3 +109,15 @@ ToggleSwitchThumbInactiveBorder.args = {
   backgroundColor: Colors.toggleSwitchThumbInactiveBorder,
   colorName: 'ToggleSwitchThumbInactiveBorder',
 };
+
+export const TabsBackground = Template.bind({});
+TabsBackground.args = {
+  backgroundColor: Colors.tabsBackground,
+  colorName: 'TabsBackground',
+};
+
+export const TabsBorder = Template.bind({});
+TabsBorder.args = {
+  backgroundColor: Colors.tabsBorder,
+  colorName: 'TabsBorder',
+};

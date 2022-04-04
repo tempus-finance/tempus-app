@@ -1,5 +1,7 @@
 {
   "textPrimary": "#222222",
+  "textPrimaryInverted": "#FFFFFF",
+  "textSuccess": "#4BB543",
 
   "primaryMain": "#2B6E84",
   "primaryLight": "#129CA4",
@@ -8,6 +10,9 @@
   "toggleSwitchInactiveBackground": "#BFC0C0",
   "toggleSwitchThumbInactiveBackground": "#FFFFFF",
   "toggleSwitchThumbInactiveBorder": "#BFC0C0",
+
+  "tabsBackground": "#FFFFFF",
+  "tabsBorder": "#BFC0C0",
 
   "iconDefaultColor": "#222222",
 
@@ -19,5 +24,9 @@
 
   "walletButtonBorder": "#BFC0C0",
   "walletButtonBackground": "#FFFFFF",
-  "walletButtonHover": "#F3F7F9"
+  "walletButtonHover": "#F3F7F9",
+
+  "switcherButtonBorder": "#222222",
+  "switcherButtonBackground": "#FFFFFF",
+  "switcherButtonBackgroundHighlight": "#F3F7F9"
 }
