@@ -1,0 +1,110 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ActionButton renders a button with a \`default\` label 1`] = `
+<button
+  class="tc__btn tc__actionButton tc__actionButton-border-primary-small tc__actionButton-background-primary-small tc__actionButton-hover-primary-small tc__actionButton-shadow-default tc__actionButton-cursor-default tc__actionButton-size-small "
+>
+  <div
+    class="tc__actionButton-status-label"
+  >
+    <div
+      style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(255, 255, 255); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+    >
+      Default
+    </div>
+  </div>
+</button>
+`;
+
+exports[`ActionButton renders a button with a \`disabled\` state 1`] = `
+<button
+  class="tc__btn tc__actionButton tc__actionButton-border-primary-small-disabled tc__actionButton-background-primary-small-disabled tc__actionButton-hover-primary-small-disabled tc__actionButton-shadow-disabled tc__actionButton-cursor-disabled tc__actionButton-size-small "
+  disabled=""
+>
+  <div
+    class="tc__actionButton-status-label"
+  >
+    <div
+      style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(255, 255, 255); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 0.5;"
+    >
+      Default
+    </div>
+  </div>
+</button>
+`;
+
+exports[`ActionButton renders a button with a \`loading\` label 1`] = `
+<button
+  class="tc__btn tc__actionButton tc__actionButton-border-primary-small-loading tc__actionButton-background-primary-small-loading tc__actionButton-hover-primary-small-loading tc__actionButton-shadow-loading tc__actionButton-cursor-loading tc__actionButton-size-small "
+>
+  <div
+    class="tc__actionButton-status-small-content"
+  >
+    <svg
+      height="12"
+      viewBox="0 0 100 100"
+      width="12"
+    >
+      <circle
+        class="tc__loading tc__loading__color-bg-default"
+        cx="50"
+        cy="50"
+        r="40"
+      />
+      <circle
+        class="tc__loading tc__loading__color-animate-default tc__loading__animate"
+        cx="50"
+        cy="50"
+        r="40"
+      />
+    </svg>
+  </div>
+  <div
+    class="tc__actionButton-status-label"
+  >
+    <div
+      style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(255, 255, 255); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+    >
+      Loading
+    </div>
+  </div>
+</button>
+`;
+
+exports[`ActionButton renders a button with a \`success\` label 1`] = `
+<button
+  class="tc__btn tc__actionButton tc__actionButton-border-primary-small-success tc__actionButton-background-primary-small-success tc__actionButton-hover-primary-small-success tc__actionButton-shadow-success tc__actionButton-cursor-success tc__actionButton-size-small "
+>
+  <div
+    class="tc__actionButton-status-small-content"
+  >
+    <svg
+      fill="none"
+      height="12"
+      viewBox="0 0 16 16"
+      width="12"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <circle
+        cx="8"
+        cy="8"
+        fill="#4BB543"
+        r="8"
+      />
+      <path
+        d="M4 8.05015L7 11L12 6L11 5L7 9L5 7L4 8.05015Z"
+        fill="white"
+      />
+    </svg>
+  </div>
+  <div
+    class="tc__actionButton-status-label"
+  >
+    <div
+      style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(75, 181, 67); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+    >
+      Success
+    </div>
+  </div>
+</button>
+`;
