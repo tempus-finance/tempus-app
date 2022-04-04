@@ -12,6 +12,7 @@ export type {
   ProtocolDisplayName,
   ProtocolName,
   Ticker,
+  NativeTokenTicker,
   TempusPool,
   TokenPrecision,
   TokenTypePrecision,
@@ -81,4 +82,4 @@ export {
   wait,
 } from './utils';
 
-export * as CONSTANTS from './constants';
+export * from './constants';

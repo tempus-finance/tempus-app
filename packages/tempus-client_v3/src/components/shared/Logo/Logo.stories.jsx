@@ -1,5 +1,5 @@
 import React from 'react';
-import Logo from './Logo';
+import { Logo } from './Logo';
 
 export default {
   title: 'Logo',
@@ -25,79 +25,79 @@ const Template = args => (
 );
 
 export const TokenETH = Template.bind({});
-TokenETH.args = { type: 'token-ETH' };
+TokenETH.args = { variant: 'token', type: 'token-ETH' };
 
 export const TokenETHLight = Template.bind({});
-TokenETHLight.args = { type: 'token-ETH-light' };
+TokenETHLight.args = { variant: 'token', type: 'token-ETH-light' };
 
 export const TokenUSDC = Template.bind({});
-TokenUSDC.args = { type: 'token-USDC' };
+TokenUSDC.args = { variant: 'token', type: 'token-USDC' };
 
 export const TokenUSDT = Template.bind({});
-TokenUSDT.args = { type: 'token-USDT' };
+TokenUSDT.args = { variant: 'token', type: 'token-USDT' };
 
 export const TokenDAI = Template.bind({});
-TokenDAI.args = { type: 'token-DAI' };
+TokenDAI.args = { variant: 'token', type: 'token-DAI' };
 
 export const TokenFTM = Template.bind({});
-TokenFTM.args = { type: 'token-FTM' };
+TokenFTM.args = { variant: 'token', type: 'token-FTM' };
 
 export const TokenMIM = Template.bind({});
-TokenMIM.args = { type: 'token-MIM' };
+TokenMIM.args = { variant: 'token', type: 'token-MIM' };
 
 export const TokenRARI = Template.bind({});
-TokenRARI.args = { type: 'token-RARI' };
+TokenRARI.args = { variant: 'token', type: 'token-RARI' };
 
 export const TokenYFI = Template.bind({});
-TokenYFI.args = { type: 'token-YFI' };
+TokenYFI.args = { variant: 'token', type: 'token-YFI' };
 
 export const TokenWBTC = Template.bind({});
-TokenWBTC.args = { type: 'token-wBTC' };
+TokenWBTC.args = { variant: 'token', type: 'token-wBTC' };
 
 export const TokenWBTCDark = Template.bind({});
-TokenWBTCDark.args = { type: 'token-wBTC-dark' };
+TokenWBTCDark.args = { variant: 'token', type: 'token-wBTC-dark' };
 
 export const TokenWETH = Template.bind({});
-TokenWETH.args = { type: 'token-wETH' };
+TokenWETH.args = { variant: 'token', type: 'token-wETH' };
 
 export const TokenWFTM = Template.bind({});
-TokenWFTM.args = { type: 'token-wFTM' };
+TokenWFTM.args = { variant: 'token', type: 'token-wFTM' };
 
 export const TokenStETH = Template.bind({});
-TokenStETH.args = { type: 'token-stETH' };
+TokenStETH.args = { variant: 'token', type: 'token-stETH' };
 
 export const TokenYvUSDC = Template.bind({});
-TokenYvUSDC.args = { type: 'token-yvUSDC' };
+TokenYvUSDC.args = { variant: 'token', type: 'token-yvUSDC' };
 
 export const TokenYvUSDT = Template.bind({});
-TokenYvUSDT.args = { type: 'token-yvUSDT' };
+TokenYvUSDT.args = { variant: 'token', type: 'token-yvUSDT' };
 
 export const TokenYvDAI = Template.bind({});
-TokenYvDAI.args = { type: 'token-yvDAI' };
+TokenYvDAI.args = { variant: 'token', type: 'token-yvDAI' };
 
 export const TokenYvBTC = Template.bind({});
-TokenYvBTC.args = { type: 'token-yvBTC' };
+TokenYvBTC.args = { variant: 'token', type: 'token-yvBTC' };
 
 export const TokenYvYFI = Template.bind({});
-TokenYvYFI.args = { type: 'token-yvYFI' };
+TokenYvYFI.args = { variant: 'token', type: 'token-yvYFI' };
 
 export const TokenYvwETH = Template.bind({});
-TokenYvwETH.args = { type: 'token-yvwETH' };
+TokenYvwETH.args = { variant: 'token', type: 'token-yvwETH' };
 
 export const ProtocolAave = Template.bind({});
-ProtocolAave.args = { type: 'protocol-Aave' };
+ProtocolAave.args = { variant: 'protocol', type: 'protocol-Aave' };
 
 export const ProtocolLido = Template.bind({});
-ProtocolLido.args = { type: 'protocol-Lido' };
+ProtocolLido.args = { variant: 'protocol', type: 'protocol-Lido' };
 
 export const ProtocolRari = Template.bind({});
-ProtocolRari.args = { type: 'protocol-Rari' };
+ProtocolRari.args = { variant: 'protocol', type: 'protocol-Rari' };
 
 export const WalletMetamask = Template.bind({});
-WalletMetamask.args = { type: 'wallet-metamask' };
+WalletMetamask.args = { variant: 'wallet', type: 'wallet-metamask' };
 
 export const WalletWalletConnect = Template.bind({});
-WalletWalletConnect.args = { type: 'wallet-walletconnect' };
+WalletWalletConnect.args = { variant: 'wallet', type: 'wallet-walletconnect' };
 
 export const WalletGnosis = Template.bind({});
-WalletGnosis.args = { type: 'wallet-gnosis' };
+WalletGnosis.args = { variant: 'wallet', type: 'wallet-gnosis' };

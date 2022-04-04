@@ -1,27 +1,31 @@
-import { Chain, Ticker } from '../interfaces';
+import { Chain, NativeTokenTicker } from '../interfaces';
 
 const chainToPrettyNameMap = {
   ethereum: 'Ethereum',
   fantom: 'Fantom',
   'ethereum-fork': 'Ethereum Fork',
+  unsupported: 'Unsupported',
 };
 
 const chainToPrettyLongNameMap = {
   ethereum: 'Ethereum Mainnet',
   fantom: 'Fantom Opera',
   'ethereum-fork': 'Tempus Ethereum Fork',
+  unsupported: 'Unsupported Network',
 };
 
 const chainToTickerMap = {
   ethereum: 'ETH',
-  fantom: 'FANTOM',
+  fantom: 'FTM',
   'ethereum-fork': 'ETH',
+  unsupported: '',
 };
 
 const chainNameToHexChainIdMap = {
   ethereum: '0x1',
   fantom: '0xfa',
   'ethereum-fork': '0x7a69',
+  unsupported: '',
 };
 
 const chainIdToChainNameMap = new Map<string, Chain>();
@@ -37,8 +41,8 @@ export function prettifyChainNameLong(chainName: Chain): string {
   return chainToPrettyLongNameMap[chainName];
 }
 
-export function chainToTicker(chainName: Chain): Ticker {
-  return chainToTickerMap[chainName] as Ticker;
+export function chainToTicker(chainName: Chain): NativeTokenTicker {
+  return chainToTickerMap[chainName] as NativeTokenTicker;
 }
 
 export function chainNameToHexChainId(chainName: Chain): string {
