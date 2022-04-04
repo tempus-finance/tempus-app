@@ -4,7 +4,7 @@ import Icon, { IconType } from '../Icon';
 import ButtonWrapper from '../ButtonWrapper';
 import './IconButton.scss';
 
-interface IconButtonProps {
+export interface IconButtonProps {
   type: IconType;
   onClick: (value: IconType) => void;
   selected?: boolean;
