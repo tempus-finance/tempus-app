@@ -38,7 +38,7 @@ jobs:
           paths:
             - ./
 
-  unit-test:
+  test:
     docker:
       - image: cimg/node:15.1
     steps:
@@ -131,7 +131,7 @@ workflows:
       - metamask:
           requires:
             - build      
-      - unit-test:
+      - test:
           requires:
             - build
       - e2e-test:
@@ -140,7 +140,7 @@ workflows:
             - metamask
       - deploy-to-stage:
           requires:
-            - unit-test
+            - test
             - e2e-test
           filters:
             branches:
