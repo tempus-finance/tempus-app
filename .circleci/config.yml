@@ -52,7 +52,7 @@ jobs:
           paths:
             - ./
 
-  e2e-setup:
+  metamask:
     docker:
       - image: mcr.microsoft.com/playwright:focal
         environment:
@@ -98,7 +98,7 @@ jobs:
           command: |
             set -e
             TEST_FILES=$(circleci tests glob "/root/project/tests/*.spec.js" | circleci tests split --split-by=timings)
-            xvfb-run --auto-servernum --server-num=2 npm run e2e $TEST_FILES
+            xvfb-run --auto-servernum --server-num=2 npm run e2e $TEST_FILES || true
       - persist_to_workspace:
           root: ./
           paths:
@@ -126,7 +126,7 @@ workflows:
   build&test:
     jobs:
       - build
-      - e2e-setup:
+      - metamask:
           requires:
             - build      
       - unit-test:
@@ -135,7 +135,7 @@ workflows:
       - e2e-test:
           requires:
             - build
-            - e2e-setup
+            - metamask
       - deploy-to-stage:
           requires:
             - unit-test
