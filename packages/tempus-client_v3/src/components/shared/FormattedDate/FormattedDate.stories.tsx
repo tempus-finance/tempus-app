@@ -1,4 +1,5 @@
 import { ComponentStory, ComponentMeta } from '@storybook/react';
+import { CSSProperties } from 'react';
 import FormattedDate from './FormattedDate';
 
 export default {
@@ -8,10 +9,6 @@ export default {
     date: {
       control: { type: 'date' },
     },
-    size: {
-      options: ['small', 'medium', 'large'],
-      control: { type: 'radio' },
-    },
     separatorContrast: {
       options: ['low', 'high'],
       control: { type: 'radio' },
@@ -19,14 +16,27 @@ export default {
   },
 } as ComponentMeta<typeof FormattedDate>;
 
+const style: CSSProperties = {
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  justifyContent: 'center',
+  padding: '10px',
+};
+
 const Template: ComponentStory<typeof FormattedDate> = props => {
-  const { date, size, separatorContrast } = props;
-  return <FormattedDate date={date} size={size} separatorContrast={separatorContrast} />;
+  const { date, separatorContrast } = props;
+  return (
+    <div style={style}>
+      <FormattedDate date={date} size="small" separatorContrast={separatorContrast} />
+      <FormattedDate date={date} size="medium" separatorContrast={separatorContrast} />
+      <FormattedDate date={date} size="large" separatorContrast={separatorContrast} />
+    </div>
+  );
 };
 
 export const StyledFormattedDate = Template.bind({});
 StyledFormattedDate.args = {
-  date: new Date(2022, 3, 4),
-  size: 'medium',
+  date: new Date(),
   separatorContrast: 'high',
 };
