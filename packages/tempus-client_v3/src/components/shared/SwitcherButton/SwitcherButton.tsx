@@ -1,4 +1,4 @@
-import React, { FC, memo, useMemo } from 'react';
+import React, { FC, memo } from 'react';
 import { colors } from '../Colors';
 import Button from '../Button';
 import Typography from '../Typography';
@@ -18,12 +18,10 @@ export interface SwitcherButtonProps {
 const SwitcherButton: FC<SwitcherButtonProps> = props => {
   const { logoType, label, title, selected, onClick } = props;
 
-  const weight = useMemo(() => (selected ? 'bold' : 'regular'), [selected]);
-
   return (
     <Button className="tc__switcher-btn" title={title} onClick={onClick}>
       <div className="tc__switcher-btn__label">
-        <Typography variant="body-primary" weight={weight}>
+        <Typography variant="body-primary" weight={selected ? 'bold' : 'regular'}>
           {label}
         </Typography>
         {selected && <Icon type="checkmark" color={colors.textSuccess} size="small" />}
