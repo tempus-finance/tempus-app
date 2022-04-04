@@ -211,3 +211,15 @@ ButtonTertiaryDefault.args = {
   backgroundColor: Colors.buttonTertiaryDefault,
   colorName: 'ButtonTertiaryDefault',
 };
+
+export const FormattedDateSeparatorLowContrast = Template.bind({});
+FormattedDateSeparatorLowContrast.args = {
+  backgroundColor: Colors.formattedDateSeparatorLowContrast,
+  colorName: 'FormattedDateSeparatorLowContrast',
+};
+
+export const FormattedDateSeparatorHighContrast = Template.bind({});
+FormattedDateSeparatorHighContrast.args = {
+  backgroundColor: Colors.formattedDateSeparatorHighContrast,
+  colorName: 'FormattedDateSeparatorHighContrast',
+};
