@@ -9,7 +9,7 @@ exports[`SwitcherButton renders a button with a title attribute 1`] = `
     class="tc__switcher-btn__label"
   >
     <div
-      style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif;"
+      style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
     >
       button label
     </div>
@@ -252,7 +252,7 @@ exports[`SwitcherButton renders a selected button 1`] = `
     class="tc__switcher-btn__label"
   >
     <div
-      style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 700; font-family: 'DM Sans', sans-serif;"
+      style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
     >
       button label
     </div>

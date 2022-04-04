@@ -92,6 +92,42 @@ TextPrimary.args = {
   colorName: 'TextPrimary',
 };
 
+export const SecondaryRegular = Template.bind({});
+SecondaryRegular.args = {
+  backgroundColor: Colors.secondaryRegular,
+  colorName: 'SecondaryRegular',
+};
+
+export const SecondaryLight = Template.bind({});
+SecondaryLight.args = {
+  backgroundColor: Colors.secondaryLight,
+  colorName: 'SecondaryLight',
+};
+
+export const TextPrimaryInverted = Template.bind({});
+TextPrimaryInverted.args = {
+  backgroundColor: Colors.textPrimaryInverted,
+  colorName: 'TextPrimaryInverted',
+};
+
+export const TextSuccess = Template.bind({});
+TextSuccess.args = {
+  backgroundColor: Colors.textSuccess,
+  colorName: 'TextSuccess',
+};
+
+export const TextDisabled = Template.bind({});
+TextDisabled.args = {
+  backgroundColor: Colors.textDisabled,
+  colorName: 'TextDisabled',
+};
+
+export const TextDisabledSecondary = Template.bind({});
+TextDisabledSecondary.args = {
+  backgroundColor: Colors.textDisabledSecondary,
+  colorName: 'TextDisabledSecondary',
+};
+
 export const ToggleSwitchInactiveBackground = Template.bind({});
 ToggleSwitchInactiveBackground.args = {
   backgroundColor: Colors.toggleSwitchInactiveBackground,
@@ -120,4 +156,58 @@ export const TabsBorder = Template.bind({});
 TabsBorder.args = {
   backgroundColor: Colors.tabsBorder,
   colorName: 'TabsBorder',
+};
+
+export const ButtonDefault = Template.bind({});
+ButtonDefault.args = {
+  backgroundColor: Colors.buttonDefault,
+  colorName: 'ButtonDefault',
+};
+
+export const ButtonBorder = Template.bind({});
+ButtonBorder.args = {
+  backgroundColor: Colors.buttonBorder,
+  colorName: 'ButtonBorder',
+};
+
+export const ButtonSuccess = Template.bind({});
+ButtonSuccess.args = {
+  backgroundColor: Colors.buttonSuccess,
+  colorName: 'ButtonSuccess',
+};
+
+export const ButtonBorderSuccess = Template.bind({});
+ButtonBorderSuccess.args = {
+  backgroundColor: Colors.buttonBorderSuccess,
+  colorName: 'ButtonBorderSuccess',
+};
+
+export const ButtonDisabled = Template.bind({});
+ButtonDisabled.args = {
+  backgroundColor: Colors.buttonDisabled,
+  colorName: 'ButtonDisabled',
+};
+
+export const ButtonSecondaryHighlight = Template.bind({});
+ButtonSecondaryHighlight.args = {
+  backgroundColor: Colors.buttonSecondaryHighlight,
+  colorName: 'ButtonSecondaryHighlight',
+};
+
+export const ButtonSecondaryLoading = Template.bind({});
+ButtonSecondaryLoading.args = {
+  backgroundColor: Colors.buttonSecondaryLoading,
+  colorName: 'ButtonSecondaryLoading',
+};
+
+export const ButtonSecondaryDisabled = Template.bind({});
+ButtonSecondaryDisabled.args = {
+  backgroundColor: Colors.buttonSecondaryDisabled,
+  colorName: 'ButtonSecondaryDisabled',
+};
+
+export const ButtonTertiaryDefault = Template.bind({});
+ButtonTertiaryDefault.args = {
+  backgroundColor: Colors.buttonTertiaryDefault,
+  colorName: 'ButtonTertiaryDefault',
 };
