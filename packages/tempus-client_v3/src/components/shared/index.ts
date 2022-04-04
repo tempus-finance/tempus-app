@@ -1,4 +1,5 @@
 import Checkbox from './Checkbox';
+import FormattedDate from './FormattedDate';
 import Typography from './Typography';
 import Icon from './Icon';
 import Logo from './Logo';
@@ -16,4 +17,16 @@ export * from './Loading';
 export * from './Radio';
 export * from './Tabs';
 
-export { ButtonWrapper, Checkbox, Icon, Logo, Link, Loading, ToggleSwitch, Typography, SwitcherButton, ActionButton };
+export {
+  ActionButton,
+  ButtonWrapper,
+  Checkbox,
+  FormattedDate,
+  Icon,
+  Link,
+  Loading,
+  Logo,
+  SwitcherButton,
+  ToggleSwitch,
+  Typography,
+};
