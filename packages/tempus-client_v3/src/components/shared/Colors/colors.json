@@ -1,6 +1,7 @@
 {
   "textPrimary": "#222222",
   "textPrimaryInverted": "#FFFFFF",
+  "textSuccess": "#4BB543",
 
   "primaryMain": "#2B6E84",
   "primaryLight": "#129CA4",
@@ -19,5 +20,9 @@
   "iconButtonBorder": "#BFC0C0",
   "iconButtonIcon": "#BFC0C0",
   "iconButtonSelectedBackground": "#222222",
-  "iconButtonSelectedIcon": "#FFFFFF"
+  "iconButtonSelectedIcon": "#FFFFFF",
+
+  "switcherButtonBorder": "#222222",
+  "switcherButtonBackground": "#FFFFFF",
+  "switcherButtonBackgroundHighlight": "#F3F7F9"
 }
