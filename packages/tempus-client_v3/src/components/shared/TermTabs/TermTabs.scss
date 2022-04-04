@@ -10,8 +10,8 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background-color: #ffffff;
-  border: 1px solid #bfc0c0;
+  background-color: var(--termTabsBackground);
+  border: 1px solid var(--termTabsBorder);
   box-sizing: border-box;
   border-radius: 4px;
 
@@ -21,6 +21,6 @@
 }
 
 .tc__term-tabs__term-selected {
-  background: #f3f7f9;
-  border: 1px solid #474350;
+  background-color: var(--termTabsSelectedBackground);
+  border-color: var(--termTabsSelectedBorder);
 }

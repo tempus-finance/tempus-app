@@ -223,3 +223,27 @@ FormattedDateSeparatorHighContrast.args = {
   backgroundColor: Colors.formattedDateSeparatorHighContrast,
   colorName: 'FormattedDateSeparatorHighContrast',
 };
+
+export const TermTabsBackground = Template.bind({});
+TermTabsBackground.args = {
+  backgroundColor: Colors.termTabsBackground,
+  colorName: 'TermTabsBackground',
+};
+
+export const TermTabsBorder = Template.bind({});
+TermTabsBorder.args = {
+  backgroundColor: Colors.termTabsBorder,
+  colorName: 'TermTabsBorder',
+};
+
+export const TermTabsSelectedBackground = Template.bind({});
+TermTabsSelectedBackground.args = {
+  backgroundColor: Colors.termTabsSelectedBackground,
+  colorName: 'TermTabsSelectedBackground',
+};
+
+export const TermTabsSelectedBorder = Template.bind({});
+TermTabsSelectedBorder.args = {
+  backgroundColor: Colors.termTabsSelectedBorder,
+  colorName: 'TermTabsSelectedBorder',
+};
