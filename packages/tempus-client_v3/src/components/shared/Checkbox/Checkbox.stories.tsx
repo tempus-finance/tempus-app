@@ -1,3 +1,4 @@
+import { ComponentStory } from '@storybook/react';
 import React from 'react';
 
 import Checkbox from './Checkbox';
@@ -16,7 +17,7 @@ const style = {
   padding: '10px',
 };
 
-const Template = args => (
+const Template: ComponentStory<typeof Checkbox> = args => (
   <div style={style}>
     <Checkbox {...args} />
   </div>

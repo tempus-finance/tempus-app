@@ -1,3 +1,4 @@
+import { ComponentStory } from '@storybook/react';
 import React from 'react';
 
 import ButtonWrapper from './ButtonWrapper';
@@ -16,7 +17,7 @@ const style = {
   padding: '10px',
 };
 
-const Template = args => (
+const Template: ComponentStory<typeof ButtonWrapper> = args => (
   <div style={style}>
     <ButtonWrapper {...args}>My Button Wrapper</ButtonWrapper>
   </div>

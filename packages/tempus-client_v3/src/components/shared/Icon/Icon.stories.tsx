@@ -1,3 +1,4 @@
+import { ComponentStory } from '@storybook/react';
 import React from 'react';
 import Icon from './Icon';
 
@@ -15,9 +16,9 @@ const style = {
   padding: '10px',
 };
 
-const Template = args => (
+const Template: ComponentStory<typeof Icon> = args => (
   <div style={style}>
-    <Icon {...args} size="small" />
+    <Icon {...args} type={args.type} size="small" />
     <Icon {...args} size="medium" />
     <Icon {...args} size="large" />
     <Icon {...args} size={48} />

@@ -1,3 +1,4 @@
+import { ComponentStory } from '@storybook/react';
 import IconButtonGroup from './IconButtonGroup';
 
 export default {
@@ -19,7 +20,7 @@ const style = {
   height: '100px',
 };
 
-const Template = args => (
+const Template: ComponentStory<typeof IconButtonGroup> = args => (
   <div style={style}>
     <IconButtonGroup {...args} />
   </div>
