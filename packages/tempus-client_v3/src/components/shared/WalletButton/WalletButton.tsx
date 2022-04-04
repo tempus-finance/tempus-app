@@ -1,4 +1,4 @@
-import { FC, memo } from 'react';
+import { FC, memo, useMemo } from 'react';
 import Blockies from 'react-blockies';
 import { Chain, chainToTicker, shortenAccount } from 'tempus-core-services';
 import Button from '../Button';
@@ -20,9 +20,15 @@ interface WalletButtonProps {
 const WalletButton: FC<WalletButtonProps> = props => {
   const { address, balance, chain, onConnect, onNetworkClick, onWalletClick } = props;
 
-  const selectedChainTokenTicker = chainToTicker(chain);
+  const selectedChainTokenTicker = useMemo(() => {
+    return chainToTicker(chain);
+  }, [chain]);
+
+  const shortAddress = useMemo(() => {
+    return shortenAccount(address);
+  }, [address]);
+
   const supportedChain = chain !== 'unsupported';
-  const shortAddress = shortenAccount(address);
 
   return (
     <>
