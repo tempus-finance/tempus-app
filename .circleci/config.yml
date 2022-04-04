@@ -52,6 +52,33 @@ jobs:
           paths:
             - ./
 
+  e2e-setup:
+    docker:
+      - image: mcr.microsoft.com/playwright:focal
+        environment:
+          METAMASK_RECOVERY_PHRASE: $METAMASK_RECOVERY_PHRASE
+          METAMASK_PASSWORD: $METAMASK_PASSWORD
+          METAMASK_ACCOUNT_ETH_FORK: $METAMASK_ACCOUNT_ETH_FORK
+          METAMASK_ACCOUNT_FANTOM: $METAMASK_ACCOUNT_FANTOM
+          NODE_ENV: development
+    steps:
+      - attach_workspace:
+          at: ./
+      - run:
+          name: E2E Tests
+          command: |
+            apt update
+            apt install -y p7zip-full || true
+            xvfb-run --auto-servernum --server-num=1 node setup.js
+      - persist_to_workspace:
+          root: ./
+          paths:
+            - ./
+      - store_test_results:
+          path: /root/project/test-results
+      - store_artifacts:
+          path: /root/project/test-results
+
   e2e-test:
     docker:
       - image: mcr.microsoft.com/playwright:focal
@@ -68,12 +95,9 @@ jobs:
       - run:
           name: E2E Tests
           command: |
-            apt update
-            apt install -y p7zip-full || true
-            xvfb-run --auto-servernum --server-num=1 node setup.js
             set -e
             TEST_FILES=$(circleci tests glob "tests/*.spec.js" | circleci tests split --split-by=timings)
-            xvfb-run --auto-servernum --server-num=2 npm run e2e $TEST_FILES
+            xvfb-run --auto-servernum --server-num=2 playwright test --headed --workers=1 $TEST_FILES
       - persist_to_workspace:
           root: ./
           paths:
@@ -101,12 +125,16 @@ workflows:
   build&test:
     jobs:
       - build
+      - e2e-setup:
+          requires:
+            - build      
       - unit-test:
           requires:
             - build
       - e2e-test:
           requires:
             - build
+            - e2e-setup
       - deploy-to-stage:
           requires:
             - unit-test
