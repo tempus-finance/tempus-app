@@ -1,7 +1,7 @@
 import { FC, memo, useMemo } from 'react';
 import Blockies from 'react-blockies';
 import { Chain, chainToTicker, shortenAccount } from 'tempus-core-services';
-import Button from '../Button';
+import ButtonWrapper from '../ButtonWrapper';
 import Icon from '../Icon';
 import Logo from '../Logo';
 import Typography from '../Typography';
@@ -33,20 +33,24 @@ const WalletButton: FC<WalletButtonProps> = props => {
   return (
     <>
       {!address && (
-        <Button className="tc__walletButton__disconnected" onClick={onConnect}>
+        <ButtonWrapper className="tc__walletButton__disconnected" onClick={onConnect}>
           <Typography variant="body-primary" weight="bold">
             {/* TODO - Needs translations */}
             Connect Wallet
           </Typography>
-        </Button>
+        </ButtonWrapper>
       )}
       {address && (
         <div className="tc__walletButton__connected">
-          <Button className="tc__walletButton__connected-network" onClick={onNetworkClick}>
+          <ButtonWrapper className="tc__walletButton__connected-network" onClick={onNetworkClick}>
             {!supportedChain && <Icon type="exclamation-error" size={20} />}
             {supportedChain && <Logo type={`token-${selectedChainTokenTicker}`} size="small" />}
-          </Button>
-          <Button className="tc__walletButton__connected-wallet" disabled={!supportedChain} onClick={onWalletClick}>
+          </ButtonWrapper>
+          <ButtonWrapper
+            className="tc__walletButton__connected-wallet"
+            disabled={!supportedChain}
+            onClick={onWalletClick}
+          >
             {!supportedChain && (
               <Typography variant="body-primary" weight="bold">
                 Unsupported
@@ -71,7 +75,7 @@ const WalletButton: FC<WalletButtonProps> = props => {
                 </div>
               </>
             )}
-          </Button>
+          </ButtonWrapper>
         </div>
       )}
     </>
