@@ -96,7 +96,7 @@ jobs:
           name: E2E Tests
           command: |
             set -e
-            TEST_FILES=$(circleci tests glob "tests/*.spec.js" | circleci tests split --split-by=timings)
+            TEST_FILES=$(circleci tests glob "/root/project/tests/*.spec.js" | circleci tests split --split-by=timings)
             xvfb-run --auto-servernum --server-num=2 playwright test --headed --workers=1 $TEST_FILES
       - persist_to_workspace:
           root: ./
