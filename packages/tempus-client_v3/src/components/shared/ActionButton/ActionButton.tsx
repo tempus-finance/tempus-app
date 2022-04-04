@@ -1,5 +1,5 @@
 import { FC, memo } from 'react';
-import Button from '../Button';
+import Button from '../ButtonWrapper';
 import Icon from '../Icon';
 import Loading, { LoadingColor } from '../Loading';
 import Typography, { TypographyColor, TypographyWeight } from '../Typography';

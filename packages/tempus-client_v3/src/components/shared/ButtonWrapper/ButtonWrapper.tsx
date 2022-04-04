@@ -1,15 +1,15 @@
 import React, { FC, forwardRef, memo, HTMLProps } from 'react';
 
-import './button.scss';
+import './ButtonWrapper.scss';
 
-export interface ButtonProps {
+export interface ButtonWrapperProps {
   className?: string;
   title?: string;
   disabled?: boolean;
   onClick?: () => void;
 }
 
-const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
+const Button = forwardRef<HTMLButtonElement, ButtonWrapperProps>((props, ref) => {
   const { children, className = '', title, disabled = false, onClick } = props;
 
   return (
@@ -19,4 +19,4 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
   );
 });
 
-export default memo(Button as FC<ButtonProps & HTMLProps<HTMLButtonElement>>);
+export default memo(Button as FC<ButtonWrapperProps & HTMLProps<HTMLButtonElement>>);
