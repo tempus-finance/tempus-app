@@ -1,0 +1,26 @@
+.tc__term-tabs {
+  height: 76px;
+  display: flex;
+}
+
+.tc__term-tabs__term {
+  margin-right: 8px;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #ffffff;
+  border: 1px solid #bfc0c0;
+  box-sizing: border-box;
+  border-radius: 4px;
+
+  &:last-child {
+    margin-right: 0;
+  }
+}
+
+.tc__term-tabs__term-selected {
+  background: #f3f7f9;
+  border: 1px solid #474350;
+}
