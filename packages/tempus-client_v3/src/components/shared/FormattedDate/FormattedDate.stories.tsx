@@ -1,5 +1,5 @@
-import { Story } from '@storybook/react';
-import FormattedDate, { FormattedDateProps } from './FormattedDate';
+import { ComponentStory, ComponentMeta } from '@storybook/react';
+import FormattedDate from './FormattedDate';
 
 export default {
   title: 'FormattedDate',
@@ -17,9 +17,9 @@ export default {
       control: { type: 'radio' },
     },
   },
-};
+} as ComponentMeta<typeof FormattedDate>;
 
-const Template: Story<FormattedDateProps> = props => {
+const Template: ComponentStory<typeof FormattedDate> = props => {
   const { date, size, separatorContrast } = props;
   return <FormattedDate date={date} size={size} separatorContrast={separatorContrast} />;
 };
