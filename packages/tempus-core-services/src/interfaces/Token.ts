@@ -31,4 +31,6 @@ export type Ticker =
   | 'yvUSDT'
   | 'yvUSDC';
 
+export type NativeTokenTicker = 'ETH' | 'FTM';
+
 export type PoolShares = 'Principals' | 'Yields';
