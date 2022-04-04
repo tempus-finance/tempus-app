@@ -1,3 +1,4 @@
+import { ComponentStory } from '@storybook/react';
 import React from 'react';
 import Logo from './Logo';
 
@@ -15,7 +16,7 @@ const style = {
   padding: '10px',
 };
 
-const Template = args => (
+const Template: ComponentStory<typeof Logo> = args => (
   <div style={style}>
     <Logo {...args} size="small" />
     <Logo {...args} size="medium" />
