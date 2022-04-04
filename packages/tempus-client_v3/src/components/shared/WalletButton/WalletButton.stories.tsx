@@ -43,4 +43,7 @@ Primary.args = {
   address: '0xAFE0B5E1bF4b9230A53e4A4715074ABf5B45F5de',
   balance: '34.2345',
   chain: 'ethereum',
+  onConnect: () => {},
+  onNetworkClick: () => {},
+  onWalletClick: () => {},
 };

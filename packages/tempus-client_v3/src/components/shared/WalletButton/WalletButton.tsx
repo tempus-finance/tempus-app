@@ -18,7 +18,7 @@ interface WalletButtonProps {
 }
 
 const WalletButton: FC<WalletButtonProps> = props => {
-  const { address, balance, chain } = props;
+  const { address, balance, chain, onConnect, onNetworkClick, onWalletClick } = props;
 
   const selectedChainTokenTicker = chainToTicker(chain);
   const supportedChain = chain !== 'unsupported';
@@ -27,7 +27,7 @@ const WalletButton: FC<WalletButtonProps> = props => {
   return (
     <>
       {!address && (
-        <Button className="tc__walletButton__disconnected">
+        <Button className="tc__walletButton__disconnected" onClick={onConnect}>
           <Typography variant="body-primary" weight="bold">
             {/* TODO - Needs translations */}
             Connect Wallet
@@ -36,11 +36,11 @@ const WalletButton: FC<WalletButtonProps> = props => {
       )}
       {address && (
         <div className="tc__walletButton__connected">
-          <Button className="tc__walletButton__connected-network">
+          <Button className="tc__walletButton__connected-network" onClick={onNetworkClick}>
             {!supportedChain && <Icon type="exclamation-error" size={20} />}
             {supportedChain && <TokenLogo type={`token-${selectedChainTokenTicker}`} size="small" />}
           </Button>
-          <Button className="tc__walletButton__connected-wallet" disabled={!supportedChain}>
+          <Button className="tc__walletButton__connected-wallet" disabled={!supportedChain} onClick={onWalletClick}>
             {!supportedChain && (
               <Typography variant="body-primary" weight="bold">
                 Unsupported
