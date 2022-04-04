@@ -3,9 +3,7 @@
 
 /** @type {import('@playwright/test').PlaywrightTestConfig} */
 const config = {
-    reporter: [
-        ['list']
-    ],
+    reporter: [['junit', { outputFile: process.env.CI ? '/root/project/test-results/results.xml' : './test-results/results.xml' }]],
     use: {
         screenshot: 'on',
         video: 'on',

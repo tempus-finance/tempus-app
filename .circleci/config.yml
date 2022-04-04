@@ -104,7 +104,7 @@ jobs:
           paths:
             - ./
       - store_test_results:
-          path: /root/project/test-results
+          path: /root/project/test-results/results.xml'
       - store_artifacts:
           path: /root/project/test-results
 
