@@ -1,9 +1,9 @@
 import { fireEvent, render } from '@testing-library/react';
-import SwitcherButton from './SwitcherButton';
+import SwitcherButton, { SwitcherButtonProps } from './SwitcherButton';
 
 const mockOnClick = jest.fn();
 
-const defaultProps = {
+const defaultProps: SwitcherButtonProps = {
   logoType: 'wallet-metamask',
   label: 'button label',
   title: 'button title',
@@ -11,7 +11,7 @@ const defaultProps = {
   onClick: mockOnClick,
 };
 
-const subject = props => render(<SwitcherButton {...props} />);
+const subject = (props: SwitcherButtonProps) => render(<SwitcherButton {...props} />);
 
 describe('SwitcherButton', () => {
   it('renders a button with a title attribute', () => {

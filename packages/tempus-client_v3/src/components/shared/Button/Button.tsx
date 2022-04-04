@@ -2,7 +2,7 @@ import React, { FC, forwardRef, memo, HTMLProps } from 'react';
 
 import './button.scss';
 
-interface ButtonProps {
+export interface ButtonProps {
   className?: string;
   title?: string;
   disabled?: boolean;
