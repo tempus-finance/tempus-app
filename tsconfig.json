@@ -1,11 +1,7 @@
 {
   "compilerOptions": {
     "target": "es5",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -20,9 +16,5 @@
     "noEmit": true,
     "jsx": "react"
   },
-  "include": [
-    "packages/tempus-core/src",
-    "packages/tempus-client_v2/src",
-    "packages/tempus-client_v3/src"
-  ]
+  "include": ["packages/tempus-core/src", "packages/tempus-client_v3/src"]
 }

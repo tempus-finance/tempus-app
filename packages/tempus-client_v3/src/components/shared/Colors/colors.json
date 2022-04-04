@@ -38,5 +38,9 @@
   "buttonSecondaryHighlight": "#F3F7F9",
   "buttonSecondaryLoading": "#F3F7F9",
   "buttonSecondaryDisabled": "#BFC0C0",
-  "buttonTertiaryDefault": "#F3F7F9"
+  "buttonTertiaryDefault": "#F3F7F9",
+
+  "switcherButtonBorder": "#222222",
+  "switcherButtonBackground": "#FFFFFF",
+  "switcherButtonBackgroundHighlight": "#F3F7F9"
 }

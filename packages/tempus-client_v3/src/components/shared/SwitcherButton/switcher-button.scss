@@ -1,0 +1,25 @@
+.tc__switcher-btn {
+  width: 308px;
+  height: 52px;
+  padding: 0 14px 0 16px;
+  border: 1px solid var(--switcherButtonBorder);
+  border-radius: 4px;
+  background-color: var(--switcherButtonBackground);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .tc__switcher-btn__label {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+
+    svg {
+      margin: 0 8px;
+    }
+  }
+
+  &:hover {
+    background-color: var(--switcherButtonBackgroundHighlight);
+  }
+}
