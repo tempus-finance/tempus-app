@@ -1,4 +1,4 @@
-import { FC, memo, useMemo } from 'react';
+import { FC, Fragment, memo, useMemo } from 'react';
 import Typography, { TypographyVariant, TypographyWeight } from '../Typography';
 import './FormattedDate.scss';
 
@@ -8,6 +8,7 @@ interface FormattedDateProps {
   date: Date;
   size?: FormattedDateSize;
   separatorContrast?: 'low' | 'high';
+  dateParts?: Set<Intl.DateTimeFormatPartTypes>;
 }
 
 interface FormattedDateStyleConfig {
@@ -36,14 +37,14 @@ const formatOptions: Intl.DateTimeFormatOptions = {
 };
 
 const FormattedDate: FC<FormattedDateProps> = props => {
-  const { date, size = 'medium', separatorContrast = 'high' } = props;
+  const { date, size = 'medium', separatorContrast = 'high', dateParts = new Set(['day', 'month', 'year']) } = props;
   const formattedDateParts = useMemo(
     () =>
       new Intl.DateTimeFormat(window.navigator.language, formatOptions)
         .formatToParts(date)
-        .filter(part => part.type === 'day' || part.type === 'month' || part.type === 'year')
+        .filter(part => dateParts.has(part.type))
         .map(part => part.value.toString()),
-    [date],
+    [date, dateParts],
   );
   const dateStyle = formattedDateStyleMap.get(size);
 
@@ -53,21 +54,18 @@ const FormattedDate: FC<FormattedDateProps> = props => {
 
   return (
     <span className="tc__formatted-date">
-      <Typography variant={dateStyle.typographyVariant} type="mono" weight={dateStyle.typographyWeight}>
-        {formattedDateParts[0]}
-      </Typography>
-      <span
-        className={`tc__formatted-date__separator tc__formatted-date__separator-${separatorContrast}-contrast`}
-      ></span>
-      <Typography variant={dateStyle.typographyVariant} type="mono" weight={dateStyle.typographyWeight}>
-        {formattedDateParts[1]}
-      </Typography>
-      <span
-        className={`tc__formatted-date__separator tc__formatted-date__separator-${separatorContrast}-contrast`}
-      ></span>
-      <Typography variant={dateStyle.typographyVariant} type="mono" weight={dateStyle.typographyWeight}>
-        {formattedDateParts[2]}
-      </Typography>
+      {formattedDateParts.map((part, index) => (
+        <Fragment key={`formatted-date-part-${index}`}>
+          <Typography variant={dateStyle.typographyVariant} type="mono" weight={dateStyle.typographyWeight}>
+            {part}
+          </Typography>
+          {index < formattedDateParts.length - 1 && (
+            <span
+              className={`tc__formatted-date__separator tc__formatted-date__separator-${separatorContrast}-contrast`}
+            ></span>
+          )}
+        </Fragment>
+      ))}
     </span>
   );
 };
