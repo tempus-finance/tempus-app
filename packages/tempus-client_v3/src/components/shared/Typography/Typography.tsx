@@ -11,7 +11,13 @@ export type TypographyVariant =
   | 'body-secondary'
   | 'body-tertiary';
 
-export type TypographyColor = 'text-primary' | 'text-primary-inverted' | 'primary-dark';
+export type TypographyColor =
+  | 'text-primary'
+  | 'primary-dark'
+  | 'text-primary-inverted'
+  | 'text-success'
+  | 'text-disabled'
+  | 'text-disabled-secondary';
 
 export type TypographyWeight = 'regular' | 'medium' | 'bold';
 
@@ -56,8 +62,11 @@ typographyVariantMap.set('body-tertiary', {
 
 const typographyColorMap = new Map<TypographyColor, string>();
 typographyColorMap.set('text-primary', colors.textPrimary);
-typographyColorMap.set('text-primary-inverted', colors.textPrimaryInverted);
 typographyColorMap.set('primary-dark', colors.primaryDark);
+typographyColorMap.set('text-primary-inverted', colors.textPrimaryInverted);
+typographyColorMap.set('text-success', colors.textSuccess);
+typographyColorMap.set('text-disabled', colors.textDisabled);
+typographyColorMap.set('text-disabled-secondary', colors.textDisabledSecondary);
 
 const typographyWeightMap = new Map<TypographyWeight, number>();
 typographyWeightMap.set('regular', 400);
@@ -71,13 +80,14 @@ typographyTypeMap.set('mono', "'Azeret Mono', monospace");
 interface TypographyProps {
   variant: TypographyVariant;
   color?: TypographyColor;
+  opacity?: number;
   weight?: TypographyWeight;
   type?: TypographyType;
   html?: string;
 }
 
 const Typography: FC<TypographyProps & React.HTMLProps<HTMLDivElement>> = props => {
-  const { variant, color, weight, type, html, children } = props;
+  const { variant, color, weight, opacity = 1, type, html, children } = props;
 
   let fontColor: string | undefined;
   if (color) {
@@ -107,6 +117,7 @@ const Typography: FC<TypographyProps & React.HTMLProps<HTMLDivElement>> = props 
         color: fontColor,
         fontWeight: fontWeight,
         fontFamily: fontFamily,
+        opacity,
       }}
     >
       {html ? parse(html) : children}

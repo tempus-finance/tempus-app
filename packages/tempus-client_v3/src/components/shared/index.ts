@@ -6,6 +6,7 @@ import ToggleSwitch from './ToggleSwitch';
 import Loading from './Loading';
 import Button from './Button';
 import Link from './Link';
+import ActionButton from './ActionButton';
 import SwitcherButton from './SwitcherButton';
 
 export * from './Colors';
@@ -15,4 +16,4 @@ export * from './Loading';
 export * from './Radio';
 export * from './Tabs';
 
-export { Button, Checkbox, Icon, Logo, Link, Loading, ToggleSwitch, Typography, SwitcherButton };
+export { Button, Checkbox, Icon, Logo, Link, Loading, ToggleSwitch, Typography, SwitcherButton, ActionButton };
