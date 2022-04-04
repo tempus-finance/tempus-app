@@ -3,7 +3,7 @@ import Blockies from 'react-blockies';
 import { Chain, chainToTicker, shortenAccount } from 'tempus-core-services';
 import Button from '../Button';
 import Icon from '../Icon';
-import { TokenLogo } from '../Logo';
+import Logo from '../Logo';
 import Typography from '../Typography';
 
 import './WalletButton.scss';
@@ -38,7 +38,7 @@ const WalletButton: FC<WalletButtonProps> = props => {
         <div className="tc__walletButton__connected">
           <Button className="tc__walletButton__connected-network" onClick={onNetworkClick}>
             {!supportedChain && <Icon type="exclamation-error" size={20} />}
-            {supportedChain && <TokenLogo type={`token-${selectedChainTokenTicker}`} size="small" />}
+            {supportedChain && <Logo type={`token-${selectedChainTokenTicker}`} size="small" />}
           </Button>
           <Button className="tc__walletButton__connected-wallet" disabled={!supportedChain} onClick={onWalletClick}>
             {!supportedChain && (

@@ -1,4 +1,4 @@
-import { FC, memo } from 'react';
+import React, { FC, memo } from 'react';
 
 import TokenETH from './TokenETH';
 import TokenETHLight from './TokenETHLight';
@@ -32,9 +32,7 @@ export const LOGO_SIZE_MEDIUM = 32;
 export const LOGO_SIZE_LARGE = 40;
 export const LOGO_SIZE_DEFAULT = LOGO_SIZE_MEDIUM;
 
-export type LogoType = 'token' | 'protocol' | 'wallet';
-
-export type TokenLogoType =
+export type LogoType =
   | 'token-ETH'
   | 'token-ETH-light'
   | 'token-USDC'
@@ -46,7 +44,7 @@ export type TokenLogoType =
   | 'token-YFI'
   | 'token-wBTC'
   | 'token-wBTC-dark'
-  | 'token-wETH'
+  | 'token-WETH'
   | 'token-wFTM'
   | 'token-stETH'
   | 'token-yvUSDC'
@@ -54,17 +52,19 @@ export type TokenLogoType =
   | 'token-yvDAI'
   | 'token-yvBTC'
   | 'token-yvYFI'
-  | 'token-yvwETH';
-
-export type ProtocolLogoType = 'protocol-Aave' | 'protocol-Lido' | 'protocol-Rari';
-
-export type WalletLogoType = 'wallet-metamask' | 'wallet-walletconnect' | 'wallet-gnosis';
+  | 'token-yvwETH'
+  | 'protocol-Aave'
+  | 'protocol-Lido'
+  | 'protocol-Rari'
+  | 'wallet-metamask'
+  | 'wallet-walletconnect'
+  | 'wallet-gnosis';
 
 export interface LogoProps {
   size?: 'large' | 'medium' | 'small' | number;
 }
 
-const TokenLogo: FC<LogoProps & { type: TokenLogoType }> = memo(props => {
+const Logo: FC<LogoProps & { type: LogoType }> = props => {
   switch (props.type) {
     case 'token-ETH':
       return <TokenETH {...props} />;
@@ -88,7 +88,7 @@ const TokenLogo: FC<LogoProps & { type: TokenLogoType }> = memo(props => {
       return <TokenWBTC {...props} />;
     case 'token-wBTC-dark':
       return <TokenWBTCDark {...props} />;
-    case 'token-wETH':
+    case 'token-WETH':
       return <TokenWETH {...props} />;
     case 'token-wFTM':
       return <TokenWFTM {...props} />;
@@ -106,26 +106,12 @@ const TokenLogo: FC<LogoProps & { type: TokenLogoType }> = memo(props => {
       return <TokenYvYFI {...props} />;
     case 'token-yvwETH':
       return <TokenYvwETH {...props} />;
-    default:
-      return null;
-  }
-});
-
-const ProtocolLogo: FC<LogoProps & { type: ProtocolLogoType }> = memo(props => {
-  switch (props.type) {
     case 'protocol-Aave':
       return <ProtocolAave {...props} />;
     case 'protocol-Lido':
       return <ProtocolLido {...props} />;
     case 'protocol-Rari':
       return <ProtocolRari {...props} />;
-    default:
-      return null;
-  }
-});
-
-const WalletLogo: FC<LogoProps & { type: WalletLogoType }> = memo(props => {
-  switch (props.type) {
     case 'wallet-metamask':
       return <WalletMetamask {...props} />;
     case 'wallet-walletconnect':
@@ -135,21 +121,6 @@ const WalletLogo: FC<LogoProps & { type: WalletLogoType }> = memo(props => {
     default:
       return null;
   }
-});
+};
 
-const Logo: FC<LogoProps & { variant: LogoType; type: TokenLogoType & WalletLogoType & ProtocolLogoType }> = memo(
-  props => {
-    switch (props.variant) {
-      case 'token':
-        return <TokenLogo {...props} />;
-      case 'protocol':
-        return <ProtocolLogo {...props} />;
-      case 'wallet':
-        return <WalletLogo {...props} />;
-      default:
-        return null;
-    }
-  },
-);
-
-export { Logo, TokenLogo, ProtocolLogo, WalletLogo };
+export default memo(Logo);
