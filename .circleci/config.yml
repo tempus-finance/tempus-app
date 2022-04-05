@@ -88,11 +88,11 @@ workflows:
           requires:
             - build
       - deploy-storybook:
-        requires:
-          - build-storybook
-        filters:
-          branches:
-            only: /(release-)/
+          requires:
+            - build-storybook
+          filters:
+            branches:
+              only: /(release-)/
       - deploy-to-stage:
           requires:
             - test
