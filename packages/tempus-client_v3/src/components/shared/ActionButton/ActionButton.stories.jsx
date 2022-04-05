@@ -1,5 +1,3 @@
-import Typography from '../Typography';
-
 import ActionButton from './ActionButton';
 
 export default {

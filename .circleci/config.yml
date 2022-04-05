@@ -38,6 +38,16 @@ jobs:
           paths:
             - ./
 
+  build-storybook:
+    docker:
+      - image: cimg/node:15.1
+    steps:
+      - checkout
+      - node/install-packages
+      - run:
+          name: Build Storybook
+          command: npm run build-storybook
+
   test:
     docker:
       - image: cimg/node:15.1
@@ -70,6 +80,7 @@ workflows:
   sample:
     jobs:
       - build
+      - build-storybook
       - test:
           requires:
             - build
