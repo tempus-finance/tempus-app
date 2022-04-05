@@ -21,7 +21,12 @@ const TermTabs: FC<TermTabsProps> = props => {
   return (
     <div className="tc__term-tabs">
       {dates.map((termDate, index) => (
-        <TermTab date={termDate} selected={selectedDate === termDate} onClick={onClick} key={`term-tab-${index}`} />
+        <TermTab
+          date={termDate}
+          selected={selectedDate === termDate}
+          onClick={onClick}
+          key={`term-tab-${index}-${termDate.getTime()}`}
+        />
       ))}
     </div>
   );
