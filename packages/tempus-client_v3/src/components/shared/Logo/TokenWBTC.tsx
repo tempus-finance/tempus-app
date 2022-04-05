@@ -3,7 +3,14 @@ import { LogoProps, LOGO_SIZE_DEFAULT } from './Logo';
 import withLogo from './withLogo';
 
 const TokenWBTC: FC<LogoProps> = ({ size = LOGO_SIZE_DEFAULT }) => (
-  <svg width={size} height={size} viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <svg
+    className="tc__logo tc__logo-token-wBTC"
+    width={size}
+    height={size}
+    viewBox="0 0 40 40"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
     <path
       d="M32.6157 8.39477L31.5174 9.49306C34.1382 12.359 35.5915 16.1019 35.5915 19.9855C35.5915 23.869 34.1382 27.6119 31.5174 30.4779L32.6157 31.5762C35.5303 28.4148 37.1484 24.2725 37.1484 19.9727C37.1484 15.6728 35.5303 11.5305 32.6157 8.36914V8.39477Z"
       fill="#5A5564"

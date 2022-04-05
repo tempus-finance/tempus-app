@@ -3,7 +3,14 @@ import { LogoProps, LOGO_SIZE_DEFAULT } from './Logo';
 import withLogo from './withLogo';
 
 const TokenYvwETH: FC<LogoProps> = ({ size = LOGO_SIZE_DEFAULT }) => (
-  <svg width={size} height={size} viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <svg
+    className="tc__logo tc__logo-token-yvwETH"
+    width={size}
+    height={size}
+    viewBox="0 0 40 40"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
     <circle cx="20" cy="20" r="20" fill="white" />
     <path
       fillRule="evenodd"
@@ -17,8 +24,8 @@ const TokenYvwETH: FC<LogoProps> = ({ size = LOGO_SIZE_DEFAULT }) => (
       d="M16.0804 7.2425C17.411 6.80132 18.8339 6.5625 20.3125 6.5625C27.7338 6.5625 33.75 12.5787 33.75 20C33.75 27.4213 27.7338 33.4375 20.3125 33.4375C12.8912 33.4375 6.875 27.4213 6.875 20C6.875 16.0299 8.59669 12.462 11.3342 10.002L10.4479 6.69436C6.3836 9.71252 3.75 14.5487 3.75 20C3.75 29.1472 11.1653 36.5625 20.3125 36.5625C29.4597 36.5625 36.875 29.1472 36.875 20C36.875 10.8528 29.4597 3.4375 20.3125 3.4375C18.5543 3.4375 16.8601 3.71145 15.2703 4.219L16.0804 7.2425Z"
       fill="#0657F9"
     />
-    <circle cx="19.6875" cy="20" r="8.78571" fill="black" stroke="black" stroke-width="0.553576" />
-    <circle cx="21.0648" cy="20.6224" r="8.78801" fill="white" stroke="black" stroke-width="0.553576" />
+    <circle cx="19.6875" cy="20" r="8.78571" fill="black" stroke="black" strokeWidth="0.553576" />
+    <circle cx="21.0648" cy="20.6224" r="8.78801" fill="white" stroke="black" strokeWidth="0.553576" />
     <path
       d="M15.0725 23.4375H15.7002L16.5167 20.0372H16.5289L17.3272 23.4375H17.9488L18.9542 19.2755H18.3814L17.9305 21.3656L17.6441 22.7611H17.6258L17.3272 21.3656L16.8336 19.2755H16.2303L15.7306 21.3656L15.4259 22.7672H15.4077L15.1273 21.3656L14.6703 19.2755H14.0853L15.0725 23.4375ZM19.4853 23.4375H21.7887L21.8253 22.9805H20.0337V21.5119H21.5572L21.5876 21.0548H20.0337V19.7386H21.7095L21.74 19.2755H19.4853V23.4375ZM23.2821 23.4375H23.8366V19.7447H24.9823L25.0127 19.2755H22.1426L22.106 19.7447H23.2821V23.4375ZM25.5017 23.4375H26.0501V21.5119H27.9392V23.4375H28.4876V19.2755H27.9392V21.0366H26.0501V19.2755H25.5017V23.4375Z"
       fill="black"

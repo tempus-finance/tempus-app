@@ -3,7 +3,14 @@ import { LogoProps, LOGO_SIZE_DEFAULT } from './Logo';
 import withLogo from './withLogo';
 
 const TokenUSDC: FC<LogoProps> = ({ size = LOGO_SIZE_DEFAULT }) => (
-  <svg width={size} height={size} viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <svg
+    className="tc__logo tc__logo-token-USDC"
+    width={size}
+    height={size}
+    viewBox="0 0 40 40"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
     <path
       d="M20 40C31.0834 40 40 31.0834 40 20C40 8.9166 31.0834 0 20 0C8.9166 0 0 8.9166 0 20C0 31.0834 8.9166 40 20 40Z"
       fill="#2775CA"

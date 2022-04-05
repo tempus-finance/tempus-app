@@ -3,7 +3,14 @@ import { IconProps, ICON_SIZE_DEFAULT } from './Icon';
 import withIcon from './withIcon';
 
 const Github: FC<IconProps> = ({ size = ICON_SIZE_DEFAULT }) => (
-  <svg width={size} height={size} viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <svg
+    className="tc__icon tc__icon-github"
+    width={size}
+    height={size}
+    viewBox="0 0 16 16"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
     <g clipPath="url(#clip0_63_441)">
       <path
         fillRule="evenodd"

@@ -3,7 +3,14 @@ import { LogoProps, LOGO_SIZE_DEFAULT } from './Logo';
 import withLogo from './withLogo';
 
 const WalletMetamask: FC<LogoProps> = ({ size = LOGO_SIZE_DEFAULT }) => (
-  <svg width={size} height={size} viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <svg
+    className="tc__logo tc__logo-wallet-metamask"
+    width={size}
+    height={size}
+    viewBox="0 0 40 40"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
     <g clipPath="url(#clip0_73_625)">
       <path
         d="M38.0216 1L22.3957 12.875L25.3014 5.87667L38.0216 1Z"
