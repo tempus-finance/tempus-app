@@ -46,7 +46,7 @@ const DefaultRoutes = (props: PropsWithChildren<{}>) => {
   const { children } = props;
   const navigate = useNavigate();
 
-  useEffect(() => navigate('/item1'), []);
+  useEffect(() => navigate('/item1'), [navigate]);
 
   return <Routes>{children}</Routes>;
 };

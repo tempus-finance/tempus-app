@@ -1,0 +1,16 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Checkbox renders an checked checkbox 1`] = `
+<input
+  checked=""
+  id="checkbox-1"
+  type="checkbox"
+/>
+`;
+
+exports[`Checkbox renders an unchecked checkbox 1`] = `
+<input
+  id="checkbox-0"
+  type="checkbox"
+/>
+`;

@@ -1,11 +1,17 @@
-import React from 'react';
+import { ComponentStory } from '@storybook/react';
+import React, { CSSProperties, FC } from 'react';
 import Colors from './colors.json';
 
-const ColorChip = props => {
+interface ColorChipProps {
+  backgroundColor: string;
+  colorName: string;
+}
+
+const ColorChip: FC<ColorChipProps> = props => {
   const { backgroundColor, colorName } = props;
   const contrastingColor = getContrastingColor(backgroundColor);
 
-  const colorChipStyle = {
+  const colorChipStyle: CSSProperties = {
     fontFamily: "'Nunito Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif",
     padding: '20px',
     backgroundColor,
@@ -13,7 +19,7 @@ const ColorChip = props => {
     border: `1px solid ${contrastingColor}`,
   };
 
-  const colorChipValueStyle = {
+  const colorChipValueStyle: CSSProperties = {
     fontWeight: 700,
     marginLeft: '4px',
   };
@@ -26,13 +32,13 @@ const ColorChip = props => {
   );
 };
 
-const getContrastingColor = hex => {
-  const brightness = getBrightness(hex);
+const getContrastingColor = (colorHex: string): string => {
+  const brightness = getBrightness(colorHex);
   return brightness > 125 ? '#222222' : '#FEFEFE';
 };
 
-const getBrightness = hex => {
-  const rbgValues = hexToRgb(hex);
+const getBrightness = (colorHex: string): number => {
+  const rbgValues = hexToRgb(colorHex);
   if (rbgValues) {
     const [red, green, blue] = rbgValues;
 
@@ -43,8 +49,8 @@ const getBrightness = hex => {
   return 125;
 };
 
-const hexToRgb = hex => {
-  var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+const hexToRgb = (colorHex: string): [number, number, number] | null => {
+  var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(colorHex);
   return result ? [parseInt(result[1], 16), parseInt(result[2], 16), parseInt(result[3], 16)] : null;
 };
 
@@ -62,7 +68,7 @@ const parentStyle = {
   width: '50%',
 };
 
-const Template = args => (
+const Template: ComponentStory<typeof ColorChip> = args => (
   <div style={parentStyle}>
     <ColorChip {...args} />
   </div>

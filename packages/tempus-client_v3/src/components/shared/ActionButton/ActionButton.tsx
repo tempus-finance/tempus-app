@@ -15,7 +15,7 @@ type ButtonLabels = {
   success: string;
 };
 
-interface ButtonProps {
+export interface ButtonProps {
   labels: ButtonLabels;
   onClick: () => void;
   variant?: ButtonVariant;

@@ -1,3 +1,4 @@
+import { ComponentStory } from '@storybook/react';
 import IconButton from './IconButton';
 
 export default {
@@ -25,7 +26,7 @@ const style = {
   height: '100px',
 };
 
-const Template = args => (
+const Template: ComponentStory<typeof IconButton> = args => (
   <div style={style}>
     <IconButton {...args} />
   </div>

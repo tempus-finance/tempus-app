@@ -1,3 +1,4 @@
+import { ComponentStory } from '@storybook/react';
 import React from 'react';
 import SwitcherButton from './SwitcherButton';
 
@@ -15,7 +16,7 @@ const style = {
   padding: '10px',
 };
 
-const Template = args => (
+const Template: ComponentStory<typeof SwitcherButton> = args => (
   <div style={style}>
     <SwitcherButton {...args} />
   </div>

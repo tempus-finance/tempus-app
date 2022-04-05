@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { CSSProperties } from 'react';
 
 import Typography from './Typography';
 
@@ -8,7 +8,7 @@ export default {
   argTypes: {},
 };
 
-const style = {
+const style: CSSProperties = {
   background: 'rgba(0, 0, 0, 0.1)',
   display: 'flex',
   flexDirection: 'column',
