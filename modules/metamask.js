@@ -1,7 +1,7 @@
 'use strict'
 
 module.exports = {
-    metamaskLogin, metamaskLogoff, metamaskAddETHfork, metamaskDownload,
+    metamaskRegister, metamaskLogin, metamaskLogoff, metamaskAddETHfork, metamaskDownload,
     metamaskAccountAdd, metamaskAccountSwitch, metamaskAccountsAddAll
 }
 const ROOT_PATH = '../'
@@ -10,45 +10,69 @@ const { METAMASK_ID, METAMASK_PATH,
 
 require('dotenv').config()
 
+async function metamaskRegister(browser) {
+    const tabMetamask = await browser.newPage()
+    await tabMetamask.goto(`chrome-extension://${METAMASK_ID}/home.html#unlock`)
+    await tabMetamask.waitForTimeout(LOAD_LONG_TIMEOUT)
+    await tabMetamask.bringToFront()
+
+
+    if (!await tabMetamask.locator('text=Get Started').count()) {
+        return await tabMetamask.close()
+    }
+    await tabMetamask.click('text=Get Started')
+    await tabMetamask.click('text=Import wallet')
+    await tabMetamask.click('text=I Agree')
+
+    const words = process.env.METAMASK_RECOVERY_PHRASE.split(' ')
+    for (var i = 0; i < 12; ++i) { // 12 word recovery phrase
+        const SELECTOR_ITH_INPUT = `input[type="password"] >> nth=${i}`
+        await tabMetamask.fill(SELECTOR_ITH_INPUT, words[i])
+    }
+
+    await tabMetamask.fill('input[type="password"] >> nth=12', process.env.METAMASK_PASSWORD)
+    await tabMetamask.fill('input[type="password"] >> nth=13', process.env.METAMASK_PASSWORD)
+
+    await tabMetamask.click('input[id="create-new-vault__terms-checkbox"]')
+    await tabMetamask.click('text="Import"')
+
+
+    await tabMetamask.waitForTimeout(LOAD_LONG_TIMEOUT)// very long timeout
+    const SELECTOR_NEXT = 'text="Next"'
+    if (await tabMetamask.locator(SELECTOR_NEXT).count()) {
+        await tabMetamask.click(SELECTOR_NEXT)
+    }
+
+    const SELECTOR_RML = 'text="Remind me later"'
+    if (await tabMetamask.locator(SELECTOR_RML).count()) {
+        await tabMetamask.click(SELECTOR_RML)
+    }
+
+    const SELECTOR_ALLDONE = 'text="All Done"'
+    if (await tabMetamask.locator(SELECTOR_ALLDONE).count()) {
+        await tabMetamask.click(SELECTOR_ALLDONE)
+    }
+
+    await tabMetamask.close()
+}
+
 async function metamaskLogin(browser) {
     const tabMetamask = await browser.newPage()
     await tabMetamask.goto(`chrome-extension://${METAMASK_ID}/home.html#unlock`)
     await tabMetamask.waitForTimeout(LOAD_LONG_TIMEOUT)
     await tabMetamask.bringToFront()
 
-    //console.log(1)
-
     if (await tabMetamask.locator('text=Buy').count()) {
-        //console.log(2)
-        // pass
+        return await tabMetamask.close()
+    }
+    else if (await tabMetamask.locator('text=Get Started').count()) {
+        await metamaskRegister(browser)
+        await metamaskLogin(browser) // rec
     }
     else if (await tabMetamask.locator('text="Unlock"').count()) {
         //console.log(3)
         await tabMetamask.fill('input[id="password"] >> nth=0', process.env.METAMASK_PASSWORD)
         await tabMetamask.click('text="Unlock" >> nth=0')
-    }
-    else if (await tabMetamask.locator('text=Get Started').count()) {
-        //console.log(4)
-        await tabMetamask.click('text=Get Started')
-        await tabMetamask.click('text=Import wallet')
-        await tabMetamask.click('text=I Agree')
-
-        const words = process.env.METAMASK_RECOVERY_PHRASE.split(' ')
-        for (var i = 0; i < 12; ++i) { // 12 word recovery phrase
-            const SELECTOR_ITH_INPUT = `input[type="password"] >> nth=${i}`
-            await tabMetamask.fill(SELECTOR_ITH_INPUT, words[i])
-        }
-
-        await tabMetamask.fill('input[type="password"] >> nth=12', process.env.METAMASK_PASSWORD)
-        await tabMetamask.fill('input[type="password"] >> nth=13', process.env.METAMASK_PASSWORD)
-
-
-        await tabMetamask.click('input[id="create-new-vault__terms-checkbox"]')
-        await tabMetamask.click('text="Import"')
-    }
-    else {
-        //console.log(5)
-        throw 'Problem in metamaskLogin'
     }
 
     // this part can and should be done by checking urls
