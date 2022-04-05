@@ -110,6 +110,7 @@
     "prestart": "./scripts/get-release-version.sh",
     "prebuild": "./scripts/get-release-version.sh build",
     "storybook": "start-storybook -p 6006 -s public",
-    "build-storybook": "build-storybook -s public"
+    "build-storybook": "build-storybook -s public",
+    "deploy-storybook": "firebase deploy --only hosting:tempus-storybook --token $FIREBASE_TOKEN"
   }
 }

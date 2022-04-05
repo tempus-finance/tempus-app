@@ -75,6 +75,16 @@ jobs:
           name: Firebase Deploy in Stage
           command: ./node_modules/.bin/lerna run deploy-stage
 
+  deploy-storybook:
+    docker:
+      - image: cimg/node:15.1
+    steps:
+      - attach_workspace:
+          at: ./
+      - run:
+          name: Deploy Storybook
+          command: cd ./packages/tempus-client_v3 && npm run deploy-storybook
+
 workflows:
   # Below is the definition of your workflow.
   # Inside the workflow, you provide the jobs you want to run, e.g this workflow runs the build-and-test job above.
