@@ -13,9 +13,9 @@ const TermTabs: FC<TermTabsProps> = props => {
   const onClick = useCallback(
     (value: Date) => {
       setSelectedDate(value);
-      onChange?.(selectedDate);
+      onChange?.(value);
     },
-    [selectedDate, onChange],
+    [onChange],
   );
 
   return (
