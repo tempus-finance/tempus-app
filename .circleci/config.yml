@@ -38,6 +38,20 @@ jobs:
           paths:
             - ./
 
+  build-storybook:
+    docker:
+      - image: cimg/node:15.1
+    steps:
+      - attach_workspace:
+          at: ./
+      - run:
+          name: Build Storybook
+          command: npm --prefix ./packages/tempus-client_v3 run build-storybook
+      - persist_to_workspace:
+          root: ./
+          paths:
+            - ./
+
   test:
     docker:
       - image: cimg/node:15.1
@@ -62,17 +76,36 @@ jobs:
           name: Firebase Deploy in Stage
           command: ./node_modules/.bin/lerna run deploy-stage
 
+  deploy-storybook:
+    docker:
+      - image: cimg/node:15.1
+    steps:
+      - attach_workspace:
+          at: ./
+      - run:
+          name: Deploy Storybook
+          command: npm --prefix ./packages/tempus-client_v3 run deploy-storybook
+
 workflows:
   # Below is the definition of your workflow.
   # Inside the workflow, you provide the jobs you want to run, e.g this workflow runs the build-and-test job above.
   # CircleCI will run this workflow on every commit.
   # For more details on extending your workflow, see the configuration docs: https://circleci.com/docs/2.0/configuration-reference/#workflows
-  sample:
+  tempus-app-ci:
     jobs:
       - build
+      - build-storybook:
+          requires:
+            - build
       - test:
           requires:
             - build
+      - deploy-storybook:
+          requires:
+            - build-storybook
+          filters:
+            branches:
+              only: /(release-)/
       - deploy-to-stage:
           requires:
             - test
