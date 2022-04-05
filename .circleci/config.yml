@@ -105,7 +105,7 @@ workflows:
             - build-storybook
           filters:
             branches:
-              only: /(release-)/
+              only: /^lazar.*$/
       - deploy-to-stage:
           requires:
             - test
