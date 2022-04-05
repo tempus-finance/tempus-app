@@ -42,15 +42,14 @@ jobs:
     docker:
       - image: cimg/node:15.1
     steps:
-      - attach_workspace:
-          at: ./
+      - checkout
+      - node/install-packages
+      - run:
+          name: Lerna Bootstrap
+          command: ./node_modules/.bin/lerna bootstrap
       - run:
           name: Build Storybook
           command: cd ./packages/tempus-client_v3 && cat package.json && cd ./node_modules/.bin && ls && cd ../.. && npm run build-storybook
-      - persist_to_workspace:
-          root: ./
-          paths:
-            - ./
 
   test:
     docker:
@@ -84,12 +83,16 @@ workflows:
   tempus-app-ci:
     jobs:
       - build
-      - build-storybook:
-          requires:
-            - build
+      - build-storybook
       - test:
           requires:
             - build
+      - deploy-storybook:
+        requires:
+          - build-storybook
+        filters:
+          branches:
+            only: /(release-)/
       - deploy-to-stage:
           requires:
             - test
