@@ -49,5 +49,10 @@
   "switcherButtonBackgroundHighlight": "#F3F7F9",
 
   "formattedDateSeparatorLowContrast": "#BFC0C0",
-  "formattedDateSeparatorHighContrast": "#7A7A7A"
+  "formattedDateSeparatorHighContrast": "#7A7A7A",
+
+  "termTabsBackground": "#FFFFFF",
+  "termTabsBorder": "#BFC0C0",
+  "termTabsSelectedBackground": "#F3F7F9",
+  "termTabsSelectedBorder": "#474350"
 }

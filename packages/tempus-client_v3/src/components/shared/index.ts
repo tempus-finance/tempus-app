@@ -9,6 +9,7 @@ import ButtonWrapper from './ButtonWrapper';
 import Link from './Link';
 import ActionButton from './ActionButton';
 import SwitcherButton from './SwitcherButton';
+import TermTabs from './TermTabs';
 
 export * from './Colors';
 export * from './Icon';
@@ -27,6 +28,7 @@ export {
   Loading,
   Logo,
   SwitcherButton,
+  TermTabs,
   ToggleSwitch,
   Typography,
 };
