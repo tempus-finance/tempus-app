@@ -41,13 +41,12 @@ jobs:
   build-storybook:
     docker:
       - image: cimg/node:15.1
-    working_directory: ./packages/tempus-client_v3
     steps:
       - checkout
       - node/install-packages
       - run:
           name: Build Storybook
-          command: npm run build-storybook
+          command: npm --prefix ./packages/tempus-client_v3 run build-storybook
 
   test:
     docker:
