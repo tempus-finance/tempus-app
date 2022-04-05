@@ -4,7 +4,7 @@ import './FormattedDate.scss';
 
 type FormattedDateSize = 'small' | 'medium' | 'large';
 
-interface FormattedDateProps {
+export interface FormattedDateProps {
   date: Date;
   size?: FormattedDateSize;
   separatorContrast?: 'low' | 'high';
