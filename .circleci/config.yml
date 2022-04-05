@@ -42,11 +42,15 @@ jobs:
     docker:
       - image: cimg/node:15.1
     steps:
-      - checkout
-      - node/install-packages
+      - attach_workspace:
+          at: ./
       - run:
           name: Build Storybook
           command: cd ./packages/tempus-client_v3 && cat package.json && cd ./node_modules/.bin && ls && cd ../.. && npm run build-storybook
+      - persist_to_workspace:
+          root: ./
+          paths:
+            - ./
 
   test:
     docker:
@@ -80,7 +84,9 @@ workflows:
   sample:
     jobs:
       - build
-      - build-storybook
+      - build-storybook:
+          requires:
+            - build
       - test:
           requires:
             - build
