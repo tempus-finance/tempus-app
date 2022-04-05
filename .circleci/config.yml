@@ -41,6 +41,7 @@ jobs:
   build-storybook:
     docker:
       - image: cimg/node:15.1
+    working_directory: ./packages/tempus-client_v3
     steps:
       - checkout
       - node/install-packages
