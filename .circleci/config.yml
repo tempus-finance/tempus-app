@@ -46,7 +46,7 @@ jobs:
       - node/install-packages
       - run:
           name: Build Storybook
-          command: cd ./packages/tempus-client_v3 && npm run build-storybook
+          command: cd ./packages/tempus-client_v3 && cat package.json && cd ./node_modules/.bin && ls && cd ../.. && npm run build-storybook
 
   test:
     docker:
