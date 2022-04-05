@@ -1,11 +1,11 @@
-import { ChangeEventHandler, FC, useMemo } from 'react';
+import { ChangeEvent, FC, useMemo } from 'react';
 import { Typography } from '..';
 import './checkbox.scss';
 
-interface CheckboxProps {
+export interface CheckboxProps {
   checked: boolean;
   label?: string;
-  onChange?: ChangeEventHandler<HTMLInputElement>;
+  onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
 }
 
 let idCounter = 0;

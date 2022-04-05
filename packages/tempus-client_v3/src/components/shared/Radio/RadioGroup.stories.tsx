@@ -1,3 +1,4 @@
+import { ComponentStory } from '@storybook/react';
 import { useCallback, useState } from 'react';
 import Radio from './Radio';
 import RadioGroup from './RadioGroup';
@@ -16,7 +17,7 @@ const style = {
   padding: '10px',
 };
 
-export const RadioGroupWithLabels = () => {
+export const RadioGroupWithLabels: ComponentStory<typeof RadioGroup> = () => {
   const [selectedValue, setSelectedValue] = useState('item1');
   const handleChange = useCallback(value => setSelectedValue(value), []);
 

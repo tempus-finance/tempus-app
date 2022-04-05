@@ -1,10 +1,11 @@
+import { ComponentStory } from '@storybook/react';
 import React from 'react';
 
-import Radio from './Radio';
+import ToggleSwitch from './ToggleSwitch';
 
 export default {
-  title: 'Radio',
-  component: Radio,
+  title: 'ToggleSwitch',
+  component: ToggleSwitch,
   argTypes: {},
 };
 
@@ -16,9 +17,9 @@ const style = {
   padding: '10px',
 };
 
-const Template = args => (
+const Template: ComponentStory<typeof ToggleSwitch> = args => (
   <div style={style}>
-    <Radio {...args} />
+    <ToggleSwitch {...args} />
   </div>
 );
 

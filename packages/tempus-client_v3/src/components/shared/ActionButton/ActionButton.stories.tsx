@@ -1,3 +1,5 @@
+import { ComponentStory } from '@storybook/react';
+import { CSSProperties } from 'react';
 import ActionButton from './ActionButton';
 
 export default {
@@ -35,7 +37,7 @@ export default {
   },
 };
 
-const style = {
+const style: CSSProperties = {
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
@@ -43,7 +45,7 @@ const style = {
   height: '150px',
 };
 
-const Template = args => (
+const Template: ComponentStory<typeof ActionButton> = args => (
   <div style={style}>
     <ActionButton {...args} />
   </div>
