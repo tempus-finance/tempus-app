@@ -1,35 +1,36 @@
-import { Children, cloneElement, isValidElement, memo, ReactElement } from 'react';
+import { Children, isValidElement, memo, ReactElement, useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
-import { TabProps } from './Tab';
+import Tab, { TabProps } from './Tab';
 import './tabs.scss';
 
 export type TabsSize = 'small' | 'large';
 
-interface TabsProps {
+export interface TabsProps {
   size: TabsSize;
   value?: any;
-  onChange?: (value: any) => void;
+  onTabSelected?: (value: any) => void;
   children?: ReactElement<TabProps> | ReactElement<TabProps>[];
 }
 
 const Tabs = (props: TabsProps) => {
   const location = useLocation();
-  const { size, value = location.pathname, onChange, children } = props;
+  const { size, value = location.pathname, onTabSelected, children } = props;
   const values = Children.map(children, child => child?.props.href ?? child?.props.value);
+  const selectedTabIndex = useMemo(
+    () => (values ? values.findIndex(tabValue => tabValue === value) : 0),
+    [value, values],
+  );
+
+  const tabWidth = useMemo(() => 100 / (values ? values.length : 1), [values]);
 
   if (!values) {
     return null;
   }
 
-  const selectedTabIndex = values.findIndex(tabValue => tabValue === value);
-  const tabWidth = 100 / values.length;
-
   return (
     <div className={`tc__tabs tc__tabs__tabs-${size}`}>
       {Children.map(children, child => {
-        return isValidElement(child)
-          ? cloneElement(child, { size: size, selectedValue: value, onChange: onChange })
-          : null;
+        return isValidElement(child) ? <Tab {...child.props} selectedValue={value} onClick={onTabSelected} /> : null;
       })}
       <div className="tc__tabs__indicator-container">
         {selectedTabIndex > -1 && (

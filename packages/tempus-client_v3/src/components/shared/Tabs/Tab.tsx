@@ -10,7 +10,7 @@ export interface TabProps {
   href?: string;
   size?: TabsSize;
   selectedValue?: any;
-  onChange?: (value: any) => void;
+  onClick?: (value: any) => void;
 }
 
 interface TabStyleConfig {
@@ -38,11 +38,13 @@ tabStyleMap.set('large', {
 });
 
 const Tab: FC<TabProps> = props => {
-  const { label, value, href, size = 'small', selectedValue, onChange } = props;
+  const { label, value, href, size = 'small', selectedValue, onClick } = props;
+
   const isSelected = selectedValue === href || selectedValue === value;
   const tabStyle = tabStyleMap.get(size);
 
-  const handleClick = useCallback(() => onChange?.(value), [onChange, value]);
+  const handleClick = useCallback(() => onClick?.(value), [onClick, value]);
+
   const labelComponent = useMemo(
     () =>
       tabStyle && (
