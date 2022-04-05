@@ -1,7 +1,6 @@
 import { FC, useCallback } from 'react';
 import ButtonWrapper from '../ButtonWrapper';
 import FormattedDate from '../FormattedDate';
-import Spacer from '../Spacer';
 import Typography from '../Typography';
 
 interface TermTabProps {
@@ -22,8 +21,7 @@ const TermTab: FC<TermTabProps> = props => {
       <Typography variant="body-secondary" weight="medium">
         Term
       </Typography>
-      <Spacer size={4} />
-      <Typography variant="body-primary" type="mono">
+      <Typography className="tc__term-tabs__term-date" variant="body-primary" type="mono">
         <FormattedDate date={date} size="medium" separatorContrast="high" />
       </Typography>
     </ButtonWrapper>

@@ -84,10 +84,11 @@ interface TypographyProps {
   weight?: TypographyWeight;
   type?: TypographyType;
   html?: string;
+  className?: string;
 }
 
-const Typography: FC<TypographyProps & React.HTMLProps<HTMLDivElement>> = props => {
-  const { variant, color, weight, opacity = 1, type, html, children } = props;
+const Typography: FC<TypographyProps> = props => {
+  const { variant, color, weight, opacity = 1, type, html, children, className } = props;
 
   let fontColor: string | undefined;
   if (color) {
@@ -112,6 +113,7 @@ const Typography: FC<TypographyProps & React.HTMLProps<HTMLDivElement>> = props 
 
   return (
     <div
+      className={className}
       style={{
         ...typographyVariantMap.get(variant),
         color: fontColor,
