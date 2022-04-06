@@ -21,7 +21,7 @@ const style = {
   height: '300px',
 };
 
-const RegularTemplate: ComponentStory<typeof Table> = () => (
+const Template: ComponentStory<typeof Table> = () => (
   <div style={style}>
     <Table>
       <TableHead>
@@ -103,4 +103,4 @@ const RegularTemplate: ComponentStory<typeof Table> = () => (
   </div>
 );
 
-export const Primary = RegularTemplate.bind({});
+export const Primary = Template.bind({});

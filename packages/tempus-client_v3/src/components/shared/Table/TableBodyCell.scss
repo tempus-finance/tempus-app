@@ -1,19 +1,24 @@
+@use './Table.scss' as TableStyle;
+
+$tableRowBorderSize: 1px;
+$tableRowHeight: 80px;
+
 .tc__tableBodyCell {
-  border-width: 1px 0px;
-  border-color: #bfc0c0;
+  border-width: $tableRowBorderSize 0px;
+  border-color: var(--tableRowBorderColor);
   border-style: solid;
-  height: 80px;
-  padding-right: 8px;
+  height: $tableRowHeight;
+  padding-right: TableStyle.$tableSidePadding;
 
   &:first-child {
-    border-left-width: 1px;
+    border-left-width: $tableRowBorderSize;
     border-color: #bfc0c0;
     border-radius: 40px 0px 0px 40px;
     padding-left: 20px;
   }
 
   &:last-child {
-    border-right-width: 1px;
+    border-right-width: $tableRowBorderSize;
     border-color: #bfc0c0;
     border-radius: 0px 40px 40px 0px;
     padding-right: 20px;

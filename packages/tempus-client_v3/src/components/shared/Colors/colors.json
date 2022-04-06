@@ -59,5 +59,7 @@
   "dropdownBackground": "#FFFFFF",
   "dropdownBorder": "#BFC0C0",
   "dropdownBackgroundHighlight": "#FFFFFF80",
-  "dropdownBackgroundSelected": "#F3F7F9"
+  "dropdownBackgroundSelected": "#F3F7F9",
+
+  "tableRowBorderColor": "#BFC0C0"
 }
