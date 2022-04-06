@@ -1,8 +1,8 @@
-import { Story } from '@storybook/react';
+import { ComponentStory } from '@storybook/react';
 import { PropsWithChildren, useCallback, useEffect, useState } from 'react';
 import { BrowserRouter, Route, Routes, useNavigate } from 'react-router-dom';
 import Tab from './Tab';
-import Tabs, { TabsSize } from './Tabs';
+import Tabs from './Tabs';
 
 export default {
   title: 'Tabs',
@@ -15,19 +15,14 @@ export default {
   },
 };
 
-interface TabsProps {
-  size: TabsSize;
-  value: any;
-}
-
-const ButtonTabsTemplate: Story<TabsProps> = (props: TabsProps) => {
+const ButtonTabsTemplate: ComponentStory<typeof Tabs> = props => {
   const { size } = props;
   const [selectedTab, setSelectedTab] = useState('item1');
-  const onChange = useCallback(value => setSelectedTab(value), []);
+  const handleClick = useCallback(value => setSelectedTab(value), []);
 
   return (
     <BrowserRouter>
-      <Tabs size={size} value={selectedTab} onChange={onChange}>
+      <Tabs size={size} value={selectedTab} onTabSelected={handleClick}>
         <Tab label="Item #1" value="item1" />
         <Tab label="Item #2" value="item2" />
         <Tab label="Item #3" value="item3" />
@@ -51,7 +46,7 @@ const DefaultRoutes = (props: PropsWithChildren<{}>) => {
   return <Routes>{children}</Routes>;
 };
 
-const LinkTabsTemplate: Story<TabsProps> = (props: TabsProps) => {
+const LinkTabsTemplate: ComponentStory<typeof Tabs> = props => {
   const { size } = props;
   const element = (
     <Tabs size={size}>
