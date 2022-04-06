@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`ActionButton renders a button with a \`twitter\` icon 1`] = `
+exports[`IconButton renders a button with a \`twitter\` icon 1`] = `
 <button
   class="tc__btn tc__iconButton__deselected"
   data-selected="false"

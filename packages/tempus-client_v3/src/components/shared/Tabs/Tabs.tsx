@@ -23,10 +23,6 @@ const Tabs = (props: TabsProps) => {
 
   const tabWidth = useMemo(() => 100 / (values ? values.length : 1), [values]);
 
-  if (!values) {
-    return null;
-  }
-
   return (
     <div className={`tc__tabs tc__tabs__tabs-${size}`}>
       {Children.map(children, child => {

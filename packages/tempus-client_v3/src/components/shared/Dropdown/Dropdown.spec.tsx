@@ -61,6 +61,19 @@ describe('Dropdown', () => {
     expect(popupElements).toMatchSnapshot();
   });
 
+  it('does not close when clicked on the list', () => {
+    const { getByRole, container } = subject(defaultProps);
+
+    const button = getByRole('button');
+    fireEvent.click(button);
+
+    const popupElements = container.getElementsByClassName('tc__dropdown__popup');
+    fireEvent.click(popupElements[0]);
+
+    expect(popupElements.length).toBe(1);
+    expect(popupElements).toMatchSnapshot();
+  });
+
   it('renders up-chevron when open', () => {
     const { getByRole, container } = subject(defaultProps);
 

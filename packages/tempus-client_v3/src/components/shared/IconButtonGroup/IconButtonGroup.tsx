@@ -3,7 +3,7 @@ import { IconType } from '../Icon/Icon';
 import IconButton from '../IconButton/IconButton';
 import './IconButtonGroup.scss';
 
-interface IconButtonGroupProps {
+export interface IconButtonGroupProps {
   types: IconType[];
   onChange: (selected: IconType) => void;
 }
@@ -16,7 +16,7 @@ const IconButtonGroup: FC<IconButtonGroupProps> = props => {
   const onClick = (value: IconType) => {
     setSelectedType(value);
 
-    onChange(selectedType);
+    onChange(value);
   };
 
   return (
