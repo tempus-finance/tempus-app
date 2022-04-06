@@ -17,7 +17,9 @@ export type TypographyColor =
   | 'text-primary-inverted'
   | 'text-success'
   | 'text-disabled'
-  | 'text-disabled-secondary';
+  | 'text-disabled-secondary'
+  | 'text-caption'
+  | 'text-error';
 
 export type TypographyWeight = 'regular' | 'medium' | 'bold';
 
@@ -67,6 +69,8 @@ typographyColorMap.set('text-primary-inverted', colors.textPrimaryInverted);
 typographyColorMap.set('text-success', colors.textSuccess);
 typographyColorMap.set('text-disabled', colors.textDisabled);
 typographyColorMap.set('text-disabled-secondary', colors.textDisabledSecondary);
+typographyColorMap.set('text-caption', colors.textCaption);
+typographyColorMap.set('text-error', colors.textError);
 
 const typographyWeightMap = new Map<TypographyWeight, number>();
 typographyWeightMap.set('regular', 400);

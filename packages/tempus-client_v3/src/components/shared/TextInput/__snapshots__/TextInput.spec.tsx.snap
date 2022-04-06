@@ -1,0 +1,349 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TextInput renders a disabled text input 1`] = `
+<div
+  class="tc__text-input tc__text-input__disabled"
+>
+  <label
+    for="text-input-5"
+  >
+    <div
+      style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+    >
+      text input label
+    </div>
+  </label>
+  <div
+    class="tc__text-input__container"
+  >
+    <div
+      style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(122, 122, 122); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+    >
+      <input
+        disabled=""
+        id="text-input-5"
+        pattern=""
+        placeholder="text input placeholder"
+        type="text"
+        value=""
+      />
+    </div>
+  </div>
+  
+  
+</div>
+`;
+
+exports[`TextInput renders a text input with caption 1`] = `
+<div
+  class="tc__text-input "
+>
+  <label
+    for="text-input-3"
+  >
+    <div
+      style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+    >
+      text input label
+    </div>
+  </label>
+  <div
+    class="tc__text-input__container"
+  >
+    <div
+      style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+    >
+      <input
+        id="text-input-3"
+        pattern=""
+        placeholder="text input placeholder"
+        type="text"
+        value=""
+      />
+    </div>
+  </div>
+  <div
+    style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+  >
+    this is a caption
+  </div>
+  
+</div>
+`;
+
+exports[`TextInput renders a text input with caption and error 1`] = `
+<div
+  class="tc__text-input tc__text-input__error"
+>
+  <label
+    for="text-input-4"
+  >
+    <div
+      style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+    >
+      text input label
+    </div>
+  </label>
+  <div
+    class="tc__text-input__container"
+  >
+    <div
+      style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+    >
+      <input
+        id="text-input-4"
+        pattern=""
+        placeholder="text input placeholder"
+        type="text"
+        value=""
+      />
+    </div>
+  </div>
+  <div
+    style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(255, 15, 15); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+  >
+    this is an error
+  </div>
+</div>
+`;
+
+exports[`TextInput renders a text input with endAdornment 1`] = `
+<div
+  class="tc__text-input "
+>
+  <label
+    for="text-input-7"
+  >
+    <div
+      style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+    >
+      text input label
+    </div>
+  </label>
+  <div
+    class="tc__text-input__container"
+  >
+    <div
+      style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+    >
+      <input
+        id="text-input-7"
+        pattern=""
+        placeholder="text input placeholder"
+        type="text"
+        value=""
+      />
+    </div>
+    <div>
+      endAdornment
+    </div>
+  </div>
+  
+  
+</div>
+`;
+
+exports[`TextInput renders a text input with focus 1`] = `
+<div
+  class="tc__text-input tc__text-input__focused"
+>
+  <label
+    for="text-input-8"
+  >
+    <div
+      style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+    >
+      text input label
+    </div>
+  </label>
+  <div
+    class="tc__text-input__container"
+  >
+    <div
+      style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+    >
+      <input
+        id="text-input-8"
+        pattern=""
+        placeholder="text input placeholder"
+        type="text"
+        value=""
+      />
+    </div>
+  </div>
+  
+  
+</div>
+`;
+
+exports[`TextInput renders a text input with focus with caption 1`] = `
+<div
+  class="tc__text-input tc__text-input__focused"
+>
+  <label
+    for="text-input-9"
+  >
+    <div
+      style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+    >
+      text input label
+    </div>
+  </label>
+  <div
+    class="tc__text-input__container"
+  >
+    <div
+      style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+    >
+      <input
+        id="text-input-9"
+        pattern=""
+        placeholder="text input placeholder"
+        type="text"
+        value=""
+      />
+    </div>
+  </div>
+  <div
+    style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(245, 172, 55); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+  >
+    this is a caption
+  </div>
+  
+</div>
+`;
+
+exports[`TextInput renders a text input with label 1`] = `
+<div
+  class="tc__text-input "
+>
+  <label
+    for="text-input-0"
+  >
+    <div
+      style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+    >
+      text input label
+    </div>
+  </label>
+  <div
+    class="tc__text-input__container"
+  >
+    <div
+      style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+    >
+      <input
+        id="text-input-0"
+        pattern=""
+        placeholder="text input placeholder"
+        type="text"
+        value=""
+      />
+    </div>
+  </div>
+  
+  
+</div>
+`;
+
+exports[`TextInput renders a text input with pattern 1`] = `
+<div
+  class="tc__text-input "
+>
+  <label
+    for="text-input-2"
+  >
+    <div
+      style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+    >
+      text input label
+    </div>
+  </label>
+  <div
+    class="tc__text-input__container"
+  >
+    <div
+      style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+    >
+      <input
+        id="text-input-2"
+        pattern="[0-9,]*[.]?[0-9]*"
+        placeholder="text input placeholder"
+        type="text"
+        value=""
+      />
+    </div>
+  </div>
+  
+  
+</div>
+`;
+
+exports[`TextInput renders a text input with startAdornment 1`] = `
+<div
+  class="tc__text-input "
+>
+  <label
+    for="text-input-6"
+  >
+    <div
+      style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+    >
+      text input label
+    </div>
+  </label>
+  <div
+    class="tc__text-input__container"
+  >
+    <div>
+      startAdornment
+    </div>
+    <div
+      style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+    >
+      <input
+        id="text-input-6"
+        pattern=""
+        placeholder="text input placeholder"
+        type="text"
+        value=""
+      />
+    </div>
+  </div>
+  
+  
+</div>
+`;
+
+exports[`TextInput renders a text input with value 1`] = `
+<div
+  class="tc__text-input "
+>
+  <label
+    for="text-input-1"
+  >
+    <div
+      style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+    >
+      text input label
+    </div>
+  </label>
+  <div
+    class="tc__text-input__container"
+  >
+    <div
+      style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+    >
+      <input
+        id="text-input-1"
+        pattern=""
+        placeholder="text input placeholder"
+        type="text"
+        value="value"
+      />
+    </div>
+  </div>
+  
+  
+</div>
+`;
