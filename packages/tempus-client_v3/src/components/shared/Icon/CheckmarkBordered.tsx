@@ -3,7 +3,14 @@ import { IconProps, ICON_SIZE_DEFAULT } from './Icon';
 import withIcon from './withIcon';
 
 const CheckmarkBordered: FC<IconProps> = ({ size = ICON_SIZE_DEFAULT }) => (
-  <svg width={size} height={size} viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <svg
+    className="tc__icon tc__icon-checkmark-bordered"
+    width={size}
+    height={size}
+    viewBox="0 0 16 16"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
     <path
       fillRule="evenodd"
       clipRule="evenodd"

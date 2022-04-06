@@ -1,0 +1,64 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ToggleSwitch renders a checked toggle switch 1`] = `
+<span
+  class="tc__toggle-switch"
+>
+  <span
+    class="tc__toggle-switch__switch-container"
+  >
+    <input
+      checked=""
+      id="toggle-switch-1"
+      type="checkbox"
+    />
+    <span
+      class="tc__toggle-switch__thumb tc__toggle-switch__thumb-active"
+    />
+    <span
+      class="tc__toggle-switch__background tc__toggle-switch__background-active"
+    />
+  </span>
+  <label
+    class="tc__toggle-switch__label"
+    for="toggle-switch-1"
+  >
+    <div
+      style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+    >
+      my label
+    </div>
+  </label>
+</span>
+`;
+
+exports[`ToggleSwitch renders an unchecked toggle switch 1`] = `
+<span
+  class="tc__toggle-switch"
+>
+  <span
+    class="tc__toggle-switch__switch-container"
+  >
+    <input
+      id="toggle-switch-0"
+      type="checkbox"
+    />
+    <span
+      class="tc__toggle-switch__thumb "
+    />
+    <span
+      class="tc__toggle-switch__background "
+    />
+  </span>
+  <label
+    class="tc__toggle-switch__label"
+    for="toggle-switch-0"
+  >
+    <div
+      style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+    >
+      my label
+    </div>
+  </label>
+</span>
+`;

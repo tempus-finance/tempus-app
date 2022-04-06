@@ -5,6 +5,7 @@ exports[`ActionButton renders a button with a \`twitter\` icon 1`] = `
   class="tc__btn tc__iconButton__deselected"
 >
   <svg
+    class="tc__icon tc__icon-twitter"
     fill="none"
     height="24"
     viewBox="0 0 16 16"

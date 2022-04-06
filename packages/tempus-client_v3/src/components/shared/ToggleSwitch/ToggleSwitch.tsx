@@ -1,11 +1,11 @@
-import { ChangeEventHandler, FC, useMemo } from 'react';
+import { ChangeEvent, FC, useMemo } from 'react';
 import { Typography } from '..';
 import './toggle-switch.scss';
 
-interface ToggleSwitchProps {
+export interface ToggleSwitchProps {
   checked: boolean;
   label?: string;
-  onChange?: ChangeEventHandler<HTMLInputElement>;
+  onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
 }
 
 let idCounter = 0;

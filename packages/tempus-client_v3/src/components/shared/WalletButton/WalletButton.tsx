@@ -8,7 +8,7 @@ import Typography from '../Typography';
 
 import './WalletButton.scss';
 
-interface WalletButtonProps {
+export interface WalletButtonProps {
   address: string;
   balance: string;
   chain: Chain;
