@@ -13,7 +13,7 @@ export interface DropdownItemProps {
 }
 
 const DropdownItem: FC<DropdownItemProps> = props => {
-  const { label, checkbox = false, icon: rightSideIcon, onChange } = props;
+  const { label, checkbox = false, icon, onChange } = props;
 
   const [checked, setChecked] = useState<boolean>(false);
 
@@ -34,7 +34,7 @@ const DropdownItem: FC<DropdownItemProps> = props => {
           {label}
         </Typography>
       )}
-      {rightSideIcon && <Icon type={rightSideIcon} size={12} />}
+      {icon && <Icon type={icon} size={12} />}
     </div>
   );
 };
