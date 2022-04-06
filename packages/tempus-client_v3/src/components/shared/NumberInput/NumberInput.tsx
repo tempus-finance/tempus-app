@@ -29,7 +29,7 @@ const NumberInput: FC<NumberInputProps> = props => {
         </Typography>
       </ButtonWrapper>
     ),
-    [max, disabled, onMaxClick],
+    [disabled, onMaxClick],
   );
 
   return (
