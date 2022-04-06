@@ -40,7 +40,7 @@ describe('Logo', () => {
       const { container } = subject({ ...defaultProps, type: type as LogoType });
       const svg = container.querySelector('svg');
 
-      expect(svg).not.toBeNull;
+      expect(svg).not.toBeNull();
       expect(svg).toHaveClass('tc__logo');
       expect(svg).toHaveClass(`tc__logo-${type}`);
       expect(svg).toMatchSnapshot();

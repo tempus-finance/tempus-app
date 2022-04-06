@@ -5,15 +5,15 @@ import Typography from '../Typography';
 
 import './DropdownItem.scss';
 
-interface DropdownItemProps {
+export interface DropdownItemProps {
   label: string;
   onChange: (checked: boolean, label: string) => void;
   checkbox?: boolean;
-  rightSideIcon?: IconType;
+  icon?: IconType;
 }
 
 const DropdownItem: FC<DropdownItemProps> = props => {
-  const { label, checkbox = false, rightSideIcon, onChange } = props;
+  const { label, checkbox = false, icon: rightSideIcon, onChange } = props;
 
   const [checked, setChecked] = useState<boolean>(false);
 

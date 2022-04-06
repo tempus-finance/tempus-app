@@ -62,7 +62,7 @@ MultipleChoice.args = {
 const RightSideIconTemplate: ComponentStory<typeof Dropdown> = args => (
   <div style={style}>
     <Dropdown {...args}>
-      <DropdownItem label="Active" checkbox={true} onChange={() => {}} rightSideIcon="up-arrow-thin" />
+      <DropdownItem label="Active" checkbox={true} onChange={() => {}} icon="up-arrow-thin" />
       <DropdownItem label="Matured" checkbox={true} onChange={() => {}} />
       <DropdownItem label="Inactive" checkbox={true} onChange={() => {}} />
     </Dropdown>
