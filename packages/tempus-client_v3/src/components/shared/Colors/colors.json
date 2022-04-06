@@ -54,5 +54,10 @@
   "termTabsBackground": "#FFFFFF",
   "termTabsBorder": "#BFC0C0",
   "termTabsSelectedBackground": "#F3F7F9",
-  "termTabsSelectedBorder": "#474350"
+  "termTabsSelectedBorder": "#474350",
+
+  "dropdownBackground": "#FFFFFF",
+  "dropdownBorder": "#BFC0C0",
+  "dropdownBackgroundHighlight": "#FFFFFF80",
+  "dropdownBackgroundSelected": "#F3F7F9"
 }
