@@ -1,0 +1,11 @@
+.tc__dropdownItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 24px;
+  width: 100%;
+
+  &:not(:last-child) {
+    margin-bottom: 16px;
+  }
+}

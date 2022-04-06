@@ -3,6 +3,7 @@
 exports[`ActionButton renders a button with a \`default\` label 1`] = `
 <button
   class="tc__btn tc__actionButton tc__actionButton-border-primary-small tc__actionButton-background-primary-small tc__actionButton-hover-primary-small tc__actionButton-shadow-default tc__actionButton-cursor-default tc__actionButton-size-small "
+  data-selected="false"
 >
   <div
     class="tc__actionButton-status-label"
@@ -19,6 +20,7 @@ exports[`ActionButton renders a button with a \`default\` label 1`] = `
 exports[`ActionButton renders a button with a \`disabled\` state 1`] = `
 <button
   class="tc__btn tc__actionButton tc__actionButton-border-primary-small-disabled tc__actionButton-background-primary-small-disabled tc__actionButton-hover-primary-small-disabled tc__actionButton-shadow-disabled tc__actionButton-cursor-disabled tc__actionButton-size-small "
+  data-selected="false"
   disabled=""
 >
   <div
@@ -36,6 +38,7 @@ exports[`ActionButton renders a button with a \`disabled\` state 1`] = `
 exports[`ActionButton renders a button with a \`loading\` label 1`] = `
 <button
   class="tc__btn tc__actionButton tc__actionButton-border-primary-small-loading tc__actionButton-background-primary-small-loading tc__actionButton-hover-primary-small-loading tc__actionButton-shadow-loading tc__actionButton-cursor-loading tc__actionButton-size-small "
+  data-selected="false"
 >
   <div
     class="tc__actionButton-status-small-content"
@@ -74,6 +77,7 @@ exports[`ActionButton renders a button with a \`loading\` label 1`] = `
 exports[`ActionButton renders a button with a \`success\` label 1`] = `
 <button
   class="tc__btn tc__actionButton tc__actionButton-border-primary-small-success tc__actionButton-background-primary-small-success tc__actionButton-hover-primary-small-success tc__actionButton-shadow-success tc__actionButton-cursor-success tc__actionButton-size-small "
+  data-selected="false"
 >
   <div
     class="tc__actionButton-status-small-content"

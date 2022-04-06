@@ -253,3 +253,27 @@ TermTabsSelectedBorder.args = {
   backgroundColor: Colors.termTabsSelectedBorder,
   colorName: 'TermTabsSelectedBorder',
 };
+
+export const DropdownBackground = Template.bind({});
+DropdownBackground.args = {
+  backgroundColor: Colors.dropdownBackground,
+  colorName: 'DropdownBackground',
+};
+
+export const DropdownBorder = Template.bind({});
+DropdownBorder.args = {
+  backgroundColor: Colors.dropdownBorder,
+  colorName: 'DropdownBorder',
+};
+
+export const DropdownBackgroundHighlight = Template.bind({});
+DropdownBackgroundHighlight.args = {
+  backgroundColor: Colors.dropdownBackgroundHighlight,
+  colorName: 'DropdownBackgroundHighlight',
+};
+
+export const DropdownBackgroundSelected = Template.bind({});
+DropdownBackgroundSelected.args = {
+  backgroundColor: Colors.dropdownBackgroundSelected,
+  colorName: 'DropdownBackgroundSelected',
+};

@@ -10,6 +10,7 @@ import Link from './Link';
 import ActionButton from './ActionButton';
 import SwitcherButton from './SwitcherButton';
 import TermTabs from './TermTabs';
+import { Dropdown, DropdownItem } from './Dropdown';
 
 export * from './Colors';
 export * from './Icon';
@@ -31,4 +32,6 @@ export {
   TermTabs,
   ToggleSwitch,
   Typography,
+  Dropdown,
+  DropdownItem,
 };
