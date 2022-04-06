@@ -1,0 +1,9 @@
+thead > .tc__tableRow {
+  cursor: default;
+}
+
+tbody > .tc__tableRow {
+  box-shadow: var(--downWeakShadow);
+  border-radius: 40px;
+  cursor: pointer;
+}
