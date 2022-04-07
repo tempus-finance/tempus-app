@@ -1,12 +1,14 @@
+@use './Table.scss' as TableStyle;
+
 .tc__tableHeadCell {
-  padding-right: 8px;
+  padding-right: TableStyle.$tableColumnPadding;
 
   &:first-child {
-    padding-left: 20px;
+    padding-left: TableStyle.$tableSidePadding;
   }
 
   &:last-child {
-    padding-right: 20px;
+    padding-right: TableStyle.$tableSidePadding;
   }
 
   &[data-align='left'] {

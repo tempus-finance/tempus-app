@@ -277,3 +277,9 @@ DropdownBackgroundSelected.args = {
   backgroundColor: Colors.dropdownBackgroundSelected,
   colorName: 'DropdownBackgroundSelected',
 };
+
+export const TableRowBorderColor = Template.bind({});
+TableRowBorderColor.args = {
+  backgroundColor: Colors.tableRowBorderColor,
+  colorName: 'TableRowBorderColor',
+};
