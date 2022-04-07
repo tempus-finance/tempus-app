@@ -56,7 +56,7 @@ describe('Icon', () => {
       const { container } = subject({ ...defaultProps, type: type as IconType });
       const svg = container.querySelector('svg');
 
-      expect(svg).not.toBeNull;
+      expect(svg).not.toBeNull();
       expect(svg).toHaveClass('tc__icon');
       expect(svg).toHaveClass(`tc__icon-${type}`);
       expect(svg).toMatchSnapshot();
@@ -66,7 +66,7 @@ describe('Icon', () => {
       const { container } = subject({ ...defaultProps, size: 'tiny', type: type as IconType });
       const svg = container.querySelector('svg');
 
-      expect(svg).not.toBeNull;
+      expect(svg).not.toBeNull();
       expect(svg).toHaveClass('tc__icon');
       expect(svg).toHaveClass(`tc__icon-${type}`);
       expect(svg).toMatchSnapshot();
@@ -76,7 +76,7 @@ describe('Icon', () => {
       const { container } = subject({ ...defaultProps, size: 'small', type: type as IconType });
       const svg = container.querySelector('svg');
 
-      expect(svg).not.toBeNull;
+      expect(svg).not.toBeNull();
       expect(svg).toHaveClass('tc__icon');
       expect(svg).toHaveClass(`tc__icon-${type}`);
       expect(svg).toMatchSnapshot();
@@ -86,7 +86,7 @@ describe('Icon', () => {
       const { container } = subject({ ...defaultProps, size: 'medium', type: type as IconType });
       const svg = container.querySelector('svg');
 
-      expect(svg).not.toBeNull;
+      expect(svg).not.toBeNull();
       expect(svg).toHaveClass('tc__icon');
       expect(svg).toHaveClass(`tc__icon-${type}`);
       expect(svg).toMatchSnapshot();
@@ -96,7 +96,7 @@ describe('Icon', () => {
       const { container } = subject({ ...defaultProps, size: 'large', type: type as IconType });
       const svg = container.querySelector('svg');
 
-      expect(svg).not.toBeNull;
+      expect(svg).not.toBeNull();
       expect(svg).toHaveClass('tc__icon');
       expect(svg).toHaveClass(`tc__icon-${type}`);
       expect(svg).toMatchSnapshot();
