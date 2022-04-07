@@ -15,7 +15,7 @@ const TableRow: FC<TableRowProps> = props => {
   }, [id, onClick]);
 
   return (
-    <tr className="tc__tableRow" onClick={onRowClick}>
+    <tr id={id} className="tc__tableRow" onClick={onRowClick}>
       {children}
     </tr>
   );

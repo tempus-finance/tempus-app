@@ -1,0 +1,56 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`WalletButton Renders a table with two columns and one row 1`] = `
+<div>
+  <table
+    class="tc__table"
+  >
+    <thead>
+      <tr
+        class="tc__tableRow"
+        id="header"
+      >
+        <th
+          class="tc__tableHeadCell"
+          data-align="right"
+        >
+          <div
+            style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+          >
+            Asset
+          </div>
+        </th>
+        <th
+          class="tc__tableHeadCell"
+          data-align="left"
+        >
+          <div
+            style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+          >
+            Protocol
+          </div>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr
+        class="tc__tableRow"
+        id="first-pool"
+      >
+        <td
+          class="tc__tableBodyCell"
+          data-align="center"
+        >
+          ETH
+        </td>
+        <td
+          class="tc__tableBodyCell"
+          data-align="left"
+        >
+          Lido
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+`;
