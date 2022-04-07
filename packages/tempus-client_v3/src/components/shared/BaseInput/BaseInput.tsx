@@ -1,4 +1,4 @@
-import React, { ChangeEvent, FocusEvent, FC, ReactNode, useCallback, useMemo, useRef } from 'react';
+import React, { ChangeEvent, FocusEvent, FC, useCallback, useMemo, useRef } from 'react';
 
 export interface BaseInputProps {
   id?: string;

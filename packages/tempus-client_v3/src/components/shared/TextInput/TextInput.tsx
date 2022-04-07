@@ -1,4 +1,4 @@
-import React, { ReactNode, ChangeEvent, FocusEvent, FC, useCallback, useMemo, useRef, useState, memo } from 'react';
+import React, { ReactNode, FocusEvent, FC, useCallback, useMemo, useState, memo } from 'react';
 import BaseInput from '../BaseInput';
 import Typography from '../Typography';
 import '../Shadow';
@@ -19,7 +19,6 @@ export interface TextInputProps {
   onChange?: (value: string) => void;
 }
 
-export const DEFAULT_DEBOUNCE_INTERVAL = 300;
 let idCounter = 0;
 
 const TextInput: FC<TextInputProps> = props => {
