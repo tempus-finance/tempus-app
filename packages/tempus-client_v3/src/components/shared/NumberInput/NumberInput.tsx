@@ -1,4 +1,5 @@
 import React, { FC, memo, useCallback, useMemo } from 'react';
+import { BigNumber } from 'ethers';
 import TextInput from '../TextInput';
 import ButtonWrapper from '../ButtonWrapper';
 import Typography from '../Typography';
@@ -8,7 +9,8 @@ import './NumberInput.scss';
 export interface NumberInputProps {
   label?: string;
   value?: string;
-  max?: number;
+  max: number | string | BigNumber;
+  precision?: number;
   placeholder?: string;
   caption?: string;
   error?: string;
@@ -18,9 +20,9 @@ export interface NumberInputProps {
 }
 
 const NumberInput: FC<NumberInputProps> = props => {
-  const { label, value, max, placeholder, caption, error, disabled, debounce, onChange } = props;
+  const { label, value, max, precision = 18, placeholder, caption, error, disabled, debounce, onChange } = props;
 
-  const onMaxClick = useCallback(() => onChange?.(`${max}`), [max, onChange]);
+  const onMaxClick = useCallback(() => onChange?.(Number(max).toFixed(precision)), [max, precision, onChange]);
   const maxButton = useMemo(
     () => (
       <ButtonWrapper disabled={disabled} onClick={onMaxClick}>
@@ -33,18 +35,20 @@ const NumberInput: FC<NumberInputProps> = props => {
   );
 
   return (
-    <TextInput
-      label={label}
-      value={value}
-      placeholder={placeholder}
-      pattern="[0-9,]*[.]?[0-9]*"
-      caption={caption}
-      error={error}
-      disabled={disabled}
-      debounce={debounce}
-      endAdornment={maxButton}
-      onChange={onChange}
-    />
+    <div className="tc__number-input">
+      <TextInput
+        label={label}
+        value={value}
+        placeholder={placeholder}
+        pattern="[0-9,]*[.]?[0-9]*"
+        caption={caption}
+        error={error}
+        disabled={disabled}
+        debounce={debounce}
+        endAdornment={maxButton}
+        onChange={onChange}
+      />
+    </div>
   );
 };
 
