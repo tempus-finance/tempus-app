@@ -107,6 +107,6 @@ describe('Icon', () => {
     const { container } = subject({ ...defaultProps, type: 'UNSUPPORTED' as IconType });
     const svg = container.querySelector('svg');
 
-    expect(svg).toBeNull;
+    expect(svg).toBeNull();
   });
 });

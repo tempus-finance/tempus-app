@@ -79,6 +79,6 @@ describe('Logo', () => {
     const { container } = subject({ ...defaultProps, type: 'UNSUPPORTED' as LogoType });
     const svg = container.querySelector('svg');
 
-    expect(svg).toBeNull;
+    expect(svg).toBeNull();
   });
 });
