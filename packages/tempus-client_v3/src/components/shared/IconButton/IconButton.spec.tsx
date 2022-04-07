@@ -10,7 +10,7 @@ const defaultProps: IconButtonProps = {
 
 const subject = (props: IconButtonProps) => render(<IconButton {...props} />);
 
-describe('ActionButton', () => {
+describe('IconButton', () => {
   it('renders a button with a `twitter` icon', () => {
     const { getByRole } = subject(defaultProps);
 

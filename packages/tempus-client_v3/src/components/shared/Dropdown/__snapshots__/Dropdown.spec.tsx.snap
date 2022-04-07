@@ -2,6 +2,24 @@
 
 exports[`Dropdown closes when clicked on while open 1`] = `HTMLCollection []`;
 
+exports[`Dropdown does not close when clicked on the list 1`] = `
+HTMLCollection [
+  <div
+    class="tc__dropdown__popup"
+  >
+    <div
+      class="tc__dropdown-popup-title"
+    >
+      <div
+        style="font-style: normal; font-size: 10px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+      >
+        Title
+      </div>
+    </div>
+  </div>,
+]
+`;
+
 exports[`Dropdown opens a popup when clicked 1`] = `
 HTMLCollection [
   <div
