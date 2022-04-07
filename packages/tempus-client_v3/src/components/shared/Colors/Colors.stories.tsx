@@ -134,6 +134,18 @@ TextDisabledSecondary.args = {
   colorName: 'TextDisabledSecondary',
 };
 
+export const TextCaption = Template.bind({});
+TextCaption.args = {
+  backgroundColor: Colors.textCaption,
+  colorName: 'TextCaption',
+};
+
+export const TextError = Template.bind({});
+TextError.args = {
+  backgroundColor: Colors.textError,
+  colorName: 'TextError',
+};
+
 export const ToggleSwitchInactiveBackground = Template.bind({});
 ToggleSwitchInactiveBackground.args = {
   backgroundColor: Colors.toggleSwitchInactiveBackground,
@@ -276,6 +288,36 @@ export const DropdownBackgroundSelected = Template.bind({});
 DropdownBackgroundSelected.args = {
   backgroundColor: Colors.dropdownBackgroundSelected,
   colorName: 'DropdownBackgroundSelected',
+};
+
+export const TextInputBackground = Template.bind({});
+TextInputBackground.args = {
+  backgroundColor: Colors.textInputBackground,
+  colorName: 'TextInputBackground',
+};
+
+export const TextInputBorder = Template.bind({});
+TextInputBorder.args = {
+  backgroundColor: Colors.textInputBorder,
+  colorName: 'TextInputBorder',
+};
+
+export const TextInputBackgroundDisabled = Template.bind({});
+TextInputBackgroundDisabled.args = {
+  backgroundColor: Colors.textInputBackgroundDisabled,
+  colorName: 'TextInputBackgroundDisabled',
+};
+
+export const TextInputBorderDisabled = Template.bind({});
+TextInputBorderDisabled.args = {
+  backgroundColor: Colors.textInputBorderDisabled,
+  colorName: 'TextInputBorderDisabled',
+};
+
+export const NumberInputMidBorderDisabled = Template.bind({});
+NumberInputMidBorderDisabled.args = {
+  backgroundColor: Colors.numberInputMidBorderDisabled,
+  colorName: 'NumberInputMidBorderDisabled',
 };
 
 export const TableRowBorderColor = Template.bind({});

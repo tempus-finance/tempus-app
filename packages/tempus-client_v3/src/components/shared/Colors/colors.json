@@ -4,6 +4,8 @@
   "textSuccess": "#4BB543",
   "textDisabled": "#7A7A7A",
   "textDisabledSecondary": "#BFC0C0",
+  "textCaption": "#F5AC37",
+  "textError": "#FF0F0F",
 
   "primaryMain": "#2B6E84",
   "primaryLight": "#129CA4",
@@ -60,6 +62,13 @@
   "dropdownBorder": "#BFC0C0",
   "dropdownBackgroundHighlight": "#FFFFFF80",
   "dropdownBackgroundSelected": "#F3F7F9",
+
+  "textInputBackground": "#FFFFFF",
+  "textInputBorder": "#BFC0C0",
+  "textInputBackgroundDisabled": "#BFC0C0",
+  "textInputBorderDisabled": "#7A7A7A",
+
+  "numberInputMidBorderDisabled": "#F3F7F9",
 
   "tableRowBorderColor": "#BFC0C0"
 }

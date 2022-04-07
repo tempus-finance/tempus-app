@@ -1,0 +1,23 @@
+.tc__number-input {
+  .tc__text-input__container {
+    input {
+      border-radius: 4px 0 0 4px;
+    }
+    .tc__btn {
+      width: 54px;
+      height: 38px;
+      border-radius: 0 4px 4px 0;
+      background: var(--textInputBackground);
+      border-left: 1px solid var(--textInputBorder);
+    }
+  }
+
+  .tc__text-input__disabled {
+    .tc__text-input__container {
+      .tc__btn {
+        background: var(--textInputBackgroundDisabled);
+        border-left: 1px solid var(--numberInputMidBorderDisabled);
+      }
+    }
+  }
+}
