@@ -12,7 +12,7 @@ export interface BaseInputProps {
   onBlur?: (ev: FocusEvent<HTMLInputElement>) => void;
 }
 
-export const DEFAULT_DEBOUNCE_INTERVAL = 300;
+export const DEFAULT_DEBOUNCE_INTERVAL_IN_MS = 300;
 
 const BaseInput: FC<BaseInputProps> = props => {
   const { id, value, placeholder, pattern, disabled, debounce = false, onChange, onFocus, onBlur } = props;
@@ -23,7 +23,7 @@ const BaseInput: FC<BaseInputProps> = props => {
       return 0;
     }
     if (debounce && debounce === true) {
-      return DEFAULT_DEBOUNCE_INTERVAL;
+      return DEFAULT_DEBOUNCE_INTERVAL_IN_MS;
     }
     return debounce as number;
   }, [debounce]);
