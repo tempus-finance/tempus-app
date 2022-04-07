@@ -12,7 +12,7 @@ $textinput-border-radius: 4px;
     box-shadow: var(--downWeakShadow);
     height: 40px;
 
-    input {
+    .tc__base-input {
       background: transparent;
       border: none;
       border-radius: $textinput-border-radius;
