@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Icon renders a default-sized loading with default color 1`] = `
+exports[`Loading renders a default-sized loading with default color 1`] = `
 <svg
   height="20"
   viewBox="0 0 100 100"
@@ -21,7 +21,7 @@ exports[`Icon renders a default-sized loading with default color 1`] = `
 </svg>
 `;
 
-exports[`Icon renders a default-sized loading with secondary color 1`] = `
+exports[`Loading renders a default-sized loading with secondary color 1`] = `
 <svg
   height="20"
   viewBox="0 0 100 100"
@@ -42,7 +42,7 @@ exports[`Icon renders a default-sized loading with secondary color 1`] = `
 </svg>
 `;
 
-exports[`Icon renders a loading 1`] = `
+exports[`Loading renders a loading 1`] = `
 <svg
   height="20"
   viewBox="0 0 100 100"
@@ -63,7 +63,7 @@ exports[`Icon renders a loading 1`] = `
 </svg>
 `;
 
-exports[`Icon renders a loading with default color and size of 16 pixels 1`] = `
+exports[`Loading renders a loading with default color and size of 16 pixels 1`] = `
 <svg
   height="16"
   viewBox="0 0 100 100"
@@ -84,7 +84,7 @@ exports[`Icon renders a loading with default color and size of 16 pixels 1`] = `
 </svg>
 `;
 
-exports[`Icon renders a loading with secondary color and size of 16 pixels 1`] = `
+exports[`Loading renders a loading with secondary color and size of 16 pixels 1`] = `
 <svg
   height="16"
   viewBox="0 0 100 100"

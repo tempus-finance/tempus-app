@@ -3,7 +3,7 @@ import Loading, { LoadingProps } from './Loading';
 
 const subject = (props: LoadingProps) => render(<Loading {...props} />);
 
-describe('Icon', () => {
+describe('Loading', () => {
   it(`renders a loading`, () => {
     const { container } = subject({});
 
