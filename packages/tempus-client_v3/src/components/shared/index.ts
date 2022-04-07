@@ -11,6 +11,7 @@ import ActionButton from './ActionButton';
 import SwitcherButton from './SwitcherButton';
 import TermTabs from './TermTabs';
 import { Dropdown, DropdownItem } from './Dropdown';
+import { Table, TableHead, TableHeadCell, TableBody, TableBodyCell, TableRow } from './Table';
 
 export * from './Colors';
 export * from './Icon';
@@ -34,4 +35,10 @@ export {
   Typography,
   Dropdown,
   DropdownItem,
+  Table,
+  TableHead,
+  TableHeadCell,
+  TableBody,
+  TableBodyCell,
+  TableRow,
 };

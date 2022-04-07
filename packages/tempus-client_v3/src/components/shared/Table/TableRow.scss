@@ -1,0 +1,11 @@
+@use './Table.scss' as TableStyle;
+
+thead > .tc__tableRow {
+  cursor: default;
+}
+
+tbody > .tc__tableRow {
+  box-shadow: var(--downWeakShadow);
+  border-radius: calc(TableStyle.$tableRowHeight / 2);
+  cursor: pointer;
+}
