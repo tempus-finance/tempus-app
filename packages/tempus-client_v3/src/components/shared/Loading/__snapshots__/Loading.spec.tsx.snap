@@ -1,0 +1,106 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Icon renders a default-sized loading with default color 1`] = `
+<svg
+  height="20"
+  viewBox="0 0 100 100"
+  width="20"
+>
+  <circle
+    class="tc__loading tc__loading__color-bg-default"
+    cx="50"
+    cy="50"
+    r="40"
+  />
+  <circle
+    class="tc__loading tc__loading__color-animate-default tc__loading__animate"
+    cx="50"
+    cy="50"
+    r="40"
+  />
+</svg>
+`;
+
+exports[`Icon renders a default-sized loading with secondary color 1`] = `
+<svg
+  height="20"
+  viewBox="0 0 100 100"
+  width="20"
+>
+  <circle
+    class="tc__loading tc__loading__color-bg-secondary"
+    cx="50"
+    cy="50"
+    r="40"
+  />
+  <circle
+    class="tc__loading tc__loading__color-animate-secondary tc__loading__animate"
+    cx="50"
+    cy="50"
+    r="40"
+  />
+</svg>
+`;
+
+exports[`Icon renders a loading 1`] = `
+<svg
+  height="20"
+  viewBox="0 0 100 100"
+  width="20"
+>
+  <circle
+    class="tc__loading tc__loading__color-bg-default"
+    cx="50"
+    cy="50"
+    r="40"
+  />
+  <circle
+    class="tc__loading tc__loading__color-animate-default tc__loading__animate"
+    cx="50"
+    cy="50"
+    r="40"
+  />
+</svg>
+`;
+
+exports[`Icon renders a loading with default color and size of 16 pixels 1`] = `
+<svg
+  height="16"
+  viewBox="0 0 100 100"
+  width="16"
+>
+  <circle
+    class="tc__loading tc__loading__color-bg-default"
+    cx="50"
+    cy="50"
+    r="40"
+  />
+  <circle
+    class="tc__loading tc__loading__color-animate-default tc__loading__animate"
+    cx="50"
+    cy="50"
+    r="40"
+  />
+</svg>
+`;
+
+exports[`Icon renders a loading with secondary color and size of 16 pixels 1`] = `
+<svg
+  height="16"
+  viewBox="0 0 100 100"
+  width="16"
+>
+  <circle
+    class="tc__loading tc__loading__color-bg-secondary"
+    cx="50"
+    cy="50"
+    r="40"
+  />
+  <circle
+    class="tc__loading tc__loading__color-animate-secondary tc__loading__animate"
+    cx="50"
+    cy="50"
+    r="40"
+  />
+</svg>
+`;
