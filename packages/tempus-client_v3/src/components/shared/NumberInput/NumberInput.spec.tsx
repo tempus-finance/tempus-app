@@ -1,5 +1,5 @@
 import { fireEvent, render } from '@testing-library/react';
-import { BigNumber } from 'ethers';
+import { BigNumber, utils } from 'ethers';
 import NumberInput, { NumberInputProps } from './NumberInput';
 
 const mockOnChange = jest.fn();
@@ -8,7 +8,7 @@ const defaultProps: NumberInputProps = {
   label: 'number input label',
   value: '',
   max: 100,
-  precision: 0,
+  precision: 18,
   placeholder: 'number input placeholder',
   caption: '',
   error: '',
@@ -70,7 +70,7 @@ describe('NumberInput', () => {
 
     fireEvent.click(button);
 
-    expect(mockOnChange).toHaveBeenCalledWith(`${defaultProps.max}`);
+    expect(mockOnChange).toHaveBeenCalledWith(utils.formatUnits(defaultProps.max, defaultProps.precision));
   });
 
   it('click max button in number input with max as string will trigger onChange', () => {
@@ -87,7 +87,7 @@ describe('NumberInput', () => {
 
     fireEvent.click(button);
 
-    expect(mockOnChange).toHaveBeenCalledWith(Number(defaultProps.max).toFixed(props.precision));
+    expect(mockOnChange).toHaveBeenCalledWith(utils.formatUnits(defaultProps.max, props.precision));
   });
 
   it('click max button in number input with max as BigNumber will trigger onChange', () => {
@@ -104,7 +104,7 @@ describe('NumberInput', () => {
 
     fireEvent.click(button);
 
-    expect(mockOnChange).toHaveBeenCalledWith(Number(defaultProps.max).toFixed(props.precision));
+    expect(mockOnChange).toHaveBeenCalledWith(utils.formatUnits(defaultProps.max, props.precision));
   });
 
   it('click max button in number input without providing precision will use default precision', () => {
@@ -121,7 +121,7 @@ describe('NumberInput', () => {
 
     fireEvent.click(button);
 
-    expect(mockOnChange).toHaveBeenCalledWith(Number(defaultProps.max).toFixed(18));
+    expect(mockOnChange).toHaveBeenCalledWith(utils.formatUnits(defaultProps.max, 18));
   });
 
   it('click max button in number input with different precision will trigger onChange', () => {
@@ -138,7 +138,7 @@ describe('NumberInput', () => {
 
     fireEvent.click(button);
 
-    expect(mockOnChange).toHaveBeenCalledWith(Number(defaultProps.max).toFixed(props.precision));
+    expect(mockOnChange).toHaveBeenCalledWith(utils.formatUnits(defaultProps.max, props.precision));
   });
 
   it('type text with unmatch pattern in number input will not trigger onChange', () => {

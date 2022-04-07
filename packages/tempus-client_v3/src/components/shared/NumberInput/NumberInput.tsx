@@ -1,5 +1,5 @@
 import React, { FC, memo, useCallback, useMemo } from 'react';
-import { BigNumber } from 'ethers';
+import { BigNumber, utils } from 'ethers';
 import TextInput from '../TextInput';
 import ButtonWrapper from '../ButtonWrapper';
 import Typography from '../Typography';
@@ -22,7 +22,7 @@ export interface NumberInputProps {
 const NumberInput: FC<NumberInputProps> = props => {
   const { label, value, max, precision = 18, placeholder, caption, error, disabled, debounce, onChange } = props;
 
-  const onMaxClick = useCallback(() => onChange?.(Number(max).toFixed(precision)), [max, precision, onChange]);
+  const onMaxClick = useCallback(() => onChange?.(utils.formatUnits(max, precision)), [max, precision, onChange]);
   const maxButton = useMemo(
     () => (
       <ButtonWrapper disabled={disabled} onClick={onMaxClick}>
