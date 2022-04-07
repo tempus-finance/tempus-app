@@ -2,7 +2,6 @@ import { render } from '@testing-library/react';
 import Icon, { IconProps, IconType } from './Icon';
 
 const defaultProps: IconProps = {
-  size: 'medium',
   color: '#222222',
 };
 
@@ -52,7 +51,7 @@ describe('Icon', () => {
     'slippage',
     'globe',
     'dark',
-  ].forEach(type =>
+  ].forEach(type => {
     it(`renders an icon with type ${type}`, () => {
       const { container } = subject({ ...defaultProps, type: type as IconType });
       const svg = container.querySelector('svg');
@@ -61,6 +60,53 @@ describe('Icon', () => {
       expect(svg).toHaveClass('tc__icon');
       expect(svg).toHaveClass(`tc__icon-${type}`);
       expect(svg).toMatchSnapshot();
-    }),
-  );
+    });
+
+    it(`renders an tiny icon with type ${type}`, () => {
+      const { container } = subject({ ...defaultProps, size: 'tiny', type: type as IconType });
+      const svg = container.querySelector('svg');
+
+      expect(svg).not.toBeNull;
+      expect(svg).toHaveClass('tc__icon');
+      expect(svg).toHaveClass(`tc__icon-${type}`);
+      expect(svg).toMatchSnapshot();
+    });
+
+    it(`renders an small icon with type ${type}`, () => {
+      const { container } = subject({ ...defaultProps, size: 'small', type: type as IconType });
+      const svg = container.querySelector('svg');
+
+      expect(svg).not.toBeNull;
+      expect(svg).toHaveClass('tc__icon');
+      expect(svg).toHaveClass(`tc__icon-${type}`);
+      expect(svg).toMatchSnapshot();
+    });
+
+    it(`renders an medium icon with type ${type}`, () => {
+      const { container } = subject({ ...defaultProps, size: 'medium', type: type as IconType });
+      const svg = container.querySelector('svg');
+
+      expect(svg).not.toBeNull;
+      expect(svg).toHaveClass('tc__icon');
+      expect(svg).toHaveClass(`tc__icon-${type}`);
+      expect(svg).toMatchSnapshot();
+    });
+
+    it(`renders an large icon with type ${type}`, () => {
+      const { container } = subject({ ...defaultProps, size: 'large', type: type as IconType });
+      const svg = container.querySelector('svg');
+
+      expect(svg).not.toBeNull;
+      expect(svg).toHaveClass('tc__icon');
+      expect(svg).toHaveClass(`tc__icon-${type}`);
+      expect(svg).toMatchSnapshot();
+    });
+  });
+
+  it('renders an icon with unsupported type', () => {
+    const { container } = subject({ ...defaultProps, type: 'UNSUPPORTED' as IconType });
+    const svg = container.querySelector('svg');
+
+    expect(svg).toBeNull();
+  });
 });

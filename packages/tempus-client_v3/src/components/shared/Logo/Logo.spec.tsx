@@ -1,9 +1,7 @@
 import { render } from '@testing-library/react';
 import Logo, { LogoProps, LogoType } from './Logo';
 
-const defaultProps: LogoProps = {
-  size: 'medium',
-};
+const defaultProps: LogoProps = {};
 
 const subject = (props: LogoProps & { type: LogoType }) => render(<Logo {...props} />);
 
@@ -35,8 +33,8 @@ describe('Logo', () => {
     'wallet-metamask',
     'wallet-walletconnect',
     'wallet-gnosis',
-  ].forEach(type =>
-    it(`renders an logo with type ${type}`, () => {
+  ].forEach(type => {
+    it(`renders a logo with type ${type}`, () => {
       const { container } = subject({ ...defaultProps, type: type as LogoType });
       const svg = container.querySelector('svg');
 
@@ -44,6 +42,43 @@ describe('Logo', () => {
       expect(svg).toHaveClass('tc__logo');
       expect(svg).toHaveClass(`tc__logo-${type}`);
       expect(svg).toMatchSnapshot();
-    }),
-  );
+    });
+
+    it(`renders a small logo with type ${type}`, () => {
+      const { container } = subject({ ...defaultProps, size: 'small', type: type as LogoType });
+      const svg = container.querySelector('svg');
+
+      expect(svg).not.toBeNull();
+      expect(svg).toHaveClass('tc__logo');
+      expect(svg).toHaveClass(`tc__logo-${type}`);
+      expect(svg).toMatchSnapshot();
+    });
+
+    it(`renders a medium logo with type ${type}`, () => {
+      const { container } = subject({ ...defaultProps, size: 'medium', type: type as LogoType });
+      const svg = container.querySelector('svg');
+
+      expect(svg).not.toBeNull();
+      expect(svg).toHaveClass('tc__logo');
+      expect(svg).toHaveClass(`tc__logo-${type}`);
+      expect(svg).toMatchSnapshot();
+    });
+
+    it(`renders a large logo with type ${type}`, () => {
+      const { container } = subject({ ...defaultProps, size: 'large', type: type as LogoType });
+      const svg = container.querySelector('svg');
+
+      expect(svg).not.toBeNull();
+      expect(svg).toHaveClass('tc__logo');
+      expect(svg).toHaveClass(`tc__logo-${type}`);
+      expect(svg).toMatchSnapshot();
+    });
+  });
+
+  it('renders a logo with unsupported type', () => {
+    const { container } = subject({ ...defaultProps, type: 'UNSUPPORTED' as LogoType });
+    const svg = container.querySelector('svg');
+
+    expect(svg).toBeNull();
+  });
 });
