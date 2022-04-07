@@ -9,7 +9,7 @@ module.exports = {
   },
   overrides: [
     {
-      files: ['*.ts', '*.tsx'],
+      files: ['*.ts', '*.tsx', '**/*.stories.*'],
       parserOptions: {
         project: ['./tsconfig.json'],
       },
@@ -90,6 +90,7 @@ module.exports = {
       '@typescript-eslint/no-explicit-any': 0,
       '@typescript-eslint/no-use-before-define': 0,
       '@typescript-eslint/explicit-function-return-type': 0,
+      'import/no-anonymous-default-export': 0,
       'import/no-extraneous-dependencies': 0,
       'import/no-useless-path-segments': 0,
       'import/prefer-default-exports': 0,
