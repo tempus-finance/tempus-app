@@ -319,3 +319,9 @@ NumberInputMidBorderDisabled.args = {
   backgroundColor: Colors.numberInputMidBorderDisabled,
   colorName: 'NumberInputMidBorderDisabled',
 };
+
+export const TableRowBorderColor = Template.bind({});
+TableRowBorderColor.args = {
+  backgroundColor: Colors.tableRowBorderColor,
+  colorName: 'TableRowBorderColor',
+};

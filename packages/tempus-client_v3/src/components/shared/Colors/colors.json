@@ -68,5 +68,7 @@
   "textInputBackgroundDisabled": "#BFC0C0",
   "textInputBorderDisabled": "#7A7A7A",
 
-  "numberInputMidBorderDisabled": "#F3F7F9"
+  "numberInputMidBorderDisabled": "#F3F7F9",
+
+  "tableRowBorderColor": "#BFC0C0"
 }

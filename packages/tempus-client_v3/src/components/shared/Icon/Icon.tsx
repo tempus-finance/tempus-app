@@ -43,6 +43,7 @@ import Slippage from './Slippage';
 import Globe from './Globe';
 import Dark from './Dark';
 
+export const ICON_SIZE_TINY = 12;
 export const ICON_SIZE_SMALL = 16;
 export const ICON_SIZE_MEDIUM = 24;
 export const ICON_SIZE_LARGE = 32;
@@ -94,7 +95,7 @@ export type IconType =
   | 'dark';
 
 export interface IconProps {
-  size?: 'large' | 'medium' | 'small' | number;
+  size?: 'large' | 'medium' | 'small' | 'tiny' | number;
   color?: string;
 }
 

@@ -99,10 +99,30 @@
       }
     ]
   },
+  "jest": {
+    "collectCoverageFrom": [
+      "src/**/*.{ts,tsx}",
+      "!src/**/*.stories.{ts,tsx}",
+      "!src/**/index.{ts,tsx}",
+      "!src/**/*.d.ts",
+      "!src/**/reportWebVitals.ts",
+      "!src/**/serviceWorker.ts",
+      "!**/node_modules/**"
+    ],
+    "coverageThreshold": {
+      "global": {
+        "branches": 60,
+        "functions": 80,
+        "lines": 80,
+        "statements": -20
+      }
+    }
+  },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
+    "test:coverage": "react-scripts test --coverage --watchAll=false",
     "test:update": "react-scripts test -u",
     "ci:test": "CI=true react-scripts test",
     "eject": "react-scripts eject",

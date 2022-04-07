@@ -1,0 +1,25 @@
+@use './Table.scss' as TableStyle;
+
+.tc__tableHeadCell {
+  padding-right: TableStyle.$tableColumnPadding;
+
+  &:first-child {
+    padding-left: TableStyle.$tableSidePadding;
+  }
+
+  &:last-child {
+    padding-right: TableStyle.$tableSidePadding;
+  }
+
+  &[data-align='left'] {
+    text-align: left;
+  }
+
+  &[data-align='center'] {
+    text-align: center;
+  }
+
+  &[data-align='right'] {
+    text-align: right;
+  }
+}

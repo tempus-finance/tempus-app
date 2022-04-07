@@ -13,6 +13,7 @@ import TermTabs from './TermTabs';
 import { Dropdown, DropdownItem } from './Dropdown';
 import TextInput from './TextInput';
 import NumberInput from './NumberInput';
+import { Table, TableHead, TableHeadCell, TableBody, TableBodyCell, TableRow } from './Table';
 
 export * from './Colors';
 export * from './Icon';
@@ -38,4 +39,10 @@ export {
   DropdownItem,
   TextInput,
   NumberInput,
+  Table,
+  TableHead,
+  TableHeadCell,
+  TableBody,
+  TableBodyCell,
+  TableRow,
 };

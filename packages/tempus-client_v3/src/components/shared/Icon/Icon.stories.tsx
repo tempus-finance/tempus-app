@@ -18,7 +18,8 @@ const style = {
 
 const Template: ComponentStory<typeof Icon> = args => (
   <div style={style}>
-    <Icon {...args} type={args.type} size="small" />
+    <Icon {...args} size="tiny" />
+    <Icon {...args} size="small" />
     <Icon {...args} size="medium" />
     <Icon {...args} size="large" />
     <Icon {...args} size={48} />
