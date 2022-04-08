@@ -1,4 +1,4 @@
-import React, { ReactNode, FocusEvent, FC, useCallback, useMemo, useState, memo } from 'react';
+import React, { ReactNode, FC, useCallback, useMemo, useState, memo } from 'react';
 import BaseInput from '../BaseInput';
 import Typography from '../Typography';
 import '../Shadow';
@@ -38,15 +38,15 @@ const TextInput: FC<TextInputProps> = props => {
   const [focused, setFocused] = useState<boolean>(false);
   const id = useMemo(() => `text-input-${idCounter++}`, []);
 
-  const handleFocus = useCallback((ev: FocusEvent<HTMLInputElement>) => setFocused(true), []);
-  const handleBlur = useCallback((ev: FocusEvent<HTMLInputElement>) => setFocused(false), []);
+  const handleFocus = useCallback(() => setFocused(true), []);
+  const handleBlur = useCallback(() => setFocused(false), []);
 
   return (
     <div
       className={`tc__text-input ${
         disabled
           ? 'tc__text-input__disabled'
-          : !!error
+          : error
           ? 'tc__text-input__error'
           : focused
           ? 'tc__text-input__focused'
