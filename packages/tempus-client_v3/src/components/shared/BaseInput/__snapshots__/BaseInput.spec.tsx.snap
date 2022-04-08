@@ -1,0 +1,32 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`input renders a base input with pattern 1`] = `
+<input
+  class="tc__base-input"
+  pattern="[0-9,]*[.]?[0-9]*"
+  placeholder="base input placeholder"
+  type="text"
+  value=""
+/>
+`;
+
+exports[`input renders a base input with value 1`] = `
+<input
+  class="tc__base-input"
+  pattern=""
+  placeholder="base input placeholder"
+  type="text"
+  value="value"
+/>
+`;
+
+exports[`input renders a disabled base input 1`] = `
+<input
+  class="tc__base-input"
+  disabled=""
+  pattern=""
+  placeholder="base input placeholder"
+  type="text"
+  value=""
+/>
+`;

@@ -11,6 +11,7 @@ import ActionButton from './ActionButton';
 import SwitcherButton from './SwitcherButton';
 import TermTabs from './TermTabs';
 import { Dropdown, DropdownItem } from './Dropdown';
+import BaseInput from './BaseInput';
 import TextInput from './TextInput';
 import NumberInput from './NumberInput';
 import { Table, TableHead, TableHeadCell, TableBody, TableBodyCell, TableRow } from './Table';
@@ -37,6 +38,7 @@ export {
   Typography,
   Dropdown,
   DropdownItem,
+  BaseInput,
   TextInput,
   NumberInput,
   Table,
