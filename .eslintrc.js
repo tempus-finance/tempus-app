@@ -35,9 +35,10 @@ module.exports = {
   plugins: ['react-hooks'],
   rules: {
     // Verified rules
-    'arrow-parens': ['error', 'as-needed'],
+    'arrow-parens': ['error', 'as-needed'], // Set to match with prettier config
+    'implicit-arrow-linebreak': 0, // This rule is disabled because it does not work well with prettier
     ////
-    'implicit-arrow-linebreak': 0,
+
     'lines-between-class-members': 0,
     'max-len': ['error', { code: 140, ignoreStrings: true }],
     'no-confusing-arrow': 0,
