@@ -1,7 +1,10 @@
 import { fireEvent, render } from '@testing-library/react';
+import { FC, useState } from 'react';
+import { act } from 'react-dom/test-utils';
 import TextInput, { TextInputProps } from './TextInput';
 
 const mockOnChange = jest.fn();
+const mockOnDebounceChange = jest.fn();
 
 const defaultProps: TextInputProps = {
   label: 'text input label',
@@ -14,9 +17,16 @@ const defaultProps: TextInputProps = {
   startAdornment: null,
   endAdornment: null,
   onChange: mockOnChange,
+  onDebounceChange: mockOnDebounceChange,
 };
 
-const subject = (props: TextInputProps) => render(<TextInput {...props} />);
+const Wrapper: FC<TextInputProps> = props => {
+  const [value, setValue] = useState<string>(props.value ?? '');
+  mockOnChange.mockImplementation((val: string) => setValue(val));
+  return <TextInput {...props} value={value} />;
+};
+
+const subject = (props: TextInputProps) => render(<Wrapper {...props} />);
 
 describe('TextInput', () => {
   it('renders a text input with label', () => {
@@ -186,7 +196,7 @@ describe('TextInput', () => {
     expect(textInput).toMatchSnapshot();
   });
 
-  it('type text and then blur in text input with debounce will trigger onChange immediately', () => {
+  it('type text and then blur in text input with debounce will trigger onChange and onDebounceChange immediately', () => {
     jest.useFakeTimers();
     const props = { ...defaultProps, value: undefined, debounce: true };
     const { getByRole, queryByLabelText } = subject(props);
@@ -198,10 +208,15 @@ describe('TextInput', () => {
     expect(label).not.toBeNull();
 
     fireEvent.change(input, { target: { value: 'abcd' } });
-    jest.advanceTimersByTime(100);
-    fireEvent.blur(input);
-
     expect(mockOnChange).toHaveBeenCalledWith('abcd');
+    expect(mockOnDebounceChange).not.toHaveBeenCalled();
+    expect(input).toHaveValue('abcd');
+    act(() => {
+      jest.advanceTimersByTime(100);
+    });
+    fireEvent.blur(input);
+    expect(mockOnDebounceChange).toHaveBeenCalledWith('abcd');
+
     jest.useRealTimers();
   });
 });

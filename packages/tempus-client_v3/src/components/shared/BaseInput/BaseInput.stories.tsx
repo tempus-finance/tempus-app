@@ -1,6 +1,6 @@
 import { ComponentStory } from '@storybook/react';
-import React from 'react';
-import BaseInput from './BaseInput';
+import React, { FC, useCallback, useState } from 'react';
+import BaseInput, { BaseInputProps } from './BaseInput';
 
 export default {
   title: 'BaseInput',
@@ -16,26 +16,51 @@ const style = {
   padding: '10px',
 };
 
+const Wrapper: FC<BaseInputProps> = props => {
+  const [value, setValue] = useState<string>(props.value ?? '');
+  const onChange = useCallback((val: string) => setValue(val), []);
+  return <BaseInput {...props} value={value} onChange={onChange} />;
+};
+
 const Template: ComponentStory<typeof BaseInput> = args => (
   <div style={style}>
-    <BaseInput {...args} />
+    <Wrapper {...args} />
   </div>
 );
 
 export const BaseInputNormal = Template.bind({});
 BaseInputNormal.args = {
+  value: 'value',
   placeholder: 'placeholder',
   pattern: '',
   disabled: false,
   debounce: false,
-  onChange: () => false,
 };
 
 export const BaseInputDisabled = Template.bind({});
 BaseInputDisabled.args = {
+  value: 'value',
   placeholder: 'placeholder',
   pattern: '',
   disabled: true,
   debounce: false,
-  onChange: () => false,
+};
+
+export const BaseInputLetterOnly = Template.bind({});
+BaseInputLetterOnly.args = {
+  value: 'value',
+  placeholder: 'placeholder',
+  pattern: '[a-zA-Z]*',
+  disabled: false,
+  debounce: false,
+};
+
+export const BaseInputDebounce = Template.bind({});
+BaseInputDebounce.args = {
+  value: 'value',
+  placeholder: 'placeholder',
+  pattern: '',
+  disabled: false,
+  debounce: true,
+  onDebounceChange: value => console.log(value),
 };
