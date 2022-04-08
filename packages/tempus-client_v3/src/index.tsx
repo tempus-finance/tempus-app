@@ -18,7 +18,9 @@ const mobile = isMobile();
 try {
   const release = require('./release.json');
   console.log(`Current version: ${release.releaseVersion}`);
-} catch (e) {}
+} catch (e) {
+  console.error(e);
+}
 
 if (mobile) {
   ReactDOM.render(

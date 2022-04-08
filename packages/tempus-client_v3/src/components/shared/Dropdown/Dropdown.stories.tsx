@@ -46,9 +46,9 @@ Regular.args = {
 const MultipleChoiceTemplate: ComponentStory<typeof Dropdown> = args => (
   <div style={style}>
     <Dropdown {...args}>
-      <DropdownItem label="Active" checkbox={true} onChange={() => {}} />
-      <DropdownItem label="Matured" checkbox={true} onChange={() => {}} />
-      <DropdownItem label="Inactive" checkbox={true} onChange={() => {}} />
+      <DropdownItem label="Active" checkbox onChange={() => {}} />
+      <DropdownItem label="Matured" checkbox onChange={() => {}} />
+      <DropdownItem label="Inactive" checkbox onChange={() => {}} />
     </Dropdown>
   </div>
 );
@@ -62,9 +62,9 @@ MultipleChoice.args = {
 const RightSideIconTemplate: ComponentStory<typeof Dropdown> = args => (
   <div style={style}>
     <Dropdown {...args}>
-      <DropdownItem label="Active" checkbox={true} onChange={() => {}} icon="up-arrow-thin" />
-      <DropdownItem label="Matured" checkbox={true} onChange={() => {}} />
-      <DropdownItem label="Inactive" checkbox={true} onChange={() => {}} />
+      <DropdownItem label="Active" checkbox onChange={() => {}} icon="up-arrow-thin" />
+      <DropdownItem label="Matured" checkbox onChange={() => {}} />
+      <DropdownItem label="Inactive" checkbox onChange={() => {}} />
     </Dropdown>
   </div>
 );

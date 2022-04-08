@@ -16,9 +16,7 @@ const Dropdown: FC<DropdownProps> = props => {
   const [open, setOpen] = useState<boolean>(false);
 
   const onClick = useCallback(() => {
-    setOpen(prevState => {
-      return !prevState;
-    });
+    setOpen(prevState => !prevState);
   }, []);
 
   const onPopupClick = useCallback((event: MouseEvent<HTMLDivElement>) => {

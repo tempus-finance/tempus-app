@@ -121,8 +121,8 @@ const Typography: FC<TypographyProps> = props => {
       style={{
         ...typographyVariantMap.get(variant),
         color: fontColor,
-        fontWeight: fontWeight,
-        fontFamily: fontFamily,
+        fontWeight,
+        fontFamily,
         opacity,
       }}
     >

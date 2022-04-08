@@ -27,6 +27,7 @@ const withIcon = (Component: React.ComponentType<IconProps>): FC<IconProps> =>
       case undefined:
         actualSize = ICON_SIZE_DEFAULT;
         break;
+      default:
     }
     return <Component size={actualSize} color={color} />;
   });
