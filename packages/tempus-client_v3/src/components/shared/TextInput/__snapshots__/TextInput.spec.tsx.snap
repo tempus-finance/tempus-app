@@ -20,6 +20,7 @@ exports[`TextInput renders a disabled text input 1`] = `
       style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(122, 122, 122); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
     >
       <input
+        class="tc__base-input"
         disabled=""
         id="text-input-5"
         pattern=""
@@ -54,6 +55,7 @@ exports[`TextInput renders a text input with caption 1`] = `
       style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
     >
       <input
+        class="tc__base-input"
         id="text-input-3"
         pattern=""
         placeholder="text input placeholder"
@@ -91,6 +93,7 @@ exports[`TextInput renders a text input with caption and error 1`] = `
       style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
     >
       <input
+        class="tc__base-input"
         id="text-input-4"
         pattern=""
         placeholder="text input placeholder"
@@ -127,6 +130,7 @@ exports[`TextInput renders a text input with endAdornment 1`] = `
       style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
     >
       <input
+        class="tc__base-input"
         id="text-input-7"
         pattern=""
         placeholder="text input placeholder"
@@ -163,6 +167,7 @@ exports[`TextInput renders a text input with focus 1`] = `
       style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
     >
       <input
+        class="tc__base-input"
         id="text-input-8"
         pattern=""
         placeholder="text input placeholder"
@@ -196,6 +201,7 @@ exports[`TextInput renders a text input with focus with caption 1`] = `
       style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
     >
       <input
+        class="tc__base-input"
         id="text-input-9"
         pattern=""
         placeholder="text input placeholder"
@@ -233,6 +239,7 @@ exports[`TextInput renders a text input with label 1`] = `
       style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
     >
       <input
+        class="tc__base-input"
         id="text-input-0"
         pattern=""
         placeholder="text input placeholder"
@@ -266,6 +273,7 @@ exports[`TextInput renders a text input with pattern 1`] = `
       style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
     >
       <input
+        class="tc__base-input"
         id="text-input-2"
         pattern="[0-9,]*[.]?[0-9]*"
         placeholder="text input placeholder"
@@ -302,6 +310,7 @@ exports[`TextInput renders a text input with startAdornment 1`] = `
       style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
     >
       <input
+        class="tc__base-input"
         id="text-input-6"
         pattern=""
         placeholder="text input placeholder"
@@ -335,6 +344,7 @@ exports[`TextInput renders a text input with value 1`] = `
       style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
     >
       <input
+        class="tc__base-input"
         id="text-input-1"
         pattern=""
         placeholder="text input placeholder"

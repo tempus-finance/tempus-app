@@ -1,4 +1,5 @@
-import React, { ReactNode, ChangeEvent, FocusEvent, FC, useCallback, useMemo, useRef, useState, memo } from 'react';
+import React, { ReactNode, FocusEvent, FC, useCallback, useMemo, useState, memo } from 'react';
+import BaseInput from '../BaseInput';
 import Typography from '../Typography';
 import '../Shadow';
 
@@ -18,7 +19,6 @@ export interface TextInputProps {
   onChange?: (value: string) => void;
 }
 
-export const DEFAULT_DEBOUNCE_INTERVAL = 300;
 let idCounter = 0;
 
 const TextInput: FC<TextInputProps> = props => {
@@ -36,53 +36,10 @@ const TextInput: FC<TextInputProps> = props => {
     onChange,
   } = props;
   const [focused, setFocused] = useState<boolean>(false);
-  const time = useRef<NodeJS.Timeout>();
   const id = useMemo(() => `text-input-${idCounter++}`, []);
 
-  const debounceInterval: number = useMemo(() => {
-    if (!debounce) {
-      return 0;
-    }
-    if (debounce && debounce === true) {
-      return DEFAULT_DEBOUNCE_INTERVAL;
-    }
-    return debounce as number;
-  }, [debounce]);
-
-  const handleChange = useCallback(
-    (ev: ChangeEvent<HTMLInputElement>) => {
-      if (!pattern || !ev.target.validity.patternMismatch) {
-        const { value } = ev.currentTarget;
-        if (debounceInterval) {
-          if (time.current) {
-            clearTimeout(time.current);
-          }
-          time.current = setTimeout(() => {
-            onChange?.(value);
-            time.current = undefined;
-          }, debounceInterval);
-        } else {
-          onChange?.(value);
-        }
-      }
-    },
-    [pattern, debounceInterval, onChange],
-  );
-
   const handleFocus = useCallback((ev: FocusEvent<HTMLInputElement>) => setFocused(true), []);
-
-  const handleBlur = useCallback(
-    (ev: FocusEvent<HTMLInputElement>) => {
-      const { value } = ev.currentTarget;
-      if (time.current) {
-        clearTimeout(time.current);
-        time.current = undefined;
-      }
-      setFocused(false);
-      onChange?.(value);
-    },
-    [onChange],
-  );
+  const handleBlur = useCallback((ev: FocusEvent<HTMLInputElement>) => setFocused(false), []);
 
   return (
     <div
@@ -106,14 +63,14 @@ const TextInput: FC<TextInputProps> = props => {
       <div className="tc__text-input__container">
         {startAdornment}
         <Typography variant="body-primary" weight="regular" color={disabled ? 'text-disabled' : undefined}>
-          <input
+          <BaseInput
             id={id}
-            type="text"
             value={value}
             placeholder={placeholder}
             pattern={pattern}
+            debounce={debounce}
             disabled={disabled}
-            onChange={handleChange}
+            onChange={onChange}
             onFocus={handleFocus}
             onBlur={handleBlur}
           />
