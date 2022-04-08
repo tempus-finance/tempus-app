@@ -31,17 +31,17 @@ const BaseInput: FC<BaseInputProps> = props => {
   const handleChange = useCallback(
     (ev: ChangeEvent<HTMLInputElement>) => {
       if (!pattern || !ev.target.validity.patternMismatch) {
-        const { value } = ev.currentTarget;
+        const elementValue = ev.currentTarget.value;
         if (debounceInterval) {
           if (time.current) {
             clearTimeout(time.current);
           }
           time.current = setTimeout(() => {
-            onChange?.(value);
+            onChange?.(elementValue);
             time.current = undefined;
           }, debounceInterval);
         } else {
-          onChange?.(value);
+          onChange?.(elementValue);
         }
       }
     },
@@ -50,12 +50,12 @@ const BaseInput: FC<BaseInputProps> = props => {
 
   const handleBlur = useCallback(
     (ev: FocusEvent<HTMLInputElement>) => {
-      const { value } = ev.currentTarget;
+      const elementValue = ev.currentTarget.value;
       if (time.current) {
         clearTimeout(time.current);
         time.current = undefined;
       }
-      onChange?.(value);
+      onChange?.(elementValue);
       onBlur?.(ev);
     },
     [onChange, onBlur],

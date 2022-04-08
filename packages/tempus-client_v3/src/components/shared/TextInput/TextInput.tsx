@@ -1,4 +1,4 @@
-import React, { ReactNode, FocusEvent, FC, useCallback, useMemo, useState, memo } from 'react';
+import React, { ReactNode, FC, useCallback, useMemo, useState, memo } from 'react';
 import BaseInput from '../BaseInput';
 import Typography from '../Typography';
 import '../Shadow';
