@@ -1,9 +1,12 @@
-export default function loadStyleVariables(styles: object, suffix: string = '') {
+import { colors } from './Colors';
+import { shadows } from './Shadow';
+
+export default function loadStyleVariables(styles: typeof colors | typeof shadows, suffix = ''): void {
   const root = document.querySelector(':root') as HTMLElement;
 
   if (root) {
-    for (const [key, value] of Object.entries(styles)) {
+    Object.entries(styles).forEach(([key, value]) => {
       root.style.setProperty(`--${key}${suffix}`, value);
-    }
+    });
   }
 }

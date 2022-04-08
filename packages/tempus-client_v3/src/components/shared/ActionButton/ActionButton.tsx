@@ -31,10 +31,10 @@ const ActionButton: FC<ButtonProps> = props => {
   let borderClass = `tc__actionButton-border-${variant}-${size}`;
   let backgroundClass = `tc__actionButton-background-${variant}-${size}`;
   let hoverClass = `tc__actionButton-hover-${variant}-${size}`;
-  let shadowClass = `tc__actionButton-shadow-${state}`;
-  let cursorClass = `tc__actionButton-cursor-${state}`;
-  let heightClass = `tc__actionButton-size-${size}`;
-  let widthClass = fullWidth ? 'tc__actionButton-width-full' : '';
+  const shadowClass = `tc__actionButton-shadow-${state}`;
+  const cursorClass = `tc__actionButton-cursor-${state}`;
+  const heightClass = `tc__actionButton-size-${size}`;
+  const widthClass = fullWidth ? 'tc__actionButton-width-full' : '';
   switch (state) {
     case 'disabled':
       borderClass += '-disabled';
@@ -75,7 +75,7 @@ const ActionButton: FC<ButtonProps> = props => {
   }
 
   // Text opacity
-  let textOpacity: number = 1;
+  let textOpacity = 1;
   if (variant === 'primary' && state === 'disabled') {
     textOpacity = 0.5;
   }
@@ -99,7 +99,10 @@ const ActionButton: FC<ButtonProps> = props => {
 
   return (
     <Button
-      className={`tc__actionButton ${borderClass} ${backgroundClass} ${hoverClass} ${shadowClass} ${cursorClass} ${heightClass} ${widthClass}`}
+      className={
+        `tc__actionButton ${borderClass} ${backgroundClass} ${hoverClass}` +
+        `${shadowClass} ${cursorClass} ${heightClass} ${widthClass}`
+      }
       disabled={state === 'disabled'}
       onClick={onClick}
     >

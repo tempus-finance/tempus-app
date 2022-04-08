@@ -52,34 +52,34 @@ const TextInput: FC<TextInputProps> = props => {
   const handleChange = useCallback(
     (ev: ChangeEvent<HTMLInputElement>) => {
       if (!pattern || !ev.target.validity.patternMismatch) {
-        const { value } = ev.currentTarget;
+        const elementValue = ev.currentTarget.value;
         if (debounceInterval) {
           if (time.current) {
             clearTimeout(time.current);
           }
           time.current = setTimeout(() => {
-            onChange?.(value);
+            onChange?.(elementValue);
             time.current = undefined;
           }, debounceInterval);
         } else {
-          onChange?.(value);
+          onChange?.(elementValue);
         }
       }
     },
     [pattern, debounceInterval, onChange],
   );
 
-  const handleFocus = useCallback((ev: FocusEvent<HTMLInputElement>) => setFocused(true), []);
+  const handleFocus = useCallback(() => setFocused(true), []);
 
   const handleBlur = useCallback(
     (ev: FocusEvent<HTMLInputElement>) => {
-      const { value } = ev.currentTarget;
+      const elementValue = ev.currentTarget.value;
       if (time.current) {
         clearTimeout(time.current);
         time.current = undefined;
       }
       setFocused(false);
-      onChange?.(value);
+      onChange?.(elementValue);
     },
     [onChange],
   );
@@ -89,7 +89,7 @@ const TextInput: FC<TextInputProps> = props => {
       className={`tc__text-input ${
         disabled
           ? 'tc__text-input__disabled'
-          : !!error
+          : error
           ? 'tc__text-input__error'
           : focused
           ? 'tc__text-input__focused'

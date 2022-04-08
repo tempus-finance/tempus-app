@@ -18,7 +18,7 @@ const Checkbox: FC<CheckboxProps> = props => {
     <span className="tc__checkbox">
       <span className="tc__checkbox__box-container">
         <input id={id} checked={checked} type="checkbox" onChange={onChange} />
-        <span className={`${checked ? 'tc__checkbox__checked-box' : ''}`} aria-hidden="true"></span>
+        <span className={`${checked ? 'tc__checkbox__checked-box' : ''}`} aria-hidden="true" />
       </span>
       {label && (
         <label htmlFor={id} className="tc__checkbox__label">

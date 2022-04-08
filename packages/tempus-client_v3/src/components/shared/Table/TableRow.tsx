@@ -11,7 +11,7 @@ const TableRow: FC<TableRowProps> = props => {
   const { id, onClick, children } = props;
 
   const onRowClick = useCallback(() => {
-    onClick && onClick(id);
+    onClick?.(id);
   }, [id, onClick]);
 
   return (

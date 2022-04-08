@@ -62,7 +62,7 @@ const FormattedDate: FC<FormattedDateProps> = props => {
           {index < formattedDateParts.length - 1 && (
             <span
               className={`tc__formatted-date__separator tc__formatted-date__separator-${separatorContrast}-contrast`}
-            ></span>
+            />
           )}
         </Fragment>
       ))}
