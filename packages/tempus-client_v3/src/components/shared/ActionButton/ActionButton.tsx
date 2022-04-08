@@ -51,6 +51,7 @@ const ActionButton: FC<ButtonProps> = props => {
       backgroundClass += '-success';
       hoverClass += '-success';
       break;
+    default:
   }
 
   // Text color
@@ -59,10 +60,13 @@ const ActionButton: FC<ButtonProps> = props => {
     case 'primary':
       textColor = 'text-primary-inverted';
       break;
+    default:
   }
   switch (state) {
     case 'success':
       textColor = 'text-success';
+      break;
+    default:
   }
   if (variant === 'secondary' && state === 'disabled') {
     textColor = 'text-disabled';
@@ -89,6 +93,7 @@ const ActionButton: FC<ButtonProps> = props => {
     case 'loading':
       textWeight = 'medium';
       break;
+    default:
   }
 
   // Loader color
