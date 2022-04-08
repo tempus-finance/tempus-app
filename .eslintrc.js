@@ -39,8 +39,6 @@ module.exports = {
     'implicit-arrow-linebreak': 0, // This rule is disabled because it does not work well with prettier
     ////
 
-    'comma-dangle': 0,
-    'default-case': 0,
     'lines-between-class-members': 0,
     'max-len': ['error', { code: 140, ignoreStrings: true }],
     'no-confusing-arrow': 0,
