@@ -1,0 +1,44 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`PercentageButton renders a disabled percentage button 1`] = `
+<button
+  class="tc__btn tc__actionButton tc__actionButton-border-secondary-small-disabled tc__actionButton-background-secondary-small-disabled tc__actionButton-hover-secondary-small-disabled tc__actionButton-shadow-disabled tc__actionButton-cursor-disabled tc__actionButton-size-small "
+  data-selected="false"
+  disabled=""
+>
+  <div
+    class="tc__actionButton-status-label"
+  >
+    <div
+      style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(122, 122, 122); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+    >
+      50%
+    </div>
+  </div>
+</button>
+`;
+
+exports[`PercentageButton renders a percentage button 1`] = `
+<button
+  class="tc__btn tc__actionButton tc__actionButton-border-secondary-small tc__actionButton-background-secondary-small tc__actionButton-hover-secondary-small tc__actionButton-shadow-default tc__actionButton-cursor-default tc__actionButton-size-small "
+  data-selected="false"
+>
+  <div
+    class="tc__actionButton-status-label"
+  >
+    <div
+      style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+    >
+      50%
+    </div>
+  </div>
+</button>
+`;
+
+exports[`PercentageButton renders a percentage button 2`] = `
+<div
+  style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+>
+  50%
+</div>
+`;

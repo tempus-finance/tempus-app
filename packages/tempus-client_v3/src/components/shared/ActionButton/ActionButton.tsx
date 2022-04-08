@@ -11,8 +11,8 @@ type ButtonVariant = 'primary' | 'secondary' | 'tertiary';
 type ButtonState = 'default' | 'disabled' | 'loading' | 'success';
 type ButtonLabels = {
   default: string;
-  loading: string;
-  success: string;
+  loading?: string;
+  success?: string;
 };
 
 export interface ButtonProps {
@@ -121,8 +121,8 @@ const ActionButton: FC<ButtonProps> = props => {
           opacity={textOpacity}
         >
           {(state === 'default' || state === 'disabled') && labels.default}
-          {state === 'loading' && labels.loading}
-          {state === 'success' && labels.success}
+          {state === 'loading' && (labels.loading ?? labels.default)}
+          {state === 'success' && (labels.success ?? labels.default)}
         </Typography>
       </div>
     </Button>

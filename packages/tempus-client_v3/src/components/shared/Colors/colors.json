@@ -1,6 +1,7 @@
 {
   "textPrimary": "#222222",
   "textPrimaryInverted": "#FFFFFF",
+  "textSecondary": "#474350",
   "textSuccess": "#4BB543",
   "textDisabled": "#7A7A7A",
   "textDisabledSecondary": "#BFC0C0",
@@ -70,5 +71,11 @@
 
   "numberInputMidBorderDisabled": "#F3F7F9",
 
-  "tableRowBorderColor": "#BFC0C0"
+  "tableRowBorderColor": "#BFC0C0",
+
+  "currencyInputBackground": "#FFFFFF",
+  "currencyInputHoverBackground": "#F3F7F9",
+  "currencyInputDisabledBackground": "#BFC0C0",
+  "currencyInputBorder": "#474350",
+  "currencyInputDisabledBorder": "#7A7A7A"
 }

@@ -13,9 +13,11 @@ export type TypographyVariant =
 
 export type TypographyColor =
   | 'text-primary'
+  | 'text-secondary'
   | 'primary-dark'
   | 'text-primary-inverted'
   | 'text-success'
+  | 'text-error'
   | 'text-disabled'
   | 'text-disabled-secondary'
   | 'text-caption'
@@ -64,9 +66,11 @@ typographyVariantMap.set('body-tertiary', {
 
 const typographyColorMap = new Map<TypographyColor, string>();
 typographyColorMap.set('text-primary', colors.textPrimary);
+typographyColorMap.set('text-secondary', colors.textSecondary);
 typographyColorMap.set('primary-dark', colors.primaryDark);
 typographyColorMap.set('text-primary-inverted', colors.textPrimaryInverted);
 typographyColorMap.set('text-success', colors.textSuccess);
+typographyColorMap.set('text-error', colors.textError);
 typographyColorMap.set('text-disabled', colors.textDisabled);
 typographyColorMap.set('text-disabled-secondary', colors.textDisabledSecondary);
 typographyColorMap.set('text-caption', colors.textCaption);
