@@ -1,5 +1,5 @@
 import { ComponentStory } from '@storybook/react';
-import { PropsWithChildren, useCallback, useEffect, useState } from 'react';
+import { FC, useCallback, useEffect, useState } from 'react';
 import { BrowserRouter, Route, Routes, useNavigate } from 'react-router-dom';
 import Tab from './Tab';
 import Tabs from './Tabs';
@@ -37,7 +37,7 @@ ButtonTabs.args = {
   size: 'small',
 };
 
-const DefaultRoutes = (props: PropsWithChildren<{}>) => {
+const DefaultRoutes: FC = props => {
   const { children } = props;
   const navigate = useNavigate();
 

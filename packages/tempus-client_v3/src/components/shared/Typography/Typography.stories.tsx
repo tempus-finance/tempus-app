@@ -1,4 +1,4 @@
-import React, { CSSProperties } from 'react';
+import React, { CSSProperties, FC } from 'react';
 
 import Typography from './Typography';
 
@@ -17,7 +17,7 @@ const style: CSSProperties = {
   padding: '10px',
 };
 
-export const Header = () => (
+export const Header: FC = () => (
   <div style={style}>
     <Typography variant="header">Header</Typography>
     <br />
@@ -43,7 +43,7 @@ export const Header = () => (
   </div>
 );
 
-export const Subheader = () => (
+export const Subheader: FC = () => (
   <div style={style}>
     <Typography variant="subheader">Subheader</Typography>
     <br />
@@ -69,7 +69,7 @@ export const Subheader = () => (
   </div>
 );
 
-export const Title = () => (
+export const Title: FC = () => (
   <div style={style}>
     <Typography variant="title">Title</Typography>
     <br />
@@ -95,7 +95,7 @@ export const Title = () => (
   </div>
 );
 
-export const Subtitle = () => (
+export const Subtitle: FC = () => (
   <div style={style}>
     <Typography variant="subtitle">Subtitle</Typography>
     <br />
@@ -121,7 +121,7 @@ export const Subtitle = () => (
   </div>
 );
 
-export const BodyPrimary = () => (
+export const BodyPrimary: FC = () => (
   <div style={style}>
     <Typography variant="body-primary">Body Primary</Typography>
     <br />
@@ -147,7 +147,7 @@ export const BodyPrimary = () => (
   </div>
 );
 
-export const BodySecondary = () => (
+export const BodySecondary: FC = () => (
   <div style={style}>
     <Typography variant="body-secondary">Body Secondary</Typography>
     <br />
@@ -173,7 +173,7 @@ export const BodySecondary = () => (
   </div>
 );
 
-export const BodyTertiary = () => (
+export const BodyTertiary: FC = () => (
   <div style={style}>
     <Typography variant="body-tertiary">Body Tertiary</Typography>
     <br />
