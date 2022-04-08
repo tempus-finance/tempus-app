@@ -39,7 +39,7 @@ const NumberInput: FC<NumberInputProps> = props => {
     const formatedMax = utils.formatUnits(max, precision);
     onChange?.(formatedMax);
     onDebounceChange?.(formatedMax);
-  }, [max, precision, onChange]);
+  }, [max, precision, onChange, onDebounceChange]);
   const maxButton = useMemo(
     () => (
       <ButtonWrapper disabled={disabled} onClick={onMaxClick}>
