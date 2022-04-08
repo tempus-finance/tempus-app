@@ -17,6 +17,8 @@ const withLogo = (Component: React.ComponentType<LogoProps>): FC<LogoProps> =>
       case undefined:
         actualSize = LOGO_SIZE_DEFAULT;
         break;
+      default:
+        actualSize = LOGO_SIZE_DEFAULT;
     }
     return <Component size={actualSize} />;
   });
