@@ -37,7 +37,6 @@ module.exports = {
     // Verified rules
     'arrow-parens': ['error', 'as-needed'],
     ////
-    'comma-dangle': 0,
     'default-case': 0,
     'implicit-arrow-linebreak': 0,
     'lines-between-class-members': 0,
