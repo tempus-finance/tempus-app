@@ -34,8 +34,9 @@ module.exports = {
   },
   plugins: ['react-hooks'],
   rules: {
+    // Verified rules
     'arrow-parens': ['error', 'as-needed'],
-    'comma-spacing': 0,
+    ////
     'comma-dangle': 0,
     'default-case': 0,
     'implicit-arrow-linebreak': 0,
