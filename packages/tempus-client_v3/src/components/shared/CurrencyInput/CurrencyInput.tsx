@@ -22,26 +22,30 @@ interface CurrencyInputProps {
 const CurrencyInput: FC<CurrencyInputProps> = props => {
   const { precision, maxAmount, usdRates, ratePrecision, disabled, error, onChange } = props;
   const [amount, setAmount] = useState('');
+  const [usdAmount, setUsdAmount] = useState(NumberUtils.formatToCurrency('0', 2, '$'));
   const [selectedCurrency, setSelectedCurrency] = useState(Array.from(usdRates.keys())[0]);
 
-  const usdAmount = useMemo(() => {
-    const rate = usdRates.get(selectedCurrency);
-    let value: BigNumber;
+  const updateUsdAmount = useCallback(
+    (value: string) => {
+      const rate = usdRates.get(selectedCurrency);
+      let usdValue: BigNumber;
 
-    if (!amount || !rate) {
-      value = BigNumber.from(0);
-    } else if (precision > ratePrecision) {
-      value = mul18f(
-        ethers.utils.parseUnits(amount, precision),
-        increasePrecision(rate, precision - ratePrecision),
-        precision,
-      );
-    } else {
-      value = mul18f(ethers.utils.parseUnits(amount, precision), rate, precision);
-    }
+      if (!value || !rate) {
+        usdValue = BigNumber.from(0);
+      } else if (precision > ratePrecision) {
+        usdValue = mul18f(
+          ethers.utils.parseUnits(value, precision),
+          increasePrecision(rate, precision - ratePrecision),
+          precision,
+        );
+      } else {
+        usdValue = mul18f(ethers.utils.parseUnits(value, precision), rate, precision);
+      }
 
-    return NumberUtils.formatToCurrency(ethers.utils.formatUnits(value, precision), 2, '$');
-  }, [usdRates, selectedCurrency, amount, precision, ratePrecision]);
+      setUsdAmount(NumberUtils.formatToCurrency(ethers.utils.formatUnits(usdValue, precision), 2, '$'));
+    },
+    [usdRates, selectedCurrency, precision, ratePrecision],
+  );
 
   const handleCurrencyChange = useCallback(currency => {
     setSelectedCurrency(currency);
@@ -93,7 +97,9 @@ const CurrencyInput: FC<CurrencyInputProps> = props => {
                 placeholder="0"
                 pattern={`[0-9]*[.]?[0-9]{0,${precision}}`}
                 disabled={disabled}
+                debounce={true}
                 onChange={handleValueChange}
+                onDebounceChange={updateUsdAmount}
               />
             </Typography>
             <span className="tc__currency-input__fiat-amount">
