@@ -14,7 +14,7 @@ const PercentageButton: FC<PercentageButtonProps> = props => {
 
   return (
     <ActionButton
-      labels={{ default: NumberUtils.formatPercentage(percentage / 100) }}
+      labels={{ default: NumberUtils.formatPercentage(percentage / 100), loading: '', success: '' }}
       onClick={onButtonClick}
       variant="secondary"
       size="small"
