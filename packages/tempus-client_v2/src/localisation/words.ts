@@ -100,6 +100,7 @@ type Words =
   | 'execute'
   | 'executing'
   | 'xxxFailed'
+  | 'xxxDeclined'
   | 'xxxDeclinedMessage'
   | 'insufficientLiquidity'
   | 'insufficientLiquidityMessage'
