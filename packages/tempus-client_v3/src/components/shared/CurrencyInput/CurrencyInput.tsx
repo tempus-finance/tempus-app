@@ -1,5 +1,5 @@
 import { BigNumber, ethers } from 'ethers';
-import { FC, useCallback, useMemo, useState } from 'react';
+import { FC, useCallback, useState } from 'react';
 import { div18f, increasePrecision, mul18f, NumberUtils, Ticker } from 'tempus-core-services';
 import BaseInput from '../BaseInput';
 import Typography from '../Typography';
@@ -62,7 +62,7 @@ const CurrencyInput: FC<CurrencyInputProps> = props => {
 
   const handlePercentageClick = useCallback(
     (percentage: number) => {
-      let value = div18f(mul18f(BigNumber.from(percentage), maxAmount, precision), BigNumber.from(100), precision);
+      const value = div18f(mul18f(BigNumber.from(percentage), maxAmount, precision), BigNumber.from(100), precision);
       handleValueChange(ethers.utils.formatUnits(value, precision));
     },
     [handleValueChange, maxAmount, precision],
@@ -97,7 +97,7 @@ const CurrencyInput: FC<CurrencyInputProps> = props => {
                 placeholder="0"
                 pattern={`[0-9]*[.]?[0-9]{0,${precision}}`}
                 disabled={disabled}
-                debounce={true}
+                debounce
                 onChange={handleValueChange}
                 onDebounceChange={updateUsdAmount}
               />
