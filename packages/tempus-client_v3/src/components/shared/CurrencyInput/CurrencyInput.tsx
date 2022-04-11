@@ -30,7 +30,7 @@ const CurrencyInput: FC<CurrencyInputProps> = props => {
       const rate = usdRates.get(selectedCurrency);
       let usdValue: BigNumber;
 
-      if (!value || !rate) {
+      if (!value || !rate || value === '.') {
         usdValue = BigNumber.from(0);
       } else if (precision > ratePrecision) {
         usdValue = mul18f(
