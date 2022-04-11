@@ -18,10 +18,8 @@ const ToggleSwitch: FC<ToggleSwitchProps> = props => {
     <span className="tc__toggle-switch">
       <span className="tc__toggle-switch__switch-container">
         <input id={id} checked={checked} type="checkbox" onChange={onChange} />
-        <span className={`tc__toggle-switch__thumb ${checked ? 'tc__toggle-switch__thumb-active' : ''}`}></span>
-        <span
-          className={`tc__toggle-switch__background ${checked ? 'tc__toggle-switch__background-active' : ''}`}
-        ></span>
+        <span className={`tc__toggle-switch__thumb ${checked ? 'tc__toggle-switch__thumb-active' : ''}`} />
+        <span className={`tc__toggle-switch__background ${checked ? 'tc__toggle-switch__background-active' : ''}`} />
       </span>
       {label && (
         <label htmlFor={id} className="tc__toggle-switch__label">

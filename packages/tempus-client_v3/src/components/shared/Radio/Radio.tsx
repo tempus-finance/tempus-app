@@ -20,7 +20,7 @@ const Radio: FC<RadioProps> = props => {
     <span className="tc__radio">
       <span className="tc__radio__box-container">
         <input id={id} checked={checked} type="radio" onChange={handleChange} />
-        <span className={`${checked ? 'tc__radio__checked-box' : ''}`} aria-hidden="true"></span>
+        <span className={`${checked ? 'tc__radio__checked-box' : ''}`} aria-hidden="true" />
       </span>
       {label && (
         <label htmlFor={id} className="tc__radio__label">

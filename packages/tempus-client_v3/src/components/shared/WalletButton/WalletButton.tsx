@@ -20,13 +20,9 @@ export interface WalletButtonProps {
 const WalletButton: FC<WalletButtonProps> = props => {
   const { address, balance, chain, onConnect, onNetworkClick, onWalletClick } = props;
 
-  const selectedChainTokenTicker = useMemo(() => {
-    return chainToTicker(chain);
-  }, [chain]);
+  const selectedChainTokenTicker = useMemo(() => chainToTicker(chain), [chain]);
 
-  const shortAddress = useMemo(() => {
-    return shortenAccount(address);
-  }, [address]);
+  const shortAddress = useMemo(() => shortenAccount(address), [address]);
 
   const supportedChain = chain !== 'unsupported';
 

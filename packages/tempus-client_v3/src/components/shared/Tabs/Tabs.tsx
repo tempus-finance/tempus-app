@@ -25,15 +25,15 @@ const Tabs = (props: TabsProps) => {
 
   return (
     <div className={`tc__tabs tc__tabs__tabs-${size}`}>
-      {Children.map(children, child => {
-        return isValidElement(child) ? <Tab {...child.props} selectedValue={value} onClick={onTabSelected} /> : null;
-      })}
+      {Children.map(children, child =>
+        isValidElement(child) ? <Tab {...child.props} selectedValue={value} onClick={onTabSelected} /> : null,
+      )}
       <div className="tc__tabs__indicator-container">
         {selectedTabIndex > -1 && (
           <div
             className="tc__tabs__indicator"
             style={{ width: `${tabWidth}%`, left: `${selectedTabIndex * tabWidth}%` }}
-          ></div>
+          />
         )}
       </div>
     </div>

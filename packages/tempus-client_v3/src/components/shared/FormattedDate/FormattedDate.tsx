@@ -16,19 +16,20 @@ interface FormattedDateStyleConfig {
   typographyWeight: TypographyWeight;
 }
 
-const formattedDateStyleMap = new Map<FormattedDateSize, FormattedDateStyleConfig>();
-formattedDateStyleMap.set('small', {
-  typographyVariant: 'body-secondary',
-  typographyWeight: 'bold',
-});
-formattedDateStyleMap.set('medium', {
-  typographyVariant: 'body-primary',
-  typographyWeight: 'medium',
-});
-formattedDateStyleMap.set('large', {
-  typographyVariant: 'subheader',
-  typographyWeight: 'medium',
-});
+const formattedDateStyleMap: Record<FormattedDateSize, FormattedDateStyleConfig> = {
+  small: {
+    typographyVariant: 'body-secondary',
+    typographyWeight: 'bold',
+  },
+  medium: {
+    typographyVariant: 'body-primary',
+    typographyWeight: 'medium',
+  },
+  large: {
+    typographyVariant: 'subheader',
+    typographyWeight: 'medium',
+  },
+};
 
 const formatOptions: Intl.DateTimeFormatOptions = {
   day: '2-digit',
@@ -46,11 +47,7 @@ const FormattedDate: FC<FormattedDateProps> = props => {
         .map(part => part.value.toString()),
     [date, dateParts],
   );
-  const dateStyle = formattedDateStyleMap.get(size);
-
-  if (!dateStyle) {
-    return null;
-  }
+  const dateStyle = formattedDateStyleMap[size];
 
   return (
     <span className="tc__formatted-date">
@@ -62,7 +59,7 @@ const FormattedDate: FC<FormattedDateProps> = props => {
           {index < formattedDateParts.length - 1 && (
             <span
               className={`tc__formatted-date__separator tc__formatted-date__separator-${separatorContrast}-contrast`}
-            ></span>
+            />
           )}
         </Fragment>
       ))}
