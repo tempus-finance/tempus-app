@@ -1,4 +1,4 @@
-import { fireEvent, render } from '@testing-library/react';
+import { act, fireEvent, render } from '@testing-library/react';
 import { BigNumber, ethers } from 'ethers';
 import { div18f, increasePrecision, mul18f, NumberUtils, Ticker } from 'tempus-core-services';
 import CurrencyInput, { CurrencyInputProps } from './CurrencyInput';
@@ -105,7 +105,7 @@ describe('CurrencyInput', () => {
     expect(actualInput).not.toBeNull();
     expect(actualInput).not.toHaveValue();
 
-    fireEvent.change(actualInput, { target: { value: `123` } });
+    fireEvent.change(actualInput, { target: { value: '123' } });
     fireEvent.click(actualSelectorButton);
 
     expect(actualInput).toHaveValue('123');
@@ -163,6 +163,7 @@ describe('CurrencyInput', () => {
   });
 
   it('updates the USD value based on same-precision USD rate', () => {
+    jest.useFakeTimers();
     const inputValue = 123;
     const precision = 18;
 
@@ -171,7 +172,7 @@ describe('CurrencyInput', () => {
 
     const { container, getByRole } = subject({
       precision,
-      usdRates: usdRates,
+      usdRates,
       maxAmount: increasePrecision(BigNumber.from(100), precision),
       ratePrecision: precision,
     });
@@ -190,13 +191,20 @@ describe('CurrencyInput', () => {
       precision,
     );
 
+    act(() => {
+      jest.advanceTimersByTime(300);
+    });
+
     expect(actualFiatValue).toHaveTextContent(
       NumberUtils.formatToCurrency(ethers.utils.formatUnits(fiatValue, defaultProps.precision), 2, '$'),
     );
     expect(actualFiatValue).toMatchSnapshot();
+
+    jest.useRealTimers();
   });
 
   it('updates the USD value based on less precise USD rate', () => {
+    jest.useFakeTimers();
     const inputValue = 123;
 
     const { container, getByRole } = subject({
@@ -221,9 +229,15 @@ describe('CurrencyInput', () => {
       defaultProps.precision,
     );
 
+    act(() => {
+      jest.advanceTimersByTime(300);
+    });
+
     expect(actualFiatValue).toHaveTextContent(
       NumberUtils.formatToCurrency(ethers.utils.formatUnits(fiatValue, defaultProps.precision), 2, '$'),
     );
     expect(actualFiatValue).toMatchSnapshot();
+
+    jest.useRealTimers();
   });
 });

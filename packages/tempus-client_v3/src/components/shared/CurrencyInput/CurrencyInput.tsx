@@ -63,9 +63,12 @@ const CurrencyInput: FC<CurrencyInputProps> = props => {
   const handlePercentageClick = useCallback(
     (percentage: number) => {
       const value = div18f(mul18f(BigNumber.from(percentage), maxAmount, precision), BigNumber.from(100), precision);
-      handleValueChange(ethers.utils.formatUnits(value, precision));
+      const formattedValue = ethers.utils.formatUnits(value, precision);
+
+      handleValueChange(formattedValue);
+      updateUsdAmount(formattedValue);
     },
-    [handleValueChange, maxAmount, precision],
+    [handleValueChange, maxAmount, precision, updateUsdAmount],
   );
 
   return (
