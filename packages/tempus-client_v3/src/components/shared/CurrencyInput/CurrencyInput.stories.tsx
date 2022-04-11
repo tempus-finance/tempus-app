@@ -42,9 +42,7 @@ const multipleCurrencyUsdRates = new Map<Ticker, BigNumber>();
 multipleCurrencyUsdRates.set('ETH', BigNumber.from(350000));
 multipleCurrencyUsdRates.set('stETH', BigNumber.from(350100));
 
-const Template: ComponentStory<typeof CurrencyInput> = props => {
-  return <CurrencyInput {...props} />;
-};
+const Template: ComponentStory<typeof CurrencyInput> = props => <CurrencyInput {...props} />;
 
 export const SingleCurrencyInput = Template.bind({});
 SingleCurrencyInput.args = {
