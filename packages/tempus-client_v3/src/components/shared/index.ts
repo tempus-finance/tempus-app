@@ -1,4 +1,5 @@
 import Checkbox from './Checkbox';
+import CurrencyInput from './CurrencyInput';
 import FormattedDate from './FormattedDate';
 import Typography from './Typography';
 import Icon from './Icon';
@@ -27,6 +28,7 @@ export {
   ActionButton,
   ButtonWrapper,
   Checkbox,
+  CurrencyInput,
   FormattedDate,
   Icon,
   Link,

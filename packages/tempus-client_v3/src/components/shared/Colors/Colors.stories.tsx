@@ -98,6 +98,12 @@ TextPrimary.args = {
   colorName: 'TextPrimary',
 };
 
+export const TextSecondary = Template.bind({});
+TextSecondary.args = {
+  backgroundColor: Colors.textSecondary,
+  colorName: 'TextSecondary',
+};
+
 export const SecondaryRegular = Template.bind({});
 SecondaryRegular.args = {
   backgroundColor: Colors.secondaryRegular,
@@ -324,4 +330,34 @@ export const TableRowBorderColor = Template.bind({});
 TableRowBorderColor.args = {
   backgroundColor: Colors.tableRowBorderColor,
   colorName: 'TableRowBorderColor',
+};
+
+export const CurrencyInputBackground = Template.bind({});
+CurrencyInputBackground.args = {
+  backgroundColor: Colors.currencyInputBackground,
+  colorName: 'CurrencyInputBackground',
+};
+
+export const CurrencyInputHoverBackground = Template.bind({});
+CurrencyInputHoverBackground.args = {
+  backgroundColor: Colors.currencyInputHoverBackground,
+  colorName: 'CurrencyInputHoverBackground',
+};
+
+export const CurrencyInputDisabledBackground = Template.bind({});
+CurrencyInputDisabledBackground.args = {
+  backgroundColor: Colors.currencyInputDisabledBackground,
+  colorName: 'CurrencyInputDisabledBackground',
+};
+
+export const CurrencyInputBorder = Template.bind({});
+CurrencyInputBorder.args = {
+  backgroundColor: Colors.currencyInputBorder,
+  colorName: 'CurrencyInputBorder',
+};
+
+export const CurrencyInputDisabledBorder = Template.bind({});
+CurrencyInputDisabledBorder.args = {
+  backgroundColor: Colors.currencyInputDisabledBorder,
+  colorName: 'CurrencyInputDisabledBorder',
 };

@@ -1,0 +1,492 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CurrencyInput renders a currency input with a single currency 1`] = `
+<button
+  class="tc__btn tc__currency-input__currency-selector-item "
+  data-selected="false"
+>
+  <span
+    class="tc__currency-input__currency-selector-item-content"
+  >
+    <svg
+      class="tc__logo tc__logo-token-ETH"
+      fill="none"
+      height="40"
+      viewBox="0 0 40 40"
+      width="40"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M20 40C31.0457 40 40 31.0457 40 20C40 8.9543 31.0457 0 20 0C8.9543 0 0 8.9543 0 20C0 31.0457 8.9543 40 20 40Z"
+        fill="#627EEA"
+      />
+      <path
+        clip-rule="evenodd"
+        d="M11.25 20.275L20.6225 5V16.0875L11.25 20.275ZM20.6225 27.4588V34.9938L11.25 22.0201L20.6225 27.4588Z"
+        fill="white"
+        fill-rule="evenodd"
+      />
+      <path
+        d="M20.625 25.7163L29.9962 20.275L20.625 16.09V25.7163Z"
+        fill="white"
+        fill-opacity="0.2"
+      />
+      <path
+        clip-rule="evenodd"
+        d="M20.625 5V16.0875L29.9962 20.275L20.625 5ZM20.625 27.4573V34.991L30.0025 22.0173L20.625 27.4573ZM20.6225 25.7163L11.25 20.275L20.6225 16.09V25.7163Z"
+        fill="white"
+        fill-opacity="0.6"
+        fill-rule="evenodd"
+      />
+    </svg>
+    <div
+      class="tc__currency-input__currency-selector-item-label"
+      style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+    >
+      ETH
+    </div>
+  </span>
+</button>
+`;
+
+exports[`CurrencyInput renders a currency input with a single currency 2`] = `
+<div
+  class="tc__currency-input__currency-selector-item-label"
+  style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+>
+  ETH
+</div>
+`;
+
+exports[`CurrencyInput renders a currency input with a single currency 3`] = `
+Array [
+  <button
+    class="tc__btn tc__actionButton tc__actionButton-border-secondary-small tc__actionButton-background-secondary-small tc__actionButton-hover-secondary-small tc__actionButton-shadow-default tc__actionButton-cursor-default tc__actionButton-size-small "
+    data-selected="false"
+  >
+    <div
+      class="tc__actionButton-status-label"
+    >
+      <div
+        style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+      >
+        25%
+      </div>
+    </div>
+  </button>,
+  <button
+    class="tc__btn tc__actionButton tc__actionButton-border-secondary-small tc__actionButton-background-secondary-small tc__actionButton-hover-secondary-small tc__actionButton-shadow-default tc__actionButton-cursor-default tc__actionButton-size-small "
+    data-selected="false"
+  >
+    <div
+      class="tc__actionButton-status-label"
+    >
+      <div
+        style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+      >
+        50%
+      </div>
+    </div>
+  </button>,
+  <button
+    class="tc__btn tc__actionButton tc__actionButton-border-secondary-small tc__actionButton-background-secondary-small tc__actionButton-hover-secondary-small tc__actionButton-shadow-default tc__actionButton-cursor-default tc__actionButton-size-small "
+    data-selected="false"
+  >
+    <div
+      class="tc__actionButton-status-label"
+    >
+      <div
+        style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+      >
+        75%
+      </div>
+    </div>
+  </button>,
+  <button
+    class="tc__btn tc__actionButton tc__actionButton-border-secondary-small tc__actionButton-background-secondary-small tc__actionButton-hover-secondary-small tc__actionButton-shadow-default tc__actionButton-cursor-default tc__actionButton-size-small "
+    data-selected="false"
+  >
+    <div
+      class="tc__actionButton-status-label"
+    >
+      <div
+        style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+      >
+        100%
+      </div>
+    </div>
+  </button>,
+]
+`;
+
+exports[`CurrencyInput renders a currency input with a single currency and an error 1`] = `
+<div
+  class="tc__currency-input__error"
+  style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(255, 15, 15); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+>
+  Input error
+</div>
+`;
+
+exports[`CurrencyInput renders a currency input with multiple currencies 1`] = `
+<button
+  class="tc__btn tc__currency-input__currency-selector-item "
+  data-selected="false"
+>
+  <span
+    class="tc__currency-input__currency-selector-item-content"
+  >
+    <svg
+      class="tc__logo tc__logo-token-ETH"
+      fill="none"
+      height="40"
+      viewBox="0 0 40 40"
+      width="40"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M20 40C31.0457 40 40 31.0457 40 20C40 8.9543 31.0457 0 20 0C8.9543 0 0 8.9543 0 20C0 31.0457 8.9543 40 20 40Z"
+        fill="#627EEA"
+      />
+      <path
+        clip-rule="evenodd"
+        d="M11.25 20.275L20.6225 5V16.0875L11.25 20.275ZM20.6225 27.4588V34.9938L11.25 22.0201L20.6225 27.4588Z"
+        fill="white"
+        fill-rule="evenodd"
+      />
+      <path
+        d="M20.625 25.7163L29.9962 20.275L20.625 16.09V25.7163Z"
+        fill="white"
+        fill-opacity="0.2"
+      />
+      <path
+        clip-rule="evenodd"
+        d="M20.625 5V16.0875L29.9962 20.275L20.625 5ZM20.625 27.4573V34.991L30.0025 22.0173L20.625 27.4573ZM20.6225 25.7163L11.25 20.275L20.6225 16.09V25.7163Z"
+        fill="white"
+        fill-opacity="0.6"
+        fill-rule="evenodd"
+      />
+    </svg>
+    <div
+      class="tc__currency-input__currency-selector-item-label"
+      style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+    >
+      ETH
+    </div>
+  </span>
+  <svg
+    class="tc__icon tc__icon-down-chevron"
+    fill="none"
+    height="16"
+    viewBox="0 0 16 16"
+    width="16"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <g
+      clip-path="url(#clip0_909_5439)"
+    >
+      <path
+        d="M15.7387 5.36992L8.63082 11.7636C8.54823 11.8385 8.44996 11.898 8.34169 11.9385C8.23342 11.9791 8.11729 12 8 12C7.88271 12 7.76658 11.9791 7.65831 11.9385C7.55004 11.898 7.45177 11.8385 7.36918 11.7636L0.261296 5.36992C0.0939908 5.21942 -2.49304e-09 5.01531 0 4.80248C2.49304e-09 4.58965 0.0939908 4.38554 0.261296 4.23504C0.428601 4.08455 0.655515 4 0.89212 4C1.12873 4 1.35564 4.08455 1.52294 4.23504L8 10.0693L14.4771 4.23504C14.6444 4.08455 14.8713 4 15.1079 4C15.3445 4 15.5714 4.08455 15.7387 4.23504C15.906 4.38554 16 4.58965 16 4.80248C16 5.01531 15.906 5.21942 15.7387 5.36992Z"
+        fill="#062330"
+      />
+    </g>
+    <defs>
+      <clippath
+        id="clip0_909_5439"
+      >
+        <rect
+          fill="white"
+          height="16"
+          width="16"
+        />
+      </clippath>
+    </defs>
+  </svg>
+</button>
+`;
+
+exports[`CurrencyInput renders a currency input with multiple currencies 2`] = `
+<div
+  class="tc__currency-input__currency-selector-item-label"
+  style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+>
+  ETH
+</div>
+`;
+
+exports[`CurrencyInput renders a currency input with multiple currencies 3`] = `
+Array [
+  <button
+    class="tc__btn tc__actionButton tc__actionButton-border-secondary-small tc__actionButton-background-secondary-small tc__actionButton-hover-secondary-small tc__actionButton-shadow-default tc__actionButton-cursor-default tc__actionButton-size-small "
+    data-selected="false"
+  >
+    <div
+      class="tc__actionButton-status-label"
+    >
+      <div
+        style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+      >
+        25%
+      </div>
+    </div>
+  </button>,
+  <button
+    class="tc__btn tc__actionButton tc__actionButton-border-secondary-small tc__actionButton-background-secondary-small tc__actionButton-hover-secondary-small tc__actionButton-shadow-default tc__actionButton-cursor-default tc__actionButton-size-small "
+    data-selected="false"
+  >
+    <div
+      class="tc__actionButton-status-label"
+    >
+      <div
+        style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+      >
+        50%
+      </div>
+    </div>
+  </button>,
+  <button
+    class="tc__btn tc__actionButton tc__actionButton-border-secondary-small tc__actionButton-background-secondary-small tc__actionButton-hover-secondary-small tc__actionButton-shadow-default tc__actionButton-cursor-default tc__actionButton-size-small "
+    data-selected="false"
+  >
+    <div
+      class="tc__actionButton-status-label"
+    >
+      <div
+        style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+      >
+        75%
+      </div>
+    </div>
+  </button>,
+  <button
+    class="tc__btn tc__actionButton tc__actionButton-border-secondary-small tc__actionButton-background-secondary-small tc__actionButton-hover-secondary-small tc__actionButton-shadow-default tc__actionButton-cursor-default tc__actionButton-size-small "
+    data-selected="false"
+  >
+    <div
+      class="tc__actionButton-status-label"
+    >
+      <div
+        style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+      >
+        100%
+      </div>
+    </div>
+  </button>,
+]
+`;
+
+exports[`CurrencyInput renders a disabled currency input with a single currency 1`] = `
+<button
+  class="tc__btn tc__currency-input__currency-selector-item tc__currency-input__currency-selector-item-disabled"
+  data-selected="false"
+  disabled=""
+>
+  <span
+    class="tc__currency-input__currency-selector-item-content"
+  >
+    <svg
+      class="tc__logo tc__logo-token-ETH"
+      fill="none"
+      height="40"
+      viewBox="0 0 40 40"
+      width="40"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M20 40C31.0457 40 40 31.0457 40 20C40 8.9543 31.0457 0 20 0C8.9543 0 0 8.9543 0 20C0 31.0457 8.9543 40 20 40Z"
+        fill="#627EEA"
+      />
+      <path
+        clip-rule="evenodd"
+        d="M11.25 20.275L20.6225 5V16.0875L11.25 20.275ZM20.6225 27.4588V34.9938L11.25 22.0201L20.6225 27.4588Z"
+        fill="white"
+        fill-rule="evenodd"
+      />
+      <path
+        d="M20.625 25.7163L29.9962 20.275L20.625 16.09V25.7163Z"
+        fill="white"
+        fill-opacity="0.2"
+      />
+      <path
+        clip-rule="evenodd"
+        d="M20.625 5V16.0875L29.9962 20.275L20.625 5ZM20.625 27.4573V34.991L30.0025 22.0173L20.625 27.4573ZM20.6225 25.7163L11.25 20.275L20.6225 16.09V25.7163Z"
+        fill="white"
+        fill-opacity="0.6"
+        fill-rule="evenodd"
+      />
+    </svg>
+    <div
+      class="tc__currency-input__currency-selector-item-label"
+      style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(122, 122, 122); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+    >
+      ETH
+    </div>
+  </span>
+</button>
+`;
+
+exports[`CurrencyInput resets the input field when currency is changed 1`] = `
+<input
+  class="tc__base-input"
+  pattern="[0-9]*[.]?[0-9]{0,18}"
+  placeholder="0"
+  type="text"
+  value=""
+/>
+`;
+
+exports[`CurrencyInput updates the USD value based on less precise USD rate 1`] = `
+<div
+  style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(71, 67, 80); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+>
+  $430,500
+</div>
+`;
+
+exports[`CurrencyInput updates the USD value based on same-precision USD rate 1`] = `
+<div
+  style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(71, 67, 80); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+>
+  $430,500
+</div>
+`;
+
+exports[`CurrencyInput updates the input field when a percentage button is clicked 1`] = `
+<button
+  class="tc__btn tc__actionButton tc__actionButton-border-secondary-small tc__actionButton-background-secondary-small tc__actionButton-hover-secondary-small tc__actionButton-shadow-default tc__actionButton-cursor-default tc__actionButton-size-small "
+  data-selected="false"
+>
+  <div
+    class="tc__actionButton-status-label"
+  >
+    <div
+      style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+    >
+      25%
+    </div>
+  </div>
+</button>
+`;
+
+exports[`CurrencyInput updates the input field when a percentage button is clicked 2`] = `
+<input
+  class="tc__base-input"
+  pattern="[0-9]*[.]?[0-9]{0,18}"
+  placeholder="0"
+  type="text"
+  value="25.0"
+/>
+`;
+
+exports[`CurrencyInput updates the input field when a percentage button is clicked 3`] = `
+<div
+  style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(71, 67, 80); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+>
+  $87,500
+</div>
+`;
+
+exports[`CurrencyInput updates the input field when a percentage button is clicked 4`] = `
+<button
+  class="tc__btn tc__actionButton tc__actionButton-border-secondary-small tc__actionButton-background-secondary-small tc__actionButton-hover-secondary-small tc__actionButton-shadow-default tc__actionButton-cursor-default tc__actionButton-size-small "
+  data-selected="false"
+>
+  <div
+    class="tc__actionButton-status-label"
+  >
+    <div
+      style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+    >
+      50%
+    </div>
+  </div>
+</button>
+`;
+
+exports[`CurrencyInput updates the input field when a percentage button is clicked 5`] = `
+<input
+  class="tc__base-input"
+  pattern="[0-9]*[.]?[0-9]{0,18}"
+  placeholder="0"
+  type="text"
+  value="50.0"
+/>
+`;
+
+exports[`CurrencyInput updates the input field when a percentage button is clicked 6`] = `
+<div
+  style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(71, 67, 80); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+>
+  $175,000
+</div>
+`;
+
+exports[`CurrencyInput updates the input field when a percentage button is clicked 7`] = `
+<button
+  class="tc__btn tc__actionButton tc__actionButton-border-secondary-small tc__actionButton-background-secondary-small tc__actionButton-hover-secondary-small tc__actionButton-shadow-default tc__actionButton-cursor-default tc__actionButton-size-small "
+  data-selected="false"
+>
+  <div
+    class="tc__actionButton-status-label"
+  >
+    <div
+      style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+    >
+      75%
+    </div>
+  </div>
+</button>
+`;
+
+exports[`CurrencyInput updates the input field when a percentage button is clicked 8`] = `
+<input
+  class="tc__base-input"
+  pattern="[0-9]*[.]?[0-9]{0,18}"
+  placeholder="0"
+  type="text"
+  value="75.0"
+/>
+`;
+
+exports[`CurrencyInput updates the input field when a percentage button is clicked 9`] = `
+<div
+  style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(71, 67, 80); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+>
+  $262,500
+</div>
+`;
+
+exports[`CurrencyInput updates the input field when a percentage button is clicked 10`] = `
+<button
+  class="tc__btn tc__actionButton tc__actionButton-border-secondary-small tc__actionButton-background-secondary-small tc__actionButton-hover-secondary-small tc__actionButton-shadow-default tc__actionButton-cursor-default tc__actionButton-size-small "
+  data-selected="false"
+>
+  <div
+    class="tc__actionButton-status-label"
+  >
+    <div
+      style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+    >
+      100%
+    </div>
+  </div>
+</button>
+`;
+
+exports[`CurrencyInput updates the input field when a percentage button is clicked 11`] = `
+<input
+  class="tc__base-input"
+  pattern="[0-9]*[.]?[0-9]{0,18}"
+  placeholder="0"
+  type="text"
+  value="100.0"
+/>
+`;
+
+exports[`CurrencyInput updates the input field when a percentage button is clicked 12`] = `
+<div
+  style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(71, 67, 80); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+>
+  $350,000
+</div>
+`;

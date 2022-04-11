@@ -3,4 +3,8 @@
   border: none;
   background-color: transparent;
   cursor: pointer;
+
+  &:disabled {
+    cursor: default;
+  }
 }
