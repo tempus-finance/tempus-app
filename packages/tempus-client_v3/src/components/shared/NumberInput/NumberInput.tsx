@@ -17,12 +17,29 @@ export interface NumberInputProps {
   disabled?: boolean;
   debounce?: boolean | number;
   onChange?: (value: string) => void;
+  onDebounceChange?: (value: string) => void;
 }
 
 const NumberInput: FC<NumberInputProps> = props => {
-  const { label, value, max, precision = 18, placeholder, caption, error, disabled, debounce, onChange } = props;
+  const {
+    label,
+    value,
+    max,
+    precision = 18,
+    placeholder,
+    caption,
+    error,
+    disabled,
+    debounce,
+    onChange,
+    onDebounceChange,
+  } = props;
 
-  const onMaxClick = useCallback(() => onChange?.(utils.formatUnits(max, precision)), [max, precision, onChange]);
+  const onMaxClick = useCallback(() => {
+    const formatedMax = utils.formatUnits(max, precision);
+    onChange?.(formatedMax);
+    onDebounceChange?.(formatedMax);
+  }, [max, precision, onChange, onDebounceChange]);
   const maxButton = useMemo(
     () => (
       <ButtonWrapper disabled={disabled} onClick={onMaxClick}>
@@ -47,6 +64,7 @@ const NumberInput: FC<NumberInputProps> = props => {
         debounce={debounce}
         endAdornment={maxButton}
         onChange={onChange}
+        onDebounceChange={onDebounceChange}
       />
     </div>
   );

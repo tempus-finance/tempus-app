@@ -1,8 +1,10 @@
 import { fireEvent, render } from '@testing-library/react';
 import { BigNumber, utils } from 'ethers';
+import { FC, useState } from 'react';
 import NumberInput, { NumberInputProps } from './NumberInput';
 
 const mockOnChange = jest.fn();
+const mockOnDebounceChange = jest.fn();
 
 const defaultProps: NumberInputProps = {
   label: 'number input label',
@@ -14,9 +16,16 @@ const defaultProps: NumberInputProps = {
   error: '',
   disabled: false,
   onChange: mockOnChange,
+  onDebounceChange: mockOnDebounceChange,
 };
 
-const subject = (props: NumberInputProps) => render(<NumberInput {...props} />);
+const Wrapper: FC<NumberInputProps> = props => {
+  const [value, setValue] = useState<string>(props.value ?? '');
+  mockOnChange.mockImplementation((val: string) => setValue(val));
+  return <NumberInput {...props} value={value} />;
+};
+
+const subject = (props: NumberInputProps) => render(<Wrapper {...props} />);
 
 describe('NumberInput', () => {
   it('renders a number input with label, value and caption', () => {
@@ -57,7 +66,7 @@ describe('NumberInput', () => {
     expect(numberInput).toMatchSnapshot();
   });
 
-  it('click max button in number input will trigger onChange', () => {
+  it('click max button in number input will trigger onChange and onDebounceChange', () => {
     const { getByRole, queryByLabelText } = subject(defaultProps);
 
     const input = getByRole('textbox');
@@ -71,9 +80,10 @@ describe('NumberInput', () => {
     fireEvent.click(button);
 
     expect(mockOnChange).toHaveBeenCalledWith(utils.formatUnits(defaultProps.max, defaultProps.precision));
+    expect(mockOnDebounceChange).toHaveBeenCalledWith(utils.formatUnits(defaultProps.max, defaultProps.precision));
   });
 
-  it('click max button in number input with max as string will trigger onChange', () => {
+  it('click max button in number input with max as string will trigger onChange and onDebounceChange', () => {
     const props = { ...defaultProps, max: '100' };
     const { getByRole, queryByLabelText } = subject(props);
 
@@ -88,9 +98,10 @@ describe('NumberInput', () => {
     fireEvent.click(button);
 
     expect(mockOnChange).toHaveBeenCalledWith(utils.formatUnits(defaultProps.max, props.precision));
+    expect(mockOnDebounceChange).toHaveBeenCalledWith(utils.formatUnits(defaultProps.max, props.precision));
   });
 
-  it('click max button in number input with max as BigNumber will trigger onChange', () => {
+  it('click max button in number input with max as BigNumber will trigger onChange and onDebounceChange', () => {
     const props = { ...defaultProps, max: BigNumber.from(100) };
     const { getByRole, queryByLabelText } = subject(props);
 
@@ -105,6 +116,7 @@ describe('NumberInput', () => {
     fireEvent.click(button);
 
     expect(mockOnChange).toHaveBeenCalledWith(utils.formatUnits(defaultProps.max, props.precision));
+    expect(mockOnDebounceChange).toHaveBeenCalledWith(utils.formatUnits(defaultProps.max, props.precision));
   });
 
   it('click max button in number input without providing precision will use default precision', () => {
@@ -122,9 +134,10 @@ describe('NumberInput', () => {
     fireEvent.click(button);
 
     expect(mockOnChange).toHaveBeenCalledWith(utils.formatUnits(defaultProps.max, 18));
+    expect(mockOnDebounceChange).toHaveBeenCalledWith(utils.formatUnits(defaultProps.max, 18));
   });
 
-  it('click max button in number input with different precision will trigger onChange', () => {
+  it('click max button in number input with different precision will trigger onChange and onDebounceChange', () => {
     const props = { ...defaultProps, precision: 10 };
     const { getByRole, queryByLabelText } = subject(props);
 
@@ -139,9 +152,10 @@ describe('NumberInput', () => {
     fireEvent.click(button);
 
     expect(mockOnChange).toHaveBeenCalledWith(utils.formatUnits(defaultProps.max, props.precision));
+    expect(mockOnDebounceChange).toHaveBeenCalledWith(utils.formatUnits(defaultProps.max, props.precision));
   });
 
-  it('type text with unmatch pattern in number input will not trigger onChange', () => {
+  it('type text with unmatch pattern in number input will not trigger onChange and onDebounceChange', () => {
     const { getByRole, queryByLabelText } = subject(defaultProps);
 
     const input = getByRole('textbox');
@@ -155,5 +169,6 @@ describe('NumberInput', () => {
     fireEvent.change(input, { target: { value: 'abcd' } });
 
     expect(mockOnChange).not.toHaveBeenCalled();
+    expect(mockOnDebounceChange).not.toHaveBeenCalled();
   });
 });

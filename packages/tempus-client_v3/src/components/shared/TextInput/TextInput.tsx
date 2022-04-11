@@ -17,6 +17,7 @@ export interface TextInputProps {
   startAdornment?: ReactNode;
   endAdornment?: ReactNode;
   onChange?: (value: string) => void;
+  onDebounceChange?: (value: string) => void;
 }
 
 let idCounter = 0;
@@ -34,6 +35,7 @@ const TextInput: FC<TextInputProps> = props => {
     startAdornment,
     endAdornment,
     onChange,
+    onDebounceChange,
   } = props;
   const [focused, setFocused] = useState<boolean>(false);
   const id = useMemo(() => `text-input-${idCounter++}`, []);
@@ -71,6 +73,7 @@ const TextInput: FC<TextInputProps> = props => {
             debounce={debounce}
             disabled={disabled}
             onChange={onChange}
+            onDebounceChange={onDebounceChange}
             onFocus={handleFocus}
             onBlur={handleBlur}
           />

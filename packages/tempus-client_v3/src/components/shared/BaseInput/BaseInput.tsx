@@ -8,6 +8,7 @@ export interface BaseInputProps {
   disabled?: boolean;
   debounce?: boolean | number;
   onChange?: (value: string) => void;
+  onDebounceChange?: (value: string) => void;
   onFocus?: (ev: FocusEvent<HTMLInputElement>) => void;
   onBlur?: (ev: FocusEvent<HTMLInputElement>) => void;
 }
@@ -15,14 +16,26 @@ export interface BaseInputProps {
 export const DEFAULT_DEBOUNCE_INTERVAL_IN_MS = 300;
 
 const BaseInput: FC<BaseInputProps> = props => {
-  const { id, value, placeholder, pattern, disabled, debounce = false, onChange, onFocus, onBlur } = props;
+  const {
+    id,
+    value,
+    placeholder,
+    pattern,
+    disabled,
+    debounce = false,
+    onChange,
+    onDebounceChange,
+    onFocus,
+    onBlur,
+  } = props;
   const time = useRef<NodeJS.Timeout>();
+  const valueToBeUpdated = useRef<string>();
 
   const debounceInterval: number = useMemo(() => {
     if (!debounce) {
       return 0;
     }
-    if (debounce && debounce === true) {
+    if (debounce === true) {
       return DEFAULT_DEBOUNCE_INTERVAL_IN_MS;
     }
     return debounce as number;
@@ -31,34 +44,37 @@ const BaseInput: FC<BaseInputProps> = props => {
   const handleChange = useCallback(
     (ev: ChangeEvent<HTMLInputElement>) => {
       if (!pattern || !ev.target.validity.patternMismatch) {
-        const elementValue = ev.currentTarget.value;
+        valueToBeUpdated.current = ev.currentTarget.value;
+        onChange?.(valueToBeUpdated.current);
         if (debounceInterval) {
           if (time.current) {
             clearTimeout(time.current);
           }
           time.current = setTimeout(() => {
-            onChange?.(elementValue);
+            onDebounceChange?.(valueToBeUpdated.current as string);
             time.current = undefined;
+            valueToBeUpdated.current = undefined;
           }, debounceInterval);
         } else {
-          onChange?.(elementValue);
+          onDebounceChange?.(valueToBeUpdated.current);
         }
       }
     },
-    [pattern, debounceInterval, onChange],
+    [pattern, debounceInterval, onChange, onDebounceChange],
   );
 
   const handleBlur = useCallback(
     (ev: FocusEvent<HTMLInputElement>) => {
-      const elementValue = ev.currentTarget.value;
       if (time.current) {
         clearTimeout(time.current);
         time.current = undefined;
       }
-      onChange?.(elementValue);
+      if (valueToBeUpdated.current !== undefined) {
+        onDebounceChange?.(valueToBeUpdated.current);
+      }
       onBlur?.(ev);
     },
-    [onChange, onBlur],
+    [onDebounceChange, onBlur],
   );
 
   return (

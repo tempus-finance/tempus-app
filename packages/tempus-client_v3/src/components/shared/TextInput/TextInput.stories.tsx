@@ -1,6 +1,7 @@
 import { ComponentStory } from '@storybook/react';
-import React from 'react';
-import TextInput from './TextInput';
+import React, { FC, useCallback, useState } from 'react';
+import TextInput, { TextInputProps } from './TextInput';
+import Logo from '../Logo';
 
 export default {
   title: 'TextInput',
@@ -16,9 +17,15 @@ const style = {
   padding: '10px',
 };
 
+const Wrapper: FC<TextInputProps> = props => {
+  const [value, setValue] = useState<string>(props.value ?? '');
+  const onChange = useCallback((val: string) => setValue(val), []);
+  return <TextInput {...props} value={value} onChange={onChange} />;
+};
+
 const Template: ComponentStory<typeof TextInput> = args => (
   <div style={style}>
-    <TextInput {...args} />
+    <Wrapper {...args} />
   </div>
 );
 
@@ -30,7 +37,6 @@ TextInputRaw.args = {
   debounce: false,
   startAdornment: null,
   endAdornment: null,
-  onChange: () => false,
 };
 
 export const TextInputNormal = Template.bind({});
@@ -42,7 +48,6 @@ TextInputNormal.args = {
   debounce: false,
   startAdornment: null,
   endAdornment: null,
-  onChange: () => false,
 };
 
 export const TextInputCaption = Template.bind({});
@@ -55,7 +60,6 @@ TextInputCaption.args = {
   debounce: false,
   startAdornment: null,
   endAdornment: null,
-  onChange: () => false,
 };
 
 export const TextInputError = Template.bind({});
@@ -69,7 +73,6 @@ TextInputError.args = {
   debounce: false,
   startAdornment: null,
   endAdornment: null,
-  onChange: () => false,
 };
 
 export const TextInputDisabled = Template.bind({});
@@ -82,5 +85,28 @@ TextInputDisabled.args = {
   debounce: false,
   startAdornment: null,
   endAdornment: null,
-  onChange: () => false,
+};
+
+export const TextInputWithStartAdornment = Template.bind({});
+TextInputWithStartAdornment.args = {
+  label: 'text input',
+  placeholder: 'placeholder',
+  pattern: '',
+  caption: 'caption here',
+  disabled: false,
+  debounce: false,
+  startAdornment: <Logo type="token-ETH" />,
+  endAdornment: null,
+};
+
+export const TextInputWithEndAdornment = Template.bind({});
+TextInputWithEndAdornment.args = {
+  label: 'text input',
+  placeholder: 'placeholder',
+  pattern: '',
+  caption: 'caption here',
+  disabled: false,
+  debounce: false,
+  startAdornment: null,
+  endAdornment: <Logo type="token-ETH" />,
 };
