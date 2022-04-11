@@ -113,6 +113,7 @@ const es: { [word in Words]: string } = {
   execute: 'Ejecutar',
   executing: 'Ejecutando',
   xxxFailed: '{{action}} Fallido',
+  xxxDeclined: '{{action}} Rechazada',
   xxxDeclinedMessage: '{{action}} rechazada. Inténtalo de nuevo.',
   insufficientLiquidity: 'Liquidez insuficiente',
   insufficientLiquidityMessage:
