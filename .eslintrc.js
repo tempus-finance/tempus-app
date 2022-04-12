@@ -41,6 +41,7 @@ module.exports = {
     'max-len': ['error', { code: 120, ignoreStrings: true }], // Set to match with prettier config
     'implicit-arrow-linebreak': 0, // This rule is disabled because it does not work well with prettier
     'no-confusing-arrow': 0, // This rule is disabled because it does not work well with prettier
+    'function-paren-newline': 0, // This rule is disabled because it does not work well with prettier
     ////
 
     'no-spaced-func': 0,
@@ -50,7 +51,6 @@ module.exports = {
     'object-curly-newline': 0,
     'operator-linebreak': 0,
     'padded-blocks': 0,
-    'function-paren-newline': 0,
     'no-console': 0,
     'global-require': 0,
     'react/button-has-type': 0,
