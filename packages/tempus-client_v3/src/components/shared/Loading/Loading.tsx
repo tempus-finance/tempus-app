@@ -2,7 +2,7 @@ import { FC } from 'react';
 
 import './Loading.scss';
 
-export type LoadingColor = 'default' | 'secondary';
+export type LoadingColor = 'default' | 'primary' | 'secondary';
 
 interface LoadingProps {
   size?: number;

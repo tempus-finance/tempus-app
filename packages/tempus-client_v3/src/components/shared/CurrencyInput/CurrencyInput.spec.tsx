@@ -9,6 +9,9 @@ const defaultProps = {
   ratePrecision: 2,
 };
 
+const mockOnAmountUpdate = jest.fn<void, [string]>();
+const mockOnCurrencyUpdate = jest.fn<void, [Ticker]>();
+
 const singleCurrencyUsdRates = new Map<Ticker, BigNumber>();
 singleCurrencyUsdRates.set('ETH', increasePrecision(BigNumber.from(3500), defaultProps.ratePrecision));
 
@@ -19,6 +22,9 @@ multipleCurrencyUsdRates.set('stETH', increasePrecision(BigNumber.from(3500), de
 const subject = (props: CurrencyInputProps) => render(<CurrencyInput {...props} />);
 
 describe('CurrencyInput', () => {
+  beforeEach(jest.useFakeTimers);
+  afterEach(jest.useRealTimers);
+
   it('renders a currency input with a single currency', () => {
     const { getAllByRole, getByRole, queryByText } = subject({
       ...defaultProps,
@@ -95,6 +101,8 @@ describe('CurrencyInput', () => {
     const { getByRole } = subject({
       ...defaultProps,
       usdRates: multipleCurrencyUsdRates,
+      onAmountUpdate: mockOnAmountUpdate,
+      onCurrencyUpdate: mockOnCurrencyUpdate,
     });
 
     const actualSelectorButton = getByRole('button', { name: 'ETH' });
@@ -110,18 +118,34 @@ describe('CurrencyInput', () => {
 
     expect(actualInput).toHaveValue('123');
 
+    expect(mockOnAmountUpdate).not.toBeCalled();
+
+    act(() => {
+      jest.advanceTimersByTime(300);
+    });
+
+    expect(mockOnAmountUpdate).toBeCalledTimes(1);
+    expect(mockOnAmountUpdate).toBeCalledWith('123');
+
     const actualStEthButton = getByRole('button', { name: 'stETH' });
 
     fireEvent.click(actualStEthButton);
 
     expect(actualInput).not.toHaveValue();
     expect(actualInput).toMatchSnapshot();
+
+    expect(mockOnAmountUpdate).toBeCalledTimes(2);
+    expect(mockOnAmountUpdate).toBeCalledWith('');
+
+    expect(mockOnCurrencyUpdate).toBeCalledTimes(1);
+    expect(mockOnCurrencyUpdate).toBeCalledWith('stETH');
   });
 
   it('updates the input field when a percentage button is clicked', () => {
     const { container, getAllByRole, getByRole } = subject({
       ...defaultProps,
       usdRates: singleCurrencyUsdRates,
+      onAmountUpdate: mockOnAmountUpdate,
     });
 
     const percentageButtons = getAllByRole('button', { name: /[\d\s%]+/ });
@@ -147,12 +171,16 @@ describe('CurrencyInput', () => {
 
       fireEvent.click(button);
 
+      const formattedValueInCurrency = ethers.utils.formatUnits(valueInCurrency, defaultProps.precision);
       const fiatValue = container.querySelector('.tc__currency-input__fiat-amount > div');
 
       expect(button).toMatchSnapshot();
 
-      expect(inputField).toHaveValue(ethers.utils.formatUnits(valueInCurrency, defaultProps.precision));
+      expect(inputField).toHaveValue(formattedValueInCurrency);
       expect(inputField).toMatchSnapshot();
+
+      expect(mockOnAmountUpdate).toBeCalledTimes(index + 1);
+      expect(mockOnAmountUpdate).toBeCalledWith(formattedValueInCurrency);
 
       expect(fiatValue).not.toBeNull();
       expect(fiatValue).toHaveTextContent(
@@ -163,7 +191,6 @@ describe('CurrencyInput', () => {
   });
 
   it('updates the USD value based on same-precision USD rate', () => {
-    jest.useFakeTimers();
     const inputValue = 123;
     const precision = 18;
 
@@ -178,10 +205,8 @@ describe('CurrencyInput', () => {
     });
 
     const actualInput = getByRole('textbox');
-    const actualFiatValue = container.querySelector('.tc__currency-input__fiat-amount > div');
 
     expect(actualInput).not.toBeNull();
-    expect(actualFiatValue).not.toBeNull();
 
     fireEvent.change(actualInput, { target: { value: `${inputValue}` } });
 
@@ -195,16 +220,16 @@ describe('CurrencyInput', () => {
       jest.advanceTimersByTime(300);
     });
 
+    const actualFiatValue = container.querySelector('.tc__currency-input__fiat-amount > div');
+
+    expect(actualFiatValue).not.toBeNull();
     expect(actualFiatValue).toHaveTextContent(
       NumberUtils.formatToCurrency(ethers.utils.formatUnits(fiatValue, defaultProps.precision), 2, '$'),
     );
     expect(actualFiatValue).toMatchSnapshot();
-
-    jest.useRealTimers();
   });
 
   it('updates the USD value based on less precise USD rate', () => {
-    jest.useFakeTimers();
     const inputValue = 123;
 
     const { container, getByRole } = subject({
@@ -213,12 +238,16 @@ describe('CurrencyInput', () => {
     });
 
     const actualInput = getByRole('textbox');
-    const actualFiatValue = container.querySelector('.tc__currency-input__fiat-amount > div');
+    let actualLoading = container.querySelector('.tc__loading');
 
     expect(actualInput).not.toBeNull();
-    expect(actualFiatValue).not.toBeNull();
+    expect(actualLoading).toBeNull();
 
     fireEvent.change(actualInput, { target: { value: `${inputValue}` } });
+
+    actualLoading = container.querySelector('.tc__loading');
+
+    expect(actualLoading).not.toBeNull();
 
     const fiatValue = mul18f(
       increasePrecision(BigNumber.from(inputValue), defaultProps.precision),
@@ -233,11 +262,15 @@ describe('CurrencyInput', () => {
       jest.advanceTimersByTime(300);
     });
 
+    const actualFiatValue = container.querySelector('.tc__currency-input__fiat-amount > div');
+    actualLoading = container.querySelector('.tc__loading');
+
+    expect(actualLoading).toBeNull();
+
+    expect(actualFiatValue).not.toBeNull();
     expect(actualFiatValue).toHaveTextContent(
       NumberUtils.formatToCurrency(ethers.utils.formatUnits(fiatValue, defaultProps.precision), 2, '$'),
     );
     expect(actualFiatValue).toMatchSnapshot();
-
-    jest.useRealTimers();
   });
 });
