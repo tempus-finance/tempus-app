@@ -12,7 +12,10 @@ let idCounter = 0;
 
 const ToggleSwitch: FC<ToggleSwitchProps> = props => {
   const { checked, label, onChange } = props;
-  const id = useMemo(() => `toggle-switch-${idCounter++}`, []);
+  const id = useMemo(() => {
+    idCounter += 1;
+    return `toggle-switch-${idCounter}`;
+  }, []);
 
   return (
     <span className="tc__toggle-switch">

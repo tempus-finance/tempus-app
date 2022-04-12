@@ -38,7 +38,10 @@ const TextInput: FC<TextInputProps> = props => {
     onDebounceChange,
   } = props;
   const [focused, setFocused] = useState<boolean>(false);
-  const id = useMemo(() => `text-input-${idCounter++}`, []);
+  const id = useMemo(() => {
+    idCounter += 1;
+    return `text-input-${idCounter}`;
+  }, []);
 
   const handleFocus = useCallback(() => setFocused(true), []);
   const handleBlur = useCallback(() => setFocused(false), []);
