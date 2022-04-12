@@ -1,5 +1,6 @@
-import React, { FC } from 'react';
-import { IconProps, ICON_COLOR_DEFAULT, ICON_SIZE_DEFAULT } from './Icon';
+import { FC } from 'react';
+import IconProps from './IconProps';
+import { ICON_COLOR_DEFAULT, ICON_SIZE_DEFAULT } from './IconConstants';
 import withIcon from './withIcon';
 
 const ListView: FC<IconProps> = ({ size = ICON_SIZE_DEFAULT, color = ICON_COLOR_DEFAULT }) => (

@@ -1,5 +1,5 @@
-import React, { FC, memo } from 'react';
-
+import { FC, memo } from 'react';
+import LogoProps from './LogoProps';
 import TokenETH from './TokenETH';
 import TokenETHLight from './TokenETHLight';
 import TokenUSDC from './TokenUSDC';
@@ -26,11 +26,6 @@ import ProtocolRari from './ProtocolRari';
 import WalletMetamask from './WalletMetamask';
 import WalletWalletConnect from './WalletWalletConnect';
 import WalletGnosis from './WalletGnosis';
-
-export const LOGO_SIZE_SMALL = 24;
-export const LOGO_SIZE_MEDIUM = 32;
-export const LOGO_SIZE_LARGE = 40;
-export const LOGO_SIZE_DEFAULT = LOGO_SIZE_MEDIUM;
 
 export type LogoType =
   | 'token-ETH'
@@ -59,10 +54,6 @@ export type LogoType =
   | 'wallet-metamask'
   | 'wallet-walletconnect'
   | 'wallet-gnosis';
-
-export interface LogoProps {
-  size?: 'large' | 'medium' | 'small' | number;
-}
 
 const Logo: FC<LogoProps & { type: LogoType }> = props => {
   switch (props.type) {

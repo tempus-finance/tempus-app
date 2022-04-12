@@ -1,5 +1,6 @@
 import { FC } from 'react';
-import { IconProps, ICON_COLOR_DEFAULT, ICON_SIZE_DEFAULT } from './Icon';
+import IconProps from './IconProps';
+import { ICON_COLOR_DEFAULT, ICON_SIZE_DEFAULT } from './IconConstants';
 import withIcon from './withIcon';
 
 const GridView: FC<IconProps> = ({ size = ICON_SIZE_DEFAULT, color = ICON_COLOR_DEFAULT }) => (

@@ -2,7 +2,7 @@ import { FC, memo, useCallback, useMemo } from 'react';
 import ButtonWrapper from '../ButtonWrapper';
 import Link from '../Link';
 import Typography, { TypographyColor, TypographyVariant, TypographyWeight } from '../Typography';
-import { TabsSize } from './Tabs';
+import type { TabsSize } from './Tabs';
 
 export interface TabProps {
   label: string;

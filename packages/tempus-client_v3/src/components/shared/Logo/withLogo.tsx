@@ -1,5 +1,6 @@
 import React, { FC, memo } from 'react';
-import { LogoProps, LOGO_SIZE_DEFAULT, LOGO_SIZE_LARGE, LOGO_SIZE_MEDIUM, LOGO_SIZE_SMALL } from './Logo';
+import LogoProps from './LogoProps';
+import { LOGO_SIZE_DEFAULT, LOGO_SIZE_LARGE, LOGO_SIZE_MEDIUM, LOGO_SIZE_SMALL } from './LogoConstants';
 
 const withLogo = (Component: React.ComponentType<LogoProps>): FC<LogoProps> =>
   memo(({ size }) => {
