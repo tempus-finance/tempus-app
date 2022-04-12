@@ -4,6 +4,7 @@ import { BrowserRouter } from 'react-router-dom';
 import isMobile from 'is-mobile';
 import reportWebVitals from './reportWebVitals';
 import { Typography } from './components/shared';
+import release from './release.json';
 
 // Creates CSS variables for all color constants
 import './components/shared/Colors';
@@ -16,7 +17,6 @@ import './index.scss';
 const mobile = isMobile();
 
 try {
-  const release = require('./release.json');
   console.log(`Current version: ${release.releaseVersion}`);
 } catch (e) {
   console.error(e);
