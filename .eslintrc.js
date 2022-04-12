@@ -41,6 +41,7 @@ module.exports = {
     'max-len': ['error', { code: 120, ignoreStrings: true }], // Set to match with prettier config
     'implicit-arrow-linebreak': 0, // This rule is disabled because it does not work well with prettier
     'no-confusing-arrow': 0, // This rule is disabled because it does not work well with prettier
+    'no-plusplus': ['error', { allowForLoopAfterthoughts: true }],
     ////
 
     'no-spaced-func': 0,
