@@ -49,7 +49,6 @@ module.exports = {
     'no-plusplus': 0,
     'object-curly-newline': 0,
     'operator-linebreak': 0,
-    'padded-blocks': 0,
     'function-paren-newline': 0,
     'no-console': 0,
     'global-require': 0,
