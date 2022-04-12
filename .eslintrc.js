@@ -53,7 +53,6 @@ module.exports = {
     'function-paren-newline': 0,
     'no-console': 0,
     'global-require': 0,
-    'react/button-has-type': 0,
     'react-hooks/rules-of-hooks': 'error',
     'react-hooks/exhaustive-deps': 'error',
     'react/prop-types': 0,
