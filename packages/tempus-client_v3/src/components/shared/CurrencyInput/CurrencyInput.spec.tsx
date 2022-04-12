@@ -205,10 +205,8 @@ describe('CurrencyInput', () => {
     });
 
     const actualInput = getByRole('textbox');
-    const actualFiatValue = container.querySelector('.tc__currency-input__fiat-amount > div');
 
     expect(actualInput).not.toBeNull();
-    expect(actualFiatValue).not.toBeNull();
 
     fireEvent.change(actualInput, { target: { value: `${inputValue}` } });
 
@@ -222,6 +220,9 @@ describe('CurrencyInput', () => {
       jest.advanceTimersByTime(300);
     });
 
+    const actualFiatValue = container.querySelector('.tc__currency-input__fiat-amount > div');
+
+    expect(actualFiatValue).not.toBeNull();
     expect(actualFiatValue).toHaveTextContent(
       NumberUtils.formatToCurrency(ethers.utils.formatUnits(fiatValue, defaultProps.precision), 2, '$'),
     );
@@ -237,12 +238,16 @@ describe('CurrencyInput', () => {
     });
 
     const actualInput = getByRole('textbox');
-    const actualFiatValue = container.querySelector('.tc__currency-input__fiat-amount > div');
+    let actualLoading = container.querySelector('.tc__loading');
 
     expect(actualInput).not.toBeNull();
-    expect(actualFiatValue).not.toBeNull();
+    expect(actualLoading).toBeNull();
 
     fireEvent.change(actualInput, { target: { value: `${inputValue}` } });
+
+    actualLoading = container.querySelector('.tc__loading');
+
+    expect(actualLoading).not.toBeNull();
 
     const fiatValue = mul18f(
       increasePrecision(BigNumber.from(inputValue), defaultProps.precision),
@@ -257,6 +262,12 @@ describe('CurrencyInput', () => {
       jest.advanceTimersByTime(300);
     });
 
+    const actualFiatValue = container.querySelector('.tc__currency-input__fiat-amount > div');
+    actualLoading = container.querySelector('.tc__loading');
+
+    expect(actualLoading).toBeNull();
+
+    expect(actualFiatValue).not.toBeNull();
     expect(actualFiatValue).toHaveTextContent(
       NumberUtils.formatToCurrency(ethers.utils.formatUnits(fiatValue, defaultProps.precision), 2, '$'),
     );

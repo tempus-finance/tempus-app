@@ -2,6 +2,7 @@ import { BigNumber, ethers } from 'ethers';
 import { FC, useCallback, useState } from 'react';
 import { div18f, increasePrecision, mul18f, NumberUtils, Ticker } from 'tempus-core-services';
 import BaseInput from '../BaseInput';
+import Loading from '../Loading';
 import Typography from '../Typography';
 import CurrencySelector from './CurrencySelector';
 import PercentageButton from './PercentageButton';
@@ -23,7 +24,7 @@ interface CurrencyInputProps {
 const CurrencyInput: FC<CurrencyInputProps> = props => {
   const { precision, maxAmount, usdRates, ratePrecision, disabled, error, onAmountUpdate, onCurrencyUpdate } = props;
   const [amount, setAmount] = useState('');
-  const [usdAmount, setUsdAmount] = useState(NumberUtils.formatToCurrency('0', 2, '$'));
+  const [usdAmount, setUsdAmount] = useState<string | null>(NumberUtils.formatToCurrency('0', 2, '$'));
   const [selectedCurrency, setSelectedCurrency] = useState(Array.from(usdRates.keys())[0]);
 
   const updateUsdAmount = useCallback(
@@ -116,24 +117,27 @@ const CurrencyInput: FC<CurrencyInputProps> = props => {
                 onDebounceChange={handleDebounceValueChange}
               />
             </Typography>
-            <span className="tc__currency-input__fiat-amount">
-              <Typography
-                variant="body-primary"
-                weight="medium"
-                type="mono"
-                color={!disabled && amount ? 'text-secondary' : 'text-disabled'}
-              >
-                {usdAmount}
-              </Typography>
-              <Typography
-                className="tc__currency-input__fiat-amount-currency"
-                variant="body-primary"
-                weight="medium"
-                color={!disabled && amount ? 'text-secondary' : 'text-disabled'}
-              >
-                USD
-              </Typography>
-            </span>
+            {usdAmount && (
+              <span className="tc__currency-input__fiat-amount">
+                <Typography
+                  variant="body-primary"
+                  weight="medium"
+                  type="mono"
+                  color={!disabled && amount ? 'text-secondary' : 'text-disabled'}
+                >
+                  {usdAmount}
+                </Typography>
+                <Typography
+                  className="tc__currency-input__fiat-amount-currency"
+                  variant="body-primary"
+                  weight="medium"
+                  color={!disabled && amount ? 'text-secondary' : 'text-disabled'}
+                >
+                  USD
+                </Typography>
+              </span>
+            )}
+            {!usdAmount && <Loading color="primary" />}
           </div>
           {error && (
             <Typography
