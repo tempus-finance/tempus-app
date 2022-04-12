@@ -1,5 +1,5 @@
-import { colors } from './Colors';
-import { shadows } from './Shadow';
+import type { colors } from './Colors';
+import type { shadows } from './Shadow';
 
 export default function loadStyleVariables(styles: typeof colors | typeof shadows, suffix = ''): void {
   const root = document.querySelector(':root') as HTMLElement;

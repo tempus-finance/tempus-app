@@ -1,5 +1,6 @@
-import React, { FC } from 'react';
-import { LogoProps, LOGO_SIZE_DEFAULT } from './Logo';
+import { FC } from 'react';
+import LogoProps from './LogoProps';
+import { LOGO_SIZE_DEFAULT } from './LogoConstants';
 import withLogo from './withLogo';
 
 const TokenWBTCDark: FC<LogoProps> = ({ size = LOGO_SIZE_DEFAULT }) => (

@@ -16,6 +16,8 @@ module.exports = {
   parser: '@typescript-eslint/parser',
   extends: [
     'plugin:react/recommended',
+    'plugin:import/recommended',
+    'plugin:import/typescript',
     'plugin:react-hooks/recommended',
     'plugin:@typescript-eslint/recommended',
     'airbnb-typescript',
@@ -88,7 +90,6 @@ module.exports = {
     'import/no-extraneous-dependencies': 0,
     'import/no-useless-path-segments': 0,
     'import/prefer-default-export': 0,
-    'import/no-cycle': 0,
     'jsx-a11y/anchor-is-valid': 0,
     'jsx-a11y/click-events-have-key-events': 0,
     'jsx-a11y/no-static-element-interactions': 0,
