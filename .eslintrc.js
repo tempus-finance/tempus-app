@@ -40,9 +40,9 @@ module.exports = {
     'arrow-parens': ['error', 'as-needed'], // Set to match with prettier config
     'max-len': ['error', { code: 120, ignoreStrings: true }], // Set to match with prettier config
     'implicit-arrow-linebreak': 0, // This rule is disabled because it does not work well with prettier
+    'no-confusing-arrow': 0, // This rule is disabled because it does not work well with prettier
     ////
 
-    'no-confusing-arrow': 0,
     'no-spaced-func': 0,
     'no-nested-ternary': 0,
     'no-empty-patterns': 0,
