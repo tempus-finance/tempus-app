@@ -43,18 +43,17 @@ const TextInput: FC<TextInputProps> = props => {
   const handleFocus = useCallback(() => setFocused(true), []);
   const handleBlur = useCallback(() => setFocused(false), []);
 
+  let stateClass = '';
+  if (disabled) {
+    stateClass = 'tc__text-input__disabled';
+  } else if (error) {
+    stateClass = 'tc__text-input__error';
+  } else if (focused) {
+    stateClass = 'tc__text-input__focused';
+  }
+
   return (
-    <div
-      className={`tc__text-input ${
-        disabled
-          ? 'tc__text-input__disabled'
-          : error
-          ? 'tc__text-input__error'
-          : focused
-          ? 'tc__text-input__focused'
-          : ''
-      }`}
-    >
+    <div className={`tc__text-input ${stateClass}`}>
       {label && (
         <label htmlFor={id}>
           <Typography variant="body-secondary" weight="bold">
