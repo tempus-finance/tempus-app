@@ -16,7 +16,6 @@ async function metamaskRegister(browser) {
     await tabMetamask.waitForTimeout(LOAD_LONG_TIMEOUT)
     await tabMetamask.bringToFront()
 
-
     if (!await tabMetamask.locator('text=Get Started').count()) {
         return await tabMetamask.close()
     }
@@ -67,10 +66,9 @@ async function metamaskLogin(browser) {
     }
     else if (await tabMetamask.locator('text=Get Started').count()) {
         await metamaskRegister(browser)
-        await metamaskLogin(browser) // rec
+        await metamaskLogin(browser)
     }
     else if (await tabMetamask.locator('text="Unlock"').count()) {
-        //console.log(3)
         await tabMetamask.fill('input[id="password"] >> nth=0', process.env.METAMASK_PASSWORD)
         await tabMetamask.click('text="Unlock" >> nth=0')
     }
@@ -85,8 +83,6 @@ async function metamaskLogin(browser) {
         await tabMetamask.click(SELECTOR_NEXT)
         await tabMetamask.click(SELECTOR_RML)
     }
-
-    //await tabMetamask.pause()
     await tabMetamask.close()
 }
 
@@ -94,12 +90,10 @@ async function metamaskLogoff(browser) {
     const tabMetamask = await browser.newPage()
     await tabMetamask.goto(`chrome-extension://${METAMASK_ID}/home.html#`)
     await tabMetamask.waitForTimeout(LOAD_TIMEOUT)
-
     if (!(await tabMetamask.locator('text="Unlock"').count()) && !(await tabMetamask.locator('text="Get Started"').count())) {
         await tabMetamask.click('svg >> nth=0')
         await tabMetamask.click('text="Lock"')
     }
-
     await tabMetamask.close()
 }
 
@@ -113,22 +107,12 @@ async function metamaskAddETHfork(browser) {
 
     await metamaskLogin(browser)
     const tabMetamask = await browser.newPage()
-    /*
-    await tabMetamask.goto('chrome-extension://colclbomlgoedkilgbjjnddgkhokhbbc/home.html#')
-    await tabMetamask.click('svg > rect >> nth=0')
-    await tabMetamask.click('text="Settings"')
-    await tabMetamask.click('text="Networks"')
-    await tabMetamask.click('text="Add a network"')
-    */
-
     await tabMetamask.goto(`chrome-extension://${METAMASK_ID}/home.html#settings/networks/add-network`)
     await tabMetamask.waitForTimeout(LOAD_SHORT_TIMEOUT)
-
     await tabMetamask.fill('input >> nth=0', eth_fork.Name)
     await tabMetamask.fill('input >> nth=1', eth_fork.RPC)
     await tabMetamask.fill('input >> nth=2', eth_fork.Chain)
     await tabMetamask.fill('input >> nth=3', eth_fork.CurrencySymbol)
-
     await tabMetamask.waitForTimeout(LOAD_SHORT_TIMEOUT)
     if (await tabMetamask.locator('.btn--rounded[disabled]:has-text("Save")').count() == 0) { // save button is disabled
         await tabMetamask.click('text="Save"')
@@ -172,14 +156,12 @@ async function metamaskAccountsAddAll(browser) {
     metamaskAccountAdd(browser, process.env.METAMASK_ACCOUNT_FANTOM)
 }
 
-
 const { download: CRXdownload } = require('download-crx')
 const p7z = require('node-7z')
 const path = require('path')
 const { mkdir } = require('commandir')
 const rimraf = require('rimraf')
 const MM_URL = 'https://chrome.google.com/webstore/detail/nkbihfbeogaeaoehlefnkodbefgpgknn'
-
 
 async function metamaskDownload(location = path.join(__dirname, ROOT_PATH, METAMASK_PATH)) {
     const MM_CRX_PATH = path.join(location, 'mm.crx');
