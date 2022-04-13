@@ -1,5 +1,4 @@
 import { BigNumber, utils } from 'ethers';
-import { div18f, mul18f } from '../utils/weiMath';
 import FixedPointDecimal from './FixedPointDecimal';
 
 describe('FixedPointDecimal', () => {
@@ -152,7 +151,10 @@ describe('FixedPointDecimal', () => {
   for (let i = 0; i < 10; i++) {
     const value = Math.random() * 1000;
     const multiplicand = Math.random() * 100;
-    const expected = mul18f(utils.parseUnits(`${value}`, 18), utils.parseUnits(`${multiplicand}`, 18), 18);
+    const expected = utils
+      .parseUnits(`${value}`, 18)
+      .mul(utils.parseUnits(`${multiplicand}`, 18))
+      .div(BigNumber.from(10).pow(18));
 
     it(`${value} * ${multiplicand} should be ${utils.formatUnits(expected, 18)}`, () => {
       const decimal = new FixedPointDecimal(value);
@@ -187,7 +189,10 @@ describe('FixedPointDecimal', () => {
   for (let i = 0; i < 10; i++) {
     const value = Math.random() * 1000;
     const divisor = Math.random() * 100;
-    const expected = div18f(utils.parseUnits(`${value}`, 18), utils.parseUnits(`${divisor}`, 18), 18);
+    const expected = utils
+      .parseUnits(`${value}`, 18)
+      .mul(BigNumber.from(10).pow(18))
+      .div(utils.parseUnits(`${divisor}`, 18));
 
     it(`${value} / ${divisor} should be ${utils.formatUnits(expected, 18)}`, () => {
       const decimal = new FixedPointDecimal(value);
