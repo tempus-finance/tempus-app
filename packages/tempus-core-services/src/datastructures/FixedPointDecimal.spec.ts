@@ -33,18 +33,22 @@ describe('FixedPointDecimal', () => {
   });
 
   [
-    { value: '0' },
-    { value: '0.0' },
-    { value: '.' },
-    { value: '.123' },
-    { value: '123.' },
-    { value: '' },
-    { value: '-123' },
-  ].forEach(({ value }) =>
+    { value: '0', expected: '0.0' },
+    { value: '0.0', expected: '0.0' },
+    { value: '.123', expected: '0.123' },
+    { value: '123.', expected: '123.0' },
+    { value: '-123', expected: '-123.0' },
+  ].forEach(({ value, expected }) =>
     it(`constructor accepts ${value}`, () => {
       const decimal = new FixedPointDecimal(value);
 
-      expect(decimal).not.toBeNull();
+      expect(decimal.toString()).toEqual(expected);
+    }),
+  );
+
+  [{ value: '.' }, { value: '' }, { value: '+123' }, { value: '1e8' }].forEach(({ value }) =>
+    it(`constructor throw error for accepting ${value}`, () => {
+      expect(() => new FixedPointDecimal(value)).toThrow(`Failed to parse ${value} when creating FixedPointDecimal`);
     }),
   );
 

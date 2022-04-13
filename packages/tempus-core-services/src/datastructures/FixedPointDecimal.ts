@@ -17,10 +17,12 @@ export default class FixedPointDecimal {
   constructor(value: string | number | BigNumber, precision: number = 18) {
     if (value instanceof BigNumber) {
       this.value = value;
-    } else if (value === '.' || value === '') {
-      this.value = BigNumber.from(0);
     } else {
-      this.value = utils.parseUnits(`${value}`, precision);
+      try {
+        this.value = utils.parseUnits(`${value}`, precision);
+      } catch (e) {
+        throw new Error(`Failed to parse ${value} when creating FixedPointDecimal`);
+      }
     }
     this.precision = precision;
   }
@@ -78,17 +80,18 @@ export default class FixedPointDecimal {
     const decimal = divisor instanceof FixedPointDecimal ? divisor : new FixedPointDecimal(divisor);
 
     if (this.precision === decimal.precision) {
-      const quotient = this.value.mul(BigNumber.from(10).pow(this.precision)).div(decimal.value);
+      const quotient = increasePrecision(this.value, this.precision).div(decimal.value);
       return new FixedPointDecimal(quotient, this.precision);
     } else if (this.precision < decimal.precision) {
-      const quotient = increasePrecision(this.value, decimal.precision - this.precision)
-        .mul(BigNumber.from(10).pow(decimal.precision))
-        .div(decimal.value);
+      const quotient = increasePrecision(
+        increasePrecision(this.value, decimal.precision - this.precision),
+        decimal.precision,
+      ).div(decimal.value);
       return new FixedPointDecimal(quotient, decimal.precision);
     } else {
-      const quotient = this.value
-        .mul(BigNumber.from(10).pow(this.precision))
-        .div(increasePrecision(decimal.value, this.precision - decimal.precision));
+      const quotient = increasePrecision(this.value, this.precision).div(
+        increasePrecision(decimal.value, this.precision - decimal.precision),
+      );
       return new FixedPointDecimal(quotient, this.precision);
     }
   }
