@@ -2,7 +2,7 @@
 
 exports[`DropdownItem calls onChange handler when checkbox is toggled 1`] = `
 <input
-  id="checkbox-3"
+  id="checkbox-4"
   type="checkbox"
 />
 `;
@@ -13,7 +13,7 @@ exports[`DropdownItem does not render an icon when icon is not provided 1`] = `n
 
 exports[`DropdownItem renders a checkbox when checkbox prop is provided 1`] = `
 <input
-  id="checkbox-1"
+  id="checkbox-2"
   type="checkbox"
 />
 `;

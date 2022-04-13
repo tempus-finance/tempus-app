@@ -9,7 +9,7 @@ exports[`ToggleSwitch renders a checked toggle switch 1`] = `
   >
     <input
       checked=""
-      id="toggle-switch-1"
+      id="toggle-switch-2"
       type="checkbox"
     />
     <span
@@ -21,7 +21,7 @@ exports[`ToggleSwitch renders a checked toggle switch 1`] = `
   </span>
   <label
     class="tc__toggle-switch__label"
-    for="toggle-switch-1"
+    for="toggle-switch-2"
   >
     <div
       style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
@@ -40,7 +40,7 @@ exports[`ToggleSwitch renders an unchecked toggle switch 1`] = `
     class="tc__toggle-switch__switch-container"
   >
     <input
-      id="toggle-switch-0"
+      id="toggle-switch-1"
       type="checkbox"
     />
     <span
@@ -52,7 +52,7 @@ exports[`ToggleSwitch renders an unchecked toggle switch 1`] = `
   </span>
   <label
     class="tc__toggle-switch__label"
-    for="toggle-switch-0"
+    for="toggle-switch-1"
   >
     <div
       style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
