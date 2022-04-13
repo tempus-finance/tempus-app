@@ -6,8 +6,9 @@ describe('FixedPointDecimal', () => {
     const value = 123.123;
     const precision = 10;
     const decimal = new FixedPointDecimal(value, precision);
+    const expected = BigNumber.from('1231230000000');
 
-    expect(decimal.value).toEqual(utils.parseUnits(`${value}`, precision));
+    expect(decimal.value.eq(expected)).toBeTruthy();
     expect(decimal.precision).toBe(precision);
     expect(decimal.toString()).toEqual('123.123');
   });
@@ -16,8 +17,9 @@ describe('FixedPointDecimal', () => {
     const value = '123.123';
     const precision = 10;
     const decimal = new FixedPointDecimal(value, precision);
+    const expected = BigNumber.from('1231230000000');
 
-    expect(decimal.value).toEqual(utils.parseUnits(value, precision));
+    expect(decimal.value.eq(expected)).toBeTruthy();
     expect(decimal.precision).toBe(precision);
     expect(decimal.toString()).toEqual('123.123');
   });
@@ -26,23 +28,26 @@ describe('FixedPointDecimal', () => {
     const value = BigNumber.from('1231230000000');
     const precision = 10;
     const decimal = new FixedPointDecimal(value, precision);
+    const expected = value;
 
-    expect(decimal.value).toBe(value);
+    expect(decimal.value).toBe(expected);
     expect(decimal.precision).toBe(precision);
     expect(decimal.toString()).toEqual('123.123');
   });
 
   [
-    { value: '0', expected: '0.0' },
-    { value: '0.0', expected: '0.0' },
-    { value: '.123', expected: '0.123' },
-    { value: '123.', expected: '123.0' },
-    { value: '-123', expected: '-123.0' },
+    { value: '0', expected: 0 },
+    { value: '0.0', expected: 0 },
+    { value: '.123', expected: 0.123 },
+    { value: '123.', expected: 123 },
+    { value: '-123', expected: -123 },
   ].forEach(({ value, expected }) =>
     it(`constructor accepts ${value}`, () => {
       const decimal = new FixedPointDecimal(value);
+      const result = new FixedPointDecimal(expected);
 
-      expect(decimal.toString()).toEqual(expected);
+      expect(decimal.value.eq(result.value)).toBeTruthy();
+      expect(decimal.precision).toEqual(result.precision);
     }),
   );
 
@@ -55,8 +60,9 @@ describe('FixedPointDecimal', () => {
   it('default precision for constructor is 18', () => {
     const value = 123.123;
     const decimal = new FixedPointDecimal(value);
+    const expected = BigNumber.from('123123000000000000000');
 
-    expect(decimal.value).toEqual(utils.parseUnits(`${value}`, 18));
+    expect(decimal.value.eq(expected)).toBeTruthy();
     expect(decimal.precision).toBe(18);
     expect(decimal.toString()).toEqual('123.123');
   });
