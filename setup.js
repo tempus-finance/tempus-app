@@ -101,32 +101,3 @@ async function setupMetaMask() {
 }
 
 setupMetaMask();
-
-/*
-(async () => {
-    await metamaskDownload()
-    await fsPromises.access('utility')
-        .then(() => console.log("utility/ already exists"))
-        .catch(() => {
-            fsPromises.mkdir('utility')
-                .then(() => console.log('utility/ created successfully'))
-                .catch(() => {
-                    console.log('Failed to create utility')
-                    exit(1)
-                })
-        })
-    await sleep(5000)
-
-    const browser = await chromium.launchPersistentContext(`${ROOT_PATH}${CONFIG_NEW.USER_DATA_DIR}`, {
-        headless: false,
-        args: [
-            `--disable-extensions-except=${EXTENSION_PATH}`,
-            `--load-extension=${EXTENSION_PATH}`
-        ],
-        slowMo: 500
-    })
-    await setupUtility(browser)
-    await browser.close()
-    exit(0)
-})()
-*/
