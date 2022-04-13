@@ -39,42 +39,42 @@ const App = () => {
       userWalletAddress: walletData.userWalletAddress,
       userWalletSigner: walletData.userWalletSigner,
       chain: walletData.userWalletChain,
-    }).init();
+    }).init(walletData.userWalletAddress, walletData.userWalletSigner, walletData.userWalletChain);
 
     getUserLPTokenBalanceProvider({
       userWalletAddress: walletData.userWalletAddress,
       userWalletSigner: walletData.userWalletSigner,
       chain: walletData.userWalletChain,
-    }).init();
+    }).init(walletData.userWalletAddress, walletData.userWalletSigner, walletData.userWalletChain);
 
     getUserBalanceProvider({
       userWalletSigner: walletData.userWalletSigner,
       userWalletAddress: walletData.userWalletAddress,
       chain: walletData.userWalletChain,
-    }).init();
+    }).init(walletData.userWalletAddress, walletData.userWalletSigner, walletData.userWalletChain);
 
     getPoolShareBalanceProvider({
       userWalletSigner: walletData.userWalletSigner,
       chain: walletData.userWalletChain,
-    }).init();
+    }).init(walletData.userWalletSigner, walletData.userWalletChain);
 
     getUserYieldBearingTokenBalanceProvider({
       userWalletSigner: walletData.userWalletSigner,
       userWalletAddress: walletData.userWalletAddress,
       chain: walletData.userWalletChain,
-    }).init();
+    }).init(walletData.userWalletAddress, walletData.userWalletSigner, walletData.userWalletChain);
 
     getUserBackingTokenBalanceProvider({
       userWalletSigner: walletData.userWalletSigner,
       userWalletAddress: walletData.userWalletAddress,
       chain: walletData.userWalletChain,
-    }).init();
+    }).init(walletData.userWalletAddress, walletData.userWalletSigner, walletData.userWalletChain);
 
     getAvailableToDepositProvider({
       userWalletSigner: walletData.userWalletSigner,
       userWalletAddress: walletData.userWalletAddress,
       chain: walletData.userWalletChain,
-    }).init();
+    }).init(walletData.userWalletAddress, walletData.userWalletSigner, walletData.userWalletChain);
   }, [walletData.userWalletAddress, walletData.userWalletSigner, walletData.userWalletChain]);
 
   return (

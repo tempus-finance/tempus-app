@@ -23,9 +23,12 @@ class PoolShareBalanceProvider {
     this.chain = params.chain;
   }
 
-  init() {
+  init(userWalletSigner: JsonRpcSigner, chain: Chain) {
     // Clean up previous subscriptions
     this.destroy();
+
+    this.userWalletSigner = userWalletSigner;
+    this.chain = chain;
 
     const config = getChainConfig(this.chain);
 

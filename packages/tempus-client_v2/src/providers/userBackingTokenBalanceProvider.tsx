@@ -20,9 +20,13 @@ class UserBackingTokenBalanceProvider {
     this.chain = params.chain;
   }
 
-  init() {
+  init(userWalletAddress: string, userWalletSigner: JsonRpcSigner, chain: Chain) {
     // Make sure to clean previous data before crating new subscriptions
     this.destroy();
+
+    this.userWalletAddress = userWalletAddress;
+    this.userWalletSigner = userWalletSigner;
+    this.chain = chain;
 
     getChainConfig(this.chain).tempusPools.forEach(poolConfig => {
       if (!this.userWalletSigner) {
