@@ -3,6 +3,7 @@ import parse from 'html-react-parser';
 import { colors } from '../Colors';
 
 export type TypographyVariant =
+  | 'page-navigation'
   | 'header'
   | 'subheader'
   | 'title'
@@ -27,6 +28,11 @@ export type TypographyWeight = 'regular' | 'medium' | 'bold';
 type TypographyType = 'regular' | 'mono';
 
 const typographyVariantMap = new Map<TypographyVariant, CSSProperties>();
+typographyVariantMap.set('page-navigation', {
+  fontStyle: 'bold',
+  fontSize: '20px',
+  lineHeight: '28px',
+});
 typographyVariantMap.set('header', {
   fontStyle: 'normal',
   fontSize: '40px',

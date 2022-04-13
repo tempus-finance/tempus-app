@@ -1,0 +1,130 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`PageNavigation navigates to a path when the corresponding tab is clicked 1`] = `
+<div
+  class="tc__page-navigation"
+  style="width: 372px;"
+>
+  <div
+    class="tc__page-navigation__background"
+  />
+  <div
+    class="tc__tabs tc__tabs__tabs-page-navigation"
+  >
+    <a
+      class="tc__link tc__tabs__tab"
+      href="/"
+    >
+      <div
+        style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+      >
+        Link 1
+      </div>
+    </a>
+    <a
+      class="tc__link tc__tabs__tab"
+      href="/link2"
+    >
+      <div
+        style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(255, 255, 255); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+      >
+        Link 2
+      </div>
+    </a>
+    <div
+      class="tc__tabs__indicator-container"
+    >
+      <div
+        class="tc__tabs__indicator"
+        style="width: 50%; left: 50%;"
+      />
+    </div>
+  </div>
+</div>
+`;
+
+exports[`PageNavigation renders a page navigation component with first tab selected 1`] = `
+<div
+  class="tc__page-navigation"
+  style="width: 372px;"
+>
+  <div
+    class="tc__page-navigation__background"
+  />
+  <div
+    class="tc__tabs tc__tabs__tabs-page-navigation"
+  >
+    <a
+      class="tc__link tc__tabs__tab"
+      href="/"
+    >
+      <div
+        style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(255, 255, 255); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+      >
+        Link 1
+      </div>
+    </a>
+    <a
+      class="tc__link tc__tabs__tab"
+      href="/link2"
+    >
+      <div
+        style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+      >
+        Link 2
+      </div>
+    </a>
+    <div
+      class="tc__tabs__indicator-container"
+    >
+      <div
+        class="tc__tabs__indicator"
+        style="width: 50%; left: 0%;"
+      />
+    </div>
+  </div>
+</div>
+`;
+
+exports[`PageNavigation renders a page navigation component with second tab selected 1`] = `
+<div
+  class="tc__page-navigation"
+  style="width: 372px;"
+>
+  <div
+    class="tc__page-navigation__background"
+  />
+  <div
+    class="tc__tabs tc__tabs__tabs-page-navigation"
+  >
+    <a
+      class="tc__link tc__tabs__tab"
+      href="/"
+    >
+      <div
+        style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+      >
+        Link 1
+      </div>
+    </a>
+    <a
+      class="tc__link tc__tabs__tab"
+      href="/link2"
+    >
+      <div
+        style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(255, 255, 255); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+      >
+        Link 2
+      </div>
+    </a>
+    <div
+      class="tc__tabs__indicator-container"
+    >
+      <div
+        class="tc__tabs__indicator"
+        style="width: 50%; left: 50%;"
+      />
+    </div>
+  </div>
+</div>
+`;
