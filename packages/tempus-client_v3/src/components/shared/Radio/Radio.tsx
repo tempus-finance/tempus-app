@@ -13,7 +13,10 @@ let idCounter = 0;
 
 const Radio: FC<RadioProps> = props => {
   const { checked = false, value, label, onChange } = props;
-  const id = useMemo(() => `radio-${idCounter++}`, []);
+  const id = useMemo(() => {
+    idCounter += 1;
+    return `radio-${idCounter}`;
+  }, []);
   const handleChange = useCallback(() => onChange?.(value), [value, onChange]);
 
   return (
