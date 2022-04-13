@@ -42,10 +42,10 @@ module.exports = {
     'object-curly-newline': ['error', { consistent: true }], // Set to match with prettier config
     'implicit-arrow-linebreak': 0, // This rule is disabled because it does not work well with prettier
     'no-confusing-arrow': 0, // This rule is disabled because it does not work well with prettier
+    'operator-linebreak': 0, // This rule is disabled because it does not work well with prettier
     'no-plusplus': ['error', { allowForLoopAfterthoughts: true }],
     ////
 
-    'operator-linebreak': 0,
     'padded-blocks': 0,
     'function-paren-newline': 0,
     'no-console': 0,
