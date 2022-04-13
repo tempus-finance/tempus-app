@@ -43,7 +43,6 @@ module.exports = {
     'no-confusing-arrow': 0, // This rule is disabled because it does not work well with prettier
     ////
 
-    'no-spaced-func': 0,
     'no-empty-patterns': 0,
     'no-plusplus': 0,
     'object-curly-newline': 0,
