@@ -48,7 +48,6 @@ module.exports = {
     'no-console': 0, // We are using console to log current app version and client errors
     ////
 
-    'global-require': 0,
     'react/button-has-type': 0,
     'react-hooks/rules-of-hooks': 'error',
     'react-hooks/exhaustive-deps': 'error',
