@@ -45,9 +45,9 @@ module.exports = {
     'function-paren-newline': 0, // This rule is disabled because it does not work well with prettier
     'operator-linebreak': 0, // This rule is disabled because it does not work well with prettier
     'no-plusplus': ['error', { allowForLoopAfterthoughts: true }],
+    'no-console': 0, // We are using console to log current app version and client errors
     ////
 
-    'no-console': 0,
     'global-require': 0,
     'react/button-has-type': 0,
     'react-hooks/rules-of-hooks': 'error',
