@@ -12,7 +12,10 @@ let idCounter = 0;
 
 const Checkbox: FC<CheckboxProps> = props => {
   const { checked, label, onChange } = props;
-  const id = useMemo(() => `checkbox-${idCounter++}`, []);
+  const id = useMemo(() => {
+    idCounter += 1;
+    return `checkbox-${idCounter}`;
+  }, []);
 
   return (
     <span className="tc__checkbox">
