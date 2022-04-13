@@ -5,6 +5,7 @@ exports[`PercentageButton renders a disabled percentage button 1`] = `
   class="tc__btn tc__actionButton tc__actionButton-border-secondary-small-disabled tc__actionButton-background-secondary-small-disabled tc__actionButton-hover-secondary-small-disabled tc__actionButton-shadow-disabled tc__actionButton-cursor-disabled tc__actionButton-size-small "
   data-selected="false"
   disabled=""
+  type="button"
 >
   <div
     class="tc__actionButton-status-label"
@@ -22,6 +23,7 @@ exports[`PercentageButton renders a percentage button 1`] = `
 <button
   class="tc__btn tc__actionButton tc__actionButton-border-secondary-small tc__actionButton-background-secondary-small tc__actionButton-hover-secondary-small tc__actionButton-shadow-default tc__actionButton-cursor-default tc__actionButton-size-small "
   data-selected="false"
+  type="button"
 >
   <div
     class="tc__actionButton-status-label"

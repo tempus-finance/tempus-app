@@ -42,6 +42,7 @@ exports[`Dropdown renders a button element 1`] = `
 <button
   class="tc__btn tc__dropdown"
   data-selected="false"
+  type="button"
 >
   <div
     style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
