@@ -21,21 +21,38 @@ interface TabStyleConfig {
   fontWeightSelected: TypographyWeight;
 }
 
-const tabStyleMap = new Map<TabsSize, TabStyleConfig>();
-tabStyleMap.set('small', {
-  variant: 'body-secondary',
-  textColor: 'text-primary',
-  textColorSelected: 'text-primary-inverted',
-  fontWeight: 'medium',
-  fontWeightSelected: 'bold',
-});
-tabStyleMap.set('large', {
-  variant: 'subtitle',
-  textColor: 'primary-dark',
-  textColorSelected: 'text-primary-inverted',
-  fontWeight: 'regular',
-  fontWeightSelected: 'bold',
-});
+const tabStyleMap = new Map<TabsSize, TabStyleConfig>([
+  [
+    'small',
+    {
+      variant: 'body-secondary',
+      textColor: 'text-primary',
+      textColorSelected: 'text-primary-inverted',
+      fontWeight: 'medium',
+      fontWeightSelected: 'bold',
+    },
+  ],
+  [
+    'large',
+    {
+      variant: 'subtitle',
+      textColor: 'primary-dark',
+      textColorSelected: 'text-primary-inverted',
+      fontWeight: 'regular',
+      fontWeightSelected: 'bold',
+    },
+  ],
+  [
+    'page-navigation',
+    {
+      variant: 'page-navigation',
+      textColor: 'primary-dark',
+      textColorSelected: 'text-primary-inverted',
+      fontWeight: 'regular',
+      fontWeightSelected: 'bold',
+    },
+  ],
+]);
 
 const Tab: FC<TabProps> = props => {
   const { label, value, href, size = 'small', selectedValue, onClick } = props;

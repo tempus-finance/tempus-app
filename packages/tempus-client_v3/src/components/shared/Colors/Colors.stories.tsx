@@ -361,3 +361,9 @@ CurrencyInputDisabledBorder.args = {
   backgroundColor: Colors.currencyInputDisabledBorder,
   colorName: 'CurrencyInputDisabledBorder',
 };
+
+export const PageContainerBackground = Template.bind({});
+PageContainerBackground.args = {
+  backgroundColor: Colors.pageContainerBackground,
+  colorName: 'PageContainerBackground',
+};

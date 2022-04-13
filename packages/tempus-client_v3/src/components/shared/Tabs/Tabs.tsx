@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom';
 import Tab, { TabProps } from './Tab';
 import './tabs.scss';
 
-export type TabsSize = 'small' | 'large';
+export type TabsSize = 'small' | 'large' | 'page-navigation';
 
 export interface TabsProps {
   size: TabsSize;

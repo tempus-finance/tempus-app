@@ -9,7 +9,7 @@ export default {
 };
 
 const style: CSSProperties = {
-  background: 'rgba(0, 0, 0, 0.1)',
+  background: 'rgba(0, 0, 0, 0.3)',
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
@@ -196,5 +196,15 @@ export const BodyTertiary: FC = () => (
     <Typography variant="body-tertiary" weight="bold" type="mono">
       Body Tertiary Mono Bold
     </Typography>
+  </div>
+);
+
+export const PageNavigation: FC = () => (
+  <div style={style}>
+    <Typography variant="page-navigation" weight="bold" color="text-primary-inverted">
+      Page Navigation selected
+    </Typography>
+    <br />
+    <Typography variant="page-navigation">Page Navigation unselected</Typography>
   </div>
 );

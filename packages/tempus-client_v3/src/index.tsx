@@ -3,8 +3,8 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter } from 'react-router-dom';
 import isMobile from 'is-mobile';
 import reportWebVitals from './reportWebVitals';
-import { Typography } from './components/shared';
 import release from './release.json';
+import App from './components/App/App';
 
 // Creates CSS variables for all color constants
 import './components/shared/Colors';
@@ -33,7 +33,7 @@ if (mobile) {
   ReactDOM.render(
     <React.StrictMode>
       <BrowserRouter>
-        <Typography variant="body-primary">Here the app</Typography>
+        <App />
       </BrowserRouter>
     </React.StrictMode>,
     document.getElementById('root'),
