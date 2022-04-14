@@ -1,7 +1,10 @@
 import { ComponentStory, ComponentMeta } from '@storybook/react';
-
+import { useState } from 'react';
 import Dropdown from './Dropdown';
-import DropdownItem from './DropdownItem';
+import DropdownCheckboxItem from './DropdownCheckboxItem';
+import DropdownSelectableItem from './DropdownSelectableItem';
+import DropdownSelectableItemIcon from './DropdownSelectableItemIcon';
+import DropdownSelector from './DropdownSelector';
 
 export default {
   title: 'Dropdown',
@@ -27,18 +30,45 @@ const style = {
   height: '100px',
 };
 
-const RegularTemplate: ComponentStory<typeof Dropdown> = args => (
-  <div style={style}>
-    <Dropdown {...args}>
-      <DropdownItem label="Option A" checkbox={false} onChange={() => {}} />
-      <DropdownItem label="Option B" checkbox={false} onChange={() => {}} />
-      <DropdownItem label="Option C" checkbox={false} onChange={() => {}} />
-    </Dropdown>
-  </div>
-);
+const SingleChoiceTemplate: ComponentStory<typeof Dropdown> = args => {
+  const [selectedValue, setSelectedValue] = useState('a');
 
-export const Regular = RegularTemplate.bind({});
-Regular.args = {
+  return (
+    <div style={style}>
+      <DropdownSelector {...args} selectedValue={selectedValue} onSelect={setSelectedValue}>
+        <DropdownSelectableItem label="Option A" value="a" />
+        <DropdownSelectableItem label="Option B" value="b" />
+        <DropdownSelectableItem label="Option C" value="c" />
+      </DropdownSelector>
+    </div>
+  );
+};
+
+export const SingleChoice = SingleChoiceTemplate.bind({});
+SingleChoice.args = {
+  label: 'Filter',
+  popupTitle: 'Title',
+};
+
+const SingleChoiceWithIconsTemplate: ComponentStory<typeof Dropdown> = args => {
+  const [selectedValue, setSelectedValue] = useState('a1');
+
+  return (
+    <div style={style}>
+      <DropdownSelector {...args} selectedValue={selectedValue} onSelect={setSelectedValue}>
+        <DropdownSelectableItem label="Option A">
+          <DropdownSelectableItemIcon icon="up-arrow-thin" value="a1" />
+          <DropdownSelectableItemIcon icon="down-arrow-thin" value="a2" />
+        </DropdownSelectableItem>
+        <DropdownSelectableItem label="Option B" value="b" />
+        <DropdownSelectableItem label="Option C" value="c" />
+      </DropdownSelector>
+    </div>
+  );
+};
+
+export const SingleChoiceWithIcons = SingleChoiceWithIconsTemplate.bind({});
+SingleChoiceWithIcons.args = {
   label: 'Filter',
   popupTitle: 'Title',
 };
@@ -46,9 +76,9 @@ Regular.args = {
 const MultipleChoiceTemplate: ComponentStory<typeof Dropdown> = args => (
   <div style={style}>
     <Dropdown {...args}>
-      <DropdownItem label="Active" checkbox onChange={() => {}} />
-      <DropdownItem label="Matured" checkbox onChange={() => {}} />
-      <DropdownItem label="Inactive" checkbox onChange={() => {}} />
+      <DropdownCheckboxItem label="Active" onChange={() => {}} />
+      <DropdownCheckboxItem label="Matured" onChange={() => {}} />
+      <DropdownCheckboxItem label="Inactive" onChange={() => {}} />
     </Dropdown>
   </div>
 );
@@ -62,9 +92,9 @@ MultipleChoice.args = {
 const RightSideIconTemplate: ComponentStory<typeof Dropdown> = args => (
   <div style={style}>
     <Dropdown {...args}>
-      <DropdownItem label="Active" checkbox onChange={() => {}} icon="up-arrow-thin" />
-      <DropdownItem label="Matured" checkbox onChange={() => {}} />
-      <DropdownItem label="Inactive" checkbox onChange={() => {}} />
+      <DropdownCheckboxItem label="Active" onChange={() => {}} icon="up-arrow-thin" />
+      <DropdownCheckboxItem label="Matured" onChange={() => {}} />
+      <DropdownCheckboxItem label="Inactive" onChange={() => {}} />
     </Dropdown>
   </div>
 );

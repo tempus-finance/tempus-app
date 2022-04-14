@@ -7,24 +7,29 @@ $dropdown-popup-offset: 7px;
 
 .tc__dropdown {
   position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
   width: $dropdown-width;
   height: $dropdown-height;
-  padding: 8px;
-  background-color: var(--dropdownBackground);
-  border: $dropdown-border;
-  box-sizing: border-box;
-  border-radius: $dropdown-border-radius;
-  box-shadow: var(--downWeakShadow);
 
-  &:hover {
-    background-color: var(--dropdownBackgroundHighlight);
-  }
+  > .tc__btn {
+    width: 100%;
+    height: 100%;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: var(--dropdownBackground);
+    border: $dropdown-border;
+    box-sizing: border-box;
+    border-radius: $dropdown-border-radius;
+    box-shadow: var(--downWeakShadow);
 
-  &[data-selected=true] {
-    background-color: var(--dropdownBackgroundSelected);
+    &:hover {
+      background-color: var(--dropdownBackgroundHighlight);
+    }
+
+    &[data-selected='true'] {
+      background-color: var(--dropdownBackgroundSelected);
+    }
   }
 }
 

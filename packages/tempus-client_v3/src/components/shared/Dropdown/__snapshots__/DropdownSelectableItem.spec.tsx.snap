@@ -1,0 +1,119 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DropdownSelectableItem changes the icon on click 1`] = `
+<svg
+  class="tc__icon tc__icon-up-arrow-thin"
+  fill="none"
+  height="12"
+  viewBox="0 0 12 12"
+  width="12"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <path
+    clip-rule="evenodd"
+    d="M5.61591 0.167368C5.82804 -0.0557892 6.17196 -0.0557892 6.38409 0.167368L9.8409 3.80392C10.053 4.02707 10.053 4.38888 9.8409 4.61204C9.62878 4.8352 9.28485 4.8352 9.07272 4.61204L6.54319 1.95098L6.54319 12H5.45681L5.45681 1.95098L2.92728 4.61204C2.71515 4.8352 2.37122 4.8352 2.1591 4.61204C1.94697 4.38888 1.94697 4.02707 2.1591 3.80392L5.61591 0.167368Z"
+    fill="#222222"
+    fill-rule="evenodd"
+  />
+</svg>
+`;
+
+exports[`DropdownSelectableItem changes the icon on click 2`] = `
+<svg
+  class="tc__icon tc__icon-down-arrow-thin"
+  fill="none"
+  height="12"
+  viewBox="0 0 12 12"
+  width="12"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <path
+    clip-rule="evenodd"
+    d="M6.38409 11.8326C6.17196 12.0558 5.82804 12.0558 5.61591 11.8326L2.1591 8.19608C1.94697 7.97293 1.94697 7.61112 2.1591 7.38796C2.37122 7.1648 2.71515 7.1648 2.92728 7.38796L5.45681 10.049L5.45681 0L6.54319 9.49736e-08L6.54319 10.049L9.07272 7.38796C9.28485 7.1648 9.62878 7.1648 9.8409 7.38796C10.053 7.61112 10.053 7.97293 9.8409 8.19608L6.38409 11.8326Z"
+    fill="#222222"
+    fill-rule="evenodd"
+  />
+</svg>
+`;
+
+exports[`DropdownSelectableItem does not change the icon on click if the item was not selected 1`] = `
+<svg
+  class="tc__icon tc__icon-up-arrow-thin"
+  fill="none"
+  height="12"
+  viewBox="0 0 12 12"
+  width="12"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <path
+    clip-rule="evenodd"
+    d="M5.61591 0.167368C5.82804 -0.0557892 6.17196 -0.0557892 6.38409 0.167368L9.8409 3.80392C10.053 4.02707 10.053 4.38888 9.8409 4.61204C9.62878 4.8352 9.28485 4.8352 9.07272 4.61204L6.54319 1.95098L6.54319 12H5.45681L5.45681 1.95098L2.92728 4.61204C2.71515 4.8352 2.37122 4.8352 2.1591 4.61204C1.94697 4.38888 1.94697 4.02707 2.1591 3.80392L5.61591 0.167368Z"
+    fill="#222222"
+    fill-rule="evenodd"
+  />
+</svg>
+`;
+
+exports[`DropdownSelectableItem does not change the icon on click if the item was not selected 2`] = `
+<svg
+  class="tc__icon tc__icon-up-arrow-thin"
+  fill="none"
+  height="12"
+  viewBox="0 0 12 12"
+  width="12"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <path
+    clip-rule="evenodd"
+    d="M5.61591 0.167368C5.82804 -0.0557892 6.17196 -0.0557892 6.38409 0.167368L9.8409 3.80392C10.053 4.02707 10.053 4.38888 9.8409 4.61204C9.62878 4.8352 9.28485 4.8352 9.07272 4.61204L6.54319 1.95098L6.54319 12H5.45681L5.45681 1.95098L2.92728 4.61204C2.71515 4.8352 2.37122 4.8352 2.1591 4.61204C1.94697 4.38888 1.94697 4.02707 2.1591 3.80392L5.61591 0.167368Z"
+    fill="#222222"
+    fill-rule="evenodd"
+  />
+</svg>
+`;
+
+exports[`DropdownSelectableItem renders a selectable dropdown item 1`] = `
+<button
+  class="tc__btn "
+  data-selected="false"
+  type="button"
+>
+  <div
+    style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+  >
+    Item
+  </div>
+</button>
+`;
+
+exports[`DropdownSelectableItem renders a selectable dropdown item with icons 1`] = `
+<button
+  class="tc__btn "
+  data-selected="false"
+  type="button"
+>
+  <div
+    style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+  >
+    Item
+  </div>
+</button>
+`;
+
+exports[`DropdownSelectableItem renders a selectable dropdown item with icons 2`] = `
+<svg
+  class="tc__icon tc__icon-up-arrow-thin"
+  fill="none"
+  height="12"
+  viewBox="0 0 12 12"
+  width="12"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <path
+    clip-rule="evenodd"
+    d="M5.61591 0.167368C5.82804 -0.0557892 6.17196 -0.0557892 6.38409 0.167368L9.8409 3.80392C10.053 4.02707 10.053 4.38888 9.8409 4.61204C9.62878 4.8352 9.28485 4.8352 9.07272 4.61204L6.54319 1.95098L6.54319 12H5.45681L5.45681 1.95098L2.92728 4.61204C2.71515 4.8352 2.37122 4.8352 2.1591 4.61204C1.94697 4.38888 1.94697 4.02707 2.1591 3.80392L5.61591 0.167368Z"
+    fill="#222222"
+    fill-rule="evenodd"
+  />
+</svg>
+`;

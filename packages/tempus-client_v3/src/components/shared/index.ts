@@ -11,7 +11,13 @@ import Link from './Link';
 import ActionButton from './ActionButton';
 import SwitcherButton from './SwitcherButton';
 import TermTabs from './TermTabs';
-import { Dropdown, DropdownItem } from './Dropdown';
+import {
+  Dropdown,
+  DropdownCheckboxItem,
+  DropdownSelectableItem,
+  DropdownSelectableItemIcon,
+  DropdownSelector,
+} from './Dropdown';
 import BaseInput from './BaseInput';
 import TextInput from './TextInput';
 import NumberInput from './NumberInput';
@@ -39,7 +45,10 @@ export {
   ToggleSwitch,
   Typography,
   Dropdown,
-  DropdownItem,
+  DropdownCheckboxItem,
+  DropdownSelectableItem,
+  DropdownSelectableItemIcon,
+  DropdownSelector,
   BaseInput,
   TextInput,
   NumberInput,

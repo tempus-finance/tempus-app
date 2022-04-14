@@ -25,9 +25,11 @@ const Dropdown: FC<DropdownProps> = props => {
   }, []);
 
   return (
-    <ButtonWrapper className="tc__dropdown" onClick={onClick} selected={open}>
-      <Typography variant="body-secondary">{label}</Typography>
-      <Icon type={open ? 'up-chevron' : 'down-chevron'} size={12} />
+    <div className="tc__dropdown">
+      <ButtonWrapper onClick={onClick} selected={open}>
+        <Typography variant="body-secondary">{label}</Typography>
+        <Icon type={open ? 'up-chevron' : 'down-chevron'} size={12} />
+      </ButtonWrapper>
 
       {/* Popup container */}
       {open && (
@@ -43,7 +45,7 @@ const Dropdown: FC<DropdownProps> = props => {
           {children}
         </div>
       )}
-    </ButtonWrapper>
+    </div>
   );
 };
-export default memo(Dropdown);
+export default memo(Dropdown) as FC<DropdownProps>;

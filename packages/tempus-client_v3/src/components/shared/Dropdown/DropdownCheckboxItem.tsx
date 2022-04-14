@@ -1,19 +1,17 @@
 import { ChangeEvent, FC, useCallback, useState } from 'react';
 import Checkbox from '../Checkbox';
 import Icon, { IconType } from '../Icon';
-import Typography from '../Typography';
 
 import './DropdownItem.scss';
 
-export interface DropdownItemProps {
+export interface DropdownCheckboxItemProps {
   label: string;
   onChange: (checked: boolean, label: string) => void;
-  checkbox?: boolean;
   icon?: IconType;
 }
 
-const DropdownItem: FC<DropdownItemProps> = props => {
-  const { label, checkbox = false, icon, onChange } = props;
+const DropdownCheckboxItem: FC<DropdownCheckboxItemProps> = props => {
+  const { label, icon, onChange } = props;
 
   const [checked, setChecked] = useState<boolean>(false);
 
@@ -28,14 +26,9 @@ const DropdownItem: FC<DropdownItemProps> = props => {
 
   return (
     <div className="tc__dropdownItem">
-      {checkbox && <Checkbox checked={checked} label={label} onChange={onCheckboxToggle} />}
-      {!checkbox && (
-        <Typography variant="body-secondary" weight={checked ? 'bold' : 'regular'}>
-          {label}
-        </Typography>
-      )}
+      <Checkbox checked={checked} label={label} onChange={onCheckboxToggle} />
       {icon && <Icon type={icon} size={12} />}
     </div>
   );
 };
-export default DropdownItem;
+export default DropdownCheckboxItem;

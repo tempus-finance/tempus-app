@@ -1,18 +1,17 @@
 import { fireEvent, render } from '@testing-library/react';
-import DropdownItem, { DropdownItemProps } from './DropdownItem';
+import DropdownCheckboxItem, { DropdownCheckboxItemProps } from './DropdownCheckboxItem';
 
 const mockOnChangeHandler = jest.fn();
 
-const defaultProps: DropdownItemProps = {
+const defaultProps: DropdownCheckboxItemProps = {
   label: 'Dropdown Item',
   onChange: mockOnChangeHandler,
-  checkbox: true,
   icon: 'up-arrow-thin',
 };
 
-const subject = (props: DropdownItemProps) => render(<DropdownItem {...props} />);
+const subject = (props: DropdownCheckboxItemProps) => render(<DropdownCheckboxItem {...props} />);
 
-describe('DropdownItem', () => {
+describe('DropdownCheckboxItem', () => {
   it('renders with provided label', () => {
     const { getByText } = subject(defaultProps);
 
@@ -39,18 +38,6 @@ describe('DropdownItem', () => {
     expect(iconSvg).not.toBeNull();
     expect(iconSvg).toHaveClass(`tc__icon-${defaultProps.icon}`);
     expect(iconSvg).toMatchSnapshot();
-  });
-
-  it('does not render a checkbox when not checkbox is not provided', () => {
-    const { queryByRole } = subject({
-      label: 'Simple label',
-      onChange: mockOnChangeHandler,
-    });
-
-    const result = queryByRole('checkbox');
-
-    expect(result).toBeNull();
-    expect(result).toMatchSnapshot();
   });
 
   it('does not render an icon when icon is not provided', () => {
