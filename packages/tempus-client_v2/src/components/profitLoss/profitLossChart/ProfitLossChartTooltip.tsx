@@ -1,14 +1,18 @@
 import { format } from 'date-fns';
-import { useMemo } from 'react';
+import { useContext, useMemo } from 'react';
 import { TooltipProps } from 'recharts';
 import { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent';
-import NumberUtils from '../../../services/NumberUtils';
+import { NumberUtils } from 'tempus-core-services';
+import { LocaleContext } from '../../../context/localeContext';
+import getText from '../../../localisation/getText';
 import Typography from '../../typography/Typography';
 import PercentageLabel from '../../pool/percentageLabel/PercentageLabel';
 import Spacer from '../../spacer/spacer';
 
 const ProfitLossChartTooltip = (props: TooltipProps<ValueType, NameType>) => {
   const { active, payload } = props;
+
+  const { locale } = useContext(LocaleContext);
 
   const valueFormatted = useMemo(() => {
     if (active && payload && payload[0]) {
@@ -24,9 +28,9 @@ const ProfitLossChartTooltip = (props: TooltipProps<ValueType, NameType>) => {
 
   const dateFormatted = useMemo(() => {
     if (active && payload && payload[0]) {
-      return format(payload[0].payload.date, 'd MMM yyyy');
+      return format(payload[0].payload.date, 'd MMM yyyy', { locale: locale.dateLocale });
     }
-  }, [active, payload]);
+  }, [active, payload, locale.dateLocale]);
 
   return (
     <div className="tc__profitLossChartTooltip">
@@ -34,9 +38,13 @@ const ProfitLossChartTooltip = (props: TooltipProps<ValueType, NameType>) => {
       <Spacer size={6} />
       <PercentageLabel percentage={valueIncreaseFormatted} />
       <Spacer size={6} />
-      <Typography variant="body-text" color="title">
-        {dateFormatted}
-      </Typography>
+      <div className="tf__flex-row-center-vh">
+        <Typography variant="body-text" color="title">
+          {getText('since', locale)}
+        </Typography>
+        &nbsp;
+        <Typography variant="body-text">{dateFormatted}</Typography>
+      </div>
     </div>
   );
 };

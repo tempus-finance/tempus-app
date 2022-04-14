@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, memo } from 'react';
 import IconProps from './IconProps';
 
 const GithubIcon: FC<IconProps> = props => {
@@ -13,4 +13,4 @@ const GithubIcon: FC<IconProps> = props => {
     </svg>
   );
 };
-export default GithubIcon;
+export default memo(GithubIcon);

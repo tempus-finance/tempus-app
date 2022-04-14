@@ -1,15 +1,21 @@
 import { BigNumber, ethers } from 'ethers';
 import { JsonRpcSigner } from '@ethersproject/providers';
-import getStatisticsService from '../services/getStatisticsService';
-import StatisticsService from '../services/StatisticsService';
-import TempusControllerService from '../services/TempusControllerService';
-import getTempusControllerService from '../services/getTempusControllerService';
-import getERC20TokenService from '../services/getERC20TokenService';
+import {
+  CONSTANTS,
+  Chain,
+  TempusControllerService,
+  TempusPool,
+  StatisticsService,
+  div18f,
+  getERC20TokenService,
+  getTempusControllerService,
+  getStatisticsService,
+  mul18f,
+} from 'tempus-core-services';
 import ChartDataPoint from '../interfaces/ChartDataPoint';
-import { TempusPool } from '../interfaces/TempusPool';
-import { div18f, mul18f } from '../utils/weiMath';
-import { SECONDS_IN_A_DAY } from '../constants';
-import { Chain } from '../interfaces/Chain';
+import { getChainConfig, getConfig } from '../utils/getConfig';
+
+const { SECONDS_IN_A_DAY } = CONSTANTS;
 
 type ProfitLossGraphDataAdapterParameters = {
   signer: JsonRpcSigner;
@@ -27,8 +33,8 @@ class ProfitLossGraphDataAdapter {
 
   public init(params: ProfitLossGraphDataAdapterParameters): void {
     this.chain = params.chain;
-    this.statisticsService = getStatisticsService(this.chain, params.signer);
-    this.tempusControllerService = getTempusControllerService(this.chain, params.signer);
+    this.statisticsService = getStatisticsService(this.chain, getConfig, getChainConfig, params.signer);
+    this.tempusControllerService = getTempusControllerService(this.chain, getChainConfig, params.signer);
     this.eRC20TokenServiceGetter = params.eRC20TokenServiceGetter;
 
     this.signer = params.signer;
@@ -186,9 +192,9 @@ class ProfitLossGraphDataAdapter {
       return BigNumber.from('0');
     }
 
-    const lpTokenService = this.eRC20TokenServiceGetter(poolData.ammAddress, this.chain);
-    const principalsService = this.eRC20TokenServiceGetter(poolData.principalsAddress, this.chain);
-    const yieldsService = this.eRC20TokenServiceGetter(poolData.yieldsAddress, this.chain);
+    const lpTokenService = this.eRC20TokenServiceGetter(poolData.ammAddress, this.chain, getChainConfig);
+    const principalsService = this.eRC20TokenServiceGetter(poolData.principalsAddress, this.chain, getChainConfig);
+    const yieldsService = this.eRC20TokenServiceGetter(poolData.yieldsAddress, this.chain, getChainConfig);
 
     try {
       const [lpBalance, principalsBalance, yieldsBalance] = await Promise.all([

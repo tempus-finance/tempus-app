@@ -1,16 +1,13 @@
 import { FC, useContext, useEffect, useMemo, useState } from 'react';
 import { Downgraded, useHookstate, useState as useHookState } from '@hookstate/core';
 import { ethers, BigNumber } from 'ethers';
-import { FIXED_APR_PRECISION, SECONDS_IN_A_DAY } from '../../constants';
-import getTokenPrecision from '../../utils/getTokenPrecision';
+import { CONSTANTS, Chain, getTokenPrecision, NumberUtils } from 'tempus-core-services';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
 import { staticChainDataState } from '../../state/ChainState';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
-import { LanguageContext } from '../../context/languageContext';
+import { LocaleContext } from '../../context/localeContext';
 import { WalletContext } from '../../context/walletContext';
 import getText from '../../localisation/getText';
-import NumberUtils from '../../services/NumberUtils';
-import { Chain } from '../../interfaces/Chain';
 import Typography from '../typography/Typography';
 import InfoIcon from '../icons/InfoIcon';
 import Spacer from '../spacer/spacer';
@@ -18,8 +15,11 @@ import InfoTooltip from '../infoTooltip/infoTooltip';
 import FeesTooltip from './feesTooltip/feesTooltip';
 import AprTooltip from './aprTooltip/aprTooltip';
 import PercentageLabel from './percentageLabel/PercentageLabel';
+import { getConfig } from '../../utils/getConfig';
 
 import './Pool.scss';
+
+const { FIXED_APR_PRECISION, SECONDS_IN_A_DAY } = CONSTANTS;
 
 interface PoolProps {
   chain: Chain;
@@ -32,7 +32,7 @@ const Pool: FC<PoolProps> = ({ chain }) => {
   const staticChainData = useHookState(staticChainDataState);
 
   const { userWalletSigner } = useContext(WalletContext);
-  const { language } = useContext(LanguageContext);
+  const { locale } = useContext(LocaleContext);
 
   const [fixedAPRChangePercentage, setFixedAPRChangePercentage] = useState<number | null>(null);
   const [tvlChangePercentage, setTVLChangePercentage] = useState<BigNumber | null>(null);
@@ -103,7 +103,7 @@ const Pool: FC<PoolProps> = ({ chain }) => {
 
         const spotPriceParsed = ethers.utils.parseUnits(
           spotPrice,
-          getTokenPrecision(selectedPoolAddress, 'backingToken'),
+          getTokenPrecision(selectedPoolAddress, 'backingToken', getConfig()),
         );
 
         const oldFixedAPR = await poolDataAdapter.getEstimatedFixedApr(
@@ -157,12 +157,12 @@ const Pool: FC<PoolProps> = ({ chain }) => {
 
   return (
     <div className="tc__pool">
-      <Typography variant="card-title">{getText('pool', language)}</Typography>
+      <Typography variant="card-title">{getText('pool', locale)}</Typography>
       <div className="tc__pool__body">
         <div className="tc__pool__body__item">
           <div className="tc__pool__body__item-title">
             <Typography variant="card-body-text" color="title">
-              {getText('fixedApr', language)}
+              {getText('fixedApr', locale)}
             </Typography>
             <Spacer size={5} />
             <InfoTooltip content={<AprTooltip chain={chain} />}>
@@ -179,7 +179,7 @@ const Pool: FC<PoolProps> = ({ chain }) => {
         <div className="tc__pool__body__item">
           <div className="tc__pool__body__item-title">
             <Typography variant="card-body-text" color="title">
-              {getText('totalValueLocked', language)}
+              {getText('totalValueLocked', locale)}
             </Typography>
           </div>
           {tvlChangePercentageFormatted && <PercentageLabel percentage={tvlChangePercentageFormatted} />}
@@ -190,7 +190,7 @@ const Pool: FC<PoolProps> = ({ chain }) => {
         <div className="tc__pool__body__item">
           <div className="tc__pool__body__item-title">
             <Typography variant="card-body-text" color="title">
-              {getText('fees', language)}
+              {getText('fees', locale)}
             </Typography>
             <Spacer size={5} />
             <InfoTooltip content={<FeesTooltip chain={chain} />}>

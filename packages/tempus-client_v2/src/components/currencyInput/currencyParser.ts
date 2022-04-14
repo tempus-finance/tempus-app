@@ -1,4 +1,4 @@
-import NumberUtils from '../../services/NumberUtils';
+import { NumberUtils } from "tempus-core-services";
 
 export const checkIfNumberRegExp = /\d/;
 export const removeLeadingZeroesRegExp = /^0+/;

@@ -1,15 +1,19 @@
 import { interval, startWith, Subscription } from 'rxjs';
 import { useCallback, useContext, useEffect } from 'react';
+import {
+  CONSTANTS,
+  Chain,
+  TempusPool,
+  getProvider,
+  getDefaultProvider,
+  getTempusPoolService,
+} from 'tempus-core-services';
 import { useState as useHookState } from '@hookstate/core';
-import { POLLING_INTERVAL } from '../constants';
 import { getChainConfig, getConfig } from '../utils/getConfig';
-import getProvider from '../utils/getProvider';
-import { TempusPool } from '../interfaces/TempusPool';
-import { Chain } from '../interfaces/Chain';
 import { dynamicPoolDataState } from '../state/PoolDataState';
 import { WalletContext } from '../context/walletContext';
-import getTempusPoolService from '../services/getTempusPoolService';
 
+const { POLLING_INTERVAL } = CONSTANTS;
 const subscriptions$ = new Subscription();
 
 const NegativeYieldProvider = () => {
@@ -25,13 +29,13 @@ const NegativeYieldProvider = () => {
       if (!document.hasFocus() && dynamicPoolData[tempusPool.address].negativeYield.get() === false) {
         return;
       }
-      const provider = await getProvider(chain, userWalletSigner);
+      const provider = await getProvider(chain, userWalletSigner, getDefaultProvider, getChainConfig);
       if (!provider) {
         return;
       }
 
       try {
-        const tempusPoolService = getTempusPoolService(chain, provider);
+        const tempusPoolService = getTempusPoolService(chain, getChainConfig, provider);
         const [currentInterestRate, initialInterestRate] = await Promise.all([
           tempusPoolService.currentInterestRate(tempusPool.address),
           tempusPoolService.initialInterestRate(tempusPool.address),

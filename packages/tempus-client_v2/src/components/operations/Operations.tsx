@@ -1,13 +1,12 @@
 import { FC, useCallback, useContext, useEffect, useState } from 'react';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
+import { Chain } from 'tempus-core-services';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
-import { LanguageContext } from '../../context/languageContext';
+import { LocaleContext } from '../../context/localeContext';
 import { WalletContext } from '../../context/walletContext';
 import { TransactionView } from '../../interfaces/TransactionView';
-import { Chain } from '../../interfaces/Chain';
 import CurrentPosition from '../currentPosition/CurrentPosition';
 import Deposit from '../deposit/Deposit';
-// import EarlyRedeem from '../earlyRedeem/EarlyRedeem';
 import Mint from '../mint/Mint';
 import Pool from '../pool/Pool';
 import ProfitLoss from '../profitLoss/ProfitLoss';
@@ -29,6 +28,10 @@ const Operations: FC<OperationsProps> = props => {
 
   const selectedPool = useHookState(selectedPoolState);
   const dynamicPoolData = useHookState(dynamicPoolDataState);
+
+  const { locale } = useContext(LocaleContext);
+  const { userWalletSigner } = useContext(WalletContext);
+
   const staticPoolData = useHookState(staticPoolDataState);
 
   const poolShareBalance = dynamicPoolData[selectedPool.get()].poolShareBalance.attach(Downgraded).get();
@@ -36,9 +39,6 @@ const Operations: FC<OperationsProps> = props => {
   const userYieldsBalance = dynamicPoolData[selectedPool.get()].userYieldsBalance.get();
   const userLPBalance = dynamicPoolData[selectedPool.get()].userLPTokenBalance.get();
   const maturityDate = staticPoolData[selectedPool.get()].maturityDate.attach(Downgraded).get();
-
-  const { language } = useContext(LanguageContext);
-  const { userWalletSigner } = useContext(WalletContext);
 
   const poolIsMature = maturityDate < Date.now();
 
@@ -96,13 +96,12 @@ const Operations: FC<OperationsProps> = props => {
             {selectedView === 'swap' && <Swap chain={chain} />}
             {selectedView === 'provideLiquidity' && <ProvideLiquidity chain={chain} />}
             {selectedView === 'removeLiquidity' && <RemoveLiquidity chain={chain} />}
-            {/* {selectedView === 'earlyRedeem' && <EarlyRedeem />} */}
           </div>
         </div>
         {/* Right side (Current Position, Profit/Loss) - Only visible if user has balance in the pool */}
         {!hideUserData && (
           <div className="tc__operations-poolUserStats">
-            <CurrentPosition language={language} chain={chain} />
+            <CurrentPosition locale={locale} chain={chain} />
             <ProfitLoss chain={chain} />
           </div>
         )}

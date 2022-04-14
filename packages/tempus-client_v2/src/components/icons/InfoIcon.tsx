@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, memo } from 'react';
 import IconProps from './IconProps';
 
 const InfoIcon: FC<IconProps> = props => {
@@ -19,4 +19,4 @@ const InfoIcon: FC<IconProps> = props => {
     </svg>
   );
 };
-export default InfoIcon;
+export default memo(InfoIcon);

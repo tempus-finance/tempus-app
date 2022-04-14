@@ -2,7 +2,7 @@ import { useCallback, useContext, useState, useRef } from 'react';
 import { List, ListItem, ListItemIcon, ListItemText, Popper } from '@material-ui/core';
 import KeyboardArrowDown from '@material-ui/icons/KeyboardArrowDown';
 import getText from '../../localisation/getText';
-import { LanguageContext } from '../../context/languageContext';
+import { LocaleContext } from '../../context/localeContext';
 import GovernanceIcon from '../icons/GovernanceIcon';
 import DiscordIcon from '../icons/DiscordIcon';
 import TwitterIcon from '../icons/TwitterIcon';
@@ -17,7 +17,7 @@ import './Community.scss';
 // check icon with design
 
 const Community = () => {
-  const { language } = useContext(LanguageContext);
+  const { locale } = useContext(LocaleContext);
 
   const [communityMenuOpen, setCommunityMenuOpen] = useState<boolean>(false);
 
@@ -50,7 +50,7 @@ const Community = () => {
   return (
     <li ref={communityMenuAnchor}>
       <Button onClick={toggleCommunityMenu}>
-        <Typography variant="dropdown-text">{getText('community', language)}</Typography>
+        <Typography variant="dropdown-text">{getText('community', locale)}</Typography>
         <KeyboardArrowDown />
       </Button>
       <Popper
@@ -60,12 +60,12 @@ const Community = () => {
         placement="bottom-end"
       >
         <div className="tc__header__community-menu__container">
-          <List>
+          <List disablePadding>
             <ListItem button onClick={onGovernanceClick}>
               <ListItemIcon className="tc__header__community-menu__icon-container">
                 <GovernanceIcon />
               </ListItemIcon>
-              <ListItemText primary={getText('governance', language)} />
+              <ListItemText primary={getText('governance', locale)} />
             </ListItem>
             <ListItem button onClick={onDiscordClick}>
               <ListItemIcon className="tc__header__community-menu__icon-container">

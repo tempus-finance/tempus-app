@@ -1,6 +1,5 @@
 import { createState } from '@hookstate/core';
-import { Chain } from '../interfaces/Chain';
-import { ChainConfig } from '../interfaces/Config';
+import { Chain, ChainConfig } from 'tempus-core-services';
 import { getConfig } from '../utils/getConfig';
 
 export const unsupportedNetworkState = createState<boolean | null>(null);

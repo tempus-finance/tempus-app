@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, memo } from 'react';
 import IconProps from './IconProps';
 
 const TwitterIcon: FC<IconProps> = props => {
@@ -11,4 +11,4 @@ const TwitterIcon: FC<IconProps> = props => {
     </svg>
   );
 };
-export default TwitterIcon;
+export default memo(TwitterIcon);

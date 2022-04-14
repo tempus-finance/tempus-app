@@ -1,4 +1,4 @@
-import { Config } from '../interfaces/Config';
+import { Config } from 'tempus-core-services';
 
 const ETHEREUM_MAINNET_ALCHEMY_KEY = process.env.REACT_APP_MAINNET_ALCHEMY_KEY || '';
 const FANTOM_MAINNET_RPC_ENDPOINT = process.env.REACT_APP_FANTOM_ENDPOINT || '';
@@ -400,6 +400,32 @@ const config: Config = {
         backingToken: 'DAI',
         yieldBearingToken: 'yvDAI',
         spotPrice: '1',
+        decimalsForUI: 2,
+        showEstimatesInBackingToken: true,
+        tokenPrecision: {
+          backingToken: 18,
+          lpTokens: 18,
+          principals: 18,
+          yieldBearingToken: 18,
+          yields: 18,
+        },
+        disabledOperations: {},
+      },
+      {
+        address: '0x0b23Fe401799dB4177375275289a450af068fe86',
+        poolId: '0x9ef23bbb8d24b862f5f0fe62cd4585d4c7edfb33000200000000000000000008',
+        ammAddress: '0x9EF23BBb8d24B862f5f0FE62cd4585D4c7EDFB33',
+        principalsAddress: '0x06F3cDB2d8C1C2e386Fc5a26A9A586B51fbCDD97',
+        yieldsAddress: '0xec8C6691bcDD7C069605288064C86eD9cac37825',
+        yieldBearingTokenAddress: '0xdA816459F1AB5631232FE5e97a05BBBb94970c95',
+        backingTokenAddress: '0x6b175474e89094c44da98b954eedeac495271d0f',
+        startDate: 1649233497000,
+        maturityDate: 1649838367000,
+        protocol: 'yearn',
+        protocolDisplayName: 'Yearn',
+        backingToken: 'DAI',
+        yieldBearingToken: 'yvDAI',
+        spotPrice: '100',
         decimalsForUI: 2,
         showEstimatesInBackingToken: true,
         tokenPrecision: {

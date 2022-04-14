@@ -1,19 +1,15 @@
 import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { ethers, BigNumber } from 'ethers';
+import { Chain, getTokenPrecision, isZeroString, mul18f, NumberUtils } from 'tempus-core-services';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
 import getPoolShareBalanceProvider from '../../providers/getPoolShareBalanceProvider';
 import { refreshBalances } from '../../providers/balanceProviderHelper';
-import { LanguageContext } from '../../context/languageContext';
+import { LocaleContext } from '../../context/localeContext';
 import { WalletContext } from '../../context/walletContext';
 import getText from '../../localisation/getText';
-import { getChainConfig } from '../../utils/getConfig';
-import { mul18f } from '../../utils/weiMath';
-import getTokenPrecision from '../../utils/getTokenPrecision';
-import { isZeroString } from '../../utils/isZeroString';
+import { getChainConfig, getConfig } from '../../utils/getConfig';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
-import NumberUtils from '../../services/NumberUtils';
-import { Chain } from '../../interfaces/Chain';
 import Typography from '../typography/Typography';
 import Descriptor from '../descriptor/Descriptor';
 import CurrencyInput from '../currencyInput/currencyInput';
@@ -36,7 +32,7 @@ const ProvideLiquidity: FC<ProvideLiquidityProps> = props => {
   const dynamicPoolData = useHookState(dynamicPoolDataState);
   const staticPoolData = useHookState(staticPoolDataState);
 
-  const { language } = useContext(LanguageContext);
+  const { locale } = useContext(LocaleContext);
 
   const { userWalletAddress, userWalletSigner } = useContext(WalletContext);
 
@@ -288,9 +284,11 @@ const ProvideLiquidity: FC<ProvideLiquidityProps> = props => {
         setTokenEstimateInProgress(false);
       }
     };
-    setPrincipalsPrecision(getTokenPrecision(selectedPoolAddress, 'principals'));
-    setYieldsPrecision(getTokenPrecision(selectedPoolAddress, 'yields'));
-    setLpTokensPrecision(getTokenPrecision(selectedPoolAddress, 'lpTokens'));
+    const config = getConfig();
+
+    setPrincipalsPrecision(getTokenPrecision(selectedPoolAddress, 'principals', config));
+    setYieldsPrecision(getTokenPrecision(selectedPoolAddress, 'yields', config));
+    setLpTokensPrecision(getTokenPrecision(selectedPoolAddress, 'lpTokens', config));
     fetchEstimatedLPTokens();
   }, [
     userWalletSigner,
@@ -364,7 +362,7 @@ const ProvideLiquidity: FC<ProvideLiquidityProps> = props => {
       return null;
     }
 
-    return ethers.utils.parseUnits(principalsAmount, getTokenPrecision(selectedPoolAddress, 'principals'));
+    return ethers.utils.parseUnits(principalsAmount, getTokenPrecision(selectedPoolAddress, 'principals', getConfig()));
   }, [selectedPoolAddress, principalsAmount]);
 
   const yieldsAmountToApprove = useMemo(() => {
@@ -372,7 +370,7 @@ const ProvideLiquidity: FC<ProvideLiquidityProps> = props => {
       return null;
     }
 
-    return ethers.utils.parseUnits(yieldsAmount, getTokenPrecision(selectedPoolAddress, 'yields'));
+    return ethers.utils.parseUnits(yieldsAmount, getTokenPrecision(selectedPoolAddress, 'yields', getConfig()));
   }, [selectedPoolAddress, yieldsAmount]);
 
   const onExecuted = useCallback(
@@ -462,14 +460,14 @@ const ProvideLiquidity: FC<ProvideLiquidityProps> = props => {
 
   return (
     <div className="tc__provideLiquidity">
-      <Descriptor>{getText('provideLiquidityDescription', language)}</Descriptor>
+      <Descriptor>{getText('provideLiquidityDescription', locale)}</Descriptor>
       <SectionContainer title="from">
         <SectionContainer elevation={2}>
           <div className="tc__title-and-balance">
-            <Typography variant="h4">{getText('principals', language)}</Typography>
+            <Typography variant="h4">{getText('principals', locale)}</Typography>
             {principalsBalanceFormatted && (
               <div>
-                <Typography variant="card-body-text">{getText('balance', language)}</Typography>
+                <Typography variant="card-body-text">{getText('balance', locale)}</Typography>
                 <Spacer size={15} />
                 <Typography variant="card-body-text">{principalsBalanceFormatted}</Typography>
               </div>
@@ -510,7 +508,7 @@ const ProvideLiquidity: FC<ProvideLiquidityProps> = props => {
             <div>
               {yieldsBalanceFormatted && (
                 <>
-                  <Typography variant="card-body-text">{getText('balance', language)}</Typography>
+                  <Typography variant="card-body-text">{getText('balance', locale)}</Typography>
                   <Spacer size={15} />
                   <Typography variant="card-body-text">{yieldsBalanceFormatted}</Typography>
                 </>
@@ -549,19 +547,19 @@ const ProvideLiquidity: FC<ProvideLiquidityProps> = props => {
       <Spacer size={15} />
       <SectionContainer title="to">
         <SectionContainer elevation={2}>
-          <Typography variant="h4">{getText('lpTokens', language)}</Typography>
+          <Typography variant="h4">{getText('lpTokens', locale)}</Typography>
           <Spacer size={10} />
           <div className="tf__flex-row-space-between">
             <div className="tf__flex-row-center-v">
-              <Typography variant="card-body-text">{getText('estimatedAmountReceived', language)}</Typography>
+              <Typography variant="card-body-text">{getText('estimatedAmountReceived', locale)}</Typography>
               <Spacer size={15} />
               <Typography variant="card-body-text">
-                {expectedLPTokensFormatted} {getText('lpTokens', language)}
+                {getText('xxxLpTokens', locale, { token: expectedLPTokensFormatted })}
               </Typography>
             </div>
             <div className="tf__flex-row-center-v-end">
               <Typography variant="card-body-text">
-                {NumberUtils.formatPercentage(expectedPoolShare)} {getText('ofPool', language)}
+                {getText('xxxOfPool', locale, { share: NumberUtils.formatPercentage(expectedPoolShare) })}
               </Typography>
             </div>
           </div>

@@ -1,7 +1,4 @@
-import { TempusPool } from './TempusPool';
-import { Ticker } from './Token';
-import { ProtocolName } from './ProtocolName';
-import { Chain } from './Chain';
+import { Chain, TempusPool, Ticker, ProtocolName } from 'tempus-core-services';
 
 export interface DashboardRow {
   id: string;

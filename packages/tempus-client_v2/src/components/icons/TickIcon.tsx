@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, memo } from 'react';
 import IconProps from './IconProps';
 
 const TickIcon: FC<IconProps> = props => {
@@ -8,4 +8,4 @@ const TickIcon: FC<IconProps> = props => {
     </svg>
   );
 };
-export default TickIcon;
+export default memo(TickIcon);

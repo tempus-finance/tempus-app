@@ -1,5 +1,5 @@
 import { useCallback, useState, useContext, useEffect } from 'react';
-import { LanguageContext } from '../../context/languageContext';
+import { LocaleContext } from '../../context/localeContext';
 import { UserSettingsContext } from '../../context/userSettingsContext';
 import getText from '../../localisation/getText';
 import SlippageIcon from '../icons/SlippageIcon';
@@ -11,7 +11,7 @@ import PercentageInput from '../percentageInput/percentageInput';
 import './Settings.scss';
 
 const Slippage = () => {
-  const { language } = useContext(LanguageContext);
+  const { locale } = useContext(LocaleContext);
   const { slippage, autoSlippage, setUserSettings } = useContext(UserSettingsContext);
   const [inputDisabled, setInputDisabled] = useState<boolean>(false);
 
@@ -58,9 +58,9 @@ const Slippage = () => {
       <div className="tc__header__settings-menu__section-header">
         <SlippageIcon />
         <Spacer size={10} />
-        <Typography variant="card-body-text">{getText('slippageTolerance', language)}</Typography>
+        <Typography variant="card-body-text">{getText('slippageTolerance', locale)}</Typography>
         <div className="tc__header__settings-menu__section-header-action">
-          <InfoTooltip content={getText('slippageTooltip', language)} />
+          <InfoTooltip content={getText('slippageTooltip', locale)} />
         </div>
       </div>
       <div className="tc__header__settings-menu__section-row">

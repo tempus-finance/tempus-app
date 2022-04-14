@@ -1,10 +1,7 @@
 import { BigNumber, Contract } from 'ethers';
 import { JsonRpcSigner } from '@ethersproject/providers';
-import ERC20ABI from '../abi/ERC20.json';
-import { ERC20 } from '../abi/ERC20';
+import { Chain, ERC20, ERC20ABI, TempusPool } from 'tempus-core-services';
 import { dynamicPoolDataState } from '../state/PoolDataState';
-import { Chain } from '../interfaces/Chain';
-import { TempusPool } from '../interfaces/TempusPool';
 import { getConfigForPoolWithAddress, getChainConfig } from '../utils/getConfig';
 
 export interface UserLPTokenBalanceProviderParams {
@@ -26,9 +23,13 @@ class UserLPTokenBalanceProvider {
     this.chain = params.chain;
   }
 
-  init() {
+  init(userWalletAddress: string, userWalletSigner: JsonRpcSigner, chain: Chain) {
     // Make sure to clean previous data before crating new subscriptions
     this.destroy();
+
+    this.userWalletAddress = userWalletAddress;
+    this.userWalletSigner = userWalletSigner;
+    this.chain = chain;
 
     getChainConfig(this.chain).tempusPools.forEach(poolConfig => {
       if (!this.userWalletSigner) {

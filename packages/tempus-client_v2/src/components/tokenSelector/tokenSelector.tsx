@@ -1,8 +1,9 @@
 import { FC, useCallback, useContext } from 'react';
 import { MenuItem, FormControl, Select } from '@material-ui/core';
-import { LanguageContext } from '../../context/languageContext';
-import getText, { Language } from '../../localisation/getText';
-import { Ticker } from '../../interfaces/Token';
+import { Ticker } from 'tempus-core-services';
+import { LocaleContext } from '../../context/localeContext';
+import getText from '../../localisation/getText';
+import { Locale } from '../../interfaces/Locale';
 import Typography from '../typography/Typography';
 import TokenIcon from '../tokenIcon';
 
@@ -20,7 +21,7 @@ type TokenSelectorOutProps = {
 
 type TokenSelectorProps = TokenSelectorInProps & TokenSelectorOutProps;
 
-const getMenuItems = (value: Ticker | null, tickers: Ticker[], language: Language, disabled?: boolean) => {
+const getMenuItems = (value: Ticker | null, tickers: Ticker[], locale: Locale, disabled?: boolean) => {
   const menuItems = tickers.map(ticker => {
     let tickerLabel;
     switch (ticker) {
@@ -50,7 +51,7 @@ const getMenuItems = (value: Ticker | null, tickers: Ticker[], language: Languag
   if (value === null) {
     menuItems.unshift(
       <MenuItem key="empty" value="empty">
-        <Typography variant="dropdown-text">{disabled ? '' : getText('selectPlaceholder', language)}</Typography>
+        <Typography variant="dropdown-text">{disabled ? '' : getText('selectPlaceholder', locale)}</Typography>
       </MenuItem>,
     );
   }
@@ -60,7 +61,7 @@ const getMenuItems = (value: Ticker | null, tickers: Ticker[], language: Languag
 
 const TokenSelector: FC<TokenSelectorProps> = props => {
   const { value, tickers, disabled, onTokenChange } = props;
-  const { language } = useContext(LanguageContext);
+  const { locale } = useContext(LocaleContext);
 
   const handleChange = useCallback(
     (event: React.ChangeEvent<{ value: unknown }>) => {
@@ -81,7 +82,7 @@ const TokenSelector: FC<TokenSelectorProps> = props => {
           onChange={handleChange}
           disableUnderline
         >
-          {getMenuItems(value, tickers, language, disabled)}
+          {getMenuItems(value, tickers, locale, disabled)}
         </Select>
       </div>
     </FormControl>

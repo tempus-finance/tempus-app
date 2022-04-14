@@ -2,21 +2,15 @@ import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react
 import { ethers, BigNumber } from 'ethers';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { combineLatest } from 'rxjs';
-import { SLIPPAGE_PRECISION } from '../../constants';
+import { CONSTANTS, Chain, Ticker, getTokenPrecision, isZeroString, mul18f, NumberUtils } from 'tempus-core-services';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
 import { refreshBalances } from '../../providers/balanceProviderHelper';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
 import { WalletContext } from '../../context/walletContext';
-import { LanguageContext } from '../../context/languageContext';
+import { LocaleContext } from '../../context/localeContext';
 import { UserSettingsContext } from '../../context/userSettingsContext';
 import getText from '../../localisation/getText';
-import { Ticker } from '../../interfaces/Token';
-import { Chain } from '../../interfaces/Chain';
-import NumberUtils from '../../services/NumberUtils';
-import { getChainConfig } from '../../utils/getConfig';
-import { mul18f } from '../../utils/weiMath';
-import { isZeroString } from '../../utils/isZeroString';
-import getTokenPrecision from '../../utils/getTokenPrecision';
+import { getChainConfig, getConfig } from '../../utils/getConfig';
 import Approve from '../buttons/Approve';
 import Execute from '../buttons/Execute';
 import PlusIconContainer from '../plusIconContainer/PlusIconContainer';
@@ -27,6 +21,8 @@ import Typography from '../typography/Typography';
 import CurrencyInput from '../currencyInput/currencyInput';
 
 import './Withdraw.scss';
+
+const { SLIPPAGE_PRECISION } = CONSTANTS;
 
 type WithdrawInProps = {
   chain: Chain;
@@ -44,7 +40,7 @@ const Withdraw: FC<WithdrawProps> = ({ chain, onWithdraw }) => {
   const staticPoolData = useHookState(staticPoolDataState);
 
   const { userWalletSigner, userWalletAddress } = useContext(WalletContext);
-  const { language } = useContext(LanguageContext);
+  const { locale } = useContext(LocaleContext);
   const { slippage, autoSlippage } = useContext(UserSettingsContext);
 
   const backingToken = staticPoolData[selectedPool.get()].backingToken.attach(Downgraded).get();
@@ -82,7 +78,7 @@ const Withdraw: FC<WithdrawProps> = ({ chain, onWithdraw }) => {
   const userLPTokenBalance = dynamicPoolData[selectedPool.get()].userLPTokenBalance.attach(Downgraded).get();
 
   const [selectedTokenPrecision, setSelectedTokenPrecision] = useState<number | undefined>(
-    getTokenPrecision(selectedPoolAddress, 'yieldBearingToken'),
+    getTokenPrecision(selectedPoolAddress, 'yieldBearingToken', getConfig()),
   );
 
   const onPrincipalsAmountChange = useCallback((amount: string) => {
@@ -130,10 +126,12 @@ const Withdraw: FC<WithdrawProps> = ({ chain, onWithdraw }) => {
   const onTokenChange = useCallback(
     (token: Ticker | undefined) => {
       if (token) {
+        const config = getConfig();
+
         if (backingToken === token) {
-          setSelectedTokenPrecision(getTokenPrecision(selectedPoolAddress, 'backingToken'));
+          setSelectedTokenPrecision(getTokenPrecision(selectedPoolAddress, 'backingToken', config));
         } else {
-          setSelectedTokenPrecision(getTokenPrecision(selectedPoolAddress, 'yieldBearingToken'));
+          setSelectedTokenPrecision(getTokenPrecision(selectedPoolAddress, 'yieldBearingToken', config));
         }
 
         setSelectedToken(token);
@@ -186,9 +184,11 @@ const Withdraw: FC<WithdrawProps> = ({ chain, onWithdraw }) => {
     if (userWalletSigner && estimatedWithdrawData) {
       const poolDataAdapter = getPoolDataAdapter(chain, userWalletSigner);
 
-      const principalsPrecision = getTokenPrecision(selectedPoolAddress, 'principals');
-      const yieldsPrecision = getTokenPrecision(selectedPoolAddress, 'yields');
-      const lpTokensPrecision = getTokenPrecision(selectedPoolAddress, 'lpTokens');
+      const config = getConfig();
+
+      const principalsPrecision = getTokenPrecision(selectedPoolAddress, 'principals', config);
+      const yieldsPrecision = getTokenPrecision(selectedPoolAddress, 'yields', config);
+      const lpTokensPrecision = getTokenPrecision(selectedPoolAddress, 'lpTokens', config);
 
       const principalsAmountParsed = ethers.utils.parseUnits(principalsAmount || '0', principalsPrecision);
       const yieldsAmountParsed = ethers.utils.parseUnits(yieldsAmount || '0', yieldsPrecision);
@@ -258,17 +258,19 @@ const Withdraw: FC<WithdrawProps> = ({ chain, onWithdraw }) => {
 
       const poolDataAdapter = getPoolDataAdapter(chain, userWalletSigner);
       try {
+        const config = getConfig();
+
         const principalsAmountParsed = ethers.utils.parseUnits(
           principalsAmount || '0',
-          getTokenPrecision(selectedPoolAddress, 'principals'),
+          getTokenPrecision(selectedPoolAddress, 'principals', config),
         );
         const yieldsAmountParsed = ethers.utils.parseUnits(
           yieldsAmount || '0',
-          getTokenPrecision(selectedPoolAddress, 'yields'),
+          getTokenPrecision(selectedPoolAddress, 'yields', config),
         );
         const lpTokenAmountParsed = ethers.utils.parseUnits(
           lpTokenAmount || '0',
-          getTokenPrecision(selectedPoolAddress, 'lpTokens'),
+          getTokenPrecision(selectedPoolAddress, 'lpTokens', config),
         );
 
         const isBackingToken = backingToken === selectedToken;
@@ -363,7 +365,10 @@ const Withdraw: FC<WithdrawProps> = ({ chain, onWithdraw }) => {
       return null;
     }
     return NumberUtils.formatToCurrency(
-      ethers.utils.formatUnits(userPrincipalsBalance, getTokenPrecision(selectedPoolAddress, 'principals')),
+      ethers.utils.formatUnits(
+        userPrincipalsBalance,
+        getTokenPrecision(selectedPoolAddress, 'principals', getConfig()),
+      ),
       decimalsForUI,
     );
   }, [selectedPoolAddress, decimalsForUI, userPrincipalsBalance]);
@@ -373,7 +378,7 @@ const Withdraw: FC<WithdrawProps> = ({ chain, onWithdraw }) => {
       return null;
     }
 
-    return ethers.utils.parseUnits(principalsAmount, getTokenPrecision(selectedPoolAddress, 'principals'));
+    return ethers.utils.parseUnits(principalsAmount, getTokenPrecision(selectedPoolAddress, 'principals', getConfig()));
   }, [selectedPoolAddress, principalsAmount]);
 
   const yieldsBalanceFormatted = useMemo(() => {
@@ -381,7 +386,7 @@ const Withdraw: FC<WithdrawProps> = ({ chain, onWithdraw }) => {
       return null;
     }
     return NumberUtils.formatToCurrency(
-      ethers.utils.formatUnits(userYieldsBalance, getTokenPrecision(selectedPoolAddress, 'yields')),
+      ethers.utils.formatUnits(userYieldsBalance, getTokenPrecision(selectedPoolAddress, 'yields', getConfig())),
       decimalsForUI,
     );
   }, [selectedPoolAddress, decimalsForUI, userYieldsBalance]);
@@ -391,7 +396,7 @@ const Withdraw: FC<WithdrawProps> = ({ chain, onWithdraw }) => {
       return null;
     }
 
-    return ethers.utils.parseUnits(yieldsAmount, getTokenPrecision(selectedPoolAddress, 'yields'));
+    return ethers.utils.parseUnits(yieldsAmount, getTokenPrecision(selectedPoolAddress, 'yields', getConfig()));
   }, [selectedPoolAddress, yieldsAmount]);
 
   const lpTokenBalanceFormatted = useMemo(() => {
@@ -399,7 +404,7 @@ const Withdraw: FC<WithdrawProps> = ({ chain, onWithdraw }) => {
       return null;
     }
     return NumberUtils.formatToCurrency(
-      ethers.utils.formatUnits(userLPTokenBalance, getTokenPrecision(selectedPoolAddress, 'lpTokens')),
+      ethers.utils.formatUnits(userLPTokenBalance, getTokenPrecision(selectedPoolAddress, 'lpTokens', getConfig())),
       decimalsForUI,
     );
   }, [selectedPoolAddress, decimalsForUI, userLPTokenBalance]);
@@ -409,7 +414,7 @@ const Withdraw: FC<WithdrawProps> = ({ chain, onWithdraw }) => {
       return null;
     }
 
-    return ethers.utils.parseUnits(lpTokenAmount, getTokenPrecision(selectedPoolAddress, 'lpTokens'));
+    return ethers.utils.parseUnits(lpTokenAmount, getTokenPrecision(selectedPoolAddress, 'lpTokens', getConfig()));
   }, [selectedPoolAddress, lpTokenAmount]);
 
   const estimatedWithdrawAmountFormatted = useMemo(() => {
@@ -487,12 +492,10 @@ const Withdraw: FC<WithdrawProps> = ({ chain, onWithdraw }) => {
         {userPrincipalsBalance && !userPrincipalsBalance.isZero() && (
           <SectionContainer elevation={2}>
             <div className="tc__title-and-balance">
-              <Typography variant="h4">
-                {backingToken} {getText('principalTokens', language)}
-              </Typography>
+              <Typography variant="h4">{getText('xxxPrincipals', locale, { token: backingToken })}</Typography>
               {principalsBalanceFormatted && (
                 <div>
-                  <Typography variant="card-body-text">{getText('balance', language)}</Typography>
+                  <Typography variant="card-body-text">{getText('balance', locale)}</Typography>
                   <Spacer size={15} />
                   <Typography variant="card-body-text">{principalsBalanceFormatted}</Typography>
                 </div>
@@ -531,12 +534,10 @@ const Withdraw: FC<WithdrawProps> = ({ chain, onWithdraw }) => {
             {userPrincipalsBalance && !userPrincipalsBalance.isZero() && <PlusIconContainer orientation="horizontal" />}
             <SectionContainer elevation={2}>
               <div className="tc__title-and-balance">
-                <Typography variant="h4">
-                  {backingToken} {getText('yieldTokens', language)}
-                </Typography>
+                <Typography variant="h4">{getText('xxxYields', locale, { token: backingToken })}</Typography>
                 {yieldsBalanceFormatted && (
                   <div>
-                    <Typography variant="card-body-text">{getText('balance', language)}</Typography>
+                    <Typography variant="card-body-text">{getText('balance', locale)}</Typography>
                     <Spacer size={15} />
 
                     <Typography variant="card-body-text">{yieldsBalanceFormatted}</Typography>
@@ -580,12 +581,10 @@ const Withdraw: FC<WithdrawProps> = ({ chain, onWithdraw }) => {
               (userYieldsBalance && !userYieldsBalance.isZero())) && <PlusIconContainer orientation="horizontal" />}
             <SectionContainer elevation={2}>
               <div className="tc__title-and-balance">
-                <Typography variant="h4">
-                  {backingToken} {getText('lpTokens', language)}
-                </Typography>
+                <Typography variant="h4">{getText('xxxLpTokens', locale, { token: backingToken })}</Typography>
                 {lpTokenBalanceFormatted && (
                   <div>
-                    <Typography variant="card-body-text">{getText('balance', language)}</Typography>
+                    <Typography variant="card-body-text">{getText('balance', locale)}</Typography>
                     <Spacer size={10} />
                     <Typography variant="card-body-text">{lpTokenBalanceFormatted}</Typography>
                   </div>
@@ -628,7 +627,7 @@ const Withdraw: FC<WithdrawProps> = ({ chain, onWithdraw }) => {
           <div className="tf__flex-row-center-v">
             <TokenSelector tickers={supportedTokens} value={selectedToken} onTokenChange={onTokenChange} />
             <Spacer size={15} />
-            <Typography variant="card-body-text">{getText('estimatedAmountReceived', language)}</Typography>
+            <Typography variant="card-body-text">{getText('estimatedAmountReceived', locale)}</Typography>
             <Spacer size={15} />
             <Typography variant="card-body-text">
               {estimatedWithdrawAmountFormatted} {selectedToken}

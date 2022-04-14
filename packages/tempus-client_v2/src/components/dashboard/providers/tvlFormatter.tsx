@@ -1,11 +1,10 @@
 import { ethers, BigNumber } from 'ethers';
+import { CONSTANTS, NumberUtils } from 'tempus-core-services';
 import { CircularProgress } from '@material-ui/core';
 import { DataTypeProvider } from '@devexpress/dx-react-grid';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
-import { ZERO } from '../../../constants';
+import { Chain, chainIdToChainName } from 'tempus-core-services';
 import { DashboardRow } from '../../../interfaces/DashboardRow';
-import { Chain, chainIdToChainName } from '../../../interfaces/Chain';
-import NumberUtils from '../../../services/NumberUtils';
 import { getChainConfigForPool } from '../../../utils/getConfig';
 import { isRariVisible } from '../../../utils/isRariVisible';
 import {
@@ -15,6 +14,8 @@ import {
   StaticPoolDataMap,
 } from '../../../state/PoolDataState';
 import Typography from '../../typography/Typography';
+
+const { ZERO } = CONSTANTS;
 
 const TVLFormatter = (props: DataTypeProvider.ValueFormatterProps) => {
   const row = props.row as DashboardRow;
@@ -102,7 +103,7 @@ const getParentChildrenAddresses = (
     const chainConfig = getChainConfigForPool(key);
 
     if (
-      `${staticPoolData[key].backingToken}-${chainIdToChainName(chainConfig.chainId.toString())}` === parentId &&
+      `${staticPoolData[key].backingToken}-${chainIdToChainName(chainConfig.chainId)}` === parentId &&
       (!dynamicPoolData[key].negativeYield || dynamicPoolData[key].userBalanceUSD?.gt(ZERO))
     ) {
       // If rari child row is hidden, do not include it in parent row stats

@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, memo } from 'react';
 import IconProps from './IconProps';
 
 const CopyIcon: FC<IconProps> = props => {
@@ -17,4 +17,4 @@ const CopyIcon: FC<IconProps> = props => {
     </svg>
   );
 };
-export default CopyIcon;
+export default memo(CopyIcon);

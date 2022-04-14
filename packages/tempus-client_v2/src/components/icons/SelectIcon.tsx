@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, memo } from 'react';
 
 interface SelectIconProps {
   selected: boolean;
@@ -13,4 +13,4 @@ const SelectIcon: FC<SelectIconProps> = ({ selected }) => {
     </svg>
   );
 };
-export default SelectIcon;
+export default memo(SelectIcon);

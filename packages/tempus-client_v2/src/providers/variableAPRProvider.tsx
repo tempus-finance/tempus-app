@@ -1,6 +1,6 @@
-import { ethers } from 'ethers';
 import { useCallback, useContext, useEffect } from 'react';
 import { useState as useHookState } from '@hookstate/core';
+import { ethers } from 'ethers';
 import {
   catchError,
   combineLatest,
@@ -13,13 +13,12 @@ import {
   Subscription,
   switchMap,
 } from 'rxjs';
+import { CONSTANTS, Chain, TempusPool, getVariableRateService } from 'tempus-core-services';
 import { getChainConfig, getConfig } from '../utils/getConfig';
 import { WalletContext } from '../context/walletContext';
 import { dynamicPoolDataState } from '../state/PoolDataState';
-import { Chain } from '../interfaces/Chain';
-import { TempusPool } from '../interfaces/TempusPool';
-import getVariableRateService from '../services/getVariableRateService';
-import { POLLING_INTERVAL } from '../constants';
+
+const { POLLING_INTERVAL } = CONSTANTS;
 
 const VariableAPRProvider = () => {
   const dynamicPoolData = useHookState(dynamicPoolDataState);
@@ -51,7 +50,7 @@ const VariableAPRProvider = () => {
           return document.hasFocus() && Boolean(userWalletSigner);
         }),
         switchMap(() => {
-          const variableRateService = getVariableRateService(chain, userWalletSigner || undefined);
+          const variableRateService = getVariableRateService(chain, getChainConfig, userWalletSigner || undefined);
 
           // Get fees for Tempus Pool
           const feesPromise = variableRateService.calculateFees(
@@ -65,7 +64,7 @@ const VariableAPRProvider = () => {
           return from(feesPromise);
         }),
         switchMap(fees => {
-          const variableRateService = getVariableRateService(chain, userWalletSigner || undefined);
+          const variableRateService = getVariableRateService(chain, getChainConfig, userWalletSigner || undefined);
 
           // Get variable APR for Tempus Pool
           const variableAPRPromise = variableRateService.getAprRate(

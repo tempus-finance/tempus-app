@@ -1,4 +1,4 @@
-import { Ticker } from '../../interfaces/Token';
+import { Ticker } from 'tempus-core-services';
 
 const tokenIconsSmall: { [key in Ticker]?: string } = {
   AAVE: `

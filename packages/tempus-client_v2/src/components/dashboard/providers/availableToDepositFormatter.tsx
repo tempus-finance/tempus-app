@@ -1,9 +1,10 @@
 import { useContext } from 'react';
 import { ethers, BigNumber } from 'ethers';
+import { CONSTANTS, NumberUtils } from 'tempus-core-services';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { DataTypeProvider } from '@devexpress/dx-react-grid';
 import { CircularProgress } from '@material-ui/core';
-import { tokenPrecision, ZERO } from '../../../constants';
+import { Chain, Ticker, chainIdToChainName } from 'tempus-core-services';
 import {
   dynamicPoolDataState,
   DynamicPoolStateData,
@@ -13,15 +14,14 @@ import {
 import { UserSettingsContext } from '../../../context/userSettingsContext';
 import { WalletContext } from '../../../context/walletContext';
 import { DashboardRow, isChildRow, isParentRow } from '../../../interfaces/DashboardRow';
-import { Ticker } from '../../../interfaces/Token';
-import { Chain, chainIdToChainName } from '../../../interfaces/Chain';
-import NumberUtils from '../../../services/NumberUtils';
 import { getChainConfigForPool } from '../../../utils/getConfig';
 import { isRariVisible } from '../../../utils/isRariVisible';
 import Spacer from '../../spacer/spacer';
 import Typography from '../../typography/Typography';
 
 import './availableToDepositFormatter.scss';
+
+const { tokenPrecision, ZERO } = CONSTANTS;
 
 const AvailableToDepositFormatter = (props: DataTypeProvider.ValueFormatterProps) => {
   const row = props.row as DashboardRow;
@@ -50,9 +50,9 @@ const AvailableToDepositFormatter = (props: DataTypeProvider.ValueFormatterProps
 
     if (showFiat) {
       const currencySymbol = '$';
-      content = `${currencySymbol}${NumberUtils.formatWithMultiplier(
+      content = `${currencySymbol}${NumberUtils.formatToFixedFractionDigitsOrMultiplier(
         // TODO - Use backing token precision from child items
-        ethers.utils.formatUnits(parentAvailableToDeposit, tokenPrecision[row.token]),
+        ethers.utils.formatUnits(parentAvailableToDeposit, tokenPrecision[row.token as Ticker]),
         2,
       )}`;
     } else {
@@ -63,8 +63,8 @@ const AvailableToDepositFormatter = (props: DataTypeProvider.ValueFormatterProps
         <>
           {/* TODO - Use decimalsForUI precision from child items (max precision) */}
           {/* TODO - Use backing token precision from child items */}
-          {NumberUtils.formatWithMultiplier(
-            ethers.utils.formatUnits(parentAvailableToDeposit, tokenPrecision[row.token]),
+          {NumberUtils.formatToFixedFractionDigitsOrMultiplier(
+            ethers.utils.formatUnits(parentAvailableToDeposit, tokenPrecision[row.token as Ticker]),
             decimalsForUI,
           )}
           <Spacer size={5} />
@@ -98,14 +98,14 @@ const AvailableToDepositFormatter = (props: DataTypeProvider.ValueFormatterProps
 
     if (showFiat) {
       const currencySymbol = '$';
-      content = `${currencySymbol}${NumberUtils.formatWithMultiplier(
+      content = `${currencySymbol}${NumberUtils.formatToFixedFractionDigitsOrMultiplier(
         ethers.utils.formatUnits(childAvailableToDeposit, staticPoolData[row.id].tokenPrecision.backingToken),
         2,
       )}`;
     } else {
       content = (
         <>
-          {NumberUtils.formatWithMultiplier(
+          {NumberUtils.formatToFixedFractionDigitsOrMultiplier(
             ethers.utils.formatUnits(childAvailableToDeposit, staticPoolData[row.id].tokenPrecision.backingToken),
             staticPoolData[row.id].decimalsForUI,
           )}
@@ -159,7 +159,7 @@ const getParentAvailableToDepositInFiat = (
     const chainConfig = getChainConfigForPool(key);
 
     if (
-      `${staticPoolData[key].backingToken}-${chainIdToChainName(chainConfig.chainId.toString())}` === parentId &&
+      `${staticPoolData[key].backingToken}-${chainIdToChainName(chainConfig.chainId)}` === parentId &&
       (!dynamicPoolData[key].negativeYield || dynamicPoolData[key].userBalanceUSD?.gt(ZERO))
     ) {
       // If rari child row is hidden, do not include it in parent row stats
@@ -212,7 +212,7 @@ const getParentAvailableToDepositInBackingToken = (
     const chainConfig = getChainConfigForPool(key);
 
     if (
-      `${staticPoolData[key].backingToken}-${chainIdToChainName(chainConfig.chainId.toString())}` === parentId &&
+      `${staticPoolData[key].backingToken}-${chainIdToChainName(chainConfig.chainId)}` === parentId &&
       (!dynamicPoolData[key].negativeYield || dynamicPoolData[key].userBalanceUSD?.gt(ZERO))
     ) {
       // If rari child row is hidden, do not include it in parent row stats

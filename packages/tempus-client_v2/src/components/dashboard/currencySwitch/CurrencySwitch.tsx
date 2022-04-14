@@ -1,6 +1,6 @@
 import { MouseEvent, useCallback, useContext, useMemo } from 'react';
 import { UserSettingsContext } from '../../../context/userSettingsContext';
-import { LanguageContext } from '../../../context/languageContext';
+import { LocaleContext } from '../../../context/localeContext';
 import getText from '../../../localisation/getText';
 import Typography from '../../typography/Typography';
 import Button from '../../common/Button';
@@ -10,7 +10,7 @@ type CurrencySwitchOptions = 'fiat' | 'crypto';
 
 const CurrencySwitch = () => {
   const { showFiat, setUserSettings } = useContext(UserSettingsContext);
-  const { language } = useContext(LanguageContext);
+  const { locale } = useContext(LocaleContext);
 
   const onSwitchClick = useCallback(
     (event: MouseEvent<HTMLButtonElement>) => {
@@ -43,12 +43,12 @@ const CurrencySwitch = () => {
       <div className="tc__switch__selector" style={style}></div>
       <div className={`tc__switch__label ${showFiat ? 'tc__switch__label-selected' : ''}`} data-id="fiat">
         <Typography variant="body-text" color={showFiat ? 'inverted' : 'default'}>
-          {getText('fiat', language)}
+          {getText('fiat', locale)}
         </Typography>
       </div>
       <div className={`tc__switch__label ${showFiat ? '' : 'tc__switch__label-selected'}`} data-id="crypto">
         <Typography variant="body-text" color={showFiat ? 'default' : 'inverted'}>
-          {getText('crypto', language)}
+          {getText('crypto', locale)}
         </Typography>
       </div>
     </Button>

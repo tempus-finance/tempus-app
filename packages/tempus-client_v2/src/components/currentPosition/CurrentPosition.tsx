@@ -1,14 +1,12 @@
 import { ethers, BigNumber } from 'ethers';
 import { FC, useContext, useEffect, useMemo, useState } from 'react';
+import { Chain, div18f, NumberUtils } from 'tempus-core-services';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
-import { Chain } from '../../interfaces/Chain';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
 import { WalletContext } from '../../context/walletContext';
 import getText from '../../localisation/getText';
-import NumberUtils from '../../services/NumberUtils';
 import SharedProps from '../../sharedProps';
-import { div18f } from '../../utils/weiMath';
 import Typography from '../typography/Typography';
 import Spacer from '../spacer/spacer';
 
@@ -20,7 +18,7 @@ type CurrentPositionInProps = {
 
 type CurrentPositionProps = SharedProps & CurrentPositionInProps;
 
-const CurrentPosition: FC<CurrentPositionProps> = ({ chain, language }) => {
+const CurrentPosition: FC<CurrentPositionProps> = ({ chain, locale }) => {
   const selectedPool = useHookState(selectedPoolState);
   const dynamicPoolData = useHookState(dynamicPoolDataState);
   const staticPoolData = useHookState(staticPoolDataState);
@@ -200,12 +198,10 @@ const CurrentPosition: FC<CurrentPositionProps> = ({ chain, language }) => {
 
   return (
     <div className="tc__currentPosition">
-      <Typography variant="card-title">{getText('currentPosition', language)}</Typography>
+      <Typography variant="card-title">{getText('currentPosition', locale)}</Typography>
       <Spacer size={12} />
       <div className="tc__currentPosition-header-row">
-        <Typography variant="card-body-text">
-          {backingToken} {getText('principals', language)}
-        </Typography>
+        <Typography variant="card-body-text">{getText('xxxPrincipals', locale, { token: backingToken })}</Typography>
         <Typography variant="card-body-text">{principalsBalanceFormatted}</Typography>
       </div>
 
@@ -214,7 +210,7 @@ const CurrentPosition: FC<CurrentPositionProps> = ({ chain, language }) => {
       <div className="tc__currentPosition-data-row">
         <div className="tc__currentPosition-data-row-label">
           <div className="tc__currentPosition-unstaked-principals-icon" />
-          <Typography variant="card-body-text">{getText('unstaked', language)}</Typography>
+          <Typography variant="card-body-text">{getText('unstaked', locale)}</Typography>
         </div>
 
         <div className="tc__currentPosition-data-row-percentage">
@@ -231,7 +227,7 @@ const CurrentPosition: FC<CurrentPositionProps> = ({ chain, language }) => {
       <div className="tc__currentPosition-data-row">
         <div className="tc__currentPosition-data-row-label">
           <div className="tc__currentPosition-staked-principals-icon" />
-          <Typography variant="card-body-text">{getText('staked', language)}</Typography>
+          <Typography variant="card-body-text">{getText('staked', locale)}</Typography>
         </div>
 
         <div className="tc__currentPosition-data-row-percentage">
@@ -246,9 +242,7 @@ const CurrentPosition: FC<CurrentPositionProps> = ({ chain, language }) => {
       <Spacer size={20} />
 
       <div className="tc__currentPosition-header-row">
-        <Typography variant="card-body-text">
-          {backingToken} {getText('yields', language)}
-        </Typography>
+        <Typography variant="card-body-text">{getText('xxxYields', locale, { token: backingToken })}</Typography>
         <Typography variant="card-body-text">{yieldsBalanceFormatted}</Typography>
       </div>
 
@@ -257,7 +251,7 @@ const CurrentPosition: FC<CurrentPositionProps> = ({ chain, language }) => {
       <div className="tc__currentPosition-data-row">
         <div className="tc__currentPosition-data-row-label">
           <div className="tc__currentPosition-unstaked-yields-icon" />
-          <Typography variant="card-body-text">{getText('unstaked', language)}</Typography>
+          <Typography variant="card-body-text">{getText('unstaked', locale)}</Typography>
         </div>
 
         <div className="tc__currentPosition-data-row-percentage">
@@ -274,7 +268,7 @@ const CurrentPosition: FC<CurrentPositionProps> = ({ chain, language }) => {
       <div className="tc__currentPosition-data-row">
         <div className="tc__currentPosition-data-row-label">
           <div className="tc__currentPosition-staked-yields-icon" />
-          <Typography variant="card-body-text">{getText('staked', language)}</Typography>
+          <Typography variant="card-body-text">{getText('staked', locale)}</Typography>
         </div>
 
         <div className="tc__currentPosition-data-row-percentage">

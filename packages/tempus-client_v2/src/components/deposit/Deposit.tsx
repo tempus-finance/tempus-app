@@ -1,24 +1,28 @@
 import { Button, CircularProgress } from '@material-ui/core';
 import { FC, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  CONSTANTS,
+  Chain,
+  Ticker,
+  div18f,
+  getTokenPrecision,
+  increasePrecision,
+  isZeroString,
+  mul18f,
+  NumberUtils,
+} from 'tempus-core-services';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
-import { ethers, BigNumber } from 'ethers';
+import { ethers, BigNumber, utils } from 'ethers';
 import { catchError, of } from 'rxjs';
 import { v1 as uuid } from 'uuid';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
 import { refreshBalances } from '../../providers/balanceProviderHelper';
-import { ETH_ALLOWANCE_FOR_GAS, FIXED_APR_PRECISION, MILLISECONDS_IN_A_YEAR, ZERO } from '../../constants';
-import { LanguageContext } from '../../context/languageContext';
+import { LocaleContext } from '../../context/localeContext';
 import { WalletContext } from '../../context/walletContext';
 import { UserSettingsContext } from '../../context/userSettingsContext';
-import { Ticker } from '../../interfaces/Token';
-import { Chain } from '../../interfaces/Chain';
 import { SelectedYield } from '../../interfaces/SelectedYield';
 import getText from '../../localisation/getText';
-import { getChainConfig } from '../../utils/getConfig';
-import getTokenPrecision from '../../utils/getTokenPrecision';
-import { isZeroString } from '../../utils/isZeroString';
-import { increasePrecision, mul18f, div18f } from '../../utils/weiMath';
-import NumberUtils from '../../services/NumberUtils';
+import { getChainConfig, getConfig } from '../../utils/getConfig';
 import getPoolDataAdapter from '../../adapters/getPoolDataAdapter';
 import Approve from '../buttons/Approve';
 import Execute from '../buttons/Execute';
@@ -33,6 +37,8 @@ import WarnIcon from '../icons/WarnIcon';
 
 import './Deposit.scss';
 
+const { ETH_ALLOWANCE_FOR_GAS, FIXED_APR_PRECISION, MILLISECONDS_IN_A_YEAR, ZERO } = CONSTANTS;
+
 type DepositInProps = {
   narrow: boolean;
   chain: Chain;
@@ -45,7 +51,7 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
   const staticPoolData = useHookState(staticPoolDataState);
   const dynamicPoolData = useHookState(dynamicPoolDataState);
 
-  const { language } = useContext(LanguageContext);
+  const { locale } = useContext(LocaleContext);
   const { userWalletSigner } = useContext(WalletContext);
   const { userWalletAddress } = useContext(WalletContext);
   const { slippage, autoSlippage } = useContext(UserSettingsContext);
@@ -105,15 +111,17 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
         setSelectedToken(token);
         setAmount('');
 
+        const config = getConfig();
+
         if (backingToken === token) {
-          setSelectedTokenPrecision(getTokenPrecision(selectedPoolAddress, 'backingToken'));
+          setSelectedTokenPrecision(getTokenPrecision(selectedPoolAddress, 'backingToken', config));
           if (backingTokenRate !== null) {
             setUsdRate(backingTokenRate);
           }
         }
 
         if (backingToken !== token) {
-          setSelectedTokenPrecision(getTokenPrecision(selectedPoolAddress, 'yieldBearingToken'));
+          setSelectedTokenPrecision(getTokenPrecision(selectedPoolAddress, 'yieldBearingToken', config));
           if (yieldBearingTokenRate !== null) {
             setUsdRate(yieldBearingTokenRate);
           }
@@ -196,7 +204,7 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
       const isBackingToken = backingToken === selectedToken;
       const isEthDeposit = selectedToken === 'ETH';
       const actualSlippage = (autoSlippage ? 1 : slippage / 100).toString();
-      const principalsPrecision = getTokenPrecision(selectedPoolAddress, 'principals');
+      const principalsPrecision = getTokenPrecision(selectedPoolAddress, 'principals', getConfig());
       const slippageFormatted = ethers.utils.parseUnits(actualSlippage, principalsPrecision);
 
       return poolDataAdapter.executeDeposit(
@@ -516,12 +524,12 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
         setExecuteDisabledText(undefined);
         return NumberUtils.formatPercentage(ethers.utils.formatEther(estimatedFixedApr));
       } else {
-        setExecuteDisabledText(getText('insufficientLiquidity', language));
+        setExecuteDisabledText(getText('insufficientLiquidity', locale));
         return ZERO;
       }
     }
     return null;
-  }, [estimatedFixedApr, language]);
+  }, [estimatedFixedApr, locale]);
 
   const estimatedFixedAprBelowThreshold = useMemo(() => {
     if (estimatedFixedApr) {
@@ -544,7 +552,7 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
     let value: BigNumber;
     if (selectedToken === yieldBearingToken) {
       const amountFormatted = ethers.utils.parseUnits(
-        Number(amount).toFixed(tokenPrecision.backingToken),
+        utils.formatUnits(amount, tokenPrecision.backingToken),
         tokenPrecision.backingToken,
       );
 
@@ -578,7 +586,7 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
     let value: BigNumber;
     if (selectedToken === yieldBearingToken) {
       const amountFormatted = ethers.utils.parseUnits(
-        Number(amount).toFixed(tokenPrecision.backingToken),
+        utils.formatUnits(amount, tokenPrecision.backingToken),
         tokenPrecision.backingToken,
       );
 
@@ -643,7 +651,7 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
     let amountParsed: BigNumber;
     if (selectedToken === yieldBearingToken) {
       const amountFormatted = ethers.utils.parseUnits(
-        Number(amount).toFixed(tokenPrecision.yieldBearingToken),
+        utils.formatUnits(amount, tokenPrecision.yieldBearingToken),
         tokenPrecision.yieldBearingToken,
       );
 
@@ -697,7 +705,7 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
     let amountParsed: BigNumber;
     if (selectedToken === yieldBearingToken) {
       const amountFormatted = ethers.utils.parseUnits(
-        Number(amount).toFixed(tokenPrecision.yieldBearingToken),
+        utils.formatUnits(amount, tokenPrecision.yieldBearingToken),
         tokenPrecision.yieldBearingToken,
       );
 
@@ -858,9 +866,9 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
       {disabledOperations.deposit && (
         <>
           <SectionContainer title="poolActionDisabledTitle">
-            <Typography variant="card-body-text">{getText('operationDisabledByConfig', language)}</Typography>
+            <Typography variant="card-body-text">{getText('operationDisabledByConfig', locale)}</Typography>
             <br />
-            <Typography variant="card-body-text" html={getText('askUsOnDiscord', language)} />
+            <Typography variant="card-body-text" html={getText('askUsOnDiscord', locale)} />
           </SectionContainer>
           <Spacer size={15} />
         </>
@@ -869,9 +877,9 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
         title={
           selectedToken && balanceFormatted ? (
             <div className="tc__title-and-balance">
-              <Typography variant="card-title">{getText('from', language)}</Typography>
+              <Typography variant="card-title">{getText('from', locale)}</Typography>
               <Typography variant="body-text">
-                {getText('availableToDeposit', language)} {balanceFormatted}
+                {getText('availableToDepositXxx', locale, { amount: balanceFormatted })}
               </Typography>
             </div>
           ) : (
@@ -896,16 +904,16 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
               disabled={!selectedToken || depositDisabled}
               disabledTooltip={
                 isYieldNegative
-                  ? getText('disableInputByNegativeYield', language)
+                  ? getText('disableInputByNegativeYield', locale)
                   : disabledOperations.deposit
-                  ? getText('depositDisabledByConfig', language)
-                  : getText('selectTokenFirst', language)
+                  ? getText('depositDisabledByConfig', locale)
+                  : getText('selectTokenFirst', locale)
               }
             />
             {ethAllowanceForGasExceeded && (
               <div className="tf__input__label">
                 <Typography variant="disclaimer-text" color="error">
-                  {getText('warningEthGasFees', language)}
+                  {getText('warningEthGasFees', locale)}
                 </Typography>
               </div>
             )}
@@ -935,9 +943,9 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
                     <Spacer size={10} />
                   </>
                 )}
-                <Typography variant="yield-card-header">{getText('fixedYield', language)}</Typography>
+                <Typography variant="yield-card-header">{getText('fixedYield', locale)}</Typography>
                 <Spacer size={10} />
-                <InfoTooltip content={getText('interestRateProtectionTooltipText', language)} />
+                <InfoTooltip content={getText('interestRateProtectionTooltipText', locale)} />
               </div>
             </div>
             <Spacer size={15} />
@@ -945,7 +953,7 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
               <div className="tc__deposit__yield-body__row__underline">
                 <div className="tc__deposit__card-row-title">
                   <Typography variant="body-text" color="title">
-                    {getText('yieldAtMaturity', language)}
+                    {getText('yieldAtMaturity', locale)}
                   </Typography>
                 </div>
                 <div className="tc__deposit__card-row-change">
@@ -975,7 +983,7 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
               <div className="tc__deposit__yield-body__row">
                 <div className="tc__deposit__card-row-title">
                   <Typography variant="body-text" color="title">
-                    {getText('totalAvailableAtMaturity', language)}
+                    {getText('totalAvailableAtMaturity', locale)}
                   </Typography>
                 </div>
                 <div className="tc__deposit__card-row-change">
@@ -1008,7 +1016,7 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
             <div className="tf__flex-row-space-between-v">
               <Typography variant="button-text">
                 {fixedPrincipalsAmountFormatted &&
-                  `${fixedPrincipalsAmountFormatted} ${getText('principalTokens', language)}`}
+                  getText('xxxPrincipals', locale, { token: fixedPrincipalsAmountFormatted })}
                 {tokenEstimateInProgress && <CircularProgress size={14} />}
               </Typography>
               <Typography variant="button-text" color="accent">
@@ -1033,9 +1041,9 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
                     <Spacer size={10} />
                   </>
                 )}
-                <Typography variant="yield-card-header">{getText('variableYield', language)}</Typography>
+                <Typography variant="yield-card-header">{getText('variableYield', locale)}</Typography>
                 <Spacer size={10} />
-                <InfoTooltip content={getText('liquidityProvisionTooltipText', language)} />
+                <InfoTooltip content={getText('liquidityProvisionTooltipText', locale)} />
               </div>
             </div>
             <Spacer size={15} />
@@ -1044,7 +1052,7 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
               <div className="tc__deposit__yield-body__row__underline">
                 <div className="tc__deposit__card-row-title">
                   <Typography variant="body-text" color="title">
-                    {getText('estimatedYieldAtMaturity', language)}
+                    {getText('estimatedYieldAtMaturity', locale)}
                   </Typography>
                 </div>
                 <div className="tc__deposit__card-row-change">
@@ -1074,7 +1082,7 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
               <div className="tc__deposit__yield-body__row">
                 <div className="tc__deposit__card-row-title">
                   <Typography variant="body-text" color="title">
-                    {getText('totalAvailableAtMaturity', language)}
+                    {getText('totalAvailableAtMaturity', locale)}
                   </Typography>
                 </div>
                 <div className="tc__deposit__card-row-change">
@@ -1106,7 +1114,7 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
                   <div className="tf__flex-row-space-between-v">
                     <Typography variant="button-text">
                       {' '}
-                      {variableUnstakedPrincipalsAmountFormatted} {getText('principalTokens', language)}
+                      {getText('xxxPrincipals', locale, { token: variableUnstakedPrincipalsAmountFormatted })}
                     </Typography>
                   </div>
                 )}
@@ -1116,13 +1124,15 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
                       {variableStakedPrincipalsAmountFormatted && variableStakedYieldsAmountFormatted && (
                         <div className="tf__flex-row-center-v">
                           <Typography variant="button-text">
-                            {`${variableStakedPrincipalsAmountFormatted} ${getText('stakedPrincipals', language)}`}
+                            {getText('xxxStakedPrincipals', locale, {
+                              amount: variableStakedPrincipalsAmountFormatted,
+                            })}
                           </Typography>
                           <Spacer size={5} />
                           <Typography variant="button-text">&nbsp;&#38;&nbsp;</Typography> {/* -Space- -&- -Space- */}
                           <Spacer size={5} />
                           <Typography variant="button-text">
-                            {`${variableStakedYieldsAmountFormatted} ${getText('stakedYields', language)}`}
+                            {getText('xxxStakedYields', locale, { amount: variableStakedYieldsAmountFormatted })}
                           </Typography>
                         </div>
                       )}
@@ -1131,7 +1141,7 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
                     {tokenEstimateInProgress && <Spacer size={20} />}
 
                     {!tokenEstimateInProgress && (
-                      <Typography variant="button-text" color="accent" align="right" noWrap>
+                      <Typography variant="button-text" color="accent" align="right" whiteSpace="nowrap">
                         APR {variableAPRFormatted}
                       </Typography>
                     )}
@@ -1146,7 +1156,7 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
               <Spacer size={20} />
               <Button color="primary" variant="contained" onClick={() => null} disabled={true}>
                 <Typography variant="button-text" color="inverted">
-                  {getText('insufficientLiquidity', language)}
+                  {getText('insufficientLiquidity', locale)}
                 </Typography>{' '}
               </Button>
               <Spacer size={15} />
@@ -1156,7 +1166,7 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
                 </div>
                 <Spacer size={15} />
                 <Typography variant="dropdown-text">
-                  <span dangerouslySetInnerHTML={{ __html: getText('insufficientLiquidityMessage', language) }}></span>
+                  <span dangerouslySetInnerHTML={{ __html: getText('insufficientLiquidityMessage', locale) }}></span>
                 </Typography>{' '}
               </div>
               <Spacer size={20} />

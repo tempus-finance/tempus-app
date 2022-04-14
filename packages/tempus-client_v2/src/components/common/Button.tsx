@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { ButtonHTMLAttributes } from 'react';
 
 import './button.scss';
@@ -16,4 +16,4 @@ const Button = React.forwardRef(
   },
 );
 
-export default Button;
+export default memo(Button);

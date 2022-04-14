@@ -1,7 +1,7 @@
 import { FC, MouseEvent, useCallback, useContext } from 'react';
 import Button from '@material-ui/core/Button';
 import CloseIcon from '@material-ui/icons/Close';
-import { LanguageContext } from '../../context/languageContext';
+import { LocaleContext } from '../../context/localeContext';
 import { Notification } from '../../interfaces/Notification';
 import getText from '../../localisation/getText';
 import Typography from '../typography/Typography';
@@ -28,7 +28,7 @@ const NotificationComponent: FC<NotificationComponentProps> = ({
   onNotificationDelete,
   openTransactions,
 }) => {
-  const { language } = useContext(LanguageContext);
+  const { locale } = useContext(LocaleContext);
 
   const onDelete = useCallback(() => onNotificationDelete(id), [id, onNotificationDelete]);
 
@@ -54,12 +54,12 @@ const NotificationComponent: FC<NotificationComponentProps> = ({
       </div>
 
       <div className="tc__notification__content">
-        <Typography variant="body-text">{content}</Typography>
+        <Typography variant="body-text" whiteSpace="pre-line">{content}</Typography>
         {link && (
           <div className="tc__notification__link">
             <a href={link} onClick={onClick}>
               <Typography variant="body-text" color="link">
-                {getText('viewRecentTransactions', language)}
+                {getText('viewRecentTransactions', locale)}
               </Typography>
             </a>
           </div>

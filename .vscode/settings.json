@@ -4,6 +4,7 @@
   "files.exclude": {
     "**/node_modules/": true,
     "**/._*": true,
-    "**/build": true
+    "**/build": true,
+    "**/dist": true
   }
 }

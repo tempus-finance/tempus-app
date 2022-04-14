@@ -1,4 +1,4 @@
-import { FC, useCallback, useContext, useState } from 'react';
+import { FC, useCallback, useContext, useMemo, useState } from 'react';
 import {
   CustomTreeData,
   IntegratedSummary,
@@ -8,11 +8,11 @@ import {
   SortingState,
   Sorting,
 } from '@devexpress/dx-react-grid';
+import { CONSTANTS } from 'tempus-core-services';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
 import { Grid, TableHeaderRow, VirtualTable, TableTreeColumn } from '@devexpress/dx-react-grid-material-ui';
-import { ZERO } from '../../constants';
 import { dynamicPoolDataState } from '../../state/PoolDataState';
-import { LanguageContext } from '../../context/languageContext';
+import { LocaleContext } from '../../context/localeContext';
 import { DashboardRow } from '../../interfaces/DashboardRow';
 import { ColumnNames } from '../../interfaces/ColumnNames';
 import TokenButton from './bodySection/tokenButton';
@@ -31,6 +31,8 @@ import { dashboardColumnsDefinitions } from './dashboardColumnsDefinitions';
 
 import './dashboard.scss';
 
+const { ZERO } = CONSTANTS;
+
 type DashboardInProps = {
   userWalletAddress?: string;
   rows: DashboardRow[];
@@ -45,24 +47,37 @@ type DashboardProps = DashboardInProps & DashboardOutProps;
 const Dashboard: FC<DashboardProps> = ({ userWalletAddress, rows, onRowActionClick }): JSX.Element => {
   const dynamicPoolData = useHookState(dynamicPoolDataState).attach(Downgraded).get();
 
-  const { language } = useContext(LanguageContext);
+  const { locale } = useContext(LocaleContext);
 
-  const [tableColumnExtensions] = useState([
-    { columnName: ColumnNames.TOKEN, align: 'left' as 'left', width: 180 },
-    { columnName: ColumnNames.PROTOCOL, align: 'left' as 'left', width: 130 },
-    { columnName: ColumnNames.MATURITY, align: 'left' as 'left' },
-    { columnName: ColumnNames.FIXED_APR, align: 'right' as 'right', width: 150 },
-    // { columnName: ColumnNames.VARIABLE_APY, align: 'right' as 'right', width: 160 },
-    { columnName: ColumnNames.TVL, align: 'right' as 'right', width: 150 },
-    { columnName: ColumnNames.PRESENT_VALUE, align: 'right' as 'right', width: 140 },
-    { columnName: ColumnNames.AVAILABLE_TO_DEPOSIT, align: 'right' as 'right', width: 180 },
-  ]);
+  const tableColumnExtensions = useMemo(
+    () => [
+      { columnName: ColumnNames.TOKEN, align: 'left' as 'left', width: 180 },
+      { columnName: ColumnNames.PROTOCOL, align: 'left' as 'left', width: 130 },
+      { columnName: ColumnNames.MATURITY, align: 'left' as 'left' },
+      { columnName: ColumnNames.FIXED_APR, align: 'right' as 'right', width: 150 },
+      // { columnName: ColumnNames.VARIABLE_APY, align: 'right' as 'right', width: 160 },
+      { columnName: ColumnNames.TVL, align: 'right' as 'right', width: 150 },
+      { columnName: ColumnNames.PRESENT_VALUE, align: 'right' as 'right', width: 140 },
+      { columnName: ColumnNames.AVAILABLE_TO_DEPOSIT, align: 'right' as 'right', width: 180 },
+    ],
+    [],
+  );
+
+  const sortingStateColumnExtensions = useMemo(() => {
+    return !!userWalletAddress
+      ? [{ columnName: ColumnNames.AVAILABLE_TO_DEPOSIT, sortingEnabled: false }]
+      : [
+          { columnName: ColumnNames.PRESENT_VALUE, sortingEnabled: false },
+          { columnName: ColumnNames.AVAILABLE_TO_DEPOSIT, sortingEnabled: false },
+        ];
+  }, [userWalletAddress]);
+
+  const columnsDefinitions = useMemo(
+    () => dashboardColumnsDefinitions(!!userWalletAddress, locale),
+    [userWalletAddress, locale],
+  );
 
   const [expandedRows, setExpandedRows] = useState<number[]>([]);
-
-  const [sortingStateColumnExtensions] = useState([
-    { columnName: ColumnNames.AVAILABLE_TO_DEPOSIT, sortingEnabled: false },
-  ]);
 
   const [integratedSortingColumnExtensions] = useState([
     { columnName: ColumnNames.MATURITY, compare: compareMaturity },
@@ -221,6 +236,27 @@ const Dashboard: FC<DashboardProps> = ({ userWalletAddress, rows, onRowActionCli
     setFilteredRows(result);
   }; */
 
+  const toggleRow = useCallback(
+    (rowId: number) => {
+      if (expandedRows.includes(rowId)) {
+        setExpandedRows(expandedRows.filter(row => row !== rowId));
+      } else {
+        setExpandedRows(expandedRows.concat(rowId).sort());
+      }
+    },
+    [expandedRows],
+  );
+
+  const RowComponent = useMemo(
+    () => (props: any) => {
+      const rowId = props.tableRow.rowId;
+      const isExpanded = expandedRows.includes(rowId);
+      const onClick = () => toggleRow(rowId);
+      return <BodyRow {...props} expand={isExpanded} onClick={onClick} />;
+    },
+    [expandedRows, toggleRow],
+  );
+
   return (
     <div className="tf__dashboard__section__container">
       <div className="tc__dashboard__container">
@@ -228,44 +264,32 @@ const Dashboard: FC<DashboardProps> = ({ userWalletAddress, rows, onRowActionCli
           <div></div>
           <div className="tc__dashboard__header__actions">
             <CurrencySwitch />
-            {/* <div onClick={onToggleFilterPopup} ref={filterButtonRef}>
-              <Typography color="default" variant="h4">
-                {getText('filter', language)}
-              </Typography>
-              <FilterIcon />
-            </div>
-            <FilterPopup
-              open={filterPopupOpen}
-              anchor={filterButtonRef.current}
-              onClose={onToggleFilterPopup}
-              onFilter={onApplyFilter}
-            /> */}
           </div>
         </div>
         <hr />
         <div className="tf__dashboard">
           <div className="tf__dashboard__grid">
-            <Grid rows={/*filteredRows || */ rowsToDisplay()} columns={dashboardColumnsDefinitions(language)}>
+            <Grid rows={/*filteredRows || */ rowsToDisplay()} columns={columnsDefinitions}>
               <SortingState
                 sorting={currentSorting}
                 onSortingChange={onSortingChange}
                 columnExtensions={sortingStateColumnExtensions}
               />
-              <TreeDataState defaultExpandedRowIds={[]} onExpandedRowIdsChange={onExpandedRowIdsChange} />
+              <TreeDataState expandedRowIds={expandedRows} onExpandedRowIdsChange={onExpandedRowIdsChange} />
               <SummaryState totalItems={totalSummaryItems} treeItems={treeSummaryItems} />
               <MaturityProvider for={[ColumnNames.MATURITY]} />
-              <AvailableToDepositProvider for={[ColumnNames.AVAILABLE_TO_DEPOSIT]} />
+              {!!userWalletAddress && <AvailableToDepositProvider for={[ColumnNames.AVAILABLE_TO_DEPOSIT]} />}
               <TVLProvider for={[ColumnNames.TVL]} />
               {/* <GridVariableAPRProvider for={[ColumnNames.VARIABLE_APY]} /> */}
               <FixedAPRProvider for={[ColumnNames.FIXED_APR]} />
-              <GridBalanceProvider for={[ColumnNames.PRESENT_VALUE]} />
+              {!!userWalletAddress && <GridBalanceProvider for={[ColumnNames.PRESENT_VALUE]} />}
               <CustomTreeData getChildRows={getChildRows} />
               <IntegratedSummary />
               <IntegratedSorting columnExtensions={integratedSortingColumnExtensions} />
               <VirtualTable
                 height="auto"
                 columnExtensions={tableColumnExtensions}
-                rowComponent={BodyRow}
+                rowComponent={RowComponent}
                 cellComponent={BodyCellFactory}
                 messages={{ noData: '' }}
               />

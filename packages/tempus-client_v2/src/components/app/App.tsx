@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { BrowserRouter } from 'react-router-dom';
-import { LanguageContext, defaultLanguageContextValue } from '../../context/languageContext';
+import { LocaleContext, defaultLocaleContextValue } from '../../context/localeContext';
 import { TokenBalanceContext, defaultTokenBalanceContextValue } from '../../context/tokenBalanceContext';
 import { defaultWalletContextValue, WalletContext } from '../../context/walletContext';
 import {
@@ -13,6 +13,7 @@ import getUserShareTokenBalanceProvider from '../../providers/getUserShareTokenB
 import getUserLPTokenBalanceProvider from '../../providers/getUserLPTokenBalanceProvider';
 import getUserBalanceProvider from '../../providers/getBalanceProvider';
 import getPoolShareBalanceProvider from '../../providers/getPoolShareBalanceProvider';
+import getAvailableToDepositProvider from '../../providers/getAvailableToDepositProvider';
 import getUserYieldBearingTokenBalanceProvider from '../../providers/getUserYieldBearingTokenBalanceProvider';
 import getUserBackingTokenBalanceProvider from '../../providers/getUserBackingTokenBalanceProvider';
 import NotificationContainer from '../notification/NotificationContainer';
@@ -23,12 +24,12 @@ import './App.scss';
 
 const App = () => {
   const [userSettings, setUserSettings] = useState(defaultUserSettingsContextValue);
-  const [language, setLanguage] = useState(defaultLanguageContextValue);
+  const [locale, setLocale] = useState(defaultLocaleContextValue);
   const [tokenBalance, setTokenBalance] = useState(defaultTokenBalanceContextValue);
   const [walletData, setWalletData] = useState(defaultWalletContextValue);
   const [pendingTransactions, setPendingTransactions] = useState(defaultPendingTransactionsContextValue);
 
-  // Initialize user share token balance provider every time user wallet address changes
+  // Initialize providers
   useEffect(() => {
     if (!walletData.userWalletAddress || !walletData.userWalletSigner || !walletData.userWalletChain) {
       return;
@@ -38,42 +39,48 @@ const App = () => {
       userWalletAddress: walletData.userWalletAddress,
       userWalletSigner: walletData.userWalletSigner,
       chain: walletData.userWalletChain,
-    }).init();
+    }).init(walletData.userWalletAddress, walletData.userWalletSigner, walletData.userWalletChain);
 
     getUserLPTokenBalanceProvider({
       userWalletAddress: walletData.userWalletAddress,
       userWalletSigner: walletData.userWalletSigner,
       chain: walletData.userWalletChain,
-    }).init();
+    }).init(walletData.userWalletAddress, walletData.userWalletSigner, walletData.userWalletChain);
 
     getUserBalanceProvider({
       userWalletSigner: walletData.userWalletSigner,
       userWalletAddress: walletData.userWalletAddress,
       chain: walletData.userWalletChain,
-    }).init();
+    }).init(walletData.userWalletAddress, walletData.userWalletSigner, walletData.userWalletChain);
 
     getPoolShareBalanceProvider({
       userWalletSigner: walletData.userWalletSigner,
       chain: walletData.userWalletChain,
-    }).init();
+    }).init(walletData.userWalletSigner, walletData.userWalletChain);
 
     getUserYieldBearingTokenBalanceProvider({
       userWalletSigner: walletData.userWalletSigner,
       userWalletAddress: walletData.userWalletAddress,
       chain: walletData.userWalletChain,
-    }).init();
+    }).init(walletData.userWalletAddress, walletData.userWalletSigner, walletData.userWalletChain);
 
     getUserBackingTokenBalanceProvider({
       userWalletSigner: walletData.userWalletSigner,
       userWalletAddress: walletData.userWalletAddress,
       chain: walletData.userWalletChain,
-    }).init();
+    }).init(walletData.userWalletAddress, walletData.userWalletSigner, walletData.userWalletChain);
+
+    getAvailableToDepositProvider({
+      userWalletSigner: walletData.userWalletSigner,
+      userWalletAddress: walletData.userWalletAddress,
+      chain: walletData.userWalletChain,
+    }).init(walletData.userWalletAddress, walletData.userWalletSigner, walletData.userWalletChain);
   }, [walletData.userWalletAddress, walletData.userWalletSigner, walletData.userWalletChain]);
 
   return (
     <>
       <UserSettingsContext.Provider value={{ ...userSettings, setUserSettings }}>
-        <LanguageContext.Provider value={{ ...language, setLanguage }}>
+        <LocaleContext.Provider value={{ ...locale, setLocale }}>
           <TokenBalanceContext.Provider value={{ ...tokenBalance, setTokenBalance }}>
             <WalletContext.Provider value={{ ...walletData, setWalletData }}>
               <PendingTransactionsContext.Provider value={{ ...pendingTransactions, setPendingTransactions }}>
@@ -88,7 +95,7 @@ const App = () => {
               <TokenBalanceProvider />
             </WalletContext.Provider>
           </TokenBalanceContext.Provider>
-        </LanguageContext.Provider>
+        </LocaleContext.Provider>
       </UserSettingsContext.Provider>
     </>
   );

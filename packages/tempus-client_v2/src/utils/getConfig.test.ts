@@ -1,7 +1,6 @@
+import * as getCookie from 'tempus-core-services/dist/utils/getCookie';
 import { getConfig, getConfigForPoolWithId, getConfigForPoolWithAddress } from './getConfig';
-import * as getCookie from './getCookie';
 import config from '../config/config';
-import { Config } from '../interfaces/Config';
 
 describe('getConfig', () => {
   const MOCK_TEMPUS_POOL = [
@@ -52,33 +51,33 @@ describe('getConfig', () => {
       },
     },
   ];
-  const MOCK_CONFIG = { ethereum: { tempusPools: MOCK_TEMPUS_POOL } } as Config;
+  const MOCK_CONFIG = { ethereum: { tempusPools: MOCK_TEMPUS_POOL } };
 
   beforeEach(() => {
     jest.clearAllMocks();
     jest.spyOn(console, 'error').mockImplementation(() => undefined);
-    jest.spyOn(getCookie, 'default').mockReturnValue('');
+    jest.spyOn(getCookie, 'getCookie').mockReturnValue('');
   });
   afterEach(jest.restoreAllMocks);
 
   describe('getConfig()', () => {
     test('return default config if no TEMPUS_OVERRIDING_CONFIG cookie exists', () => {
       expect(getConfig()).toEqual(config);
-      expect(getCookie.default).toHaveBeenCalledWith('TEMPUS_OVERRIDING_CONFIG');
+      expect(getCookie.getCookie).toHaveBeenCalledWith('TEMPUS_OVERRIDING_CONFIG');
     });
 
     test('return overriding config if TEMPUS_OVERRIDING_CONFIG cookie exists', () => {
-      jest.spyOn(getCookie, 'default').mockReturnValue(JSON.stringify(MOCK_CONFIG));
+      jest.spyOn(getCookie, 'getCookie').mockReturnValue(JSON.stringify(MOCK_CONFIG));
 
       expect(getConfig()).toEqual(MOCK_CONFIG);
-      expect(getCookie.default).toHaveBeenCalledWith('TEMPUS_OVERRIDING_CONFIG');
+      expect(getCookie.getCookie).toHaveBeenCalledWith('TEMPUS_OVERRIDING_CONFIG');
     });
 
     test("return default config if TEMPUS_OVERRIDING_CONFIG cookie exists but it's not a JSON object", () => {
-      jest.spyOn(getCookie, 'default').mockReturnValue(JSON.stringify(MOCK_CONFIG) + 'aaa');
+      jest.spyOn(getCookie, 'getCookie').mockReturnValue(JSON.stringify(MOCK_CONFIG) + 'aaa');
 
       expect(getConfig()).toEqual(config);
-      expect(getCookie.default).toHaveBeenCalledWith('TEMPUS_OVERRIDING_CONFIG');
+      expect(getCookie.getCookie).toHaveBeenCalledWith('TEMPUS_OVERRIDING_CONFIG');
       expect(console.error).toHaveBeenCalledWith(
         'Failed to parse environment config from cookie. Using default config as a fallback.',
       );

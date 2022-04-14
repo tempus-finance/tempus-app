@@ -1,7 +1,6 @@
 import { JsonRpcSigner } from '@ethersproject/providers';
 import { BigNumber, Contract } from 'ethers';
-import VaultABI from '../abi/Vault.json';
-import { Chain } from '../interfaces/Chain';
+import { Chain, VaultABI } from 'tempus-core-services';
 import { dynamicPoolDataState } from '../state/PoolDataState';
 import { getChainConfig, getConfigForPoolWithId } from '../utils/getConfig';
 
@@ -24,9 +23,12 @@ class PoolShareBalanceProvider {
     this.chain = params.chain;
   }
 
-  init() {
+  init(userWalletSigner: JsonRpcSigner, chain: Chain) {
     // Clean up previous subscriptions
     this.destroy();
+
+    this.userWalletSigner = userWalletSigner;
+    this.chain = chain;
 
     const config = getChainConfig(this.chain);
 
