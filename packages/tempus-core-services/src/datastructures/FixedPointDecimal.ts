@@ -12,57 +12,44 @@ const decreasePrecision = (bignum: BigNumber, precision: number): BigNumber => {
 
 export default class FixedPointDecimal {
   readonly value: BigNumber;
-  readonly precision: number;
+  readonly precision: number = 18;
 
-  constructor(value: string | number | BigNumber, precision: number = 18) {
+  constructor(value: string | number | BigNumber) {
     if (value instanceof BigNumber) {
       this.value = value;
     } else {
       try {
-        this.value = utils.parseUnits(`${value}`, precision);
+        this.value = utils.parseUnits(`${value}`, this.precision);
       } catch (e) {
         throw new Error(`Failed to parse ${value} when creating FixedPointDecimal`);
       }
     }
-    this.precision = precision;
   }
 
   add(addend: FixedPointDecimal | string | number | BigNumber): FixedPointDecimal {
     const decimal = addend instanceof FixedPointDecimal ? addend : new FixedPointDecimal(addend);
-    const higherPrecision = Math.max(this.precision, decimal.precision);
-    const adjustedThisBignum = this.toBigNumber(higherPrecision);
-    const adjustedAddendBignum = decimal.toBigNumber(higherPrecision);
 
-    return new FixedPointDecimal(adjustedThisBignum.add(adjustedAddendBignum), higherPrecision);
+    return new FixedPointDecimal(this.value.add(decimal.value));
   }
 
   sub(subtrahend: FixedPointDecimal | string | number | BigNumber): FixedPointDecimal {
     const decimal = subtrahend instanceof FixedPointDecimal ? subtrahend : new FixedPointDecimal(subtrahend);
-    const higherPrecision = Math.max(this.precision, decimal.precision);
-    const adjustedThisBignum = this.toBigNumber(higherPrecision);
-    const adjustedSubtrahendBignum = decimal.toBigNumber(higherPrecision);
 
-    return new FixedPointDecimal(adjustedThisBignum.sub(adjustedSubtrahendBignum), higherPrecision);
+    return new FixedPointDecimal(this.value.sub(decimal.value));
   }
 
   mul(multiplicand: FixedPointDecimal | string | number | BigNumber): FixedPointDecimal {
     const decimal = multiplicand instanceof FixedPointDecimal ? multiplicand : new FixedPointDecimal(multiplicand);
-    const higherPrecision = Math.max(this.precision, decimal.precision);
-    const adjustedThisBignum = this.toBigNumber(higherPrecision);
-    const adjustedMultiplicandBignum = decimal.toBigNumber(higherPrecision);
-    const product = decreasePrecision(adjustedThisBignum.mul(adjustedMultiplicandBignum), higherPrecision);
+    const product = decreasePrecision(this.value.mul(decimal.value), this.precision);
 
-    return new FixedPointDecimal(product, higherPrecision);
+    return new FixedPointDecimal(product);
   }
 
   div(divisor: FixedPointDecimal | string | number | BigNumber): FixedPointDecimal {
     const decimal = divisor instanceof FixedPointDecimal ? divisor : new FixedPointDecimal(divisor);
-    const higherPrecision = Math.max(this.precision, decimal.precision);
-    const adjustedThisBignum = this.toBigNumber(higherPrecision);
-    const adjustedDivisorBignum = decimal.toBigNumber(higherPrecision);
-    const quotient = increasePrecision(adjustedThisBignum, higherPrecision).div(adjustedDivisorBignum);
+    const quotient = increasePrecision(this.value, this.precision).div(decimal.value);
 
-    return new FixedPointDecimal(quotient, higherPrecision);
+    return new FixedPointDecimal(quotient);
   }
 
   toBigNumber(precision: number = 18): BigNumber {

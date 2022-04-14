@@ -4,34 +4,28 @@ import FixedPointDecimal from './FixedPointDecimal';
 describe('FixedPointDecimal', () => {
   it('constructor accepts number', () => {
     const value = 123.123;
-    const precision = 10;
-    const decimal = new FixedPointDecimal(value, precision);
-    const expected = BigNumber.from('1231230000000');
+    const decimal = new FixedPointDecimal(value);
+    const expected = BigNumber.from('123123000000000000000');
 
     expect(decimal.value.eq(expected)).toBeTruthy();
-    expect(decimal.precision).toBe(precision);
     expect(decimal.toString()).toEqual('123.123');
   });
 
   it('constructor accepts string', () => {
     const value = '123.123';
-    const precision = 10;
-    const decimal = new FixedPointDecimal(value, precision);
-    const expected = BigNumber.from('1231230000000');
+    const decimal = new FixedPointDecimal(value);
+    const expected = BigNumber.from('123123000000000000000');
 
     expect(decimal.value.eq(expected)).toBeTruthy();
-    expect(decimal.precision).toBe(precision);
     expect(decimal.toString()).toEqual('123.123');
   });
 
   it('constructor accepts BigNumber', () => {
-    const value = BigNumber.from('1231230000000');
-    const precision = 10;
-    const decimal = new FixedPointDecimal(value, precision);
+    const value = BigNumber.from('123123000000000000000');
+    const decimal = new FixedPointDecimal(value);
     const expected = value;
 
     expect(decimal.value).toBe(expected);
-    expect(decimal.precision).toBe(precision);
     expect(decimal.toString()).toEqual('123.123');
   });
 
@@ -46,8 +40,7 @@ describe('FixedPointDecimal', () => {
       const decimal = new FixedPointDecimal(value);
       const result = new FixedPointDecimal(expected);
 
-      expect(decimal.value.eq(result.value)).toBeTruthy();
-      expect(decimal.precision).toEqual(result.precision);
+      expect(decimal).toEqual(result);
     }),
   );
 
@@ -57,33 +50,18 @@ describe('FixedPointDecimal', () => {
     }),
   );
 
-  it('default precision for constructor is 18', () => {
-    const value = 123.123;
-    const decimal = new FixedPointDecimal(value);
-    const expected = BigNumber.from('123123000000000000000');
-
-    expect(decimal.value.eq(expected)).toBeTruthy();
-    expect(decimal.precision).toBe(18);
-    expect(decimal.toString()).toEqual('123.123');
-  });
-
   [
     { value: 123.123, addend: 12.12, expected: 135.243 },
     { value: 123.123, addend: '12.12', expected: 135.243 },
     { value: 123.123, addend: new FixedPointDecimal(12.12), expected: 135.243 },
-    { value: 123.123, addend: new FixedPointDecimal(12.12, 10), expected: 135.243 },
     { value: 123.123, addend: 12.12, expected: 135.243, precision: 10 },
-    { value: 9876.1234, addend: 1234.9876, expected: 11111.111 },
     { value: 9876.1234, addend: '1234.9876', expected: 11111.111 },
     { value: 9876.1234, addend: new FixedPointDecimal(1234.9876), expected: 11111.111 },
-    { value: 9876.1234, addend: new FixedPointDecimal(1234.9876, 10), expected: 11111.111 },
-    { value: 9876.1234, addend: 1234.9876, expected: 11111.111, precision: 10 },
-  ].forEach(({ value, precision, addend, expected }) =>
+  ].forEach(({ value, addend, expected }) =>
     it(`${value} + ${addend} should be ${expected}`, () => {
-      const decimal = new FixedPointDecimal(value, precision);
+      const decimal = new FixedPointDecimal(value);
       const result = new FixedPointDecimal(expected);
 
-      expect(decimal.add(addend).toString()).toEqual(result.toString());
       expect(decimal.add(addend)).toEqual(result);
     }),
   );
@@ -97,7 +75,6 @@ describe('FixedPointDecimal', () => {
       const decimal = new FixedPointDecimal(value);
       const result = new FixedPointDecimal(expected);
 
-      expect(decimal.add(addend).toString()).toEqual(result.toString());
       expect(decimal.add(addend)).toEqual(result);
     });
   }
@@ -106,19 +83,14 @@ describe('FixedPointDecimal', () => {
     { value: 123.123, subtrahend: 12.12, expected: 111.003 },
     { value: 123.123, subtrahend: '12.12', expected: 111.003 },
     { value: 123.123, subtrahend: new FixedPointDecimal(12.12), expected: 111.003 },
-    { value: 123.123, subtrahend: new FixedPointDecimal(12.12, 10), expected: 111.003 },
-    { value: 123.123, subtrahend: 12.12, expected: 111.003, precision: 10 },
     { value: 9876.1234, subtrahend: 1234.9876, expected: 8641.1358 },
     { value: 9876.1234, subtrahend: '1234.9876', expected: 8641.1358 },
     { value: 9876.1234, subtrahend: new FixedPointDecimal(1234.9876), expected: 8641.1358 },
-    { value: 9876.1234, subtrahend: new FixedPointDecimal(1234.9876, 10), expected: 8641.1358 },
-    { value: 9876.1234, subtrahend: 1234.9876, expected: 8641.1358, precision: 10 },
-  ].forEach(({ value, precision, subtrahend, expected }) =>
+  ].forEach(({ value, subtrahend, expected }) =>
     it(`${value} - ${subtrahend} should be ${expected}`, () => {
-      const decimal = new FixedPointDecimal(value, precision);
+      const decimal = new FixedPointDecimal(value);
       const result = new FixedPointDecimal(expected);
 
-      expect(decimal.sub(subtrahend).toString()).toEqual(result.toString());
       expect(decimal.sub(subtrahend)).toEqual(result);
     }),
   );
@@ -132,7 +104,6 @@ describe('FixedPointDecimal', () => {
       const decimal = new FixedPointDecimal(value);
       const result = new FixedPointDecimal(expected);
 
-      expect(decimal.sub(subtrahend).toString()).toEqual(result.toString());
       expect(decimal.sub(subtrahend)).toEqual(result);
     });
   }
@@ -141,19 +112,14 @@ describe('FixedPointDecimal', () => {
     { value: 123.123, multiplicand: 12.12, expected: 1492.25076 },
     { value: 123.123, multiplicand: '12.12', expected: 1492.25076 },
     { value: 123.123, multiplicand: new FixedPointDecimal(12.12), expected: 1492.25076 },
-    { value: 123.123, multiplicand: new FixedPointDecimal(12.12, 10), expected: 1492.25076 },
-    { value: 123.123, multiplicand: 12.12, expected: 1492.25076, precision: 10 },
     { value: 9876.1234, multiplicand: 1234.9876, expected: '12196889.93506984' },
     { value: 9876.1234, multiplicand: '1234.9876', expected: '12196889.93506984' },
     { value: 9876.1234, multiplicand: new FixedPointDecimal(1234.9876), expected: '12196889.93506984' },
-    { value: 9876.1234, multiplicand: new FixedPointDecimal(1234.9876, 10), expected: '12196889.93506984' },
-    { value: 9876.1234, multiplicand: 1234.9876, expected: '12196889.93506984', precision: 10 },
-  ].forEach(({ value, precision, multiplicand, expected }) =>
+  ].forEach(({ value, multiplicand, expected }) =>
     it(`${value} * ${multiplicand} should be ${expected}`, () => {
-      const decimal = new FixedPointDecimal(value, precision);
+      const decimal = new FixedPointDecimal(value);
       const result = new FixedPointDecimal(expected);
 
-      expect(decimal.mul(multiplicand).toString()).toEqual(result.toString());
       expect(decimal.mul(multiplicand)).toEqual(result);
     }),
   );
@@ -170,7 +136,6 @@ describe('FixedPointDecimal', () => {
       const decimal = new FixedPointDecimal(value);
       const result = new FixedPointDecimal(expected);
 
-      expect(decimal.mul(multiplicand).toString()).toEqual(result.toString());
       expect(decimal.mul(multiplicand)).toEqual(result);
     });
   }
@@ -179,19 +144,14 @@ describe('FixedPointDecimal', () => {
     { value: 123.123, divisor: 12.12, expected: '10.158663366336633663' },
     { value: 123.123, divisor: '12.12', expected: '10.158663366336633663' },
     { value: 123.123, divisor: new FixedPointDecimal(12.12), expected: '10.158663366336633663' },
-    { value: 123.123, divisor: new FixedPointDecimal(12.12, 10), expected: '10.158663366336633663' },
-    { value: 123.123, divisor: 12.12, expected: '10.158663366336633663', precision: 10 },
     { value: 9876.1234, divisor: 1234.9876, expected: '7.996941345807844548' },
     { value: 9876.1234, divisor: '1234.9876', expected: '7.996941345807844548' },
     { value: 9876.1234, divisor: new FixedPointDecimal(1234.9876), expected: '7.996941345807844548' },
-    { value: 9876.1234, divisor: new FixedPointDecimal(1234.9876, 10), expected: '7.996941345807844548' },
-    { value: 9876.1234, divisor: 1234.9876, expected: '7.996941345807844548', precision: 10 },
-  ].forEach(({ value, precision, divisor, expected }) =>
+  ].forEach(({ value, divisor, expected }) =>
     it(`${value} / ${divisor} should be ${expected}`, () => {
-      const decimal = new FixedPointDecimal(value, precision);
+      const decimal = new FixedPointDecimal(value);
       const result = new FixedPointDecimal(expected);
 
-      expect(decimal.div(divisor).toString()).toEqual(result.toString());
       expect(decimal.div(divisor)).toEqual(result);
     }),
   );
@@ -208,24 +168,24 @@ describe('FixedPointDecimal', () => {
       const decimal = new FixedPointDecimal(value);
       const result = new FixedPointDecimal(expected);
 
-      expect(decimal.div(divisor).toString()).toEqual(result.toString());
       expect(decimal.div(divisor)).toEqual(result);
     });
   }
 
   it('test toBigNumber() with different precision', () => {
     const value = 123.123;
-    const decimal = new FixedPointDecimal(value, 10);
+    const decimal = new FixedPointDecimal(value);
 
-    expect(decimal.toBigNumber(10)).toEqual(decimal.value);
+    expect(decimal.toBigNumber(10)).toEqual(BigNumber.from('1231230000000'));
     expect(decimal.toBigNumber(6)).toEqual(BigNumber.from('123123000'));
     expect(decimal.toBigNumber(18)).toEqual(BigNumber.from('123123000000000000000'));
+    expect(decimal.toBigNumber(20)).toEqual(BigNumber.from('12312300000000000000000'));
     expect(decimal.toBigNumber()).toEqual(BigNumber.from('123123000000000000000'));
   });
 
   it('test toString()', () => {
     const value = 123.123;
-    const decimal = new FixedPointDecimal(value, 6);
+    const decimal = new FixedPointDecimal(value);
 
     expect(decimal.toString()).toEqual('123.123');
   });
