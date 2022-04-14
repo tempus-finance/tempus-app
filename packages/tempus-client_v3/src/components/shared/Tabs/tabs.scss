@@ -37,6 +37,7 @@ $tabs-container-padding: 1px;
   display: flex;
   align-items: center;
   justify-content: center;
+  box-sizing: border-box;
 
   & > * {
     height: 100%;
