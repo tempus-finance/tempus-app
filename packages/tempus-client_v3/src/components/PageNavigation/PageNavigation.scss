@@ -1,0 +1,27 @@
+.tc__page-navigation {  
+  position: relative;
+  padding: 10px 20px;
+  border: none;
+}
+
+.tc__page-navigation__background {
+  position: absolute;
+  border: none;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-image: url('./svg/left-main-corner-smaller.svg'), url('./svg/right-main-corner-smaller.svg');
+  background-repeat: no-repeat;
+  background-position: left center, right center;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 1px;
+    bottom: 1px;
+    left: 34px;
+    right: 34px;
+    background-color: var(--pageContainerBackground);
+  }
+}

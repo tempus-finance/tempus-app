@@ -22,6 +22,7 @@ const chainlinkMap: { [key in Chain]: { [pair: string]: string } } = {
     'usdc-usd': '0x8fFfFfd4AfB6115b954Bd326cbe7B4BA576818f6',
     'dai-usd': '0xAed0c38402a5d19df6E4c03F4E2DceD6e29c1ee9',
   },
+  unsupported: {},
 };
 
 export const getChainlinkFeed = (chain: Chain, tokenA: Ticker): string =>

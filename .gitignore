@@ -8,6 +8,7 @@ packages/**/node_modules
 
 # testing
 /coverage
+packages/**/coverage
 
 # production
 /build
@@ -31,6 +32,7 @@ packages/tempus-client/cookie-config.json
 packages/**/*.env
 packages/**/*.env.production
 packages/**/*.env.development
+packages/**/storybook-static
 
 # release info
 packages/**/src/release.json

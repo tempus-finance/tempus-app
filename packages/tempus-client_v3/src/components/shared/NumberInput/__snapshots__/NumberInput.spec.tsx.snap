@@ -1,0 +1,105 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`NumberInput renders a disabled number input 1`] = `
+<div
+  class="tc__number-input"
+>
+  <div
+    class="tc__text-input tc__text-input__disabled"
+  >
+    <label
+      for="text-input-2"
+    >
+      <div
+        style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+      >
+        number input label
+      </div>
+    </label>
+    <div
+      class="tc__text-input__container"
+    >
+      <div
+        style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(122, 122, 122); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+      >
+        <input
+          class="tc__base-input"
+          disabled=""
+          id="text-input-2"
+          pattern="[0-9,]*[.]?[0-9]*"
+          placeholder="number input placeholder"
+          type="text"
+          value=""
+        />
+      </div>
+      <button
+        class="tc__btn "
+        data-selected="false"
+        disabled=""
+        type="button"
+      >
+        <div
+          style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(122, 122, 122); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+        >
+          Max
+        </div>
+      </button>
+    </div>
+    
+    
+  </div>
+</div>
+`;
+
+exports[`NumberInput renders a number input with label, value and caption 1`] = `
+<div
+  class="tc__number-input"
+>
+  <div
+    class="tc__text-input "
+  >
+    <label
+      for="text-input-1"
+    >
+      <div
+        style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+      >
+        number input label
+      </div>
+    </label>
+    <div
+      class="tc__text-input__container"
+    >
+      <div
+        style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+      >
+        <input
+          class="tc__base-input"
+          id="text-input-1"
+          pattern="[0-9,]*[.]?[0-9]*"
+          placeholder="number input placeholder"
+          type="text"
+          value="value"
+        />
+      </div>
+      <button
+        class="tc__btn "
+        data-selected="false"
+        type="button"
+      >
+        <div
+          style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+        >
+          Max
+        </div>
+      </button>
+    </div>
+    <div
+      style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+    >
+      this is a caption
+    </div>
+    
+  </div>
+</div>
+`;
