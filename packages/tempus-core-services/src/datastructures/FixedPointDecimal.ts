@@ -1,21 +1,24 @@
 import { BigNumber, utils } from 'ethers';
+import { DEFAULT_TOKEN_PRECISION } from '../constants';
 
-const increasePrecision = (bignum: BigNumber, precision: number): BigNumber => {
+const increasePrecision = (bigNum: BigNumber, precision: number): BigNumber => {
   const multiplicand = BigNumber.from(BigNumber.from(10).pow(precision));
-  return bignum.mul(multiplicand);
+  return bigNum.mul(multiplicand);
 };
 
-const decreasePrecision = (bignum: BigNumber, precision: number): BigNumber => {
+const decreasePrecision = (bigNum: BigNumber, precision: number): BigNumber => {
   const divisor = BigNumber.from(BigNumber.from(10).pow(precision));
-  return bignum.div(divisor);
+  return bigNum.div(divisor);
 };
 
 export default class FixedPointDecimal {
   readonly value: BigNumber;
-  readonly precision: number = 18;
+  readonly precision: number = DEFAULT_TOKEN_PRECISION;
 
-  constructor(value: string | number | BigNumber) {
-    if (value instanceof BigNumber) {
+  constructor(value: string | number | BigNumber | FixedPointDecimal) {
+    if (value instanceof FixedPointDecimal) {
+      this.value = value.value;
+    } else if (value instanceof BigNumber) {
       this.value = value;
     } else {
       try {
@@ -27,32 +30,32 @@ export default class FixedPointDecimal {
   }
 
   add(addend: FixedPointDecimal | string | number | BigNumber): FixedPointDecimal {
-    const decimal = addend instanceof FixedPointDecimal ? addend : new FixedPointDecimal(addend);
+    const decimal = new FixedPointDecimal(addend);
 
     return new FixedPointDecimal(this.value.add(decimal.value));
   }
 
   sub(subtrahend: FixedPointDecimal | string | number | BigNumber): FixedPointDecimal {
-    const decimal = subtrahend instanceof FixedPointDecimal ? subtrahend : new FixedPointDecimal(subtrahend);
+    const decimal = new FixedPointDecimal(subtrahend);
 
     return new FixedPointDecimal(this.value.sub(decimal.value));
   }
 
   mul(multiplicand: FixedPointDecimal | string | number | BigNumber): FixedPointDecimal {
-    const decimal = multiplicand instanceof FixedPointDecimal ? multiplicand : new FixedPointDecimal(multiplicand);
+    const decimal = new FixedPointDecimal(multiplicand);
     const product = decreasePrecision(this.value.mul(decimal.value), this.precision);
 
     return new FixedPointDecimal(product);
   }
 
   div(divisor: FixedPointDecimal | string | number | BigNumber): FixedPointDecimal {
-    const decimal = divisor instanceof FixedPointDecimal ? divisor : new FixedPointDecimal(divisor);
+    const decimal = new FixedPointDecimal(divisor);
     const quotient = increasePrecision(this.value, this.precision).div(decimal.value);
 
     return new FixedPointDecimal(quotient);
   }
 
-  toBigNumber(precision: number = 18): BigNumber {
+  toBigNumber(precision: number = DEFAULT_TOKEN_PRECISION): BigNumber {
     if (this.precision === precision) {
       return this.value;
     } else if (this.precision < precision) {
@@ -75,8 +78,8 @@ export default class FixedPointDecimal {
       return this.toTruncated(fractionDigits);
     } else {
       if (fractionDigits > 0) {
-        const bignum = utils.parseUnits(`${integral}.${fraction.slice(0, fractionDigits)}`, fractionDigits);
-        const str = utils.formatUnits(bignum.add(1), fractionDigits);
+        const bigNum = utils.parseUnits(`${integral}.${fraction.slice(0, fractionDigits)}`, fractionDigits);
+        const str = utils.formatUnits(bigNum.add(1), fractionDigits);
         const [outputIntegral, outputFraction] = str.split('.');
         return `${outputIntegral}.${outputFraction.padEnd(fractionDigits, '0')}`;
       } else {
