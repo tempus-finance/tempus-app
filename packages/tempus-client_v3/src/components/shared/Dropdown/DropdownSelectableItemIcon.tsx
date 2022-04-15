@@ -4,7 +4,7 @@ import Icon, { IconType } from '../Icon';
 export interface DropdownSelectableItemIconProps {
   icon: IconType;
   // eslint-disable-next-line react/no-unused-prop-types
-  value?: any;
+  value?: string;
 }
 
 const DropdownSelectableItemIcon: FC<DropdownSelectableItemIconProps> = props => {
@@ -12,7 +12,7 @@ const DropdownSelectableItemIcon: FC<DropdownSelectableItemIconProps> = props =>
 
   return (
     <span className="tc__dropdownItem__icon-container">
-      <Icon type={icon} size={12} />
+      <Icon type={icon} size="tiny" />
     </span>
   );
 };
