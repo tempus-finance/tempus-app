@@ -59,12 +59,69 @@ jobs:
       - attach_workspace:
           at: ./
       - run:
-          name: Test
+          name: Unit Test
           command: npm test
       - persist_to_workspace:
           root: ./
           paths:
             - ./
+
+  metamask:
+    docker:
+      - image: mcr.microsoft.com/playwright:focal
+        environment:
+          METAMASK_RECOVERY_PHRASE: $METAMASK_RECOVERY_PHRASE
+          METAMASK_PASSWORD: $METAMASK_PASSWORD
+          METAMASK_ACCOUNT_ETH_FORK: $METAMASK_ACCOUNT_ETH_FORK
+          METAMASK_ACCOUNT_FANTOM: $METAMASK_ACCOUNT_FANTOM
+          NODE_ENV: development
+    steps:
+      - attach_workspace:
+          at: ./
+      - run:
+          name: E2E Tests
+          command: |
+            apt update
+            apt install -y p7zip-full || true
+            xvfb-run --auto-servernum --server-num=1 node setup.js
+            xvfb-run --auto-servernum --server-num=2 npm run mm-setup
+      - persist_to_workspace:
+          root: ./
+          paths:
+            - ./
+      - store_test_results:
+          path: /root/project/test-results
+      - store_artifacts:
+          path: /root/project/test-results
+
+  e2e-test:
+    docker:
+      - image: mcr.microsoft.com/playwright:focal
+        environment:
+          METAMASK_RECOVERY_PHRASE: $METAMASK_RECOVERY_PHRASE
+          METAMASK_PASSWORD: $METAMASK_PASSWORD
+          METAMASK_ACCOUNT_ETH_FORK: $METAMASK_ACCOUNT_ETH_FORK
+          METAMASK_ACCOUNT_FANTOM: $METAMASK_ACCOUNT_FANTOM
+          NODE_ENV: development
+    parallelism: 4
+    steps:
+      - attach_workspace:
+          at: ./
+      - run:
+          name: E2E Tests
+          command: |
+            TEST_FILES=$(circleci tests glob "/root/project/tests/*.spec.js" | circleci tests split)
+            echo "Executing test files:" $TEST_FILES
+            xvfb-run --auto-servernum --server-num=2 npm run e2e $TEST_FILES
+            ls /root/project/test-results
+      - persist_to_workspace:
+          root: ./
+          paths:
+            - ./
+      - store_test_results:
+          path: /root/project/test-results
+      - store_artifacts:
+          path: /root/project/test-results
 
   deploy-to-stage:
     docker:
@@ -94,12 +151,19 @@ workflows:
   tempus-app-ci:
     jobs:
       - build
+      - metamask:
+          requires:
+            - build
       - build-storybook:
           requires:
             - build
       - test:
           requires:
             - build
+      - e2e-test:
+          requires:
+            - build
+            - metamask
       - deploy-storybook:
           requires:
             - build-storybook
