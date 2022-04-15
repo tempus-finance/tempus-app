@@ -12,7 +12,7 @@ import {
   NumberUtils,
 } from 'tempus-core-services';
 import { Downgraded, useState as useHookState } from '@hookstate/core';
-import { ethers, BigNumber, utils } from 'ethers';
+import { ethers, BigNumber } from 'ethers';
 import { catchError, of } from 'rxjs';
 import { v1 as uuid } from 'uuid';
 import { dynamicPoolDataState, selectedPoolState, staticPoolDataState } from '../../state/PoolDataState';
@@ -552,7 +552,7 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
     let value: BigNumber;
     if (selectedToken === yieldBearingToken) {
       const amountFormatted = ethers.utils.parseUnits(
-        utils.formatUnits(amount, tokenPrecision.backingToken),
+        Number(amount).toFixed(tokenPrecision.backingToken),
         tokenPrecision.backingToken,
       );
 
@@ -586,7 +586,7 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
     let value: BigNumber;
     if (selectedToken === yieldBearingToken) {
       const amountFormatted = ethers.utils.parseUnits(
-        utils.formatUnits(amount, tokenPrecision.backingToken),
+        Number(amount).toFixed(tokenPrecision.backingToken),
         tokenPrecision.backingToken,
       );
 
@@ -651,7 +651,7 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
     let amountParsed: BigNumber;
     if (selectedToken === yieldBearingToken) {
       const amountFormatted = ethers.utils.parseUnits(
-        utils.formatUnits(amount, tokenPrecision.yieldBearingToken),
+        Number(amount).toFixed(tokenPrecision.yieldBearingToken),
         tokenPrecision.yieldBearingToken,
       );
 
@@ -705,7 +705,7 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
     let amountParsed: BigNumber;
     if (selectedToken === yieldBearingToken) {
       const amountFormatted = ethers.utils.parseUnits(
-        utils.formatUnits(amount, tokenPrecision.yieldBearingToken),
+        Number(amount).toFixed(tokenPrecision.yieldBearingToken),
         tokenPrecision.yieldBearingToken,
       );
 
