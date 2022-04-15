@@ -5,7 +5,7 @@ import { Chain, ChainConfig } from '../interfaces';
 import TempusAMMABI from '../abi/TempusAMM.json';
 import { TempusAMMService } from './TempusAMMService';
 
-let tempusAMMServices = new Map<Chain, TempusAMMService>();
+const tempusAMMServices = new Map<Chain, TempusAMMService>();
 export const getTempusAMMService = (
   chain: Chain,
   getChainConfig: (chain: Chain) => ChainConfig,
@@ -16,7 +16,7 @@ export const getTempusAMMService = (
     tempusAMMService.init({
       Contract,
       tempusAMMAddresses: getChainConfig(chain).tempusPools.map(tempusPoolConfig => tempusPoolConfig.ammAddress),
-      TempusAMMABI: TempusAMMABI,
+      TempusAMMABI,
       signerOrProvider: getDefaultProvider(chain, getChainConfig),
       chain,
       getChainConfig,
@@ -31,10 +31,10 @@ export const getTempusAMMService = (
 
   if (signerOrProvider) {
     tempusAMMService.init({
-      Contract: Contract,
+      Contract,
       tempusAMMAddresses: getChainConfig(chain).tempusPools.map(tempusPoolConfig => tempusPoolConfig.ammAddress),
-      TempusAMMABI: TempusAMMABI,
-      signerOrProvider: signerOrProvider,
+      TempusAMMABI,
+      signerOrProvider,
       chain,
       getChainConfig,
     });

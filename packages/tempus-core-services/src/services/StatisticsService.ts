@@ -1,7 +1,6 @@
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
 import { BigNumber, CallOverrides, Contract, ethers } from 'ethers';
-import { Stats } from '../abi/Stats';
-import StatsABI from '../abi/Stats.json';
+import StatsABI, { Stats } from '../abi/Stats';
 import { DEFAULT_TOKEN_PRECISION, tokenPrecision } from '../constants';
 import { Chain, Config, Ticker } from '../interfaces';
 import { decreasePrecision, div18f, getTokenPrecision, mul18f } from '../utils';
@@ -20,7 +19,9 @@ type StatisticsServiceParameters = {
 
 export class StatisticsService {
   private stats: Stats | null = null;
+
   private tempusAMMService: TempusAMMService | null = null;
+
   private getConfig: (() => Config) | null = null;
 
   init({ address, abi, signerOrProvider, Contract, tempusAMMService, getConfig }: StatisticsServiceParameters) {
@@ -44,9 +45,8 @@ export class StatisticsService {
     try {
       if (overrides) {
         return await this.stats.totalValueLockedInBackingTokens(tempusPool, overrides);
-      } else {
-        return await this.stats.totalValueLockedInBackingTokens(tempusPool);
       }
+        return await this.stats.totalValueLockedInBackingTokens(tempusPool);
     } catch (error) {
       console.error(
         'StatisticsService - totalValueLockedInBackingTokens() - Failed to get total value locked in backing tokens!',
@@ -108,7 +108,7 @@ export class StatisticsService {
 
   /**
    * Returns conversion rate of specified token to USD
-   **/
+   * */
   public async getRate(chain: Chain, tokenTicker: Ticker, overrides?: CallOverrides): Promise<BigNumber> {
     if (!this.stats) {
       console.error(
@@ -145,7 +145,7 @@ export class StatisticsService {
 
   /**
    * Returns estimated amount of Principals tokens on fixed yield deposit
-   **/
+   * */
   async estimatedDepositAndFix(
     tempusAmmAddress: string,
     tokenAmount: BigNumber,
@@ -164,16 +164,16 @@ export class StatisticsService {
     }
 
     try {
-      return this.stats.estimatedDepositAndFix(tempusAmmAddress, tokenAmount, isBackingToken);
+      return await this.stats.estimatedDepositAndFix(tempusAmmAddress, tokenAmount, isBackingToken);
     } catch (error) {
-      console.error(`StatisticsService - estimatedDepositAndFix - Failed to get estimated fixed deposit amount`, error);
+      console.error('StatisticsService - estimatedDepositAndFix - Failed to get estimated fixed deposit amount', error);
       return Promise.reject(0);
     }
   }
 
   /**
    * Returns estimated amount of Principals tokens on variable yield deposit
-   **/
+   * */
   async estimatedDepositAndProvideLiquidity(
     tempusAmmAddress: string,
     tokenAmount: BigNumber,
@@ -187,16 +187,16 @@ export class StatisticsService {
     }
 
     try {
-      return this.stats.estimatedDepositAndProvideLiquidity(tempusAmmAddress, tokenAmount, isBackingToken);
+      return await this.stats.estimatedDepositAndProvideLiquidity(tempusAmmAddress, tokenAmount, isBackingToken);
     } catch (error) {
-      console.error(`Failed to get estimated variable deposit amount`, error);
+      console.error('Failed to get estimated variable deposit amount', error);
       return Promise.reject(0);
     }
   }
 
   /**
    * Returns estimated amount of Backing/Yield Bearing tokens on deposit
-   **/
+   * */
   async estimateExitAndRedeem(
     tempusPoolAddress: string,
     tempusAmmAddress: string,
@@ -239,7 +239,7 @@ export class StatisticsService {
       lpTokensAmountParsed = decreasePrecision(lpAmount, lpTokenPrecision - principalsPrecision);
     }
 
-    let maxLeftoverShares = this.tempusAMMService.getMaxLeftoverShares(
+    const maxLeftoverShares = this.tempusAMMService.getMaxLeftoverShares(
       principalAmount,
       yieldsAmount,
       lpTokensAmountParsed,
@@ -256,7 +256,7 @@ export class StatisticsService {
           isBackingToken,
           overrides,
         );
-      } else {
+      }
         return await this.stats.estimateExitAndRedeem(
           tempusAmmAddress,
           lpAmount,
@@ -265,9 +265,8 @@ export class StatisticsService {
           maxLeftoverShares,
           isBackingToken,
         );
-      }
     } catch (error) {
-      console.error(`Failed to get estimated withdraw amount`, error);
+      console.error('Failed to get estimated withdraw amount', error);
       console.log('Debug info:');
       console.log(`TempusAMM address: ${tempusAmmAddress}`);
       console.log(`LP Token amount: ${lpAmount.toHexString()} ${ethers.utils.formatEther(lpAmount)}`);
@@ -297,9 +296,8 @@ export class StatisticsService {
     try {
       if (overrides) {
         return await this.stats.estimatedMintedShares(tempusPool, amount, isBackingToken, overrides);
-      } else {
-        return await this.stats.estimatedMintedShares(tempusPool, amount, isBackingToken);
       }
+        return await this.stats.estimatedMintedShares(tempusPool, amount, isBackingToken);
     } catch (error) {
       console.error('StatisticsService - estimatedMintedShares() - Failed to fetch estimated minted shares!', error);
       return Promise.reject(error);
@@ -320,7 +318,7 @@ export class StatisticsService {
     }
 
     try {
-      return this.stats.estimatedRedeem(tempusPool, principalsAmount, yieldsAmount, toBackingToken);
+      return await this.stats.estimatedRedeem(tempusPool, principalsAmount, yieldsAmount, toBackingToken);
     } catch (error) {
       console.error('StatisticsService - estimatedRedeem() - Failed to fetch estimated redeem amount!');
       return Promise.reject(error);

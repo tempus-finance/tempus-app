@@ -22,15 +22,13 @@ describe('StatisticsService', () => {
   const mockGetMaxLeftoverShares = jest.fn();
 
   beforeEach(() => {
-    jest.spyOn(ejs as any, 'Contract').mockImplementation(() => {
-      return {
+    jest.spyOn(ejs as any, 'Contract').mockImplementation(() => ({
         totalValueLockedAtGivenRate: mockTotalValueLockedAtGivenRate,
         getRate: mockGetRate,
         estimatedDepositAndFix: mockEstimatedDepositAndFix,
         estimatedDepositAndProvideLiquidity: mockEstimatedDepositAndProvideLiquidity,
         estimateExitAndRedeem: mockEstimateExitAndRedeem,
-      };
-    });
+      }));
 
     mockGetTempusAMMService.mockReturnValue({
       getMaxLeftoverShares: mockGetMaxLeftoverShares,
@@ -110,9 +108,7 @@ describe('StatisticsService', () => {
     });
 
     test('it returns a Promise that resolves with the value current exchange rate', async () => {
-      mockGetRate.mockImplementation(() => {
-        return Promise.resolve([ejs.BigNumber.from('100'), ejs.BigNumber.from('2')]);
-      });
+      mockGetRate.mockImplementation(() => Promise.resolve([ejs.BigNumber.from('100'), ejs.BigNumber.from('2')]));
 
       const result = await instance.getRate('ethereum', 'DAI');
 
@@ -138,9 +134,7 @@ describe('StatisticsService', () => {
 
     test('it returns the amount of Principals tokens on fixed yield deposit', async () => {
       const value = ejs.BigNumber.from('57000000000000');
-      mockEstimatedDepositAndFix.mockImplementation(() => {
-        return Promise.resolve(value);
-      });
+      mockEstimatedDepositAndFix.mockImplementation(() => Promise.resolve(value));
 
       const tempusPool = 'abc';
       const tokenAmount = ejs.utils.parseEther('100');
@@ -157,9 +151,7 @@ describe('StatisticsService', () => {
         ejs.BigNumber.from('56700000000000'),
         ejs.BigNumber.from('99980000000000'),
       ];
-      mockEstimatedDepositAndProvideLiquidity.mockImplementation(() => {
-        return Promise.resolve(value);
-      });
+      mockEstimatedDepositAndProvideLiquidity.mockImplementation(() => Promise.resolve(value));
 
       const tempusPool = 'abc';
       const tokenAmount = ejs.utils.parseEther('2');
@@ -193,9 +185,7 @@ describe('StatisticsService', () => {
     test('it returns the amount of Backing or Yield Bearing tokens on withdraw', async () => {
       const value = ejs.BigNumber.from('45670000000000');
 
-      mockEstimateExitAndRedeem.mockImplementation(() => {
-        return Promise.resolve({ principalsRate: value });
-      });
+      mockEstimateExitAndRedeem.mockImplementation(() => Promise.resolve({ principalsRate: value }));
       mockGetMaxLeftoverShares.mockResolvedValue(ejs.utils.parseEther('0.00001'));
 
       const tempusPoolAddress = '123';

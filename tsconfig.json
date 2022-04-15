@@ -16,5 +16,5 @@
     "noEmit": true,
     "jsx": "react"
   },
-  "include": ["packages/tempus-core/src", "packages/tempus-client_v3/src"]
+  "include": ["packages/tempus-core-services/src", "packages/tempus-client_v3/src"]
 }

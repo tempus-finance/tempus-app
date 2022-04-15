@@ -1,8 +1,7 @@
 import { BigNumber, Contract, ContractTransaction } from 'ethers';
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
 import { TypedEvent } from '../abi/commons';
-import { TempusController } from '../abi/TempusController';
-import TempusControllerABI from '../abi/TempusController.json';
+import TempusControllerABI, { TempusController } from '../abi/TempusController';
 import {
   completeExitAndRedeemGasIncrease,
   depositAndFixGasIncrease,
@@ -57,7 +56,9 @@ export type RedeemedEvent = TypedEvent<
 
 export class TempusControllerService {
   private chain: Chain | null = null;
+
   private contract: TempusController | null = null;
+
   private getChainConfig: ((chain: Chain) => ChainConfig) | null = null;
 
   private tempusAMMService: TempusAMMService | null = null;
@@ -93,7 +94,7 @@ export class TempusControllerService {
         filters.toBlock,
       );
     } catch (error) {
-      console.error(`TempusControllerService getDepositedEvents() - Failed to get deposited events!`, error);
+      console.error('TempusControllerService getDepositedEvents() - Failed to get deposited events!', error);
       return Promise.reject(error);
     }
   }
@@ -119,7 +120,7 @@ export class TempusControllerService {
         filters.toBlock,
       );
     } catch (error) {
-      console.error(`TempusControllerService getRedeemEvents() - Failed to get redeemed events!`, error);
+      console.error('TempusControllerService getRedeemEvents() - Failed to get redeemed events!', error);
       return Promise.reject(error);
     }
   }
@@ -161,7 +162,7 @@ export class TempusControllerService {
             gasLimit: Math.ceil(estimate.toNumber() * depositAndFixGasIncrease),
           },
         );
-      } else {
+      }
         const estimate = await this.contract.estimateGas.depositAndFix(
           tempusAMM,
           tokenAmount,
@@ -179,9 +180,8 @@ export class TempusControllerService {
             gasLimit: Math.ceil(estimate.toNumber() * depositAndFixGasIncrease),
           },
         );
-      }
     } catch (error) {
-      console.error(`TempusControllerService depositAndFix() - Failed to deposit backing tokens!`, error);
+      console.error('TempusControllerService depositAndFix() - Failed to deposit backing tokens!', error);
       return Promise.reject(error);
     }
   }
@@ -213,7 +213,7 @@ export class TempusControllerService {
           value: tokenAmount,
           gasLimit: Math.ceil(estimate.toNumber() * depositAndProvideLiquidityGasIncrease),
         });
-      } else {
+      }
         const estimate = await this.contract.estimateGas.depositAndProvideLiquidity(
           tempusAMM,
           tokenAmount,
@@ -222,10 +222,9 @@ export class TempusControllerService {
         return await this.contract.depositAndProvideLiquidity(tempusAMM, tokenAmount, isBackingToken, {
           gasLimit: Math.ceil(estimate.toNumber() * depositAndProvideLiquidityGasIncrease),
         });
-      }
     } catch (error) {
       console.error(
-        `TempusControllerService depositAndProvideLiquidity() - Failed to do deposit and provide liquidity!`,
+        'TempusControllerService depositAndProvideLiquidity() - Failed to do deposit and provide liquidity!',
         error,
       );
       return Promise.reject(error);
@@ -265,7 +264,7 @@ export class TempusControllerService {
       lpTokensAmountParsed = decreasePrecision(lpTokensAmount, lpTokenPrecision - principalsPrecision);
     }
 
-    let maxLeftoverShares = this.tempusAMMService.getMaxLeftoverShares(
+    const maxLeftoverShares = this.tempusAMMService.getMaxLeftoverShares(
       principalsAmount,
       yieldsAmount,
       lpTokensAmountParsed,
@@ -302,7 +301,7 @@ export class TempusControllerService {
         },
       );
     } catch (error) {
-      console.error(`TempusControllerService exitTempusAmmAndRedeem() - Failed to redeem tokens!`, error);
+      console.error('TempusControllerService exitTempusAmmAndRedeem() - Failed to redeem tokens!', error);
       return Promise.reject(error);
     }
   }
@@ -348,12 +347,11 @@ export class TempusControllerService {
           value: amount,
           gasLimit: Math.ceil(estimate.toNumber() * depositBackingGasIncrease),
         });
-      } else {
+      }
         const estimate = await this.contract.estimateGas.depositBacking(tempusPool, amount, recipient);
         return await this.contract.depositBacking(tempusPool, amount, recipient, {
           gasLimit: Math.ceil(estimate.toNumber() * depositBackingGasIncrease),
         });
-      }
     } catch (error) {
       console.error('TempusControllerService - depositBacking() - Failed to deposit backing token!', error);
       return Promise.reject(error);

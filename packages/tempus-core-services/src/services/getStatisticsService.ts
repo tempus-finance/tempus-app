@@ -6,17 +6,17 @@ import { getDefaultProvider } from './getDefaultProvider';
 import { getTempusAMMService } from './getTempusAMMService';
 import { StatisticsService } from './StatisticsService';
 
-let statisticsServices = new Map<Chain, StatisticsService>();
+const statisticsServices = new Map<Chain, StatisticsService>();
 export const getStatisticsService = (
   chain: Chain,
   getConfig: () => Config,
   getChainConfig: (chain: Chain) => ChainConfig,
   signerOrProvider?: JsonRpcSigner | JsonRpcProvider,
-) => {
+): StatisticsService => {
   if (!statisticsServices.get(chain)) {
     const statisticsService = new StatisticsService();
     statisticsService.init({
-      Contract: Contract,
+      Contract,
       abi: StatisticsABI,
       signerOrProvider: getDefaultProvider(chain, getChainConfig),
       tempusAMMService: getTempusAMMService(chain, getChainConfig),
@@ -33,9 +33,9 @@ export const getStatisticsService = (
 
   if (signerOrProvider) {
     statisticsService.init({
-      Contract: Contract,
+      Contract,
       abi: StatisticsABI,
-      signerOrProvider: signerOrProvider,
+      signerOrProvider,
       tempusAMMService: getTempusAMMService(chain, getChainConfig, signerOrProvider),
       address: getChainConfig(chain).statisticsContract,
       getConfig,

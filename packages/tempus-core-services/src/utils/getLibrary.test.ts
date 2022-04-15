@@ -5,8 +5,8 @@ const { Web3Provider } = jest.requireMock('@ethersproject/providers');
 const { JsonRpcProvider } = jest.requireMock('@ethersproject/providers');
 
 describe('utils -> getLibrary', () => {
-  let mockProvider = new JsonRpcProvider();
-  let mockLibrary = new Web3Provider();
+  const mockProvider = new JsonRpcProvider();
+  const mockLibrary = new Web3Provider();
 
   beforeAll(() => {
     Web3Provider.mockImplementation(() => mockLibrary);

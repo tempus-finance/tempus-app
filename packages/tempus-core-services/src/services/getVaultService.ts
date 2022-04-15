@@ -6,7 +6,7 @@ import { getDefaultProvider } from './getDefaultProvider';
 import { getTempusAMMService } from './getTempusAMMService';
 import { VaultService } from './VaultService';
 
-let vaultServices = new Map<Chain, VaultService>();
+const vaultServices = new Map<Chain, VaultService>();
 export const getVaultService = (
   chain: Chain,
   getChainConfig: (chain: Chain) => ChainConfig,
@@ -15,7 +15,7 @@ export const getVaultService = (
   if (!vaultServices.get(chain)) {
     const vaultService = new VaultService();
     vaultService.init({
-      Contract: Contract,
+      Contract,
       address: getChainConfig(chain).vaultContract,
       abi: VaultABI,
       signerOrProvider: getDefaultProvider(chain, getChainConfig),
@@ -33,7 +33,7 @@ export const getVaultService = (
 
   if (signerOrProvider) {
     vaultService.init({
-      Contract: Contract,
+      Contract,
       address: getChainConfig(chain).vaultContract,
       abi: VaultABI,
       signerOrProvider,

@@ -15,8 +15,8 @@ export const getERC20TokenService = (
   if (!ERC20TokenServiceMap.get(address)) {
     const tokenService = new ERC20TokenService();
     tokenService.init({
-      Contract: Contract,
-      address: address,
+      Contract,
+      address,
       abi: ERC20TokenABI,
       signerOrProvider: getDefaultProvider(chain, getChainConfig),
     });
@@ -29,10 +29,10 @@ export const getERC20TokenService = (
 
     if (tokenService?.contract?.signer !== signerOrProvider && tokenService?.contract?.provider !== signerOrProvider) {
       tokenService?.init({
-        Contract: Contract,
-        address: address,
+        Contract,
+        address,
         abi: ERC20TokenABI,
-        signerOrProvider: signerOrProvider,
+        signerOrProvider,
       });
     }
   }

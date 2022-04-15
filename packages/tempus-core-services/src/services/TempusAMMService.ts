@@ -1,7 +1,6 @@
 import { BigNumber, Contract, ethers } from 'ethers';
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
-import { TempusAMM } from '../abi/TempusAMM';
-import TempusAMMABI from '../abi/TempusAMM.json';
+import TempusAMMABI, { TempusAMM } from '../abi/TempusAMM';
 import { Chain, ChainConfig } from '../interfaces';
 
 type TempusAMMServiceParameters = {
@@ -17,6 +16,7 @@ export class TempusAMMService {
   private tempusAMMMap: Map<string, TempusAMM> = new Map<string, TempusAMM>();
 
   private chain: Chain | null = null;
+
   private config: ChainConfig | null = null;
 
   public init({ tempusAMMAddresses, signerOrProvider, chain, getChainConfig }: TempusAMMServiceParameters) {

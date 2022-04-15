@@ -1,7 +1,6 @@
-import { getPastDaysNumber } from './getPastDaysNumber';
-
 import sub from 'date-fns/sub';
 import format from 'date-fns/format';
+import { getPastDaysNumber } from './getPastDaysNumber';
 
 describe('getPastDaysNumber()', () => {
   test('it returns an array of numbers that represent specified past number of days with specified interval', () => {

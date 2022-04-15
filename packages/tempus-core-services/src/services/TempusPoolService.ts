@@ -19,9 +19,13 @@ type TempusPoolServiceParameters = {
 
 export class TempusPoolService {
   private chain: Chain | null = null;
+
   private poolAddresses: string[] = [];
+
   private tempusPoolsMap: TempusPoolsMap = {};
+
   private eRC20TokenServiceGetter: typeof getERC20TokenService | null = null;
+
   private getChainConfig: ((chain: Chain) => ChainConfig) | null = null;
 
   init({
@@ -172,7 +176,7 @@ export class TempusPoolService {
 
         if (!currentExchangeRate || !pastExchangeRate) {
           console.error('TempusPoolService getVariableAPY() - Failed to fetch current/past exchange rates.');
-          return Promise.reject(0);
+          return await Promise.reject(0);
         }
 
         const blockRateDiff = currentExchangeRate.sub(pastExchangeRate);
@@ -253,10 +257,10 @@ export class TempusPoolService {
 
     if (tempusPool) {
       try {
-        return tempusPool.numAssetsPerYieldToken(yieldTokenAmount, interestRate);
+        return await tempusPool.numAssetsPerYieldToken(yieldTokenAmount, interestRate);
       } catch (error) {
         console.error(
-          `TempusPoolService - numAssetsPerYieldToken() - Failed to retrieve num of asset per yield token`,
+          'TempusPoolService - numAssetsPerYieldToken() - Failed to retrieve num of asset per yield token',
           error,
         );
         return Promise.reject();
