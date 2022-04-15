@@ -1,9 +1,9 @@
 import { ComponentStory, ComponentMeta } from '@storybook/react';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
+import { IconType } from '../Icon';
 import Dropdown from './Dropdown';
 import DropdownCheckboxItem from './DropdownCheckboxItem';
 import DropdownSelectableItem from './DropdownSelectableItem';
-import DropdownSelectableItemIcon from './DropdownSelectableItemIcon';
 import DropdownSelector from './DropdownSelector';
 
 export default {
@@ -51,15 +51,24 @@ SingleChoice.args = {
 };
 
 const SingleChoiceWithIconsTemplate: ComponentStory<typeof Dropdown> = args => {
-  const [selectedValue, setSelectedValue] = useState('a1');
+  const [selectedValue, setSelectedValue] = useState('a');
+  const [selectedIcon, setSelectedIcon] = useState<IconType>('up-arrow-thin');
+
+  const handleSelect = useCallback(
+    (value: string) => {
+      if (value === selectedValue) {
+        setSelectedIcon(selectedIcon === 'up-arrow-thin' ? 'down-arrow-thin' : 'up-arrow-thin');
+      } else {
+        setSelectedValue(value);
+      }
+    },
+    [selectedIcon, selectedValue],
+  );
 
   return (
     <div style={style}>
-      <DropdownSelector {...args} selectedValue={selectedValue} onSelect={setSelectedValue}>
-        <DropdownSelectableItem label="Option A">
-          <DropdownSelectableItemIcon icon="up-arrow-thin" value="a1" />
-          <DropdownSelectableItemIcon icon="down-arrow-thin" value="a2" />
-        </DropdownSelectableItem>
+      <DropdownSelector {...args} itemIcon={selectedIcon} selectedValue={selectedValue} onSelect={handleSelect}>
+        <DropdownSelectableItem label="Option A" value="a" />
         <DropdownSelectableItem label="Option B" value="b" />
         <DropdownSelectableItem label="Option C" value="c" />
       </DropdownSelector>

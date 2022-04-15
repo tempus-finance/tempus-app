@@ -1,45 +1,22 @@
-import { Children, FC, isValidElement, ReactElement, useCallback, useState } from 'react';
+import { ReactElement, useCallback } from 'react';
 import ButtonWrapper from '../ButtonWrapper';
 import Typography from '../Typography';
-import { DropdownSelectableItemIconProps } from './DropdownSelectableItemIcon';
 import './DropdownItem.scss';
+import Icon, { IconType } from '../Icon';
 
-export interface DropdownSelectableItemProps {
+export interface DropdownSelectableItemProps<T> {
   label: string;
-  value?: string;
-  selectedValue?: string;
-  onClick?: (value: string) => void;
-  children?: ReactElement<DropdownSelectableItemIconProps> | ReactElement<DropdownSelectableItemIconProps>[];
+  value: T;
+  selected?: boolean;
+  iconType?: IconType;
+  onClick?: (value: T) => void;
 }
 
-const DropdownSelectableItem: FC<DropdownSelectableItemProps> = props => {
-  const { label, value, selectedValue, onClick, children } = props;
-  const childrenValues = Children.map(children, child => (isValidElement(child) ? child.props.value : null))?.filter(
-    val => val !== null,
-  );
-  const alreadySelectedIconIndex = childrenValues ? childrenValues.findIndex(val => val === selectedValue) : null;
-
-  const [selectedIconIndex, setSelectedIconIndex] = useState(
-    alreadySelectedIconIndex !== null && alreadySelectedIconIndex > -1 ? alreadySelectedIconIndex : 0,
-  );
-
-  const resolvedValue = childrenValues && selectedIconIndex !== null ? childrenValues[selectedIconIndex] : value;
-  const selected = selectedValue === resolvedValue;
-
-  const handleClick = useCallback(() => {
-    let updatedSelectedIconIndex = selectedIconIndex;
-
-    if (selected && selectedIconIndex !== null) {
-      updatedSelectedIconIndex = (selectedIconIndex + 1) % Children.count(children);
-      setSelectedIconIndex(updatedSelectedIconIndex);
-    }
-
-    const newValue =
-      childrenValues && updatedSelectedIconIndex !== null && childrenValues[updatedSelectedIconIndex]
-        ? childrenValues[updatedSelectedIconIndex]
-        : value;
-    onClick?.(newValue);
-  }, [selectedIconIndex, selected, childrenValues, value, onClick, children]);
+function DropdownSelectableItem<T>(
+  props: DropdownSelectableItemProps<T>,
+): ReactElement<DropdownSelectableItemProps<T>> {
+  const { label, value, selected, iconType, onClick } = props;
+  const handleClick = useCallback(() => onClick?.(value), [onClick, value]);
 
   return (
     <div className="tc__dropdownItem tc__dropdownItem__selectable">
@@ -48,9 +25,13 @@ const DropdownSelectableItem: FC<DropdownSelectableItemProps> = props => {
           {label}
         </Typography>
       </ButtonWrapper>
-      {Children.map(children, (child, index) => selectedIconIndex === index && child)}
+      {iconType && (
+        <span className="tc__dropdownItem__icon-container">
+          <Icon type={iconType} size="tiny" />
+        </span>
+      )}
     </div>
   );
-};
+}
 
 export default DropdownSelectableItem;

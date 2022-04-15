@@ -11,13 +11,7 @@ import Link from './Link';
 import ActionButton from './ActionButton';
 import SwitcherButton from './SwitcherButton';
 import TermTabs from './TermTabs';
-import {
-  Dropdown,
-  DropdownCheckboxItem,
-  DropdownSelectableItem,
-  DropdownSelectableItemIcon,
-  DropdownSelector,
-} from './Dropdown';
+import { Dropdown, DropdownCheckboxItem, DropdownSelectableItem, DropdownSelector } from './Dropdown';
 import BaseInput from './BaseInput';
 import TextInput from './TextInput';
 import NumberInput from './NumberInput';
@@ -47,7 +41,6 @@ export {
   Dropdown,
   DropdownCheckboxItem,
   DropdownSelectableItem,
-  DropdownSelectableItemIcon,
   DropdownSelector,
   BaseInput,
   TextInput,
