@@ -1,8 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" class="pattern__svg" width="620" height="151" viewBox="0 0 620 151" data-pattern-svg="">
-    <rect width="620" height="151" fill="url(#pattern-5)" fillColor="#eb5a14" data-pattern-shape=""></rect>
-    <defs>
-      <pattern id="pattern-5" patternUnits="userSpaceOnUse" width="6" height="6">
-          <path d="M-1,1 l2,-2 M0,6 l6,-6 M5,7 l2,-2" stroke="#03102b" stroke-width="1.5" style="stroke: #03102b"></path>
-      </pattern>
-    </defs>
-</svg>

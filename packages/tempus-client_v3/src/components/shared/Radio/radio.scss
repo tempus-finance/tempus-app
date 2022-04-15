@@ -1,0 +1,11 @@
+@import '../common.scss';
+
+@include checked-input('radio', $radius: 50%);
+
+.tc__radio__radio-group > .tc__radio {
+  margin-bottom: 18px;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}

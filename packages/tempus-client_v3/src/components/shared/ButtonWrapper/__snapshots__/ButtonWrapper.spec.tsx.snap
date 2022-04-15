@@ -1,0 +1,12 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Button renders a button with a title attribute 1`] = `
+<button
+  class="tc__btn "
+  data-selected="false"
+  title="my title"
+  type="button"
+>
+  My Button
+</button>
+`;
