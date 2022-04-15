@@ -8,7 +8,7 @@ import { getVaultService } from './getVaultService';
 import { ChainConfig, Chain } from '../interfaces';
 import { VariableRateService } from './VariableRateService';
 
-let variableRateServices = new Map<Chain, VariableRateService>();
+const variableRateServices = new Map<Chain, VariableRateService>();
 export const getVariableRateService = (
   chain: Chain,
   getChainConfig: (chain: Chain) => ChainConfig,

@@ -40,7 +40,7 @@ export const getCoingeckoRate = async (token: Ticker, precision: number): Promis
     );
 
     coinGeckoCache.set(coinGeckoTokenId, {
-      promise: promise,
+      promise,
       cachedAt: Date.now(),
     });
 

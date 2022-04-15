@@ -1,8 +1,8 @@
 import { AlchemyProvider, JsonRpcProvider } from '@ethersproject/providers';
 import { ChainConfig, Chain } from '../interfaces';
 
-let defaultProviders = new Map<Chain, JsonRpcProvider>();
-export const getDefaultProvider = (chain: Chain, getChainConfig: (chain: Chain) => ChainConfig) => {
+const defaultProviders = new Map<Chain, JsonRpcProvider>();
+export const getDefaultProvider = (chain: Chain, getChainConfig: (chain: Chain) => ChainConfig): JsonRpcProvider => {
   if (!defaultProviders.get(chain)) {
     const config = getChainConfig(chain);
 

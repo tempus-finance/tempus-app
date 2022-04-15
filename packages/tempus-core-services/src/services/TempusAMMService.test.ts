@@ -23,13 +23,11 @@ describe('TempusAMMService', () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
-    jest.spyOn(ejs as any, 'Contract').mockImplementation(() => {
-      return {
+    jest.spyOn(ejs as any, 'Contract').mockImplementation(() => ({
         getPoolId: mockGetPoolId,
         tempusPool: mockTempusPool,
         getSwapFeePercentage: mockGetSwapFeePercentage,
-      };
-    });
+      }));
 
     mockGetPoolId.mockImplementation(() => Promise.resolve(tempusPoolIds[0]));
     mockTempusPool.mockImplementation(() => Promise.resolve(tempusPoolAddresses[0]));
@@ -47,13 +45,13 @@ describe('TempusAMMService', () => {
 
   describe('init()', () => {
     test('Properly initializes the ethers contract for all addresses', () => {
-      expect(tempusAMMService['tempusAMMMap'].get(tempusAMMAddresses[0])).toBeDefined();
-      expect(tempusAMMService['tempusAMMMap'].get(tempusAMMAddresses[1])).toBeDefined();
-      expect(tempusAMMService['tempusAMMMap'].get(tempusAMMAddresses[2])).toBeDefined();
+      expect(tempusAMMService.tempusAMMMap.get(tempusAMMAddresses[0])).toBeDefined();
+      expect(tempusAMMService.tempusAMMMap.get(tempusAMMAddresses[1])).toBeDefined();
+      expect(tempusAMMService.tempusAMMMap.get(tempusAMMAddresses[2])).toBeDefined();
     });
 
     test('Cleans up previous contracts if called multiple times', () => {
-      expect(tempusAMMService['tempusAMMMap'].size).toBe(tempusAMMAddresses.length);
+      expect(tempusAMMService.tempusAMMMap.size).toBe(tempusAMMAddresses.length);
 
       tempusAMMService.init({
         Contract: ejs.Contract,
@@ -64,7 +62,7 @@ describe('TempusAMMService', () => {
         getChainConfig: mockGetChainConfig,
       });
 
-      expect(tempusAMMService['tempusAMMMap'].size).toBe(tempusAMMAddresses.length - 1);
+      expect(tempusAMMService.tempusAMMMap.size).toBe(tempusAMMAddresses.length - 1);
     });
   });
 

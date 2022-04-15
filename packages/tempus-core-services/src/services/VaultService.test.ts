@@ -51,7 +51,7 @@ describe('VaultService', () => {
     },
   ];
   const mockProvider = new JsonRpcProvider();
-  const mockTempusAMMService = jest.fn().mockReturnValue({});
+  let mockTempusAMMService = jest.fn().mockReturnValue({});
   const mockGetChainConfig = jest.fn();
 
   beforeEach(() => {
@@ -89,10 +89,10 @@ describe('VaultService', () => {
     });
 
     test('test with no tempusAMMService provided when init(), should reject with an error', async () => {
-      const mockTempusAMMService = jest.fn().mockReturnValue(null);
+      mockTempusAMMService = jest.fn().mockReturnValue(null);
       vaultService = new VaultService();
       vaultService.init({
-        Contract: Contract,
+        Contract,
         address: DUMMY_ADDR,
         abi: VaultABI,
         signerOrProvider: mockProvider,
@@ -108,7 +108,7 @@ describe('VaultService', () => {
     });
 
     test('test with no forPoolId filter provided, should throw error when getting config', async () => {
-      const errMessage = 'ERROR_MSG_' + Math.random().toString(36).substring(2);
+      const errMessage = `ERROR_MSG_${Math.random().toString(36).substring(2)}`;
       mockGetChainConfig.mockImplementationOnce(() => {
         throw new Error(errMessage);
       });
@@ -121,10 +121,8 @@ describe('VaultService', () => {
     });
 
     test('test with no forPoolId filter provided, should throw error when query events', async () => {
-      const errMessage = 'ERROR_MSG_' + Math.random().toString(36).substring(2);
-      mockGetChainConfig.mockImplementationOnce(() => {
-        return { tempusPools: DUMMY_TEMPUS_POOL } as ChainConfig;
-      });
+      const errMessage = `ERROR_MSG_${Math.random().toString(36).substring(2)}`;
+      mockGetChainConfig.mockImplementationOnce(() => ({ tempusPools: DUMMY_TEMPUS_POOL } as ChainConfig));
 
       Reflect.set(vaultService, 'contract', {
         queryFilter: jest.fn().mockImplementation(() => {
@@ -143,11 +141,9 @@ describe('VaultService', () => {
     });
 
     test('test with no forPoolId filter provided, should throw error when call Swap()', async () => {
-      const errMessage = 'ERROR_MSG_' + Math.random().toString(36).substring(2);
+      const errMessage = `ERROR_MSG_${Math.random().toString(36).substring(2)}`;
 
-      mockGetChainConfig.mockImplementationOnce(() => {
-        return { tempusPools: DUMMY_TEMPUS_POOL } as ChainConfig;
-      });
+      mockGetChainConfig.mockImplementationOnce(() => ({ tempusPools: DUMMY_TEMPUS_POOL } as ChainConfig));
 
       Reflect.set(vaultService, 'contract', {
         queryFilter: jest.fn(),
@@ -198,8 +194,8 @@ describe('VaultService', () => {
     });
 
     test('test with forPoolId filter provided, should throw error when query events', async () => {
-      const forPoolId = 'FOR_POOL_ID_' + Math.random().toString(36).substring(2);
-      const errMessage = 'ERROR_MSG_' + Math.random().toString(36).substring(2);
+      const forPoolId = `FOR_POOL_ID_${Math.random().toString(36).substring(2)}`;
+      const errMessage = `ERROR_MSG_${Math.random().toString(36).substring(2)}`;
       Reflect.set(vaultService, 'contract', {
         queryFilter: jest.fn().mockImplementation(() => {
           throw new Error(errMessage);
@@ -217,8 +213,8 @@ describe('VaultService', () => {
     });
 
     test('test with forPoolId filter provided, should throw error when call Swap()', async () => {
-      const forPoolId = 'FOR_POOL_ID_' + Math.random().toString(36).substring(2);
-      const errMessage = 'ERROR_MSG_' + Math.random().toString(36).substring(2);
+      const forPoolId = `FOR_POOL_ID_${Math.random().toString(36).substring(2)}`;
+      const errMessage = `ERROR_MSG_${Math.random().toString(36).substring(2)}`;
       Reflect.set(vaultService, 'contract', {
         queryFilter: jest.fn(),
         filters: {
@@ -236,7 +232,7 @@ describe('VaultService', () => {
     });
 
     test('test with forPoolId filter provided, should return the Swap events', async () => {
-      const forPoolId = 'FOR_POOL_ID_' + Math.random().toString(36).substring(2);
+      const forPoolId = `FOR_POOL_ID_${Math.random().toString(36).substring(2)}`;
       const fromBlock = Math.round(Math.random() * 1000);
       const toBlock = fromBlock + Math.round(Math.random() * 1000) + 1;
       const mockSwappedEvents = [{ aaa: Math.random().toString(36).substring(2) }];
@@ -268,7 +264,7 @@ describe('VaultService', () => {
     });
 
     test('test with no forPoolId filter provided, should throw error when getting config', async () => {
-      const errMessage = 'ERROR_MSG_' + Math.random().toString(36).substring(2);
+      const errMessage = `ERROR_MSG_${Math.random().toString(36).substring(2)}`;
       mockGetChainConfig.mockImplementation(() => {
         throw new Error(errMessage);
       });
@@ -281,11 +277,9 @@ describe('VaultService', () => {
     });
 
     test('test with no forPoolId filter provided, should throw error when query events', async () => {
-      const errMessage = 'ERROR_MSG_' + Math.random().toString(36).substring(2);
+      const errMessage = `ERROR_MSG_${Math.random().toString(36).substring(2)}`;
 
-      mockGetChainConfig.mockImplementationOnce(() => {
-        return { tempusPools: DUMMY_TEMPUS_POOL } as ChainConfig;
-      });
+      mockGetChainConfig.mockImplementationOnce(() => ({ tempusPools: DUMMY_TEMPUS_POOL } as ChainConfig));
 
       Reflect.set(vaultService, 'contract', {
         queryFilter: jest.fn().mockImplementation(() => {
@@ -304,11 +298,9 @@ describe('VaultService', () => {
     });
 
     test('test with no forPoolId filter provided, should throw error when call Swap()', async () => {
-      const errMessage = 'ERROR_MSG_' + Math.random().toString(36).substring(2);
+      const errMessage = `ERROR_MSG_${Math.random().toString(36).substring(2)}`;
 
-      mockGetChainConfig.mockImplementationOnce(() => {
-        return { tempusPools: DUMMY_TEMPUS_POOL } as ChainConfig;
-      });
+      mockGetChainConfig.mockImplementationOnce(() => ({ tempusPools: DUMMY_TEMPUS_POOL } as ChainConfig));
 
       Reflect.set(vaultService, 'contract', {
         queryFilter: jest.fn(),
@@ -358,8 +350,8 @@ describe('VaultService', () => {
     });
 
     test('test with forPoolId filter provided, should throw error when query events', async () => {
-      const forPoolId = 'FOR_POOL_ID_' + Math.random().toString(36).substring(2);
-      const errMessage = 'ERROR_MSG_' + Math.random().toString(36).substring(2);
+      const forPoolId = `FOR_POOL_ID_${Math.random().toString(36).substring(2)}`;
+      const errMessage = `ERROR_MSG_${Math.random().toString(36).substring(2)}`;
       Reflect.set(vaultService, 'contract', {
         queryFilter: jest.fn().mockImplementation(() => {
           throw new Error(errMessage);
@@ -377,8 +369,8 @@ describe('VaultService', () => {
     });
 
     test('test with forPoolId filter provided, should throw error when call PoolBalanceChanged()', async () => {
-      const forPoolId = 'FOR_POOL_ID_' + Math.random().toString(36).substring(2);
-      const errMessage = 'ERROR_MSG_' + Math.random().toString(36).substring(2);
+      const forPoolId = `FOR_POOL_ID_${Math.random().toString(36).substring(2)}`;
+      const errMessage = `ERROR_MSG_${Math.random().toString(36).substring(2)}`;
       Reflect.set(vaultService, 'contract', {
         queryFilter: jest.fn(),
         filters: {
@@ -396,7 +388,7 @@ describe('VaultService', () => {
     });
 
     test('test with forPoolId filter provided, should return the PoolBalanceChanged events', async () => {
-      const forPoolId = 'FOR_POOL_ID_' + Math.random().toString(36).substring(2);
+      const forPoolId = `FOR_POOL_ID_${Math.random().toString(36).substring(2)}`;
       const fromBlock = Math.round(Math.random() * 1000);
       const mockSwappedEvents = [{ aaa: Math.random().toString(36).substring(2) }];
       const mockEvent = { bbb: Math.random().toString(36).substring(2) };
@@ -418,7 +410,7 @@ describe('VaultService', () => {
 
   describe('swap()', () => {
     test('test with no init() invoked, should reject with an error', async () => {
-      const poolId = 'POOL_ID_' + Math.random().toString(36).substring(2);
+      const poolId = `POOL_ID_${Math.random().toString(36).substring(2)}`;
       const kind = SwapKind.GIVEN_IN;
       const fromAddress = DUMMY_ADDR;
       const assetIn = 'DUMMY_ASSET_IN';
@@ -436,7 +428,7 @@ describe('VaultService', () => {
     });
 
     test('test with success run, should return with ContractTransaction', async () => {
-      const poolId = 'POOL_ID_' + Math.random().toString(36).substring(2);
+      const poolId = `POOL_ID_${Math.random().toString(36).substring(2)}`;
       const kind = SwapKind.GIVEN_IN;
       const fromAddress = DUMMY_ADDR;
       const assetIn = 'DUMMY_ASSET_IN';
@@ -485,7 +477,7 @@ describe('VaultService', () => {
 
   describe('provideLiquidity()', () => {
     test('test with no init() invoked, should reject with an error', async () => {
-      const poolId = 'POOL_ID_' + Math.random().toString(36).substring(2);
+      const poolId = `POOL_ID_${Math.random().toString(36).substring(2)}`;
       const userWalletAddress = DUMMY_ADDR;
       const principalsAddress = '0x0000000000000000000000000000000000000001';
       const yieldsAddress = '0x0000000000000000000000000000000000000002';
@@ -509,13 +501,13 @@ describe('VaultService', () => {
     });
 
     test('test with fail to get pool tokens, should reject with an error', async () => {
-      const poolId = 'POOL_ID_' + Math.random().toString(36).substring(2);
+      const poolId = `POOL_ID_${Math.random().toString(36).substring(2)}`;
       const userWalletAddress = DUMMY_ADDR;
       const principalsAddress = '0x0000000000000000000000000000000000000001';
       const yieldsAddress = '0x0000000000000000000000000000000000000002';
       const principalsIn = BigNumber.from(1);
       const yieldsIn = BigNumber.from(2);
-      const errMessage = 'ERROR_MSG_' + Math.random().toString(36).substring(2);
+      const errMessage = `ERROR_MSG_${Math.random().toString(36).substring(2)}`;
       Reflect.set(vaultService, 'contract', {
         getPoolTokens: jest.fn().mockImplementation(() => {
           throw new Error(errMessage);
@@ -539,13 +531,13 @@ describe('VaultService', () => {
     });
 
     test('test with fail to get pool tokens, should reject with an error', async () => {
-      const poolId = 'POOL_ID_' + Math.random().toString(36).substring(2);
+      const poolId = `POOL_ID_${Math.random().toString(36).substring(2)}`;
       const userWalletAddress = DUMMY_ADDR;
       const principalsAddress = '0x0000000000000000000000000000000000000001';
       const yieldsAddress = '0x0000000000000000000000000000000000000002';
       const principalsIn = BigNumber.from(1);
       const yieldsIn = BigNumber.from(2);
-      const errMessage = 'ERROR_MSG_' + Math.random().toString(36).substring(2);
+      const errMessage = `ERROR_MSG_${Math.random().toString(36).substring(2)}`;
       Reflect.set(vaultService, 'contract', {
         getPoolTokens: jest.fn().mockImplementation(() => {
           throw new Error(errMessage);
@@ -569,7 +561,7 @@ describe('VaultService', () => {
     });
 
     test('test with pool tokens with zero balances, should reject with an error unless both principalsIn and yieldsIn are non-zero', async () => {
-      const poolId = 'POOL_ID_' + Math.random().toString(36).substring(2);
+      const poolId = `POOL_ID_${Math.random().toString(36).substring(2)}`;
       const userWalletAddress = DUMMY_ADDR;
       const principalsAddress = '0x0000000000000000000000000000000000000001';
       const yieldsAddress = '0x0000000000000000000000000000000000000002';
@@ -652,13 +644,13 @@ describe('VaultService', () => {
     });
 
     test('test with pool tokens with non-zero balances, should throw error when estimate join pool', async () => {
-      const poolId = 'POOL_ID_' + Math.random().toString(36).substring(2);
+      const poolId = `POOL_ID_${Math.random().toString(36).substring(2)}`;
       const userWalletAddress = DUMMY_ADDR;
       const principalsAddress = '0x0000000000000000000000000000000000000001';
       const yieldsAddress = '0x0000000000000000000000000000000000000002';
       const principalsIn = BigNumber.from(1);
       const yieldsIn = BigNumber.from(2);
-      const errMessage = 'ERROR_MSG_' + Math.random().toString(36).substring(2);
+      const errMessage = `ERROR_MSG_${Math.random().toString(36).substring(2)}`;
       const mockPoolTokens = {
         balances: [BigNumber.from(3), BigNumber.from(4)],
       };
@@ -690,13 +682,13 @@ describe('VaultService', () => {
     });
 
     test('test with pool tokens with non-zero balances, should throw error when join pool', async () => {
-      const poolId = 'POOL_ID_' + Math.random().toString(36).substring(2);
+      const poolId = `POOL_ID_${Math.random().toString(36).substring(2)}`;
       const userWalletAddress = DUMMY_ADDR;
       const principalsAddress = '0x0000000000000000000000000000000000000001';
       const yieldsAddress = '0x0000000000000000000000000000000000000002';
       const principalsIn = BigNumber.from(1);
       const yieldsIn = BigNumber.from(2);
-      const errMessage = 'ERROR_MSG_' + Math.random().toString(36).substring(2);
+      const errMessage = `ERROR_MSG_${Math.random().toString(36).substring(2)}`;
       const joinPoolRequest = {
         assets: [principalsAddress, yieldsAddress],
         maxAmountsIn: [BigNumber.from(1), BigNumber.from(2)],
@@ -741,7 +733,7 @@ describe('VaultService', () => {
     });
 
     test('test with pool tokens with non-zero balances, should return with ContractTransaction', async () => {
-      const poolId = 'POOL_ID_' + Math.random().toString(36).substring(2);
+      const poolId = `POOL_ID_${Math.random().toString(36).substring(2)}`;
       const userWalletAddress = DUMMY_ADDR;
       const principalsAddress = '0x0000000000000000000000000000000000000001';
       const yieldsAddress = '0x0000000000000000000000000000000000000002';
@@ -792,7 +784,7 @@ describe('VaultService', () => {
 
   describe('removeLiquidity()', () => {
     test('test with no init() invoked, should reject with an error', async () => {
-      const poolId = 'POOL_ID_' + Math.random().toString(36).substring(2);
+      const poolId = `POOL_ID_${Math.random().toString(36).substring(2)}`;
       const userWalletAddress = DUMMY_ADDR;
       const principalsAddress = '0x0000000000000000000000000000000000000001';
       const yieldsAddress = '0x0000000000000000000000000000000000000002';
@@ -818,14 +810,14 @@ describe('VaultService', () => {
     });
 
     test('test with throw error when estimate join pool, should reject with an error', async () => {
-      const poolId = 'POOL_ID_' + Math.random().toString(36).substring(2);
+      const poolId = `POOL_ID_${Math.random().toString(36).substring(2)}`;
       const userWalletAddress = DUMMY_ADDR;
       const principalsAddress = '0x0000000000000000000000000000000000000001';
       const yieldsAddress = '0x0000000000000000000000000000000000000002';
       const lpAmount = BigNumber.from(1);
       const minPrincipalsReceived = BigNumber.from(2);
       const minYieldsReceived = BigNumber.from(3);
-      const errMessage = 'ERROR_MSG_' + Math.random().toString(36).substring(2);
+      const errMessage = `ERROR_MSG_${Math.random().toString(36).substring(2)}`;
       Reflect.set(vaultService, 'contract', {
         estimateGas: {
           exitPool: jest.fn().mockImplementation(() => {
@@ -852,14 +844,14 @@ describe('VaultService', () => {
     });
 
     test('test with throw error when join pool, should reject with an error', async () => {
-      const poolId = 'POOL_ID_' + Math.random().toString(36).substring(2);
+      const poolId = `POOL_ID_${Math.random().toString(36).substring(2)}`;
       const userWalletAddress = DUMMY_ADDR;
       const principalsAddress = '0x0000000000000000000000000000000000000001';
       const yieldsAddress = '0x0000000000000000000000000000000000000002';
       const lpAmount = BigNumber.from(1);
       const minPrincipalsReceived = BigNumber.from(2);
       const minYieldsReceived = BigNumber.from(3);
-      const errMessage = 'ERROR_MSG_' + Math.random().toString(36).substring(2);
+      const errMessage = `ERROR_MSG_${Math.random().toString(36).substring(2)}`;
       const exitUserData = utils.defaultAbiCoder.encode(
         ['uint256', 'uint256'],
         [TempusAMMExitKind.EXACT_BPT_IN_FOR_TOKENS_OUT, lpAmount],
@@ -900,7 +892,7 @@ describe('VaultService', () => {
     });
 
     test('test with success, should return with ContractTransaction', async () => {
-      const poolId = 'POOL_ID_' + Math.random().toString(36).substring(2);
+      const poolId = `POOL_ID_${Math.random().toString(36).substring(2)}`;
       const userWalletAddress = DUMMY_ADDR;
       const principalsAddress = '0x0000000000000000000000000000000000000001';
       const yieldsAddress = '0x0000000000000000000000000000000000000002';
@@ -948,7 +940,7 @@ describe('VaultService', () => {
 
   describe('getPoolTokens()', () => {
     test('test with no init() invoked, should reject with error', async () => {
-      const poolId = 'POOL_ID_' + Math.random().toString(36).substring(2);
+      const poolId = `POOL_ID_${Math.random().toString(36).substring(2)}`;
       vaultService = new VaultService();
 
       await expect(vaultService.getPoolTokens(poolId)).rejects.toEqual(undefined);
@@ -958,8 +950,8 @@ describe('VaultService', () => {
     });
 
     test('test with throw error when contract.getPoolTokens(), should reject with error', async () => {
-      const poolId = 'POOL_ID_' + Math.random().toString(36).substring(2);
-      const errMessage = 'ERROR_MSG_' + Math.random().toString(36).substring(2);
+      const poolId = `POOL_ID_${Math.random().toString(36).substring(2)}`;
+      const errMessage = `ERROR_MSG_${Math.random().toString(36).substring(2)}`;
       Reflect.set(vaultService, 'contract', {
         getPoolTokens: jest.fn().mockImplementation(() => {
           throw new Error(errMessage);
@@ -974,7 +966,7 @@ describe('VaultService', () => {
     });
 
     test('test with success, should return with PoolTokens', async () => {
-      const poolId = 'POOL_ID_' + Math.random().toString(36).substring(2);
+      const poolId = `POOL_ID_${Math.random().toString(36).substring(2)}`;
       const mockPoolTokens = {
         balances: [BigNumber.from(3), BigNumber.from(4)],
       };
@@ -988,7 +980,7 @@ describe('VaultService', () => {
     });
 
     test('test with success, should pass overrides to contract.getPoolTokens', async () => {
-      const poolId = 'POOL_ID_' + Math.random().toString(36).substring(2);
+      const poolId = `POOL_ID_${Math.random().toString(36).substring(2)}`;
       const mockOverride = { aaa: Math.random().toString(36).substring(2) } as any;
       const mockPoolTokens = {
         balances: [BigNumber.from(3), BigNumber.from(4)],
@@ -1005,7 +997,7 @@ describe('VaultService', () => {
 
   describe('onPoolBalanceChanged()', () => {
     test('test with no init() invoked, should do nth', () => {
-      const poolId = 'POOL_ID_' + Math.random().toString(36).substring(2);
+      const poolId = `POOL_ID_${Math.random().toString(36).substring(2)}`;
       const mockListener: any = {
         aaa: Math.random().toString(36).substring(2),
       };
@@ -1025,7 +1017,7 @@ describe('VaultService', () => {
     });
 
     test('test with success, should invoke this.contract.on() and this.contract.filters.PoolBalanceChanged()', () => {
-      const poolId = 'POOL_ID_' + Math.random().toString(36).substring(2);
+      const poolId = `POOL_ID_${Math.random().toString(36).substring(2)}`;
       const mockListener = {
         aaa: Math.random().toString(36).substring(2),
       } as unknown as PoolBalanceChangedEventListener;
@@ -1047,7 +1039,7 @@ describe('VaultService', () => {
 
   describe('offPoolBalanceChanged()', () => {
     test('test with no init() invoked, should do nth', () => {
-      const poolId = 'POOL_ID_' + Math.random().toString(36).substring(2);
+      const poolId = `POOL_ID_${Math.random().toString(36).substring(2)}`;
       const mockListener = {
         aaa: Math.random().toString(36).substring(2),
       } as unknown as PoolBalanceChangedEventListener;
@@ -1067,7 +1059,7 @@ describe('VaultService', () => {
     });
 
     test('test with success, should invoke this.contract.off() and this.contract.filters.PoolBalanceChanged()', () => {
-      const poolId = 'POOL_ID_' + Math.random().toString(36).substring(2);
+      const poolId = `POOL_ID_${Math.random().toString(36).substring(2)}`;
       const mockListener = {
         aaa: Math.random().toString(36).substring(2),
       } as unknown as PoolBalanceChangedEventListener;

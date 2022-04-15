@@ -64,7 +64,8 @@ describe('weiMath', () => {
     ].forEach(item => {
       const { multiplier, multiplicand, precision, product } = item;
 
-      test(`it returns '${product}' when multiplier is '${multiplier}', multiplicand is '${multiplicand}' and precision is '${precision}'`, () => {
+      test(`it returns '${product}' when multiplier is 
+      '${multiplier}', multiplicand is '${multiplicand}' and precision is '${precision}'`, () => {
         const result = ethers.utils.formatUnits(mul18f(multiplier, multiplicand, precision));
         expect(result).toEqual(product);
       });
@@ -127,7 +128,8 @@ describe('weiMath', () => {
     ].forEach(item => {
       const { dividend, divisor, precision, fraction } = item;
 
-      test(`it returns '${fraction}' when dividend is '${dividend}', divisor is '${divisor}' and precision is '${precision}'`, () => {
+      test(`it returns '${fraction}' when dividend is 
+      '${dividend}', divisor is '${divisor}' and precision is '${precision}'`, () => {
         const result = ethers.utils.formatUnits(div18f(dividend, divisor, precision));
         expect(result).toEqual(fraction);
       });

@@ -13,12 +13,12 @@ export function div18f(dividend: BigNumber, divisor: BigNumber, precision?: numb
   return dividend.mul(bigNumberPrecision).div(divisor);
 }
 
-export function increasePrecision(value: BigNumber, amount: number) {
+export function increasePrecision(value: BigNumber, amount: number): BigNumber {
   const multiplier = BigNumber.from(Math.pow(10, amount).toString());
   return value.mul(multiplier);
 }
 
-export function decreasePrecision(value: BigNumber, amount: number) {
+export function decreasePrecision(value: BigNumber, amount: number): BigNumber {
   const divider = BigNumber.from(Math.pow(10, amount).toString());
   return value.div(divider);
 }

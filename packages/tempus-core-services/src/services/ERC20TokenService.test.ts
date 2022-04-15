@@ -19,13 +19,11 @@ describe('ERC20TokenService', () => {
   const mockAllowance = jest.fn();
 
   beforeEach(() => {
-    Contract.mockImplementation(() => {
-      return {
+    Contract.mockImplementation(() => ({
         symbol: mockSymbol,
         balanceOf: mockBalanceOf,
         allowance: mockAllowance,
-      };
-    });
+      }));
   });
 
   describe('constructor()', () => {

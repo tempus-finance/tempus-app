@@ -5,7 +5,7 @@ export function isZeroString(value: string): boolean {
     return true;
   }
   try {
-    return ethers.utils.parseEther(value).isZero();
+    return ethers.utils.parseUnits(value).isZero();
   } catch (error) {
     return true;
   }

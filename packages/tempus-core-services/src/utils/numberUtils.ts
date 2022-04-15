@@ -14,7 +14,7 @@ const multiplierLookup = [
 const regex = /\.0+$|(\.[0-9]*[1-9])0+$/;
 
 export class NumberUtils {
-  static formatWithMultiplier(value: any, precision: number = 0): string {
+  static formatWithMultiplier(value: number | string, precision = 0): string {
     const sanitizedValue = Number(value);
     const multiplier = multiplierLookup.find(item => Math.abs(sanitizedValue) >= item.value);
 
@@ -33,7 +33,7 @@ export class NumberUtils {
       : '0';
   }
 
-  static formatToFixedFractionDigitsOrMultiplier(value: any, precision: number = 0): string {
+  static formatToFixedFractionDigitsOrMultiplier(value: number | string, precision = 0): string {
     const sanitizedValue = Number(value);
     const sanitizedValueString = sanitizedValue.toString();
 
@@ -48,7 +48,7 @@ export class NumberUtils {
     const pointIndex = sanitizedValueString.indexOf('.');
 
     if (pointIndex === -1) {
-      return `${sanitizedValueString}${precision == 0 ? '' : `.${'0'.repeat(precision)}`}`;
+      return `${sanitizedValueString}${precision === 0 ? '' : `.${'0'.repeat(precision)}`}`;
     }
 
     if (precision === 0) {
@@ -61,7 +61,7 @@ export class NumberUtils {
       : `${sanitizedValueString}${'0'.repeat(precision - numberOfFractionDigits)}`;
   }
 
-  static formatToCurrency(value: string, numberOfDecimals: number = 2, symbol?: string): string {
+  static formatToCurrency(value: string, numberOfDecimals = 2, symbol?: string): string {
     if (!value || isZeroString(value)) {
       return `${symbol || ''}0`;
     }
@@ -87,7 +87,7 @@ export class NumberUtils {
     return `${symbol || ''}${integerPartSeparatorsAdded}${fractionPartFormatted ? `.${fractionPartFormatted}` : ''}`;
   }
 
-  static formatPercentage(value: any, precision: number = 2, roundValue?: boolean): string {
+  static formatPercentage(value: number | string, precision = 2, roundValue?: boolean): string {
     const sanitizedValue = Number(value);
 
     if (sanitizedValue === undefined) {
@@ -100,7 +100,7 @@ export class NumberUtils {
       return `${sanitizedValuePer100.toFixed(precision)}%`;
     }
 
-    const matchingString = '^-?\\d+(?:\\.\\d{0,' + precision + '})?';
+    const matchingString = `^-?\\d+(?:\\.\\d{0,${precision}})?`;
     const regEx = new RegExp(matchingString);
 
     const sanitizedValueString = sanitizedValuePer100.toString();

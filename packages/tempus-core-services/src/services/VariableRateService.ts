@@ -47,7 +47,7 @@ type VariableRateServiceParameters = {
 };
 
 export class VariableRateService {
-  static getAprFromApy(apy: number, periods: number = 1): number {
+  static getAprFromApy(apy: number, periods = 1): number {
     if (periods === 1) {
       return apy;
     }
@@ -58,14 +58,23 @@ export class VariableRateService {
   }
 
   private aaveLendingPool: Contract | null = null;
+
   private lidoOracle: Contract | null = null;
+
   private rariVault: RariVault | null = null;
+
   private tempusPoolService: TempusPoolService | null = null;
+
   private vaultService: VaultService | null = null;
+
   private tempusAMMService: TempusAMMService | null = null;
+
   private tokenAddressToContractMap: { [tokenAddress: string]: ethers.Contract } = {};
+
   private signerOrProvider: JsonRpcSigner | JsonRpcProvider | null = null;
+
   private chainConfig: ChainConfig | null = null;
+
   private getChainConfig: ((chain: Chain) => ChainConfig) | null = null;
 
   init({
@@ -76,7 +85,7 @@ export class VariableRateService {
     rariVault,
     config,
     getChainConfig,
-  }: VariableRateServiceParameters) {
+  }: VariableRateServiceParameters): void {
     if (signerOrProvider) {
       // Only connect to Lido Oracle contract if address for it is specified in blockchain config
       if (config.lidoOracle) {
@@ -101,7 +110,7 @@ export class VariableRateService {
     yieldsAddress: string,
     chain: Chain,
     averageBlockTime: number,
-  ) {
+  ): Promise<BigNumber> {
     if (
       !this.tempusAMMService ||
       !this.vaultService ||
@@ -116,7 +125,7 @@ export class VariableRateService {
     if (!poolConfig) {
       return Promise.reject();
     }
-    let provider = getProviderFromSignerOrProvider(this.signerOrProvider);
+    const provider = getProviderFromSignerOrProvider(this.signerOrProvider);
 
     const [latestBlock, swapFeePercentage] = await Promise.all([
       provider.getBlock('latest'),
@@ -129,7 +138,8 @@ export class VariableRateService {
     // Timestamp of 7 days old block or pool start time (whichever of the two is closer to current date)
     const laterBlock = Math.max(poolConfig.startDate, earlierBlock.timestamp * 1000);
 
-    // Number of hours from 7 days old block to now (or pool start time to now, whichever of the two is closer to current date)
+    // Number of hours from 7 days old block to now (or pool start time to now,
+    // whichever of the two is closer to current date)
     const hoursBetweenLatestAndLater = ((latestBlock.timestamp * 1000 - laterBlock) / (60 * 60 * 1000)).toFixed(
       poolConfig.tokenPrecision.principals,
     );
@@ -140,7 +150,7 @@ export class VariableRateService {
     const sortedEvents = await this.getSwapAndPoolBalanceChangedEvents(poolConfig, fetchEventsFromBlock);
 
     // Fetch current pool balance
-    let { principals, yields } = await this.getPoolTokens(poolConfig.poolId, principalsAddress, yieldsAddress);
+    const { principals, yields } = await this.getPoolTokens(poolConfig.poolId, principalsAddress, yieldsAddress);
 
     // Calculate current principals to yields ratio
     let currentPrincipalsToYieldsRatio = ethers.utils.parseUnits('1', poolConfig.tokenPrecision.principals);
@@ -154,7 +164,7 @@ export class VariableRateService {
     // Go over all events and accumulate total swap fees
     sortedEvents.forEach(event => {
       if (isSwapEvent(event)) {
-        const adjust = this.adjustPrincipalForSwapEvent(
+        const adjust = VariableRateService.adjustPrincipalForSwapEvent(
           event,
           principalsAddress,
           principals,
@@ -167,7 +177,11 @@ export class VariableRateService {
       }
 
       if (isPoolBalanceChangedEvent(event)) {
-        principals = this.adjustPrincipalForPoolBalanceChangedEvent(event, principalsAddress, principals);
+        principals = VariableRateService.adjustPrincipalForPoolBalanceChangedEvent(
+          event,
+          principalsAddress,
+          principals,
+        );
       }
     });
 
@@ -207,7 +221,7 @@ export class VariableRateService {
     return sortedEvents;
   }
 
-  private adjustPrincipalForSwapEvent(
+  private static adjustPrincipalForSwapEvent(
     event: SwapEvent,
     principalsAddress: string,
     principals: BigNumber,
@@ -242,19 +256,20 @@ export class VariableRateService {
     const swapFeesVolume = mul18f(eventVolume, adjustedSwapFeePrecision, principalsPrecision);
     const liquidityProvided = principals.sub(swapFeesVolume);
     const feePerPrincipalShare = div18f(swapFeesVolume, liquidityProvided, principalsPrecision);
-    totalFees = totalFees.add(feePerPrincipalShare);
+    const totalFeesPlusPrincipalShareFee = totalFees.add(feePerPrincipalShare);
 
     // Adjust pool balance based on swapped amounts
+    let adjustedPrincipals = principals;
     if (event.args.tokenIn === principalsAddress) {
-      principals = principals.sub(event.args.amountIn);
+      adjustedPrincipals = principals.sub(event.args.amountIn);
     } else if (event.args.tokenOut === principalsAddress) {
-      principals = principals.add(event.args.amountOut);
+      adjustedPrincipals = principals.add(event.args.amountOut);
     }
 
-    return { principals, totalFees };
+    return { principals: adjustedPrincipals, totalFees: totalFeesPlusPrincipalShareFee };
   }
 
-  private adjustPrincipalForPoolBalanceChangedEvent(
+  private static adjustPrincipalForPoolBalanceChangedEvent(
     event: PoolBalanceChangedEvent,
     principalsAddress: string,
     principals: BigNumber,
@@ -264,11 +279,10 @@ export class VariableRateService {
       poolTokenAddress => principalsAddress === poolTokenAddress,
     );
     const principalsDelta = event.args.deltas[principalsIndexInBalanceChange];
-    principals = principalsDelta.isNegative()
-      ? principals.add(principalsDelta.abs())
-      : principals.sub(principalsDelta.abs());
+    let result = principals;
+    result = principalsDelta.isNegative() ? result.add(principalsDelta.abs()) : result.sub(principalsDelta.abs());
 
-    return principals;
+    return result;
   }
 
   async getAprRate(
@@ -329,19 +343,19 @@ export class VariableRateService {
       const { postTotalPooledEther, preTotalPooledEther, timeElapsed } =
         await this.lidoOracle?.getLastCompletedReportDelta();
 
-      const apr = this.calculateLidoAPR(postTotalPooledEther, preTotalPooledEther, timeElapsed);
+      const apr = VariableRateService.calculateLidoAPR(postTotalPooledEther, preTotalPooledEther, timeElapsed);
 
       // currently 10%. it's possible to query it using Lido.getFee()
       const aprMinusLidoFees = apr.mul(BigNumber.from('9000')).div(BigNumber.from('10000'));
 
-      return Number(ethers.utils.formatEther(aprMinusLidoFees)) + fees;
+      return Number(ethers.utils.formatUnits(aprMinusLidoFees)) + fees;
     } catch (error) {
       console.error('VariableRateService - getLidoAPR', error);
       return 0;
     }
   }
 
-  private calculateLidoAPR(
+  private static calculateLidoAPR(
     postTotalPooledEther: BigNumber,
     preTotalPooledEther: BigNumber,
     timeElapsed: BigNumber,
@@ -358,6 +372,7 @@ export class VariableRateService {
     }
   }
 
+  // eslint-disable-next-line max-len
   // https://github.com/Rari-Capital/RariSDK/blob/d6293e09c36a4ac6914725f5a5528a9c1e7cb178/src/Vaults/pools/stable.ts#L473
   private async getRariAPR(fees: number) {
     if (!this.rariVault) {
@@ -365,7 +380,7 @@ export class VariableRateService {
     }
 
     const currentRariApy: BigNumber = await this.rariVault.pools.stable.apy.getCurrentApy();
-    const parsedCurrentRariApy: number = Number(ethers.utils.formatEther(currentRariApy));
+    const parsedCurrentRariApy = Number(ethers.utils.formatUnits(currentRariApy));
     const rariAPR = VariableRateService.getAprFromApy(parsedCurrentRariApy);
 
     return rariAPR + fees;
@@ -388,7 +403,7 @@ export class VariableRateService {
   private async getAaveAPY(yieldBearingTokenAddress: string): Promise<number> {
     try {
       const { currentLiquidityRate } = await this.aaveLendingPool?.getReserveData(yieldBearingTokenAddress);
-      const aaveAPY = Number(ethers.utils.formatEther(wadToDai(currentLiquidityRate)));
+      const aaveAPY = Number(ethers.utils.formatUnits(wadToDai(currentLiquidityRate)));
       return aaveAPY;
     } catch (error) {
       console.error('VariableRateService - getAaveAPY', error);
@@ -402,7 +417,6 @@ export class VariableRateService {
     }
 
     try {
-      let supplyRatePerBlock;
       if (this.tokenAddressToContractMap[yieldBearingTokenAddress] === undefined) {
         this.tokenAddressToContractMap[yieldBearingTokenAddress] = new Contract(
           yieldBearingTokenAddress,
@@ -410,7 +424,7 @@ export class VariableRateService {
           this.signerOrProvider,
         );
       }
-      supplyRatePerBlock = await this.tokenAddressToContractMap[yieldBearingTokenAddress].supplyRatePerBlock();
+      const supplyRatePerBlock = await this.tokenAddressToContractMap[yieldBearingTokenAddress].supplyRatePerBlock();
       const supplyApy = Math.pow((supplyRatePerBlock / ethMantissa) * COMPOUND_BLOCKS_PER_DAY + 1, DAYS_IN_A_YEAR) - 1;
 
       return supplyApy;
@@ -432,9 +446,9 @@ export class VariableRateService {
     return new Promise(resolve => {
       this.fetchYearnData().subscribe(yearnData => {
         if (yearnData) {
-          const data = yearnData.filter(data => data.address === yieldBearingTokenAddress);
-          if (data && data.length) {
-            return resolve(data[0].apy.net_apy);
+          const filteredData = yearnData.filter(data => data.address === yieldBearingTokenAddress);
+          if (filteredData && filteredData.length) {
+            return resolve(filteredData[0].apy.net_apy);
           }
         }
 

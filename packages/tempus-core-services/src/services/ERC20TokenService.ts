@@ -1,7 +1,6 @@
 import { BigNumber, Contract, ContractTransaction, CallOverrides } from 'ethers';
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
-import { ERC20 } from '../abi/ERC20';
-import ERC20ABI from '../abi/ERC20.json';
+import ERC20ABI, { ERC20 } from '../abi/ERC20.json';
 import { TypedListener } from '../abi/commons';
 import { approveGasIncrease, ZERO_ETH_ADDRESS } from '../constants';
 import { Ticker } from '../interfaces';
@@ -25,7 +24,7 @@ type ERC20TokenServiceParameters = {
 export class ERC20TokenService {
   public contract: ERC20 | null = null;
 
-  init(params: ERC20TokenServiceParameters) {
+  init(params: ERC20TokenServiceParameters): void {
     if (this.contract) {
       this.contract.removeAllListeners();
     }
@@ -44,10 +43,9 @@ export class ERC20TokenService {
       // ETH is a native token that does not have an ERC20 contract, we need to get balance for it like this.
       if (this.contract.address === ZERO_ETH_ADDRESS) {
         if (overrides) {
-          return this.contract.provider.getBalance(address, overrides.blockTag);
-        } else {
-          return this.contract.provider.getBalance(address);
+          return await this.contract.provider.getBalance(address, overrides.blockTag);
         }
+        return await this.contract.provider.getBalance(address);
       }
 
       if (overrides) {
@@ -111,7 +109,7 @@ export class ERC20TokenService {
     try {
       // No need to approve ETH transfers, ETH is not an ERC20 contract.
       if (this.contract.address === ZERO_ETH_ADDRESS) {
-        return Promise.resolve();
+        return await Promise.resolve();
       }
 
       const estimate = await this.contract.estimateGas.approve(spenderAddress, amount);
@@ -139,7 +137,7 @@ export class ERC20TokenService {
     }
   }
 
-  onTransfer(from: string | null, to: string | null, listener: TransferEventListener) {
+  onTransfer(from: string | null, to: string | null, listener: TransferEventListener): void {
     if (this.contract) {
       // In case of ETH trigger transfer event on every new block
       if (this.contract.address === ZERO_ETH_ADDRESS) {
@@ -150,7 +148,7 @@ export class ERC20TokenService {
     }
   }
 
-  offTransfer(from: string | null, to: string | null, listener: TransferEventListener) {
+  offTransfer(from: string | null, to: string | null, listener: TransferEventListener): void {
     if (this.contract) {
       if (this.contract.address === ZERO_ETH_ADDRESS) {
         this.contract.provider.off('block', listener);

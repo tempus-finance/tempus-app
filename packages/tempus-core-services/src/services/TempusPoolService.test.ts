@@ -42,8 +42,7 @@ describe('TempusPoolService', () => {
   let instance: TempusPoolService;
 
   beforeEach(() => {
-    Contract.mockImplementation(() => {
-      return {
+    Contract.mockImplementation(() => ({
         currentInterestRate: mockCurrentInterestRate,
         maturityTime: mockMaturityTime,
         startTime: mockStartTime,
@@ -63,14 +62,11 @@ describe('TempusPoolService', () => {
           Deposited: jest.fn(),
           Redeemed: jest.fn(),
         },
-      };
-    });
+      }));
 
-    getERC20TokenService.mockImplementation(() => {
-      return {
+    getERC20TokenService.mockImplementation(() => ({
         symbol: mockSymbol,
-      };
-    });
+      }));
   });
 
   describe('constructor()', () => {
@@ -112,9 +108,8 @@ describe('TempusPoolService', () => {
       mockCurrentRate.mockImplementation((overrides: {}) => {
         if (!overrides) {
           return Promise.resolve(BigNumber.from('10'));
-        } else {
-          return Promise.resolve(BigNumber.from('9'));
         }
+          return Promise.resolve(BigNumber.from('9'));
       });
 
       instance = new TempusPoolService();
@@ -178,19 +173,17 @@ describe('TempusPoolService', () => {
             number: 100,
             timestamp: 200,
           });
-        } else {
+        }
           return Promise.resolve({
             number: 50,
             timestamp: 100,
           });
-        }
       });
       mockCurrentInterestRate.mockImplementation((overrides: CallOverrides) => {
         if (overrides) {
           return Promise.resolve(BigNumber.from('1'));
-        } else {
-          return Promise.resolve(BigNumber.from('2'));
         }
+          return Promise.resolve(BigNumber.from('2'));
       });
 
       utils.formatEther.mockImplementation((value: number) => value);

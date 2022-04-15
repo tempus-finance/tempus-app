@@ -16,11 +16,11 @@ export const getTokenPrecision = (
   }
 
   const tempusPoolsConfig: TempusPool[] = [];
-  for (const networkName in config) {
+  Object.keys(config).forEach((networkName: string) => {
     tempusPoolsConfig.push(...config[networkName as Chain].tempusPools);
-  }
+  });
 
-  const pool = tempusPoolsConfig.find(config => config.address === poolAddress);
+  const pool = tempusPoolsConfig.find(tempusPoolConfig => tempusPoolConfig.address === poolAddress);
 
   if (!pool) {
     return 0;

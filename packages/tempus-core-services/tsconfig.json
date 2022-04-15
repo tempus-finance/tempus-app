@@ -4,6 +4,7 @@
     "declaration": true,
     "importHelpers": true,
     "experimentalDecorators": true,
+    "noEmit": true,
     "sourceMap": true,
     "outDir": "./dist/",
     "types": ["node", "jest"]

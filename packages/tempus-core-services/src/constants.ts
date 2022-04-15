@@ -57,7 +57,7 @@ export const tokenPrecision: { [ticker in Ticker]?: number } = {
 const ALCHEMY_KEY = process.env.REACT_APP_MAINNET_ALCHEMY_KEY;
 const GOERLI_ALCHEMY_KEY = process.env.REACT_APP_GOERLI_ALCHEMY_KEY;
 const FANTOM_ENDPOINT = process.env.REACT_APP_FANTOM_ENDPOINT;
-const REACT_APP_ETHEREUM_FORK_RPC = process.env.REACT_APP_ETHEREUM_FORK_RPC;
+const { REACT_APP_ETHEREUM_FORK_RPC } = process.env;
 
 export enum SupportedChainId {
   MAINNET = 1,

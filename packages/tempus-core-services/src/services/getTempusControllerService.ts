@@ -6,7 +6,7 @@ import { getDefaultProvider } from './getDefaultProvider';
 import { getTempusAMMService } from './getTempusAMMService';
 import { TempusControllerService } from './TempusControllerService';
 
-let tempusControllerServices = new Map<Chain, TempusControllerService>();
+const tempusControllerServices = new Map<Chain, TempusControllerService>();
 export const getTempusControllerService = (
   chain: Chain,
   getChainConfig: (chain: Chain) => ChainConfig,
@@ -15,7 +15,7 @@ export const getTempusControllerService = (
   if (!tempusControllerServices.get(chain)) {
     const tempusControllerService = new TempusControllerService();
     tempusControllerService.init({
-      Contract: Contract,
+      Contract,
       address: getChainConfig(chain).tempusControllerContract,
       abi: TempusControllerABI,
       signerOrProvider: getDefaultProvider(chain, getChainConfig),
@@ -33,10 +33,10 @@ export const getTempusControllerService = (
 
   if (signerOrProvider) {
     tempusControllerService.init({
-      Contract: Contract,
+      Contract,
       address: getChainConfig(chain).tempusControllerContract,
       abi: TempusControllerABI,
-      signerOrProvider: signerOrProvider,
+      signerOrProvider,
       tempusAMMService: getTempusAMMService(chain, getChainConfig, signerOrProvider),
       chain,
       getChainConfig,
