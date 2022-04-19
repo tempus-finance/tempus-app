@@ -150,7 +150,9 @@ export class VariableRateService {
     const sortedEvents = await this.getSwapAndPoolBalanceChangedEvents(poolConfig, fetchEventsFromBlock);
 
     // Fetch current pool balance
-    const { principals, yields } = await this.getPoolTokens(poolConfig.poolId, principalsAddress, yieldsAddress);
+    const poolTokens = await this.getPoolTokens(poolConfig.poolId, principalsAddress, yieldsAddress);
+    let { principals } = poolTokens;
+    const { yields } = poolTokens;
 
     // Calculate current principals to yields ratio
     let currentPrincipalsToYieldsRatio = ethers.utils.parseUnits('1', poolConfig.tokenPrecision.principals);
