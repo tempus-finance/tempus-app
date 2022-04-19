@@ -331,7 +331,7 @@ describe('VariableRateService', () => {
           timeElapsed: mockTimeElapsed,
         }),
       });
-      jest.spyOn(variableRateService as any, 'calculateLidoAPR').mockImplementation(() => {
+      jest.spyOn(VariableRateService as any, 'calculateLidoAPR').mockImplementation(() => {
         throw new Error(errMessage);
       });
 
@@ -354,7 +354,7 @@ describe('VariableRateService', () => {
           timeElapsed: mockTimeElapsed,
         }),
       });
-      jest.spyOn(variableRateService as any, 'calculateLidoAPR').mockReturnValue(mockAPR);
+      jest.spyOn(VariableRateService as any, 'calculateLidoAPR').mockReturnValue(mockAPR);
       const expected =
         Number(utils.formatUnits(mockAPR.mul(BigNumber.from('9000')).div(BigNumber.from('10000')))) + fees;
 
@@ -390,7 +390,7 @@ describe('VariableRateService', () => {
       const timeElapsed = BigNumber.from(Math.round(Math.random() * 1000) + 1);
 
       expect(
-        (variableRateService as any).calculateLidoAPR(postTotalPooledEther, BigNumber.from(0), timeElapsed),
+        (VariableRateService as any).calculateLidoAPR(postTotalPooledEther, BigNumber.from(0), timeElapsed),
       ).toEqual(BigNumber.from(0));
       expect(console.error).toHaveBeenCalled();
       expect((console.error as jest.Mock<void, any>).mock.calls[0][0]).toEqual(
@@ -404,7 +404,7 @@ describe('VariableRateService', () => {
       const postTotalPooledEther = preTotalPooledEther.add(Math.round(Math.random() * 1000) + 1);
 
       expect(
-        (variableRateService as any).calculateLidoAPR(postTotalPooledEther, preTotalPooledEther, BigNumber.from(0)),
+        (VariableRateService as any).calculateLidoAPR(postTotalPooledEther, preTotalPooledEther, BigNumber.from(0)),
       ).toEqual(BigNumber.from(0));
       expect(console.error).toHaveBeenCalled();
       expect((console.error as jest.Mock<void, any>).mock.calls[0][0]).toEqual(
@@ -428,13 +428,15 @@ describe('VariableRateService', () => {
           .div(preTotalPooledEther.mul(timeElapsed));
 
         expect(
-          (variableRateService as any).calculateLidoAPR(postTotalPooledEther, preTotalPooledEther, timeElapsed),
+          (VariableRateService as any).calculateLidoAPR(postTotalPooledEther, preTotalPooledEther, timeElapsed),
         ).toEqual(expected);
       },
     );
   });
 
   describe('calculateFees()', () => {
+    let localMockProvider: JsonRpcProvider | null = null;
+
     test('test with no init() invoked, should reject with an error', async () => {
       const tempusPool = '0x0000000000000000000000000000000000000000';
       const tempusAMM = '0x0000000000000000000000000000000000000001';
@@ -512,18 +514,19 @@ describe('VariableRateService', () => {
               Promise.resolve(blockHashOrBlockTag === 'latest' ? mockLatestBlock : mockEarlierBlock),
           ),
       }));
-      (getProviderFromSignerOrProvider as unknown as jest.Mock).mockImplementation(() => mockProvider);
 
-      // const mockProvider = new JsonRpcProvider();
+      localMockProvider = new JsonRpcProvider();
+      (getProviderFromSignerOrProvider as unknown as jest.Mock).mockImplementation(() => localMockProvider);
+
       mockGetChainConfig.mockReturnValue({ tempusPools: DUMMY_TEMPUS_POOL } as ChainConfig);
       jest.spyOn(variableRateService as any, 'getSwapAndPoolBalanceChangedEvents').mockResolvedValue(mockEvents);
       jest.spyOn(variableRateService as any, 'getPoolTokens').mockResolvedValue(mockPoolTokens);
-      jest.spyOn(variableRateService as any, 'adjustPrincipalForSwapEvent').mockReturnValue({
+      jest.spyOn(VariableRateService as any, 'adjustPrincipalForSwapEvent').mockReturnValue({
         principals: mockPoolTokens.principals.add(10),
         totalFees,
       });
       jest
-        .spyOn(variableRateService as any, 'adjustPrincipalForPoolBalanceChangedEvent')
+        .spyOn(VariableRateService as any, 'adjustPrincipalForPoolBalanceChangedEvent')
         .mockReturnValue(mockPoolTokens.principals.sub((mockEvents[0].args as any).deltas[0]));
       jest.spyOn(utils, 'parseEther').mockReturnValue(BigNumber.from(1));
       mul18f.mockImplementation((a: BigNumber, b: BigNumber) => a.mul(b).div(10));
@@ -552,9 +555,9 @@ describe('VariableRateService', () => {
           averageBlockTime,
         ),
       ).resolves.toEqual(mul18f(scaledFees, div18f(mockPoolTokens.principals, mockPoolTokens.yields)));
-      expect(mockProvider.getBlock).toHaveBeenCalledTimes(2);
-      expect(mockProvider.getBlock).toHaveBeenNthCalledWith(1, 'latest');
-      expect(mockProvider.getBlock).toHaveBeenNthCalledWith(
+      expect(localMockProvider?.getBlock).toHaveBeenCalledTimes(2);
+      expect(localMockProvider?.getBlock).toHaveBeenNthCalledWith(1, 'latest');
+      expect(localMockProvider?.getBlock).toHaveBeenNthCalledWith(
         2,
         mockLatestBlock.number - Math.floor((SECONDS_IN_A_DAY * 7) / averageBlockTime),
       );
@@ -567,7 +570,7 @@ describe('VariableRateService', () => {
         principalsAddress,
         yieldsAddress,
       );
-      expect((variableRateService as any).adjustPrincipalForSwapEvent).toHaveBeenCalledWith(
+      expect((VariableRateService as any).adjustPrincipalForSwapEvent).toHaveBeenCalledWith(
         mockEvents[1],
         principalsAddress,
         mockPoolTokens.principals.sub((mockEvents[0].args as any).deltas[0]),
@@ -575,7 +578,7 @@ describe('VariableRateService', () => {
         mockSwapFeePercentage,
         principalsPrecision,
       );
-      expect((variableRateService as any).adjustPrincipalForPoolBalanceChangedEvent).toHaveBeenCalledWith(
+      expect((VariableRateService as any).adjustPrincipalForPoolBalanceChangedEvent).toHaveBeenCalledWith(
         mockEvents[0],
         principalsAddress,
         mockPoolTokens.principals,
@@ -617,17 +620,19 @@ describe('VariableRateService', () => {
               Promise.resolve(blockHashOrBlockTag === 'latest' ? mockLatestBlock : mockEarlierBlock),
           ),
       }));
-      (getProviderFromSignerOrProvider as unknown as jest.Mock).mockImplementation(() => mockProvider);
-      // const mockProvider = new JsonRpcProvider();
+
+      localMockProvider = new JsonRpcProvider();
+      (getProviderFromSignerOrProvider as unknown as jest.Mock).mockImplementation(() => localMockProvider);
+
       mockGetChainConfig.mockReturnValue({ tempusPools: DUMMY_TEMPUS_POOL } as ChainConfig);
       jest.spyOn(variableRateService as any, 'getSwapAndPoolBalanceChangedEvents').mockResolvedValue(mockEvents);
       jest.spyOn(variableRateService as any, 'getPoolTokens').mockResolvedValue(mockPoolTokens);
-      jest.spyOn(variableRateService as any, 'adjustPrincipalForSwapEvent').mockReturnValue({
+      jest.spyOn(VariableRateService as any, 'adjustPrincipalForSwapEvent').mockReturnValue({
         principals: mockPoolTokens.principals.add(10),
         totalFees: BigNumber.from(2),
       });
       jest
-        .spyOn(variableRateService as any, 'adjustPrincipalForPoolBalanceChangedEvent')
+        .spyOn(VariableRateService as any, 'adjustPrincipalForPoolBalanceChangedEvent')
         .mockReturnValue(mockPoolTokens.principals.sub((mockEvents[0].args as any).deltas[0]));
       jest.spyOn(utils, 'parseEther').mockReturnValue(BigNumber.from(1));
       mul18f.mockImplementation((a: BigNumber, b: BigNumber) => a.mul(b).div(10));
@@ -647,9 +652,9 @@ describe('VariableRateService', () => {
         ),
       ).resolves.toEqual(BigNumber.from(0));
       expect(mockGetChainConfig).toHaveBeenCalled();
-      expect(mockProvider.getBlock).toHaveBeenCalledTimes(2);
-      expect(mockProvider.getBlock).toHaveBeenNthCalledWith(1, 'latest');
-      expect(mockProvider.getBlock).toHaveBeenNthCalledWith(
+      expect(localMockProvider.getBlock).toHaveBeenCalledTimes(2);
+      expect(localMockProvider.getBlock).toHaveBeenNthCalledWith(1, 'latest');
+      expect(localMockProvider.getBlock).toHaveBeenNthCalledWith(
         2,
         mockLatestBlock.number - Math.floor((SECONDS_IN_A_DAY * 7) / averageBlockTime),
       );
@@ -662,7 +667,7 @@ describe('VariableRateService', () => {
         principalsAddress,
         yieldsAddress,
       );
-      expect((variableRateService as any).adjustPrincipalForSwapEvent).toHaveBeenCalledWith(
+      expect((VariableRateService as any).adjustPrincipalForSwapEvent).toHaveBeenCalledWith(
         mockEvents[1],
         principalsAddress,
         mockPoolTokens.principals.sub((mockEvents[0].args as any).deltas[0]),
@@ -670,7 +675,7 @@ describe('VariableRateService', () => {
         mockSwapFeePercentage,
         principalsPrecision,
       );
-      expect((variableRateService as any).adjustPrincipalForPoolBalanceChangedEvent).toHaveBeenCalledWith(
+      expect((VariableRateService as any).adjustPrincipalForPoolBalanceChangedEvent).toHaveBeenCalledWith(
         mockEvents[0],
         principalsAddress,
         mockPoolTokens.principals,
@@ -715,13 +720,15 @@ describe('VariableRateService', () => {
               Promise.resolve(blockHashOrBlockTag === 'latest' ? mockLatestBlock : mockEarlierBlock),
           ),
       }));
-      (getProviderFromSignerOrProvider as unknown as jest.Mock).mockImplementation(() => mockProvider);
-      // const mockProvider = new JsonRpcProvider();
+
+      localMockProvider = new JsonRpcProvider();
+      (getProviderFromSignerOrProvider as unknown as jest.Mock).mockImplementation(() => localMockProvider);
+
       mockGetChainConfig.mockReturnValue({ tempusPools: DUMMY_TEMPUS_POOL } as ChainConfig);
       jest.spyOn(variableRateService as any, 'getSwapAndPoolBalanceChangedEvents').mockResolvedValue(mockEvents);
       jest.spyOn(variableRateService as any, 'getPoolTokens').mockResolvedValue(mockPoolTokens);
       jest
-        .spyOn(variableRateService as any, 'adjustPrincipalForPoolBalanceChangedEvent')
+        .spyOn(VariableRateService as any, 'adjustPrincipalForPoolBalanceChangedEvent')
         .mockReturnValue(mockPoolTokens.principals.sub((mockEvents[0].args as any).deltas[0]));
       jest.spyOn(utils, 'parseEther').mockReturnValue(BigNumber.from(1));
       mul18f.mockImplementation((a: BigNumber, b: BigNumber) => a.mul(b).div(10));
@@ -741,9 +748,9 @@ describe('VariableRateService', () => {
         ),
       ).resolves.toEqual(BigNumber.from(0));
       expect(mockGetChainConfig).toHaveBeenCalled();
-      expect(mockProvider.getBlock).toHaveBeenCalledTimes(2);
-      expect(mockProvider.getBlock).toHaveBeenNthCalledWith(1, 'latest');
-      expect(mockProvider.getBlock).toHaveBeenNthCalledWith(
+      expect(localMockProvider.getBlock).toHaveBeenCalledTimes(2);
+      expect(localMockProvider.getBlock).toHaveBeenNthCalledWith(1, 'latest');
+      expect(localMockProvider.getBlock).toHaveBeenNthCalledWith(
         2,
         mockLatestBlock.number - Math.floor((SECONDS_IN_A_DAY * 7) / averageBlockTime),
       );
@@ -756,7 +763,7 @@ describe('VariableRateService', () => {
         principalsAddress,
         yieldsAddress,
       );
-      expect((variableRateService as any).adjustPrincipalForPoolBalanceChangedEvent).toHaveBeenCalledWith(
+      expect((VariableRateService as any).adjustPrincipalForPoolBalanceChangedEvent).toHaveBeenCalledWith(
         mockEvents[0],
         principalsAddress,
         mockPoolTokens.principals,
@@ -815,7 +822,7 @@ describe('VariableRateService', () => {
       div18f.mockImplementation((a: BigNumber, b: BigNumber) => a.mul(10).div(b));
 
       expect(
-        (variableRateService as any).adjustPrincipalForSwapEvent(
+        (VariableRateService as any).adjustPrincipalForSwapEvent(
           event,
           principalsAddress,
           BigNumber.from(principals),
@@ -844,7 +851,7 @@ describe('VariableRateService', () => {
       div18f.mockImplementation((a: BigNumber, b: BigNumber) => a.mul(10).div(b));
 
       expect(
-        (variableRateService as any).adjustPrincipalForSwapEvent(
+        (VariableRateService as any).adjustPrincipalForSwapEvent(
           event,
           principalsAddress,
           BigNumber.from(principals),
@@ -871,7 +878,7 @@ describe('VariableRateService', () => {
       div18f.mockImplementation((a: BigNumber, b: BigNumber) => a.mul(10).div(b));
 
       expect(
-        (variableRateService as any).adjustPrincipalForSwapEvent(
+        (VariableRateService as any).adjustPrincipalForSwapEvent(
           event,
           principalsAddress,
           BigNumber.from(principals),
@@ -899,7 +906,7 @@ describe('VariableRateService', () => {
       const principals = Math.round(Math.random() * 1000);
 
       expect(
-        (variableRateService as any).adjustPrincipalForPoolBalanceChangedEvent(
+        (VariableRateService as any).adjustPrincipalForPoolBalanceChangedEvent(
           event,
           principalsAddress,
           BigNumber.from(principals),
@@ -920,7 +927,7 @@ describe('VariableRateService', () => {
       const principals = Math.round(Math.random() * 1000);
 
       expect(
-        (variableRateService as any).adjustPrincipalForPoolBalanceChangedEvent(
+        (VariableRateService as any).adjustPrincipalForPoolBalanceChangedEvent(
           event,
           principalsAddress,
           BigNumber.from(principals),
