@@ -11,6 +11,10 @@ export const getTokenPrecision = (
   tokenTypePrecision: TokenTypePrecision,
   config: Config,
 ): number => {
+  if (!poolAddress || !tokenTypePrecision || !config) {
+    return DEFAULT_TOKEN_PRECISION;
+  }
+
   if (tokenPrecisionCache?.[poolAddress]?.[tokenTypePrecision] !== undefined) {
     return tokenPrecisionCache?.[poolAddress]?.[tokenTypePrecision] || 0;
   }

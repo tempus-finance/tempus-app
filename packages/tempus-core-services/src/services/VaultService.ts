@@ -1,4 +1,4 @@
-import { BigNumber, Contract, ethers, ContractTransaction, CallOverrides } from 'ethers';
+import { BigNumber, Contract, ethers, ContractTransaction, CallOverrides, ContractInterface } from 'ethers';
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
 import VaultABI, { Vault } from '../abi/Vault';
 import { TypedEvent, TypedListener } from '../abi/commons';
@@ -8,7 +8,7 @@ import { TempusAMMService } from './TempusAMMService';
 import { getDefaultProvider } from './getDefaultProvider';
 
 type VaultServiceParameters = {
-  Contract: typeof Contract;
+  VaultContract: typeof Contract;
   address: string;
   abi: typeof VaultABI;
   signerOrProvider: JsonRpcProvider | JsonRpcSigner;
@@ -79,6 +79,7 @@ export class VaultService {
   private tempusAMMService: TempusAMMService | null = null;
 
   public init({
+    VaultContract,
     address,
     abi,
     chain,
@@ -86,7 +87,7 @@ export class VaultService {
     getChainConfig,
     signerOrProvider,
   }: VaultServiceParameters): void {
-    this.contract = new Contract(address, abi, signerOrProvider) as Vault;
+    this.contract = new VaultContract(address, abi as unknown as ContractInterface, signerOrProvider) as Vault;
 
     this.tempusAMMService = tempusAMMService;
     this.getChainConfig = getChainConfig;

@@ -1,5 +1,5 @@
 import * as ejs from 'ethers';
-import StatisticsABI from '../abi/Stats.json';
+import StatisticsABI from '../abi/Stats';
 import { StatisticsService } from './StatisticsService';
 
 jest.mock('@ethersproject/providers');

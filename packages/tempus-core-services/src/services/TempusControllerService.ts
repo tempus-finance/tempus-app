@@ -1,4 +1,4 @@
-import { BigNumber, Contract, ContractTransaction } from 'ethers';
+import { BigNumber, Contract, ContractInterface, ContractTransaction } from 'ethers';
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
 import { TypedEvent } from '../abi/commons';
 import TempusControllerABI, { TempusController } from '../abi/TempusController';
@@ -72,7 +72,7 @@ export class TempusControllerService {
     tempusAMMService,
   }: TempusControllerServiceParameters): void {
     try {
-      this.contract = new Contract(address, abi, signerOrProvider) as TempusController;
+      this.contract = new Contract(address, abi as unknown as ContractInterface, signerOrProvider) as TempusController;
     } catch (error) {
       console.error('TempusControllerService - init', error);
     }

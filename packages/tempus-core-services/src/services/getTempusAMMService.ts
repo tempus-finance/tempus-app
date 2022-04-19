@@ -2,7 +2,7 @@ import { Contract } from 'ethers';
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
 import { getDefaultProvider } from './getDefaultProvider';
 import { Chain, ChainConfig } from '../interfaces';
-import TempusAMMABI from '../abi/TempusAMM.json';
+import TempusAMMABI from '../abi/TempusAMM';
 import { TempusAMMService } from './TempusAMMService';
 
 const tempusAMMServices = new Map<Chain, TempusAMMService>();

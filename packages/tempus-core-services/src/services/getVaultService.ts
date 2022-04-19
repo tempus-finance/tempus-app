@@ -1,6 +1,6 @@
 import { Contract } from 'ethers';
 import { JsonRpcSigner } from '@ethersproject/providers';
-import VaultABI from '../abi/Vault.json';
+import VaultABI from '../abi/Vault';
 import { ChainConfig, Chain } from '../interfaces';
 import { getDefaultProvider } from './getDefaultProvider';
 import { getTempusAMMService } from './getTempusAMMService';
@@ -15,7 +15,7 @@ export const getVaultService = (
   if (!vaultServices.get(chain)) {
     const vaultService = new VaultService();
     vaultService.init({
-      Contract,
+      VaultContract: Contract,
       address: getChainConfig(chain).vaultContract,
       abi: VaultABI,
       signerOrProvider: getDefaultProvider(chain, getChainConfig),
@@ -33,7 +33,7 @@ export const getVaultService = (
 
   if (signerOrProvider) {
     vaultService.init({
-      Contract,
+      VaultContract: Contract,
       address: getChainConfig(chain).vaultContract,
       abi: VaultABI,
       signerOrProvider,
