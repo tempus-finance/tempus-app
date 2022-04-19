@@ -43,10 +43,13 @@ describe('FixedPointDecimal', () => {
       }),
     );
 
-    [{ value: '.' }, { value: '' }, { value: '+123' }, { value: '1e8' }].forEach(({ value }) =>
-      it(`throw error for accepting ${value}`, () => {
-        expect(() => new FixedPointDecimal(value)).toThrow(`Failed to parse ${value} when creating FixedPointDecimal`);
-      }),
+    [{ value: '.' }, { value: '' }, { value: '+123' }, { value: '1e8' }, { value: '123.0123456789012345678' }].forEach(
+      ({ value }) =>
+        it(`throw error for accepting ${value}`, () => {
+          expect(() => new FixedPointDecimal(value)).toThrow(
+            `Failed to parse ${value} when creating FixedPointDecimal`,
+          );
+        }),
     );
   });
 
@@ -279,6 +282,21 @@ describe('FixedPointDecimal', () => {
         fractionDigits: undefined,
         expected: '790',
       },
+      {
+        value: '123.012345678901234567',
+        fractionDigits: 17,
+        expected: '123.01234567890123457',
+      },
+      {
+        value: '123.012345678901234567',
+        fractionDigits: 18,
+        expected: '123.012345678901234567',
+      },
+      {
+        value: '123.012345678901234567',
+        fractionDigits: 20,
+        expected: '123.01234567890123456700',
+      },
     ].forEach(({ value, fractionDigits, expected }) =>
       it(`${value} should be rounded to ${expected}`, () => {
         const decimal = new FixedPointDecimal(value);
@@ -333,6 +351,21 @@ describe('FixedPointDecimal', () => {
         value: 789.789,
         fractionDigits: undefined,
         expected: '789',
+      },
+      {
+        value: '123.012345678901234567',
+        fractionDigits: 17,
+        expected: '123.01234567890123456',
+      },
+      {
+        value: '123.012345678901234567',
+        fractionDigits: 18,
+        expected: '123.012345678901234567',
+      },
+      {
+        value: '123.012345678901234567',
+        fractionDigits: 20,
+        expected: '123.01234567890123456700',
       },
     ].forEach(({ value, fractionDigits, expected }) =>
       it(`${value} should be truncated to ${expected}`, () => {
