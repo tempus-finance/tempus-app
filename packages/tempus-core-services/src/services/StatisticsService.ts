@@ -1,5 +1,5 @@
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
-import { BigNumber, CallOverrides, Contract, ethers } from 'ethers';
+import { BigNumber, CallOverrides, Contract, ContractInterface, ethers } from 'ethers';
 import StatsABI, { Stats } from '../abi/Stats';
 import { DEFAULT_TOKEN_PRECISION, tokenPrecision, ZERO } from '../constants';
 import { Chain, Config, Ticker } from '../interfaces';
@@ -33,7 +33,7 @@ export class StatisticsService {
     getConfig,
   }: StatisticsServiceParameters): void {
     try {
-      this.stats = new StatsContract(address, abi, signerOrProvider) as Stats;
+      this.stats = new StatsContract(address, abi as unknown as ContractInterface, signerOrProvider) as Stats;
     } catch (error) {
       console.error('StatisticsService - init', error);
     }
