@@ -28,209 +28,209 @@ const Template: ComponentStory<typeof Icon> = args => (
 
 export const Checkmark = Template.bind({});
 Checkmark.args = {
-  type: 'checkmark',
+  variant: 'checkmark',
 };
 
 export const CheckmarkBordered = Template.bind({});
 CheckmarkBordered.args = {
-  type: 'checkmark-bordered',
+  variant: 'checkmark-bordered',
 };
 export const CheckmarkRound = Template.bind({});
 CheckmarkRound.args = {
-  type: 'checkmark-round',
+  variant: 'checkmark-round',
 };
 
 export const CheckmarkSolid = Template.bind({});
 CheckmarkSolid.args = {
-  type: 'checkmark-solid',
+  variant: 'checkmark-solid',
 };
 
 export const Close = Template.bind({});
 Close.args = {
-  type: 'close',
+  variant: 'close',
 };
 
 export const CrossRound = Template.bind({});
 CrossRound.args = {
-  type: 'cross-round',
+  variant: 'cross-round',
 };
 
 export const Dark = Template.bind({});
 Dark.args = {
-  type: 'dark',
+  variant: 'dark',
 };
 
 export const Discord = Template.bind({});
 Discord.args = {
-  type: 'discord',
+  variant: 'discord',
 };
 
 export const DownArrow = Template.bind({});
 DownArrow.args = {
-  type: 'down-arrow',
+  variant: 'down-arrow',
 };
 
 export const DownArrowThin = Template.bind({});
 DownArrowThin.args = {
-  type: 'down-arrow-thin',
+  variant: 'down-arrow-thin',
 };
 
 export const DownChevron = Template.bind({});
 DownChevron.args = {
-  type: 'down-chevron',
+  variant: 'down-chevron',
 };
 
 export const Exclamation = Template.bind({});
 Exclamation.args = {
-  type: 'exclamation',
+  variant: 'exclamation',
 };
 
 export const ExclamationBordered = Template.bind({});
 ExclamationBordered.args = {
-  type: 'exclamation-bordered',
+  variant: 'exclamation-bordered',
 };
 
 export const ExclamationError = Template.bind({});
 ExclamationError.args = {
-  type: 'exclamation-error',
+  variant: 'exclamation-error',
 };
 
 export const ExclamationNeutral = Template.bind({});
 ExclamationNeutral.args = {
-  type: 'exclamation-neutral',
+  variant: 'exclamation-neutral',
 };
 
 export const External = Template.bind({});
 External.args = {
-  type: 'external',
+  variant: 'external',
 };
 
 export const Github = Template.bind({});
 Github.args = {
-  type: 'github',
+  variant: 'github',
 };
 
 export const Globe = Template.bind({});
 Globe.args = {
-  type: 'globe',
+  variant: 'globe',
 };
 
 export const GridView = Template.bind({});
 GridView.args = {
-  type: 'grid-view',
+  variant: 'grid-view',
 };
 
 export const Info = Template.bind({});
 Info.args = {
-  type: 'info',
+  variant: 'info',
 };
 
 export const InfoBordered = Template.bind({});
 InfoBordered.args = {
-  type: 'info-bordered',
+  variant: 'info-bordered',
 };
 
 export const InfoSolid = Template.bind({});
 InfoSolid.args = {
-  type: 'info-solid',
+  variant: 'info-solid',
 };
 
 export const LeftArrow = Template.bind({});
 LeftArrow.args = {
-  type: 'left-arrow',
+  variant: 'left-arrow',
 };
 
 export const LeftArrowThin = Template.bind({});
 LeftArrowThin.args = {
-  type: 'left-arrow-thin',
+  variant: 'left-arrow-thin',
 };
 
 export const LeftChevron = Template.bind({});
 LeftChevron.args = {
-  type: 'left-chevron',
+  variant: 'left-chevron',
 };
 
 export const ListView = Template.bind({});
 ListView.args = {
-  type: 'list-view',
+  variant: 'list-view',
 };
 
 export const Medium = Template.bind({});
 Medium.args = {
-  type: 'medium',
+  variant: 'medium',
 };
 
 export const Menu = Template.bind({});
 Menu.args = {
-  type: 'menu',
+  variant: 'menu',
 };
 
 export const Minus = Template.bind({});
 Minus.args = {
-  type: 'minus',
+  variant: 'minus',
 };
 
 export const MinusRound = Template.bind({});
 MinusRound.args = {
-  type: 'minus-round',
+  variant: 'minus-round',
 };
 
 export const Plus = Template.bind({});
 Plus.args = {
-  type: 'plus',
+  variant: 'plus',
 };
 
 export const PlusRound = Template.bind({});
 PlusRound.args = {
-  type: 'plus-round',
+  variant: 'plus-round',
 };
 
 export const RightArrow = Template.bind({});
 RightArrow.args = {
-  type: 'right-arrow',
+  variant: 'right-arrow',
 };
 
 export const RightChevron = Template.bind({});
 RightChevron.args = {
-  type: 'right-chevron',
+  variant: 'right-chevron',
 };
 
 export const RightArrowThin = Template.bind({});
 RightArrowThin.args = {
-  type: 'right-arrow-thin',
+  variant: 'right-arrow-thin',
 };
 
 export const Scroll = Template.bind({});
 Scroll.args = {
-  type: 'scroll',
+  variant: 'scroll',
 };
 
 export const Slippage = Template.bind({});
 Slippage.args = {
-  type: 'slippage',
+  variant: 'slippage',
 };
 
 export const Telegram = Template.bind({});
 Telegram.args = {
-  type: 'telegram',
+  variant: 'telegram',
 };
 
 export const Twitter = Template.bind({});
 Twitter.args = {
-  type: 'twitter',
+  variant: 'twitter',
 };
 
 export const UpArrow = Template.bind({});
 UpArrow.args = {
-  type: 'up-arrow',
+  variant: 'up-arrow',
 };
 
 export const UpArrowThin = Template.bind({});
 UpArrowThin.args = {
-  type: 'up-arrow-thin',
+  variant: 'up-arrow-thin',
 };
 
 export const UpChevron = Template.bind({});
 UpChevron.args = {
-  type: 'up-chevron',
+  variant: 'up-chevron',
 };

@@ -118,7 +118,7 @@ const ActionButton: FC<ButtonProps> = props => {
       )}
       {state === 'success' && (
         <div className={`tc__actionButton-status-${size}-content`}>
-          <Icon type="checkmark-solid" size={size === 'small' ? 12 : 20} />
+          <Icon variant="checkmark-solid" size={size === 'small' ? 12 : 20} />
         </div>
       )}
       <div className="tc__actionButton-status-label">
