@@ -1,4 +1,4 @@
-import { BigNumber, Contract, ethers } from 'ethers';
+import { BigNumber, Contract, ContractInterface, ethers } from 'ethers';
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
 import TempusAMMABI, { TempusAMM } from '../abi/TempusAMM';
 import { Chain, ChainConfig } from '../interfaces';
@@ -24,7 +24,12 @@ export class TempusAMMService {
 
     tempusAMMAddresses.forEach((address: string) => {
       try {
-        this.tempusAMMMap.set(address, new Contract(address, TempusAMMABI, signerOrProvider) as TempusAMM);
+        const contract = new Contract(
+          address,
+          TempusAMMABI as unknown as ContractInterface,
+          signerOrProvider,
+        ) as TempusAMM;
+        this.tempusAMMMap.set(address, contract);
       } catch (error) {
         console.error('TempusAMMService - init - error setting contract', error);
       }
