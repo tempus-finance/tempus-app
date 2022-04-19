@@ -24,7 +24,7 @@ const SwitcherButton: FC<SwitcherButtonProps> = props => {
         <Typography variant="body-primary" weight={selected ? 'bold' : 'regular'}>
           {label}
         </Typography>
-        {selected && <Icon type="checkmark" color={colors.textSuccess} size="small" />}
+        {selected && <Icon variant="checkmark" color={colors.textSuccess} size="small" />}
       </div>
       <Logo type={logoType} size="small" />
     </ButtonWrapper>

@@ -39,7 +39,7 @@ const CurrencySelector: FC<CurrencySelectorProps> = props => {
       <CurrencySelectorItem
         currency={selectedCurrency}
         disabled={disabled}
-        icon={hasMultipleCurrencies && <Icon type="down-chevron" size="small" />}
+        icon={hasMultipleCurrencies && <Icon variant="down-chevron" size="small" />}
         onClick={handleSelectorClick}
       />
       {hasMultipleCurrencies && dropdownOpened && (
@@ -48,7 +48,7 @@ const CurrencySelector: FC<CurrencySelectorProps> = props => {
             <CurrencySelectorItem
               currency={currency}
               disabled={disabled}
-              icon={index === 0 && <Icon type="up-chevron" size="small" />}
+              icon={index === 0 && <Icon variant="up-chevron" size="small" />}
               onClick={handleSelectorItemClick}
               key={currency}
             />

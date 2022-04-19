@@ -1,6 +1,6 @@
 import { ChangeEvent, FC, useCallback, useState } from 'react';
 import Checkbox from '../Checkbox';
-import Icon, { IconType } from '../Icon';
+import Icon, { IconVariant } from '../Icon';
 import Typography from '../Typography';
 
 import './DropdownItem.scss';
@@ -9,7 +9,7 @@ export interface DropdownItemProps {
   label: string;
   onChange: (checked: boolean, label: string) => void;
   checkbox?: boolean;
-  icon?: IconType;
+  icon?: IconVariant;
 }
 
 const DropdownItem: FC<DropdownItemProps> = props => {
@@ -34,7 +34,7 @@ const DropdownItem: FC<DropdownItemProps> = props => {
           {label}
         </Typography>
       )}
-      {icon && <Icon type={icon} size={12} />}
+      {icon && <Icon variant={icon} size={12} />}
     </div>
   );
 };
