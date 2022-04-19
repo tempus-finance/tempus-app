@@ -11,14 +11,14 @@ const decreasePrecision = (bigNum: BigNumber, decrement: number): BigNumber => {
   return bigNum.div(divisor);
 };
 
-export type Numberish = FixedPointDecimal | string | number | BigNumber;
+export type Numberish = Decimal | string | number | BigNumber;
 
-export default class FixedPointDecimal {
+export default class Decimal {
   readonly value: BigNumber;
   readonly precision: number = DEFAULT_TOKEN_PRECISION;
 
   constructor(value: Numberish) {
-    if (value instanceof FixedPointDecimal) {
+    if (value instanceof Decimal) {
       this.value = BigNumber.from(value.value);
     } else if (value instanceof BigNumber) {
       this.value = BigNumber.from(value);
@@ -26,35 +26,35 @@ export default class FixedPointDecimal {
       try {
         this.value = utils.parseUnits(`${value}`, this.precision);
       } catch (e) {
-        throw new Error(`Failed to parse ${value} when creating FixedPointDecimal`);
+        throw new Error(`Failed to parse ${value} when creating Decimal`);
       }
     }
   }
 
-  add(addend: Numberish): FixedPointDecimal {
-    const decimal = new FixedPointDecimal(addend);
+  add(addend: Numberish): Decimal {
+    const decimal = new Decimal(addend);
 
-    return new FixedPointDecimal(this.value.add(decimal.value));
+    return new Decimal(this.value.add(decimal.value));
   }
 
-  sub(subtrahend: Numberish): FixedPointDecimal {
-    const decimal = new FixedPointDecimal(subtrahend);
+  sub(subtrahend: Numberish): Decimal {
+    const decimal = new Decimal(subtrahend);
 
-    return new FixedPointDecimal(this.value.sub(decimal.value));
+    return new Decimal(this.value.sub(decimal.value));
   }
 
-  mul(multiplicand: Numberish): FixedPointDecimal {
-    const decimal = new FixedPointDecimal(multiplicand);
+  mul(multiplicand: Numberish): Decimal {
+    const decimal = new Decimal(multiplicand);
     const product = decreasePrecision(this.value.mul(decimal.value), this.precision);
 
-    return new FixedPointDecimal(product);
+    return new Decimal(product);
   }
 
-  div(divisor: Numberish): FixedPointDecimal {
-    const decimal = new FixedPointDecimal(divisor);
+  div(divisor: Numberish): Decimal {
+    const decimal = new Decimal(divisor);
     const quotient = increasePrecision(this.value, this.precision).div(decimal.value);
 
-    return new FixedPointDecimal(quotient);
+    return new Decimal(quotient);
   }
 
   toBigNumber(precision: number = DEFAULT_TOKEN_PRECISION): BigNumber {
