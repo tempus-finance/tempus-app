@@ -1,4 +1,4 @@
-import ERC20ABI from '../abi/ERC20.json';
+import ERC20ABI from '../abi/ERC20';
 import { ERC20TokenService } from './ERC20TokenService';
 
 jest.mock('ethers');
@@ -20,10 +20,10 @@ describe('ERC20TokenService', () => {
 
   beforeEach(() => {
     Contract.mockImplementation(() => ({
-        symbol: mockSymbol,
-        balanceOf: mockBalanceOf,
-        allowance: mockAllowance,
-      }));
+      symbol: mockSymbol,
+      balanceOf: mockBalanceOf,
+      allowance: mockAllowance,
+    }));
   });
 
   describe('constructor()', () => {
@@ -43,7 +43,7 @@ describe('ERC20TokenService', () => {
 
     test('it initialize the instance', () => {
       instance.init({
-        Contract,
+        ERC20Contract: Contract,
         address: mockAddress,
         abi: ERC20ABI,
         signerOrProvider: mockProvider,
@@ -60,7 +60,7 @@ describe('ERC20TokenService', () => {
       instance = new ERC20TokenService();
 
       instance.init({
-        Contract,
+        ERC20Contract: Contract,
         address: mockAddress,
         abi: ERC20ABI,
         signerOrProvider: mockProvider,
@@ -83,7 +83,7 @@ describe('ERC20TokenService', () => {
       instance = new ERC20TokenService();
 
       instance.init({
-        Contract,
+        ERC20Contract: Contract,
         address: mockAddress,
         abi: ERC20ABI,
         signerOrProvider: mockProvider,
