@@ -43,30 +43,30 @@ describe('TempusPoolService', () => {
 
   beforeEach(() => {
     Contract.mockImplementation(() => ({
-        currentInterestRate: mockCurrentInterestRate,
-        maturityTime: mockMaturityTime,
-        startTime: mockStartTime,
-        yieldBearingToken: mockYieldBearingToken,
-        backingToken: mockBackingToken,
-        protocolName: mockProtocolName,
-        pricePerYieldShareStored: mockPricePerYieldShareStored,
-        pricePerPrincipalShareStored: mockPricePerPrincipalShareStored,
-        yieldShare: mockYieldShare,
-        principalShare: mockPrincipalShare,
-        numAssetsPerYieldToken: mockNumAssetsPerYieldToken,
-        getFeesConfig: mockGetFeesConfig,
-        provider: {
-          getBlock: mockGetBlock,
-        },
-        filters: {
-          Deposited: jest.fn(),
-          Redeemed: jest.fn(),
-        },
-      }));
+      currentInterestRate: mockCurrentInterestRate,
+      maturityTime: mockMaturityTime,
+      startTime: mockStartTime,
+      yieldBearingToken: mockYieldBearingToken,
+      backingToken: mockBackingToken,
+      protocolName: mockProtocolName,
+      pricePerYieldShareStored: mockPricePerYieldShareStored,
+      pricePerPrincipalShareStored: mockPricePerPrincipalShareStored,
+      yieldShare: mockYieldShare,
+      principalShare: mockPrincipalShare,
+      numAssetsPerYieldToken: mockNumAssetsPerYieldToken,
+      getFeesConfig: mockGetFeesConfig,
+      provider: {
+        getBlock: mockGetBlock,
+      },
+      filters: {
+        Deposited: jest.fn(),
+        Redeemed: jest.fn(),
+      },
+    }));
 
     getERC20TokenService.mockImplementation(() => ({
-        symbol: mockSymbol,
-      }));
+      symbol: mockSymbol,
+    }));
   });
 
   describe('constructor()', () => {
@@ -105,11 +105,11 @@ describe('TempusPoolService', () => {
     beforeEach(() => {
       jest.clearAllMocks();
 
-      mockCurrentRate.mockImplementation((overrides: {}) => {
+      mockCurrentRate.mockImplementation((overrides: Record<string, never>) => {
         if (!overrides) {
           return Promise.resolve(BigNumber.from('10'));
         }
-          return Promise.resolve(BigNumber.from('9'));
+        return Promise.resolve(BigNumber.from('9'));
       });
 
       instance = new TempusPoolService();
@@ -174,19 +174,19 @@ describe('TempusPoolService', () => {
             timestamp: 200,
           });
         }
-          return Promise.resolve({
-            number: 50,
-            timestamp: 100,
-          });
+        return Promise.resolve({
+          number: 50,
+          timestamp: 100,
+        });
       });
       mockCurrentInterestRate.mockImplementation((overrides: CallOverrides) => {
         if (overrides) {
           return Promise.resolve(BigNumber.from('1'));
         }
-          return Promise.resolve(BigNumber.from('2'));
+        return Promise.resolve(BigNumber.from('2'));
       });
 
-      utils.formatEther.mockImplementation((value: number) => value);
+      utils.formatUnits.mockImplementation((value: number) => value);
 
       instance.getVariableAPY(mockAddress, 13.2).then(result => {
         expect(result).toEqual(31536000);

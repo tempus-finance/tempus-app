@@ -3,7 +3,7 @@ import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
 import { TempusPool } from '../abi/TempusPool';
 import { Chain, Ticker, ProtocolName, ChainConfig } from '../interfaces';
 import { DAYS_IN_A_YEAR, SECONDS_IN_A_DAY } from '../constants';
-import { getERC20TokenService } from '../services';
+import { getERC20TokenService } from './getERC20TokenService';
 
 type TempusPoolsMap = { [key: string]: TempusPool };
 
@@ -36,7 +36,7 @@ export class TempusPoolService {
     chain,
     eRC20TokenServiceGetter,
     getChainConfig,
-  }: TempusPoolServiceParameters) {
+  }: TempusPoolServiceParameters): void {
     this.poolAddresses = [...tempusPoolAddresses];
     this.tempusPoolsMap = {};
     this.getChainConfig = getChainConfig;
@@ -176,7 +176,7 @@ export class TempusPoolService {
 
         if (!currentExchangeRate || !pastExchangeRate) {
           console.error('TempusPoolService getVariableAPY() - Failed to fetch current/past exchange rates.');
-          return await Promise.reject(0);
+          return await Promise.resolve(0);
         }
 
         const blockRateDiff = currentExchangeRate.sub(pastExchangeRate);
@@ -184,7 +184,7 @@ export class TempusPoolService {
 
         const totalSegments = (SECONDS_IN_A_DAY * DAYS_IN_A_YEAR) / blockTimeDiff;
 
-        return totalSegments * Number(ethers.utils.formatEther(blockRateDiff)) * 100;
+        return totalSegments * Number(ethers.utils.formatUnits(blockRateDiff)) * 100;
       } catch (error) {
         console.error('TempusPoolService getVariableAPY()', error);
         return Promise.reject(error);

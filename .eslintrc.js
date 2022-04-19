@@ -80,6 +80,17 @@ module.exports = {
     '@typescript-eslint/explicit-function-return-type': 0,
     '@typescript-eslint/indent': 0,
     '@typescript-eslint/no-var-requires': 0,
+    'import/extensions': [
+      'error',
+      'ignorePackages',
+      {
+        json: 'ignorePackages',
+        js: 'never',
+        jsx: 'never',
+        ts: 'never',
+        tsx: 'never',
+      },
+    ],
     'import/no-anonymous-default-export': 0,
     'import/no-extraneous-dependencies': 0,
     'import/no-useless-path-segments': 0,

@@ -23,12 +23,12 @@ describe('StatisticsService', () => {
 
   beforeEach(() => {
     jest.spyOn(ejs as any, 'Contract').mockImplementation(() => ({
-        totalValueLockedAtGivenRate: mockTotalValueLockedAtGivenRate,
-        getRate: mockGetRate,
-        estimatedDepositAndFix: mockEstimatedDepositAndFix,
-        estimatedDepositAndProvideLiquidity: mockEstimatedDepositAndProvideLiquidity,
-        estimateExitAndRedeem: mockEstimateExitAndRedeem,
-      }));
+      totalValueLockedAtGivenRate: mockTotalValueLockedAtGivenRate,
+      getRate: mockGetRate,
+      estimatedDepositAndFix: mockEstimatedDepositAndFix,
+      estimatedDepositAndProvideLiquidity: mockEstimatedDepositAndProvideLiquidity,
+      estimateExitAndRedeem: mockEstimateExitAndRedeem,
+    }));
 
     mockGetTempusAMMService.mockReturnValue({
       getMaxLeftoverShares: mockGetMaxLeftoverShares,
@@ -52,7 +52,7 @@ describe('StatisticsService', () => {
 
     test('it initialize the instance', () => {
       instance.init({
-        Contract: ejs.Contract,
+        StatsContract: ejs.Contract,
         address: mockAddress,
         abi: StatisticsABI,
         signerOrProvider: mockProvider,
@@ -71,7 +71,7 @@ describe('StatisticsService', () => {
       instance = new StatisticsService();
 
       instance.init({
-        Contract: ejs.Contract,
+        StatsContract: ejs.Contract,
         address: mockAddress,
         abi: StatisticsABI,
         signerOrProvider: mockProvider,
@@ -98,7 +98,7 @@ describe('StatisticsService', () => {
       instance = new StatisticsService();
 
       instance.init({
-        Contract: ejs.Contract,
+        StatsContract: ejs.Contract,
         address: mockAddress,
         abi: StatisticsABI,
         signerOrProvider: mockProvider,
@@ -112,7 +112,7 @@ describe('StatisticsService', () => {
 
       const result = await instance.getRate('ethereum', 'DAI');
 
-      expect(ejs.utils.formatEther(result)).toBe('50.0');
+      expect(ejs.utils.formatUnits(result)).toBe('50.0');
     });
   });
 
@@ -123,7 +123,7 @@ describe('StatisticsService', () => {
       instance = new StatisticsService();
 
       instance.init({
-        Contract: ejs.Contract,
+        StatsContract: ejs.Contract,
         address: mockAddress,
         abi: StatisticsABI,
         signerOrProvider: mockProvider,
@@ -137,12 +137,12 @@ describe('StatisticsService', () => {
       mockEstimatedDepositAndFix.mockImplementation(() => Promise.resolve(value));
 
       const tempusPool = 'abc';
-      const tokenAmount = ejs.utils.parseEther('100');
+      const tokenAmount = ejs.utils.parseUnits('100');
       const isBackingToken = true;
 
       const result = await instance.estimatedDepositAndFix(tempusPool, tokenAmount, isBackingToken);
 
-      expect(ejs.utils.formatEther(result)).toBe(ejs.utils.formatEther(value));
+      expect(ejs.utils.formatUnits(result)).toBe(ejs.utils.formatUnits(value));
     });
 
     test('it returns the amount of Principals and LP tokens on variable yield deposit', async () => {
@@ -154,14 +154,14 @@ describe('StatisticsService', () => {
       mockEstimatedDepositAndProvideLiquidity.mockImplementation(() => Promise.resolve(value));
 
       const tempusPool = 'abc';
-      const tokenAmount = ejs.utils.parseEther('2');
+      const tokenAmount = ejs.utils.parseUnits('2');
       const isBackingToken = true;
 
       const result = await instance.estimatedDepositAndProvideLiquidity(tempusPool, tokenAmount, isBackingToken);
 
-      expect(ejs.utils.formatEther(result[0])).toBe(ejs.utils.formatEther(value[0]));
-      expect(ejs.utils.formatEther(result[1])).toBe(ejs.utils.formatEther(value[1]));
-      expect(ejs.utils.formatEther(result[2])).toBe(ejs.utils.formatEther(value[2]));
+      expect(ejs.utils.formatUnits(result[0])).toBe(ejs.utils.formatUnits(value[0]));
+      expect(ejs.utils.formatUnits(result[1])).toBe(ejs.utils.formatUnits(value[1]));
+      expect(ejs.utils.formatUnits(result[2])).toBe(ejs.utils.formatUnits(value[2]));
     });
   });
 
@@ -172,7 +172,7 @@ describe('StatisticsService', () => {
       instance = new StatisticsService();
 
       instance.init({
-        Contract: ejs.Contract,
+        StatsContract: ejs.Contract,
         address: mockAddress,
         abi: StatisticsABI,
         signerOrProvider: mockProvider,
@@ -186,13 +186,13 @@ describe('StatisticsService', () => {
       const value = ejs.BigNumber.from('45670000000000');
 
       mockEstimateExitAndRedeem.mockImplementation(() => Promise.resolve({ principalsRate: value }));
-      mockGetMaxLeftoverShares.mockResolvedValue(ejs.utils.parseEther('0.00001'));
+      mockGetMaxLeftoverShares.mockResolvedValue(ejs.utils.parseUnits('0.00001'));
 
       const tempusPoolAddress = '123';
       const tempusAmmAddress = 'abc';
-      const principalsAmount = ejs.utils.parseEther('100');
-      const yieldsAmount = ejs.utils.parseEther('200');
-      const lpTokensAmount = ejs.utils.parseEther('300');
+      const principalsAmount = ejs.utils.parseUnits('100');
+      const yieldsAmount = ejs.utils.parseUnits('200');
+      const lpTokensAmount = ejs.utils.parseUnits('300');
       const isBackingToken = true;
 
       const result = await instance.estimateExitAndRedeem(
@@ -204,7 +204,7 @@ describe('StatisticsService', () => {
         isBackingToken,
       );
 
-      expect(ejs.utils.formatEther(result.principalsRate)).toBe(ejs.utils.formatEther(value));
+      expect(ejs.utils.formatUnits(result.principalsRate)).toBe(ejs.utils.formatUnits(value));
     });
   });
 });

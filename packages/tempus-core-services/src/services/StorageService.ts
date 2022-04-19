@@ -1,42 +1,43 @@
 const prefix = 'TC_';
 
 export class StorageService {
-  set(key: string, value: string | number | object) {
+  static set(key: string, value: string | number | Record<string, unknown>): void {
     if (!key || !value) {
       return;
     }
 
+    let stringifiedValue: string | undefined;
     if (typeof value === 'object') {
-      value = JSON.stringify(value);
+      stringifiedValue = JSON.stringify(value);
     } else {
-      value = value.toString();
+      stringifiedValue = value.toString();
     }
 
-    localStorage.setItem(`${prefix}${key}`, value);
+    localStorage.setItem(`${prefix}${key}`, stringifiedValue);
   }
 
-  get(key: string): string | object | undefined {
+  static get(key: string): string | Record<string, unknown> {
     let value = localStorage.getItem(`${prefix}${key}`);
     if (!value) {
-      return;
+      return '';
     }
 
     if (value === null) {
-      return;
+      return '';
     }
 
     if (value[0] === '{' || value[0] === '[') {
       value = JSON.parse(value);
     }
 
-    return value || undefined;
+    return value || '';
   }
 
-  delete(key: string) {
+  static delete(key: string): void {
     localStorage.removeItem(`${prefix}${key}`);
   }
 
-  clear() {
+  static clear(): void {
     localStorage.clear();
   }
 }
