@@ -1,4 +1,4 @@
-import { BigNumber, Contract, ContractTransaction, CallOverrides } from 'ethers';
+import { BigNumber, Contract, ContractTransaction, CallOverrides, ContractInterface } from 'ethers';
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
 import ERC20ABI, { ERC20 } from '../abi/ERC20';
 import { TypedListener } from '../abi/commons';
@@ -15,7 +15,7 @@ export type TransferEventListener = TypedListener<
 >;
 
 type ERC20TokenServiceParameters = {
-  Contract: typeof Contract;
+  ERC20Contract: typeof Contract;
   address: string;
   abi: typeof ERC20ABI;
   signerOrProvider: JsonRpcSigner | JsonRpcProvider;
@@ -24,12 +24,12 @@ type ERC20TokenServiceParameters = {
 export class ERC20TokenService {
   public contract: ERC20 | null = null;
 
-  init(params: ERC20TokenServiceParameters): void {
+  init({ ERC20Contract, address, abi, signerOrProvider }: ERC20TokenServiceParameters): void {
     if (this.contract) {
       this.contract.removeAllListeners();
     }
 
-    this.contract = new Contract(params.address, params.abi, params.signerOrProvider) as ERC20;
+    this.contract = new ERC20Contract(address, abi as unknown as ContractInterface, signerOrProvider) as ERC20;
   }
 
   async balanceOf(address: string, overrides?: CallOverrides): Promise<BigNumber> {
