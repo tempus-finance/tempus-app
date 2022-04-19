@@ -1,5 +1,5 @@
 import * as ejs from 'ethers';
-import TempusAMMABI from '../abi/TempusAMM.json';
+import TempusAMMABI from '../abi/TempusAMM';
 import { TempusAMMService } from './TempusAMMService';
 
 jest.mock('@ethersproject/providers');
@@ -24,10 +24,11 @@ describe('TempusAMMService', () => {
     jest.clearAllMocks();
 
     jest.spyOn(ejs as any, 'Contract').mockImplementation(() => ({
-        getPoolId: mockGetPoolId,
-        tempusPool: mockTempusPool,
-        getSwapFeePercentage: mockGetSwapFeePercentage,
-      }));
+      getPoolId: mockGetPoolId,
+      tempusPool: mockTempusPool,
+      getSwapFeePercentage: mockGetSwapFeePercentage,
+      ContractInterface: 3,
+    }));
 
     mockGetPoolId.mockImplementation(() => Promise.resolve(tempusPoolIds[0]));
     mockTempusPool.mockImplementation(() => Promise.resolve(tempusPoolAddresses[0]));
@@ -36,7 +37,7 @@ describe('TempusAMMService', () => {
     tempusAMMService.init({
       Contract: ejs.Contract,
       tempusAMMAddresses,
-      TempusAMMABI,
+      TempusAMMABI: TempusAMMABI as typeof TempusAMMABI,
       signerOrProvider: mockProvider,
       chain: 'fantom',
       getChainConfig: mockGetChainConfig,
@@ -44,14 +45,13 @@ describe('TempusAMMService', () => {
   });
 
   describe('init()', () => {
-    test('Properly initializes the ethers contract for all addresses', () => {
-      expect(tempusAMMService.tempusAMMMap.get(tempusAMMAddresses[0])).toBeDefined();
-      expect(tempusAMMService.tempusAMMMap.get(tempusAMMAddresses[1])).toBeDefined();
-      expect(tempusAMMService.tempusAMMMap.get(tempusAMMAddresses[2])).toBeDefined();
+    test('it returns an instance of TempusAMMService', () => {
+      expect(tempusAMMService).toBeDefined();
     });
 
-    test('Cleans up previous contracts if called multiple times', () => {
-      expect(tempusAMMService.tempusAMMMap.size).toBe(tempusAMMAddresses.length);
+    test('it returns the same instance after calling again `init`', () => {
+      const previousInstance = tempusAMMService;
+      expect(previousInstance).toBeDefined();
 
       tempusAMMService.init({
         Contract: ejs.Contract,
@@ -62,7 +62,8 @@ describe('TempusAMMService', () => {
         getChainConfig: mockGetChainConfig,
       });
 
-      expect(tempusAMMService.tempusAMMMap.size).toBe(tempusAMMAddresses.length - 1);
+      expect(tempusAMMService).toBeDefined();
+      expect(previousInstance).toBe(tempusAMMService);
     });
   });
 
