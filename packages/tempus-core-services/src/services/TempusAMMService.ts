@@ -19,7 +19,7 @@ export class TempusAMMService {
 
   private config: ChainConfig | null = null;
 
-  public init({ tempusAMMAddresses, signerOrProvider, chain, getChainConfig }: TempusAMMServiceParameters) {
+  public init({ tempusAMMAddresses, signerOrProvider, chain, getChainConfig }: TempusAMMServiceParameters): void {
     this.tempusAMMMap.clear();
 
     tempusAMMAddresses.forEach((address: string) => {
@@ -108,14 +108,14 @@ export class TempusAMMService {
     const tempusAMM = this.tempusAMMMap.get(address);
     if (tempusAMM) {
       if (principalsIn.isZero() && yieldsIn.isZero()) {
-        return ethers.utils.parseEther('0');
+        return ethers.utils.parseUnits('0');
       }
 
       try {
         const assets = [
           { address: principalsAddress, amount: principalsIn },
           { address: yieldsAddress, amount: yieldsIn },
-        ].sort((a, b) => parseInt(a.address) - parseInt(b.address));
+        ].sort((a, b) => parseInt(a.address, 10) - parseInt(b.address, 10));
         const amountsIn = assets.map(({ amount }) => amount);
 
         return await tempusAMM.getExpectedLPTokensForTokensIn(amountsIn);
@@ -131,7 +131,7 @@ export class TempusAMMService {
     );
   }
 
-  async getExpectedReturnGivenIn(address: string, amount: BigNumber, yieldShareIn: boolean) {
+  async getExpectedReturnGivenIn(address: string, amount: BigNumber, yieldShareIn: boolean): Promise<BigNumber> {
     const contract = this.tempusAMMMap.get(address);
     if (contract) {
       try {
@@ -162,7 +162,7 @@ export class TempusAMMService {
     throw new Error(`TempusAMMService - getSwapFeePercentage() - TempusAMM with address '${address}' does not exist!`);
   }
 
-  getMaxLeftoverShares(
+  static getMaxLeftoverShares(
     principalsToWithdraw: BigNumber,
     yieldsToWithdraw: BigNumber,
     lpTokensToWithdraw: BigNumber,

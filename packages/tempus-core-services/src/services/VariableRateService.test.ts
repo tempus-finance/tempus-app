@@ -183,14 +183,14 @@ describe('VariableRateService', () => {
       const yieldBearingTokenAddress = '0x0000000000000000000000000000000000000001';
       const feesPrecision = 18;
       const fees = BigNumber.from(1);
-      const feesFormatted = Number(utils.formatEther(fees));
+      const feesFormatted = Number(utils.formatUnits(fees));
       const mockAPR = Math.random() * 5;
       jest.spyOn(variableRateService as any, 'getAaveAPR').mockResolvedValue(mockAPR);
 
       await expect(
         variableRateService.getAprRate(protocol, yieldBearingTokenAddress, fees, feesPrecision),
       ).resolves.toEqual(mockAPR);
-      expect(variableRateService.getAaveAPR).toHaveBeenCalledWith(yieldBearingTokenAddress, feesFormatted);
+      expect((variableRateService as any).getAaveAPR).toHaveBeenCalledWith(yieldBearingTokenAddress, feesFormatted);
     });
 
     test('test with compound, should return with an APR', async () => {
@@ -198,14 +198,14 @@ describe('VariableRateService', () => {
       const yieldBearingTokenAddress = '0x0000000000000000000000000000000000000001';
       const feesPrecision = 18;
       const fees = BigNumber.from(1);
-      const feesFormatted = Number(utils.formatEther(fees));
+      const feesFormatted = Number(utils.formatUnits(fees));
       const mockAPR = Math.random() * 5;
       jest.spyOn(variableRateService as any, 'getCompoundAPR').mockResolvedValue(mockAPR);
 
       await expect(
         variableRateService.getAprRate(protocol, yieldBearingTokenAddress, fees, feesPrecision),
       ).resolves.toEqual(mockAPR);
-      expect(variableRateService.getCompoundAPR).toHaveBeenCalledWith(yieldBearingTokenAddress, feesFormatted);
+      expect((variableRateService as any).getCompoundAPR).toHaveBeenCalledWith(yieldBearingTokenAddress, feesFormatted);
     });
 
     test('test with lido, should return with an APR', async () => {
@@ -213,14 +213,14 @@ describe('VariableRateService', () => {
       const yieldBearingTokenAddress = '0x0000000000000000000000000000000000000001';
       const feesPrecision = 18;
       const fees = BigNumber.from(1);
-      const feesFormatted = Number(utils.formatEther(fees));
+      const feesFormatted = Number(utils.formatUnits(fees));
       const mockAPR = Math.random() * 5;
       jest.spyOn(variableRateService as any, 'getLidoAPR').mockResolvedValue(mockAPR);
 
       await expect(
         variableRateService.getAprRate(protocol, yieldBearingTokenAddress, fees, feesPrecision),
       ).resolves.toEqual(mockAPR);
-      expect(variableRateService.getLidoAPR).toHaveBeenCalledWith(feesFormatted);
+      expect((variableRateService as any).getLidoAPR).toHaveBeenCalledWith(feesFormatted);
     });
 
     test('test with rari, should return with an APR', async () => {
@@ -228,14 +228,14 @@ describe('VariableRateService', () => {
       const yieldBearingTokenAddress = '0x0000000000000000000000000000000000000001';
       const feesPrecision = 18;
       const fees = BigNumber.from(1);
-      const feesFormatted = Number(utils.formatEther(fees));
+      const feesFormatted = Number(utils.formatUnits(fees));
       const mockAPR = Math.random() * 5;
       jest.spyOn(variableRateService as any, 'getRariAPR').mockResolvedValue(mockAPR);
 
       await expect(
         variableRateService.getAprRate(protocol, yieldBearingTokenAddress, fees, feesPrecision),
       ).resolves.toEqual(mockAPR);
-      expect(variableRateService.getRariAPR).toHaveBeenCalledWith(feesFormatted);
+      expect((variableRateService as any).getRariAPR).toHaveBeenCalledWith(feesFormatted);
     });
 
     test('test with protocol other than aave/compound/lido, should return with 0', async () => {
@@ -261,7 +261,7 @@ describe('VariableRateService', () => {
       await expect((variableRateService as any).getAaveAPR(yieldBearingTokenAddress, fees)).resolves.toEqual(
         mockAPY + fees,
       );
-      expect(variableRateService.getAaveAPY).toHaveBeenCalledWith(yieldBearingTokenAddress);
+      expect((variableRateService as any).getAaveAPY).toHaveBeenCalledWith(yieldBearingTokenAddress);
       expect(VariableRateService.getAprFromApy).toHaveBeenCalledWith(mockAPY);
     });
   });
@@ -287,7 +287,7 @@ describe('VariableRateService', () => {
       await expect((variableRateService as any).getCompoundAPR(yieldBearingTokenAddress, fees)).resolves.toEqual(
         mockAPY + fees,
       );
-      expect(variableRateService.getCompoundAPY).toHaveBeenCalledWith(yieldBearingTokenAddress);
+      expect((variableRateService as any).getCompoundAPY).toHaveBeenCalledWith(yieldBearingTokenAddress);
       expect(VariableRateService.getAprFromApy).toHaveBeenCalledWith(mockAPY);
     });
   });
@@ -356,7 +356,7 @@ describe('VariableRateService', () => {
       });
       jest.spyOn(variableRateService as any, 'calculateLidoAPR').mockReturnValue(mockAPR);
       const expected =
-        Number(utils.formatEther(mockAPR.mul(BigNumber.from('9000')).div(BigNumber.from('10000')))) + fees;
+        Number(utils.formatUnits(mockAPR.mul(BigNumber.from('9000')).div(BigNumber.from('10000')))) + fees;
 
       await expect((variableRateService as any).getLidoAPR(fees)).resolves.toEqual(expected);
     });
@@ -375,7 +375,7 @@ describe('VariableRateService', () => {
       const mockAPY = Math.round(Math.random() * 5);
       jest
         .spyOn((variableRateService as any).rariVault.pools.stable.apy, 'getCurrentApy')
-        .mockResolvedValue(utils.parseEther(`${mockAPY}`));
+        .mockResolvedValue(utils.parseUnits(`${mockAPY}`));
       jest.spyOn(VariableRateService, 'getAprFromApy');
 
       await expect((variableRateService as any).getRariAPR(fees)).resolves.toEqual(mockAPY + fees);
@@ -485,7 +485,7 @@ describe('VariableRateService', () => {
       const mockSwapFeePercentage = BigNumber.from(Math.round(Math.random() * 5));
       const mockLatestBlock = { timestamp: Date.now() / 1000, number: 1000 } as providers.Block;
       const mockEarlierBlock = { timestamp: Date.now() / 1000 - 60 * 60, number: 997 } as providers.Block;
-      const totalFees = ethers.utils.parseEther('2');
+      const totalFees = ethers.utils.parseUnits('2');
       const mockEvents = [
         {
           blockNumber: 999,
@@ -507,11 +507,14 @@ describe('VariableRateService', () => {
       (JsonRpcProvider as unknown as jest.Mock).mockImplementation(() => ({
         getBlock: jest
           .fn()
-          .mockImplementation(async (blockHashOrBlockTag: providers.BlockTag): Promise<providers.Block> => Promise.resolve(blockHashOrBlockTag === 'latest' ? mockLatestBlock : mockEarlierBlock)),
+          .mockImplementation(
+            async (blockHashOrBlockTag: providers.BlockTag): Promise<providers.Block> =>
+              Promise.resolve(blockHashOrBlockTag === 'latest' ? mockLatestBlock : mockEarlierBlock),
+          ),
       }));
       (getProviderFromSignerOrProvider as unknown as jest.Mock).mockImplementation(() => mockProvider);
 
-      const mockProvider = new JsonRpcProvider();
+      // const mockProvider = new JsonRpcProvider();
       mockGetChainConfig.mockReturnValue({ tempusPools: DUMMY_TEMPUS_POOL } as ChainConfig);
       jest.spyOn(variableRateService as any, 'getSwapAndPoolBalanceChangedEvents').mockResolvedValue(mockEvents);
       jest.spyOn(variableRateService as any, 'getPoolTokens').mockResolvedValue(mockPoolTokens);
@@ -609,10 +612,13 @@ describe('VariableRateService', () => {
       (JsonRpcProvider as unknown as jest.Mock).mockImplementation(() => ({
         getBlock: jest
           .fn()
-          .mockImplementation(async (blockHashOrBlockTag: providers.BlockTag): Promise<providers.Block> => Promise.resolve(blockHashOrBlockTag === 'latest' ? mockLatestBlock : mockEarlierBlock)),
+          .mockImplementation(
+            async (blockHashOrBlockTag: providers.BlockTag): Promise<providers.Block> =>
+              Promise.resolve(blockHashOrBlockTag === 'latest' ? mockLatestBlock : mockEarlierBlock),
+          ),
       }));
       (getProviderFromSignerOrProvider as unknown as jest.Mock).mockImplementation(() => mockProvider);
-      const mockProvider = new JsonRpcProvider();
+      // const mockProvider = new JsonRpcProvider();
       mockGetChainConfig.mockReturnValue({ tempusPools: DUMMY_TEMPUS_POOL } as ChainConfig);
       jest.spyOn(variableRateService as any, 'getSwapAndPoolBalanceChangedEvents').mockResolvedValue(mockEvents);
       jest.spyOn(variableRateService as any, 'getPoolTokens').mockResolvedValue(mockPoolTokens);
@@ -704,10 +710,13 @@ describe('VariableRateService', () => {
       (JsonRpcProvider as unknown as jest.Mock).mockImplementation(() => ({
         getBlock: jest
           .fn()
-          .mockImplementation(async (blockHashOrBlockTag: providers.BlockTag): Promise<providers.Block> => Promise.resolve(blockHashOrBlockTag === 'latest' ? mockLatestBlock : mockEarlierBlock)),
+          .mockImplementation(
+            async (blockHashOrBlockTag: providers.BlockTag): Promise<providers.Block> =>
+              Promise.resolve(blockHashOrBlockTag === 'latest' ? mockLatestBlock : mockEarlierBlock),
+          ),
       }));
       (getProviderFromSignerOrProvider as unknown as jest.Mock).mockImplementation(() => mockProvider);
-      const mockProvider = new JsonRpcProvider();
+      // const mockProvider = new JsonRpcProvider();
       mockGetChainConfig.mockReturnValue({ tempusPools: DUMMY_TEMPUS_POOL } as ChainConfig);
       jest.spyOn(variableRateService as any, 'getSwapAndPoolBalanceChangedEvents').mockResolvedValue(mockEvents);
       jest.spyOn(variableRateService as any, 'getPoolTokens').mockResolvedValue(mockPoolTokens);
@@ -988,7 +997,7 @@ describe('VariableRateService', () => {
       Reflect.set(variableRateService, 'aaveLendingPool', {
         getReserveData: jest.fn().mockResolvedValue(mockReservedData),
       });
-      const expected = Number(utils.formatEther(wadToDai(mockReservedData.currentLiquidityRate)));
+      const expected = Number(utils.formatUnits(wadToDai(mockReservedData.currentLiquidityRate)));
 
       await expect((variableRateService as any).getAaveAPY(yieldBearingTokenAddress)).resolves.toEqual(expected);
       expect((variableRateService as any).aaveLendingPool.getReserveData).toHaveBeenCalledWith(
@@ -1076,7 +1085,7 @@ describe('VariableRateService', () => {
       variableRateService = new VariableRateService();
 
       try {
-        await variableRateService.getYearnAPR(yieldBearingTokenAddress, fees);
+        await (variableRateService as any).getYearnAPR(yieldBearingTokenAddress, fees);
       } catch (error) {
         expect((error as any).message).toBe(
           'VariableRateService - fetchYearnData() - Attempted to use VariableRateService before initializing it!',
