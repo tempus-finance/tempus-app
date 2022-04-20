@@ -34,12 +34,12 @@ const Template: ComponentStory<typeof IconButton> = args => (
 
 export const Selected = Template.bind({});
 Selected.args = {
-  type: 'grid-view',
+  variant: 'grid-view',
   selected: true,
 };
 
 export const Deselected = Template.bind({});
 Deselected.args = {
-  type: 'grid-view',
+  variant: 'grid-view',
   selected: false,
 };
