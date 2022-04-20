@@ -57,6 +57,34 @@ export default class Decimal {
     return new Decimal(quotient);
   }
 
+  abs(): Decimal {
+    return new Decimal(this.value.abs());
+  }
+
+  lt(another: Numberish): boolean {
+    const decimal = new Decimal(another);
+
+    return this.value.lt(decimal.value);
+  }
+
+  lte(another: Numberish): boolean {
+    const decimal = new Decimal(another);
+
+    return this.value.lte(decimal.value);
+  }
+
+  gt(another: Numberish): boolean {
+    const decimal = new Decimal(another);
+
+    return this.value.gt(decimal.value);
+  }
+
+  gte(another: Numberish): boolean {
+    const decimal = new Decimal(another);
+
+    return this.value.gte(decimal.value);
+  }
+
   toBigNumber(precision: number = DEFAULT_TOKEN_PRECISION): BigNumber {
     if (this.precision === precision) {
       return BigNumber.from(this.value);
@@ -76,16 +104,40 @@ export default class Decimal {
     const [integral, fraction] = str.split('.');
 
     const lastDigit = fraction.charAt(fractionDigits);
-    if (Number(lastDigit) < 5) {
-      return this.toTruncated(fractionDigits);
-    } else {
-      if (fractionDigits > 0) {
-        const bigNum = utils.parseUnits(`${integral}.${fraction.slice(0, fractionDigits)}`, fractionDigits);
-        const str = utils.formatUnits(bigNum.add(1), fractionDigits);
-        const [outputIntegral, outputFraction] = str.split('.');
-        return `${outputIntegral}.${outputFraction.padEnd(fractionDigits, '0')}`;
+
+    if (this.gte(0)) {
+      // positive number
+      if (Number(lastDigit) < 5) {
+        // no need to be rounded
+        return this.toTruncated(fractionDigits);
       } else {
-        return BigNumber.from(integral).add(1).toString();
+        if (fractionDigits > 0) {
+          // round to fractionDigits decimal places
+          const bigNum = utils.parseUnits(`${integral}.${fraction.slice(0, fractionDigits)}`, fractionDigits);
+          const str = utils.formatUnits(bigNum.add(1), fractionDigits);
+          const [outputIntegral, outputFraction] = str.split('.');
+          return `${outputIntegral}.${outputFraction.padEnd(fractionDigits, '0')}`;
+        } else {
+          // rounded as integer, simply +1
+          return BigNumber.from(integral).add(1).toString();
+        }
+      }
+    } else {
+      // negative number
+      if (Number(lastDigit) <= 5) {
+        // no need to be rounded
+        return this.toTruncated(fractionDigits);
+      } else {
+        if (fractionDigits > 0) {
+          // round to fractionDigits decimal places
+          const bigNum = utils.parseUnits(`${integral}.${fraction.slice(0, fractionDigits)}`, fractionDigits);
+          const str = utils.formatUnits(bigNum.sub(1), fractionDigits);
+          const [outputIntegral, outputFraction] = str.split('.');
+          return `${outputIntegral}.${outputFraction.padEnd(fractionDigits, '0')}`;
+        } else {
+          // rounded as negative integer, simply -1
+          return BigNumber.from(integral).sub(1).toString();
+        }
       }
     }
   }

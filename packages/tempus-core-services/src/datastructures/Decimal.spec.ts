@@ -59,6 +59,9 @@ describe('Decimal', () => {
       { value: 123.123, addend: 12.12, expected: 135.243, precision: 10 },
       { value: 9876.1234, addend: '1234.9876', expected: 11111.111 },
       { value: 9876.1234, addend: new Decimal(1234.9876), expected: 11111.111 },
+      { value: -123.123, addend: 12.12, expected: -111.003 },
+      { value: -123.123, addend: '12.12', expected: -111.003 },
+      { value: -123.123, addend: new Decimal(12.12), expected: -111.003 },
     ].forEach(({ value, addend, expected }) =>
       it(`${value} + ${addend} should be ${expected}`, () => {
         const decimal = new Decimal(value);
@@ -69,8 +72,8 @@ describe('Decimal', () => {
     );
 
     for (let i = 0; i < 10; i++) {
-      const value = Math.random() * 1000;
-      const addend = Math.random() * 100;
+      const value = Math.random() * 1000 - 500;
+      const addend = Math.random() * 1000 - 500;
       const expected = utils.parseUnits(`${value}`, 18).add(utils.parseUnits(`${addend}`, 18));
 
       it(`${value} + ${addend} should be ${utils.formatUnits(expected, 18)}`, () => {
@@ -90,6 +93,9 @@ describe('Decimal', () => {
       { value: 9876.1234, subtrahend: 1234.9876, expected: 8641.1358 },
       { value: 9876.1234, subtrahend: '1234.9876', expected: 8641.1358 },
       { value: 9876.1234, subtrahend: new Decimal(1234.9876), expected: 8641.1358 },
+      { value: -123.123, subtrahend: 12.12, expected: -135.243 },
+      { value: -123.123, subtrahend: '12.12', expected: -135.243 },
+      { value: -123.123, subtrahend: new Decimal(12.12), expected: -135.243 },
     ].forEach(({ value, subtrahend, expected }) =>
       it(`${value} - ${subtrahend} should be ${expected}`, () => {
         const decimal = new Decimal(value);
@@ -100,8 +106,8 @@ describe('Decimal', () => {
     );
 
     for (let i = 0; i < 10; i++) {
-      const value = Math.random() * 1000 + 100;
-      const subtrahend = Math.random() * 100;
+      const value = Math.random() * 1000;
+      const subtrahend = Math.random() * 1000;
       const expected = utils.parseUnits(`${value}`, 18).sub(utils.parseUnits(`${subtrahend}`, 18));
 
       it(`${value} - ${subtrahend} should be ${utils.formatUnits(expected, 18)}`, () => {
@@ -121,6 +127,15 @@ describe('Decimal', () => {
       { value: 9876.1234, multiplicand: 1234.9876, expected: '12196889.93506984' },
       { value: 9876.1234, multiplicand: '1234.9876', expected: '12196889.93506984' },
       { value: 9876.1234, multiplicand: new Decimal(1234.9876), expected: '12196889.93506984' },
+      { value: -123.123, multiplicand: 12.12, expected: -1492.25076 },
+      { value: -123.123, multiplicand: '12.12', expected: -1492.25076 },
+      { value: -123.123, multiplicand: new Decimal(12.12), expected: -1492.25076 },
+      { value: 123.123, multiplicand: -12.12, expected: -1492.25076 },
+      { value: 123.123, multiplicand: '-12.12', expected: -1492.25076 },
+      { value: 123.123, multiplicand: new Decimal(-12.12), expected: -1492.25076 },
+      { value: -123.123, multiplicand: -12.12, expected: 1492.25076 },
+      { value: -123.123, multiplicand: '-12.12', expected: 1492.25076 },
+      { value: -123.123, multiplicand: new Decimal(-12.12), expected: 1492.25076 },
     ].forEach(({ value, multiplicand, expected }) =>
       it(`${value} * ${multiplicand} should be ${expected}`, () => {
         const decimal = new Decimal(value);
@@ -131,8 +146,8 @@ describe('Decimal', () => {
     );
 
     for (let i = 0; i < 10; i++) {
-      const value = Math.random() * 1000;
-      const multiplicand = Math.random() * 100;
+      const value = Math.random() * 1000 - 500;
+      const multiplicand = Math.random() * 100 - 50;
       const expected = utils
         .parseUnits(`${value}`, 18)
         .mul(utils.parseUnits(`${multiplicand}`, 18))
@@ -155,6 +170,15 @@ describe('Decimal', () => {
       { value: 9876.1234, divisor: 1234.9876, expected: '7.996941345807844548' },
       { value: 9876.1234, divisor: '1234.9876', expected: '7.996941345807844548' },
       { value: 9876.1234, divisor: new Decimal(1234.9876), expected: '7.996941345807844548' },
+      { value: -123.123, divisor: 12.12, expected: '-10.158663366336633663' },
+      { value: -123.123, divisor: '12.12', expected: '-10.158663366336633663' },
+      { value: -123.123, divisor: new Decimal(12.12), expected: '-10.158663366336633663' },
+      { value: 123.123, divisor: -12.12, expected: '-10.158663366336633663' },
+      { value: 123.123, divisor: '-12.12', expected: '-10.158663366336633663' },
+      { value: 123.123, divisor: new Decimal(-12.12), expected: '-10.158663366336633663' },
+      { value: -123.123, divisor: -12.12, expected: '10.158663366336633663' },
+      { value: -123.123, divisor: '-12.12', expected: '10.158663366336633663' },
+      { value: -123.123, divisor: new Decimal(-12.12), expected: '10.158663366336633663' },
     ].forEach(({ value, divisor, expected }) =>
       it(`${value} / ${divisor} should be ${expected}`, () => {
         const decimal = new Decimal(value);
@@ -165,7 +189,7 @@ describe('Decimal', () => {
     );
 
     for (let i = 0; i < 10; i++) {
-      const value = Math.random() * 1000;
+      const value = Math.random() * 1000 - 500;
       const divisor = Math.random() * 100 + 1;
       const expected = utils
         .parseUnits(`${value}`, 18)
@@ -177,6 +201,210 @@ describe('Decimal', () => {
         const result = new Decimal(expected);
 
         expect(decimal.div(divisor)).toEqual(result);
+      });
+    }
+  });
+
+  describe('abs()', () => {
+    [
+      { value: 123.123, expected: '123.123' },
+      { value: '123.123', expected: '123.123' },
+      { value: new Decimal(123.123), expected: '123.123' },
+      { value: -123.123, expected: '123.123' },
+      { value: '-123.123', expected: '123.123' },
+      { value: new Decimal(-123.123), expected: '123.123' },
+    ].forEach(({ value, expected }) =>
+      it(`abs value of ${value} should be ${expected}`, () => {
+        const decimal = new Decimal(value);
+        const result = new Decimal(expected);
+
+        expect(decimal.abs()).toEqual(result);
+      }),
+    );
+
+    for (let i = 0; i < 10; i++) {
+      const minuend = Math.random() * 100;
+      const subtrahend = Math.random() * 200;
+      const value = minuend - subtrahend;
+      const expected = Math.abs(value);
+
+      it(`abs value of ${value} should be ${expected}`, () => {
+        const decimal = new Decimal(value);
+        const result = new Decimal(expected);
+
+        expect(decimal.abs()).toEqual(result);
+      });
+    }
+  });
+
+  describe('lt()', () => {
+    [
+      { value: 123.123, another: 123, expected: false },
+      { value: 123.123, another: '123', expected: false },
+      { value: 123.123, another: new Decimal(123), expected: false },
+      { value: 123.123, another: 123.123, expected: false },
+      { value: 123.123, another: '123.123', expected: false },
+      { value: 123.123, another: new Decimal(123.123), expected: false },
+      { value: 123.123, another: 124, expected: true },
+      { value: 123.123, another: '124', expected: true },
+      { value: 123.123, another: new Decimal(124), expected: true },
+      { value: -123.123, another: -123, expected: true },
+      { value: -123.123, another: '-123', expected: true },
+      { value: -123.123, another: new Decimal(-123), expected: true },
+      { value: -123.123, another: -123.123, expected: false },
+      { value: -123.123, another: '-123.123', expected: false },
+      { value: -123.123, another: new Decimal(-123.123), expected: false },
+      { value: -123.123, another: -124, expected: false },
+      { value: -123.123, another: '-124', expected: false },
+      { value: -123.123, another: new Decimal(-124), expected: false },
+    ].forEach(({ value, another, expected }) =>
+      it(`${value} should ${expected ? '' : 'not'} be less than ${another}`, () => {
+        const decimal = new Decimal(value);
+        const anotherDecimal = new Decimal(another);
+
+        expect(decimal.lt(anotherDecimal)).toEqual(expected);
+      }),
+    );
+
+    for (let i = 0; i < 10; i++) {
+      const value = Math.random() * 100 - 50;
+      const another = Math.random() * 100 - 50;
+      const expected = value < another;
+
+      it(`${value} should ${expected ? '' : 'not'} be less than ${another}`, () => {
+        const decimal = new Decimal(value);
+        const anotherDecimal = new Decimal(another);
+
+        expect(decimal.lt(anotherDecimal)).toEqual(expected);
+      });
+    }
+  });
+
+  describe('lte()', () => {
+    [
+      { value: 123.123, another: 123, expected: false },
+      { value: 123.123, another: '123', expected: false },
+      { value: 123.123, another: new Decimal(123), expected: false },
+      { value: 123.123, another: 123.123, expected: true },
+      { value: 123.123, another: '123.123', expected: true },
+      { value: 123.123, another: new Decimal(123.123), expected: true },
+      { value: 123.123, another: 124, expected: true },
+      { value: 123.123, another: '124', expected: true },
+      { value: 123.123, another: new Decimal(124), expected: true },
+      { value: -123.123, another: -123, expected: true },
+      { value: -123.123, another: '-123', expected: true },
+      { value: -123.123, another: new Decimal(-123), expected: true },
+      { value: -123.123, another: -123.123, expected: true },
+      { value: -123.123, another: '-123.123', expected: true },
+      { value: -123.123, another: new Decimal(-123.123), expected: true },
+      { value: -123.123, another: -124, expected: false },
+      { value: -123.123, another: '-124', expected: false },
+      { value: -123.123, another: new Decimal(-124), expected: false },
+    ].forEach(({ value, another, expected }) =>
+      it(`${value} should ${expected ? '' : 'not'} be less than or equal to ${another}`, () => {
+        const decimal = new Decimal(value);
+        const anotherDecimal = new Decimal(another);
+
+        expect(decimal.lte(anotherDecimal)).toEqual(expected);
+      }),
+    );
+
+    for (let i = 0; i < 10; i++) {
+      const value = Math.random() * 100 - 50;
+      const another = Math.random() * 100 - 50;
+      const expected = value <= another;
+
+      it(`${value} should ${expected ? '' : 'not'} be less than or equal to ${another}`, () => {
+        const decimal = new Decimal(value);
+        const anotherDecimal = new Decimal(another);
+
+        expect(decimal.lte(anotherDecimal)).toEqual(expected);
+      });
+    }
+  });
+
+  describe('gt()', () => {
+    [
+      { value: 123.123, another: 123, expected: true },
+      { value: 123.123, another: '123', expected: true },
+      { value: 123.123, another: new Decimal(123), expected: true },
+      { value: 123.123, another: 123.123, expected: false },
+      { value: 123.123, another: '123.123', expected: false },
+      { value: 123.123, another: new Decimal(123.123), expected: false },
+      { value: 123.123, another: 124, expected: false },
+      { value: 123.123, another: '124', expected: false },
+      { value: 123.123, another: new Decimal(124), expected: false },
+      { value: -123.123, another: -123, expected: false },
+      { value: -123.123, another: '-123', expected: false },
+      { value: -123.123, another: new Decimal(-123), expected: false },
+      { value: -123.123, another: -123.123, expected: false },
+      { value: -123.123, another: '-123.123', expected: false },
+      { value: -123.123, another: new Decimal(-123.123), expected: false },
+      { value: -123.123, another: -124, expected: true },
+      { value: -123.123, another: '-124', expected: true },
+      { value: -123.123, another: new Decimal(-124), expected: true },
+    ].forEach(({ value, another, expected }) =>
+      it(`${value} should ${expected ? '' : 'not'} be greater than ${another}`, () => {
+        const decimal = new Decimal(value);
+        const anotherDecimal = new Decimal(another);
+
+        expect(decimal.gt(anotherDecimal)).toEqual(expected);
+      }),
+    );
+
+    for (let i = 0; i < 10; i++) {
+      const value = Math.random() * 100 - 50;
+      const another = Math.random() * 100 - 50;
+      const expected = value > another;
+
+      it(`${value} should ${expected ? '' : 'not'} be greater than ${another}`, () => {
+        const decimal = new Decimal(value);
+        const anotherDecimal = new Decimal(another);
+
+        expect(decimal.gt(anotherDecimal)).toEqual(expected);
+      });
+    }
+  });
+
+  describe('gte()', () => {
+    [
+      { value: 123.123, another: 123, expected: true },
+      { value: 123.123, another: '123', expected: true },
+      { value: 123.123, another: new Decimal(123), expected: true },
+      { value: 123.123, another: 123.123, expected: true },
+      { value: 123.123, another: '123.123', expected: true },
+      { value: 123.123, another: new Decimal(123.123), expected: true },
+      { value: 123.123, another: 124, expected: false },
+      { value: 123.123, another: '124', expected: false },
+      { value: 123.123, another: new Decimal(124), expected: false },
+      { value: -123.123, another: -123, expected: false },
+      { value: -123.123, another: '-123', expected: false },
+      { value: -123.123, another: new Decimal(-123), expected: false },
+      { value: -123.123, another: -123.123, expected: true },
+      { value: -123.123, another: '-123.123', expected: true },
+      { value: -123.123, another: new Decimal(-123.123), expected: true },
+      { value: -123.123, another: -124, expected: true },
+      { value: -123.123, another: '-124', expected: true },
+      { value: -123.123, another: new Decimal(-124), expected: true },
+    ].forEach(({ value, another, expected }) =>
+      it(`${value} should ${expected ? '' : 'not'} be greater than or equal to ${another}`, () => {
+        const decimal = new Decimal(value);
+        const anotherDecimal = new Decimal(another);
+
+        expect(decimal.gte(anotherDecimal)).toEqual(expected);
+      }),
+    );
+
+    for (let i = 0; i < 10; i++) {
+      const value = Math.random() * 100 - 50;
+      const another = Math.random() * 100 - 50;
+      const expected = value >= another;
+
+      it(`${value} should ${expected ? '' : 'not'} be greater than or equal to ${another}`, () => {
+        const decimal = new Decimal(value);
+        const anotherDecimal = new Decimal(another);
+
+        expect(decimal.gte(anotherDecimal)).toEqual(expected);
       });
     }
   });
@@ -208,6 +436,31 @@ describe('Decimal', () => {
         precision: undefined,
         expected: BigNumber.from('123123000000000000000'),
       },
+      {
+        value: -123.123,
+        precision: 10,
+        expected: BigNumber.from('-1231230000000'),
+      },
+      {
+        value: -123.123,
+        precision: 6,
+        expected: BigNumber.from('-123123000'),
+      },
+      {
+        value: -123.123,
+        precision: 18,
+        expected: BigNumber.from('-123123000000000000000'),
+      },
+      {
+        value: -123.123,
+        precision: 20,
+        expected: BigNumber.from('-12312300000000000000000'),
+      },
+      {
+        value: -123.123,
+        precision: undefined,
+        expected: BigNumber.from('-123123000000000000000'),
+      },
     ].forEach(({ value, precision, expected }) =>
       it(`with precision ${precision}`, () => {
         const decimal = new Decimal(value);
@@ -238,6 +491,26 @@ describe('Decimal', () => {
       {
         value: 0.123789,
         expected: '0.123789',
+      },
+      {
+        value: -123.123,
+        expected: '-123.123',
+      },
+      {
+        value: -123123,
+        expected: '-123123.0',
+      },
+      {
+        value: -789.789,
+        expected: '-789.789',
+      },
+      {
+        value: -789789,
+        expected: '-789789.0',
+      },
+      {
+        value: -0.123789,
+        expected: '-0.123789',
       },
     ].forEach(({ value, expected }) =>
       it(`${value} should be converted to ${expected}`, () => {
@@ -271,6 +544,11 @@ describe('Decimal', () => {
         expected: '123',
       },
       {
+        value: 555.555,
+        fractionDigits: 2,
+        expected: '555.56',
+      },
+      {
         value: 789.789,
         fractionDigits: 2,
         expected: '789.79',
@@ -279,6 +557,11 @@ describe('Decimal', () => {
         value: 789.789,
         fractionDigits: undefined,
         expected: '790',
+      },
+      {
+        value: '123.012345678901234567',
+        fractionDigits: 15,
+        expected: '123.012345678901235',
       },
       {
         value: '123.012345678901234567',
@@ -294,6 +577,61 @@ describe('Decimal', () => {
         value: '123.012345678901234567',
         fractionDigits: 20,
         expected: '123.01234567890123456700',
+      },
+      {
+        value: -100,
+        fractionDigits: 2,
+        expected: '-100.00',
+      },
+      {
+        value: -100,
+        fractionDigits: undefined,
+        expected: '-100',
+      },
+      {
+        value: -123.123,
+        fractionDigits: 2,
+        expected: '-123.12',
+      },
+      {
+        value: -123.123,
+        fractionDigits: undefined,
+        expected: '-123',
+      },
+      {
+        value: -555.555,
+        fractionDigits: 2,
+        expected: '-555.55',
+      },
+      {
+        value: -789.789,
+        fractionDigits: 2,
+        expected: '-789.79',
+      },
+      {
+        value: -789.789,
+        fractionDigits: undefined,
+        expected: '-790',
+      },
+      {
+        value: '-123.012345678901234567',
+        fractionDigits: 15,
+        expected: '-123.012345678901234',
+      },
+      {
+        value: '-123.012345678901234567',
+        fractionDigits: 17,
+        expected: '-123.01234567890123457',
+      },
+      {
+        value: '-123.012345678901234567',
+        fractionDigits: 18,
+        expected: '-123.012345678901234567',
+      },
+      {
+        value: '-123.012345678901234567',
+        fractionDigits: 20,
+        expected: '-123.01234567890123456700',
       },
     ].forEach(({ value, fractionDigits, expected }) =>
       it(`${value} should be rounded to ${expected}`, () => {
@@ -365,6 +703,51 @@ describe('Decimal', () => {
         fractionDigits: 20,
         expected: '123.01234567890123456700',
       },
+      {
+        value: -100,
+        fractionDigits: 2,
+        expected: '-100.00',
+      },
+      {
+        value: -100,
+        fractionDigits: undefined,
+        expected: '-100',
+      },
+      {
+        value: -123.123,
+        fractionDigits: 2,
+        expected: '-123.12',
+      },
+      {
+        value: -123.123,
+        fractionDigits: undefined,
+        expected: '-123',
+      },
+      {
+        value: -789.789,
+        fractionDigits: 2,
+        expected: '-789.78',
+      },
+      {
+        value: -789.789,
+        fractionDigits: undefined,
+        expected: '-789',
+      },
+      {
+        value: '-123.012345678901234567',
+        fractionDigits: 17,
+        expected: '-123.01234567890123456',
+      },
+      {
+        value: '-123.012345678901234567',
+        fractionDigits: 18,
+        expected: '-123.012345678901234567',
+      },
+      {
+        value: '-123.012345678901234567',
+        fractionDigits: 20,
+        expected: '-123.01234567890123456700',
+      },
     ].forEach(({ value, fractionDigits, expected }) =>
       it(`${value} should be truncated to ${expected}`, () => {
         const decimal = new Decimal(value);
@@ -374,7 +757,7 @@ describe('Decimal', () => {
     );
 
     for (let i = 0; i < 10; i++) {
-      const value = Math.random() * 1000;
+      const value = Math.random() * 1000 - 500;
       const fractionDigits = Math.ceil(Math.random() * 5);
       const truncated = Math.trunc(value * Math.pow(10, fractionDigits)) / Math.pow(10, fractionDigits);
 
