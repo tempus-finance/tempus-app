@@ -22,7 +22,7 @@ const IconButtonGroup: FC<IconButtonGroupProps> = props => {
   return (
     <div className="tc__iconButtonGroup">
       {types.map(type => (
-        <IconButton key={type} type={type} onClick={onClick} selected={type === selectedType} />
+        <IconButton key={type} variant={type} onClick={onClick} selected={type === selectedType} />
       ))}
     </div>
   );
