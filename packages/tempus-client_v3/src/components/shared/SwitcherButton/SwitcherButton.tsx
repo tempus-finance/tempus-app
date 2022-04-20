@@ -1,4 +1,4 @@
-import React, { FC, memo } from 'react';
+import { FC, memo } from 'react';
 import { colors } from '../Colors';
 import ButtonWrapper from '../ButtonWrapper';
 import Typography from '../Typography';

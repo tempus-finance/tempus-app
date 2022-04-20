@@ -1,4 +1,4 @@
-import React, { FC, forwardRef, memo, HTMLProps, useMemo } from 'react';
+import { FC, forwardRef, memo, HTMLProps, useMemo } from 'react';
 import { Link as InternalLink } from 'react-router-dom';
 
 import './link.scss';

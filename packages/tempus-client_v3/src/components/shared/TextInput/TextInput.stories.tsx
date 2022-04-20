@@ -1,5 +1,5 @@
 import { ComponentStory } from '@storybook/react';
-import React, { FC, useCallback, useState } from 'react';
+import { FC, useCallback, useState } from 'react';
 import TextInput, { TextInputProps } from './TextInput';
 import Logo from '../Logo';
 

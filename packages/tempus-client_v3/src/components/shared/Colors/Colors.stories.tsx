@@ -1,5 +1,5 @@
 import { ComponentStory } from '@storybook/react';
-import React, { CSSProperties, FC } from 'react';
+import { CSSProperties, FC } from 'react';
 import Colors from './colors.json';
 
 interface ColorChipProps {
