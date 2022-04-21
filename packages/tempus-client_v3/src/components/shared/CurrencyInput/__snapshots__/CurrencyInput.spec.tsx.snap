@@ -350,7 +350,7 @@ exports[`CurrencyInput updates the USD value based on less precise USD rate 1`] 
 <div
   style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(71, 67, 80); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
 >
-  $430,500
+  $430,500.00
 </div>
 `;
 
@@ -358,7 +358,7 @@ exports[`CurrencyInput updates the USD value based on same-precision USD rate 1`
 <div
   style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(71, 67, 80); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
 >
-  $430,500
+  $430,500.00
 </div>
 `;
 
@@ -394,7 +394,7 @@ exports[`CurrencyInput updates the input field when a percentage button is click
 <div
   style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(71, 67, 80); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
 >
-  $87,500
+  $87,500.00
 </div>
 `;
 
@@ -430,7 +430,7 @@ exports[`CurrencyInput updates the input field when a percentage button is click
 <div
   style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(71, 67, 80); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
 >
-  $175,000
+  $175,000.00
 </div>
 `;
 
@@ -466,7 +466,7 @@ exports[`CurrencyInput updates the input field when a percentage button is click
 <div
   style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(71, 67, 80); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
 >
-  $262,500
+  $262,500.00
 </div>
 `;
 
@@ -502,6 +502,6 @@ exports[`CurrencyInput updates the input field when a percentage button is click
 <div
   style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(71, 67, 80); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
 >
-  $350,000
+  $350,000.00
 </div>
 `;
