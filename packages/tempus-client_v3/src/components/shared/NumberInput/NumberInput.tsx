@@ -1,4 +1,4 @@
-import React, { FC, memo, useCallback, useMemo } from 'react';
+import { FC, memo, useCallback, useMemo } from 'react';
 import { BigNumber, utils } from 'ethers';
 import TextInput from '../TextInput';
 import ButtonWrapper from '../ButtonWrapper';
