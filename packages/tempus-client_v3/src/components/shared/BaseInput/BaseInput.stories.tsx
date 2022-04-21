@@ -1,6 +1,7 @@
 import { ComponentStory } from '@storybook/react';
 import { FC, useCallback, useState } from 'react';
 import BaseInput, { BaseInputProps } from './BaseInput';
+import Typography from '../Typography';
 
 export default {
   title: 'BaseInput',
@@ -18,8 +19,17 @@ const style = {
 
 const Wrapper: FC<BaseInputProps> = props => {
   const [value, setValue] = useState<string>(props.value ?? '');
+  const [debouncedValue, setDebouncedValue] = useState<string>('');
   const onChange = useCallback((val: string) => setValue(val), []);
-  return <BaseInput {...props} value={value} onChange={onChange} />;
+  const onDebounceChange = useCallback((val: string) => setDebouncedValue(val), []);
+  return (
+    <div>
+      <BaseInput {...props} value={value} onChange={onChange} onDebounceChange={onDebounceChange} />
+      <hr />
+      <Typography variant="body-secondary">onChange: {value}</Typography>
+      <Typography variant="body-secondary">onDebounceChange: {debouncedValue}</Typography>
+    </div>
+  );
 };
 
 const Template: ComponentStory<typeof BaseInput> = args => (
@@ -62,5 +72,4 @@ BaseInputDebounce.args = {
   pattern: '',
   disabled: false,
   debounce: true,
-  onDebounceChange: value => console.log(value),
 };

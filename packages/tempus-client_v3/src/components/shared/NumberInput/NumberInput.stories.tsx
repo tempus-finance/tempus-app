@@ -1,6 +1,7 @@
 import { ComponentStory } from '@storybook/react';
 import { FC, useCallback, useState } from 'react';
 import NumberInput, { NumberInputProps } from './NumberInput';
+import Typography from '../Typography';
 
 export default {
   title: 'NumberInput',
@@ -18,8 +19,17 @@ const style = {
 
 const Wrapper: FC<NumberInputProps> = props => {
   const [value, setValue] = useState<string>(props.value ?? '');
+  const [debouncedValue, setDebouncedValue] = useState<string>('');
   const onChange = useCallback((val: string) => setValue(val), []);
-  return <NumberInput {...props} value={value} onChange={onChange} />;
+  const onDebounceChange = useCallback((val: string) => setDebouncedValue(val), []);
+  return (
+    <div>
+      <NumberInput {...props} value={value} onChange={onChange} onDebounceChange={onDebounceChange} />
+      <hr />
+      <Typography variant="body-secondary">onChange: {value}</Typography>
+      <Typography variant="body-secondary">onDebounceChange: {debouncedValue}</Typography>
+    </div>
+  );
 };
 
 const Template: ComponentStory<typeof NumberInput> = args => (
@@ -32,7 +42,7 @@ export const NumberInputRaw = Template.bind({});
 NumberInputRaw.args = {
   placeholder: 'placeholder',
   max: 100,
-  precision: 0,
+  precision: 6,
   disabled: false,
   debounce: false,
 };
@@ -42,7 +52,7 @@ NumberInputNormal.args = {
   label: 'number input',
   placeholder: 'placeholder',
   max: 100,
-  precision: 0,
+  precision: 6,
   disabled: false,
   debounce: false,
 };
@@ -53,7 +63,7 @@ NumberInputCaption.args = {
   placeholder: 'placeholder',
   caption: 'caption here',
   max: 100,
-  precision: 0,
+  precision: 6,
   disabled: false,
   debounce: false,
 };
@@ -65,7 +75,7 @@ NumberInputError.args = {
   caption: 'caption here',
   error: 'error here',
   max: 100,
-  precision: 0,
+  precision: 6,
   disabled: false,
   debounce: false,
 };
@@ -76,7 +86,17 @@ NumberInputDisabled.args = {
   placeholder: 'placeholder',
   caption: 'caption here',
   max: 100,
-  precision: 0,
+  precision: 6,
   disabled: true,
   debounce: false,
+};
+
+export const NumberInputDebounce = Template.bind({});
+NumberInputDebounce.args = {
+  label: 'number debounce',
+  placeholder: 'placeholder',
+  max: 100,
+  precision: 6,
+  disabled: false,
+  debounce: true,
 };

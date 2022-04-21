@@ -2,6 +2,7 @@ import { ComponentStory } from '@storybook/react';
 import { FC, useCallback, useState } from 'react';
 import TextInput, { TextInputProps } from './TextInput';
 import Logo from '../Logo';
+import Typography from '../Typography';
 
 export default {
   title: 'TextInput',
@@ -19,8 +20,17 @@ const style = {
 
 const Wrapper: FC<TextInputProps> = props => {
   const [value, setValue] = useState<string>(props.value ?? '');
+  const [debouncedValue, setDebouncedValue] = useState<string>('');
   const onChange = useCallback((val: string) => setValue(val), []);
-  return <TextInput {...props} value={value} onChange={onChange} />;
+  const onDebounceChange = useCallback((val: string) => setDebouncedValue(val), []);
+  return (
+    <div>
+      <TextInput {...props} value={value} onChange={onChange} onDebounceChange={onDebounceChange} />
+      <hr />
+      <Typography variant="body-secondary">onChange: {value}</Typography>
+      <Typography variant="body-secondary">onDebounceChange: {debouncedValue}</Typography>
+    </div>
+  );
 };
 
 const Template: ComponentStory<typeof TextInput> = args => (
@@ -83,6 +93,18 @@ TextInputDisabled.args = {
   caption: 'caption here',
   disabled: true,
   debounce: false,
+  startAdornment: null,
+  endAdornment: null,
+};
+
+export const TextInputDebounce = Template.bind({});
+TextInputDebounce.args = {
+  label: 'text input',
+  placeholder: 'placeholder',
+  pattern: '',
+  caption: 'caption here',
+  disabled: false,
+  debounce: true,
   startAdornment: null,
   endAdornment: null,
 };

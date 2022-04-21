@@ -61,12 +61,12 @@ const CurrencyInput: FC<CurrencyInputProps> = props => {
   const handlePercentageClick = useCallback(
     (percentage: number) => {
       const value = new Decimal(percentage).mul(maxAmount).div(100);
-      const formattedValue = value.toString();
+      const formattedValue = new Decimal(value.toTruncated(precision)).toString();
 
       handleValueChange(formattedValue);
       handleDebounceValueChange(formattedValue);
     },
-    [handleDebounceValueChange, handleValueChange, maxAmount],
+    [precision, handleDebounceValueChange, handleValueChange, maxAmount],
   );
 
   return (
