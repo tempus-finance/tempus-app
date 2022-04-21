@@ -1,23 +1,21 @@
 import { act, fireEvent, render } from '@testing-library/react';
-import { BigNumber, ethers } from 'ethers';
-import { div18f, increasePrecision, mul18f, NumberUtils, Ticker } from 'tempus-core-services';
+import { Decimal, DecimalUtils, Ticker } from 'tempus-core-services';
 import CurrencyInput, { CurrencyInputProps } from './CurrencyInput';
 
 const defaultProps = {
   precision: 18,
-  maxAmount: increasePrecision(BigNumber.from(100), 18),
-  ratePrecision: 2,
+  maxAmount: new Decimal(100),
 };
 
 const mockOnAmountUpdate = jest.fn<void, [string]>();
 const mockOnCurrencyUpdate = jest.fn<void, [Ticker]>();
 
-const singleCurrencyUsdRates = new Map<Ticker, BigNumber>();
-singleCurrencyUsdRates.set('ETH', increasePrecision(BigNumber.from(3500), defaultProps.ratePrecision));
+const singleCurrencyUsdRates = new Map<Ticker, Decimal>();
+singleCurrencyUsdRates.set('ETH', new Decimal(3500));
 
-const multipleCurrencyUsdRates = new Map<Ticker, BigNumber>();
-multipleCurrencyUsdRates.set('ETH', increasePrecision(BigNumber.from(3500), defaultProps.ratePrecision));
-multipleCurrencyUsdRates.set('stETH', increasePrecision(BigNumber.from(3500), defaultProps.ratePrecision));
+const multipleCurrencyUsdRates = new Map<Ticker, Decimal>();
+multipleCurrencyUsdRates.set('ETH', new Decimal(3500));
+multipleCurrencyUsdRates.set('stETH', new Decimal(3500));
 
 const subject = (props: CurrencyInputProps) => render(<CurrencyInput {...props} />);
 
@@ -155,23 +153,12 @@ describe('CurrencyInput', () => {
     expect(inputField).not.toHaveValue();
 
     percentageButtons.forEach((button, index) => {
-      const valueInCurrency = div18f(
-        mul18f(BigNumber.from(25 * (index + 1)), defaultProps.maxAmount, defaultProps.precision),
-        BigNumber.from(100),
-        defaultProps.precision,
-      );
-      const valueInFiat = mul18f(
-        valueInCurrency,
-        increasePrecision(
-          singleCurrencyUsdRates.get('ETH') ?? BigNumber.from(0),
-          defaultProps.precision - defaultProps.ratePrecision,
-        ),
-        defaultProps.precision,
-      );
+      const valueInCurrency = new Decimal(25 * (index + 1)).mul(defaultProps.maxAmount).div(100);
+      const valueInFiat = new Decimal(valueInCurrency).mul(singleCurrencyUsdRates.get('ETH') ?? 0);
 
       fireEvent.click(button);
 
-      const formattedValueInCurrency = ethers.utils.formatUnits(valueInCurrency, defaultProps.precision);
+      const formattedValueInCurrency = valueInCurrency.toString();
       const fiatValue = container.querySelector('.tc__currency-input__fiat-amount > div');
 
       expect(button).toMatchSnapshot();
@@ -183,9 +170,7 @@ describe('CurrencyInput', () => {
       expect(mockOnAmountUpdate).toBeCalledWith(formattedValueInCurrency);
 
       expect(fiatValue).not.toBeNull();
-      expect(fiatValue).toHaveTextContent(
-        NumberUtils.formatToCurrency(ethers.utils.formatUnits(valueInFiat, defaultProps.precision), 2, '$'),
-      );
+      expect(fiatValue).toHaveTextContent(DecimalUtils.formatToCurrency(valueInFiat, 2, '$'));
       expect(fiatValue).toMatchSnapshot();
     });
   });
@@ -194,14 +179,13 @@ describe('CurrencyInput', () => {
     const inputValue = 123;
     const precision = 18;
 
-    const usdRates = new Map<Ticker, BigNumber>();
-    usdRates.set('ETH', increasePrecision(BigNumber.from(3500), precision));
+    const usdRates = new Map<Ticker, Decimal>();
+    usdRates.set('ETH', new Decimal(3500));
 
     const { container, getByRole } = subject({
       precision,
       usdRates,
-      maxAmount: increasePrecision(BigNumber.from(100), precision),
-      ratePrecision: precision,
+      maxAmount: new Decimal(100),
     });
 
     const actualInput = getByRole('textbox');
@@ -210,11 +194,7 @@ describe('CurrencyInput', () => {
 
     fireEvent.change(actualInput, { target: { value: `${inputValue}` } });
 
-    const fiatValue = mul18f(
-      increasePrecision(BigNumber.from(inputValue), precision),
-      usdRates.get('ETH') ?? BigNumber.from(0),
-      precision,
-    );
+    const fiatValue = new Decimal(inputValue).mul(usdRates.get('ETH') ?? 0);
 
     act(() => {
       jest.advanceTimersByTime(300);
@@ -223,9 +203,7 @@ describe('CurrencyInput', () => {
     const actualFiatValue = container.querySelector('.tc__currency-input__fiat-amount > div');
 
     expect(actualFiatValue).not.toBeNull();
-    expect(actualFiatValue).toHaveTextContent(
-      NumberUtils.formatToCurrency(ethers.utils.formatUnits(fiatValue, defaultProps.precision), 2, '$'),
-    );
+    expect(actualFiatValue).toHaveTextContent(DecimalUtils.formatToCurrency(fiatValue, 2, '$'));
     expect(actualFiatValue).toMatchSnapshot();
   });
 
@@ -249,14 +227,7 @@ describe('CurrencyInput', () => {
 
     expect(actualLoading).not.toBeNull();
 
-    const fiatValue = mul18f(
-      increasePrecision(BigNumber.from(inputValue), defaultProps.precision),
-      increasePrecision(
-        singleCurrencyUsdRates.get('ETH') ?? BigNumber.from(0),
-        defaultProps.precision - defaultProps.ratePrecision,
-      ),
-      defaultProps.precision,
-    );
+    const fiatValue = new Decimal(inputValue).mul(singleCurrencyUsdRates.get('ETH') ?? 0);
 
     act(() => {
       jest.advanceTimersByTime(300);
@@ -268,9 +239,7 @@ describe('CurrencyInput', () => {
     expect(actualLoading).toBeNull();
 
     expect(actualFiatValue).not.toBeNull();
-    expect(actualFiatValue).toHaveTextContent(
-      NumberUtils.formatToCurrency(ethers.utils.formatUnits(fiatValue, defaultProps.precision), 2, '$'),
-    );
+    expect(actualFiatValue).toHaveTextContent(DecimalUtils.formatToCurrency(fiatValue, 2, '$'));
     expect(actualFiatValue).toMatchSnapshot();
   });
 });

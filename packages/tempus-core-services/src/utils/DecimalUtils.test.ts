@@ -1,4 +1,4 @@
-import DecimalUtils from './DecimalUtils';
+import { DecimalUtils } from './DecimalUtils';
 
 describe('DecimalUtils', () => {
   describe('formatWithMultiplier()', () => {
