@@ -50,6 +50,35 @@ divided by a number, return a `Decimal`.
 | ----------- | ----------- | ----------- | ----------- |
 | divisor | string \| number \| BigNumber \| Decimal | yes ||
 
+##### abs()
+get the absolute value, return a `Decimal`.
+| Param | Type | Mandatory | Default |
+| ----------- | ----------- | ----------- | ----------- |
+
+##### lt()
+compare with a number and see whether less than it, return a `boolean`.
+| Param | Type | Mandatory | Default |
+| ----------- | ----------- | ----------- | ----------- |
+| another | string \| number \| BigNumber \| Decimal | yes ||
+
+##### lte()
+compare with a number and see whether less than or equal to it, return a `boolean`.
+| Param | Type | Mandatory | Default |
+| ----------- | ----------- | ----------- | ----------- |
+| another | string \| number \| BigNumber \| Decimal | yes ||
+
+##### gt()
+compare with a number and see whether greater than it, return a `boolean`.
+| Param | Type | Mandatory | Default |
+| ----------- | ----------- | ----------- | ----------- |
+| another | string \| number \| BigNumber \| Decimal | yes ||
+
+##### gte()
+compare with a number and see whether greater than or equal to it, return a `boolean`.
+| Param | Type | Mandatory | Default |
+| ----------- | ----------- | ----------- | ----------- |
+| another | string \| number \| BigNumber \| Decimal | yes ||
+
 #### Conversion
 ```
 const decimal1 = new Decimal(123.123).toBigNumber(6);
@@ -61,3 +90,26 @@ const decimal3 = new Decimal(789.789).toRounded(2);
 const decimal4 = new Decimal(789.789).toTruncated(2);
 // decimal4 = '789.78'
 ```
+
+##### toBigNumber()
+convert to `BigNumber` with provided `precision`, return a `BigNumber`.
+| Param | Type | Mandatory | Default |
+| ----------- | ----------- | ----------- | ----------- |
+| precision | number | no | 18 |
+
+##### toString()
+convert to `string`, return a `string`.
+| Param | Type | Mandatory | Default |
+| ----------- | ----------- | ----------- | ----------- |
+
+##### toRounded()
+round to `fractionDigits` decimal places, return a `string`.
+| Param | Type | Mandatory | Default |
+| ----------- | ----------- | ----------- | ----------- |
+| fractionDigits | number | no | 0 |
+
+##### toTruncated()
+trauncate to `fractionDigits` decimal places, return a `string`.
+| Param | Type | Mandatory | Default |
+| ----------- | ----------- | ----------- | ----------- |
+| fractionDigits | number | no | 0 |
