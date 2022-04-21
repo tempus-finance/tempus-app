@@ -106,7 +106,7 @@ export default class Decimal {
     const lastDigit = fraction.charAt(fractionDigits);
 
     if (this.gte(0)) {
-      // positive number
+      // non-negative number
       if (Number(lastDigit) < 5) {
         // no need to be rounded
         return this.toTruncated(fractionDigits);

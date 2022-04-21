@@ -2,12 +2,12 @@ import Decimal, { Numberish } from '../datastructures/Decimal';
 import { reverseString } from './reverseString';
 
 const MULTIPLIER_LOOKUP = [
-  { value: '1000000000000000000', symbol: 'Q' },
-  { value: '1000000000000000', symbol: 'q' },
-  { value: '1000000000000', symbol: 'T' },
-  { value: '1000000000', symbol: 'B' },
-  { value: '1000000', symbol: 'M' },
-  { value: '1000', symbol: 'k' },
+  { numOfDigits: 19, symbol: 'Q' },
+  { numOfDigits: 16, symbol: 'q' },
+  { numOfDigits: 13, symbol: 'T' },
+  { numOfDigits: 10, symbol: 'B' },
+  { numOfDigits: 7, symbol: 'M' },
+  { numOfDigits: 4, symbol: 'k' },
 ];
 
 export default class DecimalUtils {
@@ -15,10 +15,11 @@ export default class DecimalUtils {
   static formatWithMultiplier(value: Numberish, fractionDigits: number = 0): string {
     const decimal = new Decimal(value);
     const decimalAbs = decimal.abs();
-    const multiplier = MULTIPLIER_LOOKUP.find(item => decimalAbs.gte(item.value));
+    const integerLength = decimalAbs.toTruncated(0).length;
+    const multiplier = MULTIPLIER_LOOKUP.find(item => integerLength >= item.numOfDigits);
 
     return multiplier
-      ? `${decimal.div(multiplier.value).toRounded(fractionDigits)}${multiplier.symbol}`
+      ? `${decimal.div('1'.padEnd(multiplier.numOfDigits, '0')).toRounded(fractionDigits)}${multiplier.symbol}`
       : decimal.toTruncated(fractionDigits);
   }
 
