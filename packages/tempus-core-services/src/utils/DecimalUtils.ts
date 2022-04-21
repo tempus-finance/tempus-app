@@ -10,7 +10,7 @@ const MULTIPLIER_LOOKUP = [
   { numOfDigits: 4, symbol: 'k' },
 ];
 
-export default class DecimalUtils {
+export class DecimalUtils {
   // round for multiplier (e.g. 9876 -> 9.88k), trauncate for fraction (e.g. 9.876 -> 9.87)
   static formatWithMultiplier(value: Numberish, fractionDigits: number = 0): string {
     const decimal = new Decimal(value);

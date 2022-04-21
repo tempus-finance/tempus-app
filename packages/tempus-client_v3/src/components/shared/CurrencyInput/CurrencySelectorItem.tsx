@@ -4,7 +4,7 @@ import ButtonWrapper from '../ButtonWrapper';
 import Logo, { LogoType } from '../Logo';
 import Typography from '../Typography';
 
-interface CurrencySelectorItemProps {
+export interface CurrencySelectorItemProps {
   currency: Ticker;
   disabled?: boolean;
   icon?: ReactNode;
