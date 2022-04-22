@@ -64,13 +64,19 @@ const Dashboard: FC<DashboardProps> = ({ userWalletAddress, rows, onRowActionCli
   );
 
   const sortingStateColumnExtensions = useMemo(() => {
-    return !!userWalletAddress
-      ? [{ columnName: ColumnNames.AVAILABLE_TO_DEPOSIT, sortingEnabled: false }]
-      : [
-          { columnName: ColumnNames.PRESENT_VALUE, sortingEnabled: false },
-          { columnName: ColumnNames.AVAILABLE_TO_DEPOSIT, sortingEnabled: false },
-        ];
-  }, [userWalletAddress]);
+    return [
+      {
+        columnName: ColumnNames.TOKEN,
+        sortingEnabled: false,
+      },
+      { columnName: ColumnNames.PROTOCOL, sortingEnabled: false },
+      { columnName: ColumnNames.MATURITY, sortingEnabled: false },
+      { columnName: ColumnNames.FIXED_APR, sortingEnabled: false },
+      { columnName: ColumnNames.TVL, sortingEnabled: false },
+      { columnName: ColumnNames.PRESENT_VALUE, sortingEnabled: false },
+      { columnName: ColumnNames.AVAILABLE_TO_DEPOSIT, sortingEnabled: false },
+    ];
+  }, []);
 
   const columnsDefinitions = useMemo(
     () => dashboardColumnsDefinitions(!!userWalletAddress, locale),
