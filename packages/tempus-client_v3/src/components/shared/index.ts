@@ -10,6 +10,7 @@ import ButtonWrapper from './ButtonWrapper';
 import Link from './Link';
 import ActionButton from './ActionButton';
 import SwitcherButton from './SwitcherButton';
+import Modal from './Modal';
 import TermTabs from './TermTabs';
 import { Dropdown, DropdownItem } from './Dropdown';
 import BaseInput from './BaseInput';
@@ -43,6 +44,7 @@ export {
   BaseInput,
   TextInput,
   NumberInput,
+  Modal,
   Table,
   TableHead,
   TableHeadCell,
