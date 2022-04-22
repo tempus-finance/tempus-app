@@ -478,7 +478,7 @@ describe('Decimal', () => {
       },
       {
         value: 123123,
-        expected: '123123.0',
+        expected: '123123',
       },
       {
         value: 789.789,
@@ -486,7 +486,7 @@ describe('Decimal', () => {
       },
       {
         value: 789789,
-        expected: '789789.0',
+        expected: '789789',
       },
       {
         value: 0.123789,
@@ -498,7 +498,7 @@ describe('Decimal', () => {
       },
       {
         value: -123123,
-        expected: '-123123.0',
+        expected: '-123123',
       },
       {
         value: -789.789,
@@ -506,7 +506,7 @@ describe('Decimal', () => {
       },
       {
         value: -789789,
-        expected: '-789789.0',
+        expected: '-789789',
       },
       {
         value: -0.123789,

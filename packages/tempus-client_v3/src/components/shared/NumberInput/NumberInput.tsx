@@ -1,5 +1,5 @@
 import { FC, memo, useCallback, useMemo } from 'react';
-import { BigNumber, utils } from 'ethers';
+import { Decimal, Numberish } from 'tempus-core-services';
 import TextInput from '../TextInput';
 import ButtonWrapper from '../ButtonWrapper';
 import Typography from '../Typography';
@@ -9,7 +9,7 @@ import './NumberInput.scss';
 export interface NumberInputProps {
   label?: string;
   value?: string;
-  max: number | string | BigNumber;
+  max: Numberish;
   precision?: number;
   placeholder?: string;
   caption?: string;
@@ -36,9 +36,9 @@ const NumberInput: FC<NumberInputProps> = props => {
   } = props;
 
   const onMaxClick = useCallback(() => {
-    const formatedMax = utils.formatUnits(max, precision);
-    onChange?.(formatedMax);
-    onDebounceChange?.(formatedMax);
+    const formattedMax = new Decimal(new Decimal(max).toTruncated(precision)).toString();
+    onChange?.(formattedMax);
+    onDebounceChange?.(formattedMax);
   }, [max, precision, onChange, onDebounceChange]);
   const maxButton = useMemo(
     () => (
@@ -50,6 +50,7 @@ const NumberInput: FC<NumberInputProps> = props => {
     ),
     [disabled, onMaxClick],
   );
+  const pattern = useMemo(() => (precision > 0 ? `[0-9,]*[.]?[0-9]{0,${precision}}` : '[0-9,]*'), [precision]);
 
   return (
     <div className="tc__number-input">
@@ -57,7 +58,7 @@ const NumberInput: FC<NumberInputProps> = props => {
         label={label}
         value={value}
         placeholder={placeholder}
-        pattern="[0-9,]*[.]?[0-9]*"
+        pattern={pattern}
         caption={caption}
         error={error}
         disabled={disabled}

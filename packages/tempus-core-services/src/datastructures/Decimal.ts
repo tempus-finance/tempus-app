@@ -96,12 +96,12 @@ export default class Decimal {
   }
 
   toString(): string {
-    return utils.formatUnits(this.value, this.precision);
+    return utils.formatUnits(this.value, this.precision).replace(/\.0*$/, '');
   }
 
   toRounded(fractionDigits: number = 0): string {
     const str = this.toString();
-    const [integral, fraction] = str.split('.');
+    const [integral, fraction = ''] = str.split('.');
 
     const lastDigit = fraction.charAt(fractionDigits);
 
@@ -144,7 +144,7 @@ export default class Decimal {
 
   toTruncated(fractionDigits: number = 0): string {
     const str = this.toString();
-    const [integral, fraction] = str.split('.');
+    const [integral, fraction = ''] = str.split('.');
 
     if (fractionDigits > 0) {
       return `${integral}.${fraction.slice(0, fractionDigits).padEnd(fractionDigits, '0')}`;
