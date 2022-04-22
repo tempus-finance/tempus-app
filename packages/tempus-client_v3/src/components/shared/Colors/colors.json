@@ -79,5 +79,8 @@
   "currencyInputBorder": "#474350",
   "currencyInputDisabledBorder": "#7A7A7A",
 
-  "pageContainerBackground": "#F3F7F9"
+  "pageContainerBackground": "#F3F7F9",
+
+  "tooltipBorder": "#BFC0C0",
+  "tooltipBackground": "#FFFFFF"
 }
