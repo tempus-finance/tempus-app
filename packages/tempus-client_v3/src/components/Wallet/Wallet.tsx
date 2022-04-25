@@ -30,6 +30,7 @@ init({
       label: 'Fantom',
       rpcUrl: process.env.REACT_APP_FANTOM_RPC || '',
     },
+    // TODO - Add forked ethereum chain
   ],
   appMetadata: {
     name: 'Tempus App',
