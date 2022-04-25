@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Tooltip does not render child elements as content when tooltip is closed 1`] = `<div />`;
+
+exports[`Tooltip renders child elements as content when tooltip is open 1`] = `
+<div>
+  <div
+    class="tc__tooltip"
+  >
+    <p>
+      Tooltip Content
+    </p>
+  </div>
+</div>
+`;

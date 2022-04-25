@@ -16,6 +16,7 @@ import BaseInput from './BaseInput';
 import TextInput from './TextInput';
 import NumberInput from './NumberInput';
 import WalletButton from './WalletButton';
+import Tooltip from './Tooltip';
 import { Table, TableHead, TableHeadCell, TableBody, TableBodyCell, TableRow } from './Table';
 
 export * from './Colors';
@@ -51,4 +52,5 @@ export {
   TableBody,
   TableBodyCell,
   TableRow,
+  Tooltip,
 };
