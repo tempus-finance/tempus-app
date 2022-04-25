@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useCallback } from 'react';
 import ButtonWrapper from '../ButtonWrapper';
 import Icon from '../Icon';
 
@@ -18,9 +18,9 @@ const Modal: FC<ModalProps> = props => {
     onClose();
   };
 
-  const onCloseButtonClick = () => {
+  const onCloseButtonClick = useCallback(() => {
     onClose();
-  };
+  }, [onClose]);
 
   if (!open) {
     return null;
