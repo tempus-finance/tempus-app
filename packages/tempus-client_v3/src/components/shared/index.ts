@@ -15,6 +15,7 @@ import { Dropdown, DropdownItem } from './Dropdown';
 import BaseInput from './BaseInput';
 import TextInput from './TextInput';
 import NumberInput from './NumberInput';
+import WalletButton from './WalletButton';
 import { Table, TableHead, TableHeadCell, TableBody, TableBodyCell, TableRow } from './Table';
 
 export * from './Colors';
@@ -36,6 +37,7 @@ export {
   Logo,
   SwitcherButton,
   TermTabs,
+  WalletButton,
   ToggleSwitch,
   Typography,
   Dropdown,

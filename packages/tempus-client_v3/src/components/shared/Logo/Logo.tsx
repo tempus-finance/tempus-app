@@ -23,6 +23,7 @@ import TokenYvwETH from './TokenYvwETH';
 import ProtocolAave from './ProtocolAave';
 import ProtocolLido from './ProtocolLido';
 import ProtocolRari from './ProtocolRari';
+import ProtocolTempus from './ProtocolTempus';
 import WalletMetamask from './WalletMetamask';
 import WalletWalletConnect from './WalletWalletConnect';
 import WalletGnosis from './WalletGnosis';
@@ -51,6 +52,7 @@ export type LogoType =
   | 'protocol-Aave'
   | 'protocol-Lido'
   | 'protocol-Rari'
+  | 'protocol-Tempus'
   | 'wallet-metamask'
   | 'wallet-walletconnect'
   | 'wallet-gnosis';
@@ -103,6 +105,8 @@ const Logo: FC<LogoProps & { type: LogoType }> = props => {
       return <ProtocolLido {...props} />;
     case 'protocol-Rari':
       return <ProtocolRari {...props} />;
+    case 'protocol-Tempus':
+      return <ProtocolTempus {...props} />;
     case 'wallet-metamask':
       return <WalletMetamask {...props} />;
     case 'wallet-walletconnect':
