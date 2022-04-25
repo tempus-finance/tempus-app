@@ -16,7 +16,7 @@ init({
       id: '0x1',
       token: 'ETH',
       label: 'Ethereum Mainnet',
-      rpcUrl: `https://eth-mainnet.alchemyapi.io/v2/${process.env.REACT_APP_MAINNET_ALCHEMY_KEY}`,
+      rpcUrl: process.env.REACT_APP_ETHEREUM_RPC || '',
     },
   ],
   appMetadata: {
