@@ -2,9 +2,9 @@ import { fireEvent, render } from '@testing-library/react';
 import { chainToTicker, shortenAccount } from 'tempus-core-services';
 import WalletButton, { WalletButtonProps } from './WalletButton';
 
-jest.mock('react-blockies', () => {
-  return () => <canvas className="identicon" width="24" height="24" style={{ width: '24px', height: '24px' }}></canvas>;
-});
+jest.mock('react-blockies', () => () => (
+  <canvas className="identicon" width="24" height="24" style={{ width: '24px', height: '24px' }} />
+));
 
 const mockOnConnect = jest.fn();
 const mockOnNetworkClick = jest.fn();
