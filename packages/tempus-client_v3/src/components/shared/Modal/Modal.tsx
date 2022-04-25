@@ -40,4 +40,4 @@ const Modal: FC<ModalProps> = props => {
     </>
   );
 };
-export default Modal;
+export default React.memo(Modal) as FC<ModalProps>;
