@@ -28,7 +28,7 @@ init({
       id: '0xfa',
       token: 'FTM',
       label: 'Fantom',
-      rpcUrl: process.env.REACT_APP_ETHEREUM_RPC || '',
+      rpcUrl: process.env.REACT_APP_FANTOM_RPC || '',
     },
   ],
   appMetadata: {
