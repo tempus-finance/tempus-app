@@ -1,12 +1,12 @@
 import { FC } from 'react';
-import { ButtonWrapper, colors, Icon, Logo, Typography } from '../shared';
-import Wallet from '../Wallet/Wallet';
+import { ButtonWrapper, colors, Icon, Typography } from '../shared';
+import Wallet from '../Wallet';
 
 import './Navbar.scss';
 
 const Navbar: FC = () => (
   <div className="tc__navbar">
-    <Logo type="protocol-Tempus" />
+    <div className="tc__navbar-tempus-logo" />
     <div className="tc__navbar-actions">
       <ButtonWrapper>
         <div className="tc__navbar-actions-dropdown">
@@ -18,7 +18,6 @@ const Navbar: FC = () => (
           </div>
         </div>
       </ButtonWrapper>
-      {/* TODO - Integrate wallet button logic */}
       <Wallet />
     </div>
   </div>

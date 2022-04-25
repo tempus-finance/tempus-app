@@ -1,0 +1,38 @@
+@mixin overlay {
+  position: fixed;
+  left: 0px;
+  top: 0px;
+  right: 0px;
+  bottom: 0px;
+}
+
+.tc__modal-backdrop {
+  @include overlay;
+  background-color: var(--modalBackdrop);
+  z-index: 9998;
+}
+
+.tc__modal-container {
+  @include overlay;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+.tc__modal {
+  position: relative;
+  border: 1px solid var(--modalBorder);
+  border-radius: 12px;
+  background-color: var(--modalBackground);
+  padding: 40px;
+  pointer-events: all;
+
+  .tc__btn {
+    position: absolute;
+    right: 16px;
+    top: 16px;
+    cursor: pointer;
+  }
+}
