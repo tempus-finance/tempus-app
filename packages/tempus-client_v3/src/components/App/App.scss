@@ -1,7 +1,7 @@
 $max-width: 1360px;
 
 html,
-body, 
+body,
 #root {
   height: 100%;
   margin: 0;
@@ -10,7 +10,7 @@ body,
 
 #root {
   display: flex;
-  background: linear-gradient(217.59deg, #00CEC6 0%, #08204E 47.39%, #0E91BC 92.12%) no-repeat center center fixed;
+  background: linear-gradient(217.59deg, #00cec6 0%, #08204e 47.39%, #0e91bc 92.12%) no-repeat center center fixed;
 }
 
 .tc__app__wrapper {
@@ -30,10 +30,10 @@ body,
 }
 
 // TEMPORARY PLACEHOLDER
-.tc__nav-header {
+.tc__app__nav-header {
+  flex-shrink: 0;
   height: 56px;
   margin-bottom: 40px;
-  background-color: palevioletred;
 }
 
 .tc__app__page-navigation {
