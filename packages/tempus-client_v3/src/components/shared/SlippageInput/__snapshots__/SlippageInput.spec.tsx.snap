@@ -1,0 +1,160 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SlippageInput renders a disabled slippage input 1`] = `
+<div
+  class="tc__slippage-input"
+>
+  <div
+    class="tc__text-input tc__text-input__disabled"
+  >
+    <div
+      class="tc__text-input__container"
+    >
+      <div
+        style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(122, 122, 122); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+      >
+        <input
+          class="tc__base-input"
+          disabled=""
+          id="text-input-3"
+          pattern="[0-9,]*[.]?[0-9]{0,2}"
+          placeholder="2.00%"
+          type="text"
+          value=""
+        />
+      </div>
+      <button
+        class="tc__btn "
+        data-selected="false"
+        disabled=""
+        type="button"
+      >
+        <div
+          style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(122, 122, 122); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+        >
+          Auto
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`SlippageInput renders a slippage input 1`] = `
+<div
+  class="tc__slippage-input"
+>
+  <div
+    class="tc__text-input "
+  >
+    <div
+      class="tc__text-input__container"
+    >
+      <div
+        style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+      >
+        <input
+          class="tc__base-input"
+          id="text-input-1"
+          pattern="[0-9,]*[.]?[0-9]{0,2}"
+          placeholder="2.00%"
+          type="text"
+          value=""
+        />
+      </div>
+      <button
+        class="tc__btn "
+        data-selected="false"
+        type="button"
+      >
+        <div
+          style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+        >
+          Auto
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`SlippageInput renders a slippage input set to auto 1`] = `
+<div
+  class="tc__slippage-input"
+>
+  <div
+    class="tc__text-input "
+  >
+    <div
+      class="tc__text-input__container"
+    >
+      <div
+        style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+      >
+        <input
+          class="tc__base-input"
+          id="text-input-2"
+          pattern="[0-9,]*[.]?[0-9]{0,2}"
+          placeholder="2.00%"
+          type="text"
+          value=""
+        />
+      </div>
+      <button
+        class="tc__btn "
+        data-selected="true"
+        type="button"
+      >
+        <div
+          style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(255, 255, 255); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+        >
+          Auto
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`SlippageInput renders a slippage input with error 1`] = `
+<div
+  class="tc__slippage-input"
+>
+  <div
+    class="tc__text-input tc__text-input__error"
+  >
+    <div
+      class="tc__text-input__container"
+    >
+      <div
+        style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+      >
+        <input
+          class="tc__base-input"
+          id="text-input-4"
+          pattern="[0-9,]*[.]?[0-9]{0,2}"
+          placeholder="2.00%"
+          type="text"
+          value=""
+        />
+      </div>
+      <button
+        class="tc__btn "
+        data-selected="false"
+        type="button"
+      >
+        <div
+          style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+        >
+          Auto
+        </div>
+      </button>
+    </div>
+    <div
+      style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(255, 15, 15); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+    >
+      cannot exceed 100%
+    </div>
+  </div>
+</div>
+`;

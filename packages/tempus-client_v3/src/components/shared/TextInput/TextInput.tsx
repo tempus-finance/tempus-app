@@ -17,6 +17,8 @@ export interface TextInputProps {
   startAdornment?: ReactNode;
   endAdornment?: ReactNode;
   onChange?: (value: string) => void;
+  onFocus?: () => void;
+  onBlur?: () => void;
   onDebounceChange?: (value: string) => void;
 }
 
@@ -35,6 +37,8 @@ const TextInput: FC<TextInputProps> = props => {
     startAdornment,
     endAdornment,
     onChange,
+    onFocus,
+    onBlur,
     onDebounceChange,
   } = props;
   const [focused, setFocused] = useState<boolean>(false);
@@ -43,8 +47,14 @@ const TextInput: FC<TextInputProps> = props => {
     return `text-input-${idCounter}`;
   }, []);
 
-  const handleFocus = useCallback(() => setFocused(true), []);
-  const handleBlur = useCallback(() => setFocused(false), []);
+  const handleFocus = useCallback(() => {
+    setFocused(true);
+    onFocus?.();
+  }, [onFocus]);
+  const handleBlur = useCallback(() => {
+    setFocused(false);
+    onBlur?.();
+  }, [onBlur]);
 
   let stateClass = '';
   if (disabled) {

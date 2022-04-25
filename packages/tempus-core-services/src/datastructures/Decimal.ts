@@ -31,6 +31,14 @@ export default class Decimal {
     }
   }
 
+  static parse(value: Numberish, defaultValue: Numberish = 0) {
+    try {
+      return new Decimal(value);
+    } catch (e) {
+      return new Decimal(defaultValue);
+    }
+  }
+
   add(addend: Numberish): Decimal {
     const decimal = new Decimal(addend);
 
