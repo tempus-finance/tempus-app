@@ -4,26 +4,44 @@ import injectedModule from '@web3-onboard/injected-wallets';
 import { init, useConnectWallet, useWallets } from '@web3-onboard/react';
 import { WalletButton } from '../shared';
 
+// TODO - Check with designers if block native UI for wallet management is fine to use
+
+import tempusLogo from './svg/Logo.svg'; // TODO - Check with designers if logo and icons are fine.
+import tempusIcon from './png/Icon.png'; // TODO - Replace with svg image
+
 // Fetch wallet modules
 const injected = injectedModule();
 const ledger = ledgerModule();
 
 // Init wallet library before using it
 init({
-  wallets: [injected, ledger],
+  wallets: [injected, ledger], // List of wallets we want to support
   chains: [
+    // List of chains we want to support
     {
       id: '0x1',
       token: 'ETH',
       label: 'Ethereum Mainnet',
       rpcUrl: process.env.REACT_APP_ETHEREUM_RPC || '',
     },
+    {
+      id: '0xfa',
+      token: 'FTM',
+      label: 'Fantom',
+      rpcUrl: process.env.REACT_APP_ETHEREUM_RPC || '',
+    },
   ],
   appMetadata: {
     name: 'Tempus App',
-    icon: '<svg><svg/>',
+    logo: tempusLogo,
+    icon: tempusIcon,
     description: 'Official Tempus App',
     recommendedInjectedWallets: [{ name: 'MetaMask', url: 'https://metamask.io' }],
+    agreement: {
+      version: '1.0',
+      privacyUrl: 'https://tempus.finance/privacy-policy',
+      termsUrl: 'https://tempus.finance/terms-of-service',
+    },
   },
   accountCenter: {
     desktop: {
@@ -38,6 +56,8 @@ const Wallet: FC = () => {
 
   // TODO - Store wallet data in global state store
   // (Hookstate, or something else once we decide what we want to use for global state management)
+
+  // TODO - Delete local storage under 'connectedWallets' when user disconnects the wallet
 
   /**
    * When user clicks on connect wallet button show a modal with all available wallets users can connect.
@@ -84,10 +104,14 @@ const Wallet: FC = () => {
   return (
     <WalletButton
       address={walletAddress || ''}
+      // TODO - Add provider that fetches user native token balance
       balance=""
+      // TODO - Use current chain from global state once we add it
       chain="ethereum"
       onConnect={onConnectWallet}
+      // TODO - Add network selector popup
       onNetworkClick={() => {}}
+      // TODO - Add wallet popup
       onWalletClick={() => {}}
     />
   );
