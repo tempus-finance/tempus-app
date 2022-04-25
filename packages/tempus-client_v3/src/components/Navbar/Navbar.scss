@@ -7,6 +7,12 @@
   justify-content: space-between;
 }
 
+.tc__navbar-tempus-logo {
+  background-image: url('./svg/TempusLogo.svg');
+  width: 120px;
+  height: 30px;
+}
+
 .tc__navbar-actions {
   display: flex;
   align-items: center;

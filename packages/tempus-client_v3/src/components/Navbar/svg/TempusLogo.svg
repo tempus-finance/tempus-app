@@ -1,9 +1,4 @@
-import { FC } from 'react';
-import LogoProps from './LogoProps';
-import withLogo from './withLogo';
-
-const TokenDAI: FC<LogoProps> = () => (
-  <svg width="120" height="30" viewBox="0 0 120 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+<svg width="120" height="30" viewBox="0 0 120 30" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path
       d="M51.9424 23.6568C50.6601 23.9047 49.5156 23.926 48.509 23.7205C47.5024 23.5151 46.7854 23.0193 46.3579 22.233C46.1442 21.8293 46.0097 21.4184 45.9546 21.0005C45.9063 20.5826 45.8891 20.0336 45.9029 19.3536V18.7905V9.6473L48.7158 8V18.6205V18.9392C48.7089 19.3997 48.7158 19.7645 48.7365 20.0336C48.7641 20.2957 48.833 20.5118 48.9433 20.6818C49.1708 21.0501 49.5328 21.2661 50.0292 21.3299C50.5256 21.3936 51.1633 21.3689 51.9424 21.2555V23.6568ZM44 14.413V12.1817H51.9424V14.413H44Z"
       fill="white"
@@ -37,6 +32,3 @@ const TokenDAI: FC<LogoProps> = () => (
       fill="white"
     />
   </svg>
-);
-
-export default withLogo(TokenDAI);

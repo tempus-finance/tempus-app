@@ -1,11 +1,11 @@
 import { FC } from 'react';
-import { ButtonWrapper, colors, Icon, Logo, Typography, WalletButton } from '../shared';
+import { ButtonWrapper, colors, Icon, Typography, WalletButton } from '../shared';
 
 import './Navbar.scss';
 
 const Navbar: FC = () => (
   <div className="tc__navbar">
-    <Logo type="protocol-Tempus" />
+    <div className="tc__navbar-tempus-logo" />
     <div className="tc__navbar-actions">
       <ButtonWrapper>
         <div className="tc__navbar-actions-dropdown">
