@@ -51,6 +51,61 @@ describe('Decimal', () => {
     );
   });
 
+  describe('parse()', () => {
+    [
+      {
+        value: 123.123,
+        defaultValue: 789.789,
+        expected: BigNumber.from('123123000000000000000'),
+      },
+      {
+        value: '123.123',
+        defaultValue: 789.789,
+        expected: BigNumber.from('123123000000000000000'),
+      },
+      {
+        value: BigNumber.from('123123000000000000000'),
+        defaultValue: 789.789,
+        expected: BigNumber.from('123123000000000000000'),
+      },
+      {
+        value: new Decimal(123.123),
+        defaultValue: 789.789,
+        expected: BigNumber.from('123123000000000000000'),
+      },
+      { value: '0', defaultValue: 789.789, expected: BigNumber.from('0') },
+      { value: '0.0', defaultValue: 789.789, expected: BigNumber.from('0') },
+      { value: '.123', defaultValue: 789.789, expected: BigNumber.from('123000000000000000') },
+      { value: '123.', defaultValue: 789.789, expected: BigNumber.from('123000000000000000000') },
+      { value: '-123', defaultValue: 789.789, expected: BigNumber.from('-123000000000000000000') },
+    ].forEach(({ value, defaultValue, expected }) =>
+      it(`it parses ${value.toString()} successfully`, () => {
+        const decimal = Decimal.parse(value, defaultValue);
+
+        expect(decimal.value.eq(expected)).toBeTruthy();
+      }),
+    );
+
+    [
+      { value: '.', defaultValue: 789.789, expected: BigNumber.from('789789000000000000000') },
+      { value: '', defaultValue: 789.789, expected: BigNumber.from('789789000000000000000') },
+      { value: '+123', defaultValue: 789.789, expected: BigNumber.from('789789000000000000000') },
+      { value: '1e8', defaultValue: 789.789, expected: BigNumber.from('789789000000000000000') },
+      { value: '123.0123456789012345678', defaultValue: 789.789, expected: BigNumber.from('789789000000000000000') },
+      { value: '.', expected: BigNumber.from('0') },
+      { value: '', expected: BigNumber.from('0') },
+      { value: '+123', expected: BigNumber.from('0') },
+      { value: '1e8', expected: BigNumber.from('0') },
+      { value: '123.0123456789012345678', expected: BigNumber.from('0') },
+    ].forEach(({ value, defaultValue, expected }) =>
+      it(`it fails to parse ${value} and use default values`, () => {
+        const decimal = Decimal.parse(value, defaultValue);
+
+        expect(decimal.value.eq(expected)).toBeTruthy();
+      }),
+    );
+  });
+
   describe('add()', () => {
     [
       { value: 123.123, addend: 12.12, expected: 135.243 },
