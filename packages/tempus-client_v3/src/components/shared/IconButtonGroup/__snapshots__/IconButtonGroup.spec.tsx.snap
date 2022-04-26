@@ -6,7 +6,7 @@ exports[`IconButtonGroup renders a group of icon buttons 1`] = `
 >
   <button
     class="tc__btn tc__iconButton__selected"
-    data-selected="false"
+    data-selected="true"
     type="button"
   >
     <svg

@@ -21,6 +21,7 @@ const IconButton: FC<IconButtonProps> = props => {
     <ButtonWrapper
       className={selected ? 'tc__iconButton__selected' : 'tc__iconButton__deselected'}
       onClick={onButtonClick}
+      selected={selected}
     >
       <Icon variant={variant} color={selected ? colors.iconButtonSelectedIcon : colors.iconButtonIcon} />
     </ButtonWrapper>
