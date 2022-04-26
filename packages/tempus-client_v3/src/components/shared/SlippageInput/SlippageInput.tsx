@@ -17,7 +17,7 @@ export interface SlippageInputProps {
 
 const SlippageInput: FC<SlippageInputProps> = props => {
   const { percentage, isAuto, error, disabled, onPercentageUpdate, onAutoUpdate } = props;
-  const [placeholder, setPlaceholder] = useState<string>(percentage.mul(100).toRounded(2));
+  const [placeholder, setPlaceholder] = useState<string>(DecimalUtils.formatPercentage(percentage, 2));
   const [value, setValue] = useState<string>('');
   const [focused, setFocused] = useState<boolean>(false);
 
