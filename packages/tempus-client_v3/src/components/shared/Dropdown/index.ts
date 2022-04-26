@@ -1,4 +1,6 @@
 import Dropdown from './Dropdown';
-import DropdownItem from './DropdownItem';
+import DropdownCheckboxItem from './DropdownCheckboxItem';
+import DropdownSelectableItem from './DropdownSelectableItem';
+import DropdownSelector from './DropdownSelector';
 
-export { Dropdown, DropdownItem };
+export { Dropdown, DropdownCheckboxItem, DropdownSelectableItem, DropdownSelector };

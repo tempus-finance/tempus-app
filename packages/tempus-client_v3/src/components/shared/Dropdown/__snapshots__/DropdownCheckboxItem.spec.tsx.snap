@@ -1,24 +1,22 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`DropdownItem calls onChange handler when checkbox is toggled 1`] = `
+exports[`DropdownCheckboxItem calls onChange handler when checkbox is toggled 1`] = `
 <input
-  id="checkbox-4"
+  id="checkbox-5"
   type="checkbox"
 />
 `;
 
-exports[`DropdownItem does not render a checkbox when not checkbox is not provided 1`] = `null`;
+exports[`DropdownCheckboxItem does not render an icon when icon is not provided 1`] = `null`;
 
-exports[`DropdownItem does not render an icon when icon is not provided 1`] = `null`;
-
-exports[`DropdownItem renders a checkbox when checkbox prop is provided 1`] = `
+exports[`DropdownCheckboxItem renders a checkbox when checkbox prop is provided 1`] = `
 <input
   id="checkbox-2"
   type="checkbox"
 />
 `;
 
-exports[`DropdownItem renders an icon when provided 1`] = `
+exports[`DropdownCheckboxItem renders an icon when provided 1`] = `
 <svg
   class="tc__icon tc__icon-up-arrow-thin"
   fill="none"
@@ -36,7 +34,7 @@ exports[`DropdownItem renders an icon when provided 1`] = `
 </svg>
 `;
 
-exports[`DropdownItem renders with provided label 1`] = `
+exports[`DropdownCheckboxItem renders with provided label 1`] = `
 <div
   style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
 >

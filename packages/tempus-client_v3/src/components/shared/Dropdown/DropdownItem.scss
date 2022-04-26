@@ -9,3 +9,24 @@
     margin-bottom: 16px;
   }
 }
+
+.tc__dropdownItem__selectable {
+  align-items: flex-start;
+  position: relative;
+
+  .tc__btn {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    text-align: start;
+  }
+
+  .tc__dropdownItem__icon-container {
+    height: 100%;
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+  }
+}

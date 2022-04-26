@@ -12,7 +12,7 @@ import ActionButton from './ActionButton';
 import SwitcherButton from './SwitcherButton';
 import Modal from './Modal';
 import TermTabs from './TermTabs';
-import { Dropdown, DropdownItem } from './Dropdown';
+import { Dropdown, DropdownCheckboxItem, DropdownSelectableItem, DropdownSelector } from './Dropdown';
 import BaseInput from './BaseInput';
 import TextInput from './TextInput';
 import NumberInput from './NumberInput';
@@ -43,7 +43,9 @@ export {
   ToggleSwitch,
   Typography,
   Dropdown,
-  DropdownItem,
+  DropdownCheckboxItem,
+  DropdownSelectableItem,
+  DropdownSelector,
   BaseInput,
   TextInput,
   NumberInput,
