@@ -39,7 +39,7 @@ const WalletButton: FC<WalletButtonProps> = props => {
       {address && (
         <div className="tc__walletButton__connected">
           <ButtonWrapper className="tc__walletButton__connected-network" onClick={onNetworkClick}>
-            {!supportedChain && <Icon type="exclamation-error" size={20} />}
+            {!supportedChain && <Icon variant="exclamation-error" size={20} />}
             {supportedChain && <Logo type={`token-${selectedChainTokenTicker}`} size="small" />}
           </ButtonWrapper>
           <ButtonWrapper

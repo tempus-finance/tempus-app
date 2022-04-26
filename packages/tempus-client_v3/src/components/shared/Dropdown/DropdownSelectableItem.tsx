@@ -2,13 +2,13 @@ import { ReactElement, useCallback } from 'react';
 import ButtonWrapper from '../ButtonWrapper';
 import Typography from '../Typography';
 import './DropdownItem.scss';
-import Icon, { IconType } from '../Icon';
+import Icon, { IconVariant } from '../Icon';
 
 export interface DropdownSelectableItemProps<T> {
   label: string;
   value: T;
   selected?: boolean;
-  iconType?: IconType;
+  iconType?: IconVariant;
   onClick?: (value: T) => void;
 }
 
@@ -27,7 +27,7 @@ function DropdownSelectableItem<T>(
       </ButtonWrapper>
       {iconType && (
         <span className="tc__dropdownItem__icon-container">
-          <Icon type={iconType} size="tiny" />
+          <Icon variant={iconType} size="tiny" />
         </span>
       )}
     </div>

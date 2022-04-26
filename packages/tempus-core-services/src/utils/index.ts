@@ -16,6 +16,7 @@ export { getRangeFrom } from './getRangeFrom';
 export { getTokenPrecision } from './getTokenPrecision';
 export { isZeroString } from './isZeroString';
 export { NumberUtils } from './numberUtils';
+export { DecimalUtils } from './DecimalUtils';
 export { rayToDai, wadToDai } from './rayToDai';
 export { reverseString } from './reverseString';
 export { shortenAccount } from './shortenAccount';

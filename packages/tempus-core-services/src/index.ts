@@ -39,6 +39,10 @@ export type {
   SwapEvent,
 } from './services';
 
+export type { Numberish } from './datastructures';
+
+export { Decimal } from './datastructures';
+
 export { SwapKind } from './services';
 
 export {
@@ -57,6 +61,7 @@ export {
 
 export {
   NumberUtils,
+  DecimalUtils,
   capitalize,
   chainIdToChainName,
   chainNameToHexChainId,

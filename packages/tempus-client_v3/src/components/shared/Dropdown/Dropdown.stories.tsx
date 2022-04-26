@@ -1,6 +1,6 @@
 import { ComponentStory, ComponentMeta } from '@storybook/react';
 import { useCallback, useState } from 'react';
-import { IconType } from '../Icon';
+import { IconVariant } from '../Icon';
 import Dropdown from './Dropdown';
 import DropdownCheckboxItem from './DropdownCheckboxItem';
 import DropdownSelectableItem from './DropdownSelectableItem';
@@ -52,7 +52,7 @@ SingleChoice.args = {
 
 const SingleChoiceWithIconsTemplate: ComponentStory<typeof Dropdown> = args => {
   const [selectedValue, setSelectedValue] = useState('a');
-  const [selectedIcon, setSelectedIcon] = useState<IconType>('up-arrow-thin');
+  const [selectedIcon, setSelectedIcon] = useState<IconVariant>('up-arrow-thin');
 
   const handleSelect = useCallback(
     (value: string) => {

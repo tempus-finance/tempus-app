@@ -1,5 +1,5 @@
 import { fireEvent, render } from '@testing-library/react';
-import { BigNumber, utils } from 'ethers';
+import { Decimal } from 'tempus-core-services';
 import { FC, useState } from 'react';
 import NumberInput, { NumberInputProps } from './NumberInput';
 
@@ -79,8 +79,12 @@ describe('NumberInput', () => {
 
     fireEvent.click(button);
 
-    expect(mockOnChange).toHaveBeenCalledWith(utils.formatUnits(defaultProps.max, defaultProps.precision));
-    expect(mockOnDebounceChange).toHaveBeenCalledWith(utils.formatUnits(defaultProps.max, defaultProps.precision));
+    expect(mockOnChange).toHaveBeenCalledWith(
+      new Decimal(new Decimal(defaultProps.max).toTruncated(defaultProps.precision)).toString(),
+    );
+    expect(mockOnDebounceChange).toHaveBeenCalledWith(
+      new Decimal(new Decimal(defaultProps.max).toTruncated(defaultProps.precision)).toString(),
+    );
   });
 
   it('click max button in number input with max as string will trigger onChange and onDebounceChange', () => {
@@ -97,12 +101,16 @@ describe('NumberInput', () => {
 
     fireEvent.click(button);
 
-    expect(mockOnChange).toHaveBeenCalledWith(utils.formatUnits(defaultProps.max, props.precision));
-    expect(mockOnDebounceChange).toHaveBeenCalledWith(utils.formatUnits(defaultProps.max, props.precision));
+    expect(mockOnChange).toHaveBeenCalledWith(
+      new Decimal(new Decimal(defaultProps.max).toTruncated(defaultProps.precision)).toString(),
+    );
+    expect(mockOnDebounceChange).toHaveBeenCalledWith(
+      new Decimal(new Decimal(defaultProps.max).toTruncated(defaultProps.precision)).toString(),
+    );
   });
 
-  it('click max button in number input with max as BigNumber will trigger onChange and onDebounceChange', () => {
-    const props = { ...defaultProps, max: BigNumber.from(100) };
+  it('click max button in number input with max as Decimal will trigger onChange and onDebounceChange', () => {
+    const props = { ...defaultProps, max: new Decimal(100) };
     const { getByRole, queryByLabelText } = subject(props);
 
     const input = getByRole('textbox');
@@ -115,8 +123,30 @@ describe('NumberInput', () => {
 
     fireEvent.click(button);
 
-    expect(mockOnChange).toHaveBeenCalledWith(utils.formatUnits(defaultProps.max, props.precision));
-    expect(mockOnDebounceChange).toHaveBeenCalledWith(utils.formatUnits(defaultProps.max, props.precision));
+    expect(mockOnChange).toHaveBeenCalledWith(
+      new Decimal(new Decimal(defaultProps.max).toTruncated(defaultProps.precision)).toString(),
+    );
+    expect(mockOnDebounceChange).toHaveBeenCalledWith(
+      new Decimal(new Decimal(defaultProps.max).toTruncated(defaultProps.precision)).toString(),
+    );
+  });
+
+  it('click max button in number input with precision 0 will show integer value of max', () => {
+    const props = { ...defaultProps, precision: 0 };
+    const { getByRole, queryByLabelText } = subject(props);
+
+    const input = getByRole('textbox');
+    const button = getByRole('button');
+    const label = queryByLabelText(defaultProps.label as string);
+
+    expect(input).not.toBeNull();
+    expect(button).not.toBeNull();
+    expect(label).not.toBeNull();
+
+    fireEvent.click(button);
+
+    expect(mockOnChange).toHaveBeenCalledWith(new Decimal(defaultProps.max).toTruncated());
+    expect(mockOnDebounceChange).toHaveBeenCalledWith(new Decimal(defaultProps.max).toTruncated());
   });
 
   it('click max button in number input without providing precision will use default precision', () => {
@@ -133,8 +163,10 @@ describe('NumberInput', () => {
 
     fireEvent.click(button);
 
-    expect(mockOnChange).toHaveBeenCalledWith(utils.formatUnits(defaultProps.max, 18));
-    expect(mockOnDebounceChange).toHaveBeenCalledWith(utils.formatUnits(defaultProps.max, 18));
+    expect(mockOnChange).toHaveBeenCalledWith(new Decimal(new Decimal(defaultProps.max).toTruncated(18)).toString());
+    expect(mockOnDebounceChange).toHaveBeenCalledWith(
+      new Decimal(new Decimal(defaultProps.max).toTruncated(18)).toString(),
+    );
   });
 
   it('click max button in number input with different precision will trigger onChange and onDebounceChange', () => {
@@ -151,8 +183,12 @@ describe('NumberInput', () => {
 
     fireEvent.click(button);
 
-    expect(mockOnChange).toHaveBeenCalledWith(utils.formatUnits(defaultProps.max, props.precision));
-    expect(mockOnDebounceChange).toHaveBeenCalledWith(utils.formatUnits(defaultProps.max, props.precision));
+    expect(mockOnChange).toHaveBeenCalledWith(
+      new Decimal(new Decimal(defaultProps.max).toTruncated(defaultProps.precision)).toString(),
+    );
+    expect(mockOnDebounceChange).toHaveBeenCalledWith(
+      new Decimal(new Decimal(defaultProps.max).toTruncated(defaultProps.precision)).toString(),
+    );
   });
 
   it('type text with unmatch pattern in number input will not trigger onChange and onDebounceChange', () => {

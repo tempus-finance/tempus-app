@@ -1,4 +1,4 @@
-import React, { FC, forwardRef, memo, HTMLProps } from 'react';
+import { FC, forwardRef, memo, HTMLProps } from 'react';
 
 import './ButtonWrapper.scss';
 

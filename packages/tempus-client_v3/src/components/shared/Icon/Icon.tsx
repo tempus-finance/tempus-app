@@ -43,7 +43,7 @@ import Slippage from './Slippage';
 import Globe from './Globe';
 import Dark from './Dark';
 
-export type IconType =
+export type IconVariant =
   | 'plus-round'
   | 'checkmark-round'
   | 'minus-round'
@@ -87,8 +87,8 @@ export type IconType =
   | 'globe'
   | 'dark';
 
-const Icon: FC<IconProps & { type: IconType }> = props => {
-  switch (props.type) {
+const Icon: FC<IconProps & { variant: IconVariant }> = props => {
+  switch (props.variant) {
     case 'plus-round':
       return <PlusRound {...props} />;
     case 'checkmark-round':

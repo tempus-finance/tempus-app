@@ -1,4 +1,4 @@
-import React, { FC, memo } from 'react';
+import { FC, memo } from 'react';
 import { colors } from '../Colors';
 import ButtonWrapper from '../ButtonWrapper';
 import Typography from '../Typography';
@@ -24,7 +24,7 @@ const SwitcherButton: FC<SwitcherButtonProps> = props => {
         <Typography variant="body-primary" weight={selected ? 'bold' : 'regular'}>
           {label}
         </Typography>
-        {selected && <Icon type="checkmark" color={colors.textSuccess} size="small" />}
+        {selected && <Icon variant="checkmark" color={colors.textSuccess} size="small" />}
       </div>
       <Logo type={logoType} size="small" />
     </ButtonWrapper>

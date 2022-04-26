@@ -1,28 +1,28 @@
 import { FC, memo, useCallback } from 'react';
 import { colors } from '../Colors';
-import Icon, { IconType } from '../Icon';
+import Icon, { IconVariant } from '../Icon';
 import ButtonWrapper from '../ButtonWrapper';
 import './IconButton.scss';
 
 export interface IconButtonProps {
-  type: IconType;
-  onClick: (value: IconType) => void;
+  variant: IconVariant;
+  onClick: (value: IconVariant) => void;
   selected?: boolean;
 }
 
 const IconButton: FC<IconButtonProps> = props => {
-  const { type, selected = false, onClick } = props;
+  const { variant, selected = false, onClick } = props;
 
   const onButtonClick = useCallback(() => {
-    onClick(type);
-  }, [onClick, type]);
+    onClick(variant);
+  }, [onClick, variant]);
 
   return (
     <ButtonWrapper
       className={selected ? 'tc__iconButton__selected' : 'tc__iconButton__deselected'}
       onClick={onButtonClick}
     >
-      <Icon type={type} color={selected ? colors.iconButtonSelectedIcon : colors.iconButtonIcon} />
+      <Icon variant={variant} color={selected ? colors.iconButtonSelectedIcon : colors.iconButtonIcon} />
     </ButtonWrapper>
   );
 };

@@ -1,12 +1,12 @@
 import { Children, cloneElement, isValidElement, ReactElement } from 'react';
-import { IconType } from '../Icon';
+import { IconVariant } from '../Icon';
 import Dropdown from './Dropdown';
 import { DropdownSelectableItemProps } from './DropdownSelectableItem';
 
 interface DropdownSelectorProps<T> {
   label: string;
   popupTitle?: string;
-  itemIcon?: IconType;
+  itemIcon?: IconVariant;
   selectedValue?: T;
   onSelect?: (value: T) => void;
   children?: ReactElement<DropdownSelectableItemProps<T>> | ReactElement<DropdownSelectableItemProps<T>>[];

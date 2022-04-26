@@ -28,7 +28,7 @@ const Dropdown: FC<DropdownProps> = props => {
     <div className="tc__dropdown">
       <ButtonWrapper onClick={onClick} selected={open}>
         <Typography variant="body-secondary">{label}</Typography>
-        <Icon type={open ? 'up-chevron' : 'down-chevron'} size={12} />
+        <Icon variant={open ? 'up-chevron' : 'down-chevron'} size="tiny" />
       </ButtonWrapper>
 
       {/* Popup container */}

@@ -1,7 +1,8 @@
 .tc__page-navigation {  
   position: relative;
-  padding: 10px 20px;
+  padding: 8px 34px;
   border: none;
+  margin-bottom: 0;
 }
 
 .tc__page-navigation__background {
@@ -18,8 +19,8 @@
   &::before {
     content: '';
     position: absolute;
-    top: 1px;
-    bottom: 1px;
+    top: 0;
+    bottom: 0;
     left: 34px;
     right: 34px;
     background-color: var(--pageContainerBackground);
