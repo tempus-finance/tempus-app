@@ -6,7 +6,7 @@ exports[`Tabs renders a \`Tabs\` component that contains \`Tab\`s components 1`]
 >
   <button
     class="tc__btn tc__tabs__tab"
-    data-selected="false"
+    data-selected="true"
     type="button"
   >
     <div
