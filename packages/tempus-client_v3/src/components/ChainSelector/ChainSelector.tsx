@@ -1,4 +1,4 @@
-import { FC, useCallback } from 'react';
+import { FC, memo, useCallback } from 'react';
 import { useSetChain } from '@web3-onboard/react';
 import {
   Chain,
@@ -7,7 +7,9 @@ import {
   ethereumForkChainIdHex,
   fantomChainIdHex,
 } from 'tempus-core-services';
-import { Modal, SwitcherButton, Spacer } from '../shared';
+import { Modal, SwitcherButton } from '../shared';
+
+import './ChainSelector.scss';
 
 interface ChainSelectorProps {
   open: boolean;
@@ -35,28 +37,28 @@ const ChainSelector: FC<ChainSelectorProps> = props => {
   }
 
   return (
-    <Modal title="Select Network" open={open} onClose={onClose}>
-      <SwitcherButton
-        label="Ethereum"
-        logoType="token-ETH"
-        selected={connectedChain.id === ethereumChainIdHex}
-        onClick={() => onNetworkClick('ethereum')}
-      />
-      <Spacer size={12} variant="vertical" />
-      <SwitcherButton
-        label="Fantom"
-        logoType="token-FTM"
-        selected={connectedChain.id === fantomChainIdHex}
-        onClick={() => onNetworkClick('fantom')}
-      />
-      <Spacer size={12} variant="vertical" />
-      <SwitcherButton
-        label="Ethereum Fork"
-        logoType="token-ETH"
-        selected={connectedChain.id === ethereumForkChainIdHex}
-        onClick={() => onNetworkClick('ethereum-fork')}
-      />
-    </Modal>
+    <div className="tc__chainSelector">
+      <Modal title="Select Network" open={open} onClose={onClose}>
+        <SwitcherButton
+          label="Ethereum"
+          logoType="token-ETH"
+          selected={connectedChain.id === ethereumChainIdHex}
+          onClick={() => onNetworkClick('ethereum')}
+        />
+        <SwitcherButton
+          label="Fantom"
+          logoType="token-FTM"
+          selected={connectedChain.id === fantomChainIdHex}
+          onClick={() => onNetworkClick('fantom')}
+        />
+        <SwitcherButton
+          label="Ethereum Fork"
+          logoType="token-ETH"
+          selected={connectedChain.id === ethereumForkChainIdHex}
+          onClick={() => onNetworkClick('ethereum-fork')}
+        />
+      </Modal>
+    </div>
   );
 };
-export default ChainSelector;
+export default memo(ChainSelector);
