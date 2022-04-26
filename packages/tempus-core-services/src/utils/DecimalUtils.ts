@@ -12,7 +12,7 @@ const MULTIPLIER_LOOKUP = [
 
 export class DecimalUtils {
   // round for multiplier (e.g. 9876 -> 9.88k), trauncate for fraction (e.g. 9.876 -> 9.87)
-  static formatWithMultiplier(value: Numberish, fractionDigits: number = 0): string {
+  static formatWithMultiplier(value: Numberish, fractionDigits = 0): string {
     const decimal = new Decimal(value);
     const decimalAbs = decimal.abs();
     const integerLength = decimalAbs.toTruncated(0).length;
@@ -24,7 +24,7 @@ export class DecimalUtils {
   }
 
   // trauncate for currency (e.g. $9,999.876 -> $9,999.87)
-  static formatToCurrency(value: Numberish, fractionDigits: number = 2, symbol: string = ''): string {
+  static formatToCurrency(value: Numberish, fractionDigits = 2, symbol = ''): string {
     const decimal = new Decimal(value);
     const str = decimal.toTruncated(fractionDigits);
     const [integerPart, fractionalPart] = str.split('.');
@@ -40,7 +40,7 @@ export class DecimalUtils {
   }
 
   // roundValue to determine whether the percentage should be rounded
-  static formatPercentage(value: Numberish, fractionDigits: number = 2, roundValue: boolean = false): string {
+  static formatPercentage(value: Numberish, fractionDigits = 2, roundValue = false): string {
     const decimal = new Decimal(value);
     const decimalIn100 = decimal.mul(100);
     const truncatedDecimalIn100 = roundValue

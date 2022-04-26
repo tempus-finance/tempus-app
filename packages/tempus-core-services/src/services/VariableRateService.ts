@@ -1,10 +1,10 @@
-import { ethers, BigNumber, Contract } from 'ethers';
+import { ethers, BigNumber, Contract, ContractInterface } from 'ethers';
 import { JsonRpcSigner, JsonRpcProvider } from '@ethersproject/providers';
 import { debounceTime, from, Observable, of, switchMap } from 'rxjs';
 import { Vaults as RariVault } from 'rari-sdk';
-import AaveLendingPoolABI from '../abi/AaveLendingPool.json';
-import lidoOracleABI from '../abi/LidoOracle.json';
-import cERC20Token from '../abi/cERC20Token.json';
+import AaveLendingPoolABI from '../abi/AaveLendingPool';
+import lidoOracleABI from '../abi/LidoOracle';
+import cERC20Token from '../abi/cERC20Token';
 import {
   DAYS_IN_A_YEAR,
   SECONDS_IN_YEAR,
@@ -89,10 +89,14 @@ export class VariableRateService {
     if (signerOrProvider) {
       // Only connect to Lido Oracle contract if address for it is specified in blockchain config
       if (config.lidoOracle) {
-        this.lidoOracle = new Contract(config.lidoOracle, lidoOracleABI.abi, signerOrProvider);
+        this.lidoOracle = new Contract(config.lidoOracle, (lidoOracleABI as any).abi, signerOrProvider);
       }
 
-      this.aaveLendingPool = new Contract(aaveLendingPoolAddress, AaveLendingPoolABI, signerOrProvider);
+      this.aaveLendingPool = new Contract(
+        aaveLendingPoolAddress,
+        AaveLendingPoolABI as unknown as ContractInterface,
+        signerOrProvider,
+      );
       this.rariVault = rariVault;
       this.signerOrProvider = signerOrProvider;
       this.tempusPoolService = tempusPoolService;
@@ -422,7 +426,7 @@ export class VariableRateService {
       if (this.tokenAddressToContractMap[yieldBearingTokenAddress] === undefined) {
         this.tokenAddressToContractMap[yieldBearingTokenAddress] = new Contract(
           yieldBearingTokenAddress,
-          cERC20Token,
+          cERC20Token as unknown as ContractInterface,
           this.signerOrProvider,
         );
       }

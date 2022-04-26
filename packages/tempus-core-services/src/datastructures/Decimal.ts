@@ -15,6 +15,7 @@ export type Numberish = Decimal | string | number | BigNumber;
 
 export default class Decimal {
   readonly value: BigNumber;
+
   readonly precision: number = DEFAULT_TOKEN_PRECISION;
 
   constructor(value: Numberish) {
@@ -88,20 +89,22 @@ export default class Decimal {
   toBigNumber(precision: number = DEFAULT_TOKEN_PRECISION): BigNumber {
     if (this.precision === precision) {
       return BigNumber.from(this.value);
-    } else if (this.precision < precision) {
-      return increasePrecision(this.value, precision - this.precision);
-    } else {
-      return decreasePrecision(this.value, this.precision - precision);
     }
+
+    if (this.precision < precision) {
+      return increasePrecision(this.value, precision - this.precision);
+    }
+
+    return decreasePrecision(this.value, this.precision - precision);
   }
 
   toString(): string {
     return utils.formatUnits(this.value, this.precision).replace(/\.0*$/, '');
   }
 
-  toRounded(fractionDigits: number = 0): string {
-    const str = this.toString();
-    const [integral, fraction = ''] = str.split('.');
+  toRounded(fractionDigits = 0): string {
+    const valueAsString = this.toString();
+    const [integral, fraction = ''] = valueAsString.split('.');
 
     const lastDigit = fraction.charAt(fractionDigits);
 
@@ -110,46 +113,41 @@ export default class Decimal {
       if (Number(lastDigit) < 5) {
         // no need to be rounded
         return this.toTruncated(fractionDigits);
-      } else {
-        if (fractionDigits > 0) {
-          // round to fractionDigits decimal places
-          const bigNum = utils.parseUnits(`${integral}.${fraction.slice(0, fractionDigits)}`, fractionDigits);
-          const str = utils.formatUnits(bigNum.add(1), fractionDigits);
-          const [outputIntegral, outputFraction] = str.split('.');
-          return `${outputIntegral}.${outputFraction.padEnd(fractionDigits, '0')}`;
-        } else {
-          // rounded as integer, simply +1
-          return BigNumber.from(integral).add(1).toString();
-        }
       }
-    } else {
-      // negative number
-      if (Number(lastDigit) <= 5) {
-        // no need to be rounded
-        return this.toTruncated(fractionDigits);
-      } else {
-        if (fractionDigits > 0) {
-          // round to fractionDigits decimal places
-          const bigNum = utils.parseUnits(`${integral}.${fraction.slice(0, fractionDigits)}`, fractionDigits);
-          const str = utils.formatUnits(bigNum.sub(1), fractionDigits);
-          const [outputIntegral, outputFraction] = str.split('.');
-          return `${outputIntegral}.${outputFraction.padEnd(fractionDigits, '0')}`;
-        } else {
-          // rounded as negative integer, simply -1
-          return BigNumber.from(integral).sub(1).toString();
-        }
+      if (fractionDigits > 0) {
+        // round to fractionDigits decimal places
+        const bigNum = utils.parseUnits(`${integral}.${fraction.slice(0, fractionDigits)}`, fractionDigits);
+        const str = utils.formatUnits(bigNum.add(1), fractionDigits);
+        const [outputIntegral, outputFraction] = str.split('.');
+        return `${outputIntegral}.${outputFraction.padEnd(fractionDigits, '0')}`;
       }
+      // rounded as integer, simply +1
+      return BigNumber.from(integral).add(1).toString();
     }
+
+    // negative number
+    if (Number(lastDigit) <= 5) {
+      // no need to be rounded
+      return this.toTruncated(fractionDigits);
+    }
+    if (fractionDigits > 0) {
+      // round to fractionDigits decimal places
+      const bigNum = utils.parseUnits(`${integral}.${fraction.slice(0, fractionDigits)}`, fractionDigits);
+      const str = utils.formatUnits(bigNum.sub(1), fractionDigits);
+      const [outputIntegral, outputFraction] = str.split('.');
+      return `${outputIntegral}.${outputFraction.padEnd(fractionDigits, '0')}`;
+    }
+    // rounded as negative integer, simply -1
+    return BigNumber.from(integral).sub(1).toString();
   }
 
-  toTruncated(fractionDigits: number = 0): string {
+  toTruncated(fractionDigits = 0): string {
     const str = this.toString();
     const [integral, fraction = ''] = str.split('.');
 
     if (fractionDigits > 0) {
       return `${integral}.${fraction.slice(0, fractionDigits).padEnd(fractionDigits, '0')}`;
-    } else {
-      return integral;
     }
+    return integral;
   }
 }

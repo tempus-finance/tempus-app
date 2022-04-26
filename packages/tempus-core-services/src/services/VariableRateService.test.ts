@@ -1,9 +1,9 @@
-import { BigNumber, Contract, utils, providers, ethers } from 'ethers';
+import { BigNumber, Contract, utils, providers, ethers, ContractInterface } from 'ethers';
 import { JsonRpcProvider } from '@ethersproject/providers';
 import { Vaults } from 'rari-sdk';
-import AaveLendingPoolABI from '../abi/AaveLendingPool.json';
-import lidoOracleABI from '../abi/LidoOracle.json';
-import cERC20Token from '../abi/cERC20Token.json';
+import AaveLendingPoolABI from '../abi/AaveLendingPool';
+import lidoOracleABI from '../abi/LidoOracle';
+import cERC20Token from '../abi/cERC20Token';
 import {
   DAYS_IN_A_YEAR,
   SECONDS_IN_YEAR,
@@ -160,7 +160,7 @@ describe('VariableRateService', () => {
     });
 
     test('should create Contractor instance twice', () => {
-      expect(Contract).toHaveBeenNthCalledWith(1, mockConfig().lidoOracle, lidoOracleABI.abi, mockProvider);
+      expect(Contract).toHaveBeenNthCalledWith(1, mockConfig().lidoOracle, (lidoOracleABI as any).abi, mockProvider);
       expect(Contract).toHaveBeenNthCalledWith(2, aaveLendingPoolAddress, AaveLendingPoolABI, mockProvider);
     });
   });
@@ -1056,7 +1056,11 @@ describe('VariableRateService', () => {
         (variableRateService as any).signerOrProvider,
       );
       expect((variableRateService as any).tokenAddressToContractMap[yieldBearingTokenAddress]).toEqual(
-        new Contract(yieldBearingTokenAddress, cERC20Token, (variableRateService as any).signerOrProvider),
+        new Contract(
+          yieldBearingTokenAddress,
+          cERC20Token as unknown as ContractInterface,
+          (variableRateService as any).signerOrProvider,
+        ),
       );
     });
 
@@ -1079,7 +1083,11 @@ describe('VariableRateService', () => {
         (variableRateService as any).signerOrProvider,
       );
       expect((variableRateService as any).tokenAddressToContractMap[yieldBearingTokenAddress]).toEqual(
-        new Contract(yieldBearingTokenAddress, cERC20Token, (variableRateService as any).signerOrProvider),
+        new Contract(
+          yieldBearingTokenAddress,
+          cERC20Token as unknown as ContractInterface,
+          (variableRateService as any).signerOrProvider,
+        ),
       );
     });
   });
