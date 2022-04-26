@@ -1,5 +1,6 @@
 import { FC } from 'react';
-import { ButtonWrapper, colors, Icon, Typography, WalletButton } from '../shared';
+import { ButtonWrapper, colors, Icon, Typography } from '../shared';
+import Wallet from '../Wallet';
 
 import './Navbar.scss';
 
@@ -17,15 +18,7 @@ const Navbar: FC = () => (
           </div>
         </div>
       </ButtonWrapper>
-      {/* TODO - Integrate wallet button logic */}
-      <WalletButton
-        address=""
-        balance=""
-        chain="ethereum"
-        onConnect={() => {}}
-        onNetworkClick={() => {}}
-        onWalletClick={() => {}}
-      />
+      <Wallet />
     </div>
   </div>
 );
