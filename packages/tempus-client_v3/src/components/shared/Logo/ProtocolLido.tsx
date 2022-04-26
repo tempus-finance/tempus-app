@@ -1,9 +1,8 @@
 import { FC } from 'react';
-import LogoProps from './LogoProps';
-import { LOGO_SIZE_DEFAULT } from './LogoConstants';
+import { InnerLogoProps } from './LogoProps';
 import withLogo from './withLogo';
 
-const ProtocolLido: FC<LogoProps> = ({ size = LOGO_SIZE_DEFAULT }) => (
+const ProtocolLido: FC<InnerLogoProps> = ({ size }) => (
   <svg
     className="tc__logo tc__logo-protocol-Lido"
     width={size}

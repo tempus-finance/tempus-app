@@ -1,8 +1,8 @@
 import React, { FC, memo } from 'react';
-import LogoProps from './LogoProps';
+import LogoProps, { InnerLogoProps } from './LogoProps';
 import { LOGO_SIZE_DEFAULT, LOGO_SIZE_LARGE, LOGO_SIZE_MEDIUM, LOGO_SIZE_SMALL } from './LogoConstants';
 
-const withLogo = (Component: React.ComponentType<LogoProps>): FC<LogoProps> =>
+const withLogo = (Component: React.ComponentType<InnerLogoProps>): FC<LogoProps> =>
   memo(({ size }) => {
     let actualSize = size;
     switch (size) {
@@ -15,12 +15,9 @@ const withLogo = (Component: React.ComponentType<LogoProps>): FC<LogoProps> =>
       case 'small':
         actualSize = LOGO_SIZE_SMALL;
         break;
-      case undefined:
-        actualSize = LOGO_SIZE_DEFAULT;
-        break;
       default:
     }
-    return <Component size={actualSize} />;
+    return <Component size={actualSize ?? LOGO_SIZE_DEFAULT} />;
   });
 
 export default withLogo;

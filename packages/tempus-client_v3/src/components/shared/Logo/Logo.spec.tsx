@@ -1,5 +1,6 @@
 import { render } from '@testing-library/react';
-import Logo, { LogoProps, LogoType } from './Logo';
+import Logo, { LogoType } from './Logo';
+import LogoProps from './LogoProps';
 
 const defaultProps: LogoProps = {};
 

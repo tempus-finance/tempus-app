@@ -1,9 +1,8 @@
 import { FC } from 'react';
-import LogoProps from './LogoProps';
-import { LOGO_SIZE_DEFAULT } from './LogoConstants';
+import { InnerLogoProps } from './LogoProps';
 import withLogo from './withLogo';
 
-const TokenYFI: FC<LogoProps> = ({ size = LOGO_SIZE_DEFAULT }) => (
+const TokenYFI: FC<InnerLogoProps> = ({ size }) => (
   <svg
     className="tc__logo tc__logo-token-YFI"
     width={size}
