@@ -85,7 +85,7 @@ const Tab: FC<TabProps> = props => {
       {labelComponent}
     </Link>
   ) : (
-    <ButtonWrapper className="tc__tabs__tab" onClick={handleClick}>
+    <ButtonWrapper className="tc__tabs__tab" onClick={handleClick} selected={isSelected}>
       {labelComponent}
     </ButtonWrapper>
   );
