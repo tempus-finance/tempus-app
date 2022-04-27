@@ -198,13 +198,3 @@ export const BodyTertiary: FC = () => (
     </Typography>
   </div>
 );
-
-export const PageNavigation: FC = () => (
-  <div style={style}>
-    <Typography variant="page-navigation" weight="bold" color="text-primary-inverted">
-      Page Navigation selected
-    </Typography>
-    <br />
-    <Typography variant="page-navigation">Page Navigation unselected</Typography>
-  </div>
-);

@@ -42,16 +42,6 @@ const tabStyleMap = new Map<TabsSize, TabStyleConfig>([
       fontWeightSelected: 'bold',
     },
   ],
-  [
-    'page-navigation',
-    {
-      variant: 'page-navigation',
-      textColor: 'primary-dark',
-      textColorSelected: 'text-primary-inverted',
-      fontWeight: 'regular',
-      fontWeightSelected: 'bold',
-    },
-  ],
 ]);
 
 const Tab: FC<TabProps> = props => {
