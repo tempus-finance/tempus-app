@@ -61,7 +61,7 @@ describe('NumberInput', () => {
     expect(input).not.toBeNull();
     expect(button).not.toBeNull();
     expect(label).not.toBeNull();
-    expect(input.getAttribute('disabled')).not.toBeNull();
+    expect(input).toBeDisabled();
 
     expect(numberInput).toMatchSnapshot();
   });
