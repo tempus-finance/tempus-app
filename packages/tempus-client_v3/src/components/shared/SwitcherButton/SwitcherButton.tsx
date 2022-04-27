@@ -19,7 +19,7 @@ const SwitcherButton: FC<SwitcherButtonProps> = props => {
   const { logoType, label, title, selected, onClick } = props;
 
   return (
-    <ButtonWrapper className="tc__switcher-btn" title={title} onClick={onClick}>
+    <ButtonWrapper className="tc__switcher-btn" title={title} onClick={onClick} selected={selected}>
       <div className="tc__switcher-btn__label">
         <Typography variant="body-primary" weight={selected ? 'bold' : 'regular'}>
           {label}

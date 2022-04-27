@@ -1,8 +1,10 @@
-import { FC, useCallback, useEffect, useMemo } from 'react';
+import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import ledgerModule from '@web3-onboard/ledger';
 import injectedModule from '@web3-onboard/injected-wallets';
 import { init, useConnectWallet, useWallets } from '@web3-onboard/react';
+import { ethereumChainIdHex, ethereumForkChainIdHex, fantomChainIdHex } from 'tempus-core-services';
 import { WalletButton } from '../shared';
+import ChainSelector from '../ChainSelector';
 
 // TODO - Check with designers if block native UI for wallet management is fine to use
 
@@ -19,18 +21,23 @@ init({
   chains: [
     // List of chains we want to support
     {
-      id: '0x1',
+      id: ethereumChainIdHex,
       token: 'ETH',
       label: 'Ethereum Mainnet',
       rpcUrl: process.env.REACT_APP_ETHEREUM_RPC || '',
     },
     {
-      id: '0xfa',
+      id: fantomChainIdHex,
       token: 'FTM',
       label: 'Fantom',
       rpcUrl: process.env.REACT_APP_FANTOM_RPC || '',
     },
-    // TODO - Add forked ethereum chain
+    {
+      id: ethereumForkChainIdHex,
+      token: 'ETH',
+      label: 'Ethereum Fork',
+      rpcUrl: process.env.REACT_APP_ETHEREUM_FORK_RPC || '',
+    },
   ],
   appMetadata: {
     name: 'Tempus App',
@@ -55,6 +62,8 @@ const Wallet: FC = () => {
   const connectedWallets = useWallets();
   const [{ wallet }, connect] = useConnectWallet();
 
+  const [chainSelectorOpen, setChainSelectorOpen] = useState<boolean>(false);
+
   // TODO - Store wallet data in global state store
   // (Hookstate, or something else once we decide what we want to use for global state management)
 
@@ -66,6 +75,14 @@ const Wallet: FC = () => {
   const onConnectWallet = useCallback(() => {
     connect({});
   }, [connect]);
+
+  const onOpenChainSelector = useCallback(() => {
+    setChainSelectorOpen(true);
+  }, []);
+
+  const onCloseChainSelector = useCallback(() => {
+    setChainSelectorOpen(false);
+  }, []);
 
   /**
    * Every time list of connected wallets changes, we want to store labels of those wallets in local storage.
@@ -103,18 +120,20 @@ const Wallet: FC = () => {
   }, [wallet]);
 
   return (
-    <WalletButton
-      address={walletAddress || ''}
-      // TODO - Add provider that fetches user native token balance
-      balance=""
-      // TODO - Use current chain from global state once we add it
-      chain="ethereum"
-      onConnect={onConnectWallet}
-      // TODO - Add network selector popup
-      onNetworkClick={() => {}}
-      // TODO - Add wallet popup
-      onWalletClick={() => {}}
-    />
+    <>
+      <WalletButton
+        address={walletAddress || ''}
+        // TODO - Add provider that fetches user native token balance
+        balance=""
+        // TODO - Use current chain from global state once we add it
+        chain="ethereum"
+        onConnect={onConnectWallet}
+        onNetworkClick={onOpenChainSelector}
+        // TODO - Add wallet popup
+        onWalletClick={() => {}}
+      />
+      <ChainSelector open={chainSelectorOpen} onClose={onCloseChainSelector} />
+    </>
   );
 };
 export default Wallet;

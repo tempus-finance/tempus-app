@@ -26,13 +26,14 @@
   border: 1px solid var(--modalBorder);
   border-radius: 12px;
   background-color: var(--modalBackground);
-  padding: 40px;
+  padding: 16px;
   pointer-events: all;
+}
 
-  .tc__btn {
-    position: absolute;
-    right: 16px;
-    top: 16px;
-    cursor: pointer;
-  }
+.tc__modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 16px;
 }

@@ -7,6 +7,7 @@ import Logo from './Logo';
 import ToggleSwitch from './ToggleSwitch';
 import Loading from './Loading';
 import ButtonWrapper from './ButtonWrapper';
+import Spacer from './Spacer';
 import Link from './Link';
 import ActionButton from './ActionButton';
 import SwitcherButton from './SwitcherButton';
@@ -37,6 +38,7 @@ export {
   Link,
   Loading,
   Logo,
+  Spacer,
   SwitcherButton,
   TermTabs,
   WalletButton,

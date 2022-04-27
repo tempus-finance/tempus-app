@@ -1,13 +1,13 @@
 .tc__switcher-btn {
   width: 308px;
-  height: 52px;
-  padding: 0 14px 0 16px;
+  padding: 14px 14px 14px 16px;
   border: 1px solid var(--switcherButtonBorder);
   border-radius: 4px;
   background-color: var(--switcherButtonBackground);
   display: flex;
   justify-content: space-between;
   align-items: center;
+  box-shadow: var(--downWeakShadow);
 
   .tc__switcher-btn__label {
     display: flex;
@@ -20,6 +20,14 @@
   }
 
   &:hover {
-    background-color: var(--switcherButtonBackgroundHighlight);
+    border: 2px solid var(--primaryMain);
+    box-shadow: none;
+    padding: 13px 13px 13px 15px; // Prevents button content from moving when border thickness changes from 1px to 2px(on hover)
+  }
+
+  &[data-selected='true'] {
+    border: 2px solid var(--primaryMain);
+    box-shadow: none;
+    padding: 13px 13px 13px 15px; // Prevents button content from moving when border thickness changes from 1px to 2px(when selected)
   }
 }

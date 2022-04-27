@@ -47,9 +47,8 @@
   "walletButtonBackground": "#FFFFFF",
   "walletButtonHover": "#F3F7F9",
 
-  "switcherButtonBorder": "#222222",
+  "switcherButtonBorder": "#BFC0C0",
   "switcherButtonBackground": "#FFFFFF",
-  "switcherButtonBackgroundHighlight": "#F3F7F9",
 
   "formattedDateSeparatorLowContrast": "#BFC0C0",
   "formattedDateSeparatorHighContrast": "#7A7A7A",
