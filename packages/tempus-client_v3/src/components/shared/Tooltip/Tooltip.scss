@@ -1,12 +1,12 @@
+@use "sass:math";
+
 $arrowWidth: 20px;
 $arrowEdgeOffset: 24px;
+$arrowBorderOffset: #{math.sqrt(2)}px;
 
 .tc__tooltip {
   min-width: 100%;
   position: absolute;
-  transform: translateY(calc(100% + $arrowWidth));
-  bottom: 0px;
-  right: 0px;
   border-radius: 4px;
   box-shadow: var(--downWeakShadow);
   border: 1px solid var(--tooltipBorder);
@@ -16,8 +16,6 @@ $arrowEdgeOffset: 24px;
     content: '';
     display: block;
     position: absolute;
-    left: calc(100% - $arrowWidth - $arrowEdgeOffset);
-    bottom: 100%;
     width: 0px;
     height: 0px;
     border: calc($arrowWidth / 2) solid transparent;
@@ -28,13 +26,31 @@ $arrowEdgeOffset: 24px;
     content: '';
     display: block;
     position: absolute;
-    // Adding two pixels for left offset to position inner triangle in the middle of outer triangle
-    left: calc(100% - $arrowWidth - $arrowEdgeOffset + 2px);
-    bottom: 100%;
     width: 0px;
     height: 0px;
-    // Subtracting two pixels from inner triangle border size to make inner triangle smaller then outer triangle
-    border: calc($arrowWidth / 2 - 2px) solid transparent;
+    // Subtracting border offset from inner triangle border size to make inner triangle smaller then outer triangle
+    border: calc($arrowWidth / 2 - $arrowBorderOffset) solid transparent;
     border-bottom-color: var(--tooltipBackground);
+  }
+
+  @each $horizontal-orientation in ('left', 'right') {
+    $opposite-horizontal-orientation: if($horizontal-orientation == 'left', 'right', 'left');
+
+    &.tc__tooltip__bottom-#{$horizontal-orientation} {
+      transform: translateY(calc(100% + $arrowWidth));
+      bottom: 0px;
+      #{$opposite-horizontal-orientation}: 0px;
+
+      &::before {
+        #{$horizontal-orientation}: calc(100% - $arrowWidth - $arrowEdgeOffset);
+        bottom: 100%;
+      }
+
+      &::after {
+        // Adding border offset to position inner triangle in the middle of outer triangle
+        #{$horizontal-orientation}: calc(100% - $arrowWidth - $arrowEdgeOffset + $arrowBorderOffset);
+        bottom: 100%;
+      }
+    }
   }
 }

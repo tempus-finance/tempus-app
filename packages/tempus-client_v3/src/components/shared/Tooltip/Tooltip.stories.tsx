@@ -5,7 +5,14 @@ import Tooltip from './Tooltip';
 export default {
   title: 'Tooltip',
   component: Tooltip,
-  argTypes: {},
+  argTypes: {
+    placement: {
+      control: {
+        type: 'select',
+        options: ['bottom-left', 'bottom-right'],
+      },
+    },
+  },
 } as ComponentMeta<typeof Tooltip>;
 
 const style = {
@@ -17,10 +24,11 @@ const style = {
 };
 
 const tooltipContentStyle = {
+  width: '300px',
   padding: '16px',
 };
 
-const Template: ComponentStory<typeof Tooltip> = () => {
+const Template: ComponentStory<typeof Tooltip> = props => {
   const [tooltipOpen, setTooltipOpen] = useState(false);
 
   const toggleTooltip = () => {
@@ -32,7 +40,7 @@ const Template: ComponentStory<typeof Tooltip> = () => {
       <button type="button" onClick={toggleTooltip} style={{ position: 'relative' }}>
         Click me!
         {/* Tooltip should be placed inside it's anchor element - and anchor element must have relative position */}
-        <Tooltip open={tooltipOpen}>
+        <Tooltip {...props} open={tooltipOpen}>
           {/* Content of the tooltip is placed inside tooltip as it's child element */}
           <div style={tooltipContentStyle}>Tooltip content</div>
         </Tooltip>
@@ -42,3 +50,6 @@ const Template: ComponentStory<typeof Tooltip> = () => {
 };
 
 export const Primary = Template.bind({});
+Primary.args = {
+  placement: 'bottom-right',
+};

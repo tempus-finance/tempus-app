@@ -5,7 +5,7 @@ exports[`Tooltip does not render child elements as content when tooltip is close
 exports[`Tooltip renders child elements as content when tooltip is open 1`] = `
 <div>
   <div
-    class="tc__tooltip"
+    class="tc__tooltip tc__tooltip__bottom-right"
   >
     <p>
       Tooltip Content
