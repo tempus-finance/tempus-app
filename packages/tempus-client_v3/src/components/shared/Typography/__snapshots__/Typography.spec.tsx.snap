@@ -153,7 +153,7 @@ exports[`Typography render a text with variant header 1`] = `
 exports[`Typography render a text with variant page-navigation 1`] = `
 <div>
   <div
-    style="font-style: bold; font-size: 20px; line-height: 28px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+    style="color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
   >
     simple text
   </div>
@@ -403,7 +403,7 @@ exports[`Typography render html with variant header 1`] = `
 exports[`Typography render html with variant page-navigation 1`] = `
 <div>
   <div
-    style="font-style: bold; font-size: 20px; line-height: 28px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+    style="color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
   >
     <span>
       simple text
