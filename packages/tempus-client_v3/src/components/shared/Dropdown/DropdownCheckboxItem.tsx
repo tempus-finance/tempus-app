@@ -1,17 +1,20 @@
-import { ChangeEvent, FC, useCallback, useState } from 'react';
+import { ChangeEvent, ReactElement, useCallback, useState } from 'react';
 import Checkbox from '../Checkbox';
 import Icon, { IconVariant } from '../Icon';
 
 import './DropdownItem.scss';
 
-export interface DropdownCheckboxItemProps {
+export interface DropdownCheckboxItemProps<T> {
   label: string;
-  onChange: (checked: boolean, label: string) => void;
+  value?: T;
+  onChange: (checked: boolean, label: T) => void;
   icon?: IconVariant;
 }
 
-const DropdownCheckboxItem: FC<DropdownCheckboxItemProps> = props => {
-  const { label, icon, onChange } = props;
+function DropdownCheckboxItem<T>(
+  props: DropdownCheckboxItemProps<T | string>,
+): ReactElement<DropdownCheckboxItemProps<T | string>> {
+  const { label, value, icon, onChange } = props;
 
   const [checked, setChecked] = useState<boolean>(false);
 
@@ -19,9 +22,9 @@ const DropdownCheckboxItem: FC<DropdownCheckboxItemProps> = props => {
     (event: ChangeEvent<HTMLInputElement>) => {
       setChecked(event.target.checked);
 
-      onChange(event.target.checked, label);
+      onChange(event.target.checked, value ?? label);
     },
-    [label, onChange],
+    [label, onChange, value],
   );
 
   return (
@@ -30,5 +33,5 @@ const DropdownCheckboxItem: FC<DropdownCheckboxItemProps> = props => {
       {icon && <Icon variant={icon} size="tiny" />}
     </div>
   );
-};
+}
 export default DropdownCheckboxItem;
