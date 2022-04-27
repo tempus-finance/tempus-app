@@ -1,5 +1,59 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`PortfolioSubheader renders a navigation subheader portfolio tabs 1`] = `
+<div>
+  <div
+    class="tc__nav-subheader"
+  >
+    <div
+      class="tc__nav-subheader__background"
+    />
+    <div
+      class="tc__nav-subheader__wrapper"
+    >
+      <div
+        class="tc__nav-subheader__group"
+      >
+        <div
+          class="tc__tabs tc__tabs__tabs-small"
+        >
+          <button
+            class="tc__btn tc__tabs__tab"
+            data-selected="true"
+            type="button"
+          >
+            <div
+              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(255, 255, 255); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+            >
+              Overview
+            </div>
+          </button>
+          <button
+            class="tc__btn tc__tabs__tab"
+            data-selected="false"
+            type="button"
+          >
+            <div
+              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+            >
+              Positions
+            </div>
+          </button>
+          <div
+            class="tc__tabs__indicator-container"
+          >
+            <div
+              class="tc__tabs__indicator"
+              style="width: 50%; left: 0%;"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
 exports[`PortfolioSubheader updates tab selection when one of tabs is selected 1`] = `
 <button
   class="tc__btn tc__tabs__tab"

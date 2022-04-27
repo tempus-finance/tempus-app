@@ -16,6 +16,7 @@ describe('PortfolioSubheader', () => {
     const { container } = subject({});
 
     expect(container).not.toBeNull();
+    expect(container).toMatchSnapshot();
   });
 
   it('updates tab selection when one of tabs is selected', () => {

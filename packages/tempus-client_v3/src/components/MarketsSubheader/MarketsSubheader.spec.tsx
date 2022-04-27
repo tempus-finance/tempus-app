@@ -26,6 +26,7 @@ describe('MarketsSubheader', () => {
     const { container } = subject({});
 
     expect(container).not.toBeNull();
+    expect(container).toMatchSnapshot();
   });
 
   it('updates pool type', () => {
@@ -122,9 +123,14 @@ describe('MarketsSubheader', () => {
     expect(onSortTypeChangeMock).toBeCalledTimes(2);
     expect(onSortTypeChangeMock).toBeCalledWith('tvl', 'descending');
 
-    fireEvent.click(sortTypeButtons[1]);
+    fireEvent.click(sortTypeButtons[2]);
 
     expect(onSortTypeChangeMock).toBeCalledTimes(3);
+    expect(onSortTypeChangeMock).toBeCalledWith('tvl', 'ascending');
+
+    fireEvent.click(sortTypeButtons[1]);
+
+    expect(onSortTypeChangeMock).toBeCalledTimes(4);
     expect(onSortTypeChangeMock).toBeCalledWith('maturity', 'ascending');
 
     sortTypeButtons.forEach(button => expect(button).toMatchSnapshot());

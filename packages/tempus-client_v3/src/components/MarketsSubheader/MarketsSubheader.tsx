@@ -42,17 +42,11 @@ const MarketsSubheader: FC<MarketsSubheaderProps> = props => {
 
   const handleViewTypeChange = useCallback(
     (iconType: IconVariant) => {
-      let viewType: ViewType;
-
       if (iconType === 'grid-view') {
-        viewType = 'grid';
+        onViewTypeChange?.('grid');
       } else if (iconType === 'list-view') {
-        viewType = 'list';
-      } else {
-        return;
+        onViewTypeChange?.('list');
       }
-
-      onViewTypeChange?.(viewType);
     },
     [onViewTypeChange],
   );
