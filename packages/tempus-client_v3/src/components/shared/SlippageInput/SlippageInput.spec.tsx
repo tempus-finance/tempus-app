@@ -70,7 +70,7 @@ describe('SlippageInput', () => {
     expect(input).not.toBeNull();
     expect(button).not.toBeNull();
     expect(input).toHaveAttribute('placeholder', DecimalUtils.formatPercentage(props.percentage, 2));
-    expect(input).toHaveAttribute('disabled');
+    expect(input).toBeDisabled();
 
     expect(slippageInput).toMatchSnapshot();
   });

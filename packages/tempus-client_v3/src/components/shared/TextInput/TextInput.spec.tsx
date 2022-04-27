@@ -122,7 +122,7 @@ describe('TextInput', () => {
     expect(textInput).not.toBeNull();
     expect(input).not.toBeNull();
     expect(label).not.toBeNull();
-    expect(input).toHaveAttribute('disabled');
+    expect(input).toBeDisabled();
 
     expect(textInput).toMatchSnapshot();
   });

@@ -49,7 +49,6 @@ describe('input', () => {
     const input = getByRole('textbox');
 
     expect(input).not.toBeNull();
-    expect(input).not.toBeNull();
     expect(input).toHaveAttribute('pattern', props.pattern);
 
     expect(input).toMatchSnapshot();
@@ -62,8 +61,7 @@ describe('input', () => {
     const input = getByRole('textbox');
 
     expect(input).not.toBeNull();
-    expect(input).not.toBeNull();
-    expect(input).toHaveAttribute('disabled');
+    expect(input).toBeDisabled();
 
     expect(input).toMatchSnapshot();
   });
