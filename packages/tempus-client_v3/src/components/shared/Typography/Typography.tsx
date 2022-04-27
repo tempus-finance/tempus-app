@@ -25,7 +25,7 @@ export type TypographyColor =
 
 export type TypographyWeight = 'regular' | 'medium' | 'bold';
 
-type TypographyType = 'regular' | 'mono';
+export type TypographyType = 'regular' | 'mono';
 
 const typographyVariantMap = new Map<TypographyVariant, CSSProperties>();
 typographyVariantMap.set('page-navigation', {
@@ -89,7 +89,7 @@ const typographyTypeMap = new Map<TypographyType, string>();
 typographyTypeMap.set('regular', "'DM Sans', sans-serif");
 typographyTypeMap.set('mono', "'Azeret Mono', monospace");
 
-interface TypographyProps {
+export interface TypographyProps {
   variant: TypographyVariant;
   color?: TypographyColor;
   opacity?: number;

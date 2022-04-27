@@ -52,7 +52,7 @@ describe('SlippageInput', () => {
     expect(slippageInput).not.toBeNull();
     expect(input).not.toBeNull();
     expect(button).not.toBeNull();
-    expect(button.getAttribute('data-selected')).toEqual('true');
+    expect(button).toHaveAttribute('data-selected', 'true');
     expect(input).toHaveAttribute('placeholder', DecimalUtils.formatPercentage(props.percentage, 2));
 
     expect(slippageInput).toMatchSnapshot();
@@ -70,7 +70,7 @@ describe('SlippageInput', () => {
     expect(input).not.toBeNull();
     expect(button).not.toBeNull();
     expect(input).toHaveAttribute('placeholder', DecimalUtils.formatPercentage(props.percentage, 2));
-    expect(input.getAttribute('disabled')).not.toBeNull();
+    expect(input).toHaveAttribute('disabled');
 
     expect(slippageInput).toMatchSnapshot();
   });

@@ -70,7 +70,7 @@ describe('TextInput', () => {
     expect(textInput).not.toBeNull();
     expect(input).not.toBeNull();
     expect(label).not.toBeNull();
-    expect(input.getAttribute('pattern')).toBe(props.pattern);
+    expect(input).toHaveAttribute('pattern', props.pattern);
 
     expect(textInput).toMatchSnapshot();
   });
@@ -122,7 +122,7 @@ describe('TextInput', () => {
     expect(textInput).not.toBeNull();
     expect(input).not.toBeNull();
     expect(label).not.toBeNull();
-    expect(input.getAttribute('disabled')).not.toBeNull();
+    expect(input).toHaveAttribute('disabled');
 
     expect(textInput).toMatchSnapshot();
   });

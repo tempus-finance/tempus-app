@@ -1,4 +1,4 @@
-import { act, fireEvent, render, waitFor } from '@testing-library/react';
+import { act, fireEvent, render } from '@testing-library/react';
 import { FC, useState } from 'react';
 import BaseInput, { BaseInputProps } from './BaseInput';
 
@@ -50,7 +50,7 @@ describe('input', () => {
 
     expect(input).not.toBeNull();
     expect(input).not.toBeNull();
-    expect(input.getAttribute('pattern')).toBe(props.pattern);
+    expect(input).toHaveAttribute('pattern', props.pattern);
 
     expect(input).toMatchSnapshot();
   });
@@ -63,7 +63,7 @@ describe('input', () => {
 
     expect(input).not.toBeNull();
     expect(input).not.toBeNull();
-    expect(input.getAttribute('disabled')).not.toBeNull();
+    expect(input).toHaveAttribute('disabled');
 
     expect(input).toMatchSnapshot();
   });

@@ -1,6 +1,6 @@
 import { FC } from 'react';
 
-interface SpacerProps {
+export interface SpacerProps {
   size: number;
   variant: 'horizontal' | 'vertical' | 'box';
 }
