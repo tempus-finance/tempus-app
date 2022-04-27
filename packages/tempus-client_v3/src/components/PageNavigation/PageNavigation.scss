@@ -1,6 +1,8 @@
-.tc__page-navigation {  
+$background-offset: 40px;
+
+.tc__page-navigation {
   position: relative;
-  padding: 8px 34px;
+  padding: 8px $background-offset;
   border: none;
   margin-bottom: 0;
 }
@@ -21,8 +23,8 @@
     position: absolute;
     top: 0;
     bottom: 0;
-    left: 34px;
-    right: 34px;
+    left: $background-offset;
+    right: $background-offset;
     background-color: var(--pageContainerBackground);
   }
 }
