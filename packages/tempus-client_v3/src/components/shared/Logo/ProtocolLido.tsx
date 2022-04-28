@@ -4,7 +4,7 @@ import withLogo from './withLogo';
 
 const ProtocolLido: FC<InnerLogoProps> = ({ size }) => (
   <svg
-    className="tc__logo tc__logo-protocol-Lido"
+    className="tc__logo tc__logo-protocol-lido"
     width={size}
     height={size}
     viewBox="0 0 40 40"

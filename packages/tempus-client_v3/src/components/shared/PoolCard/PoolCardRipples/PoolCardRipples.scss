@@ -1,0 +1,56 @@
+$circleOffset: 40px;
+
+@mixin poolCardBackgroundCircle {
+  position: absolute;
+  opacity: 0.4;
+  box-shadow: 0px 10px 76px rgba(255, 255, 255, 0.66), 0px 30.4013px 30.4013px rgba(7, 1, 45, 0.8),
+    0px 15.2007px 12.1605px rgba(7, 0, 21, 0.7);
+}
+
+.tc__poolCardRipples {
+  z-index: -2;
+  position: absolute;
+  right: 80px;
+  top: -80px;
+
+  .tc__poolCardRipples-circle-1 {
+    width: 160px;
+    height: 160px;
+    border-radius: 80px;
+    @include poolCardBackgroundCircle;
+  }
+
+  .tc__poolCardRipples-circle-2 {
+    transform: translate(-$circleOffset * 1, -$circleOffset);
+    width: 256px;
+    height: 256px;
+    border-radius: 128px;
+    @include poolCardBackgroundCircle;
+  }
+
+  .tc__poolCardRipples-circle-3 {
+    transform: translate(-$circleOffset * 2, -$circleOffset);
+    width: 308px;
+    height: 308px;
+    border-radius: 154px;
+    @include poolCardBackgroundCircle;
+  }
+
+  .tc__poolCardRipples-circle-4 {
+    transform: translate(-$circleOffset * 3, -$circleOffset);
+    width: 360px;
+    height: 360px;
+    border-radius: 180px;
+    @include poolCardBackgroundCircle;
+  }
+}
+
+.tc__poolCardRipples-overlay {
+  z-index: -1;
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle 164px at 75% 75px, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.9) 99.99%);
+}

@@ -4,7 +4,7 @@ import withLogo from './withLogo';
 
 const ProtocolAave: FC<InnerLogoProps> = ({ size }) => (
   <svg
-    className="tc__logo tc__logo-protocol-Aave"
+    className="tc__logo tc__logo-protocol-aave"
     width={size}
     height={size}
     viewBox="0 0 40 40"

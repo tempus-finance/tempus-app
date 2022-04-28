@@ -4,6 +4,7 @@ import FormattedDate from './FormattedDate';
 import Typography from './Typography';
 import Icon from './Icon';
 import Logo from './Logo';
+import PoolCard from './PoolCard';
 import ToggleSwitch from './ToggleSwitch';
 import Loading from './Loading';
 import ButtonWrapper from './ButtonWrapper';
@@ -34,6 +35,7 @@ export {
   Checkbox,
   CurrencyInput,
   FormattedDate,
+  PoolCard,
   Icon,
   Link,
   Loading,

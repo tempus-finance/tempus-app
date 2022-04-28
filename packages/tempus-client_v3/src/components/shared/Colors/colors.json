@@ -23,6 +23,10 @@
   "tabsBackground": "#FFFFFF",
   "tabsBorder": "#BFC0C0",
 
+  "poolCardBorder": "#BFC0C0",
+  "poolCardFlagDisabledBorder": "#F3F7F9",
+  "poolCardFlagDisabledBackground": "#FFFFFF33",
+
   "iconDefaultColor": "#222222",
 
   "iconButtonBackground": "#FFFFFF",

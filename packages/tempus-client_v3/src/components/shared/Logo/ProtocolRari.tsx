@@ -4,7 +4,7 @@ import withLogo from './withLogo';
 
 const ProtocolRari: FC<InnerLogoProps> = ({ size }) => (
   <svg
-    className="tc__logo tc__logo-protocol-Rari"
+    className="tc__logo tc__logo-protocol-rari"
     width={size}
     height={size}
     viewBox="0 0 40 40"
