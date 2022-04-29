@@ -41,6 +41,7 @@ exports[`ActionButton renders a button with a \`loading\` label 1`] = `
 <button
   class="tc__btn tc__actionButton tc__actionButton-border-primary-small-loading tc__actionButton-background-primary-small-loading tc__actionButton-hover-primary-small-loading tc__actionButton-shadow-loading tc__actionButton-cursor-loading tc__actionButton-size-small "
   data-selected="false"
+  disabled=""
   type="button"
 >
   <div
@@ -81,6 +82,7 @@ exports[`ActionButton renders a button with a \`success\` label 1`] = `
 <button
   class="tc__btn tc__actionButton tc__actionButton-border-primary-small-success tc__actionButton-background-primary-small-success tc__actionButton-hover-primary-small-success tc__actionButton-shadow-success tc__actionButton-cursor-success tc__actionButton-size-small "
   data-selected="false"
+  disabled=""
   type="button"
 >
   <div
@@ -159,6 +161,7 @@ exports[`ActionButton renders a secondary button with a \`loading\` label 1`] = 
 <button
   class="tc__btn tc__actionButton tc__actionButton-border-secondary-small-loading tc__actionButton-background-secondary-small-loading tc__actionButton-hover-secondary-small-loading tc__actionButton-shadow-loading tc__actionButton-cursor-loading tc__actionButton-size-small "
   data-selected="false"
+  disabled=""
   type="button"
 >
   <div
@@ -199,6 +202,7 @@ exports[`ActionButton renders a secondary button with a \`success\` label 1`] = 
 <button
   class="tc__btn tc__actionButton tc__actionButton-border-secondary-large-success tc__actionButton-background-secondary-large-success tc__actionButton-hover-secondary-large-success tc__actionButton-shadow-success tc__actionButton-cursor-success tc__actionButton-size-large "
   data-selected="false"
+  disabled=""
   type="button"
 >
   <div
@@ -259,6 +263,7 @@ exports[`ActionButton renders a tertiary button with a \`loading\` state 1`] = `
 <button
   class="tc__btn tc__actionButton tc__actionButton-border-tertiary-large-loading tc__actionButton-background-tertiary-large-loading tc__actionButton-hover-tertiary-large-loading tc__actionButton-shadow-loading tc__actionButton-cursor-loading tc__actionButton-size-large "
   data-selected="false"
+  disabled=""
   type="button"
 >
   <div

@@ -108,7 +108,7 @@ const ActionButton: FC<ButtonProps> = props => {
         `tc__actionButton ${borderClass} ${backgroundClass} ${hoverClass}` +
         ` ${shadowClass} ${cursorClass} ${heightClass} ${widthClass}`
       }
-      disabled={state === 'disabled'}
+      disabled={state !== 'default'}
       onClick={onClick}
     >
       {state === 'loading' && (

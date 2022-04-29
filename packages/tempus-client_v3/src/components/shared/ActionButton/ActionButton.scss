@@ -13,6 +13,8 @@
 .tc__actionButton-status-large-content {
   min-width: 20px;
   margin-right: 8px;
+  display: flex;
+  align-items: center;
 }
 
 .tc__actionButton-status-small-content {
