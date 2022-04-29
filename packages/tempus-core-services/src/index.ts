@@ -45,19 +45,7 @@ export { Decimal } from './datastructures';
 
 export { SwapKind } from './services';
 
-export {
-  getChainlinkFeed,
-  getCoingeckoRate,
-  getDefaultProvider,
-  getERC20TokenService,
-  getTempusAMMService,
-  getTempusControllerService,
-  getTempusPoolService,
-  getVariableRateService,
-  getStatisticsService,
-  getStorageService,
-  getVaultService,
-} from './services';
+export { getChainlinkFeed, getCoingeckoRate, getDefaultProvider, initServices, getServices } from './services';
 
 export {
   NumberUtils,

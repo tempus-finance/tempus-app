@@ -1,0 +1,18 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TotalValueLockedfrom renders a component that displays TVL value 1`] = `
+<div
+  class="tc__totalValueLocked"
+>
+  <div
+    style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(255, 255, 255); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+  >
+    Total Value Locked
+  </div>
+  <div
+    style="font-style: normal; font-size: 20px; line-height: 28px; color: rgb(255, 255, 255); font-weight: 400; font-family: 'Azeret Mono', monospace; opacity: 1;"
+  >
+    $12,345,678.00
+  </div>
+</div>
+`;
