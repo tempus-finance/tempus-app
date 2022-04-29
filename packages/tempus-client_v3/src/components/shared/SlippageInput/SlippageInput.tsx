@@ -59,6 +59,7 @@ const SlippageInput: FC<SlippageInputProps> = props => {
         placeholder={placeholder}
         value={focused ? value : ''}
         pattern="[0-9,]*[.]?[0-9]{0,2}"
+        inputType="number"
         debounce
         error={error}
         disabled={disabled}

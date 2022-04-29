@@ -8,10 +8,25 @@ export interface ButtonWrapperProps {
   disabled?: boolean;
   selected?: boolean;
   onClick?: () => void;
+  onMouseOver?: () => void;
+  onMouseOut?: () => void;
+  onFocus?: () => void;
+  onBlur?: () => void;
 }
 
 const Button = forwardRef<HTMLButtonElement, ButtonWrapperProps>((props, ref) => {
-  const { children, className = '', title, disabled = false, selected = false, onClick } = props;
+  const {
+    children,
+    className = '',
+    title,
+    disabled = false,
+    selected = false,
+    onClick,
+    onMouseOver,
+    onMouseOut,
+    onFocus,
+    onBlur,
+  } = props;
 
   return (
     <button
@@ -20,6 +35,10 @@ const Button = forwardRef<HTMLButtonElement, ButtonWrapperProps>((props, ref) =>
       title={title}
       disabled={disabled}
       onClick={onClick}
+      onMouseOver={onMouseOver}
+      onMouseOut={onMouseOut}
+      onFocus={onFocus}
+      onBlur={onBlur}
       data-selected={selected}
       type="button"
     >

@@ -28,6 +28,7 @@ $background-border-radius: calc($toggle-switch-height / 2);
     opacity: 0;
     position: absolute;
     z-index: 1;
+    cursor: pointer;
   }
 }
 

@@ -1,0 +1,113 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TooltipWrapper render a simple TooltipWrapper 1`] = `
+<div>
+  <button
+    class="tc__btn "
+    data-selected="false"
+    type="button"
+  >
+    <div
+      style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+    >
+      Anchor
+    </div>
+  </button>
+</div>
+`;
+
+exports[`TooltipWrapper render a simple TooltipWrapper, click to open tooltip 1`] = `
+<div>
+  <div
+    class="tc__tooltip-wrapper"
+  >
+    <div
+      class="tc__tooltip-wrapper-backdrop"
+    />
+    <button
+      class="tc__btn tc__tooltip-wrapper-anchor"
+      data-selected="false"
+      type="button"
+    >
+      <div
+        style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+      >
+        Anchor
+      </div>
+    </button>
+    <div
+      class="tc__tooltip tc__tooltip__bottom-right"
+    >
+      <div
+        style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+      >
+        Tooltip
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`TooltipWrapper render a simple TooltipWrapper, click to open tooltip, click backdrop to close 1`] = `
+<div>
+  <button
+    class="tc__btn "
+    data-selected="false"
+    type="button"
+  >
+    <div
+      style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+    >
+      Anchor
+    </div>
+  </button>
+</div>
+`;
+
+exports[`TooltipWrapper render a simple TooltipWrapper, mouseover to open tooltip 1`] = `
+<div>
+  <div
+    class="tc__tooltip-wrapper"
+  >
+    <div
+      class="tc__tooltip-wrapper-backdrop"
+    />
+    <button
+      class="tc__btn tc__tooltip-wrapper-anchor"
+      data-selected="false"
+      type="button"
+    >
+      <div
+        style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+      >
+        Anchor
+      </div>
+    </button>
+    <div
+      class="tc__tooltip tc__tooltip__bottom-right"
+    >
+      <div
+        style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+      >
+        Tooltip
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`TooltipWrapper render a simple TooltipWrapper, mouseover to open tooltip, mpuseout to close 1`] = `
+<div>
+  <button
+    class="tc__btn "
+    data-selected="false"
+    type="button"
+  >
+    <div
+      style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+    >
+      Anchor
+    </div>
+  </button>
+</div>
+`;
