@@ -26,17 +26,17 @@ const Template: ComponentStory<typeof TooltipWrapper> = args => (
 
 export const TooltipWrapperSimple = Template.bind({});
 TooltipWrapperSimple.args = {
-  tooltip: <Typography variant="body-primary">Tooltip</Typography>,
+  tooltipContent: <Typography variant="body-primary">Tooltip</Typography>,
 };
 
 export const TooltipWrapperClickToOpen = Template.bind({});
 TooltipWrapperClickToOpen.args = {
-  tooltip: <Typography variant="body-primary">Tooltip</Typography>,
+  tooltipContent: <Typography variant="body-primary">Tooltip</Typography>,
   openEvent: 'click',
 };
 
 export const TooltipWrapperHoverToOpen = Template.bind({});
 TooltipWrapperHoverToOpen.args = {
-  tooltip: <Typography variant="body-primary">Tooltip</Typography>,
+  tooltipContent: <Typography variant="body-primary">Tooltip</Typography>,
   openEvent: 'mouseover',
 };

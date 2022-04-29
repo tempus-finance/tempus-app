@@ -9,7 +9,7 @@ const tooltipText = 'Tooltip';
 const anchorText = 'Anchor';
 
 const defaultProps: TooltipWrapperProps = {
-  tooltip: <Typography variant="body-primary">{tooltipText}</Typography>,
+  tooltipContent: <Typography variant="body-primary">{tooltipText}</Typography>,
   onOpen: mockOnOpen,
   onClose: mockOnClose,
 };

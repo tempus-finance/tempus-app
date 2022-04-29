@@ -7,7 +7,7 @@ import './TooltipWrapper.scss';
 export type OpenEvent = 'click' | 'mouseover';
 
 export interface TooltipWrapperProps {
-  tooltip: ReactNode;
+  tooltipContent: ReactNode;
   placement?: TooltipPlacement;
   openEvent?: OpenEvent;
   onOpen?: () => void;
@@ -15,7 +15,7 @@ export interface TooltipWrapperProps {
 }
 
 const TooltipWrapper: FC<TooltipWrapperProps> = props => {
-  const { tooltip, placement, openEvent = 'click', onOpen, onClose, children } = props;
+  const { tooltipContent, placement, openEvent = 'click', onOpen, onClose, children } = props;
 
   const [open, setOpen] = useState<boolean>(false);
 
@@ -67,7 +67,7 @@ const TooltipWrapper: FC<TooltipWrapperProps> = props => {
       <div className="tc__tooltip-wrapper-backdrop" {...backdropProps} />
       <ButtonWrapper className="tc__tooltip-wrapper-anchor">{children}</ButtonWrapper>
       <Tooltip open placement={placement}>
-        {tooltip}
+        {tooltipContent}
       </Tooltip>
     </div>
   );

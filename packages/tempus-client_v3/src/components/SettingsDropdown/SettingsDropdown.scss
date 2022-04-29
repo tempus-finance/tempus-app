@@ -24,13 +24,6 @@
     .tc__slippage-input {
       flex: 1 100%;
       margin-top: 12px;
-
-      .tc__text-input__container {
-        > div,
-        .tc__base-input {
-          width: calc(100% - 54px);
-        }
-      }
     }
 
     .tc__dropdown {

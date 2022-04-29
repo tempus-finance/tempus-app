@@ -1,14 +1,16 @@
+$button-width: 54px;
+
 .tc__slippage-input {
   .tc__text-input__container {
     > div {
-      width: calc(100% - 54px);
+      width: calc(100% - $button-width);
     }
     .tc__base-input {
       border-radius: 4px 0 0 4px;
-      width: calc(100% - 54px);
+      width: calc(100% - $button-width);
     }
     .tc__btn {
-      width: 54px;
+      width: $button-width;
       height: 38px;
       border-radius: 0 4px 4px 0;
       background: var(--textInputBackground);
