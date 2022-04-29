@@ -85,6 +85,7 @@ export {
   shortenAccount,
   wadToDai,
   wait,
+  prettifyProtocolName,
 } from './utils';
 
 export * from './constants';

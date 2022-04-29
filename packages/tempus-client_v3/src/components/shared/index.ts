@@ -6,6 +6,7 @@ import Icon from './Icon';
 import IconButton from './IconButton';
 import IconButtonGroup from './IconButtonGroup';
 import Logo from './Logo';
+import PoolCard from './PoolCard';
 import ToggleSwitch from './ToggleSwitch';
 import Loading from './Loading';
 import ButtonWrapper from './ButtonWrapper';
@@ -38,6 +39,7 @@ export {
   Checkbox,
   CurrencyInput,
   FormattedDate,
+  PoolCard,
   Icon,
   IconButton,
   IconButtonGroup,

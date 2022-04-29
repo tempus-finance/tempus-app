@@ -23,6 +23,8 @@ import TokenYvwETH from './TokenYvwETH';
 import ProtocolAave from './ProtocolAave';
 import ProtocolLido from './ProtocolLido';
 import ProtocolRari from './ProtocolRari';
+import ProtocolYearn from './ProtocolYearn';
+import ProtocolCompound from './ProtocolCompound';
 import WalletMetamask from './WalletMetamask';
 import WalletWalletConnect from './WalletWalletConnect';
 import WalletGnosis from './WalletGnosis';
@@ -48,9 +50,11 @@ export type LogoType =
   | 'token-yvBTC'
   | 'token-yvYFI'
   | 'token-yvwETH'
-  | 'protocol-Aave'
-  | 'protocol-Lido'
-  | 'protocol-Rari'
+  | 'protocol-aave'
+  | 'protocol-lido'
+  | 'protocol-rari'
+  | 'protocol-yearn'
+  | 'protocol-compound'
   | 'wallet-metamask'
   | 'wallet-walletconnect'
   | 'wallet-gnosis';
@@ -97,12 +101,16 @@ const Logo: FC<LogoProps & { type: LogoType }> = props => {
       return <TokenYvYFI {...props} />;
     case 'token-yvwETH':
       return <TokenYvwETH {...props} />;
-    case 'protocol-Aave':
+    case 'protocol-aave':
       return <ProtocolAave {...props} />;
-    case 'protocol-Lido':
+    case 'protocol-lido':
       return <ProtocolLido {...props} />;
-    case 'protocol-Rari':
+    case 'protocol-rari':
       return <ProtocolRari {...props} />;
+    case 'protocol-yearn':
+      return <ProtocolYearn {...props} />;
+    case 'protocol-compound':
+      return <ProtocolCompound {...props} />;
     case 'wallet-metamask':
       return <WalletMetamask {...props} />;
     case 'wallet-walletconnect':
