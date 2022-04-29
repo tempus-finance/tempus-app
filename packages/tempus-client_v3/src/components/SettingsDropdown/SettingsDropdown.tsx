@@ -11,7 +11,7 @@ const SettingsDropdown: FC = () => (
         Settings
       </Typography>
       <div className="tc__navbar-actions-dropdown-icon">
-        <Icon variant="down-chevron" size={12} color={colors.textPrimaryInverted} />
+        <Icon variant="down-chevron" size="tiny" color={colors.textPrimaryInverted} />
       </div>
     </div>
   </TooltipWrapper>
