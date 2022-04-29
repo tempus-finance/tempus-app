@@ -29,7 +29,7 @@ const SettingsPopup: FC = () => {
         <Typography className="tc__settings-popup-item-title" variant="body-primary" weight="medium">
           Slippage tolerance
         </Typography>
-        <TooltipWrapper {...{ tooltip: <SlippageInfo /> }}>
+        <TooltipWrapper tooltip={<SlippageInfo />}>
           <Icon variant="info-bordered" size="small" />
         </TooltipWrapper>
         <SlippageInput

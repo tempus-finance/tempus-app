@@ -1,4 +1,4 @@
-import { FC, HTMLProps, memo, ReactNode, useCallback, useMemo, useState } from 'react';
+import { FC, HTMLProps, ReactNode, useCallback, useMemo, useState } from 'react';
 import ButtonWrapper, { ButtonWrapperProps } from '../ButtonWrapper/ButtonWrapper';
 import Tooltip, { TooltipPlacement } from '../Tooltip/Tooltip';
 
@@ -73,4 +73,4 @@ const TooltipWrapper: FC<TooltipWrapperProps> = props => {
   );
 };
 
-export default memo(TooltipWrapper as FC<TooltipWrapperProps>);
+export default TooltipWrapper;

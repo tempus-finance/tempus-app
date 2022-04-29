@@ -5,7 +5,7 @@ import SettingsPopup from './SettingsPopup';
 import './SettingsDropdown.scss';
 
 const SettingsDropdown: FC = () => (
-  <TooltipWrapper {...{ tooltip: <SettingsPopup />, placement: 'bottom-left' }}>
+  <TooltipWrapper tooltip={<SettingsPopup />} placement="bottom-left">
     <div className="tc__navbar-actions-dropdown">
       <Typography variant="body-primary" color="text-primary-inverted">
         Settings
