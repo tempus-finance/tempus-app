@@ -54,6 +54,7 @@
   "formattedDateSeparatorHighContrast": "#7A7A7A",
 
   "modalBackground": "#FFFFFF",
+  "modalBackgroundShade": "#F3F7F9",
   "modalBorder": "#BFC0C0",
   "modalBackdrop": "#00000080",
 

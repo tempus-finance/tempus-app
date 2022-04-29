@@ -1,5 +1,5 @@
 import { fireEvent, render } from '@testing-library/react';
-import Modal, { ModalProps } from './Modal';
+import Modal, { ModalProps, ModalStyleProps } from './Modal';
 
 const mockOnCloseHandler = jest.fn();
 
@@ -10,11 +10,21 @@ const defaultProps: ModalProps = {
 
 const modalContentText = 'This is modal content.';
 
-const subject = (props: ModalProps) => render(<Modal {...props}>{modalContentText}</Modal>);
+const subject = (props: ModalProps & ModalStyleProps) => render(<Modal {...props}>{modalContentText}</Modal>);
 
 describe('Modal', () => {
-  it('renders child elements when modal is open', () => {
-    const { container, getByText } = subject(defaultProps);
+  it('renders child elements when small modal is open', () => {
+    const { container, getByText } = subject({ ...defaultProps, size: 'small' });
+
+    const modalContent = getByText(modalContentText);
+
+    expect(modalContent).not.toBeNull();
+
+    expect(container).toMatchSnapshot();
+  });
+
+  it('renders child elements when large modal is open', () => {
+    const { container, getByText } = subject({ ...defaultProps, size: 'large' });
 
     const modalContent = getByText(modalContentText);
 

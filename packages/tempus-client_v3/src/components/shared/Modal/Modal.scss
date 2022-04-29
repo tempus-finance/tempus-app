@@ -25,9 +25,38 @@
   position: relative;
   border: 1px solid var(--modalBorder);
   border-radius: 12px;
-  background-color: var(--modalBackground);
-  padding: 16px;
   pointer-events: all;
+
+  &.tc__modal__plain {
+    background-color: var(--modalBackground);
+  }
+
+  &.tc__modal__styled {
+    background: linear-gradient(0deg, var(--modalBackgroundShade) -0.55%, var(--modalBackground) 100%);
+  }
+}
+
+.tc__modal__size-small {
+  padding: 16px;
+
+  .tc__modal-header {
+    margin-bottom: 16px;
+  }
+}
+
+.tc__modal__size-large {
+  .tc__modal-header {
+    height: 40px;
+    padding: 0 16px;
+
+    .tc__icon-close {
+      margin-top: 16px;
+    }
+  }
+
+  .tc__modal__body {
+    padding: 0 40px 40px 40px;
+  }
 }
 
 .tc__modal-header {
@@ -35,5 +64,5 @@
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  margin-bottom: 16px;
+  box-sizing: border-box;
 }

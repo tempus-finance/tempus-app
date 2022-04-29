@@ -5,14 +5,22 @@ import Typography from '../Typography';
 
 import './Modal.scss';
 
+type ModalVariant = 'plain' | 'styled';
+type ModalSize = 'small' | 'large';
+
 export interface ModalProps {
   open: boolean;
   onClose: () => void;
   title?: string;
 }
 
-const Modal: FC<ModalProps> = props => {
-  const { title = '', open, onClose, children } = props;
+interface ModalStyleProps {
+  variant?: ModalVariant;
+  size?: ModalSize;
+}
+
+const Modal: FC<ModalProps & ModalStyleProps> = props => {
+  const { title = '', open, onClose, variant = 'plain', size = 'small', children } = props;
 
   const onBackdropClick = (event: React.MouseEvent<HTMLDivElement>) => {
     event.stopPropagation();
@@ -32,20 +40,19 @@ const Modal: FC<ModalProps> = props => {
     <>
       <div id="modal-backdrop" className="tc__modal-backdrop" onClick={onBackdropClick} />
       <div className="tc__modal-container">
-        <div className="tc__modal">
+        <div className={`tc__modal tc__modal__${variant} tc__modal__size-${size}`}>
           <div className="tc__modal-header">
             <Typography variant="body-primary" weight="bold">
               {title}
             </Typography>
             <ButtonWrapper onClick={onCloseButtonClick}>
-              <Icon variant="close" size={20} />
+              <Icon variant="close" size={size === 'small' ? 'small' : 20} />
             </ButtonWrapper>
           </div>
-
-          {children}
+          <div className="tc__modal__body">{children}</div>
         </div>
       </div>
     </>
   );
 };
-export default React.memo(Modal) as FC<ModalProps>;
+export default React.memo(Modal) as FC<ModalProps & ModalStyleProps>;
