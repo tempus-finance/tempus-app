@@ -13,10 +13,10 @@ import './PoolCard.scss';
 interface PoolCardProps {
   ticker: Ticker;
   protocol: ProtocolName;
-  poolCardType: PoolCardVariant;
+  poolCardVariant: PoolCardVariant;
   poolCartStatus: PoolCardStatus;
   terms: Date[];
-  apr: Decimal;
+  aprValues: Decimal[];
   color: string;
   aggregatedAPR?: Decimal;
   multiplier?: number;
@@ -27,10 +27,10 @@ const PoolCard: FC<PoolCardProps> = props => {
   const {
     ticker,
     protocol,
-    poolCardType,
+    poolCardVariant,
     poolCartStatus,
     terms,
-    apr,
+    aprValues,
     color,
     aggregatedAPR,
     totalBalance,
@@ -39,7 +39,17 @@ const PoolCard: FC<PoolCardProps> = props => {
 
   const earliestTerm = useMemo(() => min(terms), [terms]);
 
-  const aprFormatted = useMemo(() => DecimalUtils.formatPercentage(apr), [apr]);
+  const maxApr = useMemo(() => {
+    let max = new Decimal(0);
+    aprValues.forEach(aprValue => {
+      if (aprValue.gte(max)) {
+        max = aprValue;
+      }
+    });
+    return max;
+  }, [aprValues]);
+
+  const maxAprFormatted = useMemo(() => DecimalUtils.formatPercentage(maxApr), [maxApr]);
 
   const aggregatedAPRFormatted = useMemo(() => {
     if (!aggregatedAPR) {
@@ -55,8 +65,16 @@ const PoolCard: FC<PoolCardProps> = props => {
     return DecimalUtils.formatWithMultiplier(totalBalance, 2);
   }, [totalBalance]);
 
+  const aprLabel = useMemo(() => {
+    if (poolCardVariant === 'markets') {
+      return aprValues.length === 1 ? 'Fixed APR' : 'Fixed APR (up to)';
+    }
+
+    return aprValues.length === 1 ? 'APR' : 'APR (up to)';
+  }, [aprValues.length, poolCardVariant]);
+
   return (
-    <div className="tc__poolCard" data-cardType={poolCardType}>
+    <div className="tc__poolCard" data-cardVariant={poolCardVariant}>
       {/* Pool backing token ticker */}
       <Typography variant="subheader" weight="bold">
         {multiplier > 1 && `x${multiplier}`} {ticker}
@@ -74,10 +92,10 @@ const PoolCard: FC<PoolCardProps> = props => {
         {/* APR */}
         <div className="tc__poolCard-info-row">
           <Typography variant="body-secondary" weight="medium" color="text-secondary">
-            APR (up to)
+            {aprLabel}
           </Typography>
           <Typography variant="subheader" weight="medium" type="mono">
-            {aprFormatted}
+            {maxAprFormatted}
           </Typography>
         </div>
 
@@ -90,7 +108,7 @@ const PoolCard: FC<PoolCardProps> = props => {
         </div>
 
         {/* Aggregated APR */}
-        {aggregatedAPRFormatted && (
+        {poolCardVariant === 'portfolio' && aggregatedAPRFormatted && (
           <div className="tc__poolCard-info-row">
             <Typography variant="body-secondary" weight="medium" color="text-secondary">
               Aggregated APR
@@ -102,7 +120,7 @@ const PoolCard: FC<PoolCardProps> = props => {
         )}
 
         {/* Total Balance */}
-        {totalBalanceFormatted && (
+        {poolCardVariant === 'portfolio' && totalBalanceFormatted && (
           <div className="tc__poolCard-info-row">
             <Typography variant="body-secondary" weight="medium" color="text-secondary">
               Total Balance
