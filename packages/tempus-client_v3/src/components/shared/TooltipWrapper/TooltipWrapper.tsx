@@ -1,4 +1,4 @@
-import { FC, HTMLProps, ReactNode, useCallback, useMemo, useState } from 'react';
+import { FC, HTMLProps, ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import ButtonWrapper, { ButtonWrapperProps } from '../ButtonWrapper/ButtonWrapper';
 import Tooltip, { TooltipPlacement } from '../Tooltip/Tooltip';
 
@@ -18,6 +18,22 @@ const TooltipWrapper: FC<TooltipWrapperProps> = props => {
   const { tooltipContent, placement, openEvent = 'click', onOpen, onClose, children } = props;
 
   const [open, setOpen] = useState<boolean>(false);
+  const anchorRef = useRef<HTMLButtonElement>(null);
+  const tooltipRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (anchorRef.current && tooltipRef.current) {
+      const anchorWidth = anchorRef.current.offsetWidth;
+      tooltipRef.current.style.setProperty(
+        '--arrowOffsetBefore',
+        `calc(100% - var(--arrowWidth)/2 - max(${anchorWidth / 2}px, var(--arrowWidth)/2))`,
+      );
+      tooltipRef.current.style.setProperty(
+        '--arrowOffsetAfter',
+        `calc(100% - var(--arrowWidth)/2 - max(${anchorWidth / 2}px, var(--arrowWidth)/2) + var(--arrowBorderOffset)`,
+      );
+    }
+  });
 
   const handleOpen = useCallback(() => {
     setOpen(true);
@@ -65,8 +81,10 @@ const TooltipWrapper: FC<TooltipWrapperProps> = props => {
   return (
     <div className="tc__tooltip-wrapper">
       <div className="tc__tooltip-wrapper-backdrop" {...backdropProps} />
-      <ButtonWrapper className="tc__tooltip-wrapper-anchor">{children}</ButtonWrapper>
-      <Tooltip open placement={placement}>
+      <ButtonWrapper className="tc__tooltip-wrapper-anchor" ref={anchorRef}>
+        {children}
+      </ButtonWrapper>
+      <Tooltip open placement={placement} ref={tooltipRef}>
         {tooltipContent}
       </Tooltip>
     </div>
