@@ -1,0 +1,38 @@
+.tc__settings-popup {
+  width: 224px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+
+  .tc__settings-popup-item {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 16px 12px;
+
+    .tc__settings-popup-item-title {
+      margin: 0 8px;
+      flex: 1;
+    }
+
+    .tc__settings-popup-info {
+      width: 200px;
+      padding: 8px;
+    }
+
+    .tc__slippage-input {
+      flex: 1 100%;
+      margin-top: 12px;
+    }
+
+    .tc__dropdown {
+      flex: 1 100%;
+      margin-top: 12px;
+    }
+
+    &:not(:last-of-type) {
+      border-bottom: 1px solid var(--tooltipBorder);
+    }
+  }
+}

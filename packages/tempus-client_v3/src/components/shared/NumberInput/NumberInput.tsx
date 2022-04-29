@@ -59,6 +59,7 @@ const NumberInput: FC<NumberInputProps> = props => {
         value={value}
         placeholder={placeholder}
         pattern={pattern}
+        inputType="number"
         caption={caption}
         error={error}
         disabled={disabled}

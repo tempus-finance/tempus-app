@@ -10,6 +10,7 @@ export interface TextInputProps {
   value?: string;
   placeholder?: string;
   pattern?: string;
+  inputType?: 'text' | 'number';
   caption?: string;
   error?: string;
   disabled?: boolean;
@@ -30,6 +31,7 @@ const TextInput: FC<TextInputProps> = props => {
     value,
     placeholder,
     pattern,
+    inputType,
     caption,
     error,
     disabled,
@@ -76,7 +78,12 @@ const TextInput: FC<TextInputProps> = props => {
       )}
       <div className="tc__text-input__container">
         {startAdornment}
-        <Typography variant="body-primary" weight="regular" color={disabled ? 'text-disabled' : undefined}>
+        <Typography
+          variant="body-primary"
+          weight="regular"
+          type={inputType === 'number' ? 'mono' : 'regular'}
+          color={disabled ? 'text-disabled' : undefined}
+        >
           <BaseInput
             id={id}
             value={value}
