@@ -9,7 +9,7 @@ const config = {
         video: 'on',
         trace: 'on',
     },
-    testDir: 'tests',
+    testDir: 'integration-testing/tests',
     retries: 0,
     timeout: 50000,
     outputDir: process.env.CI ? '/root/project/test-results' : './test-results',

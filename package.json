@@ -7,23 +7,24 @@
   },
   "devDependencies": {
     "@playwright/test": "^1.19.2",
-    "lerna": "^4.0.0",
+    "@types/node": "^17.0.30",
+    "@typescript-eslint/eslint-plugin": "^4.28.1",
     "async": "^3.2.3",
     "commandir": "^1.0.1",
     "dotenv": "^16.0.0",
     "download-crx": "^1.1.0",
+    "eslint-config-airbnb-typescript": "^12.3.1",
+    "lerna": "^4.0.0",
     "node-7z": "^3.0.0",
     "playwright": "^1.19.2",
     "rimraf": "^3.0.2",
-    "sleepjs": "^4.0.3",
-    "eslint-config-airbnb-typescript": "^12.3.1",
-    "@typescript-eslint/eslint-plugin": "^4.28.1"
+    "sleepjs": "^4.0.3"
   },
   "scripts": {
     "start": "lerna run start",
     "build": "lerna run build",
     "test": "lerna run ci:test",
     "e2e": "playwright test --headed --workers=1",
-    "mm-setup": "playwright test ./tests/_firstLogin.spec.js --headed --workers=1"
+    "mm-setup": "node integration-testing/utility/download_mm.js && ts-node integration-testing/utility/update_mm_id.ts"
   }
 }

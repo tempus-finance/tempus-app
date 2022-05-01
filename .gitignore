@@ -38,7 +38,10 @@ packages/**/storybook-static
 packages/**/src/release.json
 
 # MetaMask
-/mm
-/utility/user_data
+integration-testing/mm
+integration-testing/mm2
+integration-testing/utility/user_data
+integration-testing/utility/offlinetest.ts
+integration-testing/utility/mm_id.txt
 /test-results
 .env

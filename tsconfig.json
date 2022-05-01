@@ -1,7 +1,11 @@
 {
   "compilerOptions": {
     "target": "es5",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -9,12 +13,22 @@
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
-    "module": "esnext",
+    //"module": "esnext",
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react"
+    "jsx": "react",
+    //"type": "module",
+    "module": "commonjs",
   },
-  "include": ["packages/tempus-core/src", "packages/tempus-client_v3/src"]
+  "include": [
+    //"packages/tempus-core/src",
+    //"packages/tempus-client_v3/src",
+    "./integration-testing/**/*"
+  ],
+  "exclude": [
+    "./integration-testing/mm",
+    "node_modulules",
+  ],
 }
