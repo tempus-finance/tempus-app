@@ -82,7 +82,10 @@ jobs:
           name: E2E Tests
           command: |
             apt update
-            apt install -y p7zip-full || true
+            apt install -y p7zip-full
+            npm i -D typescript
+            npm i -D @types/node
+            npm i -D ts-node
             xvfb-run --auto-servernum --server-num=1 npm run mm-setup
       - persist_to_workspace:
           root: ./
