@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, forwardRef, HTMLProps } from 'react';
 
 import './Tooltip.scss';
 
@@ -9,13 +9,18 @@ export interface TooltipProps {
   placement?: TooltipPlacement;
 }
 
-const Tooltip: FC<TooltipProps> = props => {
+const Tooltip = forwardRef<HTMLDivElement, TooltipProps>((props, ref) => {
   const { open, placement = 'bottom-right', children } = props;
 
   if (!open) {
     return null;
   }
 
-  return <div className={`tc__tooltip tc__tooltip__${placement}`}>{children}</div>;
-};
-export default Tooltip;
+  return (
+    <div className={`tc__tooltip tc__tooltip__${placement}`} ref={ref}>
+      {children}
+    </div>
+  );
+});
+
+export default Tooltip as FC<TooltipProps & HTMLProps<HTMLDivElement>>;

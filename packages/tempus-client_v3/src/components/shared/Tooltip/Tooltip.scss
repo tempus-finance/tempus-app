@@ -12,6 +12,10 @@ $arrowBorderOffset: #{math.sqrt(2)}px;
   border: 1px solid var(--tooltipBorder);
   background: var(--tooltipBackground);
 
+  --arrowWidth: 20px;
+  --arrowEdgeOffset: 24px;
+  --arrowBorderOffset: 2px;
+
   &::before {
     content: '';
     display: block;
@@ -42,13 +46,16 @@ $arrowBorderOffset: #{math.sqrt(2)}px;
       #{$opposite-horizontal-orientation}: 0px;
 
       &::before {
-        #{$horizontal-orientation}: calc(100% - $arrowWidth - $arrowEdgeOffset);
+        #{$horizontal-orientation}: var(--arrowOffsetBefore, calc(100% - $arrowWidth - $arrowEdgeOffset));
         bottom: 100%;
       }
 
       &::after {
         // Adding border offset to position inner triangle in the middle of outer triangle
-        #{$horizontal-orientation}: calc(100% - $arrowWidth - $arrowEdgeOffset + $arrowBorderOffset);
+        #{$horizontal-orientation}: var(
+          --arrowOffsetAfter,
+          calc(100% - $arrowWidth - $arrowEdgeOffset + $arrowBorderOffset)
+        );
         bottom: 100%;
       }
     }

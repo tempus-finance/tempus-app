@@ -80,6 +80,7 @@ exports[`SettingsPopup open the slippage info popup 1`] = `
         </button>
         <div
           class="tc__tooltip tc__tooltip__bottom-right"
+          style="--arrowOffsetBefore: calc(100% - var(--arrowWidth)/2 - max(0px, var(--arrowWidth)/2)); --arrowOffsetAfter: calc(100% - var(--arrowWidth)/2 - max(0px, var(--arrowWidth)/2) + var(--arrowBorderOffset);"
         >
           <div
             class="tc__settings-popup-info"
