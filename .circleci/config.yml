@@ -87,6 +87,7 @@ jobs:
             npm i -D @types/node
             npm i -D ts-node
             xvfb-run --auto-servernum --server-num=1 npm run mm-setup
+            xvfb-run --auto-servernum --server-num=2 npx playwright test ./integration-testing/tests/_firstLogin.spec.ts
       - persist_to_workspace:
           root: ./
           paths:
