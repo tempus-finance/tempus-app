@@ -81,7 +81,11 @@ const TooltipWrapper: FC<TooltipWrapperProps> = props => {
   return (
     <div className="tc__tooltip-wrapper">
       <div className="tc__tooltip-wrapper-backdrop" {...backdropProps} />
-      <ButtonWrapper className="tc__tooltip-wrapper-anchor" ref={anchorRef}>
+      <ButtonWrapper
+        className="tc__tooltip-wrapper-anchor"
+        ref={anchorRef}
+        onClick={openEvent === 'click' ? handleClose : undefined}
+      >
         {children}
       </ButtonWrapper>
       <Tooltip open placement={placement} ref={tooltipRef}>
