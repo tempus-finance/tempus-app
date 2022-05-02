@@ -90,5 +90,9 @@
   "pageContainerBackground": "#F3F7F9",
 
   "tooltipBorder": "#BFC0C0",
-  "tooltipBackground": "#FFFFFF"
+  "tooltipBackground": "#FFFFFF",
+
+  "progressBarBackground": "#FFFFFF",
+  "progressBarBorder": "#BFC0C0",
+  "progressBarProgressBackground": "#FF6B00"
 }
