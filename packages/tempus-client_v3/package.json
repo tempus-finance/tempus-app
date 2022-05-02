@@ -18,6 +18,7 @@
     "@material-ui/x-license": "^4.0.0-alpha.36",
     "@testing-library/jest-dom": "^5.16.2",
     "@testing-library/react": "^12.1.4",
+    "@testing-library/react-hooks": "^8.0.0",
     "@testing-library/user-event": "^13.5.0",
     "@types/jest": "^27.4.1",
     "@types/lodash": "^4.14.178",

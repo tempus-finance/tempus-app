@@ -1,5 +1,5 @@
 import { Octokit } from 'octokit';
-import { Config } from 'tempus-core-services';
+import { Chain, ChainConfig, Config } from 'tempus-core-services';
 
 const TempusPoolsConfig = {
   owner: 'tempus-finance',
@@ -35,5 +35,31 @@ export const getConfig = async (): Promise<Config> => {
     }
   }
 
+  if (config) {
+    config = {
+      ...config,
+      ethereum: {
+        ...config.ethereum,
+        privateNetworkUrl: String(process.env.REACT_APP_ETHEREUM_RPC),
+        alchemyKey: String(process.env.REACT_APP_MAINNET_ALCHEMY_KEY),
+      },
+      fantom: {
+        ...config.fantom,
+        privateNetworkUrl: String(process.env.REACT_APP_FANTOM_RPC),
+      },
+      'ethereum-fork': {
+        ...config['ethereum-fork'],
+        privateNetworkUrl: String(process.env.REACT_APP_ETHEREUM_RPC),
+        alchemyKey: String(process.env.REACT_APP_MAINNET_ALCHEMY_KEY),
+      },
+    };
+  }
+
   return config;
+};
+
+export const getChainConfig = async (chain: Chain): Promise<ChainConfig> => {
+  const configData = await getConfig();
+
+  return configData[chain];
 };

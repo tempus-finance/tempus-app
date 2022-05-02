@@ -1,10 +1,12 @@
-import { memo, useEffect } from 'react';
+import { memo, useEffect, useState } from 'react';
 import { Route, Routes } from 'react-router-dom';
+import { initServices } from 'tempus-core-services';
 import MarketsSubheader from '../MarketsSubheader';
 import Navbar from '../Navbar/Navbar';
 import { getConfig } from '../../config/getConfig';
 import PageNavigation, { PageNavigationLink } from '../PageNavigation';
 import PortfolioSubheader from '../PortfolioSubheader/PortfolioSubheader';
+import TotalValueLocked from '../TotalValueLocked';
 
 import './App.scss';
 
@@ -14,11 +16,16 @@ const navigationLinks: PageNavigationLink[] = [
 ];
 
 const App = () => {
-  // The code below is a placeholder
+  const [servicesLoaded, setServicesLoaded] = useState<boolean>(false);
+
   useEffect(() => {
     const retrieveConfig = async () => {
       const config = await getConfig();
-      console.log('config', config);
+      initServices('ethereum', config);
+      initServices('fantom', config);
+      initServices('ethereum-fork', config);
+
+      setServicesLoaded(true);
     };
 
     retrieveConfig();
@@ -26,18 +33,23 @@ const App = () => {
 
   return (
     <div className="tc__app__wrapper">
-      <div className="tc__app__nav-header">
-        <Navbar />
-      </div>
-      <div className="tc__app__page-navigation">
-        <PageNavigation navigationLinks={navigationLinks} />
-      </div>
-      <div className="tc__app__body">
-        <Routes>
-          <Route path="/" element={<MarketsSubheader />} />
-          <Route path="/portfolio" element={<PortfolioSubheader />} />
-        </Routes>
-      </div>
+      {servicesLoaded && (
+        <>
+          <div className="tc__app__nav-header">
+            <Navbar />
+          </div>
+          <div className="tc__app__page-navigation">
+            <PageNavigation navigationLinks={navigationLinks} />
+            <TotalValueLocked />
+          </div>
+          <div className="tc__app__body">
+            <Routes>
+              <Route path="/" element={<MarketsSubheader />} />
+              <Route path="/portfolio" element={<PortfolioSubheader />} />
+            </Routes>
+          </div>
+        </>
+      )}
     </div>
   );
 };
