@@ -14,6 +14,7 @@ import Spacer from './Spacer';
 import Link from './Link';
 import NavSubheader from './NavSubheader';
 import ActionButton from './ActionButton';
+import ProgressBar from './ProgressBar';
 import SwitcherButton from './SwitcherButton';
 import Modal from './Modal';
 import TermTabs from './TermTabs';
@@ -41,6 +42,7 @@ export {
   CurrencyInput,
   FormattedDate,
   PoolCard,
+  ProgressBar,
   Icon,
   IconButton,
   IconButtonGroup,
