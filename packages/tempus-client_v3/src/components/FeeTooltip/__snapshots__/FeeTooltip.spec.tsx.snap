@@ -3,6 +3,7 @@
 exports[`FeeTooltip renders a fee tooltip 1`] = `
 <div
   class="tc__tooltip tc__tooltip__bottom-right"
+  style="--arrowOffsetBefore: calc(100% - var(--arrowWidth)/2 - max(0px, var(--arrowWidth)/2)); --arrowOffsetAfter: calc(100% - var(--arrowWidth)/2 - max(0px, var(--arrowWidth)/2) + var(--arrowBorderOffset);"
 >
   <div
     class="tc__fee-tooltip__content"
@@ -89,6 +90,7 @@ exports[`FeeTooltip renders a fee tooltip 1`] = `
 exports[`FeeTooltip renders a fee tooltip with all fees set to 0 1`] = `
 <div
   class="tc__tooltip tc__tooltip__bottom-right"
+  style="--arrowOffsetBefore: calc(100% - var(--arrowWidth)/2 - max(0px, var(--arrowWidth)/2)); --arrowOffsetAfter: calc(100% - var(--arrowWidth)/2 - max(0px, var(--arrowWidth)/2) + var(--arrowBorderOffset);"
 >
   <div
     class="tc__fee-tooltip__content"
