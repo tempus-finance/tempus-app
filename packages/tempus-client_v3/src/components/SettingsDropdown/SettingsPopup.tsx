@@ -1,8 +1,7 @@
 import { FC, memo, useCallback, useState } from 'react';
 import { Decimal } from 'tempus-core-services';
-import { DropdownSelectableItem, DropdownSelector, Icon, ToggleSwitch, TooltipWrapper, Typography } from '../shared';
+import { DropdownSelectableItem, DropdownSelector, Icon, InfoTooltip, ToggleSwitch, Typography } from '../shared';
 import SlippageInput from '../shared/SlippageInput';
-import SlippageInfo from './SlippageInfo';
 
 // TODO: put this to somewhere else
 type LOCALE = 'en' | 'es' | 'it';
@@ -29,9 +28,10 @@ const SettingsPopup: FC = () => {
         <Typography className="tc__settings-popup-item-title" variant="body-primary" weight="medium">
           Slippage tolerance
         </Typography>
-        <TooltipWrapper tooltipContent={<SlippageInfo />}>
-          <Icon variant="info-bordered" size="small" />
-        </TooltipWrapper>
+        <InfoTooltip
+          tooltipContent="Your transaction will revert if the price changes unfavorably by more than this percentage."
+          iconSize="small"
+        />
         <SlippageInput
           percentage={slippage}
           isAuto={isAuto}

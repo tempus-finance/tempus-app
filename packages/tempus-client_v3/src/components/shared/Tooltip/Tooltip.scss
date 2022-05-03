@@ -3,6 +3,7 @@
 $arrowWidth: 20px;
 $arrowEdgeOffset: 24px;
 $arrowBorderOffset: #{math.sqrt(2)}px;
+$arrowBorderWidth: 2px;
 
 .tc__tooltip {
   min-width: 100%;
@@ -12,9 +13,8 @@ $arrowBorderOffset: #{math.sqrt(2)}px;
   border: 1px solid var(--tooltipBorder);
   background: var(--tooltipBackground);
 
-  --arrowWidth: 20px;
-  --arrowEdgeOffset: 24px;
-  --arrowBorderOffset: 2px;
+  // the CSS variable are here for React components to override
+  --anchorWidth: 16px;
 
   &::before {
     content: '';
@@ -46,18 +46,32 @@ $arrowBorderOffset: #{math.sqrt(2)}px;
       #{$opposite-horizontal-orientation}: 0px;
 
       &::before {
-        #{$horizontal-orientation}: var(--arrowOffsetBefore, calc(100% - $arrowWidth - $arrowEdgeOffset));
+        #{$horizontal-orientation}: calc(100% - $arrowWidth/2 - max(var(--anchorWidth) / 2, $arrowWidth/2));
         bottom: 100%;
       }
 
       &::after {
         // Adding border offset to position inner triangle in the middle of outer triangle
-        #{$horizontal-orientation}: var(
-          --arrowOffsetAfter,
-          calc(100% - $arrowWidth - $arrowEdgeOffset + $arrowBorderOffset)
+        #{$horizontal-orientation}: calc(
+          100% - $arrowWidth/2 - max(var(--anchorWidth) / 2, $arrowWidth/2) + $arrowBorderWidth
         );
         bottom: 100%;
       }
+    }
+  }
+
+  &.tc__tooltip__bottom-center {
+    display: flex;
+    justify-content: center;
+    transform: translateY(calc(100% + $arrowWidth)) translateX(calc((-100% + var(--anchorWidth)) / 2));
+    bottom: 0;
+
+    &::before {
+      bottom: 100%;
+    }
+
+    &::after {
+      bottom: 100%;
     }
   }
 }

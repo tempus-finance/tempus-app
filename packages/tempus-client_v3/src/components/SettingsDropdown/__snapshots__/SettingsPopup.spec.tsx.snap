@@ -79,11 +79,11 @@ exports[`SettingsPopup open the slippage info popup 1`] = `
           </svg>
         </button>
         <div
-          class="tc__tooltip tc__tooltip__bottom-right"
+          class="tc__tooltip tc__tooltip__bottom-center"
           style="--arrowOffsetBefore: calc(100% - var(--arrowWidth)/2 - max(0px, var(--arrowWidth)/2)); --arrowOffsetAfter: calc(100% - var(--arrowWidth)/2 - max(0px, var(--arrowWidth)/2) + var(--arrowBorderOffset);"
         >
           <div
-            class="tc__settings-popup-info"
+            class="tc__info-tooltip-content"
             style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
           >
             Your transaction will revert if the price changes unfavorably by more than this percentage.
