@@ -1,6 +1,6 @@
-import { FC, memo } from 'react';
+import { FC, useMemo } from 'react';
 import { DecimalUtils, Numberish } from 'tempus-core-services';
-import { Tooltip, Typography } from '../shared';
+import { TooltipWrapper, Typography } from '../shared';
 import './FeeTooltip.scss';
 
 export interface FeeTooltipFees {
@@ -11,15 +11,13 @@ export interface FeeTooltipFees {
 }
 
 interface FeeTooltipProps {
-  open: boolean;
   fees: FeeTooltipFees;
 }
 
 const FeeTooltip: FC<FeeTooltipProps> = props => {
-  const { open, fees } = props;
-
-  return (
-    <Tooltip open={open}>
+  const { fees, children } = props;
+  const tooltipContent = useMemo(
+    () => (
       <div className="tc__fee-tooltip__content">
         <Typography variant="body-primary" weight="bold">
           Fee
@@ -65,8 +63,11 @@ const FeeTooltip: FC<FeeTooltipProps> = props => {
           </Typography>
         </span>
       </div>
-    </Tooltip>
+    ),
+    [fees.deposit, fees.earlyRedemption, fees.redemption, fees.swap],
   );
+
+  return <TooltipWrapper tooltipContent={tooltipContent}>{children}</TooltipWrapper>;
 };
 
-export default memo(FeeTooltip);
+export default FeeTooltip;

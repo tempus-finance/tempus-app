@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { ComponentStory, ComponentMeta } from '@storybook/react';
 import FeeTooltip from './FeeTooltip';
 
@@ -16,22 +15,10 @@ const style = {
   padding: '50px',
 };
 
-const Template: ComponentStory<typeof FeeTooltip> = () => {
-  const [tooltipOpen, setTooltipOpen] = useState(false);
-
-  const toggleTooltip = () => {
-    setTooltipOpen(prevState => !prevState);
-  };
-
-  return (
-    <div style={style}>
-      <button type="button" onClick={toggleTooltip} style={{ position: 'relative' }}>
-        Click me!
-        {/* Tooltip should be placed inside it's anchor element - and anchor element must have relative position */}
-        <FeeTooltip open={tooltipOpen} fees={{ swap: 0.002 }} />
-      </button>
-    </div>
-  );
-};
+const Template: ComponentStory<typeof FeeTooltip> = () => (
+  <div style={style}>
+    <FeeTooltip fees={{ swap: 0.002 }}>Click me!</FeeTooltip>
+  </div>
+);
 
 export const Primary = Template.bind({});
