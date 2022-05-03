@@ -6,7 +6,7 @@ import { Typography } from '../shared';
 import './TotalValueLocked.scss';
 
 const TotalValueLocked: FC = () => {
-  const [tvl] = useTvlData();
+  const tvl = useTvlData();
 
   return (
     <div className="tc__totalValueLocked">
