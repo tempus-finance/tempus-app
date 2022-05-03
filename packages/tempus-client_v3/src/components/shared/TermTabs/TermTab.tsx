@@ -1,4 +1,4 @@
-import { FC, memo, useCallback } from 'react';
+import { FC, memo, useCallback, useMemo } from 'react';
 import { DecimalUtils } from 'tempus-core-services';
 import ButtonWrapper from '../ButtonWrapper';
 import FormattedDate from '../FormattedDate';
@@ -14,6 +14,7 @@ interface TermTabProps {
 const TermTab: FC<TermTabProps> = props => {
   const { term, selected, onClick } = props;
   const handleClick = useCallback(() => onClick(term), [term, onClick]);
+  const formattedAprPercentage = useMemo(() => DecimalUtils.formatPercentage(term.apr, 1), [term.apr]);
 
   return (
     <ButtonWrapper
@@ -24,7 +25,7 @@ const TermTab: FC<TermTabProps> = props => {
         APR &amp; Term
       </Typography>
       <Typography variant="body-primary" type="mono" weight="bold">
-        {DecimalUtils.formatPercentage(term.apr, 1)}
+        {formattedAprPercentage}
       </Typography>
       <FormattedDate date={term.date} textColor="text-secondary" size="small" separatorContrast="low" />
     </ButtonWrapper>
