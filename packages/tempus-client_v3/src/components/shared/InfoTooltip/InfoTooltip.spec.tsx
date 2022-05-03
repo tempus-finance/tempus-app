@@ -46,4 +46,13 @@ describe('InfoTooltip', () => {
 
     expect(container).toMatchSnapshot();
   });
+
+  it('renders an info tooltip with customized anchor', () => {
+    const anchor = <div>anchor</div>;
+    const { container } = render(<InfoTooltip {...defaultProps}>{anchor}</InfoTooltip>);
+
+    expect(container).not.toBeNull();
+
+    expect(container).toMatchSnapshot();
+  });
 });

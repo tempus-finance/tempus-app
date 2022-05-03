@@ -40,3 +40,21 @@ TooltipWrapperHoverToOpen.args = {
   tooltipContent: <Typography variant="body-primary">Tooltip</Typography>,
   openEvent: 'mouseover',
 };
+
+export const TooltipWrapperBottomLeft = Template.bind({});
+TooltipWrapperBottomLeft.args = {
+  tooltipContent: <div style={{ width: '320px', height: '240px' }}>Tooltip</div>,
+  placement: 'bottom-left',
+};
+
+export const TooltipWrapperBottomCenter = Template.bind({});
+TooltipWrapperBottomCenter.args = {
+  tooltipContent: <div style={{ width: '320px', height: '240px' }}>Tooltip</div>,
+  placement: 'bottom-center',
+};
+
+export const TooltipWrapperBottomRight = Template.bind({});
+TooltipWrapperBottomRight.args = {
+  tooltipContent: <div style={{ width: '320px', height: '240px' }}>Tooltip</div>,
+  placement: 'bottom-right',
+};

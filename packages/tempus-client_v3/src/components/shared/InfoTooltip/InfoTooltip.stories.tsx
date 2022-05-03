@@ -48,3 +48,9 @@ InfoTooltipWithCustomContent.args = {
   tooltipContent: <Icon variant="info-bordered" size={96} />,
   openEvent: 'click',
 };
+
+export const InfoTooltipWithCustomAnchor = Template.bind({});
+InfoTooltipWithCustomAnchor.args = {
+  tooltipContent: <Icon variant="info-bordered" size={96} />,
+  children: <div>anchor</div>,
+};

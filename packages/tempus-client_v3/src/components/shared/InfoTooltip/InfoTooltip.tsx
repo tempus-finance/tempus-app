@@ -23,6 +23,7 @@ const InfoTooltip: FC<InfoTooltipProps> = props => {
     iconColor,
     placement = 'bottom-center',
     openEvent,
+    children,
   } = props;
 
   const content: ReactNode = useMemo(() => {
@@ -35,12 +36,16 @@ const InfoTooltip: FC<InfoTooltipProps> = props => {
     }
     return tooltipContent;
   }, [tooltipContent]);
+  const anchor = useMemo(
+    () => children ?? <Icon variant={iconVariant} size={iconSize} color={iconColor} />,
+    [children, iconVariant, iconSize, iconColor],
+  );
 
   return (
     <TooltipWrapper tooltipContent={content} placement={placement} openEvent={openEvent}>
-      <Icon variant={iconVariant} size={iconSize} color={iconColor} />
+      {anchor}
     </TooltipWrapper>
   );
 };
 
-export default memo(InfoTooltip);
+export default memo(InfoTooltip) as FC<InfoTooltipProps>;
