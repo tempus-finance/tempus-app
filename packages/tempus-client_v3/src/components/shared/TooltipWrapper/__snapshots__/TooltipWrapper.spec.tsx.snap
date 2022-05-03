@@ -37,7 +37,7 @@ exports[`TooltipWrapper render a simple TooltipWrapper, click to open tooltip 1`
     </button>
     <div
       class="tc__tooltip tc__tooltip__bottom-right"
-      style="--arrowOffsetBefore: calc(100% - var(--arrowWidth)/2 - max(0px, var(--arrowWidth)/2)); --arrowOffsetAfter: calc(100% - var(--arrowWidth)/2 - max(0px, var(--arrowWidth)/2) + var(--arrowBorderOffset);"
+      style="--anchorWidth: 0px;"
     >
       <div
         style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
@@ -86,7 +86,7 @@ exports[`TooltipWrapper render a simple TooltipWrapper, mouseover to open toolti
     </button>
     <div
       class="tc__tooltip tc__tooltip__bottom-right"
-      style="--arrowOffsetBefore: calc(100% - var(--arrowWidth)/2 - max(0px, var(--arrowWidth)/2)); --arrowOffsetAfter: calc(100% - var(--arrowWidth)/2 - max(0px, var(--arrowWidth)/2) + var(--arrowBorderOffset);"
+      style="--anchorWidth: 0px;"
     >
       <div
         style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"

@@ -73,7 +73,7 @@ exports[`InfoTooltip renders an info tooltip, click to open to see content 1`] =
     </button>
     <div
       class="tc__tooltip tc__tooltip__bottom-center"
-      style="--arrowOffsetBefore: calc(100% - var(--arrowWidth)/2 - max(0px, var(--arrowWidth)/2)); --arrowOffsetAfter: calc(100% - var(--arrowWidth)/2 - max(0px, var(--arrowWidth)/2) + var(--arrowBorderOffset);"
+      style="--anchorWidth: 0px;"
     >
       <div>
         content
