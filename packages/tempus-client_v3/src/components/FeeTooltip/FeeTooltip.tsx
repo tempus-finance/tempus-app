@@ -1,4 +1,4 @@
-import { FC, memo, useMemo } from 'react';
+import { FC, useMemo } from 'react';
 import { DecimalUtils, Numberish } from 'tempus-core-services';
 import { TooltipWrapper, Typography } from '../shared';
 import './FeeTooltip.scss';
@@ -70,4 +70,4 @@ const FeeTooltip: FC<FeeTooltipProps> = props => {
   return <TooltipWrapper tooltipContent={tooltipContent}>{children}</TooltipWrapper>;
 };
 
-export default memo(FeeTooltip) as FC<FeeTooltipProps>;
+export default FeeTooltip;
