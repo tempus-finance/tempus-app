@@ -80,7 +80,7 @@ describe('useTvlData', () => {
 
     const { result, waitForNextUpdate } = renderHook(() => useTvlData());
 
-    expect(result.current.toString()).toBe('undefined');
+    expect(result.current.toString()).toBe(undefined);
 
     await waitForNextUpdate();
     expect(result.current.toString()).toBe('23');
