@@ -63,7 +63,8 @@ $arrowBorderWidth: 2px;
   &.tc__tooltip__bottom-center {
     display: flex;
     justify-content: center;
-    transform: translateY(calc(100% + $arrowWidth)) translateX(calc((-100% + var(--anchorWidth)) / 2));
+    transform: translate(-50%, calc(100% + $arrowWidth));
+    left: 50%;
     bottom: 0;
 
     &::before {
