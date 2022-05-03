@@ -1,34 +1,21 @@
 import { FC, Fragment, memo, useMemo } from 'react';
-import Typography, { TypographyVariant, TypographyWeight } from '../Typography';
+import Typography, { TypographyColor, TypographyVariant } from '../Typography';
 import './FormattedDate.scss';
 
 type FormattedDateSize = 'small' | 'medium' | 'large';
 
 export interface FormattedDateProps {
   date: Date;
+  textColor?: TypographyColor;
   size?: FormattedDateSize;
   separatorContrast?: 'low' | 'high';
   dateParts?: Set<Intl.DateTimeFormatPartTypes>;
 }
 
-interface FormattedDateStyleConfig {
-  typographyVariant: TypographyVariant;
-  typographyWeight: TypographyWeight;
-}
-
-const formattedDateStyleMap: Record<FormattedDateSize, FormattedDateStyleConfig> = {
-  small: {
-    typographyVariant: 'body-secondary',
-    typographyWeight: 'bold',
-  },
-  medium: {
-    typographyVariant: 'body-primary',
-    typographyWeight: 'medium',
-  },
-  large: {
-    typographyVariant: 'subheader',
-    typographyWeight: 'medium',
-  },
+const formattedDateTypogaphyVariantMap: Record<FormattedDateSize, TypographyVariant> = {
+  small: 'body-secondary',
+  medium: 'body-primary',
+  large: 'subheader',
 };
 
 const formatOptions: Intl.DateTimeFormatOptions = {
@@ -38,7 +25,13 @@ const formatOptions: Intl.DateTimeFormatOptions = {
 };
 
 const FormattedDate: FC<FormattedDateProps> = props => {
-  const { date, size = 'medium', separatorContrast = 'high', dateParts = new Set(['day', 'month', 'year']) } = props;
+  const {
+    date,
+    textColor,
+    size = 'medium',
+    separatorContrast = 'high',
+    dateParts = new Set(['day', 'month', 'year']),
+  } = props;
   const formattedDateParts = useMemo(
     () =>
       new Intl.DateTimeFormat(window.navigator.language, formatOptions)
@@ -47,13 +40,12 @@ const FormattedDate: FC<FormattedDateProps> = props => {
         .map(part => part.value.toString()),
     [date, dateParts],
   );
-  const dateStyle = formattedDateStyleMap[size];
 
   return (
     <span className="tc__formatted-date">
       {formattedDateParts.map((part, index) => (
         <Fragment key={`formatted-date-part-${index}`}>
-          <Typography variant={dateStyle.typographyVariant} type="mono" weight={dateStyle.typographyWeight}>
+          <Typography variant={formattedDateTypogaphyVariantMap[size]} type="mono" weight="medium" color={textColor}>
             {part}
           </Typography>
           {index < formattedDateParts.length - 1 && (

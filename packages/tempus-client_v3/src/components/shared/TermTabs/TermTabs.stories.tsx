@@ -8,8 +8,36 @@ export default {
   argTypes: {},
 } as ComponentMeta<typeof TermTabs>;
 
-export const TwoTermDates: FC = () => <TermTabs dates={[new Date(2022, 7, 1), new Date(2022, 9, 1)]} />;
+export const TwoTermDates: FC = () => (
+  <TermTabs
+    terms={[
+      {
+        apr: 0.042,
+        date: new Date(2022, 0, 1),
+      },
+      {
+        apr: 0.1,
+        date: new Date(2022, 5, 1),
+      },
+    ]}
+  />
+);
 
 export const ThreeTermDates: FC = () => (
-  <TermTabs dates={[new Date(2022, 7, 1), new Date(2022, 9, 1), new Date(2022, 11, 1)]} />
+  <TermTabs
+    terms={[
+      {
+        apr: 0.042,
+        date: new Date(2022, 0, 1),
+      },
+      {
+        apr: 0.1,
+        date: new Date(2022, 5, 1),
+      },
+      {
+        apr: 0.125,
+        date: new Date(2022, 10, 1),
+      },
+    ]}
+  />
 );
