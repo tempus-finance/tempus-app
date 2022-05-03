@@ -1,177 +1,173 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`FeeTooltip renders a fee tooltip 1`] = `
-<div>
+<div
+  class="tc__tooltip tc__tooltip__bottom-right"
+>
   <div
-    class="tc__tooltip tc__tooltip__bottom-right"
+    class="tc__fee-tooltip__content"
   >
     <div
-      class="tc__fee-tooltip__content"
+      style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+    >
+      Fee
+    </div>
+    <div
+      class="tc__fee-tooltip__fees"
     >
       <div
-        style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+        class="tc__fee-tooltip__fee-row"
       >
-        Fee
+        <div
+          style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(122, 122, 122); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+        >
+          Deposit
+        </div>
+        <div
+          style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'Azeret Mono', monospace; opacity: 1;"
+        >
+          0.00%
+        </div>
       </div>
       <div
-        class="tc__fee-tooltip__fees"
+        class="tc__fee-tooltip__fee-row"
       >
         <div
-          class="tc__fee-tooltip__fee-row"
+          style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(122, 122, 122); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
         >
-          <div
-            style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(122, 122, 122); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
-          >
-            Deposit
-          </div>
-          <div
-            style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'Azeret Mono', monospace; opacity: 1;"
-          >
-            0.00%
-          </div>
+          Redemption
         </div>
         <div
-          class="tc__fee-tooltip__fee-row"
+          style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'Azeret Mono', monospace; opacity: 1;"
         >
-          <div
-            style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(122, 122, 122); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
-          >
-            Redemption
-          </div>
-          <div
-            style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'Azeret Mono', monospace; opacity: 1;"
-          >
-            0.00%
-          </div>
-        </div>
-        <div
-          class="tc__fee-tooltip__fee-row"
-        >
-          <div
-            style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(122, 122, 122); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
-          >
-            Early Redemption
-          </div>
-          <div
-            style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'Azeret Mono', monospace; opacity: 1;"
-          >
-            0.30%
-          </div>
-        </div>
-        <div
-          class="tc__fee-tooltip__fee-row"
-        >
-          <div
-            style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(122, 122, 122); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
-          >
-            Swap
-          </div>
-          <div
-            style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'Azeret Mono', monospace; opacity: 1;"
-          >
-            0.20%
-          </div>
+          0.00%
         </div>
       </div>
-      <hr />
-      <span
-        class="tc__fee-tooltip__info"
+      <div
+        class="tc__fee-tooltip__fee-row"
       >
         <div
-          style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(122, 122, 122); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+          style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(122, 122, 122); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
         >
-          Swap fees will go to Liquidity providers
+          Early Redemption
         </div>
-      </span>
+        <div
+          style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'Azeret Mono', monospace; opacity: 1;"
+        >
+          0.30%
+        </div>
+      </div>
+      <div
+        class="tc__fee-tooltip__fee-row"
+      >
+        <div
+          style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(122, 122, 122); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+        >
+          Swap
+        </div>
+        <div
+          style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'Azeret Mono', monospace; opacity: 1;"
+        >
+          0.20%
+        </div>
+      </div>
     </div>
+    <hr />
+    <span
+      class="tc__fee-tooltip__info"
+    >
+      <div
+        style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(122, 122, 122); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+      >
+        Swap fees will go to Liquidity providers
+      </div>
+    </span>
   </div>
 </div>
 `;
 
 exports[`FeeTooltip renders a fee tooltip with all fees set to 0 1`] = `
-<div>
+<div
+  class="tc__tooltip tc__tooltip__bottom-right"
+>
   <div
-    class="tc__tooltip tc__tooltip__bottom-right"
+    class="tc__fee-tooltip__content"
   >
     <div
-      class="tc__fee-tooltip__content"
+      style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+    >
+      Fee
+    </div>
+    <div
+      class="tc__fee-tooltip__fees"
     >
       <div
-        style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+        class="tc__fee-tooltip__fee-row"
       >
-        Fee
+        <div
+          style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(122, 122, 122); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+        >
+          Deposit
+        </div>
+        <div
+          style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'Azeret Mono', monospace; opacity: 1;"
+        >
+          0.00%
+        </div>
       </div>
       <div
-        class="tc__fee-tooltip__fees"
+        class="tc__fee-tooltip__fee-row"
       >
         <div
-          class="tc__fee-tooltip__fee-row"
+          style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(122, 122, 122); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
         >
-          <div
-            style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(122, 122, 122); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
-          >
-            Deposit
-          </div>
-          <div
-            style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'Azeret Mono', monospace; opacity: 1;"
-          >
-            0.00%
-          </div>
+          Redemption
         </div>
         <div
-          class="tc__fee-tooltip__fee-row"
+          style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'Azeret Mono', monospace; opacity: 1;"
         >
-          <div
-            style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(122, 122, 122); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
-          >
-            Redemption
-          </div>
-          <div
-            style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'Azeret Mono', monospace; opacity: 1;"
-          >
-            0.00%
-          </div>
-        </div>
-        <div
-          class="tc__fee-tooltip__fee-row"
-        >
-          <div
-            style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(122, 122, 122); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
-          >
-            Early Redemption
-          </div>
-          <div
-            style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'Azeret Mono', monospace; opacity: 1;"
-          >
-            0.00%
-          </div>
-        </div>
-        <div
-          class="tc__fee-tooltip__fee-row"
-        >
-          <div
-            style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(122, 122, 122); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
-          >
-            Swap
-          </div>
-          <div
-            style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'Azeret Mono', monospace; opacity: 1;"
-          >
-            0.00%
-          </div>
+          0.00%
         </div>
       </div>
-      <hr />
-      <span
-        class="tc__fee-tooltip__info"
+      <div
+        class="tc__fee-tooltip__fee-row"
       >
         <div
-          style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(122, 122, 122); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+          style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(122, 122, 122); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
         >
-          Swap fees will go to Liquidity providers
+          Early Redemption
         </div>
-      </span>
+        <div
+          style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'Azeret Mono', monospace; opacity: 1;"
+        >
+          0.00%
+        </div>
+      </div>
+      <div
+        class="tc__fee-tooltip__fee-row"
+      >
+        <div
+          style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(122, 122, 122); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+        >
+          Swap
+        </div>
+        <div
+          style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'Azeret Mono', monospace; opacity: 1;"
+        >
+          0.00%
+        </div>
+      </div>
     </div>
+    <hr />
+    <span
+      class="tc__fee-tooltip__info"
+    >
+      <div
+        style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(122, 122, 122); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+      >
+        Swap fees will go to Liquidity providers
+      </div>
+    </span>
   </div>
 </div>
 `;

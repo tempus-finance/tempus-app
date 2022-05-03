@@ -1,4 +1,4 @@
-import { render } from '@testing-library/react';
+import { fireEvent, render } from '@testing-library/react';
 import FeeTooltip, { FeeTooltipFees, FeeTooltipProps } from './FeeTooltip';
 
 const fees: FeeTooltipFees = {
@@ -9,24 +9,51 @@ const fees: FeeTooltipFees = {
 };
 
 const defaultProps: FeeTooltipProps = {
-  open: true,
-  fees: fees,
+  fees,
 };
 
-const subject = (props: FeeTooltipProps) => render(<FeeTooltip {...props} />);
+const subject = (props: FeeTooltipProps) => render(<FeeTooltip {...props}>Click</FeeTooltip>);
 
 describe('FeeTooltip', () => {
   it('renders a fee tooltip', () => {
-    const { container } = subject(defaultProps);
+    const { container, getByText } = subject(defaultProps);
 
-    expect(container).not.toBeNull();
-    expect(container).toMatchSnapshot();
+    const actualButton = getByText('Click');
+
+    expect(actualButton).not.toBeNull();
+
+    fireEvent.click(actualButton);
+
+    const tooltip = container.querySelector('.tc__tooltip');
+
+    expect(tooltip).not.toBeNull();
+    expect(tooltip).toMatchSnapshot();
   });
 
   it('renders a fee tooltip with all fees set to 0', () => {
-    const { container } = subject({ open: true, fees: {} });
+    const { container, getByText } = subject({ fees: {} });
 
-    expect(container).not.toBeNull();
-    expect(container).toMatchSnapshot();
+    const actualButton = getByText('Click');
+
+    expect(actualButton).not.toBeNull();
+
+    fireEvent.click(actualButton);
+
+    const tooltip = container.querySelector('.tc__tooltip');
+
+    expect(tooltip).not.toBeNull();
+    expect(tooltip).toMatchSnapshot();
+  });
+
+  it('does not render a fee tooltip if it is not opened', () => {
+    const { container, getByText } = subject(defaultProps);
+
+    const actualButton = getByText('Click');
+
+    expect(actualButton).not.toBeNull();
+
+    const tooltip = container.querySelector('.tc__tooltip');
+
+    expect(tooltip).toBeNull();
   });
 });
