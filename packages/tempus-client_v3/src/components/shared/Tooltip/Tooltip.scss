@@ -1,9 +1,6 @@
 @use "sass:math";
 
-$arrowWidth: 20px;
-$arrowEdgeOffset: 24px;
-$arrowBorderOffset: #{math.sqrt(2)}px;
-$arrowBorderWidth: 2px;
+$arrowWidth: 16px;
 
 .tc__tooltip {
   min-width: 100%;
@@ -18,23 +15,22 @@ $arrowBorderWidth: 2px;
 
   &::before {
     content: '';
-    display: block;
     position: absolute;
-    width: 0px;
-    height: 0px;
-    border: calc($arrowWidth / 2) solid transparent;
-    border-bottom-color: var(--tooltipBorder);
+    width: $arrowWidth;
+    height: $arrowWidth;
+    background: var(--tooltipBorder);
+    -webkit-clip-path: polygon(50% 30%, 0% 100%, 100% 100%);
+    clip-path: polygon(50% 30%, 0% 100%, 100% 100%);
   }
 
   &::after {
     content: '';
-    display: block;
     position: absolute;
-    width: 0px;
-    height: 0px;
-    // Subtracting border offset from inner triangle border size to make inner triangle smaller then outer triangle
-    border: calc($arrowWidth / 2 - $arrowBorderOffset) solid transparent;
-    border-bottom-color: var(--tooltipBackground);
+    width: calc($arrowWidth - 2px);
+    height: calc($arrowWidth - 2px);
+    background: var(--tooltipBackground);
+    -webkit-clip-path: polygon(50% 30%, 0% 100%, 100% 100%);
+    clip-path: polygon(50% 30%, 0% 100%, 100% 100%);
   }
 
   @each $horizontal-orientation in ('left', 'right') {
@@ -51,10 +47,7 @@ $arrowBorderWidth: 2px;
       }
 
       &::after {
-        // Adding border offset to position inner triangle in the middle of outer triangle
-        #{$horizontal-orientation}: calc(
-          100% - $arrowWidth/2 - max(var(--anchorWidth) / 2, $arrowWidth/2) + $arrowBorderWidth
-        );
+        #{$horizontal-orientation}: calc(100% - $arrowWidth/2 - max(var(--anchorWidth) / 2, $arrowWidth/2) + 1px);
         bottom: 100%;
       }
     }
