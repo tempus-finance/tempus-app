@@ -25,6 +25,7 @@ import NumberInput from './NumberInput';
 import WalletButton from './WalletButton';
 import Tooltip from './Tooltip';
 import TooltipWrapper from './TooltipWrapper';
+import InfoTooltip from './InfoTooltip';
 import { Table, TableHead, TableHeadCell, TableBody, TableBodyCell, TableRow } from './Table';
 
 export * from './Colors';
@@ -72,4 +73,5 @@ export {
   TableRow,
   Tooltip,
   TooltipWrapper,
+  InfoTooltip,
 };

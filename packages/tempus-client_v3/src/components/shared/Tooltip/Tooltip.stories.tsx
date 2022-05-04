@@ -9,7 +9,7 @@ export default {
     placement: {
       control: {
         type: 'select',
-        options: ['bottom-left', 'bottom-right'],
+        options: ['bottom-left', 'bottom-center', 'bottom-right'],
       },
     },
   },
@@ -49,7 +49,17 @@ const Template: ComponentStory<typeof Tooltip> = props => {
   );
 };
 
-export const Primary = Template.bind({});
-Primary.args = {
+export const TooltipBottomLeft = Template.bind({});
+TooltipBottomLeft.args = {
+  placement: 'bottom-left',
+};
+
+export const TooltipBottomCenter = Template.bind({});
+TooltipBottomCenter.args = {
+  placement: 'bottom-center',
+};
+
+export const TooltipBottomRight = Template.bind({});
+TooltipBottomRight.args = {
   placement: 'bottom-right',
 };

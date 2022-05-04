@@ -24,14 +24,7 @@ const TooltipWrapper: FC<TooltipWrapperProps> = props => {
   useEffect(() => {
     if (anchorRef.current && tooltipRef.current) {
       const anchorWidth = anchorRef.current.offsetWidth;
-      tooltipRef.current.style.setProperty(
-        '--arrowOffsetBefore',
-        `calc(100% - var(--arrowWidth)/2 - max(${anchorWidth / 2}px, var(--arrowWidth)/2))`,
-      );
-      tooltipRef.current.style.setProperty(
-        '--arrowOffsetAfter',
-        `calc(100% - var(--arrowWidth)/2 - max(${anchorWidth / 2}px, var(--arrowWidth)/2) + var(--arrowBorderOffset)`,
-      );
+      tooltipRef.current.style.setProperty('--anchorWidth', `${anchorWidth}px`);
     }
   });
 

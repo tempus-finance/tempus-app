@@ -2,7 +2,7 @@ import { FC, forwardRef, HTMLProps } from 'react';
 
 import './Tooltip.scss';
 
-export type TooltipPlacement = 'bottom-left' | 'bottom-right';
+export type TooltipPlacement = 'bottom-left' | 'bottom-center' | 'bottom-right';
 
 export interface TooltipProps {
   open: boolean;
