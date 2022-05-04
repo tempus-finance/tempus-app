@@ -1,4 +1,6 @@
 import { renderHook } from '@testing-library/react-hooks';
+import { from } from 'rxjs';
+import { Chain, Decimal, getServices } from 'tempus-core-services';
 import { useTvlData } from './useTvlData';
 
 jest.mock('../config/getConfig', () => ({
@@ -31,9 +33,10 @@ jest.mock('../config/getConfig', () => ({
     }),
 }));
 
-jest.mock('tempus-core-services');
-const { getServices } = jest.requireMock('tempus-core-services');
-const { Decimal } = jest.requireActual('tempus-core-services');
+jest.mock('tempus-core-services', () => ({
+  ...jest.requireActual('tempus-core-services'),
+  getServices: jest.fn(),
+}));
 
 describe('useTvlData', () => {
   beforeAll(() => {
@@ -41,46 +44,37 @@ describe('useTvlData', () => {
   });
 
   test('returns a TVL of all pools', async () => {
-    getServices.mockImplementation(() => ({
+    (getServices as unknown as jest.Mock).mockImplementation(() => ({
       StatisticsService: {
-        totalValueLockedUSD: jest.fn().mockImplementation((chain: string, address: string) => {
-          switch (chain) {
-            case 'ethereum': {
-              switch (address) {
-                case '1':
-                  return Promise.resolve(new Decimal('5'));
-
-                case '2':
-                  return Promise.resolve(new Decimal('7'));
-
-                default:
-                  return Promise.reject();
-              }
+        totalValueLockedUSD: jest.fn().mockImplementation((chain: Chain, address: string) => {
+          if (chain === 'ethereum') {
+            if (address === '1') {
+              return from<Decimal[]>([new Decimal('5')]);
             }
 
-            case 'fantom': {
-              switch (address) {
-                case '3':
-                  return Promise.resolve(new Decimal('2'));
-
-                case '4':
-                  return Promise.resolve(new Decimal('9'));
-
-                default:
-                  return Promise.reject();
-              }
+            if (address === '2') {
+              return from<Decimal[]>([new Decimal('7')]);
             }
-
-            default:
-              return Promise.reject();
           }
+
+          if (chain === 'fantom') {
+            if (address === '3') {
+              return from<Decimal[]>([new Decimal('2')]);
+            }
+
+            if (address === '4') {
+              return from<Decimal[]>([new Decimal('9')]);
+            }
+          }
+
+          return from<Decimal[]>([new Decimal('0')]);
         }),
       },
     }));
 
     const { result, waitForNextUpdate } = renderHook(() => useTvlData());
 
-    expect(result.current.toString()).toBe(undefined);
+    expect(result.current.toString()).toBe('0');
 
     await waitForNextUpdate();
     expect(result.current.toString()).toBe('23');
