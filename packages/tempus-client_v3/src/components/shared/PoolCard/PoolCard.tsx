@@ -14,7 +14,7 @@ interface PoolCardProps {
   ticker: Ticker;
   protocol: ProtocolName;
   poolCardVariant: PoolCardVariant;
-  poolCartStatus: PoolCardStatus;
+  poolCardStatus: PoolCardStatus;
   terms: Date[];
   aprValues: Decimal[];
   color: string;
@@ -28,7 +28,7 @@ const PoolCard: FC<PoolCardProps> = props => {
     ticker,
     protocol,
     poolCardVariant,
-    poolCartStatus,
+    poolCardStatus,
     terms,
     aprValues,
     color,
@@ -74,7 +74,7 @@ const PoolCard: FC<PoolCardProps> = props => {
   }, [aprValues.length, poolCardVariant]);
 
   return (
-    <div className="tc__poolCard" data-cardVariant={poolCardVariant}>
+    <div className="tc__poolCard" data-card-variant={poolCardVariant}>
       {/* Pool backing token ticker */}
       <Typography variant="subheader" weight="bold">
         {multiplier > 1 && `x${multiplier}`} {ticker}
@@ -133,7 +133,7 @@ const PoolCard: FC<PoolCardProps> = props => {
       </div>
 
       <PoolCardRipples color={color} />
-      <PoolCardFlag ticker={ticker} status={poolCartStatus} />
+      <PoolCardFlag ticker={ticker} status={poolCardStatus} />
     </div>
   );
 };
