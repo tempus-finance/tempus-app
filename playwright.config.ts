@@ -1,8 +1,7 @@
-// playwright.config.js
-// @ts-check
+// playwright.config.ts
+import { PlaywrightTestConfig } from '@playwright/test';
 
-/** @type {import('@playwright/test').PlaywrightTestConfig} */
-const config = {
+const config: PlaywrightTestConfig = {
     reporter: [['junit', { outputFile: './test-results/results.xml' }]],
     use: {
         screenshot: 'on',
@@ -10,9 +9,9 @@ const config = {
         trace: 'on',
     },
     testDir: 'tests',
-    retries: 0,
+    retries: 1,
     timeout: 50000,
     outputDir: process.env.CI ? '/root/project/test-results' : './test-results',
-};
 
-module.exports = config;
+};
+export default config;
