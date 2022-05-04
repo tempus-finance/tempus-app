@@ -68,7 +68,11 @@ const TooltipWrapper: FC<TooltipWrapperProps> = props => {
   }, [openEvent, handleClose]);
 
   if (!open) {
-    return <ButtonWrapper {...buttonProps}>{children}</ButtonWrapper>;
+    return (
+      <ButtonWrapper className="tc__tooltip-wrapper-anchor" {...buttonProps}>
+        {children}
+      </ButtonWrapper>
+    );
   }
 
   return (
