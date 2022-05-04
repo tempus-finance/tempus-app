@@ -285,7 +285,7 @@ exports[`SettingsPopup render the setting popup 1`] = `
         Slippage tolerance
       </div>
       <button
-        class="tc__btn "
+        class="tc__btn tc__tooltip-wrapper-anchor"
         data-selected="false"
         type="button"
       >
@@ -508,7 +508,7 @@ exports[`SettingsPopup toggle the dark mode 1`] = `
         Slippage tolerance
       </div>
       <button
-        class="tc__btn "
+        class="tc__btn tc__tooltip-wrapper-anchor"
         data-selected="false"
         type="button"
       >
