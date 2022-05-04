@@ -13,20 +13,6 @@ $arrowWidth: 16px;
   // the CSS variable are here for React components to override
   --anchorWidth: 16px;
 
-  &::before1 {
-    content: '';
-    display: block;
-    position: absolute;
-    width: $arrowWidth;
-    height: $arrowWidth;
-    border: 1px solid var(--tooltipBorder);
-    background: var(--tooltipBackground);
-    transform: translateY(calc($arrowWidth / 2)) rotate(45deg);
-    transform-origin: center;
-    border-bottom: 0;
-    border-right: 0;
-  }
-
   &::before {
     content: '';
     position: absolute;
@@ -43,7 +29,6 @@ $arrowWidth: 16px;
     width: calc($arrowWidth - 2px);
     height: calc($arrowWidth - 2px);
     background: var(--tooltipBackground);
-    bottom: 100%;
     -webkit-clip-path: polygon(50% 30%, 0% 100%, 100% 100%);
     clip-path: polygon(50% 30%, 0% 100%, 100% 100%);
   }
