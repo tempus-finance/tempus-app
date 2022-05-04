@@ -1,6 +1,7 @@
 $background-offset: 59px;
 
 .tc__nav-subheader {
+  box-sizing: border-box;
   width: 100%;
   height: 64px;
   padding: 0 $background-offset + 5px;
