@@ -26,7 +26,7 @@ Primary.args = {
   ticker: 'ETH',
   protocol: 'lido',
   poolCardVariant: 'portfolio',
-  poolCartStatus: 'Matured',
+  poolCardStatus: 'Matured',
   aprValues: [new Decimal(0.123)],
   terms: [new Date(2022, 7, 2), new Date(2023, 3, 4)],
   aggregatedAPR: new Decimal(0.042),

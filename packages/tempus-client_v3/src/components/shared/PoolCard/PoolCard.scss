@@ -10,11 +10,11 @@
   border-radius: 0px 40px;
   overflow: hidden;
 
-  &[data-cardVariant='markets'] {
+  &[data-card-variant='markets'] {
     height: 360px;
   }
 
-  &[data-cardVariant='portfolio'] {
+  &[data-card-variant='portfolio'] {
     height: 480px;
   }
 }
