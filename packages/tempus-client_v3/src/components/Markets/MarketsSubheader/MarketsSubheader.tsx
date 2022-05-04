@@ -10,7 +10,7 @@ import {
   NavSubheaderGroup,
   Tab,
   Tabs,
-} from '../shared';
+} from '../../shared';
 
 export type PoolType = 'fixed' | 'boosted' | 'all';
 export type ViewType = 'grid' | 'list';
@@ -18,7 +18,7 @@ export type FilterType = 'active' | 'matured' | 'inactive';
 export type SortType = 'a-z' | 'maturity' | 'tvl' | 'apr' | 'balance';
 export type SortOrder = 'ascending' | 'descending';
 
-interface MarketsSubheaderProps {
+export interface MarketsSubheaderProps {
   onPoolTypeChange?: (poolType: PoolType) => void;
   onViewTypeChange?: (viewType: ViewType) => void;
   onFilterChange?: (filters: Set<FilterType>) => void;
