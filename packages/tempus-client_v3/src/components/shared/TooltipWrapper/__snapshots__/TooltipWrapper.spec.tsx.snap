@@ -3,7 +3,7 @@
 exports[`TooltipWrapper render a simple TooltipWrapper 1`] = `
 <div>
   <button
-    class="tc__btn "
+    class="tc__btn tc__tooltip-wrapper-anchor"
     data-selected="false"
     type="button"
   >
@@ -52,7 +52,7 @@ exports[`TooltipWrapper render a simple TooltipWrapper, click to open tooltip 1`
 exports[`TooltipWrapper render a simple TooltipWrapper, click to open tooltip, click backdrop to close 1`] = `
 <div>
   <button
-    class="tc__btn "
+    class="tc__btn tc__tooltip-wrapper-anchor"
     data-selected="false"
     type="button"
   >
@@ -101,7 +101,7 @@ exports[`TooltipWrapper render a simple TooltipWrapper, mouseover to open toolti
 exports[`TooltipWrapper render a simple TooltipWrapper, mouseover to open tooltip, mpuseout to close 1`] = `
 <div>
   <button
-    class="tc__btn "
+    class="tc__btn tc__tooltip-wrapper-anchor"
     data-selected="false"
     type="button"
   >

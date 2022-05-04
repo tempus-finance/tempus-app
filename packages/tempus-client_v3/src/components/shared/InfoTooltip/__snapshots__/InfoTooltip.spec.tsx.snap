@@ -3,7 +3,7 @@
 exports[`InfoTooltip renders an info tooltip 1`] = `
 <div>
   <button
-    class="tc__btn "
+    class="tc__btn tc__tooltip-wrapper-anchor"
     data-selected="false"
     type="button"
   >
@@ -37,7 +37,7 @@ exports[`InfoTooltip renders an info tooltip 1`] = `
 exports[`InfoTooltip renders an info tooltip with customized anchor 1`] = `
 <div>
   <button
-    class="tc__btn "
+    class="tc__btn tc__tooltip-wrapper-anchor"
     data-selected="false"
     type="button"
   >
