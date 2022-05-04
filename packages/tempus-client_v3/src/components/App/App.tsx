@@ -1,7 +1,7 @@
 import { memo, useEffect, useState } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { initServices } from 'tempus-core-services';
-import MarketsSubheader from '../MarketsSubheader';
+import Markets from '../Markets';
 import Navbar from '../Navbar/Navbar';
 import { getConfig } from '../../config/getConfig';
 import PageNavigation, { PageNavigationLink } from '../PageNavigation';
@@ -44,7 +44,7 @@ const App = () => {
           </div>
           <div className="tc__app__body">
             <Routes>
-              <Route path="/" element={<MarketsSubheader />} />
+              <Route path="/" element={<Markets />} />
               <Route path="/portfolio" element={<PortfolioSubheader />} />
             </Routes>
           </div>
