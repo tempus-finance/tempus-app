@@ -27,7 +27,7 @@ const defaultProps: CurrencyInputModalProps = {
 
 const subject = (props: CurrencyInputModalProps) => render(<CurrencyInputModal {...props} />);
 
-describe('CurrencyInputModalInfoRow', () => {
+describe('CurrencyInputModal', () => {
   it('renders a modal with currency input', () => {
     const { container } = subject({
       ...defaultProps,

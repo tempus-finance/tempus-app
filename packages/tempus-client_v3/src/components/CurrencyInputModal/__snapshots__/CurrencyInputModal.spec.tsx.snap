@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`CurrencyInputModalInfoRow enables action button click when appropriate amount is entered 1`] = `
+exports[`CurrencyInputModal enables action button click when appropriate amount is entered 1`] = `
 <button
   class="tc__btn tc__actionButton tc__actionButton-border-primary-large-loading tc__actionButton-background-primary-large-loading tc__actionButton-hover-primary-large-loading tc__actionButton-shadow-loading tc__actionButton-cursor-loading tc__actionButton-size-large tc__actionButton-width-full"
   data-selected="false"
@@ -41,7 +41,7 @@ exports[`CurrencyInputModalInfoRow enables action button click when appropriate 
 </button>
 `;
 
-exports[`CurrencyInputModalInfoRow enables action button click when appropriate amount is entered 2`] = `
+exports[`CurrencyInputModal enables action button click when appropriate amount is entered 2`] = `
 <input
   class="tc__base-input"
   disabled=""
@@ -52,7 +52,7 @@ exports[`CurrencyInputModalInfoRow enables action button click when appropriate 
 />
 `;
 
-exports[`CurrencyInputModalInfoRow renders a modal with currency input 1`] = `
+exports[`CurrencyInputModal renders a modal with currency input 1`] = `
 <div>
   <div
     class="tc__modal-backdrop"
