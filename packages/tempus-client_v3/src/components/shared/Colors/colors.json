@@ -69,7 +69,7 @@
 
   "dropdownBackground": "#FFFFFF",
   "dropdownBorder": "#BFC0C0",
-  "dropdownBackgroundHighlight": "#FFFFFF80",
+  "dropdownBackgroundHighlight": "#F3F7F9",
   "dropdownBackgroundSelected": "#F3F7F9",
 
   "textInputBackground": "#FFFFFF",

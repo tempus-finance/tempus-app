@@ -37,6 +37,7 @@ $dropdown-popup-offset: 7px;
     height: 100%;
 
     .tc__tooltip {
+      transform: translateY(calc(100% + 8px));
       width: var(--anchorWidth);
       box-sizing: border-box;
 
@@ -55,11 +56,11 @@ $dropdown-popup-offset: 7px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  padding: 12px;
+  padding: 4px 0;
   box-sizing: border-box;
   cursor: default;
 }
 
 .tc__dropdown-popup-title {
-  margin-bottom: 8px;
+  margin: 8px;
 }
