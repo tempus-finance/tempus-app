@@ -154,7 +154,7 @@ exports[`SettingsPopup open the slippage info popup 1`] = `
         class="tc__dropdown"
       >
         <button
-          class="tc__btn "
+          class="tc__btn tc__tooltip-wrapper-anchor"
           data-selected="false"
           type="button"
         >
@@ -377,7 +377,7 @@ exports[`SettingsPopup render the setting popup 1`] = `
         class="tc__dropdown"
       >
         <button
-          class="tc__btn "
+          class="tc__btn tc__tooltip-wrapper-anchor"
           data-selected="false"
           type="button"
         >
@@ -600,7 +600,7 @@ exports[`SettingsPopup toggle the dark mode 1`] = `
         class="tc__dropdown"
       >
         <button
-          class="tc__btn "
+          class="tc__btn tc__tooltip-wrapper-anchor"
           data-selected="false"
           type="button"
         >

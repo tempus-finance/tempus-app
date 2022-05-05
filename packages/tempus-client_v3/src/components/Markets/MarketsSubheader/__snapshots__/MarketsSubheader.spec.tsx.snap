@@ -131,7 +131,7 @@ exports[`MarketsSubheader renders a navigation subheader with filtering and sort
           class="tc__dropdown"
         >
           <button
-            class="tc__btn "
+            class="tc__btn tc__tooltip-wrapper-anchor"
             data-selected="false"
             type="button"
           >
@@ -174,7 +174,7 @@ exports[`MarketsSubheader renders a navigation subheader with filtering and sort
           class="tc__dropdown"
         >
           <button
-            class="tc__btn "
+            class="tc__btn tc__tooltip-wrapper-anchor"
             data-selected="false"
             type="button"
           >

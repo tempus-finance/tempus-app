@@ -1,6 +1,6 @@
-import { FC, memo, MouseEvent, useCallback, useState } from 'react';
-import ButtonWrapper from '../ButtonWrapper';
+import { FC, memo, useCallback, useMemo, useState } from 'react';
 import Icon from '../Icon';
+import TooltipWrapper from '../TooltipWrapper';
 import Typography from '../Typography';
 
 import './Dropdown.scss';
@@ -15,36 +15,32 @@ const Dropdown: FC<DropdownProps> = props => {
 
   const [open, setOpen] = useState<boolean>(false);
 
-  const onClick = useCallback(() => {
-    setOpen(prevState => !prevState);
-  }, []);
+  const handleOpen = useCallback(() => setOpen(true), []);
+  const handleClose = useCallback(() => setOpen(false), []);
 
-  const onPopupClick = useCallback((event: MouseEvent<HTMLDivElement>) => {
-    // We don't want to close popup when user clicks on the popup itself
-    event.stopPropagation();
-  }, []);
+  const popup = useMemo(
+    () => (
+      <div className="tc__dropdown__popup">
+        {popupTitle && (
+          <div className="tc__dropdown-popup-title">
+            <Typography variant="body-tertiary" weight="bold">
+              {popupTitle}
+            </Typography>
+          </div>
+        )}
+        {/* Dropdown list items */}
+        {children}
+      </div>
+    ),
+    [popupTitle, children],
+  );
 
   return (
     <div className="tc__dropdown">
-      <ButtonWrapper onClick={onClick} selected={open}>
+      <TooltipWrapper tooltipContent={popup} onOpen={handleOpen} onClose={handleClose}>
         <Typography variant="body-secondary">{label}</Typography>
         <Icon variant={open ? 'up-chevron' : 'down-chevron'} size="tiny" />
-      </ButtonWrapper>
-
-      {/* Popup container */}
-      {open && (
-        <div className="tc__dropdown__popup" onClick={onPopupClick}>
-          {popupTitle && (
-            <div className="tc__dropdown-popup-title">
-              <Typography variant="body-tertiary" weight="bold">
-                {popupTitle}
-              </Typography>
-            </div>
-          )}
-          {/* Dropdown list items */}
-          {children}
-        </div>
-      )}
+      </TooltipWrapper>
     </div>
   );
 };

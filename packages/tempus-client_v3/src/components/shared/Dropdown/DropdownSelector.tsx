@@ -3,7 +3,7 @@ import { IconVariant } from '../Icon';
 import Dropdown from './Dropdown';
 import { DropdownSelectableItemProps } from './DropdownSelectableItem';
 
-interface DropdownSelectorProps<T> {
+export interface DropdownSelectorProps<T> {
   label: string;
   popupTitle?: string;
   itemIcon?: IconVariant;
