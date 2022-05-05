@@ -1,7 +1,7 @@
 import { bind } from '@react-rxjs/core';
-import { catchError, from, interval, map, mergeMap, Observable, of, startWith, switchMap, zip } from 'rxjs';
+import { catchError, from, interval, map, mergeMap, Observable, of, startWith, zip } from 'rxjs';
 import { getServices, Config, TempusPool, Decimal, Chain, StatisticsService } from 'tempus-core-services';
-import { getConfig } from '../config/getConfig';
+import { getConfigManager } from '../config/getConfigManager';
 
 const ZERO = new Decimal(0);
 const TVL_POLLING_INTERVAL_IN_MS = 10000;
@@ -23,7 +23,7 @@ const mapConfigToPools = (config: Config): ExtendedTempusPool[] => {
 
 const tvlData$: Observable<Decimal> = interval(TVL_POLLING_INTERVAL_IN_MS).pipe(
   startWith(0),
-  switchMap(() => getConfig()),
+  map(() => getConfigManager().getConfig()),
   map<Config, ExtendedTempusPool[]>((config: Config) => mapConfigToPools(config)),
   mergeMap<ExtendedTempusPool[], Observable<Decimal[]>>((tempusPools: ExtendedTempusPool[]) =>
     zip<Decimal[]>(
