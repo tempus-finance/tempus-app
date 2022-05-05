@@ -3,7 +3,7 @@ import { Route, Routes } from 'react-router-dom';
 import { initServices } from 'tempus-core-services';
 import Markets from '../Markets';
 import Navbar from '../Navbar/Navbar';
-import { getConfig } from '../../config/getConfig';
+import { getConfigManager } from '../../config/getConfigManager';
 import PageNavigation, { PageNavigationLink } from '../PageNavigation';
 import PortfolioSubheader from '../PortfolioSubheader/PortfolioSubheader';
 import TotalValueLocked from '../TotalValueLocked';
@@ -20,12 +20,15 @@ const App = () => {
 
   useEffect(() => {
     const retrieveConfig = async () => {
-      const config = await getConfig();
-      initServices('ethereum', config);
-      initServices('fantom', config);
-      initServices('ethereum-fork', config);
-
-      setServicesLoaded(true);
+      const configManger = getConfigManager();
+      configManger.init().then(success => {
+        if (success) {
+          initServices('ethereum', configManger.getConfig());
+          initServices('fantom', configManger.getConfig());
+          initServices('ethereum-fork', configManger.getConfig());
+          setServicesLoaded(true);
+        }
+      });
     };
 
     retrieveConfig();

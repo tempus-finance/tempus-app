@@ -1,11 +1,11 @@
 import { renderHook } from '@testing-library/react-hooks';
-import { from } from 'rxjs';
+import { delay, from } from 'rxjs';
 import { Chain, Decimal, getServices } from 'tempus-core-services';
 import { useTvlData } from './useTvlData';
 
-jest.mock('../config/getConfig', () => ({
-  getConfig: () =>
-    Promise.resolve({
+jest.mock('../config/getConfigManager', () => ({
+  getConfigManager: () => ({
+    getConfig: () => ({
       ethereum: {
         tempusPools: [
           {
@@ -31,6 +31,7 @@ jest.mock('../config/getConfig', () => ({
         ],
       },
     }),
+  }),
 }));
 
 jest.mock('tempus-core-services', () => ({
@@ -49,21 +50,21 @@ describe('useTvlData', () => {
         totalValueLockedUSD: jest.fn().mockImplementation((chain: Chain, address: string) => {
           if (chain === 'ethereum') {
             if (address === '1') {
-              return from<Decimal[]>([new Decimal('5')]);
+              return from<Decimal[]>([new Decimal('5')]).pipe(delay(1000));
             }
 
             if (address === '2') {
-              return from<Decimal[]>([new Decimal('7')]);
+              return from<Decimal[]>([new Decimal('7')]).pipe(delay(500));
             }
           }
 
           if (chain === 'fantom') {
             if (address === '3') {
-              return from<Decimal[]>([new Decimal('2')]);
+              return from<Decimal[]>([new Decimal('2')]).pipe(delay(0));
             }
 
             if (address === '4') {
-              return from<Decimal[]>([new Decimal('9')]);
+              return from<Decimal[]>([new Decimal('9')]).pipe(delay(900));
             }
           }
 

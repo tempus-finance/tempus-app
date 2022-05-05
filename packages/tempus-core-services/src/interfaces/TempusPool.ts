@@ -24,4 +24,5 @@ export type TempusPool = {
   disabledOperations: {
     [key in TransactionView]?: boolean;
   };
+  rippleColor?: string;
 };
