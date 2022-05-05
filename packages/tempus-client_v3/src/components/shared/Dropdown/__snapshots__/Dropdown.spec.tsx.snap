@@ -40,7 +40,7 @@ HTMLCollection [
 
 exports[`Dropdown renders a button element 1`] = `
 <button
-  class="tc__btn "
+  class="tc__btn tc__tooltip-wrapper-anchor"
   data-selected="false"
   type="button"
 >

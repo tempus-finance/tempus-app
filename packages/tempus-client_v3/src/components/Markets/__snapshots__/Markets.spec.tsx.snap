@@ -134,7 +134,7 @@ exports[`Markets renders the page 1`] = `
             class="tc__dropdown"
           >
             <button
-              class="tc__btn "
+              class="tc__btn tc__tooltip-wrapper-anchor"
               data-selected="false"
               type="button"
             >
@@ -177,7 +177,7 @@ exports[`Markets renders the page 1`] = `
             class="tc__dropdown"
           >
             <button
-              class="tc__btn "
+              class="tc__btn tc__tooltip-wrapper-anchor"
               data-selected="false"
               type="button"
             >
