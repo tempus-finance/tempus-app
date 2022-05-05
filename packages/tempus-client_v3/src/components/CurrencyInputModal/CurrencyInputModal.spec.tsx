@@ -15,14 +15,6 @@ const singleMaturityTerm: MaturityTerm[] = [
   },
 ];
 
-const multipleMaturityTerms: MaturityTerm[] = [
-  ...singleMaturityTerm,
-  {
-    apr: new Decimal(0.131),
-    date: new Date(2022, 11, 1),
-  },
-];
-
 const defaultProps: CurrencyInputModalProps = {
   title: '',
   description: '',
