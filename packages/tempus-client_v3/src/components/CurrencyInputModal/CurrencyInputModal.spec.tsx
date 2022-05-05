@@ -30,6 +30,7 @@ const defaultProps: CurrencyInputModalProps = {
   balance: new Decimal(100),
   inputPrecision: 18,
   actionButtonLabels: { default: 'Action', loading: 'Loading', success: 'Success' },
+  chainConfig: { blockExplorerName: 'Etherscan', blockExplorerUrl: 'https://etherscan.io/' },
 };
 
 const subject = (props: CurrencyInputModalProps) => render(<CurrencyInputModal {...props} />);

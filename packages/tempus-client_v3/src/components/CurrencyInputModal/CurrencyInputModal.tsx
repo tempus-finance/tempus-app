@@ -1,5 +1,5 @@
 import { FC, ReactNode, useCallback, useMemo, useState } from 'react';
-import { Decimal, Ticker } from 'tempus-core-services';
+import { ChainConfig, Decimal, Ticker } from 'tempus-core-services';
 import FeeTooltip from '../FeeTooltip';
 import {
   ActionButton,
@@ -23,6 +23,7 @@ interface CurrencyInputModalProps extends ModalProps {
   inputPrecision: number;
   usdRates: Map<Ticker, Decimal>;
   maturityTerms?: MaturityTerm[];
+  chainConfig?: ChainConfig;
   infoRows: ReactNode;
   actionButtonLabels: ActionButtonLabels;
   onActionButtonClick: () => string;
@@ -40,6 +41,7 @@ const CurrencyInputModal: FC<CurrencyInputModalProps> = props => {
     inputPrecision,
     usdRates,
     maturityTerms,
+    chainConfig,
     infoRows,
     actionButtonLabels,
     onActionButtonClick,
@@ -114,13 +116,12 @@ const CurrencyInputModal: FC<CurrencyInputModalProps> = props => {
           state={amountDecimal.lte(0) || insufficientBalance ? 'disabled' : transactionState}
         />
         {transactionProgress !== null && <ProgressBar value={transactionProgress} />}
-        {/* TODO: Use FTMScan for Fantom pools */}
-        {transactionHash && (
+        {chainConfig && transactionHash && (
           <Link
-            href={`https://etherscan.io/tx/${transactionHash}`}
+            href={`${chainConfig.blockExplorerUrl}tx/${transactionHash}`}
             className="tc__currency-input-modal__transaction-link"
           >
-            <Typography variant="body-secondary">Check it out on Etherscan</Typography>
+            <Typography variant="body-secondary">Check it out on {chainConfig.blockExplorerName}</Typography>
             <Icon variant="external" size="small" />
           </Link>
         )}
