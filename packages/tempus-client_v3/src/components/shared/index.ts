@@ -28,6 +28,7 @@ import TooltipWrapper from './TooltipWrapper';
 import InfoTooltip from './InfoTooltip';
 import { Table, TableHead, TableHeadCell, TableBody, TableBodyCell, TableRow } from './Table';
 
+export * from './ActionButton';
 export * from './Colors';
 export * from './Icon';
 export * from './Logo';

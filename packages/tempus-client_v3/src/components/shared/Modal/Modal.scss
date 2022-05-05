@@ -64,5 +64,16 @@
   align-items: center;
   justify-content: space-between;
   width: 100%;
+  position: relative;
   box-sizing: border-box;
+}
+
+.tc__modal-header-content {
+  display: flex;
+  justify-content: center;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
 }

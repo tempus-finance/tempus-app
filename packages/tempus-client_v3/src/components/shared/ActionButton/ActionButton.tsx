@@ -6,21 +6,21 @@ import Typography, { TypographyColor, TypographyWeight } from '../Typography';
 
 import './ActionButton.scss';
 
-type ButtonSize = 'small' | 'large';
-type ButtonVariant = 'primary' | 'secondary' | 'tertiary';
-type ButtonState = 'default' | 'disabled' | 'loading' | 'success';
-type ButtonLabels = {
+type ActionButtonSize = 'small' | 'large';
+type ActionButtonVariant = 'primary' | 'secondary' | 'tertiary';
+export type ActionButtonState = 'default' | 'disabled' | 'loading' | 'success';
+export type ActionButtonLabels = {
   default: string;
   loading: string;
   success: string;
 };
 
 export interface ButtonProps {
-  labels: ButtonLabels;
+  labels: ActionButtonLabels;
   onClick: () => void;
-  variant?: ButtonVariant;
-  state?: ButtonState;
-  size?: ButtonSize;
+  variant?: ActionButtonVariant;
+  state?: ActionButtonState;
+  size?: ActionButtonSize;
   fullWidth?: boolean;
 }
 

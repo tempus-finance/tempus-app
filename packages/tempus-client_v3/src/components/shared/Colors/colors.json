@@ -94,5 +94,8 @@
 
   "progressBarBackground": "#FFFFFF",
   "progressBarBorder": "#BFC0C0",
-  "progressBarProgressBackground": "#FF6B00"
+  "progressBarProgressBackground": "#FF6B00",
+
+  "currencyInputModalValueIncreaseBackground": "#CEF2DA",
+  "currencyInputModalValueDecreaseBackground": "#FFD9D9"
 }
