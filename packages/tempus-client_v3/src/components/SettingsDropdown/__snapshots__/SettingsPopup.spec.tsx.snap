@@ -106,7 +106,7 @@ exports[`SettingsPopup open the slippage info popup 1`] = `
                 class="tc__base-input"
                 id="text-input-2"
                 pattern="[0-9,]*[.]?[0-9]{0,2}"
-                placeholder="0.00%"
+                placeholder="2.00%"
                 type="text"
                 value=""
               />
@@ -329,7 +329,7 @@ exports[`SettingsPopup render the setting popup 1`] = `
                 class="tc__base-input"
                 id="text-input-1"
                 pattern="[0-9,]*[.]?[0-9]{0,2}"
-                placeholder="0.00%"
+                placeholder="2.00%"
                 type="text"
                 value=""
               />
@@ -552,7 +552,7 @@ exports[`SettingsPopup toggle the dark mode 1`] = `
                 class="tc__base-input"
                 id="text-input-3"
                 pattern="[0-9,]*[.]?[0-9]{0,2}"
-                placeholder="0.00%"
+                placeholder="2.00%"
                 type="text"
                 value=""
               />
