@@ -28,7 +28,7 @@ interface CurrencyInputModalProps extends ModalProps {
   actionButtonLabels: ActionButtonLabels;
   actionButtonState?: ActionButtonState;
   onAmountChange?: (amount: Decimal) => void;
-  onActionButtonClick: (amount: Decimal) => string;
+  onTransactionStart: (amount: Decimal) => string;
   onCurrencyUpdate?: (currency: Ticker) => void;
 }
 
@@ -48,7 +48,7 @@ const CurrencyInputModal: FC<CurrencyInputModalProps> = props => {
     actionButtonLabels,
     actionButtonState = 'default',
     onAmountChange,
-    onActionButtonClick,
+    onTransactionStart,
     onCurrencyUpdate,
   } = props;
   const [amount, setAmount] = useState('');
@@ -63,7 +63,7 @@ const CurrencyInputModal: FC<CurrencyInputModalProps> = props => {
   const handleAmountChange = useCallback(
     (value: string) => {
       setAmount(value);
-      onAmountChange?.(new Decimal(value || 0));
+      onAmountChange?.(Decimal.parse(value, 0));
     },
     [onAmountChange],
   );
@@ -71,8 +71,8 @@ const CurrencyInputModal: FC<CurrencyInputModalProps> = props => {
   const handleActionButtonClick = useCallback(() => {
     // TODO: this is a mockup, replace with real implementation
     setTransactionProgress(20);
-    setTransactionHash(onActionButtonClick(amountDecimal));
-  }, [amountDecimal, onActionButtonClick]);
+    setTransactionHash(onTransactionStart(amountDecimal));
+  }, [amountDecimal, onTransactionStart]);
 
   return (
     <Modal

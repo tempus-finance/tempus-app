@@ -89,7 +89,7 @@ const DepositModal: FC<DepositModalProps> = props => {
       infoRows={infoRows}
       actionButtonLabels={actionButtonLabels}
       actionButtonState={actionButtonState}
-      onActionButtonClick={approved ? deposit : approveDeposit}
+      onTransactionStart={approved ? deposit : approveDeposit}
       onAmountChange={setAmount}
       onCurrencyUpdate={handleCurrencyChange}
       chainConfig={chainConfig}

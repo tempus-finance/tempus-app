@@ -3,7 +3,7 @@ import { Decimal, Ticker } from 'tempus-core-services';
 import { MaturityTerm } from '../shared/TermTabs';
 import CurrencyInputModal, { CurrencyInputModalProps } from './CurrencyInputModal';
 
-const onActionButtonClickMock = jest.fn<string, [Decimal]>();
+const onTransactionStartMock = jest.fn<string, [Decimal]>();
 const onAmountChangeMock = jest.fn<void, [Decimal]>();
 
 const singleCurrencyUsdRates = new Map<Ticker, Decimal>();
@@ -47,7 +47,7 @@ describe('CurrencyInputModal', () => {
       ...defaultProps,
       usdRates: singleCurrencyUsdRates,
       maturityTerms: singleMaturityTerm,
-      onActionButtonClick: onActionButtonClickMock,
+      onTransactionStart: onTransactionStartMock,
       onAmountChange: onAmountChangeMock,
     });
 
@@ -84,8 +84,8 @@ describe('CurrencyInputModal', () => {
 
     fireEvent.click(actionButton);
 
-    expect(onActionButtonClickMock).toBeCalledTimes(1);
-    expect(onActionButtonClickMock).toBeCalledWith(new Decimal('1.234'));
+    expect(onTransactionStartMock).toBeCalledTimes(1);
+    expect(onTransactionStartMock).toBeCalledWith(new Decimal('1.234'));
 
     expect(actionButton).toMatchSnapshot();
     expect(currencyInput).toMatchSnapshot();

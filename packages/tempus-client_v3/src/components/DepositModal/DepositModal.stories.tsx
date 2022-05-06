@@ -49,9 +49,9 @@ const Template: ComponentStory<typeof DepositModal> = () => {
     retrieveConfig();
   }, []);
 
-  const toggleModal = () => {
-    setModalOpen(prevState => !prevState);
-  };
+  const onModalOpen = useCallback(() => {
+    setModalOpen(true);
+  }, []);
 
   const onModalClose = useCallback(() => {
     setModalOpen(false);
@@ -59,7 +59,7 @@ const Template: ComponentStory<typeof DepositModal> = () => {
 
   return (
     <div style={style}>
-      <button type="button" onClick={toggleModal}>
+      <button type="button" onClick={onModalOpen}>
         Click me!
       </button>
 
