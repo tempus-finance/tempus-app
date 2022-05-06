@@ -1,24 +1,17 @@
 import { FC, memo, useCallback, useState } from 'react';
 import { Decimal } from 'tempus-core-services';
+import { SUPPORTED_LOCALE_NAMES, SupportedLocale, useLocale } from '../../hooks';
 import { DropdownSelectableItem, DropdownSelector, Icon, InfoTooltip, ToggleSwitch, Typography } from '../shared';
 import SlippageInput from '../shared/SlippageInput';
 
-// TODO: put this to somewhere else
-type LOCALE = 'en' | 'es' | 'it';
-
-const LOCALES: Record<LOCALE, string> = {
-  en: 'English',
-  es: 'Español',
-  it: 'Italiano',
-};
-
 const SettingsPopup: FC = () => {
+  const [locale, setLocale] = useLocale();
   // TODO: use state management instead of local state
   const [slippage, setSlippage] = useState<Decimal>(new Decimal(0));
   const [isAuto, setIsAuto] = useState<boolean>(false);
-  const [locale, setLocale] = useState<LOCALE>('en');
   const [isDark, setIsDark] = useState<boolean>(false);
 
+  const handleLocaleChange = useCallback((code: string) => setLocale(code as SupportedLocale), [setLocale]);
   const handleChangeDark = useCallback(() => setIsDark(prevState => !prevState), []);
 
   return (
@@ -44,9 +37,9 @@ const SettingsPopup: FC = () => {
         <Typography className="tc__settings-popup-item-title" variant="body-primary" weight="medium">
           Language
         </Typography>
-        <DropdownSelector label={LOCALES[locale]} selectedValue={locale} onSelect={setLocale}>
-          {Object.entries(LOCALES).map(([value, label]) => (
-            <DropdownSelectableItem key={value} label={label} value={value} />
+        <DropdownSelector label={SUPPORTED_LOCALE_NAMES[locale]} selectedValue={locale} onSelect={handleLocaleChange}>
+          {Object.entries(SUPPORTED_LOCALE_NAMES).map(([code, name]) => (
+            <DropdownSelectableItem key={code} label={name} value={code} />
           ))}
         </DropdownSelector>
       </li>
