@@ -21,7 +21,7 @@ const App = () => {
   useLocale();
 
   useEffect(() => {
-    const retrieveConfig = async () => {
+    const retrieveConfig = () => {
       const configManger = getConfigManager();
       configManger.init().then(success => {
         if (success) {

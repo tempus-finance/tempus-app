@@ -5,32 +5,28 @@ import { useTvlData } from './useTvlData';
 
 jest.mock('../config/getConfigManager', () => ({
   getConfigManager: () => ({
-    getConfig: () => ({
-      ethereum: {
-        tempusPools: [
-          {
-            address: '1',
-            backingToken: 'ETH',
-          },
-          {
-            address: '2',
-            backingToken: 'USDC',
-          },
-        ],
+    getPoolList: () => [
+      {
+        address: '1',
+        backingToken: 'ETH',
+        chain: 'ethereum',
       },
-      fantom: {
-        tempusPools: [
-          {
-            address: '3',
-            backingToken: 'USDC',
-          },
-          {
-            address: '4',
-            backingToken: 'ETH',
-          },
-        ],
+      {
+        address: '2',
+        backingToken: 'USDC',
+        chain: 'ethereum',
       },
-    }),
+      {
+        address: '3',
+        backingToken: 'USDC',
+        chain: 'fantom',
+      },
+      {
+        address: '4',
+        backingToken: 'ETH',
+        chain: 'fantom',
+      },
+    ],
   }),
 }));
 
