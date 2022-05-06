@@ -3,7 +3,8 @@ import { Decimal, Ticker } from 'tempus-core-services';
 import { MaturityTerm } from '../shared/TermTabs';
 import CurrencyInputModal, { CurrencyInputModalProps } from './CurrencyInputModal';
 
-const onActionButtonClickMock = jest.fn<string, []>();
+const onActionButtonClickMock = jest.fn<string, [Decimal]>();
+const onAmountChangeMock = jest.fn<void, [Decimal]>();
 
 const singleCurrencyUsdRates = new Map<Ticker, Decimal>();
 singleCurrencyUsdRates.set('ETH', new Decimal(3500));
@@ -47,6 +48,7 @@ describe('CurrencyInputModal', () => {
       usdRates: singleCurrencyUsdRates,
       maturityTerms: singleMaturityTerm,
       onActionButtonClick: onActionButtonClickMock,
+      onAmountChange: onAmountChangeMock,
     });
 
     const actionButton = container.querySelector('.tc__currency-input-modal__action-container .tc__actionButton');
@@ -64,6 +66,9 @@ describe('CurrencyInputModal', () => {
       jest.advanceTimersByTime(300);
     });
 
+    expect(onAmountChangeMock).toBeCalledTimes(1);
+    expect(onAmountChangeMock).toBeCalledWith(new Decimal('100.234'));
+
     expect(actionButton).toBeDisabled();
 
     fireEvent.change(currencyInput, { target: { value: '1.234' } });
@@ -72,19 +77,27 @@ describe('CurrencyInputModal', () => {
       jest.advanceTimersByTime(300);
     });
 
+    expect(onAmountChangeMock).toBeCalledTimes(2);
+    expect(onAmountChangeMock).toBeCalledWith(new Decimal('1.234'));
+
     expect(actionButton).toBeEnabled();
 
     fireEvent.click(actionButton);
 
     expect(onActionButtonClickMock).toBeCalledTimes(1);
-
-    expect(actionButton).toBeDisabled();
-    expect(actionButton).toHaveTextContent(defaultProps.actionButtonLabels.loading);
-
-    expect(currencyInput).toBeDisabled();
+    expect(onActionButtonClickMock).toBeCalledWith(new Decimal('1.234'));
 
     expect(actionButton).toMatchSnapshot();
     expect(currencyInput).toMatchSnapshot();
+
+    fireEvent.change(currencyInput, { target: { value: '' } });
+
+    act(() => {
+      jest.advanceTimersByTime(300);
+    });
+
+    expect(onAmountChangeMock).toBeCalledTimes(3);
+    expect(onAmountChangeMock).toBeCalledWith(new Decimal(0));
 
     jest.useRealTimers();
   });

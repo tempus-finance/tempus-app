@@ -1,0 +1,9 @@
+.tc__deposit-modal__header {
+  height: 32px;
+  padding: 0 32px;
+  display: flex;
+  align-items: center;
+  background-color: var(--depositModalHeaderBackground);
+  border-radius: 0px 0px 16px 16px;
+  text-transform: uppercase;
+}

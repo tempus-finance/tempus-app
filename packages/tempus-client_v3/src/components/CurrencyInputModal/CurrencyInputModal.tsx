@@ -26,7 +26,9 @@ interface CurrencyInputModalProps extends ModalProps {
   chainConfig?: ChainConfig;
   infoRows: ReactNode;
   actionButtonLabels: ActionButtonLabels;
-  onActionButtonClick: () => string;
+  actionButtonState?: ActionButtonState;
+  onAmountChange?: (amount: Decimal) => void;
+  onActionButtonClick: (amount: Decimal) => string;
   onCurrencyUpdate?: (currency: Ticker) => void;
 }
 
@@ -44,30 +46,33 @@ const CurrencyInputModal: FC<CurrencyInputModalProps> = props => {
     chainConfig,
     infoRows,
     actionButtonLabels,
+    actionButtonState = 'default',
+    onAmountChange,
     onActionButtonClick,
     onCurrencyUpdate,
   } = props;
   const [amount, setAmount] = useState('');
-  const [transactionState, setTransactionState] = useState<ActionButtonState>('default');
   const [transactionProgress, setTransactionProgress] = useState<number | null>(null);
   const [transactionHash, setTransactionHash] = useState<string | null>(null);
 
   const amountDecimal = useMemo(() => new Decimal(amount || 0), [amount]);
 
-  const disabledInput = transactionState !== 'default';
+  const disabledInput = actionButtonState !== 'default';
   const insufficientBalance = amountDecimal.gt(balance);
+
+  const handleAmountChange = useCallback(
+    (value: string) => {
+      setAmount(value);
+      onAmountChange?.(new Decimal(value || 0));
+    },
+    [onAmountChange],
+  );
 
   const handleActionButtonClick = useCallback(() => {
     // TODO: this is a mockup, replace with real implementation
-    setTransactionState('loading');
     setTransactionProgress(20);
-    setTransactionHash(onActionButtonClick());
-
-    setTimeout(() => {
-      setTransactionState('success');
-      setTransactionProgress(100);
-    }, 5000);
-  }, [onActionButtonClick]);
+    setTransactionHash(onActionButtonClick(amountDecimal));
+  }, [amountDecimal, onActionButtonClick]);
 
   return (
     <Modal
@@ -96,7 +101,7 @@ const CurrencyInputModal: FC<CurrencyInputModalProps> = props => {
         usdRates={usdRates}
         disabled={disabledInput}
         error={insufficientBalance ? 'Insufficient balance' : undefined}
-        onAmountUpdate={setAmount}
+        onAmountUpdate={handleAmountChange}
         onCurrencyUpdate={onCurrencyUpdate}
       />
       {infoRows && <div className="tc__currency-input-modal__info">{infoRows}</div>}
@@ -113,10 +118,12 @@ const CurrencyInputModal: FC<CurrencyInputModalProps> = props => {
           variant="primary"
           size="large"
           fullWidth
-          state={amountDecimal.lte(0) || insufficientBalance ? 'disabled' : transactionState}
+          state={amountDecimal.lte(0) || insufficientBalance ? 'disabled' : actionButtonState}
         />
-        {transactionProgress !== null && <ProgressBar value={transactionProgress} />}
-        {chainConfig && transactionHash && (
+        {transactionProgress !== null && actionButtonState !== 'default' && (
+          <ProgressBar value={actionButtonState === 'success' ? 100 : transactionProgress} />
+        )}
+        {chainConfig && transactionHash && actionButtonState !== 'default' && (
           <Link
             href={`${chainConfig.blockExplorerUrl}tx/${transactionHash}`}
             className="tc__currency-input-modal__transaction-link"
