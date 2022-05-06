@@ -2,40 +2,17 @@
 
 exports[`CurrencyInputModal enables action button click when appropriate amount is entered 1`] = `
 <button
-  class="tc__btn tc__actionButton tc__actionButton-border-primary-large-loading tc__actionButton-background-primary-large-loading tc__actionButton-hover-primary-large-loading tc__actionButton-shadow-loading tc__actionButton-cursor-loading tc__actionButton-size-large tc__actionButton-width-full"
+  class="tc__btn tc__actionButton tc__actionButton-border-primary-large tc__actionButton-background-primary-large tc__actionButton-hover-primary-large tc__actionButton-shadow-default tc__actionButton-cursor-default tc__actionButton-size-large tc__actionButton-width-full"
   data-selected="false"
-  disabled=""
   type="button"
 >
-  <div
-    class="tc__actionButton-status-large-content"
-  >
-    <svg
-      height="20"
-      viewBox="0 0 100 100"
-      width="20"
-    >
-      <circle
-        class="tc__loading tc__loading__color-bg-default"
-        cx="50"
-        cy="50"
-        r="40"
-      />
-      <circle
-        class="tc__loading tc__loading__color-animate-default tc__loading__animate"
-        cx="50"
-        cy="50"
-        r="40"
-      />
-    </svg>
-  </div>
   <div
     class="tc__actionButton-status-label"
   >
     <div
-      style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(255, 255, 255); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+      style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(255, 255, 255); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
     >
-      Loading
+      Action
     </div>
   </div>
 </button>
@@ -44,7 +21,6 @@ exports[`CurrencyInputModal enables action button click when appropriate amount 
 exports[`CurrencyInputModal enables action button click when appropriate amount is entered 2`] = `
 <input
   class="tc__base-input"
-  disabled=""
   pattern="[0-9]*[.]?[0-9]{0,18}"
   placeholder="0"
   type="text"
