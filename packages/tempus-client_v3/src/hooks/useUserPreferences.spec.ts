@@ -10,7 +10,7 @@ describe('useUserPreferences', () => {
     const expected = {
       slippage: new Decimal(0.02),
       slippageAuto: false,
-      darkmode: false,
+      darkMode: false,
     };
 
     expect(userPreference).toEqual(expected);
@@ -22,7 +22,7 @@ describe('useUserPreferences', () => {
     const expected1 = {
       slippage: new Decimal(0.02),
       slippageAuto: false,
-      darkmode: false,
+      darkMode: false,
     };
 
     expect(userPreference).toEqual(expected1);
@@ -35,32 +35,32 @@ describe('useUserPreferences', () => {
     const expected2 = {
       slippage: new Decimal(0.035),
       slippageAuto: false,
-      darkmode: false,
+      darkMode: false,
     };
 
     expect(result.current[0]).toEqual(expected2);
   });
 
-  it('update darkmode to true', async () => {
+  it('update darkMode to true', async () => {
     const { result, waitForNextUpdate } = renderHook(() => useUserPreferences());
     const [userPreference, setUserPreference] = result.current;
     const expected1 = {
       slippage: new Decimal(0.02),
       slippageAuto: false,
-      darkmode: false,
+      darkMode: false,
     };
 
     expect(userPreference).toEqual(expected1);
 
     await act(async () => {
-      setUserPreference({ darkmode: true });
+      setUserPreference({ darkMode: true });
       await waitForNextUpdate();
     });
 
     const expected2 = {
       slippage: new Decimal(0.02),
       slippageAuto: false,
-      darkmode: true,
+      darkMode: true,
     };
 
     expect(result.current[0]).toEqual(expected2);
@@ -72,20 +72,20 @@ describe('useUserPreferences', () => {
     const expected1 = {
       slippage: new Decimal(0.02),
       slippageAuto: false,
-      darkmode: false,
+      darkMode: false,
     };
 
     expect(userPreference).toEqual(expected1);
 
     await act(async () => {
-      setUserPreference({ slippage: new Decimal(0.035), slippageAuto: true, darkmode: true });
+      setUserPreference({ slippage: new Decimal(0.035), slippageAuto: true, darkMode: true });
       await waitForNextUpdate();
     });
 
     const expected2 = {
       slippage: new Decimal(0.035),
       slippageAuto: true,
-      darkmode: true,
+      darkMode: true,
     };
 
     expect(result.current[0]).toEqual(expected2);
@@ -97,13 +97,13 @@ describe('useUserPreferences', () => {
     const expected = {
       slippage: new Decimal(0.02),
       slippageAuto: false,
-      darkmode: false,
+      darkMode: false,
     };
 
     expect(userPreference).toEqual(expected);
 
     await act(async () => {
-      setUserPreference({ slippage: undefined, slippageAuto: undefined, darkmode: undefined });
+      setUserPreference({ slippage: undefined, slippageAuto: undefined, darkMode: undefined });
 
       // timeout becoz no update will occur
       try {

@@ -6,21 +6,21 @@ import { Decimal } from 'tempus-core-services';
 export type UserPreferences = {
   slippage: Decimal;
   slippageAuto: boolean;
-  darkmode: boolean;
+  darkMode: boolean;
 };
 
 const [slippage$, setSlippage] = createSignal<Decimal>();
 const [slippageAuto$, setSlippageAuto] = createSignal<boolean>();
-const [darkmode$, setDarkmode] = createSignal<boolean>();
+const [darkMode$, setDarkmode] = createSignal<boolean>();
 
 const stateSlippage$ = state(slippage$, new Decimal(0.02));
 const stateSlippageAuto$ = state(slippageAuto$, false);
-const stateDarkmode$ = state(darkmode$, false);
+const stateDarkmode$ = state(darkMode$, false);
 
 export function useUserPreferences(): [UserPreferences, (partial: Partial<UserPreferences>) => void] {
   const slippage = useStateObservable(stateSlippage$);
   const slippageAuto = useStateObservable(stateSlippageAuto$);
-  const darkmode = useStateObservable(stateDarkmode$);
+  const darkMode = useStateObservable(stateDarkmode$);
 
   const setPartialPreference = useCallback((partial: Partial<UserPreferences>) => {
     Object.keys(partial).forEach(field => {
@@ -35,15 +35,15 @@ export function useUserPreferences(): [UserPreferences, (partial: Partial<UserPr
             setSlippageAuto(partial.slippageAuto);
           }
           break;
-        case 'darkmode':
+        case 'darkMode':
         default:
-          if (partial.darkmode !== undefined) {
-            setDarkmode(partial.darkmode);
+          if (partial.darkMode !== undefined) {
+            setDarkmode(partial.darkMode);
           }
           break;
       }
     });
   }, []);
 
-  return [{ slippage, slippageAuto, darkmode }, setPartialPreference];
+  return [{ slippage, slippageAuto, darkMode }, setPartialPreference];
 }
