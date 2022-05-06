@@ -3,14 +3,14 @@ import { act } from 'react-dom/test-utils';
 import { SUPPORTED_LOCALES, SUPPORTED_LOCALE_NAMES, useLocale } from './useLocale';
 
 describe('useLocale', () => {
-  it('by default it return en', () => {
+  it('by default it return "en"', () => {
     const { result } = renderHook(() => useLocale());
     const [locale] = result.current;
 
     expect(locale).toEqual('en');
   });
 
-  it('update locale to es', async () => {
+  it('update locale to "es"', async () => {
     const { result, waitForNextUpdate } = renderHook(() => useLocale());
     const [locale, setLocale] = result.current;
 
@@ -24,7 +24,7 @@ describe('useLocale', () => {
     expect(result.current[0]).toEqual('es');
   });
 
-  it('update locale to it', async () => {
+  it('update locale to "it"', async () => {
     const { result, waitForNextUpdate } = renderHook(() => useLocale());
     const [locale, setLocale] = result.current;
 
