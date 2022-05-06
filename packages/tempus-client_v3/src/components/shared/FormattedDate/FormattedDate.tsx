@@ -12,7 +12,7 @@ export interface FormattedDateProps {
   dateParts?: Set<Intl.DateTimeFormatPartTypes>;
 }
 
-const formattedDateTypogaphyVariantMap: Record<FormattedDateSize, TypographyVariant> = {
+const formattedDateTypographyVariantMap: Record<FormattedDateSize, TypographyVariant> = {
   small: 'body-secondary',
   medium: 'body-primary',
   large: 'subheader',
@@ -45,7 +45,7 @@ const FormattedDate: FC<FormattedDateProps> = props => {
     <span className="tc__formatted-date">
       {formattedDateParts.map((part, index) => (
         <Fragment key={`formatted-date-part-${index}`}>
-          <Typography variant={formattedDateTypogaphyVariantMap[size]} type="mono" weight="medium" color={textColor}>
+          <Typography variant={formattedDateTypographyVariantMap[size]} type="mono" weight="medium" color={textColor}>
             {part}
           </Typography>
           {index < formattedDateParts.length - 1 && (
