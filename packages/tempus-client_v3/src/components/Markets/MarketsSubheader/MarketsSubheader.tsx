@@ -16,7 +16,7 @@ export type PoolType = 'fixed' | 'boosted' | 'all';
 export type ViewType = 'grid' | 'list';
 export type FilterType = 'active' | 'matured' | 'inactive';
 export type SortType = 'a-z' | 'maturity' | 'tvl' | 'apr' | 'balance';
-export type SortOrder = 'ascending' | 'descending';
+export type SortOrder = 'asc' | 'desc';
 
 export interface MarketsSubheaderProps {
   onPoolTypeChange?: (poolType: PoolType) => void;
@@ -30,7 +30,7 @@ const MarketsSubheader: FC<MarketsSubheaderProps> = props => {
   const [poolType, setPoolType] = useState<PoolType>('all');
   const [filters, setFilters] = useState(new Set<FilterType>());
   const [sortType, setSortType] = useState<SortType>('a-z');
-  const [sortOrder, setSortOrder] = useState<SortOrder>('ascending');
+  const [sortOrder, setSortOrder] = useState<SortOrder>('asc');
 
   const handlePoolTypeChange = useCallback(
     (pool: PoolType) => {
@@ -72,9 +72,9 @@ const MarketsSubheader: FC<MarketsSubheaderProps> = props => {
       let order: SortOrder;
 
       if (sortType === updatedSortType) {
-        order = sortOrder === 'ascending' ? 'descending' : 'ascending';
+        order = sortOrder === 'asc' ? 'desc' : 'asc';
       } else {
-        order = 'ascending';
+        order = 'asc';
       }
 
       setSortType(updatedSortType);
@@ -102,7 +102,7 @@ const MarketsSubheader: FC<MarketsSubheaderProps> = props => {
         </Dropdown>
         <DropdownSelector
           label="Sort"
-          itemIcon={sortOrder === 'ascending' ? 'down-arrow-thin' : 'up-arrow-thin'}
+          itemIcon={sortOrder === 'asc' ? 'down-arrow-thin' : 'up-arrow-thin'}
           selectedValue={sortType}
           onSelect={handleSortTypeChange}
         >

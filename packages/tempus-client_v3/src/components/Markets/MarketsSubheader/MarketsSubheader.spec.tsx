@@ -116,22 +116,22 @@ describe('MarketsSubheader', () => {
     fireEvent.click(sortTypeButtons[2]);
 
     expect(onSortTypeChangeMock).toBeCalledTimes(1);
-    expect(onSortTypeChangeMock).toBeCalledWith('tvl', 'ascending');
+    expect(onSortTypeChangeMock).toBeCalledWith('tvl', 'asc');
 
     fireEvent.click(sortTypeButtons[2]);
 
     expect(onSortTypeChangeMock).toBeCalledTimes(2);
-    expect(onSortTypeChangeMock).toBeCalledWith('tvl', 'descending');
+    expect(onSortTypeChangeMock).toBeCalledWith('tvl', 'desc');
 
     fireEvent.click(sortTypeButtons[2]);
 
     expect(onSortTypeChangeMock).toBeCalledTimes(3);
-    expect(onSortTypeChangeMock).toBeCalledWith('tvl', 'ascending');
+    expect(onSortTypeChangeMock).toBeCalledWith('tvl', 'asc');
 
     fireEvent.click(sortTypeButtons[1]);
 
     expect(onSortTypeChangeMock).toBeCalledTimes(4);
-    expect(onSortTypeChangeMock).toBeCalledWith('maturity', 'ascending');
+    expect(onSortTypeChangeMock).toBeCalledWith('maturity', 'asc');
 
     sortTypeButtons.forEach(button => expect(button).toMatchSnapshot());
   });
