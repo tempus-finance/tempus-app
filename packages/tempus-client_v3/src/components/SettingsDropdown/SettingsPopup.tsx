@@ -17,7 +17,7 @@ const SettingsPopup: FC = () => {
 
   const handleLocaleChange = useCallback((code: string) => setLocale(code as SupportedLocale), [setLocale]);
   const handleChangeDark = useCallback(
-    (ev: ChangeEvent<HTMLInputElement>) => setPreferences({ darkmode: ev.target.checked }),
+    (ev: ChangeEvent<HTMLInputElement>) => setPreferences({ darkMode: ev.target.checked }),
     [setPreferences],
   );
   const handleSlippageUpdate = useCallback((slippage: Decimal) => setPreferences({ slippage }), [setPreferences]);
@@ -60,7 +60,7 @@ const SettingsPopup: FC = () => {
         <Typography className="tc__settings-popup-item-title" variant="body-primary" weight="medium">
           Dark Theme
         </Typography>
-        <ToggleSwitch checked={preference.darkmode} onChange={handleChangeDark} />
+        <ToggleSwitch checked={preference.darkMode} onChange={handleChangeDark} />
       </li>
     </ul>
   );
