@@ -27,7 +27,7 @@ class ConfigManager {
 
     Object.keys(this.config).forEach((chain: string) => {
       this.getChainConfig(chain as Chain).tempusPools.forEach((pool: TempusPool) => {
-        pools.push(pool);
+        pools.push({ ...pool, chain: chain as Chain });
       });
     });
 
@@ -52,6 +52,26 @@ class ConfigManager {
         if (content) {
           const decodedString = await String(Buffer.from(content, 'base64'));
           this.config = JSON.parse(decodedString);
+
+          if (decodedString) {
+            this.config = {
+              ...this.config,
+              ethereum: {
+                ...this.config.ethereum,
+                privateNetworkUrl: String(process.env.REACT_APP_ETHEREUM_RPC),
+                alchemyKey: String(process.env.REACT_APP_MAINNET_ALCHEMY_KEY),
+              },
+              fantom: {
+                ...this.config.fantom,
+                privateNetworkUrl: String(process.env.REACT_APP_FANTOM_RPC),
+              },
+              'ethereum-fork': {
+                ...this.config['ethereum-fork'],
+                privateNetworkUrl: String(process.env.REACT_APP_ETHEREUM_RPC),
+                alchemyKey: String(process.env.REACT_APP_MAINNET_ALCHEMY_KEY),
+              },
+            };
+          }
 
           return true;
         }

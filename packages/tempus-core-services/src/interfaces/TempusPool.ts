@@ -2,8 +2,10 @@ import { Ticker } from './Token';
 import { ProtocolDisplayName, ProtocolName } from './ProtocolName';
 import { TokenPrecision } from './TokenPrecision';
 import { TransactionView } from './TransactionView';
+import { Chain } from './Chain';
 
 export type TempusPool = {
+  chain?: Chain;
   address: string;
   poolId: string;
   protocol: ProtocolName;
