@@ -1,7 +1,7 @@
 import { memo, useEffect, useState } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { initServices } from 'tempus-core-services';
-import { useLocale } from '../../hooks';
+import { useLocale, useUserPreferences } from '../../hooks';
 import Markets from '../Markets';
 import Navbar from '../Navbar/Navbar';
 import { getConfigManager } from '../../config/getConfigManager';
@@ -18,7 +18,9 @@ const navigationLinks: PageNavigationLink[] = [
 
 const App = () => {
   const [servicesLoaded, setServicesLoaded] = useState<boolean>(false);
+  // to keep at least one subscriber of the stream insides the hook
   useLocale();
+  useUserPreferences();
 
   useEffect(() => {
     const retrieveConfig = async () => {

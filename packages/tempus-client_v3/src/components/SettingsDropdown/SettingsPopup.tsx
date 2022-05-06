@@ -1,18 +1,30 @@
-import { FC, memo, useCallback, useState } from 'react';
+import { ChangeEvent, FC, memo, useCallback } from 'react';
 import { Decimal } from 'tempus-core-services';
-import { SUPPORTED_LOCALE_NAMES, SupportedLocale, useLocale } from '../../hooks';
-import { DropdownSelectableItem, DropdownSelector, Icon, InfoTooltip, ToggleSwitch, Typography } from '../shared';
-import SlippageInput from '../shared/SlippageInput';
+import { SUPPORTED_LOCALE_NAMES, SupportedLocale, useLocale, useUserPreferences } from '../../hooks';
+import {
+  DropdownSelectableItem,
+  DropdownSelector,
+  SlippageInput,
+  Icon,
+  InfoTooltip,
+  ToggleSwitch,
+  Typography,
+} from '../shared';
 
 const SettingsPopup: FC = () => {
   const [locale, setLocale] = useLocale();
-  // TODO: use state management instead of local state
-  const [slippage, setSlippage] = useState<Decimal>(new Decimal(0));
-  const [isAuto, setIsAuto] = useState<boolean>(false);
-  const [isDark, setIsDark] = useState<boolean>(false);
+  const [preference, setPreferences] = useUserPreferences();
 
   const handleLocaleChange = useCallback((code: string) => setLocale(code as SupportedLocale), [setLocale]);
-  const handleChangeDark = useCallback(() => setIsDark(prevState => !prevState), []);
+  const handleChangeDark = useCallback(
+    (ev: ChangeEvent<HTMLInputElement>) => setPreferences({ darkmode: ev.target.checked }),
+    [setPreferences],
+  );
+  const handleSlippageUpdate = useCallback((slippage: Decimal) => setPreferences({ slippage }), [setPreferences]);
+  const handleSlippageAutoUpdate = useCallback(
+    (slippageAuto: boolean) => setPreferences({ slippageAuto }),
+    [setPreferences],
+  );
 
   return (
     <ul className="tc__settings-popup">
@@ -26,10 +38,10 @@ const SettingsPopup: FC = () => {
           iconSize="small"
         />
         <SlippageInput
-          percentage={slippage}
-          isAuto={isAuto}
-          onPercentageUpdate={setSlippage}
-          onAutoUpdate={setIsAuto}
+          percentage={preference.slippage}
+          isAuto={preference.slippageAuto}
+          onPercentageUpdate={handleSlippageUpdate}
+          onAutoUpdate={handleSlippageAutoUpdate}
         />
       </li>
       <li className="tc__settings-popup-item">
@@ -48,7 +60,7 @@ const SettingsPopup: FC = () => {
         <Typography className="tc__settings-popup-item-title" variant="body-primary" weight="medium">
           Dark Theme
         </Typography>
-        <ToggleSwitch checked={isDark} onChange={handleChangeDark} />
+        <ToggleSwitch checked={preference.darkmode} onChange={handleChangeDark} />
       </li>
     </ul>
   );

@@ -22,6 +22,7 @@ import { Dropdown, DropdownCheckboxItem, DropdownSelectableItem, DropdownSelecto
 import BaseInput from './BaseInput';
 import TextInput from './TextInput';
 import NumberInput from './NumberInput';
+import SlippageInput from './SlippageInput';
 import WalletButton from './WalletButton';
 import Tooltip from './Tooltip';
 import TooltipWrapper from './TooltipWrapper';
@@ -65,6 +66,7 @@ export {
   BaseInput,
   TextInput,
   NumberInput,
+  SlippageInput,
   Modal,
   Table,
   TableHead,
