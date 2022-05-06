@@ -7,7 +7,7 @@ exports[`Modal calls onClose when user clicks on backdrop 1`] = `
     id="modal-backdrop"
   />
   <div
-    class="tc__modal-container"
+    class="tc__modal-container "
   >
     <div
       class="tc__modal tc__modal__plain tc__modal__size-small"
@@ -79,7 +79,7 @@ exports[`Modal renders child elements when large modal is open 1`] = `
     id="modal-backdrop"
   />
   <div
-    class="tc__modal-container"
+    class="tc__modal-container "
   >
     <div
       class="tc__modal tc__modal__plain tc__modal__size-large"
@@ -127,7 +127,7 @@ exports[`Modal renders child elements when small modal is open 1`] = `
     id="modal-backdrop"
   />
   <div
-    class="tc__modal-container"
+    class="tc__modal-container "
   >
     <div
       class="tc__modal tc__modal__plain tc__modal__size-small"

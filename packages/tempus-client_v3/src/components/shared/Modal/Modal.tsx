@@ -1,4 +1,4 @@
-import React, { FC, useCallback } from 'react';
+import React, { FC, ReactNode, useCallback } from 'react';
 import ButtonWrapper from '../ButtonWrapper';
 import Icon from '../Icon';
 import Typography from '../Typography';
@@ -12,6 +12,8 @@ export interface ModalProps {
   open: boolean;
   onClose: () => void;
   title?: string;
+  className?: string;
+  header?: ReactNode;
 }
 
 interface ModalStyleProps {
@@ -20,7 +22,7 @@ interface ModalStyleProps {
 }
 
 const Modal: FC<ModalProps & ModalStyleProps> = props => {
-  const { title = '', open, onClose, variant = 'plain', size = 'small', children } = props;
+  const { title = '', open, onClose, className = '', variant = 'plain', size = 'small', header, children } = props;
 
   const onBackdropClick = (event: React.MouseEvent<HTMLDivElement>) => {
     event.stopPropagation();
@@ -39,7 +41,7 @@ const Modal: FC<ModalProps & ModalStyleProps> = props => {
   return (
     <>
       <div id="modal-backdrop" className="tc__modal-backdrop" onClick={onBackdropClick} />
-      <div className="tc__modal-container">
+      <div className={`tc__modal-container ${className}`}>
         <div className={`tc__modal tc__modal__${variant} tc__modal__size-${size}`}>
           <div className="tc__modal-header">
             <Typography variant="body-primary" weight="bold">
@@ -48,6 +50,7 @@ const Modal: FC<ModalProps & ModalStyleProps> = props => {
             <ButtonWrapper onClick={onCloseButtonClick}>
               <Icon variant="close" size={size === 'small' ? 'small' : 20} />
             </ButtonWrapper>
+            {header && <div className="tc__modal-header-content">{header}</div>}
           </div>
           <div className="tc__modal__body">{children}</div>
         </div>
