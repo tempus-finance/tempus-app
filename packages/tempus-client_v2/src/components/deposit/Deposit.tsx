@@ -551,10 +551,7 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
 
     let value: BigNumber;
     if (selectedToken === yieldBearingToken) {
-      const amountFormatted = ethers.utils.parseUnits(
-        Number(amount).toFixed(tokenPrecision.backingToken),
-        tokenPrecision.backingToken,
-      );
+      const amountFormatted = ethers.utils.parseUnits(amount, tokenPrecision.backingToken);
 
       const backingTokenAmount = mul18f(amountFormatted, yieldBearingToBackingToken, tokenPrecision.backingToken);
 
@@ -585,10 +582,7 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
 
     let value: BigNumber;
     if (selectedToken === yieldBearingToken) {
-      const amountFormatted = ethers.utils.parseUnits(
-        Number(amount).toFixed(tokenPrecision.backingToken),
-        tokenPrecision.backingToken,
-      );
+      const amountFormatted = ethers.utils.parseUnits(amount, tokenPrecision.backingToken);
 
       const backingTokenAmount = mul18f(amountFormatted, yieldBearingToBackingToken, tokenPrecision.backingToken);
 
@@ -650,10 +644,7 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
 
     let amountParsed: BigNumber;
     if (selectedToken === yieldBearingToken) {
-      const amountFormatted = ethers.utils.parseUnits(
-        Number(amount).toFixed(tokenPrecision.yieldBearingToken),
-        tokenPrecision.yieldBearingToken,
-      );
+      const amountFormatted = ethers.utils.parseUnits(amount, tokenPrecision.yieldBearingToken);
 
       let yieldBearingToBackingTokenParsed: BigNumber;
       if (tokenPrecision.yieldBearingToken > tokenPrecision.backingToken) {
@@ -704,10 +695,7 @@ const Deposit: FC<DepositProps> = ({ narrow, chain }) => {
 
     let amountParsed: BigNumber;
     if (selectedToken === yieldBearingToken) {
-      const amountFormatted = ethers.utils.parseUnits(
-        Number(amount).toFixed(tokenPrecision.yieldBearingToken),
-        tokenPrecision.yieldBearingToken,
-      );
+      const amountFormatted = ethers.utils.parseUnits(amount, tokenPrecision.yieldBearingToken);
 
       let yieldBearingToBackingTokenParsed: BigNumber;
       if (tokenPrecision.yieldBearingToken > tokenPrecision.backingToken) {
