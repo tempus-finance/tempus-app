@@ -8,11 +8,12 @@ import MaturityTerm from './MaturityTerm';
 interface TermTabProps {
   term: MaturityTerm;
   selected: boolean;
+  disabled?: boolean;
   onClick: (selected: MaturityTerm) => void;
 }
 
 const TermTab: FC<TermTabProps> = props => {
-  const { term, selected, onClick } = props;
+  const { term, selected, disabled, onClick } = props;
   const handleClick = useCallback(() => onClick(term), [term, onClick]);
   const formattedAprPercentage = useMemo(() => DecimalUtils.formatPercentage(term.apr, 1), [term.apr]);
 
@@ -20,14 +21,20 @@ const TermTab: FC<TermTabProps> = props => {
     <ButtonWrapper
       className={`tc__term-tabs__term ${selected ? 'tc__term-tabs__term-selected' : ''}`}
       onClick={handleClick}
+      disabled={disabled}
     >
-      <Typography variant="body-secondary" weight="medium" color="text-secondary">
+      <Typography variant="body-secondary" weight="medium" color={disabled ? 'text-disabled' : 'text-secondary'}>
         APR &amp; Term
       </Typography>
-      <Typography variant="body-primary" type="mono" weight="bold">
+      <Typography variant="body-primary" type="mono" weight="bold" color={disabled ? 'text-disabled' : 'text-primary'}>
         {formattedAprPercentage}
       </Typography>
-      <FormattedDate date={term.date} textColor="text-secondary" size="small" separatorContrast="low" />
+      <FormattedDate
+        date={term.date}
+        textColor={disabled ? 'text-disabled' : 'text-secondary'}
+        size="small"
+        separatorContrast="low"
+      />
     </ButtonWrapper>
   );
 };

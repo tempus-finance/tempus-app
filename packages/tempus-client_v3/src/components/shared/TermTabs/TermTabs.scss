@@ -18,6 +18,11 @@
   &:last-child {
     margin-right: 0;
   }
+
+  &:disabled {
+    background-color: var(--termTabsDisabledBackground);
+    border-color: var(--termTabsDisabledBorder);
+  }
 }
 
 .tc__term-tabs__term-selected {

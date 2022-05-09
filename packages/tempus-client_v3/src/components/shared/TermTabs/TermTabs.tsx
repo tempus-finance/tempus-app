@@ -5,11 +5,12 @@ import './TermTabs.scss';
 
 export interface TermTabsProps {
   terms: MaturityTerm[];
+  disabled?: boolean;
   onChange?: (selected: MaturityTerm) => void;
 }
 
 const TermTabs: FC<TermTabsProps> = props => {
-  const { terms, onChange } = props;
+  const { terms, disabled, onChange } = props;
   const [selectedTerm, setSelectedTerm] = useState<MaturityTerm>(terms[0]);
   const onClick = useCallback(
     (value: MaturityTerm) => {
@@ -25,6 +26,7 @@ const TermTabs: FC<TermTabsProps> = props => {
         <TermTab
           term={term}
           selected={selectedTerm === term}
+          disabled={disabled}
           onClick={onClick}
           key={`term-tab-${index}-${term.date.getTime()}`}
         />
