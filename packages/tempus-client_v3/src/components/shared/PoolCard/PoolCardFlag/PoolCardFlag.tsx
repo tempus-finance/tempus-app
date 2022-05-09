@@ -15,7 +15,7 @@ const PoolCardFlag: FC<PoolCardFlagProps> = props => {
   const { ticker, status } = props;
 
   let labelColor: TypographyColor = 'text-primary';
-  if (status === 'Fixed' || status === 'Boosted' || status === 'Matured') {
+  if (status === 'Fixed' || status === 'Boosted') {
     labelColor = 'text-primary-inverted';
   }
 

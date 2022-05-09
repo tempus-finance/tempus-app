@@ -13,34 +13,31 @@
   overflow: hidden;
 
   &[data-status='Fixed'] {
-    height: 120px;
-    border-bottom-left-radius: 40px;
-    border-bottom-right-radius: 40px;
+    height: 124px;
+    border-bottom-right-radius: 20px;
   }
 
   &[data-status='Disabled'] {
     height: 120px;
-    border-bottom-left-radius: 40px;
-    border-bottom-right-radius: 40px;
     border: 1px solid var(--poolCardFlagDisabledBorder);
     background-color: var(--poolCardFlagDisabledBackground);
   }
 
   &[data-status='Inactive'] {
     height: 120px;
-    border-bottom-left-radius: 40px;
-    border-bottom-right-radius: 40px;
     border: 1px solid var(--poolCardFlagDisabledBorder);
     background-color: var(--poolCardFlagDisabledBackground);
   }
 
   &[data-status='Boosted'] {
-    height: 228px;
+    height: 260px;
+    border-bottom-right-radius: 80px;
   }
 
   &[data-status='Matured'] {
-    height: 228px;
-    clip-path: polygon(0 0, 80px 0, 80px 187px, 40px 227px, 0 187px);
+    height: 120px;
+    border: 1px solid var(--poolCardFlagDisabledBorder);
+    background-color: var(--poolCardFlagDisabledBackground);
   }
 }
 
@@ -54,23 +51,23 @@
   justify-content: center;
 
   &[data-status='Fixed'] {
-    bottom: 16px;
+    top: 92px;
   }
 
   &[data-status='Disabled'] {
-    bottom: 16px;
+    top: 88px;
   }
 
   &[data-status='Inactive'] {
-    bottom: 16px;
+    top: 88px;
   }
 
   &[data-status='Boosted'] {
-    bottom: 12px;
+    top: 92px;
   }
 
   &[data-status='Matured'] {
-    top: 92px;
+    top: 88px;
   }
 }
 
@@ -135,40 +132,20 @@
   &[data-status='Boosted'] {
     .tc__poolCardFlag-arrows-1 {
       @include poolCardArrow();
-      transform: rotate(45deg) translate(12px, 12px);
+      transform: rotate(45deg) translate(28px, 28px);
       background-color: var(--primaryLight);
     }
 
     .tc__poolCardFlag-arrows-2 {
       @include poolCardArrow();
-      transform: rotate(45deg) translate(34px, 34px);
+      transform: rotate(45deg) translate(52px, 52px);
       background-color: var(--primaryMain);
     }
 
     .tc__poolCardFlag-arrows-3 {
       @include poolCardArrow();
-      transform: rotate(45deg) translate(56px, 56px);
+      transform: rotate(45deg) translate(78px, 78px);
       background-color: var(--primaryDark);
-    }
-  }
-
-  &[data-status='Matured'] {
-    .tc__poolCardFlag-arrows-1 {
-      @include poolCardArrow();
-      transform: rotate(45deg) translate(27px, 27px);
-      background-color: var(--primaryDark);
-    }
-
-    .tc__poolCardFlag-arrows-2 {
-      @include poolCardArrow();
-      transform: rotate(45deg) translate(5px, 5px);
-      background-color: var(--primaryLight);
-    }
-
-    .tc__poolCardFlag-arrows-3 {
-      @include poolCardArrow();
-      transform: rotate(45deg) translate(-17px, -17px);
-      background-color: var(--primaryMain);
     }
   }
 }
