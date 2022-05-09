@@ -333,7 +333,7 @@ const config: Config = {
   },
   'ethereum-fork': {
     tempusPools: [
-      {
+      /*{
         address: '0x51792Dd94aA7114e8d62c3656552C3e4fed2465f',
         poolId: '0x19003b0130c13864cd18207c8afb0c04dc5b391200020000000000000000000c',
         ammAddress: '0x19003b0130c13864CD18207C8aFB0C04dc5b3912',
@@ -358,7 +358,7 @@ const config: Config = {
           yields: 18,
         },
         disabledOperations: {},
-      },
+      },*/
     ],
     statisticsContract: '0xe552369a1b109b1eeebf060fcb6618f70f9131f7',
     tempusControllerContract: '0x039557b8f8f53d863f534C4dFF01d8A3467d26A0',
