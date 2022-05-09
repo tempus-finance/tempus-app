@@ -1,0 +1,33 @@
+.tc__switcher-btn {
+  width: 308px;
+  padding: 14px 14px 14px 16px;
+  border: 1px solid var(--switcherButtonBorder);
+  border-radius: 4px;
+  background-color: var(--switcherButtonBackground);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: var(--downWeakShadow);
+
+  .tc__switcher-btn__label {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+
+    .tc__icon-checkmark {
+      margin: 0 8px;
+    }
+  }
+
+  &:hover {
+    border: 2px solid var(--primaryMain);
+    box-shadow: none;
+    padding: 13px 13px 13px 15px; // Prevents button content from moving when border thickness changes from 1px to 2px(on hover)
+  }
+
+  &[data-selected='true'] {
+    border: 2px solid var(--primaryMain);
+    box-shadow: none;
+    padding: 13px 13px 13px 15px; // Prevents button content from moving when border thickness changes from 1px to 2px(when selected)
+  }
+}

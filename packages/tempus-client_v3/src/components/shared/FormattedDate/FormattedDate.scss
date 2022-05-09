@@ -1,0 +1,19 @@
+.tc__formatted-date {
+  display: inline-flex;
+  align-items: center;
+}
+
+.tc__formatted-date__separator {
+  width: 4px;
+  height: 4px;
+  margin: 0 4px;
+  border-radius: 50%;
+}
+
+.tc__formatted-date__separator-low-contrast {
+  background-color: var(--formattedDateSeparatorLowContrast);
+}
+
+.tc__formatted-date__separator-high-contrast {
+  background-color: var(--formattedDateSeparatorHighContrast);
+}

@@ -1,0 +1,89 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Tabs renders a \`Tabs\` component that contains \`Tab\`s components 1`] = `
+<div
+  class="tc__tabs tc__tabs__tabs-small"
+>
+  <button
+    class="tc__btn tc__tabs__tab"
+    data-selected="true"
+    type="button"
+  >
+    <div
+      style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(255, 255, 255); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+    >
+      Item #1
+    </div>
+  </button>
+  <button
+    class="tc__btn tc__tabs__tab"
+    data-selected="false"
+    type="button"
+  >
+    <div
+      style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+    >
+      Item #2
+    </div>
+  </button>
+  <button
+    class="tc__btn tc__tabs__tab"
+    data-selected="false"
+    type="button"
+  >
+    <div
+      style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+    >
+      Item #3
+    </div>
+  </button>
+  <div
+    class="tc__tabs__indicator-container"
+  >
+    <div
+      class="tc__tabs__indicator"
+      style="width: 33.333333333333336%; left: 0%;"
+    />
+  </div>
+</div>
+`;
+
+exports[`Tabs renders a Tabs component that contains \`Tab\`s components with links 1`] = `
+<div
+  class="tc__tabs tc__tabs__tabs-small"
+>
+  <a
+    class="tc__link tc__tabs__tab"
+    href="/item1"
+  >
+    <div
+      style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+    >
+      Item #1
+    </div>
+  </a>
+  <a
+    class="tc__link tc__tabs__tab"
+    href="/item2"
+  >
+    <div
+      style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+    >
+      Item #2
+    </div>
+  </a>
+  <a
+    class="tc__link tc__tabs__tab"
+    href="/item3"
+  >
+    <div
+      style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+    >
+      Item #3
+    </div>
+  </a>
+  <div
+    class="tc__tabs__indicator-container"
+  />
+</div>
+`;

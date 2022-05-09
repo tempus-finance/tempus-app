@@ -1,0 +1,485 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Typography render a text with color primary-dark 1`] = `
+<div>
+  <div
+    style="font-style: normal; font-size: 24px; line-height: 32px; color: rgb(62, 78, 110); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+  >
+    simple text
+  </div>
+</div>
+`;
+
+exports[`Typography render a text with color text-caption 1`] = `
+<div>
+  <div
+    style="font-style: normal; font-size: 24px; line-height: 32px; color: rgb(245, 172, 55); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+  >
+    simple text
+  </div>
+</div>
+`;
+
+exports[`Typography render a text with color text-disabled 1`] = `
+<div>
+  <div
+    style="font-style: normal; font-size: 24px; line-height: 32px; color: rgb(122, 122, 122); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+  >
+    simple text
+  </div>
+</div>
+`;
+
+exports[`Typography render a text with color text-disabled-secondary 1`] = `
+<div>
+  <div
+    style="font-style: normal; font-size: 24px; line-height: 32px; color: rgb(191, 192, 192); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+  >
+    simple text
+  </div>
+</div>
+`;
+
+exports[`Typography render a text with color text-error 1`] = `
+<div>
+  <div
+    style="font-style: normal; font-size: 24px; line-height: 32px; color: rgb(255, 15, 15); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+  >
+    simple text
+  </div>
+</div>
+`;
+
+exports[`Typography render a text with color text-primary 1`] = `
+<div>
+  <div
+    style="font-style: normal; font-size: 24px; line-height: 32px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+  >
+    simple text
+  </div>
+</div>
+`;
+
+exports[`Typography render a text with color text-primary-inverted 1`] = `
+<div>
+  <div
+    style="font-style: normal; font-size: 24px; line-height: 32px; color: rgb(255, 255, 255); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+  >
+    simple text
+  </div>
+</div>
+`;
+
+exports[`Typography render a text with color text-secondary 1`] = `
+<div>
+  <div
+    style="font-style: normal; font-size: 24px; line-height: 32px; color: rgb(71, 67, 80); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+  >
+    simple text
+  </div>
+</div>
+`;
+
+exports[`Typography render a text with color text-success 1`] = `
+<div>
+  <div
+    style="font-style: normal; font-size: 24px; line-height: 32px; color: rgb(75, 181, 67); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+  >
+    simple text
+  </div>
+</div>
+`;
+
+exports[`Typography render a text with type mono 1`] = `
+<div>
+  <div
+    style="font-style: normal; font-size: 24px; line-height: 32px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'Azeret Mono', monospace; opacity: 1;"
+  >
+    simple text
+  </div>
+</div>
+`;
+
+exports[`Typography render a text with type regular 1`] = `
+<div>
+  <div
+    style="font-style: normal; font-size: 24px; line-height: 32px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+  >
+    simple text
+  </div>
+</div>
+`;
+
+exports[`Typography render a text with variant body-primary 1`] = `
+<div>
+  <div
+    style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+  >
+    simple text
+  </div>
+</div>
+`;
+
+exports[`Typography render a text with variant body-secondary 1`] = `
+<div>
+  <div
+    style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+  >
+    simple text
+  </div>
+</div>
+`;
+
+exports[`Typography render a text with variant body-tertiary 1`] = `
+<div>
+  <div
+    style="font-style: normal; font-size: 10px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+  >
+    simple text
+  </div>
+</div>
+`;
+
+exports[`Typography render a text with variant header 1`] = `
+<div>
+  <div
+    style="font-style: normal; font-size: 40px; line-height: 48px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+  >
+    simple text
+  </div>
+</div>
+`;
+
+exports[`Typography render a text with variant page-navigation 1`] = `
+<div>
+  <div
+    style="color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+  >
+    simple text
+  </div>
+</div>
+`;
+
+exports[`Typography render a text with variant subheader 1`] = `
+<div>
+  <div
+    style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+  >
+    simple text
+  </div>
+</div>
+`;
+
+exports[`Typography render a text with variant subtitle 1`] = `
+<div>
+  <div
+    style="font-style: normal; font-size: 20px; line-height: 28px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+  >
+    simple text
+  </div>
+</div>
+`;
+
+exports[`Typography render a text with variant title 1`] = `
+<div>
+  <div
+    style="font-style: normal; font-size: 24px; line-height: 32px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+  >
+    simple text
+  </div>
+</div>
+`;
+
+exports[`Typography render a text with weight bold 1`] = `
+<div>
+  <div
+    style="font-style: normal; font-size: 24px; line-height: 32px; color: rgb(34, 34, 34); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+  >
+    simple text
+  </div>
+</div>
+`;
+
+exports[`Typography render a text with weight medium 1`] = `
+<div>
+  <div
+    style="font-style: normal; font-size: 24px; line-height: 32px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+  >
+    simple text
+  </div>
+</div>
+`;
+
+exports[`Typography render a text with weight regular 1`] = `
+<div>
+  <div
+    style="font-style: normal; font-size: 24px; line-height: 32px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+  >
+    simple text
+  </div>
+</div>
+`;
+
+exports[`Typography render html with color primary-dark 1`] = `
+<div>
+  <div
+    style="font-style: normal; font-size: 24px; line-height: 32px; color: rgb(62, 78, 110); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+  >
+    <span>
+      simple text
+    </span>
+  </div>
+</div>
+`;
+
+exports[`Typography render html with color text-caption 1`] = `
+<div>
+  <div
+    style="font-style: normal; font-size: 24px; line-height: 32px; color: rgb(245, 172, 55); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+  >
+    <span>
+      simple text
+    </span>
+  </div>
+</div>
+`;
+
+exports[`Typography render html with color text-disabled 1`] = `
+<div>
+  <div
+    style="font-style: normal; font-size: 24px; line-height: 32px; color: rgb(122, 122, 122); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+  >
+    <span>
+      simple text
+    </span>
+  </div>
+</div>
+`;
+
+exports[`Typography render html with color text-disabled-secondary 1`] = `
+<div>
+  <div
+    style="font-style: normal; font-size: 24px; line-height: 32px; color: rgb(191, 192, 192); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+  >
+    <span>
+      simple text
+    </span>
+  </div>
+</div>
+`;
+
+exports[`Typography render html with color text-error 1`] = `
+<div>
+  <div
+    style="font-style: normal; font-size: 24px; line-height: 32px; color: rgb(255, 15, 15); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+  >
+    <span>
+      simple text
+    </span>
+  </div>
+</div>
+`;
+
+exports[`Typography render html with color text-primary 1`] = `
+<div>
+  <div
+    style="font-style: normal; font-size: 24px; line-height: 32px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+  >
+    <span>
+      simple text
+    </span>
+  </div>
+</div>
+`;
+
+exports[`Typography render html with color text-primary-inverted 1`] = `
+<div>
+  <div
+    style="font-style: normal; font-size: 24px; line-height: 32px; color: rgb(255, 255, 255); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+  >
+    <span>
+      simple text
+    </span>
+  </div>
+</div>
+`;
+
+exports[`Typography render html with color text-secondary 1`] = `
+<div>
+  <div
+    style="font-style: normal; font-size: 24px; line-height: 32px; color: rgb(71, 67, 80); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+  >
+    <span>
+      simple text
+    </span>
+  </div>
+</div>
+`;
+
+exports[`Typography render html with color text-success 1`] = `
+<div>
+  <div
+    style="font-style: normal; font-size: 24px; line-height: 32px; color: rgb(75, 181, 67); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+  >
+    <span>
+      simple text
+    </span>
+  </div>
+</div>
+`;
+
+exports[`Typography render html with type mono 1`] = `
+<div>
+  <div
+    style="font-style: normal; font-size: 24px; line-height: 32px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'Azeret Mono', monospace; opacity: 1;"
+  >
+    <span>
+      simple text
+    </span>
+  </div>
+</div>
+`;
+
+exports[`Typography render html with type regular 1`] = `
+<div>
+  <div
+    style="font-style: normal; font-size: 24px; line-height: 32px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+  >
+    <span>
+      simple text
+    </span>
+  </div>
+</div>
+`;
+
+exports[`Typography render html with variant body-primary 1`] = `
+<div>
+  <div
+    style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+  >
+    <span>
+      simple text
+    </span>
+  </div>
+</div>
+`;
+
+exports[`Typography render html with variant body-secondary 1`] = `
+<div>
+  <div
+    style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+  >
+    <span>
+      simple text
+    </span>
+  </div>
+</div>
+`;
+
+exports[`Typography render html with variant body-tertiary 1`] = `
+<div>
+  <div
+    style="font-style: normal; font-size: 10px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+  >
+    <span>
+      simple text
+    </span>
+  </div>
+</div>
+`;
+
+exports[`Typography render html with variant header 1`] = `
+<div>
+  <div
+    style="font-style: normal; font-size: 40px; line-height: 48px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+  >
+    <span>
+      simple text
+    </span>
+  </div>
+</div>
+`;
+
+exports[`Typography render html with variant page-navigation 1`] = `
+<div>
+  <div
+    style="color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+  >
+    <span>
+      simple text
+    </span>
+  </div>
+</div>
+`;
+
+exports[`Typography render html with variant subheader 1`] = `
+<div>
+  <div
+    style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+  >
+    <span>
+      simple text
+    </span>
+  </div>
+</div>
+`;
+
+exports[`Typography render html with variant subtitle 1`] = `
+<div>
+  <div
+    style="font-style: normal; font-size: 20px; line-height: 28px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+  >
+    <span>
+      simple text
+    </span>
+  </div>
+</div>
+`;
+
+exports[`Typography render html with variant title 1`] = `
+<div>
+  <div
+    style="font-style: normal; font-size: 24px; line-height: 32px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+  >
+    <span>
+      simple text
+    </span>
+  </div>
+</div>
+`;
+
+exports[`Typography render html with weight bold 1`] = `
+<div>
+  <div
+    style="font-style: normal; font-size: 24px; line-height: 32px; color: rgb(34, 34, 34); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+  >
+    <span>
+      simple text
+    </span>
+  </div>
+</div>
+`;
+
+exports[`Typography render html with weight medium 1`] = `
+<div>
+  <div
+    style="font-style: normal; font-size: 24px; line-height: 32px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+  >
+    <span>
+      simple text
+    </span>
+  </div>
+</div>
+`;
+
+exports[`Typography render html with weight regular 1`] = `
+<div>
+  <div
+    style="font-style: normal; font-size: 24px; line-height: 32px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+  >
+    <span>
+      simple text
+    </span>
+  </div>
+</div>
+`;

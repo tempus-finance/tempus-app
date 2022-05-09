@@ -1,0 +1,75 @@
+$tabs-heights: (
+  'small': 40px,
+  'large': 64px,
+);
+$tabs-border-size: 1px;
+$tabs-container-padding: 1px;
+
+.tc__tabs {
+  display: flex;
+  position: relative;
+  background-color: var(--tabsBackground);
+  border: $tabs-border-size solid var(--tabsBorder);
+  box-sizing: border-box;
+
+  & > .tc__tabs__tab {
+    flex: 1;
+    z-index: 1;
+  }
+}
+
+@each $size, $height in $tabs-heights {
+  $indicator-height: $height - 2 * $tabs-container-padding - 2 * $tabs-border-size;
+
+  .tc__tabs__tabs-#{$size} {
+    height: $height;
+    border-radius: $height;
+
+    & > .tc__tabs__indicator-container {
+      height: $indicator-height;
+    }
+
+    & .tc__tabs__indicator {
+      height: $indicator-height;
+      border-radius: $indicator-height;
+    }
+  }
+}
+
+.tc__tabs__tab {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+
+  & > * {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-grow: 1;
+  }
+
+  a {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: inherit;
+  }
+}
+
+.tc__tabs__indicator-container {
+  width: calc(100% - #{2 * $tabs-container-padding});
+  position: absolute;
+  top: $tabs-container-padding;
+  left: $tabs-container-padding;
+  box-sizing: border-box;
+}
+
+.tc__tabs__indicator {
+  position: absolute;
+  background-color: var(--primaryMain);
+  transition: left 300ms ease-out;
+}

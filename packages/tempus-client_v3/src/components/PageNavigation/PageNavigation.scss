@@ -1,0 +1,30 @@
+$background-offset: 40px;
+
+.tc__page-navigation {
+  position: relative;
+  padding: 8px $background-offset;
+  border: none;
+  margin-bottom: 0;
+}
+
+.tc__page-navigation__background {
+  position: absolute;
+  border: none;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-image: url('./svg/left-main-corner-smaller.svg'), url('./svg/right-main-corner-smaller.svg');
+  background-repeat: no-repeat;
+  background-position: left center, right center;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: $background-offset;
+    right: $background-offset;
+    background-color: var(--pageContainerBackground);
+  }
+}

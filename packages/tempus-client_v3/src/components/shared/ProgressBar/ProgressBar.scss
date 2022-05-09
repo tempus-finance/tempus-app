@@ -1,0 +1,19 @@
+$progress-bar-height: 12px;
+$progress-bar-border: 1px;
+
+.tc__progress-bar {
+  width: 100%;
+  height: $progress-bar-height;
+  background-color: var(--progressBarBackground);
+  border: $progress-bar-border solid var(--progressBarBorder);
+  border-radius: calc($progress-bar-height / 2);
+  box-sizing: border-box;
+
+  .tc__progress-bar__progress {
+    $progress-height: $progress-bar-height - 2 * $progress-bar-border;
+    height: $progress-height;
+    background-color: var(--progressBarProgressBackground);
+    border-radius: calc($progress-height / 2);
+    transition: width 300ms ease-out;
+  }
+}

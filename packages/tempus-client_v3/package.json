@@ -1,0 +1,127 @@
+{
+  "name": "tempus-client_v3",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "@devexpress/dx-chart-core": "^2.7.6",
+    "@devexpress/dx-react-chart": "^2.7.6",
+    "@devexpress/dx-react-chart-material-ui": "^2.7.6",
+    "@devexpress/dx-react-core": "^2.7.6",
+    "@devexpress/dx-react-grid": "^2.7.6",
+    "@devexpress/dx-react-grid-material-ui": "^2.7.6",
+    "@ethersproject/providers": "5.5.2",
+    "@hookstate/core": "^3.0.13",
+    "@material-ui/core": "^4.12.1",
+    "@material-ui/data-grid": "^4.0.0-alpha.33",
+    "@material-ui/icons": "^4.11.2",
+    "@material-ui/lab": "^4.0.0-alpha.60",
+    "@material-ui/x-license": "^4.0.0-alpha.36",
+    "@react-rxjs/core": "^0.9.6",
+    "@react-rxjs/utils": "^0.9.5",
+    "@testing-library/jest-dom": "^5.16.2",
+    "@testing-library/react": "^12.1.4",
+    "@testing-library/react-hooks": "^8.0.0",
+    "@testing-library/user-event": "^13.5.0",
+    "@types/jest": "^27.4.1",
+    "@types/lodash": "^4.14.178",
+    "@types/node": "^16.11.26",
+    "@types/react": "^17.0.42",
+    "@types/react-blockies": "^1.4.1",
+    "@types/react-dom": "^17.0.14",
+    "@types/react-html-parser": "^2.0.2",
+    "@types/recharts": "^2.0.0",
+    "@types/uuid": "^8.3.1",
+    "@walletconnect/ethereum-provider": "1.6.0",
+    "@web3-onboard/core": "^2.2.5",
+    "@web3-onboard/injected-wallets": "^2.0.5",
+    "@web3-onboard/ledger": "^2.0.3",
+    "@web3-onboard/react": "^2.1.5",
+    "@web3-react/core": "6.1.9",
+    "@web3-react/injected-connector": "6.0.7",
+    "@web3-react/walletconnect-connector": "6.2.13",
+    "axios": "^0.22.0",
+    "date-fns": "^2.28.0",
+    "ethers": "5.4.6",
+    "firebase-tools": "^9.14.0",
+    "html-react-parser": "^1.4.0",
+    "is-mobile": "^3.0.0",
+    "lodash": "^4.17.21",
+    "octokit": "^1.7.1",
+    "react": "^17.0.2",
+    "react-blockies": "1.4.1",
+    "react-dom": "^17.0.2",
+    "react-error-overlay": "6.0.9",
+    "react-router-dom": "^6.0.2",
+    "react-scripts": "4.0.3",
+    "recharts": "^2.1.6",
+    "rxjs": "^7.5.5",
+    "sass": "^1.49.9",
+    "tempus-core-services": "0.0.2",
+    "uuid": "^8.3.2",
+    "web-vitals": "^2.1.4"
+  },
+  "devDependencies": {
+    "@storybook/addon-actions": "^6.4.19",
+    "@storybook/addon-essentials": "^6.4.19",
+    "@storybook/addon-interactions": "^6.4.19",
+    "@storybook/addon-links": "^6.4.19",
+    "@storybook/node-logger": "^6.4.19",
+    "@storybook/preset-create-react-app": "^3.2.0",
+    "@storybook/react": "^6.4.19",
+    "@storybook/testing-library": "^0.0.9",
+    "babel-loader": "8.1.0"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest",
+      "../../.eslintrc.js"
+    ]
+  },
+  "jest": {
+    "collectCoverageFrom": [
+      "src/**/*.{ts,tsx}",
+      "!src/**/*.stories.{ts,tsx}",
+      "!src/**/index.{ts,tsx}",
+      "!src/**/*.d.ts",
+      "!src/**/reportWebVitals.ts",
+      "!src/**/serviceWorker.ts",
+      "!**/node_modules/**"
+    ],
+    "coverageThreshold": {
+      "global": {
+        "branches": 60,
+        "functions": 80,
+        "lines": 80,
+        "statements": -20
+      }
+    }
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "test:coverage": "react-scripts test --coverage --watchAll=false",
+    "test:update": "react-scripts test -u",
+    "ci:test": "CI=true react-scripts test",
+    "eject": "react-scripts eject",
+    "deploy-stage": "firebase deploy --only hosting:tempus-app-stage --token $FIREBASE_TOKEN",
+    "prestart": "./scripts/get-release-version.sh",
+    "prebuild": "./scripts/get-release-version.sh build",
+    "storybook": "start-storybook -p 6006 -s public",
+    "build-storybook": "build-storybook -s public",
+    "deploy-storybook": "firebase deploy --only hosting:tempus-storybook --token $FIREBASE_TOKEN"
+  }
+}

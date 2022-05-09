@@ -38,6 +38,20 @@ jobs:
           paths:
             - ./
 
+  build-storybook:
+    docker:
+      - image: cimg/node:15.1
+    steps:
+      - attach_workspace:
+          at: ./
+      - run:
+          name: Build Storybook
+          command: npm --prefix ./packages/tempus-client_v3 run build-storybook
+      - persist_to_workspace:
+          root: ./
+          paths:
+            - ./
+
   test:
     docker:
       - image: cimg/node:15.1
@@ -45,12 +59,69 @@ jobs:
       - attach_workspace:
           at: ./
       - run:
-          name: Test
+          name: Unit Test
           command: npm test
       - persist_to_workspace:
           root: ./
           paths:
             - ./
+
+  metamask:
+    docker:
+      - image: mcr.microsoft.com/playwright:focal
+        environment:
+          METAMASK_RECOVERY_PHRASE: $METAMASK_RECOVERY_PHRASE
+          METAMASK_PASSWORD: $METAMASK_PASSWORD
+          METAMASK_ACCOUNT_ETH_FORK: $METAMASK_ACCOUNT_ETH_FORK
+          METAMASK_ACCOUNT_FANTOM: $METAMASK_ACCOUNT_FANTOM
+          NODE_ENV: development
+    steps:
+      - attach_workspace:
+          at: ./
+      - run:
+          name: E2E Tests
+          command: |
+            apt update
+            apt install -y p7zip-full || true
+            xvfb-run --auto-servernum --server-num=1 node setup.js
+            xvfb-run --auto-servernum --server-num=2 npm run mm-setup
+      - persist_to_workspace:
+          root: ./
+          paths:
+            - ./
+      - store_test_results:
+          path: /root/project/test-results
+      - store_artifacts:
+          path: /root/project/test-results
+
+  e2e-test:
+    docker:
+      - image: mcr.microsoft.com/playwright:focal
+        environment:
+          METAMASK_RECOVERY_PHRASE: $METAMASK_RECOVERY_PHRASE
+          METAMASK_PASSWORD: $METAMASK_PASSWORD
+          METAMASK_ACCOUNT_ETH_FORK: $METAMASK_ACCOUNT_ETH_FORK
+          METAMASK_ACCOUNT_FANTOM: $METAMASK_ACCOUNT_FANTOM
+          NODE_ENV: development
+    parallelism: 4
+    steps:
+      - attach_workspace:
+          at: ./
+      - run:
+          name: E2E Tests
+          command: |
+            TEST_FILES=$(circleci tests glob "/root/project/tests/*.spec.js" | circleci tests split)
+            echo "Executing test files:" $TEST_FILES
+            xvfb-run --auto-servernum --server-num=2 npm run e2e $TEST_FILES
+            ls /root/project/test-results
+      - persist_to_workspace:
+          root: ./
+          paths:
+            - ./
+      - store_test_results:
+          path: /root/project/test-results
+      - store_artifacts:
+          path: /root/project/test-results
 
   deploy-to-stage:
     docker:
@@ -62,17 +133,43 @@ jobs:
           name: Firebase Deploy in Stage
           command: ./node_modules/.bin/lerna run deploy-stage
 
+  deploy-storybook:
+    docker:
+      - image: cimg/node:15.1
+    steps:
+      - attach_workspace:
+          at: ./
+      - run:
+          name: Deploy Storybook
+          command: npm --prefix ./packages/tempus-client_v3 run deploy-storybook
+
 workflows:
   # Below is the definition of your workflow.
   # Inside the workflow, you provide the jobs you want to run, e.g this workflow runs the build-and-test job above.
   # CircleCI will run this workflow on every commit.
   # For more details on extending your workflow, see the configuration docs: https://circleci.com/docs/2.0/configuration-reference/#workflows
-  sample:
+  tempus-app-ci:
     jobs:
       - build
+      - metamask:
+          requires:
+            - build
+      - build-storybook:
+          requires:
+            - build
       - test:
           requires:
             - build
+      - e2e-test:
+          requires:
+            - build
+            - metamask
+      - deploy-storybook:
+          requires:
+            - build-storybook
+          filters:
+            branches:
+              only: /^release-.*$/
       - deploy-to-stage:
           requires:
             - test

@@ -1,0 +1,52 @@
+.tc__poolCard {
+  z-index: 0;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 352px;
+  padding: 32px;
+  box-sizing: border-box;
+  border: 1px solid var(--poolCardBorder);
+  border-radius: 0px 40px;
+  overflow: hidden;
+
+  &[data-card-variant='markets'] {
+    height: 360px;
+  }
+
+  &[data-card-variant='portfolio'] {
+    height: 480px;
+  }
+}
+
+.tc__poolCard-protocol {
+  display: flex;
+  align-items: center;
+  margin-top: 2px;
+
+  div {
+    margin-left: 8px;
+  }
+}
+
+.tc__poolCard-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex-grow: 1;
+
+  > div:not(:last-child) {
+    margin-bottom: 20px;
+  }
+
+  .tc__poolCard-info-row {
+    > div:first-child {
+      margin-bottom: 4px;
+    }
+  }
+}
+
+.tc__poolCard-user-data {
+  display: flex;
+  align-items: center;
+}

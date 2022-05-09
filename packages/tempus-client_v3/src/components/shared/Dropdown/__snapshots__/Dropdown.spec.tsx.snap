@@ -1,0 +1,159 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Dropdown closes when clicked on while open 1`] = `HTMLCollection []`;
+
+exports[`Dropdown does not close when clicked on the list 1`] = `
+HTMLCollection [
+  <div
+    class="tc__dropdown__popup"
+  >
+    <div
+      class="tc__dropdown-popup-title"
+    >
+      <div
+        style="font-style: normal; font-size: 10px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+      >
+        Title
+      </div>
+    </div>
+  </div>,
+]
+`;
+
+exports[`Dropdown opens a popup when clicked 1`] = `
+HTMLCollection [
+  <div
+    class="tc__dropdown__popup"
+  >
+    <div
+      class="tc__dropdown-popup-title"
+    >
+      <div
+        style="font-style: normal; font-size: 10px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+      >
+        Title
+      </div>
+    </div>
+  </div>,
+]
+`;
+
+exports[`Dropdown renders a button element 1`] = `
+<button
+  class="tc__btn tc__tooltip-wrapper-anchor"
+  data-selected="false"
+  type="button"
+>
+  <div
+    style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+  >
+    Filter
+  </div>
+  <svg
+    class="tc__icon tc__icon-down-chevron"
+    fill="none"
+    height="12"
+    viewBox="0 0 16 16"
+    width="12"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <g
+      clip-path="url(#clip0_909_5439)"
+    >
+      <path
+        d="M15.7387 5.36992L8.63082 11.7636C8.54823 11.8385 8.44996 11.898 8.34169 11.9385C8.23342 11.9791 8.11729 12 8 12C7.88271 12 7.76658 11.9791 7.65831 11.9385C7.55004 11.898 7.45177 11.8385 7.36918 11.7636L0.261296 5.36992C0.0939908 5.21942 -2.49304e-09 5.01531 0 4.80248C2.49304e-09 4.58965 0.0939908 4.38554 0.261296 4.23504C0.428601 4.08455 0.655515 4 0.89212 4C1.12873 4 1.35564 4.08455 1.52294 4.23504L8 10.0693L14.4771 4.23504C14.6444 4.08455 14.8713 4 15.1079 4C15.3445 4 15.5714 4.08455 15.7387 4.23504C15.906 4.38554 16 4.58965 16 4.80248C16 5.01531 15.906 5.21942 15.7387 5.36992Z"
+        fill="#222222"
+      />
+    </g>
+    <defs>
+      <clippath
+        id="clip0_909_5439"
+      >
+        <rect
+          fill="white"
+          height="16"
+          width="16"
+        />
+      </clippath>
+    </defs>
+  </svg>
+</button>
+`;
+
+exports[`Dropdown renders a button with provided label 1`] = `
+<div
+  style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+>
+  Filter
+</div>
+`;
+
+exports[`Dropdown renders a down-chevron inside dropdown 1`] = `
+<svg
+  class="tc__icon tc__icon-down-chevron"
+  fill="none"
+  height="12"
+  viewBox="0 0 16 16"
+  width="12"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <g
+    clip-path="url(#clip0_909_5439)"
+  >
+    <path
+      d="M15.7387 5.36992L8.63082 11.7636C8.54823 11.8385 8.44996 11.898 8.34169 11.9385C8.23342 11.9791 8.11729 12 8 12C7.88271 12 7.76658 11.9791 7.65831 11.9385C7.55004 11.898 7.45177 11.8385 7.36918 11.7636L0.261296 5.36992C0.0939908 5.21942 -2.49304e-09 5.01531 0 4.80248C2.49304e-09 4.58965 0.0939908 4.38554 0.261296 4.23504C0.428601 4.08455 0.655515 4 0.89212 4C1.12873 4 1.35564 4.08455 1.52294 4.23504L8 10.0693L14.4771 4.23504C14.6444 4.08455 14.8713 4 15.1079 4C15.3445 4 15.5714 4.08455 15.7387 4.23504C15.906 4.38554 16 4.58965 16 4.80248C16 5.01531 15.906 5.21942 15.7387 5.36992Z"
+      fill="#222222"
+    />
+  </g>
+  <defs>
+    <clippath
+      id="clip0_909_5439"
+    >
+      <rect
+        fill="white"
+        height="16"
+        width="16"
+      />
+    </clippath>
+  </defs>
+</svg>
+`;
+
+exports[`Dropdown renders a popup title 1`] = `
+<div
+  style="font-style: normal; font-size: 10px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+>
+  Dropdown popup label
+</div>
+`;
+
+exports[`Dropdown renders up-chevron when open 1`] = `
+<svg
+  class="tc__icon tc__icon-up-chevron"
+  fill="none"
+  height="12"
+  viewBox="0 0 16 16"
+  width="12"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <g
+    clip-path="url(#clip0_909_5449)"
+  >
+    <path
+      d="M15.7372 11.7636C15.6546 11.8385 15.5564 11.898 15.4481 11.9385C15.3398 11.9791 15.2237 12 15.1064 12C14.9892 12 14.873 11.9791 14.7648 11.9385C14.6565 11.898 14.5583 11.8385 14.4757 11.7636L7.99924 5.9304L1.5228 11.7636C1.35551 11.9141 1.12862 11.9986 0.892036 11.9986C0.655453 11.9986 0.42856 11.9141 0.261271 11.7636C0.0939821 11.6132 0 11.4091 0 11.1963C0 10.9835 0.0939821 10.7794 0.261271 10.629L7.36848 4.23636C7.45107 4.16147 7.54932 4.10202 7.65758 4.06145C7.76584 4.02089 7.88196 4 7.99924 4C8.11652 4 8.23264 4.02089 8.3409 4.06145C8.44916 4.10202 8.54742 4.16147 8.63001 4.23636L15.7372 10.629C15.8205 10.7032 15.8866 10.7916 15.9317 10.889C15.9768 10.9864 16 11.0908 16 11.1963C16 11.3018 15.9768 11.4062 15.9317 11.5036C15.8866 11.601 15.8205 11.6894 15.7372 11.7636Z"
+      fill="#222222"
+    />
+  </g>
+  <defs>
+    <clippath
+      id="clip0_909_5449"
+    >
+      <rect
+        fill="white"
+        height="16"
+        width="16"
+      />
+    </clippath>
+  </defs>
+</svg>
+`;

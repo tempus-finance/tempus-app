@@ -1,0 +1,25 @@
+.tc__tooltip-wrapper {
+  position: relative;
+
+  .tc__tooltip-wrapper-backdrop {
+    position: fixed;
+    left: 0px;
+    top: 0px;
+    right: 0px;
+    bottom: 0px;
+    z-index: 9997;
+  }
+
+  .tc__tooltip-wrapper-anchor {
+    position: inherit;
+    z-index: 9998;
+  }
+
+  .tc__tooltip {
+    z-index: 9999;
+  }
+}
+
+.tc__tooltip-wrapper-anchor {
+  display: flex;
+}

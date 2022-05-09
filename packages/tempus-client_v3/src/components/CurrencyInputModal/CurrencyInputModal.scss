@@ -1,0 +1,106 @@
+.tc__currency-input-modal {
+  .tc__currency-input-modal__nav {
+    margin-bottom: 8px;
+    display: flex;
+
+    .tc__btn {
+      margin-right: 8px;
+    }
+
+    .tc__icon-left-chevron {
+      padding: 0 4px;
+    }
+  }
+
+  .tc__term-tabs {
+    margin-bottom: 24px;
+  }
+
+  .tc__currency-input-modal__description {
+    margin-bottom: 24px;
+  }
+
+  .tc__currency-input-modal__info {
+    margin: 4px 0 24px 0;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    .tc__currency-input-modal__info-row {
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+
+      .tc__currency-input-modal__info-row-value {
+        display: flex;
+        align-items: center;
+
+        *:not(:last-child) {
+          margin-right: 8px;
+        }
+      }
+
+      .tc__currency-input-modal__value-change {
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 12px;
+
+        &.tc__currency-input-modal__value-change-increase {
+          background-color: var(--currencyInputModalValueIncreaseBackground);
+        }
+
+        &.tc__currency-input-modal__value-change-decrease {
+          background-color: var(--currencyInputModalValueDecreaseBackground);
+        }
+      }
+    }
+  }
+
+  .tc__currency-input-modal__action-container {
+    width: 240px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .tc__btn {
+      position: relative;
+    }
+
+    .tc__tooltip {
+      transform: translateY(100%);
+    }
+
+    .tc__progress-bar {
+      margin: 8px 0;
+    }
+
+    .tc__currency-input-modal__transaction-link {
+      display: flex;
+      align-items: center;
+
+      .tc__icon-external {
+        margin-left: 4px;
+      }
+    }
+  }
+
+  .tc__currency-input-modal__transaction-info {
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+
+    .tc__icon-info-bordered {
+      margin-left: 4px;
+    }
+  }
+
+  // Close button should not be blocked by the header
+  .tc__modal-header .tc__btn:first-of-type {
+    z-index: 1;
+  }
+}

@@ -6,5 +6,6 @@
     "**/._*": true,
     "**/build": true,
     "**/dist": true
-  }
+  },
+  "editor.tabSize": 2
 }

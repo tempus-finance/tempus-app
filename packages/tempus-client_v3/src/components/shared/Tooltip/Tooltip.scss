@@ -1,0 +1,71 @@
+@use "sass:math";
+
+$arrowWidth: 16px;
+
+.tc__tooltip {
+  min-width: 100%;
+  position: absolute;
+  border-radius: 4px;
+  box-shadow: var(--downWeakShadow);
+  border: 1px solid var(--tooltipBorder);
+  background: var(--tooltipBackground);
+
+  // the CSS variable are here for React components to override
+  --anchorWidth: 16px;
+
+  &::before {
+    content: '';
+    position: absolute;
+    width: $arrowWidth;
+    height: $arrowWidth;
+    background: var(--tooltipBorder);
+    -webkit-clip-path: polygon(50% 30%, 0% 100%, 100% 100%);
+    clip-path: polygon(50% 30%, 0% 100%, 100% 100%);
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    width: calc($arrowWidth - 2px);
+    height: calc($arrowWidth - 2px);
+    background: var(--tooltipBackground);
+    -webkit-clip-path: polygon(50% 30%, 0% 100%, 100% 100%);
+    clip-path: polygon(50% 30%, 0% 100%, 100% 100%);
+  }
+
+  @each $horizontal-orientation in ('left', 'right') {
+    $opposite-horizontal-orientation: if($horizontal-orientation == 'left', 'right', 'left');
+
+    &.tc__tooltip__bottom-#{$horizontal-orientation} {
+      transform: translateY(calc(100% + $arrowWidth));
+      bottom: 0px;
+      #{$opposite-horizontal-orientation}: 0px;
+
+      &::before {
+        #{$horizontal-orientation}: calc(100% - $arrowWidth/2 - max(var(--anchorWidth) / 2, $arrowWidth/2));
+        bottom: 100%;
+      }
+
+      &::after {
+        #{$horizontal-orientation}: calc(100% - $arrowWidth/2 - max(var(--anchorWidth) / 2, $arrowWidth/2) + 1px);
+        bottom: 100%;
+      }
+    }
+  }
+
+  &.tc__tooltip__bottom-center {
+    display: flex;
+    justify-content: center;
+    transform: translate(-50%, calc(100% + $arrowWidth));
+    left: 50%;
+    bottom: 0;
+
+    &::before {
+      bottom: 100%;
+    }
+
+    &::after {
+      bottom: 100%;
+    }
+  }
+}

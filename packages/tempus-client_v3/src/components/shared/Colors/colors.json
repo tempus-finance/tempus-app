@@ -1,0 +1,105 @@
+{
+  "textPrimary": "#222222",
+  "textPrimaryInverted": "#FFFFFF",
+  "textSecondary": "#474350",
+  "textSuccess": "#4BB543",
+  "textDisabled": "#7A7A7A",
+  "textDisabledSecondary": "#BFC0C0",
+  "textCaption": "#F5AC37",
+  "textError": "#FF0F0F",
+
+  "primaryMain": "#2B6E84",
+  "primaryLight": "#129CA4",
+  "primaryDark": "#3E4E6E",
+
+  "secondaryRegular": "#FF6B00",
+  "secondaryRegularRGB": "255, 107, 0",
+  "secondaryLight": "#FF842C",
+
+  "toggleSwitchInactiveBackground": "#BFC0C0",
+  "toggleSwitchThumbInactiveBackground": "#FFFFFF",
+  "toggleSwitchThumbInactiveBorder": "#BFC0C0",
+
+  "tabsBackground": "#FFFFFF",
+  "tabsBorder": "#BFC0C0",
+
+  "poolCardBorder": "#BFC0C0",
+  "poolCardFlagDisabledBorder": "#F3F7F9",
+  "poolCardFlagDisabledBackground": "#FFFFFF33",
+
+  "iconDefaultColor": "#222222",
+
+  "iconButtonBackground": "#FFFFFF",
+  "iconButtonBorder": "#BFC0C0",
+  "iconButtonIcon": "#BFC0C0",
+  "iconButtonSelectedBackground": "#222222",
+  "iconButtonSelectedIcon": "#FFFFFF",
+
+  "buttonDefault": "#FFFFFF",
+  "buttonBorder": "#BFC0C0",
+  "buttonSuccess": "#CEF2DA",
+  "buttonSuccessRGB": "206, 242, 218",
+  "buttonBorderSuccess": "#4BB543",
+  "buttonBorderSuccessRGB": "75, 181, 67",
+  "buttonDisabled": "#7A7A7A",
+  "buttonSecondaryHighlight": "#F3F7F9",
+  "buttonSecondaryLoading": "#F3F7F9",
+  "buttonSecondaryDisabled": "#BFC0C0",
+  "buttonTertiaryDefault": "#F3F7F9",
+
+  "walletButtonBorder": "#BFC0C0",
+  "walletButtonBackground": "#FFFFFF",
+  "walletButtonHover": "#F3F7F9",
+
+  "switcherButtonBorder": "#BFC0C0",
+  "switcherButtonBackground": "#FFFFFF",
+
+  "formattedDateSeparatorLowContrast": "#BFC0C0",
+  "formattedDateSeparatorHighContrast": "#7A7A7A",
+
+  "modalBackground": "#FFFFFF",
+  "modalBackgroundShade": "#F3F7F9",
+  "modalBorder": "#BFC0C0",
+  "modalBackdrop": "#00000080",
+
+  "termTabsBackground": "#FFFFFF",
+  "termTabsBorder": "#BFC0C0",
+  "termTabsSelectedBackground": "#F3F7F9",
+  "termTabsSelectedBorder": "#474350",
+  "termTabsDisabledBackground": "#BFC0C0",
+  "termTabsDisabledBorder": "#7A7A7A",
+
+  "dropdownBackground": "#FFFFFF",
+  "dropdownBorder": "#BFC0C0",
+  "dropdownBackgroundHighlight": "#F3F7F9",
+  "dropdownBackgroundSelected": "#F3F7F9",
+
+  "textInputBackground": "#FFFFFF",
+  "textInputBorder": "#BFC0C0",
+  "textInputBackgroundDisabled": "#BFC0C0",
+  "textInputBorderDisabled": "#7A7A7A",
+
+  "numberInputMidBorderDisabled": "#F3F7F9",
+
+  "tableRowBorderColor": "#BFC0C0",
+
+  "currencyInputBackground": "#FFFFFF",
+  "currencyInputHoverBackground": "#F3F7F9",
+  "currencyInputDisabledBackground": "#BFC0C0",
+  "currencyInputBorder": "#474350",
+  "currencyInputDisabledBorder": "#7A7A7A",
+
+  "pageContainerBackground": "#F3F7F9",
+
+  "tooltipBorder": "#BFC0C0",
+  "tooltipBackground": "#FFFFFF",
+
+  "progressBarBackground": "#FFFFFF",
+  "progressBarBorder": "#BFC0C0",
+  "progressBarProgressBackground": "#FF6B00",
+
+  "currencyInputModalValueIncreaseBackground": "#CEF2DA",
+  "currencyInputModalValueDecreaseBackground": "#FFD9D9",
+
+  "depositModalHeaderBackground": "#CEF2DA"
+}
