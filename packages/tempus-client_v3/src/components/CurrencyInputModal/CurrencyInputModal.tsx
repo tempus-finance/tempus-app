@@ -94,7 +94,7 @@ const CurrencyInputModal: FC<CurrencyInputModalProps> = props => {
       <Typography className="tc__currency-input-modal__description" variant="body-primary">
         {description}
       </Typography>
-      {maturityTerms && maturityTerms.length > 1 && <TermTabs terms={maturityTerms} />}
+      {maturityTerms && maturityTerms.length > 1 && <TermTabs terms={maturityTerms} disabled={disabledInput} />}
       <CurrencyInput
         precision={inputPrecision}
         maxAmount={balance}
@@ -109,7 +109,7 @@ const CurrencyInputModal: FC<CurrencyInputModalProps> = props => {
         <FeeTooltip fees={{ swap: 0.002 }}>
           <div className="tc__currency-input-modal__transaction-info">
             <Typography variant="body-primary">Fees &amp; transaction info</Typography>
-            <Icon variant="info-bordered" size={14} />
+            <Icon variant="info-bordered" size="small" />
           </div>
         </FeeTooltip>
         <ActionButton
