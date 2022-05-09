@@ -66,6 +66,8 @@
   "termTabsBorder": "#BFC0C0",
   "termTabsSelectedBackground": "#F3F7F9",
   "termTabsSelectedBorder": "#474350",
+  "termTabsDisabledBackground": "#BFC0C0",
+  "termTabsDisabledBorder": "#7A7A7A",
 
   "dropdownBackground": "#FFFFFF",
   "dropdownBorder": "#BFC0C0",
