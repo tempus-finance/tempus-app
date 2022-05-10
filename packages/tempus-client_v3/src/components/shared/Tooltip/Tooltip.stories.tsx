@@ -49,6 +49,16 @@ const Template: ComponentStory<typeof Tooltip> = props => {
   );
 };
 
+export const TooltipLeft = Template.bind({});
+TooltipLeft.args = {
+  placement: 'left',
+};
+
+export const TooltipRight = Template.bind({});
+TooltipRight.args = {
+  placement: 'right',
+};
+
 export const TooltipBottomLeft = Template.bind({});
 TooltipBottomLeft.args = {
   placement: 'bottom-left',
