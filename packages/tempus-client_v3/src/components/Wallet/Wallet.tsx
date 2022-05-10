@@ -2,7 +2,8 @@ import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import ledgerModule from '@web3-onboard/ledger';
 import injectedModule from '@web3-onboard/injected-wallets';
 import { init, useConnectWallet, useWallets } from '@web3-onboard/react';
-import { ethereumChainIdHex, ethereumForkChainIdHex, fantomChainIdHex } from 'tempus-core-services';
+import { DecimalUtils, ethereumChainIdHex, ethereumForkChainIdHex, fantomChainIdHex, ZERO_ETH_ADDRESS } from 'tempus-core-services';
+import { useWalletBalances } from '../../hooks';
 import { WalletButton } from '../shared';
 import ChainSelector from '../ChainSelector';
 
@@ -62,6 +63,8 @@ const Wallet: FC = () => {
   const connectedWallets = useWallets();
   const [{ wallet }, connect] = useConnectWallet();
 
+  const [walletBalances] = useWalletBalances();
+
   const [chainSelectorOpen, setChainSelectorOpen] = useState<boolean>(false);
 
   // TODO - Store wallet data in global state store
@@ -119,12 +122,21 @@ const Wallet: FC = () => {
     return wallet.accounts[0].address;
   }, [wallet]);
 
+  const balance = useMemo(() => {
+    // TODO - Once we add state for currently selected chain, use it to get token balance for selected chain
+    const tokenBalance = walletBalances[`ethereum-${ZERO_ETH_ADDRESS}`];
+    if (!tokenBalance) {
+      return null;
+    }
+
+    return DecimalUtils.formatToCurrency(tokenBalance, 2);
+  }, [walletBalances]);
+
   return (
     <>
       <WalletButton
         address={walletAddress || ''}
-        // TODO - Add provider that fetches user native token balance
-        balance=""
+        balance={balance || ''}
         // TODO - Use current chain from global state once we add it
         chain="ethereum"
         onConnect={onConnectWallet}
