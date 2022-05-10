@@ -1,6 +1,18 @@
+@use "sass:map";
 @use "sass:math";
 
 $arrowWidth: 16px;
+$arrow-path: (
+  'left': '70% 50%, 0% 0%, 00% 100%',
+  'right': '30% 50%, 100% 100%, 100% 0%',
+  'bottom': '50% 30%, 0% 100%, 100% 100%',
+);
+
+@mixin arrow-clip-path($position) {
+  $path: #{map.get($arrow-path, $position)};
+  -webkit-clip-path: polygon($path);
+  clip-path: polygon($path);
+}
 
 .tc__tooltip {
   min-width: 100%;
@@ -19,8 +31,6 @@ $arrowWidth: 16px;
     width: $arrowWidth;
     height: $arrowWidth;
     background: var(--tooltipBorder);
-    -webkit-clip-path: polygon(50% 30%, 0% 100%, 100% 100%);
-    clip-path: polygon(50% 30%, 0% 100%, 100% 100%);
   }
 
   &::after {
@@ -29,27 +39,61 @@ $arrowWidth: 16px;
     width: calc($arrowWidth - 2px);
     height: calc($arrowWidth - 2px);
     background: var(--tooltipBackground);
-    -webkit-clip-path: polygon(50% 30%, 0% 100%, 100% 100%);
-    clip-path: polygon(50% 30%, 0% 100%, 100% 100%);
   }
 
   @each $horizontal-orientation in ('left', 'right') {
     $opposite-horizontal-orientation: if($horizontal-orientation == 'left', 'right', 'left');
 
+    &.tc__tooltip__#{$horizontal-orientation} {
+      $sign: if($horizontal-orientation == 'left', -1, 1);
+
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      top: 50%;
+      #{$horizontal-orientation}: 0;
+      transform: translate(calc($sign * (100% + $arrowWidth)), -50%);
+
+      &::before {
+        @include arrow-clip-path($horizontal-orientation);
+        #{$horizontal-orientation}: 100%;
+      }
+
+      &::after {
+        @include arrow-clip-path($horizontal-orientation);
+        #{$horizontal-orientation}: 100%;
+      }
+    }
+
     &.tc__tooltip__bottom-#{$horizontal-orientation} {
       transform: translateY(calc(100% + $arrowWidth));
-      bottom: 0px;
       #{$opposite-horizontal-orientation}: 0px;
 
       &::before {
         #{$horizontal-orientation}: calc(100% - $arrowWidth/2 - max(var(--anchorWidth) / 2, $arrowWidth/2));
-        bottom: 100%;
       }
 
       &::after {
         #{$horizontal-orientation}: calc(100% - $arrowWidth/2 - max(var(--anchorWidth) / 2, $arrowWidth/2) + 1px);
-        bottom: 100%;
       }
+    }
+  }
+
+  // Bottom tooltips
+
+  &.tc__tooltip__bottom-left,
+  &.tc__tooltip__bottom-right,
+  &.tc__tooltip__bottom-center {
+    bottom: 0;
+
+    &::before {
+      @include arrow-clip-path('bottom');
+      bottom: 100%;
+    }
+
+    &::after {
+      @include arrow-clip-path('bottom');
+      bottom: 100%;
     }
   }
 
@@ -58,14 +102,5 @@ $arrowWidth: 16px;
     justify-content: center;
     transform: translate(-50%, calc(100% + $arrowWidth));
     left: 50%;
-    bottom: 0;
-
-    &::before {
-      bottom: 100%;
-    }
-
-    &::after {
-      bottom: 100%;
-    }
   }
 }
