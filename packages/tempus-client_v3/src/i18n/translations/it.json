@@ -1,0 +1,15 @@
+{
+  "SettingsDropdown": {
+    "title": ""
+  },
+  "SettingsPopup": {
+    "titleSlippage": "",
+    "slippageTooltipContent": "",
+    "titleLocale": "",
+    "localeName": "Italiano",
+    "titleDarkMode": ""
+  },
+  "SlippageInput": {
+    "buttonAuto": ""
+  }
+}

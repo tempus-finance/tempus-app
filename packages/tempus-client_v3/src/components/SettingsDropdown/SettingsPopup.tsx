@@ -1,6 +1,8 @@
 import { ChangeEvent, FC, memo, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Decimal } from 'tempus-core-services';
-import { SUPPORTED_LOCALE_NAMES, SupportedLocale, useLocale, useUserPreferences } from '../../hooks';
+import { SUPPORTED_LOCALES, SupportedLocale } from '../../i18n';
+import { useLocale, useUserPreferences } from '../../hooks';
 import {
   DropdownSelectableItem,
   DropdownSelector,
@@ -12,6 +14,7 @@ import {
 } from '../shared';
 
 const SettingsPopup: FC = () => {
+  const { t } = useTranslation();
   const [locale, setLocale] = useLocale();
   const [preference, setPreferences] = useUserPreferences();
 
@@ -31,12 +34,9 @@ const SettingsPopup: FC = () => {
       <li className="tc__settings-popup-item">
         <Icon variant="slippage" size={20} />
         <Typography className="tc__settings-popup-item-title" variant="body-primary" weight="medium">
-          Slippage tolerance
+          {t('SettingsPopup.titleSlippage')}
         </Typography>
-        <InfoTooltip
-          tooltipContent="Your transaction will revert if the price changes unfavorably by more than this percentage."
-          iconSize="small"
-        />
+        <InfoTooltip tooltipContent={t('SettingsPopup.slippageTooltipContent')} iconSize="small" />
         <SlippageInput
           percentage={preference.slippage}
           isAuto={preference.slippageAuto}
@@ -47,18 +47,18 @@ const SettingsPopup: FC = () => {
       <li className="tc__settings-popup-item">
         <Icon variant="globe" size={20} />
         <Typography className="tc__settings-popup-item-title" variant="body-primary" weight="medium">
-          Language
+          {t('SettingsPopup.titleLocale')}
         </Typography>
-        <DropdownSelector label={SUPPORTED_LOCALE_NAMES[locale]} selectedValue={locale} onSelect={handleLocaleChange}>
-          {Object.entries(SUPPORTED_LOCALE_NAMES).map(([code, name]) => (
-            <DropdownSelectableItem key={code} label={name} value={code} />
+        <DropdownSelector label={t('SettingsPopup.localeName')} selectedValue={locale} onSelect={handleLocaleChange}>
+          {SUPPORTED_LOCALES.map(code => (
+            <DropdownSelectableItem key={code} label={t('SettingsPopup.localeName', { lng: code })} value={code} />
           ))}
         </DropdownSelector>
       </li>
       <li className="tc__settings-popup-item">
         <Icon variant="dark" size={20} />
         <Typography className="tc__settings-popup-item-title" variant="body-primary" weight="medium">
-          Dark Theme
+          {t('SettingsPopup.titleDarkMode')}
         </Typography>
         <ToggleSwitch checked={preference.darkMode} onChange={handleChangeDark} />
       </li>

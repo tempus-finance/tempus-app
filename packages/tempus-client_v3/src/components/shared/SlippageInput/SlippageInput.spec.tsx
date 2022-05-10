@@ -1,5 +1,6 @@
 import { act, fireEvent, render } from '@testing-library/react';
 import { Decimal, DecimalUtils } from 'tempus-core-services';
+import I18nProvider from '../../../i18n/I18nProvider';
 import { FC, useState } from 'react';
 import SlippageInput, { SlippageInputProps } from './SlippageInput';
 
@@ -20,7 +21,11 @@ const Wrapper: FC<SlippageInputProps> = props => {
   const [isAuto, setIsAuto] = useState<boolean>(props.isAuto ?? false);
   mockOnPercentageUpdate.mockImplementation((val: Decimal) => setPercentage(val));
   mockOnAutoUpdate.mockImplementation((val: boolean) => setIsAuto(val));
-  return <SlippageInput {...props} percentage={percentage} isAuto={isAuto} />;
+  return (
+    <I18nProvider>
+      <SlippageInput {...props} percentage={percentage} isAuto={isAuto} />
+    </I18nProvider>
+  );
 };
 
 const subject = (props: SlippageInputProps) => render(<Wrapper {...props} />);
