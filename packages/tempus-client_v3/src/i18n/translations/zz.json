@@ -1,0 +1,15 @@
+{
+  "SettingsDropdown": {
+    "title": "~~~~~====={{{{{(((((title)))))}}}}}=====~~~~~"
+  },
+  "SettingsPopup": {
+    "titleSlippage": "~~~~~====={{{{{(((((titleSlippage)))))}}}}}=====~~~~~",
+    "slippageTooltipContent": "~~~~~====={{{{{(((((slippageTooltipContent)))))}}}}}=====~~~~~",
+    "titleLocale": "~~~~~====={{{{{(((((titleLocale)))))}}}}}=====~~~~~",
+    "localeName": "~~=={{((Pseudo Translation))}}==~~",
+    "titleDarkMode": "~~~~~====={{{{{(((((titleDarkMode)))))}}}}}=====~~~~~"
+  },
+  "SlippageInput": {
+    "buttonAuto": "~~~~~====={{{{{(((((buttonAuto)))))}}}}}=====~~~~~"
+  }
+}
