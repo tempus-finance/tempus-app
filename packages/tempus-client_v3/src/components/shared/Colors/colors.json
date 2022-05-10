@@ -101,5 +101,9 @@
   "currencyInputModalValueIncreaseBackground": "#CEF2DA",
   "currencyInputModalValueDecreaseBackground": "#FFD9D9",
 
-  "depositModalHeaderBackground": "#CEF2DA"
+  "depositModalHeaderBackground": "#CEF2DA",
+
+  "chartArea": "#129CA4",
+  "chartStroke": "#2B6E84",
+  "chartGrid": "#F3F7F9"
 }

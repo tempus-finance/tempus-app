@@ -1,0 +1,30 @@
+.tc__chart__date-tick-container {
+  $date-tick-width: 40px;
+  $date-tick-height: 32px;
+
+  --tick-width: #{$date-tick-width};
+  --tick-height: #{$date-tick-height};
+  width: var(--tick-width);
+  height: var(--tick-height);
+}
+
+.tc__chart__date-tick {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.recharts-yAxis .tc__chart__tick-container {
+  transform: translate(calc(-1 * var(--tick-width)), calc(-1 * var(--tick-height) / 2));
+}
+
+.tc__chart__text-tick-container {
+  $text-tick-width: 40px;
+  $text-tick-height: 16px;
+
+  --tick-width: #{$text-tick-width};
+  --tick-height: #{$text-tick-height};
+  width: var(--tick-width);
+  height: var(--tick-height);
+}
