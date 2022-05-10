@@ -1,4 +1,38 @@
 {
+  "App": {
+    "navMarkets": "",
+    "navPortfolio": ""
+  },
+  "ChainSelector": {
+    "title": ""
+  },
+  "FeeTooltip": {
+    "title": "",
+    "titleDeposit": "",
+    "titleRedemption": "",
+    "titleEarlyRedemption": "",
+    "titleSwap": "",
+    "infoText": ""
+  },
+  "MarketsSubheader": {
+    "tabFixed": "",
+    "tabBoosted": "",
+    "tabAll": "",
+    "optionFilter": "",
+    "filterActive": "",
+    "filterMatured": "",
+    "filterInactive": "",
+    "optionSort": "",
+    "sortAZ": "",
+    "sortMaturity": "",
+    "sortTVL": "",
+    "sortAPR": "",
+    "sortBalance": ""
+  },
+  "PortfolioSubheader": {
+    "tabOverview": "",
+    "tabPositions": ""
+  },
   "SettingsDropdown": {
     "title": ""
   },
@@ -9,7 +43,20 @@
     "localeName": "Italiano",
     "titleDarkMode": ""
   },
+  "NumberInput": {
+    "buttonMax": ""
+  },
   "SlippageInput": {
     "buttonAuto": ""
+  },
+  "TermTab": {
+    "title": ""
+  },
+  "WalletButton": {
+    "buttonConnectWallet": "",
+    "buttonUnsupported": ""
+  },
+  "TotalValueLocked": {
+    "title": ""
   }
 }

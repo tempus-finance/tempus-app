@@ -2,6 +2,7 @@ import { fireEvent, render } from '@testing-library/react';
 import { Decimal } from 'tempus-core-services';
 import { FC, useState } from 'react';
 import NumberInput, { NumberInputProps } from './NumberInput';
+import I18nProvider from '../../../i18n/I18nProvider';
 
 const mockOnChange = jest.fn();
 const mockOnDebounceChange = jest.fn();
@@ -22,7 +23,11 @@ const defaultProps: NumberInputProps = {
 const Wrapper: FC<NumberInputProps> = props => {
   const [value, setValue] = useState<string>(props.value ?? '');
   mockOnChange.mockImplementation((val: string) => setValue(val));
-  return <NumberInput {...props} value={value} />;
+  return (
+    <I18nProvider>
+      <NumberInput {...props} value={value} />
+    </I18nProvider>
+  );
 };
 
 const subject = (props: NumberInputProps) => render(<Wrapper {...props} />);

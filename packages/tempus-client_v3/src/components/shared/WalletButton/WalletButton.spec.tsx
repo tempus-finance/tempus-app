@@ -1,5 +1,6 @@
 import { fireEvent, render } from '@testing-library/react';
 import { chainToTicker, shortenAccount } from 'tempus-core-services';
+import I18nProvider from '../../../i18n/I18nProvider';
 import WalletButton, { WalletButtonProps } from './WalletButton';
 
 jest.mock('react-blockies', () => () => (
@@ -19,7 +20,12 @@ const defaultProps: WalletButtonProps = {
   onWalletClick: mockOnWalletClick,
 };
 
-const subject = (props: WalletButtonProps) => render(<WalletButton {...props} />);
+const subject = (props: WalletButtonProps) =>
+  render(
+    <I18nProvider>
+      <WalletButton {...props} />
+    </I18nProvider>,
+  );
 
 describe('WalletButton', () => {
   it('renders a disconnected wallet button', () => {

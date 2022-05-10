@@ -1,4 +1,38 @@
 {
+  "App": {
+    "navMarkets": "~~~~~====={{{{{(((((navMarkets)))))}}}}}=====~~~~~",
+    "navPortfolio": "~~~~~====={{{{{(((((navPortfolio)))))}}}}}=====~~~~~"
+  },
+  "ChainSelector": {
+    "title": "~~~~~====={{{{{(((((title)))))}}}}}=====~~~~~"
+  },
+  "FeeTooltip": {
+    "title": "~~~~~====={{{{{(((((title)))))}}}}}=====~~~~~",
+    "titleDeposit": "~~~~~====={{{{{(((((titleDeposit)))))}}}}}=====~~~~~",
+    "titleRedemption": "~~~~~====={{{{{(((((titleRedemption)))))}}}}}=====~~~~~",
+    "titleEarlyRedemption": "~~~~~====={{{{{(((((titleEarlyRedemption)))))}}}}}=====~~~~~",
+    "titleSwap": "~~~~~====={{{{{(((((titleSwap)))))}}}}}=====~~~~~",
+    "infoText": "~~~~~====={{{{{(((((infoText)))))}}}}}=====~~~~~"
+  },
+  "MarketsSubheader": {
+    "tabFixed": "~~~~~====={{{{{(((((tabFixed)))))}}}}}=====~~~~~",
+    "tabBoosted": "~~~~~====={{{{{(((((tabBoosted)))))}}}}}=====~~~~~",
+    "tabAll": "~~~~~====={{{{{(((((tabAll)))))}}}}}=====~~~~~",
+    "optionFilter": "~~~~~====={{{{{(((((optionFilter)))))}}}}}=====~~~~~",
+    "filterActive": "~~~~~====={{{{{(((((filterActive)))))}}}}}=====~~~~~",
+    "filterMatured": "~~~~~====={{{{{(((((filterMatured)))))}}}}}=====~~~~~",
+    "filterInactive": "~~~~~====={{{{{(((((filterInactive)))))}}}}}=====~~~~~",
+    "optionSort": "~~~~~====={{{{{(((((optionSort)))))}}}}}=====~~~~~",
+    "sortAZ": "~~~~~====={{{{{(((((sortAZ)))))}}}}}=====~~~~~",
+    "sortMaturity": "~~~~~====={{{{{(((((sortMaturity)))))}}}}}=====~~~~~",
+    "sortTVL": "~~~~~====={{{{{(((((sortTVL)))))}}}}}=====~~~~~",
+    "sortAPR": "~~~~~====={{{{{(((((sortAPR)))))}}}}}=====~~~~~",
+    "sortBalance": "~~~~~====={{{{{(((((sortBalance)))))}}}}}=====~~~~~"
+  },
+  "PortfolioSubheader": {
+    "tabOverview": "~~~~~====={{{{{(((((tabOverview)))))}}}}}=====~~~~~",
+    "tabPositions": "~~~~~====={{{{{(((((tabPositions)))))}}}}}=====~~~~~"
+  },
   "SettingsDropdown": {
     "title": "~~~~~====={{{{{(((((title)))))}}}}}=====~~~~~"
   },
@@ -9,7 +43,20 @@
     "localeName": "~~=={{((Pseudo Translation))}}==~~",
     "titleDarkMode": "~~~~~====={{{{{(((((titleDarkMode)))))}}}}}=====~~~~~"
   },
+  "NumberInput": {
+    "buttonMax": "~~~~~====={{{{{(((((buttonMax)))))}}}}}=====~~~~~"
+  },
   "SlippageInput": {
     "buttonAuto": "~~~~~====={{{{{(((((buttonAuto)))))}}}}}=====~~~~~"
+  },
+  "TermTab": {
+    "title": "~~~~~====={{{{{(((((title)))))}}}}}=====~~~~~"
+  },
+  "WalletButton": {
+    "buttonConnectWallet": "~~~~~====={{{{{(((((buttonConnectWallet)))))}}}}}=====~~~~~",
+    "buttonUnsupported": "~~~~~====={{{{{(((((buttonUnsupported)))))}}}}}=====~~~~~"
+  },
+  "TotalValueLocked": {
+    "title": "~~~~~====={{{{{(((((title)))))}}}}}=====~~~~~"
   }
 }

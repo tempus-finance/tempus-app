@@ -1,4 +1,38 @@
 {
+  "App": {
+    "navMarkets": "Markets",
+    "navPortfolio": "Portfolio"
+  },
+  "ChainSelector": {
+    "title": "Select Network"
+  },
+  "FeeTooltip": {
+    "title": "Fee",
+    "titleDeposit": "Deposit",
+    "titleRedemption": "Redemption",
+    "titleEarlyRedemption": "Early Redemption",
+    "titleSwap": "Swap",
+    "infoText": "Swap fees will go to Liquidity providers"
+  },
+  "MarketsSubheader": {
+    "tabFixed": "Fixed",
+    "tabBoosted": "Boosted",
+    "tabAll": "All",
+    "optionFilter": "Filter",
+    "filterActive": "Active #",
+    "filterMatured": "Matured #",
+    "filterInactive": "Inactive #",
+    "optionSort": "Sort",
+    "sortAZ": "A-Z",
+    "sortMaturity": "Maturity",
+    "sortTVL": "TVL",
+    "sortAPR": "APR %",
+    "sortBalance": "Balance"
+  },
+  "PortfolioSubheader": {
+    "tabOverview": "Overview",
+    "tabPositions": "Positions"
+  },
   "SettingsDropdown": {
     "title": "Settings"
   },
@@ -9,7 +43,20 @@
     "localeName": "English",
     "titleDarkMode": "Dark Theme"
   },
+  "NumberInput": {
+    "buttonMax": "Max"
+  },
   "SlippageInput": {
     "buttonAuto": "Auto"
+  },
+  "TermTab": {
+    "title": "APR & Term"
+  },
+  "WalletButton": {
+    "buttonConnectWallet": "Connect Wallet",
+    "buttonUnsupported": "Unsupported"
+  },
+  "TotalValueLocked": {
+    "title": "Total Value Locked"
   }
 }

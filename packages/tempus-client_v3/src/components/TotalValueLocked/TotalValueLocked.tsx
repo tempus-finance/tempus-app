@@ -1,4 +1,5 @@
 import { FC, memo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { DecimalUtils } from 'tempus-core-services';
 import { useTvlData } from '../../hooks';
 import { Typography } from '../shared';
@@ -6,12 +7,13 @@ import { Typography } from '../shared';
 import './TotalValueLocked.scss';
 
 const TotalValueLocked: FC = () => {
+  const { t } = useTranslation();
   const tvl = useTvlData();
 
   return (
     <div className="tc__totalValueLocked">
       <Typography variant="body-secondary" color="text-primary-inverted">
-        Total Value Locked
+        {t('TotalValueLocked.title')}
       </Typography>
       <Typography variant="subtitle" color="text-primary-inverted" type="mono">
         {tvl && DecimalUtils.formatToCurrency(tvl, 2, '$')}
