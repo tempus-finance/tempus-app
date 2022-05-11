@@ -1,4 +1,4 @@
-import { ReactElement, ReactNode } from 'react';
+import { memo, ReactElement, ReactNode } from 'react';
 import { TooltipProps } from 'recharts';
 import { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent';
 import Tooltip from '../Tooltip';
@@ -9,8 +9,14 @@ interface ChartTooltipProps<X extends NameType, Y extends ValueType> {
 
 function ChartTooltip<X extends NameType, Y extends ValueType>(
   props: ChartTooltipProps<X, Y> & TooltipProps<Y, X>,
-): ReactElement<ChartTooltipProps<X, Y> & TooltipProps<Y, X>> {
+): ReactElement<ChartTooltipProps<X, Y> & TooltipProps<Y, X>> | null {
   const { tooltipContent, coordinate, viewBox, payload } = props;
+  const { x, y } = payload?.[0]?.payload ?? {};
+
+  if (x === undefined || y === undefined) {
+    return null;
+  }
+
   return (
     <div className="tc__chart__tooltip-chart">
       <Tooltip
@@ -21,10 +27,10 @@ function ChartTooltip<X extends NameType, Y extends ValueType>(
             : 'right'
         }
       >
-        {payload && payload[0] !== undefined && tooltipContent(payload[0].payload.x, payload[0].payload.y)}
+        {tooltipContent(x, y)}
       </Tooltip>
     </div>
   );
 }
 
-export default ChartTooltip;
+export default memo(ChartTooltip);
