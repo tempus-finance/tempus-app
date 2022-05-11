@@ -1,5 +1,6 @@
 import { memo, useEffect, useState } from 'react';
 import { Route, Routes } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { initServices } from 'tempus-core-services';
 import { useLocale, useUserPreferences } from '../../hooks';
 import Markets from '../Markets';
@@ -11,16 +12,18 @@ import TotalValueLocked from '../TotalValueLocked';
 
 import './App.scss';
 
-const navigationLinks: PageNavigationLink[] = [
-  { text: 'Markets', path: '/' },
-  { text: 'Portfolio', path: '/portfolio' },
-];
-
 const App = () => {
   const [servicesLoaded, setServicesLoaded] = useState<boolean>(false);
+  const { t } = useTranslation();
+
   // to keep at least one subscriber of the stream insides the hook
   useLocale();
   useUserPreferences();
+
+  const navigationLinks: PageNavigationLink[] = [
+    { text: t('App.navMarkets'), path: '/' },
+    { text: t('App.navPortfolio'), path: '/portfolio' },
+  ];
 
   useEffect(() => {
     const retrieveConfig = () => {
