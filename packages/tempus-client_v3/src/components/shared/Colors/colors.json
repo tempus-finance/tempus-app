@@ -105,5 +105,6 @@
 
   "chartArea": "#129CA4",
   "chartStroke": "#2B6E84",
-  "chartGrid": "#F3F7F9"
+  "chartGrid": "#F3F7F9",
+  "chartTooltipLine": "#129CA4"
 }

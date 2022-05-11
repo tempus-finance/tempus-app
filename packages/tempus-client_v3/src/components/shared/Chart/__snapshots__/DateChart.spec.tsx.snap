@@ -769,6 +769,18 @@ exports[`DateChart renders a date chart 1`] = `
           </g>
         </g>
       </svg>
+      <div
+        class="recharts-tooltip-wrapper"
+        style="transform: translate(undefinedpx, undefinedpx); pointer-events: none; visibility: hidden; position: absolute; top: 0px; left: 0px;"
+      >
+        <div
+          class="tc__chart__tooltip-chart"
+        >
+          <div
+            class="tc__tooltip tc__tooltip__right"
+          />
+        </div>
+      </div>
     </div>
   </div>
 </div>

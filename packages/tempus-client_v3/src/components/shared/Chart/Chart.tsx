@@ -1,8 +1,10 @@
-import { ReactElement, SVGProps, useCallback } from 'react';
-import { Area, AreaChart, CartesianGrid, ResponsiveContainer, XAxis, YAxis } from 'recharts';
+import { ReactElement, ReactNode, SVGProps, useCallback } from 'react';
+import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
+import { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent';
 import { Margin, ScaleType } from 'recharts/types/util/types';
 import { colors } from '../Colors';
 import Typography from '../Typography';
+import ChartTooltip from './ChartTooltip';
 import './Chart.scss';
 
 type ChartAxisType = 'number' | 'category';
@@ -13,12 +15,12 @@ export type ChartTick =
   | ((props: any) => ReactElement<SVGElement>)
   | boolean;
 
-export interface ChartDataPoint<X, Y> {
+export interface ChartDataPoint<X, Y extends ValueType> {
   x: X;
   y: Y;
 }
 
-interface ChartProps<X, Y> {
+interface ChartProps<X, Y extends ValueType> {
   data: ChartDataPoint<X, Y>[];
   xAxisType?: ChartAxisType;
   xScale?: ScaleType;
@@ -30,6 +32,7 @@ interface ChartProps<X, Y> {
   yTickFormatter?: (value: Y, index: number) => string;
   margin?: Margin;
   topPercentageProjected?: number;
+  tooltipContent?: (x: NameType, y: Y) => ReactNode;
 }
 
 export interface ChartSizeProps {
@@ -37,11 +40,14 @@ export interface ChartSizeProps {
   height?: string | number;
 }
 
-function Chart<X, Y>(props: ChartProps<X, Y> & ChartSizeProps): ReactElement<ChartProps<X, Y> & ChartSizeProps> {
+function Chart<X, Y extends ValueType>(
+  props: ChartProps<X, Y> & ChartSizeProps,
+): ReactElement<ChartProps<X, Y> & ChartSizeProps> {
   const {
     data,
     width,
     height,
+    tooltipContent,
     xAxisType,
     xScale = 'linear',
     xTick,
@@ -109,9 +115,34 @@ function Chart<X, Y>(props: ChartProps<X, Y> & ChartSizeProps): ReactElement<Cha
           interval="preserveStartEnd"
         />
         <CartesianGrid stroke={colors.chartGrid} horizontal vertical={false} />
-        <Area type="monotone" dataKey="y" stroke={colors.chartStroke} strokeWidth={2} fill="url(#color)" />
+        {tooltipContent && (
+          <Tooltip
+            offset={0}
+            content={tooltipProps => (
+              <ChartTooltip
+                {...tooltipProps}
+                tooltipContent={tooltipContent as (x: NameType, y: ValueType) => ReactNode}
+              />
+            )}
+          />
+        )}
+        <Area
+          type="monotone"
+          dataKey="y"
+          activeDot={false}
+          stroke={colors.chartStroke}
+          strokeWidth={2}
+          fill="url(#color)"
+        />
         {topPercentageProjected && (
-          <Area type="monotone" dataKey="y" strokeWidth={0} clipPath="url(#projectedValueClip)" fill="url(#pattern)" />
+          <Area
+            type="monotone"
+            dataKey="y"
+            activeDot={false}
+            strokeWidth={0}
+            clipPath="url(#projectedValueClip)"
+            fill="url(#pattern)"
+          />
         )}
       </AreaChart>
     </ResponsiveContainer>
