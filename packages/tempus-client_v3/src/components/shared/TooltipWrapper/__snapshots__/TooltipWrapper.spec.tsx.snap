@@ -20,6 +20,7 @@ exports[`TooltipWrapper render a simple TooltipWrapper, click to open tooltip 1`
 <div>
   <div
     class="tc__tooltip-wrapper"
+    style="--anchorPosX: 0px; --anchorPosY: 0px;"
   >
     <div
       class="tc__tooltip-wrapper-backdrop"
@@ -69,6 +70,7 @@ exports[`TooltipWrapper render a simple TooltipWrapper, mouseover to open toolti
 <div>
   <div
     class="tc__tooltip-wrapper"
+    style="--anchorPosX: 0px; --anchorPosY: 0px;"
   >
     <div
       class="tc__tooltip-wrapper-backdrop"

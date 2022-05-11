@@ -1,12 +1,16 @@
 .tc__tooltip-wrapper {
   position: relative;
 
+  // the CSS variable are here for React components to override
+  --anchorPosX: 0px;
+  --anchorPosY: 0px;
+
   .tc__tooltip-wrapper-backdrop {
-    position: fixed;
-    left: 0px;
-    top: 0px;
-    right: 0px;
-    bottom: 0px;
+    position: absolute;
+    left: calc(var(--anchorPosX) * -1);
+    top: calc(var(--anchorPosY) * -1);
+    width: 100vw;
+    height: 100vh;
     z-index: 9997;
   }
 

@@ -52,6 +52,7 @@ exports[`InfoTooltip renders an info tooltip, click to open to see content 1`] =
 <div>
   <div
     class="tc__tooltip-wrapper"
+    style="--anchorPosX: 0px; --anchorPosY: 0px;"
   >
     <div
       class="tc__tooltip-wrapper-backdrop"
