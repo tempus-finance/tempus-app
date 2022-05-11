@@ -1,4 +1,5 @@
-import { FC, useCallback, useMemo } from 'react';
+import { FC, ReactNode, useCallback, useMemo } from 'react';
+import { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent';
 import { useLocale } from '../../../hooks';
 import Typography from '../Typography';
 import Chart, { ChartDataPoint, ChartSizeProps, ChartTick } from './Chart';
@@ -8,13 +9,19 @@ interface DateChartProps {
   yTick?: ChartTick;
   yTickFormatter?: (value: number, index: number) => string;
   topPercentageProjected?: number;
+  tooltipContent?: (x: Date, y: number) => ReactNode;
 }
 
 const DateChart: FC<DateChartProps & ChartSizeProps> = props => {
-  const { data, width, height, yTick, yTickFormatter, topPercentageProjected } = props;
+  const { data, width, height, tooltipContent, yTick, yTickFormatter, topPercentageProjected } = props;
   const [locale] = useLocale();
 
   const transformedData = useMemo(() => data.map(value => ({ x: value.x.getTime(), y: value.y })), [data]);
+
+  const adaptedTooltipContent = useCallback(
+    (x: number, y: number) => tooltipContent?.(new Date(x), y),
+    [tooltipContent],
+  ) as (x: NameType, y: ValueType) => ReactNode;
 
   const xTick = useCallback(
     tickProps => {
@@ -44,6 +51,7 @@ const DateChart: FC<DateChartProps & ChartSizeProps> = props => {
       data={transformedData}
       width={width}
       height={height}
+      tooltipContent={adaptedTooltipContent}
       xAxisType="number"
       xScale="utc"
       xTick={xTick}

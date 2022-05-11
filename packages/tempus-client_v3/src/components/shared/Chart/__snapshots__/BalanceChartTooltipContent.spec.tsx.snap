@@ -1,0 +1,51 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`BalanceChartTooltipContent renders a balance tooltip content 1`] = `
+<div>
+  <div
+    class="tc__chart__balance-tooltip-content"
+  >
+    <div
+      style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(71, 67, 80); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+    >
+      Deposit
+    </div>
+    <div
+      class="tc__chart__balance-tooltip-content-value"
+    >
+      <div
+        style="font-style: normal; font-size: 20px; line-height: 28px; color: rgb(34, 34, 34); font-weight: 700; font-family: 'Azeret Mono', monospace; opacity: 1;"
+      >
+        0.123
+         
+        ETH
+      </div>
+    </div>
+    <span
+      class="tc__formatted-date"
+    >
+      <div
+        style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(71, 67, 80); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+      >
+        May
+      </div>
+      <span
+        class="tc__formatted-date__separator tc__formatted-date__separator-low-contrast"
+      />
+      <div
+        style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(71, 67, 80); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+      >
+        01
+      </div>
+      <span
+        class="tc__formatted-date__separator tc__formatted-date__separator-low-contrast"
+      />
+      <div
+        style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(71, 67, 80); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+      >
+        22
+      </div>
+    </span>
+  </div>
+</div>
+`;
