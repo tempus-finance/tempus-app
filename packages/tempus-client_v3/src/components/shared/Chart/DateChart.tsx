@@ -52,7 +52,7 @@ const DateChart: FC<DateChartProps & ChartSizeProps> = props => {
       data={transformedData}
       width={width}
       height={height}
-      tooltipContent={adaptedTooltipContent}
+      tooltipContent={tooltipContent ? adaptedTooltipContent : undefined}
       xAxisType="number"
       xScale="utc"
       xTick={xTick}
