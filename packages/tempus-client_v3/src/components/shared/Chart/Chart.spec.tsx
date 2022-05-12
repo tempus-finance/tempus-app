@@ -11,6 +11,17 @@ const defaultProps: ChartProps & ChartSizeProps = {
 const subject = (props: ChartProps & ChartSizeProps) => render(<Chart {...props} />);
 
 describe('Chart', () => {
+  const originalConsoleWarn = console.warn;
+
+  beforeEach(() => {
+    // `render` doesn't properly handle percentage values for chart's width/height, so ignore warnings
+    console.warn = jest.fn();
+  });
+
+  afterEach(() => {
+    console.warn = originalConsoleWarn;
+  });
+
   it('renders a numeric linear chart', () => {
     const { container } = subject({ ...defaultProps, data: numericData });
 

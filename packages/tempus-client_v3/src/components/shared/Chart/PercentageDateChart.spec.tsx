@@ -15,6 +15,17 @@ const defaultProps: PercentageDateChartProps & ChartSizeProps = {
 const subject = (props: PercentageDateChartProps & ChartSizeProps) => render(<PercentageDateChart {...props} />);
 
 describe('PercentageDateChart', () => {
+  const originalConsoleWarn = console.warn;
+
+  beforeEach(() => {
+    // `render` doesn't properly handle percentage values for chart's width/height, so ignore warnings
+    console.warn = jest.fn();
+  });
+
+  afterEach(() => {
+    console.warn = originalConsoleWarn;
+  });
+
   it('renders a yield chart', () => {
     const { container } = subject({ ...defaultProps, data });
 

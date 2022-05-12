@@ -9,6 +9,17 @@ const defaultProps: ChartDotProps = {
 const subject = (props: ChartDotProps) => render(<ChartDot {...props} />);
 
 describe('ChartDot', () => {
+  const originalConsoleError = console.error;
+
+  beforeEach(() => {
+    // SVG tags (`path`, `circle`, etc.) are unrecognized in the testing browser, so ignore warnings
+    console.error = jest.fn();
+  });
+
+  afterEach(() => {
+    console.error = originalConsoleError;
+  });
+
   ['plus', 'minus', 'tick', 'INVALID'].forEach(variant => {
     [false, true].forEach(selected => {
       it(`renders a ${selected ? '' : 'un'}selected ${variant} chart dot`, () => {
