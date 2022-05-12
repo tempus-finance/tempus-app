@@ -1,4 +1,5 @@
 import Chart from './Chart';
+import ChartDot from './ChartDot';
 import Checkbox from './Checkbox';
 import CurrencyInput from './CurrencyInput';
 import FormattedDate from './FormattedDate';

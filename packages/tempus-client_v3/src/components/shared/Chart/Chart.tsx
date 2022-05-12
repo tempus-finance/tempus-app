@@ -32,6 +32,13 @@ interface ChartProps<X, Y extends ValueType> {
   yTickFormatter?: (value: Y, index: number) => string;
   margin?: Margin;
   topPercentageProjected?: number;
+  dot?: (
+    dataX: X,
+    dataY: Y,
+    index: number,
+    dotCenterX: number,
+    dotCenterY: number,
+  ) => ReactElement<SVGElement> | undefined;
   tooltipContent?: (x: NameType, y: Y) => ReactNode;
 }
 
@@ -58,6 +65,7 @@ function Chart<X, Y extends ValueType>(
     yTickFormatter,
     margin,
     topPercentageProjected,
+    dot,
   } = props;
 
   const textTick = useCallback(
@@ -73,6 +81,14 @@ function Chart<X, Y extends ValueType>(
       </foreignObject>
     ),
     [],
+  );
+
+  const chartDot = useCallback(
+    dotProps => {
+      const { payload, index, cx, cy } = dotProps;
+      return dot?.(payload.x, payload.y, index, cx, cy) ?? <></>;
+    },
+    [dot],
   );
 
   return (
@@ -129,6 +145,7 @@ function Chart<X, Y extends ValueType>(
         <Area
           type="monotone"
           dataKey="y"
+          dot={!topPercentageProjected && chartDot}
           activeDot={false}
           stroke={colors.chartStroke}
           strokeWidth={2}
@@ -138,6 +155,7 @@ function Chart<X, Y extends ValueType>(
           <Area
             type="monotone"
             dataKey="y"
+            dot={chartDot}
             activeDot={false}
             strokeWidth={0}
             clipPath="url(#projectedValueClip)"

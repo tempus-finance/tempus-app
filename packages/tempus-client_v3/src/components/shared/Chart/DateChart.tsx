@@ -1,4 +1,4 @@
-import { FC, ReactNode, useCallback, useMemo } from 'react';
+import { FC, ReactElement, ReactNode, useCallback, useMemo } from 'react';
 import { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent';
 import { useLocale } from '../../../hooks';
 import Typography from '../Typography';
@@ -9,11 +9,18 @@ interface DateChartProps {
   yTick?: ChartTick;
   yTickFormatter?: (value: number, index: number) => string;
   topPercentageProjected?: number;
+  dot?: (
+    dataX: number,
+    dataY: number,
+    index: number,
+    dotCenterX: number,
+    dotCenterY: number,
+  ) => ReactElement<SVGElement> | undefined;
   tooltipContent?: (x: Date, y: number) => ReactNode;
 }
 
 const DateChart: FC<DateChartProps & ChartSizeProps> = props => {
-  const { data, width, height, tooltipContent, yTick, yTickFormatter, topPercentageProjected } = props;
+  const { data, width, height, tooltipContent, yTick, yTickFormatter, topPercentageProjected, dot } = props;
   const [locale] = useLocale();
 
   const transformedData = useMemo(() => data.map(value => ({ x: value.x.getTime(), y: value.y })), [data]);
@@ -59,6 +66,7 @@ const DateChart: FC<DateChartProps & ChartSizeProps> = props => {
       yTick={yTick}
       yTickFormatter={yTickFormatter}
       margin={{ top: 5, bottom: 40, right: 5 }}
+      dot={dot}
       topPercentageProjected={topPercentageProjected}
     />
   );
