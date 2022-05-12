@@ -70,7 +70,7 @@ export class TempusPoolService {
         return Promise.reject(error);
       }
 
-      return this.eRC20TokenServiceGetter(backingTokenAddress, this.chain, this.getChainConfig).symbol();
+      return this.eRC20TokenServiceGetter(backingTokenAddress, this.chain).symbol();
     }
     throw new Error(`Address '${address}' is not valid`);
   }
@@ -94,7 +94,7 @@ export class TempusPoolService {
         return Promise.reject(error);
       }
 
-      return this.eRC20TokenServiceGetter(yieldBearingTokenAddress, this.chain, this.getChainConfig).symbol();
+      return this.eRC20TokenServiceGetter(yieldBearingTokenAddress, this.chain).symbol();
     }
     throw new Error(`Address '${address}' is not valid`);
   }

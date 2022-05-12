@@ -187,7 +187,7 @@ export class VaultService {
       return Promise.reject();
     }
 
-    const provider = getDefaultProvider(this.chain, this.getChainConfig);
+    const provider = getDefaultProvider(this.chain);
     const latestBlock = await provider.getBlock('latest');
 
     const singleSwap = {

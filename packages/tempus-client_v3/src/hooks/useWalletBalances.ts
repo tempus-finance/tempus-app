@@ -2,9 +2,7 @@ import { state, useStateObservable } from '@react-rxjs/core';
 import { createSignal } from '@react-rxjs/utils';
 import { useCallback, useEffect, useMemo } from 'react';
 import { useConnectWallet } from '@web3-onboard/react';
-import { Chain, Decimal } from 'tempus-core-services';
-// TODO - Replace by TokenBalance service (needs to be created)
-import { getERC20TokenService } from 'tempus-core-services/dist/services';
+import { Chain, Decimal, getServices } from 'tempus-core-services';
 import { getConfigManager } from '../config/getConfigManager';
 
 // Token ID is chainName+tokenAddress
@@ -39,15 +37,15 @@ export function useWalletBalances(): [WalletBalancesMap] {
       const tokenChain = tokenId.split('-')[0] as Chain;
       const tokenAddress = tokenId.split('-')[1];
 
-      const tokenService = getERC20TokenService(tokenAddress, tokenChain, getConfigManager().getChainConfig);
+      const services = getServices(tokenChain);
+      if (services) {
+        const balance = await services?.WalletBalanceService.getTokenBalance(tokenAddress, walletAddress);
 
-      // TODO - Create TokenBalance service that will convert fetched balance into a 18 decimal BigNumber
-      const balance = await tokenService.balanceOf(walletAddress);
-
-      setWalletBalances({
-        ...state$.getValue(),
-        [tokenId]: new Decimal(balance),
-      });
+        setWalletBalances({
+          ...state$.getValue(),
+          [tokenId]: balance,
+        });
+      }
     },
     [walletAddress],
   );

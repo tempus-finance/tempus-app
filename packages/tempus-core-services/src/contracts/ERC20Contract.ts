@@ -1,47 +1,67 @@
-import { CallOverrides, Contract } from 'ethers';
+import { BigNumber, CallOverrides, Contract } from 'ethers';
 import { JsonRpcSigner } from '@ethersproject/providers';
-import { Decimal } from '../datastructures';
-import { ERC20 } from '../abi/ERC20';
+import { ERC20 } from '../abi/ERC20Typings';
 import ERC20ABI from '../abi/ERC20.json';
+import { Decimal, DEFAULT_DECIMAL_PRECISION, increasePrecision, decreasePrecision } from '../datastructures';
 import { getDefaultProvider } from '../services';
+import { Chain } from '../interfaces';
 
+/**
+ * ERC20 Contract class represents ERC20 Token contracts on chain and has same interface.
+ * The only difference is that this contract class will always return Decimal instance
+ * that has DEFAULT_DECIMAL_PRECISION instead of a BigNumber with unknown precision.
+ */
 export class ERC20Contract {
   private contractAddress: string;
   private contract: ERC20;
 
-  constructor(contractAddress: string, signer?: JsonRpcSigner) {
+  constructor(chain: Chain, contractAddress: string, signer?: JsonRpcSigner) {
     this.contractAddress = contractAddress;
 
-    this.contract = new Contract(this.contractAddress, ERC20ABI, signer) as ERC20;
+    const provider = getDefaultProvider(chain);
+
+    this.contract = new Contract(this.contractAddress, ERC20ABI, signer || provider) as ERC20;
   }
 
   /**
    * Checks balance of the ERC20 token for specified wallet address
-   * @param address Address of the wallet.
+   * @param walletAddress Address of the wallet.
    * @param overrides Ethers.js call overrides
    * @returns Balance of the token.
    */
-  async balanceOf(address: string, overrides?: CallOverrides): Promise<Decimal> {
-    let balance: Decimal;
+  async balanceOf(walletAddress: string, overrides?: CallOverrides): Promise<Decimal> {
+    let balance: BigNumber;
     try {
-      // ETH is a native token that does not have an ERC20 contract, we need to get balance for it like this.
-      if (this.contract.address === ZERO_ETH_ADDRESS) {
-        if (overrides) {
-          return this.contract.provider.getBalance(address, overrides.blockTag);
-        } else {
-          return this.contract.provider.getBalance(address);
-        }
-      }
-
       if (overrides) {
-        balance = await this.contract.balanceOf(address, overrides);
+        balance = await this.contract.balanceOf(walletAddress, overrides);
       } else {
-        balance = await this.contract.balanceOf(address);
+        balance = await this.contract.balanceOf(walletAddress);
       }
     } catch (error) {
-      console.error(`ERC20TokenService - balanceOf() - Failed to get balance of ${address}!`);
+      console.error(
+        `ERC20TokenService - balanceOf() - Failed to get balance of ${walletAddress}, token ${this.contractAddress}!`,
+      );
       return Promise.reject(error);
     }
-    return balance;
+
+    // Convert balance (BigNumber) into a Decimal with proper precision
+    const tokenDecimals = await this.decimals();
+    if (tokenDecimals < 18) {
+      return new Decimal(increasePrecision(balance, DEFAULT_DECIMAL_PRECISION - tokenDecimals));
+    }
+    if (tokenDecimals > 18) {
+      return new Decimal(decreasePrecision(balance, tokenDecimals - DEFAULT_DECIMAL_PRECISION));
+    }
+    return new Decimal(balance);
+  }
+
+  async decimals(): Promise<number> {
+    try {
+      return await this.contract.decimals();
+    } catch (error) {
+      return Promise.reject(
+        new Error(`ERC20Contract - decimals() - Failed to get number of decimals for token ${this.contractAddress}`),
+      );
+    }
   }
 }
