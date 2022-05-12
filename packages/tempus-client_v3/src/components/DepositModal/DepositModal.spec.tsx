@@ -1,6 +1,7 @@
 import { act, fireEvent, render } from '@testing-library/react';
 import { Decimal, Ticker } from 'tempus-core-services';
 import { getConfigManager } from '../../config/getConfigManager';
+import I18nProvider from '../../i18n/I18nProvider';
 import { MaturityTerm } from '../shared/TermTabs';
 import DepositModal, { DepositModalProps } from './DepositModal';
 
@@ -31,7 +32,12 @@ const defaultProps: DepositModalProps = {
   inputPrecision: 18,
 };
 
-const subject = (props: DepositModalProps) => render(<DepositModal {...props} />);
+const subject = (props: DepositModalProps) =>
+  render(
+    <I18nProvider>
+      <DepositModal {...props} />
+    </I18nProvider>,
+  );
 
 describe('DepositModal', () => {
   it('renders a deposit modal with one maturity term', () => {

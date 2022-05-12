@@ -6,6 +6,25 @@
   "ChainSelector": {
     "title": ""
   },
+  "CurrencyInputModal": {
+    "feesAndTransactionInfo": "",
+    "linkBlockExplorer": ""
+  },
+  "DepositModal": {
+    "labelExecuteDefault": "",
+    "labelExecuteLoading": "",
+    "labelExecuteSuccess": "",
+    "labelApproveDefault": "",
+    "labelApproveLoading": "",
+    "labelApproveSuccess": "",
+    "labelAvailableForDeposit": "",
+    "labelYieldAtMaturity": "",
+    "title": "",
+    "description": ""
+  },
+  "DepositModalHeader": {
+    "titleRewardsAvailable": ""
+  },
   "FeeTooltip": {
     "title": "",
     "titleDeposit": "",
@@ -58,5 +77,13 @@
   },
   "TotalValueLocked": {
     "title": ""
+  },
+  "WithdrawModal": {
+    "labelAvailableForWithdraw": "",
+    "title": "",
+    "description": "",
+    "labelExecuteDefault": "",
+    "labelExecuteLoading": "",
+    "labelExecuteSuccess": ""
   }
 }

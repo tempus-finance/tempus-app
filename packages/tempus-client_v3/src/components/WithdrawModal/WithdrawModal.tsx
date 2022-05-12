@@ -1,4 +1,5 @@
 import { FC, useCallback, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ChainConfig, Decimal, Ticker } from 'tempus-core-services';
 import CurrencyInputModal, { CurrencyInputModalInfoRow } from '../CurrencyInputModal';
 import { ActionButtonState } from '../shared';
@@ -15,10 +16,17 @@ const WithdrawModal: FC<WithdrawModalProps> = props => {
   const [balance, setBalance] = useState(new Decimal(100)); // TODO: load balance for selected token
   const [currency, setCurrency] = useState(Array.from(usdRates.keys())[0]);
   const [actionButtonState, setActionButtonState] = useState<ActionButtonState>('default');
+  const { t } = useTranslation();
 
   const infoRows = useMemo(
-    () => <CurrencyInputModalInfoRow label="Available for Withdraw" value={balance.toString()} currency={currency} />,
-    [balance, currency],
+    () => (
+      <CurrencyInputModalInfoRow
+        label={t('WithdrawModal.labelAvailableForWithdraw')}
+        value={balance.toString()}
+        currency={currency}
+      />
+    ),
+    [balance, currency, t],
   );
 
   const handleCurrencyChange = useCallback((newCurrency: Ticker) => {
@@ -42,13 +50,17 @@ const WithdrawModal: FC<WithdrawModalProps> = props => {
     <CurrencyInputModal
       open={open}
       onClose={onClose}
-      title="Position Details"
-      description="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+      title={t('WithdrawModal.title')}
+      description={t('WithdrawModal.description')}
       inputPrecision={inputPrecision}
       balance={balance}
       usdRates={usdRates}
       infoRows={infoRows}
-      actionButtonLabels={{ default: 'Execute Withdrawal', loading: 'Executing...', success: 'Successfully Executed' }}
+      actionButtonLabels={{
+        default: t('WithdrawModal.labelExecuteDefault'),
+        loading: t('WithdrawModal.labelExecuteLoading'),
+        success: t('WithdrawModal.labelExecuteSuccess'),
+      }}
       actionButtonState={actionButtonState}
       onTransactionStart={withdraw}
       onCurrencyUpdate={handleCurrencyChange}

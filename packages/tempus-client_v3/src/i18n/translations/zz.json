@@ -6,6 +6,25 @@
   "ChainSelector": {
     "title": "~~~~~====={{{{{(((((title)))))}}}}}=====~~~~~"
   },
+  "CurrencyInputModal": {
+    "feesAndTransactionInfo": "~~~~~====={{{{{(((((feesAndTransactionInfo)))))}}}}}=====~~~~~",
+    "linkBlockExplorer": "~~~~~====={{{{{(((((linkBlockExplorer)))))}}}}}=====~~~~~"
+  },
+  "DepositModal": {
+    "labelExecuteDefault": "~~~~~====={{{{{(((((labelExecuteDefault)))))}}}}}=====~~~~~",
+    "labelExecuteLoading": "~~~~~====={{{{{(((((labelExecuteLoading)))))}}}}}=====~~~~~",
+    "labelExecuteSuccess": "~~~~~====={{{{{(((((labelExecuteSuccess)))))}}}}}=====~~~~~",
+    "labelApproveDefault": "~~~~~====={{{{{(((((labelApproveDefault)))))}}}}}=====~~~~~",
+    "labelApproveLoading": "~~~~~====={{{{{(((((labelApproveLoading)))))}}}}}=====~~~~~",
+    "labelApproveSuccess": "~~~~~====={{{{{(((((labelApproveSuccess)))))}}}}}=====~~~~~",
+    "labelAvailableForDeposit": "~~~~~====={{{{{(((((labelAvailableForDeposit)))))}}}}}=====~~~~~",
+    "labelYieldAtMaturity": "~~~~~====={{{{{(((((labelYieldAtMaturity)))))}}}}}=====~~~~~",
+    "title": "~~~~~====={{{{{(((((title)))))}}}}}=====~~~~~",
+    "description": "~~~~~====={{{{{(((((description)))))}}}}}=====~~~~~"
+  },
+  "DepositModalHeader": {
+    "titleRewardsAvailable": "~~~~~====={{{{{(((((titleRewardsAvailable)))))}}}}}=====~~~~~"
+  },
   "FeeTooltip": {
     "title": "~~~~~====={{{{{(((((title)))))}}}}}=====~~~~~",
     "titleDeposit": "~~~~~====={{{{{(((((titleDeposit)))))}}}}}=====~~~~~",
@@ -58,5 +77,13 @@
   },
   "TotalValueLocked": {
     "title": "~~~~~====={{{{{(((((title)))))}}}}}=====~~~~~"
+  },
+  "WithdrawModal": {
+    "labelAvailableForWithdraw": "~~~~~====={{{{{(((((labelAvailableForWithdraw)))))}}}}}=====~~~~~",
+    "title": "~~~~~====={{{{{(((((title)))))}}}}}=====~~~~~",
+    "description": "~~~~~====={{{{{(((((description)))))}}}}}=====~~~~~",
+    "labelExecuteDefault": "~~~~~====={{{{{(((((labelExecuteDefault)))))}}}}}=====~~~~~",
+    "labelExecuteLoading": "~~~~~====={{{{{(((((labelExecuteLoading)))))}}}}}=====~~~~~",
+    "labelExecuteSuccess": "~~~~~====={{{{{(((((labelExecuteSuccess)))))}}}}}=====~~~~~"
   }
 }

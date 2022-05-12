@@ -6,6 +6,25 @@
   "ChainSelector": {
     "title": "Select Network"
   },
+  "CurrencyInputModal": {
+    "feesAndTransactionInfo": "Fees & transaction info",
+    "linkBlockExplorer": "Check it out on {{name}}"
+  },
+  "DepositModal": {
+    "labelExecuteDefault": "Execute",
+    "labelExecuteLoading": "Executing...",
+    "labelExecuteSuccess": "Successfully Executed",
+    "labelApproveDefault": "Approve Deposit",
+    "labelApproveLoading": "Approving...",
+    "labelApproveSuccess": "Successfully Approved",
+    "labelAvailableForDeposit": "Available for Deposit",
+    "labelYieldAtMaturity": "Yield-at-Maturity",
+    "title": "Pool Details",
+    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+  },
+  "DepositModalHeader": {
+    "titleRewardsAvailable": "Rewards available"
+  },
   "FeeTooltip": {
     "title": "Fee",
     "titleDeposit": "Deposit",
@@ -58,5 +77,13 @@
   },
   "TotalValueLocked": {
     "title": "Total Value Locked"
+  },
+  "WithdrawModal": {
+    "labelAvailableForWithdraw": "Available for Withdraw",
+    "title": "Position Details",
+    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    "labelExecuteDefault": "Execute Withdrawal",
+    "labelExecuteLoading": "Executing...",
+    "labelExecuteSuccess": "Successfully Executed"
   }
 }
