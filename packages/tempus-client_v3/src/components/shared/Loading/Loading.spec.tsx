@@ -1,10 +1,10 @@
 import { render } from '@testing-library/react';
-import Loading, { LoadingProps } from './Loading';
+import Loading, { LoadingColor, LoadingProps } from './Loading';
 
 const subject = (props: LoadingProps) => render(<Loading {...props} />);
 
 describe('Loading', () => {
-  it(`renders a loading`, () => {
+  it('renders a loading', () => {
     const { container } = subject({});
 
     const svg = container.querySelector('svg');
@@ -17,9 +17,9 @@ describe('Loading', () => {
     expect(svg).toMatchSnapshot();
   });
 
-  ['default', 'secondary'].forEach(color => {
+  (['default', 'secondary'] as LoadingColor[]).forEach(color => {
     it(`renders a default-sized loading with ${color} color`, () => {
-      const { container } = subject({ color: color });
+      const { container } = subject({ color });
 
       const svg = container.querySelector('svg');
       const loadingCircle = container.querySelector('circle');
@@ -33,7 +33,7 @@ describe('Loading', () => {
     });
 
     it(`renders a loading with ${color} color and size of 16 pixels`, () => {
-      const { container } = subject({ size: 16, color: color });
+      const { container } = subject({ size: 16, color });
 
       const svg = container.querySelector('svg');
       const loadingCircle = container.querySelector('circle');

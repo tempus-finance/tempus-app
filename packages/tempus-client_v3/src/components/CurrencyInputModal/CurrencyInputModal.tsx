@@ -18,14 +18,14 @@ import { ModalProps } from '../shared/Modal/Modal';
 import TermTabs, { MaturityTerm } from '../shared/TermTabs';
 import './CurrencyInputModal.scss';
 
-interface CurrencyInputModalProps extends ModalProps {
+export interface CurrencyInputModalProps extends ModalProps {
   description: string;
   balance: Decimal;
   inputPrecision: number;
   usdRates: Map<Ticker, Decimal>;
   maturityTerms?: MaturityTerm[];
   chainConfig?: ChainConfig;
-  infoRows: ReactNode;
+  infoRows?: ReactNode;
   actionButtonLabels: ActionButtonLabels;
   actionButtonState?: ActionButtonState;
   onAmountChange?: (amount: Decimal) => void;

@@ -3,7 +3,7 @@ import { colors } from '../Colors';
 
 type ChartDotVariant = 'plus' | 'minus' | 'tick';
 
-interface ChartDotProps {
+export interface ChartDotProps {
   variant: ChartDotVariant;
   centerX: number;
   centerY: number;

@@ -1,8 +1,8 @@
-import { fireEvent, getAllByRole, render } from '@testing-library/react';
+import { fireEvent, render } from '@testing-library/react';
 import { Ticker } from 'tempus-core-services';
 import CurrencySelector, { CurrencySelectorProps } from './CurrencySelector';
 
-const defaultProps = {
+const defaultProps: CurrencySelectorProps = {
   currencies: ['ETH', 'stETH'],
 };
 

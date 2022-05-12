@@ -4,7 +4,7 @@ import './Loading.scss';
 
 export type LoadingColor = 'default' | 'primary' | 'secondary';
 
-interface LoadingProps {
+export interface LoadingProps {
   size?: number;
   color?: LoadingColor;
 }

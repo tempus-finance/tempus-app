@@ -28,7 +28,7 @@ export interface ChartDataPoint<X, Y extends ValueType> {
   y: Y;
 }
 
-interface ChartProps<X, Y extends ValueType> {
+export interface ChartProps<X, Y extends ValueType> {
   data: ChartDataPoint<X, Y>[];
   xAxisType?: ChartAxisType;
   xScale?: ScaleType;

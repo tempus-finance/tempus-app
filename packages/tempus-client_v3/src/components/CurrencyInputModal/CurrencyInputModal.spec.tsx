@@ -1,5 +1,6 @@
 import { act, fireEvent, render } from '@testing-library/react';
 import { Decimal, Ticker } from 'tempus-core-services';
+import { getConfigManager } from '../../config/getConfigManager';
 import { MaturityTerm } from '../shared/TermTabs';
 import CurrencyInputModal, { CurrencyInputModalProps } from './CurrencyInputModal';
 
@@ -20,19 +21,27 @@ const defaultProps: CurrencyInputModalProps = {
   title: '',
   description: '',
   open: true,
+  onClose: () => {},
   balance: new Decimal(100),
   inputPrecision: 18,
+  usdRates: singleCurrencyUsdRates,
   actionButtonLabels: { default: 'Action', loading: 'Loading', success: 'Success' },
-  chainConfig: { blockExplorerName: 'Etherscan', blockExplorerUrl: 'https://etherscan.io/' },
+  onTransactionStart: () => '0x0',
 };
 
 const subject = (props: CurrencyInputModalProps) => render(<CurrencyInputModal {...props} />);
 
 describe('CurrencyInputModal', () => {
+  beforeEach(async () => {
+    const configManager = getConfigManager();
+    await configManager.init();
+
+    defaultProps.chainConfig = configManager.getChainConfig('ethereum');
+  });
+
   it('renders a modal with currency input', () => {
     const { container } = subject({
       ...defaultProps,
-      usdRates: singleCurrencyUsdRates,
       maturityTerms: singleMaturityTerm,
     });
 
@@ -45,7 +54,6 @@ describe('CurrencyInputModal', () => {
 
     const { container, getByRole } = subject({
       ...defaultProps,
-      usdRates: singleCurrencyUsdRates,
       maturityTerms: singleMaturityTerm,
       onTransactionStart: onTransactionStartMock,
       onAmountChange: onAmountChangeMock,
