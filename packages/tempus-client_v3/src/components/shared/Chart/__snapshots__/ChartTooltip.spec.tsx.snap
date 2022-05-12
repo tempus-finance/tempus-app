@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`ChartTooltipContent renders a chart tooltip with left placement 1`] = `
+exports[`ChartTooltip renders a chart tooltip with left placement 1`] = `
 <div>
   <div
     class="tc__chart__tooltip-chart"
@@ -21,7 +21,7 @@ exports[`ChartTooltipContent renders a chart tooltip with left placement 1`] = `
 </div>
 `;
 
-exports[`ChartTooltipContent renders a chart tooltip with right placement 1`] = `
+exports[`ChartTooltip renders a chart tooltip with right placement 1`] = `
 <div>
   <div
     class="tc__chart__tooltip-chart"
