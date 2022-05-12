@@ -1,7 +1,7 @@
 import { state, useStateObservable } from '@react-rxjs/core';
 import { createSignal } from '@react-rxjs/utils';
-import { useConnectWallet } from '@web3-onboard/react';
 import { useCallback, useEffect, useMemo } from 'react';
+import { useConnectWallet } from '@web3-onboard/react';
 import { Chain, Decimal } from 'tempus-core-services';
 // TODO - Replace by TokenBalance service (needs to be created)
 import { getERC20TokenService } from 'tempus-core-services/dist/services';
