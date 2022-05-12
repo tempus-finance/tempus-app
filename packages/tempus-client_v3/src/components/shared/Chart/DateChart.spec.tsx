@@ -15,6 +15,11 @@ const defaultProps: DateChartProps & ChartSizeProps = {
 const subject = (props: DateChartProps & ChartSizeProps) => render(<DateChart {...props} />);
 
 describe('DateChart', () => {
+  beforeEach(() => {
+    // `render` doesn't properly handle percentage values for chart's width/height, so ignore warnings
+    console.warn = jest.fn();
+  });
+
   it('renders a date chart', () => {
     const { container } = subject({ ...defaultProps, data });
 
