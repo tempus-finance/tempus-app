@@ -4,4 +4,4 @@ import { chromiumPersistant } from '../modules/browser';
     const browser = await chromiumPersistant();
     const page = await browser.newPage();
     await page.pause();
-})()
+})();

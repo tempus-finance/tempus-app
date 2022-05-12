@@ -7,4 +7,4 @@ import { BrowserContext } from 'playwright';
     const browser: BrowserContext = await chromiumPersistant();
     await metamaskUpdateId(browser);
     await browser.close();
-})()
+})();

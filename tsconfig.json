@@ -29,6 +29,8 @@
   ],
   "exclude": [
     "./integration-testing/mm",
+    "./integration-testing/mm**",
     "node_modulules",
+    "packages",
   ],
 }

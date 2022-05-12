@@ -1,9 +1,11 @@
 import { test, expect, BrowserContext, Page } from '@playwright/test';
 import { METAMASK_ID, metamaskLogin } from '../modules/metamask';
-import { tempusNetworkChange, tempusMetamaskConnect } from '../modules/tempushome';
+import { tempusMetamaskConnect } from '../modules/tempushome';
 import { chromiumPersistant } from '../modules/browser';
+import { tempusNetworkChange } from '../modules/network';
 
-test.describe("POC tests", () => {
+
+test.describe.serial("POC tests", () => {
     let browser: BrowserContext;
     test.beforeAll(async () => {
         browser = await chromiumPersistant();
@@ -30,4 +32,4 @@ test.describe("POC tests", () => {
     test.afterAll(async () => {
         await browser.close();
     })
-})
+});

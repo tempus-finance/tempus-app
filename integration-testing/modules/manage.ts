@@ -9,7 +9,7 @@ export async function manageDeposit
         token: string = 'USDC', fixedYield: boolean = true): Promise<void> {
     const tabManage: Page = await tempusManageCurrency(browser, asset)
     await tabManage.click('text="Deposit"');
-    await tabManage.click('.MuiSelect-root'); //await tabManage.click('text=Please select')
+    await tabManage.click('.MuiSelect-root');
     await tabManage.click(`.MuiButtonBase-root :text("${token}") >> nth=0`);
     await tabManage.waitForTimeout(LOAD_SHORT_TIMEOUT);
     await tabManage.fill('input[type="text"]', amount);
@@ -26,7 +26,6 @@ export async function manageDeposit
     await tabManage.waitForTimeout(LOAD_TIMEOUT);
 
     if (await browser.pages().length > tabCount) {
-        // approve or reject in metamask
         const mm = await browser.pages().slice(-1)[0]
         if (await mm.locator('text="Approve"').count()) {
             await mm.click('text="Approve"');

@@ -6,8 +6,9 @@
 **/.git/**
 **/public/**
 .eslintrc.js
+
 ./packages/tempus-client_v3/src/serviceWorker.ts
 ./packages/tempus-client_v3/src/reportWebVitals.ts
 **/integration-testing/**
 **/tests/**
-setup.ts
+playwright.config.ts

@@ -3,7 +3,7 @@ import { metamaskRegister, metamaskLogin, metamaskLogoff } from '../modules/meta
 import { chromiumPersistant } from '../modules/browser';
 import { tempusMetamaskConnect } from '../modules/tempushome';
 
-test.describe('Logins and connections', () => {
+test.describe.serial('Logins and connections', () => {
     let browser: BrowserContext;
     test.beforeAll(async () => {
         browser = await chromiumPersistant();

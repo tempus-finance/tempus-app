@@ -67,7 +67,7 @@ export async function metamaskRegister(browser: BrowserContext): Promise<void> {
     await tabMetamask.click('text=I Agree');
 
     const words: string[] = config.METAMASK_RECOVERY_PHRASE.split(' ');
-    for (var i = 0; i < 12; ++i) { // 12 word recovery phrase
+    for (var i = 0; i < 12; ++i) {
         const SELECTOR_ITH_INPUT: string = `input[type="password"] >> nth=${i}`;
         await tabMetamask.fill(SELECTOR_ITH_INPUT, words[i]);
     }
@@ -116,8 +116,6 @@ export async function metamaskLogin(browser: BrowserContext): Promise<void> {
         await tabMetamask.click('text="Unlock" >> nth=0');
     }
 
-    // this part can and should be done by checking urls
-    // TODO ^
     await tabMetamask.goto(`chrome-extension://${METAMASK_ID}/home.html#initialize/seed-phrase-intro`);
     await tabMetamask.waitForTimeout(LOAD_LONG_TIMEOUT);
     const SELECTOR_NEXT: string = 'text="Next"';
@@ -129,7 +127,7 @@ export async function metamaskLogin(browser: BrowserContext): Promise<void> {
     await tabMetamask.close();
 }
 
-export async function metamaskLogoff(browser: BrowserContext): Promise<void> { // broke after mm update
+export async function metamaskLogoff(browser: BrowserContext): Promise<void> {
     const tabMetamask: Page = await browser.newPage();
     await tabMetamask.goto(`chrome-extension://${METAMASK_ID}/home.html#`);
     await tabMetamask.waitForTimeout(LOAD_TIMEOUT);
@@ -158,14 +156,13 @@ export async function metamaskAddETHfork(browser: BrowserContext): Promise<void>
     await tabMetamask.fill('input >> nth=2', eth_fork.Chain);
     await tabMetamask.fill('input >> nth=3', eth_fork.CurrencySymbol);
     await tabMetamask.waitForTimeout(LOAD_SHORT_TIMEOUT);
-    if (await tabMetamask.locator('.btn--rounded[disabled]:has-text("Save")').count() == 0) { // save button is disabled
+    if (await tabMetamask.locator('.btn--rounded[disabled]:has-text("Save")').count() == 0) {
         await tabMetamask.click('text="Save"');
     }
     else {
         console.log('Couldn\'t add ETH fork to metamask. Error or ETH fork is already added.');
     }
     await tabMetamask.close();
-    // TODO check if it exists in the start of the function, throw exception from "save doesnt exist branch"
 }
 
 export async function metamaskAccountAdd(browser: BrowserContext, privateKey: string):
@@ -178,11 +175,9 @@ export async function metamaskAccountAdd(browser: BrowserContext, privateKey: st
     const SELECTOR_PASSWORD_INPUT: string = 'input[type="password"]';
     await tabMetamask.fill(SELECTOR_PASSWORD_INPUT, privateKey);
     await tabMetamask.click('text="Import"');
-    // TODO check if it was added before and at the end
 }
 
 export async function metamaskAccountsAddAll(browser: BrowserContext): Promise<void> {
-    // adds all accounts currently used for testing in order
     await metamaskAccountAdd(browser, config.METAMASK_ACCOUNT_ETH_FORK);
     await metamaskAccountAdd(browser, config.METAMASK_ACCOUNT_FANTOM);
 }
@@ -202,40 +197,3 @@ export async function metamaskAccountSwitch(browser: BrowserContext, accountInde
 
     await tabMetamask.click(`.account-menu__name >> nth=${accountIndex}`);
 }
-
-/*
-import { join as pathjoin } from 'path';
-import p7z from 'node-7z';
-import { download as CRXdownload } from 'download-crx';
-import { mkdir } from 'commandir';
-import rimraf from 'rimraf';
-import { chromiumPersistant } from './browser';
-
-
-export async function metamaskDownload(location: string = pathjoin(__dirname, ROOT_PATH, METAMASK_PATH)):
-    Promise<void> {
-    const MM_URL: string = 'https://chrome.google.com/webstore/detail/nkbihfbeogaeaoehlefnkodbefgpgknn'
-
-    const MM_CRX_PATH: string = pathjoin(location, 'mm.crx');
-
-    const rmrf = (filePath: string) => {
-        return new Promise((resolve, reject) => {
-            rimraf(filePath, (err, data) => {
-                if (err) reject(err)
-                else resolve(data)
-            })
-        })
-    }
-
-    rmrf(location)
-        .catch()
-        .then(() => mkdir(location))
-        .then(() => CRXdownload(MM_URL, location, METAMASK_PATH))
-        .then(() => {
-            console.log(`CRX is located in ${MM_CRX_PATH}.`);
-            console.log(`Extracting ${MM_CRX_PATH}...`)
-            p7z.extractFull(MM_CRX_PATH, location)
-        })
-        .catch(err => console.log('CRX download and extraction failed.\n', err))
-}
-*/

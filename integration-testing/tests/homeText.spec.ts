@@ -1,9 +1,9 @@
 import { test, expect, BrowserContext } from '@playwright/test';
 import { metamaskLogin, metamaskLogoff } from '../modules/metamask';
 import { chromiumPersistant } from '../modules/browser';
-import { tempusTextHeaders } from '../modules/tempushome';
+import { tempusCommunity, tempusFiatCryptoButton, tempusManageAppears, tempusNewRow, tempusTextHeaders } from '../modules/tempushome';
 
-test.describe('Homepage text matching', () => {
+test.describe.serial('Homepage text matching', () => {
     let browser: BrowserContext;
     test.beforeAll(async () => {
         browser = await chromiumPersistant();
@@ -14,12 +14,21 @@ test.describe('Homepage text matching', () => {
         await tempusTextHeaders(browser, true);
     });
 
-    /* DON'T USE .skip! 
-    test.skip('Headers, wallet not connected', async () => {
-        await metamaskLogoff(browser);
-        await tempusTextHeaders(browser, false);
-        //await metamaskLogin(browser) not needed if its the last test
-    });*/
+    test('Manage button appears on click (english)', async () => {
+        await tempusManageAppears(browser, undefined, 'en');
+    });
+
+    test('Tempus home new row appears on click (english)', async () => {
+        await tempusNewRow(browser, undefined, 'en');
+    });
+
+    test('Fiat/Crypto button (english)', async () => {
+        await tempusFiatCryptoButton(browser, 'en');
+    });
+
+    test('Tempus home community links (english)', async () => {
+        await tempusCommunity(browser, 'en');
+    });
 
     test.afterAll(async () => {
         await browser.close();

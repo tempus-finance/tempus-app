@@ -27,4 +27,3 @@ export async function chromiumPersistant(args: {
         },
     });
 };
-// same for firefox
