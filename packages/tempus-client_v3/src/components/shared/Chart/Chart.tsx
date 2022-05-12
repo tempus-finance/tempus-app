@@ -1,4 +1,4 @@
-import { ReactElement, ReactNode, SVGProps, useCallback } from 'react';
+import { Fragment, ReactElement, ReactNode, SVGProps, useCallback } from 'react';
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent';
 import { Margin, ScaleType } from 'recharts/types/util/types';
@@ -14,6 +14,14 @@ export type ChartTick =
   | ReactElement<SVGElement>
   | ((props: any) => ReactElement<SVGElement>)
   | boolean;
+
+export type ChartDot<X, Y> = (
+  dataX: X,
+  dataY: Y,
+  index: number,
+  dotCenterX: number,
+  dotCenterY: number,
+) => ReactElement<SVGElement> | undefined;
 
 export interface ChartDataPoint<X, Y extends ValueType> {
   x: X;
@@ -32,13 +40,7 @@ interface ChartProps<X, Y extends ValueType> {
   yTickFormatter?: (value: Y, index: number) => string;
   margin?: Margin;
   topPercentageProjected?: number;
-  dot?: (
-    dataX: X,
-    dataY: Y,
-    index: number,
-    dotCenterX: number,
-    dotCenterY: number,
-  ) => ReactElement<SVGElement> | undefined;
+  dot?: ChartDot<X, Y>;
   tooltipContent?: (x: NameType, y: Y) => ReactNode;
 }
 
@@ -86,7 +88,7 @@ function Chart<X, Y extends ValueType>(
   const chartDot = useCallback(
     dotProps => {
       const { payload, index, cx, cy } = dotProps;
-      return dot?.(payload.x, payload.y, index, cx, cy) ?? <></>;
+      return dot?.(payload.x, payload.y, index, cx, cy) ?? <Fragment key={`chart-dot-${cx}-${cy}`} />;
     },
     [dot],
   );

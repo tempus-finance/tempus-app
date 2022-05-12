@@ -1,21 +1,15 @@
-import { FC, ReactElement, ReactNode, useCallback, useMemo } from 'react';
+import { FC, ReactNode, useCallback, useMemo } from 'react';
 import { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent';
 import { useLocale } from '../../../hooks';
 import Typography from '../Typography';
-import Chart, { ChartDataPoint, ChartSizeProps, ChartTick } from './Chart';
+import Chart, { ChartDataPoint, ChartDot, ChartSizeProps, ChartTick } from './Chart';
 
 interface DateChartProps {
   data: ChartDataPoint<Date, number>[];
   yTick?: ChartTick;
   yTickFormatter?: (value: number, index: number) => string;
   topPercentageProjected?: number;
-  dot?: (
-    dataX: number,
-    dataY: number,
-    index: number,
-    dotCenterX: number,
-    dotCenterY: number,
-  ) => ReactElement<SVGElement> | undefined;
+  dot?: ChartDot<number, number>;
   tooltipContent?: (x: Date, y: number) => ReactNode;
 }
 
