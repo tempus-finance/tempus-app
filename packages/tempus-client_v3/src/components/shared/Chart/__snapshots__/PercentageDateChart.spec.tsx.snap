@@ -769,10 +769,6 @@ exports[`PercentageDateChart renders a yield chart 1`] = `
           </g>
         </g>
       </svg>
-      <div
-        class="recharts-tooltip-wrapper"
-        style="transform: translate(undefinedpx, undefinedpx); pointer-events: none; visibility: hidden; position: absolute; top: 0px; left: 0px;"
-      />
     </div>
   </div>
 </div>
