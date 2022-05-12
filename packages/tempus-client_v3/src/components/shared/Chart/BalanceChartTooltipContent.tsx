@@ -4,7 +4,7 @@ import FormattedDate from '../FormattedDate';
 import Typography from '../Typography';
 import './Chart.scss';
 
-interface BalanceChartTooltipContentProps {
+export interface BalanceChartTooltipContentProps {
   title: string;
   value: string;
   currency: Ticker;

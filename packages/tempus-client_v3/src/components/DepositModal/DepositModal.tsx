@@ -8,7 +8,7 @@ import CurrencyInputModal, { CurrencyInputModalInfoRow } from '../CurrencyInputM
 import { ActionButtonLabels, ActionButtonState } from '../shared';
 import './DepositModal.scss';
 
-interface DepositModalProps extends ModalProps {
+export interface DepositModalProps extends ModalProps {
   inputPrecision: number;
   usdRates: Map<Ticker, Decimal>;
   maturityTerms: MaturityTerm[];

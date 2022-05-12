@@ -3,7 +3,7 @@ import { DecimalUtils } from 'tempus-core-services';
 import { ChartDataPoint, ChartDot, ChartSizeProps } from './Chart';
 import DateChart from './DateChart';
 
-interface PercentageDateChartProps {
+export interface PercentageDateChartProps {
   data: ChartDataPoint<Date, number>[];
   topPercentageProjected?: number;
   dot?: ChartDot<number, number>;

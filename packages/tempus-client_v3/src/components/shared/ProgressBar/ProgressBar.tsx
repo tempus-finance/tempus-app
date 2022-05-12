@@ -1,7 +1,7 @@
 import { FC, memo } from 'react';
 import './ProgressBar.scss';
 
-interface ProgressBarProps {
+export interface ProgressBarProps {
   value: number;
 }
 

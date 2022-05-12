@@ -27,8 +27,9 @@ const multipleMaturityTerms: MaturityTerm[] = [
   },
 ];
 
-const defaultProps: DepositModalProps = {
+const defaultProps = {
   open: true,
+  onClose: () => {},
   inputPrecision: 18,
 };
 

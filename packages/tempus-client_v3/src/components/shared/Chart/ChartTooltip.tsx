@@ -3,7 +3,7 @@ import { TooltipProps } from 'recharts';
 import { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent';
 import Tooltip from '../Tooltip';
 
-interface ChartTooltipProps<X extends NameType, Y extends ValueType> {
+export interface ChartTooltipProps<X extends NameType, Y extends ValueType> {
   tooltipContent: (x: X, y: Y) => ReactNode;
 }
 

@@ -1,8 +1,8 @@
 import { render } from '@testing-library/react';
 import Radio from './Radio';
-import RadioGroup from './RadioGroup';
+import RadioGroup, { RadioGroupProps } from './RadioGroup';
 
-const subject = (props: Partial<typeof RadioGroup>) =>
+const subject = (props: Partial<RadioGroupProps>) =>
   render(
     <RadioGroup {...props}>
       <Radio value="item1" label="Item #1" />

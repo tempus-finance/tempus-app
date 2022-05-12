@@ -3,13 +3,13 @@ import DropdownCheckboxItem, { DropdownCheckboxItemProps } from './DropdownCheck
 
 const mockOnChangeHandler = jest.fn();
 
-const defaultProps: DropdownCheckboxItemProps = {
+const defaultProps: DropdownCheckboxItemProps<string> = {
   label: 'Dropdown Item',
   onChange: mockOnChangeHandler,
   icon: 'up-arrow-thin',
 };
 
-const subject = (props: DropdownCheckboxItemProps) => render(<DropdownCheckboxItem {...props} />);
+const subject = (props: DropdownCheckboxItemProps<string>) => render(<DropdownCheckboxItem {...props} />);
 
 describe('DropdownCheckboxItem', () => {
   it('renders with provided label', () => {

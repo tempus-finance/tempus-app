@@ -2,7 +2,7 @@ import { FC, useCallback } from 'react';
 import { NumberUtils } from 'tempus-core-services';
 import ActionButton from '../ActionButton';
 
-interface PercentageButtonProps {
+export interface PercentageButtonProps {
   percentage: number;
   disabled?: boolean;
   onClick?: (percentage: number) => void;

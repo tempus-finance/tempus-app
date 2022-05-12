@@ -3,7 +3,7 @@ import { colors, Icon, Typography } from '../shared';
 
 type ValueChange = 'increase' | 'decrease';
 
-interface CurrencyInputModalInfoRowProps {
+export interface CurrencyInputModalInfoRowProps {
   label: string;
   value: string;
   valueChange?: ValueChange;

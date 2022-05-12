@@ -11,7 +11,7 @@ export interface FeeTooltipFees {
   swap?: Numberish;
 }
 
-interface FeeTooltipProps {
+export interface FeeTooltipProps {
   fees: FeeTooltipFees;
 }
 

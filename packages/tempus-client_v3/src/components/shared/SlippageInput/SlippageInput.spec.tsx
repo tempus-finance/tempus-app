@@ -1,7 +1,7 @@
+import { FC, useState } from 'react';
 import { act, fireEvent, render } from '@testing-library/react';
 import { Decimal, DecimalUtils } from 'tempus-core-services';
 import I18nProvider from '../../../i18n/I18nProvider';
-import { FC, useState } from 'react';
 import SlippageInput, { SlippageInputProps } from './SlippageInput';
 
 const mockOnPercentageUpdate = jest.fn();

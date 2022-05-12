@@ -5,7 +5,7 @@ import CurrencyInputModal, { CurrencyInputModalInfoRow } from '../CurrencyInputM
 import { ActionButtonState } from '../shared';
 import { ModalProps } from '../shared/Modal/Modal';
 
-interface WithdrawModalProps extends ModalProps {
+export interface WithdrawModalProps extends ModalProps {
   inputPrecision: number;
   usdRates: Map<Ticker, Decimal>;
   chainConfig?: ChainConfig;

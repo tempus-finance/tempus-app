@@ -4,7 +4,7 @@ import { useLocale } from '../../../hooks';
 import Typography from '../Typography';
 import Chart, { ChartDataPoint, ChartDot, ChartSizeProps, ChartTick } from './Chart';
 
-interface DateChartProps {
+export interface DateChartProps {
   data: ChartDataPoint<Date, number>[];
   yTick?: ChartTick;
   yTickFormatter?: (value: number, index: number) => string;
