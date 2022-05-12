@@ -54,10 +54,7 @@ export const tokenPrecision: { [ticker in Ticker]?: number } = {
   YFI: 18,
 };
 
-const ALCHEMY_KEY = process.env.REACT_APP_MAINNET_ALCHEMY_KEY;
-const GOERLI_ALCHEMY_KEY = process.env.REACT_APP_GOERLI_ALCHEMY_KEY;
-const FANTOM_ENDPOINT = process.env.REACT_APP_FANTOM_ENDPOINT;
-const REACT_APP_ETHEREUM_FORK_RPC = process.env.REACT_APP_ETHEREUM_FORK_RPC;
+const { ALCHEMY_KEY, GOERLI_ALCHEMY_KEY, FANTOM_ENDPOINT, REACT_APP_ETHEREUM_FORK_RPC } = process.env;
 
 export enum SupportedChainId {
   MAINNET = 1,
@@ -79,3 +76,7 @@ export const NETWORK_URLS: { [key in SupportedChainId]: string } = {
   [SupportedChainId.TEMPUS_AWS]: REACT_APP_ETHEREUM_FORK_RPC || '',
   [SupportedChainId.FANTOM]: FANTOM_ENDPOINT || '',
 };
+
+export const ethereumChainIdHex = '0x1';
+export const ethereumForkChainIdHex = '0x7a69';
+export const fantomChainIdHex = '0xfa';

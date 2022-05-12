@@ -5,6 +5,7 @@ exports[`SwitcherButton renders a button with a title attribute 1`] = `
   class="tc__btn tc__switcher-btn"
   data-selected="false"
   title="button title"
+  type="button"
 >
   <div
     class="tc__switcher-btn__label"
@@ -248,8 +249,9 @@ exports[`SwitcherButton renders a button with a title attribute 1`] = `
 exports[`SwitcherButton renders a selected button 1`] = `
 <button
   class="tc__btn tc__switcher-btn"
-  data-selected="false"
+  data-selected="true"
   title="button title"
+  type="button"
 >
   <div
     class="tc__switcher-btn__label"

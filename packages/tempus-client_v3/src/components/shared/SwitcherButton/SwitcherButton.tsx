@@ -1,4 +1,4 @@
-import React, { FC, memo } from 'react';
+import { FC, memo } from 'react';
 import { colors } from '../Colors';
 import ButtonWrapper from '../ButtonWrapper';
 import Typography from '../Typography';
@@ -19,12 +19,12 @@ const SwitcherButton: FC<SwitcherButtonProps> = props => {
   const { logoType, label, title, selected, onClick } = props;
 
   return (
-    <ButtonWrapper className="tc__switcher-btn" title={title} onClick={onClick}>
+    <ButtonWrapper className="tc__switcher-btn" title={title} onClick={onClick} selected={selected}>
       <div className="tc__switcher-btn__label">
         <Typography variant="body-primary" weight={selected ? 'bold' : 'regular'}>
           {label}
         </Typography>
-        {selected && <Icon type="checkmark" color={colors.textSuccess} size="small" />}
+        {selected && <Icon variant="checkmark" color={colors.textSuccess} size="small" />}
       </div>
       <Logo type={logoType} size="small" />
     </ButtonWrapper>

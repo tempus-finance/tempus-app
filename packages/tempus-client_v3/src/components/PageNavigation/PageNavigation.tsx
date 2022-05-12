@@ -22,7 +22,7 @@ const PageNavigation: FC<PageNavigationProps> = ({ navigationLinks }) => {
   return (
     <div className="tc__page-navigation" style={containerStyle}>
       <div className="tc__page-navigation__background" />
-      <Tabs size="page-navigation">
+      <Tabs size="large">
         {navigationLinks.map((navigationLink: PageNavigationLink) => (
           <Tab key={navigationLink.text} label={navigationLink.text} href={navigationLink.path} />
         ))}

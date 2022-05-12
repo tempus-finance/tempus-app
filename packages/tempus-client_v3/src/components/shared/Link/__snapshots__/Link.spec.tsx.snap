@@ -1,0 +1,32 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Link renders a link to google 1`] = `
+<a
+  class="tc__link tc__external-link"
+  href="https://www.google.com"
+  rel="external noreferrer nofollow"
+  target="_blank"
+  title="link to google"
+>
+  Link
+</a>
+`;
+
+exports[`Link renders a link to internal site 1`] = `
+<a
+  class="tc__link tc__internal-link"
+  href="/team"
+  title="link to team page"
+>
+  Link
+</a>
+`;
+
+exports[`Link renders an empty link 1`] = `
+<a
+  class="tc__link "
+  href="/"
+>
+  Link
+</a>
+`;

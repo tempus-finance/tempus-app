@@ -1,5 +1,6 @@
 import { render } from '@testing-library/react';
-import Logo, { LogoProps, LogoType } from './Logo';
+import Logo, { LogoType } from './Logo';
+import LogoProps from './LogoProps';
 
 const defaultProps: LogoProps = {};
 
@@ -27,9 +28,11 @@ describe('Logo', () => {
     'token-yvBTC',
     'token-yvYFI',
     'token-yvwETH',
-    'protocol-Aave',
-    'protocol-Lido',
-    'protocol-Rari',
+    'protocol-aave',
+    'protocol-lido',
+    'protocol-rari',
+    'protocol-yearn',
+    'protocol-compound',
     'wallet-metamask',
     'wallet-walletconnect',
     'wallet-gnosis',

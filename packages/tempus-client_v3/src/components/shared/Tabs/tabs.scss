@@ -1,15 +1,16 @@
 $tabs-heights: (
   'small': 40px,
   'large': 64px,
-  'page-navigation': 60px
 );
+$tabs-border-size: 1px;
 $tabs-container-padding: 1px;
 
 .tc__tabs {
   display: flex;
   position: relative;
   background-color: var(--tabsBackground);
-  border: 1px solid var(--tabsBorder);
+  border: $tabs-border-size solid var(--tabsBorder);
+  box-sizing: border-box;
 
   & > .tc__tabs__tab {
     flex: 1;
@@ -18,17 +19,19 @@ $tabs-container-padding: 1px;
 }
 
 @each $size, $height in $tabs-heights {
+  $indicator-height: $height - 2 * $tabs-container-padding - 2 * $tabs-border-size;
+
   .tc__tabs__tabs-#{$size} {
     height: $height;
     border-radius: $height;
 
     & > .tc__tabs__indicator-container {
-      height: $height;
+      height: $indicator-height;
     }
 
     & .tc__tabs__indicator {
-      height: $height - 2 * $tabs-container-padding;
-      border-radius: $height - 2 * $tabs-container-padding;
+      height: $indicator-height;
+      border-radius: $indicator-height;
     }
   }
 }
@@ -37,6 +40,7 @@ $tabs-container-padding: 1px;
   display: flex;
   align-items: center;
   justify-content: center;
+  box-sizing: border-box;
 
   & > * {
     height: 100%;

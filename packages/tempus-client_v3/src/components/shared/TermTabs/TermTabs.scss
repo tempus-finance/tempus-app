@@ -18,13 +18,14 @@
   &:last-child {
     margin-right: 0;
   }
+
+  &:disabled {
+    background-color: var(--termTabsDisabledBackground);
+    border-color: var(--termTabsDisabledBorder);
+  }
 }
 
 .tc__term-tabs__term-selected {
   background-color: var(--termTabsSelectedBackground);
   border-color: var(--termTabsSelectedBorder);
-}
-
-.tc__term-tabs__term-date {
-  margin-top: 4px;
 }

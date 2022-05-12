@@ -1,5 +1,4 @@
 import { ComponentStory } from '@storybook/react';
-import React from 'react';
 import Logo from './Logo';
 
 export default {
@@ -86,13 +85,19 @@ export const TokenYvwETH = Template.bind({});
 TokenYvwETH.args = { type: 'token-yvwETH' };
 
 export const ProtocolAave = Template.bind({});
-ProtocolAave.args = { type: 'protocol-Aave' };
+ProtocolAave.args = { type: 'protocol-aave' };
 
 export const ProtocolLido = Template.bind({});
-ProtocolLido.args = { type: 'protocol-Lido' };
+ProtocolLido.args = { type: 'protocol-lido' };
 
 export const ProtocolRari = Template.bind({});
-ProtocolRari.args = { type: 'protocol-Rari' };
+ProtocolRari.args = { type: 'protocol-rari' };
+
+export const ProtocolCompound = Template.bind({});
+ProtocolCompound.args = { type: 'protocol-compound' };
+
+export const ProtocolYearn = Template.bind({});
+ProtocolYearn.args = { type: 'protocol-yearn' };
 
 export const WalletMetamask = Template.bind({});
 WalletMetamask.args = { type: 'wallet-metamask' };

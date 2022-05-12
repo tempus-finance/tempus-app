@@ -1,18 +1,20 @@
 import { FC, useCallback, useState } from 'react';
+import MaturityTerm from './MaturityTerm';
 import TermTab from './TermTab';
 import './TermTabs.scss';
 
 export interface TermTabsProps {
-  dates: Date[];
-  onChange?: (selected: Date) => void;
+  terms: MaturityTerm[];
+  disabled?: boolean;
+  onChange?: (selected: MaturityTerm) => void;
 }
 
 const TermTabs: FC<TermTabsProps> = props => {
-  const { dates, onChange } = props;
-  const [selectedDate, setSelectedDate] = useState<Date>(dates[0]);
+  const { terms, disabled, onChange } = props;
+  const [selectedTerm, setSelectedTerm] = useState<MaturityTerm>(terms[0]);
   const onClick = useCallback(
-    (value: Date) => {
-      setSelectedDate(value);
+    (value: MaturityTerm) => {
+      setSelectedTerm(value);
       onChange?.(value);
     },
     [onChange],
@@ -20,12 +22,13 @@ const TermTabs: FC<TermTabsProps> = props => {
 
   return (
     <div className="tc__term-tabs">
-      {dates.map((termDate, index) => (
+      {terms.map((term, index) => (
         <TermTab
-          date={termDate}
-          selected={selectedDate === termDate}
+          term={term}
+          selected={selectedTerm === term}
+          disabled={disabled}
           onClick={onClick}
-          key={`term-tab-${index}-${termDate.getTime()}`}
+          key={`term-tab-${index}-${term.date.getTime()}`}
         />
       ))}
     </div>

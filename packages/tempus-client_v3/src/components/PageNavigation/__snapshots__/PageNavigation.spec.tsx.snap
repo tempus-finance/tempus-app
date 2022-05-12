@@ -9,14 +9,14 @@ exports[`PageNavigation navigates to a path when the corresponding tab is clicke
     class="tc__page-navigation__background"
   />
   <div
-    class="tc__tabs tc__tabs__tabs-page-navigation"
+    class="tc__tabs tc__tabs__tabs-large"
   >
     <a
       class="tc__link tc__tabs__tab"
       href="/"
     >
       <div
-        style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+        style="font-style: normal; font-size: 20px; line-height: 28px; color: rgb(62, 78, 110); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
       >
         Link 1
       </div>
@@ -26,7 +26,7 @@ exports[`PageNavigation navigates to a path when the corresponding tab is clicke
       href="/link2"
     >
       <div
-        style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(255, 255, 255); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+        style="font-style: normal; font-size: 20px; line-height: 28px; color: rgb(255, 255, 255); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
       >
         Link 2
       </div>
@@ -52,14 +52,14 @@ exports[`PageNavigation renders a page navigation component with first tab selec
     class="tc__page-navigation__background"
   />
   <div
-    class="tc__tabs tc__tabs__tabs-page-navigation"
+    class="tc__tabs tc__tabs__tabs-large"
   >
     <a
       class="tc__link tc__tabs__tab"
       href="/"
     >
       <div
-        style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(255, 255, 255); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+        style="font-style: normal; font-size: 20px; line-height: 28px; color: rgb(255, 255, 255); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
       >
         Link 1
       </div>
@@ -69,7 +69,7 @@ exports[`PageNavigation renders a page navigation component with first tab selec
       href="/link2"
     >
       <div
-        style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+        style="font-style: normal; font-size: 20px; line-height: 28px; color: rgb(62, 78, 110); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
       >
         Link 2
       </div>
@@ -95,14 +95,14 @@ exports[`PageNavigation renders a page navigation component with second tab sele
     class="tc__page-navigation__background"
   />
   <div
-    class="tc__tabs tc__tabs__tabs-page-navigation"
+    class="tc__tabs tc__tabs__tabs-large"
   >
     <a
       class="tc__link tc__tabs__tab"
       href="/"
     >
       <div
-        style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+        style="font-style: normal; font-size: 20px; line-height: 28px; color: rgb(62, 78, 110); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
       >
         Link 1
       </div>
@@ -112,7 +112,7 @@ exports[`PageNavigation renders a page navigation component with second tab sele
       href="/link2"
     >
       <div
-        style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(255, 255, 255); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+        style="font-style: normal; font-size: 20px; line-height: 28px; color: rgb(255, 255, 255); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
       >
         Link 2
       </div>

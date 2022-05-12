@@ -1,9 +1,8 @@
-import React, { CSSProperties, FC } from 'react';
+import { CSSProperties, FC } from 'react';
 import parse from 'html-react-parser';
 import { colors } from '../Colors';
 
 export type TypographyVariant =
-  | 'page-navigation'
   | 'header'
   | 'subheader'
   | 'title'
@@ -25,14 +24,9 @@ export type TypographyColor =
 
 export type TypographyWeight = 'regular' | 'medium' | 'bold';
 
-type TypographyType = 'regular' | 'mono';
+export type TypographyType = 'regular' | 'mono';
 
 const typographyVariantMap = new Map<TypographyVariant, CSSProperties>();
-typographyVariantMap.set('page-navigation', {
-  fontStyle: 'bold',
-  fontSize: '20px',
-  lineHeight: '28px',
-});
 typographyVariantMap.set('header', {
   fontStyle: 'normal',
   fontSize: '40px',
@@ -89,7 +83,7 @@ const typographyTypeMap = new Map<TypographyType, string>();
 typographyTypeMap.set('regular', "'DM Sans', sans-serif");
 typographyTypeMap.set('mono', "'Azeret Mono', monospace");
 
-interface TypographyProps {
+export interface TypographyProps {
   variant: TypographyVariant;
   color?: TypographyColor;
   opacity?: number;

@@ -1,11 +1,10 @@
 import { FC } from 'react';
-import LogoProps from './LogoProps';
-import { LOGO_SIZE_DEFAULT } from './LogoConstants';
+import { InnerLogoProps } from './LogoProps';
 import withLogo from './withLogo';
 
-const ProtocolAave: FC<LogoProps> = ({ size = LOGO_SIZE_DEFAULT }) => (
+const ProtocolAave: FC<InnerLogoProps> = ({ size }) => (
   <svg
-    className="tc__logo tc__logo-protocol-Aave"
+    className="tc__logo tc__logo-protocol-aave"
     width={size}
     height={size}
     viewBox="0 0 40 40"

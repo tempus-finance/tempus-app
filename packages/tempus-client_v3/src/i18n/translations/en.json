@@ -1,0 +1,89 @@
+{
+  "App": {
+    "navMarkets": "Markets",
+    "navPortfolio": "Portfolio"
+  },
+  "ChainSelector": {
+    "title": "Select Network"
+  },
+  "CurrencyInputModal": {
+    "feesAndTransactionInfo": "Fees & transaction info",
+    "linkBlockExplorer": "Check it out on {{name}}"
+  },
+  "DepositModal": {
+    "labelExecuteDefault": "Execute",
+    "labelExecuteLoading": "Executing...",
+    "labelExecuteSuccess": "Successfully Executed",
+    "labelApproveDefault": "Approve Deposit",
+    "labelApproveLoading": "Approving...",
+    "labelApproveSuccess": "Successfully Approved",
+    "labelAvailableForDeposit": "Available for Deposit",
+    "labelYieldAtMaturity": "Yield-at-Maturity",
+    "title": "Pool Details",
+    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+  },
+  "DepositModalHeader": {
+    "titleRewardsAvailable": "Rewards available"
+  },
+  "FeeTooltip": {
+    "title": "Fee",
+    "titleDeposit": "Deposit",
+    "titleRedemption": "Redemption",
+    "titleEarlyRedemption": "Early Redemption",
+    "titleSwap": "Swap",
+    "infoText": "Swap fees will go to Liquidity providers"
+  },
+  "MarketsSubheader": {
+    "tabFixed": "Fixed",
+    "tabBoosted": "Boosted",
+    "tabAll": "All",
+    "optionFilter": "Filter",
+    "filterActive": "Active #",
+    "filterMatured": "Matured #",
+    "filterInactive": "Inactive #",
+    "optionSort": "Sort",
+    "sortAZ": "A-Z",
+    "sortMaturity": "Maturity",
+    "sortTVL": "TVL",
+    "sortAPR": "APR %",
+    "sortBalance": "Balance"
+  },
+  "PortfolioSubheader": {
+    "tabOverview": "Overview",
+    "tabPositions": "Positions"
+  },
+  "SettingsDropdown": {
+    "title": "Settings"
+  },
+  "SettingsPopup": {
+    "titleSlippage": "Slippage tolerance",
+    "slippageTooltipContent": "Your transaction will revert if the price changes unfavorably by more than this percentage.",
+    "titleLocale": "Language",
+    "localeName": "English",
+    "titleDarkMode": "Dark Theme"
+  },
+  "NumberInput": {
+    "buttonMax": "Max"
+  },
+  "SlippageInput": {
+    "buttonAuto": "Auto"
+  },
+  "TermTab": {
+    "title": "APR & Term"
+  },
+  "WalletButton": {
+    "buttonConnectWallet": "Connect Wallet",
+    "buttonUnsupported": "Unsupported"
+  },
+  "TotalValueLocked": {
+    "title": "Total Value Locked"
+  },
+  "WithdrawModal": {
+    "labelAvailableForWithdraw": "Available for Withdraw",
+    "title": "Position Details",
+    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    "labelExecuteDefault": "Execute Withdrawal",
+    "labelExecuteLoading": "Executing...",
+    "labelExecuteSuccess": "Successfully Executed"
+  }
+}

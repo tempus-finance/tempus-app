@@ -7,24 +7,48 @@ $dropdown-popup-offset: 7px;
 
 .tc__dropdown {
   position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
   width: $dropdown-width;
   height: $dropdown-height;
-  padding: 8px;
-  background-color: var(--dropdownBackground);
-  border: $dropdown-border;
-  box-sizing: border-box;
-  border-radius: $dropdown-border-radius;
-  box-shadow: var(--downWeakShadow);
 
-  &:hover {
-    background-color: var(--dropdownBackgroundHighlight);
+  .tc__tooltip-wrapper-anchor {
+    width: 100%;
+    height: 100%;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: var(--dropdownBackground);
+    border: $dropdown-border;
+    box-sizing: border-box;
+    border-radius: $dropdown-border-radius;
+    box-shadow: var(--downWeakShadow);
+
+    &:hover {
+      background-color: var(--dropdownBackgroundHighlight);
+    }
+
+    &[data-selected='true'] {
+      background-color: var(--dropdownBackgroundSelected);
+    }
   }
 
-  &[data-selected=true] {
-    background-color: var(--dropdownBackgroundSelected);
+  .tc__tooltip-wrapper {
+    width: 100%;
+    height: 100%;
+
+    .tc__tooltip {
+      transform: translateY(calc(100% + 8px));
+      width: var(--anchorWidth);
+      box-sizing: border-box;
+
+      &::before {
+        content: initial;
+      }
+
+      &::after {
+        content: initial;
+      }
+    }
   }
 }
 
@@ -32,20 +56,11 @@ $dropdown-popup-offset: 7px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  position: absolute;
-  bottom: -$dropdown-popup-offset;
-  left: -$dropdown-border-size;
-  transform: translateY(100%);
-  width: $dropdown-width;
-  padding: 12px;
-  border: $dropdown-border;
-  border-radius: $dropdown-border-radius;
+  padding: 4px 0;
   box-sizing: border-box;
-  background-color: var(--dropdownBackground);
-  box-shadow: var(--downWeakShadow);
   cursor: default;
 }
 
 .tc__dropdown-popup-title {
-  margin-bottom: 8px;
+  margin: 8px;
 }

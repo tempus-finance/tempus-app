@@ -1,0 +1,43 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ChartTooltip renders a chart tooltip with left placement 1`] = `
+<div>
+  <div
+    class="tc__chart__tooltip-chart"
+  >
+    <div
+      class="tc__tooltip tc__tooltip__left"
+    >
+      <div
+        style="width: 300px; height: 300px;"
+      >
+        X: 
+        100
+        Y: 
+        200
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ChartTooltip renders a chart tooltip with right placement 1`] = `
+<div>
+  <div
+    class="tc__chart__tooltip-chart"
+  >
+    <div
+      class="tc__tooltip tc__tooltip__right"
+    >
+      <div
+        style="width: 300px; height: 300px;"
+      >
+        X: 
+        100
+        Y: 
+        200
+      </div>
+    </div>
+  </div>
+</div>
+`;

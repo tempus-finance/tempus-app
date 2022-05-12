@@ -20,13 +20,13 @@ exports[`NumberInput renders a disabled number input 1`] = `
       class="tc__text-input__container"
     >
       <div
-        style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(122, 122, 122); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+        style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(122, 122, 122); font-weight: 400; font-family: 'Azeret Mono', monospace; opacity: 1;"
       >
         <input
           class="tc__base-input"
           disabled=""
           id="text-input-2"
-          pattern="[0-9,]*[.]?[0-9]*"
+          pattern="[0-9,]*[.]?[0-9]{0,18}"
           placeholder="number input placeholder"
           type="text"
           value=""
@@ -36,6 +36,7 @@ exports[`NumberInput renders a disabled number input 1`] = `
         class="tc__btn "
         data-selected="false"
         disabled=""
+        type="button"
       >
         <div
           style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(122, 122, 122); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
@@ -70,12 +71,12 @@ exports[`NumberInput renders a number input with label, value and caption 1`] = 
       class="tc__text-input__container"
     >
       <div
-        style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+        style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'Azeret Mono', monospace; opacity: 1;"
       >
         <input
           class="tc__base-input"
           id="text-input-1"
-          pattern="[0-9,]*[.]?[0-9]*"
+          pattern="[0-9,]*[.]?[0-9]{0,18}"
           placeholder="number input placeholder"
           type="text"
           value="value"
@@ -84,6 +85,7 @@ exports[`NumberInput renders a number input with label, value and caption 1`] = 
       <button
         class="tc__btn "
         data-selected="false"
+        type="button"
       >
         <div
           style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"

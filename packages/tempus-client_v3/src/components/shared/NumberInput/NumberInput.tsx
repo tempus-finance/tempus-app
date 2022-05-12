@@ -1,5 +1,6 @@
-import React, { FC, memo, useCallback, useMemo } from 'react';
-import { BigNumber, utils } from 'ethers';
+import { FC, memo, useCallback, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Decimal, Numberish } from 'tempus-core-services';
 import TextInput from '../TextInput';
 import ButtonWrapper from '../ButtonWrapper';
 import Typography from '../Typography';
@@ -9,7 +10,7 @@ import './NumberInput.scss';
 export interface NumberInputProps {
   label?: string;
   value?: string;
-  max: number | string | BigNumber;
+  max: Numberish;
   precision?: number;
   placeholder?: string;
   caption?: string;
@@ -34,22 +35,24 @@ const NumberInput: FC<NumberInputProps> = props => {
     onChange,
     onDebounceChange,
   } = props;
+  const { t } = useTranslation();
 
   const onMaxClick = useCallback(() => {
-    const formatedMax = utils.formatUnits(max, precision);
-    onChange?.(formatedMax);
-    onDebounceChange?.(formatedMax);
+    const formattedMax = new Decimal(new Decimal(max).toTruncated(precision)).toString();
+    onChange?.(formattedMax);
+    onDebounceChange?.(formattedMax);
   }, [max, precision, onChange, onDebounceChange]);
   const maxButton = useMemo(
     () => (
       <ButtonWrapper disabled={disabled} onClick={onMaxClick}>
         <Typography variant="body-primary" weight="regular" color={disabled ? 'text-disabled' : undefined}>
-          Max
+          {t('NumberInput.buttonMax')}
         </Typography>
       </ButtonWrapper>
     ),
-    [disabled, onMaxClick],
+    [disabled, onMaxClick, t],
   );
+  const pattern = useMemo(() => (precision > 0 ? `[0-9,]*[.]?[0-9]{0,${precision}}` : '[0-9,]*'), [precision]);
 
   return (
     <div className="tc__number-input">
@@ -57,7 +60,8 @@ const NumberInput: FC<NumberInputProps> = props => {
         label={label}
         value={value}
         placeholder={placeholder}
-        pattern="[0-9,]*[.]?[0-9]*"
+        pattern={pattern}
+        inputType="number"
         caption={caption}
         error={error}
         disabled={disabled}

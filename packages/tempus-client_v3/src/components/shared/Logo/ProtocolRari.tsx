@@ -1,11 +1,10 @@
 import { FC } from 'react';
-import LogoProps from './LogoProps';
-import { LOGO_SIZE_DEFAULT } from './LogoConstants';
+import { InnerLogoProps } from './LogoProps';
 import withLogo from './withLogo';
 
-const ProtocolRari: FC<LogoProps> = ({ size = LOGO_SIZE_DEFAULT }) => (
+const ProtocolRari: FC<InnerLogoProps> = ({ size }) => (
   <svg
-    className="tc__logo tc__logo-protocol-Rari"
+    className="tc__logo tc__logo-protocol-rari"
     width={size}
     height={size}
     viewBox="0 0 40 40"

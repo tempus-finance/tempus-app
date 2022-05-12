@@ -53,7 +53,9 @@ describe('Dropdown', () => {
 
     const button = getByRole('button');
     fireEvent.click(button); // open
-    fireEvent.click(button); // close
+
+    const backdrop = container.querySelector('.tc__tooltip-wrapper-backdrop') as Element;
+    fireEvent.click(backdrop); // close
 
     const popupElements = container.getElementsByClassName('tc__dropdown__popup');
 

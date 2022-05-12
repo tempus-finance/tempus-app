@@ -9,82 +9,84 @@ exports[`TermTabs renders a two-button term tabs 1`] = `
       <button
         class="tc__btn tc__term-tabs__term tc__term-tabs__term-selected"
         data-selected="false"
+        type="button"
       >
         <div
-          style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+          style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(71, 67, 80); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
         >
-          Term
+          APR & Term
         </div>
         <div
-          class="tc__term-tabs__term-date"
-          style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'Azeret Mono', monospace; opacity: 1;"
+          style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 700; font-family: 'Azeret Mono', monospace; opacity: 1;"
         >
-          <span
-            class="tc__formatted-date"
-          >
-            <div
-              style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
-            >
-              Jan
-            </div>
-            <span
-              class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
-            />
-            <div
-              style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
-            >
-              01
-            </div>
-            <span
-              class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
-            />
-            <div
-              style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
-            >
-              22
-            </div>
-          </span>
+          4.2%
         </div>
+        <span
+          class="tc__formatted-date"
+        >
+          <div
+            style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(71, 67, 80); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+          >
+            Jan
+          </div>
+          <span
+            class="tc__formatted-date__separator tc__formatted-date__separator-low-contrast"
+          />
+          <div
+            style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(71, 67, 80); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+          >
+            01
+          </div>
+          <span
+            class="tc__formatted-date__separator tc__formatted-date__separator-low-contrast"
+          />
+          <div
+            style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(71, 67, 80); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+          >
+            22
+          </div>
+        </span>
       </button>
       <button
         class="tc__btn tc__term-tabs__term "
         data-selected="false"
+        type="button"
       >
         <div
-          style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+          style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(71, 67, 80); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
         >
-          Term
+          APR & Term
         </div>
         <div
-          class="tc__term-tabs__term-date"
-          style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'Azeret Mono', monospace; opacity: 1;"
+          style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 700; font-family: 'Azeret Mono', monospace; opacity: 1;"
         >
-          <span
-            class="tc__formatted-date"
-          >
-            <div
-              style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
-            >
-              Jun
-            </div>
-            <span
-              class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
-            />
-            <div
-              style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
-            >
-              01
-            </div>
-            <span
-              class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
-            />
-            <div
-              style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
-            >
-              22
-            </div>
-          </span>
+          10.0%
         </div>
+        <span
+          class="tc__formatted-date"
+        >
+          <div
+            style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(71, 67, 80); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+          >
+            Jun
+          </div>
+          <span
+            class="tc__formatted-date__separator tc__formatted-date__separator-low-contrast"
+          />
+          <div
+            style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(71, 67, 80); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+          >
+            01
+          </div>
+          <span
+            class="tc__formatted-date__separator tc__formatted-date__separator-low-contrast"
+          />
+          <div
+            style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(71, 67, 80); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+          >
+            22
+          </div>
+        </span>
       </button>
     </div>
   </div>

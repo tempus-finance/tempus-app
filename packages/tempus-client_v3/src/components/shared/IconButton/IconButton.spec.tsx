@@ -4,7 +4,7 @@ import IconButton, { IconButtonProps } from './IconButton';
 const mockOnClick = jest.fn();
 
 const defaultProps: IconButtonProps = {
-  type: 'twitter',
+  variant: 'twitter',
   onClick: mockOnClick,
 };
 

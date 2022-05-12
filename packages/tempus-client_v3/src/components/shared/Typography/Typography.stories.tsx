@@ -1,4 +1,4 @@
-import React, { CSSProperties, FC } from 'react';
+import { CSSProperties, FC } from 'react';
 
 import Typography from './Typography';
 
@@ -196,15 +196,5 @@ export const BodyTertiary: FC = () => (
     <Typography variant="body-tertiary" weight="bold" type="mono">
       Body Tertiary Mono Bold
     </Typography>
-  </div>
-);
-
-export const PageNavigation: FC = () => (
-  <div style={style}>
-    <Typography variant="page-navigation" weight="bold" color="text-primary-inverted">
-      Page Navigation selected
-    </Typography>
-    <br />
-    <Typography variant="page-navigation">Page Navigation unselected</Typography>
   </div>
 );

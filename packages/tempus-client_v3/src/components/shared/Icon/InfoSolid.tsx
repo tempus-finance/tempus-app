@@ -1,9 +1,8 @@
 import { FC } from 'react';
-import IconProps from './IconProps';
-import { ICON_SIZE_DEFAULT } from './IconConstants';
+import { InnerIconProps } from './IconProps';
 import withIcon from './withIcon';
 
-const InfoSolid: FC<IconProps> = ({ size = ICON_SIZE_DEFAULT }) => (
+const InfoSolid: FC<InnerIconProps> = ({ size }) => (
   <svg
     className="tc__icon tc__icon-info-solid"
     width={size}

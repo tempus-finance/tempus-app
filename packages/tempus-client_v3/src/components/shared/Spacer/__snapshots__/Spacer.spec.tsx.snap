@@ -1,0 +1,49 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Spacer render a 16px spacer with variant box 1`] = `
+<div>
+  <div
+    style="width: 16px; height: 16px;"
+  />
+</div>
+`;
+
+exports[`Spacer render a 16px spacer with variant horizontal 1`] = `
+<div>
+  <div
+    style="width: 16px; height: 0px;"
+  />
+</div>
+`;
+
+exports[`Spacer render a 16px spacer with variant vertical 1`] = `
+<div>
+  <div
+    style="width: 0px; height: 16px;"
+  />
+</div>
+`;
+
+exports[`Spacer render a 32px spacer with variant box 1`] = `
+<div>
+  <div
+    style="width: 32px; height: 32px;"
+  />
+</div>
+`;
+
+exports[`Spacer render a 32px spacer with variant horizontal 1`] = `
+<div>
+  <div
+    style="width: 32px; height: 0px;"
+  />
+</div>
+`;
+
+exports[`Spacer render a 32px spacer with variant vertical 1`] = `
+<div>
+  <div
+    style="width: 0px; height: 32px;"
+  />
+</div>
+`;

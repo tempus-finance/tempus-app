@@ -4,6 +4,7 @@ exports[`CurrencySelectorItem renders a currency selector item 1`] = `
 <button
   class="tc__btn tc__currency-input__currency-selector-item "
   data-selected="false"
+  type="button"
 >
   <span
     class="tc__currency-input__currency-selector-item-content"
@@ -63,6 +64,7 @@ exports[`CurrencySelectorItem renders a disabled currency selector item 1`] = `
   class="tc__btn tc__currency-input__currency-selector-item tc__currency-input__currency-selector-item-disabled"
   data-selected="false"
   disabled=""
+  type="button"
 >
   <span
     class="tc__currency-input__currency-selector-item-content"

@@ -1,9 +1,8 @@
 import { FC } from 'react';
-import IconProps from './IconProps';
-import { ICON_COLOR_DEFAULT, ICON_SIZE_DEFAULT } from './IconConstants';
+import { InnerIconProps } from './IconProps';
 import withIcon from './withIcon';
 
-const Menu: FC<IconProps> = ({ size = ICON_SIZE_DEFAULT, color = ICON_COLOR_DEFAULT }) => (
+const Menu: FC<InnerIconProps> = ({ size, color }) => (
   <svg
     className="tc__icon tc__icon-menu"
     width={size}

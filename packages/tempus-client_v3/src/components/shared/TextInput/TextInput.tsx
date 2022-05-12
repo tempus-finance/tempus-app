@@ -1,4 +1,4 @@
-import React, { ReactNode, FC, useCallback, useMemo, useState, memo } from 'react';
+import { ReactNode, FC, useCallback, useMemo, useState, memo } from 'react';
 import BaseInput from '../BaseInput';
 import Typography from '../Typography';
 import '../Shadow';
@@ -10,6 +10,7 @@ export interface TextInputProps {
   value?: string;
   placeholder?: string;
   pattern?: string;
+  inputType?: 'text' | 'number';
   caption?: string;
   error?: string;
   disabled?: boolean;
@@ -17,6 +18,8 @@ export interface TextInputProps {
   startAdornment?: ReactNode;
   endAdornment?: ReactNode;
   onChange?: (value: string) => void;
+  onFocus?: () => void;
+  onBlur?: () => void;
   onDebounceChange?: (value: string) => void;
 }
 
@@ -28,6 +31,7 @@ const TextInput: FC<TextInputProps> = props => {
     value,
     placeholder,
     pattern,
+    inputType,
     caption,
     error,
     disabled,
@@ -35,6 +39,8 @@ const TextInput: FC<TextInputProps> = props => {
     startAdornment,
     endAdornment,
     onChange,
+    onFocus,
+    onBlur,
     onDebounceChange,
   } = props;
   const [focused, setFocused] = useState<boolean>(false);
@@ -43,8 +49,14 @@ const TextInput: FC<TextInputProps> = props => {
     return `text-input-${idCounter}`;
   }, []);
 
-  const handleFocus = useCallback(() => setFocused(true), []);
-  const handleBlur = useCallback(() => setFocused(false), []);
+  const handleFocus = useCallback(() => {
+    setFocused(true);
+    onFocus?.();
+  }, [onFocus]);
+  const handleBlur = useCallback(() => {
+    setFocused(false);
+    onBlur?.();
+  }, [onBlur]);
 
   let stateClass = '';
   if (disabled) {
@@ -66,7 +78,12 @@ const TextInput: FC<TextInputProps> = props => {
       )}
       <div className="tc__text-input__container">
         {startAdornment}
-        <Typography variant="body-primary" weight="regular" color={disabled ? 'text-disabled' : undefined}>
+        <Typography
+          variant="body-primary"
+          weight="regular"
+          type={inputType === 'number' ? 'mono' : 'regular'}
+          color={disabled ? 'text-disabled' : undefined}
+        >
           <BaseInput
             id={id}
             value={value}

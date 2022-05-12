@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom';
 import Tab, { TabProps } from './Tab';
 import './tabs.scss';
 
-export type TabsSize = 'small' | 'large' | 'page-navigation';
+export type TabsSize = 'small' | 'large';
 
 export interface TabsProps {
   size: TabsSize;
@@ -26,7 +26,9 @@ const Tabs = (props: TabsProps) => {
   return (
     <div className={`tc__tabs tc__tabs__tabs-${size}`}>
       {Children.map(children, child =>
-        isValidElement(child) ? <Tab {...child.props} selectedValue={value} onClick={onTabSelected} /> : null,
+        isValidElement(child) ? (
+          <Tab {...child.props} size={size} selectedValue={value} onClick={onTabSelected} />
+        ) : null,
       )}
       <div className="tc__tabs__indicator-container">
         {selectedTabIndex > -1 && (

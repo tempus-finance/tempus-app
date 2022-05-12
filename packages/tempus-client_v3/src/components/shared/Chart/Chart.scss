@@ -1,0 +1,55 @@
+.tc__chart__date-tick-container {
+  $date-tick-width: 40px;
+  $date-tick-height: 32px;
+
+  --tick-width: #{$date-tick-width};
+  --tick-height: #{$date-tick-height};
+  width: var(--tick-width);
+  height: var(--tick-height);
+}
+
+.tc__chart__date-tick {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.recharts-yAxis .tc__chart__tick-container {
+  transform: translate(calc(-1 * var(--tick-width)), calc(-1 * var(--tick-height) / 2));
+}
+
+.recharts-tooltip-cursor {
+  stroke: var(--chartTooltipLine);
+  stroke-width: 4px;
+}
+
+.tc__chart__text-tick-container {
+  $text-tick-width: 40px;
+  $text-tick-height: 16px;
+
+  --tick-width: #{$text-tick-width};
+  --tick-height: #{$text-tick-height};
+  width: var(--tick-width);
+  height: var(--tick-height);
+}
+
+.tc__chart__tooltip-chart {
+  width: 1px;
+  height: 1px;
+  position: relative;
+}
+
+.tc__chart__balance-tooltip-content {
+  width: 144px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
+
+  .tc__chart__balance-tooltip-content-value {
+    margin-top: 8px;
+    margin-bottom: 4px;
+  }
+}

@@ -1,11 +1,12 @@
 import { render } from '@testing-library/react';
-import Icon, { IconProps, IconType } from './Icon';
+import Icon, { IconVariant } from './Icon';
+import IconProps from './IconProps';
 
 const defaultProps: IconProps = {
   color: '#222222',
 };
 
-const subject = (props: IconProps & { type: IconType }) => render(<Icon {...props} />);
+const subject = (props: IconProps & { variant: IconVariant }) => render(<Icon {...props} />);
 
 describe('Icon', () => {
   [
@@ -51,60 +52,60 @@ describe('Icon', () => {
     'slippage',
     'globe',
     'dark',
-  ].forEach(type => {
-    it(`renders an icon with type ${type}`, () => {
-      const { container } = subject({ ...defaultProps, type: type as IconType });
+  ].forEach(variant => {
+    it(`renders an icon with type ${variant}`, () => {
+      const { container } = subject({ ...defaultProps, variant: variant as IconVariant });
       const svg = container.querySelector('svg');
 
       expect(svg).not.toBeNull();
       expect(svg).toHaveClass('tc__icon');
-      expect(svg).toHaveClass(`tc__icon-${type}`);
+      expect(svg).toHaveClass(`tc__icon-${variant}`);
       expect(svg).toMatchSnapshot();
     });
 
-    it(`renders an tiny icon with type ${type}`, () => {
-      const { container } = subject({ ...defaultProps, size: 'tiny', type: type as IconType });
+    it(`renders an tiny icon with type ${variant}`, () => {
+      const { container } = subject({ ...defaultProps, size: 'tiny', variant: variant as IconVariant });
       const svg = container.querySelector('svg');
 
       expect(svg).not.toBeNull();
       expect(svg).toHaveClass('tc__icon');
-      expect(svg).toHaveClass(`tc__icon-${type}`);
+      expect(svg).toHaveClass(`tc__icon-${variant}`);
       expect(svg).toMatchSnapshot();
     });
 
-    it(`renders an small icon with type ${type}`, () => {
-      const { container } = subject({ ...defaultProps, size: 'small', type: type as IconType });
+    it(`renders an small icon with type ${variant}`, () => {
+      const { container } = subject({ ...defaultProps, size: 'small', variant: variant as IconVariant });
       const svg = container.querySelector('svg');
 
       expect(svg).not.toBeNull();
       expect(svg).toHaveClass('tc__icon');
-      expect(svg).toHaveClass(`tc__icon-${type}`);
+      expect(svg).toHaveClass(`tc__icon-${variant}`);
       expect(svg).toMatchSnapshot();
     });
 
-    it(`renders an medium icon with type ${type}`, () => {
-      const { container } = subject({ ...defaultProps, size: 'medium', type: type as IconType });
+    it(`renders an medium icon with type ${variant}`, () => {
+      const { container } = subject({ ...defaultProps, size: 'medium', variant: variant as IconVariant });
       const svg = container.querySelector('svg');
 
       expect(svg).not.toBeNull();
       expect(svg).toHaveClass('tc__icon');
-      expect(svg).toHaveClass(`tc__icon-${type}`);
+      expect(svg).toHaveClass(`tc__icon-${variant}`);
       expect(svg).toMatchSnapshot();
     });
 
-    it(`renders an large icon with type ${type}`, () => {
-      const { container } = subject({ ...defaultProps, size: 'large', type: type as IconType });
+    it(`renders an large icon with type ${variant}`, () => {
+      const { container } = subject({ ...defaultProps, size: 'large', variant: variant as IconVariant });
       const svg = container.querySelector('svg');
 
       expect(svg).not.toBeNull();
       expect(svg).toHaveClass('tc__icon');
-      expect(svg).toHaveClass(`tc__icon-${type}`);
+      expect(svg).toHaveClass(`tc__icon-${variant}`);
       expect(svg).toMatchSnapshot();
     });
   });
 
   it('renders an icon with unsupported type', () => {
-    const { container } = subject({ ...defaultProps, type: 'UNSUPPORTED' as IconType });
+    const { container } = subject({ ...defaultProps, variant: 'UNSUPPORTED' as IconVariant });
     const svg = container.querySelector('svg');
 
     expect(svg).toBeNull();

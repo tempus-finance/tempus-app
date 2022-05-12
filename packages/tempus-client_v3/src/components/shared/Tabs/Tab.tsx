@@ -42,16 +42,6 @@ const tabStyleMap = new Map<TabsSize, TabStyleConfig>([
       fontWeightSelected: 'bold',
     },
   ],
-  [
-    'page-navigation',
-    {
-      variant: 'page-navigation',
-      textColor: 'primary-dark',
-      textColorSelected: 'text-primary-inverted',
-      fontWeight: 'regular',
-      fontWeightSelected: 'bold',
-    },
-  ],
 ]);
 
 const Tab: FC<TabProps> = props => {
@@ -85,7 +75,7 @@ const Tab: FC<TabProps> = props => {
       {labelComponent}
     </Link>
   ) : (
-    <ButtonWrapper className="tc__tabs__tab" onClick={handleClick}>
+    <ButtonWrapper className="tc__tabs__tab" onClick={handleClick} selected={isSelected}>
       {labelComponent}
     </ButtonWrapper>
   );

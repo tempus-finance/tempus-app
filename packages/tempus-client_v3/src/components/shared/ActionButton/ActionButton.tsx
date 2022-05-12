@@ -6,21 +6,21 @@ import Typography, { TypographyColor, TypographyWeight } from '../Typography';
 
 import './ActionButton.scss';
 
-type ButtonSize = 'small' | 'large';
-type ButtonVariant = 'primary' | 'secondary' | 'tertiary';
-type ButtonState = 'default' | 'disabled' | 'loading' | 'success';
-type ButtonLabels = {
+type ActionButtonSize = 'small' | 'large';
+type ActionButtonVariant = 'primary' | 'secondary' | 'tertiary';
+export type ActionButtonState = 'default' | 'disabled' | 'loading' | 'success';
+export type ActionButtonLabels = {
   default: string;
   loading: string;
   success: string;
 };
 
 export interface ButtonProps {
-  labels: ButtonLabels;
+  labels: ActionButtonLabels;
   onClick: () => void;
-  variant?: ButtonVariant;
-  state?: ButtonState;
-  size?: ButtonSize;
+  variant?: ActionButtonVariant;
+  state?: ActionButtonState;
+  size?: ActionButtonSize;
   fullWidth?: boolean;
 }
 
@@ -108,7 +108,7 @@ const ActionButton: FC<ButtonProps> = props => {
         `tc__actionButton ${borderClass} ${backgroundClass} ${hoverClass}` +
         ` ${shadowClass} ${cursorClass} ${heightClass} ${widthClass}`
       }
-      disabled={state === 'disabled'}
+      disabled={state !== 'default'}
       onClick={onClick}
     >
       {state === 'loading' && (
@@ -118,7 +118,7 @@ const ActionButton: FC<ButtonProps> = props => {
       )}
       {state === 'success' && (
         <div className={`tc__actionButton-status-${size}-content`}>
-          <Icon type="checkmark-solid" size={size === 'small' ? 12 : 20} />
+          <Icon variant="checkmark-solid" size={size === 'small' ? 12 : 20} />
         </div>
       )}
       <div className="tc__actionButton-status-label">

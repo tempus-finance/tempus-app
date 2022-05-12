@@ -1,6 +1,5 @@
-import { BigNumber, ethers } from 'ethers';
 import { FC, useCallback, useState } from 'react';
-import { div18f, increasePrecision, mul18f, NumberUtils, Ticker } from 'tempus-core-services';
+import { Ticker, Decimal, DecimalUtils } from 'tempus-core-services';
 import BaseInput from '../BaseInput';
 import Loading from '../Loading';
 import Typography from '../Typography';
@@ -10,11 +9,10 @@ import './CurrencyInput.scss';
 
 const inputPercentages = [25, 50, 75, 100];
 
-interface CurrencyInputProps {
+export interface CurrencyInputProps {
   precision: number;
-  maxAmount: BigNumber;
-  usdRates: Map<Ticker, BigNumber>;
-  ratePrecision: number;
+  maxAmount: Decimal;
+  usdRates: Map<Ticker, Decimal>;
   disabled?: boolean;
   error?: string;
   onAmountUpdate?: (value: string) => void;
@@ -22,36 +20,24 @@ interface CurrencyInputProps {
 }
 
 const CurrencyInput: FC<CurrencyInputProps> = props => {
-  const { precision, maxAmount, usdRates, ratePrecision, disabled, error, onAmountUpdate, onCurrencyUpdate } = props;
-  const [amount, setAmount] = useState('');
-  const [usdAmount, setUsdAmount] = useState<string | null>(NumberUtils.formatToCurrency('0', 2, '$'));
-  const [selectedCurrency, setSelectedCurrency] = useState(Array.from(usdRates.keys())[0]);
+  const { precision, maxAmount, usdRates, disabled, error, onAmountUpdate, onCurrencyUpdate } = props;
+  const [amount, setAmount] = useState<string>('');
+  const [usdAmount, setUsdAmount] = useState<string>(DecimalUtils.formatToCurrency(0, 2, '$'));
+  const [selectedCurrency, setSelectedCurrency] = useState<Ticker>(Array.from(usdRates.keys())[0]);
 
   const updateUsdAmount = useCallback(
     (value: string) => {
       const rate = usdRates.get(selectedCurrency);
-      let usdValue: BigNumber;
+      const usdValue = !value || !rate || value === '.' ? new Decimal(0) : new Decimal(value).mul(rate);
 
-      if (!value || !rate || value === '.') {
-        usdValue = BigNumber.from(0);
-      } else if (precision > ratePrecision) {
-        usdValue = mul18f(
-          ethers.utils.parseUnits(value, precision),
-          increasePrecision(rate, precision - ratePrecision),
-          precision,
-        );
-      } else {
-        usdValue = mul18f(ethers.utils.parseUnits(value, precision), rate, precision);
-      }
-
-      setUsdAmount(NumberUtils.formatToCurrency(ethers.utils.formatUnits(usdValue, precision), 2, '$'));
+      setUsdAmount(DecimalUtils.formatToCurrency(usdValue, 2, '$'));
     },
-    [usdRates, selectedCurrency, precision, ratePrecision],
+    [usdRates, selectedCurrency],
   );
 
   const handleValueChange = useCallback((value: string) => {
     setAmount(value);
-    setUsdAmount(null);
+    setUsdAmount('');
   }, []);
 
   const handleDebounceValueChange = useCallback(
@@ -74,13 +60,13 @@ const CurrencyInput: FC<CurrencyInputProps> = props => {
 
   const handlePercentageClick = useCallback(
     (percentage: number) => {
-      const value = div18f(mul18f(BigNumber.from(percentage), maxAmount, precision), BigNumber.from(100), precision);
-      const formattedValue = ethers.utils.formatUnits(value, precision);
+      const value = new Decimal(percentage).mul(maxAmount).div(100);
+      const formattedValue = new Decimal(value.toTruncated(precision)).toString();
 
       handleValueChange(formattedValue);
       handleDebounceValueChange(formattedValue);
     },
-    [handleDebounceValueChange, handleValueChange, maxAmount, precision],
+    [precision, handleDebounceValueChange, handleValueChange, maxAmount],
   );
 
   return (

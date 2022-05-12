@@ -3,9 +3,31 @@
   align-items: center;
   justify-content: space-between;
   height: 24px;
-  width: 100%;
+  width: calc(100% - 16px);
+  padding: 8px;
 
-  &:not(:last-child) {
-    margin-bottom: 16px;
+  &:hover {
+    background-color: var(--dropdownBackgroundHighlight);
+  }
+}
+
+.tc__dropdownItem__selectable {
+  align-items: flex-start;
+  position: relative;
+
+  .tc__btn {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    text-align: start;
+  }
+
+  .tc__dropdownItem__icon-container {
+    height: 100%;
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
   }
 }

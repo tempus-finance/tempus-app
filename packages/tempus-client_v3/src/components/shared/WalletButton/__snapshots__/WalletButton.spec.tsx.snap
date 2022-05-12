@@ -7,6 +7,7 @@ exports[`WalletButton renders a connected wallet button 1`] = `
   <button
     class="tc__btn tc__walletButton__connected-network"
     data-selected="false"
+    type="button"
   >
     <svg
       class="tc__logo tc__logo-token-ETH"
@@ -43,6 +44,7 @@ exports[`WalletButton renders a connected wallet button 1`] = `
   <button
     class="tc__btn tc__walletButton__connected-wallet"
     data-selected="false"
+    type="button"
   >
     <div
       class="tc__walletButton__connected-wallet-logo"
@@ -89,6 +91,7 @@ exports[`WalletButton renders a connected wallet button to an unsupported networ
   <button
     class="tc__btn tc__walletButton__connected-network"
     data-selected="false"
+    type="button"
   >
     <svg
       class="tc__icon tc__icon-exclamation-error"
@@ -116,6 +119,7 @@ exports[`WalletButton renders a connected wallet button to an unsupported networ
     class="tc__btn tc__walletButton__connected-wallet"
     data-selected="false"
     disabled=""
+    type="button"
   >
     <div
       style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
@@ -130,6 +134,7 @@ exports[`WalletButton renders a disconnected wallet button 1`] = `
 <button
   class="tc__btn tc__walletButton__disconnected"
   data-selected="false"
+  type="button"
 >
   <div
     style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
