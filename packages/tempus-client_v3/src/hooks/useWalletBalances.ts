@@ -1,9 +1,9 @@
 import { state, useStateObservable } from '@react-rxjs/core';
 import { createSignal } from '@react-rxjs/utils';
-import { useCallback, useEffect, useMemo } from 'react';
-import { useConnectWallet } from '@web3-onboard/react';
+import { useCallback, useEffect } from 'react';
 import { Chain, Decimal, getServices } from 'tempus-core-services';
 import { getConfigManager } from '../config/getConfigManager';
+import { useWalletAddress } from './useWalletAddress';
 
 // Token ID is chainName+tokenAddress
 type WalletBalancesMap = { [tokenId: string]: Decimal | undefined };
@@ -15,15 +15,7 @@ const state$ = state(walletBalances$, {});
 export function useWalletBalances(): [WalletBalancesMap] {
   const walletBalances = useStateObservable(state$);
 
-  const [{ wallet }] = useConnectWallet();
-
-  // TODO - Store wallet address in react-rxjs hook and use it here
-  const walletAddress = useMemo(() => {
-    if (!wallet) {
-      return null;
-    }
-    return wallet.accounts[0].address;
-  }, [wallet]);
+  const [walletAddress] = useWalletAddress();
 
   /**
    * Fetch balance for specified token and update state observable

@@ -3,7 +3,7 @@ import ledgerModule from '@web3-onboard/ledger';
 import injectedModule from '@web3-onboard/injected-wallets';
 import { init, useConnectWallet, useWallets } from '@web3-onboard/react';
 import { DecimalUtils, ethereumChainIdHex, ethereumForkChainIdHex, fantomChainIdHex, ZERO_ETH_ADDRESS } from 'tempus-core-services';
-import { useWalletBalances } from '../../hooks';
+import { useWalletBalances, useWalletData } from '../../hooks';
 import { WalletButton } from '../shared';
 import ChainSelector from '../ChainSelector';
 
@@ -64,11 +64,15 @@ const Wallet: FC = () => {
   const [{ wallet }, connect] = useConnectWallet();
 
   const [walletBalances] = useWalletBalances();
+  const [,setWalletAddress] = useWalletData();
 
   const [chainSelectorOpen, setChainSelectorOpen] = useState<boolean>(false);
 
-  // TODO - Store wallet data in global state store
-  // (Hookstate, or something else once we decide what we want to use for global state management)
+  useEffect(() => {
+    if (wallet) {
+      setWalletAddress(wallet.accounts[0].address);
+    }
+  }, [setWalletAddress, wallet]);
 
   // TODO - Delete local storage under 'connectedWallets' when user disconnects the wallet
 
@@ -129,6 +133,7 @@ const Wallet: FC = () => {
       return null;
     }
 
+    // TODO - Add number of decimals for chain native token in the config and use it here.
     return DecimalUtils.formatToCurrency(tokenBalance, 2);
   }, [walletBalances]);
 
