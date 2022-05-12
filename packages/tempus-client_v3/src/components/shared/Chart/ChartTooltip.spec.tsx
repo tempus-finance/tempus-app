@@ -20,7 +20,7 @@ const defaultProps: ChartTooltipProps = {
 
 const subject = (props: ChartTooltipProps) => render(<ChartTooltip {...props} />);
 
-describe('ChartTooltipContent', () => {
+describe('ChartTooltip', () => {
   it('renders a chart tooltip with left placement', () => {
     const { container } = subject({ ...defaultProps, coordinate: { x: 100 }, viewBox: { width: 150 } });
 
