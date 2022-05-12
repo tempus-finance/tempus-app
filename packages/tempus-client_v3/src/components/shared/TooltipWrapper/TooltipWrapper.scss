@@ -7,8 +7,8 @@
 
   .tc__tooltip-wrapper-backdrop {
     position: absolute;
-    left: calc(var(--anchorPosX) * -1);
-    top: calc(var(--anchorPosY) * -1);
+    left: calc(-1 * var(--anchorPosX));
+    top: calc(-1 * var(--anchorPosY));
     width: 100vw;
     height: 100vh;
     z-index: 9997;
