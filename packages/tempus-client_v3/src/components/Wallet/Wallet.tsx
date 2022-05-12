@@ -3,7 +3,7 @@ import ledgerModule from '@web3-onboard/ledger';
 import injectedModule from '@web3-onboard/injected-wallets';
 import { init, useConnectWallet, useWallets } from '@web3-onboard/react';
 import { DecimalUtils, ethereumChainIdHex, ethereumForkChainIdHex, fantomChainIdHex, ZERO_ETH_ADDRESS } from 'tempus-core-services';
-import { useWalletBalances, useWalletData } from '../../hooks';
+import { useWalletBalances, useWalletAddress } from '../../hooks';
 import { WalletButton } from '../shared';
 import ChainSelector from '../ChainSelector';
 
@@ -64,7 +64,7 @@ const Wallet: FC = () => {
   const [{ wallet }, connect] = useConnectWallet();
 
   const [walletBalances] = useWalletBalances();
-  const [,setWalletAddress] = useWalletData();
+  const [,setWalletAddress] = useWalletAddress();
 
   const [chainSelectorOpen, setChainSelectorOpen] = useState<boolean>(false);
 
