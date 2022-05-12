@@ -9,11 +9,10 @@ const defaultProps: ChartDotProps = {
 const subject = (props: ChartDotProps) => render(<ChartDot {...props} />);
 
 describe('ChartDot', () => {
-  let originalConsoleError: (...consoleData: any[]) => void = () => {};
+  const originalConsoleError = console.error;
 
   beforeEach(() => {
     // SVG tags (`path`, `circle`, etc.) are unrecognized in the testing browser, so ignore warnings
-    originalConsoleError = console.error;
     console.error = jest.fn();
   });
 
