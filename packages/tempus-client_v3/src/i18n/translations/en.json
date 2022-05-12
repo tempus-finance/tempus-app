@@ -20,7 +20,7 @@
     "labelAvailableForDeposit": "Available for Deposit",
     "labelYieldAtMaturity": "Yield-at-Maturity",
     "title": "Pool Details",
-    "desc": "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
   },
   "DepositModalHeader": {
     "titleRewardsAvailable": "Rewards available"
@@ -81,7 +81,7 @@
   "WithdrawModal": {
     "labelAvailableForWithdraw": "Available for Withdraw",
     "title": "Position Details",
-    "desc": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
     "labelExecuteDefault": "Execute Withdrawal",
     "labelExecuteLoading": "Executing...",
     "labelExecuteSuccess": "Successfully Executed"

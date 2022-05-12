@@ -20,7 +20,7 @@
     "labelAvailableForDeposit": "",
     "labelYieldAtMaturity": "",
     "title": "",
-    "desc": ""
+    "description": ""
   },
   "DepositModalHeader": {
     "titleRewardsAvailable": ""
@@ -81,7 +81,7 @@
   "WithdrawModal": {
     "labelAvailableForWithdraw": "",
     "title": "",
-    "desc": "",
+    "description": "",
     "labelExecuteDefault": "",
     "labelExecuteLoading": "",
     "labelExecuteSuccess": ""

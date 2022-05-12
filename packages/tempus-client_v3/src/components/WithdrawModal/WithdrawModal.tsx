@@ -51,7 +51,7 @@ const WithdrawModal: FC<WithdrawModalProps> = props => {
       open={open}
       onClose={onClose}
       title={t('WithdrawModal.title')}
-      description={t('WithdrawModal.desc')}
+      description={t('WithdrawModal.description')}
       inputPrecision={inputPrecision}
       balance={balance}
       usdRates={usdRates}

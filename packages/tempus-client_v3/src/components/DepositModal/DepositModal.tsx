@@ -94,7 +94,7 @@ const DepositModal: FC<DepositModalProps> = props => {
       open={open}
       onClose={onClose}
       title={t('DepositModal.title')}
-      description={t('DepositModal.desc')}
+      description={t('DepositModal.description')}
       header={<DepositModalHeader />}
       maturityTerms={maturityTerms}
       inputPrecision={inputPrecision}

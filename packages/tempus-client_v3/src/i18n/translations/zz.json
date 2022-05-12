@@ -7,23 +7,23 @@
     "title": "~~~~~====={{{{{(((((title)))))}}}}}=====~~~~~"
   },
   "CurrencyInputModal": {
-    "feesAndTransactionInfo": "",
-    "linkBlockExplorer": ""
+    "feesAndTransactionInfo": "~~~~~====={{{{{(((((feesAndTransactionInfo)))))}}}}}=====~~~~~",
+    "linkBlockExplorer": "~~~~~====={{{{{(((((linkBlockExplorer)))))}}}}}=====~~~~~"
   },
   "DepositModal": {
-    "labelExecuteDefault": "",
-    "labelExecuteLoading": "",
-    "labelExecuteSuccess": "",
-    "labelApproveDefault": "",
-    "labelApproveLoading": "",
-    "labelApproveSuccess": "",
-    "labelAvailableForDeposit": "",
-    "labelYieldAtMaturity": "",
-    "title": "",
-    "desc": ""
+    "labelExecuteDefault": "~~~~~====={{{{{(((((labelExecuteDefault)))))}}}}}=====~~~~~",
+    "labelExecuteLoading": "~~~~~====={{{{{(((((labelExecuteLoading)))))}}}}}=====~~~~~",
+    "labelExecuteSuccess": "~~~~~====={{{{{(((((labelExecuteSuccess)))))}}}}}=====~~~~~",
+    "labelApproveDefault": "~~~~~====={{{{{(((((labelApproveDefault)))))}}}}}=====~~~~~",
+    "labelApproveLoading": "~~~~~====={{{{{(((((labelApproveLoading)))))}}}}}=====~~~~~",
+    "labelApproveSuccess": "~~~~~====={{{{{(((((labelApproveSuccess)))))}}}}}=====~~~~~",
+    "labelAvailableForDeposit": "~~~~~====={{{{{(((((labelAvailableForDeposit)))))}}}}}=====~~~~~",
+    "labelYieldAtMaturity": "~~~~~====={{{{{(((((labelYieldAtMaturity)))))}}}}}=====~~~~~",
+    "title": "~~~~~====={{{{{(((((title)))))}}}}}=====~~~~~",
+    "description": "~~~~~====={{{{{(((((description)))))}}}}}=====~~~~~"
   },
   "DepositModalHeader": {
-    "titleRewardsAvailable": ""
+    "titleRewardsAvailable": "~~~~~====={{{{{(((((titleRewardsAvailable)))))}}}}}=====~~~~~"
   },
   "FeeTooltip": {
     "title": "~~~~~====={{{{{(((((title)))))}}}}}=====~~~~~",
@@ -79,11 +79,11 @@
     "title": "~~~~~====={{{{{(((((title)))))}}}}}=====~~~~~"
   },
   "WithdrawModal": {
-    "labelAvailableForWithdraw": "",
-    "title": "",
-    "desc": "",
-    "labelExecuteDefault": "",
-    "labelExecuteLoading": "",
-    "labelExecuteSuccess": ""
+    "labelAvailableForWithdraw": "~~~~~====={{{{{(((((labelAvailableForWithdraw)))))}}}}}=====~~~~~",
+    "title": "~~~~~====={{{{{(((((title)))))}}}}}=====~~~~~",
+    "description": "~~~~~====={{{{{(((((description)))))}}}}}=====~~~~~",
+    "labelExecuteDefault": "~~~~~====={{{{{(((((labelExecuteDefault)))))}}}}}=====~~~~~",
+    "labelExecuteLoading": "~~~~~====={{{{{(((((labelExecuteLoading)))))}}}}}=====~~~~~",
+    "labelExecuteSuccess": "~~~~~====={{{{{(((((labelExecuteSuccess)))))}}}}}=====~~~~~"
   }
 }
