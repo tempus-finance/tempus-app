@@ -26,7 +26,7 @@ const WithdrawModal: FC<WithdrawModalProps> = props => {
         currency={currency}
       />
     ),
-    [balance, currency],
+    [balance, currency, t],
   );
 
   const handleCurrencyChange = useCallback((newCurrency: Ticker) => {

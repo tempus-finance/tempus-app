@@ -54,7 +54,7 @@ const DepositModal: FC<DepositModalProps> = props => {
         />
       </>
     );
-  }, [amount, balance, currency]);
+  }, [amount, balance, currency, t]);
 
   const handleCurrencyChange = useCallback((newCurrency: Ticker) => {
     // TODO: load balance for new currency
