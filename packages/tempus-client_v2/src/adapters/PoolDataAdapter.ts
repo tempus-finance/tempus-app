@@ -765,13 +765,10 @@ export default class PoolDataAdapter {
     }
 
     try {
-      const { startDate: tempusPoolStartTime, maturityDate: tempusPoolMaturityTime } =
-        staticPoolDataState[tempusPoolAddress].get();
+      const { maturityDate } = staticPoolDataState[tempusPoolAddress].get();
 
-      const poolDurationInSeconds = (tempusPoolMaturityTime - tempusPoolStartTime) / 1000;
-      const scaleFactor = ethers.utils.parseEther(
-        ((SECONDS_IN_A_DAY * DAYS_IN_A_YEAR) / poolDurationInSeconds).toString(),
-      );
+      const poolTimeRemaining = (maturityDate - Date.now()) / 1000;
+      const scaleFactor = ethers.utils.parseEther(((SECONDS_IN_A_DAY * DAYS_IN_A_YEAR) / poolTimeRemaining).toString());
 
       const principals = await this.statisticService.estimatedDepositAndFix(
         tempusAMMAddress,
@@ -779,14 +776,21 @@ export default class PoolDataAdapter {
         isBackingToken,
       );
 
-      const estimatedMintedShares = await this.statisticService.estimatedMintedShares(
+      if (isBackingToken) {
+        const ratio = div18f(principals, tokenAmount);
+        const pureInterest = ratio.sub(BigNumber.from(ONE_ETH_IN_WEI));
+        return mul18f(pureInterest, scaleFactor);
+      }
+      const interestRate = await this.tempusPoolService.currentInterestRateStatic(tempusPoolAddress, callOverrideData);
+
+      const backingAmount = await this.tempusPoolService.numAssetsPerYieldToken(
         tempusPoolAddress,
         tokenAmount,
-        isBackingToken,
+        interestRate,
         callOverrideData,
       );
 
-      const ratio = div18f(principals, estimatedMintedShares);
+      const ratio = div18f(principals, backingAmount);
       const pureInterest = ratio.sub(BigNumber.from(ONE_ETH_IN_WEI));
       return mul18f(pureInterest, scaleFactor);
     } catch (error) {
