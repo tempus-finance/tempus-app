@@ -83,6 +83,7 @@ jobs:
           command: |
             apt update
             apt install -y p7zip-full || true
+            npx playwright install
             xvfb-run --auto-servernum --server-num=1 node setup.js
             xvfb-run --auto-servernum --server-num=2 npm run mm-setup
       - persist_to_workspace:
