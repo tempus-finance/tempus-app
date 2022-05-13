@@ -8,13 +8,24 @@ const TempusPoolsConfig = {
 };
 
 class ConfigManager {
-  private config: Config = {} as Config;
+  private config: Config = {};
+  private configFetchPromise: Promise<boolean> | null = null;
 
   async init(): Promise<boolean> {
-    return this.retrieveConfig();
+    if (!this.configFetchPromise) {
+      this.configFetchPromise = this.retrieveConfig();
+    }
+
+    return this.configFetchPromise;
   }
 
   getConfig(): Config {
+    return this.config;
+  }
+
+  async getConfigAsync(): Promise<Config> {
+    await this.init();
+
     return this.config;
   }
 
@@ -34,7 +45,26 @@ class ConfigManager {
     return pools;
   }
 
-  private async retrieveConfig(): Promise<boolean> {
+  getTokenList(): string[] {
+    const result: string[] = [];
+
+    const poolList = this.getPoolList();
+    poolList.forEach(pool => {
+      const poolChain = pool.chain;
+
+      result.push(
+        `${poolChain}-${pool.backingTokenAddress}`,
+        `${poolChain}-${pool.yieldBearingTokenAddress}`,
+        `${poolChain}-${pool.principalsAddress}`,
+        `${poolChain}-${pool.yieldsAddress}`,
+        `${poolChain}-${pool.ammAddress}`,
+      );
+    });
+
+    return result;
+  }
+
+  async retrieveConfig(): Promise<boolean> {
     try {
       const octokit = new Octokit();
 

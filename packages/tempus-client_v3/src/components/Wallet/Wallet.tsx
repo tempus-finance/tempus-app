@@ -3,7 +3,7 @@ import ledgerModule from '@web3-onboard/ledger';
 import injectedModule from '@web3-onboard/injected-wallets';
 import { init, useConnectWallet, useWallets } from '@web3-onboard/react';
 import { DecimalUtils, ethereumChainIdHex, ethereumForkChainIdHex, fantomChainIdHex, ZERO_ETH_ADDRESS } from 'tempus-core-services';
-import { useWalletBalances, useWalletAddress } from '../../hooks';
+import { useTokenBalance, useWalletAddress } from '../../hooks';
 import { WalletButton } from '../shared';
 import ChainSelector from '../ChainSelector';
 
@@ -63,7 +63,8 @@ const Wallet: FC = () => {
   const connectedWallets = useWallets();
   const [{ wallet }, connect] = useConnectWallet();
 
-  const [walletBalances] = useWalletBalances();
+  // TODO - Once we add state for currently selected chain, use it to get native token balance for selected chain
+  const [nativeTokenBalance] = useTokenBalance(`ethereum-${ZERO_ETH_ADDRESS}`);
   const [,setWalletAddress] = useWalletAddress();
 
   const [chainSelectorOpen, setChainSelectorOpen] = useState<boolean>(false);
@@ -127,15 +128,13 @@ const Wallet: FC = () => {
   }, [wallet]);
 
   const balance = useMemo(() => {
-    // TODO - Once we add state for currently selected chain, use it to get token balance for selected chain
-    const tokenBalance = walletBalances[`ethereum-${ZERO_ETH_ADDRESS}`];
-    if (!tokenBalance) {
+    if (!nativeTokenBalance) {
       return null;
     }
 
     // TODO - Add number of decimals for chain native token in the config and use it here.
-    return DecimalUtils.formatToCurrency(tokenBalance, 2);
-  }, [walletBalances]);
+    return DecimalUtils.formatToCurrency(nativeTokenBalance, 2);
+  }, [nativeTokenBalance]);
 
   return (
     <>
