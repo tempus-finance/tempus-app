@@ -7,11 +7,22 @@ const TempusPoolsConfig = {
   path: 'config.json',
 };
 
+interface TokenListItem {
+  chain: Chain;
+  address: string;
+}
+
 class ConfigManager {
   private config: Config = {};
 
+  private tokenList: TokenListItem[] = [];
+
   async init(): Promise<boolean> {
-    return this.retrieveConfig();
+    const success = await this.retrieveConfig();
+
+    this.retrieveTokenList();
+
+    return success;
   }
 
   getConfig(): Config {
@@ -34,8 +45,12 @@ class ConfigManager {
     return pools;
   }
 
-  getTokenList(): { chain: Chain; address: string }[] {
-    const result: { chain: Chain; address: string }[] = [];
+  getTokenList(): TokenListItem[] {
+    return this.tokenList;
+  }
+
+  private retrieveTokenList(): void {
+    const result: TokenListItem[] = [];
 
     const poolList = this.getPoolList();
     poolList.forEach(pool => {
@@ -69,10 +84,10 @@ class ConfigManager {
       }
     });
 
-    return result;
+    this.tokenList = result;
   }
 
-  async retrieveConfig(): Promise<boolean> {
+  private async retrieveConfig(): Promise<boolean> {
     try {
       const octokit = new Octokit();
 
