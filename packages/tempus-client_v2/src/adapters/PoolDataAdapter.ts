@@ -721,6 +721,7 @@ export default class PoolDataAdapter {
       !this.tempusAMMService ||
       !this.statisticService ||
       !this.vaultService ||
+      !this.tempusControllerService ||
       !this.chain
     ) {
       console.error(
@@ -739,10 +740,10 @@ export default class PoolDataAdapter {
       return Promise.reject();
     }
 
+    const provider = getDefaultProvider(this.chain, getChainConfig);
+
     // Skip Fixed APR fetch if target block tag is older then the Tempus Pool
     if (blockTag && tempusPoolStartTime) {
-      const provider = getDefaultProvider(this.chain, getChainConfig);
-
       const pastBlock = await provider.getBlock(blockTag);
       // Convert block timestamp from seconds to milliseconds
       if (pastBlock.timestamp * 1000 < tempusPoolStartTime) {
@@ -767,7 +768,30 @@ export default class PoolDataAdapter {
     try {
       const { maturityDate } = staticPoolDataState[tempusPoolAddress].get();
 
-      const poolTimeRemaining = (maturityDate - Date.now()) / 1000;
+      const [depositedEvents, swapEvents, redeemedEvents] = await Promise.all([
+        this.tempusControllerService.getDepositedEvents({ forPool: tempusPoolAddress }),
+        this.vaultService.getSwapEvents({ forPoolId: tempusPoolId }),
+        this.tempusControllerService.getRedeemedEvents({ forPool: tempusPoolAddress }),
+      ]);
+      const allEvents = [...depositedEvents, ...swapEvents, ...redeemedEvents];
+      let latestEventBlockNumber = 0;
+      allEvents.forEach(event => {
+        if (event.blockNumber > latestEventBlockNumber) {
+          latestEventBlockNumber = event.blockNumber;
+        }
+      });
+      let currentFixedAPRTime: number;
+      // In case event time was found
+      if (latestEventBlockNumber > 0) {
+        const latestEventBlock = await provider.getBlock(latestEventBlockNumber);
+        currentFixedAPRTime = latestEventBlock.timestamp * 1000;
+      }
+      // In case there are no events for tempus pool, we fallback to Date.now() instead of latest event time
+      else {
+        currentFixedAPRTime = Date.now();
+      }
+
+      const poolTimeRemaining = (maturityDate - currentFixedAPRTime) / 1000;
       const scaleFactor = ethers.utils.parseEther(((SECONDS_IN_A_DAY * DAYS_IN_A_YEAR) / poolTimeRemaining).toString());
 
       const principals = await this.statisticService.estimatedDepositAndFix(
