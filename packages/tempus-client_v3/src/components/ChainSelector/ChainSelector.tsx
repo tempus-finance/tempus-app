@@ -1,4 +1,4 @@
-import { FC, memo, useCallback } from 'react';
+import { FC, memo, useCallback, useEffect } from 'react';
 import { useSetChain } from '@web3-onboard/react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -7,10 +7,12 @@ import {
   ethereumChainIdHex,
   ethereumForkChainIdHex,
   fantomChainIdHex,
+  chainIdHexToChainName,
 } from 'tempus-core-services';
 import { Modal, SwitcherButton } from '../shared';
 
 import './ChainSelector.scss';
+import { setSelectedChain } from '../../hooks/useSelectedChain';
 
 interface ChainSelectorProps {
   open: boolean;
@@ -33,6 +35,17 @@ const ChainSelector: FC<ChainSelectorProps> = props => {
     },
     [setChain],
   );
+
+  useEffect(() => {
+    if (!connectedChain) {
+      return;
+    }
+
+    const selectedChain = chainIdHexToChainName(connectedChain.id);
+    if (selectedChain) {
+      setSelectedChain(selectedChain);
+    }
+  }, [connectedChain]);
 
   if (!connectedChain) {
     return null;
