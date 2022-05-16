@@ -15,7 +15,7 @@ export type ChartTick =
   | ((props: any) => ReactElement<SVGElement>)
   | boolean;
 
-export type ChartDot<X, Y> = (
+export type ChartDotElement<X, Y> = (
   dataX: X,
   dataY: Y,
   index: number,
@@ -40,7 +40,7 @@ export interface ChartProps<X, Y extends ValueType> {
   yTickFormatter?: (value: Y, index: number) => string;
   margin?: Margin;
   topPercentageProjected?: number;
-  dot?: ChartDot<X, Y>;
+  dot?: ChartDotElement<X, Y>;
   tooltipContent?: (x: NameType, y: Y) => ReactNode;
 }
 

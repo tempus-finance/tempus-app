@@ -5,7 +5,7 @@ import Typography from '../Typography';
 import './Chart.scss';
 
 export interface BalanceChartTooltipContentProps {
-  title: string;
+  title?: string;
   value: string;
   currency: Ticker;
   date: Date;
@@ -16,9 +16,16 @@ const BalanceChartTooltipContent: FC<BalanceChartTooltipContentProps> = props =>
 
   return (
     <div className="tc__chart__balance-tooltip-content">
-      <Typography variant="body-primary" weight="bold" color="text-secondary">
-        {title}
-      </Typography>
+      {title && (
+        <Typography
+          className="tc__chart__balance-tooltip-content-title"
+          variant="body-primary"
+          weight="bold"
+          color="text-secondary"
+        >
+          {title}
+        </Typography>
+      )}
       <div className="tc__chart__balance-tooltip-content-value">
         <Typography variant="subtitle" type="mono" weight="bold">
           {value} {currency}

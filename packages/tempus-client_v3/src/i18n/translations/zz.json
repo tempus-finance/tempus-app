@@ -52,6 +52,18 @@
     "tabOverview": "~~~~~====={{{{{(((((tabOverview)))))}}}}}=====~~~~~",
     "tabPositions": "~~~~~====={{{{{(((((tabPositions)))))}}}}}=====~~~~~"
   },
+  "PortfolioOverview": {
+    "titleCurrentValue": "~~~~~====={{{{{(((((titleCurrentValue)))))}}}}}=====~~~~~",
+    "subtitleCurrentValue": "~~~~~====={{{{{(((((subtitleCurrentValue)))))}}}}}=====~~~~~",
+    "titleEarnedYield": "~~~~~====={{{{{(((((titleEarnedYield)))))}}}}}=====~~~~~",
+    "subtitleEarnedYield": "~~~~~====={{{{{(((((subtitleEarnedYield)))))}}}}}=====~~~~~",
+    "titleProjectedYield": "~~~~~====={{{{{(((((titleProjectedYield)))))}}}}}=====~~~~~",
+    "subtitleProjectedYield": "~~~~~====={{{{{(((((subtitleProjectedYield)))))}}}}}=====~~~~~",
+    "titleTotalYieldEarned": "~~~~~====={{{{{(((((titleTotalYieldEarned)))))}}}}}=====~~~~~",
+    "titleTotalPortfolioValue": "~~~~~====={{{{{(((((titleTotalPortfolioValue)))))}}}}}=====~~~~~",
+    "tabYield": "~~~~~====={{{{{(((((tabYield)))))}}}}}=====~~~~~",
+    "tabValue": "~~~~~====={{{{{(((((tabValue)))))}}}}}=====~~~~~"
+  },
   "SettingsDropdown": {
     "title": "~~~~~====={{{{{(((((title)))))}}}}}=====~~~~~"
   },
