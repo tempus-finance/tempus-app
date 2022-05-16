@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, memo } from 'react';
 import { Typography } from '../../shared';
 
 interface PortfolioInfoBoxProps {
@@ -33,4 +33,4 @@ const PortfolioInfoBox: FC<PortfolioInfoBoxProps> = props => {
   );
 };
 
-export default PortfolioInfoBox;
+export default memo(PortfolioInfoBox);
