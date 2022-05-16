@@ -9,15 +9,14 @@ import {
   fantomChainIdHex,
   ZERO_ETH_ADDRESS,
 } from 'tempus-core-services';
-import { useWalletBalances } from '../../hooks';
 import { WalletButton } from '../shared';
 import ChainSelector from '../ChainSelector';
+import { useWalletBalances, setWalletAddress } from '../../hooks';
 
 // TODO - Check with designers if block native UI for wallet management is fine to use
 
 import tempusLogo from './svg/Logo.svg'; // TODO - Check with designers if logo and icons are fine.
 import tempusIcon from './png/Icon.png'; // TODO - Replace with svg image
-import { setWalletAddress } from '../../hooks/useWalletAddress';
 
 // Fetch wallet modules
 const injected = injectedModule();
@@ -70,7 +69,6 @@ const Wallet: FC = () => {
   const connectedWallets = useWallets();
   const [{ wallet }, connect] = useConnectWallet();
 
-  // TODO - Once we add state for currently selected chain, use it to get native token balance for selected chain
   const walletBalances = useWalletBalances();
 
   const [chainSelectorOpen, setChainSelectorOpen] = useState<boolean>(false);
@@ -134,6 +132,7 @@ const Wallet: FC = () => {
   }, [wallet]);
 
   const balance = useMemo(() => {
+    // TODO - Once we add state for currently selected chain, use it to get native token balance for selected chain
     const nativeTokenBalance = walletBalances[`ethereum-${ZERO_ETH_ADDRESS}`];
     if (!nativeTokenBalance) {
       return null;

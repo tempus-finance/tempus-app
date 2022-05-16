@@ -9,23 +9,12 @@ const TempusPoolsConfig = {
 
 class ConfigManager {
   private config: Config = {};
-  private configFetchPromise: Promise<boolean> | null = null;
 
   async init(): Promise<boolean> {
-    if (!this.configFetchPromise) {
-      this.configFetchPromise = this.retrieveConfig();
-    }
-
-    return this.configFetchPromise;
+    return this.retrieveConfig();
   }
 
   getConfig(): Config {
-    return this.config;
-  }
-
-  async getConfigAsync(): Promise<Config> {
-    await this.init();
-
     return this.config;
   }
 
