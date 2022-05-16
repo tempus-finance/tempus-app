@@ -1,8 +1,8 @@
 import { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Tab, Tabs, Typography } from '../../shared';
-import PortfolioValueChart from '../PortfolioValueChart';
-import PortfolioYieldChart from '../PortfolioYieldChart';
+import PortfolioValueChart from './PortfolioValueChart';
+import PortfolioYieldChart from './PortfolioYieldChart';
 import PortfolioInfoBox from './PortfolioInfoBox';
 
 const PortfolioOverview: FC = () => {

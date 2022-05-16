@@ -1,6 +1,6 @@
 import { FC, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { NavSubheader, NavSubheaderGroup, Tab, Tabs } from '../../shared';
+import { NavSubheader, NavSubheaderGroup, Tab, Tabs } from '../shared';
 
 export type PortfolioView = 'overview' | 'positions';
 

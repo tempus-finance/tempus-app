@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { Typography } from '../../../shared';
+import { Typography } from '../../shared';
 
 interface PortfolioInfoBoxProps {
   title: string;
