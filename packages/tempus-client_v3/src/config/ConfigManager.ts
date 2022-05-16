@@ -45,20 +45,39 @@ class ConfigManager {
     return pools;
   }
 
-  getTokenList(): string[] {
-    const result: string[] = [];
+  getTokenList(): { chain: Chain; address: string }[] {
+    const result: { chain: Chain; address: string }[] = [];
 
     const poolList = this.getPoolList();
     poolList.forEach(pool => {
       const poolChain = pool.chain;
 
-      result.push(
-        `${poolChain}-${pool.backingTokenAddress}`,
-        `${poolChain}-${pool.yieldBearingTokenAddress}`,
-        `${poolChain}-${pool.principalsAddress}`,
-        `${poolChain}-${pool.yieldsAddress}`,
-        `${poolChain}-${pool.ammAddress}`,
-      );
+      if (poolChain) {
+        result.push(
+          {
+            address: pool.backingTokenAddress,
+            chain: poolChain,
+          },
+          {
+            address: pool.yieldBearingTokenAddress,
+            chain: poolChain,
+          },
+          {
+            address: pool.principalsAddress,
+            chain: poolChain,
+          },
+          {
+            address: pool.yieldsAddress,
+            chain: poolChain,
+          },
+          {
+            address: pool.ammAddress,
+            chain: poolChain,
+          },
+        );
+      } else {
+        console.warn(`Pool ${pool.address} does not contain chain in it's config!`);
+      }
     });
 
     return result;

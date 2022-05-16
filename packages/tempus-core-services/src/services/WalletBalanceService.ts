@@ -20,6 +20,6 @@ export class WalletBalanceService {
     }
 
     const contract = new ERC20Contract(this.chain, tokenAddress);
-    return contract.balanceOf(walletAddress);
+    return new Decimal(await contract.balanceOf(walletAddress));
   }
 }

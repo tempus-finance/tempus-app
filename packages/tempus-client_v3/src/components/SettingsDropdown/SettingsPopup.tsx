@@ -1,6 +1,6 @@
 import { ChangeEvent, FC, memo, useCallback } from 'react';
 import { Decimal } from 'tempus-core-services';
-import { SUPPORTED_LOCALE_NAMES, SupportedLocale, useLocale, useUserPreferences } from '../../hooks';
+import { SUPPORTED_LOCALE_NAMES, SupportedLocale, useLocale, useUserPreferences, useWalletBalances } from '../../hooks';
 import {
   DropdownSelectableItem,
   DropdownSelector,
@@ -14,6 +14,9 @@ import {
 const SettingsPopup: FC = () => {
   const [locale, setLocale] = useLocale();
   const [preference, setPreferences] = useUserPreferences();
+
+  const walletBalances = useWalletBalances();
+  console.log(walletBalances);
 
   const handleLocaleChange = useCallback((code: string) => setLocale(code as SupportedLocale), [setLocale]);
   const handleChangeDark = useCallback(

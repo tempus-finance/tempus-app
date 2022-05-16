@@ -2,8 +2,14 @@ import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import ledgerModule from '@web3-onboard/ledger';
 import injectedModule from '@web3-onboard/injected-wallets';
 import { init, useConnectWallet, useWallets } from '@web3-onboard/react';
-import { DecimalUtils, ethereumChainIdHex, ethereumForkChainIdHex, fantomChainIdHex, ZERO_ETH_ADDRESS } from 'tempus-core-services';
-import { useTokenBalance, useWalletAddress } from '../../hooks';
+import {
+  DecimalUtils,
+  ethereumChainIdHex,
+  ethereumForkChainIdHex,
+  fantomChainIdHex,
+  ZERO_ETH_ADDRESS,
+} from 'tempus-core-services';
+import { useWalletBalances } from '../../hooks';
 import { WalletButton } from '../shared';
 import ChainSelector from '../ChainSelector';
 
@@ -11,6 +17,7 @@ import ChainSelector from '../ChainSelector';
 
 import tempusLogo from './svg/Logo.svg'; // TODO - Check with designers if logo and icons are fine.
 import tempusIcon from './png/Icon.png'; // TODO - Replace with svg image
+import { setWalletAddress } from '../../hooks/useWalletAddress';
 
 // Fetch wallet modules
 const injected = injectedModule();
@@ -64,8 +71,7 @@ const Wallet: FC = () => {
   const [{ wallet }, connect] = useConnectWallet();
 
   // TODO - Once we add state for currently selected chain, use it to get native token balance for selected chain
-  const [nativeTokenBalance] = useTokenBalance(`ethereum-${ZERO_ETH_ADDRESS}`);
-  const [,setWalletAddress] = useWalletAddress();
+  const walletBalances = useWalletBalances();
 
   const [chainSelectorOpen, setChainSelectorOpen] = useState<boolean>(false);
 
@@ -73,7 +79,7 @@ const Wallet: FC = () => {
     if (wallet) {
       setWalletAddress(wallet.accounts[0].address);
     }
-  }, [setWalletAddress, wallet]);
+  }, [wallet]);
 
   // TODO - Delete local storage under 'connectedWallets' when user disconnects the wallet
 
@@ -128,13 +134,14 @@ const Wallet: FC = () => {
   }, [wallet]);
 
   const balance = useMemo(() => {
+    const nativeTokenBalance = walletBalances[`ethereum-${ZERO_ETH_ADDRESS}`];
     if (!nativeTokenBalance) {
       return null;
     }
 
     // TODO - Add number of decimals for chain native token in the config and use it here.
     return DecimalUtils.formatToCurrency(nativeTokenBalance, 2);
-  }, [nativeTokenBalance]);
+  }, [walletBalances]);
 
   return (
     <>

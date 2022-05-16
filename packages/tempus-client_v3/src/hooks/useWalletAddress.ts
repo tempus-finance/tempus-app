@@ -1,7 +1,14 @@
-import { state, useStateObservable } from '@react-rxjs/core';
-import { createSignal } from '@react-rxjs/utils';
+import { bind } from '@react-rxjs/core';
+import { Subject } from 'rxjs';
 
-const [walletAddress$, setWalletAddress] = createSignal<string | null>();
+const walletAddressSubject$ = new Subject<string>();
+export const setWalletAddress = (walletAddress: string): void => {
+  walletAddressSubject$.next(walletAddress);
+};
+
+export const [useWalletAddress, walletAddress$] = bind(walletAddressSubject$);
+
+/* const [walletAddress$, setWalletAddress] = createSignal<string | null>();
 const state$ = state(walletAddress$, null);
 
 export function useWalletAddress(): [string | null, typeof setWalletAddress] {
@@ -9,3 +16,5 @@ export function useWalletAddress(): [string | null, typeof setWalletAddress] {
 
   return [walletAddress, setWalletAddress];
 }
+
+export default walletAddress$; */
