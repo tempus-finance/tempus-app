@@ -16,7 +16,7 @@ export interface ModalProps {
   header?: ReactNode;
 }
 
-interface ModalStyleProps {
+export interface ModalStyleProps {
   variant?: ModalVariant;
   size?: ModalSize;
 }

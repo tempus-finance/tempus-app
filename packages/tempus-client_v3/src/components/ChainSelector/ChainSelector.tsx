@@ -1,5 +1,6 @@
 import { FC, memo, useCallback } from 'react';
 import { useSetChain } from '@web3-onboard/react';
+import { useTranslation } from 'react-i18next';
 import {
   Chain,
   chainNameToHexChainId,
@@ -18,6 +19,7 @@ interface ChainSelectorProps {
 
 const ChainSelector: FC<ChainSelectorProps> = props => {
   const [{ connectedChain }, setChain] = useSetChain();
+  const { t } = useTranslation();
 
   const { open, onClose } = props;
 
@@ -38,7 +40,7 @@ const ChainSelector: FC<ChainSelectorProps> = props => {
 
   return (
     <div className="tc__chainSelector">
-      <Modal title="Select Network" open={open} onClose={onClose}>
+      <Modal title={t('ChainSelector.title')} open={open} onClose={onClose}>
         <SwitcherButton
           label="Ethereum"
           logoType="token-ETH"

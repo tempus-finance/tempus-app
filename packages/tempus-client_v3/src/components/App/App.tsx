@@ -1,26 +1,29 @@
 import { memo, useEffect, useState } from 'react';
 import { Route, Routes } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { initServices } from 'tempus-core-services';
 import { useLocale, useUserPreferences } from '../../hooks';
 import Markets from '../Markets';
 import Navbar from '../Navbar/Navbar';
 import { getConfigManager } from '../../config/getConfigManager';
 import PageNavigation, { PageNavigationLink } from '../PageNavigation';
-import PortfolioSubheader from '../PortfolioSubheader/PortfolioSubheader';
+import Portfolio from '../Portfolio';
 import TotalValueLocked from '../TotalValueLocked';
 
 import './App.scss';
 
-const navigationLinks: PageNavigationLink[] = [
-  { text: 'Markets', path: '/' },
-  { text: 'Portfolio', path: '/portfolio' },
-];
-
 const App = () => {
   const [servicesLoaded, setServicesLoaded] = useState<boolean>(false);
+  const { t } = useTranslation();
+
   // to keep at least one subscriber of the stream insides the hook
   useLocale();
   useUserPreferences();
+
+  const navigationLinks: PageNavigationLink[] = [
+    { text: t('App.navMarkets'), path: '/' },
+    { text: t('App.navPortfolio'), path: '/portfolio' },
+  ];
 
   useEffect(() => {
     const retrieveConfig = () => {
@@ -52,7 +55,7 @@ const App = () => {
           <div className="tc__app__body">
             <Routes>
               <Route path="/" element={<Markets />} />
-              <Route path="/portfolio" element={<PortfolioSubheader />} />
+              <Route path="/portfolio" element={<Portfolio />} />
             </Routes>
           </div>
         </>

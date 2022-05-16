@@ -3,7 +3,7 @@ import { Ticker } from 'tempus-core-services';
 import Icon from '../Icon';
 import CurrencySelectorItem from './CurrencySelectorItem';
 
-interface CurrencySelectorProps {
+export interface CurrencySelectorProps {
   currencies: Ticker | Ticker[];
   disabled?: boolean;
   onChange?: (selectedCurrency: Ticker) => void;

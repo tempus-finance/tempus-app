@@ -1,4 +1,5 @@
 import { FC, useCallback, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ChainConfig, Decimal, Ticker } from 'tempus-core-services';
 import { ModalProps } from '../shared/Modal/Modal';
 import { MaturityTerm } from '../shared/TermTabs';
@@ -7,7 +8,7 @@ import CurrencyInputModal, { CurrencyInputModalInfoRow } from '../CurrencyInputM
 import { ActionButtonLabels, ActionButtonState } from '../shared';
 import './DepositModal.scss';
 
-interface DepositModalProps extends ModalProps {
+export interface DepositModalProps extends ModalProps {
   inputPrecision: number;
   usdRates: Map<Ticker, Decimal>;
   maturityTerms: MaturityTerm[];
@@ -21,26 +22,39 @@ const DepositModal: FC<DepositModalProps> = props => {
   const [currency, setCurrency] = useState(Array.from(usdRates.keys())[0]);
   const [approved, setApproved] = useState(false);
   const [actionButtonState, setActionButtonState] = useState<ActionButtonState>('default');
+  const { t } = useTranslation();
 
   const actionButtonLabels: ActionButtonLabels = approved
-    ? { default: 'Execute', loading: 'Executing...', success: 'Successfully Executed' }
-    : { default: 'Approve Deposit', loading: 'Approving...', success: 'Successfully Approved' };
+    ? {
+        default: t('DepositModal.labelExecuteDefault'),
+        loading: t('DepositModal.labelExecuteLoading'),
+        success: t('DepositModal.labelExecuteSuccess'),
+      }
+    : {
+        default: t('DepositModal.labelApproveDefault'),
+        loading: t('DepositModal.labelApproveLoading'),
+        success: t('DepositModal.labelApproveSuccess'),
+      };
 
   const infoRows = useMemo(() => {
     // TODO: Replace with real yield based on input amount
     const yieldAtMaturity = amount.mul(0.1);
     return (
       <>
-        <CurrencyInputModalInfoRow label="Available for Deposit" value={balance.toString()} currency={currency} />
         <CurrencyInputModalInfoRow
-          label="Yield-at-Maturity"
+          label={t('DepositModal.labelAvailableForDeposit')}
+          value={balance.toString()}
+          currency={currency}
+        />
+        <CurrencyInputModalInfoRow
+          label={t('DepositModal.labelYieldAtMaturity')}
           value={`${yieldAtMaturity}`}
           valueChange="increase"
           currency="stETH"
         />
       </>
     );
-  }, [amount, balance, currency]);
+  }, [amount, balance, currency, t]);
 
   const handleCurrencyChange = useCallback((newCurrency: Ticker) => {
     // TODO: load balance for new currency
@@ -79,8 +93,8 @@ const DepositModal: FC<DepositModalProps> = props => {
     <CurrencyInputModal
       open={open}
       onClose={onClose}
-      title="Pool Details"
-      description="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+      title={t('DepositModal.title')}
+      description={t('DepositModal.description')}
       header={<DepositModalHeader />}
       maturityTerms={maturityTerms}
       inputPrecision={inputPrecision}

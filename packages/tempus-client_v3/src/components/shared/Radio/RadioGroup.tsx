@@ -1,7 +1,7 @@
 import { Children, cloneElement, FC, isValidElement, ReactElement } from 'react';
 import { RadioProps } from './Radio';
 
-interface RadioGroupProps {
+export interface RadioGroupProps {
   value?: any;
   onChange?: (value: any) => void;
   children?: ReactElement<RadioProps> | ReactElement<RadioProps>[];
@@ -15,7 +15,8 @@ const RadioGroup: FC<RadioGroupProps> = props => {
       {Children.map(children, (child, index) =>
         isValidElement(child)
           ? cloneElement(child, { checked: value === child.props.value, onChange, key: `radio-${index}` })
-          : null)}
+          : null,
+      )}
     </div>
   );
 };

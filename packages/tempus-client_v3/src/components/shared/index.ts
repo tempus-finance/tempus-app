@@ -1,3 +1,4 @@
+import Chart from './Chart';
 import Checkbox from './Checkbox';
 import CurrencyInput from './CurrencyInput';
 import FormattedDate from './FormattedDate';
@@ -30,6 +31,7 @@ import InfoTooltip from './InfoTooltip';
 import { Table, TableHead, TableHeadCell, TableBody, TableBodyCell, TableRow } from './Table';
 
 export * from './ActionButton';
+export * from './Chart';
 export * from './Colors';
 export * from './Icon';
 export * from './Logo';
@@ -41,6 +43,7 @@ export * from './Tabs';
 export {
   ActionButton,
   ButtonWrapper,
+  Chart,
   Checkbox,
   CurrencyInput,
   FormattedDate,

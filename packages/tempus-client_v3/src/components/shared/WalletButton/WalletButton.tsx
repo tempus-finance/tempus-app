@@ -1,4 +1,5 @@
 import { FC, memo, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import Blockies from 'react-blockies';
 import { Chain, chainToTicker, shortenAccount } from 'tempus-core-services';
 import ButtonWrapper from '../ButtonWrapper';
@@ -19,6 +20,7 @@ export interface WalletButtonProps {
 
 const WalletButton: FC<WalletButtonProps> = props => {
   const { address, balance, chain, onConnect, onNetworkClick, onWalletClick } = props;
+  const { t } = useTranslation();
 
   const selectedChainTokenTicker = useMemo(() => chainToTicker(chain), [chain]);
 
@@ -31,8 +33,7 @@ const WalletButton: FC<WalletButtonProps> = props => {
       {!address && (
         <ButtonWrapper className="tc__walletButton__disconnected" onClick={onConnect}>
           <Typography variant="body-primary" weight="bold">
-            {/* TODO - Needs translations */}
-            Connect Wallet
+            {t('WalletButton.buttonConnectWallet')}
           </Typography>
         </ButtonWrapper>
       )}
@@ -49,7 +50,7 @@ const WalletButton: FC<WalletButtonProps> = props => {
           >
             {!supportedChain && (
               <Typography variant="body-primary" weight="bold">
-                Unsupported
+                {t('WalletButton.buttonUnsupported')}
               </Typography>
             )}
             {supportedChain && (

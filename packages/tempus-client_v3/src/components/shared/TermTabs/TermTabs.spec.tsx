@@ -1,10 +1,16 @@
 import { fireEvent, render } from '@testing-library/react';
+import I18nProvider from '../../../i18n/I18nProvider';
 import MaturityTerm from './MaturityTerm';
 import TermTabs, { TermTabsProps } from './TermTabs';
 
 const mockOnChange = jest.fn<void, [MaturityTerm]>();
 
-const subject = (props: TermTabsProps) => render(<TermTabs {...props} />);
+const subject = (props: TermTabsProps) =>
+  render(
+    <I18nProvider>
+      <TermTabs {...props} />
+    </I18nProvider>,
+  );
 
 describe('TermTabs', () => {
   it('renders a two-button term tabs', () => {

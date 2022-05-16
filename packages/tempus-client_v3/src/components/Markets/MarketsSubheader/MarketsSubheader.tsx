@@ -1,4 +1,5 @@
 import { FC, useCallback, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Dropdown,
   DropdownCheckboxItem,
@@ -27,6 +28,7 @@ export interface MarketsSubheaderProps {
 
 const MarketsSubheader: FC<MarketsSubheaderProps> = props => {
   const { onPoolTypeChange, onViewTypeChange, onFilterChange, onSortTypeChange } = props;
+  const { t } = useTranslation();
   const [poolType, setPoolType] = useState<PoolType>('all');
   const [filters, setFilters] = useState(new Set<FilterType>());
   const [sortType, setSortType] = useState<SortType>('a-z');
@@ -88,29 +90,41 @@ const MarketsSubheader: FC<MarketsSubheaderProps> = props => {
     <NavSubheader>
       <NavSubheaderGroup>
         <Tabs size="small" value={poolType} onTabSelected={handlePoolTypeChange}>
-          <Tab label="Fixed" value="fixed" />
-          <Tab label="Boosted" value="boosted" />
-          <Tab label="All" value="all" />
+          <Tab label={t('MarketsSubheader.tabFixed')} value="fixed" />
+          <Tab label={t('MarketsSubheader.tabBoosted')} value="boosted" />
+          <Tab label={t('MarketsSubheader.tabAll')} value="all" />
         </Tabs>
         <IconButtonGroup types={['grid-view', 'list-view']} onChange={handleViewTypeChange} />
       </NavSubheaderGroup>
       <NavSubheaderGroup>
-        <Dropdown label="Filter">
-          <DropdownCheckboxItem label="Active #" value="active" onChange={handleFilterChange} />
-          <DropdownCheckboxItem label="Matured #" value="matured" onChange={handleFilterChange} />
-          <DropdownCheckboxItem label="Inactive #" value="inactive" onChange={handleFilterChange} />
+        <Dropdown label={t('MarketsSubheader.optionFilter')}>
+          <DropdownCheckboxItem
+            label={t('MarketsSubheader.filterActive')}
+            value="active"
+            onChange={handleFilterChange}
+          />
+          <DropdownCheckboxItem
+            label={t('MarketsSubheader.filterMatured')}
+            value="matured"
+            onChange={handleFilterChange}
+          />
+          <DropdownCheckboxItem
+            label={t('MarketsSubheader.filterInactive')}
+            value="inactive"
+            onChange={handleFilterChange}
+          />
         </Dropdown>
         <DropdownSelector
-          label="Sort"
+          label={t('MarketsSubheader.optionSort')}
           itemIcon={sortOrder === 'asc' ? 'down-arrow-thin' : 'up-arrow-thin'}
           selectedValue={sortType}
           onSelect={handleSortTypeChange}
         >
-          <DropdownSelectableItem label="A-Z" value="a-z" />
-          <DropdownSelectableItem label="Maturity" value="maturity" />
-          <DropdownSelectableItem label="TVL" value="tvl" />
-          <DropdownSelectableItem label="APR %" value="apr" />
-          <DropdownSelectableItem label="Balance" value="balance" />
+          <DropdownSelectableItem label={t('MarketsSubheader.sortAZ')} value="a-z" />
+          <DropdownSelectableItem label={t('MarketsSubheader.sortMaturity')} value="maturity" />
+          <DropdownSelectableItem label={t('MarketsSubheader.sortTVL')} value="tvl" />
+          <DropdownSelectableItem label={t('MarketsSubheader.sortAPR')} value="apr" />
+          <DropdownSelectableItem label={t('MarketsSubheader.sortBalance')} value="balance" />
         </DropdownSelector>
       </NavSubheaderGroup>
     </NavSubheader>

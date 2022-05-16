@@ -1,4 +1,5 @@
 import { FC, ReactNode, useCallback, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ChainConfig, Decimal, Ticker } from 'tempus-core-services';
 import FeeTooltip from '../FeeTooltip';
 import {
@@ -17,14 +18,14 @@ import { ModalProps } from '../shared/Modal/Modal';
 import TermTabs, { MaturityTerm } from '../shared/TermTabs';
 import './CurrencyInputModal.scss';
 
-interface CurrencyInputModalProps extends ModalProps {
+export interface CurrencyInputModalProps extends ModalProps {
   description: string;
   balance: Decimal;
   inputPrecision: number;
   usdRates: Map<Ticker, Decimal>;
   maturityTerms?: MaturityTerm[];
   chainConfig?: ChainConfig;
-  infoRows: ReactNode;
+  infoRows?: ReactNode;
   actionButtonLabels: ActionButtonLabels;
   actionButtonState?: ActionButtonState;
   onAmountChange?: (amount: Decimal) => void;
@@ -54,6 +55,7 @@ const CurrencyInputModal: FC<CurrencyInputModalProps> = props => {
   const [amount, setAmount] = useState('');
   const [transactionProgress, setTransactionProgress] = useState<number | null>(null);
   const [transactionHash, setTransactionHash] = useState<string | null>(null);
+  const { t } = useTranslation();
 
   const amountDecimal = useMemo(() => new Decimal(amount || 0), [amount]);
 
@@ -108,7 +110,7 @@ const CurrencyInputModal: FC<CurrencyInputModalProps> = props => {
       <div className="tc__currency-input-modal__action-container">
         <FeeTooltip fees={{ swap: 0.002 }}>
           <div className="tc__currency-input-modal__transaction-info">
-            <Typography variant="body-primary">Fees &amp; transaction info</Typography>
+            <Typography variant="body-primary">{t('CurrencyInputModal.feesAndTransactionInfo')}</Typography>
             <Icon variant="info-bordered" size="small" />
           </div>
         </FeeTooltip>
@@ -128,7 +130,9 @@ const CurrencyInputModal: FC<CurrencyInputModalProps> = props => {
             href={`${chainConfig.blockExplorerUrl}tx/${transactionHash}`}
             className="tc__currency-input-modal__transaction-link"
           >
-            <Typography variant="body-secondary">Check it out on {chainConfig.blockExplorerName}</Typography>
+            <Typography variant="body-secondary">
+              {t('CurrencyInputModal.linkBlockExplorer', { name: chainConfig.blockExplorerName })}
+            </Typography>
             <Icon variant="external" size="small" />
           </Link>
         )}

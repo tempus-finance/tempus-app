@@ -2,7 +2,7 @@ import { fireEvent, render } from '@testing-library/react';
 import { Ticker } from 'tempus-core-services';
 import CurrencySelectorItem, { CurrencySelectorItemProps } from './CurrencySelectorItem';
 
-const defaultProps = {
+const defaultProps: CurrencySelectorItemProps = {
   currency: 'ETH',
 };
 

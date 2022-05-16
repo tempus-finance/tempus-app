@@ -1,4 +1,5 @@
 import { FC, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { DecimalUtils, Numberish } from 'tempus-core-services';
 import { TooltipWrapper, Typography } from '../shared';
 import './FeeTooltip.scss';
@@ -10,22 +11,24 @@ export interface FeeTooltipFees {
   swap?: Numberish;
 }
 
-interface FeeTooltipProps {
+export interface FeeTooltipProps {
   fees: FeeTooltipFees;
 }
 
 const FeeTooltip: FC<FeeTooltipProps> = props => {
   const { fees, children } = props;
+  const { t } = useTranslation();
+
   const tooltipContent = useMemo(
     () => (
       <div className="tc__fee-tooltip__content">
         <Typography variant="body-primary" weight="bold">
-          Fee
+          {t('FeeTooltip.title')}
         </Typography>
         <div className="tc__fee-tooltip__fees">
           <div className="tc__fee-tooltip__fee-row">
             <Typography variant="body-primary" color="text-disabled">
-              Deposit
+              {t('FeeTooltip.titleDeposit')}
             </Typography>
             <Typography type="mono" variant="body-primary" color="text-primary">
               {DecimalUtils.formatPercentage(fees.deposit ?? 0)}
@@ -33,7 +36,7 @@ const FeeTooltip: FC<FeeTooltipProps> = props => {
           </div>
           <div className="tc__fee-tooltip__fee-row">
             <Typography variant="body-primary" color="text-disabled">
-              Redemption
+              {t('FeeTooltip.titleRedemption')}
             </Typography>
             <Typography type="mono" variant="body-primary" color="text-primary">
               {DecimalUtils.formatPercentage(fees.redemption ?? 0)}
@@ -41,7 +44,7 @@ const FeeTooltip: FC<FeeTooltipProps> = props => {
           </div>
           <div className="tc__fee-tooltip__fee-row">
             <Typography variant="body-primary" color="text-disabled">
-              Early Redemption
+              {t('FeeTooltip.titleEarlyRedemption')}
             </Typography>
             <Typography type="mono" variant="body-primary" color="text-primary">
               {DecimalUtils.formatPercentage(fees.earlyRedemption ?? 0)}
@@ -49,7 +52,7 @@ const FeeTooltip: FC<FeeTooltipProps> = props => {
           </div>
           <div className="tc__fee-tooltip__fee-row">
             <Typography variant="body-primary" color="text-disabled">
-              Swap
+              {t('FeeTooltip.titleSwap')}
             </Typography>
             <Typography type="mono" variant="body-primary" color="text-primary">
               {DecimalUtils.formatPercentage(fees.swap ?? 0)}
@@ -59,12 +62,12 @@ const FeeTooltip: FC<FeeTooltipProps> = props => {
         <hr />
         <span className="tc__fee-tooltip__info">
           <Typography variant="body-secondary" color="text-disabled">
-            Swap fees will go to Liquidity providers
+            {t('FeeTooltip.infoText')}
           </Typography>
         </span>
       </div>
     ),
-    [fees.deposit, fees.earlyRedemption, fees.redemption, fees.swap],
+    [fees.deposit, fees.earlyRedemption, fees.redemption, fees.swap, t],
   );
 
   return <TooltipWrapper tooltipContent={tooltipContent}>{children}</TooltipWrapper>;

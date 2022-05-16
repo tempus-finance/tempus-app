@@ -1,4 +1,5 @@
 import { FC, memo, useCallback, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Decimal, Numberish } from 'tempus-core-services';
 import TextInput from '../TextInput';
 import ButtonWrapper from '../ButtonWrapper';
@@ -34,6 +35,7 @@ const NumberInput: FC<NumberInputProps> = props => {
     onChange,
     onDebounceChange,
   } = props;
+  const { t } = useTranslation();
 
   const onMaxClick = useCallback(() => {
     const formattedMax = new Decimal(new Decimal(max).toTruncated(precision)).toString();
@@ -44,11 +46,11 @@ const NumberInput: FC<NumberInputProps> = props => {
     () => (
       <ButtonWrapper disabled={disabled} onClick={onMaxClick}>
         <Typography variant="body-primary" weight="regular" color={disabled ? 'text-disabled' : undefined}>
-          Max
+          {t('NumberInput.buttonMax')}
         </Typography>
       </ButtonWrapper>
     ),
-    [disabled, onMaxClick],
+    [disabled, onMaxClick, t],
   );
   const pattern = useMemo(() => (precision > 0 ? `[0-9,]*[.]?[0-9]{0,${precision}}` : '[0-9,]*'), [precision]);
 

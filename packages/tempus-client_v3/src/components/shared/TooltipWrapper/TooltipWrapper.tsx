@@ -18,13 +18,18 @@ const TooltipWrapper: FC<TooltipWrapperProps> = props => {
   const { tooltipContent, placement, openEvent = 'click', onOpen, onClose, children } = props;
 
   const [open, setOpen] = useState<boolean>(false);
+  const wrapperRef = useRef<HTMLDivElement>(null);
   const anchorRef = useRef<HTMLButtonElement>(null);
   const tooltipRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (anchorRef.current && tooltipRef.current) {
+    if (wrapperRef.current && anchorRef.current && tooltipRef.current) {
       const anchorWidth = anchorRef.current.offsetWidth;
+      const anchorPosX = anchorRef.current.getBoundingClientRect().x;
+      const anchorPosY = anchorRef.current.getBoundingClientRect().y;
       tooltipRef.current.style.setProperty('--anchorWidth', `${anchorWidth}px`);
+      wrapperRef.current.style.setProperty('--anchorPosX', `${anchorPosX}px`);
+      wrapperRef.current.style.setProperty('--anchorPosY', `${anchorPosY}px`);
     }
   });
 
@@ -76,7 +81,7 @@ const TooltipWrapper: FC<TooltipWrapperProps> = props => {
   }
 
   return (
-    <div className="tc__tooltip-wrapper">
+    <div className="tc__tooltip-wrapper" ref={wrapperRef}>
       <div className="tc__tooltip-wrapper-backdrop" {...backdropProps} />
       <ButtonWrapper
         className="tc__tooltip-wrapper-anchor"

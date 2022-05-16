@@ -1,4 +1,5 @@
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Decimal, DecimalUtils } from 'tempus-core-services';
 import ButtonWrapper from '../ButtonWrapper';
 import TextInput from '../TextInput';
@@ -20,6 +21,7 @@ const SlippageInput: FC<SlippageInputProps> = props => {
   const [placeholder, setPlaceholder] = useState<string>(DecimalUtils.formatPercentage(percentage, 2));
   const [value, setValue] = useState<string>('');
   const [focused, setFocused] = useState<boolean>(false);
+  const { t } = useTranslation();
 
   useEffect(() => setPlaceholder(DecimalUtils.formatPercentage(percentage, 2)), [percentage]);
 
@@ -47,11 +49,11 @@ const SlippageInput: FC<SlippageInputProps> = props => {
     return (
       <ButtonWrapper selected={isAuto} disabled={disabled} onClick={handleAutoClick}>
         <Typography variant="body-primary" weight="regular" color={color}>
-          Auto
+          {t('SlippageInput.buttonAuto')}
         </Typography>
       </ButtonWrapper>
     );
-  }, [isAuto, disabled, handleAutoClick]);
+  }, [isAuto, disabled, handleAutoClick, t]);
 
   return (
     <div className="tc__slippage-input">

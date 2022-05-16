@@ -1,6 +1,6 @@
 import { renderHook } from '@testing-library/react-hooks';
 import { act } from 'react-dom/test-utils';
-import { SUPPORTED_LOCALES, SUPPORTED_LOCALE_NAMES, useLocale } from './useLocale';
+import { useLocale } from './useLocale';
 
 describe('useLocale', () => {
   it('by default it return "en"', () => {
@@ -36,17 +36,5 @@ describe('useLocale', () => {
     });
 
     expect(result.current[0]).toEqual('it');
-  });
-
-  it('it export SUPPORTED_LOCALES', () => {
-    expect(SUPPORTED_LOCALES).toEqual(['en', 'es', 'it']);
-  });
-
-  it('it export SUPPORTED_LOCALE_NAMES', () => {
-    expect(SUPPORTED_LOCALE_NAMES).toEqual({
-      en: 'English',
-      es: 'Español',
-      it: 'Italiano',
-    });
   });
 });

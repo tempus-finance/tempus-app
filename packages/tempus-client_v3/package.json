@@ -44,6 +44,8 @@
     "ethers": "5.4.6",
     "firebase-tools": "^9.14.0",
     "html-react-parser": "^1.4.0",
+    "i18next": "^21.8.0",
+    "i18next-browser-languagedetector": "^6.1.4",
     "is-mobile": "^3.0.0",
     "lodash": "^4.17.21",
     "octokit": "^1.7.1",
@@ -51,6 +53,7 @@
     "react-blockies": "1.4.1",
     "react-dom": "^17.0.2",
     "react-error-overlay": "6.0.9",
+    "react-i18next": "^11.16.9",
     "react-router-dom": "^6.0.2",
     "react-scripts": "4.0.3",
     "recharts": "^2.1.6",
@@ -69,7 +72,8 @@
     "@storybook/preset-create-react-app": "^3.2.0",
     "@storybook/react": "^6.4.19",
     "@storybook/testing-library": "^0.0.9",
-    "babel-loader": "8.1.0"
+    "babel-loader": "8.1.0",
+    "i18next-parser": "^6.4.0"
   },
   "browserslist": {
     "production": [
@@ -122,6 +126,8 @@
     "prebuild": "./scripts/get-release-version.sh build",
     "storybook": "start-storybook -p 6006 -s public",
     "build-storybook": "build-storybook -s public",
-    "deploy-storybook": "firebase deploy --only hosting:tempus-storybook --token $FIREBASE_TOKEN"
+    "deploy-storybook": "firebase deploy --only hosting:tempus-storybook --token $FIREBASE_TOKEN",
+    "i18next-parser": "i18next --config src/i18n/config.js",
+    "pseudo-translation": "./scripts/pseudo-translation.sh"
   }
 }

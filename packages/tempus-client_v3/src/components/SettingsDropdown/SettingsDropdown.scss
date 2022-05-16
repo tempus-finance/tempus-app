@@ -24,6 +24,7 @@
     .tc__dropdown {
       flex: 1 100%;
       margin-top: 12px;
+      white-space: nowrap;
     }
 
     &:not(:last-of-type) {
