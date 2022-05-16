@@ -52,6 +52,18 @@
     "tabOverview": "Overview",
     "tabPositions": "Positions"
   },
+  "PortfolioOverview": {
+    "titleCurrentValue": "Current Value",
+    "subtitleCurrentValue": "of portfolio",
+    "titleEarnedYield": "Yield Earned",
+    "subtitleEarnedYield": "of portfolio",
+    "titleProjectedYield": "Projected Yield",
+    "subtitleProjectedYield": "of portfolio",
+    "titleTotalYieldEarned": "Total Yield Earned",
+    "titleTotalPortfolioValue": "Total Portfolio Value",
+    "tabYield": "Total Yield",
+    "tabValue": "Total Value"
+  },
   "SettingsDropdown": {
     "title": "Settings"
   },

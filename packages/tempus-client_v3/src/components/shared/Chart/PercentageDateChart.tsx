@@ -1,12 +1,12 @@
 import { FC, ReactNode } from 'react';
 import { DecimalUtils } from 'tempus-core-services';
-import { ChartDataPoint, ChartDot, ChartSizeProps } from './Chart';
+import { ChartDataPoint, ChartDotElement, ChartSizeProps } from './Chart';
 import DateChart from './DateChart';
 
 export interface PercentageDateChartProps {
   data: ChartDataPoint<Date, number>[];
   topPercentageProjected?: number;
-  dot?: ChartDot<number, number>;
+  dot?: ChartDotElement<number, number>;
   tooltipContent?: (x: Date, y: number) => ReactNode;
 }
 
