@@ -1,9 +1,6 @@
 import { bind } from '@react-rxjs/core';
-import { Subject } from 'rxjs';
+import { createSignal } from '@react-rxjs/utils';
 
-const walletAddressSubject$ = new Subject<string>();
-export const setWalletAddress = (walletAddress: string): void => {
-  walletAddressSubject$.next(walletAddress);
-};
+export const [walletAddress$, setWalletAddress] = createSignal<string>();
 
-export const [useWalletAddress, walletAddress$] = bind(walletAddressSubject$);
+export const [useWalletAddress] = bind<string>(walletAddress$, '');
