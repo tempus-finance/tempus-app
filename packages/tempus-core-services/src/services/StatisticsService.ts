@@ -1,12 +1,12 @@
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
 import { BigNumber, CallOverrides, Contract, ethers } from 'ethers';
-import { catchError, from, map, Observable, throwError } from 'rxjs';
+import { catchError, from, map, Observable, of, throwError } from 'rxjs';
 import { Stats } from '../abi/Stats';
 import StatsABI from '../abi/Stats.json';
 import { DEFAULT_TOKEN_PRECISION, tokenPrecision } from '../constants';
 import { Decimal } from '../datastructures';
 import { Chain, Config, Ticker } from '../interfaces';
-import { decreasePrecision, div18f, getTokenPrecision, mul18f } from '../utils';
+import { decreasePrecision, getTokenPrecision, increasePrecision, mul18f } from '../utils';
 import { getChainlinkFeed } from './getChainlinkFeed';
 import { getCoingeckoRate } from './coinGeckoFeed';
 import { TempusAMMService } from './TempusAMMService';
@@ -116,38 +116,44 @@ export class StatisticsService {
   /**
    * Returns conversion rate of specified token to USD
    * */
-  public async getRate(chain: Chain, tokenTicker: Ticker, overrides?: CallOverrides): Promise<BigNumber> {
+  public getRate(chain: Chain, tokenTicker: Ticker, overrides?: CallOverrides): Observable<Decimal | null> {
     if (!this.stats) {
       console.error(
         'StatisticsService totalValueLockedUSD Attempted to use statistics contract before initializing it...',
       );
 
-      return Promise.reject(0);
+      return throwError(() => new Error('0'));
     }
 
     const chainLinkAggregator = getChainlinkFeed(chain, tokenTicker);
 
-    let rate: BigNumber;
-    let rateDenominator: BigNumber;
-    try {
-      if (overrides) {
-        [rate, rateDenominator] = await this.stats.getRate(chainLinkAggregator, overrides);
-      } else {
-        [rate, rateDenominator] = await this.stats.getRate(chainLinkAggregator);
-      }
-    } catch (error) {
-      console.warn(
-        `Failed to get exchange rate for ${tokenTicker} from stats contract, falling back to CoinGecko API!`,
-      );
-
-      const precision = tokenPrecision[tokenTicker] || DEFAULT_TOKEN_PRECISION;
-      return getCoingeckoRate(tokenTicker, precision);
-    }
-
     // TODO - Refactor getRate function to accept token precision as well as a parameter
     const precision = tokenPrecision[tokenTicker];
 
-    return div18f(rate, rateDenominator, precision);
+    return from(
+      overrides ? this.stats.getRate(chainLinkAggregator, overrides) : this.stats.getRate(chainLinkAggregator),
+    ).pipe(
+      map<[BigNumber, BigNumber], Decimal>(([rate, rateDenominator]) => {
+        const rate18f = increasePrecision(rate, 18 - (precision ?? 0));
+        const rateDenominator18f = increasePrecision(rateDenominator, 18 - (precision ?? 0));
+        return new Decimal(rate18f).div(rateDenominator18f);
+      }),
+      catchError(() => {
+        console.warn(
+          `Failed to get exchange rate for ${tokenTicker} from stats contract, falling back to CoinGecko API!`,
+        );
+
+        const precision = tokenPrecision[tokenTicker] || DEFAULT_TOKEN_PRECISION;
+        return from(getCoingeckoRate(tokenTicker, precision)).pipe(
+          map<BigNumber, Decimal>((value: BigNumber) => new Decimal(value)),
+          catchError(() => {
+            console.warn(`Failed to get exchange rate for ${tokenTicker} from CoinGecko API`);
+
+            return of(null);
+          }),
+        );
+      }),
+    );
   }
 
   /**

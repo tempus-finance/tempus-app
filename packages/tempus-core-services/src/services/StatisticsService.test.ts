@@ -1,5 +1,6 @@
 import * as ejs from 'ethers';
 import StatisticsABI from '../abi/Stats.json';
+import { Decimal } from '../datastructures';
 import { StatisticsService } from './StatisticsService';
 
 jest.mock('@ethersproject/providers');
@@ -110,13 +111,21 @@ describe('StatisticsService', () => {
     });
 
     test('it returns a Promise that resolves with the value current exchange rate', async () => {
-      mockGetRate.mockImplementation(() => {
-        return Promise.resolve([ejs.BigNumber.from('100'), ejs.BigNumber.from('2')]);
+      mockGetRate.mockImplementation((_, __, overrides) => {
+        return Promise.resolve([
+          ejs.BigNumber.from('100'),
+          overrides ? ejs.BigNumber.from('4') : ejs.BigNumber.from('2'),
+        ]);
+      });
+      const mockCallOverride = jest.fn();
+
+      instance.getRate('ethereum', 'DAI').subscribe(result => {
+        expect(result).toBe(new Decimal(50));
       });
 
-      const result = await instance.getRate('ethereum', 'DAI');
-
-      expect(ejs.utils.formatEther(result)).toBe('50.0');
+      instance.getRate('ethereum', 'DAI', mockCallOverride()).subscribe(result => {
+        expect(result).toBe(new Decimal(25));
+      });
     });
   });
 
