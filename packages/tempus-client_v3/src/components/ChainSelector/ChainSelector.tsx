@@ -9,10 +9,10 @@ import {
   fantomChainIdHex,
   chainIdHexToChainName,
 } from 'tempus-core-services';
+import { setSelectedChain } from '../../hooks';
 import { Modal, SwitcherButton } from '../shared';
 
 import './ChainSelector.scss';
-import { setSelectedChain } from '../../hooks/useSelectedChain';
 
 interface ChainSelectorProps {
   open: boolean;
@@ -38,6 +38,7 @@ const ChainSelector: FC<ChainSelectorProps> = props => {
 
   useEffect(() => {
     if (!connectedChain) {
+      setSelectedChain(null);
       return;
     }
 
