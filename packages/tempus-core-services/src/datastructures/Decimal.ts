@@ -1,17 +1,19 @@
 import { BigNumber, utils } from 'ethers';
 import { DEFAULT_TOKEN_PRECISION } from '../constants';
 
-const increasePrecision = (bigNum: BigNumber, increment: number): BigNumber => {
+export const increasePrecision = (bigNum: BigNumber, increment: number): BigNumber => {
   const multiplicand = BigNumber.from(10).pow(increment);
   return bigNum.mul(multiplicand);
 };
 
-const decreasePrecision = (bigNum: BigNumber, decrement: number): BigNumber => {
+export const decreasePrecision = (bigNum: BigNumber, decrement: number): BigNumber => {
   const divisor = BigNumber.from(10).pow(decrement);
   return bigNum.div(divisor);
 };
 
 export type Numberish = Decimal | string | number | BigNumber;
+
+export const DEFAULT_DECIMAL_PRECISION = 18;
 
 export default class Decimal {
   readonly value: BigNumber;

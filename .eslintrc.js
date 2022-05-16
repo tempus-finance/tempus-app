@@ -46,6 +46,8 @@ module.exports = {
     'operator-linebreak': 0, // This rule is disabled because it does not work well with prettier
     'no-plusplus': ['error', { allowForLoopAfterthoughts: true }],
     'no-console': 0, // We are using console to log current app version and client errors
+    'lines-between-class-members': 0, // Disabled because it conflicts with @typescript-eslint/lines-between-class-members rule
+    '@typescript-eslint/lines-between-class-members': ['error', 'always', { exceptAfterSingleLine: true }],
     ////
 
     'react-hooks/rules-of-hooks': 'error',

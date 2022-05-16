@@ -7,11 +7,22 @@ const TempusPoolsConfig = {
   path: 'config.json',
 };
 
+interface TokenListItem {
+  chain: Chain;
+  address: string;
+}
+
 class ConfigManager {
-  private config: Config = {} as Config;
+  private config: Config = {};
+
+  private tokenList: TokenListItem[] = [];
 
   async init(): Promise<boolean> {
-    return this.retrieveConfig();
+    const success = await this.retrieveConfig();
+
+    this.retrieveTokenList();
+
+    return success;
   }
 
   getConfig(): Config {
@@ -32,6 +43,48 @@ class ConfigManager {
     });
 
     return pools;
+  }
+
+  getTokenList(): TokenListItem[] {
+    return this.tokenList;
+  }
+
+  private retrieveTokenList(): void {
+    const result: TokenListItem[] = [];
+
+    const poolList = this.getPoolList();
+    poolList.forEach(pool => {
+      const poolChain = pool.chain;
+
+      if (poolChain) {
+        result.push(
+          {
+            address: pool.backingTokenAddress,
+            chain: poolChain,
+          },
+          {
+            address: pool.yieldBearingTokenAddress,
+            chain: poolChain,
+          },
+          {
+            address: pool.principalsAddress,
+            chain: poolChain,
+          },
+          {
+            address: pool.yieldsAddress,
+            chain: poolChain,
+          },
+          {
+            address: pool.ammAddress,
+            chain: poolChain,
+          },
+        );
+      } else {
+        console.warn(`Pool ${pool.address} does not contain chain in it's config!`);
+      }
+    });
+
+    this.tokenList = result;
   }
 
   private async retrieveConfig(): Promise<boolean> {
