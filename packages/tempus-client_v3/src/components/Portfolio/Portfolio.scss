@@ -10,7 +10,7 @@
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  border: 1px solid #bfc0c0;
+  border: 1px solid var(--portfolioBoxBorder);
   border-radius: 16px;
   box-sizing: border-box;
 }
