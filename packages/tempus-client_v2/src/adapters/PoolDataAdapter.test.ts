@@ -33,7 +33,12 @@ describe('PoolDataAdapter', () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
-    const mockGetTempusControllerService = jest.fn();
+    const mockGetTempusControllerService = jest.fn().mockImplementation(() => {
+      return {
+        getDepositedEvents: () => [{ blockNumber: 20 }, { blockNumber: 40 }, { blockNumber: 30 }],
+        getRedeemedEvents: () => [{ blockNumber: 15 }],
+      };
+    });
     const mockGetERC20TokenService = jest.fn().mockImplementation((address: string) => {
       switch (address) {
         case 'backing-token-address': {
@@ -104,6 +109,7 @@ describe('PoolDataAdapter', () => {
 
     const mockGetVaultService = jest.fn().mockReturnValue({
       getPoolTokens: () => Promise.resolve({ balances: [BigNumber.from('1'), BigNumber.from('2')] }),
+      getSwapEvents: () => [{ blockNumber: 15 }],
     });
 
     instance = new PoolDataAdapter();
