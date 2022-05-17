@@ -2,7 +2,7 @@ import { memo, useEffect, useState } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { initServices } from 'tempus-core-services';
-import { useLocale, useUserPreferences } from '../../hooks';
+import { useLocale, useSelectedChain, useUserPreferences } from '../../hooks';
 import Markets from '../Markets';
 import Navbar from '../Navbar/Navbar';
 import { getConfigManager } from '../../config/getConfigManager';
@@ -19,6 +19,7 @@ const App = () => {
   // to keep at least one subscriber of the stream insides the hook
   useLocale();
   useUserPreferences();
+  useSelectedChain();
 
   const navigationLinks: PageNavigationLink[] = [
     { text: t('App.navMarkets'), path: '/' },

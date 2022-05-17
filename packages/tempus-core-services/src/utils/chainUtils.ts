@@ -33,6 +33,11 @@ chainIdToChainNameMap.set('1', 'ethereum');
 chainIdToChainNameMap.set('250', 'fantom');
 chainIdToChainNameMap.set('31337', 'ethereum-fork');
 
+const chainHexIdToChainNameMap = new Map<string, Chain>();
+chainHexIdToChainNameMap.set('0x1', 'ethereum');
+chainHexIdToChainNameMap.set('0xfa', 'fantom');
+chainHexIdToChainNameMap.set('0x7a69', 'ethereum-fork');
+
 export function prettifyChainName(chainName: Chain): string {
   return chainToPrettyNameMap[chainName];
 }
@@ -51,4 +56,8 @@ export function chainNameToHexChainId(chainName: Chain): string {
 
 export function chainIdToChainName(chainId: string | number): Chain | undefined {
   return chainIdToChainNameMap.get(String(chainId));
+}
+
+export function chainIdHexToChainName(chainIdHex: string): Chain | undefined {
+  return chainHexIdToChainNameMap.get(chainIdHex);
 }

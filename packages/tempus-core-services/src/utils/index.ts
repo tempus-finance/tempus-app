@@ -5,6 +5,7 @@ export {
   chainToTicker,
   prettifyChainName,
   prettifyChainNameLong,
+  chainIdHexToChainName,
 } from './chainUtils';
 // getChainNameFromId redundant
 export { getCookie } from './getCookie';
