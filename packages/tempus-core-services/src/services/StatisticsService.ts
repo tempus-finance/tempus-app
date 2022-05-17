@@ -4,9 +4,9 @@ import { catchError, from, map, Observable, of, throwError } from 'rxjs';
 import { Stats } from '../abi/Stats';
 import StatsABI from '../abi/Stats.json';
 import { DEFAULT_TOKEN_PRECISION, tokenPrecision } from '../constants';
-import { Decimal } from '../datastructures';
+import { Decimal, decreasePrecision, increasePrecision } from '../datastructures';
 import { Chain, Config, Ticker } from '../interfaces';
-import { decreasePrecision, getTokenPrecision, increasePrecision, mul18f } from '../utils';
+import { getTokenPrecision, mul18f } from '../utils';
 import { getChainlinkFeed } from './getChainlinkFeed';
 import { getCoingeckoRate } from './coinGeckoFeed';
 import { TempusAMMService } from './TempusAMMService';
@@ -134,8 +134,8 @@ export class StatisticsService {
       overrides ? this.stats.getRate(chainLinkAggregator, overrides) : this.stats.getRate(chainLinkAggregator),
     ).pipe(
       map<[BigNumber, BigNumber], Decimal>(([rate, rateDenominator]) => {
-        const rate18f = increasePrecision(rate, 18 - (precision ?? 0));
-        const rateDenominator18f = increasePrecision(rateDenominator, 18 - (precision ?? 0));
+        const rate18f = increasePrecision(rate, DEFAULT_TOKEN_PRECISION - (precision ?? 0));
+        const rateDenominator18f = increasePrecision(rateDenominator, DEFAULT_TOKEN_PRECISION - (precision ?? 0));
         return new Decimal(rate18f).div(rateDenominator18f);
       }),
       catchError(() => {

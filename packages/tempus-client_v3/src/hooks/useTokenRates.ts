@@ -1,34 +1,53 @@
 import { bind } from '@react-rxjs/core';
-import { catchError, debounce, interval, map, merge, mergeMap, Observable, of, scan, startWith } from 'rxjs';
-import { getServices, Decimal, StatisticsService, TempusPool, Chain } from 'tempus-core-services';
+import {
+  catchError,
+  combineLatest,
+  debounce,
+  interval,
+  map,
+  merge,
+  mergeMap,
+  Observable,
+  of,
+  scan,
+  startWith,
+} from 'rxjs';
+import { getServices, Decimal, StatisticsService, TempusPool, Chain, Ticker } from 'tempus-core-services';
 import { getConfigManager } from '../config/getConfigManager';
+import { config$ } from './useConfig';
 
 const TOKEN_RATE_POLLING_INTERVAL_IN_MS = 30000;
-const DEBOUNCE_IN_MS = 1000;
+const DEBOUNCE_IN_MS = 500;
+
+interface TokenInfoMap {
+  [x: string]: {
+    chain: Chain;
+    token: Ticker;
+  };
+}
 
 interface TokenRateMap {
   [x: string]: Decimal | null;
 }
 
-const tokenRates$: Observable<TokenRateMap> = interval(TOKEN_RATE_POLLING_INTERVAL_IN_MS).pipe(
-  startWith(0),
-  map(() => getConfigManager().getPoolList()),
-  mergeMap<TempusPool[], Observable<TokenRateMap>>((tempusPools: TempusPool[]) => {
-    const unqiueTokenSet = new Set(
-      tempusPools
-        .map(({ chain, backingToken, yieldBearingToken }) => [
-          {
+const poolList$: Observable<TempusPool[]> = config$.pipe(map(() => getConfigManager().getPoolList()));
+const polling$: Observable<number> = interval(TOKEN_RATE_POLLING_INTERVAL_IN_MS).pipe(startWith(0));
+
+const tokenRates$: Observable<TokenRateMap> = combineLatest([poolList$, polling$]).pipe(
+  mergeMap(([tempusPools]) => {
+    const uniqueTokens = Object.values(
+      tempusPools.reduce(
+        (obj, { chain, backingToken }) => ({
+          ...obj,
+          [`${chain}-${backingToken}`]: {
             chain: chain as Chain,
             token: backingToken,
           },
-          {
-            chain: chain as Chain,
-            token: yieldBearingToken,
-          },
-        ])
-        .flat(),
+        }),
+        {} as TokenInfoMap,
+      ),
     );
-    const tokenRates = [...unqiueTokenSet].map(({ chain, token }) => {
+    const tokenRates = uniqueTokens.map(({ chain, token }) => {
       const tokenRate = (getServices(chain as Chain)?.StatisticsService as StatisticsService).getRate(
         chain as Chain,
         token,
