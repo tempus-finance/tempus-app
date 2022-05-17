@@ -1,7 +1,7 @@
 import { FC, useCallback, useMemo } from 'react';
 import { DecimalUtils } from 'tempus-core-services';
 import { BalanceChartTooltipContent, ChartDot, DateChart } from '../../shared';
-import { ChartDataPoint } from '../../shared/Chart/Chart';
+import { ChartDataPoint, ChartSizeProps } from '../../shared/Chart/Chart';
 
 type TransactionType = 'deposit' | 'withdraw';
 
@@ -9,7 +9,9 @@ interface DataPoint extends ChartDataPoint<Date, number> {
   transactionType: TransactionType;
 }
 
-const PortfolioValueChart: FC = () => {
+const PortfolioValueChart: FC<ChartSizeProps> = props => {
+  const { width, height = 512 } = props;
+
   // TODO: Replace with real data
   const chartData = useMemo(
     () =>
@@ -49,7 +51,7 @@ const PortfolioValueChart: FC = () => {
     [],
   );
 
-  return <DateChart data={chartData} height={512} dot={chartDot} tooltipContent={tooltipContent} />;
+  return <DateChart data={chartData} width={width} height={height} dot={chartDot} tooltipContent={tooltipContent} />;
 };
 
 export default PortfolioValueChart;

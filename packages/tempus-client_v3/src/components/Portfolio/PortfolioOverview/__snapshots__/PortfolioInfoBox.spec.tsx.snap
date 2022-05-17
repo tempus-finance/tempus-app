@@ -1,0 +1,35 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`PortfolioInfoBox renders info box 1`] = `
+<div>
+  <div
+    class="tc__app__portfolio-box tc__app__portfolio-info-box"
+  >
+    <div
+      style="font-style: normal; font-size: 24px; line-height: 32px; color: rgb(34, 34, 34); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+    >
+      Total Value
+    </div>
+    <div
+      style="font-style: normal; font-size: 20px; line-height: 28px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+    >
+      of portfolio
+    </div>
+    <div
+      class="tc__app__portfolio-info-box-value"
+    >
+      <div
+        style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+      >
+        123.45
+      </div>
+      <div
+        class="tc__app__portfolio-info-box-currency"
+        style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(71, 67, 80); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+      >
+        USD
+      </div>
+    </div>
+  </div>
+</div>
+`;

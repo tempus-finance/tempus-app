@@ -1,7 +1,7 @@
 import { FC, memo } from 'react';
 import { Typography } from '../../shared';
 
-interface PortfolioInfoBoxProps {
+export interface PortfolioInfoBoxProps {
   title: string;
   subtitle: string;
   value: string;
