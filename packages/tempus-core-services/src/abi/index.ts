@@ -1,1 +1,1 @@
-export { ERC20 } from './ERC20';
+export { ERC20 } from './ERC20Typings';

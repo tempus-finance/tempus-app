@@ -55,6 +55,7 @@ export {
   DecimalUtils,
   capitalize,
   chainIdToChainName,
+  chainIdHexToChainName,
   chainNameToHexChainId,
   chainToTicker,
   decreasePrecision,

@@ -1,4 +1,5 @@
 import { act, fireEvent, render } from '@testing-library/react';
+import { BrowserRouter } from 'react-router-dom';
 import { Decimal, Ticker } from 'tempus-core-services';
 import { getConfigManager } from '../../config/getConfigManager';
 import WithdrawModal, { WithdrawModalProps } from './WithdrawModal';
@@ -15,7 +16,12 @@ const defaultProps: WithdrawModalProps = {
   inputPrecision: 18,
 };
 
-const subject = (props: WithdrawModalProps) => render(<WithdrawModal {...props} />);
+const subject = (props: WithdrawModalProps) =>
+  render(
+    <BrowserRouter>
+      <WithdrawModal {...props} />
+    </BrowserRouter>,
+  );
 
 describe('WithdrawModal', () => {
   it('renders a withdraw modal', () => {

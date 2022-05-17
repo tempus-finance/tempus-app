@@ -1,0 +1,844 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`PortfolioYieldChart renders portfolio yield chart 1`] = `
+<div>
+  <div
+    class="recharts-responsive-container"
+    style="width: 800px; height: 512px;"
+  >
+    <div
+      class="recharts-wrapper"
+      style="position: relative; cursor: default; width: 800px; height: 512px;"
+    >
+      <svg
+        class="recharts-surface"
+        height="512"
+        version="1.1"
+        viewBox="0 0 800 512"
+        width="800"
+      >
+        <defs>
+          <clippath
+            id="recharts1-clip"
+          >
+            <rect
+              height="425"
+              width="723"
+              x="60"
+              y="17"
+            />
+          </clippath>
+        </defs>
+        <defs>
+          <lineargradient
+            id="color"
+            x1="0"
+            x2="0"
+            y1="0"
+            y2="1"
+          >
+            <stop
+              offset="67%"
+              stop-color="#129CA4"
+              stop-opacity="0.2"
+            />
+            <stop
+              offset="100%"
+              stop-color="#129CA4"
+              stop-opacity="0"
+            />
+          </lineargradient>
+          <pattern
+            height="4"
+            id="pattern"
+            patternTransform="rotate(45 0 0)"
+            patternUnits="userSpaceOnUse"
+            width="4"
+          >
+            <rect
+              fill="#2B6E84"
+              height="100%"
+              opacity="0.2"
+              width="100%"
+              x="0"
+              y="0"
+            />
+            <line
+              opacity="0.3"
+              stroke="#000000"
+              stroke-width="2px"
+              y2="4"
+            />
+          </pattern>
+          <clippath
+            id="projectedValueClip"
+          >
+            <rect
+              height="100%"
+              width="100%"
+              x="73.6842105263158%"
+              y="0"
+            />
+          </clippath>
+        </defs>
+        <g
+          class="recharts-layer recharts-cartesian-axis recharts-xAxis xAxis"
+        >
+          <line
+            class="recharts-cartesian-axis-line"
+            fill="none"
+            height="30"
+            orientation="bottom"
+            stroke="#666"
+            type="number"
+            width="723"
+            x="60"
+            x1="60"
+            x2="783"
+            y="442"
+            y1="442"
+            y2="442"
+          />
+          <g
+            class="recharts-cartesian-axis-ticks"
+          >
+            <g
+              class="recharts-layer recharts-cartesian-axis-tick"
+            >
+              <foreignobject
+                class="tc__chart__tick-container tc__chart__date-tick-container"
+                x="60"
+                y="450"
+              >
+                <div
+                  class="tc__chart__date-tick"
+                >
+                  <div
+                    style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+                  >
+                    01
+                  </div>
+                  <div
+                    style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+                  >
+                    May
+                  </div>
+                </div>
+              </foreignobject>
+            </g>
+            <g
+              class="recharts-layer recharts-cartesian-axis-tick"
+            >
+              <foreignobject
+                class="tc__chart__tick-container tc__chart__date-tick-container"
+                x="98.05263157894737"
+                y="450"
+              >
+                <div
+                  class="tc__chart__date-tick"
+                >
+                  <div
+                    style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+                  >
+                    02
+                  </div>
+                  <div
+                    style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+                  >
+                    May
+                  </div>
+                </div>
+              </foreignobject>
+            </g>
+            <g
+              class="recharts-layer recharts-cartesian-axis-tick"
+            >
+              <foreignobject
+                class="tc__chart__tick-container tc__chart__date-tick-container"
+                x="136.10526315789474"
+                y="450"
+              >
+                <div
+                  class="tc__chart__date-tick"
+                >
+                  <div
+                    style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+                  >
+                    03
+                  </div>
+                  <div
+                    style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+                  >
+                    May
+                  </div>
+                </div>
+              </foreignobject>
+            </g>
+            <g
+              class="recharts-layer recharts-cartesian-axis-tick"
+            >
+              <foreignobject
+                class="tc__chart__tick-container tc__chart__date-tick-container"
+                x="174.15789473684208"
+                y="450"
+              >
+                <div
+                  class="tc__chart__date-tick"
+                >
+                  <div
+                    style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+                  >
+                    04
+                  </div>
+                  <div
+                    style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+                  >
+                    May
+                  </div>
+                </div>
+              </foreignobject>
+            </g>
+            <g
+              class="recharts-layer recharts-cartesian-axis-tick"
+            >
+              <foreignobject
+                class="tc__chart__tick-container tc__chart__date-tick-container"
+                x="212.21052631578948"
+                y="450"
+              >
+                <div
+                  class="tc__chart__date-tick"
+                >
+                  <div
+                    style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+                  >
+                    05
+                  </div>
+                  <div
+                    style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+                  >
+                    May
+                  </div>
+                </div>
+              </foreignobject>
+            </g>
+            <g
+              class="recharts-layer recharts-cartesian-axis-tick"
+            >
+              <foreignobject
+                class="tc__chart__tick-container tc__chart__date-tick-container"
+                x="250.26315789473685"
+                y="450"
+              >
+                <div
+                  class="tc__chart__date-tick"
+                >
+                  <div
+                    style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+                  >
+                    06
+                  </div>
+                  <div
+                    style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+                  >
+                    May
+                  </div>
+                </div>
+              </foreignobject>
+            </g>
+            <g
+              class="recharts-layer recharts-cartesian-axis-tick"
+            >
+              <foreignobject
+                class="tc__chart__tick-container tc__chart__date-tick-container"
+                x="288.31578947368416"
+                y="450"
+              >
+                <div
+                  class="tc__chart__date-tick"
+                >
+                  <div
+                    style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+                  >
+                    07
+                  </div>
+                  <div
+                    style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+                  >
+                    May
+                  </div>
+                </div>
+              </foreignobject>
+            </g>
+            <g
+              class="recharts-layer recharts-cartesian-axis-tick"
+            >
+              <foreignobject
+                class="tc__chart__tick-container tc__chart__date-tick-container"
+                x="326.36842105263156"
+                y="450"
+              >
+                <div
+                  class="tc__chart__date-tick"
+                >
+                  <div
+                    style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+                  >
+                    08
+                  </div>
+                  <div
+                    style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+                  >
+                    May
+                  </div>
+                </div>
+              </foreignobject>
+            </g>
+            <g
+              class="recharts-layer recharts-cartesian-axis-tick"
+            >
+              <foreignobject
+                class="tc__chart__tick-container tc__chart__date-tick-container"
+                x="364.42105263157896"
+                y="450"
+              >
+                <div
+                  class="tc__chart__date-tick"
+                >
+                  <div
+                    style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+                  >
+                    09
+                  </div>
+                  <div
+                    style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+                  >
+                    May
+                  </div>
+                </div>
+              </foreignobject>
+            </g>
+            <g
+              class="recharts-layer recharts-cartesian-axis-tick"
+            >
+              <foreignobject
+                class="tc__chart__tick-container tc__chart__date-tick-container"
+                x="402.4736842105263"
+                y="450"
+              >
+                <div
+                  class="tc__chart__date-tick"
+                >
+                  <div
+                    style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+                  >
+                    10
+                  </div>
+                  <div
+                    style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+                  >
+                    May
+                  </div>
+                </div>
+              </foreignobject>
+            </g>
+            <g
+              class="recharts-layer recharts-cartesian-axis-tick"
+            >
+              <foreignobject
+                class="tc__chart__tick-container tc__chart__date-tick-container"
+                x="440.5263157894737"
+                y="450"
+              >
+                <div
+                  class="tc__chart__date-tick"
+                >
+                  <div
+                    style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+                  >
+                    11
+                  </div>
+                  <div
+                    style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+                  >
+                    May
+                  </div>
+                </div>
+              </foreignobject>
+            </g>
+            <g
+              class="recharts-layer recharts-cartesian-axis-tick"
+            >
+              <foreignobject
+                class="tc__chart__tick-container tc__chart__date-tick-container"
+                x="478.57894736842104"
+                y="450"
+              >
+                <div
+                  class="tc__chart__date-tick"
+                >
+                  <div
+                    style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+                  >
+                    12
+                  </div>
+                  <div
+                    style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+                  >
+                    May
+                  </div>
+                </div>
+              </foreignobject>
+            </g>
+            <g
+              class="recharts-layer recharts-cartesian-axis-tick"
+            >
+              <foreignobject
+                class="tc__chart__tick-container tc__chart__date-tick-container"
+                x="516.6315789473683"
+                y="450"
+              >
+                <div
+                  class="tc__chart__date-tick"
+                >
+                  <div
+                    style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+                  >
+                    13
+                  </div>
+                  <div
+                    style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+                  >
+                    May
+                  </div>
+                </div>
+              </foreignobject>
+            </g>
+            <g
+              class="recharts-layer recharts-cartesian-axis-tick"
+            >
+              <foreignobject
+                class="tc__chart__tick-container tc__chart__date-tick-container"
+                x="554.6842105263157"
+                y="450"
+              >
+                <div
+                  class="tc__chart__date-tick"
+                >
+                  <div
+                    style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+                  >
+                    14
+                  </div>
+                  <div
+                    style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+                  >
+                    May
+                  </div>
+                </div>
+              </foreignobject>
+            </g>
+            <g
+              class="recharts-layer recharts-cartesian-axis-tick"
+            >
+              <foreignobject
+                class="tc__chart__tick-container tc__chart__date-tick-container"
+                x="592.7368421052631"
+                y="450"
+              >
+                <div
+                  class="tc__chart__date-tick"
+                >
+                  <div
+                    style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+                  >
+                    15
+                  </div>
+                  <div
+                    style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+                  >
+                    May
+                  </div>
+                </div>
+              </foreignobject>
+            </g>
+            <g
+              class="recharts-layer recharts-cartesian-axis-tick"
+            >
+              <foreignobject
+                class="tc__chart__tick-container tc__chart__date-tick-container"
+                x="630.7894736842105"
+                y="450"
+              >
+                <div
+                  class="tc__chart__date-tick"
+                >
+                  <div
+                    style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+                  >
+                    16
+                  </div>
+                  <div
+                    style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+                  >
+                    May
+                  </div>
+                </div>
+              </foreignobject>
+            </g>
+            <g
+              class="recharts-layer recharts-cartesian-axis-tick"
+            >
+              <foreignobject
+                class="tc__chart__tick-container tc__chart__date-tick-container"
+                x="668.8421052631579"
+                y="450"
+              >
+                <div
+                  class="tc__chart__date-tick"
+                >
+                  <div
+                    style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+                  >
+                    17
+                  </div>
+                  <div
+                    style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+                  >
+                    May
+                  </div>
+                </div>
+              </foreignobject>
+            </g>
+            <g
+              class="recharts-layer recharts-cartesian-axis-tick"
+            >
+              <foreignobject
+                class="tc__chart__tick-container tc__chart__date-tick-container"
+                x="706.8947368421052"
+                y="450"
+              >
+                <div
+                  class="tc__chart__date-tick"
+                >
+                  <div
+                    style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+                  >
+                    18
+                  </div>
+                  <div
+                    style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+                  >
+                    May
+                  </div>
+                </div>
+              </foreignobject>
+            </g>
+            <g
+              class="recharts-layer recharts-cartesian-axis-tick"
+            >
+              <foreignobject
+                class="tc__chart__tick-container tc__chart__date-tick-container"
+                x="744.9473684210526"
+                y="450"
+              >
+                <div
+                  class="tc__chart__date-tick"
+                >
+                  <div
+                    style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+                  >
+                    19
+                  </div>
+                  <div
+                    style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+                  >
+                    May
+                  </div>
+                </div>
+              </foreignobject>
+            </g>
+            <g
+              class="recharts-layer recharts-cartesian-axis-tick"
+            >
+              <foreignobject
+                class="tc__chart__tick-container tc__chart__date-tick-container"
+                x="783"
+                y="450"
+              >
+                <div
+                  class="tc__chart__date-tick"
+                >
+                  <div
+                    style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+                  >
+                    20
+                  </div>
+                  <div
+                    style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+                  >
+                    May
+                  </div>
+                </div>
+              </foreignobject>
+            </g>
+          </g>
+        </g>
+        <g
+          class="recharts-layer recharts-cartesian-axis recharts-yAxis yAxis"
+        >
+          <g
+            class="recharts-cartesian-axis-ticks"
+          >
+            <g
+              class="recharts-layer recharts-cartesian-axis-tick"
+            >
+              <foreignobject
+                class="tc__chart__tick-container tc__chart__text-tick-container"
+                x="52"
+                y="442"
+              >
+                <div
+                  style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+                >
+                  0
+                </div>
+              </foreignobject>
+            </g>
+            <g
+              class="recharts-layer recharts-cartesian-axis-tick"
+            >
+              <foreignobject
+                class="tc__chart__tick-container tc__chart__text-tick-container"
+                x="52"
+                y="324.2714681440443"
+              >
+                <div
+                  style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+                >
+                  0.01
+                </div>
+              </foreignobject>
+            </g>
+            <g
+              class="recharts-layer recharts-cartesian-axis-tick"
+            >
+              <foreignobject
+                class="tc__chart__tick-container tc__chart__text-tick-container"
+                x="52"
+                y="206.54293628808864"
+              >
+                <div
+                  style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+                >
+                  0.02
+                </div>
+              </foreignobject>
+            </g>
+            <g
+              class="recharts-layer recharts-cartesian-axis-tick"
+            >
+              <foreignobject
+                class="tc__chart__tick-container tc__chart__text-tick-container"
+                x="52"
+                y="88.81440443213297"
+              >
+                <div
+                  style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+                >
+                  0.03
+                </div>
+              </foreignobject>
+            </g>
+          </g>
+        </g>
+        <g
+          class="recharts-cartesian-grid"
+        >
+          <g
+            class="recharts-cartesian-grid-horizontal"
+          >
+            <line
+              fill="none"
+              height="425"
+              offset="[object Object]"
+              stroke="#F3F7F9"
+              width="723"
+              x="60"
+              x1="60"
+              x2="783"
+              y="17"
+              y1="442"
+              y2="442"
+            />
+            <line
+              fill="none"
+              height="425"
+              offset="[object Object]"
+              stroke="#F3F7F9"
+              width="723"
+              x="60"
+              x1="60"
+              x2="783"
+              y="17"
+              y1="324.2714681440443"
+              y2="324.2714681440443"
+            />
+            <line
+              fill="none"
+              height="425"
+              offset="[object Object]"
+              stroke="#F3F7F9"
+              width="723"
+              x="60"
+              x1="60"
+              x2="783"
+              y="17"
+              y1="206.54293628808864"
+              y2="206.54293628808864"
+            />
+            <line
+              fill="none"
+              height="425"
+              offset="[object Object]"
+              stroke="#F3F7F9"
+              width="723"
+              x="60"
+              x1="60"
+              x2="783"
+              y="17"
+              y1="88.81440443213297"
+              y2="88.81440443213297"
+            />
+            <line
+              fill="none"
+              height="425"
+              offset="[object Object]"
+              stroke="#F3F7F9"
+              width="723"
+              x="60"
+              x1="60"
+              x2="783"
+              y="17"
+              y1="17"
+              y2="17"
+            />
+          </g>
+        </g>
+        <g
+          class="recharts-layer recharts-area"
+        >
+          <g
+            class="recharts-layer"
+          >
+            <defs>
+              <clippath
+                id="animationClipPath-recharts-area-4"
+              >
+                <rect
+                  height="444"
+                  width="0"
+                  x="60"
+                  y="0"
+                />
+              </clippath>
+            </defs>
+            <g
+              class="recharts-layer"
+              clip-path="url(#animationClipPath-recharts-area-4)"
+            >
+              <g
+                class="recharts-layer"
+              >
+                <path
+                  class="recharts-curve recharts-area-area"
+                  d="M60,442C72.6842105263158,441.8037857802401,85.36842105263158,441.60757156048015,98.05263157894737,440.82271468144046C110.73684210526316,440.03785780240077,123.42105263157895,438.86057248384117,136.10526315789474,437.2908587257617C148.78947368421052,435.72114496768233,161.4736842105263,433.75900277008304,174.15789473684208,431.40443213296396C186.8421052631579,429.0498614958448,199.52631578947367,426.3028624192059,212.21052631578948,423.16343490304706C224.89473684210526,420.02400738688823,237.57894736842107,416.4921514312096,250.26315789473685,412.5678670360111C262.9473684210526,408.64358264081255,275.6315789473684,404.3268698060942,288.31578947368416,399.61772853185596C300.99999999999994,394.90858725761774,313.6842105263158,389.8070175438596,326.36842105263156,384.3130193905817C339.05263157894734,378.8190212373038,351.7368421052632,372.932594644506,364.42105263157896,366.6537396121884C377.10526315789474,360.3748845798708,389.7894736842105,353.7036011080333,402.4736842105263,346.63988919667594C415.1578947368421,339.5761772853186,427.8421052631579,332.1200369344414,440.5263157894737,324.2714681440443C453.2105263157895,316.42289935364727,465.89473684210526,308.1819021237304,478.57894736842104,299.5484764542937C491.2631578947368,290.91505078485693,503.94736842105254,281.8891966759003,516.6315789473683,272.47091412742384C529.3157894736842,263.05263157894734,541.9999999999999,253.24192059095105,554.6842105263157,243.0387811634349C567.3684210526316,232.83564173591873,580.0526315789473,222.24007386888272,592.7368421052631,211.25207756232686C605.421052631579,200.264081255771,618.1052631578947,188.8836565096953,630.7894736842105,177.11080332409975C643.4736842105264,165.3379501385042,656.1578947368421,153.17266851338877,668.8421052631579,140.61495844875347C681.5263157894736,128.05724838411822,694.2105263157895,115.10710987996308,706.8947368421052,101.76454293628812C719.578947368421,88.42197599261313,732.2631578947368,74.6869806094183,744.9473684210526,60.55955678670361C757.6315789473684,46.43213296398892,770.3157894736842,31.71606648199446,783,17L783,442C770.3157894736842,442,757.6315789473684,442,744.9473684210526,442C732.2631578947368,442,719.578947368421,442,706.8947368421052,442C694.2105263157895,442,681.5263157894736,442,668.8421052631579,442C656.1578947368421,442,643.4736842105264,442,630.7894736842105,442C618.1052631578947,442,605.421052631579,442,592.7368421052631,442C580.0526315789473,442,567.3684210526316,442,554.6842105263157,442C541.9999999999999,442,529.3157894736842,442,516.6315789473683,442C503.94736842105254,442,491.2631578947368,442,478.57894736842104,442C465.89473684210526,442,453.2105263157895,442,440.5263157894737,442C427.8421052631579,442,415.1578947368421,442,402.4736842105263,442C389.7894736842105,442,377.10526315789474,442,364.42105263157896,442C351.7368421052632,442,339.05263157894734,442,326.36842105263156,442C313.6842105263158,442,300.99999999999994,442,288.31578947368416,442C275.6315789473684,442,262.9473684210526,442,250.26315789473685,442C237.57894736842107,442,224.89473684210526,442,212.21052631578948,442C199.52631578947367,442,186.8421052631579,442,174.15789473684208,442C161.4736842105263,442,148.78947368421052,442,136.10526315789474,442C123.42105263157895,442,110.73684210526316,442,98.05263157894737,442C85.36842105263158,442,72.6842105263158,442,60,442Z"
+                  fill="url(#color)"
+                  fill-opacity="0.6"
+                  height="425"
+                  points="[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object]"
+                  stroke="none"
+                  stroke-width="2"
+                  type="monotone"
+                  width="723"
+                />
+                <path
+                  class="recharts-curve recharts-area-curve"
+                  d="M60,442C72.6842105263158,441.8037857802401,85.36842105263158,441.60757156048015,98.05263157894737,440.82271468144046C110.73684210526316,440.03785780240077,123.42105263157895,438.86057248384117,136.10526315789474,437.2908587257617C148.78947368421052,435.72114496768233,161.4736842105263,433.75900277008304,174.15789473684208,431.40443213296396C186.8421052631579,429.0498614958448,199.52631578947367,426.3028624192059,212.21052631578948,423.16343490304706C224.89473684210526,420.02400738688823,237.57894736842107,416.4921514312096,250.26315789473685,412.5678670360111C262.9473684210526,408.64358264081255,275.6315789473684,404.3268698060942,288.31578947368416,399.61772853185596C300.99999999999994,394.90858725761774,313.6842105263158,389.8070175438596,326.36842105263156,384.3130193905817C339.05263157894734,378.8190212373038,351.7368421052632,372.932594644506,364.42105263157896,366.6537396121884C377.10526315789474,360.3748845798708,389.7894736842105,353.7036011080333,402.4736842105263,346.63988919667594C415.1578947368421,339.5761772853186,427.8421052631579,332.1200369344414,440.5263157894737,324.2714681440443C453.2105263157895,316.42289935364727,465.89473684210526,308.1819021237304,478.57894736842104,299.5484764542937C491.2631578947368,290.91505078485693,503.94736842105254,281.8891966759003,516.6315789473683,272.47091412742384C529.3157894736842,263.05263157894734,541.9999999999999,253.24192059095105,554.6842105263157,243.0387811634349C567.3684210526316,232.83564173591873,580.0526315789473,222.24007386888272,592.7368421052631,211.25207756232686C605.421052631579,200.264081255771,618.1052631578947,188.8836565096953,630.7894736842105,177.11080332409975C643.4736842105264,165.3379501385042,656.1578947368421,153.17266851338877,668.8421052631579,140.61495844875347C681.5263157894736,128.05724838411822,694.2105263157895,115.10710987996308,706.8947368421052,101.76454293628812C719.578947368421,88.42197599261313,732.2631578947368,74.6869806094183,744.9473684210526,60.55955678670361C757.6315789473684,46.43213296398892,770.3157894736842,31.71606648199446,783,17"
+                  fill="none"
+                  fill-opacity="0.6"
+                  height="425"
+                  points="[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object]"
+                  stroke="#2B6E84"
+                  stroke-width="2"
+                  type="monotone"
+                  width="723"
+                />
+              </g>
+            </g>
+          </g>
+        </g>
+        <g
+          class="recharts-layer recharts-area"
+        >
+          <g
+            class="recharts-layer"
+          >
+            <defs>
+              <clippath
+                id="animationClipPath-recharts-area-5"
+              >
+                <rect
+                  height="443"
+                  width="0"
+                  x="60"
+                  y="0"
+                />
+              </clippath>
+            </defs>
+            <g
+              class="recharts-layer"
+              clip-path="url(#animationClipPath-recharts-area-5)"
+            >
+              <g
+                class="recharts-layer"
+              >
+                <path
+                  class="recharts-curve recharts-area-area"
+                  clip-path="url(#projectedValueClip)"
+                  d="M60,442C72.6842105263158,441.8037857802401,85.36842105263158,441.60757156048015,98.05263157894737,440.82271468144046C110.73684210526316,440.03785780240077,123.42105263157895,438.86057248384117,136.10526315789474,437.2908587257617C148.78947368421052,435.72114496768233,161.4736842105263,433.75900277008304,174.15789473684208,431.40443213296396C186.8421052631579,429.0498614958448,199.52631578947367,426.3028624192059,212.21052631578948,423.16343490304706C224.89473684210526,420.02400738688823,237.57894736842107,416.4921514312096,250.26315789473685,412.5678670360111C262.9473684210526,408.64358264081255,275.6315789473684,404.3268698060942,288.31578947368416,399.61772853185596C300.99999999999994,394.90858725761774,313.6842105263158,389.8070175438596,326.36842105263156,384.3130193905817C339.05263157894734,378.8190212373038,351.7368421052632,372.932594644506,364.42105263157896,366.6537396121884C377.10526315789474,360.3748845798708,389.7894736842105,353.7036011080333,402.4736842105263,346.63988919667594C415.1578947368421,339.5761772853186,427.8421052631579,332.1200369344414,440.5263157894737,324.2714681440443C453.2105263157895,316.42289935364727,465.89473684210526,308.1819021237304,478.57894736842104,299.5484764542937C491.2631578947368,290.91505078485693,503.94736842105254,281.8891966759003,516.6315789473683,272.47091412742384C529.3157894736842,263.05263157894734,541.9999999999999,253.24192059095105,554.6842105263157,243.0387811634349C567.3684210526316,232.83564173591873,580.0526315789473,222.24007386888272,592.7368421052631,211.25207756232686C605.421052631579,200.264081255771,618.1052631578947,188.8836565096953,630.7894736842105,177.11080332409975C643.4736842105264,165.3379501385042,656.1578947368421,153.17266851338877,668.8421052631579,140.61495844875347C681.5263157894736,128.05724838411822,694.2105263157895,115.10710987996308,706.8947368421052,101.76454293628812C719.578947368421,88.42197599261313,732.2631578947368,74.6869806094183,744.9473684210526,60.55955678670361C757.6315789473684,46.43213296398892,770.3157894736842,31.71606648199446,783,17L783,442C770.3157894736842,442,757.6315789473684,442,744.9473684210526,442C732.2631578947368,442,719.578947368421,442,706.8947368421052,442C694.2105263157895,442,681.5263157894736,442,668.8421052631579,442C656.1578947368421,442,643.4736842105264,442,630.7894736842105,442C618.1052631578947,442,605.421052631579,442,592.7368421052631,442C580.0526315789473,442,567.3684210526316,442,554.6842105263157,442C541.9999999999999,442,529.3157894736842,442,516.6315789473683,442C503.94736842105254,442,491.2631578947368,442,478.57894736842104,442C465.89473684210526,442,453.2105263157895,442,440.5263157894737,442C427.8421052631579,442,415.1578947368421,442,402.4736842105263,442C389.7894736842105,442,377.10526315789474,442,364.42105263157896,442C351.7368421052632,442,339.05263157894734,442,326.36842105263156,442C313.6842105263158,442,300.99999999999994,442,288.31578947368416,442C275.6315789473684,442,262.9473684210526,442,250.26315789473685,442C237.57894736842107,442,224.89473684210526,442,212.21052631578948,442C199.52631578947367,442,186.8421052631579,442,174.15789473684208,442C161.4736842105263,442,148.78947368421052,442,136.10526315789474,442C123.42105263157895,442,110.73684210526316,442,98.05263157894737,442C85.36842105263158,442,72.6842105263158,442,60,442Z"
+                  fill="url(#pattern)"
+                  fill-opacity="0.6"
+                  height="425"
+                  points="[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object]"
+                  stroke="none"
+                  stroke-width="0"
+                  type="monotone"
+                  width="723"
+                />
+                <path
+                  class="recharts-curve recharts-area-curve"
+                  clip-path="url(#projectedValueClip)"
+                  d="M60,442C72.6842105263158,441.8037857802401,85.36842105263158,441.60757156048015,98.05263157894737,440.82271468144046C110.73684210526316,440.03785780240077,123.42105263157895,438.86057248384117,136.10526315789474,437.2908587257617C148.78947368421052,435.72114496768233,161.4736842105263,433.75900277008304,174.15789473684208,431.40443213296396C186.8421052631579,429.0498614958448,199.52631578947367,426.3028624192059,212.21052631578948,423.16343490304706C224.89473684210526,420.02400738688823,237.57894736842107,416.4921514312096,250.26315789473685,412.5678670360111C262.9473684210526,408.64358264081255,275.6315789473684,404.3268698060942,288.31578947368416,399.61772853185596C300.99999999999994,394.90858725761774,313.6842105263158,389.8070175438596,326.36842105263156,384.3130193905817C339.05263157894734,378.8190212373038,351.7368421052632,372.932594644506,364.42105263157896,366.6537396121884C377.10526315789474,360.3748845798708,389.7894736842105,353.7036011080333,402.4736842105263,346.63988919667594C415.1578947368421,339.5761772853186,427.8421052631579,332.1200369344414,440.5263157894737,324.2714681440443C453.2105263157895,316.42289935364727,465.89473684210526,308.1819021237304,478.57894736842104,299.5484764542937C491.2631578947368,290.91505078485693,503.94736842105254,281.8891966759003,516.6315789473683,272.47091412742384C529.3157894736842,263.05263157894734,541.9999999999999,253.24192059095105,554.6842105263157,243.0387811634349C567.3684210526316,232.83564173591873,580.0526315789473,222.24007386888272,592.7368421052631,211.25207756232686C605.421052631579,200.264081255771,618.1052631578947,188.8836565096953,630.7894736842105,177.11080332409975C643.4736842105264,165.3379501385042,656.1578947368421,153.17266851338877,668.8421052631579,140.61495844875347C681.5263157894736,128.05724838411822,694.2105263157895,115.10710987996308,706.8947368421052,101.76454293628812C719.578947368421,88.42197599261313,732.2631578947368,74.6869806094183,744.9473684210526,60.55955678670361C757.6315789473684,46.43213296398892,770.3157894736842,31.71606648199446,783,17"
+                  fill="none"
+                  fill-opacity="0.6"
+                  height="425"
+                  points="[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object]"
+                  stroke="#3182bd"
+                  stroke-width="0"
+                  type="monotone"
+                  width="723"
+                />
+              </g>
+            </g>
+          </g>
+        </g>
+      </svg>
+      <div
+        class="recharts-tooltip-wrapper"
+        style="transform: translate(undefinedpx, undefinedpx); pointer-events: none; visibility: hidden; position: absolute; top: 0px; left: 0px;"
+      />
+    </div>
+  </div>
+</div>
+`;

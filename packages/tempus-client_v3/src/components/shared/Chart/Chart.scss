@@ -48,8 +48,11 @@
   align-items: center;
   box-sizing: border-box;
 
+  .tc__chart__balance-tooltip-content-title {
+    margin-bottom: 8px;
+  }
+
   .tc__chart__balance-tooltip-content-value {
-    margin-top: 8px;
     margin-bottom: 4px;
   }
 }
