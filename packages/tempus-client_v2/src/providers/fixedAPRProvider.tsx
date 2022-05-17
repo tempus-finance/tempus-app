@@ -9,7 +9,7 @@ import { WalletContext } from '../context/walletContext';
 import { dynamicPoolDataState } from '../state/PoolDataState';
 import getPoolDataAdapter from '../adapters/getPoolDataAdapter';
 
-const { FIXED_APR_PRECISION, POLLING_INTERVAL } = CONSTANTS;
+const { FIXED_APR_PRECISION, FIXED_APR_POLL_INTERVAL } = CONSTANTS;
 
 const FixedAPRProvider = () => {
   const dynamicPoolData = useHookState(dynamicPoolDataState);
@@ -26,7 +26,7 @@ const FixedAPRProvider = () => {
         getTokenPrecision(tempusPool.address, 'backingToken', getConfig()),
       );
 
-      const interval$ = interval(POLLING_INTERVAL).pipe(startWith(0));
+      const interval$ = interval(FIXED_APR_POLL_INTERVAL).pipe(startWith(0));
       return interval$.pipe(
         filter(() => {
           // If FixedAPR has not been fetched yet, we want to force fetch it (even if wallet is not connected or app is not in focus)
