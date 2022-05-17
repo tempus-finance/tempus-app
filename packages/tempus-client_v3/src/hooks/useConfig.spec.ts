@@ -8,14 +8,14 @@ const mockConfig = {
 const mockFunc = jest.fn();
 
 describe('useConfig', () => {
-  it('return empty config initially', () => {
+  it('returns empty config initially', () => {
     const { result } = renderHook(() => useConfig());
     const config = result.current;
 
     expect(config).toBeNull();
   });
 
-  it("return config when it's fetched", async () => {
+  it('returns config when it is fetched', async () => {
     jest.useFakeTimers();
 
     const configManager = getConfigManager();
