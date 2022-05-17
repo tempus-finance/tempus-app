@@ -1,4 +1,5 @@
 import { act, fireEvent, render } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 import { Decimal, Ticker } from 'tempus-core-services';
 import { getConfigManager } from '../../config/getConfigManager';
 import I18nProvider from '../../i18n/I18nProvider';
@@ -35,9 +36,11 @@ const defaultProps = {
 
 const subject = (props: DepositModalProps) =>
   render(
-    <I18nProvider>
-      <DepositModal {...props} />
-    </I18nProvider>,
+    <MemoryRouter>
+      <I18nProvider>
+        <DepositModal {...props} />
+      </I18nProvider>
+    </MemoryRouter>,
   );
 
 describe('DepositModal', () => {
@@ -75,7 +78,7 @@ describe('DepositModal', () => {
     expect(currencyDropdownButton).not.toBeNull();
 
     // open currency dropdown
-    fireEvent.click(currencyDropdownButton);
+    fireEvent.click(currencyDropdownButton as Element);
 
     const currencyButtons = container.querySelectorAll('.tc__currency-input__currency-selector-dropdown button');
 
@@ -129,7 +132,7 @@ describe('DepositModal', () => {
     expect(actionButton).toBeEnabled();
 
     // approve deposit
-    fireEvent.click(actionButton);
+    fireEvent.click(actionButton as Element);
 
     expect(actionButton).toBeDisabled();
     expect(actionButton).toHaveClass('tc__actionButton-border-primary-large-loading');
@@ -151,7 +154,7 @@ describe('DepositModal', () => {
     expect(actionButton).toHaveClass('tc__actionButton-border-primary-large');
 
     // deposit
-    fireEvent.click(actionButton);
+    fireEvent.click(actionButton as Element);
 
     expect(actionButton).toBeDisabled();
     expect(actionButton).toHaveClass('tc__actionButton-border-primary-large-loading');

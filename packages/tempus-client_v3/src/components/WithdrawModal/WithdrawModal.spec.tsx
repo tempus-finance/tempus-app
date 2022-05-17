@@ -1,4 +1,5 @@
 import { act, fireEvent, render } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 import { Decimal, Ticker } from 'tempus-core-services';
 import { getConfigManager } from '../../config/getConfigManager';
 import WithdrawModal, { WithdrawModalProps } from './WithdrawModal';
@@ -13,9 +14,16 @@ multipleCurrencyUsdRates.set('stETH', new Decimal(3500));
 const defaultProps: WithdrawModalProps = {
   open: true,
   inputPrecision: 18,
+  onClose: () => null,
+  usdRates: new Map<Ticker, Decimal>(),
 };
 
-const subject = (props: WithdrawModalProps) => render(<WithdrawModal {...props} />);
+const subject = (props: WithdrawModalProps) =>
+  render(
+    <MemoryRouter>
+      <WithdrawModal {...props} />
+    </MemoryRouter>,
+  );
 
 describe('WithdrawModal', () => {
   it('renders a withdraw modal', () => {
@@ -39,7 +47,7 @@ describe('WithdrawModal', () => {
     expect(currencyDropdownButton).not.toBeNull();
 
     // open currency dropdown
-    fireEvent.click(currencyDropdownButton);
+    fireEvent.click(currencyDropdownButton as Element);
 
     const currencyButtons = container.querySelectorAll('.tc__currency-input__currency-selector-dropdown button');
 
@@ -93,7 +101,7 @@ describe('WithdrawModal', () => {
     expect(actionButton).toHaveClass('tc__actionButton-border-primary-large');
 
     // withdraw
-    fireEvent.click(actionButton);
+    fireEvent.click(actionButton as Element);
 
     expect(actionButton).toBeDisabled();
     expect(actionButton).toHaveClass('tc__actionButton-border-primary-large-loading');
