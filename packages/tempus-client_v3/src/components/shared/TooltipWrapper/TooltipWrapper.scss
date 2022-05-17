@@ -12,8 +12,8 @@
     position: absolute;
     left: calc(-1 * var(--anchorPosX));
     top: calc(-1 * var(--anchorPosY));
-    width: calc(100vw);
-    height: calc(100vh);
+    width: 100vw;
+    height: 100vh;
     z-index: 9997;
   }
 
