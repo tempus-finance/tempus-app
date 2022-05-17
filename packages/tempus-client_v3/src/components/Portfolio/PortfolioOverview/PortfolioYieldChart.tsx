@@ -1,13 +1,15 @@
 import { FC, useCallback, useMemo } from 'react';
 import { DecimalUtils } from 'tempus-core-services';
-import { BalanceChartTooltipContent, ChartDot, DateChart, ChartDataPoint } from '../../shared';
+import { BalanceChartTooltipContent, ChartDot, DateChart, ChartDataPoint, ChartSizeProps } from '../../shared';
 
 interface DataPoint extends ChartDataPoint<Date, number> {
   visible?: boolean;
   selected?: boolean;
 }
 
-const PortfolioYieldChart: FC = () => {
+const PortfolioYieldChart: FC<ChartSizeProps> = props => {
+  const { width, height = 512 } = props;
+
   // TODO: Replace with real data
   const chartData = useMemo(
     () =>
@@ -22,7 +24,7 @@ const PortfolioYieldChart: FC = () => {
 
   const topPercentageProjected = useMemo(
     () =>
-      (chartData[chartData.length - 1].x.getTime() - new Date().getTime()) /
+      (chartData[chartData.length - 1].x.getTime() - Date.now()) /
       (chartData[chartData.length - 1].x.getTime() - chartData[0].x.getTime()),
     [chartData],
   );
@@ -40,11 +42,6 @@ const PortfolioYieldChart: FC = () => {
   const chartTooltipContent = useCallback(
     (x, y) => {
       const visible = chartData.find(value => value.x === x && value.y === y);
-      console.log(
-        x,
-        y,
-        chartData.find((value: DataPoint) => value.x.getTime() === x.getTime() && value.y === y)?.visible,
-      );
       return (
         <BalanceChartTooltipContent
           title={visible ? 'Deposit' : undefined}
@@ -60,7 +57,8 @@ const PortfolioYieldChart: FC = () => {
   return (
     <DateChart
       data={chartData}
-      height={512}
+      width={width}
+      height={height}
       dot={chartDot}
       tooltipContent={chartTooltipContent}
       topPercentageProjected={topPercentageProjected}
