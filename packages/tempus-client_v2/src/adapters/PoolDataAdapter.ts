@@ -820,7 +820,7 @@ export default class PoolDataAdapter {
         const pureInterest = ratio.sub(BigNumber.from(ONE_ETH_IN_WEI));
         return mul18f(pureInterest, scaleFactor);
       }
-      const interestRate = await this.tempusPoolService.currentInterestRateStatic(tempusPoolAddress, callOverrideData);
+      const interestRate = await this.tempusPoolService.currentInterestRate(tempusPoolAddress, callOverrideData);
 
       const backingAmount = await this.tempusPoolService.numAssetsPerYieldToken(
         tempusPoolAddress,

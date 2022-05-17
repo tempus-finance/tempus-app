@@ -283,10 +283,13 @@ export class TempusPoolService {
     throw new Error(`TempusPoolService - currentInterestRate() - Address '${address}' is not valid`);
   }
 
-  public async currentInterestRate(address: string): Promise<BigNumber> {
+  public async currentInterestRate(address: string, overrides?: CallOverrides): Promise<BigNumber> {
     const contract = this.tempusPoolsMap[address];
     if (contract) {
       try {
+        if (overrides) {
+          return await contract.currentInterestRate(overrides);
+        }
         return await contract.currentInterestRate();
       } catch (error) {
         console.error('TempusPoolService - currentInterestRate() - Failed to fetch interest rate!', error);
