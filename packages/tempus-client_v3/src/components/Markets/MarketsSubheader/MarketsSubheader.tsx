@@ -12,12 +12,7 @@ import {
   Tab,
   Tabs,
 } from '../../shared';
-
-export type PoolType = 'fixed' | 'boosted' | 'all';
-export type ViewType = 'grid' | 'list';
-export type FilterType = 'active' | 'matured' | 'inactive';
-export type SortType = 'a-z' | 'maturity' | 'tvl' | 'apr' | 'balance';
-export type SortOrder = 'asc' | 'desc';
+import { FilterType, PoolType, SortOrder, SortType, ViewType } from '../../../interfaces';
 
 export interface MarketsSubheaderProps {
   onPoolTypeChange?: (poolType: PoolType) => void;

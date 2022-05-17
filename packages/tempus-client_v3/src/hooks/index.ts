@@ -1,3 +1,4 @@
+export { useFixedApr } from './useFixedApr';
 export { useTvlData } from './useTvlData';
 export { useWalletBalances } from './useWalletBalances';
 export * from './useWalletAddress';
