@@ -1,5 +1,6 @@
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import ledgerModule from '@web3-onboard/ledger';
+import gnosisModule from '@web3-onboard/gnosis';
 import injectedModule from '@web3-onboard/injected-wallets';
 import { init, useConnectWallet, useWallets } from '@web3-onboard/react';
 import {
@@ -21,10 +22,11 @@ import tempusIcon from './png/Icon.png'; // TODO - Replace with svg image
 // Fetch wallet modules
 const injected = injectedModule();
 const ledger = ledgerModule();
+const gnosis = gnosisModule();
 
 // Init wallet library before using it
 init({
-  wallets: [injected, ledger], // List of wallets we want to support
+  wallets: [injected, ledger, gnosis], // List of wallets we want to support
   chains: [
     // List of chains we want to support
     {
