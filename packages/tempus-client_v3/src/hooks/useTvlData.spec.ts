@@ -3,33 +3,6 @@ import { delay, from } from 'rxjs';
 import { Chain, Decimal, getServices } from 'tempus-core-services';
 import { useTvlData } from './useTvlData';
 
-jest.mock('../config/getConfigManager', () => ({
-  getConfigManager: () => ({
-    getPoolList: () => [
-      {
-        address: '1',
-        backingToken: 'ETH',
-        chain: 'ethereum',
-      },
-      {
-        address: '2',
-        backingToken: 'USDC',
-        chain: 'ethereum',
-      },
-      {
-        address: '3',
-        backingToken: 'USDC',
-        chain: 'fantom',
-      },
-      {
-        address: '4',
-        backingToken: 'ETH',
-        chain: 'fantom',
-      },
-    ],
-  }),
-}));
-
 jest.mock('tempus-core-services', () => ({
   ...jest.requireActual('tempus-core-services'),
   getServices: jest.fn(),
