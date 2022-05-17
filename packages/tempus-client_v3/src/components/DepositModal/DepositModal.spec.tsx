@@ -1,4 +1,5 @@
 import { act, fireEvent, render } from '@testing-library/react';
+import { BrowserRouter } from 'react-router-dom';
 import { Decimal, Ticker } from 'tempus-core-services';
 import { getConfigManager } from '../../config/getConfigManager';
 import I18nProvider from '../../i18n/I18nProvider';
@@ -35,9 +36,11 @@ const defaultProps = {
 
 const subject = (props: DepositModalProps) =>
   render(
-    <I18nProvider>
-      <DepositModal {...props} />
-    </I18nProvider>,
+    <BrowserRouter>
+      <I18nProvider>
+        <DepositModal {...props} />
+      </I18nProvider>
+    </BrowserRouter>,
   );
 
 describe('DepositModal', () => {
