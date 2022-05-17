@@ -20,14 +20,14 @@ const TOKEN_RATE_POLLING_INTERVAL_IN_MS = 30000;
 const DEBOUNCE_IN_MS = 500;
 
 interface TokenInfoMap {
-  [x: string]: {
+  [chainTokenString: string]: {
     chain: Chain;
     token: Ticker;
   };
 }
 
 interface TokenRateMap {
-  [x: string]: Decimal | null;
+  [chainTokenString: string]: Decimal | null;
 }
 
 const poolList$: Observable<TempusPool[]> = config$.pipe(map(() => getConfigManager().getPoolList()));

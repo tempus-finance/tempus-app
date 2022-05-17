@@ -32,7 +32,6 @@ describe('useTokenRates', () => {
               price = new Decimal(chain === 'fantom' ? 1.001 : 0.999);
               break;
             default:
-              break;
           }
 
           return of(price);
