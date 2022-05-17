@@ -20,10 +20,11 @@ import {
   getERC20TokenService,
   increasePrecision,
   mul18f,
+  getStatisticsService,
 } from 'tempus-core-services';
 import { SelectedYield } from '../interfaces/SelectedYield';
 import { staticPoolDataState } from '../state/PoolDataState';
-import { getChainConfig } from '../utils/getConfig';
+import { getChainConfig, getConfig } from '../utils/getConfig';
 
 const { DAYS_IN_A_YEAR, ONE_ETH_IN_WEI, POLLING_INTERVAL, SECONDS_IN_A_DAY, ZERO_ETH_ADDRESS } = CONSTANTS;
 
@@ -781,9 +782,11 @@ export default class PoolDataAdapter {
         }
       });
       let currentFixedAPRTime: number;
+
+      let latestEventBlock: ethers.providers.Block | null = null;
       // In case event time was found
       if (latestEventBlockNumber > 0) {
-        const latestEventBlock = await provider.getBlock(latestEventBlockNumber);
+        latestEventBlock = await provider.getBlock(latestEventBlockNumber);
         currentFixedAPRTime = latestEventBlock.timestamp * 1000;
       }
       // In case there are no events for tempus pool, we fallback to Date.now() instead of latest event time
@@ -794,10 +797,22 @@ export default class PoolDataAdapter {
       const poolTimeRemaining = (maturityDate - currentFixedAPRTime) / 1000;
       const scaleFactor = ethers.utils.parseEther(((SECONDS_IN_A_DAY * DAYS_IN_A_YEAR) / poolTimeRemaining).toString());
 
-      const principals = await this.statisticService.estimatedDepositAndFix(
+      const estimateCallOverrides =
+        latestEventBlock && latestEventBlock.number > 0 ? { blockTag: latestEventBlock.number } : undefined;
+
+      // Get statistics service instance that uses Alchemy as a provider
+      const statisticsService = getStatisticsService(
+        this.chain,
+        getConfig,
+        getChainConfig,
+        getDefaultProvider(this.chain, getChainConfig),
+      );
+
+      const principals = await statisticsService.estimatedDepositAndFix(
         tempusAMMAddress,
         tokenAmount,
         isBackingToken,
+        estimateCallOverrides,
       );
 
       if (isBackingToken) {
