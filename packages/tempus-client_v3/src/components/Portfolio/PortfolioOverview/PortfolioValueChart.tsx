@@ -30,7 +30,14 @@ const PortfolioValueChart: FC = () => {
       const { transactionType } = chartData[index];
 
       if (transactionType !== undefined) {
-        return <ChartDot variant={transactionType === 'deposit' ? 'plus' : 'minus'} centerX={cx} centerY={cy} />;
+        return (
+          <ChartDot
+            variant={transactionType === 'deposit' ? 'plus' : 'minus'}
+            centerX={cx}
+            centerY={cy}
+            key={`chart-dot-${cx}-${cy}`}
+          />
+        );
       }
       return undefined;
     },

@@ -30,7 +30,7 @@ const PortfolioYieldChart: FC = () => {
   const chartDot = useCallback(
     (_x, _y, index, cx, cy) => {
       if (chartData[index].visible) {
-        return <ChartDot variant="plus" centerX={cx} centerY={cy} />;
+        return <ChartDot variant="plus" centerX={cx} centerY={cy} key={`chart-dot-${cx}-${cy}`} />;
       }
       return undefined;
     },
