@@ -6,16 +6,24 @@ import { getTempusControllerService } from './getTempusControllerService';
 import { getStatisticsService } from './getStatisticsService';
 import { getVaultService } from './getVaultService';
 import { getStorageService } from './getStorageService';
+import { getWalletBalanceService } from './getWalletBalanceService';
+import { TempusPoolService } from './TempusPoolService';
+import { TempusControllerService } from './TempusControllerService';
+import { StatisticsService } from './StatisticsService';
+import { VaultService } from './VaultService';
+import { VariableRateService } from './VariableRateService';
+import { StorageService } from './StorageService';
+import { WalletBalanceService } from './WalletBalanceService';
 
-type ServiceName =
-  | 'TempusPoolService'
-  | 'TempusControllerService'
-  | 'StatisticsService'
-  | 'VaultService'
-  | 'VariableRateService'
-  | 'StorageService';
-
-type ServiceMap = { [key in ServiceName]?: any };
+type ServiceMap = {
+  TempusPoolService: TempusPoolService;
+  TempusControllerService: TempusControllerService;
+  StatisticsService: StatisticsService;
+  VaultService: VaultService;
+  VariableRateService: VariableRateService;
+  StorageService: StorageService;
+  WalletBalanceService: WalletBalanceService;
+};
 
 const serviceMap = new Map<Chain, ServiceMap>();
 
@@ -27,7 +35,7 @@ export const initServices = (
   const getChainConfig = (selectedChain: Chain): ChainConfig => config[selectedChain];
   const getConfig = () => config;
 
-  let services = {};
+  let services: ServiceMap;
 
   if (signerOrProvider) {
     services = {
@@ -37,6 +45,7 @@ export const initServices = (
       VaultService: getVaultService(chain, getChainConfig, signerOrProvider as unknown as JsonRpcSigner),
       VariableRateService: getVariableRateService(chain, getChainConfig, signerOrProvider as unknown as JsonRpcSigner),
       StorageService: getStorageService(),
+      WalletBalanceService: getWalletBalanceService(chain),
     };
   } else {
     services = {
@@ -46,6 +55,7 @@ export const initServices = (
       VaultService: getVaultService(chain, getChainConfig),
       VariableRateService: getVariableRateService(chain, getChainConfig),
       StorageService: getStorageService(),
+      WalletBalanceService: getWalletBalanceService(chain),
     };
   }
 

@@ -18,7 +18,7 @@ export const getTempusControllerService = (
       Contract: Contract,
       address: getChainConfig(chain).tempusControllerContract,
       abi: TempusControllerABI,
-      signerOrProvider: getDefaultProvider(chain, getChainConfig),
+      signerOrProvider: getDefaultProvider(chain),
       tempusAMMService: getTempusAMMService(chain, getChainConfig),
       chain,
       getChainConfig,

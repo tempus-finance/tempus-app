@@ -17,11 +17,11 @@ export const getVariableRateService = (
   if (!variableRateServices.get(chain)) {
     const variableRateService = new VariableRateService();
     variableRateService.init({
-      signerOrProvider: getDefaultProvider(chain, getChainConfig),
+      signerOrProvider: getDefaultProvider(chain),
       tempusPoolService: getTempusPoolService(chain, getChainConfig),
       vaultService: getVaultService(chain, getChainConfig),
       tempusAMMService: getTempusAMMService(chain, getChainConfig),
-      rariVault: new RariVault(getDefaultProvider(chain, getChainConfig)),
+      rariVault: new RariVault(getDefaultProvider(chain)),
       config: getChainConfig(chain),
       getChainConfig,
     });

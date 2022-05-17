@@ -108,5 +108,7 @@
   "chartGrid": "#F3F7F9",
   "chartTooltipLine": "#129CA4",
   "chartDotDominant": "#2B6E84",
-  "chartDotNeutral": "#FFFFFF"
+  "chartDotNeutral": "#FFFFFF",
+
+  "portfolioBoxBorder": "#BFC0C0"
 }

@@ -2,9 +2,16 @@ import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import ledgerModule from '@web3-onboard/ledger';
 import injectedModule from '@web3-onboard/injected-wallets';
 import { init, useConnectWallet, useWallets } from '@web3-onboard/react';
-import { ethereumChainIdHex, ethereumForkChainIdHex, fantomChainIdHex } from 'tempus-core-services';
+import {
+  DecimalUtils,
+  ethereumChainIdHex,
+  ethereumForkChainIdHex,
+  fantomChainIdHex,
+  ZERO_ETH_ADDRESS,
+} from 'tempus-core-services';
 import { WalletButton } from '../shared';
 import ChainSelector from '../ChainSelector';
+import { useWalletBalances, setWalletAddress } from '../../hooks';
 
 // TODO - Check with designers if block native UI for wallet management is fine to use
 
@@ -62,10 +69,15 @@ const Wallet: FC = () => {
   const connectedWallets = useWallets();
   const [{ wallet }, connect] = useConnectWallet();
 
+  const walletBalances = useWalletBalances();
+
   const [chainSelectorOpen, setChainSelectorOpen] = useState<boolean>(false);
 
-  // TODO - Store wallet data in global state store
-  // (Hookstate, or something else once we decide what we want to use for global state management)
+  useEffect(() => {
+    if (wallet) {
+      setWalletAddress(wallet.accounts[0].address);
+    }
+  }, [wallet]);
 
   // TODO - Delete local storage under 'connectedWallets' when user disconnects the wallet
 
@@ -119,12 +131,22 @@ const Wallet: FC = () => {
     return wallet.accounts[0].address;
   }, [wallet]);
 
+  const balance = useMemo(() => {
+    // TODO - Once we add state for currently selected chain, use it to get native token balance for selected chain
+    const nativeTokenBalance = walletBalances[`ethereum-${ZERO_ETH_ADDRESS}`];
+    if (!nativeTokenBalance) {
+      return null;
+    }
+
+    // TODO - Add number of decimals for chain native token in the config and use it here.
+    return DecimalUtils.formatToCurrency(nativeTokenBalance, 2);
+  }, [walletBalances]);
+
   return (
     <>
       <WalletButton
         address={walletAddress || ''}
-        // TODO - Add provider that fetches user native token balance
-        balance=""
+        balance={balance || ''}
         // TODO - Use current chain from global state once we add it
         chain="ethereum"
         onConnect={onConnectWallet}

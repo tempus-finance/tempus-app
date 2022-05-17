@@ -17,7 +17,7 @@ export const getTempusAMMService = (
       Contract,
       tempusAMMAddresses: getChainConfig(chain).tempusPools.map(tempusPoolConfig => tempusPoolConfig.ammAddress),
       TempusAMMABI: TempusAMMABI,
-      signerOrProvider: getDefaultProvider(chain, getChainConfig),
+      signerOrProvider: getDefaultProvider(chain),
       chain,
       getChainConfig,
     });

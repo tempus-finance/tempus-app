@@ -6,6 +6,7 @@ exports[`BalanceChartTooltipContent renders a balance tooltip content 1`] = `
     class="tc__chart__balance-tooltip-content"
   >
     <div
+      class="tc__chart__balance-tooltip-content-title"
       style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(71, 67, 80); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
     >
       Deposit

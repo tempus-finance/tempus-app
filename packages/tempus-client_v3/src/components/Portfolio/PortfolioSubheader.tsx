@@ -2,9 +2,9 @@ import { FC, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { NavSubheader, NavSubheaderGroup, Tab, Tabs } from '../shared';
 
-type PortfolioView = 'overview' | 'positions';
+export type PortfolioView = 'overview' | 'positions';
 
-interface PortfolioSubheaderProps {
+export interface PortfolioSubheaderProps {
   onViewChange?: (view: PortfolioView) => void;
 }
 

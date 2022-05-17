@@ -4,8 +4,11 @@
   // the CSS variable are here for React components to override
   --anchorPosX: 0px;
   --anchorPosY: 0px;
+  // we want to hide backdrop until JS sets proper position for it.
+  --anchorVisibility: none;
 
   .tc__tooltip-wrapper-backdrop {
+    display: var(--anchorVisibility);
     position: absolute;
     left: calc(-1 * var(--anchorPosX));
     top: calc(-1 * var(--anchorPosY));

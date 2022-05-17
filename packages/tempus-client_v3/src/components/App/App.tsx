@@ -7,7 +7,7 @@ import Markets from '../Markets';
 import Navbar from '../Navbar/Navbar';
 import { getConfigManager } from '../../config/getConfigManager';
 import PageNavigation, { PageNavigationLink } from '../PageNavigation';
-import PortfolioSubheader from '../PortfolioSubheader/PortfolioSubheader';
+import Portfolio from '../Portfolio';
 import TotalValueLocked from '../TotalValueLocked';
 
 import './App.scss';
@@ -55,7 +55,7 @@ const App = () => {
           <div className="tc__app__body">
             <Routes>
               <Route path="/" element={<Markets />} />
-              <Route path="/portfolio" element={<PortfolioSubheader />} />
+              <Route path="/portfolio" element={<Portfolio />} />
             </Routes>
           </div>
         </>

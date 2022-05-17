@@ -2,14 +2,14 @@ import { FC, ReactNode, useCallback, useMemo } from 'react';
 import { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent';
 import { useLocale } from '../../../hooks';
 import Typography from '../Typography';
-import Chart, { ChartDataPoint, ChartDot, ChartSizeProps, ChartTick } from './Chart';
+import Chart, { ChartDataPoint, ChartDotElement, ChartSizeProps, ChartTick } from './Chart';
 
 export interface DateChartProps {
   data: ChartDataPoint<Date, number>[];
   yTick?: ChartTick;
   yTickFormatter?: (value: number, index: number) => string;
   topPercentageProjected?: number;
-  dot?: ChartDot<number, number>;
+  dot?: ChartDotElement<number, number>;
   tooltipContent?: (x: Date, y: number) => ReactNode;
 }
 
@@ -59,7 +59,7 @@ const DateChart: FC<DateChartProps & ChartSizeProps> = props => {
       yAxisType="number"
       yTick={yTick}
       yTickFormatter={yTickFormatter}
-      margin={{ top: 5, bottom: 40, right: 5 }}
+      margin={{ top: 17, bottom: 40, right: 17 }}
       dot={dot}
       topPercentageProjected={topPercentageProjected}
     />
