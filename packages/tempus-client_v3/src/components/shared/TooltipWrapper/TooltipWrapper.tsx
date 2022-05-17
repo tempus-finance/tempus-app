@@ -30,6 +30,8 @@ const TooltipWrapper: FC<TooltipWrapperProps> = props => {
       tooltipRef.current.style.setProperty('--anchorWidth', `${anchorWidth}px`);
       wrapperRef.current.style.setProperty('--anchorPosX', `${anchorPosX}px`);
       wrapperRef.current.style.setProperty('--anchorPosY', `${anchorPosY}px`);
+      // Show backdrop after position for it is set
+      wrapperRef.current.style.setProperty('--anchorVisibility', 'block');
     }
   });
 
