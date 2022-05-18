@@ -10,6 +10,7 @@ const MarketsPools = (): JSX.Element => {
     <div className="tc__marketsPools">
       {tempusPools.map(tempusPool => (
         <PoolCard
+          key={`${tempusPool.chain}-${tempusPool.address}`}
           aprValues={[new Decimal(0.1)]}
           color="#ff5500"
           poolCardStatus="Fixed"

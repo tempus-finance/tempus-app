@@ -219,6 +219,830 @@ exports[`Markets renders the page 1`] = `
         </div>
       </div>
     </div>
+    <div
+      class="tc__marketsPools"
+    >
+      <div
+        class="tc__poolCard"
+        data-card-variant="markets"
+      >
+        <div
+          style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+        >
+           
+          ETH
+        </div>
+        <div
+          class="tc__poolCard-protocol"
+        >
+          <svg
+            class="tc__logo tc__logo-protocol-aave"
+            fill="none"
+            height="20"
+            viewBox="0 0 40 40"
+            width="20"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M20 40C31.0457 40 40 31.0457 40 20C40 8.9543 31.0457 0 20 0C8.9543 0 0 8.9543 0 20C0 31.0457 8.9543 40 20 40Z"
+              fill="url(#paint0_linear_83_1430)"
+            />
+            <path
+              d="M29.2406 27.9691L22.4777 11.6186C22.0963 10.7732 21.5293 10.3608 20.7819 10.3608H20.1839C19.4365 10.3608 18.8695 10.7732 18.488 11.6186L15.5447 18.7423H13.3179C12.653 18.7474 12.1118 19.2835 12.1066 19.9536V19.9691C12.1118 20.634 12.653 21.1753 13.3179 21.1804H14.5138L11.7045 27.9691C11.653 28.1186 11.6221 28.2732 11.6221 28.433C11.6221 28.8144 11.7406 29.1134 11.952 29.3454C12.1633 29.5773 12.4674 29.6907 12.8489 29.6907C13.1015 29.6856 13.3437 29.6083 13.5447 29.4588C13.7612 29.3093 13.9107 29.0928 14.0293 28.8454L17.1221 21.1753H19.2664C19.9313 21.1701 20.4726 20.634 20.4777 19.9639V19.933C20.4726 19.2681 19.9313 18.7268 19.2664 18.7217H18.1221L20.4829 12.8402L26.9159 28.8402C27.0344 29.0876 27.1839 29.3041 27.4004 29.4536C27.6014 29.6031 27.8489 29.6804 28.0963 29.6856C28.4777 29.6856 28.7767 29.5722 28.9932 29.3402C29.2097 29.1083 29.3231 28.8093 29.3231 28.4278C29.3283 28.2732 29.3025 28.1134 29.2406 27.9691Z"
+              fill="white"
+            />
+            <defs>
+              <lineargradient
+                gradientUnits="userSpaceOnUse"
+                id="paint0_linear_83_1430"
+                x1="34.9117"
+                x2="5.15171"
+                y1="7.45291"
+                y2="32.4929"
+              >
+                <stop
+                  stop-color="#B6509E"
+                />
+                <stop
+                  offset="1"
+                  stop-color="#2EBAC6"
+                />
+              </lineargradient>
+            </defs>
+          </svg>
+          <div
+            style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+          >
+            Aave
+          </div>
+        </div>
+        <div
+          class="tc__poolCard-info"
+        >
+          <div
+            class="tc__poolCard-info-row"
+          >
+            <div
+              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(71, 67, 80); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+            >
+              Fixed APR
+            </div>
+            <div
+              style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+            >
+              10.00%
+            </div>
+          </div>
+          <div
+            class="tc__poolCard-info-row"
+          >
+            <div
+              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(71, 67, 80); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+            >
+              Term
+            </div>
+            <span
+              class="tc__formatted-date"
+            >
+              <div
+                style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+              >
+                Dec
+              </div>
+              <span
+                class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
+              />
+              <div
+                style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+              >
+                14
+              </div>
+              <span
+                class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
+              />
+              <div
+                style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+              >
+                09
+              </div>
+            </span>
+          </div>
+        </div>
+        <div
+          class="tc__poolCardRipples"
+        >
+          <div
+            class="tc__poolCardRipples-circle-1"
+            style="background-color: rgb(255, 85, 0);"
+          />
+          <div
+            class="tc__poolCardRipples-circle-2"
+            style="background-color: rgb(255, 85, 0);"
+          />
+          <div
+            class="tc__poolCardRipples-circle-3"
+            style="background-color: rgb(255, 85, 0);"
+          />
+          <div
+            class="tc__poolCardRipples-circle-4"
+            style="background-color: rgb(255, 85, 0);"
+          />
+        </div>
+        <div
+          class="tc__poolCardRipples-overlay"
+        />
+        <div
+          class="tc__poolCardFlag"
+          data-status="Fixed"
+        >
+          <div
+            class="tc__poolCardFlag-label"
+            data-status="Fixed"
+          >
+            <div
+              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(255, 255, 255); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+            >
+              Fixed
+            </div>
+          </div>
+          <div
+            class="tc__poolCardFlag-ripples"
+          >
+            <div
+              class="tc__poolCardFlag-ripples-1"
+            />
+            <div
+              class="tc__poolCardFlag-ripples-2"
+            />
+            <div
+              class="tc__poolCardFlag-ripples-3"
+            />
+            <div
+              class="tc__poolCardFlag-icon"
+            >
+              <svg
+                class="tc__logo tc__logo-token-ETH"
+                fill="none"
+                height="64"
+                viewBox="0 0 40 40"
+                width="64"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M20 40C31.0457 40 40 31.0457 40 20C40 8.9543 31.0457 0 20 0C8.9543 0 0 8.9543 0 20C0 31.0457 8.9543 40 20 40Z"
+                  fill="#627EEA"
+                />
+                <path
+                  clip-rule="evenodd"
+                  d="M11.25 20.275L20.6225 5V16.0875L11.25 20.275ZM20.6225 27.4588V34.9938L11.25 22.0201L20.6225 27.4588Z"
+                  fill="white"
+                  fill-rule="evenodd"
+                />
+                <path
+                  d="M20.625 25.7163L29.9962 20.275L20.625 16.09V25.7163Z"
+                  fill="white"
+                  fill-opacity="0.2"
+                />
+                <path
+                  clip-rule="evenodd"
+                  d="M20.625 5V16.0875L29.9962 20.275L20.625 5ZM20.625 27.4573V34.991L30.0025 22.0173L20.625 27.4573ZM20.6225 25.7163L11.25 20.275L20.6225 16.09V25.7163Z"
+                  fill="white"
+                  fill-opacity="0.6"
+                  fill-rule="evenodd"
+                />
+              </svg>
+            </div>
+          </div>
+          <div
+            class="tc__poolCardFlag-arrows"
+            data-status="Fixed"
+          >
+            <div
+              class="tc__poolCardFlag-arrows-mask"
+            />
+            <div
+              class="tc__poolCardFlag-arrows-1"
+            />
+            <div
+              class="tc__poolCardFlag-arrows-2"
+            />
+            <div
+              class="tc__poolCardFlag-arrows-3"
+            />
+          </div>
+        </div>
+      </div>
+      <div
+        class="tc__poolCard"
+        data-card-variant="markets"
+      >
+        <div
+          style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+        >
+           
+          USDC
+        </div>
+        <div
+          class="tc__poolCard-protocol"
+        >
+          <svg
+            class="tc__logo tc__logo-protocol-aave"
+            fill="none"
+            height="20"
+            viewBox="0 0 40 40"
+            width="20"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M20 40C31.0457 40 40 31.0457 40 20C40 8.9543 31.0457 0 20 0C8.9543 0 0 8.9543 0 20C0 31.0457 8.9543 40 20 40Z"
+              fill="url(#paint0_linear_83_1430)"
+            />
+            <path
+              d="M29.2406 27.9691L22.4777 11.6186C22.0963 10.7732 21.5293 10.3608 20.7819 10.3608H20.1839C19.4365 10.3608 18.8695 10.7732 18.488 11.6186L15.5447 18.7423H13.3179C12.653 18.7474 12.1118 19.2835 12.1066 19.9536V19.9691C12.1118 20.634 12.653 21.1753 13.3179 21.1804H14.5138L11.7045 27.9691C11.653 28.1186 11.6221 28.2732 11.6221 28.433C11.6221 28.8144 11.7406 29.1134 11.952 29.3454C12.1633 29.5773 12.4674 29.6907 12.8489 29.6907C13.1015 29.6856 13.3437 29.6083 13.5447 29.4588C13.7612 29.3093 13.9107 29.0928 14.0293 28.8454L17.1221 21.1753H19.2664C19.9313 21.1701 20.4726 20.634 20.4777 19.9639V19.933C20.4726 19.2681 19.9313 18.7268 19.2664 18.7217H18.1221L20.4829 12.8402L26.9159 28.8402C27.0344 29.0876 27.1839 29.3041 27.4004 29.4536C27.6014 29.6031 27.8489 29.6804 28.0963 29.6856C28.4777 29.6856 28.7767 29.5722 28.9932 29.3402C29.2097 29.1083 29.3231 28.8093 29.3231 28.4278C29.3283 28.2732 29.3025 28.1134 29.2406 27.9691Z"
+              fill="white"
+            />
+            <defs>
+              <lineargradient
+                gradientUnits="userSpaceOnUse"
+                id="paint0_linear_83_1430"
+                x1="34.9117"
+                x2="5.15171"
+                y1="7.45291"
+                y2="32.4929"
+              >
+                <stop
+                  stop-color="#B6509E"
+                />
+                <stop
+                  offset="1"
+                  stop-color="#2EBAC6"
+                />
+              </lineargradient>
+            </defs>
+          </svg>
+          <div
+            style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+          >
+            Aave
+          </div>
+        </div>
+        <div
+          class="tc__poolCard-info"
+        >
+          <div
+            class="tc__poolCard-info-row"
+          >
+            <div
+              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(71, 67, 80); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+            >
+              Fixed APR
+            </div>
+            <div
+              style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+            >
+              10.00%
+            </div>
+          </div>
+          <div
+            class="tc__poolCard-info-row"
+          >
+            <div
+              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(71, 67, 80); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+            >
+              Term
+            </div>
+            <span
+              class="tc__formatted-date"
+            >
+              <div
+                style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+              >
+                Dec
+              </div>
+              <span
+                class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
+              />
+              <div
+                style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+              >
+                14
+              </div>
+              <span
+                class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
+              />
+              <div
+                style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+              >
+                09
+              </div>
+            </span>
+          </div>
+        </div>
+        <div
+          class="tc__poolCardRipples"
+        >
+          <div
+            class="tc__poolCardRipples-circle-1"
+            style="background-color: rgb(255, 85, 0);"
+          />
+          <div
+            class="tc__poolCardRipples-circle-2"
+            style="background-color: rgb(255, 85, 0);"
+          />
+          <div
+            class="tc__poolCardRipples-circle-3"
+            style="background-color: rgb(255, 85, 0);"
+          />
+          <div
+            class="tc__poolCardRipples-circle-4"
+            style="background-color: rgb(255, 85, 0);"
+          />
+        </div>
+        <div
+          class="tc__poolCardRipples-overlay"
+        />
+        <div
+          class="tc__poolCardFlag"
+          data-status="Fixed"
+        >
+          <div
+            class="tc__poolCardFlag-label"
+            data-status="Fixed"
+          >
+            <div
+              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(255, 255, 255); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+            >
+              Fixed
+            </div>
+          </div>
+          <div
+            class="tc__poolCardFlag-ripples"
+          >
+            <div
+              class="tc__poolCardFlag-ripples-1"
+            />
+            <div
+              class="tc__poolCardFlag-ripples-2"
+            />
+            <div
+              class="tc__poolCardFlag-ripples-3"
+            />
+            <div
+              class="tc__poolCardFlag-icon"
+            >
+              <svg
+                class="tc__logo tc__logo-token-USDC"
+                fill="none"
+                height="64"
+                viewBox="0 0 40 40"
+                width="64"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M20 40C31.0834 40 40 31.0834 40 20C40 8.9166 31.0834 0 20 0C8.9166 0 0 8.9166 0 20C0 31.0834 8.9166 40 20 40Z"
+                  fill="#2775CA"
+                />
+                <path
+                  d="M25.4999 23.1666C25.4999 20.25 23.7499 19.25 20.2499 18.8334C17.75 18.5 17.25 17.8334 17.25 16.6666C17.25 15.4998 18.0834 14.75 19.7499 14.75C21.2499 14.75 22.0833 15.25 22.4999 16.5C22.5833 16.75 22.8333 16.9166 23.0833 16.9166H24.4165C24.7499 16.9166 24.9999 16.6666 24.9999 16.3334V16.25C24.6665 14.4166 23.1665 13.0001 21.2499 12.8335V10.8335C21.2499 10.5001 20.9999 10.2501 20.5833 10.1667H19.3334C19 10.1667 18.75 10.4167 18.6666 10.8335V12.7501C16.1666 13.0835 14.5834 14.75 14.5834 16.8334C14.5834 19.5834 16.25 20.6666 19.7499 21.0834C22.0833 21.5 22.8333 22 22.8333 23.3334C22.8333 24.6668 21.6665 25.5834 20.0833 25.5834C17.9166 25.5834 17.1666 24.6666 16.9166 23.4166C16.8334 23.0834 16.5834 22.9166 16.3334 22.9166H14.9166C14.5834 22.9166 14.3334 23.1666 14.3334 23.5V23.5834C14.6666 25.6666 16 27.1666 18.75 27.5834V29.5834C18.75 29.9166 19 30.1666 19.4166 30.25H20.6665C20.9999 30.25 21.2499 30 21.3333 29.5834V27.5834C23.8333 27.1666 25.4999 25.4166 25.4999 23.1666Z"
+                  fill="white"
+                />
+                <path
+                  d="M15.75 31.9166C9.25 29.5834 5.9166 22.3334 8.3334 15.9166C9.5834 12.4166 12.3334 9.75001 15.75 8.5C16.0834 8.3334 16.25 8.0834 16.25 7.6666V6.5C16.25 6.1666 16.0834 5.9166 15.75 5.8334C15.6666 5.8334 15.5 5.8334 15.4166 5.9166C7.5 8.4166 3.1666 16.8334 5.6666 24.75C7.1666 29.4166 10.75 33 15.4166 34.5C15.75 34.6666 16.0834 34.5 16.1666 34.1666C16.25 34.0834 16.25 34 16.25 33.8334V32.6666C16.25 32.4166 16 32.0834 15.75 31.9166ZM24.5834 5.9166C24.25 5.75 23.9166 5.9166 23.8334 6.25C23.75 6.3334 23.75 6.4166 23.75 6.5834V7.75C23.75 8.0834 24 8.4166 24.25 8.58341C30.75 10.9166 34.0834 18.1666 31.6666 24.5834C30.4166 28.0834 27.6666 30.75 24.25 32C23.9166 32.1666 23.75 32.4166 23.75 32.8334V34C23.75 34.3334 23.9166 34.5834 24.25 34.6666C24.3334 34.6666 24.5 34.6666 24.5834 34.5834C32.5 32.0834 36.8334 23.6666 34.3334 15.75C32.8334 11 29.1666 7.4166 24.5834 5.9166Z"
+                  fill="white"
+                />
+              </svg>
+            </div>
+          </div>
+          <div
+            class="tc__poolCardFlag-arrows"
+            data-status="Fixed"
+          >
+            <div
+              class="tc__poolCardFlag-arrows-mask"
+            />
+            <div
+              class="tc__poolCardFlag-arrows-1"
+            />
+            <div
+              class="tc__poolCardFlag-arrows-2"
+            />
+            <div
+              class="tc__poolCardFlag-arrows-3"
+            />
+          </div>
+        </div>
+      </div>
+      <div
+        class="tc__poolCard"
+        data-card-variant="markets"
+      >
+        <div
+          style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+        >
+           
+          USDC
+        </div>
+        <div
+          class="tc__poolCard-protocol"
+        >
+          <svg
+            class="tc__logo tc__logo-protocol-aave"
+            fill="none"
+            height="20"
+            viewBox="0 0 40 40"
+            width="20"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M20 40C31.0457 40 40 31.0457 40 20C40 8.9543 31.0457 0 20 0C8.9543 0 0 8.9543 0 20C0 31.0457 8.9543 40 20 40Z"
+              fill="url(#paint0_linear_83_1430)"
+            />
+            <path
+              d="M29.2406 27.9691L22.4777 11.6186C22.0963 10.7732 21.5293 10.3608 20.7819 10.3608H20.1839C19.4365 10.3608 18.8695 10.7732 18.488 11.6186L15.5447 18.7423H13.3179C12.653 18.7474 12.1118 19.2835 12.1066 19.9536V19.9691C12.1118 20.634 12.653 21.1753 13.3179 21.1804H14.5138L11.7045 27.9691C11.653 28.1186 11.6221 28.2732 11.6221 28.433C11.6221 28.8144 11.7406 29.1134 11.952 29.3454C12.1633 29.5773 12.4674 29.6907 12.8489 29.6907C13.1015 29.6856 13.3437 29.6083 13.5447 29.4588C13.7612 29.3093 13.9107 29.0928 14.0293 28.8454L17.1221 21.1753H19.2664C19.9313 21.1701 20.4726 20.634 20.4777 19.9639V19.933C20.4726 19.2681 19.9313 18.7268 19.2664 18.7217H18.1221L20.4829 12.8402L26.9159 28.8402C27.0344 29.0876 27.1839 29.3041 27.4004 29.4536C27.6014 29.6031 27.8489 29.6804 28.0963 29.6856C28.4777 29.6856 28.7767 29.5722 28.9932 29.3402C29.2097 29.1083 29.3231 28.8093 29.3231 28.4278C29.3283 28.2732 29.3025 28.1134 29.2406 27.9691Z"
+              fill="white"
+            />
+            <defs>
+              <lineargradient
+                gradientUnits="userSpaceOnUse"
+                id="paint0_linear_83_1430"
+                x1="34.9117"
+                x2="5.15171"
+                y1="7.45291"
+                y2="32.4929"
+              >
+                <stop
+                  stop-color="#B6509E"
+                />
+                <stop
+                  offset="1"
+                  stop-color="#2EBAC6"
+                />
+              </lineargradient>
+            </defs>
+          </svg>
+          <div
+            style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+          >
+            Aave
+          </div>
+        </div>
+        <div
+          class="tc__poolCard-info"
+        >
+          <div
+            class="tc__poolCard-info-row"
+          >
+            <div
+              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(71, 67, 80); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+            >
+              Fixed APR
+            </div>
+            <div
+              style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+            >
+              10.00%
+            </div>
+          </div>
+          <div
+            class="tc__poolCard-info-row"
+          >
+            <div
+              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(71, 67, 80); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+            >
+              Term
+            </div>
+            <span
+              class="tc__formatted-date"
+            >
+              <div
+                style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+              >
+                Dec
+              </div>
+              <span
+                class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
+              />
+              <div
+                style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+              >
+                14
+              </div>
+              <span
+                class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
+              />
+              <div
+                style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+              >
+                09
+              </div>
+            </span>
+          </div>
+        </div>
+        <div
+          class="tc__poolCardRipples"
+        >
+          <div
+            class="tc__poolCardRipples-circle-1"
+            style="background-color: rgb(255, 85, 0);"
+          />
+          <div
+            class="tc__poolCardRipples-circle-2"
+            style="background-color: rgb(255, 85, 0);"
+          />
+          <div
+            class="tc__poolCardRipples-circle-3"
+            style="background-color: rgb(255, 85, 0);"
+          />
+          <div
+            class="tc__poolCardRipples-circle-4"
+            style="background-color: rgb(255, 85, 0);"
+          />
+        </div>
+        <div
+          class="tc__poolCardRipples-overlay"
+        />
+        <div
+          class="tc__poolCardFlag"
+          data-status="Fixed"
+        >
+          <div
+            class="tc__poolCardFlag-label"
+            data-status="Fixed"
+          >
+            <div
+              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(255, 255, 255); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+            >
+              Fixed
+            </div>
+          </div>
+          <div
+            class="tc__poolCardFlag-ripples"
+          >
+            <div
+              class="tc__poolCardFlag-ripples-1"
+            />
+            <div
+              class="tc__poolCardFlag-ripples-2"
+            />
+            <div
+              class="tc__poolCardFlag-ripples-3"
+            />
+            <div
+              class="tc__poolCardFlag-icon"
+            >
+              <svg
+                class="tc__logo tc__logo-token-USDC"
+                fill="none"
+                height="64"
+                viewBox="0 0 40 40"
+                width="64"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M20 40C31.0834 40 40 31.0834 40 20C40 8.9166 31.0834 0 20 0C8.9166 0 0 8.9166 0 20C0 31.0834 8.9166 40 20 40Z"
+                  fill="#2775CA"
+                />
+                <path
+                  d="M25.4999 23.1666C25.4999 20.25 23.7499 19.25 20.2499 18.8334C17.75 18.5 17.25 17.8334 17.25 16.6666C17.25 15.4998 18.0834 14.75 19.7499 14.75C21.2499 14.75 22.0833 15.25 22.4999 16.5C22.5833 16.75 22.8333 16.9166 23.0833 16.9166H24.4165C24.7499 16.9166 24.9999 16.6666 24.9999 16.3334V16.25C24.6665 14.4166 23.1665 13.0001 21.2499 12.8335V10.8335C21.2499 10.5001 20.9999 10.2501 20.5833 10.1667H19.3334C19 10.1667 18.75 10.4167 18.6666 10.8335V12.7501C16.1666 13.0835 14.5834 14.75 14.5834 16.8334C14.5834 19.5834 16.25 20.6666 19.7499 21.0834C22.0833 21.5 22.8333 22 22.8333 23.3334C22.8333 24.6668 21.6665 25.5834 20.0833 25.5834C17.9166 25.5834 17.1666 24.6666 16.9166 23.4166C16.8334 23.0834 16.5834 22.9166 16.3334 22.9166H14.9166C14.5834 22.9166 14.3334 23.1666 14.3334 23.5V23.5834C14.6666 25.6666 16 27.1666 18.75 27.5834V29.5834C18.75 29.9166 19 30.1666 19.4166 30.25H20.6665C20.9999 30.25 21.2499 30 21.3333 29.5834V27.5834C23.8333 27.1666 25.4999 25.4166 25.4999 23.1666Z"
+                  fill="white"
+                />
+                <path
+                  d="M15.75 31.9166C9.25 29.5834 5.9166 22.3334 8.3334 15.9166C9.5834 12.4166 12.3334 9.75001 15.75 8.5C16.0834 8.3334 16.25 8.0834 16.25 7.6666V6.5C16.25 6.1666 16.0834 5.9166 15.75 5.8334C15.6666 5.8334 15.5 5.8334 15.4166 5.9166C7.5 8.4166 3.1666 16.8334 5.6666 24.75C7.1666 29.4166 10.75 33 15.4166 34.5C15.75 34.6666 16.0834 34.5 16.1666 34.1666C16.25 34.0834 16.25 34 16.25 33.8334V32.6666C16.25 32.4166 16 32.0834 15.75 31.9166ZM24.5834 5.9166C24.25 5.75 23.9166 5.9166 23.8334 6.25C23.75 6.3334 23.75 6.4166 23.75 6.5834V7.75C23.75 8.0834 24 8.4166 24.25 8.58341C30.75 10.9166 34.0834 18.1666 31.6666 24.5834C30.4166 28.0834 27.6666 30.75 24.25 32C23.9166 32.1666 23.75 32.4166 23.75 32.8334V34C23.75 34.3334 23.9166 34.5834 24.25 34.6666C24.3334 34.6666 24.5 34.6666 24.5834 34.5834C32.5 32.0834 36.8334 23.6666 34.3334 15.75C32.8334 11 29.1666 7.4166 24.5834 5.9166Z"
+                  fill="white"
+                />
+              </svg>
+            </div>
+          </div>
+          <div
+            class="tc__poolCardFlag-arrows"
+            data-status="Fixed"
+          >
+            <div
+              class="tc__poolCardFlag-arrows-mask"
+            />
+            <div
+              class="tc__poolCardFlag-arrows-1"
+            />
+            <div
+              class="tc__poolCardFlag-arrows-2"
+            />
+            <div
+              class="tc__poolCardFlag-arrows-3"
+            />
+          </div>
+        </div>
+      </div>
+      <div
+        class="tc__poolCard"
+        data-card-variant="markets"
+      >
+        <div
+          style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+        >
+           
+          ETH
+        </div>
+        <div
+          class="tc__poolCard-protocol"
+        >
+          <svg
+            class="tc__logo tc__logo-protocol-aave"
+            fill="none"
+            height="20"
+            viewBox="0 0 40 40"
+            width="20"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M20 40C31.0457 40 40 31.0457 40 20C40 8.9543 31.0457 0 20 0C8.9543 0 0 8.9543 0 20C0 31.0457 8.9543 40 20 40Z"
+              fill="url(#paint0_linear_83_1430)"
+            />
+            <path
+              d="M29.2406 27.9691L22.4777 11.6186C22.0963 10.7732 21.5293 10.3608 20.7819 10.3608H20.1839C19.4365 10.3608 18.8695 10.7732 18.488 11.6186L15.5447 18.7423H13.3179C12.653 18.7474 12.1118 19.2835 12.1066 19.9536V19.9691C12.1118 20.634 12.653 21.1753 13.3179 21.1804H14.5138L11.7045 27.9691C11.653 28.1186 11.6221 28.2732 11.6221 28.433C11.6221 28.8144 11.7406 29.1134 11.952 29.3454C12.1633 29.5773 12.4674 29.6907 12.8489 29.6907C13.1015 29.6856 13.3437 29.6083 13.5447 29.4588C13.7612 29.3093 13.9107 29.0928 14.0293 28.8454L17.1221 21.1753H19.2664C19.9313 21.1701 20.4726 20.634 20.4777 19.9639V19.933C20.4726 19.2681 19.9313 18.7268 19.2664 18.7217H18.1221L20.4829 12.8402L26.9159 28.8402C27.0344 29.0876 27.1839 29.3041 27.4004 29.4536C27.6014 29.6031 27.8489 29.6804 28.0963 29.6856C28.4777 29.6856 28.7767 29.5722 28.9932 29.3402C29.2097 29.1083 29.3231 28.8093 29.3231 28.4278C29.3283 28.2732 29.3025 28.1134 29.2406 27.9691Z"
+              fill="white"
+            />
+            <defs>
+              <lineargradient
+                gradientUnits="userSpaceOnUse"
+                id="paint0_linear_83_1430"
+                x1="34.9117"
+                x2="5.15171"
+                y1="7.45291"
+                y2="32.4929"
+              >
+                <stop
+                  stop-color="#B6509E"
+                />
+                <stop
+                  offset="1"
+                  stop-color="#2EBAC6"
+                />
+              </lineargradient>
+            </defs>
+          </svg>
+          <div
+            style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+          >
+            Aave
+          </div>
+        </div>
+        <div
+          class="tc__poolCard-info"
+        >
+          <div
+            class="tc__poolCard-info-row"
+          >
+            <div
+              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(71, 67, 80); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+            >
+              Fixed APR
+            </div>
+            <div
+              style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+            >
+              10.00%
+            </div>
+          </div>
+          <div
+            class="tc__poolCard-info-row"
+          >
+            <div
+              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(71, 67, 80); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+            >
+              Term
+            </div>
+            <span
+              class="tc__formatted-date"
+            >
+              <div
+                style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+              >
+                Dec
+              </div>
+              <span
+                class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
+              />
+              <div
+                style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+              >
+                14
+              </div>
+              <span
+                class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
+              />
+              <div
+                style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+              >
+                09
+              </div>
+            </span>
+          </div>
+        </div>
+        <div
+          class="tc__poolCardRipples"
+        >
+          <div
+            class="tc__poolCardRipples-circle-1"
+            style="background-color: rgb(255, 85, 0);"
+          />
+          <div
+            class="tc__poolCardRipples-circle-2"
+            style="background-color: rgb(255, 85, 0);"
+          />
+          <div
+            class="tc__poolCardRipples-circle-3"
+            style="background-color: rgb(255, 85, 0);"
+          />
+          <div
+            class="tc__poolCardRipples-circle-4"
+            style="background-color: rgb(255, 85, 0);"
+          />
+        </div>
+        <div
+          class="tc__poolCardRipples-overlay"
+        />
+        <div
+          class="tc__poolCardFlag"
+          data-status="Fixed"
+        >
+          <div
+            class="tc__poolCardFlag-label"
+            data-status="Fixed"
+          >
+            <div
+              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(255, 255, 255); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+            >
+              Fixed
+            </div>
+          </div>
+          <div
+            class="tc__poolCardFlag-ripples"
+          >
+            <div
+              class="tc__poolCardFlag-ripples-1"
+            />
+            <div
+              class="tc__poolCardFlag-ripples-2"
+            />
+            <div
+              class="tc__poolCardFlag-ripples-3"
+            />
+            <div
+              class="tc__poolCardFlag-icon"
+            >
+              <svg
+                class="tc__logo tc__logo-token-ETH"
+                fill="none"
+                height="64"
+                viewBox="0 0 40 40"
+                width="64"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M20 40C31.0457 40 40 31.0457 40 20C40 8.9543 31.0457 0 20 0C8.9543 0 0 8.9543 0 20C0 31.0457 8.9543 40 20 40Z"
+                  fill="#627EEA"
+                />
+                <path
+                  clip-rule="evenodd"
+                  d="M11.25 20.275L20.6225 5V16.0875L11.25 20.275ZM20.6225 27.4588V34.9938L11.25 22.0201L20.6225 27.4588Z"
+                  fill="white"
+                  fill-rule="evenodd"
+                />
+                <path
+                  d="M20.625 25.7163L29.9962 20.275L20.625 16.09V25.7163Z"
+                  fill="white"
+                  fill-opacity="0.2"
+                />
+                <path
+                  clip-rule="evenodd"
+                  d="M20.625 5V16.0875L29.9962 20.275L20.625 5ZM20.625 27.4573V34.991L30.0025 22.0173L20.625 27.4573ZM20.6225 25.7163L11.25 20.275L20.6225 16.09V25.7163Z"
+                  fill="white"
+                  fill-opacity="0.6"
+                  fill-rule="evenodd"
+                />
+              </svg>
+            </div>
+          </div>
+          <div
+            class="tc__poolCardFlag-arrows"
+            data-status="Fixed"
+          >
+            <div
+              class="tc__poolCardFlag-arrows-mask"
+            />
+            <div
+              class="tc__poolCardFlag-arrows-1"
+            />
+            <div
+              class="tc__poolCardFlag-arrows-2"
+            />
+            <div
+              class="tc__poolCardFlag-arrows-3"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 `;
