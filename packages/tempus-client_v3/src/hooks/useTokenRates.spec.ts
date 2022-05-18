@@ -26,7 +26,10 @@ describe('useTokenRates', () => {
           let price = new Decimal(0);
           switch (tokenTicker) {
             case 'ETH':
-              price = new Decimal(chain === 'fantom' ? 3001 : 2999);
+              price = new Decimal(2999);
+              break;
+            case 'WETH':
+              price = new Decimal(3001);
               break;
             case 'USDC':
               price = new Decimal(chain === 'fantom' ? 1.001 : 0.999);
@@ -45,10 +48,10 @@ describe('useTokenRates', () => {
 
     await waitForNextUpdate();
 
-    expect(result.current['ethereum-ETH']).toEqual(new Decimal(2999));
-    expect(result.current['ethereum-USDC']).toEqual(new Decimal(0.999));
-    expect(result.current['fantom-ETH']).toEqual(new Decimal(3001));
-    expect(result.current['fantom-USDC']).toEqual(new Decimal(1.001));
+    expect(result.current['ethereum-0x0000000000000000000000000000000000000000']).toEqual(new Decimal(2999));
+    expect(result.current['ethereum-0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48']).toEqual(new Decimal(0.999));
+    expect(result.current['fantom-0x74b23882a30290451A17c44f4F05243b6b58C76d']).toEqual(new Decimal(3001));
+    expect(result.current['fantom-0x04068da6c83afcfa0e13ba15a6696662335d5b75']).toEqual(new Decimal(1.001));
   });
 
   test('returns empty map when service throw error', async () => {

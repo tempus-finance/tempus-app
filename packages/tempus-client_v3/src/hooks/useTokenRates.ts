@@ -19,14 +19,15 @@ const TOKEN_RATE_POLLING_INTERVAL_IN_MS = 30000;
 const DEBOUNCE_IN_MS = 500;
 
 interface TokenInfoMap {
-  [chainTokenString: string]: {
+  [chainTokenAddressString: string]: {
     chain: Chain;
     token: Ticker;
+    address: string;
   };
 }
 
 interface TokenRateMap {
-  [chainTokenString: string]: Decimal | null;
+  [chainTokenAddressString: string]: Decimal | null;
 }
 
 const polling$: Observable<number> = interval(TOKEN_RATE_POLLING_INTERVAL_IN_MS).pipe(startWith(0));
@@ -35,17 +36,20 @@ const tokenRates$: Observable<TokenRateMap> = combineLatest([poolList$, polling$
   mergeMap(([tempusPools]) => {
     const uniqueTokens = Object.values(
       tempusPools.reduce(
-        (obj, { chain, backingToken }) => ({
+        (obj, { chain, backingToken, backingTokenAddress }) => ({
           ...obj,
-          [`${chain}-${backingToken}`]: {
+          [`${chain}-${backingTokenAddress}`]: {
             chain: chain as Chain,
             token: backingToken,
+            address: backingTokenAddress,
           },
         }),
         {} as TokenInfoMap,
       ),
     );
-    const tokenRates = uniqueTokens.map(({ chain, token }) => {
+    const tokenRates = uniqueTokens.map(({ chain, token, address }) => {
+      // TODO: conceptually chain+ticker is not unique, it should accept chain+address instead
+      //       but currently chainlink and gecko API doesnt support that
       const tokenRate = (getServices(chain as Chain)?.StatisticsService as StatisticsService).getRate(
         chain as Chain,
         token,
@@ -54,7 +58,7 @@ const tokenRates$: Observable<TokenRateMap> = combineLatest([poolList$, polling$
         map(
           rate =>
             ({
-              [`${chain}-${token}`]: rate,
+              [`${chain}-${address}`]: rate,
             } as TokenRateMap),
         ),
       );
