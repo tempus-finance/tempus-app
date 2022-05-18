@@ -333,19 +333,19 @@ exports[`Markets renders the page 1`] = `
         >
           <div
             class="tc__poolCardRipples-circle-1"
-            style="background-color: rgb(255, 85, 0);"
+            style="background-color: rgb(98, 126, 234);"
           />
           <div
             class="tc__poolCardRipples-circle-2"
-            style="background-color: rgb(255, 85, 0);"
+            style="background-color: rgb(98, 126, 234);"
           />
           <div
             class="tc__poolCardRipples-circle-3"
-            style="background-color: rgb(255, 85, 0);"
+            style="background-color: rgb(98, 126, 234);"
           />
           <div
             class="tc__poolCardRipples-circle-4"
-            style="background-color: rgb(255, 85, 0);"
+            style="background-color: rgb(98, 126, 234);"
           />
         </div>
         <div
@@ -543,19 +543,19 @@ exports[`Markets renders the page 1`] = `
         >
           <div
             class="tc__poolCardRipples-circle-1"
-            style="background-color: rgb(255, 85, 0);"
+            style="background-color: rgb(39, 117, 202);"
           />
           <div
             class="tc__poolCardRipples-circle-2"
-            style="background-color: rgb(255, 85, 0);"
+            style="background-color: rgb(39, 117, 202);"
           />
           <div
             class="tc__poolCardRipples-circle-3"
-            style="background-color: rgb(255, 85, 0);"
+            style="background-color: rgb(39, 117, 202);"
           />
           <div
             class="tc__poolCardRipples-circle-4"
-            style="background-color: rgb(255, 85, 0);"
+            style="background-color: rgb(39, 117, 202);"
           />
         </div>
         <div
@@ -743,19 +743,19 @@ exports[`Markets renders the page 1`] = `
         >
           <div
             class="tc__poolCardRipples-circle-1"
-            style="background-color: rgb(255, 85, 0);"
+            style="background-color: rgb(39, 117, 202);"
           />
           <div
             class="tc__poolCardRipples-circle-2"
-            style="background-color: rgb(255, 85, 0);"
+            style="background-color: rgb(39, 117, 202);"
           />
           <div
             class="tc__poolCardRipples-circle-3"
-            style="background-color: rgb(255, 85, 0);"
+            style="background-color: rgb(39, 117, 202);"
           />
           <div
             class="tc__poolCardRipples-circle-4"
-            style="background-color: rgb(255, 85, 0);"
+            style="background-color: rgb(39, 117, 202);"
           />
         </div>
         <div
@@ -943,19 +943,19 @@ exports[`Markets renders the page 1`] = `
         >
           <div
             class="tc__poolCardRipples-circle-1"
-            style="background-color: rgb(255, 85, 0);"
+            style="background-color: rgb(232, 37, 115);"
           />
           <div
             class="tc__poolCardRipples-circle-2"
-            style="background-color: rgb(255, 85, 0);"
+            style="background-color: rgb(232, 37, 115);"
           />
           <div
             class="tc__poolCardRipples-circle-3"
-            style="background-color: rgb(255, 85, 0);"
+            style="background-color: rgb(232, 37, 115);"
           />
           <div
             class="tc__poolCardRipples-circle-4"
-            style="background-color: rgb(255, 85, 0);"
+            style="background-color: rgb(232, 37, 115);"
           />
         </div>
         <div
