@@ -66,6 +66,7 @@ const Template: ComponentStory<typeof DepositModal> = () => {
       <DepositModal
         inputPrecision={18}
         usdRates={singleCurrencyUsdRates}
+        poolStartDate={new Date(2022, 3, 1)}
         maturityTerms={maturityTerms}
         open={modalOpen}
         onClose={onModalClose}

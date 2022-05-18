@@ -28,6 +28,11 @@ export interface ChartDataPoint<X, Y extends ValueType> {
   y: Y;
 }
 
+export interface SelectableChartDataPoint<X, Y extends ValueType> extends ChartDataPoint<X, Y> {
+  visible?: boolean;
+  selected?: boolean;
+}
+
 export interface ChartProps<X, Y extends ValueType> {
   data: ChartDataPoint<X, Y>[];
   xAxisType?: ChartAxisType;
