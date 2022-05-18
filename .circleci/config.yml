@@ -83,6 +83,8 @@ jobs:
           command: |
             apt update
             apt install -y p7zip-full
+            npm install -g typescript
+            npm install -g ts-node
             npx playwright install
             xvfb-run --auto-servernum --server-num=1 npm run mm-setup
       - persist_to_workspace:
