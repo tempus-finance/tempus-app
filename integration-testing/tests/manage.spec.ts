@@ -1,6 +1,6 @@
 import { test, expect, BrowserContext, Page } from '@playwright/test';
 import { METAMASK_ID, metamaskLogin } from '../modules/metamask';
-import { tempusManageCurrency, tempusMetamaskConnect, tempusTextHeaders } from '../modules/tempushome';
+import { tempusManageCurrency, tempusMetamaskConnect } from '../modules/tempushome';
 import { chromiumPersistant } from '../modules/browser';
 
 test.describe.serial('Open Manage tabs', () => {
