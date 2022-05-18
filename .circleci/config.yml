@@ -86,6 +86,7 @@ jobs:
             npm install -g typescript
             npm install -g ts-node
             npx playwright install
+            touch /root/project/integration-testing/utility/mm_id.txt
             xvfb-run --auto-servernum --server-num=1 npm run mm-setup
       - persist_to_workspace:
           root: ./
