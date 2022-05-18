@@ -3,15 +3,15 @@ import { metamaskLogin } from '../modules/metamask';
 import { chromiumPersistant } from '../modules/browser';
 import { tempusCommunity, tempusFiatCryptoButton, tempusManageAppears, tempusNewRow, tempusTextHeaders } from '../modules/tempushome';
 
-test.describe.serial('Homepage text matching', () => {
+test.describe.serial('Homepage text matching tests', () => {
     let browser: BrowserContext;
     test.beforeAll(async () => {
         browser = await chromiumPersistant();
         await metamaskLogin(browser);
     });
 
-    test('Headers, wallet connected', async () => {
-        await tempusTextHeaders(browser, true);
+    test('Basic headers', async () => {
+        await tempusTextHeaders(browser, false);
     });
 
     test('Manage button appears on click (english)', async () => {

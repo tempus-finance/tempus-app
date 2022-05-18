@@ -48,7 +48,7 @@ export async function tempusTextHeaders(browser: BrowserContext, walletConnected
     const lang: Language = languageGenerator(langCode);
     const tabTempus = await browser.newPage();
     await tabTempus.goto(TEMPUS_URL);
-    await tabTempus.waitForTimeout(LOAD_LONG_TIMEOUT); // ?
+    await tabTempus.waitForTimeout(LOAD_LONG_TIMEOUT);
 
     await expect(tabTempus.locator('th >> nth=0')).toHaveText(lang.asset);
     await expect(tabTempus.locator('th >> nth=1')).toHaveText(lang.protocol);
