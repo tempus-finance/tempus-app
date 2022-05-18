@@ -58,5 +58,23 @@ jest.mock('./config/getConfigManager', () => ({
         chain: 'fantom',
       },
     ],
+    getTokenList: () => [
+      {
+        address: '1',
+        chain: 'ethereum',
+      },
+      {
+        address: '2',
+        chain: 'ethereum',
+      },
+      {
+        address: '3',
+        chain: 'fantom',
+      },
+      {
+        address: '4',
+        chain: 'fantom',
+      },
+    ],
   }),
 }));

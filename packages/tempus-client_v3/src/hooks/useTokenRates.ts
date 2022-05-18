@@ -12,9 +12,8 @@ import {
   scan,
   startWith,
 } from 'rxjs';
-import { getServices, Decimal, StatisticsService, TempusPool, Chain, Ticker } from 'tempus-core-services';
-import { getConfigManager } from '../config/getConfigManager';
-import { config$ } from './useConfig';
+import { getServices, Decimal, StatisticsService, Chain, Ticker } from 'tempus-core-services';
+import { poolList$ } from './useConfig';
 
 const TOKEN_RATE_POLLING_INTERVAL_IN_MS = 30000;
 const DEBOUNCE_IN_MS = 500;
@@ -30,7 +29,6 @@ interface TokenRateMap {
   [chainTokenString: string]: Decimal | null;
 }
 
-const poolList$: Observable<TempusPool[]> = config$.pipe(map(() => getConfigManager().getPoolList()));
 const polling$: Observable<number> = interval(TOKEN_RATE_POLLING_INTERVAL_IN_MS).pipe(startWith(0));
 
 const tokenRates$: Observable<TokenRateMap> = combineLatest([poolList$, polling$]).pipe(
