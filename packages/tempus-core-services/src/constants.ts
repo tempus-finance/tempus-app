@@ -80,3 +80,12 @@ export const NETWORK_URLS: { [key in SupportedChainId]: string } = {
 export const ethereumChainIdHex = '0x1';
 export const ethereumForkChainIdHex = '0x7a69';
 export const fantomChainIdHex = '0xfa';
+
+export const tokenColorMap = new Map<Ticker, string>([
+  ['ETH', '#627EEA'],
+  ['USDC', '#2775CA'],
+  ['DAI', '#FEBE44'],
+  ['USDT', '#53AE94'],
+  ['WETH', '#E82573'],
+  ['YFI', '#296AE3'],
+]);
