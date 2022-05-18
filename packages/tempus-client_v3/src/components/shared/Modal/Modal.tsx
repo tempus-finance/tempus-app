@@ -11,7 +11,7 @@ type ModalSize = 'small' | 'large';
 export interface ModalProps {
   open: boolean;
   onClose: () => void;
-  title?: string;
+  title?: string | ReactNode;
   className?: string;
   header?: ReactNode;
 }
@@ -44,15 +44,34 @@ const Modal: FC<ModalProps & ModalStyleProps> = props => {
       <div className={`tc__modal-container ${className}`}>
         <div className={`tc__modal tc__modal__${variant} tc__modal__size-${size}`}>
           <div className="tc__modal-header">
-            <Typography variant="body-primary" weight="bold">
-              {title}
-            </Typography>
+            {size === 'small' && (
+              <>
+                {typeof title === 'string' && (
+                  <Typography variant="body-primary" weight="bold">
+                    {title}
+                  </Typography>
+                )}
+                {typeof title !== 'string' && title}
+              </>
+            )}
             <ButtonWrapper onClick={onCloseButtonClick}>
               <Icon variant="close" size={size === 'small' ? 'small' : 20} />
             </ButtonWrapper>
             {header && <div className="tc__modal-header-content">{header}</div>}
           </div>
-          <div className="tc__modal__body">{children}</div>
+          <div className="tc__modal__body">
+            {size === 'large' && title && (
+              <>
+                {typeof title === 'string' && (
+                  <Typography variant="subtitle" weight="bold">
+                    {title}
+                  </Typography>
+                )}
+                {typeof title !== 'string' && title}
+              </>
+            )}
+            {children}
+          </div>
         </div>
       </div>
     </>

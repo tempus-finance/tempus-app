@@ -57,9 +57,11 @@ const WithdrawModal: FC<WithdrawModalProps> = props => {
       usdRates={usdRates}
       infoRows={infoRows}
       actionButtonLabels={{
-        default: t('WithdrawModal.labelExecuteDefault'),
-        loading: t('WithdrawModal.labelExecuteLoading'),
-        success: t('WithdrawModal.labelExecuteSuccess'),
+        action: {
+          default: t('WithdrawModal.labelExecuteDefault'),
+          loading: t('WithdrawModal.labelExecuteLoading'),
+          success: t('WithdrawModal.labelExecuteSuccess'),
+        },
       }}
       actionButtonState={actionButtonState}
       onTransactionStart={withdraw}

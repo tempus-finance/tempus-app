@@ -1,11 +1,12 @@
 import { FC, useCallback, useMemo } from 'react';
 import { DecimalUtils } from 'tempus-core-services';
-import { BalanceChartTooltipContent, ChartDot, DateChart, ChartDataPoint, ChartSizeProps } from '../../shared';
-
-interface DataPoint extends ChartDataPoint<Date, number> {
-  visible?: boolean;
-  selected?: boolean;
-}
+import {
+  BalanceChartTooltipContent,
+  ChartDot,
+  DateChart,
+  ChartSizeProps,
+  SelectableChartDataPoint,
+} from '../../shared';
 
 const PortfolioYieldChart: FC<ChartSizeProps> = props => {
   const { width, height = 512 } = props;
@@ -18,7 +19,7 @@ const PortfolioYieldChart: FC<ChartSizeProps> = props => {
         y: (value * value) / 10000,
         visible: value === 5 || value === 18,
         selected: value === 5,
-      })) as DataPoint[],
+      })) as SelectableChartDataPoint<Date, number>[],
     [],
   );
 
