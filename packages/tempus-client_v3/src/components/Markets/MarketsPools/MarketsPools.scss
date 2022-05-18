@@ -1,0 +1,11 @@
+.tc__marketsPools {
+  margin: 40px 80px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+
+  // Apply bottom margin to all child elements
+  > * {
+    margin-bottom: 24px;
+  }
+}
