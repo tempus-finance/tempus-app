@@ -88,7 +88,7 @@ jobs:
             npx playwright install
             touch /root/project/integration-testing/utility/mm_id.txt
             xvfb-run --auto-servernum --server-num=1 npm run mm-setup
-            npm run e2e /root/project/integration-testing/tests/_firstLogin.spec.ts
+            xvfb-run --auto-servernum --server-num=2 npm run e2e /root/project/integration-testing/tests/_firstLogin.spec.ts
       - persist_to_workspace:
           root: ./
           paths:
