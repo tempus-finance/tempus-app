@@ -15,9 +15,6 @@ exports[`DepositModal renders a deposit modal input with multiple maturity terms
       <div
         class="tc__modal-header"
       >
-        <div
-          style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
-        />
         <button
           class="tc__btn "
           data-selected="false"
@@ -493,9 +490,6 @@ exports[`DepositModal renders a deposit modal input with one maturity term 1`] =
       <div
         class="tc__modal-header"
       >
-        <div
-          style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
-        />
         <button
           class="tc__btn "
           data-selected="false"
@@ -885,9 +879,6 @@ exports[`DepositModal renders a deposit modal preview with multiple maturity ter
       <div
         class="tc__modal-header"
       >
-        <div
-          style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
-        />
         <button
           class="tc__btn "
           data-selected="false"
@@ -925,13 +916,9 @@ exports[`DepositModal renders a deposit modal preview with multiple maturity ter
         class="tc__modal__body"
       >
         <div
-          class="tc__currency-input-modal__nav"
+          style="font-style: normal; font-size: 20px; line-height: 28px; color: rgb(34, 34, 34); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
         >
-          <div
-            style="font-style: normal; font-size: 20px; line-height: 28px; color: rgb(34, 34, 34); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
-          >
-            Pool Details
-          </div>
+          Pool Details
         </div>
         <div
           class="tc__currency-input-modal__description"
@@ -1071,9 +1058,6 @@ exports[`DepositModal renders a deposit modal preview with one maturity term 1`]
       <div
         class="tc__modal-header"
       >
-        <div
-          style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
-        />
         <button
           class="tc__btn "
           data-selected="false"
@@ -1111,13 +1095,9 @@ exports[`DepositModal renders a deposit modal preview with one maturity term 1`]
         class="tc__modal__body"
       >
         <div
-          class="tc__currency-input-modal__nav"
+          style="font-style: normal; font-size: 20px; line-height: 28px; color: rgb(34, 34, 34); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
         >
-          <div
-            style="font-style: normal; font-size: 20px; line-height: 28px; color: rgb(34, 34, 34); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
-          >
-            Pool Details
-          </div>
+          Pool Details
         </div>
         <div
           class="tc__currency-input-modal__description"

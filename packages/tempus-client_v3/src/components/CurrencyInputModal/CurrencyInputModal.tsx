@@ -1,6 +1,6 @@
-import { FC, ReactNode, useCallback, useState } from 'react';
+import { FC, ReactNode, useCallback, useMemo, useState } from 'react';
 import { ChainConfig, Decimal, Ticker } from 'tempus-core-services';
-import { ActionButtonLabels, ActionButtonState, Modal, Typography } from '../shared';
+import { ActionButtonLabels, ActionButtonState, ButtonWrapper, Icon, Modal, Typography } from '../shared';
 import { ModalProps } from '../shared/Modal/Modal';
 import TermTabs, { MaturityTerm } from '../shared/TermTabs';
 import './CurrencyInputModal.scss';
@@ -64,6 +64,23 @@ const CurrencyInputModal: FC<CurrencyInputModalProps> = props => {
 
   const handleBack = useCallback(() => setContent('preview'), []);
 
+  const modalTitle = useMemo(() => {
+    if (content === 'preview') {
+      return title;
+    }
+
+    return (
+      <div className="tc__currency-input-modal__nav">
+        <ButtonWrapper onClick={handleBack}>
+          <Icon variant="left-chevron" size="small" />
+        </ButtonWrapper>
+        <Typography variant="subtitle" weight="bold">
+          {title}
+        </Typography>
+      </div>
+    );
+  }, [content, handleBack, title]);
+
   const disabledInput = actionButtonState !== 'default';
 
   return (
@@ -71,11 +88,10 @@ const CurrencyInputModal: FC<CurrencyInputModalProps> = props => {
       className="tc__currency-input-modal"
       variant="styled"
       size="large"
-      title={title}
+      title={modalTitle}
       header={header}
       open={open}
       onClose={onClose}
-      onBack={preview && content !== 'preview' ? handleBack : undefined}
     >
       <Typography className="tc__currency-input-modal__description" variant="body-primary">
         {typeof description === 'string' && description}

@@ -34,6 +34,10 @@
   &.tc__modal__styled {
     background: linear-gradient(0deg, var(--modalBackgroundShade) -0.55%, var(--modalBackground) 100%);
   }
+
+  .tc__modal-header .tc__btn {
+    margin-left: auto;
+  }
 }
 
 .tc__modal__size-small {
