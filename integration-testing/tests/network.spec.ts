@@ -5,7 +5,7 @@ import { chromiumPersistant } from '../modules/browser';
 import { tempusNetworkChange } from '../modules/network';
 
 
-test.describe.serial("POC tests", () => {
+test.describe.serial("Metamask and network unit tests", () => {
     let browser: BrowserContext;
     test.beforeAll(async () => {
         browser = await chromiumPersistant();
@@ -13,7 +13,7 @@ test.describe.serial("POC tests", () => {
         await tempusMetamaskConnect(browser);
     })
 
-    test('Logged into metamask', async () => {
+    test('Is logged into metamask', async () => {
         const tabMetamask: Page = await browser.newPage();
         await tabMetamask.goto(`chrome-extension://${METAMASK_ID}/home.html#`);
 

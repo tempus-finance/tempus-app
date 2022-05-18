@@ -1,9 +1,9 @@
-import { test, expect, BrowserContext } from '@playwright/test';
-import { metamaskRegister, metamaskLogin, metamaskLogoff } from '../modules/metamask';
+import { test, BrowserContext } from '@playwright/test';
+import { metamaskRegister, metamaskLogin } from '../modules/metamask';
 import { chromiumPersistant } from '../modules/browser';
 import { tempusMetamaskConnect } from '../modules/tempushome';
 
-test.describe.serial('Logins and connections', () => {
+test.describe.serial('Logins and connections, first unit tests', () => {
     let browser: BrowserContext;
     test.beforeAll(async () => {
         browser = await chromiumPersistant();

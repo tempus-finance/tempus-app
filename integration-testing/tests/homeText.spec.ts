@@ -3,7 +3,7 @@ import { metamaskLogin } from '../modules/metamask';
 import { chromiumPersistant } from '../modules/browser';
 import { tempusCommunity, tempusFiatCryptoButton, tempusManageAppears, tempusNewRow, tempusTextHeaders } from '../modules/tempushome';
 
-test.describe.serial('Homepage text matching tests', () => {
+test.describe.serial('Homepage text matching unit tests', () => {
     let browser: BrowserContext;
     test.beforeAll(async () => {
         browser = await chromiumPersistant();

@@ -1,9 +1,9 @@
 import { test, expect, BrowserContext, Page } from '@playwright/test';
-import { METAMASK_ID, metamaskLogin } from '../modules/metamask';
+import { metamaskLogin } from '../modules/metamask';
 import { tempusManageCurrency, tempusMetamaskConnect } from '../modules/tempushome';
 import { chromiumPersistant } from '../modules/browser';
 
-test.describe.serial('Open Manage tabs', () => {
+test.describe.serial('Open Manage tabs unit tests', () => {
     let browser: BrowserContext;
     test.beforeAll(async () => {
         browser = await chromiumPersistant();
@@ -11,21 +11,13 @@ test.describe.serial('Open Manage tabs', () => {
         await tempusMetamaskConnect(browser);
     });
 
-    test('Logged into metamask', async () => {
-        const tabMetamask: Page = await browser.newPage();
-        await tabMetamask.goto(`chrome-extension://${METAMASK_ID}/home.html#`);
-
-        await expect(tabMetamask.locator('button:has-text("Buy")')).toBeDefined();
-        await tabMetamask.close();
-    });
-
-    test("Manage USDC", async () => {
+    test("Open manage USDC tab", async () => {
         const tabManage: Page = await tempusManageCurrency(browser, 'USDC');
         await expect(tabManage.locator('text=Total Value Locked')).toBeDefined();
         await tabManage.close();
     });
 
-    test("Manage DAI", async () => {
+    test("Open manage DAI tab", async () => {
         const tabManage: Page = await tempusManageCurrency(browser, 'DAI');
         await expect(tabManage.locator('text=Total Value Locked')).toBeDefined();
         await tabManage.close();
