@@ -19,7 +19,7 @@ describe('Logo', () => {
     'token-YFI',
     'token-wBTC',
     'token-wBTC-dark',
-    'token-wETH',
+    'token-WETH',
     'token-wFTM',
     'token-stETH',
     'token-yvUSDC',

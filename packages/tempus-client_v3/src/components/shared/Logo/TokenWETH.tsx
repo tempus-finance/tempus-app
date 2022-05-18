@@ -4,7 +4,7 @@ import withLogo from './withLogo';
 
 const TokenWETH: FC<InnerLogoProps> = ({ size }) => (
   <svg
-    className="tc__logo tc__logo-token-wETH"
+    className="tc__logo tc__logo-token-WETH"
     width={size}
     height={size}
     viewBox="0 0 40 40"
