@@ -1,4 +1,4 @@
-import { FC, useCallback, useState } from 'react';
+import { memo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Dropdown,
@@ -12,40 +12,28 @@ import {
   Tab,
   Tabs,
 } from '../../shared';
-import { FilterType, PoolType, SortOrder, SortType, ViewType } from '../../../interfaces';
+import { FilterType, PoolType, SortOrder, SortType } from '../../../interfaces';
+import { usePoolViewOptions } from '../../../hooks';
 
-export interface MarketsSubheaderProps {
-  onPoolTypeChange?: (poolType: PoolType) => void;
-  onViewTypeChange?: (viewType: ViewType) => void;
-  onFilterChange?: (filters: Set<FilterType>) => void;
-  onSortTypeChange?: (sortType: SortType, sortOrder: SortOrder) => void;
-}
-
-const MarketsSubheader: FC<MarketsSubheaderProps> = props => {
-  const { onPoolTypeChange, onViewTypeChange, onFilterChange, onSortTypeChange } = props;
+const MarketsSubheader = () => {
   const { t } = useTranslation();
-  const [poolType, setPoolType] = useState<PoolType>('all');
-  const [filters, setFilters] = useState(new Set<FilterType>());
-  const [sortType, setSortType] = useState<SortType>('a-z');
-  const [sortOrder, setSortOrder] = useState<SortOrder>('asc');
-
-  const handlePoolTypeChange = useCallback(
-    (pool: PoolType) => {
-      setPoolType(pool);
-      onPoolTypeChange?.(pool);
-    },
-    [onPoolTypeChange],
-  );
+  const [poolViewOptions, setPoolViewOptions] = usePoolViewOptions();
+  const { poolType, filters, sortType, sortOrder } = poolViewOptions;
 
   const handleViewTypeChange = useCallback(
     (iconType: IconVariant) => {
       if (iconType === 'grid-view') {
-        onViewTypeChange?.('grid');
+        setPoolViewOptions({ viewType: 'grid' });
       } else if (iconType === 'list-view') {
-        onViewTypeChange?.('list');
+        setPoolViewOptions({ viewType: 'list' });
       }
     },
-    [onViewTypeChange],
+    [setPoolViewOptions],
+  );
+
+  const handlePoolTypeChange = useCallback(
+    (type: PoolType) => setPoolViewOptions({ poolType: type }),
+    [setPoolViewOptions],
   );
 
   const handleFilterChange = useCallback(
@@ -58,10 +46,9 @@ const MarketsSubheader: FC<MarketsSubheaderProps> = props => {
         updatedFilters.delete(value as FilterType);
       }
 
-      setFilters(updatedFilters);
-      onFilterChange?.(updatedFilters);
+      setPoolViewOptions({ filters: updatedFilters });
     },
-    [filters, onFilterChange],
+    [filters, setPoolViewOptions],
   );
 
   const handleSortTypeChange = useCallback(
@@ -74,11 +61,9 @@ const MarketsSubheader: FC<MarketsSubheaderProps> = props => {
         order = 'asc';
       }
 
-      setSortType(updatedSortType);
-      setSortOrder(order);
-      onSortTypeChange?.(updatedSortType, order);
+      setPoolViewOptions({ sortOrder: order, sortType: updatedSortType });
     },
-    [onSortTypeChange, sortOrder, sortType],
+    [sortOrder, sortType, setPoolViewOptions],
   );
 
   return (
@@ -126,4 +111,4 @@ const MarketsSubheader: FC<MarketsSubheaderProps> = props => {
   );
 };
 
-export default MarketsSubheader;
+export default memo(MarketsSubheader);

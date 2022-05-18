@@ -1,14 +1,23 @@
+import { useMemo } from 'react';
 import { Decimal, tokenColorMap } from 'tempus-core-services';
-import { usePoolList } from '../../../hooks';
+import { usePoolList, useSelectedChain } from '../../../hooks';
 import { PoolCard } from '../../shared';
 import './MarketsPools.scss';
 
 const MarketsPools = (): JSX.Element => {
   const tempusPools = usePoolList();
+  const selectedChain = useSelectedChain();
+
+  const filteredTempusPools = useMemo(() => {
+    const filteredByChain = selectedChain
+      ? tempusPools.filter(tempusPool => tempusPool.chain === selectedChain)
+      : tempusPools;
+    return filteredByChain;
+  }, [tempusPools, selectedChain]);
 
   return (
     <div className="tc__marketsPools">
-      {tempusPools.map(tempusPool => {
+      {filteredTempusPools.map(tempusPool => {
         const cardColor = tokenColorMap.get(tempusPool.backingToken);
 
         if (!cardColor) {
