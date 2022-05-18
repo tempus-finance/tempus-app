@@ -58,7 +58,7 @@ export const TokenWBTCDark = Template.bind({});
 TokenWBTCDark.args = { type: 'token-wBTC-dark' };
 
 export const TokenWETH = Template.bind({});
-TokenWETH.args = { type: 'token-wETH' };
+TokenWETH.args = { type: 'token-WETH' };
 
 export const TokenWFTM = Template.bind({});
 TokenWFTM.args = { type: 'token-wFTM' };
