@@ -1,8 +1,15 @@
 import { useMemo } from 'react';
-import { Decimal, prettifyChainName, TempusPool, Ticker, tokenColorMap } from 'tempus-core-services';
+import { Decimal, prettifyChainName, ProtocolName, TempusPool, Ticker, tokenColorMap } from 'tempus-core-services';
 import { useChainList, usePoolList, useSelectedChain } from '../../../hooks';
 import { PoolCard, PoolsHeading } from '../../shared';
 import './MarketsPools.scss';
+
+interface CardData {
+  token: Ticker;
+  tokenAddress: string;
+  protocol: ProtocolName;
+  pools: TempusPool[];
+}
 
 const MarketsPools = (): JSX.Element => {
   const chains = useChainList();
@@ -22,14 +29,16 @@ const MarketsPools = (): JSX.Element => {
 
         // Create a list of cards for Markets page, one card per backing token
         // TODO - Create separate cards for Fixed and Boosted yields
-        const chainCards: { token: Ticker; tokenAddress: string; pools: TempusPool[] }[] = [];
+        const chainCards: CardData[] = [];
         tempusPools.forEach(pool => {
           // Skip pools from other chains
           if (pool.chain !== chain) {
             return;
           }
 
-          const tokenCard = chainCards.find(card => card.token === pool.backingToken);
+          const tokenCard = chainCards.find(
+            card => card.token === pool.backingToken && card.protocol === pool.protocol,
+          );
           if (tokenCard) {
             tokenCard.pools.push(pool);
           } else {
@@ -37,6 +46,7 @@ const MarketsPools = (): JSX.Element => {
               pools: [pool],
               token: pool.backingToken,
               tokenAddress: pool.backingTokenAddress,
+              protocol: pool.protocol,
             });
           }
         });
@@ -59,13 +69,13 @@ const MarketsPools = (): JSX.Element => {
 
                 return (
                   <PoolCard
-                    key={`${chain}-${chainCard.tokenAddress}`}
+                    key={`${chain}-${chainCard.protocol}-${chainCard.tokenAddress}`}
                     aprValues={[new Decimal(0.1)]}
                     color={cardColor || '#ffffff'}
                     poolCardStatus="Fixed"
                     poolCardVariant="markets"
                     ticker={chainCard.token}
-                    protocol="aave"
+                    protocol={chainCard.protocol}
                     terms={[new Date(4, 5, 2023)]}
                   />
                 );
