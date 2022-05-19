@@ -110,5 +110,7 @@
   "chartDotDominant": "#2B6E84",
   "chartDotNeutral": "#FFFFFF",
 
-  "portfolioBoxBorder": "#BFC0C0"
+  "portfolioBoxBorder": "#BFC0C0",
+
+  "poolsHeadingOverlay": "#129ca433"
 }

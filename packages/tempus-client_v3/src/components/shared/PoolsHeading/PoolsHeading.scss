@@ -1,0 +1,19 @@
+.tc__poolsHeading {
+  position: relative;
+  width: max-content;
+  height: 40px;
+  padding-right: 8px;
+}
+
+.tc__poolsHeading-content {
+  height: 32px;
+}
+
+.tc__poolsHeading-overlay {
+  position: absolute;
+  height: 24px;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  background-color: var(--poolsHeadingOverlay);
+}
