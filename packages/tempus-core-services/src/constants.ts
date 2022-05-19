@@ -39,6 +39,7 @@ export const dashboardParentMaturityFormat = 'MMM yyyy';
 export const dashboardChildMaturityFormat = 'd MMMM yyyy';
 
 export const POLLING_INTERVAL = 30 * 1000;
+export const FIXED_APR_POLL_INTERVAL = 120 * 1000;
 
 export const BAL_SLIPPAGE_ERROR_CODE = '#507';
 

@@ -20,10 +20,11 @@ import {
   getERC20TokenService,
   increasePrecision,
   mul18f,
+  getStatisticsService,
 } from 'tempus-core-services';
 import { SelectedYield } from '../interfaces/SelectedYield';
 import { staticPoolDataState } from '../state/PoolDataState';
-import { getChainConfig } from '../utils/getConfig';
+import { getChainConfig, getConfig } from '../utils/getConfig';
 
 const { DAYS_IN_A_YEAR, ONE_ETH_IN_WEI, POLLING_INTERVAL, SECONDS_IN_A_DAY, ZERO_ETH_ADDRESS } = CONSTANTS;
 
@@ -721,6 +722,7 @@ export default class PoolDataAdapter {
       !this.tempusAMMService ||
       !this.statisticService ||
       !this.vaultService ||
+      !this.tempusControllerService ||
       !this.chain
     ) {
       console.error(
@@ -739,10 +741,10 @@ export default class PoolDataAdapter {
       return Promise.reject();
     }
 
+    const provider = getDefaultProvider(this.chain, getChainConfig);
+
     // Skip Fixed APR fetch if target block tag is older then the Tempus Pool
     if (blockTag && tempusPoolStartTime) {
-      const provider = getDefaultProvider(this.chain, getChainConfig);
-
       const pastBlock = await provider.getBlock(blockTag);
       // Convert block timestamp from seconds to milliseconds
       if (pastBlock.timestamp * 1000 < tempusPoolStartTime) {
@@ -765,28 +767,69 @@ export default class PoolDataAdapter {
     }
 
     try {
-      const { startDate: tempusPoolStartTime, maturityDate: tempusPoolMaturityTime } =
-        staticPoolDataState[tempusPoolAddress].get();
+      const { maturityDate } = staticPoolDataState[tempusPoolAddress].get();
 
-      const poolDurationInSeconds = (tempusPoolMaturityTime - tempusPoolStartTime) / 1000;
-      const scaleFactor = ethers.utils.parseEther(
-        ((SECONDS_IN_A_DAY * DAYS_IN_A_YEAR) / poolDurationInSeconds).toString(),
+      const [depositedEvents, swapEvents, redeemedEvents] = await Promise.all([
+        this.tempusControllerService.getDepositedEvents({ forPool: tempusPoolAddress }),
+        this.vaultService.getSwapEvents({ forPoolId: tempusPoolId }),
+        this.tempusControllerService.getRedeemedEvents({ forPool: tempusPoolAddress }),
+      ]);
+      const allEvents = [...depositedEvents, ...swapEvents, ...redeemedEvents];
+      let latestEventBlockNumber = 0;
+      allEvents.forEach(event => {
+        if (event.blockNumber > latestEventBlockNumber) {
+          latestEventBlockNumber = event.blockNumber;
+        }
+      });
+      let currentFixedAPRTime: number;
+
+      let latestEventBlock: ethers.providers.Block | null = null;
+      // In case event time was found
+      if (latestEventBlockNumber > 0) {
+        latestEventBlock = await provider.getBlock(latestEventBlockNumber);
+        currentFixedAPRTime = latestEventBlock.timestamp * 1000;
+      }
+      // In case there are no events for tempus pool, we fallback to Date.now() instead of latest event time
+      else {
+        currentFixedAPRTime = Date.now();
+      }
+
+      const poolTimeRemaining = (maturityDate - currentFixedAPRTime) / 1000;
+      const scaleFactor = ethers.utils.parseEther(((SECONDS_IN_A_DAY * DAYS_IN_A_YEAR) / poolTimeRemaining).toString());
+
+      const estimateCallOverrides =
+        latestEventBlock && latestEventBlock.number > 0 ? { blockTag: latestEventBlock.number } : undefined;
+
+      // Get statistics service instance that uses Alchemy as a provider
+      const statisticsService = getStatisticsService(
+        this.chain,
+        getConfig,
+        getChainConfig,
+        getDefaultProvider(this.chain, getChainConfig),
       );
 
-      const principals = await this.statisticService.estimatedDepositAndFix(
+      const principals = await statisticsService.estimatedDepositAndFix(
         tempusAMMAddress,
         tokenAmount,
         isBackingToken,
+        estimateCallOverrides,
       );
 
-      const estimatedMintedShares = await this.statisticService.estimatedMintedShares(
+      if (isBackingToken) {
+        const ratio = div18f(principals, tokenAmount);
+        const pureInterest = ratio.sub(BigNumber.from(ONE_ETH_IN_WEI));
+        return mul18f(pureInterest, scaleFactor);
+      }
+      const interestRate = await this.tempusPoolService.currentInterestRate(tempusPoolAddress, callOverrideData);
+
+      const backingAmount = await this.tempusPoolService.numAssetsPerYieldToken(
         tempusPoolAddress,
         tokenAmount,
-        isBackingToken,
+        interestRate,
         callOverrideData,
       );
 
-      const ratio = div18f(principals, estimatedMintedShares);
+      const ratio = div18f(principals, backingAmount);
       const pureInterest = ratio.sub(BigNumber.from(ONE_ETH_IN_WEI));
       return mul18f(pureInterest, scaleFactor);
     } catch (error) {

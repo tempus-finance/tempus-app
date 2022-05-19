@@ -150,6 +150,7 @@ export class StatisticsService {
     tempusAmmAddress: string,
     tokenAmount: BigNumber,
     isBackingToken: boolean,
+    overrides?: CallOverrides,
   ): Promise<BigNumber> {
     if (!this.stats) {
       console.error(
@@ -164,6 +165,9 @@ export class StatisticsService {
     }
 
     try {
+      if (overrides) {
+        return this.stats.estimatedDepositAndFix(tempusAmmAddress, tokenAmount, isBackingToken, overrides);
+      }
       return this.stats.estimatedDepositAndFix(tempusAmmAddress, tokenAmount, isBackingToken);
     } catch (error) {
       console.error(`StatisticsService - estimatedDepositAndFix - Failed to get estimated fixed deposit amount`, error);
