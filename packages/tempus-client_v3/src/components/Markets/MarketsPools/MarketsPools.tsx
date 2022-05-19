@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { Decimal, prettifyChainName, tokenColorMap } from 'tempus-core-services';
+import { Decimal, prettifyChainName, TempusPool, Ticker, tokenColorMap } from 'tempus-core-services';
 import { useChainList, usePoolList, useSelectedChain } from '../../../hooks';
 import { PoolCard, PoolsHeading } from '../../shared';
 import './MarketsPools.scss';
@@ -20,10 +20,29 @@ const MarketsPools = (): JSX.Element => {
       {availableChains.map(chain => {
         const prettyChainName = prettifyChainName(chain);
 
-        const chainPools = tempusPools.filter(pool => pool.chain === chain);
+        // Create a list of cards for Markets page, one card per backing token
+        // TODO - Create separate cards for Fixed and Boosted yields
+        const chainCards: { token: Ticker; tokenAddress: string; pools: TempusPool[] }[] = [];
+        tempusPools.forEach(pool => {
+          // Skip pools from other chains
+          if (pool.chain !== chain) {
+            return;
+          }
 
-        // In case chain does not have any pools - skip showing it
-        if (chainPools.length === 0) {
+          const tokenCard = chainCards.find(card => card.token === pool.backingToken);
+          if (tokenCard) {
+            tokenCard.pools.push(pool);
+          } else {
+            chainCards.push({
+              pools: [pool],
+              token: pool.backingToken,
+              tokenAddress: pool.backingTokenAddress,
+            });
+          }
+        });
+
+        // In case chain does not have any cards - skip showing it
+        if (chainCards.length === 0) {
           return null;
         }
 
@@ -31,21 +50,21 @@ const MarketsPools = (): JSX.Element => {
           <div key={chain}>
             <PoolsHeading text={`${prettyChainName}-Network pools`} />
             <div className="tc__marketsPools">
-              {chainPools.map(tempusPool => {
-                const cardColor = tokenColorMap.get(tempusPool.backingToken);
+              {chainCards.map(chainCard => {
+                const cardColor = tokenColorMap.get(chainCard.token);
 
                 if (!cardColor) {
-                  console.warn(`Missing ${tempusPool.backingToken} token color in tokenColorMap!`);
+                  console.warn(`Missing ${chainCard.token} token color in tokenColorMap!`);
                 }
 
                 return (
                   <PoolCard
-                    key={`${tempusPool.chain}-${tempusPool.address}`}
+                    key={`${chain}-${chainCard.tokenAddress}`}
                     aprValues={[new Decimal(0.1)]}
                     color={cardColor || '#ffffff'}
                     poolCardStatus="Fixed"
                     poolCardVariant="markets"
-                    ticker={tempusPool.backingToken}
+                    ticker={chainCard.token}
                     protocol="aave"
                     terms={[new Date(4, 5, 2023)]}
                   />
