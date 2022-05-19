@@ -22,24 +22,28 @@ describe.only('useConfig', () => {
         backingToken: 'ETH',
         backingTokenAddress: '0x0000000000000000000000000000000000000000',
         chain: 'ethereum',
+        protocol: 'lido',
       },
       {
         address: '2',
         backingToken: 'USDC',
         backingTokenAddress: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
         chain: 'ethereum',
+        protocol: 'yearn',
       },
       {
         address: '3',
         backingToken: 'USDC',
         backingTokenAddress: '0x04068da6c83afcfa0e13ba15a6696662335d5b75',
         chain: 'fantom',
+        protocol: 'yearn',
       },
       {
         address: '4',
         backingToken: 'WETH',
         backingTokenAddress: '0x74b23882a30290451A17c44f4F05243b6b58C76d',
         chain: 'fantom',
+        protocol: 'yearn',
       },
     ]);
   });
