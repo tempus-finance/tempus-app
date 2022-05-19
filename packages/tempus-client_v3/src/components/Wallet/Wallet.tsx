@@ -2,8 +2,9 @@ import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import ledgerModule from '@web3-onboard/ledger';
 import gnosisModule from '@web3-onboard/gnosis';
 import injectedModule from '@web3-onboard/injected-wallets';
-import { init, useConnectWallet, useWallets } from '@web3-onboard/react';
+import { init, useConnectWallet, useSetChain, useWallets } from '@web3-onboard/react';
 import {
+  chainIdHexToChainName,
   DecimalUtils,
   ethereumChainIdHex,
   ethereumForkChainIdHex,
@@ -70,6 +71,7 @@ init({
 const Wallet: FC = () => {
   const connectedWallets = useWallets();
   const [{ wallet }, connect] = useConnectWallet();
+  const [{ connectedChain }] = useSetChain();
 
   const walletBalances = useWalletBalances();
 
@@ -149,8 +151,7 @@ const Wallet: FC = () => {
       <WalletButton
         address={walletAddress || ''}
         balance={balance || ''}
-        // TODO - Use current chain from global state once we add it
-        chain="ethereum"
+        chain={chainIdHexToChainName(connectedChain?.id ?? '0x0') ?? 'unsupported'}
         onConnect={onConnectWallet}
         onNetworkClick={onOpenChainSelector}
         // TODO - Add wallet popup
