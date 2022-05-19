@@ -1,11 +1,14 @@
-.tc__marketsPools {
+.tc__marketsPools-container {
   margin: 40px 80px;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
+}
 
-  // Apply bottom margin to all child elements
-  > * {
-    margin-bottom: 24px;
-  }
+.tc__marketsPools {
+  margin-top: 24px;
+  margin-bottom: 16px;
+
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: auto;
+  column-gap: 72px;
+  row-gap: 24px;
 }

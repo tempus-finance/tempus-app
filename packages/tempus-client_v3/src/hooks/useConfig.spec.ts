@@ -1,6 +1,6 @@
 import { renderHook } from '@testing-library/react-hooks';
 import { mockConfig } from '../setupTests';
-import { useConfig, usePoolList, useTokenList } from './useConfig';
+import { useChainList, useConfig, usePoolList, useTokenList } from './useConfig';
 
 describe.only('useConfig', () => {
   beforeAll(() => {
@@ -65,5 +65,11 @@ describe.only('useConfig', () => {
         chain: 'fantom',
       },
     ]);
+  });
+
+  it('returns chain list when it is fetched', async () => {
+    const { result } = renderHook(() => useChainList());
+
+    expect(result.current).toEqual(['fantom', 'ethereum']);
   });
 });
