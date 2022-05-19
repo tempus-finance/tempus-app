@@ -23,6 +23,7 @@ describe.only('useConfig', () => {
         backingTokenAddress: '0x0000000000000000000000000000000000000000',
         chain: 'ethereum',
         protocol: 'lido',
+        maturityDate: new Date(2025, 0, 1).getTime(),
       },
       {
         address: '2',
@@ -30,6 +31,7 @@ describe.only('useConfig', () => {
         backingTokenAddress: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
         chain: 'ethereum',
         protocol: 'yearn',
+        maturityDate: new Date(2025, 0, 1).getTime(),
       },
       {
         address: '3',
@@ -37,6 +39,7 @@ describe.only('useConfig', () => {
         backingTokenAddress: '0x04068da6c83afcfa0e13ba15a6696662335d5b75',
         chain: 'fantom',
         protocol: 'yearn',
+        maturityDate: new Date(2025, 0, 1).getTime(),
       },
       {
         address: '4',
@@ -44,6 +47,7 @@ describe.only('useConfig', () => {
         backingTokenAddress: '0x74b23882a30290451A17c44f4F05243b6b58C76d',
         chain: 'fantom',
         protocol: 'yearn',
+        maturityDate: new Date(2025, 0, 1).getTime(),
       },
     ]);
   });
