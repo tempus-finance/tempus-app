@@ -15,11 +15,13 @@ interface TokenListItem {
 class ConfigManager {
   private config: Config = {};
 
+  private chainList: Chain[] = [];
   private tokenList: TokenListItem[] = [];
 
   async init(): Promise<boolean> {
     const success = await this.retrieveConfig();
 
+    this.retrieveChainList();
     this.retrieveTokenList();
 
     return success;
@@ -31,6 +33,10 @@ class ConfigManager {
 
   getChainConfig(chain: Chain): ChainConfig {
     return this.config[chain];
+  }
+
+  getChainList(): Chain[] {
+    return this.chainList;
   }
 
   getPoolList(): TempusPool[] {
@@ -47,6 +53,10 @@ class ConfigManager {
 
   getTokenList(): TokenListItem[] {
     return this.tokenList;
+  }
+
+  private retrieveChainList(): void {
+    this.chainList = Object.keys(this.config) as Chain[];
   }
 
   private retrieveTokenList(): void {
