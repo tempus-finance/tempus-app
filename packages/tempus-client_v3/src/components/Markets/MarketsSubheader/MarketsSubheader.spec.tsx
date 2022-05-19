@@ -20,7 +20,7 @@ describe('MarketsSubheader', () => {
     expect(container).toMatchSnapshot();
   });
 
-  it('updates pool type', async () => {
+  it('updates pool type', () => {
     const { container } = subject();
 
     const poolTypeButtons = container.querySelectorAll('.tc__tabs__tab');
