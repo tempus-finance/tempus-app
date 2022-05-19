@@ -319,7 +319,7 @@ exports[`Markets renders the page 1`] = `
                   <div
                     style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                   >
-                    Dec
+                    Jan
                   </div>
                   <span
                     class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -327,7 +327,7 @@ exports[`Markets renders the page 1`] = `
                   <div
                     style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                   >
-                    14
+                    01
                   </div>
                   <span
                     class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -335,7 +335,7 @@ exports[`Markets renders the page 1`] = `
                   <div
                     style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                   >
-                    09
+                    25
                   </div>
                 </span>
               </div>
@@ -511,7 +511,7 @@ exports[`Markets renders the page 1`] = `
                   <div
                     style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                   >
-                    Dec
+                    Jan
                   </div>
                   <span
                     class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -519,7 +519,7 @@ exports[`Markets renders the page 1`] = `
                   <div
                     style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                   >
-                    14
+                    01
                   </div>
                   <span
                     class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -527,7 +527,7 @@ exports[`Markets renders the page 1`] = `
                   <div
                     style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                   >
-                    09
+                    25
                   </div>
                 </span>
               </div>
@@ -758,7 +758,7 @@ exports[`Markets renders the page 1`] = `
                   <div
                     style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                   >
-                    Dec
+                    Jan
                   </div>
                   <span
                     class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -766,7 +766,7 @@ exports[`Markets renders the page 1`] = `
                   <div
                     style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                   >
-                    14
+                    01
                   </div>
                   <span
                     class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -774,7 +774,7 @@ exports[`Markets renders the page 1`] = `
                   <div
                     style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                   >
-                    09
+                    25
                   </div>
                 </span>
               </div>
@@ -960,7 +960,7 @@ exports[`Markets renders the page 1`] = `
                   <div
                     style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                   >
-                    Dec
+                    Jan
                   </div>
                   <span
                     class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -968,7 +968,7 @@ exports[`Markets renders the page 1`] = `
                   <div
                     style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                   >
-                    14
+                    01
                   </div>
                   <span
                     class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -976,7 +976,7 @@ exports[`Markets renders the page 1`] = `
                   <div
                     style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                   >
-                    09
+                    25
                   </div>
                 </span>
               </div>
