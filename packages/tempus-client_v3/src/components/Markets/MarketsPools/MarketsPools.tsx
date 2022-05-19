@@ -62,10 +62,11 @@ const MarketsPools = (): JSX.Element => {
             <div className="tc__marketsPools">
               {chainCards.map(chainCard => {
                 const cardColor = tokenColorMap.get(chainCard.token);
-
                 if (!cardColor) {
                   console.warn(`Missing ${chainCard.token} token color in tokenColorMap!`);
                 }
+
+                const terms = chainCard.pools.map(pool => new Date(pool.maturityDate));
 
                 return (
                   <PoolCard
@@ -76,7 +77,7 @@ const MarketsPools = (): JSX.Element => {
                     poolCardVariant="markets"
                     ticker={chainCard.token}
                     protocol={chainCard.protocol}
-                    terms={[new Date(4, 5, 2023)]}
+                    terms={terms}
                   />
                 );
               })}
