@@ -1,0 +1,22 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`PoolsHeading renders a heading label with provided text 1`] = `
+<div>
+  <div
+    class="tc__poolsHeading"
+  >
+    <div
+      class="tc__poolsHeading-content"
+    >
+      <div
+        style="font-style: normal; font-size: 24px; line-height: 32px; color: rgb(34, 34, 34); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+      >
+        Ethereum-network pools
+      </div>
+    </div>
+    <div
+      class="tc__poolsHeading-overlay"
+    />
+  </div>
+</div>
+`;

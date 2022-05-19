@@ -28,6 +28,7 @@ import WalletButton from './WalletButton';
 import Tooltip from './Tooltip';
 import TooltipWrapper from './TooltipWrapper';
 import InfoTooltip from './InfoTooltip';
+import PoolsHeading from './PoolsHeading';
 import { Table, TableHead, TableHeadCell, TableBody, TableBodyCell, TableRow } from './Table';
 
 export * from './ActionButton';
@@ -70,6 +71,7 @@ export {
   TextInput,
   NumberInput,
   SlippageInput,
+  PoolsHeading,
   Modal,
   Table,
   TableHead,
