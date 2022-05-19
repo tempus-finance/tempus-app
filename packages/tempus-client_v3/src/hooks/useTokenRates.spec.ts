@@ -1,4 +1,5 @@
 import { renderHook } from '@testing-library/react-hooks';
+import { BigNumber } from 'ethers';
 import { of } from 'rxjs';
 import { Chain, Decimal, getServices, Ticker } from 'tempus-core-services';
 import { useTokenRates } from './useTokenRates';
@@ -39,6 +40,10 @@ describe('useTokenRates', () => {
 
           return of(price);
         }),
+      },
+      TempusPoolService: {
+        currentInterestRate: jest.fn().mockImplementation(() => BigNumber.from(1)),
+        numAssetsPerYieldToken: jest.fn().mockImplementation(() => BigNumber.from(1)),
       },
     }));
 
