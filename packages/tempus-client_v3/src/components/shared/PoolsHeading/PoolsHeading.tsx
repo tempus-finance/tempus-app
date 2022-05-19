@@ -3,7 +3,7 @@ import Typography from '../Typography';
 
 import './PoolsHeading.scss';
 
-interface PoolsHeadingProps {
+export interface PoolsHeadingProps {
   text: string;
 }
 
