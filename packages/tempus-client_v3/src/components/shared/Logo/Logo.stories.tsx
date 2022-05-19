@@ -81,8 +81,8 @@ TokenYvBTC.args = { type: 'token-yvBTC' };
 export const TokenYvYFI = Template.bind({});
 TokenYvYFI.args = { type: 'token-yvYFI' };
 
-export const TokenYvwETH = Template.bind({});
-TokenYvwETH.args = { type: 'token-yvwETH' };
+export const TokenYvWETH = Template.bind({});
+TokenYvWETH.args = { type: 'token-yvWETH' };
 
 export const ProtocolAave = Template.bind({});
 ProtocolAave.args = { type: 'protocol-aave' };

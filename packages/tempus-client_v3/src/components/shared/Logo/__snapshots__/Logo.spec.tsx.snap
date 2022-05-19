@@ -917,9 +917,9 @@ exports[`Logo renders a large logo with type token-yvYFI 1`] = `
 </svg>
 `;
 
-exports[`Logo renders a large logo with type token-yvwETH 1`] = `
+exports[`Logo renders a large logo with type token-yvWETH 1`] = `
 <svg
-  class="tc__logo tc__logo-token-yvwETH"
+  class="tc__logo tc__logo-token-yvWETH"
   fill="none"
   height="40"
   viewBox="0 0 40 40"
@@ -2174,9 +2174,9 @@ exports[`Logo renders a logo with type token-yvYFI 1`] = `
 </svg>
 `;
 
-exports[`Logo renders a logo with type token-yvwETH 1`] = `
+exports[`Logo renders a logo with type token-yvWETH 1`] = `
 <svg
-  class="tc__logo tc__logo-token-yvwETH"
+  class="tc__logo tc__logo-token-yvWETH"
   fill="none"
   height="32"
   viewBox="0 0 40 40"
@@ -3431,9 +3431,9 @@ exports[`Logo renders a medium logo with type token-yvYFI 1`] = `
 </svg>
 `;
 
-exports[`Logo renders a medium logo with type token-yvwETH 1`] = `
+exports[`Logo renders a medium logo with type token-yvWETH 1`] = `
 <svg
-  class="tc__logo tc__logo-token-yvwETH"
+  class="tc__logo tc__logo-token-yvWETH"
   fill="none"
   height="32"
   viewBox="0 0 40 40"
@@ -4688,9 +4688,9 @@ exports[`Logo renders a small logo with type token-yvYFI 1`] = `
 </svg>
 `;
 
-exports[`Logo renders a small logo with type token-yvwETH 1`] = `
+exports[`Logo renders a small logo with type token-yvWETH 1`] = `
 <svg
-  class="tc__logo tc__logo-token-yvwETH"
+  class="tc__logo tc__logo-token-yvWETH"
   fill="none"
   height="24"
   viewBox="0 0 40 40"

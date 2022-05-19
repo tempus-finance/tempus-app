@@ -27,7 +27,7 @@ describe('Logo', () => {
     'token-yvDAI',
     'token-yvBTC',
     'token-yvYFI',
-    'token-yvwETH',
+    'token-yvWETH',
     'protocol-aave',
     'protocol-lido',
     'protocol-rari',
