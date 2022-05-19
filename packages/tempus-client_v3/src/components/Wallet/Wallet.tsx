@@ -2,9 +2,8 @@ import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import ledgerModule from '@web3-onboard/ledger';
 import gnosisModule from '@web3-onboard/gnosis';
 import injectedModule from '@web3-onboard/injected-wallets';
-import { init, useConnectWallet, useSetChain, useWallets } from '@web3-onboard/react';
+import { init, useConnectWallet, useWallets } from '@web3-onboard/react';
 import {
-  chainIdHexToChainName,
   DecimalUtils,
   ethereumChainIdHex,
   ethereumForkChainIdHex,
@@ -13,7 +12,7 @@ import {
 } from 'tempus-core-services';
 import { WalletButton } from '../shared';
 import ChainSelector from '../ChainSelector';
-import { useWalletBalances, setWalletAddress } from '../../hooks';
+import { useWalletBalances, setWalletAddress, useSelectedChain } from '../../hooks';
 
 // TODO - Check with designers if block native UI for wallet management is fine to use
 
@@ -71,7 +70,7 @@ init({
 const Wallet: FC = () => {
   const connectedWallets = useWallets();
   const [{ wallet }, connect] = useConnectWallet();
-  const [{ connectedChain }] = useSetChain();
+  const selectedChain = useSelectedChain();
 
   const walletBalances = useWalletBalances();
 
@@ -151,7 +150,7 @@ const Wallet: FC = () => {
       <WalletButton
         address={walletAddress || ''}
         balance={balance || ''}
-        chain={chainIdHexToChainName(connectedChain?.id ?? '0x0') ?? 'unsupported'}
+        chain={selectedChain ?? 'unsupported'}
         onConnect={onConnectWallet}
         onNetworkClick={onOpenChainSelector}
         // TODO - Add wallet popup
