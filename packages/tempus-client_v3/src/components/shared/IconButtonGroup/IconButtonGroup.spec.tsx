@@ -1,14 +1,22 @@
 import { fireEvent, render } from '@testing-library/react';
+import { FC, useState } from 'react';
+import { IconVariant } from '../Icon';
 import IconButtonGroup, { IconButtonGroupProps } from './IconButtonGroup';
 
 const mockOnChange = jest.fn();
 
 const defaultProps: IconButtonGroupProps = {
-  types: ['grid-view', 'list-view'],
+  variants: ['grid-view', 'list-view'],
   onChange: mockOnChange,
 };
 
-const subject = (props: IconButtonGroupProps) => render(<IconButtonGroup {...props} />);
+const Wrapper: FC<IconButtonGroupProps> = props => {
+  const [selectedVariant, setSelectedVariant] = useState<IconVariant>(props.selectedVariant ?? props.variants[0]);
+  mockOnChange.mockImplementation((val: IconVariant) => setSelectedVariant(val));
+  return <IconButtonGroup {...props} selectedVariant={selectedVariant} />;
+};
+
+const subject = (props: IconButtonGroupProps) => render(<Wrapper {...props} />);
 
 describe('IconButtonGroup', () => {
   it('renders a group of icon buttons', () => {
@@ -22,7 +30,11 @@ describe('IconButtonGroup', () => {
   });
 
   it('calls `onClick` when an icon button is clicked', () => {
-    const { getAllByRole } = subject(defaultProps);
+    const { container, getAllByRole } = subject(defaultProps);
+
+    const actualIconButtonGroup = container.querySelector('.tc__iconButtonGroup');
+
+    expect(actualIconButtonGroup).not.toBeNull();
 
     const [firstButton, secondButton] = getAllByRole('button');
 
@@ -33,5 +45,7 @@ describe('IconButtonGroup', () => {
     expect(mockOnChange).toHaveBeenCalledWith('grid-view');
 
     expect(mockOnChange).toHaveBeenCalledTimes(2);
+
+    expect(actualIconButtonGroup).toMatchSnapshot();
   });
 });

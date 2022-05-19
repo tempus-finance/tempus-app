@@ -218,3 +218,2051 @@ exports[`MarketsSubheader renders a navigation subheader with filtering and sort
   </div>
 </div>
 `;
+
+exports[`MarketsSubheader updates filters 1`] = `
+<input
+  id="checkbox-1"
+  type="checkbox"
+/>
+`;
+
+exports[`MarketsSubheader updates filters 2`] = `
+<input
+  id="checkbox-1"
+  type="checkbox"
+/>
+`;
+
+exports[`MarketsSubheader updates filters 3`] = `
+<input
+  id="checkbox-2"
+  type="checkbox"
+/>
+`;
+
+exports[`MarketsSubheader updates filters 4`] = `
+<input
+  id="checkbox-2"
+  type="checkbox"
+/>
+`;
+
+exports[`MarketsSubheader updates filters 5`] = `
+<input
+  id="checkbox-3"
+  type="checkbox"
+/>
+`;
+
+exports[`MarketsSubheader updates filters 6`] = `
+<input
+  id="checkbox-3"
+  type="checkbox"
+/>
+`;
+
+exports[`MarketsSubheader updates pool type 1`] = `
+<button
+  class="tc__btn tc__tabs__tab"
+  data-selected="false"
+  type="button"
+>
+  <div
+    style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+  >
+    Fixed
+  </div>
+</button>
+`;
+
+exports[`MarketsSubheader updates pool type 2`] = `
+<button
+  class="tc__btn tc__tabs__tab"
+  data-selected="true"
+  type="button"
+>
+  <div
+    style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(255, 255, 255); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+  >
+    Boosted
+  </div>
+</button>
+`;
+
+exports[`MarketsSubheader updates pool type 3`] = `
+<button
+  class="tc__btn tc__tabs__tab"
+  data-selected="false"
+  type="button"
+>
+  <div
+    style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+  >
+    All
+  </div>
+</button>
+`;
+
+exports[`MarketsSubheader updates pool type 4`] = `
+<div>
+  <div
+    class="tc__nav-subheader"
+  >
+    <div
+      class="tc__nav-subheader__background"
+    />
+    <div
+      class="tc__nav-subheader__wrapper"
+    >
+      <div
+        class="tc__nav-subheader__group"
+      >
+        <div
+          class="tc__tabs tc__tabs__tabs-small"
+        >
+          <button
+            class="tc__btn tc__tabs__tab"
+            data-selected="false"
+            type="button"
+          >
+            <div
+              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+            >
+              Fixed
+            </div>
+          </button>
+          <button
+            class="tc__btn tc__tabs__tab"
+            data-selected="true"
+            type="button"
+          >
+            <div
+              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(255, 255, 255); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+            >
+              Boosted
+            </div>
+          </button>
+          <button
+            class="tc__btn tc__tabs__tab"
+            data-selected="false"
+            type="button"
+          >
+            <div
+              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+            >
+              All
+            </div>
+          </button>
+          <div
+            class="tc__tabs__indicator-container"
+          >
+            <div
+              class="tc__tabs__indicator"
+              style="width: 33.333333333333336%; left: 33.333333333333336%;"
+            />
+          </div>
+        </div>
+        <div
+          class="tc__iconButtonGroup"
+        >
+          <button
+            class="tc__btn tc__iconButton__selected"
+            data-selected="true"
+            type="button"
+          >
+            <svg
+              class="tc__icon tc__icon-grid-view"
+              fill="none"
+              height="24"
+              viewBox="0 0 24 24"
+              width="24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                clip-rule="evenodd"
+                d="M1.2 0C0.537258 0 0 0.537259 0 1.2V11.4H11.4V0H1.2ZM12.6 0V11.4H24V1.2C24 0.537258 23.4627 0 22.8 0H12.6ZM24 12.6H12.6V24H22.8C23.4627 24 24 23.4627 24 22.8V12.6ZM11.4 24V12.6H0V22.8C0 23.4627 0.537259 24 1.2 24H11.4Z"
+                fill="#FFFFFF"
+                fill-rule="evenodd"
+              />
+            </svg>
+          </button>
+          <button
+            class="tc__btn tc__iconButton__deselected"
+            data-selected="false"
+            type="button"
+          >
+            <svg
+              class="tc__icon tc__icon-list-view"
+              fill="none"
+              height="24"
+              viewBox="0 0 24 24"
+              width="24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M6.6 3H23.4C23.7314 3 24 3.26863 24 3.6V6C24 6.33137 23.7314 6.6 23.4 6.6H6.6V3Z"
+                fill="#BFC0C0"
+              />
+              <path
+                d="M0 3.6C0 3.26863 0.268629 3 0.6 3H5.4V6.6H0.6C0.268629 6.6 0 6.33137 0 6V3.6Z"
+                fill="#BFC0C0"
+              />
+              <path
+                d="M6.6 10.2H23.4C23.7314 10.2 24 10.4686 24 10.8V13.2C24 13.5314 23.7314 13.8 23.4 13.8H6.6V10.2Z"
+                fill="#BFC0C0"
+              />
+              <path
+                d="M0 10.8C0 10.4686 0.268629 10.2 0.6 10.2H5.4V13.8H0.6C0.268629 13.8 0 13.5314 0 13.2V10.8Z"
+                fill="#BFC0C0"
+              />
+              <path
+                d="M6.6 17.4H23.4C23.7314 17.4 24 17.6686 24 18V20.4C24 20.7314 23.7314 21 23.4 21H6.6V17.4Z"
+                fill="#BFC0C0"
+              />
+              <path
+                d="M0 18C0 17.6686 0.268629 17.4 0.6 17.4H5.4V21H0.6C0.268629 21 0 20.7314 0 20.4V18Z"
+                fill="#BFC0C0"
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
+      <div
+        class="tc__nav-subheader__group"
+      >
+        <div
+          class="tc__dropdown"
+        >
+          <button
+            class="tc__btn tc__tooltip-wrapper-anchor"
+            data-selected="false"
+            type="button"
+          >
+            <div
+              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+            >
+              Filter
+            </div>
+            <svg
+              class="tc__icon tc__icon-down-chevron"
+              fill="none"
+              height="12"
+              viewBox="0 0 16 16"
+              width="12"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <g
+                clip-path="url(#clip0_909_5439)"
+              >
+                <path
+                  d="M15.7387 5.36992L8.63082 11.7636C8.54823 11.8385 8.44996 11.898 8.34169 11.9385C8.23342 11.9791 8.11729 12 8 12C7.88271 12 7.76658 11.9791 7.65831 11.9385C7.55004 11.898 7.45177 11.8385 7.36918 11.7636L0.261296 5.36992C0.0939908 5.21942 -2.49304e-09 5.01531 0 4.80248C2.49304e-09 4.58965 0.0939908 4.38554 0.261296 4.23504C0.428601 4.08455 0.655515 4 0.89212 4C1.12873 4 1.35564 4.08455 1.52294 4.23504L8 10.0693L14.4771 4.23504C14.6444 4.08455 14.8713 4 15.1079 4C15.3445 4 15.5714 4.08455 15.7387 4.23504C15.906 4.38554 16 4.58965 16 4.80248C16 5.01531 15.906 5.21942 15.7387 5.36992Z"
+                  fill="#222222"
+                />
+              </g>
+              <defs>
+                <clippath
+                  id="clip0_909_5439"
+                >
+                  <rect
+                    fill="white"
+                    height="16"
+                    width="16"
+                  />
+                </clippath>
+              </defs>
+            </svg>
+          </button>
+        </div>
+        <div
+          class="tc__dropdown"
+        >
+          <button
+            class="tc__btn tc__tooltip-wrapper-anchor"
+            data-selected="false"
+            type="button"
+          >
+            <div
+              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+            >
+              Sort
+            </div>
+            <svg
+              class="tc__icon tc__icon-down-chevron"
+              fill="none"
+              height="12"
+              viewBox="0 0 16 16"
+              width="12"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <g
+                clip-path="url(#clip0_909_5439)"
+              >
+                <path
+                  d="M15.7387 5.36992L8.63082 11.7636C8.54823 11.8385 8.44996 11.898 8.34169 11.9385C8.23342 11.9791 8.11729 12 8 12C7.88271 12 7.76658 11.9791 7.65831 11.9385C7.55004 11.898 7.45177 11.8385 7.36918 11.7636L0.261296 5.36992C0.0939908 5.21942 -2.49304e-09 5.01531 0 4.80248C2.49304e-09 4.58965 0.0939908 4.38554 0.261296 4.23504C0.428601 4.08455 0.655515 4 0.89212 4C1.12873 4 1.35564 4.08455 1.52294 4.23504L8 10.0693L14.4771 4.23504C14.6444 4.08455 14.8713 4 15.1079 4C15.3445 4 15.5714 4.08455 15.7387 4.23504C15.906 4.38554 16 4.58965 16 4.80248C16 5.01531 15.906 5.21942 15.7387 5.36992Z"
+                  fill="#222222"
+                />
+              </g>
+              <defs>
+                <clippath
+                  id="clip0_909_5439"
+                >
+                  <rect
+                    fill="white"
+                    height="16"
+                    width="16"
+                  />
+                </clippath>
+              </defs>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`MarketsSubheader updates sorting type 1`] = `
+<div>
+  <div
+    class="tc__nav-subheader"
+  >
+    <div
+      class="tc__nav-subheader__background"
+    />
+    <div
+      class="tc__nav-subheader__wrapper"
+    >
+      <div
+        class="tc__nav-subheader__group"
+      >
+        <div
+          class="tc__tabs tc__tabs__tabs-small"
+        >
+          <button
+            class="tc__btn tc__tabs__tab"
+            data-selected="false"
+            type="button"
+          >
+            <div
+              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+            >
+              Fixed
+            </div>
+          </button>
+          <button
+            class="tc__btn tc__tabs__tab"
+            data-selected="false"
+            type="button"
+          >
+            <div
+              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+            >
+              Boosted
+            </div>
+          </button>
+          <button
+            class="tc__btn tc__tabs__tab"
+            data-selected="true"
+            type="button"
+          >
+            <div
+              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(255, 255, 255); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+            >
+              All
+            </div>
+          </button>
+          <div
+            class="tc__tabs__indicator-container"
+          >
+            <div
+              class="tc__tabs__indicator"
+              style="width: 33.333333333333336%; left: 66.66666666666667%;"
+            />
+          </div>
+        </div>
+        <div
+          class="tc__iconButtonGroup"
+        >
+          <button
+            class="tc__btn tc__iconButton__selected"
+            data-selected="true"
+            type="button"
+          >
+            <svg
+              class="tc__icon tc__icon-grid-view"
+              fill="none"
+              height="24"
+              viewBox="0 0 24 24"
+              width="24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                clip-rule="evenodd"
+                d="M1.2 0C0.537258 0 0 0.537259 0 1.2V11.4H11.4V0H1.2ZM12.6 0V11.4H24V1.2C24 0.537258 23.4627 0 22.8 0H12.6ZM24 12.6H12.6V24H22.8C23.4627 24 24 23.4627 24 22.8V12.6ZM11.4 24V12.6H0V22.8C0 23.4627 0.537259 24 1.2 24H11.4Z"
+                fill="#FFFFFF"
+                fill-rule="evenodd"
+              />
+            </svg>
+          </button>
+          <button
+            class="tc__btn tc__iconButton__deselected"
+            data-selected="false"
+            type="button"
+          >
+            <svg
+              class="tc__icon tc__icon-list-view"
+              fill="none"
+              height="24"
+              viewBox="0 0 24 24"
+              width="24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M6.6 3H23.4C23.7314 3 24 3.26863 24 3.6V6C24 6.33137 23.7314 6.6 23.4 6.6H6.6V3Z"
+                fill="#BFC0C0"
+              />
+              <path
+                d="M0 3.6C0 3.26863 0.268629 3 0.6 3H5.4V6.6H0.6C0.268629 6.6 0 6.33137 0 6V3.6Z"
+                fill="#BFC0C0"
+              />
+              <path
+                d="M6.6 10.2H23.4C23.7314 10.2 24 10.4686 24 10.8V13.2C24 13.5314 23.7314 13.8 23.4 13.8H6.6V10.2Z"
+                fill="#BFC0C0"
+              />
+              <path
+                d="M0 10.8C0 10.4686 0.268629 10.2 0.6 10.2H5.4V13.8H0.6C0.268629 13.8 0 13.5314 0 13.2V10.8Z"
+                fill="#BFC0C0"
+              />
+              <path
+                d="M6.6 17.4H23.4C23.7314 17.4 24 17.6686 24 18V20.4C24 20.7314 23.7314 21 23.4 21H6.6V17.4Z"
+                fill="#BFC0C0"
+              />
+              <path
+                d="M0 18C0 17.6686 0.268629 17.4 0.6 17.4H5.4V21H0.6C0.268629 21 0 20.7314 0 20.4V18Z"
+                fill="#BFC0C0"
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
+      <div
+        class="tc__nav-subheader__group"
+      >
+        <div
+          class="tc__dropdown"
+        >
+          <button
+            class="tc__btn tc__tooltip-wrapper-anchor"
+            data-selected="false"
+            type="button"
+          >
+            <div
+              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+            >
+              Filter
+            </div>
+            <svg
+              class="tc__icon tc__icon-down-chevron"
+              fill="none"
+              height="12"
+              viewBox="0 0 16 16"
+              width="12"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <g
+                clip-path="url(#clip0_909_5439)"
+              >
+                <path
+                  d="M15.7387 5.36992L8.63082 11.7636C8.54823 11.8385 8.44996 11.898 8.34169 11.9385C8.23342 11.9791 8.11729 12 8 12C7.88271 12 7.76658 11.9791 7.65831 11.9385C7.55004 11.898 7.45177 11.8385 7.36918 11.7636L0.261296 5.36992C0.0939908 5.21942 -2.49304e-09 5.01531 0 4.80248C2.49304e-09 4.58965 0.0939908 4.38554 0.261296 4.23504C0.428601 4.08455 0.655515 4 0.89212 4C1.12873 4 1.35564 4.08455 1.52294 4.23504L8 10.0693L14.4771 4.23504C14.6444 4.08455 14.8713 4 15.1079 4C15.3445 4 15.5714 4.08455 15.7387 4.23504C15.906 4.38554 16 4.58965 16 4.80248C16 5.01531 15.906 5.21942 15.7387 5.36992Z"
+                  fill="#222222"
+                />
+              </g>
+              <defs>
+                <clippath
+                  id="clip0_909_5439"
+                >
+                  <rect
+                    fill="white"
+                    height="16"
+                    width="16"
+                  />
+                </clippath>
+              </defs>
+            </svg>
+          </button>
+        </div>
+        <div
+          class="tc__dropdown"
+        >
+          <div
+            class="tc__tooltip-wrapper"
+            style="--anchorPosX: 0px; --anchorPosY: 0px; --anchorVisibility: block;"
+          >
+            <div
+              class="tc__tooltip-wrapper-backdrop"
+            />
+            <button
+              class="tc__btn tc__tooltip-wrapper-anchor"
+              data-selected="false"
+              type="button"
+            >
+              <div
+                style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+              >
+                Sort
+              </div>
+              <svg
+                class="tc__icon tc__icon-up-chevron"
+                fill="none"
+                height="12"
+                viewBox="0 0 16 16"
+                width="12"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <g
+                  clip-path="url(#clip0_909_5449)"
+                >
+                  <path
+                    d="M15.7372 11.7636C15.6546 11.8385 15.5564 11.898 15.4481 11.9385C15.3398 11.9791 15.2237 12 15.1064 12C14.9892 12 14.873 11.9791 14.7648 11.9385C14.6565 11.898 14.5583 11.8385 14.4757 11.7636L7.99924 5.9304L1.5228 11.7636C1.35551 11.9141 1.12862 11.9986 0.892036 11.9986C0.655453 11.9986 0.42856 11.9141 0.261271 11.7636C0.0939821 11.6132 0 11.4091 0 11.1963C0 10.9835 0.0939821 10.7794 0.261271 10.629L7.36848 4.23636C7.45107 4.16147 7.54932 4.10202 7.65758 4.06145C7.76584 4.02089 7.88196 4 7.99924 4C8.11652 4 8.23264 4.02089 8.3409 4.06145C8.44916 4.10202 8.54742 4.16147 8.63001 4.23636L15.7372 10.629C15.8205 10.7032 15.8866 10.7916 15.9317 10.889C15.9768 10.9864 16 11.0908 16 11.1963C16 11.3018 15.9768 11.4062 15.9317 11.5036C15.8866 11.601 15.8205 11.6894 15.7372 11.7636Z"
+                    fill="#222222"
+                  />
+                </g>
+                <defs>
+                  <clippath
+                    id="clip0_909_5449"
+                  >
+                    <rect
+                      fill="white"
+                      height="16"
+                      width="16"
+                    />
+                  </clippath>
+                </defs>
+              </svg>
+            </button>
+            <div
+              class="tc__tooltip tc__tooltip__bottom-right"
+              style="--anchorWidth: 0px;"
+            >
+              <div
+                class="tc__dropdown__popup"
+              >
+                
+                <div
+                  class="tc__dropdownItem tc__dropdownItem__selectable"
+                >
+                  <button
+                    class="tc__btn "
+                    data-selected="false"
+                    type="button"
+                  >
+                    <div
+                      style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+                    >
+                      A-Z
+                    </div>
+                  </button>
+                </div>
+                <div
+                  class="tc__dropdownItem tc__dropdownItem__selectable"
+                >
+                  <button
+                    class="tc__btn "
+                    data-selected="false"
+                    type="button"
+                  >
+                    <div
+                      style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+                    >
+                      Maturity
+                    </div>
+                  </button>
+                </div>
+                <div
+                  class="tc__dropdownItem tc__dropdownItem__selectable"
+                >
+                  <button
+                    class="tc__btn "
+                    data-selected="false"
+                    type="button"
+                  >
+                    <div
+                      style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+                    >
+                      TVL
+                    </div>
+                  </button>
+                  <span
+                    class="tc__dropdownItem__icon-container"
+                  >
+                    <svg
+                      class="tc__icon tc__icon-down-arrow-thin"
+                      fill="none"
+                      height="12"
+                      viewBox="0 0 12 12"
+                      width="12"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        clip-rule="evenodd"
+                        d="M6.38409 11.8326C6.17196 12.0558 5.82804 12.0558 5.61591 11.8326L2.1591 8.19608C1.94697 7.97293 1.94697 7.61112 2.1591 7.38796C2.37122 7.1648 2.71515 7.1648 2.92728 7.38796L5.45681 10.049L5.45681 0L6.54319 9.49736e-08L6.54319 10.049L9.07272 7.38796C9.28485 7.1648 9.62878 7.1648 9.8409 7.38796C10.053 7.61112 10.053 7.97293 9.8409 8.19608L6.38409 11.8326Z"
+                        fill="#222222"
+                        fill-rule="evenodd"
+                      />
+                    </svg>
+                  </span>
+                </div>
+                <div
+                  class="tc__dropdownItem tc__dropdownItem__selectable"
+                >
+                  <button
+                    class="tc__btn "
+                    data-selected="false"
+                    type="button"
+                  >
+                    <div
+                      style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+                    >
+                      APR %
+                    </div>
+                  </button>
+                </div>
+                <div
+                  class="tc__dropdownItem tc__dropdownItem__selectable"
+                >
+                  <button
+                    class="tc__btn "
+                    data-selected="false"
+                    type="button"
+                  >
+                    <div
+                      style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+                    >
+                      Balance
+                    </div>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`MarketsSubheader updates sorting type 2`] = `
+<div>
+  <div
+    class="tc__nav-subheader"
+  >
+    <div
+      class="tc__nav-subheader__background"
+    />
+    <div
+      class="tc__nav-subheader__wrapper"
+    >
+      <div
+        class="tc__nav-subheader__group"
+      >
+        <div
+          class="tc__tabs tc__tabs__tabs-small"
+        >
+          <button
+            class="tc__btn tc__tabs__tab"
+            data-selected="false"
+            type="button"
+          >
+            <div
+              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+            >
+              Fixed
+            </div>
+          </button>
+          <button
+            class="tc__btn tc__tabs__tab"
+            data-selected="false"
+            type="button"
+          >
+            <div
+              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+            >
+              Boosted
+            </div>
+          </button>
+          <button
+            class="tc__btn tc__tabs__tab"
+            data-selected="true"
+            type="button"
+          >
+            <div
+              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(255, 255, 255); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+            >
+              All
+            </div>
+          </button>
+          <div
+            class="tc__tabs__indicator-container"
+          >
+            <div
+              class="tc__tabs__indicator"
+              style="width: 33.333333333333336%; left: 66.66666666666667%;"
+            />
+          </div>
+        </div>
+        <div
+          class="tc__iconButtonGroup"
+        >
+          <button
+            class="tc__btn tc__iconButton__selected"
+            data-selected="true"
+            type="button"
+          >
+            <svg
+              class="tc__icon tc__icon-grid-view"
+              fill="none"
+              height="24"
+              viewBox="0 0 24 24"
+              width="24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                clip-rule="evenodd"
+                d="M1.2 0C0.537258 0 0 0.537259 0 1.2V11.4H11.4V0H1.2ZM12.6 0V11.4H24V1.2C24 0.537258 23.4627 0 22.8 0H12.6ZM24 12.6H12.6V24H22.8C23.4627 24 24 23.4627 24 22.8V12.6ZM11.4 24V12.6H0V22.8C0 23.4627 0.537259 24 1.2 24H11.4Z"
+                fill="#FFFFFF"
+                fill-rule="evenodd"
+              />
+            </svg>
+          </button>
+          <button
+            class="tc__btn tc__iconButton__deselected"
+            data-selected="false"
+            type="button"
+          >
+            <svg
+              class="tc__icon tc__icon-list-view"
+              fill="none"
+              height="24"
+              viewBox="0 0 24 24"
+              width="24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M6.6 3H23.4C23.7314 3 24 3.26863 24 3.6V6C24 6.33137 23.7314 6.6 23.4 6.6H6.6V3Z"
+                fill="#BFC0C0"
+              />
+              <path
+                d="M0 3.6C0 3.26863 0.268629 3 0.6 3H5.4V6.6H0.6C0.268629 6.6 0 6.33137 0 6V3.6Z"
+                fill="#BFC0C0"
+              />
+              <path
+                d="M6.6 10.2H23.4C23.7314 10.2 24 10.4686 24 10.8V13.2C24 13.5314 23.7314 13.8 23.4 13.8H6.6V10.2Z"
+                fill="#BFC0C0"
+              />
+              <path
+                d="M0 10.8C0 10.4686 0.268629 10.2 0.6 10.2H5.4V13.8H0.6C0.268629 13.8 0 13.5314 0 13.2V10.8Z"
+                fill="#BFC0C0"
+              />
+              <path
+                d="M6.6 17.4H23.4C23.7314 17.4 24 17.6686 24 18V20.4C24 20.7314 23.7314 21 23.4 21H6.6V17.4Z"
+                fill="#BFC0C0"
+              />
+              <path
+                d="M0 18C0 17.6686 0.268629 17.4 0.6 17.4H5.4V21H0.6C0.268629 21 0 20.7314 0 20.4V18Z"
+                fill="#BFC0C0"
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
+      <div
+        class="tc__nav-subheader__group"
+      >
+        <div
+          class="tc__dropdown"
+        >
+          <button
+            class="tc__btn tc__tooltip-wrapper-anchor"
+            data-selected="false"
+            type="button"
+          >
+            <div
+              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+            >
+              Filter
+            </div>
+            <svg
+              class="tc__icon tc__icon-down-chevron"
+              fill="none"
+              height="12"
+              viewBox="0 0 16 16"
+              width="12"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <g
+                clip-path="url(#clip0_909_5439)"
+              >
+                <path
+                  d="M15.7387 5.36992L8.63082 11.7636C8.54823 11.8385 8.44996 11.898 8.34169 11.9385C8.23342 11.9791 8.11729 12 8 12C7.88271 12 7.76658 11.9791 7.65831 11.9385C7.55004 11.898 7.45177 11.8385 7.36918 11.7636L0.261296 5.36992C0.0939908 5.21942 -2.49304e-09 5.01531 0 4.80248C2.49304e-09 4.58965 0.0939908 4.38554 0.261296 4.23504C0.428601 4.08455 0.655515 4 0.89212 4C1.12873 4 1.35564 4.08455 1.52294 4.23504L8 10.0693L14.4771 4.23504C14.6444 4.08455 14.8713 4 15.1079 4C15.3445 4 15.5714 4.08455 15.7387 4.23504C15.906 4.38554 16 4.58965 16 4.80248C16 5.01531 15.906 5.21942 15.7387 5.36992Z"
+                  fill="#222222"
+                />
+              </g>
+              <defs>
+                <clippath
+                  id="clip0_909_5439"
+                >
+                  <rect
+                    fill="white"
+                    height="16"
+                    width="16"
+                  />
+                </clippath>
+              </defs>
+            </svg>
+          </button>
+        </div>
+        <div
+          class="tc__dropdown"
+        >
+          <div
+            class="tc__tooltip-wrapper"
+            style="--anchorPosX: 0px; --anchorPosY: 0px; --anchorVisibility: block;"
+          >
+            <div
+              class="tc__tooltip-wrapper-backdrop"
+            />
+            <button
+              class="tc__btn tc__tooltip-wrapper-anchor"
+              data-selected="false"
+              type="button"
+            >
+              <div
+                style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+              >
+                Sort
+              </div>
+              <svg
+                class="tc__icon tc__icon-up-chevron"
+                fill="none"
+                height="12"
+                viewBox="0 0 16 16"
+                width="12"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <g
+                  clip-path="url(#clip0_909_5449)"
+                >
+                  <path
+                    d="M15.7372 11.7636C15.6546 11.8385 15.5564 11.898 15.4481 11.9385C15.3398 11.9791 15.2237 12 15.1064 12C14.9892 12 14.873 11.9791 14.7648 11.9385C14.6565 11.898 14.5583 11.8385 14.4757 11.7636L7.99924 5.9304L1.5228 11.7636C1.35551 11.9141 1.12862 11.9986 0.892036 11.9986C0.655453 11.9986 0.42856 11.9141 0.261271 11.7636C0.0939821 11.6132 0 11.4091 0 11.1963C0 10.9835 0.0939821 10.7794 0.261271 10.629L7.36848 4.23636C7.45107 4.16147 7.54932 4.10202 7.65758 4.06145C7.76584 4.02089 7.88196 4 7.99924 4C8.11652 4 8.23264 4.02089 8.3409 4.06145C8.44916 4.10202 8.54742 4.16147 8.63001 4.23636L15.7372 10.629C15.8205 10.7032 15.8866 10.7916 15.9317 10.889C15.9768 10.9864 16 11.0908 16 11.1963C16 11.3018 15.9768 11.4062 15.9317 11.5036C15.8866 11.601 15.8205 11.6894 15.7372 11.7636Z"
+                    fill="#222222"
+                  />
+                </g>
+                <defs>
+                  <clippath
+                    id="clip0_909_5449"
+                  >
+                    <rect
+                      fill="white"
+                      height="16"
+                      width="16"
+                    />
+                  </clippath>
+                </defs>
+              </svg>
+            </button>
+            <div
+              class="tc__tooltip tc__tooltip__bottom-right"
+              style="--anchorWidth: 0px;"
+            >
+              <div
+                class="tc__dropdown__popup"
+              >
+                
+                <div
+                  class="tc__dropdownItem tc__dropdownItem__selectable"
+                >
+                  <button
+                    class="tc__btn "
+                    data-selected="false"
+                    type="button"
+                  >
+                    <div
+                      style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+                    >
+                      A-Z
+                    </div>
+                  </button>
+                </div>
+                <div
+                  class="tc__dropdownItem tc__dropdownItem__selectable"
+                >
+                  <button
+                    class="tc__btn "
+                    data-selected="false"
+                    type="button"
+                  >
+                    <div
+                      style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+                    >
+                      Maturity
+                    </div>
+                  </button>
+                </div>
+                <div
+                  class="tc__dropdownItem tc__dropdownItem__selectable"
+                >
+                  <button
+                    class="tc__btn "
+                    data-selected="false"
+                    type="button"
+                  >
+                    <div
+                      style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+                    >
+                      TVL
+                    </div>
+                  </button>
+                  <span
+                    class="tc__dropdownItem__icon-container"
+                  >
+                    <svg
+                      class="tc__icon tc__icon-up-arrow-thin"
+                      fill="none"
+                      height="12"
+                      viewBox="0 0 12 12"
+                      width="12"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        clip-rule="evenodd"
+                        d="M5.61591 0.167368C5.82804 -0.0557892 6.17196 -0.0557892 6.38409 0.167368L9.8409 3.80392C10.053 4.02707 10.053 4.38888 9.8409 4.61204C9.62878 4.8352 9.28485 4.8352 9.07272 4.61204L6.54319 1.95098L6.54319 12H5.45681L5.45681 1.95098L2.92728 4.61204C2.71515 4.8352 2.37122 4.8352 2.1591 4.61204C1.94697 4.38888 1.94697 4.02707 2.1591 3.80392L5.61591 0.167368Z"
+                        fill="#222222"
+                        fill-rule="evenodd"
+                      />
+                    </svg>
+                  </span>
+                </div>
+                <div
+                  class="tc__dropdownItem tc__dropdownItem__selectable"
+                >
+                  <button
+                    class="tc__btn "
+                    data-selected="false"
+                    type="button"
+                  >
+                    <div
+                      style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+                    >
+                      APR %
+                    </div>
+                  </button>
+                </div>
+                <div
+                  class="tc__dropdownItem tc__dropdownItem__selectable"
+                >
+                  <button
+                    class="tc__btn "
+                    data-selected="false"
+                    type="button"
+                  >
+                    <div
+                      style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+                    >
+                      Balance
+                    </div>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`MarketsSubheader updates sorting type 3`] = `
+<div>
+  <div
+    class="tc__nav-subheader"
+  >
+    <div
+      class="tc__nav-subheader__background"
+    />
+    <div
+      class="tc__nav-subheader__wrapper"
+    >
+      <div
+        class="tc__nav-subheader__group"
+      >
+        <div
+          class="tc__tabs tc__tabs__tabs-small"
+        >
+          <button
+            class="tc__btn tc__tabs__tab"
+            data-selected="false"
+            type="button"
+          >
+            <div
+              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+            >
+              Fixed
+            </div>
+          </button>
+          <button
+            class="tc__btn tc__tabs__tab"
+            data-selected="false"
+            type="button"
+          >
+            <div
+              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+            >
+              Boosted
+            </div>
+          </button>
+          <button
+            class="tc__btn tc__tabs__tab"
+            data-selected="true"
+            type="button"
+          >
+            <div
+              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(255, 255, 255); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+            >
+              All
+            </div>
+          </button>
+          <div
+            class="tc__tabs__indicator-container"
+          >
+            <div
+              class="tc__tabs__indicator"
+              style="width: 33.333333333333336%; left: 66.66666666666667%;"
+            />
+          </div>
+        </div>
+        <div
+          class="tc__iconButtonGroup"
+        >
+          <button
+            class="tc__btn tc__iconButton__selected"
+            data-selected="true"
+            type="button"
+          >
+            <svg
+              class="tc__icon tc__icon-grid-view"
+              fill="none"
+              height="24"
+              viewBox="0 0 24 24"
+              width="24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                clip-rule="evenodd"
+                d="M1.2 0C0.537258 0 0 0.537259 0 1.2V11.4H11.4V0H1.2ZM12.6 0V11.4H24V1.2C24 0.537258 23.4627 0 22.8 0H12.6ZM24 12.6H12.6V24H22.8C23.4627 24 24 23.4627 24 22.8V12.6ZM11.4 24V12.6H0V22.8C0 23.4627 0.537259 24 1.2 24H11.4Z"
+                fill="#FFFFFF"
+                fill-rule="evenodd"
+              />
+            </svg>
+          </button>
+          <button
+            class="tc__btn tc__iconButton__deselected"
+            data-selected="false"
+            type="button"
+          >
+            <svg
+              class="tc__icon tc__icon-list-view"
+              fill="none"
+              height="24"
+              viewBox="0 0 24 24"
+              width="24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M6.6 3H23.4C23.7314 3 24 3.26863 24 3.6V6C24 6.33137 23.7314 6.6 23.4 6.6H6.6V3Z"
+                fill="#BFC0C0"
+              />
+              <path
+                d="M0 3.6C0 3.26863 0.268629 3 0.6 3H5.4V6.6H0.6C0.268629 6.6 0 6.33137 0 6V3.6Z"
+                fill="#BFC0C0"
+              />
+              <path
+                d="M6.6 10.2H23.4C23.7314 10.2 24 10.4686 24 10.8V13.2C24 13.5314 23.7314 13.8 23.4 13.8H6.6V10.2Z"
+                fill="#BFC0C0"
+              />
+              <path
+                d="M0 10.8C0 10.4686 0.268629 10.2 0.6 10.2H5.4V13.8H0.6C0.268629 13.8 0 13.5314 0 13.2V10.8Z"
+                fill="#BFC0C0"
+              />
+              <path
+                d="M6.6 17.4H23.4C23.7314 17.4 24 17.6686 24 18V20.4C24 20.7314 23.7314 21 23.4 21H6.6V17.4Z"
+                fill="#BFC0C0"
+              />
+              <path
+                d="M0 18C0 17.6686 0.268629 17.4 0.6 17.4H5.4V21H0.6C0.268629 21 0 20.7314 0 20.4V18Z"
+                fill="#BFC0C0"
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
+      <div
+        class="tc__nav-subheader__group"
+      >
+        <div
+          class="tc__dropdown"
+        >
+          <button
+            class="tc__btn tc__tooltip-wrapper-anchor"
+            data-selected="false"
+            type="button"
+          >
+            <div
+              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+            >
+              Filter
+            </div>
+            <svg
+              class="tc__icon tc__icon-down-chevron"
+              fill="none"
+              height="12"
+              viewBox="0 0 16 16"
+              width="12"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <g
+                clip-path="url(#clip0_909_5439)"
+              >
+                <path
+                  d="M15.7387 5.36992L8.63082 11.7636C8.54823 11.8385 8.44996 11.898 8.34169 11.9385C8.23342 11.9791 8.11729 12 8 12C7.88271 12 7.76658 11.9791 7.65831 11.9385C7.55004 11.898 7.45177 11.8385 7.36918 11.7636L0.261296 5.36992C0.0939908 5.21942 -2.49304e-09 5.01531 0 4.80248C2.49304e-09 4.58965 0.0939908 4.38554 0.261296 4.23504C0.428601 4.08455 0.655515 4 0.89212 4C1.12873 4 1.35564 4.08455 1.52294 4.23504L8 10.0693L14.4771 4.23504C14.6444 4.08455 14.8713 4 15.1079 4C15.3445 4 15.5714 4.08455 15.7387 4.23504C15.906 4.38554 16 4.58965 16 4.80248C16 5.01531 15.906 5.21942 15.7387 5.36992Z"
+                  fill="#222222"
+                />
+              </g>
+              <defs>
+                <clippath
+                  id="clip0_909_5439"
+                >
+                  <rect
+                    fill="white"
+                    height="16"
+                    width="16"
+                  />
+                </clippath>
+              </defs>
+            </svg>
+          </button>
+        </div>
+        <div
+          class="tc__dropdown"
+        >
+          <div
+            class="tc__tooltip-wrapper"
+            style="--anchorPosX: 0px; --anchorPosY: 0px; --anchorVisibility: block;"
+          >
+            <div
+              class="tc__tooltip-wrapper-backdrop"
+            />
+            <button
+              class="tc__btn tc__tooltip-wrapper-anchor"
+              data-selected="false"
+              type="button"
+            >
+              <div
+                style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+              >
+                Sort
+              </div>
+              <svg
+                class="tc__icon tc__icon-up-chevron"
+                fill="none"
+                height="12"
+                viewBox="0 0 16 16"
+                width="12"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <g
+                  clip-path="url(#clip0_909_5449)"
+                >
+                  <path
+                    d="M15.7372 11.7636C15.6546 11.8385 15.5564 11.898 15.4481 11.9385C15.3398 11.9791 15.2237 12 15.1064 12C14.9892 12 14.873 11.9791 14.7648 11.9385C14.6565 11.898 14.5583 11.8385 14.4757 11.7636L7.99924 5.9304L1.5228 11.7636C1.35551 11.9141 1.12862 11.9986 0.892036 11.9986C0.655453 11.9986 0.42856 11.9141 0.261271 11.7636C0.0939821 11.6132 0 11.4091 0 11.1963C0 10.9835 0.0939821 10.7794 0.261271 10.629L7.36848 4.23636C7.45107 4.16147 7.54932 4.10202 7.65758 4.06145C7.76584 4.02089 7.88196 4 7.99924 4C8.11652 4 8.23264 4.02089 8.3409 4.06145C8.44916 4.10202 8.54742 4.16147 8.63001 4.23636L15.7372 10.629C15.8205 10.7032 15.8866 10.7916 15.9317 10.889C15.9768 10.9864 16 11.0908 16 11.1963C16 11.3018 15.9768 11.4062 15.9317 11.5036C15.8866 11.601 15.8205 11.6894 15.7372 11.7636Z"
+                    fill="#222222"
+                  />
+                </g>
+                <defs>
+                  <clippath
+                    id="clip0_909_5449"
+                  >
+                    <rect
+                      fill="white"
+                      height="16"
+                      width="16"
+                    />
+                  </clippath>
+                </defs>
+              </svg>
+            </button>
+            <div
+              class="tc__tooltip tc__tooltip__bottom-right"
+              style="--anchorWidth: 0px;"
+            >
+              <div
+                class="tc__dropdown__popup"
+              >
+                
+                <div
+                  class="tc__dropdownItem tc__dropdownItem__selectable"
+                >
+                  <button
+                    class="tc__btn "
+                    data-selected="false"
+                    type="button"
+                  >
+                    <div
+                      style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+                    >
+                      A-Z
+                    </div>
+                  </button>
+                </div>
+                <div
+                  class="tc__dropdownItem tc__dropdownItem__selectable"
+                >
+                  <button
+                    class="tc__btn "
+                    data-selected="false"
+                    type="button"
+                  >
+                    <div
+                      style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+                    >
+                      Maturity
+                    </div>
+                  </button>
+                </div>
+                <div
+                  class="tc__dropdownItem tc__dropdownItem__selectable"
+                >
+                  <button
+                    class="tc__btn "
+                    data-selected="false"
+                    type="button"
+                  >
+                    <div
+                      style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+                    >
+                      TVL
+                    </div>
+                  </button>
+                  <span
+                    class="tc__dropdownItem__icon-container"
+                  >
+                    <svg
+                      class="tc__icon tc__icon-down-arrow-thin"
+                      fill="none"
+                      height="12"
+                      viewBox="0 0 12 12"
+                      width="12"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        clip-rule="evenodd"
+                        d="M6.38409 11.8326C6.17196 12.0558 5.82804 12.0558 5.61591 11.8326L2.1591 8.19608C1.94697 7.97293 1.94697 7.61112 2.1591 7.38796C2.37122 7.1648 2.71515 7.1648 2.92728 7.38796L5.45681 10.049L5.45681 0L6.54319 9.49736e-08L6.54319 10.049L9.07272 7.38796C9.28485 7.1648 9.62878 7.1648 9.8409 7.38796C10.053 7.61112 10.053 7.97293 9.8409 8.19608L6.38409 11.8326Z"
+                        fill="#222222"
+                        fill-rule="evenodd"
+                      />
+                    </svg>
+                  </span>
+                </div>
+                <div
+                  class="tc__dropdownItem tc__dropdownItem__selectable"
+                >
+                  <button
+                    class="tc__btn "
+                    data-selected="false"
+                    type="button"
+                  >
+                    <div
+                      style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+                    >
+                      APR %
+                    </div>
+                  </button>
+                </div>
+                <div
+                  class="tc__dropdownItem tc__dropdownItem__selectable"
+                >
+                  <button
+                    class="tc__btn "
+                    data-selected="false"
+                    type="button"
+                  >
+                    <div
+                      style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+                    >
+                      Balance
+                    </div>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`MarketsSubheader updates sorting type 4`] = `
+<div>
+  <div
+    class="tc__nav-subheader"
+  >
+    <div
+      class="tc__nav-subheader__background"
+    />
+    <div
+      class="tc__nav-subheader__wrapper"
+    >
+      <div
+        class="tc__nav-subheader__group"
+      >
+        <div
+          class="tc__tabs tc__tabs__tabs-small"
+        >
+          <button
+            class="tc__btn tc__tabs__tab"
+            data-selected="false"
+            type="button"
+          >
+            <div
+              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+            >
+              Fixed
+            </div>
+          </button>
+          <button
+            class="tc__btn tc__tabs__tab"
+            data-selected="false"
+            type="button"
+          >
+            <div
+              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+            >
+              Boosted
+            </div>
+          </button>
+          <button
+            class="tc__btn tc__tabs__tab"
+            data-selected="true"
+            type="button"
+          >
+            <div
+              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(255, 255, 255); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+            >
+              All
+            </div>
+          </button>
+          <div
+            class="tc__tabs__indicator-container"
+          >
+            <div
+              class="tc__tabs__indicator"
+              style="width: 33.333333333333336%; left: 66.66666666666667%;"
+            />
+          </div>
+        </div>
+        <div
+          class="tc__iconButtonGroup"
+        >
+          <button
+            class="tc__btn tc__iconButton__selected"
+            data-selected="true"
+            type="button"
+          >
+            <svg
+              class="tc__icon tc__icon-grid-view"
+              fill="none"
+              height="24"
+              viewBox="0 0 24 24"
+              width="24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                clip-rule="evenodd"
+                d="M1.2 0C0.537258 0 0 0.537259 0 1.2V11.4H11.4V0H1.2ZM12.6 0V11.4H24V1.2C24 0.537258 23.4627 0 22.8 0H12.6ZM24 12.6H12.6V24H22.8C23.4627 24 24 23.4627 24 22.8V12.6ZM11.4 24V12.6H0V22.8C0 23.4627 0.537259 24 1.2 24H11.4Z"
+                fill="#FFFFFF"
+                fill-rule="evenodd"
+              />
+            </svg>
+          </button>
+          <button
+            class="tc__btn tc__iconButton__deselected"
+            data-selected="false"
+            type="button"
+          >
+            <svg
+              class="tc__icon tc__icon-list-view"
+              fill="none"
+              height="24"
+              viewBox="0 0 24 24"
+              width="24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M6.6 3H23.4C23.7314 3 24 3.26863 24 3.6V6C24 6.33137 23.7314 6.6 23.4 6.6H6.6V3Z"
+                fill="#BFC0C0"
+              />
+              <path
+                d="M0 3.6C0 3.26863 0.268629 3 0.6 3H5.4V6.6H0.6C0.268629 6.6 0 6.33137 0 6V3.6Z"
+                fill="#BFC0C0"
+              />
+              <path
+                d="M6.6 10.2H23.4C23.7314 10.2 24 10.4686 24 10.8V13.2C24 13.5314 23.7314 13.8 23.4 13.8H6.6V10.2Z"
+                fill="#BFC0C0"
+              />
+              <path
+                d="M0 10.8C0 10.4686 0.268629 10.2 0.6 10.2H5.4V13.8H0.6C0.268629 13.8 0 13.5314 0 13.2V10.8Z"
+                fill="#BFC0C0"
+              />
+              <path
+                d="M6.6 17.4H23.4C23.7314 17.4 24 17.6686 24 18V20.4C24 20.7314 23.7314 21 23.4 21H6.6V17.4Z"
+                fill="#BFC0C0"
+              />
+              <path
+                d="M0 18C0 17.6686 0.268629 17.4 0.6 17.4H5.4V21H0.6C0.268629 21 0 20.7314 0 20.4V18Z"
+                fill="#BFC0C0"
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
+      <div
+        class="tc__nav-subheader__group"
+      >
+        <div
+          class="tc__dropdown"
+        >
+          <button
+            class="tc__btn tc__tooltip-wrapper-anchor"
+            data-selected="false"
+            type="button"
+          >
+            <div
+              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+            >
+              Filter
+            </div>
+            <svg
+              class="tc__icon tc__icon-down-chevron"
+              fill="none"
+              height="12"
+              viewBox="0 0 16 16"
+              width="12"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <g
+                clip-path="url(#clip0_909_5439)"
+              >
+                <path
+                  d="M15.7387 5.36992L8.63082 11.7636C8.54823 11.8385 8.44996 11.898 8.34169 11.9385C8.23342 11.9791 8.11729 12 8 12C7.88271 12 7.76658 11.9791 7.65831 11.9385C7.55004 11.898 7.45177 11.8385 7.36918 11.7636L0.261296 5.36992C0.0939908 5.21942 -2.49304e-09 5.01531 0 4.80248C2.49304e-09 4.58965 0.0939908 4.38554 0.261296 4.23504C0.428601 4.08455 0.655515 4 0.89212 4C1.12873 4 1.35564 4.08455 1.52294 4.23504L8 10.0693L14.4771 4.23504C14.6444 4.08455 14.8713 4 15.1079 4C15.3445 4 15.5714 4.08455 15.7387 4.23504C15.906 4.38554 16 4.58965 16 4.80248C16 5.01531 15.906 5.21942 15.7387 5.36992Z"
+                  fill="#222222"
+                />
+              </g>
+              <defs>
+                <clippath
+                  id="clip0_909_5439"
+                >
+                  <rect
+                    fill="white"
+                    height="16"
+                    width="16"
+                  />
+                </clippath>
+              </defs>
+            </svg>
+          </button>
+        </div>
+        <div
+          class="tc__dropdown"
+        >
+          <div
+            class="tc__tooltip-wrapper"
+            style="--anchorPosX: 0px; --anchorPosY: 0px; --anchorVisibility: block;"
+          >
+            <div
+              class="tc__tooltip-wrapper-backdrop"
+            />
+            <button
+              class="tc__btn tc__tooltip-wrapper-anchor"
+              data-selected="false"
+              type="button"
+            >
+              <div
+                style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+              >
+                Sort
+              </div>
+              <svg
+                class="tc__icon tc__icon-up-chevron"
+                fill="none"
+                height="12"
+                viewBox="0 0 16 16"
+                width="12"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <g
+                  clip-path="url(#clip0_909_5449)"
+                >
+                  <path
+                    d="M15.7372 11.7636C15.6546 11.8385 15.5564 11.898 15.4481 11.9385C15.3398 11.9791 15.2237 12 15.1064 12C14.9892 12 14.873 11.9791 14.7648 11.9385C14.6565 11.898 14.5583 11.8385 14.4757 11.7636L7.99924 5.9304L1.5228 11.7636C1.35551 11.9141 1.12862 11.9986 0.892036 11.9986C0.655453 11.9986 0.42856 11.9141 0.261271 11.7636C0.0939821 11.6132 0 11.4091 0 11.1963C0 10.9835 0.0939821 10.7794 0.261271 10.629L7.36848 4.23636C7.45107 4.16147 7.54932 4.10202 7.65758 4.06145C7.76584 4.02089 7.88196 4 7.99924 4C8.11652 4 8.23264 4.02089 8.3409 4.06145C8.44916 4.10202 8.54742 4.16147 8.63001 4.23636L15.7372 10.629C15.8205 10.7032 15.8866 10.7916 15.9317 10.889C15.9768 10.9864 16 11.0908 16 11.1963C16 11.3018 15.9768 11.4062 15.9317 11.5036C15.8866 11.601 15.8205 11.6894 15.7372 11.7636Z"
+                    fill="#222222"
+                  />
+                </g>
+                <defs>
+                  <clippath
+                    id="clip0_909_5449"
+                  >
+                    <rect
+                      fill="white"
+                      height="16"
+                      width="16"
+                    />
+                  </clippath>
+                </defs>
+              </svg>
+            </button>
+            <div
+              class="tc__tooltip tc__tooltip__bottom-right"
+              style="--anchorWidth: 0px;"
+            >
+              <div
+                class="tc__dropdown__popup"
+              >
+                
+                <div
+                  class="tc__dropdownItem tc__dropdownItem__selectable"
+                >
+                  <button
+                    class="tc__btn "
+                    data-selected="false"
+                    type="button"
+                  >
+                    <div
+                      style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+                    >
+                      A-Z
+                    </div>
+                  </button>
+                </div>
+                <div
+                  class="tc__dropdownItem tc__dropdownItem__selectable"
+                >
+                  <button
+                    class="tc__btn "
+                    data-selected="false"
+                    type="button"
+                  >
+                    <div
+                      style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+                    >
+                      Maturity
+                    </div>
+                  </button>
+                  <span
+                    class="tc__dropdownItem__icon-container"
+                  >
+                    <svg
+                      class="tc__icon tc__icon-down-arrow-thin"
+                      fill="none"
+                      height="12"
+                      viewBox="0 0 12 12"
+                      width="12"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        clip-rule="evenodd"
+                        d="M6.38409 11.8326C6.17196 12.0558 5.82804 12.0558 5.61591 11.8326L2.1591 8.19608C1.94697 7.97293 1.94697 7.61112 2.1591 7.38796C2.37122 7.1648 2.71515 7.1648 2.92728 7.38796L5.45681 10.049L5.45681 0L6.54319 9.49736e-08L6.54319 10.049L9.07272 7.38796C9.28485 7.1648 9.62878 7.1648 9.8409 7.38796C10.053 7.61112 10.053 7.97293 9.8409 8.19608L6.38409 11.8326Z"
+                        fill="#222222"
+                        fill-rule="evenodd"
+                      />
+                    </svg>
+                  </span>
+                </div>
+                <div
+                  class="tc__dropdownItem tc__dropdownItem__selectable"
+                >
+                  <button
+                    class="tc__btn "
+                    data-selected="false"
+                    type="button"
+                  >
+                    <div
+                      style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+                    >
+                      TVL
+                    </div>
+                  </button>
+                </div>
+                <div
+                  class="tc__dropdownItem tc__dropdownItem__selectable"
+                >
+                  <button
+                    class="tc__btn "
+                    data-selected="false"
+                    type="button"
+                  >
+                    <div
+                      style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+                    >
+                      APR %
+                    </div>
+                  </button>
+                </div>
+                <div
+                  class="tc__dropdownItem tc__dropdownItem__selectable"
+                >
+                  <button
+                    class="tc__btn "
+                    data-selected="false"
+                    type="button"
+                  >
+                    <div
+                      style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+                    >
+                      Balance
+                    </div>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`MarketsSubheader updates sorting type 5`] = `
+<button
+  class="tc__btn "
+  data-selected="false"
+  type="button"
+>
+  <div
+    style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+  >
+    A-Z
+  </div>
+</button>
+`;
+
+exports[`MarketsSubheader updates sorting type 6`] = `
+<button
+  class="tc__btn "
+  data-selected="false"
+  type="button"
+>
+  <div
+    style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+  >
+    Maturity
+  </div>
+</button>
+`;
+
+exports[`MarketsSubheader updates sorting type 7`] = `
+<button
+  class="tc__btn "
+  data-selected="false"
+  type="button"
+>
+  <div
+    style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+  >
+    TVL
+  </div>
+</button>
+`;
+
+exports[`MarketsSubheader updates sorting type 8`] = `
+<button
+  class="tc__btn "
+  data-selected="false"
+  type="button"
+>
+  <div
+    style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+  >
+    APR %
+  </div>
+</button>
+`;
+
+exports[`MarketsSubheader updates sorting type 9`] = `
+<button
+  class="tc__btn "
+  data-selected="false"
+  type="button"
+>
+  <div
+    style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+  >
+    Balance
+  </div>
+</button>
+`;
+
+exports[`MarketsSubheader updates view type 1`] = `
+<button
+  class="tc__btn tc__iconButton__deselected"
+  data-selected="false"
+  type="button"
+>
+  <svg
+    class="tc__icon tc__icon-grid-view"
+    fill="none"
+    height="24"
+    viewBox="0 0 24 24"
+    width="24"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      clip-rule="evenodd"
+      d="M1.2 0C0.537258 0 0 0.537259 0 1.2V11.4H11.4V0H1.2ZM12.6 0V11.4H24V1.2C24 0.537258 23.4627 0 22.8 0H12.6ZM24 12.6H12.6V24H22.8C23.4627 24 24 23.4627 24 22.8V12.6ZM11.4 24V12.6H0V22.8C0 23.4627 0.537259 24 1.2 24H11.4Z"
+      fill="#BFC0C0"
+      fill-rule="evenodd"
+    />
+  </svg>
+</button>
+`;
+
+exports[`MarketsSubheader updates view type 2`] = `
+<button
+  class="tc__btn tc__iconButton__selected"
+  data-selected="true"
+  type="button"
+>
+  <svg
+    class="tc__icon tc__icon-list-view"
+    fill="none"
+    height="24"
+    viewBox="0 0 24 24"
+    width="24"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M6.6 3H23.4C23.7314 3 24 3.26863 24 3.6V6C24 6.33137 23.7314 6.6 23.4 6.6H6.6V3Z"
+      fill="#FFFFFF"
+    />
+    <path
+      d="M0 3.6C0 3.26863 0.268629 3 0.6 3H5.4V6.6H0.6C0.268629 6.6 0 6.33137 0 6V3.6Z"
+      fill="#FFFFFF"
+    />
+    <path
+      d="M6.6 10.2H23.4C23.7314 10.2 24 10.4686 24 10.8V13.2C24 13.5314 23.7314 13.8 23.4 13.8H6.6V10.2Z"
+      fill="#FFFFFF"
+    />
+    <path
+      d="M0 10.8C0 10.4686 0.268629 10.2 0.6 10.2H5.4V13.8H0.6C0.268629 13.8 0 13.5314 0 13.2V10.8Z"
+      fill="#FFFFFF"
+    />
+    <path
+      d="M6.6 17.4H23.4C23.7314 17.4 24 17.6686 24 18V20.4C24 20.7314 23.7314 21 23.4 21H6.6V17.4Z"
+      fill="#FFFFFF"
+    />
+    <path
+      d="M0 18C0 17.6686 0.268629 17.4 0.6 17.4H5.4V21H0.6C0.268629 21 0 20.7314 0 20.4V18Z"
+      fill="#FFFFFF"
+    />
+  </svg>
+</button>
+`;
+
+exports[`MarketsSubheader updates view type 3`] = `
+<button
+  class="tc__btn tc__iconButton__selected"
+  data-selected="true"
+  type="button"
+>
+  <svg
+    class="tc__icon tc__icon-grid-view"
+    fill="none"
+    height="24"
+    viewBox="0 0 24 24"
+    width="24"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      clip-rule="evenodd"
+      d="M1.2 0C0.537258 0 0 0.537259 0 1.2V11.4H11.4V0H1.2ZM12.6 0V11.4H24V1.2C24 0.537258 23.4627 0 22.8 0H12.6ZM24 12.6H12.6V24H22.8C23.4627 24 24 23.4627 24 22.8V12.6ZM11.4 24V12.6H0V22.8C0 23.4627 0.537259 24 1.2 24H11.4Z"
+      fill="#FFFFFF"
+      fill-rule="evenodd"
+    />
+  </svg>
+</button>
+`;
+
+exports[`MarketsSubheader updates view type 4`] = `
+<button
+  class="tc__btn tc__iconButton__deselected"
+  data-selected="false"
+  type="button"
+>
+  <svg
+    class="tc__icon tc__icon-list-view"
+    fill="none"
+    height="24"
+    viewBox="0 0 24 24"
+    width="24"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M6.6 3H23.4C23.7314 3 24 3.26863 24 3.6V6C24 6.33137 23.7314 6.6 23.4 6.6H6.6V3Z"
+      fill="#BFC0C0"
+    />
+    <path
+      d="M0 3.6C0 3.26863 0.268629 3 0.6 3H5.4V6.6H0.6C0.268629 6.6 0 6.33137 0 6V3.6Z"
+      fill="#BFC0C0"
+    />
+    <path
+      d="M6.6 10.2H23.4C23.7314 10.2 24 10.4686 24 10.8V13.2C24 13.5314 23.7314 13.8 23.4 13.8H6.6V10.2Z"
+      fill="#BFC0C0"
+    />
+    <path
+      d="M0 10.8C0 10.4686 0.268629 10.2 0.6 10.2H5.4V13.8H0.6C0.268629 13.8 0 13.5314 0 13.2V10.8Z"
+      fill="#BFC0C0"
+    />
+    <path
+      d="M6.6 17.4H23.4C23.7314 17.4 24 17.6686 24 18V20.4C24 20.7314 23.7314 21 23.4 21H6.6V17.4Z"
+      fill="#BFC0C0"
+    />
+    <path
+      d="M0 18C0 17.6686 0.268629 17.4 0.6 17.4H5.4V21H0.6C0.268629 21 0 20.7314 0 20.4V18Z"
+      fill="#BFC0C0"
+    />
+  </svg>
+</button>
+`;
+
+exports[`MarketsSubheader updates view type 5`] = `
+<div>
+  <div
+    class="tc__nav-subheader"
+  >
+    <div
+      class="tc__nav-subheader__background"
+    />
+    <div
+      class="tc__nav-subheader__wrapper"
+    >
+      <div
+        class="tc__nav-subheader__group"
+      >
+        <div
+          class="tc__tabs tc__tabs__tabs-small"
+        >
+          <button
+            class="tc__btn tc__tabs__tab"
+            data-selected="false"
+            type="button"
+          >
+            <div
+              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+            >
+              Fixed
+            </div>
+          </button>
+          <button
+            class="tc__btn tc__tabs__tab"
+            data-selected="false"
+            type="button"
+          >
+            <div
+              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+            >
+              Boosted
+            </div>
+          </button>
+          <button
+            class="tc__btn tc__tabs__tab"
+            data-selected="true"
+            type="button"
+          >
+            <div
+              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(255, 255, 255); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+            >
+              All
+            </div>
+          </button>
+          <div
+            class="tc__tabs__indicator-container"
+          >
+            <div
+              class="tc__tabs__indicator"
+              style="width: 33.333333333333336%; left: 66.66666666666667%;"
+            />
+          </div>
+        </div>
+        <div
+          class="tc__iconButtonGroup"
+        >
+          <button
+            class="tc__btn tc__iconButton__selected"
+            data-selected="true"
+            type="button"
+          >
+            <svg
+              class="tc__icon tc__icon-grid-view"
+              fill="none"
+              height="24"
+              viewBox="0 0 24 24"
+              width="24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                clip-rule="evenodd"
+                d="M1.2 0C0.537258 0 0 0.537259 0 1.2V11.4H11.4V0H1.2ZM12.6 0V11.4H24V1.2C24 0.537258 23.4627 0 22.8 0H12.6ZM24 12.6H12.6V24H22.8C23.4627 24 24 23.4627 24 22.8V12.6ZM11.4 24V12.6H0V22.8C0 23.4627 0.537259 24 1.2 24H11.4Z"
+                fill="#FFFFFF"
+                fill-rule="evenodd"
+              />
+            </svg>
+          </button>
+          <button
+            class="tc__btn tc__iconButton__deselected"
+            data-selected="false"
+            type="button"
+          >
+            <svg
+              class="tc__icon tc__icon-list-view"
+              fill="none"
+              height="24"
+              viewBox="0 0 24 24"
+              width="24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M6.6 3H23.4C23.7314 3 24 3.26863 24 3.6V6C24 6.33137 23.7314 6.6 23.4 6.6H6.6V3Z"
+                fill="#BFC0C0"
+              />
+              <path
+                d="M0 3.6C0 3.26863 0.268629 3 0.6 3H5.4V6.6H0.6C0.268629 6.6 0 6.33137 0 6V3.6Z"
+                fill="#BFC0C0"
+              />
+              <path
+                d="M6.6 10.2H23.4C23.7314 10.2 24 10.4686 24 10.8V13.2C24 13.5314 23.7314 13.8 23.4 13.8H6.6V10.2Z"
+                fill="#BFC0C0"
+              />
+              <path
+                d="M0 10.8C0 10.4686 0.268629 10.2 0.6 10.2H5.4V13.8H0.6C0.268629 13.8 0 13.5314 0 13.2V10.8Z"
+                fill="#BFC0C0"
+              />
+              <path
+                d="M6.6 17.4H23.4C23.7314 17.4 24 17.6686 24 18V20.4C24 20.7314 23.7314 21 23.4 21H6.6V17.4Z"
+                fill="#BFC0C0"
+              />
+              <path
+                d="M0 18C0 17.6686 0.268629 17.4 0.6 17.4H5.4V21H0.6C0.268629 21 0 20.7314 0 20.4V18Z"
+                fill="#BFC0C0"
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
+      <div
+        class="tc__nav-subheader__group"
+      >
+        <div
+          class="tc__dropdown"
+        >
+          <button
+            class="tc__btn tc__tooltip-wrapper-anchor"
+            data-selected="false"
+            type="button"
+          >
+            <div
+              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+            >
+              Filter
+            </div>
+            <svg
+              class="tc__icon tc__icon-down-chevron"
+              fill="none"
+              height="12"
+              viewBox="0 0 16 16"
+              width="12"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <g
+                clip-path="url(#clip0_909_5439)"
+              >
+                <path
+                  d="M15.7387 5.36992L8.63082 11.7636C8.54823 11.8385 8.44996 11.898 8.34169 11.9385C8.23342 11.9791 8.11729 12 8 12C7.88271 12 7.76658 11.9791 7.65831 11.9385C7.55004 11.898 7.45177 11.8385 7.36918 11.7636L0.261296 5.36992C0.0939908 5.21942 -2.49304e-09 5.01531 0 4.80248C2.49304e-09 4.58965 0.0939908 4.38554 0.261296 4.23504C0.428601 4.08455 0.655515 4 0.89212 4C1.12873 4 1.35564 4.08455 1.52294 4.23504L8 10.0693L14.4771 4.23504C14.6444 4.08455 14.8713 4 15.1079 4C15.3445 4 15.5714 4.08455 15.7387 4.23504C15.906 4.38554 16 4.58965 16 4.80248C16 5.01531 15.906 5.21942 15.7387 5.36992Z"
+                  fill="#222222"
+                />
+              </g>
+              <defs>
+                <clippath
+                  id="clip0_909_5439"
+                >
+                  <rect
+                    fill="white"
+                    height="16"
+                    width="16"
+                  />
+                </clippath>
+              </defs>
+            </svg>
+          </button>
+        </div>
+        <div
+          class="tc__dropdown"
+        >
+          <button
+            class="tc__btn tc__tooltip-wrapper-anchor"
+            data-selected="false"
+            type="button"
+          >
+            <div
+              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+            >
+              Sort
+            </div>
+            <svg
+              class="tc__icon tc__icon-down-chevron"
+              fill="none"
+              height="12"
+              viewBox="0 0 16 16"
+              width="12"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <g
+                clip-path="url(#clip0_909_5439)"
+              >
+                <path
+                  d="M15.7387 5.36992L8.63082 11.7636C8.54823 11.8385 8.44996 11.898 8.34169 11.9385C8.23342 11.9791 8.11729 12 8 12C7.88271 12 7.76658 11.9791 7.65831 11.9385C7.55004 11.898 7.45177 11.8385 7.36918 11.7636L0.261296 5.36992C0.0939908 5.21942 -2.49304e-09 5.01531 0 4.80248C2.49304e-09 4.58965 0.0939908 4.38554 0.261296 4.23504C0.428601 4.08455 0.655515 4 0.89212 4C1.12873 4 1.35564 4.08455 1.52294 4.23504L8 10.0693L14.4771 4.23504C14.6444 4.08455 14.8713 4 15.1079 4C15.3445 4 15.5714 4.08455 15.7387 4.23504C15.906 4.38554 16 4.58965 16 4.80248C16 5.01531 15.906 5.21942 15.7387 5.36992Z"
+                  fill="#222222"
+                />
+              </g>
+              <defs>
+                <clippath
+                  id="clip0_909_5439"
+                >
+                  <rect
+                    fill="white"
+                    height="16"
+                    width="16"
+                  />
+                </clippath>
+              </defs>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
