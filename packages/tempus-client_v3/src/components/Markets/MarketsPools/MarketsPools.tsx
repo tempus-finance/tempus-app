@@ -31,7 +31,7 @@ const MarketsPools = (): JSX.Element => {
           <div key={chain}>
             <PoolsHeading text={`${prettyChainName}-Network pools`} />
             <div className="tc__marketsPools">
-              {chainPools.map((tempusPool: any) => {
+              {chainPools.map(tempusPool => {
                 const cardColor = tokenColorMap.get(tempusPool.backingToken);
 
                 if (!cardColor) {
