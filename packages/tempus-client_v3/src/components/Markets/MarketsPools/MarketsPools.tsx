@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { Decimal, prettifyChainName, ProtocolName, TempusPool, Ticker, tokenColorMap } from 'tempus-core-services';
-import { useChainList, usePoolList, useSelectedChain } from '../../../hooks';
+import { useChainList, useFilteredSortedPoolList, useSelectedChain } from '../../../hooks';
 import { PoolCard, PoolsHeading } from '../../shared';
 import './MarketsPools.scss';
 
@@ -13,7 +13,7 @@ interface CardData {
 
 const MarketsPools = (): JSX.Element => {
   const chains = useChainList();
-  const tempusPools = usePoolList();
+  const tempusPools = useFilteredSortedPoolList();
   const selectedChain = useSelectedChain();
 
   /**
