@@ -221,6 +221,7 @@ exports[`MarketsSubheader renders a navigation subheader with filtering and sort
 
 exports[`MarketsSubheader updates filters 1`] = `
 <input
+  checked=""
   id="checkbox-1"
   type="checkbox"
 />
@@ -228,6 +229,7 @@ exports[`MarketsSubheader updates filters 1`] = `
 
 exports[`MarketsSubheader updates filters 2`] = `
 <input
+  checked=""
   id="checkbox-1"
   type="checkbox"
 />
