@@ -107,7 +107,7 @@ const MarketsSubheader = () => {
         </Dropdown>
         <DropdownSelector
           label={t('MarketsSubheader.optionSort')}
-          itemIcon={sortOrder === 'asc' ? 'down-arrow-thin' : 'up-arrow-thin'}
+          itemIcon={sortOrder === 'asc' ? 'up-arrow-thin' : 'down-arrow-thin'}
           selectedValue={sortType}
           onSelect={handleSortTypeChange}
         >

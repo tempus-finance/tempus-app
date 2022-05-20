@@ -44,26 +44,30 @@ const filteredPoolList$ = combineLatest([poolList$, stateFilters$]).pipe(
 );
 const filteredSortedPoolList$ = combineLatest([filteredPoolList$, stateSortType$, stateSortOrder$]).pipe(
   map(([tempusPools, sortType, sortOrder]) =>
-    tempusPools.sort((poolA, poolB) => {
-      const factor = sortOrder === 'desc' ? -1 : 1;
-      switch (sortType) {
-        case 'a-z':
-        default:
-          return (
-            `${poolA.backingToken}--${poolA.protocolDisplayName}`.localeCompare(
-              `${poolB.backingToken}--${poolB.protocolDisplayName}`,
-            ) * factor
-          );
-        case 'apr':
-          return 0; // TODO: need to get the APR to compare
-        case 'balance':
-          return 0; // TODO: need to get the balance to compare
-        case 'maturity':
-          return (poolA.maturityDate - poolB.maturityDate) * factor;
-        case 'tvl':
-          return 0; // TODO: need to get the TVL to compare
-      }
-    }),
+    tempusPools
+      .sort((poolA, poolB) => {
+        const factor = sortOrder === 'desc' ? -1 : 1;
+        switch (sortType) {
+          case 'a-z':
+          default:
+            return (
+              `${poolA.backingToken}--${poolA.protocolDisplayName}`.localeCompare(
+                `${poolB.backingToken}--${poolB.protocolDisplayName}`,
+              ) * factor
+            );
+          case 'apr':
+            return 0; // TODO: need to get the APR to compare
+          case 'balance':
+            return 0; // TODO: need to get the balance to compare
+          case 'maturity':
+            return (poolA.maturityDate - poolB.maturityDate) * factor;
+          case 'tvl':
+            return 0; // TODO: need to get the TVL to compare
+        }
+      })
+      // .sort() will sort the array in place and return the same reference,
+      //   Observable will not emit anything in this case, that's why we need a clone here
+      .slice(),
   ),
 );
 

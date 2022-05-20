@@ -186,6 +186,76 @@ describe('usePoolViewOptions', () => {
     expect(filteredSortedPoolListResult.current).toEqual([]);
   });
 
+  it('update filters to set of ["matured"]', async () => {
+    const { result: poolViewResult, waitForNextUpdate } = renderHook(() => usePoolViewOptions());
+    const { result: filteredSortedPoolListResult } = renderHook(() => useFilteredSortedPoolList());
+    const [poolViewOptions, setPoolViewOptions] = poolViewResult.current;
+    const expectedPoolViewOptions1 = {
+      viewType: 'grid',
+      poolType: 'all',
+      filters: new Set<FilterType>(['active']),
+      sortType: 'a-z',
+      sortOrder: 'asc',
+    };
+    const expectedFilteredSortedPoolListResult = [
+      {
+        address: '1',
+        backingToken: 'ETH',
+        backingTokenAddress: '0x0000000000000000000000000000000000000000',
+        chain: 'ethereum',
+        protocol: 'lido',
+        protocolDisplayName: 'Lido',
+        maturityDate: new Date(2025, 0, 1).getTime(),
+      },
+      {
+        address: '2',
+        backingToken: 'USDC',
+        backingTokenAddress: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+        chain: 'ethereum',
+        protocol: 'yearn',
+        protocolDisplayName: 'Yearn',
+        maturityDate: new Date(2025, 0, 1).getTime(),
+      },
+      {
+        address: '3',
+        backingToken: 'USDC',
+        backingTokenAddress: '0x04068da6c83afcfa0e13ba15a6696662335d5b75',
+        chain: 'fantom',
+        protocol: 'yearn',
+        protocolDisplayName: 'Yearn',
+        maturityDate: new Date(2025, 0, 1).getTime(),
+      },
+      {
+        address: '4',
+        backingToken: 'WETH',
+        backingTokenAddress: '0x74b23882a30290451A17c44f4F05243b6b58C76d',
+        chain: 'fantom',
+        protocol: 'yearn',
+        protocolDisplayName: 'Yearn',
+        maturityDate: new Date(2025, 0, 1).getTime(),
+      },
+    ];
+
+    expect(poolViewOptions).toEqual(expectedPoolViewOptions1);
+    expect(filteredSortedPoolListResult.current).toEqual(expectedFilteredSortedPoolListResult);
+
+    await act(async () => {
+      setPoolViewOptions({ filters: new Set(['matured']) });
+      await waitForNextUpdate();
+    });
+
+    const expectedPoolViewOptions2 = {
+      viewType: 'grid',
+      poolType: 'all',
+      filters: new Set(['matured']),
+      sortType: 'a-z',
+      sortOrder: 'asc',
+    };
+
+    expect(poolViewResult.current[0]).toEqual(expectedPoolViewOptions2);
+    expect(filteredSortedPoolListResult.current).toEqual([]);
+  });
+
   it('update sortType to "apr"', async () => {
     // TODO: check the useFilteredSortedPoolList()
     const { result: poolViewResult, waitForNextUpdate } = renderHook(() => usePoolViewOptions());
