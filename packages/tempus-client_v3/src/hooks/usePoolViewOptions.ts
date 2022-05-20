@@ -43,8 +43,8 @@ const filteredPoolList$ = combineLatest([poolList$, stateFilters$]).pipe(
   ),
 );
 const filteredSortedPoolList$ = combineLatest([filteredPoolList$, stateSortType$, stateSortOrder$]).pipe(
-  map(([tempusPools, sortType, sortOrder]) => {
-    const list = tempusPools.sort((poolA, poolB) => {
+  map(([tempusPools, sortType, sortOrder]) =>
+    tempusPools.sort((poolA, poolB) => {
       const factor = sortOrder === 'desc' ? -1 : 1;
       switch (sortType) {
         case 'a-z':
@@ -63,10 +63,8 @@ const filteredSortedPoolList$ = combineLatest([filteredPoolList$, stateSortType$
         case 'tvl':
           return 0; // TODO: need to get the TVL to compare
       }
-    });
-    console.log('list', list);
-    return list;
-  }),
+    }),
+  ),
 );
 
 export function usePoolViewOptions(): [PoolViewOptions, (partial: Partial<PoolViewOptions>) => void] {
