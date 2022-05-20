@@ -1,28 +1,23 @@
-import { FC, useState } from 'react';
+import { FC, useCallback } from 'react';
 import { IconVariant } from '../Icon/Icon';
 import IconButton from '../IconButton/IconButton';
 import './IconButtonGroup.scss';
 
 export interface IconButtonGroupProps {
-  types: IconVariant[];
+  variants: IconVariant[];
+  selectedVariant?: IconVariant;
   onChange: (selected: IconVariant) => void;
 }
 
 const IconButtonGroup: FC<IconButtonGroupProps> = props => {
-  const { types, onChange } = props;
+  const { variants, selectedVariant = variants[0], onChange } = props;
 
-  const [selectedType, setSelectedType] = useState<IconVariant>(types[0]);
-
-  const onClick = (value: IconVariant) => {
-    setSelectedType(value);
-
-    onChange(value);
-  };
+  const onClick = useCallback((value: IconVariant) => onChange(value), [onChange]);
 
   return (
     <div className="tc__iconButtonGroup">
-      {types.map(type => (
-        <IconButton key={type} variant={type} onClick={onClick} selected={type === selectedType} />
+      {variants.map(variant => (
+        <IconButton key={variant} variant={variant} onClick={onClick} selected={variant === selectedVariant} />
       ))}
     </div>
   );

@@ -18,14 +18,18 @@ import { usePoolViewOptions } from '../../../hooks';
 const MarketsSubheader = () => {
   const { t } = useTranslation();
   const [poolViewOptions, setPoolViewOptions] = usePoolViewOptions();
-  const { poolType, filters, sortType, sortOrder } = poolViewOptions;
+  const { viewType, poolType, filters, sortType, sortOrder } = poolViewOptions;
 
   const handleViewTypeChange = useCallback(
-    (iconType: IconVariant) => {
-      if (iconType === 'grid-view') {
-        setPoolViewOptions({ viewType: 'grid' });
-      } else if (iconType === 'list-view') {
-        setPoolViewOptions({ viewType: 'list' });
+    (iconVariant: IconVariant) => {
+      switch (iconVariant) {
+        case 'list-view':
+          setPoolViewOptions({ viewType: 'list' });
+          break;
+        case 'grid-view':
+        default:
+          setPoolViewOptions({ viewType: 'grid' });
+          break;
       }
     },
     [setPoolViewOptions],
@@ -74,23 +78,30 @@ const MarketsSubheader = () => {
           <Tab label={t('MarketsSubheader.tabBoosted')} value="boosted" />
           <Tab label={t('MarketsSubheader.tabAll')} value="all" />
         </Tabs>
-        <IconButtonGroup types={['grid-view', 'list-view']} onChange={handleViewTypeChange} />
+        <IconButtonGroup
+          variants={['grid-view', 'list-view']}
+          selectedVariant={`${viewType}-view`}
+          onChange={handleViewTypeChange}
+        />
       </NavSubheaderGroup>
       <NavSubheaderGroup>
         <Dropdown label={t('MarketsSubheader.optionFilter')}>
           <DropdownCheckboxItem
             label={t('MarketsSubheader.filterActive')}
             value="active"
+            checked={filters.has('active')}
             onChange={handleFilterChange}
           />
           <DropdownCheckboxItem
             label={t('MarketsSubheader.filterMatured')}
             value="matured"
+            checked={filters.has('matured')}
             onChange={handleFilterChange}
           />
           <DropdownCheckboxItem
             label={t('MarketsSubheader.filterInactive')}
             value="inactive"
+            checked={filters.has('inactive')}
             onChange={handleFilterChange}
           />
         </Dropdown>
