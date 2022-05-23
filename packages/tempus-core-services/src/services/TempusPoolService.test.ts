@@ -273,6 +273,18 @@ describe('TempusPoolService', () => {
         originalEthers.utils.formatUnits(value, unit),
       );
 
+      getChainConfig.mockImplementation(() => ({
+        tempusPools: [
+          {
+            address: mockAddress,
+            tokenPrecision: {
+              backingToken: 18,
+              yieldBearingToken: 18,
+            },
+          },
+        ],
+      }));
+
       mockNumAssetsPerYieldToken.mockResolvedValue(3);
 
       const numberOfAssets = await instance.numAssetsPerYieldToken(mockAddress, new Decimal(1), new Decimal(1));

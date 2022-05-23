@@ -4,8 +4,7 @@ import { TempusPool } from '../abi/TempusPool';
 import { Chain, Ticker, ProtocolName, ChainConfig } from '../interfaces';
 import { DAYS_IN_A_YEAR, SECONDS_IN_A_DAY } from '../constants';
 import { getERC20TokenService } from '../services';
-import { Decimal, DEFAULT_DECIMAL_PRECISION, increasePrecision } from '../datastructures';
-import { ERC20Contract } from '../contracts';
+import { Decimal, increasePrecision } from '../datastructures';
 
 type TempusPoolsMap = { [key: string]: TempusPool };
 
@@ -251,21 +250,16 @@ export class TempusPoolService {
     yieldTokenAmount: Decimal,
     interestRate: Decimal,
   ): Promise<Decimal> {
-    const tempusPool = this.tempusPoolsMap[address];
+    const contract = this.tempusPoolsMap[address];
+    const chainConfig = this.chain && this.getChainConfig?.(this.chain);
+    const tempusPool = chainConfig?.tempusPools.find(pool => pool.address === address);
 
-    if (tempusPool) {
+    if (contract && tempusPool) {
       try {
-        const backingTokenPrecision = await this.getTokenPrecision(await tempusPool.backingToken());
-        const yieldBearingTokenPrecision = await this.getTokenPrecision(await tempusPool.yieldBearingToken());
+        const backingTokenPrecision = tempusPool.tokenPrecision.backingToken;
+        const yieldBearingTokenPrecision = tempusPool.tokenPrecision.yieldBearingToken;
 
-        if (backingTokenPrecision === null || yieldBearingTokenPrecision === null) {
-          console.error(
-            'TempusPoolService - numAssetsPerYieldToken() - Failed to retrieve precisions for backing and yield bearing token',
-          );
-          return await Promise.reject();
-        }
-
-        let numAssets = await tempusPool.numAssetsPerYieldToken(
+        let numAssets = await contract.numAssetsPerYieldToken(
           yieldTokenAmount.toBigNumber(yieldBearingTokenPrecision),
           interestRate.toBigNumber(yieldBearingTokenPrecision),
         );
@@ -302,19 +296,13 @@ export class TempusPoolService {
 
   public async currentInterestRate(address: string): Promise<Decimal> {
     const contract = this.tempusPoolsMap[address];
-    if (contract) {
+    const chainConfig = this.chain && this.getChainConfig?.(this.chain);
+    const tempusPool = chainConfig?.tempusPools.find(pool => pool.address === address);
+
+    if (contract && tempusPool) {
       try {
-        const yieldBearingTokenPrecision = await this.getTokenPrecision(await contract.yieldBearingToken());
-
-        if (yieldBearingTokenPrecision === null) {
-          console.error(
-            'TempusPoolService - currentInterestRate() - Failed to retrieve precision for yield bearing token',
-          );
-          return await Promise.reject();
-        }
-
         const interestRate = await contract.currentInterestRate();
-        return new Decimal(interestRate, yieldBearingTokenPrecision);
+        return new Decimal(interestRate, tempusPool.tokenPrecision.yieldBearingToken);
       } catch (error) {
         console.error('TempusPoolService - currentInterestRate() - Failed to fetch interest rate!', error);
         return Promise.reject(error);
@@ -334,17 +322,5 @@ export class TempusPoolService {
       }
     }
     throw new Error(`TempusPoolService - getFeesConfig() - Address '${address}' is not valid`);
-  }
-
-  private async getTokenPrecision(tokenAddress: string): Promise<number | null> {
-    if (!this.chain) {
-      return null;
-    }
-
-    const contract = new ERC20Contract(this.chain, tokenAddress);
-    return contract
-      .decimals()
-      .then(decimals => decimals)
-      .catch(() => DEFAULT_DECIMAL_PRECISION);
   }
 }
