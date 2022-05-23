@@ -34,7 +34,7 @@ export class TempusPoolService {
     chain,
     eRC20TokenServiceGetter,
     getChainConfig,
-  }: TempusPoolServiceParameters) {
+  }: TempusPoolServiceParameters): void {
     this.poolAddresses = [...tempusPoolAddresses];
     this.tempusPoolsMap = {};
     this.getChainConfig = getChainConfig;
@@ -182,7 +182,7 @@ export class TempusPoolService {
 
         const totalSegments = (SECONDS_IN_A_DAY * DAYS_IN_A_YEAR) / blockTimeDiff;
 
-        return totalSegments * Number(ethers.utils.formatEther(blockRateDiff)) * 100;
+        return totalSegments * Number(ethers.utils.formatUnits(blockRateDiff)) * 100;
       } catch (error) {
         console.error('TempusPoolService getVariableAPY()', error);
         return Promise.reject(error);
