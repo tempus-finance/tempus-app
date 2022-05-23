@@ -13,7 +13,7 @@ export const getTempusPoolService = (
   signerOrProvider?: JsonRpcSigner | JsonRpcProvider,
 ) => {
   if (!tempusPoolServices.get(chain)) {
-    const defaultProvider = getDefaultProvider(chain, getChainConfig);
+    const defaultProvider = getDefaultProvider(chain);
 
     const tempusPoolService = new TempusPoolService();
     tempusPoolService.init({

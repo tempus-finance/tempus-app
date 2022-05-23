@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DepositModalHeader renders a deposit modal header 1`] = `
+<div>
+  <span
+    class="tc__deposit-modal__header"
+  >
+    <div
+      style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(75, 181, 67); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+    >
+      Rewards available
+    </div>
+  </span>
+</div>
+`;

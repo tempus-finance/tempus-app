@@ -1,0 +1,151 @@
+.tc__poolCardFlag {
+  position: absolute;
+  right: 24px;
+  top: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 80px;
+  background-color: var(--primaryMain);
+  border-top-left-radius: 40px;
+  border-top-right-radius: 40px;
+  box-sizing: border-box;
+  overflow: hidden;
+
+  &[data-status='Fixed'] {
+    height: 124px;
+    border-bottom-right-radius: 20px;
+  }
+
+  &[data-status='Disabled'] {
+    height: 120px;
+    border: 1px solid var(--poolCardFlagDisabledBorder);
+    background-color: var(--poolCardFlagDisabledBackground);
+  }
+
+  &[data-status='Inactive'] {
+    height: 120px;
+    border: 1px solid var(--poolCardFlagDisabledBorder);
+    background-color: var(--poolCardFlagDisabledBackground);
+  }
+
+  &[data-status='Boosted'] {
+    height: 260px;
+    border-bottom-right-radius: 80px;
+  }
+
+  &[data-status='Matured'] {
+    height: 120px;
+    border: 1px solid var(--poolCardFlagDisabledBorder);
+    background-color: var(--poolCardFlagDisabledBackground);
+  }
+}
+
+.tc__poolCardFlag-label {
+  z-index: 1;
+  position: absolute;
+  left: 0px;
+  right: 0px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &[data-status='Fixed'] {
+    top: 92px;
+  }
+
+  &[data-status='Disabled'] {
+    top: 88px;
+  }
+
+  &[data-status='Inactive'] {
+    top: 88px;
+  }
+
+  &[data-status='Boosted'] {
+    top: 92px;
+  }
+
+  &[data-status='Matured'] {
+    top: 88px;
+  }
+}
+
+.tc__poolCardFlag-ripples {
+  z-index: 1;
+  width: 80px;
+  height: 80px;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  @mixin poolCardRipple {
+    background-color: white;
+    opacity: 0.2;
+    border-radius: 80px;
+    position: absolute;
+  }
+
+  .tc__poolCardFlag-ripples-1 {
+    @include poolCardRipple;
+    width: 80px;
+    height: 80px;
+  }
+
+  .tc__poolCardFlag-ripples-2 {
+    @include poolCardRipple;
+    width: 74px;
+    height: 74px;
+  }
+
+  .tc__poolCardFlag-ripples-3 {
+    @include poolCardRipple;
+    width: 68px;
+    height: 68px;
+  }
+
+  .tc__poolCardFlag-icon {
+    @include poolCardRipple;
+    width: 64px;
+    height: 64px;
+    opacity: 1;
+    background-color: transparent;
+  }
+}
+
+.tc__poolCardFlag-arrows {
+  position: absolute;
+  left: 0px;
+  right: 0px;
+  top: 92px;
+  height: 136px;
+
+  @mixin poolCardArrow {
+    position: absolute;
+    width: 80px;
+    height: 80px;
+  }
+
+  &[data-status='Boosted'] {
+    .tc__poolCardFlag-arrows-1 {
+      @include poolCardArrow();
+      transform: rotate(45deg) translate(28px, 28px);
+      background-color: var(--primaryLight);
+    }
+
+    .tc__poolCardFlag-arrows-2 {
+      @include poolCardArrow();
+      transform: rotate(45deg) translate(52px, 52px);
+      background-color: var(--primaryMain);
+    }
+
+    .tc__poolCardFlag-arrows-3 {
+      @include poolCardArrow();
+      transform: rotate(45deg) translate(78px, 78px);
+      background-color: var(--primaryDark);
+    }
+  }
+}

@@ -1,0 +1,83 @@
+@mixin overlay {
+  position: fixed;
+  left: 0px;
+  top: 0px;
+  right: 0px;
+  bottom: 0px;
+}
+
+.tc__modal-backdrop {
+  @include overlay;
+  background-color: var(--modalBackdrop);
+  z-index: 9998;
+}
+
+.tc__modal-container {
+  @include overlay;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+.tc__modal {
+  position: relative;
+  border: 1px solid var(--modalBorder);
+  border-radius: 12px;
+  pointer-events: all;
+
+  &.tc__modal__plain {
+    background-color: var(--modalBackground);
+  }
+
+  &.tc__modal__styled {
+    background: linear-gradient(0deg, var(--modalBackgroundShade) -0.55%, var(--modalBackground) 100%);
+  }
+
+  .tc__modal-header .tc__btn {
+    margin-left: auto;
+  }
+}
+
+.tc__modal__size-small {
+  padding: 16px;
+
+  .tc__modal-header {
+    margin-bottom: 16px;
+  }
+}
+
+.tc__modal__size-large {
+  .tc__modal-header {
+    height: 40px;
+    padding: 0 16px;
+
+    .tc__icon-close {
+      margin-top: 16px;
+    }
+  }
+
+  .tc__modal__body {
+    padding: 0 40px 40px 40px;
+  }
+}
+
+.tc__modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  position: relative;
+  box-sizing: border-box;
+}
+
+.tc__modal-header-content {
+  display: flex;
+  justify-content: center;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}

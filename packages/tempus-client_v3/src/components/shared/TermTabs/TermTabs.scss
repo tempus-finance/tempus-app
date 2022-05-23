@@ -1,0 +1,31 @@
+.tc__term-tabs {
+  height: 76px;
+  display: flex;
+}
+
+.tc__term-tabs__term {
+  margin-right: 8px;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--termTabsBackground);
+  border: 1px solid var(--termTabsBorder);
+  box-sizing: border-box;
+  border-radius: 4px;
+
+  &:last-child {
+    margin-right: 0;
+  }
+
+  &:disabled {
+    background-color: var(--termTabsDisabledBackground);
+    border-color: var(--termTabsDisabledBorder);
+  }
+}
+
+.tc__term-tabs__term-selected {
+  background-color: var(--termTabsSelectedBackground);
+  border-color: var(--termTabsSelectedBorder);
+}

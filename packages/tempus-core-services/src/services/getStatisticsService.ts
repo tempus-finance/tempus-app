@@ -18,7 +18,7 @@ export const getStatisticsService = (
     statisticsService.init({
       Contract: Contract,
       abi: StatisticsABI,
-      signerOrProvider: getDefaultProvider(chain, getChainConfig),
+      signerOrProvider: getDefaultProvider(chain),
       tempusAMMService: getTempusAMMService(chain, getChainConfig),
       address: getChainConfig(chain).statisticsContract,
       getConfig,

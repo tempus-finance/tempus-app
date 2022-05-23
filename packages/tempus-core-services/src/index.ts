@@ -1,17 +1,21 @@
 import ERC20ABI from './abi/ERC20.json';
 import VaultABI from './abi/Vault.json';
+
 export { ERC20ABI, VaultABI };
 
 export type { ERC20 } from './abi';
 
 export type {
+  AvailableToDeposit,
   Chain,
   ChainConfig,
   Config,
+  DynamicTempusPool,
   PoolShares,
   ProtocolDisplayName,
   ProtocolName,
   Ticker,
+  NativeTokenTicker,
   TempusPool,
   TokenPrecision,
   TokenTypePrecision,
@@ -38,26 +42,20 @@ export type {
   SwapEvent,
 } from './services';
 
+export type { Numberish } from './datastructures';
+
+export { Decimal } from './datastructures';
+
 export { SwapKind } from './services';
 
-export {
-  getChainlinkFeed,
-  getCoingeckoRate,
-  getDefaultProvider,
-  getERC20TokenService,
-  getTempusAMMService,
-  getTempusControllerService,
-  getTempusPoolService,
-  getVariableRateService,
-  getStatisticsService,
-  getStorageService,
-  getVaultService,
-} from './services';
+export { getChainlinkFeed, getCoingeckoRate, getDefaultProvider, initServices, getServices } from './services';
 
 export {
   NumberUtils,
+  DecimalUtils,
   capitalize,
   chainIdToChainName,
+  chainIdHexToChainName,
   chainNameToHexChainId,
   chainToTicker,
   decreasePrecision,
@@ -79,6 +77,7 @@ export {
   shortenAccount,
   wadToDai,
   wait,
+  prettifyProtocolName,
 } from './utils';
 
-export * as CONSTANTS from './constants';
+export * from './constants';

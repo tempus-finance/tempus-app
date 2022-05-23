@@ -1,0 +1,46 @@
+@mixin checked-input($input-type, $radius: 0%) {
+  .tc__#{$input-type} {
+    display: flex;
+    align-items: center;
+  }
+
+  .tc__#{$input-type}__box-container {
+    width: 24px;
+    height: 24px;
+    border: 2px solid var(--primaryMain);
+    padding: 2px;
+    display: inline-flex;
+    align-items: center;
+    position: relative;
+    box-sizing: border-box;
+
+    @if ($radius > 0%) {
+      border-radius: $radius;
+    }
+
+    input[type='#{$input-type}'] {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      top: 0;
+      left: 0;
+      opacity: 0;
+      position: absolute;
+      z-index: 1;
+    }
+  }
+
+  .tc__#{$input-type}__checked-box {
+    width: 100%;
+    height: 100%;
+    background: var(--primaryMain);
+
+    @if ($radius > 0%) {
+      border-radius: $radius;
+    }
+  }
+
+  .tc__#{$input-type}__label {
+    padding-left: 6px;
+  }
+}

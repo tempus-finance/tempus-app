@@ -5,6 +5,7 @@ export {
   chainToTicker,
   prettifyChainName,
   prettifyChainNameLong,
+  chainIdHexToChainName,
 } from './chainUtils';
 // getChainNameFromId redundant
 export { getCookie } from './getCookie';
@@ -16,8 +17,10 @@ export { getRangeFrom } from './getRangeFrom';
 export { getTokenPrecision } from './getTokenPrecision';
 export { isZeroString } from './isZeroString';
 export { NumberUtils } from './numberUtils';
+export { DecimalUtils } from './DecimalUtils';
 export { rayToDai, wadToDai } from './rayToDai';
 export { reverseString } from './reverseString';
 export { shortenAccount } from './shortenAccount';
 export { wait } from './wait';
 export { decreasePrecision, div18f, increasePrecision, mul18f } from './weiMath';
+export { prettifyProtocolName } from './prettifyProtocolName';

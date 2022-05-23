@@ -1,10 +1,12 @@
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
 import { BigNumber, CallOverrides, Contract, ethers } from 'ethers';
+import { catchError, from, map, Observable, of, throwError } from 'rxjs';
 import { Stats } from '../abi/Stats';
 import StatsABI from '../abi/Stats.json';
 import { DEFAULT_TOKEN_PRECISION, tokenPrecision } from '../constants';
+import { Decimal, decreasePrecision, increasePrecision } from '../datastructures';
 import { Chain, Config, Ticker } from '../interfaces';
-import { decreasePrecision, div18f, getTokenPrecision, mul18f } from '../utils';
+import { getTokenPrecision, mul18f } from '../utils';
 import { getChainlinkFeed } from './getChainlinkFeed';
 import { getCoingeckoRate } from './coinGeckoFeed';
 import { TempusAMMService } from './TempusAMMService';
@@ -20,10 +22,12 @@ type StatisticsServiceParameters = {
 
 export class StatisticsService {
   private stats: Stats | null = null;
+
   private tempusAMMService: TempusAMMService | null = null;
+
   private getConfig: (() => Config) | null = null;
 
-  init({ address, abi, signerOrProvider, Contract, tempusAMMService, getConfig }: StatisticsServiceParameters) {
+  init({ address, abi, signerOrProvider, Contract, tempusAMMService, getConfig }: StatisticsServiceParameters): void {
     try {
       this.stats = new Contract(address, abi, signerOrProvider) as Stats;
     } catch (error) {
@@ -33,7 +37,7 @@ export class StatisticsService {
     this.tempusAMMService = tempusAMMService;
   }
 
-  public async totalValueLockedInBackingTokens(tempusPool: string, overrides?: CallOverrides) {
+  public async totalValueLockedInBackingTokens(tempusPool: string, overrides?: CallOverrides): Promise<BigNumber> {
     if (!this.stats) {
       console.error(
         'StatisticsService - totalValueLockedInBackingTokens() - Attempted to use statistics contract before initializing it!',
@@ -44,9 +48,8 @@ export class StatisticsService {
     try {
       if (overrides) {
         return await this.stats.totalValueLockedInBackingTokens(tempusPool, overrides);
-      } else {
-        return await this.stats.totalValueLockedInBackingTokens(tempusPool);
       }
+      return await this.stats.totalValueLockedInBackingTokens(tempusPool);
     } catch (error) {
       console.error(
         'StatisticsService - totalValueLockedInBackingTokens() - Failed to get total value locked in backing tokens!',
@@ -56,30 +59,31 @@ export class StatisticsService {
     }
   }
 
-  public async totalValueLockedUSD(
+  totalValueLockedUSD(
     chain: Chain,
     tempusPool: string,
     poolBackingTokenTicker: Ticker,
     overrides?: CallOverrides,
-  ): Promise<BigNumber> {
-    let totalValueLockedUSD = BigNumber.from('0');
-
+  ): Observable<Decimal> {
     if (!this.stats) {
       console.error(
         'StatisticsService totalValueLockedUSD Attempted to use statistics contract before initializing it...',
       );
-
-      return Promise.reject(totalValueLockedUSD);
+      return throwError(() => new Error('0'));
     }
 
     const chainLinkAggregator = getChainlinkFeed(chain, poolBackingTokenTicker);
 
     try {
       if (overrides) {
-        totalValueLockedUSD = await this.stats.totalValueLockedAtGivenRate(tempusPool, chainLinkAggregator, overrides);
-      } else {
-        totalValueLockedUSD = await this.stats.totalValueLockedAtGivenRate(tempusPool, chainLinkAggregator);
+        return from(this.stats.totalValueLockedAtGivenRate(tempusPool, chainLinkAggregator, overrides)).pipe(
+          map<BigNumber, Decimal>((value: BigNumber) => new Decimal(value)),
+        );
       }
+
+      return from(this.stats.totalValueLockedAtGivenRate(tempusPool, chainLinkAggregator)).pipe(
+        map<BigNumber, Decimal>((value: BigNumber) => new Decimal(value)),
+      );
     } catch (error) {
       console.error(
         'StatisticsService - totalValueLockedUSD() - Failed to get total value locked at given rate from contract. Falling back to CoinGecko API!',
@@ -87,65 +91,74 @@ export class StatisticsService {
       );
 
       const precision = tokenPrecision[poolBackingTokenTicker] || DEFAULT_TOKEN_PRECISION;
-      const rate = await getCoingeckoRate(poolBackingTokenTicker, precision);
-
-      let backingTokensLocked: BigNumber;
-      try {
-        backingTokensLocked = await this.stats.totalValueLockedInBackingTokens(tempusPool);
-      } catch (error) {
-        console.error(
-          'StatisticsService - totalValueLockedUSD() - Failed to get total value locked in backing tokens!',
-          error,
-        );
-        return Promise.reject(error);
-      }
-
-      return mul18f(rate, backingTokensLocked, precision);
+      return from<Promise<[BigNumber, BigNumber]>>(
+        Promise.all([
+          getCoingeckoRate(poolBackingTokenTicker, precision),
+          this.stats.totalValueLockedInBackingTokens(tempusPool),
+        ]),
+      ).pipe(
+        map(values => {
+          const [rate, backingTokensLocked] = values;
+          return mul18f(rate, backingTokensLocked, precision);
+        }),
+        map<BigNumber, Decimal>((value: BigNumber) => new Decimal(value)),
+        catchError(coinGeckoError => {
+          console.error(
+            'StatisticsService - totalValueLockedUSD() - Failed to get total value locked at given rate from contract. Falling back to CoinGecko API!',
+            coinGeckoError,
+          );
+          return throwError(() => new Error('0'));
+        }),
+      );
     }
-
-    return totalValueLockedUSD;
   }
 
   /**
    * Returns conversion rate of specified token to USD
-   **/
-  public async getRate(chain: Chain, tokenTicker: Ticker, overrides?: CallOverrides): Promise<BigNumber> {
+   * */
+  public getRate(chain: Chain, tokenTicker: Ticker, overrides?: CallOverrides): Observable<Decimal | null> {
     if (!this.stats) {
       console.error(
         'StatisticsService totalValueLockedUSD Attempted to use statistics contract before initializing it...',
       );
 
-      return Promise.reject(0);
+      return throwError(() => new Error('0'));
     }
 
     const chainLinkAggregator = getChainlinkFeed(chain, tokenTicker);
 
-    let rate: BigNumber;
-    let rateDenominator: BigNumber;
-    try {
-      if (overrides) {
-        [rate, rateDenominator] = await this.stats.getRate(chainLinkAggregator, overrides);
-      } else {
-        [rate, rateDenominator] = await this.stats.getRate(chainLinkAggregator);
-      }
-    } catch (error) {
-      console.warn(
-        `Failed to get exchange rate for ${tokenTicker} from stats contract, falling back to CoinGecko API!`,
-      );
-
-      const precision = tokenPrecision[tokenTicker] || DEFAULT_TOKEN_PRECISION;
-      return getCoingeckoRate(tokenTicker, precision);
-    }
-
     // TODO - Refactor getRate function to accept token precision as well as a parameter
     const precision = tokenPrecision[tokenTicker];
 
-    return div18f(rate, rateDenominator, precision);
+    return from(
+      overrides ? this.stats.getRate(chainLinkAggregator, overrides) : this.stats.getRate(chainLinkAggregator),
+    ).pipe(
+      map<[BigNumber, BigNumber], Decimal>(([rate, rateDenominator]) => {
+        const rate18f = increasePrecision(rate, DEFAULT_TOKEN_PRECISION - (precision ?? 0));
+        const rateDenominator18f = increasePrecision(rateDenominator, DEFAULT_TOKEN_PRECISION - (precision ?? 0));
+        return new Decimal(rate18f).div(rateDenominator18f);
+      }),
+      catchError(() => {
+        console.warn(
+          `Failed to get exchange rate for ${tokenTicker} from stats contract, falling back to CoinGecko API!`,
+        );
+
+        const precision = tokenPrecision[tokenTicker] || DEFAULT_TOKEN_PRECISION;
+        return from(getCoingeckoRate(tokenTicker, precision)).pipe(
+          map<BigNumber, Decimal>((value: BigNumber) => new Decimal(value)),
+          catchError(() => {
+            console.warn(`Failed to get exchange rate for ${tokenTicker} from CoinGecko API`);
+
+            return of(null);
+          }),
+        );
+      }),
+    );
   }
 
   /**
    * Returns estimated amount of Principals tokens on fixed yield deposit
-   **/
+   * */
   async estimatedDepositAndFix(
     tempusAmmAddress: string,
     tokenAmount: BigNumber,
@@ -170,14 +183,14 @@ export class StatisticsService {
       }
       return this.stats.estimatedDepositAndFix(tempusAmmAddress, tokenAmount, isBackingToken);
     } catch (error) {
-      console.error(`StatisticsService - estimatedDepositAndFix - Failed to get estimated fixed deposit amount`, error);
+      console.error('StatisticsService - estimatedDepositAndFix - Failed to get estimated fixed deposit amount', error);
       return Promise.reject(0);
     }
   }
 
   /**
    * Returns estimated amount of Principals tokens on variable yield deposit
-   **/
+   * */
   async estimatedDepositAndProvideLiquidity(
     tempusAmmAddress: string,
     tokenAmount: BigNumber,
@@ -193,14 +206,14 @@ export class StatisticsService {
     try {
       return this.stats.estimatedDepositAndProvideLiquidity(tempusAmmAddress, tokenAmount, isBackingToken);
     } catch (error) {
-      console.error(`Failed to get estimated variable deposit amount`, error);
+      console.error('Failed to get estimated variable deposit amount', error);
       return Promise.reject(0);
     }
   }
 
   /**
    * Returns estimated amount of Backing/Yield Bearing tokens on deposit
-   **/
+   * */
   async estimateExitAndRedeem(
     tempusPoolAddress: string,
     tempusAmmAddress: string,
@@ -243,7 +256,7 @@ export class StatisticsService {
       lpTokensAmountParsed = decreasePrecision(lpAmount, lpTokenPrecision - principalsPrecision);
     }
 
-    let maxLeftoverShares = this.tempusAMMService.getMaxLeftoverShares(
+    const maxLeftoverShares = this.tempusAMMService.getMaxLeftoverShares(
       principalAmount,
       yieldsAmount,
       lpTokensAmountParsed,
@@ -260,25 +273,24 @@ export class StatisticsService {
           isBackingToken,
           overrides,
         );
-      } else {
-        return await this.stats.estimateExitAndRedeem(
-          tempusAmmAddress,
-          lpAmount,
-          principalAmount,
-          yieldsAmount,
-          maxLeftoverShares,
-          isBackingToken,
-        );
       }
+      return await this.stats.estimateExitAndRedeem(
+        tempusAmmAddress,
+        lpAmount,
+        principalAmount,
+        yieldsAmount,
+        maxLeftoverShares,
+        isBackingToken,
+      );
     } catch (error) {
-      console.error(`Failed to get estimated withdraw amount`, error);
+      console.error('Failed to get estimated withdraw amount', error);
       console.log('Debug info:');
       console.log(`TempusAMM address: ${tempusAmmAddress}`);
-      console.log(`LP Token amount: ${lpAmount.toHexString()} ${ethers.utils.formatEther(lpAmount)}`);
-      console.log(`Principals amount: ${principalAmount.toHexString()} ${ethers.utils.formatEther(principalAmount)}`);
-      console.log(`Yields amount: ${yieldsAmount.toHexString()} ${ethers.utils.formatEther(yieldsAmount)}`);
+      console.log(`LP Token amount: ${lpAmount.toHexString()} ${ethers.utils.formatUnits(lpAmount)}`);
+      console.log(`Principals amount: ${principalAmount.toHexString()} ${ethers.utils.formatUnits(principalAmount)}`);
+      console.log(`Yields amount: ${yieldsAmount.toHexString()} ${ethers.utils.formatUnits(yieldsAmount)}`);
       console.log(
-        `Max leftover shares: ${maxLeftoverShares.toHexString()} ${ethers.utils.formatEther(maxLeftoverShares)}`,
+        `Max leftover shares: ${maxLeftoverShares.toHexString()} ${ethers.utils.formatUnits(maxLeftoverShares)}`,
       );
       console.log(`Is backing token: ${isBackingToken}`);
       return Promise.reject(error);
@@ -301,9 +313,8 @@ export class StatisticsService {
     try {
       if (overrides) {
         return await this.stats.estimatedMintedShares(tempusPool, amount, isBackingToken, overrides);
-      } else {
-        return await this.stats.estimatedMintedShares(tempusPool, amount, isBackingToken);
       }
+      return await this.stats.estimatedMintedShares(tempusPool, amount, isBackingToken);
     } catch (error) {
       console.error('StatisticsService - estimatedMintedShares() - Failed to fetch estimated minted shares!', error);
       return Promise.reject(error);

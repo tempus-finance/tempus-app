@@ -6,4 +6,5 @@
 **/.git/**
 **/public/**
 .eslintrc.js
-src/serviceWorker.ts
+./packages/tempus-client_v3/src/serviceWorker.ts
+./packages/tempus-client_v3/src/reportWebVitals.ts

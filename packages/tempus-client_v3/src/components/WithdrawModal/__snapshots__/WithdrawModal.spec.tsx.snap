@@ -1,0 +1,322 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`WithdrawModal renders a withdraw modal 1`] = `
+<div>
+  <div
+    class="tc__modal-backdrop"
+    id="modal-backdrop"
+  />
+  <div
+    class="tc__modal-container tc__currency-input-modal"
+  >
+    <div
+      class="tc__modal tc__modal__styled tc__modal__size-large"
+    >
+      <div
+        class="tc__modal-header"
+      >
+        <button
+          class="tc__btn "
+          data-selected="false"
+          type="button"
+        >
+          <svg
+            class="tc__icon tc__icon-close"
+            fill="none"
+            height="20"
+            viewBox="0 0 16 16"
+            width="20"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M15.6081 13.7161C15.859 13.967 16 14.3073 16 14.6621C16 15.017 15.859 15.3572 15.6081 15.6081C15.3572 15.859 15.017 16 14.6621 16C14.3073 16 13.967 15.859 13.7161 15.6081L8 9.87872L2.2839 15.6081C2.033 15.859 1.6927 16 1.33788 16C0.98305 16 0.642756 15.859 0.391855 15.6081C0.140955 15.3572 0 15.017 0 14.6621C0 14.3073 0.140955 13.967 0.391855 13.7161L6.12128 8L0.391855 2.2839C0.140955 2.033 -2.64367e-09 1.6927 0 1.33788C2.64367e-09 0.98305 0.140955 0.642756 0.391855 0.391855C0.642756 0.140955 0.98305 2.64367e-09 1.33788 0C1.6927 -2.64367e-09 2.033 0.140955 2.2839 0.391855L8 6.12128L13.7161 0.391855C13.967 0.140955 14.3073 0 14.6621 0C15.017 0 15.3572 0.140955 15.6081 0.391855C15.859 0.642756 16 0.98305 16 1.33788C16 1.6927 15.859 2.033 15.6081 2.2839L9.87872 8L15.6081 13.7161Z"
+              fill="#222222"
+            />
+          </svg>
+        </button>
+      </div>
+      <div
+        class="tc__modal__body"
+      >
+        <div
+          class="tc__currency-input-modal__nav"
+        >
+          <button
+            class="tc__btn "
+            data-selected="false"
+            type="button"
+          >
+            <svg
+              class="tc__icon tc__icon-left-chevron"
+              fill="none"
+              height="16"
+              viewBox="0 0 16 16"
+              width="16"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M11.7636 14.4757C11.8385 14.5583 11.898 14.6565 11.9385 14.7648C11.9791 14.873 12 14.9892 12 15.1064C12 15.2237 11.9791 15.3398 11.9385 15.4481C11.898 15.5564 11.8385 15.6546 11.7636 15.7372C11.6894 15.8205 11.601 15.8866 11.5036 15.9317C11.4062 15.9768 11.3018 16 11.1963 16C11.0908 16 10.9864 15.9768 10.889 15.9317C10.7916 15.8866 10.7032 15.8205 10.629 15.7372L4.23636 8.63001C4.16147 8.54742 4.10202 8.44916 4.06145 8.3409C4.02089 8.23264 4 8.11652 4 7.99924C4 7.88196 4.02089 7.76584 4.06145 7.65758C4.10202 7.54932 4.16147 7.45107 4.23636 7.36848L10.629 0.261271C10.7794 0.0939821 10.9835 0 11.1963 0C11.3017 0 11.406 0.0230732 11.5033 0.0679022C11.6007 0.112731 11.6891 0.178438 11.7636 0.261271C11.8381 0.344104 11.8972 0.442442 11.9376 0.550669C11.9779 0.658895 11.9986 0.774892 11.9986 0.892036C11.9986 1.00918 11.9779 1.12518 11.9376 1.2334C11.8972 1.34163 11.8381 1.43997 11.7636 1.5228L5.9304 7.99924L11.7636 14.4757Z"
+                fill="#222222"
+              />
+            </svg>
+          </button>
+          <div
+            style="font-style: normal; font-size: 20px; line-height: 28px; color: rgb(34, 34, 34); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+          >
+            Position Details
+          </div>
+        </div>
+        <div
+          class="tc__currency-input-modal__description"
+          style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+        >
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+        </div>
+        <div
+          class="tc__currency-input"
+        >
+          <div
+            class="tc__currency-input__field-container "
+          >
+            <div
+              class="tc__currency-input__currency-selector  "
+            >
+              <button
+                class="tc__btn tc__currency-input__currency-selector-item "
+                data-selected="false"
+                type="button"
+              >
+                <span
+                  class="tc__currency-input__currency-selector-item-content"
+                >
+                  <svg
+                    class="tc__logo tc__logo-token-ETH"
+                    fill="none"
+                    height="40"
+                    viewBox="0 0 40 40"
+                    width="40"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M20 40C31.0457 40 40 31.0457 40 20C40 8.9543 31.0457 0 20 0C8.9543 0 0 8.9543 0 20C0 31.0457 8.9543 40 20 40Z"
+                      fill="#627EEA"
+                    />
+                    <path
+                      clip-rule="evenodd"
+                      d="M11.25 20.275L20.6225 5V16.0875L11.25 20.275ZM20.6225 27.4588V34.9938L11.25 22.0201L20.6225 27.4588Z"
+                      fill="white"
+                      fill-rule="evenodd"
+                    />
+                    <path
+                      d="M20.625 25.7163L29.9962 20.275L20.625 16.09V25.7163Z"
+                      fill="white"
+                      fill-opacity="0.2"
+                    />
+                    <path
+                      clip-rule="evenodd"
+                      d="M20.625 5V16.0875L29.9962 20.275L20.625 5ZM20.625 27.4573V34.991L30.0025 22.0173L20.625 27.4573ZM20.6225 25.7163L11.25 20.275L20.6225 16.09V25.7163Z"
+                      fill="white"
+                      fill-opacity="0.6"
+                      fill-rule="evenodd"
+                    />
+                  </svg>
+                  <div
+                    class="tc__currency-input__currency-selector-item-label"
+                    style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+                  >
+                    ETH
+                  </div>
+                </span>
+              </button>
+            </div>
+            <div
+              class="tc__currency-input__input-container "
+            >
+              <div
+                class="tc__currency-input__amount-container"
+              >
+                <div
+                  class="tc__currency-input__amount"
+                  style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'Azeret Mono', monospace; opacity: 1;"
+                >
+                  <input
+                    class="tc__base-input"
+                    pattern="[0-9]*[.]?[0-9]{0,18}"
+                    placeholder="0"
+                    type="text"
+                    value=""
+                  />
+                </div>
+                <span
+                  class="tc__currency-input__fiat-amount"
+                >
+                  <div
+                    style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(122, 122, 122); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+                  >
+                    $0.00
+                  </div>
+                  <div
+                    class="tc__currency-input__fiat-amount-currency"
+                    style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(122, 122, 122); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+                  >
+                    USD
+                  </div>
+                </span>
+              </div>
+            </div>
+          </div>
+          <div
+            class="tc__currency-input__percentage-buttons"
+          >
+            <button
+              class="tc__btn tc__actionButton tc__actionButton-border-secondary-small tc__actionButton-background-secondary-small tc__actionButton-hover-secondary-small tc__actionButton-shadow-default tc__actionButton-cursor-default tc__actionButton-size-small "
+              data-selected="false"
+              type="button"
+            >
+              <div
+                class="tc__actionButton-status-label"
+              >
+                <div
+                  style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+                >
+                  25%
+                </div>
+              </div>
+            </button>
+            <button
+              class="tc__btn tc__actionButton tc__actionButton-border-secondary-small tc__actionButton-background-secondary-small tc__actionButton-hover-secondary-small tc__actionButton-shadow-default tc__actionButton-cursor-default tc__actionButton-size-small "
+              data-selected="false"
+              type="button"
+            >
+              <div
+                class="tc__actionButton-status-label"
+              >
+                <div
+                  style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+                >
+                  50%
+                </div>
+              </div>
+            </button>
+            <button
+              class="tc__btn tc__actionButton tc__actionButton-border-secondary-small tc__actionButton-background-secondary-small tc__actionButton-hover-secondary-small tc__actionButton-shadow-default tc__actionButton-cursor-default tc__actionButton-size-small "
+              data-selected="false"
+              type="button"
+            >
+              <div
+                class="tc__actionButton-status-label"
+              >
+                <div
+                  style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+                >
+                  75%
+                </div>
+              </div>
+            </button>
+            <button
+              class="tc__btn tc__actionButton tc__actionButton-border-secondary-small tc__actionButton-background-secondary-small tc__actionButton-hover-secondary-small tc__actionButton-shadow-default tc__actionButton-cursor-default tc__actionButton-size-small "
+              data-selected="false"
+              type="button"
+            >
+              <div
+                class="tc__actionButton-status-label"
+              >
+                <div
+                  style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+                >
+                  100%
+                </div>
+              </div>
+            </button>
+          </div>
+        </div>
+        <div
+          class="tc__currency-input-modal__info"
+        >
+          <div
+            class="tc__currency-input-modal__info-row"
+          >
+            <div
+              style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+            >
+              Available for Withdraw
+            </div>
+            <div
+              class="tc__currency-input-modal__info-row-value"
+            >
+              <div
+                style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+              >
+                100
+              </div>
+              <div
+                style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+              >
+                ETH
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="tc__currency-input-modal__action-container"
+        >
+          <button
+            class="tc__btn tc__tooltip-wrapper-anchor"
+            data-selected="false"
+            type="button"
+          >
+            <div
+              class="tc__currency-input-modal__transaction-info"
+            >
+              <div
+                style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+              >
+                Fees & transaction info
+              </div>
+              <svg
+                class="tc__icon tc__icon-info-bordered"
+                fill="none"
+                height="16"
+                viewBox="0 0 16 16"
+                width="16"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  clip-rule="evenodd"
+                  d="M8 15C11.866 15 15 11.866 15 8C15 4.13401 11.866 1 8 1C4.13401 1 1 4.13401 1 8C1 11.866 4.13401 15 8 15ZM8 16C12.4183 16 16 12.4183 16 8C16 3.58172 12.4183 0 8 0C3.58172 0 0 3.58172 0 8C0 12.4183 3.58172 16 8 16Z"
+                  fill="#222222"
+                  fill-rule="evenodd"
+                />
+                <path
+                  d="M8.9998 10.9969L8.9998 8.01403C8.9998 7.45985 8.55213 7.0106 7.9999 7.0106C7.44759 7.0106 6.99989 7.45997 7 8.01423L7.0006 10.9971C7.00071 11.5401 7.43147 11.9845 7.97243 11.9996C8.53515 12.0153 8.9998 11.5618 8.9998 10.9969Z"
+                  fill="#222222"
+                />
+                <path
+                  d="M7.0003 5.00303C7.00002 5.55732 7.44771 6.00706 8.00005 6.00706C8.55219 6.00706 8.9998 5.55763 8.9998 5.00353C8.9998 4.44944 8.55219 4 8.00005 4C7.4481 4 7.00057 4.44913 7.0003 5.00303Z"
+                  fill="#222222"
+                />
+              </svg>
+            </div>
+          </button>
+          <button
+            class="tc__btn tc__actionButton tc__actionButton-border-primary-large-disabled tc__actionButton-background-primary-large-disabled tc__actionButton-hover-primary-large-disabled tc__actionButton-shadow-disabled tc__actionButton-cursor-disabled tc__actionButton-size-large tc__actionButton-width-full"
+            data-selected="false"
+            disabled=""
+            type="button"
+          >
+            <div
+              class="tc__actionButton-status-label"
+            >
+              <div
+                style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(255, 255, 255); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 0.5;"
+              >
+                Execute Withdrawal
+              </div>
+            </div>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;

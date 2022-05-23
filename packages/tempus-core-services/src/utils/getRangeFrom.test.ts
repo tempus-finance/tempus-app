@@ -48,7 +48,7 @@ describe('getRangeFrom', () => {
   test('return the range of an unsorted Date array', () => {
     for (let i = 0; i < 10; i++) {
       const inputs = new Array(10).fill(0).map(() => new Date(Date.now() - Math.round(Math.random() * 10000000)));
-      const sorted = inputs.slice().sort();
+      const sorted = inputs.slice().sort((a, b) => a.getTime() - b.getTime());
 
       expect(getRangeFrom<Date>(inputs)).toEqual([sorted[0], sorted[sorted.length - 1]]);
     }

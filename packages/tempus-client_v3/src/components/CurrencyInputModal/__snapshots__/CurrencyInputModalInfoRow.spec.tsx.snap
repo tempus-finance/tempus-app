@@ -1,0 +1,134 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CurrencyInputModalInfoRow renders an info row for a modal with currency input 1`] = `
+<div>
+  <div
+    class="tc__currency-input-modal__info-row"
+  >
+    <div
+      style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+    >
+      Amount
+    </div>
+    <div
+      class="tc__currency-input-modal__info-row-value"
+    >
+      <div
+        style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+      >
+        1.2345
+      </div>
+      <div
+        style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+      >
+        ETH
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`CurrencyInputModalInfoRow renders an info row with a down arrow for a modal with currency input 1`] = `
+<div>
+  <div
+    class="tc__currency-input-modal__info-row"
+  >
+    <div
+      style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+    >
+      Amount
+    </div>
+    <div
+      class="tc__currency-input-modal__info-row-value"
+    >
+      <div
+        class="tc__currency-input-modal__value-change tc__currency-input-modal__value-change-decrease"
+      >
+        <svg
+          class="tc__icon tc__icon-down-arrow"
+          fill="none"
+          height="12"
+          viewBox="0 0 16 16"
+          width="12"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M7.18904 15.7043L0.335909 9.70648C0.229413 9.61328 0.144934 9.50263 0.087299 9.38085C0.0296637 9.25907 -6.58329e-09 9.12855 0 8.99674C6.58329e-09 8.86493 0.0296638 8.73441 0.087299 8.61263C0.144934 8.49085 0.229413 8.3802 0.335909 8.287C0.442405 8.19379 0.568834 8.11986 0.707978 8.06942C0.847122 8.01897 0.996254 7.99301 1.14686 7.99301C1.29747 7.99301 1.4466 8.01897 1.58575 8.06942C1.72489 8.11986 1.85132 8.19379 1.95782 8.287L6.85781 12.5854L6.85781 0.999638C6.85781 0.734517 6.97815 0.480256 7.19235 0.292787C7.40655 0.105319 7.69707 -1.15888e-08 8 0C8.30293 1.15888e-08 8.59345 0.105319 8.80765 0.292787C9.02185 0.480256 9.14219 0.734517 9.14219 0.999638L9.14219 12.5854L14.0422 8.287C14.2573 8.09876 14.549 7.99301 14.8531 7.99301C15.1573 7.99301 15.449 8.09876 15.6641 8.287C15.8792 8.47523 16 8.73053 16 8.99674C16 9.26294 15.8792 9.51825 15.6641 9.70648L8.81095 15.7043C8.70477 15.798 8.57845 15.8724 8.43926 15.9231C8.30007 15.9739 8.15078 16 8 16C7.84922 16 7.69993 15.9739 7.56074 15.9231C7.42155 15.8724 7.29523 15.798 7.18904 15.7043Z"
+            fill="#FF0F0F"
+          />
+        </svg>
+      </div>
+      <div
+        style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+      >
+        1.2345
+      </div>
+      <div
+        style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+      >
+        ETH
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`CurrencyInputModalInfoRow renders an info row with an up arrow for a modal with currency input 1`] = `
+<div>
+  <div
+    class="tc__currency-input-modal__info-row"
+  >
+    <div
+      style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+    >
+      Amount
+    </div>
+    <div
+      class="tc__currency-input-modal__info-row-value"
+    >
+      <div
+        class="tc__currency-input-modal__value-change tc__currency-input-modal__value-change-increase"
+      >
+        <svg
+          class="tc__icon tc__icon-up-arrow"
+          fill="none"
+          height="12"
+          viewBox="0 0 16 16"
+          width="12"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <g
+            clip-path="url(#clip0_909_5453)"
+          >
+            <path
+              d="M8.81096 0.295692L15.6641 6.29352C15.7706 6.38672 15.8551 6.49737 15.9127 6.61915C15.9703 6.74093 16 6.87145 16 7.00326C16 7.13507 15.9703 7.26559 15.9127 7.38737C15.8551 7.50915 15.7706 7.6198 15.6641 7.713C15.5576 7.80621 15.4312 7.88014 15.292 7.93058C15.1529 7.98103 15.0037 8.00699 14.8531 8.00699C14.7025 8.00699 14.5534 7.98103 14.4143 7.93058C14.2751 7.88014 14.1487 7.80621 14.0422 7.713L9.14219 3.41456V15.0004C9.14219 15.2655 9.02185 15.5197 8.80765 15.7072C8.59345 15.8947 8.30293 16 8 16C7.69707 16 7.40655 15.8947 7.19235 15.7072C6.97815 15.5197 6.85781 15.2655 6.85781 15.0004L6.85781 3.41456L1.95782 7.713C1.74274 7.90124 1.45103 8.00699 1.14686 8.00699C0.842696 8.00699 0.550987 7.90124 0.335909 7.713C0.12083 7.52477 1.7828e-08 7.26947 0 7.00326C-1.7828e-08 6.73706 0.12083 6.48175 0.335908 6.29352L7.18905 0.295692C7.29523 0.201998 7.42155 0.127629 7.56074 0.0768784C7.69993 0.0261281 7.84922 5.76833e-09 8 0C8.15078 -5.76833e-09 8.30007 0.026128 8.43926 0.0768783C8.57845 0.127629 8.70477 0.201998 8.81096 0.295692Z"
+              fill="#4BB543"
+            />
+          </g>
+          <defs>
+            <clippath
+              id="clip0_909_5453"
+            >
+              <rect
+                fill="white"
+                height="16"
+                width="16"
+              />
+            </clippath>
+          </defs>
+        </svg>
+      </div>
+      <div
+        style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+      >
+        1.2345
+      </div>
+      <div
+        style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+      >
+        ETH
+      </div>
+    </div>
+  </div>
+</div>
+`;

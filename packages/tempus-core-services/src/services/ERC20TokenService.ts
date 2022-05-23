@@ -1,6 +1,6 @@
 import { BigNumber, Contract, ContractTransaction, CallOverrides } from 'ethers';
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
-import { ERC20 } from '../abi/ERC20';
+import { ERC20 } from '../abi/ERC20Typings';
 import ERC20ABI from '../abi/ERC20.json';
 import { TypedListener } from '../abi/commons';
 import { approveGasIncrease, ZERO_ETH_ADDRESS } from '../constants';

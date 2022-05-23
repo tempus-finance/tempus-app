@@ -1,0 +1,18 @@
+import { state, useStateObservable } from '@react-rxjs/core';
+import { createSignal } from '@react-rxjs/utils';
+import { useCallback } from 'react';
+import i18n, { SupportedLocale } from '../i18n';
+
+const [locale$, setLocale] = createSignal<SupportedLocale>();
+const state$ = state(locale$, 'en');
+
+export function useLocale(): [SupportedLocale, (value: SupportedLocale) => void] {
+  const locale = useStateObservable(state$);
+
+  const setActualLocale = useCallback(code => {
+    setLocale(code);
+    i18n.changeLanguage(code);
+  }, []);
+
+  return [locale, setActualLocale];
+}

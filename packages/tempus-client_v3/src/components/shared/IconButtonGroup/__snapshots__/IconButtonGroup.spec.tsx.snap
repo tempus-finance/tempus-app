@@ -1,0 +1,135 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`IconButtonGroup calls \`onClick\` when an icon button is clicked 1`] = `
+<div
+  class="tc__iconButtonGroup"
+>
+  <button
+    class="tc__btn tc__iconButton__selected"
+    data-selected="true"
+    type="button"
+  >
+    <svg
+      class="tc__icon tc__icon-grid-view"
+      fill="none"
+      height="24"
+      viewBox="0 0 24 24"
+      width="24"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        clip-rule="evenodd"
+        d="M1.2 0C0.537258 0 0 0.537259 0 1.2V11.4H11.4V0H1.2ZM12.6 0V11.4H24V1.2C24 0.537258 23.4627 0 22.8 0H12.6ZM24 12.6H12.6V24H22.8C23.4627 24 24 23.4627 24 22.8V12.6ZM11.4 24V12.6H0V22.8C0 23.4627 0.537259 24 1.2 24H11.4Z"
+        fill="#FFFFFF"
+        fill-rule="evenodd"
+      />
+    </svg>
+  </button>
+  <button
+    class="tc__btn tc__iconButton__deselected"
+    data-selected="false"
+    type="button"
+  >
+    <svg
+      class="tc__icon tc__icon-list-view"
+      fill="none"
+      height="24"
+      viewBox="0 0 24 24"
+      width="24"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M6.6 3H23.4C23.7314 3 24 3.26863 24 3.6V6C24 6.33137 23.7314 6.6 23.4 6.6H6.6V3Z"
+        fill="#BFC0C0"
+      />
+      <path
+        d="M0 3.6C0 3.26863 0.268629 3 0.6 3H5.4V6.6H0.6C0.268629 6.6 0 6.33137 0 6V3.6Z"
+        fill="#BFC0C0"
+      />
+      <path
+        d="M6.6 10.2H23.4C23.7314 10.2 24 10.4686 24 10.8V13.2C24 13.5314 23.7314 13.8 23.4 13.8H6.6V10.2Z"
+        fill="#BFC0C0"
+      />
+      <path
+        d="M0 10.8C0 10.4686 0.268629 10.2 0.6 10.2H5.4V13.8H0.6C0.268629 13.8 0 13.5314 0 13.2V10.8Z"
+        fill="#BFC0C0"
+      />
+      <path
+        d="M6.6 17.4H23.4C23.7314 17.4 24 17.6686 24 18V20.4C24 20.7314 23.7314 21 23.4 21H6.6V17.4Z"
+        fill="#BFC0C0"
+      />
+      <path
+        d="M0 18C0 17.6686 0.268629 17.4 0.6 17.4H5.4V21H0.6C0.268629 21 0 20.7314 0 20.4V18Z"
+        fill="#BFC0C0"
+      />
+    </svg>
+  </button>
+</div>
+`;
+
+exports[`IconButtonGroup renders a group of icon buttons 1`] = `
+<div
+  class="tc__iconButtonGroup"
+>
+  <button
+    class="tc__btn tc__iconButton__selected"
+    data-selected="true"
+    type="button"
+  >
+    <svg
+      class="tc__icon tc__icon-grid-view"
+      fill="none"
+      height="24"
+      viewBox="0 0 24 24"
+      width="24"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        clip-rule="evenodd"
+        d="M1.2 0C0.537258 0 0 0.537259 0 1.2V11.4H11.4V0H1.2ZM12.6 0V11.4H24V1.2C24 0.537258 23.4627 0 22.8 0H12.6ZM24 12.6H12.6V24H22.8C23.4627 24 24 23.4627 24 22.8V12.6ZM11.4 24V12.6H0V22.8C0 23.4627 0.537259 24 1.2 24H11.4Z"
+        fill="#FFFFFF"
+        fill-rule="evenodd"
+      />
+    </svg>
+  </button>
+  <button
+    class="tc__btn tc__iconButton__deselected"
+    data-selected="false"
+    type="button"
+  >
+    <svg
+      class="tc__icon tc__icon-list-view"
+      fill="none"
+      height="24"
+      viewBox="0 0 24 24"
+      width="24"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M6.6 3H23.4C23.7314 3 24 3.26863 24 3.6V6C24 6.33137 23.7314 6.6 23.4 6.6H6.6V3Z"
+        fill="#BFC0C0"
+      />
+      <path
+        d="M0 3.6C0 3.26863 0.268629 3 0.6 3H5.4V6.6H0.6C0.268629 6.6 0 6.33137 0 6V3.6Z"
+        fill="#BFC0C0"
+      />
+      <path
+        d="M6.6 10.2H23.4C23.7314 10.2 24 10.4686 24 10.8V13.2C24 13.5314 23.7314 13.8 23.4 13.8H6.6V10.2Z"
+        fill="#BFC0C0"
+      />
+      <path
+        d="M0 10.8C0 10.4686 0.268629 10.2 0.6 10.2H5.4V13.8H0.6C0.268629 13.8 0 13.5314 0 13.2V10.8Z"
+        fill="#BFC0C0"
+      />
+      <path
+        d="M6.6 17.4H23.4C23.7314 17.4 24 17.6686 24 18V20.4C24 20.7314 23.7314 21 23.4 21H6.6V17.4Z"
+        fill="#BFC0C0"
+      />
+      <path
+        d="M0 18C0 17.6686 0.268629 17.4 0.6 17.4H5.4V21H0.6C0.268629 21 0 20.7314 0 20.4V18Z"
+        fill="#BFC0C0"
+      />
+    </svg>
+  </button>
+</div>
+`;

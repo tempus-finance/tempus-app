@@ -1,35 +1,34 @@
 import { AlchemyProvider, JsonRpcProvider } from '@ethersproject/providers';
-import { ChainConfig, Chain } from '../interfaces';
+import { Chain } from '../interfaces';
 
-let defaultProviders = new Map<Chain, JsonRpcProvider>();
-export const getDefaultProvider = (chain: Chain, getChainConfig: (chain: Chain) => ChainConfig) => {
+const defaultProviders = new Map<Chain, JsonRpcProvider>();
+export const getDefaultProvider = (chain: Chain): JsonRpcProvider => {
   if (!defaultProviders.get(chain)) {
-    const config = getChainConfig(chain);
-
-    if (config.networkName === 'localhost') {
-      defaultProviders.set(chain, new JsonRpcProvider('http://127.0.0.1:8545', { chainId: 31337, name: 'unknown' }));
-    } else if (config.networkName === 'homestead') {
-      try {
-        defaultProviders.set(chain, new AlchemyProvider(config.networkName, config.alchemyKey));
-      } catch (error) {
-        console.error('getDefaultProvider - Alchemy not available', error);
+    try {
+      if (chain === 'ethereum') {
+        defaultProviders.set(chain, new AlchemyProvider('homestead', process.env.REACT_APP_MAINNET_ALCHEMY_KEY));
+      } else if (chain === 'fantom') {
+        defaultProviders.set(
+          chain,
+          new JsonRpcProvider(process.env.REACT_APP_FANTOM_RPC, { chainId: 250, name: 'Fantom Opera' }),
+        );
+      } else if (chain === 'ethereum-fork') {
+        defaultProviders.set(
+          chain,
+          new JsonRpcProvider(process.env.REACT_APP_ETHEREUM_FORK_RPC, {
+            chainId: 31337,
+            name: 'Tempus Ethereum Fork',
+          }),
+        );
       }
-    } else if (config.networkName === 'fantom-mainnet') {
-      defaultProviders.set(
-        chain,
-        new JsonRpcProvider(config.privateNetworkUrl, { chainId: 250, name: 'Fantom Opera' }),
-      );
-    } else if (config.networkName === 'tempus-ethereum-fork') {
-      defaultProviders.set(
-        chain,
-        new JsonRpcProvider(config.privateNetworkUrl, { chainId: config.chainId, name: config.networkName }),
-      );
+    } catch (error) {
+      console.error(`getDefaultProvider - Failed to get RPC provider for ${chain} chain!`, error);
     }
   }
 
   const provider = defaultProviders.get(chain);
   if (!provider) {
-    throw new Error(`Failed to get default provider for ${chain} chain!`);
+    throw new Error(`getDefaultProvider - Failed to get default provider for ${chain} chain!`);
   }
   return provider;
 };

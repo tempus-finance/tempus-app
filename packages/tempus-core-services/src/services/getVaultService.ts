@@ -18,7 +18,7 @@ export const getVaultService = (
       Contract: Contract,
       address: getChainConfig(chain).vaultContract,
       abi: VaultABI,
-      signerOrProvider: getDefaultProvider(chain, getChainConfig),
+      signerOrProvider: getDefaultProvider(chain),
       tempusAMMService: getTempusAMMService(chain, getChainConfig),
       chain,
       getChainConfig,

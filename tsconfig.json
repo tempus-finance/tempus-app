@@ -1,6 +1,11 @@
 {
+  "ts-node": {
+    "compilerOptions": {
+      "module": "commonjs"
+    }
+  },
   "compilerOptions": {
-    "target": "es5",
+    "target": "es2017",
     "lib": [
       "dom",
       "dom.iterable",
@@ -14,14 +19,11 @@
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
     "module": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "Node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "noEmit": true,
-    "jsx": "react"
-  },
-  "include": [
-    "packages/tempus-core/src",
-    "packages/tempus-client_v2/src"
-  ]
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true
+  }
 }

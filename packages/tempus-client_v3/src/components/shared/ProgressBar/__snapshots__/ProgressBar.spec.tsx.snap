@@ -1,0 +1,14 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ProgressBar renders a progress bar 1`] = `
+<div>
+  <div
+    class="tc__progress-bar"
+  >
+    <div
+      class="tc__progress-bar__progress"
+      style="width: 42%;"
+    />
+  </div>
+</div>
+`;
