@@ -54,7 +54,7 @@ export const poolTvls$: Observable<PoolTvlMap> = combineLatest([poolList$, polli
   debounce<PoolTvlMap>(() => interval(DEBOUNCE_IN_MS)),
   catchError(error => {
     console.error('useTvlData - getTempusPoolTVL', error);
-    return of({ a: new Decimal(0) });
+    return of({});
   }),
 );
 
