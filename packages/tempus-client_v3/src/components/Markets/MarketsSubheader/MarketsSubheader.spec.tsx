@@ -41,33 +41,6 @@ describe('MarketsSubheader', () => {
     expect(container).toMatchSnapshot();
   });
 
-  it('updates view type', () => {
-    const { container } = subject();
-
-    const viewTypeButtons = container.querySelectorAll('.tc__iconButtonGroup .tc__btn');
-
-    expect(viewTypeButtons).toHaveLength(2);
-
-    expect(viewTypeButtons[0]).toHaveAttribute('data-selected', 'true');
-    expect(viewTypeButtons[1]).toHaveAttribute('data-selected', 'false');
-
-    fireEvent.click(viewTypeButtons[1]);
-
-    expect(viewTypeButtons[0]).toHaveAttribute('data-selected', 'false');
-    expect(viewTypeButtons[1]).toHaveAttribute('data-selected', 'true');
-
-    viewTypeButtons.forEach(button => expect(button).toMatchSnapshot());
-
-    fireEvent.click(viewTypeButtons[0]);
-
-    expect(viewTypeButtons[0]).toHaveAttribute('data-selected', 'true');
-    expect(viewTypeButtons[1]).toHaveAttribute('data-selected', 'false');
-
-    viewTypeButtons.forEach(button => expect(button).toMatchSnapshot());
-
-    expect(container).toMatchSnapshot();
-  });
-
   it('updates filters', () => {
     const { container, getByRole } = subject();
 
