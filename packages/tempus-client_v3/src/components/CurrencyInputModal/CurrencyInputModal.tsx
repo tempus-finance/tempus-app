@@ -1,33 +1,36 @@
 import { FC, ReactNode, useCallback, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { ChainConfig, Decimal, Ticker } from 'tempus-core-services';
-import FeeTooltip from '../FeeTooltip';
-import {
-  ActionButton,
-  ActionButtonLabels,
-  ActionButtonState,
-  ButtonWrapper,
-  CurrencyInput,
-  Icon,
-  Link,
-  Modal,
-  ProgressBar,
-  Typography,
-} from '../shared';
+import { ActionButtonLabels, ActionButtonState, ButtonWrapper, Icon, Modal, Typography } from '../shared';
 import { ModalProps } from '../shared/Modal/Modal';
 import TermTabs, { MaturityTerm } from '../shared/TermTabs';
 import './CurrencyInputModal.scss';
+import ModalActionContent from './ModalActionContent';
+import ModalPreviewContent from './ModalPreviewContent';
+
+type CurrencyInputModalContent = 'preview' | 'action';
+
+interface CurrencyInputModalDescription {
+  preview: string;
+  action: string;
+}
+
+export interface CurrencyInputModalActionButtonLabels {
+  preview?: ActionButtonLabels;
+  action: ActionButtonLabels;
+}
 
 export interface CurrencyInputModalProps extends ModalProps {
-  description: string;
+  description: string | CurrencyInputModalDescription;
+  preview?: ReactNode;
   balance: Decimal;
   inputPrecision: number;
   usdRates: Map<Ticker, Decimal>;
   maturityTerms?: MaturityTerm[];
   chainConfig?: ChainConfig;
   infoRows?: ReactNode;
-  actionButtonLabels: ActionButtonLabels;
+  actionButtonLabels: CurrencyInputModalActionButtonLabels;
   actionButtonState?: ActionButtonState;
+  onMaturityChange?: (term: MaturityTerm) => void;
   onAmountChange?: (amount: Decimal) => void;
   onTransactionStart: (amount: Decimal) => string;
   onCurrencyUpdate?: (currency: Ticker) => void;
@@ -40,6 +43,7 @@ const CurrencyInputModal: FC<CurrencyInputModalProps> = props => {
     open,
     onClose,
     header,
+    preview,
     balance,
     inputPrecision,
     usdRates,
@@ -48,95 +52,77 @@ const CurrencyInputModal: FC<CurrencyInputModalProps> = props => {
     infoRows,
     actionButtonLabels,
     actionButtonState = 'default',
+    onMaturityChange,
     onAmountChange,
     onTransactionStart,
     onCurrencyUpdate,
   } = props;
-  const [amount, setAmount] = useState('');
-  const [transactionProgress, setTransactionProgress] = useState<number | null>(null);
-  const [transactionHash, setTransactionHash] = useState<string | null>(null);
-  const { t } = useTranslation();
 
-  const amountDecimal = useMemo(() => new Decimal(amount || 0), [amount]);
+  const [content, setContent] = useState<CurrencyInputModalContent>(preview ? 'preview' : 'action');
 
-  const disabledInput = actionButtonState !== 'default';
-  const insufficientBalance = amountDecimal.gt(balance);
+  const handlePreviewButtonClick = useCallback(() => setContent('action'), []);
 
-  const handleAmountChange = useCallback(
-    (value: string) => {
-      setAmount(value);
-      onAmountChange?.(Decimal.parse(value, 0));
-    },
-    [onAmountChange],
-  );
+  const handleBack = useCallback(() => setContent('preview'), []);
 
-  const handleActionButtonClick = useCallback(() => {
-    // TODO: this is a mockup, replace with real implementation
-    setTransactionProgress(20);
-    setTransactionHash(onTransactionStart(amountDecimal));
-  }, [amountDecimal, onTransactionStart]);
+  const modalTitle = useMemo(() => {
+    if (content === 'preview') {
+      return title;
+    }
 
-  return (
-    <Modal
-      className="tc__currency-input-modal"
-      variant="styled"
-      size="large"
-      header={header}
-      open={open}
-      onClose={onClose}
-    >
+    return (
       <div className="tc__currency-input-modal__nav">
-        <ButtonWrapper onClick={onClose}>
+        <ButtonWrapper onClick={handleBack}>
           <Icon variant="left-chevron" size="small" />
         </ButtonWrapper>
         <Typography variant="subtitle" weight="bold">
           {title}
         </Typography>
       </div>
+    );
+  }, [content, handleBack, title]);
+
+  const disabledInput = actionButtonState !== 'default';
+
+  return (
+    <Modal
+      className="tc__currency-input-modal"
+      variant="styled"
+      size="large"
+      title={modalTitle}
+      header={header}
+      open={open}
+      onClose={onClose}
+    >
       <Typography className="tc__currency-input-modal__description" variant="body-primary">
-        {description}
+        {typeof description === 'string' && description}
+        {typeof description !== 'string' && (content === 'preview' ? description.preview : description.action)}
       </Typography>
-      {maturityTerms && maturityTerms.length > 1 && <TermTabs terms={maturityTerms} disabled={disabledInput} />}
-      <CurrencyInput
-        precision={inputPrecision}
-        maxAmount={balance}
-        usdRates={usdRates}
-        disabled={disabledInput}
-        error={insufficientBalance ? 'Insufficient balance' : undefined}
-        onAmountUpdate={handleAmountChange}
-        onCurrencyUpdate={onCurrencyUpdate}
-      />
-      {infoRows && <div className="tc__currency-input-modal__info">{infoRows}</div>}
-      <div className="tc__currency-input-modal__action-container">
-        <FeeTooltip fees={{ swap: 0.002 }}>
-          <div className="tc__currency-input-modal__transaction-info">
-            <Typography variant="body-primary">{t('CurrencyInputModal.feesAndTransactionInfo')}</Typography>
-            <Icon variant="info-bordered" size="small" />
-          </div>
-        </FeeTooltip>
-        <ActionButton
-          labels={actionButtonLabels}
-          onClick={handleActionButtonClick}
-          variant="primary"
-          size="large"
-          fullWidth
-          state={amountDecimal.lte(0) || insufficientBalance ? 'disabled' : actionButtonState}
+      {maturityTerms && (content === 'preview' || maturityTerms.length > 1) && (
+        <TermTabs terms={maturityTerms} disabled={disabledInput} onChange={onMaturityChange} />
+      )}
+      {content === 'preview' && (
+        <ModalPreviewContent
+          actionButtonLabels={actionButtonLabels.preview ?? actionButtonLabels.action}
+          onActionButtonClick={handlePreviewButtonClick}
+        >
+          {preview}
+        </ModalPreviewContent>
+      )}
+      {content === 'action' && (
+        <ModalActionContent
+          balance={balance}
+          inputPrecision={inputPrecision}
+          disabledInput={disabledInput}
+          usdRates={usdRates}
+          chainConfig={chainConfig}
+          infoRows={infoRows}
+          actionButtonLabels={actionButtonLabels.action}
+          actionButtonState={actionButtonState}
+          onAmountChange={onAmountChange}
+          onTransactionStart={onTransactionStart}
+          onCurrencyUpdate={onCurrencyUpdate}
         />
-        {transactionProgress !== null && actionButtonState !== 'default' && (
-          <ProgressBar value={actionButtonState === 'success' ? 100 : transactionProgress} />
-        )}
-        {chainConfig && transactionHash && actionButtonState !== 'default' && (
-          <Link
-            href={`${chainConfig.blockExplorerUrl}tx/${transactionHash}`}
-            className="tc__currency-input-modal__transaction-link"
-          >
-            <Typography variant="body-secondary">
-              {t('CurrencyInputModal.linkBlockExplorer', { name: chainConfig.blockExplorerName })}
-            </Typography>
-            <Icon variant="external" size="small" />
-          </Link>
-        )}
-      </div>
+      )}
     </Modal>
   );
 };

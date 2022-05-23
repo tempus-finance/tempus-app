@@ -2,9 +2,9 @@ import { FC } from 'react';
 import { InnerLogoProps } from './LogoProps';
 import withLogo from './withLogo';
 
-const TokenYvwETH: FC<InnerLogoProps> = ({ size }) => (
+const TokenYvWETH: FC<InnerLogoProps> = ({ size }) => (
   <svg
-    className="tc__logo tc__logo-token-yvwETH"
+    className="tc__logo tc__logo-token-yvWETH"
     width={size}
     height={size}
     viewBox="0 0 40 40"
@@ -37,4 +37,4 @@ const TokenYvwETH: FC<InnerLogoProps> = ({ size }) => (
   </svg>
 );
 
-export default withLogo(TokenYvwETH);
+export default withLogo(TokenYvWETH);

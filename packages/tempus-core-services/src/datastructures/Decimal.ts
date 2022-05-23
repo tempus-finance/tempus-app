@@ -19,17 +19,27 @@ export default class Decimal {
   readonly value: BigNumber;
   readonly precision: number = DEFAULT_TOKEN_PRECISION;
 
-  constructor(value: Numberish) {
+  constructor(value: Numberish, precisionConvertFrom?: number) {
+    let bigNumberValue: BigNumber;
+
     if (value instanceof Decimal) {
-      this.value = BigNumber.from(value.value);
+      bigNumberValue = BigNumber.from(value.value);
     } else if (value instanceof BigNumber) {
-      this.value = BigNumber.from(value);
+      bigNumberValue = BigNumber.from(value);
     } else {
       try {
-        this.value = utils.parseUnits(`${value}`, this.precision);
+        bigNumberValue = utils.parseUnits(`${value}`, this.precision);
       } catch (e) {
         throw new Error(`Failed to parse ${value} when creating Decimal`);
       }
+    }
+
+    if (precisionConvertFrom === undefined || precisionConvertFrom === DEFAULT_DECIMAL_PRECISION) {
+      this.value = bigNumberValue;
+    } else if (precisionConvertFrom < DEFAULT_DECIMAL_PRECISION) {
+      this.value = increasePrecision(bigNumberValue, DEFAULT_DECIMAL_PRECISION - precisionConvertFrom);
+    } else {
+      this.value = decreasePrecision(bigNumberValue, precisionConvertFrom - DEFAULT_DECIMAL_PRECISION);
     }
   }
 

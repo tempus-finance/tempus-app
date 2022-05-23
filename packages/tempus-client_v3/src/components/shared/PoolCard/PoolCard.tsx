@@ -1,5 +1,5 @@
-import { FC, useMemo } from 'react';
-import { Decimal, DecimalUtils, prettifyProtocolName, ProtocolName, Ticker } from 'tempus-core-services';
+import { FC, useCallback, useMemo } from 'react';
+import { Chain, Decimal, DecimalUtils, prettifyProtocolName, ProtocolName, Ticker } from 'tempus-core-services';
 import { min } from 'date-fns';
 import FormattedDate from '../FormattedDate';
 import Logo from '../Logo';
@@ -11,6 +11,7 @@ import PoolCardFlag from './PoolCardFlag/PoolCardFlag';
 import './PoolCard.scss';
 
 interface PoolCardProps {
+  chain: Chain;
   ticker: Ticker;
   protocol: ProtocolName;
   poolCardVariant: PoolCardVariant;
@@ -21,10 +22,12 @@ interface PoolCardProps {
   aggregatedAPR?: Decimal;
   multiplier?: number;
   totalBalance?: Decimal;
+  onClick: (chain: Chain, ticker: Ticker, protocol: ProtocolName) => void;
 }
 
 const PoolCard: FC<PoolCardProps> = props => {
   const {
+    chain,
     ticker,
     protocol,
     poolCardVariant,
@@ -35,6 +38,7 @@ const PoolCard: FC<PoolCardProps> = props => {
     aggregatedAPR,
     totalBalance,
     multiplier = 1,
+    onClick,
   } = props;
 
   const earliestTerm = useMemo(() => min(terms), [terms]);
@@ -73,8 +77,12 @@ const PoolCard: FC<PoolCardProps> = props => {
     return aprValues.length === 1 ? 'APR' : 'APR (up to)';
   }, [aprValues.length, poolCardVariant]);
 
+  const handleClick = useCallback(() => {
+    onClick(chain, ticker, protocol);
+  }, [chain, ticker, protocol, onClick]);
+
   return (
-    <div className="tc__poolCard" data-card-variant={poolCardVariant}>
+    <div className="tc__poolCard" data-card-variant={poolCardVariant} onClick={handleClick}>
       {/* Pool backing token ticker */}
       <Typography variant="subheader" weight="bold">
         {multiplier > 1 && `x${multiplier}`} {ticker}

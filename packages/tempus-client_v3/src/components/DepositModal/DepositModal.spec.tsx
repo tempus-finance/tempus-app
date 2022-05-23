@@ -31,6 +31,7 @@ const multipleMaturityTerms: MaturityTerm[] = [
 const defaultProps = {
   open: true,
   onClose: () => {},
+  poolStartDate: new Date(2022, 3, 1),
   inputPrecision: 18,
 };
 
@@ -44,26 +45,33 @@ const subject = (props: DepositModalProps) =>
   );
 
 describe('DepositModal', () => {
-  it('renders a deposit modal with one maturity term', () => {
-    const { container } = subject({
-      ...defaultProps,
-      usdRates: singleCurrencyUsdRates,
-      maturityTerms: singleMaturityTerm,
-    });
+  const skipPreview = (container: HTMLElement) => {
+    const previewButton = container.querySelector('.tc__currency-input-modal__action-container .tc__actionButton');
+    expect(previewButton).not.toBeNull();
 
-    expect(container).not.toBeNull();
-    expect(container).toMatchSnapshot();
-  });
+    fireEvent.click(previewButton);
+  };
 
-  it('renders a deposit modal with multiple maturity terms', () => {
-    const { container } = subject({
-      ...defaultProps,
-      usdRates: singleCurrencyUsdRates,
-      maturityTerms: multipleMaturityTerms,
-    });
+  ['preview', 'input'].forEach(view => {
+    const template = (terms: MaturityTerm[]) => {
+      const { container } = subject({
+        ...defaultProps,
+        usdRates: singleCurrencyUsdRates,
+        maturityTerms: terms,
+      });
 
-    expect(container).not.toBeNull();
-    expect(container).toMatchSnapshot();
+      expect(container).not.toBeNull();
+
+      if (view === 'input') {
+        skipPreview(container);
+      }
+
+      expect(container).toMatchSnapshot();
+    };
+
+    it(`renders a deposit modal ${view} with one maturity term`, () => template(singleMaturityTerm));
+
+    it(`renders a deposit modal ${view} with multiple maturity terms`, () => template(multipleMaturityTerms));
   });
 
   it('updates balance after currency change', () => {
@@ -72,6 +80,8 @@ describe('DepositModal', () => {
       usdRates: multipleCurrencyUsdRates,
       maturityTerms: singleMaturityTerm,
     });
+
+    skipPreview(container);
 
     const currencyDropdownButton = container.querySelector('.tc__currency-input__currency-selector > button');
 
@@ -93,7 +103,7 @@ describe('DepositModal', () => {
 
     fireEvent.click(allBalanceButton);
 
-    const currencyInput = getByRole('textbox');
+    const currencyInput = container.querySelector('input');
 
     expect(currencyInput).not.toBeNull();
     expect(currencyInput).toHaveValue('101'); // TODO: Mock balance fetching
@@ -108,15 +118,17 @@ describe('DepositModal', () => {
 
     jest.useFakeTimers();
 
-    const { container, getByRole } = subject({
+    const { container } = subject({
       ...defaultProps,
       usdRates: singleCurrencyUsdRates,
       maturityTerms: singleMaturityTerm,
       chainConfig: configManager.getChainConfig('ethereum'),
     });
 
+    skipPreview(container);
+
     const actionButton = container.querySelector('.tc__currency-input-modal__action-container .tc__actionButton');
-    const currencyInput = getByRole('textbox');
+    const currencyInput = container.querySelector('input');
 
     expect(actionButton).not.toBeNull();
     expect(actionButton).toBeDisabled();

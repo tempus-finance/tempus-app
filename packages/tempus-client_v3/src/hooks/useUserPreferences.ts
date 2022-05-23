@@ -3,11 +3,11 @@ import { createSignal } from '@react-rxjs/utils';
 import { useCallback } from 'react';
 import { Decimal } from 'tempus-core-services';
 
-export type UserPreferences = {
+export interface UserPreferences {
   slippage: Decimal;
   slippageAuto: boolean;
   darkMode: boolean;
-};
+}
 
 const [slippage$, setSlippage] = createSignal<Decimal>();
 const [slippageAuto$, setSlippageAuto] = createSignal<boolean>();
