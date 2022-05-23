@@ -5,8 +5,6 @@ import {
   DropdownCheckboxItem,
   DropdownSelectableItem,
   DropdownSelector,
-  IconButtonGroup,
-  IconVariant,
   NavSubheader,
   NavSubheaderGroup,
   Tab,
@@ -18,22 +16,7 @@ import { usePoolViewOptions } from '../../../hooks';
 const MarketsSubheader = () => {
   const { t } = useTranslation();
   const [poolViewOptions, setPoolViewOptions] = usePoolViewOptions();
-  const { viewType, poolType, filters, sortType, sortOrder } = poolViewOptions;
-
-  const handleViewTypeChange = useCallback(
-    (iconVariant: IconVariant) => {
-      switch (iconVariant) {
-        case 'list-view':
-          setPoolViewOptions({ viewType: 'list' });
-          break;
-        case 'grid-view':
-        default:
-          setPoolViewOptions({ viewType: 'grid' });
-          break;
-      }
-    },
-    [setPoolViewOptions],
-  );
+  const { poolType, filters, sortType, sortOrder } = poolViewOptions;
 
   const handlePoolTypeChange = useCallback(
     (type: PoolType) => setPoolViewOptions({ poolType: type }),
@@ -78,11 +61,6 @@ const MarketsSubheader = () => {
           <Tab label={t('MarketsSubheader.tabBoosted')} value="boosted" />
           <Tab label={t('MarketsSubheader.tabAll')} value="all" />
         </Tabs>
-        <IconButtonGroup
-          variants={['grid-view', 'list-view']}
-          selectedVariant={`${viewType}-view`}
-          onChange={handleViewTypeChange}
-        />
       </NavSubheaderGroup>
       <NavSubheaderGroup>
         <Dropdown label={t('MarketsSubheader.optionFilter')}>
