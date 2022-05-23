@@ -4,6 +4,7 @@ import { TempusPool } from '../abi/TempusPool';
 import { Chain, Ticker, ProtocolName, ChainConfig } from '../interfaces';
 import { DAYS_IN_A_YEAR, SECONDS_IN_A_DAY } from '../constants';
 import { getERC20TokenService } from '../services';
+import { Decimal, increasePrecision } from '../datastructures';
 
 type TempusPoolsMap = { [key: string]: TempusPool };
 
@@ -32,7 +33,7 @@ export class TempusPoolService {
     chain,
     eRC20TokenServiceGetter,
     getChainConfig,
-  }: TempusPoolServiceParameters) {
+  }: TempusPoolServiceParameters): void {
     this.poolAddresses = [...tempusPoolAddresses];
     this.tempusPoolsMap = {};
     this.getChainConfig = getChainConfig;
@@ -180,7 +181,7 @@ export class TempusPoolService {
 
         const totalSegments = (SECONDS_IN_A_DAY * DAYS_IN_A_YEAR) / blockTimeDiff;
 
-        return totalSegments * Number(ethers.utils.formatEther(blockRateDiff)) * 100;
+        return totalSegments * Number(ethers.utils.formatUnits(blockRateDiff)) * 100;
       } catch (error) {
         console.error('TempusPoolService getVariableAPY()', error);
         return Promise.reject(error);
@@ -246,21 +247,42 @@ export class TempusPoolService {
 
   public async numAssetsPerYieldToken(
     address: string,
-    yieldTokenAmount: BigNumber,
-    interestRate: BigNumber,
+    yieldTokenAmount: Decimal,
+    interestRate: Decimal,
     overrides?: CallOverrides,
-  ): Promise<BigNumber> {
-    const tempusPool = this.tempusPoolsMap[address];
+  ): Promise<Decimal> {
+    const contract = this.tempusPoolsMap[address];
+    const chainConfig = this.chain && this.getChainConfig?.(this.chain);
+    const tempusPool = chainConfig?.tempusPools.find(pool => pool.address === address);
 
-    if (tempusPool) {
+    if (contract && tempusPool) {
       try {
+        const backingTokenPrecision = tempusPool.tokenPrecision.backingToken;
+        const yieldBearingTokenPrecision = tempusPool.tokenPrecision.yieldBearingToken;
+
+        let numAssets: BigNumber;
+
         if (overrides) {
-          return tempusPool.numAssetsPerYieldToken(yieldTokenAmount, interestRate, overrides);
+          numAssets = await contract.numAssetsPerYieldToken(
+            yieldTokenAmount.toBigNumber(yieldBearingTokenPrecision),
+            interestRate.toBigNumber(yieldBearingTokenPrecision),
+            overrides,
+          );
+        } else {
+          numAssets = await contract.numAssetsPerYieldToken(
+            yieldTokenAmount.toBigNumber(yieldBearingTokenPrecision),
+            interestRate.toBigNumber(yieldBearingTokenPrecision),
+          );
         }
-        return tempusPool.numAssetsPerYieldToken(yieldTokenAmount, interestRate);
+
+        if (yieldBearingTokenPrecision > backingTokenPrecision) {
+          numAssets = increasePrecision(numAssets, yieldBearingTokenPrecision - backingTokenPrecision);
+        }
+
+        return new Decimal(numAssets, yieldBearingTokenPrecision);
       } catch (error) {
         console.error(
-          `TempusPoolService - numAssetsPerYieldToken() - Failed to retrieve num of asset per yield token`,
+          'TempusPoolService - numAssetsPerYieldToken() - Failed to retrieve num of asset per yield token',
           error,
         );
         return Promise.reject();
@@ -283,14 +305,17 @@ export class TempusPoolService {
     throw new Error(`TempusPoolService - currentInterestRate() - Address '${address}' is not valid`);
   }
 
-  public async currentInterestRate(address: string, overrides?: CallOverrides): Promise<BigNumber> {
+  public async currentInterestRate(address: string, overrides?: CallOverrides): Promise<Decimal> {
     const contract = this.tempusPoolsMap[address];
-    if (contract) {
+    const chainConfig = this.chain && this.getChainConfig?.(this.chain);
+    const tempusPool = chainConfig?.tempusPools.find(pool => pool.address === address);
+
+    if (contract && tempusPool) {
       try {
-        if (overrides) {
-          return await contract.currentInterestRate(overrides);
-        }
-        return await contract.currentInterestRate();
+        const interestRate = overrides
+          ? await contract.currentInterestRate(overrides)
+          : await contract.currentInterestRate();
+        return new Decimal(interestRate, tempusPool.tokenPrecision.yieldBearingToken);
       } catch (error) {
         console.error('TempusPoolService - currentInterestRate() - Failed to fetch interest rate!', error);
         return Promise.reject(error);
