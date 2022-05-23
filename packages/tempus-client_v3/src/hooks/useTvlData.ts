@@ -27,7 +27,6 @@ const polling$: Observable<number> = interval(TVL_POLLING_INTERVAL_IN_MS).pipe(s
 export const poolTvls$: Observable<PoolTvlMap> = combineLatest([poolList$, polling$]).pipe(
   mergeMap<[TempusPool[], number], Observable<PoolTvlMap>>(([tempusPools]) => {
     const poolTvlMaps = tempusPools.map(({ chain, address, backingToken }: TempusPool) => {
-      console.log('service', getServices(chain as Chain));
       const poolTvl$ = (getServices(chain as Chain)?.StatisticsService as StatisticsService).totalValueLockedUSD(
         chain as Chain,
         address,
