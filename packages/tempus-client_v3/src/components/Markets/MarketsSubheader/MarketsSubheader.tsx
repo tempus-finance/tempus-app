@@ -1,56 +1,26 @@
-import { FC, useCallback, useState } from 'react';
+import { memo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Dropdown,
   DropdownCheckboxItem,
   DropdownSelectableItem,
   DropdownSelector,
-  IconButtonGroup,
-  IconVariant,
   NavSubheader,
   NavSubheaderGroup,
   Tab,
   Tabs,
 } from '../../shared';
+import { FilterType, PoolType, SortOrder, SortType } from '../../../interfaces';
+import { usePoolViewOptions } from '../../../hooks';
 
-export type PoolType = 'fixed' | 'boosted' | 'all';
-export type ViewType = 'grid' | 'list';
-export type FilterType = 'active' | 'matured' | 'inactive';
-export type SortType = 'a-z' | 'maturity' | 'tvl' | 'apr' | 'balance';
-export type SortOrder = 'asc' | 'desc';
-
-export interface MarketsSubheaderProps {
-  onPoolTypeChange?: (poolType: PoolType) => void;
-  onViewTypeChange?: (viewType: ViewType) => void;
-  onFilterChange?: (filters: Set<FilterType>) => void;
-  onSortTypeChange?: (sortType: SortType, sortOrder: SortOrder) => void;
-}
-
-const MarketsSubheader: FC<MarketsSubheaderProps> = props => {
-  const { onPoolTypeChange, onViewTypeChange, onFilterChange, onSortTypeChange } = props;
+const MarketsSubheader = () => {
   const { t } = useTranslation();
-  const [poolType, setPoolType] = useState<PoolType>('all');
-  const [filters, setFilters] = useState(new Set<FilterType>());
-  const [sortType, setSortType] = useState<SortType>('a-z');
-  const [sortOrder, setSortOrder] = useState<SortOrder>('asc');
+  const [poolViewOptions, setPoolViewOptions] = usePoolViewOptions();
+  const { poolType, filters, sortType, sortOrder } = poolViewOptions;
 
   const handlePoolTypeChange = useCallback(
-    (pool: PoolType) => {
-      setPoolType(pool);
-      onPoolTypeChange?.(pool);
-    },
-    [onPoolTypeChange],
-  );
-
-  const handleViewTypeChange = useCallback(
-    (iconType: IconVariant) => {
-      if (iconType === 'grid-view') {
-        onViewTypeChange?.('grid');
-      } else if (iconType === 'list-view') {
-        onViewTypeChange?.('list');
-      }
-    },
-    [onViewTypeChange],
+    (type: PoolType) => setPoolViewOptions({ poolType: type }),
+    [setPoolViewOptions],
   );
 
   const handleFilterChange = useCallback(
@@ -63,10 +33,9 @@ const MarketsSubheader: FC<MarketsSubheaderProps> = props => {
         updatedFilters.delete(value as FilterType);
       }
 
-      setFilters(updatedFilters);
-      onFilterChange?.(updatedFilters);
+      setPoolViewOptions({ filters: updatedFilters });
     },
-    [filters, onFilterChange],
+    [filters, setPoolViewOptions],
   );
 
   const handleSortTypeChange = useCallback(
@@ -79,11 +48,9 @@ const MarketsSubheader: FC<MarketsSubheaderProps> = props => {
         order = 'asc';
       }
 
-      setSortType(updatedSortType);
-      setSortOrder(order);
-      onSortTypeChange?.(updatedSortType, order);
+      setPoolViewOptions({ sortOrder: order, sortType: updatedSortType });
     },
-    [onSortTypeChange, sortOrder, sortType],
+    [sortOrder, sortType, setPoolViewOptions],
   );
 
   return (
@@ -94,29 +61,31 @@ const MarketsSubheader: FC<MarketsSubheaderProps> = props => {
           <Tab label={t('MarketsSubheader.tabBoosted')} value="boosted" />
           <Tab label={t('MarketsSubheader.tabAll')} value="all" />
         </Tabs>
-        <IconButtonGroup types={['grid-view', 'list-view']} onChange={handleViewTypeChange} />
       </NavSubheaderGroup>
       <NavSubheaderGroup>
         <Dropdown label={t('MarketsSubheader.optionFilter')}>
           <DropdownCheckboxItem
             label={t('MarketsSubheader.filterActive')}
             value="active"
+            checked={filters.has('active')}
             onChange={handleFilterChange}
           />
           <DropdownCheckboxItem
             label={t('MarketsSubheader.filterMatured')}
             value="matured"
+            checked={filters.has('matured')}
             onChange={handleFilterChange}
           />
           <DropdownCheckboxItem
             label={t('MarketsSubheader.filterInactive')}
             value="inactive"
+            checked={filters.has('inactive')}
             onChange={handleFilterChange}
           />
         </Dropdown>
         <DropdownSelector
           label={t('MarketsSubheader.optionSort')}
-          itemIcon={sortOrder === 'asc' ? 'down-arrow-thin' : 'up-arrow-thin'}
+          itemIcon={sortOrder === 'asc' ? 'up-arrow-thin' : 'down-arrow-thin'}
           selectedValue={sortType}
           onSelect={handleSortTypeChange}
         >
@@ -131,4 +100,4 @@ const MarketsSubheader: FC<MarketsSubheaderProps> = props => {
   );
 };
 
-export default MarketsSubheader;
+export default memo(MarketsSubheader);

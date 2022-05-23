@@ -1,4 +1,5 @@
 import { fireEvent, render } from '@testing-library/react';
+import { FC, useState } from 'react';
 import DropdownCheckboxItem, { DropdownCheckboxItemProps } from './DropdownCheckboxItem';
 
 const mockOnChangeHandler = jest.fn();
@@ -9,7 +10,13 @@ const defaultProps: DropdownCheckboxItemProps<string> = {
   icon: 'up-arrow-thin',
 };
 
-const subject = (props: DropdownCheckboxItemProps<string>) => render(<DropdownCheckboxItem {...props} />);
+const Wrapper: FC<DropdownCheckboxItemProps<string>> = props => {
+  const [checked, setChecked] = useState<boolean>(false);
+  mockOnChangeHandler.mockImplementation((val: boolean) => setChecked(val));
+  return <DropdownCheckboxItem {...props} checked={checked} />;
+};
+
+const subject = (props: DropdownCheckboxItemProps<string>) => render(<Wrapper {...props} />);
 
 describe('DropdownCheckboxItem', () => {
   it('renders with provided label', () => {

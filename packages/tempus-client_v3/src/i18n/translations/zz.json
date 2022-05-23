@@ -11,6 +11,7 @@
     "linkBlockExplorer": "~~~~~====={{{{{(((((linkBlockExplorer)))))}}}}}=====~~~~~"
   },
   "DepositModal": {
+    "labelMakeDeposit": "~~~~~====={{{{{(((((labelMakeDeposit)))))}}}}}=====~~~~~",
     "labelExecuteDefault": "~~~~~====={{{{{(((((labelExecuteDefault)))))}}}}}=====~~~~~",
     "labelExecuteLoading": "~~~~~====={{{{{(((((labelExecuteLoading)))))}}}}}=====~~~~~",
     "labelExecuteSuccess": "~~~~~====={{{{{(((((labelExecuteSuccess)))))}}}}}=====~~~~~",
@@ -20,7 +21,8 @@
     "labelAvailableForDeposit": "~~~~~====={{{{{(((((labelAvailableForDeposit)))))}}}}}=====~~~~~",
     "labelYieldAtMaturity": "~~~~~====={{{{{(((((labelYieldAtMaturity)))))}}}}}=====~~~~~",
     "title": "~~~~~====={{{{{(((((title)))))}}}}}=====~~~~~",
-    "description": "~~~~~====={{{{{(((((description)))))}}}}}=====~~~~~"
+    "description": "~~~~~====={{{{{(((((description)))))}}}}}=====~~~~~",
+    "previewDescription": "~~~~~====={{{{{(((((previewDescription)))))}}}}}=====~~~~~"
   },
   "DepositModalHeader": {
     "titleRewardsAvailable": "~~~~~====={{{{{(((((titleRewardsAvailable)))))}}}}}=====~~~~~"

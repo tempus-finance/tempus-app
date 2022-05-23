@@ -1,11 +1,13 @@
 import { ComponentStory } from '@storybook/react';
-import IconButtonGroup from './IconButtonGroup';
+import { FC, useCallback, useState } from 'react';
+import { IconVariant } from '../Icon';
+import IconButtonGroup, { IconButtonGroupProps } from './IconButtonGroup';
 
 export default {
   title: 'IconButtonGroup',
   component: IconButtonGroup,
   argTypes: {
-    types: {
+    variants: {
       control: {
         type: 'array',
       },
@@ -20,14 +22,19 @@ const style = {
   height: '100px',
 };
 
+const Wrapper: FC<IconButtonGroupProps> = props => {
+  const [selectedVariant, setSelectedVariant] = useState<IconVariant>(props.selectedVariant ?? props.variants[0]);
+  const onChange = useCallback((val: IconVariant) => setSelectedVariant(val), []);
+  return <IconButtonGroup {...props} onChange={onChange} selectedVariant={selectedVariant} />;
+};
+
 const Template: ComponentStory<typeof IconButtonGroup> = args => (
   <div style={style}>
-    <IconButtonGroup {...args} />
+    <Wrapper {...args} />
   </div>
 );
 
 export const Primary = Template.bind({});
 Primary.args = {
-  types: ['grid-view', 'list-view'],
-  onChange: () => {},
+  variants: ['grid-view', 'list-view'],
 };

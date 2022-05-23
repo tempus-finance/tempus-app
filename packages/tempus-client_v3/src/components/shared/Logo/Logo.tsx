@@ -19,7 +19,7 @@ import TokenYvUSDT from './TokenYvUSDT';
 import TokenYvDAI from './TokenYvDAI';
 import TokenYvBTC from './TokenYvBTC';
 import TokenYvYFI from './TokenYvYFI';
-import TokenYvwETH from './TokenYvwETH';
+import TokenYvWETH from './TokenYvWETH';
 import ProtocolAave from './ProtocolAave';
 import ProtocolLido from './ProtocolLido';
 import ProtocolRari from './ProtocolRari';
@@ -41,7 +41,7 @@ export type LogoType =
   | 'token-YFI'
   | 'token-wBTC'
   | 'token-wBTC-dark'
-  | 'token-wETH'
+  | 'token-WETH'
   | 'token-wFTM'
   | 'token-stETH'
   | 'token-yvUSDC'
@@ -49,7 +49,7 @@ export type LogoType =
   | 'token-yvDAI'
   | 'token-yvBTC'
   | 'token-yvYFI'
-  | 'token-yvwETH'
+  | 'token-yvWETH'
   | 'protocol-aave'
   | 'protocol-lido'
   | 'protocol-rari'
@@ -83,7 +83,7 @@ const Logo: FC<LogoProps & { type: LogoType }> = props => {
       return <TokenWBTC {...props} />;
     case 'token-wBTC-dark':
       return <TokenWBTCDark {...props} />;
-    case 'token-wETH':
+    case 'token-WETH':
       return <TokenWETH {...props} />;
     case 'token-wFTM':
       return <TokenWFTM {...props} />;
@@ -99,8 +99,8 @@ const Logo: FC<LogoProps & { type: LogoType }> = props => {
       return <TokenYvBTC {...props} />;
     case 'token-yvYFI':
       return <TokenYvYFI {...props} />;
-    case 'token-yvwETH':
-      return <TokenYvwETH {...props} />;
+    case 'token-yvWETH':
+      return <TokenYvWETH {...props} />;
     case 'protocol-aave':
       return <ProtocolAave {...props} />;
     case 'protocol-lido':

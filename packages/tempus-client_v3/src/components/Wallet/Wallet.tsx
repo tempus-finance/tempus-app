@@ -12,7 +12,7 @@ import {
 } from 'tempus-core-services';
 import { WalletButton } from '../shared';
 import ChainSelector from '../ChainSelector';
-import { useWalletBalances, setWalletAddress } from '../../hooks';
+import { useWalletBalances, setWalletAddress, useSelectedChain } from '../../hooks';
 
 // TODO - Check with designers if block native UI for wallet management is fine to use
 
@@ -70,6 +70,7 @@ init({
 const Wallet: FC = () => {
   const connectedWallets = useWallets();
   const [{ wallet }, connect] = useConnectWallet();
+  const selectedChain = useSelectedChain();
 
   const walletBalances = useWalletBalances();
 
@@ -149,8 +150,7 @@ const Wallet: FC = () => {
       <WalletButton
         address={walletAddress || ''}
         balance={balance || ''}
-        // TODO - Use current chain from global state once we add it
-        chain="ethereum"
+        chain={selectedChain ?? 'unsupported'}
         onConnect={onConnectWallet}
         onNetworkClick={onOpenChainSelector}
         // TODO - Add wallet popup

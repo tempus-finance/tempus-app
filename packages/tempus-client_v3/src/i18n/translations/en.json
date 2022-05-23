@@ -11,6 +11,7 @@
     "linkBlockExplorer": "Check it out on {{name}}"
   },
   "DepositModal": {
+    "labelMakeDeposit": "Make Deposit",
     "labelExecuteDefault": "Execute",
     "labelExecuteLoading": "Executing...",
     "labelExecuteSuccess": "Successfully Executed",
@@ -20,7 +21,8 @@
     "labelAvailableForDeposit": "Available for Deposit",
     "labelYieldAtMaturity": "Yield-at-Maturity",
     "title": "Pool Details",
-    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+    "description": "You are about to deposit into this pool, choose carefully",
+    "previewDescription": "Select an APR & Term to deposit into, if there’s only one, then simply proceed to make your deposit"
   },
   "DepositModalHeader": {
     "titleRewardsAvailable": "Rewards available"

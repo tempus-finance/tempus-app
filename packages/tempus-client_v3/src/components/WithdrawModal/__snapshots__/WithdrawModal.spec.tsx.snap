@@ -15,9 +15,6 @@ exports[`WithdrawModal renders a withdraw modal 1`] = `
       <div
         class="tc__modal-header"
       >
-        <div
-          style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
-        />
         <button
           class="tc__btn "
           data-selected="false"

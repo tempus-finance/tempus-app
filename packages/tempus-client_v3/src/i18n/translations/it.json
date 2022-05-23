@@ -11,6 +11,7 @@
     "linkBlockExplorer": ""
   },
   "DepositModal": {
+    "labelMakeDeposit": "",
     "labelExecuteDefault": "",
     "labelExecuteLoading": "",
     "labelExecuteSuccess": "",
@@ -20,7 +21,8 @@
     "labelAvailableForDeposit": "",
     "labelYieldAtMaturity": "",
     "title": "",
-    "description": ""
+    "description": "",
+    "previewDescription": ""
   },
   "DepositModalHeader": {
     "titleRewardsAvailable": ""

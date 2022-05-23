@@ -25,7 +25,7 @@ const defaultProps: CurrencyInputModalProps = {
   balance: new Decimal(100),
   inputPrecision: 18,
   usdRates: singleCurrencyUsdRates,
-  actionButtonLabels: { default: 'Action', loading: 'Loading', success: 'Success' },
+  actionButtonLabels: { action: { default: 'Action', loading: 'Loading', success: 'Success' } },
   onTransactionStart: () => '0x0',
 };
 
@@ -64,7 +64,7 @@ describe('CurrencyInputModal', () => {
 
     expect(actionButton).not.toBeNull();
     expect(actionButton).toBeDisabled();
-    expect(actionButton).toHaveTextContent(defaultProps.actionButtonLabels.default);
+    expect(actionButton).toHaveTextContent(defaultProps.actionButtonLabels.action.default);
 
     expect(currencyInput).not.toBeNull();
 

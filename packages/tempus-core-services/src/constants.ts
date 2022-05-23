@@ -39,6 +39,7 @@ export const dashboardParentMaturityFormat = 'MMM yyyy';
 export const dashboardChildMaturityFormat = 'd MMMM yyyy';
 
 export const POLLING_INTERVAL = 30 * 1000;
+export const FIXED_APR_POLL_INTERVAL = 120 * 1000;
 
 export const BAL_SLIPPAGE_ERROR_CODE = '#507';
 
@@ -80,3 +81,12 @@ export const NETWORK_URLS: { [key in SupportedChainId]: string } = {
 export const ethereumChainIdHex = '0x1';
 export const ethereumForkChainIdHex = '0x7a69';
 export const fantomChainIdHex = '0xfa';
+
+export const tokenColorMap = new Map<Ticker, string>([
+  ['ETH', '#627EEA'],
+  ['USDC', '#2775CA'],
+  ['DAI', '#FEBE44'],
+  ['USDT', '#53AE94'],
+  ['WETH', '#E82573'],
+  ['YFI', '#296AE3'],
+]);

@@ -1,36 +1,27 @@
 import { fireEvent, render } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
-import MarketsSubheader, {
-  FilterType,
-  MarketsSubheaderProps,
-  PoolType,
-  SortOrder,
-  SortType,
-  ViewType,
-} from './MarketsSubheader';
+import MarketsSubheader from './MarketsSubheader';
+import I18nProvider from '../../../i18n/I18nProvider';
 
-const onPoolTypeChangeMock = jest.fn<void, [PoolType]>();
-const onViewTypeChangeMock = jest.fn<void, [ViewType]>();
-const onFilterChangeMock = jest.fn<void, [Set<FilterType>]>();
-const onSortTypeChangeMock = jest.fn<void, [SortType, SortOrder]>();
-
-const subject = (props: MarketsSubheaderProps) =>
+const subject = () =>
   render(
     <BrowserRouter>
-      <MarketsSubheader {...props} />
+      <I18nProvider>
+        <MarketsSubheader />
+      </I18nProvider>
     </BrowserRouter>,
   );
 
 describe('MarketsSubheader', () => {
   it('renders a navigation subheader with filtering and sorting options', () => {
-    const { container } = subject({});
+    const { container } = subject();
 
     expect(container).not.toBeNull();
     expect(container).toMatchSnapshot();
   });
 
   it('updates pool type', () => {
-    const { container } = subject({ onPoolTypeChange: onPoolTypeChangeMock });
+    const { container } = subject();
 
     const poolTypeButtons = container.querySelectorAll('.tc__tabs__tab');
 
@@ -42,42 +33,16 @@ describe('MarketsSubheader', () => {
 
     fireEvent.click(poolTypeButtons[1]);
 
+    expect(poolTypeButtons[0]).toHaveAttribute('data-selected', 'false');
     expect(poolTypeButtons[1]).toHaveAttribute('data-selected', 'true');
-
-    expect(onPoolTypeChangeMock).toBeCalledTimes(1);
-    expect(onPoolTypeChangeMock).toBeCalledWith('boosted');
-
+    expect(poolTypeButtons[2]).toHaveAttribute('data-selected', 'false');
     poolTypeButtons.forEach(button => expect(button).toMatchSnapshot());
-  });
 
-  it('updates view type', () => {
-    const { container } = subject({ onViewTypeChange: onViewTypeChangeMock });
-
-    const viewTypeButtons = container.querySelectorAll('.tc__iconButtonGroup .tc__btn');
-
-    expect(viewTypeButtons).toHaveLength(2);
-
-    expect(viewTypeButtons[0]).toHaveAttribute('data-selected', 'true');
-    expect(viewTypeButtons[1]).toHaveAttribute('data-selected', 'false');
-
-    fireEvent.click(viewTypeButtons[1]);
-
-    expect(viewTypeButtons[0]).toHaveAttribute('data-selected', 'false');
-    expect(viewTypeButtons[1]).toHaveAttribute('data-selected', 'true');
-
-    expect(onViewTypeChangeMock).toBeCalledTimes(1);
-    expect(onViewTypeChangeMock).toBeCalledWith('list');
-
-    viewTypeButtons.forEach(button => expect(button).toMatchSnapshot());
-
-    fireEvent.click(viewTypeButtons[0]);
-
-    expect(onViewTypeChangeMock).toBeCalledTimes(2);
-    expect(onViewTypeChangeMock).toBeCalledWith('grid');
+    expect(container).toMatchSnapshot();
   });
 
   it('updates filters', () => {
-    const { container, getByRole } = subject({ onFilterChange: onFilterChangeMock });
+    const { container, getByRole } = subject();
 
     const filterButton = getByRole('button', { name: 'Filter' });
     expect(filterButton).not.toBeNull();
@@ -87,23 +52,19 @@ describe('MarketsSubheader', () => {
     const filterTypeCheckboxes = container.querySelectorAll('.tc__dropdown:first-of-type input[type=checkbox]');
     expect(filterTypeCheckboxes).toHaveLength(3);
 
-    const filterTypes: Array<FilterType> = ['active', 'matured', 'inactive'];
+    filterTypeCheckboxes.forEach(filterTypeCheckbox => {
+      fireEvent.click(filterTypeCheckbox);
 
-    filterTypeCheckboxes.forEach((checkbox, index) => {
-      fireEvent.click(checkbox);
+      expect(filterTypeCheckbox).toMatchSnapshot();
 
-      expect(onFilterChangeMock).toBeCalledTimes(2 * index + 1);
-      expect(onFilterChangeMock).toBeCalledWith(new Set<FilterType>([filterTypes[index]]));
+      fireEvent.click(filterTypeCheckbox);
 
-      fireEvent.click(checkbox);
-
-      expect(onFilterChangeMock).toBeCalledTimes(2 * index + 2);
-      expect(onFilterChangeMock).toBeCalledWith(new Set<FilterType>());
+      expect(filterTypeCheckbox).toMatchSnapshot();
     });
   });
 
   it('updates sorting type', () => {
-    const { container, getByRole } = subject({ onSortTypeChange: onSortTypeChangeMock });
+    const { container, getByRole } = subject();
 
     const sortButton = getByRole('button', { name: 'Sort' });
     expect(sortButton).not.toBeNull();
@@ -115,23 +76,19 @@ describe('MarketsSubheader', () => {
 
     fireEvent.click(sortTypeButtons[2]);
 
-    expect(onSortTypeChangeMock).toBeCalledTimes(1);
-    expect(onSortTypeChangeMock).toBeCalledWith('tvl', 'asc');
+    expect(container).toMatchSnapshot();
 
     fireEvent.click(sortTypeButtons[2]);
 
-    expect(onSortTypeChangeMock).toBeCalledTimes(2);
-    expect(onSortTypeChangeMock).toBeCalledWith('tvl', 'desc');
+    expect(container).toMatchSnapshot();
 
     fireEvent.click(sortTypeButtons[2]);
 
-    expect(onSortTypeChangeMock).toBeCalledTimes(3);
-    expect(onSortTypeChangeMock).toBeCalledWith('tvl', 'asc');
+    expect(container).toMatchSnapshot();
 
     fireEvent.click(sortTypeButtons[1]);
 
-    expect(onSortTypeChangeMock).toBeCalledTimes(4);
-    expect(onSortTypeChangeMock).toBeCalledWith('maturity', 'asc');
+    expect(container).toMatchSnapshot();
 
     sortTypeButtons.forEach(button => expect(button).toMatchSnapshot());
   });

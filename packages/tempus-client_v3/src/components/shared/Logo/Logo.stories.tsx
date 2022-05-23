@@ -58,7 +58,7 @@ export const TokenWBTCDark = Template.bind({});
 TokenWBTCDark.args = { type: 'token-wBTC-dark' };
 
 export const TokenWETH = Template.bind({});
-TokenWETH.args = { type: 'token-wETH' };
+TokenWETH.args = { type: 'token-WETH' };
 
 export const TokenWFTM = Template.bind({});
 TokenWFTM.args = { type: 'token-wFTM' };
@@ -81,8 +81,8 @@ TokenYvBTC.args = { type: 'token-yvBTC' };
 export const TokenYvYFI = Template.bind({});
 TokenYvYFI.args = { type: 'token-yvYFI' };
 
-export const TokenYvwETH = Template.bind({});
-TokenYvwETH.args = { type: 'token-yvwETH' };
+export const TokenYvWETH = Template.bind({});
+TokenYvWETH.args = { type: 'token-yvWETH' };
 
 export const ProtocolAave = Template.bind({});
 ProtocolAave.args = { type: 'protocol-aave' };

@@ -4,37 +4,81 @@ import { ChainConfig, Decimal, Ticker } from 'tempus-core-services';
 import { ModalProps } from '../shared/Modal/Modal';
 import { MaturityTerm } from '../shared/TermTabs';
 import DepositModalHeader from './DepositModalHeader';
-import CurrencyInputModal, { CurrencyInputModalInfoRow } from '../CurrencyInputModal';
-import { ActionButtonLabels, ActionButtonState } from '../shared';
+import CurrencyInputModal, {
+  CurrencyInputModalActionButtonLabels,
+  CurrencyInputModalInfoRow,
+} from '../CurrencyInputModal';
+import { ActionButtonState, ChartDot, SelectableChartDataPoint, PercentageDateChart } from '../shared';
 import './DepositModal.scss';
 
 export interface DepositModalProps extends ModalProps {
   inputPrecision: number;
   usdRates: Map<Ticker, Decimal>;
+  poolStartDate: Date;
   maturityTerms: MaturityTerm[];
   chainConfig?: ChainConfig;
 }
 
 const DepositModal: FC<DepositModalProps> = props => {
-  const { open, onClose, inputPrecision, usdRates, maturityTerms, chainConfig } = props;
+  const { open, onClose, inputPrecision, usdRates, poolStartDate, maturityTerms, chainConfig } = props;
   const [balance, setBalance] = useState(new Decimal(100)); // TODO: load balance for selected token
+  const [maturityTerm, setMaturityTerm] = useState(maturityTerms[0]);
   const [amount, setAmount] = useState(new Decimal(0));
   const [currency, setCurrency] = useState(Array.from(usdRates.keys())[0]);
   const [approved, setApproved] = useState(false);
   const [actionButtonState, setActionButtonState] = useState<ActionButtonState>('default');
   const { t } = useTranslation();
 
-  const actionButtonLabels: ActionButtonLabels = approved
-    ? {
-        default: t('DepositModal.labelExecuteDefault'),
-        loading: t('DepositModal.labelExecuteLoading'),
-        success: t('DepositModal.labelExecuteSuccess'),
+  const actionButtonLabels: CurrencyInputModalActionButtonLabels = {
+    preview: {
+      default: t('DepositModal.labelMakeDeposit'),
+      loading: '',
+      success: '',
+    },
+    action: approved
+      ? {
+          default: t('DepositModal.labelExecuteDefault'),
+          loading: t('DepositModal.labelExecuteLoading'),
+          success: t('DepositModal.labelExecuteSuccess'),
+        }
+      : {
+          default: t('DepositModal.labelApproveDefault'),
+          loading: t('DepositModal.labelApproveLoading'),
+          success: t('DepositModal.labelApproveSuccess'),
+        },
+  };
+
+  const chartData = useMemo(
+    () =>
+      [{ date: poolStartDate, apr: 0 }, ...maturityTerms].map(term => ({
+        x: term.date,
+        y: term.apr,
+        visible: term.date !== poolStartDate,
+        selected: term === maturityTerm,
+      })) as SelectableChartDataPoint<Date, number>[],
+    [maturityTerm, maturityTerms, poolStartDate],
+  );
+
+  const chartDot = useCallback(
+    (_x, _y, index, cx, cy) => {
+      const { visible, selected } = chartData[index];
+
+      if (visible) {
+        return <ChartDot variant="tick" selected={selected} centerX={cx} centerY={cy} key={`chart-dot-${cx}-${cy}`} />;
       }
-    : {
-        default: t('DepositModal.labelApproveDefault'),
-        loading: t('DepositModal.labelApproveLoading'),
-        success: t('DepositModal.labelApproveSuccess'),
-      };
+      return undefined;
+    },
+    [chartData],
+  );
+
+  const depositYieldChart = useMemo(
+    () => (
+      <div>
+        <PercentageDateChart height={329} data={chartData} dot={chartDot} />
+      </div>
+    ),
+    [chartData, chartDot],
+  );
 
   const infoRows = useMemo(() => {
     // TODO: Replace with real yield based on input amount
@@ -94,7 +138,8 @@ const DepositModal: FC<DepositModalProps> = props => {
       open={open}
       onClose={onClose}
       title={t('DepositModal.title')}
-      description={t('DepositModal.description')}
+      description={{ preview: t('DepositModal.previewDescription'), action: t('DepositModal.description') }}
+      preview={depositYieldChart}
       header={<DepositModalHeader />}
       maturityTerms={maturityTerms}
       inputPrecision={inputPrecision}
@@ -104,6 +149,7 @@ const DepositModal: FC<DepositModalProps> = props => {
       actionButtonLabels={actionButtonLabels}
       actionButtonState={actionButtonState}
       onTransactionStart={approved ? deposit : approveDeposit}
+      onMaturityChange={setMaturityTerm}
       onAmountChange={setAmount}
       onCurrencyUpdate={handleCurrencyChange}
       chainConfig={chainConfig}

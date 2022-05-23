@@ -155,6 +155,7 @@ export async function metamaskAddETHfork(browser: BrowserContext): Promise<void>
     await tabMetamask.fill('input >> nth=3', eth_fork.Chain);
     await tabMetamask.fill('input >> nth=4', eth_fork.CurrencySymbol);
 
+
     await tabMetamask.waitForTimeout(LOAD_SHORT_TIMEOUT);
     if (await tabMetamask.locator('.btn--rounded[disabled]:has-text("Save")').count() == 0) {
         await tabMetamask.click('text="Save"');
@@ -176,7 +177,6 @@ export async function metamaskAccountAdd(browser: BrowserContext, privateKey: st
     await tabMetamask.fill(SELECTOR_PASSWORD_INPUT, privateKey);
     await tabMetamask.click('text="Import"');
 }
-
 
 export async function metamaskAccountsAddAll(browser: BrowserContext): Promise<void> {
     await metamaskAccountAdd(browser, config.METAMASK_ACCOUNT_ETH_FORK);
@@ -210,4 +210,5 @@ export async function metamaskAccountSwitch(browser: BrowserContext, accountInde
     }*/
 
     await tabMetamask.click(`${SELECTOR_ACCOUNTS} >> nth=${accountIndex}`);
+
 }
