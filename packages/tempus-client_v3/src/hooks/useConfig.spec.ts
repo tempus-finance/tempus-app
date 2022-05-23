@@ -27,6 +27,8 @@ describe.only('useConfig', () => {
           backingToken: 18,
           yieldBearingToken: 18,
         },
+        protocolDisplayName: 'Lido',
+        maturityDate: new Date(2025, 0, 1).getTime(),
       },
       {
         address: '2',
@@ -38,6 +40,8 @@ describe.only('useConfig', () => {
           backingToken: 6,
           yieldBearingToken: 6,
         },
+        protocolDisplayName: 'Yearn',
+        maturityDate: new Date(2025, 0, 1).getTime(),
       },
       {
         address: '3',
@@ -49,6 +53,8 @@ describe.only('useConfig', () => {
           backingToken: 6,
           yieldBearingToken: 6,
         },
+        protocolDisplayName: 'Yearn',
+        maturityDate: new Date(2025, 0, 1).getTime(),
       },
       {
         address: '4',
@@ -60,6 +66,8 @@ describe.only('useConfig', () => {
           backingToken: 18,
           yieldBearingToken: 18,
         },
+        protocolDisplayName: 'Yearn',
+        maturityDate: new Date(2025, 0, 1).getTime(),
       },
     ]);
   });

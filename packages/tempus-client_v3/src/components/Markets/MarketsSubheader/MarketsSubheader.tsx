@@ -5,8 +5,6 @@ import {
   DropdownCheckboxItem,
   DropdownSelectableItem,
   DropdownSelector,
-  IconButtonGroup,
-  IconVariant,
   NavSubheader,
   NavSubheaderGroup,
   Tab,
@@ -19,17 +17,6 @@ const MarketsSubheader = () => {
   const { t } = useTranslation();
   const [poolViewOptions, setPoolViewOptions] = usePoolViewOptions();
   const { poolType, filters, sortType, sortOrder } = poolViewOptions;
-
-  const handleViewTypeChange = useCallback(
-    (iconType: IconVariant) => {
-      if (iconType === 'grid-view') {
-        setPoolViewOptions({ viewType: 'grid' });
-      } else if (iconType === 'list-view') {
-        setPoolViewOptions({ viewType: 'list' });
-      }
-    },
-    [setPoolViewOptions],
-  );
 
   const handlePoolTypeChange = useCallback(
     (type: PoolType) => setPoolViewOptions({ poolType: type }),
@@ -74,29 +61,31 @@ const MarketsSubheader = () => {
           <Tab label={t('MarketsSubheader.tabBoosted')} value="boosted" />
           <Tab label={t('MarketsSubheader.tabAll')} value="all" />
         </Tabs>
-        <IconButtonGroup types={['grid-view', 'list-view']} onChange={handleViewTypeChange} />
       </NavSubheaderGroup>
       <NavSubheaderGroup>
         <Dropdown label={t('MarketsSubheader.optionFilter')}>
           <DropdownCheckboxItem
             label={t('MarketsSubheader.filterActive')}
             value="active"
+            checked={filters.has('active')}
             onChange={handleFilterChange}
           />
           <DropdownCheckboxItem
             label={t('MarketsSubheader.filterMatured')}
             value="matured"
+            checked={filters.has('matured')}
             onChange={handleFilterChange}
           />
           <DropdownCheckboxItem
             label={t('MarketsSubheader.filterInactive')}
             value="inactive"
+            checked={filters.has('inactive')}
             onChange={handleFilterChange}
           />
         </Dropdown>
         <DropdownSelector
           label={t('MarketsSubheader.optionSort')}
-          itemIcon={sortOrder === 'asc' ? 'down-arrow-thin' : 'up-arrow-thin'}
+          itemIcon={sortOrder === 'asc' ? 'up-arrow-thin' : 'down-arrow-thin'}
           selectedValue={sortType}
           onSelect={handleSortTypeChange}
         >

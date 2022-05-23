@@ -82,10 +82,13 @@ jobs:
           name: E2E Tests
           command: |
             apt update
-            apt install -y p7zip-full || true
+            apt install -y p7zip-full
+            npm install -g typescript
+            npm install -g ts-node
             npx playwright install
-            xvfb-run --auto-servernum --server-num=1 node setup.js
-            xvfb-run --auto-servernum --server-num=2 npm run mm-setup
+            touch /root/project/integration-testing/utility/mm_id.txt
+            xvfb-run --auto-servernum --server-num=1 npm run mm-setup
+            xvfb-run --auto-servernum --server-num=2 npm run e2e /root/project/integration-testing/tests/_firstLogin.spec.ts
       - persist_to_workspace:
           root: ./
           paths:
@@ -112,9 +115,9 @@ jobs:
           name: E2E Tests
           command: |
             npx playwright install
-            TEST_FILES=$(circleci tests glob "/root/project/tests/*.spec.js" | circleci tests split)
+            TEST_FILES=$(circleci tests glob "/root/project/integration-testing/tests/*.spec.ts" | circleci tests split)
             echo "Executing test files:" $TEST_FILES
-            xvfb-run --auto-servernum --server-num=2 npm run e2e $TEST_FILES
+            xvfb-run --auto-servernum --server-num=1 npm run e2e $TEST_FILES
             ls /root/project/test-results
       - persist_to_workspace:
           root: ./

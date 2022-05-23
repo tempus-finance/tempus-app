@@ -1,4 +1,4 @@
-import { BigNumber, ethers } from 'ethers';
+import { BigNumber, CallOverrides, ethers } from 'ethers';
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
 import { TempusPool } from '../abi/TempusPool';
 import { Chain, Ticker, ProtocolName, ChainConfig } from '../interfaces';
@@ -249,6 +249,7 @@ export class TempusPoolService {
     address: string,
     yieldTokenAmount: Decimal,
     interestRate: Decimal,
+    overrides?: CallOverrides,
   ): Promise<Decimal> {
     const contract = this.tempusPoolsMap[address];
     const chainConfig = this.chain && this.getChainConfig?.(this.chain);
@@ -259,10 +260,20 @@ export class TempusPoolService {
         const backingTokenPrecision = tempusPool.tokenPrecision.backingToken;
         const yieldBearingTokenPrecision = tempusPool.tokenPrecision.yieldBearingToken;
 
-        let numAssets = await contract.numAssetsPerYieldToken(
-          yieldTokenAmount.toBigNumber(yieldBearingTokenPrecision),
-          interestRate.toBigNumber(yieldBearingTokenPrecision),
-        );
+        let numAssets: BigNumber;
+
+        if (overrides) {
+          numAssets = await contract.numAssetsPerYieldToken(
+            yieldTokenAmount.toBigNumber(yieldBearingTokenPrecision),
+            interestRate.toBigNumber(yieldBearingTokenPrecision),
+            overrides,
+          );
+        } else {
+          numAssets = await contract.numAssetsPerYieldToken(
+            yieldTokenAmount.toBigNumber(yieldBearingTokenPrecision),
+            interestRate.toBigNumber(yieldBearingTokenPrecision),
+          );
+        }
 
         if (yieldBearingTokenPrecision > backingTokenPrecision) {
           numAssets = increasePrecision(numAssets, yieldBearingTokenPrecision - backingTokenPrecision);
@@ -294,17 +305,35 @@ export class TempusPoolService {
     throw new Error(`TempusPoolService - currentInterestRate() - Address '${address}' is not valid`);
   }
 
-  public async currentInterestRate(address: string): Promise<Decimal> {
+  public async currentInterestRate(address: string, overrides?: CallOverrides): Promise<Decimal> {
     const contract = this.tempusPoolsMap[address];
     const chainConfig = this.chain && this.getChainConfig?.(this.chain);
     const tempusPool = chainConfig?.tempusPools.find(pool => pool.address === address);
 
     if (contract && tempusPool) {
       try {
-        const interestRate = await contract.currentInterestRate();
+        const interestRate = overrides
+          ? await contract.currentInterestRate(overrides)
+          : await contract.currentInterestRate();
         return new Decimal(interestRate, tempusPool.tokenPrecision.yieldBearingToken);
       } catch (error) {
         console.error('TempusPoolService - currentInterestRate() - Failed to fetch interest rate!', error);
+        return Promise.reject(error);
+      }
+    }
+    throw new Error(`TempusPoolService - currentInterestRate() - Address '${address}' is not valid`);
+  }
+
+  public async currentInterestRateStatic(address: string, overrides?: CallOverrides): Promise<BigNumber> {
+    const contract = this.tempusPoolsMap[address];
+    if (contract) {
+      try {
+        if (overrides) {
+          return await contract.callStatic.currentInterestRate(overrides);
+        }
+        return await contract.callStatic.currentInterestRate();
+      } catch (error) {
+        console.error('TempusPoolService - currentInterestRateStatic() - Failed to fetch interest rate!', error);
         return Promise.reject(error);
       }
     }

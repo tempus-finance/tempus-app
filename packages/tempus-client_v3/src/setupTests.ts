@@ -55,6 +55,8 @@ jest.mock('./config/getConfigManager', () => ({
           backingToken: 18,
           yieldBearingToken: 18,
         },
+        protocolDisplayName: 'Lido',
+        maturityDate: new Date(2025, 0, 1).getTime(),
       },
       {
         address: '2',
@@ -66,6 +68,8 @@ jest.mock('./config/getConfigManager', () => ({
           backingToken: 6,
           yieldBearingToken: 6,
         },
+        protocolDisplayName: 'Yearn',
+        maturityDate: new Date(2025, 0, 1).getTime(),
       },
       {
         address: '3',
@@ -77,6 +81,8 @@ jest.mock('./config/getConfigManager', () => ({
           backingToken: 6,
           yieldBearingToken: 6,
         },
+        protocolDisplayName: 'Yearn',
+        maturityDate: new Date(2025, 0, 1).getTime(),
       },
       {
         address: '4',
@@ -88,6 +94,8 @@ jest.mock('./config/getConfigManager', () => ({
           backingToken: 18,
           yieldBearingToken: 18,
         },
+        protocolDisplayName: 'Yearn',
+        maturityDate: new Date(2025, 0, 1).getTime(),
       },
     ],
     getTokenList: () => [

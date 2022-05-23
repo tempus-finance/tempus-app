@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { Decimal, prettifyChainName, ProtocolName, TempusPool, Ticker, tokenColorMap } from 'tempus-core-services';
-import { useChainList, usePoolList, useSelectedChain } from '../../../hooks';
+import { useChainList, useFilteredSortedPoolList, useSelectedChain } from '../../../hooks';
 import { PoolCard, PoolsHeading } from '../../shared';
 import './MarketsPools.scss';
 
@@ -13,7 +13,7 @@ interface CardData {
 
 const MarketsPools = (): JSX.Element => {
   const chains = useChainList();
-  const tempusPools = usePoolList();
+  const tempusPools = useFilteredSortedPoolList();
   const selectedChain = useSelectedChain();
 
   /**
@@ -62,10 +62,11 @@ const MarketsPools = (): JSX.Element => {
             <div className="tc__marketsPools">
               {chainCards.map(chainCard => {
                 const cardColor = tokenColorMap.get(chainCard.token);
-
                 if (!cardColor) {
                   console.warn(`Missing ${chainCard.token} token color in tokenColorMap!`);
                 }
+
+                const terms = chainCard.pools.map(pool => new Date(pool.maturityDate));
 
                 return (
                   <PoolCard
@@ -76,7 +77,7 @@ const MarketsPools = (): JSX.Element => {
                     poolCardVariant="markets"
                     ticker={chainCard.token}
                     protocol={chainCard.protocol}
-                    terms={[new Date(4, 5, 2023)]}
+                    terms={terms}
                   />
                 );
               })}
