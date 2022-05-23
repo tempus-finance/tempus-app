@@ -1,5 +1,6 @@
 // Services
-import { CallOverrides } from 'ethers';
+import { BigNumberish, CallOverrides } from 'ethers';
+import { Decimal } from '../datastructures';
 import { TempusPoolService } from './TempusPoolService';
 
 jest.mock('ethers');
@@ -271,11 +272,21 @@ describe('TempusPoolService', () => {
     });
 
     test('it returns number of assets per yield token', async () => {
-      mockNumAssetsPerYieldToken.mockImplementation(() => Promise.resolve(BigNumber.from('3')));
+      (utils.parseUnits as jest.Mock).mockImplementation((value: string) => {
+        const originalEthers = jest.requireActual('ethers');
+        return originalEthers.utils.parseUnits(value);
+      });
 
-      const numberOfAssets = await instance.numAssetsPerYieldToken(mockAddress, BigNumber.from(1), BigNumber.from(1));
+      (utils.formatUnits as jest.Mock).mockImplementation((value: BigNumberish, unit?: BigNumberish) => {
+        const originalEthers = jest.requireActual('ethers');
+        return originalEthers.utils.formatUnits(value, unit);
+      });
 
-      expect(numberOfAssets.toNumber()).toBe(3);
+      mockNumAssetsPerYieldToken.mockImplementation(() => Promise.resolve(new Decimal(3)));
+
+      const numberOfAssets = await instance.numAssetsPerYieldToken(mockAddress, new Decimal(1), new Decimal(1));
+
+      expect(numberOfAssets.toString()).toBe('3');
     });
 
     test('it returns the fees', async () => {

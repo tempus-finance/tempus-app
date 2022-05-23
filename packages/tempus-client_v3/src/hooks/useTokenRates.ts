@@ -1,5 +1,4 @@
 import { bind } from '@react-rxjs/core';
-import { BigNumber } from 'ethers';
 import {
   catchError,
   combineLatest,
@@ -15,16 +14,7 @@ import {
   startWith,
   switchMap,
 } from 'rxjs';
-import {
-  getServices,
-  Decimal,
-  StatisticsService,
-  Chain,
-  Ticker,
-  increasePrecision,
-  TempusPoolService,
-} from 'tempus-core-services';
-import { DEFAULT_DECIMAL_PRECISION } from 'tempus-core-services/dist/datastructures';
+import { getServices, Decimal, StatisticsService, Chain, Ticker, TempusPoolService } from 'tempus-core-services';
 import { poolList$ } from './useConfig';
 
 const TOKEN_RATE_POLLING_INTERVAL_IN_MS = 30000;
@@ -36,7 +26,6 @@ interface TokenInfoMap {
     token: Ticker;
     address: string;
     conversionRate?: Decimal;
-    increasePrecisionAmount?: number;
   };
 }
 
@@ -50,26 +39,10 @@ const conversionRates$ = poolList$.pipe(
   switchMap(tempusPools =>
     from(
       Promise.all(
-        tempusPools.map<Promise<[BigNumber, number]>>(async pool => {
-          const backingTokenPrecision = pool.tokenPrecision.backingToken;
-          const yieldBearingTokenPrecision = pool.tokenPrecision.yieldBearingToken;
-
+        tempusPools.map(async pool => {
           const poolService = getServices(pool.chain as Chain)?.TempusPoolService as TempusPoolService;
           const interestRate = await poolService.currentInterestRate(pool.address);
-          const conversionRate = await poolService.numAssetsPerYieldToken(
-            pool.address,
-            increasePrecision(BigNumber.from(1), yieldBearingTokenPrecision),
-            interestRate,
-          );
-
-          const increasePrecisionAmount = DEFAULT_DECIMAL_PRECISION - yieldBearingTokenPrecision;
-
-          if (yieldBearingTokenPrecision > backingTokenPrecision) {
-            const precisionDifference = yieldBearingTokenPrecision - backingTokenPrecision;
-            return [increasePrecision(conversionRate, precisionDifference), increasePrecisionAmount];
-          }
-
-          return [conversionRate, increasePrecisionAmount];
+          return poolService.numAssetsPerYieldToken(pool.address, new Decimal(1), interestRate);
         }),
       ),
     ),
@@ -79,9 +52,8 @@ const conversionRates$ = poolList$.pipe(
 const tokenRates$: Observable<TokenRateMap> = combineLatest([poolList$, conversionRates$, polling$]).pipe(
   mergeMap(([tempusPools, rates]) => {
     const uniqueTokens = Object.values(
-      tempusPools.reduce((obj, { chain, backingToken, backingTokenAddress, yieldBearingTokenAddress }, index) => {
-        const [conversionRate, increasePrecisionAmount] = rates[index];
-        return {
+      tempusPools.reduce(
+        (obj, { chain, backingToken, backingTokenAddress, yieldBearingTokenAddress }, index) => ({
           ...obj,
           [`${chain}-${backingTokenAddress}`]: {
             chain: chain as Chain,
@@ -92,13 +64,13 @@ const tokenRates$: Observable<TokenRateMap> = combineLatest([poolList$, conversi
             chain: chain as Chain,
             token: backingToken,
             address: yieldBearingTokenAddress,
-            conversionRate: new Decimal(conversionRate),
-            increasePrecisionAmount,
+            conversionRate: rates[index],
           },
-        };
-      }, {} as TokenInfoMap),
+        }),
+        {} as TokenInfoMap,
+      ),
     );
-    const tokenRates = uniqueTokens.map(({ chain, token, address, conversionRate, increasePrecisionAmount }) => {
+    const tokenRates = uniqueTokens.map(({ chain, token, address, conversionRate }) => {
       // TODO: conceptually chain+ticker is not unique, it should accept chain+address instead
       //       but currently chainlink and gecko API doesnt support that
       const tokenRate = (getServices(chain as Chain)?.StatisticsService as StatisticsService).getRate(
@@ -106,16 +78,12 @@ const tokenRates$: Observable<TokenRateMap> = combineLatest([poolList$, conversi
         token,
       );
       return tokenRate.pipe(
-        map(rate => {
-          const resolvedRate = conversionRate ? rate?.mul(conversionRate) : rate;
-          const scaledRate = increasePrecisionAmount
-            ? resolvedRate?.mul(increasePrecision(BigNumber.from(1), increasePrecisionAmount))
-            : resolvedRate;
-
-          return {
-            [`${chain}-${address}`]: scaledRate,
-          } as TokenRateMap;
-        }),
+        map(
+          rate =>
+            ({
+              [`${chain}-${address}`]: conversionRate ? rate?.mul(conversionRate) : rate,
+            } as TokenRateMap),
+        ),
       );
     });
 
