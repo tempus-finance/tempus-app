@@ -43,35 +43,31 @@ describe('TempusPoolService', () => {
   let instance: TempusPoolService;
 
   beforeEach(() => {
-    Contract.mockImplementation(() => {
-      return {
-        currentInterestRate: mockCurrentInterestRate,
-        maturityTime: mockMaturityTime,
-        startTime: mockStartTime,
-        yieldBearingToken: mockYieldBearingToken,
-        backingToken: mockBackingToken,
-        protocolName: mockProtocolName,
-        pricePerYieldShareStored: mockPricePerYieldShareStored,
-        pricePerPrincipalShareStored: mockPricePerPrincipalShareStored,
-        yieldShare: mockYieldShare,
-        principalShare: mockPrincipalShare,
-        numAssetsPerYieldToken: mockNumAssetsPerYieldToken,
-        getFeesConfig: mockGetFeesConfig,
-        provider: {
-          getBlock: mockGetBlock,
-        },
-        filters: {
-          Deposited: jest.fn(),
-          Redeemed: jest.fn(),
-        },
-      };
-    });
+    Contract.mockImplementation(() => ({
+      currentInterestRate: mockCurrentInterestRate,
+      maturityTime: mockMaturityTime,
+      startTime: mockStartTime,
+      yieldBearingToken: mockYieldBearingToken,
+      backingToken: mockBackingToken,
+      protocolName: mockProtocolName,
+      pricePerYieldShareStored: mockPricePerYieldShareStored,
+      pricePerPrincipalShareStored: mockPricePerPrincipalShareStored,
+      yieldShare: mockYieldShare,
+      principalShare: mockPrincipalShare,
+      numAssetsPerYieldToken: mockNumAssetsPerYieldToken,
+      getFeesConfig: mockGetFeesConfig,
+      provider: {
+        getBlock: mockGetBlock,
+      },
+      filters: {
+        Deposited: jest.fn(),
+        Redeemed: jest.fn(),
+      },
+    }));
 
-    getERC20TokenService.mockImplementation(() => {
-      return {
-        symbol: mockSymbol,
-      };
-    });
+    getERC20TokenService.mockImplementation(() => ({
+      symbol: mockSymbol,
+    }));
   });
 
   describe('constructor()', () => {
@@ -110,12 +106,11 @@ describe('TempusPoolService', () => {
     beforeEach(() => {
       jest.clearAllMocks();
 
-      mockCurrentRate.mockImplementation((overrides: {}) => {
+      mockCurrentRate.mockImplementation((overrides: Record<string, never>) => {
         if (!overrides) {
           return Promise.resolve(BigNumber.from('10'));
-        } else {
-          return Promise.resolve(BigNumber.from('9'));
         }
+        return Promise.resolve(BigNumber.from('9'));
       });
 
       instance = new TempusPoolService();
@@ -179,22 +174,20 @@ describe('TempusPoolService', () => {
             number: 100,
             timestamp: 200,
           });
-        } else {
-          return Promise.resolve({
-            number: 50,
-            timestamp: 100,
-          });
         }
+        return Promise.resolve({
+          number: 50,
+          timestamp: 100,
+        });
       });
       mockCurrentInterestRate.mockImplementation((overrides: CallOverrides) => {
         if (overrides) {
           return Promise.resolve(BigNumber.from('1'));
-        } else {
-          return Promise.resolve(BigNumber.from('2'));
         }
+        return Promise.resolve(BigNumber.from('2'));
       });
 
-      utils.formatEther.mockImplementation((value: number) => value);
+      utils.formatUnits.mockImplementation((value: number) => value);
 
       instance.getVariableAPY(mockAddress, 13.2).then(result => {
         expect(result).toEqual(31536000);
@@ -272,17 +265,15 @@ describe('TempusPoolService', () => {
     });
 
     test('it returns number of assets per yield token', async () => {
-      (utils.parseUnits as jest.Mock).mockImplementation((value: string) => {
-        const originalEthers = jest.requireActual('ethers');
-        return originalEthers.utils.parseUnits(value);
-      });
+      const originalEthers = jest.requireActual('ethers');
 
-      (utils.formatUnits as jest.Mock).mockImplementation((value: BigNumberish, unit?: BigNumberish) => {
-        const originalEthers = jest.requireActual('ethers');
-        return originalEthers.utils.formatUnits(value, unit);
-      });
+      (utils.parseUnits as jest.Mock).mockImplementation((value: string) => originalEthers.utils.parseUnits(value));
 
-      mockNumAssetsPerYieldToken.mockImplementation(() => Promise.resolve(new Decimal(3)));
+      (utils.formatUnits as jest.Mock).mockImplementation((value: BigNumberish, unit?: BigNumberish) =>
+        originalEthers.utils.formatUnits(value, unit),
+      );
+
+      mockNumAssetsPerYieldToken.mockResolvedValue(3);
 
       const numberOfAssets = await instance.numAssetsPerYieldToken(mockAddress, new Decimal(1), new Decimal(1));
 
