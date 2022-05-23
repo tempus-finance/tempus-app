@@ -1,4 +1,4 @@
-import { BigNumber, ethers } from 'ethers';
+import { BigNumber, CallOverrides, ethers } from 'ethers';
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
 import { TempusPool } from '../abi/TempusPool';
 import { Chain, Ticker, ProtocolName, ChainConfig } from '../interfaces';
@@ -248,11 +248,15 @@ export class TempusPoolService {
     address: string,
     yieldTokenAmount: BigNumber,
     interestRate: BigNumber,
+    overrides?: CallOverrides,
   ): Promise<BigNumber> {
     const tempusPool = this.tempusPoolsMap[address];
 
     if (tempusPool) {
       try {
+        if (overrides) {
+          return tempusPool.numAssetsPerYieldToken(yieldTokenAmount, interestRate, overrides);
+        }
         return tempusPool.numAssetsPerYieldToken(yieldTokenAmount, interestRate);
       } catch (error) {
         console.error(
@@ -279,13 +283,32 @@ export class TempusPoolService {
     throw new Error(`TempusPoolService - currentInterestRate() - Address '${address}' is not valid`);
   }
 
-  public async currentInterestRate(address: string): Promise<BigNumber> {
+  public async currentInterestRate(address: string, overrides?: CallOverrides): Promise<BigNumber> {
     const contract = this.tempusPoolsMap[address];
     if (contract) {
       try {
+        if (overrides) {
+          return await contract.currentInterestRate(overrides);
+        }
         return await contract.currentInterestRate();
       } catch (error) {
         console.error('TempusPoolService - currentInterestRate() - Failed to fetch interest rate!', error);
+        return Promise.reject(error);
+      }
+    }
+    throw new Error(`TempusPoolService - currentInterestRate() - Address '${address}' is not valid`);
+  }
+
+  public async currentInterestRateStatic(address: string, overrides?: CallOverrides): Promise<BigNumber> {
+    const contract = this.tempusPoolsMap[address];
+    if (contract) {
+      try {
+        if (overrides) {
+          return await contract.callStatic.currentInterestRate(overrides);
+        }
+        return await contract.callStatic.currentInterestRate();
+      } catch (error) {
+        console.error('TempusPoolService - currentInterestRateStatic() - Failed to fetch interest rate!', error);
         return Promise.reject(error);
       }
     }
