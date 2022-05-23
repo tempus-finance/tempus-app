@@ -121,9 +121,7 @@ const MarketsPools = (): JSX.Element => {
                 <ActionButton
                   labels={{
                     default: `Show ${
-                      cardsToShow.length + NUMBER_OF_CARDS_PER_PAGE > chainCards.length
-                        ? chainCards.length
-                        : cardsToShow.length + NUMBER_OF_CARDS_PER_PAGE
+                      Math.min(cardsToShow.length + NUMBER_OF_CARDS_PER_PAGE, chainCards.length)
                     } of ${chainCards.length} more`,
                     loading: '',
                     success: '',
