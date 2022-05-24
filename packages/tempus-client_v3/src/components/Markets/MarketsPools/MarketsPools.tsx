@@ -117,18 +117,16 @@ const MarketsPools = (): JSX.Element => {
               })}
             </div>
             {cardsToShow.length < chainCards.length && (
-              <div className="tc__marketsPools-show-more">
+              <div className="tc__marketsPools-showMore">
                 <ActionButton
                   labels={{
-                    default: `Show ${
-                      Math.min(cardsToShow.length + NUMBER_OF_CARDS_PER_PAGE, chainCards.length)
-                    } of ${chainCards.length} more`,
+                    default: `Show ${Math.min(cardsToShow.length + NUMBER_OF_CARDS_PER_PAGE, chainCards.length)} of ${
+                      chainCards.length
+                    } more`,
                     loading: '',
                     success: '',
                   }}
-                  onClick={() => {
-                    onShowMoreClick(chain);
-                  }}
+                  onClick={onShowMoreClick(chain)}
                   variant="secondary"
                   size="large"
                 />
