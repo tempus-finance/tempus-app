@@ -110,7 +110,7 @@ jest.mock('tempus-core-services', () => ({
   ...jest.requireActual('tempus-core-services'),
   getServices: jest.fn().mockImplementation(() => ({
     StatisticsService: {
-      totalValueLockedUSD: (chain: Chain, address: string) => {
+      totalValueLockedUSD: jest.fn().mockImplementation((chain: Chain, address: string) => {
         switch (`${chain}-${address}`) {
           case 'ethereum-1':
             return mockOf(new mockDecimal(5000));
@@ -123,8 +123,8 @@ jest.mock('tempus-core-services', () => ({
           default:
             return mockZERO;
         }
-      },
-      getRate: (chain: Chain, tokenTicker: Ticker) => {
+      }),
+      getRate: jest.fn().mockImplementation((chain: Chain, tokenTicker: Ticker) => {
         let price = new mockDecimal(0);
         switch (tokenTicker) {
           case 'ETH':
@@ -140,7 +140,7 @@ jest.mock('tempus-core-services', () => ({
         }
 
         return mockOf(price);
-      },
+      }),
       estimatedDepositAndFix: jest.fn(),
       estimatedMintedShares: jest.fn(),
     },
