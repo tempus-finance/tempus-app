@@ -11,8 +11,9 @@ import {
   tokenColorMap,
 } from 'tempus-core-services';
 import { useChainList, useFilteredSortedPoolList, useSelectedChain } from '../../../hooks';
-import { ActionButton, PoolCard, PoolsHeading } from '../../shared';
+import { PoolCard, PoolsHeading } from '../../shared';
 import './MarketsPools.scss';
+import ShowMoreButtonWrapper from './ShowMoreButton';
 
 const NUMBER_OF_CARDS_PER_PAGE = 3;
 
@@ -46,14 +47,7 @@ const MarketsPools = (): JSX.Element => {
     setVisibleChainPools(result);
   }, [tempusPools, chains]);
 
-  const onShowMoreClick = useCallback((id?: string) => {
-    if (!id) {
-      return;
-    }
-
-    // We are passing chain as ActionButton ID, so it's safe to cast ID back to Chain
-    const chain = id as Chain;
-
+  const onShowMoreClick = useCallback((chain: Chain) => {
     setVisibleChainPools(prevState => ({
       ...prevState,
       [chain]: (prevState[chain] || NUMBER_OF_CARDS_PER_PAGE) + NUMBER_OF_CARDS_PER_PAGE,
@@ -136,19 +130,13 @@ const MarketsPools = (): JSX.Element => {
             </div>
             {cardsToShow.length < chainCards.length && (
               <div className="tc__marketsPools-showMore">
-                <ActionButton
-                  id={chain}
-                  labels={{
-                    default: t('MarketsPools.showMoreButtonLabel', {
-                      numOfCardsToShow: Math.min(cardsToShow.length + NUMBER_OF_CARDS_PER_PAGE, chainCards.length),
-                      totalNumOfCards: chainCards.length,
-                    }),
-                    loading: '',
-                    success: '',
-                  }}
+                <ShowMoreButtonWrapper
+                  chain={chain}
                   onClick={onShowMoreClick}
-                  variant="secondary"
-                  size="large"
+                  label={t('MarketsPools.showMoreButtonLabel', {
+                    numOfCardsToShow: Math.min(cardsToShow.length + NUMBER_OF_CARDS_PER_PAGE, chainCards.length),
+                    totalNumOfCards: chainCards.length,
+                  })}
                 />
               </div>
             )}

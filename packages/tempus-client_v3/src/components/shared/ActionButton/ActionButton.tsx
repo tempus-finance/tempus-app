@@ -1,4 +1,4 @@
-import { FC, memo, useCallback } from 'react';
+import { FC, memo } from 'react';
 import Button from '../ButtonWrapper';
 import Icon from '../Icon';
 import Loading, { LoadingColor } from '../Loading';
@@ -16,9 +16,8 @@ export type ActionButtonLabels = {
 };
 
 export interface ButtonProps {
-  id?: string;
   labels: ActionButtonLabels;
-  onClick: (id?: string) => void;
+  onClick: () => void;
   variant?: ActionButtonVariant;
   state?: ActionButtonState;
   size?: ActionButtonSize;
@@ -26,7 +25,7 @@ export interface ButtonProps {
 }
 
 const ActionButton: FC<ButtonProps> = props => {
-  const { id = '', labels, variant = 'primary', size = 'small', state = 'default', fullWidth = false, onClick } = props;
+  const { labels, variant = 'primary', size = 'small', state = 'default', fullWidth = false, onClick } = props;
 
   // Compute CSS class names
   let borderClass = `tc__actionButton-border-${variant}-${size}`;
@@ -103,10 +102,6 @@ const ActionButton: FC<ButtonProps> = props => {
     loaderColor = 'secondary';
   }
 
-  const handleOnClick = useCallback(() => {
-    onClick(id);
-  }, [id, onClick]);
-
   return (
     <Button
       className={
@@ -114,7 +109,7 @@ const ActionButton: FC<ButtonProps> = props => {
         ` ${shadowClass} ${cursorClass} ${heightClass} ${widthClass}`
       }
       disabled={state !== 'default'}
-      onClick={handleOnClick}
+      onClick={onClick}
     >
       {state === 'loading' && (
         <div className={`tc__actionButton-status-${size}-content`}>
