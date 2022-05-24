@@ -50,6 +50,9 @@
     "sortAPR": "APR %",
     "sortBalance": "Balance"
   },
+  "MarketsPools": {
+    "showMoreButtonLabel": "Show {{numOfCardsToShow}} of {{totalNumOfCards}} more"
+  },
   "PortfolioSubheader": {
     "tabOverview": "Overview",
     "tabPositions": "Positions"

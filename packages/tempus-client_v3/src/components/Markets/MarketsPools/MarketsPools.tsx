@@ -1,4 +1,5 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import {
   Chain,
@@ -12,6 +13,9 @@ import {
 import { useChainList, useFilteredSortedPoolList, useSelectedChain } from '../../../hooks';
 import { PoolCard, PoolsHeading } from '../../shared';
 import './MarketsPools.scss';
+import ShowMoreButtonWrapper from './ShowMoreButton';
+
+const NUMBER_OF_CARDS_PER_PAGE = 3;
 
 interface CardData {
   chain: Chain;
@@ -22,10 +26,33 @@ interface CardData {
 }
 
 const MarketsPools = (): JSX.Element => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const chains = useChainList();
   const tempusPools = useFilteredSortedPoolList();
   const selectedChain = useSelectedChain();
+
+  // When users clicks show more button, number of visible pools is increased
+  // When user sorts/filters pool list - number of visible pools for each chain is reset
+  const [visibleChainPools, setVisibleChainPools] = useState<{ [key in Chain]?: number }>({});
+
+  // Reset number of visible pools when tempus pools list changes (ie. user filtered/sorted pools)
+  useEffect(() => {
+    const result: { [key in Chain]?: number } = {};
+
+    chains.forEach(chain => {
+      result[chain] = NUMBER_OF_CARDS_PER_PAGE;
+    });
+
+    setVisibleChainPools(result);
+  }, [tempusPools, chains]);
+
+  const onShowMoreClick = useCallback((chain: Chain) => {
+    setVisibleChainPools(prevState => ({
+      ...prevState,
+      [chain]: (prevState[chain] || NUMBER_OF_CARDS_PER_PAGE) + NUMBER_OF_CARDS_PER_PAGE,
+    }));
+  }, []);
 
   /**
    * If user wallet is connected and selected chain is available we want to show pools only from selected network,
@@ -71,11 +98,13 @@ const MarketsPools = (): JSX.Element => {
           return null;
         }
 
+        const cardsToShow = chainCards.slice(0, visibleChainPools[chain] || NUMBER_OF_CARDS_PER_PAGE);
+
         return (
           <div key={chain}>
             <PoolsHeading text={`${prettyChainName}-Network pools`} />
             <div className="tc__marketsPools">
-              {chainCards.map(chainCard => {
+              {cardsToShow.map(chainCard => {
                 const cardColor = tokenColorMap.get(chainCard.token);
                 if (!cardColor) {
                   console.warn(`Missing ${chainCard.token} token color in tokenColorMap!`);
@@ -99,6 +128,18 @@ const MarketsPools = (): JSX.Element => {
                 );
               })}
             </div>
+            {cardsToShow.length < chainCards.length && (
+              <div className="tc__marketsPools-showMore">
+                <ShowMoreButtonWrapper
+                  chain={chain}
+                  onClick={onShowMoreClick}
+                  label={t('MarketsPools.showMoreButtonLabel', {
+                    numOfCardsToShow: Math.min(cardsToShow.length + NUMBER_OF_CARDS_PER_PAGE, chainCards.length),
+                    totalNumOfCards: chainCards.length,
+                  })}
+                />
+              </div>
+            )}
           </div>
         );
       })}
