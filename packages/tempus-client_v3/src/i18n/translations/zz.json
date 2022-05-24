@@ -50,6 +50,9 @@
     "sortAPR": "~~~~~====={{{{{(((((sortAPR)))))}}}}}=====~~~~~",
     "sortBalance": "~~~~~====={{{{{(((((sortBalance)))))}}}}}=====~~~~~"
   },
+  "MarketsPools": {
+    "showMoreButtonLabel": "~~~~~====={{{{{(((((showMoreButtonLabel)))))}}}}}=====~~~~~"
+  },
   "PortfolioSubheader": {
     "tabOverview": "~~~~~====={{{{{(((((tabOverview)))))}}}}}=====~~~~~",
     "tabPositions": "~~~~~====={{{{{(((((tabPositions)))))}}}}}=====~~~~~"

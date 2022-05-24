@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import {
   Chain,
@@ -24,6 +25,7 @@ interface CardData {
 }
 
 const MarketsPools = (): JSX.Element => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const chains = useChainList();
   const tempusPools = useFilteredSortedPoolList();
@@ -44,7 +46,14 @@ const MarketsPools = (): JSX.Element => {
     setVisibleChainPools(result);
   }, [tempusPools, chains]);
 
-  const onShowMoreClick = useCallback((chain: Chain) => {
+  const onShowMoreClick = useCallback((id?: string) => {
+    if (!id) {
+      return;
+    }
+
+    // We are passing chain as ActionButton ID, so it's safe to cast ID back to Chain
+    const chain = id as Chain;
+
     setVisibleChainPools(prevState => ({
       ...prevState,
       [chain]: (prevState[chain] || NUMBER_OF_CARDS_PER_PAGE) + NUMBER_OF_CARDS_PER_PAGE,
@@ -128,16 +137,16 @@ const MarketsPools = (): JSX.Element => {
             {cardsToShow.length < chainCards.length && (
               <div className="tc__marketsPools-showMore">
                 <ActionButton
+                  id={chain}
                   labels={{
-                    default: `Show ${Math.min(cardsToShow.length + NUMBER_OF_CARDS_PER_PAGE, chainCards.length)} of ${
-                      chainCards.length
-                    } more`,
+                    default: t('MarketsPools.showMoreButtonLabel', {
+                      numOfCardsToShow: Math.min(cardsToShow.length + NUMBER_OF_CARDS_PER_PAGE, chainCards.length),
+                      totalNumOfCards: chainCards.length,
+                    }),
                     loading: '',
                     success: '',
                   }}
-                  onClick={() => {
-                    onShowMoreClick(chain);
-                  }}
+                  onClick={onShowMoreClick}
                   variant="secondary"
                   size="large"
                 />

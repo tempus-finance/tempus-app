@@ -50,6 +50,9 @@
     "sortAPR": "",
     "sortBalance": ""
   },
+  "MarketsPools": {
+    "showMoreButtonLabel": ""
+  },
   "PortfolioSubheader": {
     "tabOverview": "",
     "tabPositions": ""
