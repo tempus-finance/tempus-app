@@ -112,7 +112,9 @@
         "lines": 80,
         "statements": -20
       }
-    }
+    },
+    "clearMocks": true,
+    "resetMocks": false
   },
   "scripts": {
     "start": "react-scripts start",
