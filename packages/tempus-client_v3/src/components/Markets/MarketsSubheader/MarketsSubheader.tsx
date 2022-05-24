@@ -11,11 +11,14 @@ import {
   Tabs,
 } from '../../shared';
 import { FilterType, PoolType, SortOrder, SortType } from '../../../interfaces';
-import { usePoolViewOptions } from '../../../hooks';
+import { usePoolViewOptions, useActivePoolList, useInactivePoolList, useMaturedPoolList } from '../../../hooks';
 
 const MarketsSubheader = () => {
   const { t } = useTranslation();
   const [poolViewOptions, setPoolViewOptions] = usePoolViewOptions();
+  const activePoolList = useActivePoolList();
+  const inactivePoolList = useInactivePoolList();
+  const maturedPoolList = useMaturedPoolList();
   const { poolType, filters, sortType, sortOrder } = poolViewOptions;
 
   const handlePoolTypeChange = useCallback(
@@ -65,19 +68,19 @@ const MarketsSubheader = () => {
       <NavSubheaderGroup>
         <Dropdown label={t('MarketsSubheader.optionFilter')}>
           <DropdownCheckboxItem
-            label={t('MarketsSubheader.filterActive')}
+            label={t('MarketsSubheader.filterActive', { count: activePoolList.length })}
             value="active"
             checked={filters.has('active')}
             onChange={handleFilterChange}
           />
           <DropdownCheckboxItem
-            label={t('MarketsSubheader.filterMatured')}
+            label={t('MarketsSubheader.filterMatured', { count: maturedPoolList.length })}
             value="matured"
             checked={filters.has('matured')}
             onChange={handleFilterChange}
           />
           <DropdownCheckboxItem
-            label={t('MarketsSubheader.filterInactive')}
+            label={t('MarketsSubheader.filterInactive', { count: inactivePoolList.length })}
             value="inactive"
             checked={filters.has('inactive')}
             onChange={handleFilterChange}
