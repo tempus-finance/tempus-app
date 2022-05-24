@@ -9,30 +9,43 @@ orbs:
   node: circleci/node@4.1
 
 jobs:
-  # Below is the definition of your job to build and test your app, you can rename and customize it as you want.
-  build:
-    # These next lines define a Docker executor: https://circleci.com/docs/2.0/executor-types/
-    # You can specify an image from Dockerhub or use one of our Convenience Images from CircleCI's Developer Hub.
-    # A list of available CircleCI Docker Convenience Images are available here: https://circleci.com/developer/images/image/cimg/node
+  bootstrap:
     docker:
       - image: cimg/node:15.1
-    # Then run your tests!
-    # CircleCI will report the results back to your VCS provider.
     steps:
-      # Checkout the code as the first step.
       - checkout
-      # Next, the node orb's install-packages step will install the dependencies from a package.json.
-      # The orb install-packages step will also automatically cache them for faster future runs.
       - node/install-packages
-      # If you are using yarn instead npm, remove the line above and uncomment the two lines below.
-      # - node/install-packages:
-      #     pkg-manager: yarn
       - run:
-          name: Lerna Bootstrap
+          name: Bootstrap
           command: ./node_modules/.bin/lerna bootstrap
+      - persist_to_workspace:
+          root: ./
+          paths:
+            - ./
+
+  build-tempus-core-services:
+    docker:
+      - image: cimg/node:15.1
+    steps:
+      - attach_workspace:
+          at: ./
       - run:
-          name: Build
-          command: npm run build
+          name: Build Tempus Core Services
+          command: npm --prefix ./packages/tempus-core-services run build
+      - persist_to_workspace:
+          root: ./
+          paths:
+            - ./
+
+  build-tempus-client-v3:
+    docker:
+      - image: cimg/node:15.1
+    steps:
+      - attach_workspace:
+          at: ./
+      - run:
+          name: Build Tempus Client V3
+          command: npm --prefix ./packages/tempus-client_v3 run build
       - persist_to_workspace:
           root: ./
           paths:
@@ -155,19 +168,25 @@ workflows:
   # For more details on extending your workflow, see the configuration docs: https://circleci.com/docs/2.0/configuration-reference/#workflows
   tempus-app-ci:
     jobs:
-      - build
+      - bootstrap
+      - build-tempus-core-services:
+          requires:
+            - bootstrap
+      - build-tempus-client-v3:
+          requires:
+            - build-tempus-core-services
       - metamask:
           requires:
-            - build
+            - build-tempus-client-v3
       - build-storybook:
           requires:
-            - build
+            - build-tempus-client-v3
       - test:
           requires:
-            - build
+            - build-tempus-client-v3
       - e2e-test:
           requires:
-            - build
+            - build-tempus-client-v3
             - metamask
       - deploy-storybook:
           requires:
