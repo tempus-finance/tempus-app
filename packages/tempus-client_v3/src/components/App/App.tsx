@@ -6,6 +6,7 @@ import { useLocale, useSelectedChain, useUserPreferences } from '../../hooks';
 import Markets from '../Markets';
 import Navbar from '../Navbar/Navbar';
 import { getConfigManager } from '../../config/getConfigManager';
+import ModalResolver from '../DepositModal/ModalResolver';
 import PageNavigation, { PageNavigationLink } from '../PageNavigation';
 import Portfolio from '../Portfolio';
 import TotalValueLocked from '../TotalValueLocked';
@@ -57,6 +58,7 @@ const App = () => {
             <Routes>
               <Route path="/" element={<Markets />} />
               <Route path="/portfolio" element={<Portfolio />} />
+              <Route path="pool/:chain/:ticker/:protocol" element={<ModalResolver />} />
             </Routes>
           </div>
         </>
