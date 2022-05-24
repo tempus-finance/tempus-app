@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Chain,
   Decimal,
@@ -15,6 +16,7 @@ import './MarketsPools.scss';
 const NUMBER_OF_CARDS_PER_PAGE = 3;
 
 interface CardData {
+  chain: Chain;
   token: Ticker;
   tokenAddress: string;
   protocol: ProtocolName;
@@ -22,6 +24,7 @@ interface CardData {
 }
 
 const MarketsPools = (): JSX.Element => {
+  const navigate = useNavigate();
   const chains = useChainList();
   const tempusPools = useFilteredSortedPoolList();
   const selectedChain = useSelectedChain();
@@ -53,6 +56,9 @@ const MarketsPools = (): JSX.Element => {
    * otherwise, show pools from all available networks.
    */
   const availableChains = useMemo(() => (selectedChain ? [selectedChain] : chains), [selectedChain, chains]);
+  const handleClick = (chain: Chain, ticker: Ticker, protocol: ProtocolName) => {
+    navigate(`/pool/${chain}/${ticker}/${protocol}`);
+  };
 
   return (
     <div className="tc__marketsPools-container">
@@ -76,6 +82,7 @@ const MarketsPools = (): JSX.Element => {
           } else {
             chainCards.push({
               pools: [pool],
+              chain: pool.chain,
               token: pool.backingToken,
               tokenAddress: pool.backingTokenAddress,
               protocol: pool.protocol,
@@ -112,6 +119,8 @@ const MarketsPools = (): JSX.Element => {
                     ticker={chainCard.token}
                     protocol={chainCard.protocol}
                     terms={terms}
+                    chain={chainCard.chain}
+                    onClick={handleClick}
                   />
                 );
               })}
@@ -126,7 +135,9 @@ const MarketsPools = (): JSX.Element => {
                     loading: '',
                     success: '',
                   }}
-                  onClick={onShowMoreClick(chain)}
+                  onClick={() => {
+                    onShowMoreClick(chain);
+                  }}
                   variant="secondary"
                   size="large"
                 />

@@ -2,7 +2,7 @@ import { BigNumber, CallOverrides, Contract } from 'ethers';
 import { JsonRpcSigner } from '@ethersproject/providers';
 import { ERC20 } from '../abi/ERC20Typings';
 import ERC20ABI from '../abi/ERC20.json';
-import { Decimal, DEFAULT_DECIMAL_PRECISION, increasePrecision, decreasePrecision } from '../datastructures';
+import { Decimal } from '../datastructures';
 import { getDefaultProvider } from '../services';
 import { Chain } from '../interfaces';
 
@@ -46,13 +46,7 @@ export class ERC20Contract {
 
     // Convert balance (BigNumber) into a Decimal with proper precision
     const tokenDecimals = await this.decimals();
-    if (tokenDecimals < 18) {
-      return new Decimal(increasePrecision(balance, DEFAULT_DECIMAL_PRECISION - tokenDecimals));
-    }
-    if (tokenDecimals > 18) {
-      return new Decimal(decreasePrecision(balance, tokenDecimals - DEFAULT_DECIMAL_PRECISION));
-    }
-    return new Decimal(balance);
+    return new Decimal(balance, tokenDecimals);
   }
 
   async decimals(): Promise<number> {

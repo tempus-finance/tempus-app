@@ -3,6 +3,7 @@ import {
   catchError,
   combineLatest,
   debounce,
+  from,
   interval,
   map,
   merge,
@@ -11,8 +12,9 @@ import {
   of,
   scan,
   startWith,
+  switchMap,
 } from 'rxjs';
-import { getServices, Decimal, StatisticsService, Chain, Ticker } from 'tempus-core-services';
+import { getServices, Decimal, StatisticsService, Chain, Ticker, TempusPoolService } from 'tempus-core-services';
 import { poolList$ } from './useConfig';
 
 const TOKEN_RATE_POLLING_INTERVAL_IN_MS = 30000;
@@ -23,6 +25,7 @@ interface TokenInfoMap {
     chain: Chain;
     token: Ticker;
     address: string;
+    conversionRate?: Decimal;
   };
 }
 
@@ -32,22 +35,42 @@ interface TokenRateMap {
 
 const polling$: Observable<number> = interval(TOKEN_RATE_POLLING_INTERVAL_IN_MS).pipe(startWith(0));
 
-const tokenRates$: Observable<TokenRateMap> = combineLatest([poolList$, polling$]).pipe(
-  mergeMap(([tempusPools]) => {
+const conversionRates$ = poolList$.pipe(
+  switchMap(tempusPools =>
+    from(
+      Promise.all(
+        tempusPools.map(async pool => {
+          const poolService = getServices(pool.chain as Chain)?.TempusPoolService as TempusPoolService;
+          const interestRate = await poolService.currentInterestRate(pool.address);
+          return poolService.numAssetsPerYieldToken(pool.address, new Decimal(1), interestRate);
+        }),
+      ),
+    ),
+  ),
+);
+
+const tokenRates$: Observable<TokenRateMap> = combineLatest([poolList$, conversionRates$, polling$]).pipe(
+  mergeMap(([tempusPools, rates]) => {
     const uniqueTokens = Object.values(
       tempusPools.reduce(
-        (obj, { chain, backingToken, backingTokenAddress }) => ({
+        (obj, { chain, backingToken, backingTokenAddress, yieldBearingTokenAddress }, index) => ({
           ...obj,
           [`${chain}-${backingTokenAddress}`]: {
             chain: chain as Chain,
             token: backingToken,
             address: backingTokenAddress,
           },
+          [`${chain}-${yieldBearingTokenAddress}`]: {
+            chain: chain as Chain,
+            token: backingToken,
+            address: yieldBearingTokenAddress,
+            conversionRate: rates[index],
+          },
         }),
         {} as TokenInfoMap,
       ),
     );
-    const tokenRates = uniqueTokens.map(({ chain, token, address }) => {
+    const tokenRates = uniqueTokens.map(({ chain, token, address, conversionRate }) => {
       // TODO: conceptually chain+ticker is not unique, it should accept chain+address instead
       //       but currently chainlink and gecko API doesnt support that
       const tokenRate = (getServices(chain as Chain)?.StatisticsService as StatisticsService).getRate(
@@ -58,7 +81,7 @@ const tokenRates$: Observable<TokenRateMap> = combineLatest([poolList$, polling$
         map(
           rate =>
             ({
-              [`${chain}-${address}`]: rate,
+              [`${chain}-${address}`]: conversionRate ? rate?.mul(conversionRate) : rate,
             } as TokenRateMap),
         ),
       );
