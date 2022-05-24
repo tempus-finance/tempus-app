@@ -10,6 +10,7 @@ body,
 
 #root {
   display: flex;
+  overflow-x: hidden;
 }
 
 .tc__app__wrapper {
