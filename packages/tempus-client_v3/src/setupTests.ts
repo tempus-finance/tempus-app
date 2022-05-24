@@ -3,6 +3,9 @@
 // expect(element).toHaveTextContent(/react/i)
 // learn more: https://github.com/testing-library/jest-dom
 import '@testing-library/jest-dom/extend-expect';
+import { of as mockOf } from 'rxjs';
+import { BigNumber as mockBigNumber } from 'ethers';
+import { Chain, Decimal as mockDecimal, Ticker, ZERO as mockZERO } from 'tempus-core-services';
 
 export const mockConfig = {
   ethereum: {
@@ -118,4 +121,49 @@ jest.mock('./config/getConfigManager', () => ({
     ],
     getChainList: () => ['fantom', 'ethereum'],
   }),
+}));
+
+jest.mock('tempus-core-services', () => ({
+  ...jest.requireActual('tempus-core-services'),
+  getServices: jest.fn().mockImplementation(() => ({
+    StatisticsService: {
+      totalValueLockedUSD: jest.fn().mockImplementation((chain: Chain, address: string) => {
+        switch (`${chain}-${address}`) {
+          case 'ethereum-1':
+            return mockOf(new mockDecimal(5000));
+          case 'ethereum-2':
+            return mockOf(new mockDecimal(7000));
+          case 'fantom-3':
+            return mockOf(new mockDecimal(2000));
+          case 'fantom-4':
+            return mockOf(new mockDecimal(9000));
+          default:
+            return mockZERO;
+        }
+      }),
+      getRate: jest.fn().mockImplementation((chain: Chain, tokenTicker: Ticker) => {
+        let price = new mockDecimal(0);
+        switch (tokenTicker) {
+          case 'ETH':
+            price = new mockDecimal(2999);
+            break;
+          case 'WETH':
+            price = new mockDecimal(3001);
+            break;
+          case 'USDC':
+            price = new mockDecimal(chain === 'fantom' ? 1.001 : 0.999);
+            break;
+          default:
+        }
+
+        return mockOf(price);
+      }),
+      estimatedDepositAndFix: jest.fn(),
+      estimatedMintedShares: jest.fn(),
+    },
+    TempusPoolService: {
+      currentInterestRate: jest.fn().mockImplementation(() => mockBigNumber.from(1)),
+      numAssetsPerYieldToken: jest.fn().mockImplementation(() => mockBigNumber.from(1)),
+    },
+  })),
 }));

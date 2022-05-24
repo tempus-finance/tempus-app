@@ -1,6 +1,7 @@
+import { FC } from 'react';
 import { useParams } from 'react-router-dom';
 
-const ModalResolver = () => {
+const ModalResolver: FC = () => {
   const { chain, ticker, protocol } = useParams();
 
   return (

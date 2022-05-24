@@ -1,9 +1,11 @@
 import { bind, state, useStateObservable } from '@react-rxjs/core';
 import { createSignal } from '@react-rxjs/utils';
-import { combineLatest, map } from 'rxjs';
+import { combineLatest, map, withLatestFrom } from 'rxjs';
 import { useCallback } from 'react';
+import { ZERO } from 'tempus-core-services';
 import { FilterType, PoolType, SortOrder, SortType, ViewType } from '../interfaces';
 import { poolList$ } from './useConfig';
+import { poolTvls$ } from './useTvlData';
 
 export interface PoolViewOptions {
   viewType: ViewType;
@@ -24,6 +26,7 @@ const statePoolType$ = state(poolType$, 'all');
 const stateFilters$ = state(filters$, new Set<FilterType>(['active']));
 const stateSortType$ = state(sortType$, 'a-z');
 const stateSortOrder$ = state(sortOrder$, 'asc');
+const statePoolTvls$ = state(poolTvls$, {});
 
 const filteredPoolList$ = combineLatest([poolList$, stateFilters$]).pipe(
   map(([tempusPools, filters]) =>
@@ -43,7 +46,8 @@ const filteredPoolList$ = combineLatest([poolList$, stateFilters$]).pipe(
   ),
 );
 const filteredSortedPoolList$ = combineLatest([filteredPoolList$, stateSortType$, stateSortOrder$]).pipe(
-  map(([tempusPools, sortType, sortOrder]) =>
+  withLatestFrom(statePoolTvls$), // only want to get the latest data instead of getting every interval
+  map(([[tempusPools, sortType, sortOrder], poolTvls]) =>
     tempusPools
       .sort((poolA, poolB) => {
         const factor = sortOrder === 'desc' ? -1 : 1;
@@ -61,8 +65,11 @@ const filteredSortedPoolList$ = combineLatest([filteredPoolList$, stateSortType$
             return 0; // TODO: need to get the balance to compare
           case 'maturity':
             return (poolA.maturityDate - poolB.maturityDate) * factor;
-          case 'tvl':
-            return 0; // TODO: need to get the TVL to compare
+          case 'tvl': {
+            const tvlA = poolTvls[`${poolA.chain}-${poolA.address}`] ?? ZERO;
+            const tvlB = poolTvls[`${poolB.chain}-${poolB.address}`] ?? ZERO;
+            return tvlA.gt(tvlB) ? factor : -1 * factor;
+          }
         }
       })
       // .sort() will sort the array in place and return the same reference,

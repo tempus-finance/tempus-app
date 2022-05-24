@@ -44,7 +44,7 @@ export type {
 
 export type { Numberish } from './datastructures';
 
-export { Decimal } from './datastructures';
+export { Decimal, ZERO, ONE } from './datastructures';
 
 export { SwapKind } from './services';
 

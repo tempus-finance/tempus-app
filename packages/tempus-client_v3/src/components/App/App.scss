@@ -10,6 +10,7 @@ body,
 
 #root {
   display: flex;
+  overflow-y: scroll;
   overflow-x: hidden;
 }
 
