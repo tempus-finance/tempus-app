@@ -10,9 +10,9 @@ type ActionButtonSize = 'small' | 'large';
 type ActionButtonVariant = 'primary' | 'secondary' | 'tertiary';
 export type ActionButtonState = 'default' | 'disabled' | 'loading' | 'success';
 export type ActionButtonLabels = {
-  default: string;
-  loading: string;
-  success: string;
+  default?: string;
+  loading?: string;
+  success?: string;
 };
 
 export interface ButtonProps {
