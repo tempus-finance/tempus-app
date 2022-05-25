@@ -11,7 +11,7 @@ import {
   tokenColorMap,
 } from 'tempus-core-services';
 import { useChainList, useFilteredSortedPoolList, useSelectedChain } from '../../../hooks';
-import { PoolCard, PoolsHeading } from '../../shared';
+import { PoolCard, PoolCardStatus, PoolsHeading } from '../../shared';
 import './MarketsPools.scss';
 import ShowMoreButtonWrapper from './ShowMoreButton';
 
@@ -22,6 +22,7 @@ interface CardData {
   token: Ticker;
   tokenAddress: string;
   protocol: ProtocolName;
+  matured: boolean;
   pools: TempusPool[];
 }
 
@@ -77,8 +78,21 @@ const MarketsPools = (): JSX.Element => {
             return;
           }
 
+          // We want to show one card per matured pool on markets page
+          if (pool.maturityDate < Date.now()) {
+            chainCards.push({
+              pools: [pool],
+              chain: pool.chain,
+              token: pool.backingToken,
+              tokenAddress: pool.backingTokenAddress,
+              protocol: pool.protocol,
+              matured: true,
+            });
+            return;
+          }
+
           const tokenCard = chainCards.find(
-            card => card.token === pool.backingToken && card.protocol === pool.protocol,
+            card => card.token === pool.backingToken && card.protocol === pool.protocol && !card.matured,
           );
           if (tokenCard) {
             tokenCard.pools.push(pool);
@@ -89,6 +103,7 @@ const MarketsPools = (): JSX.Element => {
               token: pool.backingToken,
               tokenAddress: pool.backingTokenAddress,
               protocol: pool.protocol,
+              matured: false,
             });
           }
         });
@@ -112,12 +127,17 @@ const MarketsPools = (): JSX.Element => {
 
                 const terms = chainCard.pools.map(pool => new Date(pool.maturityDate));
 
+                let cardStatus: PoolCardStatus = 'Fixed';
+                if (chainCard.matured) {
+                  cardStatus = 'Matured';
+                }
+
                 return (
                   <PoolCard
-                    key={`${chain}-${chainCard.protocol}-${chainCard.tokenAddress}`}
+                    key={`${chain}-${chainCard.protocol}-${chainCard.tokenAddress}-${chainCard.matured}`}
                     aprValues={[new Decimal(0.1)]}
                     color={cardColor || '#ffffff'}
-                    poolCardStatus="Fixed"
+                    poolCardStatus={cardStatus}
                     poolCardVariant="markets"
                     ticker={chainCard.token}
                     protocol={chainCard.protocol}
