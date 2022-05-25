@@ -81,12 +81,17 @@ export const pool4 = {
 export const mockConfig = {
   ethereum: {
     tempusPools: [pool1, pool2],
+    privateNetworkUrl: String(process.env.REACT_APP_ETHEREUM_RPC),
+    alchemyKey: String(process.env.REACT_APP_MAINNET_ALCHEMY_KEY),
   },
   fantom: {
     tempusPools: [pool3, pool4],
+    privateNetworkUrl: String(process.env.REACT_APP_FANTOM_RPC),
   },
   'ethereum-fork': {
     tempusPools: [],
+    privateNetworkUrl: String(process.env.REACT_APP_ETHEREUM_RPC),
+    alchemyKey: String(process.env.REACT_APP_MAINNET_ALCHEMY_KEY),
   },
 };
 
