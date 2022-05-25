@@ -88,6 +88,16 @@
   "TermTab": {
     "title": "~~~~~====={{{{{(((((title)))))}}}}}=====~~~~~"
   },
+  "PoolPositionCard": {
+    "apr": "~~~~~====={{{{{(((((apr)))))}}}}}=====~~~~~",
+    "term": "~~~~~====={{{{{(((((term)))))}}}}}=====~~~~~",
+    "seeLess": "~~~~~====={{{{{(((((seeLess)))))}}}}}=====~~~~~",
+    "seeMore": "~~~~~====={{{{{(((((seeMore)))))}}}}}=====~~~~~",
+    "profitLoss": "~~~~~====={{{{{(((((profitLoss)))))}}}}}=====~~~~~",
+    "balance": "~~~~~====={{{{{(((((balance)))))}}}}}=====~~~~~",
+    "totalYieldEarned": "~~~~~====={{{{{(((((totalYieldEarned)))))}}}}}=====~~~~~",
+    "projectedTotalYield": "~~~~~====={{{{{(((((projectedTotalYield)))))}}}}}=====~~~~~"
+  },
   "WalletButton": {
     "buttonConnectWallet": "~~~~~====={{{{{(((((buttonConnectWallet)))))}}}}}=====~~~~~",
     "buttonUnsupported": "~~~~~====={{{{{(((((buttonUnsupported)))))}}}}}=====~~~~~"

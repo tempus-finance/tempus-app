@@ -1,4 +1,5 @@
 import { FC, useCallback, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Decimal, DecimalUtils, Ticker } from 'tempus-core-services';
 import ButtonWrapper from '../ButtonWrapper';
 import FormattedDate from '../FormattedDate';
@@ -34,6 +35,8 @@ const PoolPositionCard: FC<PoolPositionCardProps> = props => {
     tokenTicker,
   } = props;
 
+  const { t } = useTranslation();
+
   const [open, setOpen] = useState<boolean>(false);
 
   const onToggleClick = useCallback(() => {
@@ -48,7 +51,7 @@ const PoolPositionCard: FC<PoolPositionCardProps> = props => {
         <div className="tc__poolPositionCard-cell">
           <div className="tc__poolPositionCard-cellData">
             <Typography variant="body-secondary" weight="bold" color="text-secondary">
-              APR
+              {t('PoolPositionCard.apr')}
             </Typography>
             <Typography variant="body-primary" weight="medium" type="mono">
               {aprFormatted}
@@ -58,7 +61,7 @@ const PoolPositionCard: FC<PoolPositionCardProps> = props => {
         <div className="tc__poolPositionCard-cell">
           <div className="tc__poolPositionCard-cellData">
             <Typography variant="body-secondary" weight="bold" color="text-secondary">
-              Term
+              {t('PoolPositionCard.term')}
             </Typography>
             <FormattedDate date={term} size="medium" separatorContrast="high" />
           </div>
@@ -70,28 +73,28 @@ const PoolPositionCard: FC<PoolPositionCardProps> = props => {
           <div className="tc__poolPositionCard-row">
             <div className="tc__poolPositionCard-cell">
               <PoolPositionCardDataCell
-                label="Profit/loss"
+                label={t('PoolPositionCard.profitLoss')}
                 tokenDecimals={tokenDecimals}
                 tokenExchangeRate={tokenExchangeRate}
                 tokenTicker={tokenTicker}
                 value={profitLoss}
               />
               <PoolPositionCardDataCell
-                label="Balance"
+                label={t('PoolPositionCard.balance')}
                 tokenDecimals={tokenDecimals}
                 tokenExchangeRate={tokenExchangeRate}
                 tokenTicker={tokenTicker}
                 value={balance}
               />
               <PoolPositionCardDataCell
-                label="Total Yield Earned"
+                label={t('PoolPositionCard.totalYieldEarned')}
                 tokenDecimals={tokenDecimals}
                 tokenExchangeRate={tokenExchangeRate}
                 tokenTicker={tokenTicker}
                 value={totalYieldEarned}
               />
               <PoolPositionCardDataCell
-                label="Projected Total Yield"
+                label={t('PoolPositionCard.projectedTotalYield')}
                 tokenDecimals={tokenDecimals}
                 tokenExchangeRate={tokenExchangeRate}
                 tokenTicker={tokenTicker}
@@ -108,7 +111,7 @@ const PoolPositionCard: FC<PoolPositionCardProps> = props => {
           <ButtonWrapper onClick={onToggleClick}>
             <div className="tc__poolPositionCard-seeMore">
               <Typography variant="body-primary" weight="bold">
-                {open ? 'See less' : 'See more'}
+                {open ? t('PoolPositionCard.seeLess') : t('PoolPositionCard.seeMore')}
               </Typography>
               &nbsp; {/* space character */}
               <Icon variant={open ? 'up-chevron' : 'down-chevron'} size="small" />

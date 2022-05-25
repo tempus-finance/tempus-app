@@ -88,6 +88,16 @@
   "TermTab": {
     "title": "APR & Term"
   },
+  "PoolPositionCard": {
+    "apr": "APR",
+    "term": "Term",
+    "seeLess": "See less",
+    "seeMore": "See more",
+    "profitLoss": "Profit/loss",
+    "balance": "Balance",
+    "totalYieldEarned": "Total Yield Earned",
+    "projectedTotalYield": "Projected Total Yield"
+  },
   "WalletButton": {
     "buttonConnectWallet": "Connect Wallet",
     "buttonUnsupported": "Unsupported"
