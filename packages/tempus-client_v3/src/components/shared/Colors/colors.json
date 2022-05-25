@@ -23,7 +23,7 @@
   "tabsBackground": "#FFFFFF",
   "tabsBorder": "#BFC0C0",
 
-  "poolCardBorder": "#BFC0C0",
+  "poolCardBorder": "#DFDFDF",
   "poolCardFlagDisabledBorder": "#F3F7F9",
   "poolCardFlagDisabledBackground": "#FFFFFF33",
 
@@ -86,7 +86,7 @@
   "currencyInputBackground": "#FFFFFF",
   "currencyInputHoverBackground": "#F3F7F9",
   "currencyInputDisabledBackground": "#BFC0C0",
-  "currencyInputBorder": "#474350",
+  "currencyInputBorder": "#BFC0C0",
   "currencyInputDisabledBorder": "#7A7A7A",
 
   "pageContainerBackground": "#F3F7F9",
@@ -112,7 +112,7 @@
 
   "portfolioBoxBorder": "#BFC0C0",
 
-  "poolsHeadingOverlay": "#129ca433",
+  "poolsHeadingOverlay": "#129CA433",
 
   "poolPositionCardBorder": "#F3F7F9",
   "poolPositionCardBackground": "#FFFFFF"
