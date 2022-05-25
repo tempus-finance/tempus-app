@@ -156,11 +156,102 @@ exports[`MarketsSubheader renders a navigation subheader with filtering and sort
 `;
 
 exports[`MarketsSubheader updates filters 1`] = `
-<input
-  checked=""
-  id="checkbox-1"
-  type="checkbox"
-/>
+<div
+  class="tc__dropdown__popup"
+>
+  
+  <div
+    class="tc__dropdownItem"
+  >
+    <span
+      class="tc__checkbox"
+    >
+      <span
+        class="tc__checkbox__box-container"
+      >
+        <input
+          checked=""
+          id="checkbox-1"
+          type="checkbox"
+        />
+        <span
+          aria-hidden="true"
+          class="tc__checkbox__checked-box"
+        />
+      </span>
+      <label
+        class="tc__checkbox__label"
+        for="checkbox-1"
+      >
+        <div
+          style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+        >
+          Active (2)
+        </div>
+      </label>
+    </span>
+  </div>
+  <div
+    class="tc__dropdownItem"
+  >
+    <span
+      class="tc__checkbox"
+    >
+      <span
+        class="tc__checkbox__box-container"
+      >
+        <input
+          id="checkbox-2"
+          type="checkbox"
+        />
+        <span
+          aria-hidden="true"
+          class=""
+        />
+      </span>
+      <label
+        class="tc__checkbox__label"
+        for="checkbox-2"
+      >
+        <div
+          style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+        >
+          Matured (1)
+        </div>
+      </label>
+    </span>
+  </div>
+  <div
+    class="tc__dropdownItem"
+  >
+    <span
+      class="tc__checkbox"
+    >
+      <span
+        class="tc__checkbox__box-container"
+      >
+        <input
+          id="checkbox-3"
+          type="checkbox"
+        />
+        <span
+          aria-hidden="true"
+          class=""
+        />
+      </span>
+      <label
+        class="tc__checkbox__label"
+        for="checkbox-3"
+      >
+        <div
+          style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+        >
+          Inactive (1)
+        </div>
+      </label>
+    </span>
+  </div>
+</div>
 `;
 
 exports[`MarketsSubheader updates filters 2`] = `
@@ -173,7 +264,8 @@ exports[`MarketsSubheader updates filters 2`] = `
 
 exports[`MarketsSubheader updates filters 3`] = `
 <input
-  id="checkbox-2"
+  checked=""
+  id="checkbox-1"
   type="checkbox"
 />
 `;
@@ -187,12 +279,19 @@ exports[`MarketsSubheader updates filters 4`] = `
 
 exports[`MarketsSubheader updates filters 5`] = `
 <input
-  id="checkbox-3"
+  id="checkbox-2"
   type="checkbox"
 />
 `;
 
 exports[`MarketsSubheader updates filters 6`] = `
+<input
+  id="checkbox-3"
+  type="checkbox"
+/>
+`;
+
+exports[`MarketsSubheader updates filters 7`] = `
 <input
   id="checkbox-3"
   type="checkbox"

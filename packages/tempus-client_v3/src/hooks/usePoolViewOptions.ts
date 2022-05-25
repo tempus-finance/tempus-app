@@ -2,7 +2,7 @@ import { bind, state, useStateObservable } from '@react-rxjs/core';
 import { createSignal } from '@react-rxjs/utils';
 import { combineLatest, map, withLatestFrom } from 'rxjs';
 import { useCallback } from 'react';
-import { ZERO } from 'tempus-core-services';
+import { TempusPool, ZERO } from 'tempus-core-services';
 import { FilterType, PoolType, SortOrder, SortType, ViewType } from '../interfaces';
 import { poolList$ } from './useConfig';
 import { poolTvls$ } from './useTvlData';
@@ -28,6 +28,16 @@ const stateSortType$ = state(sortType$, 'a-z');
 const stateSortOrder$ = state(sortOrder$, 'asc');
 const statePoolTvls$ = state(poolTvls$, {});
 
+export const isPoolMatured = (tempusPool: TempusPool): boolean => tempusPool.maturityDate <= Date.now();
+// TODO: check other operations, and check whether it's -ve APR
+export const isPoolInactive = (tempusPool: TempusPool): boolean => !!tempusPool.disabledOperations?.deposit;
+export const isPoolActive = (tempusPool: TempusPool): boolean =>
+  !isPoolMatured(tempusPool) && !isPoolInactive(tempusPool);
+
+const activePoolList$ = poolList$.pipe(map(tempusPools => tempusPools.filter(isPoolActive)));
+const inactivePoolList$ = poolList$.pipe(map(tempusPools => tempusPools.filter(isPoolInactive)));
+const maturedPoolList$ = poolList$.pipe(map(tempusPools => tempusPools.filter(isPoolMatured)));
+
 const filteredPoolList$ = combineLatest([poolList$, stateFilters$]).pipe(
   map(([tempusPools, filters]) =>
     tempusPools.filter(tempusPool =>
@@ -35,11 +45,11 @@ const filteredPoolList$ = combineLatest([poolList$, stateFilters$]).pipe(
         switch (filter) {
           case 'active':
           default:
-            return tempusPool.maturityDate > Date.now(); // TODO: need to get the interest rate to compare
+            return isPoolActive(tempusPool);
           case 'inactive':
-            return false; // TODO: need to get the interest rate to compare
+            return isPoolInactive(tempusPool);
           case 'matured':
-            return tempusPool.maturityDate <= Date.now();
+            return isPoolMatured(tempusPool);
         }
       }),
     ),
@@ -122,3 +132,6 @@ export function usePoolViewOptions(): [PoolViewOptions, (partial: Partial<PoolVi
 }
 
 export const [useFilteredSortedPoolList] = bind(filteredSortedPoolList$, []);
+export const [useActivePoolList] = bind(activePoolList$, []);
+export const [useInactivePoolList] = bind(inactivePoolList$, []);
+export const [useMaturedPoolList] = bind(maturedPoolList$, []);
