@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`WalletButton expands pool position card when user clicks on see more 1`] = `
+exports[`PoolPositionCard expands pool position card when user clicks on see more 1`] = `
 <div>
   <div
     class="tc__poolPositionCard"
@@ -292,7 +292,7 @@ exports[`WalletButton expands pool position card when user clicks on see more 1`
 </div>
 `;
 
-exports[`WalletButton renders a collapsed pool position card 1`] = `
+exports[`PoolPositionCard renders a collapsed pool position card 1`] = `
 <div>
   <div
     class="tc__poolPositionCard"
