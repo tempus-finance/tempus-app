@@ -22,7 +22,7 @@ const subject = (props: PoolPositionCardProps) =>
     </I18nProvider>,
   );
 
-describe('WalletButton', () => {
+describe('PoolPositionCard', () => {
   it('renders a collapsed pool position card', () => {
     const { container, getByText } = subject(defaultProps);
 
