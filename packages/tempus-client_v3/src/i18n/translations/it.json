@@ -88,6 +88,16 @@
   "TermTab": {
     "title": ""
   },
+  "PoolPositionCard": {
+    "apr": "",
+    "term": "",
+    "seeLess": "",
+    "seeMore": "",
+    "profitLoss": "",
+    "balance": "",
+    "totalYieldEarned": "",
+    "projectedTotalYield": ""
+  },
   "WalletButton": {
     "buttonConnectWallet": "",
     "buttonUnsupported": ""

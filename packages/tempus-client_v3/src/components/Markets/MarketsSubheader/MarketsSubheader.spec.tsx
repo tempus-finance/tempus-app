@@ -22,6 +22,11 @@ jest.mock('../../../hooks', () => ({
 }));
 
 describe('MarketsSubheader', () => {
+  beforeAll(async () => {
+    const config = getConfigManager();
+    await config.init();
+  });
+
   beforeEach(() => {
     (useActivePoolList as jest.Mock).mockImplementation(() => getConfigManager().getPoolList().slice(0, -2));
     (useInactivePoolList as jest.Mock).mockImplementation(() => getConfigManager().getPoolList().slice(-2, -1));
