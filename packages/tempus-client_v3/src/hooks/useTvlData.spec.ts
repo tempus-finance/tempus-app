@@ -1,5 +1,6 @@
 import { renderHook } from '@testing-library/react-hooks';
 import { Decimal, getServices } from 'tempus-core-services';
+import { getConfigManager } from '../config/getConfigManager';
 import { useTvlData, useTotalTvl } from './useTvlData';
 
 jest.mock('tempus-core-services', () => ({
@@ -8,6 +9,11 @@ jest.mock('tempus-core-services', () => ({
 }));
 
 describe('useTvlData', () => {
+  beforeAll(async () => {
+    const config = getConfigManager();
+    await config.init();
+  });
+
   test('returns a total TVL of all pools', async () => {
     const { result, waitForNextUpdate } = renderHook(() => useTotalTvl());
 

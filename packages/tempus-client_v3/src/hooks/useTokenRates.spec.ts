@@ -1,5 +1,6 @@
 import { renderHook } from '@testing-library/react-hooks';
 import { Decimal, getServices } from 'tempus-core-services';
+import { getConfigManager } from '../config/getConfigManager';
 import { useTokenRates } from './useTokenRates';
 
 jest.mock('tempus-core-services', () => ({
@@ -8,6 +9,11 @@ jest.mock('tempus-core-services', () => ({
 }));
 
 describe('useTokenRates', () => {
+  beforeAll(async () => {
+    const config = getConfigManager();
+    await config.init();
+  });
+
   test('returns all tokens used by all pools', async () => {
     const { result, waitForNextUpdate } = renderHook(() => useTokenRates());
 

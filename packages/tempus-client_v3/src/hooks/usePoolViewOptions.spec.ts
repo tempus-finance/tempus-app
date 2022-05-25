@@ -1,9 +1,16 @@
 import { renderHook } from '@testing-library/react-hooks';
 import { act } from 'react-dom/test-utils';
+import { getConfigManager } from '../config/getConfigManager';
 import { FilterType } from '../interfaces';
+import { pool1, pool2, pool3, pool4 } from '../setupTests';
 import { usePoolViewOptions, useFilteredSortedPoolList } from './usePoolViewOptions';
 
 describe('usePoolViewOptions', () => {
+  beforeAll(async () => {
+    const config = getConfigManager();
+    await config.init();
+  });
+
   it('check default value', () => {
     const { result: poolViewResult } = renderHook(() => usePoolViewOptions());
     const { result: filteredSortedPoolListResult } = renderHook(() => useFilteredSortedPoolList());
@@ -15,60 +22,7 @@ describe('usePoolViewOptions', () => {
       sortType: 'a-z',
       sortOrder: 'asc',
     };
-    const expectedFilteredSortedPoolListResult = [
-      {
-        address: '1',
-        backingToken: 'ETH',
-        backingTokenAddress: '0x0000000000000000000000000000000000000000',
-        chain: 'ethereum',
-        protocol: 'lido',
-        tokenPrecision: {
-          backingToken: 18,
-          yieldBearingToken: 18,
-        },
-        protocolDisplayName: 'Lido',
-        maturityDate: new Date(2025, 0, 1).getTime(),
-      },
-      {
-        address: '2',
-        backingToken: 'USDC',
-        backingTokenAddress: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-        chain: 'ethereum',
-        protocol: 'yearn',
-        tokenPrecision: {
-          backingToken: 6,
-          yieldBearingToken: 6,
-        },
-        protocolDisplayName: 'Yearn',
-        maturityDate: new Date(2025, 0, 1).getTime(),
-      },
-      {
-        address: '3',
-        backingToken: 'USDC',
-        backingTokenAddress: '0x04068da6c83afcfa0e13ba15a6696662335d5b75',
-        chain: 'fantom',
-        protocol: 'yearn',
-        tokenPrecision: {
-          backingToken: 6,
-          yieldBearingToken: 6,
-        },
-        protocolDisplayName: 'Yearn',
-        maturityDate: new Date(2025, 0, 1).getTime(),
-      },
-      {
-        address: '4',
-        backingToken: 'WETH',
-        backingTokenAddress: '0x74b23882a30290451A17c44f4F05243b6b58C76d',
-        chain: 'fantom',
-        protocol: 'yearn',
-        tokenPrecision: {
-          backingToken: 18,
-          yieldBearingToken: 18,
-        },
-        protocolDisplayName: 'Yearn',
-        maturityDate: new Date(2025, 0, 1).getTime(),
-      },
-    ];
+    const expectedFilteredSortedPoolListResult = [pool1, pool2, pool3, pool4];
 
     expect(poolViewOptions).toEqual(expectedPoolViewOptions);
     expect(filteredSortedPoolListResult.current).toEqual(expectedFilteredSortedPoolListResult);
@@ -143,60 +97,7 @@ describe('usePoolViewOptions', () => {
       sortType: 'a-z',
       sortOrder: 'asc',
     };
-    const expectedFilteredSortedPoolListResult = [
-      {
-        address: '1',
-        backingToken: 'ETH',
-        backingTokenAddress: '0x0000000000000000000000000000000000000000',
-        chain: 'ethereum',
-        protocol: 'lido',
-        tokenPrecision: {
-          backingToken: 18,
-          yieldBearingToken: 18,
-        },
-        protocolDisplayName: 'Lido',
-        maturityDate: new Date(2025, 0, 1).getTime(),
-      },
-      {
-        address: '2',
-        backingToken: 'USDC',
-        backingTokenAddress: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-        chain: 'ethereum',
-        protocol: 'yearn',
-        tokenPrecision: {
-          backingToken: 6,
-          yieldBearingToken: 6,
-        },
-        protocolDisplayName: 'Yearn',
-        maturityDate: new Date(2025, 0, 1).getTime(),
-      },
-      {
-        address: '3',
-        backingToken: 'USDC',
-        backingTokenAddress: '0x04068da6c83afcfa0e13ba15a6696662335d5b75',
-        chain: 'fantom',
-        protocol: 'yearn',
-        tokenPrecision: {
-          backingToken: 6,
-          yieldBearingToken: 6,
-        },
-        protocolDisplayName: 'Yearn',
-        maturityDate: new Date(2025, 0, 1).getTime(),
-      },
-      {
-        address: '4',
-        backingToken: 'WETH',
-        backingTokenAddress: '0x74b23882a30290451A17c44f4F05243b6b58C76d',
-        chain: 'fantom',
-        protocol: 'yearn',
-        tokenPrecision: {
-          backingToken: 18,
-          yieldBearingToken: 18,
-        },
-        protocolDisplayName: 'Yearn',
-        maturityDate: new Date(2025, 0, 1).getTime(),
-      },
-    ];
+    const expectedFilteredSortedPoolListResult = [pool1, pool2, pool3, pool4];
 
     expect(poolViewOptions).toEqual(expectedPoolViewOptions1);
     expect(filteredSortedPoolListResult.current).toEqual(expectedFilteredSortedPoolListResult);
@@ -229,60 +130,7 @@ describe('usePoolViewOptions', () => {
       sortType: 'a-z',
       sortOrder: 'asc',
     };
-    const expectedFilteredSortedPoolListResult = [
-      {
-        address: '1',
-        backingToken: 'ETH',
-        backingTokenAddress: '0x0000000000000000000000000000000000000000',
-        chain: 'ethereum',
-        protocol: 'lido',
-        tokenPrecision: {
-          backingToken: 18,
-          yieldBearingToken: 18,
-        },
-        protocolDisplayName: 'Lido',
-        maturityDate: new Date(2025, 0, 1).getTime(),
-      },
-      {
-        address: '2',
-        backingToken: 'USDC',
-        backingTokenAddress: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-        chain: 'ethereum',
-        protocol: 'yearn',
-        tokenPrecision: {
-          backingToken: 6,
-          yieldBearingToken: 6,
-        },
-        protocolDisplayName: 'Yearn',
-        maturityDate: new Date(2025, 0, 1).getTime(),
-      },
-      {
-        address: '3',
-        backingToken: 'USDC',
-        backingTokenAddress: '0x04068da6c83afcfa0e13ba15a6696662335d5b75',
-        chain: 'fantom',
-        protocol: 'yearn',
-        tokenPrecision: {
-          backingToken: 6,
-          yieldBearingToken: 6,
-        },
-        protocolDisplayName: 'Yearn',
-        maturityDate: new Date(2025, 0, 1).getTime(),
-      },
-      {
-        address: '4',
-        backingToken: 'WETH',
-        backingTokenAddress: '0x74b23882a30290451A17c44f4F05243b6b58C76d',
-        chain: 'fantom',
-        protocol: 'yearn',
-        tokenPrecision: {
-          backingToken: 18,
-          yieldBearingToken: 18,
-        },
-        protocolDisplayName: 'Yearn',
-        maturityDate: new Date(2025, 0, 1).getTime(),
-      },
-    ];
+    const expectedFilteredSortedPoolListResult = [pool1, pool2, pool3, pool4];
 
     expect(poolViewOptions).toEqual(expectedPoolViewOptions1);
     expect(filteredSortedPoolListResult.current).toEqual(expectedFilteredSortedPoolListResult);
@@ -345,60 +193,7 @@ describe('usePoolViewOptions', () => {
       sortType: 'a-z',
       sortOrder: 'asc',
     };
-    const expectedFilteredSortedPoolListResult1 = [
-      {
-        address: '1',
-        backingToken: 'ETH',
-        backingTokenAddress: '0x0000000000000000000000000000000000000000',
-        chain: 'ethereum',
-        protocol: 'lido',
-        tokenPrecision: {
-          backingToken: 18,
-          yieldBearingToken: 18,
-        },
-        protocolDisplayName: 'Lido',
-        maturityDate: new Date(2025, 0, 1).getTime(),
-      },
-      {
-        address: '2',
-        backingToken: 'USDC',
-        backingTokenAddress: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-        chain: 'ethereum',
-        protocol: 'yearn',
-        tokenPrecision: {
-          backingToken: 6,
-          yieldBearingToken: 6,
-        },
-        protocolDisplayName: 'Yearn',
-        maturityDate: new Date(2025, 0, 1).getTime(),
-      },
-      {
-        address: '3',
-        backingToken: 'USDC',
-        backingTokenAddress: '0x04068da6c83afcfa0e13ba15a6696662335d5b75',
-        chain: 'fantom',
-        protocol: 'yearn',
-        tokenPrecision: {
-          backingToken: 6,
-          yieldBearingToken: 6,
-        },
-        protocolDisplayName: 'Yearn',
-        maturityDate: new Date(2025, 0, 1).getTime(),
-      },
-      {
-        address: '4',
-        backingToken: 'WETH',
-        backingTokenAddress: '0x74b23882a30290451A17c44f4F05243b6b58C76d',
-        chain: 'fantom',
-        protocol: 'yearn',
-        tokenPrecision: {
-          backingToken: 18,
-          yieldBearingToken: 18,
-        },
-        protocolDisplayName: 'Yearn',
-        maturityDate: new Date(2025, 0, 1).getTime(),
-      },
-    ];
+    const expectedFilteredSortedPoolListResult1 = [pool1, pool2, pool3, pool4];
 
     expect(poolViewOptions).toEqual(expectedPoolViewOptions1);
     expect(filteredSortedPoolListResult.current).toEqual(expectedFilteredSortedPoolListResult1);
@@ -415,60 +210,7 @@ describe('usePoolViewOptions', () => {
       sortType: 'a-z',
       sortOrder: 'desc',
     };
-    const expectedFilteredSortedPoolListResult2 = [
-      {
-        address: '4',
-        backingToken: 'WETH',
-        backingTokenAddress: '0x74b23882a30290451A17c44f4F05243b6b58C76d',
-        chain: 'fantom',
-        protocol: 'yearn',
-        tokenPrecision: {
-          backingToken: 18,
-          yieldBearingToken: 18,
-        },
-        protocolDisplayName: 'Yearn',
-        maturityDate: new Date(2025, 0, 1).getTime(),
-      },
-      {
-        address: '2',
-        backingToken: 'USDC',
-        backingTokenAddress: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-        chain: 'ethereum',
-        protocol: 'yearn',
-        tokenPrecision: {
-          backingToken: 6,
-          yieldBearingToken: 6,
-        },
-        protocolDisplayName: 'Yearn',
-        maturityDate: new Date(2025, 0, 1).getTime(),
-      },
-      {
-        address: '3',
-        backingToken: 'USDC',
-        backingTokenAddress: '0x04068da6c83afcfa0e13ba15a6696662335d5b75',
-        chain: 'fantom',
-        protocol: 'yearn',
-        tokenPrecision: {
-          backingToken: 6,
-          yieldBearingToken: 6,
-        },
-        protocolDisplayName: 'Yearn',
-        maturityDate: new Date(2025, 0, 1).getTime(),
-      },
-      {
-        address: '1',
-        backingToken: 'ETH',
-        backingTokenAddress: '0x0000000000000000000000000000000000000000',
-        chain: 'ethereum',
-        protocol: 'lido',
-        tokenPrecision: {
-          backingToken: 18,
-          yieldBearingToken: 18,
-        },
-        protocolDisplayName: 'Lido',
-        maturityDate: new Date(2025, 0, 1).getTime(),
-      },
-    ];
+    const expectedFilteredSortedPoolListResult2 = [pool4, pool2, pool3, pool1];
 
     expect(poolViewResult.current[0]).toEqual(expectedPoolViewOptions2);
     expect(filteredSortedPoolListResult.current).toEqual(expectedFilteredSortedPoolListResult2);
