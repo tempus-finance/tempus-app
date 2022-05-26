@@ -2,7 +2,7 @@ import { ComponentStory, ComponentMeta } from '@storybook/react';
 import { useCallback, useEffect, useState } from 'react';
 import { ChainConfig, Decimal, Ticker } from 'tempus-core-services';
 import { getConfigManager } from '../../config/getConfigManager';
-import WithdrawModal from './WithdrawModal';
+import { WithdrawModal } from './WithdrawModal';
 
 export default {
   title: 'WithdrawModal',

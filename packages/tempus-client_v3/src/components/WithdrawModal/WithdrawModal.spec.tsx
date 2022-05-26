@@ -2,7 +2,7 @@ import { act, fireEvent, render } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { Decimal, Ticker } from 'tempus-core-services';
 import { getConfigManager } from '../../config/getConfigManager';
-import WithdrawModal, { WithdrawModalProps } from './WithdrawModal';
+import { WithdrawModal, WithdrawModalProps } from './WithdrawModal';
 
 const singleCurrencyUsdRates = new Map<Ticker, Decimal>();
 singleCurrencyUsdRates.set('ETH', new Decimal(3500));
@@ -14,6 +14,8 @@ multipleCurrencyUsdRates.set('stETH', new Decimal(3500));
 const defaultProps: WithdrawModalProps = {
   open: true,
   inputPrecision: 18,
+  onClose: () => {},
+  usdRates: new Map(),
 };
 
 const subject = (props: WithdrawModalProps) =>
