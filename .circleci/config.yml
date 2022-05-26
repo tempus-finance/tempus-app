@@ -87,7 +87,6 @@ jobs:
             npm install -g ts-node
             npx playwright install
             xvfb-run --auto-servernum --server-num=1 npm run mm-setup
-            xvfb-run --auto-servernum --server-num=2 npm run e2e /root/project/integration-testing/utility/_firstLogin.spec.ts
       - persist_to_workspace:
           root: ./
           paths:

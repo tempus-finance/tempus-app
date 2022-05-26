@@ -3,7 +3,7 @@ import { metamaskLogin } from '../modules/metamask';
 import { chromiumPersistant } from '../modules/browser';
 import { manageButtonsText, manageDisabledButtons } from '../modules/manageText';
 
-test.describe.serial('Manage text unit tests', () => {
+test.describe.serial('Manage text tests', () => {
     let browser: BrowserContext;
     test.beforeAll(async () => {
         browser = await chromiumPersistant();
