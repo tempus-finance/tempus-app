@@ -1,9 +1,9 @@
 import { FC, useCallback } from 'react';
 import { Decimal, Ticker } from 'tempus-core-services';
-import { ChartDataPoint, ChartDot, DateChart, ChartDotVariant } from '../Chart';
-import ActionButton from '../ActionButton';
-import Modal from '../Modal';
-import PoolPositionCard from '../PoolPositionCard';
+import { ChartDataPoint, ChartDot, DateChart, ChartDotVariant } from '../shared/Chart';
+import ActionButton from '../shared/ActionButton';
+import Modal from '../shared/Modal';
+import PoolPositionCard from '../shared/PoolPositionCard';
 
 import './PoolPositionModal.scss';
 
