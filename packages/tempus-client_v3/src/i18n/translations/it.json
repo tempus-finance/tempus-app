@@ -99,8 +99,8 @@
     "projectedTotalYield": ""
   },
   "PoolPositionModal": {
-    "title": "",
-    "withdrawAction": ""
+    "title": "Dettagli Posizione",
+    "withdrawAction": "Ritira"
   },
   "WalletButton": {
     "buttonConnectWallet": "",
