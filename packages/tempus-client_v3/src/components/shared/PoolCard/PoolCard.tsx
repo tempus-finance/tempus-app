@@ -22,7 +22,14 @@ interface PoolCardProps {
   aggregatedAPR?: Decimal;
   multiplier?: number;
   totalBalance?: Decimal;
-  onClick: (chain: Chain, ticker: Ticker, protocol: ProtocolName) => void;
+  poolAddresses: string[];
+  onClick: (
+    chain: Chain,
+    ticker: Ticker,
+    protocol: ProtocolName,
+    status: PoolCardStatus,
+    poolAddresses: string[],
+  ) => void;
 }
 
 const PoolCard: FC<PoolCardProps> = props => {
@@ -38,6 +45,7 @@ const PoolCard: FC<PoolCardProps> = props => {
     aggregatedAPR,
     totalBalance,
     multiplier = 1,
+    poolAddresses,
     onClick,
   } = props;
 
@@ -78,8 +86,8 @@ const PoolCard: FC<PoolCardProps> = props => {
   }, [aprValues.length, poolCardVariant]);
 
   const handleClick = useCallback(() => {
-    onClick(chain, ticker, protocol);
-  }, [chain, ticker, protocol, onClick]);
+    onClick(chain, ticker, protocol, poolCardStatus, poolAddresses);
+  }, [chain, ticker, protocol, poolCardStatus, poolAddresses, onClick]);
 
   return (
     <div className="tc__poolCard" data-card-variant={poolCardVariant} onClick={handleClick}>

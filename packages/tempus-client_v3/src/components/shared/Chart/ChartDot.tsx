@@ -1,7 +1,7 @@
 import { ReactElement, useMemo } from 'react';
 import { colors } from '../Colors';
 
-type ChartDotVariant = 'plus' | 'minus' | 'tick';
+export type ChartDotVariant = 'plus' | 'minus' | 'tick';
 
 export interface ChartDotProps {
   variant: ChartDotVariant;

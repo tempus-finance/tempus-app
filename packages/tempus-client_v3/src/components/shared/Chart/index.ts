@@ -6,4 +6,5 @@ import PercentageDateChart from './PercentageDateChart';
 
 export default Chart;
 export * from './Chart';
+export * from './ChartDot';
 export { BalanceChartTooltipContent, ChartDot, DateChart, PercentageDateChart };
