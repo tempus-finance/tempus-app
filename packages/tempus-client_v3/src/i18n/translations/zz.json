@@ -98,6 +98,10 @@
     "totalYieldEarned": "~~~~~====={{{{{(((((totalYieldEarned)))))}}}}}=====~~~~~",
     "projectedTotalYield": "~~~~~====={{{{{(((((projectedTotalYield)))))}}}}}=====~~~~~"
   },
+  "PoolPositionModal": {
+    "title": "~~~~~====={{{{{(((((title)))))}}}}}=====~~~~~",
+    "withdrawAction": "~~~~~====={{{{{(((((withdrawAction)))))}}}}}=====~~~~~"
+  },
   "WalletButton": {
     "buttonConnectWallet": "~~~~~====={{{{{(((((buttonConnectWallet)))))}}}}}=====~~~~~",
     "buttonUnsupported": "~~~~~====={{{{{(((((buttonUnsupported)))))}}}}}=====~~~~~"

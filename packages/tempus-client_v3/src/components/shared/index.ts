@@ -29,6 +29,7 @@ import Tooltip from './Tooltip';
 import TooltipWrapper from './TooltipWrapper';
 import InfoTooltip from './InfoTooltip';
 import PoolsHeading from './PoolsHeading';
+import PoolPositionCard from './PoolPositionCard';
 import { Table, TableHead, TableHeadCell, TableBody, TableBodyCell, TableRow } from './Table';
 
 export * from './ActionButton';
@@ -59,6 +60,7 @@ export {
   Logo,
   NavSubheader,
   Spacer,
+  PoolPositionCard,
   SwitcherButton,
   TermTabs,
   WalletButton,

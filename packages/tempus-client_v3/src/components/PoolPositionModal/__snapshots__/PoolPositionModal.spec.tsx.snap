@@ -1,0 +1,198 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`PoolPositionModal renders a pool position modal 1`] = `
+<div>
+  <div
+    class="tc__modal-backdrop"
+    id="modal-backdrop"
+  />
+  <div
+    class="tc__modal-container "
+  >
+    <div
+      class="tc__modal tc__modal__plain tc__modal__size-large"
+    >
+      <div
+        class="tc__modal-header"
+      >
+        <button
+          class="tc__btn "
+          data-selected="false"
+          type="button"
+        >
+          <svg
+            class="tc__icon tc__icon-close"
+            fill="none"
+            height="20"
+            viewBox="0 0 16 16"
+            width="20"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M15.6081 13.7161C15.859 13.967 16 14.3073 16 14.6621C16 15.017 15.859 15.3572 15.6081 15.6081C15.3572 15.859 15.017 16 14.6621 16C14.3073 16 13.967 15.859 13.7161 15.6081L8 9.87872L2.2839 15.6081C2.033 15.859 1.6927 16 1.33788 16C0.98305 16 0.642756 15.859 0.391855 15.6081C0.140955 15.3572 0 15.017 0 14.6621C0 14.3073 0.140955 13.967 0.391855 13.7161L6.12128 8L0.391855 2.2839C0.140955 2.033 -2.64367e-09 1.6927 0 1.33788C2.64367e-09 0.98305 0.140955 0.642756 0.391855 0.391855C0.642756 0.140955 0.98305 2.64367e-09 1.33788 0C1.6927 -2.64367e-09 2.033 0.140955 2.2839 0.391855L8 6.12128L13.7161 0.391855C13.967 0.140955 14.3073 0 14.6621 0C15.017 0 15.3572 0.140955 15.6081 0.391855C15.859 0.642756 16 0.98305 16 1.33788C16 1.6927 15.859 2.033 15.6081 2.2839L9.87872 8L15.6081 13.7161Z"
+              fill="#222222"
+            />
+          </svg>
+        </button>
+      </div>
+      <div
+        class="tc__modal__body"
+      >
+        <div
+          style="font-style: normal; font-size: 20px; line-height: 28px; color: rgb(34, 34, 34); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+        >
+          Position Details
+        </div>
+        <div
+          class="tc__poolPositionModal-info"
+        >
+          <div
+            class="tc__poolPositionCard"
+          >
+            <div
+              class="tc__poolPositionCard-row"
+            >
+              <div
+                class="tc__poolPositionCard-cell"
+              >
+                <div
+                  class="tc__poolPositionCard-cellData"
+                >
+                  <div
+                    style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(71, 67, 80); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+                  >
+                    APR
+                  </div>
+                  <div
+                    style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+                  >
+                    10.00%
+                  </div>
+                </div>
+              </div>
+              <div
+                class="tc__poolPositionCard-cell"
+              >
+                <div
+                  class="tc__poolPositionCard-cellData"
+                >
+                  <div
+                    style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(71, 67, 80); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+                  >
+                    Term
+                  </div>
+                  <span
+                    class="tc__formatted-date"
+                  >
+                    <div
+                      style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+                    >
+                      May
+                    </div>
+                    <span
+                      class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
+                    />
+                    <div
+                      style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+                    >
+                      02
+                    </div>
+                    <span
+                      class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
+                    />
+                    <div
+                      style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+                    >
+                      22
+                    </div>
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div
+              class="tc__poolPositionCard-row"
+            >
+              <div
+                class="tc__poolPositionCard-cell"
+                data-size="small"
+              >
+                <button
+                  class="tc__btn "
+                  data-selected="false"
+                  type="button"
+                >
+                  <div
+                    class="tc__poolPositionCard-seeMore"
+                  >
+                    <div
+                      style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+                    >
+                      See more
+                    </div>
+                      
+                    <svg
+                      class="tc__icon tc__icon-down-chevron"
+                      fill="none"
+                      height="16"
+                      viewBox="0 0 16 16"
+                      width="16"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <g
+                        clip-path="url(#clip0_909_5439)"
+                      >
+                        <path
+                          d="M15.7387 5.36992L8.63082 11.7636C8.54823 11.8385 8.44996 11.898 8.34169 11.9385C8.23342 11.9791 8.11729 12 8 12C7.88271 12 7.76658 11.9791 7.65831 11.9385C7.55004 11.898 7.45177 11.8385 7.36918 11.7636L0.261296 5.36992C0.0939908 5.21942 -2.49304e-09 5.01531 0 4.80248C2.49304e-09 4.58965 0.0939908 4.38554 0.261296 4.23504C0.428601 4.08455 0.655515 4 0.89212 4C1.12873 4 1.35564 4.08455 1.52294 4.23504L8 10.0693L14.4771 4.23504C14.6444 4.08455 14.8713 4 15.1079 4C15.3445 4 15.5714 4.08455 15.7387 4.23504C15.906 4.38554 16 4.58965 16 4.80248C16 5.01531 15.906 5.21942 15.7387 5.36992Z"
+                          fill="#222222"
+                        />
+                      </g>
+                      <defs>
+                        <clippath
+                          id="clip0_909_5439"
+                        >
+                          <rect
+                            fill="white"
+                            height="16"
+                            width="16"
+                          />
+                        </clippath>
+                      </defs>
+                    </svg>
+                  </div>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="tc__poolPositionModal-chart"
+        >
+          <div
+            class="recharts-responsive-container"
+            style="width: 100%; height: 345px;"
+          />
+        </div>
+        <div
+          class="tc__poolPositionModal-actions"
+        >
+          <button
+            class="tc__btn tc__actionButton tc__actionButton-border-primary-large tc__actionButton-background-primary-large tc__actionButton-hover-primary-large tc__actionButton-shadow-default tc__actionButton-cursor-default tc__actionButton-size-large "
+            data-selected="false"
+            type="button"
+          >
+            <div
+              class="tc__actionButton-status-label"
+            >
+              <div
+                style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(255, 255, 255); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+              >
+                Make Withdrawal
+              </div>
+            </div>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
