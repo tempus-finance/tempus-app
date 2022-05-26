@@ -40,6 +40,7 @@ export * from './Loading';
 export * from './NavSubheader';
 export * from './Radio';
 export * from './Tabs';
+export * from './PoolCard';
 
 export {
   ActionButton,

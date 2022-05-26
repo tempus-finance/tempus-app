@@ -2,6 +2,8 @@ import { fireEvent, render } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import MarketsSubheader from './MarketsSubheader';
 import I18nProvider from '../../../i18n/I18nProvider';
+import { getConfigManager } from '../../../config/getConfigManager';
+import { useActivePoolList, useInactivePoolList, useMaturedPoolList } from '../../../hooks';
 
 const subject = () =>
   render(
@@ -12,7 +14,25 @@ const subject = () =>
     </BrowserRouter>,
   );
 
+jest.mock('../../../hooks', () => ({
+  ...jest.requireActual('../../../hooks'),
+  useActivePoolList: jest.fn(),
+  useInactivePoolList: jest.fn(),
+  useMaturedPoolList: jest.fn(),
+}));
+
 describe('MarketsSubheader', () => {
+  beforeAll(async () => {
+    const config = getConfigManager();
+    await config.init();
+  });
+
+  beforeEach(() => {
+    (useActivePoolList as jest.Mock).mockImplementation(() => getConfigManager().getPoolList().slice(0, -2));
+    (useInactivePoolList as jest.Mock).mockImplementation(() => getConfigManager().getPoolList().slice(-2, -1));
+    (useMaturedPoolList as jest.Mock).mockImplementation(() => getConfigManager().getPoolList().slice(-1));
+  });
+
   it('renders a navigation subheader with filtering and sorting options', () => {
     const { container } = subject();
 
@@ -48,6 +68,9 @@ describe('MarketsSubheader', () => {
     expect(filterButton).not.toBeNull();
 
     fireEvent.click(filterButton);
+
+    const filterPopup = container.querySelector('.tc__nav-subheader__group .tc__dropdown .tc__dropdown__popup');
+    expect(filterPopup).toMatchSnapshot();
 
     const filterTypeCheckboxes = container.querySelectorAll('.tc__dropdown:first-of-type input[type=checkbox]');
     expect(filterTypeCheckboxes).toHaveLength(3);

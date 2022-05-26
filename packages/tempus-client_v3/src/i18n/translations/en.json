@@ -40,15 +40,18 @@
     "tabBoosted": "Boosted",
     "tabAll": "All",
     "optionFilter": "Filter",
-    "filterActive": "Active #",
-    "filterMatured": "Matured #",
-    "filterInactive": "Inactive #",
+    "filterActive": "Active ({{count}})",
+    "filterMatured": "Matured ({{count}})",
+    "filterInactive": "Inactive ({{count}})",
     "optionSort": "Sort",
     "sortAZ": "A-Z",
     "sortMaturity": "Maturity",
     "sortTVL": "TVL",
     "sortAPR": "APR %",
     "sortBalance": "Balance"
+  },
+  "MarketsPools": {
+    "showMoreButtonLabel": "Show {{numOfCardsToShow}} of {{totalNumOfCards}} more"
   },
   "PortfolioSubheader": {
     "tabOverview": "Overview",
@@ -84,6 +87,16 @@
   },
   "TermTab": {
     "title": "APR & Term"
+  },
+  "PoolPositionCard": {
+    "apr": "APR",
+    "term": "Term",
+    "seeLess": "See less",
+    "seeMore": "See more",
+    "profitLoss": "Profit/loss",
+    "balance": "Balance",
+    "totalYieldEarned": "Total Yield Earned",
+    "projectedTotalYield": "Projected Total Yield"
   },
   "WalletButton": {
     "buttonConnectWallet": "Connect Wallet",

@@ -1,7 +1,6 @@
 import { renderHook } from '@testing-library/react-hooks';
-import { BigNumber } from 'ethers';
-import { of } from 'rxjs';
-import { Chain, Decimal, getServices, Ticker } from 'tempus-core-services';
+import { Decimal, getServices } from 'tempus-core-services';
+import { getConfigManager } from '../config/getConfigManager';
 import { useTokenRates } from './useTokenRates';
 
 jest.mock('tempus-core-services', () => ({
@@ -10,43 +9,12 @@ jest.mock('tempus-core-services', () => ({
 }));
 
 describe('useTokenRates', () => {
-  const originalConsoleError = console.error;
-
-  beforeEach(() => {
-    console.error = jest.fn();
-  });
-  afterEach(() => {
-    jest.resetAllMocks();
-    console.error = originalConsoleError;
+  beforeAll(async () => {
+    const config = getConfigManager();
+    await config.init();
   });
 
   test('returns all tokens used by all pools', async () => {
-    (getServices as unknown as jest.Mock).mockImplementation(() => ({
-      StatisticsService: {
-        getRate: jest.fn().mockImplementation((chain: Chain, tokenTicker: Ticker) => {
-          let price = new Decimal(0);
-          switch (tokenTicker) {
-            case 'ETH':
-              price = new Decimal(2999);
-              break;
-            case 'WETH':
-              price = new Decimal(3001);
-              break;
-            case 'USDC':
-              price = new Decimal(chain === 'fantom' ? 1.001 : 0.999);
-              break;
-            default:
-          }
-
-          return of(price);
-        }),
-      },
-      TempusPoolService: {
-        currentInterestRate: jest.fn().mockImplementation(() => BigNumber.from(1)),
-        numAssetsPerYieldToken: jest.fn().mockImplementation(() => BigNumber.from(1)),
-      },
-    }));
-
     const { result, waitForNextUpdate } = renderHook(() => useTokenRates());
 
     expect(result.current).toEqual({});
@@ -60,13 +28,10 @@ describe('useTokenRates', () => {
   });
 
   test('returns empty map when service throw error', async () => {
-    (getServices as unknown as jest.Mock).mockImplementation(() => ({
-      StatisticsService: {
-        getRate: jest.fn().mockImplementation(() => {
-          throw new Error();
-        }),
-      },
-    }));
+    jest.spyOn(console, 'error').mockImplementation();
+    (getServices as unknown as jest.Mock).mockImplementation(() => {
+      throw new Error();
+    });
 
     const { result, waitForNextUpdate } = renderHook(() => useTokenRates());
 
@@ -76,7 +41,10 @@ describe('useTokenRates', () => {
       await waitForNextUpdate();
     } catch (e) {
       // when error, hook will return empty map which wont trigger rerender becoz it's same as initial value
-      expect(e).toBeDefined();
     }
+
+    expect(console.error).toHaveBeenCalled();
+
+    (console.error as jest.Mock).mockRestore();
   });
 });

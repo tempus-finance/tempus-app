@@ -1,0 +1,415 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`PoolPositionCard expands pool position card when user clicks on see more 1`] = `
+<div>
+  <div
+    class="tc__poolPositionCard"
+  >
+    <div
+      class="tc__poolPositionCard-row"
+    >
+      <div
+        class="tc__poolPositionCard-cell"
+      >
+        <div
+          class="tc__poolPositionCard-cellData"
+        >
+          <div
+            style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(71, 67, 80); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+          >
+            APR
+          </div>
+          <div
+            style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+          >
+            10.00%
+          </div>
+        </div>
+      </div>
+      <div
+        class="tc__poolPositionCard-cell"
+      >
+        <div
+          class="tc__poolPositionCard-cellData"
+        >
+          <div
+            style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(71, 67, 80); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+          >
+            Term
+          </div>
+          <span
+            class="tc__formatted-date"
+          >
+            <div
+              style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+            >
+              Mar
+            </div>
+            <span
+              class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
+            />
+            <div
+              style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+            >
+              04
+            </div>
+            <span
+              class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
+            />
+            <div
+              style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+            >
+              22
+            </div>
+          </span>
+        </div>
+      </div>
+    </div>
+    <div
+      class="tc__poolPositionCard-divider"
+    />
+    <div
+      class="tc__poolPositionCard-row"
+    >
+      <div
+        class="tc__poolPositionCard-cell"
+      >
+        <div
+          class="tc__poolPositionCard-cellData"
+        >
+          <div
+            style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(71, 67, 80); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+          >
+            Profit/loss
+          </div>
+          <div
+            class="tc__poolPositionCard-cellDataRow"
+          >
+            <div
+              style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+            >
+              10.2965
+            </div>
+              
+            <div
+              style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(71, 67, 80); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+            >
+              ETH
+            </div>
+          </div>
+          <div
+            class="tc__poolPositionCard-cellDataRow"
+          >
+            <div
+              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+            >
+              $20,593.02
+            </div>
+              
+            <div
+              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(71, 67, 80); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+            >
+              USD
+            </div>
+          </div>
+        </div>
+        <div
+          class="tc__poolPositionCard-cellData"
+        >
+          <div
+            style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(71, 67, 80); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+          >
+            Balance
+          </div>
+          <div
+            class="tc__poolPositionCard-cellDataRow"
+          >
+            <div
+              style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+            >
+              20.9294
+            </div>
+              
+            <div
+              style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(71, 67, 80); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+            >
+              ETH
+            </div>
+          </div>
+          <div
+            class="tc__poolPositionCard-cellDataRow"
+          >
+            <div
+              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+            >
+              $41,858.80
+            </div>
+              
+            <div
+              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(71, 67, 80); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+            >
+              USD
+            </div>
+          </div>
+        </div>
+        <div
+          class="tc__poolPositionCard-cellData"
+        >
+          <div
+            style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(71, 67, 80); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+          >
+            Total Yield Earned
+          </div>
+          <div
+            class="tc__poolPositionCard-cellDataRow"
+          >
+            <div
+              style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+            >
+              1.1234
+            </div>
+              
+            <div
+              style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(71, 67, 80); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+            >
+              ETH
+            </div>
+          </div>
+          <div
+            class="tc__poolPositionCard-cellDataRow"
+          >
+            <div
+              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+            >
+              $2,246.90
+            </div>
+              
+            <div
+              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(71, 67, 80); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+            >
+              USD
+            </div>
+          </div>
+        </div>
+        <div
+          class="tc__poolPositionCard-cellData"
+        >
+          <div
+            style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(71, 67, 80); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+          >
+            Projected Total Yield
+          </div>
+          <div
+            class="tc__poolPositionCard-cellDataRow"
+          >
+            <div
+              style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+            >
+              3.1812
+            </div>
+              
+            <div
+              style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(71, 67, 80); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+            >
+              ETH
+            </div>
+          </div>
+          <div
+            class="tc__poolPositionCard-cellDataRow"
+          >
+            <div
+              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+            >
+              $6,362.43
+            </div>
+              
+            <div
+              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(71, 67, 80); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+            >
+              USD
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="tc__poolPositionCard-divider"
+    />
+    <div
+      class="tc__poolPositionCard-row"
+    >
+      <div
+        class="tc__poolPositionCard-cell"
+        data-size="small"
+      >
+        <button
+          class="tc__btn "
+          data-selected="false"
+          type="button"
+        >
+          <div
+            class="tc__poolPositionCard-seeMore"
+          >
+            <div
+              style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+            >
+              See less
+            </div>
+              
+            <svg
+              class="tc__icon tc__icon-up-chevron"
+              fill="none"
+              height="16"
+              viewBox="0 0 16 16"
+              width="16"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <g
+                clip-path="url(#clip0_909_5449)"
+              >
+                <path
+                  d="M15.7372 11.7636C15.6546 11.8385 15.5564 11.898 15.4481 11.9385C15.3398 11.9791 15.2237 12 15.1064 12C14.9892 12 14.873 11.9791 14.7648 11.9385C14.6565 11.898 14.5583 11.8385 14.4757 11.7636L7.99924 5.9304L1.5228 11.7636C1.35551 11.9141 1.12862 11.9986 0.892036 11.9986C0.655453 11.9986 0.42856 11.9141 0.261271 11.7636C0.0939821 11.6132 0 11.4091 0 11.1963C0 10.9835 0.0939821 10.7794 0.261271 10.629L7.36848 4.23636C7.45107 4.16147 7.54932 4.10202 7.65758 4.06145C7.76584 4.02089 7.88196 4 7.99924 4C8.11652 4 8.23264 4.02089 8.3409 4.06145C8.44916 4.10202 8.54742 4.16147 8.63001 4.23636L15.7372 10.629C15.8205 10.7032 15.8866 10.7916 15.9317 10.889C15.9768 10.9864 16 11.0908 16 11.1963C16 11.3018 15.9768 11.4062 15.9317 11.5036C15.8866 11.601 15.8205 11.6894 15.7372 11.7636Z"
+                  fill="#222222"
+                />
+              </g>
+              <defs>
+                <clippath
+                  id="clip0_909_5449"
+                >
+                  <rect
+                    fill="white"
+                    height="16"
+                    width="16"
+                  />
+                </clippath>
+              </defs>
+            </svg>
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`PoolPositionCard renders a collapsed pool position card 1`] = `
+<div>
+  <div
+    class="tc__poolPositionCard"
+  >
+    <div
+      class="tc__poolPositionCard-row"
+    >
+      <div
+        class="tc__poolPositionCard-cell"
+      >
+        <div
+          class="tc__poolPositionCard-cellData"
+        >
+          <div
+            style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(71, 67, 80); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+          >
+            APR
+          </div>
+          <div
+            style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+          >
+            10.00%
+          </div>
+        </div>
+      </div>
+      <div
+        class="tc__poolPositionCard-cell"
+      >
+        <div
+          class="tc__poolPositionCard-cellData"
+        >
+          <div
+            style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(71, 67, 80); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+          >
+            Term
+          </div>
+          <span
+            class="tc__formatted-date"
+          >
+            <div
+              style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+            >
+              Mar
+            </div>
+            <span
+              class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
+            />
+            <div
+              style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+            >
+              04
+            </div>
+            <span
+              class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
+            />
+            <div
+              style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+            >
+              22
+            </div>
+          </span>
+        </div>
+      </div>
+    </div>
+    <div
+      class="tc__poolPositionCard-row"
+    >
+      <div
+        class="tc__poolPositionCard-cell"
+        data-size="small"
+      >
+        <button
+          class="tc__btn "
+          data-selected="false"
+          type="button"
+        >
+          <div
+            class="tc__poolPositionCard-seeMore"
+          >
+            <div
+              style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+            >
+              See more
+            </div>
+              
+            <svg
+              class="tc__icon tc__icon-down-chevron"
+              fill="none"
+              height="16"
+              viewBox="0 0 16 16"
+              width="16"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <g
+                clip-path="url(#clip0_909_5439)"
+              >
+                <path
+                  d="M15.7387 5.36992L8.63082 11.7636C8.54823 11.8385 8.44996 11.898 8.34169 11.9385C8.23342 11.9791 8.11729 12 8 12C7.88271 12 7.76658 11.9791 7.65831 11.9385C7.55004 11.898 7.45177 11.8385 7.36918 11.7636L0.261296 5.36992C0.0939908 5.21942 -2.49304e-09 5.01531 0 4.80248C2.49304e-09 4.58965 0.0939908 4.38554 0.261296 4.23504C0.428601 4.08455 0.655515 4 0.89212 4C1.12873 4 1.35564 4.08455 1.52294 4.23504L8 10.0693L14.4771 4.23504C14.6444 4.08455 14.8713 4 15.1079 4C15.3445 4 15.5714 4.08455 15.7387 4.23504C15.906 4.38554 16 4.58965 16 4.80248C16 5.01531 15.906 5.21942 15.7387 5.36992Z"
+                  fill="#222222"
+                />
+              </g>
+              <defs>
+                <clippath
+                  id="clip0_909_5439"
+                >
+                  <rect
+                    fill="white"
+                    height="16"
+                    width="16"
+                  />
+                </clippath>
+              </defs>
+            </svg>
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;

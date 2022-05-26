@@ -1,7 +1,7 @@
 import { renderHook } from '@testing-library/react-hooks';
-import { delay, from } from 'rxjs';
-import { Chain, Decimal, getServices } from 'tempus-core-services';
-import { useTvlData } from './useTvlData';
+import { Decimal, getServices } from 'tempus-core-services';
+import { getConfigManager } from '../config/getConfigManager';
+import { useTvlData, useTotalTvl } from './useTvlData';
 
 jest.mock('tempus-core-services', () => ({
   ...jest.requireActual('tempus-core-services'),
@@ -9,44 +9,54 @@ jest.mock('tempus-core-services', () => ({
 }));
 
 describe('useTvlData', () => {
-  beforeAll(() => {
-    jest.resetAllMocks();
+  beforeAll(async () => {
+    const config = getConfigManager();
+    await config.init();
   });
 
-  test('returns a TVL of all pools', async () => {
-    (getServices as unknown as jest.Mock).mockImplementation(() => ({
-      StatisticsService: {
-        totalValueLockedUSD: jest.fn().mockImplementation((chain: Chain, address: string) => {
-          if (chain === 'ethereum') {
-            if (address === '1') {
-              return from<Decimal[]>([new Decimal('5')]).pipe(delay(1000));
-            }
+  test('returns a total TVL of all pools', async () => {
+    const { result, waitForNextUpdate } = renderHook(() => useTotalTvl());
 
-            if (address === '2') {
-              return from<Decimal[]>([new Decimal('7')]).pipe(delay(500));
-            }
-          }
+    expect(result.current.toString()).toEqual('0');
 
-          if (chain === 'fantom') {
-            if (address === '3') {
-              return from<Decimal[]>([new Decimal('2')]).pipe(delay(0));
-            }
+    await waitForNextUpdate();
+    expect(result.current.toString()).toEqual('23000');
+  });
 
-            if (address === '4') {
-              return from<Decimal[]>([new Decimal('9')]).pipe(delay(900));
-            }
-          }
+  test('returns a TVL map of all pools', async () => {
+    const { result, waitForNextUpdate } = renderHook(() => useTvlData());
 
-          return from<Decimal[]>([new Decimal('0')]);
-        }),
-      },
-    }));
+    expect(result.current).toEqual({});
+
+    await waitForNextUpdate();
+
+    const expected = {
+      'ethereum-1': new Decimal(5000),
+      'ethereum-2': new Decimal(7000),
+      'fantom-3': new Decimal(2000),
+      'fantom-4': new Decimal(9000),
+    };
+    expect(result.current).toEqual(expected);
+  });
+
+  test('returns a empty map when there is error', async () => {
+    jest.spyOn(console, 'error').mockImplementation();
+    (getServices as unknown as jest.Mock).mockImplementation(() => {
+      throw new Error();
+    });
 
     const { result, waitForNextUpdate } = renderHook(() => useTvlData());
 
-    expect(result.current.toString()).toBe('0');
+    expect(result.current).toEqual({});
 
-    await waitForNextUpdate();
-    expect(result.current.toString()).toBe('23');
+    try {
+      await waitForNextUpdate();
+    } catch (e) {
+      // when error, hook will return empty map which wont trigger rerender becoz it's same as initial value
+    }
+
+    expect(console.error).toHaveBeenCalled();
+
+    (console.error as jest.Mock).mockRestore();
   });
 });

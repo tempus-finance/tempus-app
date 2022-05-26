@@ -1,9 +1,11 @@
 import { bind, state, useStateObservable } from '@react-rxjs/core';
 import { createSignal } from '@react-rxjs/utils';
-import { combineLatest, map } from 'rxjs';
+import { combineLatest, map, withLatestFrom } from 'rxjs';
 import { useCallback } from 'react';
+import { TempusPool, ZERO } from 'tempus-core-services';
 import { FilterType, PoolType, SortOrder, SortType, ViewType } from '../interfaces';
 import { poolList$ } from './useConfig';
+import { poolTvls$ } from './useTvlData';
 
 export interface PoolViewOptions {
   viewType: ViewType;
@@ -24,6 +26,17 @@ const statePoolType$ = state(poolType$, 'all');
 const stateFilters$ = state(filters$, new Set<FilterType>(['active']));
 const stateSortType$ = state(sortType$, 'a-z');
 const stateSortOrder$ = state(sortOrder$, 'asc');
+const statePoolTvls$ = state(poolTvls$, {});
+
+export const isPoolMatured = (tempusPool: TempusPool): boolean => tempusPool.maturityDate <= Date.now();
+// TODO: check other operations, and check whether it's -ve APR
+export const isPoolInactive = (tempusPool: TempusPool): boolean => !!tempusPool.disabledOperations?.deposit;
+export const isPoolActive = (tempusPool: TempusPool): boolean =>
+  !isPoolMatured(tempusPool) && !isPoolInactive(tempusPool);
+
+const activePoolList$ = poolList$.pipe(map(tempusPools => tempusPools.filter(isPoolActive)));
+const inactivePoolList$ = poolList$.pipe(map(tempusPools => tempusPools.filter(isPoolInactive)));
+const maturedPoolList$ = poolList$.pipe(map(tempusPools => tempusPools.filter(isPoolMatured)));
 
 const filteredPoolList$ = combineLatest([poolList$, stateFilters$]).pipe(
   map(([tempusPools, filters]) =>
@@ -32,18 +45,19 @@ const filteredPoolList$ = combineLatest([poolList$, stateFilters$]).pipe(
         switch (filter) {
           case 'active':
           default:
-            return tempusPool.maturityDate > Date.now(); // TODO: need to get the interest rate to compare
+            return isPoolActive(tempusPool);
           case 'inactive':
-            return false; // TODO: need to get the interest rate to compare
+            return isPoolInactive(tempusPool);
           case 'matured':
-            return tempusPool.maturityDate <= Date.now();
+            return isPoolMatured(tempusPool);
         }
       }),
     ),
   ),
 );
 const filteredSortedPoolList$ = combineLatest([filteredPoolList$, stateSortType$, stateSortOrder$]).pipe(
-  map(([tempusPools, sortType, sortOrder]) =>
+  withLatestFrom(statePoolTvls$), // only want to get the latest data instead of getting every interval
+  map(([[tempusPools, sortType, sortOrder], poolTvls]) =>
     tempusPools
       .sort((poolA, poolB) => {
         const factor = sortOrder === 'desc' ? -1 : 1;
@@ -61,8 +75,11 @@ const filteredSortedPoolList$ = combineLatest([filteredPoolList$, stateSortType$
             return 0; // TODO: need to get the balance to compare
           case 'maturity':
             return (poolA.maturityDate - poolB.maturityDate) * factor;
-          case 'tvl':
-            return 0; // TODO: need to get the TVL to compare
+          case 'tvl': {
+            const tvlA = poolTvls[`${poolA.chain}-${poolA.address}`] ?? ZERO;
+            const tvlB = poolTvls[`${poolB.chain}-${poolB.address}`] ?? ZERO;
+            return tvlA.gt(tvlB) ? factor : -1 * factor;
+          }
         }
       })
       // .sort() will sort the array in place and return the same reference,
@@ -115,3 +132,6 @@ export function usePoolViewOptions(): [PoolViewOptions, (partial: Partial<PoolVi
 }
 
 export const [useFilteredSortedPoolList] = bind(filteredSortedPoolList$, []);
+export const [useActivePoolList] = bind(activePoolList$, []);
+export const [useInactivePoolList] = bind(inactivePoolList$, []);
+export const [useMaturedPoolList] = bind(maturedPoolList$, []);

@@ -1,5 +1,5 @@
 import { Octokit } from 'octokit';
-import { Chain, ChainConfig, Config, TempusPool } from 'tempus-core-services';
+import { Chain, ChainConfig, Config, ProtocolName, TempusPool, Ticker } from 'tempus-core-services';
 
 const TempusPoolsConfig = {
   owner: 'tempus-finance',
@@ -53,6 +53,38 @@ class ConfigManager {
 
   getTokenList(): TokenListItem[] {
     return this.tokenList;
+  }
+
+  getEarliestStartDate(filterByChain?: Chain, filterByToken?: Ticker, filterByProtocol?: ProtocolName): Date {
+    const earliestPoolList = this.getPoolList()
+      .filter(pool => {
+        if (filterByChain) {
+          return pool.chain === filterByChain;
+        }
+
+        return true;
+      })
+      .filter(pool => {
+        if (filterByToken) {
+          return pool.backingToken === filterByToken;
+        }
+
+        return true;
+      })
+      .filter(pool => {
+        if (filterByProtocol) {
+          return pool.protocol === filterByProtocol;
+        }
+
+        return true;
+      })
+      .sort((poolA, poolB) => (poolA.startDate < poolB.startDate ? -1 : 1));
+
+    if (earliestPoolList && earliestPoolList.length) {
+      return new Date(earliestPoolList[0].startDate);
+    }
+
+    throw new Error('getEarliestStartDate - Cannot find a pool by search criteria');
   }
 
   private retrieveChainList(): void {
@@ -117,23 +149,31 @@ class ConfigManager {
           this.config = JSON.parse(decodedString);
 
           if (decodedString) {
-            this.config = {
-              ...this.config,
-              ethereum: {
-                ...this.config.ethereum,
-                privateNetworkUrl: String(process.env.REACT_APP_ETHEREUM_RPC),
-                alchemyKey: String(process.env.REACT_APP_MAINNET_ALCHEMY_KEY),
-              },
-              fantom: {
-                ...this.config.fantom,
-                privateNetworkUrl: String(process.env.REACT_APP_FANTOM_RPC),
-              },
-              'ethereum-fork': {
-                ...this.config['ethereum-fork'],
-                privateNetworkUrl: String(process.env.REACT_APP_ETHEREUM_RPC),
-                alchemyKey: String(process.env.REACT_APP_MAINNET_ALCHEMY_KEY),
-              },
-            };
+            if (process.env.REACT_APP_ETHEREUM_RPC) {
+              this.config = {
+                ...this.config,
+                ethereum: {
+                  ...this.config.ethereum,
+                  privateNetworkUrl: String(process.env.REACT_APP_ETHEREUM_RPC),
+                  alchemyKey: String(process.env.REACT_APP_MAINNET_ALCHEMY_KEY),
+                },
+                'ethereum-fork': {
+                  ...this.config['ethereum-fork'],
+                  privateNetworkUrl: String(process.env.REACT_APP_ETHEREUM_RPC),
+                  alchemyKey: String(process.env.REACT_APP_MAINNET_ALCHEMY_KEY),
+                },
+              };
+            }
+
+            if (process.env.REACT_APP_FANTOM_RPC) {
+              this.config = {
+                ...this.config,
+                fantom: {
+                  ...this.config.fantom,
+                  privateNetworkUrl: String(process.env.REACT_APP_FANTOM_RPC),
+                },
+              };
+            }
           }
 
           return true;

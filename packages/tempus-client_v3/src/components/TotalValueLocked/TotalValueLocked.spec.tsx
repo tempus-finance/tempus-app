@@ -5,7 +5,7 @@ import TotalValueLocked from './TotalValueLocked';
 const mockTvlValue = new Decimal('12345678');
 
 jest.mock('../../hooks/useTvlData', () => ({
-  useTvlData: () => [mockTvlValue],
+  useTotalTvl: () => mockTvlValue,
 }));
 
 const subject = () => render(<TotalValueLocked />);

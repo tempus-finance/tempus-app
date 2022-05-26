@@ -1,14 +1,14 @@
 import { FC, memo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { DecimalUtils } from 'tempus-core-services';
-import { useTvlData } from '../../hooks';
+import { useTotalTvl } from '../../hooks';
 import { Typography } from '../shared';
 
 import './TotalValueLocked.scss';
 
 const TotalValueLocked: FC = () => {
   const { t } = useTranslation();
-  const tvl = useTvlData();
+  const tvl = useTotalTvl();
 
   return (
     <div className="tc__totalValueLocked">

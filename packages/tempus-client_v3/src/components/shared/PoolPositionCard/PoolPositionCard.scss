@@ -1,0 +1,53 @@
+.tc__poolPositionCard {
+  display: flex;
+  flex-direction: column;
+  height: max-content;
+  border: 1px solid var(--poolPositionCardBorder);
+  width: 100%;
+  background-color: var(--poolPositionCardBackground);
+}
+
+.tc__poolPositionCard-row {
+  display: flex;
+}
+
+.tc__poolPositionCard-divider {
+  width: 100%;
+  height: 1px;
+  background-color: var(--poolPositionCardBorder);
+}
+
+.tc__poolPositionCard-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-grow: 1;
+  padding: 16px;
+  border: 1px solid var(--poolPositionCardBorder);
+
+  &[data-size='small'] {
+    padding: 8px;
+  }
+}
+
+.tc__poolPositionCard-cellData {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.tc__poolPositionCard-cellDataRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tc__poolPositionCard-seeMore {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
