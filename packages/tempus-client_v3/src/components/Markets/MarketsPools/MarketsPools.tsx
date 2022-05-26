@@ -60,8 +60,25 @@ const MarketsPools = (): JSX.Element => {
    * otherwise, show pools from all available networks.
    */
   const availableChains = useMemo(() => (selectedChain ? [selectedChain] : chains), [selectedChain, chains]);
-  const handleClick = (chain: Chain, ticker: Ticker, protocol: ProtocolName) => {
-    navigate(`/pool/${chain}/${ticker}/${protocol}`);
+  const handleClick = (
+    chain: Chain,
+    ticker: Ticker,
+    protocol: ProtocolName,
+    status: PoolCardStatus,
+    poolAddresses: string[],
+  ) => {
+    if (status === 'Matured') {
+      // Matured pool card always contains single pool
+      const poolAddress = poolAddresses[0];
+      if (!poolAddress) {
+        console.warn('Failed to get pool address from Matured pool card!');
+        return;
+      }
+
+      navigate(`/mature-pool/${chain}/${ticker}/${protocol}/${poolAddress}`);
+    } else {
+      navigate(`/pool/${chain}/${ticker}/${protocol}`);
+    }
   };
 
   return (
@@ -126,6 +143,7 @@ const MarketsPools = (): JSX.Element => {
                 }
 
                 const terms = chainCard.pools.map(pool => new Date(pool.maturityDate));
+                const poolAddresses = chainCard.pools.map(pool => pool.address);
 
                 let cardStatus: PoolCardStatus = 'Fixed';
                 if (chainCard.matured) {
@@ -144,6 +162,7 @@ const MarketsPools = (): JSX.Element => {
                     terms={terms}
                     chain={chainCard.chain}
                     onClick={handleClick}
+                    poolAddresses={poolAddresses}
                   />
                 );
               })}

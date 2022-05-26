@@ -1,9 +1,16 @@
-import { render } from '@testing-library/react';
+import { FC } from 'react';
+import { useParams } from 'react-router-dom';
 import { Decimal } from 'tempus-core-services';
 import { PoolPositionModal } from './PoolPositionModal';
 
-const subject = () =>
-  render(
+export const PoolPositionModalResolver: FC = () => {
+  const { chain, ticker, protocol, poolAddress } = useParams();
+
+  // Temp solution to mitigate ESlint unused param error
+  console.log(chain, ticker, protocol, poolAddress);
+
+  return (
+    // TODO - Replace dummy data with data from hooks
     <PoolPositionModal
       apr={0.1}
       balance={new Decimal(20)}
@@ -19,14 +26,6 @@ const subject = () =>
       tokenExchangeRate={new Decimal(100)}
       totalYieldEarned={new Decimal(2)}
       tokenTicker="ETH"
-    />,
+    />
   );
-
-describe('PoolPositionModal', () => {
-  it('renders a pool position modal', () => {
-    const { container } = subject();
-
-    expect(container).not.toBeNull();
-    expect(container).toMatchSnapshot();
-  });
-});
+};

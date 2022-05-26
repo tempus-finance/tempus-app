@@ -1,6 +1,6 @@
 import { ComponentStory, ComponentMeta } from '@storybook/react';
 import { Decimal } from 'tempus-core-services';
-import PoolPositionModal from './PoolPositionModal';
+import { PoolPositionModal } from './PoolPositionModal';
 
 export default {
   title: 'PoolPositionModal',

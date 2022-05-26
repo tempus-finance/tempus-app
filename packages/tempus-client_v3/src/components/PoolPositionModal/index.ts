@@ -1,3 +1,2 @@
-import PoolPositionModal from './PoolPositionModal';
-
-export default PoolPositionModal;
+export { PoolPositionModal } from './PoolPositionModal';
+export { PoolPositionModalResolver } from './PoolPositionModalResolver';
