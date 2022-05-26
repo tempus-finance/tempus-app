@@ -1,4 +1,5 @@
 import { FC, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Decimal, Ticker } from 'tempus-core-services';
 import { ChartDataPoint, ChartDot, DateChart, ChartDotVariant } from '../shared/Chart';
 import ActionButton from '../shared/ActionButton';
@@ -36,6 +37,8 @@ const PoolPositionModal: FC<PoolPositionModalProps> = props => {
     onWithdraw,
   } = props;
 
+  const { t } = useTranslation();
+
   const chartDot = useCallback(
     (_x, _y, index, cx, cy) => {
       let variant: ChartDotVariant = 'plus';
@@ -54,7 +57,7 @@ const PoolPositionModal: FC<PoolPositionModalProps> = props => {
   );
 
   return (
-    <Modal open onClose={() => {}} title="Position Details" size="large">
+    <Modal open onClose={() => {}} title={t('PoolPositionModal.title')} size="large">
       <div className="tc__poolPositionModal-info">
         <PoolPositionCard
           apr={apr}
@@ -79,7 +82,7 @@ const PoolPositionModal: FC<PoolPositionModalProps> = props => {
           variant="primary"
           size="large"
           labels={{
-            default: 'Make Withdrawal',
+            default: t('PoolPositionModal.withdrawAction'),
           }}
         />
       </div>

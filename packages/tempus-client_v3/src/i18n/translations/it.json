@@ -98,6 +98,10 @@
     "totalYieldEarned": "",
     "projectedTotalYield": ""
   },
+  "PoolPositionModal": {
+    "title": "",
+    "withdrawAction": ""
+  },
   "WalletButton": {
     "buttonConnectWallet": "",
     "buttonUnsupported": ""
