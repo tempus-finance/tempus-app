@@ -11,7 +11,6 @@ const subject = () =>
         { x: new Date(2022, 3, 4), y: 10 },
         { x: new Date(2022, 4, 1), y: 20 },
       ]}
-      onWithdraw={() => {}}
       profitLoss={new Decimal(2)}
       projectedTotalYield={new Decimal(3)}
       term={new Date(2022, 4, 2)}
@@ -19,6 +18,10 @@ const subject = () =>
       tokenExchangeRate={new Decimal(100)}
       totalYieldEarned={new Decimal(2)}
       tokenTicker="ETH"
+      protocol="lido"
+      address="0x123123123"
+      backingToken="ETH"
+      chain="ethereum"
     />,
   );
 

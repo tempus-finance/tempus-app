@@ -1,6 +1,7 @@
 import { FC, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Decimal, Ticker } from 'tempus-core-services';
+import { Chain, Decimal, ProtocolName, Ticker } from 'tempus-core-services';
 import { ChartDataPoint, ChartDot, DateChart, ChartDotVariant } from '../shared/Chart';
 import ActionButton from '../shared/ActionButton';
 import Modal from '../shared/Modal';
@@ -19,7 +20,10 @@ interface PoolPositionModalProps {
   tokenExchangeRate: Decimal;
   tokenTicker: Ticker;
   chartData: ChartDataPoint<Date, number>[];
-  onWithdraw: () => void;
+  address: string;
+  chain: Chain;
+  backingToken: Ticker;
+  protocol: ProtocolName;
 }
 
 export const PoolPositionModal: FC<PoolPositionModalProps> = props => {
@@ -34,10 +38,14 @@ export const PoolPositionModal: FC<PoolPositionModalProps> = props => {
     tokenExchangeRate,
     tokenTicker,
     chartData,
-    onWithdraw,
+    address,
+    chain,
+    backingToken,
+    protocol,
   } = props;
 
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   const chartDot = useCallback(
     (_x, _y, index, cx, cy) => {
@@ -55,6 +63,10 @@ export const PoolPositionModal: FC<PoolPositionModalProps> = props => {
     },
     [chartData],
   );
+
+  const onWithdraw = useCallback(() => {
+    navigate(`/withdraw/${chain}/${backingToken}/${protocol}/${address}`);
+  }, [address, backingToken, chain, protocol, navigate]);
 
   return (
     <Modal open onClose={() => {}} title={t('PoolPositionModal.title')} size="large">

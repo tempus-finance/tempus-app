@@ -11,7 +11,7 @@ export interface WithdrawModalProps extends ModalProps {
   chainConfig?: ChainConfig;
 }
 
-const WithdrawModal: FC<WithdrawModalProps> = props => {
+export const WithdrawModal: FC<WithdrawModalProps> = props => {
   const { open, onClose, inputPrecision, usdRates, chainConfig } = props;
   const [balance, setBalance] = useState(new Decimal(100)); // TODO: load balance for selected token
   const [currency, setCurrency] = useState(Array.from(usdRates.keys())[0]);
@@ -70,5 +70,3 @@ const WithdrawModal: FC<WithdrawModalProps> = props => {
     />
   );
 };
-
-export default WithdrawModal;
