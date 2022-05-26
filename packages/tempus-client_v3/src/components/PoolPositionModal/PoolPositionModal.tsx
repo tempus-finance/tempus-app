@@ -22,7 +22,7 @@ interface PoolPositionModalProps {
   onWithdraw: () => void;
 }
 
-const PoolPositionModal: FC<PoolPositionModalProps> = props => {
+export const PoolPositionModal: FC<PoolPositionModalProps> = props => {
   const {
     apr,
     term,
@@ -89,4 +89,3 @@ const PoolPositionModal: FC<PoolPositionModalProps> = props => {
     </Modal>
   );
 };
-export default PoolPositionModal;
