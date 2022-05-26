@@ -1,10 +1,18 @@
 import * as ejs from 'ethers';
+import { BigNumber } from 'ethers';
 import StatisticsABI from '../abi/Stats.json';
 import { Decimal } from '../datastructures';
+import { TempusPool } from '../interfaces';
 import { StatisticsService } from './StatisticsService';
+import { getERC20TokenService } from './getERC20TokenService';
+import { of } from 'rxjs';
 
 jest.mock('@ethersproject/providers');
 const { JsonRpcProvider } = jest.requireMock('@ethersproject/providers');
+
+jest.mock('./getERC20TokenService', () => ({
+  getERC20TokenService: jest.fn(),
+}));
 
 describe('StatisticsService', () => {
   const mockAddress = 'statistics-contract-address';
@@ -125,6 +133,137 @@ describe('StatisticsService', () => {
 
       instance.getRate('ethereum', 'DAI', mockCallOverride()).subscribe(result => {
         expect(result).toBe(new Decimal(25));
+      });
+    });
+  });
+
+  describe('getUserPoolBalanceUSD()', () => {
+    beforeEach(() => {
+      jest.clearAllMocks();
+
+      instance = new StatisticsService();
+
+      instance.init({
+        Contract: ejs.Contract,
+        address: mockAddress,
+        abi: StatisticsABI,
+        signerOrProvider: mockProvider,
+        tempusAMMService: mockGetTempusAMMService(),
+        getConfig: mockGetConfig,
+      });
+    });
+
+    it('it retrieves the token balances and call estimateExitAndRedeem() to calculate the pool balance', () => {
+      jest.spyOn(instance, 'getRate').mockReturnValue(of(new Decimal(1000)));
+      mockEstimateExitAndRedeem.mockResolvedValue({
+        tokenAmount: BigNumber.from(1234),
+      });
+      (getERC20TokenService as jest.Mock).mockImplementation(address => ({
+        balanceOf: jest.fn().mockImplementation(() => {
+          switch (address) {
+            case '0x2':
+              return Promise.resolve(BigNumber.from(100));
+            case '0x3':
+              return Promise.resolve(BigNumber.from(200));
+            case '0x4':
+              return Promise.resolve(BigNumber.from(300));
+            default:
+              return Promise.resolve(BigNumber.from(0));
+          }
+        }),
+      }));
+      const mockTempusPool = {
+        address: '0x1',
+        ammAddress: '0x2',
+        backingToken: 'ETH',
+        principalsAddress: '0x3',
+        yieldsAddress: '0x4',
+        tokenPrecision: { backingToken: 18 },
+      } as TempusPool;
+      const userWalletAddress = '0x0';
+      const isBackingToken = true;
+
+      instance.getUserPoolBalanceUSD('ethereum', mockTempusPool, userWalletAddress).subscribe(result => {
+        expect(result).toBe(new Decimal(1234));
+        expect(mockEstimateExitAndRedeem).toHaveBeenCalledWith(
+          mockTempusPool.address,
+          mockTempusPool.ammAddress,
+          BigNumber.from(100),
+          BigNumber.from(200),
+          BigNumber.from(300),
+          isBackingToken,
+        );
+        expect(instance.getRate).toHaveBeenCalled();
+      });
+    });
+
+    it('it accepts the token balances and call estimateExitAndRedeem() to calculate the pool balance', () => {
+      jest.spyOn(instance, 'getRate').mockReturnValue(of(new Decimal(1000)));
+      mockEstimateExitAndRedeem.mockResolvedValue({
+        tokenAmount: BigNumber.from(1234),
+      });
+      const mockTempusPool = {
+        address: '0x1',
+        ammAddress: '0x2',
+        backingToken: 'ETH',
+        principalsAddress: '0x3',
+        yieldsAddress: '0x4',
+        tokenPrecision: {},
+      } as TempusPool;
+      const userWalletAddress = '0x0';
+      const poolBalances = {
+        principalsBalance: new Decimal(200),
+        yieldsBalance: new Decimal(300),
+        lpTokenBalance: new Decimal(100),
+      };
+      const isBackingToken = true;
+
+      instance.getUserPoolBalanceUSD('ethereum', mockTempusPool, userWalletAddress, poolBalances).subscribe(result => {
+        expect(result).toBe(new Decimal(1234));
+        expect(mockEstimateExitAndRedeem).toHaveBeenCalledWith(
+          mockTempusPool.address,
+          mockTempusPool.ammAddress,
+          BigNumber.from(100),
+          BigNumber.from(200),
+          BigNumber.from(300),
+          isBackingToken,
+        );
+        expect(instance.getRate).toHaveBeenCalled();
+      });
+    });
+
+    it('it return null when getRate() return null', () => {
+      jest.spyOn(instance, 'getRate').mockReturnValue(of(null));
+      mockEstimateExitAndRedeem.mockResolvedValue({
+        tokenAmount: BigNumber.from(1234),
+      });
+      const mockTempusPool = {
+        address: '0x1',
+        ammAddress: '0x2',
+        backingToken: 'ETH',
+        principalsAddress: '0x3',
+        yieldsAddress: '0x4',
+        tokenPrecision: { backingToken: 18 },
+      } as TempusPool;
+      const userWalletAddress = '0x0';
+      const poolBalances = {
+        principalsBalance: new Decimal(200),
+        yieldsBalance: new Decimal(300),
+        lpTokenBalance: new Decimal(100),
+      };
+      const isBackingToken = true;
+
+      instance.getUserPoolBalanceUSD('ethereum', mockTempusPool, userWalletAddress, poolBalances).subscribe(result => {
+        expect(result).toBeNull();
+        expect(mockEstimateExitAndRedeem).toHaveBeenCalledWith(
+          mockTempusPool.address,
+          mockTempusPool.ammAddress,
+          BigNumber.from(100),
+          BigNumber.from(200),
+          BigNumber.from(300),
+          isBackingToken,
+        );
+        expect(instance.getRate).toHaveBeenCalled();
       });
     });
   });

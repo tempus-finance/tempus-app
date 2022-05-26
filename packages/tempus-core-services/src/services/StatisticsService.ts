@@ -164,17 +164,24 @@ export class StatisticsService {
     chain: Chain,
     tempusPool: TempusPool,
     userWalletAddress: string,
+    tokenBalances?: {
+      principalsBalance: Decimal;
+      yieldsBalance: Decimal;
+      lpTokenBalance: Decimal;
+    },
     overrides?: CallOverrides,
   ): Observable<Decimal | null> {
     const { address, ammAddress, backingToken, principalsAddress, yieldsAddress, tokenPrecision } = tempusPool;
 
-    const principalsService = getERC20TokenService(principalsAddress, chain);
-    const yieldsService = getERC20TokenService(yieldsAddress, chain);
-    const lpTokenService = getERC20TokenService(ammAddress, chain);
-
-    const principalsBalance$ = from(principalsService.balanceOf(userWalletAddress, overrides));
-    const yieldsBalance$ = from(yieldsService.balanceOf(userWalletAddress, overrides));
-    const lpTokenBalance$ = from(lpTokenService.balanceOf(userWalletAddress, overrides));
+    const principalsBalance$ = tokenBalances
+      ? of(tokenBalances.principalsBalance.toBigNumber())
+      : from(getERC20TokenService(principalsAddress, chain).balanceOf(userWalletAddress, overrides));
+    const yieldsBalance$ = tokenBalances
+      ? of(tokenBalances.yieldsBalance.toBigNumber())
+      : from(getERC20TokenService(yieldsAddress, chain).balanceOf(userWalletAddress, overrides));
+    const lpTokenBalance$ = tokenBalances
+      ? of(tokenBalances.lpTokenBalance.toBigNumber())
+      : from(getERC20TokenService(ammAddress, chain).balanceOf(userWalletAddress, overrides));
     const backingTokenRate$ = from(this.getRate(chain, backingToken, overrides));
     const isBackingToken = true;
 
@@ -203,7 +210,7 @@ export class StatisticsService {
         const userPoolBalanceInBackingToken = exitEstimate.tokenAmount;
         const userPoolBalanceInBackingToken18f = increasePrecision(
           userPoolBalanceInBackingToken,
-          DEFAULT_TOKEN_PRECISION - (tokenPrecision.backingToken ?? 0),
+          DEFAULT_TOKEN_PRECISION - (tokenPrecision.backingToken ?? DEFAULT_TOKEN_PRECISION),
         );
         const userPoolBalanceInUSD = backingTokenRate.mul(userPoolBalanceInBackingToken18f);
         return userPoolBalanceInUSD;
