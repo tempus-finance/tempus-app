@@ -3,22 +3,29 @@ import { catchError, combineLatest, debounce, interval, map, merge, Observable, 
 import { Chain, Decimal, getServices, StatisticsService } from 'tempus-core-services';
 import { poolList$ } from './useConfig';
 import { walletAddress$ } from './useWalletAddress';
+import { walletBalances$ } from './useWalletBalances';
 
 const DEBOUNCE_IN_MS = 500;
-
-// TODO: this should be replaced by chain event or app event that trigger balance update
-const someEvent$: Observable<number> = of(0);
 
 interface PoolBalanceMap {
   [chainPoolAddressString: string]: Decimal | null;
 }
 
-export const poolBalances$: Observable<PoolBalanceMap> = combineLatest([poolList$, walletAddress$, someEvent$]).pipe(
-  map(([tempusPools, walletAddress]) => {
+export const poolBalances$: Observable<PoolBalanceMap> = combineLatest([
+  poolList$,
+  walletAddress$,
+  walletBalances$,
+]).pipe(
+  map(([tempusPools, walletAddress, walletBalances]) => {
     const poolBalances = tempusPools.map(tempusPool => {
+      const tokenBalances = {
+        principalsBalance: walletBalances[`${tempusPool.chain}-${tempusPool.principalsAddress}`],
+        yieldsBalance: walletBalances[`${tempusPool.chain}-${tempusPool.yieldsAddress}`],
+        lpTokenBalance: walletBalances[`${tempusPool.chain}-${tempusPool.ammAddress}`],
+      };
       const poolBalance = (
         getServices(tempusPool.chain as Chain)?.StatisticsService as StatisticsService
-      ).getUserPoolBalanceUSD(tempusPool.chain as Chain, tempusPool, walletAddress);
+      ).getUserPoolBalanceUSD(tempusPool.chain as Chain, tempusPool, walletAddress, tokenBalances);
       return poolBalance.pipe(
         map(
           balance =>

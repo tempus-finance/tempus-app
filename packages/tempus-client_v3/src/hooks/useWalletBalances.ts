@@ -4,7 +4,7 @@ import { Decimal, getServices } from 'tempus-core-services';
 import { getConfigManager } from '../config/getConfigManager';
 import { walletAddress$ } from './useWalletAddress';
 
-export const walletBalancesSubject$ = merge(
+export const walletBalances$ = merge(
   // Every time wallet address changes, we want to fetch wallet balances
   walletAddress$.pipe(
     map(walletAddress => {
@@ -43,4 +43,4 @@ export const walletBalancesSubject$ = merge(
   ),
 );
 
-export const [useWalletBalances] = bind(walletBalancesSubject$, {});
+export const [useWalletBalances] = bind(walletBalances$, {});
