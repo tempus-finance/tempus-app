@@ -72,7 +72,7 @@ const PoolPositionModal: FC<PoolPositionModalProps> = props => {
         />
       </div>
       <div className="tc__poolPositionModal-chart">
-        <DateChart data={chartData} dot={chartDot} />
+        <DateChart data={chartData} dot={chartDot} height={345} width="100%" />
         {/* TODO - Add extra x-axis in chart component that will show 'Earned/Projected yield' labels */}
       </div>
       {/* TODO - Add transaction history (check with design team if it's done) */}
