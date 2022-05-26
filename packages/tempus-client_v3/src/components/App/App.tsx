@@ -57,10 +57,10 @@ const App = () => {
           </div>
           <div className="tc__app__body">
             <Routes>
-              <Route path="/" element={<Markets />} />
               <Route path="/portfolio" element={<Portfolio />} />
-              <Route path="pool/:chain/:ticker/:protocol" element={<ModalResolver />} />
               <Route path="mature-pool/:chain/:ticker/:protocol/:poolAddress" element={<PoolPositionModalResolver />} />
+              <Route path="pool/:chain/:ticker/:protocol" element={<ModalResolver />} />
+              <Route path="/" element={<Markets />} />
             </Routes>
           </div>
         </>
