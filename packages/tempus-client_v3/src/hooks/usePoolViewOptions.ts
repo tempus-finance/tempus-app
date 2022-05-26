@@ -58,7 +58,8 @@ const filteredPoolList$ = combineLatest([poolList$, stateFilters$]).pipe(
   ),
 );
 const filteredSortedPoolList$ = combineLatest([filteredPoolList$, stateSortType$, stateSortOrder$]).pipe(
-  withLatestFrom(statePoolTvls$, statePoolBalances$), // only want to get the latest data instead of getting every interval
+  // only want to get the latest data instead of getting every interval
+  withLatestFrom(statePoolTvls$, statePoolBalances$),
   map(([[tempusPools, sortType, sortOrder], poolTvls, poolBalances]) =>
     tempusPools
       .sort((poolA, poolB) => {
