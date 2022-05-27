@@ -1,15 +1,16 @@
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
 import { BigNumber, CallOverrides, Contract, ethers } from 'ethers';
-import { catchError, from, map, Observable, of, throwError } from 'rxjs';
+import { catchError, combineLatest, from, map, mergeMap, Observable, of, throwError } from 'rxjs';
 import { Stats } from '../abi/Stats';
 import StatsABI from '../abi/Stats.json';
 import { DEFAULT_TOKEN_PRECISION, tokenPrecision } from '../constants';
 import { Decimal, decreasePrecision, increasePrecision } from '../datastructures';
-import { Chain, Config, Ticker } from '../interfaces';
+import { Chain, Config, TempusPool, Ticker } from '../interfaces';
 import { getTokenPrecision, mul18f } from '../utils';
 import { getChainlinkFeed } from './getChainlinkFeed';
 import { getCoingeckoRate } from './coinGeckoFeed';
 import { TempusAMMService } from './TempusAMMService';
+import { getERC20TokenService } from './getERC20TokenService';
 
 type StatisticsServiceParameters = {
   Contract: typeof Contract;
@@ -154,6 +155,69 @@ export class StatisticsService {
         );
       }),
     );
+  }
+
+  /**
+   * Returns pool balance in USD
+   * */
+  public getUserPoolBalanceUSD(
+    chain: Chain,
+    tempusPool: TempusPool,
+    userWalletAddress: string,
+    tokenBalances?: {
+      principalsBalance: Decimal;
+      yieldsBalance: Decimal;
+      lpTokenBalance: Decimal;
+    },
+    overrides?: CallOverrides,
+  ): Observable<Decimal | null> {
+    const { address, ammAddress, backingToken, principalsAddress, yieldsAddress, tokenPrecision } = tempusPool;
+
+    const principalsBalance$ = tokenBalances
+      ? of(tokenBalances.principalsBalance.toBigNumber(tokenPrecision.principals))
+      : from(getERC20TokenService(principalsAddress, chain).balanceOf(userWalletAddress, overrides));
+    const yieldsBalance$ = tokenBalances
+      ? of(tokenBalances.yieldsBalance.toBigNumber(tokenPrecision.yields))
+      : from(getERC20TokenService(yieldsAddress, chain).balanceOf(userWalletAddress, overrides));
+    const lpTokenBalance$ = tokenBalances
+      ? of(tokenBalances.lpTokenBalance.toBigNumber(tokenPrecision.lpTokens))
+      : from(getERC20TokenService(ammAddress, chain).balanceOf(userWalletAddress, overrides));
+    const backingTokenRate$ = from(this.getRate(chain, backingToken, overrides));
+    const isBackingToken = true;
+
+    const exitEstimate$ = combineLatest([principalsBalance$, yieldsBalance$, lpTokenBalance$]).pipe(
+      mergeMap(([principalsBalance, yieldsBalance, lpTokenBalance]) =>
+        from(
+          this.estimateExitAndRedeem(
+            address,
+            ammAddress,
+            lpTokenBalance,
+            principalsBalance,
+            yieldsBalance,
+            isBackingToken,
+            overrides,
+          ),
+        ),
+      ),
+    );
+
+    const userPoolBalanceInUSD$ = combineLatest([exitEstimate$, backingTokenRate$]).pipe(
+      map(([exitEstimate, backingTokenRate]) => {
+        if (!backingTokenRate) {
+          return null;
+        }
+
+        const userPoolBalanceInBackingToken = exitEstimate.tokenAmount;
+        const userPoolBalanceInBackingToken18f = increasePrecision(
+          userPoolBalanceInBackingToken,
+          DEFAULT_TOKEN_PRECISION - (tokenPrecision.backingToken ?? DEFAULT_TOKEN_PRECISION),
+        );
+        const userPoolBalanceInUSD = backingTokenRate.mul(userPoolBalanceInBackingToken18f);
+        return userPoolBalanceInUSD;
+      }),
+    );
+
+    return userPoolBalanceInUSD$;
   }
 
   /**
