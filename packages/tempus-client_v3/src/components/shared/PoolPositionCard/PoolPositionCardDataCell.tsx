@@ -4,7 +4,7 @@ import Typography from '../Typography';
 
 interface PoolPositionCardDataCellProps {
   label: string;
-  value: Decimal;
+  value: Decimal | null;
   tokenTicker: Ticker;
   tokenExchangeRate: Decimal;
   tokenDecimals: number;
@@ -13,12 +13,25 @@ interface PoolPositionCardDataCellProps {
 const PoolPositionCardDataCell: FC<PoolPositionCardDataCellProps> = props => {
   const { label, value, tokenTicker, tokenExchangeRate, tokenDecimals } = props;
 
-  const valueFormatted = useMemo(() => DecimalUtils.formatToCurrency(value, tokenDecimals), [value, tokenDecimals]);
+  const valueFormatted = useMemo(() => {
+    if (!value) {
+      return null;
+    }
+    return DecimalUtils.formatToCurrency(value, tokenDecimals);
+  }, [value, tokenDecimals]);
 
-  const valueFiatFormatted = useMemo(
-    () => DecimalUtils.formatToCurrency(value.mul(tokenExchangeRate), 2, '$'),
-    [value, tokenExchangeRate],
-  );
+  const valueFiatFormatted = useMemo(() => {
+    if (!value) {
+      return null;
+    }
+    return DecimalUtils.formatToCurrency(value.mul(tokenExchangeRate), 2, '$');
+  }, [value, tokenExchangeRate]);
+
+  // Wait for data to load before showing anything
+  // TODO - Check with design team if we want to show some kind of loading indicator before the value is loaded
+  if (!valueFormatted || !valueFiatFormatted) {
+    return null;
+  }
 
   return (
     <div className="tc__poolPositionCard-cellData">
