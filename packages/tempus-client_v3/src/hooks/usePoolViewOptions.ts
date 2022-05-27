@@ -6,6 +6,7 @@ import { TempusPool, ZERO } from 'tempus-core-services';
 import { FilterType, PoolType, SortOrder, SortType, ViewType } from '../interfaces';
 import { poolList$ } from './useConfig';
 import { poolTvls$ } from './useTvlData';
+import { poolBalances$ } from './usePoolBalances';
 
 export interface PoolViewOptions {
   viewType: ViewType;
@@ -27,6 +28,7 @@ const stateFilters$ = state(filters$, new Set<FilterType>(['active']));
 const stateSortType$ = state(sortType$, 'a-z');
 const stateSortOrder$ = state(sortOrder$, 'asc');
 const statePoolTvls$ = state(poolTvls$, {});
+const statePoolBalances$ = state(poolBalances$, {});
 
 export const isPoolMatured = (tempusPool: TempusPool): boolean => tempusPool.maturityDate <= Date.now();
 // TODO: check other operations, and check whether it's -ve APR
@@ -56,8 +58,9 @@ const filteredPoolList$ = combineLatest([poolList$, stateFilters$]).pipe(
   ),
 );
 const filteredSortedPoolList$ = combineLatest([filteredPoolList$, stateSortType$, stateSortOrder$]).pipe(
-  withLatestFrom(statePoolTvls$), // only want to get the latest data instead of getting every interval
-  map(([[tempusPools, sortType, sortOrder], poolTvls]) =>
+  // only want to get the latest data instead of getting every interval
+  withLatestFrom(statePoolTvls$, statePoolBalances$),
+  map(([[tempusPools, sortType, sortOrder], poolTvls, poolBalances]) =>
     tempusPools
       .sort((poolA, poolB) => {
         const factor = sortOrder === 'desc' ? -1 : 1;
@@ -71,8 +74,11 @@ const filteredSortedPoolList$ = combineLatest([filteredPoolList$, stateSortType$
             );
           case 'apr':
             return 0; // TODO: need to get the APR to compare
-          case 'balance':
-            return 0; // TODO: need to get the balance to compare
+          case 'balance': {
+            const poolBalancesA = poolBalances[`${poolA.chain}-${poolA.address}`] ?? ZERO;
+            const poolBalancesB = poolBalances[`${poolB.chain}-${poolB.address}`] ?? ZERO;
+            return poolBalancesA.gt(poolBalancesB) ? factor : -1 * factor;
+          }
           case 'maturity':
             return (poolA.maturityDate - poolB.maturityDate) * factor;
           case 'tvl': {

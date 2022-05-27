@@ -10,9 +10,11 @@ export const pool1 = {
   chain: 'ethereum',
   protocol: 'lido',
   protocolDisplayName: 'Lido',
+  spotPrice: '1',
+  decimalsForUI: 4,
   startDate: 1640995200000, // 2022/01/01
   spotPrice: '1',
-  maturityDate: new Date(2025, 0, 1).getTime(),
+  maturityDate: 1735689600000, // 2025/01/01
   tokenPrecision: {
     backingToken: 18,
     yieldBearingToken: 18,
@@ -31,9 +33,11 @@ export const pool2 = {
   chain: 'ethereum',
   protocol: 'yearn',
   protocolDisplayName: 'Yearn',
+  spotPrice: '1',
+  decimalsForUI: 4,
   startDate: 1643673600000, // 2022/02/01
   spotPrice: '1',
-  maturityDate: new Date(2025, 0, 1).getTime(),
+  maturityDate: 1709251200000, // 2024/03/01
   tokenPrecision: {
     backingToken: 6,
     yieldBearingToken: 6,
@@ -52,9 +56,11 @@ export const pool3 = {
   chain: 'fantom',
   protocol: 'yearn',
   protocolDisplayName: 'Yearn',
+  spotPrice: '1',
+  decimalsForUI: 2,
   startDate: 1642204800000, // 2022/15/01
   spotPrice: '1',
-  maturityDate: new Date(2025, 0, 1).getTime(),
+  maturityDate: 1743724800000, // 2025/04/04
   tokenPrecision: {
     backingToken: 6,
     yieldBearingToken: 6,
@@ -73,9 +79,11 @@ export const pool4 = {
   chain: 'fantom',
   protocol: 'yearn',
   protocolDisplayName: 'Yearn',
+  spotPrice: '0.0002',
+  decimalsForUI: 4,
   startDate: 1647216000000, // 2022/03/14
   spotPrice: '1',
-  maturityDate: new Date(2025, 0, 1).getTime(),
+  maturityDate: 1671062400000, // 2022/12/15
   tokenPrecision: {
     backingToken: 18,
     yieldBearingToken: 18,

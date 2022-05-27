@@ -1,9 +1,16 @@
 import { fireEvent, render } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
+import { Decimal } from 'tempus-core-services';
 import MarketsSubheader from './MarketsSubheader';
 import I18nProvider from '../../../i18n/I18nProvider';
 import { getConfigManager } from '../../../config/getConfigManager';
-import { useActivePoolList, useInactivePoolList, useMaturedPoolList } from '../../../hooks';
+import {
+  useActivePoolList,
+  useInactivePoolList,
+  useMaturedPoolList,
+  useTvlData,
+  usePoolBalances,
+} from '../../../hooks';
 
 const subject = () =>
   render(
@@ -19,6 +26,8 @@ jest.mock('../../../hooks', () => ({
   useActivePoolList: jest.fn(),
   useInactivePoolList: jest.fn(),
   useMaturedPoolList: jest.fn(),
+  usePoolBalances: jest.fn(),
+  useTvlData: jest.fn(),
 }));
 
 describe('MarketsSubheader', () => {
@@ -31,6 +40,18 @@ describe('MarketsSubheader', () => {
     (useActivePoolList as jest.Mock).mockImplementation(() => getConfigManager().getPoolList().slice(0, -2));
     (useInactivePoolList as jest.Mock).mockImplementation(() => getConfigManager().getPoolList().slice(-2, -1));
     (useMaturedPoolList as jest.Mock).mockImplementation(() => getConfigManager().getPoolList().slice(-1));
+    (usePoolBalances as jest.Mock).mockReturnValue({
+      'ethereum-1': new Decimal(500),
+      'ethereum-2': new Decimal(700),
+      'fantom-3': new Decimal(200),
+      'fantom-4': new Decimal(900),
+    });
+    (useTvlData as jest.Mock).mockReturnValue({
+      'ethereum-1': new Decimal(5000),
+      'ethereum-2': new Decimal(7000),
+      'fantom-3': new Decimal(2000),
+      'fantom-4': new Decimal(9000),
+    });
   });
 
   it('renders a navigation subheader with filtering and sorting options', () => {
@@ -79,10 +100,6 @@ describe('MarketsSubheader', () => {
       fireEvent.click(filterTypeCheckbox);
 
       expect(filterTypeCheckbox).toMatchSnapshot();
-
-      fireEvent.click(filterTypeCheckbox);
-
-      expect(filterTypeCheckbox).toMatchSnapshot();
     });
   });
 
@@ -97,21 +114,15 @@ describe('MarketsSubheader', () => {
     const sortTypeButtons = container.querySelectorAll('.tc__dropdown:last-of-type .tc__dropdownItem button');
     expect(sortTypeButtons).toHaveLength(5);
 
-    fireEvent.click(sortTypeButtons[2]);
+    sortTypeButtons.forEach(button => {
+      fireEvent.click(button);
 
-    expect(container).toMatchSnapshot();
+      expect(container).toMatchSnapshot();
 
-    fireEvent.click(sortTypeButtons[2]);
+      fireEvent.click(button);
 
-    expect(container).toMatchSnapshot();
-
-    fireEvent.click(sortTypeButtons[2]);
-
-    expect(container).toMatchSnapshot();
-
-    fireEvent.click(sortTypeButtons[1]);
-
-    expect(container).toMatchSnapshot();
+      expect(container).toMatchSnapshot();
+    });
 
     sortTypeButtons.forEach(button => expect(button).toMatchSnapshot());
   });

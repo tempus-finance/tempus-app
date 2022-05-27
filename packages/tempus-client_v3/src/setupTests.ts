@@ -5,7 +5,7 @@
 import '@testing-library/jest-dom/extend-expect';
 import { of as mockOf } from 'rxjs';
 import { BigNumber as mockBigNumber } from 'ethers';
-import { Chain, Decimal as MockDecimal, Ticker, ZERO as mockZERO } from 'tempus-core-services';
+import { Chain, Decimal as MockDecimal, TempusPool, Ticker, ZERO as mockZERO } from 'tempus-core-services';
 
 export { mockConfig, pool1, pool2, pool3, pool4 } from './mocks/config/mockConfig';
 
@@ -43,6 +43,20 @@ jest.mock('tempus-core-services', () => ({
         }
 
         return mockOf(price);
+      }),
+      getUserPoolBalanceUSD: jest.fn().mockImplementation((chain: Chain, tempusPool: TempusPool) => {
+        switch (`${chain}-${tempusPool.address}`) {
+          case 'ethereum-1':
+            return mockOf(new MockDecimal(500));
+          case 'ethereum-2':
+            return mockOf(new MockDecimal(700));
+          case 'fantom-3':
+            return mockOf(new MockDecimal(200));
+          case 'fantom-4':
+            return mockOf(new MockDecimal(900));
+          default:
+            return mockZERO;
+        }
       }),
       estimatedDepositAndFix: jest.fn(),
       estimatedMintedShares: jest.fn(),
