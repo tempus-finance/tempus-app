@@ -56,7 +56,7 @@ const estimatedMintedShares$ = (
     ),
   ).pipe(map(value => new Decimal(value)));
 
-const poolAprs$: Observable<PoolFixedAprMap> = combineLatest([poolList$, intervalBeat$]).pipe(
+export const poolAprs$: Observable<PoolFixedAprMap> = combineLatest([poolList$, intervalBeat$]).pipe(
   mergeMap<[TempusPool[], number], Observable<PoolFixedAprMap>>(([tempusPools]) => {
     const poolAprMaps = tempusPools.map(({ ammAddress, address, chain, spotPrice }) => {
       const tokenAmount = new Decimal(spotPrice);

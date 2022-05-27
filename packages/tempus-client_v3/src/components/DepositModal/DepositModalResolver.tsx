@@ -1,7 +1,7 @@
 import { FC, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Decimal, DEFAULT_TOKEN_PRECISION, Ticker } from 'tempus-core-services';
-import { MaturityTerm } from '../shared/TermTabs';
+import { MaturityTerm } from '../../interfaces';
 
 import DepositModal from './DepositModal';
 
