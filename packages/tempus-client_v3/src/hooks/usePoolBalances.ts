@@ -1,5 +1,5 @@
 import { bind } from '@react-rxjs/core';
-import { catchError, combineLatest, debounce, interval, map, merge, Observable, of, scan } from 'rxjs';
+import { catchError, combineLatest, debounce, interval, map, merge, mergeMap, Observable, of, scan } from 'rxjs';
 import { Chain, Decimal, getServices, StatisticsService } from 'tempus-core-services';
 import { poolList$ } from './useConfig';
 import { walletAddress$ } from './useWalletAddress';
@@ -16,7 +16,7 @@ export const poolBalances$: Observable<PoolBalanceMap> = combineLatest([
   walletAddress$,
   walletBalances$,
 ]).pipe(
-  map(([tempusPools, walletAddress, walletBalances]) => {
+  mergeMap(([tempusPools, walletAddress, walletBalances]) => {
     const poolBalances = tempusPools.map(tempusPool => {
       const tokenBalances = {
         principalsBalance: walletBalances[`${tempusPool.chain}-${tempusPool.principalsAddress}`],
@@ -43,7 +43,7 @@ export const poolBalances$: Observable<PoolBalanceMap> = combineLatest([
       ...allRates,
       ...tokenRates,
     }),
-    {},
+    {} as PoolBalanceMap,
   ),
   debounce<PoolBalanceMap>(() => interval(DEBOUNCE_IN_MS)),
   catchError(error => {
