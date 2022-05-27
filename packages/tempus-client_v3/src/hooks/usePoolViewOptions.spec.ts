@@ -153,7 +153,6 @@ describe('usePoolViewOptions', () => {
   });
 
   it('update sortType to "apr"', async () => {
-    // TODO: check the useFilteredSortedPoolList()
     const { result: poolViewResult, waitForNextUpdate } = renderHook(() => usePoolViewOptions());
     const [poolViewOptions, setPoolViewOptions] = poolViewResult.current;
     const expectedPoolViewOptions1 = {
