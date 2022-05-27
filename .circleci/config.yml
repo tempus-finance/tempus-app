@@ -40,6 +40,7 @@ jobs:
   build-tempus-client-v3:
     docker:
       - image: cimg/node:15.1
+    resource_class: large
     steps:
       - attach_workspace:
           at: ./
