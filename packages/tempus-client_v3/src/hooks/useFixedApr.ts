@@ -12,7 +12,6 @@ import {
   of,
   scan,
   startWith,
-  switchMap,
 } from 'rxjs';
 import { getServices, Decimal, StatisticsService, TempusPool, Chain, ZERO, ONE } from 'tempus-core-services';
 import { poolList$ } from './useConfig';
@@ -39,7 +38,7 @@ const estimatedDepositAndFix$ = (
       tokenAmount.toBigNumber(),
       isBackingToken,
     ),
-  ).pipe(switchMap(value => of(new Decimal(value))));
+  ).pipe(map(value => new Decimal(value)));
 
 const estimatedMintedShares$ = (
   statisticsService: StatisticsService,
@@ -55,7 +54,7 @@ const estimatedMintedShares$ = (
       isBackingToken,
       callOverrideData,
     ),
-  ).pipe(switchMap(value => of(new Decimal(value))));
+  ).pipe(map(value => new Decimal(value)));
 
 const poolAprs$: Observable<PoolFixedAprMap> = combineLatest([poolList$, intervalBeat$]).pipe(
   mergeMap<[TempusPool[], number], Observable<PoolFixedAprMap>>(([tempusPools]) => {
