@@ -3,7 +3,6 @@ import { of as mockOf, delay as mockDelay } from 'rxjs';
 import { Decimal as MockDecimal, getServices } from 'tempus-core-services';
 import { getConfigManager } from '../config/getConfigManager';
 import { usePoolBalances } from './usePoolBalances';
-// import { walletAddress$, setWalletAddress } from './useWalletAddress';
 
 jest.mock('tempus-core-services', () => ({
   ...jest.requireActual('tempus-core-services'),
