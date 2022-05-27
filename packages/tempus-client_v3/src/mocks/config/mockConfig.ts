@@ -11,6 +11,7 @@ export const pool1 = {
   protocol: 'lido',
   protocolDisplayName: 'Lido',
   startDate: 1640995200000, // 2022/01/01
+  spotPrice: '1',
   maturityDate: new Date(2025, 0, 1).getTime(),
   tokenPrecision: {
     backingToken: 18,
@@ -31,6 +32,7 @@ export const pool2 = {
   protocol: 'yearn',
   protocolDisplayName: 'Yearn',
   startDate: 1643673600000, // 2022/02/01
+  spotPrice: '1',
   maturityDate: new Date(2025, 0, 1).getTime(),
   tokenPrecision: {
     backingToken: 6,
@@ -51,6 +53,7 @@ export const pool3 = {
   protocol: 'yearn',
   protocolDisplayName: 'Yearn',
   startDate: 1642204800000, // 2022/15/01
+  spotPrice: '1',
   maturityDate: new Date(2025, 0, 1).getTime(),
   tokenPrecision: {
     backingToken: 6,
@@ -71,6 +74,7 @@ export const pool4 = {
   protocol: 'yearn',
   protocolDisplayName: 'Yearn',
   startDate: 1647216000000, // 2022/03/14
+  spotPrice: '1',
   maturityDate: new Date(2025, 0, 1).getTime(),
   tokenPrecision: {
     backingToken: 18,
