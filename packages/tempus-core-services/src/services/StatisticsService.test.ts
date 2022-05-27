@@ -178,7 +178,7 @@ describe('StatisticsService', () => {
         backingToken: 'ETH',
         principalsAddress: '0x3',
         yieldsAddress: '0x4',
-        tokenPrecision: { backingToken: 18 },
+        tokenPrecision: { backingToken: 18, principals: 18, yields: 18, lpTokens: 18 },
       } as TempusPool;
       const userWalletAddress = '0x0';
       const isBackingToken = true;
@@ -243,7 +243,7 @@ describe('StatisticsService', () => {
         backingToken: 'ETH',
         principalsAddress: '0x3',
         yieldsAddress: '0x4',
-        tokenPrecision: { backingToken: 18 },
+        tokenPrecision: { backingToken: 18, principals: 18, yields: 18, lpTokens: 18 },
       } as TempusPool;
       const userWalletAddress = '0x0';
       const poolBalances = {

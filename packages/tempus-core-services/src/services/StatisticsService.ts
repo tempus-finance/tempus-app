@@ -174,13 +174,13 @@ export class StatisticsService {
     const { address, ammAddress, backingToken, principalsAddress, yieldsAddress, tokenPrecision } = tempusPool;
 
     const principalsBalance$ = tokenBalances
-      ? of(tokenBalances.principalsBalance.toBigNumber())
+      ? of(tokenBalances.principalsBalance.toBigNumber(tokenPrecision.principals))
       : from(getERC20TokenService(principalsAddress, chain).balanceOf(userWalletAddress, overrides));
     const yieldsBalance$ = tokenBalances
-      ? of(tokenBalances.yieldsBalance.toBigNumber())
+      ? of(tokenBalances.yieldsBalance.toBigNumber(tokenPrecision.yields))
       : from(getERC20TokenService(yieldsAddress, chain).balanceOf(userWalletAddress, overrides));
     const lpTokenBalance$ = tokenBalances
-      ? of(tokenBalances.lpTokenBalance.toBigNumber())
+      ? of(tokenBalances.lpTokenBalance.toBigNumber(tokenPrecision.lpTokens))
       : from(getERC20TokenService(ammAddress, chain).balanceOf(userWalletAddress, overrides));
     const backingTokenRate$ = from(this.getRate(chain, backingToken, overrides));
     const isBackingToken = true;
