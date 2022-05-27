@@ -6,7 +6,7 @@ import { useLocale, useSelectedChain, useUserPreferences } from '../../hooks';
 import Markets from '../Markets';
 import Navbar from '../Navbar/Navbar';
 import { getConfigManager } from '../../config/getConfigManager';
-import ModalResolver from '../DepositModal/ModalResolver';
+import { DepositModalResolver } from '../DepositModal/DepositModalResolver';
 import { PoolPositionModalResolver } from '../PoolPositionModal';
 import { WithdrawModalResolver } from '../WithdrawModal';
 import PageNavigation, { PageNavigationLink } from '../PageNavigation';
@@ -64,7 +64,7 @@ const App = () => {
                 element={<PoolPositionModalResolver />}
               />
               <Route path="/withdraw/:chain/:ticker/:protocol/:poolAddress" element={<WithdrawModalResolver />} />
-              <Route path="/pool/:chain/:ticker/:protocol" element={<ModalResolver />} />
+              <Route path="/pool/:chain/:ticker/:protocol" element={<DepositModalResolver />} />
               <Route path="/" element={<Markets />} />
             </Routes>
           </div>
