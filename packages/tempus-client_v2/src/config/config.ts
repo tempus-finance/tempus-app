@@ -333,7 +333,7 @@ const config: Config = {
   },
   'ethereum-fork': {
     tempusPools: [
-      /*{
+      {
         address: '0x51792Dd94aA7114e8d62c3656552C3e4fed2465f',
         poolId: '0x19003b0130c13864cd18207c8afb0c04dc5b391200020000000000000000000c',
         ammAddress: '0x19003b0130c13864CD18207C8aFB0C04dc5b3912',
@@ -358,7 +358,33 @@ const config: Config = {
           yields: 18,
         },
         disabledOperations: {},
-      },*/
+      },
+      {
+        address: '0xe13576108402D67c6211DE612F0fA3230aBe3B61',
+        poolId: '0xae0a45da4ac35eec590e90ce7101d8766f88262900020000000000000000000d',
+        ammAddress: '0xae0a45Da4aC35eeC590e90Ce7101d8766f882629',
+        principalsAddress: '0x9f18C4144efa94358845a2C8f381c60e383FBf4D',
+        yieldsAddress: '0xe324d192c03439e31d4e6c6856989F43Ea66e9C6',
+        yieldBearingTokenAddress: '0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84',
+        backingTokenAddress: '0x0000000000000000000000000000000000000000',
+        startDate: 1653638914000,
+        maturityDate: 1654934987000,
+        protocol: 'lido',
+        protocolDisplayName: 'Lido',
+        backingToken: 'ETH',
+        yieldBearingToken: 'stETH',
+        spotPrice: '1',
+        decimalsForUI: 4,
+        showEstimatesInBackingToken: false,
+        tokenPrecision: {
+          backingToken: 18,
+          lpTokens: 18,
+          principals: 18,
+          yieldBearingToken: 18,
+          yields: 18,
+        },
+        disabledOperations: {},
+      },
     ],
     statisticsContract: '0xe552369a1b109b1eeebf060fcb6618f70f9131f7',
     tempusControllerContract: '0x039557b8f8f53d863f534C4dFF01d8A3467d26A0',
