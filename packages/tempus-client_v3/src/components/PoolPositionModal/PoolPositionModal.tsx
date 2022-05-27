@@ -13,7 +13,7 @@ interface PoolPositionModalProps {
   apr: number;
   term: Date;
   profitLoss: Decimal;
-  balance: Decimal;
+  balance: Decimal | null;
   totalYieldEarned: Decimal;
   projectedTotalYield: Decimal;
   tokenDecimals: number;
