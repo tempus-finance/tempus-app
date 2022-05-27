@@ -21,7 +21,7 @@ jest.mock('./useWalletAddress', () => ({
   walletAddress$: mockOf('0x00').pipe(mockDelay(100)),
 }));
 
-describe('useTvlData', () => {
+describe('usePoolBalances', () => {
   beforeAll(async () => {
     const config = getConfigManager();
     await config.init();
