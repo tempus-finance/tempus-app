@@ -64,6 +64,36 @@ describe('ConfigManager', () => {
     });
   });
 
+  describe('getMaturityDates', () => {
+    it('returns all dates when no chain is selected', () => {
+      const result = configManager.getMaturityDates();
+
+      expect(result[0].getTime()).toBe(1671062400000);
+      expect(result[1].getTime()).toBe(1709251200000);
+      expect(result[2].getTime()).toBe(1735689600000);
+      expect(result[3].getTime()).toBe(1743724800000);
+    });
+
+    it('returns all dates when `ethereum` chain is passed', () => {
+      const result = configManager.getMaturityDates('ethereum');
+
+      expect(result[0].getTime()).toBe(1709251200000);
+      expect(result[1].getTime()).toBe(1735689600000);
+    });
+
+    it('returns all dates when `ethereum` chain and `ETH` token are passed', () => {
+      const result = configManager.getMaturityDates('ethereum', 'ETH');
+
+      expect(result[0].getTime()).toBe(1735689600000);
+    });
+
+    it('returns all dates when `fantom` chain, `WETH` token and `yearn` protocol are passed', () => {
+      const result = configManager.getMaturityDates('fantom', 'WETH', 'yearn');
+
+      expect(result[0].getTime()).toBe(1671062400000);
+    });
+  });
+
   describe('getChainList', () => {
     it('returns a list of chains', () => {
       const result = configManager.getChainList();

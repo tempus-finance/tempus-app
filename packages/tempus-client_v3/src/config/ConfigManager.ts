@@ -52,6 +52,32 @@ class ConfigManager {
     return pools;
   }
 
+  // TODO add tests
+  getFilteredPoolList(filterByChain?: Chain, filterByToken?: Ticker, filterByProtocol?: ProtocolName): TempusPool[] {
+    return this.getPoolList()
+      .filter(pool => {
+        if (filterByChain) {
+          return pool.chain === filterByChain;
+        }
+
+        return true;
+      })
+      .filter(pool => {
+        if (filterByToken) {
+          return pool.backingToken === filterByToken;
+        }
+
+        return true;
+      })
+      .filter(pool => {
+        if (filterByProtocol) {
+          return pool.protocol === filterByProtocol;
+        }
+
+        return true;
+      });
+  }
+
   getTokenList(): TokenListItem[] {
     return this.tokenList;
   }
@@ -86,6 +112,20 @@ class ConfigManager {
     }
 
     throw new Error('getEarliestStartDate - Cannot find a pool by search criteria');
+  }
+
+  getMaturityDates(filterByChain?: Chain, filterByToken?: Ticker, filterByProtocol?: ProtocolName): Date[] {
+    const today = new Date();
+    const todayTime = today.getTime();
+
+    const filteredPools = this.getFilteredPoolList(filterByChain, filterByToken, filterByProtocol)
+      .filter(pool => todayTime <= pool.maturityDate)
+      .sort((poolA, poolB) => (poolA.maturityDate < poolB.maturityDate ? -1 : 1));
+
+    const dates: Date[] = [];
+    filteredPools.forEach(pool => dates.push(new Date(pool.maturityDate)));
+
+    return dates;
   }
 
   private retrieveChainList(): void {
