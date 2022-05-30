@@ -5,6 +5,7 @@ const TempusPoolsConfig = {
   owner: 'tempus-finance',
   repo: 'tempus-pools-config',
   path: 'config.json',
+  ref: process.env.REACT_APP_CONFIG_BRANCH,
 };
 
 interface TokenListItem {
