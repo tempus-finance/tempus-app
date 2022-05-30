@@ -5,6 +5,7 @@ import MarketsSubheader from './MarketsSubheader';
 import I18nProvider from '../../../i18n/I18nProvider';
 import { getConfigManager } from '../../../config/getConfigManager';
 import {
+  useSelectedChain,
   useActivePoolList,
   useInactivePoolList,
   useMaturedPoolList,
@@ -23,6 +24,7 @@ const subject = () =>
 
 jest.mock('../../../hooks', () => ({
   ...jest.requireActual('../../../hooks'),
+  useSelectedChain: jest.fn(),
   useActivePoolList: jest.fn(),
   useInactivePoolList: jest.fn(),
   useMaturedPoolList: jest.fn(),
@@ -37,6 +39,7 @@ describe('MarketsSubheader', () => {
   });
 
   beforeEach(() => {
+    (useSelectedChain as jest.Mock).mockReturnValue(null);
     (useActivePoolList as jest.Mock).mockImplementation(() => getConfigManager().getPoolList().slice(0, -2));
     (useInactivePoolList as jest.Mock).mockImplementation(() => getConfigManager().getPoolList().slice(-2, -1));
     (useMaturedPoolList as jest.Mock).mockImplementation(() => getConfigManager().getPoolList().slice(-1));
@@ -93,13 +96,35 @@ describe('MarketsSubheader', () => {
     const filterPopup = container.querySelector('.tc__nav-subheader__group .tc__dropdown .tc__dropdown__popup');
     expect(filterPopup).toMatchSnapshot();
 
-    const filterTypeCheckboxes = container.querySelectorAll('.tc__dropdown:first-of-type input[type=checkbox]');
-    expect(filterTypeCheckboxes).toHaveLength(3);
+    const filterTypeRadios = container.querySelectorAll('.tc__dropdown:first-of-type input[type=radio]');
+    expect(filterTypeRadios).toHaveLength(3);
 
-    filterTypeCheckboxes.forEach(filterTypeCheckbox => {
-      fireEvent.click(filterTypeCheckbox);
+    filterTypeRadios.forEach(filterTypeRadio => {
+      fireEvent.click(filterTypeRadio);
 
-      expect(filterTypeCheckbox).toMatchSnapshot();
+      expect(filterTypeRadio).toMatchSnapshot();
+    });
+  });
+
+  it('updates filters with selected chain', () => {
+    (useSelectedChain as jest.Mock).mockReturnValue('ethereum');
+    const { container, getByRole } = subject();
+
+    const filterButton = getByRole('button', { name: 'Filter' });
+    expect(filterButton).not.toBeNull();
+
+    fireEvent.click(filterButton);
+
+    const filterPopup = container.querySelector('.tc__nav-subheader__group .tc__dropdown .tc__dropdown__popup');
+    expect(filterPopup).toMatchSnapshot();
+
+    const filterTypeRadios = container.querySelectorAll('.tc__dropdown:first-of-type input[type=radio]');
+    expect(filterTypeRadios).toHaveLength(3);
+
+    filterTypeRadios.forEach(filterTypeRadio => {
+      fireEvent.click(filterTypeRadio);
+
+      expect(filterTypeRadio).toMatchSnapshot();
     });
   });
 

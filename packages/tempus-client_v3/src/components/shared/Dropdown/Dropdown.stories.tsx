@@ -3,6 +3,7 @@ import { useCallback, useState } from 'react';
 import { IconVariant } from '../Icon';
 import Dropdown from './Dropdown';
 import DropdownCheckboxItem from './DropdownCheckboxItem';
+import DropdownRadioItem from './DropdownRadioItem';
 import DropdownSelectableItem from './DropdownSelectableItem';
 import DropdownSelector from './DropdownSelector';
 
@@ -110,6 +111,41 @@ const RightSideIconTemplate: ComponentStory<typeof Dropdown> = args => (
 
 export const RightSideIcon = RightSideIconTemplate.bind({});
 RightSideIcon.args = {
+  label: 'Filter',
+  popupTitle: 'Title',
+};
+
+const RadioTemplate: ComponentStory<typeof Dropdown> = args => {
+  const [selectedValue, setSelectedValue] = useState('a');
+
+  return (
+    <div style={style}>
+      <Dropdown {...args}>
+        <DropdownRadioItem
+          checked={selectedValue === 'active'}
+          label="Active"
+          value="active"
+          onChange={setSelectedValue}
+        />
+        <DropdownRadioItem
+          checked={selectedValue === 'matured'}
+          label="Matured"
+          value="matured"
+          onChange={setSelectedValue}
+        />
+        <DropdownRadioItem
+          checked={selectedValue === 'inactive'}
+          label="Inactive"
+          value="inactive"
+          onChange={setSelectedValue}
+        />
+      </Dropdown>
+    </div>
+  );
+};
+
+export const Radio = RadioTemplate.bind({});
+Radio.args = {
   label: 'Filter',
   popupTitle: 'Title',
 };
