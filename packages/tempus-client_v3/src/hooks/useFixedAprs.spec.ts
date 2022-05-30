@@ -1,7 +1,8 @@
 import { renderHook } from '@testing-library/react-hooks';
 import { of } from 'rxjs';
-import { Decimal, getServices } from 'tempus-core-services';
+import { DAYS_IN_A_YEAR, Decimal, getServices, ONE, SECONDS_IN_A_DAY } from 'tempus-core-services';
 import { getConfigManager } from '../config/getConfigManager';
+import { pool1, pool2, pool3, pool4 } from '../setupTests';
 import { useFixedAprs } from './useFixedAprs';
 
 jest.mock('tempus-core-services', () => ({
@@ -9,10 +10,14 @@ jest.mock('tempus-core-services', () => ({
   getServices: jest.fn(),
 }));
 
+const mockGetDepositedEvents = jest.fn();
+const mockGetRedeemedEvents = jest.fn();
+const mockGetSwapEvents = jest.fn();
 const mockEstimatedDepositAndFix = jest.fn();
-const mockEstimatedMintedShares = jest.fn();
 
 describe('useFixedAprs', () => {
+  let originalDateNow = Date.now;
+
   beforeAll(async () => {
     const config = getConfigManager();
     await config.init();
@@ -20,11 +25,26 @@ describe('useFixedAprs', () => {
     jest.resetAllMocks();
   });
 
+  beforeEach(() => {
+    originalDateNow = Date.now;
+    Date.now = () => new Date(2022, 4, 15).getTime();
+  });
+
+  afterEach(() => {
+    Date.now = originalDateNow;
+  });
+
   it('returns `{}` as initial value', async () => {
     (getServices as unknown as jest.Mock).mockImplementation(() => ({
+      TempusControllerService: {
+        getDepositedEvents: mockGetDepositedEvents.mockImplementation(() => []),
+        getRedeemedEvents: mockGetRedeemedEvents.mockImplementation(() => []),
+      },
+      VaultService: {
+        getSwapEvents: mockGetSwapEvents.mockImplementation(() => []),
+      },
       StatisticsService: {
-        estimatedDepositAndFix: mockEstimatedDepositAndFix.mockImplementation(() => of<Decimal>(new Decimal('1500'))),
-        estimatedMintedShares: mockEstimatedMintedShares.mockImplementation(() => of<Decimal>(new Decimal('200'))),
+        estimatedDepositAndFix: mockEstimatedDepositAndFix.mockImplementation(() => of<Decimal>(new Decimal('1.05'))),
       },
     }));
 
@@ -34,10 +54,18 @@ describe('useFixedAprs', () => {
   });
 
   it('returns pool-to-APR map based on spot price', async () => {
+    const principalsAmount = new Decimal('1.05');
+
     (getServices as unknown as jest.Mock).mockImplementation(() => ({
+      TempusControllerService: {
+        getDepositedEvents: mockGetDepositedEvents.mockImplementation(() => []),
+        getRedeemedEvents: mockGetRedeemedEvents.mockImplementation(() => []),
+      },
+      VaultService: {
+        getSwapEvents: mockGetSwapEvents.mockImplementation(() => []),
+      },
       StatisticsService: {
-        estimatedDepositAndFix: mockEstimatedDepositAndFix.mockImplementation(() => of<Decimal>(new Decimal('1500'))),
-        estimatedMintedShares: mockEstimatedMintedShares.mockImplementation(() => of<Decimal>(new Decimal('200'))),
+        estimatedDepositAndFix: mockEstimatedDepositAndFix.mockImplementation(() => of(principalsAmount)),
       },
     }));
 
@@ -45,11 +73,16 @@ describe('useFixedAprs', () => {
 
     await waitForNextUpdate();
 
+    const scalingFactor = (pool: { maturityDate: number }) => {
+      const poolTimeRemaining = (pool.maturityDate - Date.now()) / 1000;
+      return new Decimal((SECONDS_IN_A_DAY * DAYS_IN_A_YEAR) / poolTimeRemaining);
+    };
+
     const expectedResult = {
-      'ethereum-1': new Decimal(6.5),
-      'ethereum-2': new Decimal(6.5),
-      'fantom-3': new Decimal(6.5),
-      'fantom-4': new Decimal(6.5),
+      'ethereum-1': principalsAmount.div(pool1.spotPrice).sub(ONE).mul(scalingFactor(pool1)),
+      'ethereum-2': principalsAmount.div(pool2.spotPrice).sub(ONE).mul(scalingFactor(pool2)),
+      'fantom-3': principalsAmount.div(pool3.spotPrice).sub(ONE).mul(scalingFactor(pool3)),
+      'fantom-4': principalsAmount.div(pool4.spotPrice).sub(ONE).mul(scalingFactor(pool4)),
     };
     expect(result.current).toEqual(expectedResult);
   });

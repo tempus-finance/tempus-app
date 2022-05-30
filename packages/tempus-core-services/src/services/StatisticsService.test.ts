@@ -285,18 +285,23 @@ describe('StatisticsService', () => {
     });
 
     test('it returns the amount of Principals tokens on fixed yield deposit', async () => {
-      const value = ejs.BigNumber.from('57000000000000');
-      mockEstimatedDepositAndFix.mockImplementation(() => {
-        return Promise.resolve(value);
-      });
+      const expected = new Decimal('57000000000000');
+      mockEstimatedDepositAndFix.mockImplementation(() => of(expected));
 
-      const tempusPool = 'abc';
-      const tokenAmount = ejs.utils.parseEther('100');
+      const tempusPool = {
+        address: 'abc',
+        tokenPrecision: {
+          backingToken: 18,
+          yieldBearingToken: 18,
+          principals: 18,
+        },
+      };
+      const tokenAmount = new Decimal('100');
       const isBackingToken = true;
 
-      const result = await instance.estimatedDepositAndFix(tempusPool, tokenAmount, isBackingToken);
+      const result = instance.estimatedDepositAndFix(tempusPool as TempusPool, tokenAmount, isBackingToken);
 
-      expect(ejs.utils.formatEther(result)).toBe(ejs.utils.formatEther(value));
+      result.subscribe(resultValue => expect(resultValue).toBe(expected));
     });
 
     test('it returns the amount of Principals and LP tokens on variable yield deposit', async () => {

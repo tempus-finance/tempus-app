@@ -2,6 +2,7 @@ import { bind } from '@react-rxjs/core';
 import {
   catchError,
   combineLatest,
+  concatMap,
   debounce,
   from,
   interval,
@@ -13,7 +14,20 @@ import {
   scan,
   startWith,
 } from 'rxjs';
-import { getServices, Decimal, StatisticsService, TempusPool, Chain, ZERO, ONE } from 'tempus-core-services';
+import {
+  getServices,
+  Decimal,
+  StatisticsService,
+  TempusPool,
+  Chain,
+  ONE,
+  TempusControllerService,
+  VaultService,
+  SECONDS_IN_A_DAY,
+  DAYS_IN_A_YEAR,
+  getDefaultProvider,
+  ZERO,
+} from 'tempus-core-services';
 import { poolList$ } from './useConfig';
 
 interface PoolFixedAprMap {
@@ -26,63 +40,68 @@ const DEBOUNCE_IN_MS = 500;
 
 const intervalBeat$: Observable<number> = interval(APR_POLLING_INTERVAL_IN_MS).pipe(startWith(0));
 
-const estimatedDepositAndFix$ = (
-  statisticsService: StatisticsService,
-  tempusAMMAddress: string,
-  tokenAmount: Decimal,
-  isBackingToken: boolean,
-): Observable<Decimal> =>
-  from(
-    (statisticsService as StatisticsService).estimatedDepositAndFix(
-      tempusAMMAddress,
-      tokenAmount.toBigNumber(),
-      isBackingToken,
-    ),
-  ).pipe(map(value => new Decimal(value)));
-
-const estimatedMintedShares$ = (
-  statisticsService: StatisticsService,
-  tempusPoolAddress: string,
-  tokenAmount: Decimal,
-  isBackingToken: boolean,
-  callOverrideData?: { blockTag: number },
-): Observable<Decimal> =>
-  from(
-    (statisticsService as StatisticsService).estimatedMintedShares(
-      tempusPoolAddress,
-      tokenAmount.toBigNumber(),
-      isBackingToken,
-      callOverrideData,
-    ),
-  ).pipe(map(value => new Decimal(value)));
-
 export const poolAprs$: Observable<PoolFixedAprMap> = combineLatest([poolList$, intervalBeat$]).pipe(
   mergeMap<[TempusPool[], number], Observable<PoolFixedAprMap>>(([tempusPools]) => {
-    const poolAprMaps = tempusPools.map(({ ammAddress, address, chain, spotPrice }) => {
-      const tokenAmount = new Decimal(spotPrice);
+    const poolAprMaps = tempusPools.map(pool => {
+      const { address, poolId, chain, spotPrice, maturityDate } = pool;
+
+      if (maturityDate < Date.now()) {
+        return of({
+          [`${chain}-${address}`]: ZERO,
+        } as PoolFixedAprMap);
+      }
+
+      const tempusControllerService = getServices(chain as Chain)?.TempusControllerService as TempusControllerService;
+      const vaultService = getServices(chain as Chain)?.VaultService as VaultService;
       const statisticsService = getServices(chain as Chain)?.StatisticsService as StatisticsService;
 
-      const principals$ = estimatedDepositAndFix$(statisticsService, ammAddress, tokenAmount, true);
-      const mintShares$ = estimatedMintedShares$(statisticsService, address, tokenAmount, true);
+      const tokenAmount = new Decimal(spotPrice);
 
-      const fixedApr$ = combineLatest([principals$, mintShares$]).pipe(
-        map(([principals, estimatedMintedShares]) => {
-          const ratio = principals.gt(ZERO) ? principals.div(estimatedMintedShares) : ZERO;
-          const pureInterest = ratio.sub(ONE);
+      const latestEventBlock$ = from(
+        Promise.all([
+          tempusControllerService.getDepositedEvents({ forPool: address }),
+          vaultService.getSwapEvents({ forPoolId: poolId }),
+          tempusControllerService.getRedeemedEvents({ forPool: address }),
+        ]).then(([depositedEvents, swapEvents, redeemedEvents]) => {
+          const allEvents = [...depositedEvents, ...swapEvents, ...redeemedEvents];
+          const latestEventBlockNumber = Math.max(0, ...allEvents.map(event => event.blockNumber));
+          const provider = getDefaultProvider(chain as Chain);
 
-          // TODO needs to be calculated properly
-          const scaleFactor = ONE;
-          return pureInterest.mul(scaleFactor);
+          if (latestEventBlockNumber > 0) {
+            return provider.getBlock(latestEventBlockNumber);
+          }
+
+          return undefined;
         }),
       );
 
-      return fixedApr$.pipe(
-        map(
-          apr =>
-            ({
-              [`${chain}-${address}`]: apr,
-            } as PoolFixedAprMap),
-        ),
+      const principals$ = latestEventBlock$.pipe(
+        concatMap(latestEventBlock => {
+          const estimateCallOverrides =
+            latestEventBlock && latestEventBlock.number > 0 ? { blockTag: latestEventBlock.number } : undefined;
+          const estimateDepositAndFixFromBackingToken = true;
+
+          return statisticsService.estimatedDepositAndFix(
+            pool,
+            tokenAmount,
+            estimateDepositAndFixFromBackingToken,
+            estimateCallOverrides,
+          );
+        }),
+      );
+
+      return combineLatest([latestEventBlock$, principals$]).pipe(
+        map(([latestEventBlock, principals]) => {
+          const currentFixedAPRTime = latestEventBlock ? latestEventBlock.timestamp * 1000 : Date.now();
+          const poolTimeRemaining = (maturityDate - currentFixedAPRTime) / 1000;
+          const scaleFactor = new Decimal((SECONDS_IN_A_DAY * DAYS_IN_A_YEAR) / poolTimeRemaining);
+          const ratio = principals.div(tokenAmount);
+          const pureInterest = ratio.sub(ONE);
+
+          return {
+            [`${chain}-${address}`]: pureInterest.mul(scaleFactor),
+          } as PoolFixedAprMap;
+        }),
       );
     });
 
