@@ -15,9 +15,12 @@ import {
 
 interface ModalActionContentProps {
   balance: Decimal;
-  inputPrecision: number;
+  tokens: {
+    precision: number;
+    ticker: Ticker;
+    rate: Decimal;
+  }[];
   disabledInput: boolean;
-  usdRates: Map<Ticker, Decimal>;
   chainConfig?: ChainConfig;
   infoRows?: ReactNode;
   actionButtonLabels: ActionButtonLabels;
@@ -30,9 +33,8 @@ interface ModalActionContentProps {
 const ModalActionContent: FC<ModalActionContentProps> = props => {
   const {
     balance,
-    inputPrecision,
+    tokens,
     disabledInput,
-    usdRates,
     chainConfig,
     infoRows,
     actionButtonLabels,
@@ -68,9 +70,8 @@ const ModalActionContent: FC<ModalActionContentProps> = props => {
   return (
     <>
       <CurrencyInput
-        precision={inputPrecision}
+        tokens={tokens}
         maxAmount={balance}
-        usdRates={usdRates}
         disabled={disabledInput}
         error={insufficientBalance ? 'Insufficient balance' : undefined}
         onAmountUpdate={handleAmountChange}

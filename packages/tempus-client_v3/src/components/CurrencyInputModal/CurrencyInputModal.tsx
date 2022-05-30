@@ -23,8 +23,11 @@ export interface CurrencyInputModalProps extends ModalProps {
   description: string | CurrencyInputModalDescription;
   preview?: ReactNode;
   balance: Decimal;
-  inputPrecision: number;
-  usdRates: Map<Ticker, Decimal>;
+  tokens: {
+    precision: number;
+    ticker: Ticker;
+    rate: Decimal;
+  }[];
   maturityTerms?: MaturityTerm[];
   chainConfig?: ChainConfig;
   infoRows?: ReactNode;
@@ -45,8 +48,7 @@ const CurrencyInputModal: FC<CurrencyInputModalProps> = props => {
     header,
     preview,
     balance,
-    inputPrecision,
-    usdRates,
+    tokens,
     maturityTerms,
     chainConfig,
     infoRows,
@@ -111,9 +113,8 @@ const CurrencyInputModal: FC<CurrencyInputModalProps> = props => {
       {content === 'action' && (
         <ModalActionContent
           balance={balance}
-          inputPrecision={inputPrecision}
           disabledInput={disabledInput}
-          usdRates={usdRates}
+          tokens={tokens}
           chainConfig={chainConfig}
           infoRows={infoRows}
           actionButtonLabels={actionButtonLabels.action}

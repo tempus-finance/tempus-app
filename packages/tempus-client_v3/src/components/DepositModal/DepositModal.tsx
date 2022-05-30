@@ -12,19 +12,22 @@ import { ActionButtonState, ChartDot, SelectableChartDataPoint, PercentageDateCh
 import './DepositModal.scss';
 
 export interface DepositModalProps extends ModalProps {
-  inputPrecision: number;
-  usdRates: Map<Ticker, Decimal>;
+  tokens: {
+    precision: number;
+    ticker: Ticker;
+    rate: Decimal;
+  }[];
   poolStartDate: Date;
   maturityTerms: MaturityTerm[];
   chainConfig?: ChainConfig;
 }
 
 const DepositModal: FC<DepositModalProps> = props => {
-  const { open, onClose, inputPrecision, usdRates, poolStartDate, maturityTerms, chainConfig } = props;
+  const { tokens, open, onClose, poolStartDate, maturityTerms, chainConfig } = props;
   const [balance, setBalance] = useState(new Decimal(100)); // TODO: load balance for selected token
   const [maturityTerm, setMaturityTerm] = useState(maturityTerms[0]);
   const [amount, setAmount] = useState(new Decimal(0));
-  const [currency, setCurrency] = useState(Array.from(usdRates.keys())[0]);
+  const [currency, setCurrency] = useState(tokens[0].ticker);
   const [approved, setApproved] = useState(false);
   const [actionButtonState, setActionButtonState] = useState<ActionButtonState>('default');
   const { t } = useTranslation();
@@ -135,6 +138,7 @@ const DepositModal: FC<DepositModalProps> = props => {
 
   return (
     <CurrencyInputModal
+      tokens={tokens}
       open={open}
       onClose={onClose}
       title={t('DepositModal.title')}
@@ -142,9 +146,7 @@ const DepositModal: FC<DepositModalProps> = props => {
       preview={depositYieldChart}
       header={<DepositModalHeader />}
       maturityTerms={maturityTerms}
-      inputPrecision={inputPrecision}
       balance={balance}
-      usdRates={usdRates}
       infoRows={infoRows}
       actionButtonLabels={actionButtonLabels}
       actionButtonState={actionButtonState}

@@ -52,8 +52,18 @@ const Template: ComponentStory<typeof WithdrawModal> = () => {
       </button>
 
       <WithdrawModal
-        inputPrecision={18}
-        usdRates={singleCurrencyUsdRates}
+        tokens={[
+          {
+            precision: 18,
+            rate: new Decimal(3500),
+            ticker: 'ETH',
+          },
+          {
+            precision: 18,
+            rate: new Decimal(3501),
+            ticker: 'stETH',
+          },
+        ]}
         open={modalOpen}
         onClose={onModalClose}
         chainConfig={config}

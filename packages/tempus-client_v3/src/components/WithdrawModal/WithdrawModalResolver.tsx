@@ -1,5 +1,6 @@
 import { FC } from 'react';
 import { useParams } from 'react-router-dom';
+import { Decimal } from 'tempus-core-services';
 import { WithdrawModal } from './WithdrawModal';
 
 export const WithdrawModalResolver: FC = () => {
@@ -10,6 +11,21 @@ export const WithdrawModalResolver: FC = () => {
 
   return (
     // TODO - Replace dummy data with data from hooks
-    <WithdrawModal inputPrecision={4} usdRates={new Map()} onClose={() => {}} open />
+    <WithdrawModal
+      tokens={[
+        {
+          precision: 18,
+          rate: new Decimal(2000),
+          ticker: 'ETH',
+        },
+        {
+          precision: 18,
+          rate: new Decimal(2000),
+          ticker: 'stETH',
+        },
+      ]}
+      onClose={() => {}}
+      open
+    />
   );
 };

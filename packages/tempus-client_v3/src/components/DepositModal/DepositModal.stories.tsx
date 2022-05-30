@@ -64,8 +64,10 @@ const Template: ComponentStory<typeof DepositModal> = () => {
       </button>
 
       <DepositModal
-        inputPrecision={18}
-        usdRates={singleCurrencyUsdRates}
+        tokens={[
+          { precision: 6, rate: new Decimal(1), ticker: 'USDC' },
+          { precision: 6, rate: new Decimal(1), ticker: 'yvUSDC' },
+        ]}
         poolStartDate={new Date(2022, 3, 1)}
         maturityTerms={maturityTerms}
         open={modalOpen}
