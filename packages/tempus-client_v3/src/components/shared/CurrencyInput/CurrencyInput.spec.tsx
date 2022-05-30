@@ -2,20 +2,42 @@ import { act, fireEvent, render } from '@testing-library/react';
 import { Decimal, DecimalUtils, Ticker } from 'tempus-core-services';
 import CurrencyInput, { CurrencyInputProps } from './CurrencyInput';
 
-const defaultProps = {
-  precision: 18,
+const defaultProps: CurrencyInputProps = {
+  tokens: [],
   maxAmount: new Decimal(100),
 };
 
 const mockOnAmountUpdate = jest.fn<void, [string]>();
 const mockOnCurrencyUpdate = jest.fn<void, [Ticker]>();
 
-const singleCurrencyUsdRates = new Map<Ticker, Decimal>();
-singleCurrencyUsdRates.set('ETH', new Decimal(3500));
+const singleToken: {
+  precision: number;
+  ticker: Ticker;
+  rate: Decimal;
+}[] = [
+  {
+    precision: 18,
+    rate: new Decimal(3500),
+    ticker: 'ETH',
+  },
+];
 
-const multipleCurrencyUsdRates = new Map<Ticker, Decimal>();
-multipleCurrencyUsdRates.set('ETH', new Decimal(3500));
-multipleCurrencyUsdRates.set('stETH', new Decimal(3500));
+const multipleTokens: {
+  precision: number;
+  ticker: Ticker;
+  rate: Decimal;
+}[] = [
+  {
+    precision: 18,
+    rate: new Decimal(3500),
+    ticker: 'ETH',
+  },
+  {
+    precision: 18,
+    rate: new Decimal(3500),
+    ticker: 'stETH',
+  },
+];
 
 const subject = (props: CurrencyInputProps) => render(<CurrencyInput {...props} />);
 
@@ -26,7 +48,7 @@ describe('CurrencyInput', () => {
   it('renders a currency input with a single currency', () => {
     const { getAllByRole, getByRole, queryByText } = subject({
       ...defaultProps,
-      usdRates: singleCurrencyUsdRates,
+      tokens: singleToken,
     });
 
     const actualButton = getByRole('button', { name: 'ETH' });
@@ -47,7 +69,7 @@ describe('CurrencyInput', () => {
   it('renders a disabled currency input with a single currency', () => {
     const { getByRole } = subject({
       ...defaultProps,
-      usdRates: singleCurrencyUsdRates,
+      tokens: singleToken,
       disabled: true,
     });
 
@@ -62,7 +84,7 @@ describe('CurrencyInput', () => {
   it('renders a currency input with a single currency and an error', () => {
     const { container } = subject({
       ...defaultProps,
-      usdRates: singleCurrencyUsdRates,
+      tokens: singleToken,
       error: 'Input error',
     });
 
@@ -77,7 +99,7 @@ describe('CurrencyInput', () => {
   it('renders a currency input with multiple currencies', () => {
     const { getAllByRole, getByRole, queryByText } = subject({
       ...defaultProps,
-      usdRates: multipleCurrencyUsdRates,
+      tokens: multipleTokens,
     });
 
     const actualButton = getByRole('button', { name: 'ETH' });
@@ -98,7 +120,7 @@ describe('CurrencyInput', () => {
   it('resets the input field when currency is changed', () => {
     const { getByRole } = subject({
       ...defaultProps,
-      usdRates: multipleCurrencyUsdRates,
+      tokens: multipleTokens,
       onAmountUpdate: mockOnAmountUpdate,
       onCurrencyUpdate: mockOnCurrencyUpdate,
     });
@@ -142,7 +164,7 @@ describe('CurrencyInput', () => {
   it('updates the input field when a percentage button is clicked', () => {
     const { container, getAllByRole, getByRole } = subject({
       ...defaultProps,
-      usdRates: singleCurrencyUsdRates,
+      tokens: multipleTokens,
       onAmountUpdate: mockOnAmountUpdate,
     });
 
@@ -154,7 +176,7 @@ describe('CurrencyInput', () => {
 
     percentageButtons.forEach((button, index) => {
       const valueInCurrency = new Decimal(25 * (index + 1)).mul(defaultProps.maxAmount).div(100);
-      const valueInFiat = new Decimal(valueInCurrency).mul(singleCurrencyUsdRates.get('ETH') ?? 0);
+      const valueInFiat = new Decimal(valueInCurrency).mul(singleToken[0].rate);
 
       fireEvent.click(button);
 
@@ -183,8 +205,13 @@ describe('CurrencyInput', () => {
     usdRates.set('ETH', new Decimal(3500));
 
     const { container, getByRole } = subject({
-      precision,
-      usdRates,
+      tokens: [
+        {
+          precision,
+          rate: new Decimal(3500),
+          ticker: 'ETH',
+        },
+      ],
       maxAmount: new Decimal(100),
     });
 
@@ -212,7 +239,7 @@ describe('CurrencyInput', () => {
 
     const { container, getByRole } = subject({
       ...defaultProps,
-      usdRates: singleCurrencyUsdRates,
+      tokens: singleToken,
     });
 
     const actualInput = getByRole('textbox');
@@ -227,7 +254,7 @@ describe('CurrencyInput', () => {
 
     expect(actualLoading).not.toBeNull();
 
-    const fiatValue = new Decimal(inputValue).mul(singleCurrencyUsdRates.get('ETH') ?? 0);
+    const fiatValue = new Decimal(inputValue).mul(singleToken[0].rate);
 
     act(() => {
       jest.advanceTimersByTime(300);

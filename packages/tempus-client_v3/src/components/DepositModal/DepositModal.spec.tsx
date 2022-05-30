@@ -6,12 +6,34 @@ import I18nProvider from '../../i18n/I18nProvider';
 import { MaturityTerm } from '../shared/TermTabs';
 import DepositModal, { DepositModalProps } from './DepositModal';
 
-const singleCurrencyUsdRates = new Map<Ticker, Decimal>();
-singleCurrencyUsdRates.set('ETH', new Decimal(3500));
+const singleToken: {
+  precision: number;
+  ticker: Ticker;
+  rate: Decimal;
+}[] = [
+  {
+    precision: 18,
+    rate: new Decimal(3500),
+    ticker: 'ETH',
+  },
+];
 
-const multipleCurrencyUsdRates = new Map<Ticker, Decimal>();
-multipleCurrencyUsdRates.set('ETH', new Decimal(3500));
-multipleCurrencyUsdRates.set('stETH', new Decimal(3500));
+const multipleTokens: {
+  precision: number;
+  ticker: Ticker;
+  rate: Decimal;
+}[] = [
+  {
+    precision: 18,
+    rate: new Decimal(3500),
+    ticker: 'ETH',
+  },
+  {
+    precision: 18,
+    rate: new Decimal(3500),
+    ticker: 'stETH',
+  },
+];
 
 const singleMaturityTerm: MaturityTerm[] = [
   {
@@ -56,7 +78,7 @@ describe('DepositModal', () => {
     const template = (terms: MaturityTerm[]) => {
       const { container } = subject({
         ...defaultProps,
-        usdRates: singleCurrencyUsdRates,
+        tokens: singleToken,
         maturityTerms: terms,
       });
 
@@ -77,7 +99,7 @@ describe('DepositModal', () => {
   it('updates balance after currency change', () => {
     const { container, getByRole } = subject({
       ...defaultProps,
-      usdRates: multipleCurrencyUsdRates,
+      tokens: multipleTokens,
       maturityTerms: singleMaturityTerm,
     });
 
@@ -120,7 +142,7 @@ describe('DepositModal', () => {
 
     const { container } = subject({
       ...defaultProps,
-      usdRates: singleCurrencyUsdRates,
+      tokens: singleToken,
       maturityTerms: singleMaturityTerm,
       chainConfig: configManager.getChainConfig('ethereum'),
     });
