@@ -1,8 +1,8 @@
-import { memo, useCallback } from 'react';
+import { memo, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Dropdown,
-  DropdownCheckboxItem,
+  DropdownRadioItem,
   DropdownSelectableItem,
   DropdownSelector,
   NavSubheader,
@@ -11,15 +11,35 @@ import {
   Tabs,
 } from '../../shared';
 import { FilterType, PoolType, SortOrder, SortType } from '../../../interfaces';
-import { usePoolViewOptions, useActivePoolList, useInactivePoolList, useMaturedPoolList } from '../../../hooks';
+import {
+  usePoolViewOptions,
+  useActivePoolList,
+  useInactivePoolList,
+  useMaturedPoolList,
+  useSelectedChain,
+} from '../../../hooks';
 
 const MarketsSubheader = () => {
   const { t } = useTranslation();
   const [poolViewOptions, setPoolViewOptions] = usePoolViewOptions();
+  const selectedChain = useSelectedChain();
   const activePoolList = useActivePoolList();
   const inactivePoolList = useInactivePoolList();
   const maturedPoolList = useMaturedPoolList();
   const { poolType, filters, sortType, sortOrder } = poolViewOptions;
+
+  const chainActivePoolList = useMemo(
+    () => activePoolList.filter(pool => !selectedChain || pool.chain === selectedChain),
+    [selectedChain, activePoolList],
+  );
+  const chainInactivePoolList = useMemo(
+    () => inactivePoolList.filter(pool => !selectedChain || pool.chain === selectedChain),
+    [selectedChain, inactivePoolList],
+  );
+  const chainMaturedPoolList = useMemo(
+    () => maturedPoolList.filter(pool => !selectedChain || pool.chain === selectedChain),
+    [selectedChain, maturedPoolList],
+  );
 
   const handlePoolTypeChange = useCallback(
     (type: PoolType) => setPoolViewOptions({ poolType: type }),
@@ -27,18 +47,11 @@ const MarketsSubheader = () => {
   );
 
   const handleFilterChange = useCallback(
-    (checked: boolean, value: string) => {
-      const updatedFilters = new Set(filters);
-
-      if (checked) {
-        updatedFilters.add(value as FilterType);
-      } else {
-        updatedFilters.delete(value as FilterType);
-      }
-
+    (value: string) => {
+      const updatedFilters = new Set<FilterType>([value] as FilterType[]);
       setPoolViewOptions({ filters: updatedFilters });
     },
-    [filters, setPoolViewOptions],
+    [setPoolViewOptions],
   );
 
   const handleSortTypeChange = useCallback(
@@ -67,20 +80,20 @@ const MarketsSubheader = () => {
       </NavSubheaderGroup>
       <NavSubheaderGroup>
         <Dropdown label={t('MarketsSubheader.optionFilter')}>
-          <DropdownCheckboxItem
-            label={t('MarketsSubheader.filterActive', { count: activePoolList.length })}
+          <DropdownRadioItem
+            label={t('MarketsSubheader.filterActive', { count: chainActivePoolList.length })}
             value="active"
             checked={filters.has('active')}
             onChange={handleFilterChange}
           />
-          <DropdownCheckboxItem
-            label={t('MarketsSubheader.filterMatured', { count: maturedPoolList.length })}
+          <DropdownRadioItem
+            label={t('MarketsSubheader.filterMatured', { count: chainMaturedPoolList.length })}
             value="matured"
             checked={filters.has('matured')}
             onChange={handleFilterChange}
           />
-          <DropdownCheckboxItem
-            label={t('MarketsSubheader.filterInactive', { count: inactivePoolList.length })}
+          <DropdownRadioItem
+            label={t('MarketsSubheader.filterInactive', { count: chainInactivePoolList.length })}
             value="inactive"
             checked={filters.has('inactive')}
             onChange={handleFilterChange}

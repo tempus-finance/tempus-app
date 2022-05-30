@@ -11,6 +11,7 @@ import { poolBalances$ } from './usePoolBalances';
 export interface PoolViewOptions {
   viewType: ViewType;
   poolType: PoolType;
+  // on UI we only support on filter at a time, keep Set<FilterType> just to prepare to support multiple filters
   filters: Set<FilterType>;
   sortType: SortType;
   sortOrder: SortOrder;

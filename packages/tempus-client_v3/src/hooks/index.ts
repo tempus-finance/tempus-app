@@ -9,4 +9,3 @@ export * from './useUserPreferences';
 export * from './usePoolViewOptions';
 export * from './usePoolBalances';
 export * from './useConfig';
-export * from './usePoolBalances';

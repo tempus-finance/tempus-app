@@ -70,11 +70,11 @@ describe('Markets', () => {
 
     fireEvent.click(filterButton);
 
-    const filterTypeCheckboxes = container.querySelectorAll('.tc__dropdown:first-of-type input[type=checkbox]');
-    expect(filterTypeCheckboxes).toHaveLength(3);
+    const filterTypeRadios = container.querySelectorAll('.tc__dropdown:first-of-type input[type=radio]');
+    expect(filterTypeRadios).toHaveLength(3);
 
-    filterTypeCheckboxes.forEach(filterTypeCheckbox => {
-      fireEvent.click(filterTypeCheckbox);
+    filterTypeRadios.forEach(filterTypeRadio => {
+      fireEvent.click(filterTypeRadio);
 
       expect(container).toMatchSnapshot();
     });
