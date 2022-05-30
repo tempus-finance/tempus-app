@@ -1,8 +1,8 @@
 import { FC, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ChainConfig, Decimal, Ticker } from 'tempus-core-services';
+import { MaturityTerm } from '../../interfaces';
 import { ModalProps } from '../shared/Modal/Modal';
-import { MaturityTerm } from '../shared/TermTabs';
 import DepositModalHeader from './DepositModalHeader';
 import CurrencyInputModal, {
   CurrencyInputModalActionButtonLabels,
