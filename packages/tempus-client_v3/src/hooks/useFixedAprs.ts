@@ -26,11 +26,12 @@ import {
   SECONDS_IN_A_DAY,
   DAYS_IN_A_YEAR,
   getDefaultProvider,
+  ZERO,
 } from 'tempus-core-services';
 import { poolList$ } from './useConfig';
 
 interface PoolFixedAprMap {
-  [chainPoolAddress: string]: Decimal | null;
+  [chainPoolAddress: string]: Decimal;
 }
 
 // TODO all polling interval constants in a file?
@@ -39,14 +40,14 @@ const DEBOUNCE_IN_MS = 500;
 
 const intervalBeat$: Observable<number> = interval(APR_POLLING_INTERVAL_IN_MS).pipe(startWith(0));
 
-const poolAprs$: Observable<PoolFixedAprMap> = combineLatest([poolList$, intervalBeat$]).pipe(
+export const poolAprs$: Observable<PoolFixedAprMap> = combineLatest([poolList$, intervalBeat$]).pipe(
   mergeMap<[TempusPool[], number], Observable<PoolFixedAprMap>>(([tempusPools]) => {
     const poolAprMaps = tempusPools.map(pool => {
       const { address, poolId, chain, spotPrice, maturityDate } = pool;
 
       if (maturityDate < Date.now()) {
         return of({
-          [`${chain}-${address}`]: null,
+          [`${chain}-${address}`]: ZERO,
         } as PoolFixedAprMap);
       }
 

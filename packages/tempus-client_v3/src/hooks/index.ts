@@ -9,4 +9,3 @@ export * from './useLocale';
 export * from './useUserPreferences';
 export * from './usePoolViewOptions';
 export * from './useConfig';
-export * from './usePoolBalances';

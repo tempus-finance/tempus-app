@@ -285,8 +285,8 @@ describe('StatisticsService', () => {
     });
 
     test('it returns the amount of Principals tokens on fixed yield deposit', async () => {
-      const value = new Decimal('57000000000000');
-      mockEstimatedDepositAndFix.mockImplementation(() => of(value));
+      const expected = new Decimal('57000000000000');
+      mockEstimatedDepositAndFix.mockImplementation(() => of(expected));
 
       const tempusPool = {
         address: 'abc',
@@ -301,7 +301,7 @@ describe('StatisticsService', () => {
 
       const result = instance.estimatedDepositAndFix(tempusPool as TempusPool, tokenAmount, isBackingToken);
 
-      result.subscribe(resultValue => expect(resultValue).toBe(value));
+      result.subscribe(resultValue => expect(resultValue).toBe(expected));
     });
 
     test('it returns the amount of Principals and LP tokens on variable yield deposit', async () => {
