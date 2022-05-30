@@ -97,9 +97,9 @@ const poolAprs$: Observable<PoolFixedAprMap> = combineLatest([poolList$, interva
   ),
   debounce(() => interval(DEBOUNCE_IN_MS)),
   catchError(error => {
-    console.error('useFixedApr - Failed to fetch fixed APR for pools', error);
+    console.error('useFixedAprs - Failed to fetch fixed APR for pools', error);
     return of({});
   }),
 );
 
-export const [useFixedApr] = bind(poolAprs$, {});
+export const [useFixedAprs] = bind(poolAprs$, {});

@@ -2,7 +2,7 @@ import { renderHook } from '@testing-library/react-hooks';
 import { of } from 'rxjs';
 import { Decimal, getServices } from 'tempus-core-services';
 import { getConfigManager } from '../config/getConfigManager';
-import { useFixedApr } from './useFixedApr';
+import { useFixedAprs } from './useFixedAprs';
 
 jest.mock('tempus-core-services', () => ({
   ...jest.requireActual('tempus-core-services'),
@@ -12,7 +12,7 @@ jest.mock('tempus-core-services', () => ({
 const mockEstimatedDepositAndFix = jest.fn();
 const mockEstimatedMintedShares = jest.fn();
 
-describe('useFixedApr', () => {
+describe('useFixedAprs', () => {
   beforeAll(async () => {
     const config = getConfigManager();
     await config.init();
@@ -28,7 +28,7 @@ describe('useFixedApr', () => {
       },
     }));
 
-    const { result } = renderHook(() => useFixedApr());
+    const { result } = renderHook(() => useFixedAprs());
 
     expect(result.current).toEqual({});
   });
@@ -41,7 +41,7 @@ describe('useFixedApr', () => {
       },
     }));
 
-    const { result, waitForNextUpdate } = renderHook(() => useFixedApr());
+    const { result, waitForNextUpdate } = renderHook(() => useFixedAprs());
 
     await waitForNextUpdate();
 
@@ -60,7 +60,7 @@ describe('useFixedApr', () => {
       throw new Error();
     });
 
-    const { result, waitForNextUpdate } = renderHook(() => useFixedApr());
+    const { result, waitForNextUpdate } = renderHook(() => useFixedAprs());
 
     expect(result.current).toEqual({});
 
