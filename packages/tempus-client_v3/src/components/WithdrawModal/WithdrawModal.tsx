@@ -1,16 +1,13 @@
 import { FC, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ChainConfig, Decimal, Ticker } from 'tempus-core-services';
+import { TokenMetadataProp } from '../../interfaces/TokenMetadata';
 import CurrencyInputModal, { CurrencyInputModalInfoRow } from '../CurrencyInputModal';
 import { ActionButtonState } from '../shared';
 import { ModalProps } from '../shared/Modal/Modal';
 
 export interface WithdrawModalProps extends ModalProps {
-  tokens: {
-    precision: number;
-    ticker: Ticker;
-    rate: Decimal;
-  }[];
+  tokens: TokenMetadataProp;
   chainConfig?: ChainConfig;
 }
 

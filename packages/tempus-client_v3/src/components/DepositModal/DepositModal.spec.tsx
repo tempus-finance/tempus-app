@@ -3,14 +3,11 @@ import { BrowserRouter } from 'react-router-dom';
 import { Decimal, Ticker } from 'tempus-core-services';
 import { getConfigManager } from '../../config/getConfigManager';
 import I18nProvider from '../../i18n/I18nProvider';
+import { TokenMetadataProp } from '../../interfaces/TokenMetadata';
 import { MaturityTerm } from '../shared/TermTabs';
 import DepositModal, { DepositModalProps } from './DepositModal';
 
-const singleToken: {
-  precision: number;
-  ticker: Ticker;
-  rate: Decimal;
-}[] = [
+const singleToken: TokenMetadataProp = [
   {
     precision: 18,
     rate: new Decimal(3500),
@@ -18,11 +15,7 @@ const singleToken: {
   },
 ];
 
-const multipleTokens: {
-  precision: number;
-  ticker: Ticker;
-  rate: Decimal;
-}[] = [
+const multipleTokens: TokenMetadataProp = [
   {
     precision: 18,
     rate: new Decimal(3500),

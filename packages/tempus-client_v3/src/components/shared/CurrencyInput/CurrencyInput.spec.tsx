@@ -1,5 +1,6 @@
 import { act, fireEvent, render } from '@testing-library/react';
 import { Decimal, DecimalUtils, Ticker } from 'tempus-core-services';
+import { TokenMetadataProp } from '../../../interfaces/TokenMetadata';
 import CurrencyInput, { CurrencyInputProps } from './CurrencyInput';
 
 const defaultProps: CurrencyInputProps = {
@@ -10,11 +11,7 @@ const defaultProps: CurrencyInputProps = {
 const mockOnAmountUpdate = jest.fn<void, [string]>();
 const mockOnCurrencyUpdate = jest.fn<void, [Ticker]>();
 
-const singleToken: {
-  precision: number;
-  ticker: Ticker;
-  rate: Decimal;
-}[] = [
+const singleToken: TokenMetadataProp = [
   {
     precision: 18,
     rate: new Decimal(3500),
@@ -22,11 +19,7 @@ const singleToken: {
   },
 ];
 
-const multipleTokens: {
-  precision: number;
-  ticker: Ticker;
-  rate: Decimal;
-}[] = [
+const multipleTokens: TokenMetadataProp = [
   {
     precision: 18,
     rate: new Decimal(3500),

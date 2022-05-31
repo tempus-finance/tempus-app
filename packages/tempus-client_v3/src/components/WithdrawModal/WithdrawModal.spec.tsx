@@ -2,6 +2,7 @@ import { act, fireEvent, render } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { Decimal, Ticker } from 'tempus-core-services';
 import { getConfigManager } from '../../config/getConfigManager';
+import { TokenMetadataProp } from '../../interfaces/TokenMetadata';
 import { WithdrawModal, WithdrawModalProps } from './WithdrawModal';
 
 const defaultProps: WithdrawModalProps = {
@@ -10,11 +11,7 @@ const defaultProps: WithdrawModalProps = {
   tokens: [],
 };
 
-const singleToken: {
-  precision: number;
-  ticker: Ticker;
-  rate: Decimal;
-}[] = [
+const singleToken: TokenMetadataProp = [
   {
     precision: 18,
     rate: new Decimal(3500),
@@ -22,11 +19,7 @@ const singleToken: {
   },
 ];
 
-const multipleTokens: {
-  precision: number;
-  ticker: Ticker;
-  rate: Decimal;
-}[] = [
+const multipleTokens: TokenMetadataProp = [
   {
     precision: 18,
     rate: new Decimal(3500),

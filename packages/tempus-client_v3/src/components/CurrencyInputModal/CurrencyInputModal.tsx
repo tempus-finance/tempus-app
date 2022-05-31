@@ -1,11 +1,13 @@
 import { FC, ReactNode, useCallback, useMemo, useState } from 'react';
 import { ChainConfig, Decimal, Ticker } from 'tempus-core-services';
+import { TokenMetadataProp } from '../../interfaces/TokenMetadata';
 import { ActionButtonLabels, ActionButtonState, ButtonWrapper, Icon, Modal, Typography } from '../shared';
 import { ModalProps } from '../shared/Modal/Modal';
 import TermTabs, { MaturityTerm } from '../shared/TermTabs';
-import './CurrencyInputModal.scss';
 import ModalActionContent from './ModalActionContent';
 import ModalPreviewContent from './ModalPreviewContent';
+
+import './CurrencyInputModal.scss';
 
 type CurrencyInputModalContent = 'preview' | 'action';
 
@@ -23,11 +25,7 @@ export interface CurrencyInputModalProps extends ModalProps {
   description: string | CurrencyInputModalDescription;
   preview?: ReactNode;
   balance: Decimal;
-  tokens: {
-    precision: number;
-    ticker: Ticker;
-    rate: Decimal;
-  }[];
+  tokens: TokenMetadataProp;
   maturityTerms?: MaturityTerm[];
   chainConfig?: ChainConfig;
   infoRows?: ReactNode;

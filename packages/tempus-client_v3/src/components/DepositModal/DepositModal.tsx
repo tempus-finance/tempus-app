@@ -10,13 +10,10 @@ import CurrencyInputModal, {
 } from '../CurrencyInputModal';
 import { ActionButtonState, ChartDot, SelectableChartDataPoint, PercentageDateChart } from '../shared';
 import './DepositModal.scss';
+import { TokenMetadataProp } from '../../interfaces/TokenMetadata';
 
 export interface DepositModalProps extends ModalProps {
-  tokens: {
-    precision: number;
-    ticker: Ticker;
-    rate: Decimal;
-  }[];
+  tokens: TokenMetadataProp;
   poolStartDate: Date;
   maturityTerms: MaturityTerm[];
   chainConfig?: ChainConfig;

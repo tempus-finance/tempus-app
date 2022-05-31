@@ -1,21 +1,19 @@
 import { FC, useCallback, useState } from 'react';
 import { Ticker, Decimal, DecimalUtils } from 'tempus-core-services';
+import { TokenMetadataProp } from '../../../interfaces/TokenMetadata';
 import BaseInput from '../BaseInput';
 import Loading from '../Loading';
 import Typography from '../Typography';
 import CurrencySelector from './CurrencySelector';
 import PercentageButton from './PercentageButton';
+
 import './CurrencyInput.scss';
 
 const inputPercentages = [25, 50, 75, 100];
 
 export interface CurrencyInputProps {
   maxAmount: Decimal;
-  tokens: {
-    precision: number;
-    ticker: Ticker;
-    rate: Decimal;
-  }[];
+  tokens: TokenMetadataProp;
   disabled?: boolean;
   error?: string;
   onAmountUpdate?: (value: string) => void;
