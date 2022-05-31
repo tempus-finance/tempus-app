@@ -1,6 +1,6 @@
 import { ComponentStory, ComponentMeta } from '@storybook/react';
 import { useCallback, useEffect, useState } from 'react';
-import { ChainConfig, Decimal, Ticker } from 'tempus-core-services';
+import { ChainConfig, Decimal } from 'tempus-core-services';
 import { getConfigManager } from '../../config/getConfigManager';
 import { MaturityTerm } from '../shared/TermTabs';
 import DepositModal from './DepositModal';
@@ -17,9 +17,6 @@ const style = {
   justifyContent: 'center',
   height: '100px',
 };
-
-const singleCurrencyUsdRates = new Map<Ticker, Decimal>();
-singleCurrencyUsdRates.set('ETH', new Decimal(3500));
 
 const maturityTerms: MaturityTerm[] = [
   {

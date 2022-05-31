@@ -4,7 +4,13 @@ import { TokenMetadataProp } from '../../../interfaces/TokenMetadata';
 import CurrencyInput, { CurrencyInputProps } from './CurrencyInput';
 
 const defaultProps: CurrencyInputProps = {
-  tokens: [],
+  tokens: [
+    {
+      precision: 18,
+      rate: new Decimal(3500),
+      ticker: 'ETH',
+    },
+  ],
   maxAmount: new Decimal(100),
 };
 

@@ -8,7 +8,13 @@ import { WithdrawModal, WithdrawModalProps } from './WithdrawModal';
 const defaultProps: WithdrawModalProps = {
   open: true,
   onClose: () => {},
-  tokens: [],
+  tokens: [
+    {
+      precision: 18,
+      rate: new Decimal(3500),
+      ticker: 'ETH',
+    },
+  ],
 };
 
 const singleToken: TokenMetadataProp = [
