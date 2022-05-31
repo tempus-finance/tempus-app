@@ -2,7 +2,7 @@ import { ComponentStory, ComponentMeta } from '@storybook/react';
 import { useCallback, useEffect, useState } from 'react';
 import { ChainConfig, Decimal } from 'tempus-core-services';
 import { getConfigManager } from '../../config/getConfigManager';
-import { MaturityTerm } from '../shared/TermTabs';
+import { MaturityTerm } from '../../interfaces';
 import DepositModal from './DepositModal';
 
 export default {

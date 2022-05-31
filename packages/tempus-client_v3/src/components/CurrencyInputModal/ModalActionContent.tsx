@@ -1,7 +1,7 @@
 import { FC, ReactNode, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ChainConfig, Decimal, Ticker } from 'tempus-core-services';
-import { TokenMetadataProp } from '../../interfaces/TokenMetadata';
+import { TokenMetadataProp } from '../../interfaces';
 import FeeTooltip from '../FeeTooltip';
 import {
   ActionButton,

@@ -4,7 +4,7 @@ import { catchError, combineLatest, from, map, mergeMap, Observable, of, throwEr
 import { Stats } from '../abi/Stats';
 import StatsABI from '../abi/Stats.json';
 import { DEFAULT_TOKEN_PRECISION, tokenPrecision } from '../constants';
-import { Decimal, decreasePrecision, increasePrecision } from '../datastructures';
+import { Decimal, decreasePrecision, increasePrecision, ZERO } from '../datastructures';
 import { Chain, Config, TempusPool, Ticker } from '../interfaces';
 import { getTokenPrecision, mul18f } from '../utils';
 import { getChainlinkFeed } from './getChainlinkFeed';
@@ -223,32 +223,45 @@ export class StatisticsService {
   /**
    * Returns estimated amount of Principals tokens on fixed yield deposit
    * */
-  async estimatedDepositAndFix(
-    tempusAmmAddress: string,
-    tokenAmount: BigNumber,
+  estimatedDepositAndFix(
+    tempusPool: TempusPool,
+    tokenAmount: Decimal,
     isBackingToken: boolean,
     overrides?: CallOverrides,
-  ): Promise<BigNumber> {
+  ): Observable<Decimal> {
     if (!this.stats) {
       console.error(
         'StatisticsService - estimatedDepositAndFix: Attempted to use statistics contract before initializing it...',
       );
-      return Promise.reject(0);
+      return of(ZERO);
     }
 
-    if (!tempusAmmAddress || !tokenAmount) {
-      console.error('StatisticsService - estimatedDepositAndFix: invalid tempusAmmAddress or tokenAmount');
-      return Promise.reject(0);
+    if (!tokenAmount) {
+      console.error('StatisticsService - estimatedDepositAndFix: invalid tokenAmount');
+      return of(ZERO);
     }
+
+    const precision = isBackingToken
+      ? tempusPool.tokenPrecision.backingToken
+      : tempusPool.tokenPrecision.yieldBearingToken;
 
     try {
       if (overrides) {
-        return this.stats.estimatedDepositAndFix(tempusAmmAddress, tokenAmount, isBackingToken, overrides);
+        return from(
+          this.stats.estimatedDepositAndFix(
+            tempusPool.ammAddress,
+            tokenAmount.toBigNumber(precision),
+            isBackingToken,
+            overrides,
+          ),
+        ).pipe(map(value => new Decimal(value, tempusPool.tokenPrecision.principals)));
       }
-      return this.stats.estimatedDepositAndFix(tempusAmmAddress, tokenAmount, isBackingToken);
+      return from(
+        this.stats.estimatedDepositAndFix(tempusPool.ammAddress, tokenAmount.toBigNumber(precision), isBackingToken),
+      ).pipe(map(value => new Decimal(value, tempusPool.tokenPrecision.principals)));
     } catch (error) {
       console.error('StatisticsService - estimatedDepositAndFix - Failed to get estimated fixed deposit amount', error);
-      return Promise.reject(0);
+      return of(ZERO);
     }
   }
 

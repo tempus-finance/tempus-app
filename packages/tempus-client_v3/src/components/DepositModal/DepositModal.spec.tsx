@@ -1,10 +1,9 @@
 import { act, fireEvent, render } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
-import { Decimal, Ticker } from 'tempus-core-services';
+import { Decimal } from 'tempus-core-services';
 import { getConfigManager } from '../../config/getConfigManager';
 import I18nProvider from '../../i18n/I18nProvider';
-import { TokenMetadataProp } from '../../interfaces/TokenMetadata';
-import { MaturityTerm } from '../shared/TermTabs';
+import { MaturityTerm, TokenMetadataProp } from '../../interfaces';
 import DepositModal, { DepositModalProps } from './DepositModal';
 
 const singleToken: TokenMetadataProp = [

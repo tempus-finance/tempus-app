@@ -1,6 +1,6 @@
 import { FC, useCallback, useState } from 'react';
 import { Ticker, Decimal, DecimalUtils } from 'tempus-core-services';
-import { TokenMetadataProp } from '../../../interfaces/TokenMetadata';
+import { TokenMetadataProp } from '../../../interfaces';
 import BaseInput from '../BaseInput';
 import Loading from '../Loading';
 import Typography from '../Typography';

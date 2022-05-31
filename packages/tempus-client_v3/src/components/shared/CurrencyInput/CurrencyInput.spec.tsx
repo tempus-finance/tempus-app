@@ -1,6 +1,6 @@
 import { act, fireEvent, render } from '@testing-library/react';
 import { Decimal, DecimalUtils, Ticker } from 'tempus-core-services';
-import { TokenMetadataProp } from '../../../interfaces/TokenMetadata';
+import { TokenMetadataProp } from '../../../interfaces';
 import CurrencyInput, { CurrencyInputProps } from './CurrencyInput';
 
 const defaultProps: CurrencyInputProps = {

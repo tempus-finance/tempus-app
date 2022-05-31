@@ -1,10 +1,10 @@
 import { FC, memo, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { DecimalUtils } from 'tempus-core-services';
+import { MaturityTerm } from '../../../interfaces';
 import ButtonWrapper from '../ButtonWrapper';
 import FormattedDate from '../FormattedDate';
 import Typography from '../Typography';
-import MaturityTerm from './MaturityTerm';
 
 interface TermTabProps {
   term: MaturityTerm;

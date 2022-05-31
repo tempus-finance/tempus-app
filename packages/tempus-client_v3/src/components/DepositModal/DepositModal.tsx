@@ -1,9 +1,8 @@
 import { FC, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ChainConfig, Decimal, Ticker } from 'tempus-core-services';
-import { TokenMetadataProp } from '../../interfaces/TokenMetadata';
+import { MaturityTerm, TokenMetadataProp } from '../../interfaces';
 import { ModalProps } from '../shared/Modal/Modal';
-import { MaturityTerm } from '../shared/TermTabs';
 import { ActionButtonState, ChartDot, SelectableChartDataPoint, PercentageDateChart } from '../shared';
 import CurrencyInputModal, {
   CurrencyInputModalActionButtonLabels,

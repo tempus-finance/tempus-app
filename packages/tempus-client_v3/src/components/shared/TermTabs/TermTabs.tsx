@@ -1,5 +1,5 @@
 import { FC, useCallback, useState } from 'react';
-import MaturityTerm from './MaturityTerm';
+import { MaturityTerm } from '../../../interfaces';
 import TermTab from './TermTab';
 import './TermTabs.scss';
 
