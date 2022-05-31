@@ -18,7 +18,10 @@ const TermTab: FC<TermTabProps> = props => {
   const { t } = useTranslation();
 
   const handleClick = useCallback(() => onClick(term), [term, onClick]);
-  const formattedAprPercentage = useMemo(() => DecimalUtils.formatPercentage(term.apr, 1), [term.apr]);
+  const formattedAprPercentage = useMemo(
+    () => (term?.apr ? DecimalUtils.formatPercentage(term.apr, 1) : '0%'),
+    [term.apr],
+  );
 
   return (
     <ButtonWrapper

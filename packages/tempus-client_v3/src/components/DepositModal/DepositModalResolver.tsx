@@ -1,41 +1,44 @@
-import { FC, useState } from 'react';
+import { FC, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Decimal, DEFAULT_TOKEN_PRECISION } from 'tempus-core-services';
-import { MaturityTerm } from '../../interfaces';
-
+import { Chain, ProtocolName, Ticker } from 'tempus-core-services';
+import { getConfigManager } from '../../config/getConfigManager';
+import { useDepositModalData, setTempusPoolsForDepositModal } from '../../hooks';
+import { Loading } from '../shared';
 import DepositModal from './DepositModal';
+import './DepositModalResolver.scss';
 
 export const DepositModalResolver: FC = (): JSX.Element => {
+  const useDepositModalProps = useDepositModalData();
+  const depositModalProps = useDepositModalProps();
+
   const navigate = useNavigate();
   const { chain, ticker, protocol } = useParams();
 
-  const [startDate] = useState<Date>(new Date());
-  const [maturityTerms] = useState<MaturityTerm[]>([{ apr: new Decimal('1'), date: new Date() }]);
+  useEffect(() => {
+    const filteredPools = getConfigManager().getFilteredPoolList(
+      chain as Chain,
+      ticker as Ticker,
+      protocol as ProtocolName,
+    );
 
-  console.log('modalResolver ===>', ticker, protocol, chain);
+    setTempusPoolsForDepositModal(filteredPools);
+  }, [chain, ticker, protocol]);
 
   const handleCloseModal = () => {
     navigate(-1);
   };
 
-  return (
+  return depositModalProps ? (
     <DepositModal
       open
       onClose={handleCloseModal}
-      poolStartDate={startDate}
-      maturityTerms={maturityTerms}
-      tokens={[
-        {
-          precision: DEFAULT_TOKEN_PRECISION,
-          rate: new Decimal(2500),
-          ticker: 'ETH',
-        },
-        {
-          precision: DEFAULT_TOKEN_PRECISION,
-          rate: new Decimal(2500),
-          ticker: 'stETH',
-        },
-      ]}
+      poolStartDate={depositModalProps.poolStartDate}
+      maturityTerms={depositModalProps.maturityTerms}
+      tokens={depositModalProps.tokens}
     />
+  ) : (
+    <div className="tc__deposit-modal__loading">
+      <Loading size={100} color="primary" />
+    </div>
   );
 };
