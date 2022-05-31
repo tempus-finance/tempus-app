@@ -298,12 +298,12 @@ describe('usePoolViewOptions', () => {
     expect(result.current).toEqual(getConfigManager().getPoolList());
   });
 
-  it('useInactivePoolList should return a list of active pools', () => {
+  it('useInactivePoolList should return a list of inactive pools', () => {
     const { result } = renderHook(() => useInactivePoolList());
     expect(result.current).toEqual([]);
   });
 
-  it('useMaturedPoolList should return a list of active pools', () => {
+  it('useMaturedPoolList should return a list of matured pools', () => {
     const { result } = renderHook(() => useMaturedPoolList());
     expect(result.current).toEqual([]);
   });
