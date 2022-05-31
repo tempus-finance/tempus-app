@@ -1,6 +1,6 @@
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Decimal, DecimalUtils } from 'tempus-core-services';
+import { Decimal, DecimalUtils, ONE } from 'tempus-core-services';
 import ButtonWrapper from '../ButtonWrapper';
 import TextInput from '../TextInput';
 import Typography, { TypographyColor } from '../Typography';
@@ -32,7 +32,8 @@ const SlippageInput: FC<SlippageInputProps> = props => {
   }, [onAutoUpdate]);
   const handleDebounceChange = useCallback(
     (inputValue: string) => {
-      onPercentageUpdate?.(Decimal.parse(inputValue, 0).div(100));
+      const resolvedValue = Decimal.parse(inputValue, 0).div(100);
+      onPercentageUpdate?.(resolvedValue.gt(1) ? ONE : resolvedValue);
       onAutoUpdate?.(false);
     },
     [onPercentageUpdate, onAutoUpdate],

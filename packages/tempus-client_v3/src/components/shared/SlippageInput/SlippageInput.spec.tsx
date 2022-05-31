@@ -221,4 +221,29 @@ describe('SlippageInput', () => {
 
     jest.useRealTimers();
   });
+
+  it('clamps input value to 100% for values larger than 100%', () => {
+    jest.useFakeTimers();
+
+    const { getByRole } = subject(defaultProps);
+    const input = getByRole('textbox');
+
+    expect(input).not.toBeNull();
+
+    fireEvent.focus(input);
+    fireEvent.change(input, { target: { value: '123.45' } });
+
+    expect(mockOnPercentageUpdate).not.toHaveBeenCalled();
+    expect(mockOnAutoUpdate).not.toHaveBeenCalled();
+    expect(input).toHaveValue('123.45');
+
+    act(() => {
+      jest.advanceTimersByTime(300);
+    });
+
+    expect(mockOnPercentageUpdate).toHaveBeenCalledWith(new Decimal(1));
+    expect(mockOnAutoUpdate).toHaveBeenCalledWith(false);
+
+    jest.useRealTimers();
+  });
 });

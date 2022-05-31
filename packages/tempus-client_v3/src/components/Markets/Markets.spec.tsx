@@ -1,8 +1,16 @@
 import { fireEvent, render } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
-import { Decimal } from 'tempus-core-services';
+import { of as mockOf } from 'rxjs';
+import { Decimal, Decimal as MockDecimal } from 'tempus-core-services';
 import { getConfigManager } from '../../config/getConfigManager';
-import { useActivePoolList, useInactivePoolList, useMaturedPoolList, useTvlData, usePoolBalances } from '../../hooks';
+import {
+  useActivePoolList,
+  useInactivePoolList,
+  useMaturedPoolList,
+  useTvlData,
+  usePoolBalances,
+  useFixedAprs,
+} from '../../hooks';
 import Markets from './Markets';
 
 const subject = () =>
@@ -19,6 +27,17 @@ jest.mock('../../hooks', () => ({
   useMaturedPoolList: jest.fn(),
   usePoolBalances: jest.fn(),
   useTvlData: jest.fn(),
+}));
+
+jest.mock('../../hooks/useFixedAprs', () => ({
+  ...jest.requireActual('../../hooks/useFixedAprs'),
+  useFixedAprs: jest.fn(),
+  poolAprs$: mockOf({
+    'ethereum-1': new MockDecimal(0.041),
+    'ethereum-2': new MockDecimal(0.038),
+    'fantom-3': new MockDecimal(0.18),
+    'fantom-4': new MockDecimal(0.106),
+  }),
 }));
 
 describe('Markets', () => {
@@ -42,6 +61,12 @@ describe('Markets', () => {
       'ethereum-2': new Decimal(7000),
       'fantom-3': new Decimal(2000),
       'fantom-4': new Decimal(9000),
+    });
+    (useFixedAprs as jest.Mock).mockReturnValue({
+      'ethereum-1': new Decimal(0.041),
+      'ethereum-2': new Decimal(0.038),
+      'fantom-3': new Decimal(0.18),
+      'fantom-4': new Decimal(0.106),
     });
   });
 
