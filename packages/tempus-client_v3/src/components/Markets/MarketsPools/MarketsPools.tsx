@@ -4,10 +4,12 @@ import { useNavigate } from 'react-router-dom';
 import { Chain, prettifyChainName, ProtocolName, TempusPool, Ticker, tokenColorMap, ZERO } from 'tempus-core-services';
 import { useChainList, useFilteredSortedPoolList, useFixedAprs, useSelectedChain } from '../../../hooks';
 import { PoolCard, PoolCardStatus, PoolsHeading } from '../../shared';
-import './MarketsPools.scss';
-import ShowMoreButtonWrapper from './ShowMoreButton';
+import ShowMoreButtonWrapper from './ShowMoreButtonWrapper';
 
-const NUMBER_OF_CARDS_PER_PAGE = 3;
+import './MarketsPools.scss';
+
+const NUMBER_OF_CARDS_PER_PAGE = 6;
+const NUMBER_OF_CARDS_SHOW_AT_START = 3;
 
 interface CardData {
   chain: Chain;
@@ -35,7 +37,7 @@ const MarketsPools = (): JSX.Element => {
     const result: { [key in Chain]?: number } = {};
 
     chains.forEach(chain => {
-      result[chain] = NUMBER_OF_CARDS_PER_PAGE;
+      result[chain] = NUMBER_OF_CARDS_SHOW_AT_START;
     });
 
     setVisibleChainPools(result);
@@ -44,7 +46,7 @@ const MarketsPools = (): JSX.Element => {
   const onShowMoreClick = useCallback((chain: Chain) => {
     setVisibleChainPools(prevState => ({
       ...prevState,
-      [chain]: (prevState[chain] || NUMBER_OF_CARDS_PER_PAGE) + NUMBER_OF_CARDS_PER_PAGE,
+      [chain]: (prevState[chain] || NUMBER_OF_CARDS_SHOW_AT_START) + NUMBER_OF_CARDS_PER_PAGE,
     }));
   }, []);
 
@@ -123,7 +125,7 @@ const MarketsPools = (): JSX.Element => {
           return null;
         }
 
-        const cardsToShow = chainCards.slice(0, visibleChainPools[chain] || NUMBER_OF_CARDS_PER_PAGE);
+        const cardsToShow = chainCards.slice(0, visibleChainPools[chain] || NUMBER_OF_CARDS_SHOW_AT_START);
 
         return (
           <div key={chain}>
@@ -166,10 +168,16 @@ const MarketsPools = (): JSX.Element => {
                 <ShowMoreButtonWrapper
                   chain={chain}
                   onClick={onShowMoreClick}
-                  label={t('MarketsPools.showMoreButtonLabel', {
-                    numOfCardsToShow: Math.min(cardsToShow.length + NUMBER_OF_CARDS_PER_PAGE, chainCards.length),
-                    totalNumOfCards: chainCards.length,
-                  })}
+                  label={
+                    chainCards.length - cardsToShow.length > NUMBER_OF_CARDS_PER_PAGE
+                      ? t('MarketsPools.showMoreXOfYButtonLabel', {
+                          numOfCardsToShow: NUMBER_OF_CARDS_PER_PAGE,
+                          numOfRemainingCards: chainCards.length - cardsToShow.length,
+                        })
+                      : t('MarketsPools.showMoreXButtonLabel', {
+                          numOfCardsToShow: chainCards.length - cardsToShow.length,
+                        })
+                  }
                 />
               </div>
             )}

@@ -11,76 +11,91 @@
     "linkBlockExplorer": ""
   },
   "DepositModal": {
-    "labelMakeDeposit": "",
-    "labelExecuteDefault": "",
-    "labelExecuteLoading": "",
-    "labelExecuteSuccess": "",
+    "description": "",
     "labelApproveDefault": "",
     "labelApproveLoading": "",
     "labelApproveSuccess": "",
     "labelAvailableForDeposit": "",
+    "labelExecuteDefault": "",
+    "labelExecuteLoading": "",
+    "labelExecuteSuccess": "",
+    "labelMakeDeposit": "",
     "labelYieldAtMaturity": "",
-    "title": "",
-    "description": "",
-    "previewDescription": ""
+    "previewDescription": "",
+    "title": ""
   },
   "DepositModalHeader": {
     "titleRewardsAvailable": ""
   },
   "FeeTooltip": {
+    "infoText": "",
     "title": "",
     "titleDeposit": "",
-    "titleRedemption": "",
     "titleEarlyRedemption": "",
-    "titleSwap": "",
-    "infoText": ""
-  },
-  "MarketsSubheader": {
-    "tabFixed": "",
-    "tabBoosted": "",
-    "tabAll": "",
-    "optionFilter": "",
-    "filterActive": "",
-    "filterMatured": "",
-    "filterInactive": "",
-    "optionSort": "",
-    "sortAZ": "",
-    "sortMaturity": "",
-    "sortTVL": "",
-    "sortAPR": "",
-    "sortBalance": ""
+    "titleRedemption": "",
+    "titleSwap": ""
   },
   "MarketsPools": {
-    "showMoreButtonLabel": ""
+    "showMoreXButtonLabel": "",
+    "showMoreXOfYButtonLabel": ""
+  },
+  "MarketsSubheader": {
+    "filterActive": "",
+    "filterInactive": "",
+    "filterMatured": "",
+    "optionFilter": "",
+    "optionSort": "",
+    "sortAPR": "",
+    "sortAZ": "",
+    "sortBalance": "",
+    "sortMaturity": "",
+    "sortTVL": "",
+    "tabAll": "",
+    "tabBoosted": "",
+    "tabFixed": ""
+  },
+  "NumberInput": {
+    "buttonMax": ""
+  },
+  "PoolPositionCard": {
+    "apr": "",
+    "balance": "",
+    "profitLoss": "",
+    "projectedTotalYield": "",
+    "seeLess": "",
+    "seeMore": "",
+    "term": "",
+    "totalYieldEarned": ""
+  },
+  "PoolPositionModal": {
+    "title": "Detalles Posición",
+    "withdrawAction": "Retirar"
+  },
+  "PortfolioOverview": {
+    "subtitleCurrentValue": "",
+    "subtitleEarnedYield": "",
+    "subtitleProjectedYield": "",
+    "tabValue": "",
+    "tabYield": "",
+    "titleCurrentValue": "",
+    "titleEarnedYield": "",
+    "titleProjectedYield": "",
+    "titleTotalPortfolioValue": "",
+    "titleTotalYieldEarned": ""
   },
   "PortfolioSubheader": {
     "tabOverview": "",
     "tabPositions": ""
   },
-  "PortfolioOverview": {
-    "titleCurrentValue": "",
-    "subtitleCurrentValue": "",
-    "titleEarnedYield": "",
-    "subtitleEarnedYield": "",
-    "titleProjectedYield": "",
-    "subtitleProjectedYield": "",
-    "titleTotalYieldEarned": "",
-    "titleTotalPortfolioValue": "",
-    "tabYield": "",
-    "tabValue": ""
-  },
   "SettingsDropdown": {
     "title": ""
   },
   "SettingsPopup": {
-    "titleSlippage": "",
-    "slippageTooltipContent": "",
-    "titleLocale": "",
     "localeName": "Español",
-    "titleDarkMode": ""
-  },
-  "NumberInput": {
-    "buttonMax": ""
+    "slippageTooltipContent": "",
+    "titleDarkMode": "",
+    "titleLocale": "",
+    "titleSlippage": ""
   },
   "SlippageInput": {
     "buttonAuto": ""
@@ -88,33 +103,19 @@
   "TermTab": {
     "title": ""
   },
-  "PoolPositionCard": {
-    "apr": "",
-    "term": "",
-    "seeLess": "",
-    "seeMore": "",
-    "profitLoss": "",
-    "balance": "",
-    "totalYieldEarned": "",
-    "projectedTotalYield": ""
-  },
-  "PoolPositionModal": {
-    "title": "Detalles Posición",
-    "withdrawAction": "Retirar"
+  "TotalValueLocked": {
+    "title": ""
   },
   "WalletButton": {
     "buttonConnectWallet": "",
     "buttonUnsupported": ""
   },
-  "TotalValueLocked": {
-    "title": ""
-  },
   "WithdrawModal": {
-    "labelAvailableForWithdraw": "",
-    "title": "",
     "description": "",
+    "labelAvailableForWithdraw": "",
     "labelExecuteDefault": "",
     "labelExecuteLoading": "",
-    "labelExecuteSuccess": ""
+    "labelExecuteSuccess": "",
+    "title": ""
   }
 }
