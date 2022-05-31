@@ -32,7 +32,13 @@ const SlippageInput: FC<SlippageInputProps> = props => {
   }, [onAutoUpdate]);
   const handleDebounceChange = useCallback(
     (inputValue: string) => {
-      onPercentageUpdate?.(Decimal.parse(inputValue, 0).div(100));
+      let resolvedValue = Decimal.parse(inputValue, 0).div(100);
+
+      if (resolvedValue.gt(1)) {
+        resolvedValue = new Decimal(1);
+      }
+
+      onPercentageUpdate?.(resolvedValue);
       onAutoUpdate?.(false);
     },
     [onPercentageUpdate, onAutoUpdate],
