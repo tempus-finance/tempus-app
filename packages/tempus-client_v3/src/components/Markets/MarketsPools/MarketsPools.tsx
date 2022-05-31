@@ -1,16 +1,8 @@
 import { useEffect, useMemo, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import {
-  Chain,
-  Decimal,
-  prettifyChainName,
-  ProtocolName,
-  TempusPool,
-  Ticker,
-  tokenColorMap,
-} from 'tempus-core-services';
-import { useChainList, useFilteredSortedPoolList, useSelectedChain } from '../../../hooks';
+import { Chain, prettifyChainName, ProtocolName, TempusPool, Ticker, tokenColorMap, ZERO } from 'tempus-core-services';
+import { useChainList, useFilteredSortedPoolList, useFixedAprs, useSelectedChain } from '../../../hooks';
 import { PoolCard, PoolCardStatus, PoolsHeading } from '../../shared';
 import './MarketsPools.scss';
 import ShowMoreButtonWrapper from './ShowMoreButton';
@@ -32,6 +24,7 @@ const MarketsPools = (): JSX.Element => {
   const chains = useChainList();
   const tempusPools = useFilteredSortedPoolList();
   const selectedChain = useSelectedChain();
+  const fixedAprs = useFixedAprs();
 
   // When users clicks show more button, number of visible pools is increased
   // When user sorts/filters pool list - number of visible pools for each chain is reset
@@ -144,6 +137,7 @@ const MarketsPools = (): JSX.Element => {
 
                 const terms = chainCard.pools.map(pool => new Date(pool.maturityDate));
                 const poolAddresses = chainCard.pools.map(pool => pool.address);
+                const aprs = chainCard.pools.map(pool => fixedAprs[`${pool.chain}-${pool.address}`] ?? ZERO);
 
                 let cardStatus: PoolCardStatus = 'Fixed';
                 if (chainCard.matured) {
@@ -153,7 +147,7 @@ const MarketsPools = (): JSX.Element => {
                 return (
                   <PoolCard
                     key={`${chain}-${chainCard.protocol}-${chainCard.tokenAddress}-${chainCard.matured}`}
-                    aprValues={[new Decimal(0.1)]}
+                    aprValues={aprs}
                     color={cardColor || '#ffffff'}
                     poolCardStatus={cardStatus}
                     poolCardVariant="markets"

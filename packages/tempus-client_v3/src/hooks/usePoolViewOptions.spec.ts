@@ -1,9 +1,27 @@
 import { renderHook } from '@testing-library/react-hooks';
 import { act } from 'react-dom/test-utils';
+import { of as mockOf } from 'rxjs';
+import { Decimal as MockDecimal } from 'tempus-core-services';
 import { getConfigManager } from '../config/getConfigManager';
 import { FilterType } from '../interfaces';
 import { pool1, pool2, pool3, pool4 } from '../setupTests';
-import { usePoolViewOptions, useFilteredSortedPoolList } from './usePoolViewOptions';
+import {
+  usePoolViewOptions,
+  useFilteredSortedPoolList,
+  useActivePoolList,
+  useInactivePoolList,
+  useMaturedPoolList,
+} from './usePoolViewOptions';
+
+jest.mock('./useFixedAprs', () => ({
+  ...jest.requireActual('./useFixedAprs'),
+  poolAprs$: mockOf({
+    'ethereum-1': new MockDecimal(0.041),
+    'ethereum-2': new MockDecimal(0.038),
+    'fantom-3': new MockDecimal(0.18),
+    'fantom-4': new MockDecimal(0.106),
+  }),
+}));
 
 describe('usePoolViewOptions', () => {
   beforeAll(async () => {
@@ -273,5 +291,20 @@ describe('usePoolViewOptions', () => {
         expect(e).toBeInstanceOf(Error);
       }
     });
+  });
+
+  it('useActivePoolList should return a list of active pools', () => {
+    const { result } = renderHook(() => useActivePoolList());
+    expect(result.current).toEqual(getConfigManager().getPoolList());
+  });
+
+  it('useInactivePoolList should return a list of inactive pools', () => {
+    const { result } = renderHook(() => useInactivePoolList());
+    expect(result.current).toEqual([]);
+  });
+
+  it('useMaturedPoolList should return a list of matured pools', () => {
+    const { result } = renderHook(() => useMaturedPoolList());
+    expect(result.current).toEqual([]);
   });
 });

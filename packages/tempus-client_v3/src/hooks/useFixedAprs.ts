@@ -30,7 +30,7 @@ import {
 } from 'tempus-core-services';
 import { poolList$ } from './useConfig';
 
-interface PoolFixedAprMap {
+export interface PoolFixedAprMap {
   [chainPoolAddress: string]: Decimal;
 }
 
