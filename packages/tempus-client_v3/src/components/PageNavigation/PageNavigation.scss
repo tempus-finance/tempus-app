@@ -1,3 +1,6 @@
+$left-corner-svg: url("data:image/svg+xml,%3Csvg width='40' height='80' viewBox='0 0 40 80' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 79.9941H40V0C28.09 0.262146 18.1369 9.24592 16.7074 21.1273L10.7747 70.438C10.1187 75.8909 5.4922 79.9941 0 79.9941Z' fill='%23F3F7F9'/%3E%3C/svg%3E%0A");
+$right-corner-svg: url("data:image/svg+xml,%3Csvg width='40' height='80' viewBox='0 0 40 80' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M40 79.9941H0V0C11.91 0.262146 21.8631 9.24592 23.2926 21.1273L29.2253 70.438C29.8813 75.8909 34.5078 79.9941 40 79.9941Z' fill='%23F3F7F9'/%3E%3C/svg%3E%0A");
+
 $background-offset: 40px;
 
 .tc__page-navigation {
@@ -14,7 +17,7 @@ $background-offset: 40px;
   bottom: 0;
   left: 0;
   right: 0;
-  background-image: url('./svg/left-main-corner-smaller.svg'), url('./svg/right-main-corner-smaller.svg');
+  background-image: $left-corner-svg, $right-corner-svg;
   background-repeat: no-repeat;
   background-position: left center, right center;
 
