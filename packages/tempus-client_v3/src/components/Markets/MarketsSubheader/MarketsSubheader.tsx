@@ -81,19 +81,19 @@ const MarketsSubheader = () => {
       <NavSubheaderGroup>
         <Dropdown label={t('MarketsSubheader.optionFilter')}>
           <DropdownRadioItem
-            label={t('MarketsSubheader.filterActive', { count: chainActivePoolList.length })}
+            label={t('MarketsSubheader.filterActive', { numOfPool: chainActivePoolList.length })}
             value="active"
             checked={filters.has('active')}
             onChange={handleFilterChange}
           />
           <DropdownRadioItem
-            label={t('MarketsSubheader.filterMatured', { count: chainMaturedPoolList.length })}
+            label={t('MarketsSubheader.filterMatured', { numOfPool: chainMaturedPoolList.length })}
             value="matured"
             checked={filters.has('matured')}
             onChange={handleFilterChange}
           />
           <DropdownRadioItem
-            label={t('MarketsSubheader.filterInactive', { count: chainInactivePoolList.length })}
+            label={t('MarketsSubheader.filterInactive', { numOfPool: chainInactivePoolList.length })}
             value="inactive"
             checked={filters.has('inactive')}
             onChange={handleFilterChange}
