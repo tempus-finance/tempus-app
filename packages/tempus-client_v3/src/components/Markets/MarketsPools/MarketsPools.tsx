@@ -4,8 +4,9 @@ import { useNavigate } from 'react-router-dom';
 import { Chain, prettifyChainName, ProtocolName, TempusPool, Ticker, tokenColorMap, ZERO } from 'tempus-core-services';
 import { useChainList, useFilteredSortedPoolList, useFixedAprs, useSelectedChain } from '../../../hooks';
 import { PoolCard, PoolCardStatus, PoolsHeading } from '../../shared';
+import ShowMoreButtonWrapper from './ShowMoreButtonWrapper';
+
 import './MarketsPools.scss';
-import ShowMoreButtonWrapper from './ShowMoreButton';
 
 const NUMBER_OF_CARDS_PER_PAGE = 3;
 
@@ -44,7 +45,7 @@ const MarketsPools = (): JSX.Element => {
   const onShowMoreClick = useCallback((chain: Chain) => {
     setVisibleChainPools(prevState => ({
       ...prevState,
-      [chain]: (prevState[chain] || NUMBER_OF_CARDS_PER_PAGE) + NUMBER_OF_CARDS_PER_PAGE,
+      [chain]: (prevState[chain] || NUMBER_OF_CARDS_PER_PAGE) + 2 * NUMBER_OF_CARDS_PER_PAGE,
     }));
   }, []);
 
@@ -166,10 +167,16 @@ const MarketsPools = (): JSX.Element => {
                 <ShowMoreButtonWrapper
                   chain={chain}
                   onClick={onShowMoreClick}
-                  label={t('MarketsPools.showMoreButtonLabel', {
-                    numOfCardsToShow: Math.min(cardsToShow.length + NUMBER_OF_CARDS_PER_PAGE, chainCards.length),
-                    totalNumOfCards: chainCards.length,
-                  })}
+                  label={
+                    chainCards.length - cardsToShow.length > 2 * NUMBER_OF_CARDS_PER_PAGE
+                      ? t('MarketsPools.showMoreXOfYButtonLabel', {
+                          numOfCardsToShow: 2 * NUMBER_OF_CARDS_PER_PAGE,
+                          numOfRemainingCards: chainCards.length - cardsToShow.length,
+                        })
+                      : t('MarketsPools.showMoreXButtonLabel', {
+                          numOfCardsToShow: chainCards.length - cardsToShow.length,
+                        })
+                  }
                 />
               </div>
             )}

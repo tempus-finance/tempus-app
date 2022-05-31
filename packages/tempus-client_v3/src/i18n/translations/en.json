@@ -11,76 +11,91 @@
     "linkBlockExplorer": "Check it out on {{name}}"
   },
   "DepositModal": {
-    "labelMakeDeposit": "Make Deposit",
-    "labelExecuteDefault": "Execute",
-    "labelExecuteLoading": "Executing...",
-    "labelExecuteSuccess": "Successfully Executed",
+    "description": "You are about to deposit into this pool, choose carefully",
     "labelApproveDefault": "Approve Deposit",
     "labelApproveLoading": "Approving...",
     "labelApproveSuccess": "Successfully Approved",
     "labelAvailableForDeposit": "Available for Deposit",
+    "labelExecuteDefault": "Execute",
+    "labelExecuteLoading": "Executing...",
+    "labelExecuteSuccess": "Successfully Executed",
+    "labelMakeDeposit": "Make Deposit",
     "labelYieldAtMaturity": "Yield-at-Maturity",
-    "title": "Pool Details",
-    "description": "You are about to deposit into this pool, choose carefully",
-    "previewDescription": "Select an APR & Term to deposit into, if there’s only one, then simply proceed to make your deposit"
+    "previewDescription": "Select an APR & Term to deposit into, if there’s only one, then simply proceed to make your deposit",
+    "title": "Pool Details"
   },
   "DepositModalHeader": {
     "titleRewardsAvailable": "Rewards available"
   },
   "FeeTooltip": {
+    "infoText": "Swap fees will go to Liquidity providers",
     "title": "Fee",
     "titleDeposit": "Deposit",
-    "titleRedemption": "Redemption",
     "titleEarlyRedemption": "Early Redemption",
-    "titleSwap": "Swap",
-    "infoText": "Swap fees will go to Liquidity providers"
-  },
-  "MarketsSubheader": {
-    "tabFixed": "Fixed",
-    "tabBoosted": "Boosted",
-    "tabAll": "All",
-    "optionFilter": "Filter",
-    "filterActive": "Active ({{count}})",
-    "filterMatured": "Matured ({{count}})",
-    "filterInactive": "Inactive ({{count}})",
-    "optionSort": "Sort",
-    "sortAZ": "A-Z",
-    "sortMaturity": "Maturity",
-    "sortTVL": "TVL",
-    "sortAPR": "APR %",
-    "sortBalance": "Balance"
+    "titleRedemption": "Redemption",
+    "titleSwap": "Swap"
   },
   "MarketsPools": {
-    "showMoreButtonLabel": "Show {{numOfCardsToShow}} of {{totalNumOfCards}} more"
+    "showMoreXButtonLabel": "Show {{numOfCardsToShow}} more",
+    "showMoreXOfYButtonLabel": "Show {{numOfCardsToShow}} of {{numOfRemainingCards}} more"
+  },
+  "MarketsSubheader": {
+    "filterActive": "Active ({{numOfPool}})",
+    "filterInactive": "Inactive ({{numOfPool}})",
+    "filterMatured": "Matured ({{numOfPool}})",
+    "optionFilter": "Filter",
+    "optionSort": "Sort",
+    "sortAPR": "APR %",
+    "sortAZ": "A-Z",
+    "sortBalance": "Balance",
+    "sortMaturity": "Maturity",
+    "sortTVL": "TVL",
+    "tabAll": "All",
+    "tabBoosted": "Boosted",
+    "tabFixed": "Fixed"
+  },
+  "NumberInput": {
+    "buttonMax": "Max"
+  },
+  "PoolPositionCard": {
+    "apr": "APR",
+    "balance": "Balance",
+    "profitLoss": "Profit/loss",
+    "projectedTotalYield": "Projected Total Yield",
+    "seeLess": "See less",
+    "seeMore": "See more",
+    "term": "Term",
+    "totalYieldEarned": "Total Yield Earned"
+  },
+  "PoolPositionModal": {
+    "title": "Position Details",
+    "withdrawAction": "Make Withdrawal"
+  },
+  "PortfolioOverview": {
+    "subtitleCurrentValue": "of portfolio",
+    "subtitleEarnedYield": "of portfolio",
+    "subtitleProjectedYield": "of portfolio",
+    "tabValue": "Total Value",
+    "tabYield": "Total Yield",
+    "titleCurrentValue": "Current Value",
+    "titleEarnedYield": "Yield Earned",
+    "titleProjectedYield": "Projected Yield",
+    "titleTotalPortfolioValue": "Total Portfolio Value",
+    "titleTotalYieldEarned": "Total Yield Earned"
   },
   "PortfolioSubheader": {
     "tabOverview": "Overview",
     "tabPositions": "Positions"
   },
-  "PortfolioOverview": {
-    "titleCurrentValue": "Current Value",
-    "subtitleCurrentValue": "of portfolio",
-    "titleEarnedYield": "Yield Earned",
-    "subtitleEarnedYield": "of portfolio",
-    "titleProjectedYield": "Projected Yield",
-    "subtitleProjectedYield": "of portfolio",
-    "titleTotalYieldEarned": "Total Yield Earned",
-    "titleTotalPortfolioValue": "Total Portfolio Value",
-    "tabYield": "Total Yield",
-    "tabValue": "Total Value"
-  },
   "SettingsDropdown": {
     "title": "Settings"
   },
   "SettingsPopup": {
-    "titleSlippage": "Slippage tolerance",
-    "slippageTooltipContent": "Your transaction will revert if the price changes unfavorably by more than this percentage.",
-    "titleLocale": "Language",
     "localeName": "English",
-    "titleDarkMode": "Dark Theme"
-  },
-  "NumberInput": {
-    "buttonMax": "Max"
+    "slippageTooltipContent": "Your transaction will revert if the price changes unfavorably by more than this percentage.",
+    "titleDarkMode": "Dark Theme",
+    "titleLocale": "Language",
+    "titleSlippage": "Slippage tolerance"
   },
   "SlippageInput": {
     "buttonAuto": "Auto"
@@ -88,33 +103,19 @@
   "TermTab": {
     "title": "APR & Term"
   },
-  "PoolPositionCard": {
-    "apr": "APR",
-    "term": "Term",
-    "seeLess": "See less",
-    "seeMore": "See more",
-    "profitLoss": "Profit/loss",
-    "balance": "Balance",
-    "totalYieldEarned": "Total Yield Earned",
-    "projectedTotalYield": "Projected Total Yield"
-  },
-  "PoolPositionModal": {
-    "title": "Position Details",
-    "withdrawAction": "Make Withdrawal"
+  "TotalValueLocked": {
+    "title": "Total Value Locked"
   },
   "WalletButton": {
     "buttonConnectWallet": "Connect Wallet",
     "buttonUnsupported": "Unsupported"
   },
-  "TotalValueLocked": {
-    "title": "Total Value Locked"
-  },
   "WithdrawModal": {
-    "labelAvailableForWithdraw": "Available for Withdraw",
-    "title": "Position Details",
     "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    "labelAvailableForWithdraw": "Available for Withdraw",
     "labelExecuteDefault": "Execute Withdrawal",
     "labelExecuteLoading": "Executing...",
-    "labelExecuteSuccess": "Successfully Executed"
+    "labelExecuteSuccess": "Successfully Executed",
+    "title": "Position Details"
   }
 }
