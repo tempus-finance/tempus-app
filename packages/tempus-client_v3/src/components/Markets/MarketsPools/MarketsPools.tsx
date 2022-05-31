@@ -8,7 +8,8 @@ import ShowMoreButtonWrapper from './ShowMoreButtonWrapper';
 
 import './MarketsPools.scss';
 
-const NUMBER_OF_CARDS_PER_PAGE = 3;
+const NUMBER_OF_CARDS_PER_PAGE = 6;
+const NUMBER_OF_CARDS_SHOW_AT_START = 3;
 
 interface CardData {
   chain: Chain;
@@ -36,7 +37,7 @@ const MarketsPools = (): JSX.Element => {
     const result: { [key in Chain]?: number } = {};
 
     chains.forEach(chain => {
-      result[chain] = NUMBER_OF_CARDS_PER_PAGE;
+      result[chain] = NUMBER_OF_CARDS_SHOW_AT_START;
     });
 
     setVisibleChainPools(result);
@@ -45,7 +46,7 @@ const MarketsPools = (): JSX.Element => {
   const onShowMoreClick = useCallback((chain: Chain) => {
     setVisibleChainPools(prevState => ({
       ...prevState,
-      [chain]: (prevState[chain] || NUMBER_OF_CARDS_PER_PAGE) + 2 * NUMBER_OF_CARDS_PER_PAGE,
+      [chain]: (prevState[chain] || NUMBER_OF_CARDS_SHOW_AT_START) + NUMBER_OF_CARDS_PER_PAGE,
     }));
   }, []);
 
@@ -124,7 +125,7 @@ const MarketsPools = (): JSX.Element => {
           return null;
         }
 
-        const cardsToShow = chainCards.slice(0, visibleChainPools[chain] || NUMBER_OF_CARDS_PER_PAGE);
+        const cardsToShow = chainCards.slice(0, visibleChainPools[chain] || NUMBER_OF_CARDS_SHOW_AT_START);
 
         return (
           <div key={chain}>
@@ -168,9 +169,9 @@ const MarketsPools = (): JSX.Element => {
                   chain={chain}
                   onClick={onShowMoreClick}
                   label={
-                    chainCards.length - cardsToShow.length > 2 * NUMBER_OF_CARDS_PER_PAGE
+                    chainCards.length - cardsToShow.length > NUMBER_OF_CARDS_PER_PAGE
                       ? t('MarketsPools.showMoreXOfYButtonLabel', {
-                          numOfCardsToShow: 2 * NUMBER_OF_CARDS_PER_PAGE,
+                          numOfCardsToShow: NUMBER_OF_CARDS_PER_PAGE,
                           numOfRemainingCards: chainCards.length - cardsToShow.length,
                         })
                       : t('MarketsPools.showMoreXButtonLabel', {
