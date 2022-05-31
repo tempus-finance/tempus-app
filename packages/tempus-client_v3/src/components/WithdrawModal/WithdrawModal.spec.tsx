@@ -1,22 +1,42 @@
 import { act, fireEvent, render } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
-import { Decimal, Ticker } from 'tempus-core-services';
+import { Decimal } from 'tempus-core-services';
 import { getConfigManager } from '../../config/getConfigManager';
+import { TokenMetadataProp } from '../../interfaces';
 import { WithdrawModal, WithdrawModalProps } from './WithdrawModal';
-
-const singleCurrencyUsdRates = new Map<Ticker, Decimal>();
-singleCurrencyUsdRates.set('ETH', new Decimal(3500));
-
-const multipleCurrencyUsdRates = new Map<Ticker, Decimal>();
-multipleCurrencyUsdRates.set('ETH', new Decimal(3500));
-multipleCurrencyUsdRates.set('stETH', new Decimal(3500));
 
 const defaultProps: WithdrawModalProps = {
   open: true,
-  inputPrecision: 18,
   onClose: () => {},
-  usdRates: new Map(),
+  tokens: [
+    {
+      precision: 18,
+      rate: new Decimal(3500),
+      ticker: 'ETH',
+    },
+  ],
 };
+
+const singleToken: TokenMetadataProp = [
+  {
+    precision: 18,
+    rate: new Decimal(3500),
+    ticker: 'ETH',
+  },
+];
+
+const multipleTokens: TokenMetadataProp = [
+  {
+    precision: 18,
+    rate: new Decimal(3500),
+    ticker: 'ETH',
+  },
+  {
+    precision: 18,
+    rate: new Decimal(3500),
+    ticker: 'stETH',
+  },
+];
 
 const subject = (props: WithdrawModalProps) =>
   render(
@@ -29,7 +49,7 @@ describe('WithdrawModal', () => {
   it('renders a withdraw modal', () => {
     const { container } = subject({
       ...defaultProps,
-      usdRates: singleCurrencyUsdRates,
+      tokens: singleToken,
     });
 
     expect(container).not.toBeNull();
@@ -39,7 +59,7 @@ describe('WithdrawModal', () => {
   it('updates balance after currency change', () => {
     const { container, getByRole } = subject({
       ...defaultProps,
-      usdRates: multipleCurrencyUsdRates,
+      tokens: multipleTokens,
     });
 
     const currencyDropdownButton = container.querySelector('.tc__currency-input__currency-selector > button');
@@ -79,7 +99,7 @@ describe('WithdrawModal', () => {
 
     const { container, getByRole } = subject({
       ...defaultProps,
-      usdRates: singleCurrencyUsdRates,
+      tokens: singleToken,
       chainConfig: configManager.getChainConfig('ethereum'),
     });
 

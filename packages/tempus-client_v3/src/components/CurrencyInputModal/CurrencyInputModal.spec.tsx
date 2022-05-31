@@ -23,8 +23,13 @@ const defaultProps: CurrencyInputModalProps = {
   open: true,
   onClose: () => {},
   balance: new Decimal(100),
-  inputPrecision: 18,
-  usdRates: singleCurrencyUsdRates,
+  tokens: [
+    {
+      precision: 18,
+      rate: new Decimal(3500),
+      ticker: 'ETH',
+    },
+  ],
   actionButtonLabels: { action: { default: 'Action', loading: 'Loading', success: 'Success' } },
   onTransactionStart: () => '0x0',
 };
