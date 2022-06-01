@@ -13,7 +13,7 @@ import {
   startWith,
 } from 'rxjs';
 import { getServices, Decimal, ZERO, StatisticsService, TempusPool, Chain } from 'tempus-core-services';
-import { poolList$ } from './useConfig';
+import { poolListSubject$ } from './usePoolList';
 
 interface PoolTvlMap {
   [chainPoolAddress: string]: Decimal;
@@ -24,7 +24,7 @@ const DEBOUNCE_IN_MS = 500;
 
 const polling$: Observable<number> = interval(TVL_POLLING_INTERVAL_IN_MS).pipe(startWith(0));
 
-export const poolTvls$: Observable<PoolTvlMap> = combineLatest([poolList$, polling$]).pipe(
+export const poolTvls$: Observable<PoolTvlMap> = combineLatest([poolListSubject$, polling$]).pipe(
   mergeMap<[TempusPool[], number], Observable<PoolTvlMap>>(([tempusPools]) => {
     const poolTvlMaps = tempusPools.map(({ chain, address, backingToken }: TempusPool) => {
       const poolTvl$ = (getServices(chain as Chain)?.StatisticsService as StatisticsService).totalValueLockedUSD(

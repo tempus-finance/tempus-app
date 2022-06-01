@@ -28,7 +28,7 @@ import {
   getDefaultProvider,
   ZERO,
 } from 'tempus-core-services';
-import { poolList$ } from './useConfig';
+import { poolListSubject$ } from './usePoolList';
 
 export interface PoolFixedAprMap {
   [chainPoolAddress: string]: Decimal;
@@ -40,7 +40,7 @@ const DEBOUNCE_IN_MS = 500;
 
 const intervalBeat$: Observable<number> = interval(APR_POLLING_INTERVAL_IN_MS).pipe(startWith(0));
 
-export const poolAprs$: Observable<PoolFixedAprMap> = combineLatest([poolList$, intervalBeat$]).pipe(
+export const poolAprs$: Observable<PoolFixedAprMap> = combineLatest([poolListSubject$, intervalBeat$]).pipe(
   mergeMap<[TempusPool[], number], Observable<PoolFixedAprMap>>(([tempusPools]) => {
     const poolAprMaps = tempusPools.map(pool => {
       const { address, poolId, chain, spotPrice, maturityDate } = pool;

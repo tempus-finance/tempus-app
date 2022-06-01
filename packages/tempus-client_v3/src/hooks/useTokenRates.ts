@@ -15,7 +15,7 @@ import {
   switchMap,
 } from 'rxjs';
 import { getServices, Decimal, StatisticsService, Chain, Ticker, TempusPoolService } from 'tempus-core-services';
-import { poolList$ } from './useConfig';
+import { poolListSubject$ } from './usePoolList';
 
 const TOKEN_RATE_POLLING_INTERVAL_IN_MS = 30000;
 const DEBOUNCE_IN_MS = 500;
@@ -35,7 +35,7 @@ interface TokenRateMap {
 
 const polling$: Observable<number> = interval(TOKEN_RATE_POLLING_INTERVAL_IN_MS).pipe(startWith(0));
 
-const conversionRates$ = poolList$.pipe(
+const conversionRates$ = poolListSubject$.pipe(
   switchMap(tempusPools =>
     from(
       Promise.all(
@@ -49,7 +49,7 @@ const conversionRates$ = poolList$.pipe(
   ),
 );
 
-const tokenRates$: Observable<TokenRateMap> = combineLatest([poolList$, conversionRates$, polling$]).pipe(
+const tokenRates$: Observable<TokenRateMap> = combineLatest([poolListSubject$, conversionRates$, polling$]).pipe(
   mergeMap(([tempusPools, rates]) => {
     const uniqueTokens = Object.values(
       tempusPools.reduce(
