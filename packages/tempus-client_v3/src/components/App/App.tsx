@@ -33,16 +33,13 @@ const App = () => {
   useEffect(() => {
     const retrieveConfig = () => {
       const configManger = getConfigManager();
-      configManger.init().then(success => {
-        if (success) {
-          initServices('ethereum', configManger.getConfig());
-          initServices('fantom', configManger.getConfig());
-          initServices('ethereum-fork', configManger.getConfig());
-          setServicesLoaded(true);
-        }
-      });
-    };
+      configManger.init();
 
+      initServices('ethereum', configManger.getConfig());
+      initServices('fantom', configManger.getConfig());
+      initServices('ethereum-fork', configManger.getConfig());
+      setServicesLoaded(true);
+    };
     retrieveConfig();
   }, []);
 

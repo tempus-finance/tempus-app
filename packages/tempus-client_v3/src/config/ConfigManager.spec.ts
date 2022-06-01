@@ -5,10 +5,16 @@ describe('ConfigManager', () => {
   const configManager = getConfigManager();
 
   describe('init', () => {
-    it('returns `success` after invoking `init`', async () => {
-      const result = await configManager.init();
+    it('populates chain, pool and tokens lists', async () => {
+      configManager.init();
 
-      expect(result).toBe(true);
+      const chainList = configManager.getChainList();
+      const poolList = configManager.getPoolList();
+      const tokenList = configManager.getTokenList();
+
+      expect(chainList.length).toEqual(3);
+      expect(poolList.length).toEqual(4);
+      expect(tokenList.length).toEqual(20);
     });
   });
 

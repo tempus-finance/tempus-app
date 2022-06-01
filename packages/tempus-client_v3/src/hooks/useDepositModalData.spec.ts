@@ -69,10 +69,10 @@ describe('useDepositModal', () => {
     expect(result.current?.poolStartDate).toEqual(new Date(1640995200000));
 
     expect(parseFloat(String(result.current?.maturityTerms[0].apr))).toBeCloseTo(8.51756247563775);
-    expect(result.current?.maturityTerms[0].date).toEqual(new Date(2025, 0, 1));
+    expect(result.current?.maturityTerms[0].date).toEqual(new Date(Date.UTC(2025, 0, 1)));
 
     expect(parseFloat(String(result.current?.maturityTerms[1].apr))).toBeCloseTo(12.490441409971417);
-    expect(result.current?.maturityTerms[1].date).toEqual(new Date(2024, 2, 1));
+    expect(result.current?.maturityTerms[1].date).toEqual(new Date(Date.UTC(2024, 2, 1)));
 
     expect(result.current?.tokens[0].precision).toBe(18);
     expect(result.current?.tokens[0].ticker).toBe('ETH');
