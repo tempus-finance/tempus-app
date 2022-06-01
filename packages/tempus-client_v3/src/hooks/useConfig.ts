@@ -1,20 +1,27 @@
 import { bind } from '@react-rxjs/core';
-import { filter, interval, map, startWith, take } from 'rxjs';
+import { BehaviorSubject, filter, interval, map, startWith, take, tap } from 'rxjs';
+import { Config } from 'tempus-core-services';
 import { getConfigManager } from '../config/getConfigManager';
 
 const CONFIG_RETRYING_INTERVAL_IN_MS = 5000;
 
-export const config$ = interval(CONFIG_RETRYING_INTERVAL_IN_MS).pipe(
-  startWith(0),
-  map(() => getConfigManager().getConfig()),
-  filter(config => Object.keys(config).length > 0),
-  take(1),
-);
-export const chainList$ = config$.pipe(map(() => getConfigManager().getChainList()));
-export const poolList$ = config$.pipe(map(() => getConfigManager().getPoolList()));
-export const tokenList$ = config$.pipe(map(() => getConfigManager().getTokenList()));
+const configSubject$ = new BehaviorSubject<Config>({});
 
-export const [useConfig] = bind(config$, null);
+interval(CONFIG_RETRYING_INTERVAL_IN_MS)
+  .pipe(
+    startWith(0),
+    map(() => getConfigManager().getConfig()),
+    filter(config => Object.keys(config).length > 0),
+    tap(config => configSubject$.next(config)),
+    take(1),
+  )
+  .subscribe();
+
+export const [useConfig] = bind(configSubject$, {});
+export const chainList$ = configSubject$.pipe(map(() => getConfigManager().getChainList()));
+export const poolList$ = configSubject$.pipe(map(() => getConfigManager().getPoolList()));
+export const tokenList$ = configSubject$.pipe(map(() => getConfigManager().getTokenList()));
+
 export const [useChainList] = bind(chainList$, []);
 export const [usePoolList] = bind(poolList$, []);
 export const [useTokenList] = bind(tokenList$, []);

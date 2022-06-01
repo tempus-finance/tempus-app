@@ -3,6 +3,8 @@ import { getConfigManager } from '../config/getConfigManager';
 import { mockConfig, pool1, pool2, pool3, pool4 } from '../setupTests';
 import { useChainList, useConfig, usePoolList, useTokenList } from './useConfig';
 
+jest.setTimeout(10000);
+
 describe('useConfig', () => {
   beforeAll(async () => {
     jest.resetAllMocks();
@@ -12,7 +14,9 @@ describe('useConfig', () => {
   });
 
   it('returns config when it is fetched', async () => {
-    const { result } = renderHook(() => useConfig());
+    const { result, waitForNextUpdate } = renderHook(() => useConfig());
+
+    await waitForNextUpdate({ timeout: 5000 });
 
     expect(mockConfig).toStrictEqual(result.current);
   });
