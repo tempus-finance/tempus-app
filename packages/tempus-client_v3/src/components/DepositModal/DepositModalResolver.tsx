@@ -25,9 +25,11 @@ export const DepositModalResolver: FC = (): JSX.Element => {
   useYieldAtMaturity();
 
   useEffect(() => {
-    const filteredPools = getConfigManager()
-      .getFilteredPoolList(chain as Chain, ticker as Ticker, protocol as ProtocolName)
-      .filter(pool => pool.maturityDate > Date.now());
+    const filteredPools = getConfigManager().getImmaturePools(
+      chain as Chain,
+      ticker as Ticker,
+      protocol as ProtocolName,
+    );
 
     setTempusPoolsForDepositModal(filteredPools);
     setPoolForYieldAtMaturity(filteredPools[0]);

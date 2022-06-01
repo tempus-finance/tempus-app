@@ -94,7 +94,7 @@ const DepositModal: FC<DepositModalProps> = props => {
   const handleMaturityChange = useCallback(
     (newTerm: MaturityTerm) => {
       const termIndex = maturityTerms.findIndex(term => term.date === newTerm.date) ?? 0;
-      const selectedPool = modalProps?.pools[termIndex];
+      const selectedPool = modalProps?.tempusPools[termIndex];
 
       if (selectedPool) {
         setPoolForYieldAtMaturity(selectedPool);
@@ -102,7 +102,7 @@ const DepositModal: FC<DepositModalProps> = props => {
 
       setMaturityTerm(newTerm);
     },
-    [maturityTerms, modalProps?.pools],
+    [maturityTerms, modalProps?.tempusPools],
   );
 
   const handleCurrencyChange = useCallback(

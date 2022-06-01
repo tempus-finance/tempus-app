@@ -65,30 +65,16 @@ class ConfigManager {
       });
   }
 
+  getImmaturePools(filterByChain?: Chain, filterByToken?: Ticker, filterByProtocol?: ProtocolName): TempusPool[] {
+    return this.getFilteredPoolList(filterByChain, filterByToken, filterByProtocol).filter(
+      pool => pool.maturityDate > Date.now(),
+    );
+  }
+
   getEarliestStartDate(filterByChain?: Chain, filterByToken?: Ticker, filterByProtocol?: ProtocolName): Date {
-    const earliestPoolList = this.getPoolList()
-      .filter(pool => {
-        if (filterByChain) {
-          return pool.chain === filterByChain;
-        }
-
-        return true;
-      })
-      .filter(pool => {
-        if (filterByToken) {
-          return pool.backingToken === filterByToken;
-        }
-
-        return true;
-      })
-      .filter(pool => {
-        if (filterByProtocol) {
-          return pool.protocol === filterByProtocol;
-        }
-
-        return true;
-      })
-      .sort((poolA, poolB) => (poolA.startDate < poolB.startDate ? -1 : 1));
+    const earliestPoolList = this.getFilteredPoolList(filterByChain, filterByToken, filterByProtocol).sort(
+      (poolA, poolB) => (poolA.startDate < poolB.startDate ? -1 : 1),
+    );
 
     if (earliestPoolList && earliestPoolList.length) {
       return new Date(earliestPoolList[0].startDate);
@@ -135,7 +121,7 @@ class ConfigManager {
       const poolChain = pool.chain;
 
       if (poolChain) {
-        if (!chainToAddresses.get(poolChain)) {
+        if (!chainToAddresses.has(poolChain)) {
           chainToAddresses.set(poolChain, new Set());
         }
 
