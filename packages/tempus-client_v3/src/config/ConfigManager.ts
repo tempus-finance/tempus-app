@@ -1,7 +1,7 @@
 import { Chain, ChainConfig, Config, ProtocolName, TempusPool, Ticker } from 'tempus-core-services';
 import config from './config';
 
-interface TokenListItem {
+export interface TokenListItem {
   chain: Chain;
   address: string;
 }
