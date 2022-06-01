@@ -4,7 +4,7 @@ import { combineLatest, map, withLatestFrom } from 'rxjs';
 import { useCallback } from 'react';
 import { TempusPool, ZERO } from 'tempus-core-services';
 import { FilterType, PoolType, SortOrder, SortType, ViewType } from '../interfaces';
-import { poolList$ } from './useConfig';
+import { poolListSubject$ } from './usePoolList';
 import { poolTvls$ } from './useTvlData';
 import { poolBalances$ } from './usePoolBalances';
 import { poolAprs$, PoolFixedAprMap } from './useFixedAprs';
@@ -39,15 +39,15 @@ export const isPoolInactive = (tempusPool: TempusPool, poolAprs: PoolFixedAprMap
 export const isPoolActive = (tempusPool: TempusPool, poolAprs: PoolFixedAprMap): boolean =>
   !isPoolMatured(tempusPool) && !isPoolInactive(tempusPool, poolAprs);
 
-const activePoolList$ = combineLatest([poolList$, statePoolAprs$]).pipe(
+const activePoolList$ = combineLatest([poolListSubject$, statePoolAprs$]).pipe(
   map(([tempusPools, poolAprs]) => tempusPools.filter(pool => isPoolActive(pool, poolAprs))),
 );
-const inactivePoolList$ = combineLatest([poolList$, statePoolAprs$]).pipe(
+const inactivePoolList$ = combineLatest([poolListSubject$, statePoolAprs$]).pipe(
   map(([tempusPools, poolAprs]) => tempusPools.filter(pool => isPoolInactive(pool, poolAprs))),
 );
-const maturedPoolList$ = poolList$.pipe(map(tempusPools => tempusPools.filter(isPoolMatured)));
+const maturedPoolList$ = poolListSubject$.pipe(map(tempusPools => tempusPools.filter(isPoolMatured)));
 
-const filteredPoolList$ = combineLatest([poolList$, stateFilters$]).pipe(
+const filteredPoolList$ = combineLatest([poolListSubject$, stateFilters$]).pipe(
   // only want to get the latest data instead of getting every interval
   withLatestFrom(statePoolAprs$),
   map(([[tempusPools, filters], poolAprs]) =>
