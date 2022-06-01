@@ -2,7 +2,14 @@ import { memo, useEffect, useState } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { initServices } from 'tempus-core-services';
-import { useLocale, useSelectedChain, useUserPreferences, usePoolBalances } from '../../hooks';
+import {
+  useLocale,
+  useSelectedChain,
+  useUserPreferences,
+  usePoolBalances,
+  useTokenList,
+  useWalletBalances,
+} from '../../hooks';
 import Markets from '../Markets';
 import Navbar from '../Navbar/Navbar';
 import { getConfigManager } from '../../config/getConfigManager';
@@ -24,6 +31,8 @@ const App = () => {
   useUserPreferences();
   useSelectedChain();
   usePoolBalances();
+  useWalletBalances();
+  useTokenList();
 
   const navigationLinks: PageNavigationLink[] = [
     { text: t('App.navMarkets'), path: '/' },

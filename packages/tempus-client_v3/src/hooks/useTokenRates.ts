@@ -49,7 +49,7 @@ const conversionRates$ = poolList$.pipe(
   ),
 );
 
-const tokenRates$: Observable<TokenRateMap> = combineLatest([poolList$, conversionRates$, polling$]).pipe(
+export const tokenRates$: Observable<TokenRateMap> = combineLatest([poolList$, conversionRates$, polling$]).pipe(
   mergeMap(([tempusPools, rates]) => {
     const uniqueTokens = Object.values(
       tempusPools.reduce(

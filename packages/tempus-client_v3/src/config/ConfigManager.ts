@@ -8,7 +8,7 @@ const TempusPoolsConfig = {
   ref: process.env.REACT_APP_CONFIG_BRANCH,
 };
 
-interface TokenListItem {
+export interface TokenListItem {
   chain: Chain;
   address: string;
 }
@@ -95,33 +95,29 @@ class ConfigManager {
   private retrieveTokenList(): void {
     const result: TokenListItem[] = [];
 
+    // Checks if token is already added to the list and keeps resulting list unique
+    const insertToken = (address: string, chain: Chain, accumulator: TokenListItem[]) => {
+      const existingIndex = accumulator.findIndex(
+        tokenListItem => tokenListItem.address === address && tokenListItem.chain === chain,
+      );
+      if (existingIndex === -1) {
+        accumulator.push({
+          address,
+          chain,
+        });
+      }
+    };
+
     const poolList = this.getPoolList();
     poolList.forEach(pool => {
       const poolChain = pool.chain;
 
       if (poolChain) {
-        result.push(
-          {
-            address: pool.backingTokenAddress,
-            chain: poolChain,
-          },
-          {
-            address: pool.yieldBearingTokenAddress,
-            chain: poolChain,
-          },
-          {
-            address: pool.principalsAddress,
-            chain: poolChain,
-          },
-          {
-            address: pool.yieldsAddress,
-            chain: poolChain,
-          },
-          {
-            address: pool.ammAddress,
-            chain: poolChain,
-          },
-        );
+        insertToken(pool.backingTokenAddress, poolChain, result);
+        insertToken(pool.yieldBearingTokenAddress, poolChain, result);
+        insertToken(pool.principalsAddress, poolChain, result);
+        insertToken(pool.yieldsAddress, poolChain, result);
+        insertToken(pool.ammAddress, poolChain, result);
       } else {
         console.warn(`Pool ${pool.address} does not contain chain in it's config!`);
       }
