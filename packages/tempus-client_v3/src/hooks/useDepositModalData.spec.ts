@@ -23,12 +23,12 @@ describe('useDepositModal', () => {
     jest.resetAllMocks();
 
     const config = getConfigManager();
-    await config.init();
+    config.init();
   });
 
   beforeEach(() => {
     originalDateNow = Date.now;
-    Date.now = () => new Date(2022, 4, 15).getTime();
+    Date.now = () => new Date(Date.UTC(2022, 4, 15)).getTime();
   });
 
   afterEach(() => {
@@ -68,10 +68,10 @@ describe('useDepositModal', () => {
 
     expect(result.current?.poolStartDate).toEqual(new Date(1647216000000));
 
-    expect(parseFloat(String(result.current?.maturityTerms[0].apr))).toBeCloseTo(38.27598287271312);
+    expect(parseFloat(String(result.current?.maturityTerms[0].apr))).toBeCloseTo(38.29088785046729);
     expect(result.current?.maturityTerms[0].date).toEqual(new Date(Date.UTC(2022, 11, 15)));
 
-    expect(parseFloat(String(result.current?.maturityTerms[1].apr))).toBeCloseTo(29.680350135828554);
+    expect(parseFloat(String(result.current?.maturityTerms[1].apr))).toBeCloseTo(29.6893115942029);
     expect(result.current?.maturityTerms[1].date).toEqual(new Date(Date.UTC(2023, 1, 15)));
 
     expect(result.current?.tokens[0].precision).toBe(18);
