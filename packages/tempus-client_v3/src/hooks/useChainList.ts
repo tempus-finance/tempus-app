@@ -3,6 +3,7 @@ import { bind } from '@react-rxjs/core';
 import { Chain } from 'tempus-core-services';
 import { getConfigManager } from '../config/getConfigManager';
 
-const chainListSubject$ = new BehaviorSubject<Chain[]>(getConfigManager().getChainList());
+const chainListSubject = new BehaviorSubject<Chain[]>(getConfigManager().getChainList());
+export const chainList$ = chainListSubject.asObservable();
 
-export const [useChainList] = bind(chainListSubject$, []);
+export const [useChainList] = bind(chainList$, []);

@@ -3,6 +3,7 @@ import { bind } from '@react-rxjs/core';
 import { getConfigManager } from '../config/getConfigManager';
 import { TokenListItem } from '../config/ConfigManager';
 
-const tokenListSubject$ = new BehaviorSubject<TokenListItem[]>(getConfigManager().getTokenList());
+const tokenListSubject = new BehaviorSubject<TokenListItem[]>(getConfigManager().getTokenList());
+export const tokenList$ = tokenListSubject.asObservable();
 
-export const [useTokenList] = bind(tokenListSubject$, []);
+export const [useTokenList] = bind(tokenList$, []);

@@ -1,20 +1,32 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { act, renderHook } from '@testing-library/react-hooks';
+import { of as mockOf } from 'rxjs';
 import { Decimal, getServices } from 'tempus-core-services';
 import { getConfigManager } from '../config/getConfigManager';
-import { useTvlData, useTotalTvl } from './useTvlData';
+import { useTvlData, useTotalTvl, subscribe, unsubscribe } from './useTvlData';
 
 jest.mock('tempus-core-services', () => ({
   ...jest.requireActual('tempus-core-services'),
   getServices: jest.fn(),
 }));
 
+jest.mock('./useServicesLoaded', () => ({
+  ...jest.requireActual('tempus-core-services'),
+  servicesLoaded$: mockOf(true),
+}));
+
 describe('useTvlData', () => {
-  beforeAll(async () => {
-    const config = getConfigManager();
-    await config.init();
+  beforeAll(getConfigManager);
+  beforeEach(() => {
+    act(() => {
+      unsubscribe();
+    });
   });
 
   test('returns a total TVL of all pools', async () => {
+    act(() => {
+      subscribe();
+    });
+
     const { result, waitForNextUpdate } = renderHook(() => useTotalTvl());
 
     expect(result.current.toString()).toEqual('0');
@@ -24,6 +36,10 @@ describe('useTvlData', () => {
   });
 
   test('returns a TVL map of all pools', async () => {
+    act(() => {
+      subscribe();
+    });
+
     const { result, waitForNextUpdate } = renderHook(() => useTvlData());
 
     expect(result.current).toEqual({});
@@ -44,6 +60,10 @@ describe('useTvlData', () => {
     jest.spyOn(console, 'error').mockImplementation();
     (getServices as unknown as jest.Mock).mockImplementation(() => {
       throw new Error();
+    });
+
+    act(() => {
+      subscribe();
     });
 
     const { result, waitForNextUpdate } = renderHook(() => useTvlData());

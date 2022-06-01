@@ -1,8 +1,8 @@
-import { memo, useEffect, useState } from 'react';
+import { memo, useEffect } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { initServices } from 'tempus-core-services';
-import { useLocale, useSelectedChain, useUserPreferences, usePoolBalances } from '../../hooks';
+import { useLocale, useSelectedChain, useUserPreferences, usePoolBalances, useServicesLoaded } from '../../hooks';
 import Markets from '../Markets';
 import Navbar from '../Navbar/Navbar';
 import { getConfigManager } from '../../config/getConfigManager';
@@ -16,7 +16,7 @@ import TotalValueLocked from '../TotalValueLocked';
 import './App.scss';
 
 const App = () => {
-  const [servicesLoaded, setServicesLoaded] = useState<boolean>(false);
+  const [servicesLoaded, setServicesLoaded] = useServicesLoaded();
   const { t } = useTranslation();
 
   // to keep at least one subscriber of the stream insides the hook
@@ -41,7 +41,7 @@ const App = () => {
       setServicesLoaded(true);
     };
     retrieveConfig();
-  }, []);
+  }, [setServicesLoaded]);
 
   return (
     <div className="tc__app__wrapper">
