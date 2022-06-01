@@ -4,6 +4,7 @@ let configManager: ConfigManager | null = null;
 export const getConfigManager = (): ConfigManager => {
   if (!configManager) {
     configManager = new ConfigManager();
+    configManager.init();
   }
 
   return configManager;
