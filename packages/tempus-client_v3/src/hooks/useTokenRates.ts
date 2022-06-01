@@ -29,7 +29,7 @@ interface TokenInfoMap {
   };
 }
 
-interface TokenRateMap {
+export interface TokenRateMap {
   [chainTokenAddressString: string]: Decimal | null;
 }
 
@@ -49,7 +49,7 @@ const conversionRates$ = poolListSubject$.pipe(
   ),
 );
 
-const tokenRates$: Observable<TokenRateMap> = combineLatest([poolListSubject$, conversionRates$, polling$]).pipe(
+export const tokenRates$: Observable<TokenRateMap> = combineLatest([poolListSubject$, conversionRates$, polling$]).pipe(
   mergeMap(([tempusPools, rates]) => {
     const uniqueTokens = Object.values(
       tempusPools.reduce(

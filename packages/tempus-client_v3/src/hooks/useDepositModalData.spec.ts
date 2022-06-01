@@ -1,14 +1,22 @@
 import { renderHook } from '@testing-library/react-hooks';
 import { act } from 'react-dom/test-utils';
-import { delay, of } from 'rxjs';
-import { Decimal, getServices, TempusPool } from 'tempus-core-services';
+import { delay, of, of as mockOf } from 'rxjs';
+import { Decimal, Decimal as MockDecimal, getServices, TempusPool } from 'tempus-core-services';
 import { getConfigManager } from '../config/getConfigManager';
-import { pool4, pool5 } from '../setupTests';
+import { pool4, pool4 as mockPool4, pool5 } from '../setupTests';
 import { setTempusPoolsForDepositModal, useDepositModalData } from './useDepositModalData';
 
 jest.mock('tempus-core-services', () => ({
   ...jest.requireActual('tempus-core-services'),
   getServices: jest.fn(),
+}));
+
+jest.mock('./useTokenRates', () => ({
+  ...jest.requireActual('./useTokenRates'),
+  tokenRates$: mockOf({
+    [`${mockPool4.chain}-${mockPool4.backingTokenAddress}`]: new MockDecimal(1900),
+    [`${mockPool4.chain}-${mockPool4.yieldBearingTokenAddress}`]: new MockDecimal(1950),
+  }),
 }));
 
 const mockGetDepositedEvents = jest.fn();
@@ -76,10 +84,10 @@ describe('useDepositModal', () => {
 
     expect(result.current?.tokens[0].precision).toBe(18);
     expect(result.current?.tokens[0].ticker).toBe('WETH');
-    expect(result.current?.tokens[0].rate.toString()).toBe('1');
+    expect(result.current?.tokens[0].rate).toEqual(new Decimal(1900));
 
     expect(result.current?.tokens[1].precision).toBe(18);
     expect(result.current?.tokens[1].ticker).toBe('yvWETH');
-    expect(result.current?.tokens[1].rate.toString()).toBe('1');
+    expect(result.current?.tokens[1].rate).toEqual(new Decimal(1950));
   });
 });

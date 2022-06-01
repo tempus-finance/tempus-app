@@ -1,10 +1,11 @@
 import { bind } from '@react-rxjs/core';
 import { combineLatest, filter, map, Observable, switchMap } from 'rxjs';
-import { Decimal, TempusPool } from 'tempus-core-services';
+import { TempusPool, ZERO } from 'tempus-core-services';
 import { createSignal } from '@react-rxjs/utils';
 import { MaturityTerm, TokenMetadataProp } from '../interfaces';
 import { getConfigManager } from '../config/getConfigManager';
 import { maturityTerm$ } from './useMaturityTerm';
+import { TokenRateMap, tokenRates$ } from './useTokenRates';
 
 export interface UseDepositModal {
   tempusPools: TempusPool[];
@@ -15,18 +16,26 @@ export interface UseDepositModal {
 
 export const [tempusPoolsForDepositModal$, setTempusPoolsForDepositModal] = createSignal<TempusPool[]>();
 
-const depositModalPools$ = tempusPoolsForDepositModal$.pipe(
-  filter(tempusPools => tempusPools.length > 0),
-  map(tempusPools => ({
+const depositModalPools$ = combineLatest([tempusPoolsForDepositModal$, tokenRates$]).pipe(
+  filter(([tempusPools]) => tempusPools.length > 0),
+  map(([tempusPools, tokenRates]) => ({
     tempusPools,
+    tokenRates,
     obsMaturityTerms: tempusPools.map(tempusPool => maturityTerm$(tempusPool)),
   })),
   switchMap(
-    ({ tempusPools, obsMaturityTerms }: { tempusPools: TempusPool[]; obsMaturityTerms: Observable<MaturityTerm>[] }) =>
-      combineLatest(obsMaturityTerms).pipe(map(maturityTerms => ({ maturityTerms, tempusPools }))),
+    ({
+      tempusPools,
+      tokenRates,
+      obsMaturityTerms,
+    }: {
+      tempusPools: TempusPool[];
+      tokenRates: TokenRateMap;
+      obsMaturityTerms: Observable<MaturityTerm>[];
+    }) => combineLatest(obsMaturityTerms).pipe(map(maturityTerms => ({ maturityTerms, tokenRates, tempusPools }))),
   ),
   map(maturityTermsAndPools => {
-    const { maturityTerms, tempusPools } = maturityTermsAndPools;
+    const { maturityTerms, tokenRates, tempusPools } = maturityTermsAndPools;
 
     const tokens = [
       {
@@ -34,16 +43,14 @@ const depositModalPools$ = tempusPoolsForDepositModal$.pipe(
         precisionForUI: tempusPools[0].decimalsForUI,
         address: tempusPools[0].backingTokenAddress,
         ticker: tempusPools[0].backingToken,
-        // TODO needs proper hook
-        rate: new Decimal('1'),
+        rate: tokenRates[`${tempusPools[0].chain}-${tempusPools[0].backingTokenAddress}`] ?? ZERO,
       },
       {
         precision: tempusPools[0].tokenPrecision.yieldBearingToken,
         precisionForUI: tempusPools[0].decimalsForUI,
         address: tempusPools[0].yieldBearingTokenAddress,
         ticker: tempusPools[0].yieldBearingToken,
-        // TODO needs proper hook
-        rate: new Decimal('1'),
+        rate: tokenRates[`${tempusPools[0].chain}-${tempusPools[0].yieldBearingTokenAddress}`] ?? ZERO,
       },
     ];
 
