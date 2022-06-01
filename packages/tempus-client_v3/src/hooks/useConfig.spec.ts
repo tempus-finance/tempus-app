@@ -14,9 +14,7 @@ describe('useConfig', () => {
   });
 
   it('returns config when it is fetched', async () => {
-    const { result, waitForNextUpdate } = renderHook(() => useConfig());
-
-    await waitForNextUpdate({ timeout: 5000 });
+    const { result } = renderHook(() => useConfig());
 
     expect(mockConfig).toStrictEqual(result.current);
   });

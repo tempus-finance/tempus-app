@@ -126,9 +126,7 @@ describe('DepositModal', () => {
   it('approves deposit and deposits on action button click', async () => {
     // load chain config
     const configManager = getConfigManager();
-    const successfulConfigInit = await configManager.init();
-
-    expect(successfulConfigInit).toBeTruthy();
+    configManager.init();
 
     jest.useFakeTimers();
 

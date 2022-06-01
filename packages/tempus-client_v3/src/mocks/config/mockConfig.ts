@@ -103,17 +103,7 @@ export const mockConfig = {
   },
 };
 
-const mockStringifiedConfig = JSON.stringify(mockConfig, (_, value) => value);
-const mockContent = Buffer.from(mockStringifiedConfig).toString('base64');
-
-jest.mock('octokit', () => ({
-  Octokit: function constr() {
-    return {
-      rest: {
-        repos: {
-          getContent: () => Promise.resolve({ status: 200, data: { content: mockContent } }),
-        },
-      },
-    };
-  },
+jest.mock('../../config/config', () => ({
+  __esModule: true,
+  default: mockConfig,
 }));
