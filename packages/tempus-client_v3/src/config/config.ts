@@ -246,7 +246,7 @@ const config: Config = {
         protocolDisplayName: 'Yearn',
         backingToken: 'WETH',
         yieldBearingToken: 'yvWETH',
-        spotPrice: '0.0002',
+        spotPrice: '1',
         decimalsForUI: 4,
         showEstimatesInBackingToken: true,
         tokenPrecision: {

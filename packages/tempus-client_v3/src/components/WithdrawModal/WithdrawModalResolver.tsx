@@ -15,11 +15,15 @@ export const WithdrawModalResolver: FC = () => {
       tokens={[
         {
           precision: 18,
+          precisionForUI: 4,
+          address: '1',
           rate: new Decimal(2000),
           ticker: 'ETH',
         },
         {
           precision: 18,
+          precisionForUI: 4,
+          address: '2',
           rate: new Decimal(2000),
           ticker: 'stETH',
         },

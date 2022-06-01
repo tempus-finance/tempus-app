@@ -2,6 +2,8 @@ import { Decimal, Ticker } from 'tempus-core-services';
 
 export interface TokenMetadata {
   precision: number;
+  precisionForUI: number;
+  address: string;
   ticker: Ticker;
   rate: Decimal;
 }

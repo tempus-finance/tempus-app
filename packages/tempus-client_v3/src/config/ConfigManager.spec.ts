@@ -1,4 +1,4 @@
-import { pool1, pool2, pool3, pool4 } from '../mocks/config/mockConfig';
+import { pool1, pool2, pool3, pool4, pool5 } from '../mocks/config/mockConfig';
 import { getConfigManager } from './getConfigManager';
 
 describe('ConfigManager', () => {
@@ -13,7 +13,7 @@ describe('ConfigManager', () => {
       const tokenList = configManager.getTokenList();
 
       expect(chainList.length).toEqual(3);
-      expect(poolList.length).toEqual(4);
+      expect(poolList.length).toEqual(5);
       expect(tokenList.length).toEqual(20);
     });
   });
@@ -22,7 +22,7 @@ describe('ConfigManager', () => {
     it('returns a list of pools', () => {
       const result = configManager.getPoolList();
 
-      expect(result).toStrictEqual([pool1, pool2, pool3, pool4]);
+      expect(result).toStrictEqual([pool1, pool2, pool3, pool4, pool5]);
     });
   });
 
@@ -75,9 +75,10 @@ describe('ConfigManager', () => {
       const result = configManager.getMaturityDates();
 
       expect(result[0].getTime()).toBe(1671062400000);
-      expect(result[1].getTime()).toBe(1709251200000);
-      expect(result[2].getTime()).toBe(1735689600000);
-      expect(result[3].getTime()).toBe(1743724800000);
+      expect(result[1].getTime()).toBe(1676419200000);
+      expect(result[2].getTime()).toBe(1709251200000);
+      expect(result[3].getTime()).toBe(1735689600000);
+      expect(result[4].getTime()).toBe(1743724800000);
     });
 
     it('returns all dates when `ethereum` chain is passed', () => {

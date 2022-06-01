@@ -48,12 +48,14 @@ describe('MarketsSubheader', () => {
       'ethereum-2': new Decimal(700),
       'fantom-3': new Decimal(200),
       'fantom-4': new Decimal(900),
+      'fantom-5': new Decimal(800),
     });
     (useTvlData as jest.Mock).mockReturnValue({
       'ethereum-1': new Decimal(5000),
       'ethereum-2': new Decimal(7000),
       'fantom-3': new Decimal(2000),
       'fantom-4': new Decimal(9000),
+      'fantom-5': new Decimal(8000),
     });
   });
 

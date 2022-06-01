@@ -20,7 +20,7 @@ describe('useTvlData', () => {
     expect(result.current.toString()).toEqual('0');
 
     await waitForNextUpdate();
-    expect(result.current.toString()).toEqual('23000');
+    expect(result.current.toString()).toEqual('31000');
   });
 
   test('returns a TVL map of all pools', async () => {
@@ -35,6 +35,7 @@ describe('useTvlData', () => {
       'ethereum-2': new Decimal(7000),
       'fantom-3': new Decimal(2000),
       'fantom-4': new Decimal(9000),
+      'fantom-5': new Decimal(8000),
     };
     expect(result.current).toEqual(expected);
   });

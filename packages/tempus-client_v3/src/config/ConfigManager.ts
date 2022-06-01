@@ -128,41 +128,42 @@ class ConfigManager {
   }
 
   private retrieveTokenList(): void {
-    const result: TokenListItem[] = [];
+    const chainToAddresses = new Map<Chain, Set<string>>();
 
     const poolList = this.getPoolList();
     poolList.forEach(pool => {
       const poolChain = pool.chain;
 
       if (poolChain) {
-        result.push(
-          {
-            address: pool.backingTokenAddress,
-            chain: poolChain,
-          },
-          {
-            address: pool.yieldBearingTokenAddress,
-            chain: poolChain,
-          },
-          {
-            address: pool.principalsAddress,
-            chain: poolChain,
-          },
-          {
-            address: pool.yieldsAddress,
-            chain: poolChain,
-          },
-          {
-            address: pool.ammAddress,
-            chain: poolChain,
-          },
-        );
+        if (!chainToAddresses.get(poolChain)) {
+          chainToAddresses.set(poolChain, new Set());
+        }
+
+        [
+          pool.backingTokenAddress,
+          pool.yieldBearingTokenAddress,
+          pool.principalsAddress,
+          pool.yieldsAddress,
+          pool.ammAddress,
+        ].forEach(address => {
+          chainToAddresses.get(poolChain)?.add(address);
+        });
       } else {
         console.warn(`Pool ${pool.address} does not contain chain in it's config!`);
       }
     });
 
-    this.tokenList = result;
+    this.tokenList = [...chainToAddresses.entries()]
+      .map(([chain, addresses]) =>
+        [...addresses].map(
+          address =>
+            ({
+              address,
+              chain,
+            } as TokenListItem),
+        ),
+      )
+      .flat();
   }
 }
 

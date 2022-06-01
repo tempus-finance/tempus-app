@@ -1,6 +1,6 @@
 import { renderHook } from '@testing-library/react-hooks';
 import { getConfigManager } from '../config/getConfigManager';
-import { mockConfig, pool1, pool2, pool3, pool4 } from '../setupTests';
+import { mockConfig, pool1, pool2, pool3, pool4, pool5 } from '../setupTests';
 import { useChainList, useConfig, usePoolList, useTokenList } from './useConfig';
 
 jest.setTimeout(10000);
@@ -22,7 +22,7 @@ describe('useConfig', () => {
   it('returns pool list when it is fetched', async () => {
     const { result } = renderHook(() => usePoolList());
 
-    expect(result.current).toEqual([pool1, pool2, pool3, pool4]);
+    expect(result.current).toEqual([pool1, pool2, pool3, pool4, pool5]);
   });
 
   it('returns token list when it is fetched', async () => {

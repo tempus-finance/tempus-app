@@ -52,11 +52,15 @@ const Template: ComponentStory<typeof WithdrawModal> = () => {
         tokens={[
           {
             precision: 18,
+            precisionForUI: 4,
+            address: '1',
             rate: new Decimal(3500),
             ticker: 'ETH',
           },
           {
             precision: 18,
+            precisionForUI: 4,
+            address: '2',
             rate: new Decimal(3501),
             ticker: 'stETH',
           },

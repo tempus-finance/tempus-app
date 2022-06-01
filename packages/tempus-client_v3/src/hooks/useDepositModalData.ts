@@ -7,6 +7,7 @@ import { getConfigManager } from '../config/getConfigManager';
 import { maturityTerm$ } from './useMaturityTerm';
 
 export interface UseDepositModal {
+  pools: TempusPool[];
   poolStartDate: Date;
   maturityTerms: MaturityTerm[];
   tokens: TokenMetadataProp;
@@ -27,14 +28,27 @@ const depositModalPools$ = tempusPoolsForDepositModal$.pipe(
   map(maturityTermsAndPools => {
     const { maturityTerms, tempusPools } = maturityTermsAndPools;
 
-    const tokens = tempusPools.map(pool => ({
-      precision: pool.tokenPrecision.backingToken,
-      ticker: pool.backingToken,
-      // TODO needs proper hook
-      rate: new Decimal('1'),
-    }));
+    const tokens = [
+      {
+        precision: tempusPools[0].tokenPrecision.backingToken,
+        precisionForUI: tempusPools[0].decimalsForUI,
+        address: tempusPools[0].backingTokenAddress,
+        ticker: tempusPools[0].backingToken,
+        // TODO needs proper hook
+        rate: new Decimal('1'),
+      },
+      {
+        precision: tempusPools[0].tokenPrecision.yieldBearingToken,
+        precisionForUI: tempusPools[0].decimalsForUI,
+        address: tempusPools[0].yieldBearingTokenAddress,
+        ticker: tempusPools[0].yieldBearingToken,
+        // TODO needs proper hook
+        rate: new Decimal('1'),
+      },
+    ];
 
     return {
+      pools: tempusPools,
       poolStartDate: getConfigManager().getEarliestStartDate(
         tempusPools[0].chain,
         tempusPools[0].backingToken,
