@@ -1,7 +1,7 @@
 import { renderHook } from '@testing-library/react-hooks';
 import { getConfigManager } from '../config/getConfigManager';
 import { mockConfig, pool1, pool2, pool3, pool4 } from '../setupTests';
-import { useChainList, useConfig, usePoolList, useTokenList } from './useConfig';
+import { useConfig, usePoolList, useTokenList } from './useConfig';
 
 jest.setTimeout(10000);
 
@@ -110,11 +110,5 @@ describe('useConfig', () => {
         chain: 'fantom',
       },
     ]);
-  });
-
-  it('returns chain list when it is fetched', async () => {
-    const { result } = renderHook(() => useChainList());
-
-    expect(result.current).toStrictEqual(['ethereum', 'fantom', 'ethereum-fork']);
   });
 });
