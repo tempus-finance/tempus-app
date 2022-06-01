@@ -1,9 +1,9 @@
 import { renderHook } from '@testing-library/react-hooks';
 import { act } from 'react-dom/test-utils';
 import { delay, of } from 'rxjs';
-import { Decimal, getServices, TempusPool, Ticker } from 'tempus-core-services';
+import { Decimal, getServices, TempusPool } from 'tempus-core-services';
 import { getConfigManager } from '../config/getConfigManager';
-import { pool1, pool2 } from '../setupTests';
+import { pool4, pool5 } from '../setupTests';
 import { setTempusPoolsForDepositModal, useDepositModalData } from './useDepositModalData';
 
 jest.mock('tempus-core-services', () => ({
@@ -23,12 +23,12 @@ describe('useDepositModal', () => {
     jest.resetAllMocks();
 
     const config = getConfigManager();
-    await config.init();
+    config.init();
   });
 
   beforeEach(() => {
     originalDateNow = Date.now;
-    Date.now = () => new Date(2022, 4, 15).getTime();
+    Date.now = () => new Date(Date.UTC(2022, 4, 15)).getTime();
   });
 
   afterEach(() => {
@@ -46,7 +46,7 @@ describe('useDepositModal', () => {
       },
       StatisticsService: {
         estimatedDepositAndFix: mockEstimatedDepositAndFix.mockImplementation((tempusAmmAddress: string) => {
-          if (tempusAmmAddress === pool2.ammAddress) {
+          if (tempusAmmAddress === pool5.ammAddress) {
             return of<Decimal>(new Decimal('104.5678')).pipe(delay(1000));
           }
 
@@ -61,25 +61,25 @@ describe('useDepositModal', () => {
     expect(result.current).toEqual(null);
 
     await act(async () => {
-      setTempusPoolsForDepositModal([pool1 as TempusPool, pool2 as TempusPool]);
+      setTempusPoolsForDepositModal([pool4 as TempusPool, pool5 as TempusPool]);
     });
 
     await waitForNextUpdate({ timeout: 5000 });
 
-    expect(result.current?.poolStartDate).toEqual(new Date(1640995200000));
+    expect(result.current?.poolStartDate).toEqual(new Date(1647216000000));
 
-    expect(parseFloat(String(result.current?.maturityTerms[0].apr))).toBeCloseTo(8.51756247563775);
-    expect(result.current?.maturityTerms[0].date).toEqual(new Date(Date.UTC(2025, 0, 1)));
+    expect(parseFloat(String(result.current?.maturityTerms[0].apr))).toBeCloseTo(38.29088785046729);
+    expect(result.current?.maturityTerms[0].date).toEqual(new Date(Date.UTC(2022, 11, 15)));
 
-    expect(parseFloat(String(result.current?.maturityTerms[1].apr))).toBeCloseTo(12.490441409971417);
-    expect(result.current?.maturityTerms[1].date).toEqual(new Date(Date.UTC(2024, 2, 1)));
+    expect(parseFloat(String(result.current?.maturityTerms[1].apr))).toBeCloseTo(29.6893115942029);
+    expect(result.current?.maturityTerms[1].date).toEqual(new Date(Date.UTC(2023, 1, 15)));
 
     expect(result.current?.tokens[0].precision).toBe(18);
-    expect(result.current?.tokens[0].ticker).toBe('ETH');
+    expect(result.current?.tokens[0].ticker).toBe('WETH');
     expect(result.current?.tokens[0].rate.toString()).toBe('1');
 
-    expect(result.current?.tokens[1].precision).toBe(6);
-    expect(result.current?.tokens[1].ticker).toBe('USDC');
+    expect(result.current?.tokens[1].precision).toBe(18);
+    expect(result.current?.tokens[1].ticker).toBe('yvWETH');
     expect(result.current?.tokens[1].rate.toString()).toBe('1');
   });
 });

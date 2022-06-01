@@ -7,7 +7,7 @@ import { of as mockOf } from 'rxjs';
 import { BigNumber as mockBigNumber } from 'ethers';
 import { Chain, Decimal as MockDecimal, TempusPool, Ticker, ZERO as mockZERO } from 'tempus-core-services';
 
-export { mockConfig, pool1, pool2, pool3, pool4 } from './mocks/config/mockConfig';
+export { mockConfig, pool1, pool2, pool3, pool4, pool5 } from './mocks/config/mockConfig';
 
 jest.mock('tempus-core-services', () => ({
   ...jest.requireActual('tempus-core-services'),
@@ -23,6 +23,8 @@ jest.mock('tempus-core-services', () => ({
             return mockOf(new MockDecimal(2000));
           case 'fantom-4':
             return mockOf(new MockDecimal(9000));
+          case 'fantom-5':
+            return mockOf(new MockDecimal(8000));
           default:
             return mockZERO;
         }
@@ -54,6 +56,8 @@ jest.mock('tempus-core-services', () => ({
             return mockOf(new MockDecimal(200));
           case 'fantom-4':
             return mockOf(new MockDecimal(900));
+          case 'fantom-5':
+            return mockOf(new MockDecimal(300));
           default:
             return mockZERO;
         }

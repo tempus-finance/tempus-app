@@ -22,9 +22,9 @@ jest.mock('./useWalletAddress', () => ({
 }));
 
 describe('usePoolBalances', () => {
-  beforeAll(async () => {
+  beforeAll(() => {
     const config = getConfigManager();
-    await config.init();
+    config.init();
   });
 
   test('returns pool-to-balance map', async () => {
@@ -39,6 +39,7 @@ describe('usePoolBalances', () => {
       'ethereum-2': new MockDecimal(700),
       'fantom-3': new MockDecimal(200),
       'fantom-4': new MockDecimal(900),
+      'fantom-5': new MockDecimal(300),
     };
     expect(result.current).toEqual(expected);
   });

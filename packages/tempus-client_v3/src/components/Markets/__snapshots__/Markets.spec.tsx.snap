@@ -149,7 +149,7 @@ exports[`Markets render pools after updates filters 1`] = `
                         <div
                           style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
                         >
-                          Active (2)
+                          Active (3)
                         </div>
                       </label>
                     </span>
@@ -946,12 +946,12 @@ exports[`Markets render pools after updates filters 1`] = `
                 <div
                   style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(71, 67, 80); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
                 >
-                  Fixed APR
+                  Fixed APR (up to)
                 </div>
                 <div
                   style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                 >
-                  10.60%
+                  12.60%
                 </div>
               </div>
               <div
@@ -960,7 +960,7 @@ exports[`Markets render pools after updates filters 1`] = `
                 <div
                   style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(71, 67, 80); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
                 >
-                  Term
+                  Earliest term
                 </div>
                 <span
                   class="tc__formatted-date"
@@ -1276,7 +1276,7 @@ exports[`Markets render pools after updates filters 2`] = `
                         <div
                           style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
                         >
-                          Active (2)
+                          Active (3)
                         </div>
                       </label>
                     </span>
@@ -1547,7 +1547,7 @@ exports[`Markets render pools after updates filters 3`] = `
                         <div
                           style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
                         >
-                          Active (2)
+                          Active (3)
                         </div>
                       </label>
                     </span>
@@ -2506,12 +2506,12 @@ exports[`Markets render pools after updates pool type to boosted 1`] = `
                 <div
                   style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(71, 67, 80); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
                 >
-                  Fixed APR
+                  Fixed APR (up to)
                 </div>
                 <div
                   style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                 >
-                  10.60%
+                  12.60%
                 </div>
               </div>
               <div
@@ -2520,7 +2520,7 @@ exports[`Markets render pools after updates pool type to boosted 1`] = `
                 <div
                   style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(71, 67, 80); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
                 >
-                  Term
+                  Earliest term
                 </div>
                 <span
                   class="tc__formatted-date"
@@ -3444,12 +3444,12 @@ exports[`Markets render pools after updates sorting types 1`] = `
                 <div
                   style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(71, 67, 80); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
                 >
-                  Fixed APR
+                  Fixed APR (up to)
                 </div>
                 <div
                   style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                 >
-                  10.60%
+                  12.60%
                 </div>
               </div>
               <div
@@ -3458,7 +3458,7 @@ exports[`Markets render pools after updates sorting types 1`] = `
                 <div
                   style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(71, 67, 80); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
                 >
-                  Term
+                  Earliest term
                 </div>
                 <span
                   class="tc__formatted-date"
@@ -4766,12 +4766,12 @@ exports[`Markets render pools after updates sorting types 2`] = `
                 <div
                   style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(71, 67, 80); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
                 >
-                  Fixed APR
+                  Fixed APR (up to)
                 </div>
                 <div
                   style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                 >
-                  10.60%
+                  12.60%
                 </div>
               </div>
               <div
@@ -4780,7 +4780,7 @@ exports[`Markets render pools after updates sorting types 2`] = `
                 <div
                   style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(71, 67, 80); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
                 >
-                  Term
+                  Earliest term
                 </div>
                 <span
                   class="tc__formatted-date"
@@ -5704,12 +5704,12 @@ exports[`Markets render pools after updates sorting types 3`] = `
                 <div
                   style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(71, 67, 80); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
                 >
-                  Fixed APR
+                  Fixed APR (up to)
                 </div>
                 <div
                   style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                 >
-                  10.60%
+                  12.60%
                 </div>
               </div>
               <div
@@ -5718,7 +5718,7 @@ exports[`Markets render pools after updates sorting types 3`] = `
                 <div
                   style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(71, 67, 80); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
                 >
-                  Term
+                  Earliest term
                 </div>
                 <span
                   class="tc__formatted-date"
@@ -7026,12 +7026,12 @@ exports[`Markets render pools after updates sorting types 4`] = `
                 <div
                   style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(71, 67, 80); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
                 >
-                  Fixed APR
+                  Fixed APR (up to)
                 </div>
                 <div
                   style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                 >
-                  10.60%
+                  12.60%
                 </div>
               </div>
               <div
@@ -7040,7 +7040,7 @@ exports[`Markets render pools after updates sorting types 4`] = `
                 <div
                   style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(71, 67, 80); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
                 >
-                  Term
+                  Earliest term
                 </div>
                 <span
                   class="tc__formatted-date"
@@ -8156,12 +8156,12 @@ exports[`Markets render pools after updates sorting types 5`] = `
                 <div
                   style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(71, 67, 80); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
                 >
-                  Fixed APR
+                  Fixed APR (up to)
                 </div>
                 <div
                   style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                 >
-                  10.60%
+                  12.60%
                 </div>
               </div>
               <div
@@ -8170,7 +8170,7 @@ exports[`Markets render pools after updates sorting types 5`] = `
                 <div
                   style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(71, 67, 80); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
                 >
-                  Term
+                  Earliest term
                 </div>
                 <span
                   class="tc__formatted-date"
@@ -9286,12 +9286,12 @@ exports[`Markets render pools after updates sorting types 6`] = `
                 <div
                   style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(71, 67, 80); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
                 >
-                  Fixed APR
+                  Fixed APR (up to)
                 </div>
                 <div
                   style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                 >
-                  10.60%
+                  12.60%
                 </div>
               </div>
               <div
@@ -9300,7 +9300,7 @@ exports[`Markets render pools after updates sorting types 6`] = `
                 <div
                   style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(71, 67, 80); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
                 >
-                  Term
+                  Earliest term
                 </div>
                 <span
                   class="tc__formatted-date"
@@ -10224,12 +10224,12 @@ exports[`Markets render pools after updates sorting types 7`] = `
                 <div
                   style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(71, 67, 80); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
                 >
-                  Fixed APR
+                  Fixed APR (up to)
                 </div>
                 <div
                   style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                 >
-                  10.60%
+                  12.60%
                 </div>
               </div>
               <div
@@ -10238,7 +10238,7 @@ exports[`Markets render pools after updates sorting types 7`] = `
                 <div
                   style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(71, 67, 80); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
                 >
-                  Term
+                  Earliest term
                 </div>
                 <span
                   class="tc__formatted-date"
@@ -11546,12 +11546,12 @@ exports[`Markets render pools after updates sorting types 8`] = `
                 <div
                   style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(71, 67, 80); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
                 >
-                  Fixed APR
+                  Fixed APR (up to)
                 </div>
                 <div
                   style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                 >
-                  10.60%
+                  12.60%
                 </div>
               </div>
               <div
@@ -11560,7 +11560,7 @@ exports[`Markets render pools after updates sorting types 8`] = `
                 <div
                   style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(71, 67, 80); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
                 >
-                  Term
+                  Earliest term
                 </div>
                 <span
                   class="tc__formatted-date"
@@ -12676,12 +12676,12 @@ exports[`Markets render pools after updates sorting types 9`] = `
                 <div
                   style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(71, 67, 80); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
                 >
-                  Fixed APR
+                  Fixed APR (up to)
                 </div>
                 <div
                   style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                 >
-                  10.60%
+                  12.60%
                 </div>
               </div>
               <div
@@ -12690,7 +12690,7 @@ exports[`Markets render pools after updates sorting types 9`] = `
                 <div
                   style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(71, 67, 80); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
                 >
-                  Term
+                  Earliest term
                 </div>
                 <span
                   class="tc__formatted-date"
@@ -13806,12 +13806,12 @@ exports[`Markets render pools after updates sorting types 10`] = `
                 <div
                   style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(71, 67, 80); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
                 >
-                  Fixed APR
+                  Fixed APR (up to)
                 </div>
                 <div
                   style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                 >
-                  10.60%
+                  12.60%
                 </div>
               </div>
               <div
@@ -13820,7 +13820,7 @@ exports[`Markets render pools after updates sorting types 10`] = `
                 <div
                   style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(71, 67, 80); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
                 >
-                  Term
+                  Earliest term
                 </div>
                 <span
                   class="tc__formatted-date"
@@ -14824,12 +14824,12 @@ exports[`Markets renders the page 1`] = `
                 <div
                   style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(71, 67, 80); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
                 >
-                  Fixed APR
+                  Fixed APR (up to)
                 </div>
                 <div
                   style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                 >
-                  10.60%
+                  12.60%
                 </div>
               </div>
               <div
@@ -14838,7 +14838,7 @@ exports[`Markets renders the page 1`] = `
                 <div
                   style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(71, 67, 80); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
                 >
-                  Term
+                  Earliest term
                 </div>
                 <span
                   class="tc__formatted-date"

@@ -65,30 +65,16 @@ class ConfigManager {
       });
   }
 
+  getImmaturePools(filterByChain?: Chain, filterByToken?: Ticker, filterByProtocol?: ProtocolName): TempusPool[] {
+    return this.getFilteredPoolList(filterByChain, filterByToken, filterByProtocol).filter(
+      pool => pool.maturityDate > Date.now(),
+    );
+  }
+
   getEarliestStartDate(filterByChain?: Chain, filterByToken?: Ticker, filterByProtocol?: ProtocolName): Date {
-    const earliestPoolList = this.getPoolList()
-      .filter(pool => {
-        if (filterByChain) {
-          return pool.chain === filterByChain;
-        }
-
-        return true;
-      })
-      .filter(pool => {
-        if (filterByToken) {
-          return pool.backingToken === filterByToken;
-        }
-
-        return true;
-      })
-      .filter(pool => {
-        if (filterByProtocol) {
-          return pool.protocol === filterByProtocol;
-        }
-
-        return true;
-      })
-      .sort((poolA, poolB) => (poolA.startDate < poolB.startDate ? -1 : 1));
+    const earliestPoolList = this.getFilteredPoolList(filterByChain, filterByToken, filterByProtocol).sort(
+      (poolA, poolB) => (poolA.startDate < poolB.startDate ? -1 : 1),
+    );
 
     if (earliestPoolList && earliestPoolList.length) {
       return new Date(earliestPoolList[0].startDate);
@@ -128,41 +114,42 @@ class ConfigManager {
   }
 
   private retrieveTokenList(): void {
-    const result: TokenListItem[] = [];
+    const chainToAddresses = new Map<Chain, Set<string>>();
 
     const poolList = this.getPoolList();
     poolList.forEach(pool => {
       const poolChain = pool.chain;
 
       if (poolChain) {
-        result.push(
-          {
-            address: pool.backingTokenAddress,
-            chain: poolChain,
-          },
-          {
-            address: pool.yieldBearingTokenAddress,
-            chain: poolChain,
-          },
-          {
-            address: pool.principalsAddress,
-            chain: poolChain,
-          },
-          {
-            address: pool.yieldsAddress,
-            chain: poolChain,
-          },
-          {
-            address: pool.ammAddress,
-            chain: poolChain,
-          },
-        );
+        if (!chainToAddresses.has(poolChain)) {
+          chainToAddresses.set(poolChain, new Set());
+        }
+
+        [
+          pool.backingTokenAddress,
+          pool.yieldBearingTokenAddress,
+          pool.principalsAddress,
+          pool.yieldsAddress,
+          pool.ammAddress,
+        ].forEach(address => {
+          chainToAddresses.get(poolChain)?.add(address);
+        });
       } else {
         console.warn(`Pool ${pool.address} does not contain chain in it's config!`);
       }
     });
 
-    this.tokenList = result;
+    this.tokenList = [...chainToAddresses.entries()]
+      .map(([chain, addresses]) =>
+        [...addresses].map(
+          address =>
+            ({
+              address,
+              chain,
+            } as TokenListItem),
+        ),
+      )
+      .flat();
   }
 }
 

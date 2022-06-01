@@ -10,6 +10,7 @@ export * from './usePoolViewOptions';
 export * from './useConfig';
 export * from './usePoolBalances';
 export * from './useDepositModalData';
+export * from './useYieldAtMaturity';
 export * from './useChainList';
 export * from './usePoolList';
 export * from './useTokenList';

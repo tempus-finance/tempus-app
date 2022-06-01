@@ -2,7 +2,7 @@ import { renderHook } from '@testing-library/react-hooks';
 import { of } from 'rxjs';
 import { DAYS_IN_A_YEAR, Decimal, getServices, ONE, SECONDS_IN_A_DAY } from 'tempus-core-services';
 import { getConfigManager } from '../config/getConfigManager';
-import { pool1, pool2, pool3, pool4 } from '../setupTests';
+import { pool1, pool2, pool3, pool4, pool5 } from '../setupTests';
 import { useFixedAprs } from './useFixedAprs';
 
 jest.mock('tempus-core-services', () => ({
@@ -83,6 +83,7 @@ describe('useFixedAprs', () => {
       'ethereum-2': principalsAmount.div(pool2.spotPrice).sub(ONE).mul(scalingFactor(pool2)),
       'fantom-3': principalsAmount.div(pool3.spotPrice).sub(ONE).mul(scalingFactor(pool3)),
       'fantom-4': principalsAmount.div(pool4.spotPrice).sub(ONE).mul(scalingFactor(pool4)),
+      'fantom-5': principalsAmount.div(pool5.spotPrice).sub(ONE).mul(scalingFactor(pool5)),
     };
     expect(result.current).toEqual(expectedResult);
   });

@@ -4,7 +4,7 @@ import { of as mockOf } from 'rxjs';
 import { Decimal as MockDecimal } from 'tempus-core-services';
 import { getConfigManager } from '../config/getConfigManager';
 import { FilterType } from '../interfaces';
-import { pool1, pool2, pool3, pool4 } from '../setupTests';
+import { pool1, pool2, pool3, pool4, pool5 } from '../setupTests';
 import {
   usePoolViewOptions,
   useFilteredSortedPoolList,
@@ -20,6 +20,7 @@ jest.mock('./useFixedAprs', () => ({
     'ethereum-2': new MockDecimal(0.038),
     'fantom-3': new MockDecimal(0.18),
     'fantom-4': new MockDecimal(0.106),
+    'fantom-5': new MockDecimal(0.126),
   }),
 }));
 
@@ -40,7 +41,7 @@ describe('usePoolViewOptions', () => {
       sortType: 'a-z',
       sortOrder: 'asc',
     };
-    const expectedFilteredSortedPoolListResult = [pool1, pool2, pool3, pool4];
+    const expectedFilteredSortedPoolListResult = [pool1, pool2, pool3, pool4, pool5];
 
     expect(poolViewOptions).toEqual(expectedPoolViewOptions);
     expect(filteredSortedPoolListResult.current).toEqual(expectedFilteredSortedPoolListResult);
@@ -115,7 +116,7 @@ describe('usePoolViewOptions', () => {
       sortType: 'a-z',
       sortOrder: 'asc',
     };
-    const expectedFilteredSortedPoolListResult = [pool1, pool2, pool3, pool4];
+    const expectedFilteredSortedPoolListResult = [pool1, pool2, pool3, pool4, pool5];
 
     expect(poolViewOptions).toEqual(expectedPoolViewOptions1);
     expect(filteredSortedPoolListResult.current).toEqual(expectedFilteredSortedPoolListResult);
@@ -148,7 +149,7 @@ describe('usePoolViewOptions', () => {
       sortType: 'a-z',
       sortOrder: 'asc',
     };
-    const expectedFilteredSortedPoolListResult = [pool1, pool2, pool3, pool4];
+    const expectedFilteredSortedPoolListResult = [pool1, pool2, pool3, pool4, pool5];
 
     expect(poolViewOptions).toEqual(expectedPoolViewOptions1);
     expect(filteredSortedPoolListResult.current).toEqual(expectedFilteredSortedPoolListResult);
@@ -210,7 +211,7 @@ describe('usePoolViewOptions', () => {
       sortType: 'a-z',
       sortOrder: 'asc',
     };
-    const expectedFilteredSortedPoolListResult1 = [pool1, pool2, pool3, pool4];
+    const expectedFilteredSortedPoolListResult1 = [pool1, pool2, pool3, pool4, pool5];
 
     expect(poolViewOptions).toEqual(expectedPoolViewOptions1);
     expect(filteredSortedPoolListResult.current).toEqual(expectedFilteredSortedPoolListResult1);
@@ -227,7 +228,7 @@ describe('usePoolViewOptions', () => {
       sortType: 'a-z',
       sortOrder: 'desc',
     };
-    const expectedFilteredSortedPoolListResult2 = [pool4, pool2, pool3, pool1];
+    const expectedFilteredSortedPoolListResult2 = [pool4, pool5, pool2, pool3, pool1];
 
     expect(poolViewResult.current[0]).toEqual(expectedPoolViewOptions2);
     expect(filteredSortedPoolListResult.current).toEqual(expectedFilteredSortedPoolListResult2);

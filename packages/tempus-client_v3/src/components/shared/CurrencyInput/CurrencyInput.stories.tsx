@@ -48,11 +48,15 @@ SingleCurrencyInput.args = {
   tokens: [
     {
       precision: 18,
+      precisionForUI: 4,
+      address: '1',
       rate: new Decimal(3500),
       ticker: 'ETH',
     },
     {
       precision: 18,
+      precisionForUI: 4,
+      address: '2',
       rate: new Decimal(3501),
       ticker: 'stETH',
     },
@@ -65,11 +69,15 @@ MultiCurrencyInput.args = {
   tokens: [
     {
       precision: 18,
+      precisionForUI: 4,
+      address: '1',
       rate: new Decimal(3500),
       ticker: 'ETH',
     },
     {
       precision: 18,
+      precisionForUI: 4,
+      address: '2',
       rate: new Decimal(3501),
       ticker: 'stETH',
     },
@@ -82,11 +90,15 @@ DisabledSingleCurrencyInput.args = {
   tokens: [
     {
       precision: 18,
+      precisionForUI: 4,
+      address: '1',
       rate: new Decimal(3500),
       ticker: 'ETH',
     },
     {
       precision: 18,
+      precisionForUI: 4,
+      address: '2',
       rate: new Decimal(3501),
       ticker: 'stETH',
     },
@@ -100,11 +112,15 @@ DisabledMultiCurrencyInput.args = {
   tokens: [
     {
       precision: 18,
+      precisionForUI: 4,
+      address: '1',
       rate: new Decimal(3500),
       ticker: 'ETH',
     },
     {
       precision: 18,
+      precisionForUI: 4,
+      address: '2',
       rate: new Decimal(3501),
       ticker: 'stETH',
     },
@@ -118,11 +134,15 @@ SingleCurrencyInputWithError.args = {
   tokens: [
     {
       precision: 18,
+      precisionForUI: 4,
+      address: '1',
       rate: new Decimal(3500),
       ticker: 'ETH',
     },
     {
       precision: 18,
+      precisionForUI: 4,
+      address: '2',
       rate: new Decimal(3501),
       ticker: 'stETH',
     },
