@@ -1,12 +1,5 @@
-import { Octokit } from 'octokit';
 import { Chain, ChainConfig, Config, ProtocolName, TempusPool, Ticker } from 'tempus-core-services';
-
-const TempusPoolsConfig = {
-  owner: 'tempus-finance',
-  repo: 'tempus-pools-config',
-  path: 'config.json',
-  ref: process.env.REACT_APP_CONFIG_BRANCH,
-};
+import config from './config';
 
 interface TokenListItem {
   chain: Chain;
@@ -14,18 +7,16 @@ interface TokenListItem {
 }
 
 class ConfigManager {
-  private config: Config = {};
+  private config: Config = config;
 
   private chainList: Chain[] = [];
+  private poolList: TempusPool[] = [];
   private tokenList: TokenListItem[] = [];
 
-  async init(): Promise<boolean> {
-    const success = await this.retrieveConfig();
-
+  init(): void {
     this.retrieveChainList();
+    this.retrievePoolList();
     this.retrieveTokenList();
-
-    return success;
   }
 
   getConfig(): Config {
@@ -41,15 +32,11 @@ class ConfigManager {
   }
 
   getPoolList(): TempusPool[] {
-    const pools: TempusPool[] = [];
+    return this.poolList;
+  }
 
-    Object.keys(this.config).forEach((chain: string) => {
-      this.getChainConfig(chain as Chain).tempusPools.forEach((pool: TempusPool) => {
-        pools.push({ ...pool, chain: chain as Chain });
-      });
-    });
-
-    return pools;
+  getTokenList(): TokenListItem[] {
+    return this.tokenList;
   }
 
   // TODO add tests
@@ -76,10 +63,6 @@ class ConfigManager {
 
         return true;
       });
-  }
-
-  getTokenList(): TokenListItem[] {
-    return this.tokenList;
   }
 
   getEarliestStartDate(filterByChain?: Chain, filterByToken?: Ticker, filterByProtocol?: ProtocolName): Date {
@@ -132,6 +115,18 @@ class ConfigManager {
     this.chainList = Object.keys(this.config) as Chain[];
   }
 
+  private retrievePoolList(): void {
+    const pools: TempusPool[] = [];
+
+    Object.keys(this.config).forEach((chain: string) => {
+      this.getChainConfig(chain as Chain).tempusPools.forEach((pool: TempusPool) => {
+        pools.push({ ...pool, chain: chain as Chain });
+      });
+    });
+
+    this.poolList = pools;
+  }
+
   private retrieveTokenList(): void {
     const result: TokenListItem[] = [];
 
@@ -168,64 +163,6 @@ class ConfigManager {
     });
 
     this.tokenList = result;
-  }
-
-  private async retrieveConfig(): Promise<boolean> {
-    try {
-      const octokit = new Octokit();
-
-      const response = await octokit.rest.repos.getContent({
-        mediaType: {
-          format: 'json',
-        },
-        ...TempusPoolsConfig,
-      });
-
-      if (response.status === 200) {
-        const { data } = response;
-        const { content } = data as any;
-
-        if (content) {
-          const decodedString = await String(Buffer.from(content, 'base64'));
-          this.config = JSON.parse(decodedString);
-
-          if (decodedString) {
-            if (process.env.REACT_APP_ETHEREUM_RPC) {
-              this.config = {
-                ...this.config,
-                ethereum: {
-                  ...this.config.ethereum,
-                  privateNetworkUrl: String(process.env.REACT_APP_ETHEREUM_RPC),
-                  alchemyKey: String(process.env.REACT_APP_MAINNET_ALCHEMY_KEY),
-                },
-                'ethereum-fork': {
-                  ...this.config['ethereum-fork'],
-                  privateNetworkUrl: String(process.env.REACT_APP_ETHEREUM_RPC),
-                  alchemyKey: String(process.env.REACT_APP_MAINNET_ALCHEMY_KEY),
-                },
-              };
-            }
-
-            if (process.env.REACT_APP_FANTOM_RPC) {
-              this.config = {
-                ...this.config,
-                fantom: {
-                  ...this.config.fantom,
-                  privateNetworkUrl: String(process.env.REACT_APP_FANTOM_RPC),
-                },
-              };
-            }
-          }
-
-          return true;
-        }
-      }
-    } catch (error) {
-      console.log('Error retrieving Tempus Pools Config', error);
-      return false;
-    }
-
-    return false;
   }
 }
 

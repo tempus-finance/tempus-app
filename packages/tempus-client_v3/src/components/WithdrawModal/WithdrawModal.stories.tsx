@@ -27,13 +27,10 @@ const Template: ComponentStory<typeof WithdrawModal> = () => {
   useEffect(() => {
     const retrieveConfig = async () => {
       const configManager = getConfigManager();
-      configManager.init().then(success => {
-        if (success) {
-          setConfig(configManager.getChainConfig('ethereum'));
-        }
-      });
-    };
+      configManager.init();
 
+      setConfig(configManager.getChainConfig('ethereum'));
+    };
     retrieveConfig();
   }, []);
 
