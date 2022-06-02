@@ -1,4 +1,4 @@
-import { FC, useEffect, useMemo } from 'react';
+import { FC, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Chain, ProtocolName, Ticker } from 'tempus-core-services';
 import { getConfigManager } from '../../config/getConfigManager';
@@ -35,8 +35,6 @@ export const DepositModalResolver: FC = (): JSX.Element => {
     setPoolForYieldAtMaturity(filteredPools[0]);
   }, [chain, ticker, protocol]);
 
-  const chainConfig = useMemo(() => config?.[chain as Chain], [chain, config]);
-
   const handleCloseModal = () => {
     navigate(-1);
   };
@@ -48,7 +46,7 @@ export const DepositModalResolver: FC = (): JSX.Element => {
       poolStartDate={depositModalProps.poolStartDate}
       maturityTerms={depositModalProps.maturityTerms}
       tokens={depositModalProps.tokens}
-      chainConfig={chainConfig}
+      chainConfig={config?.[chain as Chain]}
     />
   ) : (
     <div className="tc__deposit-modal__loading">
