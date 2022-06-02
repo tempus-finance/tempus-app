@@ -7,6 +7,7 @@
     "title": "Select Network"
   },
   "CurrencyInputModal": {
+    "insufficientBalanceError": "Insufficient balance",
     "feesAndTransactionInfo": "Fees & transaction info",
     "linkBlockExplorer": "Check it out on {{name}}"
   },

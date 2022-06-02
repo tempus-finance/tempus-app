@@ -1,6 +1,6 @@
 import { FC, ReactNode, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ChainConfig, Decimal, Ticker } from 'tempus-core-services';
+import { ChainConfig, Decimal, Ticker, ZERO } from 'tempus-core-services';
 import { TokenMetadataProp } from '../../interfaces';
 import FeeTooltip from '../FeeTooltip';
 import {
@@ -48,7 +48,7 @@ const ModalActionContent: FC<ModalActionContentProps> = props => {
 
   const amountDecimal = useMemo(() => new Decimal(amount || 0), [amount]);
 
-  const insufficientBalance = amountDecimal.gt(balance);
+  const insufficientBalance = balance.equals(ZERO) || amountDecimal.gt(balance);
 
   const handleAmountChange = useCallback(
     (value: string) => {
@@ -70,7 +70,7 @@ const ModalActionContent: FC<ModalActionContentProps> = props => {
         tokens={tokens}
         maxAmount={balance}
         disabled={disabledInput}
-        error={insufficientBalance ? 'Insufficient balance' : undefined}
+        error={insufficientBalance ? t('CurrencyInputModal.insufficientBalanceError') : undefined}
         onAmountUpdate={handleAmountChange}
         onCurrencyUpdate={onCurrencyUpdate}
       />

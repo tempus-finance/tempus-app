@@ -292,6 +292,49 @@ describe('Decimal', () => {
     }
   });
 
+  describe('eq()', () => {
+    [
+      { value: 123.123, another: 123, expected: false },
+      { value: 123.123, another: '123', expected: false },
+      { value: 123.123, another: new Decimal(123), expected: false },
+      { value: 123.123, another: 123.123, expected: true },
+      { value: 123.123, another: '123.123', expected: true },
+      { value: 123.123, another: new Decimal(123.123), expected: true },
+      { value: 123.123, another: 124, expected: false },
+      { value: 123.123, another: '124', expected: false },
+      { value: 123.123, another: new Decimal(124), expected: false },
+      { value: -123.123, another: -123, expected: false },
+      { value: -123.123, another: '-123', expected: false },
+      { value: -123.123, another: new Decimal(-123), expected: false },
+      { value: -123.123, another: -123.123, expected: true },
+      { value: -123.123, another: '-123.123', expected: true },
+      { value: -123.123, another: new Decimal(-123.123), expected: true },
+      { value: -123.123, another: -124, expected: false },
+      { value: -123.123, another: '-124', expected: false },
+      { value: -123.123, another: new Decimal(-124), expected: false },
+    ].forEach(({ value, another, expected }) =>
+      it(`${value} should ${expected ? '' : 'not'} be equal to ${another}`, () => {
+        const decimal = new Decimal(value);
+        const anotherDecimal = new Decimal(another);
+
+        expect(decimal.equals(anotherDecimal)).toEqual(expected);
+      }),
+    );
+
+    for (let i = 0; i < 10; i++) {
+      const value = Math.random() * 100 - 50;
+      const another = Math.random() * 100 - 50;
+      const expected = value === another;
+
+      it(`${value} should ${expected ? '' : 'not'} be equal to ${another}`, () => {
+        const decimal = new Decimal(value);
+        const anotherDecimal = new Decimal(another);
+
+        expect(decimal.equals(anotherDecimal)).toEqual(expected);
+      });
+    }
+  });
+
   describe('lt()', () => {
     [
       { value: 123.123, another: 123, expected: false },
