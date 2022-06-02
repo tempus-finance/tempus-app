@@ -7,7 +7,7 @@
     "title": ""
   },
   "CurrencyInputModal": {
-    "insufficientBalanceError": "",
+    "insufficientBalanceError": "Saldo insufficiente",
     "feesAndTransactionInfo": "",
     "linkBlockExplorer": ""
   },
