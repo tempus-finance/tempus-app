@@ -2,7 +2,7 @@ import { act, renderHook } from '@testing-library/react-hooks';
 import { of as mockOf } from 'rxjs';
 import { Decimal, getServices } from 'tempus-core-services';
 import { getConfigManager } from '../config/getConfigManager';
-import { useTvlData, useTotalTvl, subscribe, unsubscribe, reset } from './useTvlData';
+import { useTvlData, useTotalTvl, subscribe, reset } from './useTvlData';
 
 jest.mock('tempus-core-services', () => ({
   ...jest.requireActual('tempus-core-services'),

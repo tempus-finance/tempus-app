@@ -25,7 +25,7 @@ interface PoolTvlMap {
 }
 
 const DEFAULT_VALUE = {};
-const TVL_POLLING_INTERVAL_IN_MS = 10000;
+const TVL_POLLING_INTERVAL_IN_MS = 2 * 60 * 1000;
 const DEBOUNCE_IN_MS = 500;
 
 const polling$: Observable<number> = interval(TVL_POLLING_INTERVAL_IN_MS).pipe(startWith(0));
