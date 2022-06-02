@@ -10,7 +10,7 @@ jest.mock('tempus-core-services', () => ({
 }));
 
 jest.mock('./useServicesLoaded', () => ({
-  ...jest.requireActual('tempus-core-services'),
+  ...jest.requireActual('./useServicesLoaded'),
   servicesLoaded$: mockOf(true),
 }));
 

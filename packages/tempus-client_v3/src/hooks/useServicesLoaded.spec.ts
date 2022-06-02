@@ -8,7 +8,7 @@ describe('useServicesLoaded', () => {
 
     const [servicesLoaded] = result.current;
 
-    expect(servicesLoaded).toBeFalsy();
+    expect(servicesLoaded).toBe(false);
   });
 
   it('properly sets state for servicesLoaded', async () => {
@@ -26,6 +26,6 @@ describe('useServicesLoaded', () => {
 
     const [servicesLoadedAfterUpdate] = result.current;
 
-    expect(servicesLoadedAfterUpdate).toBeTruthy();
+    expect(servicesLoadedAfterUpdate).toBe(true);
   });
 });
