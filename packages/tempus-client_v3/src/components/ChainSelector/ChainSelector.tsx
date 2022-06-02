@@ -26,14 +26,18 @@ const ChainSelector: FC<ChainSelectorProps> = props => {
   const { open, onClose } = props;
 
   const onNetworkClick = useCallback(
-    (chain: Chain) => {
+    async (chain: Chain) => {
       const hexChainId = chainNameToHexChainId(chain);
 
-      setChain({
+      const isSet = await setChain({
         chainId: hexChainId,
       });
+
+      if (isSet) {
+        onClose();
+      }
     },
-    [setChain],
+    [onClose, setChain],
   );
 
   useEffect(() => {
