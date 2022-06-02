@@ -3,7 +3,6 @@ import { BehaviorSubject } from 'rxjs';
 import { Config } from 'tempus-core-services';
 import { getConfigManager } from '../config/getConfigManager';
 
-const configSubject = new BehaviorSubject<Config>(getConfigManager().getConfig());
-export const config$ = configSubject.asObservable();
+export const config$ = new BehaviorSubject<Config>(getConfigManager().getConfig());
 
 export const [useConfig] = bind(config$, {});
