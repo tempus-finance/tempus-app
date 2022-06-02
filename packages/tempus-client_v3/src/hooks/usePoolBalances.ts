@@ -3,7 +3,7 @@ import { catchError, combineLatest, debounce, interval, map, merge, mergeMap, Ob
 import { Chain, Decimal, getServices, StatisticsService } from 'tempus-core-services';
 import { poolListSubject$ } from './usePoolList';
 import { walletAddress$ } from './useWalletAddress';
-import { walletBalances$ } from './useWalletBalances';
+import { walletBalances$ } from './useTokenBalance';
 
 const DEBOUNCE_IN_MS = 500;
 
@@ -14,7 +14,8 @@ interface PoolBalanceMap {
 export const poolBalances$: Observable<PoolBalanceMap> = combineLatest([
   poolListSubject$,
   walletAddress$,
-  walletBalances$,
+  walletBalances$, // TODO - Instead of depending on all token balances, this stream should
+  // update only when TPS, TYS or LP token balance changes for specific pool
 ]).pipe(
   mergeMap(([tempusPools, walletAddress, walletBalances]) => {
     const poolBalances = tempusPools.map(tempusPool => {

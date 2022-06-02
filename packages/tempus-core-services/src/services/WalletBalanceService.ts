@@ -1,4 +1,4 @@
-import { ZERO_ETH_ADDRESS } from '../constants';
+import { ZERO_ADDRESS } from '../constants';
 import { ERC20Contract } from '../contracts';
 import { Decimal } from '../datastructures';
 import { Chain } from '../interfaces';
@@ -13,7 +13,7 @@ export class WalletBalanceService {
 
   async getTokenBalance(tokenAddress: string, walletAddress: string): Promise<Decimal> {
     // ETH is a native token that does not have an ERC20 contract, we need to get balance for it using RPC provider.
-    if ((this.chain === 'ethereum' || this.chain === 'ethereum-fork') && tokenAddress === ZERO_ETH_ADDRESS) {
+    if (tokenAddress === ZERO_ADDRESS) {
       const provider = getDefaultProvider(this.chain);
 
       return new Decimal(await provider.getBalance(walletAddress));
