@@ -84,8 +84,5 @@ export const subscribe = (): void => {
   unsubscribe();
   subscription = stream$.subscribe();
 };
-
-export const unsubscribe = (): void => {
-  subscription?.unsubscribe?.();
-  poolTvls$.next(DEFAULT_VALUE);
-};
+export const unsubscribe = (): void => subscription?.unsubscribe?.();
+export const reset = (): void => poolTvls$.next(DEFAULT_VALUE);
