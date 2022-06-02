@@ -20,7 +20,7 @@ export const walletBalances$ = merge(
         result.tokenList.map(async token => {
           const services = getServices(token.chain);
           if (!services) {
-            throw new Error('walletBalancesSubject$ - Failed to get services');
+            throw new Error('walletBalances$ - Failed to get services');
           }
           const balance = await services.WalletBalanceService.getTokenBalance(token.address, result.walletAddress);
 

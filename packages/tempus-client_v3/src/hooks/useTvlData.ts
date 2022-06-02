@@ -1,8 +1,10 @@
 import { bind } from '@react-rxjs/core';
 import {
+  BehaviorSubject,
   catchError,
   combineLatest,
   debounce,
+  filter,
   interval,
   map,
   merge,
@@ -11,21 +13,28 @@ import {
   of,
   scan,
   startWith,
+  Subscription,
+  tap,
 } from 'rxjs';
 import { getServices, Decimal, ZERO, StatisticsService, TempusPool, Chain } from 'tempus-core-services';
-import { poolListSubject$ } from './usePoolList';
+import { poolList$ } from './usePoolList';
+import { servicesLoaded$ } from './useServicesLoaded';
 
 interface PoolTvlMap {
   [chainPoolAddress: string]: Decimal;
 }
 
-const TVL_POLLING_INTERVAL_IN_MS = 10000;
+const DEFAULT_VALUE = {};
+const TVL_POLLING_INTERVAL_IN_MS = 2 * 60 * 1000;
 const DEBOUNCE_IN_MS = 500;
 
 const polling$: Observable<number> = interval(TVL_POLLING_INTERVAL_IN_MS).pipe(startWith(0));
 
-export const poolTvls$: Observable<PoolTvlMap> = combineLatest([poolListSubject$, polling$]).pipe(
-  mergeMap<[TempusPool[], number], Observable<PoolTvlMap>>(([tempusPools]) => {
+export const poolTvls$ = new BehaviorSubject<PoolTvlMap>(DEFAULT_VALUE);
+
+const stream$ = combineLatest([poolList$, servicesLoaded$, polling$]).pipe(
+  filter(([, servicesLoaded]) => servicesLoaded),
+  mergeMap<[TempusPool[], boolean, number], Observable<PoolTvlMap>>(([tempusPools]) => {
     const poolTvlMaps = tempusPools.map(({ chain, address, backingToken }: TempusPool) => {
       const poolTvl$ = (getServices(chain as Chain)?.StatisticsService as StatisticsService).totalValueLockedUSD(
         chain as Chain,
@@ -54,8 +63,9 @@ export const poolTvls$: Observable<PoolTvlMap> = combineLatest([poolListSubject$
   debounce<PoolTvlMap>(() => interval(DEBOUNCE_IN_MS)),
   catchError(error => {
     console.error('useTvlData - getTempusPoolTVL', error);
-    return of({});
+    return of(DEFAULT_VALUE);
   }),
+  tap(poolTvls => poolTvls$.next(poolTvls)),
 );
 
 const totalTvl$: Observable<Decimal> = poolTvls$.pipe(
@@ -67,3 +77,12 @@ const totalTvl$: Observable<Decimal> = poolTvls$.pipe(
 
 export const [useTvlData] = bind(poolTvls$, {});
 export const [useTotalTvl] = bind(totalTvl$, ZERO);
+
+let subscription: Subscription = stream$.subscribe();
+
+export const subscribe = (): void => {
+  unsubscribe();
+  subscription = stream$.subscribe();
+};
+export const unsubscribe = (): void => subscription?.unsubscribe?.();
+export const reset = (): void => poolTvls$.next(DEFAULT_VALUE);

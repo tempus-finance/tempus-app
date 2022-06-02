@@ -3,7 +3,7 @@
 // expect(element).toHaveTextContent(/react/i)
 // learn more: https://github.com/testing-library/jest-dom
 import '@testing-library/jest-dom/extend-expect';
-import { of as mockOf } from 'rxjs';
+import { of as mockOf, delay as mockDelay } from 'rxjs';
 import { BigNumber as mockBigNumber } from 'ethers';
 import { Chain, Decimal as MockDecimal, TempusPool, Ticker, ZERO as mockZERO } from 'tempus-core-services';
 
@@ -16,15 +16,15 @@ jest.mock('tempus-core-services', () => ({
       totalValueLockedUSD: jest.fn().mockImplementation((chain: Chain, address: string) => {
         switch (`${chain}-${address}`) {
           case 'ethereum-1':
-            return mockOf(new MockDecimal(5000));
+            return mockOf(new MockDecimal(5000)).pipe(mockDelay(100));
           case 'ethereum-2':
-            return mockOf(new MockDecimal(7000));
+            return mockOf(new MockDecimal(7000)).pipe(mockDelay(100));
           case 'fantom-3':
-            return mockOf(new MockDecimal(2000));
+            return mockOf(new MockDecimal(2000)).pipe(mockDelay(100));
           case 'fantom-4':
-            return mockOf(new MockDecimal(9000));
+            return mockOf(new MockDecimal(9000)).pipe(mockDelay(100));
           case 'fantom-5':
-            return mockOf(new MockDecimal(8000));
+            return mockOf(new MockDecimal(8000)).pipe(mockDelay(100));
           default:
             return mockZERO;
         }
