@@ -1,0 +1,121 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`LoadingPlaceholder renders a loading placeholder with large width and medium height 1`] = `
+<div>
+  <div
+    class="tc__loading-placeholder tc__loading-placeholder__width-large tc__loading-placeholder__height-medium"
+  >
+    <div
+      class="tc__loading-placeholder__circle"
+    />
+    <div
+      class="tc__loading-placeholder__bar"
+    />
+  </div>
+</div>
+`;
+
+exports[`LoadingPlaceholder renders a loading placeholder with large width and small height 1`] = `
+<div>
+  <div
+    class="tc__loading-placeholder tc__loading-placeholder__width-large tc__loading-placeholder__height-small"
+  >
+    <div
+      class="tc__loading-placeholder__circle"
+    />
+    <div
+      class="tc__loading-placeholder__bar"
+    />
+  </div>
+</div>
+`;
+
+exports[`LoadingPlaceholder renders a loading placeholder with medium width and medium height 1`] = `
+<div>
+  <div
+    class="tc__loading-placeholder tc__loading-placeholder__width-medium tc__loading-placeholder__height-medium"
+  >
+    <div
+      class="tc__loading-placeholder__circle"
+    />
+    <div
+      class="tc__loading-placeholder__bar"
+    />
+  </div>
+</div>
+`;
+
+exports[`LoadingPlaceholder renders a loading placeholder with medium width and small height 1`] = `
+<div>
+  <div
+    class="tc__loading-placeholder tc__loading-placeholder__width-medium tc__loading-placeholder__height-small"
+  >
+    <div
+      class="tc__loading-placeholder__circle"
+    />
+    <div
+      class="tc__loading-placeholder__bar"
+    />
+  </div>
+</div>
+`;
+
+exports[`LoadingPlaceholder renders a loading placeholder with small width and medium height 1`] = `
+<div>
+  <div
+    class="tc__loading-placeholder tc__loading-placeholder__width-small tc__loading-placeholder__height-medium"
+  >
+    <div
+      class="tc__loading-placeholder__circle"
+    />
+    <div
+      class="tc__loading-placeholder__bar"
+    />
+  </div>
+</div>
+`;
+
+exports[`LoadingPlaceholder renders a loading placeholder with small width and small height 1`] = `
+<div>
+  <div
+    class="tc__loading-placeholder tc__loading-placeholder__width-small tc__loading-placeholder__height-small"
+  >
+    <div
+      class="tc__loading-placeholder__circle"
+    />
+    <div
+      class="tc__loading-placeholder__bar"
+    />
+  </div>
+</div>
+`;
+
+exports[`LoadingPlaceholder renders a loading placeholder with tiny width and medium height 1`] = `
+<div>
+  <div
+    class="tc__loading-placeholder tc__loading-placeholder__width-tiny tc__loading-placeholder__height-medium"
+  >
+    <div
+      class="tc__loading-placeholder__circle"
+    />
+    <div
+      class="tc__loading-placeholder__bar"
+    />
+  </div>
+</div>
+`;
+
+exports[`LoadingPlaceholder renders a loading placeholder with tiny width and small height 1`] = `
+<div>
+  <div
+    class="tc__loading-placeholder tc__loading-placeholder__width-tiny tc__loading-placeholder__height-small"
+  >
+    <div
+      class="tc__loading-placeholder__circle"
+    />
+    <div
+      class="tc__loading-placeholder__bar"
+    />
+  </div>
+</div>
+`;

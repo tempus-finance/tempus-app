@@ -28,6 +28,7 @@ import {
 } from './Dropdown';
 import BaseInput from './BaseInput';
 import TextInput from './TextInput';
+import LoadingPlaceholder from './LoadingPlaceholder';
 import NumberInput from './NumberInput';
 import SlippageInput from './SlippageInput';
 import WalletButton from './WalletButton';
@@ -63,6 +64,7 @@ export {
   IconButtonGroup,
   Link,
   Loading,
+  LoadingPlaceholder,
   Logo,
   NavSubheader,
   Spacer,

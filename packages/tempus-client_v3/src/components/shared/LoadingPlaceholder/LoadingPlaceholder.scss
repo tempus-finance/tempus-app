@@ -1,0 +1,87 @@
+@use "sass:map";
+
+$placeholder-widths: (
+  'tiny': 43px,
+  'small': 86px,
+  'medium': 128px,
+  'large': 182px,
+);
+
+$placeholder-heights: (
+  'small': 12px,
+  'medium': 24px,
+);
+
+$spacing: 8px;
+$animation-duration: 2s;
+
+.tc__loading-placeholder {
+  display: flex;
+
+  @each $size, $width in $placeholder-widths {
+    &.tc__loading-placeholder__width-#{$size} {
+      .tc__loading-placeholder__bar {
+        width: $width;
+      }
+    }
+  }
+
+  @each $size, $height in $placeholder-heights {
+    &.tc__loading-placeholder__height-#{$size} {
+      .tc__loading-placeholder__circle {
+        width: $height;
+        animation: shine-loading-placeholder-#{$size}-circle $animation-duration infinite linear;
+      }
+
+      .tc__loading-placeholder__circle,
+      .tc__loading-placeholder__bar {
+        height: $height;
+        border-radius: $height / 2;
+      }
+    }
+  }
+
+  .tc__loading-placeholder__circle {
+    margin-right: $spacing;
+  }
+
+  .tc__loading-placeholder__bar {
+    animation: shine-loading-placeholder-bar $animation-duration infinite linear;
+  }
+
+  .tc__loading-placeholder__circle,
+  .tc__loading-placeholder__bar {
+    background: linear-gradient(var(--loadingPlaceholderOverlay), var(--loadingPlaceholderOverlay)),
+      linear-gradient(
+        120deg,
+        var(--loadingPlaceholderBase) 0%,
+        var(--loadingPlaceholderBase) 5%,
+        var(--loadingPlaceholderShine) 50%,
+        var(--loadingPlaceholderBase) 95%,
+        var(--loadingPlaceholderBase) 100%
+      );
+    background-size: 2 * map.get($placeholder-widths, 'large');
+  }
+}
+
+@keyframes shine-loading-placeholder-bar {
+  0% {
+    background-position: -1 * map.get($placeholder-widths, 'large');
+  }
+
+  100% {
+    background-position: map.get($placeholder-widths, 'large');
+  }
+}
+
+@each $size, $height in $placeholder-heights {
+  @keyframes shine-loading-placeholder-#{$size}-circle {
+    0% {
+      background-position: -1 * map.get($placeholder-widths, 'large') + $height + $spacing;
+    }
+
+    100% {
+      background-position: map.get($placeholder-widths, 'large') + $height + $spacing;
+    }
+  }
+}
