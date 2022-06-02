@@ -1,7 +1,7 @@
 import { bind } from '@react-rxjs/core';
 import { catchError, combineLatest, debounce, interval, map, merge, mergeMap, Observable, of, scan } from 'rxjs';
 import { Chain, Decimal, getServices, StatisticsService } from 'tempus-core-services';
-import { poolListSubject$ } from './usePoolList';
+import { poolList$ } from './usePoolList';
 import { walletAddress$ } from './useWalletAddress';
 import { walletBalances$ } from './useTokenBalance';
 
@@ -12,7 +12,7 @@ interface PoolBalanceMap {
 }
 
 export const poolBalances$: Observable<PoolBalanceMap> = combineLatest([
-  poolListSubject$,
+  poolList$,
   walletAddress$,
   walletBalances$, // TODO - Instead of depending on all token balances, this stream should
   // update only when TPS, TYS or LP token balance changes for specific pool

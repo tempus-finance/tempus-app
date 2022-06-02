@@ -102,7 +102,7 @@ const DepositModal: FC<DepositModalProps> = props => {
 
       setMaturityTerm(newTerm);
     },
-    [maturityTerms, modalProps?.tempusPools],
+    [maturityTerms, modalProps],
   );
 
   const handleCurrencyChange = useCallback(

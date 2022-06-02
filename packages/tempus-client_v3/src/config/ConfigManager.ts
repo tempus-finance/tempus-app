@@ -73,7 +73,7 @@ class ConfigManager {
 
   getEarliestStartDate(filterByChain?: Chain, filterByToken?: Ticker, filterByProtocol?: ProtocolName): Date {
     const earliestPoolList = this.getFilteredPoolList(filterByChain, filterByToken, filterByProtocol).sort(
-      (poolA, poolB) => (poolA.startDate < poolB.startDate ? -1 : 1),
+      (poolA, poolB) => poolA.startDate - poolB.startDate,
     );
 
     if (earliestPoolList && earliestPoolList.length) {
