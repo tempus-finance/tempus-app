@@ -17,12 +17,22 @@ describe('Decimal', () => {
         expected: BigNumber.from('123123000000000000000'),
       },
       {
+        value: BigNumber.from('123123000000000'),
+        precisionConvertFrom: 12,
+        expected: BigNumber.from('123123000000000000000'),
+      },
+      {
+        value: BigNumber.from('123123000000000000000000000'),
+        precisionConvertFrom: 24,
+        expected: BigNumber.from('123123000000000000000'),
+      },
+      {
         value: new Decimal(123.123),
         expected: BigNumber.from('123123000000000000000'),
       },
-    ].forEach(({ value, expected }) =>
+    ].forEach(({ value, precisionConvertFrom, expected }) =>
       it(`accepts number/string/BigNumber/Decimal: ${value.toString()}`, () => {
-        const decimal = new Decimal(value);
+        const decimal = new Decimal(value, precisionConvertFrom);
 
         expect(decimal.value.eq(expected)).toBeTruthy();
       }),
