@@ -1,69 +1,62 @@
 import { bind } from '@react-rxjs/core';
-import {
-  catchError,
-  combineLatest,
-  debounce,
-  interval,
-  map,
-  merge,
-  mergeMap,
-  Observable,
-  of,
-  scan,
-  startWith,
-} from 'rxjs';
-import { getServices, Decimal, ZERO, StatisticsService, TempusPool, Chain } from 'tempus-core-services';
-import { poolListSubject$ } from './usePoolList';
+import { map, timer, BehaviorSubject } from 'rxjs';
+import { getServices, Decimal, Chain, Ticker } from 'tempus-core-services';
+import { getConfigManager } from '../config/getConfigManager';
 
-interface PoolTvlMap {
-  [chainPoolAddress: string]: Decimal;
+const TVL_POLLING_INTERVAL_IN_MS = 60000;
+
+interface PoolTVLDataMap {
+  behaviorSubject: BehaviorSubject<Decimal | null>;
+  chain: Chain;
+  address: string;
+  backingToken: Ticker;
 }
 
-const TVL_POLLING_INTERVAL_IN_MS = 10000;
-const DEBOUNCE_IN_MS = 500;
+// Map of BehaviorSubjects that will store one BehaviorSubject per pool
+const poolTvlSubjectsMap = new Map<string, PoolTVLDataMap>();
 
-const polling$: Observable<number> = interval(TVL_POLLING_INTERVAL_IN_MS).pipe(startWith(0));
+// Create one BehaviorSubject per pool
+const poolList = getConfigManager().getPoolList();
+poolList.forEach(pool => {
+  const poolChainAddressId = `${pool.chain}-${pool.address}`;
 
-export const poolTvls$: Observable<PoolTvlMap> = combineLatest([poolListSubject$, polling$]).pipe(
-  mergeMap<[TempusPool[], number], Observable<PoolTvlMap>>(([tempusPools]) => {
-    const poolTvlMaps = tempusPools.map(({ chain, address, backingToken }: TempusPool) => {
-      const poolTvl$ = (getServices(chain as Chain)?.StatisticsService as StatisticsService).totalValueLockedUSD(
-        chain as Chain,
-        address,
-        backingToken,
-      );
-      return poolTvl$.pipe(
-        map(
-          tvl =>
-            ({
-              [`${chain}-${address}`]: tvl,
-            } as PoolTvlMap),
-        ),
-      );
-    });
+  poolTvlSubjectsMap.set(poolChainAddressId, {
+    chain: pool.chain,
+    address: pool.address,
+    backingToken: pool.backingToken,
+    behaviorSubject: new BehaviorSubject<Decimal | null>(null),
+  });
+});
 
-    return merge(...poolTvlMaps);
-  }),
-  scan(
-    (allTvls, poolTvl) => ({
-      ...allTvls,
-      ...poolTvl,
+// Create a hook for each pool BehaviorSubject
+export const [usePoolTVLData] = bind((poolAddress: string, poolChain: Chain) => {
+  const poolTVLData = poolTvlSubjectsMap.get(`${poolAddress}-${poolChain}`);
+  if (!poolTVLData) {
+    throw new Error(`Failed to get TVL data for pool ${poolAddress} on chain ${poolChain}`);
+  }
+
+  return poolTVLData.behaviorSubject;
+});
+
+// Fetch TVL data for all pools on each polling interval
+timer(0, TVL_POLLING_INTERVAL_IN_MS)
+  .pipe(
+    map(() => {
+      poolTvlSubjectsMap.forEach(poolTvlData => {
+        console.log(`Fetching TVL data for pool ${poolTvlData.address} on chain ${poolTvlData.chain}`);
+
+        const services = getServices(poolTvlData.chain);
+        if (services) {
+          const poolTvl$ = services.StatisticsService.totalValueLockedUSD(
+            poolTvlData.chain,
+            poolTvlData.address,
+            poolTvlData.backingToken,
+          );
+
+          // Push new TVL value to the BehaviorSubject for each pool
+          poolTvl$.pipe(map(tvl => poolTvlData.behaviorSubject.next(tvl)));
+        }
+      });
     }),
-    {} as PoolTvlMap,
-  ),
-  debounce<PoolTvlMap>(() => interval(DEBOUNCE_IN_MS)),
-  catchError(error => {
-    console.error('useTvlData - getTempusPoolTVL', error);
-    return of({});
-  }),
-);
-
-const totalTvl$: Observable<Decimal> = poolTvls$.pipe(
-  map(poolTvls => {
-    const allTvls = Object.values(poolTvls);
-    return allTvls.reduce((sum, tvl) => sum.add(tvl), ZERO);
-  }),
-);
-
-export const [useTvlData] = bind(poolTvls$, {});
-export const [useTotalTvl] = bind(totalTvl$, ZERO);
+  )
+  .subscribe();
