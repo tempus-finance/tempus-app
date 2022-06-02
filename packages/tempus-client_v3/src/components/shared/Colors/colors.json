@@ -115,5 +115,9 @@
   "poolsHeadingOverlay": "#129CA433",
 
   "poolPositionCardBorder": "#F3F7F9",
-  "poolPositionCardBackground": "#FFFFFF"
+  "poolPositionCardBackground": "#FFFFFF",
+
+  "loadingPlaceholderBase": "#597B91",
+  "loadingPlaceholderShine": "#D6D6D6",
+  "loadingPlaceholderOverlay": "rgba(255, 255, 255, 0.4)"
 }

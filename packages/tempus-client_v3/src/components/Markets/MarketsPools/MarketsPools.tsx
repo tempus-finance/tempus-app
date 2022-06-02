@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { Chain, prettifyChainName, ProtocolName, TempusPool, Ticker, tokenColorMap, ZERO } from 'tempus-core-services';
+import { Chain, prettifyChainName, ProtocolName, TempusPool, Ticker, tokenColorMap } from 'tempus-core-services';
 import { useChainList, useFilteredSortedPoolList, useFixedAprs, useSelectedChain } from '../../../hooks';
 import { PoolCard, PoolCardStatus, PoolsHeading } from '../../shared';
 import ShowMoreButtonWrapper from './ShowMoreButtonWrapper';
@@ -139,7 +139,7 @@ const MarketsPools = (): JSX.Element => {
 
                 const terms = chainCard.pools.map(pool => new Date(pool.maturityDate));
                 const poolAddresses = chainCard.pools.map(pool => pool.address);
-                const aprs = chainCard.pools.map(pool => fixedAprs[`${pool.chain}-${pool.address}`] ?? ZERO);
+                const aprs = chainCard.pools.map(pool => fixedAprs[`${pool.chain}-${pool.address}`]);
 
                 let cardStatus: PoolCardStatus = 'Fixed';
                 if (chainCard.matured) {
