@@ -48,7 +48,7 @@ const ModalActionContent: FC<ModalActionContentProps> = props => {
 
   const amountDecimal = useMemo(() => new Decimal(amount || 0), [amount]);
 
-  const insufficientBalance = balance.eq(ZERO) || amountDecimal.gt(balance);
+  const insufficientBalance = balance.equals(ZERO) || amountDecimal.gt(balance);
 
   const handleAmountChange = useCallback(
     (value: string) => {

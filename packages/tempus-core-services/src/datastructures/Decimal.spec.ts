@@ -317,7 +317,7 @@ describe('Decimal', () => {
         const decimal = new Decimal(value);
         const anotherDecimal = new Decimal(another);
 
-        expect(decimal.eq(anotherDecimal)).toEqual(expected);
+        expect(decimal.equals(anotherDecimal)).toEqual(expected);
       }),
     );
 
@@ -330,7 +330,7 @@ describe('Decimal', () => {
         const decimal = new Decimal(value);
         const anotherDecimal = new Decimal(another);
 
-        expect(decimal.eq(anotherDecimal)).toEqual(expected);
+        expect(decimal.equals(anotherDecimal)).toEqual(expected);
       });
     }
   });
