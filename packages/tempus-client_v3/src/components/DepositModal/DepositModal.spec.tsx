@@ -1,6 +1,6 @@
 import { act, fireEvent, render } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
-import { Decimal as MockDecimal } from 'tempus-core-services';
+import { Decimal, Decimal as MockDecimal } from 'tempus-core-services';
 import { getConfigManager } from '../../config/getConfigManager';
 import { useWalletBalances } from '../../hooks';
 import I18nProvider from '../../i18n/I18nProvider';
@@ -11,14 +11,14 @@ const multipleTokens: TokenMetadataProp = [
   {
     precision: 18,
     precisionForUI: 4,
-    rate: new MockDecimal(3500),
+    rate: new Decimal(3500),
     ticker: 'ETH',
     address: '0x0',
   },
   {
     precision: 18,
     precisionForUI: 4,
-    rate: new MockDecimal(3500),
+    rate: new Decimal(3500),
     ticker: 'stETH',
     address: '0x1',
   },
@@ -26,7 +26,7 @@ const multipleTokens: TokenMetadataProp = [
 
 const singleMaturityTerm: MaturityTerm[] = [
   {
-    apr: new MockDecimal(0.074),
+    apr: new Decimal(0.074),
     date: new Date(2022, 9, 1),
   },
 ];
@@ -34,7 +34,7 @@ const singleMaturityTerm: MaturityTerm[] = [
 const multipleMaturityTerms: MaturityTerm[] = [
   ...singleMaturityTerm,
   {
-    apr: new MockDecimal(0.131),
+    apr: new Decimal(0.131),
     date: new Date(2022, 11, 1),
   },
 ];
@@ -61,7 +61,7 @@ jest.mock('../../hooks', () => ({
 }));
 
 describe('DepositModal', () => {
-  beforeAll(() => {
+  beforeEach(() => {
     (useWalletBalances as jest.Mock).mockImplementation(() => ({
       'ethereum-0x0': new MockDecimal(100),
       'ethereum-0x1': new MockDecimal(101),
@@ -77,9 +77,7 @@ describe('DepositModal', () => {
 
   ['preview', 'input'].forEach(view => {
     const template = (terms: MaturityTerm[]) => {
-      // load chain config
       const configManager = getConfigManager();
-      configManager.init();
 
       const { container } = subject({
         ...defaultProps,
@@ -103,9 +101,7 @@ describe('DepositModal', () => {
   });
 
   it('updates balance after currency change', () => {
-    // load chain config
     const configManager = getConfigManager();
-    configManager.init();
 
     const { container, getByRole } = subject({
       ...defaultProps,
@@ -143,9 +139,7 @@ describe('DepositModal', () => {
   });
 
   it('approves deposit and deposits on action button click', async () => {
-    // load chain config
     const configManager = getConfigManager();
-    configManager.init();
 
     jest.useFakeTimers();
 
