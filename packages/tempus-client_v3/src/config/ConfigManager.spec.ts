@@ -14,7 +14,7 @@ describe('ConfigManager', () => {
 
       expect(chainList.length).toEqual(3);
       expect(poolList.length).toEqual(5);
-      expect(tokenList.length).toEqual(20);
+      expect(tokenList.length).toEqual(22);
     });
   });
 
@@ -193,6 +193,14 @@ describe('ConfigManager', () => {
         {
           address: '00004-amm',
           chain: 'fantom',
+        },
+        {
+          address: '0x0000000000000000000000000000000000000000',
+          chain: 'fantom',
+        },
+        {
+          address: '0x0000000000000000000000000000000000000000',
+          chain: 'ethereum-fork',
         },
       ]);
     });

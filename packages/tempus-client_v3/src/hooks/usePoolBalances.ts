@@ -3,7 +3,7 @@ import { catchError, combineLatest, debounce, interval, map, merge, mergeMap, Ob
 import { Chain, Decimal, getServices, StatisticsService } from 'tempus-core-services';
 import { poolList$ } from './usePoolList';
 import { walletAddress$ } from './useWalletAddress';
-import { walletBalances$ } from './useTokenBalance';
+import { walletBalances$ } from './useWalletBalances';
 
 const DEBOUNCE_IN_MS = 500;
 

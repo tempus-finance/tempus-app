@@ -1,5 +1,5 @@
 import { bind } from '@react-rxjs/core';
-import { BehaviorSubject, Observable, map, combineLatest, from, of, merge, mergeMap, Subscription, tap } from 'rxjs';
+import { BehaviorSubject, map, combineLatest, from, of, merge, mergeMap, Subscription, tap } from 'rxjs';
 import { Chain, Decimal, getServices } from 'tempus-core-services';
 import { getConfigManager } from '../config/getConfigManager';
 import { walletAddress$ } from './useWalletAddress';
@@ -81,11 +81,6 @@ const stream$ = combineLatest([walletAddress$]).pipe(
     });
   }),
 );
-
-// TODO (hooks that depend on whole wallet balance map should be refactored to depend only on specific tokens)
-// Dummy observable to prevent TS from throwing errors until we finish refactoring hooks that depend on walletBalances
-export const walletBalances$ = new Observable<any>();
-export const [useWalletBalances] = bind(walletBalances$, {});
 
 export const [useTokenBalance] = bind((tokenAddress: string, tokenChain: Chain | null) => {
   if (!tokenChain) {

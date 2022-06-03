@@ -85,5 +85,13 @@ it('returns token list from config file', async () => {
       address: '00004-amm',
       chain: 'fantom',
     },
+    {
+      address: '0x0000000000000000000000000000000000000000',
+      chain: 'fantom',
+    },
+    {
+      address: '0x0000000000000000000000000000000000000000',
+      chain: 'ethereum-fork',
+    },
   ]);
 });
