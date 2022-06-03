@@ -1,7 +1,8 @@
 import { FC, useCallback, useMemo } from 'react';
-import { Chain, Decimal, DecimalUtils, prettifyProtocolName, ProtocolName, Ticker } from 'tempus-core-services';
+import { Chain, Decimal, DecimalUtils, prettifyProtocolName, ProtocolName, Ticker, ZERO } from 'tempus-core-services';
 import { min } from 'date-fns';
 import FormattedDate from '../FormattedDate';
+import LoadingPlaceholder from '../LoadingPlaceholder';
 import Logo from '../Logo';
 import Typography from '../Typography';
 import { PoolCardStatus, PoolCardVariant } from './PoolCardTypes';
@@ -17,7 +18,7 @@ interface PoolCardProps {
   poolCardVariant: PoolCardVariant;
   poolCardStatus: PoolCardStatus;
   terms: Date[];
-  aprValues: Decimal[];
+  aprValues: (Decimal | undefined)[];
   color: string;
   aggregatedAPR?: Decimal;
   multiplier?: number;
@@ -52,16 +53,16 @@ const PoolCard: FC<PoolCardProps> = props => {
   const earliestTerm = useMemo(() => min(terms), [terms]);
 
   const maxApr = useMemo(() => {
-    let max = new Decimal(0);
+    let max: Decimal | undefined;
     aprValues.forEach(aprValue => {
-      if (aprValue.gte(max)) {
+      if (aprValue && aprValue.gte(max ?? ZERO)) {
         max = aprValue;
       }
     });
     return max;
   }, [aprValues]);
 
-  const maxAprFormatted = useMemo(() => DecimalUtils.formatPercentage(maxApr), [maxApr]);
+  const maxAprFormatted = useMemo(() => (maxApr ? DecimalUtils.formatPercentage(maxApr) : undefined), [maxApr]);
 
   const aggregatedAPRFormatted = useMemo(() => {
     if (!aggregatedAPR) {
@@ -89,20 +90,37 @@ const PoolCard: FC<PoolCardProps> = props => {
     onClick(chain, ticker, protocol, poolCardStatus, poolAddresses);
   }, [chain, ticker, protocol, poolCardStatus, poolAddresses, onClick]);
 
+  // TODO: check if other values (aggregatedAPR and totalBalance) are loaded
+  const loading = !maxApr;
+
   return (
     <div className="tc__poolCard" data-card-variant={poolCardVariant} onClick={handleClick}>
       {/* Pool backing token ticker */}
-      <Typography variant="subheader" weight="bold">
-        {multiplier > 1 && `x${multiplier}`} {ticker}
-      </Typography>
+      {loading && (
+        <div className="tc__poolCard-value-placeholder-container">
+          <LoadingPlaceholder width="small" height="medium" />
+        </div>
+      )}
+      {!loading && (
+        <Typography variant="subheader" weight="bold">
+          {multiplier > 1 && `x${multiplier}`} {ticker}
+        </Typography>
+      )}
 
       {/* Pool underlying protocol name */}
-      <div className="tc__poolCard-protocol">
-        <Logo type={`protocol-${protocol}`} size={20} />
-        <Typography variant="body-secondary" weight="medium">
-          {prettifyProtocolName(protocol)}
-        </Typography>
-      </div>
+      {loading && (
+        <div className="tc__poolCard-protocol-placeholder-container">
+          <LoadingPlaceholder width="tiny" height="small" />
+        </div>
+      )}
+      {!loading && (
+        <div className="tc__poolCard-protocol">
+          <Logo type={`protocol-${protocol}`} size={20} />
+          <Typography variant="body-secondary" weight="medium">
+            {prettifyProtocolName(protocol)}
+          </Typography>
+        </div>
+      )}
 
       <div className="tc__poolCard-info">
         {/* APR */}
@@ -110,9 +128,16 @@ const PoolCard: FC<PoolCardProps> = props => {
           <Typography variant="body-secondary" weight="medium" color="text-secondary">
             {aprLabel}
           </Typography>
-          <Typography variant="subheader" weight="medium" type="mono">
-            {maxAprFormatted}
-          </Typography>
+          {loading && (
+            <div className="tc__poolCard-value-placeholder-container">
+              <LoadingPlaceholder width="medium" height="medium" />
+            </div>
+          )}
+          {!loading && (
+            <Typography variant="subheader" weight="medium" type="mono">
+              {maxAprFormatted}
+            </Typography>
+          )}
         </div>
 
         {/* Term */}
@@ -120,7 +145,12 @@ const PoolCard: FC<PoolCardProps> = props => {
           <Typography variant="body-secondary" weight="medium" color="text-secondary">
             {terms.length > 1 ? 'Earliest term' : 'Term'}
           </Typography>
-          <FormattedDate date={earliestTerm} size="large" />
+          {loading && (
+            <div className="tc__poolCard-value-placeholder-container">
+              <LoadingPlaceholder width="large" height="medium" />
+            </div>
+          )}
+          {!loading && <FormattedDate date={earliestTerm} size="large" />}
         </div>
 
         {/* Aggregated APR */}
@@ -129,9 +159,16 @@ const PoolCard: FC<PoolCardProps> = props => {
             <Typography variant="body-secondary" weight="medium" color="text-secondary">
               Aggregated APR
             </Typography>
-            <Typography variant="subheader" weight="medium" type="mono">
-              {aggregatedAPRFormatted}
-            </Typography>
+            {loading && (
+              <div className="tc__poolCard-value-placeholder-container">
+                <LoadingPlaceholder width="medium" height="medium" />
+              </div>
+            )}
+            {!loading && (
+              <Typography variant="subheader" weight="medium" type="mono">
+                {aggregatedAPRFormatted}
+              </Typography>
+            )}
           </div>
         )}
 
@@ -141,15 +178,26 @@ const PoolCard: FC<PoolCardProps> = props => {
             <Typography variant="body-secondary" weight="medium" color="text-secondary">
               Total Balance
             </Typography>
-            <Typography variant="subheader" weight="medium" type="mono">
-              {totalBalanceFormatted}
-            </Typography>
+            {loading && (
+              <div className="tc__poolCard-value-placeholder-container">
+                <LoadingPlaceholder width="medium" height="medium" />
+              </div>
+            )}
+            {!loading && (
+              <Typography variant="subheader" weight="medium" type="mono">
+                {totalBalanceFormatted}
+              </Typography>
+            )}
           </div>
         )}
       </div>
 
-      <PoolCardRipples color={color} />
-      <PoolCardFlag ticker={ticker} status={poolCardStatus} />
+      {!loading && (
+        <>
+          <PoolCardRipples color={color} />
+          <PoolCardFlag ticker={ticker} status={poolCardStatus} />
+        </>
+      )}
     </div>
   );
 };
