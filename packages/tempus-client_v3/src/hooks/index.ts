@@ -1,6 +1,6 @@
 export { useFixedAprs } from './useFixedAprs';
 export { useTokenRates } from './useTokenRates';
-export { useWalletBalances } from './useWalletBalances';
+export { useTokenBalance } from './useTokenBalance';
 export * from './useTvlData';
 export * from './useWalletAddress';
 export * from './useSelectedChain';
@@ -15,3 +15,4 @@ export * from './useChainList';
 export * from './usePoolList';
 export * from './useTokenList';
 export * from './useServicesLoaded';
+export * from './useWalletBalances';

@@ -1,4 +1,4 @@
-import { Chain, ChainConfig, Config, ProtocolName, TempusPool, Ticker } from 'tempus-core-services';
+import { Chain, ChainConfig, Config, ProtocolName, TempusPool, Ticker, ZERO_ADDRESS } from 'tempus-core-services';
 import config from './config';
 
 export interface TokenListItem {
@@ -137,6 +137,17 @@ class ConfigManager {
       } else {
         console.warn(`Pool ${pool.address} does not contain chain in it's config!`);
       }
+    });
+
+    // Add native token for each chain to token list
+    const chainList = this.getChainList();
+    chainList.forEach(chain => {
+      if (!chainToAddresses.has(chain)) {
+        chainToAddresses.set(chain, new Set());
+      }
+
+      // Native token on each chain always has ZERO_ADDRESS
+      chainToAddresses.get(chain)?.add(ZERO_ADDRESS);
     });
 
     this.tokenList = [...chainToAddresses.entries()]

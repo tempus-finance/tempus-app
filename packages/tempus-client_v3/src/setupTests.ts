@@ -9,6 +9,8 @@ import { Chain, Decimal as MockDecimal, TempusPool, Ticker, ZERO as mockZERO } f
 
 export { mockConfig, pool1, pool2, pool3, pool4, pool5 } from './mocks/config/mockConfig';
 
+export const mockGetTokenBalance = jest.fn().mockImplementation(() => Promise.resolve(new MockDecimal(100)));
+
 jest.mock('tempus-core-services', () => ({
   ...jest.requireActual('tempus-core-services'),
   getServices: jest.fn().mockImplementation(() => ({
@@ -68,6 +70,9 @@ jest.mock('tempus-core-services', () => ({
     TempusPoolService: {
       currentInterestRate: jest.fn().mockImplementation(() => mockBigNumber.from(1)),
       numAssetsPerYieldToken: jest.fn().mockImplementation(() => mockBigNumber.from(1)),
+    },
+    WalletBalanceService: {
+      getTokenBalance: mockGetTokenBalance,
     },
   })),
 }));

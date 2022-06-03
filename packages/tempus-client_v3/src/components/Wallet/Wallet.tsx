@@ -8,11 +8,11 @@ import {
   ethereumChainIdHex,
   ethereumForkChainIdHex,
   fantomChainIdHex,
-  ZERO_ETH_ADDRESS,
+  ZERO_ADDRESS,
 } from 'tempus-core-services';
 import { WalletButton } from '../shared';
 import ChainSelector from '../ChainSelector';
-import { useWalletBalances, setWalletAddress, useSelectedChain } from '../../hooks';
+import { setWalletAddress, useSelectedChain, useTokenBalance } from '../../hooks';
 
 // TODO - Check with designers if block native UI for wallet management is fine to use
 
@@ -72,7 +72,7 @@ const Wallet: FC = () => {
   const [{ wallet }, connect] = useConnectWallet();
   const selectedChain = useSelectedChain();
 
-  const walletBalances = useWalletBalances();
+  const nativeTokenBalance = useTokenBalance(ZERO_ADDRESS, selectedChain);
 
   const [chainSelectorOpen, setChainSelectorOpen] = useState<boolean>(false);
 
@@ -135,15 +135,13 @@ const Wallet: FC = () => {
   }, [wallet]);
 
   const balance = useMemo(() => {
-    // TODO - Once we add state for currently selected chain, use it to get native token balance for selected chain
-    const nativeTokenBalance = walletBalances[`ethereum-${ZERO_ETH_ADDRESS}`];
     if (!nativeTokenBalance) {
       return null;
     }
 
     // TODO - Add number of decimals for chain native token in the config and use it here.
     return DecimalUtils.formatToCurrency(nativeTokenBalance, 2);
-  }, [walletBalances]);
+  }, [nativeTokenBalance]);
 
   return (
     <>
