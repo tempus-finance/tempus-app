@@ -21,6 +21,11 @@ jest.mock('./useWalletAddress', () => ({
   walletAddress$: mockOf('0x00').pipe(mockDelay(100)),
 }));
 
+jest.mock('./useServicesLoaded', () => ({
+  ...jest.requireActual('./useServicesLoaded'),
+  servicesLoaded$: mockOf(true),
+}));
+
 describe('usePoolBalances', () => {
   beforeAll(() => {
     const config = getConfigManager();

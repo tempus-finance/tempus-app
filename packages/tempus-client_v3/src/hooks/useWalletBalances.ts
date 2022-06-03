@@ -7,7 +7,7 @@ import { walletAddress$ } from './useWalletAddress';
 
 // Every time wallet address changes, we want to fetch wallet balances
 export const walletBalances$ = combineLatest([walletAddress$, servicesLoaded$]).pipe(
-  filter(([walletAddress]) => Boolean(walletAddress)),
+  filter(([walletAddress, servicesLoaded]) => Boolean(walletAddress) && servicesLoaded),
   map(([walletAddress]) => {
     console.log(`Wallet address changed to ${walletAddress}, fetching token balances!`);
     return walletAddress;

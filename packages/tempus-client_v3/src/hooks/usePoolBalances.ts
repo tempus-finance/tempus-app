@@ -1,5 +1,17 @@
 import { bind } from '@react-rxjs/core';
-import { catchError, combineLatest, debounce, interval, map, merge, mergeMap, Observable, of, scan } from 'rxjs';
+import {
+  catchError,
+  combineLatest,
+  debounce,
+  interval,
+  map,
+  merge,
+  mergeMap,
+  Observable,
+  of,
+  scan,
+  filter,
+} from 'rxjs';
 import { Chain, Decimal, getServices, StatisticsService } from 'tempus-core-services';
 import { poolList$ } from './usePoolList';
 import { servicesLoaded$ } from './useServicesLoaded';
@@ -19,6 +31,7 @@ export const poolBalances$: Observable<PoolBalanceMap> = combineLatest([
   // update only when TPS, TYS or LP token balance changes for specific pool
   servicesLoaded$,
 ]).pipe(
+  filter(([, walletAddress, , servicesLoaded]) => Boolean(walletAddress) && servicesLoaded),
   mergeMap(([tempusPools, walletAddress, walletBalances]) => {
     const poolBalances = tempusPools.map(tempusPool => {
       const tokenBalances = {

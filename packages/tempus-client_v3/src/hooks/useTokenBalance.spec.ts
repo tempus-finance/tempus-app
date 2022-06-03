@@ -16,6 +16,11 @@ jest.mock('./useWalletAddress', () => ({
   walletAddress$: mockOf('0x0'),
 }));
 
+jest.mock('./useSelectedChain', () => ({
+  ...jest.requireActual('./useSelectedChain'),
+  selectedChain$: mockOf('ethereum'),
+}));
+
 describe('useTvlData', () => {
   beforeAll(getConfigManager);
 
@@ -43,13 +48,13 @@ describe('useTvlData', () => {
     const { result: result1, waitForNextUpdate } = renderHook(() => useTokenBalance(ZERO_ADDRESS, 'ethereum'));
 
     expect(result1.current).toEqual(null);
-    expect(mockGetTokenBalance).toHaveBeenCalledTimes(22);
+    expect(mockGetTokenBalance).toHaveBeenCalledTimes(10);
 
     await waitForNextUpdate();
 
     const { result: result2 } = renderHook(() => useTokenBalance(ZERO_ADDRESS, 'ethereum'));
 
-    expect(mockGetTokenBalance).toHaveBeenCalledTimes(22);
+    expect(mockGetTokenBalance).toHaveBeenCalledTimes(10);
     expect(result2.current?.toString()).toEqual('100');
   });
 });
