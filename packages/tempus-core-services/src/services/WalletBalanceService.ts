@@ -12,7 +12,8 @@ export class WalletBalanceService {
   }
 
   async getTokenBalance(tokenAddress: string, walletAddress: string): Promise<Decimal> {
-    // ETH is a native token that does not have an ERC20 contract, we need to get balance for it using RPC provider.
+    // If token address is zero address, it means it's a chain native token, and we need to
+    // get it's balance using .getBalance() instead of ERC20 contract's balanceOf()
     if (tokenAddress === ZERO_ADDRESS) {
       const provider = getDefaultProvider(this.chain);
 
