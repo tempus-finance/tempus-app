@@ -45,8 +45,6 @@ const stream$ = combineLatest([walletAddress$]).pipe(
         services.WalletBalanceService.getTokenBalance(tokenBalanceData.address, walletAddress),
       );
 
-      console.log(`Fetching token ${tokenBalanceData.address} balance on chain ${tokenBalanceData.chain}!`);
-
       return balanceFetch$.pipe(
         map(tokenBalance => ({
           [`${tokenBalanceData.chain}-${tokenBalanceData.address}`]: {
@@ -70,10 +68,6 @@ const stream$ = combineLatest([walletAddress$]).pipe(
       if (tokenData.balance) {
         const tokenBalanceData = tokenBalanceDataMap.get(`${tokenData.chain}-${tokenData.address}`);
         if (tokenBalanceData) {
-          console.log(
-            `Updating token ${tokenData.address} balance on chain ${tokenData.chain} to ${tokenData.balance}!`,
-          );
-
           tokenBalanceData.subject.next(tokenData.balance);
         }
       }
