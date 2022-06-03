@@ -2,6 +2,7 @@ import { FC, memo, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import Blockies from 'react-blockies';
 import { Chain, chainToTicker, shortenAccount } from 'tempus-core-services';
+import ActionButton, { ActionButtonVariant } from '../ActionButton';
 import ButtonWrapper from '../ButtonWrapper';
 import Icon from '../Icon';
 import Logo from '../Logo';
@@ -16,10 +17,11 @@ export interface WalletButtonProps {
   onConnect: () => void;
   onNetworkClick: () => void;
   onWalletClick: () => void;
+  connectWalletButtonVariant?: ActionButtonVariant;
 }
 
 const WalletButton: FC<WalletButtonProps> = props => {
-  const { address, balance, chain, onConnect, onNetworkClick, onWalletClick } = props;
+  const { address, balance, chain, onConnect, onNetworkClick, onWalletClick, connectWalletButtonVariant } = props;
   const { t } = useTranslation();
 
   const selectedChainTokenTicker = useMemo(() => chainToTicker(chain), [chain]);
@@ -31,11 +33,15 @@ const WalletButton: FC<WalletButtonProps> = props => {
   return (
     <>
       {!address && (
-        <ButtonWrapper className="tc__walletButton__disconnected" onClick={onConnect}>
-          <Typography variant="body-primary" weight="bold">
-            {t('WalletButton.buttonConnectWallet')}
-          </Typography>
-        </ButtonWrapper>
+        <div className="tc__walletButton__disconnected">
+          <ActionButton
+            labels={{ default: t('WalletButton.buttonConnectWallet') }}
+            onClick={onConnect}
+            variant={connectWalletButtonVariant ?? 'secondary'}
+            size="large"
+            state="default"
+          />
+        </div>
       )}
       {address && (
         <div className="tc__walletButton__connected">

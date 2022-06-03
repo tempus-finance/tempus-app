@@ -1,16 +1,19 @@
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import ledgerModule from '@web3-onboard/ledger';
 import gnosisModule from '@web3-onboard/gnosis';
 import injectedModule from '@web3-onboard/injected-wallets';
-import { init, useConnectWallet, useWallets } from '@web3-onboard/react';
+import { init, useConnectWallet, useSetChain, useWallets } from '@web3-onboard/react';
 import {
+  Chain,
+  chainNameToHexChainId,
   DecimalUtils,
   ethereumChainIdHex,
   ethereumForkChainIdHex,
   fantomChainIdHex,
   ZERO_ADDRESS,
 } from 'tempus-core-services';
-import { WalletButton } from '../shared';
+import { ActionButtonVariant, WalletButton } from '../shared';
 import ChainSelector from '../ChainSelector';
 import { setWalletAddress, useSelectedChain, useTokenBalance } from '../../hooks';
 
@@ -67,14 +70,24 @@ init({
   },
 });
 
-const Wallet: FC = () => {
+interface WalletProps {
+  connectWalletButtonVariant?: ActionButtonVariant;
+  onConnectWalletClick?: () => void;
+  redirectTo?: string;
+}
+
+const Wallet: FC<WalletProps> = props => {
+  const { connectWalletButtonVariant, onConnectWalletClick, redirectTo } = props;
   const connectedWallets = useWallets();
   const [{ wallet }, connect] = useConnectWallet();
   const selectedChain = useSelectedChain();
+  const [, setChain] = useSetChain();
 
   const nativeTokenBalance = useTokenBalance(ZERO_ADDRESS, selectedChain);
 
   const [chainSelectorOpen, setChainSelectorOpen] = useState<boolean>(false);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (wallet) {
@@ -87,9 +100,27 @@ const Wallet: FC = () => {
   /**
    * When user clicks on connect wallet button show a modal with all available wallets users can connect.
    */
-  const onConnectWallet = useCallback(() => {
-    connect({});
-  }, [connect]);
+  const onConnectWallet = useCallback(async () => {
+    onConnectWalletClick?.();
+    await connect({});
+
+    if (redirectTo) {
+      const match = redirectTo.match(/^\/pool\/([a-z-]+)\/[a-zA-Z]+\/[a-z-]+$/);
+
+      if (match) {
+        const chain = match[1] as Chain;
+        const hexChainId = chainNameToHexChainId(chain);
+
+        if (hexChainId) {
+          setChain({
+            chainId: hexChainId,
+          });
+        }
+      }
+
+      navigate(redirectTo);
+    }
+  }, [connect, navigate, onConnectWalletClick, redirectTo, setChain]);
 
   const onOpenChainSelector = useCallback(() => {
     setChainSelectorOpen(true);
@@ -153,6 +184,7 @@ const Wallet: FC = () => {
         onNetworkClick={onOpenChainSelector}
         // TODO - Add wallet popup
         onWalletClick={() => {}}
+        connectWalletButtonVariant={connectWalletButtonVariant}
       />
       <ChainSelector open={chainSelectorOpen} onClose={onCloseChainSelector} />
     </>
