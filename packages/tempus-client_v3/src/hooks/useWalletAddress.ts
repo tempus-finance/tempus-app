@@ -1,13 +1,15 @@
-import { state, useStateObservable } from '@react-rxjs/core';
-import { createSignal } from '@react-rxjs/utils';
+import { BehaviorSubject } from 'rxjs';
+import { bind } from '@react-rxjs/core';
 
-const [walletAddress$, setWalletAddress] = createSignal<string>();
-const stateWalletAddress$ = state(walletAddress$, '');
+export const walletAddress$ = new BehaviorSubject<string>('');
 
-export function useWalletAddress(): [string, (value: string) => void] {
-  const walletAddress = useStateObservable(stateWalletAddress$);
+export function setWalletAddress(address: string): void {
+  const currentAddress = walletAddress$.getValue();
 
-  return [walletAddress, setWalletAddress];
+  // We don't want to set same address multiple times because that would
+  // trigger unnecessary fetch in other hooks that depend on wallet address
+  if (currentAddress !== address) {
+    walletAddress$.next(address);
+  }
 }
-
-export { walletAddress$ };
+export const [useWalletAddress] = bind(walletAddress$);

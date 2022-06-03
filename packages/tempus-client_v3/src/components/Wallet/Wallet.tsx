@@ -12,7 +12,7 @@ import {
 } from 'tempus-core-services';
 import { WalletButton } from '../shared';
 import ChainSelector from '../ChainSelector';
-import { useSelectedChain, useWalletAddress, useTokenBalance } from '../../hooks';
+import { setWalletAddress, useSelectedChain, useTokenBalance } from '../../hooks';
 
 // TODO - Check with designers if block native UI for wallet management is fine to use
 
@@ -73,7 +73,6 @@ const Wallet: FC = () => {
   const selectedChain = useSelectedChain();
 
   const nativeTokenBalance = useTokenBalance(ZERO_ADDRESS, selectedChain);
-  const [, setWalletAddress] = useWalletAddress();
 
   const [chainSelectorOpen, setChainSelectorOpen] = useState<boolean>(false);
 
@@ -81,7 +80,7 @@ const Wallet: FC = () => {
     if (wallet) {
       setWalletAddress(wallet.accounts[0].address);
     }
-  }, [wallet, setWalletAddress]);
+  }, [wallet]);
 
   // TODO - Delete local storage under 'connectedWallets' when user disconnects the wallet
 

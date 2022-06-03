@@ -33,8 +33,7 @@ const stream$ = combineLatest([walletAddress$]).pipe(
   // TODO - Include servicesLoaded$ stream here as well
   mergeMap(([walletAddress]) => {
     const tokenBalanceFetchMap = [...tokenBalanceDataMap.values()].map(tokenBalanceData => {
-      const currentBalance = tokenBalanceData.subject.getValue();
-      if (currentBalance) {
+      if (!walletAddress) {
         return of(null);
       }
 
