@@ -7,7 +7,7 @@ import { LOAD_TIMEOUT, LOAD_SHORT_TIMEOUT }
 export async function manageDeposit
     (browser: BrowserContext, amount: string = '1', asset: string = 'USDC',
         token: string = 'USDC', fixedYield: boolean = true): Promise<void> {
-    const tabManage: Page = await tempusManageCurrency(browser, asset)
+    const tabManage: Page = await tempusManageCurrency(browser, asset);
     await tabManage.click('text="Deposit"');
     await tabManage.click('.MuiSelect-root');
     await tabManage.click(`.MuiButtonBase-root :text("${token}") >> nth=0`);
@@ -22,7 +22,10 @@ export async function manageDeposit
     }
 
     const tabCount = browser.pages().length;
-    await tabManage.click('text="Approve"');
+    const SELECTOR_APPROVE: string = 'text="Approve"';
+    if (await tabManage.locator(SELECTOR_APPROVE).count()) {
+        await tabManage.click(SELECTOR_APPROVE);
+    }
     await tabManage.waitForTimeout(LOAD_TIMEOUT);
 
     if (await browser.pages().length > tabCount) {
@@ -35,7 +38,7 @@ export async function manageDeposit
         }
 
         await mm.waitForTimeout(LOAD_TIMEOUT);
-        await mm.click('button:has-text("Switch network")');
+        await mm.click(`button:has-text("Switch network")`);
     }
 
     await tabManage.close();

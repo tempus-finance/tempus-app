@@ -1,15 +1,18 @@
 import { BrowserContext } from '@playwright/test';
-import { metamaskRegister, metamaskLogin } from '../modules/metamask';
+import { metamaskRegister, metamaskLogin, metamaskAddETHfork, metamaskAccountsAddAll, metamaskAccountSwitch } from '../modules/metamask';
 import { chromiumPersistant } from '../modules/browser';
 import { tempusMetamaskConnect } from '../modules/tempushome';
+import { ETH_NETWORK, tempusNetworkChange } from '../modules/network';
 
 (async () => {
   const browser: BrowserContext = await chromiumPersistant();
   await metamaskRegister(browser);
-  console.log('Metamask account registered');
   await metamaskLogin(browser);
   await tempusMetamaskConnect(browser);
-  console.log('Successful connection metamask-tempus');
   // TODO: add all metamask accounts and switch to 0, currently not needed
+  await metamaskAddETHfork(browser);
+  await metamaskAccountsAddAll(browser);
+  await metamaskAccountSwitch(browser, 1);
+  await tempusNetworkChange(browser, ETH_NETWORK.name);
   await browser.close();
 })();

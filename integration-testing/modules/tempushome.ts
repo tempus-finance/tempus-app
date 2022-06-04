@@ -30,6 +30,7 @@ export async function tempusMetamaskConnect(browser: BrowserContext):
 
         await mm.click('text="Connect"');
     }
+    console.log('Successful connection metamask-tempus');
     await tabTempus.close();
 }
 
@@ -38,8 +39,8 @@ export async function tempusManageCurrency(browser: BrowserContext, asset: strin
     const lang: Language = languageGenerator(langCode);
     const tabTempus = await browser.newPage();
     await tabTempus.goto(TEMPUS_URL);
-    await tabTempus.click(`svg:has-text("${asset}")`);
-    await tabTempus.click(`text="${lang.manage}" >> nth=0`);
+    await tabTempus.click(`.MuiTableCell-root >> svg:has-text("${asset}")`);
+    await tabTempus.click(`button:enabled >> text="${lang.manage}" >> nth=0`);
     return tabTempus;
 }
 
@@ -68,7 +69,7 @@ export async function tempusManageAppears(browser: BrowserContext, asset: string
     await tabTempus.goto(TEMPUS_URL);
     await tabTempus.click(`svg:has-text("${asset}")`);
 
-    const SELECTOR_MANAGE_BUTTON: string = `.MuiTableRow-root > td:has-text("${lang.manage}")`;
+    const SELECTOR_MANAGE_BUTTON: string = `button >> text="${lang.manage}" >> nth=0`;
 
     await expect(tabTempus.locator(SELECTOR_MANAGE_BUTTON)).toBeDefined();
     await tabTempus.close();
@@ -81,7 +82,7 @@ export async function tempusNewRow(browser: BrowserContext, asset: string = 'USD
     const SELECTOR_ROWS: string = '.MuiTableRow-root';
 
     const oldRowCount: number = await tabTempus.locator(SELECTOR_ROWS).count();
-    await tabTempus.click(`svg:has-text("${asset}")`);
+    await tabTempus.click(`.MuiTableCell-root >> svg:has-text("${asset}")`);
 
     await expect(tabTempus.locator(SELECTOR_ROWS)).not.toHaveCount(oldRowCount);
     await tabTempus.close();

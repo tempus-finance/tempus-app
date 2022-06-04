@@ -93,6 +93,7 @@ export async function metamaskRegister(browser: BrowserContext): Promise<void> {
         await tabMetamask.click(SELECTOR_ALLDONE);
     }
 
+    console.log('Metamask account registered');
     await tabMetamask.close();
 }
 
@@ -146,9 +147,9 @@ export async function metamaskAddETHfork(browser: BrowserContext): Promise<void>
         CurrencySymbol: 'ETH'
     };
 
-    await metamaskLogin(browser);
+    //await metamaskLogin(browser);
     const tabMetamask: Page = await browser.newPage()
-    await tabMetamask.goto(`chrome-extension://${METAMASK_ID}/home.html#settings/networks/add-network`);
+    await tabMetamask.goto(`${METAMASK_CHROME_URL}#settings/networks/add-network`);
     await tabMetamask.waitForTimeout(LOAD_SHORT_TIMEOUT);
     await tabMetamask.fill('input >> nth=1', eth_fork.Name);
     await tabMetamask.fill('input >> nth=2', eth_fork.RPC);
@@ -159,6 +160,7 @@ export async function metamaskAddETHfork(browser: BrowserContext): Promise<void>
     await tabMetamask.waitForTimeout(LOAD_SHORT_TIMEOUT);
     if (await tabMetamask.locator('.btn--rounded[disabled]:has-text("Save")').count() == 0) {
         await tabMetamask.click('text="Save"');
+        console.log('ETH fork successfully added to Metamask');
     }
     else {
         console.log('Couldn\'t add ETH fork to metamask. Error or ETH fork is already added.');
@@ -180,7 +182,9 @@ export async function metamaskAccountAdd(browser: BrowserContext, privateKey: st
 
 export async function metamaskAccountsAddAll(browser: BrowserContext): Promise<void> {
     await metamaskAccountAdd(browser, config.METAMASK_ACCOUNT_ETH_FORK);
+    console.log('Added ETH fork account');
     await metamaskAccountAdd(browser, config.METAMASK_ACCOUNT_FANTOM);
+    console.log('Added FTM account');
 }
 
 const accountIndexs: Map<string, number> = new Map<string, number>([
@@ -211,4 +215,8 @@ export async function metamaskAccountSwitch(browser: BrowserContext, accountInde
 
     await tabMetamask.click(`${SELECTOR_ACCOUNTS} >> nth=${accountIndex}`);
 
+    const SELECTOR_CONNECT: string = 'text=Connect';
+    if (await tabMetamask.locator(SELECTOR_CONNECT).count()) {
+        await tabMetamask.click(SELECTOR_CONNECT);
+    }
 }
