@@ -14,16 +14,16 @@ test.describe.serial('Homepage text matching tests', () => {
         await tempusTextHeaders(browser, false);
     });
 
-    test('Manage button appears on click (english)', async () => {
-        await tempusManageAppears(browser, undefined, 'en');
+    test('Manage button appears on click (italian)', async () => {
+        await tempusManageAppears(browser, undefined, 'it');
     });
 
-    test('Tempus home new row appears on click (english)', async () => {
+    test('Tempus home new row appears on click', async () => {
         await tempusNewRow(browser);
     });
 
-    test('Fiat/Crypto button (english)', async () => {
-        await tempusFiatCryptoButton(browser, 'en');
+    test('Fiat/Crypto button (spanish)', async () => {
+        await tempusFiatCryptoButton(browser, 'es');
     });
 
     test('Tempus home community links (english)', async () => {

@@ -30,7 +30,7 @@ export function languageGenerator(langCode: string): Language {
     return lang;
 }
 
-function getLangName(langCode: string): string {
+export function getLangName(langCode: string): string {
     const langName: string | undefined = langCodeToName.get(langCode);
     if (langName == undefined) {
         throw new Error(`Langauge ${langCode} isn't supported`);

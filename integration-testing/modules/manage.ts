@@ -1,45 +1,44 @@
 import { BrowserContext, Page } from "playwright";
 import { tempusManageCurrency } from "./tempushome";
-import { LOAD_TIMEOUT, LOAD_SHORT_TIMEOUT }
+import { LOAD_SHORT_TIMEOUT, LOAD_TIMEOUT }
     from "../utility/constants";
+import { Language, languageGenerator } from "./language";
 
 
 export async function manageDeposit
     (browser: BrowserContext, amount: string = '1', asset: string = 'USDC',
-        token: string = 'USDC', fixedYield: boolean = true): Promise<void> {
-    const tabManage: Page = await tempusManageCurrency(browser, asset);
-    await tabManage.click('text="Deposit"');
+        token: string = 'USDC', fixedYield: boolean = true, langCode: string = 'en'): Promise<void> {
+    const lang: Language = languageGenerator(langCode);
+    const tabManage: Page = await tempusManageCurrency(browser, asset, langCode);
+
+    //this will be a separate function/test
+    await tabManage.click(`text="${lang.settings}"`);
+    await tabManage.click(`text="${lang.auto}"`);
+    await tabManage.mouse.click(300, 300); // hardcoded for 16:9 full HD monitor
+
+    await tabManage.click(`text="${lang.deposit}"`);
     await tabManage.click('.MuiSelect-root');
     await tabManage.click(`.MuiButtonBase-root :text("${token}") >> nth=0`);
     await tabManage.waitForTimeout(LOAD_SHORT_TIMEOUT);
     await tabManage.fill('input[type="text"]', amount);
 
     if (fixedYield) {
-        await tabManage.click('text="Fixed Yield"');
+        await tabManage.click(`text="${lang.fixedYield}"`);
     }
     else {
-        await tabManage.click('text="Variable Yield"');
+        await tabManage.click(`text="${lang.variableYield}"`);
     }
 
-    const tabCount = browser.pages().length;
-    const SELECTOR_APPROVE: string = 'text="Approve"';
-    if (await tabManage.locator(SELECTOR_APPROVE).count()) {
-        await tabManage.click(SELECTOR_APPROVE);
-    }
+    //const tabCount = browser.pages().length;
+    await tabManage.waitForTimeout(LOAD_TIMEOUT * 5);
+    await tabManage.click(`text="${lang.execute}"`);
+    await tabManage.waitForTimeout(LOAD_TIMEOUT * 10); // possible error if slow machine
+
+    const mm = await browser.pages().slice(-1)[0];
+    await mm.click(`text="Confirm"`);
+
     await tabManage.waitForTimeout(LOAD_TIMEOUT);
-
-    if (await browser.pages().length > tabCount) {
-        const mm = await browser.pages().slice(-1)[0]
-        if (await mm.locator('text="Approve"').count()) {
-            await mm.click('text="Approve"');
-        }
-        else {
-            await mm.click('text="Reject"');
-        }
-
-        await mm.waitForTimeout(LOAD_TIMEOUT);
-        await mm.click(`button:has-text("Switch network")`);
-    }
+    await tabManage.pause();
 
     await tabManage.close();
 }

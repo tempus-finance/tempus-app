@@ -1,12 +1,14 @@
 import { BrowserContext, expect, Page } from '@playwright/test';
-import { Language, languageGenerator } from './language';
-import { tempusManageCurrency } from "./tempushome";
+import { LOAD_SHORT_TIMEOUT } from '../utility/constants';
+import { Language } from './language';
+import { tempusManageCurrency, tempusSwitchLanguage } from "./tempushome";
 
 
 export async function manageButtonsText(browser: BrowserContext, asset: string = 'USDC', langCode: string = 'en'):
     Promise<void> {
-    const lang: Language = languageGenerator(langCode);
     const page: Page = await tempusManageCurrency(browser, asset);
+    await page.waitForTimeout(LOAD_SHORT_TIMEOUT);
+    const lang: Language = await tempusSwitchLanguage(page, langCode);
     await expect(page.locator('.tc__sidebar-section-title >> nth=0')).toContainText(lang.basic);
     await expect(page.locator('.tc__sidebar-section-title >> nth=1')).toContainText(lang.advanced);
     await expect(page.locator('.tc__sidebar-view-item >> nth=0')).toHaveText(lang.deposit);

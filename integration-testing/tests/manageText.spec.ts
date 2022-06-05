@@ -14,12 +14,12 @@ test.describe.serial('Manage text tests', () => {
         await manageDisabledButtons(browser, 'USDC');
     });
 
-    test('USDC manage tab buttons, english', async () => {
+    test('USDC manage tab buttons, spanish', async () => {
         await manageButtonsText(browser, 'USDC', 'en');
     });
 
     test('DAI manage tab buttons, english', async () => {
-        await manageButtonsText(browser, 'DAI', 'en');
+        await manageButtonsText(browser, 'DAI', 'it');
     });
 
     test.afterAll(async () => {
