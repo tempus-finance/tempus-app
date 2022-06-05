@@ -1,6 +1,6 @@
 import { fireEvent, render } from '@testing-library/react';
 import I18nProvider from '../../../i18n/I18nProvider';
-import MaturityTerm from './MaturityTerm';
+import { MaturityTerm } from '../../../interfaces';
 import TermTabs, { TermTabsProps } from './TermTabs';
 
 const mockOnChange = jest.fn<void, [MaturityTerm]>();

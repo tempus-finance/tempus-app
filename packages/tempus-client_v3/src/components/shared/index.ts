@@ -19,9 +19,16 @@ import ProgressBar from './ProgressBar';
 import SwitcherButton from './SwitcherButton';
 import Modal from './Modal';
 import TermTabs from './TermTabs';
-import { Dropdown, DropdownCheckboxItem, DropdownSelectableItem, DropdownSelector } from './Dropdown';
+import {
+  Dropdown,
+  DropdownCheckboxItem,
+  DropdownRadioItem,
+  DropdownSelectableItem,
+  DropdownSelector,
+} from './Dropdown';
 import BaseInput from './BaseInput';
 import TextInput from './TextInput';
+import LoadingPlaceholder from './LoadingPlaceholder';
 import NumberInput from './NumberInput';
 import SlippageInput from './SlippageInput';
 import WalletButton from './WalletButton';
@@ -57,6 +64,7 @@ export {
   IconButtonGroup,
   Link,
   Loading,
+  LoadingPlaceholder,
   Logo,
   NavSubheader,
   Spacer,
@@ -68,6 +76,7 @@ export {
   Typography,
   Dropdown,
   DropdownCheckboxItem,
+  DropdownRadioItem,
   DropdownSelectableItem,
   DropdownSelector,
   BaseInput,

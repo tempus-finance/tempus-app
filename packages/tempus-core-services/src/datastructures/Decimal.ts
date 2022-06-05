@@ -81,6 +81,12 @@ export default class Decimal {
     return new Decimal(this.value.abs());
   }
 
+  equals(comparable: Numberish): boolean {
+    const decimal = new Decimal(comparable);
+
+    return this.value.eq(decimal.value);
+  }
+
   lt(another: Numberish): boolean {
     const decimal = new Decimal(another);
 

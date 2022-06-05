@@ -1,18 +1,19 @@
 import { FC, useCallback, useState } from 'react';
 import { Ticker, Decimal, DecimalUtils } from 'tempus-core-services';
+import { TokenMetadataProp } from '../../../interfaces';
 import BaseInput from '../BaseInput';
 import Loading from '../Loading';
 import Typography from '../Typography';
 import CurrencySelector from './CurrencySelector';
 import PercentageButton from './PercentageButton';
+
 import './CurrencyInput.scss';
 
 const inputPercentages = [25, 50, 75, 100];
 
 export interface CurrencyInputProps {
-  precision: number;
   maxAmount: Decimal;
-  usdRates: Map<Ticker, Decimal>;
+  tokens: TokenMetadataProp;
   disabled?: boolean;
   error?: string;
   onAmountUpdate?: (value: string) => void;
@@ -20,19 +21,19 @@ export interface CurrencyInputProps {
 }
 
 const CurrencyInput: FC<CurrencyInputProps> = props => {
-  const { precision, maxAmount, usdRates, disabled, error, onAmountUpdate, onCurrencyUpdate } = props;
+  const { tokens, maxAmount, disabled, error, onAmountUpdate, onCurrencyUpdate } = props;
   const [amount, setAmount] = useState<string>('');
   const [usdAmount, setUsdAmount] = useState<string>(DecimalUtils.formatToCurrency(0, 2, '$'));
-  const [selectedCurrency, setSelectedCurrency] = useState<Ticker>(Array.from(usdRates.keys())[0]);
+  const [selectedToken, setSelectedToken] = useState(tokens[0]);
 
   const updateUsdAmount = useCallback(
     (value: string) => {
-      const rate = usdRates.get(selectedCurrency);
-      const usdValue = !value || !rate || value === '.' ? new Decimal(0) : new Decimal(value).mul(rate);
+      const usdValue =
+        !value || !selectedToken.rate || value === '.' ? new Decimal(0) : new Decimal(value).mul(selectedToken.rate);
 
       setUsdAmount(DecimalUtils.formatToCurrency(usdValue, 2, '$'));
     },
-    [usdRates, selectedCurrency],
+    [selectedToken],
   );
 
   const handleValueChange = useCallback((value: string) => {
@@ -50,23 +51,26 @@ const CurrencyInput: FC<CurrencyInputProps> = props => {
 
   const handleCurrencyChange = useCallback(
     (currency: Ticker) => {
-      setSelectedCurrency(currency);
-      onCurrencyUpdate?.(currency);
-      handleValueChange('');
-      handleDebounceValueChange('');
+      const result = tokens.find(token => token.ticker === currency);
+      if (result) {
+        setSelectedToken(result);
+        onCurrencyUpdate?.(currency);
+        handleValueChange('');
+        handleDebounceValueChange('');
+      }
     },
-    [handleDebounceValueChange, handleValueChange, onCurrencyUpdate],
+    [handleDebounceValueChange, handleValueChange, onCurrencyUpdate, tokens],
   );
 
   const handlePercentageClick = useCallback(
     (percentage: number) => {
       const value = new Decimal(percentage).mul(maxAmount).div(100);
-      const formattedValue = new Decimal(value.toTruncated(precision)).toString();
+      const formattedValue = new Decimal(value.toTruncated(selectedToken.precision)).toString();
 
       handleValueChange(formattedValue);
       handleDebounceValueChange(formattedValue);
     },
-    [precision, handleDebounceValueChange, handleValueChange, maxAmount],
+    [selectedToken, handleDebounceValueChange, handleValueChange, maxAmount],
   );
 
   return (
@@ -77,7 +81,7 @@ const CurrencyInput: FC<CurrencyInputProps> = props => {
         }`}
       >
         <CurrencySelector
-          currencies={Array.from(usdRates.keys())}
+          currencies={tokens.map(token => token.ticker)}
           disabled={disabled}
           onChange={handleCurrencyChange}
         />
@@ -96,7 +100,7 @@ const CurrencyInput: FC<CurrencyInputProps> = props => {
               <BaseInput
                 value={amount}
                 placeholder="0"
-                pattern={`[0-9]*[.]?[0-9]{0,${precision}}`}
+                pattern={`[0-9]*[.]?[0-9]{0,${selectedToken.precision}}`}
                 disabled={disabled}
                 debounce
                 onChange={handleValueChange}

@@ -1,10 +1,10 @@
 import { FC, memo, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { DecimalUtils } from 'tempus-core-services';
+import { MaturityTerm } from '../../../interfaces';
 import ButtonWrapper from '../ButtonWrapper';
 import FormattedDate from '../FormattedDate';
 import Typography from '../Typography';
-import MaturityTerm from './MaturityTerm';
 
 interface TermTabProps {
   term: MaturityTerm;
@@ -18,7 +18,10 @@ const TermTab: FC<TermTabProps> = props => {
   const { t } = useTranslation();
 
   const handleClick = useCallback(() => onClick(term), [term, onClick]);
-  const formattedAprPercentage = useMemo(() => DecimalUtils.formatPercentage(term.apr, 1), [term.apr]);
+  const formattedAprPercentage = useMemo(
+    () => (term?.apr ? DecimalUtils.formatPercentage(term.apr, 1) : '0%'),
+    [term.apr],
+  );
 
   return (
     <ButtonWrapper

@@ -1,8 +1,8 @@
 import { ComponentStory, ComponentMeta } from '@storybook/react';
 import { useCallback, useEffect, useState } from 'react';
-import { ChainConfig, Decimal, Ticker } from 'tempus-core-services';
+import { ChainConfig, Decimal } from 'tempus-core-services';
 import { getConfigManager } from '../../config/getConfigManager';
-import { MaturityTerm } from '../shared/TermTabs';
+import { MaturityTerm } from '../../interfaces';
 import DepositModal from './DepositModal';
 
 export default {
@@ -17,9 +17,6 @@ const style = {
   justifyContent: 'center',
   height: '100px',
 };
-
-const singleCurrencyUsdRates = new Map<Ticker, Decimal>();
-singleCurrencyUsdRates.set('ETH', new Decimal(3500));
 
 const maturityTerms: MaturityTerm[] = [
   {
@@ -39,13 +36,10 @@ const Template: ComponentStory<typeof DepositModal> = () => {
   useEffect(() => {
     const retrieveConfig = async () => {
       const configManager = getConfigManager();
-      configManager.init().then(success => {
-        if (success) {
-          setConfig(configManager.getChainConfig('ethereum'));
-        }
-      });
-    };
+      configManager.init();
 
+      setConfig(configManager.getChainConfig('ethereum'));
+    };
     retrieveConfig();
   }, []);
 
@@ -64,8 +58,10 @@ const Template: ComponentStory<typeof DepositModal> = () => {
       </button>
 
       <DepositModal
-        inputPrecision={18}
-        usdRates={singleCurrencyUsdRates}
+        tokens={[
+          { precision: 6, precisionForUI: 2, address: '1', rate: new Decimal(1), ticker: 'USDC' },
+          { precision: 6, precisionForUI: 2, address: '2', rate: new Decimal(1), ticker: 'yvUSDC' },
+        ]}
         poolStartDate={new Date(2022, 3, 1)}
         maturityTerms={maturityTerms}
         open={modalOpen}

@@ -2,7 +2,7 @@ import { ComponentStory, ComponentMeta } from '@storybook/react';
 import { useCallback, useEffect, useState } from 'react';
 import { ChainConfig, Decimal, Ticker } from 'tempus-core-services';
 import { getConfigManager } from '../../config/getConfigManager';
-import WithdrawModal from './WithdrawModal';
+import { WithdrawModal } from './WithdrawModal';
 
 export default {
   title: 'WithdrawModal',
@@ -27,13 +27,10 @@ const Template: ComponentStory<typeof WithdrawModal> = () => {
   useEffect(() => {
     const retrieveConfig = async () => {
       const configManager = getConfigManager();
-      configManager.init().then(success => {
-        if (success) {
-          setConfig(configManager.getChainConfig('ethereum'));
-        }
-      });
-    };
+      configManager.init();
 
+      setConfig(configManager.getChainConfig('ethereum'));
+    };
     retrieveConfig();
   }, []);
 
@@ -52,8 +49,22 @@ const Template: ComponentStory<typeof WithdrawModal> = () => {
       </button>
 
       <WithdrawModal
-        inputPrecision={18}
-        usdRates={singleCurrencyUsdRates}
+        tokens={[
+          {
+            precision: 18,
+            precisionForUI: 4,
+            address: '1',
+            rate: new Decimal(3500),
+            ticker: 'ETH',
+          },
+          {
+            precision: 18,
+            precisionForUI: 4,
+            address: '2',
+            rate: new Decimal(3501),
+            ticker: 'stETH',
+          },
+        ]}
         open={modalOpen}
         onClose={onModalClose}
         chainConfig={config}

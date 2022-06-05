@@ -15,7 +15,7 @@ import {
   switchMap,
 } from 'rxjs';
 import { getServices, Decimal, StatisticsService, Chain, Ticker, TempusPoolService } from 'tempus-core-services';
-import { poolList$ } from './useConfig';
+import { poolList$ } from './usePoolList';
 
 const TOKEN_RATE_POLLING_INTERVAL_IN_MS = 30000;
 const DEBOUNCE_IN_MS = 500;
@@ -29,7 +29,7 @@ interface TokenInfoMap {
   };
 }
 
-interface TokenRateMap {
+export interface TokenRateMap {
   [chainTokenAddressString: string]: Decimal | null;
 }
 
@@ -49,7 +49,7 @@ const conversionRates$ = poolList$.pipe(
   ),
 );
 
-const tokenRates$: Observable<TokenRateMap> = combineLatest([poolList$, conversionRates$, polling$]).pipe(
+export const tokenRates$: Observable<TokenRateMap> = combineLatest([poolList$, conversionRates$, polling$]).pipe(
   mergeMap(([tempusPools, rates]) => {
     const uniqueTokens = Object.values(
       tempusPools.reduce(

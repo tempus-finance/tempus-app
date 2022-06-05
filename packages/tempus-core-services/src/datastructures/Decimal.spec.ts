@@ -17,12 +17,22 @@ describe('Decimal', () => {
         expected: BigNumber.from('123123000000000000000'),
       },
       {
+        value: BigNumber.from('123123000000000'),
+        precisionConvertFrom: 12,
+        expected: BigNumber.from('123123000000000000000'),
+      },
+      {
+        value: BigNumber.from('123123000000000000000000000'),
+        precisionConvertFrom: 24,
+        expected: BigNumber.from('123123000000000000000'),
+      },
+      {
         value: new Decimal(123.123),
         expected: BigNumber.from('123123000000000000000'),
       },
-    ].forEach(({ value, expected }) =>
+    ].forEach(({ value, precisionConvertFrom, expected }) =>
       it(`accepts number/string/BigNumber/Decimal: ${value.toString()}`, () => {
-        const decimal = new Decimal(value);
+        const decimal = new Decimal(value, precisionConvertFrom);
 
         expect(decimal.value.eq(expected)).toBeTruthy();
       }),
@@ -288,6 +298,49 @@ describe('Decimal', () => {
         const result = new Decimal(expected);
 
         expect(decimal.abs()).toEqual(result);
+      });
+    }
+  });
+
+  describe('eq()', () => {
+    [
+      { value: 123.123, another: 123, expected: false },
+      { value: 123.123, another: '123', expected: false },
+      { value: 123.123, another: new Decimal(123), expected: false },
+      { value: 123.123, another: 123.123, expected: true },
+      { value: 123.123, another: '123.123', expected: true },
+      { value: 123.123, another: new Decimal(123.123), expected: true },
+      { value: 123.123, another: 124, expected: false },
+      { value: 123.123, another: '124', expected: false },
+      { value: 123.123, another: new Decimal(124), expected: false },
+      { value: -123.123, another: -123, expected: false },
+      { value: -123.123, another: '-123', expected: false },
+      { value: -123.123, another: new Decimal(-123), expected: false },
+      { value: -123.123, another: -123.123, expected: true },
+      { value: -123.123, another: '-123.123', expected: true },
+      { value: -123.123, another: new Decimal(-123.123), expected: true },
+      { value: -123.123, another: -124, expected: false },
+      { value: -123.123, another: '-124', expected: false },
+      { value: -123.123, another: new Decimal(-124), expected: false },
+    ].forEach(({ value, another, expected }) =>
+      it(`${value} should ${expected ? '' : 'not'} be equal to ${another}`, () => {
+        const decimal = new Decimal(value);
+        const anotherDecimal = new Decimal(another);
+
+        expect(decimal.equals(anotherDecimal)).toEqual(expected);
+      }),
+    );
+
+    for (let i = 0; i < 10; i++) {
+      const value = Math.random() * 100 - 50;
+      const another = Math.random() * 100 - 50;
+      const expected = value === another;
+
+      it(`${value} should ${expected ? '' : 'not'} be equal to ${another}`, () => {
+        const decimal = new Decimal(value);
+        const anotherDecimal = new Decimal(another);
+
+        expect(decimal.equals(anotherDecimal)).toEqual(expected);
       });
     }
   });

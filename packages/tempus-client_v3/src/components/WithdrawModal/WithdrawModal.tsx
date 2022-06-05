@@ -1,20 +1,20 @@
 import { FC, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ChainConfig, Decimal, Ticker } from 'tempus-core-services';
+import { TokenMetadataProp } from '../../interfaces';
 import CurrencyInputModal, { CurrencyInputModalInfoRow } from '../CurrencyInputModal';
 import { ActionButtonState } from '../shared';
 import { ModalProps } from '../shared/Modal/Modal';
 
 export interface WithdrawModalProps extends ModalProps {
-  inputPrecision: number;
-  usdRates: Map<Ticker, Decimal>;
+  tokens: TokenMetadataProp;
   chainConfig?: ChainConfig;
 }
 
-const WithdrawModal: FC<WithdrawModalProps> = props => {
-  const { open, onClose, inputPrecision, usdRates, chainConfig } = props;
+export const WithdrawModal: FC<WithdrawModalProps> = props => {
+  const { open, onClose, tokens, chainConfig } = props;
   const [balance, setBalance] = useState(new Decimal(100)); // TODO: load balance for selected token
-  const [currency, setCurrency] = useState(Array.from(usdRates.keys())[0]);
+  const [currency, setCurrency] = useState(tokens[0].ticker);
   const [actionButtonState, setActionButtonState] = useState<ActionButtonState>('default');
   const { t } = useTranslation();
 
@@ -48,13 +48,12 @@ const WithdrawModal: FC<WithdrawModalProps> = props => {
 
   return (
     <CurrencyInputModal
+      tokens={tokens}
       open={open}
       onClose={onClose}
       title={t('WithdrawModal.title')}
       description={t('WithdrawModal.description')}
-      inputPrecision={inputPrecision}
       balance={balance}
-      usdRates={usdRates}
       infoRows={infoRows}
       actionButtonLabels={{
         action: {
@@ -70,5 +69,3 @@ const WithdrawModal: FC<WithdrawModalProps> = props => {
     />
   );
 };
-
-export default WithdrawModal;

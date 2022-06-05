@@ -1,21 +1,15 @@
 import { useEffect, useMemo, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import {
-  Chain,
-  Decimal,
-  prettifyChainName,
-  ProtocolName,
-  TempusPool,
-  Ticker,
-  tokenColorMap,
-} from 'tempus-core-services';
-import { useChainList, useFilteredSortedPoolList, useSelectedChain } from '../../../hooks';
+import { Chain, prettifyChainName, ProtocolName, TempusPool, Ticker, tokenColorMap } from 'tempus-core-services';
+import { useChainList, useFilteredSortedPoolList, useFixedAprs, useSelectedChain } from '../../../hooks';
 import { PoolCard, PoolCardStatus, PoolsHeading } from '../../shared';
-import './MarketsPools.scss';
-import ShowMoreButtonWrapper from './ShowMoreButton';
+import ShowMoreButtonWrapper from './ShowMoreButtonWrapper';
 
-const NUMBER_OF_CARDS_PER_PAGE = 3;
+import './MarketsPools.scss';
+
+const NUMBER_OF_CARDS_PER_PAGE = 6;
+const NUMBER_OF_CARDS_SHOW_AT_START = 3;
 
 interface CardData {
   chain: Chain;
@@ -32,6 +26,7 @@ const MarketsPools = (): JSX.Element => {
   const chains = useChainList();
   const tempusPools = useFilteredSortedPoolList();
   const selectedChain = useSelectedChain();
+  const fixedAprs = useFixedAprs();
 
   // When users clicks show more button, number of visible pools is increased
   // When user sorts/filters pool list - number of visible pools for each chain is reset
@@ -42,7 +37,7 @@ const MarketsPools = (): JSX.Element => {
     const result: { [key in Chain]?: number } = {};
 
     chains.forEach(chain => {
-      result[chain] = NUMBER_OF_CARDS_PER_PAGE;
+      result[chain] = NUMBER_OF_CARDS_SHOW_AT_START;
     });
 
     setVisibleChainPools(result);
@@ -51,7 +46,7 @@ const MarketsPools = (): JSX.Element => {
   const onShowMoreClick = useCallback((chain: Chain) => {
     setVisibleChainPools(prevState => ({
       ...prevState,
-      [chain]: (prevState[chain] || NUMBER_OF_CARDS_PER_PAGE) + NUMBER_OF_CARDS_PER_PAGE,
+      [chain]: (prevState[chain] || NUMBER_OF_CARDS_SHOW_AT_START) + NUMBER_OF_CARDS_PER_PAGE,
     }));
   }, []);
 
@@ -130,7 +125,7 @@ const MarketsPools = (): JSX.Element => {
           return null;
         }
 
-        const cardsToShow = chainCards.slice(0, visibleChainPools[chain] || NUMBER_OF_CARDS_PER_PAGE);
+        const cardsToShow = chainCards.slice(0, visibleChainPools[chain] || NUMBER_OF_CARDS_SHOW_AT_START);
 
         return (
           <div key={chain}>
@@ -144,6 +139,7 @@ const MarketsPools = (): JSX.Element => {
 
                 const terms = chainCard.pools.map(pool => new Date(pool.maturityDate));
                 const poolAddresses = chainCard.pools.map(pool => pool.address);
+                const aprs = chainCard.pools.map(pool => fixedAprs[`${pool.chain}-${pool.address}`]);
 
                 let cardStatus: PoolCardStatus = 'Fixed';
                 if (chainCard.matured) {
@@ -158,7 +154,7 @@ const MarketsPools = (): JSX.Element => {
                 return (
                   <PoolCard
                     key={`${chain}-${chainCard.protocol}-${chainCard.tokenAddress}-${chainCard.matured}`}
-                    aprValues={[new Decimal(0.1)]}
+                    aprValues={aprs}
                     color={cardColor || '#ffffff'}
                     poolCardStatus={cardStatus}
                     poolCardVariant="markets"
@@ -177,10 +173,16 @@ const MarketsPools = (): JSX.Element => {
                 <ShowMoreButtonWrapper
                   chain={chain}
                   onClick={onShowMoreClick}
-                  label={t('MarketsPools.showMoreButtonLabel', {
-                    numOfCardsToShow: Math.min(cardsToShow.length + NUMBER_OF_CARDS_PER_PAGE, chainCards.length),
-                    totalNumOfCards: chainCards.length,
-                  })}
+                  label={
+                    chainCards.length - cardsToShow.length > NUMBER_OF_CARDS_PER_PAGE
+                      ? t('MarketsPools.showMoreXOfYButtonLabel', {
+                          numOfCardsToShow: NUMBER_OF_CARDS_PER_PAGE,
+                          numOfRemainingCards: chainCards.length - cardsToShow.length,
+                        })
+                      : t('MarketsPools.showMoreXButtonLabel', {
+                          numOfCardsToShow: chainCards.length - cardsToShow.length,
+                        })
+                  }
                 />
               </div>
             )}

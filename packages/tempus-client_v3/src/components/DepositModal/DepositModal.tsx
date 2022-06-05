@@ -1,33 +1,39 @@
 import { FC, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ChainConfig, Decimal, Ticker } from 'tempus-core-services';
+import { ChainConfig, chainIdToChainName, Ticker, ZERO } from 'tempus-core-services';
+import {
+  setPoolForYieldAtMaturity,
+  setTokenAmountForYieldAtMaturity,
+  useDepositModalData,
+  useWalletBalances,
+} from '../../hooks';
+import { MaturityTerm, TokenMetadataProp } from '../../interfaces';
 import { ModalProps } from '../shared/Modal/Modal';
-import { MaturityTerm } from '../shared/TermTabs';
-import DepositModalHeader from './DepositModalHeader';
-import CurrencyInputModal, {
-  CurrencyInputModalActionButtonLabels,
-  CurrencyInputModalInfoRow,
-} from '../CurrencyInputModal';
 import { ActionButtonState, ChartDot, SelectableChartDataPoint, PercentageDateChart } from '../shared';
+import CurrencyInputModal, { CurrencyInputModalActionButtonLabels } from '../CurrencyInputModal';
+import DepositModalHeader from './DepositModalHeader';
+import DepositModalInfoRows from './DepositModalInfoRows';
+
 import './DepositModal.scss';
 
 export interface DepositModalProps extends ModalProps {
-  inputPrecision: number;
-  usdRates: Map<Ticker, Decimal>;
+  tokens: TokenMetadataProp;
   poolStartDate: Date;
   maturityTerms: MaturityTerm[];
   chainConfig?: ChainConfig;
 }
 
 const DepositModal: FC<DepositModalProps> = props => {
-  const { open, onClose, inputPrecision, usdRates, poolStartDate, maturityTerms, chainConfig } = props;
-  const [balance, setBalance] = useState(new Decimal(100)); // TODO: load balance for selected token
+  const { tokens, open, onClose, poolStartDate, maturityTerms, chainConfig } = props;
   const [maturityTerm, setMaturityTerm] = useState(maturityTerms[0]);
-  const [amount, setAmount] = useState(new Decimal(0));
-  const [currency, setCurrency] = useState(Array.from(usdRates.keys())[0]);
+  const [token, setToken] = useState(tokens[0]);
   const [approved, setApproved] = useState(false);
   const [actionButtonState, setActionButtonState] = useState<ActionButtonState>('default');
+  const balances = useWalletBalances();
   const { t } = useTranslation();
+
+  const useDepositModalProps = useDepositModalData();
+  const modalProps = useDepositModalProps();
 
   const actionButtonLabels: CurrencyInputModalActionButtonLabels = {
     preview: {
@@ -47,6 +53,11 @@ const DepositModal: FC<DepositModalProps> = props => {
           success: t('DepositModal.labelApproveSuccess'),
         },
   };
+
+  const balance = useMemo(() => {
+    const chain = chainConfig?.chainId ? chainIdToChainName(chainConfig?.chainId) : undefined;
+    return balances[`${chain}-${token.address}`] ?? ZERO;
+  }, [balances, chainConfig?.chainId, token.address]);
 
   const chartData = useMemo(
     () =>
@@ -80,31 +91,30 @@ const DepositModal: FC<DepositModalProps> = props => {
     [chartData, chartDot],
   );
 
-  const infoRows = useMemo(() => {
-    // TODO: Replace with real yield based on input amount
-    const yieldAtMaturity = amount.mul(0.1);
-    return (
-      <>
-        <CurrencyInputModalInfoRow
-          label={t('DepositModal.labelAvailableForDeposit')}
-          value={balance.toString()}
-          currency={currency}
-        />
-        <CurrencyInputModalInfoRow
-          label={t('DepositModal.labelYieldAtMaturity')}
-          value={`${yieldAtMaturity}`}
-          valueChange="increase"
-          currency="stETH"
-        />
-      </>
-    );
-  }, [amount, balance, currency, t]);
+  const handleMaturityChange = useCallback(
+    (newTerm: MaturityTerm) => {
+      const termIndex = maturityTerms.findIndex(term => term.date === newTerm.date) ?? 0;
+      const selectedPool = modalProps?.tempusPools[termIndex];
 
-  const handleCurrencyChange = useCallback((newCurrency: Ticker) => {
-    // TODO: load balance for new currency
-    setBalance(new Decimal(101));
-    setCurrency(newCurrency);
-  }, []);
+      if (selectedPool) {
+        setPoolForYieldAtMaturity(selectedPool);
+      }
+
+      setMaturityTerm(newTerm);
+    },
+    [maturityTerms, modalProps],
+  );
+
+  const handleCurrencyChange = useCallback(
+    (newCurrency: Ticker) => {
+      const newToken = tokens.find(value => value.ticker === newCurrency);
+
+      if (newToken) {
+        setToken(newToken);
+      }
+    },
+    [tokens],
+  );
 
   const approveDeposit = useCallback(() => {
     // TODO: Implement approve deposit function
@@ -135,6 +145,7 @@ const DepositModal: FC<DepositModalProps> = props => {
 
   return (
     <CurrencyInputModal
+      tokens={tokens}
       open={open}
       onClose={onClose}
       title={t('DepositModal.title')}
@@ -142,15 +153,13 @@ const DepositModal: FC<DepositModalProps> = props => {
       preview={depositYieldChart}
       header={<DepositModalHeader />}
       maturityTerms={maturityTerms}
-      inputPrecision={inputPrecision}
       balance={balance}
-      usdRates={usdRates}
-      infoRows={infoRows}
+      infoRows={<DepositModalInfoRows balance={balance} balanceToken={token} yieldToken={tokens[1]} />}
       actionButtonLabels={actionButtonLabels}
       actionButtonState={actionButtonState}
       onTransactionStart={approved ? deposit : approveDeposit}
-      onMaturityChange={setMaturityTerm}
-      onAmountChange={setAmount}
+      onMaturityChange={handleMaturityChange}
+      onAmountChange={setTokenAmountForYieldAtMaturity}
       onCurrencyUpdate={handleCurrencyChange}
       chainConfig={chainConfig}
     />

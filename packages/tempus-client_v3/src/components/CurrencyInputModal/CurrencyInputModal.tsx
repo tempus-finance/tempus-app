@@ -1,11 +1,13 @@
 import { FC, ReactNode, useCallback, useMemo, useState } from 'react';
 import { ChainConfig, Decimal, Ticker } from 'tempus-core-services';
+import { MaturityTerm, TokenMetadataProp } from '../../interfaces';
 import { ActionButtonLabels, ActionButtonState, ButtonWrapper, Icon, Modal, Typography } from '../shared';
 import { ModalProps } from '../shared/Modal/Modal';
-import TermTabs, { MaturityTerm } from '../shared/TermTabs';
-import './CurrencyInputModal.scss';
+import TermTabs from '../shared/TermTabs';
 import ModalActionContent from './ModalActionContent';
 import ModalPreviewContent from './ModalPreviewContent';
+
+import './CurrencyInputModal.scss';
 
 type CurrencyInputModalContent = 'preview' | 'action';
 
@@ -23,8 +25,7 @@ export interface CurrencyInputModalProps extends ModalProps {
   description: string | CurrencyInputModalDescription;
   preview?: ReactNode;
   balance: Decimal;
-  inputPrecision: number;
-  usdRates: Map<Ticker, Decimal>;
+  tokens: TokenMetadataProp;
   maturityTerms?: MaturityTerm[];
   chainConfig?: ChainConfig;
   infoRows?: ReactNode;
@@ -45,8 +46,7 @@ const CurrencyInputModal: FC<CurrencyInputModalProps> = props => {
     header,
     preview,
     balance,
-    inputPrecision,
-    usdRates,
+    tokens,
     maturityTerms,
     chainConfig,
     infoRows,
@@ -111,9 +111,8 @@ const CurrencyInputModal: FC<CurrencyInputModalProps> = props => {
       {content === 'action' && (
         <ModalActionContent
           balance={balance}
-          inputPrecision={inputPrecision}
           disabledInput={disabledInput}
-          usdRates={usdRates}
+          tokens={tokens}
           chainConfig={chainConfig}
           infoRows={infoRows}
           actionButtonLabels={actionButtonLabels.action}

@@ -1,13 +1,14 @@
-import { memo, useEffect, useState } from 'react';
+import { memo, useEffect } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { initServices } from 'tempus-core-services';
-import { useLocale, useSelectedChain, useUserPreferences } from '../../hooks';
+import { useLocale, useSelectedChain, useUserPreferences, usePoolBalances, useServicesLoaded } from '../../hooks';
 import Markets from '../Markets';
 import Navbar from '../Navbar/Navbar';
 import { getConfigManager } from '../../config/getConfigManager';
-import ModalResolver from '../DepositModal/ModalResolver';
+import { DepositModalResolver } from '../DepositModal/DepositModalResolver';
 import { PoolPositionModalResolver } from '../PoolPositionModal';
+import { WithdrawModalResolver } from '../WithdrawModal';
 import PageNavigation, { PageNavigationLink } from '../PageNavigation';
 import Portfolio from '../Portfolio';
 import TotalValueLocked from '../TotalValueLocked';
@@ -15,13 +16,14 @@ import TotalValueLocked from '../TotalValueLocked';
 import './App.scss';
 
 const App = () => {
-  const [servicesLoaded, setServicesLoaded] = useState<boolean>(false);
+  const [servicesLoaded, setServicesLoaded] = useServicesLoaded();
   const { t } = useTranslation();
 
   // to keep at least one subscriber of the stream insides the hook
   useLocale();
   useUserPreferences();
   useSelectedChain();
+  usePoolBalances();
 
   const navigationLinks: PageNavigationLink[] = [
     { text: t('App.navMarkets'), path: '/' },
@@ -31,18 +33,15 @@ const App = () => {
   useEffect(() => {
     const retrieveConfig = () => {
       const configManger = getConfigManager();
-      configManger.init().then(success => {
-        if (success) {
-          initServices('ethereum', configManger.getConfig());
-          initServices('fantom', configManger.getConfig());
-          initServices('ethereum-fork', configManger.getConfig());
-          setServicesLoaded(true);
-        }
-      });
-    };
+      configManger.init();
 
+      initServices('ethereum', configManger.getConfig());
+      initServices('fantom', configManger.getConfig());
+      initServices('ethereum-fork', configManger.getConfig());
+      setServicesLoaded(true);
+    };
     retrieveConfig();
-  }, []);
+  }, [setServicesLoaded]);
 
   return (
     <div className="tc__app__wrapper">
@@ -58,8 +57,12 @@ const App = () => {
           <div className="tc__app__body">
             <Routes>
               <Route path="/portfolio" element={<Portfolio />} />
-              <Route path="mature-pool/:chain/:ticker/:protocol/:poolAddress" element={<PoolPositionModalResolver />} />
-              <Route path="pool/:chain/:ticker/:protocol" element={<ModalResolver />} />
+              <Route
+                path="/mature-pool/:chain/:ticker/:protocol/:poolAddress"
+                element={<PoolPositionModalResolver />}
+              />
+              <Route path="/withdraw/:chain/:ticker/:protocol/:poolAddress" element={<WithdrawModalResolver />} />
+              <Route path="/pool/:chain/:ticker/:protocol" element={<DepositModalResolver />} />
               <Route path="/" element={<Markets />} />
             </Routes>
           </div>

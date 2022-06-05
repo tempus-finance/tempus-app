@@ -45,38 +45,108 @@ const Template: ComponentStory<typeof CurrencyInput> = props => <CurrencyInput {
 
 export const SingleCurrencyInput = Template.bind({});
 SingleCurrencyInput.args = {
-  usdRates: singleCurrencyUsdRates,
-  precision: 18,
+  tokens: [
+    {
+      precision: 18,
+      precisionForUI: 4,
+      address: '1',
+      rate: new Decimal(3500),
+      ticker: 'ETH',
+    },
+    {
+      precision: 18,
+      precisionForUI: 4,
+      address: '2',
+      rate: new Decimal(3501),
+      ticker: 'stETH',
+    },
+  ],
   maxAmount: new Decimal(100),
 };
 
 export const MultiCurrencyInput = Template.bind({});
 MultiCurrencyInput.args = {
-  usdRates: multipleCurrencyUsdRates,
-  precision: 18,
+  tokens: [
+    {
+      precision: 18,
+      precisionForUI: 4,
+      address: '1',
+      rate: new Decimal(3500),
+      ticker: 'ETH',
+    },
+    {
+      precision: 18,
+      precisionForUI: 4,
+      address: '2',
+      rate: new Decimal(3501),
+      ticker: 'stETH',
+    },
+  ],
   maxAmount: new Decimal(100),
 };
 
 export const DisabledSingleCurrencyInput = Template.bind({});
 DisabledSingleCurrencyInput.args = {
-  usdRates: singleCurrencyUsdRates,
-  precision: 18,
+  tokens: [
+    {
+      precision: 18,
+      precisionForUI: 4,
+      address: '1',
+      rate: new Decimal(3500),
+      ticker: 'ETH',
+    },
+    {
+      precision: 18,
+      precisionForUI: 4,
+      address: '2',
+      rate: new Decimal(3501),
+      ticker: 'stETH',
+    },
+  ],
   maxAmount: new Decimal(100),
   disabled: true,
 };
 
 export const DisabledMultiCurrencyInput = Template.bind({});
 DisabledMultiCurrencyInput.args = {
-  usdRates: multipleCurrencyUsdRates,
-  precision: 18,
+  tokens: [
+    {
+      precision: 18,
+      precisionForUI: 4,
+      address: '1',
+      rate: new Decimal(3500),
+      ticker: 'ETH',
+    },
+    {
+      precision: 18,
+      precisionForUI: 4,
+      address: '2',
+      rate: new Decimal(3501),
+      ticker: 'stETH',
+    },
+  ],
   maxAmount: new Decimal(100),
   disabled: true,
 };
 
 export const SingleCurrencyInputWithError = Template.bind({});
 SingleCurrencyInputWithError.args = {
-  usdRates: singleCurrencyUsdRates,
-  precision: 18,
+  tokens: [
+    {
+      precision: 18,
+      precisionForUI: 4,
+      address: '1',
+      rate: new Decimal(3500),
+      ticker: 'ETH',
+    },
+    {
+      precision: 18,
+      precisionForUI: 4,
+      address: '2',
+      rate: new Decimal(3501),
+      ticker: 'stETH',
+    },
+  ],
   maxAmount: new Decimal(100),
   error: 'Value is too low',
 };

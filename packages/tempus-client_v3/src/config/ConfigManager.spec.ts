@@ -1,14 +1,20 @@
-import { pool1, pool2, pool3, pool4 } from '../mocks/config/mockConfig';
+import { pool1, pool2, pool3, pool4, pool5 } from '../mocks/config/mockConfig';
 import { getConfigManager } from './getConfigManager';
 
 describe('ConfigManager', () => {
   const configManager = getConfigManager();
 
   describe('init', () => {
-    it('returns `success` after invoking `init`', async () => {
-      const result = await configManager.init();
+    it('populates chain, pool and tokens lists', async () => {
+      configManager.init();
 
-      expect(result).toBe(true);
+      const chainList = configManager.getChainList();
+      const poolList = configManager.getPoolList();
+      const tokenList = configManager.getTokenList();
+
+      expect(chainList.length).toEqual(3);
+      expect(poolList.length).toEqual(5);
+      expect(tokenList.length).toEqual(22);
     });
   });
 
@@ -16,7 +22,7 @@ describe('ConfigManager', () => {
     it('returns a list of pools', () => {
       const result = configManager.getPoolList();
 
-      expect(result).toStrictEqual([pool1, pool2, pool3, pool4]);
+      expect(result).toStrictEqual([pool1, pool2, pool3, pool4, pool5]);
     });
   });
 
@@ -61,6 +67,37 @@ describe('ConfigManager', () => {
       const result = configManager.getEarliestStartDate('fantom', 'USDC', 'yearn');
 
       expect(result.getTime()).toBe(1642204800000);
+    });
+  });
+
+  describe('getMaturityDates', () => {
+    it('returns all dates when no chain is selected', () => {
+      const result = configManager.getMaturityDates();
+
+      expect(result[0].getTime()).toBe(1671062400000);
+      expect(result[1].getTime()).toBe(1676419200000);
+      expect(result[2].getTime()).toBe(1709251200000);
+      expect(result[3].getTime()).toBe(1735689600000);
+      expect(result[4].getTime()).toBe(1743724800000);
+    });
+
+    it('returns all dates when `ethereum` chain is passed', () => {
+      const result = configManager.getMaturityDates('ethereum');
+
+      expect(result[0].getTime()).toBe(1709251200000);
+      expect(result[1].getTime()).toBe(1735689600000);
+    });
+
+    it('returns all dates when `ethereum` chain and `ETH` token are passed', () => {
+      const result = configManager.getMaturityDates('ethereum', 'ETH');
+
+      expect(result[0].getTime()).toBe(1735689600000);
+    });
+
+    it('returns all dates when `fantom` chain, `WETH` token and `yearn` protocol are passed', () => {
+      const result = configManager.getMaturityDates('fantom', 'WETH', 'yearn');
+
+      expect(result[0].getTime()).toBe(1671062400000);
     });
   });
 
@@ -156,6 +193,14 @@ describe('ConfigManager', () => {
         {
           address: '00004-amm',
           chain: 'fantom',
+        },
+        {
+          address: '0x0000000000000000000000000000000000000000',
+          chain: 'fantom',
+        },
+        {
+          address: '0x0000000000000000000000000000000000000000',
+          chain: 'ethereum-fork',
         },
       ]);
     });

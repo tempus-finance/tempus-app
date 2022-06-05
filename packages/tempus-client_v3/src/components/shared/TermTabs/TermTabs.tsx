@@ -1,5 +1,5 @@
-import { FC, useCallback, useState } from 'react';
-import MaturityTerm from './MaturityTerm';
+import { FC, useCallback, useEffect, useState } from 'react';
+import { MaturityTerm } from '../../../interfaces';
 import TermTab from './TermTab';
 import './TermTabs.scss';
 
@@ -14,11 +14,20 @@ const TermTabs: FC<TermTabsProps> = props => {
   const [selectedTerm, setSelectedTerm] = useState<MaturityTerm>(terms[0]);
   const onClick = useCallback(
     (value: MaturityTerm) => {
-      setSelectedTerm(value);
-      onChange?.(value);
+      if (terms.length > 1) {
+        setSelectedTerm(value);
+        onChange?.(value);
+      }
     },
-    [onChange],
+    [terms, onChange],
   );
+
+  useEffect(() => {
+    if (terms.length === 1) {
+      setSelectedTerm(terms[0]);
+      onChange?.(terms[0]);
+    }
+  }, [terms, onChange]);
 
   return (
     <div className="tc__term-tabs">

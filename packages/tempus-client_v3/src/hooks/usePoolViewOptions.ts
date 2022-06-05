@@ -4,12 +4,15 @@ import { combineLatest, map, withLatestFrom } from 'rxjs';
 import { useCallback } from 'react';
 import { TempusPool, ZERO } from 'tempus-core-services';
 import { FilterType, PoolType, SortOrder, SortType, ViewType } from '../interfaces';
-import { poolList$ } from './useConfig';
+import { poolList$ } from './usePoolList';
 import { poolTvls$ } from './useTvlData';
+import { poolBalances$ } from './usePoolBalances';
+import { poolAprs$, PoolFixedAprMap } from './useFixedAprs';
 
 export interface PoolViewOptions {
   viewType: ViewType;
   poolType: PoolType;
+  // on UI we only support on filter at a time, keep Set<FilterType> just to prepare to support multiple filters
   filters: Set<FilterType>;
   sortType: SortType;
   sortOrder: SortOrder;
@@ -27,27 +30,35 @@ const stateFilters$ = state(filters$, new Set<FilterType>(['active']));
 const stateSortType$ = state(sortType$, 'a-z');
 const stateSortOrder$ = state(sortOrder$, 'asc');
 const statePoolTvls$ = state(poolTvls$, {});
+const statePoolBalances$ = state(poolBalances$, {});
+const statePoolAprs$ = state(poolAprs$, {});
 
 export const isPoolMatured = (tempusPool: TempusPool): boolean => tempusPool.maturityDate <= Date.now();
-// TODO: check other operations, and check whether it's -ve APR
-export const isPoolInactive = (tempusPool: TempusPool): boolean => !!tempusPool.disabledOperations?.deposit;
-export const isPoolActive = (tempusPool: TempusPool): boolean =>
-  !isPoolMatured(tempusPool) && !isPoolInactive(tempusPool);
+export const isPoolInactive = (tempusPool: TempusPool, poolAprs: PoolFixedAprMap): boolean =>
+  !!tempusPool.disabledOperations?.deposit || !!poolAprs[`${tempusPool.chain}-${tempusPool.address}`]?.lt(ZERO);
+export const isPoolActive = (tempusPool: TempusPool, poolAprs: PoolFixedAprMap): boolean =>
+  !isPoolMatured(tempusPool) && !isPoolInactive(tempusPool, poolAprs);
 
-const activePoolList$ = poolList$.pipe(map(tempusPools => tempusPools.filter(isPoolActive)));
-const inactivePoolList$ = poolList$.pipe(map(tempusPools => tempusPools.filter(isPoolInactive)));
+const activePoolList$ = combineLatest([poolList$, statePoolAprs$]).pipe(
+  map(([tempusPools, poolAprs]) => tempusPools.filter(pool => isPoolActive(pool, poolAprs))),
+);
+const inactivePoolList$ = combineLatest([poolList$, statePoolAprs$]).pipe(
+  map(([tempusPools, poolAprs]) => tempusPools.filter(pool => isPoolInactive(pool, poolAprs))),
+);
 const maturedPoolList$ = poolList$.pipe(map(tempusPools => tempusPools.filter(isPoolMatured)));
 
 const filteredPoolList$ = combineLatest([poolList$, stateFilters$]).pipe(
-  map(([tempusPools, filters]) =>
+  // only want to get the latest data instead of getting every interval
+  withLatestFrom(statePoolAprs$),
+  map(([[tempusPools, filters], poolAprs]) =>
     tempusPools.filter(tempusPool =>
       [...filters].some(filter => {
         switch (filter) {
           case 'active':
           default:
-            return isPoolActive(tempusPool);
+            return isPoolActive(tempusPool, poolAprs);
           case 'inactive':
-            return isPoolInactive(tempusPool);
+            return isPoolInactive(tempusPool, poolAprs);
           case 'matured':
             return isPoolMatured(tempusPool);
         }
@@ -56,8 +67,9 @@ const filteredPoolList$ = combineLatest([poolList$, stateFilters$]).pipe(
   ),
 );
 const filteredSortedPoolList$ = combineLatest([filteredPoolList$, stateSortType$, stateSortOrder$]).pipe(
-  withLatestFrom(statePoolTvls$), // only want to get the latest data instead of getting every interval
-  map(([[tempusPools, sortType, sortOrder], poolTvls]) =>
+  // only want to get the latest data instead of getting every interval
+  withLatestFrom(statePoolTvls$, statePoolBalances$, statePoolAprs$),
+  map(([[tempusPools, sortType, sortOrder], poolTvls, poolBalances, poolAprs]) =>
     tempusPools
       .sort((poolA, poolB) => {
         const factor = sortOrder === 'desc' ? -1 : 1;
@@ -69,10 +81,16 @@ const filteredSortedPoolList$ = combineLatest([filteredPoolList$, stateSortType$
                 `${poolB.backingToken}--${poolB.protocolDisplayName}`,
               ) * factor
             );
-          case 'apr':
-            return 0; // TODO: need to get the APR to compare
-          case 'balance':
-            return 0; // TODO: need to get the balance to compare
+          case 'apr': {
+            const aprA = poolAprs[`${poolA.chain}-${poolA.address}`] ?? ZERO;
+            const aprB = poolAprs[`${poolB.chain}-${poolB.address}`] ?? ZERO;
+            return aprA.gt(aprB) ? factor : -1 * factor;
+          }
+          case 'balance': {
+            const poolBalancesA = poolBalances[`${poolA.chain}-${poolA.address}`] ?? ZERO;
+            const poolBalancesB = poolBalances[`${poolB.chain}-${poolB.address}`] ?? ZERO;
+            return poolBalancesA.gt(poolBalancesB) ? factor : -1 * factor;
+          }
           case 'maturity':
             return (poolA.maturityDate - poolB.maturityDate) * factor;
           case 'tvl': {

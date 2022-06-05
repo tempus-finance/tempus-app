@@ -6,8 +6,9 @@ $button-width: 54px;
       width: calc(100% - $button-width);
     }
     .tc__base-input {
+      width: 100%;
       border-radius: 4px 0 0 4px;
-      width: calc(100% - $button-width);
+      box-sizing: border-box;
     }
     .tc__btn {
       width: $button-width;

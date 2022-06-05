@@ -13,7 +13,7 @@ export interface PoolPositionCardProps {
   apr: number;
   term: Date;
   profitLoss: Decimal;
-  balance: Decimal;
+  balance: Decimal | null;
   totalYieldEarned: Decimal;
   projectedTotalYield: Decimal;
   // Used to convert and show above values in fiat currency

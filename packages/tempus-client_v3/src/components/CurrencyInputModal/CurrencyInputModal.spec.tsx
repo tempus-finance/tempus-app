@@ -1,7 +1,7 @@
 import { act, fireEvent, render } from '@testing-library/react';
 import { Decimal, Ticker } from 'tempus-core-services';
 import { getConfigManager } from '../../config/getConfigManager';
-import { MaturityTerm } from '../shared/TermTabs';
+import { MaturityTerm } from '../../interfaces';
 import CurrencyInputModal, { CurrencyInputModalProps } from './CurrencyInputModal';
 
 const onTransactionStartMock = jest.fn<string, [Decimal]>();
@@ -23,8 +23,15 @@ const defaultProps: CurrencyInputModalProps = {
   open: true,
   onClose: () => {},
   balance: new Decimal(100),
-  inputPrecision: 18,
-  usdRates: singleCurrencyUsdRates,
+  tokens: [
+    {
+      precision: 18,
+      rate: new Decimal(3500),
+      ticker: 'ETH',
+      address: '0x0000000000000000000000000000000000000000',
+      precisionForUI: 2,
+    },
+  ],
   actionButtonLabels: { action: { default: 'Action', loading: 'Loading', success: 'Success' } },
   onTransactionStart: () => '0x0',
 };

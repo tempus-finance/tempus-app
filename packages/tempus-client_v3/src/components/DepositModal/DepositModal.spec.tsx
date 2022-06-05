@@ -1,17 +1,28 @@
 import { act, fireEvent, render } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
-import { Decimal, Ticker } from 'tempus-core-services';
+import { Decimal, Decimal as MockDecimal } from 'tempus-core-services';
 import { getConfigManager } from '../../config/getConfigManager';
+import { useWalletBalances } from '../../hooks';
 import I18nProvider from '../../i18n/I18nProvider';
-import { MaturityTerm } from '../shared/TermTabs';
+import { MaturityTerm, TokenMetadataProp } from '../../interfaces';
 import DepositModal, { DepositModalProps } from './DepositModal';
 
-const singleCurrencyUsdRates = new Map<Ticker, Decimal>();
-singleCurrencyUsdRates.set('ETH', new Decimal(3500));
-
-const multipleCurrencyUsdRates = new Map<Ticker, Decimal>();
-multipleCurrencyUsdRates.set('ETH', new Decimal(3500));
-multipleCurrencyUsdRates.set('stETH', new Decimal(3500));
+const multipleTokens: TokenMetadataProp = [
+  {
+    precision: 18,
+    precisionForUI: 4,
+    rate: new Decimal(3500),
+    ticker: 'ETH',
+    address: '0x0',
+  },
+  {
+    precision: 18,
+    precisionForUI: 4,
+    rate: new Decimal(3500),
+    ticker: 'stETH',
+    address: '0x1',
+  },
+];
 
 const singleMaturityTerm: MaturityTerm[] = [
   {
@@ -44,7 +55,19 @@ const subject = (props: DepositModalProps) =>
     </BrowserRouter>,
   );
 
+jest.mock('../../hooks', () => ({
+  ...jest.requireActual('../../hooks'),
+  useWalletBalances: jest.fn(),
+}));
+
 describe('DepositModal', () => {
+  beforeEach(() => {
+    (useWalletBalances as jest.Mock).mockImplementation(() => ({
+      'ethereum-0x0': new MockDecimal(100),
+      'ethereum-0x1': new MockDecimal(101),
+    }));
+  });
+
   const skipPreview = (container: HTMLElement) => {
     const previewButton = container.querySelector('.tc__currency-input-modal__action-container .tc__actionButton');
     expect(previewButton).not.toBeNull();
@@ -54,10 +77,13 @@ describe('DepositModal', () => {
 
   ['preview', 'input'].forEach(view => {
     const template = (terms: MaturityTerm[]) => {
+      const configManager = getConfigManager();
+
       const { container } = subject({
         ...defaultProps,
-        usdRates: singleCurrencyUsdRates,
+        tokens: multipleTokens,
         maturityTerms: terms,
+        chainConfig: configManager.getChainConfig('ethereum'),
       });
 
       expect(container).not.toBeNull();
@@ -75,10 +101,13 @@ describe('DepositModal', () => {
   });
 
   it('updates balance after currency change', () => {
+    const configManager = getConfigManager();
+
     const { container, getByRole } = subject({
       ...defaultProps,
-      usdRates: multipleCurrencyUsdRates,
+      tokens: multipleTokens,
       maturityTerms: singleMaturityTerm,
+      chainConfig: configManager.getChainConfig('ethereum'),
     });
 
     skipPreview(container);
@@ -110,17 +139,13 @@ describe('DepositModal', () => {
   });
 
   it('approves deposit and deposits on action button click', async () => {
-    // load chain config
     const configManager = getConfigManager();
-    const successfulConfigInit = await configManager.init();
-
-    expect(successfulConfigInit).toBeTruthy();
 
     jest.useFakeTimers();
 
     const { container } = subject({
       ...defaultProps,
-      usdRates: singleCurrencyUsdRates,
+      tokens: multipleTokens,
       maturityTerms: singleMaturityTerm,
       chainConfig: configManager.getChainConfig('ethereum'),
     });

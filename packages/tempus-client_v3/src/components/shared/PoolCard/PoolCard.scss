@@ -51,3 +51,15 @@
   display: flex;
   align-items: center;
 }
+
+/* Placeholders */
+
+.tc__poolCard-value-placeholder-container {
+  display: flex;
+  height: 40px;
+}
+
+.tc__poolCard-protocol-placeholder-container {
+  display: flex;
+  height: 20px;
+}
