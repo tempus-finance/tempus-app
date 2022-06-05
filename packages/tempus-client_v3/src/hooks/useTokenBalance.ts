@@ -29,10 +29,10 @@ interface TokenBalanceData {
 }
 
 // Each token will have a separate BehaviorSubject, and this map will store them with some additional token data
-const tokenBalanceDataMap = new Map<TokenChainAddressId, TokenBalanceData>();
+export const tokenBalanceDataMap = new Map<TokenChainAddressId, TokenBalanceData>();
 
 // Wait for config to load and create a BehaviorSubject for each token in the config file
-const initStream$ = combineLatest([config$]).pipe(
+export const initTokenBalancesStream$ = combineLatest([config$]).pipe(
   tap(() => {
     const tokenList = getConfigManager().getTokenList();
     tokenList.forEach(token => {
@@ -48,7 +48,7 @@ const initStream$ = combineLatest([config$]).pipe(
 );
 
 // Stream that goes over all tokens and fetches their balance, this happens only when wallet address changes
-const stream$ = combineLatest([initStream$, walletAddress$, selectedChain$, servicesLoaded$]).pipe(
+const stream$ = combineLatest([initTokenBalancesStream$, walletAddress$, selectedChain$, servicesLoaded$]).pipe(
   filter(
     ([, walletAddress, selectedChain, servicesLoaded]) =>
       Boolean(walletAddress) && Boolean(selectedChain) && servicesLoaded,
@@ -120,12 +120,12 @@ export const [useTokenBalance] = bind((tokenAddress: string, tokenChain: Chain |
   return of(null);
 }, null);
 
-let initSubscription: Subscription = initStream$.subscribe();
+let initSubscription: Subscription = initTokenBalancesStream$.subscribe();
 let streamSubscription: Subscription = stream$.subscribe();
 
 export const subscribe = (): void => {
   unsubscribe();
-  initSubscription = initStream$.subscribe();
+  initSubscription = initTokenBalancesStream$.subscribe();
   streamSubscription = stream$.subscribe();
 };
 export const unsubscribe = (): void => {

@@ -6,7 +6,7 @@ import { TempusPool, ZERO } from 'tempus-core-services';
 import { FilterType, PoolType, SortOrder, SortType, ViewType } from '../interfaces';
 import { poolList$ } from './usePoolList';
 import { poolTvls$ } from './useTvlData';
-import { poolBalances$ } from './usePoolBalances';
+import { poolBalances$ } from './usePoolBalance';
 import { poolAprs$, PoolFixedAprMap } from './useFixedAprs';
 
 export interface PoolViewOptions {
@@ -30,7 +30,6 @@ const stateFilters$ = state(filters$, new Set<FilterType>(['active']));
 const stateSortType$ = state(sortType$, 'a-z');
 const stateSortOrder$ = state(sortOrder$, 'asc');
 const statePoolTvls$ = state(poolTvls$, {});
-const statePoolBalances$ = state(poolBalances$, {});
 const statePoolAprs$ = state(poolAprs$, {});
 
 export const isPoolMatured = (tempusPool: TempusPool): boolean => tempusPool.maturityDate <= Date.now();
@@ -66,10 +65,10 @@ const filteredPoolList$ = combineLatest([poolList$, stateFilters$]).pipe(
     ),
   ),
 );
-const filteredSortedPoolList$ = combineLatest([filteredPoolList$, stateSortType$, stateSortOrder$]).pipe(
+const filteredSortedPoolList$ = combineLatest([filteredPoolList$, stateSortType$, stateSortOrder$, poolBalances$]).pipe(
   // only want to get the latest data instead of getting every interval
-  withLatestFrom(statePoolTvls$, statePoolBalances$, statePoolAprs$),
-  map(([[tempusPools, sortType, sortOrder], poolTvls, poolBalances, poolAprs]) =>
+  withLatestFrom(statePoolTvls$, statePoolAprs$),
+  map(([[tempusPools, sortType, sortOrder, poolBalances], poolTvls, poolAprs]) =>
     tempusPools
       .sort((poolA, poolB) => {
         const factor = sortOrder === 'desc' ? -1 : 1;
