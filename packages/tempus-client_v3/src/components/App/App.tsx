@@ -6,7 +6,6 @@ import {
   useLocale,
   useSelectedChain,
   useUserPreferences,
-  usePoolBalances,
   useServicesLoaded,
   useWalletAddress,
 } from '../../hooks';
