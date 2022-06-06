@@ -91,6 +91,10 @@
         margin-left: 4px;
       }
     }
+
+    .tc__walletButton__disconnected .tc__actionButton {
+      width: 240px;
+    }
   }
 
   .tc__currency-input-modal__transaction-info {

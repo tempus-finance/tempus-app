@@ -7,7 +7,7 @@ import Typography, { TypographyColor, TypographyWeight } from '../Typography';
 import './ActionButton.scss';
 
 type ActionButtonSize = 'small' | 'large';
-type ActionButtonVariant = 'primary' | 'secondary' | 'tertiary';
+export type ActionButtonVariant = 'primary' | 'secondary' | 'tertiary';
 export type ActionButtonState = 'default' | 'disabled' | 'loading' | 'success';
 export type ActionButtonLabels = {
   default: string;

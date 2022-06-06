@@ -5,12 +5,45 @@ import { getConfigManager } from '../../config/getConfigManager';
 import { TokenMetadataProp } from '../../interfaces';
 import { WithdrawModal, WithdrawModalProps } from './WithdrawModal';
 
+jest.mock('@web3-onboard/ledger', () =>
+  jest.fn().mockImplementation(() => () => ({
+    label: '',
+    getIcon: () => new Promise<string>(() => ''),
+    getInterface: () => null,
+  })),
+);
+
+jest.mock('@web3-onboard/gnosis', () =>
+  jest.fn().mockImplementation(() => () => ({
+    label: '',
+    getIcon: () => new Promise<string>(() => ''),
+    getInterface: () => null,
+  })),
+);
+
+jest.mock('@web3-onboard/injected-wallets', () =>
+  jest.fn().mockImplementation(() => () => ({
+    label: '',
+    getIcon: () => new Promise<string>(() => ''),
+    getInterface: () => null,
+  })),
+);
+
+jest.mock('@web3-onboard/react', () => ({
+  init: jest.fn(),
+  useConnectWallet: jest.fn().mockReturnValue([{ wallet: { accounts: [{ address: '0x123123123' }] } }, () => {}]),
+  useSetChain: jest.fn().mockReturnValue([{}, () => {}]),
+  useWallets: jest.fn().mockReturnValue([]),
+}));
+
 const defaultProps: WithdrawModalProps = {
   open: true,
   onClose: () => {},
   tokens: [
     {
       precision: 18,
+      precisionForUI: 4,
+      address: '0x0',
       rate: new Decimal(3500),
       ticker: 'ETH',
     },
@@ -20,6 +53,8 @@ const defaultProps: WithdrawModalProps = {
 const singleToken: TokenMetadataProp = [
   {
     precision: 18,
+    precisionForUI: 4,
+    address: '0x0',
     rate: new Decimal(3500),
     ticker: 'ETH',
   },
@@ -28,11 +63,15 @@ const singleToken: TokenMetadataProp = [
 const multipleTokens: TokenMetadataProp = [
   {
     precision: 18,
+    precisionForUI: 4,
+    address: '0x0',
     rate: new Decimal(3500),
     ticker: 'ETH',
   },
   {
     precision: 18,
+    precisionForUI: 4,
+    address: '0x1',
     rate: new Decimal(3500),
     ticker: 'stETH',
   },
