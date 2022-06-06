@@ -61,20 +61,20 @@ poolList.forEach(tempusPool => {
       lpTokenStreamData.subject$,
     ]).pipe(
       filter(([servicesLoaded, walletAddress]) => servicesLoaded && Boolean(walletAddress)),
-      mergeMap(([, walletAddress, capitalsBalance, yieldsBalance, lpBalance]) => {
+      mergeMap(([, walletAddress, capitalsBalanceData, yieldsBalanceData, lpBalanceData]) => {
         const services = getServices(chain);
         if (!services) {
           throw new Error('usePoolBalance - updateStream$ - Failed to get services');
         }
 
-        if (!capitalsBalance || !yieldsBalance || !lpBalance) {
+        if (!capitalsBalanceData.balance || !yieldsBalanceData.balance || !lpBalanceData.balance) {
           return of(null);
         }
 
         return services.StatisticsService.getUserPoolBalanceUSD(chain, tempusPool, walletAddress, {
-          principalsBalance: capitalsBalance,
-          yieldsBalance,
-          lpTokenBalance: lpBalance,
+          principalsBalance: capitalsBalanceData.balance,
+          yieldsBalance: yieldsBalanceData.balance,
+          lpTokenBalance: lpBalanceData.balance,
         });
       }),
       map(balance => {
