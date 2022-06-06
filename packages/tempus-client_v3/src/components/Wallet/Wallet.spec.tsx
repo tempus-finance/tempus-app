@@ -1,7 +1,7 @@
 import { fireEvent, render, waitFor } from '@testing-library/react';
 import { useConnectWallet, useSetChain } from '@web3-onboard/react';
 import { BrowserRouter } from 'react-router-dom';
-import { Chain, chainNameToHexChainId, Decimal } from 'tempus-core-services';
+import { Chain, chainNameToHexChainId, Decimal, ZERO_ADDRESS } from 'tempus-core-services';
 import { useSelectedChain, useTokenBalance } from '../../hooks';
 import Wallet, { WalletProps } from './Wallet';
 
@@ -75,7 +75,11 @@ describe('Wallet', () => {
       () => {},
     ]);
     (useSelectedChain as jest.Mock).mockReturnValue('ethereum' as Chain);
-    (useTokenBalance as jest.Mock).mockReturnValue(new Decimal(10.456));
+    (useTokenBalance as jest.Mock).mockReturnValue({
+      address: ZERO_ADDRESS,
+      balance: new Decimal(10.456),
+      chain: 'ethereum',
+    });
 
     const { container } = subject({});
 

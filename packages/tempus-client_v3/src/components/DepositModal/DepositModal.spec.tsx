@@ -2,7 +2,7 @@ import { act, fireEvent, render } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { Decimal, Decimal as MockDecimal } from 'tempus-core-services';
 import { getConfigManager } from '../../config/getConfigManager';
-import { useWalletBalances } from '../../hooks';
+import { useTokenBalances } from '../../hooks';
 import I18nProvider from '../../i18n/I18nProvider';
 import { MaturityTerm, TokenMetadataProp } from '../../interfaces';
 import DepositModal, { DepositModalProps } from './DepositModal';
@@ -88,12 +88,12 @@ jest.mock('@web3-onboard/react', () => ({
 
 jest.mock('../../hooks', () => ({
   ...jest.requireActual('../../hooks'),
-  useWalletBalances: jest.fn(),
+  useTokenBalances: jest.fn(),
 }));
 
 describe('DepositModal', () => {
   beforeEach(() => {
-    (useWalletBalances as jest.Mock).mockImplementation(() => ({
+    (useTokenBalances as jest.Mock).mockImplementation(() => ({
       'ethereum-0x0': new MockDecimal(100),
       'ethereum-0x1': new MockDecimal(101),
     }));
