@@ -29,10 +29,10 @@ jest.mock('@web3-onboard/injected-wallets', () =>
 );
 
 jest.mock('@web3-onboard/react', () => ({
-  init: jest.fn().mockImplementation(() => {}),
-  useConnectWallet: jest.fn().mockImplementation(() => [{ wallet: { accounts: ['0x123'] } }, () => {}]),
-  useSetChain: jest.fn().mockImplementation(() => [{}, () => {}]),
-  useWallets: jest.fn().mockImplementation(() => []),
+  init: jest.fn(),
+  useConnectWallet: jest.fn().mockReturnValue([{ wallet: { accounts: [{ address: '0x123123123' }] } }, () => {}]),
+  useSetChain: jest.fn().mockReturnValue([{}, () => {}]),
+  useWallets: jest.fn().mockReturnValue([]),
 }));
 
 const onTransactionStartMock = jest.fn<string, [Decimal]>();

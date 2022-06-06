@@ -70,7 +70,7 @@ init({
   },
 });
 
-interface WalletProps {
+export interface WalletProps {
   connectWalletButtonVariant?: ActionButtonVariant;
   onConnectWalletClick?: () => void;
   redirectTo?: string;
@@ -89,21 +89,7 @@ const Wallet: FC<WalletProps> = props => {
 
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (wallet) {
-      setWalletAddress(wallet.accounts[0].address);
-    }
-  }, [wallet]);
-
-  // TODO - Delete local storage under 'connectedWallets' when user disconnects the wallet
-
-  /**
-   * When user clicks on connect wallet button show a modal with all available wallets users can connect.
-   */
-  const onConnectWallet = useCallback(async () => {
-    onConnectWalletClick?.();
-    await connect({});
-
+  const redirectAfterConnect = useCallback(() => {
     if (redirectTo) {
       const match = redirectTo.match(/^\/pool\/([a-z-]+)\/[a-zA-Z]+\/[a-z-]+$/);
 
@@ -120,7 +106,24 @@ const Wallet: FC<WalletProps> = props => {
 
       navigate(redirectTo);
     }
-  }, [connect, navigate, onConnectWalletClick, redirectTo, setChain]);
+  }, [navigate, redirectTo, setChain]);
+
+  useEffect(() => {
+    if (wallet) {
+      setWalletAddress(wallet.accounts[0].address);
+    }
+  }, [wallet]);
+
+  // TODO - Delete local storage under 'connectedWallets' when user disconnects the wallet
+
+  /**
+   * When user clicks on connect wallet button show a modal with all available wallets users can connect.
+   */
+  const onConnectWallet = useCallback(async () => {
+    onConnectWalletClick?.();
+    await connect({});
+    redirectAfterConnect();
+  }, [connect, onConnectWalletClick, redirectAfterConnect]);
 
   const onOpenChainSelector = useCallback(() => {
     setChainSelectorOpen(true);

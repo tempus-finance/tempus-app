@@ -16,37 +16,6 @@ import DepositModalInfoRows from './DepositModalInfoRows';
 
 import './DepositModal.scss';
 
-jest.mock('@web3-onboard/ledger', () =>
-  jest.fn().mockImplementation(() => () => ({
-    label: '',
-    getIcon: () => new Promise<string>(() => ''),
-    getInterface: () => null,
-  })),
-);
-
-jest.mock('@web3-onboard/gnosis', () =>
-  jest.fn().mockImplementation(() => () => ({
-    label: '',
-    getIcon: () => new Promise<string>(() => ''),
-    getInterface: () => null,
-  })),
-);
-
-jest.mock('@web3-onboard/injected-wallets', () =>
-  jest.fn().mockImplementation(() => () => ({
-    label: '',
-    getIcon: () => new Promise<string>(() => ''),
-    getInterface: () => null,
-  })),
-);
-
-jest.mock('@web3-onboard/react', () => ({
-  init: jest.fn().mockImplementation(() => {}),
-  useConnectWallet: jest.fn().mockImplementation(() => [{ wallet: { accounts: ['0x123'] } }, () => {}]),
-  useSetChain: jest.fn().mockImplementation(() => [{}, () => {}]),
-  useWallets: jest.fn().mockImplementation(() => []),
-}));
-
 export interface DepositModalProps extends ModalProps {
   tokens: TokenMetadataProp;
   poolStartDate: Date;
