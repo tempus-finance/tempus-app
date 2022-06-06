@@ -1,6 +1,5 @@
-import { act, fireEvent, render, waitFor } from '@testing-library/react';
+import { fireEvent, render, waitFor } from '@testing-library/react';
 import { useConnectWallet, useSetChain } from '@web3-onboard/react';
-import _ from 'lodash';
 import { BrowserRouter } from 'react-router-dom';
 import { Chain, chainNameToHexChainId, Decimal } from 'tempus-core-services';
 import { useSelectedChain, useTokenBalance } from '../../hooks';
@@ -106,7 +105,8 @@ describe('Wallet', () => {
   });
 
   it('does not change chain if the redirect path is invalid', async () => {
-    const { getByRole } = subject({ redirectTo: '/pool/invalid/lido' });
+    const redirectTo = '/pool/invalid/lido';
+    const { getByRole } = subject({ redirectTo });
 
     const connectButton = getByRole('button');
 
@@ -115,6 +115,7 @@ describe('Wallet', () => {
     await waitFor(() => {
       expect(mockConnect).toBeCalledTimes(1);
       expect(mockSetChain).not.toBeCalled();
+      expect(window.location.pathname).toBe(redirectTo);
     });
   });
 
