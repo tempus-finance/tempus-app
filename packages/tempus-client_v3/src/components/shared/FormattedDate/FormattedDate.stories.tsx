@@ -37,6 +37,6 @@ const Template: ComponentStory<typeof FormattedDate> = props => {
 
 export const StyledFormattedDate = Template.bind({});
 StyledFormattedDate.args = {
-  date: new Date(),
+  date: new Date(Date.now()),
   separatorContrast: 'high',
 };

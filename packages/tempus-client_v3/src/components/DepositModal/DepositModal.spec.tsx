@@ -27,7 +27,7 @@ const multipleTokens: TokenMetadataProp = [
 const singleMaturityTerm: MaturityTerm[] = [
   {
     apr: new Decimal(0.074),
-    date: new Date(2022, 9, 1),
+    date: new Date(Date.UTC(2022, 9, 1)),
   },
 ];
 
@@ -35,14 +35,14 @@ const multipleMaturityTerms: MaturityTerm[] = [
   ...singleMaturityTerm,
   {
     apr: new Decimal(0.131),
-    date: new Date(2022, 11, 1),
+    date: new Date(Date.UTC(2022, 11, 1)),
   },
 ];
 
 const defaultProps = {
   open: true,
   onClose: () => {},
-  poolStartDate: new Date(2022, 3, 1),
+  poolStartDate: new Date(Date.UTC(2022, 3, 1)),
   inputPrecision: 18,
 };
 
@@ -103,7 +103,7 @@ describe('DepositModal', () => {
     const previewButton = container.querySelector('.tc__currency-input-modal__action-container .tc__actionButton');
     expect(previewButton).not.toBeNull();
 
-    fireEvent.click(previewButton);
+    fireEvent.click(previewButton as Element);
   };
 
   ['preview', 'input'].forEach(view => {
@@ -148,7 +148,7 @@ describe('DepositModal', () => {
     expect(currencyDropdownButton).not.toBeNull();
 
     // open currency dropdown
-    fireEvent.click(currencyDropdownButton);
+    fireEvent.click(currencyDropdownButton as Element);
 
     const currencyButtons = container.querySelectorAll('.tc__currency-input__currency-selector-dropdown button');
 
@@ -191,7 +191,7 @@ describe('DepositModal', () => {
 
     expect(currencyInput).not.toBeNull();
 
-    fireEvent.change(currencyInput, { target: { value: '1' } });
+    fireEvent.change(currencyInput as HTMLInputElement, { target: { value: '1' } });
 
     act(() => {
       jest.advanceTimersByTime(300);
@@ -200,7 +200,7 @@ describe('DepositModal', () => {
     expect(actionButton).toBeEnabled();
 
     // approve deposit
-    fireEvent.click(actionButton);
+    fireEvent.click(actionButton as Element);
 
     expect(actionButton).toBeDisabled();
     expect(actionButton).toHaveClass('tc__actionButton-border-primary-large-loading');
@@ -222,7 +222,7 @@ describe('DepositModal', () => {
     expect(actionButton).toHaveClass('tc__actionButton-border-primary-large');
 
     // deposit
-    fireEvent.click(actionButton);
+    fireEvent.click(actionButton as Element);
 
     expect(actionButton).toBeDisabled();
     expect(actionButton).toHaveClass('tc__actionButton-border-primary-large-loading');
