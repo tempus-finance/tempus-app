@@ -5,7 +5,7 @@ import {
   setPoolForYieldAtMaturity,
   setTokenAmountForYieldAtMaturity,
   useDepositModalData,
-  useWalletBalances,
+  useTokenBalances,
 } from '../../hooks';
 import { MaturityTerm, TokenMetadataProp } from '../../interfaces';
 import { ModalProps } from '../shared/Modal/Modal';
@@ -29,7 +29,7 @@ const DepositModal: FC<DepositModalProps> = props => {
   const [token, setToken] = useState(tokens[0]);
   const [approved, setApproved] = useState(false);
   const [actionButtonState, setActionButtonState] = useState<ActionButtonState>('default');
-  const balances = useWalletBalances();
+  const balances = useTokenBalances();
   const { t } = useTranslation();
 
   const useDepositModalProps = useDepositModalData();

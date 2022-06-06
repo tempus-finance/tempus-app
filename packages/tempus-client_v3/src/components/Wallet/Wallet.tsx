@@ -83,7 +83,7 @@ const Wallet: FC<WalletProps> = props => {
   const selectedChain = useSelectedChain();
   const [, setChain] = useSetChain();
 
-  const nativeTokenBalance = useTokenBalance(ZERO_ADDRESS, selectedChain);
+  const nativeTokenBalanceData = useTokenBalance(ZERO_ADDRESS, selectedChain);
 
   const [chainSelectorOpen, setChainSelectorOpen] = useState<boolean>(false);
 
@@ -169,13 +169,13 @@ const Wallet: FC<WalletProps> = props => {
   }, [wallet]);
 
   const balance = useMemo(() => {
-    if (!nativeTokenBalance) {
+    if (!nativeTokenBalanceData || !nativeTokenBalanceData.balance) {
       return null;
     }
 
     // TODO - Add number of decimals for chain native token in the config and use it here.
-    return DecimalUtils.formatToCurrency(nativeTokenBalance, 2);
-  }, [nativeTokenBalance]);
+    return DecimalUtils.formatToCurrency(nativeTokenBalanceData.balance, 2);
+  }, [nativeTokenBalanceData]);
 
   return (
     <>
