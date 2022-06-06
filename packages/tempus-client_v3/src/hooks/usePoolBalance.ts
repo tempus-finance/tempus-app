@@ -1,29 +1,20 @@
 import { bind } from '@react-rxjs/core';
-import {
-  BehaviorSubject,
-  combineLatest,
-  map,
-  mergeMap,
-  merge,
-  filter,
-  tap,
-  Subscription,
-  Observable,
-  of,
-  scan,
-} from 'rxjs';
+import { BehaviorSubject, combineLatest, map, mergeMap, filter, Subscription, Observable, of } from 'rxjs';
 import { Chain, Decimal, getServices } from 'tempus-core-services';
 import { getConfigManager } from '../config/getConfigManager';
-import { config$ } from './useConfig';
 import { servicesLoaded$ } from './useServicesLoaded';
-import { initTokenBalancesStream$, tokenBalanceDataMap } from './useTokenBalance';
+import { tokenBalanceDataMap } from './useTokenBalance';
 import { walletAddress$ } from './useWalletAddress';
 
 // Improves readability of the code
 type PoolChainAddressId = string;
 
 interface PoolBalanceData {
-  subject$: BehaviorSubject<Decimal | null>;
+  subject$: BehaviorSubject<{
+    balance: Decimal | null;
+    chain: Chain;
+    address: string;
+  }>;
   address: string;
   chain: Chain;
 }
@@ -35,105 +26,79 @@ export const poolBalanceDataMap = new Map<PoolChainAddressId, PoolBalanceData>()
 const balanceUpdateStreams: Observable<void>[] = [];
 let balanceUpdateSubscriptions: Subscription[] = [];
 
-// Wait for config to load and create a BehaviorSubject and update stream for each pool in the config file
-export const initPoolBalancesStream$ = combineLatest([config$, initTokenBalancesStream$]).pipe(
-  tap(() => {
-    const poolList = getConfigManager().getPoolList();
-    poolList.forEach(pool => {
-      const poolChainAddressId = `${pool.chain}-${pool.address}`;
+const poolList = getConfigManager().getPoolList();
+poolList.forEach(pool => {
+  const poolChainAddressId = `${pool.chain}-${pool.address}`;
 
-      const poolBalanceSubject$ = new BehaviorSubject<Decimal | null>(null);
-
-      poolBalanceDataMap.set(poolChainAddressId, {
-        subject$: poolBalanceSubject$,
-        address: pool.address,
-        chain: pool.chain,
-      });
-
-      // Get token balance stream data for pool
-      const capitalTokenStreamData = tokenBalanceDataMap.get(`${pool.chain}-${pool.principalsAddress}`);
-      const yieldTokenStreamData = tokenBalanceDataMap.get(`${pool.chain}-${pool.yieldsAddress}`);
-      const lpTokenStreamData = tokenBalanceDataMap.get(`${pool.chain}-${pool.ammAddress}`);
-
-      if (capitalTokenStreamData && yieldTokenStreamData && lpTokenStreamData) {
-        const updateStream$ = combineLatest([
-          servicesLoaded$,
-          walletAddress$,
-          capitalTokenStreamData.subject$,
-          yieldTokenStreamData.subject$,
-          lpTokenStreamData.subject$,
-        ]).pipe(
-          filter(([servicesLoaded, walletAddress]) => Boolean(walletAddress) && servicesLoaded),
-          mergeMap(([, walletAddress, capitalsBalance, yieldsBalance, lpBalance]) => {
-            const services = getServices(pool.chain);
-            if (!services) {
-              throw new Error('usePoolBalance - initPoolBalancesStream$ - Failed to get services');
-            }
-
-            if (!capitalsBalance || !yieldsBalance || !lpBalance) {
-              return of(null);
-            }
-
-            console.log(`Fetching pool ${pool.address} balance on chain ${pool.chain}`);
-            return services.StatisticsService.getUserPoolBalanceUSD(pool.chain, pool, walletAddress, {
-              principalsBalance: capitalsBalance || new Decimal(0),
-              yieldsBalance: yieldsBalance || new Decimal(0),
-              lpTokenBalance: lpBalance || new Decimal(0),
-            });
-          }),
-          map(balance => {
-            if (balance === null) {
-              return;
-            }
-
-            console.log(`Updating pool ${pool.address} balance on chain ${pool.chain} to ${balance}`);
-            poolBalanceSubject$.next(balance);
-          }),
-          tap(() => poolBalances$.next({})),
-        );
-
-        balanceUpdateStreams.push(updateStream$);
-      }
-    });
-  }),
-);
-
-interface PoolBalanceMap {
-  [chainPoolAddress: string]: Decimal | null;
-}
-
-export const poolBalances$ = new BehaviorSubject<PoolBalanceMap>({});
-
-let poolBalanceMapStream$: Observable<BehaviorSubject<Decimal | null>>;
-const poolBalanceMapStreamInit$ = combineLatest([initPoolBalancesStream$]).pipe(
-  map(() => merge([...poolBalanceDataMap.values()].map(poolBalanceData => poolBalanceData.subject$))),
-);
-
-const poolBalanceMapStream$ = combineLatest([poolBalanceMapStreamInit$]).pipe(
-  mergeMap(() => {
-    const poolBalanceStreams = [...poolBalanceDataMap.values()].map(poolBalanceData => {
-      console.log('test');
-
-      return poolBalanceData.subject$.pipe(
-        map(balance => ({
-          [`${poolBalanceData.chain}-${poolBalanceData.address}`]: balance,
-        })),
-      );
-    });
-
-    return merge(...poolBalanceStreams);
-  }),
-  scan(
-    (allPoolBalances, poolBalance) => ({
-      ...allPoolBalances,
-      ...poolBalance,
+  poolBalanceDataMap.set(poolChainAddressId, {
+    subject$: new BehaviorSubject<{
+      balance: Decimal | null;
+      address: string;
+      chain: Chain;
+    }>({
+      balance: null,
+      address: pool.address,
+      chain: pool.chain,
     }),
-    {} as PoolBalanceMap,
-  ),
-  tap(poolBalances => {
-    poolBalances$.next(poolBalances);
-  }),
-);
+    address: pool.address,
+    chain: pool.chain,
+  });
+});
+
+poolList.forEach(tempusPool => {
+  const { chain, address, principalsAddress, yieldsAddress, ammAddress } = tempusPool;
+
+  const capitalTokenStreamData = tokenBalanceDataMap.get(`${chain}-${principalsAddress}`);
+  const yieldTokenStreamData = tokenBalanceDataMap.get(`${chain}-${yieldsAddress}`);
+  const lpTokenStreamData = tokenBalanceDataMap.get(`${chain}-${ammAddress}`);
+
+  if (capitalTokenStreamData && yieldTokenStreamData && lpTokenStreamData) {
+    const updateStream$ = combineLatest([
+      servicesLoaded$,
+      walletAddress$,
+      capitalTokenStreamData.subject$,
+      yieldTokenStreamData.subject$,
+      lpTokenStreamData.subject$,
+    ]).pipe(
+      filter(([servicesLoaded, walletAddress]) => servicesLoaded && Boolean(walletAddress)),
+      mergeMap(([, walletAddress, capitalsBalance, yieldsBalance, lpBalance]) => {
+        const services = getServices(chain);
+        if (!services) {
+          throw new Error('usePoolBalance - updateStream$ - Failed to get services');
+        }
+
+        if (!capitalsBalance || !yieldsBalance || !lpBalance) {
+          return of(null);
+        }
+
+        console.log(`Fetching pool ${address} balance on chain ${chain}`);
+
+        return services.StatisticsService.getUserPoolBalanceUSD(chain, tempusPool, walletAddress, {
+          principalsBalance: capitalsBalance,
+          yieldsBalance,
+          lpTokenBalance: lpBalance,
+        });
+      }),
+      map(balance => {
+        if (balance === null) {
+          return;
+        }
+
+        console.log(`Updating pool ${address} balance on chain ${chain} to ${balance}`);
+
+        const poolBalanceData = poolBalanceDataMap.get(`${chain}-${address}`);
+        if (poolBalanceData) {
+          poolBalanceData.subject$.next({
+            balance,
+            address,
+            chain,
+          });
+        }
+      }),
+    );
+    balanceUpdateStreams.push(updateStream$);
+  }
+});
 
 export const [usePoolBalance] = bind((poolAddress: string | undefined, poolChain: Chain | undefined) => {
   if (!poolChain || !poolAddress) {
@@ -147,28 +112,32 @@ export const [usePoolBalance] = bind((poolAddress: string | undefined, poolChain
   return of(null);
 }, null);
 
-let initSubscription = initPoolBalancesStream$.subscribe();
-let poolBalanceMapSubscription = poolBalanceMapStream$.subscribe();
 balanceUpdateStreams.forEach(stream => {
   balanceUpdateSubscriptions.push(stream.subscribe());
 });
+
+export const poolBalancesStream$ = combineLatest(
+  [...poolBalanceDataMap.values()].map(poolBalanceData => poolBalanceData.subject$),
+);
 
 export const subscribe = (): void => {
   unsubscribe();
   balanceUpdateStreams.forEach(stream => {
     balanceUpdateSubscriptions.push(stream.subscribe());
   });
-  initSubscription = initPoolBalancesStream$.subscribe();
-  poolBalanceMapSubscription = poolBalanceMapStream$.subscribe();
 };
 export const unsubscribe = (): void => {
-  initSubscription.unsubscribe();
-  poolBalanceMapSubscription.unsubscribe();
   balanceUpdateSubscriptions.forEach(subscription => {
     subscription.unsubscribe();
   });
   balanceUpdateSubscriptions = [];
 };
 export const reset = (): void => {
-  poolBalanceDataMap.forEach(poolBalanceData => poolBalanceData.subject$.next(null));
+  poolBalanceDataMap.forEach(poolBalanceData =>
+    poolBalanceData.subject$.next({
+      balance: null,
+      address: poolBalanceData.address,
+      chain: poolBalanceData.chain,
+    }),
+  );
 };

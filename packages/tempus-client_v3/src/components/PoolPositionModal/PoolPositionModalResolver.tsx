@@ -7,7 +7,7 @@ import { PoolPositionModal } from './PoolPositionModal';
 export const PoolPositionModalResolver: FC = () => {
   const { chain, ticker, protocol, poolAddress } = useParams();
 
-  const poolBalance = usePoolBalance(poolAddress, chain as Chain);
+  const poolBalanceData = usePoolBalance(poolAddress, chain as Chain);
 
   // TODO - Properly check if URL params have valid values - if not show an error page or redirect to root page
 
@@ -15,7 +15,7 @@ export const PoolPositionModalResolver: FC = () => {
     // TODO - Replace dummy data with data from hooks
     <PoolPositionModal
       apr={0.1}
-      balance={poolBalance}
+      balance={poolBalanceData?.balance || new Decimal(0)}
       chartData={[
         { x: new Date(2022, 3, 4), y: 10 },
         { x: new Date(2022, 4, 1), y: 20 },

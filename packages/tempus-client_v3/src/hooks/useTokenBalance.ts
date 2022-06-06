@@ -14,7 +14,6 @@ import {
 } from 'rxjs';
 import { Chain, Decimal, getServices } from 'tempus-core-services';
 import { getConfigManager } from '../config/getConfigManager';
-import { config$ } from './useConfig';
 import { selectedChain$ } from './useSelectedChain';
 import { servicesLoaded$ } from './useServicesLoaded';
 import { walletAddress$ } from './useWalletAddress';
@@ -31,29 +30,24 @@ interface TokenBalanceData {
 // Each token will have a separate BehaviorSubject, and this map will store them with some additional token data
 export const tokenBalanceDataMap = new Map<TokenChainAddressId, TokenBalanceData>();
 
-// Wait for config to load and create a BehaviorSubject for each token in the config file
-export const initTokenBalancesStream$ = combineLatest([config$]).pipe(
-  tap(() => {
-    const tokenList = getConfigManager().getTokenList();
-    tokenList.forEach(token => {
-      const tokenChainAddressId = `${token.chain}-${token.address}`;
+const tokenList = getConfigManager().getTokenList();
+tokenList.forEach(token => {
+  const tokenChainAddressId = `${token.chain}-${token.address}`;
 
-      tokenBalanceDataMap.set(tokenChainAddressId, {
-        subject$: new BehaviorSubject<Decimal | null>(null),
-        address: token.address,
-        chain: token.chain,
-      });
-    });
-  }),
-);
+  tokenBalanceDataMap.set(tokenChainAddressId, {
+    subject$: new BehaviorSubject<Decimal | null>(null),
+    address: token.address,
+    chain: token.chain,
+  });
+});
 
 // Stream that goes over all tokens and fetches their balance, this happens only when wallet address changes
-const stream$ = combineLatest([initTokenBalancesStream$, walletAddress$, selectedChain$, servicesLoaded$]).pipe(
+const stream$ = combineLatest([walletAddress$, selectedChain$, servicesLoaded$]).pipe(
   filter(
-    ([, walletAddress, selectedChain, servicesLoaded]) =>
+    ([walletAddress, selectedChain, servicesLoaded]) =>
       Boolean(walletAddress) && Boolean(selectedChain) && servicesLoaded,
   ),
-  mergeMap(([, walletAddress, selectedChain]) => {
+  mergeMap(([walletAddress, selectedChain]) => {
     const tokenBalanceFetchMap = [...tokenBalanceDataMap.values()].map(tokenBalanceData => {
       // Only fetch token balances for currently selected chain
       if (selectedChain && selectedChain !== tokenBalanceData.chain) {
@@ -97,6 +91,10 @@ const stream$ = combineLatest([initTokenBalancesStream$, walletAddress$, selecte
       if (tokenData.balance) {
         const tokenBalanceData = tokenBalanceDataMap.get(`${tokenData.chain}-${tokenData.address}`);
         if (tokenBalanceData) {
+          console.log(
+            `Setting ${tokenBalanceData.address} balance on chain ${tokenBalanceData.chain} to ${tokenData.balance}`,
+          );
+
           tokenBalanceData.subject$.next(tokenData.balance);
         }
       }
@@ -120,16 +118,13 @@ export const [useTokenBalance] = bind((tokenAddress: string, tokenChain: Chain |
   return of(null);
 }, null);
 
-let initSubscription: Subscription = initTokenBalancesStream$.subscribe();
 let streamSubscription: Subscription = stream$.subscribe();
 
 export const subscribe = (): void => {
   unsubscribe();
-  initSubscription = initTokenBalancesStream$.subscribe();
   streamSubscription = stream$.subscribe();
 };
 export const unsubscribe = (): void => {
-  initSubscription.unsubscribe();
   streamSubscription.unsubscribe();
 };
 export const reset = (): void => {
