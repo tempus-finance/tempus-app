@@ -73,10 +73,12 @@ describe('useTvlData', () => {
       'fantom-5': new Decimal(8000),
     };
     expect(result1.current).toEqual(expected);
+    const functionCalledCount = (getServices as jest.Mock).mock.calls.length;
 
     const { result: result2 } = renderHook(() => useTvlData());
 
     expect(result2.current).toEqual(expected);
+    expect(getServices).toHaveBeenCalledTimes(functionCalledCount);
   });
 
   test('returns a empty map when there is error', async () => {
