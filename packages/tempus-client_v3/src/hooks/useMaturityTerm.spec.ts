@@ -44,9 +44,9 @@ describe('useMaturityTerm', () => {
     const poolTimeRemaining = (pool1.maturityDate - Date.now()) / 1000;
     const scalingFactor = new Decimal((SECONDS_IN_A_DAY * DAYS_IN_A_YEAR) / poolTimeRemaining);
 
-    expect(result.current).toEqual({
-      apr: principalsAmount.div(pool1.spotPrice).sub(ONE).mul(scalingFactor),
-      date: new Date(pool1.maturityDate),
-    });
+    expect(parseFloat(String(result.current?.apr))).toBeCloseTo(
+      parseFloat(principalsAmount.div(pool1.spotPrice).sub(ONE).mul(scalingFactor).toString()),
+    );
+    expect(result.current?.date).toEqual(new Date(pool1.maturityDate));
   });
 });

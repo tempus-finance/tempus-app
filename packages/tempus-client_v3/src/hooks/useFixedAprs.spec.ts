@@ -83,12 +83,14 @@ describe('useFixedAprs', () => {
       'fantom-4': new Decimal('0.08514774494556765'),
       'fantom-5': new Decimal('0.066043425814234015'),
     };
-    expect(result1.current).toEqual(expected);
+    Object.entries(expected).forEach(([key, value]) => {
+      expect(parseFloat(value.toString())).toBeCloseTo(parseFloat(result1.current[key].toString()));
+    });
     const functionCalledCount = (getServices as jest.Mock).mock.calls.length;
 
     const { result: result2 } = renderHook(() => useFixedAprs());
 
-    expect(result2.current).toEqual(expected);
+    expect(result2.current).toEqual(result1.current);
     expect(getServices).toHaveBeenCalledTimes(functionCalledCount);
   });
 
