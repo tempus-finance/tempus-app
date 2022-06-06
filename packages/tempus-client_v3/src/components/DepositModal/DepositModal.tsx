@@ -70,7 +70,7 @@ const DepositModal: FC<DepositModalProps> = props => {
   const balance = useMemo(() => {
     const chain = chainConfig?.chainId ? chainIdToChainName(chainConfig?.chainId) : undefined;
     return balances[`${chain}-${token?.address}`] ?? ZERO;
-  }, [balances, chainConfig?.chainId, token]);
+  }, [balances, chainConfig, token]);
 
   const depositYieldChart = useMemo(
     () =>
