@@ -1,9 +1,9 @@
 import { renderHook } from '@testing-library/react-hooks';
 import { act } from 'react-dom/test-utils';
-import { delay, of, of as mockOf } from 'rxjs';
-import { Decimal, Decimal as MockDecimal, getServices, TempusPool } from 'tempus-core-services';
+import { of as mockOf, delay as mockDelay } from 'rxjs';
+import { Decimal, Decimal as MockDecimal, TempusPool } from 'tempus-core-services';
 import { getConfigManager } from '../config/getConfigManager';
-import { pool4, pool4 as mockPool4, pool5 } from '../setupTests';
+import { pool4, pool4 as mockPool4, pool5, pool5 as mockPool5 } from '../setupTests';
 import { setTempusPoolsForDepositModal, useDepositModalData } from './useDepositModalData';
 
 jest.mock('tempus-core-services', () => ({
@@ -19,50 +19,24 @@ jest.mock('./useTokenRates', () => ({
   }),
 }));
 
-const mockGetDepositedEvents = jest.fn();
-const mockGetRedeemedEvents = jest.fn();
-const mockGetSwapEvents = jest.fn();
-const mockEstimatedDepositAndFix = jest.fn();
+jest.mock('./useFixedAprs', () => ({
+  ...jest.requireActual('./useFixedAprs'),
+  poolAprs$: mockOf({
+    // principalsAmount = 23.45
+    [`${mockPool4.chain}-${mockPool4.address}`]: new MockDecimal('38.2908878504672893'),
+    // principalsAmount = 104.5678
+    [`${mockPool5.chain}-${mockPool5.address}`]: new MockDecimal('29.689311594202900145'),
+  }).pipe(mockDelay(100)),
+}));
 
 describe('useDepositModal', () => {
-  let originalDateNow = Date.now;
-
-  beforeAll(async () => {
-    jest.resetAllMocks();
-
-    const config = getConfigManager();
-    config.init();
-  });
+  beforeAll(getConfigManager);
 
   beforeEach(() => {
-    originalDateNow = Date.now;
-    Date.now = () => new Date(Date.UTC(2022, 4, 15)).getTime();
-  });
-
-  afterEach(() => {
-    Date.now = originalDateNow;
+    jest.spyOn(Date, 'now').mockReturnValue(new Date(2022, 4, 15).getTime());
   });
 
   it('returns values from the selected pool', async () => {
-    (getServices as unknown as jest.Mock).mockImplementation(() => ({
-      TempusControllerService: {
-        getDepositedEvents: mockGetDepositedEvents.mockImplementation(() => []),
-        getRedeemedEvents: mockGetRedeemedEvents.mockImplementation(() => []),
-      },
-      VaultService: {
-        getSwapEvents: mockGetSwapEvents.mockImplementation(() => []),
-      },
-      StatisticsService: {
-        estimatedDepositAndFix: mockEstimatedDepositAndFix.mockImplementation((tempusAmmAddress: string) => {
-          if (tempusAmmAddress === pool5.ammAddress) {
-            return of<Decimal>(new Decimal('104.5678')).pipe(delay(1000));
-          }
-
-          return of<Decimal>(new Decimal('23.45')).pipe(delay(1000));
-        }),
-      },
-    }));
-
     const useDepositModalProps = useDepositModalData();
     const { result, waitForNextUpdate } = renderHook(() => useDepositModalProps());
 
