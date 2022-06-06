@@ -1,4 +1,4 @@
-import { FC, useCallback, useMemo, useState } from 'react';
+import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ChainConfig, chainIdToChainName, Ticker, ZERO } from 'tempus-core-services';
 import {
@@ -7,26 +7,27 @@ import {
   useDepositModalData,
   useTokenBalances,
 } from '../../hooks';
-import { MaturityTerm, TokenMetadataProp } from '../../interfaces';
+import { MaturityTerm, TokenMetadata, TokenMetadataProp } from '../../interfaces';
 import { ModalProps } from '../shared/Modal/Modal';
-import { ActionButtonState, ChartDot, SelectableChartDataPoint, PercentageDateChart } from '../shared';
+import { ActionButtonState, Loading } from '../shared';
 import CurrencyInputModal, { CurrencyInputModalActionButtonLabels } from '../CurrencyInputModal';
+import DepositModalChart from './DepositModalChart';
 import DepositModalHeader from './DepositModalHeader';
 import DepositModalInfoRows from './DepositModalInfoRows';
 
 import './DepositModal.scss';
 
 export interface DepositModalProps extends ModalProps {
-  tokens: TokenMetadataProp;
-  poolStartDate: Date;
-  maturityTerms: MaturityTerm[];
+  tokens?: TokenMetadataProp;
+  poolStartDate?: Date;
+  maturityTerms?: MaturityTerm[];
   chainConfig?: ChainConfig;
 }
 
 const DepositModal: FC<DepositModalProps> = props => {
   const { tokens, open, onClose, poolStartDate, maturityTerms, chainConfig } = props;
-  const [maturityTerm, setMaturityTerm] = useState(maturityTerms[0]);
-  const [token, setToken] = useState(tokens[0]);
+  const [maturityTerm, setMaturityTerm] = useState<MaturityTerm | undefined>();
+  const [token, setToken] = useState<TokenMetadata | undefined>();
   const [approved, setApproved] = useState(false);
   const [actionButtonState, setActionButtonState] = useState<ActionButtonState>('default');
   const balances = useTokenBalances();
@@ -54,46 +55,42 @@ const DepositModal: FC<DepositModalProps> = props => {
         },
   };
 
+  useEffect(() => {
+    if (maturityTerms) {
+      setMaturityTerm(maturityTerms[0]);
+    }
+  }, [maturityTerms]);
+
+  useEffect(() => {
+    if (tokens) {
+      setToken(tokens[0]);
+    }
+  }, [tokens]);
+
   const balance = useMemo(() => {
     const chain = chainConfig?.chainId ? chainIdToChainName(chainConfig?.chainId) : undefined;
-    return balances[`${chain}-${token.address}`] ?? ZERO;
-  }, [balances, chainConfig?.chainId, token.address]);
-
-  const chartData = useMemo(
-    () =>
-      [{ date: poolStartDate, apr: 0 }, ...maturityTerms].map(term => ({
-        x: term.date,
-        y: term.apr,
-        visible: term.date !== poolStartDate,
-        selected: term === maturityTerm,
-      })) as SelectableChartDataPoint<Date, number>[],
-    [maturityTerm, maturityTerms, poolStartDate],
-  );
-
-  const chartDot = useCallback(
-    (_x, _y, index, cx, cy) => {
-      const { visible, selected } = chartData[index];
-
-      if (visible) {
-        return <ChartDot variant="tick" selected={selected} centerX={cx} centerY={cy} key={`chart-dot-${cx}-${cy}`} />;
-      }
-      return undefined;
-    },
-    [chartData],
-  );
+    return balances[`${chain}-${token?.address}`] ?? ZERO;
+  }, [balances, chainConfig, token]);
 
   const depositYieldChart = useMemo(
-    () => (
-      <div>
-        <PercentageDateChart height={329} data={chartData} dot={chartDot} />
-      </div>
-    ),
-    [chartData, chartDot],
+    () =>
+      poolStartDate && maturityTerms && maturityTerm ? (
+        <DepositModalChart
+          poolStartDate={poolStartDate}
+          maturityTerms={maturityTerms}
+          selectedMaturityTerm={maturityTerm}
+        />
+      ) : (
+        <div className="tc__deposit-modal__preview-loading-placeholder">
+          <Loading size={60} color="primary" />
+        </div>
+      ),
+    [maturityTerm, maturityTerms, poolStartDate],
   );
 
   const handleMaturityChange = useCallback(
     (newTerm: MaturityTerm) => {
-      const termIndex = maturityTerms.findIndex(term => term.date === newTerm.date) ?? 0;
+      const termIndex = maturityTerms?.findIndex(term => term.date === newTerm.date) ?? 0;
       const selectedPool = modalProps?.tempusPools[termIndex];
 
       if (selectedPool) {
@@ -107,7 +104,7 @@ const DepositModal: FC<DepositModalProps> = props => {
 
   const handleCurrencyChange = useCallback(
     (newCurrency: Ticker) => {
-      const newToken = tokens.find(value => value.ticker === newCurrency);
+      const newToken = tokens?.find(value => value.ticker === newCurrency);
 
       if (newToken) {
         setToken(newToken);
@@ -154,7 +151,11 @@ const DepositModal: FC<DepositModalProps> = props => {
       header={<DepositModalHeader />}
       maturityTerms={maturityTerms}
       balance={balance}
-      infoRows={<DepositModalInfoRows balance={balance} balanceToken={token} yieldToken={tokens[1]} />}
+      infoRows={
+        tokens && token ? (
+          <DepositModalInfoRows balance={balance} balanceToken={token} yieldToken={tokens[1]} />
+        ) : undefined
+      }
       actionButtonLabels={actionButtonLabels}
       actionButtonState={actionButtonState}
       onTransactionStart={approved ? deposit : approveDeposit}
