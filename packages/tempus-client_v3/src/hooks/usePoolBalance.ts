@@ -119,6 +119,19 @@ balanceUpdateStreams.forEach(stream => {
 
 export const poolBalances$ = combineLatest(
   [...poolBalanceDataMap.values()].map(poolBalanceData => poolBalanceData.subject$),
+).pipe(
+  map(poolBalancesData => {
+    let poolBalanceMap: { [id: PoolChainAddressId]: Decimal | null } = {};
+
+    poolBalancesData.forEach(poolBalanceData => {
+      poolBalanceMap = {
+        ...poolBalanceMap,
+        [`${poolBalanceData.chain}-${poolBalanceData.address}`]: poolBalanceData.balance,
+      };
+    });
+
+    return poolBalanceMap;
+  }),
 );
 
 export const subscribe = (): void => {
