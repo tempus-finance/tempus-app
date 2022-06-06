@@ -55,6 +55,37 @@ const subject = (props: DepositModalProps) =>
     </BrowserRouter>,
   );
 
+jest.mock('@web3-onboard/ledger', () =>
+  jest.fn().mockImplementation(() => () => ({
+    label: '',
+    getIcon: () => new Promise<string>(() => ''),
+    getInterface: () => null,
+  })),
+);
+
+jest.mock('@web3-onboard/gnosis', () =>
+  jest.fn().mockImplementation(() => () => ({
+    label: '',
+    getIcon: () => new Promise<string>(() => ''),
+    getInterface: () => null,
+  })),
+);
+
+jest.mock('@web3-onboard/injected-wallets', () =>
+  jest.fn().mockImplementation(() => () => ({
+    label: '',
+    getIcon: () => new Promise<string>(() => ''),
+    getInterface: () => null,
+  })),
+);
+
+jest.mock('@web3-onboard/react', () => ({
+  init: jest.fn(),
+  useConnectWallet: jest.fn().mockReturnValue([{ wallet: { accounts: [{ address: '0x123123123' }] } }, () => {}]),
+  useSetChain: jest.fn().mockReturnValue([{}, () => {}]),
+  useWallets: jest.fn().mockReturnValue([]),
+}));
+
 jest.mock('../../hooks', () => ({
   ...jest.requireActual('../../hooks'),
   useWalletBalances: jest.fn(),

@@ -13,4 +13,4 @@ export function setWalletAddress(address: string): void {
     )
     .subscribe();
 }
-export const [useWalletAddress] = bind(walletAddress$);
+export const [useWalletAddress] = bind(walletAddress$, '');

@@ -4,6 +4,37 @@ import { getConfigManager } from '../../config/getConfigManager';
 import { MaturityTerm } from '../../interfaces';
 import CurrencyInputModal, { CurrencyInputModalProps } from './CurrencyInputModal';
 
+jest.mock('@web3-onboard/ledger', () =>
+  jest.fn().mockImplementation(() => () => ({
+    label: '',
+    getIcon: () => new Promise<string>(() => ''),
+    getInterface: () => null,
+  })),
+);
+
+jest.mock('@web3-onboard/gnosis', () =>
+  jest.fn().mockImplementation(() => () => ({
+    label: '',
+    getIcon: () => new Promise<string>(() => ''),
+    getInterface: () => null,
+  })),
+);
+
+jest.mock('@web3-onboard/injected-wallets', () =>
+  jest.fn().mockImplementation(() => () => ({
+    label: '',
+    getIcon: () => new Promise<string>(() => ''),
+    getInterface: () => null,
+  })),
+);
+
+jest.mock('@web3-onboard/react', () => ({
+  init: jest.fn(),
+  useConnectWallet: jest.fn().mockReturnValue([{ wallet: { accounts: [{ address: '0x123123123' }] } }, () => {}]),
+  useSetChain: jest.fn().mockReturnValue([{}, () => {}]),
+  useWallets: jest.fn().mockReturnValue([]),
+}));
+
 const onTransactionStartMock = jest.fn<string, [Decimal]>();
 const onAmountChangeMock = jest.fn<void, [Decimal]>();
 
