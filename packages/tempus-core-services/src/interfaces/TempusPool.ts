@@ -5,7 +5,7 @@ import { TransactionView } from './TransactionView';
 import { Chain } from './Chain';
 
 export type TempusPool = {
-  chain?: Chain;
+  chain: Chain;
   address: string;
   poolId: string;
   protocol: ProtocolName;

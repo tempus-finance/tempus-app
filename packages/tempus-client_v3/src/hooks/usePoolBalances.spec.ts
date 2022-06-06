@@ -1,20 +1,43 @@
+import { act } from '@testing-library/react';
 import { renderHook } from '@testing-library/react-hooks';
 import { of as mockOf, delay as mockDelay } from 'rxjs';
 import { Decimal as MockDecimal, getServices } from 'tempus-core-services';
 import { getConfigManager } from '../config/getConfigManager';
-import { usePoolBalances } from './usePoolBalances';
+import { reset, subscribe, usePoolBalance } from './usePoolBalance';
 
 jest.mock('tempus-core-services', () => ({
   ...jest.requireActual('tempus-core-services'),
   getServices: jest.fn(),
 }));
 
-jest.mock('./useWalletBalances', () => ({
-  walletBalances$: mockOf({
-    'ethereum-00001-p': new MockDecimal(100),
-    'ethereum-00001-y': new MockDecimal(200),
-    'ethereum-00001-amm': new MockDecimal(300),
-  }).pipe(mockDelay(100)),
+jest.mock('./useTokenBalance', () => ({
+  ...jest.requireActual('./useServicesLoaded'),
+  tokenBalanceDataMap: new Map([
+    [
+      'ethereum-00001-p',
+      {
+        subject$: mockOf(new MockDecimal(100)).pipe(mockDelay(100)),
+        address: '00001-p',
+        chain: 'ethereum',
+      },
+    ],
+    [
+      'ethereum-00001-y',
+      {
+        subject$: mockOf(new MockDecimal(100)).pipe(mockDelay(100)),
+        address: '00001-p',
+        chain: 'ethereum',
+      },
+    ],
+    [
+      'ethereum-00001-amm',
+      {
+        subject$: mockOf(new MockDecimal(100)).pipe(mockDelay(100)),
+        address: '00001-p',
+        chain: 'ethereum',
+      },
+    ],
+  ]),
 }));
 
 jest.mock('./useWalletAddress', () => ({
@@ -27,26 +50,21 @@ jest.mock('./useServicesLoaded', () => ({
 }));
 
 describe('usePoolBalances', () => {
-  beforeAll(() => {
-    const config = getConfigManager();
-    config.init();
-  });
+  beforeAll(getConfigManager);
 
   test('returns pool-to-balance map', async () => {
-    const { result, waitForNextUpdate } = renderHook(() => usePoolBalances());
+    act(() => {
+      reset();
+      subscribe();
+    });
 
-    expect(result.current).toEqual({});
+    const { result, waitForNextUpdate } = renderHook(() => usePoolBalance('1', 'ethereum'));
 
     await waitForNextUpdate();
 
-    const expected = {
-      'ethereum-1': new MockDecimal(500),
-      'ethereum-2': new MockDecimal(700),
-      'fantom-3': new MockDecimal(200),
-      'fantom-4': new MockDecimal(900),
-      'fantom-5': new MockDecimal(300),
-    };
-    expect(result.current).toEqual(expected);
+    expect(result.current?.balance?.toString()).toEqual('500');
+    expect(result.current?.address).toEqual('1');
+    expect(result.current?.chain).toEqual('ethereum');
   });
 
   test('returns a empty map when there is error', async () => {
@@ -55,10 +73,18 @@ describe('usePoolBalances', () => {
       throw new Error();
     });
 
-    const { result, waitForNextUpdate } = renderHook(() => usePoolBalances());
+    act(() => {
+      reset();
+      subscribe();
+    });
 
-    expect(result.current).toEqual({});
+    const { result, waitForNextUpdate } = renderHook(() => usePoolBalance('1', 'ethereum'));
 
+    expect(result.current).toEqual({
+      address: '1',
+      chain: 'ethereum',
+      balance: null,
+    });
     try {
       await waitForNextUpdate();
     } catch (e) {
