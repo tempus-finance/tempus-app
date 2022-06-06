@@ -22,7 +22,11 @@ import { walletAddress$ } from './useWalletAddress';
 type TokenChainAddressId = string;
 
 interface TokenBalanceData {
-  subject$: BehaviorSubject<Decimal | null>;
+  subject$: BehaviorSubject<{
+    balance: Decimal | null;
+    chain: Chain;
+    address: string;
+  }>;
   address: string;
   chain: Chain;
 }
@@ -35,7 +39,15 @@ tokenList.forEach(token => {
   const tokenChainAddressId = `${token.chain}-${token.address}`;
 
   tokenBalanceDataMap.set(tokenChainAddressId, {
-    subject$: new BehaviorSubject<Decimal | null>(null),
+    subject$: new BehaviorSubject<{
+      balance: Decimal | null;
+      address: string;
+      chain: Chain;
+    }>({
+      balance: null,
+      address: token.address,
+      chain: token.chain,
+    }),
     address: token.address,
     chain: token.chain,
   });
@@ -56,7 +68,8 @@ const stream$ = combineLatest([walletAddress$, selectedChain$, servicesLoaded$])
 
       // If token balance was previously fetched, skip fetching it - token balance updates will happen in different
       // stream, this stream is only for initial token balance fetches
-      if (tokenBalanceData.subject$.getValue()) {
+      const balanceData = tokenBalanceData.subject$.getValue();
+      if (balanceData && balanceData.balance) {
         return of(null);
       }
 
@@ -91,7 +104,11 @@ const stream$ = combineLatest([walletAddress$, selectedChain$, servicesLoaded$])
       if (tokenData.balance) {
         const tokenBalanceData = tokenBalanceDataMap.get(`${tokenData.chain}-${tokenData.address}`);
         if (tokenBalanceData) {
-          tokenBalanceData.subject$.next(tokenData.balance);
+          tokenBalanceData.subject$.next({
+            balance: tokenData.balance,
+            chain: tokenBalanceData.chain,
+            address: tokenBalanceData.address,
+          });
         }
       }
     });
@@ -116,6 +133,25 @@ export const [useTokenBalance] = bind((tokenAddress: string, tokenChain: Chain |
 
 let streamSubscription: Subscription = stream$.subscribe();
 
+const tokenBalanceMap$ = combineLatest(
+  [...tokenBalanceDataMap.values()].map(tokenBalanceData => tokenBalanceData.subject$),
+).pipe(
+  map(tokenBalancesData => {
+    let tokenBalanceMap: { [id: TokenChainAddressId]: Decimal | null } = {};
+
+    tokenBalancesData.forEach(tokenBalanceData => {
+      tokenBalanceMap = {
+        ...tokenBalanceMap,
+        [`${tokenBalanceData.chain}-${tokenBalanceData.address}`]: tokenBalanceData.balance,
+      };
+    });
+
+    return tokenBalanceMap;
+  }),
+);
+
+export const [useTokenBalances] = bind(tokenBalanceMap$, {});
+
 export const subscribe = (): void => {
   unsubscribe();
   streamSubscription = stream$.subscribe();
@@ -124,5 +160,11 @@ export const unsubscribe = (): void => {
   streamSubscription.unsubscribe();
 };
 export const reset = (): void => {
-  tokenBalanceDataMap.forEach(tokenBalanceData => tokenBalanceData.subject$.next(null));
+  tokenBalanceDataMap.forEach(tokenBalanceData =>
+    tokenBalanceData.subject$.next({
+      balance: null,
+      chain: tokenBalanceData.chain,
+      address: tokenBalanceData.address,
+    }),
+  );
 };
