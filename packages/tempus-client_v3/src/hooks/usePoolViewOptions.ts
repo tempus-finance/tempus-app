@@ -6,7 +6,7 @@ import { TempusPool, ZERO } from 'tempus-core-services';
 import { FilterType, PoolType, SortOrder, SortType, ViewType } from '../interfaces';
 import { poolList$ } from './usePoolList';
 import { poolTvls$ } from './useTvlData';
-import { poolBalancesStream$ } from './usePoolBalance';
+import { poolBalances$ } from './usePoolBalance';
 import { poolAprs$, PoolFixedAprMap } from './useFixedAprs';
 
 export interface PoolViewOptions {
@@ -31,7 +31,7 @@ const stateSortType$ = state(sortType$, 'a-z');
 const stateSortOrder$ = state(sortOrder$, 'asc');
 const statePoolTvls$ = state(poolTvls$, {});
 const statePoolAprs$ = state(poolAprs$, {});
-const statePoolBalances$ = state(poolBalancesStream$, []);
+const statePoolBalances$ = state(poolBalances$, []);
 
 export const isPoolMatured = (tempusPool: TempusPool): boolean => tempusPool.maturityDate <= Date.now();
 export const isPoolInactive = (tempusPool: TempusPool, poolAprs: PoolFixedAprMap): boolean =>
@@ -69,54 +69,48 @@ const filteredPoolList$ = combineLatest([poolList$, stateFilters$]).pipe(
 const filteredSortedPoolList$ = combineLatest([filteredPoolList$, stateSortType$, stateSortOrder$]).pipe(
   // only want to get the latest data instead of getting every interval
   withLatestFrom(statePoolTvls$, statePoolAprs$, statePoolBalances$),
-  map(([poolData, poolTvls, poolAprs, poolBalances]) => {
-    const tempusPools = poolData[0];
-    const sortType = poolData[1];
-    const sortOrder = poolData[2];
-
-    return (
-      tempusPools
-        .sort((poolA, poolB) => {
-          const factor = sortOrder === 'desc' ? -1 : 1;
-          switch (sortType) {
-            case 'a-z':
-            default:
-              return (
-                `${poolA.backingToken}--${poolA.protocolDisplayName}`.localeCompare(
-                  `${poolB.backingToken}--${poolB.protocolDisplayName}`,
-                ) * factor
-              );
-            case 'apr': {
-              const aprA = poolAprs[`${poolA.chain}-${poolA.address}`] ?? ZERO;
-              const aprB = poolAprs[`${poolB.chain}-${poolB.address}`] ?? ZERO;
-              return aprA.gt(aprB) ? factor : -1 * factor;
-            }
-            case 'balance': {
-              const poolABalanceData = poolBalances.find(
-                poolBalance => poolBalance.chain === poolA.chain && poolBalance.address === poolA.address,
-              );
-              const poolBBalanceData = poolBalances.find(
-                poolBalance => poolBalance.chain === poolB.chain && poolBalance.address === poolB.address,
-              );
-
-              const poolBalancesA = poolABalanceData?.balance ?? ZERO;
-              const poolBalancesB = poolBBalanceData?.balance ?? ZERO;
-              return poolBalancesA.gt(poolBalancesB) ? factor : -1 * factor;
-            }
-            case 'maturity':
-              return (poolA.maturityDate - poolB.maturityDate) * factor;
-            case 'tvl': {
-              const tvlA = poolTvls[`${poolA.chain}-${poolA.address}`] ?? ZERO;
-              const tvlB = poolTvls[`${poolB.chain}-${poolB.address}`] ?? ZERO;
-              return tvlA.gt(tvlB) ? factor : -1 * factor;
-            }
+  map(([[tempusPools, sortType, sortOrder], poolTvls, poolAprs, poolBalances]) =>
+    tempusPools
+      .sort((poolA, poolB) => {
+        const factor = sortOrder === 'desc' ? -1 : 1;
+        switch (sortType) {
+          case 'a-z':
+          default:
+            return (
+              `${poolA.backingToken}--${poolA.protocolDisplayName}`.localeCompare(
+                `${poolB.backingToken}--${poolB.protocolDisplayName}`,
+              ) * factor
+            );
+          case 'apr': {
+            const aprA = poolAprs[`${poolA.chain}-${poolA.address}`] ?? ZERO;
+            const aprB = poolAprs[`${poolB.chain}-${poolB.address}`] ?? ZERO;
+            return aprA.gt(aprB) ? factor : -1 * factor;
           }
-        })
-        // .sort() will sort the array in place and return the same reference,
-        //   Observable will not emit anything in this case, that's why we need a clone here
-        .slice()
-    );
-  }),
+          case 'balance': {
+            const poolABalanceData = poolBalances.find(
+              poolBalance => poolBalance.chain === poolA.chain && poolBalance.address === poolA.address,
+            );
+            const poolBBalanceData = poolBalances.find(
+              poolBalance => poolBalance.chain === poolB.chain && poolBalance.address === poolB.address,
+            );
+
+            const poolBalancesA = poolABalanceData?.balance ?? ZERO;
+            const poolBalancesB = poolBBalanceData?.balance ?? ZERO;
+            return poolBalancesA.gt(poolBalancesB) ? factor : -1 * factor;
+          }
+          case 'maturity':
+            return (poolA.maturityDate - poolB.maturityDate) * factor;
+          case 'tvl': {
+            const tvlA = poolTvls[`${poolA.chain}-${poolA.address}`] ?? ZERO;
+            const tvlB = poolTvls[`${poolB.chain}-${poolB.address}`] ?? ZERO;
+            return tvlA.gt(tvlB) ? factor : -1 * factor;
+          }
+        }
+      })
+      // .sort() will sort the array in place and return the same reference,
+      //   Observable will not emit anything in this case, that's why we need a clone here
+      .slice(),
+  ),
 );
 
 export function usePoolViewOptions(): [PoolViewOptions, (partial: Partial<PoolViewOptions>) => void] {

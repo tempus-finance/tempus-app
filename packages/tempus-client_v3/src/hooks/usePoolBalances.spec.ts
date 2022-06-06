@@ -2,7 +2,7 @@ import { renderHook } from '@testing-library/react-hooks';
 import { of as mockOf, delay as mockDelay } from 'rxjs';
 import { Decimal as MockDecimal, getServices } from 'tempus-core-services';
 import { getConfigManager } from '../config/getConfigManager';
-import { usePoolBalances } from './usePoolBalances';
+import { usePoolBalance } from './usePoolBalance';
 
 jest.mock('tempus-core-services', () => ({
   ...jest.requireActual('tempus-core-services'),
@@ -33,7 +33,7 @@ describe('usePoolBalances', () => {
   });
 
   test('returns pool-to-balance map', async () => {
-    const { result, waitForNextUpdate } = renderHook(() => usePoolBalances());
+    const { result, waitForNextUpdate } = renderHook(() => usePoolBalance('00001-p', 'ethereum'));
 
     expect(result.current).toEqual({});
 

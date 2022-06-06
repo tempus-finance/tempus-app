@@ -116,7 +116,7 @@ balanceUpdateStreams.forEach(stream => {
   balanceUpdateSubscriptions.push(stream.subscribe());
 });
 
-export const poolBalancesStream$ = combineLatest(
+export const poolBalances$ = combineLatest(
   [...poolBalanceDataMap.values()].map(poolBalanceData => poolBalanceData.subject$),
 );
 
