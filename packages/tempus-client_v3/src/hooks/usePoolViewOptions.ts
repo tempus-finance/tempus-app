@@ -31,7 +31,7 @@ const stateSortType$ = state(sortType$, 'a-z');
 const stateSortOrder$ = state(sortOrder$, 'asc');
 const statePoolTvls$ = state(poolTvls$, {});
 const statePoolAprs$ = state(poolAprs$, {});
-const statePoolBalances$ = state(poolBalances$, []);
+const statePoolBalances$ = state(poolBalances$, {});
 
 export const isPoolMatured = (tempusPool: TempusPool): boolean => tempusPool.maturityDate <= Date.now();
 export const isPoolInactive = (tempusPool: TempusPool, poolAprs: PoolFixedAprMap): boolean =>
@@ -87,16 +87,10 @@ const filteredSortedPoolList$ = combineLatest([filteredPoolList$, stateSortType$
             return aprA.gt(aprB) ? factor : -1 * factor;
           }
           case 'balance': {
-            const poolABalanceData = poolBalances.find(
-              poolBalance => poolBalance.chain === poolA.chain && poolBalance.address === poolA.address,
-            );
-            const poolBBalanceData = poolBalances.find(
-              poolBalance => poolBalance.chain === poolB.chain && poolBalance.address === poolB.address,
-            );
+            const firstPoolBalance = poolBalances[`${poolA.chain}-${poolA.address}`] ?? ZERO;
+            const secondPoolBalance = poolBalances[`${poolB.chain}-${poolB.address}`] ?? ZERO;
 
-            const poolBalancesA = poolABalanceData?.balance ?? ZERO;
-            const poolBalancesB = poolBBalanceData?.balance ?? ZERO;
-            return poolBalancesA.gt(poolBalancesB) ? factor : -1 * factor;
+            return firstPoolBalance.gt(secondPoolBalance) ? factor : -1 * factor;
           }
           case 'maturity':
             return (poolA.maturityDate - poolB.maturityDate) * factor;
