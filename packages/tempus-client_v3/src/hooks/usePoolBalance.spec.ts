@@ -1,7 +1,7 @@
 import { act } from '@testing-library/react';
 import { renderHook } from '@testing-library/react-hooks';
 import { of as mockOf, delay as mockDelay } from 'rxjs';
-import { Decimal as MockDecimal, getServices } from 'tempus-core-services';
+import { Decimal as MockDecimal, getServices, ZERO_ADDRESS } from 'tempus-core-services';
 import { getConfigManager } from '../config/getConfigManager';
 import { reset, subscribe, usePoolBalance } from './usePoolBalance';
 
@@ -16,7 +16,11 @@ jest.mock('./useTokenBalance', () => ({
     [
       'ethereum-00001-p',
       {
-        subject$: mockOf(new MockDecimal(100)).pipe(mockDelay(100)),
+        subject$: mockOf({
+          balance: new MockDecimal(100),
+          address: '00001-p',
+          chain: 'ethereum',
+        }).pipe(mockDelay(100)),
         address: '00001-p',
         chain: 'ethereum',
       },
@@ -24,7 +28,11 @@ jest.mock('./useTokenBalance', () => ({
     [
       'ethereum-00001-y',
       {
-        subject$: mockOf(new MockDecimal(100)).pipe(mockDelay(100)),
+        subject$: mockOf({
+          balance: new MockDecimal(100),
+          address: '00001-p',
+          chain: 'ethereum',
+        }).pipe(mockDelay(100)),
         address: '00001-p',
         chain: 'ethereum',
       },
@@ -32,7 +40,11 @@ jest.mock('./useTokenBalance', () => ({
     [
       'ethereum-00001-amm',
       {
-        subject$: mockOf(new MockDecimal(100)).pipe(mockDelay(100)),
+        subject$: mockOf({
+          balance: new MockDecimal(100),
+          address: '00001-p',
+          chain: 'ethereum',
+        }).pipe(mockDelay(100)),
         address: '00001-p',
         chain: 'ethereum',
       },
