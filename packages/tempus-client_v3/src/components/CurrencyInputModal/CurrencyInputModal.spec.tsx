@@ -44,7 +44,7 @@ singleCurrencyUsdRates.set('ETH', new Decimal(3500));
 const singleMaturityTerm: MaturityTerm[] = [
   {
     apr: new Decimal(0.074),
-    date: new Date(2022, 9, 1),
+    date: new Date(Date.UTC(2022, 9, 1)),
   },
 ];
 
@@ -128,7 +128,7 @@ describe('CurrencyInputModal', () => {
 
     expect(actionButton).toBeEnabled();
 
-    fireEvent.click(actionButton);
+    fireEvent.click(actionButton as Element);
 
     expect(onTransactionStartMock).toBeCalledTimes(1);
     expect(onTransactionStartMock).toBeCalledWith(new Decimal('1.234'));

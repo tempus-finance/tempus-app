@@ -18,11 +18,11 @@ describe('TermTabs', () => {
       terms: [
         {
           apr: 0.042,
-          date: new Date(2022, 0, 1),
+          date: new Date(Date.UTC(2022, 0, 1)),
         },
         {
           apr: 0.1,
-          date: new Date(2022, 5, 1),
+          date: new Date(Date.UTC(2022, 5, 1)),
         },
       ],
     });
@@ -37,15 +37,15 @@ describe('TermTabs', () => {
     const terms = [
       {
         apr: 0.042,
-        date: new Date(2022, 0, 1),
+        date: new Date(Date.UTC(2022, 0, 1)),
       },
       {
         apr: 0.1,
-        date: new Date(2022, 5, 1),
+        date: new Date(Date.UTC(2022, 5, 1)),
       },
       {
         apr: 0.125,
-        date: new Date(2022, 10, 1),
+        date: new Date(Date.UTC(2022, 10, 1)),
       },
     ];
     const { getAllByRole } = subject({

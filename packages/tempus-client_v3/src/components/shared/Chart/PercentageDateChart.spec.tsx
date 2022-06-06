@@ -3,7 +3,7 @@ import { ChartSizeProps } from './Chart';
 import PercentageDateChart, { PercentageDateChartProps } from './PercentageDateChart';
 
 const data = [...Array(20).keys()].map(value => ({
-  x: new Date(2022, 3, 1 + value),
+  x: new Date(Date.UTC(2022, 3, 1 + value)),
   y: (value * value) / 10000,
 }));
 

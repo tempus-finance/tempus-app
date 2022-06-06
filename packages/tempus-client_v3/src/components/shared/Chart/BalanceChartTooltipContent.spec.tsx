@@ -5,7 +5,7 @@ const defaultProps: BalanceChartTooltipContentProps = {
   title: 'Deposit',
   value: '0.123',
   currency: 'ETH',
-  date: new Date(2022, 4, 1),
+  date: new Date(Date.UTC(2022, 4, 1)),
 };
 
 const subject = (props: BalanceChartTooltipContentProps) => render(<BalanceChartTooltipContent {...props} />);
