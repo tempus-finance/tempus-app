@@ -104,6 +104,7 @@ const CurrencyInputModal: FC<CurrencyInputModalProps> = props => {
         <ModalPreviewContent
           actionButtonLabels={actionButtonLabels.preview ?? actionButtonLabels.action}
           onActionButtonClick={handlePreviewButtonClick}
+          onConnectWalletClick={onClose}
         >
           {preview}
         </ModalPreviewContent>

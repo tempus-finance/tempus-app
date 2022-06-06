@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import { useParams } from 'react-router-dom';
-import { Chain, Decimal, ProtocolName, Ticker } from 'tempus-core-services';
+import { Chain, Decimal, ProtocolName, Ticker, ZERO } from 'tempus-core-services';
 import { usePoolBalance } from '../../hooks';
 import { PoolPositionModal } from './PoolPositionModal';
 
@@ -15,7 +15,7 @@ export const PoolPositionModalResolver: FC = () => {
     // TODO - Replace dummy data with data from hooks
     <PoolPositionModal
       apr={0.1}
-      balance={poolBalanceData?.balance || new Decimal(0)}
+      balance={poolBalanceData?.balance || ZERO}
       chartData={[
         { x: new Date(2022, 3, 4), y: 10 },
         { x: new Date(2022, 4, 1), y: 20 },

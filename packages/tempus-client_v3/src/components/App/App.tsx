@@ -2,7 +2,13 @@ import { memo, useEffect } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { initServices } from 'tempus-core-services';
-import { useLocale, useSelectedChain, useUserPreferences, useServicesLoaded } from '../../hooks';
+import {
+  useLocale,
+  useSelectedChain,
+  useUserPreferences,
+  useServicesLoaded,
+  useWalletAddress,
+} from '../../hooks';
 import Markets from '../Markets';
 import Navbar from '../Navbar/Navbar';
 import { getConfigManager } from '../../config/getConfigManager';
@@ -23,6 +29,7 @@ const App = () => {
   useLocale();
   useUserPreferences();
   useSelectedChain();
+  useWalletAddress();
 
   const navigationLinks: PageNavigationLink[] = [
     { text: t('App.navMarkets'), path: '/' },

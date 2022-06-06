@@ -1,4 +1,4 @@
-import ActionButton, { ActionButtonLabels, ActionButtonState } from './ActionButton';
+import ActionButton, { ActionButtonLabels, ActionButtonState, ActionButtonVariant } from './ActionButton';
 
 export default ActionButton;
-export type { ActionButtonLabels, ActionButtonState };
+export type { ActionButtonLabels, ActionButtonState, ActionButtonVariant };
