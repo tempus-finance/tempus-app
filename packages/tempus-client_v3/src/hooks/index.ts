@@ -1,6 +1,7 @@
 export { useFixedAprs } from './useFixedAprs';
 export { useTokenRates } from './useTokenRates';
 export { useTokenBalance } from './useTokenBalance';
+export { usePoolBalance } from './usePoolBalance';
 export * from './useTvlData';
 export * from './useWalletAddress';
 export * from './useSelectedChain';
@@ -8,7 +9,6 @@ export * from './useLocale';
 export * from './useUserPreferences';
 export * from './usePoolViewOptions';
 export * from './useConfig';
-export * from './usePoolBalances';
 export * from './useDepositModalData';
 export * from './useYieldAtMaturity';
 export * from './useChainList';

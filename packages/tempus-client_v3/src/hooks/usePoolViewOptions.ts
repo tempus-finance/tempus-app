@@ -6,7 +6,7 @@ import { TempusPool, ZERO } from 'tempus-core-services';
 import { FilterType, PoolType, SortOrder, SortType, ViewType } from '../interfaces';
 import { poolList$ } from './usePoolList';
 import { poolTvls$ } from './useTvlData';
-import { poolBalances$ } from './usePoolBalances';
+import { poolBalances$ } from './usePoolBalance';
 import { poolAprs$, PoolFixedAprMap } from './useFixedAprs';
 
 export interface PoolViewOptions {
@@ -30,8 +30,8 @@ const stateFilters$ = state(filters$, new Set<FilterType>(['active']));
 const stateSortType$ = state(sortType$, 'a-z');
 const stateSortOrder$ = state(sortOrder$, 'asc');
 const statePoolTvls$ = state(poolTvls$, {});
-const statePoolBalances$ = state(poolBalances$, {});
 const statePoolAprs$ = state(poolAprs$, {});
+const statePoolBalances$ = state(poolBalances$, {});
 
 export const isPoolMatured = (tempusPool: TempusPool): boolean => tempusPool.maturityDate <= Date.now();
 export const isPoolInactive = (tempusPool: TempusPool, poolAprs: PoolFixedAprMap): boolean =>
@@ -68,8 +68,8 @@ const filteredPoolList$ = combineLatest([poolList$, stateFilters$]).pipe(
 );
 const filteredSortedPoolList$ = combineLatest([filteredPoolList$, stateSortType$, stateSortOrder$]).pipe(
   // only want to get the latest data instead of getting every interval
-  withLatestFrom(statePoolTvls$, statePoolBalances$, statePoolAprs$),
-  map(([[tempusPools, sortType, sortOrder], poolTvls, poolBalances, poolAprs]) =>
+  withLatestFrom(statePoolTvls$, statePoolAprs$, statePoolBalances$),
+  map(([[tempusPools, sortType, sortOrder], poolTvls, poolAprs, poolBalances]) =>
     tempusPools
       .sort((poolA, poolB) => {
         const factor = sortOrder === 'desc' ? -1 : 1;
@@ -87,9 +87,10 @@ const filteredSortedPoolList$ = combineLatest([filteredPoolList$, stateSortType$
             return aprA.gt(aprB) ? factor : -1 * factor;
           }
           case 'balance': {
-            const poolBalancesA = poolBalances[`${poolA.chain}-${poolA.address}`] ?? ZERO;
-            const poolBalancesB = poolBalances[`${poolB.chain}-${poolB.address}`] ?? ZERO;
-            return poolBalancesA.gt(poolBalancesB) ? factor : -1 * factor;
+            const firstPoolBalance = poolBalances[`${poolA.chain}-${poolA.address}`] ?? ZERO;
+            const secondPoolBalance = poolBalances[`${poolB.chain}-${poolB.address}`] ?? ZERO;
+
+            return firstPoolBalance.gt(secondPoolBalance) ? factor : -1 * factor;
           }
           case 'maturity':
             return (poolA.maturityDate - poolB.maturityDate) * factor;

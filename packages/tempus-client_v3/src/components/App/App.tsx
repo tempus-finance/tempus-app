@@ -6,7 +6,6 @@ import {
   useLocale,
   useSelectedChain,
   useUserPreferences,
-  usePoolBalances,
   useServicesLoaded,
   useWalletAddress,
 } from '../../hooks';
@@ -30,7 +29,6 @@ const App = () => {
   useLocale();
   useUserPreferences();
   useSelectedChain();
-  usePoolBalances();
   useWalletAddress();
 
   const navigationLinks: PageNavigationLink[] = [
