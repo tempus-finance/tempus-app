@@ -1,5 +1,5 @@
 import { bind } from '@react-rxjs/core';
-import { BehaviorSubject, combineLatest, map, mergeMap, filter, Subscription, Observable, of } from 'rxjs';
+import { BehaviorSubject, combineLatest, map, mergeMap, filter, Subscription, Observable, of, catchError } from 'rxjs';
 import { Chain, Decimal, getServices } from 'tempus-core-services';
 import { getConfigManager } from '../config/getConfigManager';
 import { servicesLoaded$ } from './useServicesLoaded';
@@ -71,8 +71,6 @@ poolList.forEach(tempusPool => {
           return of(null);
         }
 
-        console.log(`Fetching pool ${address} balance on chain ${chain}`);
-
         return services.StatisticsService.getUserPoolBalanceUSD(chain, tempusPool, walletAddress, {
           principalsBalance: capitalsBalance,
           yieldsBalance,
@@ -84,8 +82,6 @@ poolList.forEach(tempusPool => {
           return;
         }
 
-        console.log(`Updating pool ${address} balance on chain ${chain} to ${balance}`);
-
         const poolBalanceData = poolBalanceDataMap.get(`${chain}-${address}`);
         if (poolBalanceData) {
           poolBalanceData.subject$.next({
@@ -95,7 +91,12 @@ poolList.forEach(tempusPool => {
           });
         }
       }),
+      catchError(error => {
+        console.error('usePoolBalance - updateStream$ - ', error);
+        return of();
+      }),
     );
+
     balanceUpdateStreams.push(updateStream$);
   }
 });

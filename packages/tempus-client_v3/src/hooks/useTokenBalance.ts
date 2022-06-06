@@ -91,10 +91,6 @@ const stream$ = combineLatest([walletAddress$, selectedChain$, servicesLoaded$])
       if (tokenData.balance) {
         const tokenBalanceData = tokenBalanceDataMap.get(`${tokenData.chain}-${tokenData.address}`);
         if (tokenBalanceData) {
-          console.log(
-            `Setting ${tokenBalanceData.address} balance on chain ${tokenBalanceData.chain} to ${tokenData.balance}`,
-          );
-
           tokenBalanceData.subject$.next(tokenData.balance);
         }
       }
