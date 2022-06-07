@@ -26,7 +26,7 @@ interface PoolTvlMap {
   [chainPoolAddress: string]: Decimal;
 }
 
-const DEFAULT_VALUE = {};
+const DEFAULT_VALUE: PoolTvlMap = {};
 
 const intervalBeat$: Observable<number> = interval(POLLING_INTERVAL_IN_MS).pipe(startWith(0));
 
