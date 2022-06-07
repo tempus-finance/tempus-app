@@ -14,6 +14,7 @@ import { VaultService } from './VaultService';
 import { VariableRateService } from './VariableRateService';
 import { StorageService } from './StorageService';
 import { WalletBalanceService } from './WalletBalanceService';
+import { getERC20TokenService } from './getERC20TokenService';
 
 type ServiceMap = {
   TempusPoolService: TempusPoolService;
@@ -23,6 +24,7 @@ type ServiceMap = {
   VariableRateService: VariableRateService;
   StorageService: StorageService;
   WalletBalanceService: WalletBalanceService;
+  ERC20TokenServiceGetter: typeof getERC20TokenService;
 };
 
 const serviceMap = new Map<Chain, ServiceMap>();
@@ -46,6 +48,7 @@ export const initServices = (
       VariableRateService: getVariableRateService(chain, getChainConfig, signerOrProvider as unknown as JsonRpcSigner),
       StorageService: getStorageService(),
       WalletBalanceService: getWalletBalanceService(chain),
+      ERC20TokenServiceGetter: getERC20TokenService,
     };
   } else {
     services = {
@@ -56,6 +59,7 @@ export const initServices = (
       VariableRateService: getVariableRateService(chain, getChainConfig),
       StorageService: getStorageService(),
       WalletBalanceService: getWalletBalanceService(chain),
+      ERC20TokenServiceGetter: getERC20TokenService,
     };
   }
 

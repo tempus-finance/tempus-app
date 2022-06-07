@@ -48,7 +48,14 @@ export { Decimal, ZERO, ONE } from './datastructures';
 
 export { SwapKind } from './services';
 
-export { getChainlinkFeed, getCoingeckoRate, getDefaultProvider, initServices, getServices } from './services';
+export {
+  getChainlinkFeed,
+  getCoingeckoRate,
+  getDefaultProvider,
+  getERC20TokenService,
+  initServices,
+  getServices,
+} from './services';
 
 export {
   NumberUtils,

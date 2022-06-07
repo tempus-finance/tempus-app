@@ -4,6 +4,7 @@ import { ERC20 } from '../abi/ERC20Typings';
 import ERC20ABI from '../abi/ERC20.json';
 import { TypedListener } from '../abi/commons';
 import { approveGasIncrease, ZERO_ETH_ADDRESS } from '../constants';
+import { Decimal } from '../datastructures';
 import { Ticker } from '../interfaces';
 
 export type TransferEventListener = TypedListener<
@@ -24,8 +25,9 @@ type ERC20TokenServiceParameters = {
 
 export class ERC20TokenService {
   public contract: ERC20 | null = null;
+  private precision: number | null = null;
 
-  init(params: ERC20TokenServiceParameters) {
+  init(params: ERC20TokenServiceParameters): void {
     if (this.contract) {
       this.contract.removeAllListeners();
     }
@@ -44,10 +46,10 @@ export class ERC20TokenService {
       // ETH is a native token that does not have an ERC20 contract, we need to get balance for it like this.
       if (this.contract.address === ZERO_ETH_ADDRESS) {
         if (overrides) {
-          return this.contract.provider.getBalance(address, overrides.blockTag);
-        } else {
-          return this.contract.provider.getBalance(address);
+          return await Promise.resolve(this.contract.provider.getBalance(address, overrides.blockTag));
         }
+
+        return await Promise.resolve(this.contract.provider.getBalance(address));
       }
 
       if (overrides) {
@@ -101,7 +103,7 @@ export class ERC20TokenService {
     }
   }
 
-  async approve(spenderAddress: string, amount: BigNumber): Promise<ContractTransaction | void> {
+  async approve(spenderAddress: string, amount: Decimal): Promise<ContractTransaction | void> {
     if (!this.contract) {
       console.error('ERC20TokenService - approve() - Attempted to use ERC20TokenService before initializing it!');
       return Promise.reject();
@@ -111,11 +113,15 @@ export class ERC20TokenService {
     try {
       // No need to approve ETH transfers, ETH is not an ERC20 contract.
       if (this.contract.address === ZERO_ETH_ADDRESS) {
-        return Promise.resolve();
+        return await Promise.resolve();
       }
 
-      const estimate = await this.contract.estimateGas.approve(spenderAddress, amount);
-      approveTransaction = await this.contract.approve(spenderAddress, amount, {
+      if (!this.precision) {
+        this.precision = await this.contract.decimals();
+      }
+
+      const estimate = await this.contract.estimateGas.approve(spenderAddress, amount.toBigNumber(this.precision));
+      approveTransaction = await this.contract.approve(spenderAddress, amount.toBigNumber(this.precision), {
         gasLimit: Math.ceil(estimate.toNumber() * approveGasIncrease),
       });
     } catch (error) {
@@ -139,7 +145,7 @@ export class ERC20TokenService {
     }
   }
 
-  onTransfer(from: string | null, to: string | null, listener: TransferEventListener) {
+  onTransfer(from: string | null, to: string | null, listener: TransferEventListener): void {
     if (this.contract) {
       // In case of ETH trigger transfer event on every new block
       if (this.contract.address === ZERO_ETH_ADDRESS) {
@@ -150,7 +156,7 @@ export class ERC20TokenService {
     }
   }
 
-  offTransfer(from: string | null, to: string | null, listener: TransferEventListener) {
+  offTransfer(from: string | null, to: string | null, listener: TransferEventListener): void {
     if (this.contract) {
       if (this.contract.address === ZERO_ETH_ADDRESS) {
         this.contract.provider.off('block', listener);
