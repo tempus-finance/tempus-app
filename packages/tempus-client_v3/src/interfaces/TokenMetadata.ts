@@ -6,6 +6,7 @@ export interface TokenMetadata {
   address: string;
   ticker: Ticker;
   rate: Decimal;
+  balance: Decimal;
 }
 
 // Prop type that requires one or more entries to be provided,

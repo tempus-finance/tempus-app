@@ -56,6 +56,7 @@ const Template: ComponentStory<typeof WithdrawModal> = () => {
             address: '1',
             rate: new Decimal(3500),
             ticker: 'ETH',
+            balance: new Decimal(1),
           },
           {
             precision: 18,
@@ -63,6 +64,7 @@ const Template: ComponentStory<typeof WithdrawModal> = () => {
             address: '2',
             rate: new Decimal(3501),
             ticker: 'stETH',
+            balance: new Decimal(1),
           },
         ]}
         open={modalOpen}
