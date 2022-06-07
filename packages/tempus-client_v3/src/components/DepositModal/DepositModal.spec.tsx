@@ -2,7 +2,7 @@ import { act, fireEvent, render } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { Decimal, Decimal as MockDecimal } from 'tempus-core-services';
 import { getConfigManager } from '../../config/getConfigManager';
-import { useWalletBalances } from '../../hooks';
+import { useTokenBalances } from '../../hooks';
 import I18nProvider from '../../i18n/I18nProvider';
 import { MaturityTerm, TokenMetadataProp } from '../../interfaces';
 import DepositModal, { DepositModalProps } from './DepositModal';
@@ -27,7 +27,7 @@ const multipleTokens: TokenMetadataProp = [
 const singleMaturityTerm: MaturityTerm[] = [
   {
     apr: new Decimal(0.074),
-    date: new Date(2022, 9, 1),
+    date: new Date(Date.UTC(2022, 9, 1)),
   },
 ];
 
@@ -35,14 +35,14 @@ const multipleMaturityTerms: MaturityTerm[] = [
   ...singleMaturityTerm,
   {
     apr: new Decimal(0.131),
-    date: new Date(2022, 11, 1),
+    date: new Date(Date.UTC(2022, 11, 1)),
   },
 ];
 
 const defaultProps = {
   open: true,
   onClose: () => {},
-  poolStartDate: new Date(2022, 3, 1),
+  poolStartDate: new Date(Date.UTC(2022, 3, 1)),
   inputPrecision: 18,
 };
 
@@ -55,14 +55,45 @@ const subject = (props: DepositModalProps) =>
     </BrowserRouter>,
   );
 
+jest.mock('@web3-onboard/ledger', () =>
+  jest.fn().mockImplementation(() => () => ({
+    label: '',
+    getIcon: () => new Promise<string>(() => ''),
+    getInterface: () => null,
+  })),
+);
+
+jest.mock('@web3-onboard/gnosis', () =>
+  jest.fn().mockImplementation(() => () => ({
+    label: '',
+    getIcon: () => new Promise<string>(() => ''),
+    getInterface: () => null,
+  })),
+);
+
+jest.mock('@web3-onboard/injected-wallets', () =>
+  jest.fn().mockImplementation(() => () => ({
+    label: '',
+    getIcon: () => new Promise<string>(() => ''),
+    getInterface: () => null,
+  })),
+);
+
+jest.mock('@web3-onboard/react', () => ({
+  init: jest.fn(),
+  useConnectWallet: jest.fn().mockReturnValue([{ wallet: { accounts: [{ address: '0x123123123' }] } }, () => {}]),
+  useSetChain: jest.fn().mockReturnValue([{}, () => {}]),
+  useWallets: jest.fn().mockReturnValue([]),
+}));
+
 jest.mock('../../hooks', () => ({
   ...jest.requireActual('../../hooks'),
-  useWalletBalances: jest.fn(),
+  useTokenBalances: jest.fn(),
 }));
 
 describe('DepositModal', () => {
   beforeEach(() => {
-    (useWalletBalances as jest.Mock).mockImplementation(() => ({
+    (useTokenBalances as jest.Mock).mockImplementation(() => ({
       'ethereum-0x0': new MockDecimal(100),
       'ethereum-0x1': new MockDecimal(101),
     }));
@@ -72,7 +103,7 @@ describe('DepositModal', () => {
     const previewButton = container.querySelector('.tc__currency-input-modal__action-container .tc__actionButton');
     expect(previewButton).not.toBeNull();
 
-    fireEvent.click(previewButton);
+    fireEvent.click(previewButton as Element);
   };
 
   ['preview', 'input'].forEach(view => {
@@ -117,7 +148,7 @@ describe('DepositModal', () => {
     expect(currencyDropdownButton).not.toBeNull();
 
     // open currency dropdown
-    fireEvent.click(currencyDropdownButton);
+    fireEvent.click(currencyDropdownButton as Element);
 
     const currencyButtons = container.querySelectorAll('.tc__currency-input__currency-selector-dropdown button');
 
@@ -160,7 +191,7 @@ describe('DepositModal', () => {
 
     expect(currencyInput).not.toBeNull();
 
-    fireEvent.change(currencyInput, { target: { value: '1' } });
+    fireEvent.change(currencyInput as HTMLInputElement, { target: { value: '1' } });
 
     act(() => {
       jest.advanceTimersByTime(300);
@@ -169,7 +200,7 @@ describe('DepositModal', () => {
     expect(actionButton).toBeEnabled();
 
     // approve deposit
-    fireEvent.click(actionButton);
+    fireEvent.click(actionButton as Element);
 
     expect(actionButton).toBeDisabled();
     expect(actionButton).toHaveClass('tc__actionButton-border-primary-large-loading');
@@ -191,7 +222,7 @@ describe('DepositModal', () => {
     expect(actionButton).toHaveClass('tc__actionButton-border-primary-large');
 
     // deposit
-    fireEvent.click(actionButton);
+    fireEvent.click(actionButton as Element);
 
     expect(actionButton).toBeDisabled();
     expect(actionButton).toHaveClass('tc__actionButton-border-primary-large-loading');

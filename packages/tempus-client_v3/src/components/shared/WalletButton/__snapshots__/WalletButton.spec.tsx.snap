@@ -131,15 +131,23 @@ exports[`WalletButton renders a connected wallet button to an unsupported networ
 `;
 
 exports[`WalletButton renders a disconnected wallet button 1`] = `
-<button
-  class="tc__btn tc__walletButton__disconnected"
-  data-selected="false"
-  type="button"
+<div
+  class="tc__walletButton__disconnected"
 >
-  <div
-    style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+  <button
+    class="tc__btn tc__actionButton tc__actionButton-border-secondary-large tc__actionButton-background-secondary-large tc__actionButton-hover-secondary-large tc__actionButton-shadow-default tc__actionButton-cursor-default tc__actionButton-size-large "
+    data-selected="false"
+    type="button"
   >
-    Connect Wallet
-  </div>
-</button>
+    <div
+      class="tc__actionButton-status-label"
+    >
+      <div
+        style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+      >
+        Connect Wallet
+      </div>
+    </div>
+  </button>
+</div>
 `;

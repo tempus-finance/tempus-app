@@ -4,6 +4,37 @@ import { getConfigManager } from '../../config/getConfigManager';
 import { MaturityTerm } from '../../interfaces';
 import CurrencyInputModal, { CurrencyInputModalProps } from './CurrencyInputModal';
 
+jest.mock('@web3-onboard/ledger', () =>
+  jest.fn().mockImplementation(() => () => ({
+    label: '',
+    getIcon: () => new Promise<string>(() => ''),
+    getInterface: () => null,
+  })),
+);
+
+jest.mock('@web3-onboard/gnosis', () =>
+  jest.fn().mockImplementation(() => () => ({
+    label: '',
+    getIcon: () => new Promise<string>(() => ''),
+    getInterface: () => null,
+  })),
+);
+
+jest.mock('@web3-onboard/injected-wallets', () =>
+  jest.fn().mockImplementation(() => () => ({
+    label: '',
+    getIcon: () => new Promise<string>(() => ''),
+    getInterface: () => null,
+  })),
+);
+
+jest.mock('@web3-onboard/react', () => ({
+  init: jest.fn(),
+  useConnectWallet: jest.fn().mockReturnValue([{ wallet: { accounts: [{ address: '0x123123123' }] } }, () => {}]),
+  useSetChain: jest.fn().mockReturnValue([{}, () => {}]),
+  useWallets: jest.fn().mockReturnValue([]),
+}));
+
 const onTransactionStartMock = jest.fn<string, [Decimal]>();
 const onAmountChangeMock = jest.fn<void, [Decimal]>();
 
@@ -13,7 +44,7 @@ singleCurrencyUsdRates.set('ETH', new Decimal(3500));
 const singleMaturityTerm: MaturityTerm[] = [
   {
     apr: new Decimal(0.074),
-    date: new Date(2022, 9, 1),
+    date: new Date(Date.UTC(2022, 9, 1)),
   },
 ];
 
@@ -97,7 +128,7 @@ describe('CurrencyInputModal', () => {
 
     expect(actionButton).toBeEnabled();
 
-    fireEvent.click(actionButton);
+    fireEvent.click(actionButton as Element);
 
     expect(onTransactionStartMock).toBeCalledTimes(1);
     expect(onTransactionStartMock).toBeCalledWith(new Decimal('1.234'));

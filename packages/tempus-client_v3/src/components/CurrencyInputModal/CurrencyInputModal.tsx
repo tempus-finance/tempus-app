@@ -25,7 +25,7 @@ export interface CurrencyInputModalProps extends ModalProps {
   description: string | CurrencyInputModalDescription;
   preview?: ReactNode;
   balance: Decimal;
-  tokens: TokenMetadataProp;
+  tokens?: TokenMetadataProp;
   maturityTerms?: MaturityTerm[];
   chainConfig?: ChainConfig;
   infoRows?: ReactNode;
@@ -104,11 +104,12 @@ const CurrencyInputModal: FC<CurrencyInputModalProps> = props => {
         <ModalPreviewContent
           actionButtonLabels={actionButtonLabels.preview ?? actionButtonLabels.action}
           onActionButtonClick={handlePreviewButtonClick}
+          onConnectWalletClick={onClose}
         >
           {preview}
         </ModalPreviewContent>
       )}
-      {content === 'action' && (
+      {content === 'action' && tokens && (
         <ModalActionContent
           balance={balance}
           disabledInput={disabledInput}

@@ -20,6 +20,7 @@ const config: Config = {
         spotPrice: '1',
         decimalsForUI: 4,
         showEstimatesInBackingToken: false,
+        chain: 'ethereum',
         tokenPrecision: {
           backingToken: 18,
           lpTokens: 18,
@@ -46,6 +47,7 @@ const config: Config = {
         spotPrice: '1',
         decimalsForUI: 4,
         showEstimatesInBackingToken: false,
+        chain: 'ethereum',
         tokenPrecision: {
           backingToken: 18,
           lpTokens: 18,
@@ -72,6 +74,7 @@ const config: Config = {
         spotPrice: '1',
         decimalsForUI: 2,
         showEstimatesInBackingToken: true,
+        chain: 'ethereum',
         tokenPrecision: {
           backingToken: 6,
           lpTokens: 18,
@@ -101,6 +104,7 @@ const config: Config = {
         spotPrice: '1',
         decimalsForUI: 2,
         showEstimatesInBackingToken: true,
+        chain: 'ethereum',
         tokenPrecision: {
           backingToken: 6,
           lpTokens: 18,
@@ -127,6 +131,7 @@ const config: Config = {
         spotPrice: '1',
         decimalsForUI: 2,
         showEstimatesInBackingToken: true,
+        chain: 'ethereum',
         tokenPrecision: {
           backingToken: 18,
           lpTokens: 18,
@@ -171,6 +176,7 @@ const config: Config = {
         spotPrice: '1',
         decimalsForUI: 2,
         showEstimatesInBackingToken: true,
+        chain: 'fantom',
         tokenPrecision: {
           backingToken: 6,
           lpTokens: 18,
@@ -197,6 +203,7 @@ const config: Config = {
         spotPrice: '1',
         decimalsForUI: 2,
         showEstimatesInBackingToken: true,
+        chain: 'fantom',
         tokenPrecision: {
           backingToken: 18,
           lpTokens: 18,
@@ -223,6 +230,7 @@ const config: Config = {
         spotPrice: '1',
         decimalsForUI: 2,
         showEstimatesInBackingToken: true,
+        chain: 'fantom',
         tokenPrecision: {
           backingToken: 6,
           lpTokens: 18,
@@ -249,6 +257,7 @@ const config: Config = {
         spotPrice: '1',
         decimalsForUI: 4,
         showEstimatesInBackingToken: true,
+        chain: 'fantom',
         tokenPrecision: {
           backingToken: 18,
           lpTokens: 18,
@@ -275,6 +284,7 @@ const config: Config = {
         spotPrice: '0.00004',
         decimalsForUI: 4,
         showEstimatesInBackingToken: true,
+        chain: 'fantom',
         tokenPrecision: {
           backingToken: 18,
           lpTokens: 18,

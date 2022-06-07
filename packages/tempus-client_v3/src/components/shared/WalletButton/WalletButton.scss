@@ -2,17 +2,8 @@ $buttonHeight: 40px;
 $networkSectionWidth: 55px;
 $walletSectionWidth: 160px;
 
-.tc__walletButton__disconnected {
+.tc__walletButton__disconnected .tc__actionButton {
   width: $walletSectionWidth;
-  height: $buttonHeight;
-  border: 1px solid var(--walletButtonBorder);
-  border-radius: 4px;
-  box-sizing: border-box;
-  background: var(--walletButtonBackground);
-
-  &:hover {
-    background: var(--walletButtonHover);
-  }
 }
 
 .tc__walletButton__connected {

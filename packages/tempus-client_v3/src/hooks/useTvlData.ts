@@ -17,22 +17,18 @@ import {
   tap,
 } from 'rxjs';
 import { getServices, Decimal, ZERO, StatisticsService, TempusPool, Chain } from 'tempus-core-services';
+import { POLLING_INTERVAL_IN_MS, DEBOUNCE_IN_MS } from '../constants';
 import { poolList$ } from './usePoolList';
 import { servicesLoaded$ } from './useServicesLoaded';
+import { appEvent$ } from './useAppEvent';
 
 interface PoolTvlMap {
   [chainPoolAddress: string]: Decimal;
 }
 
-const DEFAULT_VALUE = {};
-const TVL_POLLING_INTERVAL_IN_MS = 2 * 60 * 1000;
-const DEBOUNCE_IN_MS = 500;
+const DEFAULT_VALUE: PoolTvlMap = {};
 
-const polling$: Observable<number> = interval(TVL_POLLING_INTERVAL_IN_MS).pipe(startWith(0));
-// TODO: we dont have this event$ yet. this is a dummy event$ that gives tempusPool as param
-const event$: Observable<{ tempusPool: TempusPool }> = poolList$.pipe(
-  map(tempusPools => ({ tempusPool: tempusPools[0] })),
-);
+const intervalBeat$: Observable<number> = interval(POLLING_INTERVAL_IN_MS).pipe(startWith(0));
 
 export const poolTvls$ = new BehaviorSubject<PoolTvlMap>(DEFAULT_VALUE);
 
@@ -54,7 +50,7 @@ const fetchData = (tempusPool: TempusPool): Observable<PoolTvlMap> => {
 };
 
 // stream$ for periodic polling to fetch data
-const periodicStream$ = combineLatest([poolList$, servicesLoaded$, polling$]).pipe(
+const periodicStream$ = combineLatest([poolList$, servicesLoaded$, intervalBeat$]).pipe(
   filter(([, servicesLoaded]) => servicesLoaded),
   mergeMap<[TempusPool[], boolean, number], Observable<PoolTvlMap>>(([tempusPools]) => {
     const poolTvlMaps = tempusPools.map(fetchData);
@@ -64,7 +60,7 @@ const periodicStream$ = combineLatest([poolList$, servicesLoaded$, polling$]).pi
 );
 
 // stream$ for listening to Tempus event to fetch specific pool data
-const eventStream$ = combineLatest([event$, servicesLoaded$]).pipe(
+const eventStream$ = combineLatest([appEvent$, servicesLoaded$]).pipe(
   filter(([, servicesLoaded]) => servicesLoaded),
   mergeMap<[{ tempusPool: TempusPool }, boolean], Observable<PoolTvlMap>>(([{ tempusPool }]) => fetchData(tempusPool)),
 );
