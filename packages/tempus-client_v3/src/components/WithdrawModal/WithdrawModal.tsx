@@ -1,6 +1,6 @@
 import { FC, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ChainConfig, Decimal, Ticker } from 'tempus-core-services';
+import { ChainConfig, Decimal, DecimalUtils, Ticker } from 'tempus-core-services';
 import { TokenMetadataProp } from '../../interfaces';
 import CurrencyInputModal, { CurrencyInputModalInfoRow } from '../CurrencyInputModal';
 import { ActionButtonState } from '../shared';
@@ -14,26 +14,40 @@ export interface WithdrawModalProps extends ModalProps {
 export const WithdrawModal: FC<WithdrawModalProps> = props => {
   const { open, onClose, tokens, chainConfig } = props;
   const [balance, setBalance] = useState(new Decimal(100)); // TODO: load balance for selected token
-  const [currency, setCurrency] = useState(tokens[0].ticker);
+  const [currency, setCurrency] = useState(tokens[0]);
   const [actionButtonState, setActionButtonState] = useState<ActionButtonState>('default');
   const { t } = useTranslation();
+
+  const formattedBalanceUsdValue = useMemo(() => {
+    const usdValue = balance.mul(currency.rate);
+    return DecimalUtils.formatToCurrency(usdValue, undefined, '$');
+  }, [balance, currency.rate]);
 
   const infoRows = useMemo(
     () => (
       <CurrencyInputModalInfoRow
         label={t('WithdrawModal.labelAvailableForWithdraw')}
         value={balance.toString()}
-        currency={currency}
+        currency={currency.ticker}
+        usdValue={formattedBalanceUsdValue}
       />
     ),
-    [balance, currency, t],
+    [balance, currency.ticker, formattedBalanceUsdValue, t],
   );
 
-  const handleCurrencyChange = useCallback((newCurrency: Ticker) => {
-    // TODO: load balance for new currency
-    setBalance(new Decimal(101));
-    setCurrency(newCurrency);
-  }, []);
+  const handleCurrencyChange = useCallback(
+    (newCurrency: Ticker) => {
+      // TODO: load balance for new currency
+      setBalance(new Decimal(101));
+
+      const newToken = tokens?.find(value => value.ticker === newCurrency);
+
+      if (newToken) {
+        setCurrency(newToken);
+      }
+    },
+    [tokens],
+  );
 
   const withdraw = useCallback(() => {
     // TODO: Implement withdraw function

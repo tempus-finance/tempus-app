@@ -110,18 +110,17 @@ const CurrencyInput: FC<CurrencyInputProps> = props => {
             {usdAmount && (
               <span className="tc__currency-input__fiat-amount">
                 <Typography
-                  variant="body-primary"
+                  variant="body-secondary"
                   weight="medium"
-                  type="mono"
-                  color={!disabled && amount ? 'text-secondary' : 'text-disabled'}
+                  color={!disabled && amount ? 'text-primary' : 'text-disabled'}
                 >
                   {usdAmount}
                 </Typography>
                 <Typography
                   className="tc__currency-input__fiat-amount-currency"
-                  variant="body-primary"
+                  variant="body-secondary"
                   weight="medium"
-                  color={!disabled && amount ? 'text-secondary' : 'text-disabled'}
+                  color={!disabled && amount ? 'text-primary' : 'text-disabled'}
                 >
                   USD
                 </Typography>

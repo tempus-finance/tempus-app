@@ -12,17 +12,17 @@
     "linkBlockExplorer": "Check it out on {{name}}"
   },
   "DepositModal": {
-    "description": "You are about to deposit into this pool, choose carefully",
+    "description": "You are about to deposit into the {{asset}} pool with term {{term}}.",
     "labelApproveDefault": "Approve Deposit",
     "labelApproveLoading": "Approving...",
     "labelApproveSuccess": "Successfully Approved",
-    "labelAvailableForDeposit": "Available for Deposit",
+    "labelCurrentBalance": "Current Balance",
     "labelExecuteDefault": "Execute",
     "labelExecuteLoading": "Executing...",
     "labelExecuteSuccess": "Successfully Executed",
     "labelMakeDeposit": "Make Deposit",
     "labelYieldAtMaturity": "Yield-at-Maturity",
-    "previewDescription": "Select an APR & Term to deposit into, if there’s only one, then simply proceed to make your deposit",
+    "previewDescription": "Select an APR & Term to deposit into, if there’s only one, then simply proceed to make your deposit.",
     "title": "Pool Details"
   },
   "DepositModalHeader": {
@@ -112,7 +112,7 @@
     "buttonUnsupported": "Unsupported"
   },
   "WithdrawModal": {
-    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    "description": "Select the amount you you like to withdraw.",
     "labelAvailableForWithdraw": "Available for Withdraw",
     "labelExecuteDefault": "Execute Withdrawal",
     "labelExecuteLoading": "Executing...",
