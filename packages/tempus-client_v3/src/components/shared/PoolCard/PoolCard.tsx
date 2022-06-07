@@ -123,22 +123,24 @@ const PoolCard: FC<PoolCardProps> = props => {
       )}
 
       <div className="tc__poolCard-info">
-        {/* APR */}
-        <div className="tc__poolCard-info-row">
-          <Typography variant="body-secondary" weight="medium" color="text-secondary">
-            {aprLabel}
-          </Typography>
-          {loading && (
-            <div className="tc__poolCard-value-placeholder-container">
-              <LoadingPlaceholder width="medium" height="medium" />
-            </div>
-          )}
-          {!loading && (
-            <Typography variant="subheader" weight="medium" type="mono">
-              {maxAprFormatted}
+        {/* APR - Shown only for non mature pools */}
+        {poolCardStatus !== 'Matured' && (
+          <div className="tc__poolCard-info-row">
+            <Typography variant="body-secondary" weight="medium" color="text-secondary">
+              {aprLabel}
             </Typography>
-          )}
-        </div>
+            {loading && (
+              <div className="tc__poolCard-value-placeholder-container">
+                <LoadingPlaceholder width="medium" height="medium" />
+              </div>
+            )}
+            {!loading && (
+              <Typography variant="subheader" weight="medium" type="mono">
+                {maxAprFormatted}
+              </Typography>
+            )}
+          </div>
+        )}
 
         {/* Term */}
         <div className="tc__poolCard-info-row">
