@@ -1,8 +1,8 @@
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
 import { BigNumber, CallOverrides, Contract, ethers } from 'ethers';
 import { catchError, combineLatest, from, map, mergeMap, Observable, of, throwError } from 'rxjs';
-import { Stats } from '../abi/Stats';
-import StatsABI from '../abi/Stats.json';
+import { Stats } from '../abi/StatsTypingsV2';
+import StatsABI from '../abi/StatsV2ABI.json';
 import { DEFAULT_TOKEN_PRECISION, tokenPrecision } from '../constants';
 import { Decimal, decreasePrecision, increasePrecision, ZERO } from '../datastructures';
 import { Chain, Config, TempusPool, Ticker } from '../interfaces';

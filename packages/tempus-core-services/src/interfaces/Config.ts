@@ -1,3 +1,4 @@
+import { Chain } from './Chain';
 import { TempusPool } from './TempusPool';
 
 export interface ChainConfig {
@@ -22,5 +23,5 @@ export interface ChainConfig {
 }
 
 export type Config = {
-  [chainName: string]: ChainConfig;
+  [chainName in Chain]: ChainConfig;
 };
