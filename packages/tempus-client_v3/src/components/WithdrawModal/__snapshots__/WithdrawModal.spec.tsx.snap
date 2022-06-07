@@ -70,7 +70,7 @@ exports[`WithdrawModal renders a withdraw modal 1`] = `
           class="tc__currency-input-modal__description"
           style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
         >
-          Select the amount you you like to withdraw.
+          Select the amount you like to withdraw.
         </div>
         <div
           class="tc__currency-input"
