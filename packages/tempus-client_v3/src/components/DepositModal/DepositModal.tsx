@@ -146,7 +146,13 @@ const DepositModal: FC<DepositModalProps> = props => {
       open={open}
       onClose={onClose}
       title={t('DepositModal.title')}
-      description={{ preview: t('DepositModal.previewDescription'), action: t('DepositModal.description') }}
+      description={{
+        preview: t('DepositModal.previewDescription'),
+        action: t('DepositModal.description', {
+          asset: tokens?.[0].ticker,
+          term: maturityTerm?.date.toLocaleDateString(),
+        }),
+      }}
       preview={depositYieldChart}
       header={<DepositModalHeader />}
       maturityTerms={maturityTerms}
