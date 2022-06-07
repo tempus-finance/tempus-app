@@ -112,7 +112,7 @@
     "buttonUnsupported": "Unsupported"
   },
   "WithdrawModal": {
-    "description": "Select the amount you you like to withdraw.",
+    "description": "Select the amount you like to withdraw.",
     "labelAvailableForWithdraw": "Available for Withdraw",
     "labelExecuteDefault": "Execute Withdrawal",
     "labelExecuteLoading": "Executing...",
