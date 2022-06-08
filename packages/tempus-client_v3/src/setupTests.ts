@@ -73,6 +73,9 @@ jest.mock('tempus-core-services', () => ({
     WalletBalanceService: {
       getTokenBalance: mockGetTokenBalance,
     },
+    PoolBalanceService: {
+      getPoolBalance: jest.fn().mockResolvedValue(new MockDecimal(100)),
+    },
     ERC20TokenServiceGetter: jest.fn().mockImplementation(() => ({
       approve: jest.fn().mockImplementation(() =>
         Promise.resolve({
