@@ -68,7 +68,7 @@ const tokenInfoMap$ = poolList$.pipe(
   ),
 );
 
-const getServicesNotNull = (chain: Chain) => {
+const getDefinedServices = (chain: Chain) => {
   const services = getServices(chain);
   if (!services) {
     throw new Error(`Cannot get service map for ${chain}`);
@@ -77,7 +77,7 @@ const getServicesNotNull = (chain: Chain) => {
 };
 
 const getConversionRate = ({ chain, address }: TempusPool): Observable<Decimal> => {
-  const services = getServicesNotNull(chain);
+  const services = getDefinedServices(chain);
   const interestRate$ = from(services.TempusPoolService.currentInterestRate(address));
   return interestRate$.pipe(
     mergeMap(interestRate => from(services.TempusPoolService.numAssetsPerYieldToken(address, ONE, interestRate))),
@@ -87,31 +87,31 @@ const getConversionRate = ({ chain, address }: TempusPool): Observable<Decimal> 
 const fetchData = (tokenInfo: TokenInfo): Observable<TokenRateMap> => {
   const { chain, token, address, hasConversionRate, poolAddress } = tokenInfo;
 
-  // handle all error in Observable.pipe()
-  return of({}).pipe(
-    mergeMap(() => {
-      // TODO: conceptually chain+ticker is not unique, it should accept chain+address instead
-      //       but currently chainlink and gecko API doesnt support that
-      const tokenRate$ = getServicesNotNull(chain).StatisticsService.getRate(chain, token);
-      const conversionRate$ = hasConversionRate
-        ? getConversionRate({ chain, address: poolAddress } as TempusPool)
-        : of(ONE);
+  try {
+    // TODO: conceptually chain+ticker is not unique, it should accept chain+address instead
+    //       but currently chainlink and gecko API doesnt support that
+    const tokenRate$ = getDefinedServices(chain).StatisticsService.getRate(chain, token);
+    const conversionRate$ = hasConversionRate
+      ? getConversionRate({ chain, address: poolAddress } as TempusPool)
+      : of(ONE);
 
-      return combineLatest([tokenRate$, conversionRate$]).pipe(
-        map<[Decimal | null, Decimal], TokenRateMap>(([tokenRate, conversionRate]) =>
-          tokenRate
-            ? {
-                [`${chain}-${address}`]: tokenRate?.mul(conversionRate),
-              }
-            : {},
-        ),
-      );
-    }),
-    catchError(error => {
-      console.error(`useTokenRates - Fail to get token rate for ${token} on ${chain}`, error);
-      return of(DEFAULT_VALUE);
-    }),
-  );
+    return combineLatest([tokenRate$, conversionRate$]).pipe(
+      map<[Decimal | null, Decimal], TokenRateMap>(([tokenRate, conversionRate]) =>
+        tokenRate
+          ? {
+              [`${chain}-${address}`]: tokenRate?.mul(conversionRate),
+            }
+          : {},
+      ),
+      catchError(error => {
+        console.error(`useTokenRates - Fail to get token rate for ${token} on ${chain}`, error);
+        return of(DEFAULT_VALUE);
+      }),
+    );
+  } catch (error) {
+    console.error(`useTokenRates - Fail to get token rate for ${token} on ${chain}`, error);
+    return of(DEFAULT_VALUE);
+  }
 };
 
 // stream$ for periodic polling to fetch data

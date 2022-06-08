@@ -1,7 +1,6 @@
 import { bind } from '@react-rxjs/core';
 import {
   BehaviorSubject,
-  catchError,
   combineLatest,
   debounce,
   filter,
@@ -32,7 +31,7 @@ const intervalBeat$: Observable<number> = interval(POLLING_INTERVAL_IN_MS).pipe(
 
 export const poolTvls$ = new BehaviorSubject<PoolTvlMap>(DEFAULT_VALUE);
 
-const getServicesNotNull = (chain: Chain) => {
+const getDefinedServices = (chain: Chain) => {
   const services = getServices(chain);
   if (!services) {
     throw new Error(`Cannot get service map for ${chain}`);
@@ -43,20 +42,20 @@ const getServicesNotNull = (chain: Chain) => {
 const fetchData = (tempusPool: TempusPool): Observable<PoolTvlMap> => {
   const { chain, address, backingToken } = tempusPool;
 
-  // handle all error in Observable.pipe()
-  return of({}).pipe(
-    mergeMap(() => getServicesNotNull(chain).StatisticsService.totalValueLockedUSD(chain, address, backingToken)),
-    map(
-      tvl =>
-        ({
-          [`${chain}-${address}`]: tvl,
-        } as PoolTvlMap),
-    ),
-    catchError(error => {
-      console.error(`useTvlData - Fail to get the TVL for pool ${address} on ${chain}`, error);
-      return of(DEFAULT_VALUE);
-    }),
-  );
+  try {
+    const tvl$ = getDefinedServices(chain).StatisticsService.totalValueLockedUSD(chain, address, backingToken);
+    return tvl$.pipe(
+      map(
+        tvl =>
+          ({
+            [`${chain}-${address}`]: tvl,
+          } as PoolTvlMap),
+      ),
+    );
+  } catch (error) {
+    console.error(`useTvlData - Fail to get the TVL for pool ${address} on ${chain}`, error);
+    return of(DEFAULT_VALUE);
+  }
 };
 
 // stream$ for periodic polling to fetch data

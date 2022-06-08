@@ -1,7 +1,6 @@
 import { bind } from '@react-rxjs/core';
 import {
   BehaviorSubject,
-  catchError,
   combineLatest,
   debounce,
   filter,
@@ -43,7 +42,7 @@ const intervalBeat$: Observable<number> = interval(POLLING_INTERVAL_IN_MS).pipe(
 
 export const poolAprs$ = new BehaviorSubject<PoolFixedAprMap>(DEFAULT_VALUE);
 
-const getServicesNotNull = (chain: Chain) => {
+const getDefinedServices = (chain: Chain) => {
   const services = getServices(chain);
   if (!services) {
     throw new Error(`Cannot get service map for ${chain}`);
@@ -54,16 +53,13 @@ const getServicesNotNull = (chain: Chain) => {
 const getLatestEventBlock = (tempusPool: TempusPool) => {
   const { address, poolId, chain } = tempusPool;
 
-  // handle all error in Observable.pipe()
-  return of({}).pipe(
-    map(() => getServicesNotNull(chain)),
-    mergeMap(services =>
-      Promise.all([
-        services.TempusControllerService.getDepositedEvents({ forPool: address }),
-        services.VaultService.getSwapEvents({ forPoolId: poolId }),
-        services.TempusControllerService.getRedeemedEvents({ forPool: address }),
-      ]),
-    ),
+  return from(
+    Promise.all([
+      getDefinedServices(chain).TempusControllerService.getDepositedEvents({ forPool: address }),
+      getDefinedServices(chain).VaultService.getSwapEvents({ forPoolId: poolId }),
+      getDefinedServices(chain).TempusControllerService.getRedeemedEvents({ forPool: address }),
+    ]),
+  ).pipe(
     mergeMap(([depositedEvents, swapEvents, redeemedEvents]) => {
       const allEvents = [...depositedEvents, ...swapEvents, ...redeemedEvents];
       const latestEventBlockNumber = Math.max(0, ...allEvents.map(event => event.blockNumber));
@@ -89,39 +85,40 @@ const fetchData = (tempusPool: TempusPool): Observable<PoolFixedAprMap> => {
 
   const tokenAmount = new Decimal(spotPrice);
 
-  const latestEventBlock$ = getLatestEventBlock(tempusPool);
-  const principals$ = latestEventBlock$.pipe(
-    mergeMap(latestEventBlock => {
-      const estimateCallOverrides =
-        latestEventBlock && latestEventBlock.number > 0 ? { blockTag: latestEventBlock.number } : undefined;
-      const estimateDepositAndFixFromBackingToken = true;
+  try {
+    const latestEventBlock$ = getLatestEventBlock(tempusPool);
+    const principals$ = latestEventBlock$.pipe(
+      mergeMap(latestEventBlock => {
+        const estimateCallOverrides =
+          latestEventBlock && latestEventBlock.number > 0 ? { blockTag: latestEventBlock.number } : undefined;
+        const estimateDepositAndFixFromBackingToken = true;
 
-      return getServicesNotNull(chain).StatisticsService.estimatedDepositAndFix(
-        tempusPool,
-        tokenAmount,
-        estimateDepositAndFixFromBackingToken,
-        estimateCallOverrides,
-      );
-    }),
-  );
+        return getDefinedServices(chain).StatisticsService.estimatedDepositAndFix(
+          tempusPool,
+          tokenAmount,
+          estimateDepositAndFixFromBackingToken,
+          estimateCallOverrides,
+        );
+      }),
+    );
 
-  return combineLatest([latestEventBlock$, principals$]).pipe(
-    map(([latestEventBlock, principals]) => {
-      const currentFixedAPRTime = latestEventBlock ? latestEventBlock.timestamp * 1000 : Date.now();
-      const poolTimeRemaining = (maturityDate - currentFixedAPRTime) / 1000;
-      const scaleFactor = new Decimal((SECONDS_IN_A_DAY * DAYS_IN_A_YEAR) / poolTimeRemaining);
-      const ratio = principals.div(tokenAmount);
-      const pureInterest = ratio.sub(ONE);
+    return combineLatest([latestEventBlock$, principals$]).pipe(
+      map(([latestEventBlock, principals]) => {
+        const currentFixedAPRTime = latestEventBlock ? latestEventBlock.timestamp * 1000 : Date.now();
+        const poolTimeRemaining = (maturityDate - currentFixedAPRTime) / 1000;
+        const scaleFactor = new Decimal((SECONDS_IN_A_DAY * DAYS_IN_A_YEAR) / poolTimeRemaining);
+        const ratio = principals.div(tokenAmount);
+        const pureInterest = ratio.sub(ONE);
 
-      return {
-        [`${chain}-${address}`]: pureInterest.mul(scaleFactor),
-      } as PoolFixedAprMap;
-    }),
-    catchError(error => {
-      console.error(`useFixedAprs - Fail to fetch fixed APR for pools ${address} on ${chain}`, error);
-      return of(DEFAULT_VALUE);
-    }),
-  );
+        return {
+          [`${chain}-${address}`]: pureInterest.mul(scaleFactor),
+        } as PoolFixedAprMap;
+      }),
+    );
+  } catch (error) {
+    console.error(`useFixedAprs - Fail to fetch fixed APR for pools ${address} on ${chain}`, error);
+    return of(DEFAULT_VALUE);
+  }
 };
 
 // stream$ for periodic polling to fetch data
