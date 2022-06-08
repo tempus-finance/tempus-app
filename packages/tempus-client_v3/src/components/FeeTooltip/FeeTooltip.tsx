@@ -1,14 +1,14 @@
 import { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Decimal, DecimalUtils } from 'tempus-core-services';
+import { DecimalUtils, Numberish } from 'tempus-core-services';
 import { TooltipWrapper, Typography } from '../shared';
 import './FeeTooltip.scss';
 
 export interface FeeTooltipFees {
-  deposit?: number | string | Decimal;
-  redemption?: number | string | Decimal;
-  earlyRedemption?: number | string | Decimal;
-  swap?: number | string | Decimal;
+  deposit?: Numberish;
+  redemption?: Numberish;
+  earlyRedemption?: Numberish;
+  swap?: Numberish;
 }
 
 export interface FeeTooltipProps {

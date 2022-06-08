@@ -1,5 +1,4 @@
 import { ComponentStory, ComponentMeta } from '@storybook/react';
-import { Decimal } from 'tempus-core-services';
 import FeeTooltip from './FeeTooltip';
 
 export default {
@@ -18,7 +17,7 @@ const style = {
 
 const Template: ComponentStory<typeof FeeTooltip> = () => (
   <div style={style}>
-    <FeeTooltip fees={{ swap: new Decimal(0.002) }}>Click me!</FeeTooltip>
+    <FeeTooltip fees={{ swap: 0.002 }}>Click me!</FeeTooltip>
   </div>
 );
 

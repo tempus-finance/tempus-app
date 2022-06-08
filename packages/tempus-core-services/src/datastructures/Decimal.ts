@@ -10,7 +10,7 @@ export const decreasePrecision = (bigNum: BigNumber, decrement: number): BigNumb
   return bigNum.div(divisor);
 };
 
-export type Numberish = Decimal | string | number | BigNumber;
+export type Numberish = Decimal | string | number;
 
 export const DEFAULT_DECIMAL_PRECISION = 18;
 
@@ -25,7 +25,7 @@ export default class Decimal {
   constructor(value: number | string | Decimal);
 
   // Constructor implementation
-  constructor(value: Numberish, valuePrecision: number = DEFAULT_DECIMAL_PRECISION) {
+  constructor(value: number | string | Decimal | BigNumber, valuePrecision: number = DEFAULT_DECIMAL_PRECISION) {
     // In case we pass in Decimal, underlying value inside the Decimal is already 18 decimal precision
     if (value instanceof Decimal) {
       this.value = BigNumber.from(value.value);
@@ -50,8 +50,12 @@ export default class Decimal {
   }
 
   static parse(value: BigNumber, defaultValue: BigNumber, valuePrecision: number): Decimal;
-  static parse(value: number | string | Decimal, defaultValue: number | string | Decimal): Decimal;
-  static parse(value: Numberish, defaultValue: Numberish, valuePrecision = DEFAULT_DECIMAL_PRECISION): Decimal {
+  static parse(value: Numberish, defaultValue: Numberish): Decimal;
+  static parse(
+    value: Numberish | BigNumber,
+    defaultValue: Numberish | BigNumber,
+    valuePrecision = DEFAULT_DECIMAL_PRECISION,
+  ): Decimal {
     try {
       if (value instanceof BigNumber) {
         return new Decimal(value, valuePrecision);
@@ -65,26 +69,26 @@ export default class Decimal {
     }
   }
 
-  add(addend: number | string | Decimal): Decimal {
+  add(addend: Numberish): Decimal {
     const decimal = new Decimal(addend);
 
     return new Decimal(this.value.add(decimal.value), DEFAULT_DECIMAL_PRECISION);
   }
 
-  sub(subtrahend: number | string | Decimal): Decimal {
+  sub(subtrahend: Numberish): Decimal {
     const decimal = new Decimal(subtrahend);
 
     return new Decimal(this.value.sub(decimal.value), DEFAULT_DECIMAL_PRECISION);
   }
 
-  mul(multiplicand: number | string | Decimal): Decimal {
+  mul(multiplicand: Numberish): Decimal {
     const decimal = new Decimal(multiplicand);
     const product = decreasePrecision(this.value.mul(decimal.value), DEFAULT_DECIMAL_PRECISION);
 
     return new Decimal(product, DEFAULT_DECIMAL_PRECISION);
   }
 
-  div(divisor: number | string | Decimal): Decimal {
+  div(divisor: Numberish): Decimal {
     const decimal = new Decimal(divisor);
     const quotient = increasePrecision(this.value, DEFAULT_DECIMAL_PRECISION).div(decimal.value);
 
@@ -95,31 +99,31 @@ export default class Decimal {
     return new Decimal(this.value.abs(), DEFAULT_DECIMAL_PRECISION);
   }
 
-  equals(comparable: number | string | Decimal): boolean {
+  equals(comparable: Numberish): boolean {
     const decimal = new Decimal(comparable);
 
     return this.value.eq(decimal.value);
   }
 
-  lt(another: number | string | Decimal): boolean {
+  lt(another: Numberish): boolean {
     const decimal = new Decimal(another);
 
     return this.value.lt(decimal.value);
   }
 
-  lte(another: number | string | Decimal): boolean {
+  lte(another: Numberish): boolean {
     const decimal = new Decimal(another);
 
     return this.value.lte(decimal.value);
   }
 
-  gt(another: number | string | Decimal): boolean {
+  gt(another: Numberish): boolean {
     const decimal = new Decimal(another);
 
     return this.value.gt(decimal.value);
   }
 
-  gte(another: number | string | Decimal): boolean {
+  gte(another: Numberish): boolean {
     const decimal = new Decimal(another);
 
     return this.value.gte(decimal.value);

@@ -1,6 +1,6 @@
 import { FC, memo, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Decimal } from 'tempus-core-services';
+import { Decimal, Numberish } from 'tempus-core-services';
 import TextInput from '../TextInput';
 import ButtonWrapper from '../ButtonWrapper';
 import Typography from '../Typography';
@@ -10,7 +10,7 @@ import './NumberInput.scss';
 export interface NumberInputProps {
   label?: string;
   value?: string;
-  max: number | string | Decimal;
+  max: Numberish;
   precision?: number;
   placeholder?: string;
   caption?: string;

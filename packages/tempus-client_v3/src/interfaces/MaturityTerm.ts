@@ -1,6 +1,6 @@
-import { Decimal } from 'tempus-core-services';
+import { Numberish } from 'tempus-core-services';
 
 export default interface MaturityTerm {
-  apr: number | string | Decimal;
+  apr: Numberish;
   date: Date;
 }
