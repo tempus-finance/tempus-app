@@ -8,6 +8,7 @@ import { poolList$ } from './usePoolList';
 import { poolTvls$ } from './useTvlData';
 import { poolBalances$ } from './usePoolBalance';
 import { poolAprs$, PoolFixedAprMap } from './useFixedAprs';
+import { tokenRates$ } from './useTokenRates';
 
 export interface PoolViewOptions {
   viewType: ViewType;
@@ -32,6 +33,7 @@ const stateSortOrder$ = state(sortOrder$, 'asc');
 const statePoolTvls$ = state(poolTvls$, {});
 const statePoolAprs$ = state(poolAprs$, {});
 const statePoolBalances$ = state(poolBalances$, {});
+const stateTokenRates$ = state(tokenRates$, {});
 
 export const isPoolMatured = (tempusPool: TempusPool): boolean => tempusPool.maturityDate <= Date.now();
 export const isPoolInactive = (tempusPool: TempusPool, poolAprs: PoolFixedAprMap): boolean =>
@@ -68,8 +70,8 @@ const filteredPoolList$ = combineLatest([poolList$, stateFilters$]).pipe(
 );
 const filteredSortedPoolList$ = combineLatest([filteredPoolList$, stateSortType$, stateSortOrder$]).pipe(
   // only want to get the latest data instead of getting every interval
-  withLatestFrom(statePoolTvls$, statePoolAprs$, statePoolBalances$),
-  map(([[tempusPools, sortType, sortOrder], poolTvls, poolAprs, poolBalances]) =>
+  withLatestFrom(statePoolTvls$, statePoolAprs$, statePoolBalances$, stateTokenRates$),
+  map(([[tempusPools, sortType, sortOrder], poolTvls, poolAprs, poolBalances, tokenRates]) =>
     tempusPools
       .sort((poolA, poolB) => {
         const factor = sortOrder === 'desc' ? -1 : 1;
@@ -87,10 +89,19 @@ const filteredSortedPoolList$ = combineLatest([filteredPoolList$, stateSortType$
             return aprA.gt(aprB) ? factor : -1 * factor;
           }
           case 'balance': {
-            const firstPoolBalance = poolBalances[`${poolA.chain}-${poolA.address}`].balanceInBackingToken ?? ZERO;
-            const secondPoolBalance = poolBalances[`${poolB.chain}-${poolB.address}`].balanceInBackingToken ?? ZERO;
+            const firstPoolTokenRate = tokenRates[`${poolA.chain}-${poolA.backingTokenAddress}`];
+            const secondPoolTokenRate = tokenRates[`${poolB.chain}-${poolB.backingTokenAddress}`];
 
-            return firstPoolBalance.gt(secondPoolBalance) ? factor : -1 * factor;
+            const firstPoolBalanceInBT = poolBalances[`${poolA.chain}-${poolA.address}`].balanceInBackingToken;
+            const secondPoolBalanceInBT = poolBalances[`${poolB.chain}-${poolB.address}`].balanceInBackingToken;
+
+            if (firstPoolTokenRate && secondPoolTokenRate && firstPoolBalanceInBT && secondPoolBalanceInBT) {
+              const firstPoolBalanceInUSD = firstPoolBalanceInBT.mul(firstPoolTokenRate);
+              const secondPoolBalanceInUSD = secondPoolBalanceInBT.mul(secondPoolTokenRate);
+
+              return firstPoolBalanceInUSD.gt(secondPoolBalanceInUSD) ? factor : -1 * factor;
+            }
+            return 0;
           }
           case 'maturity':
             return (poolA.maturityDate - poolB.maturityDate) * factor;

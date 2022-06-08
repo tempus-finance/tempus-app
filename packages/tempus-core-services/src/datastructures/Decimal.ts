@@ -22,10 +22,10 @@ export default class Decimal {
   constructor(value: BigNumber, valuePrecision: number);
   // In case user passes (number | string | Decimal) as value, we don't need precision because
   // we can safely convert (number | string | Decimal) to BigNumber with 18 decimal precision.
-  constructor(value: number | string | Decimal);
+  constructor(value: Numberish);
 
   // Constructor implementation
-  constructor(value: number | string | Decimal | BigNumber, valuePrecision: number = DEFAULT_DECIMAL_PRECISION) {
+  constructor(value: Numberish | BigNumber, valuePrecision: number = DEFAULT_DECIMAL_PRECISION) {
     // In case we pass in Decimal, underlying value inside the Decimal is already 18 decimal precision
     if (value instanceof Decimal) {
       this.value = BigNumber.from(value.value);
