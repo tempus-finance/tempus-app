@@ -36,7 +36,6 @@ export class StatsV2Contract {
     principalsRate: Decimal;
     yieldsRate: Decimal;
   }> {
-    // TODO - Use proper precision for tokens (refactor precision handling in Decimal)
     const estimate = await this.contract.estimateExitAndRedeem(
       ammAddress,
       lpBalance.toBigNumber(lpPrecision),
@@ -46,7 +45,6 @@ export class StatsV2Contract {
       isBackingToken,
     );
 
-    // TODO - Use proper precision for tokens (refactor precision handling in Decimal)
     return {
       tokenAmount: new Decimal(
         estimate.tokenAmount,

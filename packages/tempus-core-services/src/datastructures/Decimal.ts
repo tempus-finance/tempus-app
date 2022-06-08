@@ -29,7 +29,7 @@ export default class Decimal {
       bigNumberValue = BigNumber.from(value);
     } else {
       try {
-        bigNumberValue = utils.parseUnits(`${value}`, valuePrecision);
+        bigNumberValue = utils.parseUnits(`${value}`, this.precision);
       } catch (e) {
         throw new Error(`Failed to parse ${value} when creating Decimal`);
       }
