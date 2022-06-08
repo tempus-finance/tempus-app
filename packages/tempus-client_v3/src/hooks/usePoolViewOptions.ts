@@ -89,19 +89,16 @@ const filteredSortedPoolList$ = combineLatest([filteredPoolList$, stateSortType$
             return aprA.gt(aprB) ? factor : -1 * factor;
           }
           case 'balance': {
-            const firstPoolTokenRate = tokenRates[`${poolA.chain}-${poolA.backingTokenAddress}`];
-            const secondPoolTokenRate = tokenRates[`${poolB.chain}-${poolB.backingTokenAddress}`];
+            const firstPoolTokenRate = tokenRates[`${poolA.chain}-${poolA.backingTokenAddress}`] ?? ZERO;
+            const secondPoolTokenRate = tokenRates[`${poolB.chain}-${poolB.backingTokenAddress}`] ?? ZERO;
 
-            const firstPoolBalanceInBT = poolBalances[`${poolA.chain}-${poolA.address}`].balanceInBackingToken;
-            const secondPoolBalanceInBT = poolBalances[`${poolB.chain}-${poolB.address}`].balanceInBackingToken;
+            const firstPoolBalanceInBT = poolBalances[`${poolA.chain}-${poolA.address}`].balanceInBackingToken ?? ZERO;
+            const secondPoolBalanceInBT = poolBalances[`${poolB.chain}-${poolB.address}`].balanceInBackingToken ?? ZERO;
 
-            if (firstPoolTokenRate && secondPoolTokenRate && firstPoolBalanceInBT && secondPoolBalanceInBT) {
-              const firstPoolBalanceInUSD = firstPoolBalanceInBT.mul(firstPoolTokenRate);
-              const secondPoolBalanceInUSD = secondPoolBalanceInBT.mul(secondPoolTokenRate);
+            const firstPoolBalanceInUSD = firstPoolBalanceInBT.mul(firstPoolTokenRate);
+            const secondPoolBalanceInUSD = secondPoolBalanceInBT.mul(secondPoolTokenRate);
 
-              return firstPoolBalanceInUSD.gt(secondPoolBalanceInUSD) ? factor : -1 * factor;
-            }
-            return 0;
+            return firstPoolBalanceInUSD.gt(secondPoolBalanceInUSD) ? factor : -1 * factor;
           }
           case 'maturity':
             return (poolA.maturityDate - poolB.maturityDate) * factor;
