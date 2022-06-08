@@ -1,6 +1,7 @@
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ChainConfig, chainIdToChainName, Ticker, ZERO } from 'tempus-core-services';
+import { dateFormatter } from '../../constants';
 import {
   setPoolForYieldAtMaturity,
   setTokenAmountForYieldAtMaturity,
@@ -150,7 +151,7 @@ const DepositModal: FC<DepositModalProps> = props => {
         preview: t('DepositModal.previewDescription'),
         action: t('DepositModal.description', {
           asset: tokens?.[0].ticker,
-          term: maturityTerm?.date.toLocaleDateString(),
+          term: dateFormatter.format(maturityTerm?.date),
         }),
       }}
       preview={depositYieldChart}

@@ -83,7 +83,7 @@ exports[`DepositModal renders a deposit modal input with multiple maturity terms
           class="tc__currency-input-modal__description"
           style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
         >
-          You are about to deposit into the ETH pool with term 10/1/2022.
+          You are about to deposit into the ETH pool with term 01/10/2022.
         </div>
         <div
           class="tc__term-tabs"
@@ -593,7 +593,7 @@ exports[`DepositModal renders a deposit modal input with one maturity term 1`] =
           class="tc__currency-input-modal__description"
           style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
         >
-          You are about to deposit into the ETH pool with term 10/1/2022.
+          You are about to deposit into the ETH pool with term 01/10/2022.
         </div>
         <div
           class="tc__currency-input"
