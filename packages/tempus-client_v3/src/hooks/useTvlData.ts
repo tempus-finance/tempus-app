@@ -1,6 +1,7 @@
 import { bind } from '@react-rxjs/core';
 import {
   BehaviorSubject,
+  catchError,
   combineLatest,
   debounce,
   filter,
@@ -15,7 +16,7 @@ import {
   Subscription,
   tap,
 } from 'rxjs';
-import { getServices, Decimal, ZERO, TempusPool, Chain } from 'tempus-core-services';
+import { getDefinedServices, Decimal, ZERO, TempusPool } from 'tempus-core-services';
 import { POLLING_INTERVAL_IN_MS, DEBOUNCE_IN_MS } from '../constants';
 import { poolList$ } from './usePoolList';
 import { servicesLoaded$ } from './useServicesLoaded';
@@ -31,14 +32,6 @@ const intervalBeat$: Observable<number> = interval(POLLING_INTERVAL_IN_MS).pipe(
 
 export const poolTvls$ = new BehaviorSubject<PoolTvlMap>(DEFAULT_VALUE);
 
-const getDefinedServices = (chain: Chain) => {
-  const services = getServices(chain);
-  if (!services) {
-    throw new Error(`Cannot get service map for ${chain}`);
-  }
-  return services;
-};
-
 const fetchData = (tempusPool: TempusPool): Observable<PoolTvlMap> => {
   const { chain, address, backingToken } = tempusPool;
 
@@ -51,6 +44,10 @@ const fetchData = (tempusPool: TempusPool): Observable<PoolTvlMap> => {
             [`${chain}-${address}`]: tvl,
           } as PoolTvlMap),
       ),
+      catchError(error => {
+        console.error(`useTvlData - Fail to get the TVL for pool ${address} on ${chain}`, error);
+        return of(DEFAULT_VALUE);
+      }),
     );
   } catch (error) {
     console.error(`useTvlData - Fail to get the TVL for pool ${address} on ${chain}`, error);

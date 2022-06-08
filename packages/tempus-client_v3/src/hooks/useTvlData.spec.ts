@@ -1,12 +1,12 @@
 import { act, renderHook } from '@testing-library/react-hooks';
-import { of as mockOf } from 'rxjs';
-import { Decimal, getServices } from 'tempus-core-services';
+import { of as mockOf, throwError } from 'rxjs';
+import { Decimal, getDefinedServices } from 'tempus-core-services';
 import { getConfigManager } from '../config/getConfigManager';
 import { useTvlData, useTotalTvl, subscribe, reset } from './useTvlData';
 
 jest.mock('tempus-core-services', () => ({
   ...jest.requireActual('tempus-core-services'),
-  getServices: jest.fn(),
+  getDefinedServices: jest.fn(),
 }));
 
 jest.mock('./useServicesLoaded', () => ({
@@ -73,17 +73,17 @@ describe('useTvlData', () => {
       'fantom-5': new Decimal(8000),
     };
     expect(result1.current).toEqual(expected);
-    const functionCalledCount = (getServices as jest.Mock).mock.calls.length;
+    const functionCalledCount = (getDefinedServices as jest.Mock).mock.calls.length;
 
     const { result: result2 } = renderHook(() => useTvlData());
 
     expect(result2.current).toEqual(expected);
-    expect(getServices).toHaveBeenCalledTimes(functionCalledCount);
+    expect(getDefinedServices).toHaveBeenCalledTimes(functionCalledCount);
   });
 
   test('no updates when service map is null', async () => {
     jest.spyOn(console, 'error').mockImplementation();
-    (getServices as unknown as jest.Mock).mockReturnValue(null);
+    (getDefinedServices as unknown as jest.Mock).mockReturnValue(null);
 
     act(() => {
       reset();
@@ -107,7 +107,7 @@ describe('useTvlData', () => {
 
   test('no updates when there is error when getServices()', async () => {
     jest.spyOn(console, 'error').mockImplementation();
-    (getServices as unknown as jest.Mock).mockImplementation(() => {
+    (getDefinedServices as unknown as jest.Mock).mockImplementation(() => {
       throw new Error();
     });
 
@@ -133,11 +133,39 @@ describe('useTvlData', () => {
 
   test('no updates when there is error when StatisticsService.totalValueLockedUSD()', async () => {
     jest.spyOn(console, 'error').mockImplementation();
-    (getServices as unknown as jest.Mock).mockImplementation(() => ({
+    (getDefinedServices as unknown as jest.Mock).mockImplementation(() => ({
       StatisticsService: {
         totalValueLockedUSD: jest.fn().mockImplementation(() => {
           throw new Error();
         }),
+      },
+    }));
+
+    act(() => {
+      reset();
+      subscribe();
+    });
+
+    const { result, waitForNextUpdate } = renderHook(() => useTvlData());
+
+    expect(result.current).toEqual({});
+
+    try {
+      await waitForNextUpdate();
+    } catch (e) {
+      // when error, the failed polling will be skipped and thus no updates on hook
+    }
+
+    expect(console.error).toHaveBeenCalled();
+
+    (console.error as jest.Mock).mockRestore();
+  });
+
+  test('no updates when there is Observable<Error> when StatisticsService.totalValueLockedUSD()', async () => {
+    jest.spyOn(console, 'error').mockImplementation();
+    (getDefinedServices as unknown as jest.Mock).mockImplementation(() => ({
+      StatisticsService: {
+        totalValueLockedUSD: jest.fn().mockReturnValue(throwError(() => new Error())),
       },
     }));
 

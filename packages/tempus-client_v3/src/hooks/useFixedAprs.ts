@@ -18,7 +18,7 @@ import {
   tap,
 } from 'rxjs';
 import {
-  getServices,
+  getDefinedServices,
   Decimal,
   TempusPool,
   ONE,
@@ -26,7 +26,6 @@ import {
   DAYS_IN_A_YEAR,
   getDefaultProvider,
   ZERO,
-  Chain,
 } from 'tempus-core-services';
 import { POLLING_INTERVAL_IN_MS, DEBOUNCE_IN_MS } from '../constants';
 import { poolList$ } from './usePoolList';
@@ -42,14 +41,6 @@ const DEFAULT_VALUE: PoolFixedAprMap = {};
 const intervalBeat$: Observable<number> = interval(POLLING_INTERVAL_IN_MS).pipe(startWith(0));
 
 export const poolAprs$ = new BehaviorSubject<PoolFixedAprMap>(DEFAULT_VALUE);
-
-const getDefinedServices = (chain: Chain) => {
-  const services = getServices(chain);
-  if (!services) {
-    throw new Error(`Cannot get service map for ${chain}`);
-  }
-  return services;
-};
 
 const getLatestEventBlock = (tempusPool: TempusPool) => {
   const { address, poolId, chain } = tempusPool;
