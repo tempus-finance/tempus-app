@@ -8,6 +8,7 @@ import Wallet, { WalletProps } from './Wallet';
 
 const mockConnect = jest.fn();
 const mockSetChain = jest.fn();
+const mockSetSigner = jest.fn();
 
 const subject = (props: WalletProps): [RenderResult, History] => {
   const history = createMemoryHistory();
@@ -53,6 +54,16 @@ jest.mock('@web3-onboard/react', () => ({
   useWallets: jest.fn().mockReturnValue([]),
 }));
 
+jest.mock('ethers', () => ({
+  ethers: {
+    providers: {
+      Web3Provider: jest.fn().mockImplementation(wallet => ({
+        getSigner: jest.fn().mockImplementation(() => wallet),
+      })),
+    },
+  },
+}));
+
 jest.mock('react-blockies', () => () => (
   <canvas className="identicon" width="24" height="24" style={{ width: '24px', height: '24px' }} />
 ));
@@ -61,6 +72,7 @@ jest.mock('../../hooks', () => ({
   ...jest.requireActual('../../hooks'),
   useSelectedChain: jest.fn(),
   useTokenBalance: jest.fn(),
+  useSigner: jest.fn().mockImplementation(() => [{}, mockSetSigner]),
 }));
 
 describe('Wallet', () => {
@@ -92,6 +104,18 @@ describe('Wallet', () => {
 
     expect(container).not.toBeNull();
     expect(container).toMatchSnapshot();
+  });
+
+  it('stores the signer in the state after connecting', () => {
+    (useConnectWallet as jest.Mock).mockImplementation(() => [
+      { wallet: { accounts: [{ address: '0x123123123' }], provider: { property: 'ABC' } } },
+      mockConnect,
+    ]);
+
+    const [{ container }] = subject({});
+
+    expect(container).not.toBeNull();
+    expect(mockSetSigner).toHaveBeenCalledWith({ property: 'ABC' });
   });
 
   it('redirects after connect', async () => {
