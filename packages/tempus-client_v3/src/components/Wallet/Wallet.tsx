@@ -1,9 +1,11 @@
-import { FC, useCallback, useEffect, useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { JsonRpcSigner } from '@ethersproject/providers';
 import ledgerModule from '@web3-onboard/ledger';
 import gnosisModule from '@web3-onboard/gnosis';
 import injectedModule from '@web3-onboard/injected-wallets';
 import { init, useConnectWallet, useSetChain, useWallets } from '@web3-onboard/react';
+import { ethers } from 'ethers';
+import { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Chain,
   chainNameToHexChainId,
@@ -13,9 +15,9 @@ import {
   fantomChainIdHex,
   ZERO_ADDRESS,
 } from 'tempus-core-services';
+import { setWalletAddress, useSelectedChain, useTokenBalance, useSigner } from '../../hooks';
 import { ActionButtonVariant, WalletButton } from '../shared';
 import ChainSelector from '../ChainSelector';
-import { setWalletAddress, useSelectedChain, useTokenBalance } from '../../hooks';
 
 // TODO - Check with designers if block native UI for wallet management is fine to use
 
@@ -82,6 +84,7 @@ const Wallet: FC<WalletProps> = props => {
   const [{ wallet }, connect] = useConnectWallet();
   const selectedChain = useSelectedChain();
   const [, setChain] = useSetChain();
+  const [, setSigner] = useSigner();
 
   const nativeTokenBalanceData = useTokenBalance(ZERO_ADDRESS, selectedChain);
 
@@ -160,6 +163,13 @@ const Wallet: FC<WalletProps> = props => {
       });
     }
   }, [connect]);
+
+  useEffect(() => {
+    if (wallet && wallet.provider) {
+      const signer = new ethers.providers.Web3Provider(wallet.provider).getSigner() as JsonRpcSigner;
+      setSigner(signer);
+    }
+  }, [wallet, setSigner]);
 
   const walletAddress = useMemo(() => {
     if (!wallet) {
