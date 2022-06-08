@@ -76,7 +76,7 @@ const ModalActionContent: FC<ModalActionContentProps> = props => {
       />
       {infoRows && <div className="tc__currency-input-modal__info">{infoRows}</div>}
       <div className="tc__currency-input-modal__action-container">
-        <FeeTooltip fees={{ swap: 0.002 }}>
+        <FeeTooltip fees={{ swap: new Decimal(0.002) }}>
           <div className="tc__currency-input-modal__transaction-info">
             <Icon variant="info-bordered" size="small" />
             <Typography variant="body-secondary">{t('CurrencyInputModal.feesAndTransactionInfo')}</Typography>
