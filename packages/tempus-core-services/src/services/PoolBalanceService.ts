@@ -46,6 +46,8 @@ export class PoolBalanceService extends BaseService {
 
     const poolConfig = this.getPoolConfig(poolAddress);
 
+    const isBackingToken = getBalanceInToken === 'backing';
+
     const estimateData = await statsContract.estimateExitAndRedeem(
       ammContractAddress,
       userTokenBalances.capitalsBalance,
@@ -57,7 +59,7 @@ export class PoolBalanceService extends BaseService {
       poolConfig.tokenPrecision.yields,
       poolConfig.tokenPrecision.lpTokens,
       threshold,
-      getBalanceInToken === 'backing',
+      isBackingToken,
     );
 
     return estimateData.tokenAmount;

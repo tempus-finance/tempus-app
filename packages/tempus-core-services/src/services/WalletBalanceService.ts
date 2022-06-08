@@ -26,6 +26,7 @@ export class WalletBalanceService extends BaseService {
 
     const tokenPrecision = this.getTokenPrecision(tokenAddress);
 
+    // TODO - Create a getter for all contract classes
     const contract = new ERC20Contract(this.chain, tokenAddress, tokenPrecision);
     return contract.balanceOf(walletAddress);
   }

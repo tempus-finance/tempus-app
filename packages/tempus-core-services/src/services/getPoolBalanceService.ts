@@ -4,7 +4,7 @@ import { PoolBalanceService } from './PoolBalanceService';
 
 const poolBalanceServices = new Map<Chain, PoolBalanceService>();
 export function getPoolBalanceService(chain: Chain, getConfig: ConfigGetter): PoolBalanceService {
-  if (!poolBalanceServices.get(chain)) {
+  if (!poolBalanceServices.has(chain)) {
     poolBalanceServices.set(chain, new PoolBalanceService(chain, getConfig));
   }
 
