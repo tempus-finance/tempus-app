@@ -83,7 +83,7 @@ exports[`DepositModal renders a deposit modal input with multiple maturity terms
           class="tc__currency-input-modal__description"
           style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
         >
-          You are about to deposit into this pool, choose carefully
+          You are about to deposit into the ETH pool with term 10/1/2022.
         </div>
         <div
           class="tc__term-tabs"
@@ -278,13 +278,13 @@ exports[`DepositModal renders a deposit modal input with multiple maturity terms
                   class="tc__currency-input__fiat-amount"
                 >
                   <div
-                    style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(122, 122, 122); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+                    style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(122, 122, 122); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
                   >
                     $0.00
                   </div>
                   <div
                     class="tc__currency-input__fiat-amount-currency"
-                    style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(122, 122, 122); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+                    style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(122, 122, 122); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
                   >
                     USD
                   </div>
@@ -364,78 +364,85 @@ exports[`DepositModal renders a deposit modal input with multiple maturity terms
             class="tc__currency-input-modal__info-row"
           >
             <div
+              class="tc__currency-input-modal__info-row-label"
               style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
             >
-              Available for Deposit
+              Current Balance
             </div>
             <div
               class="tc__currency-input-modal__info-row-value"
+              style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
             >
-              <div
-                style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
-              >
-                100.0000
-              </div>
-              <div
-                style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
-              >
-                ETH
-              </div>
+              100.0000
+            </div>
+            <div
+              class="tc__currency-input-modal__info-row-currency"
+              style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+            >
+              ETH
+            </div>
+            <div
+              class="tc__currency-input-modal__info-row-fiat-value"
+              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+            >
+              $350,000.00
+            </div>
+            <div
+              class="tc__currency-input-modal__info-row-fiat"
+              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+            >
+              USD
             </div>
           </div>
           <div
             class="tc__currency-input-modal__info-row"
           >
             <div
+              class="tc__currency-input-modal__info-row-label"
               style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
             >
               Yield-at-Maturity
             </div>
             <div
-              class="tc__currency-input-modal__info-row-value"
+              class="tc__currency-input-modal__value-change"
             >
-              <div
-                class="tc__currency-input-modal__value-change tc__currency-input-modal__value-change-increase"
+              <svg
+                class="tc__icon tc__icon-plus"
+                fill="none"
+                height="12"
+                viewBox="0 0 16 16"
+                width="12"
+                xmlns="http://www.w3.org/2000/svg"
               >
-                <svg
-                  class="tc__icon tc__icon-up-arrow"
-                  fill="none"
-                  height="12"
-                  viewBox="0 0 16 16"
-                  width="12"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <g
-                    clip-path="url(#clip0_909_5453)"
-                  >
-                    <path
-                      d="M8.81096 0.295692L15.6641 6.29352C15.7706 6.38672 15.8551 6.49737 15.9127 6.61915C15.9703 6.74093 16 6.87145 16 7.00326C16 7.13507 15.9703 7.26559 15.9127 7.38737C15.8551 7.50915 15.7706 7.6198 15.6641 7.713C15.5576 7.80621 15.4312 7.88014 15.292 7.93058C15.1529 7.98103 15.0037 8.00699 14.8531 8.00699C14.7025 8.00699 14.5534 7.98103 14.4143 7.93058C14.2751 7.88014 14.1487 7.80621 14.0422 7.713L9.14219 3.41456V15.0004C9.14219 15.2655 9.02185 15.5197 8.80765 15.7072C8.59345 15.8947 8.30293 16 8 16C7.69707 16 7.40655 15.8947 7.19235 15.7072C6.97815 15.5197 6.85781 15.2655 6.85781 15.0004L6.85781 3.41456L1.95782 7.713C1.74274 7.90124 1.45103 8.00699 1.14686 8.00699C0.842696 8.00699 0.550987 7.90124 0.335909 7.713C0.12083 7.52477 1.7828e-08 7.26947 0 7.00326C-1.7828e-08 6.73706 0.12083 6.48175 0.335908 6.29352L7.18905 0.295692C7.29523 0.201998 7.42155 0.127629 7.56074 0.0768784C7.69993 0.0261281 7.84922 5.76833e-09 8 0C8.15078 -5.76833e-09 8.30007 0.026128 8.43926 0.0768783C8.57845 0.127629 8.70477 0.201998 8.81096 0.295692Z"
-                      fill="#4BB543"
-                    />
-                  </g>
-                  <defs>
-                    <clippath
-                      id="clip0_909_5453"
-                    >
-                      <rect
-                        fill="white"
-                        height="16"
-                        width="16"
-                      />
-                    </clippath>
-                  </defs>
-                </svg>
-              </div>
-              <div
-                style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
-              >
-                0.0000
-              </div>
-              <div
-                style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
-              >
-                stETH
-              </div>
+                <path
+                  d="M8.99475 15.0053C8.99475 15.2691 8.88994 15.5221 8.70339 15.7086C8.51684 15.8952 8.26382 16 8 16C7.73618 16 7.48316 15.8952 7.29661 15.7086C7.11006 15.5221 7.00526 15.2691 7.00526 15.0053L7.01226 8.98774L0.994746 8.99475C0.730923 8.99475 0.477905 8.88994 0.291354 8.70339C0.104803 8.51684 0 8.26382 0 8C0 7.73618 0.104803 7.48316 0.291354 7.29661C0.477905 7.11006 0.730922 7.00526 0.994745 7.00526L7.01226 7.01226L7.00525 0.994746C7.00525 0.730923 7.11006 0.477905 7.29661 0.291354C7.48316 0.104803 7.73618 0 8 0C8.26382 0 8.51684 0.104803 8.70339 0.291354C8.88994 0.477905 8.99475 0.730923 8.99475 0.994746L8.98774 7.01226L15.0053 7.00526C15.2691 7.00526 15.5221 7.11006 15.7086 7.29661C15.8952 7.48316 16 7.73618 16 8C16 8.26382 15.8952 8.51684 15.7086 8.70339C15.5221 8.88994 15.2691 8.99475 15.0053 8.99475L8.98774 8.98774L8.99475 15.0053Z"
+                  fill="#222222"
+                />
+              </svg>
+            </div>
+            <div
+              class="tc__currency-input-modal__info-row-value"
+              style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+            >
+              0.0000
+            </div>
+            <div
+              class="tc__currency-input-modal__info-row-currency"
+              style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+            >
+              stETH
+            </div>
+            <div
+              class="tc__currency-input-modal__info-row-fiat-value"
+              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+            >
+              $0.00
+            </div>
+            <div
+              class="tc__currency-input-modal__info-row-fiat"
+              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+            >
+              USD
             </div>
           </div>
         </div>
@@ -450,11 +457,6 @@ exports[`DepositModal renders a deposit modal input with multiple maturity terms
             <div
               class="tc__currency-input-modal__transaction-info"
             >
-              <div
-                style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
-              >
-                Fees & transaction info
-              </div>
               <svg
                 class="tc__icon tc__icon-info-bordered"
                 fill="none"
@@ -478,6 +480,11 @@ exports[`DepositModal renders a deposit modal input with multiple maturity terms
                   fill="#222222"
                 />
               </svg>
+              <div
+                style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+              >
+                Fees & transaction info
+              </div>
             </div>
           </button>
           <button
@@ -586,7 +593,7 @@ exports[`DepositModal renders a deposit modal input with one maturity term 1`] =
           class="tc__currency-input-modal__description"
           style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
         >
-          You are about to deposit into this pool, choose carefully
+          You are about to deposit into the ETH pool with term 10/1/2022.
         </div>
         <div
           class="tc__currency-input"
@@ -695,13 +702,13 @@ exports[`DepositModal renders a deposit modal input with one maturity term 1`] =
                   class="tc__currency-input__fiat-amount"
                 >
                   <div
-                    style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(122, 122, 122); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+                    style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(122, 122, 122); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
                   >
                     $0.00
                   </div>
                   <div
                     class="tc__currency-input__fiat-amount-currency"
-                    style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(122, 122, 122); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+                    style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(122, 122, 122); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
                   >
                     USD
                   </div>
@@ -781,78 +788,85 @@ exports[`DepositModal renders a deposit modal input with one maturity term 1`] =
             class="tc__currency-input-modal__info-row"
           >
             <div
+              class="tc__currency-input-modal__info-row-label"
               style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
             >
-              Available for Deposit
+              Current Balance
             </div>
             <div
               class="tc__currency-input-modal__info-row-value"
+              style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
             >
-              <div
-                style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
-              >
-                100.0000
-              </div>
-              <div
-                style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
-              >
-                ETH
-              </div>
+              100.0000
+            </div>
+            <div
+              class="tc__currency-input-modal__info-row-currency"
+              style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+            >
+              ETH
+            </div>
+            <div
+              class="tc__currency-input-modal__info-row-fiat-value"
+              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+            >
+              $350,000.00
+            </div>
+            <div
+              class="tc__currency-input-modal__info-row-fiat"
+              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+            >
+              USD
             </div>
           </div>
           <div
             class="tc__currency-input-modal__info-row"
           >
             <div
+              class="tc__currency-input-modal__info-row-label"
               style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
             >
               Yield-at-Maturity
             </div>
             <div
-              class="tc__currency-input-modal__info-row-value"
+              class="tc__currency-input-modal__value-change"
             >
-              <div
-                class="tc__currency-input-modal__value-change tc__currency-input-modal__value-change-increase"
+              <svg
+                class="tc__icon tc__icon-plus"
+                fill="none"
+                height="12"
+                viewBox="0 0 16 16"
+                width="12"
+                xmlns="http://www.w3.org/2000/svg"
               >
-                <svg
-                  class="tc__icon tc__icon-up-arrow"
-                  fill="none"
-                  height="12"
-                  viewBox="0 0 16 16"
-                  width="12"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <g
-                    clip-path="url(#clip0_909_5453)"
-                  >
-                    <path
-                      d="M8.81096 0.295692L15.6641 6.29352C15.7706 6.38672 15.8551 6.49737 15.9127 6.61915C15.9703 6.74093 16 6.87145 16 7.00326C16 7.13507 15.9703 7.26559 15.9127 7.38737C15.8551 7.50915 15.7706 7.6198 15.6641 7.713C15.5576 7.80621 15.4312 7.88014 15.292 7.93058C15.1529 7.98103 15.0037 8.00699 14.8531 8.00699C14.7025 8.00699 14.5534 7.98103 14.4143 7.93058C14.2751 7.88014 14.1487 7.80621 14.0422 7.713L9.14219 3.41456V15.0004C9.14219 15.2655 9.02185 15.5197 8.80765 15.7072C8.59345 15.8947 8.30293 16 8 16C7.69707 16 7.40655 15.8947 7.19235 15.7072C6.97815 15.5197 6.85781 15.2655 6.85781 15.0004L6.85781 3.41456L1.95782 7.713C1.74274 7.90124 1.45103 8.00699 1.14686 8.00699C0.842696 8.00699 0.550987 7.90124 0.335909 7.713C0.12083 7.52477 1.7828e-08 7.26947 0 7.00326C-1.7828e-08 6.73706 0.12083 6.48175 0.335908 6.29352L7.18905 0.295692C7.29523 0.201998 7.42155 0.127629 7.56074 0.0768784C7.69993 0.0261281 7.84922 5.76833e-09 8 0C8.15078 -5.76833e-09 8.30007 0.026128 8.43926 0.0768783C8.57845 0.127629 8.70477 0.201998 8.81096 0.295692Z"
-                      fill="#4BB543"
-                    />
-                  </g>
-                  <defs>
-                    <clippath
-                      id="clip0_909_5453"
-                    >
-                      <rect
-                        fill="white"
-                        height="16"
-                        width="16"
-                      />
-                    </clippath>
-                  </defs>
-                </svg>
-              </div>
-              <div
-                style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
-              >
-                0.0000
-              </div>
-              <div
-                style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
-              >
-                stETH
-              </div>
+                <path
+                  d="M8.99475 15.0053C8.99475 15.2691 8.88994 15.5221 8.70339 15.7086C8.51684 15.8952 8.26382 16 8 16C7.73618 16 7.48316 15.8952 7.29661 15.7086C7.11006 15.5221 7.00526 15.2691 7.00526 15.0053L7.01226 8.98774L0.994746 8.99475C0.730923 8.99475 0.477905 8.88994 0.291354 8.70339C0.104803 8.51684 0 8.26382 0 8C0 7.73618 0.104803 7.48316 0.291354 7.29661C0.477905 7.11006 0.730922 7.00526 0.994745 7.00526L7.01226 7.01226L7.00525 0.994746C7.00525 0.730923 7.11006 0.477905 7.29661 0.291354C7.48316 0.104803 7.73618 0 8 0C8.26382 0 8.51684 0.104803 8.70339 0.291354C8.88994 0.477905 8.99475 0.730923 8.99475 0.994746L8.98774 7.01226L15.0053 7.00526C15.2691 7.00526 15.5221 7.11006 15.7086 7.29661C15.8952 7.48316 16 7.73618 16 8C16 8.26382 15.8952 8.51684 15.7086 8.70339C15.5221 8.88994 15.2691 8.99475 15.0053 8.99475L8.98774 8.98774L8.99475 15.0053Z"
+                  fill="#222222"
+                />
+              </svg>
+            </div>
+            <div
+              class="tc__currency-input-modal__info-row-value"
+              style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+            >
+              0.0000
+            </div>
+            <div
+              class="tc__currency-input-modal__info-row-currency"
+              style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+            >
+              stETH
+            </div>
+            <div
+              class="tc__currency-input-modal__info-row-fiat-value"
+              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+            >
+              $0.00
+            </div>
+            <div
+              class="tc__currency-input-modal__info-row-fiat"
+              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+            >
+              USD
             </div>
           </div>
         </div>
@@ -867,11 +881,6 @@ exports[`DepositModal renders a deposit modal input with one maturity term 1`] =
             <div
               class="tc__currency-input-modal__transaction-info"
             >
-              <div
-                style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
-              >
-                Fees & transaction info
-              </div>
               <svg
                 class="tc__icon tc__icon-info-bordered"
                 fill="none"
@@ -895,6 +904,11 @@ exports[`DepositModal renders a deposit modal input with one maturity term 1`] =
                   fill="#222222"
                 />
               </svg>
+              <div
+                style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+              >
+                Fees & transaction info
+              </div>
             </div>
           </button>
           <button
@@ -980,7 +994,7 @@ exports[`DepositModal renders a deposit modal preview with multiple maturity ter
           class="tc__currency-input-modal__description"
           style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
         >
-          Select an APR & Term to deposit into, if there’s only one, then simply proceed to make your deposit
+          Select an APR & Term to deposit into, if there’s only one, then simply proceed to make your deposit.
         </div>
         <div
           class="tc__term-tabs"
@@ -1157,7 +1171,7 @@ exports[`DepositModal renders a deposit modal preview with one maturity term 1`]
           class="tc__currency-input-modal__description"
           style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
         >
-          Select an APR & Term to deposit into, if there’s only one, then simply proceed to make your deposit
+          Select an APR & Term to deposit into, if there’s only one, then simply proceed to make your deposit.
         </div>
         <div
           class="tc__term-tabs"

@@ -73,5 +73,17 @@ jest.mock('tempus-core-services', () => ({
     WalletBalanceService: {
       getTokenBalance: mockGetTokenBalance,
     },
+    ERC20TokenServiceGetter: jest.fn().mockImplementation(() => ({
+      approve: jest.fn().mockImplementation(() =>
+        Promise.resolve({
+          hash: '0x00',
+        }),
+      ),
+    })),
   })),
+}));
+
+jest.mock('@ethersproject/providers', () => ({
+  ...jest.requireActual('@ethersproject/providers'),
+  JsonRpcSigner: jest.fn(),
 }));

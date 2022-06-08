@@ -1,6 +1,6 @@
 .tc__currency-input-modal {
   .tc__modal {
-    max-width: 814px;
+    max-width: 816px;
   }
 
   .tc__currency-input-modal__nav {
@@ -33,33 +33,45 @@
 
     .tc__currency-input-modal__info-row {
       margin-bottom: 12px;
-      display: flex;
-      justify-content: space-between;
+      display: grid;
+      grid-template-rows: auto auto;
+      grid-template-columns: 1fr 12px auto auto;
+      grid-template-areas:
+        'label icon value currency'
+        'space space fiat-value fiat';
+      gap: 12px 8px;
 
-      .tc__currency-input-modal__info-row-value {
-        display: flex;
-        align-items: center;
+      > *:not(:first-child) {
+        text-align: right;
+      }
 
-        *:not(:last-child) {
-          margin-right: 8px;
-        }
+      .tc__currency-input-modal__info-row-label {
+        grid-area: label;
       }
 
       .tc__currency-input-modal__value-change {
-        width: 24px;
-        height: 24px;
+        width: 100%;
+        height: 100%;
         display: flex;
         align-items: center;
         justify-content: center;
-        border-radius: 12px;
+        grid-area: icon;
+      }
 
-        &.tc__currency-input-modal__value-change-increase {
-          background-color: var(--currencyInputModalValueIncreaseBackground);
-        }
+      .tc__currency-input-modal__info-row-value {
+        grid-area: value;
+      }
 
-        &.tc__currency-input-modal__value-change-decrease {
-          background-color: var(--currencyInputModalValueDecreaseBackground);
-        }
+      .tc__currency-input-modal__info-row-currency {
+        grid-area: currency;
+      }
+
+      .tc__currency-input-modal__info-row-fiat-value {
+        grid-area: fiat-value;
+      }
+
+      .tc__currency-input-modal__info-row-fiat {
+        grid-area: fiat;
       }
     }
   }
@@ -88,7 +100,7 @@
       align-items: center;
 
       .tc__icon-external {
-        margin-left: 4px;
+        margin-left: 8px;
       }
     }
 
@@ -103,7 +115,7 @@
     align-items: center;
 
     .tc__icon-info-bordered {
-      margin-left: 4px;
+      margin-right: 8px;
     }
   }
 
