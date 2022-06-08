@@ -1,0 +1,27 @@
+.tc__success-modal__content {
+  max-width: 480px;
+  padding: 0 24px 48px 24px;
+  text-align: center;
+}
+
+.tc__success-modal__animation {
+  margin: 24px 0;
+  position: relative;
+
+  .tc__success-modal__title {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+}
+
+.tc__success-modal__action-buttons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  .tc__actionButton:first-child {
+    margin-bottom: 16px;
+  }
+}
