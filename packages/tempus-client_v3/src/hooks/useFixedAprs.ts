@@ -1,6 +1,7 @@
 import { bind } from '@react-rxjs/core';
 import {
   BehaviorSubject,
+  catchError,
   combineLatest,
   debounce,
   filter,
@@ -113,6 +114,10 @@ const fetchData = (tempusPool: TempusPool): Observable<PoolFixedAprMap> => {
         return {
           [`${chain}-${address}`]: pureInterest.mul(scaleFactor),
         } as PoolFixedAprMap;
+      }),
+      catchError(error => {
+        console.error(`useFixedAprs - Fail to fetch fixed APR for pools ${address} on ${chain}`, error);
+        return of(DEFAULT_VALUE);
       }),
     );
   } catch (error) {

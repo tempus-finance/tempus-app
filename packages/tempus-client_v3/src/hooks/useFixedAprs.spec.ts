@@ -158,11 +158,165 @@ describe('useFixedAprs', () => {
     (console.error as jest.Mock).mockRestore();
   });
 
-  test('no updates when there is an error', async () => {
+  test('no updates when there is an error when getServices()', async () => {
     jest.spyOn(console, 'error').mockImplementation();
     (getServices as unknown as jest.Mock).mockImplementation(() => {
       throw new Error();
     });
+
+    act(() => {
+      reset();
+      subscribe();
+    });
+
+    const { result, waitForNextUpdate } = renderHook(() => useFixedAprs());
+
+    expect(result.current).toEqual({});
+
+    try {
+      await waitForNextUpdate();
+    } catch (e) {
+      // when error, the failed polling will be skipped and thus no updates on hook
+    }
+
+    expect(console.error).toHaveBeenCalled();
+
+    (console.error as jest.Mock).mockRestore();
+  });
+
+  test('no updates when there is an error when TempusControllerService.getDepositedEvents()', async () => {
+    const principalsAmount = new Decimal('1.05');
+
+    jest.spyOn(console, 'error').mockImplementation();
+    (getServices as unknown as jest.Mock).mockImplementation(() => ({
+      TempusControllerService: {
+        getDepositedEvents: mockGetDepositedEvents.mockImplementation(() => {
+          throw new Error();
+        }),
+        getRedeemedEvents: mockGetRedeemedEvents.mockImplementation(() => []),
+      },
+      VaultService: {
+        getSwapEvents: mockGetSwapEvents.mockImplementation(() => []),
+      },
+      StatisticsService: {
+        estimatedDepositAndFix: mockEstimatedDepositAndFix.mockImplementation(() => of(principalsAmount)),
+      },
+    }));
+
+    act(() => {
+      reset();
+      subscribe();
+    });
+
+    const { result, waitForNextUpdate } = renderHook(() => useFixedAprs());
+
+    expect(result.current).toEqual({});
+
+    try {
+      await waitForNextUpdate();
+    } catch (e) {
+      // when error, the failed polling will be skipped and thus no updates on hook
+    }
+
+    expect(console.error).toHaveBeenCalled();
+
+    (console.error as jest.Mock).mockRestore();
+  });
+
+  test('no updates when there is an error when TempusControllerService.getRedeemedEvents()', async () => {
+    const principalsAmount = new Decimal('1.05');
+
+    jest.spyOn(console, 'error').mockImplementation();
+    (getServices as unknown as jest.Mock).mockImplementation(() => ({
+      TempusControllerService: {
+        getDepositedEvents: mockGetDepositedEvents.mockImplementation(() => []),
+        getRedeemedEvents: mockGetRedeemedEvents.mockImplementation(() => {
+          throw new Error();
+        }),
+      },
+      VaultService: {
+        getSwapEvents: mockGetSwapEvents.mockImplementation(() => []),
+      },
+      StatisticsService: {
+        estimatedDepositAndFix: mockEstimatedDepositAndFix.mockImplementation(() => of(principalsAmount)),
+      },
+    }));
+
+    act(() => {
+      reset();
+      subscribe();
+    });
+
+    const { result, waitForNextUpdate } = renderHook(() => useFixedAprs());
+
+    expect(result.current).toEqual({});
+
+    try {
+      await waitForNextUpdate();
+    } catch (e) {
+      // when error, the failed polling will be skipped and thus no updates on hook
+    }
+
+    expect(console.error).toHaveBeenCalled();
+
+    (console.error as jest.Mock).mockRestore();
+  });
+
+  test('no updates when there is an error when VaultService.getSwapEvents()', async () => {
+    const principalsAmount = new Decimal('1.05');
+
+    jest.spyOn(console, 'error').mockImplementation();
+    (getServices as unknown as jest.Mock).mockImplementation(() => ({
+      TempusControllerService: {
+        getDepositedEvents: mockGetDepositedEvents.mockImplementation(() => []),
+        getRedeemedEvents: mockGetRedeemedEvents.mockImplementation(() => []),
+      },
+      VaultService: {
+        getSwapEvents: mockGetSwapEvents.mockImplementation(() => {
+          throw new Error();
+        }),
+      },
+      StatisticsService: {
+        estimatedDepositAndFix: mockEstimatedDepositAndFix.mockImplementation(() => of(principalsAmount)),
+      },
+    }));
+
+    act(() => {
+      reset();
+      subscribe();
+    });
+
+    const { result, waitForNextUpdate } = renderHook(() => useFixedAprs());
+
+    expect(result.current).toEqual({});
+
+    try {
+      await waitForNextUpdate();
+    } catch (e) {
+      // when error, the failed polling will be skipped and thus no updates on hook
+    }
+
+    expect(console.error).toHaveBeenCalled();
+
+    (console.error as jest.Mock).mockRestore();
+  });
+
+  test('no updates when there is an error when StatisticsService.estimatedDepositAndFix()', async () => {
+    jest.spyOn(console, 'error').mockImplementation();
+    (getServices as unknown as jest.Mock).mockImplementation(() => ({
+      TempusControllerService: {
+        getDepositedEvents: mockGetDepositedEvents.mockImplementation(() => []),
+        getRedeemedEvents: mockGetRedeemedEvents.mockImplementation(() => []),
+      },
+      VaultService: {
+        getSwapEvents: mockGetSwapEvents.mockImplementation(() => []),
+      },
+      StatisticsService: {
+        estimatedDepositAndFix: mockEstimatedDepositAndFix.mockImplementation(() => {
+          throw new Error();
+        }),
+      },
+    }));
 
     act(() => {
       reset();

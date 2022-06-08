@@ -105,11 +105,41 @@ describe('useTvlData', () => {
     (console.error as jest.Mock).mockRestore();
   });
 
-  test('no updates when there is error', async () => {
+  test('no updates when there is error when getServices()', async () => {
     jest.spyOn(console, 'error').mockImplementation();
     (getServices as unknown as jest.Mock).mockImplementation(() => {
       throw new Error();
     });
+
+    act(() => {
+      reset();
+      subscribe();
+    });
+
+    const { result, waitForNextUpdate } = renderHook(() => useTvlData());
+
+    expect(result.current).toEqual({});
+
+    try {
+      await waitForNextUpdate();
+    } catch (e) {
+      // when error, the failed polling will be skipped and thus no updates on hook
+    }
+
+    expect(console.error).toHaveBeenCalled();
+
+    (console.error as jest.Mock).mockRestore();
+  });
+
+  test('no updates when there is error when StatisticsService.totalValueLockedUSD()', async () => {
+    jest.spyOn(console, 'error').mockImplementation();
+    (getServices as unknown as jest.Mock).mockImplementation(() => ({
+      StatisticsService: {
+        totalValueLockedUSD: jest.fn().mockImplementation(() => {
+          throw new Error();
+        }),
+      },
+    }));
 
     act(() => {
       reset();

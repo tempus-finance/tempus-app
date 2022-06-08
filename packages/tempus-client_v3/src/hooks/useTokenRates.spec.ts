@@ -116,7 +116,7 @@ describe('useTokenRates', () => {
     (console.error as jest.Mock).mockRestore();
   });
 
-  test('no updates when StatisticsService.getRate throw error', async () => {
+  test('no updates when there is error when StatisticsService.getRate()', async () => {
     jest.spyOn(console, 'error').mockImplementation();
     (getServices as unknown as jest.Mock).mockImplementation(() => ({
       StatisticsService: {
@@ -150,7 +150,58 @@ describe('useTokenRates', () => {
     (console.error as jest.Mock).mockRestore();
   });
 
-  test('no updates when TempusPoolService.numAssetsPerYieldToken throw error', async () => {
+  test('no updates when there is error when TempusPoolService.currentInterestRate()', async () => {
+    jest.spyOn(console, 'error').mockImplementation();
+    (getServices as unknown as jest.Mock).mockImplementation(() => ({
+      ...getServices,
+      StatisticsService: {
+        getRate: jest.fn().mockImplementation((chain: Chain, tokenTicker: Ticker) => {
+          let price = new Decimal(0);
+          switch (tokenTicker) {
+            case 'ETH':
+              price = new Decimal(2999);
+              break;
+            case 'WETH':
+              price = new Decimal(3001);
+              break;
+            case 'USDC':
+              price = new Decimal(chain === 'fantom' ? 1.001 : 0.999);
+              break;
+            default:
+          }
+
+          return mockOf(price);
+        }),
+      },
+      TempusPoolService: {
+        currentInterestRate: jest.fn().mockImplementation(() => {
+          throw new Error();
+        }),
+        numAssetsPerYieldToken: jest.fn().mockResolvedValue(new Decimal(1)),
+      },
+    }));
+
+    act(() => {
+      reset();
+      subscribe();
+    });
+
+    const { result, waitForNextUpdate } = renderHook(() => useTokenRates());
+
+    expect(result.current).toEqual({});
+
+    try {
+      await waitForNextUpdate();
+    } catch (e) {
+      // when error, the failed polling will be skipped and thus no updates on hook
+    }
+
+    expect(console.error).toHaveBeenCalled();
+
+    (console.error as jest.Mock).mockRestore();
+  });
+
+  test('no updates when there is error when TempusPoolService.numAssetsPerYieldToken()', async () => {
     jest.spyOn(console, 'error').mockImplementation();
     (getServices as unknown as jest.Mock).mockImplementation(() => ({
       ...getServices,
