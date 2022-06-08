@@ -134,7 +134,31 @@ describe('useFixedAprs', () => {
     expect(result.current).toEqual(expectedResult);
   });
 
-  test('returns `{}` when there is an error', async () => {
+  test('no updates when service map is null', async () => {
+    jest.spyOn(console, 'error').mockImplementation();
+    (getServices as unknown as jest.Mock).mockReturnValue(null);
+
+    act(() => {
+      reset();
+      subscribe();
+    });
+
+    const { result, waitForNextUpdate } = renderHook(() => useFixedAprs());
+
+    expect(result.current).toEqual({});
+
+    try {
+      await waitForNextUpdate();
+    } catch (e) {
+      // when error, the failed polling will be skipped and thus no updates on hook
+    }
+
+    expect(console.error).toHaveBeenCalled();
+
+    (console.error as jest.Mock).mockRestore();
+  });
+
+  test('no updates when there is an error', async () => {
     jest.spyOn(console, 'error').mockImplementation();
     (getServices as unknown as jest.Mock).mockImplementation(() => {
       throw new Error();
@@ -152,7 +176,7 @@ describe('useFixedAprs', () => {
     try {
       await waitForNextUpdate();
     } catch (e) {
-      // when error, hook will return empty map which wont trigger rerender because it's same as initial value
+      // when error, the failed polling will be skipped and thus no updates on hook
     }
 
     expect(console.error).toHaveBeenCalled();

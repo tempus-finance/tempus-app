@@ -3,7 +3,6 @@ import {
   BehaviorSubject,
   catchError,
   combineLatest,
-  concatMap,
   debounce,
   filter,
   from,
@@ -21,16 +20,13 @@ import {
 import {
   getServices,
   Decimal,
-  StatisticsService,
   TempusPool,
-  Chain,
   ONE,
-  TempusControllerService,
-  VaultService,
   SECONDS_IN_A_DAY,
   DAYS_IN_A_YEAR,
   getDefaultProvider,
   ZERO,
+  Chain,
 } from 'tempus-core-services';
 import { POLLING_INTERVAL_IN_MS, DEBOUNCE_IN_MS } from '../constants';
 import { poolList$ } from './usePoolList';
@@ -47,8 +43,43 @@ const intervalBeat$: Observable<number> = interval(POLLING_INTERVAL_IN_MS).pipe(
 
 export const poolAprs$ = new BehaviorSubject<PoolFixedAprMap>(DEFAULT_VALUE);
 
+const getServicesNotNull = (chain: Chain) => {
+  const services = getServices(chain);
+  if (!services) {
+    throw new Error(`Cannot get service map for ${chain}`);
+  }
+  return services;
+};
+
+const getLatestEventBlock = (tempusPool: TempusPool) => {
+  const { address, poolId, chain } = tempusPool;
+
+  // handle all error in Observable.pipe()
+  return of({}).pipe(
+    map(() => getServicesNotNull(chain)),
+    mergeMap(services =>
+      Promise.all([
+        services.TempusControllerService.getDepositedEvents({ forPool: address }),
+        services.VaultService.getSwapEvents({ forPoolId: poolId }),
+        services.TempusControllerService.getRedeemedEvents({ forPool: address }),
+      ]),
+    ),
+    mergeMap(([depositedEvents, swapEvents, redeemedEvents]) => {
+      const allEvents = [...depositedEvents, ...swapEvents, ...redeemedEvents];
+      const latestEventBlockNumber = Math.max(0, ...allEvents.map(event => event.blockNumber));
+      const provider = getDefaultProvider(chain);
+
+      if (latestEventBlockNumber > 0) {
+        return from(provider.getBlock(latestEventBlockNumber));
+      }
+
+      return of(undefined);
+    }),
+  );
+};
+
 const fetchData = (tempusPool: TempusPool): Observable<PoolFixedAprMap> => {
-  const { address, poolId, chain, spotPrice, maturityDate } = tempusPool;
+  const { address, chain, spotPrice, maturityDate } = tempusPool;
 
   if (maturityDate < Date.now()) {
     return of({
@@ -56,37 +87,16 @@ const fetchData = (tempusPool: TempusPool): Observable<PoolFixedAprMap> => {
     } as PoolFixedAprMap);
   }
 
-  const tempusControllerService = getServices(chain as Chain)?.TempusControllerService as TempusControllerService;
-  const vaultService = getServices(chain as Chain)?.VaultService as VaultService;
-  const statisticsService = getServices(chain as Chain)?.StatisticsService as StatisticsService;
-
   const tokenAmount = new Decimal(spotPrice);
 
-  const latestEventBlock$ = from(
-    Promise.all([
-      tempusControllerService.getDepositedEvents({ forPool: address }),
-      vaultService.getSwapEvents({ forPoolId: poolId }),
-      tempusControllerService.getRedeemedEvents({ forPool: address }),
-    ]).then(([depositedEvents, swapEvents, redeemedEvents]) => {
-      const allEvents = [...depositedEvents, ...swapEvents, ...redeemedEvents];
-      const latestEventBlockNumber = Math.max(0, ...allEvents.map(event => event.blockNumber));
-      const provider = getDefaultProvider(chain as Chain);
-
-      if (latestEventBlockNumber > 0) {
-        return provider.getBlock(latestEventBlockNumber);
-      }
-
-      return undefined;
-    }),
-  );
-
+  const latestEventBlock$ = getLatestEventBlock(tempusPool);
   const principals$ = latestEventBlock$.pipe(
-    concatMap(latestEventBlock => {
+    mergeMap(latestEventBlock => {
       const estimateCallOverrides =
         latestEventBlock && latestEventBlock.number > 0 ? { blockTag: latestEventBlock.number } : undefined;
       const estimateDepositAndFixFromBackingToken = true;
 
-      return statisticsService.estimatedDepositAndFix(
+      return getServicesNotNull(chain).StatisticsService.estimatedDepositAndFix(
         tempusPool,
         tokenAmount,
         estimateDepositAndFixFromBackingToken,
@@ -106,6 +116,10 @@ const fetchData = (tempusPool: TempusPool): Observable<PoolFixedAprMap> => {
       return {
         [`${chain}-${address}`]: pureInterest.mul(scaleFactor),
       } as PoolFixedAprMap;
+    }),
+    catchError(error => {
+      console.error(`useFixedAprs - Fail to fetch fixed APR for pools ${address} on ${chain}`, error);
+      return of(DEFAULT_VALUE);
     }),
   );
 };
@@ -137,10 +151,6 @@ const stream$ = merge(periodicStream$, eventStream$).pipe(
     {} as PoolFixedAprMap,
   ),
   debounce(() => interval(DEBOUNCE_IN_MS)),
-  catchError(error => {
-    console.error('useFixedAprs - Failed to fetch fixed APR for pools', error);
-    return of({});
-  }),
   tap(poolTvls => poolAprs$.next(poolTvls)),
 );
 

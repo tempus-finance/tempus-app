@@ -81,7 +81,31 @@ describe('useTvlData', () => {
     expect(getServices).toHaveBeenCalledTimes(functionCalledCount);
   });
 
-  test('returns a empty map when there is error', async () => {
+  test('no updates when service map is null', async () => {
+    jest.spyOn(console, 'error').mockImplementation();
+    (getServices as unknown as jest.Mock).mockReturnValue(null);
+
+    act(() => {
+      reset();
+      subscribe();
+    });
+
+    const { result, waitForNextUpdate } = renderHook(() => useTvlData());
+
+    expect(result.current).toEqual({});
+
+    try {
+      await waitForNextUpdate();
+    } catch (e) {
+      // when error, the failed polling will be skipped and thus no updates on hook
+    }
+
+    expect(console.error).toHaveBeenCalled();
+
+    (console.error as jest.Mock).mockRestore();
+  });
+
+  test('no updates when there is error', async () => {
     jest.spyOn(console, 'error').mockImplementation();
     (getServices as unknown as jest.Mock).mockImplementation(() => {
       throw new Error();
@@ -99,7 +123,7 @@ describe('useTvlData', () => {
     try {
       await waitForNextUpdate();
     } catch (e) {
-      // when error, hook will return empty map which wont trigger rerender becoz it's same as initial value
+      // when error, the failed polling will be skipped and thus no updates on hook
     }
 
     expect(console.error).toHaveBeenCalled();

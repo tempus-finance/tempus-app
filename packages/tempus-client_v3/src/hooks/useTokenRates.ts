@@ -17,16 +17,7 @@ import {
   Subscription,
   tap,
 } from 'rxjs';
-import {
-  getServices,
-  Decimal,
-  StatisticsService,
-  Chain,
-  Ticker,
-  TempusPoolService,
-  TempusPool,
-  ONE,
-} from 'tempus-core-services';
+import { getServices, Decimal, Chain, Ticker, TempusPool, ONE } from 'tempus-core-services';
 import { POLLING_INTERVAL_IN_MS, DEBOUNCE_IN_MS } from '../constants';
 import { poolList$ } from './usePoolList';
 import { servicesLoaded$ } from './useServicesLoaded';
@@ -77,35 +68,49 @@ const tokenInfoMap$ = poolList$.pipe(
   ),
 );
 
-const getConversionRate = ({ chain, address }: TempusPool): Observable<Decimal | null> => {
-  const tempusPoolService = getServices(chain)?.TempusPoolService as TempusPoolService;
-  const interestRate$ = from(tempusPoolService.currentInterestRate(address));
+const getServicesNotNull = (chain: Chain) => {
+  const services = getServices(chain);
+  if (!services) {
+    throw new Error(`Cannot get service map for ${chain}`);
+  }
+  return services;
+};
+
+const getConversionRate = ({ chain, address }: TempusPool): Observable<Decimal> => {
+  const services = getServicesNotNull(chain);
+  const interestRate$ = from(services.TempusPoolService.currentInterestRate(address));
   return interestRate$.pipe(
-    mergeMap(interestRate => from(tempusPoolService.numAssetsPerYieldToken(address, ONE, interestRate))),
-    catchError(error => {
-      console.error('useTokenRates - TempusPoolService.numAssetsPerYieldToken', error);
-      return of(null);
-    }),
+    mergeMap(interestRate => from(services.TempusPoolService.numAssetsPerYieldToken(address, ONE, interestRate))),
   );
 };
 
 const fetchData = (tokenInfo: TokenInfo): Observable<TokenRateMap> => {
   const { chain, token, address, hasConversionRate, poolAddress } = tokenInfo;
 
-  // TODO: conceptually chain+ticker is not unique, it should accept chain+address instead
-  //       but currently chainlink and gecko API doesnt support that
-  const tokenRate$ = (getServices(chain)?.StatisticsService as StatisticsService).getRate(chain, token);
-  const conversionRate$ = hasConversionRate
-    ? getConversionRate({ chain, address: poolAddress } as TempusPool)
-    : of(ONE);
-  return combineLatest([tokenRate$, conversionRate$]).pipe(
-    map<[Decimal | null, Decimal | null], TokenRateMap>(([tokenRate, conversionRate]) =>
-      tokenRate && conversionRate
-        ? {
-            [`${chain}-${address}`]: tokenRate?.mul(conversionRate),
-          }
-        : {},
-    ),
+  // handle all error in Observable.pipe()
+  return of({}).pipe(
+    mergeMap(() => {
+      // TODO: conceptually chain+ticker is not unique, it should accept chain+address instead
+      //       but currently chainlink and gecko API doesnt support that
+      const tokenRate$ = getServicesNotNull(chain).StatisticsService.getRate(chain, token);
+      const conversionRate$ = hasConversionRate
+        ? getConversionRate({ chain, address: poolAddress } as TempusPool)
+        : of(ONE);
+
+      return combineLatest([tokenRate$, conversionRate$]).pipe(
+        map<[Decimal | null, Decimal], TokenRateMap>(([tokenRate, conversionRate]) =>
+          tokenRate
+            ? {
+                [`${chain}-${address}`]: tokenRate?.mul(conversionRate),
+              }
+            : {},
+        ),
+      );
+    }),
+    catchError(error => {
+      console.error(`useTokenRates - Fail to get token rate for ${token} on ${chain}`, error);
+      return of(DEFAULT_VALUE);
+    }),
   );
 };
 
@@ -153,10 +158,6 @@ const stream$ = merge(periodicStream$, eventStream$).pipe(
     {} as TokenRateMap,
   ),
   debounce<TokenRateMap>(() => interval(DEBOUNCE_IN_MS)),
-  catchError(error => {
-    console.error('useTokenRates - StatisticsService.getRate', error);
-    return of(DEFAULT_VALUE);
-  }),
   tap(allRates => tokenRates$.next(allRates)),
 );
 
