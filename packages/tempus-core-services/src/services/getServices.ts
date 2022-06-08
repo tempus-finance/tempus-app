@@ -48,7 +48,7 @@ export const initServices = (
       VaultService: getVaultService(chain, getChainConfig, signerOrProvider as unknown as JsonRpcSigner),
       VariableRateService: getVariableRateService(chain, getChainConfig, signerOrProvider as unknown as JsonRpcSigner),
       StorageService: getStorageService(),
-      WalletBalanceService: getWalletBalanceService(chain),
+      WalletBalanceService: getWalletBalanceService(chain, getConfig),
       PoolBalanceService: getPoolBalanceService(chain, getConfig),
     };
   } else {
@@ -59,7 +59,7 @@ export const initServices = (
       VaultService: getVaultService(chain, getChainConfig),
       VariableRateService: getVariableRateService(chain, getChainConfig),
       StorageService: getStorageService(),
-      WalletBalanceService: getWalletBalanceService(chain),
+      WalletBalanceService: getWalletBalanceService(chain, getConfig),
       PoolBalanceService: getPoolBalanceService(chain, getConfig),
     };
   }

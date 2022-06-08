@@ -1,13 +1,16 @@
 import { ZERO_ADDRESS } from '../constants';
 import { ERC20Contract } from '../contracts';
-import { Decimal } from '../datastructures';
+import { Decimal, DEFAULT_DECIMAL_PRECISION } from '../datastructures';
 import { Chain } from '../interfaces';
+import { BaseService, ConfigGetter } from './BaseService';
 import { getDefaultProvider } from './getDefaultProvider';
 
-export class WalletBalanceService {
+export class WalletBalanceService extends BaseService {
   private chain: Chain;
 
-  constructor(chain: Chain) {
+  constructor(chain: Chain, getConfig: ConfigGetter) {
+    super(getConfig);
+
     this.chain = chain;
   }
 
@@ -17,10 +20,13 @@ export class WalletBalanceService {
     if (tokenAddress === ZERO_ADDRESS) {
       const provider = getDefaultProvider(this.chain);
 
-      return new Decimal(await provider.getBalance(walletAddress));
+      // Native tokens always have default precision
+      return new Decimal(await provider.getBalance(walletAddress), DEFAULT_DECIMAL_PRECISION);
     }
 
-    const contract = new ERC20Contract(this.chain, tokenAddress);
-    return new Decimal(await contract.balanceOf(walletAddress));
+    const tokenPrecision = this.getTokenPrecision(tokenAddress);
+
+    const contract = new ERC20Contract(this.chain, tokenAddress, tokenPrecision);
+    return contract.balanceOf(walletAddress);
   }
 }

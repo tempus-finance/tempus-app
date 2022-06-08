@@ -1,4 +1,3 @@
-import { ethers } from 'ethers';
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ledgerModule from '@web3-onboard/ledger';
@@ -111,10 +110,6 @@ const Wallet: FC<WalletProps> = props => {
 
   useEffect(() => {
     if (wallet) {
-      const signer = new ethers.providers.Web3Provider(wallet.provider).getSigner();
-
-      console.log(signer);
-
       setWalletAddress(wallet.accounts[0].address);
     }
   }, [wallet]);

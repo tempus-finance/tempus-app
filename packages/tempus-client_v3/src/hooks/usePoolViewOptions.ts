@@ -87,8 +87,8 @@ const filteredSortedPoolList$ = combineLatest([filteredPoolList$, stateSortType$
             return aprA.gt(aprB) ? factor : -1 * factor;
           }
           case 'balance': {
-            const firstPoolBalance = poolBalances[`${poolA.chain}-${poolA.address}`] ?? ZERO;
-            const secondPoolBalance = poolBalances[`${poolB.chain}-${poolB.address}`] ?? ZERO;
+            const firstPoolBalance = poolBalances[`${poolA.chain}-${poolA.address}`].balanceInBackingToken ?? ZERO;
+            const secondPoolBalance = poolBalances[`${poolB.chain}-${poolB.address}`].balanceInBackingToken ?? ZERO;
 
             return firstPoolBalance.gt(secondPoolBalance) ? factor : -1 * factor;
           }

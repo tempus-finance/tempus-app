@@ -13,10 +13,12 @@ import { Chain } from '../interfaces';
  */
 export class ERC20Contract {
   private contractAddress: string;
+  private precision: number;
   private contract: ERC20;
 
-  constructor(chain: Chain, contractAddress: string, signer?: JsonRpcSigner) {
+  constructor(chain: Chain, contractAddress: string, precision: number, signer?: JsonRpcSigner) {
     this.contractAddress = contractAddress;
+    this.precision = precision;
 
     const provider = getDefaultProvider(chain);
 
@@ -44,9 +46,7 @@ export class ERC20Contract {
       return Promise.reject(error);
     }
 
-    // Convert balance (BigNumber) into a Decimal with proper precision
-    const tokenDecimals = await this.decimals();
-    return new Decimal(balance, tokenDecimals);
+    return new Decimal(balance, this.precision);
   }
 
   async decimals(): Promise<number> {

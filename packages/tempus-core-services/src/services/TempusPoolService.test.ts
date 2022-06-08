@@ -1,6 +1,6 @@
 // Services
 import { BigNumberish, CallOverrides } from 'ethers';
-import { Decimal } from '../datastructures';
+import { Decimal, DEFAULT_DECIMAL_PRECISION } from '../datastructures';
 import { TempusPoolService } from './TempusPoolService';
 
 jest.mock('ethers');
@@ -287,7 +287,11 @@ describe('TempusPoolService', () => {
 
       mockNumAssetsPerYieldToken.mockResolvedValue(3);
 
-      const numberOfAssets = await instance.numAssetsPerYieldToken(mockAddress, new Decimal(1), new Decimal(1));
+      const numberOfAssets = await instance.numAssetsPerYieldToken(
+        mockAddress,
+        new Decimal(1, DEFAULT_DECIMAL_PRECISION),
+        new Decimal(1, DEFAULT_DECIMAL_PRECISION),
+      );
 
       expect(numberOfAssets.toString()).toBe('3');
     });

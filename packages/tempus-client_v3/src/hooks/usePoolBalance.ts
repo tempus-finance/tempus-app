@@ -1,17 +1,28 @@
 import { bind } from '@react-rxjs/core';
-import { BehaviorSubject, combineLatest, map, mergeMap, filter, Subscription, Observable, of, catchError } from 'rxjs';
+import {
+  BehaviorSubject,
+  combineLatest,
+  map,
+  mergeMap,
+  filter,
+  Subscription,
+  Observable,
+  of,
+  catchError,
+  from,
+} from 'rxjs';
 import { Chain, Decimal, getServices } from 'tempus-core-services';
 import { getConfigManager } from '../config/getConfigManager';
 import { servicesLoaded$ } from './useServicesLoaded';
 import { tokenBalanceDataMap } from './useTokenBalance';
-import { walletAddress$ } from './useWalletAddress';
 
 // Improves readability of the code
 type PoolChainAddressId = string;
 
 interface PoolBalanceData {
   subject$: BehaviorSubject<{
-    balance: Decimal | null;
+    balanceInBackingToken: Decimal | null;
+    balanceInYieldBearingToken: Decimal | null;
     chain: Chain;
     address: string;
   }>;
@@ -32,11 +43,13 @@ poolList.forEach(pool => {
 
   poolBalanceDataMap.set(poolChainAddressId, {
     subject$: new BehaviorSubject<{
-      balance: Decimal | null;
+      balanceInBackingToken: Decimal | null;
+      balanceInYieldBearingToken: Decimal | null;
       address: string;
       chain: Chain;
     }>({
-      balance: null,
+      balanceInBackingToken: null,
+      balanceInYieldBearingToken: null,
       address: pool.address,
       chain: pool.chain,
     }),
@@ -55,13 +68,12 @@ poolList.forEach(tempusPool => {
   if (capitalTokenStreamData && yieldTokenStreamData && lpTokenStreamData) {
     const updateStream$ = combineLatest([
       servicesLoaded$,
-      walletAddress$,
       capitalTokenStreamData.subject$,
       yieldTokenStreamData.subject$,
       lpTokenStreamData.subject$,
     ]).pipe(
-      filter(([servicesLoaded, walletAddress]) => servicesLoaded && Boolean(walletAddress)),
-      mergeMap(([, walletAddress, capitalsBalanceData, yieldsBalanceData, lpBalanceData]) => {
+      filter(([servicesLoaded]) => servicesLoaded),
+      mergeMap(([, capitalsBalanceData, yieldsBalanceData, lpBalanceData]) => {
         if (!capitalsBalanceData.balance || !yieldsBalanceData.balance || !lpBalanceData.balance) {
           return of(null);
         }
@@ -71,25 +83,44 @@ poolList.forEach(tempusPool => {
           throw new Error('usePoolBalance - updateStream$ - Failed to get services');
         }
 
-        const balanceFetch$ = from(
-          services.WalletBalanceService.getTokenBalance(tokenBalanceData.address, walletAddress),
+        const balanceInBackingTokenFetch$ = from(
+          services.PoolBalanceService.getPoolBalance(
+            tempusPool.address,
+            {
+              capitalsBalance: capitalsBalanceData.balance,
+              yieldsBalance: yieldsBalanceData.balance,
+              lpBalance: lpBalanceData.balance,
+            },
+            'backing',
+          ),
+        );
+        const balanceInYieldBearingTokenFetch$ = from(
+          services.PoolBalanceService.getPoolBalance(
+            tempusPool.address,
+            {
+              capitalsBalance: capitalsBalanceData.balance,
+              yieldsBalance: yieldsBalanceData.balance,
+              lpBalance: lpBalanceData.balance,
+            },
+            'yield-bearing',
+          ),
         );
 
-        return services.StatisticsService.getUserPoolBalanceUSD(chain, tempusPool, walletAddress, {
-          principalsBalance: capitalsBalanceData.balance,
-          yieldsBalance: yieldsBalanceData.balance,
-          lpTokenBalance: lpBalanceData.balance,
-        });
+        return combineLatest([balanceInBackingTokenFetch$, balanceInYieldBearingTokenFetch$]);
       }),
-      map(balance => {
-        if (balance === null) {
+      map(poolBalances => {
+        if (poolBalances === null) {
           return;
         }
+
+        const balanceInBackingToken = poolBalances[0];
+        const balanceInYieldBearingToken = poolBalances[1];
 
         const poolBalanceData = poolBalanceDataMap.get(`${chain}-${address}`);
         if (poolBalanceData) {
           poolBalanceData.subject$.next({
-            balance,
+            balanceInBackingToken,
+            balanceInYieldBearingToken,
             address,
             chain,
           });
@@ -125,12 +156,20 @@ export const poolBalances$ = combineLatest(
   [...poolBalanceDataMap.values()].map(poolBalanceData => poolBalanceData.subject$),
 ).pipe(
   map(poolBalancesData => {
-    let poolBalanceMap: { [id: PoolChainAddressId]: Decimal | null } = {};
+    let poolBalanceMap: {
+      [id: PoolChainAddressId]: {
+        balanceInBackingToken: Decimal | null;
+        balanceInYieldBearingToken: Decimal | null;
+      };
+    } = {};
 
     poolBalancesData.forEach(poolBalanceData => {
       poolBalanceMap = {
         ...poolBalanceMap,
-        [`${poolBalanceData.chain}-${poolBalanceData.address}`]: poolBalanceData.balance,
+        [`${poolBalanceData.chain}-${poolBalanceData.address}`]: {
+          balanceInBackingToken: poolBalanceData.balanceInBackingToken,
+          balanceInYieldBearingToken: poolBalanceData.balanceInYieldBearingToken,
+        },
       };
     });
 
@@ -153,7 +192,8 @@ export const unsubscribe = (): void => {
 export const reset = (): void => {
   poolBalanceDataMap.forEach(poolBalanceData =>
     poolBalanceData.subject$.next({
-      balance: null,
+      balanceInBackingToken: null,
+      balanceInYieldBearingToken: null,
       address: poolBalanceData.address,
       chain: poolBalanceData.chain,
     }),

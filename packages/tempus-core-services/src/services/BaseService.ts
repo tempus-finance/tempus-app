@@ -51,4 +51,43 @@ export class BaseService {
 
     return poolChainConfig.statisticsContract;
   }
+
+  getAmmAddressForPool(poolAddress: string): string {
+    const poolConfig = this.getPoolConfig(poolAddress);
+
+    return poolConfig.ammAddress;
+  }
+
+  getTokenPrecision(tokenAddress: string): number {
+    let precision: number | null = null;
+
+    const poolList = this.getPoolList();
+    poolList.forEach(pool => {
+      switch (tokenAddress) {
+        case pool.backingTokenAddress:
+          precision = pool.tokenPrecision.backingToken;
+          break;
+        case pool.yieldBearingTokenAddress:
+          precision = pool.tokenPrecision.yieldBearingToken;
+          break;
+        case pool.principalsAddress:
+          precision = pool.tokenPrecision.principals;
+          break;
+        case pool.yieldsAddress:
+          precision = pool.tokenPrecision.yields;
+          break;
+        case pool.ammAddress:
+          precision = pool.tokenPrecision.lpTokens;
+          break;
+        default:
+          break;
+      }
+    });
+
+    if (precision === null) {
+      throw new Error(`BaseService - getTokenPrecision() - Failed to get precision for token '${tokenAddress}'`);
+    }
+
+    return precision;
+  }
 }
