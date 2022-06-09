@@ -14,6 +14,8 @@ import { VaultService } from './VaultService';
 import { VariableRateService } from './VariableRateService';
 import { StorageService } from './StorageService';
 import { WalletBalanceService } from './WalletBalanceService';
+import { getPoolBalanceService } from './getPoolBalanceService';
+import { PoolBalanceService } from './PoolBalanceService';
 import { getERC20TokenService } from './getERC20TokenService';
 
 type ServiceMap = {
@@ -24,6 +26,7 @@ type ServiceMap = {
   VariableRateService: VariableRateService;
   StorageService: StorageService;
   WalletBalanceService: WalletBalanceService;
+  PoolBalanceService: PoolBalanceService;
   ERC20TokenServiceGetter: typeof getERC20TokenService;
 };
 
@@ -47,7 +50,8 @@ export const initServices = (
       VaultService: getVaultService(chain, getChainConfig, signerOrProvider as unknown as JsonRpcSigner),
       VariableRateService: getVariableRateService(chain, getChainConfig, signerOrProvider as unknown as JsonRpcSigner),
       StorageService: getStorageService(),
-      WalletBalanceService: getWalletBalanceService(chain),
+      WalletBalanceService: getWalletBalanceService(chain, getConfig),
+      PoolBalanceService: getPoolBalanceService(chain, getConfig),
       ERC20TokenServiceGetter: getERC20TokenService,
     };
   } else {
@@ -58,7 +62,8 @@ export const initServices = (
       VaultService: getVaultService(chain, getChainConfig),
       VariableRateService: getVariableRateService(chain, getChainConfig),
       StorageService: getStorageService(),
-      WalletBalanceService: getWalletBalanceService(chain),
+      WalletBalanceService: getWalletBalanceService(chain, getConfig),
+      PoolBalanceService: getPoolBalanceService(chain, getConfig),
       ERC20TokenServiceGetter: getERC20TokenService,
     };
   }
