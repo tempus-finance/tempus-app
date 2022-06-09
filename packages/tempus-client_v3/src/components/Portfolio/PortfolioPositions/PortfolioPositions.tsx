@@ -1,9 +1,9 @@
 import { FC, useCallback, useMemo } from 'react';
-import { usePoolList, useSelectedChain, useTokenBalances } from '../../../hooks';
+import { useSelectedChain, useUserDepositedPools, useTokenBalances } from '../../../hooks';
 import { PoolCardData, PoolCardGrid } from '../../shared';
 
 const PortfolioPositions: FC = () => {
-  const tempusPools = usePoolList();
+  const tempusPools = useUserDepositedPools();
   const chain = useSelectedChain();
   const balances = useTokenBalances();
 

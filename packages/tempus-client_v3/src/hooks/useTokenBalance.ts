@@ -133,7 +133,7 @@ export const [useTokenBalance] = bind((tokenAddress: string, tokenChain: Chain |
 
 let streamSubscription: Subscription = stream$.subscribe();
 
-const tokenBalanceMap$ = combineLatest(
+export const tokenBalanceMap$ = combineLatest(
   [...tokenBalanceDataMap.values()].map(tokenBalanceData => tokenBalanceData.subject$),
 ).pipe(
   map(tokenBalancesData => {
