@@ -1,4 +1,5 @@
 import { Contract, ContractTransaction } from 'ethers';
+import { from, Observable } from 'rxjs';
 import { TempusController as TempusControllerV1 } from '../abi/TempusControllerV1Typings';
 import TempusControllerV1ABI from '../abi/TempusControllerV1ABI.json';
 import { Decimal } from '../datastructures';
@@ -17,7 +18,7 @@ export class TempusControllerV1Contract {
     this.contract = new Contract(this.contractAddress, TempusControllerV1ABI, provider) as TempusControllerV1;
   }
 
-  async exitAmmGiveLpAndRedeem(
+  exitAmmGiveLpAndRedeem(
     ammAddress: string,
     lpTokensAmount: Decimal,
     capitalsAmount: Decimal,
@@ -29,19 +30,21 @@ export class TempusControllerV1Contract {
     maxSlippage: Decimal,
     toBackingToken: boolean,
     deadline: Decimal,
-  ): Promise<ContractTransaction> {
-    return this.contract.exitAmmGivenLpAndRedeem(
-      ammAddress,
-      lpTokensAmount.toBigNumber(),
-      capitalsAmount.toBigNumber(),
-      yieldsAmount.toBigNumber(),
-      minCapitalsStaked.toBigNumber(),
-      minYieldsStaked.toBigNumber(),
-      maxLeftoverShares.toBigNumber(),
-      yieldsRate.toBigNumber(),
-      maxSlippage.toBigNumber(),
-      toBackingToken,
-      deadline.toBigNumber(),
+  ): Observable<ContractTransaction> {
+    return from(
+      this.contract.exitAmmGivenLpAndRedeem(
+        ammAddress,
+        lpTokensAmount.toBigNumber(),
+        capitalsAmount.toBigNumber(),
+        yieldsAmount.toBigNumber(),
+        minCapitalsStaked.toBigNumber(),
+        minYieldsStaked.toBigNumber(),
+        maxLeftoverShares.toBigNumber(),
+        yieldsRate.toBigNumber(),
+        maxSlippage.toBigNumber(),
+        toBackingToken,
+        deadline.toBigNumber(),
+      ),
     );
   }
 }
