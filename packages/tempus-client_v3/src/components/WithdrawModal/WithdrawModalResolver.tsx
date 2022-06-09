@@ -28,7 +28,12 @@ export const WithdrawModalResolver: FC = () => {
 
   // Don't show anything until rates are loaded,
   // we might want to show skeleton loading boxes for things that are still loading
-  if (!backingTokenRate || !yieldBearingTokenRate || !poolBalanceData?.balance) {
+  if (
+    !backingTokenRate ||
+    !yieldBearingTokenRate ||
+    !poolBalanceData?.balanceInBackingToken ||
+    !poolBalanceData.balanceInYieldBearingToken
+  ) {
     return null;
   }
 
@@ -42,7 +47,7 @@ export const WithdrawModalResolver: FC = () => {
           address: poolData.backingTokenAddress,
           rate: backingTokenRate,
           ticker: poolData.backingToken,
-          balance: poolBalanceData.balance,
+          balance: poolBalanceData.balanceInBackingToken,
         },
         {
           precision: poolData.tokenPrecision.yieldBearingToken,
@@ -50,7 +55,7 @@ export const WithdrawModalResolver: FC = () => {
           address: poolData.yieldBearingTokenAddress,
           rate: yieldBearingTokenRate,
           ticker: poolData.yieldBearingToken,
-          balance: poolBalanceData.balance,
+          balance: poolBalanceData.balanceInYieldBearingToken,
         },
       ]}
       onClose={() => {}}

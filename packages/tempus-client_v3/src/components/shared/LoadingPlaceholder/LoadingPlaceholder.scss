@@ -36,7 +36,7 @@ $animation-duration: 2s;
       .tc__loading-placeholder__circle,
       .tc__loading-placeholder__bar {
         height: $height;
-        border-radius: $height / 2;
+        border-radius: calc($height / 2);
       }
     }
   }

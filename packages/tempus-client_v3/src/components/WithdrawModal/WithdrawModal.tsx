@@ -1,6 +1,6 @@
 import { FC, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ChainConfig, Decimal, DecimalUtils, Ticker, ZERO } from 'tempus-core-services';
+import { ChainConfig, DecimalUtils, Ticker } from 'tempus-core-services';
 import { TokenMetadataProp } from '../../interfaces';
 import CurrencyInputModal, { CurrencyInputModalInfoRow } from '../CurrencyInputModal';
 import { ActionButtonState } from '../shared';
