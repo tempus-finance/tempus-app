@@ -46,6 +46,7 @@ const defaultProps: WithdrawModalProps = {
       address: '0x0',
       rate: new Decimal(3500),
       ticker: 'ETH',
+      balance: new Decimal(100),
     },
   ],
 };
@@ -55,8 +56,9 @@ const singleToken: TokenMetadataProp = [
     precision: 18,
     precisionForUI: 4,
     address: '0x0',
-    rate: new Decimal(3500),
+    rate: new Decimal(1),
     ticker: 'ETH',
+    balance: new Decimal(100),
   },
 ];
 
@@ -65,15 +67,17 @@ const multipleTokens: TokenMetadataProp = [
     precision: 18,
     precisionForUI: 4,
     address: '0x0',
-    rate: new Decimal(3500),
+    rate: new Decimal(1),
     ticker: 'ETH',
+    balance: new Decimal(100),
   },
   {
     precision: 18,
     precisionForUI: 4,
     address: '0x1',
-    rate: new Decimal(3500),
+    rate: new Decimal(1),
     ticker: 'stETH',
+    balance: new Decimal(200),
   },
 ];
 
@@ -124,7 +128,7 @@ describe('WithdrawModal', () => {
     const currencyInput = getByRole('textbox');
 
     expect(currencyInput).not.toBeNull();
-    expect(currencyInput).toHaveValue('101'); // TODO: Mock balance fetching
+    expect(currencyInput).toHaveValue('200'); // TODO: Mock balance fetching
   });
 
   it('withdraws on action button click', async () => {
