@@ -1,0 +1,21 @@
+.tc__portfolio-positions {
+  display: flex;
+  flex-grow: 1;
+}
+
+.tc__portfolio-positions__empty {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  & > div:first-child {
+    margin-bottom: 4px;
+  }
+
+  & > .tc__actionButton {
+    width: 169px;
+    margin-top: 45px;
+  }
+}

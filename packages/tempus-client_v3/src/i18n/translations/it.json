@@ -84,6 +84,11 @@
     "titleTotalPortfolioValue": "",
     "titleTotalYieldEarned": ""
   },
+  "PortfolioPositions": {
+    "titleNoPositions": "",
+    "descriptionNoPositions": "",
+    "buttonBrowseMarkets": ""
+  },
   "PortfolioSubheader": {
     "tabOverview": "",
     "tabPositions": ""
