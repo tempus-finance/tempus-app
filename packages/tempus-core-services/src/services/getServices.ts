@@ -74,3 +74,11 @@ export const initServices = (
 
 export const getServices = (chain: Chain): ServiceMap | null =>
   serviceMap.has(chain) ? (serviceMap.get(chain) as ServiceMap) : null;
+
+export const getDefinedServices = (chain: Chain) => {
+  const services = getServices(chain);
+  if (!services) {
+    throw new Error(`Cannot get service map for ${chain}`);
+  }
+  return services;
+};
