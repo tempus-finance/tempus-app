@@ -8,13 +8,13 @@ describe('useTokenApprove', () => {
   it('returns the default status', async () => {
     const { result } = renderHook(() => useTokenApprove());
 
-    expect(result.current.approveTokenStatus).toStrictEqual({ pending: true });
+    expect(result.current.approveTokenStatus).toStrictEqual(null);
   });
 
   it('returns a single token approval status', async () => {
     const { result, waitForNextUpdate } = renderHook(() => useTokenApprove());
 
-    expect(result.current.approveTokenStatus).toStrictEqual({ pending: true });
+    expect(result.current.approveTokenStatus).toStrictEqual(null);
 
     act(() => {
       result.current.approveToken({
@@ -43,7 +43,7 @@ describe('useTokenApprove', () => {
   it('returns a sequence of token approval status', async () => {
     const { result, waitForNextUpdate } = renderHook(() => useTokenApprove());
 
-    expect(result.current.approveTokenStatus).toStrictEqual({ pending: true });
+    expect(result.current.approveTokenStatus).toStrictEqual(null);
 
     act(() => {
       result.current.approveToken({
