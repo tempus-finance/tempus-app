@@ -153,7 +153,7 @@ const DepositModal: FC<DepositModalProps> = props => {
         });
       }
 
-      return approveTokenStatus.contractTransaction?.hash || '0x0';
+      return approveTokenStatus?.contractTransaction?.hash || '0x0';
     },
     [approveToken, approveTokenStatus, chainConfig, token, signer],
   );
@@ -193,7 +193,7 @@ const DepositModal: FC<DepositModalProps> = props => {
       }
       actionButtonLabels={actionButtonLabels}
       actionButtonState={actionButtonState}
-      onTransactionStart={approveTokenStatus.success ? deposit : approveDeposit}
+      onTransactionStart={approveTokenStatus?.success ? deposit : approveDeposit}
       onMaturityChange={handleMaturityChange}
       onAmountChange={setTokenAmountForYieldAtMaturity}
       onCurrencyUpdate={handleCurrencyChange}

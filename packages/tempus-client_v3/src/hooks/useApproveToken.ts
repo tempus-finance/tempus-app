@@ -66,10 +66,10 @@ const tokenApproveStatus$ = approveToken$.pipe(
   }),
 );
 
-const [approveTokenStatus] = bind<ApproveTokenStatus>(tokenApproveStatus$, { pending: true });
+const [approveTokenStatus] = bind<ApproveTokenStatus | null>(tokenApproveStatus$, null);
 
 export const useTokenApprove = (): {
-  approveTokenStatus: ApproveTokenStatus;
+  approveTokenStatus: ApproveTokenStatus | null;
   approveToken: (payload: ApproveTokenRequestEnhanced) => void;
 } => ({
   approveTokenStatus: approveTokenStatus(),
