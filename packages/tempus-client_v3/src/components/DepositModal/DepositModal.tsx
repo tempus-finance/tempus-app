@@ -1,12 +1,14 @@
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ChainConfig, chainIdToChainName, Ticker, ZERO } from 'tempus-core-services';
+import { ChainConfig, Decimal, chainIdToChainName, Ticker, ZERO } from 'tempus-core-services';
 import { dateFormatter } from '../../constants';
 import {
   setPoolForYieldAtMaturity,
   setTokenAmountForYieldAtMaturity,
   useDepositModalData,
   useTokenBalances,
+  useTokenApprove,
+  useSigner,
 } from '../../hooks';
 import { MaturityTerm, TokenMetadata, TokenMetadataProp } from '../../interfaces';
 import { ModalProps } from '../shared/Modal/Modal';
@@ -25,14 +27,17 @@ export interface DepositModalProps extends ModalProps {
   chainConfig?: ChainConfig;
 }
 
+export const TIMEOUT_FROM_SUCCESS_TO_DEFAULT_IN_MS = 3000;
+
 const DepositModal: FC<DepositModalProps> = props => {
   const { tokens, open, onClose, poolStartDate, maturityTerms, chainConfig } = props;
   const [maturityTerm, setMaturityTerm] = useState<MaturityTerm | undefined>();
   const [token, setToken] = useState<TokenMetadata | undefined>();
-  const [approved, setApproved] = useState(false);
   const [actionButtonState, setActionButtonState] = useState<ActionButtonState>('default');
   const balances = useTokenBalances();
+  const { approveToken, approveTokenStatus } = useTokenApprove();
   const { t } = useTranslation();
+  const [signer] = useSigner();
 
   const useDepositModalProps = useDepositModalData();
   const modalProps = useDepositModalProps();
@@ -43,7 +48,7 @@ const DepositModal: FC<DepositModalProps> = props => {
       loading: '',
       success: '',
     },
-    action: approved
+    action: approveTokenStatus?.success
       ? {
           default: t('DepositModal.labelExecuteDefault'),
           loading: t('DepositModal.labelExecuteLoading'),
@@ -67,6 +72,24 @@ const DepositModal: FC<DepositModalProps> = props => {
       setToken(tokens[0]);
     }
   }, [tokens]);
+
+  useEffect(() => {
+    if (approveTokenStatus) {
+      if (approveTokenStatus.pending) {
+        setActionButtonState('loading');
+      }
+
+      if (approveTokenStatus.success) {
+        setActionButtonState('success');
+
+        setTimeout(() => {
+          setActionButtonState('default');
+        }, TIMEOUT_FROM_SUCCESS_TO_DEFAULT_IN_MS);
+      }
+    } else {
+      setActionButtonState('default');
+    }
+  }, [approveTokenStatus]);
 
   const balance = useMemo(() => {
     const chain = chainConfig?.chainId ? chainIdToChainName(chainConfig?.chainId) : undefined;
@@ -114,23 +137,28 @@ const DepositModal: FC<DepositModalProps> = props => {
     [tokens],
   );
 
-  const approveDeposit = useCallback(() => {
-    // TODO: Implement approve deposit function
-    setActionButtonState('loading');
+  const approveDeposit = useCallback(
+    async (amount: Decimal) => {
+      setActionButtonState('loading');
+      const chain = chainConfig?.chainId ? chainIdToChainName(chainConfig?.chainId) : undefined;
+      const spenderAddress = chainConfig?.tempusControllerContract;
 
-    setTimeout(() => {
-      setActionButtonState('success');
+      if (chain && spenderAddress && signer) {
+        approveToken({
+          chain,
+          tokenAddress: String(token?.address),
+          spenderAddress,
+          amount,
+          signer,
+        });
+      }
 
-      setTimeout(() => {
-        setActionButtonState('default');
-        setApproved(true);
-      }, 3000);
-    }, 5000);
+      return approveTokenStatus.contractTransaction?.hash || '0x0';
+    },
+    [approveToken, approveTokenStatus, chainConfig, token, signer],
+  );
 
-    return '0x0';
-  }, []);
-
-  const deposit = useCallback(() => {
+  const deposit = useCallback(async () => {
     // TODO: Implement deposit function
     setActionButtonState('loading');
 
@@ -138,7 +166,7 @@ const DepositModal: FC<DepositModalProps> = props => {
       setActionButtonState('success');
     }, 5000);
 
-    return '0x0';
+    return Promise.resolve('0x0');
   }, []);
 
   return (
@@ -165,7 +193,7 @@ const DepositModal: FC<DepositModalProps> = props => {
       }
       actionButtonLabels={actionButtonLabels}
       actionButtonState={actionButtonState}
-      onTransactionStart={approved ? deposit : approveDeposit}
+      onTransactionStart={approveTokenStatus.success ? deposit : approveDeposit}
       onMaturityChange={handleMaturityChange}
       onAmountChange={setTokenAmountForYieldAtMaturity}
       onCurrencyUpdate={handleCurrencyChange}

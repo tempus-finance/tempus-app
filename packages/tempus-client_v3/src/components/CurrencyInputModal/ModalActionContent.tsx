@@ -23,7 +23,7 @@ interface ModalActionContentProps {
   actionButtonLabels: ActionButtonLabels;
   actionButtonState: ActionButtonState;
   onAmountChange?: (amount: Decimal) => void;
-  onTransactionStart: (amount: Decimal) => string;
+  onTransactionStart: (amount: Decimal) => Promise<string>;
   onCurrencyUpdate?: (currency: Ticker) => void;
 }
 
@@ -58,10 +58,11 @@ const ModalActionContent: FC<ModalActionContentProps> = props => {
     [onAmountChange],
   );
 
-  const handleActionButtonClick = useCallback(() => {
+  const handleActionButtonClick = useCallback(async () => {
     // TODO: this is a mockup, replace with real implementation
     setTransactionProgress(20);
-    setTransactionHash(onTransactionStart(amountDecimal));
+    const result = await onTransactionStart(amountDecimal);
+    setTransactionHash(result);
   }, [amountDecimal, onTransactionStart]);
 
   return (

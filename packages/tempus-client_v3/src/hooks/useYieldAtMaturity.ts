@@ -1,7 +1,7 @@
 import { bind } from '@react-rxjs/core';
 import { createSignal } from '@react-rxjs/utils';
 import { combineLatest, map, mergeMap, of } from 'rxjs';
-import { Chain, Decimal, getServices, StatisticsService, TempusPool, ZERO } from 'tempus-core-services';
+import { Decimal, getServices, StatisticsService, TempusPool, ZERO } from 'tempus-core-services';
 
 export const [poolForYieldAtMaturity$, setPoolForYieldAtMaturity] = createSignal<TempusPool>();
 export const [tokenAmountForYieldAtMaturity$, setTokenAmountForYieldAtMaturity] = createSignal<Decimal>();
@@ -12,7 +12,7 @@ const yieldAtMaturity$ = combineLatest([poolForYieldAtMaturity$, tokenAmountForY
       return of(ZERO);
     }
 
-    return (getServices(tempusPool.chain as Chain)?.StatisticsService as StatisticsService)
+    return (getServices(tempusPool.chain)?.StatisticsService as StatisticsService)
       .estimatedDepositAndFix(tempusPool, tokenAmount, true)
       .pipe(map(principals => principals.sub(tokenAmount)));
   }),

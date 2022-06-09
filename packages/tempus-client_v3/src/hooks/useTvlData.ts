@@ -16,7 +16,7 @@ import {
   Subscription,
   tap,
 } from 'rxjs';
-import { getServices, Decimal, ZERO, StatisticsService, TempusPool, Chain } from 'tempus-core-services';
+import { getDefinedServices, Decimal, ZERO, TempusPool } from 'tempus-core-services';
 import { POLLING_INTERVAL_IN_MS, DEBOUNCE_IN_MS } from '../constants';
 import { poolList$ } from './usePoolList';
 import { servicesLoaded$ } from './useServicesLoaded';
@@ -34,19 +34,25 @@ export const poolTvls$ = new BehaviorSubject<PoolTvlMap>(DEFAULT_VALUE);
 
 const fetchData = (tempusPool: TempusPool): Observable<PoolTvlMap> => {
   const { chain, address, backingToken } = tempusPool;
-  const poolTvl$ = (getServices(chain as Chain)?.StatisticsService as StatisticsService).totalValueLockedUSD(
-    chain as Chain,
-    address,
-    backingToken,
-  );
-  return poolTvl$.pipe(
-    map(
-      tvl =>
-        ({
-          [`${chain}-${address}`]: tvl,
-        } as PoolTvlMap),
-    ),
-  );
+
+  try {
+    const tvl$ = getDefinedServices(chain).StatisticsService.totalValueLockedUSD(chain, address, backingToken);
+    return tvl$.pipe(
+      map(
+        tvl =>
+          ({
+            [`${chain}-${address}`]: tvl,
+          } as PoolTvlMap),
+      ),
+      catchError(error => {
+        console.error(`useTvlData - Fail to get the TVL for pool ${address} on ${chain}`, error);
+        return of(DEFAULT_VALUE);
+      }),
+    );
+  } catch (error) {
+    console.error(`useTvlData - Fail to get the TVL for pool ${address} on ${chain}`, error);
+    return of(DEFAULT_VALUE);
+  }
 };
 
 // stream$ for periodic polling to fetch data
@@ -75,10 +81,6 @@ const stream$ = merge(periodicStream$, eventStream$).pipe(
     {} as PoolTvlMap,
   ),
   debounce<PoolTvlMap>(() => interval(DEBOUNCE_IN_MS)),
-  catchError(error => {
-    console.error('useTvlData - getTempusPoolTVL', error);
-    return of(DEFAULT_VALUE);
-  }),
   tap(poolTvls => poolTvls$.next(poolTvls)),
 );
 

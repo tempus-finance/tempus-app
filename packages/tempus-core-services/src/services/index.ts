@@ -33,4 +33,4 @@ export type {
   PoolBalanceChangedEvent,
   PoolBalanceChangedEventListener,
 } from './VaultService';
-export { initServices, getServices } from './getServices';
+export { initServices, getServices, getDefinedServices } from './getServices';

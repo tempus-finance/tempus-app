@@ -55,6 +55,7 @@ export {
   getERC20TokenService,
   initServices,
   getServices,
+  getDefinedServices,
 } from './services';
 
 export {

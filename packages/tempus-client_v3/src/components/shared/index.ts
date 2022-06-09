@@ -38,6 +38,7 @@ import InfoTooltip from './InfoTooltip';
 import PoolsHeading from './PoolsHeading';
 import PoolPositionCard from './PoolPositionCard';
 import { Table, TableHead, TableHeadCell, TableBody, TableBodyCell, TableRow } from './Table';
+import PoolCardGrid from './PoolCardGrid';
 
 export * from './ActionButton';
 export * from './Chart';
@@ -46,6 +47,7 @@ export * from './Icon';
 export * from './Logo';
 export * from './Loading';
 export * from './NavSubheader';
+export * from './PoolCardGrid';
 export * from './Radio';
 export * from './Tabs';
 export * from './PoolCard';
@@ -58,6 +60,7 @@ export {
   CurrencyInput,
   FormattedDate,
   PoolCard,
+  PoolCardGrid,
   ProgressBar,
   Icon,
   IconButton,

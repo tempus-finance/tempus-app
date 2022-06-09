@@ -5,7 +5,7 @@ import { getConfigManager } from '../../config/getConfigManager';
 import { useTokenBalances } from '../../hooks';
 import I18nProvider from '../../i18n/I18nProvider';
 import { MaturityTerm, TokenMetadataProp } from '../../interfaces';
-import DepositModal, { DepositModalProps } from './DepositModal';
+import DepositModal, { DepositModalProps, TIMEOUT_FROM_SUCCESS_TO_DEFAULT_IN_MS } from './DepositModal';
 
 const multipleTokens: TokenMetadataProp = [
   {
@@ -55,6 +55,28 @@ const subject = (props: DepositModalProps) =>
     </BrowserRouter>,
   );
 
+const mockSetSigner = jest.fn();
+const mockApproveToken = jest.fn();
+
+const mockApproveTokenStatusPending = {
+  pending: true,
+};
+
+const mockApproveTokenStatusDone = {
+  pending: false,
+  success: true,
+  contractTransaction: {
+    hash: '0x123',
+  },
+  request: {
+    chain: 'ethereum',
+    tokenAddress: '0x001',
+    amount: new Decimal('9'),
+  },
+};
+
+let mockApproveStatus = {};
+
 jest.mock('@web3-onboard/ledger', () =>
   jest.fn().mockImplementation(() => () => ({
     label: '',
@@ -89,6 +111,11 @@ jest.mock('@web3-onboard/react', () => ({
 jest.mock('../../hooks', () => ({
   ...jest.requireActual('../../hooks'),
   useTokenBalances: jest.fn(),
+  useSigner: jest.fn().mockImplementation(() => [{ signerProperty: 'xyz' }, mockSetSigner]),
+  useTokenApprove: () => ({
+    approveToken: mockApproveToken,
+    approveTokenStatus: mockApproveStatus,
+  }),
 }));
 
 describe('DepositModal', () => {
@@ -169,7 +196,7 @@ describe('DepositModal', () => {
     expect(currencyInput).toHaveValue('101'); // TODO: Mock balance fetching
   });
 
-  it('approves deposit and deposits on action button click', async () => {
+  it('enables approve button on amount change', async () => {
     const configManager = getConfigManager();
 
     jest.useFakeTimers();
@@ -199,41 +226,79 @@ describe('DepositModal', () => {
 
     expect(actionButton).toBeEnabled();
 
-    // approve deposit
-    fireEvent.click(actionButton as Element);
+    jest.useRealTimers();
+  });
 
+  it('disables the `Approve` button once clicked upon and enables it again on success', async () => {
+    const configManager = getConfigManager();
+
+    const props = {
+      ...defaultProps,
+      tokens: multipleTokens,
+      maturityTerms: singleMaturityTerm,
+      chainConfig: configManager.getChainConfig('ethereum'),
+    };
+
+    jest.useFakeTimers();
+
+    const wrapper = subject(props);
+    const { container } = wrapper;
+
+    skipPreview(container);
+
+    const actionButton = container.querySelector('.tc__currency-input-modal__action-container .tc__actionButton');
+    const currencyInput = container.querySelector('input');
+
+    expect(actionButton).not.toBeNull();
     expect(actionButton).toBeDisabled();
-    expect(actionButton).toHaveClass('tc__actionButton-border-primary-large-loading');
 
-    // wait for transaction to finish
+    expect(currencyInput).not.toBeNull();
+
+    fireEvent.change(currencyInput as HTMLInputElement, { target: { value: '1' } });
+
     act(() => {
-      jest.advanceTimersByTime(5000);
-    });
-
-    expect(actionButton).toBeDisabled();
-    expect(actionButton).toHaveClass('tc__actionButton-border-primary-large-success');
-
-    // wait for button switch from approve deposit to deposit
-    act(() => {
-      jest.advanceTimersByTime(3000);
+      jest.advanceTimersByTime(300);
     });
 
     expect(actionButton).toBeEnabled();
-    expect(actionButton).toHaveClass('tc__actionButton-border-primary-large');
 
-    // deposit
+    // click on approve
+
     fireEvent.click(actionButton as Element);
+
+    mockApproveStatus = mockApproveTokenStatusPending;
+    wrapper.rerender(
+      <BrowserRouter>
+        <I18nProvider>
+          <DepositModal {...props} />
+        </I18nProvider>
+      </BrowserRouter>,
+    );
 
     expect(actionButton).toBeDisabled();
     expect(actionButton).toHaveClass('tc__actionButton-border-primary-large-loading');
 
-    // wait for transaction to finish
-    act(() => {
-      jest.advanceTimersByTime(5000);
-    });
+    mockApproveStatus = mockApproveTokenStatusDone;
+
+    wrapper.rerender(
+      <BrowserRouter>
+        <I18nProvider>
+          <DepositModal {...props} />
+        </I18nProvider>
+      </BrowserRouter>,
+    );
 
     expect(actionButton).toBeDisabled();
     expect(actionButton).toHaveClass('tc__actionButton-border-primary-large-success');
+
+    act(() => {
+      jest.advanceTimersByTime(TIMEOUT_FROM_SUCCESS_TO_DEFAULT_IN_MS);
+    });
+
+    await act(async () => {
+      await expect(actionButton).toBeEnabled();
+      await expect(actionButton).toHaveClass('tc__actionButton-border-primary-large');
+    });
 
     jest.useRealTimers();
   });
