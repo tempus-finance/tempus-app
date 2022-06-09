@@ -49,7 +49,7 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
     [tokens],
   );
 
-  const withdraw = useCallback(() => {
+  const withdraw = useCallback(async () => {
     // TODO: Implement withdraw function
     setActionButtonState('loading');
 
@@ -57,7 +57,7 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
       setActionButtonState('success');
     }, 5000);
 
-    return '0x0';
+    return Promise.resolve('0x0');
   }, []);
 
   return (

@@ -35,7 +35,7 @@ jest.mock('@web3-onboard/react', () => ({
   useWallets: jest.fn().mockReturnValue([]),
 }));
 
-const onTransactionStartMock = jest.fn<string, [Decimal]>();
+const onTransactionStartMock = jest.fn<Promise<string>, [Decimal]>().mockResolvedValue('someResult');
 const onAmountChangeMock = jest.fn<void, [Decimal]>();
 
 const singleCurrencyUsdRates = new Map<Ticker, Decimal>();
@@ -64,7 +64,7 @@ const defaultProps: CurrencyInputModalProps = {
     },
   ],
   actionButtonLabels: { action: { default: 'Action', loading: 'Loading', success: 'Success' } },
-  onTransactionStart: () => '0x0',
+  onTransactionStart: () => Promise.resolve('someString'),
 };
 
 const subject = (props: CurrencyInputModalProps) => render(<CurrencyInputModal {...props} />);
@@ -87,7 +87,7 @@ describe('CurrencyInputModal', () => {
     expect(container).toMatchSnapshot();
   });
 
-  it('enables action button click when appropriate amount is entered', () => {
+  it('enables action button click when appropriate amount is entered', async () => {
     jest.useFakeTimers();
 
     const { container, getByRole } = subject({
@@ -130,8 +130,10 @@ describe('CurrencyInputModal', () => {
 
     fireEvent.click(actionButton as Element);
 
-    expect(onTransactionStartMock).toBeCalledTimes(1);
-    expect(onTransactionStartMock).toBeCalledWith(new Decimal('1.234'));
+    await act(async () => {
+      await expect(onTransactionStartMock).toBeCalledTimes(1);
+      await expect(onTransactionStartMock).toBeCalledWith(new Decimal('1.234'));
+    });
 
     expect(actionButton).toMatchSnapshot();
     expect(currencyInput).toMatchSnapshot();
