@@ -2,7 +2,7 @@ import { render } from '@testing-library/react';
 import FormattedDate, { FormattedDateProps } from './FormattedDate';
 
 const defaultProps: FormattedDateProps = {
-  date: new Date(2022, 1, 4),
+  date: new Date(Date.UTC(2022, 1, 4)),
 };
 
 const subject = (props: FormattedDateProps) => render(<FormattedDate {...props} />);

@@ -21,11 +21,11 @@ const style = {
 const maturityTerms: MaturityTerm[] = [
   {
     apr: new Decimal(0.074),
-    date: new Date(2022, 9, 1),
+    date: new Date(Date.UTC(2022, 9, 1)),
   },
   {
     apr: new Decimal(0.131),
-    date: new Date(2022, 11, 1),
+    date: new Date(Date.UTC(2022, 11, 1)),
   },
 ];
 
@@ -76,7 +76,7 @@ const Template: ComponentStory<typeof DepositModal> = () => {
             balance: new Decimal(15),
           },
         ]}
-        poolStartDate={new Date(2022, 3, 1)}
+        poolStartDate={new Date(Date.UTC(2022, 3, 1))}
         maturityTerms={maturityTerms}
         open={modalOpen}
         onClose={onModalClose}

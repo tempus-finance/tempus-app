@@ -16,14 +16,11 @@ describe('PortfolioYieldChart', () => {
   });
 
   it('renders portfolio yield chart', () => {
-    const originalDateNow = Date.now;
-    Date.now = () => new Date(2022, 4, 15).getTime();
+    jest.spyOn(Date, 'now').mockReturnValue(new Date(2022, 4, 15).getTime());
 
     const { container } = subject();
 
     expect(container).not.toBeNull();
     expect(container).toMatchSnapshot();
-
-    Date.now = originalDateNow;
   });
 });

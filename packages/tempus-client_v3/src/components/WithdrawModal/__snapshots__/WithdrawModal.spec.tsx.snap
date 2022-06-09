@@ -70,7 +70,7 @@ exports[`WithdrawModal renders a withdraw modal 1`] = `
           class="tc__currency-input-modal__description"
           style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
         >
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+          Select the amount you like to withdraw.
         </div>
         <div
           class="tc__currency-input"
@@ -151,13 +151,13 @@ exports[`WithdrawModal renders a withdraw modal 1`] = `
                   class="tc__currency-input__fiat-amount"
                 >
                   <div
-                    style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(122, 122, 122); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+                    style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(122, 122, 122); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
                   >
                     $0.00
                   </div>
                   <div
                     class="tc__currency-input__fiat-amount-currency"
-                    style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(122, 122, 122); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+                    style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(122, 122, 122); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
                   >
                     USD
                   </div>
@@ -237,23 +237,34 @@ exports[`WithdrawModal renders a withdraw modal 1`] = `
             class="tc__currency-input-modal__info-row"
           >
             <div
+              class="tc__currency-input-modal__info-row-label"
               style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
             >
               Available for Withdraw
             </div>
             <div
               class="tc__currency-input-modal__info-row-value"
+              style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
             >
-              <div
-                style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
-              >
-                100
-              </div>
-              <div
-                style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
-              >
-                ETH
-              </div>
+              100
+            </div>
+            <div
+              class="tc__currency-input-modal__info-row-currency"
+              style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+            >
+              ETH
+            </div>
+            <div
+              class="tc__currency-input-modal__info-row-fiat-value"
+              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+            >
+              $350,000.00
+            </div>
+            <div
+              class="tc__currency-input-modal__info-row-fiat"
+              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+            >
+              USD
             </div>
           </div>
         </div>
@@ -268,11 +279,6 @@ exports[`WithdrawModal renders a withdraw modal 1`] = `
             <div
               class="tc__currency-input-modal__transaction-info"
             >
-              <div
-                style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
-              >
-                Fees & transaction info
-              </div>
               <svg
                 class="tc__icon tc__icon-info-bordered"
                 fill="none"
@@ -296,6 +302,11 @@ exports[`WithdrawModal renders a withdraw modal 1`] = `
                   fill="#222222"
                 />
               </svg>
+              <div
+                style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+              >
+                Fees & transaction info
+              </div>
             </div>
           </button>
           <button

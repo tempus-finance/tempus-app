@@ -5,12 +5,13 @@ import Wallet from '../Wallet';
 
 interface ModalPreviewContentProps {
   actionButtonLabels: ActionButtonLabels;
+  actionButtonDisabled?: boolean;
   onActionButtonClick: () => void;
   onConnectWalletClick?: () => void;
 }
 
 const ModalPreviewContent: FC<ModalPreviewContentProps> = props => {
-  const { actionButtonLabels, onActionButtonClick, onConnectWalletClick, children } = props;
+  const { actionButtonLabels, actionButtonDisabled, onActionButtonClick, onConnectWalletClick, children } = props;
   const walletAddress = useWalletAddress();
 
   return (
@@ -24,7 +25,7 @@ const ModalPreviewContent: FC<ModalPreviewContentProps> = props => {
             variant="primary"
             size="large"
             fullWidth
-            state="default"
+            state={actionButtonDisabled ? 'disabled' : 'default'}
           />
         ) : (
           <Wallet

@@ -74,7 +74,8 @@ describe('usePoolBalances', () => {
 
     await waitForNextUpdate();
 
-    expect(result.current?.balance?.toString()).toEqual('500');
+    expect(result.current?.balanceInBackingToken?.toString()).toEqual('100');
+    expect(result.current?.balanceInYieldBearingToken?.toString()).toEqual('100');
     expect(result.current?.address).toEqual('1');
     expect(result.current?.chain).toEqual('ethereum');
   });
@@ -95,7 +96,8 @@ describe('usePoolBalances', () => {
     expect(result.current).toEqual({
       address: '1',
       chain: 'ethereum',
-      balance: null,
+      balanceInBackingToken: null,
+      balanceInYieldBearingToken: null,
     });
     try {
       await waitForNextUpdate();

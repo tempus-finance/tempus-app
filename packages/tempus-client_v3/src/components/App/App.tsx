@@ -68,8 +68,9 @@ const App = () => {
                 element={<PoolPositionModalResolver />}
               />
               <Route path="/withdraw/:chain/:ticker/:protocol/:poolAddress" element={<WithdrawModalResolver />} />
-              <Route path="/pool/:chain/:ticker/:protocol" element={<DepositModalResolver />} />
-              <Route path="/" element={<Markets />} />
+              <Route path="/" element={<Markets />}>
+                <Route path="pool/:chain/:ticker/:protocol" element={<DepositModalResolver />} />
+              </Route>
             </Routes>
           </div>
         </>

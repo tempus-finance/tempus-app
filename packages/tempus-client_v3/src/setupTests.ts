@@ -4,7 +4,6 @@
 // learn more: https://github.com/testing-library/jest-dom
 import '@testing-library/jest-dom/extend-expect';
 import { of as mockOf, delay as mockDelay } from 'rxjs';
-import { BigNumber as mockBigNumber } from 'ethers';
 import { Chain, Decimal as MockDecimal, TempusPool, Ticker, ZERO as mockZERO } from 'tempus-core-services';
 
 export { mockConfig, pool1, pool2, pool3, pool4, pool5 } from './mocks/config/mockConfig';
@@ -68,11 +67,26 @@ jest.mock('tempus-core-services', () => ({
       estimatedMintedShares: jest.fn(),
     },
     TempusPoolService: {
-      currentInterestRate: jest.fn().mockImplementation(() => mockBigNumber.from(1)),
-      numAssetsPerYieldToken: jest.fn().mockImplementation(() => mockBigNumber.from(1)),
+      currentInterestRate: jest.fn().mockResolvedValue(new MockDecimal(1)),
+      numAssetsPerYieldToken: jest.fn().mockResolvedValue(new MockDecimal(1)),
     },
     WalletBalanceService: {
       getTokenBalance: mockGetTokenBalance,
     },
+    PoolBalanceService: {
+      getPoolBalance: jest.fn().mockResolvedValue(new MockDecimal(100)),
+    },
+    ERC20TokenServiceGetter: jest.fn().mockImplementation(() => ({
+      approve: jest.fn().mockImplementation(() =>
+        Promise.resolve({
+          hash: '0x00',
+        }),
+      ),
+    })),
   })),
+}));
+
+jest.mock('@ethersproject/providers', () => ({
+  ...jest.requireActual('@ethersproject/providers'),
+  JsonRpcSigner: jest.fn(),
 }));

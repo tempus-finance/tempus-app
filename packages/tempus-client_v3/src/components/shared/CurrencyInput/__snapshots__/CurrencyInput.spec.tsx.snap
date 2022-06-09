@@ -348,7 +348,7 @@ exports[`CurrencyInput resets the input field when currency is changed 1`] = `
 
 exports[`CurrencyInput updates the USD value based on less precise USD rate 1`] = `
 <div
-  style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(71, 67, 80); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+  style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
 >
   $430,500.00
 </div>
@@ -356,7 +356,7 @@ exports[`CurrencyInput updates the USD value based on less precise USD rate 1`] 
 
 exports[`CurrencyInput updates the USD value based on same-precision USD rate 1`] = `
 <div
-  style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(71, 67, 80); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+  style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
 >
   $430,500.00
 </div>
@@ -392,7 +392,7 @@ exports[`CurrencyInput updates the input field when a percentage button is click
 
 exports[`CurrencyInput updates the input field when a percentage button is clicked 3`] = `
 <div
-  style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(71, 67, 80); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+  style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
 >
   $87,500.00
 </div>
@@ -428,7 +428,7 @@ exports[`CurrencyInput updates the input field when a percentage button is click
 
 exports[`CurrencyInput updates the input field when a percentage button is clicked 6`] = `
 <div
-  style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(71, 67, 80); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+  style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
 >
   $175,000.00
 </div>
@@ -464,7 +464,7 @@ exports[`CurrencyInput updates the input field when a percentage button is click
 
 exports[`CurrencyInput updates the input field when a percentage button is clicked 9`] = `
 <div
-  style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(71, 67, 80); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+  style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
 >
   $262,500.00
 </div>
@@ -500,7 +500,7 @@ exports[`CurrencyInput updates the input field when a percentage button is click
 
 exports[`CurrencyInput updates the input field when a percentage button is clicked 12`] = `
 <div
-  style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(71, 67, 80); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+  style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
 >
   $350,000.00
 </div>

@@ -1,10 +1,10 @@
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
 import { BigNumber, CallOverrides, Contract, ethers } from 'ethers';
 import { catchError, combineLatest, from, map, mergeMap, Observable, of, throwError } from 'rxjs';
-import { Stats } from '../abi/Stats';
-import StatsABI from '../abi/Stats.json';
-import { DEFAULT_TOKEN_PRECISION, tokenPrecision } from '../constants';
-import { Decimal, decreasePrecision, increasePrecision, ZERO } from '../datastructures';
+import { Stats } from '../abi/StatsTypingsV2';
+import StatsABI from '../abi/StatsV2ABI.json';
+import { tokenPrecision } from '../constants';
+import { Decimal, decreasePrecision, ZERO } from '../datastructures';
 import { Chain, Config, TempusPool, Ticker } from '../interfaces';
 import { getTokenPrecision, mul18f } from '../utils';
 import { getChainlinkFeed } from './getChainlinkFeed';
@@ -75,15 +75,20 @@ export class StatisticsService {
 
     const chainLinkAggregator = getChainlinkFeed(chain, poolBackingTokenTicker);
 
+    const precision = tokenPrecision[poolBackingTokenTicker];
+    if (!precision) {
+      throw new Error(`Failed to get precision for token ${poolBackingTokenTicker} from tokenPrecision map!`);
+    }
+
     try {
       if (overrides) {
         return from(this.stats.totalValueLockedAtGivenRate(tempusPool, chainLinkAggregator, overrides)).pipe(
-          map<BigNumber, Decimal>((value: BigNumber) => new Decimal(value)),
+          map<BigNumber, Decimal>((value: BigNumber) => new Decimal(value, precision)),
         );
       }
 
       return from(this.stats.totalValueLockedAtGivenRate(tempusPool, chainLinkAggregator)).pipe(
-        map<BigNumber, Decimal>((value: BigNumber) => new Decimal(value)),
+        map<BigNumber, Decimal>((value: BigNumber) => new Decimal(value, precision)),
       );
     } catch (error) {
       console.error(
@@ -91,7 +96,6 @@ export class StatisticsService {
         error,
       );
 
-      const precision = tokenPrecision[poolBackingTokenTicker] || DEFAULT_TOKEN_PRECISION;
       return from<Promise<[BigNumber, BigNumber]>>(
         Promise.all([
           getCoingeckoRate(poolBackingTokenTicker, precision),
@@ -102,7 +106,7 @@ export class StatisticsService {
           const [rate, backingTokensLocked] = values;
           return mul18f(rate, backingTokensLocked, precision);
         }),
-        map<BigNumber, Decimal>((value: BigNumber) => new Decimal(value)),
+        map<BigNumber, Decimal>((value: BigNumber) => new Decimal(value, precision)),
         catchError(coinGeckoError => {
           console.error(
             'StatisticsService - totalValueLockedUSD() - Failed to get total value locked at given rate from contract. Falling back to CoinGecko API!',
@@ -130,23 +134,23 @@ export class StatisticsService {
 
     // TODO - Refactor getRate function to accept token precision as well as a parameter
     const precision = tokenPrecision[tokenTicker];
+    if (!precision) {
+      throw new Error(`Failed to get precision for token ${tokenTicker} from tokenPrecision map!`);
+    }
 
     return from(
       overrides ? this.stats.getRate(chainLinkAggregator, overrides) : this.stats.getRate(chainLinkAggregator),
     ).pipe(
-      map<[BigNumber, BigNumber], Decimal>(([rate, rateDenominator]) => {
-        const rate18f = increasePrecision(rate, DEFAULT_TOKEN_PRECISION - (precision ?? 0));
-        const rateDenominator18f = increasePrecision(rateDenominator, DEFAULT_TOKEN_PRECISION - (precision ?? 0));
-        return new Decimal(rate18f).div(rateDenominator18f);
-      }),
+      map<[BigNumber, BigNumber], Decimal>(([rate, rateDenominator]) =>
+        new Decimal(rate, precision).div(new Decimal(rateDenominator, precision)),
+      ),
       catchError(() => {
         console.warn(
           `Failed to get exchange rate for ${tokenTicker} from stats contract, falling back to CoinGecko API!`,
         );
 
-        const precision = tokenPrecision[tokenTicker] || DEFAULT_TOKEN_PRECISION;
         return from(getCoingeckoRate(tokenTicker, precision)).pipe(
-          map<BigNumber, Decimal>((value: BigNumber) => new Decimal(value)),
+          map<BigNumber, Decimal>((value: BigNumber) => new Decimal(value, precision)),
           catchError(() => {
             console.warn(`Failed to get exchange rate for ${tokenTicker} from CoinGecko API`);
 
@@ -207,12 +211,12 @@ export class StatisticsService {
           return null;
         }
 
-        const userPoolBalanceInBackingToken = exitEstimate.tokenAmount;
-        const userPoolBalanceInBackingToken18f = increasePrecision(
-          userPoolBalanceInBackingToken,
-          DEFAULT_TOKEN_PRECISION - (tokenPrecision.backingToken ?? DEFAULT_TOKEN_PRECISION),
+        const userPoolBalanceInUSD = backingTokenRate.mul(
+          new Decimal(
+            exitEstimate.tokenAmount,
+            isBackingToken ? tokenPrecision.backingToken : tokenPrecision.yieldBearingToken,
+          ),
         );
-        const userPoolBalanceInUSD = backingTokenRate.mul(userPoolBalanceInBackingToken18f);
         return userPoolBalanceInUSD;
       }),
     );

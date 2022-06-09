@@ -9,7 +9,6 @@ import {
   useDepositModalData,
   useYieldAtMaturity,
 } from '../../hooks';
-import { Loading } from '../shared';
 import DepositModal from './DepositModal';
 import './DepositModalResolver.scss';
 
@@ -39,18 +38,14 @@ export const DepositModalResolver: FC = (): JSX.Element => {
     navigate(-1);
   };
 
-  return depositModalProps ? (
+  return (
     <DepositModal
       open
       onClose={handleCloseModal}
-      poolStartDate={depositModalProps.poolStartDate}
-      maturityTerms={depositModalProps.maturityTerms}
-      tokens={depositModalProps.tokens}
+      poolStartDate={depositModalProps?.poolStartDate}
+      maturityTerms={depositModalProps?.maturityTerms}
+      tokens={depositModalProps?.tokens}
       chainConfig={config?.[chain as Chain]}
     />
-  ) : (
-    <div className="tc__deposit-modal__loading">
-      <Loading size={100} color="primary" />
-    </div>
   );
 };

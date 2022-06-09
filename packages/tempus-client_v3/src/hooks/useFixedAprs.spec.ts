@@ -24,7 +24,7 @@ describe('useFixedAprs', () => {
   beforeAll(getConfigManager);
 
   beforeEach(() => {
-    jest.spyOn(Date, 'now').mockReturnValue(new Date(2022, 4, 15).getTime());
+    jest.spyOn(Date, 'now').mockReturnValue(Date.UTC(2022, 4, 15));
   });
 
   it('returns `{}` as initial value', async () => {

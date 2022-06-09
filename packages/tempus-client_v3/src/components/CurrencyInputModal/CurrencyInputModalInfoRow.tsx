@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { colors, Icon, Typography } from '../shared';
+import { Icon, Typography } from '../shared';
 
 type ValueChange = 'increase' | 'decrease';
 
@@ -8,34 +8,45 @@ export interface CurrencyInputModalInfoRowProps {
   value: string;
   valueChange?: ValueChange;
   currency: string;
+  usdValue: string;
 }
 
 const CurrencyInputModalInfoRow: FC<CurrencyInputModalInfoRowProps> = props => {
-  const { label, value, valueChange, currency } = props;
+  const { label, value, valueChange, currency, usdValue } = props;
 
   return (
     <div className="tc__currency-input-modal__info-row">
-      <Typography variant="body-primary" weight="medium">
+      <Typography className="tc__currency-input-modal__info-row-label" variant="body-primary" weight="medium">
         {label}
       </Typography>
-      <div className="tc__currency-input-modal__info-row-value">
-        {valueChange === 'increase' && (
-          <div className="tc__currency-input-modal__value-change tc__currency-input-modal__value-change-increase">
-            <Icon variant="up-arrow" size="tiny" color={colors.textSuccess} />
-          </div>
-        )}
-        {valueChange === 'decrease' && (
-          <div className="tc__currency-input-modal__value-change tc__currency-input-modal__value-change-decrease">
-            <Icon variant="down-arrow" size="tiny" color={colors.textError} />
-          </div>
-        )}
-        <Typography variant="body-primary" type="mono" weight="medium">
-          {value}
-        </Typography>
-        <Typography variant="body-primary" weight="medium">
-          {currency}
-        </Typography>
-      </div>
+      {valueChange && (
+        <div className="tc__currency-input-modal__value-change">
+          {valueChange === 'increase' && <Icon variant="plus" size="tiny" />}
+          {valueChange === 'decrease' && <Icon variant="minus" size="tiny" />}
+        </div>
+      )}
+      <Typography
+        className="tc__currency-input-modal__info-row-value"
+        variant="body-primary"
+        type="mono"
+        weight="medium"
+      >
+        {value}
+      </Typography>
+      <Typography className="tc__currency-input-modal__info-row-currency" variant="body-primary" weight="medium">
+        {currency}
+      </Typography>
+      <Typography
+        className="tc__currency-input-modal__info-row-fiat-value"
+        variant="body-secondary"
+        type="mono"
+        weight="medium"
+      >
+        {usdValue}
+      </Typography>
+      <Typography className="tc__currency-input-modal__info-row-fiat" variant="body-secondary" weight="medium">
+        USD
+      </Typography>
     </div>
   );
 };

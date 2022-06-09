@@ -1,6 +1,6 @@
 import { FC, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ChainConfig, Ticker, ZERO } from 'tempus-core-services';
+import { ChainConfig, Decimal, DecimalUtils, Ticker, ZERO } from 'tempus-core-services';
 import { TokenMetadataProp } from '../../interfaces';
 import CurrencyInputModal, { CurrencyInputModalInfoRow } from '../CurrencyInputModal';
 import { ActionButtonState } from '../shared';
@@ -14,20 +14,27 @@ export interface WithdrawModalProps extends ModalProps {
 export const WithdrawModal: FC<WithdrawModalProps> = props => {
   const { open, onClose, tokens, chainConfig } = props;
 
-  const [balance, setBalance] = useState(tokens[0].balance.div(tokens[0].rate));
-  const [currency, setCurrency] = useState(tokens[0].ticker);
-  const [actionButtonState, setActionButtonState] = useState<ActionButtonState>('default');
   const { t } = useTranslation();
+
+  const [balance, setBalance] = useState(tokens[0].balance.div(tokens[0].rate));
+  const [currency, setCurrency] = useState(tokens[0]);
+  const [actionButtonState, setActionButtonState] = useState<ActionButtonState>('default');
+
+  const formattedBalanceUsdValue = useMemo(() => {
+    const usdValue = balance.mul(currency.rate);
+    return DecimalUtils.formatToCurrency(usdValue, undefined, '$');
+  }, [balance, currency.rate]);
 
   const infoRows = useMemo(
     () => (
       <CurrencyInputModalInfoRow
         label={t('WithdrawModal.labelAvailableForWithdraw')}
-        value={balance.toString() || ZERO.toString()}
-        currency={currency}
+        value={balance.toString()}
+        currency={currency.ticker}
+        usdValue={formattedBalanceUsdValue}
       />
     ),
-    [balance, currency, t],
+    [balance, currency.ticker, formattedBalanceUsdValue, t],
   );
 
   const handleCurrencyChange = useCallback(
@@ -36,7 +43,11 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
       if (tokenMetadata) {
         setBalance(tokenMetadata.balance.div(tokenMetadata.rate));
       }
-      setCurrency(newCurrency);
+
+      const newToken = tokens?.find(value => value.ticker === newCurrency);
+      if (newToken) {
+        setCurrency(newToken);
+      }
     },
     [tokens],
   );
