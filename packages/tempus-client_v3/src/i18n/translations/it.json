@@ -84,6 +84,11 @@
     "titleTotalPortfolioValue": "",
     "titleTotalYieldEarned": ""
   },
+  "PortfolioPositions": {
+    "titleNoPositions": "Nessuna Posizione",
+    "descriptionNoPositions": "Il tuo portafoglio è vuoto. Facciamo qualcosa.",
+    "buttonBrowseMarkets": "Vai su Mercati"
+  },
   "PortfolioSubheader": {
     "tabOverview": "",
     "tabPositions": ""

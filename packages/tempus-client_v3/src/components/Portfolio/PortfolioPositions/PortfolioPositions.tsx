@@ -1,6 +1,9 @@
 import { FC, useCallback, useMemo } from 'react';
 import { useSelectedChain, useUserDepositedPools, useTokenBalances } from '../../../hooks';
 import { PoolCardData, PoolCardGrid } from '../../shared';
+import PortfolioNoPositions from './PortfolioNoPositions';
+
+import './PortfolioPositions.scss';
 
 const PortfolioPositions: FC = () => {
   const tempusPools = useUserDepositedPools();
@@ -28,14 +31,13 @@ const PortfolioPositions: FC = () => {
 
   const handleClick = useCallback(() => {}, []);
 
-  if (!chain) {
-    // TODO: add empty state page
-    return null;
-  }
-
   return (
     <div className="tc__portfolio-positions">
-      <PoolCardGrid chain={chain} cards={poolCards} cardVariant="portfolio" onCardClick={handleClick} />
+      {chain && poolCards ? (
+        <PoolCardGrid chain={chain} cards={poolCards} cardVariant="portfolio" onCardClick={handleClick} />
+      ) : (
+        <PortfolioNoPositions />
+      )}
     </div>
   );
 };

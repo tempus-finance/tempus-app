@@ -84,6 +84,11 @@
     "titleTotalPortfolioValue": "~~~~~====={{{{{(((((titleTotalPortfolioValue)))))}}}}}=====~~~~~",
     "titleTotalYieldEarned": "~~~~~====={{{{{(((((titleTotalYieldEarned)))))}}}}}=====~~~~~"
   },
+  "PortfolioPositions": {
+    "titleNoPositions": "~~~~~====={{{{{(((((titleNoPositions)))))}}}}}=====~~~~~",
+    "descriptionNoPositions": "~~~~~====={{{{{(((((descriptionNoPositions)))))}}}}}=====~~~~~",
+    "buttonBrowseMarkets": "~~~~~====={{{{{(((((buttonBrowseMarkets)))))}}}}}=====~~~~~"
+  },
   "PortfolioSubheader": {
     "tabOverview": "~~~~~====={{{{{(((((tabOverview)))))}}}}}=====~~~~~",
     "tabPositions": "~~~~~====={{{{{(((((tabPositions)))))}}}}}=====~~~~~"

@@ -84,6 +84,11 @@
     "titleTotalPortfolioValue": "Total Portfolio Value",
     "titleTotalYieldEarned": "Total Yield Earned"
   },
+  "PortfolioPositions": {
+    "titleNoPositions": "No Current Positions",
+    "descriptionNoPositions": "Your portfolio is empty. Let’s change that for you.",
+    "buttonBrowseMarkets": "Browse Markets"
+  },
   "PortfolioSubheader": {
     "tabOverview": "Overview",
     "tabPositions": "Positions"

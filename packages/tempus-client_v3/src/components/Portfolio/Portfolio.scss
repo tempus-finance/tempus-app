@@ -1,8 +1,13 @@
 .tc__app__portfolio {
+  display: flex;
   flex-grow: 1;
+  flex-direction: column;
 }
 
 .tc__app__portfolio-content {
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
   padding: 40px 80px 80px 80px;
 }
 
