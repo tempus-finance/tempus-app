@@ -1,0 +1,295 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`PoolCardGrid renders a pool card grid 1`] = `
+<div>
+  <div
+    class="tc__pool-card-grid"
+  >
+    <div
+      class="tc__pool-card-grid__content"
+    >
+      <div
+        class="tc__poolCard"
+        data-card-variant="markets"
+      >
+        <div
+          class="tc__poolCard-value-placeholder-container"
+        >
+          <div
+            class="tc__loading-placeholder tc__loading-placeholder__width-small tc__loading-placeholder__height-medium"
+          >
+            <div
+              class="tc__loading-placeholder__circle"
+            />
+            <div
+              class="tc__loading-placeholder__bar"
+            />
+          </div>
+        </div>
+        <div
+          class="tc__poolCard-protocol-placeholder-container"
+        >
+          <div
+            class="tc__loading-placeholder tc__loading-placeholder__width-tiny tc__loading-placeholder__height-small"
+          >
+            <div
+              class="tc__loading-placeholder__circle"
+            />
+            <div
+              class="tc__loading-placeholder__bar"
+            />
+          </div>
+        </div>
+        <div
+          class="tc__poolCard-info"
+        >
+          <div
+            class="tc__poolCard-info-row"
+          >
+            <div
+              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(71, 67, 80); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+            >
+              Fixed APR
+            </div>
+            <div
+              class="tc__poolCard-value-placeholder-container"
+            >
+              <div
+                class="tc__loading-placeholder tc__loading-placeholder__width-medium tc__loading-placeholder__height-medium"
+              >
+                <div
+                  class="tc__loading-placeholder__circle"
+                />
+                <div
+                  class="tc__loading-placeholder__bar"
+                />
+              </div>
+            </div>
+          </div>
+          <div
+            class="tc__poolCard-info-row"
+          >
+            <div
+              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(71, 67, 80); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+            >
+              Term
+            </div>
+            <div
+              class="tc__poolCard-value-placeholder-container"
+            >
+              <div
+                class="tc__loading-placeholder tc__loading-placeholder__width-large tc__loading-placeholder__height-medium"
+              >
+                <div
+                  class="tc__loading-placeholder__circle"
+                />
+                <div
+                  class="tc__loading-placeholder__bar"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="tc__poolCard"
+        data-card-variant="markets"
+      >
+        <div
+          class="tc__poolCard-value-placeholder-container"
+        >
+          <div
+            class="tc__loading-placeholder tc__loading-placeholder__width-small tc__loading-placeholder__height-medium"
+          >
+            <div
+              class="tc__loading-placeholder__circle"
+            />
+            <div
+              class="tc__loading-placeholder__bar"
+            />
+          </div>
+        </div>
+        <div
+          class="tc__poolCard-protocol-placeholder-container"
+        >
+          <div
+            class="tc__loading-placeholder tc__loading-placeholder__width-tiny tc__loading-placeholder__height-small"
+          >
+            <div
+              class="tc__loading-placeholder__circle"
+            />
+            <div
+              class="tc__loading-placeholder__bar"
+            />
+          </div>
+        </div>
+        <div
+          class="tc__poolCard-info"
+        >
+          <div
+            class="tc__poolCard-info-row"
+          >
+            <div
+              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(71, 67, 80); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+            >
+              Term
+            </div>
+            <div
+              class="tc__poolCard-value-placeholder-container"
+            >
+              <div
+                class="tc__loading-placeholder tc__loading-placeholder__width-large tc__loading-placeholder__height-medium"
+              >
+                <div
+                  class="tc__loading-placeholder__circle"
+                />
+                <div
+                  class="tc__loading-placeholder__bar"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="tc__poolCard"
+        data-card-variant="markets"
+      >
+        <div
+          class="tc__poolCard-value-placeholder-container"
+        >
+          <div
+            class="tc__loading-placeholder tc__loading-placeholder__width-small tc__loading-placeholder__height-medium"
+          >
+            <div
+              class="tc__loading-placeholder__circle"
+            />
+            <div
+              class="tc__loading-placeholder__bar"
+            />
+          </div>
+        </div>
+        <div
+          class="tc__poolCard-protocol-placeholder-container"
+        >
+          <div
+            class="tc__loading-placeholder tc__loading-placeholder__width-tiny tc__loading-placeholder__height-small"
+          >
+            <div
+              class="tc__loading-placeholder__circle"
+            />
+            <div
+              class="tc__loading-placeholder__bar"
+            />
+          </div>
+        </div>
+        <div
+          class="tc__poolCard-info"
+        >
+          <div
+            class="tc__poolCard-info-row"
+          >
+            <div
+              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(71, 67, 80); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+            >
+              Fixed APR
+            </div>
+            <div
+              class="tc__poolCard-value-placeholder-container"
+            >
+              <div
+                class="tc__loading-placeholder tc__loading-placeholder__width-medium tc__loading-placeholder__height-medium"
+              >
+                <div
+                  class="tc__loading-placeholder__circle"
+                />
+                <div
+                  class="tc__loading-placeholder__bar"
+                />
+              </div>
+            </div>
+          </div>
+          <div
+            class="tc__poolCard-info-row"
+          >
+            <div
+              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(71, 67, 80); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+            >
+              Term
+            </div>
+            <div
+              class="tc__poolCard-value-placeholder-container"
+            >
+              <div
+                class="tc__loading-placeholder tc__loading-placeholder__width-large tc__loading-placeholder__height-medium"
+              >
+                <div
+                  class="tc__loading-placeholder__circle"
+                />
+                <div
+                  class="tc__loading-placeholder__bar"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="tc__pool-card-grid__show-more"
+    >
+      <button
+        class="tc__btn tc__actionButton tc__actionButton-border-secondary-large tc__actionButton-background-secondary-large tc__actionButton-hover-secondary-large tc__actionButton-shadow-default tc__actionButton-cursor-default tc__actionButton-size-large "
+        data-selected="false"
+        type="button"
+      >
+        <div
+          class="tc__actionButton-status-label"
+        >
+          <div
+            style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+          >
+            Show 6 of 7 more
+          </div>
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`PoolCardGrid shows more cards when "Show more" button is clicked 1`] = `
+<button
+  class="tc__btn tc__actionButton tc__actionButton-border-secondary-large tc__actionButton-background-secondary-large tc__actionButton-hover-secondary-large tc__actionButton-shadow-default tc__actionButton-cursor-default tc__actionButton-size-large "
+  data-selected="false"
+  type="button"
+>
+  <div
+    class="tc__actionButton-status-label"
+  >
+    <div
+      style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+    >
+      Show 6 of 7 more
+    </div>
+  </div>
+</button>
+`;
+
+exports[`PoolCardGrid shows more cards when "Show more" button is clicked 2`] = `
+<button
+  class="tc__btn tc__actionButton tc__actionButton-border-secondary-large tc__actionButton-background-secondary-large tc__actionButton-hover-secondary-large tc__actionButton-shadow-default tc__actionButton-cursor-default tc__actionButton-size-large "
+  data-selected="false"
+  type="button"
+>
+  <div
+    class="tc__actionButton-status-label"
+  >
+    <div
+      style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+    >
+      Show 1 more
+    </div>
+  </div>
+</button>
+`;
