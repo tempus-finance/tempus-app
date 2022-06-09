@@ -1,0 +1,17 @@
+.tc__pool-card-grid__content {
+  margin-top: 24px;
+  margin-bottom: 40px;
+
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: auto;
+  column-gap: 72px;
+  row-gap: 24px;
+}
+
+.tc__pool-card-grid__show-more {
+  display: flex;
+  justify-content: center;
+  margin-top: -16px;
+  margin-bottom: 40px;
+}
