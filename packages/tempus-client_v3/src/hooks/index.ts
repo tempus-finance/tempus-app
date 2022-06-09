@@ -2,6 +2,7 @@ export { useFixedAprs } from './useFixedAprs';
 export { useTokenRates } from './useTokenRates';
 export { useTokenBalance, useTokenBalances } from './useTokenBalance';
 export { usePoolBalance } from './usePoolBalance';
+export { useUserDepositedPools } from './useUserDepositedPools';
 export * from './useTvlData';
 export * from './useWalletAddress';
 export * from './useSelectedChain';
