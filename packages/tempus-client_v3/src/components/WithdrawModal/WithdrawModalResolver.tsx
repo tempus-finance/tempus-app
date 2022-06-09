@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { Chain } from 'tempus-core-services';
 import { getConfigManager } from '../../config/getConfigManager';
 import { usePoolBalance, useTokenRates } from '../../hooks';
+import { TokenMetadataProp } from '../../interfaces';
 import { WithdrawModal } from './WithdrawModal';
 
 export const WithdrawModalResolver: FC = () => {
@@ -37,29 +38,29 @@ export const WithdrawModalResolver: FC = () => {
     return null;
   }
 
+  const tokens: TokenMetadataProp = [
+    {
+      precision: poolData.tokenPrecision.yieldBearingToken,
+      precisionForUI: poolData.decimalsForUI,
+      address: poolData.yieldBearingTokenAddress,
+      rate: yieldBearingTokenRate,
+      ticker: poolData.yieldBearingToken,
+      balance: poolBalanceData.balanceInYieldBearingToken,
+    },
+  ];
+  if (poolData.backingToken !== 'ETH') {
+    tokens.push({
+      precision: poolData.tokenPrecision.backingToken,
+      precisionForUI: poolData.decimalsForUI,
+      address: poolData.backingTokenAddress,
+      rate: backingTokenRate,
+      ticker: poolData.backingToken,
+      balance: poolBalanceData.balanceInBackingToken,
+    });
+  }
+
   return (
     // TODO - Replace dummy data with data from hooks
-    <WithdrawModal
-      tokens={[
-        {
-          precision: poolData.tokenPrecision.backingToken,
-          precisionForUI: poolData.decimalsForUI,
-          address: poolData.backingTokenAddress,
-          rate: backingTokenRate,
-          ticker: poolData.backingToken,
-          balance: poolBalanceData.balanceInBackingToken,
-        },
-        {
-          precision: poolData.tokenPrecision.yieldBearingToken,
-          precisionForUI: poolData.decimalsForUI,
-          address: poolData.yieldBearingTokenAddress,
-          rate: yieldBearingTokenRate,
-          ticker: poolData.yieldBearingToken,
-          balance: poolBalanceData.balanceInYieldBearingToken,
-        },
-      ]}
-      onClose={() => {}}
-      open
-    />
+    <WithdrawModal tokens={tokens} onClose={() => {}} open />
   );
 };
