@@ -24,6 +24,17 @@ jest.mock('./useFixedAprs', () => ({
   }),
 }));
 
+jest.mock('./useTokenRates', () => ({
+  ...jest.requireActual('./useTokenRates'),
+  useTokenRates: jest.fn(),
+  tokenRates$: mockOf({
+    'ethereum-0x0000000000000000000000000000000000000000': new MockDecimal(1),
+    'ethereum-0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': new MockDecimal(1),
+    'ethereum-0x04068da6c83afcfa0e13ba15a6696662335d5b75': new MockDecimal(1),
+    'ethereum-0x74b23882a30290451A17c44f4F05243b6b58C76d': new MockDecimal(1),
+  }),
+}));
+
 describe('usePoolViewOptions', () => {
   beforeAll(async () => {
     const config = getConfigManager();

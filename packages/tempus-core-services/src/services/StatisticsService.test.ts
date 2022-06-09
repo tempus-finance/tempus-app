@@ -1,6 +1,6 @@
 import * as ejs from 'ethers';
 import { BigNumber } from 'ethers';
-import StatisticsABI from '../abi/Stats.json';
+import StatisticsABI from '../abi/StatsV2ABI.json';
 import { Decimal } from '../datastructures';
 import { TempusPool } from '../interfaces';
 import { StatisticsService } from './StatisticsService';

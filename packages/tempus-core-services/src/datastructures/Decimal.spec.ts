@@ -1,5 +1,5 @@
 import { BigNumber, utils } from 'ethers';
-import Decimal from './Decimal';
+import Decimal, { DEFAULT_DECIMAL_PRECISION } from './Decimal';
 
 describe('Decimal', () => {
   describe('constructor', () => {
@@ -14,6 +14,7 @@ describe('Decimal', () => {
       },
       {
         value: BigNumber.from('123123000000000000000'),
+        precisionConvertFrom: 18,
         expected: BigNumber.from('123123000000000000000'),
       },
       {
@@ -32,7 +33,12 @@ describe('Decimal', () => {
       },
     ].forEach(({ value, precisionConvertFrom, expected }) =>
       it(`accepts number/string/BigNumber/Decimal: ${value.toString()}`, () => {
-        const decimal = new Decimal(value, precisionConvertFrom);
+        let decimal: Decimal;
+        if (value instanceof BigNumber) {
+          decimal = new Decimal(value, precisionConvertFrom || DEFAULT_DECIMAL_PRECISION);
+        } else {
+          decimal = new Decimal(value);
+        }
 
         expect(decimal.value.eq(expected)).toBeTruthy();
       }),
@@ -90,7 +96,12 @@ describe('Decimal', () => {
       { value: '-123', defaultValue: 789.789, expected: BigNumber.from('-123000000000000000000') },
     ].forEach(({ value, defaultValue, expected }) =>
       it(`it parses ${value.toString()} successfully`, () => {
-        const decimal = Decimal.parse(value, defaultValue);
+        let decimal: Decimal;
+        if (value instanceof BigNumber) {
+          decimal = Decimal.parse(value, BigNumber.from(0), DEFAULT_DECIMAL_PRECISION);
+        } else {
+          decimal = Decimal.parse(value, defaultValue);
+        }
 
         expect(decimal.value.eq(expected)).toBeTruthy();
       }),
@@ -109,7 +120,7 @@ describe('Decimal', () => {
       { value: '123.0123456789012345678', expected: BigNumber.from('0') },
     ].forEach(({ value, defaultValue, expected }) =>
       it(`it fails to parse ${value} and use default values`, () => {
-        const decimal = Decimal.parse(value, defaultValue);
+        const decimal = Decimal.parse(value, defaultValue || 0);
 
         expect(decimal.value.eq(expected)).toBeTruthy();
       }),
@@ -143,7 +154,7 @@ describe('Decimal', () => {
 
       it(`${value} + ${addend} should be ${utils.formatUnits(expected, 18)}`, () => {
         const decimal = new Decimal(value);
-        const result = new Decimal(expected);
+        const result = new Decimal(expected, DEFAULT_DECIMAL_PRECISION);
 
         expect(decimal.add(addend)).toEqual(result);
       });
@@ -177,7 +188,7 @@ describe('Decimal', () => {
 
       it(`${value} - ${subtrahend} should be ${utils.formatUnits(expected, 18)}`, () => {
         const decimal = new Decimal(value);
-        const result = new Decimal(expected);
+        const result = new Decimal(expected, DEFAULT_DECIMAL_PRECISION);
 
         expect(decimal.sub(subtrahend)).toEqual(result);
       });
@@ -220,7 +231,7 @@ describe('Decimal', () => {
 
       it(`${value} * ${multiplicand} should be ${utils.formatUnits(expected, 18)}`, () => {
         const decimal = new Decimal(value);
-        const result = new Decimal(expected);
+        const result = new Decimal(expected, DEFAULT_DECIMAL_PRECISION);
 
         expect(decimal.mul(multiplicand)).toEqual(result);
       });
@@ -263,7 +274,7 @@ describe('Decimal', () => {
 
       it(`${value} / ${divisor} should be ${utils.formatUnits(expected, 18)}`, () => {
         const decimal = new Decimal(value);
-        const result = new Decimal(expected);
+        const result = new Decimal(expected, DEFAULT_DECIMAL_PRECISION);
 
         expect(decimal.div(divisor)).toEqual(result);
       });

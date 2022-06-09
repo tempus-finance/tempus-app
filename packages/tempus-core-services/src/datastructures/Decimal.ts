@@ -1,5 +1,4 @@
 import { BigNumber, utils } from 'ethers';
-import { DEFAULT_TOKEN_PRECISION } from '../constants';
 
 export const increasePrecision = (bigNum: BigNumber, increment: number): BigNumber => {
   const multiplicand = BigNumber.from(10).pow(increment);
@@ -11,42 +10,61 @@ export const decreasePrecision = (bigNum: BigNumber, decrement: number): BigNumb
   return bigNum.div(divisor);
 };
 
-export type Numberish = Decimal | string | number | BigNumber;
+export type Numberish = Decimal | string | number;
 
 export const DEFAULT_DECIMAL_PRECISION = 18;
 
 export default class Decimal {
   readonly value: BigNumber;
-  readonly precision: number = DEFAULT_TOKEN_PRECISION;
+  readonly precision = DEFAULT_DECIMAL_PRECISION;
 
-  constructor(value: Numberish, precisionConvertFrom?: number) {
-    let bigNumberValue: BigNumber;
+  // In case user passes BigNumber as value, we also need user to provide precision
+  constructor(value: BigNumber, valuePrecision: number);
+  // In case user passes (number | string | Decimal) as value, we don't need precision because
+  // we can safely convert (number | string | Decimal) to BigNumber with 18 decimal precision.
+  constructor(value: Numberish);
 
+  // Constructor implementation
+  constructor(value: Numberish | BigNumber, valuePrecision: number = DEFAULT_DECIMAL_PRECISION) {
+    // In case we pass in Decimal, underlying value inside the Decimal is already 18 decimal precision
     if (value instanceof Decimal) {
-      bigNumberValue = BigNumber.from(value.value);
+      this.value = BigNumber.from(value.value);
+      // In case we pass in BigNumber as value, need to convert it to 18 decimal
+      // precision BigNumber before storing it inside value
     } else if (value instanceof BigNumber) {
-      bigNumberValue = BigNumber.from(value);
+      if (valuePrecision === DEFAULT_DECIMAL_PRECISION) {
+        this.value = BigNumber.from(value);
+      } else if (valuePrecision < DEFAULT_DECIMAL_PRECISION) {
+        this.value = increasePrecision(BigNumber.from(value), DEFAULT_DECIMAL_PRECISION - valuePrecision);
+      } else {
+        this.value = decreasePrecision(BigNumber.from(value), valuePrecision - DEFAULT_DECIMAL_PRECISION);
+      }
+      // In case user passes (number | string), attempt to create BigNumber from passed value using parseUnits()
     } else {
       try {
-        bigNumberValue = utils.parseUnits(`${value}`, this.precision);
+        this.value = utils.parseUnits(`${value}`, valuePrecision);
       } catch (e) {
         throw new Error(`Failed to parse ${value} when creating Decimal`);
       }
     }
-
-    if (precisionConvertFrom === undefined || precisionConvertFrom === DEFAULT_DECIMAL_PRECISION) {
-      this.value = bigNumberValue;
-    } else if (precisionConvertFrom < DEFAULT_DECIMAL_PRECISION) {
-      this.value = increasePrecision(bigNumberValue, DEFAULT_DECIMAL_PRECISION - precisionConvertFrom);
-    } else {
-      this.value = decreasePrecision(bigNumberValue, precisionConvertFrom - DEFAULT_DECIMAL_PRECISION);
-    }
   }
 
-  static parse(value: Numberish, defaultValue: Numberish = 0) {
+  static parse(value: BigNumber, defaultValue: BigNumber, valuePrecision: number): Decimal;
+  static parse(value: Numberish, defaultValue: Numberish): Decimal;
+  static parse(
+    value: Numberish | BigNumber,
+    defaultValue: Numberish | BigNumber,
+    valuePrecision = DEFAULT_DECIMAL_PRECISION,
+  ): Decimal {
     try {
+      if (value instanceof BigNumber) {
+        return new Decimal(value, valuePrecision);
+      }
       return new Decimal(value);
     } catch (e) {
+      if (defaultValue instanceof BigNumber) {
+        return new Decimal(defaultValue, valuePrecision);
+      }
       return new Decimal(defaultValue);
     }
   }
@@ -54,31 +72,31 @@ export default class Decimal {
   add(addend: Numberish): Decimal {
     const decimal = new Decimal(addend);
 
-    return new Decimal(this.value.add(decimal.value));
+    return new Decimal(this.value.add(decimal.value), DEFAULT_DECIMAL_PRECISION);
   }
 
   sub(subtrahend: Numberish): Decimal {
     const decimal = new Decimal(subtrahend);
 
-    return new Decimal(this.value.sub(decimal.value));
+    return new Decimal(this.value.sub(decimal.value), DEFAULT_DECIMAL_PRECISION);
   }
 
   mul(multiplicand: Numberish): Decimal {
     const decimal = new Decimal(multiplicand);
-    const product = decreasePrecision(this.value.mul(decimal.value), this.precision);
+    const product = decreasePrecision(this.value.mul(decimal.value), DEFAULT_DECIMAL_PRECISION);
 
-    return new Decimal(product);
+    return new Decimal(product, DEFAULT_DECIMAL_PRECISION);
   }
 
   div(divisor: Numberish): Decimal {
     const decimal = new Decimal(divisor);
-    const quotient = increasePrecision(this.value, this.precision).div(decimal.value);
+    const quotient = increasePrecision(this.value, DEFAULT_DECIMAL_PRECISION).div(decimal.value);
 
-    return new Decimal(quotient);
+    return new Decimal(quotient, DEFAULT_DECIMAL_PRECISION);
   }
 
   abs(): Decimal {
-    return new Decimal(this.value.abs());
+    return new Decimal(this.value.abs(), DEFAULT_DECIMAL_PRECISION);
   }
 
   equals(comparable: Numberish): boolean {
@@ -111,21 +129,25 @@ export default class Decimal {
     return this.value.gte(decimal.value);
   }
 
-  toBigNumber(precision: number = DEFAULT_TOKEN_PRECISION): BigNumber {
-    if (this.precision === precision) {
+  isZero(): boolean {
+    return this.value.isZero();
+  }
+
+  toBigNumber(precision = DEFAULT_DECIMAL_PRECISION): BigNumber {
+    if (precision === DEFAULT_DECIMAL_PRECISION) {
       return BigNumber.from(this.value);
-    } else if (this.precision < precision) {
-      return increasePrecision(this.value, precision - this.precision);
-    } else {
-      return decreasePrecision(this.value, this.precision - precision);
     }
+    if (DEFAULT_DECIMAL_PRECISION < precision) {
+      return increasePrecision(this.value, precision - DEFAULT_DECIMAL_PRECISION);
+    }
+    return decreasePrecision(this.value, DEFAULT_DECIMAL_PRECISION - precision);
   }
 
   toString(): string {
-    return utils.formatUnits(this.value, this.precision).replace(/\.0*$/, '');
+    return utils.formatUnits(this.value, DEFAULT_DECIMAL_PRECISION).replace(/\.0*$/, '');
   }
 
-  toRounded(fractionDigits: number = 0): string {
+  toRounded(fractionDigits = 0): string {
     const str = this.toString();
     const [integral, fraction = ''] = str.split('.');
 
@@ -136,47 +158,41 @@ export default class Decimal {
       if (Number(lastDigit) < 5) {
         // no need to be rounded
         return this.toTruncated(fractionDigits);
-      } else {
-        if (fractionDigits > 0) {
-          // round to fractionDigits decimal places
-          const bigNum = utils.parseUnits(`${integral}.${fraction.slice(0, fractionDigits)}`, fractionDigits);
-          const str = utils.formatUnits(bigNum.add(1), fractionDigits);
-          const [outputIntegral, outputFraction] = str.split('.');
-          return `${outputIntegral}.${outputFraction.padEnd(fractionDigits, '0')}`;
-        } else {
-          // rounded as integer, simply +1
-          return BigNumber.from(integral).add(1).toString();
-        }
       }
-    } else {
-      // negative number
-      if (Number(lastDigit) <= 5) {
-        // no need to be rounded
-        return this.toTruncated(fractionDigits);
-      } else {
-        if (fractionDigits > 0) {
-          // round to fractionDigits decimal places
-          const bigNum = utils.parseUnits(`${integral}.${fraction.slice(0, fractionDigits)}`, fractionDigits);
-          const str = utils.formatUnits(bigNum.sub(1), fractionDigits);
-          const [outputIntegral, outputFraction] = str.split('.');
-          return `${outputIntegral}.${outputFraction.padEnd(fractionDigits, '0')}`;
-        } else {
-          // rounded as negative integer, simply -1
-          return BigNumber.from(integral).sub(1).toString();
-        }
+      if (fractionDigits > 0) {
+        // round to fractionDigits decimal places
+        const bigNum = utils.parseUnits(`${integral}.${fraction.slice(0, fractionDigits)}`, fractionDigits);
+        const strRounded = utils.formatUnits(bigNum.add(1), fractionDigits);
+        const [outputIntegral, outputFraction] = strRounded.split('.');
+        return `${outputIntegral}.${outputFraction.padEnd(fractionDigits, '0')}`;
       }
+      // rounded as integer, simply +1
+      return BigNumber.from(integral).add(1).toString();
     }
+    // negative number
+    if (Number(lastDigit) <= 5) {
+      // no need to be rounded
+      return this.toTruncated(fractionDigits);
+    }
+    if (fractionDigits > 0) {
+      // round to fractionDigits decimal places
+      const bigNum = utils.parseUnits(`${integral}.${fraction.slice(0, fractionDigits)}`, fractionDigits);
+      const strRounded = utils.formatUnits(bigNum.sub(1), fractionDigits);
+      const [outputIntegral, outputFraction] = strRounded.split('.');
+      return `${outputIntegral}.${outputFraction.padEnd(fractionDigits, '0')}`;
+    }
+    // rounded as negative integer, simply -1
+    return BigNumber.from(integral).sub(1).toString();
   }
 
-  toTruncated(fractionDigits: number = 0): string {
+  toTruncated(fractionDigits = 0): string {
     const str = this.toString();
     const [integral, fraction = ''] = str.split('.');
 
     if (fractionDigits > 0) {
       return `${integral}.${fraction.slice(0, fractionDigits).padEnd(fractionDigits, '0')}`;
-    } else {
-      return integral;
     }
+    return integral;
   }
 }
 

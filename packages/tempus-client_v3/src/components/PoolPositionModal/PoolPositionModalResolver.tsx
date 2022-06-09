@@ -15,7 +15,7 @@ export const PoolPositionModalResolver: FC = () => {
     // TODO - Replace dummy data with data from hooks
     <PoolPositionModal
       apr={0.1}
-      balance={poolBalanceData?.balance || ZERO}
+      balance={poolBalanceData?.balanceInBackingToken || ZERO}
       chartData={[
         { x: new Date(2022, 3, 4), y: 10 },
         { x: new Date(2022, 4, 1), y: 20 },
