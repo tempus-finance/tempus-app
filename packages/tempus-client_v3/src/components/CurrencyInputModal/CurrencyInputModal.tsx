@@ -33,7 +33,7 @@ export interface CurrencyInputModalProps extends ModalProps {
   actionButtonState?: ActionButtonState;
   onMaturityChange?: (term: MaturityTerm) => void;
   onAmountChange?: (amount: Decimal) => void;
-  onTransactionStart: (amount: Decimal) => string;
+  onTransactionStart: (amount: Decimal) => Promise<string>;
   onCurrencyUpdate?: (currency: Ticker) => void;
 }
 
