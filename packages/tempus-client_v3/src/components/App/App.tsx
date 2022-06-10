@@ -2,16 +2,11 @@ import { memo, useEffect } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { initServices } from 'tempus-core-services';
-import {
-  useLocale,
-  useSelectedChain,
-  useUserPreferences,
-  useServicesLoaded,
-  useWalletAddress,
-} from '../../hooks';
+import { useServicesLoaded } from '../../hooks';
 import Markets from '../Markets';
 import Navbar from '../Navbar/Navbar';
 import { getConfigManager } from '../../config/getConfigManager';
+import { HookSubscriber } from '../HookSubscriber';
 import { DepositModalResolver } from '../DepositModal/DepositModalResolver';
 import { PoolPositionModalResolver } from '../PoolPositionModal';
 import { WithdrawModalResolver } from '../WithdrawModal';
@@ -24,12 +19,6 @@ import './App.scss';
 const App = () => {
   const [servicesLoaded, setServicesLoaded] = useServicesLoaded();
   const { t } = useTranslation();
-
-  // to keep at least one subscriber of the stream insides the hook
-  useLocale();
-  useUserPreferences();
-  useSelectedChain();
-  useWalletAddress();
 
   const navigationLinks: PageNavigationLink[] = [
     { text: t('App.navMarkets'), path: '/' },
@@ -51,6 +40,7 @@ const App = () => {
 
   return (
     <div className="tc__app__wrapper">
+      <HookSubscriber />
       {servicesLoaded && (
         <>
           <div className="tc__app__nav-header">
