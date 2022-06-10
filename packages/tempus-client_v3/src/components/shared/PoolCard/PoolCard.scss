@@ -1,11 +1,57 @@
+.tc__poolCard-container {
+  position: relative;
+
+  &[data-card-stack='2'] {
+    padding-bottom: 10px;
+
+    .tc__poolCard-stack-card-2 {
+      bottom: 0;
+    }
+  }
+
+  &[data-card-stack='3'] {
+    padding-bottom: 20px;
+
+    .tc__poolCard-stack-card-2 {
+      bottom: 10px;
+    }
+  }
+
+  &[data-card-stack='2'],
+  &[data-card-stack='3'] {
+    .tc__poolCard-stack-card {
+      height: 40px;
+      position: absolute;
+      box-sizing: border-box;
+      background-color: var(--poolCardBackground);
+      border: 1px solid var(--poolCardBorder);
+      border-bottom-left-radius: 40px;
+    }
+
+    .tc__poolCard-stack-card-2 {
+      z-index: 1;
+      width: 320px;
+      left: 16px;
+    }
+
+    .tc__poolCard-stack-card-3 {
+      z-index: 0;
+      width: 288px;
+      left: 32px;
+      bottom: 0;
+    }
+  }
+}
+
 .tc__poolCard {
-  z-index: 0;
+  z-index: 2;
   position: relative;
   display: flex;
   flex-direction: column;
   width: 352px;
   padding: 32px;
   box-sizing: border-box;
+  background-color: var(--poolCardBackground);
   border: 1px solid var(--poolCardBorder);
   border-radius: 0px 40px;
   overflow: hidden;

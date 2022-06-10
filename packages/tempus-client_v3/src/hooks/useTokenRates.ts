@@ -4,6 +4,7 @@ import {
   catchError,
   combineLatest,
   debounce,
+  distinctUntilChanged,
   filter,
   from,
   interval,
@@ -32,18 +33,34 @@ interface TokenInfo {
 }
 
 interface TokenInfoMap {
-  [chainTokenAddressString: string]: TokenInfo;
+  [chainTokenAddress: string]: TokenInfo;
 }
 
 export interface TokenRateMap {
-  [chainTokenAddressString: string]: Decimal | null;
+  [chainTokenAddress: string]: Decimal | null;
 }
 
 const DEFAULT_VALUE: TokenRateMap = {};
 
 const intervalBeat$: Observable<number> = interval(POLLING_INTERVAL_IN_MS).pipe(startWith(0));
 
-export const tokenRates$ = new BehaviorSubject<TokenRateMap>(DEFAULT_VALUE);
+const rawTokenRates$ = new BehaviorSubject<TokenRateMap>(DEFAULT_VALUE);
+export const tokenRates$ = rawTokenRates$.pipe(
+  // TODO: we can set the throttle for comparison as TVL if necessary
+  distinctUntilChanged(
+    (previous, current) =>
+      Object.keys(current).length === Object.keys(previous).length &&
+      Object.keys(current).every(chainTokenAddress => {
+        if (current[chainTokenAddress] === null) {
+          return previous[chainTokenAddress] === null;
+        }
+        if (previous[chainTokenAddress] === null) {
+          return false;
+        }
+        return (current[chainTokenAddress] as Decimal).equals(previous[chainTokenAddress] as Decimal);
+      }),
+  ),
+);
 
 const tokenInfoMap$ = poolList$.pipe(
   map(tempusPools =>
@@ -158,16 +175,16 @@ const stream$ = merge(periodicStream$, eventStream$).pipe(
     {} as TokenRateMap,
   ),
   debounce<TokenRateMap>(() => interval(DEBOUNCE_IN_MS)),
-  tap(allRates => tokenRates$.next(allRates)),
+  tap(allRates => rawTokenRates$.next(allRates)),
 );
 
 export const [useTokenRates] = bind(tokenRates$, DEFAULT_VALUE);
 
-let subscription: Subscription = stream$.subscribe();
+let subscription: Subscription;
 
-export const subscribe = (): void => {
-  unsubscribe();
+export const subscribeTakenRates = (): void => {
+  unsubscribeTakenRates();
   subscription = stream$.subscribe();
 };
-export const unsubscribe = (): void => subscription?.unsubscribe?.();
-export const reset = (): void => tokenRates$.next(DEFAULT_VALUE);
+export const unsubscribeTakenRates = (): void => subscription?.unsubscribe?.();
+export const resetTakenRates = (): void => rawTokenRates$.next(DEFAULT_VALUE);

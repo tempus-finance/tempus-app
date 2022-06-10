@@ -8,6 +8,9 @@ import {
   useWalletAddress,
   usePoolViewOptions,
   useSigner,
+  subscribeFixedAprs,
+  subscribeTakenRates,
+  subscribeTvlData,
 } from '../../hooks';
 
 const subject = () => render(<HookSubscriber />);
@@ -21,6 +24,9 @@ jest.mock('../../hooks', () => ({
   useWalletAddress: jest.fn(),
   usePoolViewOptions: jest.fn(),
   useSigner: jest.fn(),
+  subscribeFixedAprs: jest.fn(),
+  subscribeTakenRates: jest.fn(),
+  subscribeTvlData: jest.fn(),
 }));
 
 describe('HookSubscriber', () => {
@@ -32,6 +38,9 @@ describe('HookSubscriber', () => {
     const mockUseWalletAddress = jest.fn();
     const mockUsePoolViewOptions = jest.fn();
     const mockUseSigner = jest.fn();
+    const mockSubscribeFixedAprs = jest.fn();
+    const mockSubscribeTakenRates = jest.fn();
+    const mockSubscribeTvlData = jest.fn();
 
     (useLocale as jest.Mock).mockImplementation(mockUseLocale);
     (useSelectedChain as jest.Mock).mockImplementation(mockUseSelectedChain);
@@ -40,6 +49,9 @@ describe('HookSubscriber', () => {
     (useWalletAddress as jest.Mock).mockImplementation(mockUseWalletAddress);
     (usePoolViewOptions as jest.Mock).mockImplementation(mockUsePoolViewOptions);
     (useSigner as jest.Mock).mockImplementation(mockUseSigner);
+    (subscribeFixedAprs as jest.Mock).mockImplementation(mockSubscribeFixedAprs);
+    (subscribeTakenRates as jest.Mock).mockImplementation(mockSubscribeTakenRates);
+    (subscribeTvlData as jest.Mock).mockImplementation(mockSubscribeTvlData);
 
     const { container } = subject();
 
@@ -52,5 +64,8 @@ describe('HookSubscriber', () => {
     expect(mockUseWalletAddress).toHaveBeenCalled();
     expect(mockUsePoolViewOptions).toHaveBeenCalled();
     expect(mockUseSigner).toHaveBeenCalled();
+    expect(mockSubscribeFixedAprs).toHaveBeenCalled();
+    expect(mockSubscribeTakenRates).toHaveBeenCalled();
+    expect(mockSubscribeTvlData).toHaveBeenCalled();
   });
 });

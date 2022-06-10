@@ -39,7 +39,7 @@ describe('MarketsSubheader', () => {
   });
 
   beforeEach(() => {
-    (useSelectedChain as jest.Mock).mockReturnValue(null);
+    (useSelectedChain as jest.Mock).mockReturnValue([null]);
     (useActivePoolList as jest.Mock).mockImplementation(() => getConfigManager().getPoolList().slice(0, -2));
     (useInactivePoolList as jest.Mock).mockImplementation(() => getConfigManager().getPoolList().slice(-2, -1));
     (useMaturedPoolList as jest.Mock).mockImplementation(() => getConfigManager().getPoolList().slice(-1));
@@ -109,7 +109,7 @@ describe('MarketsSubheader', () => {
   });
 
   it('updates filters with selected chain', () => {
-    (useSelectedChain as jest.Mock).mockReturnValue('ethereum');
+    (useSelectedChain as jest.Mock).mockReturnValue(['ethereum']);
     const { container, getByRole } = subject();
 
     const filterButton = getByRole('button', { name: 'Filter' });

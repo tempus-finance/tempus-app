@@ -39,10 +39,12 @@ import PoolsHeading from './PoolsHeading';
 import PoolPositionCard from './PoolPositionCard';
 import { Table, TableHead, TableHeadCell, TableBody, TableBodyCell, TableRow } from './Table';
 import PoolCardGrid from './PoolCardGrid';
+import GroupedPoolCardGrid from './GroupedPoolCardsGrid';
 
 export * from './ActionButton';
 export * from './Chart';
 export * from './Colors';
+export * from './GroupedPoolCardsGrid';
 export * from './Icon';
 export * from './Logo';
 export * from './Loading';
@@ -59,6 +61,7 @@ export {
   Checkbox,
   CurrencyInput,
   FormattedDate,
+  GroupedPoolCardGrid,
   PoolCard,
   PoolCardGrid,
   ProgressBar,

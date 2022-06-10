@@ -83,7 +83,7 @@ const Wallet: FC<WalletProps> = props => {
   const connectedWallets = useWallets();
   const [{ wallet }, connect] = useConnectWallet();
   const [, setWalletAddress] = useWalletAddress();
-  const selectedChain = useSelectedChain();
+  const [selectedChain] = useSelectedChain();
   const [, setChain] = useSetChain();
   const [, setSigner] = useSigner();
 

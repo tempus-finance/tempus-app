@@ -1,8 +1,10 @@
+import { distinctUntilChanged } from 'rxjs';
 import { JsonRpcSigner } from '@ethersproject/providers';
 import { state, useStateObservable } from '@react-rxjs/core';
 import { createSignal } from '@react-rxjs/utils';
 
-const [signer$, setSigner] = createSignal<JsonRpcSigner | null>();
+const [rawSigner$, setSigner] = createSignal<JsonRpcSigner | null>();
+const signer$ = rawSigner$.pipe(distinctUntilChanged());
 const stateSigner$ = state(signer$, null);
 
 export const useSigner = (): [JsonRpcSigner | null, (value: JsonRpcSigner | null) => void] => {
