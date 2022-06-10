@@ -1,7 +1,7 @@
 import { bind } from '@react-rxjs/core';
 import { createSignal } from '@react-rxjs/utils';
 import { combineLatest, map, mergeMap, of } from 'rxjs';
-import { Decimal, getServices, StatisticsService, TempusPool, ZERO } from 'tempus-core-services';
+import { Decimal, getDefinedServices, TempusPool, ZERO } from 'tempus-core-services';
 
 export const [poolForYieldAtMaturity$, setPoolForYieldAtMaturity] = createSignal<TempusPool>();
 export const [tokenAmountForYieldAtMaturity$, setTokenAmountForYieldAtMaturity] = createSignal<Decimal>();
@@ -12,9 +12,19 @@ const yieldAtMaturity$ = combineLatest([poolForYieldAtMaturity$, tokenAmountForY
       return of(ZERO);
     }
 
-    return (getServices(tempusPool.chain)?.StatisticsService as StatisticsService)
-      .estimatedDepositAndFix(tempusPool, tokenAmount, true)
-      .pipe(map(principals => principals.sub(tokenAmount)));
+    const isBackingToken = true;
+
+    try {
+      const services = getDefinedServices(tempusPool.chain);
+      const estimated$ = services.StatisticsService.estimatedDepositAndFix(tempusPool, tokenAmount, isBackingToken);
+      return estimated$.pipe(map(principals => principals.sub(tokenAmount)));
+    } catch (error) {
+      console.error(
+        `useYieldAtMaturity - Fail to get the Yield at Maturity for ${tempusPool.address} on ${tempusPool.chain}`,
+        error,
+      );
+      return of(ZERO);
+    }
   }),
 );
 

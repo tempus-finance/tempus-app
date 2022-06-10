@@ -252,7 +252,7 @@ describe('useFixedAprs', () => {
     (console.error as jest.Mock).mockRestore();
   });
 
-  test('no updates when there is an error when getServices()', async () => {
+  test('no updates when there is an error when getDefinedServices()', async () => {
     jest.spyOn(console, 'error').mockImplementation();
     (getDefinedServices as unknown as jest.Mock).mockImplementation(() => {
       throw new Error();
