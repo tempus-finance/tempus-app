@@ -16,6 +16,7 @@ export interface PoolCardData {
   matured: boolean;
   totalBalance?: Decimal;
   pools: TempusPool[];
+  cardsInGroup?: number;
 }
 
 export interface PoolCardGridProps {
@@ -86,6 +87,7 @@ const PoolCardGrid: FC<PoolCardGridProps> = props => {
               onClick={onCardClick}
               poolAddresses={poolAddresses}
               totalBalance={card.totalBalance}
+              cardsInGroup={card.cardsInGroup}
             />
           );
         })}

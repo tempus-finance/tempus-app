@@ -1,6 +1,7 @@
 import { FC, useCallback, useMemo } from 'react';
+import { ZERO } from 'tempus-core-services';
 import { useSelectedChain, useUserDepositedPools, useTokenBalances } from '../../../hooks';
-import { PoolCardData, PoolCardGrid } from '../../shared';
+import { GroupedPoolCardGrid, PoolCardData, PoolCardGroupId } from '../../shared';
 import PortfolioNoPositions from './PortfolioNoPositions';
 
 import './PortfolioPositions.scss';
@@ -10,31 +11,46 @@ const PortfolioPositions: FC = () => {
   const chain = useSelectedChain();
   const balances = useTokenBalances();
 
-  const poolCards = useMemo(
-    () =>
-      tempusPools
-        .filter(tempusPool => tempusPool.chain === chain)
-        .map(
-          tempusPool =>
-            ({
-              chain: tempusPool.chain,
-              token: tempusPool.backingToken,
-              tokenAddress: tempusPool.backingTokenAddress,
-              protocol: tempusPool.protocol,
-              matured: tempusPool.maturityDate <= Date.now(),
-              pools: [tempusPool],
-              totalBalance: balances[`${chain}-${tempusPool.address}`],
-            } as PoolCardData),
-        ),
-    [balances, chain, tempusPools],
-  );
+  const cardGroups = useMemo(() => {
+    const groups = new Map<PoolCardGroupId, PoolCardData[]>();
 
-  const handleClick = useCallback(() => {}, []);
+    tempusPools
+      .filter(tempusPool => tempusPool.chain === chain)
+      .forEach(tempusPool => {
+        const isMatured = tempusPool.maturityDate <= Date.now();
+        const uniqueGroupId: PoolCardGroupId = `${tempusPool.backingToken}-${tempusPool.protocol}-${
+          isMatured ? 'Matured' : 'Fixed'
+        }`;
+
+        if (!groups.has(uniqueGroupId)) {
+          groups.set(uniqueGroupId, []);
+        }
+
+        groups.get(uniqueGroupId)?.push({
+          chain: tempusPool.chain,
+          token: tempusPool.backingToken,
+          tokenAddress: tempusPool.backingTokenAddress,
+          protocol: tempusPool.protocol,
+          matured: isMatured,
+          pools: [tempusPool],
+          totalBalance: balances[`${chain}-${tempusPool.principalsAddress}`] ?? ZERO,
+        });
+      });
+
+    return groups;
+  }, [balances, chain, tempusPools]);
+
+  const handleCardClick = useCallback(() => {}, []);
 
   return (
     <div className="tc__portfolio-positions">
-      {chain && poolCards ? (
-        <PoolCardGrid chain={chain} cards={poolCards} cardVariant="portfolio" onCardClick={handleClick} />
+      {chain && cardGroups.size ? (
+        <GroupedPoolCardGrid
+          chain={chain}
+          cardGroups={cardGroups}
+          groupHeading="All Positions"
+          onCardClick={handleCardClick}
+        />
       ) : (
         <PortfolioNoPositions />
       )}

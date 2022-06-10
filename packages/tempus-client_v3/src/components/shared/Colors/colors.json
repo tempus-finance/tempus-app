@@ -23,6 +23,7 @@
   "tabsBackground": "#FFFFFF",
   "tabsBorder": "#BFC0C0",
 
+  "poolCardBackground": "#FFFFFF",
   "poolCardBorder": "#DFDFDF",
   "poolCardFlagDisabledBorder": "#F3F7F9",
   "poolCardFlagDisabledBackground": "#FFFFFF33",
