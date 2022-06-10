@@ -1,11 +1,11 @@
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ChainConfig, chainIdToChainName, Decimal, DecimalUtils, TempusPool, Ticker } from 'tempus-core-services';
+import { TIMEOUT_FROM_SUCCESS_TO_DEFAULT_IN_MS } from '../../constants';
 import { useSigner, useTokenApprove, useTokenBalance, useUserPreferences } from '../../hooks';
 import { useWithdraw } from '../../hooks/useWithdraw';
 import { TokenMetadataProp } from '../../interfaces';
 import CurrencyInputModal, { CurrencyInputModalInfoRow } from '../CurrencyInputModal';
-import { TIMEOUT_FROM_SUCCESS_TO_DEFAULT_IN_MS } from '../DepositModal/DepositModal';
 import { ActionButtonState } from '../shared';
 import { ModalProps } from '../shared/Modal/Modal';
 
@@ -31,24 +31,34 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
   const [balance, setBalance] = useState(tokens[0].balance);
   const [currency, setCurrency] = useState(tokens[0]);
   const [actionButtonState, setActionButtonState] = useState<ActionButtonState>('default');
+  const [approvedTokens, setApprovedTokens] = useState<string[]>([]);
+  const [tokensApproved, setTokensApproved] = useState<boolean>(false);
 
   useEffect(() => {
     if (approveTokenStatus) {
-      if (approveTokenStatus.pending) {
-        setActionButtonState('loading');
-      }
-
-      if (approveTokenStatus.success) {
-        setActionButtonState('success');
-
-        setTimeout(() => {
-          setActionButtonState('default');
-        }, TIMEOUT_FROM_SUCCESS_TO_DEFAULT_IN_MS);
-      }
-    } else {
-      setActionButtonState('default');
+      setApprovedTokens(currentState => {
+        if (approveTokenStatus.request) {
+          return [...currentState, approveTokenStatus.request.tokenAddress];
+        }
+        return currentState;
+      });
     }
   }, [approveTokenStatus]);
+
+  useEffect(() => {
+    const capitalsApproved = approvedTokens.findIndex(approvedToken => approvedToken === tempusPool.principalsAddress);
+    const yieldsApproved = approvedTokens.findIndex(approvedToken => approvedToken === tempusPool.yieldsAddress);
+    const lpApproved = approvedTokens.findIndex(approvedToken => approvedToken === tempusPool.ammAddress);
+
+    if (capitalsApproved > -1 && yieldsApproved > -1 && lpApproved > -1) {
+      setTokensApproved(true);
+      setActionButtonState('success');
+
+      setTimeout(() => {
+        setActionButtonState('default');
+      }, TIMEOUT_FROM_SUCCESS_TO_DEFAULT_IN_MS);
+    }
+  }, [approvedTokens, tempusPool.ammAddress, tempusPool.principalsAddress, tempusPool.yieldsAddress]);
 
   const formattedBalanceUsdValue = useMemo(() => {
     const usdValue = balance.mul(currency.rate);
@@ -83,40 +93,36 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
   );
 
   /**
-   * TODO - In case LP token balance is zero, we do not need to approve anything for withdrawal
    * TODO - Check token allowance before executing another approval - to save gas cost
    */
   const handleApproveToken = useCallback(async () => {
     setActionButtonState('loading');
 
-    const chain = chainConfig.chainId ? chainIdToChainName(chainConfig.chainId) : undefined;
-    const spenderAddress = chainConfig.tempusControllerContract;
-
     // Approve all share tokens that have balance
-    if (chain && spenderAddress && signer) {
+    if (signer) {
       if (lpTokenBalanceData?.balance?.gt(0)) {
         approveToken({
-          chain,
+          chain: tempusPool.chain,
           tokenAddress: tempusPool.ammAddress,
-          spenderAddress,
+          spenderAddress: chainConfig.tempusControllerContract,
           amount: lpTokenBalanceData.balance,
           signer,
         });
       }
       if (capitalsBalanceData?.balance?.gt(0)) {
         approveToken({
-          chain,
+          chain: tempusPool.chain,
           tokenAddress: tempusPool.principalsAddress,
-          spenderAddress,
+          spenderAddress: chainConfig.tempusControllerContract,
           amount: capitalsBalanceData.balance,
           signer,
         });
       }
       if (yieldsBalanceData?.balance?.gt(0)) {
         approveToken({
-          chain,
+          chain: tempusPool.chain,
           tokenAddress: tempusPool.yieldsAddress,
-          spenderAddress,
+          spenderAddress: chainConfig.tempusControllerContract,
           amount: yieldsBalanceData.balance,
           signer,
         });
@@ -126,16 +132,16 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
     return approveTokenStatus?.contractTransaction?.hash || '0x0';
   }, [
     approveToken,
-    approveTokenStatus?.contractTransaction?.hash,
-    capitalsBalanceData?.balance,
-    chainConfig.chainId,
-    chainConfig.tempusControllerContract,
-    lpTokenBalanceData?.balance,
     signer,
-    tempusPool.ammAddress,
+    chainConfig.tempusControllerContract,
+    tempusPool.chain,
     tempusPool.principalsAddress,
     tempusPool.yieldsAddress,
+    tempusPool.ammAddress,
+    capitalsBalanceData?.balance,
     yieldsBalanceData?.balance,
+    lpTokenBalanceData?.balance,
+    approveTokenStatus?.contractTransaction?.hash,
   ]);
 
   const handleWithdraw = useCallback(
@@ -185,7 +191,7 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
         },
       }}
       actionButtonState={actionButtonState}
-      onTransactionStart={approveTokenStatus?.success ? handleWithdraw : handleApproveToken}
+      onTransactionStart={tokensApproved ? handleWithdraw : handleApproveToken}
       onCurrencyUpdate={handleCurrencyChange}
       chainConfig={chainConfig}
     />
