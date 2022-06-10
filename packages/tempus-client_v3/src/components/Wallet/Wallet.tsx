@@ -15,7 +15,7 @@ import {
   fantomChainIdHex,
   ZERO_ADDRESS,
 } from 'tempus-core-services';
-import { setWalletAddress, useSelectedChain, useTokenBalance, useSigner } from '../../hooks';
+import { useWalletAddress, useSelectedChain, useTokenBalance, useSigner } from '../../hooks';
 import { ActionButtonVariant, WalletButton } from '../shared';
 import ChainSelector from '../ChainSelector';
 
@@ -82,6 +82,7 @@ const Wallet: FC<WalletProps> = props => {
   const { connectWalletButtonVariant, onConnectWalletClick, redirectTo } = props;
   const connectedWallets = useWallets();
   const [{ wallet }, connect] = useConnectWallet();
+  const [, setWalletAddress] = useWalletAddress();
   const selectedChain = useSelectedChain();
   const [, setChain] = useSetChain();
   const [, setSigner] = useSigner();
@@ -115,7 +116,7 @@ const Wallet: FC<WalletProps> = props => {
     if (wallet) {
       setWalletAddress(wallet.accounts[0].address);
     }
-  }, [wallet]);
+  }, [wallet, setWalletAddress]);
 
   // TODO - Delete local storage under 'connectedWallets' when user disconnects the wallet
 

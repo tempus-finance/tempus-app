@@ -1,16 +1,13 @@
-import { BehaviorSubject, of, combineLatestWith, filter, tap, take } from 'rxjs';
-import { bind } from '@react-rxjs/core';
+import { state, useStateObservable } from '@react-rxjs/core';
+import { createSignal } from '@react-rxjs/utils';
 
-export const walletAddress$ = new BehaviorSubject<string>('');
+const [walletAddress$, setWalletAddress] = createSignal<string>();
+const stateWalletAddress$ = state(walletAddress$, '');
 
-export function setWalletAddress(address: string): void {
-  of(address)
-    .pipe(
-      combineLatestWith(walletAddress$),
-      filter(([newAddress, currentAddress]) => newAddress !== currentAddress),
-      tap(([newAddress]) => walletAddress$.next(newAddress)),
-      take(1),
-    )
-    .subscribe();
+export function useWalletAddress(): [string, (address: string) => void] {
+  const walletAddress = useStateObservable(stateWalletAddress$);
+
+  return [walletAddress, setWalletAddress];
 }
-export const [useWalletAddress] = bind(walletAddress$, '');
+
+export { walletAddress$ };
