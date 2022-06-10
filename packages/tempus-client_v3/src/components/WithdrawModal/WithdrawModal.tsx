@@ -144,13 +144,14 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
 
       const chain = chainConfig.chainId ? chainIdToChainName(chainConfig.chainId) : undefined;
 
-      if (chain) {
+      if (signer && chain) {
         withdraw({
           amount,
           chain,
           poolAddress: tempusPool.address,
           token: currency.ticker,
           slippage,
+          signer,
         });
       }
 
@@ -162,6 +163,7 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
       currency.ticker,
       slippage,
       tempusPool.address,
+      signer,
       withdraw,
     ],
   );

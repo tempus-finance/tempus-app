@@ -1,4 +1,4 @@
-import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
+import { JsonRpcSigner } from '@ethersproject/providers';
 import { ContractTransaction } from 'ethers';
 import { INFINITE_DEADLINE } from '../constants';
 import { StatsV2Contract } from '../contracts/StatsV2Contract';
@@ -9,13 +9,11 @@ import { Chain, Ticker } from '../interfaces';
 import { BaseService, ConfigGetter } from './BaseService';
 
 export class WithdrawService extends BaseService {
-  private signer: JsonRpcSigner | JsonRpcProvider;
   private chain: Chain;
 
-  constructor(chain: Chain, getConfig: ConfigGetter, signer: JsonRpcSigner | JsonRpcProvider) {
+  constructor(chain: Chain, getConfig: ConfigGetter) {
     super(getConfig);
 
-    this.signer = signer;
     this.chain = chain;
   }
 
@@ -24,6 +22,7 @@ export class WithdrawService extends BaseService {
     amountToGet: Decimal,
     tokenToGet: Ticker,
     slippage: Decimal,
+    signer: JsonRpcSigner,
   ): Promise<ContractTransaction> {
     // In order to avoid unused parameter lint error
     console.log(amountToGet.toString());
@@ -46,7 +45,7 @@ export class WithdrawService extends BaseService {
     const tempusControllerContract = new TempusControllerV1Contract(
       this.chain,
       tempusControllerContractAddress,
-      this.signer,
+      signer,
     );
     const statsContract = new StatsV2Contract(this.chain, statsContractAddress);
 

@@ -1,4 +1,3 @@
-import { JsonRpcSigner } from '@ethersproject/providers';
 import { Chain, ChainConfig, Config } from '../interfaces';
 import { getVariableRateService } from './getVariableRateService';
 import { getTempusPoolService } from './getTempusPoolService';
@@ -35,39 +34,22 @@ type ServiceMap = {
 
 const serviceMap = new Map<Chain, ServiceMap>();
 
-export const initServices = (chain: Chain, config: Config, signer: JsonRpcSigner | null): void => {
+export const initServices = (chain: Chain, config: Config): void => {
   const getChainConfig = (selectedChain: Chain): ChainConfig => config[selectedChain];
   const getConfig = () => config;
 
-  let services: ServiceMap;
-
-  if (signer) {
-    services = {
-      TempusPoolService: getTempusPoolService(chain, getChainConfig),
-      TempusControllerService: getTempusControllerService(chain, getChainConfig),
-      StatisticsService: getStatisticsService(chain, getConfig, getChainConfig),
-      VaultService: getVaultService(chain, getChainConfig),
-      VariableRateService: getVariableRateService(chain, getChainConfig),
-      StorageService: getStorageService(),
-      WalletBalanceService: getWalletBalanceService(chain, getConfig),
-      PoolBalanceService: getPoolBalanceService(chain, getConfig),
-      WithdrawService: getWithdrawService(chain, getConfig, signer),
-      ERC20TokenServiceGetter: getERC20TokenService,
-    };
-  } else {
-    services = {
-      TempusPoolService: getTempusPoolService(chain, getChainConfig),
-      TempusControllerService: getTempusControllerService(chain, getChainConfig),
-      StatisticsService: getStatisticsService(chain, getConfig, getChainConfig),
-      VaultService: getVaultService(chain, getChainConfig),
-      VariableRateService: getVariableRateService(chain, getChainConfig),
-      StorageService: getStorageService(),
-      WalletBalanceService: getWalletBalanceService(chain, getConfig),
-      PoolBalanceService: getPoolBalanceService(chain, getConfig),
-      WithdrawService: null, // Withdraw service needs user wallet in order to work
-      ERC20TokenServiceGetter: getERC20TokenService,
-    };
-  }
+  const services: ServiceMap = {
+    TempusPoolService: getTempusPoolService(chain, getChainConfig),
+    TempusControllerService: getTempusControllerService(chain, getChainConfig),
+    StatisticsService: getStatisticsService(chain, getConfig, getChainConfig),
+    VaultService: getVaultService(chain, getChainConfig),
+    VariableRateService: getVariableRateService(chain, getChainConfig),
+    StorageService: getStorageService(),
+    WalletBalanceService: getWalletBalanceService(chain, getConfig),
+    PoolBalanceService: getPoolBalanceService(chain, getConfig),
+    WithdrawService: getWithdrawService(chain, getConfig),
+    ERC20TokenServiceGetter: getERC20TokenService,
+  };
 
   // TODO if the map has already a chain we should destroy the services
   serviceMap.set(chain, services);
@@ -76,7 +58,7 @@ export const initServices = (chain: Chain, config: Config, signer: JsonRpcSigner
 export const getServices = (chain: Chain): ServiceMap | null =>
   serviceMap.has(chain) ? (serviceMap.get(chain) as ServiceMap) : null;
 
-export const getDefinedServices = (chain: Chain) => {
+export const getDefinedServices = (chain: Chain): ServiceMap => {
   const services = getServices(chain);
   if (!services) {
     throw new Error(`Cannot get service map for ${chain}`);

@@ -1,4 +1,5 @@
 import { ContractTransaction } from 'ethers';
+import { JsonRpcSigner } from '@ethersproject/providers';
 import { bind } from '@react-rxjs/core';
 import { createSignal } from '@react-rxjs/utils';
 import { concatMap, map } from 'rxjs';
@@ -10,6 +11,7 @@ interface WithdrawRequest {
   amount: Decimal;
   token: Ticker;
   slippage: Decimal;
+  signer: JsonRpcSigner;
 }
 
 interface WithdrawStatus {
@@ -28,7 +30,7 @@ const [withdraw$, withdraw] = createSignal<WithdrawRequest>();
 
 const withdrawStatus$ = withdraw$.pipe(
   concatMap<WithdrawRequest, Promise<WithdrawResponse>>(async payload => {
-    const { chain, poolAddress, amount, token, slippage } = payload;
+    const { chain, poolAddress, amount, token, slippage, signer } = payload;
 
     try {
       const services = getServices(chain);
@@ -36,7 +38,7 @@ const withdrawStatus$ = withdraw$.pipe(
         throw new Error('useWithdraw - withdrawStatus$ - Failed to get services');
       }
 
-      const contractTransaction = await services.WithdrawService.withdraw(poolAddress, amount, token, slippage);
+      const contractTransaction = await services.WithdrawService.withdraw(poolAddress, amount, token, slippage, signer);
 
       return await Promise.resolve({
         contractTransaction,

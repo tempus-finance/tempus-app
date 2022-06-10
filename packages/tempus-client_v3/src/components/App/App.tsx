@@ -2,14 +2,7 @@ import { memo, useEffect } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { initServices } from 'tempus-core-services';
-import {
-  useLocale,
-  useSelectedChain,
-  useUserPreferences,
-  useServicesLoaded,
-  useWalletAddress,
-  useSigner,
-} from '../../hooks';
+import { useLocale, useSelectedChain, useUserPreferences, useServicesLoaded, useWalletAddress } from '../../hooks';
 import Markets from '../Markets';
 import Navbar from '../Navbar/Navbar';
 import { getConfigManager } from '../../config/getConfigManager';
@@ -23,7 +16,6 @@ import TotalValueLocked from '../TotalValueLocked';
 import './App.scss';
 
 const App = () => {
-  const [signer] = useSigner();
   const [servicesLoaded, setServicesLoaded] = useServicesLoaded();
   const { t } = useTranslation();
 
@@ -38,17 +30,16 @@ const App = () => {
     { text: t('App.navPortfolio'), path: '/portfolio' },
   ];
 
-  // Init services and config - if signer changes, init services again using signer
+  // Init services and config
   useEffect(() => {
     const configManger = getConfigManager();
-    configManger.init();
 
-    initServices('ethereum', configManger.getConfig(), signer);
-    initServices('fantom', configManger.getConfig(), signer);
-    initServices('ethereum-fork', configManger.getConfig(), signer);
+    initServices('ethereum', configManger.getConfig());
+    initServices('fantom', configManger.getConfig());
+    initServices('ethereum-fork', configManger.getConfig());
 
     setServicesLoaded(true);
-  }, [signer, setServicesLoaded]);
+  }, [setServicesLoaded]);
 
   return (
     <div className="tc__app__wrapper">
