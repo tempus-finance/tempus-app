@@ -1,5 +1,4 @@
 import { Contract } from 'ethers';
-import { from, map, Observable } from 'rxjs';
 import TempusAMMV1ABI from '../abi/TempusAMMV1ABI.json';
 import { TempusAMM as TempusAMMV1 } from '../abi/TempusAMMV1Typings';
 import { Decimal } from '../datastructures';
@@ -18,17 +17,17 @@ export class TempusAMMV1Contract {
     this.contract = new Contract(this.contractAddress, TempusAMMV1ABI, provider) as TempusAMMV1;
   }
 
-  getExpectedReturnGivenIn(
+  async getExpectedReturnGivenIn(
     amount: Decimal,
     yieldShareIn: boolean,
     capitalsPrecision: number,
     yieldsPrecision: number,
-  ): Observable<Decimal> {
+  ): Promise<Decimal> {
     const inPrecision = yieldShareIn ? yieldsPrecision : capitalsPrecision;
     const outPrecision = yieldShareIn ? capitalsPrecision : yieldsPrecision;
 
-    return from(this.contract.getExpectedReturnGivenIn(amount.toBigNumber(inPrecision), yieldShareIn)).pipe(
-      map(result => new Decimal(result, outPrecision)),
-    );
+    const result = await this.contract.getExpectedReturnGivenIn(amount.toBigNumber(inPrecision), yieldShareIn);
+
+    return new Decimal(result, outPrecision);
   }
 }

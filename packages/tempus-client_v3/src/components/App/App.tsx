@@ -8,6 +8,7 @@ import {
   useUserPreferences,
   useServicesLoaded,
   useWalletAddress,
+  useSigner,
 } from '../../hooks';
 import Markets from '../Markets';
 import Navbar from '../Navbar/Navbar';
@@ -22,6 +23,7 @@ import TotalValueLocked from '../TotalValueLocked';
 import './App.scss';
 
 const App = () => {
+  const [signer] = useSigner();
   const [servicesLoaded, setServicesLoaded] = useServicesLoaded();
   const { t } = useTranslation();
 
@@ -36,18 +38,17 @@ const App = () => {
     { text: t('App.navPortfolio'), path: '/portfolio' },
   ];
 
+  // Init services and config - if signer changes, init services again using signer
   useEffect(() => {
-    const retrieveConfig = () => {
-      const configManger = getConfigManager();
-      configManger.init();
+    const configManger = getConfigManager();
+    configManger.init();
 
-      initServices('ethereum', configManger.getConfig());
-      initServices('fantom', configManger.getConfig());
-      initServices('ethereum-fork', configManger.getConfig());
-      setServicesLoaded(true);
-    };
-    retrieveConfig();
-  }, [setServicesLoaded]);
+    initServices('ethereum', configManger.getConfig(), signer);
+    initServices('fantom', configManger.getConfig(), signer);
+    initServices('ethereum-fork', configManger.getConfig(), signer);
+
+    setServicesLoaded(true);
+  }, [signer, setServicesLoaded]);
 
   return (
     <div className="tc__app__wrapper">

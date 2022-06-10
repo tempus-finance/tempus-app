@@ -1,4 +1,4 @@
-import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
+import { JsonRpcSigner } from '@ethersproject/providers';
 import { Chain, ChainConfig, Config } from '../interfaces';
 import { getVariableRateService } from './getVariableRateService';
 import { getTempusPoolService } from './getTempusPoolService';
@@ -29,33 +29,29 @@ type ServiceMap = {
   StorageService: StorageService;
   WalletBalanceService: WalletBalanceService;
   PoolBalanceService: PoolBalanceService;
-  WithdrawService: WithdrawService;
+  WithdrawService: WithdrawService | null;
   ERC20TokenServiceGetter: typeof getERC20TokenService;
 };
 
 const serviceMap = new Map<Chain, ServiceMap>();
 
-export const initServices = (
-  chain: Chain,
-  config: Config,
-  signerOrProvider?: JsonRpcSigner | JsonRpcProvider,
-): void => {
+export const initServices = (chain: Chain, config: Config, signer: JsonRpcSigner | null): void => {
   const getChainConfig = (selectedChain: Chain): ChainConfig => config[selectedChain];
   const getConfig = () => config;
 
   let services: ServiceMap;
 
-  if (signerOrProvider) {
+  if (signer) {
     services = {
-      TempusPoolService: getTempusPoolService(chain, getChainConfig, signerOrProvider),
-      TempusControllerService: getTempusControllerService(chain, getChainConfig, signerOrProvider),
-      StatisticsService: getStatisticsService(chain, getConfig, getChainConfig, signerOrProvider),
-      VaultService: getVaultService(chain, getChainConfig, signerOrProvider as unknown as JsonRpcSigner),
-      VariableRateService: getVariableRateService(chain, getChainConfig, signerOrProvider as unknown as JsonRpcSigner),
+      TempusPoolService: getTempusPoolService(chain, getChainConfig),
+      TempusControllerService: getTempusControllerService(chain, getChainConfig),
+      StatisticsService: getStatisticsService(chain, getConfig, getChainConfig),
+      VaultService: getVaultService(chain, getChainConfig),
+      VariableRateService: getVariableRateService(chain, getChainConfig),
       StorageService: getStorageService(),
       WalletBalanceService: getWalletBalanceService(chain, getConfig),
       PoolBalanceService: getPoolBalanceService(chain, getConfig),
-      WithdrawService: getWithdrawService(chain, getConfig),
+      WithdrawService: getWithdrawService(chain, getConfig, signer),
       ERC20TokenServiceGetter: getERC20TokenService,
     };
   } else {
@@ -68,7 +64,7 @@ export const initServices = (
       StorageService: getStorageService(),
       WalletBalanceService: getWalletBalanceService(chain, getConfig),
       PoolBalanceService: getPoolBalanceService(chain, getConfig),
-      WithdrawService: getWithdrawService(chain, getConfig),
+      WithdrawService: null, // Withdraw service needs user wallet in order to work
       ERC20TokenServiceGetter: getERC20TokenService,
     };
   }

@@ -128,7 +128,7 @@ describe('WithdrawModal', () => {
     const currencyInput = getByRole('textbox');
 
     expect(currencyInput).not.toBeNull();
-    expect(currencyInput).toHaveValue('200'); // TODO: Mock balance fetching
+    expect(currencyInput).toHaveValue('200');
   });
 
   it('withdraws on action button click', async () => {

@@ -1,4 +1,6 @@
-export const pool1 = {
+import { TempusPool } from 'tempus-core-services';
+
+export const pool1: TempusPool = {
   address: '1',
   poolId: 'ethereum-1',
   backingToken: 'ETH',
@@ -18,7 +20,13 @@ export const pool1 = {
   tokenPrecision: {
     backingToken: 18,
     yieldBearingToken: 18,
+    lpTokens: 18,
+    principals: 18,
+    yields: 18,
   },
+  disabledOperations: {},
+  showEstimatesInBackingToken: false,
+  rippleColor: '#ffffaa',
 };
 
 export const pool2 = {

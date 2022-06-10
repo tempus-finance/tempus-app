@@ -20,8 +20,11 @@
     "eslint": "^7.22.0",
     "jest": "^26.6.3",
     "ts-jest": "^26.5.4",
+    "ts-loader": "^8.4.0",
     "ts-node": "^9.1.1",
-    "typedoc": "^0.20.35"
+    "typedoc": "^0.20.35",
+    "webpack": "^4.46.0",
+    "webpack-cli": "^4.9.2"
   },
   "peerDependencies": {
     "@typescript-eslint/eslint-plugin": "^4.28.1",
@@ -35,7 +38,7 @@
     "clean": "rm -rf dist build package",
     "ts-node": "ts-node",
     "docs": "typedoc --entryPoints src/index.ts",
-    "build": "npm run clean && tsc -p tsconfig.json",
+    "build": "npm run clean && webpack --config ./webpack.config.js",
     "build-all": "npm run clean && npm run build && npm run esbuild-node && npm run esbuild-node",
     "esbuild-node": "esbuild src/index.ts --bundle --platform=node --minify --sourcemap=external --outfile=dist/esbuild/index.js",
     "esbuild-node:dev": "esbuild src/index.ts --bundle --platform=node --sourcemap=external --outfile=dist/esbuild/index.js",

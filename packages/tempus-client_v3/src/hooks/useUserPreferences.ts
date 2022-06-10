@@ -47,5 +47,3 @@ export function useUserPreferences(): [UserPreferences, (partial: Partial<UserPr
 
   return [{ slippage, slippageAuto, darkMode }, setPartialPreference];
 }
-
-export { slippage$ };

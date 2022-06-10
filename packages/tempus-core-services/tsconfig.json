@@ -6,6 +6,7 @@
     "experimentalDecorators": true,
     "sourceMap": true,
     "outDir": "./dist/",
+    "noEmit": false,
     "types": ["node", "jest"]
   },
   "include": ["src/**/*.ts"],

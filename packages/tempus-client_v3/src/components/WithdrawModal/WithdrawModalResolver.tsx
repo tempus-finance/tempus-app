@@ -13,6 +13,8 @@ export const WithdrawModalResolver: FC = () => {
   const poolBalanceData = usePoolBalance(poolAddress, chain as Chain);
 
   const poolData = getConfigManager().getPoolData(poolAddress || '');
+  const chainData = getConfigManager().getChainConfig(chain as Chain);
+
   if (!poolData) {
     // TODO - Show pool not found page 404
     return null;
@@ -61,6 +63,6 @@ export const WithdrawModalResolver: FC = () => {
 
   return (
     // TODO - Replace dummy data with data from hooks
-    <WithdrawModal tokens={tokens} onClose={() => {}} open />
+    <WithdrawModal chainConfig={chainData} tempusPool={poolData} tokens={tokens} onClose={() => {}} open />
   );
 };

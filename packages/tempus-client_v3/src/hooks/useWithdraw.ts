@@ -1,15 +1,15 @@
 import { ContractTransaction } from 'ethers';
 import { bind } from '@react-rxjs/core';
 import { createSignal } from '@react-rxjs/utils';
-import { concatMap, map, withLatestFrom } from 'rxjs';
+import { concatMap, map } from 'rxjs';
 import { Chain, Decimal, getServices, Ticker } from 'tempus-core-services';
-import { slippage$ } from './useUserPreferences';
 
 interface WithdrawRequest {
   chain: Chain;
   poolAddress: string;
   amount: Decimal;
   token: Ticker;
+  slippage: Decimal;
 }
 
 interface WithdrawStatus {
@@ -27,13 +27,12 @@ interface WithdrawResponse {
 const [withdraw$, withdraw] = createSignal<WithdrawRequest>();
 
 const withdrawStatus$ = withdraw$.pipe(
-  withLatestFrom(slippage$),
-  concatMap<[WithdrawRequest, Decimal], Promise<WithdrawResponse>>(async ([payload, slippage]) => {
-    const { chain, poolAddress, amount, token } = payload;
+  concatMap<WithdrawRequest, Promise<WithdrawResponse>>(async payload => {
+    const { chain, poolAddress, amount, token, slippage } = payload;
 
     try {
       const services = getServices(chain);
-      if (!services) {
+      if (!services || !services.WithdrawService) {
         throw new Error('useWithdraw - withdrawStatus$ - Failed to get services');
       }
 
