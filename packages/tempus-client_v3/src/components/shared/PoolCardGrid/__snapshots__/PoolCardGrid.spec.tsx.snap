@@ -9,226 +9,238 @@ exports[`PoolCardGrid renders a pool card grid 1`] = `
       class="tc__pool-card-grid__content"
     >
       <div
-        class="tc__poolCard"
-        data-card-variant="markets"
+        class="tc__poolCard-container"
       >
         <div
-          class="tc__poolCard-value-placeholder-container"
+          class="tc__poolCard"
+          data-card-variant="markets"
         >
           <div
-            class="tc__loading-placeholder tc__loading-placeholder__width-small tc__loading-placeholder__height-medium"
+            class="tc__poolCard-value-placeholder-container"
           >
             <div
-              class="tc__loading-placeholder__circle"
-            />
-            <div
-              class="tc__loading-placeholder__bar"
-            />
-          </div>
-        </div>
-        <div
-          class="tc__poolCard-protocol-placeholder-container"
-        >
-          <div
-            class="tc__loading-placeholder tc__loading-placeholder__width-tiny tc__loading-placeholder__height-small"
-          >
-            <div
-              class="tc__loading-placeholder__circle"
-            />
-            <div
-              class="tc__loading-placeholder__bar"
-            />
-          </div>
-        </div>
-        <div
-          class="tc__poolCard-info"
-        >
-          <div
-            class="tc__poolCard-info-row"
-          >
-            <div
-              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(71, 67, 80); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
-            >
-              Fixed APR
-            </div>
-            <div
-              class="tc__poolCard-value-placeholder-container"
+              class="tc__loading-placeholder tc__loading-placeholder__width-small tc__loading-placeholder__height-medium"
             >
               <div
-                class="tc__loading-placeholder tc__loading-placeholder__width-medium tc__loading-placeholder__height-medium"
+                class="tc__loading-placeholder__circle"
+              />
+              <div
+                class="tc__loading-placeholder__bar"
+              />
+            </div>
+          </div>
+          <div
+            class="tc__poolCard-protocol-placeholder-container"
+          >
+            <div
+              class="tc__loading-placeholder tc__loading-placeholder__width-tiny tc__loading-placeholder__height-small"
+            >
+              <div
+                class="tc__loading-placeholder__circle"
+              />
+              <div
+                class="tc__loading-placeholder__bar"
+              />
+            </div>
+          </div>
+          <div
+            class="tc__poolCard-info"
+          >
+            <div
+              class="tc__poolCard-info-row"
+            >
+              <div
+                style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(71, 67, 80); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+              >
+                Fixed APR
+              </div>
+              <div
+                class="tc__poolCard-value-placeholder-container"
               >
                 <div
-                  class="tc__loading-placeholder__circle"
-                />
-                <div
-                  class="tc__loading-placeholder__bar"
-                />
+                  class="tc__loading-placeholder tc__loading-placeholder__width-medium tc__loading-placeholder__height-medium"
+                >
+                  <div
+                    class="tc__loading-placeholder__circle"
+                  />
+                  <div
+                    class="tc__loading-placeholder__bar"
+                  />
+                </div>
               </div>
             </div>
-          </div>
-          <div
-            class="tc__poolCard-info-row"
-          >
             <div
-              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(71, 67, 80); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
-            >
-              Term
-            </div>
-            <div
-              class="tc__poolCard-value-placeholder-container"
+              class="tc__poolCard-info-row"
             >
               <div
-                class="tc__loading-placeholder tc__loading-placeholder__width-large tc__loading-placeholder__height-medium"
+                style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(71, 67, 80); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+              >
+                Term
+              </div>
+              <div
+                class="tc__poolCard-value-placeholder-container"
               >
                 <div
-                  class="tc__loading-placeholder__circle"
-                />
-                <div
-                  class="tc__loading-placeholder__bar"
-                />
+                  class="tc__loading-placeholder tc__loading-placeholder__width-large tc__loading-placeholder__height-medium"
+                >
+                  <div
+                    class="tc__loading-placeholder__circle"
+                  />
+                  <div
+                    class="tc__loading-placeholder__bar"
+                  />
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
       <div
-        class="tc__poolCard"
-        data-card-variant="markets"
+        class="tc__poolCard-container"
       >
         <div
-          class="tc__poolCard-value-placeholder-container"
+          class="tc__poolCard"
+          data-card-variant="markets"
         >
           <div
-            class="tc__loading-placeholder tc__loading-placeholder__width-small tc__loading-placeholder__height-medium"
+            class="tc__poolCard-value-placeholder-container"
           >
             <div
-              class="tc__loading-placeholder__circle"
-            />
-            <div
-              class="tc__loading-placeholder__bar"
-            />
-          </div>
-        </div>
-        <div
-          class="tc__poolCard-protocol-placeholder-container"
-        >
-          <div
-            class="tc__loading-placeholder tc__loading-placeholder__width-tiny tc__loading-placeholder__height-small"
-          >
-            <div
-              class="tc__loading-placeholder__circle"
-            />
-            <div
-              class="tc__loading-placeholder__bar"
-            />
-          </div>
-        </div>
-        <div
-          class="tc__poolCard-info"
-        >
-          <div
-            class="tc__poolCard-info-row"
-          >
-            <div
-              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(71, 67, 80); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
-            >
-              Term
-            </div>
-            <div
-              class="tc__poolCard-value-placeholder-container"
+              class="tc__loading-placeholder tc__loading-placeholder__width-small tc__loading-placeholder__height-medium"
             >
               <div
-                class="tc__loading-placeholder tc__loading-placeholder__width-large tc__loading-placeholder__height-medium"
+                class="tc__loading-placeholder__circle"
+              />
+              <div
+                class="tc__loading-placeholder__bar"
+              />
+            </div>
+          </div>
+          <div
+            class="tc__poolCard-protocol-placeholder-container"
+          >
+            <div
+              class="tc__loading-placeholder tc__loading-placeholder__width-tiny tc__loading-placeholder__height-small"
+            >
+              <div
+                class="tc__loading-placeholder__circle"
+              />
+              <div
+                class="tc__loading-placeholder__bar"
+              />
+            </div>
+          </div>
+          <div
+            class="tc__poolCard-info"
+          >
+            <div
+              class="tc__poolCard-info-row"
+            >
+              <div
+                style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(71, 67, 80); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+              >
+                Term
+              </div>
+              <div
+                class="tc__poolCard-value-placeholder-container"
               >
                 <div
-                  class="tc__loading-placeholder__circle"
-                />
-                <div
-                  class="tc__loading-placeholder__bar"
-                />
+                  class="tc__loading-placeholder tc__loading-placeholder__width-large tc__loading-placeholder__height-medium"
+                >
+                  <div
+                    class="tc__loading-placeholder__circle"
+                  />
+                  <div
+                    class="tc__loading-placeholder__bar"
+                  />
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
       <div
-        class="tc__poolCard"
-        data-card-variant="markets"
+        class="tc__poolCard-container"
       >
         <div
-          class="tc__poolCard-value-placeholder-container"
+          class="tc__poolCard"
+          data-card-variant="markets"
         >
           <div
-            class="tc__loading-placeholder tc__loading-placeholder__width-small tc__loading-placeholder__height-medium"
+            class="tc__poolCard-value-placeholder-container"
           >
             <div
-              class="tc__loading-placeholder__circle"
-            />
-            <div
-              class="tc__loading-placeholder__bar"
-            />
-          </div>
-        </div>
-        <div
-          class="tc__poolCard-protocol-placeholder-container"
-        >
-          <div
-            class="tc__loading-placeholder tc__loading-placeholder__width-tiny tc__loading-placeholder__height-small"
-          >
-            <div
-              class="tc__loading-placeholder__circle"
-            />
-            <div
-              class="tc__loading-placeholder__bar"
-            />
-          </div>
-        </div>
-        <div
-          class="tc__poolCard-info"
-        >
-          <div
-            class="tc__poolCard-info-row"
-          >
-            <div
-              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(71, 67, 80); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
-            >
-              Fixed APR
-            </div>
-            <div
-              class="tc__poolCard-value-placeholder-container"
+              class="tc__loading-placeholder tc__loading-placeholder__width-small tc__loading-placeholder__height-medium"
             >
               <div
-                class="tc__loading-placeholder tc__loading-placeholder__width-medium tc__loading-placeholder__height-medium"
+                class="tc__loading-placeholder__circle"
+              />
+              <div
+                class="tc__loading-placeholder__bar"
+              />
+            </div>
+          </div>
+          <div
+            class="tc__poolCard-protocol-placeholder-container"
+          >
+            <div
+              class="tc__loading-placeholder tc__loading-placeholder__width-tiny tc__loading-placeholder__height-small"
+            >
+              <div
+                class="tc__loading-placeholder__circle"
+              />
+              <div
+                class="tc__loading-placeholder__bar"
+              />
+            </div>
+          </div>
+          <div
+            class="tc__poolCard-info"
+          >
+            <div
+              class="tc__poolCard-info-row"
+            >
+              <div
+                style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(71, 67, 80); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+              >
+                Fixed APR
+              </div>
+              <div
+                class="tc__poolCard-value-placeholder-container"
               >
                 <div
-                  class="tc__loading-placeholder__circle"
-                />
-                <div
-                  class="tc__loading-placeholder__bar"
-                />
+                  class="tc__loading-placeholder tc__loading-placeholder__width-medium tc__loading-placeholder__height-medium"
+                >
+                  <div
+                    class="tc__loading-placeholder__circle"
+                  />
+                  <div
+                    class="tc__loading-placeholder__bar"
+                  />
+                </div>
               </div>
             </div>
-          </div>
-          <div
-            class="tc__poolCard-info-row"
-          >
             <div
-              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(71, 67, 80); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
-            >
-              Term
-            </div>
-            <div
-              class="tc__poolCard-value-placeholder-container"
+              class="tc__poolCard-info-row"
             >
               <div
-                class="tc__loading-placeholder tc__loading-placeholder__width-large tc__loading-placeholder__height-medium"
+                style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(71, 67, 80); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+              >
+                Term
+              </div>
+              <div
+                class="tc__poolCard-value-placeholder-container"
               >
                 <div
-                  class="tc__loading-placeholder__circle"
-                />
-                <div
-                  class="tc__loading-placeholder__bar"
-                />
+                  class="tc__loading-placeholder tc__loading-placeholder__width-large tc__loading-placeholder__height-medium"
+                >
+                  <div
+                    class="tc__loading-placeholder__circle"
+                  />
+                  <div
+                    class="tc__loading-placeholder__bar"
+                  />
+                </div>
               </div>
             </div>
           </div>

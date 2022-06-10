@@ -24,6 +24,7 @@ interface PoolCardProps {
   multiplier?: number;
   totalBalance?: Decimal;
   poolAddresses: string[];
+  cardsInGroup?: number;
   onClick: (
     chain: Chain,
     ticker: Ticker,
@@ -47,6 +48,7 @@ const PoolCard: FC<PoolCardProps> = props => {
     totalBalance,
     multiplier = 1,
     poolAddresses,
+    cardsInGroup = 1,
     onClick,
   } = props;
 
@@ -94,112 +96,117 @@ const PoolCard: FC<PoolCardProps> = props => {
   const loading = !maxApr;
 
   return (
-    <div className="tc__poolCard" data-card-variant={poolCardVariant} onClick={handleClick}>
-      {/* Pool backing token ticker */}
-      {loading && (
-        <div className="tc__poolCard-value-placeholder-container">
-          <LoadingPlaceholder width="small" height="medium" />
-        </div>
-      )}
-      {!loading && (
-        <Typography variant="subheader" weight="bold">
-          {multiplier > 1 && `x${multiplier}`} {ticker}
-        </Typography>
-      )}
-
-      {/* Pool underlying protocol name */}
-      {loading && (
-        <div className="tc__poolCard-protocol-placeholder-container">
-          <LoadingPlaceholder width="tiny" height="small" />
-        </div>
-      )}
-      {!loading && (
-        <div className="tc__poolCard-protocol">
-          <Logo type={`protocol-${protocol}`} size={20} />
-          <Typography variant="body-secondary" weight="medium">
-            {prettifyProtocolName(protocol)}
+    <div className="tc__poolCard-container" data-card-stack={cardsInGroup > 1 ? Math.min(cardsInGroup, 3) : undefined}>
+      <div className="tc__poolCard" data-card-variant={poolCardVariant} onClick={handleClick}>
+        {/* Pool backing token ticker */}
+        {loading && (
+          <div className="tc__poolCard-value-placeholder-container">
+            <LoadingPlaceholder width="small" height="medium" />
+          </div>
+        )}
+        {!loading && (
+          <Typography variant="subheader" weight="bold">
+            {multiplier > 1 && `x${multiplier}`} {ticker}
           </Typography>
-        </div>
-      )}
+        )}
 
-      <div className="tc__poolCard-info">
-        {/* APR - Shown only for non mature pools */}
-        {poolCardStatus !== 'Matured' && (
-          <div className="tc__poolCard-info-row">
-            <Typography variant="body-secondary" weight="medium" color="text-secondary">
-              {aprLabel}
+        {/* Pool underlying protocol name */}
+        {loading && (
+          <div className="tc__poolCard-protocol-placeholder-container">
+            <LoadingPlaceholder width="tiny" height="small" />
+          </div>
+        )}
+        {!loading && (
+          <div className="tc__poolCard-protocol">
+            <Logo type={`protocol-${protocol}`} size={20} />
+            <Typography variant="body-secondary" weight="medium">
+              {prettifyProtocolName(protocol)}
             </Typography>
-            {loading && (
-              <div className="tc__poolCard-value-placeholder-container">
-                <LoadingPlaceholder width="medium" height="medium" />
-              </div>
-            )}
-            {!loading && (
-              <Typography variant="subheader" weight="medium" type="mono">
-                {maxAprFormatted}
-              </Typography>
-            )}
           </div>
         )}
 
-        {/* Term */}
-        <div className="tc__poolCard-info-row">
-          <Typography variant="body-secondary" weight="medium" color="text-secondary">
-            {terms.length > 1 ? 'Earliest term' : 'Term'}
-          </Typography>
-          {loading && (
-            <div className="tc__poolCard-value-placeholder-container">
-              <LoadingPlaceholder width="large" height="medium" />
+        <div className="tc__poolCard-info">
+          {/* APR - Shown only for non mature pools */}
+          {poolCardStatus !== 'Matured' && (
+            <div className="tc__poolCard-info-row">
+              <Typography variant="body-secondary" weight="medium" color="text-secondary">
+                {aprLabel}
+              </Typography>
+              {loading && (
+                <div className="tc__poolCard-value-placeholder-container">
+                  <LoadingPlaceholder width="medium" height="medium" />
+                </div>
+              )}
+              {!loading && (
+                <Typography variant="subheader" weight="medium" type="mono">
+                  {maxAprFormatted}
+                </Typography>
+              )}
             </div>
           )}
-          {!loading && <FormattedDate date={earliestTerm} size="large" />}
+
+          {/* Term */}
+          <div className="tc__poolCard-info-row">
+            <Typography variant="body-secondary" weight="medium" color="text-secondary">
+              {terms.length > 1 ? 'Earliest term' : 'Term'}
+            </Typography>
+            {loading && (
+              <div className="tc__poolCard-value-placeholder-container">
+                <LoadingPlaceholder width="large" height="medium" />
+              </div>
+            )}
+            {!loading && <FormattedDate date={earliestTerm} size="large" />}
+          </div>
+
+          {/* Aggregated APR */}
+          {poolCardVariant === 'portfolio' && aggregatedAPRFormatted && (
+            <div className="tc__poolCard-info-row">
+              <Typography variant="body-secondary" weight="medium" color="text-secondary">
+                Aggregated APR
+              </Typography>
+              {loading && (
+                <div className="tc__poolCard-value-placeholder-container">
+                  <LoadingPlaceholder width="medium" height="medium" />
+                </div>
+              )}
+              {!loading && (
+                <Typography variant="subheader" weight="medium" type="mono">
+                  {aggregatedAPRFormatted}
+                </Typography>
+              )}
+            </div>
+          )}
+
+          {/* Total Balance */}
+          {poolCardVariant === 'portfolio' && totalBalanceFormatted && (
+            <div className="tc__poolCard-info-row">
+              <Typography variant="body-secondary" weight="medium" color="text-secondary">
+                Total Balance
+              </Typography>
+              {loading && (
+                <div className="tc__poolCard-value-placeholder-container">
+                  <LoadingPlaceholder width="medium" height="medium" />
+                </div>
+              )}
+              {!loading && (
+                <Typography variant="subheader" weight="medium" type="mono">
+                  {totalBalanceFormatted}
+                </Typography>
+              )}
+            </div>
+          )}
         </div>
 
-        {/* Aggregated APR */}
-        {poolCardVariant === 'portfolio' && aggregatedAPRFormatted && (
-          <div className="tc__poolCard-info-row">
-            <Typography variant="body-secondary" weight="medium" color="text-secondary">
-              Aggregated APR
-            </Typography>
-            {loading && (
-              <div className="tc__poolCard-value-placeholder-container">
-                <LoadingPlaceholder width="medium" height="medium" />
-              </div>
-            )}
-            {!loading && (
-              <Typography variant="subheader" weight="medium" type="mono">
-                {aggregatedAPRFormatted}
-              </Typography>
-            )}
-          </div>
-        )}
-
-        {/* Total Balance */}
-        {poolCardVariant === 'portfolio' && totalBalanceFormatted && (
-          <div className="tc__poolCard-info-row">
-            <Typography variant="body-secondary" weight="medium" color="text-secondary">
-              Total Balance
-            </Typography>
-            {loading && (
-              <div className="tc__poolCard-value-placeholder-container">
-                <LoadingPlaceholder width="medium" height="medium" />
-              </div>
-            )}
-            {!loading && (
-              <Typography variant="subheader" weight="medium" type="mono">
-                {totalBalanceFormatted}
-              </Typography>
-            )}
-          </div>
+        {!loading && (
+          <>
+            <PoolCardRipples color={color} />
+            <PoolCardFlag ticker={ticker} status={poolCardStatus} />
+          </>
         )}
       </div>
 
-      {!loading && (
-        <>
-          <PoolCardRipples color={color} />
-          <PoolCardFlag ticker={ticker} status={poolCardStatus} />
-        </>
-      )}
+      {cardsInGroup >= 2 && <div className="tc__poolCard-stack-card tc__poolCard-stack-card-2" />}
+      {cardsInGroup >= 3 && <div className="tc__poolCard-stack-card tc__poolCard-stack-card-3" />}
     </div>
   );
 };
