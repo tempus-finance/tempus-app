@@ -3,7 +3,7 @@ import { createSignal } from '@react-rxjs/utils';
 import { distinctUntilChanged } from 'rxjs';
 
 const [rawWalletAddress$, setWalletAddress] = createSignal<string>();
-const walletAddress$ = rawWalletAddress$.pipe(distinctUntilChanged());
+export const walletAddress$ = rawWalletAddress$.pipe(distinctUntilChanged());
 const stateWalletAddress$ = state(walletAddress$, '');
 
 export function useWalletAddress(): [string, (address: string) => void] {
@@ -11,5 +11,3 @@ export function useWalletAddress(): [string, (address: string) => void] {
 
   return [walletAddress, setWalletAddress];
 }
-
-export { walletAddress$ };
