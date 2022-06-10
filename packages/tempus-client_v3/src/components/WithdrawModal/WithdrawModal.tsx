@@ -2,12 +2,13 @@ import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ChainConfig, chainIdToChainName, Decimal, DecimalUtils, TempusPool, Ticker } from 'tempus-core-services';
 import { TIMEOUT_FROM_SUCCESS_TO_DEFAULT_IN_MS } from '../../constants';
-import { useSigner, useTokenApprove, useTokenBalance, useUserPreferences } from '../../hooks';
+import { useLocale, useSigner, useTokenApprove, useTokenBalance, useUserPreferences } from '../../hooks';
 import { useWithdraw } from '../../hooks/useWithdraw';
 import { TokenMetadataProp } from '../../interfaces';
 import CurrencyInputModal, { CurrencyInputModalInfoRow } from '../CurrencyInputModal';
 import { ActionButtonState } from '../shared';
 import { ModalProps } from '../shared/Modal/Modal';
+import SuccessModal from '../SuccessModal/SuccessModal';
 
 export interface WithdrawModalProps extends ModalProps {
   tokens: TokenMetadataProp;
@@ -20,9 +21,10 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
 
   const { t } = useTranslation();
 
+  const [locale] = useLocale();
   const [signer] = useSigner();
   const { approveToken, approveTokenStatus } = useTokenApprove();
-  const { withdraw } = useWithdraw();
+  const { withdraw, withdrawStatus } = useWithdraw();
   const capitalsBalanceData = useTokenBalance(tempusPool.principalsAddress, tempusPool.chain);
   const yieldsBalanceData = useTokenBalance(tempusPool.yieldsAddress, tempusPool.chain);
   const lpBalanceData = useTokenBalance(tempusPool.ammAddress, tempusPool.chain);
@@ -33,6 +35,7 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
   const [actionButtonState, setActionButtonState] = useState<ActionButtonState>('default');
   const [approvedTokens, setApprovedTokens] = useState<string[]>([]);
   const [tokensApproved, setTokensApproved] = useState<boolean>(false);
+  const [withdrawSuccessful, setWithdrawSuccessful] = useState<boolean>(false);
 
   useEffect(() => {
     if (approveTokenStatus) {
@@ -44,6 +47,18 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
       });
     }
   }, [approveTokenStatus]);
+
+  useEffect(() => {
+    if (withdrawStatus) {
+      if (withdrawStatus.success) {
+        setActionButtonState('success');
+
+        setTimeout(() => {
+          setWithdrawSuccessful(true);
+        }, TIMEOUT_FROM_SUCCESS_TO_DEFAULT_IN_MS);
+      }
+    }
+  }, [withdrawStatus]);
 
   useEffect(() => {
     const capitalsApproved = approvedTokens.findIndex(approvedToken => approvedToken === tempusPool.principalsAddress);
@@ -183,25 +198,51 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
   );
 
   return (
-    <CurrencyInputModal
-      tokens={tokens}
-      open={open}
-      onClose={onClose}
-      title={t('WithdrawModal.title')}
-      description={t('WithdrawModal.description')}
-      balance={balance}
-      infoRows={infoRows}
-      actionButtonLabels={{
-        action: {
-          default: t('WithdrawModal.labelExecuteDefault'),
-          loading: t('WithdrawModal.labelExecuteLoading'),
-          success: t('WithdrawModal.labelExecuteSuccess'),
-        },
-      }}
-      actionButtonState={actionButtonState}
-      onTransactionStart={tokensApproved ? handleWithdraw : handleApproveToken}
-      onCurrencyUpdate={handleCurrencyChange}
-      chainConfig={chainConfig}
-    />
+    <>
+      {/* Show withdraw modal if withdraw is not yet finalized */}
+      {!withdrawSuccessful && (
+        <CurrencyInputModal
+          tokens={tokens}
+          open={open}
+          onClose={onClose}
+          title={t('WithdrawModal.title')}
+          description={t('WithdrawModal.description')}
+          balance={balance}
+          infoRows={infoRows}
+          actionButtonLabels={{
+            action: {
+              default: t('WithdrawModal.labelExecuteDefault'),
+              loading: t('WithdrawModal.labelExecuteLoading'),
+              success: t('WithdrawModal.labelExecuteSuccess'),
+            },
+          }}
+          actionButtonState={actionButtonState}
+          onTransactionStart={tokensApproved ? handleWithdraw : handleApproveToken}
+          onCurrencyUpdate={handleCurrencyChange}
+          chainConfig={chainConfig}
+        />
+      )}
+      {/* Show success modal if withdraw is finalized */}
+      <SuccessModal
+        description={`You have withdrawn [AMOUNT] ${currency.ticker} with ${new Date(
+          tempusPool.maturityDate,
+        ).toLocaleDateString(locale, {
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric',
+        })} term. It should reach your wallet momentarily.`}
+        primaryButtonLabel={{
+          default: 'Manage Portfolio',
+        }}
+        secondaryButtonLabel={{
+          default: 'Deposit in another pool',
+        }}
+        onClose={() => {}}
+        onPrimaryButtonClick={() => {}}
+        onSecondaryButtonClick={() => {}}
+        open={withdrawSuccessful}
+        title="Withdraw Complete!"
+      />
+    </>
   );
 };
