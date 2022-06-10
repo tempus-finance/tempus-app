@@ -10,7 +10,7 @@ const MarketsPools = (): JSX.Element => {
   const navigate = useNavigate();
   const chains = useChainList();
   const tempusPools = useFilteredSortedPoolList();
-  const selectedChain = useSelectedChain();
+  const [selectedChain] = useSelectedChain();
 
   /**
    * If user wallet is connected and selected chain is available we want to show pools only from selected network,

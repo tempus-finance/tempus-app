@@ -8,7 +8,7 @@ import './PortfolioPositions.scss';
 
 const PortfolioPositions: FC = () => {
   const tempusPools = useUserDepositedPools();
-  const chain = useSelectedChain();
+  const [chain] = useSelectedChain();
   const balances = useTokenBalances();
 
   const cardGroups = useMemo(() => {

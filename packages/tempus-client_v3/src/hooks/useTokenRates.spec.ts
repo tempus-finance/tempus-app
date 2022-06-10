@@ -2,7 +2,7 @@ import { act, renderHook } from '@testing-library/react-hooks';
 import { of as mockOf, delay as mockDelay, throwError } from 'rxjs';
 import { Chain, Decimal, getServices, Ticker } from 'tempus-core-services';
 import { getConfigManager } from '../config/getConfigManager';
-import { reset, subscribe, useTokenRates } from './useTokenRates';
+import { resetTakenRates, subscribeTakenRates, useTokenRates } from './useTokenRates';
 
 jest.mock('tempus-core-services', () => ({
   ...jest.requireActual('tempus-core-services'),
@@ -19,8 +19,8 @@ describe('useTokenRates', () => {
 
   test('returns all tokens used by all pools', async () => {
     act(() => {
-      reset();
-      subscribe();
+      resetTakenRates();
+      subscribeTakenRates();
     });
 
     const { result, waitForNextUpdate } = renderHook(() => useTokenRates());
@@ -37,8 +37,8 @@ describe('useTokenRates', () => {
 
   test('directly get the latest value for 2nd hooks', async () => {
     act(() => {
-      reset();
-      subscribe();
+      resetTakenRates();
+      subscribeTakenRates();
     });
 
     const { result: result1, waitForNextUpdate } = renderHook(() => useTokenRates());
@@ -65,8 +65,8 @@ describe('useTokenRates', () => {
     (getServices as unknown as jest.Mock).mockReturnValue(null);
 
     act(() => {
-      reset();
-      subscribe();
+      resetTakenRates();
+      subscribeTakenRates();
     });
 
     const { result, waitForNextUpdate } = renderHook(() => useTokenRates());
@@ -97,8 +97,8 @@ describe('useTokenRates', () => {
     }));
 
     act(() => {
-      reset();
-      subscribe();
+      resetTakenRates();
+      subscribeTakenRates();
     });
 
     const { result, waitForNextUpdate } = renderHook(() => useTokenRates());
@@ -131,8 +131,8 @@ describe('useTokenRates', () => {
     }));
 
     act(() => {
-      reset();
-      subscribe();
+      resetTakenRates();
+      subscribeTakenRates();
     });
 
     const { result, waitForNextUpdate } = renderHook(() => useTokenRates());
@@ -163,8 +163,8 @@ describe('useTokenRates', () => {
     }));
 
     act(() => {
-      reset();
-      subscribe();
+      resetTakenRates();
+      subscribeTakenRates();
     });
 
     const { result, waitForNextUpdate } = renderHook(() => useTokenRates());
@@ -214,8 +214,8 @@ describe('useTokenRates', () => {
     }));
 
     act(() => {
-      reset();
-      subscribe();
+      resetTakenRates();
+      subscribeTakenRates();
     });
 
     const { result, waitForNextUpdate } = renderHook(() => useTokenRates());
@@ -263,8 +263,8 @@ describe('useTokenRates', () => {
     }));
 
     act(() => {
-      reset();
-      subscribe();
+      resetTakenRates();
+      subscribeTakenRates();
     });
 
     const { result, waitForNextUpdate } = renderHook(() => useTokenRates());
@@ -314,8 +314,8 @@ describe('useTokenRates', () => {
     }));
 
     act(() => {
-      reset();
-      subscribe();
+      resetTakenRates();
+      subscribeTakenRates();
     });
 
     const { result, waitForNextUpdate } = renderHook(() => useTokenRates());
@@ -363,8 +363,8 @@ describe('useTokenRates', () => {
     }));
 
     act(() => {
-      reset();
-      subscribe();
+      resetTakenRates();
+      subscribeTakenRates();
     });
 
     const { result, waitForNextUpdate } = renderHook(() => useTokenRates());

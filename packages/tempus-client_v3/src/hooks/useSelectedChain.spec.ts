@@ -1,13 +1,13 @@
 import { renderHook } from '@testing-library/react-hooks';
 import { act } from 'react-dom/test-utils';
 import { Chain } from 'tempus-core-services';
-import { setSelectedChain, useSelectedChain } from './useSelectedChain';
+import { useSelectedChain } from './useSelectedChain';
 
 describe('useSelectedChain', () => {
   it('sets default value to null', () => {
     const { result } = renderHook(() => useSelectedChain());
 
-    const selectedChain = result.current;
+    const [selectedChain] = result.current;
 
     expect(selectedChain).toEqual(null);
   });
@@ -15,7 +15,7 @@ describe('useSelectedChain', () => {
   it('properly sets new chain', async () => {
     const { result, waitForNextUpdate } = renderHook(() => useSelectedChain());
 
-    const selectedChain = result.current;
+    const [selectedChain, setSelectedChain] = result.current;
 
     const chainName: Chain = 'ethereum';
 
@@ -27,7 +27,7 @@ describe('useSelectedChain', () => {
       await waitForNextUpdate();
     });
 
-    const selectedChainAfterUpdate = result.current;
+    const [selectedChainAfterUpdate] = result.current;
 
     expect(selectedChainAfterUpdate).toEqual(chainName);
   });

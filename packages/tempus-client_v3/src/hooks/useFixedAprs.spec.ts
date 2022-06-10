@@ -21,7 +21,7 @@ import {
   pool4 as mockPool4,
   pool5 as mockPool5,
 } from '../setupTests';
-import { useFixedAprs, subscribe, reset } from './useFixedAprs';
+import { useFixedAprs, subscribeFixedAprs, resetFixedAprs } from './useFixedAprs';
 
 jest.mock('tempus-core-services', () => ({
   ...jest.requireActual('tempus-core-services'),
@@ -74,8 +74,8 @@ describe('useFixedAprs', () => {
     }));
 
     act(() => {
-      reset();
-      subscribe();
+      resetFixedAprs();
+      subscribeFixedAprs();
     });
 
     const { result } = renderHook(() => useFixedAprs());
@@ -98,8 +98,8 @@ describe('useFixedAprs', () => {
     }));
 
     act(() => {
-      reset();
-      subscribe();
+      resetFixedAprs();
+      subscribeFixedAprs();
     });
 
     const { result, waitForNextUpdate } = renderHook(() => useFixedAprs());
@@ -130,8 +130,8 @@ describe('useFixedAprs', () => {
     }));
 
     act(() => {
-      reset();
-      subscribe();
+      resetFixedAprs();
+      subscribeFixedAprs();
     });
 
     const { result, waitForNextUpdate } = renderHook(() => useFixedAprs());
@@ -158,8 +158,8 @@ describe('useFixedAprs', () => {
     }));
 
     act(() => {
-      reset();
-      subscribe();
+      resetFixedAprs();
+      subscribeFixedAprs();
     });
 
     const { result: result1, waitForNextUpdate } = renderHook(() => useFixedAprs());
@@ -204,8 +204,8 @@ describe('useFixedAprs', () => {
     }));
 
     act(() => {
-      reset();
-      subscribe();
+      resetFixedAprs();
+      subscribeFixedAprs();
     });
 
     const { result, waitForNextUpdate } = renderHook(() => useFixedAprs());
@@ -233,8 +233,8 @@ describe('useFixedAprs', () => {
     (getDefinedServices as unknown as jest.Mock).mockReturnValue(null);
 
     act(() => {
-      reset();
-      subscribe();
+      resetFixedAprs();
+      subscribeFixedAprs();
     });
 
     const { result, waitForNextUpdate } = renderHook(() => useFixedAprs());
@@ -259,8 +259,8 @@ describe('useFixedAprs', () => {
     });
 
     act(() => {
-      reset();
-      subscribe();
+      resetFixedAprs();
+      subscribeFixedAprs();
     });
 
     const { result, waitForNextUpdate } = renderHook(() => useFixedAprs());
@@ -298,8 +298,8 @@ describe('useFixedAprs', () => {
     }));
 
     act(() => {
-      reset();
-      subscribe();
+      resetFixedAprs();
+      subscribeFixedAprs();
     });
 
     const { result, waitForNextUpdate } = renderHook(() => useFixedAprs());
@@ -337,8 +337,8 @@ describe('useFixedAprs', () => {
     }));
 
     act(() => {
-      reset();
-      subscribe();
+      resetFixedAprs();
+      subscribeFixedAprs();
     });
 
     const { result, waitForNextUpdate } = renderHook(() => useFixedAprs());
@@ -376,8 +376,8 @@ describe('useFixedAprs', () => {
     }));
 
     act(() => {
-      reset();
-      subscribe();
+      resetFixedAprs();
+      subscribeFixedAprs();
     });
 
     const { result, waitForNextUpdate } = renderHook(() => useFixedAprs());
@@ -413,8 +413,8 @@ describe('useFixedAprs', () => {
     }));
 
     act(() => {
-      reset();
-      subscribe();
+      resetFixedAprs();
+      subscribeFixedAprs();
     });
 
     const { result, waitForNextUpdate } = renderHook(() => useFixedAprs());
@@ -448,8 +448,8 @@ describe('useFixedAprs', () => {
     }));
 
     act(() => {
-      reset();
-      subscribe();
+      resetFixedAprs();
+      subscribeFixedAprs();
     });
 
     const { result, waitForNextUpdate } = renderHook(() => useFixedAprs());

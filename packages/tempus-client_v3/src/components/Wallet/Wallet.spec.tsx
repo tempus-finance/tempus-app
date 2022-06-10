@@ -82,6 +82,7 @@ describe('Wallet', () => {
   });
 
   it('renders a "Connect Wallet" button', () => {
+    (useSelectedChain as jest.Mock).mockReturnValue([null, () => false]);
     const [{ container }] = subject({});
 
     expect(container).not.toBeNull();
@@ -93,7 +94,7 @@ describe('Wallet', () => {
       { wallet: { accounts: [{ address: '0x123123123' }] } },
       () => {},
     ]);
-    (useSelectedChain as jest.Mock).mockReturnValue('ethereum' as Chain);
+    (useSelectedChain as jest.Mock).mockReturnValue(['ethereum' as Chain, () => false]);
     (useTokenBalance as jest.Mock).mockReturnValue({
       address: ZERO_ADDRESS,
       balance: new Decimal(10.456),

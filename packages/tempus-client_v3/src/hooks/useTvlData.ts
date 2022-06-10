@@ -4,6 +4,7 @@ import {
   catchError,
   combineLatest,
   debounce,
+  distinctUntilChanged,
   filter,
   interval,
   map,
@@ -30,7 +31,17 @@ const DEFAULT_VALUE: PoolTvlMap = {};
 
 const intervalBeat$: Observable<number> = interval(POLLING_INTERVAL_IN_MS).pipe(startWith(0));
 
-export const poolTvls$ = new BehaviorSubject<PoolTvlMap>(DEFAULT_VALUE);
+const rawPoolTvls$ = new BehaviorSubject<PoolTvlMap>(DEFAULT_VALUE);
+export const poolTvls$ = rawPoolTvls$.pipe(
+  // the throttle for comparison is 2 decimal places for TVL
+  distinctUntilChanged(
+    (previous, current) =>
+      Object.keys(current).length === Object.keys(previous).length &&
+      Object.keys(current).every(
+        chainPoolAddress => current[chainPoolAddress].toRounded(2) === previous[chainPoolAddress].toRounded(2),
+      ),
+  ),
+);
 
 const fetchData = (tempusPool: TempusPool): Observable<PoolTvlMap> => {
   const { chain, address, backingToken } = tempusPool;
@@ -81,7 +92,7 @@ const stream$ = merge(periodicStream$, eventStream$).pipe(
     {} as PoolTvlMap,
   ),
   debounce<PoolTvlMap>(() => interval(DEBOUNCE_IN_MS)),
-  tap(poolTvls => poolTvls$.next(poolTvls)),
+  tap(poolTvls => rawPoolTvls$.next(poolTvls)),
 );
 
 const totalTvl$: Observable<Decimal> = poolTvls$.pipe(
@@ -94,11 +105,11 @@ const totalTvl$: Observable<Decimal> = poolTvls$.pipe(
 export const [useTvlData] = bind(poolTvls$, {});
 export const [useTotalTvl] = bind(totalTvl$, ZERO);
 
-let subscription: Subscription = stream$.subscribe();
+let subscription: Subscription;
 
-export const subscribe = (): void => {
-  unsubscribe();
+export const subscribeTvlData = (): void => {
+  unsubscribeTvlData();
   subscription = stream$.subscribe();
 };
-export const unsubscribe = (): void => subscription?.unsubscribe?.();
-export const reset = (): void => poolTvls$.next(DEFAULT_VALUE);
+export const unsubscribeTvlData = (): void => subscription?.unsubscribe?.();
+export const resetTvlData = (): void => rawPoolTvls$.next(DEFAULT_VALUE);
