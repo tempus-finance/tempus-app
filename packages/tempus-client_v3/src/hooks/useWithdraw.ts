@@ -10,6 +10,10 @@ interface WithdrawRequest {
   poolAddress: string;
   amount: Decimal;
   token: Ticker;
+  tokenBalance: Decimal;
+  capitalsBalance: Decimal;
+  yieldsBalance: Decimal;
+  lpBalance: Decimal;
   slippage: Decimal;
   signer: JsonRpcSigner;
 }
@@ -30,7 +34,18 @@ const [withdraw$, withdraw] = createSignal<WithdrawRequest>();
 
 const withdrawStatus$ = withdraw$.pipe(
   concatMap<WithdrawRequest, Promise<WithdrawResponse>>(async payload => {
-    const { chain, poolAddress, amount, token, slippage, signer } = payload;
+    const {
+      chain,
+      poolAddress,
+      amount,
+      token,
+      tokenBalance,
+      capitalsBalance,
+      yieldsBalance,
+      lpBalance,
+      slippage,
+      signer,
+    } = payload;
 
     try {
       const services = getServices(chain);
@@ -38,7 +53,17 @@ const withdrawStatus$ = withdraw$.pipe(
         throw new Error('useWithdraw - withdrawStatus$ - Failed to get services');
       }
 
-      const contractTransaction = await services.WithdrawService.withdraw(poolAddress, amount, token, slippage, signer);
+      const contractTransaction = await services.WithdrawService.withdraw(
+        poolAddress,
+        amount,
+        token,
+        tokenBalance,
+        capitalsBalance,
+        yieldsBalance,
+        lpBalance,
+        slippage,
+        signer,
+      );
 
       return await Promise.resolve({
         contractTransaction,

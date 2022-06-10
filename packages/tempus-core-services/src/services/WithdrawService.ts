@@ -21,12 +21,13 @@ export class WithdrawService extends BaseService {
     poolAddress: string,
     amountToGet: Decimal,
     tokenToGet: Ticker,
+    tokenBalance: Decimal,
+    capitalsBalance: Decimal,
+    yieldsBalance: Decimal,
+    lpBalance: Decimal,
     slippage: Decimal,
     signer: JsonRpcSigner,
   ): Promise<ContractTransaction> {
-    // In order to avoid unused parameter lint error
-    console.log(amountToGet.toString());
-
     const statsContractAddress = this.getStatsAddressForPool(poolAddress);
     const tempusControllerContractAddress = this.getTempusControllerAddressForPool(poolAddress);
     const ammContractAddress = this.getAmmAddressForPool(poolAddress);
@@ -37,10 +38,11 @@ export class WithdrawService extends BaseService {
       tokenPrecision: { backingToken, yieldBearingToken, principals, yields, lpTokens },
     } = poolConfig;
 
-    // TODO - Calculate following amounts using amountToGet+tokenToGet params that user entered in withdraw modal
-    const lpAmount = new Decimal(0.01);
-    const capitalsAmount = new Decimal(0.01);
-    const yieldsAmount = new Decimal(0.01);
+    const ratio = amountToGet.div(tokenBalance);
+
+    const lpAmount = lpBalance.mul(ratio);
+    const capitalsAmount = capitalsBalance.mul(ratio);
+    const yieldsAmount = yieldsBalance.mul(ratio);
 
     const tempusControllerContract = new TempusControllerV1Contract(
       this.chain,

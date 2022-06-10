@@ -25,7 +25,7 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
   const { withdraw } = useWithdraw();
   const capitalsBalanceData = useTokenBalance(tempusPool.principalsAddress, tempusPool.chain);
   const yieldsBalanceData = useTokenBalance(tempusPool.yieldsAddress, tempusPool.chain);
-  const lpTokenBalanceData = useTokenBalance(tempusPool.ammAddress, tempusPool.chain);
+  const lpBalanceData = useTokenBalance(tempusPool.ammAddress, tempusPool.chain);
   const [{ slippage }] = useUserPreferences();
 
   const [balance, setBalance] = useState(tokens[0].balance);
@@ -100,12 +100,12 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
 
     // Approve all share tokens that have balance
     if (signer) {
-      if (lpTokenBalanceData?.balance?.gt(0)) {
+      if (lpBalanceData?.balance?.gt(0)) {
         approveToken({
           chain: tempusPool.chain,
           tokenAddress: tempusPool.ammAddress,
           spenderAddress: chainConfig.tempusControllerContract,
-          amount: lpTokenBalanceData.balance,
+          amount: lpBalanceData.balance,
           signer,
         });
       }
@@ -140,7 +140,7 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
     tempusPool.ammAddress,
     capitalsBalanceData?.balance,
     yieldsBalanceData?.balance,
-    lpTokenBalanceData?.balance,
+    lpBalanceData?.balance,
     approveTokenStatus?.contractTransaction?.hash,
   ]);
 
@@ -150,12 +150,16 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
 
       const chain = chainConfig.chainId ? chainIdToChainName(chainConfig.chainId) : undefined;
 
-      if (signer && chain) {
+      if (signer && chain && capitalsBalanceData?.balance && yieldsBalanceData?.balance && lpBalanceData?.balance) {
         withdraw({
           amount,
           chain,
           poolAddress: tempusPool.address,
           token: currency.ticker,
+          tokenBalance: currency.balance,
+          capitalsBalance: capitalsBalanceData.balance,
+          yieldsBalance: yieldsBalanceData.balance,
+          lpBalance: lpBalanceData.balance,
           slippage,
           signer,
         });
@@ -164,12 +168,16 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
       return approveTokenStatus?.contractTransaction?.hash || '0x0';
     },
     [
-      approveTokenStatus?.contractTransaction?.hash,
-      chainConfig.chainId,
-      currency.ticker,
-      slippage,
-      tempusPool.address,
       signer,
+      slippage,
+      chainConfig.chainId,
+      tempusPool.address,
+      capitalsBalanceData?.balance,
+      yieldsBalanceData?.balance,
+      lpBalanceData?.balance,
+      currency.ticker,
+      currency.balance,
+      approveTokenStatus?.contractTransaction?.hash,
       withdraw,
     ],
   );
