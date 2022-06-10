@@ -7,6 +7,12 @@
 
 .tc__poolsHeading-content {
   height: 32px;
+  display: flex;
+  align-items: center;
+
+  .tc__btn {
+    margin-right: 8px;
+  }
 }
 
 .tc__poolsHeading-overlay {
