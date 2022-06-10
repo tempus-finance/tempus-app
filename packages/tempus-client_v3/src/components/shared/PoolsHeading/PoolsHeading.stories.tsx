@@ -11,6 +11,10 @@ export default {
         type: 'text',
       },
     },
+    onBackButtonClick: {
+      required: false,
+      defaultValue: undefined,
+    },
   },
 } as ComponentMeta<typeof PoolsHeading>;
 

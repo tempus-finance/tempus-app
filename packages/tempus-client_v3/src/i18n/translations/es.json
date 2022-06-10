@@ -84,6 +84,11 @@
     "titleTotalPortfolioValue": "",
     "titleTotalYieldEarned": ""
   },
+  "PortfolioPositions": {
+    "titleNoPositions": "Sin posición",
+    "descriptionNoPositions": "Tu billetera está vacía. Hacer algo.",
+    "buttonBrowseMarkets": "Ir a Mercados"
+  },
   "PortfolioSubheader": {
     "tabOverview": "",
     "tabPositions": ""

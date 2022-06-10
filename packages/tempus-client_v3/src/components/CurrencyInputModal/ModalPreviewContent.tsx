@@ -12,7 +12,7 @@ interface ModalPreviewContentProps {
 
 const ModalPreviewContent: FC<ModalPreviewContentProps> = props => {
   const { actionButtonLabels, actionButtonDisabled, onActionButtonClick, onConnectWalletClick, children } = props;
-  const walletAddress = useWalletAddress();
+  const [walletAddress] = useWalletAddress();
 
   return (
     <>
