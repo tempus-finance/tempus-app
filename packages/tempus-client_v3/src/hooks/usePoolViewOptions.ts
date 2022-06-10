@@ -1,6 +1,6 @@
 import { bind, state, useStateObservable } from '@react-rxjs/core';
 import { createSignal } from '@react-rxjs/utils';
-import { combineLatest, map, withLatestFrom } from 'rxjs';
+import { combineLatest, distinctUntilChanged, map, withLatestFrom } from 'rxjs';
 import { useCallback } from 'react';
 import { TempusPool, ZERO } from 'tempus-core-services';
 import { FilterType, PoolType, SortOrder, SortType, ViewType } from '../interfaces';
@@ -19,11 +19,17 @@ export interface PoolViewOptions {
   sortOrder: SortOrder;
 }
 
-const [viewType$, setViewType] = createSignal<ViewType>();
-const [poolType$, setPoolType] = createSignal<PoolType>();
-const [filters$, setFilters] = createSignal<Set<FilterType>>();
-const [sortType$, setSortType] = createSignal<SortType>();
-const [sortOrder$, setSortOrder] = createSignal<SortOrder>();
+const [rawViewType$, setViewType] = createSignal<ViewType>();
+const [rawPoolType$, setPoolType] = createSignal<PoolType>();
+const [rawFilters$, setFilters] = createSignal<Set<FilterType>>();
+const [rawSortType$, setSortType] = createSignal<SortType>();
+const [rawSortOrder$, setSortOrder] = createSignal<SortOrder>();
+
+const viewType$ = rawViewType$.pipe(distinctUntilChanged());
+const poolType$ = rawPoolType$.pipe(distinctUntilChanged());
+const filters$ = rawFilters$.pipe(distinctUntilChanged());
+const sortType$ = rawSortType$.pipe(distinctUntilChanged());
+const sortOrder$ = rawSortOrder$.pipe(distinctUntilChanged());
 
 const stateViewType$ = state(viewType$, 'grid');
 const statePoolType$ = state(poolType$, 'all');

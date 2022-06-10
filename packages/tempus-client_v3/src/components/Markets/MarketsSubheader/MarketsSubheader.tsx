@@ -22,7 +22,7 @@ import {
 const MarketsSubheader = () => {
   const { t } = useTranslation();
   const [poolViewOptions, setPoolViewOptions] = usePoolViewOptions();
-  const selectedChain = useSelectedChain();
+  const [selectedChain] = useSelectedChain();
   const activePoolList = useActivePoolList();
   const inactivePoolList = useInactivePoolList();
   const maturedPoolList = useMaturedPoolList();

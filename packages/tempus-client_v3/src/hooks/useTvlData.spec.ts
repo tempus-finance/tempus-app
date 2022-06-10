@@ -2,7 +2,7 @@ import { act, renderHook } from '@testing-library/react-hooks';
 import { of as mockOf, throwError } from 'rxjs';
 import { Decimal, getDefinedServices } from 'tempus-core-services';
 import { getConfigManager } from '../config/getConfigManager';
-import { useTvlData, useTotalTvl, subscribe, reset } from './useTvlData';
+import { useTvlData, useTotalTvl, subscribeTvlData, resetTvlData } from './useTvlData';
 
 jest.mock('tempus-core-services', () => ({
   ...jest.requireActual('tempus-core-services'),
@@ -19,8 +19,8 @@ describe('useTvlData', () => {
 
   test('returns a total TVL of all pools', async () => {
     act(() => {
-      reset();
-      subscribe();
+      resetTvlData();
+      subscribeTvlData();
     });
 
     const { result, waitForNextUpdate } = renderHook(() => useTotalTvl());
@@ -33,8 +33,8 @@ describe('useTvlData', () => {
 
   test('returns a TVL map of all pools', async () => {
     act(() => {
-      reset();
-      subscribe();
+      resetTvlData();
+      subscribeTvlData();
     });
 
     const { result, waitForNextUpdate } = renderHook(() => useTvlData());
@@ -55,8 +55,8 @@ describe('useTvlData', () => {
 
   test('directly get the latest value for 2nd hooks', async () => {
     act(() => {
-      reset();
-      subscribe();
+      resetTvlData();
+      subscribeTvlData();
     });
 
     const { result: result1, waitForNextUpdate } = renderHook(() => useTvlData());
@@ -86,8 +86,8 @@ describe('useTvlData', () => {
     (getDefinedServices as unknown as jest.Mock).mockReturnValue(null);
 
     act(() => {
-      reset();
-      subscribe();
+      resetTvlData();
+      subscribeTvlData();
     });
 
     const { result, waitForNextUpdate } = renderHook(() => useTvlData());
@@ -112,8 +112,8 @@ describe('useTvlData', () => {
     });
 
     act(() => {
-      reset();
-      subscribe();
+      resetTvlData();
+      subscribeTvlData();
     });
 
     const { result, waitForNextUpdate } = renderHook(() => useTvlData());
@@ -142,8 +142,8 @@ describe('useTvlData', () => {
     }));
 
     act(() => {
-      reset();
-      subscribe();
+      resetTvlData();
+      subscribeTvlData();
     });
 
     const { result, waitForNextUpdate } = renderHook(() => useTvlData());
@@ -170,8 +170,8 @@ describe('useTvlData', () => {
     }));
 
     act(() => {
-      reset();
-      subscribe();
+      resetTvlData();
+      subscribeTvlData();
     });
 
     const { result, waitForNextUpdate } = renderHook(() => useTvlData());

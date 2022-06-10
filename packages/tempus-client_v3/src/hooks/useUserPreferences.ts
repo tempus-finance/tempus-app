@@ -1,6 +1,7 @@
+import { useCallback } from 'react';
+import { distinctUntilChanged } from 'rxjs';
 import { state, useStateObservable } from '@react-rxjs/core';
 import { createSignal } from '@react-rxjs/utils';
-import { useCallback } from 'react';
 import { Decimal } from 'tempus-core-services';
 
 export interface UserPreferences {
@@ -9,9 +10,13 @@ export interface UserPreferences {
   darkMode: boolean;
 }
 
-const [slippage$, setSlippage] = createSignal<Decimal>();
-const [slippageAuto$, setSlippageAuto] = createSignal<boolean>();
-const [darkMode$, setDarkmode] = createSignal<boolean>();
+const [rawSlippage$, setSlippage] = createSignal<Decimal>();
+const [rawSlippageAuto$, setSlippageAuto] = createSignal<boolean>();
+const [rawDarkMode$, setDarkmode] = createSignal<boolean>();
+
+const slippage$ = rawSlippage$.pipe(distinctUntilChanged());
+const slippageAuto$ = rawSlippageAuto$.pipe(distinctUntilChanged());
+const darkMode$ = rawDarkMode$.pipe(distinctUntilChanged());
 
 const stateSlippage$ = state(slippage$, new Decimal(0.02));
 const stateSlippageAuto$ = state(slippageAuto$, false);

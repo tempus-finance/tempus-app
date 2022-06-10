@@ -1,9 +1,11 @@
+import { distinctUntilChanged } from 'rxjs';
 import { state, useStateObservable } from '@react-rxjs/core';
 import { createSignal } from '@react-rxjs/utils';
 import { useCallback } from 'react';
 import i18n, { SupportedLocale } from '../i18n';
 
-const [locale$, setLocale] = createSignal<SupportedLocale>();
+const [rawLocale$, setLocale] = createSignal<SupportedLocale>();
+const locale$ = rawLocale$.pipe(distinctUntilChanged());
 const state$ = state(locale$, 'en');
 
 export function useLocale(): [SupportedLocale, (value: SupportedLocale) => void] {

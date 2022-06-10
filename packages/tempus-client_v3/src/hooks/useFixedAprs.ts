@@ -4,6 +4,7 @@ import {
   catchError,
   combineLatest,
   debounce,
+  distinctUntilChanged,
   filter,
   from,
   interval,
@@ -40,7 +41,15 @@ const DEFAULT_VALUE: PoolFixedAprMap = {};
 
 const intervalBeat$: Observable<number> = interval(POLLING_INTERVAL_IN_MS).pipe(startWith(0));
 
-export const poolAprs$ = new BehaviorSubject<PoolFixedAprMap>(DEFAULT_VALUE);
+const rawPoolAprs$ = new BehaviorSubject<PoolFixedAprMap>(DEFAULT_VALUE);
+export const poolAprs$ = rawPoolAprs$.pipe(
+  // TODO: we can set the throttle for comparison as TVL if necessary
+  distinctUntilChanged(
+    (previous, current) =>
+      Object.keys(current).length === Object.keys(previous).length &&
+      Object.keys(current).every(chainPoolAddress => current[chainPoolAddress].equals(previous[chainPoolAddress])),
+  ),
+);
 
 const getLatestEventBlock = (tempusPool: TempusPool) => {
   const { address, poolId, chain } = tempusPool;
@@ -144,16 +153,16 @@ const stream$ = merge(periodicStream$, eventStream$).pipe(
     {} as PoolFixedAprMap,
   ),
   debounce(() => interval(DEBOUNCE_IN_MS)),
-  tap(poolTvls => poolAprs$.next(poolTvls)),
+  tap(poolTvls => rawPoolAprs$.next(poolTvls)),
 );
 
 export const [useFixedAprs] = bind(poolAprs$, {});
 
-let subscription: Subscription = stream$.subscribe();
+let subscription: Subscription;
 
-export const subscribe = (): void => {
-  unsubscribe();
+export const subscribeFixedAprs = (): void => {
+  unsubscribeFixedAprs();
   subscription = stream$.subscribe();
 };
-export const unsubscribe = (): void => subscription?.unsubscribe?.();
-export const reset = (): void => poolAprs$.next(DEFAULT_VALUE);
+export const unsubscribeFixedAprs = (): void => subscription?.unsubscribe?.();
+export const resetFixedAprs = (): void => rawPoolAprs$.next(DEFAULT_VALUE);

@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
 import {
   useLocale,
   useSelectedChain,
@@ -7,6 +7,9 @@ import {
   useWalletAddress,
   usePoolViewOptions,
   useSigner,
+  subscribeFixedAprs,
+  subscribeTakenRates,
+  subscribeTvlData,
 } from '../../hooks';
 
 export const HookSubscriber: FC = () => {
@@ -19,7 +22,12 @@ export const HookSubscriber: FC = () => {
   useWalletAddress();
   useSigner();
 
-  // TODO: may consider to call stream$.subscribe() here instead of app start
+  // subscribe for the steam$ of the polling hooks
+  useEffect(() => {
+    subscribeTvlData();
+    subscribeTakenRates();
+    subscribeFixedAprs();
+  }, []);
 
   return null;
 };
