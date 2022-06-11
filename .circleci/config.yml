@@ -12,6 +12,7 @@ jobs:
   bootstrap:
     docker:
       - image: cimg/node:15.1
+    resource_class: large
     steps:
       - checkout
       - node/install-packages
@@ -55,7 +56,6 @@ jobs:
   build-storybook:
     docker:
       - image: cimg/node:15.1
-    resource_class: large
     steps:
       - attach_workspace:
           at: ./
