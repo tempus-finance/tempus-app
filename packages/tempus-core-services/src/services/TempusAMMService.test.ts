@@ -1,5 +1,5 @@
 import * as ejs from 'ethers';
-import TempusAMMABI from '../abi/TempusAMM.json';
+import TempusAMMABI from '../abi/TempusAMMV1ABI.json';
 import { TempusAMMService } from './TempusAMMService';
 
 jest.mock('@ethersproject/providers');

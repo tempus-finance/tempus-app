@@ -1,7 +1,7 @@
 import { BigNumber, Contract, ethers } from 'ethers';
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
-import { TempusAMM } from '../abi/TempusAMM';
-import TempusAMMABI from '../abi/TempusAMM.json';
+import { TempusAMM } from '../abi/TempusAMMV1Typings';
+import TempusAMMABI from '../abi/TempusAMMV1ABI.json';
 import { Chain, ChainConfig } from '../interfaces';
 
 type TempusAMMServiceParameters = {
