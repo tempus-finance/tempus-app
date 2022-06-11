@@ -1,12 +1,12 @@
 import { act, renderHook } from '@testing-library/react-hooks';
 import { of as mockOf, delay as mockDelay, throwError } from 'rxjs';
-import { Chain, Decimal, getServices, Ticker } from 'tempus-core-services';
+import { Chain, Decimal, getDefinedServices, Ticker } from 'tempus-core-services';
 import { getConfigManager } from '../config/getConfigManager';
 import { resetTakenRates, subscribeTakenRates, useTokenRates } from './useTokenRates';
 
 jest.mock('tempus-core-services', () => ({
   ...jest.requireActual('tempus-core-services'),
-  getServices: jest.fn(),
+  getDefinedServices: jest.fn(),
 }));
 
 jest.mock('./useServicesLoaded', () => ({
@@ -52,17 +52,41 @@ describe('useTokenRates', () => {
     expect(result1.current['fantom-0x74b23882a30290451A17c44f4F05243b6b58C76d']).toEqual(new Decimal(3001));
     expect(result1.current['fantom-0x04068da6c83afcfa0e13ba15a6696662335d5b75']).toEqual(new Decimal(1.001));
 
-    const functionCalledCount = (getServices as jest.Mock).mock.calls.length;
+    const functionCalledCount = (getDefinedServices as jest.Mock).mock.calls.length;
 
     const { result: result2 } = renderHook(() => useTokenRates());
 
     expect(result2.current).toEqual(result1.current);
-    expect(getServices).toHaveBeenCalledTimes(functionCalledCount);
+    expect(getDefinedServices).toHaveBeenCalledTimes(functionCalledCount);
   });
 
   test('no updates when service map is null', async () => {
     jest.spyOn(console, 'error').mockImplementation();
-    (getServices as unknown as jest.Mock).mockReturnValue(null);
+    (getDefinedServices as unknown as jest.Mock).mockReturnValue(null);
+
+    act(() => {
+      resetTakenRates();
+      subscribeTakenRates();
+    });
+
+    const { result, waitForNextUpdate } = renderHook(() => useTokenRates());
+
+    expect(result.current).toEqual({});
+
+    try {
+      await waitForNextUpdate();
+    } catch (e) {
+      // when error, the failed polling will be skipped and thus no updates on hook
+    }
+
+    expect(console.error).toHaveBeenCalled();
+
+    (console.error as jest.Mock).mockRestore();
+  });
+
+  test('no updates when there is error when getDefinedServices()', async () => {
+    jest.spyOn(console, 'error').mockImplementation();
+    (getDefinedServices as unknown as jest.Mock).mockReturnValue(null);
 
     act(() => {
       resetTakenRates();
@@ -86,7 +110,7 @@ describe('useTokenRates', () => {
 
   test('no updates when StatisticsService.getRate return null', async () => {
     jest.spyOn(console, 'error').mockImplementation();
-    (getServices as unknown as jest.Mock).mockImplementation(() => ({
+    (getDefinedServices as unknown as jest.Mock).mockImplementation(() => ({
       StatisticsService: {
         getRate: jest.fn().mockReturnValue(mockOf(null)),
       },
@@ -118,7 +142,7 @@ describe('useTokenRates', () => {
 
   test('no updates when there is error when StatisticsService.getRate()', async () => {
     jest.spyOn(console, 'error').mockImplementation();
-    (getServices as unknown as jest.Mock).mockImplementation(() => ({
+    (getDefinedServices as unknown as jest.Mock).mockImplementation(() => ({
       StatisticsService: {
         getRate: jest.fn().mockImplementation(() => {
           throw new Error();
@@ -152,7 +176,7 @@ describe('useTokenRates', () => {
 
   test('no updates when there is Observale<Error> when StatisticsService.getRate()', async () => {
     jest.spyOn(console, 'error').mockImplementation();
-    (getServices as unknown as jest.Mock).mockImplementation(() => ({
+    (getDefinedServices as unknown as jest.Mock).mockImplementation(() => ({
       StatisticsService: {
         getRate: jest.fn().mockReturnValue(throwError(() => new Error())),
       },
@@ -184,8 +208,7 @@ describe('useTokenRates', () => {
 
   test('no updates when there is error when TempusPoolService.currentInterestRate()', async () => {
     jest.spyOn(console, 'error').mockImplementation();
-    (getServices as unknown as jest.Mock).mockImplementation(() => ({
-      ...getServices,
+    (getDefinedServices as unknown as jest.Mock).mockImplementation(() => ({
       StatisticsService: {
         getRate: jest.fn().mockImplementation((chain: Chain, tokenTicker: Ticker) => {
           let price = new Decimal(0);
@@ -235,8 +258,7 @@ describe('useTokenRates', () => {
 
   test('no updates when there is Observable<Error> when TempusPoolService.currentInterestRate()', async () => {
     jest.spyOn(console, 'error').mockImplementation();
-    (getServices as unknown as jest.Mock).mockImplementation(() => ({
-      ...getServices,
+    (getDefinedServices as unknown as jest.Mock).mockImplementation(() => ({
       StatisticsService: {
         getRate: jest.fn().mockImplementation((chain: Chain, tokenTicker: Ticker) => {
           let price = new Decimal(0);
@@ -284,8 +306,7 @@ describe('useTokenRates', () => {
 
   test('no updates when there is error when TempusPoolService.numAssetsPerYieldToken()', async () => {
     jest.spyOn(console, 'error').mockImplementation();
-    (getServices as unknown as jest.Mock).mockImplementation(() => ({
-      ...getServices,
+    (getDefinedServices as unknown as jest.Mock).mockImplementation(() => ({
       StatisticsService: {
         getRate: jest.fn().mockImplementation((chain: Chain, tokenTicker: Ticker) => {
           let price = new Decimal(0);
@@ -335,8 +356,7 @@ describe('useTokenRates', () => {
 
   test('no updates when there is Observable<Error> when TempusPoolService.numAssetsPerYieldToken()', async () => {
     jest.spyOn(console, 'error').mockImplementation();
-    (getServices as unknown as jest.Mock).mockImplementation(() => ({
-      ...getServices,
+    (getDefinedServices as unknown as jest.Mock).mockImplementation(() => ({
       StatisticsService: {
         getRate: jest.fn().mockImplementation((chain: Chain, tokenTicker: Ticker) => {
           let price = new Decimal(0);
