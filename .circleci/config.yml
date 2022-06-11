@@ -67,15 +67,31 @@ jobs:
           paths:
             - ./
 
-  test:
+  test-tempus-client-v3:
     docker:
       - image: cimg/node:15.1
+    resource_class: large
     steps:
       - attach_workspace:
           at: ./
       - run:
-          name: Unit Test
-          command: npm test
+          name: Unit Test - Tempus Client v3
+          command: npm --prefix ./packages/tempus-client_v3 run test
+      - persist_to_workspace:
+          root: ./
+          paths:
+            - ./
+
+  test-tempus-core-services:
+    docker:
+      - image: cimg/node:15.1
+    resource_class: large
+    steps:
+      - attach_workspace:
+          at: ./
+      - run:
+          name: Unit Test - Tempus Core Services
+          command: npm --prefix ./packages/tempus-core-services run test
       - persist_to_workspace:
           root: ./
           paths:
@@ -183,7 +199,10 @@ workflows:
       - build-storybook:
           requires:
             - build-tempus-client-v3
-      - test:
+      - test-tempus-client-v3:
+          requires:
+            - build-tempus-client-v3
+      - test-tempus-core-services:
           requires:
             - build-tempus-client-v3
       - e2e-test:
