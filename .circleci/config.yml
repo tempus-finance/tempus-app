@@ -190,7 +190,6 @@ workflows:
             - bootstrap
       - build-storybook:
           requires:
-            - build-tempus-core-services
             - build-tempus-client-v3
       - test-tempus-client-v3:
           requires:
