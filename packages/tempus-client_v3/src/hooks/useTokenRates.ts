@@ -18,7 +18,7 @@ import {
   Subscription,
   tap,
 } from 'rxjs';
-import { getServices, Decimal, Chain, Ticker, TempusPool, ONE } from 'tempus-core-services';
+import { getDefinedServices, Decimal, Chain, Ticker, TempusPool, ONE } from 'tempus-core-services';
 import { POLLING_INTERVAL_IN_MS, DEBOUNCE_IN_MS } from '../constants';
 import { poolList$ } from './usePoolList';
 import { servicesLoaded$ } from './useServicesLoaded';
@@ -84,14 +84,6 @@ const tokenInfoMap$ = poolList$.pipe(
     ),
   ),
 );
-
-const getDefinedServices = (chain: Chain) => {
-  const services = getServices(chain);
-  if (!services) {
-    throw new Error(`Cannot get service map for ${chain}`);
-  }
-  return services;
-};
 
 const getConversionRate = ({ chain, address }: TempusPool): Observable<Decimal> => {
   const services = getDefinedServices(chain);
