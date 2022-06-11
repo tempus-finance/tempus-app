@@ -195,16 +195,16 @@ workflows:
             - build-tempus-core-services
       - metamask:
           requires:
-            - build-tempus-client-v3
+            - bootstrap
       - build-storybook:
           requires:
-            - build-tempus-client-v3
+            - bootstrap
       - test-tempus-client-v3:
           requires:
-            - build-tempus-client-v3
+            - bootstrap
       - test-tempus-core-services:
           requires:
-            - build-tempus-client-v3
+            - bootstrap
       - e2e-test:
           requires:
             - metamask
