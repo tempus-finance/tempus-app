@@ -77,10 +77,6 @@ jobs:
       - run:
           name: Unit Test - Tempus Client v3
           command: npm --prefix ./packages/tempus-client_v3 run test
-      - persist_to_workspace:
-          root: ./
-          paths:
-            - ./
 
   test-tempus-core-services:
     docker:
@@ -92,10 +88,6 @@ jobs:
       - run:
           name: Unit Test - Tempus Core Services
           command: npm --prefix ./packages/tempus-core-services run test
-      - persist_to_workspace:
-          root: ./
-          paths:
-            - ./
 
   metamask:
     docker:
@@ -198,10 +190,10 @@ workflows:
             - bootstrap
       - build-storybook:
           requires:
-            - bootstrap
+            - build-tempus-core-services
       - test-tempus-client-v3:
           requires:
-            - bootstrap
+            - build-tempus-core-services
       - test-tempus-core-services:
           requires:
             - bootstrap
