@@ -30,7 +30,6 @@ export class WithdrawService extends BaseService {
   ): Promise<ContractTransaction> {
     const statsContractAddress = this.getStatsAddressForPool(poolAddress);
     const tempusControllerContractAddress = this.getTempusControllerAddressForPool(poolAddress);
-    const ammContractAddress = this.getAmmAddressForPool(poolAddress);
 
     const poolConfig = this.getPoolConfig(poolAddress);
 
@@ -56,7 +55,7 @@ export class WithdrawService extends BaseService {
     const toBackingToken = tokenToGet === poolConfig.backingToken;
 
     const estimate = await statsContract.estimateExitAndRedeem(
-      ammContractAddress,
+      poolConfig.ammAddress,
       capitalsAmount,
       yieldsAmount,
       lpAmount,
@@ -75,7 +74,7 @@ export class WithdrawService extends BaseService {
     const totalCapitals = capitalsAmount.add(estimate.principalsStaked);
     const totalYields = yieldsAmount.add(estimate.yieldsStaked);
 
-    const tempusAMM = new TempusAMMV1Contract(this.chain, ammContractAddress);
+    const tempusAMM = new TempusAMMV1Contract(this.chain, poolConfig.ammAddress);
 
     let yieldsRate: Decimal;
     // Calculate yieldsRate if pool is not mature yet
@@ -113,7 +112,7 @@ export class WithdrawService extends BaseService {
     const deadline = new Decimal(INFINITE_DEADLINE, DEFAULT_DECIMAL_PRECISION);
 
     return tempusControllerContract.exitAmmGiveLpAndRedeem(
-      ammContractAddress,
+      poolConfig.ammAddress,
       lpAmount,
       capitalsAmount,
       yieldsAmount,
