@@ -17,7 +17,7 @@ export const ETH_ASSETS: string[] = ['ETH', 'USDC', 'DAI'];
 export const FTM_ASSETS: string[] = ['USDC', 'DAI', 'USDT', 'WETH', 'YFI'];
 
 export const ETH_NETWORK: Network = new Network('ETH', 'Ethereum', ETH_ASSETS);
-export const TEMPUS_ETH_NETWORK: Network = new Network('ETH', 'Tempus Ethereum Fork', ETH_ASSETS);
+export const TEMPUS_ETH_NETWORK: Network = new Network('ETH', 'Ethereum Fork', ['ETH']);
 export const FTM_NETWORK: Network = new Network('FTM', 'Fantom', FTM_ASSETS);
 export const NETWORKS: Network[] = [ETH_NETWORK, TEMPUS_ETH_NETWORK, FTM_NETWORK];
 

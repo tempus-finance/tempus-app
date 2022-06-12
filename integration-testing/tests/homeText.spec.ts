@@ -3,7 +3,7 @@ import { metamaskLogin } from '../modules/metamask';
 import { chromiumPersistant } from '../modules/browser';
 import { tempusCommunity, tempusFiatCryptoButton, tempusManageAppears, tempusNewRow, tempusTextHeaders } from '../modules/tempushome';
 
-test.describe.serial('Homepage text matching unit tests', () => {
+test.describe.serial('Homepage text matching tests', () => {
     let browser: BrowserContext;
     test.beforeAll(async () => {
         browser = await chromiumPersistant();
@@ -14,16 +14,16 @@ test.describe.serial('Homepage text matching unit tests', () => {
         await tempusTextHeaders(browser, false);
     });
 
-    test('Manage button appears on click (english)', async () => {
-        await tempusManageAppears(browser, undefined, 'en');
+    test('Manage button appears on click (italian)', async () => {
+        await tempusManageAppears(browser, undefined, 'it');
     });
 
-    test('Tempus home new row appears on click (english)', async () => {
+    test('Tempus home new row appears on click', async () => {
         await tempusNewRow(browser);
     });
 
-    test('Fiat/Crypto button (english)', async () => {
-        await tempusFiatCryptoButton(browser, 'en');
+    test('Fiat/Crypto button (spanish)', async () => {
+        await tempusFiatCryptoButton(browser, 'es');
     });
 
     test('Tempus home community links (english)', async () => {

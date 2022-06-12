@@ -3,20 +3,21 @@ import { exit } from 'process';
 import { BrowserContext, Page } from 'playwright';
 import config from '../utility/config';
 import {
-    LOAD_TIMEOUT, LOAD_SHORT_TIMEOUT, LOAD_LONG_TIMEOUT
+    METAMASK_ID_PATH, LOAD_TIMEOUT, LOAD_SHORT_TIMEOUT, LOAD_LONG_TIMEOUT
 } from "../utility/constants";
 import { readFileSync } from 'fs';
 import { join as pathjoin } from 'path';
 
-const DEFAULT_MMID_PATH: string = '../utility/mm_id.txt';
-export const METAMASK_ID: string = readFileSync(pathjoin(__dirname, DEFAULT_MMID_PATH),
-    { encoding: 'utf-8', flag: 'r' });
 
-export async function metamaskGetId(src: string = DEFAULT_MMID_PATH):
+const ROOT_PATH: string = '../../';
+export const METAMASK_ID: string = readFileSync(pathjoin(__dirname, ROOT_PATH, METAMASK_ID_PATH), { encoding: 'utf-8', flag: 'r' });
+export const METAMASK_CHROME_URL = `chrome-extension://${METAMASK_ID}/home.html`;
+
+export async function metamaskGetId(src: string = METAMASK_ID_PATH):
     Promise<string> {
     return (await readFile(src)
         .catch(() => {
-            console.log(`Failed to read ${pathjoin(__dirname, src)}`);
+            console.log(`Failed to read ${pathjoin(__dirname, ROOT_PATH, src)}`);
             exit(1);
         }))
         .toString();
@@ -39,9 +40,9 @@ export async function metamaskRetrieveId(browser: BrowserContext):
 }
 
 export async function metamaskUpdateId(browser: BrowserContext,
-    src: string = DEFAULT_MMID_PATH): Promise<void> {
+    src: string = METAMASK_ID_PATH): Promise<void> {
     const mmId = await metamaskRetrieveId(browser);
-    const path: string = pathjoin(__dirname, src);
+    const path: string = pathjoin(__dirname, ROOT_PATH, src);
     await writeFile(path, mmId)
         .then(() => {
             console.log(`Succesfully wrote metamask id into ${path}`);
@@ -92,6 +93,7 @@ export async function metamaskRegister(browser: BrowserContext): Promise<void> {
         await tabMetamask.click(SELECTOR_ALLDONE);
     }
 
+    console.log('Metamask account registered');
     await tabMetamask.close();
 }
 
@@ -131,7 +133,7 @@ export async function metamaskLogoff(browser: BrowserContext): Promise<void> {
     await tabMetamask.waitForTimeout(LOAD_TIMEOUT);
     if (!(await tabMetamask.locator('text="Unlock"').count()) && !(await tabMetamask.locator('text="Get Started"').count())) {
         await tabMetamask.waitForTimeout(LOAD_TIMEOUT);
-        await tabMetamask.click('div .account-menu__icon');
+        await tabMetamask.click('.account-menu__icon'); // .identicon >> nth=0
         await tabMetamask.click('text="Lock"');
     }
     await tabMetamask.close()
@@ -145,17 +147,20 @@ export async function metamaskAddETHfork(browser: BrowserContext): Promise<void>
         CurrencySymbol: 'ETH'
     };
 
-    await metamaskLogin(browser);
+    //await metamaskLogin(browser);
     const tabMetamask: Page = await browser.newPage()
-    await tabMetamask.goto(`chrome-extension://${METAMASK_ID}/home.html#settings/networks/add-network`);
+    await tabMetamask.goto(`${METAMASK_CHROME_URL}#settings/networks/add-network`);
     await tabMetamask.waitForTimeout(LOAD_SHORT_TIMEOUT);
-    await tabMetamask.fill('input >> nth=0', eth_fork.Name);
-    await tabMetamask.fill('input >> nth=1', eth_fork.RPC);
-    await tabMetamask.fill('input >> nth=2', eth_fork.Chain);
-    await tabMetamask.fill('input >> nth=3', eth_fork.CurrencySymbol);
+    await tabMetamask.fill('input >> nth=1', eth_fork.Name);
+    await tabMetamask.fill('input >> nth=2', eth_fork.RPC);
+    await tabMetamask.fill('input >> nth=3', eth_fork.Chain);
+    await tabMetamask.fill('input >> nth=4', eth_fork.CurrencySymbol);
+
+
     await tabMetamask.waitForTimeout(LOAD_SHORT_TIMEOUT);
     if (await tabMetamask.locator('.btn--rounded[disabled]:has-text("Save")').count() == 0) {
         await tabMetamask.click('text="Save"');
+        console.log('ETH fork successfully added to Metamask');
     }
     else {
         console.log('Couldn\'t add ETH fork to metamask. Error or ETH fork is already added.');
@@ -177,21 +182,41 @@ export async function metamaskAccountAdd(browser: BrowserContext, privateKey: st
 
 export async function metamaskAccountsAddAll(browser: BrowserContext): Promise<void> {
     await metamaskAccountAdd(browser, config.METAMASK_ACCOUNT_ETH_FORK);
+    console.log('Added ETH fork account');
     await metamaskAccountAdd(browser, config.METAMASK_ACCOUNT_FANTOM);
+    console.log('Added FTM account');
 }
 
+const accountIndexs: Map<string, number> = new Map<string, number>([
+    ['Default', 0],
+    ['ETH fork', 1],
+    ['FTM', 2],
+]);
+
+export function getAccountIndex(name: string): number {
+    const val: number | undefined = accountIndexs.get(name);
+    if (val == undefined) {
+        throw new Error(`Failed to find account named ${name}`);
+    }
+    return val;
+}
 
 export async function metamaskAccountSwitch(browser: BrowserContext, accountIndex: number):
     Promise<void> {
-    await metamaskLogin(browser);
+    //await metamaskLogin(browser);
     const tabMetamask: Page = await browser.newPage();
-    await tabMetamask.goto(`chrome-extension://${METAMASK_ID}/home.html#`);
-    await tabMetamask.waitForTimeout(LOAD_TIMEOUT);
+    await tabMetamask.goto(METAMASK_CHROME_URL);
+    await tabMetamask.click('.account-menu__icon');
 
     const SELECTOR_ACCOUNTS: string = '.account-menu__name';
-    if (await tabMetamask.locator(SELECTOR_ACCOUNTS).count() >= accountIndex) {
+    /*if (await tabMetamask.locator(SELECTOR_ACCOUNTS).count() >= accountIndex) {
         throw `There is no account with an index of ${accountIndex}`;
-    }
+    }*/
 
-    await tabMetamask.click(`.account-menu__name >> nth=${accountIndex}`);
+    await tabMetamask.click(`${SELECTOR_ACCOUNTS} >> nth=${accountIndex}`);
+
+    const SELECTOR_CONNECT: string = 'text=Connect';
+    if (await tabMetamask.locator(SELECTOR_CONNECT).count()) {
+        await tabMetamask.click(SELECTOR_CONNECT);
+    }
 }

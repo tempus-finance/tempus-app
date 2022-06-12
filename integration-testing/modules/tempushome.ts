@@ -1,7 +1,7 @@
 import { BrowserContext, expect, Page } from '@playwright/test';
-import { TEMPUS_URL, LOAD_TIMEOUT, LOAD_SHORT_TIMEOUT, LOAD_LONG_TIMEOUT }
-    from "../utility/constants";
-import { Language, languageGenerator } from './language';
+
+import { LOAD_LONG_TIMEOUT, LOAD_SHORT_TIMEOUT, LOAD_TIMEOUT, TEMPUS_URL } from '../utility/constants';
+import { getLangName, Language, languageGenerator } from './language';
 import { tempusNetworkChange } from './network';
 
 export async function tempusMetamaskConnect(browser: BrowserContext):
@@ -30,24 +30,26 @@ export async function tempusMetamaskConnect(browser: BrowserContext):
 
         await mm.click('text="Connect"');
     }
+    console.log('Successful connection metamask-tempus');
     await tabTempus.close();
 }
 
 export async function tempusManageCurrency(browser: BrowserContext, asset: string = 'USDC', langCode: string = 'en'):
     Promise<Page> {
-    const lang: Language = languageGenerator(langCode);
     const tabTempus = await browser.newPage();
     await tabTempus.goto(TEMPUS_URL);
-    await tabTempus.click(`svg:has-text("${asset}")`);
-    await tabTempus.click(`text="${lang.manage}" >> nth=0`);
+    const lang: Language = await tempusSwitchLanguage(tabTempus, langCode);
+    await tabTempus.click(`.MuiTableCell-root >> svg:has-text("${asset}")`);
+    await tabTempus.click(`button:enabled >> text="${lang.manage}" >> nth=0`);
     return tabTempus;
 }
 
 export async function tempusTextHeaders(browser: BrowserContext, walletConnected: boolean = false, langCode: string = 'en'):
     Promise<void> {
-    const lang: Language = languageGenerator(langCode);
     const tabTempus = await browser.newPage();
     await tabTempus.goto(TEMPUS_URL);
+    const lang: Language = await tempusSwitchLanguage(tabTempus, langCode);
+
     await tabTempus.waitForTimeout(LOAD_LONG_TIMEOUT);
 
     await expect(tabTempus.locator('th >> nth=0')).toHaveText(lang.asset);
@@ -63,12 +65,11 @@ export async function tempusTextHeaders(browser: BrowserContext, walletConnected
 }
 
 export async function tempusManageAppears(browser: BrowserContext, asset: string = 'USDC', langCode: string = 'en') {
-    const lang: Language = languageGenerator(langCode);
     const tabTempus = await browser.newPage();
     await tabTempus.goto(TEMPUS_URL);
+    const lang: Language = await tempusSwitchLanguage(tabTempus, langCode);
     await tabTempus.click(`svg:has-text("${asset}")`);
-
-    const SELECTOR_MANAGE_BUTTON: string = `.MuiTableRow-root > td:has-text("${lang.manage}")`;
+    const SELECTOR_MANAGE_BUTTON: string = `button >> text="${lang.manage}" >> nth=0`;
 
     await expect(tabTempus.locator(SELECTOR_MANAGE_BUTTON)).toBeDefined();
     await tabTempus.close();
@@ -81,7 +82,7 @@ export async function tempusNewRow(browser: BrowserContext, asset: string = 'USD
     const SELECTOR_ROWS: string = '.MuiTableRow-root';
 
     const oldRowCount: number = await tabTempus.locator(SELECTOR_ROWS).count();
-    await tabTempus.click(`svg:has-text("${asset}")`);
+    await tabTempus.click(`.MuiTableCell-root >> svg:has-text("${asset}")`);
 
     await expect(tabTempus.locator(SELECTOR_ROWS)).not.toHaveCount(oldRowCount);
     await tabTempus.close();
@@ -89,9 +90,9 @@ export async function tempusNewRow(browser: BrowserContext, asset: string = 'USD
 
 export async function tempusFiatCryptoButton(browser: BrowserContext, langCode: string = 'en') {
     await tempusNetworkChange(browser, 'Ethereum', langCode); // works only on ETH atm, hardcoded ContainText
-    const lang: Language = languageGenerator(langCode);
     const tabTempus = await browser.newPage();
     await tabTempus.goto(TEMPUS_URL);
+    const lang: Language = await tempusSwitchLanguage(tabTempus, langCode);
     await tabTempus.waitForLoadState();
     await tabTempus.waitForTimeout(LOAD_TIMEOUT);
 
@@ -111,9 +112,9 @@ export async function tempusFiatCryptoButton(browser: BrowserContext, langCode: 
 }
 
 export async function tempusCommunity(browser: BrowserContext, langCode: string = 'en') {
-    const lang: Language = languageGenerator(langCode);
     const tabTempus = await browser.newPage();
     await tabTempus.goto(TEMPUS_URL);
+    const lang: Language = await tempusSwitchLanguage(tabTempus, langCode);
 
     const urls: Map<string, string> = new Map([
         [lang.governance, 'https://forum.tempus.finance/'],
@@ -138,4 +139,20 @@ export async function tempusCommunity(browser: BrowserContext, langCode: string 
         await checkUrl(site);
     }
     await tabTempus.close();
+}
+
+export async function tempusSwitchLanguage(tabTempus: Page, toLangCode: string = 'en',
+    fromLangCode: string = 'en', empty_x: number = 300, empty_y: number = 300): Promise<Language> {
+    if (toLangCode == fromLangCode) {
+        return languageGenerator(toLangCode);
+    }
+    const fromLang: Language = languageGenerator(fromLangCode);
+    const toLangName: string = getLangName(toLangCode);
+    const fromLangName: string = getLangName(fromLangCode);
+    await tabTempus.click(`text="${fromLang.settings}"`);
+    await tabTempus.click(`text="${fromLangName}"`);
+    await tabTempus.click(`text="${toLangName}"`);
+    await tabTempus.mouse.click(empty_x, empty_y);
+
+    return languageGenerator(toLangCode);
 }
