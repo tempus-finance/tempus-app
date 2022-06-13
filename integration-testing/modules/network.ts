@@ -44,7 +44,7 @@ export async function tempusNetworkChange(browser: BrowserContext, networkName: 
             await mm.click(`text="${lang.approve}"`);
             await mm.waitForTimeout(LOAD_TIMEOUT);
         }
-        await mm.click(`button:has-text("${lang.switchNetwork}")`);
+        await mm.click(`button:has-text("Switch network")`);
     }
 
     await tabTempus.waitForTimeout(LOAD_TIMEOUT);
