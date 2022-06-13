@@ -22,7 +22,6 @@ import { getDefinedServices, Decimal, Chain, Ticker, TempusPool, ONE } from 'tem
 import { POLLING_INTERVAL_IN_MS, DEBOUNCE_IN_MS } from '../constants';
 import { poolList$ } from './usePoolList';
 import { servicesLoaded$ } from './useServicesLoaded';
-import { appEvent$ } from './useAppEvent';
 
 interface TokenInfo {
   chain: Chain;
@@ -37,7 +36,7 @@ interface TokenInfoMap {
 }
 
 export interface TokenRateMap {
-  [chainTokenAddress: string]: Decimal | null;
+  [chainTokenAddress: string]: Decimal;
 }
 
 const DEFAULT_VALUE: TokenRateMap = {};
@@ -50,15 +49,7 @@ export const tokenRates$ = rawTokenRates$.pipe(
   distinctUntilChanged(
     (previous, current) =>
       Object.keys(current).length === Object.keys(previous).length &&
-      Object.keys(current).every(chainTokenAddress => {
-        if (current[chainTokenAddress] === null) {
-          return previous[chainTokenAddress] === null;
-        }
-        if (previous[chainTokenAddress] === null) {
-          return false;
-        }
-        return (current[chainTokenAddress] as Decimal).equals(previous[chainTokenAddress] as Decimal);
-      }),
+      Object.keys(current).every(chainTokenAddress => current[chainTokenAddress].equals(previous[chainTokenAddress])),
   ),
 );
 
@@ -133,32 +124,8 @@ const periodicStream$: Observable<TokenRateMap> = combineLatest([tokenInfoMap$, 
   }),
 );
 
-// stream$ for listening to Tempus event to fetch specific pool data
-const eventStream$ = combineLatest([appEvent$, servicesLoaded$]).pipe(
-  filter(([, servicesLoaded]) => servicesLoaded),
-  mergeMap<[{ tempusPool: TempusPool }, boolean], Observable<TokenRateMap>>(([{ tempusPool }]) => {
-    const backingTokenInfo = {
-      chain: tempusPool.chain,
-      token: tempusPool.backingToken,
-      address: tempusPool.backingTokenAddress,
-    };
-    const yieldBearingTokenInfo = {
-      chain: tempusPool.chain,
-      token: tempusPool.backingToken,
-      address: tempusPool.backingTokenAddress,
-      hasConversionRate: true,
-      poolAddress: tempusPool.address,
-    };
-
-    const backingTokenRate$ = fetchData(backingTokenInfo);
-    const yieldBearingTokenRate$ = fetchData(yieldBearingTokenInfo);
-
-    return merge(backingTokenRate$, yieldBearingTokenRate$);
-  }),
-);
-
-// merge all stream$ into one
-const stream$ = merge(periodicStream$, eventStream$).pipe(
+// merge all stream$ into one, use merge() for multiple
+const stream$ = periodicStream$.pipe(
   scan(
     (allRates, tokenRates) => ({
       ...allRates,
