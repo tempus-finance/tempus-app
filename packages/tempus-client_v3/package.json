@@ -122,7 +122,7 @@
     "test": "react-scripts test",
     "test:coverage": "react-scripts test --coverage --watchAll=false",
     "test:update": "react-scripts test -u",
-    "ci:test": "CI=true react-scripts test --bail",
+    "ci:test": "CI=true react-scripts test --bail --maxWorkers=1",
     "eject": "react-scripts eject",
     "deploy-stage": "firebase deploy --only hosting:tempus-app-stage --token $FIREBASE_TOKEN",
     "prestart": "./scripts/get-release-version.sh",
