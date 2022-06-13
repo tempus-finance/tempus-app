@@ -12,7 +12,6 @@ jobs:
   bootstrap:
     docker:
       - image: cimg/node:lts
-    resource_class: large
     steps:
       - checkout
       - node/install-packages
@@ -71,7 +70,6 @@ jobs:
   test-tempus-client-v3:
     docker:
       - image: cimg/node:lts
-    resource_class: large
     steps:
       - attach_workspace:
           at: ./
@@ -82,7 +80,6 @@ jobs:
   test-tempus-core-services:
     docker:
       - image: cimg/node:lts
-    resource_class: large
     steps:
       - attach_workspace:
           at: ./
