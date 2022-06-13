@@ -3,7 +3,7 @@ import { metamaskLogin } from '../modules/metamask';
 import { chromiumPersistant } from '../modules/browser';
 import { manageButtonsText, manageDisabledButtons } from '../modules/manageText';
 
-test.describe.serial('Manage text unit tests', () => {
+test.describe.serial('Manage text tests', () => {
     let browser: BrowserContext;
     test.beforeAll(async () => {
         browser = await chromiumPersistant();
@@ -14,12 +14,12 @@ test.describe.serial('Manage text unit tests', () => {
         await manageDisabledButtons(browser, 'USDC');
     });
 
-    test('USDC manage tab buttons, english', async () => {
+    test('USDC manage tab buttons, spanish', async () => {
         await manageButtonsText(browser, 'USDC', 'en');
     });
 
     test('DAI manage tab buttons, english', async () => {
-        await manageButtonsText(browser, 'DAI', 'en');
+        await manageButtonsText(browser, 'DAI', 'it');
     });
 
     test.afterAll(async () => {

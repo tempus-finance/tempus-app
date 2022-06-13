@@ -5,7 +5,7 @@ import { chromiumPersistant } from '../modules/browser';
 import { tempusNetworkChange } from '../modules/network';
 
 
-test.describe.serial("Metamask and network unit tests", () => {
+test.describe.serial("Metamask and network tests", () => {
     let browser: BrowserContext;
     test.beforeAll(async () => {
         browser = await chromiumPersistant();

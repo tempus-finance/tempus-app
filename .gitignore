@@ -37,7 +37,7 @@ packages/**/storybook-static
 # release info
 packages/**/src/release.json
 
-# MetaMask
+#e2e
 /integration-testing/mm
 /integration-testing/utility/user_data
 /integration-testing/utility/mm_id.txt
