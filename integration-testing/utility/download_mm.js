@@ -26,7 +26,7 @@ async function metamaskDownload(location = path.join(__dirname, '../../', METAMA
         .then(() => CRXdownload(MM_URL, location, 'mm'))
         .then(() => {
             console.log(`CRX is located in ${MM_CRX_PATH}.`);
-            console.log(`Extracting ${MM_CRX_PATH}...`)
+            console.log(`Extracting ${MM_CRX_PATH}...`);
             p7z.extractFull(MM_CRX_PATH, location);
         })
         .then(() => console.log("Successful Metamask download and extraction."))
