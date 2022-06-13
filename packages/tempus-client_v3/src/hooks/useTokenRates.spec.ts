@@ -11,7 +11,8 @@ jest.mock('tempus-core-services', () => ({
 
 jest.mock('./useServicesLoaded', () => ({
   ...jest.requireActual('./useServicesLoaded'),
-  servicesLoaded$: mockOf(true).pipe(mockDelay(100)), // there is a chance that the mock subscribe and run before it mocks
+  // there is a chance that the mock subscribe and run before it mocks
+  servicesLoaded$: mockOf(true).pipe(mockDelay(100)),
 }));
 
 describe('useTokenRates', () => {

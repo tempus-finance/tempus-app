@@ -6,12 +6,12 @@ orbs:
   # The Node.js orb contains a set of prepackaged CircleCI configuration you can utilize
   # Orbs reduce the amount of configuration required for common tasks.
   # See the orb documentation here: https://circleci.com/developer/orbs/orb/circleci/node
-  node: circleci/node@4.1
+  node: circleci/node@5.0.2
 
 jobs:
   bootstrap:
     docker:
-      - image: cimg/node:15.1
+      - image: cimg/node:lts
     steps:
       - checkout
       - node/install-packages
@@ -25,7 +25,7 @@ jobs:
 
   build-tempus-core-services:
     docker:
-      - image: cimg/node:15.1
+      - image: cimg/node:lts
     steps:
       - attach_workspace:
           at: ./
@@ -39,7 +39,7 @@ jobs:
 
   build-tempus-client-v3:
     docker:
-      - image: cimg/node:15.1
+      - image: cimg/node:lts
     resource_class: large
     steps:
       - attach_workspace:
@@ -54,7 +54,7 @@ jobs:
 
   build-storybook:
     docker:
-      - image: cimg/node:15.1
+      - image: cimg/node:lts
     resource_class: large
     steps:
       - attach_workspace:
@@ -67,19 +67,25 @@ jobs:
           paths:
             - ./
 
-  test:
+  test-tempus-client-v3:
     docker:
-      - image: cimg/node:15.1
+      - image: cimg/node:lts
     steps:
       - attach_workspace:
           at: ./
       - run:
-          name: Unit Test
-          command: npm test
-      - persist_to_workspace:
-          root: ./
-          paths:
-            - ./
+          name: Unit Test - Tempus Client v3
+          command: npm --prefix ./packages/tempus-client_v3 run ci:test
+
+  test-tempus-core-services:
+    docker:
+      - image: cimg/node:lts
+    steps:
+      - attach_workspace:
+          at: ./
+      - run:
+          name: Unit Test - Tempus Core Services
+          command: npm --prefix ./packages/tempus-core-services run ci:test
 
   metamask:
     docker:
@@ -143,7 +149,7 @@ jobs:
 
   deploy-to-stage:
     docker:
-      - image: cimg/node:15.1
+      - image: cimg/node:lts
     steps:
       - attach_workspace:
           at: ./
@@ -153,7 +159,7 @@ jobs:
 
   deploy-storybook:
     docker:
-      - image: cimg/node:15.1
+      - image: cimg/node:lts
     steps:
       - attach_workspace:
           at: ./
@@ -177,13 +183,16 @@ workflows:
             - build-tempus-core-services
       - metamask:
           requires:
-            - build-tempus-client-v3
+            - bootstrap
       - build-storybook:
           requires:
             - build-tempus-client-v3
-      - test:
+      - test-tempus-client-v3:
           requires:
-            - build-tempus-client-v3
+            - build-tempus-core-services
+      - test-tempus-core-services:
+          requires:
+            - bootstrap
       - e2e-test:
           requires:
             - metamask
@@ -195,7 +204,8 @@ workflows:
               only: /^release-.*$/
       - deploy-to-stage:
           requires:
-            - test
+            - test-tempus-client-v3
+            - test-tempus-core-services
           filters:
             branches:
               only: master
