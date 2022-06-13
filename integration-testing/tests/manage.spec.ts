@@ -3,7 +3,7 @@ import { metamaskLogin } from '../modules/metamask';
 import { tempusManageCurrency, tempusMetamaskConnect } from '../modules/tempushome';
 import { chromiumPersistant } from '../modules/browser';
 
-test.describe.serial('Open Manage tabs unit tests', () => {
+test.describe.serial('Open Manage tabs tests', () => {
     let browser: BrowserContext;
     test.beforeAll(async () => {
         browser = await chromiumPersistant();

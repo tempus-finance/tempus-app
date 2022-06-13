@@ -148,8 +148,8 @@ describe('Decimal', () => {
     );
 
     for (let i = 0; i < 10; i++) {
-      const value = Math.random() * 1000 - 500;
-      const addend = Math.random() * 1000 - 500;
+      const value = Math.random() * 1000;
+      const addend = Math.random() * 1000;
       const expected = utils.parseUnits(`${value}`, 18).add(utils.parseUnits(`${addend}`, 18));
 
       it(`${value} + ${addend} should be ${utils.formatUnits(expected, 18)}`, () => {
@@ -222,8 +222,8 @@ describe('Decimal', () => {
     );
 
     for (let i = 0; i < 10; i++) {
-      const value = Math.random() * 1000 - 500;
-      const multiplicand = Math.random() * 100 - 50;
+      const value = Math.random() * 1000;
+      const multiplicand = Math.random() * 100;
       const expected = utils
         .parseUnits(`${value}`, 18)
         .mul(utils.parseUnits(`${multiplicand}`, 18))
@@ -265,7 +265,7 @@ describe('Decimal', () => {
     );
 
     for (let i = 0; i < 10; i++) {
-      const value = Math.random() * 1000 - 500;
+      const value = Math.random() * 1000;
       const divisor = Math.random() * 100 + 1;
       const expected = utils
         .parseUnits(`${value}`, 18)
@@ -343,8 +343,8 @@ describe('Decimal', () => {
     );
 
     for (let i = 0; i < 10; i++) {
-      const value = Math.random() * 100 - 50;
-      const another = Math.random() * 100 - 50;
+      const value = Math.random() * 100;
+      const another = Math.random() * 100;
       const expected = value === another;
 
       it(`${value} should ${expected ? '' : 'not'} be equal to ${another}`, () => {
@@ -386,8 +386,8 @@ describe('Decimal', () => {
     );
 
     for (let i = 0; i < 10; i++) {
-      const value = Math.random() * 100 - 50;
-      const another = Math.random() * 100 - 50;
+      const value = Math.random() * 100;
+      const another = Math.random() * 100;
       const expected = value < another;
 
       it(`${value} should ${expected ? '' : 'not'} be less than ${another}`, () => {
@@ -429,8 +429,8 @@ describe('Decimal', () => {
     );
 
     for (let i = 0; i < 10; i++) {
-      const value = Math.random() * 100 - 50;
-      const another = Math.random() * 100 - 50;
+      const value = Math.random() * 100;
+      const another = Math.random() * 100;
       const expected = value <= another;
 
       it(`${value} should ${expected ? '' : 'not'} be less than or equal to ${another}`, () => {
@@ -472,8 +472,8 @@ describe('Decimal', () => {
     );
 
     for (let i = 0; i < 10; i++) {
-      const value = Math.random() * 100 - 50;
-      const another = Math.random() * 100 - 50;
+      const value = Math.random() * 100;
+      const another = Math.random() * 100;
       const expected = value > another;
 
       it(`${value} should ${expected ? '' : 'not'} be greater than ${another}`, () => {
@@ -515,8 +515,8 @@ describe('Decimal', () => {
     );
 
     for (let i = 0; i < 10; i++) {
-      const value = Math.random() * 100 - 50;
-      const another = Math.random() * 100 - 50;
+      const value = Math.random() * 100;
+      const another = Math.random() * 100;
       const expected = value >= another;
 
       it(`${value} should ${expected ? '' : 'not'} be greater than or equal to ${another}`, () => {
@@ -876,7 +876,7 @@ describe('Decimal', () => {
     );
 
     for (let i = 0; i < 10; i++) {
-      const value = Math.random() * 1000 - 500;
+      const value = Math.random() * 1000;
       const fractionDigits = Math.ceil(Math.random() * 5);
       const truncated = Math.trunc(value * Math.pow(10, fractionDigits)) / Math.pow(10, fractionDigits);
 

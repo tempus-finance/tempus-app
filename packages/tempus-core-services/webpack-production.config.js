@@ -26,6 +26,7 @@ module.exports = {
   },
   mode: 'production',
   devtool: 'eval-source-map',
+  externals: ['ethers', 'rxjs', 'date-fns', '@ethersproject/providers'],
   plugins: [
     new webpack.DefinePlugin({
       'process.env': JSON.stringify(process.env),

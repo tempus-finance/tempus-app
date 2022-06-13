@@ -24,6 +24,7 @@
     "ts-node": "^9.1.1",
     "typedoc": "^0.20.35",
     "webpack": "^4.46.0",
+    "webpack-bundle-analyzer": "^4.5.0",
     "webpack-cli": "^4.9.2"
   },
   "peerDependencies": {
@@ -34,11 +35,11 @@
     "lint": "eslint src/ --ext .js,.jsx,.ts,.tsx",
     "test": "jest",
     "test:watch": "jest --watch",
-    "ci:test": "CI=true jest",
+    "ci:test": "CI=true jest --bail --maxWorkers=1",
     "clean": "rm -rf dist build package",
     "ts-node": "ts-node",
     "docs": "typedoc --entryPoints src/index.ts",
-    "build": "npm run clean && webpack --config ./webpack.config.js",
+    "build": "npm run clean && webpack --config ./webpack-production.config.js",
     "build-all": "npm run clean && npm run build && npm run esbuild-node && npm run esbuild-node",
     "esbuild-node": "esbuild src/index.ts --bundle --platform=node --minify --sourcemap=external --outfile=dist/esbuild/index.js",
     "esbuild-node:dev": "esbuild src/index.ts --bundle --platform=node --sourcemap=external --outfile=dist/esbuild/index.js",
