@@ -1,8 +1,9 @@
 import { act, renderHook } from '@testing-library/react-hooks';
-import { of, of as mockOf, delay as mockDelay, throwError } from 'rxjs';
+import { of, of as mockOf, delay as mockDelay, merge as mockMerge, throwError } from 'rxjs';
 import {
   DAYS_IN_A_YEAR,
   Decimal,
+  Decimal as MockDecimal,
   getDefinedServices,
   getDefaultProvider,
   ONE,
@@ -32,6 +33,32 @@ jest.mock('tempus-core-services', () => ({
 jest.mock('./useServicesLoaded', () => ({
   ...jest.requireActual('./useServicesLoaded'),
   servicesLoaded$: mockOf(true).pipe(mockDelay(100)), // there is a chance that the mock subscribe and run before it mocks
+}));
+
+jest.mock('./useAppEvent', () => ({
+  ...jest.requireActual('./useAppEvent'),
+  appEvent$: mockMerge(
+    mockOf({
+      eventType: 'deposit',
+      tempusPool: mockPool1,
+      amount: new MockDecimal(1),
+    }).pipe(mockDelay(1000)),
+    mockOf({
+      eventType: 'withdraw',
+      tempusPool: mockPool1,
+      amount: new MockDecimal(1),
+    }).pipe(mockDelay(2000)),
+    mockOf({
+      eventType: 'deposit',
+      tempusPool: mockPool2,
+      amount: new MockDecimal(2),
+    }).pipe(mockDelay(3000)),
+    mockOf({
+      eventType: 'withdraw',
+      tempusPool: mockPool2,
+      amount: new MockDecimal(2),
+    }).pipe(mockDelay(4000)),
+  ),
 }));
 
 jest.mock('./usePoolList', () => ({
@@ -143,7 +170,7 @@ describe('useFixedAprs', () => {
     expect(mockGetBlock).toHaveBeenCalledWith(3456);
   });
 
-  test('directly get the latest value for 2nd hooks', async () => {
+  it('directly get the latest value for 2nd hooks', async () => {
     (getDefinedServices as unknown as jest.Mock).mockImplementation(() => ({
       TempusControllerService: {
         getDepositedEvents: jest.fn().mockResolvedValue([]),
@@ -228,7 +255,54 @@ describe('useFixedAprs', () => {
     expect(result.current).toEqual(expectedResult);
   });
 
-  test('no updates when service map is null', async () => {
+  it('fetch data when receiving appEvent$', async () => {
+    const mockEstimatedDepositAndFix = jest.fn().mockReturnValue(of(new Decimal('1.05')));
+    (getDefinedServices as unknown as jest.Mock).mockImplementation(() => ({
+      TempusControllerService: {
+        getDepositedEvents: jest.fn().mockResolvedValue([]),
+        getRedeemedEvents: jest.fn().mockResolvedValue([]),
+      },
+      VaultService: {
+        getSwapEvents: jest.fn().mockResolvedValue([]),
+      },
+      StatisticsService: {
+        estimatedDepositAndFix: mockEstimatedDepositAndFix,
+      },
+    }));
+
+    act(() => {
+      resetFixedAprs();
+      subscribeFixedAprs();
+    });
+
+    const { waitForNextUpdate } = renderHook(() => useFixedAprs());
+
+    await waitForNextUpdate();
+
+    expect(mockEstimatedDepositAndFix).toHaveBeenCalledTimes(5);
+
+    mockEstimatedDepositAndFix.mockReturnValue(of(new Decimal('1.25')));
+    await waitForNextUpdate({ timeout: 2000 });
+
+    expect(mockEstimatedDepositAndFix).toHaveBeenCalledTimes(6);
+
+    mockEstimatedDepositAndFix.mockReturnValue(of(new Decimal('1.45')));
+    await waitForNextUpdate({ timeout: 2000 });
+
+    expect(mockEstimatedDepositAndFix).toHaveBeenCalledTimes(7);
+
+    mockEstimatedDepositAndFix.mockReturnValue(of(new Decimal('1.65')));
+    await waitForNextUpdate({ timeout: 2000 });
+
+    expect(mockEstimatedDepositAndFix).toHaveBeenCalledTimes(8);
+
+    mockEstimatedDepositAndFix.mockReturnValue(of(new Decimal('1.85')));
+    await waitForNextUpdate({ timeout: 2000 });
+
+    expect(mockEstimatedDepositAndFix).toHaveBeenCalledTimes(9);
+  });
+
+  it('no updates when service map is null', async () => {
     jest.spyOn(console, 'error').mockImplementation();
     (getDefinedServices as unknown as jest.Mock).mockReturnValue(null);
 
@@ -252,7 +326,7 @@ describe('useFixedAprs', () => {
     (console.error as jest.Mock).mockRestore();
   });
 
-  test('no updates when there is an error when getDefinedServices()', async () => {
+  it('no updates when there is an error when getDefinedServices()', async () => {
     jest.spyOn(console, 'error').mockImplementation();
     (getDefinedServices as unknown as jest.Mock).mockImplementation(() => {
       throw new Error();
@@ -278,7 +352,7 @@ describe('useFixedAprs', () => {
     (console.error as jest.Mock).mockRestore();
   });
 
-  test('no updates when there is an error when TempusControllerService.getDepositedEvents()', async () => {
+  it('no updates when there is an error when TempusControllerService.getDepositedEvents()', async () => {
     const principalsAmount = new Decimal('1.05');
 
     jest.spyOn(console, 'error').mockImplementation();
@@ -317,7 +391,7 @@ describe('useFixedAprs', () => {
     (console.error as jest.Mock).mockRestore();
   });
 
-  test('no updates when there is an error when TempusControllerService.getRedeemedEvents()', async () => {
+  it('no updates when there is an error when TempusControllerService.getRedeemedEvents()', async () => {
     const principalsAmount = new Decimal('1.05');
 
     jest.spyOn(console, 'error').mockImplementation();
@@ -356,7 +430,7 @@ describe('useFixedAprs', () => {
     (console.error as jest.Mock).mockRestore();
   });
 
-  test('no updates when there is an error when VaultService.getSwapEvents()', async () => {
+  it('no updates when there is an error when VaultService.getSwapEvents()', async () => {
     const principalsAmount = new Decimal('1.05');
 
     jest.spyOn(console, 'error').mockImplementation();
@@ -395,7 +469,7 @@ describe('useFixedAprs', () => {
     (console.error as jest.Mock).mockRestore();
   });
 
-  test('no updates when there is an error when StatisticsService.estimatedDepositAndFix()', async () => {
+  it('no updates when there is an error when StatisticsService.estimatedDepositAndFix()', async () => {
     jest.spyOn(console, 'error').mockImplementation();
     (getDefinedServices as unknown as jest.Mock).mockImplementation(() => ({
       TempusControllerService: {
@@ -432,7 +506,7 @@ describe('useFixedAprs', () => {
     (console.error as jest.Mock).mockRestore();
   });
 
-  test('no updates when there is an Observable<Error> when StatisticsService.estimatedDepositAndFix()', async () => {
+  it('no updates when there is an Observable<Error> when StatisticsService.estimatedDepositAndFix()', async () => {
     jest.spyOn(console, 'error').mockImplementation();
     (getDefinedServices as unknown as jest.Mock).mockImplementation(() => ({
       TempusControllerService: {

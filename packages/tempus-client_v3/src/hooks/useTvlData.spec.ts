@@ -1,7 +1,8 @@
 import { act, renderHook } from '@testing-library/react-hooks';
-import { of as mockOf, throwError } from 'rxjs';
-import { Decimal, getDefinedServices } from 'tempus-core-services';
+import { of, of as mockOf, delay as mockDelay, merge as mockMerge, throwError } from 'rxjs';
+import { Decimal, Decimal as MockDecimal, getDefinedServices } from 'tempus-core-services';
 import { getConfigManager } from '../config/getConfigManager';
+import { pool1 as mockPool1, pool2 as mockPool2 } from '../setupTests';
 import { useTvlData, useTotalTvl, subscribeTvlData, resetTvlData } from './useTvlData';
 
 jest.mock('tempus-core-services', () => ({
@@ -12,6 +13,32 @@ jest.mock('tempus-core-services', () => ({
 jest.mock('./useServicesLoaded', () => ({
   ...jest.requireActual('./useServicesLoaded'),
   servicesLoaded$: mockOf(true),
+}));
+
+jest.mock('./useAppEvent', () => ({
+  ...jest.requireActual('./useAppEvent'),
+  appEvent$: mockMerge(
+    mockOf({
+      eventType: 'deposit',
+      tempusPool: mockPool1,
+      amount: new MockDecimal(1),
+    }).pipe(mockDelay(1000)),
+    mockOf({
+      eventType: 'withdraw',
+      tempusPool: mockPool1,
+      amount: new MockDecimal(1),
+    }).pipe(mockDelay(2000)),
+    mockOf({
+      eventType: 'deposit',
+      tempusPool: mockPool2,
+      amount: new MockDecimal(2),
+    }).pipe(mockDelay(3000)),
+    mockOf({
+      eventType: 'withdraw',
+      tempusPool: mockPool2,
+      amount: new MockDecimal(2),
+    }).pipe(mockDelay(4000)),
+  ),
 }));
 
 describe('useTvlData', () => {
@@ -79,6 +106,46 @@ describe('useTvlData', () => {
 
     expect(result2.current).toEqual(expected);
     expect(getDefinedServices).toHaveBeenCalledTimes(functionCalledCount);
+  });
+
+  test('fetch data when receiving appEvent$', async () => {
+    const mockTotalValueLockedUSD = jest.fn().mockReturnValue(of(new Decimal(1000)));
+    (getDefinedServices as unknown as jest.Mock).mockImplementation(() => ({
+      StatisticsService: {
+        totalValueLockedUSD: mockTotalValueLockedUSD,
+      },
+    }));
+
+    act(() => {
+      resetTvlData();
+      subscribeTvlData();
+    });
+
+    const { waitForNextUpdate } = renderHook(() => useTvlData());
+
+    await waitForNextUpdate();
+
+    expect(mockTotalValueLockedUSD).toHaveBeenCalledTimes(5);
+
+    mockTotalValueLockedUSD.mockReturnValue(of(new Decimal(1100)));
+    await waitForNextUpdate({ timeout: 2000 });
+
+    expect(mockTotalValueLockedUSD).toHaveBeenCalledTimes(6);
+
+    mockTotalValueLockedUSD.mockReturnValue(of(new Decimal(1200)));
+    await waitForNextUpdate({ timeout: 2000 });
+
+    expect(mockTotalValueLockedUSD).toHaveBeenCalledTimes(7);
+
+    mockTotalValueLockedUSD.mockReturnValue(of(new Decimal(1300)));
+    await waitForNextUpdate({ timeout: 2000 });
+
+    expect(mockTotalValueLockedUSD).toHaveBeenCalledTimes(8);
+
+    mockTotalValueLockedUSD.mockReturnValue(of(new Decimal(1400)));
+    await waitForNextUpdate({ timeout: 2000 });
+
+    expect(mockTotalValueLockedUSD).toHaveBeenCalledTimes(9);
   });
 
   test('no updates when service map is null', async () => {
