@@ -35,7 +35,7 @@ export const WithdrawModalResolver: FC = () => {
     !backingTokenRate ||
     !yieldBearingTokenRate ||
     !poolBalanceData?.balanceInBackingToken ||
-    !poolBalanceData.balanceInYieldBearingToken
+    !poolBalanceData?.balanceInYieldBearingToken
   ) {
     return null;
   }
