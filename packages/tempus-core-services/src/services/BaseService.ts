@@ -9,13 +9,13 @@ export class BaseService {
     this.getConfig = getConfig;
   }
 
-  getChainConfig(chain: Chain): ChainConfig {
+  protected getChainConfig(chain: Chain): ChainConfig {
     const config = this.getConfig();
 
     return config[chain];
   }
 
-  getPoolList(): TempusPool[] {
+  protected getPoolList(): TempusPool[] {
     const config = this.getConfig();
 
     const pools: TempusPool[] = [];
@@ -29,7 +29,7 @@ export class BaseService {
     return pools;
   }
 
-  getPoolConfig(poolAddress: string): TempusPool {
+  protected getPoolConfig(poolAddress: string): TempusPool {
     const pools = this.getPoolList();
 
     const poolConfig = pools.find(pool => pool.address === poolAddress);
@@ -40,25 +40,31 @@ export class BaseService {
     return poolConfig;
   }
 
-  getChainConfigForPool(poolAddress: string): ChainConfig {
+  protected getChainConfigForPool(poolAddress: string): ChainConfig {
     const poolConfig = this.getPoolConfig(poolAddress);
 
     return this.getChainConfig(poolConfig?.chain);
   }
 
-  getStatsAddressForPool(poolAddress: string): string {
+  protected getStatsAddressForPool(poolAddress: string): string {
     const poolChainConfig = this.getChainConfigForPool(poolAddress);
 
     return poolChainConfig.statisticsContract;
   }
 
-  getAmmAddressForPool(poolAddress: string): string {
+  protected getTempusControllerAddressForPool(poolAddress: string): string {
+    const poolChainConfig = this.getChainConfigForPool(poolAddress);
+
+    return poolChainConfig.tempusControllerContract;
+  }
+
+  protected getAmmAddressForPool(poolAddress: string): string {
     const poolConfig = this.getPoolConfig(poolAddress);
 
     return poolConfig.ammAddress;
   }
 
-  getTokenPrecision(tokenAddress: string): number {
+  protected getTokenPrecision(tokenAddress: string): number {
     let precision: number | null = null;
 
     const poolList = this.getPoolList();
