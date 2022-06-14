@@ -37,6 +37,10 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
   const [tokensApproved, setTokensApproved] = useState<boolean>(false);
   const [withdrawSuccessful, setWithdrawSuccessful] = useState<boolean>(false);
 
+  /**
+   * For withdrawal we need to approve three tokens (TPS, TYS, LP), and useApproveToken supports only one token, so we
+   * need to call useApproveToken three times, this useEffect keeps track of all approved tokens.
+   */
   useEffect(() => {
     if (approveTokenStatus) {
       setApprovedTokens(currentState => {
