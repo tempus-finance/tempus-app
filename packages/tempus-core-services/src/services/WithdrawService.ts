@@ -1,6 +1,6 @@
 import { JsonRpcSigner } from '@ethersproject/providers';
 import { ContractTransaction } from 'ethers';
-import { INFINITE_DEADLINE } from '../constants';
+import { INFINITE_DEADLINE, SLIPPAGE_PRECISION } from '../constants';
 import { StatsV2Contract } from '../contracts/StatsV2Contract';
 import { TempusAMMV1Contract } from '../contracts/TempusAMMV1Contract';
 import { TempusControllerV1Contract } from '../contracts/TempusControllerV1Contract';
@@ -34,7 +34,13 @@ export class WithdrawService extends BaseService {
     const poolConfig = this.getPoolConfig(poolAddress);
 
     const {
-      tokenPrecision: { backingToken, yieldBearingToken, principals, yields, lpTokens },
+      tokenPrecision: {
+        backingToken: backingTokenPrecision,
+        yieldBearingToken: yieldBearingTokenPrecision,
+        principals: principalsPrecision,
+        yields: yieldsPrecision,
+        lpTokens: lpPrecision,
+      },
     } = poolConfig;
 
     const ratio = amountToGet.div(tokenBalance);
@@ -59,11 +65,11 @@ export class WithdrawService extends BaseService {
       capitalsAmount,
       yieldsAmount,
       lpAmount,
-      backingToken,
-      yieldBearingToken,
-      principals,
-      yields,
-      lpTokens,
+      backingTokenPrecision,
+      yieldBearingTokenPrecision,
+      principalsPrecision,
+      yieldsPrecision,
+      lpPrecision,
       maxLeftoverShares,
       toBackingToken,
     );
@@ -82,13 +88,23 @@ export class WithdrawService extends BaseService {
       if (totalYields.gt(totalCapitals)) {
         const tokenSwapAmount = totalYields.sub(totalCapitals);
 
-        const estimatedPrincipals = await tempusAMM.getExpectedReturnGivenIn(tokenSwapAmount, true, principals, yields);
+        const estimatedPrincipals = await tempusAMM.getExpectedReturnGivenIn(
+          tokenSwapAmount,
+          true,
+          principalsPrecision,
+          yieldsPrecision,
+        );
 
         yieldsRate = estimatedPrincipals.div(tokenSwapAmount);
       } else if (totalCapitals.gt(totalYields)) {
         const tokenSwapAmount = totalCapitals.sub(totalYields);
 
-        const estimatedYields = await tempusAMM.getExpectedReturnGivenIn(tokenSwapAmount, false, principals, yields);
+        const estimatedYields = await tempusAMM.getExpectedReturnGivenIn(
+          tokenSwapAmount,
+          false,
+          principalsPrecision,
+          yieldsPrecision,
+        );
 
         yieldsRate = tokenSwapAmount.div(estimatedYields);
       } else {
@@ -96,7 +112,12 @@ export class WithdrawService extends BaseService {
         // and swap is going to happen anyways
         const tokenSwapAmount = new Decimal(1);
 
-        const estimatedPrincipals = await tempusAMM.getExpectedReturnGivenIn(tokenSwapAmount, true, principals, yields);
+        const estimatedPrincipals = await tempusAMM.getExpectedReturnGivenIn(
+          tokenSwapAmount,
+          true,
+          principalsPrecision,
+          yieldsPrecision,
+        );
 
         yieldsRate = estimatedPrincipals.div(tokenSwapAmount);
       }
@@ -116,6 +137,10 @@ export class WithdrawService extends BaseService {
       lpAmount,
       capitalsAmount,
       yieldsAmount,
+      lpPrecision,
+      principalsPrecision,
+      yieldsPrecision,
+      SLIPPAGE_PRECISION,
       minCapitalsStaked,
       minYieldsStaked,
       maxLeftoverShares,
