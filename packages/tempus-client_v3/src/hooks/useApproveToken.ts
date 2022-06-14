@@ -2,8 +2,9 @@ import { JsonRpcSigner } from '@ethersproject/providers';
 import { ContractTransaction } from 'ethers';
 import { bind } from '@react-rxjs/core';
 import { createSignal } from '@react-rxjs/utils';
-import { concatMap, map } from 'rxjs';
-import { Chain, Decimal, getServices } from 'tempus-core-services';
+import { combineLatest, concatMap, filter, map } from 'rxjs';
+import { Chain, Decimal, getDefinedServices } from 'tempus-core-services';
+import { servicesLoaded$ } from './useServicesLoaded';
 
 interface ApproveTokenRequest {
   chain: Chain;
@@ -29,26 +30,20 @@ interface ApproveTokenResponse {
 
 const [approveToken$, approveToken] = createSignal<ApproveTokenRequestEnhanced>();
 
-const tokenApproveStatus$ = approveToken$.pipe(
-  concatMap<ApproveTokenRequestEnhanced, Promise<ApproveTokenResponse>>(async payload => {
+const tokenApproveStatus$ = combineLatest([approveToken$, servicesLoaded$]).pipe(
+  filter(([, servicesLoaded]) => servicesLoaded),
+  concatMap<[ApproveTokenRequestEnhanced, boolean], Promise<ApproveTokenResponse>>(async ([payload]) => {
     const { chain, tokenAddress, spenderAddress, amount, signer } = payload;
 
-    const ERC20TokenServiceGetter = getServices(chain as Chain)?.ERC20TokenServiceGetter;
-    const Erc20TokenService = ERC20TokenServiceGetter?.(tokenAddress, chain, signer);
-
-    if (!Erc20TokenService) {
-      console.error('useApproveToken - Erc20TokenService not available');
-      return Promise.resolve({});
-    }
-
     try {
+      const Erc20TokenService = getDefinedServices(chain).ERC20TokenServiceGetter(tokenAddress, chain, signer);
       const contractTransaction = await Erc20TokenService.approve(spenderAddress, amount);
       return await Promise.resolve({
         contractTransaction,
         request: { chain, tokenAddress, amount },
       });
     } catch (error) {
-      console.error('useApproveToken - Failed to approve token amount!', error);
+      console.error(`useApproveToken - Failed to approve token ${tokenAddress} with amount ${amount} !`, error);
       return Promise.resolve({});
     }
   }),
