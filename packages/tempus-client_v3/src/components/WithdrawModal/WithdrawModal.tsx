@@ -49,14 +49,12 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
   }, [approveTokenStatus]);
 
   useEffect(() => {
-    if (withdrawStatus) {
-      if (withdrawStatus.success) {
-        setActionButtonState('success');
+    if (withdrawStatus?.success) {
+      setActionButtonState('success');
 
-        setTimeout(() => {
-          setWithdrawSuccessful(true);
-        }, TIMEOUT_FROM_SUCCESS_TO_DEFAULT_IN_MS);
-      }
+      setTimeout(() => {
+        setWithdrawSuccessful(true);
+      }, TIMEOUT_FROM_SUCCESS_TO_DEFAULT_IN_MS);
     }
   }, [withdrawStatus]);
 
