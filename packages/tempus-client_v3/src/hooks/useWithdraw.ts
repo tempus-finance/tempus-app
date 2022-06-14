@@ -2,8 +2,8 @@ import { ContractTransaction } from 'ethers';
 import { JsonRpcSigner } from '@ethersproject/providers';
 import { bind } from '@react-rxjs/core';
 import { createSignal } from '@react-rxjs/utils';
-import { concatMap, map } from 'rxjs';
-import { Chain, Decimal, getServices, Ticker } from 'tempus-core-services';
+import { concatMap, map, catchError, of } from 'rxjs';
+import { Chain, Decimal, getDefinedServices, Ticker } from 'tempus-core-services';
 
 interface WithdrawRequest {
   chain: Chain;
@@ -48,12 +48,7 @@ const withdrawStatus$ = withdraw$.pipe(
     } = payload;
 
     try {
-      const services = getServices(chain);
-      if (!services || !services.WithdrawService) {
-        throw new Error('useWithdraw - withdrawStatus$ - Failed to get services');
-      }
-
-      const contractTransaction = await services.WithdrawService.withdraw(
+      const contractTransaction = await getDefinedServices(chain).WithdrawService.withdraw(
         poolAddress,
         amount,
         token,
@@ -86,12 +81,19 @@ const withdrawStatus$ = withdraw$.pipe(
         }
       : { pending: false, success: false, request };
   }),
+  catchError(error => {
+    console.error('useWithdraw - Failed to execute withdrawal!', error);
+    return of({
+      pending: false,
+      success: false,
+    });
+  }),
 );
 
-const [withdrawStatus] = bind<WithdrawStatus>(withdrawStatus$, { pending: true });
+const [withdrawStatus] = bind<WithdrawStatus | null>(withdrawStatus$, null);
 
 export const useWithdraw = (): {
-  withdrawStatus: WithdrawStatus;
+  withdrawStatus: WithdrawStatus | null;
   withdraw: (payload: WithdrawRequest) => void;
 } => ({
   withdrawStatus: withdrawStatus(),

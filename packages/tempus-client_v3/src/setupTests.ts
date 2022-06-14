@@ -74,6 +74,11 @@ const mockServices = {
   PoolBalanceService: {
     getPoolBalance: jest.fn().mockResolvedValue(new MockDecimal(100)),
   },
+  WithdrawService: {
+    withdraw: jest.fn().mockResolvedValue({
+      hash: '0x00',
+    }),
+  },
   ERC20TokenServiceGetter: jest.fn().mockImplementation(() => ({
     approve: jest.fn().mockImplementation(() =>
       Promise.resolve({
