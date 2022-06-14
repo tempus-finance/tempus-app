@@ -125,6 +125,9 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
           amount: lpBalanceData.balance,
           signer,
         });
+      } else {
+        // No token balance - set tokens as approved automatically
+        setApprovedTokens(currentState => [...currentState, tempusPool.ammAddress]);
       }
       if (capitalsBalanceData?.balance?.gt(0)) {
         approveToken({
@@ -134,6 +137,9 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
           amount: capitalsBalanceData.balance,
           signer,
         });
+      } else {
+        // No token balance - set tokens as approved automatically
+        setApprovedTokens(currentState => [...currentState, tempusPool.principalsAddress]);
       }
       if (yieldsBalanceData?.balance?.gt(0)) {
         approveToken({
@@ -143,6 +149,9 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
           amount: yieldsBalanceData.balance,
           signer,
         });
+      } else {
+        // No token balance - set tokens as approved automatically
+        setApprovedTokens(currentState => [...currentState, tempusPool.yieldsAddress]);
       }
     }
 
