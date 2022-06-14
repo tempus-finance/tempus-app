@@ -1,10 +1,23 @@
-import { map, Observable } from 'rxjs';
-import { TempusPool } from 'tempus-core-services';
-import { poolList$ } from './usePoolList';
+import { state, useStateObservable } from '@react-rxjs/core';
+import { createSignal } from '@react-rxjs/utils';
+import { Decimal, TempusPool } from 'tempus-core-services';
 
-// TODO: we dont have this event$ yet. this is a dummy event$ that gives tempusPool as param
-export const appEvent$: Observable<{ tempusPool: TempusPool }> = poolList$.pipe(
-  map(tempusPools => ({ tempusPool: tempusPools[0] })),
-);
+export type AppEventType = 'deposit' | 'withdraw';
 
-// TODO: we should have a hook for consumer to emit app event like deposit/withdraw
+export interface AppEvent {
+  eventType: AppEventType;
+  tempusPool: TempusPool;
+  amount: Decimal;
+  timestamp: number;
+}
+
+const [appEvent$, setAppEvent] = createSignal<AppEvent>();
+const stateAppEvent$ = state(appEvent$, null);
+
+export function useAppEvent(): [AppEvent | null, (value: AppEvent) => void] {
+  const appEvent = useStateObservable(stateAppEvent$);
+  const emitAppEvent = setAppEvent; // to remind to use for better naming only
+  return [appEvent, emitAppEvent];
+}
+
+export { appEvent$ };

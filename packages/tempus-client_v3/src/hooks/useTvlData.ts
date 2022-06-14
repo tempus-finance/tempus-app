@@ -16,12 +16,13 @@ import {
   startWith,
   Subscription,
   tap,
+  withLatestFrom,
 } from 'rxjs';
 import { getDefinedServices, Decimal, ZERO, TempusPool } from 'tempus-core-services';
 import { POLLING_INTERVAL_IN_MS, DEBOUNCE_IN_MS } from '../constants';
 import { poolList$ } from './usePoolList';
 import { servicesLoaded$ } from './useServicesLoaded';
-import { appEvent$ } from './useAppEvent';
+import { AppEvent, appEvent$ } from './useAppEvent';
 
 interface PoolTvlMap {
   [chainPoolAddress: string]: Decimal;
@@ -77,9 +78,10 @@ const periodicStream$ = combineLatest([poolList$, servicesLoaded$, intervalBeat$
 );
 
 // stream$ for listening to Tempus event to fetch specific pool data
-const eventStream$ = combineLatest([appEvent$, servicesLoaded$]).pipe(
+const eventStream$ = appEvent$.pipe(
+  withLatestFrom(servicesLoaded$),
   filter(([, servicesLoaded]) => servicesLoaded),
-  mergeMap<[{ tempusPool: TempusPool }, boolean], Observable<PoolTvlMap>>(([{ tempusPool }]) => fetchData(tempusPool)),
+  mergeMap<[AppEvent, boolean], Observable<PoolTvlMap>>(([{ tempusPool }]) => fetchData(tempusPool)),
 );
 
 // merge all stream$ into one
