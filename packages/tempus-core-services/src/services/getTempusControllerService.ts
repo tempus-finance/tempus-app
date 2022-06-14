@@ -1,6 +1,6 @@
 import { Contract } from 'ethers';
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
-import TempusControllerABI from '../abi/TempusController.json';
+import TempusControllerABI from '../abi/TempusControllerV1ABI.json';
 import { Chain, ChainConfig } from '../interfaces';
 import { getDefaultProvider } from './getDefaultProvider';
 import { getTempusAMMService } from './getTempusAMMService';

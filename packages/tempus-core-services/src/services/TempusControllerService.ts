@@ -1,8 +1,8 @@
 import { BigNumber, Contract, ContractTransaction } from 'ethers';
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
 import { TypedEvent } from '../abi/commons';
-import { TempusController } from '../abi/TempusController';
-import TempusControllerABI from '../abi/TempusController.json';
+import { TempusController } from '../abi/TempusControllerV1Typings';
+import TempusControllerABI from '../abi/TempusControllerV1ABI.json';
 import {
   completeExitAndRedeemGasIncrease,
   depositAndFixGasIncrease,
