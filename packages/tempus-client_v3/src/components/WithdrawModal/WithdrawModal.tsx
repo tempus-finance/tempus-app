@@ -30,7 +30,6 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
   const lpBalanceData = useTokenBalance(tempusPool.ammAddress, tempusPool.chain);
   const [{ slippage }] = useUserPreferences();
 
-  const [balance, setBalance] = useState(tokens[0].balance);
   const [currency, setCurrency] = useState(tokens[0]);
   const [actionButtonState, setActionButtonState] = useState<ActionButtonState>('default');
   const [approvedTokens, setApprovedTokens] = useState<string[]>([]);
@@ -78,32 +77,27 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
   }, [approvedTokens, tempusPool.ammAddress, tempusPool.principalsAddress, tempusPool.yieldsAddress]);
 
   const formattedBalanceUsdValue = useMemo(() => {
-    const usdValue = balance.mul(currency.rate);
+    const usdValue = currency.balance.mul(currency.rate);
     return DecimalUtils.formatToCurrency(usdValue, undefined, '$');
-  }, [balance, currency.rate]);
+  }, [currency.rate, currency.balance]);
 
   const infoRows = useMemo(
     () => (
       <CurrencyInputModalInfoRow
         label={t('WithdrawModal.labelAvailableForWithdraw')}
-        value={balance.toString()}
+        value={currency.balance.toString()}
         currency={currency.ticker}
         usdValue={formattedBalanceUsdValue}
       />
     ),
-    [balance, currency.ticker, formattedBalanceUsdValue, t],
+    [currency.balance, currency.ticker, formattedBalanceUsdValue, t],
   );
 
   const handleCurrencyChange = useCallback(
     (newCurrency: Ticker) => {
       const tokenMetadata = tokens.find(token => token.ticker === newCurrency);
       if (tokenMetadata) {
-        setBalance(tokenMetadata.balance);
-      }
-
-      const newToken = tokens?.find(value => value.ticker === newCurrency);
-      if (newToken) {
-        setCurrency(newToken);
+        setCurrency(tokenMetadata);
       }
     },
     [tokens],
@@ -218,7 +212,7 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
           onClose={onClose}
           title={t('WithdrawModal.title')}
           description={t('WithdrawModal.description')}
-          balance={balance}
+          balance={currency.balance}
           infoRows={infoRows}
           actionButtonLabels={{
             action: {
