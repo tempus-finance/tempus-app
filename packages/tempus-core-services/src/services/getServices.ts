@@ -28,7 +28,7 @@ type ServiceMap = {
   StorageService: StorageService;
   WalletBalanceService: WalletBalanceService;
   PoolBalanceService: PoolBalanceService;
-  WithdrawService: WithdrawService | null;
+  WithdrawService: WithdrawService;
   ERC20TokenServiceGetter: typeof getERC20TokenService;
 };
 
