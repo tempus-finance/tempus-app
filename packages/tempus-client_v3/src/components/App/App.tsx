@@ -25,17 +25,15 @@ const App = () => {
     { text: t('App.navPortfolio'), path: '/portfolio' },
   ];
 
+  // Init services and config
   useEffect(() => {
-    const retrieveConfig = () => {
-      const configManger = getConfigManager();
-      configManger.init();
+    const configManger = getConfigManager();
 
-      initServices('ethereum', configManger.getConfig());
-      initServices('fantom', configManger.getConfig());
-      initServices('ethereum-fork', configManger.getConfig());
-      setServicesLoaded(true);
-    };
-    retrieveConfig();
+    initServices('ethereum', configManger.getConfig());
+    initServices('fantom', configManger.getConfig());
+    initServices('ethereum-fork', configManger.getConfig());
+
+    setServicesLoaded(true);
   }, [setServicesLoaded]);
 
   return (
