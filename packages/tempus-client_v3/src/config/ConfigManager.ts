@@ -97,6 +97,10 @@ class ConfigManager {
     return dates;
   }
 
+  getPoolData(poolAddress: string): TempusPool | undefined {
+    return this.poolList.find(pool => pool.address === poolAddress);
+  }
+
   private retrieveChainList(): void {
     this.chainList = Object.keys(this.config) as Chain[];
   }

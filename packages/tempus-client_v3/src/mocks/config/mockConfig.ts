@@ -1,4 +1,6 @@
-export const pool1 = {
+import { ChainConfig, TempusPool } from 'tempus-core-services';
+
+export const pool1: TempusPool = {
   address: '1',
   poolId: 'ethereum-1',
   backingToken: 'ETH',
@@ -18,10 +20,16 @@ export const pool1 = {
   tokenPrecision: {
     backingToken: 18,
     yieldBearingToken: 18,
+    lpTokens: 18,
+    principals: 18,
+    yields: 18,
   },
+  disabledOperations: {},
+  showEstimatesInBackingToken: false,
+  rippleColor: '#ffffaa',
 };
 
-export const pool2 = {
+export const pool2: TempusPool = {
   address: '2',
   poolId: 'ethereum-2',
   backingToken: 'USDC',
@@ -41,10 +49,16 @@ export const pool2 = {
   tokenPrecision: {
     backingToken: 6,
     yieldBearingToken: 6,
+    lpTokens: 18,
+    principals: 6,
+    yields: 6,
   },
+  disabledOperations: {},
+  showEstimatesInBackingToken: true,
+  rippleColor: '#fafafa',
 };
 
-export const pool3 = {
+export const pool3: TempusPool = {
   address: '3',
   poolId: 'fantom-1',
   backingToken: 'USDC',
@@ -64,10 +78,16 @@ export const pool3 = {
   tokenPrecision: {
     backingToken: 6,
     yieldBearingToken: 6,
+    lpTokens: 18,
+    principals: 6,
+    yields: 6,
   },
+  disabledOperations: {},
+  showEstimatesInBackingToken: true,
+  rippleColor: '#fcfcfc',
 };
 
-export const pool4 = {
+export const pool4: TempusPool = {
   address: '4',
   poolId: 'fantom-2',
   backingToken: 'WETH',
@@ -87,10 +107,16 @@ export const pool4 = {
   tokenPrecision: {
     backingToken: 18,
     yieldBearingToken: 18,
+    lpTokens: 18,
+    principals: 18,
+    yields: 18,
   },
+  disabledOperations: {},
+  showEstimatesInBackingToken: true,
+  rippleColor: '#122112',
 };
 
-export const pool5 = {
+export const pool5: TempusPool = {
   address: '5',
   poolId: 'fantom-3',
   backingToken: 'WETH',
@@ -110,26 +136,66 @@ export const pool5 = {
   tokenPrecision: {
     backingToken: 18,
     yieldBearingToken: 18,
+    lpTokens: 18,
+    principals: 18,
+    yields: 18,
   },
+  disabledOperations: {},
+  showEstimatesInBackingToken: true,
+  rippleColor: '#ababab',
 };
 
-export const mockConfig = {
+export const mockConfig: { [chain: string]: ChainConfig } = {
   ethereum: {
     tempusPools: [pool1, pool2],
     chainId: 1,
     privateNetworkUrl: String(process.env.REACT_APP_ETHEREUM_RPC),
     alchemyKey: String(process.env.REACT_APP_MAINNET_ALCHEMY_KEY),
+    averageBlockTime: 13.3,
+    blockExplorerName: 'Etherscan',
+    blockExplorerUrl: 'https://etherscan.io/',
+    lidoOracle: '',
+    nativeToken: 'ETH',
+    nativeTokenPrecision: 18,
+    networkName: 'ethereum',
+    publicNetworkUrl: '',
+    statisticsContract: '',
+    tempusControllerContract: '',
+    vaultContract: '',
   },
   fantom: {
     tempusPools: [pool3, pool4, pool5],
     chainId: 250,
     privateNetworkUrl: String(process.env.REACT_APP_FANTOM_RPC),
+    averageBlockTime: 0.9,
+    blockExplorerName: 'FTMScan',
+    blockExplorerUrl: 'https://ftmscan.com/',
+    lidoOracle: '',
+    nativeToken: 'FTM',
+    nativeTokenPrecision: 18,
+    networkName: 'fantom',
+    publicNetworkUrl: '',
+    statisticsContract: '',
+    tempusControllerContract: '',
+    vaultContract: '',
+    alchemyKey: '',
   },
   'ethereum-fork': {
     tempusPools: [],
     chainId: 31337,
     privateNetworkUrl: String(process.env.REACT_APP_ETHEREUM_RPC),
     alchemyKey: String(process.env.REACT_APP_MAINNET_ALCHEMY_KEY),
+    averageBlockTime: 13.3,
+    blockExplorerName: 'Etherscan',
+    blockExplorerUrl: 'https://etherscan.io/',
+    lidoOracle: '',
+    nativeToken: 'ETH',
+    nativeTokenPrecision: 18,
+    networkName: 'ethereum',
+    publicNetworkUrl: '',
+    statisticsContract: '',
+    tempusControllerContract: '',
+    vaultContract: '',
   },
 };
 

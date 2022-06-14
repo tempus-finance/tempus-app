@@ -1,7 +1,7 @@
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ChainConfig, Decimal, chainIdToChainName, Ticker, ZERO } from 'tempus-core-services';
-import { dateFormatter } from '../../constants';
+import { dateFormatter, TIMEOUT_FROM_SUCCESS_TO_DEFAULT_IN_MS } from '../../constants';
 import {
   setPoolForYieldAtMaturity,
   setTokenAmountForYieldAtMaturity,
@@ -26,8 +26,6 @@ export interface DepositModalProps extends ModalProps {
   maturityTerms?: MaturityTerm[];
   chainConfig?: ChainConfig;
 }
-
-export const TIMEOUT_FROM_SUCCESS_TO_DEFAULT_IN_MS = 3000;
 
 const DepositModal: FC<DepositModalProps> = props => {
   const { tokens, open, onClose, poolStartDate, maturityTerms, chainConfig } = props;

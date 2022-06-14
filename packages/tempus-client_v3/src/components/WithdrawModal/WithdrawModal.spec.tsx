@@ -3,7 +3,11 @@ import { BrowserRouter } from 'react-router-dom';
 import { Decimal } from 'tempus-core-services';
 import { getConfigManager } from '../../config/getConfigManager';
 import { TokenMetadataProp } from '../../interfaces';
+import { mockConfig } from '../../setupTests';
+import { pool1 } from '../../mocks/config/mockConfig';
 import { WithdrawModal, WithdrawModalProps } from './WithdrawModal';
+
+jest.mock('lottie-react', () => () => <div className="lottie-animation" />);
 
 jest.mock('@web3-onboard/ledger', () =>
   jest.fn().mockImplementation(() => () => ({
@@ -46,8 +50,11 @@ const defaultProps: WithdrawModalProps = {
       address: '0x0',
       rate: new Decimal(3500),
       ticker: 'ETH',
+      balance: new Decimal(100),
     },
   ],
+  chainConfig: mockConfig.ethereum,
+  tempusPool: pool1,
 };
 
 const singleToken: TokenMetadataProp = [
@@ -55,8 +62,9 @@ const singleToken: TokenMetadataProp = [
     precision: 18,
     precisionForUI: 4,
     address: '0x0',
-    rate: new Decimal(3500),
+    rate: new Decimal(1),
     ticker: 'ETH',
+    balance: new Decimal(100),
   },
 ];
 
@@ -65,15 +73,17 @@ const multipleTokens: TokenMetadataProp = [
     precision: 18,
     precisionForUI: 4,
     address: '0x0',
-    rate: new Decimal(3500),
+    rate: new Decimal(1),
     ticker: 'ETH',
+    balance: new Decimal(100),
   },
   {
     precision: 18,
     precisionForUI: 4,
     address: '0x1',
-    rate: new Decimal(3500),
+    rate: new Decimal(1),
     ticker: 'stETH',
+    balance: new Decimal(200),
   },
 ];
 
@@ -124,7 +134,7 @@ describe('WithdrawModal', () => {
     const currencyInput = getByRole('textbox');
 
     expect(currencyInput).not.toBeNull();
-    expect(currencyInput).toHaveValue('101'); // TODO: Mock balance fetching
+    expect(currencyInput).toHaveValue('200');
   });
 
   it('withdraws on action button click', async () => {
@@ -155,14 +165,12 @@ describe('WithdrawModal', () => {
     });
 
     expect(actionButton).toBeEnabled();
-    expect(actionButton).toHaveClass('tc__actionButton-border-primary-large');
 
     // withdraw
     fireEvent.click(actionButton as Element);
 
     await act(async () => {
       await expect(actionButton).toBeDisabled();
-      await expect(actionButton).toHaveClass('tc__actionButton-border-primary-large-loading');
     });
 
     // wait for transaction to finish
@@ -171,7 +179,6 @@ describe('WithdrawModal', () => {
     });
 
     expect(actionButton).toBeDisabled();
-    expect(actionButton).toHaveClass('tc__actionButton-border-primary-large-success');
 
     jest.useRealTimers();
   });
