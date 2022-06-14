@@ -4,7 +4,7 @@ import { WithdrawService } from './WithdrawService';
 
 const withdrawServices = new Map<Chain, WithdrawService>();
 export function getWithdrawService(chain: Chain, getConfig: ConfigGetter): WithdrawService {
-  if (!withdrawServices.get(chain)) {
+  if (!withdrawServices.has(chain)) {
     withdrawServices.set(chain, new WithdrawService(chain, getConfig));
   }
 

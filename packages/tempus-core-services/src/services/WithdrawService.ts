@@ -60,19 +60,31 @@ export class WithdrawService extends BaseService {
 
     const toBackingToken = tokenToGet === poolConfig.backingToken;
 
-    const estimate = await statsContract.estimateExitAndRedeem(
-      poolConfig.ammAddress,
-      capitalsAmount,
-      yieldsAmount,
-      lpAmount,
-      backingTokenPrecision,
-      yieldBearingTokenPrecision,
-      principalsPrecision,
-      yieldsPrecision,
-      lpPrecision,
-      maxLeftoverShares,
-      toBackingToken,
-    );
+    let estimate: {
+      tokenAmount: Decimal;
+      principalsStaked: Decimal;
+      yieldsStaked: Decimal;
+      principalsRate: Decimal;
+      yieldsRate: Decimal;
+    };
+    try {
+      estimate = await statsContract.estimateExitAndRedeem(
+        poolConfig.ammAddress,
+        capitalsAmount,
+        yieldsAmount,
+        lpAmount,
+        backingTokenPrecision,
+        yieldBearingTokenPrecision,
+        principalsPrecision,
+        yieldsPrecision,
+        lpPrecision,
+        maxLeftoverShares,
+        toBackingToken,
+      );
+    } catch (error) {
+      console.error('WithdrawService - withdraw() - Failed to get withdraw estimate!', error);
+      return Promise.reject(error);
+    }
 
     const minCapitalsStaked = estimate.principalsStaked.sub(estimate.principalsStaked.mul(slippage));
     const minYieldsStaked = estimate.yieldsStaked.sub(estimate.yieldsStaked.mul(slippage));
@@ -83,71 +95,81 @@ export class WithdrawService extends BaseService {
     const tempusAMM = new TempusAMMV1Contract(this.chain, poolConfig.ammAddress);
 
     let yieldsRate: Decimal;
-    // Calculate yieldsRate if pool is not mature yet
-    if (poolConfig.maturityDate > Date.now()) {
-      if (totalYields.gt(totalCapitals)) {
-        const tokenSwapAmount = totalYields.sub(totalCapitals);
+    try {
+      // Calculate yieldsRate if pool is not mature yet
+      if (poolConfig.maturityDate > Date.now()) {
+        if (totalYields.gt(totalCapitals)) {
+          const tokenSwapAmount = totalYields.sub(totalCapitals);
 
-        const estimatedPrincipals = await tempusAMM.getExpectedReturnGivenIn(
-          tokenSwapAmount,
-          true,
-          principalsPrecision,
-          yieldsPrecision,
-        );
+          const estimatedPrincipals = await tempusAMM.getExpectedReturnGivenIn(
+            tokenSwapAmount,
+            true,
+            principalsPrecision,
+            yieldsPrecision,
+          );
 
-        yieldsRate = estimatedPrincipals.div(tokenSwapAmount);
-      } else if (totalCapitals.gt(totalYields)) {
-        const tokenSwapAmount = totalCapitals.sub(totalYields);
+          yieldsRate = estimatedPrincipals.div(tokenSwapAmount);
+        } else if (totalCapitals.gt(totalYields)) {
+          const tokenSwapAmount = totalCapitals.sub(totalYields);
 
-        const estimatedYields = await tempusAMM.getExpectedReturnGivenIn(
-          tokenSwapAmount,
-          false,
-          principalsPrecision,
-          yieldsPrecision,
-        );
+          const estimatedYields = await tempusAMM.getExpectedReturnGivenIn(
+            tokenSwapAmount,
+            false,
+            principalsPrecision,
+            yieldsPrecision,
+          );
 
-        yieldsRate = tokenSwapAmount.div(estimatedYields);
+          yieldsRate = tokenSwapAmount.div(estimatedYields);
+        } else {
+          // In case we have equal amounts, use 1 as swapAmount just in case estimate was wrong,
+          // and swap is going to happen anyways
+          const tokenSwapAmount = new Decimal(1);
+
+          const estimatedPrincipals = await tempusAMM.getExpectedReturnGivenIn(
+            tokenSwapAmount,
+            true,
+            principalsPrecision,
+            yieldsPrecision,
+          );
+
+          yieldsRate = estimatedPrincipals.div(tokenSwapAmount);
+        }
       } else {
-        // In case we have equal amounts, use 1 as swapAmount just in case estimate was wrong,
-        // and swap is going to happen anyways
-        const tokenSwapAmount = new Decimal(1);
+        // In case pool is mature, withdraw will not execute any swaps under the hood,
+        // so we can set yieldsRate to any value other then zero
 
-        const estimatedPrincipals = await tempusAMM.getExpectedReturnGivenIn(
-          tokenSwapAmount,
-          true,
-          principalsPrecision,
-          yieldsPrecision,
-        );
-
-        yieldsRate = estimatedPrincipals.div(tokenSwapAmount);
+        yieldsRate = new Decimal(1);
       }
-    } else {
-      // In case pool is mature, withdraw will not execute any swaps under the hood,
-      // so we can set yieldsRate to any value other then zero
-
-      yieldsRate = new Decimal(1);
+    } catch (error) {
+      console.error('WithdrawService - withdraw() - Failed to get calculate yields rate!', error);
+      return Promise.reject(error);
     }
 
     const maxSlippage = slippage.div(100);
 
     const deadline = new Decimal(INFINITE_DEADLINE, DEFAULT_DECIMAL_PRECISION);
 
-    return tempusControllerContract.exitAmmGiveLpAndRedeem(
-      poolConfig.ammAddress,
-      lpAmount,
-      capitalsAmount,
-      yieldsAmount,
-      lpPrecision,
-      principalsPrecision,
-      yieldsPrecision,
-      SLIPPAGE_PRECISION,
-      minCapitalsStaked,
-      minYieldsStaked,
-      maxLeftoverShares,
-      yieldsRate,
-      maxSlippage,
-      toBackingToken,
-      deadline,
-    );
+    try {
+      return await tempusControllerContract.exitAmmGiveLpAndRedeem(
+        poolConfig.ammAddress,
+        lpAmount,
+        capitalsAmount,
+        yieldsAmount,
+        lpPrecision,
+        principalsPrecision,
+        yieldsPrecision,
+        SLIPPAGE_PRECISION,
+        minCapitalsStaked,
+        minYieldsStaked,
+        maxLeftoverShares,
+        yieldsRate,
+        maxSlippage,
+        toBackingToken,
+        deadline,
+      );
+    } catch (error) {
+      console.error('WithdrawService - withdraw() - Failed to execute withdrawal!', error);
+      return Promise.reject(error);
+    }
   }
 }
