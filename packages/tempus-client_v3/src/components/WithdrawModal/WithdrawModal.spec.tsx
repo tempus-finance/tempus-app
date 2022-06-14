@@ -3,7 +3,11 @@ import { BrowserRouter } from 'react-router-dom';
 import { Decimal } from 'tempus-core-services';
 import { getConfigManager } from '../../config/getConfigManager';
 import { TokenMetadataProp } from '../../interfaces';
+import { mockConfig } from '../../setupTests';
+import { pool1 } from '../../mocks/config/mockConfig';
 import { WithdrawModal, WithdrawModalProps } from './WithdrawModal';
+
+jest.mock('lottie-react', () => () => <div className="lottie-animation" />);
 
 jest.mock('@web3-onboard/ledger', () =>
   jest.fn().mockImplementation(() => () => ({
@@ -49,6 +53,8 @@ const defaultProps: WithdrawModalProps = {
       balance: new Decimal(100),
     },
   ],
+  chainConfig: mockConfig.ethereum,
+  tempusPool: pool1,
 };
 
 const singleToken: TokenMetadataProp = [
@@ -159,14 +165,12 @@ describe('WithdrawModal', () => {
     });
 
     expect(actionButton).toBeEnabled();
-    expect(actionButton).toHaveClass('tc__actionButton-border-primary-large');
 
     // withdraw
     fireEvent.click(actionButton as Element);
 
     await act(async () => {
       await expect(actionButton).toBeDisabled();
-      await expect(actionButton).toHaveClass('tc__actionButton-border-primary-large-loading');
     });
 
     // wait for transaction to finish
@@ -175,7 +179,6 @@ describe('WithdrawModal', () => {
     });
 
     expect(actionButton).toBeDisabled();
-    expect(actionButton).toHaveClass('tc__actionButton-border-primary-large-success');
 
     jest.useRealTimers();
   });
