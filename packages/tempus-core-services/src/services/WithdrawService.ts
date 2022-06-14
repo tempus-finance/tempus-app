@@ -149,22 +149,27 @@ export class WithdrawService extends BaseService {
 
     const deadline = new Decimal(INFINITE_DEADLINE, DEFAULT_DECIMAL_PRECISION);
 
-    return tempusControllerContract.exitAmmGiveLpAndRedeem(
-      poolConfig.ammAddress,
-      lpAmount,
-      capitalsAmount,
-      yieldsAmount,
-      lpPrecision,
-      principalsPrecision,
-      yieldsPrecision,
-      SLIPPAGE_PRECISION,
-      minCapitalsStaked,
-      minYieldsStaked,
-      maxLeftoverShares,
-      yieldsRate,
-      maxSlippage,
-      toBackingToken,
-      deadline,
-    );
+    try {
+      return await tempusControllerContract.exitAmmGiveLpAndRedeem(
+        poolConfig.ammAddress,
+        lpAmount,
+        capitalsAmount,
+        yieldsAmount,
+        lpPrecision,
+        principalsPrecision,
+        yieldsPrecision,
+        SLIPPAGE_PRECISION,
+        minCapitalsStaked,
+        minYieldsStaked,
+        maxLeftoverShares,
+        yieldsRate,
+        maxSlippage,
+        toBackingToken,
+        deadline,
+      );
+    } catch (error) {
+      console.error('WithdrawService - withdraw() - Failed to execute withdrawal!', error);
+      return Promise.reject(error);
+    }
   }
 }
