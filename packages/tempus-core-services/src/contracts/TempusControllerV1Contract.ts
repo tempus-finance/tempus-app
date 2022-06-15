@@ -1,10 +1,11 @@
-import { Contract, ContractTransaction } from 'ethers';
+import { CallOverrides, Contract, ContractTransaction } from 'ethers';
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
 import { TempusController as TempusControllerV1 } from '../abi/TempusControllerV1Typings';
 import TempusControllerV1ABI from '../abi/TempusControllerV1ABI.json';
 import { Decimal } from '../datastructures';
-import { Chain } from '../interfaces';
+import { Chain, Ticker } from '../interfaces';
 import { getDefaultProvider } from '../services';
+import { DEADLINE_PRECISION } from '../constants';
 
 export class TempusControllerV1Contract {
   private contractAddress: string;
@@ -46,7 +47,34 @@ export class TempusControllerV1Contract {
       yieldsRate.toBigNumber(yieldsPrecision),
       maxSlippage.toBigNumber(slippagePrecision),
       toBackingToken,
-      deadline.toBigNumber(),
+      deadline.toBigNumber(DEADLINE_PRECISION),
+    );
+  }
+
+  depositAndFix(
+    ammAddress: string,
+    tokenAmount: Decimal,
+    tokenTicker: Ticker,
+    tokenPrecision: number,
+    yieldsPrecision: number,
+    isBackingToken: boolean,
+    minTYSRate: Decimal,
+    deadline: Decimal,
+  ): Promise<ContractTransaction> {
+    let overrides: CallOverrides = {};
+    if (tokenTicker === 'ETH') {
+      overrides = {
+        value: tokenAmount.toBigNumber(tokenPrecision),
+      };
+    }
+
+    return this.contract.depositAndFix(
+      ammAddress,
+      tokenAmount.toBigNumber(tokenPrecision),
+      isBackingToken,
+      minTYSRate.toBigNumber(yieldsPrecision),
+      deadline.toBigNumber(DEADLINE_PRECISION),
+      overrides,
     );
   }
 }
