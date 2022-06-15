@@ -79,6 +79,11 @@ const mockServices = {
       hash: '0x00',
     }),
   },
+  DepositService: {
+    fixedDeposit: jest.fn().mockResolvedValue({
+      hash: '0x00',
+    }),
+  },
   ERC20TokenServiceGetter: jest.fn().mockImplementation(() => ({
     approve: jest.fn().mockImplementation(() =>
       Promise.resolve({
