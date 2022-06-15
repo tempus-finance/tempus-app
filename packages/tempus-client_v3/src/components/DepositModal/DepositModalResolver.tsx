@@ -12,7 +12,7 @@ import {
 import DepositModal from './DepositModal';
 import './DepositModalResolver.scss';
 
-export const DepositModalResolver: FC = (): JSX.Element => {
+export const DepositModalResolver: FC = () => {
   const useDepositModalProps = useDepositModalData();
   const depositModalProps = useDepositModalProps();
   const config = useConfig();
@@ -38,14 +38,18 @@ export const DepositModalResolver: FC = (): JSX.Element => {
     navigate(-1);
   };
 
+  if (!depositModalProps) {
+    return null;
+  }
+
   return (
     <DepositModal
       open
       onClose={handleCloseModal}
-      poolStartDate={depositModalProps?.poolStartDate}
-      maturityTerms={depositModalProps?.maturityTerms}
-      tokens={depositModalProps?.tokens}
-      chainConfig={config?.[chain as Chain]}
+      poolStartDate={depositModalProps.poolStartDate}
+      maturityTerms={depositModalProps.maturityTerms}
+      tokens={depositModalProps.tokens}
+      chainConfig={config[chain as Chain]}
     />
   );
 };

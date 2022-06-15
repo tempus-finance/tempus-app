@@ -9,6 +9,9 @@ import {
   useTokenBalances,
   useTokenApprove,
   useSigner,
+  useUserPreferences,
+  usePoolList,
+  useFixedDeposit,
 } from '../../hooks';
 import { MaturityTerm, TokenMetadata, TokenMetadataProp } from '../../interfaces';
 import { ModalProps } from '../shared/Modal/Modal';
@@ -21,24 +24,30 @@ import DepositModalInfoRows from './DepositModalInfoRows';
 import './DepositModal.scss';
 
 export interface DepositModalProps extends ModalProps {
-  tokens?: TokenMetadataProp;
+  tokens: TokenMetadataProp;
   poolStartDate?: Date;
-  maturityTerms?: MaturityTerm[];
-  chainConfig?: ChainConfig;
+  maturityTerms: MaturityTerm[];
+  chainConfig: ChainConfig;
 }
 
 const DepositModal: FC<DepositModalProps> = props => {
   const { tokens, open, onClose, poolStartDate, maturityTerms, chainConfig } = props;
-  const [maturityTerm, setMaturityTerm] = useState<MaturityTerm | undefined>();
-  const [token, setToken] = useState<TokenMetadata | undefined>();
-  const [actionButtonState, setActionButtonState] = useState<ActionButtonState>('default');
-  const balances = useTokenBalances();
-  const { approveToken, approveTokenStatus } = useTokenApprove();
+
   const { t } = useTranslation();
-  const [signer] = useSigner();
 
   const useDepositModalProps = useDepositModalData();
   const modalProps = useDepositModalProps();
+
+  const tempusPools = usePoolList();
+  const balances = useTokenBalances();
+  const [signer] = useSigner();
+  const [{ slippage }] = useUserPreferences();
+  const { fixedDeposit } = useFixedDeposit();
+  const { approveToken, approveTokenStatus } = useTokenApprove();
+
+  const [maturityTerm, setMaturityTerm] = useState<MaturityTerm>(maturityTerms[0]);
+  const [token, setToken] = useState<TokenMetadata>(tokens[0]);
+  const [actionButtonState, setActionButtonState] = useState<ActionButtonState>('default');
 
   const actionButtonLabels: CurrencyInputModalActionButtonLabels = {
     preview: {
@@ -58,18 +67,6 @@ const DepositModal: FC<DepositModalProps> = props => {
           success: t('DepositModal.labelApproveSuccess'),
         },
   };
-
-  useEffect(() => {
-    if (maturityTerms) {
-      setMaturityTerm(maturityTerms[0]);
-    }
-  }, [maturityTerms]);
-
-  useEffect(() => {
-    if (tokens) {
-      setToken(tokens[0]);
-    }
-  }, [tokens]);
 
   useEffect(() => {
     if (approveTokenStatus) {
@@ -112,7 +109,7 @@ const DepositModal: FC<DepositModalProps> = props => {
 
   const handleMaturityChange = useCallback(
     (newTerm: MaturityTerm) => {
-      const termIndex = maturityTerms?.findIndex(term => term.date === newTerm.date) ?? 0;
+      const termIndex = maturityTerms.findIndex(term => term.date === newTerm.date) ?? 0;
       const selectedPool = modalProps?.tempusPools[termIndex];
 
       if (selectedPool) {
@@ -126,8 +123,7 @@ const DepositModal: FC<DepositModalProps> = props => {
 
   const handleCurrencyChange = useCallback(
     (newCurrency: Ticker) => {
-      const newToken = tokens?.find(value => value.ticker === newCurrency);
-
+      const newToken = tokens.find(value => value.ticker === newCurrency);
       if (newToken) {
         setToken(newToken);
       }
@@ -135,17 +131,21 @@ const DepositModal: FC<DepositModalProps> = props => {
     [tokens],
   );
 
-  const approveDeposit = useCallback(
+  /**
+   * TODO - Check token allowance before executing another approval - to save gas cost
+   */
+  const handleApprove = useCallback(
     async (amount: Decimal) => {
-      setActionButtonState('loading');
-      const chain = chainConfig?.chainId ? chainIdToChainName(chainConfig?.chainId) : undefined;
-      const spenderAddress = chainConfig?.tempusControllerContract;
+      const tempusPool = tempusPools.find(pool => pool.maturityDate === maturityTerm.date.getTime());
 
-      if (chain && spenderAddress && signer) {
+      // Approve selected token entered amount
+      if (tempusPool && signer) {
+        setActionButtonState('loading');
+
         approveToken({
-          chain,
-          tokenAddress: String(token?.address),
-          spenderAddress,
+          chain: tempusPool.chain,
+          tokenAddress: token.address,
+          spenderAddress: chainConfig.tempusControllerContract,
           amount,
           signer,
         });
@@ -153,19 +153,48 @@ const DepositModal: FC<DepositModalProps> = props => {
 
       return approveTokenStatus?.contractTransaction?.hash || '0x0';
     },
-    [approveToken, approveTokenStatus, chainConfig, token, signer],
+    [
+      tempusPools,
+      signer,
+      approveTokenStatus?.contractTransaction?.hash,
+      maturityTerm.date,
+      approveToken,
+      token.address,
+      chainConfig.tempusControllerContract,
+    ],
   );
 
-  const deposit = useCallback(async () => {
-    // TODO: Implement deposit function
-    setActionButtonState('loading');
+  const handleDeposit = useCallback(
+    async (amount: Decimal) => {
+      const tempusPool = tempusPools.find(pool => pool.maturityDate === maturityTerm.date.getTime());
 
-    setTimeout(() => {
-      setActionButtonState('success');
-    }, 5000);
+      if (signer && tempusPool) {
+        setActionButtonState('loading');
 
-    return Promise.resolve('0x0');
-  }, []);
+        fixedDeposit({
+          chain: tempusPool.chain,
+          poolAddress: tempusPool.address,
+          tokenAmount: amount,
+          tokenTicker: token.ticker,
+          tokenAddress: token.address,
+          slippage,
+          signer,
+        });
+      }
+
+      return approveTokenStatus?.contractTransaction?.hash || '0x0';
+    },
+    [
+      tempusPools,
+      signer,
+      approveTokenStatus?.contractTransaction?.hash,
+      maturityTerm.date,
+      fixedDeposit,
+      token.ticker,
+      token.address,
+      slippage,
+    ],
+  );
 
   return (
     <CurrencyInputModal
@@ -191,7 +220,7 @@ const DepositModal: FC<DepositModalProps> = props => {
       }
       actionButtonLabels={actionButtonLabels}
       actionButtonState={actionButtonState}
-      onTransactionStart={approveTokenStatus?.success ? deposit : approveDeposit}
+      onTransactionStart={approveTokenStatus?.success ? handleDeposit : handleApprove}
       onMaturityChange={handleMaturityChange}
       onAmountChange={setTokenAmountForYieldAtMaturity}
       onCurrencyUpdate={handleCurrencyChange}

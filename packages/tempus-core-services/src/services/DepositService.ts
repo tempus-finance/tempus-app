@@ -47,7 +47,7 @@ export class DepositService extends BaseService {
         poolConfig.tokenPrecision.principals,
         poolConfig.tokenPrecision.yields,
       );
-      minTYSRate = tysRate.sub(tysRate.mul(slippage.div(100)));
+      minTYSRate = tysRate.sub(tysRate.mul(slippage));
     } catch (error) {
       console.error('DepositService - fixedDeposit() - Failed to get yields token exchange rate!', error);
       return Promise.reject(error);
