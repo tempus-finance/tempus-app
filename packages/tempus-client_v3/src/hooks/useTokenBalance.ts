@@ -21,12 +21,14 @@ import { walletAddress$ } from './useWalletAddress';
 // Improves readability of the code
 type TokenChainAddressId = string;
 
+export interface TokenBalance {
+  balance: Decimal | null;
+  chain: Chain;
+  address: string;
+}
+
 interface TokenBalanceData {
-  subject$: BehaviorSubject<{
-    balance: Decimal | null;
-    chain: Chain;
-    address: string;
-  }>;
+  subject$: BehaviorSubject<TokenBalance>;
   address: string;
   chain: Chain;
 }
@@ -39,11 +41,7 @@ tokenList.forEach(token => {
   const tokenChainAddressId = `${token.chain}-${token.address}`;
 
   tokenBalanceDataMap.set(tokenChainAddressId, {
-    subject$: new BehaviorSubject<{
-      balance: Decimal | null;
-      address: string;
-      chain: Chain;
-    }>({
+    subject$: new BehaviorSubject<TokenBalance>({
       balance: null,
       address: token.address,
       chain: token.chain,

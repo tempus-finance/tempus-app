@@ -7,7 +7,7 @@ module.exports = {
   },
   overrides: [
     {
-      files: ['*.ts', '*.tsx', '**/*.stories.*'],
+      files: ['**/*.ts', '**/*.tsx', '**/*.stories.*'],
       parserOptions: {
         project: ['./tsconfig.json'],
       },

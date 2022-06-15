@@ -30,7 +30,7 @@ interface ApproveTokenResponse {
 
 const [approveToken$, approveToken] = createSignal<ApproveTokenRequestEnhanced>();
 
-const tokenApproveStatus$ = combineLatest([approveToken$, servicesLoaded$]).pipe(
+export const tokenApproveStatus$ = combineLatest([approveToken$, servicesLoaded$]).pipe(
   filter(([, servicesLoaded]) => servicesLoaded),
   concatMap<[ApproveTokenRequestEnhanced, boolean], Promise<ApproveTokenResponse>>(async ([payload]) => {
     const { chain, tokenAddress, spenderAddress, amount, signer } = payload;
