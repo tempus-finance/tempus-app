@@ -1,5 +1,5 @@
 import { ComponentStory, ComponentMeta } from '@storybook/react';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { ChainConfig, Decimal } from 'tempus-core-services';
 import { getConfigManager } from '../../config/getConfigManager';
 import { MaturityTerm } from '../../interfaces';
@@ -31,17 +31,7 @@ const maturityTerms: MaturityTerm[] = [
 
 const Template: ComponentStory<typeof DepositModal> = () => {
   const [modalOpen, setModalOpen] = useState(false);
-  const [config, setConfig] = useState<ChainConfig | undefined>();
-
-  useEffect(() => {
-    const retrieveConfig = async () => {
-      const configManager = getConfigManager();
-      configManager.init();
-
-      setConfig(configManager.getChainConfig('ethereum'));
-    };
-    retrieveConfig();
-  }, []);
+  const [config] = useState<ChainConfig>(getConfigManager().getChainConfig('ethereum'));
 
   const onModalOpen = useCallback(() => {
     setModalOpen(true);
