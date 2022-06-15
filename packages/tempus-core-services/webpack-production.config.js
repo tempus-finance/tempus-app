@@ -24,7 +24,6 @@ module.exports = {
     library: 'tempus-core-services',
     libraryTarget: 'umd',
   },
-  watch: true,
   mode: 'production',
   devtool: 'eval-source-map',
   externals: ['ethers', 'rxjs', 'date-fns', '@ethersproject/providers'],
