@@ -8,12 +8,16 @@ import { Chain, Ticker } from '../interfaces';
 import { BaseService, ConfigGetter } from './BaseService';
 
 export class DepositService extends BaseService {
-  private chain: Chain;
+  #chain: Chain;
 
   constructor(chain: Chain, getConfig: ConfigGetter) {
     super(getConfig);
 
-    this.chain = chain;
+    this.#chain = chain;
+  }
+
+  get chain(): Chain {
+    return this.#chain;
   }
 
   async fixedDeposit(
@@ -29,11 +33,11 @@ export class DepositService extends BaseService {
     const poolConfig = this.getPoolConfig(poolAddress);
 
     const tempusControllerContract = new TempusControllerV1Contract(
-      this.chain,
+      this.#chain,
       tempusControllerContractAddress,
       signer,
     );
-    const tempusAMM = new TempusAMMV1Contract(this.chain, poolConfig.ammAddress);
+    const tempusAMM = new TempusAMMV1Contract(this.#chain, poolConfig.ammAddress);
 
     let minTYSRate: Decimal;
     try {
@@ -43,7 +47,7 @@ export class DepositService extends BaseService {
         poolConfig.tokenPrecision.principals,
         poolConfig.tokenPrecision.yields,
       );
-      minTYSRate = tysRate.sub(tysRate.mul(slippage));
+      minTYSRate = tysRate.sub(tysRate.mul(slippage.div(100)));
     } catch (error) {
       console.error('DepositService - fixedDeposit() - Failed to get yields token exchange rate!', error);
       return Promise.reject(error);

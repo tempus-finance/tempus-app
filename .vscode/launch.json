@@ -11,6 +11,17 @@
       "protocol": "inspector",
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen"
+    },
+    {
+      "name": "Test Core Services - Debug",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "${workspaceRoot}/packages/tempus-client_v3/node_modules/.bin/jest",
+      "args": ["--watch"],
+      "cwd": "${workspaceRoot}/packages/tempus-core-services",
+      "protocol": "inspector",
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen"
     }
   ]
 }
