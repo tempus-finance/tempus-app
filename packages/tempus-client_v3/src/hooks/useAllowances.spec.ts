@@ -1,4 +1,3 @@
-import { BigNumber } from 'ethers';
 import { JsonRpcSigner } from '@ethersproject/providers';
 import { renderHook } from '@testing-library/react-hooks';
 import { of as mockOf, delay as mockDelay } from 'rxjs';
@@ -96,15 +95,15 @@ describe('useAllowances', () => {
         getAllowance: jest.fn().mockImplementation(() => {
           switch (tokenAddress) {
             case '0x0000000000000000000000000000000000000000':
-              return Promise.resolve(BigNumber.from(5));
+              return Promise.resolve(new Decimal(5));
             case '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48':
-              return Promise.resolve(BigNumber.from(600));
+              return Promise.resolve(new Decimal(600));
             case '0x04068da6c83afcfa0e13ba15a6696662335d5b75':
-              return Promise.resolve(BigNumber.from(500));
+              return Promise.resolve(new Decimal(500));
             case '0x74b23882a30290451A17c44f4F05243b6b58C76d':
-              return Promise.resolve(BigNumber.from(4));
+              return Promise.resolve(new Decimal(4));
           }
-          return Promise.resolve(BigNumber.from(10));
+          return Promise.resolve(new Decimal(10));
         }),
       })),
     }));
@@ -140,15 +139,15 @@ describe('useAllowances', () => {
         getAllowance: jest.fn().mockImplementation(() => {
           switch (tokenAddress) {
             case '0x0000000000000000000000000000000000000000':
-              return Promise.resolve(BigNumber.from(5));
+              return Promise.resolve(new Decimal(5));
             case '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48':
-              return Promise.resolve(BigNumber.from(600));
+              return Promise.resolve(new Decimal(600));
             case '0x04068da6c83afcfa0e13ba15a6696662335d5b75':
-              return Promise.resolve(BigNumber.from(500));
+              return Promise.resolve(new Decimal(500));
             case '0x74b23882a30290451A17c44f4F05243b6b58C76d':
-              return Promise.resolve(BigNumber.from(4));
+              return Promise.resolve(new Decimal(4));
           }
-          return Promise.resolve(BigNumber.from(10));
+          return Promise.resolve(new Decimal(10));
         }),
       })),
     }));

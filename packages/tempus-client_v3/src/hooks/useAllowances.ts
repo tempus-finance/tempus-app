@@ -17,14 +17,7 @@ import {
 } from 'rxjs';
 import { bind } from '@react-rxjs/core';
 import { JsonRpcSigner } from '@ethersproject/providers';
-import {
-  Decimal,
-  getDefinedServices,
-  ZERO_ADDRESS,
-  DEFAULT_DECIMAL_PRECISION,
-  Config,
-  ZERO,
-} from 'tempus-core-services';
+import { Decimal, getDefinedServices, ZERO_ADDRESS, Config, ZERO } from 'tempus-core-services';
 import { servicesLoaded$ } from './useServicesLoaded';
 import { config$ } from './useConfig';
 import { signer$ } from './useSigner';
@@ -75,11 +68,11 @@ const tokenBalanceStream$ = tokenBalance$.pipe(
         const spenderAddress = config[chain].tempusControllerContract;
         return from(erc20TokenServiceGetter.getAllowance(walletAddress, spenderAddress)).pipe(
           map(
-            bigNum =>
+            amount =>
               ({
                 [`${chain}-${address}`]: {
                   alwaysApproved: false,
-                  amount: new Decimal(bigNum, DEFAULT_DECIMAL_PRECISION),
+                  amount,
                 },
               } as AllowanceMap),
           ),
