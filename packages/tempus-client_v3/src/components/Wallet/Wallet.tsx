@@ -93,8 +93,15 @@ const Wallet: FC<WalletProps> = props => {
 
   const navigate = useNavigate();
 
-  const redirectAfterConnect = useCallback(() => {
-    if (redirectTo) {
+  /**
+   * Redirects after wallet is connected, if needed.
+   *
+   * TODO: Revisit this behavior as it may not be intended for other use cases.
+   * Right now, it redirects after wallet change, but should not redirect when
+   * user changes wallets, for example.
+   */
+  useEffect(() => {
+    if (wallet && redirectTo) {
       const match = redirectTo.match(/^\/pool\/([a-z-]+)\/[a-zA-Z]+\/[a-z-]+$/);
 
       if (match) {
@@ -110,7 +117,7 @@ const Wallet: FC<WalletProps> = props => {
 
       navigate(redirectTo);
     }
-  }, [navigate, redirectTo, setChain]);
+  }, [navigate, redirectTo, setChain, wallet]);
 
   useEffect(() => {
     if (wallet) {
@@ -126,8 +133,7 @@ const Wallet: FC<WalletProps> = props => {
   const onConnectWallet = useCallback(async () => {
     onConnectWalletClick?.();
     await connect({});
-    redirectAfterConnect();
-  }, [connect, onConnectWalletClick, redirectAfterConnect]);
+  }, [connect, onConnectWalletClick]);
 
   const onOpenChainSelector = useCallback(() => {
     setChainSelectorOpen(true);

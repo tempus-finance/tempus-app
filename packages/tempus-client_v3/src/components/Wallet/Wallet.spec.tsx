@@ -1,7 +1,7 @@
-import { act, fireEvent, render, RenderResult, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, waitFor } from '@testing-library/react';
 import { useConnectWallet, useSetChain } from '@web3-onboard/react';
 import { Router } from 'react-router-dom';
-import { createMemoryHistory, History } from 'history';
+import { createMemoryHistory } from 'history';
 import { Chain, chainNameToHexChainId, Decimal, ZERO_ADDRESS } from 'tempus-core-services';
 import { useSelectedChain, useTokenBalance } from '../../hooks';
 import Wallet, { WalletProps } from './Wallet';
@@ -10,18 +10,25 @@ const mockConnect = jest.fn();
 const mockSetChain = jest.fn();
 const mockSetSigner = jest.fn();
 
-const subject = (props: WalletProps): [RenderResult, History] => {
-  const history = createMemoryHistory();
-  history.push('/');
-
-  const renderedSubject = render(
-    <Router location={history.location} navigator={history}>
-      <Wallet {...props} />
-    </Router>,
-  );
-
-  return [renderedSubject, history];
+const noWallet = { wallet: null };
+const connectedWallet = {
+  wallet: {
+    accounts: [{ address: '0x123123123' }],
+    provider: {
+      property: 'ABC',
+    },
+  },
 };
+
+const history = createMemoryHistory();
+
+const subjectElement = (props: WalletProps) => (
+  <Router location={history.location} navigator={history}>
+    <Wallet {...props} />
+  </Router>
+);
+
+const subject = (props: WalletProps) => render(subjectElement(props));
 
 jest.mock('@web3-onboard/ledger', () =>
   jest.fn().mockImplementation(() => () => ({
@@ -70,30 +77,29 @@ jest.mock('react-blockies', () => () => (
 
 jest.mock('../../hooks', () => ({
   ...jest.requireActual('../../hooks'),
-  useSelectedChain: jest.fn(),
+  useSelectedChain: jest.fn().mockReturnValue(['ethereum' as Chain, () => {}]),
   useTokenBalance: jest.fn(),
   useSigner: jest.fn().mockImplementation(() => [{}, mockSetSigner]),
 }));
 
 describe('Wallet', () => {
   beforeEach(() => {
-    (useConnectWallet as jest.Mock).mockReturnValue([{ wallet: null }, mockConnect]);
     (useSetChain as jest.Mock).mockReturnValue([{}, mockSetChain]);
+
+    history.push('/');
   });
 
   it('renders a "Connect Wallet" button', () => {
+    (useConnectWallet as jest.Mock).mockReturnValue([noWallet, mockConnect]);
     (useSelectedChain as jest.Mock).mockReturnValue([null, () => false]);
-    const [{ container }] = subject({});
+    const { container } = subject({});
 
     expect(container).not.toBeNull();
     expect(container).toMatchSnapshot();
   });
 
   it('renders a wallet button', () => {
-    (useConnectWallet as jest.Mock).mockImplementation(() => [
-      { wallet: { accounts: [{ address: '0x123123123' }] } },
-      () => {},
-    ]);
+    (useConnectWallet as jest.Mock).mockImplementation(() => [connectedWallet, () => {}]);
     (useSelectedChain as jest.Mock).mockReturnValue(['ethereum' as Chain, () => false]);
     (useTokenBalance as jest.Mock).mockReturnValue({
       address: ZERO_ADDRESS,
@@ -101,30 +107,35 @@ describe('Wallet', () => {
       chain: 'ethereum',
     });
 
-    const [{ container }] = subject({});
+    const { container } = subject({});
 
     expect(container).not.toBeNull();
     expect(container).toMatchSnapshot();
   });
 
   it('stores the signer in the state after connecting', () => {
-    (useConnectWallet as jest.Mock).mockImplementation(() => [
-      { wallet: { accounts: [{ address: '0x123123123' }], provider: { property: 'ABC' } } },
-      mockConnect,
-    ]);
+    (useConnectWallet as jest.Mock).mockImplementation(() => [connectedWallet, mockConnect]);
 
-    const [{ container }] = subject({});
+    const { container } = subject({});
 
     expect(container).not.toBeNull();
     expect(mockSetSigner).toHaveBeenCalledWith({ property: 'ABC' });
   });
 
   it('redirects after connect', async () => {
+    (useConnectWallet as jest.Mock)
+      .mockReturnValue([connectedWallet, mockConnect])
+      .mockReturnValueOnce([noWallet, mockConnect]);
+
     const chain = 'ethereum';
     const redirectTo = `/pool/${chain}/ETH/lido`;
-    const [{ getByRole }, history] = subject({ redirectTo });
+    const { getByRole, rerender } = subject({ redirectTo });
 
     const connectButton = getByRole('button');
+
+    mockConnect.mockImplementation(async () => {
+      rerender(subjectElement({ redirectTo }));
+    });
 
     act(() => {
       fireEvent.click(connectButton);
@@ -143,10 +154,18 @@ describe('Wallet', () => {
   });
 
   it('does not change chain if the redirect path is invalid', async () => {
+    (useConnectWallet as jest.Mock)
+      .mockReturnValue([connectedWallet, mockConnect])
+      .mockReturnValueOnce([noWallet, mockConnect]);
+
     const redirectTo = '/pool/invalid/lido';
-    const [{ getByRole }, history] = subject({ redirectTo });
+    const { getByRole, rerender } = subject({ redirectTo });
 
     const connectButton = getByRole('button');
+
+    mockConnect.mockImplementation(async () => {
+      rerender(subjectElement({ redirectTo }));
+    });
 
     act(() => {
       fireEvent.click(connectButton);
@@ -160,13 +179,10 @@ describe('Wallet', () => {
   });
 
   it('shows chain selector on chain switcher click and hides it after closing the modal', async () => {
-    (useConnectWallet as jest.Mock).mockImplementation(() => [
-      { wallet: { accounts: [{ address: '0x123123123' }] } },
-      () => {},
-    ]);
+    (useConnectWallet as jest.Mock).mockImplementation(() => [connectedWallet, () => {}]);
     (useSetChain as jest.Mock).mockReturnValue([{ connectedChain: 'ethereum' }, mockSetChain]);
 
-    const [{ container }] = subject({});
+    const { container } = subject({});
     const chainSwitcherButton = container.querySelector('.tc__walletButton__connected-network');
 
     expect(chainSwitcherButton).not.toBeNull();
