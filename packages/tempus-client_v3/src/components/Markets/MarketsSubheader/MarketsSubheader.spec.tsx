@@ -66,27 +66,6 @@ describe('MarketsSubheader', () => {
     expect(container).toMatchSnapshot();
   });
 
-  it('updates pool type', () => {
-    const { container } = subject();
-
-    const poolTypeButtons = container.querySelectorAll('.tc__tabs__tab');
-
-    expect(poolTypeButtons).toHaveLength(3);
-
-    expect(poolTypeButtons[0]).toHaveAttribute('data-selected', 'false');
-    expect(poolTypeButtons[1]).toHaveAttribute('data-selected', 'false');
-    expect(poolTypeButtons[2]).toHaveAttribute('data-selected', 'true');
-
-    fireEvent.click(poolTypeButtons[1]);
-
-    expect(poolTypeButtons[0]).toHaveAttribute('data-selected', 'false');
-    expect(poolTypeButtons[1]).toHaveAttribute('data-selected', 'true');
-    expect(poolTypeButtons[2]).toHaveAttribute('data-selected', 'false');
-    poolTypeButtons.forEach(button => expect(button).toMatchSnapshot());
-
-    expect(container).toMatchSnapshot();
-  });
-
   it('updates filters', () => {
     const { container, getByRole } = subject();
 

@@ -22,7 +22,7 @@ const PortfolioSubheader: FC<PortfolioSubheaderProps> = props => {
   );
 
   return (
-    <NavSubheader>
+    <NavSubheader align="center">
       <NavSubheaderGroup>
         <Tabs size="small" value={selectedView} onTabSelected={handleViewChange}>
           <Tab label={t('PortfolioSubheader.tabOverview')} value="overview" />
