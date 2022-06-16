@@ -7,7 +7,7 @@ import Markets from '../Markets';
 import Navbar from '../Navbar';
 import { getConfigManager } from '../../config/getConfigManager';
 import { HookSubscriber } from '../HookSubscriber';
-import { DepositModalResolver } from '../DepositModal/DepositModalResolver';
+import { DepositModalResolver } from '../DepositModal';
 import { PoolPositionModalResolver } from '../PoolPositionModal';
 import { WithdrawModalResolver } from '../WithdrawModal';
 import PageNavigation, { PageNavigationLink } from '../PageNavigation';
