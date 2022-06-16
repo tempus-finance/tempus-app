@@ -95,6 +95,10 @@ const Wallet: FC<WalletProps> = props => {
 
   /**
    * Redirects after wallet is connected, if needed.
+   *
+   * TODO: Revisit this behavior as it may not be intended for other use cases.
+   * Right now, it redirects after wallet change, but should not redirect when
+   * user changes wallets, for example.
    */
   useEffect(() => {
     if (wallet && redirectTo) {
