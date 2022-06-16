@@ -1,2 +1,4 @@
-export { DepositModal } from './DepositModal';
+import DepositModal from './DepositModal';
+
+export default DepositModal;
 export { DepositModalResolver } from './DepositModalResolver';

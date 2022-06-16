@@ -3,7 +3,7 @@ import { useCallback, useState } from 'react';
 import { ChainConfig, Decimal } from 'tempus-core-services';
 import { getConfigManager } from '../../config/getConfigManager';
 import { MaturityTerm } from '../../interfaces';
-import { DepositModal } from './DepositModal';
+import DepositModal from './DepositModal';
 
 export default {
   title: 'DepositModal',
