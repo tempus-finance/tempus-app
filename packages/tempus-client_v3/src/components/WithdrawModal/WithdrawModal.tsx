@@ -1,8 +1,8 @@
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ChainConfig, chainIdToChainName, Decimal, DecimalUtils, TempusPool, Ticker } from 'tempus-core-services';
+import { ChainConfig, chainIdToChainName, Decimal, DecimalUtils, TempusPool, Ticker, ZERO } from 'tempus-core-services';
 import { TIMEOUT_FROM_SUCCESS_TO_DEFAULT_IN_MS } from '../../constants';
-import { useLocale, useSigner, useTokenApprove, useTokenBalance, useUserPreferences } from '../../hooks';
+import { useAllowances, useLocale, useSigner, useTokenApprove, useTokenBalance, useUserPreferences } from '../../hooks';
 import { useWithdraw } from '../../hooks/useWithdraw';
 import { TokenMetadataProp } from '../../interfaces';
 import CurrencyInputModal, { CurrencyInputModalInfoRow } from '../CurrencyInputModal';
@@ -29,27 +29,18 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
   const yieldsBalanceData = useTokenBalance(tempusPool.yieldsAddress, tempusPool.chain);
   const lpBalanceData = useTokenBalance(tempusPool.ammAddress, tempusPool.chain);
   const [{ slippage }] = useUserPreferences();
+  const tokenAllowances = useAllowances();
 
   const [currency, setCurrency] = useState(tokens[0]);
   const [actionButtonState, setActionButtonState] = useState<ActionButtonState>('default');
-  const [approvedTokens, setApprovedTokens] = useState<string[]>([]);
   const [tokensApproved, setTokensApproved] = useState<boolean>(false);
   const [withdrawSuccessful, setWithdrawSuccessful] = useState<boolean>(false);
 
-  /**
-   * For withdrawal we need to approve three tokens (TPS, TYS, LP), and useApproveToken supports only one token, so we
-   * need to call useApproveToken three times, this useEffect keeps track of all approved tokens.
-   */
-  useEffect(() => {
-    if (approveTokenStatus) {
-      setApprovedTokens(currentState => {
-        if (approveTokenStatus.request) {
-          return [...currentState, approveTokenStatus.request.tokenAddress];
-        }
-        return currentState;
-      });
-    }
-  }, [approveTokenStatus]);
+  const capitalsTokenBalance = capitalsBalanceData?.balance ?? ZERO;
+  const yieldsTokenBalance = yieldsBalanceData?.balance ?? ZERO;
+  const lpTokenBalance = lpBalanceData?.balance ?? ZERO;
+  const approveTokenTxnHash = approveTokenStatus?.contractTransaction?.hash ?? '0x0';
+  const withdrawTokenTxnHash = withdrawStatus?.contractTransaction?.hash ?? '0x0';
 
   useEffect(() => {
     if (withdrawStatus?.success) {
@@ -62,11 +53,15 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
   }, [withdrawStatus]);
 
   useEffect(() => {
-    const capitalsApproved = approvedTokens.findIndex(approvedToken => approvedToken === tempusPool.principalsAddress);
-    const yieldsApproved = approvedTokens.findIndex(approvedToken => approvedToken === tempusPool.yieldsAddress);
-    const lpApproved = approvedTokens.findIndex(approvedToken => approvedToken === tempusPool.ammAddress);
+    const capitalsAllowance = tokenAllowances[`${tempusPool.chain}-${tempusPool.principalsAddress}`];
+    const yieldsAllowance = tokenAllowances[`${tempusPool.chain}-${tempusPool.yieldsAddress}`];
+    const lpAllowance = tokenAllowances[`${tempusPool.chain}-${tempusPool.ammAddress}`];
 
-    if (capitalsApproved > -1 && yieldsApproved > -1 && lpApproved > -1) {
+    const capitalsApproved = capitalsAllowance?.alwaysApproved || capitalsAllowance?.amount.gte(capitalsTokenBalance);
+    const yieldsApproved = yieldsAllowance?.alwaysApproved || yieldsAllowance?.amount.gte(yieldsTokenBalance);
+    const lpApproved = lpAllowance?.alwaysApproved || lpAllowance?.amount.gte(lpTokenBalance);
+
+    if (capitalsApproved && yieldsApproved && lpApproved) {
       setTokensApproved(true);
       setActionButtonState('success');
 
@@ -74,7 +69,16 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
         setActionButtonState('default');
       }, TIMEOUT_FROM_SUCCESS_TO_DEFAULT_IN_MS);
     }
-  }, [approvedTokens, tempusPool.ammAddress, tempusPool.principalsAddress, tempusPool.yieldsAddress]);
+  }, [
+    tokenAllowances,
+    tempusPool.chain,
+    tempusPool.ammAddress,
+    tempusPool.principalsAddress,
+    tempusPool.yieldsAddress,
+    capitalsTokenBalance,
+    yieldsTokenBalance,
+    lpTokenBalance,
+  ]);
 
   const formattedBalanceUsdValue = useMemo(() => {
     const usdValue = currency.balance.mul(currency.rate);
@@ -103,54 +107,49 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
     [tokens],
   );
 
-  /**
-   * TODO - Check token allowance before executing another approval - to save gas cost
-   */
   const handleApproveToken = useCallback(async () => {
     setActionButtonState('loading');
 
     // Approve all share tokens that have balance
     if (signer) {
-      if (lpBalanceData?.balance?.gt(0)) {
+      const capitalsAllowance = tokenAllowances[`${tempusPool.chain}-${tempusPool.principalsAddress}`];
+      const yieldsAllowance = tokenAllowances[`${tempusPool.chain}-${tempusPool.yieldsAddress}`];
+      const lpAllowance = tokenAllowances[`${tempusPool.chain}-${tempusPool.ammAddress}`];
+
+      if (!lpAllowance?.alwaysApproved && lpTokenBalance.gt(lpAllowance?.amount ?? ZERO)) {
         approveToken({
           chain: tempusPool.chain,
           tokenAddress: tempusPool.ammAddress,
           spenderAddress: chainConfig.tempusControllerContract,
-          amount: lpBalanceData.balance,
+          amount: lpTokenBalance,
           signer,
         });
-      } else {
-        // No token balance - set tokens as approved automatically
-        setApprovedTokens(currentState => [...currentState, tempusPool.ammAddress]);
       }
-      if (capitalsBalanceData?.balance?.gt(0)) {
+
+      if (!capitalsAllowance?.alwaysApproved && capitalsTokenBalance.gt(capitalsAllowance?.amount ?? ZERO)) {
         approveToken({
           chain: tempusPool.chain,
           tokenAddress: tempusPool.principalsAddress,
           spenderAddress: chainConfig.tempusControllerContract,
-          amount: capitalsBalanceData.balance,
+          amount: capitalsTokenBalance,
           signer,
         });
-      } else {
-        // No token balance - set tokens as approved automatically
-        setApprovedTokens(currentState => [...currentState, tempusPool.principalsAddress]);
       }
-      if (yieldsBalanceData?.balance?.gt(0)) {
+
+      if (!yieldsAllowance?.alwaysApproved && yieldsTokenBalance.gt(yieldsAllowance?.amount ?? ZERO)) {
         approveToken({
           chain: tempusPool.chain,
           tokenAddress: tempusPool.yieldsAddress,
           spenderAddress: chainConfig.tempusControllerContract,
-          amount: yieldsBalanceData.balance,
+          amount: yieldsTokenBalance,
           signer,
         });
-      } else {
-        // No token balance - set tokens as approved automatically
-        setApprovedTokens(currentState => [...currentState, tempusPool.yieldsAddress]);
       }
     }
 
-    return approveTokenStatus?.contractTransaction?.hash || '0x0';
+    return approveTokenTxnHash;
   }, [
+    tokenAllowances,
     approveToken,
     signer,
     chainConfig.tempusControllerContract,
@@ -158,10 +157,10 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
     tempusPool.principalsAddress,
     tempusPool.yieldsAddress,
     tempusPool.ammAddress,
-    capitalsBalanceData?.balance,
-    yieldsBalanceData?.balance,
-    lpBalanceData?.balance,
-    approveTokenStatus?.contractTransaction?.hash,
+    capitalsTokenBalance,
+    yieldsTokenBalance,
+    lpTokenBalance,
+    approveTokenTxnHash,
   ]);
 
   const handleWithdraw = useCallback(
@@ -170,34 +169,34 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
 
       const chain = chainConfig.chainId ? chainIdToChainName(chainConfig.chainId) : undefined;
 
-      if (signer && chain && capitalsBalanceData?.balance && yieldsBalanceData?.balance && lpBalanceData?.balance) {
+      if (signer && chain) {
         withdraw({
           amount,
           chain,
           poolAddress: tempusPool.address,
           token: currency.ticker,
           tokenBalance: currency.balance,
-          capitalsBalance: capitalsBalanceData.balance,
-          yieldsBalance: yieldsBalanceData.balance,
-          lpBalance: lpBalanceData.balance,
+          capitalsBalance: capitalsTokenBalance,
+          yieldsBalance: yieldsTokenBalance,
+          lpBalance: lpTokenBalance,
           slippage,
           signer,
         });
       }
 
-      return approveTokenStatus?.contractTransaction?.hash || '0x0';
+      return withdrawTokenTxnHash;
     },
     [
       signer,
       slippage,
       chainConfig.chainId,
       tempusPool.address,
-      capitalsBalanceData?.balance,
-      yieldsBalanceData?.balance,
-      lpBalanceData?.balance,
+      capitalsTokenBalance,
+      yieldsTokenBalance,
+      lpTokenBalance,
       currency.ticker,
       currency.balance,
-      approveTokenStatus?.contractTransaction?.hash,
+      withdrawTokenTxnHash,
       withdraw,
     ],
   );

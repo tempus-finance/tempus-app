@@ -3,7 +3,7 @@ import { renderHook } from '@testing-library/react-hooks';
 import { act } from 'react-dom/test-utils';
 import { of as mockOf } from 'rxjs';
 import { Decimal, ONE, getDefinedServices } from 'tempus-core-services';
-import { useTokenApprove } from './useApproveToken';
+import { useTokenApprove, subscribeApproveTokenStatus, resetApproveTokenStatus } from './useApproveToken';
 
 jest.mock('tempus-core-services', () => ({
   ...jest.requireActual('tempus-core-services'),
@@ -17,12 +17,22 @@ jest.mock('./useServicesLoaded', () => ({
 
 describe('useTokenApprove', () => {
   it('returns the default status', async () => {
+    act(() => {
+      resetApproveTokenStatus();
+      subscribeApproveTokenStatus();
+    });
+
     const { result } = renderHook(() => useTokenApprove());
 
     expect(result.current.approveTokenStatus).toBeNull();
   });
 
   it('returns a single token approval status', async () => {
+    act(() => {
+      resetApproveTokenStatus();
+      subscribeApproveTokenStatus();
+    });
+
     const { result, waitForNextUpdate } = renderHook(() => useTokenApprove());
 
     expect(result.current.approveTokenStatus).toBeNull();
@@ -52,6 +62,11 @@ describe('useTokenApprove', () => {
   });
 
   it('returns a sequence of token approval status', async () => {
+    act(() => {
+      resetApproveTokenStatus();
+      subscribeApproveTokenStatus();
+    });
+
     const { result, waitForNextUpdate } = renderHook(() => useTokenApprove());
 
     expect(result.current.approveTokenStatus).toBeNull();
@@ -107,6 +122,11 @@ describe('useTokenApprove', () => {
     jest.spyOn(console, 'error').mockImplementation();
     (getDefinedServices as unknown as jest.Mock).mockReturnValue(null);
 
+    act(() => {
+      resetApproveTokenStatus();
+      subscribeApproveTokenStatus();
+    });
+
     const { result, waitForNextUpdate } = renderHook(() => useTokenApprove());
 
     expect(result.current.approveTokenStatus).toBeNull();
@@ -137,6 +157,11 @@ describe('useTokenApprove', () => {
     jest.spyOn(console, 'error').mockImplementation();
     (getDefinedServices as unknown as jest.Mock).mockImplementation(() => {
       throw new Error();
+    });
+
+    act(() => {
+      resetApproveTokenStatus();
+      subscribeApproveTokenStatus();
     });
 
     const { result, waitForNextUpdate } = renderHook(() => useTokenApprove());
@@ -172,6 +197,11 @@ describe('useTokenApprove', () => {
         throw new Error();
       }),
     }));
+
+    act(() => {
+      resetApproveTokenStatus();
+      subscribeApproveTokenStatus();
+    });
 
     const { result, waitForNextUpdate } = renderHook(() => useTokenApprove());
 
@@ -209,6 +239,11 @@ describe('useTokenApprove', () => {
       })),
     }));
 
+    act(() => {
+      resetApproveTokenStatus();
+      subscribeApproveTokenStatus();
+    });
+
     const { result, waitForNextUpdate } = renderHook(() => useTokenApprove());
 
     expect(result.current.approveTokenStatus).toBeNull();
@@ -242,6 +277,11 @@ describe('useTokenApprove', () => {
         approve: jest.fn().mockRejectedValue({}),
       })),
     }));
+
+    act(() => {
+      resetApproveTokenStatus();
+      subscribeApproveTokenStatus();
+    });
 
     const { result, waitForNextUpdate } = renderHook(() => useTokenApprove());
 

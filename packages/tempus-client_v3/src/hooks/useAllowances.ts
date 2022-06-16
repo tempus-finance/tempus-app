@@ -14,6 +14,7 @@ import {
   debounce,
   scan,
   interval,
+  catchError,
 } from 'rxjs';
 import { bind } from '@react-rxjs/core';
 import { JsonRpcSigner } from '@ethersproject/providers';
@@ -76,6 +77,10 @@ const tokenBalanceStream$ = tokenBalance$.pipe(
                 },
               } as AllowanceMap),
           ),
+          catchError(error => {
+            console.error(`useAllowance - Fail to get the allowance for token ${address} on ${chain}`, error);
+            return of(DEFAULT_VALUE);
+          }),
         );
       } catch (error) {
         console.error(`useAllowance - Fail to get the allowance for token ${address} on ${chain}`, error);
@@ -87,13 +92,13 @@ const tokenBalanceStream$ = tokenBalance$.pipe(
 
 // stream$ for listening approval status
 const approvalStream$ = tokenApproveStatus$.pipe(
-  filter(status => Boolean(status.request) && status.success),
+  filter(status => Boolean(status?.request) && Boolean(status?.success)),
   map(
-    ({ request }) =>
+    status =>
       ({
-        [`${request?.chain}-${request?.tokenAddress}`]: {
+        [`${status?.request?.chain}-${status?.request?.tokenAddress}`]: {
           alwaysApproved: false,
-          amount: request?.amount as Decimal,
+          amount: status?.request?.amount as Decimal,
         },
       } as AllowanceMap),
   ),
@@ -112,7 +117,7 @@ const stream$ = merge(tokenBalanceStream$, approvalStream$).pipe(
   tap(poolTvls => rawAllowances$.next(poolTvls)),
 );
 
-export const [useAllowances] = bind(stream$, DEFAULT_VALUE);
+export const [useAllowances] = bind(rawAllowances$, DEFAULT_VALUE);
 
 let subscription: Subscription;
 
