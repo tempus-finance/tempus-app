@@ -23,7 +23,10 @@
     "labelMakeDeposit": "",
     "labelYieldAtMaturity": "",
     "previewDescription": "",
-    "title": ""
+    "title": "",
+    "successModalDescription": "",
+    "successModalPrimaryButton": "",
+    "successModalSecondaryButton": ""
   },
   "DepositModalHeader": {
     "titleRewardsAvailable": ""

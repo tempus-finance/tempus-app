@@ -23,7 +23,10 @@
     "labelMakeDeposit": "~~~~~====={{{{{(((((labelMakeDeposit)))))}}}}}=====~~~~~",
     "labelYieldAtMaturity": "~~~~~====={{{{{(((((labelYieldAtMaturity)))))}}}}}=====~~~~~",
     "previewDescription": "~~~~~====={{{{{(((((previewDescription)))))}}}}}=====~~~~~",
-    "title": "~~~~~====={{{{{(((((title)))))}}}}}=====~~~~~"
+    "title": "~~~~~====={{{{{(((((title)))))}}}}}=====~~~~~",
+    "successModalDescription": "~~~~~====={{{{{(((((successModalDescription)))))}}}}}=====~~~~~",
+    "successModalPrimaryButton": "~~~~~====={{{{{(((((successModalPrimaryButton)))))}}}}}=====~~~~~",
+    "successModalSecondaryButton": "~~~~~====={{{{{(((((successModalSecondaryButton)))))}}}}}=====~~~~~"
   },
   "DepositModalHeader": {
     "titleRewardsAvailable": "~~~~~====={{{{{(((((titleRewardsAvailable)))))}}}}}=====~~~~~"
