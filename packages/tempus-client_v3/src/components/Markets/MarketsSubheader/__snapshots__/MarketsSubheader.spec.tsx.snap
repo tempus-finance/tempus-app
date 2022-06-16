@@ -10,56 +10,8 @@ exports[`MarketsSubheader renders a navigation subheader with filtering and sort
     />
     <div
       class="tc__nav-subheader__wrapper"
+      style="justify-content: right;"
     >
-      <div
-        class="tc__nav-subheader__group"
-      >
-        <div
-          class="tc__tabs tc__tabs__tabs-small"
-        >
-          <button
-            class="tc__btn tc__tabs__tab"
-            data-selected="false"
-            type="button"
-          >
-            <div
-              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
-            >
-              Fixed
-            </div>
-          </button>
-          <button
-            class="tc__btn tc__tabs__tab"
-            data-selected="false"
-            type="button"
-          >
-            <div
-              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
-            >
-              Boosted
-            </div>
-          </button>
-          <button
-            class="tc__btn tc__tabs__tab"
-            data-selected="true"
-            type="button"
-          >
-            <div
-              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(255, 255, 255); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
-            >
-              All
-            </div>
-          </button>
-          <div
-            class="tc__tabs__indicator-container"
-          >
-            <div
-              class="tc__tabs__indicator"
-              style="width: 33.333333333333336%; left: 66.66666666666667%;"
-            />
-          </div>
-        </div>
-      </div>
       <div
         class="tc__nav-subheader__group"
       >
@@ -397,203 +349,6 @@ exports[`MarketsSubheader updates filters with selected chain 4`] = `
 />
 `;
 
-exports[`MarketsSubheader updates pool type 1`] = `
-<button
-  class="tc__btn tc__tabs__tab"
-  data-selected="false"
-  type="button"
->
-  <div
-    style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
-  >
-    Fixed
-  </div>
-</button>
-`;
-
-exports[`MarketsSubheader updates pool type 2`] = `
-<button
-  class="tc__btn tc__tabs__tab"
-  data-selected="true"
-  type="button"
->
-  <div
-    style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(255, 255, 255); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
-  >
-    Boosted
-  </div>
-</button>
-`;
-
-exports[`MarketsSubheader updates pool type 3`] = `
-<button
-  class="tc__btn tc__tabs__tab"
-  data-selected="false"
-  type="button"
->
-  <div
-    style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
-  >
-    All
-  </div>
-</button>
-`;
-
-exports[`MarketsSubheader updates pool type 4`] = `
-<div>
-  <div
-    class="tc__nav-subheader"
-  >
-    <div
-      class="tc__nav-subheader__background"
-    />
-    <div
-      class="tc__nav-subheader__wrapper"
-    >
-      <div
-        class="tc__nav-subheader__group"
-      >
-        <div
-          class="tc__tabs tc__tabs__tabs-small"
-        >
-          <button
-            class="tc__btn tc__tabs__tab"
-            data-selected="false"
-            type="button"
-          >
-            <div
-              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
-            >
-              Fixed
-            </div>
-          </button>
-          <button
-            class="tc__btn tc__tabs__tab"
-            data-selected="true"
-            type="button"
-          >
-            <div
-              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(255, 255, 255); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
-            >
-              Boosted
-            </div>
-          </button>
-          <button
-            class="tc__btn tc__tabs__tab"
-            data-selected="false"
-            type="button"
-          >
-            <div
-              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
-            >
-              All
-            </div>
-          </button>
-          <div
-            class="tc__tabs__indicator-container"
-          >
-            <div
-              class="tc__tabs__indicator"
-              style="width: 33.333333333333336%; left: 33.333333333333336%;"
-            />
-          </div>
-        </div>
-      </div>
-      <div
-        class="tc__nav-subheader__group"
-      >
-        <div
-          class="tc__dropdown"
-        >
-          <button
-            class="tc__btn tc__tooltip-wrapper-anchor"
-            data-selected="false"
-            type="button"
-          >
-            <div
-              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
-            >
-              Filter
-            </div>
-            <svg
-              class="tc__icon tc__icon-down-chevron"
-              fill="none"
-              height="12"
-              viewBox="0 0 16 16"
-              width="12"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <g
-                clip-path="url(#clip0_909_5439)"
-              >
-                <path
-                  d="M15.7387 5.36992L8.63082 11.7636C8.54823 11.8385 8.44996 11.898 8.34169 11.9385C8.23342 11.9791 8.11729 12 8 12C7.88271 12 7.76658 11.9791 7.65831 11.9385C7.55004 11.898 7.45177 11.8385 7.36918 11.7636L0.261296 5.36992C0.0939908 5.21942 -2.49304e-09 5.01531 0 4.80248C2.49304e-09 4.58965 0.0939908 4.38554 0.261296 4.23504C0.428601 4.08455 0.655515 4 0.89212 4C1.12873 4 1.35564 4.08455 1.52294 4.23504L8 10.0693L14.4771 4.23504C14.6444 4.08455 14.8713 4 15.1079 4C15.3445 4 15.5714 4.08455 15.7387 4.23504C15.906 4.38554 16 4.58965 16 4.80248C16 5.01531 15.906 5.21942 15.7387 5.36992Z"
-                  fill="#222222"
-                />
-              </g>
-              <defs>
-                <clippath
-                  id="clip0_909_5439"
-                >
-                  <rect
-                    fill="white"
-                    height="16"
-                    width="16"
-                  />
-                </clippath>
-              </defs>
-            </svg>
-          </button>
-        </div>
-        <div
-          class="tc__dropdown"
-        >
-          <button
-            class="tc__btn tc__tooltip-wrapper-anchor"
-            data-selected="false"
-            type="button"
-          >
-            <div
-              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
-            >
-              Sort
-            </div>
-            <svg
-              class="tc__icon tc__icon-down-chevron"
-              fill="none"
-              height="12"
-              viewBox="0 0 16 16"
-              width="12"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <g
-                clip-path="url(#clip0_909_5439)"
-              >
-                <path
-                  d="M15.7387 5.36992L8.63082 11.7636C8.54823 11.8385 8.44996 11.898 8.34169 11.9385C8.23342 11.9791 8.11729 12 8 12C7.88271 12 7.76658 11.9791 7.65831 11.9385C7.55004 11.898 7.45177 11.8385 7.36918 11.7636L0.261296 5.36992C0.0939908 5.21942 -2.49304e-09 5.01531 0 4.80248C2.49304e-09 4.58965 0.0939908 4.38554 0.261296 4.23504C0.428601 4.08455 0.655515 4 0.89212 4C1.12873 4 1.35564 4.08455 1.52294 4.23504L8 10.0693L14.4771 4.23504C14.6444 4.08455 14.8713 4 15.1079 4C15.3445 4 15.5714 4.08455 15.7387 4.23504C15.906 4.38554 16 4.58965 16 4.80248C16 5.01531 15.906 5.21942 15.7387 5.36992Z"
-                  fill="#222222"
-                />
-              </g>
-              <defs>
-                <clippath
-                  id="clip0_909_5439"
-                >
-                  <rect
-                    fill="white"
-                    height="16"
-                    width="16"
-                  />
-                </clippath>
-              </defs>
-            </svg>
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-`;
-
 exports[`MarketsSubheader updates sorting type 1`] = `
 <div>
   <div
@@ -604,56 +359,8 @@ exports[`MarketsSubheader updates sorting type 1`] = `
     />
     <div
       class="tc__nav-subheader__wrapper"
+      style="justify-content: right;"
     >
-      <div
-        class="tc__nav-subheader__group"
-      >
-        <div
-          class="tc__tabs tc__tabs__tabs-small"
-        >
-          <button
-            class="tc__btn tc__tabs__tab"
-            data-selected="false"
-            type="button"
-          >
-            <div
-              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
-            >
-              Fixed
-            </div>
-          </button>
-          <button
-            class="tc__btn tc__tabs__tab"
-            data-selected="false"
-            type="button"
-          >
-            <div
-              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
-            >
-              Boosted
-            </div>
-          </button>
-          <button
-            class="tc__btn tc__tabs__tab"
-            data-selected="true"
-            type="button"
-          >
-            <div
-              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(255, 255, 255); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
-            >
-              All
-            </div>
-          </button>
-          <div
-            class="tc__tabs__indicator-container"
-          >
-            <div
-              class="tc__tabs__indicator"
-              style="width: 33.333333333333336%; left: 66.66666666666667%;"
-            />
-          </div>
-        </div>
-      </div>
       <div
         class="tc__nav-subheader__group"
       >
@@ -871,56 +578,8 @@ exports[`MarketsSubheader updates sorting type 2`] = `
     />
     <div
       class="tc__nav-subheader__wrapper"
+      style="justify-content: right;"
     >
-      <div
-        class="tc__nav-subheader__group"
-      >
-        <div
-          class="tc__tabs tc__tabs__tabs-small"
-        >
-          <button
-            class="tc__btn tc__tabs__tab"
-            data-selected="false"
-            type="button"
-          >
-            <div
-              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
-            >
-              Fixed
-            </div>
-          </button>
-          <button
-            class="tc__btn tc__tabs__tab"
-            data-selected="false"
-            type="button"
-          >
-            <div
-              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
-            >
-              Boosted
-            </div>
-          </button>
-          <button
-            class="tc__btn tc__tabs__tab"
-            data-selected="true"
-            type="button"
-          >
-            <div
-              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(255, 255, 255); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
-            >
-              All
-            </div>
-          </button>
-          <div
-            class="tc__tabs__indicator-container"
-          >
-            <div
-              class="tc__tabs__indicator"
-              style="width: 33.333333333333336%; left: 66.66666666666667%;"
-            />
-          </div>
-        </div>
-      </div>
       <div
         class="tc__nav-subheader__group"
       >
@@ -1138,56 +797,8 @@ exports[`MarketsSubheader updates sorting type 3`] = `
     />
     <div
       class="tc__nav-subheader__wrapper"
+      style="justify-content: right;"
     >
-      <div
-        class="tc__nav-subheader__group"
-      >
-        <div
-          class="tc__tabs tc__tabs__tabs-small"
-        >
-          <button
-            class="tc__btn tc__tabs__tab"
-            data-selected="false"
-            type="button"
-          >
-            <div
-              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
-            >
-              Fixed
-            </div>
-          </button>
-          <button
-            class="tc__btn tc__tabs__tab"
-            data-selected="false"
-            type="button"
-          >
-            <div
-              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
-            >
-              Boosted
-            </div>
-          </button>
-          <button
-            class="tc__btn tc__tabs__tab"
-            data-selected="true"
-            type="button"
-          >
-            <div
-              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(255, 255, 255); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
-            >
-              All
-            </div>
-          </button>
-          <div
-            class="tc__tabs__indicator-container"
-          >
-            <div
-              class="tc__tabs__indicator"
-              style="width: 33.333333333333336%; left: 66.66666666666667%;"
-            />
-          </div>
-        </div>
-      </div>
       <div
         class="tc__nav-subheader__group"
       >
@@ -1405,56 +1016,8 @@ exports[`MarketsSubheader updates sorting type 4`] = `
     />
     <div
       class="tc__nav-subheader__wrapper"
+      style="justify-content: right;"
     >
-      <div
-        class="tc__nav-subheader__group"
-      >
-        <div
-          class="tc__tabs tc__tabs__tabs-small"
-        >
-          <button
-            class="tc__btn tc__tabs__tab"
-            data-selected="false"
-            type="button"
-          >
-            <div
-              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
-            >
-              Fixed
-            </div>
-          </button>
-          <button
-            class="tc__btn tc__tabs__tab"
-            data-selected="false"
-            type="button"
-          >
-            <div
-              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
-            >
-              Boosted
-            </div>
-          </button>
-          <button
-            class="tc__btn tc__tabs__tab"
-            data-selected="true"
-            type="button"
-          >
-            <div
-              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(255, 255, 255); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
-            >
-              All
-            </div>
-          </button>
-          <div
-            class="tc__tabs__indicator-container"
-          >
-            <div
-              class="tc__tabs__indicator"
-              style="width: 33.333333333333336%; left: 66.66666666666667%;"
-            />
-          </div>
-        </div>
-      </div>
       <div
         class="tc__nav-subheader__group"
       >
@@ -1672,56 +1235,8 @@ exports[`MarketsSubheader updates sorting type 5`] = `
     />
     <div
       class="tc__nav-subheader__wrapper"
+      style="justify-content: right;"
     >
-      <div
-        class="tc__nav-subheader__group"
-      >
-        <div
-          class="tc__tabs tc__tabs__tabs-small"
-        >
-          <button
-            class="tc__btn tc__tabs__tab"
-            data-selected="false"
-            type="button"
-          >
-            <div
-              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
-            >
-              Fixed
-            </div>
-          </button>
-          <button
-            class="tc__btn tc__tabs__tab"
-            data-selected="false"
-            type="button"
-          >
-            <div
-              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
-            >
-              Boosted
-            </div>
-          </button>
-          <button
-            class="tc__btn tc__tabs__tab"
-            data-selected="true"
-            type="button"
-          >
-            <div
-              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(255, 255, 255); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
-            >
-              All
-            </div>
-          </button>
-          <div
-            class="tc__tabs__indicator-container"
-          >
-            <div
-              class="tc__tabs__indicator"
-              style="width: 33.333333333333336%; left: 66.66666666666667%;"
-            />
-          </div>
-        </div>
-      </div>
       <div
         class="tc__nav-subheader__group"
       >
@@ -1939,56 +1454,8 @@ exports[`MarketsSubheader updates sorting type 6`] = `
     />
     <div
       class="tc__nav-subheader__wrapper"
+      style="justify-content: right;"
     >
-      <div
-        class="tc__nav-subheader__group"
-      >
-        <div
-          class="tc__tabs tc__tabs__tabs-small"
-        >
-          <button
-            class="tc__btn tc__tabs__tab"
-            data-selected="false"
-            type="button"
-          >
-            <div
-              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
-            >
-              Fixed
-            </div>
-          </button>
-          <button
-            class="tc__btn tc__tabs__tab"
-            data-selected="false"
-            type="button"
-          >
-            <div
-              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
-            >
-              Boosted
-            </div>
-          </button>
-          <button
-            class="tc__btn tc__tabs__tab"
-            data-selected="true"
-            type="button"
-          >
-            <div
-              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(255, 255, 255); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
-            >
-              All
-            </div>
-          </button>
-          <div
-            class="tc__tabs__indicator-container"
-          >
-            <div
-              class="tc__tabs__indicator"
-              style="width: 33.333333333333336%; left: 66.66666666666667%;"
-            />
-          </div>
-        </div>
-      </div>
       <div
         class="tc__nav-subheader__group"
       >
@@ -2206,56 +1673,8 @@ exports[`MarketsSubheader updates sorting type 7`] = `
     />
     <div
       class="tc__nav-subheader__wrapper"
+      style="justify-content: right;"
     >
-      <div
-        class="tc__nav-subheader__group"
-      >
-        <div
-          class="tc__tabs tc__tabs__tabs-small"
-        >
-          <button
-            class="tc__btn tc__tabs__tab"
-            data-selected="false"
-            type="button"
-          >
-            <div
-              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
-            >
-              Fixed
-            </div>
-          </button>
-          <button
-            class="tc__btn tc__tabs__tab"
-            data-selected="false"
-            type="button"
-          >
-            <div
-              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
-            >
-              Boosted
-            </div>
-          </button>
-          <button
-            class="tc__btn tc__tabs__tab"
-            data-selected="true"
-            type="button"
-          >
-            <div
-              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(255, 255, 255); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
-            >
-              All
-            </div>
-          </button>
-          <div
-            class="tc__tabs__indicator-container"
-          >
-            <div
-              class="tc__tabs__indicator"
-              style="width: 33.333333333333336%; left: 66.66666666666667%;"
-            />
-          </div>
-        </div>
-      </div>
       <div
         class="tc__nav-subheader__group"
       >
@@ -2473,56 +1892,8 @@ exports[`MarketsSubheader updates sorting type 8`] = `
     />
     <div
       class="tc__nav-subheader__wrapper"
+      style="justify-content: right;"
     >
-      <div
-        class="tc__nav-subheader__group"
-      >
-        <div
-          class="tc__tabs tc__tabs__tabs-small"
-        >
-          <button
-            class="tc__btn tc__tabs__tab"
-            data-selected="false"
-            type="button"
-          >
-            <div
-              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
-            >
-              Fixed
-            </div>
-          </button>
-          <button
-            class="tc__btn tc__tabs__tab"
-            data-selected="false"
-            type="button"
-          >
-            <div
-              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
-            >
-              Boosted
-            </div>
-          </button>
-          <button
-            class="tc__btn tc__tabs__tab"
-            data-selected="true"
-            type="button"
-          >
-            <div
-              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(255, 255, 255); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
-            >
-              All
-            </div>
-          </button>
-          <div
-            class="tc__tabs__indicator-container"
-          >
-            <div
-              class="tc__tabs__indicator"
-              style="width: 33.333333333333336%; left: 66.66666666666667%;"
-            />
-          </div>
-        </div>
-      </div>
       <div
         class="tc__nav-subheader__group"
       >
@@ -2740,56 +2111,8 @@ exports[`MarketsSubheader updates sorting type 9`] = `
     />
     <div
       class="tc__nav-subheader__wrapper"
+      style="justify-content: right;"
     >
-      <div
-        class="tc__nav-subheader__group"
-      >
-        <div
-          class="tc__tabs tc__tabs__tabs-small"
-        >
-          <button
-            class="tc__btn tc__tabs__tab"
-            data-selected="false"
-            type="button"
-          >
-            <div
-              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
-            >
-              Fixed
-            </div>
-          </button>
-          <button
-            class="tc__btn tc__tabs__tab"
-            data-selected="false"
-            type="button"
-          >
-            <div
-              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
-            >
-              Boosted
-            </div>
-          </button>
-          <button
-            class="tc__btn tc__tabs__tab"
-            data-selected="true"
-            type="button"
-          >
-            <div
-              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(255, 255, 255); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
-            >
-              All
-            </div>
-          </button>
-          <div
-            class="tc__tabs__indicator-container"
-          >
-            <div
-              class="tc__tabs__indicator"
-              style="width: 33.333333333333336%; left: 66.66666666666667%;"
-            />
-          </div>
-        </div>
-      </div>
       <div
         class="tc__nav-subheader__group"
       >
@@ -3007,56 +2330,8 @@ exports[`MarketsSubheader updates sorting type 10`] = `
     />
     <div
       class="tc__nav-subheader__wrapper"
+      style="justify-content: right;"
     >
-      <div
-        class="tc__nav-subheader__group"
-      >
-        <div
-          class="tc__tabs tc__tabs__tabs-small"
-        >
-          <button
-            class="tc__btn tc__tabs__tab"
-            data-selected="false"
-            type="button"
-          >
-            <div
-              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
-            >
-              Fixed
-            </div>
-          </button>
-          <button
-            class="tc__btn tc__tabs__tab"
-            data-selected="false"
-            type="button"
-          >
-            <div
-              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
-            >
-              Boosted
-            </div>
-          </button>
-          <button
-            class="tc__btn tc__tabs__tab"
-            data-selected="true"
-            type="button"
-          >
-            <div
-              style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(255, 255, 255); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
-            >
-              All
-            </div>
-          </button>
-          <div
-            class="tc__tabs__indicator-container"
-          >
-            <div
-              class="tc__tabs__indicator"
-              style="width: 33.333333333333336%; left: 66.66666666666667%;"
-            />
-          </div>
-        </div>
-      </div>
       <div
         class="tc__nav-subheader__group"
       >

@@ -10,6 +10,7 @@ exports[`PortfolioSubheader renders a navigation subheader portfolio tabs 1`] = 
     />
     <div
       class="tc__nav-subheader__wrapper"
+      style="justify-content: center;"
     >
       <div
         class="tc__nav-subheader__group"

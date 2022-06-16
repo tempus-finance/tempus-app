@@ -92,16 +92,6 @@ describe('Markets', () => {
     expect(container).toMatchSnapshot();
   });
 
-  it('render pools after updates pool type to boosted', () => {
-    const { container } = subject();
-
-    const poolTypeButtons = container.querySelectorAll('.tc__tabs__tab');
-
-    fireEvent.click(poolTypeButtons[1]);
-
-    expect(container).toMatchSnapshot();
-  });
-
   it('render pools after updates filters', () => {
     const { container, getByRole } = subject();
 

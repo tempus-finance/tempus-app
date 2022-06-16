@@ -1,13 +1,19 @@
 import { FC } from 'react';
 import './NavSubheader.scss';
 
-const NavSubheader: FC = props => {
-  const { children } = props;
+interface NavSubheaderGroupProps {
+  align: 'left' | 'right' | 'center';
+}
+
+const NavSubheader: FC<NavSubheaderGroupProps> = props => {
+  const { align, children } = props;
 
   return (
     <div className="tc__nav-subheader">
       <div className="tc__nav-subheader__background" />
-      <div className="tc__nav-subheader__wrapper">{children}</div>
+      <div style={{ justifyContent: align }} className="tc__nav-subheader__wrapper">
+        {children}
+      </div>
     </div>
   );
 };
