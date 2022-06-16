@@ -2,9 +2,8 @@ import { JsonRpcSigner } from '@ethersproject/providers';
 import { ContractTransaction } from 'ethers';
 import { bind } from '@react-rxjs/core';
 import { createSignal } from '@react-rxjs/utils';
-import { combineLatest, concatMap, filter, map } from 'rxjs';
+import { combineLatest, concatMap, map } from 'rxjs';
 import { Chain, Decimal, getDefinedServices } from 'tempus-core-services';
-import { servicesLoaded$ } from './useServicesLoaded';
 
 interface ApproveTokenRequest {
   chain: Chain;
@@ -30,9 +29,8 @@ interface ApproveTokenResponse {
 
 const [approveToken$, approveToken] = createSignal<ApproveTokenRequestEnhanced>();
 
-export const tokenApproveStatus$ = combineLatest([approveToken$, servicesLoaded$]).pipe(
-  filter(([, servicesLoaded]) => servicesLoaded),
-  concatMap<[ApproveTokenRequestEnhanced, boolean], Promise<ApproveTokenResponse>>(async ([payload]) => {
+export const tokenApproveStatus$ = combineLatest([approveToken$]).pipe(
+  concatMap<[ApproveTokenRequestEnhanced], Promise<ApproveTokenResponse>>(async ([payload]) => {
     const { chain, tokenAddress, spenderAddress, amount, signer } = payload;
 
     try {
@@ -65,7 +63,7 @@ const [approveTokenStatus] = bind<ApproveTokenStatus | null>(tokenApproveStatus$
 
 export const useTokenApprove = (): {
   approveTokenStatus: ApproveTokenStatus | null;
-  approveToken: (payload: ApproveTokenRequestEnhanced) => void;
+  approveToken: typeof approveToken;
 } => ({
   approveTokenStatus: approveTokenStatus(),
   approveToken,
