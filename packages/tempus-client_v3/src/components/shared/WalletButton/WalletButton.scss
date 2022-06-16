@@ -3,11 +3,11 @@ $networkSectionWidth: 55px;
 $walletSectionWidth: 160px;
 
 .tc__walletButton__disconnected .tc__actionButton {
-  width: $walletSectionWidth;
+  min-width: $walletSectionWidth;
 }
 
 .tc__walletButton__connected {
-  width: $networkSectionWidth + $walletSectionWidth;
+  min-width: $networkSectionWidth + $walletSectionWidth;
   height: $buttonHeight;
   display: flex;
 }
@@ -16,7 +16,7 @@ $walletSectionWidth: 160px;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: $networkSectionWidth;
+  min-width: $networkSectionWidth;
   height: $buttonHeight;
   background: var(--walletButtonBackground);
   border: 1px solid var(--walletButtonBorder);
@@ -32,7 +32,8 @@ $walletSectionWidth: 160px;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: $walletSectionWidth;
+  min-width: $walletSectionWidth;
+  padding: 8px 8px;
   height: $buttonHeight;
   background: var(--walletButtonBackground);
   border: 1px solid var(--walletButtonBorder);
@@ -55,7 +56,7 @@ $walletSectionWidth: 160px;
 }
 
 .tc__walletButton__connected-wallet-info {
-  width: 112px;
+  min-width: 112px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
