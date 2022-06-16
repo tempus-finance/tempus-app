@@ -27,7 +27,7 @@ export interface DepositModalProps extends ModalProps {
   chainConfig?: ChainConfig;
 }
 
-const DepositModal: FC<DepositModalProps> = props => {
+export const DepositModal: FC<DepositModalProps> = props => {
   const { tokens, open, onClose, poolStartDate, maturityTerms, chainConfig } = props;
   const [maturityTerm, setMaturityTerm] = useState<MaturityTerm | undefined>();
   const [token, setToken] = useState<TokenMetadata | undefined>();
@@ -199,5 +199,3 @@ const DepositModal: FC<DepositModalProps> = props => {
     />
   );
 };
-
-export default DepositModal;

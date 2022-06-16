@@ -9,7 +9,7 @@ import {
   useDepositModalData,
   useYieldAtMaturity,
 } from '../../hooks';
-import DepositModal from './DepositModal';
+import { DepositModal } from './DepositModal';
 import './DepositModalResolver.scss';
 
 export const DepositModalResolver: FC = (): JSX.Element => {
