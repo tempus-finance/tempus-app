@@ -59,7 +59,7 @@ describe('DepositService', () => {
       const tokenAmount = new Decimal(5);
       const tokenTicker = 'ETH';
       const tokenAddress = 'test-token';
-      const slippage = new Decimal(5);
+      const slippage = new Decimal(0.05);
       const deadline = new Decimal(INFINITE_DEADLINE, DEADLINE_PRECISION);
 
       await instance.fixedDeposit(poolAddress, tokenAmount, tokenTicker, tokenAddress, slippage, mockSigner);
