@@ -11,7 +11,6 @@ import {
   subscribeTakenRates,
   subscribeTvlData,
 } from '../../hooks';
-import { subscribeAllowance } from '../../hooks/useAllowances';
 
 export const HookSubscriber: FC = () => {
   // to keep at least one subscriber of the stream insides the state hooks
@@ -28,7 +27,6 @@ export const HookSubscriber: FC = () => {
     subscribeTvlData();
     subscribeTakenRates();
     subscribeFixedAprs();
-    subscribeAllowance();
   }, []);
 
   return null;

@@ -63,7 +63,7 @@ const [approveTokenStatus] = bind<ApproveTokenStatus | null>(tokenApproveStatus$
 
 export const useTokenApprove = (): {
   approveTokenStatus: ApproveTokenStatus | null;
-  approveToken: (payload: ApproveTokenRequestEnhanced) => void;
+  approveToken: typeof approveToken;
 } => ({
   approveTokenStatus: approveTokenStatus(),
   approveToken,
