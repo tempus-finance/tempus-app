@@ -20,3 +20,4 @@ export * from './useApproveToken';
 export * from './useSigner';
 export * from './useAppEvent';
 export * from './useFixedDeposit';
+export * from './useAllowances';

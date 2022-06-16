@@ -1,4 +1,5 @@
 import ERC20ABI from '../abi/ERC20.json';
+import { Decimal } from '../datastructures';
 import { ERC20TokenService } from './ERC20TokenService';
 
 jest.mock('ethers');
@@ -24,6 +25,7 @@ describe('ERC20TokenService', () => {
         symbol: mockSymbol,
         balanceOf: mockBalanceOf,
         allowance: mockAllowance,
+        decimals: jest.fn().mockReturnValue(18),
       };
     });
   });
@@ -100,6 +102,21 @@ describe('ERC20TokenService', () => {
       expect(result).toBeInstanceOf(BigNumber);
       expect(result.toNumber()).toBe(10);
     });
+  });
+
+  describe('getAllowance()', () => {
+    beforeEach(() => {
+      jest.clearAllMocks();
+
+      instance = new ERC20TokenService();
+
+      instance.init({
+        Contract,
+        address: mockAddress,
+        abi: ERC20ABI,
+        signerOrProvider: mockProvider,
+      });
+    });
 
     test('it returns the allowance of selected token', async () => {
       mockAllowance.mockResolvedValue(BigNumber.from('10'));
@@ -109,8 +126,7 @@ describe('ERC20TokenService', () => {
 
       const result = await instance.getAllowance(ownerAddress, spenderAddress);
 
-      expect(result).toBeInstanceOf(BigNumber);
-      expect(result.toNumber()).toBe(10);
+      expect(result).toEqual(new Decimal(10));
     });
   });
 });

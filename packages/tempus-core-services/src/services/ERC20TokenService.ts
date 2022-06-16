@@ -85,10 +85,14 @@ export class ERC20TokenService {
     return ticker;
   }
 
-  async getAllowance(ownerAddress: string, spenderAddress: string): Promise<BigNumber> {
+  async getAllowance(ownerAddress: string, spenderAddress: string): Promise<Decimal> {
     if (!this.contract) {
       console.error('ERC20TokenService - getAllowance() - Attempted to use ERC20TokenService before initializing it!');
       return Promise.reject();
+    }
+
+    if (!this.precision) {
+      this.precision = await this.contract.decimals();
     }
 
     try {
@@ -96,7 +100,8 @@ export class ERC20TokenService {
         this.contract.provider.getBalance(ownerAddress);
       }
 
-      return await this.contract.allowance(ownerAddress, spenderAddress);
+      const allowance = await this.contract.allowance(ownerAddress, spenderAddress);
+      return new Decimal(allowance, this.precision);
     } catch (error) {
       console.error('ERC20TokenService - getAllowance() - Getting allowance failed!', error);
       return Promise.reject(error);

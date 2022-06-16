@@ -29,8 +29,7 @@ interface ApproveTokenResponse {
 
 const [approveToken$, approveToken] = createSignal<ApproveTokenRequestEnhanced>();
 
-// TODO - For some reason hook never runs if we use servicesLoaded$ - investigate why
-const tokenApproveStatus$ = combineLatest([approveToken$]).pipe(
+export const tokenApproveStatus$ = combineLatest([approveToken$]).pipe(
   concatMap<[ApproveTokenRequestEnhanced], Promise<ApproveTokenResponse>>(async ([payload]) => {
     const { chain, tokenAddress, spenderAddress, amount, signer } = payload;
 

@@ -3,6 +3,7 @@
 // expect(element).toHaveTextContent(/react/i)
 // learn more: https://github.com/testing-library/jest-dom
 import '@testing-library/jest-dom/extend-expect';
+import { BigNumber as MockBigNumber } from 'ethers';
 import { of as mockOf, delay as mockDelay } from 'rxjs';
 import { Chain, Decimal as MockDecimal, TempusPool, Ticker, ZERO as mockZERO } from 'tempus-core-services';
 
@@ -85,11 +86,8 @@ const mockServices = {
     }),
   },
   ERC20TokenServiceGetter: jest.fn().mockImplementation(() => ({
-    approve: jest.fn().mockImplementation(() =>
-      Promise.resolve({
-        hash: '0x00',
-      }),
-    ),
+    approve: jest.fn().mockResolvedValue({ hash: '0x00' }),
+    getAllowance: jest.fn().mockResolvedValue(MockBigNumber.from(10)),
   })),
 };
 
