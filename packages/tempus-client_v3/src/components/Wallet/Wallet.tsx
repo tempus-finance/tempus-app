@@ -93,8 +93,11 @@ const Wallet: FC<WalletProps> = props => {
 
   const navigate = useNavigate();
 
-  const redirectAfterConnect = useCallback(() => {
-    if (redirectTo) {
+  /**
+   * Redirects after wallet is connected, if needed.
+   */
+  useEffect(() => {
+    if (wallet && redirectTo) {
       const match = redirectTo.match(/^\/pool\/([a-z-]+)\/[a-zA-Z]+\/[a-z-]+$/);
 
       if (match) {
@@ -110,7 +113,7 @@ const Wallet: FC<WalletProps> = props => {
 
       navigate(redirectTo);
     }
-  }, [navigate, redirectTo, setChain]);
+  }, [navigate, redirectTo, setChain, wallet]);
 
   useEffect(() => {
     if (wallet) {
@@ -126,8 +129,7 @@ const Wallet: FC<WalletProps> = props => {
   const onConnectWallet = useCallback(async () => {
     onConnectWalletClick?.();
     await connect({});
-    redirectAfterConnect();
-  }, [connect, onConnectWalletClick, redirectAfterConnect]);
+  }, [connect, onConnectWalletClick]);
 
   const onOpenChainSelector = useCallback(() => {
     setChainSelectorOpen(true);
