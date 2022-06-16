@@ -24,6 +24,7 @@
     "labelYieldAtMaturity": "~~~~~====={{{{{(((((labelYieldAtMaturity)))))}}}}}=====~~~~~",
     "previewDescription": "~~~~~====={{{{{(((((previewDescription)))))}}}}}=====~~~~~",
     "title": "~~~~~====={{{{{(((((title)))))}}}}}=====~~~~~",
+    "successModalTitle": "~~~~~====={{{{{(((((successModalTitle)))))}}}}}=====~~~~~",
     "successModalDescription": "~~~~~====={{{{{(((((successModalDescription)))))}}}}}=====~~~~~",
     "successModalPrimaryButton": "~~~~~====={{{{{(((((successModalPrimaryButton)))))}}}}}=====~~~~~",
     "successModalSecondaryButton": "~~~~~====={{{{{(((((successModalSecondaryButton)))))}}}}}=====~~~~~"

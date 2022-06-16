@@ -255,7 +255,7 @@ const DepositModal: FC<DepositModalProps> = props => {
         onPrimaryButtonClick={() => {}}
         onSecondaryButtonClick={() => {}}
         open={fixedDepositSuccessful}
-        title="Withdraw Complete!"
+        title={t('DepositModal.successModalTitle')}
       />
     </>
   );

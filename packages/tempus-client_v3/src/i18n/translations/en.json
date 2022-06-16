@@ -24,6 +24,7 @@
     "labelYieldAtMaturity": "Yield-at-Maturity",
     "previewDescription": "Select an APR & Term to deposit into, if there’s only one, then simply proceed to make your deposit.",
     "title": "Pool Details",
+    "successModalTitle": "Withdraw Complete!",
     "successModalDescription": "You have withdrawn {{amount}} {{ticker}} with {{term}} term. It should reach your wallet momentarily.",
     "successModalPrimaryButton": "Manage Portfolio",
     "successModalSecondaryButton": "Deposit in another pool"
