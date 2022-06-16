@@ -7,10 +7,8 @@ import {
   DropdownSelector,
   NavSubheader,
   NavSubheaderGroup,
-  Tab,
-  Tabs,
 } from '../../shared';
-import { FilterType, PoolType, SortOrder, SortType } from '../../../interfaces';
+import { FilterType, SortOrder, SortType } from '../../../interfaces';
 import {
   usePoolViewOptions,
   useActivePoolList,
@@ -26,7 +24,7 @@ const MarketsSubheader = () => {
   const activePoolList = useActivePoolList();
   const inactivePoolList = useInactivePoolList();
   const maturedPoolList = useMaturedPoolList();
-  const { poolType, filters, sortType, sortOrder } = poolViewOptions;
+  const { filters, sortType, sortOrder } = poolViewOptions;
 
   const chainActivePoolList = useMemo(
     () => activePoolList.filter(pool => !selectedChain || pool.chain === selectedChain),
@@ -39,11 +37,6 @@ const MarketsSubheader = () => {
   const chainMaturedPoolList = useMemo(
     () => maturedPoolList.filter(pool => !selectedChain || pool.chain === selectedChain),
     [selectedChain, maturedPoolList],
-  );
-
-  const handlePoolTypeChange = useCallback(
-    (type: PoolType) => setPoolViewOptions({ poolType: type }),
-    [setPoolViewOptions],
   );
 
   const handleFilterChange = useCallback(
@@ -70,14 +63,7 @@ const MarketsSubheader = () => {
   );
 
   return (
-    <NavSubheader>
-      <NavSubheaderGroup>
-        <Tabs size="small" value={poolType} onTabSelected={handlePoolTypeChange}>
-          <Tab label={t('MarketsSubheader.tabFixed')} value="fixed" />
-          <Tab label={t('MarketsSubheader.tabBoosted')} value="boosted" />
-          <Tab label={t('MarketsSubheader.tabAll')} value="all" />
-        </Tabs>
-      </NavSubheaderGroup>
+    <NavSubheader align="right">
       <NavSubheaderGroup>
         <Dropdown label={t('MarketsSubheader.optionFilter')}>
           <DropdownRadioItem
