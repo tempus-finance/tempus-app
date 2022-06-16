@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { initServices } from 'tempus-core-services';
 import { useServicesLoaded } from '../../hooks';
 import Markets from '../Markets';
-import Navbar from '../Navbar/Navbar';
+import Navbar from '../Navbar';
 import { getConfigManager } from '../../config/getConfigManager';
 import { HookSubscriber } from '../HookSubscriber';
 import { DepositModalResolver } from '../DepositModal/DepositModalResolver';
