@@ -49,7 +49,7 @@ const PortfolioOverview: FC = () => {
         </div>
         {view === 'yield' && <PortfolioYieldChart />}
         {view === 'value' && <PortfolioValueChart />}
-        {userDepositedPools && <PortfolioOverviewNoPositions />}
+        {!userDepositedPools && <PortfolioOverviewNoPositions />}
       </div>
     </div>
   );
