@@ -2,7 +2,7 @@ import { JsonRpcSigner } from '@ethersproject/providers';
 import { ContractTransaction } from 'ethers';
 import { bind } from '@react-rxjs/core';
 import { createSignal } from '@react-rxjs/utils';
-import { combineLatest, concatMap, map } from 'rxjs';
+import { BehaviorSubject, combineLatest, concatMap, map, Subscription, tap } from 'rxjs';
 import { Chain, Decimal, getDefinedServices } from 'tempus-core-services';
 
 interface ApproveTokenRequest {
@@ -28,8 +28,9 @@ interface ApproveTokenResponse {
 }
 
 const [approveToken$, approveToken] = createSignal<ApproveTokenRequestEnhanced>();
+export const tokenApproveStatus$ = new BehaviorSubject<ApproveTokenStatus | null>(null);
 
-export const tokenApproveStatus$ = combineLatest([approveToken$]).pipe(
+const approveTokenStream$ = combineLatest([approveToken$]).pipe(
   concatMap<[ApproveTokenRequestEnhanced], Promise<ApproveTokenResponse>>(async ([payload]) => {
     const { chain, tokenAddress, spenderAddress, amount, signer } = payload;
 
@@ -57,6 +58,7 @@ export const tokenApproveStatus$ = combineLatest([approveToken$]).pipe(
         }
       : { pending: false, success: false, request };
   }),
+  tap(status => tokenApproveStatus$.next(status)),
 );
 
 const [approveTokenStatus] = bind<ApproveTokenStatus | null>(tokenApproveStatus$, null);
@@ -68,3 +70,12 @@ export const useTokenApprove = (): {
   approveTokenStatus: approveTokenStatus(),
   approveToken,
 });
+
+let subscription: Subscription;
+
+export const subscribeApproveTokenStatus = (): void => {
+  unsubscribeApproveTokenStatus();
+  subscription = approveTokenStream$.subscribe();
+};
+export const unsubscribeApproveTokenStatus = (): void => subscription?.unsubscribe?.();
+export const resetApproveTokenStatus = (): void => tokenApproveStatus$.next(null);

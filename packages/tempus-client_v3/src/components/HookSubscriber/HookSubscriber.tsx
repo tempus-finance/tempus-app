@@ -10,6 +10,8 @@ import {
   subscribeFixedAprs,
   subscribeTakenRates,
   subscribeTvlData,
+  subscribeAllowance,
+  subscribeApproveTokenStatus,
 } from '../../hooks';
 
 export const HookSubscriber: FC = () => {
@@ -27,6 +29,8 @@ export const HookSubscriber: FC = () => {
     subscribeTvlData();
     subscribeTakenRates();
     subscribeFixedAprs();
+    subscribeAllowance();
+    subscribeApproveTokenStatus();
   }, []);
 
   return null;
