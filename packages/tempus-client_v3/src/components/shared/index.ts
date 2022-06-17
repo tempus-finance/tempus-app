@@ -53,6 +53,7 @@ export * from './PoolCardGrid';
 export * from './Radio';
 export * from './Tabs';
 export * from './PoolCard';
+export * from './Modal';
 
 export {
   ActionButton,

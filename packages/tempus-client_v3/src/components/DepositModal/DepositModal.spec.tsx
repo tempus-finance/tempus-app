@@ -7,6 +7,8 @@ import I18nProvider from '../../i18n/I18nProvider';
 import { MaturityTerm, TokenMetadataProp } from '../../interfaces';
 import DepositModal, { DepositModalProps, TIMEOUT_FROM_SUCCESS_TO_DEFAULT_IN_MS } from './DepositModal';
 
+jest.mock('lottie-react', () => () => <div className="lottie-animation" />);
+
 const multipleTokens: TokenMetadataProp = [
   {
     precision: 18,

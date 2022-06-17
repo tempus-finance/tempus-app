@@ -14,9 +14,9 @@ import {
   useFixedDeposit,
 } from '../../hooks';
 import { MaturityTerm, TokenMetadata, TokenMetadataProp } from '../../interfaces';
-import { ModalProps } from '../shared/Modal/Modal';
-import { ActionButtonState, Loading } from '../shared';
+import { ActionButtonState, Loading, ModalProps } from '../shared';
 import CurrencyInputModal, { CurrencyInputModalActionButtonLabels } from '../CurrencyInputModal';
+import SuccessModal from '../SuccessModal';
 import DepositModalChart from './DepositModalChart';
 import DepositModalHeader from './DepositModalHeader';
 import DepositModalInfoRows from './DepositModalInfoRows';
@@ -31,7 +31,7 @@ export interface DepositModalProps extends ModalProps {
 }
 
 const DepositModal: FC<DepositModalProps> = props => {
-  const { tokens, open, onClose, poolStartDate, maturityTerms, chainConfig } = props;
+  const { tokens, onClose, poolStartDate, maturityTerms, chainConfig } = props;
 
   const { t } = useTranslation();
 
@@ -42,12 +42,13 @@ const DepositModal: FC<DepositModalProps> = props => {
   const balances = useTokenBalances();
   const [signer] = useSigner();
   const [{ slippage }] = useUserPreferences();
-  const { fixedDeposit } = useFixedDeposit();
+  const { fixedDeposit, fixedDepositStatus } = useFixedDeposit();
   const { approveToken, approveTokenStatus } = useTokenApprove();
 
   const [maturityTerm, setMaturityTerm] = useState<MaturityTerm>(maturityTerms[0]);
   const [token, setToken] = useState<TokenMetadata>(tokens[0]);
   const [actionButtonState, setActionButtonState] = useState<ActionButtonState>('default');
+  const [fixedDepositSuccessful, setFixedDepositSuccessful] = useState<boolean>(false);
 
   const actionButtonLabels: CurrencyInputModalActionButtonLabels = {
     preview: {
@@ -85,6 +86,16 @@ const DepositModal: FC<DepositModalProps> = props => {
       setActionButtonState('default');
     }
   }, [approveTokenStatus]);
+
+  useEffect(() => {
+    if (fixedDepositStatus?.success) {
+      setActionButtonState('success');
+
+      setTimeout(() => {
+        setFixedDepositSuccessful(true);
+      }, TIMEOUT_FROM_SUCCESS_TO_DEFAULT_IN_MS);
+    }
+  }, [fixedDepositStatus?.success]);
 
   const balance = useMemo(() => {
     const chain = chainConfig?.chainId ? chainIdToChainName(chainConfig?.chainId) : undefined;
@@ -197,35 +208,56 @@ const DepositModal: FC<DepositModalProps> = props => {
   );
 
   return (
-    <CurrencyInputModal
-      tokens={tokens}
-      open={open}
-      onClose={onClose}
-      title={t('DepositModal.title')}
-      description={{
-        preview: t('DepositModal.previewDescription'),
-        action: t('DepositModal.description', {
-          asset: tokens?.[0].ticker,
-          term: dateFormatter.format(maturityTerm?.date),
-        }),
-      }}
-      preview={depositYieldChart}
-      header={<DepositModalHeader />}
-      maturityTerms={maturityTerms}
-      balance={balance}
-      infoRows={
-        tokens && token ? (
-          <DepositModalInfoRows balance={balance} balanceToken={token} yieldToken={tokens[1]} />
-        ) : undefined
-      }
-      actionButtonLabels={actionButtonLabels}
-      actionButtonState={actionButtonState}
-      onTransactionStart={approveTokenStatus?.success ? handleDeposit : handleApprove}
-      onMaturityChange={handleMaturityChange}
-      onAmountChange={setTokenAmountForYieldAtMaturity}
-      onCurrencyUpdate={handleCurrencyChange}
-      chainConfig={chainConfig}
-    />
+    <>
+      <CurrencyInputModal
+        tokens={tokens}
+        open={!fixedDepositSuccessful}
+        onClose={onClose}
+        title={t('DepositModal.title')}
+        description={{
+          preview: t('DepositModal.previewDescription'),
+          action: t('DepositModal.description', {
+            asset: tokens?.[0].ticker,
+            term: dateFormatter.format(maturityTerm?.date),
+          }),
+        }}
+        preview={depositYieldChart}
+        header={<DepositModalHeader />}
+        maturityTerms={maturityTerms}
+        balance={balance}
+        infoRows={
+          tokens && token ? (
+            <DepositModalInfoRows balance={balance} balanceToken={token} yieldToken={tokens[1]} />
+          ) : undefined
+        }
+        actionButtonLabels={actionButtonLabels}
+        actionButtonState={actionButtonState}
+        onTransactionStart={approveTokenStatus?.success ? handleDeposit : handleApprove}
+        onMaturityChange={handleMaturityChange}
+        onAmountChange={setTokenAmountForYieldAtMaturity}
+        onCurrencyUpdate={handleCurrencyChange}
+        chainConfig={chainConfig}
+      />
+      {/* Show success modal if withdraw is finalized */}
+      <SuccessModal
+        description={t('DepositModal.successModalDescription', {
+          amount: 'AMOUNT', // TODO - Parse amount from tx receipt and put it here
+          ticker: token.ticker,
+          term: dateFormatter.format(maturityTerm.date),
+        })}
+        primaryButtonLabel={{
+          default: t('DepositModal.successModalPrimaryButton'),
+        }}
+        secondaryButtonLabel={{
+          default: t('DepositModal.successModalSecondaryButton'),
+        }}
+        onClose={() => {}}
+        onPrimaryButtonClick={() => {}}
+        onSecondaryButtonClick={() => {}}
+        open={fixedDepositSuccessful}
+        title={t('DepositModal.successModalTitle')}
+      />
+    </>
   );
 };
 
