@@ -174,7 +174,8 @@ workflows:
               only: /^release-.*$/
       - deploy-to-stage:
           requires:
-            - test
+            - e2e-test
+            #- test
           filters:
             branches:
               only: master
