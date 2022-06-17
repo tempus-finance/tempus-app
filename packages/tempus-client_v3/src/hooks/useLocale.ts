@@ -6,7 +6,7 @@ import i18n, { SupportedLocale } from '../i18n';
 
 const [rawLocale$, setLocale] = createSignal<SupportedLocale>();
 const locale$ = rawLocale$.pipe(distinctUntilChanged());
-const state$ = state(locale$, 'en');
+const state$ = state(locale$, i18n.languages[0] as SupportedLocale);
 
 export function useLocale(): [SupportedLocale, (value: SupportedLocale) => void] {
   const locale = useStateObservable(state$);
