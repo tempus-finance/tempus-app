@@ -5,6 +5,7 @@ import { Tab, Tabs, Typography } from '../../shared';
 import PortfolioValueChart from './PortfolioValueChart';
 import PortfolioYieldChart from './PortfolioYieldChart';
 import PortfolioInfoBox from './PortfolioInfoBox';
+import PortfolioOverviewNoPositions from './PortfolioOverviewNoPositions';
 
 const PortfolioOverview: FC = () => {
   const [view, setView] = useState('yield');
