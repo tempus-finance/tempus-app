@@ -11,7 +11,7 @@ import { join as pathjoin } from 'path';
 
 const ROOT_PATH: string = '../../';
 export const METAMASK_ID: string = readFileSync(pathjoin(__dirname, ROOT_PATH, METAMASK_ID_PATH), { encoding: 'utf-8', flag: 'r' });
-export const METAMASK_CHROME_URL = `chrome-extension://${METAMASK_ID}/home.html`;
+export const METAMASK_CHROME_URL = `chrome-extension://${METAMASK_ID}/home.html#`;
 
 export async function metamaskGetId(src: string = METAMASK_ID_PATH):
     Promise<string> {
@@ -129,7 +129,7 @@ export async function metamaskLogin(browser: BrowserContext): Promise<void> {
 
 export async function metamaskLogoff(browser: BrowserContext): Promise<void> {
     const tabMetamask: Page = await browser.newPage();
-    await tabMetamask.goto(`chrome-extension://${METAMASK_ID}/home.html#`);
+    await tabMetamask.goto(`${METAMASK_CHROME_URL}new-account/import`);
     await tabMetamask.waitForTimeout(LOAD_TIMEOUT);
     if (!(await tabMetamask.locator('text="Unlock"').count()) && !(await tabMetamask.locator('text="Get Started"').count())) {
         await tabMetamask.waitForTimeout(LOAD_TIMEOUT);
@@ -172,7 +172,7 @@ export async function metamaskAccountAdd(browser: BrowserContext, privateKey: st
     Promise<void> {
     await metamaskLogin(browser);
     const tabMetamask: Page = await browser.newPage();
-    await tabMetamask.goto(`chrome-extension://${METAMASK_ID}/home.html#new-account/import`);
+    await tabMetamask.goto(`${METAMASK_CHROME_URL}new-account/import`);
     await tabMetamask.waitForTimeout(LOAD_TIMEOUT);
 
     const SELECTOR_PASSWORD_INPUT: string = 'input[type="password"]';
@@ -205,7 +205,7 @@ export async function metamaskAccountSwitch(browser: BrowserContext, accountInde
     Promise<void> {
     //await metamaskLogin(browser);
     const tabMetamask: Page = await browser.newPage();
-    await tabMetamask.goto(METAMASK_CHROME_URL);
+    await tabMetamask.goto(`${METAMASK_CHROME_URL}new-account/import`);
     await tabMetamask.click('.account-menu__icon');
 
     const SELECTOR_ACCOUNTS: string = '.account-menu__name';

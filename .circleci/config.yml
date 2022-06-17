@@ -6,47 +6,33 @@ orbs:
   # The Node.js orb contains a set of prepackaged CircleCI configuration you can utilize
   # Orbs reduce the amount of configuration required for common tasks.
   # See the orb documentation here: https://circleci.com/developer/orbs/orb/circleci/node
-  node: circleci/node@5.0.2
+  node: circleci/node@4.1
 
 jobs:
-  bootstrap:
+  # Below is the definition of your job to build and test your app, you can rename and customize it as you want.
+  build:
+    # These next lines define a Docker executor: https://circleci.com/docs/2.0/executor-types/
+    # You can specify an image from Dockerhub or use one of our Convenience Images from CircleCI's Developer Hub.
+    # A list of available CircleCI Docker Convenience Images are available here: https://circleci.com/developer/images/image/cimg/node
     docker:
-      - image: cimg/node:lts
+      - image: cimg/node:15.1
+    # Then run your tests!
+    # CircleCI will report the results back to your VCS provider.
     steps:
+      # Checkout the code as the first step.
       - checkout
+      # Next, the node orb's install-packages step will install the dependencies from a package.json.
+      # The orb install-packages step will also automatically cache them for faster future runs.
       - node/install-packages
+      # If you are using yarn instead npm, remove the line above and uncomment the two lines below.
+      # - node/install-packages:
+      #     pkg-manager: yarn
       - run:
-          name: Bootstrap
+          name: Lerna Bootstrap
           command: ./node_modules/.bin/lerna bootstrap
-      - persist_to_workspace:
-          root: ./
-          paths:
-            - ./
-
-  build-tempus-core-services:
-    docker:
-      - image: cimg/node:lts
-    steps:
-      - attach_workspace:
-          at: ./
       - run:
-          name: Build Tempus Core Services
-          command: npm --prefix ./packages/tempus-core-services run build
-      - persist_to_workspace:
-          root: ./
-          paths:
-            - ./
-
-  build-tempus-client-v3:
-    docker:
-      - image: cimg/node:lts
-    resource_class: large
-    steps:
-      - attach_workspace:
-          at: ./
-      - run:
-          name: Build Tempus Client V3
-          command: npm --prefix ./packages/tempus-client_v3 run build
+          name: Build
+          command: npm run build
       - persist_to_workspace:
           root: ./
           paths:
@@ -54,8 +40,7 @@ jobs:
 
   build-storybook:
     docker:
-      - image: cimg/node:lts
-    resource_class: large
+      - image: cimg/node:15.1
     steps:
       - attach_workspace:
           at: ./
@@ -67,25 +52,19 @@ jobs:
           paths:
             - ./
 
-  test-tempus-client-v3:
+  test:
     docker:
-      - image: cimg/node:lts
+      - image: cimg/node:15.1
     steps:
       - attach_workspace:
           at: ./
       - run:
-          name: Unit Test - Tempus Client v3
-          command: npm --prefix ./packages/tempus-client_v3 run ci:test
-
-  test-tempus-core-services:
-    docker:
-      - image: cimg/node:lts
-    steps:
-      - attach_workspace:
-          at: ./
-      - run:
-          name: Unit Test - Tempus Core Services
-          command: npm --prefix ./packages/tempus-core-services run ci:test
+          name: Unit Test
+          command: npm test
+      - persist_to_workspace:
+          root: ./
+          paths:
+            - ./
 
   metamask:
     docker:
@@ -107,7 +86,9 @@ jobs:
             npm install -g typescript
             npm install -g ts-node
             npx playwright install
+            touch /root/project/integration-testing/utility/mm_id.txt
             xvfb-run --auto-servernum --server-num=1 npm run mm-setup
+            xvfb-run --auto-servernum --server-num=2 npm run e2e /root/project/integration-testing/tests/_firstLogin.spec.ts
       - persist_to_workspace:
           root: ./
           paths:
@@ -149,7 +130,7 @@ jobs:
 
   deploy-to-stage:
     docker:
-      - image: cimg/node:lts
+      - image: cimg/node:15.1
     steps:
       - attach_workspace:
           at: ./
@@ -159,7 +140,7 @@ jobs:
 
   deploy-storybook:
     docker:
-      - image: cimg/node:lts
+      - image: cimg/node:15.1
     steps:
       - attach_workspace:
           at: ./
@@ -174,27 +155,19 @@ workflows:
   # For more details on extending your workflow, see the configuration docs: https://circleci.com/docs/2.0/configuration-reference/#workflows
   tempus-app-ci:
     jobs:
-      - bootstrap
-      - build-tempus-core-services:
-          requires:
-            - bootstrap
-      - build-tempus-client-v3:
-          requires:
-            - build-tempus-core-services
+      - build
       - metamask:
           requires:
-            - bootstrap
+            - build
       - build-storybook:
           requires:
-            - build-tempus-client-v3
-      - test-tempus-client-v3:
+            - build
+      - test:
           requires:
-            - build-tempus-core-services
-      - test-tempus-core-services:
-          requires:
-            - bootstrap
+            - build
       - e2e-test:
           requires:
+            - build-tempus-client-v3 # maybe need start too
             - metamask
       - deploy-storybook:
           requires:
@@ -204,8 +177,7 @@ workflows:
               only: /^release-.*$/
       - deploy-to-stage:
           requires:
-            - test-tempus-client-v3
-            - test-tempus-core-services
+            - test
           filters:
             branches:
               only: master
