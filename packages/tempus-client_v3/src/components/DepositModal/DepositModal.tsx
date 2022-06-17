@@ -227,9 +227,7 @@ const DepositModal: FC<DepositModalProps> = props => {
       if (tempusPool) {
         const tokenAllowance = tokenAllowances[`${tempusPool.chain}-${token.address}`];
 
-        if (Boolean(tokenAllowance?.alwaysApproved) || amount.lte(tokenAllowance?.amount ?? ZERO)) {
-          setTokenApproved(true);
-        }
+        setTokenApproved(Boolean(tokenAllowance?.alwaysApproved) || amount.lte(tokenAllowance?.amount ?? ZERO));
       }
     },
     [tokenAllowances, filteredTempusPools, maturityTerm.date, token.address],
