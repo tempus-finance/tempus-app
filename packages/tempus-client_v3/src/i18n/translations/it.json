@@ -86,7 +86,10 @@
     "titleEarnedYield": "",
     "titleProjectedYield": "",
     "titleTotalPortfolioValue": "",
-    "titleTotalYieldEarned": ""
+    "titleTotalYieldEarned": "Rendimento Totale",
+    "titleNoPositions": "Niente in Portafogli",
+    "descriptionNoPositions": "Vuoi incrementare? Vai su Mercati",
+    "buttonBrowseMarkets": "Vai su Mercati"
   },
   "PortfolioPositions": {
     "titleNoPositions": "Nessuna Posizione",
