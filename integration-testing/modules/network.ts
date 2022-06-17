@@ -28,7 +28,8 @@ export async function tempusNetworkChange(browser: BrowserContext, networkName: 
     await tabTempus.goto(TEMPUS_URL);
 
     await tabTempus.waitForTimeout(LOAD_TIMEOUT);
-    await tabTempus.click('.tc__connect-wallet-network-picker');
+    //await tabTempus.click('.tc__connect-wallet-network-picker');
+    await tabTempus.click(`.tc__walletButton__connected-network`);
 
     await tabTempus.waitForTimeout(LOAD_SHORT_TIMEOUT);
     const tabCount: number = browser.pages().length;
@@ -44,7 +45,7 @@ export async function tempusNetworkChange(browser: BrowserContext, networkName: 
             await mm.click(`text="${lang.approve}"`);
             await mm.waitForTimeout(LOAD_TIMEOUT);
         }
-        await mm.click(`button:has-text("Switch network")`);
+        await mm.click(`button:has-text("${lang.switchNetwork}")`);
     }
 
     await tabTempus.waitForTimeout(LOAD_TIMEOUT);

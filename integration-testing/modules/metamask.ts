@@ -206,7 +206,6 @@ export async function metamaskAccountSwitch(browser: BrowserContext, accountInde
     //await metamaskLogin(browser);
     const tabMetamask: Page = await browser.newPage();
     await tabMetamask.goto(METAMASK_CHROME_URL);
-    await tabMetamask.click('[data-testid="popover-close"]');
     await tabMetamask.click('.account-menu__icon');
 
     const SELECTOR_ACCOUNTS: string = '.account-menu__name';

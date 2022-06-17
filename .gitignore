@@ -44,4 +44,5 @@ packages/**/src/release.json
 /integration-testing/tests/dev.spec.ts
 /integration-testing/utility/manualtesting.ts
 /test-results
+/integration-testing/old_tests
 .env

@@ -16,6 +16,11 @@ export async function tempusMetamaskConnect(browser: BrowserContext):
 
     const tabCountBefore: number = await browser.pages().length;
     await tabTempus.click('text=Connect Wallet');
+    const termsAndConds: string = `text=I agree to the Terms & Conditions and Privacy Policy.`; //untested
+    if (await tabTempus.locator(termsAndConds).count()) {
+        await tabTempus.click(termsAndConds);
+    }
+
     await tabTempus.click('text=MetaMask');
     await tabTempus.waitForTimeout(LOAD_LONG_TIMEOUT);
     const tabCountAfter: number = await browser.pages().length;
