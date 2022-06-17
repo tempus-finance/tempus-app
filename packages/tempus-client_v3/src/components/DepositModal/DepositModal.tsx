@@ -103,10 +103,13 @@ const DepositModal: FC<DepositModalProps> = props => {
     }
   }, [fixedDepositStatus?.success]);
 
-  const filteredTempusPools = useMemo(() => modalProps?.tempusPools ?? [], [modalProps]);
+  const selectedTempusPool = useMemo(
+    () => modalProps?.tempusPools?.find(pool => pool.maturityDate === maturityTerm.date.getTime()),
+    [modalProps, maturityTerm.date],
+  );
   const chain = useMemo(
-    () => (chainId ? chainIdToChainName(chainId) : filteredTempusPools[0]?.chain),
-    [chainId, filteredTempusPools],
+    () => (chainId ? chainIdToChainName(chainId) : selectedTempusPool?.chain),
+    [chainId, selectedTempusPool],
   );
   const balance = useMemo(() => balances[`${chain}-${token?.address}`] ?? ZERO, [balances, chain, token]);
 
@@ -152,17 +155,15 @@ const DepositModal: FC<DepositModalProps> = props => {
 
   const handleApprove = useCallback(
     async (amount: Decimal) => {
-      const tempusPool = filteredTempusPools.find(pool => pool.maturityDate === maturityTerm.date.getTime());
-
       // Approve selected token entered amount
-      if (tempusPool && signer) {
-        const tokenAllowance = tokenAllowances[`${tempusPool.chain}-${token.address}`];
+      if (selectedTempusPool && signer) {
+        const tokenAllowance = tokenAllowances[`${selectedTempusPool.chain}-${token.address}`];
 
         if (!tokenAllowance?.alwaysApproved && amount.gt(tokenAllowance?.amount ?? ZERO)) {
           setActionButtonState('loading');
 
           approveToken({
-            chain: tempusPool.chain,
+            chain: selectedTempusPool.chain,
             tokenAddress: token.address,
             spenderAddress: chainConfig.tempusControllerContract,
             amount,
@@ -176,11 +177,10 @@ const DepositModal: FC<DepositModalProps> = props => {
       return approveTokenTxnHash;
     },
     [
-      filteredTempusPools,
+      selectedTempusPool,
       signer,
       tokenAllowances,
       approveTokenTxnHash,
-      maturityTerm.date,
       approveToken,
       token.address,
       chainConfig.tempusControllerContract,
@@ -189,14 +189,12 @@ const DepositModal: FC<DepositModalProps> = props => {
 
   const handleDeposit = useCallback(
     async (amount: Decimal) => {
-      const tempusPool = filteredTempusPools.find(pool => pool.maturityDate === maturityTerm.date.getTime());
-
-      if (signer && tempusPool) {
+      if (selectedTempusPool && signer) {
         setActionButtonState('loading');
 
         fixedDeposit({
-          chain: tempusPool.chain,
-          poolAddress: tempusPool.address,
+          chain: selectedTempusPool.chain,
+          poolAddress: selectedTempusPool.address,
           tokenAmount: amount,
           tokenTicker: token.ticker,
           tokenAddress: token.address,
@@ -207,30 +205,20 @@ const DepositModal: FC<DepositModalProps> = props => {
 
       return depositTokenTxnHash;
     },
-    [
-      filteredTempusPools,
-      signer,
-      depositTokenTxnHash,
-      maturityTerm.date,
-      fixedDeposit,
-      token.ticker,
-      token.address,
-      slippage,
-    ],
+    [selectedTempusPool, signer, depositTokenTxnHash, fixedDeposit, token.ticker, token.address, slippage],
   );
 
   const handleAmountChange = useCallback(
     (amount: Decimal) => {
       setTokenAmountForYieldAtMaturity(amount);
 
-      const tempusPool = filteredTempusPools.find(pool => pool.maturityDate === maturityTerm.date.getTime());
-      if (tempusPool) {
-        const tokenAllowance = tokenAllowances[`${tempusPool.chain}-${token.address}`];
+      if (selectedTempusPool) {
+        const tokenAllowance = tokenAllowances[`${selectedTempusPool.chain}-${token.address}`];
 
         setTokenApproved(Boolean(tokenAllowance?.alwaysApproved) || amount.lte(tokenAllowance?.amount ?? ZERO));
       }
     },
-    [tokenAllowances, filteredTempusPools, maturityTerm.date, token.address],
+    [tokenAllowances, selectedTempusPool, token.address],
   );
 
   return (
