@@ -1,12 +1,15 @@
 import { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useUserDepositedPools } from '../../../hooks';
 import { Tab, Tabs, Typography } from '../../shared';
 import PortfolioValueChart from './PortfolioValueChart';
 import PortfolioYieldChart from './PortfolioYieldChart';
 import PortfolioInfoBox from './PortfolioInfoBox';
+import PortfolioOverviewNoPositions from './PortfolioOverviewNoPositions';
 
 const PortfolioOverview: FC = () => {
   const [view, setView] = useState('yield');
+  const userDepositedPools = useUserDepositedPools();
   const { t } = useTranslation();
 
   // TODO: Fetch real values
@@ -46,6 +49,7 @@ const PortfolioOverview: FC = () => {
         </div>
         {view === 'yield' && <PortfolioYieldChart />}
         {view === 'value' && <PortfolioValueChart />}
+        {!userDepositedPools && <PortfolioOverviewNoPositions />}
       </div>
     </div>
   );

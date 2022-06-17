@@ -86,7 +86,10 @@
     "titleEarnedYield": "Yield Earned",
     "titleProjectedYield": "Projected Yield",
     "titleTotalPortfolioValue": "Total Portfolio Value",
-    "titleTotalYieldEarned": "Total Yield Earned"
+    "titleTotalYieldEarned": "Total Yield Earned",
+    "titleNoPositions": "Nothing in Your Portfolio",
+    "descriptionNoPositions": "Want to see growth? Go to Markets.",
+    "buttonBrowseMarkets": "Browse Markets"
   },
   "PortfolioPositions": {
     "titleNoPositions": "No Current Positions",

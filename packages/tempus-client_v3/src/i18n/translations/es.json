@@ -86,7 +86,10 @@
     "titleEarnedYield": "",
     "titleProjectedYield": "",
     "titleTotalPortfolioValue": "",
-    "titleTotalYieldEarned": ""
+    "titleTotalYieldEarned": "Regreso trotal",
+    "titleNoPositions": "Nada en la Cartera",
+    "descriptionNoPositions": "¿Quieres aumentar? Ir a Mercados",
+    "buttonBrowseMarkets": "Ir a Mercados"
   },
   "PortfolioPositions": {
     "titleNoPositions": "Sin posición",
