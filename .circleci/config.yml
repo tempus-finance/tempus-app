@@ -46,7 +46,7 @@ jobs:
           at: ./
       - run:
           name: Build Storybook
-          command: npm --prefix ./packages/tempus-client_v3 run build-storybook
+          command: npm --prefix ./packages/tempus-client_v3 run build-storybook && npm run start #new
       - persist_to_workspace:
           root: ./
           paths:
@@ -159,7 +159,7 @@ workflows:
             - build
       - metamask:
           requires:
-            - deploy-storybook
+            - build-storybook
       #- test:
        #   requires:
         #    - build
