@@ -86,7 +86,10 @@
     "titleEarnedYield": "~~~~~====={{{{{(((((titleEarnedYield)))))}}}}}=====~~~~~",
     "titleProjectedYield": "~~~~~====={{{{{(((((titleProjectedYield)))))}}}}}=====~~~~~",
     "titleTotalPortfolioValue": "~~~~~====={{{{{(((((titleTotalPortfolioValue)))))}}}}}=====~~~~~",
-    "titleTotalYieldEarned": "~~~~~====={{{{{(((((titleTotalYieldEarned)))))}}}}}=====~~~~~"
+    "titleTotalYieldEarned": "~~~~~====={{{{{(((((titleTotalYieldEarned)))))}}}}}=====~~~~~",
+    "titleNoPositions": "~~~~~====={{{{{(((((titleNoPositions)))))}}}}}=====~~~~~",
+    "descriptionNoPositions": "~~~~~====={{{{{(((((descriptionNoPositions)))))}}}}}=====~~~~~",
+    "buttonBrowseMarkets": "~~~~~====={{{{{(((((buttonBrowseMarkets)))))}}}}}=====~~~~~"
   },
   "PortfolioPositions": {
     "titleNoPositions": "~~~~~====={{{{{(((((titleNoPositions)))))}}}}}=====~~~~~",
