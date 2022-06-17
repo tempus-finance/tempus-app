@@ -10,6 +10,8 @@ i18n
   .init({
     resources,
     fallbackLng: 'en',
+    supportedLngs: SUPPORTED_LOCALES,
+    load: 'languageOnly',
     returnEmptyString: false,
 
     interpolation: {
