@@ -154,15 +154,15 @@ workflows:
   tempus-app-ci:
     jobs:
       - build
-      - metamask:
-          requires:
-            - deploy-storybook
       - build-storybook:
           requires:
             - build
-      - test:
+      - metamask:
           requires:
-            - build
+            - deploy-storybook
+      #- test:
+       #   requires:
+        #    - build
       - e2e-test:
           requires:
             - metamask
