@@ -1,8 +1,9 @@
 import { JsonRpcSigner } from '@ethersproject/providers';
 import { renderHook } from '@testing-library/react-hooks';
+import { act } from 'react-dom/test-utils';
 import { of as mockOf, delay as mockDelay } from 'rxjs';
 import { Decimal as MockDecimal, getDefinedServices, Decimal, ZERO } from 'tempus-core-services';
-import { useAllowances } from './useAllowances';
+import { useAllowances, subscribeAllowance, resetAllowance } from './useAllowances';
 
 jest.mock('tempus-core-services', () => ({
   ...jest.requireActual('tempus-core-services'),
@@ -84,6 +85,11 @@ jest.mock('./useTokenBalance', () => ({
 
 describe('useAllowances', () => {
   it('returns the default empty allowance map', async () => {
+    act(() => {
+      resetAllowance();
+      subscribeAllowance();
+    });
+
     const { result } = renderHook(() => useAllowances());
 
     expect(result.current).toEqual({});
@@ -107,6 +113,12 @@ describe('useAllowances', () => {
         }),
       })),
     }));
+
+    act(() => {
+      resetAllowance();
+      subscribeAllowance();
+    });
+
     const { result, waitForNextUpdate } = renderHook(() => useAllowances());
 
     expect(result.current).toEqual({});
@@ -151,6 +163,12 @@ describe('useAllowances', () => {
         }),
       })),
     }));
+
+    act(() => {
+      resetAllowance();
+      subscribeAllowance();
+    });
+
     const { result, waitForNextUpdate } = renderHook(() => useAllowances());
 
     expect(result.current).toEqual({});
@@ -203,6 +221,11 @@ describe('useAllowances', () => {
     jest.spyOn(console, 'error').mockImplementation();
     (getDefinedServices as unknown as jest.Mock).mockReturnValue(null);
 
+    act(() => {
+      resetAllowance();
+      subscribeAllowance();
+    });
+
     const { result, waitForNextUpdate } = renderHook(() => useAllowances());
 
     expect(result.current).toEqual({});
@@ -222,6 +245,11 @@ describe('useAllowances', () => {
     jest.spyOn(console, 'error').mockImplementation();
     (getDefinedServices as unknown as jest.Mock).mockImplementation(() => {
       throw new Error();
+    });
+
+    act(() => {
+      resetAllowance();
+      subscribeAllowance();
     });
 
     const { result, waitForNextUpdate } = renderHook(() => useAllowances());
@@ -245,6 +273,11 @@ describe('useAllowances', () => {
       ERC20TokenServiceGetter: jest.fn().mockImplementation(() => {
         throw new Error();
       }),
+    });
+
+    act(() => {
+      resetAllowance();
+      subscribeAllowance();
     });
 
     const { result, waitForNextUpdate } = renderHook(() => useAllowances());
@@ -272,6 +305,11 @@ describe('useAllowances', () => {
       })),
     });
 
+    act(() => {
+      resetAllowance();
+      subscribeAllowance();
+    });
+
     const { result, waitForNextUpdate } = renderHook(() => useAllowances());
 
     expect(result.current).toEqual({});
@@ -293,6 +331,11 @@ describe('useAllowances', () => {
       ERC20TokenServiceGetter: jest.fn().mockImplementation(() => ({
         getAllowance: jest.fn().mockRejectedValue({}),
       })),
+    });
+
+    act(() => {
+      resetAllowance();
+      subscribeAllowance();
     });
 
     const { result, waitForNextUpdate } = renderHook(() => useAllowances());
