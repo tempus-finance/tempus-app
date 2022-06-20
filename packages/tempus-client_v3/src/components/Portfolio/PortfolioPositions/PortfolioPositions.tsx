@@ -1,5 +1,5 @@
 import { FC, useCallback, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
 import { Chain, ProtocolName, Ticker, ZERO } from 'tempus-core-services';
 import { useSelectedChain, useUserDepositedPools, useTokenBalances } from '../../../hooks';
 import { GroupedPoolCardGrid, PoolCardData, PoolCardGroupId, PoolCardStatus } from '../../shared';
@@ -48,7 +48,7 @@ const PortfolioPositions: FC = () => {
       if (poolAddresses.length === 1) {
         const poolAddress = poolAddresses[0];
 
-        navigate(`/portfolio/position/${cardChain}/${ticker}/${protocol}/${poolAddress}`);
+        navigate(`/portfolio/positions/${cardChain}/${ticker}/${protocol}/${poolAddress}`);
       }
       // TODO - If position card has multiple pools we need to open sub-position screen
       // that contains cards for each pool (deploy multiple pools with same Protocol and Ticker)
@@ -68,6 +68,7 @@ const PortfolioPositions: FC = () => {
       ) : (
         <PortfolioNoPositions />
       )}
+      <Outlet />
     </div>
   );
 };
