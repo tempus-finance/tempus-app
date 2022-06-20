@@ -57,13 +57,11 @@ const App = () => {
                 </Route>
               </Route>
 
-              <Route
-                path="/mature-pool/:chain/:ticker/:protocol/:poolAddress"
-                element={<PoolPositionModalResolver />}
-              />
               <Route path="/withdraw/:chain/:ticker/:protocol/:poolAddress" element={<WithdrawModalResolver />} />
+
               <Route path="/" element={<Markets />}>
                 <Route path="pool/:chain/:ticker/:protocol" element={<DepositModalResolver />} />
+                <Route path="pool/:chain/:ticker/:protocol/:poolAddress" element={<PoolPositionModalResolver />} />
               </Route>
             </Routes>
           </div>

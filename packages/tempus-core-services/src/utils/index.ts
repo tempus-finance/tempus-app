@@ -24,3 +24,4 @@ export { shortenAccount } from './shortenAccount';
 export { wait } from './wait';
 export { decreasePrecision, div18f, increasePrecision, mul18f } from './weiMath';
 export { prettifyProtocolName } from './prettifyProtocolName';
+export { getPathRoot } from './getPathRoot';

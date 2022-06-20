@@ -86,6 +86,7 @@ export {
   wadToDai,
   wait,
   prettifyProtocolName,
+  getPathRoot,
 } from './utils';
 
 export * from './constants';

@@ -32,7 +32,7 @@ const MarketsPools = (): JSX.Element => {
         return;
       }
 
-      navigate(`/mature-pool/${chain}/${ticker}/${protocol}/${poolAddress}`);
+      navigate(`/pool/${chain}/${ticker}/${protocol}/${poolAddress}`);
     } else {
       navigate(`/pool/${chain}/${ticker}/${protocol}`);
     }

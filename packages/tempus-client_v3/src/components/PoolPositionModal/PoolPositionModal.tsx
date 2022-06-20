@@ -2,6 +2,7 @@ import { FC, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Chain, Decimal, ProtocolName, Ticker } from 'tempus-core-services';
+import { useNavigateToRoot } from '../../hooks';
 import { ChartDataPoint, ChartDot, DateChart, ChartDotVariant } from '../shared/Chart';
 import ActionButton from '../shared/ActionButton';
 import Modal from '../shared/Modal';
@@ -47,6 +48,8 @@ export const PoolPositionModal: FC<PoolPositionModalProps> = props => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
+  const [navigateToRoot] = useNavigateToRoot();
+
   const chartDot = useCallback(
     (_x, _y, index, cx, cy) => {
       let variant: ChartDotVariant = 'plus';
@@ -68,8 +71,12 @@ export const PoolPositionModal: FC<PoolPositionModalProps> = props => {
     navigate(`/withdraw/${chain}/${backingToken}/${protocol}/${address}`);
   }, [address, backingToken, chain, protocol, navigate]);
 
+  const handleClose = useCallback(() => {
+    navigateToRoot();
+  }, [navigateToRoot]);
+
   return (
-    <Modal open onClose={() => {}} title={t('PoolPositionModal.title')} size="large">
+    <Modal open onClose={handleClose} title={t('PoolPositionModal.title')} size="large">
       <div className="tc__poolPositionModal-info">
         <PoolPositionCard
           apr={apr}
