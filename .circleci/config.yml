@@ -61,7 +61,8 @@ jobs:
           at: ./
       - run:
           name: Start Tempus Client V3
-          command: npm --prefix ./packages/tempus-client_v3 run start & disown
+          command: npm --prefix ./packages/tempus-client_v3 run start & disown      
+      - run: sleep 50
       - persist_to_workspace:
           root: ./
           paths:
