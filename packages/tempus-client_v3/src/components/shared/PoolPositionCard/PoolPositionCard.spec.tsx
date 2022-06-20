@@ -4,8 +4,8 @@ import I18nProvider from '../../../i18n/I18nProvider';
 import PoolPositionCard, { PoolPositionCardProps } from './PoolPositionCard';
 
 const defaultProps: PoolPositionCardProps = {
-  apr: 0.1,
-  term: new Date(Date.UTC(2022, 2, 4)),
+  apr: new Decimal(0.1),
+  term: new Date(Date.UTC(2024, 2, 4)),
   profitLoss: new Decimal(10.29651),
   balance: new Decimal(20.9294),
   totalYieldEarned: new Decimal(1.12345),
