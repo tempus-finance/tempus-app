@@ -52,6 +52,21 @@ jobs:
           paths:
             - ./
 
+  start-tempus-client-v3:
+    docker:
+      - image: cimg/node:lts
+    resource_class: large
+    steps:
+      - attach_workspace:
+          at: ./
+      - run:
+          name: Start Tempus Client V3
+          command: npm --prefix ./packages/tempus-client_v3 run start
+      - persist_to_workspace:
+          root: ./
+          paths:
+            - ./
+
   build-storybook:
     docker:
       - image: cimg/node:lts
@@ -181,10 +196,12 @@ workflows:
       - build-tempus-client-v3:
           requires:
             - build-tempus-core-services
-      - metamask:
+      - start-tempus-client-v3:
           requires:
             - build-tempus-client-v3
-            - bootstrap
+      - metamask:
+          requires:
+            - start-tempus-client-v3
       - build-storybook:
           requires:
             - build-tempus-client-v3
