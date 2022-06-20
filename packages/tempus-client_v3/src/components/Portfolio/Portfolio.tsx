@@ -1,4 +1,5 @@
 import { FC, useState } from 'react';
+import { Outlet } from 'react-router-dom';
 import PortfolioOverview from './PortfolioOverview';
 import PortfolioSubheader, { PortfolioView } from './PortfolioSubheader';
 import './Portfolio.scss';
@@ -14,6 +15,7 @@ const Portfolio: FC = () => {
         {view === 'overview' && <PortfolioOverview />}
         {view === 'positions' && <PortfolioPositions />}
       </div>
+      <Outlet />
     </div>
   );
 };
