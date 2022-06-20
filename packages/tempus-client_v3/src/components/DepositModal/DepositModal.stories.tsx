@@ -1,5 +1,6 @@
 import { ComponentStory, ComponentMeta } from '@storybook/react';
 import { useCallback, useState } from 'react';
+import { BrowserRouter } from 'react-router-dom';
 import { ChainConfig, Decimal } from 'tempus-core-services';
 import { getConfigManager } from '../../config/getConfigManager';
 import { MaturityTerm } from '../../interfaces';
@@ -42,37 +43,39 @@ const Template: ComponentStory<typeof DepositModal> = () => {
   }, []);
 
   return (
-    <div style={style}>
-      <button type="button" onClick={onModalOpen}>
-        Click me!
-      </button>
+    <BrowserRouter>
+      <div style={style}>
+        <button type="button" onClick={onModalOpen}>
+          Click me!
+        </button>
 
-      <DepositModal
-        tokens={[
-          {
-            precision: 6,
-            precisionForUI: 2,
-            address: '1',
-            rate: new Decimal(1),
-            ticker: 'USDC',
-            balance: new Decimal(15),
-          },
-          {
-            precision: 6,
-            precisionForUI: 2,
-            address: '2',
-            rate: new Decimal(1),
-            ticker: 'yvUSDC',
-            balance: new Decimal(15),
-          },
-        ]}
-        poolStartDate={new Date(Date.UTC(2022, 3, 1))}
-        maturityTerms={maturityTerms}
-        open={modalOpen}
-        onClose={onModalClose}
-        chainConfig={config}
-      />
-    </div>
+        <DepositModal
+          tokens={[
+            {
+              precision: 6,
+              precisionForUI: 2,
+              address: '1',
+              rate: new Decimal(1),
+              ticker: 'USDC',
+              balance: new Decimal(15),
+            },
+            {
+              precision: 6,
+              precisionForUI: 2,
+              address: '2',
+              rate: new Decimal(1),
+              ticker: 'yvUSDC',
+              balance: new Decimal(15),
+            },
+          ]}
+          poolStartDate={new Date(Date.UTC(2022, 3, 1))}
+          maturityTerms={maturityTerms}
+          open={modalOpen}
+          onClose={onModalClose}
+          chainConfig={config}
+        />
+      </div>
+    </BrowserRouter>
   );
 };
 
