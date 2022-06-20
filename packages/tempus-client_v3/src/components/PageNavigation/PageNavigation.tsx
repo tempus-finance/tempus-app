@@ -6,6 +6,7 @@ import './PageNavigation.scss';
 export interface PageNavigationLink {
   text: string;
   path: string;
+  pathPatterns?: string[];
 }
 
 export interface PageNavigationProps {
@@ -24,7 +25,12 @@ const PageNavigation: FC<PageNavigationProps> = ({ navigationLinks }) => {
       <div className="tc__page-navigation__background" />
       <Tabs size="large">
         {navigationLinks.map((navigationLink: PageNavigationLink) => (
-          <Tab key={navigationLink.text} label={navigationLink.text} href={navigationLink.path} />
+          <Tab
+            key={navigationLink.text}
+            label={navigationLink.text}
+            href={navigationLink.path}
+            hrefPatterns={navigationLink.pathPatterns}
+          />
         ))}
       </Tabs>
     </div>
