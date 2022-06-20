@@ -11,7 +11,7 @@ import { DepositModalResolver } from '../DepositModal';
 import { PoolPositionModalResolver } from '../PoolPositionModal';
 import { WithdrawModalResolver } from '../WithdrawModal';
 import PageNavigation, { PageNavigationLink } from '../PageNavigation';
-import Portfolio from '../Portfolio';
+import Portfolio, { PortfolioOverview, PortfolioPositions } from '../Portfolio';
 import TotalValueLocked from '../TotalValueLocked';
 
 import './App.scss';
@@ -22,7 +22,7 @@ const App = () => {
 
   const navigationLinks: PageNavigationLink[] = [
     { text: t('App.navMarkets'), path: '/' },
-    { text: t('App.navPortfolio'), path: '/portfolio' },
+    { text: t('App.navPortfolio'), path: '/portfolio/overview' },
   ];
 
   // Init services and config
@@ -51,7 +51,10 @@ const App = () => {
           <div className="tc__app__body">
             <Routes>
               <Route path="/portfolio" element={<Portfolio />}>
-                <Route path="position/:chain/:ticker/:protocol/:poolAddress" element={<PoolPositionModalResolver />} />
+                <Route path="overview" element={<PortfolioOverview />} />
+                <Route path="positions" element={<PortfolioPositions />}>
+                  <Route path=":chain/:ticker/:protocol/:poolAddress" element={<PoolPositionModalResolver />} />
+                </Route>
               </Route>
 
               <Route

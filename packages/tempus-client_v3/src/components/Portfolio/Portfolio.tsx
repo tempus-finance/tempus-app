@@ -1,23 +1,16 @@
-import { FC, useState } from 'react';
+import { FC } from 'react';
 import { Outlet } from 'react-router-dom';
-import PortfolioOverview from './PortfolioOverview';
-import PortfolioSubheader, { PortfolioView } from './PortfolioSubheader';
+import PortfolioSubheader from './PortfolioSubheader';
+
 import './Portfolio.scss';
-import PortfolioPositions from './PortfolioPositions';
 
-const Portfolio: FC = () => {
-  const [view, setView] = useState<PortfolioView>('overview');
-
-  return (
-    <div className="tc__app__portfolio">
-      <PortfolioSubheader onViewChange={setView} />
-      <div className="tc__app__portfolio-content">
-        {view === 'overview' && <PortfolioOverview />}
-        {view === 'positions' && <PortfolioPositions />}
-      </div>
+const Portfolio: FC = () => (
+  <div className="tc__app__portfolio">
+    <PortfolioSubheader />
+    <div className="tc__app__portfolio-content">
       <Outlet />
     </div>
-  );
-};
+  </div>
+);
 
 export default Portfolio;
