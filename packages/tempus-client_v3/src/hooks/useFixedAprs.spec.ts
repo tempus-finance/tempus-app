@@ -3,7 +3,6 @@ import { of, of as mockOf, delay as mockDelay, merge as mockMerge, throwError } 
 import {
   DAYS_IN_A_YEAR,
   Decimal,
-  Decimal as MockDecimal,
   getDefinedServices,
   getDefaultProvider,
   ONE,
@@ -41,22 +40,22 @@ jest.mock('./useAppEvent', () => ({
     mockOf({
       eventType: 'deposit',
       tempusPool: mockPool1,
-      amount: new MockDecimal(1),
+      txnHash: '0x0',
     }).pipe(mockDelay(1000)),
     mockOf({
       eventType: 'withdraw',
       tempusPool: mockPool1,
-      amount: new MockDecimal(1),
+      txnHash: '0x1',
     }).pipe(mockDelay(2000)),
     mockOf({
       eventType: 'deposit',
       tempusPool: mockPool2,
-      amount: new MockDecimal(2),
+      txnHash: '0x2',
     }).pipe(mockDelay(3000)),
     mockOf({
       eventType: 'withdraw',
       tempusPool: mockPool2,
-      amount: new MockDecimal(2),
+      txnHash: '0x3',
     }).pipe(mockDelay(4000)),
   ),
 }));

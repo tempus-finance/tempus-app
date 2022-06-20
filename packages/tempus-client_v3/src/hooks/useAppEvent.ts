@@ -1,13 +1,13 @@
 import { state, useStateObservable } from '@react-rxjs/core';
 import { createSignal } from '@react-rxjs/utils';
-import { Decimal, TempusPool } from 'tempus-core-services';
+import { TempusPool } from 'tempus-core-services';
 
 export type AppEventType = 'deposit' | 'withdraw';
 
 export interface AppEvent {
   eventType: AppEventType;
   tempusPool: TempusPool;
-  amount: Decimal;
+  txnHash: string;
   timestamp: number;
 }
 
