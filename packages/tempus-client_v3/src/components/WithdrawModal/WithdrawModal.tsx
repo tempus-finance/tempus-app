@@ -2,7 +2,15 @@ import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ChainConfig, chainIdToChainName, Decimal, DecimalUtils, TempusPool, Ticker, ZERO } from 'tempus-core-services';
 import { TIMEOUT_FROM_SUCCESS_TO_DEFAULT_IN_MS } from '../../constants';
-import { useAllowances, useLocale, useSigner, useTokenApprove, useTokenBalance, useUserPreferences } from '../../hooks';
+import {
+  useAllowances,
+  useAppEvent,
+  useLocale,
+  useSigner,
+  useTokenApprove,
+  useTokenBalance,
+  useUserPreferences,
+} from '../../hooks';
 import { useWithdraw } from '../../hooks/useWithdraw';
 import { TokenMetadataProp } from '../../interfaces';
 import CurrencyInputModal, { CurrencyInputModalInfoRow } from '../CurrencyInputModal';
@@ -30,6 +38,7 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
   const lpBalanceData = useTokenBalance(tempusPool.ammAddress, tempusPool.chain);
   const [{ slippage }] = useUserPreferences();
   const tokenAllowances = useAllowances();
+  const [, emitAppEvent] = useAppEvent();
 
   const [currency, setCurrency] = useState(tokens[0]);
   const [actionButtonState, setActionButtonState] = useState<ActionButtonState>('default');
@@ -45,12 +54,18 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
   useEffect(() => {
     if (withdrawStatus?.success) {
       setActionButtonState('success');
+      emitAppEvent({
+        eventType: 'withdraw',
+        tempusPool,
+        txnHash: withdrawStatus.contractTransaction?.hash ?? '0x0',
+        timestamp: withdrawStatus.contractTransaction?.timestamp ?? Date.now(),
+      });
 
       setTimeout(() => {
         setWithdrawSuccessful(true);
       }, TIMEOUT_FROM_SUCCESS_TO_DEFAULT_IN_MS);
     }
-  }, [withdrawStatus]);
+  }, [withdrawStatus, emitAppEvent, tempusPool]);
 
   useEffect(() => {
     const capitalsAllowance = tokenAllowances[`${tempusPool.chain}-${tempusPool.principalsAddress}`];

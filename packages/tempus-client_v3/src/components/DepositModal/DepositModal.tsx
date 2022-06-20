@@ -1,6 +1,6 @@
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ChainConfig, Decimal, chainIdToChainName, Ticker, ZERO } from 'tempus-core-services';
+import { ChainConfig, Decimal, chainIdToChainName, Ticker, ZERO, TempusPool } from 'tempus-core-services';
 import { dateFormatter, TIMEOUT_FROM_SUCCESS_TO_DEFAULT_IN_MS } from '../../constants';
 import {
   setPoolForYieldAtMaturity,
@@ -12,6 +12,7 @@ import {
   useUserPreferences,
   useFixedDeposit,
   useAllowances,
+  useAppEvent,
 } from '../../hooks';
 import { MaturityTerm, TokenMetadata, TokenMetadataProp } from '../../interfaces';
 import { ActionButtonState, Loading, ModalProps } from '../shared';
@@ -44,6 +45,7 @@ const DepositModal: FC<DepositModalProps> = props => {
   const { fixedDeposit, fixedDepositStatus } = useFixedDeposit();
   const { approveToken, approveTokenStatus } = useTokenApprove();
   const tokenAllowances = useAllowances();
+  const [, emitAppEvent] = useAppEvent();
 
   const [maturityTerm, setMaturityTerm] = useState<MaturityTerm>(maturityTerms[0]);
   const [token, setToken] = useState<TokenMetadata>(tokens[0]);
@@ -74,35 +76,6 @@ const DepositModal: FC<DepositModalProps> = props => {
         },
   };
 
-  useEffect(() => {
-    if (approveTokenStatus) {
-      if (approveTokenStatus.pending) {
-        setActionButtonState('loading');
-      }
-
-      if (approveTokenStatus.success) {
-        setActionButtonState('success');
-        setTokenApproved(true);
-
-        setTimeout(() => {
-          setActionButtonState('default');
-        }, TIMEOUT_FROM_SUCCESS_TO_DEFAULT_IN_MS);
-      }
-    } else {
-      setActionButtonState('default');
-    }
-  }, [approveTokenStatus]);
-
-  useEffect(() => {
-    if (fixedDepositStatus?.success) {
-      setActionButtonState('success');
-
-      setTimeout(() => {
-        setFixedDepositSuccessful(true);
-      }, TIMEOUT_FROM_SUCCESS_TO_DEFAULT_IN_MS);
-    }
-  }, [fixedDepositStatus?.success]);
-
   const selectedTempusPool = useMemo(
     () => modalProps?.tempusPools?.find(pool => pool.maturityDate === maturityTerm.date.getTime()),
     [modalProps, maturityTerm.date],
@@ -128,6 +101,41 @@ const DepositModal: FC<DepositModalProps> = props => {
       ),
     [maturityTerm, maturityTerms, poolStartDate],
   );
+
+  useEffect(() => {
+    if (approveTokenStatus) {
+      if (approveTokenStatus.pending) {
+        setActionButtonState('loading');
+      }
+
+      if (approveTokenStatus.success) {
+        setActionButtonState('success');
+        setTokenApproved(true);
+
+        setTimeout(() => {
+          setActionButtonState('default');
+        }, TIMEOUT_FROM_SUCCESS_TO_DEFAULT_IN_MS);
+      }
+    } else {
+      setActionButtonState('default');
+    }
+  }, [approveTokenStatus]);
+
+  useEffect(() => {
+    if (fixedDepositStatus?.success) {
+      setActionButtonState('success');
+      emitAppEvent({
+        eventType: 'deposit',
+        tempusPool: selectedTempusPool as TempusPool,
+        txnHash: fixedDepositStatus.contractTransaction?.hash ?? '0x0',
+        timestamp: fixedDepositStatus.contractTransaction?.timestamp ?? Date.now(),
+      });
+
+      setTimeout(() => {
+        setFixedDepositSuccessful(true);
+      }, TIMEOUT_FROM_SUCCESS_TO_DEFAULT_IN_MS);
+    }
+  }, [fixedDepositStatus, emitAppEvent, selectedTempusPool]);
 
   const handleMaturityChange = useCallback(
     (newTerm: MaturityTerm) => {
