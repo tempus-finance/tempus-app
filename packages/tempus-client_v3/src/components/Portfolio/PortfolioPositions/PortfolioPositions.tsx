@@ -1,12 +1,15 @@
 import { FC, useCallback, useMemo } from 'react';
-import { ZERO } from 'tempus-core-services';
+import { useNavigate } from 'react-router-dom';
+import { Chain, ProtocolName, Ticker, ZERO } from 'tempus-core-services';
 import { useSelectedChain, useUserDepositedPools, useTokenBalances } from '../../../hooks';
-import { GroupedPoolCardGrid, PoolCardData, PoolCardGroupId } from '../../shared';
+import { GroupedPoolCardGrid, PoolCardData, PoolCardGroupId, PoolCardStatus } from '../../shared';
 import PortfolioNoPositions from './PortfolioNoPositions';
 
 import './PortfolioPositions.scss';
 
 const PortfolioPositions: FC = () => {
+  const navigate = useNavigate();
+
   const tempusPools = useUserDepositedPools();
   const [chain] = useSelectedChain();
   const balances = useTokenBalances();
@@ -40,7 +43,18 @@ const PortfolioPositions: FC = () => {
     return groups;
   }, [balances, chain, tempusPools]);
 
-  const handleCardClick = useCallback(() => {}, []);
+  const handleCardClick = useCallback(
+    (cardChain: Chain, ticker: Ticker, protocol: ProtocolName, _status: PoolCardStatus, poolAddresses: string[]) => {
+      if (poolAddresses.length === 1) {
+        const poolAddress = poolAddresses[0];
+
+        navigate(`/position/details/${cardChain}/${ticker}/${protocol}/${poolAddress}`);
+      }
+      // TODO - If position card has multiple pools we need to open sub-position screen
+      // that contains cards for each pool (deploy multiple pools with same Protocol and Ticker)
+    },
+    [navigate],
+  );
 
   return (
     <div className="tc__portfolio-positions">
