@@ -227,6 +227,7 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
   }, [navigate]);
 
   const handleCloseSuccessModal = useCallback(() => {
+    // TODO - If user withdraws from Portfolio page we should navigate back to Portfolio page
     navigate('/');
   }, [navigate]);
 

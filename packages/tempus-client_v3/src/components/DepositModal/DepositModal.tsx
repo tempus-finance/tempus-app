@@ -240,6 +240,7 @@ const DepositModal: FC<DepositModalProps> = props => {
   }, [navigate]);
 
   const handleCloseSuccessModal = useCallback(() => {
+    // TODO - If user deposits from Portfolio page we should navigate back to Portfolio page
     navigate('/');
   }, [navigate]);
 
