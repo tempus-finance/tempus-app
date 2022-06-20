@@ -240,7 +240,7 @@ const DepositModal: FC<DepositModalProps> = props => {
   }, [navigate]);
 
   const handleCloseSuccessModal = useCallback(() => {
-    navigate(-1);
+    navigate('/');
   }, [navigate]);
 
   return (
