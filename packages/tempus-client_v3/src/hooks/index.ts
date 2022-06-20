@@ -21,3 +21,4 @@ export * from './useSigner';
 export * from './useAppEvent';
 export * from './useFixedDeposit';
 export * from './useAllowances';
+export * from './useNavigateToRoot';
