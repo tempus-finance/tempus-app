@@ -1,5 +1,6 @@
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import { ChainConfig, Decimal, chainIdToChainName, Ticker, ZERO, TempusPool } from 'tempus-core-services';
 import { dateFormatter, TIMEOUT_FROM_SUCCESS_TO_DEFAULT_IN_MS } from '../../constants';
 import {
@@ -35,6 +36,7 @@ const DepositModal: FC<DepositModalProps> = props => {
   const { tokens, onClose, poolStartDate, maturityTerms, chainConfig } = props;
 
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   const useDepositModalProps = useDepositModalData();
   const modalProps = useDepositModalProps();
@@ -229,6 +231,18 @@ const DepositModal: FC<DepositModalProps> = props => {
     [tokenAllowances, selectedTempusPool, token.address],
   );
 
+  const handleDepositInAnotherPoolClick = useCallback(() => {
+    navigate('/');
+  }, [navigate]);
+
+  const handleManagePortfolioClick = useCallback(() => {
+    navigate('/portfolio');
+  }, [navigate]);
+
+  const handleCloseSuccessModal = useCallback(() => {
+    navigate(-1);
+  }, [navigate]);
+
   return (
     <>
       <CurrencyInputModal
@@ -273,9 +287,9 @@ const DepositModal: FC<DepositModalProps> = props => {
         secondaryButtonLabel={{
           default: t('DepositModal.successModalSecondaryButton'),
         }}
-        onClose={() => {}}
-        onPrimaryButtonClick={() => {}}
-        onSecondaryButtonClick={() => {}}
+        onClose={handleCloseSuccessModal}
+        onPrimaryButtonClick={handleManagePortfolioClick}
+        onSecondaryButtonClick={handleDepositInAnotherPoolClick}
         open={fixedDepositSuccessful}
         title={t('DepositModal.successModalTitle')}
       />
