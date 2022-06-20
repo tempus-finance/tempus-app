@@ -1,20 +1,26 @@
 import { FC } from 'react';
 import { useParams } from 'react-router-dom';
 import { Chain, Decimal, ProtocolName, Ticker, ZERO } from 'tempus-core-services';
-import { usePoolBalance } from '../../hooks';
+import { useFixedAprs, usePoolBalance } from '../../hooks';
 import { PoolPositionModal } from './PoolPositionModal';
 
 export const PoolPositionModalResolver: FC = () => {
   const { chain, ticker, protocol, poolAddress } = useParams();
 
   const poolBalanceData = usePoolBalance(poolAddress, chain as Chain);
+  const fixedAprs = useFixedAprs();
 
   // TODO - Properly check if URL params have valid values - if not show an error page or redirect to root page
+
+  if (!poolAddress) {
+    // TODO - Show 404 page (pool not found)
+    return null;
+  }
 
   return (
     // TODO - Replace dummy data with data from hooks
     <PoolPositionModal
-      apr={0.1}
+      apr={fixedAprs[poolAddress]}
       balance={poolBalanceData?.balanceInBackingToken || ZERO}
       chartData={[
         { x: new Date(2022, 3, 4), y: 10 },
