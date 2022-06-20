@@ -114,6 +114,7 @@ jobs:
     steps:
       - attach_workspace:
           at: ./
+      - run: sleep 300
       - run:
           name: E2E Tests
           command: |
