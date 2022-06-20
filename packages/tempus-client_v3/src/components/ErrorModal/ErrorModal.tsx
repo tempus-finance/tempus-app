@@ -15,15 +15,15 @@ const ErrorModal: FC<ErrorModalProps> = props => {
 
   return (
     <Modal open={open} onClose={onClose}>
-      <div className="tc__eror-modal__content">
-        <Typography className="tc__eror-modal__title" variant="subtitle" weight="bold">
+      <div className="tc__error-modal__content">
+        <Typography className="tc__error-modal__title" variant="subtitle" weight="bold">
           {title}
         </Typography>
         <Typography variant="body-primary">{description}</Typography>
-        <div className="tc__eror-modal__animation">
+        <div className="tc__error-modal__animation">
           <HungryCatLogo />
         </div>
-        <div className="tc__eror-modal__action-buttons">
+        <div className="tc__error-modal__action-buttons">
           <ActionButton labels={primaryButtonLabel} onClick={onPrimaryButtonClick} variant="primary" size="large" />
         </div>
       </div>
