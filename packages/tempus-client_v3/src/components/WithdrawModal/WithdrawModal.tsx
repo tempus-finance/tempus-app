@@ -1,5 +1,6 @@
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import { ChainConfig, chainIdToChainName, Decimal, DecimalUtils, TempusPool, Ticker, ZERO } from 'tempus-core-services';
 import { TIMEOUT_FROM_SUCCESS_TO_DEFAULT_IN_MS } from '../../constants';
 import {
@@ -28,6 +29,7 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
   const { open, onClose, tokens, chainConfig, tempusPool } = props;
 
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   const [locale] = useLocale();
   const [signer] = useSigner();
@@ -216,6 +218,19 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
     ],
   );
 
+  const handleDepositInAnotherPoolClick = useCallback(() => {
+    navigate('/');
+  }, [navigate]);
+
+  const handleManagePortfolioClick = useCallback(() => {
+    navigate('/portfolio');
+  }, [navigate]);
+
+  const handleCloseSuccessModal = useCallback(() => {
+    // TODO - If user withdraws from Portfolio page we should navigate back to Portfolio page
+    navigate('/');
+  }, [navigate]);
+
   return (
     <>
       {/* Show withdraw modal if withdraw is not yet finalized */}
@@ -256,9 +271,9 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
         secondaryButtonLabel={{
           default: 'Deposit in another pool',
         }}
-        onClose={() => {}}
-        onPrimaryButtonClick={() => {}}
-        onSecondaryButtonClick={() => {}}
+        onClose={handleCloseSuccessModal}
+        onPrimaryButtonClick={handleManagePortfolioClick}
+        onSecondaryButtonClick={handleDepositInAnotherPoolClick}
         open={withdrawSuccessful}
         title="Withdraw Complete!"
       />
