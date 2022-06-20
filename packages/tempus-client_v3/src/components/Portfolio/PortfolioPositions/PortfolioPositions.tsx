@@ -48,7 +48,7 @@ const PortfolioPositions: FC = () => {
       if (poolAddresses.length === 1) {
         const poolAddress = poolAddresses[0];
 
-        navigate(`/position/details/${cardChain}/${ticker}/${protocol}/${poolAddress}`);
+        navigate(`/position/${cardChain}/${ticker}/${protocol}/${poolAddress}`);
       }
       // TODO - If position card has multiple pools we need to open sub-position screen
       // that contains cards for each pool (deploy multiple pools with same Protocol and Ticker)

@@ -51,10 +51,7 @@ const App = () => {
           <div className="tc__app__body">
             <Routes>
               <Route path="/portfolio" element={<Portfolio />} />
-              <Route
-                path="/position/details/:chain/:ticker/:protocol/:poolAddress"
-                element={<PoolPositionModalResolver />}
-              />
+              <Route path="/position/:chain/:ticker/:protocol/:poolAddress" element={<PoolPositionModalResolver />} />
               <Route
                 path="/mature-pool/:chain/:ticker/:protocol/:poolAddress"
                 element={<PoolPositionModalResolver />}
