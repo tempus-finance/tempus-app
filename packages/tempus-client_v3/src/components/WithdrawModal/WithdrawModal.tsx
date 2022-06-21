@@ -192,6 +192,7 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
           chain,
           poolAddress: tempusPool.address,
           token: currency.ticker,
+          tokenAddress: currency.address,
           tokenBalance: currency.balance,
           capitalsBalance: capitalsTokenBalance,
           yieldsBalance: yieldsTokenBalance,
@@ -212,6 +213,7 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
       yieldsTokenBalance,
       lpTokenBalance,
       currency.ticker,
+      currency.address,
       currency.balance,
       withdrawTokenTxnHash,
       withdraw,
@@ -230,6 +232,14 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
     // TODO - If user withdraws from Portfolio page we should navigate back to Portfolio page
     navigate('/');
   }, [navigate]);
+
+  const withdrawnAmountFormatted = useMemo(() => {
+    const withdrawnAmount = withdrawStatus?.transactionData?.withdrawnAmount;
+    if (!withdrawnAmount) {
+      return null;
+    }
+    return DecimalUtils.formatToCurrency(withdrawnAmount, tempusPool?.decimalsForUI);
+  }, [tempusPool?.decimalsForUI, withdrawStatus?.transactionData?.withdrawnAmount]);
 
   return (
     <>
@@ -258,7 +268,7 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
       )}
       {/* Show success modal if withdraw is finalized */}
       <SuccessModal
-        description={`You have withdrawn [AMOUNT] ${currency.ticker} with ${new Date(
+        description={`You have withdrawn ${withdrawnAmountFormatted} ${currency.ticker} with ${new Date(
           tempusPool.maturityDate,
         ).toLocaleDateString(locale, {
           day: '2-digit',
