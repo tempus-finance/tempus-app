@@ -49,6 +49,9 @@ describe('useFixedDeposit', () => {
       pending: false,
       success: true,
       contractTransaction: { hash: '0x00' },
+      transactionData: {
+        depositedAmount: new Decimal(1),
+      },
       request: {
         chain: 'ethereum',
         poolAddress: '1',
@@ -88,6 +91,9 @@ describe('useFixedDeposit', () => {
       pending: false,
       success: true,
       contractTransaction: { hash: '0x00' },
+      transactionData: {
+        depositedAmount: new Decimal(1),
+      },
       request: {
         chain: 'ethereum',
         poolAddress: '1',
@@ -116,6 +122,9 @@ describe('useFixedDeposit', () => {
       pending: false,
       success: true,
       contractTransaction: { hash: '0x00' },
+      transactionData: {
+        depositedAmount: new Decimal(1),
+      },
       request: {
         chain: 'ethereum',
         poolAddress: '1',
