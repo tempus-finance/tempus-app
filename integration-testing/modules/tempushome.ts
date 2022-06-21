@@ -21,6 +21,7 @@ export async function tempusMetamaskConnect(browser: BrowserContext):
         await tabTempus.click(termsAndConds);
     }
 
+    await tabTempus.waitForTimeout(LOAD_LONG_TIMEOUT * 3);
     await metamaskConfirmConnection(browser);
 
     //await tabTempus.click('text=MetaMask');
