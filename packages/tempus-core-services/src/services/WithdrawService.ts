@@ -197,7 +197,7 @@ export class WithdrawService extends BaseService {
         walletAddress,
       );
     } catch (error) {
-      console.error('DepositService - fixedDeposit() - Failed to get deposit amount from deposit transaction receipt!');
+      console.error('WithdrawService - withdraw() - Failed to get withdrawn amount from withdraw transaction receipt!');
       return Promise.reject(error);
     }
 
