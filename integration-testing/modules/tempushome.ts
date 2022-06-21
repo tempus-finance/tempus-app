@@ -7,6 +7,7 @@ import { tempusNetworkChange } from './network';
 export async function tempusMetamaskConnect(browser: BrowserContext):
     Promise<void> {
     const tabTempus: Page = await browser.newPage();
+    const tabCountBefore: number = await browser.pages().length;
     await tabTempus.goto(TEMPUS_URL);
     await tabTempus.waitForTimeout(LOAD_TIMEOUT);
     if (await tabTempus.locator('text=Connect Wallet').count() == 0) {
@@ -14,14 +15,13 @@ export async function tempusMetamaskConnect(browser: BrowserContext):
         return;
     }
 
-    const tabCountBefore: number = await browser.pages().length;
     await tabTempus.click('text=Connect Wallet');
     const termsAndConds: string = `text=I agree to the Terms & Conditions and Privacy Policy.`; //untested
     if (await tabTempus.locator(termsAndConds).count()) {
         await tabTempus.click(termsAndConds);
     }
 
-    await tabTempus.click('text=MetaMask');
+    //await tabTempus.click('text=MetaMask');
     await tabTempus.waitForTimeout(LOAD_LONG_TIMEOUT);
     const tabCountAfter: number = await browser.pages().length;
 
@@ -32,7 +32,6 @@ export async function tempusMetamaskConnect(browser: BrowserContext):
         await mm.waitForTimeout(LOAD_LONG_TIMEOUT);
         const SELECTOR_NEXT = 'text="Next"';
         await mm.click(SELECTOR_NEXT);
-
         await mm.click('text="Connect"');
     }
     console.log('Successful connection metamask-tempus');
