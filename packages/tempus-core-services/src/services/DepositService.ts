@@ -5,6 +5,7 @@ import { TempusAMMV1Contract } from '../contracts/TempusAMMV1Contract';
 import { TempusControllerV1Contract } from '../contracts/TempusControllerV1Contract';
 import { Decimal } from '../datastructures';
 import { Chain, Ticker } from '../interfaces';
+import { getDepositAmountFromTx } from '../utils';
 import { BaseService, ConfigGetter } from './BaseService';
 
 export class DepositService extends BaseService {
@@ -27,7 +28,10 @@ export class DepositService extends BaseService {
     tokenAddress: string,
     slippage: Decimal,
     signer: JsonRpcSigner,
-  ): Promise<ContractTransaction> {
+  ): Promise<{
+    contractTransaction: ContractTransaction;
+    depositedAmount: Decimal;
+  }> {
     const tempusControllerContractAddress = this.getTempusControllerAddressForPool(poolAddress);
     const tokenPrecision = this.getTokenPrecision(tokenAddress);
     const poolConfig = this.getPoolConfig(poolAddress);
@@ -57,8 +61,9 @@ export class DepositService extends BaseService {
 
     const deadline = new Decimal(INFINITE_DEADLINE, DEADLINE_PRECISION);
 
+    let contractTransaction: ContractTransaction;
     try {
-      return await tempusControllerContract.depositAndFix(
+      contractTransaction = await tempusControllerContract.depositAndFix(
         poolConfig.ammAddress,
         tokenAmount,
         tokenTicker,
@@ -72,5 +77,26 @@ export class DepositService extends BaseService {
       console.error('DepositService - fixedDeposit() - Failed to execute deposit!');
       return Promise.reject(error);
     }
+
+    let walletAddress;
+    try {
+      walletAddress = await signer.getAddress();
+    } catch (error) {
+      console.error('DepositService - fixedDeposit() - Failed to get wallet address from signer!');
+      return Promise.reject(error);
+    }
+
+    let depositedAmount: Decimal;
+    try {
+      depositedAmount = await getDepositAmountFromTx(contractTransaction, tokenAddress, tokenPrecision, walletAddress);
+    } catch (error) {
+      console.error('DepositService - fixedDeposit() - Failed to get deposit amount from deposit transaction receipt!');
+      return Promise.reject(error);
+    }
+
+    return {
+      depositedAmount,
+      contractTransaction,
+    };
   }
 }
