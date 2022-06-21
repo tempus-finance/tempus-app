@@ -20,11 +20,17 @@ interface FixedDepositStatus {
   request?: FixedDepositRequest;
   success?: boolean;
   contractTransaction?: ContractTransaction;
+  transactionData?: {
+    depositedAmount: Decimal;
+  };
 }
 
 interface FixedDepositResponse {
   request?: FixedDepositRequest;
   contractTransaction?: ContractTransaction | void;
+  transactionData?: {
+    depositedAmount: Decimal;
+  };
 }
 
 const [fixedDeposit$, fixedDeposit] = createSignal<FixedDepositRequest>();
@@ -34,7 +40,7 @@ const fixedDepositStatus$ = fixedDeposit$.pipe(
     const { chain, poolAddress, tokenAmount, tokenTicker, tokenAddress, slippage, signer } = payload;
 
     try {
-      const contractTransaction = await getDefinedServices(chain).DepositService.fixedDeposit(
+      const result = await getDefinedServices(chain).DepositService.fixedDeposit(
         poolAddress,
         tokenAmount,
         tokenTicker,
@@ -44,7 +50,10 @@ const fixedDepositStatus$ = fixedDeposit$.pipe(
       );
 
       return await Promise.resolve({
-        contractTransaction,
+        contractTransaction: result.contractTransaction,
+        transactionData: {
+          depositedAmount: result.depositedAmount,
+        },
         request: { chain, poolAddress, tokenAmount, tokenTicker, tokenAddress },
       });
     } catch (error) {
@@ -53,14 +62,15 @@ const fixedDepositStatus$ = fixedDeposit$.pipe(
     }
   }),
   map(response => {
-    const { contractTransaction, request } = response;
+    const { contractTransaction, transactionData, request } = response;
 
-    return contractTransaction
+    return contractTransaction && transactionData
       ? {
           pending: false,
           success: true,
           request,
           contractTransaction,
+          transactionData,
         }
       : { pending: false, success: false, request };
   }),

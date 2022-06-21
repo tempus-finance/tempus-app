@@ -1,7 +1,7 @@
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { ChainConfig, Decimal, chainIdToChainName, Ticker, ZERO, TempusPool } from 'tempus-core-services';
+import { ChainConfig, Decimal, chainIdToChainName, Ticker, ZERO, TempusPool, DecimalUtils } from 'tempus-core-services';
 import { dateFormatter, TIMEOUT_FROM_SUCCESS_TO_DEFAULT_IN_MS } from '../../constants';
 import {
   setPoolForYieldAtMaturity,
@@ -244,6 +244,14 @@ const DepositModal: FC<DepositModalProps> = props => {
     navigate('/');
   }, [navigate]);
 
+  const depositedAmountFormatted = useMemo(() => {
+    const depositedAmount = fixedDepositStatus?.transactionData?.depositedAmount;
+    if (!depositedAmount) {
+      return null;
+    }
+    return DecimalUtils.formatToCurrency(depositedAmount);
+  }, [fixedDepositStatus?.transactionData?.depositedAmount]);
+
   return (
     <>
       <CurrencyInputModal
@@ -278,7 +286,7 @@ const DepositModal: FC<DepositModalProps> = props => {
       {/* Show success modal if withdraw is finalized */}
       <SuccessModal
         description={t('DepositModal.successModalDescription', {
-          amount: 'AMOUNT', // TODO - Parse amount from tx receipt and put it here
+          amount: depositedAmountFormatted,
           ticker: token.ticker,
           term: dateFormatter.format(maturityTerm.date),
         })}
