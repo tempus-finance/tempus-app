@@ -12,8 +12,6 @@ const yieldAtMaturity$ = combineLatest([poolForYieldAtMaturity$, tokenAmountForY
       return of(ZERO);
     }
 
-    return of(ZERO);
-
     const isBackingToken = true;
 
     try {
