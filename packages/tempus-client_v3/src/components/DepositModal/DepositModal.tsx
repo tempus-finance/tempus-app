@@ -19,6 +19,7 @@ import { MaturityTerm, TokenMetadata, TokenMetadataProp } from '../../interfaces
 import { ActionButtonState, Loading, ModalProps } from '../shared';
 import CurrencyInputModal, { CurrencyInputModalActionButtonLabels } from '../CurrencyInputModal';
 import SuccessModal from '../SuccessModal';
+import ErrorModal from '../ErrorModal';
 import DepositModalChart from './DepositModalChart';
 import DepositModalHeader from './DepositModalHeader';
 import DepositModalInfoRows from './DepositModalInfoRows';
@@ -53,6 +54,7 @@ const DepositModal: FC<DepositModalProps> = props => {
   const [token, setToken] = useState<TokenMetadata>(tokens[0]);
   const [actionButtonState, setActionButtonState] = useState<ActionButtonState>('default');
   const [fixedDepositSuccessful, setFixedDepositSuccessful] = useState<boolean>(false);
+  const [fixedDepositError, setFixedDepositError] = useState<Error>();
   const [tokenApproved, setTokenApproved] = useState<boolean>(false);
 
   const approveTokenTxnHash = approveTokenStatus?.contractTransaction?.hash ?? '0x0';
@@ -126,6 +128,7 @@ const DepositModal: FC<DepositModalProps> = props => {
   useEffect(() => {
     if (fixedDepositStatus?.success) {
       setActionButtonState('success');
+      setFixedDepositError(undefined);
       emitAppEvent({
         eventType: 'deposit',
         tempusPool: selectedTempusPool as TempusPool,
@@ -136,6 +139,9 @@ const DepositModal: FC<DepositModalProps> = props => {
       setTimeout(() => {
         setFixedDepositSuccessful(true);
       }, TIMEOUT_FROM_SUCCESS_TO_DEFAULT_IN_MS);
+    } else if (fixedDepositStatus?.error) {
+      setActionButtonState('default');
+      setFixedDepositError(fixedDepositStatus?.error);
     }
   }, [fixedDepositStatus, emitAppEvent, selectedTempusPool]);
 
@@ -239,7 +245,7 @@ const DepositModal: FC<DepositModalProps> = props => {
     navigate('/portfolio');
   }, [navigate]);
 
-  const handleCloseSuccessModal = useCallback(() => {
+  const handleCloseModal = useCallback(() => {
     // TODO - If user deposits from Portfolio page we should navigate back to Portfolio page
     navigate('/');
   }, [navigate]);
@@ -249,14 +255,18 @@ const DepositModal: FC<DepositModalProps> = props => {
     if (!depositedAmount) {
       return null;
     }
-    return DecimalUtils.formatToCurrency(depositedAmount);
-  }, [fixedDepositStatus?.transactionData?.depositedAmount]);
+    return DecimalUtils.formatToCurrency(depositedAmount, selectedTempusPool?.decimalsForUI);
+  }, [fixedDepositStatus?.transactionData?.depositedAmount, selectedTempusPool?.decimalsForUI]);
+
+  const handleErrorTryAgain = useCallback(() => {
+    setFixedDepositError(undefined);
+  }, []);
 
   return (
     <>
       <CurrencyInputModal
         tokens={tokens}
-        open={!fixedDepositSuccessful}
+        open={!fixedDepositSuccessful && !fixedDepositError}
         onClose={onClose}
         title={t('DepositModal.title')}
         description={{
@@ -283,7 +293,7 @@ const DepositModal: FC<DepositModalProps> = props => {
         onCurrencyUpdate={handleCurrencyChange}
         chainConfig={chainConfig}
       />
-      {/* Show success modal if withdraw is finalized */}
+      {/* Show success modal if deposit is finalized */}
       <SuccessModal
         description={t('DepositModal.successModalDescription', {
           amount: depositedAmountFormatted,
@@ -296,11 +306,22 @@ const DepositModal: FC<DepositModalProps> = props => {
         secondaryButtonLabel={{
           default: t('DepositModal.successModalSecondaryButton'),
         }}
-        onClose={handleCloseSuccessModal}
+        onClose={handleCloseModal}
         onPrimaryButtonClick={handleManagePortfolioClick}
         onSecondaryButtonClick={handleDepositInAnotherPoolClick}
         open={fixedDepositSuccessful}
         title={t('DepositModal.successModalTitle')}
+      />
+      {/* Show error modal if deposit throws Error */}
+      <ErrorModal
+        description={t('DepositModal.errorModalDescription')}
+        primaryButtonLabel={{
+          default: t('DepositModal.errorModalPrimaryButton'),
+        }}
+        onClose={handleCloseModal}
+        onPrimaryButtonClick={handleErrorTryAgain}
+        open={Boolean(fixedDepositError)}
+        title={t('DepositModal.errorModalTitle')}
       />
     </>
   );

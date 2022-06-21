@@ -1,4 +1,4 @@
-import { ContractTransaction, ethers } from 'ethers';
+import { BigNumber, ContractTransaction, ethers } from 'ethers';
 import { Decimal, DEFAULT_DECIMAL_PRECISION } from '../datastructures';
 import ERC20ABI from '../abi/ERC20.json';
 
@@ -16,7 +16,7 @@ export async function getDepositAmountFromTx(
   // ETH was deposited
   if (!tx.value.isZero()) {
     // ETH has default token precision
-    return new Decimal(tx.value, DEFAULT_DECIMAL_PRECISION);
+    return new Decimal(BigNumber.from(tx.value), DEFAULT_DECIMAL_PRECISION);
   }
 
   const ifc = new ethers.utils.Interface(ERC20ABI);
