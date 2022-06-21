@@ -268,24 +268,26 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
       )}
       {/* Show success modal if withdraw is finalized */}
       <SuccessModal
-        description={`You have withdrawn ${withdrawnAmountFormatted} ${currency.ticker} with ${new Date(
-          tempusPool.maturityDate,
-        ).toLocaleDateString(locale, {
-          day: '2-digit',
-          month: '2-digit',
-          year: 'numeric',
-        })} term. It should reach your wallet momentarily.`}
+        description={t('WithdrawModal.successModalDescription', {
+          amount: withdrawnAmountFormatted,
+          ticker: currency.ticker,
+          term: new Date(tempusPool.maturityDate).toLocaleDateString(locale, {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+          }),
+        })}
         primaryButtonLabel={{
-          default: 'Manage Portfolio',
+          default: t('WithdrawModal.successModalPrimaryButton'),
         }}
         secondaryButtonLabel={{
-          default: 'Deposit in another pool',
+          default: t('WithdrawModal.successModalSecondaryButton'),
         }}
         onClose={handleCloseSuccessModal}
         onPrimaryButtonClick={handleManagePortfolioClick}
         onSecondaryButtonClick={handleDepositInAnotherPoolClick}
         open={withdrawSuccessful}
-        title="Withdraw Complete!"
+        title={t('WithdrawModal.successModalTitle')}
       />
     </>
   );
