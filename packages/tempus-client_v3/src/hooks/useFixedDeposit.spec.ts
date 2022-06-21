@@ -188,7 +188,7 @@ describe('useFixedDeposit', () => {
     jest.spyOn(console, 'error').mockImplementation();
     (getDefinedServices as jest.Mock).mockImplementation(() => ({
       DepositService: {
-        fixedDeposit: jest.fn().mockRejectedValue('1234'),
+        fixedDeposit: jest.fn().mockRejectedValue(new Error('1234')),
       },
     }));
 
@@ -223,7 +223,7 @@ describe('useFixedDeposit', () => {
     expect(result.current.fixedDepositStatus).toStrictEqual({
       pending: false,
       success: false,
-      error: '1234',
+      error: new Error('1234'),
       request: {
         chain: 'ethereum',
         poolAddress: '1',

@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Chain } from 'tempus-core-services';
 import { getConfigManager } from '../../config/getConfigManager';
 import { usePoolBalance, useTokenRates } from '../../hooks';
@@ -7,6 +7,7 @@ import { TokenMetadataProp } from '../../interfaces';
 import { WithdrawModal } from './WithdrawModal';
 
 export const WithdrawModalResolver: FC = () => {
+  const navigate = useNavigate();
   const { chain, ticker, protocol, poolAddress } = useParams();
 
   const tokenRates = useTokenRates();
@@ -61,8 +62,12 @@ export const WithdrawModalResolver: FC = () => {
     });
   }
 
+  const handleCloseModal = () => {
+    navigate(-1);
+  };
+
   return (
     // TODO - Replace dummy data with data from hooks
-    <WithdrawModal chainConfig={chainData} tempusPool={poolData} tokens={tokens} onClose={() => {}} open />
+    <WithdrawModal chainConfig={chainData} tempusPool={poolData} tokens={tokens} onClose={handleCloseModal} open />
   );
 };

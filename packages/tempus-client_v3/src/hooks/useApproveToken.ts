@@ -9,6 +9,7 @@ interface ApproveTokenRequest {
   chain: Chain;
   tokenAddress: string;
   amount: Decimal;
+  txnId: string;
 }
 interface ApproveTokenRequestEnhanced extends ApproveTokenRequest {
   spenderAddress: string;
@@ -19,12 +20,16 @@ interface ApproveTokenStatus {
   pending: boolean;
   request?: ApproveTokenRequest;
   success?: boolean;
+  error?: Error;
   contractTransaction?: ContractTransaction;
+  txnId: string; // unique string to tell react it's another response
 }
 
 interface ApproveTokenResponse {
   request?: ApproveTokenRequest;
   contractTransaction?: ContractTransaction | void;
+  error?: Error;
+  txnId: string;
 }
 
 const [approveToken$, approveToken] = createSignal<ApproveTokenRequestEnhanced>();
@@ -32,22 +37,28 @@ export const tokenApproveStatus$ = new BehaviorSubject<ApproveTokenStatus | null
 
 const approveTokenStream$ = combineLatest([approveToken$]).pipe(
   concatMap<[ApproveTokenRequestEnhanced], Promise<ApproveTokenResponse>>(async ([payload]) => {
-    const { chain, tokenAddress, spenderAddress, amount, signer } = payload;
+    const { chain, tokenAddress, spenderAddress, amount, signer, txnId } = payload;
+    const request = { chain, tokenAddress, amount };
 
     try {
       const Erc20TokenService = getDefinedServices(chain).ERC20TokenServiceGetter(tokenAddress, chain, signer);
       const contractTransaction = await Erc20TokenService.approve(spenderAddress, amount);
       return await Promise.resolve({
         contractTransaction,
-        request: { chain, tokenAddress, amount },
-      });
+        request,
+        txnId,
+      } as ApproveTokenResponse);
     } catch (error) {
       console.error(`useApproveToken - Failed to approve token ${tokenAddress} with amount ${amount} !`, error);
-      return Promise.resolve({});
+      return Promise.resolve({
+        request,
+        error,
+        txnId,
+      } as ApproveTokenResponse);
     }
   }),
-  map(response => {
-    const { contractTransaction, request } = response;
+  map<ApproveTokenResponse, ApproveTokenStatus>(response => {
+    const { contractTransaction, request, error, txnId } = response;
 
     return contractTransaction
       ? {
@@ -55,8 +66,9 @@ const approveTokenStream$ = combineLatest([approveToken$]).pipe(
           success: true,
           request,
           contractTransaction: contractTransaction as ContractTransaction,
+          txnId,
         }
-      : { pending: false, success: false, request };
+      : { pending: false, success: false, error, request, txnId };
   }),
   tap(status => tokenApproveStatus$.next(status)),
 );
