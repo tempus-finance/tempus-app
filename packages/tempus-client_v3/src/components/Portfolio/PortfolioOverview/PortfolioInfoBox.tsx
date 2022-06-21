@@ -4,7 +4,7 @@ import { LoadingPlaceholder, Typography } from '../../shared';
 export interface PortfolioInfoBoxProps {
   title: string;
   subtitle: string;
-  value: string | null;
+  value: string;
 }
 
 const PortfolioInfoBox: FC<PortfolioInfoBoxProps> = props => {
@@ -17,7 +17,7 @@ const PortfolioInfoBox: FC<PortfolioInfoBoxProps> = props => {
       </Typography>
       <Typography variant="subtitle">{subtitle}</Typography>
       <div className="tc__app__portfolio-info-box-value">
-        {value !== null && (
+        {value && (
           <>
             <Typography variant="subheader" type="mono" weight="medium">
               {value}
@@ -32,7 +32,7 @@ const PortfolioInfoBox: FC<PortfolioInfoBoxProps> = props => {
             </Typography>
           </>
         )}
-        {value === null && <LoadingPlaceholder width="medium" height="medium" />}
+        {!value && <LoadingPlaceholder width="medium" height="medium" />}
       </div>
     </div>
   );

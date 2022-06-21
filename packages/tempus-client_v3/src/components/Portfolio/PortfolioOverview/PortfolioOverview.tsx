@@ -24,7 +24,7 @@ const PortfolioOverview: FC = () => {
         <PortfolioInfoBox
           title={t('PortfolioOverview.titleCurrentValue')}
           subtitle={t('PortfolioOverview.subtitleCurrentValue')}
-          value={usdBalance ? DecimalUtils.formatToCurrency(usdBalance, 2) : null}
+          value={usdBalance ? DecimalUtils.formatToCurrency(usdBalance, 2) : ''}
         />
         <PortfolioInfoBox
           title={t('PortfolioOverview.titleEarnedYield')}
