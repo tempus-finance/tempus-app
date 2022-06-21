@@ -11,7 +11,7 @@ import PoolPositionCard from '../shared/PoolPositionCard';
 import './PoolPositionModal.scss';
 
 interface PoolPositionModalProps {
-  apr: number;
+  apr: Decimal;
   term: Date;
   profitLoss: Decimal;
   balance: Decimal | null;

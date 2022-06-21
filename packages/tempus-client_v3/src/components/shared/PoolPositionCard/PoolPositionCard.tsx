@@ -1,3 +1,4 @@
+import { isAfter } from 'date-fns';
 import { FC, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Decimal, DecimalUtils, Ticker } from 'tempus-core-services';
@@ -10,7 +11,7 @@ import PoolPositionCardDataCell from './PoolPositionCardDataCell';
 import './PoolPositionCard.scss';
 
 export interface PoolPositionCardProps {
-  apr: number;
+  apr: Decimal;
   term: Date;
   profitLoss: Decimal;
   balance: Decimal | null;
@@ -43,21 +44,30 @@ const PoolPositionCard: FC<PoolPositionCardProps> = props => {
     setOpen(prevState => !prevState);
   }, []);
 
-  const aprFormatted = useMemo(() => DecimalUtils.formatPercentage(apr), [apr]);
+  const aprFormatted = useMemo(() => {
+    // Mature pools do not have Fixed APR
+    if (isAfter(new Date(), term)) {
+      return null;
+    }
+
+    return DecimalUtils.formatPercentage(apr);
+  }, [apr, term]);
 
   return (
     <div className="tc__poolPositionCard">
       <div className="tc__poolPositionCard-row">
-        <div className="tc__poolPositionCard-cell">
-          <div className="tc__poolPositionCard-cellData">
-            <Typography variant="body-secondary" weight="bold" color="text-secondary">
-              {t('PoolPositionCard.apr')}
-            </Typography>
-            <Typography variant="body-primary" weight="medium" type="mono">
-              {aprFormatted}
-            </Typography>
+        {aprFormatted && (
+          <div className="tc__poolPositionCard-cell">
+            <div className="tc__poolPositionCard-cellData">
+              <Typography variant="body-secondary" weight="bold" color="text-secondary">
+                {t('PoolPositionCard.apr')}
+              </Typography>
+              <Typography variant="body-primary" weight="medium" type="mono">
+                {aprFormatted}
+              </Typography>
+            </div>
           </div>
-        </div>
+        )}
         <div className="tc__poolPositionCard-cell">
           <div className="tc__poolPositionCard-cellData">
             <Typography variant="body-secondary" weight="bold" color="text-secondary">

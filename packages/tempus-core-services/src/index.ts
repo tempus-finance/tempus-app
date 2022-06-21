@@ -87,6 +87,7 @@ export {
   wait,
   prettifyProtocolName,
   getPathRoot,
+  getDepositAmountFromTx,
 } from './utils';
 
 export * from './constants';

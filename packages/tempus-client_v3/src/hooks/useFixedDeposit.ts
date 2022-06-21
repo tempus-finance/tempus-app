@@ -22,12 +22,18 @@ interface FixedDepositStatus {
   success?: boolean;
   error?: Error;
   contractTransaction?: ContractTransaction;
+  transactionData?: {
+    depositedAmount: Decimal;
+  };
   txnId: string; // unique string to tell react it's another response
 }
 
 interface FixedDepositResponse {
   request?: FixedDepositRequest;
   contractTransaction?: ContractTransaction | void;
+  transactionData?: {
+    depositedAmount: Decimal;
+  };
   error?: Error;
 }
 
@@ -40,7 +46,7 @@ const stream$ = fixedDeposit$.pipe(
     const request = { chain, poolAddress, tokenAmount, tokenTicker, tokenAddress };
 
     try {
-      const contractTransaction$ = from(
+      const result$ = from(
         getDefinedServices(chain).DepositService.fixedDeposit(
           poolAddress,
           tokenAmount,
@@ -51,12 +57,15 @@ const stream$ = fixedDeposit$.pipe(
         ),
       );
 
-      return contractTransaction$.pipe(
+      return result$.pipe(
         map(
-          contractTransaction =>
+          result =>
             ({
-              contractTransaction,
-              request,
+              contractTransaction: result.contractTransaction,
+              transactionData: {
+                depositedAmount: result.depositedAmount,
+              },
+              request: { chain, poolAddress, tokenAmount, tokenTicker, tokenAddress },
             } as FixedDepositResponse),
         ),
         catchError(error => {
@@ -76,14 +85,15 @@ const stream$ = fixedDeposit$.pipe(
     }
   }),
   map<FixedDepositResponse, FixedDepositStatus>(response => {
-    const { contractTransaction, request, error } = response;
+    const { contractTransaction, transactionData, request, error } = response;
 
-    return contractTransaction
+    return contractTransaction && transactionData
       ? {
           pending: false,
           success: true,
           request,
           contractTransaction,
+          transactionData,
           txnId: contractTransaction.hash, // to access txn hash plz still access contractTransaction.hash
         }
       : { pending: false, success: false, error, request, txnId: uuidv4() };

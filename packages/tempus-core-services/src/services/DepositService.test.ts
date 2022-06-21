@@ -1,3 +1,4 @@
+import { BigNumber } from 'ethers';
 import { DEADLINE_PRECISION, INFINITE_DEADLINE } from '../constants';
 import { Decimal } from '../datastructures';
 import { DepositService } from './DepositService';
@@ -5,7 +6,10 @@ import { DepositService } from './DepositService';
 jest.mock('@ethersproject/providers');
 const { JsonRpcSigner } = jest.requireMock('@ethersproject/providers');
 
-const depositAndFixMock = jest.fn().mockImplementation(() => {});
+const depositAndFixMock = jest.fn().mockImplementation(() => ({
+  wait: jest.fn(),
+  value: BigNumber.from(1),
+}));
 const getExpectedReturnGivenInMock = jest.fn().mockImplementation(() => new Decimal(1));
 
 jest.mock('../contracts/TempusControllerV1Contract', () => ({

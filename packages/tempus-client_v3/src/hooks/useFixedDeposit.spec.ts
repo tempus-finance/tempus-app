@@ -1,7 +1,7 @@
 import { JsonRpcSigner } from '@ethersproject/providers';
 import { renderHook } from '@testing-library/react-hooks';
 import { act } from 'react-dom/test-utils';
-import { Decimal, getDefinedServices } from 'tempus-core-services';
+import { Decimal, getDefinedServices, ONE } from 'tempus-core-services';
 import { v4 as uuidv4 } from 'uuid';
 import { useFixedDeposit, subscribeFixedDepositStatus, resetFixedDepositStatus } from './useFixedDeposit';
 
@@ -49,6 +49,9 @@ describe('useFixedDeposit', () => {
       pending: false,
       success: true,
       contractTransaction: { hash: '0x00' },
+      transactionData: {
+        depositedAmount: ONE,
+      },
       request: {
         chain: 'ethereum',
         poolAddress: '1',
@@ -88,6 +91,9 @@ describe('useFixedDeposit', () => {
       pending: false,
       success: true,
       contractTransaction: { hash: '0x00' },
+      transactionData: {
+        depositedAmount: ONE,
+      },
       request: {
         chain: 'ethereum',
         poolAddress: '1',
@@ -116,6 +122,9 @@ describe('useFixedDeposit', () => {
       pending: false,
       success: true,
       contractTransaction: { hash: '0x00' },
+      transactionData: {
+        depositedAmount: ONE,
+      },
       request: {
         chain: 'ethereum',
         poolAddress: '1',
