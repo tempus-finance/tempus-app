@@ -87,66 +87,6 @@ jobs:
           name: Unit Test - Tempus Core Services
           command: npm --prefix ./packages/tempus-core-services run ci:test
 
-  metamask:
-    docker:
-      - image: mcr.microsoft.com/playwright:focal
-        environment:
-          METAMASK_RECOVERY_PHRASE: $METAMASK_RECOVERY_PHRASE
-          METAMASK_PASSWORD: $METAMASK_PASSWORD
-          METAMASK_ACCOUNT_ETH_FORK: $METAMASK_ACCOUNT_ETH_FORK
-          METAMASK_ACCOUNT_FANTOM: $METAMASK_ACCOUNT_FANTOM
-          NODE_ENV: development
-    steps:
-      - attach_workspace:
-          at: ./
-      - run:
-          name: E2E Tests
-          command: |
-            apt update
-            apt install -y p7zip-full
-            npm install -g typescript
-            npm install -g ts-node
-            npx playwright install
-            xvfb-run --auto-servernum --server-num=1 npm run mm-setup
-      - persist_to_workspace:
-          root: ./
-          paths:
-            - ./
-      - store_test_results:
-          path: /root/project/test-results
-      - store_artifacts:
-          path: /root/project/test-results
-
-  e2e-test:
-    docker:
-      - image: mcr.microsoft.com/playwright:focal
-        environment:
-          METAMASK_RECOVERY_PHRASE: $METAMASK_RECOVERY_PHRASE
-          METAMASK_PASSWORD: $METAMASK_PASSWORD
-          METAMASK_ACCOUNT_ETH_FORK: $METAMASK_ACCOUNT_ETH_FORK
-          METAMASK_ACCOUNT_FANTOM: $METAMASK_ACCOUNT_FANTOM
-          NODE_ENV: development
-    parallelism: 4
-    steps:
-      - attach_workspace:
-          at: ./
-      - run:
-          name: E2E Tests
-          command: |
-            npx playwright install
-            TEST_FILES=$(circleci tests glob "/root/project/integration-testing/tests/*.spec.ts" | circleci tests split)
-            echo "Executing test files:" $TEST_FILES
-            xvfb-run --auto-servernum --server-num=1 npm run e2e $TEST_FILES
-            ls /root/project/test-results
-      - persist_to_workspace:
-          root: ./
-          paths:
-            - ./
-      - store_test_results:
-          path: /root/project/test-results
-      - store_artifacts:
-          path: /root/project/test-results
-
   deploy-to-stage:
     docker:
       - image: cimg/node:lts
@@ -181,9 +121,6 @@ workflows:
       - build-tempus-client-v3:
           requires:
             - build-tempus-core-services
-      - metamask:
-          requires:
-            - bootstrap
       - build-storybook:
           requires:
             - build-tempus-client-v3
@@ -193,9 +130,6 @@ workflows:
       - test-tempus-core-services:
           requires:
             - bootstrap
-      - e2e-test:
-          requires:
-            - metamask
       - deploy-storybook:
           requires:
             - build-storybook
