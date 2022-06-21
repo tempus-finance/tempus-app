@@ -7,12 +7,15 @@
     "title": ""
   },
   "CurrencyInputModal": {
-    "insufficientBalanceError": "Saldo insuficiente",
     "feesAndTransactionInfo": "",
+    "insufficientBalanceError": "Saldo insuficiente",
     "linkBlockExplorer": ""
   },
   "DepositModal": {
     "description": "",
+    "errorModalDescription": "",
+    "errorModalPrimaryButton": "",
+    "errorModalTitle": "",
     "labelApproveDefault": "",
     "labelApproveLoading": "",
     "labelApproveSuccess": "",
@@ -23,11 +26,11 @@
     "labelMakeDeposit": "",
     "labelYieldAtMaturity": "",
     "previewDescription": "",
-    "title": "",
-    "successModalTitle": "",
     "successModalDescription": "",
     "successModalPrimaryButton": "",
-    "successModalSecondaryButton": ""
+    "successModalSecondaryButton": "",
+    "successModalTitle": "",
+    "title": ""
   },
   "DepositModalHeader": {
     "titleRewardsAvailable": ""
@@ -54,10 +57,7 @@
     "sortAZ": "",
     "sortBalance": "",
     "sortMaturity": "",
-    "sortTVL": "",
-    "tabAll": "",
-    "tabBoosted": "",
-    "tabFixed": ""
+    "sortTVL": ""
   },
   "NumberInput": {
     "buttonMax": ""
@@ -77,6 +77,8 @@
     "withdrawAction": "Retirar"
   },
   "PortfolioOverview": {
+    "buttonBrowseMarkets": "Ir a Mercados",
+    "descriptionNoPositions": "¿Quieres aumentar? Ir a Mercados",
     "subtitleCurrentValue": "",
     "subtitleEarnedYield": "",
     "subtitleProjectedYield": "",
@@ -84,17 +86,15 @@
     "tabYield": "",
     "titleCurrentValue": "",
     "titleEarnedYield": "",
+    "titleNoPositions": "Nada en la Cartera",
     "titleProjectedYield": "",
     "titleTotalPortfolioValue": "",
-    "titleTotalYieldEarned": "Regreso trotal",
-    "titleNoPositions": "Nada en la Cartera",
-    "descriptionNoPositions": "¿Quieres aumentar? Ir a Mercados",
-    "buttonBrowseMarkets": "Ir a Mercados"
+    "titleTotalYieldEarned": "Regreso trotal"
   },
   "PortfolioPositions": {
-    "titleNoPositions": "Sin posición",
+    "buttonBrowseMarkets": "Ir a Mercados",
     "descriptionNoPositions": "Tu billetera está vacía. Hacer algo.",
-    "buttonBrowseMarkets": "Ir a Mercados"
+    "titleNoPositions": "Sin posición"
   },
   "PortfolioSubheader": {
     "tabOverview": "",
