@@ -1,17 +1,9 @@
-import { ChangeEvent, FC, memo, useCallback } from 'react';
+import { FC, memo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Decimal } from 'tempus-core-services';
 import { SUPPORTED_LOCALES, SupportedLocale } from '../../i18n';
 import { useLocale, useUserPreferences } from '../../hooks';
-import {
-  DropdownSelectableItem,
-  DropdownSelector,
-  SlippageInput,
-  Icon,
-  InfoTooltip,
-  ToggleSwitch,
-  Typography,
-} from '../shared';
+import { DropdownSelectableItem, DropdownSelector, SlippageInput, Icon, InfoTooltip, Typography } from '../shared';
 
 const SettingsPopup: FC = () => {
   const { t } = useTranslation();
@@ -19,10 +11,6 @@ const SettingsPopup: FC = () => {
   const [preference, setPreferences] = useUserPreferences();
 
   const handleLocaleChange = useCallback((code: string) => setLocale(code as SupportedLocale), [setLocale]);
-  const handleChangeDark = useCallback(
-    (ev: ChangeEvent<HTMLInputElement>) => setPreferences({ darkMode: ev.target.checked }),
-    [setPreferences],
-  );
   const handleSlippageUpdate = useCallback((slippage: Decimal) => setPreferences({ slippage }), [setPreferences]);
   const handleSlippageAutoUpdate = useCallback(
     (slippageAuto: boolean) => setPreferences({ slippageAuto }),
@@ -54,13 +42,6 @@ const SettingsPopup: FC = () => {
             <DropdownSelectableItem key={code} label={t('SettingsPopup.localeName', { lng: code })} value={code} />
           ))}
         </DropdownSelector>
-      </li>
-      <li className="tc__settings-popup-item">
-        <Icon variant="dark" size={20} />
-        <Typography className="tc__settings-popup-item-title" variant="body-primary" weight="medium">
-          {t('SettingsPopup.titleDarkMode')}
-        </Typography>
-        <ToggleSwitch checked={preference.darkMode} onChange={handleChangeDark} />
       </li>
     </ul>
   );
