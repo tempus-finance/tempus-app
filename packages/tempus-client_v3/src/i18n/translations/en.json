@@ -7,12 +7,15 @@
     "title": "Select Network"
   },
   "CurrencyInputModal": {
-    "insufficientBalanceError": "Insufficient balance",
     "feesAndTransactionInfo": "Fees & transaction info",
+    "insufficientBalanceError": "Insufficient balance",
     "linkBlockExplorer": "Check it out on {{name}}"
   },
   "DepositModal": {
     "description": "You are about to deposit into the {{asset}} pool with term {{term}}.",
+    "errorModalDescription": "An error occured and the transaction failed.",
+    "errorModalPrimaryButton": "Try again",
+    "errorModalTitle": "Something's wrong.",
     "labelApproveDefault": "Approve Deposit",
     "labelApproveLoading": "Approving...",
     "labelApproveSuccess": "Successfully Approved",
@@ -23,11 +26,11 @@
     "labelMakeDeposit": "Make Deposit",
     "labelYieldAtMaturity": "Yield-at-Maturity",
     "previewDescription": "Select an APR & Term to deposit into, if there’s only one, then simply proceed to make your deposit.",
-    "title": "Pool Details",
-    "successModalTitle": "Deposit Complete!",
     "successModalDescription": "You have deposited {{amount}} {{ticker}} with {{term}} term. It should reach your wallet momentarily.",
     "successModalPrimaryButton": "Manage Portfolio",
-    "successModalSecondaryButton": "Deposit in another pool"
+    "successModalSecondaryButton": "Deposit in another pool",
+    "successModalTitle": "Deposit Complete!",
+    "title": "Pool Details"
   },
   "DepositModalHeader": {
     "titleRewardsAvailable": "Rewards available"
@@ -54,10 +57,7 @@
     "sortAZ": "A-Z",
     "sortBalance": "Balance",
     "sortMaturity": "Maturity",
-    "sortTVL": "TVL",
-    "tabAll": "All",
-    "tabBoosted": "Boosted",
-    "tabFixed": "Fixed"
+    "sortTVL": "TVL"
   },
   "NumberInput": {
     "buttonMax": "Max"
@@ -77,6 +77,8 @@
     "withdrawAction": "Make Withdrawal"
   },
   "PortfolioOverview": {
+    "buttonBrowseMarkets": "Browse Markets",
+    "descriptionNoPositions": "Want to see growth? Go to Markets.",
     "subtitleCurrentValue": "of portfolio",
     "subtitleEarnedYield": "of portfolio",
     "subtitleProjectedYield": "of portfolio",
@@ -84,17 +86,15 @@
     "tabYield": "Total Yield",
     "titleCurrentValue": "Current Value",
     "titleEarnedYield": "Yield Earned",
+    "titleNoPositions": "Nothing in Your Portfolio",
     "titleProjectedYield": "Projected Yield",
     "titleTotalPortfolioValue": "Total Portfolio Value",
-    "titleTotalYieldEarned": "Total Yield Earned",
-    "titleNoPositions": "Nothing in Your Portfolio",
-    "descriptionNoPositions": "Want to see growth? Go to Markets.",
-    "buttonBrowseMarkets": "Browse Markets"
+    "titleTotalYieldEarned": "Total Yield Earned"
   },
   "PortfolioPositions": {
-    "titleNoPositions": "No Current Positions",
+    "buttonBrowseMarkets": "Browse Markets",
     "descriptionNoPositions": "Your portfolio is empty. Let’s change that for you.",
-    "buttonBrowseMarkets": "Browse Markets"
+    "titleNoPositions": "No Current Positions"
   },
   "PortfolioSubheader": {
     "tabOverview": "Overview",

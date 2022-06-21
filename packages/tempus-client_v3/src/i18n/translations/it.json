@@ -7,12 +7,15 @@
     "title": ""
   },
   "CurrencyInputModal": {
-    "insufficientBalanceError": "Saldo insufficiente",
     "feesAndTransactionInfo": "",
+    "insufficientBalanceError": "Saldo insufficiente",
     "linkBlockExplorer": ""
   },
   "DepositModal": {
     "description": "",
+    "errorModalDescription": "",
+    "errorModalPrimaryButton": "",
+    "errorModalTitle": "",
     "labelApproveDefault": "",
     "labelApproveLoading": "",
     "labelApproveSuccess": "",
@@ -23,11 +26,11 @@
     "labelMakeDeposit": "",
     "labelYieldAtMaturity": "",
     "previewDescription": "",
-    "title": "",
-    "successModalTitle": "",
     "successModalDescription": "",
     "successModalPrimaryButton": "",
-    "successModalSecondaryButton": ""
+    "successModalSecondaryButton": "",
+    "successModalTitle": "",
+    "title": ""
   },
   "DepositModalHeader": {
     "titleRewardsAvailable": ""
@@ -54,10 +57,7 @@
     "sortAZ": "",
     "sortBalance": "",
     "sortMaturity": "",
-    "sortTVL": "",
-    "tabAll": "",
-    "tabBoosted": "",
-    "tabFixed": ""
+    "sortTVL": ""
   },
   "NumberInput": {
     "buttonMax": ""
@@ -77,6 +77,8 @@
     "withdrawAction": "Ritira"
   },
   "PortfolioOverview": {
+    "buttonBrowseMarkets": "Vai su Mercati",
+    "descriptionNoPositions": "Vuoi incrementare? Vai su Mercati",
     "subtitleCurrentValue": "",
     "subtitleEarnedYield": "",
     "subtitleProjectedYield": "",
@@ -84,17 +86,15 @@
     "tabYield": "",
     "titleCurrentValue": "",
     "titleEarnedYield": "",
+    "titleNoPositions": "Niente in Portafogli",
     "titleProjectedYield": "",
     "titleTotalPortfolioValue": "",
-    "titleTotalYieldEarned": "Rendimento Totale",
-    "titleNoPositions": "Niente in Portafogli",
-    "descriptionNoPositions": "Vuoi incrementare? Vai su Mercati",
-    "buttonBrowseMarkets": "Vai su Mercati"
+    "titleTotalYieldEarned": "Rendimento Totale"
   },
   "PortfolioPositions": {
-    "titleNoPositions": "Nessuna Posizione",
+    "buttonBrowseMarkets": "Vai su Mercati",
     "descriptionNoPositions": "Il tuo portafoglio è vuoto. Facciamo qualcosa.",
-    "buttonBrowseMarkets": "Vai su Mercati"
+    "titleNoPositions": "Nessuna Posizione"
   },
   "PortfolioSubheader": {
     "tabOverview": "",

@@ -21,8 +21,16 @@ const App = () => {
   const { t } = useTranslation();
 
   const navigationLinks: PageNavigationLink[] = [
-    { text: t('App.navMarkets'), path: '/' },
-    { text: t('App.navPortfolio'), path: '/portfolio/overview' },
+    {
+      text: t('App.navMarkets'),
+      path: '/',
+      pathPatterns: ['/', '/pool/*'],
+    },
+    {
+      text: t('App.navPortfolio'),
+      path: '/portfolio/overview',
+      pathPatterns: ['/portfolio/*'],
+    },
   ];
 
   // Init services and config

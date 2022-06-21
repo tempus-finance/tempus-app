@@ -8,8 +8,9 @@ export interface TabProps {
   label: string;
   value?: any;
   href?: string;
+  hrefPatterns?: string[];
   size?: TabsSize;
-  selectedValue?: any;
+  selected?: any;
   onClick?: (value: any) => void;
 }
 
@@ -45,9 +46,7 @@ const tabStyleMap = new Map<TabsSize, TabStyleConfig>([
 ]);
 
 const Tab: FC<TabProps> = props => {
-  const { label, value, href, size = 'small', selectedValue, onClick } = props;
-
-  const isSelected = selectedValue === href || selectedValue === value;
+  const { label, value, href, hrefPatterns, size = 'small', selected, onClick } = props;
   const tabStyle = tabStyleMap.get(size);
 
   const handleClick = useCallback(() => onClick?.(value), [onClick, value]);
@@ -57,16 +56,16 @@ const Tab: FC<TabProps> = props => {
       tabStyle && (
         <Typography
           variant={tabStyle.variant}
-          color={isSelected ? tabStyle.textColorSelected : tabStyle.textColor}
-          weight={isSelected ? tabStyle.fontWeightSelected : tabStyle.fontWeight}
+          color={selected ? tabStyle.textColorSelected : tabStyle.textColor}
+          weight={selected ? tabStyle.fontWeightSelected : tabStyle.fontWeight}
         >
           {label}
         </Typography>
       ),
-    [isSelected, label, tabStyle],
+    [selected, label, tabStyle],
   );
 
-  if (!tabStyle || (!value && !href)) {
+  if (!tabStyle || (!value && !href && !hrefPatterns)) {
     return null;
   }
 
@@ -75,7 +74,7 @@ const Tab: FC<TabProps> = props => {
       {labelComponent}
     </Link>
   ) : (
-    <ButtonWrapper className="tc__tabs__tab" onClick={handleClick} selected={isSelected}>
+    <ButtonWrapper className="tc__tabs__tab" onClick={handleClick} selected={selected}>
       {labelComponent}
     </ButtonWrapper>
   );
