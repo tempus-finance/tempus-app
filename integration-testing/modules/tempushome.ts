@@ -94,7 +94,7 @@ export async function tempusNewRow(browser: BrowserContext, asset: string = 'USD
 }
 
 export async function tempusFiatCryptoButton(browser: BrowserContext, langCode: string = 'en') {
-    await tempusNetworkChange(browser, 'Ethereum', langCode); // works only on ETH atm, hardcoded ContainText
+    await tempusNetworkChange(browser, 'Ethereum'); // works only on ETH atm, hardcoded ContainText
     const tabTempus = await browser.newPage();
     await tabTempus.goto(TEMPUS_URL);
     const lang: Language = await tempusSwitchLanguage(tabTempus, langCode);
