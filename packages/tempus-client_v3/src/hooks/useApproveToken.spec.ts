@@ -44,6 +44,7 @@ describe('useTokenApprove', () => {
         spenderAddress: '0xABC',
         amount: ONE,
         signer: {} as unknown as JsonRpcSigner,
+        txnId: '0x01',
       });
     });
 
@@ -58,6 +59,7 @@ describe('useTokenApprove', () => {
         tokenAddress: '0x123',
         amount: ONE,
       },
+      txnId: '0x01',
     });
   });
 
@@ -78,6 +80,7 @@ describe('useTokenApprove', () => {
         spenderAddress: '0xABC',
         amount: ONE,
         signer: {} as unknown as JsonRpcSigner,
+        txnId: '0x01',
       });
     });
 
@@ -92,6 +95,7 @@ describe('useTokenApprove', () => {
         tokenAddress: '0x123',
         amount: ONE,
       },
+      txnId: '0x01',
     });
 
     act(() => {
@@ -101,6 +105,7 @@ describe('useTokenApprove', () => {
         spenderAddress: '0xXYZ',
         amount: new Decimal('12'),
         signer: {} as unknown as JsonRpcSigner,
+        txnId: '0x0w',
       });
     });
 
@@ -115,6 +120,7 @@ describe('useTokenApprove', () => {
         tokenAddress: '0x789',
         amount: new Decimal('12'),
       },
+      txnId: '0x0w',
     });
   });
 
@@ -138,6 +144,7 @@ describe('useTokenApprove', () => {
         spenderAddress: '0xABC',
         amount: ONE,
         signer: {} as unknown as JsonRpcSigner,
+        txnId: '0x01',
       });
     });
 
@@ -147,7 +154,17 @@ describe('useTokenApprove', () => {
       // when error, the failed polling will be skipped and thus no updates on hook
     }
 
-    expect(result.current.approveTokenStatus).toStrictEqual({ pending: false, success: false, request: undefined });
+    expect(result.current.approveTokenStatus).toStrictEqual({
+      pending: false,
+      success: false,
+      error: new TypeError("Cannot read properties of null (reading 'ERC20TokenServiceGetter')"),
+      request: {
+        chain: 'ethereum',
+        tokenAddress: '0x123',
+        amount: ONE,
+      },
+      txnId: '0x01',
+    });
     expect(console.error).toHaveBeenCalled();
 
     (console.error as jest.Mock).mockRestore();
@@ -156,7 +173,7 @@ describe('useTokenApprove', () => {
   test('return false status when there is error when getDefinedServices()', async () => {
     jest.spyOn(console, 'error').mockImplementation();
     (getDefinedServices as unknown as jest.Mock).mockImplementation(() => {
-      throw new Error();
+      throw new Error('1234');
     });
 
     act(() => {
@@ -175,6 +192,7 @@ describe('useTokenApprove', () => {
         spenderAddress: '0xABC',
         amount: ONE,
         signer: {} as unknown as JsonRpcSigner,
+        txnId: '0x01',
       });
     });
 
@@ -184,7 +202,17 @@ describe('useTokenApprove', () => {
       // when error, the failed polling will be skipped and thus no updates on hook
     }
 
-    expect(result.current.approveTokenStatus).toStrictEqual({ pending: false, success: false, request: undefined });
+    expect(result.current.approveTokenStatus).toStrictEqual({
+      pending: false,
+      success: false,
+      error: new Error('1234'),
+      request: {
+        chain: 'ethereum',
+        tokenAddress: '0x123',
+        amount: ONE,
+      },
+      txnId: '0x01',
+    });
     expect(console.error).toHaveBeenCalled();
 
     (console.error as jest.Mock).mockRestore();
@@ -194,7 +222,7 @@ describe('useTokenApprove', () => {
     jest.spyOn(console, 'error').mockImplementation();
     (getDefinedServices as unknown as jest.Mock).mockImplementation(() => ({
       ERC20TokenServiceGetter: jest.fn().mockImplementation(() => {
-        throw new Error();
+        throw new Error('1234');
       }),
     }));
 
@@ -214,6 +242,7 @@ describe('useTokenApprove', () => {
         spenderAddress: '0xABC',
         amount: ONE,
         signer: {} as unknown as JsonRpcSigner,
+        txnId: '0x01',
       });
     });
 
@@ -223,7 +252,17 @@ describe('useTokenApprove', () => {
       // when error, the failed polling will be skipped and thus no updates on hook
     }
 
-    expect(result.current.approveTokenStatus).toStrictEqual({ pending: false, success: false, request: undefined });
+    expect(result.current.approveTokenStatus).toStrictEqual({
+      pending: false,
+      success: false,
+      error: new Error('1234'),
+      request: {
+        chain: 'ethereum',
+        tokenAddress: '0x123',
+        amount: ONE,
+      },
+      txnId: '0x01',
+    });
     expect(console.error).toHaveBeenCalled();
 
     (console.error as jest.Mock).mockRestore();
@@ -234,7 +273,7 @@ describe('useTokenApprove', () => {
     (getDefinedServices as unknown as jest.Mock).mockImplementation(() => ({
       ERC20TokenServiceGetter: jest.fn().mockImplementation(() => ({
         approve: jest.fn().mockImplementation(() => {
-          throw new Error();
+          throw new Error('1234');
         }),
       })),
     }));
@@ -255,6 +294,7 @@ describe('useTokenApprove', () => {
         spenderAddress: '0xABC',
         amount: ONE,
         signer: {} as unknown as JsonRpcSigner,
+        txnId: '0x01',
       });
     });
 
@@ -264,7 +304,17 @@ describe('useTokenApprove', () => {
       // when error, the failed polling will be skipped and thus no updates on hook
     }
 
-    expect(result.current.approveTokenStatus).toStrictEqual({ pending: false, success: false, request: undefined });
+    expect(result.current.approveTokenStatus).toStrictEqual({
+      pending: false,
+      success: false,
+      error: new Error('1234'),
+      request: {
+        chain: 'ethereum',
+        tokenAddress: '0x123',
+        amount: ONE,
+      },
+      txnId: '0x01',
+    });
     expect(console.error).toHaveBeenCalled();
 
     (console.error as jest.Mock).mockRestore();
@@ -274,7 +324,7 @@ describe('useTokenApprove', () => {
     jest.spyOn(console, 'error').mockImplementation();
     (getDefinedServices as unknown as jest.Mock).mockImplementation(() => ({
       ERC20TokenServiceGetter: jest.fn().mockImplementation(() => ({
-        approve: jest.fn().mockRejectedValue({}),
+        approve: jest.fn().mockRejectedValue(new Error('1234')),
       })),
     }));
 
@@ -294,6 +344,7 @@ describe('useTokenApprove', () => {
         spenderAddress: '0xABC',
         amount: ONE,
         signer: {} as unknown as JsonRpcSigner,
+        txnId: '0x01',
       });
     });
 
@@ -303,7 +354,17 @@ describe('useTokenApprove', () => {
       // when error, the failed polling will be skipped and thus no updates on hook
     }
 
-    expect(result.current.approveTokenStatus).toStrictEqual({ pending: false, success: false, request: undefined });
+    expect(result.current.approveTokenStatus).toStrictEqual({
+      pending: false,
+      success: false,
+      error: new Error('1234'),
+      request: {
+        chain: 'ethereum',
+        tokenAddress: '0x123',
+        amount: ONE,
+      },
+      txnId: '0x01',
+    });
     expect(console.error).toHaveBeenCalled();
 
     (console.error as jest.Mock).mockRestore();

@@ -43,6 +43,7 @@ const fixedDepositStatus$ = new BehaviorSubject<FixedDepositStatus | null>(null)
 const stream$ = fixedDeposit$.pipe(
   concatMap<FixedDepositRequest, Observable<FixedDepositResponse>>(payload => {
     const { chain, poolAddress, tokenAmount, tokenTicker, tokenAddress, slippage, signer } = payload;
+    const request = { chain, poolAddress, tokenAmount, tokenTicker, tokenAddress };
 
     try {
       const result$ = from(
@@ -70,7 +71,7 @@ const stream$ = fixedDeposit$.pipe(
         catchError(error => {
           console.error('useFixedDeposits - Failed to execute fixed deposit!', error);
           return of({
-            request: { chain, poolAddress, tokenAmount, tokenTicker, tokenAddress },
+            request,
             error,
           } as FixedDepositResponse);
         }),
@@ -78,7 +79,7 @@ const stream$ = fixedDeposit$.pipe(
     } catch (error) {
       console.error('useFixedDeposits - Failed to execute fixed deposit!', error);
       return of({
-        request: { chain, poolAddress, tokenAmount, tokenTicker, tokenAddress },
+        request,
         error,
       } as FixedDepositResponse);
     }
