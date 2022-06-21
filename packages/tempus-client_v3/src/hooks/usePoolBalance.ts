@@ -15,7 +15,7 @@ import { Chain, Decimal, getServices } from 'tempus-core-services';
 import { getConfigManager } from '../config/getConfigManager';
 import { servicesLoaded$ } from './useServicesLoaded';
 import { tokenBalanceDataMap } from './useTokenBalance';
-import { walletAddress$ } from './useWalletAddress';
+import { tokenRates$ } from './useTokenRates';
 
 // Improves readability of the code
 type PoolChainAddressId = string;
@@ -62,7 +62,7 @@ poolList.forEach(pool => {
 });
 
 poolList.forEach(tempusPool => {
-  const { chain, address, principalsAddress, yieldsAddress, ammAddress } = tempusPool;
+  const { chain, address, backingTokenAddress, principalsAddress, yieldsAddress, ammAddress } = tempusPool;
 
   const capitalTokenStreamData = tokenBalanceDataMap.get(`${chain}-${principalsAddress}`);
   const yieldTokenStreamData = tokenBalanceDataMap.get(`${chain}-${yieldsAddress}`);
@@ -74,10 +74,9 @@ poolList.forEach(tempusPool => {
       capitalTokenStreamData.subject$,
       yieldTokenStreamData.subject$,
       lpTokenStreamData.subject$,
-      walletAddress$,
     ]).pipe(
       filter(([servicesLoaded]) => servicesLoaded),
-      mergeMap(([, capitalsBalanceData, yieldsBalanceData, lpBalanceData, walletAddress]) => {
+      mergeMap(([, capitalsBalanceData, yieldsBalanceData, lpBalanceData]) => {
         if (!capitalsBalanceData.balance || !yieldsBalanceData.balance || !lpBalanceData.balance) {
           return of(null);
         }
@@ -109,25 +108,24 @@ poolList.forEach(tempusPool => {
             'yield-bearing',
           ),
         );
-        const balanceInUsdFetch$ = from(
-          services.StatisticsService.getUserPoolBalanceUSD(chain, tempusPool, walletAddress),
-        );
 
-        return combineLatest([balanceInBackingTokenFetch$, balanceInYieldBearingTokenFetch$, balanceInUsdFetch$]);
+        return combineLatest([balanceInBackingTokenFetch$, balanceInYieldBearingTokenFetch$, tokenRates$]);
       }),
       map(poolBalances => {
         if (poolBalances === null) {
           return;
         }
 
-        const [balanceInBackingToken, balanceInYieldBearingToken, balanceInUsd] = poolBalances;
+        const [balanceInBackingToken, balanceInYieldBearingToken, tokenRates] = poolBalances;
 
         const poolBalanceData = poolBalanceDataMap.get(`${chain}-${address}`);
         if (poolBalanceData) {
+          const backingTokenRate = tokenRates[`${chain}-${backingTokenAddress}`];
+
           poolBalanceData.subject$.next({
             balanceInBackingToken,
             balanceInYieldBearingToken,
-            balanceInUsd,
+            balanceInUsd: backingTokenRate ? balanceInBackingToken?.mul(backingTokenRate) : null,
             address,
             chain,
           });
@@ -179,6 +177,8 @@ export const poolBalances$ = combineLatest(
     return poolBalanceMap;
   }),
 );
+
+export const [usePoolBalances] = bind(poolBalances$, {});
 
 export const subscribe = (): void => {
   unsubscribe();
