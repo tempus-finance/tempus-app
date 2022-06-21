@@ -25,7 +25,7 @@
     "labelExecuteSuccess": "Successfully Executed",
     "labelMakeDeposit": "Make Deposit",
     "labelYieldAtMaturity": "Yield-at-Maturity",
-    "previewDescription": "Select an APR & Term to deposit into, if there’s only one, then simply proceed to make your deposit.",
+    "previewDescription": "Select an APR & Term to deposit into, if there's only one, then simply proceed to make your deposit.",
     "successModalDescription": "You have deposited {{amount}} {{ticker}} with {{term}} term. It should reach your wallet momentarily.",
     "successModalPrimaryButton": "Manage Portfolio",
     "successModalSecondaryButton": "Deposit in another pool",
@@ -132,6 +132,10 @@
     "labelExecuteDefault": "Execute Withdrawal",
     "labelExecuteLoading": "Executing...",
     "labelExecuteSuccess": "Successfully Executed",
+    "successModalDescription": "You have withdrawn {{amount}} {{ticker}} with {{term}} term. It should reach your wallet momentarily.",
+    "successModalPrimaryButton": "Manage Portfolio",
+    "successModalSecondaryButton": "Deposit in another pool",
+    "successModalTitle": "Withdraw Complete!",
     "title": "Position Details"
   }
 }

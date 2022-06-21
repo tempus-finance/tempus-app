@@ -10,6 +10,7 @@ interface WithdrawRequest {
   poolAddress: string;
   amount: Decimal;
   token: Ticker;
+  tokenAddress: string;
   tokenBalance: Decimal;
   capitalsBalance: Decimal;
   yieldsBalance: Decimal;
@@ -23,11 +24,17 @@ interface WithdrawStatus {
   request?: WithdrawRequest;
   success?: boolean;
   contractTransaction?: ContractTransaction;
+  transactionData?: {
+    withdrawnAmount: Decimal;
+  };
 }
 
 interface WithdrawResponse {
   request?: WithdrawRequest;
   contractTransaction?: ContractTransaction | void;
+  transactionData?: {
+    withdrawnAmount: Decimal;
+  };
 }
 
 const [withdraw$, withdraw] = createSignal<WithdrawRequest>();
@@ -39,6 +46,7 @@ const withdrawStatus$ = withdraw$.pipe(
       poolAddress,
       amount,
       token,
+      tokenAddress,
       tokenBalance,
       capitalsBalance,
       yieldsBalance,
@@ -48,10 +56,11 @@ const withdrawStatus$ = withdraw$.pipe(
     } = payload;
 
     try {
-      const contractTransaction = await getDefinedServices(chain).WithdrawService.withdraw(
+      const result = await getDefinedServices(chain).WithdrawService.withdraw(
         poolAddress,
         amount,
         token,
+        tokenAddress,
         tokenBalance,
         capitalsBalance,
         yieldsBalance,
@@ -61,7 +70,10 @@ const withdrawStatus$ = withdraw$.pipe(
       );
 
       return await Promise.resolve({
-        contractTransaction,
+        contractTransaction: result.contractTransaction,
+        transactionData: {
+          withdrawnAmount: result.withdrawnAmount,
+        },
         request: { chain, poolAddress, amount, token },
       });
     } catch (error) {
@@ -70,7 +82,7 @@ const withdrawStatus$ = withdraw$.pipe(
     }
   }),
   map(response => {
-    const { contractTransaction, request } = response;
+    const { contractTransaction, transactionData, request } = response;
 
     return contractTransaction
       ? {
@@ -78,6 +90,7 @@ const withdrawStatus$ = withdraw$.pipe(
           success: true,
           request,
           contractTransaction,
+          transactionData,
         }
       : { pending: false, success: false, request };
   }),

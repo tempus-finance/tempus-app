@@ -994,7 +994,7 @@ exports[`DepositModal renders a deposit modal preview with multiple maturity ter
           class="tc__currency-input-modal__description"
           style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
         >
-          Select an APR & Term to deposit into, if there’s only one, then simply proceed to make your deposit.
+          Select an APR & Term to deposit into, if there's only one, then simply proceed to make your deposit.
         </div>
         <div
           class="tc__term-tabs"
@@ -1171,7 +1171,7 @@ exports[`DepositModal renders a deposit modal preview with one maturity term 1`]
           class="tc__currency-input-modal__description"
           style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
         >
-          Select an APR & Term to deposit into, if there’s only one, then simply proceed to make your deposit.
+          Select an APR & Term to deposit into, if there's only one, then simply proceed to make your deposit.
         </div>
         <div
           class="tc__term-tabs"

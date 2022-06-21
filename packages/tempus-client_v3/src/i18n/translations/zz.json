@@ -132,6 +132,10 @@
     "labelExecuteDefault": "~~~~~====={{{{{(((((labelExecuteDefault)))))}}}}}=====~~~~~",
     "labelExecuteLoading": "~~~~~====={{{{{(((((labelExecuteLoading)))))}}}}}=====~~~~~",
     "labelExecuteSuccess": "~~~~~====={{{{{(((((labelExecuteSuccess)))))}}}}}=====~~~~~",
+    "successModalDescription": "~~~~~====={{{{{(((((successModalDescription)))))}}}}}=====~~~~~",
+    "successModalPrimaryButton": "~~~~~====={{{{{(((((successModalPrimaryButton)))))}}}}}=====~~~~~",
+    "successModalSecondaryButton": "~~~~~====={{{{{(((((successModalSecondaryButton)))))}}}}}=====~~~~~",
+    "successModalTitle": "~~~~~====={{{{{(((((successModalTitle)))))}}}}}=====~~~~~",
     "title": "~~~~~====={{{{{(((((title)))))}}}}}=====~~~~~"
   }
 }

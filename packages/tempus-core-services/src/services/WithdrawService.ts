@@ -6,6 +6,7 @@ import { TempusAMMV1Contract } from '../contracts/TempusAMMV1Contract';
 import { TempusControllerV1Contract } from '../contracts/TempusControllerV1Contract';
 import { Decimal, DEFAULT_DECIMAL_PRECISION } from '../datastructures';
 import { Chain, Ticker } from '../interfaces';
+import { getWithdrawnAmountFromTx } from '../utils';
 import { BaseService, ConfigGetter } from './BaseService';
 
 export class WithdrawService extends BaseService {
@@ -21,13 +22,19 @@ export class WithdrawService extends BaseService {
     poolAddress: string,
     amountToGet: Decimal,
     tokenToGet: Ticker,
+    tokenAddress: string,
     tokenBalance: Decimal,
     capitalsBalance: Decimal,
     yieldsBalance: Decimal,
     lpBalance: Decimal,
     slippage: Decimal,
     signer: JsonRpcSigner,
-  ): Promise<ContractTransaction> {
+  ): Promise<{
+    contractTransaction: ContractTransaction;
+    withdrawnAmount: Decimal;
+  }> {
+    const tokenPrecision = this.getTokenPrecision(tokenAddress);
+
     const statsContractAddress = this.getStatsAddressForPool(poolAddress);
     const tempusControllerContractAddress = this.getTempusControllerAddressForPool(poolAddress);
 
@@ -149,8 +156,9 @@ export class WithdrawService extends BaseService {
 
     const deadline = new Decimal(INFINITE_DEADLINE, DEFAULT_DECIMAL_PRECISION);
 
+    let contractTransaction: ContractTransaction;
     try {
-      return await tempusControllerContract.exitAmmGiveLpAndRedeem(
+      contractTransaction = await tempusControllerContract.exitAmmGiveLpAndRedeem(
         poolConfig.ammAddress,
         lpAmount,
         capitalsAmount,
@@ -171,5 +179,31 @@ export class WithdrawService extends BaseService {
       console.error('WithdrawService - withdraw() - Failed to execute withdrawal!', error);
       return Promise.reject(error);
     }
+
+    let walletAddress;
+    try {
+      walletAddress = await signer.getAddress();
+    } catch (error) {
+      console.error('WithdrawService - withdraw() - Failed to get wallet address from signer!');
+      return Promise.reject(error);
+    }
+
+    let withdrawnAmount: Decimal;
+    try {
+      withdrawnAmount = await getWithdrawnAmountFromTx(
+        contractTransaction,
+        tokenAddress,
+        tokenPrecision,
+        walletAddress,
+      );
+    } catch (error) {
+      console.error('WithdrawService - withdraw() - Failed to get withdrawn amount from withdraw transaction receipt!');
+      return Promise.reject(error);
+    }
+
+    return {
+      contractTransaction,
+      withdrawnAmount,
+    };
   }
 }

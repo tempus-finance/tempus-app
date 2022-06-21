@@ -214,6 +214,7 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
           chain,
           poolAddress: tempusPool.address,
           token: currency.ticker,
+          tokenAddress: currency.address,
           tokenBalance: currency.balance,
           capitalsBalance: capitalsTokenBalance,
           yieldsBalance: yieldsTokenBalance,
@@ -234,6 +235,7 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
       yieldsTokenBalance,
       lpTokenBalance,
       currency.ticker,
+      currency.address,
       currency.balance,
       withdrawTokenTxnHash,
       withdraw,
@@ -252,6 +254,14 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
     // TODO - If user withdraws from Portfolio page we should navigate back to Portfolio page
     navigate('/portfolio/positions');
   }, [navigate]);
+
+  const withdrawnAmountFormatted = useMemo(() => {
+    const withdrawnAmount = withdrawStatus?.transactionData?.withdrawnAmount;
+    if (!withdrawnAmount) {
+      return null;
+    }
+    return DecimalUtils.formatToCurrency(withdrawnAmount, tempusPool?.decimalsForUI);
+  }, [tempusPool?.decimalsForUI, withdrawStatus?.transactionData?.withdrawnAmount]);
 
   const handleErrorTryAgain = useCallback(() => {
     setWithdrawError(undefined);
@@ -282,24 +292,26 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
       />
       {/* Show success modal if withdraw is finalized */}
       <SuccessModal
-        description={`You have withdrawn [AMOUNT] ${currency.ticker} with ${new Date(
-          tempusPool.maturityDate,
-        ).toLocaleDateString(locale, {
-          day: '2-digit',
-          month: '2-digit',
-          year: 'numeric',
-        })} term. It should reach your wallet momentarily.`}
+        description={t('WithdrawModal.successModalDescription', {
+          amount: withdrawnAmountFormatted,
+          ticker: currency.ticker,
+          term: new Date(tempusPool.maturityDate).toLocaleDateString(locale, {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+          }),
+        })}
         primaryButtonLabel={{
-          default: 'Manage Portfolio',
+          default: t('WithdrawModal.successModalPrimaryButton'),
         }}
         secondaryButtonLabel={{
-          default: 'Deposit in another pool',
+          default: t('WithdrawModal.successModalSecondaryButton'),
         }}
         onClose={handleCloseModal}
         onPrimaryButtonClick={handleManagePortfolioClick}
         onSecondaryButtonClick={handleDepositInAnotherPoolClick}
         open={withdrawSuccessful}
-        title="Withdraw Complete!"
+        title={t('WithdrawModal.successModalTitle')}
       />
       {/* Show error modal if withdraw throws Error */}
       <ErrorModal

@@ -77,7 +77,10 @@ const mockServices = {
   },
   WithdrawService: {
     withdraw: jest.fn().mockResolvedValue({
-      hash: '0x00',
+      contractTransaction: {
+        hash: '0x00',
+      },
+      withdrawnAmount: ONE,
     }),
   },
   DepositService: {
