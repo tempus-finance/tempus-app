@@ -4,7 +4,7 @@ import { ZERO } from 'tempus-core-services';
 import { poolList$ } from './usePoolList';
 import { tokenBalanceMap$ } from './useTokenBalance';
 
-const userDepositedPools$ = combineLatest([poolList$, tokenBalanceMap$]).pipe(
+export const userDepositedPools$ = combineLatest([poolList$, tokenBalanceMap$]).pipe(
   map(([poolList, tokenBalanceMap]) => {
     const filteredPools = poolList.filter(tempusPool => {
       const principalsBalance = tokenBalanceMap[`${tempusPool.chain}-${tempusPool.principalsAddress}`];

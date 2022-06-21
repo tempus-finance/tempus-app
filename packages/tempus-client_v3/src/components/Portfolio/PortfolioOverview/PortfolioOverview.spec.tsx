@@ -1,5 +1,7 @@
 import { fireEvent, render } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
+import { of as mockOf } from 'rxjs';
+import { Decimal as MockDecimal } from 'tempus-core-services';
 import { pool1 as mockPool1, pool2 as mockPool2 } from '../../../setupTests';
 import PortfolioOverview from './PortfolioOverview';
 
@@ -9,6 +11,15 @@ const subject = () =>
       <PortfolioOverview />
     </BrowserRouter>,
   );
+
+jest.mock('../../../hooks/usePoolBalance', () => ({
+  ...jest.requireActual('../../../hooks/usePoolBalance'),
+  poolBalances$: mockOf({
+    [`${mockPool1.chain}-${mockPool1.address}`]: {
+      balanceInUsd: new MockDecimal(123.45),
+    },
+  }),
+}));
 
 jest.mock('../../../hooks', () => ({
   ...jest.requireActual('../../../hooks'),

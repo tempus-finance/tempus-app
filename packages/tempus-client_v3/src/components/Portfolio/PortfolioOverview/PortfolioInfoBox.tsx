@@ -1,10 +1,10 @@
 import { FC, memo } from 'react';
-import { Typography } from '../../shared';
+import { LoadingPlaceholder, Typography } from '../../shared';
 
 export interface PortfolioInfoBoxProps {
   title: string;
   subtitle: string;
-  value: string;
+  value: string | null;
 }
 
 const PortfolioInfoBox: FC<PortfolioInfoBoxProps> = props => {
@@ -17,17 +17,22 @@ const PortfolioInfoBox: FC<PortfolioInfoBoxProps> = props => {
       </Typography>
       <Typography variant="subtitle">{subtitle}</Typography>
       <div className="tc__app__portfolio-info-box-value">
-        <Typography variant="subheader" type="mono" weight="medium">
-          {value}
-        </Typography>
-        <Typography
-          className="tc__app__portfolio-info-box-currency"
-          variant="subheader"
-          weight="medium"
-          color="text-secondary"
-        >
-          USD
-        </Typography>
+        {value !== null && (
+          <>
+            <Typography variant="subheader" type="mono" weight="medium">
+              {value}
+            </Typography>
+            <Typography
+              className="tc__app__portfolio-info-box-currency"
+              variant="subheader"
+              weight="medium"
+              color="text-secondary"
+            >
+              USD
+            </Typography>
+          </>
+        )}
+        {value === null && <LoadingPlaceholder width="medium" height="medium" />}
       </div>
     </div>
   );

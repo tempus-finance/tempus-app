@@ -1,6 +1,7 @@
 import { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useUserDepositedPools } from '../../../hooks';
+import { DecimalUtils } from 'tempus-core-services';
+import { useUserDepositedPools, useUserUsdBalance } from '../../../hooks';
 import { Tab, Tabs, Typography } from '../../shared';
 import PortfolioValueChart from './PortfolioValueChart';
 import PortfolioYieldChart from './PortfolioYieldChart';
@@ -10,10 +11,10 @@ import PortfolioOverviewNoPositions from './PortfolioOverviewNoPositions';
 const PortfolioOverview: FC = () => {
   const [view, setView] = useState('yield');
   const userDepositedPools = useUserDepositedPools();
+  const usdBalance = useUserUsdBalance();
   const { t } = useTranslation();
 
   // TODO: Fetch real values
-  const currentValue = '123.45';
   const earnedYield = '30.24';
   const projectedYield = '42.78';
 
@@ -23,7 +24,7 @@ const PortfolioOverview: FC = () => {
         <PortfolioInfoBox
           title={t('PortfolioOverview.titleCurrentValue')}
           subtitle={t('PortfolioOverview.subtitleCurrentValue')}
-          value={currentValue}
+          value={usdBalance ? DecimalUtils.formatToCurrency(usdBalance, 2) : null}
         />
         <PortfolioInfoBox
           title={t('PortfolioOverview.titleEarnedYield')}
@@ -49,7 +50,7 @@ const PortfolioOverview: FC = () => {
         </div>
         {view === 'yield' && <PortfolioYieldChart />}
         {view === 'value' && <PortfolioValueChart />}
-        {!userDepositedPools && <PortfolioOverviewNoPositions />}
+        {!userDepositedPools.length && <PortfolioOverviewNoPositions />}
       </div>
     </div>
   );
