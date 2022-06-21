@@ -132,6 +132,10 @@
     "labelExecuteDefault": "",
     "labelExecuteLoading": "",
     "labelExecuteSuccess": "",
+    "successModalDescription": "",
+    "successModalPrimaryButton": "",
+    "successModalSecondaryButton": "",
+    "successModalTitle": "",
     "title": ""
   }
 }

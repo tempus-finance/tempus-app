@@ -88,6 +88,7 @@ export {
   prettifyProtocolName,
   getPathRoot,
   getDepositAmountFromTx,
+  getWithdrawnAmountFromTx,
 } from './utils';
 
 export * from './constants';

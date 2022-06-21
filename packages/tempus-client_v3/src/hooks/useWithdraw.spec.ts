@@ -1,7 +1,7 @@
 import { JsonRpcSigner } from '@ethersproject/providers';
 import { renderHook } from '@testing-library/react-hooks';
 import { act } from 'react-dom/test-utils';
-import { Decimal } from 'tempus-core-services';
+import { Decimal, ONE } from 'tempus-core-services';
 import { useWithdraw } from './useWithdraw';
 
 describe('useWithdraw', () => {
@@ -22,6 +22,7 @@ describe('useWithdraw', () => {
         poolAddress: '1',
         amount: new Decimal(2),
         token: 'stETH',
+        tokenAddress: '00001-ybt',
         tokenBalance: new Decimal(30),
         lpBalance: new Decimal(20),
         capitalsBalance: new Decimal(10),
@@ -37,6 +38,9 @@ describe('useWithdraw', () => {
       pending: false,
       success: true,
       contractTransaction: { hash: '0x00' },
+      transactionData: {
+        withdrawnAmount: ONE,
+      },
       request: {
         amount: new Decimal(2),
         chain: 'ethereum',
@@ -57,6 +61,7 @@ describe('useWithdraw', () => {
         poolAddress: '1',
         amount: new Decimal(2),
         token: 'stETH',
+        tokenAddress: '00001-ybt',
         tokenBalance: new Decimal(30),
         lpBalance: new Decimal(20),
         capitalsBalance: new Decimal(10),
@@ -72,6 +77,9 @@ describe('useWithdraw', () => {
       pending: false,
       success: true,
       contractTransaction: { hash: '0x00' },
+      transactionData: {
+        withdrawnAmount: ONE,
+      },
       request: {
         amount: new Decimal(2),
         chain: 'ethereum',
@@ -86,6 +94,7 @@ describe('useWithdraw', () => {
         poolAddress: '1',
         amount: new Decimal(3),
         token: 'stETH',
+        tokenAddress: '00001-ybt',
         tokenBalance: new Decimal(30),
         lpBalance: new Decimal(20),
         capitalsBalance: new Decimal(10),
@@ -101,6 +110,9 @@ describe('useWithdraw', () => {
       pending: false,
       success: true,
       contractTransaction: { hash: '0x00' },
+      transactionData: {
+        withdrawnAmount: ONE,
+      },
       request: {
         amount: new Decimal(3),
         chain: 'ethereum',
