@@ -11,7 +11,7 @@ test.describe.serial("Metamask and network tests", () => {
         browser = await chromiumPersistant();
         await metamaskLogin(browser);
         await tempusMetamaskConnect(browser);
-    })
+    });
 
     test('Is logged into metamask', async () => {
         const tabMetamask: Page = await browser.newPage();
@@ -19,17 +19,17 @@ test.describe.serial("Metamask and network tests", () => {
 
         await expect(tabMetamask.locator('button:has-text("Buy")')).toBeDefined();
         await tabMetamask.close();
-    })
+    });
 
     test('Change to Fantom network', async () => {
         await tempusNetworkChange(browser, FTM_NETWORK.name);
-    })
+    });
 
     test('Change to ETH network', async () => {
         await tempusNetworkChange(browser, ETH_NETWORK.name);
-    })
+    });
 
     test.afterAll(async () => {
         await browser.close();
-    })
+    });
 });

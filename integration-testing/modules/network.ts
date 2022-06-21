@@ -1,6 +1,5 @@
 import { BrowserContext, Page } from "playwright";
 import { LOAD_SHORT_TIMEOUT, LOAD_TIMEOUT, TEMPUS_URL } from "../utility/constants";
-import { Language, languageGenerator } from "./language";
 
 class Network {
     symbol: string;
@@ -21,9 +20,8 @@ export const TEMPUS_ETH_NETWORK: Network = new Network('ETH', 'Ethereum Fork', [
 export const FTM_NETWORK: Network = new Network('FTM', 'Fantom', FTM_ASSETS);
 export const NETWORKS: Network[] = [ETH_NETWORK, TEMPUS_ETH_NETWORK, FTM_NETWORK];
 
-export async function tempusNetworkChange(browser: BrowserContext, networkName: string, langCode: string = 'en'):
+export async function tempusNetworkChange(browser: BrowserContext, networkName: string):
     Promise<void> {
-    const lang: Language = languageGenerator(langCode);
     const tabTempus: Page = await browser.newPage();
     await tabTempus.goto(TEMPUS_URL);
 
@@ -41,11 +39,11 @@ export async function tempusNetworkChange(browser: BrowserContext, networkName: 
         const mm = await browser.pages().slice(-1)[0];
         await mm.bringToFront();
         await mm.waitForTimeout(LOAD_TIMEOUT);
-        if (await mm.locator(`text="${lang.approve}"`).count()) {
-            await mm.click(`text="${lang.approve}"`);
+        if (await mm.locator(`text="Approve"`).count()) {
+            await mm.click(`text="Approve"`);
             await mm.waitForTimeout(LOAD_TIMEOUT);
         }
-        await mm.click(`button:has-text("${lang.switchNetwork}")`);
+        await mm.click(`button:has-text("Switch Network")`);
     }
 
     await tabTempus.waitForTimeout(LOAD_TIMEOUT);
