@@ -5,7 +5,7 @@
 import '@testing-library/jest-dom/extend-expect';
 import { BigNumber as MockBigNumber } from 'ethers';
 import { of as mockOf, delay as mockDelay } from 'rxjs';
-import { Chain, Decimal, Decimal as MockDecimal, TempusPool, Ticker, ZERO as mockZERO } from 'tempus-core-services';
+import { Chain, Decimal as MockDecimal, ONE, TempusPool, Ticker, ZERO as mockZERO } from 'tempus-core-services';
 
 export { mockConfig, pool1, pool2, pool3, pool4, pool5 } from './mocks/config/mockConfig';
 
@@ -85,7 +85,7 @@ const mockServices = {
       contractTransaction: {
         hash: '0x00',
       },
-      depositedAmount: new Decimal(1),
+      depositedAmount: ONE,
     }),
   },
   ERC20TokenServiceGetter: jest.fn().mockImplementation(() => ({
