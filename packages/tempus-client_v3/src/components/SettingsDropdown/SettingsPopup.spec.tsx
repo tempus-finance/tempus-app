@@ -23,17 +23,4 @@ describe('SettingsPopup', () => {
 
     expect(container).toMatchSnapshot();
   });
-
-  it('toggle the dark mode', () => {
-    const { container } = subject();
-
-    const toggle = container.querySelector('.tc__toggle-switch input[type=checkbox]') as Element;
-
-    expect(toggle).not.toBeNull();
-    expect(container).not.toBeNull();
-
-    fireEvent.click(toggle);
-
-    expect(container).toMatchSnapshot();
-  });
 });

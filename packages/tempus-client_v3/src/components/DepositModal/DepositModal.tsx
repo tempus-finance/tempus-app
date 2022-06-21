@@ -2,6 +2,7 @@ import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { ChainConfig, Decimal, chainIdToChainName, Ticker, ZERO, TempusPool, DecimalUtils } from 'tempus-core-services';
+import { v4 as uuidv4 } from 'uuid';
 import { dateFormatter, TIMEOUT_FROM_SUCCESS_TO_DEFAULT_IN_MS } from '../../constants';
 import {
   setPoolForYieldAtMaturity,
@@ -56,6 +57,8 @@ const DepositModal: FC<DepositModalProps> = props => {
   const [fixedDepositSuccessful, setFixedDepositSuccessful] = useState<boolean>(false);
   const [fixedDepositError, setFixedDepositError] = useState<Error>();
   const [tokenApproved, setTokenApproved] = useState<boolean>(false);
+  const [approveTxnId, setApproveTxnId] = useState<string>();
+  const [depositTxnId] = useState<string>();
 
   const approveTokenTxnHash = approveTokenStatus?.contractTransaction?.hash ?? '0x0';
   const depositTokenTxnHash = fixedDepositStatus?.contractTransaction?.hash ?? '0x0';
@@ -107,43 +110,49 @@ const DepositModal: FC<DepositModalProps> = props => {
   );
 
   useEffect(() => {
-    if (approveTokenStatus) {
+    if (approveTokenStatus && approveTokenStatus.txnId === approveTxnId) {
       if (approveTokenStatus.pending) {
         setActionButtonState('loading');
-      }
-
-      if (approveTokenStatus.success) {
+      } else if (approveTokenStatus.success) {
         setActionButtonState('success');
+        setFixedDepositError(undefined);
         setTokenApproved(true);
 
         setTimeout(() => {
           setActionButtonState('default');
         }, TIMEOUT_FROM_SUCCESS_TO_DEFAULT_IN_MS);
+      } else if (approveTokenStatus.error) {
+        setActionButtonState('default');
+        setFixedDepositError(approveTokenStatus.error);
       }
     } else {
       setActionButtonState('default');
     }
-  }, [approveTokenStatus]);
+  }, [approveTokenStatus, approveTxnId]);
 
   useEffect(() => {
-    if (fixedDepositStatus?.success) {
-      setActionButtonState('success');
-      setFixedDepositError(undefined);
-      emitAppEvent({
-        eventType: 'deposit',
-        tempusPool: selectedTempusPool as TempusPool,
-        txnHash: fixedDepositStatus.contractTransaction?.hash ?? '0x0',
-        timestamp: fixedDepositStatus.contractTransaction?.timestamp ?? Date.now(),
-      });
+    if (fixedDepositStatus && fixedDepositStatus.txnId === depositTxnId) {
+      if (fixedDepositStatus.success) {
+        setActionButtonState('success');
+        setFixedDepositError(undefined);
+        emitAppEvent({
+          eventType: 'deposit',
+          tempusPool: selectedTempusPool as TempusPool,
+          txnHash: fixedDepositStatus.contractTransaction?.hash ?? '0x0',
+          timestamp: fixedDepositStatus.contractTransaction?.timestamp ?? Date.now(),
+        });
 
-      setTimeout(() => {
-        setFixedDepositSuccessful(true);
-      }, TIMEOUT_FROM_SUCCESS_TO_DEFAULT_IN_MS);
-    } else if (fixedDepositStatus?.error) {
+        setTimeout(() => {
+          setFixedDepositSuccessful(true);
+        }, TIMEOUT_FROM_SUCCESS_TO_DEFAULT_IN_MS);
+      } else if (fixedDepositStatus.error) {
+        setActionButtonState('default');
+        setFixedDepositError(fixedDepositStatus.error);
+      }
+    } else {
       setActionButtonState('default');
-      setFixedDepositError(fixedDepositStatus?.error);
     }
-  }, [fixedDepositStatus, emitAppEvent, selectedTempusPool]);
+  }, [fixedDepositStatus, emitAppEvent, selectedTempusPool, depositTxnId]);
 
   const handleMaturityChange = useCallback(
     (newTerm: MaturityTerm) => {
@@ -178,12 +187,16 @@ const DepositModal: FC<DepositModalProps> = props => {
         if (!tokenAllowance?.alwaysApproved && amount.gt(tokenAllowance?.amount ?? ZERO)) {
           setActionButtonState('loading');
 
+          const txnId = uuidv4();
+          setApproveTxnId(txnId);
+
           approveToken({
             chain: selectedTempusPool.chain,
             tokenAddress: token.address,
             spenderAddress: chainConfig.tempusControllerContract,
             amount,
             signer,
+            txnId,
           });
         } else {
           setTokenApproved(true);

@@ -2,6 +2,7 @@ import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { ChainConfig, chainIdToChainName, Decimal, DecimalUtils, TempusPool, Ticker, ZERO } from 'tempus-core-services';
+import { v4 as uuidv4 } from 'uuid';
 import { TIMEOUT_FROM_SUCCESS_TO_DEFAULT_IN_MS } from '../../constants';
 import {
   useAllowances,
@@ -15,6 +16,7 @@ import {
 import { useWithdraw } from '../../hooks/useWithdraw';
 import { TokenMetadataProp } from '../../interfaces';
 import CurrencyInputModal, { CurrencyInputModalInfoRow } from '../CurrencyInputModal';
+import ErrorModal from '../ErrorModal';
 import { ActionButtonState } from '../shared';
 import { ModalProps } from '../shared/Modal/Modal';
 import SuccessModal from '../SuccessModal/SuccessModal';
@@ -26,7 +28,7 @@ export interface WithdrawModalProps extends ModalProps {
 }
 
 export const WithdrawModal: FC<WithdrawModalProps> = props => {
-  const { open, onClose, tokens, chainConfig, tempusPool } = props;
+  const { onClose, tokens, chainConfig, tempusPool } = props;
 
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -46,12 +48,23 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
   const [actionButtonState, setActionButtonState] = useState<ActionButtonState>('default');
   const [tokensApproved, setTokensApproved] = useState<boolean>(false);
   const [withdrawSuccessful, setWithdrawSuccessful] = useState<boolean>(false);
+  const [withdrawError, setWithdrawError] = useState<Error>();
+  const [approveTxnIds, setApproveTxnIds] = useState<string[]>([]);
 
   const capitalsTokenBalance = capitalsBalanceData?.balance ?? ZERO;
   const yieldsTokenBalance = yieldsBalanceData?.balance ?? ZERO;
   const lpTokenBalance = lpBalanceData?.balance ?? ZERO;
   const approveTokenTxnHash = approveTokenStatus?.contractTransaction?.hash ?? '0x0';
   const withdrawTokenTxnHash = withdrawStatus?.contractTransaction?.hash ?? '0x0';
+
+  useEffect(() => {
+    if (approveTokenStatus && approveTxnIds.includes(approveTokenStatus.txnId) && approveTokenStatus.error) {
+      setActionButtonState('default');
+      setWithdrawError(approveTokenStatus.error);
+    } else {
+      setActionButtonState('default');
+    }
+  }, [approveTokenStatus, approveTxnIds]);
 
   useEffect(() => {
     if (withdrawStatus?.success) {
@@ -133,6 +146,10 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
       const yieldsAllowance = tokenAllowances[`${tempusPool.chain}-${tempusPool.yieldsAddress}`];
       const lpAllowance = tokenAllowances[`${tempusPool.chain}-${tempusPool.ammAddress}`];
 
+      const lpApproveTxnId = uuidv4();
+      const capitalsApproveTxnId = uuidv4();
+      const yieldsApproveTxnId = uuidv4();
+
       if (!lpAllowance?.alwaysApproved && lpTokenBalance.gt(lpAllowance?.amount ?? ZERO)) {
         approveToken({
           chain: tempusPool.chain,
@@ -140,6 +157,7 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
           spenderAddress: chainConfig.tempusControllerContract,
           amount: lpTokenBalance,
           signer,
+          txnId: lpApproveTxnId,
         });
       }
 
@@ -150,6 +168,7 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
           spenderAddress: chainConfig.tempusControllerContract,
           amount: capitalsTokenBalance,
           signer,
+          txnId: capitalsApproveTxnId,
         });
       }
 
@@ -160,8 +179,11 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
           spenderAddress: chainConfig.tempusControllerContract,
           amount: yieldsTokenBalance,
           signer,
+          txnId: yieldsApproveTxnId,
         });
       }
+
+      setApproveTxnIds([lpApproveTxnId, capitalsApproveTxnId, yieldsApproveTxnId]);
     }
 
     return approveTokenTxnHash;
@@ -225,12 +247,12 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
   }, [navigate]);
 
   const handleManagePortfolioClick = useCallback(() => {
-    navigate('/portfolio');
+    navigate('/portfolio/overview');
   }, [navigate]);
 
-  const handleCloseSuccessModal = useCallback(() => {
+  const handleCloseModal = useCallback(() => {
     // TODO - If user withdraws from Portfolio page we should navigate back to Portfolio page
-    navigate('/');
+    navigate('/portfolio/positions');
   }, [navigate]);
 
   const withdrawnAmountFormatted = useMemo(() => {
@@ -241,31 +263,33 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
     return DecimalUtils.formatToCurrency(withdrawnAmount, tempusPool?.decimalsForUI);
   }, [tempusPool?.decimalsForUI, withdrawStatus?.transactionData?.withdrawnAmount]);
 
+  const handleErrorTryAgain = useCallback(() => {
+    setWithdrawError(undefined);
+  }, []);
+
   return (
     <>
       {/* Show withdraw modal if withdraw is not yet finalized */}
-      {!withdrawSuccessful && (
-        <CurrencyInputModal
-          tokens={tokens}
-          open={open}
-          onClose={onClose}
-          title={t('WithdrawModal.title')}
-          description={t('WithdrawModal.description')}
-          balance={currency.balance}
-          infoRows={infoRows}
-          actionButtonLabels={{
-            action: {
-              default: t('WithdrawModal.labelExecuteDefault'),
-              loading: t('WithdrawModal.labelExecuteLoading'),
-              success: t('WithdrawModal.labelExecuteSuccess'),
-            },
-          }}
-          actionButtonState={actionButtonState}
-          onTransactionStart={tokensApproved ? handleWithdraw : handleApproveToken}
-          onCurrencyUpdate={handleCurrencyChange}
-          chainConfig={chainConfig}
-        />
-      )}
+      <CurrencyInputModal
+        tokens={tokens}
+        open={!withdrawSuccessful && !withdrawError}
+        onClose={onClose}
+        title={t('WithdrawModal.title')}
+        description={t('WithdrawModal.description')}
+        balance={currency.balance}
+        infoRows={infoRows}
+        actionButtonLabels={{
+          action: {
+            default: t('WithdrawModal.labelExecuteDefault'),
+            loading: t('WithdrawModal.labelExecuteLoading'),
+            success: t('WithdrawModal.labelExecuteSuccess'),
+          },
+        }}
+        actionButtonState={actionButtonState}
+        onTransactionStart={tokensApproved ? handleWithdraw : handleApproveToken}
+        onCurrencyUpdate={handleCurrencyChange}
+        chainConfig={chainConfig}
+      />
       {/* Show success modal if withdraw is finalized */}
       <SuccessModal
         description={t('WithdrawModal.successModalDescription', {
@@ -283,11 +307,22 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
         secondaryButtonLabel={{
           default: t('WithdrawModal.successModalSecondaryButton'),
         }}
-        onClose={handleCloseSuccessModal}
+        onClose={handleCloseModal}
         onPrimaryButtonClick={handleManagePortfolioClick}
         onSecondaryButtonClick={handleDepositInAnotherPoolClick}
         open={withdrawSuccessful}
         title={t('WithdrawModal.successModalTitle')}
+      />
+      {/* Show error modal if withdraw throws Error */}
+      <ErrorModal
+        description={t('WithdrawModal.errorModalDescription')}
+        primaryButtonLabel={{
+          default: t('WithdrawModal.errorModalPrimaryButton'),
+        }}
+        onClose={handleCloseModal}
+        onPrimaryButtonClick={handleErrorTryAgain}
+        open={Boolean(withdrawError)}
+        title={t('WithdrawModal.errorModalTitle')}
       />
     </>
   );

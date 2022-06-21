@@ -125,6 +125,9 @@
   },
   "WithdrawModal": {
     "description": "Select the amount you like to withdraw.",
+    "errorModalDescription": "An error occured and the transaction failed.",
+    "errorModalPrimaryButton": "Try again",
+    "errorModalTitle": "Something's wrong.",
     "labelAvailableForWithdraw": "Available for Withdraw",
     "labelExecuteDefault": "Execute Withdrawal",
     "labelExecuteLoading": "Executing...",
