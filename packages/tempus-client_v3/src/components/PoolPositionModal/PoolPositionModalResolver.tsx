@@ -2,13 +2,14 @@ import { FC, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { Chain, Decimal, ProtocolName, Ticker, ZERO } from 'tempus-core-services';
 import { getConfigManager } from '../../config/getConfigManager';
-import { useFixedAprs, usePoolBalance } from '../../hooks';
+import { useFixedAprs, usePoolBalance, useTokenRates } from '../../hooks';
 import { PoolPositionModal } from './PoolPositionModal';
 
 export const PoolPositionModalResolver: FC = () => {
   const { chain, ticker, protocol, poolAddress } = useParams();
 
   const poolBalanceData = usePoolBalance(poolAddress, chain as Chain);
+  const tokenRates = useTokenRates();
   const fixedAprs = useFixedAprs();
 
   // TODO - Properly check if URL params have valid values - if not show an error page or redirect to root page
@@ -30,6 +31,7 @@ export const PoolPositionModalResolver: FC = () => {
     // TODO - Replace dummy data with data from hooks
     <PoolPositionModal
       apr={fixedAprs[`${poolData.chain}-${poolData.address}`]}
+      // TODO - Show loading indicator while balance is being loaded, instead of showing zero
       balance={poolBalanceData?.balanceInBackingToken || ZERO}
       chartData={[
         { x: new Date(2022, 3, 4), y: 10 },
@@ -39,7 +41,7 @@ export const PoolPositionModalResolver: FC = () => {
       projectedTotalYield={new Decimal(3)}
       term={new Date(poolData.maturityDate)}
       tokenDecimals={poolData.decimalsForUI}
-      tokenExchangeRate={new Decimal(100)}
+      tokenExchangeRate={tokenRates[`${poolData.chain}-${poolData.backingTokenAddress}`]}
       totalYieldEarned={new Decimal(2)}
       tokenTicker="ETH"
       chain={chain as Chain}
