@@ -62,6 +62,17 @@
   "NumberInput": {
     "buttonMax": "Max"
   },
+  "PoolCard": {
+    "apr": "APR",
+    "aprUpTo": "APR (up to)",
+    "balance": "Balance",
+    "earliestTerm": "Earliest term",
+    "fixedApr": "Fixed APR",
+    "fixedAprUpTo": "Fixed APR (up to)",
+    "notApplicable": "N/A",
+    "term": "Term",
+    "totalBalance": "Total Balance"
+  },
   "PoolPositionCard": {
     "apr": "APR",
     "balance": "Balance",

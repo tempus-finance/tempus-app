@@ -1,4 +1,5 @@
 import { FC, useCallback, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Chain, Decimal, DecimalUtils, prettifyProtocolName, ProtocolName, Ticker, ZERO } from 'tempus-core-services';
 import { min } from 'date-fns';
 import FormattedDate from '../FormattedDate';
@@ -20,7 +21,6 @@ interface PoolCardProps {
   terms: Date[];
   aprValues: (Decimal | undefined)[];
   color: string;
-  aggregatedAPR?: Decimal;
   multiplier?: number;
   totalBalance?: Decimal;
   poolAddresses: string[];
@@ -44,13 +44,13 @@ const PoolCard: FC<PoolCardProps> = props => {
     terms,
     aprValues,
     color,
-    aggregatedAPR,
     totalBalance,
     multiplier = 1,
     poolAddresses,
     cardsInGroup = 1,
     onClick,
   } = props;
+  const { t } = useTranslation();
 
   const earliestTerm = useMemo(() => min(terms), [terms]);
 
@@ -66,13 +66,6 @@ const PoolCard: FC<PoolCardProps> = props => {
 
   const maxAprFormatted = useMemo(() => (maxApr ? DecimalUtils.formatPercentage(maxApr) : undefined), [maxApr]);
 
-  const aggregatedAPRFormatted = useMemo(() => {
-    if (!aggregatedAPR) {
-      return null;
-    }
-    return DecimalUtils.formatPercentage(aggregatedAPR);
-  }, [aggregatedAPR]);
-
   const totalBalanceFormatted = useMemo(() => {
     if (!totalBalance) {
       return null;
@@ -82,17 +75,16 @@ const PoolCard: FC<PoolCardProps> = props => {
 
   const aprLabel = useMemo(() => {
     if (poolCardVariant === 'markets') {
-      return aprValues.length === 1 ? 'Fixed APR' : 'Fixed APR (up to)';
+      return aprValues.length === 1 ? t('PoolCard.fixedApr') : t('PoolCard.fixedAprUpTo');
     }
 
-    return aprValues.length === 1 ? 'APR' : 'APR (up to)';
-  }, [aprValues.length, poolCardVariant]);
+    return aprValues.length === 1 ? t('PoolCard.apr') : t('PoolCard.aprUpTo');
+  }, [aprValues.length, poolCardVariant, t]);
 
   const handleClick = useCallback(() => {
     onClick(chain, ticker, protocol, poolCardStatus, poolAddresses);
   }, [chain, ticker, protocol, poolCardStatus, poolAddresses, onClick]);
 
-  // TODO: check if other values (aggregatedAPR and totalBalance) are loaded
   const loading = !maxApr;
 
   return (
@@ -127,28 +119,26 @@ const PoolCard: FC<PoolCardProps> = props => {
 
         <div className="tc__poolCard-info">
           {/* APR - Shown only for non mature pools */}
-          {poolCardStatus !== 'Matured' && (
-            <div className="tc__poolCard-info-row">
-              <Typography variant="body-secondary" weight="medium" color="text-secondary">
-                {aprLabel}
+          <div className="tc__poolCard-info-row">
+            <Typography variant="body-secondary" weight="medium" color="text-secondary">
+              {aprLabel}
+            </Typography>
+            {loading && (
+              <div className="tc__poolCard-value-placeholder-container">
+                <LoadingPlaceholder width="medium" height="medium" />
+              </div>
+            )}
+            {!loading && (
+              <Typography variant="subheader" weight="medium" type="mono">
+                {poolCardStatus === 'Matured' ? t('PoolCard.notApplicable') : maxAprFormatted}
               </Typography>
-              {loading && (
-                <div className="tc__poolCard-value-placeholder-container">
-                  <LoadingPlaceholder width="medium" height="medium" />
-                </div>
-              )}
-              {!loading && (
-                <Typography variant="subheader" weight="medium" type="mono">
-                  {maxAprFormatted}
-                </Typography>
-              )}
-            </div>
-          )}
+            )}
+          </div>
 
           {/* Term */}
           <div className="tc__poolCard-info-row">
             <Typography variant="body-secondary" weight="medium" color="text-secondary">
-              {terms.length > 1 ? 'Earliest term' : 'Term'}
+              {terms.length > 1 ? t('PoolCard.earliestTerm') : t('PoolCard.term')}
             </Typography>
             {loading && (
               <div className="tc__poolCard-value-placeholder-container">
@@ -158,30 +148,11 @@ const PoolCard: FC<PoolCardProps> = props => {
             {!loading && <FormattedDate date={earliestTerm} size="large" />}
           </div>
 
-          {/* Aggregated APR */}
-          {poolCardVariant === 'portfolio' && aggregatedAPRFormatted && (
-            <div className="tc__poolCard-info-row">
-              <Typography variant="body-secondary" weight="medium" color="text-secondary">
-                Aggregated APR
-              </Typography>
-              {loading && (
-                <div className="tc__poolCard-value-placeholder-container">
-                  <LoadingPlaceholder width="medium" height="medium" />
-                </div>
-              )}
-              {!loading && (
-                <Typography variant="subheader" weight="medium" type="mono">
-                  {aggregatedAPRFormatted}
-                </Typography>
-              )}
-            </div>
-          )}
-
           {/* Total Balance */}
           {poolCardVariant === 'portfolio' && totalBalanceFormatted && (
             <div className="tc__poolCard-info-row">
               <Typography variant="body-secondary" weight="medium" color="text-secondary">
-                Total Balance
+                {cardsInGroup && cardsInGroup > 1 ? t('PoolCard.totalBalance') : t('PoolCard.balance')}
               </Typography>
               {loading && (
                 <div className="tc__poolCard-value-placeholder-container">
