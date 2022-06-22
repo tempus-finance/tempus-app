@@ -10,6 +10,9 @@ test.describe.serial("Metamask and network tests", () => {
     test.beforeAll(async () => {
         browser = await chromiumPersistant();
         await metamaskLogin(browser);
+    });
+
+    test('Metamask - Tempus connection', async () => {
         await tempusMetamaskConnect(browser);
     });
 
