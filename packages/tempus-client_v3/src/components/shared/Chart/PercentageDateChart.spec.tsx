@@ -1,5 +1,5 @@
 import { render } from '@testing-library/react';
-import { ChartSizeProps } from './Chart';
+import { ChartCommonProps } from './Chart';
 import PercentageDateChart, { PercentageDateChartProps } from './PercentageDateChart';
 
 const data = [...Array(20).keys()].map(value => ({
@@ -7,12 +7,12 @@ const data = [...Array(20).keys()].map(value => ({
   y: (value * value) / 10000,
 }));
 
-const defaultProps: PercentageDateChartProps & ChartSizeProps = {
+const defaultProps: PercentageDateChartProps & ChartCommonProps = {
   width: 500,
   height: 300,
 };
 
-const subject = (props: PercentageDateChartProps & ChartSizeProps) => render(<PercentageDateChart {...props} />);
+const subject = (props: PercentageDateChartProps & ChartCommonProps) => render(<PercentageDateChart {...props} />);
 
 describe('PercentageDateChart', () => {
   const originalConsoleWarn = console.warn;

@@ -1,27 +1,34 @@
 import { FC, useCallback, useMemo } from 'react';
 import { DecimalUtils } from 'tempus-core-services';
+import { useUserDepositedPools } from '../../../hooks';
 import {
   BalanceChartTooltipContent,
   ChartDot,
   DateChart,
-  ChartSizeProps,
+  ChartCommonProps,
   SelectableChartDataPoint,
 } from '../../shared';
+import { generateDummyDateChartData } from '../../shared/Chart/utils';
 
-const PortfolioYieldChart: FC<ChartSizeProps> = props => {
+const PortfolioYieldChart: FC<ChartCommonProps> = props => {
   const { width, height = 512 } = props;
+  const userDepositedPools = useUserDepositedPools();
+  const hideData = !userDepositedPools.length;
 
-  // TODO: Replace with real data
-  const chartData = useMemo(
-    () =>
-      [...Array(20).keys()].map(value => ({
-        x: new Date(2022, 4, 1 + value),
-        y: (value * value) / 10000,
-        visible: value === 5 || value === 18,
-        selected: value === 5,
-      })) as SelectableChartDataPoint<Date, number>[],
-    [],
-  );
+  const chartData = useMemo((): SelectableChartDataPoint<Date, number>[] => {
+    if (hideData) {
+      // Generates some dummy data that won't be shown in the graph, but will force showing axes
+      return generateDummyDateChartData();
+    }
+
+    // TODO: Replace with real data
+    return [...Array(20).keys()].map(value => ({
+      x: new Date(2022, 4, 1 + value),
+      y: (value * value) / 10000,
+      visible: value === 5 || value === 18,
+      selected: value === 5,
+    }));
+  }, [hideData]);
 
   const topPercentageProjected = useMemo(
     () =>
@@ -63,6 +70,7 @@ const PortfolioYieldChart: FC<ChartSizeProps> = props => {
       dot={chartDot}
       tooltipContent={chartTooltipContent}
       topPercentageProjected={topPercentageProjected}
+      hideData={hideData}
     />
   );
 };

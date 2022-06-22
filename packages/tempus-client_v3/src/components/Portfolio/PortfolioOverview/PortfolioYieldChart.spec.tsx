@@ -1,7 +1,13 @@
 import { render } from '@testing-library/react';
+import { pool1 as mockPool1, pool2 as mockPool2 } from '../../../setupTests';
 import PortfolioYieldChart from './PortfolioYieldChart';
 
 const subject = () => render(<PortfolioYieldChart width={800} />);
+
+jest.mock('../../../hooks', () => ({
+  ...jest.requireActual('../../../hooks'),
+  useUserDepositedPools: jest.fn().mockReturnValue([mockPool1, mockPool2]),
+}));
 
 describe('PortfolioYieldChart', () => {
   const originalConsoleWarn = console.warn;

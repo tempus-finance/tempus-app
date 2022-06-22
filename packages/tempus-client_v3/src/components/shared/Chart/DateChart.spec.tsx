@@ -1,5 +1,5 @@
 import { render } from '@testing-library/react';
-import { ChartSizeProps } from './Chart';
+import { ChartCommonProps } from './Chart';
 import DateChart, { DateChartProps } from './DateChart';
 
 const data = [...Array(20).keys()].map(value => ({
@@ -7,12 +7,12 @@ const data = [...Array(20).keys()].map(value => ({
   y: value * value,
 }));
 
-const defaultProps: DateChartProps & ChartSizeProps = {
+const defaultProps: DateChartProps & ChartCommonProps = {
   width: 500,
   height: 300,
 };
 
-const subject = (props: DateChartProps & ChartSizeProps) => render(<DateChart {...props} />);
+const subject = (props: DateChartProps & ChartCommonProps) => render(<DateChart {...props} />);
 
 describe('DateChart', () => {
   const originalConsoleWarn = console.warn;
