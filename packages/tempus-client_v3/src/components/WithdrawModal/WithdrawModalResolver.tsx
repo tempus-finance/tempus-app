@@ -63,7 +63,7 @@ export const WithdrawModalResolver: FC = () => {
   }
 
   const handleCloseModal = () => {
-    navigate(-1);
+    navigate('/portfolio/positions');
   };
 
   return (
