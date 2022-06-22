@@ -63,16 +63,6 @@
   "NumberInput": {
     "buttonMax": ""
   },
-  "PoolPositionCard": {
-    "apr": "",
-    "balance": "",
-    "profitLoss": "",
-    "projectedTotalYield": "",
-    "seeLess": "",
-    "seeMore": "",
-    "term": "",
-    "totalYieldEarned": ""
-  },
   "PoolCard": {
     "apr": "",
     "aprUpTo": "",
@@ -83,6 +73,16 @@
     "notApplicable": "",
     "term": "",
     "totalBalance": ""
+  },
+  "PoolPositionCard": {
+    "apr": "",
+    "balance": "",
+    "profitLoss": "",
+    "projectedTotalYield": "",
+    "seeLess": "",
+    "seeMore": "",
+    "term": "",
+    "totalYieldEarned": ""
   },
   "PoolPositionModal": {
     "title": "Detalles Posición",
@@ -118,7 +118,6 @@
   "SettingsPopup": {
     "localeName": "Español",
     "slippageTooltipContent": "",
-    "titleDarkMode": "",
     "titleLocale": "",
     "titleSlippage": ""
   },
@@ -140,6 +139,9 @@
     "errorModalDescription": "La transacción falló debido a un error. [{{error}}]",
     "errorModalPrimaryButton": "Intentar otra vez",
     "errorModalTitle": "Hay un problema.",
+    "labelApproveDefault": "",
+    "labelApproveLoading": "",
+    "labelApproveSuccess": "",
     "labelAvailableForWithdraw": "",
     "labelExecuteDefault": "",
     "labelExecuteLoading": "",

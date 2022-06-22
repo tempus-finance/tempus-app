@@ -118,7 +118,6 @@
   "SettingsPopup": {
     "localeName": "~~=={{((Pseudo Translation))}}==~~",
     "slippageTooltipContent": "~~~~~====={{{{{(((((slippageTooltipContent)))))}}}}}=====~~~~~",
-    "titleDarkMode": "~~~~~====={{{{{(((((titleDarkMode)))))}}}}}=====~~~~~",
     "titleLocale": "~~~~~====={{{{{(((((titleLocale)))))}}}}}=====~~~~~",
     "titleSlippage": "~~~~~====={{{{{(((((titleSlippage)))))}}}}}=====~~~~~"
   },
@@ -140,6 +139,9 @@
     "errorModalDescription": "~~~~~====={{{{{(((((errorModalDescription)))))}}}}}=====~~~~~",
     "errorModalPrimaryButton": "~~~~~====={{{{{(((((errorModalPrimaryButton)))))}}}}}=====~~~~~",
     "errorModalTitle": "~~~~~====={{{{{(((((errorModalTitle)))))}}}}}=====~~~~~",
+    "labelApproveDefault": "~~~~~====={{{{{(((((labelApproveDefault)))))}}}}}=====~~~~~",
+    "labelApproveLoading": "~~~~~====={{{{{(((((labelApproveLoading)))))}}}}}=====~~~~~",
+    "labelApproveSuccess": "~~~~~====={{{{{(((((labelApproveSuccess)))))}}}}}=====~~~~~",
     "labelAvailableForWithdraw": "~~~~~====={{{{{(((((labelAvailableForWithdraw)))))}}}}}=====~~~~~",
     "labelExecuteDefault": "~~~~~====={{{{{(((((labelExecuteDefault)))))}}}}}=====~~~~~",
     "labelExecuteLoading": "~~~~~====={{{{{(((((labelExecuteLoading)))))}}}}}=====~~~~~",
