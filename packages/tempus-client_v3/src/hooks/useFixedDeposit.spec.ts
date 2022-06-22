@@ -2,12 +2,7 @@ import { JsonRpcSigner } from '@ethersproject/providers';
 import { renderHook } from '@testing-library/react-hooks';
 import { act } from 'react-dom/test-utils';
 import { Decimal, getDefinedServices, ONE } from 'tempus-core-services';
-import { v4 as uuidv4 } from 'uuid';
 import { useFixedDeposit, subscribeFixedDepositStatus, resetFixedDepositStatus } from './useFixedDeposit';
-
-jest.mock('uuid', () => ({
-  v4: jest.fn(),
-}));
 
 jest.mock('tempus-core-services', () => ({
   ...jest.requireActual('tempus-core-services'),
@@ -40,6 +35,7 @@ describe('useFixedDeposit', () => {
         tokenAddress: '00001-ybt',
         slippage: new Decimal(1.5),
         signer: {} as unknown as JsonRpcSigner,
+        txnId: '0x01',
       });
     });
 
@@ -59,7 +55,7 @@ describe('useFixedDeposit', () => {
         tokenTicker: 'stETH',
         tokenAddress: '00001-ybt',
       },
-      txnId: '0x00',
+      txnId: '0x01',
     });
   });
 
@@ -82,6 +78,7 @@ describe('useFixedDeposit', () => {
         tokenAddress: '00001-ybt',
         slippage: new Decimal(1.5),
         signer: {} as unknown as JsonRpcSigner,
+        txnId: '0x01',
       });
     });
 
@@ -101,7 +98,7 @@ describe('useFixedDeposit', () => {
         tokenTicker: 'stETH',
         tokenAddress: '00001-ybt',
       },
-      txnId: '0x00',
+      txnId: '0x01',
     });
 
     act(() => {
@@ -113,6 +110,7 @@ describe('useFixedDeposit', () => {
         tokenAddress: '00001-ybt',
         slippage: new Decimal(1.5),
         signer: {} as unknown as JsonRpcSigner,
+        txnId: '0x02',
       });
     });
 
@@ -132,12 +130,11 @@ describe('useFixedDeposit', () => {
         tokenTicker: 'stETH',
         tokenAddress: '00001-ybt',
       },
-      txnId: '0x00',
+      txnId: '0x02',
     });
   });
 
   it('returns error status when there is error thrown for fixedDeposit()', async () => {
-    (uuidv4 as jest.Mock).mockReturnValue('0x01');
     jest.spyOn(console, 'error').mockImplementation();
     (getDefinedServices as jest.Mock).mockImplementation(() => ({
       DepositService: {
@@ -165,6 +162,7 @@ describe('useFixedDeposit', () => {
         tokenAddress: '00001-ybt',
         slippage: new Decimal(1.5),
         signer: {} as unknown as JsonRpcSigner,
+        txnId: '0x01',
       });
     });
 
@@ -193,7 +191,6 @@ describe('useFixedDeposit', () => {
   });
 
   it('returns error status when there is error rejected for fixedDeposit()', async () => {
-    (uuidv4 as jest.Mock).mockReturnValue('0x01');
     jest.spyOn(console, 'error').mockImplementation();
     (getDefinedServices as jest.Mock).mockImplementation(() => ({
       DepositService: {
@@ -219,6 +216,7 @@ describe('useFixedDeposit', () => {
         tokenAddress: '00001-ybt',
         slippage: new Decimal(1.5),
         signer: {} as unknown as JsonRpcSigner,
+        txnId: '0x01',
       });
     });
 

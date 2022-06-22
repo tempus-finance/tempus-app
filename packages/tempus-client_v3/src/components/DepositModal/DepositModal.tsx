@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { ChainConfig, Decimal, chainIdToChainName, Ticker, ZERO, TempusPool, DecimalUtils } from 'tempus-core-services';
 import { v4 as uuidv4 } from 'uuid';
-import { dateFormatter, TIMEOUT_FROM_SUCCESS_TO_DEFAULT_IN_MS } from '../../constants';
+import { TIMEOUT_FROM_SUCCESS_TO_DEFAULT_IN_MS } from '../../constants';
 import {
   setPoolForYieldAtMaturity,
   setTokenAmountForYieldAtMaturity,
@@ -15,6 +15,7 @@ import {
   useFixedDeposit,
   useAllowances,
   useAppEvent,
+  useLocale,
 } from '../../hooks';
 import { MaturityTerm, TokenMetadata, TokenMetadataProp } from '../../interfaces';
 import { ActionButtonState, Loading, ModalProps } from '../shared';
@@ -38,6 +39,7 @@ const DepositModal: FC<DepositModalProps> = props => {
   const { tokens, onClose, poolStartDate, maturityTerms, chainConfig } = props;
 
   const { t } = useTranslation();
+  const [locale] = useLocale();
   const navigate = useNavigate();
 
   const useDepositModalProps = useDepositModalData();
@@ -57,8 +59,7 @@ const DepositModal: FC<DepositModalProps> = props => {
   const [fixedDepositSuccessful, setFixedDepositSuccessful] = useState<boolean>(false);
   const [fixedDepositError, setFixedDepositError] = useState<Error>();
   const [tokenApproved, setTokenApproved] = useState<boolean>(false);
-  const [approveTxnId, setApproveTxnId] = useState<string>();
-  const [depositTxnId] = useState<string>();
+  const [txnId, setTxnId] = useState<string>(); // either approve or deposit, one txn at a time
 
   const approveTokenTxnHash = approveTokenStatus?.contractTransaction?.hash ?? '0x0';
   const depositTokenTxnHash = fixedDepositStatus?.contractTransaction?.hash ?? '0x0';
@@ -109,32 +110,15 @@ const DepositModal: FC<DepositModalProps> = props => {
     [maturityTerm, maturityTerms, poolStartDate],
   );
 
+  // hook to handle the modal button status in one place
   useEffect(() => {
-    if (approveTokenStatus && approveTokenStatus.txnId === approveTxnId) {
-      if (approveTokenStatus.pending) {
+    // current deposit txn in modal = current deposit txn status
+    if (fixedDepositStatus?.txnId === txnId) {
+      if (fixedDepositStatus?.pending) {
         setActionButtonState('loading');
-      } else if (approveTokenStatus.success) {
-        setActionButtonState('success');
         setFixedDepositError(undefined);
-        setTokenApproved(true);
-
-        setTimeout(() => {
-          setActionButtonState('default');
-        }, TIMEOUT_FROM_SUCCESS_TO_DEFAULT_IN_MS);
-      } else if (approveTokenStatus.error) {
-        setActionButtonState('default');
-        setFixedDepositError(approveTokenStatus.error);
-      }
-    } else {
-      setActionButtonState('default');
-    }
-  }, [approveTokenStatus, approveTxnId]);
-
-  useEffect(() => {
-    if (fixedDepositStatus && fixedDepositStatus.txnId === depositTxnId) {
-      if (fixedDepositStatus.success) {
+      } else if (fixedDepositStatus?.success) {
         setActionButtonState('success');
-        setFixedDepositError(undefined);
         emitAppEvent({
           eventType: 'deposit',
           tempusPool: selectedTempusPool as TempusPool,
@@ -145,14 +129,37 @@ const DepositModal: FC<DepositModalProps> = props => {
         setTimeout(() => {
           setFixedDepositSuccessful(true);
         }, TIMEOUT_FROM_SUCCESS_TO_DEFAULT_IN_MS);
-      } else if (fixedDepositStatus.error) {
+      } else {
         setActionButtonState('default');
-        setFixedDepositError(fixedDepositStatus.error);
+
+        if (fixedDepositStatus?.error) {
+          setFixedDepositError(fixedDepositStatus.error);
+        }
       }
+      // current approval txn in modal = current approval txn status
+    } else if (approveTokenStatus?.txnId === txnId) {
+      if (approveTokenStatus?.pending) {
+        setActionButtonState('loading');
+        setFixedDepositError(undefined);
+      } else if (approveTokenStatus?.success) {
+        setActionButtonState('success');
+        setTokenApproved(true);
+
+        setTimeout(() => {
+          setActionButtonState('default');
+        }, TIMEOUT_FROM_SUCCESS_TO_DEFAULT_IN_MS);
+      } else {
+        setActionButtonState('default');
+
+        if (approveTokenStatus?.error) {
+          setFixedDepositError(approveTokenStatus.error);
+        }
+      }
+      // status empty, or previous txn status that not related to current modal
     } else {
       setActionButtonState('default');
     }
-  }, [fixedDepositStatus, emitAppEvent, selectedTempusPool, depositTxnId]);
+  }, [approveTokenStatus, fixedDepositStatus, txnId, emitAppEvent, selectedTempusPool]);
 
   const handleMaturityChange = useCallback(
     (newTerm: MaturityTerm) => {
@@ -185,10 +192,11 @@ const DepositModal: FC<DepositModalProps> = props => {
         const tokenAllowance = tokenAllowances[`${selectedTempusPool.chain}-${token.address}`];
 
         if (!tokenAllowance?.alwaysApproved && amount.gt(tokenAllowance?.amount ?? ZERO)) {
+          // showing loading status before prompting wallet
           setActionButtonState('loading');
 
-          const txnId = uuidv4();
-          setApproveTxnId(txnId);
+          const approveTxnId = uuidv4();
+          setTxnId(approveTxnId);
 
           approveToken({
             chain: selectedTempusPool.chain,
@@ -196,7 +204,7 @@ const DepositModal: FC<DepositModalProps> = props => {
             spenderAddress: chainConfig.tempusControllerContract,
             amount,
             signer,
-            txnId,
+            txnId: approveTxnId,
           });
         } else {
           setTokenApproved(true);
@@ -219,7 +227,11 @@ const DepositModal: FC<DepositModalProps> = props => {
   const handleDeposit = useCallback(
     async (amount: Decimal) => {
       if (selectedTempusPool && signer) {
+        // showing loading status before prompting wallet
         setActionButtonState('loading');
+
+        const depositTxnId = uuidv4();
+        setTxnId(depositTxnId);
 
         fixedDeposit({
           chain: selectedTempusPool.chain,
@@ -229,6 +241,7 @@ const DepositModal: FC<DepositModalProps> = props => {
           tokenAddress: token.address,
           slippage,
           signer,
+          txnId: depositTxnId,
         });
       }
 
@@ -286,7 +299,11 @@ const DepositModal: FC<DepositModalProps> = props => {
           preview: t('DepositModal.previewDescription'),
           action: t('DepositModal.description', {
             asset: tokens?.[0].ticker,
-            term: dateFormatter.format(maturityTerm?.date),
+            term: new Date(maturityTerm?.date).toLocaleDateString(locale, {
+              day: '2-digit',
+              month: 'short',
+              year: 'numeric',
+            }),
           }),
         }}
         preview={depositYieldChart}
@@ -311,7 +328,11 @@ const DepositModal: FC<DepositModalProps> = props => {
         description={t('DepositModal.successModalDescription', {
           amount: depositedAmountFormatted,
           ticker: token.ticker,
-          term: dateFormatter.format(maturityTerm.date),
+          term: new Date(maturityTerm.date).toLocaleDateString(locale, {
+            day: '2-digit',
+            month: 'short',
+            year: 'numeric',
+          }),
         })}
         primaryButtonLabel={{
           default: t('DepositModal.successModalPrimaryButton'),
@@ -327,7 +348,11 @@ const DepositModal: FC<DepositModalProps> = props => {
       />
       {/* Show error modal if deposit throws Error */}
       <ErrorModal
-        description={t('DepositModal.errorModalDescription')}
+        description={t('DepositModal.errorModalDescription', {
+          // fixedDepositError.data.message: error from txn
+          // fixedDepositError.message: generic error, e.g. rejected by metamask
+          error: (fixedDepositError as any)?.data?.message ?? fixedDepositError?.message,
+        })}
         primaryButtonLabel={{
           default: t('DepositModal.errorModalPrimaryButton'),
         }}

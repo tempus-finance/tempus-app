@@ -49,7 +49,7 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
   const [tokensApproved, setTokensApproved] = useState<boolean>(false);
   const [withdrawSuccessful, setWithdrawSuccessful] = useState<boolean>(false);
   const [withdrawError, setWithdrawError] = useState<Error>();
-  const [approveTxnIds, setApproveTxnIds] = useState<string[]>([]);
+  const [txnIds, setTxnIds] = useState<string[]>([]);
 
   const capitalsTokenBalance = capitalsBalanceData?.balance ?? ZERO;
   const yieldsTokenBalance = yieldsBalanceData?.balance ?? ZERO;
@@ -58,13 +58,13 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
   const withdrawTokenTxnHash = withdrawStatus?.contractTransaction?.hash ?? '0x0';
 
   useEffect(() => {
-    if (approveTokenStatus && approveTxnIds.includes(approveTokenStatus.txnId) && approveTokenStatus.error) {
+    if (approveTokenStatus && txnIds.includes(approveTokenStatus.txnId) && approveTokenStatus.error) {
       setActionButtonState('default');
       setWithdrawError(approveTokenStatus.error);
     } else {
       setActionButtonState('default');
     }
-  }, [approveTokenStatus, approveTxnIds]);
+  }, [approveTokenStatus, txnIds]);
 
   useEffect(() => {
     if (withdrawStatus?.success) {
@@ -183,7 +183,7 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
         });
       }
 
-      setApproveTxnIds([lpApproveTxnId, capitalsApproveTxnId, yieldsApproveTxnId]);
+      setTxnIds([lpApproveTxnId, capitalsApproveTxnId, yieldsApproveTxnId]);
     }
 
     return approveTokenTxnHash;
@@ -292,7 +292,7 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
           ticker: currency.ticker,
           term: new Date(tempusPool.maturityDate).toLocaleDateString(locale, {
             day: '2-digit',
-            month: '2-digit',
+            month: 'short',
             year: 'numeric',
           }),
         })}
