@@ -22,7 +22,7 @@ interface ApproveTokenStatus {
   success?: boolean;
   error?: Error;
   contractTransaction?: ContractTransaction;
-  txnId: string; // unique string to tell react it's another response
+  txnId: string;
 }
 
 interface ApproveTokenResponse {
@@ -39,6 +39,8 @@ const approveTokenStream$ = combineLatest([approveToken$]).pipe(
   concatMap<[ApproveTokenRequestEnhanced], Promise<ApproveTokenResponse>>(async ([payload]) => {
     const { chain, tokenAddress, spenderAddress, amount, signer, txnId } = payload;
     const request = { chain, tokenAddress, amount };
+
+    tokenApproveStatus$.next({ pending: true, txnId });
 
     try {
       const Erc20TokenService = getDefinedServices(chain).ERC20TokenServiceGetter(tokenAddress, chain, signer);
