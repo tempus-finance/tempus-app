@@ -1,7 +1,7 @@
 import { act } from '@testing-library/react';
 import { renderHook } from '@testing-library/react-hooks';
 import { of as mockOf, delay as mockDelay } from 'rxjs';
-import { Decimal as MockDecimal, getServices, ZERO_ADDRESS } from 'tempus-core-services';
+import { Decimal as MockDecimal, getServices } from 'tempus-core-services';
 import { getConfigManager } from '../config/getConfigManager';
 import { reset, subscribe, usePoolBalance } from './usePoolBalance';
 
@@ -98,6 +98,7 @@ describe('usePoolBalances', () => {
       chain: 'ethereum',
       balanceInBackingToken: null,
       balanceInYieldBearingToken: null,
+      balanceInUsd: null,
     });
     try {
       await waitForNextUpdate();

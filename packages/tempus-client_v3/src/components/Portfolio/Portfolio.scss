@@ -27,6 +27,7 @@
   .tc__app__portfolio-info-box {
     padding: 24px;
     flex-grow: 1;
+    flex-basis: 0;
 
     &:not(:last-child) {
       margin-right: 12px;
@@ -39,6 +40,10 @@
 
     .tc__app__portfolio-info-box-currency {
       margin-left: 12px;
+    }
+
+    .tc__loading-placeholder {
+      margin-top: 8px;
     }
   }
 }
