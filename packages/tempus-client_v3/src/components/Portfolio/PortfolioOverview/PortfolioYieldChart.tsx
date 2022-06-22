@@ -13,6 +13,9 @@ import { generateDummyDateChartData } from '../../shared/Chart/utils';
 const PortfolioYieldChart: FC<ChartCommonProps> = props => {
   const { width, height = 512 } = props;
   const userDepositedPools = useUserDepositedPools();
+
+  // TODO: When the Graph is integrated, we should hide the chart based on the data from the graph instead of using
+  // current positions.
   const hideData = !userDepositedPools.length;
 
   const chartData = useMemo((): SelectableChartDataPoint<Date, number>[] => {

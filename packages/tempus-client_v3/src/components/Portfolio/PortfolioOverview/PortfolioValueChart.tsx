@@ -14,6 +14,9 @@ interface DataPoint extends ChartDataPoint<Date, number> {
 const PortfolioValueChart: FC<ChartCommonProps> = props => {
   const { width, height = 512 } = props;
   const userDepositedPools = useUserDepositedPools();
+
+  // TODO: When the Graph is integrated, we should hide the chart based on the data from the graph instead of using
+  // current positions.
   const hideData = !userDepositedPools.length;
 
   const chartData = useMemo((): DataPoint[] => {
