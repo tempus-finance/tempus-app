@@ -218,7 +218,6 @@ workflows:
       - deploy-to-stage:
           requires:
             - test-tempus-client-v3
-            - test-tempus-core-services
           filters:
             branches:
               only: master
