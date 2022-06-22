@@ -250,11 +250,6 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
     navigate('/portfolio/overview');
   }, [navigate]);
 
-  const handleCloseModal = useCallback(() => {
-    // TODO - If user withdraws from Portfolio page we should navigate back to Portfolio page
-    navigate('/portfolio/positions');
-  }, [navigate]);
-
   const withdrawnAmountFormatted = useMemo(() => {
     const withdrawnAmount = withdrawStatus?.transactionData?.withdrawnAmount;
     if (!withdrawnAmount) {
@@ -307,7 +302,7 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
         secondaryButtonLabel={{
           default: t('WithdrawModal.successModalSecondaryButton'),
         }}
-        onClose={handleCloseModal}
+        onClose={onClose}
         onPrimaryButtonClick={handleManagePortfolioClick}
         onSecondaryButtonClick={handleDepositInAnotherPoolClick}
         open={withdrawSuccessful}
@@ -319,7 +314,7 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
         primaryButtonLabel={{
           default: t('WithdrawModal.errorModalPrimaryButton'),
         }}
-        onClose={handleCloseModal}
+        onClose={onClose}
         onPrimaryButtonClick={handleErrorTryAgain}
         open={Boolean(withdrawError)}
         title={t('WithdrawModal.errorModalTitle')}

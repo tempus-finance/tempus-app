@@ -1,7 +1,7 @@
 import { FC, useCallback, useMemo } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { Chain, ProtocolName, Ticker, ZERO } from 'tempus-core-services';
-import { useSelectedChain, useUserDepositedPools, useTokenBalances } from '../../../hooks';
+import { useSelectedChain, useUserDepositedPools, usePoolBalances } from '../../../hooks';
 import { GroupedPoolCardGrid, PoolCardData, PoolCardGroupId, PoolCardStatus } from '../../shared';
 import PortfolioNoPositions from './PortfolioNoPositions';
 
@@ -12,7 +12,7 @@ const PortfolioPositions: FC = () => {
 
   const tempusPools = useUserDepositedPools();
   const [chain] = useSelectedChain();
-  const balances = useTokenBalances();
+  const balances = usePoolBalances();
 
   const cardGroups = useMemo(() => {
     const groups = new Map<PoolCardGroupId, PoolCardData[]>();
@@ -36,7 +36,7 @@ const PortfolioPositions: FC = () => {
           protocol: tempusPool.protocol,
           matured: isMatured,
           pools: [tempusPool],
-          totalBalance: balances[`${chain}-${tempusPool.principalsAddress}`] ?? ZERO,
+          totalBalance: balances[`${chain}-${tempusPool.address}`]?.balanceInBackingToken ?? ZERO,
         });
       });
 

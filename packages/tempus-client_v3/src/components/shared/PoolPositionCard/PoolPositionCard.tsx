@@ -45,6 +45,9 @@ const PoolPositionCard: FC<PoolPositionCardProps> = props => {
   }, []);
 
   const aprFormatted = useMemo(() => {
+    if (!apr) {
+      return null;
+    }
     // Mature pools do not have Fixed APR
     if (isAfter(new Date(), term)) {
       return null;

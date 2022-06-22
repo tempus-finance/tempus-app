@@ -72,6 +72,17 @@
     "term": "",
     "totalYieldEarned": ""
   },
+  "PoolCard": {
+    "apr": "",
+    "aprUpTo": "",
+    "balance": "",
+    "earliestTerm": "",
+    "fixedApr": "",
+    "fixedAprUpTo": "",
+    "notApplicable": "",
+    "term": "",
+    "totalBalance": ""
+  },
   "PoolPositionModal": {
     "title": "Detalles Posición",
     "withdrawAction": "Retirar"
