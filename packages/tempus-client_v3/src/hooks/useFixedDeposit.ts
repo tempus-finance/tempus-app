@@ -3,7 +3,6 @@ import { JsonRpcSigner } from '@ethersproject/providers';
 import { bind } from '@react-rxjs/core';
 import { createSignal } from '@react-rxjs/utils';
 import { concatMap, map, of, from, Observable, tap, BehaviorSubject, Subscription, catchError } from 'rxjs';
-import { v4 as uuidv4 } from 'uuid';
 import { Chain, Decimal, getDefinedServices, Ticker } from 'tempus-core-services';
 
 interface FixedDepositRequest {
@@ -14,6 +13,7 @@ interface FixedDepositRequest {
   tokenAddress: string;
   slippage: Decimal;
   signer: JsonRpcSigner;
+  txnId: string;
 }
 
 interface FixedDepositStatus {
@@ -25,7 +25,7 @@ interface FixedDepositStatus {
   transactionData?: {
     depositedAmount: Decimal;
   };
-  txnId: string; // unique string to tell react it's another response
+  txnId: string;
 }
 
 interface FixedDepositResponse {
@@ -35,6 +35,7 @@ interface FixedDepositResponse {
     depositedAmount: Decimal;
   };
   error?: Error;
+  txnId: string;
 }
 
 const [fixedDeposit$, fixedDeposit] = createSignal<FixedDepositRequest>();
@@ -42,8 +43,10 @@ const fixedDepositStatus$ = new BehaviorSubject<FixedDepositStatus | null>(null)
 
 const stream$ = fixedDeposit$.pipe(
   concatMap<FixedDepositRequest, Observable<FixedDepositResponse>>(payload => {
-    const { chain, poolAddress, tokenAmount, tokenTicker, tokenAddress, slippage, signer } = payload;
+    const { chain, poolAddress, tokenAmount, tokenTicker, tokenAddress, slippage, signer, txnId } = payload;
     const request = { chain, poolAddress, tokenAmount, tokenTicker, tokenAddress };
+
+    fixedDepositStatus$.next({ pending: true, txnId });
 
     try {
       const result$ = from(
@@ -59,13 +62,14 @@ const stream$ = fixedDeposit$.pipe(
 
       return result$.pipe(
         map(
-          result =>
+          ({ contractTransaction, depositedAmount }) =>
             ({
-              contractTransaction: result.contractTransaction,
+              contractTransaction,
               transactionData: {
-                depositedAmount: result.depositedAmount,
+                depositedAmount,
               },
-              request: { chain, poolAddress, tokenAmount, tokenTicker, tokenAddress },
+              request,
+              txnId,
             } as FixedDepositResponse),
         ),
         catchError(error => {
@@ -73,6 +77,7 @@ const stream$ = fixedDeposit$.pipe(
           return of({
             request,
             error,
+            txnId,
           } as FixedDepositResponse);
         }),
       );
@@ -81,11 +86,12 @@ const stream$ = fixedDeposit$.pipe(
       return of({
         request,
         error,
+        txnId,
       } as FixedDepositResponse);
     }
   }),
   map<FixedDepositResponse, FixedDepositStatus>(response => {
-    const { contractTransaction, transactionData, request, error } = response;
+    const { contractTransaction, transactionData, request, error, txnId } = response;
 
     return contractTransaction && transactionData
       ? {
@@ -94,9 +100,9 @@ const stream$ = fixedDeposit$.pipe(
           request,
           contractTransaction,
           transactionData,
-          txnId: contractTransaction.hash, // to access txn hash plz still access contractTransaction.hash
+          txnId,
         }
-      : { pending: false, success: false, error, request, txnId: uuidv4() };
+      : { pending: false, success: false, error, request, txnId };
   }),
   tap(status => fixedDepositStatus$.next(status)),
 );

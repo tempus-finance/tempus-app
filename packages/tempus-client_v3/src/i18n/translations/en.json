@@ -13,7 +13,7 @@
   },
   "DepositModal": {
     "description": "You are about to deposit into the {{asset}} pool with term {{term}}.",
-    "errorModalDescription": "An error occured and the transaction failed.",
+    "errorModalDescription": "An error occured and the transaction failed. [{{error}}]",
     "errorModalPrimaryButton": "Try again",
     "errorModalTitle": "Something's wrong.",
     "labelApproveDefault": "Approve Deposit",
@@ -136,7 +136,7 @@
   },
   "WithdrawModal": {
     "description": "Select the amount you like to withdraw.",
-    "errorModalDescription": "An error occured and the transaction failed.",
+    "errorModalDescription": "An error occured and the transaction failed. [{{error}}]",
     "errorModalPrimaryButton": "Try again",
     "errorModalTitle": "Something's wrong.",
     "labelAvailableForWithdraw": "Available for Withdraw",
