@@ -191,12 +191,9 @@ workflows:
   tempus-app-ci:
     jobs:
       - bootstrap
-      - build-tempus-core-services:
-          requires:
-            - bootstrap
       - build-tempus-client-v3:
           requires:
-            - build-tempus-core-services
+            - bootstrap
       - start-tempus-client-v3:
           requires:
             - build-tempus-client-v3
@@ -207,9 +204,6 @@ workflows:
           requires:
             - build-tempus-client-v3
       - test-tempus-client-v3:
-          requires:
-            - build-tempus-core-services
-      - test-tempus-core-services:
           requires:
             - bootstrap
       - e2e-test:
