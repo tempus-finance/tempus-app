@@ -84,8 +84,6 @@ const DepositModal: FC<DepositModalProps> = props => {
         },
   };
 
-  console.log('approval status', approveTokenStatus);
-
   const selectedTempusPool = useMemo(
     () => modalProps?.tempusPools?.find(pool => pool.maturityDate === maturityTerm.date.getTime()),
     [modalProps, maturityTerm.date],

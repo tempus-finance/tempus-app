@@ -2,7 +2,7 @@ import { act, fireEvent, render } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { Decimal, Decimal as MockDecimal } from 'tempus-core-services';
 import { getConfigManager } from '../../config/getConfigManager';
-import { useTokenBalances, setTempusPoolsForDepositModal } from '../../hooks';
+import { useTokenBalances } from '../../hooks';
 import I18nProvider from '../../i18n/I18nProvider';
 import { MaturityTerm, TokenMetadataProp } from '../../interfaces';
 import DepositModal, { DepositModalProps } from './DepositModal';
