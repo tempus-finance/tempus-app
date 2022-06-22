@@ -61,7 +61,7 @@ jobs:
           at: ./
       - run:
           name: Start Tempus Client V3
-          command: (npm --prefix ./packages/tempus-client_v3 run start&)
+          command: npm --prefix ./packages/tempus-client_v3 run start
       - run: sleep 100
       - persist_to_workspace:
           root: ./
@@ -146,8 +146,6 @@ jobs:
     steps:
       - attach_workspace:
           at: ./
-      - run: (npm --prefix ./packages/tempus-client_v3 run start&)
-      - run: sleep 100
       - run:
           name: E2E Tests
           command: |
@@ -199,9 +197,12 @@ workflows:
       - build-tempus-client-v3:
           requires:
             - build-tempus-core-services
-      - metamask:
+      - start-tempus-client-v3:
           requires:
             - build-tempus-client-v3
+      - metamask:
+          requires:
+            - start-tempus-client-v3
       - build-storybook:
           requires:
             - build-tempus-client-v3
