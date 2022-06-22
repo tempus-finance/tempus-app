@@ -117,7 +117,6 @@
   "SettingsPopup": {
     "localeName": "English",
     "slippageTooltipContent": "Your transaction will revert if the price changes unfavorably by more than this percentage.",
-    "titleDarkMode": "Dark Theme",
     "titleLocale": "Language",
     "titleSlippage": "Slippage tolerance"
   },
@@ -139,6 +138,9 @@
     "errorModalDescription": "An error occured and the transaction failed. [{{error}}]",
     "errorModalPrimaryButton": "Try again",
     "errorModalTitle": "Something's wrong.",
+    "labelApproveDefault": "Approve Deposit",
+    "labelApproveLoading": "Approving...",
+    "labelApproveSuccess": "Successfully Approved",
     "labelAvailableForWithdraw": "Available for Withdraw",
     "labelExecuteDefault": "Execute Withdrawal",
     "labelExecuteLoading": "Executing...",

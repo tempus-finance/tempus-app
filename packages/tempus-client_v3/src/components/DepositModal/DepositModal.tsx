@@ -268,7 +268,7 @@ const DepositModal: FC<DepositModalProps> = props => {
   }, [navigate]);
 
   const handleManagePortfolioClick = useCallback(() => {
-    navigate('/portfolio');
+    navigate('/portfolio/overview');
   }, [navigate]);
 
   const handleCloseModal = useCallback(() => {

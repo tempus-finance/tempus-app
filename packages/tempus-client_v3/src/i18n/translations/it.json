@@ -117,7 +117,6 @@
   "SettingsPopup": {
     "localeName": "Italiano",
     "slippageTooltipContent": "",
-    "titleDarkMode": "",
     "titleLocale": "",
     "titleSlippage": ""
   },
@@ -139,6 +138,9 @@
     "errorModalDescription": "La transazione è fallita a causa di un errore. [{{error}}]",
     "errorModalPrimaryButton": "Riprova",
     "errorModalTitle": "C'è un problema.",
+    "labelApproveDefault": "",
+    "labelApproveLoading": "",
+    "labelApproveSuccess": "",
     "labelAvailableForWithdraw": "",
     "labelExecuteDefault": "",
     "labelExecuteLoading": "",

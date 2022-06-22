@@ -12,10 +12,13 @@ import {
   useTokenApprove,
   useTokenBalance,
   useUserPreferences,
+  useWithdraw,
 } from '../../hooks';
-import { useWithdraw } from '../../hooks/useWithdraw';
 import { TokenMetadataProp } from '../../interfaces';
-import CurrencyInputModal, { CurrencyInputModalInfoRow } from '../CurrencyInputModal';
+import CurrencyInputModal, {
+  CurrencyInputModalActionButtonLabels,
+  CurrencyInputModalInfoRow,
+} from '../CurrencyInputModal';
 import ErrorModal from '../ErrorModal';
 import { ActionButtonState } from '../shared';
 import { ModalProps } from '../shared/Modal/Modal';
@@ -57,30 +60,68 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
   const approveTokenTxnHash = approveTokenStatus?.contractTransaction?.hash ?? '0x0';
   const withdrawTokenTxnHash = withdrawStatus?.contractTransaction?.hash ?? '0x0';
 
+  const actionButtonLabels: CurrencyInputModalActionButtonLabels = {
+    action: tokensApproved
+      ? {
+          default: t('WithdrawModal.labelExecuteDefault'),
+          loading: t('WithdrawModal.labelExecuteLoading'),
+          success: t('WithdrawModal.labelExecuteSuccess'),
+        }
+      : {
+          default: t('WithdrawModal.labelApproveDefault'),
+          loading: t('WithdrawModal.labelApproveLoading'),
+          success: t('WithdrawModal.labelApproveSuccess'),
+        },
+  };
+
+  // hook to handle the modal button status in one place
   useEffect(() => {
-    if (approveTokenStatus && txnIds.includes(approveTokenStatus.txnId) && approveTokenStatus.error) {
-      setActionButtonState('default');
-      setWithdrawError(approveTokenStatus.error);
+    // current withdraw txn in modal = current withdraw txn status
+    if (withdrawStatus?.txnId && txnIds.includes(withdrawStatus?.txnId)) {
+      if (withdrawStatus?.pending) {
+        setActionButtonState('loading');
+        setWithdrawError(undefined);
+      } else if (withdrawStatus?.success) {
+        setActionButtonState('success');
+        emitAppEvent({
+          eventType: 'withdraw',
+          tempusPool,
+          txnHash: withdrawStatus.contractTransaction?.hash ?? '0x0',
+          timestamp: withdrawStatus.contractTransaction?.timestamp ?? Date.now(),
+        });
+
+        setTimeout(() => {
+          setWithdrawSuccessful(true);
+        }, TIMEOUT_FROM_SUCCESS_TO_DEFAULT_IN_MS);
+      } else {
+        setActionButtonState('default');
+
+        if (withdrawStatus?.error) {
+          setWithdrawError(withdrawStatus.error);
+        }
+      }
+      // current approval txn in modal = current approval txn status
+    } else if (approveTokenStatus?.txnId && txnIds.includes(approveTokenStatus?.txnId)) {
+      if (approveTokenStatus?.pending) {
+        setActionButtonState('loading');
+        setWithdrawError(undefined);
+      } else if (approveTokenStatus?.error) {
+        setActionButtonState('default');
+        setWithdrawError(approveTokenStatus.error);
+        // only change the status to success when all tokens approved
+      } else if (approveTokenStatus?.success && tokensApproved) {
+        setActionButtonState('success');
+        setTokensApproved(true);
+
+        setTimeout(() => {
+          setActionButtonState('default');
+        }, TIMEOUT_FROM_SUCCESS_TO_DEFAULT_IN_MS);
+      }
+      // status empty, or previous txn status that not related to current modal
     } else {
       setActionButtonState('default');
     }
-  }, [approveTokenStatus, txnIds]);
-
-  useEffect(() => {
-    if (withdrawStatus?.success) {
-      setActionButtonState('success');
-      emitAppEvent({
-        eventType: 'withdraw',
-        tempusPool,
-        txnHash: withdrawStatus.contractTransaction?.hash ?? '0x0',
-        timestamp: withdrawStatus.contractTransaction?.timestamp ?? Date.now(),
-      });
-
-      setTimeout(() => {
-        setWithdrawSuccessful(true);
-      }, TIMEOUT_FROM_SUCCESS_TO_DEFAULT_IN_MS);
-    }
-  }, [withdrawStatus, emitAppEvent, tempusPool]);
+  }, [approveTokenStatus, withdrawStatus, txnIds, tokensApproved, emitAppEvent, tempusPool]);
 
   useEffect(() => {
     const capitalsAllowance = tokenAllowances[`${tempusPool.chain}-${tempusPool.principalsAddress}`];
@@ -93,11 +134,6 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
 
     if (capitalsApproved && yieldsApproved && lpApproved) {
       setTokensApproved(true);
-      setActionButtonState('success');
-
-      setTimeout(() => {
-        setActionButtonState('default');
-      }, TIMEOUT_FROM_SUCCESS_TO_DEFAULT_IN_MS);
     }
   }, [
     tokenAllowances,
@@ -151,6 +187,7 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
       const yieldsApproveTxnId = uuidv4();
 
       if (!lpAllowance?.alwaysApproved && lpTokenBalance.gt(lpAllowance?.amount ?? ZERO)) {
+        setActionButtonState('loading');
         approveToken({
           chain: tempusPool.chain,
           tokenAddress: tempusPool.ammAddress,
@@ -162,6 +199,7 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
       }
 
       if (!capitalsAllowance?.alwaysApproved && capitalsTokenBalance.gt(capitalsAllowance?.amount ?? ZERO)) {
+        setActionButtonState('loading');
         approveToken({
           chain: tempusPool.chain,
           tokenAddress: tempusPool.principalsAddress,
@@ -173,6 +211,7 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
       }
 
       if (!yieldsAllowance?.alwaysApproved && yieldsTokenBalance.gt(yieldsAllowance?.amount ?? ZERO)) {
+        setActionButtonState('loading');
         approveToken({
           chain: tempusPool.chain,
           tokenAddress: tempusPool.yieldsAddress,
@@ -207,6 +246,8 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
       setActionButtonState('loading');
 
       const chain = chainConfig.chainId ? chainIdToChainName(chainConfig.chainId) : undefined;
+      const withdrawTxnId = uuidv4();
+      setTxnIds([withdrawTxnId]);
 
       if (signer && chain) {
         withdraw({
@@ -221,6 +262,7 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
           lpBalance: lpTokenBalance,
           slippage,
           signer,
+          txnId: withdrawTxnId,
         });
       }
 
@@ -273,13 +315,7 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
         description={t('WithdrawModal.description')}
         balance={currency.balance}
         infoRows={infoRows}
-        actionButtonLabels={{
-          action: {
-            default: t('WithdrawModal.labelExecuteDefault'),
-            loading: t('WithdrawModal.labelExecuteLoading'),
-            success: t('WithdrawModal.labelExecuteSuccess'),
-          },
-        }}
+        actionButtonLabels={actionButtonLabels}
         actionButtonState={actionButtonState}
         onTransactionStart={tokensApproved ? handleWithdraw : handleApproveToken}
         onCurrencyUpdate={handleCurrencyChange}
@@ -310,7 +346,11 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
       />
       {/* Show error modal if withdraw throws Error */}
       <ErrorModal
-        description={t('WithdrawModal.errorModalDescription')}
+        description={t('WithdrawModal.errorModalDescription', {
+          // withdrawError.data.message: error from txn
+          // withdrawError.message: generic error, e.g. rejected by metamask
+          error: (withdrawError as any)?.data?.message ?? withdrawError?.message,
+        })}
         primaryButtonLabel={{
           default: t('WithdrawModal.errorModalPrimaryButton'),
         }}

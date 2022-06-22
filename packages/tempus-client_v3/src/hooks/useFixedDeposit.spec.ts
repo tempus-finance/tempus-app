@@ -134,6 +134,108 @@ describe('useFixedDeposit', () => {
     });
   });
 
+  it('returns error status when service map is null', async () => {
+    jest.spyOn(console, 'error').mockImplementation();
+    (getDefinedServices as jest.Mock).mockReturnValue(null);
+
+    act(() => {
+      resetFixedDepositStatus();
+      subscribeFixedDepositStatus();
+    });
+
+    const { result, waitForNextUpdate } = renderHook(() => useFixedDeposit());
+
+    expect(result.current.fixedDepositStatus).toStrictEqual(null);
+
+    act(() => {
+      result.current.fixedDeposit({
+        chain: 'ethereum',
+        poolAddress: '1',
+        tokenAmount: new Decimal(2),
+        tokenTicker: 'stETH',
+        tokenAddress: '00001-ybt',
+        slippage: new Decimal(1.5),
+        signer: {} as unknown as JsonRpcSigner,
+        txnId: '0x01',
+      });
+    });
+
+    try {
+      await waitForNextUpdate();
+    } catch (e) {
+      // when error, the failed polling will be skipped and thus no updates on hook
+    }
+
+    expect(console.error).toHaveBeenCalled();
+    expect(result.current.fixedDepositStatus).toStrictEqual({
+      pending: false,
+      success: false,
+      error: new TypeError("Cannot read properties of null (reading 'DepositService')"),
+      request: {
+        chain: 'ethereum',
+        poolAddress: '1',
+        tokenAmount: new Decimal(2),
+        tokenTicker: 'stETH',
+        tokenAddress: '00001-ybt',
+      },
+      txnId: '0x01',
+    });
+
+    (console.error as jest.Mock).mockRestore();
+  });
+
+  it('returns error status when there is an error when getDefinedServices()', async () => {
+    jest.spyOn(console, 'error').mockImplementation();
+    (getDefinedServices as jest.Mock).mockImplementation(() => {
+      throw new Error('1234');
+    });
+
+    act(() => {
+      resetFixedDepositStatus();
+      subscribeFixedDepositStatus();
+    });
+
+    const { result, waitForNextUpdate } = renderHook(() => useFixedDeposit());
+
+    expect(result.current.fixedDepositStatus).toStrictEqual(null);
+
+    act(() => {
+      result.current.fixedDeposit({
+        chain: 'ethereum',
+        poolAddress: '1',
+        tokenAmount: new Decimal(2),
+        tokenTicker: 'stETH',
+        tokenAddress: '00001-ybt',
+        slippage: new Decimal(1.5),
+        signer: {} as unknown as JsonRpcSigner,
+        txnId: '0x01',
+      });
+    });
+
+    try {
+      await waitForNextUpdate();
+    } catch (e) {
+      // when error, the failed polling will be skipped and thus no updates on hook
+    }
+
+    expect(console.error).toHaveBeenCalled();
+    expect(result.current.fixedDepositStatus).toStrictEqual({
+      pending: false,
+      success: false,
+      error: new Error('1234'),
+      request: {
+        chain: 'ethereum',
+        poolAddress: '1',
+        tokenAmount: new Decimal(2),
+        tokenTicker: 'stETH',
+        tokenAddress: '00001-ybt',
+      },
+      txnId: '0x01',
+    });
+
+    (console.error as jest.Mock).mockRestore();
+  });
+
   it('returns error status when there is error thrown for fixedDeposit()', async () => {
     jest.spyOn(console, 'error').mockImplementation();
     (getDefinedServices as jest.Mock).mockImplementation(() => ({

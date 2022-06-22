@@ -321,7 +321,7 @@ exports[`WithdrawModal renders a withdraw modal 1`] = `
               <div
                 style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(255, 255, 255); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 0.5;"
               >
-                Execute Withdrawal
+                Approve Deposit
               </div>
             </div>
           </button>
