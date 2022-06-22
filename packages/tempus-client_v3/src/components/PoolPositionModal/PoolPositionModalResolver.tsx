@@ -1,12 +1,12 @@
 import { FC, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
-import { Chain, Decimal, ProtocolName, Ticker, ZERO } from 'tempus-core-services';
+import { Chain, Decimal, ZERO } from 'tempus-core-services';
 import { getConfigManager } from '../../config/getConfigManager';
 import { useFixedAprs, usePoolBalance, useTokenRates } from '../../hooks';
 import { PoolPositionModal } from './PoolPositionModal';
 
 export const PoolPositionModalResolver: FC = () => {
-  const { chain, ticker, protocol, poolAddress } = useParams();
+  const { chain, poolAddress } = useParams();
 
   const poolBalanceData = usePoolBalance(poolAddress, chain as Chain);
   const tokenRates = useTokenRates();
@@ -43,11 +43,11 @@ export const PoolPositionModalResolver: FC = () => {
       tokenDecimals={poolData.decimalsForUI}
       tokenExchangeRate={tokenRates[`${poolData.chain}-${poolData.backingTokenAddress}`]}
       totalYieldEarned={new Decimal(2)}
-      tokenTicker="ETH"
-      chain={chain as Chain}
-      address={poolAddress || ''}
-      backingToken={ticker as Ticker}
-      protocol={protocol as ProtocolName}
+      tokenTicker={poolData.backingToken}
+      chain={poolData.chain}
+      address={poolData.address}
+      backingToken={poolData.backingToken}
+      protocol={poolData.protocol}
     />
   );
 };
