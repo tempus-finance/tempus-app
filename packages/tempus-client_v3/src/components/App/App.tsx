@@ -13,6 +13,7 @@ import { WithdrawModalResolver } from '../WithdrawModal';
 import PageNavigation, { PageNavigationLink } from '../PageNavigation';
 import Portfolio, { PortfolioOverview, PortfolioPositions } from '../Portfolio';
 import TotalValueLocked from '../TotalValueLocked';
+import LiquidityProvision from '../LiquidityProvision';
 
 import './App.scss';
 
@@ -25,6 +26,11 @@ const App = () => {
       text: t('App.navMarkets'),
       path: '/',
       pathPatterns: ['/', '/pool/*'],
+    },
+    {
+      text: t('App.navLp'),
+      path: '/lp',
+      pathPatterns: ['/lp', '/lp/*'],
     },
     {
       text: t('App.navPortfolio'),
@@ -66,6 +72,8 @@ const App = () => {
               </Route>
 
               <Route path="/withdraw/:chain/:ticker/:protocol/:poolAddress" element={<WithdrawModalResolver />} />
+
+              <Route path="/lp" element={<LiquidityProvision />} />
 
               <Route path="/" element={<Markets />}>
                 <Route path="pool/:chain/:ticker/:protocol" element={<DepositModalResolver />} />

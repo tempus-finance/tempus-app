@@ -8,6 +8,7 @@ $background-offset: 59px;
   position: relative;
   display: flex;
   align-items: center;
+  flex-shrink: 0;
 
   .tc__nav-subheader__background {
     position: absolute;
@@ -35,6 +36,7 @@ $background-offset: 59px;
     width: 100%;
     display: flex;
     justify-content: space-between;
+    z-index: 1;
   }
 
   .tc__nav-subheader__group {

@@ -1,0 +1,22 @@
+.tc__liquidityProvision {
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+}
+
+.tc__liquidityProvision-content {
+  padding-top: 176px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  > div:nth-child(2) {
+    margin-top: 40px;
+  }
+
+  > div:nth-child(3) {
+    margin-top: 4px;
+  }
+}

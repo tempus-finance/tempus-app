@@ -42,6 +42,7 @@ import Scroll from './Scroll';
 import Slippage from './Slippage';
 import Globe from './Globe';
 import Dark from './Dark';
+import MagicWand from './MagicWand';
 
 export type IconVariant =
   | 'plus-round'
@@ -85,7 +86,8 @@ export type IconVariant =
   | 'scroll'
   | 'slippage'
   | 'globe'
-  | 'dark';
+  | 'dark'
+  | 'magic-wand';
 
 const Icon: FC<IconProps & { variant: IconVariant }> = props => {
   switch (props.variant) {
@@ -173,6 +175,8 @@ const Icon: FC<IconProps & { variant: IconVariant }> = props => {
       return <Globe {...props} />;
     case 'dark':
       return <Dark {...props} />;
+    case 'magic-wand':
+      return <MagicWand {...props} />;
     default:
       return null;
   }
