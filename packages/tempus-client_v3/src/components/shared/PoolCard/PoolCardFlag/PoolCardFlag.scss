@@ -21,12 +21,20 @@
     height: 120px;
     border: 1px solid var(--poolCardFlagDisabledBorder);
     background-color: var(--poolCardFlagDisabledBackground);
+
+    .tc__poolCardFlag-ripples {
+      margin: -1px 0 0 -1px;
+    }
   }
 
   &[data-status='Inactive'] {
     height: 120px;
     border: 1px solid var(--poolCardFlagDisabledBorder);
     background-color: var(--poolCardFlagDisabledBackground);
+
+    .tc__poolCardFlag-ripples {
+      margin: -1px 0 0 -1px;
+    }
   }
 
   &[data-status='Boosted'] {
@@ -38,6 +46,10 @@
     height: 120px;
     border: 1px solid var(--poolCardFlagDisabledBorder);
     background-color: var(--poolCardFlagDisabledBackground);
+
+    .tc__poolCardFlag-ripples {
+      margin: -1px 0 0 -1px;
+    }
   }
 }
 

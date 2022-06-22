@@ -1,6 +1,6 @@
 import { fireEvent, render } from '@testing-library/react';
-import { Chain, ProtocolName, Ticker } from 'tempus-core-services';
-import { pool3, pool4, pool5 } from '../../../setupTests';
+import { Chain, Decimal as MockDecimal, ProtocolName, Ticker } from 'tempus-core-services';
+import { pool3, pool3 as mockPool3, pool4, pool4 as mockPool4, pool5, pool5 as mockPool5 } from '../../../setupTests';
 import { PoolCardStatus } from '../PoolCard';
 import PoolCardGrid, {
   NUMBER_OF_CARDS_PER_PAGE,
@@ -32,6 +32,15 @@ const defaultProps: PoolCardGridProps = {
 };
 
 const subject = (props: PoolCardGridProps) => render(<PoolCardGrid {...props} />);
+
+jest.mock('../../../hooks', () => ({
+  ...jest.requireActual('../../../hooks'),
+  useFixedAprs: jest.fn().mockReturnValue({
+    [`${mockPool3.chain}-${mockPool3.address}`]: new MockDecimal(0.05),
+    [`${mockPool4.chain}-${mockPool4.address}`]: new MockDecimal(0.06),
+    [`${mockPool5.chain}-${mockPool5.address}`]: new MockDecimal(0.07),
+  }),
+}));
 
 describe('PoolCardGrid', () => {
   beforeEach(() => {
