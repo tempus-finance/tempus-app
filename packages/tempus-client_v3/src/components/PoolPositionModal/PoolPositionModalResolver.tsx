@@ -38,7 +38,7 @@ export const PoolPositionModalResolver: FC = () => {
       profitLoss={new Decimal(2)}
       projectedTotalYield={new Decimal(3)}
       term={new Date(poolData.maturityDate)}
-      tokenDecimals={4}
+      tokenDecimals={poolData.decimalsForUI}
       tokenExchangeRate={new Decimal(100)}
       totalYieldEarned={new Decimal(2)}
       tokenTicker="ETH"
