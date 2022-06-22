@@ -1,6 +1,7 @@
 {
   "App": {
     "navMarkets": "Markets",
+    "navLp": "LP",
     "navPortfolio": "Portfolio"
   },
   "ChainSelector": {
@@ -150,5 +151,12 @@
     "successModalSecondaryButton": "Deposit in another pool",
     "successModalTitle": "Withdraw Complete!",
     "title": "Position Details"
+  },
+  "LiquidityProvisionSubheader": {
+    "comingSoon": "Coming Soon"
+  },
+  "LiquidityProvision": {
+    "comingSoonTitle": "We're busy crafting the magic",
+    "comingSoonDescription": "This will be released soon!"
   }
 }

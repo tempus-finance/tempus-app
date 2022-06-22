@@ -2,7 +2,7 @@ import { FC, ReactNode, useCallback, useMemo } from 'react';
 import { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent';
 import { useLocale } from '../../../hooks';
 import Typography from '../Typography';
-import Chart, { ChartDataPoint, ChartDotElement, ChartSizeProps, ChartTick } from './Chart';
+import Chart, { ChartDataPoint, ChartDotElement, ChartCommonProps, ChartTick } from './Chart';
 
 export interface DateChartProps {
   data: ChartDataPoint<Date, number>[];
@@ -13,8 +13,8 @@ export interface DateChartProps {
   tooltipContent?: (x: Date, y: number) => ReactNode;
 }
 
-const DateChart: FC<DateChartProps & ChartSizeProps> = props => {
-  const { data, width, height, tooltipContent, yTick, yTickFormatter, topPercentageProjected, dot } = props;
+const DateChart: FC<DateChartProps & ChartCommonProps> = props => {
+  const { data, width, height, tooltipContent, yTick, yTickFormatter, topPercentageProjected, dot, hideData } = props;
   const [locale] = useLocale();
 
   const transformedData = useMemo(() => data.map(value => ({ x: value.x.getTime(), y: value.y })), [data]);
@@ -62,6 +62,7 @@ const DateChart: FC<DateChartProps & ChartSizeProps> = props => {
       margin={{ top: 17, bottom: 40, right: 17 }}
       dot={dot}
       topPercentageProjected={topPercentageProjected}
+      hideData={hideData}
     />
   );
 };

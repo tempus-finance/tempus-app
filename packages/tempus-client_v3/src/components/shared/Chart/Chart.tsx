@@ -49,14 +49,15 @@ export interface ChartProps<X, Y extends ValueType> {
   tooltipContent?: (x: NameType, y: Y) => ReactNode;
 }
 
-export interface ChartSizeProps {
+export interface ChartCommonProps {
   width?: string | number;
   height?: string | number;
+  hideData?: boolean;
 }
 
 function Chart<X, Y extends ValueType>(
-  props: ChartProps<X, Y> & ChartSizeProps,
-): ReactElement<ChartProps<X, Y> & ChartSizeProps> {
+  props: ChartProps<X, Y> & ChartCommonProps,
+): ReactElement<ChartProps<X, Y> & ChartCommonProps> {
   const {
     data,
     width,
@@ -73,6 +74,7 @@ function Chart<X, Y extends ValueType>(
     margin,
     topPercentageProjected,
     dot,
+    hideData,
   } = props;
 
   const textTick = useCallback(
@@ -154,9 +156,9 @@ function Chart<X, Y extends ValueType>(
           dataKey="y"
           dot={!topPercentageProjected && chartDot}
           activeDot={false}
-          stroke={colors.chartStroke}
+          stroke={hideData ? 'transparent' : colors.chartStroke}
           strokeWidth={2}
-          fill="url(#color)"
+          fill={hideData ? 'transparent' : 'url(#color)'}
         />
         {topPercentageProjected && (
           <Area
@@ -166,7 +168,7 @@ function Chart<X, Y extends ValueType>(
             activeDot={false}
             strokeWidth={0}
             clipPath="url(#projectedValueClip)"
-            fill="url(#pattern)"
+            fill={hideData ? 'transparent' : 'url(#pattern)'}
           />
         )}
       </AreaChart>

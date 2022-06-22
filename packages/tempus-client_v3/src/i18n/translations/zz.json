@@ -1,6 +1,7 @@
 {
   "App": {
     "navMarkets": "~~~~~====={{{{{(((((navMarkets)))))}}}}}=====~~~~~",
+    "navLp": "~~~~~====={{{{{(((((navLp)))))}}}}}=====~~~~~",
     "navPortfolio": "~~~~~====={{{{{(((((navPortfolio)))))}}}}}=====~~~~~"
   },
   "ChainSelector": {
@@ -150,5 +151,12 @@
     "successModalSecondaryButton": "~~~~~====={{{{{(((((successModalSecondaryButton)))))}}}}}=====~~~~~",
     "successModalTitle": "~~~~~====={{{{{(((((successModalTitle)))))}}}}}=====~~~~~",
     "title": "~~~~~====={{{{{(((((title)))))}}}}}=====~~~~~"
+  },
+  "LiquidityProvisionSubheader": {
+    "comingSoon": "~~~~~====={{{{{(((((comingSoon)))))}}}}}=====~~~~~"
+  },
+  "LiquidityProvision": {
+    "comingSoonTitle": "~~~~~====={{{{{(((((comingSoonTitle)))))}}}}}=====~~~~~",
+    "comingSoonDescription": "~~~~~====={{{{{(((((comingSoonDescription)))))}}}}}=====~~~~~"
   }
 }

@@ -1,14 +1,14 @@
 import { render } from '@testing-library/react';
-import Chart, { ChartProps, ChartSizeProps } from './Chart';
+import Chart, { ChartProps, ChartCommonProps } from './Chart';
 
 const numericData = [...Array(20).keys()].map(value => ({ x: value, y: value * value }));
 
-const defaultProps: Partial<ChartProps<number, number> & ChartSizeProps> = {
+const defaultProps: Partial<ChartProps<number, number> & ChartCommonProps> = {
   width: 500,
   height: 300,
 };
 
-const subject = (props: ChartProps<number, number> & ChartSizeProps) => render(<Chart {...props} />);
+const subject = (props: ChartProps<number, number> & ChartCommonProps) => render(<Chart {...props} />);
 
 describe('Chart', () => {
   const originalConsoleWarn = console.warn;

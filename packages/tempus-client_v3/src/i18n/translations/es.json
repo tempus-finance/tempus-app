@@ -1,6 +1,7 @@
 {
   "App": {
     "navMarkets": "",
+    "navLp": "",
     "navPortfolio": ""
   },
   "ChainSelector": {
@@ -150,5 +151,12 @@
     "successModalSecondaryButton": "",
     "successModalTitle": "",
     "title": ""
+  },
+  "LiquidityProvisionSubheader": {
+    "comingSoon": ""
+  },
+  "LiquidityProvision": {
+    "comingSoonTitle": "",
+    "comingSoonDescription": ""
   }
 }

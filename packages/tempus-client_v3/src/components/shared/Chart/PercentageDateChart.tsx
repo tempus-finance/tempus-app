@@ -1,6 +1,6 @@
 import { FC, ReactNode } from 'react';
 import { DecimalUtils } from 'tempus-core-services';
-import { ChartDataPoint, ChartDotElement, ChartSizeProps } from './Chart';
+import { ChartDataPoint, ChartDotElement, ChartCommonProps } from './Chart';
 import DateChart from './DateChart';
 
 export interface PercentageDateChartProps {
@@ -10,8 +10,8 @@ export interface PercentageDateChartProps {
   tooltipContent?: (x: Date, y: number) => ReactNode;
 }
 
-const PercentageDateChart: FC<PercentageDateChartProps & ChartSizeProps> = props => {
-  const { data, width, height, tooltipContent, topPercentageProjected, dot } = props;
+const PercentageDateChart: FC<PercentageDateChartProps & ChartCommonProps> = props => {
+  const { data, width, height, tooltipContent, topPercentageProjected, dot, hideData } = props;
 
   return (
     <DateChart
@@ -22,6 +22,7 @@ const PercentageDateChart: FC<PercentageDateChartProps & ChartSizeProps> = props
       tooltipContent={tooltipContent}
       yTickFormatter={DecimalUtils.formatPercentage}
       topPercentageProjected={topPercentageProjected}
+      hideData={hideData}
     />
   );
 };
