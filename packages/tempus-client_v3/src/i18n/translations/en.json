@@ -139,7 +139,7 @@
     "errorModalDescription": "An error occured and the transaction failed. [{{error}}]",
     "errorModalPrimaryButton": "Try again",
     "errorModalTitle": "Something's wrong.",
-    "labelApproveDefault": "Approve Deposit",
+    "labelApproveDefault": "Approve Withdrawal",
     "labelApproveLoading": "Approving...",
     "labelApproveSuccess": "Successfully Approved",
     "labelAvailableForWithdraw": "Available for Withdraw",
