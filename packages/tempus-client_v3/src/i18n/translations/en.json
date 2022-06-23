@@ -61,6 +61,12 @@
     "sortMaturity": "Maturity",
     "sortTVL": "TVL"
   },
+  "MarketsSwitchNetworkFooter": {
+    "descriptionMultipleChains": "Switch to another network to view them",
+    "descriptionSingleChain": "Switch to the {{chainName}} network to view them",
+    "titleMultipleChains": "Check out our other pools",
+    "titleSingleChain": "Check out our {{chainName}} pools"
+  },
   "NumberInput": {
     "buttonMax": "Max"
   },

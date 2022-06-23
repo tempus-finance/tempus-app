@@ -61,6 +61,12 @@
     "sortMaturity": "",
     "sortTVL": ""
   },
+  "MarketsSwitchNetworkFooter": {
+    "descriptionMultipleChains": "Cambia de red para verlos",
+    "descriptionSingleChain": "Ve a la red {{chainName}} para verlos",
+    "titleMultipleChains": "Ver las otras pools",
+    "titleSingleChain": "Vea nuestros pools en {{chainName}}"
+  },
   "NumberInput": {
     "buttonMax": ""
   },
