@@ -10,6 +10,7 @@ import {
   useTvlData,
   usePoolBalances,
   useFixedAprs,
+  useSelectedChain,
 } from '../../hooks';
 import Markets from './Markets';
 
@@ -20,12 +21,17 @@ const subject = () =>
     </BrowserRouter>,
   );
 
+jest.mock('@web3-onboard/react', () => ({
+  useSetChain: jest.fn().mockReturnValue([{ connectedChain: null }, () => {}]),
+}));
+
 jest.mock('../../hooks', () => ({
   ...jest.requireActual('../../hooks'),
   useActivePoolList: jest.fn(),
   useInactivePoolList: jest.fn(),
   useMaturedPoolList: jest.fn(),
   usePoolBalances: jest.fn(),
+  useSelectedChain: jest.fn(),
   useTvlData: jest.fn(),
 }));
 
@@ -69,6 +75,7 @@ describe('Markets', () => {
       'fantom-4': new Decimal(900),
       'fantom-5': new Decimal(800),
     });
+    (useSelectedChain as jest.Mock).mockReturnValue([null]);
     (useTvlData as jest.Mock).mockReturnValue({
       'ethereum-1': new Decimal(5000),
       'ethereum-2': new Decimal(7000),

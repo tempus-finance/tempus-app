@@ -61,6 +61,12 @@
     "sortMaturity": "~~~~~====={{{{{(((((sortMaturity)))))}}}}}=====~~~~~",
     "sortTVL": "~~~~~====={{{{{(((((sortTVL)))))}}}}}=====~~~~~"
   },
+  "MarketsSwitchNetworkFooter": {
+    "descriptionMultipleChains": "~~~~~====={{{{{(((((descriptionMultipleChains)))))}}}}}=====~~~~~",
+    "descriptionSingleChain": "~~~~~====={{{{{(((((descriptionSingleChain)))))}}}}}=====~~~~~",
+    "titleMultipleChains": "~~~~~====={{{{{(((((titleMultipleChains)))))}}}}}=====~~~~~",
+    "titleSingleChain": "~~~~~====={{{{{(((((titleSingleChain)))))}}}}}=====~~~~~"
+  },
   "NumberInput": {
     "buttonMax": "~~~~~====={{{{{(((((buttonMax)))))}}}}}=====~~~~~"
   },
