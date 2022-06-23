@@ -1,14 +1,14 @@
 import { renderHook } from '@testing-library/react-hooks';
 import { act } from 'react-dom/test-utils';
 import { Decimal } from 'tempus-core-services';
-import { useUserPreferences } from './useUserPreferences';
+import { useUserPreferences, DEFAULT_SLIPPAGE } from './useUserPreferences';
 
 describe('useUserPreferences', () => {
-  it('check default value', () => {
+  it('checks default value', () => {
     const { result } = renderHook(() => useUserPreferences());
     const [userPreference] = result.current;
     const expected = {
-      slippage: new Decimal(0.02),
+      slippage: new Decimal(DEFAULT_SLIPPAGE),
       slippageAuto: false,
       darkMode: false,
     };
@@ -16,11 +16,11 @@ describe('useUserPreferences', () => {
     expect(userPreference).toEqual(expected);
   });
 
-  it('update slippage to 3.5%', async () => {
+  it('updates slippage to 3.5%', async () => {
     const { result, waitForNextUpdate } = renderHook(() => useUserPreferences());
     const [userPreference, setUserPreference] = result.current;
     const expected1 = {
-      slippage: new Decimal(0.02),
+      slippage: new Decimal(DEFAULT_SLIPPAGE),
       slippageAuto: false,
       darkMode: false,
     };
@@ -41,11 +41,11 @@ describe('useUserPreferences', () => {
     expect(result.current[0]).toEqual(expected2);
   });
 
-  it('update darkMode to true', async () => {
+  it('updates darkMode to true', async () => {
     const { result, waitForNextUpdate } = renderHook(() => useUserPreferences());
     const [userPreference, setUserPreference] = result.current;
     const expected1 = {
-      slippage: new Decimal(0.02),
+      slippage: new Decimal(DEFAULT_SLIPPAGE),
       slippageAuto: false,
       darkMode: false,
     };
@@ -58,7 +58,7 @@ describe('useUserPreferences', () => {
     });
 
     const expected2 = {
-      slippage: new Decimal(0.02),
+      slippage: new Decimal(DEFAULT_SLIPPAGE),
       slippageAuto: false,
       darkMode: true,
     };
@@ -66,11 +66,11 @@ describe('useUserPreferences', () => {
     expect(result.current[0]).toEqual(expected2);
   });
 
-  it('update multiple user preference at once', async () => {
+  it('updates multiple user preference at once', async () => {
     const { result, waitForNextUpdate } = renderHook(() => useUserPreferences());
     const [userPreference, setUserPreference] = result.current;
     const expected1 = {
-      slippage: new Decimal(0.02),
+      slippage: new Decimal(DEFAULT_SLIPPAGE),
       slippageAuto: false,
       darkMode: false,
     };
@@ -91,11 +91,11 @@ describe('useUserPreferences', () => {
     expect(result.current[0]).toEqual(expected2);
   });
 
-  it('update user preferences with undefined', async () => {
+  it('updates user preferences with undefined', async () => {
     const { result, waitForNextUpdate } = renderHook(() => useUserPreferences());
     const [userPreference, setUserPreference] = result.current;
     const expected = {
-      slippage: new Decimal(0.02),
+      slippage: new Decimal(DEFAULT_SLIPPAGE),
       slippageAuto: false,
       darkMode: false,
     };
