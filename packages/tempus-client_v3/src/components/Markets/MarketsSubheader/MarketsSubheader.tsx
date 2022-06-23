@@ -15,10 +15,12 @@ import {
   useInactivePoolList,
   useMaturedPoolList,
   useSelectedChain,
+  useWalletAddress,
 } from '../../../hooks';
 
 const MarketsSubheader = () => {
   const { t } = useTranslation();
+  const [walletAddress] = useWalletAddress();
   const [poolViewOptions, setPoolViewOptions] = usePoolViewOptions();
   const [selectedChain] = useSelectedChain();
   const activePoolList = useActivePoolList();
@@ -95,7 +97,7 @@ const MarketsSubheader = () => {
           <DropdownSelectableItem label={t('MarketsSubheader.sortMaturity')} value="maturity" />
           <DropdownSelectableItem label={t('MarketsSubheader.sortTVL')} value="tvl" />
           <DropdownSelectableItem label={t('MarketsSubheader.sortAPR')} value="apr" />
-          <DropdownSelectableItem label={t('MarketsSubheader.sortBalance')} value="balance" />
+          {walletAddress ? <DropdownSelectableItem label={t('MarketsSubheader.sortBalance')} value="balance" /> : null}
         </DropdownSelector>
       </NavSubheaderGroup>
     </NavSubheader>

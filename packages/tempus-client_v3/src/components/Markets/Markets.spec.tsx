@@ -11,6 +11,7 @@ import {
   usePoolBalances,
   useFixedAprs,
   useSelectedChain,
+  useWalletAddress,
 } from '../../hooks';
 import Markets from './Markets';
 
@@ -33,6 +34,7 @@ jest.mock('../../hooks', () => ({
   usePoolBalances: jest.fn(),
   useSelectedChain: jest.fn(),
   useTvlData: jest.fn(),
+  useWalletAddress: jest.fn(),
 }));
 
 jest.mock('../../hooks/useFixedAprs', () => ({
@@ -90,6 +92,7 @@ describe('Markets', () => {
       'fantom-4': new Decimal(0.106),
       'fantom-5': new Decimal(0.126),
     });
+    (useWalletAddress as jest.Mock).mockReturnValue('0x123123123');
   });
 
   it('renders the page', () => {

@@ -9,7 +9,7 @@ export interface DropdownSelectorProps<T> {
   itemIcon?: IconVariant;
   selectedValue?: T;
   onSelect?: (value: T) => void;
-  children?: ReactElement<DropdownSelectableItemProps<T>> | ReactElement<DropdownSelectableItemProps<T>>[];
+  children?: ReactElement<DropdownSelectableItemProps<T>> | (ReactElement<DropdownSelectableItemProps<T>> | null)[];
 }
 
 function DropdownSelector<T>(props: DropdownSelectorProps<T>): ReactElement<DropdownSelectorProps<T>> {
