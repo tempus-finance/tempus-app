@@ -1,3 +1,10 @@
+:root {
+  // Connect Wallet modal fonts
+  --onboard-font-family-normal: DM Sans;
+  --onboard-font-family-semibold: DM Sans;
+  --onboard-font-family-light: DM Sans;
+}
+
 @mixin checked-input($input-type, $radius: 0%) {
   .tc__#{$input-type} {
     display: flex;
