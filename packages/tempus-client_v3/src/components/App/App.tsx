@@ -14,6 +14,7 @@ import PageNavigation, { PageNavigationLink } from '../PageNavigation';
 import Portfolio, { PortfolioOverview, PortfolioPositions } from '../Portfolio';
 import TotalValueLocked from '../TotalValueLocked';
 import LiquidityProvision from '../LiquidityProvision';
+import Staking from '../Staking';
 
 import './App.scss';
 
@@ -31,6 +32,11 @@ const App = () => {
       text: t('App.navLp'),
       path: '/lp',
       pathPatterns: ['/lp', '/lp/*'],
+    },
+    {
+      text: t('App.navStaking'),
+      path: '/staking',
+      pathPatterns: ['/staking', '/staking/*'],
     },
     {
       text: t('App.navPortfolio'),
@@ -74,6 +80,8 @@ const App = () => {
               <Route path="/withdraw/:chain/:ticker/:protocol/:poolAddress" element={<WithdrawModalResolver />} />
 
               <Route path="/lp" element={<LiquidityProvision />} />
+
+              <Route path="/staking" element={<Staking />} />
 
               <Route path="/" element={<Markets />}>
                 <Route path="pool/:chain/:ticker/:protocol" element={<DepositModalResolver />} />

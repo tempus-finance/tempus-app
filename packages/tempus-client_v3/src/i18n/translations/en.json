@@ -2,6 +2,7 @@
   "App": {
     "navMarkets": "Markets",
     "navLp": "LP",
+    "navStaking": "Staking",
     "navPortfolio": "Portfolio"
   },
   "ChainSelector": {
@@ -156,6 +157,13 @@
     "comingSoon": "Coming Soon"
   },
   "LiquidityProvision": {
+    "comingSoonTitle": "We're busy crafting the magic",
+    "comingSoonDescription": "This will be released soon!"
+  },
+  "StakingSubheader": {
+    "comingSoon": "Coming Soon"
+  },
+  "Staking": {
     "comingSoonTitle": "We're busy crafting the magic",
     "comingSoonDescription": "This will be released soon!"
   }
