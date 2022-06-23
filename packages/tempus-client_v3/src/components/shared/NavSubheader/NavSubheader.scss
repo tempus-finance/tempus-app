@@ -9,6 +9,8 @@ $background-offset: 59px;
   display: flex;
   align-items: center;
   flex-shrink: 0;
+  // Subheader should be above section content - in case of a dropdown that overlaps with section content once expanded
+  z-index: 3;
 
   .tc__nav-subheader__background {
     position: absolute;
