@@ -2,6 +2,7 @@
   "App": {
     "navMarkets": "",
     "navLp": "",
+    "navStaking": "",
     "navPortfolio": ""
   },
   "ChainSelector": {
@@ -156,6 +157,13 @@
     "comingSoon": ""
   },
   "LiquidityProvision": {
+    "comingSoonTitle": "",
+    "comingSoonDescription": ""
+  },
+  "StakingSubheader": {
+    "comingSoon": ""
+  },
+  "Staking": {
     "comingSoonTitle": "",
     "comingSoonDescription": ""
   }
