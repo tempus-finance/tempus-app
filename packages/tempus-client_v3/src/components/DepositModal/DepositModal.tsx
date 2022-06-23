@@ -55,15 +55,36 @@ const DepositModal: FC<DepositModalProps> = props => {
 
   const [maturityTerm, setMaturityTerm] = useState<MaturityTerm>(maturityTerms[0]);
   const [token, setToken] = useState<TokenMetadata>(tokens[0]);
+  const [amount, setAmount] = useState<Decimal>(ZERO);
   const [actionButtonState, setActionButtonState] = useState<ActionButtonState>('default');
   const [fixedDepositSuccessful, setFixedDepositSuccessful] = useState<boolean>(false);
   const [fixedDepositError, setFixedDepositError] = useState<Error>();
-  const [tokenApproved, setTokenApproved] = useState<boolean>(false);
   const [txnId, setTxnId] = useState<string>(); // either approve or deposit, one txn at a time
 
   const approveTokenTxnHash = approveTokenStatus?.contractTransaction?.hash ?? '0x0';
   const depositTokenTxnHash = fixedDepositStatus?.contractTransaction?.hash ?? '0x0';
   const { chainId } = chainConfig ?? {};
+
+  const selectedTempusPool = useMemo(
+    () => modalProps?.tempusPools?.find(pool => pool.maturityDate === maturityTerm.date.getTime()),
+    [modalProps, maturityTerm.date],
+  );
+  const chain = useMemo(
+    () => (chainId ? chainIdToChainName(chainId) : selectedTempusPool?.chain),
+    [chainId, selectedTempusPool],
+  );
+  const balance = useMemo(() => balances[`${chain}-${token?.address}`] ?? ZERO, [balances, chain, token]);
+
+  const tokenAllowance = useMemo(
+    () => tokenAllowances[`${selectedTempusPool?.chain}-${token.address}`],
+    [selectedTempusPool, token.address, tokenAllowances],
+  );
+  const tokenApproved = useMemo(
+    () => Boolean(tokenAllowance?.alwaysApproved) || amount.lte(tokenAllowance?.amount ?? ZERO),
+    [amount, tokenAllowance],
+  );
+
+  console.log(tokenAllowance, tokenApproved);
 
   const actionButtonLabels: CurrencyInputModalActionButtonLabels = {
     preview: {
@@ -83,16 +104,6 @@ const DepositModal: FC<DepositModalProps> = props => {
           success: t('DepositModal.labelApproveSuccess'),
         },
   };
-
-  const selectedTempusPool = useMemo(
-    () => modalProps?.tempusPools?.find(pool => pool.maturityDate === maturityTerm.date.getTime()),
-    [modalProps, maturityTerm.date],
-  );
-  const chain = useMemo(
-    () => (chainId ? chainIdToChainName(chainId) : selectedTempusPool?.chain),
-    [chainId, selectedTempusPool],
-  );
-  const balance = useMemo(() => balances[`${chain}-${token?.address}`] ?? ZERO, [balances, chain, token]);
 
   const depositYieldChart = useMemo(
     () =>
@@ -143,7 +154,6 @@ const DepositModal: FC<DepositModalProps> = props => {
         setFixedDepositError(undefined);
       } else if (approveTokenStatus?.success) {
         setActionButtonState('success');
-        setTokenApproved(true);
 
         setTimeout(() => {
           setActionButtonState('default');
@@ -186,29 +196,28 @@ const DepositModal: FC<DepositModalProps> = props => {
   );
 
   const handleApprove = useCallback(
-    async (amount: Decimal) => {
+    async (amountForApproval: Decimal) => {
       // Approve selected token entered amount
-      if (selectedTempusPool && signer) {
-        const tokenAllowance = tokenAllowances[`${selectedTempusPool.chain}-${token.address}`];
+      if (
+        selectedTempusPool &&
+        signer &&
+        !tokenAllowance?.alwaysApproved &&
+        amountForApproval.gt(tokenAllowance?.amount ?? ZERO)
+      ) {
+        // showing loading status before prompting wallet
+        setActionButtonState('loading');
 
-        if (!tokenAllowance?.alwaysApproved && amount.gt(tokenAllowance?.amount ?? ZERO)) {
-          // showing loading status before prompting wallet
-          setActionButtonState('loading');
+        const approveTxnId = uuidv4();
+        setTxnId(approveTxnId);
 
-          const approveTxnId = uuidv4();
-          setTxnId(approveTxnId);
-
-          approveToken({
-            chain: selectedTempusPool.chain,
-            tokenAddress: token.address,
-            spenderAddress: chainConfig.tempusControllerContract,
-            amount,
-            signer,
-            txnId: approveTxnId,
-          });
-        } else {
-          setTokenApproved(true);
-        }
+        approveToken({
+          chain: selectedTempusPool.chain,
+          tokenAddress: token.address,
+          spenderAddress: chainConfig.tempusControllerContract,
+          amount: amountForApproval,
+          signer,
+          txnId: approveTxnId,
+        });
       }
 
       return approveTokenTxnHash;
@@ -216,7 +225,7 @@ const DepositModal: FC<DepositModalProps> = props => {
     [
       selectedTempusPool,
       signer,
-      tokenAllowances,
+      tokenAllowance,
       approveTokenTxnHash,
       approveToken,
       token.address,
@@ -225,7 +234,7 @@ const DepositModal: FC<DepositModalProps> = props => {
   );
 
   const handleDeposit = useCallback(
-    async (amount: Decimal) => {
+    async (amountForDeposit: Decimal) => {
       if (selectedTempusPool && signer) {
         // showing loading status before prompting wallet
         setActionButtonState('loading');
@@ -236,7 +245,7 @@ const DepositModal: FC<DepositModalProps> = props => {
         fixedDeposit({
           chain: selectedTempusPool.chain,
           poolAddress: selectedTempusPool.address,
-          tokenAmount: amount,
+          tokenAmount: amountForDeposit,
           tokenTicker: token.ticker,
           tokenAddress: token.address,
           slippage,
@@ -250,18 +259,10 @@ const DepositModal: FC<DepositModalProps> = props => {
     [selectedTempusPool, signer, depositTokenTxnHash, fixedDeposit, token.ticker, token.address, slippage],
   );
 
-  const handleAmountChange = useCallback(
-    (amount: Decimal) => {
-      setTokenAmountForYieldAtMaturity(amount);
-
-      if (selectedTempusPool) {
-        const tokenAllowance = tokenAllowances[`${selectedTempusPool.chain}-${token.address}`];
-
-        setTokenApproved(Boolean(tokenAllowance?.alwaysApproved) || amount.lte(tokenAllowance?.amount ?? ZERO));
-      }
-    },
-    [tokenAllowances, selectedTempusPool, token.address],
-  );
+  const handleAmountChange = useCallback((newAmount: Decimal) => {
+    setAmount(newAmount);
+    setTokenAmountForYieldAtMaturity(newAmount);
+  }, []);
 
   const handleDepositInAnotherPoolClick = useCallback(() => {
     navigate('/');
