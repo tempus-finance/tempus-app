@@ -1,4 +1,5 @@
 import { bind } from '@react-rxjs/core';
+import { JsonRpcSigner } from '@ethersproject/providers';
 import {
   BehaviorSubject,
   map,
@@ -10,13 +11,17 @@ import {
   Subscription,
   tap,
   filter,
+  Observable,
+  withLatestFrom,
   catchError,
 } from 'rxjs';
-import { Chain, Decimal, getServices } from 'tempus-core-services';
+import { Chain, Decimal, getDefinedServices } from 'tempus-core-services';
 import { getConfigManager } from '../config/getConfigManager';
 import { selectedChain$ } from './useSelectedChain';
 import { servicesLoaded$ } from './useServicesLoaded';
+import { signer$ } from './useSigner';
 import { walletAddress$ } from './useWalletAddress';
+import { AppEvent, appEvent$ } from './useAppEvent';
 
 // Improves readability of the code
 type TokenChainAddressId = string;
@@ -31,6 +36,10 @@ interface TokenBalanceData {
   subject$: BehaviorSubject<TokenBalance>;
   address: string;
   chain: Chain;
+}
+
+interface TokenBalanceMap {
+  [chainPoolAddress: string]: TokenBalance;
 }
 
 // Each token will have a separate BehaviorSubject, and this map will store them with some additional token data
@@ -51,13 +60,178 @@ tokenList.forEach(token => {
   });
 });
 
+const fetchData = (chain: Chain, tokenAddress: string, walletAddress: string): Observable<Decimal | null> => {
+  try {
+    const services = getDefinedServices(chain);
+    return from(services.WalletBalanceService.getTokenBalance(tokenAddress, walletAddress)).pipe(
+      catchError(error => {
+        console.error(
+          `useTokenBalances - cannot fetch token balance for ${tokenAddress} on ${chain} for $wallet ${walletAddress}`,
+          error,
+        );
+        return of(null);
+      }),
+    );
+  } catch (error) {
+    console.error(
+      `useTokenBalances - cannot fetch token balance for ${tokenAddress} on ${chain} for $wallet ${walletAddress}`,
+      error,
+    );
+    return of(null);
+  }
+};
+
+// stream for listening chain events
+const txnStream$ = combineLatest([walletAddress$, signer$, servicesLoaded$]).pipe(
+  filter(([walletAddress, signer, servicesLoaded]) => Boolean(walletAddress) && Boolean(signer) && servicesLoaded),
+  mergeMap<[string, JsonRpcSigner | null, boolean], Observable<TokenBalanceMap | null>>(([walletAddress, signer]) => {
+    const tokenBalanceFetchMap = [...tokenBalanceDataMap.values()].map(tokenBalanceData => {
+      try {
+        const services = getDefinedServices(tokenBalanceData.chain);
+        const erc20TokenService = services.ERC20TokenServiceGetter(
+          tokenBalanceData.address,
+          tokenBalanceData.chain,
+          signer as JsonRpcSigner,
+        );
+        const subject$ = new BehaviorSubject<TokenBalance | null>(null);
+        const transferListener = () => {
+          fetchData(tokenBalanceData.chain, tokenBalanceData.address, walletAddress).subscribe(balance =>
+            subject$.next({
+              balance,
+              address: tokenBalanceData.address,
+              chain: tokenBalanceData.chain,
+            }),
+          );
+        };
+
+        // TODO: should we call offTransfer()? this stream will only run when wallet changes anyway
+        erc20TokenService.onTransfer(walletAddress, null, transferListener);
+        erc20TokenService.onTransfer(null, walletAddress, transferListener);
+
+        return subject$.pipe(
+          map(tokenBalance =>
+            tokenBalance
+              ? {
+                  [`${tokenBalance.chain}-${tokenBalance.address}`]: {
+                    balance: tokenBalance.balance,
+                    address: tokenBalance.address,
+                    chain: tokenBalance.chain,
+                  },
+                }
+              : null,
+          ),
+        );
+      } catch (error) {
+        console.error(
+          'useTokenBalances - cannot fetch token balance for ' +
+            `${tokenBalanceData.address} on ${tokenBalanceData.chain} for $wallet ${walletAddress}`,
+          error,
+        );
+        return of(null);
+      }
+    });
+
+    return merge(...tokenBalanceFetchMap);
+  }),
+);
+
+// stream$ for listening to Tempus event to fetch specific pool data
+const eventStream$ = appEvent$.pipe(
+  withLatestFrom(walletAddress$, servicesLoaded$),
+  filter(([, walletAddress, servicesLoaded]) => Boolean(walletAddress) && servicesLoaded),
+  mergeMap<[AppEvent, string, boolean], Observable<TokenBalanceMap | null>>(([{ tempusPool }, walletAddress]) => {
+    const { chain, backingTokenAddress, principalsAddress, yieldBearingTokenAddress, yieldsAddress, ammAddress } =
+      tempusPool;
+
+    const backingTokenBalance$ = fetchData(chain, backingTokenAddress, walletAddress);
+    const principalsTokenBalance$ = fetchData(chain, principalsAddress, walletAddress);
+    const yieldBearingTokenBalance$ = fetchData(chain, yieldBearingTokenAddress, walletAddress);
+    const yieldsTokenBalance$ = fetchData(chain, yieldsAddress, walletAddress);
+    const ammTokenBalance$ = fetchData(chain, ammAddress, walletAddress);
+
+    const backingTokenBalanceMap$ = backingTokenBalance$.pipe(
+      map(tokenBalance =>
+        tokenBalance
+          ? {
+              [`${chain}-${backingTokenAddress}`]: {
+                balance: tokenBalance,
+                address: backingTokenAddress,
+                chain,
+              },
+            }
+          : null,
+      ),
+    );
+    const principalsTokenBalanceMap$ = principalsTokenBalance$.pipe(
+      map(tokenBalance =>
+        tokenBalance
+          ? {
+              [`${chain}-${principalsAddress}`]: {
+                balance: tokenBalance,
+                address: principalsAddress,
+                chain,
+              },
+            }
+          : null,
+      ),
+    );
+    const yieldBearingTokenBalanceMap$ = yieldBearingTokenBalance$.pipe(
+      map(tokenBalance =>
+        tokenBalance
+          ? {
+              [`${chain}-${yieldBearingTokenAddress}`]: {
+                balance: tokenBalance,
+                address: yieldBearingTokenAddress,
+                chain,
+              },
+            }
+          : null,
+      ),
+    );
+    const yieldsTokenBalanceMap$ = yieldsTokenBalance$.pipe(
+      map(tokenBalance =>
+        tokenBalance
+          ? {
+              [`${chain}-${yieldsAddress}`]: {
+                balance: tokenBalance,
+                address: yieldsAddress,
+                chain,
+              },
+            }
+          : null,
+      ),
+    );
+    const ammTokenBalanceMap$ = ammTokenBalance$.pipe(
+      map(tokenBalance =>
+        tokenBalance
+          ? {
+              [`${chain}-${ammAddress}`]: {
+                balance: tokenBalance,
+                address: ammAddress,
+                chain,
+              },
+            }
+          : null,
+      ),
+    );
+
+    return merge(
+      backingTokenBalanceMap$,
+      principalsTokenBalanceMap$,
+      yieldBearingTokenBalanceMap$,
+      yieldsTokenBalanceMap$,
+      ammTokenBalanceMap$,
+    );
+  }),
+);
+
 // Stream that goes over all tokens and fetches their balance, this happens only when wallet address changes
-const stream$ = combineLatest([walletAddress$, selectedChain$, servicesLoaded$]).pipe(
+const initStream$ = combineLatest([walletAddress$, selectedChain$, servicesLoaded$]).pipe(
   filter(
     ([walletAddress, selectedChain, servicesLoaded]) =>
       Boolean(walletAddress) && Boolean(selectedChain) && servicesLoaded,
   ),
-  mergeMap(([walletAddress, selectedChain]) => {
+  mergeMap<[string, Chain | null, boolean], Observable<TokenBalanceMap | null>>(([walletAddress, selectedChain]) => {
     const tokenBalanceFetchMap = [...tokenBalanceDataMap.values()].map(tokenBalanceData => {
       // Only fetch token balances for currently selected chain
       if (selectedChain && selectedChain !== tokenBalanceData.chain) {
@@ -71,27 +245,28 @@ const stream$ = combineLatest([walletAddress$, selectedChain$, servicesLoaded$])
         return of(null);
       }
 
-      const services = getServices(tokenBalanceData.chain);
-      if (!services) {
-        throw new Error('useWalletBalances - stream$ - Failed to get services');
-      }
-      const balanceFetch$ = from(
-        services.WalletBalanceService.getTokenBalance(tokenBalanceData.address, walletAddress),
-      );
-
-      return balanceFetch$.pipe(
-        map(tokenBalance => ({
-          [`${tokenBalanceData.chain}-${tokenBalanceData.address}`]: {
-            balance: tokenBalance,
-            address: tokenBalanceData.address,
-            chain: tokenBalanceData.chain,
-          },
-        })),
+      const balanceBalance$ = fetchData(tokenBalanceData.chain, tokenBalanceData.address, walletAddress);
+      return balanceBalance$.pipe(
+        map(tokenBalance =>
+          tokenBalance
+            ? {
+                [`${tokenBalanceData.chain}-${tokenBalanceData.address}`]: {
+                  balance: tokenBalance,
+                  address: tokenBalanceData.address,
+                  chain: tokenBalanceData.chain,
+                },
+              }
+            : null,
+        ),
       );
     });
 
     return merge(...tokenBalanceFetchMap);
   }),
+);
+
+// merge all stream$ into one if there are multiple
+const stream$ = merge(initStream$, txnStream$, eventStream$).pipe(
   tap(tokenDataMap => {
     if (tokenDataMap === null) {
       return;
@@ -110,10 +285,6 @@ const stream$ = combineLatest([walletAddress$, selectedChain$, servicesLoaded$])
         }
       }
     });
-  }),
-  catchError(error => {
-    console.error('useTokenBalances - $stream - ', error);
-    return of({});
   }),
 );
 
@@ -150,14 +321,14 @@ export const tokenBalanceMap$ = combineLatest(
 
 export const [useTokenBalances] = bind(tokenBalanceMap$, {});
 
-export const subscribe = (): void => {
-  unsubscribe();
+export const subscribeTokenBalance = (): void => {
+  unsubscribeTokenBalance();
   streamSubscription = stream$.subscribe();
 };
-export const unsubscribe = (): void => {
+export const unsubscribeTokenBalance = (): void => {
   streamSubscription.unsubscribe();
 };
-export const reset = (): void => {
+export const resetTokenBalance = (): void => {
   tokenBalanceDataMap.forEach(tokenBalanceData =>
     tokenBalanceData.subject$.next({
       balance: null,

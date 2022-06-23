@@ -11,7 +11,7 @@ export { mockConfig, pool1, pool2, pool3, pool4, pool5 } from './mocks/config/mo
 
 export const mockGetTokenBalance = jest.fn().mockImplementation(() => Promise.resolve(new MockDecimal(100)));
 
-const mockServices = {
+export const mockServices = {
   StatisticsService: {
     totalValueLockedUSD: jest.fn().mockImplementation((chain: Chain, address: string) => {
       switch (`${chain}-${address}`) {
@@ -94,6 +94,7 @@ const mockServices = {
   ERC20TokenServiceGetter: jest.fn().mockImplementation(() => ({
     approve: jest.fn().mockResolvedValue({ hash: '0x00' }),
     getAllowance: jest.fn().mockResolvedValue(MockBigNumber.from(10)),
+    onTransfer: jest.fn(),
   })),
 };
 
