@@ -68,7 +68,7 @@ export const PoolPositionModal: FC<PoolPositionModalProps> = props => {
   );
 
   const onWithdraw = useCallback(() => {
-    navigate(`/withdraw/${chain}/${backingToken}/${protocol}/${address}`);
+    navigate(`/portfolio/positions/withdraw/${chain}/${backingToken}/${protocol}/${address}`);
   }, [address, backingToken, chain, protocol, navigate]);
 
   const handleClose = useCallback(() => {
