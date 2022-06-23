@@ -24,6 +24,8 @@ import ChainSelector from '../ChainSelector';
 import tempusLogo from './svg/Logo.svg'; // TODO - Check with designers if logo and icons are fine.
 import tempusIcon from './png/Icon.png'; // TODO - Replace with svg image
 
+const LAST_CONNECTED_WALLET_STORAGE_KEY = 'connectedWallets';
+
 // Fetch wallet modules
 const injected = injectedModule();
 const ledger = ledgerModule();
@@ -151,7 +153,7 @@ const Wallet: FC<WalletProps> = props => {
     const connectedWalletLabels = connectedWallets.map(connectedWallet => connectedWallet.label);
 
     if (connectedWalletLabels.length > 0) {
-      window.localStorage.setItem('connectedWallets', JSON.stringify(connectedWalletLabels));
+      window.localStorage.setItem(LAST_CONNECTED_WALLET_STORAGE_KEY, JSON.stringify(connectedWalletLabels));
     }
   }, [connectedWallets]);
 
@@ -160,7 +162,9 @@ const Wallet: FC<WalletProps> = props => {
    * automatically connect first wallet from list of previously connected wallets.
    */
   useEffect(() => {
-    const previouslyConnectedWallets = JSON.parse(window.localStorage.getItem('connectedWallets') || '[]') as string[];
+    const previouslyConnectedWallets = JSON.parse(
+      window.localStorage.getItem(LAST_CONNECTED_WALLET_STORAGE_KEY) || '[]',
+    ) as string[];
     if (previouslyConnectedWallets && previouslyConnectedWallets.length > 0) {
       connect({
         autoSelect: {
@@ -170,6 +174,16 @@ const Wallet: FC<WalletProps> = props => {
       });
     }
   }, [connect]);
+
+  /**
+   * If user disconnected all of his wallets - we need to clear last connected wallet info from local
+   * storage to prevent app from trying to connect automatically on app load
+   */
+  useEffect(() => {
+    if (connectedWallets.length === 0) {
+      window.localStorage.removeItem(LAST_CONNECTED_WALLET_STORAGE_KEY);
+    }
+  }, [connectedWallets]);
 
   useEffect(() => {
     if (wallet && wallet.provider) {
