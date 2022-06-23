@@ -24,8 +24,16 @@ const PortfolioSubheader: FC = () => {
     <NavSubheader align="center">
       <NavSubheaderGroup>
         <Tabs size="small" value={currentView} onTabSelected={handleViewChange}>
-          <Tab label={t('PortfolioSubheader.tabOverview')} value="overview" />
-          <Tab label={t('PortfolioSubheader.tabPositions')} value="positions" />
+          <Tab
+            label={t('PortfolioSubheader.tabOverview')}
+            hrefPatterns={['/portfolio/overview', '/portfolio/overview/*']}
+            value="overview"
+          />
+          <Tab
+            label={t('PortfolioSubheader.tabPositions')}
+            hrefPatterns={['/portfolio/positions', '/portfolio/positions/*']}
+            value="positions"
+          />
         </Tabs>
       </NavSubheaderGroup>
     </NavSubheader>
