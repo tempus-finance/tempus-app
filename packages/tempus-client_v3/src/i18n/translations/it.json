@@ -61,6 +61,12 @@
     "sortMaturity": "",
     "sortTVL": ""
   },
+  "MarketsSwitchNetworkFooter": {
+    "descriptionMultipleChains": "",
+    "descriptionSingleChain": "",
+    "titleMultipleChains": "",
+    "titleSingleChain": ""
+  },
   "NumberInput": {
     "buttonMax": ""
   },
