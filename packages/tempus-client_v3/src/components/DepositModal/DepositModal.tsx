@@ -84,8 +84,6 @@ const DepositModal: FC<DepositModalProps> = props => {
     [amount, tokenAllowance],
   );
 
-  console.log(tokenAllowance, tokenApproved);
-
   const actionButtonLabels: CurrencyInputModalActionButtonLabels = {
     preview: {
       default: t('DepositModal.labelMakeDeposit'),
