@@ -154,17 +154,17 @@
     "title": ""
   },
   "LiquidityProvisionSubheader": {
-    "comingSoon": ""
+    "comingSoon": "Prossimamente"
   },
   "LiquidityProvision": {
-    "comingSoonTitle": "",
-    "comingSoonDescription": ""
+    "comingSoonTitle": "Siamo impegnati nel creare la magia",
+    "comingSoonDescription": "Verrà lanciato presto!"
   },
   "StakingSubheader": {
-    "comingSoon": ""
+    "comingSoon": "Prossimamente"
   },
   "Staking": {
-    "comingSoonTitle": "",
-    "comingSoonDescription": ""
+    "comingSoonTitle": "Siamo impegnati nel creare la magia",
+    "comingSoonDescription": "Verrà lanciato presto!"
   }
 }
