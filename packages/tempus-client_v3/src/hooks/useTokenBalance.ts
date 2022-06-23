@@ -82,7 +82,7 @@ const fetchData = (chain: Chain, tokenAddress: string, walletAddress: string): O
 };
 
 // stream for listening chain events
-const txnStream$ = combineLatest([walletAddress$, signer$, servicesLoaded$]).pipe(
+const transactionStream$ = combineLatest([walletAddress$, signer$, servicesLoaded$]).pipe(
   filter(([walletAddress, signer, servicesLoaded]) => Boolean(walletAddress) && Boolean(signer) && servicesLoaded),
   mergeMap<[string, JsonRpcSigner | null, boolean], Observable<TokenBalanceMap | null>>(([walletAddress, signer]) => {
     const tokenBalanceFetchMap = [...tokenBalanceDataMap.values()].map(tokenBalanceData => {
@@ -109,16 +109,16 @@ const txnStream$ = combineLatest([walletAddress$, signer$, servicesLoaded$]).pip
         erc20TokenService.onTransfer(null, walletAddress, transferListener);
 
         return subject$.pipe(
-          map(tokenBalance =>
-            tokenBalance
-              ? {
-                  [`${tokenBalance.chain}-${tokenBalance.address}`]: {
-                    balance: tokenBalance.balance,
-                    address: tokenBalance.address,
-                    chain: tokenBalance.chain,
-                  },
-                }
-              : null,
+          filter(tokenBalance => Boolean(tokenBalance)),
+          map(
+            tokenBalance =>
+              ({
+                [`${tokenBalance?.chain}-${tokenBalance?.address}`]: {
+                  balance: tokenBalance?.balance,
+                  address: tokenBalance?.address,
+                  chain: tokenBalance?.chain,
+                },
+              } as TokenBalanceMap),
           ),
         );
       } catch (error) {
@@ -150,69 +150,54 @@ const eventStream$ = appEvent$.pipe(
     const ammTokenBalance$ = fetchData(chain, ammAddress, walletAddress);
 
     const backingTokenBalanceMap$ = backingTokenBalance$.pipe(
-      map(tokenBalance =>
-        tokenBalance
-          ? {
-              [`${chain}-${backingTokenAddress}`]: {
-                balance: tokenBalance,
-                address: backingTokenAddress,
-                chain,
-              },
-            }
-          : null,
-      ),
+      filter(balance => Boolean(balance)),
+      map(balance => ({
+        [`${chain}-${backingTokenAddress}`]: {
+          balance,
+          address: backingTokenAddress,
+          chain,
+        },
+      })),
     );
     const principalsTokenBalanceMap$ = principalsTokenBalance$.pipe(
-      map(tokenBalance =>
-        tokenBalance
-          ? {
-              [`${chain}-${principalsAddress}`]: {
-                balance: tokenBalance,
-                address: principalsAddress,
-                chain,
-              },
-            }
-          : null,
-      ),
+      filter(balance => Boolean(balance)),
+      map(balance => ({
+        [`${chain}-${principalsAddress}`]: {
+          balance,
+          address: principalsAddress,
+          chain,
+        },
+      })),
     );
     const yieldBearingTokenBalanceMap$ = yieldBearingTokenBalance$.pipe(
-      map(tokenBalance =>
-        tokenBalance
-          ? {
-              [`${chain}-${yieldBearingTokenAddress}`]: {
-                balance: tokenBalance,
-                address: yieldBearingTokenAddress,
-                chain,
-              },
-            }
-          : null,
-      ),
+      filter(balance => Boolean(balance)),
+      map(balance => ({
+        [`${chain}-${yieldBearingTokenAddress}`]: {
+          balance,
+          address: yieldBearingTokenAddress,
+          chain,
+        },
+      })),
     );
     const yieldsTokenBalanceMap$ = yieldsTokenBalance$.pipe(
-      map(tokenBalance =>
-        tokenBalance
-          ? {
-              [`${chain}-${yieldsAddress}`]: {
-                balance: tokenBalance,
-                address: yieldsAddress,
-                chain,
-              },
-            }
-          : null,
-      ),
+      filter(balance => Boolean(balance)),
+      map(balance => ({
+        [`${chain}-${yieldsAddress}`]: {
+          balance,
+          address: yieldsAddress,
+          chain,
+        },
+      })),
     );
     const ammTokenBalanceMap$ = ammTokenBalance$.pipe(
-      map(tokenBalance =>
-        tokenBalance
-          ? {
-              [`${chain}-${ammAddress}`]: {
-                balance: tokenBalance,
-                address: ammAddress,
-                chain,
-              },
-            }
-          : null,
-      ),
+      filter(balance => Boolean(balance)),
+      map(balance => ({
+        [`${chain}-${ammAddress}`]: {
+          balance,
+          address: ammAddress,
+          chain,
+        },
+      })),
     );
 
     return merge(
@@ -226,7 +211,7 @@ const eventStream$ = appEvent$.pipe(
 );
 
 // Stream that goes over all tokens and fetches their balance, this happens only when wallet address changes
-const initStream$ = combineLatest([walletAddress$, selectedChain$, servicesLoaded$]).pipe(
+const walletStream$ = combineLatest([walletAddress$, selectedChain$, servicesLoaded$]).pipe(
   filter(
     ([walletAddress, selectedChain, servicesLoaded]) =>
       Boolean(walletAddress) && Boolean(selectedChain) && servicesLoaded,
@@ -245,19 +230,15 @@ const initStream$ = combineLatest([walletAddress$, selectedChain$, servicesLoade
         return of(null);
       }
 
-      const balanceBalance$ = fetchData(tokenBalanceData.chain, tokenBalanceData.address, walletAddress);
-      return balanceBalance$.pipe(
-        map(tokenBalance =>
-          tokenBalance
-            ? {
-                [`${tokenBalanceData.chain}-${tokenBalanceData.address}`]: {
-                  balance: tokenBalance,
-                  address: tokenBalanceData.address,
-                  chain: tokenBalanceData.chain,
-                },
-              }
-            : null,
-        ),
+      return fetchData(tokenBalanceData.chain, tokenBalanceData.address, walletAddress).pipe(
+        filter(balance => Boolean(balance)),
+        map(balance => ({
+          [`${tokenBalanceData.chain}-${tokenBalanceData.address}`]: {
+            balance,
+            address: tokenBalanceData.address,
+            chain: tokenBalanceData.chain,
+          },
+        })),
       );
     });
 
@@ -266,7 +247,7 @@ const initStream$ = combineLatest([walletAddress$, selectedChain$, servicesLoade
 );
 
 // merge all stream$ into one if there are multiple
-const stream$ = merge(initStream$, txnStream$, eventStream$).pipe(
+const stream$ = merge(walletStream$, transactionStream$, eventStream$).pipe(
   tap(tokenDataMap => {
     if (tokenDataMap === null) {
       return;

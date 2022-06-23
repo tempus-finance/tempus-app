@@ -152,11 +152,8 @@ export class ERC20TokenService {
 
   onTransfer(from: string | null, to: string | null, listener: TransferEventListener): void {
     if (this.contract) {
-      // In case of ETH trigger transfer event on every new block
-      if (this.contract.address === ZERO_ETH_ADDRESS) {
-        // skip this. native token is not a ERC20 contract and cannot listen for transfer events
-        // this.contract.provider.on('block', listener);
-      } else {
+      // skip for native token is not a ERC20 contract and cannot listen for transfer events
+      if (this.contract.address !== ZERO_ETH_ADDRESS) {
         this.contract.on(this.contract.filters.Transfer(from, to), listener);
       }
     }

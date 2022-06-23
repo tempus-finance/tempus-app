@@ -211,7 +211,7 @@ describe('useTvlData', () => {
       balance: new Decimal(100),
     });
 
-    // by initStream$
+    // by walletStream$
     expect(mockGetTokenBalance).toHaveBeenCalledTimes(10);
 
     await waitForNextUpdate();
@@ -226,7 +226,7 @@ describe('useTvlData', () => {
 
     await waitForNextUpdate();
 
-    // by txnStream$
+    // by transactionStream$
     expect(mockGetTokenBalance).toHaveBeenCalledTimes(22);
   });
 
