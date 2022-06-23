@@ -28,9 +28,9 @@ const Template: ComponentStory<typeof FormattedDate> = props => {
   const { date, separatorContrast } = props;
   return (
     <div style={style}>
-      <FormattedDate date={date} size="small" separatorContrast={separatorContrast} />
-      <FormattedDate date={date} size="medium" separatorContrast={separatorContrast} />
-      <FormattedDate date={date} size="large" separatorContrast={separatorContrast} />
+      <FormattedDate date={date} locale="en-GB" size="small" separatorContrast={separatorContrast} />
+      <FormattedDate date={date} locale="en-GB" size="medium" separatorContrast={separatorContrast} />
+      <FormattedDate date={date} locale="en-GB" size="large" separatorContrast={separatorContrast} />
     </div>
   );
 };
