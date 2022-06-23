@@ -1,7 +1,7 @@
 import { FC, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Chain, Decimal, ProtocolName, Ticker } from 'tempus-core-services';
+import { Chain, Decimal, ProtocolName, Ticker, ZERO } from 'tempus-core-services';
 import { useNavigateToRoot } from '../../hooks';
 import { ChartDataPoint, ChartDot, DateChart, ChartDotVariant } from '../shared/Chart';
 import ActionButton from '../shared/ActionButton';
@@ -95,16 +95,19 @@ export const PoolPositionModal: FC<PoolPositionModalProps> = props => {
         {/* TODO - Add extra x-axis in chart component that will show 'Earned/Projected yield' labels */}
       </div>
       {/* TODO - Add transaction history (check with design team if it's done) */}
-      <div className="tc__poolPositionModal-actions">
-        <ActionButton
-          onClick={onWithdraw}
-          variant="primary"
-          size="large"
-          labels={{
-            default: t('PoolPositionModal.withdrawAction'),
-          }}
-        />
-      </div>
+      {balance &&
+        balance.gt(ZERO) && ( // Only show withdraw button if user has balance in the pool
+          <div className="tc__poolPositionModal-actions">
+            <ActionButton
+              onClick={onWithdraw}
+              variant="primary"
+              size="large"
+              labels={{
+                default: t('PoolPositionModal.withdrawAction'),
+              }}
+            />
+          </div>
+        )}
     </Modal>
   );
 };
