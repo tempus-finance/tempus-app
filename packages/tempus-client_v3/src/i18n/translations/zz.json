@@ -2,6 +2,7 @@
   "App": {
     "navMarkets": "~~~~~====={{{{{(((((navMarkets)))))}}}}}=====~~~~~",
     "navLp": "~~~~~====={{{{{(((((navLp)))))}}}}}=====~~~~~",
+    "navStaking": "~~~~~====={{{{{(((((navStaking)))))}}}}}=====~~~~~",
     "navPortfolio": "~~~~~====={{{{{(((((navPortfolio)))))}}}}}=====~~~~~"
   },
   "ChainSelector": {
@@ -59,6 +60,12 @@
     "sortBalance": "~~~~~====={{{{{(((((sortBalance)))))}}}}}=====~~~~~",
     "sortMaturity": "~~~~~====={{{{{(((((sortMaturity)))))}}}}}=====~~~~~",
     "sortTVL": "~~~~~====={{{{{(((((sortTVL)))))}}}}}=====~~~~~"
+  },
+  "MarketsSwitchNetworkFooter": {
+    "descriptionMultipleChains": "~~~~~====={{{{{(((((descriptionMultipleChains)))))}}}}}=====~~~~~",
+    "descriptionSingleChain": "~~~~~====={{{{{(((((descriptionSingleChain)))))}}}}}=====~~~~~",
+    "titleMultipleChains": "~~~~~====={{{{{(((((titleMultipleChains)))))}}}}}=====~~~~~",
+    "titleSingleChain": "~~~~~====={{{{{(((((titleSingleChain)))))}}}}}=====~~~~~"
   },
   "NumberInput": {
     "buttonMax": "~~~~~====={{{{{(((((buttonMax)))))}}}}}=====~~~~~"
@@ -156,6 +163,13 @@
     "comingSoon": "~~~~~====={{{{{(((((comingSoon)))))}}}}}=====~~~~~"
   },
   "LiquidityProvision": {
+    "comingSoonTitle": "~~~~~====={{{{{(((((comingSoonTitle)))))}}}}}=====~~~~~",
+    "comingSoonDescription": "~~~~~====={{{{{(((((comingSoonDescription)))))}}}}}=====~~~~~"
+  },
+  "StakingSubheader": {
+    "comingSoon": "~~~~~====={{{{{(((((comingSoon)))))}}}}}=====~~~~~"
+  },
+  "Staking": {
     "comingSoonTitle": "~~~~~====={{{{{(((((comingSoonTitle)))))}}}}}=====~~~~~",
     "comingSoonDescription": "~~~~~====={{{{{(((((comingSoonDescription)))))}}}}}=====~~~~~"
   }

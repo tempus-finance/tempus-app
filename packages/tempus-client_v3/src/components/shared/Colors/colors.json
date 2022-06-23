@@ -117,5 +117,8 @@
 
   "loadingPlaceholderBase": "#597B91",
   "loadingPlaceholderShine": "#D6D6D6",
-  "loadingPlaceholderOverlay": "rgba(255, 255, 255, 0.4)"
+  "loadingPlaceholderOverlay": "rgba(255, 255, 255, 0.4)",
+
+  "marketsFooterBackground": "#F3F7F9",
+  "marketsFooterSeparator": "#BFC0C0"
 }

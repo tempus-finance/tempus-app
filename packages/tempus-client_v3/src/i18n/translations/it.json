@@ -2,6 +2,7 @@
   "App": {
     "navMarkets": "",
     "navLp": "",
+    "navStaking": "",
     "navPortfolio": ""
   },
   "ChainSelector": {
@@ -59,6 +60,12 @@
     "sortBalance": "",
     "sortMaturity": "",
     "sortTVL": ""
+  },
+  "MarketsSwitchNetworkFooter": {
+    "descriptionMultipleChains": "Cambia network per vederle",
+    "descriptionSingleChain": "Passa a {{chainName}} network per vederle",
+    "titleMultipleChains": "Vedi le altre pools",
+    "titleSingleChain": "Vedi le nostre pool su {{chainName}}"
   },
   "NumberInput": {
     "buttonMax": ""
@@ -153,10 +160,17 @@
     "title": ""
   },
   "LiquidityProvisionSubheader": {
-    "comingSoon": ""
+    "comingSoon": "Prossimamente"
   },
   "LiquidityProvision": {
-    "comingSoonTitle": "",
-    "comingSoonDescription": ""
+    "comingSoonTitle": "Siamo impegnati nel creare la magia",
+    "comingSoonDescription": "Verrà lanciato presto!"
+  },
+  "StakingSubheader": {
+    "comingSoon": "Prossimamente"
+  },
+  "Staking": {
+    "comingSoonTitle": "Siamo impegnati nel creare la magia",
+    "comingSoonDescription": "Verrà lanciato presto!"
   }
 }

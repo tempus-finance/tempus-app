@@ -2,6 +2,7 @@
   "App": {
     "navMarkets": "Markets",
     "navLp": "LP",
+    "navStaking": "Staking",
     "navPortfolio": "Portfolio"
   },
   "ChainSelector": {
@@ -27,7 +28,7 @@
     "labelMakeDeposit": "Make Deposit",
     "labelYieldAtMaturity": "Yield-at-Maturity",
     "previewDescription": "Select an APR & Term to deposit into, if there's only one, then simply proceed to make your deposit.",
-    "successModalDescription": "You have deposited {{amount}} {{ticker}} with {{term}} term. It should reach your wallet momentarily.",
+    "successModalDescription": "You have successfully deposited {{amount}} {{ticker}} with {{term}} term.",
     "successModalPrimaryButton": "Manage Portfolio",
     "successModalSecondaryButton": "Deposit in another pool",
     "successModalTitle": "Deposit Complete!",
@@ -59,6 +60,12 @@
     "sortBalance": "Balance",
     "sortMaturity": "Maturity",
     "sortTVL": "TVL"
+  },
+  "MarketsSwitchNetworkFooter": {
+    "descriptionMultipleChains": "Switch to another network to view them",
+    "descriptionSingleChain": "Switch to the {{chainName}} network to view them",
+    "titleMultipleChains": "Check out our other pools",
+    "titleSingleChain": "Check out our {{chainName}} pools"
   },
   "NumberInput": {
     "buttonMax": "Max"
@@ -156,6 +163,13 @@
     "comingSoon": "Coming Soon"
   },
   "LiquidityProvision": {
+    "comingSoonTitle": "We're busy crafting the magic",
+    "comingSoonDescription": "This will be released soon!"
+  },
+  "StakingSubheader": {
+    "comingSoon": "Coming Soon"
+  },
+  "Staking": {
     "comingSoonTitle": "We're busy crafting the magic",
     "comingSoonDescription": "This will be released soon!"
   }

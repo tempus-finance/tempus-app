@@ -107,7 +107,7 @@ exports[`SettingsPopup open the slippage info popup 1`] = `
                 class="tc__base-input"
                 id="text-input-2"
                 pattern="[0-9,]*[.]?[0-9]{0,2}"
-                placeholder="2.00%"
+                placeholder="1.00%"
                 type="text"
                 value=""
               />
@@ -287,7 +287,7 @@ exports[`SettingsPopup render the setting popup 1`] = `
                 class="tc__base-input"
                 id="text-input-1"
                 pattern="[0-9,]*[.]?[0-9]{0,2}"
-                placeholder="2.00%"
+                placeholder="1.00%"
                 type="text"
                 value=""
               />

@@ -10,6 +10,8 @@ export interface UserPreferences {
   darkMode: boolean;
 }
 
+export const DEFAULT_SLIPPAGE = 0.01;
+
 const [rawSlippage$, setSlippage] = createSignal<Decimal>();
 const [rawSlippageAuto$, setSlippageAuto] = createSignal<boolean>();
 const [rawDarkMode$, setDarkmode] = createSignal<boolean>();
@@ -18,7 +20,7 @@ const slippage$ = rawSlippage$.pipe(distinctUntilChanged());
 const slippageAuto$ = rawSlippageAuto$.pipe(distinctUntilChanged());
 const darkMode$ = rawDarkMode$.pipe(distinctUntilChanged());
 
-const stateSlippage$ = state(slippage$, new Decimal(0.02));
+const stateSlippage$ = state(slippage$, new Decimal(DEFAULT_SLIPPAGE));
 const stateSlippageAuto$ = state(slippageAuto$, false);
 const stateDarkmode$ = state(darkMode$, false);
 

@@ -16,7 +16,9 @@ const CurrencySelector: FC<CurrencySelectorProps> = props => {
   const [selectedCurrency, setSelectedCurrency] = useState(currencies[0] as Ticker);
   const [dropdownOpened, setDropdownOpened] = useState(false);
 
-  const handleSelectorClick = useCallback(() => setDropdownOpened(true), []);
+  const handleSelectorOpen = useCallback(() => setDropdownOpened(true), []);
+
+  const handleSelectorClose = useCallback(() => setDropdownOpened(false), []);
 
   const handleSelectorItemClick = useCallback(
     (currency: Ticker) => {
@@ -40,20 +42,23 @@ const CurrencySelector: FC<CurrencySelectorProps> = props => {
         currency={selectedCurrency}
         disabled={disabled}
         icon={hasMultipleCurrencies && <Icon variant="down-chevron" size="small" />}
-        onClick={handleSelectorClick}
+        onClick={handleSelectorOpen}
       />
       {hasMultipleCurrencies && dropdownOpened && (
-        <div className="tc__currency-input__currency-selector-dropdown">
-          {currencies.map((currency, index) => (
-            <CurrencySelectorItem
-              currency={currency}
-              disabled={disabled}
-              icon={index === 0 && <Icon variant="up-chevron" size="small" />}
-              onClick={handleSelectorItemClick}
-              key={currency}
-            />
-          ))}
-        </div>
+        <>
+          <div className="tc__currency-input__currency-selector-backdrop" onClick={handleSelectorClose} />
+          <div className="tc__currency-input__currency-selector-dropdown">
+            {currencies.map((currency, index) => (
+              <CurrencySelectorItem
+                currency={currency}
+                disabled={disabled}
+                icon={index === 0 && <Icon variant="up-chevron" size="small" />}
+                onClick={handleSelectorItemClick}
+                key={currency}
+              />
+            ))}
+          </div>
+        </>
       )}
     </div>
   );

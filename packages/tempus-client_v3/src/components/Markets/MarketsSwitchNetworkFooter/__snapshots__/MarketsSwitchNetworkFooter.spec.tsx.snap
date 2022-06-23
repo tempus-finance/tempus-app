@@ -1,0 +1,123 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`MarketsSwitchNetworkFooter does not render footer if a chain is not selected 1`] = `<div />`;
+
+exports[`MarketsSwitchNetworkFooter renders Ethereum footer if Fantom chain is selected 1`] = `
+<div>
+  <div
+    class="tc__chainSelector"
+  />
+  <div
+    class="tc__markets-switch-network-footer"
+  >
+    <div
+      style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(122, 122, 122); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+    >
+      Check out our Ethereum pools
+    </div>
+    <div
+      class="tc__markets-switch-network-footer__separator"
+    />
+    <div
+      style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(122, 122, 122); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+    >
+      Switch to the Ethereum network to view them
+    </div>
+    <button
+      class="tc__btn tc__actionButton tc__actionButton-border-secondary-small tc__actionButton-background-secondary-small tc__actionButton-hover-secondary-small tc__actionButton-shadow-default tc__actionButton-cursor-default tc__actionButton-size-small "
+      data-selected="false"
+      type="button"
+    >
+      <div
+        class="tc__actionButton-status-label"
+      >
+        <div
+          style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+        >
+          Switch
+        </div>
+      </div>
+    </button>
+  </div>
+</div>
+`;
+
+exports[`MarketsSwitchNetworkFooter renders Fantom footer if Ethereum chain is selected 1`] = `
+<div>
+  <div
+    class="tc__chainSelector"
+  />
+  <div
+    class="tc__markets-switch-network-footer"
+  >
+    <div
+      style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(122, 122, 122); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+    >
+      Check out our Fantom pools
+    </div>
+    <div
+      class="tc__markets-switch-network-footer__separator"
+    />
+    <div
+      style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(122, 122, 122); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+    >
+      Switch to the Fantom network to view them
+    </div>
+    <button
+      class="tc__btn tc__actionButton tc__actionButton-border-secondary-small tc__actionButton-background-secondary-small tc__actionButton-hover-secondary-small tc__actionButton-shadow-default tc__actionButton-cursor-default tc__actionButton-size-small "
+      data-selected="false"
+      type="button"
+    >
+      <div
+        class="tc__actionButton-status-label"
+      >
+        <div
+          style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+        >
+          Switch
+        </div>
+      </div>
+    </button>
+  </div>
+</div>
+`;
+
+exports[`MarketsSwitchNetworkFooter renders multi-chain footer if Ethereum chain is selected 1`] = `
+<div>
+  <div
+    class="tc__chainSelector"
+  />
+  <div
+    class="tc__markets-switch-network-footer"
+  >
+    <div
+      style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(122, 122, 122); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+    >
+      Check out our other pools
+    </div>
+    <div
+      class="tc__markets-switch-network-footer__separator"
+    />
+    <div
+      style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(122, 122, 122); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+    >
+      Switch to another network to view them
+    </div>
+    <button
+      class="tc__btn tc__actionButton tc__actionButton-border-secondary-small tc__actionButton-background-secondary-small tc__actionButton-hover-secondary-small tc__actionButton-shadow-default tc__actionButton-cursor-default tc__actionButton-size-small "
+      data-selected="false"
+      type="button"
+    >
+      <div
+        class="tc__actionButton-status-label"
+      >
+        <div
+          style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+        >
+          Switch
+        </div>
+      </div>
+    </button>
+  </div>
+</div>
+`;
