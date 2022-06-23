@@ -38,6 +38,15 @@ $border-radius: 8px;
     border-right: $border-size solid var(--currencyInputDisabledBorder);
   }
 
+  .tc__currency-input__currency-selector-backdrop {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    bottom: 0px;
+    right: 0px;
+    z-index: 9997;
+  }
+
   .tc__currency-input__currency-selector-dropdown {
     width: $currency-selector-width + $border-size;
     position: absolute;
@@ -48,6 +57,7 @@ $border-radius: 8px;
     background-color: var(--currencyInputBackground);
     border-radius: $border-radius 0 $border-radius $border-radius;
     box-sizing: border-box;
+    z-index: 9998;
 
     > .tc__currency-input__currency-selector-item {
       width: $currency-selector-width - $border-size;
