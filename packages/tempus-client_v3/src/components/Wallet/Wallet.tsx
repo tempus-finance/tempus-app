@@ -171,6 +171,16 @@ const Wallet: FC<WalletProps> = props => {
     }
   }, [connect]);
 
+  /**
+   * If user disconnected all of his wallets - we need to clear last connected wallet info from local
+   * storage to prevent app from trying to connect automatically on app load
+   */
+  useEffect(() => {
+    if (connectedWallets.length === 0) {
+      window.localStorage.removeItem('connectedWallets');
+    }
+  }, [connectedWallets]);
+
   useEffect(() => {
     if (wallet && wallet.provider) {
       const signer = new ethers.providers.Web3Provider(wallet.provider).getSigner() as JsonRpcSigner;
