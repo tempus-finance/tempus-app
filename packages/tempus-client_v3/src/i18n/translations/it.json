@@ -124,8 +124,8 @@
     "buttonBrowseMarkets": "Vai su Mercati",
     "descriptionNoPositions": "Il tuo portafoglio è vuoto. Facciamo qualcosa.",
     "titleNoPositions": "Nessuna Posizione",
-    "titleWalletNotConnected": "",
-    "descriptionWalletNotConnected": "",
+    "titleWalletNotConnected": "Wallet non collegato",
+    "descriptionWalletNotConnected": "Connetti il tuo wallet per gestire il portafoglio.",
     "buttonConnectWallet": "Connetti Wallet"
   },
   "PortfolioSubheader": {

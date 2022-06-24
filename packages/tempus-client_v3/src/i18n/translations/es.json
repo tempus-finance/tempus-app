@@ -116,16 +116,16 @@
     "titleProjectedYield": "",
     "titleTotalPortfolioValue": "",
     "titleTotalYieldEarned": "Regreso trotal",
-    "titleWalletNotConnected": "",
-    "descriptionWalletNotConnected": "",
+    "titleWalletNotConnected": "Wallet no conectado",
+    "descriptionWalletNotConnected": "Conecte su wallet para administrar la billetera.",
     "buttonConnectWallet": "Conectar Wallet"
   },
   "PortfolioPositions": {
     "buttonBrowseMarkets": "Ir a Mercados",
     "descriptionNoPositions": "Tu billetera está vacía. Hacer algo.",
     "titleNoPositions": "Sin posición",
-    "titleWalletNotConnected": "",
-    "descriptionWalletNotConnected": "",
+    "titleWalletNotConnected": "Wallet no conectado",
+    "descriptionWalletNotConnected": "Conecte su wallet para administrar la billetera.",
     "buttonConnectWallet": "Conectar Wallet"
   },
   "PortfolioSubheader": {
