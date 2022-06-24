@@ -62,13 +62,13 @@ jobs:
       - run:
           name: Start Tempus Client V3
           command: (npm --prefix ./packages/tempus-client_v3 run start > ./integration-testing/utility/tmp.txt &)
-      - run: sleep 10
+      - run: sleep 30
       - run: cat ./integration-testing/utility/tmp.txt
       - run: sleep 2
       - run:
           name: Isolate Tempus URL
           command: grep "Project is running at" ./integration-testing/utility/tmp.txt | awk '{print $7}' > ./integration-testing/utility/link.txt    
-      - run: sleep 100
+      - run: sleep 80
       - persist_to_workspace:
           root: ./
           paths:
