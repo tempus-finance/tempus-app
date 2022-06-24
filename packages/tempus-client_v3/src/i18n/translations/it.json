@@ -115,12 +115,18 @@
     "titleNoPositions": "Niente in Portafogli",
     "titleProjectedYield": "",
     "titleTotalPortfolioValue": "",
-    "titleTotalYieldEarned": "Rendimento Totale"
+    "titleTotalYieldEarned": "Rendimento Totale",
+    "titleWalletNotConnected": "Wallet non collegato",
+    "descriptionWalletNotConnected": "Connetti il tuo wallet per gestire il portafoglio.",
+    "buttonConnectWallet": "Connetti Wallet"
   },
   "PortfolioPositions": {
     "buttonBrowseMarkets": "Vai su Mercati",
     "descriptionNoPositions": "Il tuo portafoglio è vuoto. Facciamo qualcosa.",
-    "titleNoPositions": "Nessuna Posizione"
+    "titleNoPositions": "Nessuna Posizione",
+    "titleWalletNotConnected": "Wallet non collegato",
+    "descriptionWalletNotConnected": "Connetti il tuo wallet per gestire il portafoglio.",
+    "buttonConnectWallet": "Connetti Wallet"
   },
   "PortfolioSubheader": {
     "tabOverview": "",

@@ -2,7 +2,9 @@
 
 exports[`PortfolioOverview renders portfolio overview with value chart 1`] = `
 <div>
-  <div>
+  <div
+    class="tc__app__portfolio-overview"
+  >
     <div
       class="tc__app__portfolio-info-container"
     >
@@ -151,7 +153,9 @@ exports[`PortfolioOverview renders portfolio overview with value chart 1`] = `
 
 exports[`PortfolioOverview renders portfolio overview with yield chart 1`] = `
 <div>
-  <div>
+  <div
+    class="tc__app__portfolio-overview"
+  >
     <div
       class="tc__app__portfolio-info-container"
     >

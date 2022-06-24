@@ -115,12 +115,18 @@
     "titleNoPositions": "~~~~~====={{{{{(((((titleNoPositions)))))}}}}}=====~~~~~",
     "titleProjectedYield": "~~~~~====={{{{{(((((titleProjectedYield)))))}}}}}=====~~~~~",
     "titleTotalPortfolioValue": "~~~~~====={{{{{(((((titleTotalPortfolioValue)))))}}}}}=====~~~~~",
-    "titleTotalYieldEarned": "~~~~~====={{{{{(((((titleTotalYieldEarned)))))}}}}}=====~~~~~"
+    "titleTotalYieldEarned": "~~~~~====={{{{{(((((titleTotalYieldEarned)))))}}}}}=====~~~~~",
+    "titleWalletNotConnected": "~~~~~====={{{{{(((((titleWalletNotConnected)))))}}}}}=====~~~~~",
+    "descriptionWalletNotConnected": "~~~~~====={{{{{(((((descriptionWalletNotConnected)))))}}}}}=====~~~~~",
+    "buttonConnectWallet": "~~~~~====={{{{{(((((buttonConnectWallet)))))}}}}}=====~~~~~"
   },
   "PortfolioPositions": {
     "buttonBrowseMarkets": "~~~~~====={{{{{(((((buttonBrowseMarkets)))))}}}}}=====~~~~~",
     "descriptionNoPositions": "~~~~~====={{{{{(((((descriptionNoPositions)))))}}}}}=====~~~~~",
-    "titleNoPositions": "~~~~~====={{{{{(((((titleNoPositions)))))}}}}}=====~~~~~"
+    "titleNoPositions": "~~~~~====={{{{{(((((titleNoPositions)))))}}}}}=====~~~~~",
+    "titleWalletNotConnected": "~~~~~====={{{{{(((((titleWalletNotConnected)))))}}}}}=====~~~~~",
+    "descriptionWalletNotConnected": "~~~~~====={{{{{(((((descriptionWalletNotConnected)))))}}}}}=====~~~~~",
+    "buttonConnectWallet": "~~~~~====={{{{{(((((buttonConnectWallet)))))}}}}}=====~~~~~"
   },
   "PortfolioSubheader": {
     "tabOverview": "~~~~~====={{{{{(((((tabOverview)))))}}}}}=====~~~~~",
