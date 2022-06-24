@@ -43,7 +43,7 @@ exports[`PoolPositionCard expands pool position card when user clicks on see mor
             <div
               style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
             >
-              Mar
+              04
             </div>
             <span
               class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -51,7 +51,7 @@ exports[`PoolPositionCard expands pool position card when user clicks on see mor
             <div
               style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
             >
-              04
+              Mar
             </div>
             <span
               class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -335,7 +335,7 @@ exports[`PoolPositionCard renders a collapsed pool position card 1`] = `
             <div
               style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
             >
-              Mar
+              04
             </div>
             <span
               class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -343,7 +343,7 @@ exports[`PoolPositionCard renders a collapsed pool position card 1`] = `
             <div
               style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
             >
-              04
+              Mar
             </div>
             <span
               class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"

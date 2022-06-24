@@ -4,7 +4,7 @@ import i18n, { SupportedLocale } from '../i18n';
 import { useLocale } from './useLocale';
 
 jest.mock('../i18n', () => ({
-  languages: ['en'],
+  languages: ['en-GB'],
   changeLanguage: jest.fn<void, [SupportedLocale]>().mockImplementation(() => {}),
 }));
 
@@ -13,14 +13,14 @@ describe('useLocale', () => {
     const { result } = renderHook(() => useLocale());
     const [locale] = result.current;
 
-    expect(locale).toEqual('en');
+    expect(locale).toEqual('en-GB');
   });
 
   it('update locale to "es"', async () => {
     const { result, waitForNextUpdate } = renderHook(() => useLocale());
     const [locale, setLocale] = result.current;
 
-    expect(locale).toEqual('en');
+    expect(locale).toEqual('en-GB');
 
     await act(async () => {
       setLocale('es');
@@ -37,7 +37,7 @@ describe('useLocale', () => {
     const { result, waitForNextUpdate } = renderHook(() => useLocale());
     const [locale, setLocale] = result.current;
 
-    expect(locale).toEqual('en');
+    expect(locale).toEqual('en-GB');
 
     await act(async () => {
       setLocale('it');
