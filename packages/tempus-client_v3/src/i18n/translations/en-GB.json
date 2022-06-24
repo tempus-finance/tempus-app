@@ -115,12 +115,18 @@
     "titleNoPositions": "Nothing in Your Portfolio",
     "titleProjectedYield": "Projected Yield",
     "titleTotalPortfolioValue": "Total Portfolio Value",
-    "titleTotalYieldEarned": "Total Yield Earned"
+    "titleTotalYieldEarned": "Total Yield Earned",
+    "titleWalletNotConnected": "Wallet not connected",
+    "descriptionWalletNotConnected": "Connect your wallet to manage your portfolio.",
+    "buttonConnectWallet": "Connect Wallet"
   },
   "PortfolioPositions": {
     "buttonBrowseMarkets": "Browse Markets",
     "descriptionNoPositions": "Your portfolio is empty. Let’s change that for you.",
-    "titleNoPositions": "No Current Positions"
+    "titleNoPositions": "No Current Positions",
+    "titleWalletNotConnected": "Wallet not connected",
+    "descriptionWalletNotConnected": "Connect your wallet to manage your positions.",
+    "buttonConnectWallet": "Connect Wallet"
   },
   "PortfolioSubheader": {
     "tabOverview": "Overview",

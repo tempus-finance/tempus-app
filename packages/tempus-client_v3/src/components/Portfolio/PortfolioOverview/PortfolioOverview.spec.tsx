@@ -4,6 +4,10 @@ import { Chain, Decimal as MockDecimal } from 'tempus-core-services';
 import { pool1 as mockPool1, pool2 as mockPool2 } from '../../../setupTests';
 import PortfolioOverview from './PortfolioOverview';
 
+jest.mock('@web3-onboard/react', () => ({
+  useConnectWallet: jest.fn().mockReturnValue(['test-wallet-address', jest.fn()]),
+}));
+
 const subject = () =>
   render(
     <BrowserRouter>
@@ -23,6 +27,7 @@ jest.mock('../../../hooks', () => ({
     },
   }),
   useUserDepositedPools: jest.fn().mockReturnValue([mockPool1, mockPool2]),
+  useWalletAddress: jest.fn().mockReturnValue(['test-wallet-address']),
 }));
 
 describe('PortfolioOverview', () => {
