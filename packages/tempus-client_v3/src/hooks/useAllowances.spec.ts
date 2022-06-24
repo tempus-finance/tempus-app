@@ -108,8 +108,9 @@ describe('useAllowances', () => {
               return Promise.resolve(new Decimal(500));
             case '0x74b23882a30290451A17c44f4F05243b6b58C76d':
               return Promise.resolve(new Decimal(4));
+            default:
+              return Promise.resolve(new Decimal(10));
           }
-          return Promise.resolve(new Decimal(10));
         }),
       })),
     }));
@@ -139,8 +140,8 @@ describe('useAllowances', () => {
         amount: new Decimal(500),
       },
       'fantom-0x74b23882a30290451A17c44f4F05243b6b58C76d': {
-        alwaysApproved: true,
-        amount: ZERO,
+        alwaysApproved: false,
+        amount: new Decimal(4),
       },
     });
   });
@@ -158,8 +159,9 @@ describe('useAllowances', () => {
               return Promise.resolve(new Decimal(500));
             case '0x74b23882a30290451A17c44f4F05243b6b58C76d':
               return Promise.resolve(new Decimal(4));
+            default:
+              return Promise.resolve(new Decimal(10));
           }
-          return Promise.resolve(new Decimal(10));
         }),
       })),
     }));
@@ -189,8 +191,8 @@ describe('useAllowances', () => {
         amount: new Decimal(500),
       },
       'fantom-0x74b23882a30290451A17c44f4F05243b6b58C76d': {
-        alwaysApproved: true,
-        amount: ZERO,
+        alwaysApproved: false,
+        amount: new Decimal(4),
       },
     });
 
@@ -211,8 +213,8 @@ describe('useAllowances', () => {
         amount: new Decimal(1200),
       },
       'fantom-0x74b23882a30290451A17c44f4F05243b6b58C76d': {
-        alwaysApproved: true,
-        amount: ZERO,
+        alwaysApproved: false,
+        amount: new Decimal(4),
       },
     });
   });
