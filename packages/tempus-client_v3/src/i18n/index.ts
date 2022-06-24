@@ -9,9 +9,9 @@ i18n
   .use(LngDetector)
   .init({
     resources,
-    fallbackLng: 'en',
+    fallbackLng: SUPPORTED_LOCALES[0],
     supportedLngs: SUPPORTED_LOCALES,
-    load: 'languageOnly',
+    load: 'currentOnly',
     returnEmptyString: false,
 
     interpolation: {

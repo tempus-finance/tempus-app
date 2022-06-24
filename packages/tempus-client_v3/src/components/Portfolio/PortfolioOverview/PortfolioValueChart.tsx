@@ -1,6 +1,6 @@
 import { FC, useCallback, useMemo } from 'react';
 import { DecimalUtils } from 'tempus-core-services';
-import { useUserDepositedPools } from '../../../hooks';
+import { useLocale, useUserDepositedPools } from '../../../hooks';
 import { BalanceChartTooltipContent, ChartDot, DateChart } from '../../shared';
 import { ChartDataPoint, ChartCommonProps } from '../../shared/Chart/Chart';
 import { generateDummyDateChartData } from '../../shared/Chart/utils';
@@ -14,6 +14,7 @@ interface DataPoint extends ChartDataPoint<Date, number> {
 const PortfolioValueChart: FC<ChartCommonProps> = props => {
   const { width, height = 512 } = props;
   const userDepositedPools = useUserDepositedPools();
+  const [locale] = useLocale();
 
   // TODO: When the Graph is integrated, we should hide the chart based on the data from the graph instead of using
   // current positions.
@@ -57,8 +58,10 @@ const PortfolioValueChart: FC<ChartCommonProps> = props => {
   );
 
   const tooltipContent = useCallback(
-    (x, y) => <BalanceChartTooltipContent value={DecimalUtils.formatToCurrency(y)} currency="ETH" date={x} />,
-    [],
+    (x, y) => (
+      <BalanceChartTooltipContent value={DecimalUtils.formatToCurrency(y)} currency="ETH" date={x} locale={locale} />
+    ),
+    [locale],
   );
 
   return <DateChart data={chartData} width={width} height={height} dot={chartDot} tooltipContent={tooltipContent} />;

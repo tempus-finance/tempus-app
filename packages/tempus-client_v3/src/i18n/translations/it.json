@@ -1,9 +1,9 @@
 {
   "App": {
-    "navMarkets": "",
     "navLp": "",
-    "navStaking": "",
-    "navPortfolio": ""
+    "navMarkets": "",
+    "navPortfolio": "",
+    "navStaking": ""
   },
   "ChainSelector": {
     "title": ""
@@ -44,6 +44,13 @@
     "titleEarlyRedemption": "",
     "titleRedemption": "",
     "titleSwap": ""
+  },
+  "LiquidityProvision": {
+    "comingSoonDescription": "Verrà lanciato presto!",
+    "comingSoonTitle": "Siamo impegnati nel creare la magia"
+  },
+  "LiquidityProvisionSubheader": {
+    "comingSoon": "Prossimamente"
   },
   "MarketsPools": {
     "showMoreXButtonLabel": "",
@@ -131,6 +138,13 @@
   "SlippageInput": {
     "buttonAuto": ""
   },
+  "Staking": {
+    "comingSoonDescription": "Verrà lanciato presto!",
+    "comingSoonTitle": "Siamo impegnati nel creare la magia"
+  },
+  "StakingSubheader": {
+    "comingSoon": "Prossimamente"
+  },
   "TermTab": {
     "title": ""
   },
@@ -158,19 +172,5 @@
     "successModalSecondaryButton": "",
     "successModalTitle": "",
     "title": ""
-  },
-  "LiquidityProvisionSubheader": {
-    "comingSoon": "Prossimamente"
-  },
-  "LiquidityProvision": {
-    "comingSoonTitle": "Siamo impegnati nel creare la magia",
-    "comingSoonDescription": "Verrà lanciato presto!"
-  },
-  "StakingSubheader": {
-    "comingSoon": "Prossimamente"
-  },
-  "Staking": {
-    "comingSoonTitle": "Siamo impegnati nel creare la magia",
-    "comingSoonDescription": "Verrà lanciato presto!"
   }
 }
