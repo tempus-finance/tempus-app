@@ -9,6 +9,7 @@ import Typography from '../Typography';
 import PoolPositionCardDataCell from './PoolPositionCardDataCell';
 
 import './PoolPositionCard.scss';
+import { useLocale } from '../../../hooks';
 
 export interface PoolPositionCardProps {
   apr: Decimal;
@@ -37,6 +38,7 @@ const PoolPositionCard: FC<PoolPositionCardProps> = props => {
   } = props;
 
   const { t } = useTranslation();
+  const [locale] = useLocale();
 
   const [open, setOpen] = useState<boolean>(false);
 
@@ -76,7 +78,7 @@ const PoolPositionCard: FC<PoolPositionCardProps> = props => {
             <Typography variant="body-secondary" weight="bold" color="text-secondary">
               {t('PoolPositionCard.term')}
             </Typography>
-            <FormattedDate date={term} size="medium" separatorContrast="high" />
+            <FormattedDate date={term} locale={locale} size="medium" separatorContrast="high" />
           </div>
         </div>
       </div>

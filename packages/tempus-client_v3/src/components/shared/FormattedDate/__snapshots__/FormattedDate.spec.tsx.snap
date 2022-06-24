@@ -7,7 +7,7 @@ exports[`FormattedDate formats a Date like \`04 - Feb - 22\` 1`] = `
   <div
     style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
   >
-    Feb
+    04
   </div>
   <span
     class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -15,7 +15,7 @@ exports[`FormattedDate formats a Date like \`04 - Feb - 22\` 1`] = `
   <div
     style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
   >
-    04
+    Feb
   </div>
   <span
     class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"

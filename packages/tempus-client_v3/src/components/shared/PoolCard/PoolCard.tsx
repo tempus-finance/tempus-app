@@ -11,6 +11,7 @@ import PoolCardRipples from './PoolCardRipples/PoolCardRipples';
 import PoolCardFlag from './PoolCardFlag/PoolCardFlag';
 
 import './PoolCard.scss';
+import { useLocale } from '../../../hooks';
 
 interface PoolCardProps {
   chain: Chain;
@@ -51,6 +52,7 @@ const PoolCard: FC<PoolCardProps> = props => {
     onClick,
   } = props;
   const { t } = useTranslation();
+  const [locale] = useLocale();
 
   const earliestTerm = useMemo(() => min(terms), [terms]);
 
@@ -145,7 +147,7 @@ const PoolCard: FC<PoolCardProps> = props => {
                 <LoadingPlaceholder width="large" height="medium" />
               </div>
             )}
-            {!loading && <FormattedDate date={earliestTerm} size="large" />}
+            {!loading && <FormattedDate date={earliestTerm} locale={locale} size="large" />}
           </div>
 
           {/* Total Balance */}

@@ -27,7 +27,7 @@ exports[`TermTabs renders a two-button term tabs 1`] = `
           <div
             style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(71, 67, 80); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
           >
-            Jan
+            01
           </div>
           <span
             class="tc__formatted-date__separator tc__formatted-date__separator-low-contrast"
@@ -35,7 +35,7 @@ exports[`TermTabs renders a two-button term tabs 1`] = `
           <div
             style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(71, 67, 80); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
           >
-            01
+            Jan
           </div>
           <span
             class="tc__formatted-date__separator tc__formatted-date__separator-low-contrast"
@@ -68,7 +68,7 @@ exports[`TermTabs renders a two-button term tabs 1`] = `
           <div
             style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(71, 67, 80); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
           >
-            Jun
+            01
           </div>
           <span
             class="tc__formatted-date__separator tc__formatted-date__separator-low-contrast"
@@ -76,7 +76,7 @@ exports[`TermTabs renders a two-button term tabs 1`] = `
           <div
             style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(71, 67, 80); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
           >
-            01
+            Jun
           </div>
           <span
             class="tc__formatted-date__separator tc__formatted-date__separator-low-contrast"

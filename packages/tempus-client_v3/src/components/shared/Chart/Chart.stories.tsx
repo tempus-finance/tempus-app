@@ -45,7 +45,13 @@ DateChartWithProjectedValue.args = {
 export const DateChartWithTooltip = DateTemplate.bind({});
 DateChartWithTooltip.args = {
   tooltipContent: (x, y) => (
-    <BalanceChartTooltipContent title="Deposit" value={DecimalUtils.formatToCurrency(y, 1)} currency="ETH" date={x} />
+    <BalanceChartTooltipContent
+      title="Deposit"
+      value={DecimalUtils.formatToCurrency(y, 1)}
+      currency="ETH"
+      date={x}
+      locale="en-GB"
+    />
   ),
 };
 

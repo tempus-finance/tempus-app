@@ -321,7 +321,7 @@ exports[`Markets render pools after updates filters 1`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          Jan
+                          01
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -329,7 +329,7 @@ exports[`Markets render pools after updates filters 1`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          01
+                          Jan
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -527,7 +527,7 @@ exports[`Markets render pools after updates filters 1`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          Mar
+                          01
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -535,7 +535,7 @@ exports[`Markets render pools after updates filters 1`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          01
+                          Mar
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -749,7 +749,7 @@ exports[`Markets render pools after updates filters 1`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          Apr
+                          04
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -757,7 +757,7 @@ exports[`Markets render pools after updates filters 1`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          04
+                          Apr
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -945,7 +945,7 @@ exports[`Markets render pools after updates filters 1`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          Dec
+                          15
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -953,7 +953,7 @@ exports[`Markets render pools after updates filters 1`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          15
+                          Dec
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -1889,7 +1889,7 @@ exports[`Markets render pools after updates sorting types 1`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          Mar
+                          01
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -1897,7 +1897,7 @@ exports[`Markets render pools after updates sorting types 1`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          01
+                          Mar
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -2081,7 +2081,7 @@ exports[`Markets render pools after updates sorting types 1`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          Jan
+                          01
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -2089,7 +2089,7 @@ exports[`Markets render pools after updates sorting types 1`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          01
+                          Jan
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -2313,7 +2313,7 @@ exports[`Markets render pools after updates sorting types 1`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          Dec
+                          15
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -2321,7 +2321,7 @@ exports[`Markets render pools after updates sorting types 1`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          15
+                          Dec
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -2546,7 +2546,7 @@ exports[`Markets render pools after updates sorting types 1`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          Apr
+                          04
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -2554,7 +2554,7 @@ exports[`Markets render pools after updates sorting types 1`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          04
+                          Apr
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -2995,7 +2995,7 @@ exports[`Markets render pools after updates sorting types 2`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          Jan
+                          01
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -3003,7 +3003,7 @@ exports[`Markets render pools after updates sorting types 2`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          01
+                          Jan
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -3201,7 +3201,7 @@ exports[`Markets render pools after updates sorting types 2`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          Mar
+                          01
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -3209,7 +3209,7 @@ exports[`Markets render pools after updates sorting types 2`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          01
+                          Mar
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -3423,7 +3423,7 @@ exports[`Markets render pools after updates sorting types 2`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          Apr
+                          04
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -3431,7 +3431,7 @@ exports[`Markets render pools after updates sorting types 2`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          04
+                          Apr
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -3619,7 +3619,7 @@ exports[`Markets render pools after updates sorting types 2`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          Dec
+                          15
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -3627,7 +3627,7 @@ exports[`Markets render pools after updates sorting types 2`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          15
+                          Dec
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -4109,7 +4109,7 @@ exports[`Markets render pools after updates sorting types 3`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          Mar
+                          01
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -4117,7 +4117,7 @@ exports[`Markets render pools after updates sorting types 3`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          01
+                          Mar
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -4301,7 +4301,7 @@ exports[`Markets render pools after updates sorting types 3`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          Jan
+                          01
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -4309,7 +4309,7 @@ exports[`Markets render pools after updates sorting types 3`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          01
+                          Jan
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -4533,7 +4533,7 @@ exports[`Markets render pools after updates sorting types 3`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          Dec
+                          15
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -4541,7 +4541,7 @@ exports[`Markets render pools after updates sorting types 3`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          15
+                          Dec
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -4766,7 +4766,7 @@ exports[`Markets render pools after updates sorting types 3`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          Apr
+                          04
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -4774,7 +4774,7 @@ exports[`Markets render pools after updates sorting types 3`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          04
+                          Apr
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -5215,7 +5215,7 @@ exports[`Markets render pools after updates sorting types 4`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          Jan
+                          01
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -5223,7 +5223,7 @@ exports[`Markets render pools after updates sorting types 4`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          01
+                          Jan
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -5421,7 +5421,7 @@ exports[`Markets render pools after updates sorting types 4`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          Mar
+                          01
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -5429,7 +5429,7 @@ exports[`Markets render pools after updates sorting types 4`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          01
+                          Mar
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -5643,7 +5643,7 @@ exports[`Markets render pools after updates sorting types 4`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          Apr
+                          04
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -5651,7 +5651,7 @@ exports[`Markets render pools after updates sorting types 4`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          04
+                          Apr
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -5839,7 +5839,7 @@ exports[`Markets render pools after updates sorting types 4`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          Dec
+                          15
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -5847,7 +5847,7 @@ exports[`Markets render pools after updates sorting types 4`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          15
+                          Dec
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -6325,7 +6325,7 @@ exports[`Markets render pools after updates sorting types 5`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          Jan
+                          01
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -6333,7 +6333,7 @@ exports[`Markets render pools after updates sorting types 5`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          01
+                          Jan
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -6531,7 +6531,7 @@ exports[`Markets render pools after updates sorting types 5`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          Mar
+                          01
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -6539,7 +6539,7 @@ exports[`Markets render pools after updates sorting types 5`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          01
+                          Mar
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -6753,7 +6753,7 @@ exports[`Markets render pools after updates sorting types 5`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          Apr
+                          04
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -6761,7 +6761,7 @@ exports[`Markets render pools after updates sorting types 5`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          04
+                          Apr
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -6949,7 +6949,7 @@ exports[`Markets render pools after updates sorting types 5`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          Dec
+                          15
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -6957,7 +6957,7 @@ exports[`Markets render pools after updates sorting types 5`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          15
+                          Dec
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -7435,7 +7435,7 @@ exports[`Markets render pools after updates sorting types 6`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          Jan
+                          01
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -7443,7 +7443,7 @@ exports[`Markets render pools after updates sorting types 6`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          01
+                          Jan
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -7641,7 +7641,7 @@ exports[`Markets render pools after updates sorting types 6`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          Mar
+                          01
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -7649,7 +7649,7 @@ exports[`Markets render pools after updates sorting types 6`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          01
+                          Mar
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -7863,7 +7863,7 @@ exports[`Markets render pools after updates sorting types 6`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          Apr
+                          04
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -7871,7 +7871,7 @@ exports[`Markets render pools after updates sorting types 6`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          04
+                          Apr
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -8059,7 +8059,7 @@ exports[`Markets render pools after updates sorting types 6`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          Dec
+                          15
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -8067,7 +8067,7 @@ exports[`Markets render pools after updates sorting types 6`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          15
+                          Dec
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -8549,7 +8549,7 @@ exports[`Markets render pools after updates sorting types 7`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          Mar
+                          01
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -8557,7 +8557,7 @@ exports[`Markets render pools after updates sorting types 7`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          01
+                          Mar
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -8741,7 +8741,7 @@ exports[`Markets render pools after updates sorting types 7`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          Jan
+                          01
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -8749,7 +8749,7 @@ exports[`Markets render pools after updates sorting types 7`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          01
+                          Jan
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -8973,7 +8973,7 @@ exports[`Markets render pools after updates sorting types 7`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          Dec
+                          15
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -8981,7 +8981,7 @@ exports[`Markets render pools after updates sorting types 7`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          15
+                          Dec
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -9206,7 +9206,7 @@ exports[`Markets render pools after updates sorting types 7`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          Apr
+                          04
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -9214,7 +9214,7 @@ exports[`Markets render pools after updates sorting types 7`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          04
+                          Apr
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -9655,7 +9655,7 @@ exports[`Markets render pools after updates sorting types 8`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          Jan
+                          01
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -9663,7 +9663,7 @@ exports[`Markets render pools after updates sorting types 8`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          01
+                          Jan
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -9861,7 +9861,7 @@ exports[`Markets render pools after updates sorting types 8`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          Mar
+                          01
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -9869,7 +9869,7 @@ exports[`Markets render pools after updates sorting types 8`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          01
+                          Mar
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -10083,7 +10083,7 @@ exports[`Markets render pools after updates sorting types 8`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          Apr
+                          04
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -10091,7 +10091,7 @@ exports[`Markets render pools after updates sorting types 8`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          04
+                          Apr
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -10279,7 +10279,7 @@ exports[`Markets render pools after updates sorting types 8`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          Dec
+                          15
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -10287,7 +10287,7 @@ exports[`Markets render pools after updates sorting types 8`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          15
+                          Dec
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -10765,7 +10765,7 @@ exports[`Markets render pools after updates sorting types 9`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          Jan
+                          01
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -10773,7 +10773,7 @@ exports[`Markets render pools after updates sorting types 9`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          01
+                          Jan
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -10971,7 +10971,7 @@ exports[`Markets render pools after updates sorting types 9`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          Mar
+                          01
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -10979,7 +10979,7 @@ exports[`Markets render pools after updates sorting types 9`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          01
+                          Mar
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -11193,7 +11193,7 @@ exports[`Markets render pools after updates sorting types 9`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          Apr
+                          04
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -11201,7 +11201,7 @@ exports[`Markets render pools after updates sorting types 9`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          04
+                          Apr
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -11389,7 +11389,7 @@ exports[`Markets render pools after updates sorting types 9`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          Dec
+                          15
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -11397,7 +11397,7 @@ exports[`Markets render pools after updates sorting types 9`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          15
+                          Dec
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -11875,7 +11875,7 @@ exports[`Markets render pools after updates sorting types 10`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          Jan
+                          01
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -11883,7 +11883,7 @@ exports[`Markets render pools after updates sorting types 10`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          01
+                          Jan
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -12081,7 +12081,7 @@ exports[`Markets render pools after updates sorting types 10`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          Mar
+                          01
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -12089,7 +12089,7 @@ exports[`Markets render pools after updates sorting types 10`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          01
+                          Mar
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -12303,7 +12303,7 @@ exports[`Markets render pools after updates sorting types 10`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          Apr
+                          04
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -12311,7 +12311,7 @@ exports[`Markets render pools after updates sorting types 10`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          04
+                          Apr
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -12499,7 +12499,7 @@ exports[`Markets render pools after updates sorting types 10`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          Dec
+                          15
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -12507,7 +12507,7 @@ exports[`Markets render pools after updates sorting types 10`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          15
+                          Dec
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -12873,7 +12873,7 @@ exports[`Markets renders the page 1`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          Jan
+                          01
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -12881,7 +12881,7 @@ exports[`Markets renders the page 1`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          01
+                          Jan
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -13079,7 +13079,7 @@ exports[`Markets renders the page 1`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          Mar
+                          01
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -13087,7 +13087,7 @@ exports[`Markets renders the page 1`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          01
+                          Mar
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -13301,7 +13301,7 @@ exports[`Markets renders the page 1`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          Apr
+                          04
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -13309,7 +13309,7 @@ exports[`Markets renders the page 1`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          04
+                          Apr
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -13497,7 +13497,7 @@ exports[`Markets renders the page 1`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          Dec
+                          15
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -13505,7 +13505,7 @@ exports[`Markets renders the page 1`] = `
                         <div
                           style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                         >
-                          15
+                          Dec
                         </div>
                         <span
                           class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
