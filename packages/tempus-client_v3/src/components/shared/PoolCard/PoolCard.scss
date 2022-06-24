@@ -64,6 +64,13 @@
   &[data-card-variant='portfolio'] {
     height: 480px;
   }
+
+  transition: transform 0.2s;
+
+  &:hover {
+    box-shadow: var(--downWeakShadow);
+    transform: translateY(-5px);
+  }
 }
 
 .tc__poolCard-protocol {
