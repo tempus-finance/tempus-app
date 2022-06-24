@@ -1,9 +1,10 @@
 import { FC, useCallback, useMemo } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { Chain, ProtocolName, Ticker, ZERO } from 'tempus-core-services';
-import { useSelectedChain, useUserDepositedPools, usePoolBalances } from '../../../hooks';
+import { useSelectedChain, useUserDepositedPools, usePoolBalances, useWalletAddress } from '../../../hooks';
 import { GroupedPoolCardGrid, PoolCardData, PoolCardGroupId, PoolCardStatus } from '../../shared';
 import PortfolioNoPositions from './PortfolioNoPositions';
+import PortfolioPositionsWalletNotConnected from './PortfolioPositionsWalletNotConnected';
 
 import './PortfolioPositions.scss';
 
@@ -11,8 +12,9 @@ const PortfolioPositions: FC = () => {
   const navigate = useNavigate();
 
   const tempusPools = useUserDepositedPools();
-  const [chain] = useSelectedChain();
   const balances = usePoolBalances();
+  const [walletAddress] = useWalletAddress();
+  const [chain] = useSelectedChain();
 
   const cardGroups = useMemo(() => {
     const groups = new Map<PoolCardGroupId, PoolCardData[]>();
@@ -58,16 +60,21 @@ const PortfolioPositions: FC = () => {
 
   return (
     <div className="tc__portfolio-positions">
-      {chain && cardGroups.size ? (
+      {/* Wallet connected and user has pool positions */}
+      {chain && cardGroups.size && (
         <GroupedPoolCardGrid
           chain={chain}
           cardGroups={cardGroups}
           groupHeading="All Positions"
           onCardClick={handleCardClick}
         />
-      ) : (
-        <PortfolioNoPositions />
       )}
+
+      {/* Wallet connected user does not have pool positions */}
+      {walletAddress && !cardGroups.size && <PortfolioNoPositions />}
+
+      {/* Wallet not connected */}
+      {!walletAddress && <PortfolioPositionsWalletNotConnected />}
       <Outlet />
     </div>
   );
