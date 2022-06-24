@@ -80,7 +80,9 @@ const DepositModal: FC<DepositModalProps> = props => {
     [selectedTempusPool, token.address, tokenAllowances],
   );
   const tokenApproved = useMemo(
-    () => Boolean(tokenAllowance?.alwaysApproved) || amount.lte(tokenAllowance?.amount ?? ZERO),
+    () =>
+      Boolean(tokenAllowance?.alwaysApproved) ||
+      (tokenAllowance?.amount?.gt(ZERO) && amount.lte(tokenAllowance?.amount ?? ZERO)),
     [amount, tokenAllowance],
   );
 
