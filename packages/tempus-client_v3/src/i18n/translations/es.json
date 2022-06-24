@@ -118,7 +118,7 @@
     "titleTotalYieldEarned": "Regreso trotal",
     "titleWalletNotConnected": "",
     "descriptionWalletNotConnected": "",
-    "buttonConnectWallet": ""
+    "buttonConnectWallet": "Conectar Wallet"
   },
   "PortfolioPositions": {
     "buttonBrowseMarkets": "Ir a Mercados",
@@ -126,7 +126,7 @@
     "titleNoPositions": "Sin posición",
     "titleWalletNotConnected": "",
     "descriptionWalletNotConnected": "",
-    "buttonConnectWallet": ""
+    "buttonConnectWallet": "Conectar Wallet"
   },
   "PortfolioSubheader": {
     "tabOverview": "",

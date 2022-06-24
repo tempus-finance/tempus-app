@@ -116,9 +116,9 @@
     "titleProjectedYield": "",
     "titleTotalPortfolioValue": "",
     "titleTotalYieldEarned": "Rendimento Totale",
-    "titleWalletNotConnected": "",
-    "descriptionWalletNotConnected": "",
-    "buttonConnectWallet": ""
+    "titleWalletNotConnected": "Wallet non collegato",
+    "descriptionWalletNotConnected": "Connetti il tuo wallet per gestire il portafoglio.",
+    "buttonConnectWallet": "Connetti Wallet"
   },
   "PortfolioPositions": {
     "buttonBrowseMarkets": "Vai su Mercati",
@@ -126,7 +126,7 @@
     "titleNoPositions": "Nessuna Posizione",
     "titleWalletNotConnected": "",
     "descriptionWalletNotConnected": "",
-    "buttonConnectWallet": ""
+    "buttonConnectWallet": "Connetti Wallet"
   },
   "PortfolioSubheader": {
     "tabOverview": "",
