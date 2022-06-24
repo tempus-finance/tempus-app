@@ -115,12 +115,18 @@
     "titleNoPositions": "Nada en la Cartera",
     "titleProjectedYield": "",
     "titleTotalPortfolioValue": "",
-    "titleTotalYieldEarned": "Regreso trotal"
+    "titleTotalYieldEarned": "Regreso trotal",
+    "titleWalletNotConnected": "",
+    "descriptionWalletNotConnected": "",
+    "buttonConnectWallet": ""
   },
   "PortfolioPositions": {
     "buttonBrowseMarkets": "Ir a Mercados",
     "descriptionNoPositions": "Tu billetera está vacía. Hacer algo.",
-    "titleNoPositions": "Sin posición"
+    "titleNoPositions": "Sin posición",
+    "titleWalletNotConnected": "",
+    "descriptionWalletNotConnected": "",
+    "buttonConnectWallet": ""
   },
   "PortfolioSubheader": {
     "tabOverview": "",
