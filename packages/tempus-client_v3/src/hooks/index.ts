@@ -23,3 +23,4 @@ export * from './useFixedDeposit';
 export * from './useWithdraw';
 export * from './useAllowances';
 export * from './useNavigateToRoot';
+export * from './useTransactions';

@@ -1,5 +1,4 @@
 import { bind } from '@react-rxjs/core';
-import { JsonRpcSigner } from '@ethersproject/providers';
 import {
   BehaviorSubject,
   map,
@@ -19,8 +18,8 @@ import { Chain, Decimal, getDefinedServices } from 'tempus-core-services';
 import { getConfigManager } from '../config/getConfigManager';
 import { selectedChain$ } from './useSelectedChain';
 import { servicesLoaded$ } from './useServicesLoaded';
-import { signer$ } from './useSigner';
 import { walletAddress$ } from './useWalletAddress';
+import { transferStream$, TrasnferTransaction } from './useTransactions';
 import { AppEvent, appEvent$ } from './useAppEvent';
 
 // Improves readability of the code
@@ -39,7 +38,7 @@ interface TokenBalanceData {
 }
 
 interface TokenBalanceMap {
-  [chainPoolAddress: string]: TokenBalance;
+  [chainTokenAddress: string]: TokenBalance;
 }
 
 // Each token will have a separate BehaviorSubject, and this map will store them with some additional token data
@@ -82,56 +81,22 @@ const fetchData = (chain: Chain, tokenAddress: string, walletAddress: string): O
 };
 
 // stream for listening chain events
-const transactionStream$ = combineLatest([walletAddress$, signer$, servicesLoaded$]).pipe(
-  filter(([walletAddress, signer, servicesLoaded]) => Boolean(walletAddress) && Boolean(signer) && servicesLoaded),
-  mergeMap<[string, JsonRpcSigner | null, boolean], Observable<TokenBalanceMap | null>>(([walletAddress, signer]) => {
-    const tokenBalanceFetchMap = [...tokenBalanceDataMap.values()].map(tokenBalanceData => {
-      try {
-        const services = getDefinedServices(tokenBalanceData.chain);
-        const erc20TokenService = services.ERC20TokenServiceGetter(
-          tokenBalanceData.address,
-          tokenBalanceData.chain,
-          signer as JsonRpcSigner,
-        );
-        const subject$ = new BehaviorSubject<TokenBalance | null>(null);
-        const transferListener = () => {
-          fetchData(tokenBalanceData.chain, tokenBalanceData.address, walletAddress).subscribe(balance =>
-            subject$.next({
-              balance,
-              address: tokenBalanceData.address,
-              chain: tokenBalanceData.chain,
-            }),
-          );
-        };
+const onChainStream$ = transferStream$.pipe(
+  filter(transction => Boolean(transction)),
+  mergeMap<TrasnferTransaction | null, Observable<TokenBalanceMap | null>>(transaction => {
+    const { walletAddress, token } = transaction as TrasnferTransaction;
+    const { chain, address: tokenAddress } = token;
 
-        // TODO: should we call offTransfer()? this stream will only run when wallet changes anyway
-        erc20TokenService.onTransfer(walletAddress, null, transferListener);
-        erc20TokenService.onTransfer(null, walletAddress, transferListener);
-
-        return subject$.pipe(
-          filter(tokenBalance => Boolean(tokenBalance)),
-          map(
-            tokenBalance =>
-              ({
-                [`${tokenBalance?.chain}-${tokenBalance?.address}`]: {
-                  balance: tokenBalance?.balance,
-                  address: tokenBalance?.address,
-                  chain: tokenBalance?.chain,
-                },
-              } as TokenBalanceMap),
-          ),
-        );
-      } catch (error) {
-        console.error(
-          'useTokenBalances - cannot fetch token balance for ' +
-            `${tokenBalanceData.address} on ${tokenBalanceData.chain} for $wallet ${walletAddress}`,
-          error,
-        );
-        return of(null);
-      }
-    });
-
-    return merge(...tokenBalanceFetchMap);
+    return fetchData(chain, tokenAddress, walletAddress).pipe(
+      filter(balance => Boolean(balance)),
+      map(balance => ({
+        [`${chain}-${tokenAddress}`]: {
+          balance,
+          address: tokenAddress,
+          chain,
+        },
+      })),
+    );
   }),
 );
 
@@ -247,7 +212,7 @@ const walletStream$ = combineLatest([walletAddress$, selectedChain$, servicesLoa
 );
 
 // merge all stream$ into one if there are multiple
-const stream$ = merge(walletStream$, transactionStream$, eventStream$).pipe(
+const stream$ = merge(walletStream$, onChainStream$, eventStream$).pipe(
   tap(tokenDataMap => {
     if (tokenDataMap === null) {
       return;
