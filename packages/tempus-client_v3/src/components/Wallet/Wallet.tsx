@@ -85,7 +85,7 @@ const Wallet: FC<WalletProps> = props => {
   const connectedWallets = useWallets();
   const [{ wallet }, connect] = useConnectWallet();
   const [, setWalletAddress] = useWalletAddress();
-  const [selectedChain] = useSelectedChain();
+  const [selectedChain, setSelectedChain] = useSelectedChain();
   const [, setChain] = useSetChain();
   const [, setSigner] = useSigner();
 
@@ -124,8 +124,11 @@ const Wallet: FC<WalletProps> = props => {
   useEffect(() => {
     if (wallet) {
       setWalletAddress(wallet.accounts[0].address);
+    } else {
+      setWalletAddress('');
+      setSelectedChain(null);
     }
-  }, [wallet, setWalletAddress]);
+  }, [wallet, setWalletAddress, setSelectedChain]);
 
   /**
    * When user clicks on connect wallet button show a modal with all available wallets users can connect.
@@ -187,6 +190,8 @@ const Wallet: FC<WalletProps> = props => {
     if (wallet && wallet.provider) {
       const signer = new ethers.providers.Web3Provider(wallet.provider).getSigner() as JsonRpcSigner;
       setSigner(signer);
+    } else {
+      setSigner(null);
     }
   }, [wallet, setSigner]);
 
