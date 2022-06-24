@@ -13,14 +13,18 @@ import {
   Observable,
   withLatestFrom,
   catchError,
+  debounce,
+  interval,
+  scan,
 } from 'rxjs';
 import { Chain, Decimal, getDefinedServices } from 'tempus-core-services';
 import { getConfigManager } from '../config/getConfigManager';
 import { selectedChain$ } from './useSelectedChain';
 import { servicesLoaded$ } from './useServicesLoaded';
 import { walletAddress$ } from './useWalletAddress';
-import { transferStream$, TrasnferTransaction } from './useTransactions';
+import { transferStream$, TransferTransaction } from './useTransactions';
 import { AppEvent, appEvent$ } from './useAppEvent';
+import { DEBOUNCE_IN_MS } from '../constants';
 
 // Improves readability of the code
 type TokenChainAddressId = string;
@@ -83,8 +87,8 @@ const fetchData = (chain: Chain, tokenAddress: string, walletAddress: string): O
 // stream for listening chain events
 const onChainStream$ = transferStream$.pipe(
   filter(transction => Boolean(transction)),
-  mergeMap<TrasnferTransaction | null, Observable<TokenBalanceMap | null>>(transaction => {
-    const { walletAddress, token } = transaction as TrasnferTransaction;
+  mergeMap<TransferTransaction | null, Observable<TokenBalanceMap | null>>(transaction => {
+    const { walletAddress, token } = transaction as TransferTransaction;
     const { chain, address: tokenAddress } = token;
 
     return fetchData(chain, tokenAddress, walletAddress).pipe(
@@ -213,6 +217,15 @@ const walletStream$ = combineLatest([walletAddress$, selectedChain$, servicesLoa
 
 // merge all stream$ into one if there are multiple
 const stream$ = merge(walletStream$, onChainStream$, eventStream$).pipe(
+  filter(tokenDataMap => Boolean(tokenDataMap)),
+  scan(
+    (allTokenDataMap, tokenDataMap) => ({
+      ...allTokenDataMap,
+      ...tokenDataMap,
+    }),
+    {} as TokenBalanceMap,
+  ),
+  debounce<TokenBalanceMap>(() => interval(DEBOUNCE_IN_MS)),
   tap(tokenDataMap => {
     if (tokenDataMap === null) {
       return;

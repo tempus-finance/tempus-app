@@ -7,7 +7,7 @@ import { signer$ } from './useSigner';
 import { walletAddress$ } from './useWalletAddress';
 import { TokenListItem } from '../config/ConfigManager';
 
-export interface TrasnferTransaction {
+export interface TransferTransaction {
   fromAddress: string;
   toAddress: string;
   walletAddress: string;
@@ -19,14 +19,14 @@ export const transferStream$ = combineLatest([tokenList$, walletAddress$, signer
     ([tokenListItems, walletAddress, signer, servicesLoaded]) =>
       tokenListItems.length > 0 && Boolean(walletAddress) && Boolean(signer) && servicesLoaded,
   ),
-  mergeMap<[TokenListItem[], string, JsonRpcSigner | null, boolean], Observable<TrasnferTransaction | null>>(
+  mergeMap<[TokenListItem[], string, JsonRpcSigner | null, boolean], Observable<TransferTransaction | null>>(
     ([tokenListItems, walletAddress, signer]) => {
       const transactionEvents = tokenListItems.map(tokenListItem => {
         const { chain, address } = tokenListItem;
         try {
           const services = getDefinedServices(chain);
           const erc20TokenService = services.ERC20TokenServiceGetter(address, chain, signer as JsonRpcSigner);
-          const subject$ = new BehaviorSubject<TrasnferTransaction | null>(null);
+          const subject$ = new BehaviorSubject<TransferTransaction | null>(null);
           const listener = (fromAddress: string, toAddress: string) =>
             subject$.next({
               fromAddress,
