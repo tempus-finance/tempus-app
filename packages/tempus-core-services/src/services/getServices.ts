@@ -4,14 +4,12 @@ import { getTempusPoolService } from './getTempusPoolService';
 import { getTempusControllerService } from './getTempusControllerService';
 import { getStatisticsService } from './getStatisticsService';
 import { getVaultService } from './getVaultService';
-import { getStorageService } from './getStorageService';
 import { getWalletBalanceService } from './getWalletBalanceService';
 import { TempusPoolService } from './TempusPoolService';
 import { TempusControllerService } from './TempusControllerService';
 import { StatisticsService } from './StatisticsService';
 import { VaultService } from './VaultService';
 import { VariableRateService } from './VariableRateService';
-import { StorageService } from './StorageService';
 import { WalletBalanceService } from './WalletBalanceService';
 import { getPoolBalanceService } from './getPoolBalanceService';
 import { PoolBalanceService } from './PoolBalanceService';
@@ -27,7 +25,6 @@ type ServiceMap = {
   StatisticsService: StatisticsService;
   VaultService: VaultService;
   VariableRateService: VariableRateService;
-  StorageService: StorageService;
   WalletBalanceService: WalletBalanceService;
   PoolBalanceService: PoolBalanceService;
   WithdrawService: WithdrawService;
@@ -47,7 +44,6 @@ export const initServices = (chain: Chain, config: Config): void => {
     StatisticsService: getStatisticsService(chain, getConfig, getChainConfig),
     VaultService: getVaultService(chain, getChainConfig),
     VariableRateService: getVariableRateService(chain, getChainConfig),
-    StorageService: getStorageService(),
     WalletBalanceService: getWalletBalanceService(chain, getConfig),
     PoolBalanceService: getPoolBalanceService(chain, getConfig),
     WithdrawService: getWithdrawService(chain, getConfig),
