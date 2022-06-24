@@ -16,12 +16,18 @@ export async function tempusMetamaskConnect(browser: BrowserContext):
     }
 
     await tabTempus.click('text=Connect Wallet');
-    const termsAndConds: string = `text=I agree to the Terms & Conditions and Privacy Policy.`; //untested
+    const termsAndConds: string = `input[type="checkbox"]`;
     if (await tabTempus.locator(termsAndConds).count()) {
         await tabTempus.click(termsAndConds);
     }
 
-    await tabTempus.waitForTimeout(LOAD_LONG_TIMEOUT * 3);
+    const SELECTOR_MM: string = 'text="MetaMask"';
+    await tabTempus.waitForTimeout(LOAD_SHORT_TIMEOUT);
+    if (await tabTempus.locator(SELECTOR_MM).count()) {
+        await tabTempus.click(SELECTOR_MM);
+    }
+
+    await tabTempus.waitForTimeout(LOAD_LONG_TIMEOUT);
     await metamaskConfirmConnection(browser);
 
     //await tabTempus.click('text=MetaMask');

@@ -1,7 +1,7 @@
 import { BrowserContext } from '@playwright/test';
 import { metamaskRegister, metamaskLogin } from '../modules/metamask';
 import { chromiumPersistant } from '../modules/browser';
-//import { tempusMetamaskConnect } from '../modules/tempushome';
+import { tempusMetamaskConnect } from '../modules/tempushome';
 //import { ETH_NETWORK, tempusNetworkChange } from '../modules/network';
 
 (async () => {
@@ -14,6 +14,7 @@ import { chromiumPersistant } from '../modules/browser';
   //await metamaskAddETHfork(browser);
   //await metamaskAccountsAddAll(browser);
   //await metamaskAccountSwitch(browser, 1);
+  await tempusMetamaskConnect(browser);
 
   //await tempusNetworkChange(browser, ETH_NETWORK.name);
   //await page.pause();

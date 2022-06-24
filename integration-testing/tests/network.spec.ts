@@ -1,6 +1,5 @@
 import { test, expect, BrowserContext, Page } from '@playwright/test';
 import { metamaskLogin, METAMASK_CHROME_URL } from '../modules/metamask';
-import { tempusMetamaskConnect } from '../modules/tempushome';
 import { chromiumPersistant } from '../modules/browser';
 import { ETH_NETWORK, FTM_NETWORK, tempusNetworkChange } from '../modules/network';
 
@@ -10,10 +9,6 @@ test.describe.serial("Metamask and network tests", () => {
     test.beforeAll(async () => {
         browser = await chromiumPersistant();
         await metamaskLogin(browser);
-    });
-
-    test('Metamask - Tempus connection', async () => {
-        await tempusMetamaskConnect(browser);
     });
 
     test('Is logged into metamask', async () => {

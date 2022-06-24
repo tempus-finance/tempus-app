@@ -222,11 +222,9 @@ export async function metamaskAccountSwitch(browser: BrowserContext, accountInde
 }
 
 export async function metamaskConfirmConnection(browser: BrowserContext) {
-    const mm: Page = await browser.newPage();
-    mm.goto(`${METAMASK_CHROME_URL}connect`);
-    await mm.waitForTimeout(LOAD_LONG_TIMEOUT * 6);
-    const SELECTOR_NEXT = 'text="Next"';
-    await mm.click(SELECTOR_NEXT);
+    const mm: Page = await browser.pages().slice(-1)[0];
+    await mm.waitForTimeout(LOAD_LONG_TIMEOUT * 2);
+    await mm.click('text="Next"');
     await mm.click('text="Connect"');
     mm.close();
 }
