@@ -86,8 +86,10 @@ const fetchData = (chain: Chain, tokenAddress: string, walletAddress: string): O
 
 // stream for listening chain events
 const onChainStream$ = transferStream$.pipe(
-  filter(transction => Boolean(transction)),
-  mergeMap<TransferTransaction | null, Observable<TokenBalanceMap | null>>(transaction => {
+  withLatestFrom(walletAddress$),
+  // make sure the transaction is for the current wallet address
+  filter(([transction, walletAddress]) => Boolean(transction) && transction?.walletAddress === walletAddress),
+  mergeMap<[TransferTransaction | null, string], Observable<TokenBalanceMap | null>>(([transaction]) => {
     const { walletAddress, token } = transaction as TransferTransaction;
     const { chain, address: tokenAddress } = token;
 
