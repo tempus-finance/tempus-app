@@ -127,8 +127,6 @@ const Wallet: FC<WalletProps> = props => {
     }
   }, [wallet, setWalletAddress]);
 
-  // TODO - Delete local storage under 'connectedWallets' when user disconnects the wallet
-
   /**
    * When user clicks on connect wallet button show a modal with all available wallets users can connect.
    */
