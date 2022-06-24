@@ -42,7 +42,8 @@ export const transferStream$ = combineLatest([tokenList$, walletAddress$, signer
           return subject$.pipe(filter(item => Boolean(item)));
         } catch (error) {
           console.error(
-            `useTransactions - cannot listen on chain events for token ${address} on ${chain} for $wallet ${walletAddress}`,
+            'useTransactions - ' +
+              `cannot listen on chain events for token ${address} on ${chain} for $wallet ${walletAddress}`,
             error,
           );
           return of(null);
