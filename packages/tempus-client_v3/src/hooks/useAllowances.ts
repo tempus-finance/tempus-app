@@ -49,8 +49,8 @@ const tokenBalanceStream$ = tokenBalance$.pipe(
       Boolean(config) && Boolean(walletAddress) && Boolean(signer) && servicesLoaded,
   ),
   concatMap<[TokenBalance, Config, string, JsonRpcSigner | null, boolean], Observable<AllowanceMap>>(
-    ([{ balance, address, chain }, config, walletAddress, signer]) => {
-      if (!balance || balance.lte(0) || address === ZERO_ADDRESS) {
+    ([{ address, chain }, config, walletAddress, signer]) => {
+      if (address === ZERO_ADDRESS) {
         // always approved
         return of({
           [`${chain}-${address}`]: {
