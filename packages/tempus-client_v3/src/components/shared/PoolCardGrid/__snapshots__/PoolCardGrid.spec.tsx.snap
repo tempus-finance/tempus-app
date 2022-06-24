@@ -88,7 +88,7 @@ exports[`PoolCardGrid renders a pool card grid 1`] = `
                 <div
                   style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                 >
-                  Apr
+                  04
                 </div>
                 <span
                   class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -96,7 +96,7 @@ exports[`PoolCardGrid renders a pool card grid 1`] = `
                 <div
                   style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                 >
-                  04
+                  Apr
                 </div>
                 <span
                   class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -284,7 +284,7 @@ exports[`PoolCardGrid renders a pool card grid 1`] = `
                 <div
                   style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                 >
-                  Dec
+                  15
                 </div>
                 <span
                   class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -292,7 +292,7 @@ exports[`PoolCardGrid renders a pool card grid 1`] = `
                 <div
                   style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                 >
-                  15
+                  Dec
                 </div>
                 <span
                   class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -517,7 +517,7 @@ exports[`PoolCardGrid renders a pool card grid 1`] = `
                 <div
                   style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                 >
-                  Feb
+                  15
                 </div>
                 <span
                   class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
@@ -525,7 +525,7 @@ exports[`PoolCardGrid renders a pool card grid 1`] = `
                 <div
                   style="font-style: normal; font-size: 32px; line-height: 40px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                 >
-                  15
+                  Feb
                 </div>
                 <span
                   class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"

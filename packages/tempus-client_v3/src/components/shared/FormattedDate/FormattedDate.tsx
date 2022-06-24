@@ -6,6 +6,7 @@ type FormattedDateSize = 'small' | 'medium' | 'large';
 
 export interface FormattedDateProps {
   date: Date;
+  locale: string;
   textColor?: TypographyColor;
   size?: FormattedDateSize;
   separatorContrast?: 'low' | 'high';
@@ -27,6 +28,7 @@ const formatOptions: Intl.DateTimeFormatOptions = {
 const FormattedDate: FC<FormattedDateProps> = props => {
   const {
     date,
+    locale,
     textColor,
     size = 'medium',
     separatorContrast = 'high',
@@ -34,11 +36,11 @@ const FormattedDate: FC<FormattedDateProps> = props => {
   } = props;
   const formattedDateParts = useMemo(
     () =>
-      new Intl.DateTimeFormat(window.navigator.language, formatOptions)
+      new Intl.DateTimeFormat(locale, formatOptions)
         .formatToParts(date)
         .filter(part => dateParts.has(part.type))
         .map(part => part.value.toString()),
-    [date, dateParts],
+    [date, locale, dateParts],
   );
 
   return (

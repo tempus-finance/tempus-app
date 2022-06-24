@@ -3,6 +3,7 @@ import FormattedDate, { FormattedDateProps } from './FormattedDate';
 
 const defaultProps: FormattedDateProps = {
   date: new Date(Date.UTC(2022, 1, 4)),
+  locale: 'en-GB',
 };
 
 const subject = (props: FormattedDateProps) => render(<FormattedDate {...props} />);

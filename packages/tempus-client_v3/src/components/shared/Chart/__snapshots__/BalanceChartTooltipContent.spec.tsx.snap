@@ -28,7 +28,7 @@ exports[`BalanceChartTooltipContent renders a balance tooltip content 1`] = `
       <div
         style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(71, 67, 80); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
       >
-        May
+        01
       </div>
       <span
         class="tc__formatted-date__separator tc__formatted-date__separator-low-contrast"
@@ -36,7 +36,7 @@ exports[`BalanceChartTooltipContent renders a balance tooltip content 1`] = `
       <div
         style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(71, 67, 80); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
       >
-        01
+        May
       </div>
       <span
         class="tc__formatted-date__separator tc__formatted-date__separator-low-contrast"

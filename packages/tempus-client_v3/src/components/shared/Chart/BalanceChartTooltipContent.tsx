@@ -9,10 +9,11 @@ export interface BalanceChartTooltipContentProps {
   value: string;
   currency: Ticker;
   date: Date;
+  locale: string;
 }
 
 const BalanceChartTooltipContent: FC<BalanceChartTooltipContentProps> = props => {
-  const { title, value, currency, date } = props;
+  const { title, value, currency, date, locale } = props;
 
   return (
     <div className="tc__chart__balance-tooltip-content">
@@ -31,7 +32,7 @@ const BalanceChartTooltipContent: FC<BalanceChartTooltipContentProps> = props =>
           {value} {currency}
         </Typography>
       </div>
-      <FormattedDate date={date} size="small" textColor="text-secondary" separatorContrast="low" />
+      <FormattedDate date={date} locale={locale} size="small" textColor="text-secondary" separatorContrast="low" />
     </div>
   );
 };

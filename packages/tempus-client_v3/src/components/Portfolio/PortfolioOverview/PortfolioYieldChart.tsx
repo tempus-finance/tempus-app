@@ -1,6 +1,6 @@
 import { FC, useCallback, useMemo } from 'react';
 import { DecimalUtils } from 'tempus-core-services';
-import { useUserDepositedPools } from '../../../hooks';
+import { useLocale, useUserDepositedPools } from '../../../hooks';
 import {
   BalanceChartTooltipContent,
   ChartDot,
@@ -13,6 +13,7 @@ import { generateDummyDateChartData } from '../../shared/Chart/utils';
 const PortfolioYieldChart: FC<ChartCommonProps> = props => {
   const { width, height = 512 } = props;
   const userDepositedPools = useUserDepositedPools();
+  const [locale] = useLocale();
 
   // TODO: When the Graph is integrated, we should hide the chart based on the data from the graph instead of using
   // current positions.
@@ -59,10 +60,11 @@ const PortfolioYieldChart: FC<ChartCommonProps> = props => {
           value={DecimalUtils.formatToCurrency(y)}
           currency="ETH"
           date={x}
+          locale={locale}
         />
       );
     },
-    [chartData],
+    [chartData, locale],
   );
 
   return (

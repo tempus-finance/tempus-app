@@ -1,9 +1,9 @@
 {
   "App": {
-    "navMarkets": "~~~~~====={{{{{(((((navMarkets)))))}}}}}=====~~~~~",
     "navLp": "~~~~~====={{{{{(((((navLp)))))}}}}}=====~~~~~",
-    "navStaking": "~~~~~====={{{{{(((((navStaking)))))}}}}}=====~~~~~",
-    "navPortfolio": "~~~~~====={{{{{(((((navPortfolio)))))}}}}}=====~~~~~"
+    "navMarkets": "~~~~~====={{{{{(((((navMarkets)))))}}}}}=====~~~~~",
+    "navPortfolio": "~~~~~====={{{{{(((((navPortfolio)))))}}}}}=====~~~~~",
+    "navStaking": "~~~~~====={{{{{(((((navStaking)))))}}}}}=====~~~~~"
   },
   "ChainSelector": {
     "title": "~~~~~====={{{{{(((((title)))))}}}}}=====~~~~~"
@@ -44,6 +44,13 @@
     "titleEarlyRedemption": "~~~~~====={{{{{(((((titleEarlyRedemption)))))}}}}}=====~~~~~",
     "titleRedemption": "~~~~~====={{{{{(((((titleRedemption)))))}}}}}=====~~~~~",
     "titleSwap": "~~~~~====={{{{{(((((titleSwap)))))}}}}}=====~~~~~"
+  },
+  "LiquidityProvision": {
+    "comingSoonDescription": "~~~~~====={{{{{(((((comingSoonDescription)))))}}}}}=====~~~~~",
+    "comingSoonTitle": "~~~~~====={{{{{(((((comingSoonTitle)))))}}}}}=====~~~~~"
+  },
+  "LiquidityProvisionSubheader": {
+    "comingSoon": "~~~~~====={{{{{(((((comingSoon)))))}}}}}=====~~~~~"
   },
   "MarketsPools": {
     "showMoreXButtonLabel": "~~~~~====={{{{{(((((showMoreXButtonLabel)))))}}}}}=====~~~~~",
@@ -131,6 +138,13 @@
   "SlippageInput": {
     "buttonAuto": "~~~~~====={{{{{(((((buttonAuto)))))}}}}}=====~~~~~"
   },
+  "Staking": {
+    "comingSoonDescription": "~~~~~====={{{{{(((((comingSoonDescription)))))}}}}}=====~~~~~",
+    "comingSoonTitle": "~~~~~====={{{{{(((((comingSoonTitle)))))}}}}}=====~~~~~"
+  },
+  "StakingSubheader": {
+    "comingSoon": "~~~~~====={{{{{(((((comingSoon)))))}}}}}=====~~~~~"
+  },
   "TermTab": {
     "title": "~~~~~====={{{{{(((((title)))))}}}}}=====~~~~~"
   },
@@ -158,19 +172,5 @@
     "successModalSecondaryButton": "~~~~~====={{{{{(((((successModalSecondaryButton)))))}}}}}=====~~~~~",
     "successModalTitle": "~~~~~====={{{{{(((((successModalTitle)))))}}}}}=====~~~~~",
     "title": "~~~~~====={{{{{(((((title)))))}}}}}=====~~~~~"
-  },
-  "LiquidityProvisionSubheader": {
-    "comingSoon": "~~~~~====={{{{{(((((comingSoon)))))}}}}}=====~~~~~"
-  },
-  "LiquidityProvision": {
-    "comingSoonTitle": "~~~~~====={{{{{(((((comingSoonTitle)))))}}}}}=====~~~~~",
-    "comingSoonDescription": "~~~~~====={{{{{(((((comingSoonDescription)))))}}}}}=====~~~~~"
-  },
-  "StakingSubheader": {
-    "comingSoon": "~~~~~====={{{{{(((((comingSoon)))))}}}}}=====~~~~~"
-  },
-  "Staking": {
-    "comingSoonTitle": "~~~~~====={{{{{(((((comingSoonTitle)))))}}}}}=====~~~~~",
-    "comingSoonDescription": "~~~~~====={{{{{(((((comingSoonDescription)))))}}}}}=====~~~~~"
   }
 }
