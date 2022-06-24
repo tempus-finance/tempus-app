@@ -1,0 +1,37 @@
+
+> tempus-client_v3@0.0.1 prestart
+> ./scripts/get-release-version.sh
+
+Current version: e2e-v3-switch-17380306-20220624-17:27:59
+Release version stored in ./src/release.json
+
+> tempus-client_v3@0.0.1 start
+> react-scripts start
+
+Something is already running on port 3000.
+
+> tempus-client_v3@0.0.1 prestart
+> ./scripts/get-release-version.sh
+
+Current version: e2e-v3-switch-17380306-20220624-17:28:35
+Release version stored in ./src/release.json
+
+> tempus-client_v3@0.0.1 start
+> react-scripts start
+
+[34mℹ[39m [90m｢wds｣[39m: Project is running at http://192.168.0.19/
+[34mℹ[39m [90m｢wds｣[39m: webpack output is served from 
+[34mℹ[39m [90m｢wds｣[39m: Content not from webpack is served from /home/milutin/Documents/release3.0/dev version 5/tempus-app/packages/tempus-client_v3/public
+[34mℹ[39m [90m｢wds｣[39m: 404s will fallback to /
+Starting the development server...
+
+Compiled successfully!
+
+You can now view tempus-client_v3 in the browser.
+
+  Local:            http://localhost:3000
+  On Your Network:  http://192.168.0.19:3000
+
+Note that the development build is not optimized.
+To create a production build, use npm run build.
+
