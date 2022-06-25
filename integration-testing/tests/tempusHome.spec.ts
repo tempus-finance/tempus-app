@@ -35,6 +35,12 @@ test.describe.serial("Tempus Homepage tests", () => {
   test('Click to switch sorting (english)', async () => {
     const page: Page = await browser.newPage();
     await page.goto(TEMPUS_URL);
+
+    await page.click('text="Filter"');
+    await page.click('text=/^Inactive\\ \\(/');
+    await page.mouse.click(10, 10);
+    // remove this when z-index problem is fixed
+
     await page.click('text="Sort"');
     await page.click('text="A-Z"');
     await page.click('text="Maturity"');
