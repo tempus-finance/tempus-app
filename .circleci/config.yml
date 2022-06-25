@@ -116,7 +116,7 @@ jobs:
       - attach_workspace:
           at: ./
       - run:
-          name: E2E Tests
+          name: MetaMask Setup
           command: |
             apt update
             apt install -y p7zip-full
