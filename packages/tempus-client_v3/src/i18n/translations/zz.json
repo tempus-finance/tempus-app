@@ -1,18 +1,23 @@
 {
   "App": {
+    "navLp": "~~~~~====={{{{{(((((navLp)))))}}}}}=====~~~~~",
     "navMarkets": "~~~~~====={{{{{(((((navMarkets)))))}}}}}=====~~~~~",
-    "navPortfolio": "~~~~~====={{{{{(((((navPortfolio)))))}}}}}=====~~~~~"
+    "navPortfolio": "~~~~~====={{{{{(((((navPortfolio)))))}}}}}=====~~~~~",
+    "navStaking": "~~~~~====={{{{{(((((navStaking)))))}}}}}=====~~~~~"
   },
   "ChainSelector": {
     "title": "~~~~~====={{{{{(((((title)))))}}}}}=====~~~~~"
   },
   "CurrencyInputModal": {
-    "insufficientBalanceError": "~~~~~====={{{{{(((((insufficientBalanceError)))))}}}}}=====~~~~~",
     "feesAndTransactionInfo": "~~~~~====={{{{{(((((feesAndTransactionInfo)))))}}}}}=====~~~~~",
+    "insufficientBalanceError": "~~~~~====={{{{{(((((insufficientBalanceError)))))}}}}}=====~~~~~",
     "linkBlockExplorer": "~~~~~====={{{{{(((((linkBlockExplorer)))))}}}}}=====~~~~~"
   },
   "DepositModal": {
     "description": "~~~~~====={{{{{(((((description)))))}}}}}=====~~~~~",
+    "errorModalDescription": "~~~~~====={{{{{(((((errorModalDescription)))))}}}}}=====~~~~~",
+    "errorModalPrimaryButton": "~~~~~====={{{{{(((((errorModalPrimaryButton)))))}}}}}=====~~~~~",
+    "errorModalTitle": "~~~~~====={{{{{(((((errorModalTitle)))))}}}}}=====~~~~~",
     "labelApproveDefault": "~~~~~====={{{{{(((((labelApproveDefault)))))}}}}}=====~~~~~",
     "labelApproveLoading": "~~~~~====={{{{{(((((labelApproveLoading)))))}}}}}=====~~~~~",
     "labelApproveSuccess": "~~~~~====={{{{{(((((labelApproveSuccess)))))}}}}}=====~~~~~",
@@ -23,11 +28,11 @@
     "labelMakeDeposit": "~~~~~====={{{{{(((((labelMakeDeposit)))))}}}}}=====~~~~~",
     "labelYieldAtMaturity": "~~~~~====={{{{{(((((labelYieldAtMaturity)))))}}}}}=====~~~~~",
     "previewDescription": "~~~~~====={{{{{(((((previewDescription)))))}}}}}=====~~~~~",
-    "title": "~~~~~====={{{{{(((((title)))))}}}}}=====~~~~~",
-    "successModalTitle": "~~~~~====={{{{{(((((successModalTitle)))))}}}}}=====~~~~~",
     "successModalDescription": "~~~~~====={{{{{(((((successModalDescription)))))}}}}}=====~~~~~",
     "successModalPrimaryButton": "~~~~~====={{{{{(((((successModalPrimaryButton)))))}}}}}=====~~~~~",
-    "successModalSecondaryButton": "~~~~~====={{{{{(((((successModalSecondaryButton)))))}}}}}=====~~~~~"
+    "successModalSecondaryButton": "~~~~~====={{{{{(((((successModalSecondaryButton)))))}}}}}=====~~~~~",
+    "successModalTitle": "~~~~~====={{{{{(((((successModalTitle)))))}}}}}=====~~~~~",
+    "title": "~~~~~====={{{{{(((((title)))))}}}}}=====~~~~~"
   },
   "DepositModalHeader": {
     "titleRewardsAvailable": "~~~~~====={{{{{(((((titleRewardsAvailable)))))}}}}}=====~~~~~"
@@ -39,6 +44,13 @@
     "titleEarlyRedemption": "~~~~~====={{{{{(((((titleEarlyRedemption)))))}}}}}=====~~~~~",
     "titleRedemption": "~~~~~====={{{{{(((((titleRedemption)))))}}}}}=====~~~~~",
     "titleSwap": "~~~~~====={{{{{(((((titleSwap)))))}}}}}=====~~~~~"
+  },
+  "LiquidityProvision": {
+    "comingSoonDescription": "~~~~~====={{{{{(((((comingSoonDescription)))))}}}}}=====~~~~~",
+    "comingSoonTitle": "~~~~~====={{{{{(((((comingSoonTitle)))))}}}}}=====~~~~~"
+  },
+  "LiquidityProvisionSubheader": {
+    "comingSoon": "~~~~~====={{{{{(((((comingSoon)))))}}}}}=====~~~~~"
   },
   "MarketsPools": {
     "showMoreXButtonLabel": "~~~~~====={{{{{(((((showMoreXButtonLabel)))))}}}}}=====~~~~~",
@@ -54,13 +66,27 @@
     "sortAZ": "~~~~~====={{{{{(((((sortAZ)))))}}}}}=====~~~~~",
     "sortBalance": "~~~~~====={{{{{(((((sortBalance)))))}}}}}=====~~~~~",
     "sortMaturity": "~~~~~====={{{{{(((((sortMaturity)))))}}}}}=====~~~~~",
-    "sortTVL": "~~~~~====={{{{{(((((sortTVL)))))}}}}}=====~~~~~",
-    "tabAll": "~~~~~====={{{{{(((((tabAll)))))}}}}}=====~~~~~",
-    "tabBoosted": "~~~~~====={{{{{(((((tabBoosted)))))}}}}}=====~~~~~",
-    "tabFixed": "~~~~~====={{{{{(((((tabFixed)))))}}}}}=====~~~~~"
+    "sortTVL": "~~~~~====={{{{{(((((sortTVL)))))}}}}}=====~~~~~"
+  },
+  "MarketsSwitchNetworkFooter": {
+    "descriptionMultipleChains": "~~~~~====={{{{{(((((descriptionMultipleChains)))))}}}}}=====~~~~~",
+    "descriptionSingleChain": "~~~~~====={{{{{(((((descriptionSingleChain)))))}}}}}=====~~~~~",
+    "titleMultipleChains": "~~~~~====={{{{{(((((titleMultipleChains)))))}}}}}=====~~~~~",
+    "titleSingleChain": "~~~~~====={{{{{(((((titleSingleChain)))))}}}}}=====~~~~~"
   },
   "NumberInput": {
     "buttonMax": "~~~~~====={{{{{(((((buttonMax)))))}}}}}=====~~~~~"
+  },
+  "PoolCard": {
+    "apr": "~~~~~====={{{{{(((((apr)))))}}}}}=====~~~~~",
+    "aprUpTo": "~~~~~====={{{{{(((((aprUpTo)))))}}}}}=====~~~~~",
+    "balance": "~~~~~====={{{{{(((((balance)))))}}}}}=====~~~~~",
+    "earliestTerm": "~~~~~====={{{{{(((((earliestTerm)))))}}}}}=====~~~~~",
+    "fixedApr": "~~~~~====={{{{{(((((fixedApr)))))}}}}}=====~~~~~",
+    "fixedAprUpTo": "~~~~~====={{{{{(((((fixedAprUpTo)))))}}}}}=====~~~~~",
+    "notApplicable": "~~~~~====={{{{{(((((notApplicable)))))}}}}}=====~~~~~",
+    "term": "~~~~~====={{{{{(((((term)))))}}}}}=====~~~~~",
+    "totalBalance": "~~~~~====={{{{{(((((totalBalance)))))}}}}}=====~~~~~"
   },
   "PoolPositionCard": {
     "apr": "~~~~~====={{{{{(((((apr)))))}}}}}=====~~~~~",
@@ -77,6 +103,8 @@
     "withdrawAction": "~~~~~====={{{{{(((((withdrawAction)))))}}}}}=====~~~~~"
   },
   "PortfolioOverview": {
+    "buttonBrowseMarkets": "~~~~~====={{{{{(((((buttonBrowseMarkets)))))}}}}}=====~~~~~",
+    "descriptionNoPositions": "~~~~~====={{{{{(((((descriptionNoPositions)))))}}}}}=====~~~~~",
     "subtitleCurrentValue": "~~~~~====={{{{{(((((subtitleCurrentValue)))))}}}}}=====~~~~~",
     "subtitleEarnedYield": "~~~~~====={{{{{(((((subtitleEarnedYield)))))}}}}}=====~~~~~",
     "subtitleProjectedYield": "~~~~~====={{{{{(((((subtitleProjectedYield)))))}}}}}=====~~~~~",
@@ -84,17 +112,21 @@
     "tabYield": "~~~~~====={{{{{(((((tabYield)))))}}}}}=====~~~~~",
     "titleCurrentValue": "~~~~~====={{{{{(((((titleCurrentValue)))))}}}}}=====~~~~~",
     "titleEarnedYield": "~~~~~====={{{{{(((((titleEarnedYield)))))}}}}}=====~~~~~",
+    "titleNoPositions": "~~~~~====={{{{{(((((titleNoPositions)))))}}}}}=====~~~~~",
     "titleProjectedYield": "~~~~~====={{{{{(((((titleProjectedYield)))))}}}}}=====~~~~~",
     "titleTotalPortfolioValue": "~~~~~====={{{{{(((((titleTotalPortfolioValue)))))}}}}}=====~~~~~",
     "titleTotalYieldEarned": "~~~~~====={{{{{(((((titleTotalYieldEarned)))))}}}}}=====~~~~~",
-    "titleNoPositions": "~~~~~====={{{{{(((((titleNoPositions)))))}}}}}=====~~~~~",
-    "descriptionNoPositions": "~~~~~====={{{{{(((((descriptionNoPositions)))))}}}}}=====~~~~~",
-    "buttonBrowseMarkets": "~~~~~====={{{{{(((((buttonBrowseMarkets)))))}}}}}=====~~~~~"
+    "titleWalletNotConnected": "~~~~~====={{{{{(((((titleWalletNotConnected)))))}}}}}=====~~~~~",
+    "descriptionWalletNotConnected": "~~~~~====={{{{{(((((descriptionWalletNotConnected)))))}}}}}=====~~~~~",
+    "buttonConnectWallet": "~~~~~====={{{{{(((((buttonConnectWallet)))))}}}}}=====~~~~~"
   },
   "PortfolioPositions": {
-    "titleNoPositions": "~~~~~====={{{{{(((((titleNoPositions)))))}}}}}=====~~~~~",
+    "buttonBrowseMarkets": "~~~~~====={{{{{(((((buttonBrowseMarkets)))))}}}}}=====~~~~~",
     "descriptionNoPositions": "~~~~~====={{{{{(((((descriptionNoPositions)))))}}}}}=====~~~~~",
-    "buttonBrowseMarkets": "~~~~~====={{{{{(((((buttonBrowseMarkets)))))}}}}}=====~~~~~"
+    "titleNoPositions": "~~~~~====={{{{{(((((titleNoPositions)))))}}}}}=====~~~~~",
+    "titleWalletNotConnected": "~~~~~====={{{{{(((((titleWalletNotConnected)))))}}}}}=====~~~~~",
+    "descriptionWalletNotConnected": "~~~~~====={{{{{(((((descriptionWalletNotConnected)))))}}}}}=====~~~~~",
+    "buttonConnectWallet": "~~~~~====={{{{{(((((buttonConnectWallet)))))}}}}}=====~~~~~"
   },
   "PortfolioSubheader": {
     "tabOverview": "~~~~~====={{{{{(((((tabOverview)))))}}}}}=====~~~~~",
@@ -106,12 +138,18 @@
   "SettingsPopup": {
     "localeName": "~~=={{((Pseudo Translation))}}==~~",
     "slippageTooltipContent": "~~~~~====={{{{{(((((slippageTooltipContent)))))}}}}}=====~~~~~",
-    "titleDarkMode": "~~~~~====={{{{{(((((titleDarkMode)))))}}}}}=====~~~~~",
     "titleLocale": "~~~~~====={{{{{(((((titleLocale)))))}}}}}=====~~~~~",
     "titleSlippage": "~~~~~====={{{{{(((((titleSlippage)))))}}}}}=====~~~~~"
   },
   "SlippageInput": {
     "buttonAuto": "~~~~~====={{{{{(((((buttonAuto)))))}}}}}=====~~~~~"
+  },
+  "Staking": {
+    "comingSoonDescription": "~~~~~====={{{{{(((((comingSoonDescription)))))}}}}}=====~~~~~",
+    "comingSoonTitle": "~~~~~====={{{{{(((((comingSoonTitle)))))}}}}}=====~~~~~"
+  },
+  "StakingSubheader": {
+    "comingSoon": "~~~~~====={{{{{(((((comingSoon)))))}}}}}=====~~~~~"
   },
   "TermTab": {
     "title": "~~~~~====={{{{{(((((title)))))}}}}}=====~~~~~"
@@ -125,10 +163,20 @@
   },
   "WithdrawModal": {
     "description": "~~~~~====={{{{{(((((description)))))}}}}}=====~~~~~",
+    "errorModalDescription": "~~~~~====={{{{{(((((errorModalDescription)))))}}}}}=====~~~~~",
+    "errorModalPrimaryButton": "~~~~~====={{{{{(((((errorModalPrimaryButton)))))}}}}}=====~~~~~",
+    "errorModalTitle": "~~~~~====={{{{{(((((errorModalTitle)))))}}}}}=====~~~~~",
+    "labelApproveDefault": "~~~~~====={{{{{(((((labelApproveDefault)))))}}}}}=====~~~~~",
+    "labelApproveLoading": "~~~~~====={{{{{(((((labelApproveLoading)))))}}}}}=====~~~~~",
+    "labelApproveSuccess": "~~~~~====={{{{{(((((labelApproveSuccess)))))}}}}}=====~~~~~",
     "labelAvailableForWithdraw": "~~~~~====={{{{{(((((labelAvailableForWithdraw)))))}}}}}=====~~~~~",
     "labelExecuteDefault": "~~~~~====={{{{{(((((labelExecuteDefault)))))}}}}}=====~~~~~",
     "labelExecuteLoading": "~~~~~====={{{{{(((((labelExecuteLoading)))))}}}}}=====~~~~~",
     "labelExecuteSuccess": "~~~~~====={{{{{(((((labelExecuteSuccess)))))}}}}}=====~~~~~",
+    "successModalDescription": "~~~~~====={{{{{(((((successModalDescription)))))}}}}}=====~~~~~",
+    "successModalPrimaryButton": "~~~~~====={{{{{(((((successModalPrimaryButton)))))}}}}}=====~~~~~",
+    "successModalSecondaryButton": "~~~~~====={{{{{(((((successModalSecondaryButton)))))}}}}}=====~~~~~",
+    "successModalTitle": "~~~~~====={{{{{(((((successModalTitle)))))}}}}}=====~~~~~",
     "title": "~~~~~====={{{{{(((((title)))))}}}}}=====~~~~~"
   }
 }

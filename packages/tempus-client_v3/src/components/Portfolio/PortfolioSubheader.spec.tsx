@@ -1,26 +1,40 @@
 import { fireEvent, render } from '@testing-library/react';
-import { BrowserRouter } from 'react-router-dom';
-import PortfolioSubheader, { PortfolioSubheaderProps, PortfolioView } from './PortfolioSubheader';
+import { createMemoryHistory } from 'history';
+import { Router } from 'react-router-dom';
+import PortfolioSubheader from './PortfolioSubheader';
 
-const onViewChangeMock = jest.fn<void, [PortfolioView]>();
+const mockUseNavigate = jest.fn();
 
-const subject = (props: PortfolioSubheaderProps) =>
+jest.mock('react-router-dom', () => ({
+  ...(jest.requireActual('react-router-dom') as any),
+  useNavigate: () => mockUseNavigate,
+}));
+
+const history = createMemoryHistory();
+
+const subject = () =>
   render(
-    <BrowserRouter>
-      <PortfolioSubheader {...props} />
-    </BrowserRouter>,
+    <Router location={history.location} navigator={history}>
+      <PortfolioSubheader />
+    </Router>,
   );
+
+mockUseNavigate.mockImplementation(path => {
+  history.push(path);
+});
 
 describe('PortfolioSubheader', () => {
   it('renders a navigation subheader portfolio tabs', () => {
-    const { container } = subject({});
+    history.push('/portfolio/overview');
+
+    const { container } = subject();
 
     expect(container).not.toBeNull();
     expect(container).toMatchSnapshot();
   });
 
   it('updates tab selection when one of tabs is selected', () => {
-    const { getByRole } = subject({ onViewChange: onViewChangeMock });
+    const { getByRole } = subject();
 
     const overviewButton = getByRole('button', { name: 'Overview' });
     const positionsButton = getByRole('button', { name: 'Positions' });
@@ -30,10 +44,7 @@ describe('PortfolioSubheader', () => {
 
     fireEvent.click(positionsButton);
 
-    expect(onViewChangeMock).toBeCalledTimes(1);
-    expect(onViewChangeMock).toBeCalledWith('positions');
-
-    expect(overviewButton).toMatchSnapshot();
-    expect(positionsButton).toMatchSnapshot();
+    expect(mockUseNavigate).toHaveBeenCalledTimes(1);
+    expect(mockUseNavigate).toHaveBeenCalledWith('/portfolio/positions');
   });
 });

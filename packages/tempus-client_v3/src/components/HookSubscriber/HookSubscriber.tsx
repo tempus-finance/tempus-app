@@ -12,6 +12,8 @@ import {
   subscribeTvlData,
   subscribeAllowance,
   subscribeApproveTokenStatus,
+  subscribeFixedDepositStatus,
+  subscribeWithdrawStatus,
 } from '../../hooks';
 
 export const HookSubscriber: FC = () => {
@@ -31,6 +33,8 @@ export const HookSubscriber: FC = () => {
     subscribeFixedAprs();
     subscribeAllowance();
     subscribeApproveTokenStatus();
+    subscribeFixedDepositStatus();
+    subscribeWithdrawStatus();
   }, []);
 
   return null;

@@ -2,7 +2,7 @@ import { ContractTransaction } from 'ethers';
 import { JsonRpcSigner } from '@ethersproject/providers';
 import { bind } from '@react-rxjs/core';
 import { createSignal } from '@react-rxjs/utils';
-import { concatMap, map, catchError, of } from 'rxjs';
+import { concatMap, map, BehaviorSubject, Subscription, tap } from 'rxjs';
 import { Chain, Decimal, getDefinedServices, Ticker } from 'tempus-core-services';
 
 interface WithdrawRequest {
@@ -10,48 +10,68 @@ interface WithdrawRequest {
   poolAddress: string;
   amount: Decimal;
   token: Ticker;
+  tokenAddress: string;
   tokenBalance: Decimal;
   capitalsBalance: Decimal;
   yieldsBalance: Decimal;
   lpBalance: Decimal;
   slippage: Decimal;
   signer: JsonRpcSigner;
+  txnId: string;
 }
 
 interface WithdrawStatus {
   pending: boolean;
   request?: WithdrawRequest;
   success?: boolean;
+  error?: Error;
   contractTransaction?: ContractTransaction;
+  transactionData?: {
+    withdrawnAmount: Decimal;
+  };
+  txnId: string;
 }
 
 interface WithdrawResponse {
   request?: WithdrawRequest;
   contractTransaction?: ContractTransaction | void;
+  transactionData?: {
+    withdrawnAmount: Decimal;
+  };
+  error?: Error;
+  txnId: string;
 }
 
 const [withdraw$, withdraw] = createSignal<WithdrawRequest>();
+const withdrawStatus$ = new BehaviorSubject<WithdrawStatus | null>(null);
 
-const withdrawStatus$ = withdraw$.pipe(
+const stream$ = withdraw$.pipe(
   concatMap<WithdrawRequest, Promise<WithdrawResponse>>(async payload => {
     const {
       chain,
       poolAddress,
       amount,
       token,
+      tokenAddress,
       tokenBalance,
       capitalsBalance,
       yieldsBalance,
       lpBalance,
       slippage,
       signer,
+      txnId,
     } = payload;
+    const request = { chain, poolAddress, amount, token };
+
+    withdrawStatus$.next({ pending: true, txnId });
 
     try {
-      const contractTransaction = await getDefinedServices(chain).WithdrawService.withdraw(
+      const withdrawService = getDefinedServices(chain).WithdrawService;
+      const result = await withdrawService.withdraw(
         poolAddress,
         amount,
         token,
+        tokenAddress,
         tokenBalance,
         capitalsBalance,
         yieldsBalance,
@@ -61,16 +81,24 @@ const withdrawStatus$ = withdraw$.pipe(
       );
 
       return await Promise.resolve({
-        contractTransaction,
-        request: { chain, poolAddress, amount, token },
-      });
+        contractTransaction: result.contractTransaction,
+        transactionData: {
+          withdrawnAmount: result.withdrawnAmount,
+        },
+        request,
+        txnId,
+      } as WithdrawResponse);
     } catch (error) {
       console.error('useWithdraw - Failed to withdraw specified amount!', error);
-      return Promise.resolve({});
+      return Promise.resolve({
+        request,
+        error,
+        txnId,
+      } as WithdrawResponse);
     }
   }),
-  map(response => {
-    const { contractTransaction, request } = response;
+  map<WithdrawResponse, WithdrawStatus>(response => {
+    const { contractTransaction, transactionData, request, error, txnId } = response;
 
     return contractTransaction
       ? {
@@ -78,16 +106,12 @@ const withdrawStatus$ = withdraw$.pipe(
           success: true,
           request,
           contractTransaction,
+          transactionData,
+          txnId,
         }
-      : { pending: false, success: false, request };
+      : { pending: false, success: false, request, error, txnId };
   }),
-  catchError(error => {
-    console.error('useWithdraw - Failed to execute withdrawal!', error);
-    return of({
-      pending: false,
-      success: false,
-    });
-  }),
+  tap(status => withdrawStatus$.next(status)),
 );
 
 const [withdrawStatus] = bind<WithdrawStatus | null>(withdrawStatus$, null);
@@ -99,3 +123,12 @@ export const useWithdraw = (): {
   withdrawStatus: withdrawStatus(),
   withdraw,
 });
+
+let subscription: Subscription;
+
+export const subscribeWithdrawStatus = (): void => {
+  unsubscribeWithdrawStatus();
+  subscription = stream$.subscribe();
+};
+export const unsubscribeWithdrawStatus = (): void => subscription?.unsubscribe?.();
+export const resetWithdrawStatus = (): void => withdrawStatus$.next(null);

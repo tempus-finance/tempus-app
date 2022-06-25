@@ -55,6 +55,7 @@ export {
   getERC20TokenService,
   initServices,
   getServices,
+  getStorageService,
   getDefinedServices,
 } from './services';
 
@@ -86,6 +87,9 @@ export {
   wadToDai,
   wait,
   prettifyProtocolName,
+  getPathRoot,
+  getDepositAmountFromTx,
+  getWithdrawnAmountFromTx,
 } from './utils';
 
 export * from './constants';

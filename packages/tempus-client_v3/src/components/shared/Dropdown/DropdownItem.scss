@@ -26,8 +26,9 @@
     height: 100%;
     position: absolute;
     top: 0;
-    right: 0;
+    right: 12px;
     display: flex;
     align-items: center;
+    pointer-events: none;
   }
 }

@@ -1,3 +1,4 @@
+import { isAfter } from 'date-fns';
 import { FC, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Decimal, DecimalUtils, Ticker } from 'tempus-core-services';
@@ -8,9 +9,10 @@ import Typography from '../Typography';
 import PoolPositionCardDataCell from './PoolPositionCardDataCell';
 
 import './PoolPositionCard.scss';
+import { useLocale } from '../../../hooks';
 
 export interface PoolPositionCardProps {
-  apr: number;
+  apr: Decimal;
   term: Date;
   profitLoss: Decimal;
   balance: Decimal | null;
@@ -36,6 +38,7 @@ const PoolPositionCard: FC<PoolPositionCardProps> = props => {
   } = props;
 
   const { t } = useTranslation();
+  const [locale] = useLocale();
 
   const [open, setOpen] = useState<boolean>(false);
 
@@ -43,27 +46,39 @@ const PoolPositionCard: FC<PoolPositionCardProps> = props => {
     setOpen(prevState => !prevState);
   }, []);
 
-  const aprFormatted = useMemo(() => DecimalUtils.formatPercentage(apr), [apr]);
+  const aprFormatted = useMemo(() => {
+    if (!apr) {
+      return null;
+    }
+    // Mature pools do not have Fixed APR
+    if (isAfter(new Date(), term)) {
+      return null;
+    }
+
+    return DecimalUtils.formatPercentage(apr);
+  }, [apr, term]);
 
   return (
     <div className="tc__poolPositionCard">
       <div className="tc__poolPositionCard-row">
-        <div className="tc__poolPositionCard-cell">
-          <div className="tc__poolPositionCard-cellData">
-            <Typography variant="body-secondary" weight="bold" color="text-secondary">
-              {t('PoolPositionCard.apr')}
-            </Typography>
-            <Typography variant="body-primary" weight="medium" type="mono">
-              {aprFormatted}
-            </Typography>
+        {aprFormatted && (
+          <div className="tc__poolPositionCard-cell">
+            <div className="tc__poolPositionCard-cellData">
+              <Typography variant="body-secondary" weight="bold" color="text-secondary">
+                {t('PoolPositionCard.apr')}
+              </Typography>
+              <Typography variant="body-primary" weight="medium" type="mono">
+                {aprFormatted}
+              </Typography>
+            </div>
           </div>
-        </div>
+        )}
         <div className="tc__poolPositionCard-cell">
           <div className="tc__poolPositionCard-cellData">
             <Typography variant="body-secondary" weight="bold" color="text-secondary">
               {t('PoolPositionCard.term')}
             </Typography>
-            <FormattedDate date={term} size="medium" separatorContrast="high" />
+            <FormattedDate date={term} locale={locale} size="medium" separatorContrast="high" />
           </div>
         </div>
       </div>

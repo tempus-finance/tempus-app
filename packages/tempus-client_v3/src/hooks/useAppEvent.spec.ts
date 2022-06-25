@@ -1,7 +1,7 @@
 import { renderHook } from '@testing-library/react-hooks';
 import { act } from 'react-dom/test-utils';
 import { Observable } from 'rxjs';
-import { Decimal, TempusPool } from 'tempus-core-services';
+import { TempusPool } from 'tempus-core-services';
 import { pool1 } from '../setupTests';
 import { useAppEvent, AppEvent } from './useAppEvent';
 
@@ -18,13 +18,13 @@ describe('useAppEvent', () => {
     const depositEvent: AppEvent = {
       eventType: 'deposit',
       tempusPool: pool1 as TempusPool,
-      amount: new Decimal(100),
+      txnHash: '0x0',
       timestamp: Date.now() - 2000,
     };
     const withdrawEvent: AppEvent = {
       eventType: 'withdraw',
       tempusPool: pool1 as TempusPool,
-      amount: new Decimal(100),
+      txnHash: '0x1',
       timestamp: Date.now() - 1000,
     };
     const { appEvent$ } = require('./useAppEvent');

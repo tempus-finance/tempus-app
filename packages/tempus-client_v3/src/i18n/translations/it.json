@@ -1,21 +1,26 @@
 {
   "App": {
+    "navLp": "",
     "navMarkets": "",
-    "navPortfolio": ""
+    "navPortfolio": "",
+    "navStaking": ""
   },
   "ChainSelector": {
     "title": ""
   },
   "CurrencyInputModal": {
-    "insufficientBalanceError": "Saldo insufficiente",
     "feesAndTransactionInfo": "",
+    "insufficientBalanceError": "Saldo insufficiente",
     "linkBlockExplorer": ""
   },
   "DepositModal": {
     "description": "",
-    "labelApproveDefault": "",
-    "labelApproveLoading": "",
-    "labelApproveSuccess": "",
+    "errorModalDescription": "La transazione è fallita a causa di un errore. [{{error}}]",
+    "errorModalPrimaryButton": "Riprova",
+    "errorModalTitle": "C'è un problema.",
+    "labelApproveDefault": "Approva Deposito",
+    "labelApproveLoading": "In Approvazione...",
+    "labelApproveSuccess": "Approvato",
     "labelCurrentBalance": "Saldo corrente",
     "labelExecuteDefault": "",
     "labelExecuteLoading": "",
@@ -23,11 +28,11 @@
     "labelMakeDeposit": "",
     "labelYieldAtMaturity": "",
     "previewDescription": "",
-    "title": "",
-    "successModalTitle": "",
     "successModalDescription": "",
     "successModalPrimaryButton": "",
-    "successModalSecondaryButton": ""
+    "successModalSecondaryButton": "",
+    "successModalTitle": "",
+    "title": ""
   },
   "DepositModalHeader": {
     "titleRewardsAvailable": ""
@@ -39,6 +44,13 @@
     "titleEarlyRedemption": "",
     "titleRedemption": "",
     "titleSwap": ""
+  },
+  "LiquidityProvision": {
+    "comingSoonDescription": "Verrà lanciato presto!",
+    "comingSoonTitle": "Siamo impegnati nel creare la magia"
+  },
+  "LiquidityProvisionSubheader": {
+    "comingSoon": "Prossimamente"
   },
   "MarketsPools": {
     "showMoreXButtonLabel": "",
@@ -54,13 +66,27 @@
     "sortAZ": "",
     "sortBalance": "",
     "sortMaturity": "",
-    "sortTVL": "",
-    "tabAll": "",
-    "tabBoosted": "",
-    "tabFixed": ""
+    "sortTVL": ""
+  },
+  "MarketsSwitchNetworkFooter": {
+    "descriptionMultipleChains": "Cambia network per vederle",
+    "descriptionSingleChain": "Passa a {{chainName}} network per vederle",
+    "titleMultipleChains": "Vedi le altre pools",
+    "titleSingleChain": "Vedi le nostre pool su {{chainName}}"
   },
   "NumberInput": {
     "buttonMax": ""
+  },
+  "PoolCard": {
+    "apr": "",
+    "aprUpTo": "",
+    "balance": "",
+    "earliestTerm": "",
+    "fixedApr": "",
+    "fixedAprUpTo": "",
+    "notApplicable": "",
+    "term": "",
+    "totalBalance": ""
   },
   "PoolPositionCard": {
     "apr": "",
@@ -77,6 +103,8 @@
     "withdrawAction": "Ritira"
   },
   "PortfolioOverview": {
+    "buttonBrowseMarkets": "Vai su Mercati",
+    "descriptionNoPositions": "Vuoi incrementare? Vai su Mercati",
     "subtitleCurrentValue": "",
     "subtitleEarnedYield": "",
     "subtitleProjectedYield": "",
@@ -84,17 +112,21 @@
     "tabYield": "",
     "titleCurrentValue": "",
     "titleEarnedYield": "",
+    "titleNoPositions": "Niente in Portafogli",
     "titleProjectedYield": "",
     "titleTotalPortfolioValue": "",
     "titleTotalYieldEarned": "Rendimento Totale",
-    "titleNoPositions": "Niente in Portafogli",
-    "descriptionNoPositions": "Vuoi incrementare? Vai su Mercati",
-    "buttonBrowseMarkets": "Vai su Mercati"
+    "titleWalletNotConnected": "Wallet non collegato",
+    "descriptionWalletNotConnected": "Connetti il tuo wallet per gestire il portafoglio.",
+    "buttonConnectWallet": "Connetti Wallet"
   },
   "PortfolioPositions": {
-    "titleNoPositions": "Nessuna Posizione",
+    "buttonBrowseMarkets": "Vai su Mercati",
     "descriptionNoPositions": "Il tuo portafoglio è vuoto. Facciamo qualcosa.",
-    "buttonBrowseMarkets": "Vai su Mercati"
+    "titleNoPositions": "Nessuna Posizione",
+    "titleWalletNotConnected": "Wallet non collegato",
+    "descriptionWalletNotConnected": "Connetti il tuo wallet per gestire il portafoglio.",
+    "buttonConnectWallet": "Connetti Wallet"
   },
   "PortfolioSubheader": {
     "tabOverview": "",
@@ -106,12 +138,18 @@
   "SettingsPopup": {
     "localeName": "Italiano",
     "slippageTooltipContent": "",
-    "titleDarkMode": "",
     "titleLocale": "",
     "titleSlippage": ""
   },
   "SlippageInput": {
     "buttonAuto": ""
+  },
+  "Staking": {
+    "comingSoonDescription": "Verrà lanciato presto!",
+    "comingSoonTitle": "Siamo impegnati nel creare la magia"
+  },
+  "StakingSubheader": {
+    "comingSoon": "Prossimamente"
   },
   "TermTab": {
     "title": ""
@@ -125,10 +163,20 @@
   },
   "WithdrawModal": {
     "description": "",
+    "errorModalDescription": "La transazione è fallita a causa di un errore. [{{error}}]",
+    "errorModalPrimaryButton": "Riprova",
+    "errorModalTitle": "C'è un problema.",
+    "labelApproveDefault": "Approva Ritiro",
+    "labelApproveLoading": "In Approvazione...",
+    "labelApproveSuccess": "Approvato",
     "labelAvailableForWithdraw": "",
     "labelExecuteDefault": "",
     "labelExecuteLoading": "",
     "labelExecuteSuccess": "",
+    "successModalDescription": "",
+    "successModalPrimaryButton": "",
+    "successModalSecondaryButton": "",
+    "successModalTitle": "",
     "title": ""
   }
 }

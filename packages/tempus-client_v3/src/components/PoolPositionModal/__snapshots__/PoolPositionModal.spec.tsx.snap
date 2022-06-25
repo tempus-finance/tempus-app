@@ -87,14 +87,6 @@ exports[`PoolPositionModal renders a pool position modal 1`] = `
                     <div
                       style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                     >
-                      May
-                    </div>
-                    <span
-                      class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
-                    />
-                    <div
-                      style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
-                    >
                       02
                     </div>
                     <span
@@ -103,7 +95,15 @@ exports[`PoolPositionModal renders a pool position modal 1`] = `
                     <div
                       style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
                     >
-                      22
+                      May
+                    </div>
+                    <span
+                      class="tc__formatted-date__separator tc__formatted-date__separator-high-contrast"
+                    />
+                    <div
+                      style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+                    >
+                      24
                     </div>
                   </span>
                 </div>

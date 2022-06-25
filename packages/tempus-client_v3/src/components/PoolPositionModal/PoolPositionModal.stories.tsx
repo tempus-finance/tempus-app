@@ -18,7 +18,7 @@ const Template: ComponentStory<typeof PoolPositionModal> = args => <PoolPosition
 
 export const Primary = Template.bind({});
 Primary.args = {
-  apr: 0.1,
+  apr: new Decimal(0.1),
   term: new Date(Date.UTC(2022, 2, 4)),
   profitLoss: new Decimal(10.29651),
   balance: new Decimal(20.9294),

@@ -1,3 +1,7 @@
+.tc__app__portfolio-overview {
+  position: relative;
+}
+
 .tc__portfolio-overview__empty {
   position: absolute;
   top: 3px;
@@ -36,5 +40,47 @@
     .tc__actionButton {
       margin-top: 19px;
     }
+  }
+}
+
+.tc__portfolio-wallet-not-connected-overlay {
+  position: absolute;
+  top: -5px;
+  left: -5px;
+  right: -5px;
+  bottom: -5px;
+  border-radius: 0px 0px 12px 12px;
+  background-color: white;
+  z-index: 1;
+
+  .tc__portfolio-wallet-not-connected-content {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    padding-top: 155px;
+    align-items: center;
+    flex-direction: column;
+
+    > div:nth-child(1) {
+      margin-bottom: 4px;
+    }
+
+    & > .tc__actionButton {
+      width: 169px;
+      margin-top: 45px;
+    }
+  }
+
+  .tc__portfolio-wallet-not-connected-overlay-mask {
+    background-color: rgba(255, 255, 255, 0.55);
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
   }
 }

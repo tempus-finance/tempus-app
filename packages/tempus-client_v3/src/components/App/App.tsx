@@ -11,8 +11,10 @@ import { DepositModalResolver } from '../DepositModal';
 import { PoolPositionModalResolver } from '../PoolPositionModal';
 import { WithdrawModalResolver } from '../WithdrawModal';
 import PageNavigation, { PageNavigationLink } from '../PageNavigation';
-import Portfolio from '../Portfolio';
+import Portfolio, { PortfolioOverview, PortfolioPositions } from '../Portfolio';
 import TotalValueLocked from '../TotalValueLocked';
+import LiquidityProvision from '../LiquidityProvision';
+import Staking from '../Staking';
 
 import './App.scss';
 
@@ -21,8 +23,26 @@ const App = () => {
   const { t } = useTranslation();
 
   const navigationLinks: PageNavigationLink[] = [
-    { text: t('App.navMarkets'), path: '/' },
-    { text: t('App.navPortfolio'), path: '/portfolio' },
+    {
+      text: t('App.navMarkets'),
+      path: '/',
+      pathPatterns: ['/', '/pool/*'],
+    },
+    {
+      text: t('App.navLp'),
+      path: '/lp',
+      pathPatterns: ['/lp', '/lp/*'],
+    },
+    {
+      text: t('App.navStaking'),
+      path: '/staking',
+      pathPatterns: ['/staking', '/staking/*'],
+    },
+    {
+      text: t('App.navPortfolio'),
+      path: '/portfolio/overview',
+      pathPatterns: ['/portfolio/*'],
+    },
   ];
 
   // Init services and config
@@ -50,14 +70,21 @@ const App = () => {
           </div>
           <div className="tc__app__body">
             <Routes>
-              <Route path="/portfolio" element={<Portfolio />} />
-              <Route
-                path="/mature-pool/:chain/:ticker/:protocol/:poolAddress"
-                element={<PoolPositionModalResolver />}
-              />
-              <Route path="/withdraw/:chain/:ticker/:protocol/:poolAddress" element={<WithdrawModalResolver />} />
+              <Route path="/portfolio" element={<Portfolio />}>
+                <Route path="overview" element={<PortfolioOverview />} />
+                <Route path="positions" element={<PortfolioPositions />}>
+                  <Route path=":chain/:ticker/:protocol/:poolAddress" element={<PoolPositionModalResolver />} />
+                  <Route path="withdraw/:chain/:ticker/:protocol/:poolAddress" element={<WithdrawModalResolver />} />
+                </Route>
+              </Route>
+
+              <Route path="/lp" element={<LiquidityProvision />} />
+
+              <Route path="/staking" element={<Staking />} />
+
               <Route path="/" element={<Markets />}>
                 <Route path="pool/:chain/:ticker/:protocol" element={<DepositModalResolver />} />
+                <Route path="pool/:chain/:ticker/:protocol/:poolAddress" element={<PoolPositionModalResolver />} />
               </Route>
             </Routes>
           </div>

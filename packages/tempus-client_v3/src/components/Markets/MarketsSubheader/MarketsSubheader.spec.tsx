@@ -11,6 +11,7 @@ import {
   useMaturedPoolList,
   useTvlData,
   usePoolBalances,
+  useWalletAddress,
 } from '../../../hooks';
 
 const subject = () =>
@@ -30,12 +31,13 @@ jest.mock('../../../hooks', () => ({
   useMaturedPoolList: jest.fn(),
   usePoolBalances: jest.fn(),
   useTvlData: jest.fn(),
+  useWalletAddress: jest.fn(),
 }));
 
 describe('MarketsSubheader', () => {
   beforeAll(async () => {
     const config = getConfigManager();
-    await config.init();
+    config.init();
   });
 
   beforeEach(() => {
@@ -57,6 +59,7 @@ describe('MarketsSubheader', () => {
       'fantom-4': new Decimal(9000),
       'fantom-5': new Decimal(8000),
     });
+    (useWalletAddress as jest.Mock).mockReturnValue('0x123123123');
   });
 
   it('renders a navigation subheader with filtering and sorting options', () => {

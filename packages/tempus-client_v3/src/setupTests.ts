@@ -5,13 +5,13 @@
 import '@testing-library/jest-dom/extend-expect';
 import { BigNumber as MockBigNumber } from 'ethers';
 import { of as mockOf, delay as mockDelay } from 'rxjs';
-import { Chain, Decimal as MockDecimal, TempusPool, Ticker, ZERO as mockZERO } from 'tempus-core-services';
+import { Chain, Decimal as MockDecimal, ONE, TempusPool, Ticker, ZERO as mockZERO } from 'tempus-core-services';
 
 export { mockConfig, pool1, pool2, pool3, pool4, pool5 } from './mocks/config/mockConfig';
 
 export const mockGetTokenBalance = jest.fn().mockImplementation(() => Promise.resolve(new MockDecimal(100)));
 
-const mockServices = {
+export const mockServices = {
   StatisticsService: {
     totalValueLockedUSD: jest.fn().mockImplementation((chain: Chain, address: string) => {
       switch (`${chain}-${address}`) {
@@ -77,17 +77,24 @@ const mockServices = {
   },
   WithdrawService: {
     withdraw: jest.fn().mockResolvedValue({
-      hash: '0x00',
+      contractTransaction: {
+        hash: '0x00',
+      },
+      withdrawnAmount: ONE,
     }),
   },
   DepositService: {
     fixedDeposit: jest.fn().mockResolvedValue({
-      hash: '0x00',
+      contractTransaction: {
+        hash: '0x00',
+      },
+      depositedAmount: ONE,
     }),
   },
   ERC20TokenServiceGetter: jest.fn().mockImplementation(() => ({
     approve: jest.fn().mockResolvedValue({ hash: '0x00' }),
     getAllowance: jest.fn().mockResolvedValue(MockBigNumber.from(10)),
+    onTransfer: jest.fn(),
   })),
 };
 

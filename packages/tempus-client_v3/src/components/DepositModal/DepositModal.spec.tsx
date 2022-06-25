@@ -5,9 +5,14 @@ import { getConfigManager } from '../../config/getConfigManager';
 import { useTokenBalances } from '../../hooks';
 import I18nProvider from '../../i18n/I18nProvider';
 import { MaturityTerm, TokenMetadataProp } from '../../interfaces';
-import DepositModal, { DepositModalProps, TIMEOUT_FROM_SUCCESS_TO_DEFAULT_IN_MS } from './DepositModal';
+import DepositModal, { DepositModalProps } from './DepositModal';
+import { TIMEOUT_FROM_SUCCESS_TO_DEFAULT_IN_MS } from '../../constants';
+import { pool2, pool4, pool2 as mockPool2 } from '../../mocks/config/mockConfig';
 
 jest.mock('lottie-react', () => () => <div className="lottie-animation" />);
+jest.mock('uuid', () => ({
+  v4: jest.fn().mockReturnValue('0x01'),
+}));
 
 const multipleTokens: TokenMetadataProp = [
   {
@@ -29,7 +34,7 @@ const multipleTokens: TokenMetadataProp = [
 const singleMaturityTerm: MaturityTerm[] = [
   {
     apr: new Decimal(0.074),
-    date: new Date(Date.UTC(2022, 9, 1)),
+    date: new Date(pool2.maturityDate),
   },
 ];
 
@@ -37,7 +42,7 @@ const multipleMaturityTerms: MaturityTerm[] = [
   ...singleMaturityTerm,
   {
     apr: new Decimal(0.131),
-    date: new Date(Date.UTC(2022, 11, 1)),
+    date: new Date(pool4.maturityDate),
   },
 ];
 
@@ -62,6 +67,7 @@ const mockApproveToken = jest.fn();
 
 const mockApproveTokenStatusPending = {
   pending: true,
+  txnId: '0x01',
 };
 
 const mockApproveTokenStatusDone = {
@@ -75,9 +81,10 @@ const mockApproveTokenStatusDone = {
     tokenAddress: '0x001',
     amount: new Decimal('9'),
   },
+  txnId: '0x01',
 };
 
-let mockApproveStatus = {};
+let mockApproveStatus: any = {};
 
 jest.mock('@web3-onboard/ledger', () =>
   jest.fn().mockImplementation(() => () => ({
@@ -114,6 +121,7 @@ jest.mock('../../hooks', () => ({
   ...jest.requireActual('../../hooks'),
   useTokenBalances: jest.fn(),
   useSigner: jest.fn().mockImplementation(() => [{ signerProperty: 'xyz' }, mockSetSigner]),
+  useDepositModalData: jest.fn().mockImplementation(() => () => ({ tempusPools: [mockPool2] })),
   useTokenApprove: () => ({
     approveToken: mockApproveToken,
     approveTokenStatus: mockApproveStatus,
@@ -133,6 +141,10 @@ describe('DepositModal', () => {
     expect(previewButton).not.toBeNull();
 
     fireEvent.click(previewButton as Element);
+  };
+
+  const changeApprovalStatus = (status: any) => {
+    mockApproveStatus = status;
   };
 
   ['preview', 'input'].forEach(view => {
@@ -233,6 +245,7 @@ describe('DepositModal', () => {
 
   it('disables the `Approve` button once clicked upon and enables it again on success', async () => {
     const configManager = getConfigManager();
+    mockApproveToken.mockImplementation(() => changeApprovalStatus(mockApproveTokenStatusPending));
 
     const props = {
       ...defaultProps,
@@ -266,32 +279,28 @@ describe('DepositModal', () => {
 
     // click on approve
 
-    fireEvent.click(actionButton as Element);
-
-    mockApproveStatus = mockApproveTokenStatusPending;
-    wrapper.rerender(
-      <BrowserRouter>
-        <I18nProvider>
-          <DepositModal {...props} />
-        </I18nProvider>
-      </BrowserRouter>,
-    );
+    await act(async () => {
+      await fireEvent.click(actionButton as Element);
+      jest.advanceTimersByTime(300);
+    });
 
     expect(actionButton).toBeDisabled();
     expect(actionButton).toHaveClass('tc__actionButton-border-primary-large-loading');
 
-    mockApproveStatus = mockApproveTokenStatusDone;
+    changeApprovalStatus(mockApproveTokenStatusDone);
 
-    wrapper.rerender(
-      <BrowserRouter>
-        <I18nProvider>
-          <DepositModal {...props} />
-        </I18nProvider>
-      </BrowserRouter>,
-    );
+    act(() => {
+      wrapper.rerender(
+        <BrowserRouter>
+          <I18nProvider>
+            <DepositModal {...props} />
+          </I18nProvider>
+        </BrowserRouter>,
+      );
+    });
 
-    expect(actionButton).toBeDisabled();
-    expect(actionButton).toHaveClass('tc__actionButton-border-primary-large-success');
+    await expect(actionButton).toBeDisabled();
+    await expect(actionButton).toHaveClass('tc__actionButton-border-primary-large-success');
 
     act(() => {
       jest.advanceTimersByTime(TIMEOUT_FROM_SUCCESS_TO_DEFAULT_IN_MS);

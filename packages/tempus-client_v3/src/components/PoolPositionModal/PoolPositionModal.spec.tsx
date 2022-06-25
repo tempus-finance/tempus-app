@@ -7,15 +7,15 @@ const subject = () =>
   render(
     <BrowserRouter>
       <PoolPositionModal
-        apr={0.1}
+        apr={new Decimal(0.1)}
         balance={new Decimal(20)}
         chartData={[
-          { x: new Date(Date.UTC(2022, 3, 4)), y: 10 },
-          { x: new Date(Date.UTC(2022, 4, 1)), y: 20 },
+          { x: new Date(Date.UTC(2024, 3, 4)), y: 10 },
+          { x: new Date(Date.UTC(2024, 4, 1)), y: 20 },
         ]}
         profitLoss={new Decimal(2)}
         projectedTotalYield={new Decimal(3)}
-        term={new Date(Date.UTC(2022, 4, 2))}
+        term={new Date(Date.UTC(2024, 4, 2))}
         tokenDecimals={4}
         tokenExchangeRate={new Decimal(100)}
         totalYieldEarned={new Decimal(2)}

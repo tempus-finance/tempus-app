@@ -54,31 +54,3 @@ exports[`PortfolioSubheader renders a navigation subheader portfolio tabs 1`] = 
   </div>
 </div>
 `;
-
-exports[`PortfolioSubheader updates tab selection when one of tabs is selected 1`] = `
-<button
-  class="tc__btn tc__tabs__tab"
-  data-selected="false"
-  type="button"
->
-  <div
-    style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
-  >
-    Overview
-  </div>
-</button>
-`;
-
-exports[`PortfolioSubheader updates tab selection when one of tabs is selected 2`] = `
-<button
-  class="tc__btn tc__tabs__tab"
-  data-selected="true"
-  type="button"
->
-  <div
-    style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(255, 255, 255); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
-  >
-    Positions
-  </div>
-</button>
-`;

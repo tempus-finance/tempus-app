@@ -1,13 +1,16 @@
 import { render } from '@testing-library/react';
-import { BrowserRouter } from 'react-router-dom';
+import { Router } from 'react-router-dom';
+import { createMemoryHistory } from 'history';
 import { pool1 as mockPool1, pool2 as mockPool2 } from '../../setupTests';
 import Portfolio from './Portfolio';
 
+const history = createMemoryHistory();
+
 const subject = () =>
   render(
-    <BrowserRouter>
+    <Router location={history.location} navigator={history}>
       <Portfolio />
-    </BrowserRouter>,
+    </Router>,
   );
 
 jest.mock('../../hooks', () => ({
@@ -17,6 +20,8 @@ jest.mock('../../hooks', () => ({
 
 describe('Portfolio', () => {
   it('renders portfolio page', () => {
+    history.push('/portfolio/overview');
+
     const { container } = subject();
 
     expect(container).not.toBeNull();

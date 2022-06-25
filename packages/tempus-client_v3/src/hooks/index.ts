@@ -1,5 +1,5 @@
 export { useTokenBalance, useTokenBalances } from './useTokenBalance';
-export { usePoolBalance } from './usePoolBalance';
+export { usePoolBalance, usePoolBalances } from './usePoolBalance';
 export { useUserDepositedPools } from './useUserDepositedPools';
 export * from './useFixedAprs';
 export * from './useTvlData';
@@ -20,4 +20,7 @@ export * from './useApproveToken';
 export * from './useSigner';
 export * from './useAppEvent';
 export * from './useFixedDeposit';
+export * from './useWithdraw';
 export * from './useAllowances';
+export * from './useNavigateToRoot';
+export * from './useTransactions';

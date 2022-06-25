@@ -1,5 +1,5 @@
 import { Children, isValidElement, memo, ReactElement, useMemo } from 'react';
-import { useLocation } from 'react-router-dom';
+import { matchPath, useLocation } from 'react-router-dom';
 import Tab, { TabProps } from './Tab';
 import './tabs.scss';
 
@@ -15,23 +15,34 @@ export interface TabsProps {
 const Tabs = (props: TabsProps) => {
   const location = useLocation();
   const { size, value = location.pathname, onTabSelected, children } = props;
-  const values = Children.map(children, child => child?.props.href ?? child?.props.value);
-  const selectedTabIndex = useMemo(
-    () => (values ? values.findIndex(tabValue => tabValue === value) : 0),
-    [value, values],
-  );
 
-  const tabWidth = useMemo(() => 100 / (values ? values.length : 1), [values]);
+  const selectedTabIndex = useMemo(() => {
+    const selectedIndex = Children.map(children, child => {
+      if (child?.props.hrefPatterns) {
+        return (
+          child.props.hrefPatterns
+            .map(pattern => matchPath(pattern, location.pathname) !== null)
+            .filter(matched => matched).length > 0
+        );
+      }
+
+      return value === child?.props.href || value === child?.props.value;
+    })?.findIndex(matched => matched);
+
+    return selectedIndex === undefined || selectedIndex < 0 ? undefined : selectedIndex;
+  }, [children, location.pathname, value]);
+
+  const tabWidth = useMemo(() => 100 / (children ? Children.count(children) : 1), [children]);
 
   return (
     <div className={`tc__tabs tc__tabs__tabs-${size}`}>
-      {Children.map(children, child =>
+      {Children.map(children, (child, index) =>
         isValidElement(child) ? (
-          <Tab {...child.props} size={size} selectedValue={value} onClick={onTabSelected} />
+          <Tab {...child.props} size={size} selected={index === selectedTabIndex} onClick={onTabSelected} />
         ) : null,
       )}
       <div className="tc__tabs__indicator-container">
-        {selectedTabIndex > -1 && (
+        {selectedTabIndex !== undefined && (
           <div
             className="tc__tabs__indicator"
             style={{ width: `${tabWidth}%`, left: `${selectedTabIndex * tabWidth}%` }}
