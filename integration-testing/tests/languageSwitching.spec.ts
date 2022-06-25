@@ -1,6 +1,5 @@
 import { BrowserContext, Page, test, expect } from '@playwright/test'
-import { tempusSwitchLanguage } from '../modules/tempushome';
-import { metamaskLogin, METAMASK_CHROME_URL } from '../modules/metamask';
+import { metamaskLogin } from '../modules/metamask';
 import { chromiumPersistant } from '../modules/browser';
 import { TEMPUS_URL } from '../utility/constants';
 
