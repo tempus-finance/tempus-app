@@ -1,6 +1,7 @@
-import { FC, ReactNode, useCallback, useMemo, useState } from 'react';
+import { FC, ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ChainConfig, Decimal, Ticker } from 'tempus-core-services';
+import { ChainConfig, Decimal, TempusPool, Ticker } from 'tempus-core-services';
+import { setPoolForFees, useFees } from '../../hooks';
 import { TokenMetadataProp } from '../../interfaces';
 import FeeTooltip from '../FeeTooltip';
 import {
@@ -15,6 +16,7 @@ import {
 } from '../shared';
 
 interface ModalActionContentProps {
+  selectedPool?: TempusPool;
   balance: Decimal;
   tokens: TokenMetadataProp;
   disabledInput: boolean;
@@ -29,6 +31,7 @@ interface ModalActionContentProps {
 
 const ModalActionContent: FC<ModalActionContentProps> = props => {
   const {
+    selectedPool,
     balance,
     tokens,
     disabledInput,
@@ -41,10 +44,17 @@ const ModalActionContent: FC<ModalActionContentProps> = props => {
     onCurrencyUpdate,
   } = props;
   const { t } = useTranslation();
+  const fees = useFees();
 
   const [amount, setAmount] = useState('');
   const [transactionProgress, setTransactionProgress] = useState<number | null>(null);
   const [transactionHash, setTransactionHash] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (selectedPool) {
+      setPoolForFees(selectedPool);
+    }
+  }, [selectedPool]);
 
   const amountDecimal = useMemo(() => new Decimal(amount || 0), [amount]);
 
@@ -77,12 +87,14 @@ const ModalActionContent: FC<ModalActionContentProps> = props => {
       />
       {infoRows && <div className="tc__currency-input-modal__info">{infoRows}</div>}
       <div className="tc__currency-input-modal__action-container">
-        <FeeTooltip fees={{ swap: 0.002 }}>
-          <div className="tc__currency-input-modal__transaction-info">
-            <Icon variant="info-bordered" size="small" />
-            <Typography variant="body-secondary">{t('CurrencyInputModal.feesAndTransactionInfo')}</Typography>
-          </div>
-        </FeeTooltip>
+        {selectedPool && (
+          <FeeTooltip fees={fees}>
+            <div className="tc__currency-input-modal__transaction-info">
+              <Icon variant="info-bordered" size="small" />
+              <Typography variant="body-secondary">{t('CurrencyInputModal.feesAndTransactionInfo')}</Typography>
+            </div>
+          </FeeTooltip>
+        )}
         <ActionButton
           labels={actionButtonLabels}
           onClick={handleActionButtonClick}

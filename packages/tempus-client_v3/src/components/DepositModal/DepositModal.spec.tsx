@@ -119,6 +119,12 @@ jest.mock('@web3-onboard/react', () => ({
 
 jest.mock('../../hooks', () => ({
   ...jest.requireActual('../../hooks'),
+  useFees: jest.fn().mockReturnValue({
+    deposit: new MockDecimal(0.01),
+    redemption: new MockDecimal(0.02),
+    earlyRedemption: new MockDecimal(0.03),
+    swap: new MockDecimal(0.04),
+  }),
   useTokenBalances: jest.fn(),
   useSigner: jest.fn().mockImplementation(() => [{ signerProperty: 'xyz' }, mockSetSigner]),
   useDepositModalData: jest.fn().mockImplementation(() => () => ({ tempusPools: [mockPool2] })),

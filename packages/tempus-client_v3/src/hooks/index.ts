@@ -1,6 +1,7 @@
 export { useTokenBalance, useTokenBalances } from './useTokenBalance';
 export { usePoolBalance, usePoolBalances } from './usePoolBalance';
 export { useUserDepositedPools } from './useUserDepositedPools';
+export * from './useFees';
 export * from './useFixedAprs';
 export * from './useTvlData';
 export * from './useTokenRates';

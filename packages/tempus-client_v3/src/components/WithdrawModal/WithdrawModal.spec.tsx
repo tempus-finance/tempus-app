@@ -1,6 +1,6 @@
 import { act, fireEvent, render } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
-import { Decimal } from 'tempus-core-services';
+import { Decimal, Decimal as MockDecimal } from 'tempus-core-services';
 import { getConfigManager } from '../../config/getConfigManager';
 import { TokenMetadataProp } from '../../interfaces';
 import { mockConfig } from '../../setupTests';
@@ -38,6 +38,16 @@ jest.mock('@web3-onboard/react', () => ({
   useConnectWallet: jest.fn().mockReturnValue([{ wallet: { accounts: [{ address: '0x123123123' }] } }, () => {}]),
   useSetChain: jest.fn().mockReturnValue([{}, () => {}]),
   useWallets: jest.fn().mockReturnValue([]),
+}));
+
+jest.mock('../../hooks', () => ({
+  ...jest.requireActual('../../hooks'),
+  useFees: jest.fn().mockReturnValue({
+    deposit: new MockDecimal(0.01),
+    redemption: new MockDecimal(0.02),
+    earlyRedemption: new MockDecimal(0.03),
+    swap: new MockDecimal(0.04),
+  }),
 }));
 
 const defaultProps: WithdrawModalProps = {
