@@ -1,5 +1,6 @@
 import { fireEvent, render } from '@testing-library/react';
-import ErrorModal, { ErrorModalProps } from './ErrorModal';
+import { act } from 'react-dom/test-utils';
+import ErrorModal, { ErrorModalProps, TransactionError } from './ErrorModal';
 
 const mockOnPrimaryButtonClick = jest.fn();
 
@@ -42,5 +43,56 @@ describe('ErrorModal', () => {
 
     expect(mockOnPrimaryButtonClick).toHaveBeenCalled();
     expect(primaryButton).toMatchSnapshot();
+  });
+
+  it('renders a slippage error modal', () => {
+    const props = {
+      ...defaultProps,
+      error: { data: { code: 3, message: 'revised transaction: BAL#507' } } as TransactionError,
+    };
+    const { container, getByText } = subject(props);
+
+    expect(container).not.toBeNull();
+
+    const title = getByText(defaultProps.title as string);
+
+    expect(title).not.toBeNull();
+    expect(container).toMatchSnapshot();
+  });
+
+  it('update slippage when slippage input is set to 2.5%', async () => {
+    const props = {
+      ...defaultProps,
+      error: { data: { code: 3, message: 'revised transaction: BAL#507' } } as TransactionError,
+    };
+    const { container, getByRole } = subject(props);
+
+    const slippageInput = getByRole('textbox');
+
+    expect(slippageInput).not.toBeNull();
+
+    act(() => {
+      fireEvent.change(slippageInput, { target: { value: '2.5' } });
+    });
+
+    expect(container).toMatchSnapshot();
+  });
+
+  it('update slippage when slippage input is set to 2.5%', async () => {
+    const props = {
+      ...defaultProps,
+      error: { data: { code: 3, message: 'revised transaction: BAL#507' } } as TransactionError,
+    };
+    const { container, getByRole } = subject(props);
+
+    const autoButton = getByRole('button', { name: 'Auto' });
+
+    expect(autoButton).not.toBeNull();
+
+    act(() => {
+      fireEvent.click(autoButton);
+    });
+
+    expect(container).toMatchSnapshot();
   });
 });

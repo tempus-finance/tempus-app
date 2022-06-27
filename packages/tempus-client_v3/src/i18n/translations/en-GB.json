@@ -15,7 +15,7 @@
   },
   "DepositModal": {
     "description": "You are about to deposit into the {{asset}} pool with term {{term}}.",
-    "errorModalDescription": "An error occured and the transaction failed. [{{error}}]",
+    "errorModalDescription": "An error occured and the transaction failed.",
     "errorModalPrimaryButton": "Try again",
     "errorModalTitle": "Something's wrong.",
     "labelApproveDefault": "Approve Deposit",
@@ -104,7 +104,9 @@
   },
   "PortfolioOverview": {
     "buttonBrowseMarkets": "Browse Markets",
+    "buttonConnectWallet": "Connect Wallet",
     "descriptionNoPositions": "Want to see growth? Go to Markets.",
+    "descriptionWalletNotConnected": "Connect your wallet to manage your portfolio.",
     "subtitleCurrentValue": "of portfolio",
     "subtitleEarnedYield": "of portfolio",
     "subtitleProjectedYield": "of portfolio",
@@ -116,17 +118,15 @@
     "titleProjectedYield": "Projected Yield",
     "titleTotalPortfolioValue": "Total Portfolio Value",
     "titleTotalYieldEarned": "Total Yield Earned",
-    "titleWalletNotConnected": "Wallet not connected",
-    "descriptionWalletNotConnected": "Connect your wallet to manage your portfolio.",
-    "buttonConnectWallet": "Connect Wallet"
+    "titleWalletNotConnected": "Wallet not connected"
   },
   "PortfolioPositions": {
     "buttonBrowseMarkets": "Browse Markets",
+    "buttonConnectWallet": "Connect Wallet",
     "descriptionNoPositions": "Your portfolio is empty. Let’s change that for you.",
-    "titleNoPositions": "No Current Positions",
-    "titleWalletNotConnected": "Wallet not connected",
     "descriptionWalletNotConnected": "Connect your wallet to manage your positions.",
-    "buttonConnectWallet": "Connect Wallet"
+    "titleNoPositions": "No Current Positions",
+    "titleWalletNotConnected": "Wallet not connected"
   },
   "PortfolioSubheader": {
     "tabOverview": "Overview",
@@ -139,6 +139,11 @@
     "localeName": "English",
     "slippageTooltipContent": "Your transaction will revert if the price changes unfavorably by more than this percentage.",
     "titleLocale": "Language",
+    "titleSlippage": "Slippage tolerance"
+  },
+  "SlippageErrorModal": {
+    "errorModalDescription": "Swap violates user-supplied limits. Please try to increase slippage tolerance.",
+    "slippageTooltipContent": "Your transaction will revert if the price changes unfavorably by more than this percentage.",
     "titleSlippage": "Slippage tolerance"
   },
   "SlippageInput": {
@@ -163,7 +168,7 @@
   },
   "WithdrawModal": {
     "description": "Select the amount you like to withdraw.",
-    "errorModalDescription": "An error occured and the transaction failed. [{{error}}]",
+    "errorModalDescription": "An error occured and the transaction failed.",
     "errorModalPrimaryButton": "Try again",
     "errorModalTitle": "Something's wrong.",
     "labelApproveDefault": "Approve Withdrawal",

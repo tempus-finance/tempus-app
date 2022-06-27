@@ -346,11 +346,8 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
       />
       {/* Show error modal if withdraw throws Error */}
       <ErrorModal
-        description={t('WithdrawModal.errorModalDescription', {
-          // withdrawError.data.message: error from txn
-          // withdrawError.message: generic error, e.g. rejected by metamask
-          error: (withdrawError as any)?.data?.message ?? withdrawError?.message,
-        })}
+        description={t('WithdrawModal.errorModalDescription')}
+        error={withdrawError}
         primaryButtonLabel={{
           default: t('WithdrawModal.errorModalPrimaryButton'),
         }}

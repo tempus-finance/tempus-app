@@ -1,7 +1,7 @@
 import { ComponentStory, ComponentMeta } from '@storybook/react';
 import { useCallback, useState } from 'react';
 
-import ErrorModal from './ErrorModal';
+import ErrorModal, { TransactionError } from './ErrorModal';
 
 export default {
   title: 'ErrorModal',
@@ -16,7 +16,8 @@ const style = {
   height: '100px',
 };
 
-const Template: ComponentStory<typeof ErrorModal> = () => {
+const Template: ComponentStory<typeof ErrorModal> = props => {
+  const { error } = props;
   const [modalOpen, setModalOpen] = useState(false);
 
   const toggleModal = () => {
@@ -37,6 +38,7 @@ const Template: ComponentStory<typeof ErrorModal> = () => {
         open={modalOpen}
         onClose={onModalClose}
         title="Something's wrong."
+        error={error}
         description="An error occured and the transaction failed."
         primaryButtonLabel={{ default: 'Try again', loading: '', success: '' }}
         onPrimaryButtonClick={() => {}}
@@ -46,3 +48,8 @@ const Template: ComponentStory<typeof ErrorModal> = () => {
 };
 
 export const Primary = Template.bind({});
+
+export const SlippageErrorModal = Template.bind({});
+SlippageErrorModal.args = {
+  error: { data: { code: 3, message: 'revised transaction: BAL#507' } } as TransactionError,
+};
