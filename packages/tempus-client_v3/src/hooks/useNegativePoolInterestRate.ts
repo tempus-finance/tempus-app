@@ -96,17 +96,13 @@ const negativePoolInterestRateStream$ = combineLatest([servicesLoaded$]).pipe(
       negativePoolInterestRateData =>
         fetchIsPoolInterestRateNegative(negativePoolInterestRateData.chain, negativePoolInterestRateData.address).pipe(
           filter(poolInterestRateNegative => poolInterestRateNegative !== null),
-          map(poolInterestRateNegative => {
-            console.log(`Fetching negative interest rate flag for pool ${negativePoolInterestRateData.address}`);
-
-            return {
-              [`${negativePoolInterestRateData.chain}-${negativePoolInterestRateData.address}`]: {
-                poolInterestRateNegative,
-                address: negativePoolInterestRateData.address,
-                chain: negativePoolInterestRateData.chain,
-              },
-            };
-          }),
+          map(poolInterestRateNegative => ({
+            [`${negativePoolInterestRateData.chain}-${negativePoolInterestRateData.address}`]: {
+              poolInterestRateNegative,
+              address: negativePoolInterestRateData.address,
+              chain: negativePoolInterestRateData.chain,
+            },
+          })),
         ),
     );
 
