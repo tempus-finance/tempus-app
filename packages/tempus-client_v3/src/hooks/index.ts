@@ -24,3 +24,4 @@ export * from './useWithdraw';
 export * from './useAllowances';
 export * from './useNavigateToRoot';
 export * from './useTransactions';
+export * from './useNegativePoolInterestRate';

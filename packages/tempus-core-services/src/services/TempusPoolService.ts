@@ -1,6 +1,6 @@
 import { BigNumber, CallOverrides, ethers } from 'ethers';
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
-import { TempusPool } from '../abi/TempusPool';
+import { TempusPool } from '../abi/TempusPoolV1Typings';
 import { Chain, Ticker, ProtocolName, ChainConfig } from '../interfaces';
 import { DAYS_IN_A_YEAR, SECONDS_IN_A_DAY } from '../constants';
 import { getERC20TokenService } from '../services';

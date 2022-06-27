@@ -2,13 +2,16 @@ import { FC, memo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Decimal } from 'tempus-core-services';
 import { SUPPORTED_LOCALES, SupportedLocale } from '../../i18n';
-import { useLocale, useUserPreferences } from '../../hooks';
+import { useLocale, useNegativePoolInterestRates, useUserPreferences } from '../../hooks';
 import { DropdownSelectableItem, DropdownSelector, SlippageInput, Icon, InfoTooltip, Typography } from '../shared';
 
 const SettingsPopup: FC = () => {
   const { t } = useTranslation();
   const [locale, setLocale] = useLocale();
   const [preference, setPreferences] = useUserPreferences();
+  const negativePoolInterestRates = useNegativePoolInterestRates();
+
+  console.log(negativePoolInterestRates);
 
   const handleLocaleChange = useCallback((code: string) => setLocale(code as SupportedLocale), [setLocale]);
   const handleSlippageUpdate = useCallback((slippage: Decimal) => setPreferences({ slippage }), [setPreferences]);
