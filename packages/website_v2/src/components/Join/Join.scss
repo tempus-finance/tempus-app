@@ -1,0 +1,32 @@
+.tw__join {
+  padding: 0 40px 100px 40px;
+  background-color: #050a4a;
+  color: #eeecff;
+
+  .tw__join__separator {
+    display: flex;
+    margin-bottom: 40px;
+    flex-grow: 1;
+    height: 1px;
+    width: 100%;
+    background-color: #ffffff;
+  }
+
+  .tw__join__title {
+    margin: 0;
+  }
+
+  .tw__join__description {
+    max-width: 737px;
+    margin-top: 90px;
+    margin-bottom: 100px;
+    font-size: 20px;
+    line-height: 30px;
+  }
+}
+
+.tw__join__link-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-gap: 23px;
+}

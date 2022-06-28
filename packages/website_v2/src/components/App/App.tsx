@@ -4,8 +4,7 @@ import Hero from '../Hero';
 import Blog from '../Blog';
 import Footer from '../Footer';
 import Investors from '../Investors';
-
-import './App.scss';
+import Join from '../Join';
 
 const App = (): JSX.Element => (
   <>
@@ -14,6 +13,7 @@ const App = (): JSX.Element => (
     <About />
     <Investors />
     <Blog />
+    <Join />
     <Footer />
   </>
 );
