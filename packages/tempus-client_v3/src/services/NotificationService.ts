@@ -1,7 +1,7 @@
 import { Observable, ReplaySubject, Subject, interval, tap, filter, take } from 'rxjs';
 import { v1 as uuid } from 'uuid';
 import { Chain, StorageService } from 'tempus-core-services';
-import { Notification, NotificationCategory, NotificationLevel } from '../interfaces';
+import { Notification, NotificationCategory, NotificationLevel, NotificationInput } from '../interfaces';
 
 export const NOTIFICATIONS_KEY = 'notifications_v2';
 const NOTIFICATION_HISTORY_SIZE = 5;
@@ -14,25 +14,13 @@ class NotificationService {
     this.restoreNotifications();
   }
 
-  warn(
-    chain: Chain,
-    category: NotificationCategory,
-    title: string,
-    content: string,
-    link?: string,
-    linkText?: string,
-  ): void {
+  warn(input: NotificationInput): void {
+    const { chain, category, title, content, link, linkText } = input;
     this.addToQueue(chain, category, NotificationLevel.WARNING, title, content, link, linkText);
   }
 
-  notify(
-    chain: Chain,
-    category: NotificationCategory,
-    title: string,
-    content: string,
-    link?: string,
-    linkText?: string,
-  ): void {
+  notify(input: NotificationInput): void {
+    const { chain, category, title, content, link, linkText } = input;
     this.addToQueue(chain, category, NotificationLevel.INFO, title, content, link, linkText);
   }
 
