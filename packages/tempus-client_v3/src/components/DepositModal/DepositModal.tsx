@@ -292,6 +292,7 @@ const DepositModal: FC<DepositModalProps> = props => {
   return (
     <>
       <CurrencyInputModal
+        selectedPool={selectedTempusPool}
         tokens={tokens}
         open={!fixedDepositSuccessful && !fixedDepositError}
         onClose={onClose}

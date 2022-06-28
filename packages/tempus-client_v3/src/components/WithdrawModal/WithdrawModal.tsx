@@ -308,6 +308,7 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
     <>
       {/* Show withdraw modal if withdraw is not yet finalized */}
       <CurrencyInputModal
+        selectedPool={tempusPool}
         tokens={tokens}
         open={!withdrawSuccessful && !withdrawError}
         onClose={onClose}
