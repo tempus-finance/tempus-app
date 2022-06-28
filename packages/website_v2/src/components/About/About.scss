@@ -1,0 +1,33 @@
+.tw__about {
+  padding: 40px 40px 100px 40px;
+  background-color: #050a4a;
+  color: #eeecff;
+
+  h2 {
+    margin: 0;
+  }
+}
+
+.tw__about__grid {
+  margin-top: 103px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 20px;
+
+  .tw__about__grid-item {
+    .tw__about__grid-item-icon {
+      height: 64px;
+    }
+
+    .tw__about__grid-item-title {
+      font-size: 28px;
+      font-weight: 600;
+      line-height: 34px;
+    }
+
+    .tw__about__grid-item-description {
+      font-size: 18px;
+      line-height: 30px;
+    }
+  }
+}
