@@ -18,14 +18,7 @@ import {
   Subscription,
   tap,
 } from 'rxjs';
-import {
-  Decimal,
-  DEFAULT_TOKEN_PRECISION,
-  getDefinedServices,
-  getTempusAMMService,
-  TempusPool,
-} from 'tempus-core-services';
-import { getConfigManager } from '../config/getConfigManager';
+import { Decimal, DEFAULT_TOKEN_PRECISION, getDefinedServices, TempusPool } from 'tempus-core-services';
 import { DEBOUNCE_IN_MS, POLLING_INTERVAL_IN_MS } from '../constants';
 import { poolList$ } from './usePoolList';
 import { servicesLoaded$ } from './useServicesLoaded';
@@ -58,9 +51,9 @@ const fetchData = (tempusPool: TempusPool): Observable<PoolFeesMap> => {
   const { chain, address, ammAddress } = tempusPool;
 
   try {
-    const { getChainConfig } = getConfigManager();
-    const feesConfig$ = getDefinedServices(chain).TempusPoolService.getFeesConfig(address);
-    const swapFee$ = from(getTempusAMMService(chain, getChainConfig).getSwapFeePercentage(ammAddress)).pipe(
+    const services = getDefinedServices(chain);
+    const feesConfig$ = services.TempusPoolService.getFeesConfig(address);
+    const swapFee$ = from(services.TempusAMMService.getSwapFeePercentage(ammAddress)).pipe(
       map(fee => new Decimal(fee, DEFAULT_TOKEN_PRECISION)),
     );
 
@@ -70,8 +63,8 @@ const fetchData = (tempusPool: TempusPool): Observable<PoolFeesMap> => {
         return {
           [`${chain}-${address}`]: {
             deposit,
-            redemption,
             earlyRedemption,
+            redemption,
             swap: swapFee,
           },
         } as PoolFeesMap;

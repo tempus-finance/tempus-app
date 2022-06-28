@@ -1,7 +1,6 @@
 import { act, renderHook } from '@testing-library/react-hooks';
-import { BigNumber } from 'ethers';
 import { delay as mockDelay, of as mockOf, of } from 'rxjs';
-import { Decimal, getDefinedServices, getTempusAMMService } from 'tempus-core-services';
+import { Decimal, getDefinedServices } from 'tempus-core-services';
 import { getConfigManager } from '../config/getConfigManager';
 import {
   pool1,
@@ -27,7 +26,6 @@ const mockSwapFee = new Decimal(0.04);
 jest.mock('tempus-core-services', () => ({
   ...jest.requireActual('tempus-core-services'),
   getDefinedServices: jest.fn(),
-  getTempusAMMService: jest.fn(),
 }));
 
 jest.mock('./usePoolList', () => ({
@@ -41,28 +39,31 @@ jest.mock('./useServicesLoaded', () => ({
 }));
 
 describe('useFees', () => {
-  beforeAll(getConfigManager);
+  beforeAll(() => {
+    const configManager = getConfigManager();
+    configManager.init();
+  });
 
   test('returns a fees map of all pools', async () => {
-    act(() => {
-      resetFeesData();
-      subscribeFeesData();
-    });
-
     (getDefinedServices as unknown as jest.Mock).mockImplementation(() => ({
       TempusPoolService: {
         getFeesConfig: jest
           .fn()
           .mockImplementation(() =>
-            of([mockPoolFees.deposit, mockPoolFees.redemption, mockPoolFees.earlyRedemption] as Decimal[]).pipe(
+            of([mockPoolFees.deposit, mockPoolFees.earlyRedemption, mockPoolFees.redemption] as Decimal[]).pipe(
               mockDelay(500),
             ),
           ),
       },
+      TempusAMMService: {
+        getSwapFeePercentage: jest.fn().mockResolvedValue(mockSwapFee.toBigNumber()),
+      },
     }));
-    (getTempusAMMService as jest.Mock).mockImplementation(() => ({
-      getSwapFeePercentage: () => new Promise<BigNumber>(() => mockSwapFee.toBigNumber()),
-    }));
+
+    act(() => {
+      resetFeesData();
+      subscribeFeesData();
+    });
 
     const { result, waitForNextUpdate } = renderHook(() => useFees());
 
@@ -84,25 +85,25 @@ describe('useFees', () => {
   });
 
   test('directly get the latest value for 2nd hooks', async () => {
-    act(() => {
-      resetFeesData();
-      subscribeFeesData();
-    });
-
     (getDefinedServices as unknown as jest.Mock).mockImplementation(() => ({
       TempusPoolService: {
         getFeesConfig: jest
           .fn()
           .mockImplementation(() =>
-            of([mockPoolFees.deposit, mockPoolFees.redemption, mockPoolFees.earlyRedemption] as Decimal[]).pipe(
+            of([mockPoolFees.deposit, mockPoolFees.earlyRedemption, mockPoolFees.redemption] as Decimal[]).pipe(
               mockDelay(500),
             ),
           ),
       },
+      TempusAMMService: {
+        getSwapFeePercentage: jest.fn().mockResolvedValue(mockSwapFee.toBigNumber()),
+      },
     }));
-    (getTempusAMMService as jest.Mock).mockImplementation(() => ({
-      getSwapFeePercentage: () => new Promise<BigNumber>(() => mockSwapFee.toBigNumber()),
-    }));
+
+    act(() => {
+      resetFeesData();
+      subscribeFeesData();
+    });
 
     const { result: result1, waitForNextUpdate } = renderHook(() => useFees());
 
@@ -183,9 +184,12 @@ describe('useFees', () => {
     jest.spyOn(console, 'error').mockImplementation();
     (getDefinedServices as unknown as jest.Mock).mockImplementation(() => ({
       TempusPoolService: {
-        getFeesConfig: () => {
+        getFeesConfig: jest.fn().mockImplementation(() => {
           throw new Error();
-        },
+        }),
+      },
+      TempusAMMService: {
+        getSwapFeePercentage: jest.fn().mockResolvedValue(mockSwapFee.toBigNumber()),
       },
     }));
 
@@ -211,9 +215,20 @@ describe('useFees', () => {
 
   test('no updates when there is error when TempusAMMService.getSwapFeePercentage()', async () => {
     jest.spyOn(console, 'error').mockImplementation();
-    (getTempusAMMService as jest.Mock).mockImplementation(() => ({
-      getSwapFeePercentage: () => {
-        throw new Error();
+    (getDefinedServices as unknown as jest.Mock).mockImplementation(() => ({
+      TempusPoolService: {
+        getFeesConfig: jest
+          .fn()
+          .mockImplementation(() =>
+            of([mockPoolFees.deposit, mockPoolFees.redemption, mockPoolFees.earlyRedemption] as Decimal[]).pipe(
+              mockDelay(500),
+            ),
+          ),
+      },
+      TempusAMMService: {
+        getSwapFeePercentage: jest.fn().mockImplementation(() => {
+          throw new Error();
+        }),
       },
     }));
 

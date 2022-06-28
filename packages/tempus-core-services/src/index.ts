@@ -53,7 +53,6 @@ export {
   getCoingeckoRate,
   getDefaultProvider,
   getERC20TokenService,
-  getTempusAMMService,
   initServices,
   getServices,
   getStorageService,
