@@ -4,8 +4,12 @@
   color: #eeecff;
 
   .tw__join__separator {
-    border: 1px solid #ffffff;
+    display: flex;
     margin-bottom: 40px;
+    flex-grow: 1;
+    height: 1px;
+    width: 100%;
+    background-color: #ffffff;
   }
 
   .tw__join__title {
