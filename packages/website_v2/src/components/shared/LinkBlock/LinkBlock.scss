@@ -1,0 +1,36 @@
+.tw__link-block {
+  background-color: #eeecff;
+  height: 154px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border-radius: 10px;
+  color: #050a4a;
+  text-decoration: none;
+
+  .tw__link-block__header {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .tw__link-block__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .tw__link-block__title {
+    font-size: 20px;
+    font-weight: 600;
+  }
+
+  .tw__link-block__description {
+    font-size: 16px;
+    font-weight: 400;
+  }
+
+  .tw__right-arrow-icon:only-child {
+    margin-left: auto;
+  }
+}
