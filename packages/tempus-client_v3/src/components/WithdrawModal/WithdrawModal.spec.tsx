@@ -4,7 +4,7 @@ import { Decimal, Decimal as MockDecimal } from 'tempus-core-services';
 import { getConfigManager } from '../../config/getConfigManager';
 import { TokenMetadataProp } from '../../interfaces';
 import { mockConfig } from '../../setupTests';
-import { pool1 } from '../../mocks/config/mockConfig';
+import { pool1, pool1 as mockPool1 } from '../../mocks/config/mockConfig';
 import { WithdrawModal, WithdrawModalProps } from './WithdrawModal';
 
 jest.mock('lottie-react', () => () => <div className="lottie-animation" />);
@@ -43,10 +43,12 @@ jest.mock('@web3-onboard/react', () => ({
 jest.mock('../../hooks', () => ({
   ...jest.requireActual('../../hooks'),
   useFees: jest.fn().mockReturnValue({
-    deposit: new MockDecimal(0.01),
-    redemption: new MockDecimal(0.02),
-    earlyRedemption: new MockDecimal(0.03),
-    swap: new MockDecimal(0.04),
+    [`${mockPool1.chain}-${mockPool1.address}`]: {
+      deposit: new MockDecimal(0.01),
+      redemption: new MockDecimal(0.02),
+      earlyRedemption: new MockDecimal(0.03),
+      swap: new MockDecimal(0.04),
+    },
   }),
 }));
 
