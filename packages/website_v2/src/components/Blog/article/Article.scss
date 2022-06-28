@@ -1,0 +1,51 @@
+.tw__article {
+  display: flex;
+  flex-direction: column;
+  border-radius: 10px;
+  height: 100%;
+  text-decoration: none;
+  font-family: 'Articulat CF';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 26px;
+  color: #EEECFF;
+}
+
+.tw__article-content {
+  display: flex;
+  flex-direction: column;
+  padding: 30px;
+  height: 100%;
+  word-break: break-word;
+  background-color: rgba(255, 255, 255, 0.1);
+  
+  .tw__article-readmore {
+    align-self: flex-start;
+    padding-top: 20px;
+    margin-top: auto;
+    cursor: pointer;
+  }
+}
+
+.tw__article-date {
+  display: flex;
+  justify-content: flex-start;
+  font-size: 20px;
+  line-height: 30px;
+  padding-bottom: 14px;
+}
+
+.tw__article-title {
+  font-weight: 600;
+  font-size: 28px;
+  line-height: 30px;
+  padding-bottom: 32px;
+}
+
+.tw__article-image {
+  width: 100%;
+  min-height: 239px;
+  background-size: cover;
+  border-radius: 5px 5px 0px 0px;
+}
