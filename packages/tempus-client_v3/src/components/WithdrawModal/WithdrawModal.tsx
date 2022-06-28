@@ -304,6 +304,11 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
     setWithdrawError(undefined);
   }, []);
 
+  const handleBack = useCallback(() => {
+    const { chain, backingToken, protocol, address } = tempusPool;
+    navigate(`/portfolio/positions/${chain}/${backingToken}/${protocol}/${address}`);
+  }, [navigate, tempusPool]);
+
   return (
     <>
       {/* Show withdraw modal if withdraw is not yet finalized */}
@@ -318,6 +323,7 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
         infoRows={infoRows}
         actionButtonLabels={actionButtonLabels}
         actionButtonState={actionButtonState}
+        onBack={handleBack}
         onTransactionStart={tokensApproved ? handleWithdraw : handleApproveToken}
         onCurrencyUpdate={handleCurrencyChange}
         chainConfig={chainConfig}
