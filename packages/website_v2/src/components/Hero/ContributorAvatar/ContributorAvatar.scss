@@ -1,0 +1,29 @@
+.tw__contributor-avatar {
+  position: absolute;
+  cursor: pointer;
+}
+
+.tw__contributor-avatar-image {
+  position: absolute;
+  left: 0px;
+  bottom: 0px;
+  width: 160px;
+  height: 160px;
+  border-radius: 30px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+}
+
+.tw__contributor-avatar-image-blur {
+  position: absolute;
+  left: 0px;
+  bottom: 0px;
+  width: 160px;
+  height: 160px;
+  border-radius: 30px;
+  filter: blur(30px);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+}
