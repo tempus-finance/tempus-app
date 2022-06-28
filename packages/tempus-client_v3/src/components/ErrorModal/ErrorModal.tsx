@@ -3,7 +3,8 @@ import { TransactionError } from 'tempus-core-services';
 import { ActionButton, ActionButtonLabels, Modal, Typography } from '../shared';
 import { ModalProps } from '../shared/Modal/Modal';
 import SlippageErrorModal from './SlippageErrorModal';
-import MetamaskErrorModal from './MetamaskErrorModal';
+import WalletErrorModal from './WalletErrorModal';
+import RpcErrorModal from './RpcErrorModal';
 import HungryCatLogo from './HungryCatLogo';
 
 import './ErrorModal.scss';
@@ -33,12 +34,26 @@ const ErrorModal: FC<ErrorModalProps> = props => {
     );
   }
 
-  if (transactionError.isMetamaskError) {
+  if (transactionError.isWalletError) {
     return (
-      <MetamaskErrorModal
+      <WalletErrorModal
         open={open}
         onClose={onClose}
         title={title}
+        error={error as Error}
+        primaryButtonLabel={primaryButtonLabel}
+        onPrimaryButtonClick={onPrimaryButtonClick}
+      />
+    );
+  }
+
+  if (transactionError.isRpcError) {
+    return (
+      <RpcErrorModal
+        open={open}
+        onClose={onClose}
+        title={title}
+        error={error as Error}
         primaryButtonLabel={primaryButtonLabel}
         onPrimaryButtonClick={onPrimaryButtonClick}
       />

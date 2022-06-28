@@ -74,9 +74,6 @@
     "titleMultipleChains": "Check out our other pools",
     "titleSingleChain": "Check out our {{chainName}} pools"
   },
-  "MetamaskErrorModal": {
-    "errorModalDescription": "An error has occurred with your wallet, please check your wallet and try again."
-  },
   "NumberInput": {
     "buttonMax": "Max"
   },
@@ -135,6 +132,9 @@
     "tabOverview": "Overview",
     "tabPositions": "Positions"
   },
+  "RpcErrorModal": {
+    "errorModalDescription": "An error has occurred when submitting your transaction, please check your connection and try again."
+  },
   "SettingsDropdown": {
     "title": "Settings"
   },
@@ -168,6 +168,9 @@
   "WalletButton": {
     "buttonConnectWallet": "Connect Wallet",
     "buttonUnsupported": "Unsupported"
+  },
+  "WalletErrorModal": {
+    "errorModalDescription": "An error has occurred with your wallet, please check your wallet and try again."
   },
   "WithdrawModal": {
     "description": "Select the amount you like to withdraw.",

@@ -74,9 +74,6 @@
     "titleMultipleChains": "Ver las otras pools",
     "titleSingleChain": "Vea nuestros pools en {{chainName}}"
   },
-  "MetamaskErrorModal": {
-    "errorModalDescription": ""
-  },
   "NumberInput": {
     "buttonMax": ""
   },
@@ -135,6 +132,9 @@
     "tabOverview": "",
     "tabPositions": ""
   },
+  "RpcErrorModal": {
+    "errorModalDescription": ""
+  },
   "SettingsDropdown": {
     "title": ""
   },
@@ -168,6 +168,9 @@
   "WalletButton": {
     "buttonConnectWallet": "",
     "buttonUnsupported": ""
+  },
+  "WalletErrorModal": {
+    "errorModalDescription": ""
   },
   "WithdrawModal": {
     "description": "",

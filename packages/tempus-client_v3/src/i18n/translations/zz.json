@@ -74,9 +74,6 @@
     "titleMultipleChains": "~~~~~====={{{{{(((((titleMultipleChains)))))}}}}}=====~~~~~",
     "titleSingleChain": "~~~~~====={{{{{(((((titleSingleChain)))))}}}}}=====~~~~~"
   },
-  "MetamaskErrorModal": {
-    "errorModalDescription": ""
-  },
   "NumberInput": {
     "buttonMax": "~~~~~====={{{{{(((((buttonMax)))))}}}}}=====~~~~~"
   },
@@ -135,6 +132,9 @@
     "tabOverview": "~~~~~====={{{{{(((((tabOverview)))))}}}}}=====~~~~~",
     "tabPositions": "~~~~~====={{{{{(((((tabPositions)))))}}}}}=====~~~~~"
   },
+  "RpcErrorModal": {
+    "errorModalDescription": ""
+  },
   "SettingsDropdown": {
     "title": "~~~~~====={{{{{(((((title)))))}}}}}=====~~~~~"
   },
@@ -168,6 +168,9 @@
   "WalletButton": {
     "buttonConnectWallet": "~~~~~====={{{{{(((((buttonConnectWallet)))))}}}}}=====~~~~~",
     "buttonUnsupported": "~~~~~====={{{{{(((((buttonUnsupported)))))}}}}}=====~~~~~"
+  },
+  "WalletErrorModal": {
+    "errorModalDescription": ""
   },
   "WithdrawModal": {
     "description": "~~~~~====={{{{{(((((description)))))}}}}}=====~~~~~",

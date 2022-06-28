@@ -54,7 +54,12 @@ SlippageErrorModal.args = {
   error: { data: { code: 3, message: 'revised transaction: BAL#507' } } as unknown as Error,
 };
 
-export const MetamaskErrorModal = Template.bind({});
-MetamaskErrorModal.args = {
-  error: { code: 4001 } as unknown as Error,
+export const WalletErrorModal = Template.bind({});
+WalletErrorModal.args = {
+  error: { code: 4001, message: 'User rejected the request.' } as unknown as Error,
+};
+
+export const RpcErrorModal = Template.bind({});
+RpcErrorModal.args = {
+  error: { code: 32603, message: 'Internal JSON-RPC error.' } as unknown as Error,
 };

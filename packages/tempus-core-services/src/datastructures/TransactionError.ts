@@ -24,14 +24,17 @@ type MetamaskErrorCode =
   | -32700; // parse
 interface MetamaskError extends Error {
   code: MetamaskErrorCode;
+  message: string;
+  data?: any;
 }
 
 export default class TransactionError {
   public readonly raw: Error | undefined = undefined;
   public readonly isBalancerError: boolean = false;
-  public readonly isMetamaskError: boolean = false;
+  public readonly isWalletError: boolean = false;
+  public readonly isRpcError: boolean = false;
   public readonly balancerErrorCode: number | null = null;
-  public readonly metemaskErrorCode: MetamaskErrorCode | null = null;
+  public readonly metamaskErrorCode: MetamaskErrorCode | null = null;
 
   constructor(error?: Error) {
     if (error) {
@@ -42,8 +45,9 @@ export default class TransactionError {
       this.isBalancerError = Boolean(this.balancerErrorCode);
 
       // metamask error: https://github.com/MetaMask/eth-rpc-errors/blob/main/src/error-constants.ts
-      this.metemaskErrorCode = TransactionError.parseMetamaskErrorCode(error as MetamaskError);
-      this.isMetamaskError = Boolean(this.metemaskErrorCode);
+      this.metamaskErrorCode = TransactionError.parseMetamaskErrorCode(error as MetamaskError);
+      this.isWalletError = TransactionError.isMetamaskProviderError(error as MetamaskError);
+      this.isRpcError = TransactionError.isMetamaskRpcError(error as MetamaskError);
     }
   }
 
@@ -52,7 +56,17 @@ export default class TransactionError {
     return Number(errorCodeString.split('#')[1]);
   }
 
-  static parseMetamaskErrorCode(error: MetamaskError): MetamaskErrorCode {
+  static parseMetamaskErrorCode(error: MetamaskError): MetamaskErrorCode | null {
     return error.code ?? null;
+  }
+
+  static isMetamaskRpcError(error: MetamaskError): boolean {
+    const code = TransactionError.parseMetamaskErrorCode(error);
+    return code !== null && code >= 30000;
+  }
+
+  static isMetamaskProviderError(error: MetamaskError): boolean {
+    const code = TransactionError.parseMetamaskErrorCode(error);
+    return code !== null && code < 5000;
   }
 }

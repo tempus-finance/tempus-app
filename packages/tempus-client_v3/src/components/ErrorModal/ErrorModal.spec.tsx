@@ -45,10 +45,25 @@ describe('ErrorModal', () => {
     expect(primaryButton).toMatchSnapshot();
   });
 
-  it('renders a metamask error modal', () => {
+  it('renders a wallet error modal', () => {
     const props = {
       ...defaultProps,
-      error: { code: 4001 } as unknown as Error,
+      error: { code: 4001, message: 'User rejected the request.' } as unknown as Error,
+    };
+    const { container, getByText } = subject(props);
+
+    expect(container).not.toBeNull();
+
+    const title = getByText(defaultProps.title as string);
+
+    expect(title).not.toBeNull();
+    expect(container).toMatchSnapshot();
+  });
+
+  it('renders a rpc error modal', () => {
+    const props = {
+      ...defaultProps,
+      error: { code: 32603, message: 'Internal JSON-RPC error.' } as unknown as Error,
     };
     const { container, getByText } = subject(props);
 
