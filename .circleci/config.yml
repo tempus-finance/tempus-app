@@ -212,6 +212,9 @@ workflows:
       - test-tempus-core-services:
           requires:
             - bootstrap
+      - e2e-test:
+          requires:
+            - metamask
       - deploy-storybook:
           requires:
             - build-storybook
