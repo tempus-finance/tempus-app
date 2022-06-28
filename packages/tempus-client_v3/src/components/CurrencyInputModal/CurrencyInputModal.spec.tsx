@@ -1,7 +1,8 @@
 import { act, fireEvent, render } from '@testing-library/react';
-import { Decimal, Ticker } from 'tempus-core-services';
+import { Decimal, Decimal as MockDecimal, Ticker } from 'tempus-core-services';
 import { getConfigManager } from '../../config/getConfigManager';
 import { MaturityTerm } from '../../interfaces';
+import { pool1, pool1 as mockPool1 } from '../../setupTests';
 import CurrencyInputModal, { CurrencyInputModalProps } from './CurrencyInputModal';
 
 jest.mock('@web3-onboard/ledger', () =>
@@ -35,6 +36,18 @@ jest.mock('@web3-onboard/react', () => ({
   useWallets: jest.fn().mockReturnValue([]),
 }));
 
+jest.mock('../../hooks', () => ({
+  ...jest.requireActual('../../hooks'),
+  useFees: jest.fn().mockReturnValue({
+    [`${mockPool1.chain}-${mockPool1.address}`]: {
+      deposit: new MockDecimal(0.01),
+      redemption: new MockDecimal(0.02),
+      earlyRedemption: new MockDecimal(0.03),
+      swap: new MockDecimal(0.04),
+    },
+  }),
+}));
+
 const onTransactionStartMock = jest.fn<Promise<string>, [Decimal]>().mockResolvedValue('someResult');
 const onAmountChangeMock = jest.fn<void, [Decimal]>();
 
@@ -49,6 +62,7 @@ const singleMaturityTerm: MaturityTerm[] = [
 ];
 
 const defaultProps: CurrencyInputModalProps = {
+  selectedPool: pool1,
   title: '',
   description: '',
   open: true,
