@@ -3692,7 +3692,7 @@ exports[`ErrorModal renders a slippage error modal 1`] = `
           <div
             style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
           >
-            Swap violates user-supplied limits. Please try to increase slippage tolerance.
+            Transaction failed because slippage is too low, please increase the slippage.
           </div>
           <div
             class="tc__error-modal__animation"
@@ -7416,7 +7416,7 @@ exports[`ErrorModal update slippage when slippage input is set to 2.5% 1`] = `
           <div
             style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
           >
-            Swap violates user-supplied limits. Please try to increase slippage tolerance.
+            Transaction failed because slippage is too low, please increase the slippage.
           </div>
           <div
             class="tc__error-modal__animation"
@@ -11140,7 +11140,7 @@ exports[`ErrorModal update slippage when slippage input is set to auto 1`] = `
           <div
             style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
           >
-            Swap violates user-supplied limits. Please try to increase slippage tolerance.
+            Transaction failed because slippage is too low, please increase the slippage.
           </div>
           <div
             class="tc__error-modal__animation"
