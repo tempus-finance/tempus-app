@@ -17,6 +17,7 @@ export type {
   Ticker,
   NativeTokenTicker,
   TempusPool,
+  TransactionError,
   TokenPrecision,
   TokenTypePrecision,
   YearnData,
@@ -62,6 +63,7 @@ export {
 export {
   NumberUtils,
   DecimalUtils,
+  ErrorUtils,
   capitalize,
   chainIdToChainName,
   chainIdHexToChainName,
