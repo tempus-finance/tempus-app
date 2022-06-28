@@ -137,14 +137,14 @@
   },
   "SettingsPopup": {
     "localeName": "Español",
-    "slippageTooltipContent": "",
+    "slippageTooltipContent": "La transacción se cancelará si el precio cambia desfavorablemente en más de este porcentaje.",
     "titleLocale": "",
-    "titleSlippage": ""
+    "titleSlippage": "Tolerancia al Slippage"
   },
   "SlippageErrorModal": {
-    "errorModalDescription": "",
-    "slippageTooltipContent": "",
-    "titleSlippage": ""
+    "errorModalDescription": "El Swap viola los límites indicados. Intente aumentar la tolerancia al deslizamiento.",
+    "slippageTooltipContent": "La transacción se cancelará si el precio cambia desfavorablemente en más de este porcentaje.",
+    "titleSlippage": "Tolerancia al Slippage"
   },
   "SlippageInput": {
     "buttonAuto": ""

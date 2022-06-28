@@ -1,6 +1,7 @@
 import { fireEvent, render } from '@testing-library/react';
 import { act } from 'react-dom/test-utils';
-import ErrorModal, { ErrorModalProps, TransactionError } from './ErrorModal';
+import { TransactionError } from 'tempus-core-services';
+import ErrorModal, { ErrorModalProps } from './ErrorModal';
 
 const mockOnPrimaryButtonClick = jest.fn();
 
@@ -78,7 +79,7 @@ describe('ErrorModal', () => {
     expect(container).toMatchSnapshot();
   });
 
-  it('update slippage when slippage input is set to 2.5%', async () => {
+  it('update slippage when slippage input is set to auto', async () => {
     const props = {
       ...defaultProps,
       error: { data: { code: 3, message: 'revised transaction: BAL#507' } } as TransactionError,

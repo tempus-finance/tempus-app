@@ -11087,7 +11087,7 @@ exports[`ErrorModal update slippage when slippage input is set to 2.5% 1`] = `
 </div>
 `;
 
-exports[`ErrorModal update slippage when slippage input is set to 2.5% 2`] = `
+exports[`ErrorModal update slippage when slippage input is set to auto 1`] = `
 <div>
   <div
     class="tc__modal-backdrop"

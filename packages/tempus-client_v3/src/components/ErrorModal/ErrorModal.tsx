@@ -1,17 +1,11 @@
 import { FC, memo } from 'react';
+import { TransactionError, ErrorUtils } from 'tempus-core-services';
 import { ActionButton, ActionButtonLabels, Modal, Typography } from '../shared';
 import { ModalProps } from '../shared/Modal/Modal';
 import SlippageErrorModal from './SlippageErrorModal';
 import HungryCatLogo from './HungryCatLogo';
 
 import './ErrorModal.scss';
-
-export interface TransactionError extends Error {
-  data?: {
-    code: number;
-    message: string;
-  };
-}
 
 export interface ErrorModalProps extends ModalProps {
   description: string;
@@ -20,13 +14,11 @@ export interface ErrorModalProps extends ModalProps {
   onPrimaryButtonClick: () => void;
 }
 
-const getTransactionError = (error?: TransactionError) => error?.data?.message.match(/BAL#\d+/)?.[0];
-
 const ErrorModal: FC<ErrorModalProps> = props => {
   const { open, onClose, title, description, error, primaryButtonLabel, onPrimaryButtonClick } = props;
 
   // check transaction error
-  const txnErrorCode = getTransactionError(error);
+  const txnErrorCode = ErrorUtils.getTransactionErrorCode(error);
   if (txnErrorCode === 'BAL#507') {
     // SWAP_LIMIT: Swap violates user-supplied limits (min out or max in)
     return (
@@ -38,9 +30,6 @@ const ErrorModal: FC<ErrorModalProps> = props => {
         onPrimaryButtonClick={onPrimaryButtonClick}
       />
     );
-  }
-  if (txnErrorCode) {
-    // ref: https://dev.balancer.fi/references/error-codes
   }
 
   // check non-transaction error
