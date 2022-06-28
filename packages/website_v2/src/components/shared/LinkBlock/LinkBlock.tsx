@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { RightArrowIcon } from '../Icon';
+import ArrowRight from '../../../icons/arrowRight';
 
 import './LinkBlock.scss';
 
@@ -21,7 +21,7 @@ const LinkBlock: FC<LinkBlockProps> = props => {
       </div>
       <div className="tw__link-block__footer">
         {description && <span className="tw__link-block__description">{description}</span>}
-        <RightArrowIcon />
+        <ArrowRight color="#050A4A" />
       </div>
     </a>
   );

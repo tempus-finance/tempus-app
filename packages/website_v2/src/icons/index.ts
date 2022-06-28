@@ -1,3 +1,4 @@
+import ArrowRight from './arrowRight';
 import DistributedGlobalLogo from './distributedGlobalLogo';
 import GSRLogo from './gsrLogo';
 import JumpCapitalLogo from './jumpCapitalLogo';
@@ -9,6 +10,7 @@ import TomahawkVCLogo from './tomahawkVcLogo';
 import WintermuteLogo from './wintermuteLogo';
 
 export {
+  ArrowRight,
   DistributedGlobalLogo,
   GSRLogo,
   JumpCapitalLogo,
