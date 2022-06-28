@@ -1,7 +1,8 @@
 import { ComponentStory, ComponentMeta } from '@storybook/react';
 import { useCallback, useState } from 'react';
+import { TransactionError } from 'tempus-core-services';
 
-import ErrorModal, { TransactionError } from './ErrorModal';
+import ErrorModal from './ErrorModal';
 
 export default {
   title: 'ErrorModal',
