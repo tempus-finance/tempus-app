@@ -74,6 +74,9 @@
     "titleMultipleChains": "~~~~~====={{{{{(((((titleMultipleChains)))))}}}}}=====~~~~~",
     "titleSingleChain": "~~~~~====={{{{{(((((titleSingleChain)))))}}}}}=====~~~~~"
   },
+  "MetamaskErrorModal": {
+    "errorModalDescription": ""
+  },
   "NumberInput": {
     "buttonMax": "~~~~~====={{{{{(((((buttonMax)))))}}}}}=====~~~~~"
   },

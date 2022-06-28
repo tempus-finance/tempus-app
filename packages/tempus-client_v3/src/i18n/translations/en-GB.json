@@ -74,6 +74,9 @@
     "titleMultipleChains": "Check out our other pools",
     "titleSingleChain": "Check out our {{chainName}} pools"
   },
+  "MetamaskErrorModal": {
+    "errorModalDescription": "An error has occurred with your wallet, please check your wallet and try again."
+  },
   "NumberInput": {
     "buttonMax": "Max"
   },

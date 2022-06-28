@@ -1,15 +1,16 @@
-import { FC, memo } from 'react';
-import { TransactionError, ErrorUtils } from 'tempus-core-services';
+import { FC, memo, useMemo } from 'react';
+import { TransactionError } from 'tempus-core-services';
 import { ActionButton, ActionButtonLabels, Modal, Typography } from '../shared';
 import { ModalProps } from '../shared/Modal/Modal';
 import SlippageErrorModal from './SlippageErrorModal';
+import MetamaskErrorModal from './MetamaskErrorModal';
 import HungryCatLogo from './HungryCatLogo';
 
 import './ErrorModal.scss';
 
 export interface ErrorModalProps extends ModalProps {
   description: string;
-  error?: TransactionError;
+  error?: Error;
   primaryButtonLabel: ActionButtonLabels;
   onPrimaryButtonClick: () => void;
 }
@@ -17,9 +18,9 @@ export interface ErrorModalProps extends ModalProps {
 const ErrorModal: FC<ErrorModalProps> = props => {
   const { open, onClose, title, description, error, primaryButtonLabel, onPrimaryButtonClick } = props;
 
-  // check transaction error
-  const txnErrorCode = ErrorUtils.getTransactionErrorCode(error);
-  if (txnErrorCode === 'BAL#507') {
+  const transactionError = useMemo(() => new TransactionError(error), [error]);
+
+  if (transactionError.balancerErrorCode === 507) {
     // SWAP_LIMIT: Swap violates user-supplied limits (min out or max in)
     return (
       <SlippageErrorModal
@@ -32,7 +33,17 @@ const ErrorModal: FC<ErrorModalProps> = props => {
     );
   }
 
-  // check non-transaction error
+  if (transactionError.isMetamaskError) {
+    return (
+      <MetamaskErrorModal
+        open={open}
+        onClose={onClose}
+        title={title}
+        primaryButtonLabel={primaryButtonLabel}
+        onPrimaryButtonClick={onPrimaryButtonClick}
+      />
+    );
+  }
 
   return (
     <Modal open={open} onClose={onClose}>

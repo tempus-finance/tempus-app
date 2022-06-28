@@ -74,6 +74,9 @@
     "titleMultipleChains": "Vedi le altre pools",
     "titleSingleChain": "Vedi le nostre pool su {{chainName}}"
   },
+  "MetamaskErrorModal": {
+    "errorModalDescription": ""
+  },
   "NumberInput": {
     "buttonMax": ""
   },

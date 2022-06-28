@@ -1,6 +1,5 @@
 import { ComponentStory, ComponentMeta } from '@storybook/react';
 import { useCallback, useState } from 'react';
-import { TransactionError } from 'tempus-core-services';
 
 import ErrorModal from './ErrorModal';
 
@@ -52,5 +51,10 @@ export const Primary = Template.bind({});
 
 export const SlippageErrorModal = Template.bind({});
 SlippageErrorModal.args = {
-  error: { data: { code: 3, message: 'revised transaction: BAL#507' } } as TransactionError,
+  error: { data: { code: 3, message: 'revised transaction: BAL#507' } } as unknown as Error,
+};
+
+export const MetamaskErrorModal = Template.bind({});
+MetamaskErrorModal.args = {
+  error: { code: 4001 } as unknown as Error,
 };
