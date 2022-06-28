@@ -1,6 +1,6 @@
 import { bind } from '@react-rxjs/core';
 import { createSignal } from '@react-rxjs/utils';
-import { combineLatest, map, mergeMap, of } from 'rxjs';
+import { catchError, combineLatest, map, mergeMap, of } from 'rxjs';
 import { Decimal, getDefinedServices, TempusPool, ZERO } from 'tempus-core-services';
 
 export const [poolForYieldAtMaturity$, setPoolForYieldAtMaturity] = createSignal<TempusPool>();
@@ -17,7 +17,18 @@ const yieldAtMaturity$ = combineLatest([poolForYieldAtMaturity$, tokenAmountForY
     try {
       const services = getDefinedServices(tempusPool.chain);
       const estimated$ = services.StatisticsService.estimatedDepositAndFix(tempusPool, tokenAmount, isBackingToken);
-      return estimated$.pipe(map(principals => principals.sub(tokenAmount)));
+      return estimated$.pipe(
+        map(principals => principals.sub(tokenAmount)),
+        // TODO: conceptually error will be handled by try-catch but somehow not the case for issue-1895
+        //   need to find out why unit test cannot catch this error and need to add catchError()
+        catchError(error => {
+          console.error(
+            `useYieldAtMaturity - Fail to get the Yield at Maturity for ${tempusPool.address} on ${tempusPool.chain}`,
+            error,
+          );
+          return of(ZERO);
+        }),
+      );
     } catch (error) {
       console.error(
         `useYieldAtMaturity - Fail to get the Yield at Maturity for ${tempusPool.address} on ${tempusPool.chain}`,

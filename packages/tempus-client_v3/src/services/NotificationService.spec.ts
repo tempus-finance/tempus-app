@@ -1,4 +1,5 @@
 import { act } from 'react-dom/test-utils';
+import { NotificationInput } from '../interfaces/Notification';
 import NotificationService, { NOTIFICATIONS_KEY } from './NotificationService';
 
 jest.mock('uuid', () => ({
@@ -82,7 +83,13 @@ describe('NotificationService', () => {
     });
 
     it('stores a warning Transaction', () => {
-      notificationService.warn('ethereum', 'Transaction', 'Warning T', 'some content');
+      const input: NotificationInput = {
+        chain: 'ethereum',
+        category: 'Transaction',
+        title: 'Warning T',
+        content: 'some content',
+      };
+      notificationService.warn(input);
 
       expect(mockSet).toHaveBeenCalledTimes(1);
       expect(mockSet).toHaveBeenCalledWith(NOTIFICATIONS_KEY, [
@@ -102,7 +109,15 @@ describe('NotificationService', () => {
     });
 
     it('stores a notification Transaction', () => {
-      notificationService.notify('fantom', 'Transaction', 'Notify T', 'some other content', 'someLink', 'someLinkText');
+      const input: NotificationInput = {
+        chain: 'fantom',
+        category: 'Transaction',
+        title: 'Notify T',
+        content: 'some other content',
+        link: 'someLink',
+        linkText: 'someLinkText',
+      };
+      notificationService.notify(input);
 
       expect(mockSet).toHaveBeenCalledTimes(1);
       expect(mockSet).toHaveBeenCalledWith(NOTIFICATIONS_KEY, [
@@ -122,13 +137,25 @@ describe('NotificationService', () => {
     });
 
     it('does not store a notification Wallet', () => {
-      notificationService.notify('fantom', 'Wallet', 'Notify W', 'unimportant');
+      const input: NotificationInput = {
+        chain: 'fantom',
+        category: 'Wallet',
+        title: 'Notify W',
+        content: 'unimportant',
+      };
+      notificationService.notify(input);
 
       expect(mockSet).not.toHaveBeenCalled();
     });
 
     it('does not store a notification Service', () => {
-      notificationService.notify('ethereum', 'Service', 'Notify S', 'some value');
+      const input: NotificationInput = {
+        chain: 'ethereum',
+        category: 'Service',
+        title: 'Notify S',
+        content: 'some value',
+      };
+      notificationService.notify(input);
 
       expect(mockSet).not.toHaveBeenCalled();
     });
@@ -143,23 +170,27 @@ describe('NotificationService', () => {
     it('emits notifications in the same order as they are created', () => {
       notificationService.getNextItem().subscribe(mockListener);
 
-      notificationService.notify(
-        'fantom',
-        'Transaction',
-        'Notification 1',
-        'notification content',
-        'someLink',
-        'someLinkText',
-      );
+      const inputNotify: NotificationInput = {
+        chain: 'fantom',
+        category: 'Transaction',
+        title: 'Notification 1',
+        content: 'notification content',
+        link: 'someLink',
+        linkText: 'someLinkText',
+      };
 
-      notificationService.warn(
-        'fantom',
-        'Transaction',
-        'Notification 2',
-        'warning content',
-        'someLink',
-        'someLinkText',
-      );
+      notificationService.notify(inputNotify);
+
+      const inputWarn: NotificationInput = {
+        chain: 'fantom',
+        category: 'Transaction',
+        title: 'Notification 2',
+        content: 'warning content',
+        link: 'someLink',
+        linkText: 'someLinkText',
+      };
+
+      notificationService.warn(inputWarn);
 
       expect(mockListener).toHaveBeenNthCalledWith(1, {
         category: 'Transaction',

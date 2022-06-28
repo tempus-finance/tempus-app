@@ -61,7 +61,7 @@ const PortfolioPositions: FC = () => {
   return (
     <div className="tc__portfolio-positions">
       {/* Wallet connected and user has pool positions */}
-      {chain && cardGroups.size && (
+      {chain && cardGroups.size > 0 && (
         <GroupedPoolCardGrid
           chain={chain}
           cardGroups={cardGroups}

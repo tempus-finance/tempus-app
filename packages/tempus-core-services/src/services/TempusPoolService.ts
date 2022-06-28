@@ -1,10 +1,11 @@
 import { BigNumber, CallOverrides, ethers } from 'ethers';
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
+import { from, map, Observable, throwError } from 'rxjs';
 import { TempusPool } from '../abi/TempusPool';
 import { Chain, Ticker, ProtocolName, ChainConfig } from '../interfaces';
 import { DAYS_IN_A_YEAR, SECONDS_IN_A_DAY } from '../constants';
 import { getERC20TokenService } from '../services';
-import { Decimal, increasePrecision } from '../datastructures';
+import { Decimal, DEFAULT_DECIMAL_PRECISION, increasePrecision } from '../datastructures';
 
 type TempusPoolsMap = { [key: string]: TempusPool };
 
@@ -340,14 +341,24 @@ export class TempusPoolService {
     throw new Error(`TempusPoolService - currentInterestRate() - Address '${address}' is not valid`);
   }
 
-  async getFeesConfig(address: string): Promise<BigNumber[]> {
+  getFeesConfig(address: string): Observable<Decimal[]> {
     const contract = this.tempusPoolsMap[address];
     if (contract) {
       try {
-        return await contract.getFeesConfig();
+        return from(contract.getFeesConfig()).pipe(
+          map(fees => {
+            const { depositPercent, earlyRedeemPercent, matureRedeemPercent } = fees;
+            const percentArray =
+              depositPercent && earlyRedeemPercent && matureRedeemPercent
+                ? [depositPercent, earlyRedeemPercent, matureRedeemPercent]
+                : fees;
+
+            return percentArray.map(percent => new Decimal(percent, DEFAULT_DECIMAL_PRECISION));
+          }),
+        );
       } catch (error) {
         console.error('TempusPoolService - getFeesConfig() - Failed to fetch pool fees.', error);
-        return Promise.reject(error);
+        return throwError(() => new Error(error));
       }
     }
     throw new Error(`TempusPoolService - getFeesConfig() - Address '${address}' is not valid`);

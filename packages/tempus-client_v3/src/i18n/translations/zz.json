@@ -104,7 +104,9 @@
   },
   "PortfolioOverview": {
     "buttonBrowseMarkets": "~~~~~====={{{{{(((((buttonBrowseMarkets)))))}}}}}=====~~~~~",
+    "buttonConnectWallet": "~~~~~====={{{{{(((((buttonConnectWallet)))))}}}}}=====~~~~~",
     "descriptionNoPositions": "~~~~~====={{{{{(((((descriptionNoPositions)))))}}}}}=====~~~~~",
+    "descriptionWalletNotConnected": "~~~~~====={{{{{(((((descriptionWalletNotConnected)))))}}}}}=====~~~~~",
     "subtitleCurrentValue": "~~~~~====={{{{{(((((subtitleCurrentValue)))))}}}}}=====~~~~~",
     "subtitleEarnedYield": "~~~~~====={{{{{(((((subtitleEarnedYield)))))}}}}}=====~~~~~",
     "subtitleProjectedYield": "~~~~~====={{{{{(((((subtitleProjectedYield)))))}}}}}=====~~~~~",
@@ -116,17 +118,15 @@
     "titleProjectedYield": "~~~~~====={{{{{(((((titleProjectedYield)))))}}}}}=====~~~~~",
     "titleTotalPortfolioValue": "~~~~~====={{{{{(((((titleTotalPortfolioValue)))))}}}}}=====~~~~~",
     "titleTotalYieldEarned": "~~~~~====={{{{{(((((titleTotalYieldEarned)))))}}}}}=====~~~~~",
-    "titleWalletNotConnected": "~~~~~====={{{{{(((((titleWalletNotConnected)))))}}}}}=====~~~~~",
-    "descriptionWalletNotConnected": "~~~~~====={{{{{(((((descriptionWalletNotConnected)))))}}}}}=====~~~~~",
-    "buttonConnectWallet": "~~~~~====={{{{{(((((buttonConnectWallet)))))}}}}}=====~~~~~"
+    "titleWalletNotConnected": "~~~~~====={{{{{(((((titleWalletNotConnected)))))}}}}}=====~~~~~"
   },
   "PortfolioPositions": {
     "buttonBrowseMarkets": "~~~~~====={{{{{(((((buttonBrowseMarkets)))))}}}}}=====~~~~~",
+    "buttonConnectWallet": "~~~~~====={{{{{(((((buttonConnectWallet)))))}}}}}=====~~~~~",
     "descriptionNoPositions": "~~~~~====={{{{{(((((descriptionNoPositions)))))}}}}}=====~~~~~",
-    "titleNoPositions": "~~~~~====={{{{{(((((titleNoPositions)))))}}}}}=====~~~~~",
-    "titleWalletNotConnected": "~~~~~====={{{{{(((((titleWalletNotConnected)))))}}}}}=====~~~~~",
     "descriptionWalletNotConnected": "~~~~~====={{{{{(((((descriptionWalletNotConnected)))))}}}}}=====~~~~~",
-    "buttonConnectWallet": "~~~~~====={{{{{(((((buttonConnectWallet)))))}}}}}=====~~~~~"
+    "titleNoPositions": "~~~~~====={{{{{(((((titleNoPositions)))))}}}}}=====~~~~~",
+    "titleWalletNotConnected": "~~~~~====={{{{{(((((titleWalletNotConnected)))))}}}}}=====~~~~~"
   },
   "PortfolioSubheader": {
     "tabOverview": "~~~~~====={{{{{(((((tabOverview)))))}}}}}=====~~~~~",
@@ -140,6 +140,11 @@
     "slippageTooltipContent": "~~~~~====={{{{{(((((slippageTooltipContent)))))}}}}}=====~~~~~",
     "titleLocale": "~~~~~====={{{{{(((((titleLocale)))))}}}}}=====~~~~~",
     "titleSlippage": "~~~~~====={{{{{(((((titleSlippage)))))}}}}}=====~~~~~"
+  },
+  "SlippageErrorModal": {
+    "errorModalDescription": "",
+    "slippageTooltipContent": "",
+    "titleSlippage": ""
   },
   "SlippageInput": {
     "buttonAuto": "~~~~~====={{{{{(((((buttonAuto)))))}}}}}=====~~~~~"
