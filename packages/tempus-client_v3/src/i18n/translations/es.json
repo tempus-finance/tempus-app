@@ -142,7 +142,7 @@
     "titleSlippage": "Tolerancia al Slippage"
   },
   "SlippageErrorModal": {
-    "errorModalDescription": "El Swap viola los límites indicados. Intente aumentar la tolerancia al deslizamiento.",
+    "errorModalDescription": "La transacción falló porque el slippage es demasiado bajo, aumente el slippage.",
     "slippageTooltipContent": "La transacción se cancelará si el precio cambia desfavorablemente en más de este porcentaje.",
     "titleSlippage": "Tolerancia al Slippage"
   },
