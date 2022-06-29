@@ -7,4 +7,3 @@ export type { PoolShares, Ticker, NativeTokenTicker } from './Token';
 export type { TokenPrecision, TokenTypePrecision } from './TokenPrecision';
 export type { TransactionView } from './TransactionView';
 export type { YearnData, YearnDataApy, YearnDataToken } from './YearnData';
-export type { TransactionError } from './TransactionError';

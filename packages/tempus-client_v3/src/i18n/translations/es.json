@@ -132,6 +132,9 @@
     "tabOverview": "",
     "tabPositions": ""
   },
+  "RpcErrorModal": {
+    "errorModalDescription": ""
+  },
   "SettingsDropdown": {
     "title": ""
   },
@@ -165,6 +168,9 @@
   "WalletButton": {
     "buttonConnectWallet": "",
     "buttonUnsupported": ""
+  },
+  "WalletErrorModal": {
+    "errorModalDescription": ""
   },
   "WithdrawModal": {
     "description": "",
