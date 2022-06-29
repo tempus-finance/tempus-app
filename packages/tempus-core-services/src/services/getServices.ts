@@ -20,10 +20,13 @@ import { DepositService } from './DepositService';
 import { getDepositService } from './getDepositService';
 import { PoolInterestRateService } from './PoolInterestRateService';
 import { getPoolInterestRateService } from './getPoolInterestRateService';
+import { TempusAMMService } from './TempusAMMService';
+import { getTempusAMMService } from './getTempusAMMService';
 
 type ServiceMap = {
   TempusPoolService: TempusPoolService;
   TempusControllerService: TempusControllerService;
+  TempusAMMService: TempusAMMService;
   StatisticsService: StatisticsService;
   VaultService: VaultService;
   VariableRateService: VariableRateService;
@@ -44,6 +47,7 @@ export const initServices = (chain: Chain, config: Config): void => {
   const services: ServiceMap = {
     TempusPoolService: getTempusPoolService(chain, getChainConfig),
     TempusControllerService: getTempusControllerService(chain, getChainConfig),
+    TempusAMMService: getTempusAMMService(chain, getChainConfig),
     StatisticsService: getStatisticsService(chain, getConfig, getChainConfig),
     VaultService: getVaultService(chain, getChainConfig),
     VariableRateService: getVariableRateService(chain, getChainConfig),

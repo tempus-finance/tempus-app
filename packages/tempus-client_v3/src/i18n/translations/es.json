@@ -15,7 +15,7 @@
   },
   "DepositModal": {
     "description": "",
-    "errorModalDescription": "La transacción falló debido a un error. [{{error}}]",
+    "errorModalDescription": "La transacción falló debido a un error.",
     "errorModalPrimaryButton": "Intentar otra vez",
     "errorModalTitle": "Hay un problema.",
     "labelApproveDefault": "Aprobar depósito",
@@ -104,7 +104,9 @@
   },
   "PortfolioOverview": {
     "buttonBrowseMarkets": "Ir a Mercados",
+    "buttonConnectWallet": "Conectar Wallet",
     "descriptionNoPositions": "¿Quieres aumentar? Ir a Mercados",
+    "descriptionWalletNotConnected": "Conecte su wallet para administrar la billetera.",
     "subtitleCurrentValue": "",
     "subtitleEarnedYield": "",
     "subtitleProjectedYield": "",
@@ -116,30 +118,36 @@
     "titleProjectedYield": "",
     "titleTotalPortfolioValue": "",
     "titleTotalYieldEarned": "Regreso trotal",
-    "titleWalletNotConnected": "Wallet no conectado",
-    "descriptionWalletNotConnected": "Conecte su wallet para administrar la billetera.",
-    "buttonConnectWallet": "Conectar Wallet"
+    "titleWalletNotConnected": "Wallet no conectado"
   },
   "PortfolioPositions": {
     "buttonBrowseMarkets": "Ir a Mercados",
+    "buttonConnectWallet": "Conectar Wallet",
     "descriptionNoPositions": "Tu billetera está vacía. Hacer algo.",
-    "titleNoPositions": "Sin posición",
-    "titleWalletNotConnected": "Wallet no conectado",
     "descriptionWalletNotConnected": "Conecte su wallet para administrar la billetera.",
-    "buttonConnectWallet": "Conectar Wallet"
+    "titleNoPositions": "Sin posición",
+    "titleWalletNotConnected": "Wallet no conectado"
   },
   "PortfolioSubheader": {
     "tabOverview": "",
     "tabPositions": ""
+  },
+  "RpcErrorModal": {
+    "errorModalDescription": "Ocurrió un error al enviar la transacción, verifique su conexión e intente nuevamente."
   },
   "SettingsDropdown": {
     "title": ""
   },
   "SettingsPopup": {
     "localeName": "Español",
-    "slippageTooltipContent": "",
+    "slippageTooltipContent": "La transacción se cancelará si el precio cambia desfavorablemente en más de este porcentaje.",
     "titleLocale": "",
-    "titleSlippage": ""
+    "titleSlippage": "Tolerancia al Slippage"
+  },
+  "SlippageErrorModal": {
+    "errorModalDescription": "La transacción falló porque el slippage es demasiado bajo, aumente el slippage.",
+    "slippageTooltipContent": "La transacción se cancelará si el precio cambia desfavorablemente en más de este porcentaje.",
+    "titleSlippage": "Tolerancia al Slippage"
   },
   "SlippageInput": {
     "buttonAuto": ""
@@ -161,9 +169,12 @@
     "buttonConnectWallet": "",
     "buttonUnsupported": ""
   },
+  "WalletErrorModal": {
+    "errorModalDescription": "Ocurrió un error con su wallet, verifíquelo e intente nuevamente."
+  },
   "WithdrawModal": {
     "description": "",
-    "errorModalDescription": "La transacción falló debido a un error. [{{error}}]",
+    "errorModalDescription": "La transacción falló debido a un error.",
     "errorModalPrimaryButton": "Intentar otra vez",
     "errorModalTitle": "Hay un problema.",
     "labelApproveDefault": "Aprobar retiro",
