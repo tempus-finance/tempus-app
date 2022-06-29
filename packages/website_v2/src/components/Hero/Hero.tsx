@@ -18,12 +18,54 @@ const Hero = (): JSX.Element => {
       </button>
       <div className="tw__hero-banner">
         <div className="tw__hero-banner-stripes" />
-        <ContributorAvatar name="avatar-1" x={8} y={7} />
-        <ContributorAvatar name="avatar-2" x={14} y={216} />
-        <ContributorAvatar name="avatar-3" x={25} y={28} />
-        <ContributorAvatar name="avatar-1" x={37} y={79} />
-        <ContributorAvatar name="avatar-2" x={73} y={166} />
-        <ContributorAvatar name="avatar-3" x={84} y={411} />
+        <ContributorAvatar
+          avatarName="avatar-1"
+          name="0xWL"
+          title="Community Member"
+          description="Has had an excellent influence on the community."
+          x={8}
+          y={7}
+        />
+        <ContributorAvatar
+          avatarName="avatar-2"
+          name="0xWL"
+          title="Community Member"
+          description="Has had an excellent influence on the community."
+          x={14}
+          y={216}
+        />
+        <ContributorAvatar
+          avatarName="avatar-3"
+          name="0xWL"
+          title="Community Member"
+          description="Has had an excellent influence on the community."
+          x={25}
+          y={28}
+        />
+        <ContributorAvatar
+          avatarName="avatar-1"
+          name="0xWL"
+          title="Community Member"
+          description="Has had an excellent influence on the community."
+          x={37}
+          y={79}
+        />
+        <ContributorAvatar
+          avatarName="avatar-2"
+          name="0xWL"
+          title="Community Member"
+          description="Has had an excellent influence on the community."
+          x={73}
+          y={166}
+        />
+        <ContributorAvatar
+          avatarName="avatar-3"
+          name="0xWL"
+          title="Community Member"
+          description="Has had an excellent influence on the community."
+          x={84}
+          y={411}
+        />
       </div>
     </div>
   );
