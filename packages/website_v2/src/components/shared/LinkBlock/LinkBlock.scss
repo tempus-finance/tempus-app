@@ -6,6 +6,7 @@
   flex-direction: column;
   justify-content: space-between;
   border-radius: 10px;
+  box-sizing: border-box;
   color: #050a4a;
   text-decoration: none;
 
@@ -30,7 +31,7 @@
     font-weight: 400;
   }
 
-  .tw__right-arrow-icon:only-child {
+  .tw__arrow-right-icon:only-child {
     margin-left: auto;
   }
 }

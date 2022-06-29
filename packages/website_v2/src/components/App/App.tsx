@@ -5,12 +5,14 @@ import Blog from '../Blog';
 import Footer from '../Footer';
 import Investors from '../Investors';
 import Join from '../Join';
+import Invest from '../Invest';
 
 const App = (): JSX.Element => (
   <>
     <Header />
     <Hero />
     <About />
+    <Invest />
     <Investors />
     <Blog />
     <Join />
