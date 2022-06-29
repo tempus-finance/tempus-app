@@ -5,12 +5,12 @@
   position: relative;
   box-sizing: border-box;
   width: 100%;
-  margin-top: 139px;
-  padding: 100px 40px;
+  padding: 40px 40px 100px 40px;
   background-color: #050a4a;
   color: #eeecff;
 
   .tw__section-title {
+    margin-bottom: 100px;
     color: #eeecff;
   }
 }
@@ -33,12 +33,13 @@
 
 .tw__blog__read-more {
   display: flex;
+  align-items: center;
   flex-direction: row;
   font-style: normal;
   font-weight: 400;
   font-size: 20px;
   line-height: 30px;
-  color: #EEECFF;
+  color: #eeecff;
   text-decoration: none;
 
   &:hover {
