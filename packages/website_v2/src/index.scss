@@ -32,9 +32,25 @@ body {
   color: #050a4a;
 }
 
+.tw__section__subtitles {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
 .tw__section-subtitle {
   font-weight: 400;
   font-size: 20px;
   line-height: 30px;
   color: #eeecff;
+}
+
+.tw__section__subsection-title {
+  font-style: normal;
+  font-weight: 600;
+  font-size: 28px;
+  line-height: 30px;
+  color: #EFECFF;
 }

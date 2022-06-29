@@ -1,0 +1,65 @@
+.tw__who {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  padding: 40px;
+  background-color: #050a4a;
+  color: #EEECFF;
+
+  .tw__section-title {
+    color: #EEECFF;
+    padding-bottom: 72px;
+  }
+}
+
+.tw__who__people {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: flex-start;
+  width: 100%;
+  padding-top: 100px;
+
+  .tw__section__subsection-title {
+    padding-bottom: 30px;
+    color: rgba(239, 236, 255, 0.2);
+    cursor: pointer;
+
+    &.active {
+      color: #EEECFF;
+    }
+  }
+
+  .tw__who__people-subsection {
+    flex: 3;
+    padding-right: 100px;
+    padding-bottom: 32px;
+    font-size: 20px;
+    line-height: 30px;
+  }
+
+  .tw__who__people-subsection-body {
+    padding-bottom: 80px;
+  }
+
+  .tw__who__people-description {
+    flex: 3;
+    padding-right: 100px;
+    padding-bottom: 32px;
+    font-size: 20px;
+    line-height: 30px;
+  }
+
+  .tw__who__people-graphics {
+    flex: 2;
+  }
+}
+
+.tw__who__people-graphics {
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: auto;
+  width: 500px;
+  height: 500px;
+}

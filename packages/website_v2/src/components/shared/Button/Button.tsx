@@ -1,0 +1,40 @@
+import { FC, MouseEvent, useCallback } from 'react';
+
+import './Button.scss';
+
+interface ButtonProps {
+  className?: string;
+  width?: string;
+  height?: string;
+  onClick?: (event: MouseEvent<HTMLDivElement>) => void;
+}
+
+const Button: FC<ButtonProps> = props => {
+  const { className, width, height, onClick, children } = props;
+
+  const handleClick = useCallback(
+    (event: MouseEvent<HTMLDivElement>) => {
+      onClick?.(event);
+    },
+    [onClick],
+  );
+
+  return (
+    <div
+      className={`tw__button__container ${className ?? ''}`}
+      style={{ width, height }}
+      onClick={handleClick}
+      aria-hidden="true"
+    >
+      {children}
+    </div>
+  );
+};
+
+Button.defaultProps = {
+  width: '',
+  height: '',
+  onClick: undefined,
+};
+
+export default Button;
