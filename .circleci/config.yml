@@ -60,7 +60,7 @@ jobs:
       - attach_workspace:
           at: ./
       - run:
-          name: Build Tempus Client V3
+          name: Build Website V2
           command: npm --prefix ./packages/website_v2 run build
 
   build-storybook:
