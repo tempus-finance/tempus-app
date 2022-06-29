@@ -32,6 +32,7 @@ export interface CurrencyInputModalProps extends ModalProps {
   infoRows?: ReactNode;
   actionButtonLabels: CurrencyInputModalActionButtonLabels;
   actionButtonState?: ActionButtonState;
+  onBack?: () => void;
   onMaturityChange?: (term: MaturityTerm) => void;
   onAmountChange?: (amount: Decimal) => void;
   onTransactionStart: (amount: Decimal) => Promise<string>;
@@ -54,6 +55,7 @@ const CurrencyInputModal: FC<CurrencyInputModalProps> = props => {
     infoRows,
     actionButtonLabels,
     actionButtonState = 'default',
+    onBack,
     onMaturityChange,
     onAmountChange,
     onTransactionStart,
@@ -64,7 +66,7 @@ const CurrencyInputModal: FC<CurrencyInputModalProps> = props => {
 
   const handlePreviewButtonClick = useCallback(() => setContent('action'), []);
 
-  const handleBack = useCallback(() => setContent('preview'), []);
+  const handleBack = useCallback(() => (onBack ? onBack() : setContent('preview')), [onBack]);
 
   const modalTitle = useMemo(() => {
     if (content === 'preview') {
