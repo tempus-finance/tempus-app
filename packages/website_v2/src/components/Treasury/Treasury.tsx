@@ -2,9 +2,9 @@ import { useEffect, useMemo, useState } from 'react';
 import { Decimal, DecimalUtils } from 'tempus-core-services';
 import TreasuryValueService from '../../services/TreasuryValueService';
 
-import './FundsAvailable.scss';
+import './Treasury.scss';
 
-const FundsAvailable = (): JSX.Element => {
+const Treasury = (): JSX.Element => {
   const [value, setValue] = useState<Decimal | null>(null);
 
   useEffect(() => {
@@ -38,4 +38,4 @@ const FundsAvailable = (): JSX.Element => {
     </div>
   );
 };
-export default FundsAvailable;
+export default Treasury;
