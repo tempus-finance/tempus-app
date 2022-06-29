@@ -298,9 +298,9 @@ describe('TempusPoolService', () => {
       const redeemFee = BigNumber.from(3);
       mockGetFeesConfig.mockImplementation(() => Promise.resolve([depositFee, earlyRedeemFee, redeemFee]));
 
-      const fees = await instance.getFeesConfig(mockAddress);
-
-      expect(fees).toStrictEqual([depositFee, earlyRedeemFee, redeemFee]);
+      instance
+        .getFeesConfig(mockAddress)
+        .subscribe(fees => expect(fees).toStrictEqual([depositFee, earlyRedeemFee, redeemFee]));
     });
   });
 });

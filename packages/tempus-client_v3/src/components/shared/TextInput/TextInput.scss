@@ -18,6 +18,7 @@ $textinput-border-radius: 4px;
       border-radius: $textinput-border-radius;
       padding: 0 12px;
       height: 38px;
+      font: inherit;
 
       &:focus-visible {
         outline: none;

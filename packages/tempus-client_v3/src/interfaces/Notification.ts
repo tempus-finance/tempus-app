@@ -19,3 +19,12 @@ export type Notification = {
   linkText?: string;
   dismissed: boolean;
 };
+
+export type NotificationInput = {
+  chain: Chain;
+  category: NotificationCategory;
+  title: string;
+  content: string;
+  link?: string;
+  linkText?: string;
+};
