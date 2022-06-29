@@ -133,7 +133,7 @@ export async function metamaskLogoff(browser: BrowserContext): Promise<void> {
     await tabMetamask.waitForTimeout(LOAD_TIMEOUT);
     if (!(await tabMetamask.locator('text="Unlock"').count()) && !(await tabMetamask.locator('text="Get Started"').count())) {
         await tabMetamask.waitForTimeout(LOAD_TIMEOUT);
-        await tabMetamask.click('.account-menu__icon'); // .identicon >> nth=0
+        await tabMetamask.click('.account-menu__icon');
         await tabMetamask.click('text="Lock"');
     }
     await tabMetamask.close()
@@ -147,7 +147,6 @@ export async function metamaskAddETHfork(browser: BrowserContext): Promise<void>
         CurrencySymbol: 'ETH'
     };
 
-    //await metamaskLogin(browser);
     const tabMetamask: Page = await browser.newPage()
     await tabMetamask.goto(`${METAMASK_CHROME_URL}#settings/networks/add-network`);
     await tabMetamask.waitForTimeout(LOAD_SHORT_TIMEOUT);
@@ -203,16 +202,11 @@ export function getAccountIndex(name: string): number {
 
 export async function metamaskAccountSwitch(browser: BrowserContext, accountIndex: number):
     Promise<void> {
-    //await metamaskLogin(browser);
     const tabMetamask: Page = await browser.newPage();
     await tabMetamask.goto(`${METAMASK_CHROME_URL}new-account/import`);
     await tabMetamask.click('.account-menu__icon');
 
     const SELECTOR_ACCOUNTS: string = '.account-menu__name';
-    /*if (await tabMetamask.locator(SELECTOR_ACCOUNTS).count() >= accountIndex) {
-        throw `There is no account with an index of ${accountIndex}`;
-    }*/
-
     await tabMetamask.click(`${SELECTOR_ACCOUNTS} >> nth=${accountIndex}`);
 
     const SELECTOR_CONNECT: string = 'text=Connect';

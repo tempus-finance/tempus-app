@@ -30,7 +30,6 @@ export async function tempusMetamaskConnect(browser: BrowserContext):
     await tabTempus.waitForTimeout(LOAD_LONG_TIMEOUT);
     await metamaskConfirmConnection(browser);
 
-    //await tabTempus.click('text=MetaMask');
     await tabTempus.waitForTimeout(LOAD_LONG_TIMEOUT);
     console.log('Successful connection metamask-tempus');
     await tabTempus.close();
@@ -98,9 +97,6 @@ export async function tempusFiatCryptoButton(browser: BrowserContext, langCode: 
     await tabTempus.waitForLoadState();
     await tabTempus.waitForTimeout(LOAD_TIMEOUT);
 
-    //await langaugeSwitch(tabTempus, languageGenerator('en'), langCode);
-    //page becomes unresponsive
-
     const SELECTOR_CRYPTO_SWITCH = `.tc__switch__label :text("${lang.crypto}")`;
     const SELECTOR_FIAT_SWITCH = `.tc__switch__label :text("${lang.fiat}")`;
     const SELECTOR_CURRENCY: string = '.MuiTableRow-root >> nth=1 >> td >> nth=5';
@@ -133,7 +129,6 @@ export async function tempusCommunity(browser: BrowserContext, langCode: string 
         const tabNew: Page = await browser.pages().slice(-1)[0];
         const expected_url: string = urls.get(site) ?? "INVALID_URL";
         await tabNew.waitForURL(expected_url);
-        //await tabNew.waitForTimeout(LOAD_TIMEOUT);
         await tabNew.close();
     };
 

@@ -26,7 +26,6 @@ export async function tempusNetworkChange(browser: BrowserContext, networkName: 
     await tabTempus.goto(TEMPUS_URL);
 
     await tabTempus.waitForTimeout(LOAD_TIMEOUT);
-    //await tabTempus.click('.tc__connect-wallet-network-picker');
     await tabTempus.click(`.tc__walletButton__connected-network`);
 
     await tabTempus.waitForTimeout(LOAD_SHORT_TIMEOUT);

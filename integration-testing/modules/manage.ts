@@ -11,10 +11,9 @@ export async function manageDeposit
     const lang: Language = languageGenerator(langCode);
     const tabManage: Page = await tempusManageCurrency(browser, asset, langCode);
 
-    //this will be a separate function/test
     await tabManage.click(`text="${lang.settings}"`);
     await tabManage.click(`text="${lang.auto}"`);
-    await tabManage.mouse.click(300, 300); // hardcoded for 16:9 full HD monitor
+    await tabManage.mouse.click(300, 300);
 
     await tabManage.click(`text="${lang.deposit}"`);
     await tabManage.click('.MuiSelect-root');
@@ -29,10 +28,9 @@ export async function manageDeposit
         await tabManage.click(`text="${lang.variableYield}"`);
     }
 
-    //const tabCount = browser.pages().length;
     await tabManage.waitForTimeout(LOAD_TIMEOUT * 5);
     await tabManage.click(`text="${lang.execute}"`);
-    await tabManage.waitForTimeout(LOAD_TIMEOUT * 10); // possible error if slow machine
+    await tabManage.waitForTimeout(LOAD_TIMEOUT * 10);
 
     const mm = await browser.pages().slice(-1)[0];
     await mm.click(`text="Confirm"`);

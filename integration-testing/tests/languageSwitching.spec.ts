@@ -22,45 +22,6 @@ test.describe.serial("Language switching tests", () => {
     page.close();
   })
 
-  /* UNCOMMENT AFTER LANGUAGE CHANGING IS ADDED
-
-  test('English to Spanish', async () => {
-    const page: Page = await browser.newPage();
-    await page.goto(TEMPUS_URL);
-    await tempusSwitchLanguage(page, 'es', 'en');
-    page.close();
-  });
-
-  test('Spanish to Italian', async () => {
-    const page: Page = await browser.newPage();
-    await page.goto(TEMPUS_URL);
-    await tempusSwitchLanguage(page, 'it', 'es');
-    page.close();
-  });
-
-  test('Persistancy', async () => {
-    const page: Page = await browser.newPage();
-    await page.goto(TEMPUS_URL);
-    await page.click(`text="Settings"`);
-    await expect(page.locator(`text="Italiano"`)).toBeDefined();
-    page.close();
-  });
-
-  test('Italian to English', async () => {
-    const page: Page = await browser.newPage();
-    await page.goto(TEMPUS_URL);
-    await tempusSwitchLanguage(page, 'it', 'en');
-    page.close();
-  });
-
-  test('English to Italian to Spanish', async () => {
-    const page: Page = await browser.newPage();
-    await page.goto(TEMPUS_URL);
-    await tempusSwitchLanguage(page, 'it', 'en');
-    await tempusSwitchLanguage(page, 'es', 'it');
-    page.close();
-  });*/
-
   test.afterAll(async () => {
     await browser.close();
   });
