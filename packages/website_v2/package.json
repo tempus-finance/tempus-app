@@ -19,7 +19,11 @@
     "react-router-dom": "^6.0.2",
     "react-scripts": "4.0.3",
     "rxjs": "^7.5.5",
-    "sass": "^1.49.9"
+    "sass": "^1.49.9",
+    "@uniswap/sdk-core": "^3.0.1",
+    "@uniswap/v3-core": "^1.0.0",
+    "@uniswap/v3-sdk": "^3.8.1",
+    "tempus-core-services": "0.0.2"
   },
   "browserslist": {
     "production": [

@@ -1,0 +1,49 @@
+.tw__funds-available {
+  display: flex;
+  align-items: center;
+  padding-top: 40px;
+  background-color: #050a4a;
+  color: #eeecff;
+  width: 100%;
+  flex-direction: column;
+}
+
+.tw__funds-available-title {
+  position: relative;
+  font-size: 42px;
+  line-height: 120%;
+  margin: 0px;
+
+  .tw__funds-available-badge {
+    position: absolute;
+    width: 194px;
+    height: 32px;
+    border-radius: 60px;
+    background-color: #ff7700;
+    margin: 0px;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    line-height: 120%;
+    top: -7px;
+    right: -16px;
+    transform: translateX(100%);
+  }
+}
+
+.tw__funds-available-value {
+  font-size: 152px;
+  font-weight: 500;
+  line-height: 120%;
+  color: rgba(238, 236, 255, 0.2);
+  margin: 0px;
+}
+
+.tw__funds-available-separator {
+  width: calc(100% - 80px);
+  margin: 40px 40px 0px 40px;
+  height: 1px;
+  background-color: white;
+}

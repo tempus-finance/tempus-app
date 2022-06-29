@@ -1,7 +1,7 @@
 import { BigNumber, Contract, ethers, ContractTransaction, CallOverrides } from 'ethers';
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
-import { Vault } from '../abi/Vault';
-import VaultABI from '../abi/Vault.json';
+import { Vault } from '../abi/VaultTypings';
+import VaultABI from '../abi/VaultABI.json';
 import { TypedEvent, TypedListener } from '../abi/commons';
 import { provideLiquidityGasIncrease, removeLiquidityGasIncrease, SECONDS_IN_AN_HOUR } from '../constants';
 import { ChainConfig, Chain } from '../interfaces';
