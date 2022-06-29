@@ -1,6 +1,6 @@
 import { Contract, BigNumber, utils } from 'ethers';
 import { JsonRpcProvider } from '@ethersproject/providers';
-import VaultABI from '../abi/Vault.json';
+import VaultABI from '../abi/VaultABI.json';
 import { provideLiquidityGasIncrease, removeLiquidityGasIncrease, SECONDS_IN_AN_HOUR } from '../constants';
 import { ChainConfig } from '../interfaces';
 import {
