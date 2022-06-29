@@ -48,6 +48,7 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
   const tokenAllowances = useAllowances();
   const [, emitAppEvent] = useAppEvent();
 
+  const [amount, setAmount] = useState<Decimal>();
   const [currency, setCurrency] = useState(tokens[0]);
   const [actionButtonState, setActionButtonState] = useState<ActionButtonState>('default');
   const [tokensApproved, setTokensApproved] = useState<boolean>(false);
@@ -243,7 +244,7 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
   ]);
 
   const handleWithdraw = useCallback(
-    async (amount: Decimal) => {
+    async (withdrawAmount: Decimal) => {
       setActionButtonState('loading');
 
       const chain = chainConfig.chainId ? chainIdToChainName(chainConfig.chainId) : undefined;
@@ -252,7 +253,7 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
 
       if (signer && chain) {
         withdraw({
-          amount,
+          amount: withdrawAmount,
           chain,
           poolAddress: tempusPool.address,
           token: currency.ticker,
@@ -317,6 +318,8 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
       {/* Show withdraw modal if withdraw is not yet finalized */}
       <CurrencyInputModal
         selectedPool={tempusPool}
+        defaultAmount={amount}
+        defaultToken={currency}
         tokens={tokens}
         open={!withdrawSuccessful && !withdrawError}
         onClose={onClose}
@@ -328,6 +331,7 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
         actionButtonState={actionButtonState}
         onBack={handleBack}
         onTransactionStart={tokensApproved ? handleWithdraw : handleApproveToken}
+        onAmountChange={setAmount}
         onCurrencyUpdate={handleCurrencyChange}
         chainConfig={chainConfig}
       />

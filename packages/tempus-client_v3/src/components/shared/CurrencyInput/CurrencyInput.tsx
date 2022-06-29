@@ -1,6 +1,6 @@
 import { FC, useCallback, useState } from 'react';
-import { Ticker, Decimal, DecimalUtils } from 'tempus-core-services';
-import { TokenMetadataProp } from '../../../interfaces';
+import { Ticker, Decimal, DecimalUtils, ZERO } from 'tempus-core-services';
+import { TokenMetadata, TokenMetadataProp } from '../../../interfaces';
 import BaseInput from '../BaseInput';
 import Loading from '../Loading';
 import Typography from '../Typography';
@@ -12,6 +12,8 @@ import './CurrencyInput.scss';
 const inputPercentages = [25, 50, 75, 100];
 
 export interface CurrencyInputProps {
+  defaultAmount?: Decimal;
+  defaultToken?: TokenMetadata;
   maxAmount: Decimal;
   tokens: TokenMetadataProp;
   disabled?: boolean;
@@ -21,10 +23,10 @@ export interface CurrencyInputProps {
 }
 
 const CurrencyInput: FC<CurrencyInputProps> = props => {
-  const { tokens, maxAmount, disabled, error, onAmountUpdate, onCurrencyUpdate } = props;
-  const [amount, setAmount] = useState<string>('');
-  const [usdAmount, setUsdAmount] = useState<string>(DecimalUtils.formatToCurrency(0, 2, '$'));
-  const [selectedToken, setSelectedToken] = useState(tokens[0]);
+  const { defaultAmount, defaultToken, tokens, maxAmount, disabled, error, onAmountUpdate, onCurrencyUpdate } = props;
+  const [amount, setAmount] = useState<string>(defaultAmount?.toString() ?? '');
+  const [usdAmount, setUsdAmount] = useState<string>(DecimalUtils.formatToCurrency(defaultAmount ?? ZERO, 2, '$'));
+  const [selectedToken, setSelectedToken] = useState(defaultToken ?? tokens[0]);
 
   const updateUsdAmount = useCallback(
     (value: string) => {
@@ -82,6 +84,7 @@ const CurrencyInput: FC<CurrencyInputProps> = props => {
       >
         <CurrencySelector
           currencies={tokens.map(token => token.ticker)}
+          defaultCurrency={selectedToken.ticker}
           disabled={disabled}
           onChange={handleCurrencyChange}
         />

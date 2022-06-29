@@ -5,15 +5,16 @@ import CurrencySelectorItem from './CurrencySelectorItem';
 
 export interface CurrencySelectorProps {
   currencies: Ticker | Ticker[];
+  defaultCurrency?: Ticker;
   disabled?: boolean;
   onChange?: (selectedCurrency: Ticker) => void;
 }
 
 const CurrencySelector: FC<CurrencySelectorProps> = props => {
-  const { currencies, disabled, onChange } = props;
+  const { currencies, defaultCurrency, disabled, onChange } = props;
   const hasMultipleCurrencies = currencies.constructor === Array && currencies.length > 1;
 
-  const [selectedCurrency, setSelectedCurrency] = useState(currencies[0] as Ticker);
+  const [selectedCurrency, setSelectedCurrency] = useState(defaultCurrency ?? (currencies[0] as Ticker));
   const [dropdownOpened, setDropdownOpened] = useState(false);
 
   const handleSelectorOpen = useCallback(() => setDropdownOpened(true), []);
