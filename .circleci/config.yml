@@ -133,7 +133,7 @@ workflows:
           requires:
             - build-tempus-core-services
       - build-website-v2:
-          required:
+          requires:
             - build-tempus-core-services
       - build-storybook:
           requires:
