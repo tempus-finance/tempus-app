@@ -1,6 +1,6 @@
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { ChainConfig, chainIdToChainName, Decimal, DecimalUtils, TempusPool, Ticker, ZERO } from 'tempus-core-services';
 import { v4 as uuidv4 } from 'uuid';
 import { TIMEOUT_FROM_SUCCESS_TO_DEFAULT_IN_MS } from '../../constants';
@@ -34,6 +34,7 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
   const { onClose, tokens, chainConfig, tempusPool } = props;
 
   const { t } = useTranslation();
+  const { state } = useLocation();
   const navigate = useNavigate();
 
   const [locale] = useLocale();
@@ -306,8 +307,10 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
 
   const handleBack = useCallback(() => {
     const { chain, backingToken, protocol, address } = tempusPool;
-    navigate(`/portfolio/positions/${chain}/${backingToken}/${protocol}/${address}`);
-  }, [navigate, tempusPool]);
+    navigate(
+      (state as { previousPath?: string })?.previousPath ?? `/pool/${chain}/${backingToken}/${protocol}/${address}`,
+    );
+  }, [navigate, state, tempusPool]);
 
   return (
     <>
