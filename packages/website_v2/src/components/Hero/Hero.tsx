@@ -4,6 +4,57 @@ import ContributorAvatar from './ContributorAvatar/ContributorAvatar';
 
 import './Hero.scss';
 
+const avatars = [
+  {
+    avatarName: 'avatar-1',
+    name: '0xWL',
+    title: 'Community Member',
+    description: 'Has had an excellent influence on the community.',
+    x: 8,
+    y: 7,
+  },
+  {
+    avatarName: 'avatar-2',
+    name: '0xWL',
+    title: 'Community Member',
+    description: 'Has had an excellent influence on the community.',
+    x: 14,
+    y: 216,
+  },
+  {
+    avatarName: 'avatar-3',
+    name: '0xWL',
+    title: 'Community Member',
+    description: 'Has had an excellent influence on the community.',
+    x: 25,
+    y: 28,
+  },
+  {
+    avatarName: 'avatar-1',
+    name: '0xWL',
+    title: 'Community Member',
+    description: 'Has had an excellent influence on the community.',
+    x: 37,
+    y: 79,
+  },
+  {
+    avatarName: 'avatar-2',
+    name: '0xWL',
+    title: 'Community Member',
+    description: 'Has had an excellent influence on the community.',
+    x: 73,
+    y: 166,
+  },
+  {
+    avatarName: 'avatar-3',
+    name: '0xWL',
+    title: 'Community Member',
+    description: 'Has had an excellent influence on the community.',
+    x: 84,
+    y: 411,
+  },
+];
+
 const Hero = (): JSX.Element => {
   const handleOnBuildWithUsClick = useCallback(() => {
     window.open(discordInviteLink, '_blank');
@@ -18,12 +69,16 @@ const Hero = (): JSX.Element => {
       </button>
       <div className="tw__hero-banner">
         <div className="tw__hero-banner-stripes" />
-        <ContributorAvatar name="avatar-1" x={8} y={7} />
-        <ContributorAvatar name="avatar-2" x={14} y={216} />
-        <ContributorAvatar name="avatar-3" x={25} y={28} />
-        <ContributorAvatar name="avatar-1" x={37} y={79} />
-        <ContributorAvatar name="avatar-2" x={73} y={166} />
-        <ContributorAvatar name="avatar-3" x={84} y={411} />
+        {avatars.map(avatar => (
+          <ContributorAvatar
+            avatarName={avatar.avatarName}
+            name={avatar.name}
+            title={avatar.title}
+            description={avatar.description}
+            x={avatar.x}
+            y={avatar.y}
+          />
+        ))}
       </div>
     </div>
   );
