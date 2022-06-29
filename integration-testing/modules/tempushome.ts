@@ -1,5 +1,4 @@
 import { BrowserContext, expect, Page } from '@playwright/test';
-
 import { LOAD_LONG_TIMEOUT, LOAD_SHORT_TIMEOUT, LOAD_TIMEOUT, TEMPUS_URL } from '../utility/constants';
 import { getLangName, Language, languageGenerator } from './language';
 import { tempusNetworkChange } from './network';
