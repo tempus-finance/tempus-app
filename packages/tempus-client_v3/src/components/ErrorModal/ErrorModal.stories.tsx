@@ -16,7 +16,8 @@ const style = {
   height: '100px',
 };
 
-const Template: ComponentStory<typeof ErrorModal> = () => {
+const Template: ComponentStory<typeof ErrorModal> = props => {
+  const { error } = props;
   const [modalOpen, setModalOpen] = useState(false);
 
   const toggleModal = () => {
@@ -37,6 +38,7 @@ const Template: ComponentStory<typeof ErrorModal> = () => {
         open={modalOpen}
         onClose={onModalClose}
         title="Something's wrong."
+        error={error}
         description="An error occured and the transaction failed."
         primaryButtonLabel={{ default: 'Try again', loading: '', success: '' }}
         onPrimaryButtonClick={() => {}}
@@ -46,3 +48,18 @@ const Template: ComponentStory<typeof ErrorModal> = () => {
 };
 
 export const Primary = Template.bind({});
+
+export const SlippageErrorModal = Template.bind({});
+SlippageErrorModal.args = {
+  error: { data: { code: 3, message: 'revised transaction: BAL#507' } } as unknown as Error,
+};
+
+export const WalletErrorModal = Template.bind({});
+WalletErrorModal.args = {
+  error: { code: 4001, message: 'User rejected the request.' } as unknown as Error,
+};
+
+export const RpcErrorModal = Template.bind({});
+RpcErrorModal.args = {
+  error: { code: 32603, message: 'Internal JSON-RPC error.' } as unknown as Error,
+};

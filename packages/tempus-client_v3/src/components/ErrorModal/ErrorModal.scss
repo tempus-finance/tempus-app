@@ -1,6 +1,9 @@
 .tc__error-modal__content {
   max-width: 480px;
   padding: 0 24px 48px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   text-align: center;
 
   .tc__error-modal__animation {
@@ -9,8 +12,34 @@
     justify-content: center;
   }
 
+  .tc__error-modal__input {
+    width: 224px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 16px 12px;
+
+    .tc__error-modal__input-title {
+      margin: 0 8px;
+      flex: 1;
+    }
+
+    .tc__slippage-input {
+      flex: 1 100%;
+      margin-top: 12px;
+    }
+
+    .tc__dropdown {
+      flex: 1 100%;
+      margin-top: 12px;
+      white-space: nowrap;
+    }
+  }
+
   .tc__error-modal__action-buttons {
     display: flex;
     justify-content: center;
+    margin-bottom: 24px;
   }
 }

@@ -350,11 +350,8 @@ const DepositModal: FC<DepositModalProps> = props => {
       />
       {/* Show error modal if deposit throws Error */}
       <ErrorModal
-        description={t('DepositModal.errorModalDescription', {
-          // fixedDepositError.data.message: error from txn
-          // fixedDepositError.message: generic error, e.g. rejected by metamask
-          error: (fixedDepositError as any)?.data?.message ?? fixedDepositError?.message,
-        })}
+        description={t('DepositModal.errorModalDescription')}
+        error={fixedDepositError}
         primaryButtonLabel={{
           default: t('DepositModal.errorModalPrimaryButton'),
         }}
