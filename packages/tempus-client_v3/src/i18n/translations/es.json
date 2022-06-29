@@ -133,7 +133,7 @@
     "tabPositions": ""
   },
   "RpcErrorModal": {
-    "errorModalDescription": ""
+    "errorModalDescription": "Ocurrió un error al enviar la transacción, verifique su conexión e intente nuevamente."
   },
   "SettingsDropdown": {
     "title": ""
@@ -170,7 +170,7 @@
     "buttonUnsupported": ""
   },
   "WalletErrorModal": {
-    "errorModalDescription": ""
+    "errorModalDescription": "Ocurrió un error con su wallet, verifíquelo e intente nuevamente."
   },
   "WithdrawModal": {
     "description": "",

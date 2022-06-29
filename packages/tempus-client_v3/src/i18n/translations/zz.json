@@ -133,7 +133,7 @@
     "tabPositions": "~~~~~====={{{{{(((((tabPositions)))))}}}}}=====~~~~~"
   },
   "RpcErrorModal": {
-    "errorModalDescription": ""
+    "errorModalDescription": "~~~~~====={{{{{(((((errorModalDescription)))))}}}}}=====~~~~~"
   },
   "SettingsDropdown": {
     "title": "~~~~~====={{{{{(((((title)))))}}}}}=====~~~~~"
@@ -145,9 +145,9 @@
     "titleSlippage": "~~~~~====={{{{{(((((titleSlippage)))))}}}}}=====~~~~~"
   },
   "SlippageErrorModal": {
-    "errorModalDescription": "",
-    "slippageTooltipContent": "",
-    "titleSlippage": ""
+    "errorModalDescription": "~~~~~====={{{{{(((((errorModalDescription)))))}}}}}=====~~~~~",
+    "slippageTooltipContent": "~~~~~====={{{{{(((((slippageTooltipContent)))))}}}}}=====~~~~~",
+    "titleSlippage": "~~~~~====={{{{{(((((titleSlippage)))))}}}}}=====~~~~~"
   },
   "SlippageInput": {
     "buttonAuto": "~~~~~====={{{{{(((((buttonAuto)))))}}}}}=====~~~~~"
@@ -170,7 +170,7 @@
     "buttonUnsupported": "~~~~~====={{{{{(((((buttonUnsupported)))))}}}}}=====~~~~~"
   },
   "WalletErrorModal": {
-    "errorModalDescription": ""
+    "errorModalDescription": "~~~~~====={{{{{(((((errorModalDescription)))))}}}}}=====~~~~~"
   },
   "WithdrawModal": {
     "description": "~~~~~====={{{{{(((((description)))))}}}}}=====~~~~~",
