@@ -5,7 +5,7 @@ import './About.scss';
 
 const About = (): JSX.Element => (
   <div className="tw__about">
-    <h2>What is Tempus?</h2>
+    <h2 className="tw__about__title">What is Tempus?</h2>
     <div className="tw__about__grid">
       <AboutGridItem
         icon={<CommunityIcon />}
