@@ -1,0 +1,116 @@
+.tw__products {
+  padding: 40px 40px 100px 40px;
+  background-color: #efecff;
+  color: #050a4a;
+
+  .tw__products__title {
+    margin-top: 0;
+    margin-bottom: 100px;
+    font-size: 34px;
+  }
+}
+
+.tw__products__grid {
+  margin-top: 103px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 20px;
+}
+
+.tw__products__product {
+  display: flex;
+  flex-direction: column;
+  background: #fafaff;
+  border-radius: 12px;
+
+  .tw__products__product-banner {
+    height: 263px;
+    position: relative;
+    border-radius: 12px 12px 0 0;
+
+    &.tw__products__product-banner-bright {
+      background: linear-gradient(90deg, #ff7700 0%, #c6bfff 100%);
+    }
+
+    &.tw__products__product-banner-dark {
+      background: linear-gradient(90deg, #050a4a 0%, #c6bfff 100%);
+    }
+
+    .tw__products__product-name {
+      position: absolute;
+      top: 36px;
+      left: 30px;
+      font-size: 21px;
+      color: #ffffff;
+    }
+
+    .tw__products__product-banner-illustration {
+      display: flex;
+      align-items: flex-end;
+      position: absolute;
+      top: 16px;
+      bottom: 16px;
+      right: 16px;
+    }
+
+    .tw__products__product-badge {
+      position: absolute;
+      left: 11px;
+      bottom: 0;
+      transform: translateY(50%);
+    }
+  }
+
+  .tw__products__product-content {
+    padding: 50px 30px 42px 30px;
+    display: flex;
+    flex-grow: 1;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .tw__products__product-title {
+    margin: 0 0 21px 0;
+    font-size: 32px;
+    font-weight: 600;
+    line-height: 38px;
+  }
+
+  .tw__products__product-description {
+    margin: 0 0 37px 0;
+    font-size: 18px;
+    line-height: 30px;
+  }
+
+  .tw__products__product-button {
+    width: 283px;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #050a4a;
+    border-radius: 30px;
+    box-sizing: border-box;
+    text-decoration: none;
+    text-transform: uppercase;
+    color: #050a4a;
+    font-size: 18px;
+    font-weight: 600;
+  }
+}
+
+.tw__products__starknet-badge {
+  height: 50px;
+  padding: 0 37px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #ff7700;
+  border-radius: 25px;
+
+  .tw__products__starknet-badge-label {
+    margin-right: 17px;
+    color: #ffffff;
+    font-size: 22px;
+  }
+}

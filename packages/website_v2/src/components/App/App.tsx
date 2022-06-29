@@ -7,6 +7,7 @@ import Investors from '../Investors';
 import Join from '../Join';
 import Treasury from '../Treasury';
 import Invest from '../Invest';
+import Products from '../Products';
 
 const App = (): JSX.Element => (
   <>
@@ -14,6 +15,7 @@ const App = (): JSX.Element => (
     <Hero />
     <Treasury />
     <About />
+    <Products />
     <Invest />
     <Investors />
     <Blog />
