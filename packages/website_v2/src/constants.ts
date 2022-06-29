@@ -9,3 +9,4 @@ export const usdcAddress = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48';
 export const spookySwapPoolAddress = '0x3b00de93e05815609c58ef936dc202d388802a44';
 export const TEMP_PRECISION = 18;
 export const USDC_PRECISION = 6;
+export const discordInviteLink = 'https://discord.com/invite/6gauHECShr';
