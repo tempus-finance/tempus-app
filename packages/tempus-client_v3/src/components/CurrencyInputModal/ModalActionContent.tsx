@@ -2,7 +2,7 @@ import { FC, ReactNode, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ChainConfig, Decimal, TempusPool, Ticker } from 'tempus-core-services';
 import { useFees } from '../../hooks';
-import { TokenMetadataProp } from '../../interfaces';
+import { TokenMetadata, TokenMetadataProp } from '../../interfaces';
 import FeeTooltip from '../FeeTooltip';
 import {
   ActionButton,
@@ -17,6 +17,8 @@ import {
 
 interface ModalActionContentProps {
   selectedPool?: TempusPool;
+  defaultAmount?: Decimal;
+  defaultToken?: TokenMetadata;
   balance: Decimal;
   tokens: TokenMetadataProp;
   disabledInput: boolean;
@@ -32,6 +34,8 @@ interface ModalActionContentProps {
 const ModalActionContent: FC<ModalActionContentProps> = props => {
   const {
     selectedPool,
+    defaultAmount,
+    defaultToken,
     balance,
     tokens,
     disabledInput,
@@ -46,7 +50,7 @@ const ModalActionContent: FC<ModalActionContentProps> = props => {
   const { t } = useTranslation();
   const allFees = useFees();
 
-  const [amount, setAmount] = useState('');
+  const [amount, setAmount] = useState(defaultAmount?.toString() ?? '');
   const [transactionProgress, setTransactionProgress] = useState<number | null>(null);
   const [transactionHash, setTransactionHash] = useState<string | null>(null);
 
@@ -76,6 +80,8 @@ const ModalActionContent: FC<ModalActionContentProps> = props => {
       <CurrencyInput
         tokens={tokens}
         maxAmount={balance}
+        defaultAmount={defaultAmount}
+        defaultToken={defaultToken}
         disabled={disabledInput}
         error={insufficientBalance ? t('CurrencyInputModal.insufficientBalanceError') : undefined}
         onAmountUpdate={handleAmountChange}

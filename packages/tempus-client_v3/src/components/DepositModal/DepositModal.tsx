@@ -55,7 +55,7 @@ const DepositModal: FC<DepositModalProps> = props => {
 
   const [maturityTerm, setMaturityTerm] = useState<MaturityTerm>(maturityTerms[0]);
   const [token, setToken] = useState<TokenMetadata>(tokens[0]);
-  const [amount, setAmount] = useState<Decimal>(ZERO);
+  const [amount, setAmount] = useState<Decimal>();
   const [actionButtonState, setActionButtonState] = useState<ActionButtonState>('default');
   const [fixedDepositSuccessful, setFixedDepositSuccessful] = useState<boolean>(false);
   const [fixedDepositError, setFixedDepositError] = useState<Error>();
@@ -82,7 +82,7 @@ const DepositModal: FC<DepositModalProps> = props => {
   const tokenApproved = useMemo(
     () =>
       Boolean(tokenAllowance?.alwaysApproved) ||
-      (tokenAllowance?.amount?.gt(ZERO) && amount.lte(tokenAllowance?.amount ?? ZERO)),
+      (tokenAllowance?.amount?.gt(ZERO) && (amount ?? ZERO).lte(tokenAllowance?.amount ?? ZERO)),
     [amount, tokenAllowance],
   );
 
@@ -293,6 +293,8 @@ const DepositModal: FC<DepositModalProps> = props => {
     <>
       <CurrencyInputModal
         selectedPool={selectedTempusPool}
+        defaultAmount={amount}
+        defaultToken={token}
         tokens={tokens}
         open={!fixedDepositSuccessful && !fixedDepositError}
         onClose={onClose}
