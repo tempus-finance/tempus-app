@@ -207,4 +207,25 @@ describe('Wallet', () => {
 
     expect(closeModalButton).toBeNull();
   });
+
+  it('renders a wallet popup when click on wallet button', () => {
+    (useConnectWallet as jest.Mock).mockImplementation(() => [connectedWallet, () => {}]);
+    (useSelectedChain as jest.Mock).mockReturnValue(['ethereum' as Chain, () => false]);
+    (useTokenBalance as jest.Mock).mockReturnValue({
+      address: ZERO_ADDRESS,
+      balance: new Decimal(10.456),
+      chain: 'ethereum',
+    });
+
+    const { container } = subject({});
+
+    const walletButton = container.querySelector('.tc__walletButton__connected-wallet');
+
+    act(() => {
+      fireEvent.click(walletButton as Element);
+    });
+
+    expect(container).not.toBeNull();
+    expect(container).toMatchSnapshot();
+  });
 });
