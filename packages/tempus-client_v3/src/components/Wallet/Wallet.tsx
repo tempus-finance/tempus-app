@@ -8,6 +8,7 @@ import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Chain,
+  chainIdHexToChainName,
   chainNameToHexChainId,
   DecimalUtils,
   ethereumChainIdHex,
@@ -86,7 +87,7 @@ const Wallet: FC<WalletProps> = props => {
   const [{ wallet }, connect] = useConnectWallet();
   const [, setWalletAddress] = useWalletAddress();
   const [selectedChain, setSelectedChain] = useSelectedChain();
-  const [, setChain] = useSetChain();
+  const [{ connectedChain }, setChain] = useSetChain();
   const [, setSigner] = useSigner();
 
   const nativeTokenBalanceData = useTokenBalance(ZERO_ADDRESS, selectedChain);
@@ -126,9 +127,15 @@ const Wallet: FC<WalletProps> = props => {
       setWalletAddress(wallet.accounts[0].address);
     } else {
       setWalletAddress('');
+    }
+
+    if (connectedChain) {
+      const chain = chainIdHexToChainName(connectedChain.id);
+      setSelectedChain(chain ?? null);
+    } else {
       setSelectedChain(null);
     }
-  }, [wallet, setWalletAddress, setSelectedChain]);
+  }, [wallet, setWalletAddress, setSelectedChain, connectedChain]);
 
   /**
    * When user clicks on connect wallet button show a modal with all available wallets users can connect.
