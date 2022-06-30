@@ -53,6 +53,8 @@
     "comingSoon": "~~~~~====={{{{{(((((comingSoon)))))}}}}}=====~~~~~"
   },
   "MarketsPools": {
+    "emptyTitle": "~~~~~====={{{{{(((((emptyTitle)))))}}}}}=====~~~~~",
+    "emptyDescription": "~~~~~====={{{{{(((((emptyDescription)))))}}}}}=====~~~~~",
     "showMoreXButtonLabel": "~~~~~====={{{{{(((((showMoreXButtonLabel)))))}}}}}=====~~~~~",
     "showMoreXOfYButtonLabel": "~~~~~====={{{{{(((((showMoreXOfYButtonLabel)))))}}}}}=====~~~~~"
   },
