@@ -13,7 +13,7 @@ import {
 import './Investors.scss';
 
 const Investors = (): JSX.Element => (
-  <div className="tw__investors">
+  <div id="investors-section" className="tw__investors">
     <h2 className="tw__section-title">Our Investors</h2>
 
     <div className="tw__investors-separator" />
