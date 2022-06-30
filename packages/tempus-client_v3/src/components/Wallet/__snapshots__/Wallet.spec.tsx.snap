@@ -22,6 +22,10 @@ exports[`Wallet renders a "Connect Wallet" button 1`] = `
     </button>
   </div>
   
+  <div
+    class="tc__wallet-popup"
+    style="--popupPosX: 0px; --popupPosY: 0px; --popupVisibility: block;"
+  />
 </div>
 `;
 
@@ -107,6 +111,148 @@ exports[`Wallet renders a wallet button 1`] = `
         </div>
       </div>
     </button>
+  </div>
+  <div
+    class="tc__wallet-popup"
+    style="--popupPosX: 0px; --popupPosY: 0px; --popupVisibility: block;"
+  />
+</div>
+`;
+
+exports[`Wallet renders a wallet popup when click on wallet button 1`] = `
+<div>
+  <div
+    class="tc__walletButton__connected"
+  >
+    <button
+      class="tc__btn tc__walletButton__connected-network"
+      data-selected="false"
+      type="button"
+    >
+      <svg
+        class="tc__logo tc__logo-token-ETH"
+        fill="none"
+        height="24"
+        viewBox="0 0 40 40"
+        width="24"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M20 40C31.0457 40 40 31.0457 40 20C40 8.9543 31.0457 0 20 0C8.9543 0 0 8.9543 0 20C0 31.0457 8.9543 40 20 40Z"
+          fill="#627EEA"
+        />
+        <path
+          clip-rule="evenodd"
+          d="M11.25 20.275L20.6225 5V16.0875L11.25 20.275ZM20.6225 27.4588V34.9938L11.25 22.0201L20.6225 27.4588Z"
+          fill="white"
+          fill-rule="evenodd"
+        />
+        <path
+          d="M20.625 25.7163L29.9962 20.275L20.625 16.09V25.7163Z"
+          fill="white"
+          fill-opacity="0.2"
+        />
+        <path
+          clip-rule="evenodd"
+          d="M20.625 5V16.0875L29.9962 20.275L20.625 5ZM20.625 27.4573V34.991L30.0025 22.0173L20.625 27.4573ZM20.6225 25.7163L11.25 20.275L20.6225 16.09V25.7163Z"
+          fill="white"
+          fill-opacity="0.6"
+          fill-rule="evenodd"
+        />
+      </svg>
+    </button>
+    <button
+      class="tc__btn tc__walletButton__connected-wallet"
+      data-selected="false"
+      type="button"
+    >
+      <div
+        class="tc__walletButton__connected-wallet-logo"
+      >
+        <canvas
+          class="identicon"
+          height="24"
+          style="width: 24px; height: 24px;"
+          width="24"
+        />
+      </div>
+      <div
+        class="tc__walletButton__connected-wallet-info"
+      >
+        <div
+          style="font-style: normal; font-size: 10px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+        >
+          0x1231...23123
+        </div>
+        <div
+          class="tc__walletButton__connected-wallet-info-balance"
+        >
+          <div
+            style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 700; font-family: 'Azeret Mono', monospace; opacity: 1;"
+          >
+            10.45
+          </div>
+           
+          <div
+            style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+          >
+            ETH
+          </div>
+        </div>
+      </div>
+    </button>
+  </div>
+  <div
+    class="tc__wallet-popup"
+    style="--popupPosX: 0px; --popupPosY: 0px; --popupVisibility: block;"
+  >
+    <div
+      class="tc__wallet-popup-backdrop"
+    />
+    <div
+      class="tc__tooltip tc__tooltip__bottom-center"
+    >
+      <div
+        class="tc__wallet-popup__title"
+        style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+      >
+        Wallet Overview
+      </div>
+      <button
+        class="tc__btn "
+        data-selected="false"
+        type="button"
+      >
+        <svg
+          class="tc__icon tc__icon-close"
+          fill="none"
+          height="16"
+          viewBox="0 0 16 16"
+          width="16"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M15.6081 13.7161C15.859 13.967 16 14.3073 16 14.6621C16 15.017 15.859 15.3572 15.6081 15.6081C15.3572 15.859 15.017 16 14.6621 16C14.3073 16 13.967 15.859 13.7161 15.6081L8 9.87872L2.2839 15.6081C2.033 15.859 1.6927 16 1.33788 16C0.98305 16 0.642756 15.859 0.391855 15.6081C0.140955 15.3572 0 15.017 0 14.6621C0 14.3073 0.140955 13.967 0.391855 13.7161L6.12128 8L0.391855 2.2839C0.140955 2.033 -2.64367e-09 1.6927 0 1.33788C2.64367e-09 0.98305 0.140955 0.642756 0.391855 0.391855C0.642756 0.140955 0.98305 2.64367e-09 1.33788 0C1.6927 -2.64367e-09 2.033 0.140955 2.2839 0.391855L8 6.12128L13.7161 0.391855C13.967 0.140955 14.3073 0 14.6621 0C15.017 0 15.3572 0.140955 15.6081 0.391855C15.859 0.642756 16 0.98305 16 1.33788C16 1.6927 15.859 2.033 15.6081 2.2839L9.87872 8L15.6081 13.7161Z"
+            fill="#222222"
+          />
+        </svg>
+      </button>
+      <div
+        class="tc__wallet-popup__address"
+      >
+        <div
+          class="tc__wallet-popup__address-title"
+          style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'DM Sans', sans-serif; opacity: 1;"
+        >
+          Connected Wallet
+        </div>
+        <div
+          style="font-style: normal; font-size: 16px; line-height: 24px; color: rgb(34, 34, 34); font-weight: 500; font-family: 'Azeret Mono', monospace; opacity: 1;"
+        >
+          0x1231...23123
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 `;

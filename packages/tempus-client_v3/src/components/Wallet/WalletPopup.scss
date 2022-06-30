@@ -1,0 +1,54 @@
+.tc__wallet-popup {
+  position: relative;
+  align-self: flex-end;
+
+  // the CSS variable are here for React components to override
+  --popupPosX: 0px;
+  --popupPosY: 0px;
+  // we want to hide backdrop until JS sets proper position for it.
+  --popupVisibility: none;
+
+  .tc__wallet-popup-backdrop {
+    display: var(--popupVisibility);
+    position: absolute;
+    left: calc(-1 * var(--popupPosX));
+    top: calc(-1 * var(--popupPosY));
+    width: 100vw;
+    height: 100vh;
+    z-index: 9997;
+  }
+
+  .tc__tooltip {
+    z-index: 9999;
+    background-color: var(--walletPopupBackground);
+    width: 328px;
+    padding: 16px;
+    transform: translate(-100%, calc(100% + 8px));
+    box-sizing: border-box;
+    border: none;
+    border-radius: 5px;
+    box-shadow: var(--downStrongShadow);
+    display: flex;
+    flex-wrap: wrap;
+
+    .tc__wallet-popup__title {
+      flex: 1;
+    }
+
+    .tc__wallet-popup__address {
+      border: 1px solid var(--walletPopupInnerBorder);
+      border-radius: 8px;
+      padding: 16px;
+      margin-top: 12px;
+      flex: 1 100%;
+    }
+
+    &::before {
+      content: initial;
+    }
+
+    &::after {
+      content: initial;
+    }
+  }
+}
