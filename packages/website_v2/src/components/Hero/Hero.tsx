@@ -6,6 +6,7 @@ import './Hero.scss';
 
 const avatars = [
   {
+    id: 1,
     avatarName: 'avatar-1',
     name: '0xWL',
     title: 'Community Member',
@@ -14,6 +15,7 @@ const avatars = [
     y: 7,
   },
   {
+    id: 2,
     avatarName: 'avatar-2',
     name: '0xWL',
     title: 'Community Member',
@@ -22,6 +24,7 @@ const avatars = [
     y: 216,
   },
   {
+    id: 3,
     avatarName: 'avatar-3',
     name: '0xWL',
     title: 'Community Member',
@@ -30,6 +33,7 @@ const avatars = [
     y: 28,
   },
   {
+    id: 4,
     avatarName: 'avatar-1',
     name: '0xWL',
     title: 'Community Member',
@@ -38,6 +42,7 @@ const avatars = [
     y: 79,
   },
   {
+    id: 5,
     avatarName: 'avatar-2',
     name: '0xWL',
     title: 'Community Member',
@@ -46,6 +51,7 @@ const avatars = [
     y: 166,
   },
   {
+    id: 6,
     avatarName: 'avatar-3',
     name: '0xWL',
     title: 'Community Member',
@@ -71,6 +77,7 @@ const Hero = (): JSX.Element => {
         <div className="tw__hero-banner-stripes" />
         {avatars.map(avatar => (
           <ContributorAvatar
+            key={avatar.id}
             avatarName={avatar.avatarName}
             name={avatar.name}
             title={avatar.title}
