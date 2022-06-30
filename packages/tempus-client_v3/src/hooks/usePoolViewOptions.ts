@@ -51,7 +51,16 @@ const activePoolList$ = combineLatest([poolList$, statePoolAprs$]).pipe(
   map(([tempusPools, poolAprs]) => tempusPools.filter(pool => isPoolActive(pool, poolAprs))),
 );
 const inactivePoolList$ = combineLatest([poolList$, statePoolAprs$]).pipe(
-  map(([tempusPools, poolAprs]) => tempusPools.filter(pool => isPoolInactive(pool, poolAprs))),
+  map(([tempusPools, poolAprs]) =>
+    tempusPools.filter(pool => {
+      // Matured pools should not be marked as inactive
+      if (isPoolMatured(pool)) {
+        return false;
+      }
+
+      return isPoolInactive(pool, poolAprs);
+    }),
+  ),
 );
 const maturedPoolList$ = poolList$.pipe(map(tempusPools => tempusPools.filter(isPoolMatured)));
 
@@ -66,6 +75,10 @@ const filteredPoolList$ = combineLatest([poolList$, stateFilters$]).pipe(
           default:
             return isPoolActive(tempusPool, poolAprs);
           case 'inactive':
+            // Matured pools should not be marked as inactive
+            if (isPoolMatured(tempusPool)) {
+              return false;
+            }
             return isPoolInactive(tempusPool, poolAprs);
           case 'matured':
             return isPoolMatured(tempusPool);
