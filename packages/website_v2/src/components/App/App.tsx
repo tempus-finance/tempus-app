@@ -1,3 +1,4 @@
+import { useRef } from 'react';
 import About from '../About';
 import Header from '../Header';
 import Hero from '../Hero';
@@ -8,19 +9,25 @@ import Join from '../Join';
 import Treasury from '../Treasury';
 import Invest from '../Invest';
 import Products from '../Products';
+import Who from '../Who';
 
-const App = (): JSX.Element => (
-  <>
-    <Header />
-    <Hero />
-    <Treasury />
-    <About />
-    <Products />
-    <Invest />
-    <Investors />
-    <Blog />
-    <Join />
-    <Footer />
-  </>
-);
+const App = (): JSX.Element => {
+  const rootRef = useRef<HTMLDivElement>(null);
+
+  return (
+    <div className="tw__root" ref={rootRef}>
+      <Header />
+      <Hero />
+      <Treasury />
+      <About />
+      <Products />
+      <Invest />
+      <Who />
+      <Investors />
+      <Blog />
+      <Join />
+      <Footer />
+    </div>
+  );
+};
 export default App;

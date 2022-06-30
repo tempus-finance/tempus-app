@@ -44,7 +44,7 @@ const Blog = (): JSX.Element => {
     <div className="tw__blog">
       <h2 className="tw__section-title">Blog</h2>
       <div className="tw__blog-separator" />
-      <div className="tw__blog__subtitles">
+      <div className="tw__section__subtitles">
         <h3 className="tw__section-subtitle">Checkout our latest alpha</h3>
         <a
           href="https://medium.com/tempusfinance/"
