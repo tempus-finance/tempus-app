@@ -175,8 +175,8 @@
     "errorModalDescription": "Ocurrió un error con su wallet, verifíquelo e intente nuevamente."
   },
   "WalletPopup": {
-    "title": "",
-    "titleAddress": ""
+    "title": "Visión general del wallet",
+    "titleAddress": "wallet conectado"
   },
   "WithdrawModal": {
     "description": "",
