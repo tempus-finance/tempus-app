@@ -53,6 +53,8 @@
     "comingSoon": "Coming Soon"
   },
   "MarketsPools": {
+    "emptyTitle": "No Pools to Display",
+    "emptyDescription": "Please select another filter option.",
     "showMoreXButtonLabel": "Show {{numOfCardsToShow}} more",
     "showMoreXOfYButtonLabel": "Show {{numOfCardsToShow}} of {{numOfRemainingCards}} more"
   },
