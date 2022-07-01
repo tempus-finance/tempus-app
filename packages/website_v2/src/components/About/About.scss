@@ -7,6 +7,15 @@
     margin: 0;
     font-size: 34px;
   }
+
+  .tw__about__separator {
+    display: flex;
+    margin-bottom: 40px;
+    flex-grow: 1;
+    height: 1px;
+    width: 100%;
+    background-color: #ffffff;
+  }
 }
 
 .tw__about__grid {

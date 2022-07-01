@@ -1,17 +1,5 @@
 .tw__products {
-  padding: 40px 40px 100px 40px;
-  background-color: #efecff;
-  color: #050a4a;
-
-  .tw__products__title {
-    margin-top: 0;
-    margin-bottom: 100px;
-    font-size: 34px;
-  }
-}
-
-.tw__products__grid {
-  margin-top: 103px;
+  margin: 40px 40px 73px 40px;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-gap: 20px;
@@ -22,6 +10,7 @@
   flex-direction: column;
   background: #fafaff;
   border-radius: 12px;
+  color: #050a4a;
 
   .tw__products__product-banner {
     height: 263px;
