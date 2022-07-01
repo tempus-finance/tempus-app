@@ -29,9 +29,30 @@
   .tw__link-block__description {
     font-size: 16px;
     font-weight: 400;
+    position: relative;
+
+    &:after {
+      content: '';
+      position: absolute;
+      width: 100%;
+      transform: scaleX(0);
+      height: 2px;
+      bottom: 0;
+      left: 0;
+      background-color: #050A4A;
+      transform-origin: bottom left;
+      transition: transform 0.25s ease-out;
+    }
   }
 
   .tw__arrow-right-icon:only-child {
     margin-left: auto;
+  }
+
+  &:hover {
+    .tw__link-block__description:after {
+      transform: scaleX(1);
+      transform-origin: bottom left;
+    }
   }
 }

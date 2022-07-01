@@ -37,7 +37,12 @@ const Treasury = (): JSX.Element => {
             <span>Available for Innovation.</span>
           </div>
           <div>
-            <a href="" rel="external noreferrer nofollow" target="_blank" className="tw__funds-available__read-more">
+            <a
+              href=""
+              rel="external noreferrer nofollow"
+              target="_blank"
+              className="tw__funds-available__read-more tw__hover-animation"
+            >
               Read more about our Grants <ArrowRight color="#050A4A" />
             </a>
           </div>

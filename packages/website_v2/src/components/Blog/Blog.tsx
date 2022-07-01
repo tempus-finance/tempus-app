@@ -50,7 +50,7 @@ const Blog = (): JSX.Element => {
           href="https://medium.com/tempusfinance/"
           rel="external noreferrer nofollow"
           target="_blank"
-          className="tw__blog__read-more"
+          className="tw__blog__read-more tw__hover-animation"
         >
           Read more on our Blog <ArrowRight />
         </a>
