@@ -37,23 +37,3 @@
   color: #eeecff;
   cursor: pointer;
 }
-
-.tw__hero-banner {
-  position: relative;
-  margin-top: 64px;
-  width: 100%;
-  height: 327px;
-  background-image: linear-gradient(to right, #ff7700, #c6bfff);
-}
-
-.tw__hero-banner-stripes {
-  position: absolute;
-  top: 0px;
-  right: 0px;
-  bottom: 0px;
-  left: 0px;
-  background-image: url('../../images/hero-banner-lines.svg');
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: cover;
-}

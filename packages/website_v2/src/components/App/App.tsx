@@ -6,9 +6,7 @@ import Blog from '../Blog';
 import Footer from '../Footer';
 import Investors from '../Investors';
 import Join from '../Join';
-import Treasury from '../Treasury';
 import Invest from '../Invest';
-import Products from '../Products';
 import Who from '../Who';
 
 const App = (): JSX.Element => {
@@ -18,9 +16,7 @@ const App = (): JSX.Element => {
     <div className="tw__root" ref={rootRef}>
       <Header />
       <Hero />
-      <Treasury />
       <About />
-      <Products />
       <Invest />
       <Who />
       <Investors />
