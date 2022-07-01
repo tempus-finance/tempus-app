@@ -1,9 +1,9 @@
-import { BrowserContext, Page, test, expect } from '@playwright/test'
+import { BrowserContext, Page, test, expect } from '@playwright/test';
 import { metamaskLogin } from '../modules/metamask';
 import { chromiumPersistant } from '../modules/browser';
 import { TEMPUS_URL } from '../utility/constants';
 
-test.describe.serial("Tempus Homepage tests", () => {
+test.describe.serial('Tempus Homepage tests', () => {
   let browser: BrowserContext;
   test.beforeAll(async () => {
     browser = await chromiumPersistant();
