@@ -11,6 +11,7 @@ import { pool2, pool2 as mockPool2, pool4 } from '../../mocks/config/mockConfig'
 
 jest.mock('lottie-react', () => () => <div className="lottie-animation" />);
 jest.mock('uuid', () => ({
+  v1: jest.fn().mockReturnValue('abcdabcd'),
   v4: jest.fn().mockReturnValue('0x01'),
 }));
 

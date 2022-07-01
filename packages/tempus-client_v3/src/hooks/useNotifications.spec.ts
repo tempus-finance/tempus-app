@@ -2,6 +2,7 @@ import { renderHook } from '@testing-library/react-hooks';
 import { of as mockOf } from 'rxjs';
 import { NotificationInput } from '../interfaces/Notification';
 import { useNotifications } from './useNotifications';
+import { getNotificationService } from '../services/getNotificationService';
 
 jest.useFakeTimers();
 
@@ -37,17 +38,21 @@ const mockNotification2 = {
 };
 
 jest.mock('../services/getNotificationService', () => ({
-  getNotificationService: jest.fn().mockImplementation(() => ({
-    notify: mockNotify,
-    warn: mockWarn,
-    deleteNotifications: mockDeleteNotifications,
-    dismissNotification: mockDismissNotification,
-    getNextItem: mockGetNextItem,
-    getLastItems: mockGetLastItems,
-  })),
+  getNotificationService: jest.fn(),
 }));
 
 describe('useNotifications()', () => {
+  beforeEach(() => {
+    (getNotificationService as jest.Mock).mockImplementation(() => ({
+      notify: mockNotify,
+      warn: mockWarn,
+      deleteNotifications: mockDeleteNotifications,
+      dismissNotification: mockDismissNotification,
+      getNextItem: mockGetNextItem,
+      getLastItems: mockGetLastItems,
+    }));
+  });
+
   afterAll(() => {
     jest.resetAllMocks();
     jest.useRealTimers();
@@ -57,6 +62,7 @@ describe('useNotifications()', () => {
     const mockNotificationInput1: NotificationInput = {
       chain: 'ethereum',
       category: 'Service',
+      status: 'success',
       title: 'Notification 1',
       content: 'Notification content 1',
     };
@@ -64,6 +70,7 @@ describe('useNotifications()', () => {
     const mockNotificationInput2: NotificationInput = {
       chain: 'ethereum',
       category: 'Wallet',
+      status: 'success',
       title: 'Notification 2',
       content: 'Notification content 2',
     };
@@ -85,6 +92,7 @@ describe('useNotifications()', () => {
     const mockWarnInput: NotificationInput = {
       chain: 'ethereum',
       category: 'Service',
+      status: 'failure',
       title: 'Warn 1',
       content: 'Warn Content 1',
     };

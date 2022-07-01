@@ -1,3 +1,22 @@
 .tc__marketsPools-container {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
   margin: 40px 80px;
+}
+
+.tc__marketsPools-empty {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .tc__marketsPools-empty-content {
+    max-width: 400px;
+    text-align: center;
+
+    > *:first-child {
+      margin-bottom: 4px;
+    }
+  }
 }

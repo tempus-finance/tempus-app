@@ -8,6 +8,7 @@ import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Chain,
+  chainIdHexToChainName,
   chainNameToHexChainId,
   DecimalUtils,
   ethereumChainIdHex,
@@ -17,6 +18,7 @@ import {
 } from 'tempus-core-services';
 import { useWalletAddress, useSelectedChain, useTokenBalance, useSigner } from '../../hooks';
 import { ActionButtonVariant, WalletButton } from '../shared';
+import WalletPopup from './WalletPopup';
 import ChainSelector from '../ChainSelector';
 
 // TODO - Check with designers if block native UI for wallet management is fine to use
@@ -86,12 +88,13 @@ const Wallet: FC<WalletProps> = props => {
   const [{ wallet }, connect] = useConnectWallet();
   const [, setWalletAddress] = useWalletAddress();
   const [selectedChain, setSelectedChain] = useSelectedChain();
-  const [, setChain] = useSetChain();
+  const [{ connectedChain }, setChain] = useSetChain();
   const [, setSigner] = useSigner();
 
   const nativeTokenBalanceData = useTokenBalance(ZERO_ADDRESS, selectedChain);
 
   const [chainSelectorOpen, setChainSelectorOpen] = useState<boolean>(false);
+  const [walletPopupOpen, setWalletPopupOpen] = useState<boolean>(false);
 
   const navigate = useNavigate();
 
@@ -126,9 +129,15 @@ const Wallet: FC<WalletProps> = props => {
       setWalletAddress(wallet.accounts[0].address);
     } else {
       setWalletAddress('');
+    }
+
+    if (connectedChain) {
+      const chain = chainIdHexToChainName(connectedChain.id);
+      setSelectedChain(chain ?? null);
+    } else {
       setSelectedChain(null);
     }
-  }, [wallet, setWalletAddress, setSelectedChain]);
+  }, [wallet, setWalletAddress, setSelectedChain, connectedChain]);
 
   /**
    * When user clicks on connect wallet button show a modal with all available wallets users can connect.
@@ -137,6 +146,9 @@ const Wallet: FC<WalletProps> = props => {
     onConnectWalletClick?.();
     await connect({});
   }, [connect, onConnectWalletClick]);
+
+  const onOpenWalletPopup = useCallback(() => setWalletPopupOpen(true), []);
+  const onCloseWalletPopup = useCallback(() => setWalletPopupOpen(false), []);
 
   const onOpenChainSelector = useCallback(() => {
     setChainSelectorOpen(true);
@@ -219,11 +231,11 @@ const Wallet: FC<WalletProps> = props => {
         chain={selectedChain ?? 'unsupported'}
         onConnect={onConnectWallet}
         onNetworkClick={onOpenChainSelector}
-        // TODO - Add wallet popup
-        onWalletClick={() => {}}
+        onWalletClick={onOpenWalletPopup}
         connectWalletButtonVariant={connectWalletButtonVariant}
       />
       <ChainSelector open={chainSelectorOpen} onClose={onCloseChainSelector} />
+      <WalletPopup open={walletPopupOpen} onClose={onCloseWalletPopup} address={walletAddress || ''} />
     </>
   );
 };

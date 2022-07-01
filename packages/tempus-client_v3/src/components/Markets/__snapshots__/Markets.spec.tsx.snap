@@ -1328,7 +1328,26 @@ exports[`Markets render pools after updates filters 2`] = `
       </div>
       <div
         class="tc__marketsPools-container"
-      />
+      >
+        <div
+          class="tc__marketsPools-empty"
+        >
+          <div
+            class="tc__marketsPools-empty-content"
+          >
+            <div
+              style="font-style: normal; font-size: 20px; line-height: 28px; color: rgb(34, 34, 34); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+            >
+              No Pools to Display
+            </div>
+            <div
+              style="font-style: normal; font-size: 20px; line-height: 28px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+            >
+              Please select another filter option.
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -1555,7 +1574,26 @@ exports[`Markets render pools after updates filters 3`] = `
       </div>
       <div
         class="tc__marketsPools-container"
-      />
+      >
+        <div
+          class="tc__marketsPools-empty"
+        >
+          <div
+            class="tc__marketsPools-empty-content"
+          >
+            <div
+              style="font-style: normal; font-size: 20px; line-height: 28px; color: rgb(34, 34, 34); font-weight: 700; font-family: 'DM Sans', sans-serif; opacity: 1;"
+            >
+              No Pools to Display
+            </div>
+            <div
+              style="font-style: normal; font-size: 20px; line-height: 28px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+            >
+              Please select another filter option.
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>

@@ -52,6 +52,9 @@
   "walletButtonBackground": "#FFFFFF",
   "walletButtonHover": "#F3F7F9",
 
+  "walletPopupBackground": "#F3F7F9",
+  "walletPopupInnerBorder": "#BFC0C0",
+
   "switcherButtonBorder": "#BFC0C0",
   "switcherButtonBackground": "#FFFFFF",
 

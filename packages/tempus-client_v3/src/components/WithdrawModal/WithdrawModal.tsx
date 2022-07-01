@@ -1,6 +1,6 @@
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { ChainConfig, chainIdToChainName, Decimal, DecimalUtils, TempusPool, Ticker, ZERO } from 'tempus-core-services';
 import { v4 as uuidv4 } from 'uuid';
 import { TIMEOUT_FROM_SUCCESS_TO_DEFAULT_IN_MS } from '../../constants';
@@ -34,6 +34,7 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
   const { onClose, tokens, chainConfig, tempusPool } = props;
 
   const { t } = useTranslation();
+  const { state } = useLocation();
   const navigate = useNavigate();
 
   const [locale] = useLocale();
@@ -47,6 +48,7 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
   const tokenAllowances = useAllowances();
   const [, emitAppEvent] = useAppEvent();
 
+  const [amount, setAmount] = useState<Decimal>();
   const [currency, setCurrency] = useState(tokens[0]);
   const [actionButtonState, setActionButtonState] = useState<ActionButtonState>('default');
   const [tokensApproved, setTokensApproved] = useState<boolean>(false);
@@ -242,7 +244,7 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
   ]);
 
   const handleWithdraw = useCallback(
-    async (amount: Decimal) => {
+    async (withdrawAmount: Decimal) => {
       setActionButtonState('loading');
 
       const chain = chainConfig.chainId ? chainIdToChainName(chainConfig.chainId) : undefined;
@@ -251,7 +253,7 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
 
       if (signer && chain) {
         withdraw({
-          amount,
+          amount: withdrawAmount,
           chain,
           poolAddress: tempusPool.address,
           token: currency.ticker,
@@ -304,11 +306,20 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
     setWithdrawError(undefined);
   }, []);
 
+  const handleBack = useCallback(() => {
+    const { chain, backingToken, protocol, address } = tempusPool;
+    navigate(
+      (state as { previousPath?: string })?.previousPath ?? `/pool/${chain}/${backingToken}/${protocol}/${address}`,
+    );
+  }, [navigate, state, tempusPool]);
+
   return (
     <>
       {/* Show withdraw modal if withdraw is not yet finalized */}
       <CurrencyInputModal
         selectedPool={tempusPool}
+        defaultAmount={amount}
+        defaultToken={currency}
         tokens={tokens}
         open={!withdrawSuccessful && !withdrawError}
         onClose={onClose}
@@ -318,7 +329,9 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
         infoRows={infoRows}
         actionButtonLabels={actionButtonLabels}
         actionButtonState={actionButtonState}
+        onBack={handleBack}
         onTransactionStart={tokensApproved ? handleWithdraw : handleApproveToken}
+        onAmountChange={setAmount}
         onCurrencyUpdate={handleCurrencyChange}
         chainConfig={chainConfig}
       />

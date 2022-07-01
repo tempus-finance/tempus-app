@@ -23,7 +23,7 @@ const defaultProps: PoolCardGridProps = {
         token: pool.backingToken,
         tokenAddress: pool.backingTokenAddress,
         protocol: pool.protocol,
-        matured: pool.maturityDate <= dateNow.getTime(),
+        status: pool.maturityDate <= dateNow.getTime() ? 'Matured' : 'Fixed',
         pools: [pool],
       } as PoolCardData),
   ),
@@ -74,7 +74,7 @@ describe('PoolCardGrid', () => {
         cardData.chain,
         cardData.token,
         cardData.protocol,
-        cardData.matured ? 'Matured' : 'Fixed',
+        cardData.status,
         cardData.pools.map(pool => pool.address),
       );
     });

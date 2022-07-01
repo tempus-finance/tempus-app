@@ -13,7 +13,7 @@ export interface PoolCardData {
   token: Ticker;
   tokenAddress: string;
   protocol: ProtocolName;
-  matured: boolean;
+  status: PoolCardStatus;
   totalBalance?: Decimal;
   pools: TempusPool[];
   cardsInGroup?: number;
@@ -68,17 +68,12 @@ const PoolCardGrid: FC<PoolCardGridProps> = props => {
           const poolAddresses = card.pools.map(pool => pool.address);
           const aprs = card.pools.map(pool => fixedAprs[`${pool.chain}-${pool.address}`]);
 
-          let cardStatus: PoolCardStatus = 'Fixed';
-          if (card.matured) {
-            cardStatus = 'Matured';
-          }
-
           return (
             <PoolCard
-              key={`${chain}-${card.protocol}-${card.tokenAddress}-${card.matured}`}
+              key={`${chain}-${card.protocol}-${card.tokenAddress}-${card.status}`}
               aprValues={aprs}
               color={cardColor || '#ffffff'}
-              poolCardStatus={cardStatus}
+              poolCardStatus={card.status}
               poolCardVariant={cardVariant}
               ticker={card.token}
               protocol={card.protocol}

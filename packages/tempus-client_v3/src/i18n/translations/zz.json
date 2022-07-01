@@ -53,6 +53,8 @@
     "comingSoon": "~~~~~====={{{{{(((((comingSoon)))))}}}}}=====~~~~~"
   },
   "MarketsPools": {
+    "emptyTitle": "~~~~~====={{{{{(((((emptyTitle)))))}}}}}=====~~~~~",
+    "emptyDescription": "~~~~~====={{{{{(((((emptyDescription)))))}}}}}=====~~~~~",
     "showMoreXButtonLabel": "~~~~~====={{{{{(((((showMoreXButtonLabel)))))}}}}}=====~~~~~",
     "showMoreXOfYButtonLabel": "~~~~~====={{{{{(((((showMoreXOfYButtonLabel)))))}}}}}=====~~~~~"
   },
@@ -132,6 +134,9 @@
     "tabOverview": "~~~~~====={{{{{(((((tabOverview)))))}}}}}=====~~~~~",
     "tabPositions": "~~~~~====={{{{{(((((tabPositions)))))}}}}}=====~~~~~"
   },
+  "RpcErrorModal": {
+    "errorModalDescription": "~~~~~====={{{{{(((((errorModalDescription)))))}}}}}=====~~~~~"
+  },
   "SettingsDropdown": {
     "title": "~~~~~====={{{{{(((((title)))))}}}}}=====~~~~~"
   },
@@ -142,9 +147,9 @@
     "titleSlippage": "~~~~~====={{{{{(((((titleSlippage)))))}}}}}=====~~~~~"
   },
   "SlippageErrorModal": {
-    "errorModalDescription": "",
-    "slippageTooltipContent": "",
-    "titleSlippage": ""
+    "errorModalDescription": "~~~~~====={{{{{(((((errorModalDescription)))))}}}}}=====~~~~~",
+    "slippageTooltipContent": "~~~~~====={{{{{(((((slippageTooltipContent)))))}}}}}=====~~~~~",
+    "titleSlippage": "~~~~~====={{{{{(((((titleSlippage)))))}}}}}=====~~~~~"
   },
   "SlippageInput": {
     "buttonAuto": "~~~~~====={{{{{(((((buttonAuto)))))}}}}}=====~~~~~"
@@ -165,6 +170,13 @@
   "WalletButton": {
     "buttonConnectWallet": "~~~~~====={{{{{(((((buttonConnectWallet)))))}}}}}=====~~~~~",
     "buttonUnsupported": "~~~~~====={{{{{(((((buttonUnsupported)))))}}}}}=====~~~~~"
+  },
+  "WalletErrorModal": {
+    "errorModalDescription": "~~~~~====={{{{{(((((errorModalDescription)))))}}}}}=====~~~~~"
+  },
+  "WalletPopup": {
+    "title": "~~~~~====={{{{{(((((title)))))}}}}}=====~~~~~",
+    "titleAddress": "~~~~~====={{{{{(((((titleAddress)))))}}}}}=====~~~~~"
   },
   "WithdrawModal": {
     "description": "~~~~~====={{{{{(((((description)))))}}}}}=====~~~~~",

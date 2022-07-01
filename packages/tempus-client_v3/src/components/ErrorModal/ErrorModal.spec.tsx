@@ -1,6 +1,5 @@
 import { fireEvent, render } from '@testing-library/react';
 import { act } from 'react-dom/test-utils';
-import { TransactionError } from 'tempus-core-services';
 import ErrorModal, { ErrorModalProps } from './ErrorModal';
 
 const mockOnPrimaryButtonClick = jest.fn();
@@ -46,10 +45,55 @@ describe('ErrorModal', () => {
     expect(primaryButton).toMatchSnapshot();
   });
 
+  it('renders a wallet error modal', () => {
+    const props = {
+      ...defaultProps,
+      error: { code: 4001, message: 'User rejected the request.' } as unknown as Error,
+    };
+    const { container, getByText } = subject(props);
+
+    expect(container).not.toBeNull();
+
+    const title = getByText(defaultProps.title as string);
+
+    expect(title).not.toBeNull();
+    expect(container).toMatchSnapshot();
+  });
+
+  it('renders a rpc error modal', () => {
+    const props = {
+      ...defaultProps,
+      error: { code: 32603, message: 'Internal JSON-RPC error.' } as unknown as Error,
+    };
+    const { container, getByText } = subject(props);
+
+    expect(container).not.toBeNull();
+
+    const title = getByText(defaultProps.title as string);
+
+    expect(title).not.toBeNull();
+    expect(container).toMatchSnapshot();
+  });
+
+  it('renders a generic error modal', () => {
+    const props = {
+      ...defaultProps,
+      error: { message: 'some error occurs' } as unknown as Error,
+    };
+    const { container, getByText } = subject(props);
+
+    expect(container).not.toBeNull();
+
+    const title = getByText(defaultProps.title as string);
+
+    expect(title).not.toBeNull();
+    expect(container).toMatchSnapshot();
+  });
+
   it('renders a slippage error modal', () => {
     const props = {
       ...defaultProps,
-      error: { data: { code: 3, message: 'revised transaction: BAL#507' } } as TransactionError,
+      error: { data: { code: 3, message: 'revised transaction: BAL#507' } } as unknown as Error,
     };
     const { container, getByText } = subject(props);
 
@@ -64,7 +108,7 @@ describe('ErrorModal', () => {
   it('update slippage when slippage input is set to 2.5%', async () => {
     const props = {
       ...defaultProps,
-      error: { data: { code: 3, message: 'revised transaction: BAL#507' } } as TransactionError,
+      error: { data: { code: 3, message: 'revised transaction: BAL#507' } } as unknown as Error,
     };
     const { container, getByRole } = subject(props);
 
@@ -82,7 +126,7 @@ describe('ErrorModal', () => {
   it('update slippage when slippage input is set to auto', async () => {
     const props = {
       ...defaultProps,
-      error: { data: { code: 3, message: 'revised transaction: BAL#507' } } as TransactionError,
+      error: { data: { code: 3, message: 'revised transaction: BAL#507' } } as unknown as Error,
     };
     const { container, getByRole } = subject(props);
 

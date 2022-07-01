@@ -1,6 +1,6 @@
 import { FC, ReactNode, useCallback, useMemo, useState } from 'react';
 import { ChainConfig, Decimal, TempusPool, Ticker } from 'tempus-core-services';
-import { MaturityTerm, TokenMetadataProp } from '../../interfaces';
+import { MaturityTerm, TokenMetadata, TokenMetadataProp } from '../../interfaces';
 import { ActionButtonLabels, ActionButtonState, ButtonWrapper, Icon, Modal, Typography } from '../shared';
 import { ModalProps } from '../shared/Modal/Modal';
 import TermTabs from '../shared/TermTabs';
@@ -23,6 +23,8 @@ export interface CurrencyInputModalActionButtonLabels {
 
 export interface CurrencyInputModalProps extends ModalProps {
   selectedPool?: TempusPool;
+  defaultAmount?: Decimal;
+  defaultToken?: TokenMetadata;
   description: string | CurrencyInputModalDescription;
   preview?: ReactNode;
   balance: Decimal;
@@ -32,6 +34,7 @@ export interface CurrencyInputModalProps extends ModalProps {
   infoRows?: ReactNode;
   actionButtonLabels: CurrencyInputModalActionButtonLabels;
   actionButtonState?: ActionButtonState;
+  onBack?: () => void;
   onMaturityChange?: (term: MaturityTerm) => void;
   onAmountChange?: (amount: Decimal) => void;
   onTransactionStart: (amount: Decimal) => Promise<string>;
@@ -41,6 +44,8 @@ export interface CurrencyInputModalProps extends ModalProps {
 const CurrencyInputModal: FC<CurrencyInputModalProps> = props => {
   const {
     selectedPool,
+    defaultAmount,
+    defaultToken,
     title,
     description,
     open,
@@ -54,6 +59,7 @@ const CurrencyInputModal: FC<CurrencyInputModalProps> = props => {
     infoRows,
     actionButtonLabels,
     actionButtonState = 'default',
+    onBack,
     onMaturityChange,
     onAmountChange,
     onTransactionStart,
@@ -64,7 +70,7 @@ const CurrencyInputModal: FC<CurrencyInputModalProps> = props => {
 
   const handlePreviewButtonClick = useCallback(() => setContent('action'), []);
 
-  const handleBack = useCallback(() => setContent('preview'), []);
+  const handleBack = useCallback(() => (onBack ? onBack() : setContent('preview')), [onBack]);
 
   const modalTitle = useMemo(() => {
     if (content === 'preview') {
@@ -115,6 +121,8 @@ const CurrencyInputModal: FC<CurrencyInputModalProps> = props => {
       {content === 'action' && tokens && (
         <ModalActionContent
           selectedPool={selectedPool}
+          defaultAmount={defaultAmount}
+          defaultToken={defaultToken}
           balance={balance}
           disabledInput={disabledInput}
           tokens={tokens}

@@ -53,6 +53,8 @@
     "comingSoon": "Prossimamente"
   },
   "MarketsPools": {
+    "emptyTitle": "",
+    "emptyDescription": "",
     "showMoreXButtonLabel": "",
     "showMoreXOfYButtonLabel": ""
   },
@@ -132,6 +134,9 @@
     "tabOverview": "",
     "tabPositions": ""
   },
+  "RpcErrorModal": {
+    "errorModalDescription": "Un errore è occorso sottomettendo la transazione , per favore controlla la connessione e riprova."
+  },
   "SettingsDropdown": {
     "title": ""
   },
@@ -165,6 +170,13 @@
   "WalletButton": {
     "buttonConnectWallet": "",
     "buttonUnsupported": ""
+  },
+  "WalletErrorModal": {
+    "errorModalDescription": "Un errore è occorso con il tuo wallet, per favore controllalo e riprova."
+  },
+  "WalletPopup": {
+    "title": "Panoramica del Wallet",
+    "titleAddress": "Wallet connesso"
   },
   "WithdrawModal": {
     "description": "",

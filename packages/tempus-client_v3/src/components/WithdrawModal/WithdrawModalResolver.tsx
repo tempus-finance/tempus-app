@@ -41,16 +41,7 @@ export const WithdrawModalResolver: FC = () => {
     return null;
   }
 
-  const tokens: TokenMetadataProp = [
-    {
-      precision: poolData.tokenPrecision.yieldBearingToken,
-      precisionForUI: poolData.decimalsForUI,
-      address: poolData.yieldBearingTokenAddress,
-      rate: yieldBearingTokenRate,
-      ticker: poolData.yieldBearingToken,
-      balance: poolBalanceData.balanceInYieldBearingToken,
-    },
-  ];
+  const tokens = [];
   if (poolData.backingToken !== 'ETH') {
     tokens.push({
       precision: poolData.tokenPrecision.backingToken,
@@ -61,6 +52,14 @@ export const WithdrawModalResolver: FC = () => {
       balance: poolBalanceData.balanceInBackingToken,
     });
   }
+  tokens.push({
+    precision: poolData.tokenPrecision.yieldBearingToken,
+    precisionForUI: poolData.decimalsForUI,
+    address: poolData.yieldBearingTokenAddress,
+    rate: yieldBearingTokenRate,
+    ticker: poolData.yieldBearingToken,
+    balance: poolBalanceData.balanceInYieldBearingToken,
+  });
 
   const handleCloseModal = () => {
     navigate('/portfolio/positions');
@@ -68,6 +67,12 @@ export const WithdrawModalResolver: FC = () => {
 
   return (
     // TODO - Replace dummy data with data from hooks
-    <WithdrawModal chainConfig={chainData} tempusPool={poolData} tokens={tokens} onClose={handleCloseModal} open />
+    <WithdrawModal
+      chainConfig={chainData}
+      tempusPool={poolData}
+      tokens={tokens as TokenMetadataProp}
+      onClose={handleCloseModal}
+      open
+    />
   );
 };

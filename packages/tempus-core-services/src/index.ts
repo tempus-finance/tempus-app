@@ -17,7 +17,6 @@ export type {
   Ticker,
   NativeTokenTicker,
   TempusPool,
-  TransactionError,
   TokenPrecision,
   TokenTypePrecision,
   YearnData,
@@ -45,7 +44,7 @@ export type {
 
 export type { Numberish } from './datastructures';
 
-export { Decimal, ZERO, ONE, DEFAULT_DECIMAL_PRECISION } from './datastructures';
+export { Decimal, ZERO, ONE, DEFAULT_DECIMAL_PRECISION, TransactionError } from './datastructures';
 
 export { SwapKind } from './services';
 
@@ -63,7 +62,6 @@ export {
 export {
   NumberUtils,
   DecimalUtils,
-  ErrorUtils,
   capitalize,
   chainIdToChainName,
   chainIdHexToChainName,
