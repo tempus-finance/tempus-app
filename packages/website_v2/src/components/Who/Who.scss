@@ -1,25 +1,34 @@
 .tw__who {
+  position: relative;
+  height: 300vh;
+  background-color: #050a4a;
+}
+
+.tw__who__content {
+  position: sticky;
+  top: 0;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  justify-content: flex-start;
+  justify-content: space-between;
+  height: 100vh;
   padding: 40px;
-  background-color: #050a4a;
-  color: #EEECFF;
+  color: #eeecff;
+  box-sizing: border-box;
 
   .tw__section-title {
-    color: #EEECFF;
-    padding-bottom: 72px;
+    margin: 0;
+    color: #eeecff;
   }
 }
 
 .tw__who__people {
   display: flex;
   flex-direction: row;
-  align-items: flex-start;
+  align-items: center;
   justify-content: flex-start;
   width: 100%;
-  padding-top: 100px;
+  height: 50vh;
 
   .tw__section__subsection-title {
     padding-bottom: 30px;
@@ -27,19 +36,18 @@
     cursor: pointer;
 
     &.active {
-      color: #EEECFF;
+      color: #eeecff;
     }
   }
 
   .tw__who__people-subsection {
     flex: 3;
-    padding-right: 100px;
-    padding-bottom: 32px;
+    padding-right: 5%;
     font-size: 20px;
     line-height: 30px;
   }
 
-  .tw__who__people-subsection-body {
+  .tw__who__people-subsection-body:not(:last-child) {
     padding-bottom: 80px;
   }
 
@@ -57,9 +65,12 @@
 }
 
 .tw__who__people-graphics {
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: auto;
-  width: 500px;
-  height: 500px;
+  position: relative;
+  width: 100%;
+  height: 100%;
+
+  svg {
+    max-width: 30vw;
+    height: 50vh;
+  }
 }

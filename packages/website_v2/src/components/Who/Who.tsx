@@ -1,8 +1,10 @@
-import { FC, MouseEvent, useCallback, useState } from 'react';
+import { FC, MouseEvent, useCallback, useEffect, useState } from 'react';
 import { Button } from '../shared';
+import { BuildersIllustration, ConnectorsIllustration, CreatorsIllustration } from './illustrations';
 import './Who.scss';
 
-type Sections = 'builders' | 'creators' | 'connectors';
+const SECTIONS = ['builders', 'creators', 'connectors'] as const;
+type Section = typeof SECTIONS[number];
 
 const buildersDescription = `
 The Builders are super coders who love solving problems.
@@ -24,43 +26,50 @@ They break the language barriers between Web3 and the real world.`.trim();
 const connectorsCTA = "I'm In";
 
 const Who: FC = (): JSX.Element => {
-  const [activeSection, setActiveSection] = useState<Sections>('builders');
+  const [activeSection, setActiveSection] = useState<Section>('builders');
 
-  const handleTitleClick = useCallback((event: MouseEvent<HTMLDivElement>) => {
-    const section = (event.currentTarget as HTMLDivElement).getAttribute('data-test');
-    setActiveSection(section as Sections);
+  const handleTitleClick = useCallback(
+    (event: MouseEvent<HTMLDivElement>) => {
+      const section = (event.currentTarget as HTMLDivElement).getAttribute('data-test') as Section;
+
+      if (section === activeSection) {
+        return;
+      }
+
+      const container = document.querySelector('.tw__who') as HTMLDivElement;
+      const content = document.querySelector('.tw__who__content') as HTMLDivElement;
+      const scrollableHeight = container.clientHeight - content.clientHeight;
+      const newOffsetTop = (scrollableHeight * (SECTIONS.findIndex(value => value === section) ?? 0)) / SECTIONS.length;
+
+      window.scrollBy(0, newOffsetTop - content.offsetTop);
+      setActiveSection(section as Section);
+    },
+    [activeSection],
+  );
+
+  const onScroll = useCallback(() => {
+    const container = document.querySelector('.tw__who') as HTMLDivElement;
+    const content = document.querySelector('.tw__who__content') as HTMLDivElement;
+    const scrollableHeight = container.clientHeight - content.clientHeight;
+    const percentageScrolled = content.offsetTop / scrollableHeight;
+    const selectedSection = SECTIONS[Math.min(Math.floor(percentageScrolled * SECTIONS.length), SECTIONS.length - 1)];
+    setActiveSection(selectedSection);
   }, []);
 
-  const style = () => {
-    if (activeSection === 'builders') {
-      return {
-        backgroundImage: 'url(images/graphics/builders.svg)',
-      };
-    }
-    if (activeSection === 'creators') {
-      return {
-        backgroundImage: 'url(images/graphics/creators.svg)',
-      };
-    }
-    if (activeSection === 'connectors') {
-      return {
-        backgroundImage: 'url(images/graphics/connectors.svg)',
-      };
-    }
-
-    return { backgroundImage: '' };
-  };
+  useEffect(() => {
+    window.addEventListener('scroll', onScroll);
+  }, [onScroll]);
 
   return (
     <div className="tw__who">
-      <h2 className="tw__section-title">Who are we?</h2>
-      <div className="tw__section__subtitles">
-        <h3 className="tw__section-subtitle">
-          Tempus Labs has been elected by the Tempus DAO governance as the service provider to lead the project. Tempus
-          DAO is a decentralized community of Builders, Creators and Connectors. Find your role!
-        </h3>
-      </div>
-      <div className="tw__who__people">
+      <div className="tw__who__content">
+        <h2 className="tw__section-title">Who are we?</h2>
+        <div className="tw__section__subtitles">
+          <h3 className="tw__section-subtitle">
+            Tempus Labs has been elected by the Tempus DAO governance as the service provider to lead the project.
+            Tempus DAO is a decentralized community of Builders, Creators and Connectors. Find your role!
+          </h3>
+        </div>
         <div className="tw__who__people">
           <div className="tw__who__people-subsection">
             <div
@@ -76,7 +85,6 @@ const Who: FC = (): JSX.Element => {
                 <Button>{buildersCTA}</Button>
               </div>
             )}
-
             <div
               data-test="creators"
               className={`tw__section__subsection-title ${activeSection === 'creators' ? 'active' : ''}`}
@@ -104,7 +112,11 @@ const Who: FC = (): JSX.Element => {
               </div>
             )}
           </div>
-          <div className="tw__who__people-graphics" style={style()} />
+          <div className="tw__who__people-graphics">
+            {activeSection === 'builders' && <BuildersIllustration />}
+            {activeSection === 'creators' && <CreatorsIllustration />}
+            {activeSection === 'connectors' && <ConnectorsIllustration />}
+          </div>
         </div>
       </div>
     </div>

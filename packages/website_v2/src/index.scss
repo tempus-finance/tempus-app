@@ -25,6 +25,7 @@ body {
 }
 
 .tw__section-title {
+  margin: 0;
   font-style: normal;
   font-weight: 600;
   font-size: 34px;
@@ -38,6 +39,10 @@ body {
   justify-content: space-between;
   align-items: center;
   width: 100%;
+
+  h3 {
+    margin: 0;
+  }
 }
 
 .tw__section-subtitle {
@@ -52,7 +57,7 @@ body {
   font-weight: 600;
   font-size: 28px;
   line-height: 30px;
-  color: #EFECFF;
+  color: #efecff;
 }
 
 .tw__hover-animation {
