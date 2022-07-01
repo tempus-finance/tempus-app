@@ -36,4 +36,9 @@
   line-height: 18px;
   color: #eeecff;
   cursor: pointer;
+
+  &:hover {
+    background-color: #EEECFF;
+    color: #050a4a;
+  }
 }

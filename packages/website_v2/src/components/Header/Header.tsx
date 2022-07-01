@@ -7,11 +7,11 @@ const Header = (): JSX.Element => (
     </div>
     <div className="tw__header-links">
       {/* TODO - Add click handlers */}
-      <p className="tw__header-link">Products</p>
-      <p className="tw__header-link">Contributors</p>
-      <p className="tw__header-link">Token</p>
-      <p className="tw__header-link">Docs</p>
-      <p className="tw__header-link">Blog</p>
+      <p className="tw__header-link tw__hover-animation">Products</p>
+      <p className="tw__header-link tw__hover-animation">Contributors</p>
+      <p className="tw__header-link tw__hover-animation">Token</p>
+      <p className="tw__header-link tw__hover-animation">Docs</p>
+      <p className="tw__header-link tw__hover-animation">Blog</p>
     </div>
     <div className="tw__header-separator" />
   </div>

@@ -9,74 +9,129 @@ const Footer = (): JSX.Element => (
     <div className="tw__footer__links-container">
       <div className="tw__footer__links-column">
         <p className="tw__footer__links-title">Token</p>
-        <a className="tw__footer__link" href="https://forum.tempus.finance/" target="_blank" rel="noreferrer">
-          Governance
-        </a>
+        <div className="tw__footer__link-container">
+          <a
+            className="tw__footer__link tw__hover-animation"
+            href="https://forum.tempus.finance/"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Governance
+          </a>
+        </div>
         {/* TODO - Add token page */}
-        <a className="tw__footer__link" href="#" target="_blank" rel="noreferrer">
-          Tokenomics
-        </a>
-        <a
-          className="tw__footer__link"
-          href="https://www.coingecko.com/en/coins/tempus"
-          target="_blank"
-          rel="noreferrer"
-        >
-          Coingecko
-        </a>
-        <a
-          className="tw__footer__link"
-          href="https://coinmarketcap.com/currencies/tempus/"
-          target="_blank"
-          rel="noreferrer"
-        >
-          Coinmarketcap
-        </a>
+        <div className="tw__footer__link-container">
+          <a className="tw__footer__link tw__hover-animation" href="#" target="_blank" rel="noreferrer">
+            Tokenomics
+          </a>
+        </div>
+        <div className="tw__footer__link-container">
+          <a
+            className="tw__footer__link tw__hover-animation"
+            href="https://www.coingecko.com/en/coins/tempus"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Coingecko
+          </a>
+        </div>
+        <div className="tw__footer__link-container">
+          <a
+            className="tw__footer__link tw__hover-animation"
+            href="https://coinmarketcap.com/currencies/tempus/"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Coinmarketcap
+          </a>
+        </div>
       </div>
       <div className="tw__footer__links-column">
         <p className="tw__footer__links-title">Team</p>
         {/* TODO - Add Team page */}
-        <a className="tw__footer__link" href="#" target="_blank" rel="noreferrer">
-          Tempus Labs
-        </a>
-        <a className="tw__footer__link" href="#investors-section">
-          Investors
-        </a>
-        <a
-          className="tw__footer__link"
-          href="https://angel.co/company/tempusfinance/jobs"
-          target="_blank"
-          rel="noreferrer"
-        >
-          We&apos;re Hiring!
-        </a>
-        <a className="tw__footer__link" href="mailto:contact@tempus.finance">
-          Contact
-        </a>
+        <div className="tw__footer__link-container">
+          <a className="tw__footer__link tw__hover-animation" href="#" target="_blank" rel="noreferrer">
+            Tempus Labs
+          </a>
+        </div>
+        <div className="tw__footer__link-container">
+          <a className="tw__footer__link tw__hover-animation" href="#investors-section">
+            Investors
+          </a>
+        </div>
+        <div className="tw__footer__link-container">
+          <a
+            className="tw__footer__link tw__hover-animation"
+            href="https://angel.co/company/tempusfinance/jobs"
+            target="_blank"
+            rel="noreferrer"
+          >
+            We&apos;re Hiring!
+          </a>
+        </div>
+        <div className="tw__footer__link-container">
+          <a className="tw__footer__link tw__hover-animation" href="mailto:contact@tempus.finance">
+            Contact
+          </a>
+        </div>
       </div>
       <div className="tw__footer__links-column">
         <p className="tw__footer__links-title">Community</p>
-        <a className="tw__footer__link" href="https://discord.com/invite/6gauHECShr" target="_blank" rel="noreferrer">
-          Discord
-        </a>
-        <a className="tw__footer__link" href="https://twitter.com/tempusfinance" target="_blank" rel="noreferrer">
-          Twitter
-        </a>
-        <a className="tw__footer__link" href="https://t.me/tempuschat" target="_blank" rel="noreferrer">
-          Telegram
-        </a>
-        <a className="tw__footer__link" href="https://medium.com/tempusfinance" target="_blank" rel="noreferrer">
-          Medium
-        </a>
+        <div className="tw__footer__link-container">
+          <a
+            className="tw__footer__link tw__hover-animation"
+            href="https://discord.com/invite/6gauHECShr"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Discord
+          </a>
+        </div>
+        <div className="tw__footer__link-container">
+          <a
+            className="tw__footer__link tw__hover-animation"
+            href="https://twitter.com/tempusfinance"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Twitter
+          </a>
+        </div>
+        <div className="tw__footer__link-container">
+          <a
+            className="tw__footer__link tw__hover-animation"
+            href="https://t.me/tempuschat"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Telegram
+          </a>
+        </div>
+        <div className="tw__footer__link-container">
+          <a
+            className="tw__footer__link tw__hover-animation"
+            href="https://medium.com/tempusfinance"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Medium
+          </a>
+        </div>
       </div>
       <div className="tw__footer__links-column">
         <p className="tw__footer__links-title">Legal</p>
         {/* TODO - Add Terms page */}
-        <a className="tw__footer__link">Terms</a>
+        <div className="tw__footer__link-container">
+          <a className="tw__footer__link tw__hover-animation">Terms</a>
+        </div>
         {/* TODO - Add disclaimer page */}
-        <a className="tw__footer__link">Disclaimer</a>
+        <div className="tw__footer__link-container">
+          <a className="tw__footer__link tw__hover-animation">Disclaimer</a>
+        </div>
         {/* TODO - Add Privacy page */}
-        <a className="tw__footer__link">Privacy</a>
+        <div className="tw__footer__link-container">
+          <a className="tw__footer__link tw__hover-animation">Privacy</a>
+        </div>
       </div>
     </div>
   </div>
