@@ -23,6 +23,10 @@ import { servicesLoaded$ } from './useServicesLoaded';
 
 type PoolChainAddressId = string;
 
+export interface NegativePoolInterestRatesMap {
+  [id: PoolChainAddressId]: boolean | null;
+}
+
 export interface NegativePoolInterestRate {
   poolInterestRateNegative: boolean | null;
   chain: Chain;
@@ -150,7 +154,7 @@ export const negativePoolInterestRateMap$ = combineLatest(
     negativePoolInterestRateData => negativePoolInterestRateData.subject$,
   ),
 ).pipe(
-  map(negativePoolInterestRatesData => {
+  map<NegativePoolInterestRate[], NegativePoolInterestRatesMap>(negativePoolInterestRatesData => {
     let negativePoolInterestRateMap: { [id: PoolChainAddressId]: boolean | null } = {};
 
     negativePoolInterestRatesData.forEach(negativePoolInterestRateData => {
@@ -165,7 +169,7 @@ export const negativePoolInterestRateMap$ = combineLatest(
   }),
 );
 
-export const [useNegativePoolInterestRates] = bind(negativePoolInterestRateMap$, {});
+export const [useNegativePoolInterestRates] = bind<NegativePoolInterestRatesMap>(negativePoolInterestRateMap$, {});
 
 export const [useNegativePoolInterestRate] = bind((poolAddress: string, chain: Chain | null) => {
   if (!chain) {
