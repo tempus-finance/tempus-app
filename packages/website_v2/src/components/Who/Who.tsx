@@ -41,7 +41,7 @@ const Who: FC = (): JSX.Element => {
       const scrollableHeight = container.clientHeight - content.clientHeight;
       const newOffsetTop = (scrollableHeight * (SECTIONS.findIndex(value => value === section) ?? 0)) / SECTIONS.length;
 
-      window.scrollBy(0, newOffsetTop - content.offsetTop);
+      window.scrollBy(0, newOffsetTop - content.offsetTop + 1);
       setActiveSection(section as Section);
     },
     [activeSection],
