@@ -1,10 +1,9 @@
 .tw__funds-available {
   display: flex;
-  align-items: center;
-  padding-top: 40px;
-  background-color: #050a4a;
-  color: #eeecff;
-  width: 100%;
+  align-items: flex-start;
+  padding: 40px;
+  background-color: #efecff;
+  color: #050a4a;
   flex-direction: column;
 }
 
@@ -13,37 +12,54 @@
   font-size: 42px;
   line-height: 120%;
   margin: 0px;
+}
 
-  .tw__funds-available-badge {
-    position: absolute;
-    width: 194px;
-    height: 32px;
-    border-radius: 60px;
-    background-color: #ff7700;
-    margin: 0px;
-    font-size: 16px;
+.tw__funds-available__body {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.tw__funds-available__description {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+
+  > div {
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    font-weight: 600;
-    line-height: 120%;
-    top: -7px;
-    right: -16px;
-    transform: translateX(100%);
+    font-size: 20px;
+    line-height: 30px;
+
+    &:first-child {
+      padding-bottom: 12px;
+    }
   }
 }
 
-.tw__funds-available-value {
-  font-size: 152px;
-  font-weight: 500;
-  line-height: 120%;
-  color: rgba(238, 236, 255, 0.2);
-  margin: 0px;
+.tw__funds-available__read-more {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  text-decoration: none;
+
+  &:hover {
+    background-color: red; // TBD
+  }
 }
 
-.tw__funds-available-separator {
-  width: calc(100% - 80px);
-  margin: 40px 40px 0px 40px;
-  height: 1px;
-  background-color: white;
+.tw__funds-available__value {
+  margin-right: 120px;
+  > p {
+    margin: 0.2em auto;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 152px;
+    text-align: left;
+    color: #050A4A;
+  }
 }
