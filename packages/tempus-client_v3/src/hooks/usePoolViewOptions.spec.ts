@@ -24,6 +24,17 @@ jest.mock('./useFixedAprs', () => ({
   }),
 }));
 
+jest.mock('./useNegativePoolInterestRate', () => ({
+  ...jest.requireActual('./useNegativePoolInterestRate'),
+  negativePoolInterestRateMap$: mockOf({
+    'ethereum-1': false,
+    'ethereum-2': false,
+    'fantom-3': false,
+    'fantom-4': false,
+    'fantom-5': false,
+  }),
+}));
+
 jest.mock('./useTokenRates', () => ({
   ...jest.requireActual('./useTokenRates'),
   useTokenRates: jest.fn(),
