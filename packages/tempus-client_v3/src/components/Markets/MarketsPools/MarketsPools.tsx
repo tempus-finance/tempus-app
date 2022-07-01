@@ -2,7 +2,12 @@ import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { Chain, prettifyChainName, ProtocolName, Ticker } from 'tempus-core-services';
-import { useChainList, useFilteredSortedPoolList, useSelectedChain } from '../../../hooks';
+import {
+  useChainList,
+  useFilteredSortedPoolList,
+  useNegativePoolInterestRates,
+  useSelectedChain,
+} from '../../../hooks';
 import { PoolCardData, PoolCardGrid, PoolCardStatus, PoolsHeading, Typography } from '../../shared';
 
 import './MarketsPools.scss';
@@ -12,6 +17,7 @@ const MarketsPools = (): JSX.Element => {
   const chains = useChainList();
   const tempusPools = useFilteredSortedPoolList();
   const [selectedChain] = useSelectedChain();
+  const negativePoolInterestRates = useNegativePoolInterestRates();
   const { t } = useTranslation();
 
   /**
@@ -61,14 +67,25 @@ const MarketsPools = (): JSX.Element => {
             token: pool.backingToken,
             tokenAddress: pool.backingTokenAddress,
             protocol: pool.protocol,
-            matured: true,
+            status: 'Matured',
           });
           return;
         }
 
-        const tokenCard = chainCards.find(
-          card => card.token === pool.backingToken && card.protocol === pool.protocol && !card.matured,
-        );
+        // We want to show one card per inactive pool on markets page
+        if (negativePoolInterestRates[`${pool.chain}-${pool.address}`]) {
+          chainCards.push({
+            pools: [pool],
+            chain: pool.chain,
+            token: pool.backingToken,
+            tokenAddress: pool.backingTokenAddress,
+            protocol: pool.protocol,
+            status: 'Inactive',
+          });
+          return;
+        }
+
+        const tokenCard = chainCards.find(card => card.token === pool.backingToken && card.protocol === pool.protocol);
         if (tokenCard) {
           tokenCard.pools.push(pool);
         } else {
@@ -78,7 +95,7 @@ const MarketsPools = (): JSX.Element => {
             token: pool.backingToken,
             tokenAddress: pool.backingTokenAddress,
             protocol: pool.protocol,
-            matured: false,
+            status: 'Fixed',
           });
         }
       });
@@ -87,7 +104,7 @@ const MarketsPools = (): JSX.Element => {
     });
 
     return cardsMap;
-  }, [availableChains, tempusPools]);
+  }, [availableChains, negativePoolInterestRates, tempusPools]);
 
   const cardsAvailable = useMemo(() => [...chainCardsMap.values()].flat().length > 0, [chainCardsMap]);
 
