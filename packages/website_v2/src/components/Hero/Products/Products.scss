@@ -11,6 +11,11 @@
   background: #fafaff;
   border-radius: 12px;
   color: #050a4a;
+  transition: transform 0.2s;
+
+  &:hover {
+    transform: translateY(-5px);
+  }
 
   .tw__products__product-banner {
     height: 263px;
