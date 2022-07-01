@@ -86,6 +86,7 @@ describe('NotificationService', () => {
       const input: NotificationInput = {
         chain: 'ethereum',
         category: 'Transaction',
+        status: 'failure',
         title: 'Warning T',
         content: 'some content',
       };
@@ -95,6 +96,7 @@ describe('NotificationService', () => {
       expect(mockSet).toHaveBeenCalledWith(NOTIFICATIONS_KEY, [
         {
           category: 'Transaction',
+          status: 'failure',
           chain: 'ethereum',
           content: 'some content',
           dismissed: false,
@@ -112,6 +114,7 @@ describe('NotificationService', () => {
       const input: NotificationInput = {
         chain: 'fantom',
         category: 'Transaction',
+        status: 'success',
         title: 'Notify T',
         content: 'some other content',
         link: 'someLink',
@@ -123,6 +126,7 @@ describe('NotificationService', () => {
       expect(mockSet).toHaveBeenCalledWith(NOTIFICATIONS_KEY, [
         {
           category: 'Transaction',
+          status: 'success',
           chain: 'fantom',
           content: 'some other content',
           dismissed: false,
@@ -140,6 +144,7 @@ describe('NotificationService', () => {
       const input: NotificationInput = {
         chain: 'fantom',
         category: 'Wallet',
+        status: 'success',
         title: 'Notify W',
         content: 'unimportant',
       };
@@ -152,6 +157,7 @@ describe('NotificationService', () => {
       const input: NotificationInput = {
         chain: 'ethereum',
         category: 'Service',
+        status: 'success',
         title: 'Notify S',
         content: 'some value',
       };
@@ -173,6 +179,7 @@ describe('NotificationService', () => {
       const inputNotify: NotificationInput = {
         chain: 'fantom',
         category: 'Transaction',
+        status: 'success',
         title: 'Notification 1',
         content: 'notification content',
         link: 'someLink',
@@ -184,6 +191,7 @@ describe('NotificationService', () => {
       const inputWarn: NotificationInput = {
         chain: 'fantom',
         category: 'Transaction',
+        status: 'success',
         title: 'Notification 2',
         content: 'warning content',
         link: 'someLink',
@@ -194,6 +202,7 @@ describe('NotificationService', () => {
 
       expect(mockListener).toHaveBeenNthCalledWith(1, {
         category: 'Transaction',
+        status: 'success',
         chain: 'fantom',
         content: 'notification content',
         dismissed: false,
@@ -207,6 +216,7 @@ describe('NotificationService', () => {
 
       expect(mockListener).toHaveBeenNthCalledWith(2, {
         category: 'Transaction',
+        status: 'success',
         chain: 'fantom',
         content: 'warning content',
         dismissed: false,
