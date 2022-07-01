@@ -89,6 +89,7 @@ const MultipleChoiceTemplate: ComponentStory<typeof Dropdown> = args => (
       <DropdownCheckboxItem label="Active" onChange={() => {}} />
       <DropdownCheckboxItem label="Matured" onChange={() => {}} />
       <DropdownCheckboxItem label="Inactive" onChange={() => {}} />
+      <DropdownCheckboxItem label="Disabled" onChange={() => {}} />
     </Dropdown>
   </div>
 );
@@ -105,6 +106,7 @@ const RightSideIconTemplate: ComponentStory<typeof Dropdown> = args => (
       <DropdownCheckboxItem label="Active" onChange={() => {}} icon="up-arrow-thin" />
       <DropdownCheckboxItem label="Matured" onChange={() => {}} />
       <DropdownCheckboxItem label="Inactive" onChange={() => {}} />
+      <DropdownCheckboxItem label="Disabled" onChange={() => {}} />
     </Dropdown>
   </div>
 );
@@ -137,6 +139,12 @@ const RadioTemplate: ComponentStory<typeof Dropdown> = args => {
           checked={selectedValue === 'inactive'}
           label="Inactive"
           value="inactive"
+          onChange={setSelectedValue}
+        />
+        <DropdownRadioItem
+          checked={selectedValue === 'disabled'}
+          label="Disabled"
+          value="disabled"
           onChange={setSelectedValue}
         />
       </Dropdown>

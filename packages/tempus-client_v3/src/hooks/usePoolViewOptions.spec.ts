@@ -10,6 +10,7 @@ import {
   useFilteredSortedPoolList,
   useActivePoolList,
   useInactivePoolList,
+  useDisabledPoolList,
   useMaturedPoolList,
 } from './usePoolViewOptions';
 
@@ -152,6 +153,39 @@ describe('usePoolViewOptions', () => {
       viewType: 'grid',
       poolType: 'all',
       filters: new Set(['inactive']),
+      sortType: 'a-z',
+      sortOrder: 'asc',
+    };
+
+    expect(poolViewResult.current[0]).toEqual(expectedPoolViewOptions2);
+    expect(filteredSortedPoolListResult.current).toEqual([]);
+  });
+
+  it('update filters to set of ["disabled"]', async () => {
+    const { result: poolViewResult, waitForNextUpdate } = renderHook(() => usePoolViewOptions());
+    const { result: filteredSortedPoolListResult } = renderHook(() => useFilteredSortedPoolList());
+    const [poolViewOptions, setPoolViewOptions] = poolViewResult.current;
+    const expectedPoolViewOptions1 = {
+      viewType: 'grid',
+      poolType: 'all',
+      filters: new Set<FilterType>(['active']),
+      sortType: 'a-z',
+      sortOrder: 'asc',
+    };
+    const expectedFilteredSortedPoolListResult = [pool1, pool2, pool3, pool4, pool5];
+
+    expect(poolViewOptions).toEqual(expectedPoolViewOptions1);
+    expect(filteredSortedPoolListResult.current).toEqual(expectedFilteredSortedPoolListResult);
+
+    await act(async () => {
+      setPoolViewOptions({ filters: new Set(['disabled']) });
+      await waitForNextUpdate();
+    });
+
+    const expectedPoolViewOptions2 = {
+      viewType: 'grid',
+      poolType: 'all',
+      filters: new Set(['disabled']),
       sortType: 'a-z',
       sortOrder: 'asc',
     };
@@ -323,6 +357,11 @@ describe('usePoolViewOptions', () => {
 
   it('useInactivePoolList should return a list of inactive pools', () => {
     const { result } = renderHook(() => useInactivePoolList());
+    expect(result.current).toEqual([]);
+  });
+
+  it('useDisabledPoolList should return a list of disabled pools', () => {
+    const { result } = renderHook(() => useDisabledPoolList());
     expect(result.current).toEqual([]);
   });
 
