@@ -1,7 +1,13 @@
 import { FC, useCallback, useMemo } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { Chain, ProtocolName, Ticker, ZERO } from 'tempus-core-services';
-import { useSelectedChain, useUserDepositedPools, usePoolBalances, useWalletAddress } from '../../../hooks';
+import {
+  useSelectedChain,
+  useUserDepositedPools,
+  usePoolBalances,
+  useWalletAddress,
+  useNegativePoolInterestRates,
+} from '../../../hooks';
 import { GroupedPoolCardGrid, PoolCardData, PoolCardGroupId, PoolCardStatus } from '../../shared';
 import PortfolioNoPositions from './PortfolioNoPositions';
 import PortfolioPositionsWalletNotConnected from './PortfolioPositionsWalletNotConnected';
@@ -13,6 +19,7 @@ const PortfolioPositions: FC = () => {
 
   const tempusPools = useUserDepositedPools();
   const balances = usePoolBalances();
+  const negativePoolInterestRates = useNegativePoolInterestRates();
   const [walletAddress] = useWalletAddress();
   const [chain] = useSelectedChain();
 
@@ -23,9 +30,17 @@ const PortfolioPositions: FC = () => {
       .filter(tempusPool => tempusPool.chain === chain)
       .forEach(tempusPool => {
         const isMatured = tempusPool.maturityDate <= Date.now();
-        const uniqueGroupId: PoolCardGroupId = `${tempusPool.backingToken}-${tempusPool.protocol}-${
-          isMatured ? 'Matured' : 'Fixed'
-        }`;
+        const isInactive = negativePoolInterestRates[`${tempusPool.chain}-${tempusPool.address}`];
+
+        let status: PoolCardStatus = 'Fixed';
+        if (isMatured) {
+          status = 'Matured';
+        }
+        if (isInactive) {
+          status = 'Inactive';
+        }
+
+        const uniqueGroupId: PoolCardGroupId = `${tempusPool.backingToken}-${tempusPool.protocol}-${status}`;
 
         if (!groups.has(uniqueGroupId)) {
           groups.set(uniqueGroupId, []);
@@ -36,14 +51,14 @@ const PortfolioPositions: FC = () => {
           token: tempusPool.backingToken,
           tokenAddress: tempusPool.backingTokenAddress,
           protocol: tempusPool.protocol,
-          matured: isMatured,
+          status,
           pools: [tempusPool],
           totalBalance: balances[`${chain}-${tempusPool.address}`]?.balanceInBackingToken ?? ZERO,
         });
       });
 
     return groups;
-  }, [balances, chain, tempusPools]);
+  }, [balances, chain, negativePoolInterestRates, tempusPools]);
 
   const handleCardClick = useCallback(
     (cardChain: Chain, ticker: Ticker, protocol: ProtocolName, _status: PoolCardStatus, poolAddresses: string[]) => {

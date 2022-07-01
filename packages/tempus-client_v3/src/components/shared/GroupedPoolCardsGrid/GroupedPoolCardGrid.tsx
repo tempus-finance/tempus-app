@@ -35,7 +35,7 @@ const GroupedPoolCardGrid: FC<GroupedPoolCardGridProps> = props => {
           token,
           tokenAddress: cardsFromGroup[0].tokenAddress,
           protocol,
-          matured: cardStatus === 'Matured',
+          status: cardStatus,
           pools: cardsFromGroup.flatMap(card => card.pools),
           totalBalance: cardsFromGroup.reduce((sum, card) => sum.add(card.totalBalance ?? ZERO), ZERO),
           cardsInGroup: cardsFromGroup.length,

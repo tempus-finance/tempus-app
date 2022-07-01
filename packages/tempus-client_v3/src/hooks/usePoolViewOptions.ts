@@ -78,10 +78,8 @@ const inactivePoolList$ = combineLatest([poolList$, negativePoolInterestRateMap$
 );
 const maturedPoolList$ = poolList$.pipe(map(tempusPools => tempusPools.filter(isPoolMatured)));
 
-const filteredPoolList$ = combineLatest([poolList$, stateFilters$]).pipe(
-  // only want to get the latest data instead of getting every interval
-  withLatestFrom(negativePoolInterestRateMap$),
-  map(([[tempusPools, filters], negativePoolInterestRates]) =>
+const filteredPoolList$ = combineLatest([poolList$, stateFilters$, negativePoolInterestRateMap$]).pipe(
+  map(([tempusPools, filters, negativePoolInterestRates]) =>
     tempusPools.filter(tempusPool =>
       [...filters].some(filter => {
         switch (filter) {
