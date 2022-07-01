@@ -205,7 +205,7 @@ workflows:
             - start-tempus-client-v3
       - build-storybook:
           requires:
-            - e2e-test
+            - build-tempus-client-v3
       - test-tempus-client-v3:
           requires:
             - build-tempus-core-services
