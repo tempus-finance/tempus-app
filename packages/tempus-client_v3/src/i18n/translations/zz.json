@@ -175,8 +175,8 @@
     "errorModalDescription": "~~~~~====={{{{{(((((errorModalDescription)))))}}}}}=====~~~~~"
   },
   "WalletPopup": {
-    "title": "",
-    "titleAddress": ""
+    "title": "~~~~~====={{{{{(((((title)))))}}}}}=====~~~~~",
+    "titleAddress": "~~~~~====={{{{{(((((titleAddress)))))}}}}}=====~~~~~"
   },
   "WithdrawModal": {
     "description": "~~~~~====={{{{{(((((description)))))}}}}}=====~~~~~",
