@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Decimal, DecimalUtils } from 'tempus-core-services';
+import { ArrowRight } from '../../icons';
 import TreasuryValueService from '../../services/TreasuryValueService';
 
 import './Treasury.scss';
@@ -29,12 +30,22 @@ const Treasury = (): JSX.Element => {
 
   return (
     <div className="tw__funds-available">
-      <p className="tw__funds-available-title">
-        Funds available for builders <span className="tw__funds-available-badge">POWERED BY $TEMP</span>
-      </p>
-
-      <p className="tw__funds-available-value">{valueFormatted}</p>
-      <div className="tw__funds-available-separator" />
+      <h2 className="tw__section-title">Treasury Funds</h2>
+      <div className="tw__funds-available__body">
+        <div className="tw__funds-available__description">
+          <div>
+            <span>Available for Innovation.</span>
+          </div>
+          <div>
+            <a href="" rel="external noreferrer nofollow" target="_blank" className="tw__funds-available__read-more">
+              Read more about our Grants <ArrowRight color="#050A4A" />
+            </a>
+          </div>
+        </div>
+        <div className="tw__funds-available__value">
+          <p>{valueFormatted}</p>
+        </div>
+      </div>
     </div>
   );
 };

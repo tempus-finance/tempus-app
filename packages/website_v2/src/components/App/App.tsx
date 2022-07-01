@@ -7,6 +7,7 @@ import Footer from '../Footer';
 import Investors from '../Investors';
 import Join from '../Join';
 import Invest from '../Invest';
+import Treasury from '../Treasury';
 import Who from '../Who';
 
 const App = (): JSX.Element => {
@@ -18,6 +19,7 @@ const App = (): JSX.Element => {
       <Hero />
       <About />
       <Invest />
+      <Treasury />
       <Who />
       <Investors />
       <Blog />
