@@ -1,10 +1,14 @@
-import Header from '../Header';
+import TeamHeader from './TeamHeader';
+import WorkedWith from './WorkedWith';
 import Footer from '../Footer';
 import Join from '../Join';
 
+import './TeamPage.scss';
+
 const TeamPage = (): JSX.Element => (
   <div className="tw__team">
-    <Header />
+    <TeamHeader />
+    <WorkedWith />
     <Join />
     <Footer />
   </div>

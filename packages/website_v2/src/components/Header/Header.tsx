@@ -4,7 +4,9 @@ import './Header.scss';
 const Header = (): JSX.Element => (
   <div className="tw__header">
     <div>
-      <img src="/images/header-logo.svg" alt="Tempus DAO" />
+      <Link href="/">
+        <img src="/images/header-logo.svg" alt="Tempus DAO" />
+      </Link>
     </div>
     <div className="tw__header-links">
       {/* TODO - Add click handlers */}
