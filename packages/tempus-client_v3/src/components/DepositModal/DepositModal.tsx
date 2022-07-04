@@ -25,6 +25,7 @@ import {
   useAllowances,
   useAppEvent,
   useLocale,
+  useNotifications,
 } from '../../hooks';
 import { MaturityTerm, TokenMetadata, TokenMetadataProp } from '../../interfaces';
 import { ActionButtonState, Loading, ModalProps } from '../shared';
@@ -36,7 +37,6 @@ import DepositModalHeader from './DepositModalHeader';
 import DepositModalInfoRows from './DepositModalInfoRows';
 
 import './DepositModal.scss';
-import { useNotifications } from '../../hooks/useNotifications';
 
 export interface DepositModalProps extends ModalProps {
   tokens: TokenMetadataProp;
