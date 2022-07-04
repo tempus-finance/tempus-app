@@ -1,10 +1,15 @@
 .tw__funds-available {
   display: flex;
   align-items: flex-start;
-  padding: 40px;
+  padding: 40px 40px 100px 40px;
   background-color: #efecff;
   color: #050a4a;
   flex-direction: column;
+
+  @media screen and (max-width: 768px) {
+    padding: 60px 16px;
+    text-align: center;
+  }
 }
 
 .tw__funds-available-title {
@@ -18,7 +23,12 @@
   display: flex;
   flex-direction: row;
   width: 100%;
+  margin-top: 40px;
   justify-content: space-between;
+
+  @media screen and (max-width: 1024px) {
+    flex-direction: column;
+  }
 }
 
 .tw__funds-available__description {
@@ -26,18 +36,15 @@
   flex-direction: column;
   align-items: flex-start;
   justify-content: center;
+  font-size: 20px;
+  line-height: 30px;
 
-  > div {
-    display: flex;
-    flex-direction: column;
+  @media screen and (max-width: 768px) {
     align-items: center;
-    justify-content: center;
-    font-size: 20px;
-    line-height: 30px;
+  }
 
-    &:first-child {
-      padding-bottom: 12px;
-    }
+  > div:first-child {
+    margin-bottom: 12px;
   }
 }
 
@@ -46,16 +53,29 @@
   align-items: center;
   flex-direction: row;
   text-decoration: none;
+
+  .tw__arrow-right-icon {
+    margin-left: 12px;
+  }
 }
 
 .tw__funds-available__value {
-  margin-right: 120px;
+  margin-right: 20px;
+
+  @media screen and (max-width: 1024px) {
+    margin-top: 24px;
+  }
+
   > p {
-    margin: 0.2em auto;
+    margin: 0 auto;
     font-style: normal;
     font-weight: 500;
-    font-size: 152px;
+    font-size: clamp(52px, 8.5vw, 152px);
     text-align: left;
-    color: #050A4A;
+    color: #050a4a;
+
+    @media screen and (max-width: 768px) {
+      text-align: center;
+    }
   }
 }
