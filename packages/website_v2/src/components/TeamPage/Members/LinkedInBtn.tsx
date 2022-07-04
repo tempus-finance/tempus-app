@@ -1,3 +1,4 @@
+import { FC } from 'react';
 import { Link } from '../../shared/';
 
 const LinkedInIcon = () => (
@@ -15,7 +16,7 @@ interface BtnProps {
   url?: string;
 }
 
-const LinkedInBtn = (props: BtnProps) => {
+const LinkedInBtn: FC<BtnProps> = props => {
   const { url } = props;
 
   if (!url) return null;

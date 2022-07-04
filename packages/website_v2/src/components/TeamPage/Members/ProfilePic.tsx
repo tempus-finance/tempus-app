@@ -1,3 +1,5 @@
+import { FC } from 'react';
+
 const AvatarTemplate = () => (
   <svg width="176" height="176" viewBox="0 0 176 176" fill="none" xmlns="http://www.w3.org/2000/svg">
     <rect width="176" height="176" fill="#F3F7F9" />
@@ -26,7 +28,7 @@ interface ProfilePicProps {
   url?: string;
 }
 
-const ProfilePic = ({ url }: ProfilePicProps) => (
+const ProfilePic: FC<ProfilePicProps> = ({ url }) => (
   <div className="tw__team__members__profile-pic">{url ? <img src={url} alt="profile pic" /> : <AvatarTemplate />}</div>
 );
 

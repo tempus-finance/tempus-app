@@ -1,3 +1,4 @@
+import { FC } from 'react';
 import { Link } from '../../shared/';
 
 const GithubIcon = () => (
@@ -15,7 +16,7 @@ interface BtnProps {
   url?: string;
 }
 
-const GithubBtn = (props: BtnProps) => {
+const GithubBtn: FC<BtnProps> = props => {
   const { url } = props;
 
   if (!url) return null;
