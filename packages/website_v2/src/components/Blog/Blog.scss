@@ -9,9 +9,44 @@
   background-color: #050a4a;
   color: #eeecff;
 
+  @media screen and (max-width: 768px) {
+    padding: 60px 16px;
+    text-align: center;
+  }
+
   .tw__section-title {
     margin-bottom: 100px;
     color: #eeecff;
+
+    @media screen and (max-width: 768px) {
+      margin-bottom: 8px;
+    }
+  }
+
+  .tw__section__subtitles {
+    margin-bottom: 100px;
+
+    @media screen and (max-width: 768px) {
+      margin-bottom: 60px;
+
+      .tw__section-subtitle {
+        flex-grow: 1;
+      }
+
+      .tw__blog__read-more {
+        display: none;
+      }
+    }
+  }
+
+  // mobile only
+  > .tw__blog__read-more {
+    display: none;
+
+    @media screen and (max-width: 768px) {
+      display: flex;
+      margin: 20px auto;
+    }
   }
 }
 
@@ -20,7 +55,12 @@
   flex-grow: 1;
   height: 1px;
   width: 100%;
+  margin-bottom: 40px;
   background-color: #eeecff;
+
+  @media screen and (max-width: 768px) {
+    display: none;
+  }
 }
 
 .tw__blog__read-more {
@@ -35,21 +75,32 @@
   color: #eeecff;
   text-decoration: none;
 
-  &.tw__hover-animation:after {
+  .tw__hover-animation:after {
     background-color: #eeecff;
+  }
+
+  .tw__arrow-right-icon {
+    margin-left: 9px;
   }
 }
 
 .tw__blog__article-container {
-  display: flex;
   justify-content: center;
-  padding-top: 40px;
-  padding-bottom: 40px;
   width: 100%;
 }
 
 .tw__blog__articles {
   display: grid;
-  grid-template-columns: repeat(3, 439px);
+  grid-template-columns: repeat(3, 1fr);
   column-gap: 24px;
+
+  @media screen and (max-width: 1024px) {
+    grid-template-columns: repeat(2, 1fr);
+    row-gap: 24px;
+  }
+
+  @media screen and (max-width: 768px) {
+    width: 100%;
+    grid-template-columns: 1fr;
+  }
 }
