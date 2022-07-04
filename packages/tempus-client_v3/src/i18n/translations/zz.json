@@ -62,6 +62,7 @@
     "filterActive": "~~~~~====={{{{{(((((filterActive)))))}}}}}=====~~~~~",
     "filterInactive": "~~~~~====={{{{{(((((filterInactive)))))}}}}}=====~~~~~",
     "filterMatured": "~~~~~====={{{{{(((((filterMatured)))))}}}}}=====~~~~~",
+    "filterDisabled": "~~~~~====={{{{{(((((filterDisabled)))))}}}}}=====~~~~~",
     "optionFilter": "~~~~~====={{{{{(((((optionFilter)))))}}}}}=====~~~~~",
     "optionSort": "~~~~~====={{{{{(((((optionSort)))))}}}}}=====~~~~~",
     "sortAPR": "~~~~~====={{{{{(((((sortAPR)))))}}}}}=====~~~~~",

@@ -7,6 +7,9 @@ import {
   usePoolBalances,
   useWalletAddress,
   useNegativePoolInterestRates,
+  isPoolMatured,
+  isPoolInactive,
+  isPoolDisabled,
 } from '../../../hooks';
 import { GroupedPoolCardGrid, PoolCardData, PoolCardGroupId, PoolCardStatus } from '../../shared';
 import PortfolioNoPositions from './PortfolioNoPositions';
@@ -29,15 +32,17 @@ const PortfolioPositions: FC = () => {
     tempusPools
       .filter(tempusPool => tempusPool.chain === chain)
       .forEach(tempusPool => {
-        const isMatured = tempusPool.maturityDate <= Date.now();
-        const isInactive = negativePoolInterestRates[`${tempusPool.chain}-${tempusPool.address}`];
+        const isMatured = isPoolMatured(tempusPool);
+        const isInactive = isPoolInactive(tempusPool, negativePoolInterestRates);
+        const isDisabled = isPoolDisabled(tempusPool);
 
         let status: PoolCardStatus = 'Fixed';
         if (isMatured) {
           status = 'Matured';
-        }
-        if (isInactive) {
+        } else if (isInactive) {
           status = 'Inactive';
+        } else if (isDisabled) {
+          status = 'Disabled';
         }
 
         const uniqueGroupId: PoolCardGroupId = `${tempusPool.backingToken}-${tempusPool.protocol}-${status}`;
