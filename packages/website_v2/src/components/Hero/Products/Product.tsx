@@ -1,4 +1,5 @@
 import { FC, ReactElement } from 'react';
+import { Link } from '../../shared';
 
 type ProductBannerType = 'bright' | 'dark';
 
@@ -28,9 +29,9 @@ const Product: FC<ProductProps> = props => {
           <h3 className="tw__products__product-title">{title}</h3>
           <p className="tw__products__product-description">{description}</p>
         </div>
-        <a className="tw__products__product-button" href={buttonLink ?? '#'}>
+        <Link className="tw__products__product-button" href={buttonLink ?? '#'}>
           {buttonLabel}
-        </a>
+        </Link>
       </div>
     </div>
   );

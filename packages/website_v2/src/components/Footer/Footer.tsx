@@ -1,3 +1,4 @@
+import { Link } from '../shared';
 import './Footer.scss';
 
 const Footer = (): JSX.Element => (
@@ -10,64 +11,48 @@ const Footer = (): JSX.Element => (
       <div className="tw__footer__links-column">
         <p className="tw__footer__links-title">Token</p>
         <div className="tw__footer__link-container">
-          <a
-            className="tw__footer__link tw__hover-animation"
-            href="https://forum.tempus.finance/"
-            target="_blank"
-            rel="noreferrer"
-          >
+          <Link className="tw__footer__link tw__hover-animation" href="https://forum.tempus.finance/">
             Governance
-          </a>
+          </Link>
         </div>
         {/* TODO - Add token page */}
         <div className="tw__footer__link-container">
-          <a className="tw__footer__link tw__hover-animation" href="#" target="_blank" rel="noreferrer">
+          <Link className="tw__footer__link tw__hover-animation" href="/token">
             Tokenomics
-          </a>
+          </Link>
         </div>
         <div className="tw__footer__link-container">
-          <a
-            className="tw__footer__link tw__hover-animation"
-            href="https://www.coingecko.com/en/coins/tempus"
-            target="_blank"
-            rel="noreferrer"
-          >
+          <Link className="tw__footer__link tw__hover-animation" href="https://www.coingecko.com/en/coins/tempus">
             Coingecko
-          </a>
+          </Link>
         </div>
         <div className="tw__footer__link-container">
-          <a
-            className="tw__footer__link tw__hover-animation"
-            href="https://coinmarketcap.com/currencies/tempus/"
-            target="_blank"
-            rel="noreferrer"
-          >
+          <Link className="tw__footer__link tw__hover-animation" href="https://coinmarketcap.com/currencies/tempus/">
             Coinmarketcap
-          </a>
+          </Link>
         </div>
       </div>
       <div className="tw__footer__links-column">
         <p className="tw__footer__links-title">Team</p>
-        {/* TODO - Add Team page */}
         <div className="tw__footer__link-container">
-          <a className="tw__footer__link tw__hover-animation" href="#" target="_blank" rel="noreferrer">
+          <Link className="tw__footer__link tw__hover-animation" href="/team">
+            Team
+          </Link>
+        </div>
+        <div className="tw__footer__link-container">
+          <Link className="tw__footer__link tw__hover-animation" href="/#">
             Tempus Labs
-          </a>
+          </Link>
         </div>
         <div className="tw__footer__link-container">
-          <a className="tw__footer__link tw__hover-animation" href="#investors-section">
+          <Link className="tw__footer__link tw__hover-animation" href="/#investors-section">
             Investors
-          </a>
+          </Link>
         </div>
         <div className="tw__footer__link-container">
-          <a
-            className="tw__footer__link tw__hover-animation"
-            href="https://angel.co/company/tempusfinance/jobs"
-            target="_blank"
-            rel="noreferrer"
-          >
+          <Link className="tw__footer__link tw__hover-animation" href="https://angel.co/company/tempusfinance/jobs">
             We&apos;re Hiring!
-          </a>
+          </Link>
         </div>
         <div className="tw__footer__link-container">
           <a className="tw__footer__link tw__hover-animation" href="mailto:contact@tempus.finance">
@@ -78,44 +63,24 @@ const Footer = (): JSX.Element => (
       <div className="tw__footer__links-column">
         <p className="tw__footer__links-title">Community</p>
         <div className="tw__footer__link-container">
-          <a
-            className="tw__footer__link tw__hover-animation"
-            href="https://discord.com/invite/6gauHECShr"
-            target="_blank"
-            rel="noreferrer"
-          >
+          <Link className="tw__footer__link tw__hover-animation" href="https://discord.com/invite/6gauHECShr">
             Discord
-          </a>
+          </Link>
         </div>
         <div className="tw__footer__link-container">
-          <a
-            className="tw__footer__link tw__hover-animation"
-            href="https://twitter.com/tempusfinance"
-            target="_blank"
-            rel="noreferrer"
-          >
+          <Link className="tw__footer__link tw__hover-animation" href="https://twitter.com/tempusfinance">
             Twitter
-          </a>
+          </Link>
         </div>
         <div className="tw__footer__link-container">
-          <a
-            className="tw__footer__link tw__hover-animation"
-            href="https://t.me/tempuschat"
-            target="_blank"
-            rel="noreferrer"
-          >
+          <Link className="tw__footer__link tw__hover-animation" href="https://t.me/tempuschat">
             Telegram
-          </a>
+          </Link>
         </div>
         <div className="tw__footer__link-container">
-          <a
-            className="tw__footer__link tw__hover-animation"
-            href="https://medium.com/tempusfinance"
-            target="_blank"
-            rel="noreferrer"
-          >
+          <Link className="tw__footer__link tw__hover-animation" href="https://medium.com/tempusfinance">
             Medium
-          </a>
+          </Link>
         </div>
       </div>
       <div className="tw__footer__links-column">

@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Decimal, DecimalUtils } from 'tempus-core-services';
 import { ArrowRight } from '../../icons';
 import TreasuryValueService from '../../services/TreasuryValueService';
+import { Link } from '../shared';
 
 import './Treasury.scss';
 
@@ -37,14 +38,9 @@ const Treasury = (): JSX.Element => {
             <span>Available for Innovation.</span>
           </div>
           <div>
-            <a
-              href=""
-              rel="external noreferrer nofollow"
-              target="_blank"
-              className="tw__funds-available__read-more tw__hover-animation"
-            >
+            <Link href="" className="tw__funds-available__read-more tw__hover-animation">
               Read more about our Grants <ArrowRight color="#050A4A" />
-            </a>
+            </Link>
           </div>
         </div>
         <div className="tw__funds-available__value">
