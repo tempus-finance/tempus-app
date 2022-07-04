@@ -3,6 +3,9 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { Chain, prettifyChainName, ProtocolName, Ticker } from 'tempus-core-services';
 import {
+  isPoolDisabled,
+  isPoolInactive,
+  isPoolMatured,
   useChainList,
   useFilteredSortedPoolList,
   useNegativePoolInterestRates,
@@ -60,7 +63,7 @@ const MarketsPools = (): JSX.Element => {
         }
 
         // We want to show one card per matured pool on markets page
-        if (pool.maturityDate < Date.now()) {
+        if (isPoolMatured(pool)) {
           chainCards.push({
             pools: [pool],
             chain: pool.chain,
@@ -73,7 +76,7 @@ const MarketsPools = (): JSX.Element => {
         }
 
         // We want to show one card per inactive pool on markets page
-        if (negativePoolInterestRates[`${pool.chain}-${pool.address}`]) {
+        if (isPoolInactive(pool, negativePoolInterestRates)) {
           chainCards.push({
             pools: [pool],
             chain: pool.chain,
@@ -81,6 +84,19 @@ const MarketsPools = (): JSX.Element => {
             tokenAddress: pool.backingTokenAddress,
             protocol: pool.protocol,
             status: 'Inactive',
+          });
+          return;
+        }
+
+        // We want to show one card per disabled pool on markets page
+        if (isPoolDisabled(pool)) {
+          chainCards.push({
+            pools: [pool],
+            chain: pool.chain,
+            token: pool.backingToken,
+            tokenAddress: pool.backingTokenAddress,
+            protocol: pool.protocol,
+            status: 'Disabled',
           });
           return;
         }

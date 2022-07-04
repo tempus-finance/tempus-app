@@ -62,6 +62,7 @@
     "filterActive": "Active ({{numOfPool}})",
     "filterInactive": "Inactive ({{numOfPool}})",
     "filterMatured": "Matured ({{numOfPool}})",
+    "filterDisabled": "Disabled ({{numOfPool}})",
     "optionFilter": "Filter",
     "optionSort": "Sort",
     "sortAPR": "APR %",
