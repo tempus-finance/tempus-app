@@ -47,9 +47,12 @@ const Blog = (): JSX.Element => {
       <div className="tw__blog-separator" />
       <div className="tw__section__subtitles">
         <h3 className="tw__section-subtitle">Checkout our latest alpha</h3>
-        <Link href="https://medium.com/tempusfinance/" className="tw__blog__read-more tw__hover-animation">
-          Read more on our Blog <ArrowRight />
-        </Link>
+        <div className="tw__blog__read-more">
+          <Link href="https://medium.com/tempusfinance/" className="tw__hover-animation">
+            Read more on our Blog
+          </Link>
+          <ArrowRight />
+        </div>
       </div>
 
       <div className="tw__blog__article-container">
@@ -65,6 +68,13 @@ const Blog = (): JSX.Element => {
             />
           ))}
         </div>
+      </div>
+
+      <div className="tw__blog__read-more">
+        <Link href="https://medium.com/tempusfinance/" className="tw__hover-animation">
+          Read more on our Blog
+        </Link>
+        <ArrowRight />
       </div>
     </div>
   );
