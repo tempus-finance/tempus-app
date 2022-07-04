@@ -62,7 +62,7 @@
     "filterActive": "",
     "filterInactive": "",
     "filterMatured": "",
-    "filterDisabled": "",
+    "filterDisabled": "Disabilitate ({{numOfPool}})",
     "optionFilter": "",
     "optionSort": "",
     "sortAPR": "",
