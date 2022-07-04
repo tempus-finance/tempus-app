@@ -1,5 +1,6 @@
 import { FC } from 'react';
 import { ArrowRight } from '../../../icons';
+import { Link } from '../../shared';
 
 import './Article.scss';
 
@@ -15,7 +16,7 @@ const Article: FC<ArticleProps> = props => {
   const { date, title, description, link, thumbnail } = props;
 
   return (
-    <a href={link} rel="external noreferrer nofollow" target="_blank" className="tw__article">
+    <Link href={link} className="tw__article">
       <div className="tw__article-image" style={{ backgroundImage: `url('${thumbnail}')` }} />
       <div className="tw__article-content">
         <div className="tw__article-date">
@@ -29,7 +30,7 @@ const Article: FC<ArticleProps> = props => {
           <ArrowRight />
         </div>
       </div>
-    </a>
+    </Link>
   );
 };
 export default Article;
