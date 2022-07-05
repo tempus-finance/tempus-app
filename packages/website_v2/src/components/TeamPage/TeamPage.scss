@@ -6,6 +6,8 @@
   }
 
   .tw__team__header {
+    display: flex;
+    flex-direction: column;
     background: linear-gradient(89.84deg, #ff7700 0.14%, #c6bfff 99.42%);
     background-repeat: no-repeat;
     background-size: cover;
@@ -29,14 +31,21 @@
     .tw__team__header__title {
       display: flex;
       justify-content: center;
-      padding-top: 132px;
+      align-items: center;
+      flex-grow: 1;
       font-size: 72px;
       font-weight: 700;
       line-height: 79px;
 
+      @media screen and (max-width: 1200px) {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
+
       .tw__team__header__title-text {
         color: #eeecff;
-        margin: 8px;
+        margin: 0 8px;
 
         &:first-child {
           opacity: 0.5;
@@ -59,7 +68,7 @@
           font-size: 34px;
           font-weight: 600;
           line-height: 34px;
-          margin-bottom: 14;
+          margin-bottom: 14px;
         }
 
         &:last-child {
@@ -72,7 +81,7 @@
     }
 
     .tw__team__members__container {
-      padding: 40px;
+      padding: 40px 0;
       box-sizing: border-box;
 
       @media screen and (min-width: 768px) {
