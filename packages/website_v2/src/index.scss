@@ -24,6 +24,17 @@ body {
   font-family: articulat-cf, sans-serif;
 }
 
+.tw__btn {
+  padding: 0;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+
+  &:disabled {
+    cursor: default;
+  }
+}
+
 .tw__section-title {
   width: 100%;
   margin: 0;

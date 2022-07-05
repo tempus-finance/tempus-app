@@ -9,10 +9,66 @@
   align-items: center;
   justify-content: space-between;
   box-sizing: border-box;
+
+  @media screen and (max-width: 768px) {
+    height: 76px;
+    padding: 0 16px;
+
+    .tw__header-logo img {
+      width: 145px;
+    }
+  }
+}
+
+.tw__header-menu-button {
+  padding: 0;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  display: none;
+
+  @media screen and (max-width: 1024px) {
+    display: block;
+  }
+
+  &:disabled {
+    cursor: default;
+  }
+}
+
+.tw__header-close-button {
+  display: none;
+
+  @media screen and (max-width: 1024px) {
+    display: block;
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    color: #ffffff;
+    z-index: 9999;
+  }
 }
 
 .tw__header-links {
   display: flex;
+
+  @media screen and (max-width: 1024px) {
+    display: none;
+
+    &.tw__header-menu-opened {
+      display: flex;
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background-color: #050a4a;
+      z-index: 9998;
+    }
+  }
 
   > p:last-child {
     margin: 0px;
@@ -22,8 +78,20 @@
 .tw__header-link {
   font-size: 18px;
   line-height: 18px;
-  margin: 0px 36px 0px 0px;
   cursor: pointer;
+
+  &:not(:last-child) {
+    margin: 0 36px 0 0;
+  }
+
+  @media screen and (max-width: 1024px) {
+    font-size: 26px;
+    line-height: 26px;
+
+    &:not(:last-child) {
+      margin: 0 0 30px 0;
+    }
+  }
 
   &.tw__hover-animation:after {
     bottom: -8px;
@@ -38,4 +106,9 @@
   bottom: 6px;
   left: 40px;
   right: 40px;
+
+  @media screen and (max-width: 768px) {
+    left: 16px;
+    right: 16px;
+  }
 }
