@@ -34,13 +34,6 @@
   }
 }
 
-.tw__treasury-title {
-  position: relative;
-  font-size: 42px;
-  line-height: 120%;
-  margin: 0px;
-}
-
 .tw__treasury__body {
   display: flex;
   flex-direction: row;
@@ -63,6 +56,8 @@
 
   @media screen and (max-width: 768px) {
     align-items: center;
+    font-size: 18px;
+    line-height: 28px;
   }
 
   > div:first-child {

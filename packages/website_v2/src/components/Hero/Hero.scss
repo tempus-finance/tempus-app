@@ -7,7 +7,7 @@
 
 .tw__hero-title {
   margin: 0;
-  font-weight: 500;
+  font-weight: 700;
   font-size: 72px;
   line-height: 120%;
   color: rgba(238, 236, 255, 1);
@@ -15,6 +15,8 @@
   @media screen and (max-width: 768px) {
     margin: 0 16px 40px 16px;
     text-align: center;
+    font-size: 42px;
+    line-height: 50px;
   }
 }
 
@@ -26,8 +28,11 @@
   color: rgba(238, 236, 255, 0.25);
 
   @media screen and (max-width: 768px) {
+    max-width: 300px;
     margin: 40px 16px 0 16px;
     text-align: center;
+    font-size: 42px;
+    line-height: 50px;
   }
 }
 
@@ -46,6 +51,14 @@
   line-height: 18px;
   color: #eeecff;
   cursor: pointer;
+
+  @media screen and (max-width: 768px) {
+    margin-top: 20px;
+    width: 232px;
+    height: 48px;
+    font-size: 16px;
+    line-height: 16px;
+  }
 
   &:hover {
     background-color: #eeecff;

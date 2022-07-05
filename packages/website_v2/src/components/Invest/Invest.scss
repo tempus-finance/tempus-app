@@ -18,6 +18,7 @@
 
     @media screen and (max-width: 768px) {
       margin-bottom: 40px;
+      font-size: 24px;
     }
   }
 }
@@ -57,6 +58,10 @@
 .tw__invest__description {
   font-size: 20px;
   line-height: 30px;
+
+  @media screen and (max-width: 768px) {
+    font-size: 18px;
+  }
 }
 
 .tw__invest__links {
