@@ -20,9 +20,9 @@ const Product: FC<ProductProps> = props => {
   return (
     <div className="tw__products__product">
       <div className={`tw__products__product-banner tw__products__product-banner-${bannerType}`}>
-        {name && <div className="tw__products__product-name">{name}</div>}
         <div className="tw__products__product-banner-illustration">{bannerIllustration}</div>
         {badge && <div className="tw__products__product-badge">{badge}</div>}
+        {name && <div className="tw__products__product-name">{name}</div>}
       </div>
       <div className="tw__products__product-content">
         <div className="tw__products__product-content-text">

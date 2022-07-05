@@ -1,5 +1,5 @@
 const MoneyMarketIllustration = (): JSX.Element => (
-  <svg width="171" height="203" viewBox="0 0 171 203" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <svg viewBox="0 0 171 203" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path d="M20.9443 81.7871H149.685" stroke="white" strokeLinecap="round" strokeLinejoin="round" />
     <path
       d="M164.582 27.1357H6.04688C3.25956 27.1357 1 29.3953 1 32.1826V170.815C1 173.602 3.25956 175.862 6.04688 175.862H164.582C167.37 175.862 169.629 173.602 169.629 170.815V32.1826C169.629 29.3953 167.37 27.1357 164.582 27.1357Z"
