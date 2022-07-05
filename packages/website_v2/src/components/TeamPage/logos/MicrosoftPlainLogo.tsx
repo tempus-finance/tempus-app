@@ -1,4 +1,4 @@
-const MicrosoftWhiteLogo = (): JSX.Element => (
+const MicrosoftPlainLogo = (): JSX.Element => (
   <svg width="226" height="49" viewBox="0 0 226 49" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path
       fillRule="evenodd"
@@ -15,4 +15,4 @@ const MicrosoftWhiteLogo = (): JSX.Element => (
   </svg>
 );
 
-export default MicrosoftWhiteLogo;
+export default MicrosoftPlainLogo;
