@@ -18,12 +18,21 @@
   height: 100%;
   word-break: break-word;
   background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 0 0 10px 10px;
+
+  .tw__article-date {
+    color: #c6c0ff;
+  }
 
   .tw__article-readmore {
     align-self: flex-start;
     padding-top: 20px;
     margin-top: auto;
     cursor: pointer;
+
+    @media screen and (max-width: 768px) {
+      align-self: center;
+    }
   }
 }
 
@@ -33,18 +42,48 @@
   font-size: 20px;
   line-height: 30px;
   padding-bottom: 14px;
+
+  @media screen and (max-width: 768px) {
+    justify-content: center;
+    font-size: 18px;
+    line-height: 28px;
+  }
 }
 
 .tw__article-title {
   font-weight: 600;
   font-size: 28px;
   line-height: 30px;
-  padding-bottom: 32px;
+  margin-bottom: 32px;
+
+  @media screen and (max-width: 768px) {
+    font-size: 20px;
+    margin-bottom: 12px;
+  }
+}
+
+.tw__article-description {
+  font-size: 16px;
+  line-height: 26px;
+  margin-bottom: 92px;
+
+  @media screen and (max-width: 768px) {
+    margin-bottom: 24px;
+  }
 }
 
 .tw__article-image {
   width: 100%;
   min-height: 239px;
   background-size: cover;
+  background-position: center;
   border-radius: 5px 5px 0px 0px;
+
+  @media screen and (max-width: 768px) {
+    min-height: 280px;
+  }
+
+  @media screen and (max-width: 320px) {
+    min-height: 180px;
+  }
 }

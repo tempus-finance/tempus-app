@@ -1,4 +1,5 @@
 import { FC, ReactElement } from 'react';
+import { Link } from '../../shared';
 
 type ProductBannerType = 'bright' | 'dark';
 
@@ -19,18 +20,18 @@ const Product: FC<ProductProps> = props => {
   return (
     <div className="tw__products__product">
       <div className={`tw__products__product-banner tw__products__product-banner-${bannerType}`}>
-        {name && <div className="tw__products__product-name">{name}</div>}
         <div className="tw__products__product-banner-illustration">{bannerIllustration}</div>
         {badge && <div className="tw__products__product-badge">{badge}</div>}
+        {name && <div className="tw__products__product-name">{name}</div>}
       </div>
       <div className="tw__products__product-content">
         <div className="tw__products__product-content-text">
           <h3 className="tw__products__product-title">{title}</h3>
           <p className="tw__products__product-description">{description}</p>
         </div>
-        <a className="tw__products__product-button" href={buttonLink ?? '#'}>
+        <Link className="tw__products__product-button" href={buttonLink ?? '#'}>
           {buttonLabel}
-        </a>
+        </Link>
       </div>
     </div>
   );

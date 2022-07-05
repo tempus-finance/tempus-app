@@ -1,14 +1,18 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter } from 'react-router-dom';
-import App from './components/App';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import HomePage from './components/HomePage';
+import TeamPage from './components/TeamPage';
 
 import './index.scss';
 
 ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
-      <App />
+      <Routes>
+        <Route path="/team" element={<TeamPage />} />
+        <Route path="/" element={<HomePage />} />
+      </Routes>
     </BrowserRouter>
   </React.StrictMode>,
   document.getElementById('root'),

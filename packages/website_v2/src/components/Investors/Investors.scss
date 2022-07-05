@@ -6,8 +6,13 @@
   box-sizing: border-box;
   position: relative;
   width: 100%;
-  padding: 100px 40px;
+  padding: 40px 40px 100px 40px;
   background-color: #efecff;
+
+  @media screen and (max-width: 768px) {
+    padding: 60px 16px;
+    text-align: center;
+  }
 }
 
 .tw__investors-separator {
@@ -15,25 +20,49 @@
   flex-grow: 1;
   height: 1px;
   width: 100%;
-  margin-top: 100px;
+  margin: 100px 0;
   background-color: #050a4a;
+
+  @media screen and (max-width: 768px) {
+    margin: 60px 0;
+  }
 }
 
 .tw__investors_logos {
   display: grid;
-  grid-template-columns: repeat(3, auto);
-  grid-template-rows: repeat(3, auto);
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  grid-gap: 120px;
   align-self: flex-start;
   justify-items: center;
   align-items: center;
-  width: 80%;
   margin: auto;
+
+  @media screen and (max-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(5, 1fr);
+    grid-gap: 80px 40px;
+  }
+
+  @media screen and (max-width: 320px) {
+    grid-gap: 40px;
+  }
 
   > * {
     max-width: 150px;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 60px;
+
+    @media screen and (max-width: 768px) {
+      &:last-child {
+        // span to the last two cells
+        grid-column: 1 / -1;
+      }
+    }
+
+    @media screen and (max-width: 320px) {
+      max-width: 90px;
+    }
   }
 }

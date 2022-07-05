@@ -25,6 +25,7 @@ body {
 }
 
 .tw__section-title {
+  width: 100%;
   margin: 0;
   font-style: normal;
   font-weight: 600;
@@ -46,6 +47,7 @@ body {
 }
 
 .tw__section-subtitle {
+  margin: 0;
   font-weight: 400;
   font-size: 20px;
   line-height: 30px;
@@ -71,7 +73,7 @@ body {
     height: 2px;
     bottom: 0;
     left: 0;
-    background-color: #050A4A;
+    background-color: #050a4a;
     transform-origin: bottom left;
     transition: transform 0.25s ease-out;
   }

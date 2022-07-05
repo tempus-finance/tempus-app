@@ -1,5 +1,5 @@
 const FixedIncomeIllustration = (): JSX.Element => (
-  <svg width="220" height="179" viewBox="0 0 220 179" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <svg viewBox="0 0 220 179" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path
       d="M80.9766 47.9492C81.4621 49.6954 82.3336 51.3104 83.5267 52.6751C87.6395 57.2678 94.1511 56.7078 99.2907 57.5464C104.43 58.385 111.348 61.1793 119.007 69.8349C122.041 65.2462 126.3 61.5981 131.3 59.3033C136.301 57.0085 141.845 56.1587 147.304 56.85L153.8 48.0703"
       stroke="white"

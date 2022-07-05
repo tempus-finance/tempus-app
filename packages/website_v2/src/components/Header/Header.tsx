@@ -1,17 +1,26 @@
+import { Link } from '../shared';
 import './Header.scss';
 
 const Header = (): JSX.Element => (
   <div className="tw__header">
     <div>
-      <img src="/images/header-logo.svg" alt="Tempus DAO" />
+      <Link href="/">
+        <img src="/images/header-logo.svg" alt="Tempus DAO" />
+      </Link>
     </div>
     <div className="tw__header-links">
       {/* TODO - Add click handlers */}
       <p className="tw__header-link tw__hover-animation">Products</p>
-      <p className="tw__header-link tw__hover-animation">Contributors</p>
+      <Link className="tw__header-link tw__hover-animation" href="/team">
+        Contributors
+      </Link>
       <p className="tw__header-link tw__hover-animation">Token</p>
-      <p className="tw__header-link tw__hover-animation">Docs</p>
-      <p className="tw__header-link tw__hover-animation">Blog</p>
+      <Link className="tw__header-link tw__hover-animation" href="https://docs.tempus.finance/">
+        Docs
+      </Link>
+      <Link className="tw__header-link tw__hover-animation" href="https://medium.com/tempusfinance">
+        Blog
+      </Link>
     </div>
     <div className="tw__header-separator" />
   </div>

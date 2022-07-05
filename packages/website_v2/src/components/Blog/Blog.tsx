@@ -2,6 +2,7 @@ import Axios from 'axios';
 import { format } from 'date-fns';
 import { useEffect, useState } from 'react';
 import { ArrowRight } from '../../icons';
+import { Link } from '../shared';
 import Article from './article/Article';
 import './Blog.scss';
 
@@ -46,14 +47,12 @@ const Blog = (): JSX.Element => {
       <div className="tw__blog-separator" />
       <div className="tw__section__subtitles">
         <h3 className="tw__section-subtitle">Checkout our latest alpha</h3>
-        <a
-          href="https://medium.com/tempusfinance/"
-          rel="external noreferrer nofollow"
-          target="_blank"
-          className="tw__blog__read-more tw__hover-animation"
-        >
-          Read more on our Blog <ArrowRight />
-        </a>
+        <div className="tw__blog__read-more">
+          <Link href="https://medium.com/tempusfinance/" className="tw__hover-animation">
+            Read more on our Blog
+          </Link>
+          <ArrowRight />
+        </div>
       </div>
 
       <div className="tw__blog__article-container">
@@ -69,6 +68,13 @@ const Blog = (): JSX.Element => {
             />
           ))}
         </div>
+      </div>
+
+      <div className="tw__blog__read-more">
+        <Link href="https://medium.com/tempusfinance/" className="tw__hover-animation">
+          Read more on our Blog
+        </Link>
+        <ArrowRight />
       </div>
     </div>
   );

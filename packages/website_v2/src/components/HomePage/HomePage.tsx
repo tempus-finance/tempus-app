@@ -10,7 +10,7 @@ import Invest from '../Invest';
 import Treasury from '../Treasury';
 import Who from '../Who';
 
-const App = (): JSX.Element => {
+const HomePage = (): JSX.Element => {
   const rootRef = useRef<HTMLDivElement>(null);
 
   return (
@@ -28,4 +28,4 @@ const App = (): JSX.Element => {
     </div>
   );
 };
-export default App;
+export default HomePage;

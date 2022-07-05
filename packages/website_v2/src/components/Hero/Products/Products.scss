@@ -3,6 +3,14 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-gap: 20px;
+
+  @media screen and (max-width: 1024px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media screen and (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
 }
 
 .tw__products__product {
@@ -13,14 +21,24 @@
   color: #050a4a;
   transition: transform 0.2s;
 
+  @media screen and (max-width: 768px) {
+    text-align: center;
+  }
+
   &:hover {
     transform: translateY(-5px);
   }
 
   .tw__products__product-banner {
     height: 263px;
+    display: flex;
     position: relative;
     border-radius: 12px 12px 0 0;
+
+    @media screen and (max-width: 768px) {
+      height: 200px;
+      justify-content: center;
+    }
 
     &.tw__products__product-banner-bright {
       background: linear-gradient(90deg, #ff7700 0%, #c6bfff 100%);
@@ -36,22 +54,46 @@
       left: 30px;
       font-size: 21px;
       color: #ffffff;
+
+      @media screen and (max-width: 768px) {
+        top: 16px;
+        left: 16px;
+        right: 16px;
+      }
     }
 
     .tw__products__product-banner-illustration {
+      max-width: 218px;
       display: flex;
       align-items: flex-end;
       position: absolute;
-      top: 16px;
+      top: 52px;
       bottom: 16px;
       right: 16px;
+
+      @media screen and (max-width: 768px) {
+        left: 16px;
+        right: 16px;
+        margin: 0 auto;
+      }
+
+      svg {
+        width: 100%;
+        height: 100%;
+      }
     }
 
     .tw__products__product-badge {
+      display: flex;
       position: absolute;
       left: 11px;
+      right: 11px;
       bottom: 0;
       transform: translateY(50%);
+
+      @media screen and (max-width: 768px) {
+        justify-content: center;
+      }
     }
   }
 
@@ -91,9 +133,13 @@
     font-size: 18px;
     font-weight: 600;
 
+    @media screen and (max-width: 768px) {
+      width: 100%;
+    }
+
     &:hover {
       background-color: #050a4a;
-      color: #EEECFF;
+      color: #eeecff;
     }
   }
 }
