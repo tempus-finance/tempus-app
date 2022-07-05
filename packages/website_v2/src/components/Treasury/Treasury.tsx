@@ -3,6 +3,7 @@ import { Decimal, DecimalUtils } from 'tempus-core-services';
 import { ArrowRight } from '../../icons';
 import TreasuryValueService from '../../services/TreasuryValueService';
 import { Link } from '../shared';
+import TreasuryBackground from './TreasuryBackground';
 
 import './Treasury.scss';
 
@@ -30,14 +31,17 @@ const Treasury = (): JSX.Element => {
   }, [value]);
 
   return (
-    <div className="tw__funds-available">
+    <div className="tw__treasury">
+      <div className="tw__treasury__background">
+        <TreasuryBackground />
+      </div>
       <h2 className="tw__section-title">Treasury Funds</h2>
-      <div className="tw__funds-available__body">
-        <div className="tw__funds-available__description">
+      <div className="tw__treasury__body">
+        <div className="tw__treasury__description">
           <div>
             <span>Available for Innovation.</span>
           </div>
-          <div className="tw__funds-available__read-more">
+          <div className="tw__treasury__read-more">
             <Link
               href="https://tempusfinance.notion.site/Tempus-Grants-Program-c54b4410e9db49139347210d5a340c5e"
               className="tw__hover-animation"
@@ -47,7 +51,7 @@ const Treasury = (): JSX.Element => {
             <ArrowRight color="#050A4A" />
           </div>
         </div>
-        <div className="tw__funds-available__value">
+        <div className="tw__treasury__value">
           <p>{valueFormatted}</p>
         </div>
       </div>
