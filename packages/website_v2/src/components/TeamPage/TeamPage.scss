@@ -144,6 +144,9 @@
           @media screen and (max-width: 768px) {
             text-align: center;
             max-width: 512px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
           }
 
           @media screen and (min-width: 768px) and (max-width: 1200px) {
@@ -155,45 +158,51 @@
             max-width: 33%;
           }
 
-          .tw__team__members__profile-pic {
+          .tw__team__members__profile-pic-container {
+            width: 150px;
+            height: 150px;
             margin-bottom: 32px;
+            position: relative;
 
-            img {
-              width: 150px;
-              height: 150px;
-              border-radius: 10px;
-            }
-          }
-
-          .tw__team__members__profile-role {
-            font-weight: 400;
-            font-size: 16px;
-            line-height: 26px;
-            width: 166px;
-            height: 162px;
-            text-transform: capitalize;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-            justify-content: flex-end;
-            position: absolute;
-
-            div {
-              border-radius: 6px;
-              padding: 0 12px;
-              margin: 2px 0;
+            .tw__team__members__profile-pic {
+              img {
+                width: 150px;
+                height: 150px;
+                border-radius: 10px;
+              }
             }
 
-            .tw__team__members__profile-role-creator {
-              background: linear-gradient(89.84deg, #ff7700 0.14%, #c6bfff 99.42%);
-            }
+            .tw__team__members__profile-role {
+              font-weight: 400;
+              font-size: 16px;
+              line-height: 26px;
+              height: 90px;
+              text-transform: capitalize;
+              display: flex;
+              flex-direction: column;
+              align-items: flex-end;
+              justify-content: flex-end;
+              position: absolute;
+              right: -16px;
+              bottom: -12px;
 
-            .tw__team__members__profile-role-connector {
-              background: linear-gradient(89.84deg, #7262fd 0.14%, #c6bfff 99.42%);
-            }
+              div {
+                border-radius: 6px;
+                padding: 0 12px;
+                margin: 2px 0;
+              }
 
-            .tw__team__members__profile-role-builder {
-              background: linear-gradient(89.84deg, #101669 0.14%, #c6bfff 99.42%);
+              .tw__team__members__profile-role-creator {
+                background: linear-gradient(89.84deg, #ff7700 0.14%, #c6bfff 99.42%);
+              }
+
+              .tw__team__members__profile-role-connector {
+                background: linear-gradient(89.84deg, #7262fd 0.14%, #c6bfff 99.42%);
+              }
+
+              .tw__team__members__profile-role-builder {
+                background: linear-gradient(89.84deg, #101669 0.14%, #c6bfff 99.42%);
+              }
             }
           }
 
