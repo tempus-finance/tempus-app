@@ -14,6 +14,7 @@
     height: 507px;
     position: relative;
     overflow: hidden;
+    color: #050a4a;
 
     &::before {
       content: ' ';
@@ -26,6 +27,22 @@
 
     .tw__header {
       background-color: transparent;
+
+      .tw__header-logo-img-light {
+        display: none;
+      }
+
+      .tw__header-logo-img-dark {
+        display: block;
+      }
+
+      .tw__header-links {
+        color: #050a4a;
+      }
+
+      .tw__header-separator {
+        background-color: #050a4a;
+      }
     }
 
     .tw__team__header__title {
@@ -36,6 +53,7 @@
       font-size: 72px;
       font-weight: 700;
       line-height: 79px;
+      z-index: 1;
 
       @media screen and (max-width: 1200px) {
         flex-direction: column;
@@ -44,11 +62,10 @@
       }
 
       .tw__team__header__title-text {
-        color: #eeecff;
         margin: 0 8px;
 
         &:first-child {
-          opacity: 0.5;
+          font-weight: 400;
         }
       }
     }
@@ -63,19 +80,18 @@
     .tw__team__members__header {
       .tw__team__members__header-text {
         max-width: 960px;
+        margin-bottom: 100px;
 
         &:first-child {
           font-size: 34px;
           font-weight: 600;
           line-height: 34px;
-          margin-bottom: 14px;
         }
 
         &:last-child {
           font-size: 20px;
           font-weight: 400;
           line-height: 30px;
-          margin-bottom: 100px;
         }
       }
     }
@@ -146,6 +162,38 @@
               width: 150px;
               height: 150px;
               border-radius: 10px;
+            }
+          }
+
+          .tw__team__members__profile-role {
+            font-weight: 400;
+            font-size: 16px;
+            line-height: 26px;
+            width: 166px;
+            height: 162px;
+            text-transform: capitalize;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            justify-content: flex-end;
+            position: absolute;
+
+            div {
+              border-radius: 6px;
+              padding: 0 12px;
+              margin: 2px 0;
+            }
+
+            .tw__team__members__profile-role-creator {
+              background: linear-gradient(89.84deg, #ff7700 0.14%, #c6bfff 99.42%);
+            }
+
+            .tw__team__members__profile-role-connector {
+              background: linear-gradient(89.84deg, #7262fd 0.14%, #c6bfff 99.42%);
+            }
+
+            .tw__team__members__profile-role-builder {
+              background: linear-gradient(89.84deg, #101669 0.14%, #c6bfff 99.42%);
             }
           }
 

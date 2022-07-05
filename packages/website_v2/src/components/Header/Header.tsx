@@ -20,7 +20,8 @@ const Header = (): JSX.Element => {
     <div className="tw__header">
       <div className="tw__header-logo">
         <Link href="/">
-          <img src="/images/header-logo.svg" alt="Tempus DAO" />
+          <img className="tw__header-logo-img-light" src="/images/header-logo.svg" alt="Tempus DAO" />
+          <img className="tw__header-logo-img-dark" src="/images/header-logo-dark.svg" alt="Tempus DAO" />
         </Link>
       </div>
       {/* TODO: Add hover style for menu button */}
