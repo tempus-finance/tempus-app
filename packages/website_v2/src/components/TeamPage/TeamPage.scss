@@ -6,10 +6,21 @@
   }
 
   .tw__team__header {
-    background: url(./header-background.png);
+    background: linear-gradient(89.84deg, #ff7700 0.14%, #c6bfff 99.42%);
     background-repeat: no-repeat;
     background-size: cover;
     height: 507px;
+    position: relative;
+    z-index: -1;
+
+    &::before {
+      content: ' ';
+      background: url(./header-background.svg);
+      width: 400%;
+      height: 320%;
+      position: absolute;
+      transform: translateY(-500px);
+    }
 
     .tw__header {
       background-color: transparent;
@@ -63,10 +74,19 @@
     .tw__team__members__container {
       padding: 40px;
       box-sizing: border-box;
-      display: flex;
+
+      @media screen and (min-width: 768px) {
+        display: flex;
+      }
 
       .tw__team__members__container-title {
-        min-width: 25%;
+        @media screen and (min-width: 1024px) and (max-width: 1536px) {
+          min-width: 33%;
+        }
+
+        @media screen and (min-width: 1536px) {
+          min-width: 25%;
+        }
 
         .tw__team__members__container-title-text {
           max-width: 250px;
@@ -83,8 +103,19 @@
         .tw__team__members__profile {
           padding: 16px;
           box-sizing: border-box;
-          flex: 1 33%;
-          max-width: 33%;
+
+          @media screen and (min-width: 768px) and (max-width: 1024px) {
+            flex: 1 100%;
+          }
+
+          @media screen and (min-width: 1024px) and (max-width: 1536px) {
+            flex: 1 50%;
+          }
+
+          @media screen and (min-width: 1536px) {
+            flex: 1 33%;
+            max-width: 33%;
+          }
 
           .tw__team__members__profile-pic {
             margin-bottom: 32px;
