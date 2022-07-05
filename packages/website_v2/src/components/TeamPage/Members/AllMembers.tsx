@@ -1,4 +1,4 @@
-import { FOUNDERS, FRONTENDS, BACKENDS, MARKETING_BDS, OPERATIONS } from './profiles';
+import { FOUNDERS, DEVELOPMENTS, MARKETING_BDS, OPERATIONS } from './profiles';
 import TeamMembers from './TeamMembers';
 
 const AllMembers = (): JSX.Element => (
@@ -13,9 +13,7 @@ const AllMembers = (): JSX.Element => (
     <div className="tw__team__separator" />
     <TeamMembers title="Founders" members={FOUNDERS} />
     <div className="tw__team__separator" />
-    <TeamMembers title="Front-end Engineers" members={FRONTENDS} />
-    <div className="tw__team__separator" />
-    <TeamMembers title="Blockchain Engineers" members={BACKENDS} />
+    <TeamMembers title="Product Development" members={DEVELOPMENTS} />
     <div className="tw__team__separator" />
     <TeamMembers title="Marketing & Business Development" members={MARKETING_BDS} />
     <div className="tw__team__separator" />
