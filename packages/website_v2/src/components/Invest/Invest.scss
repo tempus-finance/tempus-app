@@ -3,6 +3,7 @@
   position: relative;
   background: linear-gradient(90deg, #ff7700 0%, #c6bfff 100%);
   color: #050a4a;
+  overflow: hidden;
 
   @media screen and (max-width: 768px) {
     padding: 60px 16px;
