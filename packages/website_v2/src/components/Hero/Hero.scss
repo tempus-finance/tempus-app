@@ -6,19 +6,29 @@
 }
 
 .tw__hero-title {
-  margin: 0px;
+  margin: 0;
   font-weight: 500;
   font-size: 72px;
   line-height: 120%;
   color: rgba(238, 236, 255, 1);
+
+  @media screen and (max-width: 768px) {
+    margin: 0 16px 40px 16px;
+    text-align: center;
+  }
 }
 
 .tw__hero-title-faded {
-  margin: 78px 0px 0px 0px;
+  margin: 84px 0 0 0;
   font-weight: 500;
   font-size: 72px;
   line-height: 120%;
   color: rgba(238, 236, 255, 0.25);
+
+  @media screen and (max-width: 768px) {
+    margin: 40px 16px 0 16px;
+    text-align: center;
+  }
 }
 
 .tw__hero-button {
@@ -38,7 +48,7 @@
   cursor: pointer;
 
   &:hover {
-    background-color: #EEECFF;
+    background-color: #eeecff;
     color: #050a4a;
   }
 }
