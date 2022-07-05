@@ -23,12 +23,12 @@ const Footer = (): JSX.Element => (
         </div>
         <div className="tw__footer__link-container">
           <Link className="tw__footer__link tw__hover-animation" href="https://www.coingecko.com/en/coins/tempus">
-            Coingecko
+            CoinGecko
           </Link>
         </div>
         <div className="tw__footer__link-container">
           <Link className="tw__footer__link tw__hover-animation" href="https://coinmarketcap.com/currencies/tempus/">
-            Coinmarketcap
+            CoinMarketCap
           </Link>
         </div>
       </div>
