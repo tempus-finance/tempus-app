@@ -1,7 +1,4 @@
-import EthereumFoundationWhiteLogo from './logos/EthereumFoundationWhiteLogo';
-import LinklatersWhiteLogo from './logos/LinklatersWhiteLogo';
-import MicrosoftWhiteLogo from './logos/MicrosoftWhiteLogo';
-import LendinvestWhiteLogo from './logos/LendinvestWhiteLogo';
+import CompanyLogo from './logos/CompanyLogo';
 
 const WorkedWith = (): JSX.Element => (
   <div className="tw__team__work-with">
@@ -10,10 +7,10 @@ const WorkedWith = (): JSX.Element => (
     </h2>
     <div className="tw__team__separator" />
     <div className="tw__team__worked-with__organizations">
-      <LinklatersWhiteLogo />
-      <EthereumFoundationWhiteLogo />
-      <MicrosoftWhiteLogo />
-      <LendinvestWhiteLogo />
+      <CompanyLogo variant="linklaters" />
+      <CompanyLogo variant="ethereum-foundation" />
+      <CompanyLogo variant="microsoft" />
+      <CompanyLogo variant="lendinvest" />
     </div>
   </div>
 );

@@ -84,24 +84,31 @@
       padding: 40px 0;
       box-sizing: border-box;
 
-      @media screen and (min-width: 768px) {
+      @media screen and (min-width: 1536px) {
         display: flex;
       }
 
       .tw__team__members__container-title {
-        @media screen and (min-width: 1024px) and (max-width: 1536px) {
+        @media screen and (max-width: 768px) {
+          text-align: center;
+        }
+
+        @media screen and (min-width: 768px) and (max-width: 1200px) {
           min-width: 33%;
         }
 
-        @media screen and (min-width: 1536px) {
+        @media screen and (min-width: 1200px) {
           min-width: 25%;
         }
 
         .tw__team__members__container-title-text {
-          max-width: 250px;
           font-size: 34px;
           font-weight: 600;
           line-height: 34px;
+
+          @media screen and (min-width: 1536px) {
+            max-width: 250px;
+          }
         }
       }
 
@@ -109,19 +116,25 @@
         display: flex;
         flex-wrap: wrap;
 
+        @media screen and (max-width: 768px) {
+          flex-direction: column;
+          align-items: center;
+        }
+
         .tw__team__members__profile {
           padding: 16px;
           box-sizing: border-box;
 
-          @media screen and (min-width: 768px) and (max-width: 1024px) {
-            flex: 1 100%;
+          @media screen and (max-width: 768px) {
+            text-align: center;
+            max-width: 512px;
           }
 
-          @media screen and (min-width: 1024px) and (max-width: 1536px) {
+          @media screen and (min-width: 768px) and (max-width: 1200px) {
             flex: 1 50%;
           }
 
-          @media screen and (min-width: 1536px) {
+          @media screen and (min-width: 1200px) {
             flex: 1 33%;
             max-width: 33%;
           }
@@ -193,8 +206,30 @@
       align-items: center;
       padding-top: 64px;
 
-      svg {
-        margin: 32px 0;
+      .tw__team__worked-with__organization {
+        svg {
+          margin: 32px 0;
+
+          &:first-child {
+            display: none;
+          }
+
+          &:last-child {
+            display: block;
+          }
+        }
+
+        &:hover {
+          svg {
+            &:first-child {
+              display: block;
+            }
+
+            &:last-child {
+              display: none;
+            }
+          }
+        }
       }
     }
   }
