@@ -1,6 +1,8 @@
 import { FC, MouseEvent, useCallback, useEffect, useState } from 'react';
+import { discordInviteLink } from '../../constants';
 import { Button } from '../shared';
 import { BuildersIllustration, ConnectorsIllustration, CreatorsIllustration } from './illustrations';
+
 import './Who.scss';
 
 const SECTIONS = ['builders', 'creators', 'connectors'] as const;
@@ -60,6 +62,10 @@ const Who: FC = (): JSX.Element => {
     window.addEventListener('scroll', onScroll);
   }, [onScroll]);
 
+  const handleActionClick = useCallback(() => {
+    window.open(discordInviteLink, '_blank');
+  }, []);
+
   return (
     <div className="tw__who">
       <div className="tw__who__content">
@@ -82,7 +88,7 @@ const Who: FC = (): JSX.Element => {
             {activeSection === 'builders' && (
               <div className="tw__who__people-subsection-body">
                 <div className="tw__who__people-description">{buildersDescription}</div>
-                <Button>{buildersCTA}</Button>
+                <Button onClick={handleActionClick}>{buildersCTA}</Button>
               </div>
             )}
             <div
@@ -95,7 +101,7 @@ const Who: FC = (): JSX.Element => {
             {activeSection === 'creators' && (
               <div className="tw__who__people-subsection-body">
                 <div className="tw__who__people-description">{creatorsDescription}</div>
-                <Button>{creatorsCTA}</Button>
+                <Button onClick={handleActionClick}>{creatorsCTA}</Button>
               </div>
             )}
             <div
@@ -108,7 +114,7 @@ const Who: FC = (): JSX.Element => {
             {activeSection === 'connectors' && (
               <div className="tw__who__people-subsection-body">
                 <div className="tw__who__people-description">{connectorsDescription}</div>
-                <Button>{connectorsCTA}</Button>
+                <Button onClick={handleActionClick}>{connectorsCTA}</Button>
               </div>
             )}
           </div>
