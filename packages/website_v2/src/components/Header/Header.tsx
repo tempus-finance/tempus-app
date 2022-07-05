@@ -23,11 +23,13 @@ const Header = (): JSX.Element => {
           <img src="/images/header-logo.svg" alt="Tempus DAO" />
         </Link>
       </div>
+      {/* TODO: Add hover style for menu button */}
       <button type="button" className="tw__btn tw__header-menu-button" onClick={handleMenuOpen}>
         <MenuIcon />
       </button>
       <div className={`tw__header-links ${menuOpened ? 'tw__header-menu-opened' : ''}`}>
         {/* TODO: Replace with close icon when the design is ready */}
+        {/* TODO: Add hover style for close button */}
         {menuOpened && (
           <button type="button" className="tw__btn tw__header-close-button" onClick={handleMenuClose}>
             Close
