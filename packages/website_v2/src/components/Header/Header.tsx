@@ -15,7 +15,9 @@ const Header = (): JSX.Element => (
         Contributors
       </Link>
       <p className="tw__header-link tw__hover-animation">Token</p>
-      <p className="tw__header-link tw__hover-animation">Docs</p>
+      <Link className="tw__header-link tw__hover-animation" href="https://docs.tempus.finance/">
+        Docs
+      </Link>
       <Link className="tw__header-link tw__hover-animation" href="https://medium.com/tempusfinance">
         Blog
       </Link>
