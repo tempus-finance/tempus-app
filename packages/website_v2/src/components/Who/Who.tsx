@@ -1,5 +1,7 @@
 import { FC, MouseEvent, useCallback, useState } from 'react';
+import { discordInviteLink } from '../../constants';
 import { Button } from '../shared';
+
 import './Who.scss';
 
 type Sections = 'builders' | 'creators' | 'connectors';
@@ -29,6 +31,10 @@ const Who: FC = (): JSX.Element => {
   const handleTitleClick = useCallback((event: MouseEvent<HTMLDivElement>) => {
     const section = (event.currentTarget as HTMLDivElement).getAttribute('data-test');
     setActiveSection(section as Sections);
+  }, []);
+
+  const handleActionClick = useCallback(() => {
+    window.open(discordInviteLink, '_blank');
   }, []);
 
   const style = () => {
@@ -73,7 +79,7 @@ const Who: FC = (): JSX.Element => {
             {activeSection === 'builders' && (
               <div className="tw__who__people-subsection-body">
                 <div className="tw__who__people-description">{buildersDescription}</div>
-                <Button>{buildersCTA}</Button>
+                <Button onClick={handleActionClick}>{buildersCTA}</Button>
               </div>
             )}
 
@@ -87,7 +93,7 @@ const Who: FC = (): JSX.Element => {
             {activeSection === 'creators' && (
               <div className="tw__who__people-subsection-body">
                 <div className="tw__who__people-description">{creatorsDescription}</div>
-                <Button>{creatorsCTA}</Button>
+                <Button onClick={handleActionClick}>{creatorsCTA}</Button>
               </div>
             )}
             <div
@@ -100,7 +106,7 @@ const Who: FC = (): JSX.Element => {
             {activeSection === 'connectors' && (
               <div className="tw__who__people-subsection-body">
                 <div className="tw__who__people-description">{connectorsDescription}</div>
-                <Button>{connectorsCTA}</Button>
+                <Button onClick={handleActionClick}>{connectorsCTA}</Button>
               </div>
             )}
           </div>
