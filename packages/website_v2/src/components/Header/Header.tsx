@@ -18,7 +18,9 @@ const Header = (): JSX.Element => (
       <Link className="tw__header-link tw__hover-animation" href="https://docs.tempus.finance/">
         Docs
       </Link>
-      <p className="tw__header-link tw__hover-animation">Blog</p>
+      <Link className="tw__header-link tw__hover-animation" href="https://medium.com/tempusfinance">
+        Blog
+      </Link>
     </div>
     <div className="tw__header-separator" />
   </div>
