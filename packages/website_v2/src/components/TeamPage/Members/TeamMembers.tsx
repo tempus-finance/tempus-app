@@ -14,7 +14,7 @@ const TeamMembers: FC<TeamMembersProps> = ({ title, members }) => (
     </div>
     <div className="tw__team__members__container-content">
       {members.map(member => (
-        <ProfileCard profile={member} />
+        <ProfileCard key={member.name} profile={member} />
       ))}
     </div>
   </div>
