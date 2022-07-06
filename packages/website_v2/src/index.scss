@@ -76,7 +76,7 @@ body {
     left: 0;
     background-color: #050a4a;
     transform-origin: bottom left;
-    transition: transform 0.25s ease-out;
+    transition: all 0.3s ease-out;
   }
 
   &:hover:after {

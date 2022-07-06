@@ -18,14 +18,14 @@
   display: flex;
   flex-direction: column;
   color: #050a4a;
-  transition: transform 0.2s;
+  transition: all 0.3s ease-out;
 
   @media screen and (max-width: 768px) {
     text-align: center;
   }
 
   &:hover {
-    transform: translateY(-5px);
+    transform: translateY(-8px);
   }
 
   .tw__products__product-banner {
