@@ -1,9 +1,15 @@
-import { useCallback, useState } from 'react';
+import { FC, useCallback, useState } from 'react';
 import { Link } from '../shared';
 import { MenuIcon } from './icons';
 import './Header.scss';
 
-const Header = (): JSX.Element => {
+interface HeaderProps {
+  color: string;
+}
+
+const Header: FC<HeaderProps> = (props): JSX.Element => {
+  const { color } = props;
+
   const [menuOpened, setMenuOpened] = useState(false);
 
   const handleMenuOpen = useCallback(() => setMenuOpened(true), []);
@@ -17,7 +23,7 @@ const Header = (): JSX.Element => {
   }, [handleMenuClose]);
 
   return (
-    <div className="tw__header">
+    <div className="tw__header" style={{ backgroundColor: color }}>
       <div className="tw__header-logo">
         <Link href="/">
           <img className="tw__header-logo-img-light" src="/images/header-logo.svg" alt="Tempus DAO" />
