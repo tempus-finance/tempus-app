@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { FOUNDERS, DEVELOPMENTS, MARKETING_BDS, OPERATIONS } from './profiles';
 import TeamMembers from './TeamMembers';
 
@@ -22,4 +23,4 @@ const AllMembers = (): JSX.Element => (
     </div>
   </div>
 );
-export default AllMembers;
+export default memo(AllMembers);

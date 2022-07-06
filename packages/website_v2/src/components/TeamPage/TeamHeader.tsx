@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import Header from '../Header';
 
 const TeamHeader = (): JSX.Element => (
@@ -9,4 +10,4 @@ const TeamHeader = (): JSX.Element => (
     </div>
   </div>
 );
-export default TeamHeader;
+export default memo(TeamHeader);

@@ -1,3 +1,5 @@
+import { memo } from 'react';
+
 const CommunityIcon = (): JSX.Element => (
   <svg width="54" height="58" viewBox="0 0 54 58" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path
@@ -17,4 +19,4 @@ const CommunityIcon = (): JSX.Element => (
   </svg>
 );
 
-export default CommunityIcon;
+export default memo(CommunityIcon);

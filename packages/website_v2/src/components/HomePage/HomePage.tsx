@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { memo, useRef } from 'react';
 import About from '../About';
 import Header from '../Header';
 import Hero from '../Hero';
@@ -28,4 +28,4 @@ const HomePage = (): JSX.Element => {
     </div>
   );
 };
-export default HomePage;
+export default memo(HomePage);

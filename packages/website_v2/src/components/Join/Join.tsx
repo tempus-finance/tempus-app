@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { LinkBlock } from '../shared';
 import { DiscordIcon, GitHubIcon, MediumIcon, TelegramIcon, TwitterIcon } from './icons';
 import './Join.scss';
@@ -52,4 +53,4 @@ const Join = ({ theme = 'dark' }: JoinProps): JSX.Element => (
   </div>
 );
 
-export default Join;
+export default memo(Join);

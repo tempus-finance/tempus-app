@@ -1,3 +1,5 @@
+import { memo } from 'react';
+
 const TreasuryBackground = (): JSX.Element => (
   <svg width="1315" height="411" viewBox="0 0 1315 411" fill="none" xmlns="http://www.w3.org/2000/svg">
     <g opacity="0.5">
@@ -109,4 +111,4 @@ const TreasuryBackground = (): JSX.Element => (
   </svg>
 );
 
-export default TreasuryBackground;
+export default memo(TreasuryBackground);

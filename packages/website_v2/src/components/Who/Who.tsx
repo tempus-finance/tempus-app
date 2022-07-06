@@ -1,4 +1,4 @@
-import { FC, MouseEvent, useCallback, useState } from 'react';
+import { FC, memo, MouseEvent, useCallback, useState } from 'react';
 import { discordInviteLink } from '../../constants';
 import { Button } from '../shared';
 
@@ -126,4 +126,4 @@ const Who: FC = (): JSX.Element => {
   );
 };
 
-export default Who;
+export default memo(Who);

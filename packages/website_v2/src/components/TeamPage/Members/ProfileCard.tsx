@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, memo } from 'react';
 
 import { Profile } from './profiles';
 import GithubBtn from './GithubBtn';
@@ -30,4 +30,4 @@ const ProfileCard: FC<ProfileCardProps> = ({ profile }) => {
   );
 };
 
-export default ProfileCard;
+export default memo(ProfileCard);

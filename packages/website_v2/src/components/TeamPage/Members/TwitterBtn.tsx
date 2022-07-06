@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, memo } from 'react';
 import { Link } from '../../shared/';
 
 const TwitterIcon = () => (
@@ -28,4 +28,4 @@ const TwitterBtn: FC<BtnProps> = props => {
   );
 };
 
-export default TwitterBtn;
+export default memo(TwitterBtn);

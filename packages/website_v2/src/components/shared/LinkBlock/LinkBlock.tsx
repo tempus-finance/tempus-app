@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, memo } from 'react';
 import ArrowRight from '../../../icons/arrowRight';
 import Link from '../Link';
 
@@ -28,4 +28,4 @@ const LinkBlock: FC<LinkBlockProps> = props => {
   );
 };
 
-export default LinkBlock;
+export default memo(LinkBlock);

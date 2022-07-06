@@ -1,3 +1,5 @@
+import { memo } from 'react';
+
 const MoneyMarketIllustration = (): JSX.Element => (
   <svg viewBox="0 0 171 203" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path d="M20.9443 81.7871H149.685" stroke="white" strokeLinecap="round" strokeLinejoin="round" />
@@ -354,4 +356,4 @@ const MoneyMarketIllustration = (): JSX.Element => (
   </svg>
 );
 
-export default MoneyMarketIllustration;
+export default memo(MoneyMarketIllustration);

@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import CompanyLogo from './logos/CompanyLogo';
 
 const WorkedWith = (): JSX.Element => (
@@ -17,4 +18,4 @@ const WorkedWith = (): JSX.Element => (
   </div>
 );
 
-export default WorkedWith;
+export default memo(WorkedWith);

@@ -1,3 +1,5 @@
+import { memo } from 'react';
+
 const StarkNetLogo = (): JSX.Element => (
   <svg width="137" height="28" viewBox="0 0 137 28" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path
@@ -53,4 +55,4 @@ const StarkNetLogo = (): JSX.Element => (
   </svg>
 );
 
-export default StarkNetLogo;
+export default memo(StarkNetLogo);

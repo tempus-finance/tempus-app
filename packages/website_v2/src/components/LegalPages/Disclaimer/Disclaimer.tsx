@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { memo, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Footer from '../../Footer';
 import Header from '../../Header';
@@ -55,4 +55,4 @@ const Disclaimer = (): JSX.Element => {
     </>
   );
 };
-export default Disclaimer;
+export default memo(Disclaimer);

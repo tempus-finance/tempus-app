@@ -1,3 +1,5 @@
+import { memo } from 'react';
+
 const InvestBackground = (): JSX.Element => (
   <svg viewBox="0 0 929 427" fill="none" xmlns="http://www.w3.org/2000/svg">
     <g style={{ mixBlendMode: 'soft-light' }} opacity="0.5">
@@ -491,4 +493,4 @@ const InvestBackground = (): JSX.Element => (
   </svg>
 );
 
-export default InvestBackground;
+export default memo(InvestBackground);

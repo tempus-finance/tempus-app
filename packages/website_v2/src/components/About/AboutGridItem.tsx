@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, memo } from 'react';
 
 interface AboutGridItemProps {
   icon: JSX.Element;
@@ -18,4 +18,4 @@ const AboutGridItem: FC<AboutGridItemProps> = props => {
   );
 };
 
-export default AboutGridItem;
+export default memo(AboutGridItem);

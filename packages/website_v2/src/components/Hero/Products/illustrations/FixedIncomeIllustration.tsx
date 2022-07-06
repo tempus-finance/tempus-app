@@ -1,3 +1,5 @@
+import { memo } from 'react';
+
 const FixedIncomeIllustration = (): JSX.Element => (
   <svg viewBox="0 0 220 179" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path
@@ -182,4 +184,4 @@ const FixedIncomeIllustration = (): JSX.Element => (
   </svg>
 );
 
-export default FixedIncomeIllustration;
+export default memo(FixedIncomeIllustration);

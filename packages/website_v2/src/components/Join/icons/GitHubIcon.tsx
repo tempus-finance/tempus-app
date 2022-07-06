@@ -1,3 +1,5 @@
+import { memo } from 'react';
+
 const GitHubIcon = (): JSX.Element => (
   <svg width="30" height="31" viewBox="0 0 30 31" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path
@@ -9,4 +11,4 @@ const GitHubIcon = (): JSX.Element => (
   </svg>
 );
 
-export default GitHubIcon;
+export default memo(GitHubIcon);

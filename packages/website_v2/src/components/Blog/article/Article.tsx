@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, memo } from 'react';
 import { ArrowRight } from '../../../icons';
 import { Link } from '../../shared';
 
@@ -33,4 +33,4 @@ const Article: FC<ArticleProps> = props => {
     </Link>
   );
 };
-export default Article;
+export default memo(Article);

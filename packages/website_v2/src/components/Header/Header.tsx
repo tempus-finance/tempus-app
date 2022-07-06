@@ -1,4 +1,4 @@
-import { FC, useCallback, useState } from 'react';
+import { FC, memo, useCallback, useState } from 'react';
 import { Link } from '../shared';
 import { MenuIcon } from './icons';
 import './Header.scss';
@@ -71,4 +71,4 @@ const Header: FC<HeaderProps> = (props): JSX.Element => {
   );
 };
 
-export default Header;
+export default memo(Header);

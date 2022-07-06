@@ -1,6 +1,6 @@
 import Axios from 'axios';
 import { format } from 'date-fns';
-import { useEffect, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import { ArrowRight } from '../../icons';
 import { Link } from '../shared';
 import Article from './article/Article';
@@ -82,4 +82,4 @@ const Blog = (): JSX.Element => {
   );
 };
 
-export default Blog;
+export default memo(Blog);
