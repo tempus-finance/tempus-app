@@ -11,17 +11,12 @@ interface ProfileCardProps {
 }
 
 const ProfileCard: FC<ProfileCardProps> = ({ profile }) => {
-  const { name, avatar, title, twitter, linkedIn, github, desc, isBuilder, isCreator, isConnector } = profile;
+  const { name, avatar, title, twitter, linkedIn, github, desc } = profile;
 
   return (
     <div className="tw__team__members__profile">
       <div className="tw__team__members__profile-pic-container">
         <ProfilePic url={avatar} />
-        <div className="tw__team__members__profile-role">
-          {isCreator && <div className="tw__team__members__profile-role-creator">Creator</div>}
-          {isConnector && <div className="tw__team__members__profile-role-connector">Connector</div>}
-          {isBuilder && <div className="tw__team__members__profile-role-builder">Builder</div>}
-        </div>
       </div>
       <div className="tw__team__members__profile-name">{name}</div>
       <div className="tw__team__members__profile-title">{title}</div>
