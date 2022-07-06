@@ -4,7 +4,7 @@ import './Join.scss';
 
 const Join = (): JSX.Element => (
   <div className="tw__join">
-    <div className="tw__join__container">
+    <div className="tw__container tw__join__container">
       <div className="tw__join__separator" />
       <h2 className="tw__join__title">Join Tempus DAO</h2>
       <p className="tw__join__description">

@@ -5,7 +5,7 @@ import './About.scss';
 
 const About = (): JSX.Element => (
   <div className="tw__about">
-    <div className="tw__about__container">
+    <div className="tw__container tw__about__container">
       <div className="tw__about__separator" />
       <h2 className="tw__about__title">What is Tempus?</h2>
       <div className="tw__about__grid">

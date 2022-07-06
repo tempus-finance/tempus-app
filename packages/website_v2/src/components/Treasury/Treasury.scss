@@ -11,9 +11,6 @@
     color: #050a4a;
     flex-direction: column;
     overflow: hidden;
-    max-width: 1440px;
-    box-sizing: border-box;
-    margin: auto;
 
     @media screen and (max-width: 768px) {
       padding: 60px 16px;

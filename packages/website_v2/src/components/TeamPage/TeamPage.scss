@@ -91,10 +91,6 @@
     .tw__team__members__container {
       color: #eeecff;
       padding: 40px;
-      box-sizing: border-box;
-      max-width: 1440px;
-      box-sizing: border-box;
-      margin: auto;
 
       .tw__team__members__header {
         .tw__team__members__header-text {
@@ -117,7 +113,6 @@
 
       .tw__team__members__container {
         padding: 40px 0;
-        box-sizing: border-box;
 
         @media screen and (min-width: 1536px) {
           display: flex;
@@ -261,11 +256,8 @@
     background: linear-gradient(89.84deg, #ff7700 0.14%, #c6bfff 99.42%);
 
     .tw__team__work-with__container {
-      max-width: 1440px;
       min-height: 430px;
       padding: 40px;
-      box-sizing: border-box;
-      margin: auto;
 
       .tw__team__worked-with__title {
         font-size: 34px;
