@@ -38,6 +38,10 @@
 
       .tw__header-links {
         color: #050a4a;
+
+        .tw__hover-animation:after {
+          background-color: #050a4a;
+        }
       }
 
       .tw__header-separator {
@@ -253,7 +257,7 @@
     .tw__team__worked-with__separator {
       width: 100%;
       height: 0;
-      border: 1px solid #eeecff;
+      border-bottom: 1px solid #050a4a;
     }
 
     .tw__team__worked-with__organizations {
