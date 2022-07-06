@@ -2,57 +2,69 @@ import { ethers, BigNumber } from 'ethers';
 import { ERC20, ERC20ABI, getDefaultProvider } from 'tempus-core-services';
 import { tempTokenAddress } from '../constants';
 
+interface HolderBalance {
+  balance: BigNumber;
+  address: string;
+}
+
 class TokenHoldersService {
-  static async getHoldersCount(): Promise<number> {
-    const contract = await this.getTokenContract();
+  static async getHoldersCount(): Promise<number | null> {
+    try {
+      const contract = await this.getTokenContract();
 
-    const transferEvents = await contract.queryFilter(contract.filters.Transfer());
+      const transferEvents = await contract.queryFilter(contract.filters.Transfer());
 
-    const holderAddresses: string[] = transferEvents.map(
-      (transferEvent: { args: { to: any } }) => transferEvent.args.to,
-    );
-    const uniqueHolderAddresses = [...new Set(holderAddresses)];
+      const holderAddresses: string[] = transferEvents.map(
+        (transferEvent: { args: { to: any } }) => transferEvent.args.to,
+      );
+      const uniqueHolderAddresses = [...new Set(holderAddresses)];
 
-    let holderBalances: { balance: BigNumber; address: string }[] = [];
-    while (uniqueHolderAddresses.length > 0) {
-      const batch = uniqueHolderAddresses.splice(0, 2000);
+      let holderBalances: HolderBalance[] = [];
+      while (uniqueHolderAddresses.length > 0) {
+        const batch = uniqueHolderAddresses.splice(0, 2000);
 
-      // eslint-disable-next-line no-await-in-loop
-      holderBalances = await this.getHolderBalancesBatch(batch, holderBalances);
-    }
-
-    holderBalances.sort((a, b) => {
-      if (a.balance.gte(b.balance)) {
-        return -1;
+        // eslint-disable-next-line no-await-in-loop
+        holderBalances = await this.getHolderBalancesBatch(batch, holderBalances);
       }
-      return 1;
-    });
 
-    return holderBalances.filter(holder => !holder.balance.isZero()).length;
+      holderBalances.sort((a, b) => {
+        if (a.balance.gte(b.balance)) {
+          return -1;
+        }
+        return 1;
+      });
+
+      return holderBalances.filter(holder => !holder.balance.isZero()).length;
+    } catch {
+      console.error('getHoldersCount - Failed to fetch TEMP holder');
+      return null;
+    }
   }
 
-  private static async getHolderBalancesBatch(
-    addresses: string[],
-    currentBalances: Array<{ balance: BigNumber; address: string }>,
-  ) {
-    const balancePromises: Promise<{ balance: BigNumber; address: string }>[] = [];
+  private static async getHolderBalancesBatch(addresses: string[], currentBalances: Array<HolderBalance>) {
+    const balancePromises: Promise<HolderBalance | null>[] = [];
     addresses.forEach(address => {
       balancePromises.push(this.getHolderBalance(address));
     });
     const balances = await Promise.all(balancePromises);
 
-    return [...balances, ...currentBalances];
+    return [...(balances.filter(balance => balance !== null) as HolderBalance[]), ...currentBalances];
   }
 
-  private static async getHolderBalance(address: string): Promise<{ balance: BigNumber; address: string }> {
-    const contract = await this.getTokenContract();
+  private static async getHolderBalance(address: string): Promise<HolderBalance | null> {
+    try {
+      const contract = await this.getTokenContract();
 
-    const balance = await contract.balanceOf(address);
+      const balance = await contract.balanceOf(address);
 
-    return {
-      balance,
-      address,
-    };
+      return {
+        balance,
+        address,
+      };
+    } catch {
+      console.error(`getHolderBalance - Failed to fetch TEMP balance for holder ${address}`);
+      return null;
+    }
   }
 
   private static async getTokenContract() {
