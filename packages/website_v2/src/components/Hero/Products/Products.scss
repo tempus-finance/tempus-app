@@ -17,8 +17,6 @@
 .tw__products__product {
   display: flex;
   flex-direction: column;
-  background: #fafaff;
-  border-radius: 12px;
   color: #050a4a;
   transition: transform 0.2s;
 
@@ -106,6 +104,8 @@
     flex-grow: 1;
     flex-direction: column;
     justify-content: space-between;
+    background: #fafaff;
+    border-radius: 0 0 12px 12px;
   }
 
   .tw__products__product-title {
