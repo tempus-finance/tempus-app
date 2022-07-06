@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, memo } from 'react';
 import { Link } from '../../shared/';
 
 const LinkedInIcon = () => (
@@ -28,4 +28,4 @@ const LinkedInBtn: FC<BtnProps> = props => {
   );
 };
 
-export default LinkedInBtn;
+export default memo(LinkedInBtn);

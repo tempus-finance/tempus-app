@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, memo } from 'react';
 
 const AvatarTemplate = () => (
   <svg width="176" height="176" viewBox="0 0 176 176" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -32,4 +32,4 @@ const ProfilePic: FC<ProfilePicProps> = ({ url }) => (
   <div className="tw__team__members__profile-pic">{url ? <img src={url} alt="profile pic" /> : <AvatarTemplate />}</div>
 );
 
-export default ProfilePic;
+export default memo(ProfilePic);

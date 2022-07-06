@@ -1,4 +1,4 @@
-import { FC, useMemo } from 'react';
+import { FC, memo, useMemo } from 'react';
 import LinklatersOriginalLogo from './LinklatersOriginalLogo';
 import LinklatersPlainLogo from './LinklatersPlainLogo';
 import EthereumFoundationOriginalLogo from './EthereumFoundationOriginalLogo';
@@ -53,4 +53,4 @@ const CompanyLogo: FC<CompanyLogoProps> = ({ variant }) => {
   );
 };
 
-export default CompanyLogo;
+export default memo(CompanyLogo);

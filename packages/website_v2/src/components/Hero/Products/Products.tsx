@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { CommunityIllustration, FixedIncomeIllustration, MoneyMarketIllustration } from './illustrations';
 import Product from './Product';
 import './Products.scss';
@@ -35,4 +36,4 @@ const Products = (): JSX.Element => (
   </div>
 );
 
-export default Products;
+export default memo(Products);

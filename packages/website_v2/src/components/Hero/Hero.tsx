@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { memo, useCallback } from 'react';
 import { discordInviteLink } from '../../constants';
 import Products from './Products';
 
@@ -22,4 +22,4 @@ const Hero = (): JSX.Element => {
     </div>
   );
 };
-export default Hero;
+export default memo(Hero);

@@ -1,4 +1,4 @@
-import { FC, ReactElement } from 'react';
+import { FC, memo, ReactElement } from 'react';
 import { Link } from '../../shared';
 
 type ProductBannerType = 'bright' | 'dark';
@@ -37,4 +37,4 @@ const Product: FC<ProductProps> = props => {
   );
 };
 
-export default Product;
+export default memo(Product);

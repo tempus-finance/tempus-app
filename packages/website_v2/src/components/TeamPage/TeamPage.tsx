@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { memo, useEffect } from 'react';
 import TeamHeader from './TeamHeader';
 import AllMembers from './Members';
 import WorkedWith from './WorkedWith';
@@ -22,4 +22,4 @@ const TeamPage = (): JSX.Element => {
     </div>
   );
 };
-export default TeamPage;
+export default memo(TeamPage);

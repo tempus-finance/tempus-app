@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { Link } from '../shared';
 
 import './Footer.scss';
@@ -102,4 +103,4 @@ const Footer = (): JSX.Element => (
   </div>
 );
 
-export default Footer;
+export default memo(Footer);

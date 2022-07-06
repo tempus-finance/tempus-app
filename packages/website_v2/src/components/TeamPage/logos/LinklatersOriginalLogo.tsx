@@ -1,3 +1,5 @@
+import { memo } from 'react';
+
 const LinklaterOriginalLogo = (): JSX.Element => (
   <svg width="197" height="32" viewBox="0 0 197 32" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path
@@ -7,4 +9,4 @@ const LinklaterOriginalLogo = (): JSX.Element => (
   </svg>
 );
 
-export default LinklaterOriginalLogo;
+export default memo(LinklaterOriginalLogo);

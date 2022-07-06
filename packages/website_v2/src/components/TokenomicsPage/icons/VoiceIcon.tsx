@@ -1,3 +1,5 @@
+import { memo } from 'react';
+
 const VoiceIcon = (): JSX.Element => (
   <svg width="62" height="55" viewBox="0 0 62 55" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path
@@ -19,4 +21,4 @@ const VoiceIcon = (): JSX.Element => (
   </svg>
 );
 
-export default VoiceIcon;
+export default memo(VoiceIcon);

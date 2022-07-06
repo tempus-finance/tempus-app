@@ -1,3 +1,5 @@
+import { memo } from 'react';
+
 const CommunityIllustration = (): JSX.Element => (
   <svg viewBox="0 0 194 221" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path
@@ -257,4 +259,4 @@ const CommunityIllustration = (): JSX.Element => (
   </svg>
 );
 
-export default CommunityIllustration;
+export default memo(CommunityIllustration);

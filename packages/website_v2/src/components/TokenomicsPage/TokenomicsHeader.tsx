@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import Header from '../Header';
 
 const TokenomicsHeader = (): JSX.Element => (
@@ -10,4 +11,4 @@ const TokenomicsHeader = (): JSX.Element => (
   </div>
 );
 
-export default TokenomicsHeader;
+export default memo(TokenomicsHeader);

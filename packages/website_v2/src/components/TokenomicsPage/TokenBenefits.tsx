@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { ValueIcon, VoiceIcon } from './icons';
 
 const TokenBenefits = (): JSX.Element => (
@@ -31,4 +32,4 @@ const TokenBenefits = (): JSX.Element => (
   </div>
 );
 
-export default TokenBenefits;
+export default memo(TokenBenefits);

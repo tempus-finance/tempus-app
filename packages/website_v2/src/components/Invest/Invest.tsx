@@ -1,8 +1,11 @@
+import { memo } from 'react';
+
 import CoinGeckoIcon from '../../icons/CoinGeckoIcon';
 import CoinMarketCapIcon from '../../icons/CoinMarketCapIcon';
 import { LinkBlock } from '../shared';
-import './Invest.scss';
 import InvestBackground from './InvestBackground';
+
+import './Invest.scss';
 
 const Invest = (): JSX.Element => (
   <div className="tw__invest">
@@ -29,4 +32,4 @@ const Invest = (): JSX.Element => (
   </div>
 );
 
-export default Invest;
+export default memo(Invest);

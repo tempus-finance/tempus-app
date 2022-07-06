@@ -1,3 +1,5 @@
+import { memo } from 'react';
+
 const MediumIcon = (): JSX.Element => (
   <svg width="38" height="23" viewBox="0 0 38 23" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path
@@ -7,4 +9,4 @@ const MediumIcon = (): JSX.Element => (
   </svg>
 );
 
-export default MediumIcon;
+export default memo(MediumIcon);

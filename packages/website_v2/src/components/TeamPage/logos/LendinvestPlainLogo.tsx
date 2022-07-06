@@ -1,3 +1,5 @@
+import { memo } from 'react';
+
 const LendinvestPlainLogo = (): JSX.Element => (
   <svg width="264" height="46" viewBox="0 0 264 46" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path
@@ -9,4 +11,4 @@ const LendinvestPlainLogo = (): JSX.Element => (
   </svg>
 );
 
-export default LendinvestPlainLogo;
+export default memo(LendinvestPlainLogo);

@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, memo } from 'react';
 import { Link } from '../../shared/';
 
 const GithubIcon = () => (
@@ -28,4 +28,4 @@ const GithubBtn: FC<BtnProps> = props => {
   );
 };
 
-export default GithubBtn;
+export default memo(GithubBtn);

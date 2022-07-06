@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import AboutGridItem from './AboutGridItem';
 import { CommunityIcon, TeamIcon, VisionIcon } from './icons';
 
@@ -29,4 +30,4 @@ const About = (): JSX.Element => (
   </div>
 );
 
-export default About;
+export default memo(About);

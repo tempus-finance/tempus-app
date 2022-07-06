@@ -1,3 +1,5 @@
+import { memo } from 'react';
+
 const TeamIcon = (): JSX.Element => (
   <svg width="65" height="64" viewBox="0 0 65 64" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path
@@ -17,4 +19,4 @@ const TeamIcon = (): JSX.Element => (
   </svg>
 );
 
-export default TeamIcon;
+export default memo(TeamIcon);

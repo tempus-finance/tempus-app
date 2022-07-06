@@ -1,3 +1,5 @@
+import { memo } from 'react';
+
 const TelegramIcon = (): JSX.Element => (
   <svg width="29" height="23" viewBox="0 0 29 23" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path
@@ -7,4 +9,4 @@ const TelegramIcon = (): JSX.Element => (
   </svg>
 );
 
-export default TelegramIcon;
+export default memo(TelegramIcon);

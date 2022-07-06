@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import CoinGeckoIcon from '../../icons/CoinGeckoIcon';
 import CoinMarketCapIcon from '../../icons/CoinMarketCapIcon';
 import { LinkBlock } from '../shared';
@@ -18,4 +19,4 @@ const BuyToken = (): JSX.Element => (
   </div>
 );
 
-export default BuyToken;
+export default memo(BuyToken);

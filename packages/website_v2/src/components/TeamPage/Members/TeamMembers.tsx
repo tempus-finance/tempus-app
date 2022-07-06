@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, memo } from 'react';
 import { Profile } from './profiles';
 import ProfileCard from './ProfileCard';
 
@@ -19,4 +19,4 @@ const TeamMembers: FC<TeamMembersProps> = ({ title, members }) => (
     </div>
   </div>
 );
-export default TeamMembers;
+export default memo(TeamMembers);

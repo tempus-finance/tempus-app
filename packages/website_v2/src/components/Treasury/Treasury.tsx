@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { memo, useEffect, useMemo, useState } from 'react';
 import { Decimal, DecimalUtils } from 'tempus-core-services';
 import { ArrowRight } from '../../icons';
 import TreasuryValueService from '../../services/TreasuryValueService';
@@ -60,4 +60,4 @@ const Treasury = (): JSX.Element => {
     </div>
   );
 };
-export default Treasury;
+export default memo(Treasury);

@@ -1,3 +1,5 @@
+import { memo } from 'react';
+
 const EthereumFoundationOriginalLogo = (): JSX.Element => (
   <svg width="240" height="75" viewBox="0 0 240 75" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path
@@ -81,4 +83,4 @@ const EthereumFoundationOriginalLogo = (): JSX.Element => (
   </svg>
 );
 
-export default EthereumFoundationOriginalLogo;
+export default memo(EthereumFoundationOriginalLogo);

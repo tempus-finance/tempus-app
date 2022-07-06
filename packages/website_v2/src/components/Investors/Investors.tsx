@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import {
   DistributedGlobalLogo,
   GSRLogo,
@@ -32,4 +33,4 @@ const Investors = (): JSX.Element => (
   </div>
 );
 
-export default Investors;
+export default memo(Investors);

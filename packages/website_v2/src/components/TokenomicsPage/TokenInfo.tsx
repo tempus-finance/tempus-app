@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { memo, useEffect, useMemo, useState } from 'react';
 import { Decimal, DecimalUtils } from 'tempus-core-services';
 import TokenCirculatingSupplyService from '../../services/TokenCirculatingSupplyService';
 import TokenHoldersService from '../../services/TokenHoldersService';
@@ -69,4 +69,4 @@ const TokenInfo = (): JSX.Element => {
   );
 };
 
-export default TokenInfo;
+export default memo(TokenInfo);

@@ -1,4 +1,4 @@
-import { FC, MouseEvent, useCallback } from 'react';
+import { FC, memo, MouseEvent, PropsWithChildren, useCallback } from 'react';
 
 import './Button.scss';
 
@@ -37,4 +37,4 @@ Button.defaultProps = {
   onClick: undefined,
 };
 
-export default Button;
+export default memo<PropsWithChildren<ButtonProps>>(Button);

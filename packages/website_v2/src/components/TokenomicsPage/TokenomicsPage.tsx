@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { memo, useEffect } from 'react';
 import Footer from '../Footer';
 import Join from '../Join';
 import BuyToken from './BuyToken';
@@ -25,4 +25,4 @@ const TokenomicsPage = (): JSX.Element => {
   );
 };
 
-export default TokenomicsPage;
+export default memo(TokenomicsPage);
