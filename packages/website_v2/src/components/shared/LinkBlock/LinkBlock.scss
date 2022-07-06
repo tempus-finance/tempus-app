@@ -12,7 +12,7 @@
   box-sizing: border-box;
   color: #050a4a;
   text-decoration: none;
-  transition: transform 0.3s ease-out;
+  transition: all 0.3s ease-out;
 
   &:hover {
     transform: translateY(-8px);
@@ -52,7 +52,7 @@
       left: 0;
       background-color: #eeecff;
       transform-origin: bottom left;
-      transition: transform 0.25s ease-out;
+      transition: transform 0.3s ease-out;
     }
   }
 
