@@ -31,11 +31,17 @@
 
   @media screen and (max-width: 1024px) {
     width: 100%;
-    grid-template-columns: repeat(2, 270px);
+    grid-template-columns: repeat(4, 180px);
   }
 
   @media screen and (max-width: 768px) {
-    margin-top: 60px;
+    width: 100%;
+    grid-template-columns: repeat(2, 180px);
+    justify-content: center;
+  }
+
+  @media screen and (max-width: 512px) {
+    width: 100%;
     grid-template-columns: 1fr;
   }
 

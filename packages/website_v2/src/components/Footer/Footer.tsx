@@ -40,18 +40,13 @@ const Footer = (): JSX.Element => (
           </Link>
         </div>
         <div className="tw__footer__link-container">
-          <Link className="tw__footer__link tw__hover-animation" href="/#">
-            Tempus Labs
-          </Link>
-        </div>
-        <div className="tw__footer__link-container">
           <Link className="tw__footer__link tw__hover-animation" href="#investors-section">
             Investors
           </Link>
         </div>
         <div className="tw__footer__link-container">
           <Link className="tw__footer__link tw__hover-animation" href="https://angel.co/company/tempusfinance/jobs">
-            We&apos;re Hiring!
+            Jobs
           </Link>
         </div>
         <div className="tw__footer__link-container">
