@@ -17,7 +17,7 @@ const TeamPage = (): JSX.Element => {
       <TeamHeader />
       <AllMembers />
       <WorkedWith />
-      <Join />
+      <Join theme="light" />
       <Footer />
     </div>
   );

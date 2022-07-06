@@ -4,6 +4,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { Disclaimer, Privacy, Terms } from './components/LegalPages';
 import HomePage from './components/HomePage';
 import TeamPage from './components/TeamPage';
+import TokenomicsPage from './components/TokenomicsPage';
 
 import './index.scss';
 
@@ -15,6 +16,7 @@ ReactDOM.render(
         <Route path="/terms" element={<Terms />} />
         <Route path="/privacy" element={<Privacy />} />
         <Route path="/team" element={<TeamPage />} />
+        <Route path="/tokenomics" element={<TokenomicsPage />} />
         <Route path="/" element={<HomePage />} />
       </Routes>
     </BrowserRouter>
