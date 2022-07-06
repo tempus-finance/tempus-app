@@ -87,163 +87,169 @@
 
   .tw__team__members {
     background-color: #050a4a;
-    color: #eeecff;
-    padding: 40px;
-    box-sizing: border-box;
-
-    .tw__team__members__header {
-      .tw__team__members__header-text {
-        max-width: 960px;
-        margin-bottom: 100px;
-
-        &:first-child {
-          font-size: 34px;
-          font-weight: 600;
-          line-height: 34px;
-        }
-
-        &:last-child {
-          font-size: 20px;
-          font-weight: 400;
-          line-height: 30px;
-        }
-      }
-    }
 
     .tw__team__members__container {
-      padding: 40px 0;
+      color: #eeecff;
+      padding: 40px;
       box-sizing: border-box;
+      max-width: 1440px;
+      box-sizing: border-box;
+      margin: auto;
 
-      @media screen and (min-width: 1536px) {
-        display: flex;
-      }
+      .tw__team__members__header {
+        .tw__team__members__header-text {
+          max-width: 960px;
+          margin-bottom: 100px;
 
-      .tw__team__members__container-title {
-        @media screen and (max-width: 768px) {
-          text-align: center;
-        }
+          &:first-child {
+            font-size: 34px;
+            font-weight: 600;
+            line-height: 34px;
+          }
 
-        @media screen and (min-width: 768px) and (max-width: 1200px) {
-          min-width: 33%;
-        }
-
-        @media screen and (min-width: 1200px) {
-          min-width: 25%;
-        }
-
-        .tw__team__members__container-title-text {
-          font-size: 34px;
-          font-weight: 600;
-          line-height: 34px;
-          margin-bottom: 48px;
-
-          @media screen and (min-width: 1536px) {
-            max-width: 250px;
+          &:last-child {
+            font-size: 20px;
+            font-weight: 400;
+            line-height: 30px;
           }
         }
       }
 
-      .tw__team__members__container-content {
-        display: flex;
-        flex-wrap: wrap;
+      .tw__team__members__container {
+        padding: 40px 0;
+        box-sizing: border-box;
 
-        @media screen and (max-width: 768px) {
-          flex-direction: column;
-          align-items: center;
+        @media screen and (min-width: 1536px) {
+          display: flex;
         }
 
-        .tw__team__members__profile {
-          padding: 16px;
-          box-sizing: border-box;
-
+        .tw__team__members__container-title {
           @media screen and (max-width: 768px) {
             text-align: center;
-            max-width: 512px;
-            display: flex;
+          }
+
+          @media screen and (min-width: 768px) and (max-width: 1200px) {
+            min-width: 33%;
+          }
+
+          @media screen and (min-width: 1200px) {
+            min-width: 25%;
+          }
+
+          .tw__team__members__container-title-text {
+            font-size: 34px;
+            font-weight: 600;
+            line-height: 34px;
+            margin-bottom: 48px;
+
+            @media screen and (min-width: 1536px) {
+              max-width: 250px;
+            }
+          }
+        }
+
+        .tw__team__members__container-content {
+          display: flex;
+          flex-wrap: wrap;
+
+          @media screen and (max-width: 768px) {
             flex-direction: column;
             align-items: center;
           }
 
-          @media screen and (min-width: 768px) and (max-width: 1200px) {
-            flex: 1 50%;
-          }
+          .tw__team__members__profile {
+            padding: 16px;
+            box-sizing: border-box;
 
-          @media screen and (min-width: 1200px) {
-            flex: 1 33%;
-            max-width: 33%;
-          }
-
-          .tw__team__members__profile-pic-container {
-            width: 150px;
-            height: 150px;
-            margin-bottom: 32px;
-            position: relative;
-
-            .tw__team__members__profile-pic {
-              img {
-                width: 150px;
-                height: 150px;
-                border-radius: 10px;
-              }
-            }
-
-            .tw__team__members__profile-role {
-              font-weight: 400;
-              font-size: 16px;
-              line-height: 26px;
-              height: 90px;
-              text-transform: capitalize;
+            @media screen and (max-width: 768px) {
+              text-align: center;
+              max-width: 512px;
               display: flex;
               flex-direction: column;
-              align-items: flex-end;
-              justify-content: flex-end;
-              position: absolute;
-              right: -16px;
-              bottom: -12px;
+              align-items: center;
+            }
 
-              div {
-                border-radius: 6px;
-                padding: 0 12px;
-                margin: 2px 0;
+            @media screen and (min-width: 768px) and (max-width: 1200px) {
+              flex: 1 50%;
+            }
+
+            @media screen and (min-width: 1200px) {
+              flex: 1 33%;
+              max-width: 33%;
+            }
+
+            .tw__team__members__profile-pic-container {
+              width: 150px;
+              height: 150px;
+              margin-bottom: 32px;
+              position: relative;
+
+              .tw__team__members__profile-pic {
+                img {
+                  width: 150px;
+                  height: 150px;
+                  border-radius: 10px;
+                }
               }
 
-              .tw__team__members__profile-role-creator {
-                background: linear-gradient(89.84deg, #ff7700 0.14%, #c6bfff 99.42%);
-              }
+              .tw__team__members__profile-role {
+                font-weight: 400;
+                font-size: 16px;
+                line-height: 26px;
+                height: 90px;
+                text-transform: capitalize;
+                display: flex;
+                flex-direction: column;
+                align-items: flex-end;
+                justify-content: flex-end;
+                position: absolute;
+                right: -16px;
+                bottom: -12px;
 
-              .tw__team__members__profile-role-connector {
-                background: linear-gradient(89.84deg, #7262fd 0.14%, #c6bfff 99.42%);
-              }
+                div {
+                  border-radius: 6px;
+                  padding: 0 12px;
+                  margin: 2px 0;
+                }
 
-              .tw__team__members__profile-role-builder {
-                background: linear-gradient(89.84deg, #101669 0.14%, #c6bfff 99.42%);
+                .tw__team__members__profile-role-creator {
+                  background: linear-gradient(89.84deg, #ff7700 0.14%, #c6bfff 99.42%);
+                }
+
+                .tw__team__members__profile-role-connector {
+                  background: linear-gradient(89.84deg, #7262fd 0.14%, #c6bfff 99.42%);
+                }
+
+                .tw__team__members__profile-role-builder {
+                  background: linear-gradient(89.84deg, #101669 0.14%, #c6bfff 99.42%);
+                }
               }
             }
-          }
 
-          .tw__team__members__profile-name {
-            font-size: 28px;
-            font-weight: 700;
-            line-height: 29px;
-          }
+            .tw__team__members__profile-name {
+              font-size: 28px;
+              font-weight: 700;
+              line-height: 29px;
+            }
 
-          .tw__team__members__profile-title {
-            font-size: 20px;
-            font-weight: 400;
-            line-height: 30px;
-            margin-bottom: 16px;
-          }
+            .tw__team__members__profile-title {
+              font-size: 20px;
+              font-weight: 400;
+              line-height: 30px;
+              margin-bottom: 16px;
+            }
 
-          .tw__team__members__profile-desc {
-            font-size: 16px;
-            font-weight: 400;
-            line-height: 26px;
-            margin-bottom: 24px;
-          }
+            .tw__team__members__profile-desc {
+              font-size: 16px;
+              font-weight: 400;
+              line-height: 26px;
+              margin-bottom: 24px;
+            }
 
-          .tw__team__members__profile-social {
-            .tw__link {
-              margin-right: 8px;
+            .tw__team__members__profile-social {
+              .tw__link {
+                margin-right: 8px;
+              }
             }
           }
         }
@@ -253,52 +259,57 @@
 
   .tw__team__work-with {
     background: linear-gradient(89.84deg, #ff7700 0.14%, #c6bfff 99.42%);
-    min-height: 430px;
-    padding: 40px;
-    box-sizing: border-box;
 
-    .tw__team__worked-with__title {
-      font-size: 34px;
-      font-weight: 600;
-      line-height: 34px;
-      color: #050a4a;
-      margin: 0 0 100px 0;
-    }
+    .tw__team__work-with__container {
+      max-width: 1440px;
+      min-height: 430px;
+      padding: 40px;
+      box-sizing: border-box;
+      margin: auto;
 
-    .tw__team__worked-with__separator {
-      width: 100%;
-      height: 0;
-      border-bottom: 1px solid #050a4a;
-    }
+      .tw__team__worked-with__title {
+        font-size: 34px;
+        font-weight: 600;
+        line-height: 34px;
+        color: #050a4a;
+        margin: 0 0 100px 0;
+      }
 
-    .tw__team__worked-with__organizations {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      align-items: center;
-      padding-top: 64px;
+      .tw__team__worked-with__separator {
+        width: 100%;
+        height: 0;
+        border-bottom: 1px solid #050a4a;
+      }
 
-      .tw__team__worked-with__organization {
-        svg {
-          margin: 32px 0;
+      .tw__team__worked-with__organizations {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 64px;
 
-          &:first-child {
-            display: none;
-          }
-
-          &:last-child {
-            display: block;
-          }
-        }
-
-        &:hover {
+        .tw__team__worked-with__organization {
           svg {
+            margin: 32px 0;
+
             &:first-child {
-              display: block;
+              display: none;
             }
 
             &:last-child {
-              display: none;
+              display: block;
+            }
+          }
+
+          &:hover {
+            svg {
+              &:first-child {
+                display: block;
+              }
+
+              &:last-child {
+                display: none;
+              }
             }
           }
         }

@@ -59,59 +59,67 @@ const Who: FC = (): JSX.Element => {
 
   return (
     <div className="tw__who">
-      <h2 className="tw__section-title">Who are we?</h2>
-      <div className="tw__section__subtitles">
-        <h3 className="tw__section-subtitle">
-          Tempus Labs has been elected by the Tempus DAO governance as the service provider to lead the project. Tempus
-          DAO is a decentralized community of Builders, Creators and Connectors. Find your role!
-        </h3>
-      </div>
-      <div className="tw__who__people">
-        <div className="tw__who__people-subsection">
-          <div className="tw__who__people-graphics" style={{ backgroundImage: 'url(images/graphics/builders.svg)' }} />
-          <div
-            data-test="builders"
-            className={`tw__section__subsection-title ${activeSection === 'builders' ? 'active' : ''}`}
-            onClick={handleTitleClick}
-          >
-            Builders
-          </div>
-          <div className={`tw__who__people-subsection-body ${activeSection === 'builders' ? 'active' : ''}`}>
-            <div className="tw__who__people-description">{buildersDescription}</div>
-            <Button onClick={handleActionClick}>{buildersCTA}</Button>
-          </div>
-
-          <div className="tw__who__people-graphics" style={{ backgroundImage: 'url(images/graphics/creators.svg)' }} />
-          <div
-            data-test="creators"
-            className={`tw__section__subsection-title ${activeSection === 'creators' ? 'active' : ''}`}
-            onClick={handleTitleClick}
-          >
-            Creators
-          </div>
-          <div className={`tw__who__people-subsection-body ${activeSection === 'creators' ? 'active' : ''}`}>
-            <div className="tw__who__people-description">{creatorsDescription}</div>
-            <Button onClick={handleActionClick}>{creatorsCTA}</Button>
-          </div>
-
-          <div
-            className="tw__who__people-graphics"
-            style={{ backgroundImage: 'url(images/graphics/connectors.svg)' }}
-          />
-          <div
-            data-test="connectors"
-            className={`tw__section__subsection-title ${activeSection === 'connectors' ? 'active' : ''}`}
-            onClick={handleTitleClick}
-          >
-            Connectors
-          </div>
-          <div className={`tw__who__people-subsection-body ${activeSection === 'connectors' ? 'active' : ''}`}>
-            <div className="tw__who__people-description">{connectorsDescription}</div>
-            <Button onClick={handleActionClick}>{connectorsCTA}</Button>
-          </div>
+      <div className="tw__who__container">
+        <h2 className="tw__section-title">Who are we?</h2>
+        <div className="tw__section__subtitles">
+          <h3 className="tw__section-subtitle">
+            Tempus Labs has been elected by the Tempus DAO governance as the service provider to lead the project.
+            Tempus DAO is a decentralized community of Builders, Creators and Connectors. Find your role!
+          </h3>
         </div>
-        <div className="tw__who__people-shared-graphics">
-          <div className="tw__who__people-graphics" style={sharedImageStyle()} />
+        <div className="tw__who__people">
+          <div className="tw__who__people-subsection">
+            <div
+              className="tw__who__people-graphics"
+              style={{ backgroundImage: 'url(images/graphics/builders.svg)' }}
+            />
+            <div
+              data-test="builders"
+              className={`tw__section__subsection-title ${activeSection === 'builders' ? 'active' : ''}`}
+              onClick={handleTitleClick}
+            >
+              Builders
+            </div>
+            <div className={`tw__who__people-subsection-body ${activeSection === 'builders' ? 'active' : ''}`}>
+              <div className="tw__who__people-description">{buildersDescription}</div>
+              <Button onClick={handleActionClick}>{buildersCTA}</Button>
+            </div>
+
+            <div
+              className="tw__who__people-graphics"
+              style={{ backgroundImage: 'url(images/graphics/creators.svg)' }}
+            />
+            <div
+              data-test="creators"
+              className={`tw__section__subsection-title ${activeSection === 'creators' ? 'active' : ''}`}
+              onClick={handleTitleClick}
+            >
+              Creators
+            </div>
+            <div className={`tw__who__people-subsection-body ${activeSection === 'creators' ? 'active' : ''}`}>
+              <div className="tw__who__people-description">{creatorsDescription}</div>
+              <Button onClick={handleActionClick}>{creatorsCTA}</Button>
+            </div>
+
+            <div
+              className="tw__who__people-graphics"
+              style={{ backgroundImage: 'url(images/graphics/connectors.svg)' }}
+            />
+            <div
+              data-test="connectors"
+              className={`tw__section__subsection-title ${activeSection === 'connectors' ? 'active' : ''}`}
+              onClick={handleTitleClick}
+            >
+              Connectors
+            </div>
+            <div className={`tw__who__people-subsection-body ${activeSection === 'connectors' ? 'active' : ''}`}>
+              <div className="tw__who__people-description">{connectorsDescription}</div>
+              <Button onClick={handleActionClick}>{connectorsCTA}</Button>
+            </div>
+          </div>
+          <div className="tw__who__people-shared-graphics">
+            <div className="tw__who__people-graphics" style={sharedImageStyle()} />
+          </div>
         </div>
       </div>
     </div>

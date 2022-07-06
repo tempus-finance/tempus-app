@@ -1,18 +1,24 @@
 .tw__footer {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  min-height: 495px;
-  box-sizing: border-box;
-  padding: 24px 51px;
   background-color: #070b37;
-  position: relative;
-  overflow: hidden;
 
-  @media screen and (max-width: 768px) {
-    text-align: center;
-    align-items: center;
-    padding: 60px 16px;
+  .tw__footer__container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    min-height: 495px;
+    box-sizing: border-box;
+    padding: 24px 51px;
+    position: relative;
+    overflow: hidden;
+    max-width: 1440px;
+    box-sizing: border-box;
+    margin: auto;
+
+    @media screen and (max-width: 768px) {
+      text-align: center;
+      align-items: center;
+      padding: 60px 16px;
+    }
   }
 }
 

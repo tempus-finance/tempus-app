@@ -1,24 +1,32 @@
 .tw__invest {
-  padding: 40px 40px 100px 40px;
-  position: relative;
   background: linear-gradient(90deg, #ff7700 0%, #c6bfff 100%);
-  color: #050a4a;
+  position: relative;
   overflow: hidden;
 
-  @media screen and (max-width: 768px) {
-    padding: 60px 16px;
-    text-align: center;
-  }
+  .tw__invest__container {
+    padding: 40px 40px 100px 40px;
+    position: relative;
+    color: #050a4a;
+    overflow: hidden;
+    max-width: 1440px;
+    box-sizing: border-box;
+    margin: auto;
 
-  .tw__invest__title {
-    margin-top: 0;
-    margin-bottom: 100px;
-    font-size: 34px;
-    line-height: 34px;
+    .tw__invest__title {
+      margin-top: 0;
+      margin-bottom: 100px;
+      font-size: 34px;
+      line-height: 34px;
+
+      @media screen and (max-width: 768px) {
+        margin-bottom: 40px;
+        font-size: 24px;
+      }
+    }
 
     @media screen and (max-width: 768px) {
-      margin-bottom: 40px;
-      font-size: 24px;
+      padding: 60px 16px;
+      text-align: center;
     }
   }
 }
@@ -31,10 +39,9 @@
   bottom: 0;
 
   @media screen and (max-width: 1024px) {
-    left: -40%;
-    right: -40%;
     top: 60px;
     bottom: 60px;
+    width: 100%;
   }
 
   svg {

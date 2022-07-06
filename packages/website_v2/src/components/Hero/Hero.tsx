@@ -11,12 +11,14 @@ const Hero = (): JSX.Element => {
 
   return (
     <div className="tw__hero">
-      <h1 className="tw__hero-title-faded">Tempus is shaping the</h1>
-      <h1 className="tw__hero-title">future of DeFi</h1>
-      <button type="button" className="tw__hero-button" onClick={handleOnBuildWithUsClick}>
-        BUILD WITH US
-      </button>
-      <Products />
+      <div className="tw__hero__container">
+        <h1 className="tw__hero-title-faded">Tempus is shaping the</h1>
+        <h1 className="tw__hero-title">future of DeFi</h1>
+        <button type="button" className="tw__hero-button" onClick={handleOnBuildWithUsClick}>
+          BUILD WITH US
+        </button>
+        <Products />
+      </div>
     </div>
   );
 };
