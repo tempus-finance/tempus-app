@@ -48,7 +48,7 @@ const Treasury = (): JSX.Element => {
             >
               Read more about our Grants
             </Link>
-            <ArrowRight color="#050A4A" />
+            <ArrowRight />
           </div>
         </div>
         <div className="tw__treasury__value">

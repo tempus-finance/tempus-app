@@ -1,14 +1,25 @@
 .tw__link-block {
   background-color: #eeecff;
-  height: 154px;
+  height: 150px;
   padding: 18px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  border-style: solid;
+  border-color: transparent;
+  border-width: 2px;
   border-radius: 10px;
   box-sizing: border-box;
   color: #050a4a;
   text-decoration: none;
+  transition: transform 0.3s ease-out;
+
+  &:hover {
+    transform: translateY(-8px);
+    border-color: #eeecff;;
+    color: #eeecff;
+    background-color: #050a4a;
+  }
 
   .tw__link-block__header {
     display: flex;
@@ -39,7 +50,7 @@
       height: 2px;
       bottom: 0;
       left: 0;
-      background-color: #050A4A;
+      background-color: #eeecff;
       transform-origin: bottom left;
       transition: transform 0.25s ease-out;
     }
