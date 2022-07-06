@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import TeamHeader from './TeamHeader';
 import AllMembers from './Members';
 import WorkedWith from './WorkedWith';
@@ -6,13 +7,19 @@ import Join from '../Join';
 
 import './TeamPage.scss';
 
-const TeamPage = (): JSX.Element => (
-  <div className="tw__team">
-    <TeamHeader />
-    <AllMembers />
-    <WorkedWith />
-    <Join />
-    <Footer />
-  </div>
-);
+const TeamPage = (): JSX.Element => {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  return (
+    <div className="tw__team">
+      <TeamHeader />
+      <AllMembers />
+      <WorkedWith />
+      <Join />
+      <Footer />
+    </div>
+  );
+};
 export default TeamPage;

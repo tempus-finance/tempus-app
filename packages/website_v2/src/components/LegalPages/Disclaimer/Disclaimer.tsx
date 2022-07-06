@@ -33,8 +33,8 @@ const Disclaimer = (): JSX.Element => {
               the fees and risks they present.
               <br />
               <br />
-              AS DESCRIBED IN THE TEMPUS <Link to="/terms-of-service">TERMS OF SERVICE</Link>, THE PROTOCOL IS PROVIDED
-              “AS IS”, AT YOUR OWN RISK, AND WITHOUT WARRANTIES OF ANY KIND. Although Tempus Labs, Inc. (trading as
+              AS DESCRIBED IN THE TEMPUS <Link to="/terms#top">TERMS OF SERVICE</Link>, THE PROTOCOL IS PROVIDED “AS
+              IS”, AT YOUR OWN RISK, AND WITHOUT WARRANTIES OF ANY KIND. Although Tempus Labs, Inc. (trading as
               “Tempus”) developed much of the code for the Protocol, Tempus does not provide, own, or control the
               Protocol, which is run by smart contracts deployed on the relevant blockchain. Upgrades and modifications
               to the Protocol are managed in a community-driven way by governance by holders of the TEMP governance

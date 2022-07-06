@@ -1,5 +1,6 @@
 import { FC, forwardRef, memo, HTMLProps, useMemo } from 'react';
 import { Link as InternalLink } from 'react-router-dom';
+import { HashLink } from 'react-router-hash-link';
 
 import './Link.scss';
 
@@ -15,7 +16,7 @@ const Link = forwardRef<HTMLAnchorElement, LinkProps>((props, ref) => {
 
   const isExternal = useMemo(() => href.includes('://') && new URL(href).origin !== window.location.origin, [href]);
 
-  const isHash = useMemo(() => href.startsWith('#'), [href]);
+  const isHash = useMemo(() => !isExternal && href.includes('#'), [href, isExternal]);
 
   return (
     <>
@@ -33,9 +34,9 @@ const Link = forwardRef<HTMLAnchorElement, LinkProps>((props, ref) => {
         </a>
       )}
       {isHash && (
-        <a ref={ref} className={`tw__link ${className}`} title={title} href={href} onClick={onClick}>
+        <HashLink ref={ref} className={`tw__link ${className}`} title={title} to={href} onClick={onClick}>
           {children}
-        </a>
+        </HashLink>
       )}
       {!isExternal && !isHash && (
         <InternalLink ref={ref} className={`tw__link ${className}`} title={title} to={href} onClick={onClick}>

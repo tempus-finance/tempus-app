@@ -40,7 +40,7 @@ const Terms = (): JSX.Element => {
               or use the Site and should not use the Site.
               <br />
               <br />
-              Our <Link to="/privacy-policy">Privacy Policy</Link> and <Link to="/disclaimer">Disclaimer</Link> are
+              Our <Link to="/privacy#top">Privacy Policy</Link> and <Link to="/disclaimer#top">Disclaimer</Link> are
               incorporated into these Terms by reference and also apply to your use of the Site.
             </p>
 
@@ -51,10 +51,10 @@ const Terms = (): JSX.Element => {
               check these Terms periodically to familiarize yourself with any changes. If we make any changes, we will
               notify you by updating the date at the top of these Terms and by maintaining a current version of the
               Terms at
-              <Link to="/terms-of-service"> https://tempus.finance/terms-of-service</Link>. All changes will be
-              immediately effective when they are posted, and your continued accessing or use of the Site will serve as
-              confirmation of your acceptance of the changes. If you do not agree with any changes to these Terms, you
-              must immediately stop accessing and using the Site.
+              <Link to="/terms#top"> https://tempus.finance/terms</Link>. All changes will be immediately effective when
+              they are posted, and your continued accessing or use of the Site will serve as confirmation of your
+              acceptance of the changes. If you do not agree with any changes to these Terms, you must immediately stop
+              accessing and using the Site.
             </p>
 
             <h3 className="tw__legalPage__body-content-title">3. Site</h3>
