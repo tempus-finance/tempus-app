@@ -27,7 +27,7 @@ const Treasury = (): JSX.Element => {
     if (!value) {
       return '-';
     }
-    return DecimalUtils.formatToCurrency(value, 2, '$');
+    return DecimalUtils.formatToCurrency(value, 0, '$');
   }, [value]);
 
   return (
