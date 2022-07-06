@@ -2,7 +2,6 @@ import davidImg from './profiles/david.png';
 import dordeImg from './profiles/dorde.png';
 import adriImg from './profiles/adri.png';
 import alexImg from './profiles/alex.png';
-import bratkoImg from './profiles/bratko.png';
 import cristianoImg from './profiles/cristiano.png';
 import danieleImg from './profiles/daniele.png';
 import dhruvImg from './profiles/dhruv.png';
@@ -10,6 +9,7 @@ import georgeImg from './profiles/george.png';
 import irinelImg from './profiles/irinel.png';
 import jormaImg from './profiles/jorma.png';
 import joshImg from './profiles/josh.png';
+import krumImg from './profiles/krum.png';
 import lazarImg from './profiles/lazar.png';
 import milicaImg from './profiles/milica.png';
 import olafImg from './profiles/olaf.png';
@@ -74,15 +74,6 @@ export const DEVELOPMENTS: Profile[] = [
     isBuilder: true,
   },
   {
-    name: 'Bratko',
-    fullname: 'Bratko Pashov',
-    avatar: bratkoImg,
-    title: 'Blockchain Engineer',
-    linkedIn: 'https://www.linkedin.com/in/krum-krasimirov-pashov/',
-    desc: 'Bratko is one of Tempus’ blockchain engineers. He has experience in a variety of sectors, including finance, cloud, and crypto. Prior to joining Tempus, he worked at Nexo where he built and scaled crypto exchange products and carried out integrations with various DeFi projects.',
-    isBuilder: true,
-  },
-  {
     name: 'Cristiano',
     fullname: 'Cristiano Ventricelli',
     avatar: cristianoImg,
@@ -132,6 +123,15 @@ export const DEVELOPMENTS: Profile[] = [
     linkedIn: 'https://www.linkedin.com/in/jorma-rebane-319067126/',
     github: 'https://github.com/RedFox20',
     desc: "Jorma is one of Tempus' blockchain engineers. He has over 12 years' software engineering experience with high performance computing and high frequency trading.",
+    isBuilder: true,
+  },
+  {
+    name: 'Krum',
+    fullname: 'Krum Pashov',
+    avatar: krumImg,
+    title: 'Blockchain Engineer',
+    linkedIn: 'https://www.linkedin.com/in/krum-krasimirov-pashov/',
+    desc: 'Krum is one of Tempus’ blockchain engineers. He has experience in a variety of sectors, including finance, cloud, and crypto. Prior to joining Tempus, he worked at Nexo where he built and scaled crypto exchange products and carried out integrations with various DeFi projects.',
     isBuilder: true,
   },
   {
