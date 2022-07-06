@@ -86,17 +86,20 @@ const Footer = (): JSX.Element => (
         </div>
         <div className="tw__footer__links-column">
           <p className="tw__footer__links-title">Legal</p>
-          {/* TODO - Add Terms page */}
           <div className="tw__footer__link-container">
-            <a className="tw__footer__link tw__hover-animation">Terms</a>
+            <Link className="tw__footer__link tw__hover-animation" href="/terms">
+              Terms
+            </Link>
           </div>
-          {/* TODO - Add disclaimer page */}
           <div className="tw__footer__link-container">
-            <a className="tw__footer__link tw__hover-animation">Disclaimer</a>
+            <Link className="tw__footer__link tw__hover-animation" href="/disclaimer">
+              Disclaimer
+            </Link>
           </div>
-          {/* TODO - Add Privacy page */}
           <div className="tw__footer__link-container">
-            <a className="tw__footer__link tw__hover-animation">Privacy</a>
+            <Link className="tw__footer__link tw__hover-animation" href="/privacy">
+              Privacy
+            </Link>
           </div>
         </div>
       </div>

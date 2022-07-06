@@ -3,12 +3,19 @@
   flex-direction: column;
   border-radius: 10px;
   height: 100%;
+  max-width: 683px;
+  margin: auto;
   text-decoration: none;
   font-style: normal;
   font-weight: 400;
   font-size: 16px;
   line-height: 26px;
   color: #eeecff;
+  transition: transform 0.3s ease-out;
+
+  &:hover {
+    transform: translateY(-16px);
+  }
 }
 
 .tw__article-content {
