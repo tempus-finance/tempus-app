@@ -23,7 +23,9 @@
     "@uniswap/sdk-core": "^3.0.1",
     "@uniswap/v3-core": "^1.0.0",
     "@uniswap/v3-sdk": "^3.8.1",
-    "tempus-core-services": "0.0.2"
+    "tempus-core-services": "0.0.2",
+    "react-router-hash-link": "^2.4.3",
+    "@types/react-router-hash-link": "^2.4.5"
   },
   "browserslist": {
     "production": [

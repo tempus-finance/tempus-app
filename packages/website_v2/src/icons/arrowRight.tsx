@@ -1,4 +1,4 @@
-const ArrowRight = ({ color = '#EEECFF' }: { color?: string }): JSX.Element => (
+const ArrowRight = (): JSX.Element => (
   <svg
     className="tw__arrow-right-icon"
     width="24"
@@ -7,10 +7,10 @@ const ArrowRight = ({ color = '#EEECFF' }: { color?: string }): JSX.Element => (
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
-    <path d="M5 12.9961H19" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M5 12.9961H19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
     <path
       d="M12 5.99609L19 12.9961L12 19.9961"
-      stroke={color}
+      stroke="currentColor"
       strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"

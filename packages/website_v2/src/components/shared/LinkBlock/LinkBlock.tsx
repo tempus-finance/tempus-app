@@ -21,8 +21,8 @@ const LinkBlock: FC<LinkBlockProps> = props => {
         <span className="tw__link-block__icon">{icon}</span>
       </div>
       <div className="tw__link-block__footer">
-        {description && <span className="tw__link-block__description">{description}</span>}
-        <ArrowRight color="#050A4A" />
+        <span className="tw__link-block__description">{description}</span>
+        <ArrowRight />
       </div>
     </Link>
   );

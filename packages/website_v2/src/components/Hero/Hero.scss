@@ -1,8 +1,13 @@
 .tw__hero {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
   background-color: #050a4a;
+
+  .tw__hero__container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 1440px;
+    margin: auto;
+  }
 }
 
 .tw__hero-title {

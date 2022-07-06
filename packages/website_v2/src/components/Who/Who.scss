@@ -1,23 +1,29 @@
 .tw__who {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: flex-start;
-  padding: 40px 40px 100px 40px;
   background-color: #050a4a;
-  color: #eeecff;
 
-  @media screen and (max-width: 768px) {
-    padding: 60px 16px;
-    text-align: center;
-  }
-
-  .tw__section-title {
+  .tw__who__container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding: 40px 40px 100px 40px;
     color: #eeecff;
-    margin-bottom: 72px;
+    max-width: 1440px;
+    box-sizing: border-box;
+    margin: auto;
 
     @media screen and (max-width: 768px) {
-      margin-bottom: 40px;
+      padding: 60px 16px;
+      text-align: center;
+    }
+
+    .tw__section-title {
+      color: #eeecff;
+      margin-bottom: 72px;
+
+      @media screen and (max-width: 768px) {
+        margin-bottom: 40px;
+      }
     }
   }
 }

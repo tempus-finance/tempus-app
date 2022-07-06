@@ -1,45 +1,51 @@
 .tw__join {
-  padding: 0 40px 100px 40px;
   background-color: #050a4a;
-  color: #eeecff;
 
-  @media screen and (max-width: 768px) {
-    padding: 0 16px 60px 16px;
-    text-align: center;
-  }
+  .tw__join__container {
+    padding: 0 40px 100px 40px;
+    color: #eeecff;
+    max-width: 1440px;
+    box-sizing: border-box;
+    margin: auto;
 
-  .tw__join__separator {
-    display: flex;
-    margin-bottom: 40px;
-    flex-grow: 1;
-    height: 1px;
-    width: 100%;
-    background-color: #ffffff;
+    .tw__join__separator {
+      display: flex;
+      margin-bottom: 40px;
+      flex-grow: 1;
+      height: 1px;
+      width: 100%;
+      background-color: #ffffff;
 
-    @media screen and (max-width: 768px) {
-      margin-bottom: 60px;
+      @media screen and (max-width: 768px) {
+        margin-bottom: 60px;
+      }
     }
-  }
 
-  .tw__join__title {
-    margin: 0;
-    font-size: 34px;
+    .tw__join__title {
+      margin: 0;
+      font-size: 34px;
 
-    @media screen and (max-width: 768px) {
-      font-size: 24px;
+      @media screen and (max-width: 768px) {
+        font-size: 24px;
+      }
     }
-  }
 
-  .tw__join__description {
-    max-width: 737px;
-    margin: 90px 0 100px 0;
-    font-size: 20px;
-    line-height: 30px;
+    .tw__join__description {
+      max-width: 737px;
+      margin: 90px 0 100px 0;
+      font-size: 20px;
+      line-height: 30px;
+
+      @media screen and (max-width: 768px) {
+        margin: 40px 0 46px 0;
+        font-size: 18px;
+        line-height: 28px;
+      }
+    }
 
     @media screen and (max-width: 768px) {
-      margin: 40px 0 46px 0;
-      font-size: 18px;
-      line-height: 28px;
+      padding: 0 16px 60px 16px;
+      text-align: center;
     }
   }
 }

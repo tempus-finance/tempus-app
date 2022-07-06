@@ -1,17 +1,23 @@
 .tw__investors {
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  flex-direction: column;
-  box-sizing: border-box;
-  position: relative;
-  width: 100%;
-  padding: 40px 40px 100px 40px;
   background-color: #efecff;
 
-  @media screen and (max-width: 768px) {
-    padding: 60px 16px;
-    text-align: center;
+  .tw__investors__container {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    flex-direction: column;
+    box-sizing: border-box;
+    position: relative;
+    width: 100%;
+    padding: 40px 40px 100px 40px;
+    max-width: 1440px;
+    box-sizing: border-box;
+    margin: auto;
+
+    @media screen and (max-width: 768px) {
+      padding: 60px 16px;
+      text-align: center;
+    }
   }
 }
 
