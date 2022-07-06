@@ -26,8 +26,8 @@ const Privacy = (): JSX.Element => {
               Tempus and its affiliates (hereinafter, “Tempus”, &quot;the Company&quot;, &quot;we&quot;, &quot;us&quot;
               or &quot;our&quot;) are committed to protecting and respecting your personal information. In addition, we
               recognize that persons who use Tempus value their privacy. This Privacy Policy together with our{' '}
-              <Link to="/terms-of-service">Terms of Service</Link> governs our collection, processing and use of your
-              Personal Information. By accessing Tempus, you are consenting to the information collection, use hold and
+              <Link to="/terms#top">Terms of Service</Link> governs our collection, processing and use of your Personal
+              Information. By accessing Tempus, you are consenting to the information collection, use hold and
               disclosure practices as described in this Privacy Policy.
               <br />
               <br />
@@ -156,10 +156,10 @@ const Privacy = (): JSX.Element => {
             <p className="tw__legalPage__body-content-text">
               Consent is required for the collection of Personal Information and the subsequent use or disclosure of
               Personal Information. The form of consent may vary depending upon the circumstances and the type of
-              Personal information obtained. Your agreement with Tempus’s{' '}
-              <Link to="/terms-of-service">Terms of Service</Link> constitutes your consent to the collection and use of
-              Personal Information as described in this Privacy Policy. Tempus reserves the right to use and disclose
-              Personal Information without your knowledge or consent as permitted by applicable law.
+              Personal information obtained. Your agreement with Tempus’s <Link to="/terms#top">Terms of Service</Link>{' '}
+              constitutes your consent to the collection and use of Personal Information as described in this Privacy
+              Policy. Tempus reserves the right to use and disclose Personal Information without your knowledge or
+              consent as permitted by applicable law.
             </p>
 
             <h3 className="tw__legalPage__body-content-title">8. Disclosure of Personal Information</h3>
