@@ -79,7 +79,6 @@ export const DEVELOPMENTS: Profile[] = [
     avatar: cristianoImg,
     title: 'Quantitative Analyst',
     twitter: 'https://twitter.com/Cristianoventr2',
-    linkedIn: 'https://www.linkedin.com/in/cristiano-ventricelli-844b7077/',
     desc: "Cristiano is our resident quantitative guru. He has over 7 years' experience in financial modeling and risk analytics in banks, insurance companies, and asset management firms.",
     isCreator: true,
   },
