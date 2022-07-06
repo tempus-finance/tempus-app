@@ -2,8 +2,14 @@ import { LinkBlock } from '../shared';
 import { DiscordIcon, GitHubIcon, MediumIcon, TelegramIcon, TwitterIcon } from './icons';
 import './Join.scss';
 
-const Join = (): JSX.Element => (
-  <div className="tw__join">
+type JoinTheme = 'light' | 'dark';
+
+interface JoinProps {
+  theme?: JoinTheme;
+}
+
+const Join = ({ theme = 'dark' }: JoinProps): JSX.Element => (
+  <div className={`tw__join tw__join__${theme}`}>
     <div className="tw__container tw__join__container">
       <div className="tw__join__separator" />
       <h2 className="tw__join__title">Join Tempus DAO</h2>

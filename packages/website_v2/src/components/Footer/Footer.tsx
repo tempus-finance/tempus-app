@@ -17,9 +17,8 @@ const Footer = (): JSX.Element => (
               Governance
             </Link>
           </div>
-          {/* TODO - Add token page */}
           <div className="tw__footer__link-container">
-            <Link className="tw__footer__link tw__hover-animation" href="/token">
+            <Link className="tw__footer__link tw__hover-animation" href="/tokenomics">
               Tokenomics
             </Link>
           </div>

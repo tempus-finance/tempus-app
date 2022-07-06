@@ -1,0 +1,212 @@
+.tw__tokenomics {
+  .tw__tokenomics__header {
+    display: flex;
+    flex-direction: column;
+    background: linear-gradient(89.84deg, #ff7700 0.14%, #c6bfff 99.42%);
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: 507px;
+    position: relative;
+    overflow: hidden;
+    color: #050a4a;
+
+    &::before {
+      content: ' ';
+      background: url(./header-background.svg);
+      width: 400%;
+      height: 400%;
+      position: absolute;
+    }
+
+    .tw__header {
+      background-color: transparent;
+
+      .tw__header-logo-img-light {
+        display: none;
+      }
+
+      .tw__header-logo-img-dark {
+        display: block;
+      }
+
+      .tw__header-links {
+        color: #050a4a;
+
+        .tw__hover-animation:after {
+          background-color: #050a4a;
+        }
+      }
+
+      .tw__header-separator {
+        background-color: #050a4a;
+      }
+    }
+
+    .tw__tokenomics__header__title {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-grow: 1;
+      font-size: 72px;
+      font-weight: 700;
+      line-height: 79px;
+      z-index: 1;
+
+      @media screen and (max-width: 1200px) {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
+
+      .tw__tokenomics__header__title-text {
+        margin: 0 8px;
+
+        &:first-child {
+          font-weight: 400;
+        }
+      }
+    }
+  }
+}
+
+.tw__tokenomics__title {
+  margin: 0;
+  font-weight: 600;
+  font-size: 34px;
+}
+
+.tw__tokenomics__token-info {
+  background-color: #070b37;
+
+  .tw__tokenomics__token-info-container {
+    padding: 40px;
+    display: flex;
+  }
+
+  .tw__tokenomics__token-info-title {
+    margin-bottom: 16px;
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1;
+    color: #eeecff;
+  }
+
+  .tw__tokenomics__token-info-value {
+    font-size: 48px;
+    line-height: 1;
+    color: #c6c0ff;
+  }
+
+  .tw__tokenomics__token-price {
+    flex: 3;
+    margin-right: 20px;
+
+    .tw__tokenomics__token-info-title {
+      font-size: 28px;
+    }
+
+    .tw__tokenomics__token-info-value {
+      font-size: 100px;
+      color: #867ce7;
+    }
+  }
+
+  .tw__tokenomics__supply,
+  .tw__tokenomics__capitalization,
+  .tw__tokenomics__holders {
+    flex: 1;
+  }
+}
+
+.tw__tokenomics__token-benefits {
+  background-color: #050a4a;
+
+  .tw__tokenomics__token-benefits-container {
+    padding: 40px 40px 100px 40px;
+    color: #eeecff;
+  }
+
+  .tw__tokenomics__token-benefits-grid {
+    margin-top: 80px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 20px;
+
+    @media screen and (max-width: 1024px) {
+      grid-template-columns: 1fr;
+    }
+
+    .tw__tokenomics__token-benefits-grid-item {
+      @media screen and (max-width: 1024px) {
+        &:not(:last-child) {
+          margin-bottom: 20px;
+        }
+      }
+
+      h3 {
+        margin: 17px 0;
+        font-weight: 700;
+        font-size: 28px;
+        line-height: 30px;
+      }
+
+      p {
+        margin: 0;
+        padding: 0 46px 0 0;
+        font-size: 20px;
+        line-height: 30px;
+
+        @media screen and (max-width: 1024px) {
+          padding: 0;
+        }
+      }
+    }
+
+    .tw_tokenomics__token-benefits-grid-item-icon {
+      height: 55px;
+    }
+  }
+}
+
+.tw__tokenomics__buy-token {
+  background: linear-gradient(90deg, #6167c8 0%, #c6bfff 100%);
+
+  .tw__tokenomics__buy-token-container {
+    padding: 40px 40px 100px 40px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 20px;
+    color: #eeecff;
+
+    @media screen and (max-width: 1024px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .tw__tokenomics__buy-token-links {
+    display: flex;
+
+    @media screen and (max-width: 768px) {
+      flex-direction: column;
+    }
+
+    .tw__link-block {
+      flex: 1;
+
+      &:not(:last-child) {
+        margin-right: 20px;
+      }
+
+      @media screen and (max-width: 768px) {
+        width: 100%;
+        height: 96px;
+        margin-right: 0;
+        margin-bottom: 16px;
+
+        .tw__arrow-right-icon {
+          margin-left: 0;
+        }
+      }
+    }
+  }
+}

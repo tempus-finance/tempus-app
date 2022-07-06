@@ -1,5 +1,6 @@
+import CoinGeckoIcon from '../../icons/CoinGeckoIcon';
+import CoinMarketCapIcon from '../../icons/CoinMarketCapIcon';
 import { LinkBlock } from '../shared';
-import { CoinGeckoIcon, CoinMarketCapIcon } from './icons';
 import './Invest.scss';
 import InvestBackground from './InvestBackground';
 
