@@ -46,10 +46,18 @@ const Header = (): JSX.Element => {
         <Link className="tw__header-link tw__hover-animation" onClick={handleLinkClick}>
           Token
         </Link>
-        <Link className="tw__header-link tw__hover-animation" onClick={handleLinkClick}>
+        <Link
+          className="tw__header-link tw__hover-animation"
+          href="https://docs.tempus.finance/"
+          onClick={handleLinkClick}
+        >
           Docs
         </Link>
-        <Link className="tw__header-link tw__hover-animation" onClick={handleLinkClick}>
+        <Link
+          className="tw__header-link tw__hover-animation"
+          href="https://medium.com/tempusfinance/"
+          onClick={handleLinkClick}
+        >
           Blog
         </Link>
       </div>
