@@ -3,7 +3,7 @@ import TeamMembers from './TeamMembers';
 
 const AllMembers = (): JSX.Element => (
   <div className="tw__team__members">
-    <div className="tw__team__members__container">
+    <div className="tw__container tw__team__members__container">
       <div className="tw__team__members__header">
         <div className="tw__team__members__header-text">Meet the Tempus Labs team</div>
         <div className="tw__team__members__header-text">

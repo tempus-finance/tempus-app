@@ -43,7 +43,7 @@ const Blog = (): JSX.Element => {
 
   return (
     <div className="tw__blog">
-      <div className="tw__blog__container">
+      <div className="tw__container tw__blog__container">
         <h2 className="tw__section-title">Blog</h2>
         <div className="tw__blog-separator" />
         <div className="tw__section__subtitles">

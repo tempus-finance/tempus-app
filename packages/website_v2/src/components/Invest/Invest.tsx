@@ -8,7 +8,7 @@ const Invest = (): JSX.Element => (
     <div className="tw__invest__background">
       <InvestBackground />
     </div>
-    <div className="tw__invest__container">
+    <div className="tw__container tw__invest__container">
       <h2 className="tw__invest__title">Invest in the future</h2>
       <div className="tw__invest__content">
         <p className="tw__invest__description">

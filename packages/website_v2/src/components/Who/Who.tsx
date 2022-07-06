@@ -59,7 +59,7 @@ const Who: FC = (): JSX.Element => {
 
   return (
     <div className="tw__who">
-      <div className="tw__who__container">
+      <div className="tw__container tw__who__container">
         <h2 className="tw__section-title">Who are we?</h2>
         <div className="tw__section__subtitles">
           <h3 className="tw__section-subtitle">

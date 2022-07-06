@@ -35,7 +35,7 @@ const Treasury = (): JSX.Element => {
       <div className="tw__treasury__background">
         <TreasuryBackground />
       </div>
-      <div className="tw__treasury__container">
+      <div className="tw__container tw__treasury__container">
         <h2 className="tw__section-title">Treasury Funds</h2>
         <div className="tw__treasury__body">
           <div className="tw__treasury__description">

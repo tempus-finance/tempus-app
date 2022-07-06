@@ -3,7 +3,7 @@ import './Footer.scss';
 
 const Footer = (): JSX.Element => (
   <div className="tw__footer">
-    <div className="tw__footer__container">
+    <div className="tw__container tw__footer__container">
       <div className="tw__footer__background" />
       <div className="tw__footer__logo">
         <img src="/images/header-logo.svg" alt="Tempus DAO" />
