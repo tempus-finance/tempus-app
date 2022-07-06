@@ -1,16 +1,24 @@
 .tw__treasury {
-  display: flex;
-  align-items: flex-start;
-  position: relative;
-  padding: 40px 40px 100px 40px;
   background-color: #efecff;
-  color: #050a4a;
-  flex-direction: column;
+  position: relative;
   overflow: hidden;
 
-  @media screen and (max-width: 768px) {
-    padding: 60px 16px;
-    text-align: center;
+  .tw__treasury__container {
+    display: flex;
+    align-items: flex-start;
+    position: relative;
+    padding: 40px 40px 100px 40px;
+    color: #050a4a;
+    flex-direction: column;
+    overflow: hidden;
+    max-width: 1440px;
+    box-sizing: border-box;
+    margin: auto;
+
+    @media screen and (max-width: 768px) {
+      padding: 60px 16px;
+      text-align: center;
+    }
   }
 }
 
@@ -22,10 +30,9 @@
   bottom: 0;
 
   @media screen and (max-width: 1024px) {
-    left: -40%;
-    right: -40%;
     top: 60px;
     bottom: 60px;
+    width: 100%;
   }
 
   svg {
