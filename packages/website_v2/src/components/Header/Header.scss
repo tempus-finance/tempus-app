@@ -16,6 +16,14 @@
 
     .tw__header-logo img {
       width: 145px;
+
+      &.tw__header-logo-img-light {
+        display: block;
+      }
+
+      &.tw__header-logo-img-dark {
+        display: none;
+      }
     }
   }
 }
