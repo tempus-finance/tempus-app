@@ -25,6 +25,10 @@
       transform: translateY(-500px);
     }
 
+    @media screen and (max-width: 768px) {
+      height: 400px;
+    }
+
     .tw__header {
       background-color: transparent;
 
@@ -58,6 +62,12 @@
       font-weight: 700;
       line-height: 79px;
       z-index: 1;
+
+      @media screen and (max-width: 768px) {
+        text-align: center;
+        font-size: 42px;
+        line-height: 50px;
+      }
 
       @media screen and (max-width: 1200px) {
         flex-direction: column;
