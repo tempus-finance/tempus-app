@@ -37,14 +37,11 @@ const Header = (): JSX.Element => {
           </button>
         )}
         {/* TODO - Add click handlers */}
-        <Link className="tw__header-link tw__hover-animation" onClick={handleLinkClick}>
-          Products
-        </Link>
         <Link className="tw__header-link tw__hover-animation" href="/team" onClick={handleLinkClick}>
-          Contributors
+          Team
         </Link>
-        <Link className="tw__header-link tw__hover-animation" onClick={handleLinkClick}>
-          Token
+        <Link className="tw__header-link tw__hover-animation" href="/tokenomics" onClick={handleLinkClick}>
+          Tokenomics
         </Link>
         <Link
           className="tw__header-link tw__hover-animation"
