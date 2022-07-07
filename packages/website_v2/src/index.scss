@@ -84,3 +84,25 @@ body {
     transform-origin: bottom left;
   }
 }
+
+.tw__hover-animation-light {
+  position: relative;
+
+  &:after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    transform: scaleX(0);
+    height: 2px;
+    bottom: 0;
+    left: 0;
+    background-color: #eeecff;
+    transform-origin: bottom left;
+    transition: all 0.3s ease-out;
+  }
+
+  &:hover:after {
+    transform: scaleX(1);
+    transform-origin: bottom left;
+  }
+}

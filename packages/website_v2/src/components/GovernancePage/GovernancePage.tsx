@@ -1,4 +1,5 @@
 import { memo, useEffect } from 'react';
+import GrantsCommittee from './GrantsCommittee';
 import Footer from '../Footer';
 import Join from '../Join';
 
@@ -11,6 +12,7 @@ const GovernancePage = (): JSX.Element => {
 
   return (
     <div className="tw__governance">
+      <GrantsCommittee />
       <Join />
       <Footer />
     </div>
