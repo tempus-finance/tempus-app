@@ -27,7 +27,7 @@ const Header: FC<HeaderProps> = (props): JSX.Element => {
     <div className="tw__header" style={{ backgroundColor: color }}>
       <div className="tw__container tw__header__container">
         <div className="tw__header-logo">
-          <Link href="/">
+          <Link href="/" className="tw__clickable-logo">
             <img className="tw__header-logo-img-light" src="/images/header-logo.svg" alt="Tempus DAO" />
             <img className="tw__header-logo-img-dark" src="/images/header-logo-dark.svg" alt="Tempus DAO" />
           </Link>
