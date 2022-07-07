@@ -71,12 +71,6 @@ const Blog = (): JSX.Element => {
               ))}
             </div>
           </div>
-          <div className="tw__blog__read-more">
-            <Link href="https://medium.com/tempusfinance/" className="tw__hover-animation">
-              Read more on our Blog
-            </Link>
-            <ArrowRight />
-          </div>
         </ScrollFadeIn>
       </div>
     </div>
