@@ -5,10 +5,11 @@ import './Header.scss';
 
 interface HeaderProps {
   color: string;
+  iconColor?: string;
 }
 
 const Header: FC<HeaderProps> = (props): JSX.Element => {
-  const { color } = props;
+  const { color, iconColor } = props;
 
   const [menuOpened, setMenuOpened] = useState(false);
 
@@ -33,7 +34,7 @@ const Header: FC<HeaderProps> = (props): JSX.Element => {
         </div>
         {/* TODO: Add hover style for menu button */}
         <button type="button" className="tw__btn tw__header-menu-button" onClick={handleMenuOpen}>
-          <MenuIcon />
+          <MenuIcon color={iconColor} />
         </button>
         <div className={`tw__header-links ${menuOpened ? 'tw__header-menu-opened' : ''}`}>
           {/* TODO: Replace with close icon when the design is ready */}
