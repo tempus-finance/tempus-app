@@ -22,15 +22,22 @@
     }
   }
 
-  .tw__header-logo img {
-    &.tw__header-logo-img-light {
-      display: block;
+  .tw__header-logo {
+    > .tw__clickable-logo {
+      display: inline-block;
+      padding: 20px 50px 20px 0;
     }
 
-    &.tw__header-logo-img-dark {
-      display: none;
+    > img {
+      &.tw__header-logo-img-light {
+        display: block;
+      }
+      
+      &.tw__header-logo-img-dark {
+        display: none;
+      }
     }
-  }
+  } 
 
   .tw__header-separator {
     height: 1px;
