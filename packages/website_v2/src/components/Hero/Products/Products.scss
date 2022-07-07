@@ -8,7 +8,7 @@
     grid-template-columns: repeat(2, 1fr);
   }
 
-  @media screen and (max-width: 768px) {
+  @media screen and (max-width: 880px) {
     margin: 60px 16px;
     grid-template-columns: 1fr;
   }
@@ -18,6 +18,7 @@
   display: flex;
   flex-direction: column;
   color: #050a4a;
+  max-width: 440px;
   transition: all 0.3s ease-out;
 
   @media screen and (max-width: 768px) {
