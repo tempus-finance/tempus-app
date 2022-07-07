@@ -1,5 +1,5 @@
 .tw__join {
-  background-color: #050a4a;
+  background-color: #efecff;
 
   .tw__join__container {
     padding: 0 40px 100px 40px;
@@ -21,6 +21,7 @@
     .tw__join__title {
       margin: 0;
       font-size: 34px;
+      color: #050a4a;
 
       @media screen and (max-width: 768px) {
         font-size: 24px;
@@ -30,6 +31,7 @@
     .tw__join__description {
       max-width: 737px;
       margin: 90px 0 100px 0;
+      color: #050a4a;
       font-size: 20px;
       line-height: 30px;
 
@@ -43,26 +45,6 @@
     @media screen and (max-width: 768px) {
       padding: 0 16px 60px 16px;
       text-align: center;
-    }
-  }
-
-  &.tw__join__light {
-    background: #eeecff;
-
-    .tw__join__separator {
-      height: 0;
-    }
-
-    .tw__join__title {
-      color: #050a4a;
-    }
-
-    .tw__join__description {
-      color: #050a4a;
-    }
-
-    .tw__link-block {
-      background-color: #fafaff;
     }
   }
 }
