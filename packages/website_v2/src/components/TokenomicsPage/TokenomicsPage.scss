@@ -92,48 +92,10 @@
   font-weight: 600;
   font-size: 34px;
   line-height: 1;
-}
 
-.tw__tokenomics__token-info {
-  background-color: #070b37;
-
-  .tw__tokenomics__token-info-container {
-    padding: 40px;
-    display: flex;
-  }
-
-  .tw__tokenomics__token-info-title {
-    margin-bottom: 16px;
-    font-size: 20px;
-    font-weight: 700;
-    line-height: 1;
-    color: #eeecff;
-  }
-
-  .tw__tokenomics__token-info-value {
-    font-size: 48px;
-    line-height: 1;
-    color: #c6c0ff;
-  }
-
-  .tw__tokenomics__token-price {
-    flex: 3;
-    margin-right: 20px;
-
-    .tw__tokenomics__token-info-title {
-      font-size: 28px;
-    }
-
-    .tw__tokenomics__token-info-value {
-      font-size: 100px;
-      color: #867ce7;
-    }
-  }
-
-  .tw__tokenomics__supply,
-  .tw__tokenomics__capitalization,
-  .tw__tokenomics__holders {
-    flex: 1;
+  @media screen and (max-width: 768px) {
+    font-size: 24px;
+    line-height: 30px;
   }
 }
 
@@ -143,6 +105,11 @@
   .tw__tokenomics__token-benefits-container {
     padding: 40px 40px 100px 40px;
     color: #eeecff;
+
+    @media screen and (max-width: 768px) {
+      padding: 60px 16px;
+      text-align: center;
+    }
   }
 
   .tw__tokenomics__token-benefits-grid {
@@ -155,10 +122,14 @@
       grid-template-columns: 1fr;
     }
 
+    @media screen and (max-width: 768px) {
+      margin-top: 40px;
+    }
+
     .tw__tokenomics__token-benefits-grid-item {
-      @media screen and (max-width: 1024px) {
-        &:not(:last-child) {
-          margin-bottom: 20px;
+      &:not(:last-child) {
+        @media screen and (max-width: 1024px) {
+          margin-bottom: 40px;
         }
       }
 
@@ -167,6 +138,11 @@
         font-weight: 700;
         font-size: 28px;
         line-height: 30px;
+
+        @media screen and (max-width: 768px) {
+          font-size: 20px;
+          line-height: 24px;
+        }
       }
 
       p {
@@ -177,6 +153,11 @@
 
         @media screen and (max-width: 1024px) {
           padding: 0;
+        }
+
+        @media screen and (max-width: 768px) {
+          font-size: 18px;
+          line-height: 28px;
         }
       }
     }
@@ -199,6 +180,12 @@
 
     @media screen and (max-width: 1024px) {
       grid-template-columns: 1fr;
+      grid-gap: 40px;
+    }
+
+    @media screen and (max-width: 768px) {
+      padding: 60px 16px;
+      text-align: center;
     }
   }
 
@@ -269,6 +256,11 @@
 
   .tw__tokenomics__tokenomics-container {
     padding: 40px 40px 100px 40px;
+
+    @media screen and (max-width: 768px) {
+      padding: 60px 16px;
+      text-align: center;
+    }
   }
 
   .tw__tokenomics__tokenomics-description {
@@ -278,6 +270,12 @@
 
     @media screen and (max-width: 1024px) {
       margin-right: 0;
+    }
+
+    @media screen and (max-width: 768px) {
+      margin: 60px 0;
+      font-size: 18px;
+      line-height: 28px;
     }
   }
 
@@ -311,6 +309,11 @@
 
   .tw__tokenomics__token-distribution-container {
     padding: 0 40px 100px 40px;
+
+    @media screen and (max-width: 768px) {
+      padding: 0 16px 60px 16px;
+      text-align: center;
+    }
   }
 
   .tw__tokenomics__token-distribution-separator {
@@ -329,6 +332,12 @@
 
     @media screen and (max-width: 1024px) {
       margin-right: 0;
+    }
+
+    @media screen and (max-width: 768px) {
+      margin: 60px 0;
+      font-size: 18px;
+      line-height: 28px;
     }
   }
 
