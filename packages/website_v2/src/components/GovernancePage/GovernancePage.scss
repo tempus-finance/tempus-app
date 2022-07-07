@@ -85,3 +85,157 @@
     }
   }
 }
+
+.tw__governance__title {
+  margin: 0;
+  font-weight: 600;
+  font-size: 34px;
+  line-height: 1;
+
+  @media screen and (max-width: 768px) {
+    font-size: 24px;
+    line-height: 30px;
+    text-align: center;
+  }
+}
+
+.tw__governance__steps {
+  background-color: #050a4a;
+  color: #eeecff;
+
+  .tw__governance__steps-container {
+    padding: 0 40px 100px 40px;
+  }
+
+  .tw__governance__steps-separator {
+    display: flex;
+    flex-grow: 1;
+    height: 1px;
+    width: 100%;
+    margin-bottom: 40px;
+    background-color: #eeecff;
+  }
+
+  .tw__governance__steps-grid {
+    margin-top: 80px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 20px;
+
+    @media screen and (max-width: 1024px) {
+      grid-template-columns: 1fr;
+    }
+
+    .tw__governance__steps-grid-item {
+      &:not(:last-child) {
+        @media screen and (max-width: 1024px) {
+          margin-bottom: 60px;
+        }
+      }
+
+      &:nth-child(1) {
+        .tw__governance__steps-title::after {
+          content: 'Step 1';
+        }
+      }
+
+      &:nth-child(2) {
+        .tw__governance__steps-title::after {
+          content: 'Step 2';
+        }
+      }
+
+      &:nth-child(3) {
+        .tw__governance__steps-title::after {
+          content: 'Step 3';
+        }
+      }
+
+      .tw__governance__steps-separator {
+        @media screen and (max-width: 768px) {
+          margin-top: -11px;
+        }
+      }
+    }
+  }
+
+  .tw__governance__steps-illustration {
+    height: 246px;
+    margin-bottom: 40px;
+
+    @media screen and (max-width: 768px) {
+      margin-bottom: 0;
+      display: flex;
+      justify-content: center;
+    }
+  }
+
+  .tw__governance__steps-title {
+    margin-bottom: 60px;
+    position: relative;
+    font-size: 28px;
+    line-height: 1;
+    font-weight: bold;
+
+    &::after {
+      margin-left: 11px;
+      position: absolute;
+      color: #ff7700;
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 19px;
+      text-transform: uppercase;
+
+      @media screen and (max-width: 768px) {
+        margin-top: -2px;
+        margin-left: 8px;
+        font-size: 14px;
+        line-height: 16px;
+      }
+    }
+
+    @media screen and (max-width: 768px) {
+      margin-bottom: 24px;
+      font-size: 21px;
+      text-align: center;
+    }
+  }
+
+  .tw__governance__steps-description {
+    margin-bottom: 40px;
+    font-size: 20px;
+    line-height: 30px;
+
+    @media screen and (max-width: 768px) {
+      margin-bottom: 24px;
+      font-size: 16px;
+      line-height: 26px;
+      text-align: center;
+    }
+  }
+
+  .tw__governance__steps-button {
+    width: 283px;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 18px;
+    font-weight: 600;
+    text-transform: uppercase;
+    border: 1px solid #eeecff;
+    border-radius: 30px;
+
+    @media screen and (max-width: 768px) {
+      width: 100%;
+      height: 52px;
+      font-size: 16px;
+      border-radius: 26px;
+    }
+
+    &:hover {
+      background-color: #eeecff;
+      color: #050a4a;
+    }
+  }
+}
