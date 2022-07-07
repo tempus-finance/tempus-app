@@ -3,7 +3,9 @@ import Footer from '../Footer';
 import Join from '../Join';
 import BuyToken from './BuyToken';
 import TokenBenefits from './TokenBenefits';
+import TokenDistribution from './TokenDistribution';
 import TokenInfo from './TokenInfo';
+import Tokenomics from './Tokenomics';
 import TokenomicsHeader from './TokenomicsHeader';
 
 import './TokenomicsPage.scss';
@@ -19,6 +21,8 @@ const TokenomicsPage = (): JSX.Element => {
       <TokenInfo />
       <TokenBenefits />
       <BuyToken />
+      <Tokenomics />
+      <TokenDistribution />
       <Join />
       <Footer />
     </div>
