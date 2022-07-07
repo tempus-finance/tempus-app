@@ -6,7 +6,7 @@ const TokenomicsHeader = (): JSX.Element => (
     <div className="tw__tokenomics__header__background-container">
       <div className="tw__tokenomics__header__background" />
     </div>
-    <Header color="transparent" />
+    <Header color="transparent" iconColor="#050A4A" />
     <div className="tw__tokenomics__header__title">
       <span className="tw__tokenomics__header__title-text">Own a slice of</span>
       <span className="tw__tokenomics__header__title-text">DeFi innovation</span>
