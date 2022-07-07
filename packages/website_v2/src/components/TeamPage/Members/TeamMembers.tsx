@@ -8,11 +8,11 @@ interface TeamMembersProps {
 }
 
 const TeamMembers: FC<TeamMembersProps> = ({ title, members }) => (
-  <div className="tw__team__members__container">
-    <div className="tw__team__members__container-title">
-      <div className="tw__team__members__container-title-text">{title}</div>
+  <div className="tw__team__members__section">
+    <div className="tw__team__members__section-title">
+      <div className="tw__team__members__section-title-text">{title}</div>
     </div>
-    <div className="tw__team__members__container-content">
+    <div className="tw__team__members__section-content">
       {members.map(member => (
         <ProfileCard key={member.name} profile={member} />
       ))}

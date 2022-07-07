@@ -89,6 +89,8 @@
     background-color: #050a4a;
 
     .tw__team__members__container {
+      position: relative;
+      overflow: hidden;
       color: #eeecff;
       padding: 40px;
 
@@ -111,14 +113,14 @@
         }
       }
 
-      .tw__team__members__container {
+      .tw__team__members__section {
         padding: 40px 0;
 
         @media screen and (min-width: 1536px) {
           display: flex;
         }
 
-        .tw__team__members__container-title {
+        .tw__team__members__section-title {
           @media screen and (max-width: 768px) {
             text-align: center;
           }
@@ -131,7 +133,7 @@
             min-width: 25%;
           }
 
-          .tw__team__members__container-title-text {
+          .tw__team__members__section-title-text {
             font-size: 34px;
             font-weight: 600;
             line-height: 34px;
@@ -143,7 +145,7 @@
           }
         }
 
-        .tw__team__members__container-content {
+        .tw__team__members__section-content {
           display: flex;
           flex-wrap: wrap;
 
@@ -215,6 +217,101 @@
             }
           }
         }
+      }
+
+      .tw__team__fading-block {
+        position: absolute;
+
+        &.background1 {
+          background: url(./block-background1.svg);
+        }
+
+        &.background2 {
+          background: url(./block-background2.svg);
+        }
+
+        &.background3 {
+          background: url(./block-background3.svg);
+        }
+
+        &.background4 {
+          background: url(./block-background1.svg);
+          transform: scalX(-1);
+        }
+
+        &.background5 {
+          background: url(./block-background2.svg);
+          transform: scalX(-1);
+        }
+
+        &.background6 {
+          background: url(./block-background3.svg);
+          transform: scalX(-1);
+        }
+      }
+
+      @keyframes tw__team__fading-block-left-in {
+        from {
+          opacity: 0;
+          transform: translate3d(-200px, 0, 0);
+        }
+
+        to {
+          opacity: 1;
+          transform: translate3d(0, 0, 0);
+        }
+      }
+
+      .tw__team__fading-block-left-in {
+        animation-name: tw__team__fading-block-left-in;
+      }
+
+      @keyframes tw__team__fading-block-left-out {
+        from {
+          opacity: 1;
+          transform: translate3d(0, 0, 0);
+        }
+
+        to {
+          opacity: 0;
+          transform: translate3d(-200px, 0, 0);
+        }
+      }
+
+      .tw__team__fading-block-left-out {
+        animation-name: tw__team__fading-block-left-out;
+      }
+
+      @keyframes tw__team__fading-block-right-in {
+        from {
+          opacity: 0;
+          transform: translate3d(200px, 0, 0);
+        }
+
+        to {
+          opacity: 1;
+          transform: translate3d(0, 0, 0);
+        }
+      }
+
+      .tw__team__fading-block-right-in {
+        animation-name: tw__team__fading-block-right-in;
+      }
+
+      @keyframes tw__team__fading-block-right-out {
+        from {
+          opacity: 1;
+          transform: translate3d(0, 0, 0);
+        }
+
+        to {
+          opacity: 0;
+          transform: translate3d(200px, 0, 0);
+        }
+      }
+
+      .tw__team__fading-block-right-out {
+        animation-name: tw__team__fading-block-right-out;
       }
     }
   }
