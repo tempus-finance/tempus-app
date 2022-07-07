@@ -1,0 +1,68 @@
+.tw__token-info {
+  background-color: #070b37;
+
+  .tw__token-info__container {
+    padding: 40px;
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    grid-gap: 20px;
+
+    @media screen and (max-width: 1330px) {
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    @media screen and (max-width: 1024px) {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    @media screen and (max-width: 768px) {
+      grid-template-columns: 1fr;
+      grid-gap: 24px;
+      text-align: center;
+    }
+  }
+
+  .tw__token-info__title {
+    margin-bottom: 16px;
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1;
+    color: #eeecff;
+  }
+
+  .tw__token-info__value {
+    font-size: 48px;
+    line-height: 1;
+    color: #c6c0ff;
+  }
+
+  .tw__token-info__price {
+    grid-column: 1 / 4;
+
+    @media screen and (max-width: 1330px) {
+      grid-column: 1 / 5;
+    }
+
+    @media screen and (max-width: 1024px) {
+      grid-column: 1 / 4;
+    }
+
+    @media screen and (max-width: 768px) {
+      grid-column: 1;
+    }
+
+    .tw__token-info__title {
+      font-size: 28px;
+    }
+
+    .tw__token-info__value {
+      font-size: 100px;
+      color: #867ce7;
+
+      @media screen and (max-width: 768px) {
+        font-size: 70px;
+        margin-bottom: 8px;
+      }
+    }
+  }
+}
