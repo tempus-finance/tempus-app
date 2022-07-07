@@ -10,7 +10,7 @@ const Join = (): JSX.Element => (
       <ScrollFadeIn>
         <h2 className="tw__join__title">Join Tempus DAO</h2>
         <p className="tw__join__description">
-          Tempus DAO is a global community of Builders, Creators and Connectors shaping the future of Web3.
+          Tempus DAO is a global community of Builders, Creators and Connectors shaping the future of DeFi.
         </p>
         <div className="tw__join__link-grid">
           <LinkBlock
