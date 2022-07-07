@@ -1,13 +1,10 @@
 .tw__link-block {
-  background-color: #eeecff;
-  height: 150px;
+  background-color: #fafaff;
+  height: 154px;
   padding: 18px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  border-style: solid;
-  border-color: transparent;
-  border-width: 2px;
   border-radius: 10px;
   box-sizing: border-box;
   color: #050a4a;
@@ -16,7 +13,6 @@
 
   &:hover {
     transform: translateY(-8px);
-    border-color: #eeecff;;
     color: #eeecff;
     background-color: #050a4a;
   }

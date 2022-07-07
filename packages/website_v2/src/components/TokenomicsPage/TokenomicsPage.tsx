@@ -19,7 +19,7 @@ const TokenomicsPage = (): JSX.Element => {
       <TokenInfo />
       <TokenBenefits />
       <BuyToken />
-      <Join theme="light" />
+      <Join />
       <Footer />
     </div>
   );
