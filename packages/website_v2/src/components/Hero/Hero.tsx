@@ -1,6 +1,7 @@
 import { memo, useCallback } from 'react';
 import { discordInviteLink } from '../../constants';
 import Products from './Products';
+import { ScrollFadeIn } from '../shared';
 
 import './Hero.scss';
 
@@ -17,7 +18,9 @@ const Hero = (): JSX.Element => {
         <button type="button" className="tw__hero-button" onClick={handleOnBuildWithUsClick}>
           BUILD WITH US
         </button>
-        <Products />
+        <ScrollFadeIn>
+          <Products />
+        </ScrollFadeIn>
       </div>
     </div>
   );

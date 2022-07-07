@@ -2,7 +2,7 @@ import Axios from 'axios';
 import { format } from 'date-fns';
 import { memo, useEffect, useState } from 'react';
 import { ArrowRight } from '../../icons';
-import { Link } from '../shared';
+import { Link, ScrollFadeIn } from '../shared';
 import Article from './article/Article';
 import './Blog.scss';
 
@@ -44,39 +44,40 @@ const Blog = (): JSX.Element => {
   return (
     <div className="tw__blog">
       <div className="tw__container tw__blog__container">
-        <h2 className="tw__section-title">Blog</h2>
-        <div className="tw__blog-separator" />
-        <div className="tw__section__subtitles">
-          <h3 className="tw__section-subtitle">Check out our latest alpha</h3>
+        <ScrollFadeIn>
+          <h2 className="tw__section-title">Blog</h2>
+          <div className="tw__blog-separator" />
+          <div className="tw__section__subtitles">
+            <h3 className="tw__section-subtitle">Check out our latest alpha</h3>
+            <div className="tw__blog__read-more">
+              <Link href="https://medium.com/tempusfinance/" className="tw__hover-animation">
+                Read more on our Blog
+              </Link>
+              <ArrowRight />
+            </div>
+          </div>
+
+          <div className="tw__blog__article-container">
+            <div className="tw__blog__articles">
+              {posts.map(post => (
+                <Article
+                  key={post.title}
+                  date={post.date}
+                  description={post.description}
+                  title={post.title}
+                  link={post.link}
+                  thumbnail={post.thumbnail}
+                />
+              ))}
+            </div>
+          </div>
           <div className="tw__blog__read-more">
             <Link href="https://medium.com/tempusfinance/" className="tw__hover-animation">
               Read more on our Blog
             </Link>
             <ArrowRight />
           </div>
-        </div>
-
-        <div className="tw__blog__article-container">
-          <div className="tw__blog__articles">
-            {posts.map(post => (
-              <Article
-                key={post.title}
-                date={post.date}
-                description={post.description}
-                title={post.title}
-                link={post.link}
-                thumbnail={post.thumbnail}
-              />
-            ))}
-          </div>
-        </div>
-
-        <div className="tw__blog__read-more">
-          <Link href="https://medium.com/tempusfinance/" className="tw__hover-animation">
-            Read more on our Blog
-          </Link>
-          <ArrowRight />
-        </div>
+        </ScrollFadeIn>
       </div>
     </div>
   );
