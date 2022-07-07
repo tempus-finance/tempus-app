@@ -2,20 +2,33 @@
   .tw__tokenomics__header {
     display: flex;
     flex-direction: column;
-    background: linear-gradient(89.84deg, #ff7700 0.14%, #c6bfff 99.42%);
-    background-repeat: no-repeat;
-    background-size: cover;
+    background-image: linear-gradient(89.84deg, #ff7700 0.14%, #c6bfff 99.42%);
     height: 507px;
     position: relative;
     overflow: hidden;
     color: #050a4a;
 
-    &::before {
-      content: ' ';
-      background: url(./header-background.svg);
-      width: 400%;
-      height: 400%;
+    @media screen and (max-width: 768px) {
+      height: 428px;
+    }
+
+    .tw__tokenomics__header__background-container {
       position: absolute;
+      left: 0px;
+      top: 0px;
+      bottom: 0px;
+      right: 0px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .tw__tokenomics__header__background {
+      width: 100%;
+      max-width: 1440px;
+      background-image: url(./header-background.svg);
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-position: center;
     }
 
     .tw__header {
@@ -58,6 +71,11 @@
         text-align: center;
       }
 
+      @media screen and (max-width: 768px) {
+        font-size: 42px;
+        line-height: 110%;
+      }
+
       .tw__tokenomics__header__title-text {
         margin: 0 8px;
 
@@ -73,6 +91,7 @@
   margin: 0;
   font-weight: 600;
   font-size: 34px;
+  line-height: 1;
 }
 
 .tw__tokenomics__token-info {
@@ -209,4 +228,177 @@
       }
     }
   }
+}
+
+.tw__tokenomics__legend {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  font-size: 16px;
+  line-height: 1;
+
+  @media screen and (max-width: 768px) {
+    flex-direction: column;
+  }
+
+  .tw__tokenomics__legend-item {
+    display: flex;
+    align-items: center;
+
+    &:not(:last-child) {
+      margin-right: 24px;
+
+      @media screen and (max-width: 768px) {
+        margin-bottom: 8px;
+        margin-right: 0;
+      }
+    }
+  }
+
+  .tw__tokenomics__legend-color {
+    width: 12px;
+    height: 12px;
+    margin-right: 8px;
+    border-radius: 6px;
+  }
+}
+
+.tw__tokenomics__tokenomics {
+  background-color: #050a4a;
+  color: #eeecff;
+
+  .tw__tokenomics__tokenomics-container {
+    padding: 40px 40px 100px 40px;
+  }
+
+  .tw__tokenomics__tokenomics-description {
+    margin: 100px 230px 60px 0;
+    font-size: 20px;
+    line-height: 30px;
+
+    @media screen and (max-width: 1024px) {
+      margin-right: 0;
+    }
+  }
+
+  .tw__tokenomics__legend-color {
+    &.tw__tokenomics__tokenomics-legend-color-sale {
+      background: linear-gradient(90deg, #6167c8 0%, #c6bfff 100%);
+    }
+
+    &.tw__tokenomics__tokenomics-legend-color-investors {
+      background-color: #ff7700;
+    }
+
+    &.tw__tokenomics__tokenomics-legend-color-team {
+      background-color: #eeecff;
+    }
+  }
+
+  .tw__tokenomics__tokenomics-chart {
+    margin-left: 114px;
+    box-sizing: border-box;
+
+    @media screen and (max-width: 1024px) {
+      margin-left: 0;
+    }
+  }
+}
+
+.tw__tokenomics__token-distribution {
+  background-color: #050a4a;
+  color: #eeecff;
+
+  .tw__tokenomics__token-distribution-container {
+    padding: 0 40px 100px 40px;
+  }
+
+  .tw__tokenomics__token-distribution-separator {
+    display: flex;
+    margin-bottom: 40px;
+    flex-grow: 1;
+    height: 1px;
+    width: 100%;
+    background-color: #ffffff;
+  }
+
+  .tw__tokenomics__token-distribution-description {
+    margin: 100px 230px 60px 0;
+    font-size: 20px;
+    line-height: 30px;
+
+    @media screen and (max-width: 1024px) {
+      margin-right: 0;
+    }
+  }
+
+  .tw__tokenomics__legend {
+    display: none;
+
+    @media screen and (max-width: 1024px) {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 40px;
+    }
+
+    .tw__tokenomics__legend-item:not(:last-child) {
+      margin-bottom: 8px;
+    }
+
+    .tw__tokenomics__token-distribution-legend-value {
+      font-weight: bold;
+    }
+  }
+
+  .tw__tokenomics__legend-color {
+    &.tw__tokenomics__token-distribution-legend-color-investors {
+      background-color: #ff7700;
+    }
+
+    &.tw__tokenomics__token-distribution-legend-color-team {
+      background-color: #eeecff;
+    }
+
+    &.tw__tokenomics__token-distribution-legend-color-treasury {
+      background-color: #c6cfff;
+    }
+
+    &.tw__tokenomics__token-distribution-legend-color-sale {
+      background-color: #6167c8;
+    }
+  }
+
+  .tw__tokenomics__token-distribution-chart {
+    display: flex;
+    justify-content: center;
+  }
+
+  .tw__tokenomics__token-distribution-chart-wrapper {
+    width: 994px;
+    position: relative;
+  }
+}
+
+.tw__tokenomics__chart-label-line {
+  height: 1px;
+  position: absolute;
+  background-color: white;
+
+  @media screen and (max-width: 1024px) {
+    display: none;
+  }
+}
+
+.tw__tokenomics__chart-label-label {
+  position: absolute;
+  right: 0px;
+  top: -28px;
+  font-size: 20px;
+}
+
+.tw__tokenomics__chart-label-percentage {
+  position: absolute;
+  right: 0px;
+  top: 0px;
+  font-size: 28px;
 }
