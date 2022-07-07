@@ -42,7 +42,7 @@
     }
 
     // mobile only
-    > .tw__blog__read-more {
+    .tw__blog__read-more.tw__mobile {
       display: none;
 
       @media screen and (max-width: 768px) {
