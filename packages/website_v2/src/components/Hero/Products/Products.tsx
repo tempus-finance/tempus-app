@@ -19,7 +19,7 @@ const Products = (): JSX.Element => (
       bannerType="dark"
       bannerIllustration={<MoneyMarketIllustration />}
       badge={<StarkNetBadge />}
-      name="Nostra Money Market"
+      name="Money Market"
       title="Borrow. Lend. Earn."
       description="Our new money market for borrowing and lending. Get the most out of your money in a fast and secure way."
       buttonLabel="Coming soon"
