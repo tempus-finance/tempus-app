@@ -28,7 +28,7 @@ const TokenInfo = (): JSX.Element => {
       setHoldersCount(await TokenHoldersService.getHoldersCount());
     };
     fetchHoldersCount();
-  });
+  }, []);
 
   const priceFormatted = useMemo(() => (price ? DecimalUtils.formatToCurrency(price, 4, '$') : '-'), [price]);
 
