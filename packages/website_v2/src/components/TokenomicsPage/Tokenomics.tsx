@@ -1,6 +1,7 @@
 import { memo, useCallback } from 'react';
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, XAxis, YAxis } from 'recharts';
 import { DecimalUtils } from 'tempus-core-services';
+import { ScrollFadeIn } from '../shared';
 
 const data = [
   {
@@ -196,79 +197,81 @@ const Tokenomics = (): JSX.Element => {
 
   return (
     <div className="tw__tokenomics__tokenomics">
-      <div className="tw__container tw__tokenomics__tokenomics-container">
-        <h2 className="tw__tokenomics__title">TEMP Tokenomics</h2>
-        <p className="tw__tokenomics__tokenomics-description">
-          The maximum supply of TEMP is 1 billion and 70 million unlocked TEMP were sold in a fair launch auction in
-          November 2021. The remaining 930 million TEMP will unlock gradually until May 2024.
-        </p>
-        <div className="tw__tokenomics__legend">
-          <div className="tw__tokenomics__legend-item">
-            <span className="tw__tokenomics__legend-color tw__tokenomics__tokenomics-legend-color-sale" />
-            <span>Fair Launch Investors</span>
+      <ScrollFadeIn>
+        <div className="tw__container tw__tokenomics__tokenomics-container">
+          <h2 className="tw__tokenomics__title">TEMP Tokenomics</h2>
+          <p className="tw__tokenomics__tokenomics-description">
+            The maximum supply of TEMP is 1 billion and 70 million unlocked TEMP were sold in a fair launch auction in
+            November 2021. The remaining 930 million TEMP will unlock gradually until May 2024.
+          </p>
+          <div className="tw__tokenomics__legend">
+            <div className="tw__tokenomics__legend-item">
+              <span className="tw__tokenomics__legend-color tw__tokenomics__tokenomics-legend-color-sale" />
+              <span>Fair Launch Investors</span>
+            </div>
+            <div className="tw__tokenomics__legend-item">
+              <span className="tw__tokenomics__legend-color tw__tokenomics__tokenomics-legend-color-investors" />
+              <span>Investors &amp; Advisors</span>
+            </div>
+            <div className="tw__tokenomics__legend-item">
+              <span className="tw__tokenomics__legend-color tw__tokenomics__tokenomics-legend-color-team" />
+              <span>Current &amp; Future Team</span>
+            </div>
           </div>
-          <div className="tw__tokenomics__legend-item">
-            <span className="tw__tokenomics__legend-color tw__tokenomics__tokenomics-legend-color-investors" />
-            <span>Investors &amp; Advisors</span>
-          </div>
-          <div className="tw__tokenomics__legend-item">
-            <span className="tw__tokenomics__legend-color tw__tokenomics__tokenomics-legend-color-team" />
-            <span>Current &amp; Future Team</span>
+          <div className="tw__tokenomics__tokenomics-chart">
+            <ResponsiveContainer width="100%" height={470}>
+              <AreaChart
+                width={500}
+                height={342}
+                data={data}
+                margin={{
+                  top: 48,
+                  right: 20,
+                  left: 20,
+                  bottom: 20,
+                }}
+              >
+                <defs>
+                  <linearGradient id="publicSaleGradient" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0%" stopColor="#6167c8" />
+                    <stop offset="100%" stopColor="#c6bfff" />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid vertical={false} opacity={1} />
+                <XAxis dataKey="date" stroke="#ffffff" dy={20} />
+                <YAxis stroke="#ffffff" dx={-15} tickFormatter={formatTickValue} />
+                <Area
+                  type="monotone"
+                  dataKey="team"
+                  stackId="1"
+                  stroke="#eeecff"
+                  fill="#eeecff"
+                  opacity={1}
+                  fillOpacity={1}
+                />
+                <Area
+                  type="monotone"
+                  dataKey="investorsAndAdvisors"
+                  stackId="1"
+                  stroke="#ff7700"
+                  fill="#ff7700"
+                  opacity={1}
+                  fillOpacity={1}
+                />
+                <Area
+                  type="monotone"
+                  dataKey="publicSale"
+                  stackId="1"
+                  strokeWidth={0}
+                  fill="url(#publicSaleGradient)"
+                  opacity={1}
+                  fillOpacity={1}
+                />
+              </AreaChart>
+            </ResponsiveContainer>
           </div>
         </div>
-        <div className="tw__tokenomics__tokenomics-chart">
-          <ResponsiveContainer width="100%" height={470}>
-            <AreaChart
-              width={500}
-              height={342}
-              data={data}
-              margin={{
-                top: 48,
-                right: 20,
-                left: 20,
-                bottom: 20,
-              }}
-            >
-              <defs>
-                <linearGradient id="publicSaleGradient" x1="0" y1="0" x2="1" y2="0">
-                  <stop offset="0%" stopColor="#6167c8" />
-                  <stop offset="100%" stopColor="#c6bfff" />
-                </linearGradient>
-              </defs>
-              <CartesianGrid vertical={false} opacity={1} />
-              <XAxis dataKey="date" stroke="#ffffff" dy={20} />
-              <YAxis stroke="#ffffff" dx={-15} tickFormatter={formatTickValue} />
-              <Area
-                type="monotone"
-                dataKey="team"
-                stackId="1"
-                stroke="#eeecff"
-                fill="#eeecff"
-                opacity={1}
-                fillOpacity={1}
-              />
-              <Area
-                type="monotone"
-                dataKey="investorsAndAdvisors"
-                stackId="1"
-                stroke="#ff7700"
-                fill="#ff7700"
-                opacity={1}
-                fillOpacity={1}
-              />
-              <Area
-                type="monotone"
-                dataKey="publicSale"
-                stackId="1"
-                strokeWidth={0}
-                fill="url(#publicSaleGradient)"
-                opacity={1}
-                fillOpacity={1}
-              />
-            </AreaChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
+      </ScrollFadeIn>
     </div>
   );
 };

@@ -3,6 +3,7 @@ import { Decimal, DecimalUtils } from 'tempus-core-services';
 import TokenCirculatingSupplyService from '../../services/TokenCirculatingSupplyService';
 import TokenHoldersService from '../../services/TokenHoldersService';
 import TokenPriceService from '../../services/TokenPriceService';
+import { ScrollFadeIn } from '../shared';
 
 import './TokenInfo.scss';
 
@@ -49,24 +50,26 @@ const TokenInfo = (): JSX.Element => {
 
   return (
     <div className="tw__token-info">
-      <div className="tw__container tw__token-info__container">
-        <div className="tw__token-info__price">
-          <div className="tw__token-info__title">TEMP price</div>
-          <div className="tw__token-info__value">{priceFormatted}</div>
+      <ScrollFadeIn>
+        <div className="tw__container tw__token-info__container">
+          <div className="tw__token-info__price">
+            <div className="tw__token-info__title">TEMP price</div>
+            <div className="tw__token-info__value">{priceFormatted}</div>
+          </div>
+          <div className="tw__token-info__supply">
+            <div className="tw__token-info__title">Circulating supply</div>
+            <div className="tw__token-info__value">{circulatingSupplyFormatted}</div>
+          </div>
+          <div className="tw__token-info__capitalization">
+            <div className="tw__token-info__title">Market capitalization</div>
+            <div className="tw__token-info__value">{marketCapFormatted}</div>
+          </div>
+          <div className="tw__token-info__holders">
+            <div className="tw__token-info__title">Holders</div>
+            <div className="tw__token-info__value">{holdersCount ?? '-'}</div>
+          </div>
         </div>
-        <div className="tw__token-info__supply">
-          <div className="tw__token-info__title">Circulating supply</div>
-          <div className="tw__token-info__value">{circulatingSupplyFormatted}</div>
-        </div>
-        <div className="tw__token-info__capitalization">
-          <div className="tw__token-info__title">Market capitalization</div>
-          <div className="tw__token-info__value">{marketCapFormatted}</div>
-        </div>
-        <div className="tw__token-info__holders">
-          <div className="tw__token-info__title">Holders</div>
-          <div className="tw__token-info__value">{holdersCount ?? '-'}</div>
-        </div>
-      </div>
+      </ScrollFadeIn>
     </div>
   );
 };
