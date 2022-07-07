@@ -172,9 +172,11 @@
 
   @media screen and (max-width: 1024px) {
     padding: 0 24px;
+    font-size: 18px;
   }
 
-  @media screen and (max-width: 1024px) {
+  @media screen and (max-width: 330px) {
+    padding: 0 22px;
     font-size: 18px;
   }
 
@@ -182,5 +184,9 @@
     margin-right: 17px;
     color: #ffffff;
     font-size: 22px;
+
+    @media screen and (max-width: 330px) {
+      margin-right: 13px;
+    }
   }
 }
