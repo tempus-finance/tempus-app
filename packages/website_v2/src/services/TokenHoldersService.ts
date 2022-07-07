@@ -1,94 +1,92 @@
-import { ethers, BigNumber } from 'ethers';
-import { ERC20, ERC20ABI, getDefaultProvider } from 'tempus-core-services';
-import { tempTokenAddress } from '../constants';
+import { BigNumber, ethers } from 'ethers';
+import { JsonRpcProvider } from '@ethersproject/providers';
+import { Chain, Decimal, ERC20, ERC20ABI, ZERO } from 'tempus-core-services';
+import config from '../config';
+import { TEMP_PRECISION } from '../constants';
 
-interface HolderBalance {
-  balance: BigNumber;
-  address: string;
+interface TokenHolderData {
+  [holderAddress: string]: {
+    balance: Decimal;
+  };
 }
 
 class TokenHoldersService {
   static async getHoldersCount(): Promise<number | null> {
+    const tokenHolderData: TokenHolderData = {};
+
     try {
-      const contract = await this.getTokenContract();
+      const results = await Promise.all(
+        Object.keys(config).map(async key => {
+          const chain = key as Chain;
 
-      const transferEvents = await contract.queryFilter(contract.filters.Transfer());
+          // Skip test chains
+          if (config[chain].testChain) {
+            return 0;
+          }
 
-      const holderAddresses: string[] = transferEvents.map(
-        (transferEvent: { args: { to: any } }) => transferEvent.args.to,
+          const contract = await this.getTokenContract(chain, config[chain].tempTokenAddress);
+
+          const transferEvents = await contract.queryFilter(contract.filters.Transfer());
+          transferEvents.forEach((transferEvent: any) => {
+            const fromAddress = transferEvent.args.from;
+            const toAddress = transferEvent.args.to;
+            const amount = new Decimal(BigNumber.from(transferEvent.args.value), TEMP_PRECISION);
+
+            if (!tokenHolderData[toAddress]) {
+              tokenHolderData[toAddress] = {
+                balance: new Decimal(0),
+              };
+            }
+            tokenHolderData[toAddress].balance = tokenHolderData[toAddress].balance.add(amount);
+
+            if (!tokenHolderData[fromAddress]) {
+              tokenHolderData[fromAddress] = {
+                balance: new Decimal(0),
+              };
+            }
+            tokenHolderData[fromAddress].balance = tokenHolderData[fromAddress].balance.sub(amount);
+          });
+
+          let holderCount = 0;
+          Object.keys(tokenHolderData).forEach(tokenHolderAddress => {
+            if (tokenHolderData[tokenHolderAddress].balance.gt(ZERO)) {
+              holderCount += 1;
+            }
+          });
+
+          return holderCount;
+        }),
       );
-      const uniqueHolderAddresses = [...new Set(holderAddresses)];
 
-      let holderBalances: HolderBalance[] = [];
-      while (uniqueHolderAddresses.length > 0) {
-        const batch = uniqueHolderAddresses.splice(0, 2000);
-
-        // eslint-disable-next-line no-await-in-loop
-        holderBalances = await this.getHolderBalancesBatch(batch, holderBalances);
-      }
-
-      holderBalances.sort((a, b) => {
-        if (a.balance.gte(b.balance)) {
-          return -1;
-        }
-        return 1;
+      let totalHolders = 0;
+      results.forEach(result => {
+        totalHolders += result;
       });
 
-      return holderBalances.filter(holder => !holder.balance.isZero()).length;
+      return totalHolders;
     } catch {
       console.error('getHoldersCount - Failed to fetch TEMP holder');
       return null;
     }
   }
 
-  private static async getHolderBalancesBatch(addresses: string[], currentBalances: Array<HolderBalance>) {
-    const balancePromises: Promise<HolderBalance | null>[] = [];
-    addresses.forEach(address => {
-      balancePromises.push(this.getHolderBalance(address));
-    });
-    const balances = await Promise.all(balancePromises);
+  private static async getTokenContract(chain: Chain, address: string) {
+    const provider = await this.getProvider(chain);
 
-    return [...(balances.filter(balance => balance !== null) as HolderBalance[]), ...currentBalances];
+    return new ethers.Contract(address, ERC20ABI, provider) as ERC20;
   }
 
-  private static async getHolderBalance(address: string): Promise<HolderBalance | null> {
-    try {
-      const contract = await this.getTokenContract();
-
-      const balance = await contract.balanceOf(address);
-
-      return {
-        balance,
-        address,
-      };
-    } catch {
-      console.error(`getHolderBalance - Failed to fetch TEMP balance for holder ${address}`);
-      return null;
-    }
-  }
-
-  private static async getTokenContract() {
-    const provider = await this.getProvider();
-
-    return new ethers.Contract(tempTokenAddress, ERC20ABI, provider) as ERC20;
-  }
-
-  private static async getProvider(): Promise<any> {
-    if ((window as any).ethereum && !(window as any).ethereum.chainId) {
-      await TokenHoldersService.wait();
-      return this.getProvider();
+  private static async getProvider(chain: Chain): Promise<any> {
+    if (chain === 'fantom') {
+      return new JsonRpcProvider(process.env.REACT_APP_FANTOM_RPC, { chainId: 250, name: 'Fantom Opera' });
     }
 
-    if ((window as any).ethereum && parseInt((window as any).ethereum.chainId, 16) === 1) {
-      return new ethers.providers.Web3Provider((window as any).ethereum, 'any');
-    }
-    return getDefaultProvider('ethereum');
-  }
+    const browserProvider = (window as any).ethereum;
 
-  private static async wait() {
-    return new Promise(resolve => {
-      setTimeout(resolve, 100);
-    });
+    if (browserProvider && browserProvider.chainId && parseInt(browserProvider.chainId, 16) === 1) {
+      return new ethers.providers.Web3Provider(browserProvider, 'any');
+    }
+    return new JsonRpcProvider(process.env.REACT_APP_ETHEREUM_RPC, { chainId: 1, name: 'homestead' });
   }
 }
 export default TokenHoldersService;
