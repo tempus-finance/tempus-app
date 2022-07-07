@@ -81,16 +81,5 @@
 
 .tw__article-image {
   width: 100%;
-  min-height: 239px;
-  background-size: cover;
-  background-position: center;
   border-radius: 5px 5px 0px 0px;
-
-  @media screen and (max-width: 768px) {
-    min-height: 280px;
-  }
-
-  @media screen and (max-width: 320px) {
-    min-height: 180px;
-  }
 }
