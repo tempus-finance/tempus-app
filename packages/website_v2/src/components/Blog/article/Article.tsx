@@ -17,7 +17,7 @@ const Article: FC<ArticleProps> = props => {
 
   return (
     <Link href={link} className="tw__article">
-      <img className="tw__article-image" src={thumbnail} alt="article banner" />
+      <img className="tw__article-image" src={thumbnail} alt={title} />
       <div className="tw__article-content">
         <div className="tw__article-date">
           <span>{date}</span>
