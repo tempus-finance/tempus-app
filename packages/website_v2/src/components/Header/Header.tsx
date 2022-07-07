@@ -1,6 +1,6 @@
 import { FC, memo, useCallback, useState } from 'react';
 import { Link } from '../shared';
-import { MenuIcon } from './icons';
+import { MenuIcon, CloseIcon } from './icons';
 import './Header.scss';
 
 interface HeaderProps {
@@ -41,7 +41,7 @@ const Header: FC<HeaderProps> = (props): JSX.Element => {
           {/* TODO: Add hover style for close button */}
           {menuOpened && (
             <button type="button" className="tw__btn tw__header-close-button" onClick={handleMenuClose}>
-              Close
+              <CloseIcon color={iconColor} />
             </button>
           )}
           {/* TODO - Add click handlers */}
