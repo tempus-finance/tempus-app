@@ -84,6 +84,23 @@
       }
     }
   }
+
+  .tw__treasury {
+    background-color: #050a4a;
+
+    .tw__treasury__background,
+    .tw__treasury__description {
+      display: none;
+    }
+
+    .tw__section-title {
+      color: #eeecff;
+    }
+
+    .tw__treasury__value > p {
+      color: #c6c0ff;
+    }
+  }
 }
 
 .tw__governance__title {
