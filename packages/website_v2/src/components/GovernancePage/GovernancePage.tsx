@@ -1,6 +1,7 @@
 import { memo, useEffect } from 'react';
 import Footer from '../Footer';
 import Join from '../Join';
+import TokenInfo from '../TokenInfo';
 
 import './GovernancePage.scss';
 
@@ -11,6 +12,7 @@ const GovernancePage = (): JSX.Element => {
 
   return (
     <div className="tw__governance">
+      <TokenInfo />
       <Join />
       <Footer />
     </div>

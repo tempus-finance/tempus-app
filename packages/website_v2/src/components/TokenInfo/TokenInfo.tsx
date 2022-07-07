@@ -4,6 +4,8 @@ import TokenCirculatingSupplyService from '../../services/TokenCirculatingSupply
 import TokenHoldersService from '../../services/TokenHoldersService';
 import TokenPriceService from '../../services/TokenPriceService';
 
+import './TokenInfo.scss';
+
 const TokenInfo = (): JSX.Element => {
   const [price, setPrice] = useState<Decimal | null>(null);
   const [circulatingSupply, setCirculatingSupply] = useState<Decimal | null>(null);
@@ -46,23 +48,23 @@ const TokenInfo = (): JSX.Element => {
   }, [price, circulatingSupply]);
 
   return (
-    <div className="tw__tokenomics__token-info">
-      <div className="tw__container tw__tokenomics__token-info-container">
-        <div className="tw__tokenomics__token-price">
-          <div className="tw__tokenomics__token-info-title">TEMP price</div>
-          <div className="tw__tokenomics__token-info-value">{priceFormatted}</div>
+    <div className="tw__token-info">
+      <div className="tw__container tw__token-info__container">
+        <div className="tw__token-info__price">
+          <div className="tw__token-info__title">TEMP price</div>
+          <div className="tw__token-info__value">{priceFormatted}</div>
         </div>
-        <div className="tw__tokenomics__supply">
-          <div className="tw__tokenomics__token-info-title">Circulating supply</div>
-          <div className="tw__tokenomics__token-info-value">{circulatingSupplyFormatted}</div>
+        <div className="tw__token-info__supply">
+          <div className="tw__token-info__title">Circulating supply</div>
+          <div className="tw__token-info__value">{circulatingSupplyFormatted}</div>
         </div>
-        <div className="tw__tokenomics__capitalization">
-          <div className="tw__tokenomics__token-info-title">Market capitalization</div>
-          <div className="tw__tokenomics__token-info-value">{marketCapFormatted}</div>
+        <div className="tw__token-info__capitalization">
+          <div className="tw__token-info__title">Market capitalization</div>
+          <div className="tw__token-info__value">{marketCapFormatted}</div>
         </div>
-        <div className="tw__tokenomics__holders">
-          <div className="tw__tokenomics__token-info-title">Holders</div>
-          <div className="tw__tokenomics__token-info-value">{holdersCount ?? '-'}</div>
+        <div className="tw__token-info__holders">
+          <div className="tw__token-info__title">Holders</div>
+          <div className="tw__token-info__value">{holdersCount ?? '-'}</div>
         </div>
       </div>
     </div>
