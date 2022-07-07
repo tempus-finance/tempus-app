@@ -7,6 +7,7 @@ import GovernanceHeader from './GovernanceHeader';
 import GovernanceSteps from './GovernanceSteps';
 
 import './GovernancePage.scss';
+import Treasury from '../Treasury';
 
 const GovernancePage = (): JSX.Element => {
   useEffect(() => {
@@ -17,6 +18,7 @@ const GovernancePage = (): JSX.Element => {
     <div className="tw__governance">
       <GovernanceHeader />
       <TokenInfo />
+      <Treasury />
       <GovernanceSteps />
       <GrantsCommittee />
       <Join />
