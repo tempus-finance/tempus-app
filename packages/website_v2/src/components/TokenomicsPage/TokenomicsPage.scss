@@ -2,20 +2,33 @@
   .tw__tokenomics__header {
     display: flex;
     flex-direction: column;
-    background: linear-gradient(89.84deg, #ff7700 0.14%, #c6bfff 99.42%);
-    background-repeat: no-repeat;
-    background-size: cover;
+    background-image: linear-gradient(89.84deg, #ff7700 0.14%, #c6bfff 99.42%);
     height: 507px;
     position: relative;
     overflow: hidden;
     color: #050a4a;
 
-    &::before {
-      content: ' ';
-      background: url(./header-background.svg);
-      width: 400%;
-      height: 400%;
+    @media screen and (max-width: 768px) {
+      height: 428px;
+    }
+
+    .tw__tokenomics__header__background-container {
       position: absolute;
+      left: 0px;
+      top: 0px;
+      bottom: 0px;
+      right: 0px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .tw__tokenomics__header__background {
+      width: 100%;
+      max-width: 1440px;
+      background-image: url(./header-background.svg);
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-position: center;
     }
 
     .tw__header {
@@ -56,6 +69,11 @@
         flex-direction: column;
         align-items: center;
         text-align: center;
+      }
+
+      @media screen and (max-width: 768px) {
+        font-size: 42px;
+        line-height: 110%;
       }
 
       .tw__tokenomics__header__title-text {
