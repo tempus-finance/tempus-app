@@ -31,12 +31,12 @@
       &.tw__header-logo-img-light {
         display: block;
       }
-      
+
       &.tw__header-logo-img-dark {
         display: none;
       }
     }
-  } 
+  }
 
   .tw__header-separator {
     height: 1px;
@@ -75,10 +75,14 @@
   @media screen and (max-width: 1024px) {
     display: block;
     position: absolute;
-    top: 16px;
-    right: 16px;
-    color: #eeecff;
+    top: 28px;
+    right: 20px;
     z-index: 9999;
+
+    svg {
+      width: 20px;
+      height: 20px;
+    }
   }
 }
 

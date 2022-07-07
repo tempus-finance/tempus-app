@@ -4,6 +4,7 @@ import Footer from '../Footer';
 import Join from '../Join';
 import TokenInfo from '../TokenInfo';
 import GovernanceHeader from './GovernanceHeader';
+import GovernanceSteps from './GovernanceSteps';
 
 import './GovernancePage.scss';
 
@@ -16,6 +17,7 @@ const GovernancePage = (): JSX.Element => {
     <div className="tw__governance">
       <GovernanceHeader />
       <TokenInfo />
+      <GovernanceSteps />
       <GrantsCommittee />
       <Join />
       <Footer />
