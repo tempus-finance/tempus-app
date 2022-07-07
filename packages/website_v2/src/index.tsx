@@ -5,7 +5,7 @@ import { Disclaimer, Privacy, Terms } from './components/LegalPages';
 import HomePage from './components/HomePage';
 import TeamPage from './components/TeamPage';
 import TokenomicsPage from './components/TokenomicsPage';
-import GovernancePage from './components/GovernancePage/GovernancePage';
+import GovernancePage from './components/GovernancePage';
 
 import './index.scss';
 

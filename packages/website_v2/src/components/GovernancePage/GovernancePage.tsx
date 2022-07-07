@@ -4,7 +4,7 @@ import Join from '../Join';
 
 import './GovernancePage.scss';
 
-const TokenomicsPage = (): JSX.Element => {
+const GovernancePage = (): JSX.Element => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -17,4 +17,4 @@ const TokenomicsPage = (): JSX.Element => {
   );
 };
 
-export default memo(TokenomicsPage);
+export default memo(GovernancePage);
