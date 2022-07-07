@@ -2,7 +2,7 @@ import { memo, useEffect, useMemo, useState } from 'react';
 import { Decimal, DecimalUtils } from 'tempus-core-services';
 import { ArrowRight } from '../../icons';
 import TreasuryValueService from '../../services/TreasuryValueService';
-import { Link } from '../shared';
+import { Link, ScrollFadeIn } from '../shared';
 import TreasuryBackground from './TreasuryBackground';
 
 import './Treasury.scss';
@@ -35,28 +35,30 @@ const Treasury = (): JSX.Element => {
       <div className="tw__treasury__background">
         <TreasuryBackground />
       </div>
-      <div className="tw__container tw__treasury__container">
-        <h2 className="tw__section-title">Treasury Funds</h2>
-        <div className="tw__treasury__body">
-          <div className="tw__treasury__description">
-            <div>
-              <span>Available for Innovation.</span>
+      <ScrollFadeIn>
+        <div className="tw__container tw__treasury__container">
+          <h2 className="tw__section-title">Treasury Funds</h2>
+          <div className="tw__treasury__body">
+            <div className="tw__treasury__description">
+              <div>
+                <span>Available for Innovation.</span>
+              </div>
+              <div className="tw__treasury__read-more">
+                <Link
+                  href="https://tempusfinance.notion.site/Tempus-Grants-Program-c54b4410e9db49139347210d5a340c5e"
+                  className="tw__hover-animation"
+                >
+                  Read more about our Grants
+                </Link>
+                <ArrowRight />
+              </div>
             </div>
-            <div className="tw__treasury__read-more">
-              <Link
-                href="https://tempusfinance.notion.site/Tempus-Grants-Program-c54b4410e9db49139347210d5a340c5e"
-                className="tw__hover-animation"
-              >
-                Read more about our Grants
-              </Link>
-              <ArrowRight />
+            <div className="tw__treasury__value">
+              <p>{valueFormatted}</p>
             </div>
-          </div>
-          <div className="tw__treasury__value">
-            <p>{valueFormatted}</p>
           </div>
         </div>
-      </div>
+      </ScrollFadeIn>
     </div>
   );
 };
