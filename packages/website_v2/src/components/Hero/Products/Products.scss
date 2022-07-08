@@ -17,6 +17,13 @@
   transition: all 0.3s ease-out;
   margin: 0 auto;
 
+  @media screen and (min-width: 768px) and (max-width: 1200px) {
+    flex-direction: row;
+    max-width: unset;
+    margin: 0 24px;
+    min-height: 280px;
+  }
+
   @media screen and (max-width: 768px) {
     text-align: center;
   }
@@ -30,6 +37,18 @@
     display: flex;
     position: relative;
     border-radius: 12px 12px 0 0;
+
+    @media screen and (min-width: 768px) and (max-width: 1200px) {
+      width: 50%;
+      border-radius: 12px 0 0 12px;
+      height: unset;
+      box-sizing: border-box;
+      display: flex;
+      justify-content: space-evenly;
+      align-items: center;
+      flex-direction: column-reverse;
+      text-align: center;
+    }
 
     @media screen and (max-width: 768px) {
       height: 200px;
@@ -51,6 +70,12 @@
       font-size: 21px;
       color: #ffffff;
 
+      @media screen and (min-width: 768px) and (max-width: 1200px) {
+        position: relative;
+        top: 0;
+        left: 0;
+      }
+
       @media screen and (max-width: 768px) {
         top: 16px;
         left: 16px;
@@ -68,6 +93,15 @@
       top: 52px;
       bottom: 16px;
       right: 16px;
+
+      @media screen and (min-width: 768px) and (max-width: 1200px) {
+        position: relative;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        max-height: 200px;
+        max-width: inherit;
+      }
 
       @media screen and (max-width: 768px) {
         left: 16px;
@@ -89,6 +123,12 @@
       bottom: 0;
       transform: translateY(50%);
 
+      @media screen and (min-width: 768px) and (max-width: 1200px) {
+        transform: translateY(-40%);
+        left: unset;
+        right: unset;
+      }
+
       @media screen and (max-width: 768px) {
         justify-content: center;
       }
@@ -103,6 +143,13 @@
     justify-content: space-between;
     background: #fafaff;
     border-radius: 0 0 12px 12px;
+
+    @media screen and (min-width: 768px) and (max-width: 1200px) {
+      width: 50%;
+      padding: 40px;
+      border-radius: 0 12px 12px 0;
+      box-sizing: border-box;
+    }
   }
 
   .tw__products__product-title {
@@ -110,6 +157,10 @@
     font-size: 32px;
     font-weight: 600;
     line-height: 38px;
+
+    @media screen and (min-width: 768px) and (max-width: 1200px) {
+      margin-bottom: 12px;
+    }
 
     @media screen and (max-width: 768px) {
       font-size: 24px;
@@ -121,6 +172,10 @@
     margin: 0 0 37px 0;
     font-size: 18px;
     line-height: 30px;
+
+    @media screen and (min-width: 768px) and (max-width: 1200px) {
+      margin-bottom: 12px;
+    }
 
     @media screen and (max-width: 768px) {
       font-size: 16px;
@@ -142,6 +197,10 @@
     color: #050a4a;
     font-size: 18px;
     font-weight: 600;
+
+    @media screen and (min-width: 768px) and (max-width: 1200px) {
+      width: 240px;
+    }
 
     @media screen and (max-width: 768px) {
       width: 100%;
@@ -169,7 +228,10 @@
 
   @media screen and (max-width: 1024px) {
     padding: 0 24px;
-    font-size: 18px;
+  }
+
+  @media screen and (min-width: 768px) and (max-width: 1200px) {
+    height: 32px;
   }
 
   @media screen and (max-width: 330px) {
@@ -182,8 +244,23 @@
     color: #ffffff;
     font-size: 22px;
 
+    @media screen and (max-width: 768px) {
+      font-size: 18px;
+    }
+
+    @media screen and (min-width: 768px) and (max-width: 1200px) {
+      margin: 2px 0 0 0;
+      font-size: 16px;
+    }
+
     @media screen and (max-width: 330px) {
       margin-right: 13px;
+    }
+  }
+
+  svg {
+    @media screen and (min-width: 768px) and (max-width: 1200px) {
+      height: 24px;
     }
   }
 }
