@@ -77,7 +77,11 @@
   height: 327px;
   background-image: linear-gradient(to right, #ff7700, #c6bfff);
 
-  @media screen and (max-width: 1200px) {
+  @media screen and (min-width: 768px) and (max-width: 1200px) {
+    margin-bottom: 720px;
+  }
+
+  @media screen and (max-width: 768px) {
     background-image: none;
     height: auto;
     margin-top: 0px;
@@ -96,7 +100,7 @@
   background-position: center;
   background-size: cover;
 
-  @media screen and (max-width: 1200px) {
+  @media screen and (max-width: 768px) {
     background-image: none;
   }
 }
@@ -108,7 +112,7 @@
   top: -164px;
   padding: 0px 40px;
 
-  @media screen and (max-width: 1200px) {
+  @media screen and (max-width: 768px) {
     position: relative;
     top: 0px;
   }
