@@ -4,6 +4,22 @@ import { Chain, Decimal, ERC20, ERC20ABI, ZERO } from 'tempus-core-services';
 import config from '../config';
 import { TEMP_PRECISION } from '../constants';
 
+// TODO - Refactor this to use graph service
+const tokenDeployBlocks = {
+  ethereum: 13512104,
+  fantom: 30428726,
+  'ethereum-fork': 13512104,
+  unsupported: 0,
+};
+
+// TODO - Refactor this to use graph service
+const chainBatchBlockRange = {
+  ethereum: 500000, // 500K
+  fantom: 10000000, // 10M
+  'ethereum-fork': 1000000, // 1M
+  unsupported: 0,
+};
+
 interface TokenHolderData {
   [holderAddress: string]: {
     balance: Decimal;
@@ -12,21 +28,24 @@ interface TokenHolderData {
 
 class TokenHoldersService {
   static async getHoldersCount(): Promise<number | null> {
-    const tokenHolderData: TokenHolderData = {};
-
     try {
       const results = await Promise.all(
         Object.keys(config).map(async key => {
           const chain = key as Chain;
+
+          const tokenHolderData: TokenHolderData = {};
 
           // Skip test chains
           if (config[chain].testChain) {
             return 0;
           }
 
-          const contract = await this.getTokenContract(chain, config[chain].tempTokenAddress);
-
-          const transferEvents = await contract.queryFilter(contract.filters.Transfer());
+          const transferEvents = await this.fetchEventsInBatches(
+            chain,
+            config[chain].tempTokenAddress,
+            tokenDeployBlocks[chain],
+            chainBatchBlockRange[chain],
+          );
           transferEvents.forEach((transferEvent: any) => {
             const fromAddress = transferEvent.args.from;
             const toAddress = transferEvent.args.to;
@@ -64,10 +83,40 @@ class TokenHoldersService {
       });
 
       return totalHolders;
-    } catch {
-      console.error('getHoldersCount - Failed to fetch TEMP holder');
+    } catch (error) {
+      console.error('getHoldersCount - Failed to fetch TEMP holder', error);
       return null;
     }
+  }
+
+  /**
+   * Fetches transfer events in multiple batches because query fetch size is limited to 10k entries
+   */
+  private static async fetchEventsInBatches(
+    chain: Chain,
+    tokenAddress: string,
+    tokenDeployBlock: number,
+    batchSize: number,
+  ) {
+    const provider = await this.getProvider(chain);
+
+    const latestBlock = await provider.getBlock('latest');
+
+    const batches: { form: number; to: number }[] = [];
+    for (let i = tokenDeployBlock; i <= latestBlock.number; i += batchSize) {
+      batches.push({
+        form: i,
+        to: Math.min(i + batchSize, latestBlock.number),
+      });
+    }
+
+    const contract = await this.getTokenContract(chain, tokenAddress);
+
+    const results = await Promise.all(
+      batches.map(async batch => contract.queryFilter(contract.filters.Transfer(), batch.form, batch.to)),
+    );
+
+    return results.flat();
   }
 
   private static async getTokenContract(chain: Chain, address: string) {
