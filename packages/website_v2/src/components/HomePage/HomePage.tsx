@@ -15,7 +15,7 @@ const HomePage = (): JSX.Element => {
 
   return (
     <div className="tw__root" ref={rootRef}>
-      <Header color="#050a4a" />
+      <Header color="#050a4a" menuIconColor="light" />
       <Hero />
       <About />
       <Invest />

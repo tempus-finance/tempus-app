@@ -6,7 +6,7 @@ const GovernanceHeader = (): JSX.Element => (
     <div className="tw__governance__header__background-container">
       <div className="tw__governance__header__background" />
     </div>
-    <Header color="transparent" iconColor="#050A4A" />
+    <Header color="transparent" menuIconColor="dark" />
     <div className="tw__governance__header__title">
       <span className="tw__governance__header__title-text">Your token.</span>
       <span className="tw__governance__header__title-text">Your voice.</span>

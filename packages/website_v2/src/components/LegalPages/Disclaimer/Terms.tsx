@@ -10,7 +10,7 @@ const Terms = (): JSX.Element => {
 
   return (
     <>
-      <Header color="#070b37" />
+      <Header color="#070b37" menuIconColor="light" />
       <div className="tw__legalPage">
         <div className="tw__legalPage__header">
           <div className="tw__legalPage__header-content">

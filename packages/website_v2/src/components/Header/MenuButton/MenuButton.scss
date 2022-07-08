@@ -1,0 +1,89 @@
+.tw__menuButton-wrapper {
+  position: relative;
+  cursor: pointer;
+  width: 24px;
+  height: 19px;
+  margin-top: -4px;
+}
+
+.tw__menuButton {
+  position: absolute;
+  top: 8px;
+}
+
+.tw__menuButton-light {
+  background-color: #eeecff;
+
+  &::before,
+  &::after {
+    background-color: #eeecff;
+  }
+}
+
+.tw__menuButton-dark {
+  background-color: #050a4a;
+
+  &::before,
+  &::after {
+    background-color: #050a4a;
+  }
+}
+
+label {
+  border-radius: 2px;
+  width: 24px;
+  height: 3px;
+
+  position: absolute;
+  cursor: pointer;
+
+  &::before,
+  &::after {
+    content: '';
+    width: 24px;
+    height: 3px;
+    border-radius: 2px;
+    // background-color: #eeecff;
+    position: absolute;
+    display: block;
+    color: #050a4a;
+    transition: all 0.3s;
+  }
+
+  &::before {
+    top: -250%;
+    left: 0%;
+    transform: rotateZ(0deg);
+    transform-origin: left top;
+  }
+
+  &::after {
+    bottom: -250%;
+    left: 0%;
+    transform: rotateZ(0deg);
+    transform-origin: left bottom;
+  }
+}
+
+#menu-button:checked ~ label::before {
+  content: '';
+  background-color: #050a4a;
+  transform: rotateZ(41deg);
+  left: 10%;
+}
+
+#menu-button:checked ~ label::after {
+  content: '';
+  background-color: #050a4a;
+  transform: rotateZ(-41deg);
+  left: 10%;
+}
+
+#menu-button:checked ~ label {
+  background-color: transparent;
+}
+
+input {
+  display: none;
+  pointer-events: none;
+}

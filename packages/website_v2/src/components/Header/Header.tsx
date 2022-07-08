@@ -1,27 +1,36 @@
-import { FC, memo, useCallback, useState } from 'react';
+import { FC, memo, useCallback, useEffect, useRef, useState } from 'react';
 import { Link } from '../shared';
-import { MenuIcon, CloseIcon } from './icons';
+import MenuButton from './MenuButton';
+
 import './Header.scss';
 
 interface HeaderProps {
   color: string;
-  iconColor?: string;
+  menuIconColor: 'dark' | 'light';
 }
 
 const Header: FC<HeaderProps> = (props): JSX.Element => {
-  const { color, iconColor } = props;
+  const { color, menuIconColor } = props;
 
   const [menuOpened, setMenuOpened] = useState(false);
 
-  const handleMenuOpen = useCallback(() => setMenuOpened(true), []);
+  const menuContainerRef = useRef<HTMLDivElement>(null);
 
-  const handleMenuClose = useCallback(() => setMenuOpened(false), []);
+  const onMenuToggle = useCallback((opened: boolean) => {
+    setMenuOpened(opened);
+  }, []);
+
+  useEffect(() => {
+    if (menuContainerRef.current) {
+      menuContainerRef.current.style.left = menuOpened ? '0%' : '-100%';
+    }
+  }, [menuOpened]);
 
   const handleLinkClick = useCallback(() => {
     setTimeout(() => {
-      handleMenuClose();
+      setMenuOpened(false);
     }, 200);
-  }, [handleMenuClose]);
+  }, []);
 
   return (
     <div className="tw__header" style={{ backgroundColor: color }}>
@@ -32,19 +41,8 @@ const Header: FC<HeaderProps> = (props): JSX.Element => {
             <img className="tw__header-logo-img-dark" src="/images/header-logo-dark.svg" alt="Tempus DAO" />
           </Link>
         </div>
-        {/* TODO: Add hover style for menu button */}
-        <button type="button" className="tw__btn tw__header-menu-button" onClick={handleMenuOpen}>
-          <MenuIcon color={iconColor} />
-        </button>
-        <div className={`tw__header-links ${menuOpened ? 'tw__header-menu-opened' : ''}`}>
-          {/* TODO: Replace with close icon when the design is ready */}
-          {/* TODO: Add hover style for close button */}
-          {menuOpened && (
-            <button type="button" className="tw__btn tw__header-close-button" onClick={handleMenuClose}>
-              <CloseIcon color={iconColor} />
-            </button>
-          )}
-          {/* TODO - Add click handlers */}
+
+        <div className="tw__header-links">
           <Link className="tw__header-link tw__hover-animation" href="/team" onClick={handleLinkClick}>
             Team
           </Link>
@@ -65,6 +63,43 @@ const Header: FC<HeaderProps> = (props): JSX.Element => {
           >
             Blog
           </Link>
+        </div>
+
+        <div className="tw__header-menu">
+          <div className="tw__header-menu-container" ref={menuContainerRef}>
+            <div className="tw__header-menu-bar">
+              <div className="tw__header-menu-logo">
+                <Link href="/" className="tw__clickable-logo">
+                  <img className="tw__header-logo-img-light" src="/images/header-logo.svg" alt="Tempus DAO" />
+                  <img className="tw__header-logo-img-dark" src="/images/header-logo-dark.svg" alt="Tempus DAO" />
+                </Link>
+              </div>
+              <div className="tw__header__menu-bar-separator" />
+            </div>
+            <div className="tw__header__menu-body">
+              <Link className="tw__header-menu-link tw__hover-animation" href="/team" onClick={handleLinkClick}>
+                Team
+              </Link>
+              <Link className="tw__header-menu-link tw__hover-animation" href="/token" onClick={handleLinkClick}>
+                Token
+              </Link>
+              <Link
+                className="tw__header-menu-link tw__hover-animation"
+                href="https://docs.tempus.finance/"
+                onClick={handleLinkClick}
+              >
+                Docs
+              </Link>
+              <Link
+                className="tw__header-menu-link tw__hover-animation"
+                href="https://medium.com/tempusfinance/"
+                onClick={handleLinkClick}
+              >
+                Blog
+              </Link>
+            </div>
+          </div>
+          <MenuButton onChange={onMenuToggle} checked={menuOpened} color={menuIconColor} />
         </div>
         <div className="tw__header-separator" />
       </div>
