@@ -51,11 +51,6 @@
       text-align: center;
     }
 
-    @media screen and (max-width: 768px) {
-      height: 200px;
-      justify-content: center;
-    }
-
     &.tw__products__product-banner-bright {
       background: linear-gradient(90deg, #ff7700 0%, #c6bfff 100%);
     }
@@ -75,12 +70,6 @@
         position: relative;
         top: 0;
         left: 0;
-      }
-
-      @media screen and (max-width: 768px) {
-        top: 16px;
-        left: 16px;
-        right: 16px;
         font-size: 20px;
         line-height: 28px;
       }
@@ -102,11 +91,6 @@
         right: 0;
         max-height: 200px;
         max-width: inherit;
-      }
-
-      @media screen and (max-width: 768px) {
-        left: 16px;
-        right: 16px;
         margin: 0 auto;
       }
 
