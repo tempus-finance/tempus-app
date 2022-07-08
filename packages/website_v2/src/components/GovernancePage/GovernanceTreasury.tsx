@@ -56,21 +56,16 @@ const GovernanceTreasury = (): JSX.Element => {
               color: '#EEECFF',
             },
             {
-              name: 'Balancer pool',
+              name: 'Balancer Liquidity',
               description: 'TEMP-WETH (80/20)',
               value: treasuryValues.balancerPool,
               color: '#6167C8',
             },
             {
-              name: 'Uniswap pool',
+              name: 'Uniswap Liquidity',
               description: 'TEMP-USDC (50/50)',
               value: treasuryValues.uniswapPool,
               color: '#FF7700',
-            },
-            {
-              name: 'SpookySwap pool',
-              value: treasuryValues.spookySwapPool,
-              color: '#D0F4F9',
             },
           ].map(entry => ({ ...entry, value: +entry.value.toBigNumber() }))
         : [],
@@ -95,7 +90,7 @@ const GovernanceTreasury = (): JSX.Element => {
                   startAngle={90}
                   endAngle={450}
                   data={chartData}
-                  innerRadius="66%"
+                  innerRadius="70%"
                   outerRadius="100%"
                   fill="#82ca9d"
                   onMouseEnter={handlePieSectorSelect}
