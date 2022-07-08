@@ -12,7 +12,7 @@
     flex-direction: column;
     overflow: hidden;
 
-    @media screen and (max-width: 768px) {
+    @media screen and (max-width: 767px) {
       padding: 60px 16px;
       text-align: center;
     }
@@ -58,7 +58,7 @@
   font-size: 20px;
   line-height: 30px;
 
-  @media screen and (max-width: 768px) {
+  @media screen and (max-width: 767px) {
     align-items: center;
     font-size: 18px;
     line-height: 28px;
@@ -95,7 +95,7 @@
     text-align: left;
     color: #050a4a;
 
-    @media screen and (max-width: 768px) {
+    @media screen and (max-width: 767px) {
       text-align: center;
     }
   }

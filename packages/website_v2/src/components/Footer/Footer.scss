@@ -11,7 +11,7 @@
     position: relative;
     overflow: hidden;
 
-    @media screen and (max-width: 768px) {
+    @media screen and (max-width: 767px) {
       text-align: center;
       align-items: center;
       padding: 60px 16px;
@@ -37,7 +37,7 @@
     grid-template-columns: repeat(4, 180px);
   }
 
-  @media screen and (max-width: 768px) {
+  @media screen and (max-width: 767px) {
     width: 100%;
     grid-template-columns: repeat(2, 180px);
     justify-content: center;
@@ -58,7 +58,7 @@
       }
     }
 
-    @media screen and (max-width: 768px) {
+    @media screen and (max-width: 767px) {
       width: 100%;
     }
 
@@ -69,7 +69,7 @@
       color: #eeecff;
       margin-bottom: 21px;
 
-      @media screen and (max-width: 768px) {
+      @media screen and (max-width: 767px) {
         font-size: 20px;
       }
     }
@@ -78,7 +78,7 @@
       margin: 0px;
       margin-bottom: 21px;
 
-      @media screen and (max-width: 768px) {
+      @media screen and (max-width: 767px) {
         justify-content: center;
       }
     }
@@ -108,7 +108,7 @@
   right: 49px;
   bottom: 28px;
 
-  @media screen and (max-width: 768px) {
+  @media screen and (max-width: 767px) {
     height: 100%;
     right: -24px;
     top: 0;
