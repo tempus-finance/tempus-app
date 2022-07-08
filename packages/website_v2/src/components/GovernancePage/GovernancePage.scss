@@ -241,13 +241,13 @@
     grid-template-columns: repeat(3, 1fr);
     grid-gap: 20px;
 
-    @media screen and (max-width: 1024px) {
+    @media screen and (max-width: 1023px) {
       grid-template-columns: 1fr;
     }
 
     .tw__governance__steps-grid-item {
       &:not(:last-child) {
-        @media screen and (max-width: 1024px) {
+        @media screen and (max-width: 1023px) {
           margin-bottom: 60px;
         }
       }

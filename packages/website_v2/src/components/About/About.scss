@@ -5,7 +5,7 @@
     padding: 40px 40px 100px 40px;
     color: #eeecff;
 
-    @media screen and (max-width: 768px) {
+    @media screen and (max-width: 767px) {
       padding: 0 16px 60px 16px;
       text-align: center;
     }
@@ -14,7 +14,7 @@
       margin: 0;
       font-size: 34px;
 
-      @media screen and (max-width: 768px) {
+      @media screen and (max-width: 767px) {
         margin-top: 60px;
         font-size: 24px;
       }
@@ -37,13 +37,13 @@
   grid-template-columns: repeat(3, 1fr);
   grid-gap: 20px;
 
-  @media screen and (max-width: 768px) {
+  @media screen and (max-width: 767px) {
     margin-top: 40px;
     grid-template-columns: 1fr;
   }
 
   .tw__about__grid-item {
-    @media screen and (max-width: 768px) {
+    @media screen and (max-width: 767px) {
       &:not(:last-child) {
         margin-bottom: 40px;
       }
@@ -60,7 +60,7 @@
       font-weight: 600;
       line-height: 34px;
 
-      @media screen and (max-width: 768px) {
+      @media screen and (max-width: 767px) {
         margin-top: 24px;
         margin-bottom: 12px;
         font-size: 18px;
@@ -72,7 +72,7 @@
       font-size: 18px;
       line-height: 30px;
 
-      @media screen and (max-width: 768px) {
+      @media screen and (max-width: 767px) {
         font-size: 16px;
       }
     }
