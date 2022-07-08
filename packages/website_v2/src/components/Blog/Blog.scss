@@ -11,7 +11,7 @@
     padding: 40px 40px 100px 40px;
     color: #eeecff;
 
-    @media screen and (max-width: 768px) {
+    @media screen and (max-width: 767px) {
       padding: 60px 16px;
       text-align: center;
     }
@@ -98,13 +98,12 @@
   grid-template-columns: repeat(3, 1fr);
   column-gap: 24px;
 
-  @media screen and (max-width: 1024px) {
-    grid-template-columns: repeat(2, 1fr);
+  @media screen and (max-width: 1200px) {
+    grid-template-columns: 1fr;
     row-gap: 24px;
   }
 
-  @media screen and (max-width: 820px) {
+  @media screen and (max-width: 768px) {
     width: 100%;
-    grid-template-columns: 1fr;
   }
 }

@@ -3,7 +3,7 @@
   flex-direction: column;
   border-radius: 10px;
   height: 100%;
-  max-width: 683px;
+  max-width: 440px;
   margin: auto;
   text-decoration: none;
   font-style: normal;
@@ -16,6 +16,13 @@
   &:hover {
     transform: translateY(-16px);
   }
+
+  @media screen and (min-width: 768px) and (max-width: 1200px) {
+    flex-direction: row;
+    margin: 0 auto;
+    min-height: 440px;
+    max-width: 800px;
+  }
 }
 
 .tw__article-content {
@@ -25,7 +32,7 @@
   height: 100%;
   word-break: break-word;
   background-color: rgba(255, 255, 255, 0.1);
-  border-radius: 0 0 10px 10px;
+  border-radius: 0 0 12px 12px;
 
   .tw__article-date {
     color: #c6c0ff;
@@ -33,13 +40,19 @@
 
   .tw__article-readmore {
     align-self: flex-start;
-    padding-top: 20px;
     margin-top: auto;
     cursor: pointer;
 
-    @media screen and (max-width: 768px) {
+    @media screen and (max-width: 767px) {
       align-self: center;
     }
+  }
+
+  @media screen and (min-width: 768px) and (max-width: 1200px) {
+    width: 50%;
+    padding: 40px;
+    border-radius: 0 12px 12px 0;
+    box-sizing: border-box;
   }
 }
 
@@ -72,7 +85,6 @@
 .tw__article-description {
   font-size: 16px;
   line-height: 26px;
-  margin-bottom: 92px;
 
   @media screen and (max-width: 768px) {
     margin-bottom: 24px;
@@ -81,5 +93,11 @@
 
 .tw__article-image {
   width: 100%;
-  border-radius: 5px 5px 0px 0px;
+  border-radius: 12px 12px 0px 0px;
+
+  @media screen and (min-width: 768px) and (max-width: 1200px) {
+    width: 50%;
+    border-radius: 12px 0 0 12px;
+    object-fit: cover;
+  }
 }
