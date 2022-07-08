@@ -70,9 +70,6 @@
         position: relative;
         top: 0;
         left: 0;
-      }
-
-      @media screen and (max-width: 768px) {
         font-size: 20px;
         line-height: 28px;
       }
@@ -94,6 +91,7 @@
         right: 0;
         max-height: 200px;
         max-width: inherit;
+        margin: 0 auto;
       }
 
       svg {
