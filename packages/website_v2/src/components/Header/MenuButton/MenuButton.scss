@@ -4,6 +4,22 @@
   width: 24px;
   height: 19px;
   margin-top: -4px;
+
+  &:hover {
+    .tw__menuButton-light,
+    .tw__menuButton-light::before,
+    .tw__menuButton-light::after {
+      background-color: rgba(#eeecff, 0.6);
+    }
+  }
+
+  &:hover {
+    .tw__menuButton-dark,
+    .tw__menuButton-dark::before,
+    .tw__menuButton-dark::after {
+      background-color: rgba(#050a4a, 0.6);
+    }
+  }
 }
 
 .tw__menuButton {
@@ -46,7 +62,7 @@ label {
     position: absolute;
     display: block;
     color: #050a4a;
-    transition: all 0.3s;
+    transition: top 0.3s, bottom 0.3s, left 0.3s, transform 0.3s, color 0.3s;
   }
 
   &::before {
@@ -64,22 +80,33 @@ label {
   }
 }
 
-#menu-button:checked ~ label::before {
-  content: '';
-  background-color: #050a4a;
-  transform: rotateZ(41deg);
-  left: 10%;
-}
+#menu-button:checked {
+  &:hover {
+    & ~ label::before,
+    & ~ label::after {
+      // Since x lines are overlapping, they create a patch of less transparent color on their intersection.
+      // Resulting color is background + rgba(#050a4a, 0.6)
+      background-color: #62648f;
+    }
+  }
 
-#menu-button:checked ~ label::after {
-  content: '';
-  background-color: #050a4a;
-  transform: rotateZ(-41deg);
-  left: 10%;
-}
+  & ~ label::before {
+    content: '';
+    background-color: #050a4a;
+    transform: rotateZ(41deg);
+    left: 10%;
+  }
 
-#menu-button:checked ~ label {
-  background-color: transparent;
+  & ~ label::after {
+    content: '';
+    background-color: #050a4a;
+    transform: rotateZ(-41deg);
+    left: 10%;
+  }
+
+  & ~ label {
+    background-color: transparent;
+  }
 }
 
 input {
