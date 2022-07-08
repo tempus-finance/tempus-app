@@ -142,8 +142,13 @@
     flex: 3;
     position: relative;
 
+    @media screen and (max-width: 1200px) {
+      width: 50%;
+    }
+
     @media screen and (max-width: 1024px) {
       flex: 1;
+      width: 100%;
     }
 
     @media screen and (max-width: 420px) {
