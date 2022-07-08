@@ -27,14 +27,12 @@
       padding: 20px 50px 20px 0;
     }
 
-    > img {
-      &.tw__header-logo-img-light {
-        display: block;
-      }
+    .tw__header-logo-img-light {
+      display: block;
+    }
 
-      &.tw__header-logo-img-dark {
-        display: none;
-      }
+    .tw__header-logo-img-dark {
+      display: none;
     }
   }
 
