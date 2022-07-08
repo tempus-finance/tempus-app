@@ -146,8 +146,10 @@
       flex: 1;
     }
 
-    @media screen and (max-width: 420px) {
-      height: calc(100vw - 32px);
+    @media screen and (max-width: 440px) {
+      .recharts-responsive-container {
+        height: calc(100vw - 32px);
+      }
     }
 
     .tw__governance__treasury-chart-selected-sector {
@@ -158,6 +160,10 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
+
+      @media screen and (max-width: 440px) {
+        min-width: 150px;
+      }
     }
 
     .tw__governance__treasury-chart-selected-name {
@@ -166,10 +172,10 @@
       font-weight: 600;
 
       @media screen and (max-width: 420px) {
-        font-size: 24px;
+        font-size: 20px;
       }
 
-      @media screen and (max-width: 320px) {
+      @media screen and (max-width: 360px) {
         font-size: 18px;
       }
     }
@@ -180,8 +186,12 @@
       font-weight: 600;
       color: rgba(#eeecff, 0.6);
 
-      @media screen and (max-width: 320px) {
+      @media screen and (max-width: 420px) {
         font-size: 14px;
+      }
+
+      @media screen and (max-width: 360px) {
+        font-size: 12px;
       }
     }
 
@@ -192,10 +202,11 @@
       font-weight: 600;
 
       @media screen and (max-width: 420px) {
-        font-size: 48px;
+        font-size: 42px;
       }
 
-      @media screen and (max-width: 320px) {
+      @media screen and (max-width: 360px) {
+        margin-top: 4px;
         font-size: 36px;
       }
     }

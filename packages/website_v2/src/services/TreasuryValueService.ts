@@ -27,41 +27,35 @@ import {
   treasuryAddress,
   uniswapPoolAddress,
   usdcAddress,
-  spookySwapPoolAddress,
   TEMP_PRECISION,
   USDC_PRECISION,
 } from '../constants';
 import config from '../config';
 import BalancerPoolABI from '../abi/BalancerPoolABI.json';
 import UniswapPositionManagerABI from '../abi/UniswapPositionManagerABI.json';
-import SpookySwapABI from '../abi/SpookySwapABI.json';
 
 export interface TreasuryValues {
   tempToken: Decimal;
   tempusPools: Decimal;
   balancerPool: Decimal;
   uniswapPool: Decimal;
-  spookySwapPool: Decimal;
 }
 
 // TODO - Refactor/move into tempus-core-services
 class TreasuryValueService {
   async getValuesPerSource(): Promise<TreasuryValues> {
-    const [tempTokenValue, tempusPoolsValue, balancerPoolValue, uniswapPoolValue, spookySwapPoolValue] =
-      await Promise.all([
-        this.getTempTokenValue(),
-        this.getTempusPoolsValue(),
-        this.getBalancerPoolValue(),
-        this.getUniswapPoolValue(),
-        this.getSpookySwapLPTempValue(),
-      ]);
+    const [tempTokenValue, tempusPoolsValue, balancerPoolValue, uniswapPoolValue] = await Promise.all([
+      this.getTempTokenValue(),
+      this.getTempusPoolsValue(),
+      this.getBalancerPoolValue(),
+      this.getUniswapPoolValue(),
+    ]);
 
     return {
       tempToken: tempTokenValue,
       tempusPools: tempusPoolsValue,
       balancerPool: balancerPoolValue,
       uniswapPool: uniswapPoolValue,
-      spookySwapPool: spookySwapPoolValue,
     };
   }
 
@@ -290,25 +284,6 @@ class TreasuryValueService {
     return tempValue.add(usdcAmountDecimal);
   }
 
-  private async getSpookySwapLPTempValue() {
-    const spookySwapPoolContract = await this.getSpookySwapPoolContract('fantom');
-
-    const treasuryTokenBalance = await spookySwapPoolContract.balanceOf(config.fantom.tempusTreasuryAddress);
-    const tokenTotalSupply = await spookySwapPoolContract.totalSupply();
-
-    const fantomTempTokenContract = await this.getTokenContract('fantom', config.fantom.tempTokenAddress);
-
-    const poolTempBalance = await fantomTempTokenContract.balanceOf(spookySwapPoolContract.address);
-
-    const valueInTemp = treasuryTokenBalance.mul(poolTempBalance).div(tokenTotalSupply);
-
-    const valueInTempDecimal = new Decimal(ethers.utils.formatUnits(valueInTemp, TEMP_PRECISION));
-
-    const tempTokenPrice = await this.getTempTokenPrice();
-
-    return valueInTempDecimal.mul(tempTokenPrice);
-  }
-
   // eslint-disable-next-line class-methods-use-this
   private async getTempTokenPrice() {
     const result = await Axios.get<any>('https://api.coingecko.com/api/v3/simple/price?ids=tempus&vs_currencies=usd');
@@ -364,12 +339,6 @@ class TreasuryValueService {
     const provider = await this.getProvider(chain);
 
     return new ethers.Contract(balancerVaultAddress, VaultABI, provider) as Vault;
-  }
-
-  private async getSpookySwapPoolContract(chain: Chain) {
-    const provider = await this.getProvider(chain);
-
-    return new ethers.Contract(spookySwapPoolAddress, SpookySwapABI, provider);
   }
 
   private async getBalancerPoolContract(chain: Chain) {
