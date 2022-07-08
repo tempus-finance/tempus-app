@@ -192,33 +192,33 @@ const data = [
   },
 ];
 
-const Tokenomics = (): JSX.Element => {
+const Token = (): JSX.Element => {
   const formatTickValue = useCallback((value: number) => DecimalUtils.formatWithMultiplier(value), []);
 
   return (
-    <div className="tw__tokenomics__tokenomics">
+    <div className="tw__token__token">
       <ScrollFadeIn>
-        <div className="tw__container tw__tokenomics__tokenomics-container">
-          <h2 className="tw__tokenomics__title">TEMP Tokenomics</h2>
-          <p className="tw__tokenomics__tokenomics-description">
+        <div className="tw__container tw__token__token-container">
+          <h2 className="tw__token__title">TEMP Token</h2>
+          <p className="tw__token__token-description">
             The maximum supply of TEMP is 1 billion and 70 million unlocked TEMP were sold in a fair launch auction in
             November 2021. The remaining 930 million TEMP will unlock gradually until May 2024.
           </p>
-          <div className="tw__tokenomics__legend">
-            <div className="tw__tokenomics__legend-item">
-              <span className="tw__tokenomics__legend-color tw__tokenomics__tokenomics-legend-color-sale" />
+          <div className="tw__token__legend">
+            <div className="tw__token__legend-item">
+              <span className="tw__token__legend-color tw__token__token-legend-color-sale" />
               <span>Fair Launch Investors</span>
             </div>
-            <div className="tw__tokenomics__legend-item">
-              <span className="tw__tokenomics__legend-color tw__tokenomics__tokenomics-legend-color-investors" />
+            <div className="tw__token__legend-item">
+              <span className="tw__token__legend-color tw__token__token-legend-color-investors" />
               <span>Investors &amp; Advisors</span>
             </div>
-            <div className="tw__tokenomics__legend-item">
-              <span className="tw__tokenomics__legend-color tw__tokenomics__tokenomics-legend-color-team" />
+            <div className="tw__token__legend-item">
+              <span className="tw__token__legend-color tw__token__token-legend-color-team" />
               <span>Current &amp; Future Team</span>
             </div>
           </div>
-          <div className="tw__tokenomics__tokenomics-chart">
+          <div className="tw__token__token-chart">
             <ResponsiveContainer width="100%" height={470}>
               <AreaChart
                 width={500}
@@ -276,4 +276,4 @@ const Tokenomics = (): JSX.Element => {
   );
 };
 
-export default memo(Tokenomics);
+export default memo(Token);

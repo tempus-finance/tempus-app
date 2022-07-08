@@ -48,8 +48,8 @@ const Header: FC<HeaderProps> = (props): JSX.Element => {
           <Link className="tw__header-link tw__hover-animation" href="/team" onClick={handleLinkClick}>
             Team
           </Link>
-          <Link className="tw__header-link tw__hover-animation" href="/tokenomics" onClick={handleLinkClick}>
-            Tokenomics
+          <Link className="tw__header-link tw__hover-animation" href="/token" onClick={handleLinkClick}>
+            Token
           </Link>
           <Link
             className="tw__header-link tw__hover-animation"
