@@ -68,3 +68,48 @@
     color: #050a4a;
   }
 }
+
+.tw__hero-banner {
+  position: relative;
+  margin-top: 204px;
+  margin-bottom: 156px;
+  width: 100%;
+  height: 327px;
+  background-image: linear-gradient(to right, #ff7700, #c6bfff);
+
+  @media screen and (max-width: 1200px) {
+    background-image: none;
+    height: auto;
+    margin-top: 0px;
+    margin-bottom: 0px;
+  }
+}
+
+.tw__hero-banner-stripes {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  bottom: 0px;
+  left: 0px;
+  background-image: url('../../images/hero-banner-lines.svg');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+
+  @media screen and (max-width: 1200px) {
+    background-image: none;
+  }
+}
+
+.tw__hero-product-cards {
+  position: absolute;
+  left: 0px;
+  right: 0px;
+  top: -164px;
+  padding: 0px 40px;
+
+  @media screen and (max-width: 1200px) {
+    position: relative;
+    top: 0px;
+  }
+}
