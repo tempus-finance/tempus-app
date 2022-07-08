@@ -1,11 +1,10 @@
 .tw__products {
-  margin: 40px 40px 73px 40px;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-gap: 20px;
 
   @media screen and (max-width: 1200px) {
-    margin: 60px 16px;
+    margin: 60px 16px 20px 16px;
     grid-template-columns: 1fr;
   }
 }
