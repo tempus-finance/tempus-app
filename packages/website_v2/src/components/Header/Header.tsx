@@ -51,6 +51,9 @@ const Header: FC<HeaderProps> = (props): JSX.Element => {
           <Link className="tw__header-link tw__hover-animation" href="/token" onClick={handleLinkClick}>
             Token
           </Link>
+          <Link className="tw__header-link tw__hover-animation" href="/governance" onClick={handleLinkClick}>
+            Governance
+          </Link>
           <Link
             className="tw__header-link tw__hover-animation"
             href="https://docs.tempus.finance/"
