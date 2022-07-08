@@ -256,7 +256,7 @@
 
       .tw__governance__steps-separator {
         @media screen and (max-width: 768px) {
-          margin-top: -11px;
+          display: none;
         }
       }
     }
