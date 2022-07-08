@@ -5,6 +5,7 @@ import TreasuryValueService, { TreasuryValues } from '../../services/TreasuryVal
 
 interface TreasurySource {
   name: string;
+  description?: string;
   percent: number;
   color: string;
 }
@@ -56,11 +57,13 @@ const GovernanceTreasury = (): JSX.Element => {
             },
             {
               name: 'Balancer pool',
+              description: 'TEMP-WETH (80/20)',
               value: treasuryValues.balancerPool,
               color: '#6167C8',
             },
             {
               name: 'Uniswap pool',
+              description: 'TEMP-USDC (50/50)',
               value: treasuryValues.uniswapPool,
               color: '#FF7700',
             },
@@ -108,6 +111,11 @@ const GovernanceTreasury = (): JSX.Element => {
             {selectedSource && (
               <div className="tw__governance__treasury-chart-selected-sector">
                 <div className="tw__governance__treasury-chart-selected-name">{selectedSource.name}</div>
+                {selectedSource.description && (
+                  <div className="tw__governance__treasury-chart-selected-description">
+                    {selectedSource.description}
+                  </div>
+                )}
                 <div className="tw__governance__treasury-chart-selected-value" style={{ color: selectedSource.color }}>
                   {DecimalUtils.formatPercentage(selectedSource.percent)}
                 </div>
