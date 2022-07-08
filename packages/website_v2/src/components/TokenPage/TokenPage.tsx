@@ -5,23 +5,23 @@ import BuyToken from './BuyToken';
 import TokenBenefits from './TokenBenefits';
 import TokenDistribution from './TokenDistribution';
 import TokenInfo from '../TokenInfo';
-import Tokenomics from './Tokenomics';
-import TokenomicsHeader from './TokenomicsHeader';
+import Token from './Token';
+import TokenHeader from './TokenHeader';
 
-import './TokenomicsPage.scss';
+import './TokenPage.scss';
 
-const TokenomicsPage = (): JSX.Element => {
+const TokensPage = (): JSX.Element => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
   return (
-    <div className="tw__tokenomics">
-      <TokenomicsHeader />
+    <div className="tw__token">
+      <TokenHeader />
       <TokenInfo />
       <TokenBenefits />
       <BuyToken />
-      <Tokenomics />
+      <Token />
       <TokenDistribution />
       <Join />
       <Footer />
@@ -29,4 +29,4 @@ const TokenomicsPage = (): JSX.Element => {
   );
 };
 
-export default memo(TokenomicsPage);
+export default memo(TokensPage);

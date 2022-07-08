@@ -19,8 +19,8 @@ const Footer = (): JSX.Element => (
             </Link>
           </div>
           <div className="tw__footer__link-container">
-            <Link className="tw__footer__link tw__hover-animation" href="/tokenomics">
-              Tokenomics
+            <Link className="tw__footer__link tw__hover-animation" href="/token">
+              TEMP
             </Link>
           </div>
           <div className="tw__footer__link-container">
@@ -38,7 +38,7 @@ const Footer = (): JSX.Element => (
           <p className="tw__footer__links-title">Team</p>
           <div className="tw__footer__link-container">
             <Link className="tw__footer__link tw__hover-animation" href="/team">
-              Team
+              Tempus Labs
             </Link>
           </div>
           <div className="tw__footer__link-container">
