@@ -16,6 +16,7 @@ import {
   Decimal,
   tokenPrecision,
   DEFAULT_DECIMAL_PRECISION,
+  ZERO,
 } from 'tempus-core-services';
 import {
   balancerPoolAddress,
@@ -35,9 +36,17 @@ import BalancerPoolABI from '../abi/BalancerPoolABI.json';
 import UniswapPositionManagerABI from '../abi/UniswapPositionManagerABI.json';
 import SpookySwapABI from '../abi/SpookySwapABI.json';
 
+export interface TreasuryValues {
+  tempToken: Decimal;
+  tempusPools: Decimal;
+  balancerPool: Decimal;
+  uniswapPool: Decimal;
+  spookySwapPool: Decimal;
+}
+
 // TODO - Refactor/move into tempus-core-services
 class TreasuryValueService {
-  async getValue(): Promise<Decimal> {
+  async getValuesPerSource(): Promise<TreasuryValues> {
     const [tempTokenValue, tempusPoolsValue, balancerPoolValue, uniswapPoolValue, spookySwapPoolValue] =
       await Promise.all([
         this.getTempTokenValue(),
@@ -47,13 +56,18 @@ class TreasuryValueService {
         this.getSpookySwapLPTempValue(),
       ]);
 
-    const value = tempTokenValue
-      .add(tempusPoolsValue)
-      .add(balancerPoolValue)
-      .add(uniswapPoolValue)
-      .add(spookySwapPoolValue);
+    return {
+      tempToken: tempTokenValue,
+      tempusPools: tempusPoolsValue,
+      balancerPool: balancerPoolValue,
+      uniswapPool: uniswapPoolValue,
+      spookySwapPool: spookySwapPoolValue,
+    };
+  }
 
-    return value;
+  async getValue(): Promise<Decimal> {
+    const valuesPerSource = await this.getValuesPerSource();
+    return Object.values(valuesPerSource).reduce((sum, value) => sum.add(value), ZERO);
   }
 
   /**
