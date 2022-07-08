@@ -23,7 +23,7 @@ const Blog = (): JSX.Element => {
         'https://api.rss2json.com/v1/api.json?rss_url=https://medium.com/feed/tempusfinance',
       );
       const lastThreePosts: MediumPostData[] = response.data.items.slice(0, 3).map((item: any) => {
-        const publicationDate = new Date(item.pubDate);
+        const publicationDate = new Date(`${item.pubDate}`.replace(' ', 'T'));
 
         const tag = document.createElement('div');
         tag.innerHTML = item.description;
