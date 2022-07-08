@@ -4,11 +4,7 @@
   grid-template-columns: repeat(3, 1fr);
   grid-gap: 20px;
 
-  @media screen and (max-width: 1024px) {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  @media screen and (max-width: 880px) {
+  @media screen and (max-width: 1200px) {
     margin: 60px 16px;
     grid-template-columns: 1fr;
   }
@@ -20,6 +16,7 @@
   color: #050a4a;
   max-width: 440px;
   transition: all 0.3s ease-out;
+  margin: 0 auto;
 
   @media screen and (max-width: 768px) {
     text-align: center;
