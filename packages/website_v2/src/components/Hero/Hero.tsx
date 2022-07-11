@@ -1,5 +1,6 @@
 import { memo, useCallback } from 'react';
 import { discordInviteLink } from '../../constants';
+import { DiscordIcon } from '../Join/icons';
 import Products from './Products';
 import { ScrollFadeIn } from '../shared';
 
@@ -16,6 +17,7 @@ const Hero = (): JSX.Element => {
         <h1 className="tw__hero-title-faded">Tempus is shaping the</h1>
         <h1 className="tw__hero-title">future of DeFi</h1>
         <button type="button" className="tw__hero-button" onClick={handleOnBuildWithUsClick}>
+          <DiscordIcon />
           BUILD WITH US
         </button>
 
