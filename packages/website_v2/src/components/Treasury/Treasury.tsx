@@ -37,11 +37,11 @@ const Treasury = (): JSX.Element => {
       </div>
       <ScrollFadeIn>
         <div className="tw__container tw__treasury__container">
-          <h2 className="tw__section-title">Treasury Funds</h2>
+          <h2 className="tw__section-title">Treasury</h2>
           <div className="tw__treasury__body">
             <div className="tw__treasury__description">
               <div>
-                <span>Available for Innovation.</span>
+                <span>Available for innovation.</span>
               </div>
               <div className="tw__treasury__read-more">
                 <Link
