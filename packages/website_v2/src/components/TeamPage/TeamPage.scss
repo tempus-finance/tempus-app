@@ -343,12 +343,18 @@
         flex-wrap: wrap;
         justify-content: space-between;
         align-items: center;
-        padding-top: 64px;
+        padding-top: 60px;
 
         .tw__team__worked-with__organization {
-          display: inline-block;
+          width: 25%;
+          display: flex;
+          justify-content: center;
 
-          @media screen and (min-width: 768px) and (max-width: 1200px) {
+          @media screen and (min-width: 1200px) and (max-width: 1535px) {
+            width: 33%;
+          }
+
+          @media screen and (min-width: 768px) and (max-width: 1199px) {
             width: 50%;
             display: flex;
             justify-content: center;
@@ -361,27 +367,7 @@
           }
 
           svg {
-            margin: 32px 0;
-
-            &:first-child {
-              display: none;
-            }
-
-            &:last-child {
-              display: block;
-            }
-          }
-
-          &:hover {
-            svg {
-              &:first-child {
-                display: block;
-              }
-
-              &:last-child {
-                display: none;
-              }
-            }
+            margin: 40px 0;
           }
         }
       }
