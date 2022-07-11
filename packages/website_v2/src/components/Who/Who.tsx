@@ -23,7 +23,7 @@ const connectorsDescription = `
 The Connectors use their business skills to put the right products in front of the right eyes.
 They break the language barriers between DeFi and the real world.`.trim();
 
-const connectorsCTA = "I'm In";
+const connectorsCTA = "Let's Partner";
 
 const Who: FC = (): JSX.Element => {
   const [activeSection, setActiveSection] = useState<Sections>('builders');
