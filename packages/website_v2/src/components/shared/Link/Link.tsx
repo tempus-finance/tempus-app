@@ -8,11 +8,12 @@ interface LinkProps {
   className?: string;
   title?: string;
   href?: string;
+  disabled?: boolean;
   onClick?: () => void;
 }
 
 const Link = forwardRef<HTMLAnchorElement, LinkProps>((props, ref) => {
-  const { children, className = '', title, href = '', onClick } = props;
+  const { children, className = '', disabled, title, href = '', onClick } = props;
 
   const isExternal = useMemo(() => href.includes('://') && new URL(href).origin !== window.location.origin, [href]);
 
@@ -25,7 +26,7 @@ const Link = forwardRef<HTMLAnchorElement, LinkProps>((props, ref) => {
           ref={ref}
           rel="external noreferrer nofollow"
           target="_blank"
-          className={`tw__link ${className}`}
+          className={`tw__link ${className} ${disabled ? 'disabled' : ''}`}
           title={title}
           href={href}
           onClick={onClick}
@@ -34,12 +35,24 @@ const Link = forwardRef<HTMLAnchorElement, LinkProps>((props, ref) => {
         </a>
       )}
       {isHash && (
-        <HashLink ref={ref} className={`tw__link ${className}`} title={title} to={href} onClick={onClick}>
+        <HashLink
+          ref={ref}
+          className={`tw__link ${className} ${disabled ? 'disabled' : ''}`}
+          title={title}
+          to={disabled ? '#' : href}
+          onClick={onClick}
+        >
           {children}
         </HashLink>
       )}
       {!isExternal && !isHash && (
-        <InternalLink ref={ref} className={`tw__link ${className}`} title={title} to={href} onClick={onClick}>
+        <InternalLink
+          ref={ref}
+          className={`tw__link ${className} `}
+          title={title}
+          to={disabled ? '#' : href}
+          onClick={onClick}
+        >
           {children}
         </InternalLink>
       )}

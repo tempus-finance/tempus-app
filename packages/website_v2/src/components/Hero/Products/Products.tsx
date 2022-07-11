@@ -23,6 +23,7 @@ const Products = (): JSX.Element => (
       title="Borrow. Lend. Earn."
       description="Our new money market for borrowing and lending. Get the most out of your money in a fast and secure way."
       buttonLabel="Coming soon"
+      disabled
     />
     <Product
       bannerType="bright"
