@@ -1,6 +1,6 @@
 import { memo } from 'react';
 import CoinGeckoIcon from '../../icons/CoinGeckoIcon';
-import CoinMarketCapIcon from '../../icons/CoinMarketCapIcon';
+import { CoinMarketCapIcon } from '../../icons';
 import { LinkBlock, ScrollFadeIn } from '../shared';
 
 const BuyToken = (): JSX.Element => (
