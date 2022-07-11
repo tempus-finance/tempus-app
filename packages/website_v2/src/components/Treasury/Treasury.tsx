@@ -41,14 +41,14 @@ const Treasury = (): JSX.Element => {
           <div className="tw__treasury__body">
             <div className="tw__treasury__description">
               <div>
-                <span>Available for innovation.</span>
+                <span>Tempus supports financial innovation through our Grants program.</span>
               </div>
               <div className="tw__treasury__read-more">
                 <Link
                   href="https://tempusfinance.notion.site/Tempus-Grants-Program-c54b4410e9db49139347210d5a340c5e"
                   className="tw__hover-animation"
                 >
-                  Read more about our Grants
+                  Find out more
                   <ArrowRight />
                 </Link>
               </div>
