@@ -57,6 +57,8 @@ const Who: FC = (): JSX.Element => {
               />
               <div
                 data-test="builders"
+                role="button"
+                tabIndex={0}
                 className={`tw__section__subsection-title ${activeSection === 'builders' ? 'active' : ''}`}
                 onClick={handleTitleClick}
               >
@@ -74,6 +76,8 @@ const Who: FC = (): JSX.Element => {
               />
               <div
                 data-test="creators"
+                role="button"
+                tabIndex={0}
                 className={`tw__section__subsection-title ${activeSection === 'creators' ? 'active' : ''}`}
                 onClick={handleTitleClick}
               >
@@ -91,6 +95,8 @@ const Who: FC = (): JSX.Element => {
               />
               <div
                 data-test="connectors"
+                role="button"
+                tabIndex={0}
                 className={`tw__section__subsection-title ${activeSection === 'connectors' ? 'active' : ''}`}
                 onClick={handleTitleClick}
               >
