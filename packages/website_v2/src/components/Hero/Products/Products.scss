@@ -42,6 +42,9 @@
       width: 50%;
       border-radius: 12px 0 0 12px;
       height: unset;
+    }
+
+    @media screen and (max-width: 1200px) {
       box-sizing: border-box;
       display: flex;
       justify-content: space-evenly;
@@ -65,7 +68,7 @@
       font-size: 21px;
       color: #ffffff;
 
-      @media screen and (min-width: 768px) and (max-width: 1200px) {
+      @media screen and (max-width: 1200px) {
         position: relative;
         top: 0;
         left: 0;
@@ -83,7 +86,7 @@
       bottom: 16px;
       right: 16px;
 
-      @media screen and (min-width: 768px) and (max-width: 1200px) {
+      @media screen and (max-width: 1200px) {
         position: relative;
         top: 0;
         bottom: 0;
@@ -91,6 +94,10 @@
         max-height: 200px;
         max-width: inherit;
         margin: 0 auto;
+      }
+
+      @media screen and (max-width: 767px) {
+        max-height: 170px;
       }
 
       svg {
