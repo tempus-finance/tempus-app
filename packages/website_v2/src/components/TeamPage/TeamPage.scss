@@ -364,6 +364,11 @@
             width: 100%;
             display: flex;
             justify-content: center;
+
+            // hide last six logos for mobile screen otherwise the list will be too long
+            &:nth-last-child(-n + 6) {
+              display: none;
+            }
           }
 
           svg {
