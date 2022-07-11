@@ -21,7 +21,7 @@ const creatorsCTA = 'Get Creative';
 
 const connectorsDescription = `
 The Connectors use their business skills to put the right products in front of the right eyes.
-They break the language barriers between Web3 and the real world.`.trim();
+They break the language barriers between DeFi and the real world.`.trim();
 
 const connectorsCTA = "I'm In";
 

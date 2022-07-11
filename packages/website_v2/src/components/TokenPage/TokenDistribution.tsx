@@ -7,7 +7,7 @@ const tokenAllocationData = [
   { name: 'Tempus Team', value: 26, color: '#eeecff' },
   { name: 'Investors & Advisors', value: 22, color: '#ff7700' },
   { name: 'Fair Launch Auction', value: 7, color: '#6167c8' },
-  { name: 'Treasury & Liquidity incentives', value: 45, color: '#c6cfff' },
+  { name: 'Treasury & Liquidity Incentives', value: 45, color: '#c6cfff' },
 ];
 
 const TokenDistribution = (): JSX.Element => (
@@ -37,7 +37,7 @@ const TokenDistribution = (): JSX.Element => (
           <div className="tw__token__legend-item">
             <span className="tw__token__legend-color tw__token__token-distribution-legend-color-treasury" />
             <div>
-              Treasury &amp; Liquidity incentives -{' '}
+              Treasury &amp; Liquidity Incentives -{' '}
               <span className="tw__token__token-distribution-legend-value">45%</span>
             </div>
           </div>

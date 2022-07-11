@@ -28,9 +28,9 @@ const Products = (): JSX.Element => (
     <Product
       bannerType="bright"
       bannerIllustration={<CommunityIllustration />}
-      name="Join the community"
+      name="Join the Community"
       title="Let’s shape the future together"
-      description="Join the Tempus community to bring the next generation of Web3 products to life."
+      description="Join the Tempus community to bring the next generation of DeFi products to life."
       buttonLabel="LFG"
       buttonLink="https://discord.com/invite/6gauHECShr"
     />
