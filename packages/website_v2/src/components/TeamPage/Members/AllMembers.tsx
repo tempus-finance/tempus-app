@@ -9,8 +9,8 @@ const AllMembers = (): JSX.Element => (
       <div className="tw__team__members__header">
         <div className="tw__team__members__header-text">Meet the Tempus Labs team</div>
         <div className="tw__team__members__header-text">
-          Tempus Labs has been elected by the Tempus DAO governance as the service provider to lead the project. Tempus
-          DAO is a decentralized community of Builders, Creators and Connectors.
+          Tempus Labs has been elected by the Tempus DAO governance process as the service provider to lead the project.
+          Tempus DAO is a decentralized community of Builders, Creators and Connectors.
         </div>
       </div>
       <div className="tw__team__separator" />
