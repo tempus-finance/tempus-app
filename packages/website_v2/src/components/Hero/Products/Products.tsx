@@ -10,7 +10,7 @@ const Products = (): JSX.Element => (
       bannerType="bright"
       bannerIllustration={<FixedIncomeIllustration />}
       name="Fixed Income"
-      title="Fix your future yield."
+      title="Fix your future yield"
       description="Our innovative fixed income protocol allows you to securely lock in a fixed rate on any lending or staking income."
       buttonLabel="Fix my yield"
       buttonLink="https://app.tempus.finance"
