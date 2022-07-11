@@ -3,7 +3,7 @@ import { Decimal, DecimalUtils } from 'tempus-core-services';
 import TokenCirculatingSupplyService from '../../services/TokenCirculatingSupplyService';
 import TokenHoldersService from '../../services/TokenHoldersService';
 import TokenPriceService from '../../services/TokenPriceService';
-import { ScrollFadeIn } from '../shared';
+import { Loading, ScrollFadeIn } from '../shared';
 
 import './TokenInfo.scss';
 
@@ -33,16 +33,16 @@ const TokenInfo = (): JSX.Element => {
     fetchHoldersCount();
   }, []);
 
-  const priceFormatted = useMemo(() => (price ? DecimalUtils.formatToCurrency(price, 4, '$') : '-'), [price]);
+  const priceFormatted = useMemo(() => (price ? DecimalUtils.formatToCurrency(price, 4, '$') : null), [price]);
 
   const circulatingSupplyFormatted = useMemo(
-    () => (circulatingSupply ? DecimalUtils.formatWithMultiplier(circulatingSupply, 0) : '-'),
+    () => (circulatingSupply ? DecimalUtils.formatWithMultiplier(circulatingSupply, 0) : null),
     [circulatingSupply],
   );
 
   const marketCapFormatted = useMemo(() => {
     if (!price || !circulatingSupply) {
-      return '-';
+      return null;
     }
 
     return `$${DecimalUtils.formatWithMultiplier(circulatingSupply.mul(price), 2)}`;
@@ -54,19 +54,23 @@ const TokenInfo = (): JSX.Element => {
         <div className="tw__container tw__token-info__container">
           <div className="tw__token-info__price">
             <div className="tw__token-info__title">TEMP price</div>
-            <div className="tw__token-info__value">{priceFormatted}</div>
+            {priceFormatted ? <div className="tw__token-info__value">{priceFormatted}</div> : <Loading />}
           </div>
           <div className="tw__token-info__supply">
             <div className="tw__token-info__title">Circulating supply</div>
-            <div className="tw__token-info__value">{circulatingSupplyFormatted}</div>
+            {circulatingSupplyFormatted ? (
+              <div className="tw__token-info__value">{circulatingSupplyFormatted}</div>
+            ) : (
+              <Loading />
+            )}
           </div>
           <div className="tw__token-info__capitalization">
             <div className="tw__token-info__title">Market capitalization</div>
-            <div className="tw__token-info__value">{marketCapFormatted}</div>
+            {marketCapFormatted ? <div className="tw__token-info__value">{marketCapFormatted}</div> : <Loading />}
           </div>
           <div className="tw__token-info__holders">
             <div className="tw__token-info__title">Holders</div>
-            <div className="tw__token-info__value">{holdersCount ?? '-'}</div>
+            {holdersCount ? <div className="tw__token-info__value">{holdersCount}</div> : <Loading />}
           </div>
         </div>
       </ScrollFadeIn>

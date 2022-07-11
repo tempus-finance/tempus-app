@@ -43,25 +43,36 @@ export interface TreasuryValues {
 
 // TODO - Refactor/move into tempus-core-services
 class TreasuryValueService {
-  async getValuesPerSource(): Promise<TreasuryValues> {
-    const [tempTokenValue, tempusPoolsValue, balancerPoolValue, uniswapPoolValue] = await Promise.all([
-      this.getTempTokenValue(),
-      this.getTempusPoolsValue(),
-      this.getBalancerPoolValue(),
-      this.getUniswapPoolValue(),
-    ]);
+  private valuesPerSource: TreasuryValues | null = null;
+  private value: Decimal | null = null;
 
-    return {
-      tempToken: tempTokenValue,
-      tempusPools: tempusPoolsValue,
-      balancerPool: balancerPoolValue,
-      uniswapPool: uniswapPoolValue,
-    };
+  async getValuesPerSource(): Promise<TreasuryValues> {
+    if (!this.valuesPerSource) {
+      const [tempTokenValue, tempusPoolsValue, balancerPoolValue, uniswapPoolValue] = await Promise.all([
+        this.getTempTokenValue(),
+        this.getTempusPoolsValue(),
+        this.getBalancerPoolValue(),
+        this.getUniswapPoolValue(),
+      ]);
+
+      this.valuesPerSource = {
+        tempToken: tempTokenValue,
+        tempusPools: tempusPoolsValue,
+        balancerPool: balancerPoolValue,
+        uniswapPool: uniswapPoolValue,
+      };
+    }
+
+    return this.valuesPerSource;
   }
 
   async getValue(): Promise<Decimal> {
-    const valuesPerSource = await this.getValuesPerSource();
-    return Object.values(valuesPerSource).reduce((sum, value) => sum.add(value), ZERO);
+    if (!this.value) {
+      const valuesPerSource = await this.getValuesPerSource();
+      this.value = Object.values(valuesPerSource).reduce((sum, value) => sum.add(value), ZERO);
+    }
+
+    return this.value ?? ZERO;
   }
 
   /**

@@ -2,7 +2,7 @@ import { memo, useEffect, useMemo, useState } from 'react';
 import { Decimal, DecimalUtils } from 'tempus-core-services';
 import { ArrowRight } from '../../icons';
 import TreasuryValueService from '../../services/TreasuryValueService';
-import { Link, ScrollFadeIn } from '../shared';
+import { Link, Loading, ScrollFadeIn } from '../shared';
 import TreasuryBackground from './TreasuryBackground';
 
 import './Treasury.scss';
@@ -25,7 +25,7 @@ const Treasury = (): JSX.Element => {
 
   const valueFormatted = useMemo(() => {
     if (!value) {
-      return '-';
+      return null;
     }
     return DecimalUtils.formatToCurrency(value, 0, '$');
   }, [value]);
@@ -53,9 +53,7 @@ const Treasury = (): JSX.Element => {
                 </Link>
               </div>
             </div>
-            <div className="tw__treasury__value">
-              <p>{valueFormatted}</p>
-            </div>
+            <div className="tw__treasury__value">{valueFormatted ? <p>{valueFormatted}</p> : <Loading />}</div>
           </div>
         </div>
       </ScrollFadeIn>

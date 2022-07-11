@@ -2,6 +2,7 @@ import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { Cell, Pie, PieChart, ResponsiveContainer } from 'recharts';
 import { DecimalUtils, ZERO } from 'tempus-core-services';
 import TreasuryValueService, { TreasuryValues } from '../../services/TreasuryValueService';
+import { Loading } from '../shared';
 
 interface TreasurySource {
   name: string;
@@ -35,7 +36,7 @@ const GovernanceTreasury = (): JSX.Element => {
 
   const totalTreasuryValueFormatted = useMemo(() => {
     if (!totalTreasuryValue) {
-      return '-';
+      return null;
     }
 
     return DecimalUtils.formatToCurrency(totalTreasuryValue, 0, '$');
@@ -81,7 +82,12 @@ const GovernanceTreasury = (): JSX.Element => {
       <div className="tw__container tw__governance__treasury-container">
         <h2 className="tw__governance__title">Treasury Funds</h2>
         <div className="tw__governance__treasury-content">
-          <div className="tw__governance__treasury-value">{totalTreasuryValueFormatted}</div>
+          {totalTreasuryValueFormatted ? (
+            <div className="tw__governance__treasury-value">{totalTreasuryValueFormatted}</div>
+          ) : (
+            <Loading />
+          )}
+
           <div className="tw__governance__treasury-chart">
             <ResponsiveContainer>
               <PieChart>

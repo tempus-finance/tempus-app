@@ -2,7 +2,7 @@ import { BigNumber, ethers } from 'ethers';
 import { JsonRpcProvider } from '@ethersproject/providers';
 import { Chain, Decimal, ERC20, ERC20ABI, ZERO } from 'tempus-core-services';
 import config from '../config';
-import { TEMP_PRECISION } from '../constants';
+import { TEMP_PRECISION, REFRESH_TIME } from '../constants';
 
 // TODO - Refactor this to use graph service
 const tokenDeployBlocks = {
@@ -27,62 +27,73 @@ interface TokenHolderData {
 }
 
 class TokenHoldersService {
+  private static value: number | null = null;
+  private static lastFetched: number | null = null;
+
   static async getHoldersCount(): Promise<number | null> {
     try {
-      const results = await Promise.all(
-        Object.keys(config).map(async key => {
-          const chain = key as Chain;
+      if (
+        !TokenHoldersService.value ||
+        (TokenHoldersService.lastFetched && TokenHoldersService.lastFetched > Date.now() + REFRESH_TIME)
+      ) {
+        const results = await Promise.all(
+          Object.keys(config).map(async key => {
+            const chain = key as Chain;
 
-          const tokenHolderData: TokenHolderData = {};
+            const tokenHolderData: TokenHolderData = {};
 
-          // Skip test chains
-          if (config[chain].testChain) {
-            return 0;
-          }
-
-          const transferEvents = await this.fetchEventsInBatches(
-            chain,
-            config[chain].tempTokenAddress,
-            tokenDeployBlocks[chain],
-            chainBatchBlockRange[chain],
-          );
-          transferEvents.forEach((transferEvent: any) => {
-            const fromAddress = transferEvent.args.from;
-            const toAddress = transferEvent.args.to;
-            const amount = new Decimal(BigNumber.from(transferEvent.args.value), TEMP_PRECISION);
-
-            if (!tokenHolderData[toAddress]) {
-              tokenHolderData[toAddress] = {
-                balance: new Decimal(0),
-              };
+            // Skip test chains
+            if (config[chain].testChain) {
+              return 0;
             }
-            tokenHolderData[toAddress].balance = tokenHolderData[toAddress].balance.add(amount);
 
-            if (!tokenHolderData[fromAddress]) {
-              tokenHolderData[fromAddress] = {
-                balance: new Decimal(0),
-              };
-            }
-            tokenHolderData[fromAddress].balance = tokenHolderData[fromAddress].balance.sub(amount);
-          });
+            const transferEvents = await this.fetchEventsInBatches(
+              chain,
+              config[chain].tempTokenAddress,
+              tokenDeployBlocks[chain],
+              chainBatchBlockRange[chain],
+            );
+            transferEvents.forEach((transferEvent: any) => {
+              const fromAddress = transferEvent.args.from;
+              const toAddress = transferEvent.args.to;
+              const amount = new Decimal(BigNumber.from(transferEvent.args.value), TEMP_PRECISION);
 
-          let holderCount = 0;
-          Object.keys(tokenHolderData).forEach(tokenHolderAddress => {
-            if (tokenHolderData[tokenHolderAddress].balance.gt(ZERO)) {
-              holderCount += 1;
-            }
-          });
+              if (!tokenHolderData[toAddress]) {
+                tokenHolderData[toAddress] = {
+                  balance: new Decimal(0),
+                };
+              }
+              tokenHolderData[toAddress].balance = tokenHolderData[toAddress].balance.add(amount);
 
-          return holderCount;
-        }),
-      );
+              if (!tokenHolderData[fromAddress]) {
+                tokenHolderData[fromAddress] = {
+                  balance: new Decimal(0),
+                };
+              }
+              tokenHolderData[fromAddress].balance = tokenHolderData[fromAddress].balance.sub(amount);
+            });
 
-      let totalHolders = 0;
-      results.forEach(result => {
-        totalHolders += result;
-      });
+            let holderCount = 0;
+            Object.keys(tokenHolderData).forEach(tokenHolderAddress => {
+              if (tokenHolderData[tokenHolderAddress].balance.gt(ZERO)) {
+                holderCount += 1;
+              }
+            });
 
-      return totalHolders;
+            return holderCount;
+          }),
+        );
+
+        let totalHolders = 0;
+        results.forEach(result => {
+          totalHolders += result;
+        });
+
+        TokenHoldersService.value = totalHolders;
+        TokenHoldersService.lastFetched = Date.now();
+      }
+
+      return TokenHoldersService.value;
     } catch (error) {
       console.error('getHoldersCount - Failed to fetch TEMP holder', error);
       return null;
