@@ -49,8 +49,8 @@ const Treasury = (): JSX.Element => {
                   className="tw__hover-animation"
                 >
                   Read more about our Grants
+                  <ArrowRight />
                 </Link>
-                <ArrowRight />
               </div>
             </div>
             <div className="tw__treasury__value">

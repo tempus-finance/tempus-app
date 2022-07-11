@@ -52,8 +52,8 @@ const Blog = (): JSX.Element => {
             <div className="tw__blog__read-more">
               <Link href="https://medium.com/tempusfinance/" className="tw__hover-animation">
                 Read more on our Blog
+                <ArrowRight />
               </Link>
-              <ArrowRight />
             </div>
           </div>
 
@@ -75,8 +75,8 @@ const Blog = (): JSX.Element => {
           <div className="tw__blog__read-more tw__mobile">
             <Link href="https://medium.com/tempusfinance/" className="tw__hover-animation">
               Read more on our Blog
+              <ArrowRight />
             </Link>
-            <ArrowRight />
           </div>
         </ScrollFadeIn>
       </div>

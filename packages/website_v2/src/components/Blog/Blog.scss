@@ -67,11 +67,9 @@
   }
 }
 
-.tw__blog__read-more {
+.tw__blog__read-more .tw__link {
   position: relative;
   display: flex;
-  align-items: center;
-  flex-direction: row;
   font-style: normal;
   font-weight: 400;
   font-size: 20px;
@@ -79,12 +77,12 @@
   color: #eeecff;
   text-decoration: none;
 
-  .tw__hover-animation:after {
-    background-color: #eeecff;
-  }
-
   .tw__arrow-right-icon {
     margin-left: 9px;
+  }
+
+  &.tw__hover-animation:after {
+    background-color: #eeecff;
   }
 }
 
