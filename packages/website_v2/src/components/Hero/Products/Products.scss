@@ -196,6 +196,11 @@
       background-color: #050a4a;
       color: #eeecff;
     }
+
+    &.disabled {
+      background-color: #eeecff;
+      color: #ff7700;
+    }
   }
 }
 

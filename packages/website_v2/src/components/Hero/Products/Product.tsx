@@ -12,10 +12,11 @@ interface ProductProps {
   description: string;
   buttonLabel: string;
   buttonLink?: string;
+  disabled?: boolean;
 }
 
 const Product: FC<ProductProps> = props => {
-  const { bannerType, bannerIllustration, badge, name, title, description, buttonLabel, buttonLink } = props;
+  const { bannerType, bannerIllustration, badge, name, title, description, buttonLabel, buttonLink, disabled } = props;
 
   return (
     <div className="tw__products__product">
@@ -29,7 +30,7 @@ const Product: FC<ProductProps> = props => {
           <h3 className="tw__products__product-title">{title}</h3>
           <p className="tw__products__product-description">{description}</p>
         </div>
-        <Link className="tw__products__product-button" href={buttonLink ?? '#'}>
+        <Link className="tw__products__product-button" disabled={disabled} href={buttonLink ?? '#'}>
           {buttonLabel}
         </Link>
       </div>
