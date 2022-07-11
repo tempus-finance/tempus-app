@@ -1,56 +1,68 @@
 import { FC, memo, useMemo } from 'react';
-import LinklatersOriginalLogo from './LinklatersOriginalLogo';
-import LinklatersPlainLogo from './LinklatersPlainLogo';
-import EthereumFoundationOriginalLogo from './EthereumFoundationOriginalLogo';
-import EthereumFoundationPlainLogo from './EthereumFoundationPlainLogo';
-import MicrosoftOriginalLogo from './MicrosoftOriginalLogo';
-import MicrosoftPlainLogo from './MicrosoftPlainLogo';
-import LendinvestOriginalLogo from './LendinvestOriginalLogo';
-import LendinvestPlainLogo from './LendinvestPlainLogo';
+import AllenOveryLogo from './AllenOveryLogo';
+import BankOfAmericaLogo from './BankOfAmericaLogo';
+import BarclaycardLogo from './BarclaycardLogo';
+import BNPLogo from './BNPLogo';
+import EthereumFoundationLogo from './EthereumFoundationLogo';
+import GoldmanSachsLogo from './GoldmanSachsLogo';
+import IBMLogo from './IBMLogo';
+import KirklandEllisLogo from './KirklandEllisLogo';
+import LendinvestLogo from './LendinvestLogo';
+import MicrosoftLogo from './MicrosoftLogo';
+import NomuraLogo from './NomuraLogo';
+import UBSLogo from './UBSLogo';
 
-type CompanyLogoVariant = 'linklaters' | 'ethereum-foundation' | 'microsoft' | 'lendinvest';
+type CompanyLogoVariant =
+  | 'bank-of-america'
+  | 'bnp'
+  | 'barclaycard'
+  | 'goldman-sachs'
+  | 'ubs'
+  | 'lendinvest'
+  | 'nomura'
+  | 'ethereum-foundation'
+  | 'microsoft'
+  | 'allen-overy'
+  | 'kirkland-ellis'
+  | 'ibm';
 
 interface CompanyLogoProps {
   variant: CompanyLogoVariant;
 }
 
 const CompanyLogo: FC<CompanyLogoProps> = ({ variant }) => {
-  const originalLogo = useMemo(() => {
+  const logo = useMemo(() => {
     switch (variant) {
-      case 'linklaters':
-        return <LinklatersOriginalLogo />;
+      case 'allen-overy':
+        return <AllenOveryLogo />;
+      case 'bank-of-america':
+        return <BankOfAmericaLogo />;
+      case 'barclaycard':
+        return <BarclaycardLogo />;
+      case 'bnp':
+        return <BNPLogo />;
       case 'ethereum-foundation':
-        return <EthereumFoundationOriginalLogo />;
-      case 'microsoft':
-        return <MicrosoftOriginalLogo />;
+        return <EthereumFoundationLogo />;
+      case 'goldman-sachs':
+        return <GoldmanSachsLogo />;
+      case 'ibm':
+        return <IBMLogo />;
+      case 'kirkland-ellis':
+        return <KirklandEllisLogo />;
       case 'lendinvest':
-        return <LendinvestOriginalLogo />;
+        return <LendinvestLogo />;
+      case 'microsoft':
+        return <MicrosoftLogo />;
+      case 'nomura':
+        return <NomuraLogo />;
+      case 'ubs':
+        return <UBSLogo />;
       default:
         return null;
     }
   }, [variant]);
 
-  const plainLogo = useMemo(() => {
-    switch (variant) {
-      case 'linklaters':
-        return <LinklatersPlainLogo />;
-      case 'ethereum-foundation':
-        return <EthereumFoundationPlainLogo />;
-      case 'microsoft':
-        return <MicrosoftPlainLogo />;
-      case 'lendinvest':
-        return <LendinvestPlainLogo />;
-      default:
-        return null;
-    }
-  }, [variant]);
-
-  return (
-    <div className="tw__team__worked-with__organization">
-      {originalLogo}
-      {plainLogo}
-    </div>
-  );
+  return <div className="tw__team__worked-with__organization">{logo}</div>;
 };
 
 export default memo(CompanyLogo);

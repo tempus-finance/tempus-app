@@ -11,10 +11,18 @@ const WorkedWith = (): JSX.Element => (
         </h2>
         <div className="tw__team__worked-with__separator" />
         <div className="tw__team__worked-with__organizations">
-          <CompanyLogo variant="linklaters" />
+          <CompanyLogo variant="bank-of-america" />
+          <CompanyLogo variant="bnp" />
+          <CompanyLogo variant="barclaycard" />
+          <CompanyLogo variant="goldman-sachs" />
+          <CompanyLogo variant="ubs" />
+          <CompanyLogo variant="lendinvest" />
+          <CompanyLogo variant="nomura" />
           <CompanyLogo variant="ethereum-foundation" />
           <CompanyLogo variant="microsoft" />
-          <CompanyLogo variant="lendinvest" />
+          <CompanyLogo variant="allen-overy" />
+          <CompanyLogo variant="kirkland-ellis" />
+          <CompanyLogo variant="ibm" />
         </div>
       </ScrollFadeIn>
     </div>
