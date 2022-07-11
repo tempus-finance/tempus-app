@@ -55,6 +55,10 @@
   color: #eeecff;
   cursor: pointer;
 
+  > svg {
+    margin-right: 16px;
+  }
+
   @media screen and (max-width: 768px) {
     margin-top: 20px;
     width: 232px;
