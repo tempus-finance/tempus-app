@@ -24,7 +24,8 @@ const Button: FC<ButtonProps> = props => {
       className={`tw__button__container ${className ?? ''}`}
       style={{ width, height }}
       onClick={handleClick}
-      aria-hidden="true"
+      role="button"
+      tabIndex={0}
     >
       {children}
     </div>

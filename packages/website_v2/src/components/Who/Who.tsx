@@ -23,7 +23,7 @@ const connectorsDescription = `
 The Connectors use their business skills to put the right products in front of the right eyes.
 They break the language barriers between DeFi and the real world.`.trim();
 
-const connectorsCTA = "I'm In";
+const connectorsCTA = "Let's Partner";
 
 const Who: FC = (): JSX.Element => {
   const [activeSection, setActiveSection] = useState<Sections>('builders');
@@ -57,6 +57,8 @@ const Who: FC = (): JSX.Element => {
               />
               <div
                 data-test="builders"
+                role="button"
+                tabIndex={0}
                 className={`tw__section__subsection-title ${activeSection === 'builders' ? 'active' : ''}`}
                 onClick={handleTitleClick}
               >
@@ -74,6 +76,8 @@ const Who: FC = (): JSX.Element => {
               />
               <div
                 data-test="creators"
+                role="button"
+                tabIndex={0}
                 className={`tw__section__subsection-title ${activeSection === 'creators' ? 'active' : ''}`}
                 onClick={handleTitleClick}
               >
@@ -91,6 +95,8 @@ const Who: FC = (): JSX.Element => {
               />
               <div
                 data-test="connectors"
+                role="button"
+                tabIndex={0}
                 className={`tw__section__subsection-title ${activeSection === 'connectors' ? 'active' : ''}`}
                 onClick={handleTitleClick}
               >
