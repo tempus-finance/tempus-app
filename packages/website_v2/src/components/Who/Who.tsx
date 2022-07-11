@@ -51,6 +51,7 @@ const Who: FC = (): JSX.Element => {
           <div className="tw__who__people">
             <div className="tw__who__people-subsection">
               <div
+                id="builders-graphics"
                 className="tw__who__people-graphics"
                 style={{ backgroundImage: 'url(images/graphics/builders.svg)' }}
               />
@@ -67,6 +68,7 @@ const Who: FC = (): JSX.Element => {
               </div>
 
               <div
+                id="creators-graphic"
                 className="tw__who__people-graphics"
                 style={{ backgroundImage: 'url(images/graphics/creators.svg)' }}
               />
@@ -83,6 +85,7 @@ const Who: FC = (): JSX.Element => {
               </div>
 
               <div
+                id="connectors-graphic"
                 className="tw__who__people-graphics"
                 style={{ backgroundImage: 'url(images/graphics/connectors.svg)' }}
               />
