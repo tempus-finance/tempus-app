@@ -1,4 +1,5 @@
 import ArrowRight from './arrowRight';
+import CoinMarketCapIcon from './CoinMarketCapIcon';
 import DistributedGlobalLogo from './distributedGlobalLogo';
 import GSRLogo from './gsrLogo';
 import JumpCapitalLogo from './jumpCapitalLogo';
@@ -12,6 +13,7 @@ import WintermuteLogo from './wintermuteLogo';
 export {
   ArrowRight,
   DistributedGlobalLogo,
+  CoinMarketCapIcon,
   GSRLogo,
   JumpCapitalLogo,
   KojiLogo,
