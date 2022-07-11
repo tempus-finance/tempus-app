@@ -26,10 +26,9 @@ const Terms = (): JSX.Element => {
               British Virgin Islands (the “Issuer”) in association with Tempus Foundation Company, a foundation company
               based in the Cayman Islands (the “Foundation”) (the Issuer and the Foundation together, “Tempus”, “we”,
               “our”, or “us”). We own and operate the website <Link to="/">https://tempus.finance</Link> which acts as a
-              front-end to the decentralized finance application (known as “Tempus Protocol”) available at
-              <a href="https://app.tempus.finance"> https://app.tempus.finance</a> (the website and application together
-              the “Site”). These Terms apply to you (“You”) as a user of the Site, including all the products, services,
-              tools and information made available on the Site.
+              front-end to various crypto applications (the website and any applications linked together the “Site”).
+              These Terms apply to you (“You”) as a user of the Site, including all the products, services, tools and
+              information made available on the Site.
               <br />
               <br />
               Please read these Terms carefully as they explain the terms and conditions on which you may use and access
@@ -50,29 +49,27 @@ const Terms = (): JSX.Element => {
               We reserve the right, in our sole discretion, to modify these Terms from time to time. You are advised to
               check these Terms periodically to familiarize yourself with any changes. If we make any changes, we will
               notify you by updating the date at the top of these Terms and by maintaining a current version of the
-              Terms at
-              <Link to="/terms#top"> https://tempus.finance/terms</Link>. All changes will be immediately effective when
-              they are posted, and your continued accessing or use of the Site will serve as confirmation of your
-              acceptance of the changes. If you do not agree with any changes to these Terms, you must immediately stop
-              accessing and using the Site.
+              Terms at <Link to="/terms#top"> https://tempus.finance/terms</Link>. All changes will be immediately
+              effective when they are posted, and your continued accessing or use of the Site will serve as confirmation
+              of your acceptance of the changes. If you do not agree with any changes to these Terms, you must
+              immediately stop accessing and using the Site.
             </p>
 
             <h3 className="tw__legalPage__body-content-title">3. Site</h3>
 
             <p className="tw__legalPage__body-content-text">
-              As part of the Site, Tempus provides access to the decentralized finance application Tempus Protocol on
-              the relevant blockchain (which includes any blockchain that Tempus contracts are deployed on, including
-              but not limited to Ethereum and Fantom), that allows suppliers and borrowers of certain cryptoassets to
-              earn yields using smart contracts (“Smart Contracts”).
+              As part of the Site, Tempus provides access to various crypto applications on the relevant blockchain
+              (which includes any blockchain that Tempus contracts are deployed on, including but not limited to
+              Ethereum, Fantom, and L2’s such as StarkNet), that allows users to interact with certain cryptoassets
+              using smart contracts (“Smart Contracts”).
               <br />
               <br />
-              Using the Tempus Protocol may require that you pay a fee, such as gas costs for using the networks
-              supported by Tempus, to perform a transaction. You acknowledge and agree that Tempus has no control over
-              any transactions made over Tempus Protocol, the method of payment of any transactions or any actual
-              payments of transactions. Accordingly, you must ensure that you have a sufficient balance of the
-              applicable cryptocurrency tokens stored at your Tempus Protocol-compatible wallet address (“Cryptocurrency
-              Wallet”) to complete any transaction on the Tempus Protocol or the relevant network before initiating such
-              transaction.
+              Using such applications may require that you pay a fee, such as gas costs for using the networks supported
+              by Tempus, to perform a transaction. You acknowledge and agree that Tempus has no control over any
+              transactions made over such applications he method of payment of any transactions or any actual payments
+              of transactions. Accordingly, you must ensure that you have a sufficient balance of the applicable your
+              cryptocurrency tokens stored in compatible wallet address (“Cryptocurrency Wallet”) to complete any
+              transaction on any such application or the relevant network before initiating such a transaction.
             </p>
 
             <h3 className="tw__legalPage__body-content-title">4. Access to the Site and All Rights Reserved</h3>
@@ -148,8 +145,8 @@ const Terms = (): JSX.Element => {
                 </li>
                 <li>
                   That the Site could be impacted by one or more regulatory inquiries or actions, which would impede or
-                  limit the ability of Tempus to continue to make available the Tempus Protocol and, thus, could impede
-                  or limit your ability to access or use the Site.
+                  limit the ability of Tempus to continue to make available the crypto applications and, thus, could
+                  impede or limit your ability to access or use the Site.
                 </li>
                 <li>
                   You understand that the relevant blockchain remains under development, which creates technological and
@@ -177,8 +174,8 @@ const Terms = (): JSX.Element => {
               Accordingly, you expressly agree that:
               <ul>
                 <li>
-                  You assume all risk in connection with your access and use of the Site, the Tempus Protocol and the
-                  Smart Contracts.
+                  You assume all risk in connection with your access and use of the Site, the applications and the Smart
+                  Contracts.
                 </li>
                 <li>
                   You alone are responsible for securing the private key(s) associated with your Smart Contracts. You
@@ -191,8 +188,8 @@ const Terms = (): JSX.Element => {
                 </li>
                 <li>
                   You expressly waive and release Tempus from any and all liability, claims, causes of action, or
-                  damages arising from or in any way related to your use of the Site, the Tempus Protocol or the Smart
-                  Contracts.
+                  damages arising from or in any way related to your use of the Site, the crypto applications or the
+                  Smart Contracts.
                 </li>
               </ul>
             </div>
@@ -228,8 +225,8 @@ const Terms = (): JSX.Element => {
               designs. These works are protected by intellectual property laws and all such rights are reserved.
               <br />
               <br />
-              The Tempus Protocol (available at <a href="https://app.tempus.finance">https://app.tempus.finance</a>) is
-              comprised entirely of open-source or source-available software running on the public relevant blockchain.
+              The crypto applications comprised entirely of open-source or source-available software running on the
+              public relevant blockchain.
               <br />
               <br />
               <Link to="/">https://tempus.finance</Link> is the uniform resource locator (“URL”) of Tempus. You will not
@@ -386,16 +383,17 @@ const Terms = (): JSX.Element => {
             <p className="tw__legalPage__body-content-text">
               We are not registered with any government agencies as a national securities exchange or in any other
               capacity. No government agencies have reviewed or approved the use of Tempus-developed software. You
-              understand and acknowledge that we do not broker swaps on your behalf. We also do not facilitate the
-              execution or settlement of your swaps, which occur entirely on the public distributed blockchain.
+              understand and acknowledge that we do not broker transactions on your behalf. We also do not facilitate
+              the execution or settlement of your transactions, which occur entirely on the public distributed
+              blockchain.
             </p>
 
             <h3 className="tw__legalPage__body-content-title">12. Non-Solicitation and No Investment Advice</h3>
 
             <p className="tw__legalPage__body-content-text">
-              You agree and understand that all swaps you submit through the Site are considered unsolicited, which
-              means that you have not received any investment advice from us in connection with any swaps, and that we
-              do not conduct a suitability review of any swaps you submit.
+              You agree and understand that all transactions you submit through the Site are considered unsolicited,
+              which means that you have not received any investment advice from us in connection with any transactions,
+              and that we do not conduct a suitability review of any transactions you submit.
               <br />
               <br />
               All information provided by the Site is for informational purposes only and should not be construed as
@@ -410,13 +408,13 @@ const Terms = (): JSX.Element => {
             <h3 className="tw__legalPage__body-content-title">13. Non-Custodial and No Fiduciary Duties</h3>
 
             <p className="tw__legalPage__body-content-text">
-              The Site is a purely non-custodial application, meaning you are solely responsible for the custody of the
-              cryptographic private keys to the digital asset wallets you hold. These Terms are not intended to, and do
-              not, create or impose any fiduciary duties on us. To the fullest extent permitted by law, you acknowledge
-              and agree that we owe no fiduciary duties or liabilities to you or any other party, and that to the extent
-              any such duties or liabilities may exist at law or in equity, those duties and liabilities are hereby
-              irrevocably disclaimed, waived, and eliminated. You further agree that the only duties and obligations
-              that we owe you are those set out expressly in these Terms.
+              The Site (including the crypto applications) are purely non-custodial, meaning you are solely responsible
+              for the custody of the cryptographic private keys to the digital asset wallets you hold. These Terms are
+              not intended to, and do not, create or impose any fiduciary duties on us. To the fullest extent permitted
+              by law, you acknowledge and agree that we owe no fiduciary duties or liabilities to you or any other
+              party, and that to the extent any such duties or liabilities may exist at law or in equity, those duties
+              and liabilities are hereby irrevocably disclaimed, waived, and eliminated. You further agree that the only
+              duties and obligations that we owe you are those set out expressly in these Terms.
             </p>
 
             <h3 className="tw__legalPage__body-content-title">14. Financial and Technical Sophistication</h3>
