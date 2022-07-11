@@ -37,26 +37,6 @@ const Who: FC = (): JSX.Element => {
     window.open(discordInviteLink, '_blank');
   }, []);
 
-  const sharedImageStyle = useCallback(() => {
-    if (activeSection === 'builders') {
-      return {
-        backgroundImage: 'url(images/graphics/builders.svg)',
-      };
-    }
-    if (activeSection === 'creators') {
-      return {
-        backgroundImage: 'url(images/graphics/creators.svg)',
-      };
-    }
-    if (activeSection === 'connectors') {
-      return {
-        backgroundImage: 'url(images/graphics/connectors.svg)',
-      };
-    }
-
-    return { backgroundImage: '' };
-  }, [activeSection]);
-
   return (
     <div className="tw__who">
       <div className="tw__container tw__who__container">
@@ -119,7 +99,18 @@ const Who: FC = (): JSX.Element => {
               </div>
             </div>
             <div className="tw__who__people-shared-graphics">
-              <div className="tw__who__people-graphics" style={sharedImageStyle()} />
+              <div
+                className={`tw__who__people-graphics ${activeSection === 'builders' ? 'active' : ''}`}
+                style={{ backgroundImage: 'url(images/graphics/builders.svg)' }}
+              />
+              <div
+                className={`tw__who__people-graphics ${activeSection === 'creators' ? 'active' : ''}`}
+                style={{ backgroundImage: 'url(images/graphics/creators.svg)' }}
+              />
+              <div
+                className={`tw__who__people-graphics ${activeSection === 'connectors' ? 'active' : ''}`}
+                style={{ backgroundImage: 'url(images/graphics/connectors.svg)' }}
+              />
             </div>
           </div>
         </ScrollFadeIn>
