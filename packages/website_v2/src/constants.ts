@@ -10,3 +10,4 @@ export const spookySwapPoolAddress = '0x3b00de93e05815609c58ef936dc202d388802a44
 export const TEMP_PRECISION = 18;
 export const USDC_PRECISION = 6;
 export const discordInviteLink = 'https://discord.com/invite/6gauHECShr';
+export const REFRESH_TIME = 60 * 60 * 1000; // ONE HOUR
