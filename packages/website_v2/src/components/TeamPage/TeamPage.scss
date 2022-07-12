@@ -95,6 +95,10 @@
       padding: 40px;
 
       .tw__team__members__header {
+        font-size: 20px;
+        font-weight: 400;
+        line-height: 30px;
+
         .tw__team__members__header-text {
           max-width: 960px;
           margin-bottom: 100px;
@@ -105,10 +109,23 @@
             line-height: 34px;
           }
 
-          &:last-child {
-            font-size: 20px;
-            font-weight: 400;
-            line-height: 30px;
+          &:nth-child(2) {
+            margin-bottom: 20px;
+          }
+        }
+
+        .tw__team__members__header-link {
+          display: inline-block;
+
+          .tw__link {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            margin-bottom: 100px;
+
+            .tw__arrow-right-icon {
+              margin-left: 12px;
+            }
           }
         }
       }
