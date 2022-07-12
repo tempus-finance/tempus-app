@@ -53,7 +53,9 @@ const Treasury = (): JSX.Element => {
                 </Link>
               </div>
             </div>
-            <div className="tw__treasury__value">{valueFormatted ? <p>{valueFormatted}</p> : <Loading />}</div>
+            <div className="tw__treasury__value">
+              {valueFormatted ? <p>{valueFormatted}</p> : <Loading variant="dark" />}
+            </div>
           </div>
         </div>
       </ScrollFadeIn>

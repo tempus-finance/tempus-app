@@ -85,7 +85,7 @@ const GovernanceTreasury = (): JSX.Element => {
           {totalTreasuryValueFormatted ? (
             <div className="tw__governance__treasury-value">{totalTreasuryValueFormatted}</div>
           ) : (
-            <Loading />
+            <Loading variant="light" />
           )}
 
           <div className="tw__governance__treasury-chart">
