@@ -4,7 +4,7 @@ import { DiscordIcon, GitHubIcon, MediumIcon, TelegramIcon, TwitterIcon } from '
 import './Join.scss';
 
 const Join = (): JSX.Element => (
-  <div className="tw__join">
+  <div id="join-section" className="tw__join">
     <div className="tw__container tw__join__container">
       <div className="tw__join__separator" />
       <ScrollFadeIn>
