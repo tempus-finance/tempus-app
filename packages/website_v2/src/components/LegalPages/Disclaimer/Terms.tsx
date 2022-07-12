@@ -14,8 +14,11 @@ const Terms = (): JSX.Element => {
       <div className="tw__legalPage">
         <div className="tw__legalPage__header">
           <div className="tw__legalPage__header-content">
-            <h1 className="tw__legalPage__header-title">Tempus Terms of Service</h1>
-            <h2 className="tw__legalPage__header-subtitle">Last updated: 21 February 2022</h2>
+            <h1 className="tw__legalPage__header-title">
+              Tempus
+              <br /> Terms of Service
+            </h1>
+            <h2 className="tw__legalPage__header-subtitle">Last updated: Tuesday 12 July 2022</h2>
           </div>
         </div>
         <div className="tw__legalPage__body">
@@ -66,9 +69,9 @@ const Terms = (): JSX.Element => {
               <br />
               Using such applications may require that you pay a fee, such as gas costs for using the networks supported
               by Tempus, to perform a transaction. You acknowledge and agree that Tempus has no control over any
-              transactions made over such applications he method of payment of any transactions or any actual payments
+              transactions made over such applications, the method of payment of any transactions or any actual payments
               of transactions. Accordingly, you must ensure that you have a sufficient balance of the applicable your
-              cryptocurrency tokens stored in compatible wallet address (“Cryptocurrency Wallet”) to complete any
+              cryptocurrency tokens stored in your compatible wallet address (“Cryptocurrency Wallet”) to complete any
               transaction on any such application or the relevant network before initiating such a transaction.
             </p>
 
@@ -174,8 +177,8 @@ const Terms = (): JSX.Element => {
               Accordingly, you expressly agree that:
               <ul>
                 <li>
-                  You assume all risk in connection with your access and use of the Site, the applications and the Smart
-                  Contracts.
+                  You assume all risk in connection with your access and use of the Site, the crypto applications and
+                  the Smart Contracts.
                 </li>
                 <li>
                   You alone are responsible for securing the private key(s) associated with your Smart Contracts. You
@@ -225,8 +228,8 @@ const Terms = (): JSX.Element => {
               designs. These works are protected by intellectual property laws and all such rights are reserved.
               <br />
               <br />
-              The crypto applications comprised entirely of open-source or source-available software running on the
-              public relevant blockchain.
+              The crypto applications developed by Tempus are comprised entirely of open-source or source-available
+              software running on the public relevant blockchain.
               <br />
               <br />
               <Link to="/">https://tempus.finance</Link> is the uniform resource locator (“URL”) of Tempus. You will not

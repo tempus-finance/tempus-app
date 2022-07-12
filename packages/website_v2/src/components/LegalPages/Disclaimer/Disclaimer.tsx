@@ -14,7 +14,7 @@ const Disclaimer = (): JSX.Element => {
       <div className="tw__legalPage">
         <div className="tw__legalPage__header">
           <div className="tw__legalPage__header-content">
-            <h1 className="tw__legalPage__header-title">Tempus Protocol Disclaimer</h1>
+            <h1 className="tw__legalPage__header-title">Tempus Disclaimer</h1>
           </div>
         </div>
         <div className="tw__legalPage__body">
@@ -24,13 +24,13 @@ const Disclaimer = (): JSX.Element => {
               “Issuer”) in association with Tempus Foundation Company, a foundation company based in the Cayman Islands
               (the “Foundation”) (the Issuer and the Foundation together, “Tempus”, “we”, “our”, or “us”). This website
               acts as a front-end to various crypto applications deployed on the relevant blockchain (which includes any
-              blockchain that Tempus contracts are deployed on, including but not limited to Ethereum,Fantom, and L2’s
+              blockchain that Tempus contracts are deployed on, including but not limited to Ethereum, Fantom, and L2’s
               such as StarkNet), that allows users to interact with certain cryptoassets using smart contracts. Such
               applications are made up of free, public, open-source or source-available software. Your use of such
               applications involves various risks, including, but not limited to, losses while cryptoassets are supplied
-              to the applications , losses due to the fluctuation of prices of tokens in a pool, and losses due to price
+              to the applications, losses due to the fluctuation of prices of tokens in a pool, and losses due to price
               slippage and cost. Before using the applications, you should review the relevant documentation from our
-              GitHub to ensure you understand how the applications works. Additionally, just as you can access email
+              GitHub to ensure you understand how the applications work. Additionally, just as you can access email
               protocols such as SMTP through multiple email clients, you can access the applications through various web
               and mobile interfaces. You are responsible for doing your own due diligence on these interfaces to
               understand the fees and risks they present.
@@ -43,7 +43,7 @@ const Disclaimer = (): JSX.Element => {
               managed in a community-driven way by governance by holders of the TEMP governance token. No Tempus
               developer or entity involved in creating the applications will be liable for any claims or damages
               whatsoever associated with your use, inability to use, or your interaction with other users of, the
-              applications including any direct, indirect, incidental, special, exemplary, punitive or consequential
+              applications, including any direct, indirect, incidental, special, exemplary, punitive or consequential
               damages, or loss of profits, cryptocurrencies, tokens, or anything else of value.
               <br />
               <br />
