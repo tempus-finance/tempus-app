@@ -43,10 +43,11 @@ const Who: FC = (): JSX.Element => {
         <ScrollFadeIn>
           <h2 className="tw__section-title">Who are we?</h2>
           <div className="tw__section__subtitles">
-            <h3 className="tw__section-subtitle">
-              Tempus Labs has been elected by the Tempus DAO governance process as the service provider to lead the
-              project. Tempus DAO is a decentralized community of Builders, Creators and Connectors. Find your role!
-            </h3>
+            <p className="tw__section-subtitle">
+              Tempus builds DeFi products through organic collaboration between the Tempus Labs team and our community.
+              Tempus Labs has been elected by Tempus DAO governance as the service provider to lead the project.
+            </p>
+            <p className="tw__section-subtitle">Interested in joining the community? Explore our roles below.</p>
           </div>
           <div className="tw__who__people">
             <div className="tw__who__people-subsection">
