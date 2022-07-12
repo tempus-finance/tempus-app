@@ -23,8 +23,8 @@
   "warningMain": "#F5AC37",
   "warningLight": "#FFE2B2",
 
-  "dangerMain": "#FFD9D9",
-  "dangerLight": "#FF0F0F",
+  "dangerMain": "#FF0F0F",
+  "dangerLight": "#FFD9D9",
 
   "toggleSwitchInactiveBackground": "#BFC0C0",
   "toggleSwitchThumbInactiveBackground": "#FFFFFF",
