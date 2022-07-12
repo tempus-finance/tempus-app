@@ -86,6 +86,12 @@ PrimaryLight.args = {
   colorName: 'PrimaryLight',
 };
 
+export const PrimaryExtraLight = Template.bind({});
+PrimaryExtraLight.args = {
+  backgroundColor: Colors.primaryExtraLight,
+  colorName: 'PrimaryExtraLight',
+};
+
 export const PrimaryDark = Template.bind({});
 PrimaryDark.args = {
   backgroundColor: Colors.primaryDark,
@@ -114,6 +120,42 @@ export const SecondaryLight = Template.bind({});
 SecondaryLight.args = {
   backgroundColor: Colors.secondaryLight,
   colorName: 'SecondaryLight',
+};
+
+export const SuccessMain = Template.bind({});
+SuccessMain.args = {
+  backgroundColor: Colors.successMain,
+  colorName: 'SuccessMain',
+};
+
+export const SuccessLight = Template.bind({});
+SuccessLight.args = {
+  backgroundColor: Colors.successLight,
+  colorName: 'SuccessLight',
+};
+
+export const WarningMain = Template.bind({});
+WarningMain.args = {
+  backgroundColor: Colors.warningMain,
+  colorName: 'WarningMain',
+};
+
+export const WarningLight = Template.bind({});
+WarningLight.args = {
+  backgroundColor: Colors.warningLight,
+  colorName: 'WarningLight',
+};
+
+export const DangerMain = Template.bind({});
+DangerMain.args = {
+  backgroundColor: Colors.dangerMain,
+  colorName: 'DangerMain',
+};
+
+export const DangerLight = Template.bind({});
+DangerLight.args = {
+  backgroundColor: Colors.dangerLight,
+  colorName: 'DangerLight',
 };
 
 export const TextPrimaryInverted = Template.bind({});
@@ -272,6 +314,18 @@ TermTabsSelectedBorder.args = {
   colorName: 'TermTabsSelectedBorder',
 };
 
+export const TermTabsDisabledBackground = Template.bind({});
+TermTabsDisabledBackground.args = {
+  backgroundColor: Colors.termTabsDisabledBackground,
+  colorName: 'TermTabsDisabledBackground',
+};
+
+export const TermTabsDisabledBorder = Template.bind({});
+TermTabsDisabledBorder.args = {
+  backgroundColor: Colors.termTabsDisabledBorder,
+  colorName: 'TermTabsDisabledBorder',
+};
+
 export const DropdownBackground = Template.bind({});
 DropdownBackground.args = {
   backgroundColor: Colors.dropdownBackground,
@@ -366,4 +420,255 @@ export const PageContainerBackground = Template.bind({});
 PageContainerBackground.args = {
   backgroundColor: Colors.pageContainerBackground,
   colorName: 'PageContainerBackground',
+};
+
+export const PoolCardBackground = Template.bind({});
+PoolCardBackground.args = {
+  backgroundColor: Colors.poolCardBackground,
+  colorName: 'PoolCardBackground',
+};
+
+export const PoolCardBorder = Template.bind({});
+PoolCardBorder.args = {
+  backgroundColor: Colors.poolCardBorder,
+  colorName: 'PoolCardBorder',
+};
+
+export const PoolCardFlagDisabledBorder = Template.bind({});
+PoolCardFlagDisabledBorder.args = {
+  backgroundColor: Colors.poolCardFlagDisabledBorder,
+  colorName: 'PoolCardFlagDisabledBorder',
+};
+
+export const PoolCardFlagDisabledBackground = Template.bind({});
+PoolCardFlagDisabledBackground.args = {
+  backgroundColor: Colors.poolCardFlagDisabledBackground,
+  colorName: 'PoolCardFlagDisabledBackground',
+};
+
+export const IconDefaultColor = Template.bind({});
+IconDefaultColor.args = {
+  backgroundColor: Colors.iconDefaultColor,
+  colorName: 'IconDefaultColor',
+};
+
+export const IconButtonBackground = Template.bind({});
+IconButtonBackground.args = {
+  backgroundColor: Colors.iconButtonBackground,
+  colorName: 'IconButtonBackground',
+};
+export const IconButtonBorder = Template.bind({});
+IconButtonBorder.args = {
+  backgroundColor: Colors.iconButtonBorder,
+  colorName: 'IconButtonBorder',
+};
+
+export const IconButtonIcon = Template.bind({});
+IconButtonIcon.args = {
+  backgroundColor: Colors.iconButtonIcon,
+  colorName: 'IconButtonIcon',
+};
+
+export const IconButtonSelectedBackground = Template.bind({});
+IconButtonSelectedBackground.args = {
+  backgroundColor: Colors.iconButtonSelectedBackground,
+  colorName: 'IconButtonSelectedBackground',
+};
+
+export const IconButtonSelectedIcon = Template.bind({});
+IconButtonSelectedIcon.args = {
+  backgroundColor: Colors.iconButtonSelectedIcon,
+  colorName: 'IconButtonSelectedIcon',
+};
+
+export const WalletButtonBorder = Template.bind({});
+WalletButtonBorder.args = {
+  backgroundColor: Colors.walletButtonBorder,
+  colorName: 'WalletButtonBorder',
+};
+
+export const WalletButtonBackground = Template.bind({});
+WalletButtonBackground.args = {
+  backgroundColor: Colors.walletButtonBackground,
+  colorName: 'WalletButtonBackground',
+};
+
+export const WalletButtonHover = Template.bind({});
+WalletButtonHover.args = {
+  backgroundColor: Colors.walletButtonHover,
+  colorName: 'WalletButtonHover',
+};
+
+export const WalletPopupBackground = Template.bind({});
+WalletPopupBackground.args = {
+  backgroundColor: Colors.walletPopupBackground,
+  colorName: 'WalletPopupBackground',
+};
+
+export const WalletPopupInnerBorder = Template.bind({});
+WalletPopupInnerBorder.args = {
+  backgroundColor: Colors.walletPopupInnerBorder,
+  colorName: 'WalletPopupInnerBorder',
+};
+
+export const SwitcherButtonBorder = Template.bind({});
+SwitcherButtonBorder.args = {
+  backgroundColor: Colors.switcherButtonBorder,
+  colorName: 'SwitcherButtonBorder',
+};
+
+export const SwitcherButtonBackground = Template.bind({});
+SwitcherButtonBackground.args = {
+  backgroundColor: Colors.switcherButtonBackground,
+  colorName: 'SwitcherButtonBackground',
+};
+
+export const ModalBackground = Template.bind({});
+ModalBackground.args = {
+  backgroundColor: Colors.modalBackground,
+  colorName: 'ModalBackground',
+};
+
+export const ModalBackgroundShade = Template.bind({});
+ModalBackgroundShade.args = {
+  backgroundColor: Colors.modalBackgroundShade,
+  colorName: 'ModalBackgroundShade',
+};
+
+export const ModalBorder = Template.bind({});
+ModalBorder.args = {
+  backgroundColor: Colors.modalBorder,
+  colorName: 'ModalBorder',
+};
+
+export const ModalBackdrop = Template.bind({});
+ModalBackdrop.args = {
+  backgroundColor: Colors.modalBackdrop,
+  colorName: 'ModalBackdrop',
+};
+
+export const TooltipBorder = Template.bind({});
+TooltipBorder.args = {
+  backgroundColor: Colors.tooltipBorder,
+  colorName: 'TooltipBorder',
+};
+
+export const TooltipBackground = Template.bind({});
+TooltipBackground.args = {
+  backgroundColor: Colors.tooltipBackground,
+  colorName: 'TooltipBackground',
+};
+
+export const ProgressBarBackground = Template.bind({});
+ProgressBarBackground.args = {
+  backgroundColor: Colors.progressBarBackground,
+  colorName: 'ProgressBarBackground',
+};
+
+export const ProgressBarBorder = Template.bind({});
+ProgressBarBorder.args = {
+  backgroundColor: Colors.progressBarBorder,
+  colorName: 'ProgressBarBorder',
+};
+
+export const ProgressBarProgressBackground = Template.bind({});
+ProgressBarProgressBackground.args = {
+  backgroundColor: Colors.progressBarProgressBackground,
+  colorName: 'ProgressBarProgressBackground',
+};
+
+export const DepositModalHeaderBackground = Template.bind({});
+DepositModalHeaderBackground.args = {
+  backgroundColor: Colors.depositModalHeaderBackground,
+  colorName: 'DepositModalHeaderBackground',
+};
+
+export const ChartArea = Template.bind({});
+ChartArea.args = {
+  backgroundColor: Colors.chartArea,
+  colorName: 'ChartArea',
+};
+
+export const ChartStroke = Template.bind({});
+ChartStroke.args = {
+  backgroundColor: Colors.chartStroke,
+  colorName: 'ChartStroke',
+};
+
+export const ChartGrid = Template.bind({});
+ChartGrid.args = {
+  backgroundColor: Colors.chartGrid,
+  colorName: 'ChartGrid',
+};
+
+export const ChartTooltipLine = Template.bind({});
+ChartTooltipLine.args = {
+  backgroundColor: Colors.chartTooltipLine,
+  colorName: 'ChartTooltipLine',
+};
+
+export const ChartDotDominant = Template.bind({});
+ChartDotDominant.args = {
+  backgroundColor: Colors.chartDotDominant,
+  colorName: 'ChartDotDominant',
+};
+
+export const ChartDotNeutral = Template.bind({});
+ChartDotNeutral.args = {
+  backgroundColor: Colors.chartDotNeutral,
+  colorName: 'ChartDotNeutral',
+};
+
+export const PortfolioBoxBorder = Template.bind({});
+PortfolioBoxBorder.args = {
+  backgroundColor: Colors.portfolioBoxBorder,
+  colorName: 'PortfolioBoxBorder',
+};
+
+export const PoolsHeadingOverlay = Template.bind({});
+PoolsHeadingOverlay.args = {
+  backgroundColor: Colors.poolsHeadingOverlay,
+  colorName: 'PoolsHeadingOverlay',
+};
+
+export const PoolPositionCardBorder = Template.bind({});
+PoolPositionCardBorder.args = {
+  backgroundColor: Colors.poolPositionCardBorder,
+  colorName: 'PoolPositionCardBorder',
+};
+
+export const PoolPositionCardBackground = Template.bind({});
+PoolPositionCardBackground.args = {
+  backgroundColor: Colors.poolPositionCardBackground,
+  colorName: 'PoolPositionCardBackground',
+};
+
+export const LoadingPlaceholderBase = Template.bind({});
+LoadingPlaceholderBase.args = {
+  backgroundColor: Colors.loadingPlaceholderBase,
+  colorName: 'LoadingPlaceholderBase',
+};
+
+export const LoadingPlaceholderShine = Template.bind({});
+LoadingPlaceholderShine.args = {
+  backgroundColor: Colors.loadingPlaceholderShine,
+  colorName: 'LoadingPlaceholderShine',
+};
+
+export const LoadingPlaceholderOverlay = Template.bind({});
+LoadingPlaceholderOverlay.args = {
+  backgroundColor: Colors.loadingPlaceholderOverlay,
+  colorName: 'LoadingPlaceholderOverlay',
+};
+
+export const MarketsFooterBackground = Template.bind({});
+MarketsFooterBackground.args = {
+  backgroundColor: Colors.marketsFooterBackground,
+  colorName: 'MarketsFooterBackground',
+};
+
+export const MarketsFooterSeparator = Template.bind({});
+MarketsFooterSeparator.args = {
+  backgroundColor: Colors.marketsFooterSeparator,
+  colorName: 'MarketsFooterSeparator',
 };
