@@ -32,7 +32,7 @@ const Products = (): JSX.Element => (
       title="Let’s shape the future together"
       description="Join the Tempus community to bring the next generation of DeFi products to life."
       buttonLabel="LFG"
-      buttonLink="https://discord.com/invite/6gauHECShr"
+      buttonLink="/#join-section"
     />
   </div>
 );
