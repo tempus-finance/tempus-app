@@ -81,7 +81,15 @@ const Footer = (): JSX.Element => (
           </div>
         </div>
         <div className="tw__footer__links-column">
-          <p className="tw__footer__links-title">Legal</p>
+          <p className="tw__footer__links-title">Admin</p>
+          <div className="tw__footer__link-container">
+            <Link
+              className="tw__footer__link tw__hover-animation"
+              href="https://github.com/tempus-finance/branding-assets"
+            >
+              Branding
+            </Link>
+          </div>
           <div className="tw__footer__link-container">
             <Link className="tw__footer__link tw__hover-animation" href="/terms#top">
               Terms

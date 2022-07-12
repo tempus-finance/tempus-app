@@ -20,7 +20,7 @@ const About = (): JSX.Element => (
           <AboutGridItem
             icon={<TeamIcon />}
             title="World-class team"
-            description="Tempus Labs is elected by the DAO to lead product development. We are a global team of experienced finance and tech professionals who are passionate about all things crypto"
+            description="Tempus Labs is elected by the DAO to lead product development. We are a global team of experienced finance and tech professionals who are passionate about all things crypto."
           />
           <AboutGridItem
             icon={<VisionIcon />}
