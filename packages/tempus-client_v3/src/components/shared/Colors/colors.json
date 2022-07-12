@@ -10,11 +10,21 @@
 
   "primaryMain": "#2B6E84",
   "primaryLight": "#129CA4",
+  "primaryExtraLight": "#EBF6F6",
   "primaryDark": "#3E4E6E",
 
   "secondaryRegular": "#FF6B00",
   "secondaryRegularRGB": "255, 107, 0",
   "secondaryLight": "#FF842C",
+
+  "successMain": "#4BB543",
+  "successLight": "#CEF2DA",
+
+  "warningMain": "#F5AC37",
+  "warningLight": "#FFE2B2",
+
+  "dangerMain": "#FFD9D9",
+  "dangerLight": "#FF0F0F",
 
   "toggleSwitchInactiveBackground": "#BFC0C0",
   "toggleSwitchThumbInactiveBackground": "#FFFFFF",
