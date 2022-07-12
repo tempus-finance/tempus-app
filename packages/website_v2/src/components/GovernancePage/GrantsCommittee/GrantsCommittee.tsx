@@ -23,7 +23,7 @@ const GrantsCommittee = (): JSX.Element => (
         </p>
         <div className="tw__grantsCommittee__active-grants">
           <Link
-            href="https://www.notion.so/tempusfinance/Tempus-Grants-Program-c54b4410e9db49139347210d5a340c5e"
+            href="https://tempusfinance.notion.site/tempusfinance/Tempus-Grants-Program-c54b4410e9db49139347210d5a340c5e"
             className="tw__hover-animation-light"
           >
             <span>Check active grants</span>
