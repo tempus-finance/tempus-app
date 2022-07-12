@@ -19,7 +19,7 @@ const TokenDistribution = (): JSX.Element => (
         <p className="tw__token__token-distribution-description">
           The pie chart below sets out the initial three year allocation of the 1 billion TEMP total supply. At Tempus,
           we are strong believers in decentralization and so we have allocated 52% of our initial token supply to
-          benefit Tempus DAO.
+          benefit Tempus.
         </p>
         <div className="tw__token__legend">
           <div className="tw__token__legend-item">

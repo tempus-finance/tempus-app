@@ -18,8 +18,8 @@ const GrantsCommittee = (): JSX.Element => (
         </div>
         <h3 className="tw__grantsCommittee__subtitle">Build a Better Future of DeFi</h3>
         <p className="tw__grantsCommittee__text">
-          We established the Tempus Grants Committee to support Builders, Creators and Connectors like you to grow the
-          Tempus DAO through innovative collaborations. Together we&apos;ll build something beyond special.
+          We established the Tempus Grants Committee to support Builders, Creators and Connectors like you to grow
+          Tempus through innovative collaborations. Together we&apos;ll build something beyond special.
         </p>
         <div className="tw__grantsCommittee__active-grants">
           <Link

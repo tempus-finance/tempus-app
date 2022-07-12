@@ -18,7 +18,7 @@ const Invest = (): JSX.Element => (
         <div className="tw__invest__body">
           <div className="tw__invest__description">
             <p>
-              Tempus DAO is governed by TEMP token holders. TEMP token holders capture value from all products built by
+              Tempus is governed by TEMP token holders. TEMP token holders capture value from all products built by
               Tempus.
             </p>
             <div className="tw__invest__read-more">

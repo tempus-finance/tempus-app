@@ -15,12 +15,12 @@ const About = (): JSX.Element => (
           <AboutGridItem
             icon={<CommunityIcon />}
             title="Decentralized community"
-            description="Tempus DAO is a decentralized community of Builders, Creators and Connectors collaborating to deliver rockstar products. We are a diverse group of innovators working together to shape the future of DeFi."
+            description="Tempus is a decentralized community of Builders, Creators and Connectors led by Tempus Labs to build some of the most innovative DeFi products."
           />
           <AboutGridItem
             icon={<TeamIcon />}
             title="World-class team"
-            description="Tempus Labs is elected by the DAO to lead product development. We are a global team of experienced finance and tech professionals who are passionate about all things crypto."
+            description="Tempus Labs is elected by the DAO to lead product development. We are a global team of experienced finance and tech professionals who are passionate about all things crypto"
           />
           <AboutGridItem
             icon={<VisionIcon />}

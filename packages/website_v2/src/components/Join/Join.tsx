@@ -8,9 +8,9 @@ const Join = (): JSX.Element => (
     <div className="tw__container tw__join__container">
       <div className="tw__join__separator" />
       <ScrollFadeIn>
-        <h2 className="tw__join__title">Join Tempus DAO</h2>
+        <h2 className="tw__join__title">Join the Tempus Community</h2>
         <p className="tw__join__description">
-          Tempus DAO is a global community of Builders, Creators and Connectors shaping the future of DeFi.
+          Tempus is a global community of Builders, Creators and Connectors shaping the future of DeFi.
         </p>
         <div className="tw__join__link-grid">
           <LinkBlock
