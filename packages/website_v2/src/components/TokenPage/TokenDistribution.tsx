@@ -4,9 +4,9 @@ import { ScrollFadeIn } from '../shared';
 import ChartLabel from './ChartLabel';
 
 const tokenAllocationData = [
-  { name: 'Tempus Team', value: 26, color: '#eeecff' },
+  { name: 'Current & Future Team', value: 26, color: '#eeecff' },
   { name: 'Investors & Advisors', value: 22, color: '#ff7700' },
-  { name: 'Fair Launch Auction', value: 7, color: '#6167c8' },
+  { name: 'Fair Launch Investors', value: 7, color: '#6167c8' },
   { name: 'Treasury & Liquidity Incentives', value: 45, color: '#c6cfff' },
 ];
 
@@ -25,7 +25,7 @@ const TokenDistribution = (): JSX.Element => (
           <div className="tw__token__legend-item">
             <span className="tw__token__legend-color tw__token__token-distribution-legend-color-team" />
             <div>
-              Tempus Team - <span className="tw__token__token-distribution-legend-value">26%</span>
+              Current &amp; Future Team - <span className="tw__token__token-distribution-legend-value">26%</span>
             </div>
           </div>
           <div className="tw__token__legend-item">
@@ -44,7 +44,7 @@ const TokenDistribution = (): JSX.Element => (
           <div className="tw__token__legend-item">
             <span className="tw__token__legend-color tw__token__token-distribution-legend-color-sale" />
             <div>
-              Fair Launch Auction - <span className="tw__token__token-distribution-legend-value">7%</span>
+              Fair Launch Investors - <span className="tw__token__token-distribution-legend-value">7%</span>
             </div>
           </div>
         </div>
@@ -67,7 +67,7 @@ const TokenDistribution = (): JSX.Element => (
                 </Pie>
               </PieChart>
             </ResponsiveContainer>
-            <ChartLabel x={0} y={120} width={360} orientation="left" label="Tempus Team" value="26.00%" />
+            <ChartLabel x={0} y={120} width={360} orientation="left" label="Current & Future Team" value="26.00%" />
             <ChartLabel
               x={100}
               y={330}
@@ -84,7 +84,7 @@ const TokenDistribution = (): JSX.Element => (
               label="Treasury &amp; Liquidity Incentives"
               value="45.00%"
             />
-            <ChartLabel x={110} y={390} width={370} orientation="right" label="Fair Launch Auction" value="7.00%" />
+            <ChartLabel x={110} y={390} width={370} orientation="right" label="Fair Launch Investors" value="7.00%" />
           </div>
         </div>
       </div>
