@@ -14,8 +14,8 @@ const TokenBenefits = (): JSX.Element => (
             </div>
             <h3>Your Token. Your Voice.</h3>
             <p>
-              TEMP holders govern the Tempus DAO. The DAO elects the service contractor to lead product development.
-              TEMP holders can submit governance proposals and vote to decide the future of the DAO.
+              TEMP holders govern the Tempus DAO. The token holder selects the service contractor to lead product
+              development. TEMP holders can submit governance proposals and vote to decide the future of the Tempus.
             </p>
           </div>
           <div className="tw__token__token-benefits-grid-item">
@@ -24,9 +24,9 @@ const TokenBenefits = (): JSX.Element => (
             </div>
             <h3>Capture Value</h3>
             <p>
-              TEMP holders capture value from products developed by Tempus DAO, including early access to any new
-              products and their tokens. Our product line already features a fixed income protocol, and a novel money
-              market will be launching soon.
+              TEMP holders capture value from products developed by Tempus, including early access to any new products
+              and their tokens. Our product line already features a fixed income protocol, and a novel money market will
+              be launching soon.
             </p>
           </div>
         </div>

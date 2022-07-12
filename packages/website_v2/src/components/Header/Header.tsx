@@ -37,8 +37,8 @@ const Header: FC<HeaderProps> = (props): JSX.Element => {
       <div className="tw__container tw__header__container">
         <div className="tw__header-logo">
           <Link href="/" className="tw__clickable-logo">
-            <img className="tw__header-logo-img-light" src="/images/header-logo.svg" alt="Tempus DAO" />
-            <img className="tw__header-logo-img-dark" src="/images/header-logo-dark.svg" alt="Tempus DAO" />
+            <img className="tw__header-logo-img-light" src="/images/header-logo.svg" alt="Tempus" />
+            <img className="tw__header-logo-img-dark" src="/images/header-logo-dark.svg" alt="Tempus" />
           </Link>
         </div>
 
@@ -73,8 +73,8 @@ const Header: FC<HeaderProps> = (props): JSX.Element => {
             <div className="tw__header-menu-bar">
               <div className="tw__header-menu-logo">
                 <Link href="/" className="tw__clickable-logo">
-                  <img className="tw__header-logo-img-light" src="/images/header-logo.svg" alt="Tempus DAO" />
-                  <img className="tw__header-logo-img-dark" src="/images/header-logo-dark.svg" alt="Tempus DAO" />
+                  <img className="tw__header-logo-img-light" src="/images/header-logo.svg" alt="Tempus" />
+                  <img className="tw__header-logo-img-dark" src="/images/header-logo-dark.svg" alt="Tempus" />
                 </Link>
               </div>
               <div className="tw__header__menu-bar-separator" />
