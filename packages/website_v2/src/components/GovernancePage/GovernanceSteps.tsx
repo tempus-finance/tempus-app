@@ -32,7 +32,7 @@ const GovernanceSteps = (): JSX.Element => (
             <h3 className="tw__governance__steps-title">Propose</h3>
             <p className="tw__governance__steps-description">
               Once you have come up with an idea, you can make a proposal on the governance forum. If a consensus is
-              reached a Snapshot will be created for TEMP holders to vote.
+              reached a Snapshot will be created for TEMP holders to vote on.
             </p>
             <Link href="https://forum.tempus.finance/" className="tw__governance__steps-button">
               Submit a proposal
