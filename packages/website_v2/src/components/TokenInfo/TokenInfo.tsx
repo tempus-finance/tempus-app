@@ -54,23 +54,31 @@ const TokenInfo = (): JSX.Element => {
         <div className="tw__container tw__token-info__container">
           <div className="tw__token-info__price">
             <div className="tw__token-info__title">TEMP price</div>
-            {priceFormatted ? <div className="tw__token-info__value">{priceFormatted}</div> : <Loading />}
+            {priceFormatted ? (
+              <div className="tw__token-info__value">{priceFormatted}</div>
+            ) : (
+              <Loading variant="light" />
+            )}
           </div>
           <div className="tw__token-info__supply">
             <div className="tw__token-info__title">Circulating supply</div>
             {circulatingSupplyFormatted ? (
               <div className="tw__token-info__value">{circulatingSupplyFormatted}</div>
             ) : (
-              <Loading />
+              <Loading variant="light" />
             )}
           </div>
           <div className="tw__token-info__capitalization">
             <div className="tw__token-info__title">Market capitalization</div>
-            {marketCapFormatted ? <div className="tw__token-info__value">{marketCapFormatted}</div> : <Loading />}
+            {marketCapFormatted ? (
+              <div className="tw__token-info__value">{marketCapFormatted}</div>
+            ) : (
+              <Loading variant="light" />
+            )}
           </div>
           <div className="tw__token-info__holders">
             <div className="tw__token-info__title">Holders</div>
-            {holdersCount ? <div className="tw__token-info__value">{holdersCount}</div> : <Loading />}
+            {holdersCount ? <div className="tw__token-info__value">{holdersCount}</div> : <Loading variant="light" />}
           </div>
         </div>
       </ScrollFadeIn>

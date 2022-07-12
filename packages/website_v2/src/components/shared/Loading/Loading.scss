@@ -4,8 +4,12 @@
   stroke-linecap: square;
 }
 
-.tw__loading__color-bg-default {
-  stroke: rgba(255, 255, 255, 0.5);
+.tw__loading__color-bg-light {
+  stroke: rgba(#eeecff, 0.5);
+}
+
+.tw__loading__color-bg-dark {
+  stroke: rgba(#050a4a, 0.5);
 }
 
 .tw__loading__animate {
@@ -14,8 +18,12 @@
   animation: circle-animation 4s linear infinite;
 }
 
-.tw__loading__color-animate-default {
-  stroke: rgba(255, 255, 255, 1);
+.tw__loading__color-animate-light {
+  stroke: #eeecff;
+}
+
+.tw__loading__color-animate-dark {
+  stroke: #050a4a;
 }
 
 @keyframes circle-animation {
