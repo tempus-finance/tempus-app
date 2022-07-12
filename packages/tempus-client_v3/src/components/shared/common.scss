@@ -1,4 +1,19 @@
 :root {
+  // Connect Wallet colors
+  --onboard-primary-100: var(--primaryExtraLight);
+  --onboard-primary-200: var(--primaryLight);
+  --onboard-primary-300: var(--primaryLight);
+  --onboard-primary-500: var(--primaryMain);
+  --onboard-success-100: var(--successLight);
+  --onboard-success-600: var(--successMain);
+  --onboard-warning-100: var(--warningLight);
+  --onboard-warning-600: var(--warningMain);
+  --onboard-danger-100: var(--dangerLight);
+  --onboard-danger-600: var(--dangerMain);
+  --onboard-link-color: var(--primaryMain);
+  --onboard-checkbox-background: var(--primaryMain);
+  --onboard-connect-sidebar-progress-color: var(--primaryMain);
+
   // Connect Wallet modal fonts
   --onboard-font-family-normal: DM Sans;
   --onboard-font-family-semibold: DM Sans;
