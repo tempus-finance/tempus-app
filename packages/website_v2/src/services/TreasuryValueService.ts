@@ -381,12 +381,6 @@ class TreasuryValueService {
     if (chain === 'fantom') {
       return new JsonRpcProvider(process.env.REACT_APP_FANTOM_RPC, { chainId: 250, name: 'Fantom Opera' });
     }
-
-    const browserProvider = (window as any).ethereum;
-
-    if (browserProvider && browserProvider.chainId && parseInt(browserProvider.chainId, 16) === 1) {
-      return new ethers.providers.Web3Provider(browserProvider, 'any');
-    }
     return new JsonRpcProvider(process.env.REACT_APP_ETHEREUM_RPC, { chainId: 1, name: 'homestead' });
   }
 }
