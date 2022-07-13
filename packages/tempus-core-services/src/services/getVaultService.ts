@@ -1,6 +1,6 @@
 import { Contract } from 'ethers';
 import { JsonRpcSigner } from '@ethersproject/providers';
-import VaultABI from '../abi/Vault.json';
+import VaultABI from '../abi/VaultABI.json';
 import { ChainConfig, Chain } from '../interfaces';
 import { getDefaultProvider } from './getDefaultProvider';
 import { getTempusAMMService } from './getTempusAMMService';

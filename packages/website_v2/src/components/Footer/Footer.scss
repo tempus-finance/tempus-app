@@ -1,0 +1,117 @@
+.tw__footer {
+  background-color: #070b37;
+
+  .tw__footer__container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    min-height: 495px;
+    box-sizing: border-box;
+    padding: 24px 51px;
+    position: relative;
+    overflow: hidden;
+
+    @media screen and (max-width: 767px) {
+      text-align: center;
+      align-items: center;
+      padding: 60px 16px;
+    }
+  }
+}
+
+.tw__footer__logo {
+  width: 211px;
+
+  > img {
+    width: 100%;
+  }
+}
+
+.tw__footer__links-container {
+  margin-top: 100px;
+  display: grid;
+  grid-template-columns: repeat(4, 270px);
+
+  @media screen and (max-width: 1024px) {
+    width: 100%;
+    grid-template-columns: repeat(4, 180px);
+  }
+
+  @media screen and (max-width: 767px) {
+    width: 100%;
+    grid-template-columns: repeat(2, 180px);
+    justify-content: center;
+  }
+
+  @media screen and (max-width: 512px) {
+    width: 100%;
+    grid-template-columns: 1fr;
+  }
+
+  .tw__footer__links-column {
+    display: flex;
+    flex-direction: column;
+
+    @media screen and (max-width: 1024px) {
+      &:not(:last-child) {
+        margin-bottom: 40px;
+      }
+    }
+
+    @media screen and (max-width: 767px) {
+      width: 100%;
+    }
+
+    .tw__footer__links-title {
+      font-weight: 700;
+      margin: 0px;
+      line-height: 26px;
+      color: #eeecff;
+      margin-bottom: 21px;
+
+      @media screen and (max-width: 767px) {
+        font-size: 20px;
+      }
+    }
+
+    .tw__footer__link-container {
+      margin: 0px;
+      margin-bottom: 21px;
+
+      @media screen and (max-width: 767px) {
+        justify-content: center;
+      }
+    }
+
+    .tw__footer__link {
+      padding-bottom: 2px;
+      font-size: 16px;
+      line-height: 26px;
+      color: #eeecff;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .tw__hover-animation:after {
+      background-color: #eeecff;
+    }
+  }
+}
+
+.tw__footer__background {
+  background-image: url('../../images/footer-logo.svg');
+  background-repeat: no-repeat;
+  background-position: center;
+  width: 289px;
+  height: 425px;
+  position: absolute;
+  right: 49px;
+  bottom: 28px;
+
+  @media screen and (max-width: 767px) {
+    height: 100%;
+    right: -24px;
+    top: 0;
+    bottom: 0;
+  }
+}

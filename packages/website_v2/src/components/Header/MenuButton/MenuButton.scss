@@ -1,0 +1,115 @@
+.tw__menuButton-wrapper {
+  position: relative;
+  cursor: pointer;
+  width: 24px;
+  height: 19px;
+  margin-top: -4px;
+
+  &:hover {
+    .tw__menuButton-light,
+    .tw__menuButton-light::before,
+    .tw__menuButton-light::after {
+      background-color: rgba(#eeecff, 0.6);
+    }
+  }
+
+  &:hover {
+    .tw__menuButton-dark,
+    .tw__menuButton-dark::before,
+    .tw__menuButton-dark::after {
+      background-color: rgba(#050a4a, 0.6);
+    }
+  }
+}
+
+.tw__menuButton {
+  position: absolute;
+  top: 8px;
+}
+
+.tw__menuButton-light {
+  background-color: #eeecff;
+
+  &::before,
+  &::after {
+    background-color: #eeecff;
+  }
+}
+
+.tw__menuButton-dark {
+  background-color: #050a4a;
+
+  &::before,
+  &::after {
+    background-color: #050a4a;
+  }
+}
+
+label {
+  border-radius: 2px;
+  width: 24px;
+  height: 3px;
+
+  position: absolute;
+  cursor: pointer;
+
+  &::before,
+  &::after {
+    content: '';
+    width: 24px;
+    height: 3px;
+    border-radius: 2px;
+    position: absolute;
+    display: block;
+    color: #050a4a;
+    transition: top 0.3s, bottom 0.3s, left 0.3s, transform 0.3s, color 0.3s;
+  }
+
+  &::before {
+    top: -250%;
+    left: 0%;
+    transform: rotateZ(0deg);
+    transform-origin: left top;
+  }
+
+  &::after {
+    bottom: -250%;
+    left: 0%;
+    transform: rotateZ(0deg);
+    transform-origin: left bottom;
+  }
+}
+
+#menu-button:checked {
+  &:hover {
+    & ~ label::before,
+    & ~ label::after {
+      // Since x lines are overlapping, they create a patch of less transparent color on their intersection.
+      // Resulting color is background + rgba(#050a4a, 0.6)
+      background-color: #62648f;
+    }
+  }
+
+  & ~ label::before {
+    content: '';
+    background-color: #050a4a;
+    transform: rotateZ(41deg);
+    left: 10%;
+  }
+
+  & ~ label::after {
+    content: '';
+    background-color: #050a4a;
+    transform: rotateZ(-41deg);
+    left: 10%;
+  }
+
+  & ~ label {
+    background-color: transparent;
+  }
+}
+
+input {
+  display: none;
+  pointer-events: none;
+}

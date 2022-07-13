@@ -1,0 +1,124 @@
+.tw__hero {
+  background-color: #050a4a;
+
+  .tw__hero__container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+.tw__hero-title {
+  margin: 0;
+  font-weight: 700;
+  font-size: 72px;
+  line-height: 120%;
+  color: rgba(238, 236, 255, 1);
+
+  @media screen and (max-width: 768px) {
+    margin: 0 16px 40px 16px;
+    text-align: center;
+    font-size: 42px;
+    line-height: 50px;
+  }
+}
+
+.tw__hero-title-faded {
+  margin: 84px 0 0 0;
+  font-weight: 500;
+  font-size: 72px;
+  line-height: 120%;
+  color: rgba(238, 236, 255, 0.25);
+
+  @media screen and (max-width: 768px) {
+    max-width: 300px;
+    margin: 40px 16px 0 16px;
+    text-align: center;
+    font-size: 42px;
+    line-height: 50px;
+  }
+}
+
+.tw__hero-button {
+  margin-top: 40px;
+  width: 283px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;
+  border: 1px solid #eeecff;
+  border-radius: 60px;
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 18px;
+  color: #eeecff;
+  cursor: pointer;
+
+  > svg {
+    margin-right: 16px;
+  }
+
+  @media screen and (max-width: 768px) {
+    margin-top: 20px;
+    width: 232px;
+    height: 48px;
+    font-size: 16px;
+    line-height: 16px;
+  }
+
+  &:hover {
+    background-color: #eeecff;
+    color: #050a4a;
+  }
+}
+
+.tw__hero-banner {
+  position: relative;
+  margin-top: 204px;
+  margin-bottom: 156px;
+  width: 100%;
+  height: 327px;
+  background-image: linear-gradient(to right, #ff7700, #c6bfff);
+
+  @media screen and (min-width: 768px) and (max-width: 1200px) {
+    margin-bottom: 720px;
+  }
+
+  @media screen and (max-width: 768px) {
+    background-image: none;
+    height: auto;
+    margin-top: 0px;
+    margin-bottom: 0px;
+  }
+}
+
+.tw__hero-banner-stripes {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  bottom: 0px;
+  left: 0px;
+  background-image: url('../../images/hero-banner-lines.svg');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+
+  @media screen and (max-width: 768px) {
+    background-image: none;
+  }
+}
+
+.tw__hero-product-cards {
+  position: absolute;
+  left: 0px;
+  right: 0px;
+  top: -164px;
+  padding: 0px 40px;
+
+  @media screen and (max-width: 768px) {
+    padding: 0;
+    position: relative;
+    top: 0px;
+  }
+}

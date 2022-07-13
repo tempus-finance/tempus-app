@@ -1,0 +1,42 @@
+.tw__loading {
+  fill: none;
+  stroke-width: 10px;
+  stroke-linecap: square;
+}
+
+.tw__loading__color-bg-light {
+  stroke: rgba(#eeecff, 0.5);
+}
+
+.tw__loading__color-bg-dark {
+  stroke: rgba(#050a4a, 0.5);
+}
+
+.tw__loading__animate {
+  transform-origin: 50px 50px 0;
+  stroke-dasharray: 250;
+  animation: circle-animation 4s linear infinite;
+}
+
+.tw__loading__color-animate-light {
+  stroke: #eeecff;
+}
+
+.tw__loading__color-animate-dark {
+  stroke: #050a4a;
+}
+
+@keyframes circle-animation {
+  0% {
+    stroke-dashoffset: 40;
+    transform: rotate(0deg);
+  }
+  50% {
+    stroke-dashoffset: 150;
+    transform: rotate(540deg);
+  }
+  100% {
+    stroke-dashoffset: 40;
+    transform: rotate(1080deg);
+  }
+}

@@ -1,0 +1,27 @@
+.tw__button__container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 14px 30px;
+  border-radius: 60px;
+  border: 1px solid #eeecff;
+  background-color: transparent;
+  cursor: pointer;
+  box-sizing: border-box;
+  width: 283px;
+  height: 60px;
+  text-transform: uppercase;
+  font-weight: 600;
+
+  &:hover {
+    background-color: #eeecff;
+    color: #050a4a;
+  }
+
+  a {
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    color: #eeecff;
+  }
+}

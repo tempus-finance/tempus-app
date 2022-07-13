@@ -1,0 +1,9 @@
+.tw__link {
+  text-decoration: none;
+  color: inherit;
+
+  &.disabled {
+    pointer-events: none;
+    cursor: default;
+  }
+}

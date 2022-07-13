@@ -156,6 +156,9 @@ const config: Config = {
     blockExplorerUrl: 'https://etherscan.io/',
     privateNetworkUrl: process.env.REACT_APP_ETHEREUM_RPC || '',
     alchemyKey: process.env.REACT_APP_MAINNET_ALCHEMY_KEY || '',
+    tempTokenAddress: '0xa36fdbbae3c9d55a1d67ee5821d53b50b63a1ab9',
+    tempusTreasuryAddress: '0xaB40A7e3cEF4AfB323cE23B6565012Ac7c76BFef',
+    testChain: false,
   },
   fantom: {
     tempusPools: [
@@ -309,6 +312,9 @@ const config: Config = {
     privateNetworkUrl: process.env.REACT_APP_FANTOM_RPC || '',
     alchemyKey: '',
     lidoOracle: '',
+    tempTokenAddress: '0x1c174f6ab0753162befbb916c69def2cc1bfdec1',
+    tempusTreasuryAddress: '0x51252c520375C6A236Bb56DdF0C407A099B2EC0e',
+    testChain: false,
   },
   'ethereum-fork': {
     tempusPools: [
@@ -381,6 +387,9 @@ const config: Config = {
     blockExplorerUrl: 'https://etherscan.io/',
     privateNetworkUrl: process.env.REACT_APP_ETHEREUM_FORK_RPC || '',
     alchemyKey: process.env.REACT_APP_MAINNET_ALCHEMY_KEY || '',
+    tempTokenAddress: '0xa36fdbbae3c9d55a1d67ee5821d53b50b63a1ab9',
+    tempusTreasuryAddress: '0xaB40A7e3cEF4AfB323cE23B6565012Ac7c76BFef',
+    testChain: true,
   },
 };
 export default config;

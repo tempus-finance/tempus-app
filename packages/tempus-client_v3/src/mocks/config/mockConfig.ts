@@ -162,6 +162,9 @@ export const mockConfig: { [chain: string]: ChainConfig } = {
     statisticsContract: '',
     tempusControllerContract: '',
     vaultContract: '',
+    tempTokenAddress: 'temp-token-address-ethereum',
+    tempusTreasuryAddress: 'treasury-address-ethereum',
+    testChain: false,
   },
   fantom: {
     tempusPools: [pool3, pool4, pool5],
@@ -179,6 +182,9 @@ export const mockConfig: { [chain: string]: ChainConfig } = {
     tempusControllerContract: '',
     vaultContract: '',
     alchemyKey: '',
+    tempTokenAddress: 'temp-token-address-fantom',
+    tempusTreasuryAddress: 'treasury-address-fantom',
+    testChain: false,
   },
   'ethereum-fork': {
     tempusPools: [],
@@ -196,6 +202,9 @@ export const mockConfig: { [chain: string]: ChainConfig } = {
     statisticsContract: '',
     tempusControllerContract: '',
     vaultContract: '',
+    tempTokenAddress: 'temp-token-address-ethereum-fork',
+    tempusTreasuryAddress: 'treasury-address-ethereum-fork',
+    testChain: true,
   },
 };
 

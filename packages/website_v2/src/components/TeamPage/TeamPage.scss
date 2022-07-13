@@ -1,0 +1,398 @@
+.tw__team {
+  .tw__team__separator {
+    width: 100%;
+    height: 0;
+    border-bottom: 1px solid #eeecff;
+  }
+
+  .tw__team__header {
+    display: flex;
+    flex-direction: column;
+    background: linear-gradient(89.84deg, #ff7700 0.14%, #c6bfff 99.42%);
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: 507px;
+    position: relative;
+    overflow: hidden;
+    color: #050a4a;
+
+    &::before {
+      content: ' ';
+      background: url(./header-background.svg);
+      width: 400%;
+      height: 320%;
+      position: absolute;
+      transform: translateY(-500px);
+    }
+
+    @media screen and (max-width: 767px) {
+      height: 400px;
+    }
+
+    .tw__header {
+      background-color: transparent;
+
+      .tw__header-logo-img-light {
+        display: none;
+      }
+
+      .tw__header-logo-img-dark {
+        display: block;
+      }
+
+      .tw__header-links {
+        color: #050a4a;
+
+        .tw__hover-animation:after {
+          background-color: #050a4a;
+        }
+      }
+
+      .tw__header-separator {
+        background-color: #050a4a;
+      }
+    }
+
+    .tw__team__header__title {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-grow: 1;
+      font-size: 72px;
+      font-weight: 700;
+      line-height: 79px;
+      z-index: 1;
+
+      @media screen and (max-width: 767px) {
+        text-align: center;
+        font-size: 42px;
+        line-height: 50px;
+      }
+
+      @media screen and (max-width: 1200px) {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
+
+      .tw__team__header__title-text {
+        margin: 0 8px;
+
+        &:first-child {
+          font-weight: 400;
+        }
+      }
+    }
+  }
+
+  .tw__team__members {
+    background-color: #050a4a;
+
+    .tw__team__members__container {
+      position: relative;
+      overflow: hidden;
+      color: #eeecff;
+      padding: 40px;
+
+      .tw__team__members__header {
+        font-size: 20px;
+        font-weight: 400;
+        line-height: 30px;
+
+        .tw__team__members__header-text {
+          max-width: 960px;
+          margin-bottom: 100px;
+
+          &:first-child {
+            font-size: 34px;
+            font-weight: 600;
+            line-height: 34px;
+          }
+
+          &:nth-child(2) {
+            margin-bottom: 20px;
+          }
+        }
+
+        .tw__team__members__header-link {
+          display: inline-block;
+
+          .tw__link {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            margin-bottom: 100px;
+
+            .tw__arrow-right-icon {
+              margin-left: 12px;
+            }
+          }
+        }
+      }
+
+      .tw__team__members__section {
+        padding: 40px 0;
+
+        @media screen and (min-width: 1536px) {
+          display: flex;
+        }
+
+        .tw__team__members__section-title {
+          @media screen and (max-width: 767px) {
+            text-align: center;
+          }
+
+          @media screen and (min-width: 768px) and (max-width: 1200px) {
+            min-width: 33%;
+          }
+
+          @media screen and (min-width: 1200px) {
+            min-width: 25%;
+          }
+
+          .tw__team__members__section-title-text {
+            font-size: 34px;
+            font-weight: 600;
+            line-height: 34px;
+            margin-bottom: 48px;
+
+            @media screen and (min-width: 1536px) {
+              max-width: 250px;
+            }
+          }
+        }
+
+        .tw__team__members__section-content {
+          display: flex;
+          flex-wrap: wrap;
+
+          @media screen and (max-width: 767px) {
+            flex-direction: column;
+            align-items: center;
+          }
+
+          .tw__team__members__profile {
+            padding: 16px;
+            box-sizing: border-box;
+            z-index: 2;
+
+            @media screen and (max-width: 767px) {
+              text-align: center;
+              max-width: 512px;
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+            }
+
+            @media screen and (min-width: 768px) and (max-width: 1200px) {
+              flex: 1 50%;
+            }
+
+            @media screen and (min-width: 1200px) {
+              flex: 1 33%;
+              max-width: 33%;
+            }
+
+            .tw__team__members__profile-pic-container {
+              width: 150px;
+              height: 150px;
+              margin-bottom: 32px;
+              position: relative;
+
+              .tw__team__members__profile-pic {
+                img {
+                  width: 150px;
+                  height: 150px;
+                  border-radius: 10px;
+                }
+              }
+            }
+
+            .tw__team__members__profile-name {
+              font-size: 28px;
+              font-weight: 700;
+              line-height: 29px;
+            }
+
+            .tw__team__members__profile-title {
+              font-size: 20px;
+              font-weight: 400;
+              line-height: 30px;
+              margin-bottom: 16px;
+            }
+
+            .tw__team__members__profile-desc {
+              font-size: 16px;
+              font-weight: 400;
+              line-height: 26px;
+              margin-bottom: 24px;
+            }
+
+            .tw__team__members__profile-social {
+              .tw__link {
+                margin-right: 8px;
+              }
+            }
+          }
+        }
+      }
+
+      .tw__team__fading-block {
+        position: absolute;
+
+        &.background1 {
+          background: url(./block-background1.svg);
+        }
+
+        &.background2 {
+          background: url(./block-background2.svg);
+        }
+
+        &.background3 {
+          background: url(./block-background3.svg);
+        }
+
+        &.background4 {
+          background: url(./block-background1.svg);
+          transform: scalX(-1);
+        }
+
+        &.background5 {
+          background: url(./block-background2.svg);
+          transform: scalX(-1);
+        }
+
+        &.background6 {
+          background: url(./block-background3.svg);
+          transform: scalX(-1);
+        }
+      }
+
+      @keyframes tw__team__fading-block-left-in {
+        from {
+          opacity: 0;
+          transform: translate3d(-200px, 0, 0);
+        }
+
+        to {
+          opacity: 1;
+          transform: translate3d(0, 0, 0);
+        }
+      }
+
+      .tw__team__fading-block-left-in {
+        animation-name: tw__team__fading-block-left-in;
+      }
+
+      @keyframes tw__team__fading-block-left-out {
+        from {
+          opacity: 1;
+          transform: translate3d(0, 0, 0);
+        }
+
+        to {
+          opacity: 0;
+          transform: translate3d(-200px, 0, 0);
+        }
+      }
+
+      .tw__team__fading-block-left-out {
+        animation-name: tw__team__fading-block-left-out;
+      }
+
+      @keyframes tw__team__fading-block-right-in {
+        from {
+          opacity: 0;
+          transform: translate3d(200px, 0, 0);
+        }
+
+        to {
+          opacity: 1;
+          transform: translate3d(0, 0, 0);
+        }
+      }
+
+      .tw__team__fading-block-right-in {
+        animation-name: tw__team__fading-block-right-in;
+      }
+
+      @keyframes tw__team__fading-block-right-out {
+        from {
+          opacity: 1;
+          transform: translate3d(0, 0, 0);
+        }
+
+        to {
+          opacity: 0;
+          transform: translate3d(200px, 0, 0);
+        }
+      }
+
+      .tw__team__fading-block-right-out {
+        animation-name: tw__team__fading-block-right-out;
+      }
+    }
+  }
+
+  .tw__team__work-with {
+    background: linear-gradient(89.84deg, #ff7700 0.14%, #c6bfff 99.42%);
+
+    .tw__team__work-with__container {
+      min-height: 430px;
+      padding: 40px;
+
+      .tw__team__worked-with__title {
+        font-size: 34px;
+        font-weight: 600;
+        line-height: 1.3;
+        color: #050a4a;
+        margin: 0 0 100px 0;
+      }
+
+      .tw__team__worked-with__separator {
+        width: 100%;
+        height: 0;
+        border-bottom: 1px solid #050a4a;
+      }
+
+      .tw__team__worked-with__organizations {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 60px;
+
+        .tw__team__worked-with__organization {
+          width: 25%;
+          display: flex;
+          justify-content: center;
+
+          @media screen and (min-width: 1200px) and (max-width: 1535px) {
+            width: 33%;
+          }
+
+          @media screen and (min-width: 768px) and (max-width: 1199px) {
+            width: 50%;
+            display: flex;
+            justify-content: center;
+          }
+
+          @media screen and (max-width: 767px) {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+
+            // hide last six logos for mobile screen otherwise the list will be too long
+            &:nth-last-child(-n + 6) {
+              display: none;
+            }
+          }
+
+          svg {
+            margin: 40px 0;
+          }
+        }
+      }
+    }
+  }
+}
