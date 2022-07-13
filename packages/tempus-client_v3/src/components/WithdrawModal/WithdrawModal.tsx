@@ -1,6 +1,6 @@
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { ChainConfig, chainIdToChainName, Decimal, DecimalUtils, TempusPool, Ticker, ZERO } from 'tempus-core-services';
 import { v4 as uuidv4 } from 'uuid';
 import { TIMEOUT_FROM_SUCCESS_TO_DEFAULT_IN_MS } from '../../constants';
@@ -13,6 +13,7 @@ import {
   useTokenBalance,
   useUserPreferences,
   useWithdraw,
+  useNotifications,
 } from '../../hooks';
 import { TokenMetadataProp } from '../../interfaces';
 import CurrencyInputModal, {
@@ -34,7 +35,9 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
   const { onClose, tokens, chainConfig, tempusPool } = props;
 
   const { t } = useTranslation();
+  const { state } = useLocation();
   const navigate = useNavigate();
+  const { notify } = useNotifications();
 
   const [locale] = useLocale();
   const [signer] = useSigner();
@@ -47,6 +50,7 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
   const tokenAllowances = useAllowances();
   const [, emitAppEvent] = useAppEvent();
 
+  const [amount, setAmount] = useState<Decimal>();
   const [currency, setCurrency] = useState(tokens[0]);
   const [actionButtonState, setActionButtonState] = useState<ActionButtonState>('default');
   const [tokensApproved, setTokensApproved] = useState<boolean>(false);
@@ -90,6 +94,21 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
           timestamp: withdrawStatus.contractTransaction?.timestamp ?? Date.now(),
         });
 
+        // for i18next extract
+        t('WithdrawModal.notifcationTitleWithdrawSuccess');
+        t('WithdrawModal.notifcationContentWithdrawSuccess');
+        t('WithdrawModal.notifcationLinkWithdrawSuccess');
+        notify({
+          chain: tempusPool.chain,
+          category: 'Transaction',
+          status: 'success',
+          title: { key: 'WithdrawModal.notifcationTitleWithdrawSuccess' },
+          content: { key: 'WithdrawModal.notifcationContentWithdrawSuccess' },
+          link: `${chainConfig.blockExplorerUrl}tx/${withdrawStatus?.contractTransaction?.hash ?? '0x0'}`,
+          linkText: { key: 'WithdrawModal.notifcationLinkWithdrawSuccess' },
+          refId: withdrawStatus?.txnId,
+        });
+
         setTimeout(() => {
           setWithdrawSuccessful(true);
         }, TIMEOUT_FROM_SUCCESS_TO_DEFAULT_IN_MS);
@@ -98,6 +117,21 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
 
         if (withdrawStatus?.error) {
           setWithdrawError(withdrawStatus.error);
+
+          // for i18next extract
+          t('WithdrawModal.notifcationTitleWithdrawFailure');
+          t('WithdrawModal.notifcationContentWithdrawFailure');
+          t('WithdrawModal.notifcationLinkWithdrawFailure');
+          notify({
+            chain: tempusPool.chain,
+            category: 'Transaction',
+            status: 'failure',
+            title: { key: 'WithdrawModal.notifcationTitleWithdrawFailure' },
+            content: { key: 'WithdrawModal.notifcationContentWithdrawFailure' },
+            link: `${chainConfig.blockExplorerUrl}tx/${withdrawStatus?.contractTransaction?.hash ?? '0x0'}`,
+            linkText: { key: 'WithdrawModal.notifcationLinkWithdrawFailure' },
+            refId: withdrawStatus?.txnId,
+          });
         }
       }
       // current approval txn in modal = current approval txn status
@@ -108,10 +142,40 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
       } else if (approveTokenStatus?.error) {
         setActionButtonState('default');
         setWithdrawError(approveTokenStatus.error);
+
+        // for i18next extract
+        t('WithdrawModal.notifcationTitleApproveFailure');
+        t('WithdrawModal.notifcationContentApproveFailure');
+        t('WithdrawModal.notifcationLinkApproveFailure');
+        notify({
+          chain: tempusPool.chain,
+          category: 'Transaction',
+          status: 'failure',
+          title: { key: 'WithdrawModal.notifcationTitleApproveFailure' },
+          content: { key: 'WithdrawModal.notifcationContentApproveFailure' },
+          link: `${chainConfig.blockExplorerUrl}tx/${approveTokenStatus?.contractTransaction?.hash ?? '0x0'}`,
+          linkText: { key: 'WithdrawModal.notifcationLinkApproveFailure' },
+          refId: approveTokenStatus?.txnId,
+        });
         // only change the status to success when all tokens approved
       } else if (approveTokenStatus?.success && tokensApproved) {
         setActionButtonState('success');
         setTokensApproved(true);
+
+        // for i18next extract
+        t('WithdrawModal.notifcationTitleApproveSuccess');
+        t('WithdrawModal.notifcationContentApproveSuccess');
+        t('WithdrawModal.notifcationLinkApproveSuccess');
+        notify({
+          chain: tempusPool.chain,
+          category: 'Transaction',
+          status: 'success',
+          title: { key: 'WithdrawModal.notifcationTitleApproveSuccess' },
+          content: { key: 'WithdrawModal.notifcationContentApproveSuccess' },
+          link: `${chainConfig.blockExplorerUrl}tx/${approveTokenStatus?.contractTransaction?.hash ?? '0x0'}`,
+          linkText: { key: 'WithdrawModal.notifcationLinkApproveSuccess' },
+          refId: approveTokenStatus?.txnId,
+        });
 
         setTimeout(() => {
           setActionButtonState('default');
@@ -121,7 +185,7 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
     } else {
       setActionButtonState('default');
     }
-  }, [approveTokenStatus, withdrawStatus, txnIds, tokensApproved, emitAppEvent, tempusPool]);
+  }, [approveTokenStatus, withdrawStatus, txnIds, tokensApproved, emitAppEvent, tempusPool, chainConfig, notify, t]);
 
   useEffect(() => {
     const capitalsAllowance = tokenAllowances[`${tempusPool.chain}-${tempusPool.principalsAddress}`];
@@ -196,6 +260,18 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
           signer,
           txnId: lpApproveTxnId,
         });
+
+        // for i18next extract
+        t('WithdrawModal.notifcationTitleApprovePending');
+        t('WithdrawModal.notifcationContentApprovePending');
+        notify({
+          chain: tempusPool.chain,
+          category: 'Transaction',
+          status: 'pending',
+          title: { key: 'WithdrawModal.notifcationTitleApprovePending' },
+          content: { key: 'WithdrawModal.notifcationContentApprovePending' },
+          refId: lpApproveTxnId,
+        });
       }
 
       if (!capitalsAllowance?.alwaysApproved && capitalsTokenBalance.gt(capitalsAllowance?.amount ?? ZERO)) {
@@ -208,6 +284,18 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
           signer,
           txnId: capitalsApproveTxnId,
         });
+
+        // for i18next extract
+        t('WithdrawModal.notifcationTitleApprovePending');
+        t('WithdrawModal.notifcationContentApprovePending');
+        notify({
+          chain: tempusPool.chain,
+          category: 'Transaction',
+          status: 'pending',
+          title: { key: 'WithdrawModal.notifcationTitleApprovePending' },
+          content: { key: 'WithdrawModal.notifcationContentApprovePending' },
+          refId: capitalsApproveTxnId,
+        });
       }
 
       if (!yieldsAllowance?.alwaysApproved && yieldsTokenBalance.gt(yieldsAllowance?.amount ?? ZERO)) {
@@ -219,6 +307,18 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
           amount: yieldsTokenBalance,
           signer,
           txnId: yieldsApproveTxnId,
+        });
+
+        // for i18next extract
+        t('WithdrawModal.notifcationTitleApprovePending');
+        t('WithdrawModal.notifcationContentApprovePending');
+        notify({
+          chain: tempusPool.chain,
+          category: 'Transaction',
+          status: 'pending',
+          title: { key: 'WithdrawModal.notifcationTitleApprovePending' },
+          content: { key: 'WithdrawModal.notifcationContentApprovePending' },
+          refId: yieldsApproveTxnId,
         });
       }
 
@@ -239,10 +339,12 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
     yieldsTokenBalance,
     lpTokenBalance,
     approveTokenTxnHash,
+    notify,
+    t,
   ]);
 
   const handleWithdraw = useCallback(
-    async (amount: Decimal) => {
+    async (withdrawAmount: Decimal) => {
       setActionButtonState('loading');
 
       const chain = chainConfig.chainId ? chainIdToChainName(chainConfig.chainId) : undefined;
@@ -251,7 +353,7 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
 
       if (signer && chain) {
         withdraw({
-          amount,
+          amount: withdrawAmount,
           chain,
           poolAddress: tempusPool.address,
           token: currency.ticker,
@@ -263,6 +365,18 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
           slippage,
           signer,
           txnId: withdrawTxnId,
+        });
+
+        // for i18next extract
+        t('WithdrawModal.notifcationTitleWithdrawPending');
+        t('WithdrawModal.notifcationContentWithdrawPending');
+        notify({
+          chain,
+          category: 'Transaction',
+          status: 'pending',
+          title: { key: 'WithdrawModal.notifcationTitleWithdrawPending' },
+          content: { key: 'WithdrawModal.notifcationContentWithdrawPending' },
+          refId: withdrawTxnId,
         });
       }
 
@@ -281,6 +395,8 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
       currency.balance,
       withdrawTokenTxnHash,
       withdraw,
+      notify,
+      t,
     ],
   );
 
@@ -304,10 +420,20 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
     setWithdrawError(undefined);
   }, []);
 
+  const handleBack = useCallback(() => {
+    const { chain, backingToken, protocol, address } = tempusPool;
+    navigate(
+      (state as { previousPath?: string })?.previousPath ?? `/pool/${chain}/${backingToken}/${protocol}/${address}`,
+    );
+  }, [navigate, state, tempusPool]);
+
   return (
     <>
       {/* Show withdraw modal if withdraw is not yet finalized */}
       <CurrencyInputModal
+        selectedPool={tempusPool}
+        defaultAmount={amount}
+        defaultToken={currency}
         tokens={tokens}
         open={!withdrawSuccessful && !withdrawError}
         onClose={onClose}
@@ -317,7 +443,9 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
         infoRows={infoRows}
         actionButtonLabels={actionButtonLabels}
         actionButtonState={actionButtonState}
+        onBack={handleBack}
         onTransactionStart={tokensApproved ? handleWithdraw : handleApproveToken}
+        onAmountChange={setAmount}
         onCurrencyUpdate={handleCurrencyChange}
         chainConfig={chainConfig}
       />
@@ -346,11 +474,8 @@ export const WithdrawModal: FC<WithdrawModalProps> = props => {
       />
       {/* Show error modal if withdraw throws Error */}
       <ErrorModal
-        description={t('WithdrawModal.errorModalDescription', {
-          // withdrawError.data.message: error from txn
-          // withdrawError.message: generic error, e.g. rejected by metamask
-          error: (withdrawError as any)?.data?.message ?? withdrawError?.message,
-        })}
+        description={t('WithdrawModal.errorModalDescription')}
+        error={withdrawError}
         primaryButtonLabel={{
           default: t('WithdrawModal.errorModalPrimaryButton'),
         }}

@@ -7,17 +7,19 @@
   },
   "devDependencies": {
     "@playwright/test": "^1.19.2",
-    "lerna": "^4.0.0",
+    "@typescript-eslint/eslint-plugin": "^4.28.1",
     "async": "^3.2.3",
     "commandir": "^1.0.1",
     "dotenv": "^16.0.0",
     "download-crx": "^1.1.0",
+    "eslint": "^7.32.0",
+    "eslint-config-airbnb-typescript": "^12.3.1",
+    "eslint-config-strongloop": "^2.1.0",
+    "lerna": "^4.0.0",
     "node-7z": "^3.0.0",
     "playwright": "^1.19.2",
     "rimraf": "^3.0.2",
-    "sleepjs": "^4.0.3",
-    "eslint-config-airbnb-typescript": "^12.3.1",
-    "@typescript-eslint/eslint-plugin": "^4.28.1"
+    "sleepjs": "^4.0.3"
   },
   "scripts": {
     "start": "lerna run start",

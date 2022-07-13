@@ -13,6 +13,7 @@ import {
   usePoolViewOptions,
   useActivePoolList,
   useInactivePoolList,
+  useDisabledPoolList,
   useMaturedPoolList,
   useSelectedChain,
   useWalletAddress,
@@ -25,6 +26,7 @@ const MarketsSubheader = () => {
   const [selectedChain] = useSelectedChain();
   const activePoolList = useActivePoolList();
   const inactivePoolList = useInactivePoolList();
+  const disabledPoolList = useDisabledPoolList();
   const maturedPoolList = useMaturedPoolList();
   const { filters, sortType, sortOrder } = poolViewOptions;
 
@@ -35,6 +37,10 @@ const MarketsSubheader = () => {
   const chainInactivePoolList = useMemo(
     () => inactivePoolList.filter(pool => !selectedChain || pool.chain === selectedChain),
     [selectedChain, inactivePoolList],
+  );
+  const chainDisabledPoolList = useMemo(
+    () => disabledPoolList.filter(pool => !selectedChain || pool.chain === selectedChain),
+    [selectedChain, disabledPoolList],
   );
   const chainMaturedPoolList = useMemo(
     () => maturedPoolList.filter(pool => !selectedChain || pool.chain === selectedChain),
@@ -84,6 +90,12 @@ const MarketsSubheader = () => {
             label={t('MarketsSubheader.filterInactive', { numOfPool: chainInactivePoolList.length })}
             value="inactive"
             checked={filters.has('inactive')}
+            onChange={handleFilterChange}
+          />
+          <DropdownRadioItem
+            label={t('MarketsSubheader.filterDisabled', { numOfPool: chainDisabledPoolList.length })}
+            value="disabled"
+            checked={filters.has('disabled')}
             onChange={handleFilterChange}
           />
         </Dropdown>

@@ -7,8 +7,9 @@ import { FilterType, PoolType, SortOrder, SortType, ViewType } from '../interfac
 import { poolList$ } from './usePoolList';
 import { poolTvls$ } from './useTvlData';
 import { poolBalances$ } from './usePoolBalance';
-import { poolAprs$, PoolFixedAprMap } from './useFixedAprs';
+import { poolAprs$ } from './useFixedAprs';
 import { tokenRates$ } from './useTokenRates';
+import { negativePoolInterestRateMap$, NegativePoolInterestRatesMap } from './useNegativePoolInterestRate';
 
 export interface PoolViewOptions {
   viewType: ViewType;
@@ -41,32 +42,75 @@ const statePoolAprs$ = state(poolAprs$, {});
 const statePoolBalances$ = state(poolBalances$, {});
 const stateTokenRates$ = state(tokenRates$, {});
 
-export const isPoolMatured = (tempusPool: TempusPool): boolean => tempusPool.maturityDate <= Date.now();
-export const isPoolInactive = (tempusPool: TempusPool, poolAprs: PoolFixedAprMap): boolean =>
-  !!tempusPool.disabledOperations?.deposit || !!poolAprs[`${tempusPool.chain}-${tempusPool.address}`]?.lt(ZERO);
-export const isPoolActive = (tempusPool: TempusPool, poolAprs: PoolFixedAprMap): boolean =>
-  !isPoolMatured(tempusPool) && !isPoolInactive(tempusPool, poolAprs);
+export const isPoolMatured = (tempusPool: TempusPool): boolean => {
+  // Do not show pool as mature if withdraw operation is disabled (pool will be shown as disabled)
+  if (tempusPool.disabledOperations.withdraw) {
+    return false;
+  }
 
-const activePoolList$ = combineLatest([poolList$, statePoolAprs$]).pipe(
-  map(([tempusPools, poolAprs]) => tempusPools.filter(pool => isPoolActive(pool, poolAprs))),
+  return tempusPool.maturityDate <= Date.now();
+};
+export const isPoolInactive = (
+  tempusPool: TempusPool,
+  negativePoolInterestRates: NegativePoolInterestRatesMap,
+): boolean => {
+  const poolChainAddressId = `${tempusPool.chain}-${tempusPool.address}`;
+
+  // Matured pools should not be marked as inactive
+  if (isPoolMatured(tempusPool)) {
+    return false;
+  }
+
+  // Non mature pools with negative interest rate should be marked as inactive
+  if (negativePoolInterestRates[poolChainAddressId]) {
+    return true;
+  }
+
+  return false;
+};
+export const isPoolDisabled = (tempusPool: TempusPool): boolean => {
+  // If pool is mature and withdraw operation is enabled we can show pool as Matured
+  if (isPoolMatured(tempusPool) && !tempusPool.disabledOperations.withdraw) {
+    return false;
+  }
+
+  // Otherwise show pool as disabled if any of the operations are disabled even if pool is mature
+  return Boolean(tempusPool.disabledOperations.deposit) || Boolean(tempusPool.disabledOperations.withdraw);
+};
+
+export const isPoolActive = (
+  tempusPool: TempusPool,
+  negativePoolInterestRates: NegativePoolInterestRatesMap,
+): boolean =>
+  !isPoolMatured(tempusPool) && !isPoolInactive(tempusPool, negativePoolInterestRates) && !isPoolDisabled(tempusPool);
+
+const activePoolList$ = combineLatest([poolList$, negativePoolInterestRateMap$]).pipe(
+  map(([tempusPools, negativePoolInterestRates]) =>
+    tempusPools.filter(pool => isPoolActive(pool, negativePoolInterestRates)),
+  ),
 );
-const inactivePoolList$ = combineLatest([poolList$, statePoolAprs$]).pipe(
-  map(([tempusPools, poolAprs]) => tempusPools.filter(pool => isPoolInactive(pool, poolAprs))),
+const inactivePoolList$ = combineLatest([poolList$, negativePoolInterestRateMap$]).pipe(
+  map(([tempusPools, negativePoolInterestRates]) =>
+    tempusPools.filter(pool => isPoolInactive(pool, negativePoolInterestRates)),
+  ),
+);
+const disabledPoolList$ = combineLatest([poolList$]).pipe(
+  map(([tempusPools]) => tempusPools.filter(pool => isPoolDisabled(pool))),
 );
 const maturedPoolList$ = poolList$.pipe(map(tempusPools => tempusPools.filter(isPoolMatured)));
 
-const filteredPoolList$ = combineLatest([poolList$, stateFilters$]).pipe(
-  // only want to get the latest data instead of getting every interval
-  withLatestFrom(statePoolAprs$),
-  map(([[tempusPools, filters], poolAprs]) =>
+const filteredPoolList$ = combineLatest([poolList$, stateFilters$, negativePoolInterestRateMap$]).pipe(
+  map(([tempusPools, filters, negativePoolInterestRates]) =>
     tempusPools.filter(tempusPool =>
       [...filters].some(filter => {
         switch (filter) {
           case 'active':
           default:
-            return isPoolActive(tempusPool, poolAprs);
+            return isPoolActive(tempusPool, negativePoolInterestRates);
           case 'inactive':
-            return isPoolInactive(tempusPool, poolAprs);
+            return isPoolInactive(tempusPool, negativePoolInterestRates);
+          case 'disabled':
+            return isPoolDisabled(tempusPool);
           case 'matured':
             return isPoolMatured(tempusPool);
         }
@@ -167,4 +211,5 @@ export function usePoolViewOptions(): [PoolViewOptions, (partial: Partial<PoolVi
 export const [useFilteredSortedPoolList] = bind(filteredSortedPoolList$, []);
 export const [useActivePoolList] = bind(activePoolList$, []);
 export const [useInactivePoolList] = bind(inactivePoolList$, []);
+export const [useDisabledPoolList] = bind(disabledPoolList$, []);
 export const [useMaturedPoolList] = bind(maturedPoolList$, []);

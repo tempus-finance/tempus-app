@@ -7,10 +7,11 @@ import I18nProvider from '../../i18n/I18nProvider';
 import { MaturityTerm, TokenMetadataProp } from '../../interfaces';
 import DepositModal, { DepositModalProps } from './DepositModal';
 import { TIMEOUT_FROM_SUCCESS_TO_DEFAULT_IN_MS } from '../../constants';
-import { pool2, pool4, pool2 as mockPool2 } from '../../mocks/config/mockConfig';
+import { pool2, pool2 as mockPool2, pool4 } from '../../mocks/config/mockConfig';
 
 jest.mock('lottie-react', () => () => <div className="lottie-animation" />);
 jest.mock('uuid', () => ({
+  v1: jest.fn().mockReturnValue('abcdabcd'),
   v4: jest.fn().mockReturnValue('0x01'),
 }));
 
@@ -119,6 +120,14 @@ jest.mock('@web3-onboard/react', () => ({
 
 jest.mock('../../hooks', () => ({
   ...jest.requireActual('../../hooks'),
+  useFees: jest.fn().mockReturnValue({
+    'ethereum-2': {
+      deposit: new MockDecimal(0.01),
+      redemption: new MockDecimal(0.02),
+      earlyRedemption: new MockDecimal(0.03),
+      swap: new MockDecimal(0.04),
+    },
+  }),
   useTokenBalances: jest.fn(),
   useSigner: jest.fn().mockImplementation(() => [{ signerProperty: 'xyz' }, mockSetSigner]),
   useDepositModalData: jest.fn().mockImplementation(() => () => ({ tempusPools: [mockPool2] })),

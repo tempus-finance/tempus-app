@@ -6,6 +6,7 @@ import { getConfigManager } from '../../config/getConfigManager';
 import {
   useActivePoolList,
   useInactivePoolList,
+  useDisabledPoolList,
   useMaturedPoolList,
   useTvlData,
   usePoolBalances,
@@ -30,6 +31,7 @@ jest.mock('../../hooks', () => ({
   ...jest.requireActual('../../hooks'),
   useActivePoolList: jest.fn(),
   useInactivePoolList: jest.fn(),
+  useDisabledPoolList: jest.fn(),
   useMaturedPoolList: jest.fn(),
   usePoolBalances: jest.fn(),
   useSelectedChain: jest.fn(),
@@ -69,6 +71,7 @@ describe('Markets', () => {
   beforeEach(() => {
     (useActivePoolList as jest.Mock).mockImplementation(() => getConfigManager().getPoolList().slice(0, -2));
     (useInactivePoolList as jest.Mock).mockImplementation(() => getConfigManager().getPoolList().slice(-2, -1));
+    (useDisabledPoolList as jest.Mock).mockImplementation(() => getConfigManager().getPoolList().slice(-3, -2));
     (useMaturedPoolList as jest.Mock).mockImplementation(() => getConfigManager().getPoolList().slice(-1));
     (usePoolBalances as jest.Mock).mockReturnValue({
       'ethereum-1': new Decimal(500),
@@ -111,7 +114,7 @@ describe('Markets', () => {
     fireEvent.click(filterButton);
 
     const filterTypeRadios = container.querySelectorAll('.tc__dropdown:first-of-type input[type=radio]');
-    expect(filterTypeRadios).toHaveLength(3);
+    expect(filterTypeRadios).toHaveLength(4);
 
     filterTypeRadios.forEach(filterTypeRadio => {
       fireEvent.click(filterTypeRadio);

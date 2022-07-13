@@ -342,7 +342,7 @@ const config: Config = {
           yieldBearingToken: 18,
           yields: 18,
         },
-        disabledOperations: {},
+        disabledOperations: { deposit: true },
         chain: 'ethereum-fork',
       },
       {
@@ -369,7 +369,7 @@ const config: Config = {
           yieldBearingToken: 18,
           yields: 18,
         },
-        disabledOperations: {},
+        disabledOperations: { deposit: true, withdraw: true },
         chain: 'ethereum-fork',
       },
     ],

@@ -18,10 +18,15 @@ import { getWithdrawService } from './getWithdrawService';
 import { WithdrawService } from './WithdrawService';
 import { DepositService } from './DepositService';
 import { getDepositService } from './getDepositService';
+import { PoolInterestRateService } from './PoolInterestRateService';
+import { getPoolInterestRateService } from './getPoolInterestRateService';
+import { TempusAMMService } from './TempusAMMService';
+import { getTempusAMMService } from './getTempusAMMService';
 
 type ServiceMap = {
   TempusPoolService: TempusPoolService;
   TempusControllerService: TempusControllerService;
+  TempusAMMService: TempusAMMService;
   StatisticsService: StatisticsService;
   VaultService: VaultService;
   VariableRateService: VariableRateService;
@@ -29,6 +34,7 @@ type ServiceMap = {
   PoolBalanceService: PoolBalanceService;
   WithdrawService: WithdrawService;
   DepositService: DepositService;
+  PoolInterestRateService: PoolInterestRateService;
   ERC20TokenServiceGetter: typeof getERC20TokenService;
 };
 
@@ -41,6 +47,7 @@ export const initServices = (chain: Chain, config: Config): void => {
   const services: ServiceMap = {
     TempusPoolService: getTempusPoolService(chain, getChainConfig),
     TempusControllerService: getTempusControllerService(chain, getChainConfig),
+    TempusAMMService: getTempusAMMService(chain, getChainConfig),
     StatisticsService: getStatisticsService(chain, getConfig, getChainConfig),
     VaultService: getVaultService(chain, getChainConfig),
     VariableRateService: getVariableRateService(chain, getChainConfig),
@@ -48,6 +55,7 @@ export const initServices = (chain: Chain, config: Config): void => {
     PoolBalanceService: getPoolBalanceService(chain, getConfig),
     WithdrawService: getWithdrawService(chain, getConfig),
     DepositService: getDepositService(chain, getConfig),
+    PoolInterestRateService: getPoolInterestRateService(chain, getConfig),
     ERC20TokenServiceGetter: getERC20TokenService,
   };
 

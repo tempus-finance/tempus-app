@@ -1,7 +1,14 @@
 import { Observable, ReplaySubject, Subject, interval, tap, filter, take } from 'rxjs';
 import { v1 as uuid } from 'uuid';
 import { Chain, StorageService } from 'tempus-core-services';
-import { Notification, NotificationCategory, NotificationLevel } from '../interfaces';
+import {
+  Notification,
+  NotificationCategory,
+  NotificationLevel,
+  NotificationInput,
+  NotificationText,
+} from '../interfaces';
+import { NotificationStatus } from '../interfaces/Notification';
 
 export const NOTIFICATIONS_KEY = 'notifications_v2';
 const NOTIFICATION_HISTORY_SIZE = 5;
@@ -14,26 +21,14 @@ class NotificationService {
     this.restoreNotifications();
   }
 
-  warn(
-    chain: Chain,
-    category: NotificationCategory,
-    title: string,
-    content: string,
-    link?: string,
-    linkText?: string,
-  ): void {
-    this.addToQueue(chain, category, NotificationLevel.WARNING, title, content, link, linkText);
+  warn(input: NotificationInput): void {
+    const { chain, category, status, title, content, link, linkText } = input;
+    this.addToQueue(chain, category, status, NotificationLevel.WARNING, title, content, link, linkText);
   }
 
-  notify(
-    chain: Chain,
-    category: NotificationCategory,
-    title: string,
-    content: string,
-    link?: string,
-    linkText?: string,
-  ): void {
-    this.addToQueue(chain, category, NotificationLevel.INFO, title, content, link, linkText);
+  notify(input: NotificationInput): void {
+    const { chain, category, status, title, content, link, linkText } = input;
+    this.addToQueue(chain, category, status, NotificationLevel.INFO, title, content, link, linkText);
   }
 
   getNextItem(): Observable<Notification> {
@@ -61,14 +56,16 @@ class NotificationService {
   private addToQueue(
     chain: Chain,
     category: NotificationCategory,
+    status: NotificationStatus,
     level: NotificationLevel,
-    title: string,
-    content: string,
+    title: NotificationText,
+    content: NotificationText,
     link?: string,
-    linkText?: string,
+    linkText?: NotificationText,
   ) {
     const notification = {
       category,
+      status,
       chain,
       level,
       title,

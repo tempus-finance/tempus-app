@@ -1,7 +1,16 @@
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { ChainConfig, Decimal, chainIdToChainName, Ticker, ZERO, TempusPool, DecimalUtils } from 'tempus-core-services';
+import {
+  ChainConfig,
+  Decimal,
+  chainIdToChainName,
+  Ticker,
+  ZERO,
+  TempusPool,
+  DecimalUtils,
+  Chain,
+} from 'tempus-core-services';
 import { v4 as uuidv4 } from 'uuid';
 import { TIMEOUT_FROM_SUCCESS_TO_DEFAULT_IN_MS } from '../../constants';
 import {
@@ -16,6 +25,7 @@ import {
   useAllowances,
   useAppEvent,
   useLocale,
+  useNotifications,
 } from '../../hooks';
 import { MaturityTerm, TokenMetadata, TokenMetadataProp } from '../../interfaces';
 import { ActionButtonState, Loading, ModalProps } from '../shared';
@@ -41,6 +51,7 @@ const DepositModal: FC<DepositModalProps> = props => {
   const { t } = useTranslation();
   const [locale] = useLocale();
   const navigate = useNavigate();
+  const { notify } = useNotifications();
 
   const useDepositModalProps = useDepositModalData();
   const modalProps = useDepositModalProps();
@@ -55,7 +66,7 @@ const DepositModal: FC<DepositModalProps> = props => {
 
   const [maturityTerm, setMaturityTerm] = useState<MaturityTerm>(maturityTerms[0]);
   const [token, setToken] = useState<TokenMetadata>(tokens[0]);
-  const [amount, setAmount] = useState<Decimal>(ZERO);
+  const [amount, setAmount] = useState<Decimal>();
   const [actionButtonState, setActionButtonState] = useState<ActionButtonState>('default');
   const [fixedDepositSuccessful, setFixedDepositSuccessful] = useState<boolean>(false);
   const [fixedDepositError, setFixedDepositError] = useState<Error>();
@@ -82,7 +93,7 @@ const DepositModal: FC<DepositModalProps> = props => {
   const tokenApproved = useMemo(
     () =>
       Boolean(tokenAllowance?.alwaysApproved) ||
-      (tokenAllowance?.amount?.gt(ZERO) && amount.lte(tokenAllowance?.amount ?? ZERO)),
+      (tokenAllowance?.amount?.gt(ZERO) && (amount ?? ZERO).lte(tokenAllowance?.amount ?? ZERO)),
     [amount, tokenAllowance],
   );
 
@@ -137,6 +148,21 @@ const DepositModal: FC<DepositModalProps> = props => {
           timestamp: fixedDepositStatus.contractTransaction?.timestamp ?? Date.now(),
         });
 
+        // for i18next extract
+        t('DepositModal.notifcationTitleDepositSuccess');
+        t('DepositModal.notifcationContentDepositSuccess');
+        t('DepositModal.notifcationLinkDepositSuccess');
+        notify({
+          chain: selectedTempusPool?.chain as Chain,
+          category: 'Transaction',
+          status: 'success',
+          title: { key: 'DepositModal.notifcationTitleDepositSuccess' },
+          content: { key: 'DepositModal.notifcationContentDepositSuccess' },
+          link: `${chainConfig.blockExplorerUrl}tx/${fixedDepositStatus?.contractTransaction?.hash ?? '0x0'}`,
+          linkText: { key: 'DepositModal.notifcationLinkDepositSuccess' },
+          refId: txnId,
+        });
+
         setTimeout(() => {
           setFixedDepositSuccessful(true);
         }, TIMEOUT_FROM_SUCCESS_TO_DEFAULT_IN_MS);
@@ -145,6 +171,21 @@ const DepositModal: FC<DepositModalProps> = props => {
 
         if (fixedDepositStatus?.error) {
           setFixedDepositError(fixedDepositStatus.error);
+
+          // for i18next extract
+          t('DepositModal.notifcationTitleDepositFailure');
+          t('DepositModal.notifcationContentDepositFailure');
+          t('DepositModal.notifcationLinkDepositFailure');
+          notify({
+            chain: selectedTempusPool?.chain as Chain,
+            category: 'Transaction',
+            status: 'failure',
+            title: { key: 'DepositModal.notifcationTitleDepositFailure' },
+            content: { key: 'DepositModal.notifcationContentDepositFailure' },
+            link: `${chainConfig.blockExplorerUrl}tx/${fixedDepositStatus?.contractTransaction?.hash ?? '0x0'}`,
+            linkText: { key: 'DepositModal.notifcationLinkDepositFailure' },
+            refId: txnId,
+          });
         }
       }
       // current approval txn in modal = current approval txn status
@@ -155,6 +196,21 @@ const DepositModal: FC<DepositModalProps> = props => {
       } else if (approveTokenStatus?.success) {
         setActionButtonState('success');
 
+        // for i18next extract
+        t('DepositModal.notifcationTitleApproveSuccess');
+        t('DepositModal.notifcationContentApproveSuccess');
+        t('DepositModal.notifcationLinkApproveSuccess');
+        notify({
+          chain: selectedTempusPool?.chain as Chain,
+          category: 'Transaction',
+          status: 'success',
+          title: { key: 'DepositModal.notifcationTitleApproveSuccess' },
+          content: { key: 'DepositModal.notifcationContentApproveSuccess' },
+          link: `${chainConfig.blockExplorerUrl}tx/${approveTokenStatus?.contractTransaction?.hash ?? '0x0'}`,
+          linkText: { key: 'DepositModal.notifcationLinkApproveSuccess' },
+          refId: txnId,
+        });
+
         setTimeout(() => {
           setActionButtonState('default');
         }, TIMEOUT_FROM_SUCCESS_TO_DEFAULT_IN_MS);
@@ -163,13 +219,27 @@ const DepositModal: FC<DepositModalProps> = props => {
 
         if (approveTokenStatus?.error) {
           setFixedDepositError(approveTokenStatus.error);
+          // for i18next extract
+          t('DepositModal.notifcationTitleApproveFailure');
+          t('DepositModal.notifcationContentApproveFailure');
+          t('DepositModal.notifcationLinkApproveFailure');
+          notify({
+            chain: selectedTempusPool?.chain as Chain,
+            category: 'Transaction',
+            status: 'failure',
+            title: { key: 'DepositModal.notifcationTitleApproveFailure' },
+            content: { key: 'DepositModal.notifcationContentApproveFailure' },
+            link: `${chainConfig.blockExplorerUrl}tx/${approveTokenStatus?.contractTransaction?.hash ?? '0x0'}`,
+            linkText: { key: 'DepositModal.notifcationLinkApproveFailure' },
+            refId: txnId,
+          });
         }
       }
       // status empty, or previous txn status that not related to current modal
     } else {
       setActionButtonState('default');
     }
-  }, [approveTokenStatus, fixedDepositStatus, txnId, emitAppEvent, selectedTempusPool]);
+  }, [approveTokenStatus, fixedDepositStatus, txnId, emitAppEvent, selectedTempusPool, chainConfig, notify, t]);
 
   const handleMaturityChange = useCallback(
     (newTerm: MaturityTerm) => {
@@ -210,6 +280,18 @@ const DepositModal: FC<DepositModalProps> = props => {
         const approveTxnId = uuidv4();
         setTxnId(approveTxnId);
 
+        // for i18next extract
+        t('DepositModal.notifcationTitleApprovePending');
+        t('DepositModal.notifcationContentApprovePending');
+        notify({
+          chain: selectedTempusPool.chain,
+          category: 'Transaction',
+          status: 'pending',
+          title: { key: 'DepositModal.notifcationTitleApprovePending' },
+          content: { key: 'DepositModal.notifcationContentApprovePending' },
+          refId: approveTxnId,
+        });
+
         approveToken({
           chain: selectedTempusPool.chain,
           tokenAddress: token.address,
@@ -230,6 +312,8 @@ const DepositModal: FC<DepositModalProps> = props => {
       approveToken,
       token.address,
       chainConfig.tempusControllerContract,
+      notify,
+      t,
     ],
   );
 
@@ -241,6 +325,18 @@ const DepositModal: FC<DepositModalProps> = props => {
 
         const depositTxnId = uuidv4();
         setTxnId(depositTxnId);
+
+        // for i18next extract
+        t('DepositModal.notifcationTitleDepositPending');
+        t('DepositModal.notifcationContentDepositPending');
+        notify({
+          chain: selectedTempusPool.chain,
+          category: 'Transaction',
+          status: 'pending',
+          title: { key: 'DepositModal.notifcationTitleDepositPending' },
+          content: { key: 'DepositModal.notifcationContentDepositPending' },
+          refId: depositTxnId,
+        });
 
         fixedDeposit({
           chain: selectedTempusPool.chain,
@@ -256,7 +352,7 @@ const DepositModal: FC<DepositModalProps> = props => {
 
       return depositTokenTxnHash;
     },
-    [selectedTempusPool, signer, depositTokenTxnHash, fixedDeposit, token.ticker, token.address, slippage],
+    [selectedTempusPool, signer, depositTokenTxnHash, fixedDeposit, token.ticker, token.address, slippage, notify, t],
   );
 
   const handleAmountChange = useCallback((newAmount: Decimal) => {
@@ -292,6 +388,9 @@ const DepositModal: FC<DepositModalProps> = props => {
   return (
     <>
       <CurrencyInputModal
+        selectedPool={selectedTempusPool}
+        defaultAmount={amount}
+        defaultToken={token}
         tokens={tokens}
         open={!fixedDepositSuccessful && !fixedDepositError}
         onClose={onClose}
@@ -349,11 +448,8 @@ const DepositModal: FC<DepositModalProps> = props => {
       />
       {/* Show error modal if deposit throws Error */}
       <ErrorModal
-        description={t('DepositModal.errorModalDescription', {
-          // fixedDepositError.data.message: error from txn
-          // fixedDepositError.message: generic error, e.g. rejected by metamask
-          error: (fixedDepositError as any)?.data?.message ?? fixedDepositError?.message,
-        })}
+        description={t('DepositModal.errorModalDescription')}
+        error={fixedDepositError}
         primaryButtonLabel={{
           default: t('DepositModal.errorModalPrimaryButton'),
         }}

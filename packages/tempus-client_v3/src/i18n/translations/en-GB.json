@@ -15,7 +15,7 @@
   },
   "DepositModal": {
     "description": "You are about to deposit into the {{asset}} pool with term {{term}}.",
-    "errorModalDescription": "An error occured and the transaction failed. [{{error}}]",
+    "errorModalDescription": "An error occured and the transaction failed.",
     "errorModalPrimaryButton": "Try again",
     "errorModalTitle": "Something's wrong.",
     "labelApproveDefault": "Approve Deposit",
@@ -53,6 +53,8 @@
     "comingSoon": "Coming Soon"
   },
   "MarketsPools": {
+    "emptyTitle": "No Pools to Display",
+    "emptyDescription": "Please select another filter option.",
     "showMoreXButtonLabel": "Show {{numOfCardsToShow}} more",
     "showMoreXOfYButtonLabel": "Show {{numOfCardsToShow}} of {{numOfRemainingCards}} more"
   },
@@ -60,6 +62,7 @@
     "filterActive": "Active ({{numOfPool}})",
     "filterInactive": "Inactive ({{numOfPool}})",
     "filterMatured": "Matured ({{numOfPool}})",
+    "filterDisabled": "Disabled ({{numOfPool}})",
     "optionFilter": "Filter",
     "optionSort": "Sort",
     "sortAPR": "APR %",
@@ -104,7 +107,9 @@
   },
   "PortfolioOverview": {
     "buttonBrowseMarkets": "Browse Markets",
+    "buttonConnectWallet": "Connect Wallet",
     "descriptionNoPositions": "Want to see growth? Go to Markets.",
+    "descriptionWalletNotConnected": "Connect your wallet to manage your portfolio.",
     "subtitleCurrentValue": "of portfolio",
     "subtitleEarnedYield": "of portfolio",
     "subtitleProjectedYield": "of portfolio",
@@ -116,21 +121,22 @@
     "titleProjectedYield": "Projected Yield",
     "titleTotalPortfolioValue": "Total Portfolio Value",
     "titleTotalYieldEarned": "Total Yield Earned",
-    "titleWalletNotConnected": "Wallet not connected",
-    "descriptionWalletNotConnected": "Connect your wallet to manage your portfolio.",
-    "buttonConnectWallet": "Connect Wallet"
+    "titleWalletNotConnected": "Wallet not connected"
   },
   "PortfolioPositions": {
     "buttonBrowseMarkets": "Browse Markets",
+    "buttonConnectWallet": "Connect Wallet",
     "descriptionNoPositions": "Your portfolio is empty. Let’s change that for you.",
-    "titleNoPositions": "No Current Positions",
-    "titleWalletNotConnected": "Wallet not connected",
     "descriptionWalletNotConnected": "Connect your wallet to manage your positions.",
-    "buttonConnectWallet": "Connect Wallet"
+    "titleNoPositions": "No Current Positions",
+    "titleWalletNotConnected": "Wallet not connected"
   },
   "PortfolioSubheader": {
     "tabOverview": "Overview",
     "tabPositions": "Positions"
+  },
+  "RpcErrorModal": {
+    "errorModalDescription": "An error has occurred when submitting your transaction, please check your connection and try again."
   },
   "SettingsDropdown": {
     "title": "Settings"
@@ -139,6 +145,11 @@
     "localeName": "English",
     "slippageTooltipContent": "Your transaction will revert if the price changes unfavorably by more than this percentage.",
     "titleLocale": "Language",
+    "titleSlippage": "Slippage tolerance"
+  },
+  "SlippageErrorModal": {
+    "errorModalDescription": "Transaction failed because slippage is too low, please increase the slippage.",
+    "slippageTooltipContent": "Your transaction will revert if the price changes unfavorably by more than this percentage.",
     "titleSlippage": "Slippage tolerance"
   },
   "SlippageInput": {
@@ -161,9 +172,16 @@
     "buttonConnectWallet": "Connect Wallet",
     "buttonUnsupported": "Unsupported"
   },
+  "WalletErrorModal": {
+    "errorModalDescription": "An error has occurred with your wallet, please check your wallet and try again."
+  },
+  "WalletPopup": {
+    "title": "Wallet Overview",
+    "titleAddress": "Connected Wallet"
+  },
   "WithdrawModal": {
     "description": "Select the amount you like to withdraw.",
-    "errorModalDescription": "An error occured and the transaction failed. [{{error}}]",
+    "errorModalDescription": "An error occured and the transaction failed.",
     "errorModalPrimaryButton": "Try again",
     "errorModalTitle": "Something's wrong.",
     "labelApproveDefault": "Approve Withdrawal",
