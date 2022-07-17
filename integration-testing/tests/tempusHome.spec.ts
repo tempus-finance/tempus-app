@@ -51,6 +51,33 @@ test.describe.serial('Tempus Homepage tests', () => {
     await page.close();
   });
 
+  test('Portofolio overview - Current Value', async () => {
+    const page: Page = await browser.newPage();
+    await page.goto(TEMPUS_URL);
+    await page.click('text="Portfolio"');
+    await page.click('text="Overview"');
+    await expect(page.locator('.tc__app__portfolio-box >> nth=0')).toContainText('Current Value');
+    await page.close();
+  });
+
+  test('Portofolio overview - Yield Earned', async () => {
+    const page: Page = await browser.newPage();
+    await page.goto(TEMPUS_URL);
+    await page.click('text="Portfolio"');
+    await page.click('text="Overview"');
+    await expect(page.locator('.tc__app__portfolio-box >> nth=1')).toContainText('Yield Earned');
+    await page.close();
+  });
+
+  test('Portofolio overview - Projected Yield', async () => {
+    const page: Page = await browser.newPage();
+    await page.goto(TEMPUS_URL);
+    await page.click('text="Portfolio"');
+    await page.click('text="Overview"');
+    await expect(page.locator('.tc__app__portfolio-box >> nth=2')).toContainText('Projected Yield');
+    await page.close();
+  });
+
   test.afterAll(async () => {
     await browser.close();
   });

@@ -46,3 +46,4 @@ packages/**/src/release.json
 /test-results
 /integration-testing/old_tests
 .env
+nohup.out
