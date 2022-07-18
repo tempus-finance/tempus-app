@@ -94,7 +94,7 @@ jobs:
           paths:
             - ./
 
-  test-tempus-client-v3:
+  unit-test-tempus-client-v3:
     docker:
       - image: cimg/node:lts
     steps:
@@ -237,7 +237,7 @@ workflows:
               only: /^release-.*$/
       - deploy-to-stage:
           requires:
-            - test-tempus-client-v3
+            - unit-test-tempus-client-v3
             - test-tempus-core-services
           filters:
             branches:
