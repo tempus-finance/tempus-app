@@ -11,3 +11,5 @@ export const TEMP_PRECISION = 18;
 export const USDC_PRECISION = 6;
 export const discordInviteLink = 'https://discord.com/invite/6gauHECShr';
 export const REFRESH_TIME = 60 * 60 * 1000; // ONE HOUR
+export const TEMPUS_SUBGRAPH_MAINNET_URL = 'https://api.thegraph.com/subgraphs/name/tempus-finance/tempus';
+export const TEMPUS_SUBGRAPH_FANTOM_URL = 'https://api.thegraph.com/subgraphs/name/tempus-finance/tempus-fantom';

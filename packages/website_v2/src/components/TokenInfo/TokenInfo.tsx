@@ -28,7 +28,7 @@ const TokenInfo = (): JSX.Element => {
 
   useEffect(() => {
     const fetchHoldersCount = async () => {
-      setHoldersCount(await TokenHoldersService.getHoldersCount());
+      setHoldersCount(await TokenHoldersService.getHolderCount());
     };
     fetchHoldersCount();
   }, []);
