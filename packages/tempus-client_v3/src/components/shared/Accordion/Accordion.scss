@@ -1,0 +1,36 @@
+.tc__accordion {
+  min-width: 260px;
+  border-radius: 4px;
+  box-shadow: var(--downWeakShadow);
+  border: 1px solid var(--collapsingWidgetBorder);
+  background: var(--collapsingWidgetBackground);
+
+  .tc__accordion__title {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 12px 8px;
+    width: 100%;
+
+    :not(svg) {
+      flex: 1 100%;
+      text-align: initial;
+    }
+
+    svg {
+      &:first-child {
+        margin-right: 4px;
+      }
+
+      &:last-child {
+        margin-left: 4px;
+      }
+    }
+  }
+
+  .tc__accordion__content {
+    padding: 12px 8px;
+    box-sizing: border-box;
+    width: 100%;
+  }
+}
