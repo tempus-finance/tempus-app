@@ -54,6 +54,7 @@ describe('useFixedDeposit', () => {
         tokenAmount: new Decimal(2),
         tokenTicker: 'stETH',
         tokenAddress: '00001-ybt',
+        txnId: '0x01',
       },
       txnId: '0x01',
     });
@@ -97,6 +98,7 @@ describe('useFixedDeposit', () => {
         tokenAmount: new Decimal(2),
         tokenTicker: 'stETH',
         tokenAddress: '00001-ybt',
+        txnId: '0x01',
       },
       txnId: '0x01',
     });
@@ -129,6 +131,7 @@ describe('useFixedDeposit', () => {
         tokenAmount: new Decimal(3),
         tokenTicker: 'stETH',
         tokenAddress: '00001-ybt',
+        txnId: '0x02',
       },
       txnId: '0x02',
     });
@@ -177,6 +180,7 @@ describe('useFixedDeposit', () => {
         tokenAmount: new Decimal(2),
         tokenTicker: 'stETH',
         tokenAddress: '00001-ybt',
+        txnId: '0x01',
       },
       txnId: '0x01',
     });
@@ -229,6 +233,7 @@ describe('useFixedDeposit', () => {
         tokenAmount: new Decimal(2),
         tokenTicker: 'stETH',
         tokenAddress: '00001-ybt',
+        txnId: '0x01',
       },
       txnId: '0x01',
     });
@@ -285,6 +290,7 @@ describe('useFixedDeposit', () => {
         tokenAmount: new Decimal(2),
         tokenTicker: 'stETH',
         tokenAddress: '00001-ybt',
+        txnId: '0x01',
       },
       txnId: '0x01',
     });
@@ -339,6 +345,7 @@ describe('useFixedDeposit', () => {
         tokenAmount: new Decimal(2),
         tokenTicker: 'stETH',
         tokenAddress: '00001-ybt',
+        txnId: '0x01',
       },
       txnId: '0x01',
     });
