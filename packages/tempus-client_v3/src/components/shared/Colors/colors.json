@@ -133,5 +133,8 @@
   "loadingPlaceholderOverlay": "rgba(255, 255, 255, 0.4)",
 
   "marketsFooterBackground": "#F3F7F9",
-  "marketsFooterSeparator": "#BFC0C0"
+  "marketsFooterSeparator": "#BFC0C0",
+
+  "collapsingWidgetBorder": "#BFC0C0",
+  "collapsingWidgetBackground": "#FFFFFF"
 }

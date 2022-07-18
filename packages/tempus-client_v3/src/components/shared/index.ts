@@ -54,6 +54,7 @@ export * from './Radio';
 export * from './Tabs';
 export * from './PoolCard';
 export * from './Modal';
+export * from './Accordion';
 
 export {
   ActionButton,
