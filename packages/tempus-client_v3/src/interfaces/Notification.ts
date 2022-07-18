@@ -17,7 +17,17 @@ export type NotificationText =
       };
     };
 
-export type Notification = {
+export interface TransactionData {
+  transactionType: 'approve' | 'deposit' | 'withdraw';
+  chain: Chain;
+  poolAddress?: string;
+  tokenAmount: string; // use string to be better serlizable in storage
+  tokenAddress: string;
+  txnId: string;
+}
+export type NotificationData = TransactionData; // in future it will be TransactionData | WalletData | ServiceData
+
+export interface Notification {
   category: NotificationCategory;
   status: NotificationStatus;
   chain: Chain;
@@ -29,10 +39,11 @@ export type Notification = {
   link?: string;
   linkText?: NotificationText;
   refId?: string;
+  data?: NotificationData;
   dismissed: boolean;
-};
+}
 
-export type NotificationInput = {
+export interface NotificationInput {
   chain: Chain;
   category: NotificationCategory;
   status: NotificationStatus;
@@ -41,4 +52,5 @@ export type NotificationInput = {
   link?: string;
   linkText?: NotificationText;
   refId?: string;
-};
+  data?: NotificationData;
+}

@@ -4,6 +4,7 @@ import { bind } from '@react-rxjs/core';
 import { createSignal } from '@react-rxjs/utils';
 import { BehaviorSubject, combineLatest, concatMap, map, Subscription, tap } from 'rxjs';
 import { Chain, Decimal, getDefinedServices } from 'tempus-core-services';
+import { notifyTransaction } from './useNotifications';
 
 interface ApproveTokenRequest {
   chain: Chain;
@@ -38,9 +39,16 @@ export const tokenApproveStatus$ = new BehaviorSubject<ApproveTokenStatus | null
 const approveTokenStream$ = combineLatest([approveToken$]).pipe(
   concatMap<[ApproveTokenRequestEnhanced], Promise<ApproveTokenResponse>>(async ([payload]) => {
     const { chain, tokenAddress, spenderAddress, amount, signer, txnId } = payload;
-    const request = { chain, tokenAddress, amount };
+    const request = { chain, tokenAddress, amount, txnId };
 
     tokenApproveStatus$.next({ pending: true, txnId });
+    notifyTransaction('pending', {
+      transactionType: 'approve',
+      chain,
+      tokenAddress,
+      tokenAmount: amount.toString(),
+      txnId,
+    });
 
     try {
       const Erc20TokenService = getDefinedServices(chain).ERC20TokenServiceGetter(tokenAddress, chain, signer);
@@ -72,7 +80,17 @@ const approveTokenStream$ = combineLatest([approveToken$]).pipe(
         }
       : { pending: false, success: false, error, request, txnId };
   }),
-  tap(status => tokenApproveStatus$.next(status)),
+  tap(status => {
+    const { chain, tokenAddress, amount, txnId } = status.request as ApproveTokenRequest;
+    tokenApproveStatus$.next(status);
+    notifyTransaction(status.success ? 'success' : 'failure', {
+      transactionType: 'approve',
+      chain,
+      tokenAddress,
+      tokenAmount: amount.toString(),
+      txnId,
+    });
+  }),
 );
 
 const [approveTokenStatus] = bind<ApproveTokenStatus | null>(tokenApproveStatus$, null);
