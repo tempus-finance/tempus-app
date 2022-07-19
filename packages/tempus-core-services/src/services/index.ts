@@ -19,6 +19,7 @@ export { getTempusPoolService } from './getTempusPoolService';
 export { getVariableRateService } from './getVariableRateService';
 export { getVaultService } from './getVaultService';
 export { PoolInterestRateService } from './PoolInterestRateService';
+export { UserDepositsService } from './UserDepositsService';
 export { StatisticsService } from './StatisticsService';
 export { StorageService } from './StorageService';
 export { TempusAMMService } from './TempusAMMService';

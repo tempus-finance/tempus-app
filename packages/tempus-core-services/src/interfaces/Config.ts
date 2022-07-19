@@ -22,6 +22,7 @@ export interface ChainConfig {
   tempTokenAddress: string;
   tempusTreasuryAddress: string;
   testChain: boolean;
+  subgraphUrl: string;
 }
 
 export type Config = {

@@ -41,6 +41,7 @@ export type {
   StatisticsService,
   StorageService,
   SwapEvent,
+  UserDepositsService,
 } from './services';
 
 export type { Numberish } from './datastructures';

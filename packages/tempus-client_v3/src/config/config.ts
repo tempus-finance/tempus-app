@@ -159,6 +159,7 @@ const config: Config = {
     tempTokenAddress: '0xa36fdbbae3c9d55a1d67ee5821d53b50b63a1ab9',
     tempusTreasuryAddress: '0xaB40A7e3cEF4AfB323cE23B6565012Ac7c76BFef',
     testChain: false,
+    subgraphUrl: 'https://api.thegraph.com/subgraphs/name/tempus-finance/tempus',
   },
   fantom: {
     tempusPools: [
@@ -315,6 +316,7 @@ const config: Config = {
     tempTokenAddress: '0x1c174f6ab0753162befbb916c69def2cc1bfdec1',
     tempusTreasuryAddress: '0x51252c520375C6A236Bb56DdF0C407A099B2EC0e',
     testChain: false,
+    subgraphUrl: 'https://api.thegraph.com/subgraphs/name/tempus-finance/tempus-fantom',
   },
   'ethereum-fork': {
     tempusPools: [
@@ -390,6 +392,7 @@ const config: Config = {
     tempTokenAddress: '0xa36fdbbae3c9d55a1d67ee5821d53b50b63a1ab9',
     tempusTreasuryAddress: '0xaB40A7e3cEF4AfB323cE23B6565012Ac7c76BFef',
     testChain: true,
+    subgraphUrl: '', // TODO - Add TheGraph support for forked networks
   },
 };
 export default config;
