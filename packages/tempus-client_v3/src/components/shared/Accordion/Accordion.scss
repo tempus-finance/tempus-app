@@ -2,8 +2,8 @@
   min-width: 260px;
   border-radius: 4px;
   box-shadow: var(--downWeakShadow);
-  border: 1px solid var(--collapsingWidgetBorder);
-  background: var(--collapsingWidgetBackground);
+  border: 1px solid var(--accordionBorder);
+  background: var(--accordionBackground);
 
   .tc__accordion__title {
     display: flex;

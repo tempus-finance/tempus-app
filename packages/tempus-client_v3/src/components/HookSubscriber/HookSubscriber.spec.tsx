@@ -15,6 +15,7 @@ import {
   subscribeApproveTokenStatus,
   subscribeFixedDepositStatus,
   subscribeWithdrawStatus,
+  subscribeNotifications,
 } from '../../hooks';
 
 const subject = () => render(<HookSubscriber />);
@@ -35,6 +36,7 @@ jest.mock('../../hooks', () => ({
   subscribeApproveTokenStatus: jest.fn(),
   subscribeFixedDepositStatus: jest.fn(),
   subscribeWithdrawStatus: jest.fn(),
+  subscribeNotifications: jest.fn(),
 }));
 
 describe('HookSubscriber', () => {
@@ -53,6 +55,7 @@ describe('HookSubscriber', () => {
     const mockSubscribeApproveTokenStatus = jest.fn();
     const mockSubscribeFixedDepositStatus = jest.fn();
     const mockSubscribeWithdrawStatus = jest.fn();
+    const mockSubscribeNotifications = jest.fn();
 
     (useLocale as jest.Mock).mockImplementation(mockUseLocale);
     (useSelectedChain as jest.Mock).mockImplementation(mockUseSelectedChain);
@@ -68,6 +71,7 @@ describe('HookSubscriber', () => {
     (subscribeApproveTokenStatus as jest.Mock).mockImplementation(mockSubscribeApproveTokenStatus);
     (subscribeFixedDepositStatus as jest.Mock).mockImplementation(mockSubscribeFixedDepositStatus);
     (subscribeWithdrawStatus as jest.Mock).mockImplementation(mockSubscribeWithdrawStatus);
+    (subscribeNotifications as jest.Mock).mockImplementation(mockSubscribeNotifications);
 
     const { container } = subject();
 
@@ -87,5 +91,6 @@ describe('HookSubscriber', () => {
     expect(mockSubscribeApproveTokenStatus).toHaveBeenCalled();
     expect(mockSubscribeFixedDepositStatus).toHaveBeenCalled();
     expect(mockSubscribeWithdrawStatus).toHaveBeenCalled();
+    expect(mockSubscribeNotifications).toHaveBeenCalled();
   });
 });

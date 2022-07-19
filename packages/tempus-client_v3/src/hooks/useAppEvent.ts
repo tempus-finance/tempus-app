@@ -13,10 +13,10 @@ export interface AppEvent {
 
 const [appEvent$, setAppEvent] = createSignal<AppEvent>();
 const stateAppEvent$ = state(appEvent$, null);
+export const emitAppEvent = setAppEvent; // to remind to use for better naming only
 
 export function useAppEvent(): [AppEvent | null, (value: AppEvent) => void] {
   const appEvent = useStateObservable(stateAppEvent$);
-  const emitAppEvent = setAppEvent; // to remind to use for better naming only
   return [appEvent, emitAppEvent];
 }
 

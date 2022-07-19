@@ -1,9 +1,11 @@
-import { FC, useEffect, useMemo, useRef } from 'react';
+import { FC, memo, useMemo, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { shortenAccount } from 'tempus-core-services';
 import { ButtonWrapper, Icon, Tooltip, Typography } from '../shared';
+import { TransactionList } from './Transaction';
 
 import './WalletPopup.scss';
+import { useNotifications } from '../../hooks';
 
 export interface WalletPopupProps {
   open: boolean;
@@ -14,11 +16,13 @@ export interface WalletPopupProps {
 const WalletPopup: FC<WalletPopupProps> = props => {
   const { open, address, onClose } = props;
   const { t } = useTranslation();
+  const { getLastItems } = useNotifications();
+  const transactions = getLastItems();
 
   const wrapperRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (wrapperRef.current) {
+    if (wrapperRef.current && open) {
       const wrapperPosX = wrapperRef.current.getBoundingClientRect().x;
       const wrapperPosY = wrapperRef.current.getBoundingClientRect().y;
       wrapperRef.current.style.setProperty('--popupPosX', `${wrapperPosX}px`);
@@ -45,9 +49,10 @@ const WalletPopup: FC<WalletPopupProps> = props => {
             {shortenAccount(address)}
           </Typography>
         </div>
+        <TransactionList transactions={transactions} />
       </>
     ),
-    [t, onClose, address],
+    [t, onClose, address, transactions],
   );
 
   return (
@@ -60,4 +65,4 @@ const WalletPopup: FC<WalletPopupProps> = props => {
   );
 };
 
-export default WalletPopup;
+export default memo(WalletPopup);

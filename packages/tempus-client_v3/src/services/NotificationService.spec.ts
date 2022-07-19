@@ -1,5 +1,5 @@
 import { act } from 'react-dom/test-utils';
-import { NotificationInput } from '../interfaces/Notification';
+import { NotificationInput, TransactionData } from '../interfaces/Notification';
 import NotificationService, { NOTIFICATIONS_KEY } from './NotificationService';
 
 jest.mock('uuid', () => ({
@@ -167,6 +167,46 @@ describe('NotificationService', () => {
     });
   });
 
+  describe('notifyTransaction()', () => {
+    it('notifyTransaction() will stores a notification Transaction', () => {
+      const data: TransactionData = {
+        transactionType: 'deposit',
+        chain: 'ethereum',
+        poolAddress: '0x01',
+        tokenAmount: '123',
+        tokenAddress: '0x02',
+        txnId: '0x03',
+      };
+      notificationService.notifyTransaction('success', data);
+
+      expect(mockSet).toHaveBeenCalledTimes(1);
+      expect(mockSet).toHaveBeenCalledWith(NOTIFICATIONS_KEY, [
+        {
+          category: 'Transaction',
+          status: 'success',
+          chain: 'ethereum',
+          content: '',
+          dismissed: false,
+          id: 'abc000',
+          level: 'info',
+          link: '',
+          linkText: '',
+          timestamp: 1649031780000,
+          title: '',
+          refId: '0x03',
+          data: {
+            transactionType: 'deposit',
+            chain: 'ethereum',
+            poolAddress: '0x01',
+            tokenAmount: '123',
+            tokenAddress: '0x02',
+            txnId: '0x03',
+          },
+        },
+      ]);
+    });
+  });
+
   describe('getNextItem()', () => {
     beforeEach(() => {
       mockGet.mockReturnValue([]);
@@ -253,11 +293,15 @@ describe('NotificationService', () => {
 
       expect(mockDelete).toHaveBeenCalledTimes(1);
 
-      expect(mockListener).toHaveBeenNthCalledWith(1, mockStoredNotification3);
+      expect(mockListener).toHaveBeenNthCalledWith(1, [mockStoredNotification3]);
 
-      expect(mockListener).toHaveBeenNthCalledWith(2, mockStoredNotification2);
+      expect(mockListener).toHaveBeenNthCalledWith(2, [mockStoredNotification3, mockStoredNotification2]);
 
-      expect(mockListener).toHaveBeenNthCalledWith(3, mockStoredNotification1);
+      expect(mockListener).toHaveBeenNthCalledWith(3, [
+        mockStoredNotification3,
+        mockStoredNotification2,
+        mockStoredNotification1,
+      ]);
     });
   });
 
