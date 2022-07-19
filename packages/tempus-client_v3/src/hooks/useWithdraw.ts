@@ -2,8 +2,11 @@ import { ContractTransaction } from 'ethers';
 import { JsonRpcSigner } from '@ethersproject/providers';
 import { bind } from '@react-rxjs/core';
 import { createSignal } from '@react-rxjs/utils';
-import { concatMap, map, BehaviorSubject, Subscription, tap } from 'rxjs';
-import { Chain, Decimal, getDefinedServices, Ticker } from 'tempus-core-services';
+import { concatMap, map, BehaviorSubject, Subscription, tap, filter, take } from 'rxjs';
+import { Chain, Decimal, getDefinedServices, TempusPool, Ticker } from 'tempus-core-services';
+import { notifyTransaction } from './useNotifications';
+import { poolList$ } from './usePoolList';
+import { emitAppEvent } from './useAppEvent';
 
 interface WithdrawRequest {
   chain: Chain;
@@ -61,9 +64,16 @@ const stream$ = withdraw$.pipe(
       signer,
       txnId,
     } = payload;
-    const request = { chain, poolAddress, amount, token };
+    const request = { chain, poolAddress, amount, token, txnId };
 
     withdrawStatus$.next({ pending: true, txnId });
+    notifyTransaction('pending', {
+      transactionType: 'withdraw',
+      chain,
+      tokenAddress,
+      tokenAmount: amount.toString(),
+      txnId,
+    });
 
     try {
       const withdrawService = getDefinedServices(chain).WithdrawService;
@@ -111,7 +121,38 @@ const stream$ = withdraw$.pipe(
         }
       : { pending: false, success: false, request, error, txnId };
   }),
-  tap(status => withdrawStatus$.next(status)),
+  tap(status => {
+    const { chain, poolAddress, tokenAddress, amount, txnId } = status.request as WithdrawRequest;
+    withdrawStatus$.next(status);
+    notifyTransaction(status.success ? 'success' : 'failure', {
+      transactionType: 'withdraw',
+      chain,
+      poolAddress,
+      tokenAddress,
+      tokenAmount: amount.toString(),
+      txnId,
+    });
+
+    if (status.success) {
+      const contractTransaction = status.contractTransaction as ContractTransaction;
+
+      poolList$
+        .pipe(
+          map(poolList => poolList.find(pool => pool.address === poolAddress && pool.chain === chain)),
+          filter(tempusPool => Boolean(tempusPool)),
+          tap(tempusPool => {
+            emitAppEvent({
+              eventType: 'withdraw',
+              tempusPool: tempusPool as TempusPool,
+              txnHash: contractTransaction?.hash,
+              timestamp: contractTransaction?.timestamp ?? Date.now(),
+            });
+          }),
+          take(1),
+        )
+        .subscribe();
+    }
+  }),
 );
 
 const [withdrawStatus] = bind<WithdrawStatus | null>(withdrawStatus$, null);

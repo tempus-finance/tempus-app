@@ -24,7 +24,6 @@ exports[`Wallet renders a "Connect Wallet" button 1`] = `
   
   <div
     class="tc__wallet-popup"
-    style="--popupPosX: 0px; --popupPosY: 0px; --popupVisibility: block;"
   />
 </div>
 `;
@@ -114,7 +113,6 @@ exports[`Wallet renders a wallet button 1`] = `
   </div>
   <div
     class="tc__wallet-popup"
-    style="--popupPosX: 0px; --popupPosY: 0px; --popupVisibility: block;"
   />
 </div>
 `;
@@ -252,6 +250,9 @@ exports[`Wallet renders a wallet popup when click on wallet button 1`] = `
           0x1231...23123
         </div>
       </div>
+      <div
+        class="tc__wallet-popup__transaction-list"
+      />
     </div>
   </div>
 </div>
