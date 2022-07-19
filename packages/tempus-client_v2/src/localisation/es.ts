@@ -161,7 +161,7 @@ const es: { [word in Words]: string } = {
     'Retire su liquidez del grupo con las recompensas acumuladas en forma de sus tokens LP iniciales.',
   combinedApr: 'APR combinado',
   askUsOnDiscord:
-    '¿Tienes más preguntas? Pregúntanos en el Discord: <a href="https://discord.com/invite/6gauHECShr" target="_blank">https://discord.com/invite/6gauHECShr</a>',
+    '¿Tienes más preguntas? Pregúntanos en el Discord: <a href="https://bit.ly/TempusDiscordInvite" target="_blank">https://bit.ly/TempusDiscordInvite</a>',
   depositDisabledByConfig: 'El depósito no está disponible actualmente.',
   mintDisabledByConfig: 'Acuñar no está disponible actualmente.',
   operationDisabledByConfig:

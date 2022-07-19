@@ -61,7 +61,7 @@ const en: { [word in Words]: string } = {
   operationDisabledByConfig:
     'Certain actions in relation to this Tempus pool are temporarily disabled due to intermittent unreliability of the underlying pool. Please bear with us while we investigate this issue.',
   askUsOnDiscord:
-    'Have more questions? Ask us on Discord: <a href="https://discord.com/invite/6gauHECShr" target="_blank">https://discord.com/invite/6gauHECShr</a>',
+    'Have more questions? Ask us on Discord: <a href="https://bit.ly/TempusDiscordInvite" target="_blank">https://bit.ly/TempusDiscordInvite</a>',
   depositDisabledByConfig: 'Depositing is currently not available.',
   mintDisabledByConfig: 'Minting is currently not available.',
   depositDisabledNoLiquidity:
