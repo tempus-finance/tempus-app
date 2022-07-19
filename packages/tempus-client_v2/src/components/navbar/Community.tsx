@@ -33,7 +33,7 @@ const Community = () => {
   }, [toggleCommunityMenu]);
 
   const onDiscordClick = useCallback(() => {
-    window.open('https://discord.com/invite/6gauHECShr', '_blank');
+    window.open('https://bit.ly/TempusDiscordInvite', '_blank');
     toggleCommunityMenu();
   }, [toggleCommunityMenu]);
 
