@@ -14,7 +14,7 @@ const Join = (): JSX.Element => (
         </p>
         <div className="tw__join__link-grid">
           <LinkBlock
-            href="https://discord.com/invite/6gauHECShr"
+            href="https://bit.ly/TempusDiscordInvite"
             title="Discord"
             description="Get involved"
             icon={<DiscordIcon />}
