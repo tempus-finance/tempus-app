@@ -60,7 +60,7 @@ const Footer = (): JSX.Element => (
         <div className="tw__footer__links-column">
           <p className="tw__footer__links-title">Community</p>
           <div className="tw__footer__link-container">
-            <Link className="tw__footer__link tw__hover-animation" href="https://discord.com/invite/6gauHECShr">
+            <Link className="tw__footer__link tw__hover-animation" href="https://bit.ly/TempusDiscordInvite">
               Discord
             </Link>
           </div>
