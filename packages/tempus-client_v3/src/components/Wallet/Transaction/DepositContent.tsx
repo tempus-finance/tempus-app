@@ -46,7 +46,12 @@ const DepositContent: FC<DepositContentProps> = props => {
             customizedFormatOptions={{ hour: '2-digit', hour12: true }}
           />
           <span className="tc__wallet-popup__transaction-list__deposit-content-timestamp__separator" />
-          <FormattedDate date={new Date(data.timestamp)} locale={locale} size="tiny" />
+          <FormattedDate
+            date={new Date(data.timestamp)}
+            locale={locale}
+            size="tiny"
+            customizedFormatOptions={{ year: 'numeric' }}
+          />
         </div>
       )}
       <div className="tc__wallet-popup__transaction-list__deposit-content-detail">
@@ -72,7 +77,12 @@ const DepositContent: FC<DepositContentProps> = props => {
       <div className="tc__wallet-popup__transaction-list__deposit-content-term">
         <Trans i18nKey="DepositContent.descriptionTerm" t={t}>
           <Typography variant="body-secondary" weight="medium" color="text-secondary" />
-          <FormattedDate date={new Date(tempusPool.maturityDate)} locale={locale} size="small" />
+          <FormattedDate
+            date={new Date(tempusPool.maturityDate)}
+            locale={locale}
+            size="small"
+            customizedFormatOptions={{ year: 'numeric' }}
+          />
         </Trans>
       </div>
       {data.error && (

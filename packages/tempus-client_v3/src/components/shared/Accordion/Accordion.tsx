@@ -37,7 +37,7 @@ const Accordion: FC<AccordionProps> = props => {
         {icon}
         <Typography variant="body-secondary">{title}</Typography>
         {subtitle && (
-          <Typography variant="body-tertiary" type="mono" color="text-disabled">
+          <Typography variant="body-secondary" type="mono" color="text-disabled">
             {subtitle}
           </Typography>
         )}

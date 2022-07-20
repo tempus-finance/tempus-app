@@ -2,9 +2,7 @@ import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import LngDetector from 'i18next-browser-languagedetector';
 import TimeAgo from 'javascript-time-ago';
-import enGB from 'javascript-time-ago/locale/en-GB.json';
-import es from 'javascript-time-ago/locale/es.json';
-import it from 'javascript-time-ago/locale/it.json';
+import TimeAgoLocaleEN from 'javascript-time-ago/locale/en';
 import resources from './translations';
 import { SUPPORTED_LOCALES, SupportedLocale } from './i18nTypes';
 
@@ -35,9 +33,8 @@ i18n
     },
   });
 
-TimeAgo.addDefaultLocale(enGB);
-TimeAgo.addLocale(es);
-TimeAgo.addLocale(it);
+TimeAgo.setDefaultLocale('en');
+TimeAgo.addLocale(TimeAgoLocaleEN);
 
 export type { SupportedLocale };
 export { SUPPORTED_LOCALES };
