@@ -130,6 +130,9 @@ const stream$ = withdraw$.pipe(
       poolAddress,
       tokenAddress,
       tokenAmount: amount.toString(),
+      timestamp: status.contractTransaction?.timestamp ?? Date.now(),
+      txnHash: status.contractTransaction?.hash,
+      error: status.error?.message,
       txnId,
     });
 

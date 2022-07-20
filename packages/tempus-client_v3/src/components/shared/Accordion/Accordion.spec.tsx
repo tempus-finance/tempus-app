@@ -24,6 +24,18 @@ describe('Accordion', () => {
     expect(container).toMatchSnapshot();
   });
 
+  it('renders an accordion element with subtitle', () => {
+    const props: AccordionProps = { ...defaultProps, subtitle: 'subtitle' };
+    const { container, getByRole, queryByText } = subject(props);
+
+    const button = getByRole('button');
+    const content = queryByText(CONTENT);
+
+    expect(button).not.toBeNull();
+    expect(content).toBeNull();
+    expect(container).toMatchSnapshot();
+  });
+
   it('renders an accordion element which default to open', () => {
     const props = { ...defaultProps, defaultOpen: true };
     const { container, getByRole, queryByText } = subject(props);

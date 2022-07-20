@@ -2,7 +2,7 @@ import { FC, Fragment, memo, useMemo } from 'react';
 import Typography, { TypographyColor, TypographyVariant } from '../Typography';
 import './FormattedDate.scss';
 
-type FormattedDateSize = 'small' | 'medium' | 'large';
+type FormattedDateSize = 'tiny' | 'small' | 'medium' | 'large';
 
 export interface FormattedDateProps {
   date: Date;
@@ -11,9 +11,11 @@ export interface FormattedDateProps {
   size?: FormattedDateSize;
   separatorContrast?: 'low' | 'high';
   dateParts?: Set<Intl.DateTimeFormatPartTypes>;
+  customizedFormatOptions?: Intl.DateTimeFormatOptions;
 }
 
 const formattedDateTypographyVariantMap: Record<FormattedDateSize, TypographyVariant> = {
+  tiny: 'body-tertiary',
   small: 'body-secondary',
   medium: 'body-primary',
   large: 'subheader',
@@ -33,14 +35,15 @@ const FormattedDate: FC<FormattedDateProps> = props => {
     size = 'medium',
     separatorContrast = 'high',
     dateParts = new Set(['day', 'month', 'year']),
+    customizedFormatOptions = {},
   } = props;
   const formattedDateParts = useMemo(
     () =>
-      new Intl.DateTimeFormat(locale, formatOptions)
+      new Intl.DateTimeFormat(locale, { ...formatOptions, ...customizedFormatOptions })
         .formatToParts(date)
         .filter(part => dateParts.has(part.type))
         .map(part => part.value.toString()),
-    [date, locale, dateParts],
+    [date, locale, dateParts, customizedFormatOptions],
   );
 
   return (
