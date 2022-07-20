@@ -1,4 +1,4 @@
-import { Observable, ReplaySubject, Subject, interval, tap, filter, take } from 'rxjs';
+import { Observable, ReplaySubject, Subject, interval, tap, filter, take, scan } from 'rxjs';
 import { v1 as uuid } from 'uuid';
 import { Chain, StorageService } from 'tempus-core-services';
 import {
@@ -8,10 +8,10 @@ import {
   NotificationInput,
   NotificationText,
 } from '../interfaces';
-import { NotificationStatus } from '../interfaces/Notification';
+import { NotificationData, NotificationStatus, TransactionData } from '../interfaces/Notification';
 
-export const NOTIFICATIONS_KEY = 'notifications_v2';
-const NOTIFICATION_HISTORY_SIZE = 5;
+export const NOTIFICATIONS_KEY = 'notifications_v3';
+const NOTIFICATION_HISTORY_SIZE = 20;
 
 class NotificationService {
   private notificationQueue: Subject<Notification> = new Subject<Notification>();
@@ -22,21 +22,31 @@ class NotificationService {
   }
 
   warn(input: NotificationInput): void {
-    const { chain, category, status, title, content, link, linkText } = input;
-    this.addToQueue(chain, category, status, NotificationLevel.WARNING, title, content, link, linkText);
+    const { chain, category, status, title, content, link, linkText, refId } = input;
+    this.addToQueue(chain, category, status, NotificationLevel.WARNING, title, content, link, linkText, refId);
   }
 
   notify(input: NotificationInput): void {
-    const { chain, category, status, title, content, link, linkText } = input;
-    this.addToQueue(chain, category, status, NotificationLevel.INFO, title, content, link, linkText);
+    const { chain, category, status, title, content, link, linkText, refId } = input;
+    this.addToQueue(chain, category, status, NotificationLevel.INFO, title, content, link, linkText, refId);
+  }
+
+  notifyTransaction(status: NotificationStatus, data: TransactionData): void {
+    const { chain, txnId } = data;
+
+    // for transaction notification we dont rely on title/content/link, we render the notification from data
+    // TODO: revisit in the future to see whether we need to store title/content/link
+    this.addToQueue(chain, 'Transaction', status, NotificationLevel.INFO, '', '', '', '', txnId, data);
   }
 
   getNextItem(): Observable<Notification> {
     return this.notificationQueue.asObservable();
   }
 
-  getLastItems(): Observable<Notification> {
-    return this.notificationHistory.asObservable();
+  getLastItems(): Observable<Notification[]> {
+    return this.notificationHistory
+      .asObservable()
+      .pipe(scan((allNotifications, notification) => allNotifications.concat(notification), [] as Notification[]));
   }
 
   deleteNotifications(): void {
@@ -62,6 +72,8 @@ class NotificationService {
     content: NotificationText,
     link?: string,
     linkText?: NotificationText,
+    refId?: string,
+    data?: NotificationData,
   ) {
     const notification = {
       category,
@@ -75,6 +87,8 @@ class NotificationService {
       id: uuid(),
       timestamp: Date.now(),
       dismissed: false,
+      refId,
+      data,
     };
     this.emitNotification(notification);
   }

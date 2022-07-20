@@ -58,6 +58,7 @@ describe('useTokenApprove', () => {
         chain: 'ethereum',
         tokenAddress: '0x123',
         amount: ONE,
+        txnId: '0x01',
       },
       txnId: '0x01',
     });
@@ -94,6 +95,7 @@ describe('useTokenApprove', () => {
         chain: 'ethereum',
         tokenAddress: '0x123',
         amount: ONE,
+        txnId: '0x01',
       },
       txnId: '0x01',
     });
@@ -119,6 +121,7 @@ describe('useTokenApprove', () => {
         chain: 'fantom',
         tokenAddress: '0x789',
         amount: new Decimal('12'),
+        txnId: '0x0w',
       },
       txnId: '0x0w',
     });
@@ -162,6 +165,7 @@ describe('useTokenApprove', () => {
         chain: 'ethereum',
         tokenAddress: '0x123',
         amount: ONE,
+        txnId: '0x01',
       },
       txnId: '0x01',
     });
@@ -210,6 +214,7 @@ describe('useTokenApprove', () => {
         chain: 'ethereum',
         tokenAddress: '0x123',
         amount: ONE,
+        txnId: '0x01',
       },
       txnId: '0x01',
     });
@@ -260,6 +265,7 @@ describe('useTokenApprove', () => {
         chain: 'ethereum',
         tokenAddress: '0x123',
         amount: ONE,
+        txnId: '0x01',
       },
       txnId: '0x01',
     });
@@ -312,6 +318,7 @@ describe('useTokenApprove', () => {
         chain: 'ethereum',
         tokenAddress: '0x123',
         amount: ONE,
+        txnId: '0x01',
       },
       txnId: '0x01',
     });
@@ -362,6 +369,7 @@ describe('useTokenApprove', () => {
         chain: 'ethereum',
         tokenAddress: '0x123',
         amount: ONE,
+        txnId: '0x01',
       },
       txnId: '0x01',
     });

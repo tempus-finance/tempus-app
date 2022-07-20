@@ -1,7 +1,7 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { act, renderHook } from '@testing-library/react-hooks';
 import { of as mockOf } from 'rxjs';
 import { NotificationInput } from '../interfaces/Notification';
-import { useNotifications } from './useNotifications';
+import { useNotifications, subscribeNotifications, resetNotifications } from './useNotifications';
 import { getNotificationService } from '../services/getNotificationService';
 
 jest.useFakeTimers();
@@ -59,6 +59,11 @@ describe('useNotifications()', () => {
   });
 
   it('should call `NotificationService.notify`', async () => {
+    act(() => {
+      resetNotifications();
+      subscribeNotifications();
+    });
+
     const mockNotificationInput1: NotificationInput = {
       chain: 'ethereum',
       category: 'Service',
@@ -89,6 +94,11 @@ describe('useNotifications()', () => {
   });
 
   it('should call `NotificationService.warn`', async () => {
+    act(() => {
+      resetNotifications();
+      subscribeNotifications();
+    });
+
     const mockWarnInput: NotificationInput = {
       chain: 'ethereum',
       category: 'Service',
@@ -105,6 +115,11 @@ describe('useNotifications()', () => {
   });
 
   it('should call `NotificationService.deleteNotifications`', async () => {
+    act(() => {
+      resetNotifications();
+      subscribeNotifications();
+    });
+
     const { deleteNotifications } = useNotifications();
     renderHook(() => deleteNotifications());
 
@@ -112,6 +127,11 @@ describe('useNotifications()', () => {
   });
 
   it('should call `NotificationService.dismissNotification`', async () => {
+    act(() => {
+      resetNotifications();
+      subscribeNotifications();
+    });
+
     const { dismissNotification } = useNotifications();
     renderHook(() => dismissNotification('abc'));
 
@@ -120,7 +140,13 @@ describe('useNotifications()', () => {
   });
 
   it('should return the last notification emitted', async () => {
-    mockGetNextItem.mockImplementation(() => mockOf(mockNotification1));
+    mockGetNextItem.mockReturnValue(mockOf(mockNotification1));
+
+    act(() => {
+      resetNotifications();
+      subscribeNotifications();
+    });
+
     const { getNextItem } = useNotifications();
     const { result } = renderHook(() => getNextItem());
 
@@ -128,8 +154,13 @@ describe('useNotifications()', () => {
   });
 
   it('should return the last stored notifications', async () => {
-    const mockNotifications = [mockNotification1, mockNotification2];
-    mockGetLastItems.mockImplementation(() => mockOf(mockNotifications));
+    const mockNotifications = [mockNotification2, mockNotification1];
+    mockGetLastItems.mockReturnValue(mockOf(mockNotifications));
+
+    act(() => {
+      resetNotifications();
+      subscribeNotifications();
+    });
 
     const { getLastItems } = useNotifications();
     const { result } = renderHook(() => getLastItems());

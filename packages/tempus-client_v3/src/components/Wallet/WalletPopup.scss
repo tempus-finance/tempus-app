@@ -43,6 +43,24 @@
       flex: 1 100%;
     }
 
+    .tc__wallet-popup__transaction-list {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 8px;
+      box-sizing: border-box;
+
+      .tc__accordion {
+        width: 260px;
+        margin: 4px;
+
+        .tc__accordion__title :not(svg) {
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+      }
+    }
+
     &::before {
       content: initial;
     }

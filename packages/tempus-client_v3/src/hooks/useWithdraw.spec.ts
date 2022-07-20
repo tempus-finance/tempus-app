@@ -57,6 +57,7 @@ describe('useWithdraw', () => {
         chain: 'ethereum',
         poolAddress: '1',
         token: 'stETH',
+        txnId: '0x01',
       },
       txnId: '0x01',
     });
@@ -103,6 +104,7 @@ describe('useWithdraw', () => {
         chain: 'ethereum',
         poolAddress: '1',
         token: 'stETH',
+        txnId: '0x01',
       },
       txnId: '0x01',
     });
@@ -138,6 +140,7 @@ describe('useWithdraw', () => {
         chain: 'ethereum',
         poolAddress: '1',
         token: 'stETH',
+        txnId: '0x02',
       },
       txnId: '0x02',
     });
@@ -189,6 +192,7 @@ describe('useWithdraw', () => {
         poolAddress: '1',
         amount: new Decimal(2),
         token: 'stETH',
+        txnId: '0x01',
       },
       txnId: '0x01',
     });
@@ -244,6 +248,7 @@ describe('useWithdraw', () => {
         poolAddress: '1',
         amount: new Decimal(2),
         token: 'stETH',
+        txnId: '0x01',
       },
       txnId: '0x01',
     });
@@ -303,6 +308,7 @@ describe('useWithdraw', () => {
         poolAddress: '1',
         amount: new Decimal(2),
         token: 'stETH',
+        txnId: '0x01',
       },
       txnId: '0x01',
     });
@@ -360,6 +366,7 @@ describe('useWithdraw', () => {
         poolAddress: '1',
         amount: new Decimal(2),
         token: 'stETH',
+        txnId: '0x01',
       },
       txnId: '0x01',
     });

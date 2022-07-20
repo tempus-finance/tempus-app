@@ -15,6 +15,7 @@ import {
   subscribeFixedDepositStatus,
   subscribeWithdrawStatus,
   subscribeFeesData,
+  subscribeNotifications,
 } from '../../hooks';
 
 export const HookSubscriber: FC = () => {
@@ -37,6 +38,7 @@ export const HookSubscriber: FC = () => {
     subscribeApproveTokenStatus();
     subscribeFixedDepositStatus();
     subscribeWithdrawStatus();
+    subscribeNotifications();
   }, []);
 
   return null;
