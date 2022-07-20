@@ -222,7 +222,7 @@ exports[`Accordion renders an accordion element with subtitle 1`] = `
         Success transaction
       </div>
       <div
-        style="font-style: normal; font-size: 10px; line-height: 16px; color: rgb(122, 122, 122); font-weight: 400; font-family: 'Azeret Mono', monospace; opacity: 1;"
+        style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(122, 122, 122); font-weight: 400; font-family: 'Azeret Mono', monospace; opacity: 1;"
       >
         subtitle
       </div>
