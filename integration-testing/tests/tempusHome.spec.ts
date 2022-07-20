@@ -106,6 +106,7 @@ test.describe.serial('Tempus Homepage tests', () => {
     await page.goto(TEMPUS_URL);
     await tempusManageCurrency(page, 'DAI');
     await expect(page.locator('.tc__modal')).toBeEnabled();
+    await page.close();
   });
 
   test('Manage window has Make Deposit button', async () => {
@@ -113,6 +114,7 @@ test.describe.serial('Tempus Homepage tests', () => {
     await page.goto(TEMPUS_URL);
     await tempusManageCurrency(page, 'DAI');
     await expect(page.locator('button:has-text("Make Deposit")')).toBeEnabled();
+    await page.close();
   });
 
   test.afterAll(async () => {
