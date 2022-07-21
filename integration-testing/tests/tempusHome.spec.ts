@@ -2,6 +2,7 @@ import { BrowserContext, Page, test, expect } from '@playwright/test';
 import { metamaskLogin } from '../modules/metamask';
 import { chromiumPersistant } from '../modules/browser';
 import { TEMPUS_URL } from '../utility/constants';
+import { tempusManageCurrency } from '../modules/tempushome';
 
 test.describe.serial('Tempus Homepage tests', () => {
   let browser: BrowserContext;
@@ -48,6 +49,71 @@ test.describe.serial('Tempus Homepage tests', () => {
     await page.click('text="APR %"');
     await page.click('text="Balance"');
 
+    await page.close();
+  });
+
+  test('Portofolio overview - Current Value', async () => {
+    const page: Page = await browser.newPage();
+    await page.goto(TEMPUS_URL);
+    await page.click('text="Portfolio"');
+    await page.click('text="Overview"');
+    await expect(page.locator('.tc__app__portfolio-box >> nth=0')).toContainText('Current Value');
+    await page.close();
+  });
+
+  test('Portofolio overview - Yield Earned', async () => {
+    const page: Page = await browser.newPage();
+    await page.goto(TEMPUS_URL);
+    await page.click('text="Portfolio"');
+    await page.click('text="Overview"');
+    await expect(page.locator('.tc__app__portfolio-box >> nth=1')).toContainText('Yield Earned');
+    await page.close();
+  });
+
+  test('Portofolio overview - Projected Yield', async () => {
+    const page: Page = await browser.newPage();
+    await page.goto(TEMPUS_URL);
+    await page.click('text="Portfolio"');
+    await page.click('text="Overview"');
+    await expect(page.locator('.tc__app__portfolio-box >> nth=2')).toContainText('Projected Yield');
+    await page.close();
+  });
+
+  test('Portofolio overview - Overview - Browse Markets', async () => {
+    // has to be called from an account with empty portfolio
+    const page: Page = await browser.newPage();
+    await page.goto(TEMPUS_URL);
+    await page.click('text="Portfolio"');
+    await page.click('text="Overview"');
+    await page.click('text="Browse Markets"');
+    await expect(page).toHaveURL(TEMPUS_URL);
+    await page.close();
+  });
+
+  test('Portofolio overview - Positions - Browse Markets', async () => {
+    // has to be called from an account with empty portfolio
+    const page: Page = await browser.newPage();
+    await page.goto(TEMPUS_URL);
+    await page.click('text="Portfolio"');
+    await page.click('text="Positions"');
+    await page.click('text="Browse Markets"');
+    await expect(page).toHaveURL(TEMPUS_URL);
+    await page.close();
+  });
+
+  test('Popup window appears when clicked DAI', async () => {
+    const page: Page = await browser.newPage();
+    await page.goto(TEMPUS_URL);
+    await tempusManageCurrency(page, 'DAI');
+    await expect(page.locator('.tc__modal')).toBeEnabled();
+    await page.close();
+  });
+
+  test('Manage window has Make Deposit button', async () => {
+    const page: Page = await browser.newPage();
+    await page.goto(TEMPUS_URL);
+    await tempusManageCurrency(page, 'DAI');
+    await expect(page.locator('button:has-text("Make Deposit")')).toBeEnabled();
     await page.close();
   });
 
