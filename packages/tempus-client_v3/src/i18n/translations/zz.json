@@ -13,6 +13,13 @@
     "insufficientBalanceError": "~~~~~====={{{{{(((((insufficientBalanceError)))))}}}}}=====~~~~~",
     "linkBlockExplorer": "~~~~~====={{{{{(((((linkBlockExplorer)))))}}}}}=====~~~~~"
   },
+  "DepositContent": {
+    "descriptionDetail": "~~~~~====={{{{{(((((descriptionDetail)))))}}}}}=====~~~~~",
+    "descriptionProtocol": "<0>{{chainTokenStr}}</0><1></1><2>{{protocolStr}}</2>",
+    "descriptionTerm": "<0>{t('DepositContent.term')}</0><1></1>",
+    "linkBlockExplorer": "~~~~~====={{{{{(((((linkBlockExplorer)))))}}}}}=====~~~~~",
+    "titleErrorDetail": "~~~~~====={{{{{(((((titleErrorDetail)))))}}}}}=====~~~~~"
+  },
   "DepositModal": {
     "description": "~~~~~====={{{{{(((((description)))))}}}}}=====~~~~~",
     "errorModalDescription": "~~~~~====={{{{{(((((errorModalDescription)))))}}}}}=====~~~~~",
@@ -53,16 +60,16 @@
     "comingSoon": "~~~~~====={{{{{(((((comingSoon)))))}}}}}=====~~~~~"
   },
   "MarketsPools": {
-    "emptyTitle": "~~~~~====={{{{{(((((emptyTitle)))))}}}}}=====~~~~~",
     "emptyDescription": "~~~~~====={{{{{(((((emptyDescription)))))}}}}}=====~~~~~",
+    "emptyTitle": "~~~~~====={{{{{(((((emptyTitle)))))}}}}}=====~~~~~",
     "showMoreXButtonLabel": "~~~~~====={{{{{(((((showMoreXButtonLabel)))))}}}}}=====~~~~~",
     "showMoreXOfYButtonLabel": "~~~~~====={{{{{(((((showMoreXOfYButtonLabel)))))}}}}}=====~~~~~"
   },
   "MarketsSubheader": {
     "filterActive": "~~~~~====={{{{{(((((filterActive)))))}}}}}=====~~~~~",
+    "filterDisabled": "~~~~~====={{{{{(((((filterDisabled)))))}}}}}=====~~~~~",
     "filterInactive": "~~~~~====={{{{{(((((filterInactive)))))}}}}}=====~~~~~",
     "filterMatured": "~~~~~====={{{{{(((((filterMatured)))))}}}}}=====~~~~~",
-    "filterDisabled": "~~~~~====={{{{{(((((filterDisabled)))))}}}}}=====~~~~~",
     "optionFilter": "~~~~~====={{{{{(((((optionFilter)))))}}}}}=====~~~~~",
     "optionSort": "~~~~~====={{{{{(((((optionSort)))))}}}}}=====~~~~~",
     "sortAPR": "~~~~~====={{{{{(((((sortAPR)))))}}}}}=====~~~~~",
@@ -168,6 +175,20 @@
   "TotalValueLocked": {
     "title": "~~~~~====={{{{{(((((title)))))}}}}}=====~~~~~"
   },
+  "TransactionItem": {
+    "titleApprovalFailed": "~~~~~====={{{{{(((((titleApprovalFailed)))))}}}}}=====~~~~~",
+    "titleApprovalPending": "~~~~~====={{{{{(((((titleApprovalPending)))))}}}}}=====~~~~~",
+    "titleApprovalSucceed": "~~~~~====={{{{{(((((titleApprovalSucceed)))))}}}}}=====~~~~~",
+    "titleDepositFailed": "~~~~~====={{{{{(((((titleDepositFailed)))))}}}}}=====~~~~~",
+    "titleDepositPending": "~~~~~====={{{{{(((((titleDepositPending)))))}}}}}=====~~~~~",
+    "titleDepositSucceed": "~~~~~====={{{{{(((((titleDepositSucceed)))))}}}}}=====~~~~~",
+    "titleWithdrawalFailed": "~~~~~====={{{{{(((((titleWithdrawalFailed)))))}}}}}=====~~~~~",
+    "titleWithdrawalPending": "~~~~~====={{{{{(((((titleWithdrawalPending)))))}}}}}=====~~~~~",
+    "titleWithdrawalSucceed": "~~~~~====={{{{{(((((titleWithdrawalSucceed)))))}}}}}=====~~~~~"
+  },
+  "TransactionList": {
+    "descriptionNoTransactions": "~~~~~====={{{{{(((((descriptionNoTransactions)))))}}}}}=====~~~~~"
+  },
   "WalletButton": {
     "buttonConnectWallet": "~~~~~====={{{{{(((((buttonConnectWallet)))))}}}}}=====~~~~~",
     "buttonUnsupported": "~~~~~====={{{{{(((((buttonUnsupported)))))}}}}}=====~~~~~"
@@ -178,6 +199,13 @@
   "WalletPopup": {
     "title": "~~~~~====={{{{{(((((title)))))}}}}}=====~~~~~",
     "titleAddress": "~~~~~====={{{{{(((((titleAddress)))))}}}}}=====~~~~~"
+  },
+  "WithdrawContent": {
+    "descriptionDetail": "<0></0><1></1>",
+    "descriptionProtocol": "<0>{{chainTokenStr}}</0><1></1><2></2><3>{{protocolStr}}</3>",
+    "descriptionTerm": "<0></0><1></1>",
+    "linkBlockExplorer": "~~~~~====={{{{{(((((linkBlockExplorer)))))}}}}}=====~~~~~",
+    "titleErrorDetail": "~~~~~====={{{{{(((((titleErrorDetail)))))}}}}}=====~~~~~"
   },
   "WithdrawModal": {
     "description": "~~~~~====={{{{{(((((description)))))}}}}}=====~~~~~",

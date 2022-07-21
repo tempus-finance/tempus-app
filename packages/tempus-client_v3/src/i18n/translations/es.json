@@ -13,6 +13,13 @@
     "insufficientBalanceError": "Saldo insuficiente",
     "linkBlockExplorer": ""
   },
+  "DepositContent": {
+    "descriptionDetail": "<0>Deposit</0><1>{{amount}} {{token}}</1>",
+    "descriptionProtocol": "<0>{{chainTokenStr}}</0><1>via</1><2></2><3>{{protocolStr}}</3>",
+    "descriptionTerm": "<0>with term</0><1></1>",
+    "linkBlockExplorer": "",
+    "titleErrorDetail": ""
+  },
   "DepositModal": {
     "description": "",
     "errorModalDescription": "La transacción falló debido a un error.",
@@ -53,16 +60,16 @@
     "comingSoon": "Próximamente"
   },
   "MarketsPools": {
-    "emptyTitle": "",
     "emptyDescription": "",
+    "emptyTitle": "",
     "showMoreXButtonLabel": "",
     "showMoreXOfYButtonLabel": ""
   },
   "MarketsSubheader": {
     "filterActive": "",
+    "filterDisabled": "Desactivados ({{numOfPool}})",
     "filterInactive": "",
     "filterMatured": "",
-    "filterDisabled": "Desactivados ({{numOfPool}})",
     "optionFilter": "",
     "optionSort": "",
     "sortAPR": "",
@@ -168,6 +175,20 @@
   "TotalValueLocked": {
     "title": ""
   },
+  "TransactionItem": {
+    "titleApprovalFailed": "",
+    "titleApprovalPending": "",
+    "titleApprovalSucceed": "",
+    "titleDepositFailed": "",
+    "titleDepositPending": "",
+    "titleDepositSucceed": "",
+    "titleWithdrawalFailed": "",
+    "titleWithdrawalPending": "",
+    "titleWithdrawalSucceed": ""
+  },
+  "TransactionList": {
+    "descriptionNoTransactions": ""
+  },
   "WalletButton": {
     "buttonConnectWallet": "",
     "buttonUnsupported": ""
@@ -178,6 +199,13 @@
   "WalletPopup": {
     "title": "Visión general del wallet",
     "titleAddress": "wallet conectado"
+  },
+  "WithdrawContent": {
+    "descriptionDetail": "<0>Withdraw</0><1>{{amount}} {{token}}</1>",
+    "descriptionProtocol": "<0>{{chainTokenStr}}</0><1>via</1><2></2><3>{{protocolStr}}</3>",
+    "descriptionTerm": "<0>with term</0><1></1>",
+    "linkBlockExplorer": "",
+    "titleErrorDetail": ""
   },
   "WithdrawModal": {
     "description": "",

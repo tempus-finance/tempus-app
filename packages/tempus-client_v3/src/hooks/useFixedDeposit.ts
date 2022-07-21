@@ -136,6 +136,9 @@ const stream$ = fixedDeposit$.pipe(
       poolAddress,
       tokenAddress,
       tokenAmount: tokenAmount.toString(),
+      timestamp: status.contractTransaction?.timestamp ?? Date.now(),
+      txnHash: status.contractTransaction?.hash,
+      error: status.error?.message,
       txnId,
     });
 

@@ -24,6 +24,9 @@ export interface TransactionData {
   tokenAmount: string; // use string to be better serlizable in storage
   tokenAddress: string;
   txnId: string;
+  timestamp?: number;
+  txnHash?: string;
+  error?: string;
 }
 export type NotificationData = TransactionData; // in future it will be TransactionData | WalletData | ServiceData
 

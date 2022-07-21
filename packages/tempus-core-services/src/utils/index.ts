@@ -27,3 +27,4 @@ export { prettifyProtocolName } from './prettifyProtocolName';
 export { getPathRoot } from './getPathRoot';
 export { getDepositAmountFromTx } from './getDepositedAmountFromTx';
 export { getWithdrawnAmountFromTx } from './getWithdrawnAmountFromTx';
+export { timeago } from './timeago';
