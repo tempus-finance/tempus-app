@@ -1,7 +1,6 @@
 import { FC, memo, useMemo } from 'react';
-import TimeAgo from 'javascript-time-ago';
 import { useTranslation } from 'react-i18next';
-import { TempusPool } from 'tempus-core-services';
+import { TempusPool, timeago } from 'tempus-core-services';
 import { Accordion, colors } from '../../shared';
 import { Notification, TransactionData } from '../../../interfaces/Notification';
 import ApproveContent from './ApproveContent';
@@ -61,7 +60,7 @@ const TransactionItem: FC<TransactionItemProps> = props => {
   }, [transaction.status, transactionData, t]);
   const subtitle = useMemo(
     // use default locale 'en' here - we dont need translation for this
-    () => new TimeAgo().format(transactionData.timestamp as number, 'twitter') as string,
+    () => timeago(transactionData.timestamp as number),
     [transactionData],
   );
   const content = useMemo(() => {

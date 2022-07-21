@@ -91,6 +91,7 @@ export {
   getPathRoot,
   getDepositAmountFromTx,
   getWithdrawnAmountFromTx,
+  timeago,
 } from './utils';
 
 export * from './constants';

@@ -68,11 +68,11 @@
           }
         }
 
-        .tc__wallet-popup__transaction-list__deposit-content {
-          .tc__wallet-popup__transaction-list__deposit-content-timestamp,
-          .tc__wallet-popup__transaction-list__deposit-content-detail,
-          .tc__wallet-popup__transaction-list__deposit-content-protocol,
-          .tc__wallet-popup__transaction-list__deposit-content-term {
+        .tc__wallet-popup__transaction-list__deposit-withdraw-content {
+          .tc__wallet-popup__transaction-list__deposit-withdraw-content-timestamp,
+          .tc__wallet-popup__transaction-list__deposit-withdraw-content-detail,
+          .tc__wallet-popup__transaction-list__deposit-withdraw-content-protocol,
+          .tc__wallet-popup__transaction-list__deposit-withdraw-content-term {
             display: flex;
             align-content: center;
             margin: 4px 0;
@@ -90,8 +90,8 @@
             }
           }
 
-          .tc__wallet-popup__transaction-list__deposit-content-timestamp {
-            .tc__wallet-popup__transaction-list__deposit-content-timestamp__separator {
+          .tc__wallet-popup__transaction-list__deposit-withdraw-content-timestamp {
+            .tc__wallet-popup__transaction-list__deposit-withdraw-content-timestamp__separator {
               width: 1px;
               height: 12px;
               background-color: var(--textDisabled);
@@ -120,14 +120,14 @@
             }
           }
 
-          .tc__wallet-popup__transaction-list__deposit-content-protocol {
+          .tc__wallet-popup__transaction-list__deposit-withdraw-content-protocol {
             div {
               display: flex;
               align-content: center;
             }
           }
 
-          .tc__wallet-popup__transaction-list__deposit-content-error {
+          .tc__wallet-popup__transaction-list__deposit-withdraw-content-error {
             background-color: var(--walletPopupBackground);
             border: 1px solid var(--walletPopupInnerBorder);
             border-radius: 5px;
@@ -135,7 +135,7 @@
             margin-top: 12px;
           }
 
-          .tc__wallet-popup__transaction-list__deposit-content-link {
+          .tc__wallet-popup__transaction-list__deposit-withdraw-content-link {
             margin-top: 16px;
 
             a {
