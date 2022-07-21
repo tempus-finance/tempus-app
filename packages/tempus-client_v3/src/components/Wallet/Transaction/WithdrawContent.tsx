@@ -1,7 +1,7 @@
-import { FC, memo, useMemo } from 'react';
+import { FC, memo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { prettifyChainName, prettifyProtocolName, TempusPool } from 'tempus-core-services';
-import { useConfig, useLocale } from '../../../hooks';
+import { useConfig, useLocale, useTokenSymbol } from '../../../hooks';
 import { TransactionData } from '../../../interfaces/Notification';
 import { FormattedDate, Icon, Link, Logo, Typography } from '../../shared';
 
@@ -15,23 +15,12 @@ const WithdrawContent: FC<WithdrawContentProps> = props => {
   const { t } = useTranslation();
   const config = useConfig();
   const [locale] = useLocale();
-
-  const token = useMemo(() => {
-    switch (data.tokenAddress) {
-      case tempusPool.backingTokenAddress:
-        return tempusPool.backingToken;
-      case tempusPool.yieldBearingTokenAddress:
-        return tempusPool.yieldBearingToken;
-      default:
-        return '';
-    }
-  }, [data.tokenAddress, tempusPool]);
-  console.log(token, data, tempusPool);
+  const token = useTokenSymbol(data.chain, data.tokenAddress) ?? data.tokenAddress;
 
   return (
-    <div className="tc__wallet-popup__transaction-list__deposit-withdraw-content">
+    <div className="tc__wallet-popup__transaction-list__item-content">
       {data.timestamp && (
-        <div className="tc__wallet-popup__transaction-list__deposit-withdraw-content-timestamp">
+        <div className="tc__wallet-popup__transaction-list__item-content-timestamp">
           <FormattedDate
             date={new Date(data.timestamp)}
             locale={locale}
@@ -46,7 +35,7 @@ const WithdrawContent: FC<WithdrawContentProps> = props => {
             dateParts={new Set(['dayPeriod'])}
             customizedFormatOptions={{ hour: '2-digit', hour12: true }}
           />
-          <span className="tc__wallet-popup__transaction-list__deposit-withdraw-content-timestamp__separator" />
+          <span className="tc__wallet-popup__transaction-list__item-content-timestamp__separator" />
           <FormattedDate
             date={new Date(data.timestamp)}
             locale={locale}
@@ -55,7 +44,7 @@ const WithdrawContent: FC<WithdrawContentProps> = props => {
           />
         </div>
       )}
-      <div className="tc__wallet-popup__transaction-list__deposit-withdraw-content-detail">
+      <div className="tc__wallet-popup__transaction-list__item-content-detail">
         <Trans i18nKey="WithdrawContent.descriptionDetail" t={t}>
           <Typography variant="body-secondary" weight="medium" />
           <Typography variant="body-secondary" weight="bold">
@@ -63,7 +52,7 @@ const WithdrawContent: FC<WithdrawContentProps> = props => {
           </Typography>
         </Trans>
       </div>
-      <div className="tc__wallet-popup__transaction-list__deposit-withdraw-content-protocol">
+      <div className="tc__wallet-popup__transaction-list__item-content-protocol">
         <Trans i18nKey="WithdrawContent.descriptionProtocol" t={t}>
           <Typography variant="body-secondary" weight="medium">
             {{ chainTokenStr: `${prettifyChainName(data.chain)} - ${tempusPool.backingToken}` }}
@@ -75,7 +64,7 @@ const WithdrawContent: FC<WithdrawContentProps> = props => {
           </Typography>
         </Trans>
       </div>
-      <div className="tc__wallet-popup__transaction-list__deposit-withdraw-content-term">
+      <div className="tc__wallet-popup__transaction-list__item-content-term">
         <Trans i18nKey="WithdrawContent.descriptionTerm" t={t}>
           <Typography variant="body-secondary" weight="medium" color="text-secondary" />
           <FormattedDate
@@ -87,7 +76,7 @@ const WithdrawContent: FC<WithdrawContentProps> = props => {
         </Trans>
       </div>
       {data.error && (
-        <div className="tc__wallet-popup__transaction-list__deposit-withdraw-content-error">
+        <div className="tc__wallet-popup__transaction-list__item-content-error">
           <Typography variant="body-secondary" weight="medium">
             {t('WithdrawContent.titleErrorDetail')}
           </Typography>
@@ -97,7 +86,7 @@ const WithdrawContent: FC<WithdrawContentProps> = props => {
         </div>
       )}
       {data.txnHash && config[data.chain] && (
-        <div className="tc__wallet-popup__transaction-list__deposit-withdraw-content-link">
+        <div className="tc__wallet-popup__transaction-list__item-content-link">
           <Link
             href={`${config[data.chain].blockExplorerUrl}tx/${data.txnHash}`}
             className="tc__currency-input-modal__transaction-link"

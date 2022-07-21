@@ -91,10 +91,11 @@ export const mockServices = {
       depositedAmount: ONE,
     }),
   },
-  ERC20TokenServiceGetter: jest.fn().mockImplementation(() => ({
+  ERC20TokenServiceGetter: jest.fn().mockImplementation((_, tokenAddress) => ({
     approve: jest.fn().mockResolvedValue({ hash: '0x00' }),
     getAllowance: jest.fn().mockResolvedValue(MockBigNumber.from(10)),
     onTransfer: jest.fn(),
+    symbol: jest.fn().mockReturnValue(tokenAddress),
   })),
 };
 

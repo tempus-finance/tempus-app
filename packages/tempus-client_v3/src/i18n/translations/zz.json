@@ -5,6 +5,9 @@
     "navPortfolio": "~~~~~====={{{{{(((((navPortfolio)))))}}}}}=====~~~~~",
     "navStaking": "~~~~~====={{{{{(((((navStaking)))))}}}}}=====~~~~~"
   },
+  "ApproveContent": {
+    "descriptionDetail": "<0></0><1></1>"
+  },
   "ChainSelector": {
     "title": "~~~~~====={{{{{(((((title)))))}}}}}=====~~~~~"
   },

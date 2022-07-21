@@ -5,7 +5,7 @@ import { ButtonWrapper, Icon, Tooltip, Typography } from '../shared';
 import { TransactionList } from './Transaction';
 
 import './WalletPopup.scss';
-import { useNotifications } from '../../hooks';
+import { useNotifications, useTokenSymbols } from '../../hooks';
 
 export interface WalletPopupProps {
   open: boolean;

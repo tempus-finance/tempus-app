@@ -5,6 +5,9 @@
     "navPortfolio": "Portfolio",
     "navStaking": "Staking"
   },
+  "ApproveContent": {
+    "descriptionDetail": "<0>Approve</0><1>{{amount}} {{token}}</1>"
+  },
   "ChainSelector": {
     "title": "Select Network"
   },

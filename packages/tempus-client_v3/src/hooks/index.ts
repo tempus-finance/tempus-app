@@ -27,3 +27,4 @@ export * from './useNavigateToRoot';
 export * from './useTransactions';
 export * from './useNegativePoolInterestRate';
 export * from './useNotifications';
+export * from './useTokenSymbols';
