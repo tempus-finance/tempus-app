@@ -252,7 +252,13 @@ exports[`Wallet renders a wallet popup when click on wallet button 1`] = `
       </div>
       <div
         class="tc__wallet-popup__transaction-list"
-      />
+      >
+        <div
+          style="font-style: normal; font-size: 12px; line-height: 16px; color: rgb(34, 34, 34); font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 1;"
+        >
+          Your transactions will appear here...
+        </div>
+      </div>
     </div>
   </div>
 </div>

@@ -13,6 +13,13 @@
     "insufficientBalanceError": "~~~~~====={{{{{(((((insufficientBalanceError)))))}}}}}=====~~~~~",
     "linkBlockExplorer": "~~~~~====={{{{{(((((linkBlockExplorer)))))}}}}}=====~~~~~"
   },
+  "DepositContent": {
+    "descriptionDetail": "",
+    "descriptionProtocol": "<0>{{chainTokenStr}}</0><1></1><2>{{protocolStr}}</2>",
+    "descriptionTerm": "<0>{t('DepositContent.term')}</0><1></1>",
+    "linkBlockExplorer": "",
+    "titleErrorDetail": ""
+  },
   "DepositModal": {
     "description": "~~~~~====={{{{{(((((description)))))}}}}}=====~~~~~",
     "errorModalDescription": "~~~~~====={{{{{(((((errorModalDescription)))))}}}}}=====~~~~~",
@@ -53,16 +60,16 @@
     "comingSoon": "~~~~~====={{{{{(((((comingSoon)))))}}}}}=====~~~~~"
   },
   "MarketsPools": {
-    "emptyTitle": "~~~~~====={{{{{(((((emptyTitle)))))}}}}}=====~~~~~",
     "emptyDescription": "~~~~~====={{{{{(((((emptyDescription)))))}}}}}=====~~~~~",
+    "emptyTitle": "~~~~~====={{{{{(((((emptyTitle)))))}}}}}=====~~~~~",
     "showMoreXButtonLabel": "~~~~~====={{{{{(((((showMoreXButtonLabel)))))}}}}}=====~~~~~",
     "showMoreXOfYButtonLabel": "~~~~~====={{{{{(((((showMoreXOfYButtonLabel)))))}}}}}=====~~~~~"
   },
   "MarketsSubheader": {
     "filterActive": "~~~~~====={{{{{(((((filterActive)))))}}}}}=====~~~~~",
+    "filterDisabled": "~~~~~====={{{{{(((((filterDisabled)))))}}}}}=====~~~~~",
     "filterInactive": "~~~~~====={{{{{(((((filterInactive)))))}}}}}=====~~~~~",
     "filterMatured": "~~~~~====={{{{{(((((filterMatured)))))}}}}}=====~~~~~",
-    "filterDisabled": "~~~~~====={{{{{(((((filterDisabled)))))}}}}}=====~~~~~",
     "optionFilter": "~~~~~====={{{{{(((((optionFilter)))))}}}}}=====~~~~~",
     "optionSort": "~~~~~====={{{{{(((((optionSort)))))}}}}}=====~~~~~",
     "sortAPR": "~~~~~====={{{{{(((((sortAPR)))))}}}}}=====~~~~~",
@@ -167,6 +174,20 @@
   },
   "TotalValueLocked": {
     "title": "~~~~~====={{{{{(((((title)))))}}}}}=====~~~~~"
+  },
+  "TransactionItem": {
+    "titleApprovalFailed": "",
+    "titleApprovalPending": "",
+    "titleApprovalSucceed": "",
+    "titleDepositFailed": "",
+    "titleDepositPending": "",
+    "titleDepositSucceed": "",
+    "titleWithdrawalFailed": "",
+    "titleWithdrawalPending": "",
+    "titleWithdrawalSucceed": ""
+  },
+  "TransactionList": {
+    "descriptionNoTransactions": ""
   },
   "WalletButton": {
     "buttonConnectWallet": "~~~~~====={{{{{(((((buttonConnectWallet)))))}}}}}=====~~~~~",

@@ -48,6 +48,7 @@
     "i18next": "^21.8.0",
     "i18next-browser-languagedetector": "^6.1.4",
     "is-mobile": "^3.0.0",
+    "javascript-time-ago": "^1.0.35",
     "lodash": "^4.17.21",
     "lottie-react": "^2.2.1",
     "react": "^17.0.2",
@@ -73,6 +74,7 @@
     "@storybook/preset-create-react-app": "^3.2.0",
     "@storybook/react": "^6.4.19",
     "@storybook/testing-library": "^0.0.9",
+    "@types/javascript-time-ago": "^2.0.3",
     "babel-loader": "8.1.0",
     "i18next-parser": "^6.4.0"
   },

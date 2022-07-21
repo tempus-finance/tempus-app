@@ -12,11 +12,12 @@ export interface AccordionProps {
   iconVariant: AccordionIconVariant;
   iconColor?: string;
   title: string;
+  subtitle?: string;
   defaultOpen?: boolean;
 }
 
 const Accordion: FC<AccordionProps> = props => {
-  const { iconVariant, iconColor, title, children, defaultOpen } = props;
+  const { iconVariant, iconColor, title, subtitle, children, defaultOpen } = props;
 
   const [open, setOpen] = useState<boolean>(defaultOpen || false);
   const handleToggle = useCallback(() => setOpen(state => !state), []);
@@ -35,6 +36,11 @@ const Accordion: FC<AccordionProps> = props => {
       <ButtonWrapper className="tc__accordion__title" onClick={handleToggle}>
         {icon}
         <Typography variant="body-secondary">{title}</Typography>
+        {subtitle && (
+          <Typography variant="body-secondary" type="mono" color="text-disabled">
+            {subtitle}
+          </Typography>
+        )}
         <Icon variant={open ? 'up-chevron' : 'down-chevron'} size="small" />
       </ButtonWrapper>
       {open && <div className="tc__accordion__content">{children}</div>}

@@ -1,6 +1,8 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import LngDetector from 'i18next-browser-languagedetector';
+import TimeAgo from 'javascript-time-ago';
+import TimeAgoLocaleEN from 'javascript-time-ago/locale/en';
 import resources from './translations';
 import { SUPPORTED_LOCALES, SupportedLocale } from './i18nTypes';
 
@@ -30,6 +32,9 @@ i18n
       useSuspense: false,
     },
   });
+
+TimeAgo.setDefaultLocale('en');
+TimeAgo.addLocale(TimeAgoLocaleEN);
 
 export type { SupportedLocale };
 export { SUPPORTED_LOCALES };

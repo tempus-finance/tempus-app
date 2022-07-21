@@ -13,8 +13,16 @@
     width: 100%;
 
     :not(svg) {
-      flex: 1 100%;
       text-align: initial;
+      white-space: nowrap;
+
+      &:first-of-type {
+        flex: 1 100%;
+      }
+
+      &:last-of-type {
+        text-align: right;
+      }
     }
 
     svg {
