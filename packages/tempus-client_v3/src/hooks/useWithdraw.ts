@@ -64,7 +64,7 @@ const stream$ = withdraw$.pipe(
       signer,
       txnId,
     } = payload;
-    const request = { chain, poolAddress, amount, token, txnId };
+    const request = { chain, poolAddress, amount, token, tokenAddress, txnId };
 
     withdrawStatus$.next({ pending: true, txnId });
     notifyTransaction('pending', {

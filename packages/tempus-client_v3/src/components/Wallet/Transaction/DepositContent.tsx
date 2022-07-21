@@ -28,9 +28,9 @@ const DepositContent: FC<DepositContentProps> = props => {
   }, [data.tokenAddress, tempusPool]);
 
   return (
-    <div className="tc__wallet-popup__transaction-list__deposit-content">
+    <div className="tc__wallet-popup__transaction-list__deposit-withdraw-content">
       {data.timestamp && (
-        <div className="tc__wallet-popup__transaction-list__deposit-content-timestamp">
+        <div className="tc__wallet-popup__transaction-list__deposit-withdraw-content-timestamp">
           <FormattedDate
             date={new Date(data.timestamp)}
             locale={locale}
@@ -45,7 +45,7 @@ const DepositContent: FC<DepositContentProps> = props => {
             dateParts={new Set(['dayPeriod'])}
             customizedFormatOptions={{ hour: '2-digit', hour12: true }}
           />
-          <span className="tc__wallet-popup__transaction-list__deposit-content-timestamp__separator" />
+          <span className="tc__wallet-popup__transaction-list__deposit-withdraw-content-timestamp__separator" />
           <FormattedDate
             date={new Date(data.timestamp)}
             locale={locale}
@@ -54,7 +54,7 @@ const DepositContent: FC<DepositContentProps> = props => {
           />
         </div>
       )}
-      <div className="tc__wallet-popup__transaction-list__deposit-content-detail">
+      <div className="tc__wallet-popup__transaction-list__deposit-withdraw-content-detail">
         <Trans i18nKey="DepositContent.descriptionDetail" t={t}>
           <Typography variant="body-secondary" weight="medium" />
           <Typography variant="body-secondary" weight="bold">
@@ -62,7 +62,7 @@ const DepositContent: FC<DepositContentProps> = props => {
           </Typography>
         </Trans>
       </div>
-      <div className="tc__wallet-popup__transaction-list__deposit-content-protocol">
+      <div className="tc__wallet-popup__transaction-list__deposit-withdraw-content-protocol">
         <Trans i18nKey="DepositContent.descriptionProtocol" t={t}>
           <Typography variant="body-secondary" weight="medium">
             {{ chainTokenStr: `${prettifyChainName(data.chain)} - ${tempusPool.backingToken}` }}
@@ -74,7 +74,7 @@ const DepositContent: FC<DepositContentProps> = props => {
           </Typography>
         </Trans>
       </div>
-      <div className="tc__wallet-popup__transaction-list__deposit-content-term">
+      <div className="tc__wallet-popup__transaction-list__deposit-withdraw-content-term">
         <Trans i18nKey="DepositContent.descriptionTerm" t={t}>
           <Typography variant="body-secondary" weight="medium" color="text-secondary" />
           <FormattedDate
@@ -86,7 +86,7 @@ const DepositContent: FC<DepositContentProps> = props => {
         </Trans>
       </div>
       {data.error && (
-        <div className="tc__wallet-popup__transaction-list__deposit-content-error">
+        <div className="tc__wallet-popup__transaction-list__deposit-withdraw-content-error">
           <Typography variant="body-secondary" weight="medium">
             {t('DepositContent.titleErrorDetail')}
           </Typography>
@@ -96,7 +96,7 @@ const DepositContent: FC<DepositContentProps> = props => {
         </div>
       )}
       {data.txnHash && config[data.chain] && (
-        <div className="tc__wallet-popup__transaction-list__deposit-content-link">
+        <div className="tc__wallet-popup__transaction-list__deposit-withdraw-content-link">
           <Link
             href={`${config[data.chain].blockExplorerUrl}tx/${data.txnHash}`}
             className="tc__currency-input-modal__transaction-link"

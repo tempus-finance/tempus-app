@@ -14,11 +14,11 @@
     "linkBlockExplorer": "~~~~~====={{{{{(((((linkBlockExplorer)))))}}}}}=====~~~~~"
   },
   "DepositContent": {
-    "descriptionDetail": "",
+    "descriptionDetail": "~~~~~====={{{{{(((((descriptionDetail)))))}}}}}=====~~~~~",
     "descriptionProtocol": "<0>{{chainTokenStr}}</0><1></1><2>{{protocolStr}}</2>",
     "descriptionTerm": "<0>{t('DepositContent.term')}</0><1></1>",
-    "linkBlockExplorer": "",
-    "titleErrorDetail": ""
+    "linkBlockExplorer": "~~~~~====={{{{{(((((linkBlockExplorer)))))}}}}}=====~~~~~",
+    "titleErrorDetail": "~~~~~====={{{{{(((((titleErrorDetail)))))}}}}}=====~~~~~"
   },
   "DepositModal": {
     "description": "~~~~~====={{{{{(((((description)))))}}}}}=====~~~~~",
@@ -176,18 +176,18 @@
     "title": "~~~~~====={{{{{(((((title)))))}}}}}=====~~~~~"
   },
   "TransactionItem": {
-    "titleApprovalFailed": "",
-    "titleApprovalPending": "",
-    "titleApprovalSucceed": "",
-    "titleDepositFailed": "",
-    "titleDepositPending": "",
-    "titleDepositSucceed": "",
-    "titleWithdrawalFailed": "",
-    "titleWithdrawalPending": "",
-    "titleWithdrawalSucceed": ""
+    "titleApprovalFailed": "~~~~~====={{{{{(((((titleApprovalFailed)))))}}}}}=====~~~~~",
+    "titleApprovalPending": "~~~~~====={{{{{(((((titleApprovalPending)))))}}}}}=====~~~~~",
+    "titleApprovalSucceed": "~~~~~====={{{{{(((((titleApprovalSucceed)))))}}}}}=====~~~~~",
+    "titleDepositFailed": "~~~~~====={{{{{(((((titleDepositFailed)))))}}}}}=====~~~~~",
+    "titleDepositPending": "~~~~~====={{{{{(((((titleDepositPending)))))}}}}}=====~~~~~",
+    "titleDepositSucceed": "~~~~~====={{{{{(((((titleDepositSucceed)))))}}}}}=====~~~~~",
+    "titleWithdrawalFailed": "~~~~~====={{{{{(((((titleWithdrawalFailed)))))}}}}}=====~~~~~",
+    "titleWithdrawalPending": "~~~~~====={{{{{(((((titleWithdrawalPending)))))}}}}}=====~~~~~",
+    "titleWithdrawalSucceed": "~~~~~====={{{{{(((((titleWithdrawalSucceed)))))}}}}}=====~~~~~"
   },
   "TransactionList": {
-    "descriptionNoTransactions": ""
+    "descriptionNoTransactions": "~~~~~====={{{{{(((((descriptionNoTransactions)))))}}}}}=====~~~~~"
   },
   "WalletButton": {
     "buttonConnectWallet": "~~~~~====={{{{{(((((buttonConnectWallet)))))}}}}}=====~~~~~",
@@ -199,6 +199,13 @@
   "WalletPopup": {
     "title": "~~~~~====={{{{{(((((title)))))}}}}}=====~~~~~",
     "titleAddress": "~~~~~====={{{{{(((((titleAddress)))))}}}}}=====~~~~~"
+  },
+  "WithdrawContent": {
+    "descriptionDetail": "<0></0><1></1>",
+    "descriptionProtocol": "<0>{{chainTokenStr}}</0><1></1><2></2><3>{{protocolStr}}</3>",
+    "descriptionTerm": "<0></0><1></1>",
+    "linkBlockExplorer": "~~~~~====={{{{{(((((linkBlockExplorer)))))}}}}}=====~~~~~",
+    "titleErrorDetail": "~~~~~====={{{{{(((((titleErrorDetail)))))}}}}}=====~~~~~"
   },
   "WithdrawModal": {
     "description": "~~~~~====={{{{{(((((description)))))}}}}}=====~~~~~",
