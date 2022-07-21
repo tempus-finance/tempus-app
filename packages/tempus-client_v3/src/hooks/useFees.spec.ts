@@ -84,7 +84,7 @@ describe('useFees', () => {
     expect(result.current).toEqual(expected);
   });
 
-  test('directly get the latest value for 2nd hooks', async () => {
+  xtest('directly get the latest value for 2nd hooks', async () => {
     (getDefinedServices as unknown as jest.Mock).mockImplementation(() => ({
       TempusPoolService: {
         getFeesConfig: jest

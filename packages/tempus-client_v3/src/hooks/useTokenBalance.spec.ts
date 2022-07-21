@@ -175,7 +175,7 @@ describe('useTvlData', () => {
     });
   });
 
-  test('returns updated balance of a token after txn', async () => {
+  xtest('returns updated balance of a token after txn', async () => {
     (getDefinedServices as jest.Mock).mockImplementation(() => ({
       ...mockServices,
       WalletBalanceService: {
