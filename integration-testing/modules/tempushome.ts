@@ -34,10 +34,12 @@ export async function tempusMetamaskConnect(browser: BrowserContext):
   await tabTempus.close();
 }
 
-export async function tempusManageCurrency(page: Page, asset = 'USDC'):
-  Promise<void> {
+export async function tempusManageCurrency(browser: BrowserContext, asset = 'USDC'):
+  Promise<Page> {
+  const page = await browser.newPage();
   await page.goto(TEMPUS_URL);
-  await page.click(`.tc__poolCard :has-text("${asset}")`);
+  await page.click(`.tc__poolCard:has-text("${asset}")`);
+  return page;
 }
 
 export async function tempusTextHeaders(browser: BrowserContext, walletConnected = false, langCode = 'en'):

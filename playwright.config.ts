@@ -9,7 +9,7 @@ const config: PlaywrightTestConfig = {
     trace: 'on',
   },
   testDir: 'integration-testing/tests',
-  retries: process.env.CI ? 1 : 0,
+  retries: process.env.CI ? 2 : 0,
   timeout: 50000,
   outputDir: process.env.CI ? '/root/project/test-results' : './test-results',
 
