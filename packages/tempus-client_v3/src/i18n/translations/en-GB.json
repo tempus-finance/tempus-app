@@ -190,6 +190,8 @@
     "titleWithdrawalSucceed": "Withdrawal Succeed"
   },
   "TransactionList": {
+    "buttonShowLess": "Show less",
+    "buttonShowMore": "Show more",
     "descriptionNoTransactions": "Your transactions will appear here..."
   },
   "WalletButton": {
