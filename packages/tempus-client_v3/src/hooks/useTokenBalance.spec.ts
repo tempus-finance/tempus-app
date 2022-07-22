@@ -44,7 +44,7 @@ jest.mock('./useAppEvent', () => ({
   ),
 }));
 
-describe('useTvlData', () => {
+describe('useTokenBalances', () => {
   beforeAll(getConfigManager);
 
   test('returns whole token balance map', async () => {
