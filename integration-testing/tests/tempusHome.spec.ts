@@ -102,17 +102,13 @@ test.describe.serial('Tempus Homepage tests', () => {
   });
 
   test('Popup window appears when clicked DAI', async () => {
-    const page: Page = await browser.newPage();
-    await page.goto(TEMPUS_URL);
-    await tempusManageCurrency(page, 'DAI');
+    const page: Page = await tempusManageCurrency(browser, 'DAI');
     await expect(page.locator('.tc__modal')).toBeEnabled();
     await page.close();
   });
 
   test('Manage window has Make Deposit button', async () => {
-    const page: Page = await browser.newPage();
-    await page.goto(TEMPUS_URL);
-    await tempusManageCurrency(page, 'DAI');
+    const page:Page = await tempusManageCurrency(browser, 'DAI');
     await expect(page.locator('button:has-text("Make Deposit")')).toBeEnabled();
     await page.close();
   });

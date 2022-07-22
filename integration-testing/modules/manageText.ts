@@ -1,8 +1,25 @@
 import { BrowserContext, expect, Page } from '@playwright/test';
-import { LOAD_SHORT_TIMEOUT } from '../utility/constants';
+import { manageDeposit } from './manage';
 import { Language } from './language';
-import { tempusManageCurrency, tempusSwitchLanguage } from './tempushome';
+import { tempusSwitchLanguage } from './tempushome';
 
+export async function manageTextFees(browser: BrowserContext, asset = 'USDC', langCode = 'en'): Promise<void> {
+  const page2: Page = await browser.newPage();
+  const lang: Language = await tempusSwitchLanguage(page, langCode);
+  const page: Page = await manageDeposit(browser, asset);
+  const str = 'Fees & transaction info';
+  await page.click(`text="${str}"`);
+  const content = '.tc__fee-tooltip__content';
+  await expect(page.locator(content)).toContainText('Fee');
+  await expect(page.locator(content)).toContainText(lang.deposit);
+  await expect(page.locator(content)).toContainText(lang.redemption);
+  await expect(page.locator(content)).toContainText(lang.earlyRedemption);
+  await expect(page.locator(content)).toContainText(lang.swap);
+  await expect(page.locator(content)).toContainText('Swap fees will go to Liquidity providers');
+  page.close();
+}
+
+/*
 export async function manageButtonsText(browser: BrowserContext, asset = 'USDC', langCode = 'en'):
   Promise<void> {
   const page: Page = await tempusManageCurrency(browser, asset);
@@ -25,3 +42,4 @@ export async function manageDisabledButtons(browser: BrowserContext, asset = 'US
   await expect(page.locator('.disabled')).toHaveCount(4);
   await page.close();
 }
+*/
