@@ -190,6 +190,8 @@
     "titleWithdrawalSucceed": "~~~~~====={{{{{(((((titleWithdrawalSucceed)))))}}}}}=====~~~~~"
   },
   "TransactionList": {
+    "buttonShowLess": "",
+    "buttonShowMore": "",
     "descriptionNoTransactions": "~~~~~====={{{{{(((((descriptionNoTransactions)))))}}}}}=====~~~~~"
   },
   "WalletButton": {
