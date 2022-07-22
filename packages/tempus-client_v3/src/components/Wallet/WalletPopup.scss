@@ -157,6 +157,35 @@
           }
         }
       }
+
+      .tc__wallet-popup__transaction-list__show-more {
+        width: 260px;
+        margin: 4px;
+        border-radius: 4px;
+        box-shadow: var(--downWeakShadow);
+        border: 1px solid var(--accordionBorder);
+        background: var(--accordionBackground);
+
+        .tc__btn {
+          width: 100%;
+          padding: 8px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+
+          > * {
+            margin: 0 4px;
+
+            &:first-child {
+              margin-left: 0;
+            }
+
+            &:last-child {
+              margin-right: 0;
+            }
+          }
+        }
+      }
     }
 
     &::before {
