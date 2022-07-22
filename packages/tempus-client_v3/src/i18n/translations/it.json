@@ -190,6 +190,8 @@
     "titleWithdrawalSucceed": ""
   },
   "TransactionList": {
+    "buttonShowLess": "",
+    "buttonShowMore": "",
     "descriptionNoTransactions": ""
   },
   "WalletButton": {
