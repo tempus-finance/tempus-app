@@ -1,0 +1,58 @@
+{
+  "name": "node-7z",
+  "version": "3.0.0",
+  "description": "A Node.js wrapper for 7-Zip with platform binaries",
+  "main": "./src/main.js",
+  "scripts": {
+    "test": "npx mocha -r esm --reporter=spec \"test/**/*.spec.js\" --timeout=0",
+    "test-unit": "npx mocha -r esm --reporter=spec \"test/unit/*.spec.js\"",
+    "test-unit-coverage": "npx nyc --reporter=html npm run test-unit",
+    "test-func": "npx mocha -r esm --reporter=spec \"test/func/*.spec.js\" --timeout=0",
+    "test-func-coverage": "npx nyc --reporter=html npm run test-func",
+    "test-debug": "DEBUG=node-7z npm run test",
+    "test-coverage": "npx nyc --reporter=lcov npm run test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/quentinrossetti/node-7z.git"
+  },
+  "keywords": [
+    "node",
+    "7z",
+    "7za",
+    "7zr",
+    "p7zip",
+    "7zip",
+    "wrapper"
+  ],
+  "author": "Quentin Rossetti <quentin.rossetti@gmail.com>",
+  "contributors": [],
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/quentinrossetti/node-7zip/issues"
+  },
+  "homepage": "https://github.com/quentinrossetti/node-7zip.git",
+  "engines": {
+    "node": ">=10"
+  },
+  "dependencies": {
+    "debug": "^4.3.2",
+    "lodash.defaultsdeep": "^4.6.1",
+    "lodash.defaultto": "^4.14.0",
+    "lodash.flattendeep": "^4.4.0",
+    "lodash.isempty": "^4.4.0",
+    "lodash.negate": "^3.0.2",
+    "normalize-path": "^3.0.0"
+  },
+  "optionalDependencies": {},
+  "devDependencies": {
+    "chai": "^4.3.4",
+    "esm": "^3.2.25",
+    "fs-readdir-recursive": "^1.1.0",
+    "is-child-process": "^1.0.2",
+    "mocha": "^6.2.3",
+    "nyc": "^14.1.1",
+    "rimraf": "^3.0.2",
+    "standard": "^14.3.4"
+  }
+}
