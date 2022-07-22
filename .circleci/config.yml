@@ -15,9 +15,11 @@ jobs:
     steps:
       - checkout
       - node/install-packages
+      - run: cd ./integration-testing
       - run:
           name: Bootstrap
-          command: ./integration-testing/node_modules/.bin/lerna bootstrap --contents=integration-testing
+          command: lerna bootstrap
+      - run: cd ..
       - persist_to_workspace:
           root: ./
           paths:
