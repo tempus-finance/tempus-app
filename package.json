@@ -1,0 +1,10 @@
+{
+  "name": "root",
+  "private": true,
+  "workspaces": [
+    "integration-testing/*"
+  ],
+  "devDependencies": {
+    "lerna": "^5.1.4"
+  }
+}

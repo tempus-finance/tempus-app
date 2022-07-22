@@ -13,8 +13,6 @@ jobs:
     docker:
       - image: cimg/node:lts
     steps:
-      - attach_workspace:
-          at: ./integration-testing
       - checkout
       - node/install-packages
       - run:
