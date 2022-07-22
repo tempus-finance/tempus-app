@@ -5,7 +5,8 @@ import { tempusSwitchLanguage } from './tempushome';
 
 export async function manageTextFees(browser: BrowserContext, asset = 'USDC', langCode = 'en'): Promise<void> {
   const page2: Page = await browser.newPage();
-  const lang: Language = await tempusSwitchLanguage(page, langCode);
+  const lang: Language = await tempusSwitchLanguage(page2, langCode);
+  await page2.close();
   const page: Page = await manageDeposit(browser, asset);
   const str = 'Fees & transaction info';
   await page.click(`text="${str}"`);
