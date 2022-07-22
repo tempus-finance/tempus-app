@@ -13,13 +13,13 @@ jobs:
     docker:
       - image: cimg/node:lts
     steps:
+      - attach_workspace:
+          at: ./integration-testing
       - checkout
       - node/install-packages
-      - run: cd ./integration-testing
       - run:
           name: Bootstrap
           command: lerna bootstrap
-      - run: cd ..
       - persist_to_workspace:
           root: ./
           paths:
