@@ -4,11 +4,11 @@
   "private": true,
   "dependencies": {
     "@playwright/test": "^1.24.0",
+    "@types/node": "^18.0.6",
     "playwright": "^1.24.0",
     "typescript": "^4.6.2"
   },
   "devDependencies": {
-    "@types/node": "^18.0.6",
     "@typescript-eslint/eslint-plugin": "^4.28.1",
     "async": "^3.2.3",
     "commandir": "^1.0.1",
@@ -27,6 +27,6 @@
     "build": "lerna run build",
     "test": "lerna run ci:test",
     "e2e": "playwright test --headed --workers=1",
-    "mm-setup": "echo INVALID_ID >> integration-testing/utility/mm_id.txt && node integration-testing/utility/download_mm.js && ts-node integration-testing/utility/update_mm_id.ts && ts-node integration-testing/utility/metamask-setup.ts"
+    "mm-setup": "echo INVALID_ID > ./utility/mm_id.txt && node ./utility/download_mm.js && ts-node ./utility/update_mm_id.ts && ts-node ./utility/metamask-setup.ts"
   }
 }
