@@ -8,10 +8,10 @@ const config: PlaywrightTestConfig = {
     video: 'on',
     trace: 'on',
   },
-  testDir: 'integration-testing/tests',
+  testDir: './tests',
   retries: process.env.CI ? 2 : 0,
   timeout: 50000,
-  outputDir: process.env.CI ? '/root/project/test-results' : './test-results',
+  outputDir: process.env.CI ? '/root/project/integration-testing/test-results' : './test-results',
 
 };
 export default config;

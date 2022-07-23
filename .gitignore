@@ -38,6 +38,7 @@ packages/**/storybook-static
 packages/**/src/release.json
 
 #e2e
+/integration-testing/node_modules
 /integration-testing/mm
 /integration-testing/utility/user_data
 /integration-testing/utility/*.txt

@@ -1,6 +1,8 @@
 import { config as denvconfig } from 'dotenv';
+import { join as pathjoin } from 'path';
 
-denvconfig();
+const dotenvPath = pathjoin(__dirname, '../../.env');
+denvconfig({path: dotenvPath});
 
 export default {
   METAMASK_RECOVERY_PHRASE: process.env.METAMASK_RECOVERY_PHRASE ?? '',

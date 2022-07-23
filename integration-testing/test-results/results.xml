@@ -1,0 +1,15 @@
+<testsuites id="" name="" tests="1" failures="0" skipped="0" errors="0" time="19.48990899991989">
+<testsuite name="languageSwitching.spec.ts" timestamp="1658585512238" hostname="" tests="1" failures="0" skipped="0" time="3.667" errors="0">
+<testcase name="Language switching tests English, Spanish, Italian languages are included" classname="languageSwitching.spec.ts:13:3 › Language switching tests › English, Spanish, Italian languages are included" time="3.667">
+<system-out>
+<![CDATA[
+[[ATTACHMENT|../test-results/languageSwitching-Language-switching-tests-English-Spanish-Italian-languages-are-included/trace.zip]]
+
+[[ATTACHMENT|../test-results/languageSwitching-Language-switching-tests-English-Spanish-Italian-languages-are-included/test-finished-1.png]]
+
+[[ATTACHMENT|../test-results/languageSwitching-Language-switching-tests-English-Spanish-Italian-languages-are-included/test-finished-2.png]]
+]]>
+</system-out>
+</testcase>
+</testsuite>
+</testsuites>
