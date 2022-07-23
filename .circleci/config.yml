@@ -160,7 +160,7 @@ jobs:
       - run:
           name: E2E Tests
           command: |
-            npx playwright install
+            npx --prefix ./integration-testing playwright install
             TEST_FILES=$(circleci tests glob "/root/project/integration-testing/tests/*.spec.ts" | circleci tests split)
             echo "Executing test files:" $TEST_FILES
             xvfb-run --auto-servernum --server-num=1 npm --prefix ./integration-testing run e2e $TEST_FILES
