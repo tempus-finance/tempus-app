@@ -7,7 +7,7 @@ import './Chart.scss';
 export interface BalanceChartTooltipContentProps {
   title?: string;
   value: string;
-  currency: Ticker;
+  currency: Ticker | 'USD';
   date: Date;
   locale: string;
 }

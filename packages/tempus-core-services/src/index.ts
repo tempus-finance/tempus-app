@@ -23,6 +23,8 @@ export type {
   YearnData,
   YearnDataApy,
   YearnDataToken,
+  Deposit,
+  Redeem,
 } from './interfaces';
 
 export type {
@@ -42,6 +44,7 @@ export type {
   StorageService,
   SwapEvent,
   UserDepositsService,
+  UserRedeemsService,
 } from './services';
 
 export type { Numberish } from './datastructures';

@@ -17,7 +17,7 @@ import { selectedChain$ } from './useSelectedChain';
 import { servicesLoaded$ } from './useServicesLoaded';
 import { walletAddress$ } from './useWalletAddress';
 
-export const userDeposits$ = new BehaviorSubject<Deposit[]>([]);
+export const userDeposits$ = new BehaviorSubject<Deposit[] | null>(null);
 
 const fetchUserDeposits = (chain: Chain, walletAddress: string): Observable<Deposit[] | null> => {
   try {

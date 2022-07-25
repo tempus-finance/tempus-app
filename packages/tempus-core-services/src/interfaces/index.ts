@@ -8,3 +8,4 @@ export type { TokenPrecision, TokenTypePrecision } from './TokenPrecision';
 export type { TransactionView } from './TransactionView';
 export type { YearnData, YearnDataApy, YearnDataToken } from './YearnData';
 export type { Deposit } from './Deposit';
+export type { Redeem } from './Redeem';

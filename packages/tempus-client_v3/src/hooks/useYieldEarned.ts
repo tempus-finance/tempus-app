@@ -1,25 +1,12 @@
 import { bind } from '@react-rxjs/core';
-import {
-  BehaviorSubject,
-  map,
-  combineLatest,
-  from,
-  of,
-  merge,
-  mergeMap,
-  Subscription,
-  filter,
-  Observable,
-  catchError,
-  scan,
-  debounce,
-  tap,
-  interval,
-} from 'rxjs';
-import { Chain, Decimal, getDefinedServices } from 'tempus-core-services';
+import { BehaviorSubject, map, combineLatest, of, merge, mergeMap, Subscription, filter, tap } from 'rxjs';
+import { Chain, Decimal } from 'tempus-core-services';
+import { Deposit, Redeem } from 'tempus-core-services/dist/interfaces';
 import { getConfigManager } from '../config/getConfigManager';
-import { DEBOUNCE_IN_MS } from '../constants';
+import { PoolBalance, poolBalances$ } from './usePoolBalance';
 import { servicesLoaded$ } from './useServicesLoaded';
+import { userDeposits$ } from './useUserDeposits';
+import { userRedeems$ } from './useUserRedeems';
 
 type PoolChainAddressId = string;
 
@@ -37,10 +24,6 @@ interface PoolYieldEarnedData {
   subject$: BehaviorSubject<PoolYieldEarned>;
   address: string;
   chain: Chain;
-}
-
-interface PoolYieldEarnedMap {
-  [id: PoolChainAddressId]: PoolYieldEarned;
 }
 
 // Each pool will have a separate BehaviorSubject, and this map will store them with some additional pool data
@@ -64,35 +47,69 @@ poolList.forEach(pool => {
 /**
  * Function to fetch pool negative interest rate flag
  */
-const fetchPoolYieldEarned = (chain: Chain, poolAddress: string): Observable<Decimal | null> => {
+const getPoolYieldEarned = (
+  chain: Chain,
+  address: string,
+  userDeposits: Deposit[] | null,
+  userRedeems: Redeem[] | null,
+  userPoolBalances: { [id: string]: PoolBalance },
+): Decimal | null => {
   try {
-    const services = getDefinedServices(chain);
-    return from(services.PoolInterestRateService.isPoolInterestRateNegative(poolAddress)).pipe(
-      catchError(error => {
-        console.error(
-          'useNegativePoolInterestRate -' +
-            `failed to check if pool interest rate is negative for pool ${poolAddress} on ${chain}`,
-          error,
-        );
-        return of(null);
-      }),
-    );
+    const currentBalance = userPoolBalances[`${chain}-${address}`].balanceInUsd;
+
+    if (!currentBalance || !userDeposits || !userRedeems) {
+      return null;
+    }
+
+    let totalDepositedUsd = new Decimal(0);
+    userDeposits.forEach(deposit => {
+      if (deposit.poolAddress.toLowerCase() !== address.toLowerCase()) {
+        return;
+      }
+
+      const depositAmountUsd = deposit.amountDeposited.mul(deposit.tokenRate);
+
+      totalDepositedUsd = totalDepositedUsd.add(depositAmountUsd);
+    });
+
+    let totalRedeemedUsd = new Decimal(0);
+    userRedeems.forEach(redeem => {
+      if (redeem.poolAddress.toLocaleLowerCase() !== address.toLowerCase()) {
+        return;
+      }
+
+      const redeemedAmountUsd = redeem.amountRedeemed.mul(redeem.tokenRate);
+
+      totalRedeemedUsd = totalRedeemedUsd.add(redeemedAmountUsd);
+    });
+
+    return totalRedeemedUsd.add(currentBalance).sub(totalDepositedUsd);
   } catch (error) {
     console.error(
       'useNegativePoolInterestRate - ' +
-        `failed to check if pool interest rate is negative for pool ${poolAddress} on ${chain}`,
+        `failed to check if pool interest rate is negative for pool ${address} on ${chain}`,
       error,
     );
-    return of(null);
+    return null;
   }
 };
 
-// Stream that goes over all pools and fetches interest rate negative flag - this happens only once on app load
-const poolYieldEarnedStream$ = combineLatest([servicesLoaded$]).pipe(
-  filter(([servicesLoaded]) => servicesLoaded),
-  mergeMap<[boolean], Observable<PoolYieldEarnedMap | null>>(() => {
+// Stream that goes over all pools and calculates yield earned for all pools - this happens only once on app load
+const poolYieldEarnedStream$ = combineLatest([servicesLoaded$, userDeposits$, userRedeems$, poolBalances$]).pipe(
+  filter(
+    ([servicesLoaded, userDeposits, userRedeems]) => servicesLoaded && Boolean(userDeposits) && Boolean(userRedeems),
+  ),
+  mergeMap(([, userDeposits, userRedeems, poolBalances]) => {
     const poolYieldEarnedFetchMap = [...poolYieldEarnedDataMap.values()].map(poolYieldEarnedData =>
-      fetchPoolYieldEarned(poolYieldEarnedData.chain, poolYieldEarnedData.address).pipe(
+      of(
+        getPoolYieldEarned(
+          poolYieldEarnedData.chain,
+          poolYieldEarnedData.address,
+          userDeposits,
+          userRedeems,
+          poolBalances,
+        ),
+      ).pipe(
         filter(poolYieldEarned => poolYieldEarned !== null),
         map(poolYieldEarned => ({
           [`${poolYieldEarnedData.chain}-${poolYieldEarnedData.address}`]: {
@@ -111,30 +128,22 @@ const poolYieldEarnedStream$ = combineLatest([servicesLoaded$]).pipe(
 // Merge all stream$ into one
 const stream$ = merge(poolYieldEarnedStream$).pipe(
   filter(dataMap => Boolean(dataMap)),
-  scan(
-    (allDataMap, dataMap) => ({
-      ...allDataMap,
-      ...dataMap,
-    }),
-    {} as PoolYieldEarnedMap,
-  ),
-  debounce<PoolYieldEarnedMap>(() => interval(DEBOUNCE_IN_MS)),
   tap(dataMap => {
     if (dataMap === null) {
       return;
     }
 
     Object.keys(dataMap).forEach(key => {
-      const negativePoolInterestRateData = dataMap[key];
-      if (negativePoolInterestRateData.poolInterestRateNegative !== null) {
-        const negativePoolInterestRate = poolYieldEarnedDataMap.get(
-          `${negativePoolInterestRateData.chain}-${negativePoolInterestRateData.address}`,
+      const poolYieldEarnedData = dataMap[key];
+      if (poolYieldEarnedData.poolYieldEarned !== null) {
+        const poolYieldEarned = poolYieldEarnedDataMap.get(
+          `${poolYieldEarnedData.chain}-${poolYieldEarnedData.address}`,
         );
-        if (negativePoolInterestRate) {
-          negativePoolInterestRate.subject$.next({
-            poolInterestRateNegative: negativePoolInterestRateData.poolInterestRateNegative,
-            chain: negativePoolInterestRateData.chain,
-            address: negativePoolInterestRateData.address,
+        if (poolYieldEarned) {
+          poolYieldEarned.subject$.next({
+            poolYieldEarned: poolYieldEarnedData.poolYieldEarned,
+            chain: poolYieldEarnedData.chain,
+            address: poolYieldEarnedData.address,
           });
         }
       }
@@ -142,12 +151,12 @@ const stream$ = merge(poolYieldEarnedStream$).pipe(
   }),
 );
 
-// Combines all negative pool interest rate subjects into a single map
+// Combines all pool yield earned subjects into a single map
 export const poolYieldEarnedMap$ = combineLatest(
   [...poolYieldEarnedDataMap.values()].map(negativePoolInterestRateData => negativePoolInterestRateData.subject$),
 ).pipe(
   map<PoolYieldEarned[], PoolsYieldEarnedMap>(poolsYieldEarnedData => {
-    let poolYieldEarnedMap: { [id: PoolChainAddressId]: Decimal | null } = {};
+    let poolYieldEarnedMap: PoolsYieldEarnedMap = {};
 
     poolsYieldEarnedData.forEach(poolYieldEarnedData => {
       poolYieldEarnedMap = {

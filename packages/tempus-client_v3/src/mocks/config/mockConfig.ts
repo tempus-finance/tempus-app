@@ -165,6 +165,7 @@ export const mockConfig: { [chain: string]: ChainConfig } = {
     tempTokenAddress: 'temp-token-address-ethereum',
     tempusTreasuryAddress: 'treasury-address-ethereum',
     testChain: false,
+    subgraphUrl: '',
   },
   fantom: {
     tempusPools: [pool3, pool4, pool5],
@@ -185,6 +186,7 @@ export const mockConfig: { [chain: string]: ChainConfig } = {
     tempTokenAddress: 'temp-token-address-fantom',
     tempusTreasuryAddress: 'treasury-address-fantom',
     testChain: false,
+    subgraphUrl: '',
   },
   'ethereum-fork': {
     tempusPools: [],
@@ -205,6 +207,7 @@ export const mockConfig: { [chain: string]: ChainConfig } = {
     tempTokenAddress: 'temp-token-address-ethereum-fork',
     tempusTreasuryAddress: 'treasury-address-ethereum-fork',
     testChain: true,
+    subgraphUrl: '',
   },
 };
 

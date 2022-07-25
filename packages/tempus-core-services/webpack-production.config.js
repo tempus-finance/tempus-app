@@ -32,4 +32,5 @@ module.exports = {
       'process.env': JSON.stringify(process.env),
     }),
   ],
+  watch: true,
 };

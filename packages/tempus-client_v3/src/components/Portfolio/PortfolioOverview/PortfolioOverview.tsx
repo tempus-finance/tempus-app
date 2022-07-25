@@ -1,7 +1,13 @@
 import { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Decimal, DecimalUtils, ZERO } from 'tempus-core-services';
-import { usePoolBalances, useSelectedChain, useUserDepositedPools, useWalletAddress } from '../../../hooks';
+import {
+  usePoolBalances,
+  useSelectedChain,
+  useUserDepositedPools,
+  useWalletAddress,
+  usePoolsYieldEarned,
+} from '../../../hooks';
 import { Tab, Tabs, Typography } from '../../shared';
 import PortfolioValueChart from './PortfolioValueChart';
 import PortfolioYieldChart from './PortfolioYieldChart';
@@ -14,6 +20,7 @@ import './PortfolioOverview.scss';
 const PortfolioOverview: FC = () => {
   const { t } = useTranslation();
 
+  const poolsYieldEarned = usePoolsYieldEarned();
   const userDepositedPools = useUserDepositedPools();
   const [selectedChain] = useSelectedChain();
   const balances = usePoolBalances();
@@ -34,8 +41,33 @@ const PortfolioOverview: FC = () => {
     [balances, selectedChain],
   );
 
+  const yieldEarnedFormatted = useMemo(() => {
+    let yieldEarned = new Decimal(0);
+
+    let yieldEarnedLoading = false;
+
+    Object.keys(poolsYieldEarned).forEach(key => {
+      const [chain] = key.split('-');
+      if (chain !== selectedChain) {
+        return;
+      }
+
+      const poolYieldEarned = poolsYieldEarned[key];
+      if (poolYieldEarned) {
+        yieldEarned = yieldEarned.add(poolYieldEarned);
+      } else {
+        yieldEarnedLoading = true;
+      }
+    });
+
+    if (yieldEarnedLoading) {
+      return null;
+    }
+
+    return DecimalUtils.formatToCurrency(yieldEarned, 2);
+  }, [poolsYieldEarned, selectedChain]);
+
   // TODO: Fetch real values
-  const earnedYield = '30.24';
   const projectedYield = '42.78';
 
   return (
@@ -51,7 +83,7 @@ const PortfolioOverview: FC = () => {
             <PortfolioInfoBox
               title={t('PortfolioOverview.titleEarnedYield')}
               subtitle={t('PortfolioOverview.subtitleEarnedYield')}
-              value={earnedYield}
+              value={yieldEarnedFormatted || ''}
             />
             <PortfolioInfoBox
               title={t('PortfolioOverview.titleProjectedYield')}

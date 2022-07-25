@@ -1,13 +1,14 @@
 import Axios from 'axios';
 import { BigNumber } from 'ethers';
 import { Decimal } from '../datastructures';
-import { Chain, Deposit, Ticker } from '../interfaces';
+import { Chain, Ticker } from '../interfaces';
+import { Redeem } from '../interfaces/Redeem';
 import { BaseService, ConfigGetter } from './BaseService';
 
 interface ResponseData {
   data: {
     data: {
-      deposits: [
+      redeems: [
         {
           amount: string;
           id: string;
@@ -24,7 +25,7 @@ interface ResponseData {
   };
 }
 
-export class UserDepositsService extends BaseService {
+export class UserRedeemsService extends BaseService {
   private chain: Chain;
 
   constructor(chain: Chain, getConfig: ConfigGetter) {
@@ -33,18 +34,18 @@ export class UserDepositsService extends BaseService {
     this.chain = chain;
   }
 
-  async fetchUserDeposits(walletAddress: string): Promise<Deposit[]> {
+  async fetchUserRedeems(walletAddress: string): Promise<Redeem[]> {
     const chainConfig = this.getChainConfig(this.chain);
 
-    // TODO - Add query pagination in case user has more then 1000 deposits
+    // TODO - Add query pagination in case user has more then 1000 redeems
     const {
       data: {
-        data: { deposits },
+        data: { redeems },
       },
     } = await Axios.post<{ query: string }, ResponseData>(chainConfig.subgraphUrl, {
       query: `
         query {
-          deposits (first: 1000, where: {user_: {id: "${walletAddress}"}}) {
+          redeems (first: 1000, where: {user_: {id: "${walletAddress}"}}) {
             id
             amount
             token
@@ -62,20 +63,20 @@ export class UserDepositsService extends BaseService {
         `,
     });
 
-    return deposits.map(deposit => {
-      const transactionHash = deposit.id;
-      const userWallet = deposit.user.id;
-      const date = new Date(Number(deposit.timestamp) * 1000);
-      const amountDeposited = new Decimal(BigNumber.from(deposit.amount), 18);
-      const tokenDeposited = deposit.token;
-      const tokenRate = new Decimal(deposit.tokenRate).div(new Decimal(deposit.tokenRateDenominator));
-      const poolAddress = deposit.pool;
+    return redeems.map(redeem => {
+      const transactionHash = redeem.id;
+      const userWallet = redeem.user.id;
+      const date = new Date(Number(redeem.timestamp) * 1000);
+      const amountRedeemed = new Decimal(BigNumber.from(redeem.amount), 18);
+      const tokenRedeemed = redeem.token;
+      const tokenRate = new Decimal(redeem.tokenRate).div(new Decimal(redeem.tokenRateDenominator));
+      const poolAddress = redeem.pool;
 
       return {
         transactionHash,
         userWallet,
-        amountDeposited,
-        tokenDeposited,
+        amountRedeemed,
+        tokenRedeemed,
         tokenRate,
         date,
         poolAddress,

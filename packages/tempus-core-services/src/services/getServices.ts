@@ -24,6 +24,8 @@ import { TempusAMMService } from './TempusAMMService';
 import { getTempusAMMService } from './getTempusAMMService';
 import { UserDepositsService } from './UserDepositsService';
 import { getUserDepositsService } from './getUserDepositsService';
+import { UserRedeemsService } from './UserRedeemsService';
+import { getUserRedeemsService } from './getUserRedeemsService';
 
 type ServiceMap = {
   TempusPoolService: TempusPoolService;
@@ -38,6 +40,7 @@ type ServiceMap = {
   DepositService: DepositService;
   PoolInterestRateService: PoolInterestRateService;
   UserDepositsService: UserDepositsService;
+  UserRedeemsService: UserRedeemsService;
   ERC20TokenServiceGetter: typeof getERC20TokenService;
 };
 
@@ -60,6 +63,7 @@ export const initServices = (chain: Chain, config: Config): void => {
     DepositService: getDepositService(chain, getConfig),
     PoolInterestRateService: getPoolInterestRateService(chain, getConfig),
     UserDepositsService: getUserDepositsService(chain, getConfig),
+    UserRedeemsService: getUserRedeemsService(chain, getConfig),
     ERC20TokenServiceGetter: getERC20TokenService,
   };
 

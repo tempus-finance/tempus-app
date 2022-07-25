@@ -59,7 +59,7 @@ const PortfolioValueChart: FC<ChartCommonProps> = props => {
 
   const tooltipContent = useCallback(
     (x, y) => (
-      <BalanceChartTooltipContent value={DecimalUtils.formatToCurrency(y)} currency="ETH" date={x} locale={locale} />
+      <BalanceChartTooltipContent value={DecimalUtils.formatToCurrency(y)} currency="USD" date={x} locale={locale} />
     ),
     [locale],
   );
